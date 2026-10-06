@@ -1,0 +1,49 @@
+name: SLUS_012.51
+# Boot executable is byte-identical on all four US discs (SLUS_012.51/.95/.96/.97)
+sha1: e37e8c4dc7c374a06375f312b366f79b8fbd1764
+options:
+  basename: slus_012.51
+  target_path: disks/us/SLUS_012.51
+  base_path: ..
+  platform: psx
+  compiler: GCC
+
+  asm_path: asm/us/main
+  src_path: src/main
+  build_path: build/us
+  ld_script_path: build/us/slus_012.51.ld
+  ld_dependencies: yes
+  elf_path: build/us/slus_012.51.elf
+
+  symbol_addrs_path:
+    - config/symbols.us.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto.us.txt
+  undefined_syms_auto_path: config/undefined_syms_auto.us.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+
+segments:
+  - name: header
+    type: header
+    start: 0x0
+
+  - name: main
+    type: code
+    start: 0x800
+    vram: 0x80010000
+    bss_size: 0x0
+    subsegments:
+      - [0x800, rodata]
+      - [0x2FA0, asm]     # first function (addiu sp,sp,-0x20)
+      - [0x56DE0, data]   # after last jr ra at 0x56DCC
+
+  - [0x1DE800]

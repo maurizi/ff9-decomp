@@ -1,0 +1,24 @@
+# Copyrighted game data — never commit
+disks/
+*.img
+*.bin
+*.cue
+*.ccd
+*.sub
+*.exe
+
+# Generated
+build/
+asm/
+assets/
+config/undefined_*_auto*.txt
+*.ld
+.splat/
+.splache
+
+# Tooling
+.venv/
+__pycache__/
+tools/bin/
+
+CLAUDE.local.md

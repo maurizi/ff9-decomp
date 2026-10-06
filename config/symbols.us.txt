@@ -1,0 +1,1 @@
+__start = 0x80012B68; // type:func  entry point from PS-X EXE header
