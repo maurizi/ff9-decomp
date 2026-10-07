@@ -280,8 +280,8 @@ typedef struct Unk80077530 {
 } Unk80077530;
 extern Unk80077530 D_80077530[10];
 
-void func_8002CF20(Unk80077530 *, s32);
-void func_8002D1AC(Unk80077530 *, s32);
+void func_8002CF20(void *, s32); /* window, see func_8002D1AC */
+void func_8002D1AC(void *, s32); /* window: Unk80077530 (main) / Window (ovl_65), to unify */
 void func_8002D398(Unk80077530 *, s32, s32);
 
 /* ---- misc globals (batch 1) ---- */
@@ -676,7 +676,7 @@ u16 *func_800633E4(s32);
 void func_80027CB0(void);
 void func_8003431C(void);
 void func_80033690(void);
-s32 func_80055210(void);
+s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void func_8001C718(void);
 u16 *func_8001C7FC(s32, s32, s32);
 void func_8002CD4C(s32, s32, s32, s32);

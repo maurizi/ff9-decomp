@@ -1,6 +1,6 @@
 #include "ovl_65.h"
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF28C);
+INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF284);
 
 void func_801EF45C(void) {
     Unk11C0 *s = GDATA->unk8E4->unk11C0;
@@ -951,7 +951,5 @@ void func_801F3A20(s32 arg0) {
 }
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3A7C);
-
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3B8C);
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EF27C);

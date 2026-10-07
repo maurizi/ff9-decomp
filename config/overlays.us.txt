@@ -17,5 +17,5 @@
 3b 801EDF00 58A8  6830    # menu: party select
 3c 801EDF00 6100  A8F0    # menu: ? (mostly graphics data)
 3e 801EDF00 815C  8C60    # menu: ? (mostly graphics data)
-65 801EDF00 138C  5C90    # menu: battle rewards ("EXP Received")
+65 801EDF00 1384  5C88    # menu: battle rewards ("EXP Received")
 64 80198700 9A0   4D00    # debug FMV player ("\TEST\FMV990.STR")

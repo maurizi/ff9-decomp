@@ -43,7 +43,7 @@ segments:
     bss_size: 0x0
     subsegments:
       - [0x0, .rodata, ovl_65]
-      - [0x138C, c, ovl_65]
-      - [0x5C90, data]
+      - [0x1384, c, ovl_65]
+      - [0x5C88, data]
 
   - [0xA800]
