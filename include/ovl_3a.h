@@ -26,7 +26,6 @@ typedef struct {
 } NameEntry;
 extern NameEntry D_801F4BBC;
 
-extern u32 D_80077DBC; /* = D_80077DB0.unkC */
 /* A RECT, not code: splat starts .data at 0x6C50 instead of 0x6C48, so the
  * symbol keeps the func_ name. */
 extern RECT func_801F4B48;
