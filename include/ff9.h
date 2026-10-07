@@ -57,7 +57,9 @@ typedef struct {
     u8 unk774[0x40];       /* 2 bits per item id */
     u8 pad7B4[0x7D4 - 0x7B4];
     Unk7D4 *unk7D4;
-    u8 pad7D8[0x8C8 - 0x7D8];
+    u8 pad7D8[0x8B2 - 0x7D8];
+    s16 unk8B2;
+    u8 pad8B4[0x8C8 - 0x8B4];
     Unk8C8 *unk8C8;
 } GameData;
 
@@ -294,13 +296,23 @@ typedef struct {
     s32 unk14;
 } Unk8005F038;
 
+/* Sound sequencer channel (AKAO): unk0 is the byte-code read pointer. */
 typedef struct {
-    u8 pad0[0xCA];
+    u8 *unk0;
+    u8 pad4[0x34 - 4];
+    u32 unk34; /* flags */
+    u8 pad38[0x94 - 0x38];
+    u16 unk94;
+    u8 pad96[0xC4 - 0x96];
+    u16 unkC4;
+    u8 padC6[0xCA - 0xC6];
     s16 unkCA;
     s16 unkCC;
     u8 padCE[0xF6 - 0xCE];
     s16 unkF6;
-} Unk8005F64C;
+    u8 padF8[0x12E - 0xF8];
+    s16 unk12E;
+} AkaoChannel;
 
 typedef struct {
     u8 unk0;
@@ -332,7 +344,8 @@ typedef struct {
     s32 unkC;
     u8 pad10[0x18 - 0x10];
     u8 unk18;
-    u8 pad19[2];
+    u8 unk19;
+    u8 unk1A;
     u8 unk1B;
     u8 unk1C;
     u8 unk1D;
@@ -367,5 +380,72 @@ extern s32 D_80080A24;
 extern s16 D_8008324A;
 extern s16 D_8008324C;
 extern s32 *D_80066764;
+
+typedef struct {
+    u8 pad0[0xC];
+    u8 unkC;
+    u8 padD[3];
+} Unk80077E44; /* 16-byte entries */
+extern Unk80077E44 *D_80077E44;
+
+typedef struct {
+    u8 pad0[6];
+    u8 unk6;
+} Unk8004AB64;
+
+typedef struct {
+    u8 pad0[0x16EC];
+    u8 unk16EC;
+} Unk8007AECC;
+extern Unk8007AECC *D_8007AECC;
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+} Unk8001E3A4;
+
+typedef struct {
+    u8 pad0[5];
+    u8 unk5;
+} Unk800659D0Sub;
+
+typedef struct {
+    u8 pad0[8];
+    Unk800659D0Sub *unk8;
+    u8 padC[0x12 - 0xC];
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+} Unk800659D0;
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+} Unk8007B988;
+extern Unk8007B988 D_8007B988;
+
+extern u8 D_80076B0C;
+extern s32 D_80077E20;
+extern s32 D_8007ADFC;
+extern u32 D_800739A0;
+extern u32 D_8007B97C;
+extern u32 D_8007B980;
+extern s32 D_8007BBEC;
+extern s32 D_8007BBF4;
+extern u16 D_8007BD38;
+extern s32 D_8007BD44;
+extern s32 D_8007BD40;
+extern u8 D_80077DB6;
+extern u8 D_80077E2C;
+extern s16 D_8007AE10[8];
+extern s32 D_8007B978;
+extern s8 D_8006F440[];
+extern s16 D_8007F96E;
+extern s32 D_80083154;
+extern s16 D_8007F96C;
+extern s32 D_80083150;
 
 #endif
