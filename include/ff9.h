@@ -1456,6 +1456,9 @@ extern s32 D_80070418;
 void func_8003563C(u8);
 s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
+extern s32 D_800739A8[];
+u8 *func_80027834(s32, s32, u32 *, s32, s32, u8 *, u8 *);
+u8 func_8003561C(void);
 void func_80033AF4(s32, s32);
 
 #endif
