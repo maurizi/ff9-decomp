@@ -39,6 +39,9 @@ typedef struct {
 typedef struct {
     u8 pad0[4];
     u16 unk4; /* high byte: first text code that takes an extra byte */
+    u16 unk6;
+    u8 pad8[4];
+    u32 unkC[1]; /* glyph info, width in the top 4 bits */
 } Unk7D4;
 
 /* Character record: 9 of them at GameData+0x3C; GameData.unk54C[] points at
