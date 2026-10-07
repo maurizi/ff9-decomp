@@ -74,9 +74,40 @@ INCLUDE_RODATA("asm/us/ovl_3a/nonmatchings/ovl_3a", D_801EDF00);
 
 INCLUDE_ASM("asm/us/ovl_3a/nonmatchings/ovl_3a", func_801F3D9C);
 
-INCLUDE_ASM("asm/us/ovl_3a/nonmatchings/ovl_3a", func_801F3FAC);
+void func_801F3FAC(void) {
+    SprtWords *p;
+    u32 clut = (GetClut(0, 0x100) << 16) | 0xB000;
 
-INCLUDE_ASM("asm/us/ovl_3a/nonmatchings/ovl_3a", func_801F4110);
+    setlen(D_80077170, 4);
+    p = (SprtWords *)D_80077170;
+    p->rgbc = 0x64808080;
+    p->xy = (D_801F4B58->x + 2) | ((D_801F4B58->y + 2) << 16);
+    p->uvclut = clut;
+    p->wh = 0x2E0020;
+    addPrim(&D_8007716C[4], p);
+    D_80077170 = (u8 *)(p + 1);
+    setlen(D_80077170, 2);
+    SetDrawTPage(D_80077170, 0, 1, 0x9F);
+    addPrim(&D_8007716C[4], D_80077170);
+    D_80077170 += 8;
+    func_8002DEE4(D_801F4B58, 6, 0);
+    func_8002705C(D_801F4B58, 6, 0);
+}
+
+void func_801F4110(void) {
+    s32 i;
+
+    func_800269F4(D_801F4B5C->x + 4, D_801F4B5C->y + 0x2A, 5, D_801F4B5C->w - 9);
+    func_8002DEE4(D_801F4B5C, 5, 2);
+    func_8002705C(D_801F4B5C, 5, 2);
+    for (i = 0; i < 2; i++) {
+        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 9 + i * 0x10, 4, func_80035774(i + 2),
+                      D_801F4BBC.unk2 == i ? 4 : 0);
+    }
+    for (i = 0; i < 3; i++) {
+        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 0x31 + i * 0x10, 4, func_80035774(i + 4), 0);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_3a/nonmatchings/ovl_3a", func_801F4238);
 
