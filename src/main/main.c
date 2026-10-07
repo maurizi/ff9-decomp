@@ -1971,11 +1971,11 @@ u16 func_8002C830(s32 a, s32 b) {
     return D_80077188[a][b].unk12;
 }
 
-void func_8002C870(s32 a, s32 b, s16 v) {
+void func_8002C870(s32 a, s32 b, s32 v) {
     D_80077188[a][b].unk10 = v;
 }
 
-void func_8002C8AC(s32 a, s32 b, s16 v) {
+void func_8002C8AC(s32 a, s32 b, s32 v) {
     D_80077188[a][b].unk12 = v;
 }
 

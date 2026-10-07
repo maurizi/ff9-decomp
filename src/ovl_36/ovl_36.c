@@ -108,7 +108,18 @@ void func_801F23DC(void) {
     func_801F2548();
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F240C);
+void func_801F240C(void) {
+    s32 i;
+    s32 id;
+
+    for (i = 0; i < 4; i++) {
+        id = D_801F30E4[i];
+        func_8002C870(0, id, D_801F347C.unk1948[i].unk0);
+        func_8002C8AC(0, id, D_801F347C.unk1948[i].unk4);
+    }
+    func_8003556C(NULL);
+    func_801F2EE8();
+}
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F24A0);
 
@@ -218,7 +229,17 @@ CardSlot *func_801F2D30(s32 id) {
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2D88);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2E60);
+void func_801F2E60(void) {
+    u8 *a = D_801EE1B4;
+    u8 *b = D_801EEFB4;
+
+    func_801F1EA0((u8 *)0x801F6D30);
+    LoadImage(&D_801F3168, (u32 *)a);
+    LoadImage(&D_801F3170, (u32 *)(a + 0x200));
+    LoadImage(&D_801F3178, (u32 *)b);
+    LoadImage(&D_801F3180, (u32 *)(b + 0x200));
+    DrawSync(0);
+}
 
 void func_801F2EE8(void) {
     func_801F1FE8((u8 *)0x801F6D30);
