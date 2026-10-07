@@ -80,7 +80,8 @@ typedef struct {
     s32 unk7E0;
     u8 pad7E4[0x838 - 0x7E4];
     void (*unk838)(s32, void *);
-    u8 pad83C[0x8B2 - 0x83C];
+    void (*unk83C)(s32, s32, s32, s32, s32);
+    u8 pad840[0x8B2 - 0x840];
     s16 unk8B2;
     u8 pad8B4[0x8C8 - 0x8B4];
     Unk8C8 *unk8C8;
@@ -93,7 +94,7 @@ typedef struct {
     GameData *unk1C;
     u8 pad20[4];
     u32 unk24;
-    u8 pad28[4];
+    u32 unk28; /* 4-bit fields */
     u32 unk2C; /* frame counter? divided by 60 */
 } GameState;
 
@@ -405,7 +406,11 @@ typedef struct {
     u8 pad14[0x18 - 0x14];
     s32 unk18;
     s32 unk1C;
-    u8 pad20[0x28 - 0x20];
+    u8 pad20[0x24 - 0x20];
+    u8 unk24;
+    u8 unk25;
+    u8 unk26;
+    u8 pad27;
     Unk4 unk28;
 } Unk80077C78;
 extern Unk80077C78 D_80077C78;
@@ -632,6 +637,7 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
+    s32 unkC;
 } Unk80080AA0;
 extern Unk80080AA0 D_80080AA0;
 
@@ -795,5 +801,15 @@ void func_80056614(void);
 void func_8006008C(AkaoChannel *, s32);
 void func_800600C0(AkaoChannel *, s32);
 u8 func_80022D3C(s32);
+
+typedef struct {
+    u8 pad0[0xC];
+    s32 unkC;
+} Unk8005AA78;
+
+extern u8 D_8006CAD8[][5];
+extern s32 D_800809B8;
+
+void func_8005A658(Unk8005AA78 *);
 
 #endif
