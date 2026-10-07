@@ -1134,6 +1134,7 @@ s32 func_8001C8B0(s32, s32, s32, s32);
 void func_8001CCB4(s32, s32, s32);
 void func_8001CFB4(void);
 void func_8001D8A8(s32);
+void func_8001D9CC(s32, s32, s32, s32, s32);
 void func_8001DAA4(s32, s32, s32, s32);
 void func_8001DCB8(void);
 FileEntry *func_8001E218(s32, s32);

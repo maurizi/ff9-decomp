@@ -7,8 +7,10 @@
 #include "ff9.h"
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    u32 unk0; /* uv + clut */
+    u8 unk4;  /* w */
+    u8 unk5;  /* h */
+    u16 unk6; /* tpage */
 } Ovl14Text; /* 8-byte item drawn by func_80027710 */
 
 /* other overlay (0x801F....) */
@@ -68,6 +70,10 @@ typedef struct {
 extern Ovl14Unk320 D_800AB320;
 
 extern void *D_800AB230;
+extern u16 D_800AB2D8[];
+extern s32 D_800AB2F4;
+extern s32 D_800AB440;
+extern s16 D_800AB2D0;
 
 void func_800A7578(void);
 void func_800A75C8(void);
