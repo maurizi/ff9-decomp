@@ -1459,6 +1459,11 @@ s32 func_800632B4(s32, s8 *);
 extern s32 D_800739A8[];
 u8 *func_80027834(s32, s32, u32 *, s32, s32, u8 *, u8 *);
 u8 func_8003561C(void);
+void func_80025A28(s32, s32, s32, s32, s32, s32);
+void func_8002EF58(MenuList *, u32);
+void func_8002EEF0(MenuList *, u32);
+extern u32 D_80077524; /* pad buttons */
+extern s32 D_80070430;
 void func_80033AF4(s32, s32);
 
 #endif
