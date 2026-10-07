@@ -121,11 +121,7 @@ typedef struct {
 
 extern u8 *D_80067944;
 
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-} Ovl14Pair;
-extern Ovl14Pair D_800739B0[2];
+typedef UnkPair Ovl14Pair;
 
 void func_8001C750(void *, s32);
 void func_8001CCB4(s32, s32, s32);

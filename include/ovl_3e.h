@@ -14,13 +14,6 @@
 #define GAMESTATE_UNKB(gs) ((gs)->pad9[2])          /* disc bitmask? 0xFF = unknown */
 #define GAMESTATE_UNK20(gs) (*(s32 *)(gs)->pad20)   /* base CD sector? */
 
-typedef struct {
-    u8 pad0[9];
-    u8 unk9;
-    u8 padA[2];
-    u32 unkC; /* bits 0-13: id, bits 14-15: disc */
-} Unk80077DB0;
-extern Unk80077DB0 D_80077DB0;
 extern s32 D_80073998[];
 extern u32 D_80077528; /* pad buttons pressed */
 
