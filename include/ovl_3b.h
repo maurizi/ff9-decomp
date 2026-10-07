@@ -40,6 +40,9 @@ extern RECT D_801F4730;
 extern RECT D_801F4738;
 extern RECT D_801F4740;
 
+/* main exe: candidates for ff9.h (ovl_3a calls it unprototyped) */
+u8 func_80028954(s32);
+
 void func_801F37A8(void);
 void func_801F38D8(void);
 void func_801F3A60(void);
