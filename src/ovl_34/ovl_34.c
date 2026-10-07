@@ -1,4 +1,4 @@
-#include "common.h"
+#include "ovl_34.h"
 
 INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF00);
 
