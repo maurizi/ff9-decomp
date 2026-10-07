@@ -32,5 +32,6 @@ int CD_getsector2(void *madr, int size);
 void *SpuSetTransferCallback(void (*func)(void));
 void SpuSetIRQAddr(u32 addr);
 void *SpuSetIRQCallback(void (*func)(void));
+int CdControlB(u8 com, u8 *param, u8 *result);
 
 #endif

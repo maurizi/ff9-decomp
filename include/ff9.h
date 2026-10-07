@@ -34,7 +34,9 @@ typedef struct {
 } Unk7D4;
 
 typedef struct {
-    u8 unk0[0x10]; /* name? 0xFF-terminated text, read up to 7 chars */
+    u8 unk0[0xA]; /* name? 0xFF-terminated text, read up to 7 chars */
+    u8 unkA;      /* bit 4 tested */
+    u8 padB[0x10 - 0xB];
     u16 unk10;
     u8 pad12[0x34 - 0x12];
     u32 unk34; /* low nibble: index into GameData.unk3C */
@@ -55,7 +57,16 @@ typedef struct {
 typedef struct {
     u8 pad0[0x3C];
     Character unk3C[9];
-    Unk54C *unk54C[10];
+    Unk54C *unk54C[4];
+    u8 pad55C[0x568 - 0x55C];
+    s16 unk568;
+    s16 unk56A;
+    s16 unk56C;
+    u8 unk56E;
+    u8 unk56F;
+    u8 unk570;
+    u8 unk571;
+    u8 pad572[2];
     UnkPair unk574[0x100]; /* {id, count}: likely the item inventory */
     u8 unk774[0x40];       /* 2 bits per item id */
     u8 pad7B4[0x7D4 - 0x7B4];
@@ -628,5 +639,47 @@ void func_800611EC(void);
 void func_8006121C(void);
 void func_8006124C(void);
 void func_800565F0(void);
+
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* count */
+    s32 unk4[16];
+} Unk80073C40;
+extern Unk80073C40 D_80073C40;
+
+typedef struct {
+    u32 unk0;
+    u8 pad4[0x24 - 4];
+} Unk80073940; /* 0x24-byte entries */
+extern Unk80073940 D_80073940[];
+
+typedef struct {
+    u8 pad0[5];
+    u8 unk5;
+    u8 pad6[0xF - 6];
+    u8 unkF;
+} Unk800367D0;
+
+typedef struct {
+    u8 pad0[0x12];
+    s16 unk12;
+} Unk8006573C;
+
+extern u16 D_80067950;
+extern u32 D_80077DB4;
+extern u8 D_8006CAB8[][2];
+
+u16 *func_800633E4(s32);
+void func_80027CB0(void);
+void func_8003431C(void);
+void func_80033690(void);
+s32 func_80055210(void);
+void func_8001C718(void);
+u16 *func_8001C7FC(s32, s32, s32);
+void func_8002CD4C(s32, s32, s32, s32);
+void func_80032A44(void);
+Unk800367D0 *func_800367D0(s32, s32, s32, s32);
+s32 func_80021380(s32);
+void func_80021340(void);
 
 #endif
