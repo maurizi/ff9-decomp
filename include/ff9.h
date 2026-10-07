@@ -1066,7 +1066,8 @@ typedef struct {
     u8 unk7;
     u8 unk8;
     u8 unk9;
-    u8 padA[2];
+    u8 unkA; /* row height */
+    u8 unkB; /* flags */
     u8 unkC;
     u8 unkD;
     u8 unkE;
@@ -1464,6 +1465,9 @@ void func_8002EF58(MenuList *, u32);
 void func_8002EEF0(MenuList *, u32);
 extern u32 D_80077524; /* pad buttons */
 extern s32 D_80070430;
+extern u8 D_8007AF02;
+void func_8003384C(Character *);
+s32 func_80033280(s32, s32, u8 *);
 void func_80033AF4(s32, s32);
 
 #endif
