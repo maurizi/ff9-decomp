@@ -78,7 +78,9 @@ typedef struct {
     Unk7D4 *unk7D4;
     u8 pad7D8[0x7E0 - 0x7D8];
     s32 unk7E0;
-    u8 pad7E4[0x8B2 - 0x7E4];
+    u8 pad7E4[0x838 - 0x7E4];
+    void (*unk838)(s32, void *);
+    u8 pad83C[0x8B2 - 0x83C];
     s16 unk8B2;
     u8 pad8B4[0x8C8 - 0x8B4];
     Unk8C8 *unk8C8;
@@ -438,6 +440,7 @@ typedef struct {
     u16 unk72;
     u16 unk74;
     u16 unk76;
+    u16 unk78;
 } Unk80080A10;
 extern Unk80080A10 *D_80080A10;
 
@@ -648,7 +651,9 @@ extern Unk80083248 D_80083248;
 typedef struct {
     u8 pad0[8];
     s16 unk8;
-    u8 padA[0x2C - 0xA];
+    u8 padA[0x14 - 0xA];
+    s32 unk14;
+    u8 pad18[0x2C - 0x18];
 } Unk8007B9C0;
 extern Unk8007B9C0 D_8007B9C0[];
 
@@ -739,10 +744,11 @@ void func_80023A2C(void);
 s32 func_8002F8E4(s32);
 
 typedef struct {
-    u8 pad0[0xC];
+    u8 unk0;
+    u8 pad1[0xC - 1];
     s32 unkC;
-    s16 unk10;
-    s16 unk12;
+    u16 unk10;
+    u16 unk12;
 } Unk80077188; /* 20 bytes */
 extern Unk80077188 D_80077188[][23];
 
@@ -762,5 +768,32 @@ void func_80021974(Unk80021938 *, s32, s32, s32, s32, s32, s32, s32);
 Unk80021938 *func_80021E5C(void);
 s32 func_80021C20(Unk80021938 *);
 void func_8002BEEC(u32 *, u32 *, s32, s32);
+
+typedef struct {
+    u8 pad0[0x8C];
+    s32 unk8C;
+} Unk80065A44Sub;
+
+typedef struct {
+    Unk80065A44Sub *unk0;
+    u8 pad4[0x16 - 4];
+    s16 unk16;
+} Unk80065A44;
+
+typedef struct {
+    u8 pad0[0x34];
+    u16 unk34;
+} Unk80021698;
+
+extern s32 D_8007B960;
+extern s32 D_8007B958;
+extern s32 D_8007B974;
+extern s32 D_8007BB94;
+
+s32 func_8005703C(s32, s32);
+void func_80056614(void);
+void func_8006008C(AkaoChannel *, s32);
+void func_800600C0(AkaoChannel *, s32);
+u8 func_80022D3C(s32);
 
 #endif
