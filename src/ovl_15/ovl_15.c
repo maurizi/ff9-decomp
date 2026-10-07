@@ -24,9 +24,107 @@ void func_800A7280(void) {
     func_8002C0DC(D_8006794C->unk1C->unk8);
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A7378);
+s32 func_800A7378(s32 arg0, s32 arg1) {
+    u8 *buf;
+    s32 timer;
+    s32 i;
+    s32 r;
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A766C);
+    buf = D_80067944 + 0x106700;
+    timer = -1;
+    func_800A766C(arg0, arg1);
+    do {
+        func_800A7838();
+        func_80019194();
+        switch (D_800AE4C0) {
+        case 0:
+            if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 8)) {
+                D_800AE0E0 = 1;
+                D_800AE4C0 = 1;
+            } else {
+                D_800AE4C0 = 3;
+                D_800AE0E0 |= 0x80;
+            }
+            break;
+        case 1:
+            i = 1;
+            if (D_8006794C->unk1C->unk8 != 0) {
+                i = 2;
+            }
+            D_800AE4C8[0][i - 1] = 7;
+            D_800AE4C8[0][i] = 0x10;
+            D_8006794C->unk9 = 4;
+            DrawSync(0);
+            func_801999B4(1, &buf);
+            func_8019A5B0(1);
+            func_8019AC3C(func_800A7A84);
+            func_80199B28(arg0, arg1);
+            D_800AE4C0 = 2;
+            break;
+        case 2:
+            if ((D_800AE0E0 & 0x10) && (func_80012AD4() & 2)) {
+                r = func_80199F30(0);
+                func_8019AD0C();
+                if (r != 0) {
+                    DrawOTag(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8 ^ 1] + 0xFFF);
+                } else if (timer == -1 && D_8006794C->unk1C->unk8 == 0) {
+                    D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+                }
+            }
+            break;
+        case 3:
+            if (D_800AE0E0 & 0x80) {
+                D_8006794C->unk9 = 0;
+                timer = 900;
+                D_8006794C->unkC[0].disp.x = 0x140;
+                D_800AE4C0 = 4;
+                D_8006794C->unkC[1].disp.x = 0;
+                D_80073998[0] = 0;
+            }
+            break;
+        }
+        if (!(D_800AE0E0 & 2)) {
+            func_80032098();
+        }
+        func_800A787C();
+    } while (D_800AE4C0 < 4);
+    return 0;
+}
+
+s32 func_800A766C(s32 arg0, s32 arg1) {
+    FileEntry *e;
+    s32 h;
+    s32 i;
+    s32 j;
+
+    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    }
+    e = func_8001E218(0, 0x64);
+    func_8002177C(D_8006794C->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, 0);
+    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    }
+    func_80012D08();
+    func_80012CF8();
+    func_80012D18();
+    if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 8)) {
+        h = func_80022AC4(D_8019DC5C[arg0].unk4[arg1].unk0);
+        func_80022ED4(h);
+        while (func_80022B18() != 0) {
+        }
+        func_8019C98C(h);
+    }
+    func_800320B8(1, 1, 0x78, 0xFFFFFF);
+    D_800AE4C0 = 0;
+    D_800AE0E0 = 0;
+    for (i = 1; i >= 0; i--) {
+        for (j = 3; j >= 0; j--) {
+            D_800AE4C8[i][j] = 0;
+        }
+    }
+    D_800AE0E4 = 0;
+    D_80073998[0] = 0;
+    return 0;
+}
 
 void func_800A7838(void) {
     GameData *ctx = D_8006794C->unk1C;
@@ -208,7 +306,43 @@ INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A945C);
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A9488);
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AAD24);
+s32 func_800AAD24(void) {
+    s32 p;
+
+    p = (s32)func_8001C7FC(4, 0x44F4C, 0);
+    func_8001D9CC(p, 0, 0xE4, 0x1C0, 0x180);
+    func_8001D8A8(p);
+    func_8001D9CC(p, 0, 0xE5, 0x1C0, 0x180);
+    func_8001D8A8(p);
+    p = (s32)func_8001C7FC(4, 0x44F4D, 0);
+    func_8001D9CC(p, 0, 0xE6, 0x1EC, 0x100);
+    func_8001D8A8(p);
+    p = (s32)func_8001C7FC(4, 0x44F4E, 0);
+    func_8001D9CC(p, 0, 0xE0, 0x1C0, 0x100);
+    func_8001D8A8(p);
+    p = (s32)func_8001C7FC(4, 0x44F50, 0);
+    func_8001D9CC(p, 0, 0xE1, 0x1D6, 0x100);
+    func_8001D8A8(p);
+    p = (s32)func_8001C7FC(4, 0x44F4F, 0);
+    func_8001D9CC(p, 0, 0xE2, 0x1C0, 0x140);
+    func_8001D8A8(p);
+    p = (s32)func_8001C7FC(4, 0x44F51, 0);
+    func_8001D9CC(p, 0, 0xE9, 0x280, 0x100);
+    func_8001D8A8(p);
+    setRECT(&D_800AE4E0, 0x20, 0xE4, 0x10, 1);
+    LoadImage(&D_800AE4E0, D_800AE0EC);
+    DrawSync(0);
+    setlen(&D_800AE4E8, 1);
+    D_800AE4E8.code = 0xE1000697;
+    if (!(D_8006794C->unk1C->unk0 & 0x20000000)) {
+        func_800AC598(0, 0x7009C, 0, 0, 0);
+        func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
+    }
+    func_800320B8(1, 1, 0, 0xFFFFFF);
+    D_800B0DF8 = 0;
+    D_80073998[0] = 0;
+    return 0;
+}
 
 s32 func_800AAFA4(void) {
     return 0;

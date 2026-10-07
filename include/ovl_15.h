@@ -8,10 +8,31 @@
 
 /* main exe: candidates for ff9.h */
 void func_800552B8(s32);
+void func_80019194(void);
+void func_80032098(void);
 void func_8001D9CC(s32, s32, s32, s32, s32);
+s32 func_80012AD4(void);
+s32 func_80022AC4(s32);
+void func_80022ED4(s32);
 
-/* other overlay (0x8019....) */
+/* ovl_64 (FMV player, 0x80198700) */
+void func_801999B4(s32, u8 **);
+void func_80199B28(s32, s32);
+s32 func_80199F30(s32);
+void func_8019A5B0(s32);
 void func_8019A9D8(void);
+void func_8019AC3C(void (*)(void));
+void func_8019AD0C(void);
+void func_8019C98C(s32);
+typedef struct {
+    s32 unk0;
+    u8 pad4[0x14 - 4];
+} Unk8019DC5CSub;
+typedef struct {
+    s32 unk0;
+    Unk8019DC5CSub *unk4;
+} Unk8019DC5C;
+extern Unk8019DC5C D_8019DC5C[];
 
 /* ---- this overlay ---- */
 
@@ -74,7 +95,9 @@ extern Ovl15Pos D_800AE494[1];
 extern Ovl15Pos D_800AE498[4];
 extern void *D_800AE440;
 
-extern u16 D_800AE0E0;
+extern u16 D_800AE0E0; /* flags */
+extern s32 D_800AE0E4; /* frame counter */
+extern u16 D_800AE4C8[2][4]; /* queued flag sets / clears */
 extern s32 D_800AE0E8; /* bankroll */
 extern s16 D_800AE430;
 extern u16 D_800AE432;
@@ -85,19 +108,27 @@ extern s32 D_800B0FD0;
 extern s16 D_800AE4A8;
 extern s32 D_800AE4AC;
 extern u8 *D_800AE4B0; /* next free primitive */
-extern s32 D_800AE4C0;
+extern u32 D_800AE4C0; /* FMV state */
 extern u32 D_800AE4B8; /* main state */
 extern s32 D_800AE4D8;
 extern s32 D_800AE4DC;
 extern u8 D_800B1000[2][0x2000]; /* primitive buffers */
 extern s32 D_800B5000;
+extern RECT D_800AE4E0;
+extern u32 D_800AE0EC[8]; /* CLUT */
+extern DrTpageWords D_800AE4E8;
+extern s32 D_800B0DF8;
 extern SPRT D_800AE5F8[2][256];
 
 s32 func_800A8528(s32, s32);
 s32 func_800A91F0(Ovl15Hand *, s16, s16);
 void func_800A8630(s32, s32, s32, s32);
 void func_800AB1C8(void);
-void func_800A7378(s32, s32);
+void func_800A7838(void);
+void func_800A787C(void);
+s32 func_800A766C(s32, s32);
+void func_800A7A84(void);
+s32 func_800A7378(s32, s32);
 void func_800A9488(void);
 s32 func_800AB490(void);
 void func_800ACB98(void);

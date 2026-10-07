@@ -993,7 +993,7 @@ void func_80022A80(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022AC4);
 
-u8 func_80022B18(void) {
+s32 func_80022B18(void) {
     return D_800761D0.unk0;
 }
 
