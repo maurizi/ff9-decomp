@@ -270,12 +270,9 @@ extern u8 D_80077DBA;
 extern u8 D_80077DBB;
 extern u8 D_80077DB2;
 extern u8 D_80077DE0;
-extern u8 D_80077E03;
-extern u8 D_80077E04;
-extern u8 D_80077E05;
 extern s32 D_8007BB78;
 extern s32 D_800834C8;
-extern u8 D_80083248[];
+extern s16 D_80083248[];
 extern u8 D_800121C8[];
 extern s32 D_8006798C;
 extern u16 D_80073720;
@@ -283,10 +280,13 @@ extern u8 D_8006825C;
 extern u8 D_8006826C;
 
 typedef struct {
-    u8 pad0[0x37];
+    u8 pad0[0x2C];
+    s32 unk2C;
+    u8 pad30[6];
+    u8 unk36;
     u8 unk37;
     u8 unk38;
-} Unk8001A084;
+} Unk8001A084; /* pad state? (near libpad) */
 
 typedef struct {
     s32 unk0;
@@ -303,8 +303,69 @@ typedef struct {
 } Unk8005F64C;
 
 typedef struct {
-    u8 pad0[0x14];
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3[0x14 - 3];
     s32 unk14;
 } Unk80035B74;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 pad5[0xA - 5];
+    u16 unkA;
+    s32 unkC;
+    s32 unk10;
+    u8 pad14[0x18 - 0x14];
+    s32 unk18;
+    s32 unk1C;
+} Unk80077C78;
+extern Unk80077C78 D_80077C78;
+
+typedef struct {
+    u8 pad0[8];
+    s32 unk8;
+    s32 unkC;
+    u8 pad10[0x18 - 0x10];
+    u8 unk18;
+    u8 pad19[2];
+    u8 unk1B;
+    u8 unk1C;
+    u8 unk1D;
+} Unk80077DE8;
+extern Unk80077DE8 D_80077DE8;
+
+typedef struct {
+    u8 pad0[0x38];
+    s32 unk38;
+    u8 pad3C[0x6C - 0x3C];
+    u16 unk6C;
+} Unk80080A10;
+extern Unk80080A10 *D_80080A10;
+
+typedef struct {
+    u8 pad0[0x38];
+    u8 unk38;
+} Unk800539FC;
+
+typedef struct {
+    u8 pad0[0x50];
+    s32 unk50;
+} Unk800589E0;
+
+extern s32 D_80077DCC;
+extern u8 D_80077E52;
+extern s32 D_8007AEB8;
+extern s32 D_8007AEBC;
+extern s32 D_8007B950;
+extern s16 D_8007BD3E;
+extern s32 D_80080A24;
+extern s16 D_8008324A;
+extern s16 D_8008324C;
+extern s32 *D_80066764;
 
 #endif
