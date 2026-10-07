@@ -19,5 +19,5 @@ for sm in tools/maspsx tools/m2c tools/asm-differ tools/decomp-permuter; do
     (cd "$MAIN/$sm" && tar cf - --exclude=.git .) | (cd "$sm" && tar xf -)
 done
 
-tools/docker.sh make resplit >/dev/null
+tools/docker.sh make resplit >/dev/null 2>&1
 tools/docker.sh make -j8 verify | tail -3
