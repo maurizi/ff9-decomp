@@ -164,6 +164,21 @@ void func_8002FAAC(s32);
 void func_8002DE60(void);
 void func_8003556C(s32);
 void func_800E9DBC(void);
+void func_800239D0(void);
+void func_80024BD8(void);
+void func_8002C064(s32);
+void func_8002DEE4(RECT *, s32, s32);
+void func_8002705C(RECT *, s32, s32);
+void func_8002B524(s32, s32, s32, s32, s32);
+void func_8002F9D0(void);
+s32 func_80035774(s32); /* text pointer */
+void func_8003575C(u8 *);
+void func_800325E0(void);
+void func_80063108(u8 *, u8 *);
+void func_80063118(void *, void *, s32);
+void func_800631AC(void *);
+extern s32 D_80070450;
+extern s32 D_80070460;
 
 /* ---- overlay 0x65 ---- */
 
@@ -202,10 +217,21 @@ typedef struct {
 
 typedef struct {
     u8 pad0[4];
-    s16 unk4[4]; /* rect */
-    u8 unkC;
-    u8 padD[3];
+    RECT unk4;
+    s32 unkC;
 } WinDef; /* 0x10 */
+
+/* 0x88 bytes at D_801F7A78+0x24, cleared as a block */
+typedef struct {
+    u32 unk0; /* exp per member */
+    u32 unk4; /* ap */
+    s32 unk8; /* card, 0xFF = none */
+    u32 unkC; /* item kinds */
+    u8 unk10[6][2]; /* {item id, count} */
+    Counter unk1C[4]; /* exp */
+    Counter unk4C[4]; /* ap */
+    Counter unk7C;    /* gil */
+} Rewards;
 
 typedef struct {
     u8 unk0;
@@ -216,23 +242,14 @@ typedef struct {
     u8 pad5[3];
     u8 unk8; /* state, index into D_801F3B88 */
     u8 unk9; /* party members receiving exp */
-    u8 unkA;
-    u8 padB;
+    u16 unkA;
     u32 unkC;
     u32 unk10;
     u8 unk14[4]; /* gets exp */
     u8 unk18[4]; /* gets ap */
     u8 unk1C[4];
     u8 unk20[4];
-    /* 0x24: cleared as a block (0x88 bytes) */
-    u32 unk24; /* exp per member */
-    u32 unk28; /* ap */
-    s32 unk2C; /* card, 0xFF = none */
-    u32 unk30; /* item kinds */
-    u8 unk34[6][2]; /* {item id, count} */
-    Counter unk40[4]; /* exp */
-    Counter unk70[4]; /* ap */
-    Counter unkA0;    /* gil */
+    Rewards unk24;
     WinDef unkAC[10];
     u8 unk14C[10];
     u8 pad156[2];
@@ -249,38 +266,126 @@ typedef struct {
 } Unk801F7A78;
 
 extern Unk801F7A78 D_801F7A78;
+extern u8 D_801EDF04[];
 extern void (*D_801F3B88[])(void);
-extern s32 D_801F3BA0[];
-extern s32 D_801F3BB8[];
+extern s32 D_801F3BA0[]; /* sound effect per state */
+extern s32 D_801F3BB8[]; /* text id */
+extern u8 D_801F3BC0[];
+extern u8 D_801F3BC4[];
+extern u8 D_801F3C4C[10][0x10];
+extern u8 D_801F3CDC[7][0x10];
 extern RECT D_801F525C;
 extern u8 D_801F5278[2][0x1400]; /* primitive buffers */
 extern u32 D_801F7DF8[0x100];   /* VRAM backup */
 extern u8 D_801F8278;
 
+static inline u8 func_801F_alive(PartyMember *c) {
+    if (c == NULL) {
+        return 0;
+    }
+    if (c->unk10 == 0) {
+        return 0;
+    }
+    if (c->unk38 & 0x45) {
+        return 0;
+    }
+    return 1;
+}
+
+static inline void WinSlot_clear(WinSlot *s) {
+    s->unk4 = 0;
+    s->unk6 = 0;
+    s->unk1C = 0;
+    s->unk8 = 0;
+    s->unk0 = 0;
+}
+
+void func_801EF28C(void);
+void func_801EF45C(void);
+void func_801EF5C8(void);
 s32 func_801EF6D8(void);
+s32 func_801EF6F8(void);
 s32 func_801EF814(void);
+void func_801EF890(void);
+void func_801EFB98(void);
+void func_801EFC68(void);
+void func_801EFF50(void);
+void func_801F0044(void);
+void func_801F0138(void);
+void func_801F0264(void);
+void func_801F0394(RECT *);
+void func_801F04BC(void);
+void func_801F0594(void);
+void func_801F076C(void);
+void func_801F0878(void);
+void func_801F0978(void);
+void func_801F0A44(void);
+void func_801F0C0C(void);
+void func_801F0D98(s32, s32, s32, s32, s32);
+void func_801F0DE4(s32, s32, s32, s32, s32);
+void func_801F0E30(void);
+s32 func_801F0F04(void);
 void func_801F0FC4(void);
 void func_801F0FF4(void);
+s32 func_801F1004(void);
 void func_801F1060(void);
+void func_801F107C(void);
 void func_801F114C(void);
+void func_801F1160(void);
+void func_801F11B8(void);
+void func_801F1228(void);
 void func_801F12E0(void);
 void func_801F1300(WinSlot *);
+void func_801F1318(void);
+void func_801F13B4(void);
+void func_801F143C(void);
+void func_801F14C0(void);
+void func_801F1518(void);
+void func_801F1560(void);
 void func_801F160C(void);
+void func_801F1688(void);
+u8 func_801F171C(PartyMember *, s32);
 void func_801F16F4(void);
+void func_801F1774(void);
 void func_801F17D4(void);
+void func_801F17FC(s32, s32, s32, u8 *, s32);
 void func_801F1848(void);
+void func_801F1A04(s32, u32);
+u8 func_801F1BA4(PartyMember *, s32);
+void func_801F1D94(Window *);
+void func_801F1FEC(void);
 void func_801F2080(void);
+s32 func_801F20A8(s32);
 void func_801F213C(void);
+void func_801F21DC(s32, u8);
 void func_801F2248(Window *);
+void func_801F2264(s32, s32, s32, Popup *);
+void func_801F2490(void);
 void func_801F2538(void);
+void func_801F2560(s32, u32);
+void func_801F269C(s32);
+u32 func_801F26F8(s32);
+s32 func_801F27F0(PartyMember *, s32);
 void func_801F2834(void);
 void func_801F28F0(void);
+void func_801F29BC(s32);
 void func_801F2A4C(Popup *);
 void func_801F2A6C(Popup *);
 void func_801F2AAC(Popup *);
+u8 func_801F2AC8(Popup *);
+void func_801F2BBC(void);
+void func_801F2C7C(void);
+void func_801F2D08(s32);
+void func_801F2D74(void);
 void func_801F2E24(void);
+u8 func_801F2E58(void);
+void func_801F2FE8(Window *);
 void func_801F3250(void);
+u8 func_801F3264(void);
+void func_801F325C(void);
 void func_801F332C(void);
+void func_801F33A0(Window *);
+void func_801F3434(Window *);
 void func_801F347C(void);
 
 #endif
