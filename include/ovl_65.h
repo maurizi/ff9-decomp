@@ -8,6 +8,95 @@
 
 /* main exe: candidates for ff9.h */
 
+/* PsyQ libgpu (candidates for psyq.h) */
+typedef struct {
+    u32 tag;
+    u32 code[15];
+} DR_ENV;
+
+typedef struct {
+    RECT clip;
+    s16 ofs[2];
+    RECT tw;
+    u16 tpage;
+    u8 dtd;
+    u8 dfe;
+    u8 isbg;
+    u8 r0, g0, b0;
+    DR_ENV dr_env;
+} DRAWENV;
+
+typedef struct {
+    RECT disp;
+    RECT screen;
+    u8 isinter;
+    u8 isrgb24;
+    u8 pad0, pad1;
+} DISPENV;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 w, h;
+} SPRT;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    s16 w, h;
+} TILE;
+
+typedef struct {
+    u32 tag;
+    u32 code[1];
+} DR_TPAGE;
+
+#define setRECT(r, _x, _y, _w, _h) ((r)->x = (_x), (r)->y = (_y), (r)->w = (_w), (r)->h = (_h))
+#define setXY0(p, _x0, _y0) ((p)->x0 = (_x0), (p)->y0 = (_y0))
+#define setUV0(p, _u0, _v0) ((p)->u0 = (_u0), (p)->v0 = (_v0))
+#define setWH(p, _w, _h) ((p)->w = (_w), (p)->h = (_h))
+#define setRGB0(p, _r0, _g0, _b0) ((p)->r0 = (_r0), (p)->g0 = (_g0), (p)->b0 = (_b0))
+
+void ClearImage(RECT *rect, s32 r, s32 g, s32 b);
+DRAWENV *SetDefDrawEnv(DRAWENV *env, s32 x, s32 y, s32 w, s32 h);
+DISPENV *SetDefDispEnv(DISPENV *env, s32 x, s32 y, s32 w, s32 h);
+void SetSemiTrans(void *p, s32 abe);
+u16 GetTPage(s32 tp, s32 abr, s32 x, s32 y);
+
+/* File table entry returned by func_8001E218 / func_80021E5C / func_80063088. */
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* start sector */
+    s32 unk8;
+    s32 unkC; /* end sector / next id */
+} FileEntry;
+
+FileEntry *func_8001E218(s32, s32);
+FileEntry *func_80021E5C(s32);
+FileEntry *func_80063088(s32, s32);
+s32 func_800220E8(s32);
+void func_8001DAA4(s32, s32, s32, s32);
+void func_80022390(s32);
+void func_8002177C(void *, s32, s32, s32, s32, s32, s32);
+s32 func_800217C4(void *);
+void func_80022DF0(u8 *, s32, s32);
+void func_8001D8A8(s32);
+void func_8001CFB4(void);
+void func_80021C60(void);
+s32 func_80021CFC(void);
+void func_80021974(s32, s32, s32, u8 *, s32, s32, s32, s32);
+void func_80021CDC(s32);
+void func_8004A06C(s32);
+void func_8004BFB0(void);
+void func_800AD90C(s32, s32, s32, s32, s32);
+void func_80055210(void *);
+void func_80063580(DR_TPAGE *, s32);
+void func_800635E0(DR_TPAGE *, s32);
+
 /* Party member record (GameData.unk54C[i]); fuller view of ff9.h's Unk54C. */
 typedef struct {
     u8 unk0[0xB]; /* name */
@@ -35,7 +124,7 @@ typedef struct {
     s32 unk10;
     s32 unk14;
     u8 pad18[4];
-    s32 unk1C;
+    u8 *unk1C; /* load address */
 } Unk11C0;
 
 typedef struct {
@@ -51,7 +140,8 @@ typedef struct {
     u8 pad4[4];
     u8 unk8; /* double-buffer index */
     u8 pad9[3];
-    s32 unkC;
+    u16 unkC;
+    u8 padE[2];
     u32 *unk10[2]; /* ordering tables */
     u8 pad18[0x3A - 0x18];
     u16 unk3A;
@@ -90,6 +180,7 @@ typedef struct {
     u8 *unk10; /* DRAWENV[2] (0x5C each) */
     u8 pad14[0x1C - 0x14];
     GameDataX *unk1C;
+    u8 *unk20; /* file load buffer */
 } GameStateX;
 
 #define GSTATE ((GameStateX *)D_8006794C)
@@ -138,7 +229,7 @@ extern u8 D_800FDF4D;
 extern u32 D_8006DF5C[]; /* exp needed for next level, by level */
 extern s32 D_80077528;   /* pad buttons pressed */
 extern u8 D_80077DB5;
-extern s32 D_80067944;
+extern u8 *D_80067944; /* end of load area */
 extern s32 D_80067948;
 extern u16 D_80067950;
 
@@ -175,6 +266,28 @@ void func_800325E0(void);
 void func_80063108(u8 *, u8 *);
 void func_80063118(void *, void *, s32);
 void func_800631AC(void *);
+u8 func_800349BC(s32, s32);
+u8 func_80034A30(PartyMember *);
+void func_80033CCC(s32, s32);
+void func_8002D1AC(Window *, s32);
+Window *func_8002DC54(RECT *, s32, s32);
+void func_8002E2EC(Window *, void (*)(Window *));
+void func_8002E2F4(Window *, void (*)(Window *));
+void func_8002E2FC(Window *, void (*)(Window *));
+void func_8002E304(Window *, void *);
+void func_8002E31C(Window *, s32);
+void func_8002E334(Window *, s32);
+void func_8002CF20(Window *, s32);
+s32 func_8002AE7C(s32);
+void func_8002B56C(s32, s32, s32, s32, s32);
+void func_8002B5FC(s32, s32, s32, s32, s32);
+typedef struct {
+    u8 pad0[0x68];
+    s32 unk68;
+    u8 pad6C[0x94 - 0x6C];
+    s32 unk94;
+} Unk800703FC; /* text table? */
+extern Unk800703FC D_800703FC;
 extern s32 D_80070450;
 extern s32 D_80070460;
 
@@ -270,9 +383,38 @@ extern s32 D_801F3BA0[]; /* sound effect per state */
 extern s32 D_801F3BB8[]; /* text id */
 extern u8 D_801F3BC0[];
 extern u8 D_801F3BC4[];
+typedef struct {
+    RECT unk0;
+    u8 unk8; /* initially shown */
+    u8 pad9;
+} WinInit;
+extern WinInit D_801F3BC8[10];
 extern u8 D_801F3C4C[10][0x10];
 extern u8 D_801F3CDC[7][0x10];
+extern u8 D_801EE03C[];
+extern u8 D_801EE19C[];
+extern s8 D_801F5230[];
+extern RECT D_801F523C;
+extern RECT D_801F5244;
+extern RECT D_801F524C;
+extern RECT D_801F5254;
 extern RECT D_801F525C;
+extern RECT D_801EF260; /* const {0, 0, 320, 224} */
+extern RECT D_801EF27C; /* const {0, 0, 640, 224} */
+
+/* Double-buffered display setup (func_801F3818). */
+typedef struct {
+    DRAWENV draw;
+    DISPENV disp;
+    u8 pad70[8];
+    DR_TPAGE unk78;
+    SPRT unk80;
+    DR_TPAGE unk94;
+    SPRT unk9C;
+    DR_TPAGE unkB0;
+    TILE unkB8;
+} DispBuf; /* 0xC8 */
+extern RECT D_801F5264;
 extern u8 D_801F5278[2][0x1400]; /* primitive buffers */
 extern u32 D_801F7DF8[0x100];   /* VRAM backup */
 extern u8 D_801F8278;
@@ -290,6 +432,17 @@ static inline u8 func_801F_alive(PartyMember *c) {
     return 1;
 }
 
+/* Amount to add to a counter this frame. */
+static inline u32 Counter_step(Counter *c) {
+    u32 step;
+    if (c->unk0 < c->unk8 + c->unk4) {
+        step = c->unk0 - c->unk8;
+    } else {
+        step = c->unk4;
+    }
+    return step;
+}
+
 static inline void WinSlot_clear(WinSlot *s) {
     s->unk4 = 0;
     s->unk6 = 0;
@@ -299,6 +452,10 @@ static inline void WinSlot_clear(WinSlot *s) {
 }
 
 void func_801EF28C(void);
+void func_801F3818(DispBuf *);
+void func_801F3A20(s32);
+s32 func_801F3A7C(void);
+void func_801F3488(s32);
 void func_801EF45C(void);
 void func_801EF5C8(void);
 s32 func_801EF6D8(void);
@@ -370,7 +527,7 @@ void func_801F29BC(s32);
 void func_801F2A4C(Popup *);
 void func_801F2A6C(Popup *);
 void func_801F2AAC(Popup *);
-u8 func_801F2AC8(Popup *);
+s32 func_801F2AC8(Popup *);
 void func_801F2BBC(void);
 void func_801F2C7C(void);
 void func_801F2D08(s32);
