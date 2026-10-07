@@ -19,6 +19,11 @@ typedef struct {
     s32 unk14; /* saved func_8002F8E4 mode */
     u8 pad18[0x20 - 0x18];
     u8 *unk20; /* help text */
+    u8 pad24[0x29 - 0x24];
+    u8 unk29; /* list scroll */
+    u8 unk2A; /* list cursor */
+    u8 pad2B[0x4E - 0x2B];
+    u8 unk4E; /* slot 0 state; 15 slots of 0x98 bytes */
 } SaveMenu;
 extern SaveMenu D_801FB1A8;
 
@@ -29,13 +34,13 @@ typedef struct {
 } Unk801FBAC8;
 extern Unk801FBAC8 D_801FBAC8;
 
-typedef struct {
+typedef struct Unk801FBEE0 {
     u8 unk0;
     u8 unk1;
     u8 pad2[2];
     s32 unk4;
     u8 pad8[4];
-    s32 unkC;
+    void (*unkC)(struct Unk801FBEE0 *);
     u16 unk10; /* text ids */
     u16 unk12;
 } Unk801FBEE0;
@@ -77,12 +82,24 @@ extern s32 D_801FB084;
 extern s32 D_801FB088;
 extern s32 D_801FB08C;
 extern s32 D_801FC604;
-extern s32 D_801FB098;
+extern void (*D_801FB098)(void); /* memory card completion callback */
 extern s32 D_801FB09C;
 extern s32 D_801FB0A0;
 extern u8 *D_801FC360;
 extern u8 D_801EE4D4[];
 extern u16 D_801FC3E0[256]; /* CRC-16 table */
+extern s32 D_801FC5E0;
+extern s32 D_801FC5E4;
+extern s32 D_801FC5E8;
+extern s32 D_801FC5EC;
+extern s32 D_801FC5F4;
+extern s32 D_801FC5F8;
+extern s32 D_801FC5FC;
+extern s32 D_801FC600;
+extern s32 D_801FC608;
+extern s32 D_801FC60C;
+extern s32 D_801FC610;
+extern s32 D_801FC614;
 
 typedef struct {
     s32 unk0;
@@ -105,6 +122,18 @@ void func_801F5A24(void);
 void func_801F5A68(s32, s32, s32, s32);
 void func_801F75C8(s32, s32);
 void func_801F7084(void);
+void func_801F5E68(s32, s32, s32);
+void func_801F6A84(void);
+void func_801F6B48(Unk801FBEF8 *);
+void func_801F72B4(s32);
+u8 func_801F77E4(void);
+void func_801F9788(s32, s32);
+void func_801F94D0(s32, s32);
+void func_801FA53C(void);
+s32 func_801FA2D8(void);
+s32 func_801FA350(s32, void (*)(void));
+s32 func_801FA754(s32);
+void func_801F65C4(void);
 void func_801F7300(s32);
 void func_801F7364(SaveMenu *);
 void func_801F77A8(s32);
@@ -115,9 +144,9 @@ void func_801FAE1C(void);
 void func_801F7780(s32);
 u8 func_801F79F4(s8);
 void func_801F9C58(void *, void *);
-s32 func_801FA37C(s32, s32);
-s32 func_801FA4E4(s32, s32, s32, s32);
-s32 func_801FA5D0(s32, s32, s32, s32);
+s32 func_801FA37C(s32);
+s32 func_801FA4E4(s32, s32, s32);
+s32 func_801FA5D0(s32, s32, s32);
 void func_801FAAF4(void);
 
 #endif

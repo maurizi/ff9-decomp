@@ -1487,6 +1487,7 @@ void func_80028720(u8 *, s32);
 void func_8002C1E4(void);
 void func_80065EB0(s32);
 void func_80065EA0(s32);
+s32 func_80066170(s32);
 void *func_80062824(void);
 extern s32 D_80070440;
 extern s32 D_8007048C;
