@@ -177,6 +177,27 @@ void func_800325E0(void);
 void func_80063108(u8 *, u8 *);
 void func_80063118(void *, void *, s32);
 void func_800631AC(void *);
+u8 func_800349BC(s32, s32);
+void func_80033CCC(s32, s32);
+void func_8002D1AC(Window *, s32);
+Window *func_8002DC54(RECT *, s32, s32);
+void func_8002E2EC(Window *, void (*)(Window *));
+void func_8002E2F4(Window *, void (*)(Window *));
+void func_8002E2FC(Window *, void (*)(Window *));
+void func_8002E304(Window *, void *);
+void func_8002E31C(Window *, s32);
+void func_8002E334(Window *, s32);
+void func_8002CF20(Window *, s32);
+s32 func_8002AE7C(s32);
+void func_8002B56C(s32, s32, s32, s32, s32);
+void func_8002B5FC(s32, s32, s32, s32, s32);
+typedef struct {
+    u8 pad0[0x68];
+    s32 unk68;
+    u8 pad6C[0x94 - 0x6C];
+    s32 unk94;
+} Unk800703FC; /* text table? */
+extern Unk800703FC D_800703FC;
 extern s32 D_80070450;
 extern s32 D_80070460;
 
@@ -274,7 +295,15 @@ extern u8 D_801F3BC0[];
 extern u8 D_801F3BC4[];
 extern u8 D_801F3C4C[10][0x10];
 extern u8 D_801F3CDC[7][0x10];
+extern u8 D_801EE03C[];
+extern u8 D_801EE19C[];
+extern s8 D_801F5230[];
+extern RECT D_801F523C;
+extern RECT D_801F5244;
+extern RECT D_801F524C;
+extern RECT D_801F5254;
 extern RECT D_801F525C;
+extern RECT D_801F5264;
 extern u8 D_801F5278[2][0x1400]; /* primitive buffers */
 extern u32 D_801F7DF8[0x100];   /* VRAM backup */
 extern u8 D_801F8278;
@@ -290,6 +319,17 @@ static inline u8 func_801F_alive(PartyMember *c) {
         return 0;
     }
     return 1;
+}
+
+/* Amount to add to a counter this frame. */
+static inline u32 Counter_step(Counter *c) {
+    u32 step;
+    if (c->unk0 < c->unk8 + c->unk4) {
+        step = c->unk0 - c->unk8;
+    } else {
+        step = c->unk4;
+    }
+    return step;
 }
 
 static inline void WinSlot_clear(WinSlot *s) {
@@ -372,7 +412,7 @@ void func_801F29BC(s32);
 void func_801F2A4C(Popup *);
 void func_801F2A6C(Popup *);
 void func_801F2AAC(Popup *);
-u8 func_801F2AC8(Popup *);
+s32 func_801F2AC8(Popup *);
 void func_801F2BBC(void);
 void func_801F2C7C(void);
 void func_801F2D08(s32);
