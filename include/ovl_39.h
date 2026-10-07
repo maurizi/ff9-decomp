@@ -14,6 +14,10 @@ typedef struct {
     u8 pad3[3];
     u8 unk6;
     u8 unk7;
+    u8 pad8[0x14 - 8];
+    s32 unk14; /* saved func_8002F8E4 mode */
+    u8 pad18[0x20 - 0x18];
+    u8 *unk20; /* help text */
 } SaveMenu;
 extern SaveMenu D_801FB1A8;
 
@@ -68,5 +72,32 @@ extern s32 D_801FB084;
 extern s32 D_801FB088;
 extern s32 D_801FB08C;
 extern s32 D_801FC604;
+extern s32 D_801FB098;
+extern s32 D_801FB09C;
+extern s32 D_801FB0A0;
+extern u8 *D_801FC360;
+extern u8 D_801EE4D4[];
+
+typedef struct {
+    u8 pad0[0x12];
+    u8 unk12; /* ASCII digits */
+    u8 unk13;
+} Unk801F6D24;
+
+void func_801F4538(void);
+void func_801F53E0(void);
+void func_801F5460(void);
+void func_801F54C8(void);
+void func_801F5550(void);
+void func_801F5A24(void);
+void func_801F5A68(s32, s32, s32, s32);
+void func_801F75C8(s32, s32);
+void func_801F7780(s32);
+u8 func_801F79F4(s8);
+void func_801F9C58(void *, void *);
+s32 func_801FA37C(s32, s32);
+s32 func_801FA4E4(s32, s32, s32, s32);
+s32 func_801FA5D0(s32, s32, s32, s32);
+void func_801FAAF4(void);
 
 #endif

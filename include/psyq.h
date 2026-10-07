@@ -111,4 +111,6 @@ int CdDiskReady(int mode);
 int CdGetDiskType(void);
 CdlLOC *CdIntToPos(int i, CdlLOC *p);
 
+long _card_format(long chan);
+
 #endif
