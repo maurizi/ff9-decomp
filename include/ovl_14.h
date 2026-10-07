@@ -21,6 +21,11 @@ typedef struct {
     u8 pad0[0x5C];
 } DRAWENV; /* opaque, 0x5C */
 
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+} Ovl14Text; /* 8-byte item drawn by func_80027710 */
+
 int ResetGraph(int mode);
 void SetDispMask(int mask);
 u32 *ClearOTagR(u32 *ot, int n);
@@ -72,7 +77,9 @@ typedef struct {
     s32 unk84C;
     u8 unk850;
     u8 pad851[0x854 - 0x851];
-    u8 unk854[0x8AC - 0x854]; /* CD read context (func_8002177C) */
+    u8 unk854[0x890 - 0x854]; /* CD read context (func_8002177C) */
+    u8 unk890;
+    u8 pad891[0x8AC - 0x891];
     s32 unk8AC;
     u16 unk8B0;
     u8 pad8B2[2];
@@ -173,9 +180,19 @@ s32 func_80065208(s32);
 void func_80065218(s32);
 void func_80065228(s32);
 extern u32 D_80077528; /* pad buttons pressed */
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s32 unk4;
+} Ovl14Cursor;
+extern Ovl14Cursor D_80077DE8; /* menu cursor? */
+void func_800355E4(Ovl14Cursor *);
+void func_80027710(s32, s32, s32, Ovl14Text *, s32);
+void func_80022B28(void);
 
 /* other overlay (0x801F....) */
 u8 func_801F5330(void);
+void func_8019A9D8(void);
 
 /* ---- this overlay ---- */
 
@@ -199,6 +216,20 @@ extern u32 D_800AB310;
 extern u8 D_800AB318;
 
 typedef struct {
+    s16 x;
+    s16 y;
+} Ovl14Pos;
+extern Ovl14Pos D_800AB298;
+extern Ovl14Pos D_800AB29C;
+extern Ovl14Pos D_800AB2A0;
+extern Ovl14Pos D_800AB2A4;
+extern Ovl14Pos D_800AB2A8[3];
+extern u16 D_800AB2C4;
+extern void *D_800AB2D4;
+extern void *D_800AB2F0;
+extern s32 D_800AB3C8;
+
+typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2;
@@ -211,6 +242,7 @@ typedef struct {
     s32 unkC;
     s32 unk10;
     s32 unk14[4]; /* sound/voice handles */
+    Ovl14Text unk24[14];
 } Ovl14Unk320;
 extern Ovl14Unk320 D_800AB320;
 
@@ -249,6 +281,9 @@ void func_800A8E10(void);
 u8 func_800A8EA4(void);
 void func_800A8FBC(void);
 void func_800A9180(void);
+void func_800A8ED8(void);
+s32 func_800A8F44(void);
+void func_800A903C(s32, s32, s32, Ovl14Text *, s32);
 u8 func_800A832C(void);
 void func_800A880C(void);
 void func_800A8D2C(void);
