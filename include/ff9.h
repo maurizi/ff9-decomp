@@ -770,8 +770,8 @@ typedef struct {
 
 void func_8004C204(void);
 void func_800512E4(s32);
-void func_80021974(Unk80021938 *, s32, s32, s32, s32, s32, s32, s32);
-Unk80021938 *func_80021E5C(void);
+void func_80021974(); /* TODO unify: arg types differ between main and ovl_65 call sites */
+void *func_80021E5C(); /* TODO unify: main sees Unk80021938 *, ovl_65 passes an id and gets a FileEntry * */
 s32 func_80021C20(Unk80021938 *);
 void func_8002BEEC(u32 *, u32 *, s32, s32);
 

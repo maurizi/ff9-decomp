@@ -76,7 +76,6 @@ typedef struct {
 } FileEntry;
 
 FileEntry *func_8001E218(s32, s32);
-FileEntry *func_80021E5C(s32);
 FileEntry *func_80063088(s32, s32);
 s32 func_800220E8(s32);
 void func_8001DAA4(s32, s32, s32, s32);
@@ -88,7 +87,6 @@ void func_8001D8A8(s32);
 void func_8001CFB4(void);
 void func_80021C60(void);
 s32 func_80021CFC(void);
-void func_80021974(s32, s32, s32, u8 *, s32, s32, s32, s32);
 void func_80021CDC(s32);
 void func_8004A06C(s32);
 void func_8004BFB0(void);
