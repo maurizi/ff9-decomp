@@ -107,6 +107,7 @@ typedef struct {
     Ovl14Unk14 *unk14;
     u8 pad18[4];
     Ovl14Ctx *unk1C;
+    u8 *unk20;
 } Ovl14State;
 
 #define G14 ((Ovl14State *)D_8006794C)
@@ -156,6 +157,23 @@ typedef struct {
 } Ovl14FileEntry;
 Ovl14FileEntry *func_8001E218(s32, s32);
 
+void func_80012D08(void);
+void func_80012D18(void);
+s32 func_80016EC0(s32, s32, s32, s32);
+void func_80016ED0(s32);
+void func_80022DF0(u8 *, s32, void *, s32);
+void func_8002C308(s32);
+void func_8002F488(s32);
+void func_8002F8A8(void (*)());
+void func_8002FA50(s32);
+void func_8002FAAC(s32);
+void func_80056CAC(s32);
+void func_80056CBC(s32);
+s32 func_80065208(s32);
+void func_80065218(s32);
+void func_80065228(s32);
+extern u32 D_80077528; /* pad buttons pressed */
+
 /* other overlay (0x801F....) */
 u8 func_801F5330(void);
 
@@ -176,6 +194,7 @@ typedef struct {
     u8 unk3;
 } Ovl14ModeState;
 extern Ovl14ModeState D_800AB308;
+extern s32 D_800AB2B4[4];
 extern u32 D_800AB310;
 extern u8 D_800AB318;
 
@@ -191,6 +210,7 @@ typedef struct {
     u8 pad9[3];
     s32 unkC;
     s32 unk10;
+    s32 unk14[4]; /* sound/voice handles */
 } Ovl14Unk320;
 extern Ovl14Unk320 D_800AB320;
 
@@ -204,18 +224,34 @@ void func_800A780C(void);
 void func_800A78C0(void);
 void func_800A796C(void);
 void func_800A799C(void);
-u8 func_800A811C(void);
+s32 func_800A811C(void);
 void func_800A812C(s32);
 s32 func_800A81B8(void);
 s32 func_800A8260(s32);
-s32 func_800A8298(s32, s32);
-void func_800A82F4(s8);
+u8 func_800A8298(s32, s32);
+void func_800A82F4(s32);
 void func_800A8378(void);
 void func_800A84B0(void);
 void func_800A84EC(void);
 void func_800A8618(void);
+void func_800A86D8(void);
+void func_800A87AC(void);
+void func_800A87E4(void);
+void func_800A8868(void *);
+void func_800A8A0C(void);
+void func_800A8A8C(void);
+void func_800A8A94(void);
+void func_800A8B7C(void);
+void func_800A8C60(void);
+void func_800A8CF8(void);
+void func_800A8DB0(void);
+void func_800A8E10(void);
+u8 func_800A8EA4(void);
+void func_800A8FBC(void);
+void func_800A9180(void);
+u8 func_800A832C(void);
 void func_800A880C(void);
-void func_800A8D2C(s32);
+void func_800A8D2C(void);
 s32 func_800A8FCC(void);
 void func_800A8FDC(void);
 void func_800AB1E4(void);
