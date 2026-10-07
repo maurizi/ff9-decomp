@@ -2,16 +2,83 @@
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF28C);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF45C);
+void func_801EF45C(void) {
+    Unk11C0 *s = GDATA->unk8E4->unk11C0;
+    FileEntry *e;
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF5C8);
+    func_8001CFB4();
+    func_80021CDC(0);
+    func_801F0E30();
+    func_801EF6F8();
+    func_801EF6D8();
+    func_801EF814();
+    if (s->unk10 != 0 && D_800FDF30.unkB != 0) {
+        func_8004A06C(s->unk10);
+        if (s->unk14 != 0) {
+            func_8004BFB0();
+        }
+    }
+    if (GDATA->unk56F & 1) {
+        e = func_80063088(GDATA->unk7E4, GDATA->unkC | 0x50000);
+        if (e != NULL) {
+            GDATA->unk3A = e->unkC;
+            GDATA->unk800 = e->unk4;
+            GDATA->unk808 = e->unk8;
+            e = func_80063088(GDATA->unk7E4, e->unkC);
+            if (e != NULL) {
+                GDATA->unk7FC = e->unk4;
+                GDATA->unk804 = e->unk8;
+            }
+        }
+    }
+    func_801EF890();
+}
+
+void func_801EF5C8(void) {
+    GameDataX *g = GDATA;
+    s32 i;
+
+    if (!(g->unk56F & 8) && (g->unk0 & 0x20000000) && g->unk81C != 0xFFFF) {
+        g->unk0 |= 0x400000;
+    }
+    GDATA->unk7E4 = -1;
+    if (GSTATE->unk8 == 0) {
+        func_800AD90C(0x8601, 0, 0x1E, 0, 0);
+        for (i = 29; i >= 0; i--) {
+            VSync(0);
+        }
+        g = GDATA;
+        g->unk0 &= ~0x400000;
+        func_80055210(g);
+        D_80067950++;
+        GDATA->unk0 |= 0x100000;
+    }
+}
 
 s32 func_801EF6D8(void) {
     func_800E9DBC();
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF6F8);
+s32 func_801EF6F8(void) {
+    FileEntry *e;
+    FileEntry *f;
+
+    if (func_800220E8(0x2713)) {
+        f = func_80021E5C(0x2713);
+        func_8001DAA4(D_80067948, f->unk8, f->unkC, 0);
+        func_80022390(0x2713);
+        DrawSync(0);
+    } else {
+        e = func_8001E218(1, 0x2713);
+        func_8002177C(GDATA->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067948, 0, -1, 0);
+        while (func_800217C4(GDATA->unk854)) {
+        }
+    }
+    GDATA->unk8E4->unk1354->unk4 = D_80067948;
+    func_8001C750(GDATA->unk8E4->unk1354->unk4, 0);
+    return 0;
+}
 
 s32 func_801EF814(void) {
     Unk1354 *p = GDATA->unk8E4->unk1354;
@@ -832,9 +899,44 @@ INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EF260);
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3488);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3818);
+void func_801F3818(DispBuf *b) {
+    RECT rect = D_801EF27C;
+    u32 i;
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3A20);
+    ClearImage(&rect, 0, 0, 0);
+    SetDefDrawEnv(&b[0].draw, 0, 0, 320, 224);
+    SetDefDispEnv(&b[0].disp, 320, 0, 320, 224);
+    SetDefDrawEnv(&b[1].draw, 320, 0, 320, 224);
+    SetDefDispEnv(&b[1].disp, 0, 0, 320, 224);
+    for (i = 0; i < 2; i++) {
+        b[i].draw.dtd = 1;
+        b[i].draw.isbg = 1;
+        b[i].disp.isinter = 0;
+        setRECT(&b[i].disp.screen, 0, 8, 256, 224);
+        func_80063580(&b[i].unk78, GetTPage(2, 0, 0, 256));
+        setXY0(&b[i].unk80, 0, 0);
+        setUV0(&b[i].unk80, 0, 0);
+        setWH(&b[i].unk80, 256, 224);
+        setRGB0(&b[i].unk80, 0x80, 0x80, 0x80);
+        func_80063580(&b[i].unk94, GetTPage(2, 0, 256, 256));
+        setXY0(&b[i].unk9C, 256, 0);
+        setUV0(&b[i].unk9C, 0, 0);
+        setWH(&b[i].unk9C, 64, 224);
+        setRGB0(&b[i].unk9C, 0x80, 0x80, 0x80);
+        func_800635E0(&b[i].unkB0, GetTPage(0, 2, 0, 0));
+        setXY0(&b[i].unkB8, 0, 0);
+        setWH(&b[i].unkB8, 320, 224);
+        setRGB0(&b[i].unkB8, 0, 0, 0);
+        SetSemiTrans(&b[i].unkB8, 1);
+    }
+}
+
+void func_801F3A20(s32 arg0) {
+    FileEntry *e = func_8001E218(1, 0xB);
+
+    func_80022DF0(GSTATE->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
+    func_8001D8A8(arg0);
+}
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3A7C);
 
