@@ -1453,6 +1453,9 @@ extern CardInfo D_800121C8[]; /* card table */
 CardInfo *func_80062B30(void);
 extern s32 D_800704C4;
 extern s32 D_80070418;
+void func_8003563C(u8);
+s32 func_800281A4(s32);
+s32 func_800632B4(s32, s8 *);
 void func_80033AF4(s32, s32);
 
 #endif
