@@ -134,7 +134,7 @@ void func_800ACB98(void);
 void func_800ACC08(void);
 void func_800ACE1C(void);
 void func_800ACF00(void);
-void func_800AD7DC(void);
+s32 func_800AD7DC(void);
 void func_800AB34C(void);
 void func_800AB37C(void);
 void func_800AB3C4(void);
@@ -168,5 +168,12 @@ void func_800AD690(void);
 void func_800AD728(void);
 void func_800AD75C(void);
 void func_800AD77C(void);
+extern u8 D_800A70EC[]; /* message table */
+s32 func_800ADC3C(void);
+void func_800ADC98(void);
+void func_800ADD04(void);
+u8 *func_800ADE14(u8 *, s32);
+void *func_800ADE30(s32, s32, u32 *, u8 *, void *);
+s32 func_800ADF90(u8 *);
 
 #endif
