@@ -37,21 +37,24 @@ typedef struct {
     u8 unk0[0x10]; /* name? 0xFF-terminated text, read up to 7 chars */
     u16 unk10;
     u8 pad12[0x34 - 0x12];
-    u32 unk34; /* low nibble: index into GameData.unk0 */
+    u32 unk34; /* low nibble: index into GameData.unk3C */
 } Unk54C;
 
 typedef struct {
-    u8 pad0[0x70];
-    u32 unk70; /* flags; bit 11 tested, bits 4-8 index D_8006BB8C */
-    u8 pad74;
-    u8 unk75[5]; /* 5 item ids (equipment slots?) */
-    u8 pad7A[0x90 - 0x7A];
-} Unk0; /* 0x90 bytes, 9 of them: likely characters */
+    u8 pad0[0x34];
+    u32 unk34; /* flags; bit 11 tested, bits 4-8 index D_8006BB8C */
+    u8 pad38;
+    u8 unk39[5]; /* 5 item ids (equipment slots?) */
+    u8 pad3E[0x58 - 0x3E];
+    u8 unk58[0x30]; /* cleared by func_800343C0 */
+    s32 unk88;
+    s32 unk8C;
+} Character; /* 0x90 bytes, 9 of them at GameData+0x3C: likely characters */
 
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
-    Unk0 unk0[9];
-    u8 pad510[0x54C - 0x510];
+    u8 pad0[0x3C];
+    Character unk3C[9];
     Unk54C *unk54C[10];
     UnkPair unk574[0x100]; /* {id, count}: likely the item inventory */
     u8 unk774[0x40];       /* 2 bits per item id */
@@ -281,7 +284,6 @@ extern u8 D_80077DB2;
 extern u8 D_80077DE0;
 extern s32 D_8007BB78;
 extern s32 D_800834C8;
-extern s16 D_80083248[];
 extern u8 D_800121C8[];
 extern s32 D_8006798C;
 extern u16 D_80073720;
@@ -310,13 +312,18 @@ typedef struct {
     u8 *unk0;
     u8 pad4[0x34 - 4];
     u32 unk34; /* flags */
-    u8 pad38[0x94 - 0x38];
+    u8 pad38[0x78 - 0x38];
+    s32 unk78;
+    u8 pad7C[0x94 - 0x7C];
     u16 unk94;
     u16 unk96;
     u16 unk98;
     u8 pad9A[0xB2 - 0x9A];
     u16 unkB2;
-    u8 padB4[0xC4 - 0xB4];
+    u8 padB4[0xB8 - 0xB4];
+    s16 unkB8;
+    s16 unkBA;
+    u8 padBC[0xC4 - 0xBC];
     u16 unkC4;
     u8 padC6[0xCA - 0xC6];
     s16 unkCA;
@@ -325,7 +332,10 @@ typedef struct {
     u16 unkE2;
     u8 padE4[0xEA - 0xE4];
     u16 unkEA;
-    u8 padEC[0xF6 - 0xEC];
+    u8 padEC[0xF0 - 0xEC];
+    u16 unkF0;
+    u16 unkF2;
+    u8 padF4[0xF6 - 0xF4];
     s16 unkF6;
     u16 unkF8;
     s16 unkFA;
@@ -337,7 +347,9 @@ typedef struct {
     s16 unk114;
     u8 pad116[0x11C - 0x116];
     u32 unk11C;
-    u8 pad120[0x12E - 0x120];
+    u8 pad120[0x12A - 0x120];
+    u16 unk12A;
+    u8 pad12C[0x12E - 0x12C];
     s16 unk12E;
 } AkaoChannel;
 
@@ -408,8 +420,6 @@ extern s32 D_8007AEB8;
 extern s32 D_8007AEBC;
 extern s32 D_8007B950;
 extern s32 D_80080A24;
-extern s16 D_8008324A;
-extern s16 D_8008324C;
 extern s32 *D_80066764;
 
 typedef struct {
@@ -564,7 +574,6 @@ extern u8 D_8006FD60[];
 extern s32 D_8007BC10;
 extern s32 D_8007BC14;
 extern u8 D_8007AEF0[];
-extern s32 D_80080AA0;
 
 void func_800239A4(void);
 void func_80023784(void);
@@ -576,5 +585,48 @@ void func_800555A8(s32);
 void func_800343C0(s32);
 void func_80034404(s32);
 void func_8001A878(void *, s32); /* BIOS A(28h) bzero */
+
+/* argument block for sound command func_8005C8BC */
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+} Unk80080AA0;
+extern Unk80080AA0 D_80080AA0;
+
+typedef struct {
+    u8 unk0;
+    u8 pad1[5];
+} Unk6;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+    Unk6 unk6[105];
+} Unk80083248;
+extern Unk80083248 D_80083248;
+
+typedef struct {
+    u8 pad0[8];
+    s16 unk8;
+    u8 padA[0x2C - 0xA];
+} Unk8007B9C0;
+extern Unk8007B9C0 D_8007B9C0[];
+
+extern u8 D_80077E2F;
+
+void func_80036470(void);
+void func_80059AA8(s32, s32);
+s32 func_80021FB4(void);
+void func_80022050(void);
+void func_80035430(void);
+void func_80023918(void);
+void func_80032078(void);
+void func_80061070(s32, s32, s32, void (*)(void));
+void func_800611BC(void);
+void func_800611EC(void);
+void func_8006121C(void);
+void func_8006124C(void);
+void func_800565F0(void);
 
 #endif
