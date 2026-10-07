@@ -29,7 +29,8 @@ typedef struct {
     u8 pad24[0x29 - 0x24];
     u8 unk29; /* list scroll */
     u8 unk2A; /* list cursor */
-    u8 pad2B[0x4E - 0x2B];
+    s8 unk2B; /* selected slot */
+    u8 pad2C[0x4E - 0x2C];
     SaveSlot unk4E[15];
 } SaveMenu;
 extern SaveMenu D_801FB1A8;
@@ -46,7 +47,7 @@ typedef struct Unk801FBEE0 {
     u8 unk1;
     u8 pad2[2];
     s32 unk4;
-    u8 pad8[4];
+    Window *unk8;
     void (*unkC)(struct Unk801FBEE0 *);
     u16 unk10; /* text ids */
     u16 unk12;
@@ -68,7 +69,7 @@ extern Unk801FBEF8 D_801FBEF8;
 typedef struct {
     u8 unk0;
     u8 pad1[3];
-    s32 unk4;
+    u32 unk4; /* frame counter */
     Window *unk8;
 } Unk801FC348;
 extern Unk801FC348 D_801FC348;
@@ -185,6 +186,19 @@ s32 func_801FA0F4(s32, s32);
 void func_801F8904(void);
 extern u8 D_801FC368[13];
 extern u8 D_801F43A8[13]; /* "BASLUS-01251" */
+s32 func_801FA2E8(s32);
+s32 func_801FA644(void);
+s32 func_801FA21C(s32);
+void func_801FA794(void);
+void func_801F7718(void);
+void func_801F7AF4(void);
+void func_801F7C20(void);
+void func_801F98D0(void);
+void func_801F63D8(void);
+void func_801F59B8(void);
+void func_801F5DE0(void);
+extern void (*D_801FAF8C[])(void);
+extern void (*D_801FAFC4[])(void);
 extern void (*D_801FAFA8[])(void);
 extern void (*D_801FB014[])(void);
 

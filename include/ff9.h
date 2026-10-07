@@ -1170,6 +1170,7 @@ void func_8002C4B0(s32);
 void func_8002D9B4(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
 void func_8002DD00(Window *);
+void func_8002DE10(Window *);
 void func_8002DE60(void);
 void func_8002DEE4(RECT *, s32, s32);
 void func_8002E040(RECT *, s32, s32, void *);
