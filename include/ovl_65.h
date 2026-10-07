@@ -86,6 +86,9 @@ s32 func_800217C4(void *);
 void func_80022DF0(u8 *, s32, s32);
 void func_8001D8A8(s32);
 void func_8001CFB4(void);
+void func_80021C60(void);
+s32 func_80021CFC(void);
+void func_80021974(s32, s32, s32, u8 *, s32, s32, s32, s32);
 void func_80021CDC(s32);
 void func_8004A06C(s32);
 void func_8004BFB0(void);
@@ -121,7 +124,7 @@ typedef struct {
     s32 unk10;
     s32 unk14;
     u8 pad18[4];
-    s32 unk1C;
+    u8 *unk1C; /* load address */
 } Unk11C0;
 
 typedef struct {
@@ -226,7 +229,7 @@ extern u8 D_800FDF4D;
 extern u32 D_8006DF5C[]; /* exp needed for next level, by level */
 extern s32 D_80077528;   /* pad buttons pressed */
 extern u8 D_80077DB5;
-extern s32 D_80067944;
+extern u8 *D_80067944; /* end of load area */
 extern s32 D_80067948;
 extern u16 D_80067950;
 extern s16 D_8007AEF0;
@@ -266,6 +269,7 @@ void func_80063108(u8 *, u8 *);
 void func_80063118(void *, void *, s32);
 void func_800631AC(void *);
 u8 func_800349BC(s32, s32);
+u8 func_80034A30(PartyMember *);
 void func_80033CCC(s32, s32);
 void func_8002D1AC(Window *, s32);
 Window *func_8002DC54(RECT *, s32, s32);
@@ -381,6 +385,12 @@ extern s32 D_801F3BA0[]; /* sound effect per state */
 extern s32 D_801F3BB8[]; /* text id */
 extern u8 D_801F3BC0[];
 extern u8 D_801F3BC4[];
+typedef struct {
+    RECT unk0;
+    u8 unk8; /* initially shown */
+    u8 pad9;
+} WinInit;
+extern WinInit D_801F3BC8[10];
 extern u8 D_801F3C4C[10][0x10];
 extern u8 D_801F3CDC[7][0x10];
 extern u8 D_801EE03C[];

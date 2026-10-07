@@ -202,7 +202,19 @@ void func_801F0394(RECT *r) {
     D_801F7A78.unk374 = p;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F04BC);
+void func_801F04BC(void) {
+    s32 i;
+
+    for (i = 0; i < 10; i++) {
+        D_801F7A78.unk14C[i] = D_801F3BC8[i].unk8;
+        D_801F7A78.unkAC[i].unk4 = D_801F3BC8[i].unk0;
+        if (D_801F3BC8[i].unk8 != 0) {
+            func_80063118(&D_801F7A78.unkAC[i], D_801F3C4C[i], 1);
+        } else {
+            func_80063118(&D_801F7A78.unkAC[i], NULL, 0);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F0594);
 
