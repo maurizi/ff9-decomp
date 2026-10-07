@@ -224,4 +224,87 @@ s32 func_80023938(void);
 void func_8002C9B0(void);
 void func_8002E180(void);
 
+/* ---- 0x54-byte objects, 10 at D_80077530 (func_8002E260..8002E3F0) ---- */
+
+typedef struct {
+    s16 unk0[8];
+} Unk16; /* 16 bytes, 2-aligned (copied with lwl/lwr) */
+
+typedef struct Unk80077530 {
+    u8 pad0[0x10];
+    s16 unk10;
+    u8 pad12[0x1A - 0x12];
+    u8 unk1A;
+    u8 pad1B;
+    u8 unk1C; /* state: 2 = fire callback */
+    u8 unk1D;
+    u8 pad1E;
+    u8 unk1F;
+    s16 unk20;
+    s8 unk22;
+    u8 unk23;
+    s32 unk24;
+    u8 unk28;
+    u8 unk29;
+    s16 unk2A;
+    u8 pad2C[4];
+    Unk16 unk30;
+    s32 unk40;
+    s32 unk44;
+    s32 unk48;
+    void (*unk4C)(struct Unk80077530 *);
+    u8 pad50[4];
+} Unk80077530;
+extern Unk80077530 D_80077530[10];
+
+void func_8002CF20(Unk80077530 *, s32);
+void func_8002D1AC(Unk80077530 *, s32);
+void func_8002D398(Unk80077530 *, s32, s32);
+
+/* ---- misc globals (batch 1) ---- */
+
+extern u8 D_80068268[];
+extern s8 D_80071E32;
+extern s32 D_80077DD4;
+extern u8 D_80077DBA;
+extern u8 D_80077DBB;
+extern u8 D_80077DB2;
+extern u8 D_80077DE0;
+extern u8 D_80077E03;
+extern u8 D_80077E04;
+extern u8 D_80077E05;
+extern s32 D_8007BB78;
+extern s32 D_800834C8;
+extern u8 D_80083248[];
+extern u8 D_800121C8[];
+extern s32 D_8006798C;
+extern u16 D_80073720;
+extern u8 D_8006825C;
+extern u8 D_8006826C;
+
+typedef struct {
+    u8 pad0[0x37];
+    u8 unk37;
+    u8 unk38;
+} Unk8001A084;
+
+typedef struct {
+    s32 unk0;
+    u8 pad4[0x10];
+    s32 unk14;
+} Unk8005F038;
+
+typedef struct {
+    u8 pad0[0xCA];
+    s16 unkCA;
+    s16 unkCC;
+    u8 padCE[0xF6 - 0xCE];
+    s16 unkF6;
+} Unk8005F64C;
+
+typedef struct {
+    u8 pad0[0x14];
+    s32 unk14;
+} Unk80035B74;
+
 #endif
