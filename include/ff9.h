@@ -1422,5 +1422,7 @@ extern u8 D_8007AF00;
 void func_80024428(s32, s32, s32, void *);
 void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void func_800273C0(s32, s32, s32, s32, s32);
+void func_80033D38(u8 *, s32); /* default name by id */
+void func_80015C28(u8 *, u8 *, s32); /* memcpy */
 
 #endif
