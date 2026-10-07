@@ -8,8 +8,12 @@
 
 /* Per-slot entry of the save list (0x98 bytes; the first byte is the state). */
 typedef struct {
-    u8 unk0; /* state: 1 = empty, 4 = used */
-    u8 pad1[0x98 - 1];
+    s32 unk0; /* version tag, 0x30005 */
+    u8 unk4[0x1A - 4];
+    u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
+    u8 pad1B[0x4C - 0x1B];
+    u32 unk4C; /* save counter */
+    u8 pad50[0x98 - 0x50];
 } SaveSlot;
 
 /* Save menu state (D_801FB1A8). */
@@ -22,16 +26,14 @@ typedef struct {
     u8 unk6;
     u8 unk7;
     u8 unk8;
-    u8 pad9[0x14 - 9];
+    u8 pad9[3];
+    u32 unkC;  /* highest save counter */
+    s32 unk10; /* slot holding it */
     s32 unk14; /* saved func_8002F8E4 mode */
     s32 unk18[2]; /* saved D_80073998[] */
     u8 *unk20; /* help text */
-    u8 pad24[0x29 - 0x24];
-    u8 unk29; /* list scroll */
-    u8 unk2A; /* list cursor */
-    s8 unk2B; /* selected slot */
-    u8 pad2C[0x4E - 0x2C];
-    SaveSlot unk4E[15];
+    MenuList unk24; /* slot list */
+    SaveSlot unk34[15];
 } SaveMenu;
 extern SaveMenu D_801FB1A8;
 
@@ -91,6 +93,7 @@ typedef struct {
     u8 pad7[0x1C - 7];
     Window *unk1C;
     s32 unk20; /* card channel */
+    s32 unk24;
 } Unk801FC388;
 extern Unk801FC388 D_801FC388;
 
@@ -197,6 +200,17 @@ void func_801F98D0(void);
 void func_801F63D8(void);
 void func_801F59B8(void);
 void func_801F5DE0(void);
+extern RECT D_801FB030;
+extern u8 D_801FB038[];
+extern s32 D_801FBF18;
+s32 func_801FA240(s32);
+s32 func_801FAAE4(); /* unprototyped: callers pass the channel or nothing */
+void func_801F8610(void);
+void func_801F86C0(s32);
+void func_801F78CC(void);
+void func_801F74F4(Window *);
+void func_801F7510(Window *);
+void func_801F7560(Window *);
 extern void (*D_801FAF8C[])(void);
 extern void (*D_801FAFC4[])(void);
 extern void (*D_801FAFA8[])(void);
