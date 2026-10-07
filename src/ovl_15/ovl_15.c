@@ -131,7 +131,38 @@ void func_800A7838(void) {
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A787C);
+void func_800A787C(void) {
+    GameData *ctx;
+    u8 k;
+    s32 i;
+    s32 j;
+
+    DrawSync(0);
+    if (!(func_80012AD4() & 2)) {
+        D_8006794C->unk9 = 0;
+    }
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    if (D_800AE0E0 & 4) {
+        PutDrawEnv(&D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+    } else {
+        ctx = D_8006794C->unk1C;
+        k = ctx->unk8;
+        DrawOTagEnv(ctx->unk10[k] + 0xFFF, &D_8006794C->unk10[k]);
+    }
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+    D_800AE0E0 |= D_800AE4C8[0][0];
+    D_800AE0E0 &= ~D_800AE4C8[1][0];
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 3; j++) {
+            D_800AE4C8[i][j] = D_800AE4C8[i][j + 1];
+            D_800AE4C8[i][3] = 0;
+        }
+    }
+    D_800AE0E4++;
+}
 
 void func_800A7A84(void) {
     func_8019A9D8();

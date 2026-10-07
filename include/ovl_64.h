@@ -12,6 +12,16 @@ extern s32 D_80071E34;
 extern s8 D_80071E38;
 void func_80056228(void);
 void func_80065238(s32, s32);
+extern s8 D_80071E30;
+void func_80015C38(const char *, ...); /* printf */
+void func_80022F1C(s32, void (*)());
+void func_80022FD0(s32);
+void func_80023018(void);
+void func_800236A4(s32);
+void func_80056448(s32, s32);
+void func_80056488(void *);
+int SetGraphDebug(int level);
+int CdPosToInt(CdlLOC *p);
 
 /* PsyQ libpress */
 void DecDCToutCallback(void (*func)());
@@ -96,12 +106,73 @@ typedef struct {
 extern Ovl64Vlc D_8019DCFC[108];
 extern s32 D_8019DDD4;
 
+/* CD stream ring (D_8019DE10) */
+typedef struct {
+    u16 unk0; /* flags: 0x1000 free, 0x8000 ready */
+    u8 pad2[2];
+    u16 unk4;
+    u8 pad6[2];
+    u8 pad8[0x20 - 8];
+} Ovl64RingHdr; /* 0x20 */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 pad4[4];
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    CdlLOC unk20;
+    u8 pad24[0x38 - 0x24];
+    s32 unk38;
+    s32 unk3C;
+    s32 unk40;
+    s32 unk44;
+    s32 unk48;
+    s32 unk4C;
+    s32 unk50;
+    s32 unk54;
+    s32 unk58;
+    u32 unk5C; /* sectors per slot */
+    u32 unk60;
+    s32 unk64;
+    s32 unk68;
+    u32 unk6C; /* slot count */
+    u32 unk70; /* current slot */
+    Ovl64RingHdr *unk74;
+    u8 *unk78; /* slot data, 0x8F4 bytes per sector */
+    s32 unk7C;
+    s32 unk80;
+    s32 unk84;
+    u32 unk88;
+    s32 unk8C;
+    s32 unk90;
+} Ovl64Stream;
+extern s32 D_8019DE0C;
+extern Ovl64Stream D_8019DE10;
+extern s32 D_8019DEA4;
+extern s32 D_8019DEA8;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+} Ovl64Pair;
+extern u8 D_8019F510[][0x24];
+extern Ovl64Pair D_8019F750[16];
+extern u16 D_8019F7D0[];
+
+void func_8019C434();
 void func_8019A7A8(s32, s32);
-void func_8019C864(void);
+s32 func_8019C864(void);
 s32 func_8019C99C(s32 *);
 s32 func_8019C9B4(u32);
 s32 func_8019CBF4(s32 *);
 s32 func_8019CC3C(s32);
+s32 func_8019CC7C(void);
 s32 func_80199F30(s32);
 
 #endif
