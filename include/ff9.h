@@ -1124,6 +1124,7 @@ extern u32 D_80077528; /* pad buttons pressed this frame */
 extern u8 D_80077DB5;
 extern s32 D_80077DC0; /* frame counter? */
 
+s32 func_80012AD4(void);
 void func_80012D08(void);
 void func_80012D18(void);
 s32 func_80016EC0(s32, s32, s32, s32);
