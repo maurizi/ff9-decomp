@@ -3,12 +3,13 @@
 against the original SLUS_012.51, masking relocated fields (jal targets,
 %hi/%lo immediates). Run inside the container:
 
-    tools/docker.sh python3 tools/ccprobe.py probe.c [--flags "-O2 -G0"] [--aspsx 2.67,2.77]
+    tools/docker.sh python3 tools/ccprobe.py probe.c [--flags "-O2 -G0"] [--aspsx 2.67,2.77] [--bin ovl_0a]
 
 Functions in the C file must keep their func_XXXXXXXX names (address is taken
 from the name). Prints a matrix of compiler/aspsx -> matching words per function.
 """
 import argparse
+import glob
 import os
 import re
 import struct
@@ -17,6 +18,7 @@ import sys
 import tempfile
 
 EXE = "disks/us/SLUS_012.51"
+ASM_DIR = "asm/us/main/nonmatchings"
 VRAM = 0x80010000
 FILE_OFF = 0x800
 CC_DIR = os.environ.get("CC_DIR", "/opt/cc")
@@ -96,7 +98,8 @@ def show(name, obj):
         if m:
             ours.append(re.sub(r"\s+", " ", m.group(1)).strip())
     theirs = []
-    for line in open(f"asm/us/main/nonmatchings/main/{name}.s"):
+    path = next(iter(glob.glob(f"{ASM_DIR}/*/{name}.s")))
+    for line in open(path):
         m = re.match(r"^\s+/\* [0-9A-F]+ [0-9A-F]+ [0-9A-F]+ \*/\s+(.*)$", line)
         if m:
             theirs.append(re.sub(r"\s+", " ", m.group(1)).strip())
@@ -114,8 +117,19 @@ def main():
     ap.add_argument("--cc", default=",".join(sorted(os.listdir(CC_DIR))))
     ap.add_argument("--no-expand-div", action="store_true")
     ap.add_argument("--show", help="print ours vs original side by side for this function")
+    ap.add_argument("--bin", default="main", help="binary the functions belong to: main or ovl_XX")
     a = ap.parse_args()
-    exe = open(EXE, "rb").read()
+    global VRAM, FILE_OFF, ASM_DIR
+    if a.bin == "main":
+        exe = open(EXE, "rb").read()
+    else:
+        ovl = a.bin[4:]
+        exe = open(f"disks/us/ovl/{ovl}.bin", "rb").read()
+        for line in open("config/overlays.us.txt"):
+            f = line.split()
+            if f and f[0] == ovl:
+                VRAM, FILE_OFF = int(f[1], 16), 0
+    ASM_DIR = f"asm/us/{a.bin}/nonmatchings"
     with tempfile.TemporaryDirectory() as tmp:
         for cc in a.cc.split(","):
             for asv in a.aspsx.split(","):

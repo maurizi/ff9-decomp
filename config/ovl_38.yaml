@@ -1,0 +1,49 @@
+name: ovl_38
+sha1: 1238fdbb20e1f4f6b11284ec92ad6cc76ef0eea8
+options:
+  basename: ovl_38
+  target_path: disks/us/ovl/38.bin
+  base_path: ..
+  platform: psx
+  compiler: GCC
+
+  asm_path: asm/us/ovl_38
+  src_path: src/ovl_38
+  build_path: build/us
+  ld_script_path: build/us/ovl_38.ld
+  ld_dependencies: yes
+  elf_path: build/us/ovl_38.elf
+
+  symbol_addrs_path:
+    - config/symbols.us.txt
+    - config/symbols.psyq.us.txt
+    - config/symbols.ovl_38.us.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto.ovl_38.us.txt
+  undefined_syms_auto_path: config/undefined_syms_auto.ovl_38.us.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: ovl_38
+    type: code
+    start: 0x0
+    vram: 0x801EDF00
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, ovl_38]
+      - [0x540, c, ovl_38]
+      - [0x1CB0, data]
+
+  - [0x3800]

@@ -1,0 +1,49 @@
+name: ovl_37
+sha1: 087eaeedf5d16e62e5236dbe4591cc835db7ea8e
+options:
+  basename: ovl_37
+  target_path: disks/us/ovl/37.bin
+  base_path: ..
+  platform: psx
+  compiler: GCC
+
+  asm_path: asm/us/ovl_37
+  src_path: src/ovl_37
+  build_path: build/us
+  ld_script_path: build/us/ovl_37.ld
+  ld_dependencies: yes
+  elf_path: build/us/ovl_37.elf
+
+  symbol_addrs_path:
+    - config/symbols.us.txt
+    - config/symbols.psyq.us.txt
+    - config/symbols.ovl_37.us.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto.ovl_37.us.txt
+  undefined_syms_auto_path: config/undefined_syms_auto.ovl_37.us.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: ovl_37
+    type: code
+    start: 0x0
+    vram: 0x801EDF00
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, ovl_37]
+      - [0x2D18, c, ovl_37]
+      - [0x5140, data]
+
+  - [0xD000]

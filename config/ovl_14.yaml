@@ -1,0 +1,49 @@
+name: ovl_14
+sha1: 4709932946cf991fc69707848c1413ffc661b549
+options:
+  basename: ovl_14
+  target_path: disks/us/ovl/14.bin
+  base_path: ..
+  platform: psx
+  compiler: GCC
+
+  asm_path: asm/us/ovl_14
+  src_path: src/ovl_14
+  build_path: build/us
+  ld_script_path: build/us/ovl_14.ld
+  ld_dependencies: yes
+  elf_path: build/us/ovl_14.elf
+
+  symbol_addrs_path:
+    - config/symbols.us.txt
+    - config/symbols.psyq.us.txt
+    - config/symbols.ovl_14.us.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto.ovl_14.us.txt
+  undefined_syms_auto_path: config/undefined_syms_auto.ovl_14.us.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: ovl_14
+    type: code
+    start: 0x0
+    vram: 0x800A7000
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, ovl_14]
+      - [0x88, c, ovl_14]
+      - [0x4230, data]
+
+  - [0x4800]

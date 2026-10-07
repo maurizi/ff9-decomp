@@ -2,18 +2,18 @@
 """Re-run splat without losing decompiled C.
 
 splat never rewrites an existing .c file, so after symbol/boundary changes the
-INCLUDE_ASM list in src/main/*.c goes stale. This moves each C file aside, lets
+INCLUDE_ASM list in src/**/*.c goes stale. Usage: resplit.py [yaml ...] This moves each C file aside, lets
 splat regenerate it, then merges back: the old preamble (everything before the
 first INCLUDE_ASM or function), and every decompiled function body replacing
 its INCLUDE_ASM line. Run inside the container: tools/docker.sh make resplit
 """
+import glob
 import os
 import re
 import subprocess
 import sys
 
-SRC_DIR = "src/main"
-YAML = "config/slus_012.51.yaml"
+DEFAULT_YAMLS = ["config/slus_012.51.yaml"]
 
 FUNC_DEF = re.compile(r"^[A-Za-z_][^;{}()]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{", re.M)
 INCLUDE = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*(\w+)\);\n', re.M)
@@ -33,43 +33,64 @@ def split_c(text):
     return preamble, bodies
 
 
+EMPTY_BODY = re.compile(r"\{\s*\}\n?$")
+
+
 def main():
+    yamls = sys.argv[1:] or DEFAULT_YAMLS
+    stale = glob.glob("src/**/*.bak", recursive=True)
+    if stale:
+        sys.exit(f"refusing to run: leftover backups {stale}; resolve them first")
+
     old = {}
-    for fn in os.listdir(SRC_DIR):
-        if fn.endswith(".c"):
-            path = os.path.join(SRC_DIR, fn)
-            old[path] = open(path).read()
-            os.rename(path, path + ".bak")
+    for path in glob.glob("src/**/*.c", recursive=True):
+        old[path] = open(path).read()
+        os.rename(path, path + ".bak")
     try:
         subprocess.run(["rm", "-rf", "asm/us"], check=True)
-        subprocess.run([sys.executable, "-m", "splat", "split", YAML], check=True)
+        for y in yamls:
+            subprocess.run([sys.executable, "-m", "splat", "split", y], check=True)
     except BaseException:
         for path in old:
             os.replace(path + ".bak", path)
         raise
+
+    # Fresh splat output, with each old file's preamble restored.
+    new = {}
+    for path in glob.glob("src/**/*.c", recursive=True):
+        text = open(path).read()
+        if path in old:
+            pre, _ = split_c(old[path])
+            new_pre, _ = split_c(text)
+            text = pre + text[len(new_pre):]
+        new[path] = text
+
+    # Put every hand-written body back over its INCLUDE_ASM slot, in whichever file it now lives.
+    # Empty bodies are skipped: splat regenerates trivial functions as C itself.
+    missing, kept = [], {}
     for path, text in old.items():
-        preamble, bodies = split_c(text)
-        if not os.path.exists(path):
-            sys.exit(f"splat no longer generates {path}; old copy kept at {path}.bak")
-        new = open(path).read()
-        new_pre, _ = split_c(new)
-        new = preamble + new[len(new_pre):]
-        missing = []
-        _, generated = split_c(new)  # splat emits trivial (empty) functions as C itself
+        _, bodies = split_c(text)
         for name, body in bodies.items():
-            if name in generated:
+            if EMPTY_BODY.search(body):
                 continue
             pat = re.compile(r'^INCLUDE_ASM\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
-            new, n = pat.subn(lambda _: body, new)
-            if n != 1:
-                missing.append(name)
-        open(path, "w").write(new)
-        if missing:
-            sys.exit(f"{path}: decompiled functions with no INCLUDE_ASM slot after split "
-                     f"(renamed or merged?): {missing}; old copy at {path}.bak")
-        os.remove(path + ".bak")
-        print(f"{path}: kept {len(bodies) - len(generated)} decompiled functions")
+            for npath in new:
+                new[npath], n = pat.subn(lambda _: body, new[npath])
+                if n:
+                    kept[npath] = kept.get(npath, 0) + 1
+                    break
+            else:
+                missing.append((path, name))
 
+    for path, text in new.items():
+        open(path, "w").write(text)
+    for path, n in sorted(kept.items()):
+        print(f"{path}: kept {n} decompiled functions")
+    if missing:
+        sys.exit(f"decompiled functions with no INCLUDE_ASM slot after split (renamed or merged?): "
+                 f"{missing}. Old files kept as *.bak; merge by hand, then delete the backups.")
+    for path in old:
+        os.remove(path + ".bak")
 
 if __name__ == "__main__":
     main()

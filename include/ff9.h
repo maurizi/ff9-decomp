@@ -189,6 +189,7 @@ extern Unk80077148 D_80077148;
 
 /* ---- functions (main exe) ---- */
 
+void func_8001C784(void *);
 void func_8001D898(s32, s32, s32);
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);

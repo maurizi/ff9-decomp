@@ -1,0 +1,49 @@
+name: ovl_3e
+sha1: 4b3b480ee497f3508818dbb83a65c4cfc106f86f
+options:
+  basename: ovl_3e
+  target_path: disks/us/ovl/3e.bin
+  base_path: ..
+  platform: psx
+  compiler: GCC
+
+  asm_path: asm/us/ovl_3e
+  src_path: src/ovl_3e
+  build_path: build/us
+  ld_script_path: build/us/ovl_3e.ld
+  ld_dependencies: yes
+  elf_path: build/us/ovl_3e.elf
+
+  symbol_addrs_path:
+    - config/symbols.us.txt
+    - config/symbols.psyq.us.txt
+    - config/symbols.ovl_3e.us.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto.ovl_3e.us.txt
+  undefined_syms_auto_path: config/undefined_syms_auto.ovl_3e.us.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: ovl_3e
+    type: code
+    start: 0x0
+    vram: 0x801EDF00
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, ovl_3e]
+      - [0x815C, c, ovl_3e]
+      - [0x8C60, data]
+
+  - [0x9000]

@@ -37,7 +37,12 @@ LDFLAGS   := -T $(LD_SCRIPT) \
              --no-check-sections -nostdlib \
              -Map $(ELF:.elf=.map)
 
-.PHONY: all extract extract-img split resplit build verify progress clean distclean
+# FF9.IMG dir-0 code overlays (identical on all discs); see config/overlays.us.txt
+OVLS      := $(shell awk '/^[0-9a-f]/ {print $$1}' config/overlays.$(VERSION).txt)
+OVL_BINS  := $(foreach o,$(OVLS),$(BUILD_DIR)/ovl_$(o).bin)
+YAMLS     := $(SPLAT_YAML) $(foreach o,$(OVLS),config/ovl_$(o).yaml)
+
+.PHONY: all extract extract-img extract-ovl split resplit build verify progress clean distclean
 
 all: verify
 
@@ -53,14 +58,18 @@ extract-img:
 		python3 tools/extract_disc.py "$(DISC_DIR)/FF9 CD$$n.img" $(DISKS)/disc$$n FF9.IMG || exit 1; \
 	done
 
+# Code overlays from disc 1's FF9.IMG (needs extract-img first).
+extract-ovl:
+	python3 tools/ff9img.py $(DISKS)/disc1/FF9.IMG extract-dir 0 $(DISKS)/ovl
+
 # First split only: splat won't touch existing .c files. Use resplit afterwards.
 split: $(DISKS)/$(MAIN)
 	rm -rf asm/$(VERSION)
-	$(SPLAT) $(SPLAT_YAML)
+	for y in $(YAMLS); do $(SPLAT) $$y || exit 1; done
 
 # Re-split after symbol/config changes, keeping decompiled C.
 resplit: $(DISKS)/$(MAIN)
-	$(PYTHON) tools/resplit.py
+	$(PYTHON) tools/resplit.py $(YAMLS)
 
 # splat's ld_dependencies rule lists every object the ELF needs.
 -include $(LD_SCRIPT:.ld=.d)
@@ -82,10 +91,21 @@ $(ELF): $(LD_SCRIPT)
 $(EXE): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
-build: $(EXE)
+define OVL_RULES
+-include $(BUILD_DIR)/ovl_$(1).d
+$(BUILD_DIR)/ovl_$(1).elf: $(BUILD_DIR)/ovl_$(1).ld
+	$(LD) -T $$< -T config/undefined_funcs_auto.ovl_$(1).$(VERSION).txt \
+		-T config/undefined_syms_auto.ovl_$(1).$(VERSION).txt \
+		--no-check-sections -nostdlib -Map $$(@:.elf=.map) -o $$@ $$(filter %.o,$$^)
+$(BUILD_DIR)/ovl_$(1).bin: $(BUILD_DIR)/ovl_$(1).elf
+	$(OBJCOPY) -O binary $$< $$@
+endef
+$(foreach o,$(OVLS),$(eval $(call OVL_RULES,$(o))))
 
-verify: $(EXE)
-	sha1sum -c config/checksums.$(VERSION).sha1
+build: $(EXE) $(OVL_BINS)
+
+verify: build
+	sha1sum -c config/checksums.$(VERSION).sha1 config/checksums.ovl.$(VERSION).sha1
 
 # Function/byte counts for game code (PsyQ libs excluded). `make progress CSV=1` logs to docs/progress.csv
 progress:

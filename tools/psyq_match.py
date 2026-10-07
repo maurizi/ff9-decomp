@@ -61,8 +61,15 @@ def main():
     ap.add_argument("sigdir")
     ap.add_argument("--version", help="comma-separated, e.g. 470,460")
     ap.add_argument("--symbols", action="store_true")
+    ap.add_argument("--bin", help="other binary: PATH:VRAM:TEXT_START:TEXT_END (hex), default main exe")
     a = ap.parse_args()
-    data = open(EXE, "rb").read()
+    global VRAM, FILE_OFF, TEXT
+    if a.bin:
+        path, vram, ts, te = a.bin.split(":")
+        data = open(path, "rb").read()
+        VRAM, FILE_OFF, TEXT = int(vram, 16), 0, (int(ts, 16), int(te, 16))
+    else:
+        data = open(EXE, "rb").read()
     text = data[TEXT[0]:TEXT[1]]
     versions = a.version.split(",") if a.version else sorted(
         d for d in os.listdir(a.sigdir) if d.isdigit())

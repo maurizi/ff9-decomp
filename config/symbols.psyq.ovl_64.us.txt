@@ -1,0 +1,10 @@
+// PsyQ libpress, linked into the FMV player overlay (tools/psyq_match.py --bin).
+DecDCTReset = 0x8019CD60; // type:func libpress/LIBPRESS.OBJ
+DecDCTGetEnv = 0x8019CD94; // type:func libpress/LIBPRESS.OBJ
+DecDCTPutEnv = 0x8019CE20; // type:func libpress/LIBPRESS.OBJ
+DecDCTin = 0x8019CEB8; // type:func libpress/LIBPRESS.OBJ
+DecDCTout = 0x8019CF34; // type:func libpress/LIBPRESS.OBJ
+DecDCTinSync = 0x8019CF54; // type:func libpress/LIBPRESS.OBJ
+DecDCToutSync = 0x8019CF90; // type:func libpress/LIBPRESS.OBJ
+DecDCTinCallback = 0x8019CFD8; // type:func libpress/LIBPRESS.OBJ
+DecDCToutCallback = 0x8019CFFC; // type:func libpress/LIBPRESS.OBJ

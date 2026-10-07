@@ -16,33 +16,38 @@ import os
 import re
 import subprocess
 
-ASM_GLOB = "asm/us/main/nonmatchings/*/*.s"
+ASM_GLOB = "asm/us/*/nonmatchings/*/*.s"
 SRC_GLOB = "src/**/*.c"
-LIB_SYMS = "config/symbols.psyq.us.txt"
+LIB_GLOB = "config/symbols.psyq*.txt"
 CSV = "docs/progress.csv"
 
 
 def functions():
+    """{(binary, name): (size, addr)}; binary is the asm/us/<dir> name (main, ovl_0a, ...)."""
     out = {}
     for path in glob.glob(ASM_GLOB):
-        m = re.search(r"^nonmatching (\w+), (0x[0-9A-Fa-f]+)", open(path).read(), re.M)
+        text = open(path).read()
+        m = re.search(r"^nonmatching (\w+), (0x[0-9A-Fa-f]+)", text, re.M)
         if m:
-            addr = re.search(r"/\* [0-9A-F]+ ([0-9A-F]{8}) ", open(path).read())
-            out[m.group(1)] = (int(m.group(2), 16), int(addr.group(1), 16) if addr else 0)
+            addr = re.search(r"/\* [0-9A-F]+ ([0-9A-F]{8}) ", text)
+            binary = path.split("/")[2]
+            out[(binary, m.group(1))] = (int(m.group(2), 16), int(addr.group(1), 16) if addr else 0)
     return out
 
 
 def remaining():
+    """{(binary, name)} still INCLUDE_ASM'd. The asm path in the macro names the binary."""
     names = set()
     for path in glob.glob(SRC_GLOB, recursive=True):
-        names |= set(re.findall(r'^INCLUDE_ASM\("[^"]+",\s*(\w+)\);', open(path).read(), re.M))
+        for d, n in re.findall(r'^INCLUDE_ASM\("asm/us/(\w+)/[^"]*",\s*(\w+)\);', open(path).read(), re.M):
+            names.add((d, n))
     return names
 
 
 def library():
     names = set()
-    if os.path.exists(LIB_SYMS):
-        for line in open(LIB_SYMS):
+    for path in glob.glob(LIB_GLOB):
+        for line in open(path):
             m = re.match(r"(\w+) = 0x", line)
             if m:
                 names.add(m.group(1))
@@ -56,30 +61,38 @@ def main():
     ap.add_argument("--min", type=lambda x: int(x, 0), default=0)
     ap.add_argument("--max", type=lambda x: int(x, 0), default=1 << 30)
     ap.add_argument("--range", default="0-0xFFFFFFFF")
+    ap.add_argument("--bin", help="restrict to one binary (main, ovl_0a, ...)")
     a = ap.parse_args()
 
     funcs, todo, lib = functions(), remaining(), library()
     if not funcs:
         raise SystemExit("no asm found; run tools/docker.sh make split first")
 
+    if a.bin:
+        funcs = {k: v for k, v in funcs.items() if k[0] == a.bin}
+
     if a.list:
         lo, hi = (int(x, 0) for x in a.range.split("-"))
-        rows = [(addr, size, n) for n, (size, addr) in funcs.items()
-                if n in todo and n not in lib and a.min <= size <= a.max and lo <= addr <= hi]
-        for addr, size, n in sorted(rows):
-            print(f"{n:32} 0x{addr:08X} {size:6d}")
+        rows = [(b, addr, size, n) for (b, n), (size, addr) in funcs.items()
+                if (b, n) in todo and n not in lib and a.min <= size <= a.max and lo <= addr <= hi]
+        for b, addr, size, n in sorted(rows):
+            print(f"{n:32} 0x{addr:08X} {size:6d} {b}")
         return
 
-    def stats(names):
-        done = [n for n in names if n not in todo]
-        return len(done), len(names), sum(funcs[n][0] for n in done), sum(funcs[n][0] for n in names)
+    def stats(keys):
+        done = [k for k in keys if k not in todo]
+        return len(done), len(keys), sum(funcs[k][0] for k in done), sum(funcs[k][0] for k in keys)
 
-    game = [n for n in funcs if n not in lib]
-    libs = [n for n in funcs if n in lib]
-    g, l = stats(game), stats(libs)
     pct = lambda d, t: 100.0 * d / t if t else 0.0
-    print(f"game code : {g[0]:5d}/{g[1]:5d} funcs ({pct(g[0], g[1]):5.2f}%)  "
-          f"{g[2]:7d}/{g[3]:7d} bytes ({pct(g[2], g[3]):5.2f}%)")
+    row = lambda label, s: print(f"{label:10}: {s[0]:5d}/{s[1]:5d} funcs ({pct(s[0], s[1]):5.2f}%)  "
+                                 f"{s[2]:7d}/{s[3]:7d} bytes ({pct(s[2], s[3]):5.2f}%)")
+    game = [k for k in funcs if k[1] not in lib]
+    libs = [k for k in funcs if k[1] in lib]
+    for b in sorted({k[0] for k in game}, key=lambda b: (b != "main", b)):
+        row(b, stats([k for k in game if k[0] == b]))
+    g, l = stats(game), stats(libs)
+    print("-" * 70)
+    row("game total", g)
     print(f"psyq libs : {l[1]:5d} funcs, {l[3]:7d} bytes (identified by signature, not decompiled)")
 
     if a.csv:

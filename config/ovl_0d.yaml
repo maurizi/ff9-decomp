@@ -1,0 +1,49 @@
+name: ovl_0d
+sha1: 8389597f33492c531b63af74471ad73a48ad03a7
+options:
+  basename: ovl_0d
+  target_path: disks/us/ovl/0d.bin
+  base_path: ..
+  platform: psx
+  compiler: GCC
+
+  asm_path: asm/us/ovl_0d
+  src_path: src/ovl_0d
+  build_path: build/us
+  ld_script_path: build/us/ovl_0d.ld
+  ld_dependencies: yes
+  elf_path: build/us/ovl_0d.elf
+
+  symbol_addrs_path:
+    - config/symbols.us.txt
+    - config/symbols.psyq.us.txt
+    - config/symbols.ovl_0d.us.txt
+  undefined_funcs_auto_path: config/undefined_funcs_auto.ovl_0d.us.txt
+  undefined_syms_auto_path: config/undefined_syms_auto.ovl_0d.us.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: ovl_0d
+    type: code
+    start: 0x0
+    vram: 0x800A7000
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, ovl_0d]
+      - [0x52C, c, ovl_0d]
+      - [0xC660, data]
+
+  - [0xD000]
