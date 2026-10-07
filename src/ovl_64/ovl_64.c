@@ -1,4 +1,4 @@
-#include "common.h"
+#include "ovl_64.h"
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_801990A0);
 
