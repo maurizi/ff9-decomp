@@ -70,6 +70,15 @@ typedef struct {
 extern Ovl14Unk320 D_800AB320;
 
 extern void *D_800AB230;
+extern u32 D_800AB300; /* main state */
+s32 func_800A9220(void);
+s32 func_800A9E14(s32);
+void func_800AAADC(void);
+void func_800A741C(void);
+void func_800A767C(void);
+void func_800A7FF0(void);
+void func_800A80D4(void);
+void func_800A77BC(void);
 extern u16 D_800AB2D8[];
 extern s32 D_800AB2F4;
 extern s32 D_800AB440;

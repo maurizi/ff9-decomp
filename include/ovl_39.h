@@ -6,6 +6,12 @@
  * overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
+/* Per-slot entry of the save list (0x98 bytes; the first byte is the state). */
+typedef struct {
+    u8 unk0; /* state: 1 = empty, 4 = used */
+    u8 pad1[0x98 - 1];
+} SaveSlot;
+
 /* Save menu state (D_801FB1A8). */
 typedef struct {
     u8 unk0;
@@ -24,7 +30,7 @@ typedef struct {
     u8 unk29; /* list scroll */
     u8 unk2A; /* list cursor */
     u8 pad2B[0x4E - 0x2B];
-    u8 unk4E; /* slot 0 state; 15 slots of 0x98 bytes */
+    SaveSlot unk4E[15];
 } SaveMenu;
 extern SaveMenu D_801FB1A8;
 
@@ -175,6 +181,10 @@ s32 func_801FA184(s32);
 s32 func_801FABB8(void);
 void func_801FAECC(void);
 u8 func_801F5340(s32, u8);
+s32 func_801FA0F4(s32, s32);
+void func_801F8904(void);
+extern u8 D_801FC368[13];
+extern u8 D_801F43A8[13]; /* "BASLUS-01251" */
 extern void (*D_801FAFA8[])(void);
 extern void (*D_801FB014[])(void);
 

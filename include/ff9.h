@@ -211,6 +211,7 @@ typedef struct {
 } GameState;
 
 extern GameState *D_8006794C;
+void func_8001DE50(GameState *);
 
 /* Inlined copy of func_80027EDC (item search); the original source inlines it. */
 static inline UnkPair *func_80027EDC_inline(s32 id) {
@@ -322,7 +323,8 @@ extern UnkPair D_800739B0[2];
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2[9 - 2];
+    u8 unk2; /* memory card slot */
+    u8 pad3[9 - 3];
     u8 unk9;
     u8 padA[2];
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
