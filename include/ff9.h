@@ -87,6 +87,13 @@ typedef struct {
     Unk1354 *unk1354;
 } Unk8E4;
 
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} Unk880; /* copied as a block by ovl_39 */
+
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
@@ -148,9 +155,12 @@ typedef struct {
     s32 unk84C;
     u8 unk850;
     u8 pad851[0x854 - 0x851];
-    u8 unk854[0x890 - 0x854]; /* CD read context (func_8002177C) */
+    u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
+    Unk880 unk880;
     u8 unk890;
-    u8 pad891[0x8AC - 0x891];
+    u8 pad891;
+    u8 unk892;
+    u8 pad893[0x8AC - 0x893];
     s32 unk8AC;
     u16 unk8B0;
     s16 unk8B2;

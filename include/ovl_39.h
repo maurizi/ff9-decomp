@@ -11,7 +11,8 @@ typedef struct {
     u8 unk0;
     u8 unk1; /* state */
     u8 unk2; /* 1 = busy, 2 = done */
-    u8 pad3[3];
+    u8 pad3;
+    u8 unk4[2]; /* card status per slot */
     u8 unk6;
     u8 unk7;
     u8 pad8[0x14 - 8];
@@ -35,12 +36,16 @@ typedef struct {
     s32 unk4;
     u8 pad8[4];
     s32 unkC;
+    u16 unk10; /* text ids */
+    u16 unk12;
 } Unk801FBEE0;
 extern Unk801FBEE0 D_801FBEE0;
 
 typedef struct {
     u8 unk0;
     u8 unk1;
+    u8 pad2[0x1C - 2];
+    Window *unk1C;
 } Unk801FBEF8;
 extern Unk801FBEF8 D_801FBEF8;
 
@@ -77,6 +82,13 @@ extern s32 D_801FB09C;
 extern s32 D_801FB0A0;
 extern u8 *D_801FC360;
 extern u8 D_801EE4D4[];
+extern u16 D_801FC3E0[256]; /* CRC-16 table */
+
+typedef struct {
+    s32 unk0;
+    Unk880 unk4;
+    u8 unk14;
+} Unk801FA078;
 
 typedef struct {
     u8 pad0[0x12];
@@ -92,6 +104,14 @@ void func_801F5550(void);
 void func_801F5A24(void);
 void func_801F5A68(s32, s32, s32, s32);
 void func_801F75C8(s32, s32);
+void func_801F7084(void);
+void func_801F7300(s32);
+void func_801F7364(SaveMenu *);
+void func_801F77A8(s32);
+void func_801F7918(void);
+void func_801F889C(s32);
+s32 func_801FAB08(void);
+void func_801FAE1C(void);
 void func_801F7780(s32);
 u8 func_801F79F4(s8);
 void func_801F9C58(void *, void *);
