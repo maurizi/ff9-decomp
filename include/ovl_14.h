@@ -128,7 +128,6 @@ typedef struct {
 extern Ovl14Pair D_800739B0[2];
 
 void func_8001C750(void *, s32);
-s32 func_8001C7FC(s32, s32, s32);
 void func_8001CCB4(s32, s32, s32);
 void func_8001DCB8(void);
 void func_8002177C(void *, s32, s32, void *, s32, s32, s32);
@@ -180,13 +179,7 @@ s32 func_80065208(s32);
 void func_80065218(s32);
 void func_80065228(s32);
 extern u32 D_80077528; /* pad buttons pressed */
-typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s32 unk4;
-} Ovl14Cursor;
-extern Ovl14Cursor D_80077DE8; /* menu cursor? */
-void func_800355E4(Ovl14Cursor *);
+void func_800355E4(Unk80077DE8 *);
 void func_80027710(s32, s32, s32, Ovl14Text *, s32);
 void func_80022B28(void);
 

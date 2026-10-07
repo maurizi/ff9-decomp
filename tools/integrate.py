@@ -32,7 +32,7 @@ def main():
     for name in names:
         if name not in bodies:
             sys.exit(f"{name} not defined in {sys.argv[1]}")
-        pat = re.compile(r'^INCLUDE_ASM\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
+        pat = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
         src, n = pat.subn(lambda _: bodies[name], src)
         (moved if n == 1 else missing).append(name)
     open(target, "w").write(src)

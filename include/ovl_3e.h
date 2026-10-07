@@ -62,7 +62,6 @@ void func_8002FAAC(s32);
 void func_800325E0(void);
 void func_80032634(s32);
 void func_80032640(s32);
-void func_8003556C(s32);
 
 /* ---- overlay ---- */
 

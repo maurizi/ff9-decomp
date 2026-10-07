@@ -391,10 +391,13 @@ typedef struct {
 } Unk80077C78;
 extern Unk80077C78 D_80077C78;
 
+/* menu cursor / help window (layout merged from main + ovl_14 + ovl_32) */
 typedef struct {
-    u8 pad0[8];
-    s32 unk8;
-    s32 unkC;
+    s16 unk0; /* x */
+    s16 unk2; /* y */
+    s32 unk4;
+    u8 *unk8; /* help text */
+    void (*unkC)(void);
     u8 pad10[0x18 - 0x10];
     u8 unk18;
     u8 unk19;
@@ -562,7 +565,7 @@ void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
 void func_80014E20(s32, s32, s32, s32);
-void func_8003556C(s32);
+void func_8003556C(void (*)(void));
 
 typedef struct {
     u16 unk0;

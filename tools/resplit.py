@@ -17,6 +17,15 @@ DEFAULT_YAMLS = ["config/slus_012.51.yaml"]
 
 FUNC_DEF = re.compile(r"^[A-Za-z_][^;{}()]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{", re.M)
 INCLUDE = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*(\w+)\);\n', re.M)
+# Data converted from INCLUDE_RODATA to C, e.g. `const u8 D_801EDF84[0x1260] = {...};`
+DATA_DEF = re.compile(r"^(?:static\s+)?(?:const\s+)?[A-Za-z_][\w \*]*?\b(D_[0-9A-F]{8})\b[^;={(]*=\s*\{", re.M)
+LEADING_COMMENT = re.compile(r"(?:^(?:/\*.*\*/|//.*)\n)+\Z", re.M)
+
+
+def _with_comment(text, start):
+    """Extend start backwards over comment lines directly above a definition."""
+    m = LEADING_COMMENT.search(text, 0, start)
+    return m.start() if m and m.end() == start else start
 
 
 def split_c(text):
@@ -29,7 +38,23 @@ def split_c(text):
         end = re.compile(r"^\}\n", re.M).search(text, m.end())
         if not end:
             sys.exit(f"unterminated function {m.group(1)}")
-        bodies[m.group(1)] = text[m.start():end.end()]
+        bodies[m.group(1)] = text[_with_comment(text, m.start()):end.end()]
+    for m in DATA_DEF.finditer(text):
+        if m.start() < first:
+            continue  # declarations in the preamble stay there
+        end = re.compile(r"^\};\n", re.M).search(text, m.end())
+        if not end:
+            sys.exit(f"unterminated data definition {m.group(1)}")
+        bodies[m.group(1)] = text[_with_comment(text, m.start()):end.end()]
+    # Rodata that splat migrated into a function's asm has no slot of its own; keep it
+    # glued to the function that directly follows it.
+    for name in [n for n in bodies if n.startswith("D_")]:
+        data = bodies[name]
+        after = text[text.index(data) + len(data):]
+        nxt = FUNC_DEF.match(after.lstrip("\n"))
+        if nxt and nxt.group(1) in bodies:
+            bodies[nxt.group(1)] = data + "\n" + bodies[nxt.group(1)]
+            del bodies[name]
     return preamble, bodies
 
 
@@ -73,8 +98,9 @@ def main():
         for name, body in bodies.items():
             if EMPTY_BODY.search(body):
                 continue
-            pat = re.compile(r'^INCLUDE_ASM\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
-            for npath in new:
+            pat = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
+            # Only files of the same binary: overlays at the same address reuse names.
+            for npath in [p for p in new if os.path.dirname(p) == os.path.dirname(path)]:
                 new[npath], n = pat.subn(lambda _: body, new[npath])
                 if n:
                     kept[npath] = kept.get(npath, 0) + 1

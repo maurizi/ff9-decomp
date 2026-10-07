@@ -141,7 +141,6 @@ extern u8 D_80077DB5;
 extern s32 D_80067944;
 extern s32 D_80067948;
 extern u16 D_80067950;
-extern s16 D_8007AEF0;
 
 void ClearOTagR(u32 *ot, s32 n);
 void DrawOTagEnv(u32 *p, void *env);
@@ -162,7 +161,6 @@ void func_8002F8A8(void (*)(void));
 void func_8002FA50(s32);
 void func_8002FAAC(s32);
 void func_8002DE60(void);
-void func_8003556C(s32);
 void func_800E9DBC(void);
 void func_800239D0(void);
 void func_80024BD8(void);

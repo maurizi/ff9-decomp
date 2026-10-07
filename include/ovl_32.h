@@ -19,23 +19,7 @@ extern s32 D_800704AC;
 extern s32 D_80070454;
 extern s32 D_80077DC0; /* frame counter? */
 
-/* menu cursor / help window */
-typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* y */
-    s32 unk4;
-    u8 *unk8; /* help text */
-} Unk80077DE8;
-extern Unk80077DE8 D_80077DE8;
 
-typedef struct {
-    u8 pad0[0xB8];
-    u8 unkB8[3]; /* bitmask bytes */
-    u8 unkBB[3]; /* bitmask bytes */
-    u8 padBE;
-    u8 unkBF;
-} Unk8007AEF0;
-extern Unk8007AEF0 D_8007AEF0;
 
 /* menu list/cursor state passed to func_8002EE8C etc. */
 typedef struct {
@@ -77,7 +61,6 @@ int MoveImage(RECT *rect, int x, int y);
 u16 GetClut(int x, int y);
 #define setRECT(r, _x, _y, _w, _h) ((r)->x = (_x), (r)->y = (_y), (r)->w = (_w), (r)->h = (_h))
 void func_8003575C(const u8 *);
-void func_8003556C(void (*)(void));
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
 void SetDrawTPage(void *p, int dfe, int dtd, int tpage);
 

@@ -2471,7 +2471,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035490);
 void func_80035564(void) {
 }
 
-void func_8003556C(s32 a) {
+void func_8003556C(void (*a)(void)) {
     D_80077DE8.unk8 = 0;
     D_80077DE8.unkC = a;
 }
