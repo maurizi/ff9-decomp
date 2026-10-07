@@ -78,6 +78,9 @@ typedef struct {
 } CdlLOC;
 
 long VSync(long mode);
+/* C library: gcc 2.8 expands small constant-size memcpy inline (lwl/lwr) */
+void *memcpy(void *, const void *, u32);
+
 int DrawSync(int mode);
 int LoadImage(RECT *rect, u32 *p);
 int StoreImage(RECT *rect, u32 *p);
