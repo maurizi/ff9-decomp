@@ -102,7 +102,7 @@ typedef struct {
     u8 unk9;
     u8 padA[2];
     u16 unkC;
-    u8 padE[2];
+    u16 unkE;
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
     u8 pad18[0x38 - 0x18];
     u8 unk38;
@@ -151,7 +151,8 @@ typedef struct {
     u16 unk840;
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
-    u8 pad848[0x84C - 0x848];
+    u8 unk848;
+    u8 pad849[0x84C - 0x849];
     s32 unk84C;
     u8 unk850;
     u8 pad851[0x854 - 0x851];
@@ -1485,9 +1486,11 @@ void func_8003384C(Character *);
 s32 func_80033280(s32, s32, u8 *);
 void func_80028720(u8 *, s32);
 void func_8002C1E4(void);
-void func_80065EB0(s32);
-void func_80065EA0(s32);
+s32 func_80065EB0(s32);
+s32 func_80065EA0(s32);
 s32 func_80066170(s32);
+s32 func_80065E90(s32, s32, s32);
+s32 func_80065E80(s32, s32, s32);
 void *func_80062824(void);
 extern s32 D_80070440;
 extern s32 D_8007048C;
