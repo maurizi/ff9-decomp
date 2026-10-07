@@ -55,7 +55,11 @@ typedef struct {
 
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
-    u8 pad0[0x3C];
+    u8 pad0[8];
+    u8 unk8;
+    u8 pad9[0x10 - 9];
+    u32 *unk10[1];
+    u8 pad14[0x3C - 0x14];
     Character unk3C[9];
     Unk54C *unk54C[4];
     u8 pad55C[0x568 - 0x55C];
@@ -334,7 +338,10 @@ typedef struct {
     u8 padB4[0xB8 - 0xB4];
     s16 unkB8;
     s16 unkBA;
-    u8 padBC[0xC4 - 0xBC];
+    u8 padBC[0xBE - 0xBC];
+    u16 unkBE;
+    s16 unkC0;
+    u8 padC2[0xC4 - 0xC2];
     u16 unkC4;
     u8 padC6[0xCA - 0xC6];
     s16 unkCA;
@@ -358,9 +365,11 @@ typedef struct {
     s16 unk114;
     u8 pad116[0x11C - 0x116];
     u32 unk11C;
-    u8 pad120[0x12A - 0x120];
+    s32 unk120;
+    s32 unk124;
+    u8 pad128[0x12A - 0x128];
     u16 unk12A;
-    u8 pad12C[0x12E - 0x12C];
+    u16 unk12C;
     s16 unk12E;
 } AkaoChannel;
 
@@ -451,7 +460,8 @@ typedef struct {
 typedef struct {
     u8 pad0[0x16D8];
     s32 unk16D8;
-    u8 pad16DC[0x16EC - 0x16DC];
+    u8 pad16DC[0x16E4 - 0x16DC];
+    u8 unk16E4[8];
     u8 unk16EC;
     u8 pad16ED[0x16FC - 0x16ED];
     s32 unk16FC;
@@ -604,6 +614,7 @@ void func_8001A878(void *, s32); /* BIOS A(28h) bzero */
 typedef struct {
     s32 unk0;
     s32 unk4;
+    s32 unk8;
 } Unk80080AA0;
 extern Unk80080AA0 D_80080AA0;
 
@@ -684,5 +695,31 @@ void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
 s32 func_80021380(s32);
 void func_80021340(void);
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+    u8 pad8[0xC - 8];
+    u16 unkC;
+    u16 unkE;
+} Unk8005EBB4;
+
+typedef struct {
+    u8 pad0[5];
+    u8 unk5;
+    u8 pad6[0x20 - 6];
+    void (*unk20)(void);
+} Unk80077E28;
+extern Unk80077E28 D_80077E28;
+
+extern s16 D_80080A2C;
+extern s32 D_80080AC0;
+extern s32 D_80077E58;
+extern u32 *D_8007BCA4;
+
+void func_8005CDE4(void);
+void func_800325E0(void);
+void func_80023A2C(void);
+s32 func_8002F8E4(s32);
 
 #endif
