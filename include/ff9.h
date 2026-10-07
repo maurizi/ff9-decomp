@@ -1187,7 +1187,7 @@ u8 func_800349BC(s32, s32);
 u8 func_80034A30(Character *);
 u8 func_80034A04(u32 *, s32);
 void func_80035580(RECT *);
-void func_800355E4(Unk80077DE8 *);
+void func_800355E4(); /* unprototyped: the argument is unused and most callers pass none */
 void func_80035674(u8);
 void func_8003575C(const u8 *);
 u8 *func_80035774(s32); /* text lookup */
@@ -1468,6 +1468,8 @@ extern s32 D_80070430;
 extern u8 D_8007AF02;
 void func_8003384C(Character *);
 s32 func_80033280(s32, s32, u8 *);
+void func_80028720(u8 *, s32);
+void func_8002C1E4(void);
 void func_80033AF4(s32, s32);
 
 #endif
