@@ -57,6 +57,7 @@ def compile_c(src, cc, flags, aspsx, expand_div, tmp):
     i, s, o = (os.path.join(tmp, n) for n in ("x.i", "x.s", "x.o"))
     run(["cpp", *CPP_FLAGS, src, "-o", i])
     run([f"{CC_DIR}/{cc}/cc1", "-quiet", *flags.split(), i, "-o", s])
+    run(["sed", "-i", r"s/^\t\.align\t3$/\t.align\t2/", s])  # see Makefile: jump-table alignment
     maspsx = ["python3", "tools/maspsx/maspsx.py", f"--aspsx-version={aspsx}"]
     if expand_div:
         maspsx.append("--expand-div")

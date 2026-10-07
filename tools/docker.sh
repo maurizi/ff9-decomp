@@ -14,4 +14,4 @@ fi
 TTY=()
 [ -t 0 ] && [ -t 1 ] && TTY=(-it)
 
-exec docker run --rm "${TTY[@]}" -u "$(id -u):$(id -g)" -v "$ROOT:/ff9" -w /ff9 "$IMAGE:$HASH" "${@:-bash}"
+exec docker run --rm --init "${TTY[@]}" -u "$(id -u):$(id -g)" -v "$ROOT:/ff9" -w /ff9 "$IMAGE:$HASH" "${@:-bash}"

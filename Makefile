@@ -83,6 +83,9 @@ $(BUILD_DIR)/%.c.o: %.c $(wildcard include/*.h)
 	@mkdir -p $(dir $@)
 	$(CPP) $(CPP_FLAGS) $< -o $(@:.o=.i)
 	$(CC1) -quiet $(CC_FLAGS) $(@:.o=.i) -o $(@:.o=.cc1.s)
+	@# gcc 8-aligns jump tables (.align 3); originals were separate objects packed at 4, so
+	@# within our merged per-binary C files that alignment lands differently. Use 4.
+	sed -i 's/^\t\.align\t3$$/\t.align\t2/' $(@:.o=.cc1.s)
 	$(MASPSX) --aspsx-version=$(ASPSX_VERSION) --expand-div --run-assembler $(ASFLAGS) -o $@ < $(@:.o=.cc1.s)
 
 $(ELF): $(LD_SCRIPT)

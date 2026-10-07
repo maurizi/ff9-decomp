@@ -22,6 +22,9 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 5. `python3 tools/integrate.py build/batchN.c [func ...] [--into src/ovl_XX/ovl_XX.c]` moves function bodies over their `INCLUDE_ASM` lines (default target `src/main/main.c`). Then `tools/docker.sh make verify` (under 1 s); only a sha1 `OK` counts.
 6. In a built tree, `tools/docker.sh python3 tools/asm-differ/diff.py --no-pager -s <func>` also works. `-s` stops at `jr ra`.
 - **All declarations live in headers** (`include/ff9.h` for game code, `include/psyq.h` for SDK types, macros and prototypes), so batch files and `main.c` share them. `main.c`'s preamble is just `#include "ff9.h"`. Use `unkXX` field names (XX = hex offset) with pad arrays until the meaning is known, and prefer struct fields over byte-offset casts.
+- `ccprobe` masks relocated fields, so a wrong struct offset or relocation addend can still score `*`. Treat it as a filter; only `make verify` proves a match.
+- Jump tables: gcc emits `.align 3` for them, but the original objects were packed at 4 bytes, so all compile paths (Makefile, ccprobe, permute) rewrite it to `.align 2`. Switch functions that failed `verify` before this fix (e.g. ovl_15 `func_800A713C`) are worth retrying.
+- Permuter on an overlay function: `tools/permute.py <file> <func> --bin ovl_XX --run -j 8`. `tools/docker.sh` runs containers with `--init`, so `timeout` really stops them; check `docker ps` for strays anyway.
 - Square's code uses PsyQ macros such as `addPrim`/`setlen`, which compile to the bitfield mask sequences. It also inlines helpers: `func_80027F34` only matches by calling `static inline func_80027EDC_inline` (in `ff9.h`).
 
 ## Compiler (verified empirically, not documented anywhere)
