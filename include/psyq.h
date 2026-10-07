@@ -26,4 +26,9 @@ int DrawSync(int mode);
 int LoadImage(RECT *rect, u32 *p);
 int StoreImage(RECT *rect, u32 *p);
 
+int CdControlF(u8 com, u8 *param);
+int CD_getsector(void *madr, int size);
+int CD_getsector2(void *madr, int size);
+void *SpuSetTransferCallback(void (*func)(void));
+
 #endif

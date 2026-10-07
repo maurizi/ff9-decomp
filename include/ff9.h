@@ -195,7 +195,7 @@ void func_8001C784(void *);
 void func_8001D898(s32, s32, s32);
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
-void func_80023580(s32, s32);
+void func_80023580(u8, u8 *);
 void func_800235A0();
 void func_8002423C(s32, s32, s32, Unk54C *);
 u8 *func_80024EB4(s32, u32 *, u8, u8, s32, u8 *);
@@ -282,7 +282,9 @@ extern u8 D_8006825C;
 extern u8 D_8006826C;
 
 typedef struct {
-    u8 pad0[0x2C];
+    u8 pad0[0x24];
+    u8 unk24;
+    u8 pad25[0x2C - 0x25];
     s32 unk2C;
     u8 pad30[6];
     u8 unk36;
@@ -308,9 +310,20 @@ typedef struct {
     u8 padC6[0xCA - 0xC6];
     s16 unkCA;
     s16 unkCC;
-    u8 padCE[0xF6 - 0xCE];
+    u8 padCE[0xE2 - 0xCE];
+    u16 unkE2;
+    u8 padE4[0xEA - 0xE4];
+    u16 unkEA;
+    u8 padEC[0xF6 - 0xEC];
     s16 unkF6;
-    u8 padF8[0x12E - 0xF8];
+    u8 padF8[0x106 - 0xF8];
+    s16 unk106;
+    u8 pad108[0x110 - 0x108];
+    s16 unk110;
+    s16 unk112;
+    u8 pad114[0x11C - 0x114];
+    u32 unk11C;
+    u8 pad120[0x12E - 0x120];
     s16 unk12E;
 } AkaoChannel;
 
@@ -328,7 +341,8 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 unk4;
-    u8 pad5[0xA - 5];
+    u8 pad5[0x8 - 5];
+    u16 unk8;
     u16 unkA;
     s32 unkC;
     s32 unk10;
@@ -353,7 +367,9 @@ typedef struct {
 extern Unk80077DE8 D_80077DE8;
 
 typedef struct {
-    u8 pad0[0x38];
+    u8 pad0[8];
+    s32 unk8;
+    u8 padC[0x38 - 0xC];
     s32 unk38;
     u8 pad3C[0x6C - 0x3C];
     u16 unk6C;
@@ -394,8 +410,12 @@ typedef struct {
 } Unk8004AB64;
 
 typedef struct {
-    u8 pad0[0x16EC];
+    u8 pad0[0x16D8];
+    s32 unk16D8;
+    u8 pad16DC[0x16EC - 0x16DC];
     u8 unk16EC;
+    u8 pad16ED[0x16FC - 0x16ED];
+    s32 unk16FC;
 } Unk8007AECC;
 extern Unk8007AECC *D_8007AECC;
 
@@ -447,5 +467,73 @@ extern s16 D_8007F96E;
 extern s32 D_80083154;
 extern s16 D_8007F96C;
 extern s32 D_80083150;
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+} Unk800219FC;
+
+typedef struct {
+    u16 unk0;
+    u8 pad2[0x20 - 2];
+    s16 unk20;
+    s16 unk22;
+    s16 unk24;
+    s16 unk26;
+} Unk800219D8;
+
+typedef struct {
+    u8 unk0[4];
+} Unk4; /* 4 bytes, byte-aligned (copied with lwl/lwr) */
+extern Unk4 D_80068158;
+
+extern u8 D_800739B8[];
+extern s16 D_8007BD3A;
+extern s16 D_8007BD3C;
+extern s32 D_8007F790;
+extern s16 D_8007F95A;
+extern s32 D_8008322C;
+extern s32 D_80083158;
+extern u8 D_80077E50;
+extern s32 D_8007AE54;
+extern u8 D_8007954E;
+extern u8 D_8007AD1E;
+extern s32 D_8007BBA8[8];
+extern s32 D_8007BC0C;
+extern s32 D_8007BC08;
+extern s32 D_8007BBF0;
+extern s32 D_800809E0;
+
+void func_8001C720(void);
+s32 func_8001D848(void);
+s32 func_8001ED40(char *, char *, s32); /* BIOS A(18h) strncmp */
+void func_8001E2AC(u16);
+void func_800236C4(void);
+void func_8002BFD0(void);
+void func_80023EB8(void);
+void func_80023F00(void);
+void func_8002FA50(s32);
+void func_8002FAAC(s32);
+void func_8002FB08(s32);
+void func_8002FB64(s32);
+void func_80030770(void *);
+s32 func_8002F5A0(s32);
+void *func_80030B34(void *, void *, s32);
+void *func_80030EE4(void *, void *, s32);
+void *func_80031284(void *, void *, s32);
+void *func_80031718(void *, void *, s32);
+void func_8002FC38(void);
+void func_8002F6C8(void);
+void func_8002FC8C(s32, s32, s32, s32);
+void func_80032658(void);
+void func_80032140(s32, s32);
+void func_80056B18(void);
+void func_80056C08(void);
+u16 func_8005C8BC(s32);
+void func_80055D80(s32, s32);
+void func_8005ECCC(AkaoChannel *, s32);
+void func_80060938(void);
+void func_80014E20(s32, s32, s32, s32);
+void func_8003556C(s32);
 
 #endif
