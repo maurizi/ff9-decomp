@@ -5,7 +5,8 @@ FROM ubuntu:24.04
 RUN apt-get update && apt-get install -y --no-install-recommends \
         binutils-mipsel-linux-gnu cpp make git ca-certificates curl \
         python3 python3-venv \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/mipsel-linux-gnu-objdump /usr/local/bin/mips-linux-gnu-objdump  # decomp-permuter looks for this name
 
 # Candidate PSX compilers (decompals/old-gcc). FF8 used 2.7.2-cdk (PsyQ 4.1) +
 # 2.8.0-psx (PsyQ 4.3); the others are kept to test what FF9 used.

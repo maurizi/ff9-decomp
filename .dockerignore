@@ -6,3 +6,5 @@ asm
 assets
 tools/maspsx
 tools/m2c
+tools/asm-differ
+tools/decomp-permuter

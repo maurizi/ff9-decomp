@@ -84,6 +84,28 @@ def score(exe, code, syms, masks):
     return res
 
 
+def show(name, obj):
+    dis = run(["mipsel-linux-gnu-objdump", "-d", "-r", "--no-show-raw-insn", f"--disassemble={name}", obj])
+    ours = []
+    for line in dis.splitlines():
+        if "R_MIPS" in line:
+            if ours:
+                ours[-1] += "  <" + line.split()[-1] + ">"
+            continue
+        m = re.match(r"^\s+[0-9a-f]+:\s+(.*)$", line)
+        if m:
+            ours.append(re.sub(r"\s+", " ", m.group(1)).strip())
+    theirs = []
+    for line in open(f"asm/us/main/nonmatchings/main/{name}.s"):
+        m = re.match(r"^\s+/\* [0-9A-F]+ [0-9A-F]+ [0-9A-F]+ \*/\s+(.*)$", line)
+        if m:
+            theirs.append(re.sub(r"\s+", " ", m.group(1)).strip())
+    for i in range(max(len(ours), len(theirs))):
+        o = ours[i] if i < len(ours) else ""
+        t = theirs[i] if i < len(theirs) else ""
+        print(f"{i*4:4x}  {o:46.46} | {t}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src")
@@ -91,6 +113,7 @@ def main():
     ap.add_argument("--aspsx", default="2.56,2.67,2.77,2.79")
     ap.add_argument("--cc", default=",".join(sorted(os.listdir(CC_DIR))))
     ap.add_argument("--no-expand-div", action="store_true")
+    ap.add_argument("--show", help="print ours vs original side by side for this function")
     a = ap.parse_args()
     exe = open(EXE, "rb").read()
     with tempfile.TemporaryDirectory() as tmp:
@@ -101,6 +124,9 @@ def main():
                 except subprocess.CalledProcessError as e:
                     print(f"{cc:18} aspsx {asv}: FAILED {e.stderr.strip()[:200]}")
                     continue
+                if a.show:
+                    show(a.show, os.path.join(tmp, "x.o"))
+                    return
                 res = score(exe, code, syms, masks)
                 cells = "  ".join(f"{k[5:]}:{g}/{n}{'*' if g == n else ''}" for k, (g, n) in sorted(res.items()))
                 print(f"{cc:18} aspsx {asv}: {cells}")

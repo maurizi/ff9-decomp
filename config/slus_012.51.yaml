@@ -17,6 +17,7 @@ options:
 
   symbol_addrs_path:
     - config/symbols.us.txt
+    - config/symbols.psyq.us.txt
   undefined_funcs_auto_path: config/undefined_funcs_auto.us.txt
   undefined_syms_auto_path: config/undefined_syms_auto.us.txt
 
@@ -42,8 +43,8 @@ segments:
     vram: 0x80010000
     bss_size: 0x0
     subsegments:
-      - [0x800, rodata]
-      - [0x2FA0, asm]     # first function (addiu sp,sp,-0x20)
+      - [0x800, .rodata, main]
+      - [0x2FA0, c, main]   # first function (addiu sp,sp,-0x20); split into files as they are identified
       - [0x56DE0, data]   # after last jr ra at 0x56DCC
 
   - [0x1DE800]

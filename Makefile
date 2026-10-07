@@ -37,7 +37,7 @@ LDFLAGS   := -T $(LD_SCRIPT) \
              --no-check-sections -nostdlib \
              -Map $(ELF:.elf=.map)
 
-.PHONY: all extract extract-img split build verify clean distclean
+.PHONY: all extract extract-img split resplit build verify progress clean distclean
 
 all: verify
 
@@ -53,9 +53,14 @@ extract-img:
 		python3 tools/extract_disc.py "$(DISC_DIR)/FF9 CD$$n.img" $(DISKS)/disc$$n FF9.IMG || exit 1; \
 	done
 
+# First split only: splat won't touch existing .c files. Use resplit afterwards.
 split: $(DISKS)/$(MAIN)
 	rm -rf asm/$(VERSION)
 	$(SPLAT) $(SPLAT_YAML)
+
+# Re-split after symbol/config changes, keeping decompiled C.
+resplit: $(DISKS)/$(MAIN)
+	$(PYTHON) tools/resplit.py
 
 # splat's ld_dependencies rule lists every object the ELF needs.
 -include $(LD_SCRIPT:.ld=.d)
@@ -65,7 +70,7 @@ $(BUILD_DIR)/%.s.o: %.s
 	$(AS) $(ASFLAGS) -o $@ $<
 
 # cpp -> cc1 -> maspsx (emulates ASPSX expansions) -> GNU as
-$(BUILD_DIR)/%.c.o: %.c
+$(BUILD_DIR)/%.c.o: %.c $(wildcard include/*.h)
 	@mkdir -p $(dir $@)
 	$(CPP) $(CPP_FLAGS) $< -o $(@:.o=.i)
 	$(CC1) -quiet $(CC_FLAGS) $(@:.o=.i) -o $(@:.o=.cc1.s)
@@ -81,6 +86,10 @@ build: $(EXE)
 
 verify: $(EXE)
 	sha1sum -c config/checksums.$(VERSION).sha1
+
+# Function/byte counts for game code (PsyQ libs excluded). `make progress CSV=1` logs to docs/progress.csv
+progress:
+	python3 tools/progress.py $(if $(CSV),--csv)
 
 clean:
 	rm -rf build asm config/undefined_*_auto*.txt
