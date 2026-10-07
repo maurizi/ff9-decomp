@@ -432,7 +432,6 @@ extern u8 D_80077DB2;
 extern u8 D_80077DE0;
 extern s32 D_8007BB78;
 extern s32 D_800834C8;
-extern u8 D_800121C8[];
 extern s32 D_8006798C;
 extern u16 D_80073720;
 extern u8 D_8006825C;
@@ -845,9 +844,12 @@ typedef struct {
 extern Unk80080AA0 D_80080AA0;
 
 typedef struct {
-    u8 unk0;
-    u8 pad1[5];
-} Unk6;
+    u8 unk0; /* card id, 0xFF = none */
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 pad4[2];
+} Unk6; /* card inventory entry */
 
 typedef struct {
     s16 unk0;
@@ -1437,6 +1439,20 @@ extern Icon D_80068E30;
 extern Icon D_80068E38;
 extern s32 D_80070494;
 void func_800270EC(s32, s32, s32);
+void func_8002C870(s32, s32, s16);
+void func_8002C8AC(s32, s32, s16);
+u8 func_80022B18(void);
+s32 func_80062560(u8);
+Unk6 *func_800625A0(s32, s32);
+void func_800626D0(s32, s32);
+typedef struct {
+    u8 pad0[4];
+    u8 unk4; /* collector points */
+} CardInfo; /* 5 bytes */
+extern CardInfo D_800121C8[]; /* card table */
+CardInfo *func_80062B30(void);
+extern s32 D_800704C4;
+extern s32 D_80070418;
 void func_80033AF4(s32, s32);
 
 #endif

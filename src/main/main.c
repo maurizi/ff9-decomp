@@ -5259,8 +5259,8 @@ void *func_80062824(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062830);
 
-void *func_80062B30(void) {
-    return &D_800121C8;
+CardInfo *func_80062B30(void) {
+    return D_800121C8;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062B3C);
