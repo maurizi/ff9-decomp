@@ -24,6 +24,57 @@ typedef struct {
 } ShopHub;
 extern ShopHub D_801FC2D0;
 
+/* Buy menu (D_801FC2F8). */
+typedef struct {
+    u8 unk0; /* state, index into D_801FC044 */
+    u8 unk1; /* item count */
+    u8 unk2; /* quantity */
+    u8 pad3;
+    u8 unk4; /* sells equipment */
+    u8 pad5[0x28 - 5];
+    MenuList unk28;
+    Window *unk38;
+    u8 *unk3C; /* item list */
+} ShopBuy;
+extern ShopBuy D_801FC2F8;
+
+typedef struct {
+    u16 unk0; /* price */
+    u8 unk2;  /* ingredient */
+    u8 unk3;  /* ingredient */
+    u8 unk4;  /* result */
+    u8 pad5;
+} SynthRecipe;
+
+/* Synthesis menu (D_801FC338). */
+typedef struct {
+    u8 unk0; /* state, index into D_801FC09C */
+    u8 unk1;
+    u8 unk2; /* quantity */
+    u8 pad3[0x28 - 3];
+    MenuList unk28;
+    Window *unk38;
+    SynthRecipe unk3C[32];
+    u8 padFC[4];
+} ShopSynth;
+extern ShopSynth D_801FC338;
+
+/* Sell menu (D_801FC438). */
+typedef struct {
+    u8 unk0; /* state, index into D_801FC27C */
+    u8 pad1[3];
+    MenuList unk4;
+    u8 pad14[0x2C - 0x14];
+    Window *unk2C[2];
+} ShopSell;
+extern ShopSell D_801FC438;
+
+extern void (*D_801FC044[])(void);
+extern void (*D_801FC09C[])(void);
+extern void (*D_801FC27C[])(void);
+/* item names: data, splat starts .data at 0xA8F0 instead of 0xA8EC */
+extern u8 func_801F87EC[];
+
 /* {init, update, exit} per shop kind and option */
 extern void (*D_801FBBA0[][3][3])(void);
 extern RECT D_801FBC0C;
@@ -63,6 +114,28 @@ void func_801F56E4(void);
 s32 func_801F59A8(s32);
 void func_801F5A1C(void);
 void func_801F5A74(void);
+void func_801F57C8(void);
+void func_801F5BCC(s32, s32, s32, MenuView *);
+void func_801F5D14(void);
+void func_801F625C(void);
+void func_801F65C8(void);
+void func_801F6714(void);
+void func_801F6C50(void);
+void func_801F6D34(s32, s32, s32, MenuView *);
+void func_801F6F00(void);
+void func_801F73E0(void);
+void func_801F7438(void);
+void func_801F7470(void);
+void func_801F7590(void);
+void func_801F79FC(void);
+void func_801F7FE0(void);
+void func_801F80D0(void);
+void func_801F837C(void);
+void func_801F83D4(void);
+void func_801F83FC(void);
+void func_801F856C(s32, s32, s32, MenuView *);
+s32 func_801F4458(void);
+void func_801F43F8(void);
 void func_801F5AAC(void);
 
 #endif

@@ -2142,23 +2142,23 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EEF0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EF58);
 
-void func_8002F044(u8 *arg0, s32 arg1) {
+void func_8002F044(MenuList *arg0, s32 arg1) {
     arg1 &= 0x80;
     if (arg1 != 0) {
-        if (arg0[7] == 0) {
-            if (arg0[6] != 0) {
-                arg0[7] = arg0[4] - 1;
-                arg0[6] = arg0[6] - 1;
+        if (arg0->unk7 == 0) {
+            if (arg0->unk6 != 0) {
+                arg0->unk7 = arg0->unk4 - 1;
+                arg0->unk6 = arg0->unk6 - 1;
                 func_8002F488(0x67);
                 return;
             }
-            if (arg0[5] != 0) {
+            if (arg0->unk5 != 0) {
                 func_8002F488(0x67);
-                arg0[8] = 0xA;
+                arg0->unk8 = 0xA;
             }
         } else {
             func_8002F488(0x67);
-            arg0[7]--;
+            arg0->unk7--;
         }
     }
 }

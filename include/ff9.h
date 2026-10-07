@@ -268,7 +268,9 @@ extern u8 D_8006BB8C[];
 
 typedef struct {
     u16 unk0; /* name offset into D_8006A218 */
-    u8 pad2[0xC - 2];
+    u16 unk2; /* name offset into the shop's text block */
+    u16 unk4; /* price */
+    u8 pad6[0xC - 6];
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
     u8 pad10[2];
@@ -355,7 +357,7 @@ void func_80028AF0(s32, s32, s32, s32, u8);
 void func_8002BAE4(s32, u8 *, s32, s32);
 void func_80027D18(void);
 void func_80027D4C(void);
-void func_80027D84(u8, u8);
+s32 func_80027D84(u8, u8);
 void func_80028204(s32, s32, s32, s32, s32, u8);
 void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
@@ -1164,7 +1166,9 @@ void func_8002EB64(s32, s32);
 void func_8002EB74(MenuList *);
 void func_8002ECA0(MenuList *, MenuView *);
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
-void func_8002EE8C(MenuList *);
+void func_8002EE8C(MenuList *, s32);
+void func_8002F044(MenuList *, s32);
+void func_8002F0EC(MenuList *, s32);
 void func_8002F344(MenuList *, MenuView *);
 void func_8002F40C(MenuList *, RECT *, RECT *);
 void func_8002F488(s32);
@@ -1430,6 +1434,7 @@ void func_80015C28(u8 *, u8 *, s32); /* memcpy */
 extern u32 D_80077DBC; /* = D_80077DB0.unkC, read on its own by ovl_3a */
 extern u32 D_80077520; /* pad buttons (repeat?) */
 void func_8002886C(void);
+s32 func_80027E5C(s32, s32);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* width */
