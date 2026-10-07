@@ -31,7 +31,37 @@ void func_8019A688(s32 h, s32 hires, s32 i) {
     D_8006794C->unkC[i].screen.h = h;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019A7A8);
+void func_8019A7A8(s32 h, s32 hires) {
+    s32 w = 0x140;
+
+    if (hires != 0) {
+        w = 0x1E0;
+    }
+    SetDefDispEnv(&D_8006794C->unkC[0], w, 0, w, h);
+    SetDefDispEnv(&D_8006794C->unkC[1], 0, 0, w, h);
+    if (hires != 0) {
+        D_8006794C->unkC[0].isrgb24 = 1;
+        D_8006794C->unkC[0].disp.w = D_8006794C->unkC[0].disp.w * 2 / 3;
+        D_8006794C->unkC[1].isrgb24 = 1;
+        D_8006794C->unkC[1].disp.w = D_8006794C->unkC[1].disp.w * 2 / 3;
+    }
+    D_8006794C->unkC[0].isinter = 0;
+    D_8006794C->unkC[0].screen.x = 0;
+    D_8006794C->unkC[0].screen.y = (0xF0 - h) >> 1;
+    D_8006794C->unkC[0].screen.h = h;
+    D_8006794C->unkC[1].isinter = 0;
+    D_8006794C->unkC[1].screen.x = 0;
+    D_8006794C->unkC[1].screen.y = (0xF0 - h) >> 1;
+    D_8006794C->unkC[1].screen.h = h;
+    SetDefDrawEnv(&D_8006794C->unk10[0], 0, 0, w, h);
+    SetDefDrawEnv(&D_8006794C->unk10[1], w, 0, w, h);
+    D_8006794C->unk10[0].dfe = 0;
+    D_8006794C->unk10[0].dtd = 1;
+    D_8006794C->unk10[0].isbg = 1;
+    D_8006794C->unk10[1].dfe = 0;
+    D_8006794C->unk10[1].dtd = 1;
+    D_8006794C->unk10[1].isbg = 1;
+}
 
 s32 func_8019A9D8(void) {
     if (D_80071E32 == 0) {
