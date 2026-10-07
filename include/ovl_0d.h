@@ -16,10 +16,56 @@ typedef struct {
     s16 unk18;
 } WinCtx;
 
+/* Fields of D_8006794C and its ->unk1C block used here; GameState/GameData in
+ * ff9.h place other members at these offsets, so this overlay uses views. */
+typedef struct {
+    u8 pad0[8];
+    u8 unk8;
+    u8 pad9;
+    u8 unkA;
+    u8 padB[0x1C - 0xB];
+    void *unk1C;
+    s32 unk20;
+} GameStateView;
+
+typedef struct {
+    u8 pad0[8];
+    u8 unk8; /* current buffer */
+    u8 pad9[0x10 - 9];
+    u32 *unk10[2]; /* ordering tables */
+    u8 pad18[0x814 - 0x18];
+    void *unk814;
+    u8 pad818[0x83C - 0x818];
+    void (*unk83C)(s32, s32, s32, s32, s32);
+    u8 pad840[0x854 - 0x840];
+    u8 unk854[1];
+} GameDataView;
+
+#define GSV ((GameStateView *)D_8006794C)
+#define GDV ((GameDataView *)D_8006794C->unk1C)
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+    u8 pad8[4];
+    s32 unkC;
+} Unk8001E218;
+
 extern s32 D_80067944;
 extern s32 D_80077528; /* pad buttons (pressed) */
 
+void ClearOTagR(u32 *, s32);
+void *memmove(void *, void *, s32);
 void func_8001C750(s32, s32);
+Unk8001E218 *func_8001E218(s32, s32);
+void func_80021C60(void);
+void func_8002177C(void *, s32, s32, s32, s32, s32, s32);
+s32 func_800217C4(void *);
+void func_80022DF0(s32, s32, void *);
+void func_8002EB64(s32, s32);
+void func_800320B8(s32, s32, s32, s32);
+void func_80055DF4(void);
+void func_80055E14(s32, s32, s32);
 s32 func_8001C7FC(s32, s32, s32);
 s32 func_8001C8B0(s32, s32, s32, s32);
 void func_8002B5FC(s32, s32, s32, u8 *, s32);
@@ -133,6 +179,21 @@ extern TmCell D_800B3CE8; /* returned for out-of-range board squares */
 extern s32 D_800B3CF0;
 extern s32 D_800B3CF4;
 
+s32 func_800A7634(void);
+s32 func_800A76F8(void);
+s32 func_800A7764(void);
+s32 func_800A7818(void);
+s32 func_800A7884(void);
+s32 func_800A78B8(void);
+u8 *func_800A93A0(s32);
+void func_800ABEC4(TmState *);
+void func_800AF2CC(TmState *, TmCard *, s32, s32);
+void func_800AF388(TmState *, TmCard *);
+void func_800AF3E8(TmState *, TmCard *, s32, s32);
+void func_800B0618(TmState *);
+s32 func_800B0EB8(TmState *, s32, s32, s32, s32);
+void func_800B1110(TmState *, s32, s32, s32, s32, s32);
+void func_800B35F8(TmState *);
 void func_800A755C(void);
 void func_800A75E0(void);
 void func_800A78EC(s32, s32, s32, s32, s32);
