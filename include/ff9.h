@@ -53,7 +53,8 @@ typedef struct {
     u8 unk17;
     u8 pad18[0x1F - 0x18];
     u8 unk1F;
-    u8 pad20[0x34 - 0x20];
+    u8 unk20;
+    u8 pad21[0x34 - 0x21];
     u32 unk34; /* low nibble: character id (index into GameData.unk3C);
                 * bits 4-8 index D_8006BB8C; bit 11 tested;
                 * bits 12-16: ability table row */
@@ -61,8 +62,7 @@ typedef struct {
     u8 unk39[5]; /* equipment item ids (0xFF = none) */
     u8 pad3E[0x58 - 0x3E];
     u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
-    s32 unk88;
-    s32 unk8C;
+    u32 unk88[2]; /* support abilities equipped: bit (id - 0xC0) */
 } Character; /* 0x90 */
 
 typedef struct {
@@ -321,7 +321,7 @@ extern void (*D_8006BBEC[])(s32);
 extern s32 D_8006BBFC[];
 extern s32 D_8006BC18[];
 extern s32 D_800770AC;
-extern s32 D_800770B0[];
+extern u8 *D_800770B0[]; /* menu strings (func_8002BE44) */
 extern s32 D_800770F0[];
 extern u8 D_80077130[];
 extern s32 D_80077150;
@@ -751,7 +751,16 @@ typedef struct {
     s32 unk8;
 } Unk80083158;
 extern Unk80083158 D_80083158;
-extern u8 D_80077E50;
+/* menu state */
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3; /* selected party slot */
+    u8 unk4;
+} Unk80077E50;
+extern Unk80077E50 D_80077E50;
+extern u8 D_80077E53;
 extern s32 D_8007AE54;
 extern u8 D_8007954E;
 extern u8 D_8007AD1E;
@@ -1071,9 +1080,13 @@ typedef struct {
 } MenuView;
 
 typedef struct {
-    u8 pad0[0x68];
+    u8 pad0[4];
+    s32 unk4;
+    u8 pad8[0x68 - 8];
     s32 unk68;
-    u8 pad6C[0x94 - 0x6C];
+    u8 pad6C[0x88 - 0x6C];
+    s32 unk88;
+    u8 pad8C[0x94 - 0x8C];
     s32 unk94;
 } Unk800703FC; /* text table? */
 extern Unk800703FC D_800703FC;
@@ -1168,7 +1181,8 @@ void func_80032640(u8);
 void func_80033CCC(s32, s32);
 void func_80033D1C(u8);
 u8 func_800349BC(s32, s32);
-s32 func_80034A30(Character *);
+u8 func_80034A30(Character *);
+u8 func_80034A04(u32 *, s32);
 void func_80035580(RECT *);
 void func_800355E4(Unk80077DE8 *);
 void func_80035674(u8);
@@ -1194,6 +1208,12 @@ s32 func_80062638(void);
 s32 func_80062B3C(void);
 FileEntry *func_80063088(s32, s32);
 void func_80063108(u8 *, u8 *);
+/* text window (func_80063118 / func_800631AC) */
+typedef struct {
+    u8 pad0[4];
+    RECT unk4;
+    s32 unkC;
+} WinDef; /* 0x10 */
 void func_80063118(void *, void *, s32);
 void func_800631AC(void *);
 void func_80063580(DR_TPAGE *, s32);
@@ -1327,8 +1347,9 @@ typedef struct {
 typedef struct {
     u8 pad0;
     u8 unk1;
-    u8 pad2[6];
-} Unk8006D128;
+    u16 unk2; /* name offset */
+    u8 pad4[4];
+} Unk8006D128; /* support abilities, indexed by id - 0xC0 */
 extern Unk8006D128 D_8006D128[];
 void func_8003493C(s32, s32, s32);
 extern s32 D_8006E510[];
@@ -1378,5 +1399,28 @@ void func_80012CF8(void);
 extern u8 *D_8007B720;
 extern u8 D_8007B92D[];
 void func_8004BF20(void);
+
+/* ---- hoisted for menu overlays ---- */
+void func_80028CF8(UnkBlink *, s32, void (*)(void));
+void func_80028D08(UnkBlink *, s32, s32, s32);
+void func_80028D2C(UnkBlink *);
+void func_8002BE44(s32, u8 *);
+void func_8002BE74(s32, s32);
+u8 func_80035648(void);
+void func_80035658(u8);
+void func_800361CC(s32);
+s32 func_800337D0(s32);
+s32 func_8003380C(s32);
+void func_800269F4(s32, s32, s32, s32);
+typedef struct {
+    u8 unk0; /* ability id, 0 = none */
+    u8 unk1; /* ap needed? */
+} AbilityEntry;
+extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34 bits 12-16 */
+void func_80025ED4(s32, s32, s32, s32, s32, s32, s32);
+extern u8 D_8007AF00;
+void func_80024428(s32, s32, s32, void *);
+void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
+void func_800273C0(s32, s32, s32, s32, s32);
 
 #endif

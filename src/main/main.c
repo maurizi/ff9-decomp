@@ -1349,7 +1349,7 @@ void func_80026F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     func_8002423C(arg0, arg1, arg2, D_8006794C->unk1C->unk54C[arg3]);
 }
 
-void func_80026FC4(s32 arg0, s32 arg1, s32 arg2, u8 arg3) {
+void func_80026FC4(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
     s32 i;
 
     for (i = 0; i < 7; i++) {
@@ -1846,7 +1846,7 @@ s32 func_8002BE10(void) {
     return D_8006BC18[func_80023938()];
 }
 
-void func_8002BE44(s32 i, s32 v) {
+void func_8002BE44(s32 i, u8 *v) {
     D_800770B0[i] = v;
 }
 
@@ -1854,7 +1854,7 @@ void func_8002BE5C(s32 i, s32 v) {
     D_800770F0[i] = v;
 }
 
-void func_8002BE74(s32 i, u8 v) {
+void func_8002BE74(s32 i, s32 v) {
     D_80077130[i] = v;
 }
 
@@ -2769,8 +2769,8 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800343C0);
 
 void func_80034404(s32 i) {
     Character *c = &D_8006794C->unk1C->unk3C[i];
-    c->unk8C = 0;
-    c->unk88 = 0;
+    c->unk88[1] = 0;
+    c->unk88[0] = 0;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034430);
@@ -2791,12 +2791,12 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003493C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800349BC);
 
-s32 func_80034A04(u32 *bits, s32 b) {
+u8 func_80034A04(u32 *bits, s32 b) {
     b -= 0xC0;
     return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
 }
 
-s32 func_80034A30(Character *a) {
+u8 func_80034A30(Character *a) {
     if (a->unkA & 0x10) {
         return 0;
     }
@@ -2962,7 +2962,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003613C);
 
 void func_800361A8(void) {
     func_8003556C(0);
-    D_80077E50 = 0;
+    D_80077E50.unk0 = 0;
 }
 
 void func_800361CC(s32 arg0) {

@@ -58,12 +58,6 @@ typedef struct {
     u8 unk11[0x13];
 } LearnList; /* 0x24 */
 
-typedef struct {
-    u8 pad0[4];
-    RECT unk4;
-    s32 unkC;
-} WinDef; /* 0x10 */
-
 /* 0x88 bytes at D_801F7A78+0x24, cleared as a block */
 typedef struct {
     u32 unk0; /* exp per member */
