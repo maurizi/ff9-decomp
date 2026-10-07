@@ -8,6 +8,7 @@
 
 /* main exe: candidates for ff9.h */
 void func_800552B8(s32);
+void func_8001D9CC(s32, s32, s32, s32, s32);
 
 /* other overlay (0x8019....) */
 void func_8019A9D8(void);
@@ -16,17 +17,17 @@ void func_8019A9D8(void);
 
 /* Card shoe: 6 decks of 52 cards. Card ids are rank * 4 + suit. */
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    u16 unk0; /* flags: 2 = shuffled, 4 = needs reshuffle */
+    u16 unk2; /* next card */
     u8 unk4[6 * 52];
 } Ovl15Shoe;
 
 /* A blackjack hand. */
 typedef struct {
-    u16 unk0;
+    u16 unk0; /* flags: 1 = soft ace, 2 = bust, 8 = ace, 0x10 = hole card */
     u16 unk2; /* card count */
     u16 unk4; /* hand value */
-    u16 unk6;
+    u16 unk6; /* value with aces as 1 */
     s16 unk8; /* screen x */
     s16 unkA; /* screen y */
     s32 unkC[22]; /* cards */
@@ -74,22 +75,44 @@ extern Ovl15Pos D_800AE498[4];
 extern void *D_800AE440;
 
 extern u16 D_800AE0E0;
+extern s32 D_800AE0E8; /* bankroll */
+extern s16 D_800AE430;
+extern u16 D_800AE432;
+extern u8 D_800B0F44; /* double allowed */
+extern s32 D_800B0F48; /* bet */
+extern u8 D_800B0F4C; /* split allowed */
+extern s32 D_800B0FD0;
 extern s16 D_800AE4A8;
 extern s32 D_800AE4AC;
 extern u8 *D_800AE4B0; /* next free primitive */
 extern s32 D_800AE4C0;
+extern u32 D_800AE4B8; /* main state */
 extern s32 D_800AE4D8;
 extern s32 D_800AE4DC;
 extern u8 D_800B1000[2][0x2000]; /* primitive buffers */
 extern s32 D_800B5000;
+extern SPRT D_800AE5F8[2][256];
 
-void func_800A8528(s32, s32);
+s32 func_800A8528(s32, s32);
+s32 func_800A91F0(Ovl15Hand *, s16, s16);
+void func_800A8630(s32, s32, s32, s32);
 void func_800AB1C8(void);
+void func_800A7378(s32, s32);
+void func_800A9488(void);
+s32 func_800AB490(void);
+void func_800ACB98(void);
+void func_800ACC08(void);
+void func_800ACE1C(void);
+void func_800ACF00(void);
+void func_800AD7DC(void);
 void func_800AB34C(void);
 void func_800AB37C(void);
 void func_800AB3C4(void);
 void func_800AB3CC(void);
 void func_800AB3D4(void);
+void func_800AB39C(void);
+void func_800AD358(void);
+void func_800AD644(void);
 void func_800AB45C(void);
 void func_800AC598(s32, s32, s32, s32, s32);
 void func_800ACCB4(void);

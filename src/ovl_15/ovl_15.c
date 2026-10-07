@@ -9,7 +9,20 @@ void func_800A723C(void) {
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A7280);
+void func_800A7280(void) {
+    GameData *ctx;
+    u8 i;
+
+    DrawSync(0);
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    ctx = D_8006794C->unk1C;
+    i = ctx->unk8;
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+}
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A7378);
 
@@ -30,11 +43,34 @@ void func_800A7A84(void) {
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A7ABC);
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A8528);
+s32 func_800A8528(s32 x, s32 y) {
+    SPRT *p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+
+    setlen(p, 4);
+    p->code = 0x64;
+    setRGB0(p, 0x80, 0x80, 0x80);
+    p->x0 = x;
+    p->u0 = 0;
+    p->v0 = 0x80;
+    p->w = 0x38;
+    p->h = 0x48;
+    p->y0 = y;
+    p->clut = 0x3940;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+    D_800AE4D8++;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A8630);
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A8F00);
+s32 func_800A8F00(s32 x, s32 y) {
+    s32 i;
+
+    for (i = 0; i < 3; i++) {
+        func_800A8528(x - i * 2, y - i);
+    }
+    return 0;
+}
 
 s32 func_800A8F58(Ovl15Shoe *shoe) {
     s32 i;
@@ -50,9 +86,60 @@ s32 func_800A8F58(Ovl15Shoe *shoe) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A8FA4);
+s32 func_800A8FA4(Ovl15Shoe *shoe) {
+    s32 pass;
+    s32 n;
+    s32 i;
+    s32 j;
+    u8 t;
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A90B8);
+    for (pass = 0; pass < 5; pass++) {
+        for (i = 0, n = 312; n > 0; n--, i++) {
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+            }
+            j = (*D_8007B720++ * 2) % n;
+            t = shoe->unk4[i];
+            shoe->unk4[i] = shoe->unk4[i + j];
+            shoe->unk4[i + j] = t;
+        }
+    }
+    shoe->unk0 = (shoe->unk0 & ~1) | 2;
+    return 0;
+}
+
+s32 func_800A90B8(Ovl15Hand *hand, Ovl15Shoe *shoe) {
+    s32 card = shoe->unk4[shoe->unk2++];
+    s32 rank;
+
+    hand->unkC[hand->unk2++] = card;
+    rank = card / 4;
+    if (rank < 9) {
+        hand->unk4 += rank + 2;
+        hand->unk6 += rank + 2;
+    } else if (rank == 12) {
+        hand->unk4 += 11;
+        hand->unk6 += 1;
+        hand->unk0 |= 1;
+    } else {
+        hand->unk4 += 10;
+        hand->unk6 += 10;
+    }
+    if (hand->unk4 >= 22) {
+        if (hand->unk0 & 1) {
+            hand->unk4 -= 10;
+            if (hand->unk6 >= hand->unk4) {
+                hand->unk0 &= ~1;
+            }
+        } else {
+            hand->unk0 |= 2;
+        }
+    }
+    if (shoe->unk2 >= 249) {
+        shoe->unk0 |= 4;
+    }
+    return 0;
+}
 
 s32 func_800A91F0(Ovl15Hand *hand, s16 x, s16 y) {
     s32 i;
@@ -83,7 +170,39 @@ s32 func_800A92FC(Ovl15Hand *hand) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A9334);
+s32 func_800A9334(Ovl15Hand *hand, s32 dx, s32 dy, s32 count) {
+    s32 first;
+    s32 n;
+    s32 i;
+    s32 x;
+    s32 y;
+    s32 card;
+
+    if (count == 0) {
+        return 1;
+    }
+    n = count - 1;
+    if (count < 0) {
+        n = hand->unk2 - 1;
+        if (hand->unk2 == 0) {
+            return 1;
+        }
+    }
+    first = 1;
+    x = hand->unk8 + dx + n * 13;
+    y = hand->unkA + dy;
+    for (i = n; i >= 0; i--) {
+        card = hand->unkC[i];
+        if (first && (hand->unk0 & 0x10) && n == 1) {
+            func_800A8528(x, y);
+            first = 0;
+        } else {
+            func_800A8630(card / 4, card % 4, x, y);
+        }
+        x -= 13;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A945C);
 
@@ -102,7 +221,21 @@ void func_800AAFAC(void) {
     D_800AE4DC = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AAFFC);
+void func_800AAFFC(void) {
+    GameData *ctx;
+    u8 i;
+
+    DrawSync(0);
+    D_8006794C->unk9 = 0;
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    ctx = D_8006794C->unk1C;
+    i = ctx->unk8;
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+}
 
 void func_800AB100(void) {
     D_800B0F50.unk3 = 0;
@@ -136,7 +269,31 @@ u8 func_800AB1B8(void) {
     return D_800B0F50.unk3;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AB1C8);
+void func_800AB1C8(void) {
+    if (D_800B0F50.unk1 != 0 && D_800B0F50.unk2 == 0) {
+        if (D_80077528 & 0x10) {
+            func_8002F488(0x67);
+            D_800B0F50.unk3 = D_800B0F50.unk3 != 0 ? D_800B0F50.unk3 - 1 : 3;
+            if (D_800B0F4C == 0 && D_800B0F50.unk3 == 3) {
+                D_800B0F50.unk3--;
+            }
+            if (D_800B0F44 == 0 && D_800B0F50.unk3 == 2) {
+                D_800B0F50.unk3--;
+            }
+        } else if (D_80077528 & 0x40) {
+            func_8002F488(0x67);
+            D_800B0F50.unk3 = D_800B0F50.unk3 < 3 ? D_800B0F50.unk3 + 1 : 0;
+            if (D_800B0F44 == 0 && D_800B0F50.unk3 == 2) {
+                D_800B0F50.unk3++;
+            }
+            if (D_800B0F4C == 0 && D_800B0F50.unk3 == 3) {
+                D_800B0F50.unk3 = 0;
+            }
+        } else if (D_80077528 & 0x20000) {
+            func_800AB39C();
+        }
+    }
+}
 
 void func_800AB34C(void) {
     func_800AB3C4();
@@ -178,7 +335,20 @@ void func_800AB45C(void) {
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AB490);
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AC374);
+s32 func_800AC374(void) {
+    s32 p = (s32)func_8001C7FC(4, D_800AE432 | 0x40000, 0);
+
+    func_8001D9CC(p, 0, 0xE0, 0x280, 0);
+    func_8001D8A8(p);
+    func_800552B8(0);
+    func_800AC598(0, 0x7009C, 0, 0, 0);
+    func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
+    func_800320B8(1, 1, 0, 0xFFFFFF);
+    D_800B0FD0 = 0;
+    D_800AE430 = 0;
+    D_80073998[0] = 0;
+    return 0;
+}
 
 s32 func_800AC448(void) {
     return 0;
@@ -189,7 +359,21 @@ void func_800AC450(void) {
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AC494);
+void func_800AC494(void) {
+    GameData *ctx;
+    u8 i;
+
+    DrawSync(0);
+    D_8006794C->unk9 = 0;
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    ctx = D_8006794C->unk1C;
+    i = ctx->unk8;
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+}
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AC598);
 
@@ -377,7 +561,28 @@ u8 func_800AD1EC(void) {
     return D_800B0FE0.unk3;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AD1FC);
+void func_800AD1FC(void) {
+    if (D_800B0FE0.unk1 != 0 && D_800B0FE0.unk2 == 0) {
+        if (D_80077528 & 0x20) {
+            D_800B0F48 += 10;
+            if (D_800AE0E8 < D_800B0F48) {
+                D_800B0F48 = D_800AE0E8 / 10 * 10;
+            }
+            if (D_800B0F48 > 1000) {
+                D_800B0F48 = 1000;
+            }
+            func_8002F488(0x67);
+        } else if (D_80077528 & 0x80) {
+            D_800B0F48 -= 10;
+            if (D_800B0F48 < 10) {
+                D_800B0F48 = 10;
+            }
+            func_8002F488(0x67);
+        } else if (D_80077528 & 0x20000) {
+            func_800AD358();
+        }
+    }
+}
 
 void func_800AD308(void) {
     func_800AD380();
@@ -449,7 +654,19 @@ u8 func_800AD504(void) {
     return D_800B0FF0.unk3;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AD514);
+void func_800AD514(void) {
+    if (func_8002F810() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
+        if (D_80077528 & 0x10) {
+            func_8002F488(0x67);
+            D_800B0FF0.unk3 = D_800B0FF0.unk3 != 0 ? D_800B0FF0.unk3 - 1 : 3;
+        } else if (D_80077528 & 0x40) {
+            func_8002F488(0x67);
+            D_800B0FF0.unk3 = D_800B0FF0.unk3 < 3 ? D_800B0FF0.unk3 + 1 : 0;
+        } else if (D_80077528 & 0x20000) {
+            func_800AD644();
+        }
+    }
+}
 
 void func_800AD5EC(void) {
     func_800AD678();
@@ -529,7 +746,22 @@ void func_800ADC98(void) {
     D_800AE4B0 = D_800B1000[D_8006794C->unk1C->unk8];
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800ADD04);
+void func_800ADD04(void) {
+    GameData *ctx;
+    u8 i;
+
+    DrawSync(0);
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    ctx = D_8006794C->unk1C;
+    i = ctx->unk8;
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+    D_800AE4A8 = 0;
+    D_800AE4AC++;
+}
 
 u8 *func_800ADE14(u8 *arg0, s32 arg1) {
     return arg0 + (arg0[arg1 * 4 + 4] + 4);
