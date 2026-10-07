@@ -12,7 +12,8 @@
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[0x8 - 2];
+    u8 pad2[2];
+    s32 unk4; /* id, -1 = none */
     s32 unk8;
     s32 unkC;
     u8 pad10[0x28 - 0x10];
@@ -21,7 +22,7 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 unk2;
+    s8 unk2; /* count */
     s8 unk3;
     Unk80021938 unk4[7];
     s32 unk11C;
@@ -234,7 +235,9 @@ extern Unk80076F68 D_80076F68;
 
 typedef struct {
     u8 unk0;
-    u8 pad1[0xC - 1];
+    u8 pad1;
+    u8 unk2;
+    u8 pad3[0xC - 3];
     s32 unkC;
     u8 pad10[0x18 - 0x10];
     s32 unk18;
@@ -242,6 +245,9 @@ typedef struct {
     u8 unk944;
     u8 pad945[0x958 - 0x945];
     void (*unk958)();
+    void (*unk95C)(void *);
+    u8 pad960[0x968 - 0x960];
+    u8 unk968[4]; /* passed to func_8002267C */
 } Unk800761D0;
 extern Unk800761D0 D_800761D0;
 
@@ -290,10 +296,13 @@ typedef struct {
 extern UnkPair D_800739B0[2];
 
 typedef struct {
-    u8 pad0[9];
+    u8 pad0;
+    u8 unk1;
+    u8 pad2[9 - 2];
     u8 unk9;
     u8 padA[2];
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
+    s32 unk10; /* frame counter */
 } Unk80077DB0;
 extern Unk80077DB0 D_80077DB0;
 
@@ -324,7 +333,7 @@ void func_8001D898(s32, s32, s32);
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
-void func_800235A0();
+void func_800235A0(u8, u8 *);
 void func_8002423C(s32, s32, s32, Character *);
 u8 *func_80024EB4(s32, u32 *, u8, u8, s32, u8 *);
 u8 *func_800253D4(s32, u32 *, u8, u8, s32, s32, u8 *);
@@ -441,18 +450,33 @@ typedef struct {
 /* Sound sequencer channel (AKAO): unk0 is the byte-code read pointer. */
 typedef struct {
     u8 *unk0;
-    u8 pad4[0x14 - 4];
+    u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
-    u8 pad18[0x34 - 0x18];
+    s32 unk18;
+    u8 pad1C[0x24 - 0x1C];
+    s32 unk24;
+    u8 pad28[0x30 - 0x28];
+    s32 unk30;
     u32 unk34; /* flags */
-    u8 pad38[0x78 - 0x38];
+    s32 unk38;
+    u8 pad3C[0x5C - 0x3C];
+    u32 unk5C;
+    u8 pad60[0x64 - 0x60];
+    s32 unk64;
+    u32 unk68;
+    u8 pad6C[0x78 - 0x6C];
     s32 unk78;
-    u8 pad7C[0x94 - 0x7C];
+    u8 pad7C[0x84 - 0x7C];
+    s32 unk84;
+    u8 pad88[0x94 - 0x88];
     u16 unk94;
     u16 unk96;
     u16 unk98;
     u16 unk9A;
-    u8 pad9C[0xB2 - 0x9C];
+    u8 pad9C[0xA0 - 0x9C];
+    u16 unkA0;
+    u16 unkA2[4]; /* loop counters */
+    u16 unkAA[4];
     u16 unkB2;
     u8 padB4[0xB8 - 0xB4];
     s16 unkB8;
@@ -460,26 +484,37 @@ typedef struct {
     u8 padBC[0xBE - 0xBC];
     u16 unkBE;
     s16 unkC0;
-    u8 padC2[0xC4 - 0xC2];
+    s16 unkC2;
     u16 unkC4;
     u8 padC6[0xC8 - 0xC6];
     s16 unkC8;
     s16 unkCA;
     s16 unkCC;
-    u8 padCE[0xE2 - 0xCE];
+    u8 padCE[0xD2 - 0xCE];
+    s16 unkD2;
+    u8 padD4[0xD6 - 0xD4];
+    s16 unkD6;
+    s16 unkD8;
+    u8 padDA[0xE0 - 0xDA];
+    s16 unkE0;
     u16 unkE2;
-    u8 padE4[0xEA - 0xE4];
+    s16 unkE4;
+    u8 padE6[0xE8 - 0xE6];
+    u16 unkE8;
     u16 unkEA;
-    u8 padEC[0xF0 - 0xEC];
+    s16 unkEC;
+    u8 padEE[0xF0 - 0xEE];
     u16 unkF0;
     u16 unkF2;
-    u8 padF4[0xF6 - 0xF4];
+    u16 unkF4; /* loop depth */
     s16 unkF6;
     u16 unkF8;
     s16 unkFA;
     u8 padFC[0x106 - 0xFC];
     s16 unk106;
-    u8 pad108[0x10E - 0x108];
+    s16 unk108;
+    s16 unk10A;
+    s16 unk10C;
     s16 unk10E;
     s16 unk110;
     s16 unk112;
@@ -492,7 +527,8 @@ typedef struct {
     u16 unk12A;
     u16 unk12C;
     s16 unk12E;
-} AkaoChannel;
+    u8 pad130[4];
+} AkaoChannel; /* 0x134 */
 
 typedef struct {
     u8 unk0;
@@ -543,14 +579,26 @@ typedef struct {
 extern Unk80077DE8 D_80077DE8;
 
 typedef struct {
-    u8 pad0[8];
+    s32 unk0;
+    s32 unk4;
     s32 unk8;
-    u8 padC[0x34 - 0xC];
+    u8 padC[0x1C - 0xC];
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    u8 pad28[0x30 - 0x28];
+    u16 *unk30;
     s32 unk34;
     s32 unk38;
-    u8 pad3C[0x6C - 0x3C];
+    u8 pad3C[0x48 - 0x3C];
+    s32 unk48;
+    s32 unk4C;
+    u8 pad50[0x66 - 0x50];
+    s16 unk66;
+    u16 unk68;
+    u8 pad6A[2];
     u16 unk6C;
-    u8 pad6E[2];
+    u16 unk6E;
     u16 unk70;
     u16 unk72;
     u16 unk74;
@@ -587,11 +635,17 @@ extern Unk80077E44 *D_80077E44;
 typedef struct {
     u8 pad0[6];
     u8 unk6;
+    u8 unk7;
 } Unk8004AB64;
+
+typedef struct Unk16D8 {
+    struct Unk16D8 *unk0; /* next */
+    Unk8004AB64 *unk4;
+} Unk16D8;
 
 typedef struct {
     u8 pad0[0x16D8];
-    s32 unk16D8;
+    Unk16D8 *unk16D8;
     u8 pad16DC[0x16E4 - 0x16DC];
     u8 unk16E4[8];
     u8 unk16EC;
@@ -666,7 +720,12 @@ extern u8 D_800739B8[];
 extern s32 D_8007F790;
 extern s16 D_8007F95A;
 extern s32 D_8008322C;
-extern s32 D_80083158;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} Unk80083158;
+extern Unk80083158 D_80083158;
 extern u8 D_80077E50;
 extern s32 D_8007AE54;
 extern u8 D_8007954E;
@@ -842,9 +901,23 @@ extern Unk8005EBB4 D_8007F970[];
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 
 typedef struct {
-    u8 pad0[5];
+    s32 unk0;
+    s32 unk4;
+    void (*unk8)(void);
+    s32 unkC;
+} Unk80077E28Entry;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 pad2;
+    u8 unk3;
+    u8 unk4;
     u8 unk5;
-    u8 pad6[0x20 - 6];
+    u8 unk6;
+    u8 unk7; /* = D_80077E2F */
+    u8 pad8[0x1C - 8];
+    Unk80077E28Entry *unk1C;
     void (*unk20)(void);
 } Unk80077E28;
 extern Unk80077E28 D_80077E28;
@@ -1072,8 +1145,8 @@ void func_80055D40(void);
 void func_80055D60(void);
 s32 func_80055DF4(void);
 void func_80055E14(s32, s32, s32);
-void func_80056CAC(s32);
-void func_80056CBC(s32);
+s32 func_80056CAC(s32);
+s32 func_80056CBC(s32);
 void func_80062344(void);
 void func_8006237C(void);
 void func_80062420(u8, u8, u8, u8, s32, s32);
@@ -1090,5 +1163,110 @@ void func_800651D8(void);
 s32 func_80065208(s32);
 void func_80065218(s32);
 void func_80065228(s32);
+
+/* ---- main batch 1 ---- */
+
+typedef struct {
+    u8 unk0[8];
+} Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
+
+void func_800384D0(s32, s32, s32, s32);
+void func_8005A284(void *, s32);
+void func_80062830(Unk6 *, u8, s32, s32);
+extern s32 D_8006FB40[];
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} Unk80080A18;
+extern Unk80080A18 D_80080A18;
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+    u8 pad8[8];
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    u8 pad1C[0x6A - 0x1C];
+    s16 unk6A;
+} Unk8005D628;
+
+extern AkaoChannel D_8007BD48[];
+extern AkaoChannel D_8007E3D8[];
+extern s32 D_800831C4;
+
+typedef struct {
+    s32 unk0;
+    u8 pad4[0x10 - 4];
+    s32 unk10;
+    u8 pad14[0x28 - 0x14];
+    u16 unk28;
+} Unk80080A70;
+extern Unk80080A70 D_80080A70;
+extern u16 D_80080A98; /* = D_80080A70.unk28 */
+extern s32 D_80080A80;
+
+/* frame animation (func_80035B90) */
+typedef struct {
+    u8 pad0[2];
+    u8 unk2; /* ticks */
+    u8 pad3[5];
+} Unk80035B90Frame;
+
+typedef struct Unk80035B90 {
+    u8 unk0; /* active */
+    u8 unk1; /* frame */
+    u8 unk2; /* tick */
+    u8 unk3; /* frame count */
+    u8 pad4[4];
+    Unk80035B90Frame *unk8;
+    u8 padC[0x14 - 0xC];
+    void (*unk14)(struct Unk80035B90 *);
+} Unk80035B90;
+
+typedef struct {
+    s32 unk0;
+    void (*unk4)(u8);
+    s32 unk8;
+} Unk8006C9D4;
+extern Unk8006C9D4 D_8006C9D4[];
+s32 func_8002C1EC(void);
+void func_80035490(void);
+
+extern s32 D_8007B6F4;
+extern s32 D_8007B6F8;
+extern u8 **D_8007B70C;
+void func_80052DA0(void);
+s32 func_80052D40(void);
+
+s16 func_800BEC64(s32); /* overlay code at 0x800BEC64 */
+void func_800363BC(void);
+void func_80036444(void);
+void func_80036528(void);
+void func_8002F9F0(void);
+
+void func_8002267C(void *);
+s32 func_8005DD54(s32, s32);
+s32 func_8005EC8C(s32, s32);
+void func_8005EBE8(AkaoChannel *, s32);
+void func_80056644(void *, s32);
+void func_800566D0(void);
+void func_80056CCC(s32, s32);
+void func_800575D0(s32);
+s32 StopRCnt(s32);
+void SpuQuit(void);
+extern s32 D_8006F318;
+extern u8 D_8006F334[];
+extern s32 D_8007B708;
+extern s32 *D_8007B954;
+
+typedef struct {
+    u8 pad0[2];
+    s16 unk2;
+    u8 pad4[9 - 4];
+    u8 unk9;
+} Unk8004EFB0;
 
 #endif
