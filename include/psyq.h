@@ -87,6 +87,8 @@ int ResetGraph(int mode);
 void SetDispMask(int mask);
 u32 *ClearOTagR(u32 *ot, int n);
 void DrawOTag(u32 *p);
+void AddPrim(void *ot, void *p);
+void SetSprt(SPRT *p);
 void DrawOTagEnv(u32 *p, DRAWENV *env);
 DRAWENV *PutDrawEnv(DRAWENV *env);
 DISPENV *PutDispEnv(DISPENV *env);

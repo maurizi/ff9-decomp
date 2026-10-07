@@ -20,7 +20,7 @@ typedef struct {
     s32 unk10; /* y */
     s32 unk14; /* owner: 0 player, 1 enemy */
     s32 unk18; /* 1: on the board */
-    u8 pad1C[0x20 - 0x1C];
+    s32 unk1C;
     s32 unk20; /* x << 8 */
     s32 unk24; /* y << 8 */
     s32 unk28;
@@ -43,6 +43,23 @@ typedef struct {
 } TmUnk350;
 
 typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} TmUnk2F0;
+
+typedef struct {
+    s32 unk0; /* x */
+    s32 unk4; /* y */
+} TmPos;
+
+typedef struct {
+    s32 unk0; /* offset << 11 of entry */
+    s32 unk4;
+} TmFileEntry; /* file table loaded at 0x80104A00 */
+
+typedef struct {
     s32 unk0; /* state */
     s32 unk4;
     s32 unk8;
@@ -50,8 +67,9 @@ typedef struct {
     TmCard unk10[10]; /* 0-4 player hand, 5-9 enemy hand */
     TmCell unk268[4][4]; /* board [y][x] */
     s32 unk2E8; /* frame counter in the current state */
-    s32 unk2EC;
-    u8 pad2F0[0x350 - 0x2F0];
+    u8 unk2EC; /* brightness */
+    u8 pad2ED[3];
+    TmUnk2F0 unk2F0[6];
     TmUnk350 unk350[10];
     s32 unk418;
     u8 pad41C[0x424 - 0x41C];
@@ -60,7 +78,9 @@ typedef struct {
     s32 unk42C;
     s32 unk430;
     s32 unk434;
-    u8 pad438[0x458 - 0x438];
+    u8 pad438[0x450 - 0x438];
+    s32 unk450;
+    u8 pad454[0x458 - 0x454];
     Window *unk458;
     s32 unk45C;
     s32 unk460;
@@ -101,6 +121,8 @@ extern s32 D_800B365C;
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;
+extern s32 D_800B3CD8;
+extern s32 D_800B3CE0;
 extern TmCell D_800B3CE8; /* returned for out-of-range board squares */
 extern s32 D_800B3CF0;
 extern s32 D_800B3CF4;
@@ -129,5 +151,13 @@ void func_800AB8E8(s32);
 void func_800AE54C(TmState *);
 void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
+s32 func_800AE830(TmState *, s32);
+TmCard *func_800AE9D0(TmState *, s32, s32);
+void func_800AEA24(TmState *);
+void func_800B1A24(TmState *);
+void func_800B295C(TmState *);
+void func_800B29DC(TmState *);
+void func_800AB89C(Window *);
+void func_800B355C(Window *);
 
 #endif

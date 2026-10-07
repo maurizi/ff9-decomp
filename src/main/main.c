@@ -1785,7 +1785,7 @@ s32 func_8002BA10(u8 *s) {
     return w;
 }
 
-s16 func_8002BA68(s32 arg0) {
+s32 func_8002BA68(s32 arg0) {
     s16 v;
 
     func_8002AF70(&v, arg0);

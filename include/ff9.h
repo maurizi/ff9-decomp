@@ -844,7 +844,7 @@ void func_80023784(void);
 void func_800325A4(void);
 void func_8003264C(void);
 s32 func_800357C0(u8 *, s32);
-s16 func_8002BA68(s32);
+s32 func_8002BA68(s32);
 void func_800555A8(s32);
 void func_800343C0(s32);
 void func_80034404(s32);
@@ -1228,6 +1228,7 @@ void func_80062420(u8, u8, u8, u8, s32, s32);
 s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
+s32 func_8006276C(s32); /* number to string */
 FileEntry *func_80063088(s32, s32);
 void func_80063108(u8 *, u8 *);
 /* text window (func_80063118 / func_800631AC) */
