@@ -126,11 +126,11 @@ u8 func_801F6368(void) {
     VSync(3);
     for (i = 0; i < 10; i++) {
         func_8001DCB8();
-        if (GAMESTATE_UNKB(D_8006794C) != 0xFF) {
+        if (D_8006794C->unkB != 0xFF) {
             break;
         }
     }
-    if (GAMESTATE_UNKB(D_8006794C) == 0xFF || !(GAMESTATE_UNKB(D_8006794C) & mask)) {
+    if (D_8006794C->unkB == 0xFF || !(D_8006794C->unkB & mask)) {
         func_80022BD0();
         return 6;
     }
@@ -154,7 +154,7 @@ void func_801F65D4(void) {
     }
     dst = D_80073998;
     st = &D_801F6BBC;
-    GAMESTATE_UNK0(D_8006794C) |= 0x100000;
+    D_8006794C->unk0 |= 0x100000;
     for (i = 0; i < 2; i++) {
         dst[i] = st->unk8[i];
     }
@@ -194,7 +194,7 @@ void func_801F673C(void) {
     s32 i;
     s32 sector;
 
-    sector = GAMESTATE_UNK20(D_8006794C) + func_8001E218(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
+    sector = D_8006794C->unk20 + func_8001E218(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
     size = 0x11800;
     for (i = 0; i < 2; i++) {
         func_80022DF0(sector, size, buf);

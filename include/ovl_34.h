@@ -6,6 +6,4 @@
  * not in ff9.h. */
 #include "ff9.h"
 
-/* main exe: candidates for ff9.h */
-
 #endif

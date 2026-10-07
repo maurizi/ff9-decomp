@@ -5,30 +5,30 @@ INCLUDE_RODATA("asm/us/ovl_14/nonmatchings/ovl_14", D_800A7000);
 INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A7088);
 
 void func_800A727C(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
 void func_800A72C0(void) {
-    Ovl14Ctx *ctx;
+    GameData *ctx;
     u8 i;
 
     DrawSync(0);
-    VSync(G14->unk9);
+    VSync(D_8006794C->unk9);
     ResetGraph(1);
-    PutDispEnv(&G14->unkC[G14->unk1C->unk8]);
-    ctx = G14->unk1C;
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    ctx = D_8006794C->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &G14->unk10[i]);
-    G14->unk1C->unk8 ^= 1;
-    func_8002C0DC(G14->unk1C->unk8);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
 }
 
 void func_800A73B8(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     func_8001CCB4(0, 0, 0);
-    G14->unk8 = 1;
-    G14->unk9 = 2;
+    D_8006794C->unk8 = 1;
+    D_8006794C->unk9 = 2;
     ctx->unkC = 0;
     ctx->unk3A = 1;
 }
@@ -54,7 +54,7 @@ void func_800A75C8(void) {
 
 void func_800A7600(void) {
     s32 i;
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
 
     ctx->unk9 = 0;
     ctx->unk39 = 0;
@@ -83,14 +83,14 @@ void func_800A767C(void) {
     }
     func_80055D40();
     func_80055D60();
-    if (G14->unk1C->unk0 & 0x100000) {
+    if (D_8006794C->unk1C->unk0 & 0x100000) {
         func_800551F0();
         func_800A7768();
-        G14->unk1C->unk0 &= ~0x100000;
+        D_8006794C->unk1C->unk0 &= ~0x100000;
     }
     func_8002306C();
-    G14->unk1C->unk83C = func_800A799C;
-    G14->unk1C->unk84C = 0;
+    D_8006794C->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A799C;
+    D_8006794C->unk1C->unk84C = 0;
     func_800A78C0();
     func_800A780C();
     func_800A796C();
@@ -100,7 +100,7 @@ void func_800A767C(void) {
 
 void func_800A7768(void) {
     s32 i;
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
 
     for (i = 1; i >= 0; i--) {
         ctx->unk81C[i] = 0xFFFF;
@@ -112,10 +112,10 @@ void func_800A7768(void) {
 }
 
 void func_800A77BC(void) {
-    Ovl14Ctx *ctx;
+    GameData *ctx;
 
     SetDispMask(0);
-    ctx = G14->unk1C;
+    ctx = D_8006794C->unk1C;
     if (ctx->unk0 & 0x20000000) {
         ctx->unk0 |= 0x400000;
     }
@@ -125,25 +125,25 @@ void func_800A780C(void) {
     s32 a;
     s32 b;
 
-    a = func_8001C7FC(4, 0x7003A, 0);
-    memmove(G14->unk1C->unk814, (void *)a, func_8001C7FC(5, 0x7003A, 0));
-    a = func_8001C7FC(4, 0x90122, 0);
-    b = func_8001C7FC(5, 0x90122, 0);
+    a = (s32)func_8001C7FC(4, 0x7003A, 0);
+    memmove(D_8006794C->unk1C->unk814, (void *)a, (s32)func_8001C7FC(5, 0x7003A, 0));
+    a = (s32)func_8001C7FC(4, 0x90122, 0);
+    b = (s32)func_8001C7FC(5, 0x90122, 0);
     func_80055DF4();
     func_80055E14(a, b, 1);
 }
 
 void func_800A78C0(void) {
     u8 *buf;
-    Ovl14FileEntry *e;
+    FileEntry *e;
 
     buf = D_80067944 + 0x10000;
     e = func_8001E218(1, 0x2717);
-    func_8002177C(G14->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (func_800217C4(G14->unk1C->unk854) != 0) {
+    func_8002177C(D_8006794C->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
+    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
     }
     D_800AB230 = buf;
-    func_8001C750(buf, 0);
+    func_8001C750((s32)buf, 0);
 }
 
 void func_800A796C(void) {
@@ -154,7 +154,7 @@ void func_800A796C(void) {
 INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A799C);
 
 void func_800A7F70(s32 arg0, s32 arg1) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
 
     ctx->unk826[0] = arg0;
     if (arg0 == 0) {
@@ -164,7 +164,7 @@ void func_800A7F70(s32 arg0, s32 arg1) {
 }
 
 s32 func_800A7FB0(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     return (u32)(VSync(-1) - ctx->unk8C4) < ctx->unk842;
 }
 
@@ -220,12 +220,12 @@ s32 func_800A81B8(void) {
     s32 prev;
 
     i = 0;
-    prev = G14->unkB;
+    prev = D_8006794C->unkB;
     do {
         func_8001DCB8();
-    } while (G14->unkB == 0xFF && ++i < 10);
+    } while (D_8006794C->unkB == 0xFF && ++i < 10);
     func_80033D1C(1);
-    if (func_800A8298(prev, G14->unkB)) {
+    if (func_800A8298(prev, D_8006794C->unkB)) {
         return func_800A8260(prev);
     }
     return 0xFF;
@@ -301,9 +301,9 @@ void func_800A83AC(void) {
 void func_800A83E8(void) {
     if (func_800A8FCC() == 0) {
         func_800A7578();
-        G14->unk8 = 1;
-        G14->unk1C->unkC = 0x46;
-        G14->unk1C->unk3A = 2;
+        D_8006794C->unk8 = 1;
+        D_8006794C->unk1C->unkC = 0x46;
+        D_8006794C->unk1C->unk3A = 2;
     }
 }
 
@@ -411,10 +411,10 @@ void func_800A87E4(void) {
 }
 
 void func_800A880C(void) {
-    Ovl14FileEntry *e;
+    FileEntry *e;
 
     e = func_8001E218(1, 0x3C);
-    func_80022DF0(G14->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
+    func_80022DF0(D_8006794C->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
     func_800A8868((void *)0x801CDF00);
 }
 
@@ -578,7 +578,7 @@ void func_800A9180(void) {
 
     switch (D_800AB320.unk3) {
     case 0:
-        G14->unkB = 1;
+        D_8006794C->unkB = 1;
         r = func_800A81B8();
         if (r != 0xFF) {
             func_80032120(8, ((r & 3) << 14) | 0x3A98);
@@ -599,7 +599,7 @@ INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A9220);
 INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A9968);
 
 void func_800A9B14(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
@@ -623,7 +623,7 @@ s32 func_800AA960(void) {
 }
 
 void func_800AA994(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
@@ -639,18 +639,18 @@ void func_800AB06C(void) {
 }
 
 void func_800AB09C(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
 INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800AB0E0);
 
 void func_800AB1E4(void) {
-    G14->unk1C->unk890 = 1;
+    D_8006794C->unk1C->unk890 = 1;
 }
 
 void func_800AB200(void) {
-    Ovl14Ctx *ctx = G14->unk1C;
+    GameData *ctx = D_8006794C->unk1C;
     if (ctx->unk890 == 0) {
         ctx->unk890 = 2;
     }

@@ -12,7 +12,10 @@
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[0x28 - 2];
+    u8 pad2[0x8 - 2];
+    s32 unk8;
+    s32 unkC;
+    u8 pad10[0x28 - 0x10];
 } Unk80021938; /* element passed to func_80021938 */
 
 typedef struct {
@@ -34,36 +37,67 @@ typedef struct {
     u16 unk4; /* high byte: first text code that takes an extra byte */
 } Unk7D4;
 
+/* Character record: 9 of them at GameData+0x3C; GameData.unk54C[] points at
+ * the party members. */
 typedef struct {
-    u8 unk0[0xA]; /* name? 0xFF-terminated text, read up to 7 chars */
+    u8 unk0[0xA]; /* name: 0xFF-terminated text, read up to 7 chars */
     u8 unkA;      /* bit 4 tested */
-    u8 padB[0x10 - 0xB];
-    u16 unk10;
+    u8 unkB;      /* level (exp table has 99 entries) */
+    u32 unkC;     /* exp, capped at 9999999 */
+    u16 unk10;    /* hp */
     u8 pad12[0x34 - 0x12];
-    u32 unk34; /* low nibble: index into GameData.unk3C */
-} Unk54C;
-
-typedef struct {
-    u8 pad0[0x34];
-    u32 unk34; /* flags; bit 11 tested, bits 4-8 index D_8006BB8C */
-    u8 pad38;
-    u8 unk39[5]; /* 5 item ids (equipment slots?) */
+    u32 unk34; /* low nibble: character id (index into GameData.unk3C);
+                * bits 4-8 index D_8006BB8C; bit 11 tested;
+                * bits 12-16: ability table row */
+    u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
+    u8 unk39[5]; /* equipment item ids (0xFF = none) */
     u8 pad3E[0x58 - 0x3E];
-    u8 unk58[0x30]; /* cleared by func_800343C0 */
+    u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
     s32 unk88;
     s32 unk8C;
-} Character; /* 0x90 bytes, 9 of them at GameData+0x3C: likely characters */
+} Character; /* 0x90 */
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4; /* load address */
+} Unk1354;
+
+typedef struct {
+    u8 pad0[6];
+    u8 unk6;
+    u8 pad7[0x10 - 7];
+    s32 unk10;
+    s32 unk14;
+    u8 pad18[4];
+    u8 *unk1C; /* load address */
+} Unk11C0;
+
+typedef struct {
+    u8 pad0[0x11C0];
+    Unk11C0 *unk11C0;
+    u8 pad11C4[0x1354 - 0x11C4];
+    Unk1354 *unk1354;
+} Unk8E4;
 
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
-    u8 pad0[8];
-    u8 unk8;
-    u8 pad9[0x10 - 9];
-    u32 *unk10[2];
-    u8 pad18[0x3C - 0x18];
+    u32 unk0; /* flags */
+    u8 pad4[4];
+    u8 unk8; /* draw buffer index (0/1) */
+    u8 unk9;
+    u8 padA[2];
+    u16 unkC;
+    u8 padE[2];
+    u32 *unk10[2]; /* ordering tables, 0x1000 entries */
+    u8 pad18[0x38 - 0x18];
+    u8 unk38;
+    u8 unk39;
+    u16 unk3A;
     Character unk3C[9];
-    Unk54C *unk54C[4];
-    u8 pad55C[0x568 - 0x55C];
+    Character *unk54C[4]; /* party */
+    u8 pad55C[0x560 - 0x55C];
+    u32 unk560; /* gil, capped at 9999999 */
+    u8 pad564[0x568 - 0x564];
     s16 unk568;
     s16 unk56A;
     s16 unk56C;
@@ -76,23 +110,79 @@ typedef struct {
     u8 unk774[0x40];       /* 2 bits per item id */
     u8 pad7B4[0x7D4 - 0x7B4];
     Unk7D4 *unk7D4;
-    u8 pad7D8[0x7E0 - 0x7D8];
+    u8 pad7D8[0x7DC - 0x7D8];
+    s16 unk7DC;
+    u16 unk7DE;
     s32 unk7E0;
-    u8 pad7E4[0x838 - 0x7E4];
+    s32 unk7E4;
+    u16 unk7E8;
+    u16 unk7EA;
+    s32 unk7EC[2];
+    s32 unk7F4[2];
+    s32 unk7FC;
+    s32 unk800;
+    s32 unk804;
+    s32 unk808;
+    u8 pad80C[0x814 - 0x80C];
+    void *unk814;
+    u8 pad818[0x81C - 0x818];
+    u16 unk81C[2];
+    u16 unk820[2];
+    u8 unk824[2];
+    u8 unk826[2];
+    u8 pad828[0x838 - 0x828];
     void (*unk838)(s32, void *);
     void (*unk83C)(s32, s32, s32, s32, s32);
-    u8 pad840[0x8B2 - 0x840];
+    u16 unk840;
+    u16 unk842;
+    s32 unk844; /* selected chocograph (1-based, 0 = none) */
+    u8 pad848[0x84C - 0x848];
+    s32 unk84C;
+    u8 unk850;
+    u8 pad851[0x854 - 0x851];
+    u8 unk854[0x890 - 0x854]; /* CD read context (func_8002177C) */
+    u8 unk890;
+    u8 pad891[0x8AC - 0x891];
+    s32 unk8AC;
+    u16 unk8B0;
     s16 unk8B2;
-    u8 pad8B4[0x8C8 - 0x8B4];
+    u16 unk8B4[2];
+    u8 pad8B8[0x8BC - 0x8B8];
+    s32 unk8BC;
+    u8 pad8C0[0x8C4 - 0x8C0];
+    s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
+    u8 pad8CC[0x8E4 - 0x8CC];
+    Unk8E4 *unk8E4;
 } GameData;
 
 typedef struct {
     u8 pad0[8];
+    s32 unk8;
+    u8 padC[0x24 - 0xC];
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x34 - 0x2C];
+    s32 unk34;
+    s32 unk38;
+    u8 pad3C[0x44 - 0x3C];
+    s32 unk44;
+    s32 unk48;
+} GameStateUnk14;
+
+typedef struct {
+    u32 unk0; /* flags */
+    u8 pad4[4];
     u8 unk8;
-    u8 pad9[0x1C - 9];
+    u8 unk9; /* VSync mode */
+    u8 unkA;
+    u8 unkB;          /* disc / pad connection bits, 0xFF = none */
+    DISPENV *unkC;    /* [2] */
+    DRAWENV *unk10;   /* [2] */
+    GameStateUnk14 *unk14;
+    u8 pad18[4];
     GameData *unk1C;
-    u8 pad20[4];
+    s32 unk20; /* base CD sector added to file start sectors */
     u32 unk24;
     u32 unk28; /* 4-bit fields */
     u32 unk2C; /* frame counter? divided by 60 */
@@ -163,10 +253,12 @@ extern s16 D_80068F70[];
 extern u8 D_8006BB8C[];
 
 typedef struct {
-    u8 pad0[0xF];
-    u8 unkF; /* mask tested against D_8006BB84[] */
+    u16 unk0; /* name offset into D_8006A218 */
+    u8 pad2[0xC - 2];
+    u8 unkC[3]; /* abilities taught */
+    u8 unkF;    /* mask tested against D_8006BB84[] */
     u8 pad10[2];
-} Unk80069018; /* 0x12-byte table entries */
+} Unk80069018; /* item table, 0x12-byte entries */
 extern Unk80069018 D_80069018[];
 extern u8 D_8006BB84[];
 extern u8 D_8006BB74[];
@@ -207,7 +299,7 @@ extern Unk80077DB0 D_80077DB0;
 
 extern s32 D_80077140;
 extern s32 D_80077144;
-extern void (*D_80068F80[])(s32, s32);
+extern void (*D_80068F80[])(RECT *, s32);
 extern void (*D_8006BBEC[])(s32);
 extern s32 D_8006BBFC[];
 extern s32 D_8006BC18[];
@@ -233,7 +325,7 @@ void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
 void func_800235A0();
-void func_8002423C(s32, s32, s32, Unk54C *);
+void func_8002423C(s32, s32, s32, Character *);
 u8 *func_80024EB4(s32, u32 *, u8, u8, s32, u8 *);
 u8 *func_800253D4(s32, u32 *, u8, u8, s32, s32, u8 *);
 void func_8002642C(s16, s16, s32, s32, s32, s32);
@@ -253,10 +345,10 @@ void func_80028A40(s32, RECT *, RECT *, RECT *);
 void func_80028BE8(u8 *, s32);
 s32 func_80028DB0(s32, s32, u8);
 u8 *func_80029B4C(s32, s32, u32 *, s32, s32, u8 *);
-u8 *func_80029D60(s32, s32, u32 *, s32, s32, u8 *);
+u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
 u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, u8 *);
 void func_8002B5B4(s32, s32, s32, u8 *, s32);
-u8 *func_8002920C(s32, s32, u32 *, s32, s32, u8 *);
+u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
 void func_8002AF70(s16 *, s32);
 s32 func_80023938(void);
 void func_8002C9B0(void);
@@ -266,17 +358,25 @@ void func_8002E180(void);
 
 typedef struct {
     s16 unk0[8];
-} Unk16;
+} Unk16; /* 16 bytes, 2-aligned (copied with lwl/lwr) */
 
 typedef struct {
     u8 unk0[4];
 } Unk4; /* 4 bytes, byte-aligned (copied with lwl/lwr) */
- /* 16 bytes, 2-aligned (copied with lwl/lwr) */
 
-typedef struct Unk80077530 {
-    u8 pad0[0x10];
+/* Menu window object (func_8002DC54 returns one of these). */
+typedef struct Window {
+    s16 unk0; /* x */
+    s16 unk2; /* y */
+    s16 unk4; /* w */
+    s16 unk6; /* h */
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
     s16 unk10;
-    u8 pad12[0x1A - 0x12];
+    u8 pad12[0x18 - 0x12];
+    s16 unk18; /* OT layer */
     u8 unk1A;
     u8 unk1B; /* index */
     u8 unk1C; /* state: 2 = fire callback */
@@ -292,17 +392,17 @@ typedef struct Unk80077530 {
     s16 unk2A;
     u8 pad2C[4];
     Unk16 unk30;
-    s32 unk40;
-    s32 unk44;
-    s32 unk48;
-    void (*unk4C)(struct Unk80077530 *);
-    u8 pad50[4];
-} Unk80077530;
-extern Unk80077530 D_80077530[10];
+    void (*unk40)(struct Window *);
+    void (*unk44)(struct Window *);
+    void (*unk48)(struct Window *);
+    void (*unk4C)(struct Window *);
+    s32 unk50; /* user data */
+} Window; /* 0x54 */
+extern Window D_80077530[10];
 
-void func_8002CF20(void *, s32); /* window, see func_8002D1AC */
-void func_8002D1AC(void *, s32); /* window: Unk80077530 (main) / Window (ovl_65), to unify */
-void func_8002D398(Unk80077530 *, s32, s32);
+void func_8002CF20(Window *, s32);
+void func_8002D1AC(Window *, s32);
+void func_8002D398(Window *, s32, s32);
 
 /* ---- misc globals (batch 1) ---- */
 
@@ -724,8 +824,8 @@ void func_8003431C(void);
 void func_80033690(void);
 s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void func_8001C718(void);
-u16 *func_8001C7FC(s32, s32, s32);
-void func_8002CD4C(s32, s32, s32, s32);
+void *func_8001C7FC(s32, s32, s32); /* mode 4: address, 5: size */
+void func_8002CD4C(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
 s32 func_80021380(s32);
@@ -780,8 +880,8 @@ typedef struct {
 
 void func_8004C204(void);
 void func_800512E4(s32);
-void func_80021974(); /* TODO unify: arg types differ between main and ovl_65 call sites */
-void *func_80021E5C(); /* TODO unify: main sees Unk80021938 *, ovl_65 passes an id and gets a FileEntry * */
+void func_80021974(Unk80021938 *, s32, s32, s32, s32, s32, s32, s32);
+Unk80021938 *func_80021E5C(s32);
 s32 func_80021C20(Unk80021938 *);
 void func_8002BEEC(u32 *, u32 *, s32, s32);
 
@@ -821,5 +921,174 @@ extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
 
 void func_8005A658(Unk8005AA78 *);
+
+/* ---- hoisted from overlay headers ---- */
+
+/* file table entry (func_8001E218 / func_80063088) */
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* start sector */
+    s32 unk8;
+    s32 unkC; /* end sector / next id */
+} FileEntry;
+
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy;
+    u32 uvclut;
+    u32 wh;
+} SprtWords; /* SPRT written as whole words */
+
+/* menu list/cursor state passed to func_8002EE8C etc. */
+typedef struct {
+    u8 pad0[5];
+    u8 unk5; /* scroll top */
+    u8 unk6; /* cursor row */
+    u8 pad7;
+    u8 unk8;
+    u8 pad9[7];
+} MenuList;
+
+/* visible window of a MenuList (func_8002F344) */
+typedef struct {
+    u8 unk0;  /* visible rows */
+    u8 unk1;  /* first index */
+    s16 unk2; /* y */
+    u8 pad4[4];
+} MenuView;
+
+typedef struct {
+    u8 pad0[0x68];
+    s32 unk68;
+    u8 pad6C[0x94 - 0x6C];
+    s32 unk94;
+} Unk800703FC; /* text table? */
+extern Unk800703FC D_800703FC;
+
+extern u8 *D_80067944; /* end of load area */
+extern s32 D_80067948;
+extern u32 D_8006DF5C[]; /* exp needed for next level, by level */
+extern s32 D_80070424;
+extern s32 D_80070428;
+extern s32 D_80070450;
+extern s32 D_80070454;
+extern s32 D_80070460;
+extern s32 D_800704AC;
+extern s32 D_80073998[];
+extern u32 D_80077528; /* pad buttons pressed this frame */
+extern u8 D_80077DB5;
+extern s32 D_80077DC0; /* frame counter? */
+
+void func_80012D08(void);
+void func_80012D18(void);
+s32 func_80016EC0(s32, s32, s32, s32);
+void func_80016ED0(s32);
+s32 func_8001C750(s32, s32);
+s32 func_8001C8B0(s32, s32, s32, s32);
+void func_8001CCB4(s32, s32, s32);
+void func_8001CFB4(void);
+void func_8001D8A8(s32);
+void func_8001DAA4(s32, s32, s32, s32);
+void func_8001DCB8(void);
+FileEntry *func_8001E218(s32, s32);
+void func_80021640(s32);
+void func_8002177C(void *, s32, s32, void *, s32, s32, s32);
+s32 func_800217C4(void *);
+void func_80021C60(void);
+void func_80021CDC(s32);
+s32 func_80021CFC(void);
+s32 func_800220E8(s32);
+void func_80022390(s32);
+void func_80022B28(void);
+void func_80022BD0(void);
+s32 func_80022DF0(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
+s32 func_800230A0(void);
+u8 func_8002306C(void);
+void func_800239D0(void);
+void func_80024BD8(void);
+void func_8002705C(RECT *, s32, s32);
+void func_80027710(s32, s32, s32, void *, s32);
+void func_8002AD38(u8 *, u8 *);
+s32 func_8002AE7C(s32);
+void func_8002B524(s32, s32, s32, s32, s32);
+void func_8002B56C(s32, s32, s32, u8 *, s32);
+void func_8002B5FC(s32, s32, s32, u8 *, s32);
+u8 *func_8002BD54(u8 *, u8 *);
+void func_8002C064(s32);
+void func_8002C0DC(s32);
+void func_8002C308(s32);
+void func_8002C4B0(s32);
+void func_8002D9B4(RECT *, s32, s32);
+Window *func_8002DC54(RECT *, s32, s32);
+void func_8002DD00(Window *);
+void func_8002DE60(void);
+void func_8002DEE4(RECT *, s32, s32);
+void func_8002E040(RECT *, s32, s32, void *);
+void func_8002E2E4(Window *, void (*)(Window *));
+void func_8002E2EC(Window *, void (*)(Window *));
+void func_8002E2F4(Window *, void (*)(Window *));
+void func_8002E2FC(Window *, void (*)(Window *));
+void func_8002E304(Window *, s32);
+void func_8002E31C(Window *, u8);
+void func_8002E334(Window *, s16);
+void func_8002EB64(s32, s32);
+void func_8002EB74(MenuList *);
+void func_8002ECA0(MenuList *, MenuView *);
+void func_8002EDFC(MenuList *, s32, s32, s32, s32);
+void func_8002EE8C(MenuList *);
+void func_8002F344(MenuList *, MenuView *);
+void func_8002F40C(MenuList *, RECT *, RECT *);
+void func_8002F488(s32);
+void func_8002F514(s32);
+void func_8002F55C(s32);
+u8 func_8002F810(void);
+s32 func_8002F8A8(void (*)(void));
+u16 func_8002F93C(u16);
+void func_8002F9D0(void);
+void func_800320B8(s32, s32, s32, s32);
+void func_80032120(s32, s32);
+void func_8003253C(void);
+void func_80032574(void);
+void func_80032628(void (*)(void));
+void func_80032634(u8);
+void func_80032640(u8);
+void func_80033CCC(s32, s32);
+void func_80033D1C(u8);
+u8 func_800349BC(s32, s32);
+s32 func_80034A30(Character *);
+void func_80035580(RECT *);
+void func_800355E4(Unk80077DE8 *);
+void func_80035674(u8);
+void func_8003575C(const u8 *);
+u8 *func_80035774(s32); /* text lookup */
+void func_8004A06C(s32);
+void func_8004BBF0(void);
+void func_8004BFB0(void);
+void func_80050A84(void);
+void func_8005392C(void);
+s32 func_800551F0(void);
+void func_80055D40(void);
+void func_80055D60(void);
+s32 func_80055DF4(void);
+void func_80055E14(s32, s32, s32);
+void func_80056CAC(s32);
+void func_80056CBC(s32);
+void func_80062344(void);
+void func_8006237C(void);
+void func_80062420(u8, u8, u8, u8, s32, s32);
+s32 func_800625F8(void);
+s32 func_80062638(void);
+s32 func_80062B3C(void);
+FileEntry *func_80063088(s32, s32);
+void func_80063108(u8 *, u8 *);
+void func_80063118(void *, void *, s32);
+void func_800631AC(void *);
+void func_80063580(DR_TPAGE *, s32);
+void func_800635E0(DR_TPAGE *, s32);
+void func_800651D8(void);
+s32 func_80065208(s32);
+void func_80065218(s32);
+void func_80065228(s32);
 
 #endif

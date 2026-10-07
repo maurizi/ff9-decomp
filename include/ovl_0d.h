@@ -6,79 +6,6 @@
  * different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
-/* ---- main exe: candidates for ff9.h ---- */
-
-/* argument of window draw callbacks (func_8002B5FC callers) */
-typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* y */
-    u8 pad4[0x18 - 4];
-    s16 unk18;
-} WinCtx;
-
-/* Fields of D_8006794C and its ->unk1C block used here; GameState/GameData in
- * ff9.h place other members at these offsets, so this overlay uses views. */
-typedef struct {
-    u8 pad0[8];
-    u8 unk8;
-    u8 pad9;
-    u8 unkA;
-    u8 padB[0x1C - 0xB];
-    void *unk1C;
-    s32 unk20;
-} GameStateView;
-
-typedef struct {
-    u8 pad0[8];
-    u8 unk8; /* current buffer */
-    u8 pad9[0x10 - 9];
-    u32 *unk10[2]; /* ordering tables */
-    u8 pad18[0x814 - 0x18];
-    void *unk814;
-    u8 pad818[0x83C - 0x818];
-    void (*unk83C)(s32, s32, s32, s32, s32);
-    u8 pad840[0x854 - 0x840];
-    u8 unk854[1];
-} GameDataView;
-
-#define GSV ((GameStateView *)D_8006794C)
-#define GDV ((GameDataView *)D_8006794C->unk1C)
-
-typedef struct {
-    u8 pad0[4];
-    s32 unk4;
-    u8 pad8[4];
-    s32 unkC;
-} Unk8001E218;
-
-extern s32 D_80067944;
-extern s32 D_80077528; /* pad buttons (pressed) */
-
-void ClearOTagR(u32 *, s32);
-void *memmove(void *, void *, s32);
-void func_8001C750(s32, s32);
-Unk8001E218 *func_8001E218(s32, s32);
-void func_80021C60(void);
-void func_8002177C(void *, s32, s32, s32, s32, s32, s32);
-s32 func_800217C4(void *);
-void func_80022DF0(s32, s32, void *);
-void func_8002EB64(s32, s32);
-void func_800320B8(s32, s32, s32, s32);
-void func_80055DF4(void);
-void func_80055E14(s32, s32, s32);
-s32 func_8001C8B0(s32, s32, s32, s32);
-void func_8002B5FC(s32, s32, s32, u8 *, s32);
-void func_8002C308(s32);
-void func_8002DD00(s32);
-void func_8002E2E4(s32, void (*)(void));
-void func_8002F93C(s32);
-void func_80035580(RECT *);
-u8 *func_80035774(s32);
-s32 func_800625F8(void);
-s32 func_80062638(void);
-s32 func_80062B3C(void);
-void func_80062420(u8, u8, u8, u8, s32, s32);
-
 /* ---- Tetra Master ---- */
 
 typedef struct {
@@ -134,7 +61,7 @@ typedef struct {
     s32 unk430;
     s32 unk434;
     u8 pad438[0x458 - 0x438];
-    s32 unk458;
+    Window *unk458;
     s32 unk45C;
     s32 unk460;
     s32 unk464;
@@ -148,10 +75,10 @@ typedef struct {
     s32 unk484;
     u8 pad488[0x4B4 - 0x488];
     s32 unk4B4;
-    s32 unk4B8;
+    Window *unk4B8;
     s32 unk4BC;
     s32 unk4C0;
-    s32 unk4C4;
+    Window *unk4C4;
     u8 pad4C8[0x4F0 - 0x4C8];
     s32 unk4F0;
     u8 pad4F4[0x550 - 0x4F4];
