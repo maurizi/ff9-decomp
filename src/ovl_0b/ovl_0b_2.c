@@ -2334,7 +2334,37 @@ void func_800E6244(s32 arg0, s32 arg1) {
     func_800D6E70(4, -1, arg0 & 0xFF, arg1 & 0xFF);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6270);
+s32 func_800E6270(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+    s16 v;
+    s32 n;
+    if (arg0 == 0) {
+        *arg4 = 0xC;
+        return 0;
+    }
+    if (arg0 == 1) {
+        if (arg4[1] & 4) {
+            arg1->unk4 = 0x80;
+            v = -0x80;
+        } else {
+            arg1->unk4 = 0;
+            v = 0x80;
+        }
+        arg1->unk6 = v;
+        arg1->unk8 = arg4[1] & 0xB;
+        if ((arg1->unk0 = arg4[0]) != 0) {
+            return 0;
+        }
+        func_800E813C(arg1->unk8, arg1->unk4 + arg1->unk6);
+        return 1;
+    }
+    n = *arg3;
+    func_800E813C(arg1->unk8, arg1->unk4 + n * arg1->unk6 / arg1->unk0);
+    if (n < arg1->unk0) {
+        *arg3 = n;
+        return 0;
+    }
+    return 1;
+}
 
 s32 func_800E639C(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
     if (arg0 == 1) {

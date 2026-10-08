@@ -1317,6 +1317,14 @@ extern Unk801050D8 *D_801050D8;
 extern u8 D_801051E0;
 extern u8 D_80104E94[2][0x18];
 
+typedef struct {
+    s32 unk0; /* frames */
+    s16 unk4;
+    s16 unk6;
+    s32 unk8;
+} Unk800E6270;
+void func_800E813C(s32, s32);
+
 /* main exe: candidates for ff9.h */
 void func_8002E260(void);
 u8 func_800339F4(s32, u8);
