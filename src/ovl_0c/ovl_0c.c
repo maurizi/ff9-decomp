@@ -1817,7 +1817,30 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C7CF4);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C8950);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C9484);
+void func_800C9484(Unk800C95C8 *arg0) {
+    MATRIX m;
+
+    if (arg0->unk0 & 2) {
+        *(s32 *)&m.m[0][0] = 0x1000;
+        *(s32 *)&m.m[0][2] = 0;
+        *(s32 *)&m.m[1][1] = 0x1000;
+        *(s32 *)&m.m[2][0] = 0;
+        *(s32 *)&m.m[2][2] = 0x1000;
+        m.m[0][0] = arg0->unk54;
+        gte_SetRotMatrix(&arg0->unk24);
+        gte_ldclmv(&m);
+        gte_rtir();
+        m.m[1][1] = arg0->unk56;
+        gte_stclmv(&arg0->unk24);
+        gte_ldclmv(&m.m[0][1]);
+        gte_rtir();
+        m.m[2][2] = arg0->unk58;
+        gte_stclmv(&arg0->unk24.m[0][1]);
+        gte_ldclmv(&m.m[0][2]);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24.m[0][2]);
+    }
+}
 
 void func_800C95C8(Unk800C95C8 *arg0) {
     SVECTOR v;
@@ -1827,9 +1850,9 @@ void func_800C95C8(Unk800C95C8 *arg0) {
     if (arg0->unk1C != NULL) {
         arg0->unk0 |= *arg0->unk1C & 0x10;
     } else {
-        v.vx = arg0->unk38;
-        v.vy = arg0->unk3C;
-        v.vz = arg0->unk40;
+        v.vx = arg0->unk24.t[0];
+        v.vy = arg0->unk24.t[1];
+        v.vz = arg0->unk24.t[2];
         gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
         gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
         gte_ldv0(&v);

@@ -108,10 +108,12 @@ typedef struct {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[0x1C - 2];
     u16 *unk1C; /* parent flags */
-    u8 pad20[0x38 - 0x20];
-    s32 unk38; /* position */
-    s32 unk3C;
-    s32 unk40;
+    u8 pad20[0x24 - 0x20];
+    MATRIX unk24; /* t: position */
+    u8 pad44[0x54 - 0x44];
+    u16 unk54; /* scale */
+    u16 unk56;
+    u16 unk58;
 } Unk800C95C8;
 
 /* relocatable block: offsets are turned into pointers by func_800BA528 */

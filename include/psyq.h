@@ -122,13 +122,88 @@ MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
     "lwc2\t$0, 0(%0);" \
     "lwc2\t$1, 4(%0)" \
     : : "r"(r0))
-/* GTE command words; the two leading nops are emitted as .word 0 so that the
- * assembler (reorder mode) keeps them */
-#define GTE_NOPS ".word\t0x00000000;.word\t0x00000000;"
-#define gte_rtps() __asm__ volatile(GTE_NOPS ".word\t0x4A180001")
+#define gte_ldv1(r0) __asm__ volatile( \
+    "lwc2\t$2, 0(%0);" \
+    "lwc2\t$3, 4(%0)" \
+    : : "r"(r0))
+#define gte_ldv2(r0) __asm__ volatile( \
+    "lwc2\t$4, 0(%0);" \
+    "lwc2\t$5, 4(%0)" \
+    : : "r"(r0))
+#define gte_ldv3(r0, r1, r2) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 4(%0);" \
+    "lwc2\t$2, 0(%1);" \
+    "lwc2\t$3, 4(%1);" \
+    "lwc2\t$4, 0(%2);" \
+    "lwc2\t$5, 4(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldclmv(r0) __asm__ volatile( \
+    "lhu\t$12, 0(%0);" \
+    "lhu\t$13, 6(%0);" \
+    "lhu\t$14, 12(%0);" \
+    "mtc2\t$12, $9;" \
+    "mtc2\t$13, $10;" \
+    "mtc2\t$14, $11" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_stclmv(r0) __asm__ volatile( \
+    "mfc2\t$12, $9;" \
+    "mfc2\t$13, $10;" \
+    "mfc2\t$14, $11;" \
+    "sh\t$12, 0(%0);" \
+    "sh\t$13, 6(%0);" \
+    "sh\t$14, 12(%0)" \
+    : : "r"(r0) : "$12", "$13", "$14", "memory")
+#define gte_stsxy(r0) __asm__ volatile( \
+    "swc2\t$14, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stsxy3(r0, r1, r2) __asm__ volatile( \
+    "swc2\t$12, 0(%0);" \
+    "swc2\t$13, 0(%1);" \
+    "swc2\t$14, 0(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2) : "memory")
 #define gte_stsz(r0) __asm__ volatile( \
     "swc2\t$19, 0(%0)" \
     : : "r"(r0) : "memory")
+#define gte_stotz(r0) __asm__ volatile( \
+    "swc2\t$7, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stopz(r0) __asm__ volatile( \
+    "swc2\t$24, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stflg(r0) __asm__ volatile( \
+    "cfc2\t$12, $31;" \
+    "nop;" \
+    "sw\t$12, 0(%0)" \
+    : : "r"(r0) : "$12", "memory")
+/* GTE commands; the two leading nops are emitted as .word 0 so that the
+ * assembler (reorder mode) keeps them */
+#define GTE_NOPS ".word\t0x00000000;.word\t0x00000000;"
+#define gte_rtps() __asm__ volatile(GTE_NOPS ".word\t0x4A180001")
+#define gte_rtpt() __asm__ volatile(GTE_NOPS ".word\t0x4A280030")
+#define gte_nclip() __asm__ volatile(GTE_NOPS ".word\t0x4B400006")
+#define gte_avsz3() __asm__ volatile(GTE_NOPS ".word\t0x4B58002D")
+#define gte_rtir() __asm__ volatile(GTE_NOPS ".word\t0x4A49E012")
+#define gte_rtir_sf0() __asm__ volatile(GTE_NOPS ".word\t0x4A41E012")
+#define gte_rtv0() __asm__ volatile(GTE_NOPS ".word\t0x4A486012")
+#define gte_rtv0tr() __asm__ volatile(GTE_NOPS ".word\t0x4A480012")
+#define gte_op0() __asm__ volatile(GTE_NOPS ".word\t0x4B70000C")
+#define gte_op12() __asm__ volatile(GTE_NOPS ".word\t0x4B78000C")
+#define gte_gpf0() __asm__ volatile(GTE_NOPS ".word\t0x4B90003D")
+#define gte_gpf12() __asm__ volatile(GTE_NOPS ".word\t0x4B98003D")
+#define gte_MulMatrix0(r1, r2, r3) \
+    { \
+        gte_SetRotMatrix(r1); \
+        gte_ldclmv(r2); \
+        gte_rtir(); \
+        gte_stclmv(r3); \
+        gte_ldclmv((s16 *)(r2) + 1); \
+        gte_rtir(); \
+        gte_stclmv((s16 *)(r3) + 1); \
+        gte_ldclmv((s16 *)(r2) + 2); \
+        gte_rtir(); \
+        gte_stclmv((s16 *)(r3) + 2); \
+    }
 
 long VSync(long mode);
 /* C library: gcc 2.8 expands small constant-size memcpy inline (lwl/lwr) */
