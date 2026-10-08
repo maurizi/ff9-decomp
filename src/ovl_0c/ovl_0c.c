@@ -2530,7 +2530,76 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C69F4);
 void func_800C6EF8(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C6F00);
+void func_800C6F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    WmNode *p;
+    s32 v;
+    u8 k;
+    WmNode *h;
+
+    p = D_800D4848.unk8;
+    h = &D_800D53A0;
+    switch (arg3) {
+    case 2:
+    case 3:
+        k = 2;
+        break;
+    case 16:
+        k = 0xFF;
+        break;
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 17:
+    case 18:
+    case 19:
+    case 20:
+    case 21:
+    case 22:
+    case 23:
+    case 24:
+    case 25:
+    case 26:
+    case 27:
+    case 28:
+    case 29:
+        k = 1;
+        break;
+    default:
+        k = 1;
+        break;
+    }
+    if (p->unk8 != 0) {
+        v = (s32)func_800B8388(D_800CF428, arg3 + 7);
+        p->unk4->unk8 = p->unk8;
+        p->unk8->unk4 = p->unk4;
+        p->unk4 = h;
+        p->unk8 = h->unk8;
+        h->unk8->unk4 = p;
+        h->unk8 = p;
+        p->unkC = k;
+        p->unk1C = 0;
+        p->unk10 = arg0;
+        p->unk14 = arg1;
+        p->unk18 = arg2;
+        p->unk0 = v;
+        p->unkE = arg4;
+        p->unkD = arg3;
+        p->unk20 = 0;
+        p->unk24 = 0;
+        if (arg3 == 0x17) {
+            p->unk20 = func_80062B3C() & 0xFFF;
+        }
+    }
+}
 
 void func_800C7050(WmNode *arg0) {
     arg0->unk4->unk8 = arg0->unk8;

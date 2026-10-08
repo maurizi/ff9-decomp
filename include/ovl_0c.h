@@ -51,7 +51,17 @@ typedef struct WmNode {
     s32 unk0;
     struct WmNode *unk4;
     struct WmNode *unk8;
-} WmNode;
+    s8 unkC;
+    s8 unkD;
+    s16 unkE;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s16 unk1C;
+    s16 pad1E;
+    s32 unk20;
+    s32 unk24;
+} WmNode; /* 0x28 */
 
 /* frame pack slot list: D_800D3EA8 (head) -> D_800D3EC0[6] -> D_800D3E98 (tail) */
 typedef struct Unk800D3EAC {
@@ -570,6 +580,8 @@ extern s32 D_800D3EB8;
 extern s8 D_800CCE69;
 extern char D_800CCE6C[];
 extern WmNode D_800D4848;
+extern WmNode D_800D53A0;
+extern void **D_800CF428;
 extern u8 D_800CCA1C;
 extern RECT D_800CE0B8[];
 extern u8 D_800CCFB4[];
