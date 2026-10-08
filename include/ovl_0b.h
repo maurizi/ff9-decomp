@@ -1098,10 +1098,11 @@ extern s32 (*D_800F8DC4[])(void);
 typedef struct {
     u8 unk0; /* cursor */
     u8 unk1;
-    u8 pad2[2];
+    u8 unk2;
+    u8 pad3;
     u8 unk4[4];
     u8 unk8[4];
-    u8 padC[0x10 - 0xC];
+    u8 unkC[4];
     u8 unk10;
     u8 unk11;
     u8 pad12[0x18 - 0x12];
