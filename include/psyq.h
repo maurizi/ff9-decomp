@@ -219,10 +219,15 @@ typedef struct {
 } SVECTOR;
 
 typedef struct {
+    s16 vx, vy;
+} DVECTOR;
+
+typedef struct {
     u8 r, g, b, cd;
 } CVECTOR;
 
 MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
+int VectorNormal(VECTOR *v0, VECTOR *v1);
 
 /* libgte inline macros (PsyQ inline_c.h); they expand to the same asm text */
 #define gte_SetRotMatrix(r0) __asm__ volatile( \
@@ -316,6 +321,24 @@ MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
 #define gte_rtpt() __asm__ volatile(GTE_NOPS ".word\t0x4A280030")
 #define gte_nclip() __asm__ volatile(GTE_NOPS ".word\t0x4B400006")
 #define gte_avsz3() __asm__ volatile(GTE_NOPS ".word\t0x4B58002D")
+#define gte_ldopv1(r0) __asm__ volatile( \
+    "lw\t$12, 0(%0);" \
+    "lw\t$13, 4(%0);" \
+    "ctc2\t$12, $0;" \
+    "lw\t$14, 8(%0);" \
+    "ctc2\t$13, $2;" \
+    "ctc2\t$14, $4" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_ldopv2(r0) __asm__ volatile( \
+    "lwc2\t$11, 8(%0);" \
+    "lwc2\t$9, 0(%0);" \
+    "lwc2\t$10, 4(%0)" \
+    : : "r"(r0))
+#define gte_stlvnl(r0) __asm__ volatile( \
+    "swc2\t$25, 0(%0);" \
+    "swc2\t$26, 4(%0);" \
+    "swc2\t$27, 8(%0)" \
+    : : "r"(r0) : "memory")
 #define gte_rtir() __asm__ volatile(GTE_NOPS ".word\t0x4A49E012")
 #define gte_rtir_sf0() __asm__ volatile(GTE_NOPS ".word\t0x4A41E012")
 #define gte_rtv0() __asm__ volatile(GTE_NOPS ".word\t0x4A486012")

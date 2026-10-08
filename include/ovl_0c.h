@@ -951,7 +951,7 @@ void func_800BF544(s32, s32, s32, s32, CVECTOR, CVECTOR, s32, s32, s32, s32);
 static inline CVECTOR func_800C1428_color(void) {
     CVECTOR c;
 
-    func_8001D898((s32)&c, 0, 4);
+    func_8001D898(&c, 0, 4);
     c.r = D_800CD710;
     c.g = D_800CD714;
     c.b = D_800CD718;

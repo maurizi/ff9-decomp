@@ -884,7 +884,46 @@ void func_800AE860(void) {
     D_800CE0EE = 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AE880);
+void func_800AE880(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2, VECTOR *arg3) {
+    VECTOR d;
+    VECTOR x;
+    VECTOR y;
+    VECTOR z;
+
+    d.vx = arg2->vx - arg1->vx;
+    d.vy = arg2->vy - arg1->vy;
+    d.vz = arg2->vz - arg1->vz;
+    VectorNormal(&d, &z);
+    if (z.vz == arg3->vz) {
+        z.vz++;
+    }
+    gte_ldopv1(&z);
+    gte_ldopv2(arg3);
+    gte_op12();
+    gte_stlvnl(&d);
+    VectorNormal(&d, &x);
+    gte_ldopv1(&z);
+    gte_ldopv2(&x);
+    gte_op12();
+    gte_stlvnl(&d);
+    VectorNormal(&d, &y);
+    arg0->m[0][0] = x.vx;
+    arg0->m[0][1] = x.vy;
+    arg0->m[0][2] = x.vz;
+    arg0->m[1][0] = y.vx;
+    arg0->m[1][1] = y.vy;
+    arg0->m[1][2] = y.vz;
+    arg0->m[2][0] = z.vx;
+    arg0->m[2][1] = z.vy;
+    arg0->m[2][2] = z.vz;
+    gte_SetRotMatrix(arg0);
+    gte_ldv0(arg1);
+    gte_rtv0();
+    gte_stlvnl(arg0->t);
+    arg0->t[0] = -arg0->t[0];
+    arg0->t[1] = -arg0->t[1];
+    arg0->t[2] = -arg0->t[2];
+}
 
 s32 func_800AEA94(s32 arg0) {
     arg0 = (arg0 - 1000) << 12;
