@@ -286,7 +286,9 @@ typedef struct {
     u8 unk12B4;
     u8 pad12B5;
     u8 unk12B6;
-    u8 pad12B7[0x12BC - 0x12B7];
+    u8 unk12B7;
+    u16 unk12B8;
+    u8 pad12BA[0x12BC - 0x12BA];
     s32 unk12BC;
     u32 unk12C0;
     u8 unk12C4; /* queue count */
@@ -386,12 +388,14 @@ typedef struct {
 extern Unk80100DC0 D_80100DC0;
 
 typedef struct {
-    u8 pad0[4];
+    s32 unk0;
     struct Unk80104FD4 *unk4;
     u8 pad8[0x10 - 8];
     u16 unk10;
     u8 pad12[0x14 - 0x12];
     struct BtlUnit *unk14;
+    u8 pad18;
+    u8 unk19;
 } Unk80104FD0;
 extern Unk80104FD0 D_80104FD0;
 
@@ -993,7 +997,8 @@ typedef struct Unk800F3F10 {
 
 /* moving menu sprite */
 typedef struct Unk800F412C {
-    u8 pad0[4];
+    u16 unk0;
+    u8 pad2[4 - 2];
     u8 unk4;
     u8 pad5;
     u16 unk6; /* frame */
@@ -1677,6 +1682,12 @@ u16 *func_800E4530(s32);
 s16 func_800D6188(void);
 void func_800C30B8(void);
 s32 func_800DF940(BtlUnit9C *, u16, s32);
+extern Unk800F3F10 D_800F9058;
+extern Unk800F3F10 D_800F9064;
+extern U16Pair D_800F9070[];
+s32 func_800C1F7C(s32);
+s32 func_800D8CB4(u8 *, s32, s32);
+void func_800EF044(void);
 
 /* main exe: candidates for ff9.h */
 void func_800562E0(u8 *, s32);
