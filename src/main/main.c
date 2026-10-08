@@ -6888,7 +6888,22 @@ void func_800615F8(void) {
     SpuSetIRQCallback(func_80060938);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061624);
+void func_80061624(void) {
+    u32 irq;
+    if (D_80083168.unk14 > 0x2000) {
+        SpuSetTransferStartAddr(D_80083168.unk2C + 0x2000);
+        func_80056644(D_80083168.unk0, D_80083168.unk14 - 0x2000);
+        irq = D_80083168.unk2C + 0x1FF8;
+    } else {
+        irq = D_80083168.unk2C + (D_80083168.unk14 >> 1) + 8;
+    }
+    func_80060D1C(D_80083168.unk10, 0, D_80083168.unk2C, 0x1030);
+    func_80060D1C(D_80083168.unk10 + 1, 0, D_80083168.unk2C, 0x1030);
+    SpuSetIRQAddr(irq);
+    SpuSetIRQCallback(func_800615F8);
+    func_800575B4(D_80083168.unkC);
+    SpuSetIRQ(1);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800616F8);
 

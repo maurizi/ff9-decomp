@@ -1324,6 +1324,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_800615F8(void);
 extern u8 D_8006F40C[];
 extern Unk80080A10 *D_800831C8[24];
 void func_800577BC(s32, s32, s32);
