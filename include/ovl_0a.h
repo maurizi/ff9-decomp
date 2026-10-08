@@ -105,9 +105,9 @@ typedef struct {
 } Unk800CA058;
 
 typedef struct {
-    u8 pad0[4];
-    void (*unk4)(u8);
-    u8 pad8[4];
+    void (*unk0)(void); /* enter */
+    void (*unk4)(u8);   /* update */
+    void (*unk8)(void); /* leave */
 } Unk800C9D5C; /* 0xC */
 
 typedef struct {
@@ -125,7 +125,12 @@ typedef struct {
     s16 unk16;
     s16 unk18;
     s16 unk1A;
-    u8 pad1C[0x75 - 0x1C];
+    u8 pad1C[0x24 - 0x1C];
+    u16 unk24;
+    u16 unk26;
+    u16 unk28;
+    u16 unk2A;
+    u8 pad2C[0x75 - 0x2C];
     u8 unk75;
     s16 unk76;
     u8 pad78[0xA8 - 0x78];
@@ -187,7 +192,12 @@ typedef struct {
     u8 pad0[0x20];
     u16 unk20;
     u16 unk22;
-    u8 pad24[0x34 - 0x24];
+    u8 pad24[0x28 - 0x24];
+    u16 unk28;
+    u16 unk2A;
+    u16 unk2C;
+    u16 unk2E;
+    u8 pad30[0x34 - 0x30];
 } Unk800C9DB4Cam; /* 0x34 */
 
 typedef struct {
