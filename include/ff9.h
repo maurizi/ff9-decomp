@@ -1899,6 +1899,8 @@ typedef struct {
     u8 pad44[4];
     s32 unk48;
     s32 unk4C; /* pan in bits 8-15 */
+    u8 pad50[0x58 - 0x50];
+    s32 unk58;
 } Unk80083168;
 u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
 void func_80060FA8(void);
@@ -2213,4 +2215,7 @@ typedef struct {
     u16 unk6; /* tpage */
 } Unk800689B0;
 extern Unk800689B0 D_800689B0[];
+u8 func_8002E4BC(Window *);
+void func_8002CB18(Window *);
+void func_8002E588(Window *);
 #endif

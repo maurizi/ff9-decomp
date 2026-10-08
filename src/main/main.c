@@ -7231,7 +7231,36 @@ void func_8005C684(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C700);
+void func_8005C700(void) {
+    Unk80083168 *d = &D_80083168;
+    s32 v;
+    s32 l;
+    s32 r;
+    s32 pan;
+
+    if (d->unkC == 0) {
+        return;
+    }
+    func_80057688(d->unk10, d->unk58);
+    func_80057688(d->unk10 + 1, d->unk58);
+    if (D_8008315C & 2) {
+        v = d->unk40 * D_8006F640 >> 16;
+        func_80057640(d->unk10, v, v, 0);
+        func_80057640(d->unk10 + 1, v, v, 0);
+    } else if (d->unk8 & 1) {
+        v = d->unk40;
+        v <<= 15;
+        v >>= 16;
+        func_80057640(d->unk10, v, 0, 0);
+        func_80057640(d->unk10 + 1, 0, v, 0);
+    } else {
+        pan = (u8)(d->unk4C >> 8);
+        l = d->unk40 * D_8006F540[pan] >> 16;
+        r = d->unk40 * D_8006F540[pan ^ 0xFF] >> 16;
+        func_80057640(d->unk10, l, r, 0);
+        func_80057640(d->unk10 + 1, l, r, 0);
+    }
+}
 
 void func_8005C864(void) {
 }
@@ -8199,7 +8228,36 @@ void func_800612F0(s32 *a) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8006142C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800614AC);
+void func_800614AC(s32 *a) {
+    Unk80083168 *d = &D_80083168;
+    s32 p = *a;
+    s32 v;
+    s32 l;
+    s32 r;
+    s32 pan;
+
+    d->unk4C = p;
+    if (d->unkC == 0) {
+        return;
+    }
+    if (D_8008315C & 2) {
+        v = d->unk40 * D_8006F640 >> 16;
+        func_80057640(d->unk10, v, v, 0);
+        func_80057640(d->unk10 + 1, v, v, 0);
+    } else if (d->unk8 & 1) {
+        v = d->unk40;
+        v <<= 15;
+        v >>= 16;
+        func_80057640(d->unk10, v, 0, 0);
+        func_80057640(d->unk10 + 1, 0, v, 0);
+    } else {
+        pan = (p >> 8) & 0xFF;
+        l = d->unk40 * D_8006F540[pan] >> 16;
+        r = d->unk40 * D_8006F540[pan ^ 0xFF] >> 16;
+        func_80057640(d->unk10, l, r, 0);
+        func_80057640(d->unk10 + 1, l, r, 0);
+    }
+}
 
 void func_800615F8(void) {
     SpuSetIRQAddr(0x1038);
