@@ -101,10 +101,12 @@ typedef struct {
  * overlay. */
 struct WorldMap; /* ovl_0c, include/ovl_0c.h */
 struct FieldMap; /* ovl_0a, include/ovl_0a.h */
+struct Battle;   /* ovl_0b, include/ovl_0b.h */
 typedef union {
     Unk8E4 *ovl65;
     struct WorldMap *world;
     struct FieldMap *field;
+    struct Battle *battle;
 } Unk8E4Ptr;
 
 /* D_8006794C->unk1C: looks like the save-data block */
