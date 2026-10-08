@@ -536,7 +536,8 @@ typedef struct {
     s32 unk18;
     u8 pad1C[0x24 - 0x1C];
     s32 unk24;
-    u8 pad28[0x30 - 0x28];
+    u32 unk28;
+    u8 pad2C[0x30 - 0x2C];
     s32 unk30;
     u32 unk34; /* flags */
     s32 unk38;
@@ -545,7 +546,9 @@ typedef struct {
     u8 pad60[0x64 - 0x60];
     s32 unk64;
     u32 unk68;
-    u8 pad6C[0x78 - 0x6C];
+    u8 pad6C[0x70 - 0x6C];
+    s32 unk70;
+    u8 pad74[0x78 - 0x74];
     s32 unk78;
     u8 pad7C[0x84 - 0x7C];
     s32 unk84;
@@ -559,7 +562,8 @@ typedef struct {
     u16 unkA2[4]; /* loop counters */
     u16 unkAA[4];
     u16 unkB2;
-    u8 padB4[0xB8 - 0xB4];
+    u8 padB4[0xB6 - 0xB4];
+    s16 unkB6;
     s16 unkB8;
     s16 unkBA;
     u8 padBC[0xBE - 0xBC];
@@ -975,11 +979,18 @@ typedef struct {
 extern Unk80083248 D_80083248;
 
 typedef struct {
+    u8 pad0[0x18];
+    s16 unk18;
+} Unk8007B9C0Sub;
+
+typedef struct {
     u8 pad0[8];
     s16 unk8;
     u8 padA[0x14 - 0xA];
-    s32 unk14;
-    u8 pad18[0x2C - 0x18];
+    Unk8007B9C0Sub *unk14;
+    u8 pad18[0x28 - 0x18];
+    u8 unk28;
+    u8 pad29[0x2C - 0x29];
 } Unk8007B9C0;
 extern Unk8007B9C0 D_8007B9C0[];
 
@@ -1456,6 +1467,12 @@ extern s32 D_8007B6F8;
 extern u8 **D_8007B70C;
 void func_80052DA0(void);
 s32 func_80052D40(void);
+extern s32 D_8007B718;
+void func_8004E7FC(void);
+void func_8004883C(void);
+s32 func_80048F54(void);
+void func_8004FBD8(void);
+void func_8004FE0C(void);
 
 s16 func_800BEC64(s32); /* overlay code at 0x800BEC64 */
 void func_800363BC(void);
