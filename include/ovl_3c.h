@@ -46,8 +46,9 @@ typedef struct {
     u8 unk2;  /* ingredient */
     u8 unk3;  /* ingredient */
     u8 unk4;  /* result */
-    u8 pad5;
+    u8 unk5;  /* shop mask */
 } SynthRecipe;
+extern SynthRecipe D_801FC0FC[64];
 
 /* Synthesis menu (D_801FC338). */
 typedef struct {
@@ -100,6 +101,10 @@ extern RECT D_801FBC3C;
 extern u8 D_801FBC44[][0x20]; /* item list per shop, 0xFF = none */
 extern u8 D_801F36FC[];
 extern u8 D_801F3C9C[];
+typedef struct {
+    RECT r[7];
+} RectTbl7;
+extern RectTbl7 D_801EDF04; /* icon source rects */
 extern u8 D_801EDF3C[];
 
 extern u8 D_801F3E98[];
@@ -148,6 +153,8 @@ void func_801F5A74(void);
 void func_801F57C8(void);
 void func_801F5BCC(s32, s32, s32, MenuView *);
 void func_801F5D14(void);
+void func_801F5B64(void);
+void func_801F7528(void);
 void func_801F625C(void);
 void func_801F65C8(void);
 void func_801F6714(void);

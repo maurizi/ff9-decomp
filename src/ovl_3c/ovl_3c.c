@@ -75,7 +75,11 @@ void func_801F4468(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F44F4);
+void func_801F44F4(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
+    RectTbl7 rects = D_801EDF04;
+
+    func_80027710(x, y, z, &rects.r[icon], arg4);
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F45E4);
 
@@ -206,7 +210,31 @@ INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F4C68);
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F4E1C);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F506C);
+void func_801F506C(void) {
+    RECT sub;
+    MenuView view;
+    s32 w;
+    s32 i;
+    MenuList *list;
+    RECT *r = &D_801FC2F8.unk10;
+
+    w = func_8002AE7C((u8 *)D_800703FC.unkA4);
+    func_8002B524(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
+    func_8002B524((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
+    list = &D_801FC2F8.unk28;
+    func_8002E040(r, 0x23, 1, list);
+    func_8002ECA0(list, &view);
+    func_8002D9B4(NULL, 0x1E, 1);
+    for (i = 0; i < view.unk0; i++) {
+        func_801F5BCC(0, i, view.unk1 + i, &view);
+    }
+    if (list->unk8 & 4) {
+        func_8002F40C(list, r, &sub);
+        func_8002D9B4(&sub, 0x1E, 1);
+        func_801F5B64();
+    }
+    func_8002D9B4(r, 0x1E, 1);
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F51B8);
 
@@ -384,7 +412,31 @@ INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F60A8);
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F625C);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F65C8);
+void func_801F65C8(void) {
+    RECT sub;
+    MenuView view;
+    s32 w;
+    s32 i;
+    MenuList *list;
+    RECT *r = &D_801FC338.unk10;
+
+    w = func_8002AE7C((u8 *)D_800703FC.unkA4);
+    func_8002B524(r->x + 0xE, r->y - 3, 0x23, D_800703FC.unk68, 0);
+    func_8002B524((r->x + 0xA6) - w, r->y - 3, 0x23, D_800703FC.unkA4, 0);
+    list = &D_801FC338.unk28;
+    func_8002E040(r, 0x23, 1, list);
+    func_8002ECA0(list, &view);
+    func_8002D9B4(NULL, 0x1E, 1);
+    for (i = 0; i < view.unk0; i++) {
+        func_801F6D34(0, i, view.unk1 + i, &view);
+    }
+    if (list->unk8 & 4) {
+        func_8002F40C(list, r, &sub);
+        func_8002D9B4(&sub, 0x1E, 1);
+        func_801F7528();
+    }
+    func_8002D9B4(r, 0x1E, 1);
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6714);
 
@@ -411,7 +463,28 @@ INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6D34);
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6F00);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F7250);
+void func_801F7250(void) {
+    s32 mask;
+    s32 i;
+    s32 n;
+
+    n = 0x40;
+    mask = 1 << (func_801F4458() - 0x20);
+    D_801FC338.unk1 = 0;
+    for (i = 0; i < n; i++) {
+        if ((D_801FC0FC[i].unk5 & mask) && D_801FC0FC[i].unk4 != 0xFF) {
+            D_801FC338.unk3C[D_801FC338.unk1++] = D_801FC0FC[i];
+            if (D_801FC338.unk1 >= 0x20) {
+                break;
+            }
+        }
+    }
+    for (i = 0; i < D_801FC338.unk1; i++) {
+        if (D_80069018[D_801FC338.unk3C[i].unk4].unkF & 0xF8) {
+            D_801FC338.unk4 = 1;
+        }
+    }
+}
 
 void func_801F7390(void) {
     func_801F73E0();
