@@ -4313,7 +4313,15 @@ void func_800F4FE8(s32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F5064);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F511C);
+u8 *func_800F511C(u8 *arg0, RECT *arg1) {
+    RECT r;
+    u8 *v = func_800253D4((s32)arg1, D_801051F0.unk98, 1, 0, 1, (D_8006794C->unk24 >> 18) & 1, arg0);
+    r.x = arg1->x + 2;
+    r.y = arg1->y + 2;
+    r.w = arg1->w - 3;
+    r.h = arg1->h - 3;
+    return func_80024EB4((s32)&r, D_801051F0.unk98, 0, 0, (D_8006794C->unk24 >> 18) & 1, v);
+}
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A8584);
 

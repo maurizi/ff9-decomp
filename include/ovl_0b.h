@@ -1377,7 +1377,7 @@ s32 func_800E9930(s32, s32, s32);
 s32 func_800B4040(BtlUnit *);
 void func_800C316C(s32);
 void func_800C36D0(void);
-void func_800CAEC4(void);
+s32 func_800CAEC4(BtlScript *, BtlUnit *);
 Unk800CC278 *func_800CC278(s32);
 s32 func_800CC444(u32);
 s32 func_800AE47C(s32, u16);
