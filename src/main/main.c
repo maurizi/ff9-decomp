@@ -1710,7 +1710,14 @@ void func_80027568(arg0, arg1, arg2, arg3, arg4)
     func_8002642C(arg0, arg1, arg2, arg3, arg4, 1);
 }
 
-void func_800275A4(s16 arg0, s16 arg1, s32 arg2, s32 arg3, u8 arg4) {
+/* K&R definition: callers pass plain ints */
+void func_800275A4(arg0, arg1, arg2, arg3, arg4)
+    s16 arg0;
+    s16 arg1;
+    s32 arg2;
+    s32 arg3;
+    u8 arg4;
+{
     func_8002642C(arg0, arg1, arg2, arg3, arg4, 0);
 }
 
