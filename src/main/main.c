@@ -3555,7 +3555,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80050410);
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80050744);
 
 void func_80050A84(void) {
-    func_8001A878(D_8007AEF0, 0x800);
+    func_8001A878(&D_8007AEF0, 0x800);
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80050AAC);

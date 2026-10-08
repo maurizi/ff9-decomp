@@ -839,7 +839,12 @@ extern u8 D_800110A0[];
 extern u8 D_8006FD60[];
 extern s32 D_8007BC10;
 extern s32 D_8007BC14;
-extern u8 D_8007AEF0[];
+/* event / script variables; h[0] is the story progress counter */
+typedef union {
+    s16 h[0x400];
+    u8 b[0x800];
+} EventVars;
+extern EventVars D_8007AEF0;
 
 void func_800239A4(void);
 void func_80023784(void);
@@ -1505,5 +1510,10 @@ void *func_80062824(void);
 extern s32 D_80070440;
 extern s32 D_8007048C;
 void func_80033AF4(s32, s32);
+
+
+/* ---- hoisted for the world map (ovl_0c) ---- */
+void func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
+extern s32 D_80073990;
 
 #endif
