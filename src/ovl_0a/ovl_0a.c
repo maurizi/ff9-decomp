@@ -2049,7 +2049,20 @@ s32 func_800C75E0(s32 arg0, s32 *arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C760C);
+s32 func_800C760C(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
+    Unk800C9E04 *e;
+    Unk800C9E00 *n;
+    struct Unk800C9DF4 *a;
+
+    a = D_800C9DF0.unk4 + arg0;
+    n = D_800C9DF0.unk10 + a->unk6;
+    e = D_800C9DF0.unk14 + n->unk6;
+    *arg1 = e->unk0;
+    *arg2 = e->unk4;
+    *arg3 = e->unk8;
+    *arg4 = e->unkC;
+    return 1;
+}
 
 s32 func_800C768C(s32 arg0, s16 *arg1, u16 *arg2) {
     Unk800C9DF4 *a = &D_800C9DF0.unk4[arg0];
