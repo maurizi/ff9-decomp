@@ -1424,6 +1424,17 @@ void func_8002C4B0(u8);
 void func_8002D9B4(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
 Window *func_8002EA7C(RECT *, s32, s32, Window *);
+
+/* Inlined copy of func_8002DD00 (close window). */
+static inline void func_8002DD00_inline(Window *w) {
+    if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
+        w->unk1C = 2;
+        if (D_80077148.unk1 != 2) {
+            func_8002D1AC(w, w->unk28);
+        }
+    }
+}
+
 void func_8002DD00(Window *);
 void func_8002DE10(Window *);
 void func_8002DE60(void);
@@ -1699,7 +1710,7 @@ void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
-u32 func_80061BC8(u32 *, s32);
+s32 func_80061BC8(s32 *, s32);
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void func_800576BC(s32, s32);
 void func_80062118(void);

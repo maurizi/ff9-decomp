@@ -2345,7 +2345,15 @@ void func_8002DD00(Window *w) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002DD54);
+void func_8002DD54(void) {
+    s32 i;
+    Window *w = D_80077530;
+    for (i = 0; i < 10; w++, i++) {
+        if (w->unk1C != 0 && w->unk1C != 2) {
+            func_8002DD00_inline(w);
+        }
+    }
+}
 
 void func_8002DE10(Window *w) {
     if (w != NULL && w->unk1C != 0) {
@@ -6723,7 +6731,7 @@ void func_80061B78(s32 *a) {
     D_80080A70.unk0 &= ~D_80083168.unkC;
 }
 
-u32 func_80061BC8(u32 *p, s32 unused) {
+s32 func_80061BC8(s32 *p, s32 unused) {
     D_80083168.unk28++;
     (*p)++;
     if (D_80083168.unk3C - 1 < *p) {
