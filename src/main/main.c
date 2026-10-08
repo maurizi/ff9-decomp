@@ -3532,7 +3532,14 @@ s32 func_80034648(s32 ch, s32 id, u8 v) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003470C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800347D8);
+u8 func_800347D8(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    if (i < 0) {
+        return 0;
+    }
+    return D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+}
 
 s32 func_800348C0(s32 ch) {
     s32 sum = 0;
