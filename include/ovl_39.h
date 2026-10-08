@@ -89,8 +89,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 pad4[2];
-    u8 unk6;
-    u8 pad7[0x1C - 7];
+    char unk6[0x1C - 6]; /* file name */
     Window *unk1C;
     s32 unk20; /* card channel */
     s32 unk24;
@@ -315,6 +314,9 @@ void func_801F74F4(Window *);
 void func_801F7510(Window *);
 void func_801F7560(Window *);
 u8 func_801F8478(void);
+void func_80065238(char *, u8 *); /* main exe: string copy */
+void func_801F8588(void);
+MenuView *func_801F89B8(MenuList *, MenuView *);
 void func_801F8704(s32, void *);
 u8 func_801F9804(void);
 void func_801F5384(void);

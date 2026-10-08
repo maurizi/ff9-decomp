@@ -706,7 +706,23 @@ void func_801F8424(void) {
     D_801FB1A8.unk1 = 4;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F8478);
+u8 func_801F8478(void) {
+    SaveSlot *sl;
+    s32 port;
+    s32 fd;
+
+    port = D_80077DB2 << 4;
+    sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
+    func_80065238(D_801FC388.unk6, sl->unk4);
+    fd = func_801FA3D8(port, D_801FC388.unk6);
+    D_801FC388.unk20 = fd;
+    if (fd < 0) {
+        func_801F889C(0x34);
+        return 0;
+    }
+    func_801FA5A4(fd, 0x801FCB00, 0x1400, func_801F8588);
+    return 1;
+}
 
 s32 func_801F8524(void) {
     if (func_801FA754(D_80077DB0.unk2 * 0x10) == 0) {
