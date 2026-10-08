@@ -68,7 +68,8 @@ typedef struct {
     u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
-    u8 pad21[0x2C - 0x21];
+    u8 unk21;
+    u8 pad22[0x2C - 0x22];
     u16 unk2C;
     u16 unk2E;
     u8 unk30;
@@ -85,6 +86,14 @@ typedef struct {
     u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
     u32 unk88[2]; /* support abilities equipped: bit (id - 0xC0) */
 } Character; /* 0x90 */
+
+/* GameData.unk8E0 entry */
+typedef struct Unk8E0 {
+    u8 pad0[8];
+    struct BtlUnit9C *unk8;
+    struct BtlUnitA0 *unkC;
+    struct BtlUnit *unk10;
+} Unk8E0;
 
 typedef struct {
     u8 pad0[4];
@@ -208,7 +217,8 @@ typedef struct {
     u8 pad8C0[0x8C4 - 0x8C0];
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
-    u8 pad8CC[0x8E4 - 0x8CC];
+    u8 pad8CC[0x8E0 - 0x8CC];
+    struct Unk8E0 *unk8E0; /* [unit id] */
     Unk8E4Ptr unk8E4;
 } GameData;
 
@@ -224,6 +234,8 @@ typedef struct {
     u8 pad3C[0x44 - 0x3C];
     s32 unk44;
     s32 unk48;
+    u8 pad4C[0xDC - 0x4C];
+    s32 unkDC; /* battle data file start sector */
 } GameStateUnk14;
 
 typedef struct {
@@ -1337,12 +1349,22 @@ typedef struct {
 typedef struct {
     u8 pad0[4];
     s32 unk4;
-    u8 pad8[0x68 - 8];
+    u8 pad8[0x30 - 8];
+    s32 unk30;
+    u8 pad34[0x3C - 0x34];
+    s32 unk3C;
+    u8 pad40[0x68 - 0x40];
     s32 unk68;
-    u8 pad6C[0x88 - 0x6C];
+    u8 pad6C[0x7C - 0x6C];
+    s32 unk7C;
+    u8 pad80[0x88 - 0x80];
     s32 unk88;
     u8 pad8C[0x94 - 0x8C];
     s32 unk94;
+    u8 pad98[0xA0 - 0x98];
+    s32 unkA0;
+    u8 padA4[0xC0 - 0xA4];
+    s32 unkC0;
 } Unk800703FC; /* text table? */
 extern Unk800703FC D_800703FC;
 
