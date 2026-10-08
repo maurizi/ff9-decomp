@@ -3744,7 +3744,45 @@ BtlUnit *func_800EAD94(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EAE8C);
+void func_800EAE8C(void) {
+    BtlUnit *list[4];
+    u8 seen[4];
+    s32 n = 0;
+    s32 head = D_80104F88->unk12C5;
+    s32 cnt = D_80104F88->unk12C4;
+    BtlUnit *u;
+    s32 i;
+    Unk80104F88 *q;
+    BtlUnit *v;
+    Unk80104F88 *r;
+    func_8001D898(seen, 0, 4);
+    while (cnt != 0) {
+        u = D_80104F88->unk12C8[head];
+        if (BtlUnitCanAct(u) && u->unkB3 != 1) {
+            list[n++] = u;
+        } else {
+            u->unkCF = 0;
+        }
+        cnt--;
+        head = (head + 1) & 3;
+    }
+    q = D_80104F88;
+    if (n != q->unk12C4) {
+        q->unk12C6 = 0;
+        q->unk12C5 = 0;
+        q->unk12C4 = 0;
+        for (i = 0; i < n; i++) {
+            if (seen[(u8)list[i]->unk68 >> 5] == 0) {
+                seen[(u8)list[i]->unk68 >> 5] = 1;
+                v = list[i];
+                r = D_80104F88;
+                v->unkCF = 1;
+                D_80104F88->unk12C8[(r->unk12C5 + r->unk12C4) & 3] = v;
+                r->unk12C4++;
+            }
+        }
+    }
+}
 
 void func_800EB05C(void) {
     s32 i;

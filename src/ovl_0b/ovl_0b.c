@@ -253,7 +253,74 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA958);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AABC4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AAEF0);
+u32 func_800AAEF0(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
+    u32 best = -1;
+    s32 bestn = 0;
+    u16 id;
+    u32 start;
+    s32 n;
+    s32 k;
+    FileEntry *f;
+    do {
+        id = *arg2;
+        start = -1;
+        if (id != 0xFFFF) {
+            n = 0;
+            f = func_8001E218(arg0, id);
+            if (f != NULL) {
+                start = f->unk4;
+                n = f->unkC - start;
+            } else {
+                k = 0;
+                switch (arg0) {
+                case 0:
+                    k = 1;
+                    break;
+                case 1:
+                    k = 0;
+                    break;
+                case 3:
+                case 4:
+                    k = 5;
+                    break;
+                case 5:
+                    k = 0x11;
+                    break;
+                case 7:
+                case 8:
+                case 10:
+                    k = 2;
+                    break;
+                case 2:
+                    k = 6;
+                    break;
+                case 6:
+                    k = 0xC;
+                    break;
+                case 11:
+                    k = 9;
+                    break;
+                case 9:
+                    k = 7;
+                    break;
+                }
+                f = func_80063088(D_8006794C->unk1C->unk7E4, (k << 16) | id);
+                if (f != NULL) {
+                    start = f->unk4;
+                    n = f->unk8;
+                }
+            }
+            if (start < best) {
+                best = start;
+                bestn = n;
+                *arg3 = arg2;
+            }
+        }
+        arg2--;
+    } while (arg2 >= arg1);
+    *arg4 = bestn;
+    return best;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AB07C);
 

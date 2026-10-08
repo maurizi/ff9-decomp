@@ -1795,6 +1795,7 @@ void func_800CF560(s32);
 s32 func_800CF574(void);
 UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
+u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);
 u16 func_800DB8E0(struct Unk80100DC054 *, s16 *);
 s32 func_800AB2C8(void);
 Unk8010141C *func_800DC4CC(void);
@@ -2125,6 +2126,20 @@ static inline s32 func_800F1B78_inline(void) {
         }
     }
     return n >= 2;
+}
+
+/* Queue-entry validity check inlined into func_800EAE8C. */
+static inline u8 BtlUnitCanAct(BtlUnit *u) {
+    if (u == NULL) {
+        return 0;
+    }
+    if (u->unk28 == 0 || (u8)func_800C09A4(u, 0x42021D03) != 0) {
+        return 0;
+    }
+    if ((D_800FDF30.unkA >> ((u8)u->unk68 >> 5)) & 1) {
+        return 1;
+    }
+    return 0;
 }
 
 #endif
