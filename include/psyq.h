@@ -366,6 +366,8 @@ long VSync(long mode);
 void *memcpy(void *, const void *, u32);
 
 int DrawSync(int mode);
+long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3, long *sxy0, long *sxy1, long *sxy2, long *sxy3, long *p, long *flag);
+int MargePrim(void *p0, void *p1);
 void SetLightMatrix(MATRIX *m);
 void SetColorMatrix(MATRIX *m);
 MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);

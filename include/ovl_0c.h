@@ -351,6 +351,8 @@ typedef struct Unk800D375C {
 typedef struct WmTexEnt {
     u8 unk0;
     u8 unk1;
+    u8 pad2[0x21 - 2];
+    u8 unk21; /* sound id */
 } WmTexEnt;
 
 typedef struct WmTexPack {
@@ -524,7 +526,7 @@ s32 func_800A91A4(void);
 s32 func_800A91AC(void);
 s32 func_800A91B4(void);
 s32 func_800A9220(void);
-void func_800A924C(void);
+void func_800A924C();
 void func_800A95A0(void);
 u32 func_800AA15C(s32, Unk8004AB64 *);
 void func_800AC580(void);

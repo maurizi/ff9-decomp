@@ -238,6 +238,9 @@ typedef struct Unk800C9DB4 {
     u16 unk22;
     u16 unk24;
     u16 unk26;
+    u8 pad28[0x30 - 0x28];
+    u16 unk30; /* screen origin x */
+    u16 unk32; /* screen origin y */
 } Unk800C9DB4;
 
 typedef struct {
@@ -766,6 +769,7 @@ extern s32 D_800C9D58;
 extern Unk800C9D5C D_800C9D5C[];
 extern Unk800C9DA4 D_800C9DA4;
 extern Unk800C9DB4 *D_800C9DB4;
+extern u8 D_800CA108; /* background sprite x extent */
 extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;

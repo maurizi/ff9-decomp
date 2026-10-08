@@ -199,7 +199,52 @@ s32 func_800A9228(void) {
     return v;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A924C);
+void func_800A924C(s32 arg0) {
+    WorldMapObj *obj;
+    s32 i;
+
+    D_80067948 = (s32)D_8006794C->unk1C->unk8E4.world->unk4;
+    func_800A98B8();
+    obj = D_8006794C->unk1C->unk8E4.world->unk8;
+    func_800A98F8();
+    D_8006794C->unk0 &= ~0x3001;
+    D_8006794C->unk1C->unk8E4.world->unk0 |= 0x400;
+    D_8006794C->unk1C->unk7DC = arg0;
+    obj->unk24 = arg0;
+    func_800A9A44();
+    func_800A9C1C(obj, arg0);
+    func_800A9A04(obj, arg0);
+    func_800A99C4(obj, (s16)D_8006794C->unk1C->unk7DE);
+    func_800A9B54();
+    func_800AB0C0(0x900, 0, 0, 0, 0);
+    func_80049ED8(obj->unk10);
+    func_8004A06C(obj->unk10);
+    while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
+    }
+    func_8004BFB0();
+    D_8006794C->unk1C->unk38 = func_8004AAF0(0);
+    D_8006794C->unk1C->unk8DC = (Unk8D4 *)(obj + 1);
+    D_8006794C->unk1C->unk8E0 = (Unk8E0 *)&D_8006794C->unk1C->unk8DC[D_8006794C->unk1C->unk38];
+    D_80067948 = (s32)&D_8006794C->unk1C->unk8E0[D_8006794C->unk1C->unk38];
+    D_8006794C->unk1C->unk9 = 0;
+    for (i = 0; i < 9; i++) {
+        func_8001E3A4(&D_8006794C->unk1C->unk8D8[i]);
+        D_8006794C->unk1C->unk8D8[i].unk8 = &D_8006794C->unk1C->unk8D4[i];
+    }
+    D_8006794C->unk1C->unk39 = 0;
+    for (i = 0; i < D_8006794C->unk1C->unk38; i++) {
+        func_8001E3A4(&D_8006794C->unk1C->unk8E0[i]);
+        D_8006794C->unk1C->unk8E0[i].unk8 = &D_8006794C->unk1C->unk8DC[i];
+    }
+    obj->unk1C = (void *)D_80067948;
+    D_80067948 = func_800AAD0C(D_80067948, D_8006794C->unk1C->unk38 + 9);
+    obj->unk4 = (void *)D_80067948;
+    obj->unk20 = (s32)obj->unk30;
+    func_8004A8A4();
+    func_800B7F7C();
+    func_80021C60();
+    D_8006794C->unk1C->unk8E4.world->unk0 &= ~1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A95A0);
 
