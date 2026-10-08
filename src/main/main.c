@@ -4716,15 +4716,7 @@ Unk8007B9C0 *func_8004EDD0(Unk8004EBC0 *r, Unk8007B9C0 *a, s32 idx, s32 flag) {
 }
 
 void func_8004EEA0(Unk8007B9C0 *p) {
-    if (p != NULL && p->unk8 != 0) {
-        if (p->unk14 != NULL) {
-            func_8002DD00(p->unk14);
-        }
-        if (D_8007B968 >= 0 && D_8007B970 == p->unkA) {
-            func_80019774(&D_8007B99C);
-        }
-        func_8004E958_inline(p);
-    }
+    func_8004EEA0_inline(p);
 }
 
 void func_8004EFA0(void) {

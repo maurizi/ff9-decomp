@@ -1375,21 +1375,7 @@ extern s32 D_8007B968;
 extern s32 D_8007B970;
 extern Unk4 D_8007B99C;
 
-/* Inlined body of func_8004E958 for one entry (close and unlink). */
-static inline void func_8004E958_inline(Unk8007B9C0 *p) {
-    Unk8007B9C0 *q;
-    if (p != NULL && p->unk8 != 0) {
-        p->unk8 = 0;
-        if (func_8004EA3C() == p) {
-            func_8004EA30(p->unk0);
-        }
-        for (q = D_8007B9C0; q < D_8007B9C0 + 10; q++) {
-            if (q->unk8 != 0 && q->unk0 == p) {
-                q->unk0 = NULL;
-            }
-        }
-    }
-}
+
 void func_800615F8(void);
 extern u8 D_8006F40C[];
 extern Unk80080A10 *D_800831C8[24];
@@ -1979,5 +1965,35 @@ extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
 void func_80015C38(const char *, ...); /* printf */
+
+/* Inlined body of func_8004E958 for one entry (close and unlink). */
+static inline void func_8004E958_inline(Unk8007B9C0 *p) {
+    Unk8007B9C0 *q;
+    if (p != NULL && p->unk8 != 0) {
+        p->unk8 = 0;
+        if (func_8004EA3C() == p) {
+            func_8004EA30(p->unk0);
+        }
+        for (q = D_8007B9C0; q < D_8007B9C0 + 10; q++) {
+            if (q->unk8 != 0 && q->unk0 == p) {
+                q->unk0 = NULL;
+            }
+        }
+    }
+}
+
+/* Inlined copy of func_8004EEA0 (close an entry, its window and its children). */
+static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
+    if (p != NULL && p->unk8 != 0) {
+        if (p->unk14 != NULL) {
+            func_8002DD00(p->unk14);
+        }
+        if (D_8007B968 >= 0 && D_8007B970 == p->unkA) {
+            func_80019774(&D_8007B99C);
+        }
+        func_8004E958_inline(p);
+    }
+}
+extern s32 D_8007B990;
 
 #endif
