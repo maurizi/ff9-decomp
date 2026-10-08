@@ -168,7 +168,22 @@ void func_801F3E58(void) {
 
 INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDF00);
 
-INCLUDE_ASM("asm/us/ovl_3b/nonmatchings/ovl_3b", func_801F3FEC);
+/* text bank for this menu (count + {offset, info} table, then strings) */
+INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDF04);
+
+void func_801F3FEC(void) {
+    func_8003575C(D_801EDF04);
+    func_8003556C(func_801F46FC);
+    func_80028720(D_801EDFE8, 0xD);
+    D_801F4748.unk0 = 0;
+    D_801F4748.unk4[1].unk0 = 0;
+    D_801F4748.unk4[0].unk0 = 0;
+    D_801F4748.unk4[1].unk1 = 0;
+    D_801F4748.unk4[0].unk1 = 0;
+    D_801F4748.unk9 = 0;
+    D_801F4748.unk8 = 0;
+    func_801F457C((PartyRequest *)D_80077DBC);
+}
 
 void func_801F405C(void) {
     func_801F40AC();
@@ -243,7 +258,33 @@ void func_801F4360(s32 x, s32 y, s32 otz, s32 id) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3b/nonmatchings/ovl_3b", func_801F43FC);
+void func_801F43FC(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
+    Icon *icon;
+    s32 yy;
+    s32 base;
+    Character *c;
+
+    base = y + h;
+    yy = base - 8;
+    if (id != 0xFF) {
+        c = &D_8006794C->unk1C->unk3C[id];
+        if (c->unk38 & 2) {
+            icon = &D_800687C0;
+            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            yy = base - 0xF;
+        }
+        if (c->unk38 & 1) {
+            icon = &D_80068E38;
+            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            yy -= 7;
+        }
+        if (c->unk10 == 0) {
+            icon = &D_80068E30;
+            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+        }
+        func_80028204(x, y, otz, func_80028954(id), h, arg5);
+    }
+}
 
 void func_801F457C(PartyRequest *req) {
     s32 i;
