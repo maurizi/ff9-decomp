@@ -1651,7 +1651,34 @@ void func_8002417C(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetDrawTPage);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002423C);
+void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
+    u8 buf[16];
+    s32 col;
+
+    if (c == NULL) {
+        return;
+    }
+    func_8002BAE4(c->unkB, buf, 2, 1);
+    func_8002B5FC(x, y, otz, c->unk0, 0);
+    func_8002B56C(x + 0x24, y + 0xE, otz, buf, 0);
+    func_800275DC(x, y + 0xE, otz, 0xB4, 0);
+    func_800275DC(x, y + 0x17, otz, 0xAF, 0);
+    func_800275DC(x, y + 0x20, otz, 0xB0, 0);
+    if (c->unk10 != 0) {
+        col = ((u16)(c->unk18 / 6) >= c->unk10) << 2;
+    } else {
+        col = 3;
+    }
+    func_8002BAE4(c->unk10, buf, 4, 1);
+    buf[4] = '/';
+    func_8002BAE4(c->unk18, buf + 5, -1, 1);
+    func_8002B56C(x + 0x16, y + 0x17, otz, buf, col);
+    col = ((s16)((s16)c->unk1A / 6) >= (s16)c->unk12) << 2;
+    func_8002BAE4((s16)c->unk12, buf, 3, 1);
+    buf[3] = '/';
+    func_8002BAE4((s16)c->unk1A, buf + 4, -1, 1);
+    func_8002B56C(x + 0x1D, y + 0x20, otz, buf, col);
+}
 
 void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
     Character *a = D_8006794C->unk1C->unk54C[s->unk2];
