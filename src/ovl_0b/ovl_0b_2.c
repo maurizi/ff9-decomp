@@ -1430,11 +1430,64 @@ s32 func_800DB8D8(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB8E0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBA80);
+void func_800DBA80(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
+    BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawEffModel()\nid:%d cannot use!");
+    s32 n;
+    s32 i;
+    s32 v;
+    func_800DCA68(s->unk0, arg0, arg1, arg2);
+    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    s->unk0->unk10 = 0;
+    n = s->unk0->unk8->unk3;
+    for (i = 0; i < n; i++) {
+        func_800C6528(s->unk0, i);
+        if (s->unk22 != 0) {
+            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+        } else {
+            switch ((u16)s->unk20) {
+            case 0:
+            case 2:
+                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                break;
+            case 1:
+                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                break;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBBFC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBD10);
+void func_800DBD10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    BtlObjSlot *s = func_800DCFB0(arg1, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
+    s32 n;
+    s32 i;
+    s32 v;
+    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    func_800DC988(arg2, arg3, (BtlBone *)&s->unk0->unk24);
+    if (arg0 != 0) {
+        func_800DCB20(s->unk0, arg0);
+    }
+    s->unk0->unk10 = 0;
+    n = s->unk0->unk8->unk3;
+    for (i = 0; i < n; i++) {
+        func_800C6528(s->unk0, i);
+        if (s->unk22 != 0) {
+            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+        } else {
+            switch ((u16)s->unk20) {
+            case 0:
+            case 2:
+                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                break;
+            case 1:
+                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                break;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBE98);
 
@@ -4107,7 +4160,37 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF094);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF0D8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF228);
+void func_800EF228(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
+    u8 buf[8];
+    s32 x5;
+    UnkPair *e = func_800EC114(arg2);
+    Window *w = D_80104F88->unk12A4[2];
+    RECT *r = (RECT *)&w->unk8;
+    s32 dy = w->unk6 - r->h;
+    s32 n;
+    u8 id;
+    s16 x;
+    s32 y;
+    Unk80069018 *it;
+    if (e != NULL) {
+        if (e->unk1 - func_800EC194(e->unk0) >= 0) {
+            n = e->unk1 - func_800EC194(e->unk0);
+        } else {
+            n = 0;
+        }
+        if (n != 0) {
+            id = e->unk0;
+            x = r->x;
+            it = &D_80069018[id];
+            x5 = x + 5;
+            y = r->y + arg1 * 15 + arg3->unk2 - dy;
+            func_80026C34(x5, y, 7, id, 1);
+            func_80029058(x + 0x14, y, 7, D_8006A218 + it->unk0, 0);
+            func_8002BAE4(n, buf, 2, 1);
+            func_8002B56C(x + 0x67, y + 4, 7, buf, 0);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF390);
 

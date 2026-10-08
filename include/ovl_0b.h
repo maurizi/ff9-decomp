@@ -1724,6 +1724,7 @@ extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+u8 *func_800DD27C(BtlUnit9C *, u8, u8 *, s32);
 u8 *func_800C7DAC(BtlUnit9C *, s32, u8 *);
 void func_800C6528(BtlUnit9C *, u8);
 u8 *func_800C58E4(BtlUnit9C *, u8, u8 *);
