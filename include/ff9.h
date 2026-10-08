@@ -173,7 +173,7 @@ typedef struct {
     u8 pad828[0x830 - 0x828];
     u16 unk830[2];
     u8 pad834[0x838 - 0x834];
-    void (*unk838)(s32, void *);
+    s32 (*unk838)(s32, void *);
     void (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
     u16 unk842;
@@ -830,7 +830,14 @@ typedef struct {
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
-    u8 pad24[0x34 - 0x24];
+    u8 pad24[0x26 - 0x24];
+    u8 unk26;
+    u8 pad27;
+    u16 unk28;
+    u16 unk2A;
+    u8 pad2C[0x2E - 0x2C];
+    s8 unk2E;
+    u8 pad2F[0x34 - 0x2F];
     u16 unk34;
     u8 pad36[0x3B - 0x36];
     u8 unk3B;
@@ -1345,16 +1352,16 @@ void func_8001DAA4(s32, s32, s32, RECT *);
 void func_8001DCB8(void);
 FileEntry *func_8001E218(s32, s32);
 void func_80021640(s32);
-typedef struct {
-    s32 unk0;
-    s32 unk4;
-    void *unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
+typedef struct CdReadCtx {
+    s32 unk0; /* start sector */
+    s32 unk4; /* total bytes */
+    u8 *unk8; /* destination */
+    s32 unkC; /* bytes done */
+    s32 unk10; /* chunk size, -1 = all */
+    void (*unk14)(struct CdReadCtx *); /* done callback */
     s32 unk18;
-    s32 unk1C;
-    void *unk20;
+    s32 unk1C; /* state */
+    u8 *unk20;
 } CdReadCtx; /* GameData.unk854 */
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
@@ -1525,7 +1532,8 @@ extern u8 *D_8007BC18;
 extern u8 *D_8007BC48;
 extern Unk8007BC20 D_8007BC20;
 extern Unk8007BC20 D_8007BC50;
-void func_80032C4C(s32, s32, s32, s32);
+void func_80032C4C(s32, s32, u32 *, s32);
+extern u32 D_8006CA78[];
 extern u32 D_80077CA4[];
 s32 func_80056700(s32, s32);
 void func_80051568(void);
@@ -1537,7 +1545,7 @@ extern u16 D_8007AE12;
 void func_80032384(void);
 void func_800326B0(void);
 void func_80036560(void);
-CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, s32);
+CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
 s32 func_800217C4(void *);
 void func_80021C60(void);
 void func_80021CDC(s32);

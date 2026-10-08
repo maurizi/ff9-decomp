@@ -795,8 +795,8 @@ void func_80021680(s16 a) {
     D_8006794C->unk1C->unk8B2 = a;
 }
 
-void func_80021698(Unk80021698 *a) {
-    D_8006794C->unk1C->unk838(a->unk34 | 0x20000, a);
+s32 func_80021698(Unk8004AB64 *a) {
+    return D_8006794C->unk1C->unk838(a->unk34 | 0x20000, a);
 }
 
 u16 func_800216D8(a, b)
@@ -812,7 +812,7 @@ void func_80021770(void) {
     D_80071E32 = 0;
 }
 
-CdReadCtx *func_8002177C(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, s32 f) {
+CdReadCtx *func_8002177C(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f)(CdReadCtx *)) {
     CdReadCtx *p = arg0;
     if (p != NULL) {
         p->unk0 = a;
@@ -828,7 +828,44 @@ CdReadCtx *func_8002177C(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, s32 f)
     return p;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800217C4);
+s32 func_800217C4(void *arg0) {
+    CdReadCtx *p = arg0;
+    s32 n;
+
+    if (p != NULL) {
+        switch (p->unk1C) {
+        case 1:
+            if (func_80022B18() == 0) {
+                p->unk1C = 2;
+            }
+            break;
+        case 2:
+            n = p->unk4 - p->unkC;
+            if (p->unk10 != -1 && p->unk10 < n) {
+                n = p->unk10;
+            }
+            if (n != 0) {
+                func_80022C60(D_8006794C->unk20 + p->unk0 + p->unkC / 2048, n, p->unk8, NULL);
+            }
+            p->unk10 = n;
+            p->unk1C = 3;
+            p->unk20 = p->unk8 + n;
+            return 3;
+        case 3:
+            if (func_80022B18() == 0) {
+                if (p->unk14 != NULL) {
+                    p->unk14(p);
+                }
+                p->unk1C = 0;
+            }
+            break;
+        default:
+            return 0;
+        }
+        return p->unk1C;
+    }
+    return 0;
+}
 
 s32 func_80021910(Unk80021910 *a) {
     if (a->unk1C >= 3) {
