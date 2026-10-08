@@ -490,7 +490,7 @@ void func_80028204(s32, s32, s32, s32, s32, u8);
 void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
 void func_80028BE8(u8 *, s32);
-s32 func_80028DB0(s32, s32, u8);
+s32 func_80028DB0(s32, s32, s32);
 u8 *func_80029B4C(s32, s32, u32 *, s32, s32, u8 *);
 u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
 u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
