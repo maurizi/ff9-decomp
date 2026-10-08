@@ -3276,7 +3276,7 @@ s16 func_800C45C0(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, Unk800C9E00 **arg4) {
                 p.vy = v.vy;
             } else {
                 t = &D_800C9DF0.unk1C[n->unk4];
-                vx = &D_800C9DF0.unkC[n->unkC];
+                vx = &D_800C9DF0.unkC[n->unkC[0]];
                 p.vy = vx->unk2 + (D_800C9DF0.unk8->unkA + t->unkA[1]);
             }
             y = p.vy;
@@ -3362,7 +3362,7 @@ start:
             {
                 p.vy = D_800C9DF0.unk8->unkA;
                 p.vy += D_800C9DF0.unk1C[n->unk4].unkA[1];
-                p.vy += D_800C9DF0.unkC[n->unkC].unk2;
+                p.vy += D_800C9DF0.unkC[n->unkC[0]].unk2;
                 return p.vy;
             }
         }
