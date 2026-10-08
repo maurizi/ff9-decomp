@@ -777,6 +777,16 @@ typedef struct {
 extern FieldFade D_800CA140[];
 extern u16 D_800C9DA0; /* FieldFade count */
 
+/* object placement (func_800AD488) */
+typedef struct {
+    unsigned unk0 : 8;
+    unsigned unk1 : 12; /* scale x */
+    unsigned unk2 : 12; /* scale z */
+    unsigned unk4 : 12; /* angle */
+    signed unk4_12 : 10; /* offset x */
+    signed unk4_22 : 10; /* offset z */
+} FieldObjEnt;
+
 /* object model slot (func_8001E350) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */

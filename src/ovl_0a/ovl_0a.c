@@ -771,7 +771,83 @@ void func_800AD44C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AD488);
+/* object placement matrix: either a plain y rotation or facing the model's joint */
+void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
+    MATRIX m;
+    SVECTOR v;
+    VECTOR dir;
+    VECTOR side;
+    VECTOR up;
+    VECTOR fwd;
+    s32 *d;
+    s32 *s;
+    s32 c;
+    s32 sn;
+
+    if (arg1->unk0 & 0x20) {
+        c = func_8004BB7C(arg0->unk4);
+        sn = func_8004BB80(arg0->unk4);
+        arg2->m[0][0] = c * arg0->unk1 >> 12;
+        arg2->m[1][0] = 0;
+        arg2->m[2][0] = -sn * arg0->unk1 >> 12;
+        arg2->m[0][1] = 0;
+        arg2->m[1][1] = 0x1000;
+        arg2->m[2][1] = 0;
+        arg2->m[0][2] = sn * arg0->unk2 >> 12;
+        arg2->m[1][2] = 0;
+        arg2->m[2][2] = c * arg0->unk2 >> 12;
+        arg2->t[0] = ((c * arg0->unk4_12 + sn * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->unk14.vx;
+        arg2->t[1] = ((Unk8004AB64 *)arg1->unkC)->unk14.vy;
+        arg2->t[2] = ((-sn * arg0->unk4_12 + c * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->unk14.vz;
+    } else {
+        /* word-wise copy of the joint matrix */
+        d = (s32 *)&m;
+        s = (s32 *)&((MATRIX *)arg1->unk8->unk20)[1];
+        d[0] = s[0];
+        d[1] = s[1];
+        d[2] = s[2];
+        d[3] = s[3];
+        d[4] = s[4];
+        d[5] = s[5];
+        d[6] = s[6];
+        d[7] = s[7];
+        m.t[2] = 0;
+        m.t[1] = 0;
+        m.t[0] = 0;
+        v.vx = 0;
+        v.vy = -0x1000;
+        v.vz = 0;
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(&v);
+        gte_rtv0tr();
+        gte_stlvnl(&dir);
+        dir.vy = 0;
+        VectorNormal(&dir, &fwd);
+        up.vy = 0x1000;
+        up.vx = 0;
+        up.vz = 0;
+        fwd.vx = -fwd.vx;
+        fwd.vy = -fwd.vy;
+        fwd.vz = -fwd.vz;
+        gte_ldopv1(&up);
+        gte_ldopv2(&fwd);
+        gte_op12();
+        gte_stlvnl(&side);
+        arg2->m[0][0] = side.vx * arg0->unk1 >> 12;
+        arg2->m[1][0] = side.vy * arg0->unk1 >> 12;
+        arg2->m[2][0] = side.vz * arg0->unk1 >> 12;
+        arg2->m[0][1] = up.vx;
+        arg2->m[1][1] = up.vy;
+        arg2->m[2][1] = up.vz;
+        arg2->m[0][2] = fwd.vx * arg0->unk2 >> 12;
+        arg2->m[1][2] = fwd.vy * arg0->unk2 >> 12;
+        arg2->m[2][2] = fwd.vz * arg0->unk2 >> 12;
+        arg2->t[0] = ((side.vx * arg0->unk4_12 + fwd.vx * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[1].t[0];
+        arg2->t[1] = ((side.vy * arg0->unk4_12 + fwd.vy * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->unk14.vy;
+        arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[1].t[2];
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AD944);
 
