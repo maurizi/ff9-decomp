@@ -407,7 +407,13 @@ void func_8002E180(void);
 /* ---- 0x54-byte objects, 10 at D_80077530 (func_8002E260..8002E3F0) ---- */
 
 typedef struct {
-    s16 unk0[8];
+    s16 unk0;
+    s16 unk2;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
+    s16 unk8[4];
 } Unk16; /* 16 bytes, 2-aligned (copied with lwl/lwr) */
 
 typedef struct {

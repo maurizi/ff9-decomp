@@ -95,6 +95,8 @@ typedef struct {
     u8 r, g, b, cd;
 } CVECTOR;
 
+MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
+
 long VSync(long mode);
 /* C library: gcc 2.8 expands small constant-size memcpy inline (lwl/lwr) */
 void *memcpy(void *, const void *, u32);
