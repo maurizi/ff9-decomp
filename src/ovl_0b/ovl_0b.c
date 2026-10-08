@@ -3379,7 +3379,43 @@ u16 func_800CA378(void) {
     return b->unk1334[b->unk1330->unk8[0].unk0].unk62;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA3CC);
+void func_800CA3CC(void) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    u16 i = 0;
+    u16 *h = b->unk1338;
+    Battle11C4 *t = &b->unk11C4;
+    u16 *p = h + 2;
+    u32 *q;
+    BtlUnit9CC *m;
+    u16 n = h[0];
+    for (; i < n; i++) {
+        t->unk8[i] = (s32)h + *p++;
+    }
+    for (; i < 0x12; i++) {
+        t->unk8[i] = 0;
+    }
+    q = (u32 *)p;
+    t->unk0 = (BtlUnit9CC **)q;
+    n = h[1];
+    for (i = 0; i < n; i++, q++) {
+        m = func_8001C7FC(4, (*q & 0xFFFF) | 0x30000, 0);
+        *q = (u32)m;
+        if (m->unkC >= 0) {
+            m->unkC = (s32)m + m->unkC;
+            if (m->unk10 != 0) {
+                m->unk10 = *q + m->unk10;
+            }
+        }
+    }
+    t->unk4 = (u8 *)q;
+    {
+        Battle122C *c = t->unk68;
+        for (i = 4; i-- != 0;) {
+            c->unk4 = 0;
+            c++;
+        }
+    }
+}
 
 void func_800CA530(BtlCmd *arg0) {
     if (D_8006794C->unk1C->unk8E4.battle->unk11C4.unk8[arg0->unkF] != 0 && func_800CA5AC(arg0) != NULL) {
