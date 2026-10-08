@@ -1822,7 +1822,28 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800283E0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028720);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002886C);
+void func_8002886C(void) {
+    RECT clut;
+    RECT img;
+    u32 *p = D_80076F78.unk0;
+    u32 *q;
+    s32 i;
+    func_80028994(0, &clut, &img);
+    LoadImage(&clut, D_80076F80);
+    DrawSync(0);
+    q = p;
+    for (i = 1; i < D_80076F78.unk4; i++) {
+        func_80028994(i, &clut, &img);
+        LoadImage(&clut, p);
+        DrawSync(0);
+        if (i >= 4) {
+            LoadImage(&img, q + 0x40);
+            DrawSync(0);
+            q += 0x1B0;
+        }
+        p += 0x1B0;
+    }
+}
 
 u8 func_80028954(s32 arg0) {
     return D_8006BB8C[(D_8006794C->unk1C->unk3C[arg0].unk34 >> 4) & 0x1F];

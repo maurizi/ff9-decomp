@@ -1819,6 +1819,13 @@ s32 func_8002BCC0(u8 *); /* strlen */
 extern u32 D_80077DBC; /* = D_80077DB0.unkC, read on its own by ovl_3a */
 extern u32 D_80077520; /* pad buttons (repeat?) */
 void func_8002886C(void);
+void func_80028994(s32, RECT *, RECT *);
+typedef struct {
+    u32 *unk0; /* portrait image data, 0x6C0 bytes each */
+    s32 unk4;  /* count */
+} Unk80076F78;
+extern Unk80076F78 D_80076F78;
+extern u32 D_80076F80[]; /* first CLUT, right after D_80076F78 */
 s32 func_80027E5C(s32, s32);
 typedef struct {
     u8 pad0[4];
