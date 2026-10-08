@@ -42,7 +42,9 @@ typedef struct {
     u8 *unk54; /* = unk90 */
     u8 *unk58; /* = unk270 */
     u8 unk5C;
-    u8 pad5D[0x6C - 0x5D];
+    u8 pad5D[3];
+    u8 unk60; /* D_800C9F20 count */
+    u8 pad61[0x6C - 0x61];
     u8 unk6C[0x90 - 0x6C];
     u8 unk90[0x270 - 0x90];
     u8 unk270[0x330 - 0x270];
@@ -631,6 +633,7 @@ extern u8 *D_80077DF0;
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 void func_800C85B8(s32, s32);
+void func_800B5794(void);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;
