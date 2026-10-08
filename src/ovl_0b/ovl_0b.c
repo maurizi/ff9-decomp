@@ -131,7 +131,24 @@ s32 func_800A9090(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A90B0);
+s32 func_800A90B0(void) {
+    s32 p = D_80067948;
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    FileEntry *f = func_8001E218(1, 0x271B);
+    s32 s = f->unk4;
+    void *ctx = D_8006794C->unk1C->unk854;
+    func_8002177C(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
+    while (func_800217C4(ctx) != 0) {
+    }
+    b->unk1354->unk0[0] = (void *)p;
+    func_8001C750(p, 0);
+    func_8001DAA4((s32)b->unk154C, (s32)func_8001C7FC(4, 0x1F4, 0), 0x180, NULL);
+    func_8001DAA4((s32)b->unk16CC, (s32)func_8001C7FC(4, 0x1F5, 0), 0xC00, NULL);
+    func_8001DAA4((s32)b->unk22CC, (s32)func_8001C7FC(4, 0x1F6, 0), 0x100, NULL);
+    DrawSync(0);
+    D_80067948 = func_8001C8B0(p, 4, 0x1E, 0);
+    return 0;
+}
 
 s32 func_800A91EC(void) {
     Battle1354 *p = D_8006794C->unk1C->unk8E4.battle->unk1354;
@@ -550,7 +567,23 @@ void func_800B0EF8(Battle *arg0) {
     func_800B3CEC_inline(&arg0->unk1060);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B0FC0);
+void func_800B0FC0(Battle *arg0) {
+    s8 i;
+    s8 j;
+    s32 c;
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 4; j++) {
+            func_80063640(&arg0->unk108C[i][j].unk0, GetTPage(0, 1, 0, 0));
+            if (j < 3) {
+                c = 0xBC - j * 0x3C;
+            } else {
+                c = 0xA0;
+            }
+            setRGB0(&arg0->unk108C[i][j].unk8, c, c, 0);
+            SetSemiTrans(&arg0->unk108C[i][j].unk8, 1);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B10F8);
 

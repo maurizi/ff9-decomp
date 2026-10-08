@@ -414,7 +414,7 @@ typedef struct {
     struct Unk80100DC054 *unk54;
     s32 unk58;
     s32 unk5C;
-    u8 pad60[0x64 - 0x60];
+    s32 unk60;
     u8 unk64;
     u8 unk65;
     u8 unk66;
@@ -667,6 +667,11 @@ static inline void func_800B3CEC_inline(BtlCmd *arg0) {
     arg0->unk10_11 = 0;
 }
 
+typedef struct Battle108C {
+    DR_TPAGE unk0;
+    POLY_F3 unk8;
+} Battle108C; /* 0x1C */
+
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
@@ -692,7 +697,8 @@ typedef struct Battle {
     BtlCmd unk1060;
     BtlCmd unk1074;  /* list head (only unk0 used) */
     BtlCmd *unk1088; /* current command */
-    u8 pad108C[0x11B8 - 0x108C];
+    struct Battle108C unk108C[2][4];
+    u8 pad116C[0x11B8 - 0x116C];
     u16 unk11B8;
     u8 unk11BA;
     u8 unk11BB;
@@ -1074,8 +1080,21 @@ extern s8 D_800FEC54;
 extern char D_80101470[];
 
 typedef struct Unk80100DC054 {
-    u8 pad0[0x50];
+    u8 pad0[2];
+    s16 unk2;
+    s16 unk4;
+    u8 pad6[0x18 - 6];
+    u16 unk18[6];
+    u16 unk24[6];
+    u16 unk30[6];
+    u8 *unk3C;
+    s32 unk40;
+    u8 pad44[0x50 - 0x44];
     s32 *unk50;
+    u8 pad54[0x90 - 0x54];
+    BtlModel unk90;
+    u8 pad128[0x180 - 0x128];
+    s32 unk180[1];
 } Unk80100DC054;
 
 typedef struct {
@@ -1651,7 +1670,7 @@ typedef struct {
 
 typedef struct {
     u16 unk0;
-    u8 pad2[4 - 2];
+    u16 unk2;
 } Unk800E8F50Entry;
 
 typedef struct {
@@ -1768,6 +1787,7 @@ void func_800DC988(s32, s32, BtlBone *);
 void func_800C9040(BtlUnit9C50 *);
 BtlUnit *func_800C1DEC(void);
 void func_800CF58C(s32);
+void func_80063640(DR_TPAGE *, u16);
 void func_800C9374(BtlUnit9C50 *, s32);
 void func_800B0E04(BtlUnit *, u8 *);
 void func_800EEDD4(void);
@@ -1832,10 +1852,19 @@ typedef struct {
     s32 unk8;
 } Unk800D805C;
 
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    s32 unk4;
+    s16 unk8[3];
+} Unk800D8124;
+
 extern s8 D_800FEC56;
 s32 func_800D9488(Unk800D7C9C *, s32, s32 *);
 s32 func_800D9AB0(Unk800D805C *, s32, s32 *);
-s32 func_800D9D58(Unk800D805C *, s32, s32 *);
+s32 func_800D9D58(Unk800D8124 *, s32, s32 *);
 s32 func_800D8ACC(s32, s32);
 
 typedef struct {
@@ -1892,7 +1921,7 @@ s32 func_800A8F18(void);
 s32 func_800A8F8C(void);
 s32 func_800A902C(void);
 s32 func_800A9090(void);
-void func_800A90B0(void);
+s32 func_800A90B0(void);
 s32 func_800AF1C8(void);
 extern void (*D_800F8DF0[])(Unk800FD56C *);
 extern void (*D_800F8E00)(Unk800FD56C *);
