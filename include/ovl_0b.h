@@ -37,7 +37,11 @@ typedef struct BtlUnit {
     u32 unk68; /* flags */
     u8 pad6C[0x6D - 0x6C];
     u8 unk6D;
-    u8 pad6E[0x7C - 0x6E];
+    u8 pad6E[0x74 - 0x6E];
+    u8 *unk74;
+    u8 pad78;
+    u8 unk79;
+    u8 pad7A[0x7C - 0x7A];
     u8 unk7C;
     u8 pad7D;
     u16 unk7E;
@@ -73,7 +77,15 @@ typedef struct BtlScript {
     u8 *unk8; /* script pointer */
     u8 padC[0x12 - 0xC];
     s16 unk12;
-    u8 pad14[0x26 - 0x14];
+    u8 pad14[0x17 - 0x14];
+    u8 unk17;
+    s16 unk18;
+    u8 pad1A;
+    u8 unk1B;
+    u8 pad1C[0x22 - 0x1C];
+    s16 unk22;
+    u8 unk24;
+    u8 unk25;
     u8 unk26;
     u8 unk27;
 } BtlScript;
@@ -98,8 +110,11 @@ typedef struct {
     Unk800F78A40 *unk0;
     u8 pad4[0xC - 4];
     BtlUnitList *unkC;
-    u8 pad10[0x24 - 0x10];
+    u8 pad10[0x20 - 0x10];
+    s32 *unk20;
     u8 *unk24; /* next free primitive */
+    s32 unk28;
+    struct Unk800FE3B8 *unk2C;
 } Unk800F78A4;
 extern Unk800F78A4 *D_800F78A4;
 
@@ -154,7 +169,9 @@ typedef struct {
 extern Unk800FEC40 D_800FEC40;
 
 typedef struct {
-    u8 pad0[0x58];
+    u8 pad0[0x2C];
+    s16 unk2C[2];
+    u8 pad30[0x58 - 0x30];
     s32 unk58;
     s32 unk5C;
 } Unk80100DC0;
@@ -192,12 +209,25 @@ typedef struct Battle {
     u8 unk131C;
     u8 pad131D[0x133C - 0x131D];
     s16 *unk133C; /* offset table, entries relative to its start */
-    u8 pad1340[0x151C - 0x1340];
+    u8 pad1340[0x1354 - 0x1340];
+    u8 *unk1354;
+    u8 pad1358[0x151C - 0x1358];
     s32 unk151C;
     s32 unk1520;
-    u8 pad1524[0x1692 - 0x1524];
+    u8 pad1524[0x1538 - 0x1524];
+    u8 *unk1538;
+    u8 pad153C[0x1692 - 0x153C];
     u16 unk1692;
-} Battle;
+    u8 pad1694[0x23CC - 0x1694];
+} Battle; /* 0x23CC */
+
+/* battle work area, allocated at D_80067944 + 0x61800 */
+typedef struct {
+    Battle unk0;
+    u8 unk23CC[0x240C - 0x23CC];
+    u8 unk240C[0x241C - 0x240C];
+    u8 unk241C[1]; /* becomes D_80067948 */
+} BattleMem;
 
 typedef struct {
     u8 unk0;
@@ -228,6 +258,53 @@ typedef struct {
 } U16Pair;
 
 extern BtlUnit *D_800FE484;
+
+typedef struct Unk800FE3B8 {
+    u8 pad0[0x5E];
+    s16 unk5E;
+    s16 unk60;
+    u8 pad62[0xD0 - 0x62];
+} Unk800FE3B8;
+extern Unk800FE3B8 D_800FE3B8;
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s16 unk8;
+    u8 padA[2];
+    u8 unkC[16];
+    u8 unk1C;
+    u8 unk1D;
+} Unk800FDF30;
+extern Unk800FDF30 D_800FDF30;
+
+typedef struct {
+    u8 pad0[0xE];
+    u8 unkE;
+    u8 unkF;
+} Unk800B4434;
+
+typedef struct {
+    u8 pad0[0x19];
+    u8 unk19;
+    u8 unk1A;
+    u8 unk1B;
+    u8 unk1C;
+    u8 unk1D;
+} Unk800C412C;
+
+typedef struct {
+    s16 unk0; /* entry stride in bytes */
+    s16 unk2; /* entry count */
+    u8 pad4[0xC - 4];
+    s32 unkC[1];
+} Unk800DA1B8;
+
+extern s32 D_800FEC38;
+extern s32 D_800FEC3C;
+extern s8 D_800FEC57;
+extern s16 D_80100D8C;
+extern u16 D_800F7460[];
 
 typedef struct LinkNode {
     struct LinkNode *unk0;
@@ -269,12 +346,27 @@ typedef struct {
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800A91EC(void);
+void func_800BD4DC(BtlUnit *);
+void func_800BD53C(BtlUnit *);
+s32 func_800CFC0C(s32);
+void func_800D07B4(s32, s32 *);
+s32 func_800D6360(void);
+void func_800D64C8(s32);
+void func_800D85AC(s32, s32);
+void func_800D85F8(s32, s32, s32);
+void func_800D8820(s32, s32);
+void func_800D8988(s32, s32, s32);
+s32 func_800D8A64(s32);
+s32 func_800D8B70(s32);
+s32 func_800DA0B8(s32);
+void func_800EA124(s32);
 void func_800A9BE4(s32);
 void func_800ABBC4(s32, s32);
-s32 func_800D8C70(s32, s32);
-void func_800D8658(u8, s32);
-void func_800D8914(u8);
-void func_800D8A20(u8, s32);
+u32 func_800D8C70(s32, u32);
+void func_800D8658(s32, s32);
+void func_800D8914(s32);
+void func_800D8A20(s32, s32);
 BtlUnit *func_800E716C(s32);
 void func_800E9D84(void);
 void func_800EC070(void);
