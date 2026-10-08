@@ -17,19 +17,25 @@ typedef struct {
     u32 unk8;
     s32 unkC;
     s32 unk10;
-    u8 pad14[0x1C - 0x14];
+    s32 unk14;
+    s32 unk18;
     s32 unk1C;
-    u8 pad20[0x28 - 0x20];
+    s16 unk20;
+    s16 unk22;
+    s16 unk24;
+    s16 unk26;
 } Unk80021938; /* element passed to func_80021938 */
 
-typedef struct {
+typedef struct Unk8C8 {
     u8 unk0;
-    u8 unk1;
+    u8 unk1; /* state */
     s8 unk2; /* count */
     s8 unk3;
     Unk80021938 unk4[7];
-    s32 unk11C;
+    s32 (*unk11C)(struct Unk8C8 *); /* hook, nonzero = handled */
 } Unk8C8;
+Unk80021938 *func_80021B34(Unk80021938 *, Unk80021938 *);
+s32 func_80021ED4(void);
 
 typedef struct {
     u8 unk0;
@@ -37,7 +43,8 @@ typedef struct {
 } UnkPair;
 
 typedef struct {
-    u8 pad0[4];
+    u16 unk0; /* (second table) high byte: first two-byte code */
+    u8 pad2[2];
     u16 unk4; /* high byte: first text code that takes an extra byte */
     u16 unk6;
     u8 pad8[4];
@@ -52,19 +59,30 @@ typedef struct {
     u8 unkB;      /* level (exp table has 99 entries) */
     u32 unkC;     /* exp, capped at 9999999 */
     u16 unk10;    /* hp */
-    u8 pad12[0x17 - 0x12];
+    s16 unk12;    /* mp */
+    u8 pad14[0x16 - 0x14];
+    u8 unk16;
     u8 unk17;
-    u8 pad18[0x1F - 0x18];
+    u16 unk18;    /* max hp */
+    s16 unk1A;    /* max mp */
+    u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
     u8 unk21;
-    u8 pad22[0x34 - 0x22];
+    u8 pad22[0x2C - 0x22];
+    u16 unk2C;
+    u16 unk2E;
+    u8 unk30;
+    u8 unk31;
+    u8 unk32;
+    u8 unk33;
     u32 unk34; /* low nibble: character id (index into GameData.unk3C);
                 * bits 4-8 index D_8006BB8C; bit 11 tested;
                 * bits 12-16: ability table row */
     u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
     u8 unk39[5]; /* equipment item ids (0xFF = none) */
-    u8 pad3E[0x58 - 0x3E];
+    u16 unk3E[5]; /* stat bonuses from equipment */
+    u8 pad48[0x58 - 0x48];
     u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
     u32 unk88[2]; /* support abilities equipped: bit (id - 0xC0) */
 } Character; /* 0x90 */
@@ -126,7 +144,8 @@ typedef struct {
     u16 unk3A;
     Character unk3C[9];
     Character *unk54C[4]; /* party */
-    u8 pad55C[0x560 - 0x55C];
+    u8 pad55C[0x55E - 0x55C];
+    s16 unk55E;
     u32 unk560; /* gil, capped at 9999999 */
     u8 pad564[0x568 - 0x564];
     s16 unk568;
@@ -155,7 +174,7 @@ typedef struct {
     s32 unk804;
     s32 unk808;
     u8 *unk80C; /* name text */
-    u8 pad810[0x814 - 0x810];
+    u8 *unk810;
     void *unk814;
     s32 unk818;
     u16 unk81C[2];
@@ -165,14 +184,14 @@ typedef struct {
     u8 pad828[0x830 - 0x828];
     u16 unk830[2];
     u8 pad834[0x838 - 0x834];
-    void (*unk838)(s32, void *);
+    s32 (*unk838)(s32, void *);
     void (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
     u8 unk848;
     u8 pad849[0x84C - 0x849];
-    s32 unk84C;
+    Unk7D4 *unk84C; /* second (kanji) font table */
     u8 unk850;
     u8 pad851[0x854 - 0x851];
     u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
@@ -231,6 +250,12 @@ typedef struct {
 extern GameState *D_8006794C;
 void func_8001DE50(GameState *);
 
+/* Inlined copy of func_80034A04 (support ability bit test). */
+static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
+    b -= 0xC0;
+    return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
+}
+
 /* Inlined copy of func_80027EDC (item search); the original source inlines it. */
 static inline UnkPair *func_80027EDC_inline(s32 id) {
     s32 i;
@@ -256,7 +281,8 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* VSync(-1) at last update */
-    u8 pad[0x404];
+    u8 unk4[0x400];
+    u8 *unk404; /* write pointer into unk4 */
     UnkTimer unk408;
 } Unk80076B60;
 extern Unk80076B60 D_80076B60;
@@ -273,22 +299,39 @@ extern Unk80076F68 D_80076F68;
 
 /* ---- CD / streaming state near libcd ---- */
 
+/* CD request, queued by func_800230B8 (0x24 bytes) */
+/* one contiguous read: byte count and destination */
+typedef struct {
+    u32 unk0; /* size */
+    u8 *unk4; /* destination */
+} CdChunk;
+
+typedef struct {
+    u8 unk0; /* command; bit 2: run unk18 directly when idle */
+    u8 pad1[3];
+    s32 unk4;
+    s32 unk8;
+    CdChunk *unkC; /* chunk list; -1 = use unk1C */
+    void (*unk10)(u8, u8 *);
+    void (*unk14)(u8, u8 *); /* data-ready handler */
+    void (*unk18)(); /* callback */
+    CdChunk unk1C; /* single chunk */
+} CdRequest;
+
 typedef struct {
     u8 unk0;
-    u8 pad1;
+    u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[0xC - 4];
+    s32 unk4; /* sectors left */
+    CdlLOC unk8; /* current position */
     s32 unkC;
-    u8 pad10[0x18 - 0x10];
+    u32 unk10; /* offset in current chunk */
+    s32 unk14; /* current chunk */
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
-    u8 unk944;
-    u8 pad945[0x958 - 0x945];
-    void (*unk958)();
-    void (*unk95C)(void *);
-    u8 pad960[0x968 - 0x960];
-    u8 unk968[4]; /* passed to func_8002267C */
+    CdRequest unk944; /* current request */
+    CdRequest unk968; /* passed to func_8002267C */
 } Unk800761D0;
 extern Unk800761D0 D_800761D0;
 
@@ -303,7 +346,11 @@ typedef struct {
     u16 unk0; /* name offset into D_8006A218 */
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
-    u8 pad6[0xC - 6];
+    u8 pad6[2];
+    u8 unk8; /* kind (icon) */
+    u8 unk9; /* icon palette */
+    u8 padA;
+    u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
     u8 pad10[2];
@@ -321,8 +368,30 @@ typedef struct {
 
 typedef struct {
     u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 xy1;
+    u32 xy2;
+    u32 xy3;
+} PolyF4Words; /* POLY_F4 written as whole words */
+
+typedef struct {
+    u32 tag;
     u32 code;
 } DrTpageWords;
+
+extern u16 D_8006BBA0[];
+
+/* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
+typedef struct {
+    u32 unk0; /* uv0 | clut << 16 */
+    u8 unk4;  /* w */
+    u8 unk5;  /* h */
+    u16 unk6; /* tpage */
+} Unk800686E8;
+extern Unk800686E8 D_800686E8;
+extern Unk800686E8 D_800686D0[];
+extern Unk800686E8 D_800687E0[]; /* digit glyphs */
 
 /* 12-tick toggle timer (func_80028CF8/D08/D2C) */
 typedef struct {
@@ -342,11 +411,24 @@ typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2; /* memory card slot */
-    u8 pad3[9 - 3];
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
+    u8 pad8;
     u8 unk9;
     u8 padA[2];
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
     s32 unk10; /* frame counter */
+    s32 unk14; /* saved VSync mode */
+    s32 unk18;
+    s32 unk1C;
+    u8 unk20; /* saved background colour */
+    u8 unk21;
+    u8 unk22;
+    u8 pad23;
+    s32 unk24;
 } Unk80077DB0;
 extern Unk80077DB0 D_80077DB0;
 
@@ -365,59 +447,83 @@ extern s32 D_80077150;
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2[6];
+    u8 unk2;
+    u8 pad3;
+    s32 unk4; /* free bytes in the packet buffer */
     s32 unk8;
+    u8 *unkC[2];   /* packet buffers */
+    u32 *unk14[2]; /* ordering tables */
+    s16 unk1C; /* display x/y per buffer */
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
 } Unk80077148;
 extern Unk80077148 D_80077148;
 
 /* ---- functions (main exe) ---- */
 
 void func_8001C784(void *);
-void func_8001D898(s32, s32, s32);
+void func_8001D898(void *, s32, s32); /* memset */
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
 void func_800235A0(u8, u8 *);
 void func_8002423C(s32, s32, s32, Character *);
-u8 *func_80024EB4(s32, u32 *, u8, u8, s32, u8 *);
-u8 *func_800253D4(s32, u32 *, u8, u8, s32, s32, u8 *);
-void func_8002642C(s16, s16, s32, s32, s32, s32);
+u8 *func_80024EB4(RECT *, u32 *, u8, u8, s32, u8 *);
+u8 *func_800253D4(RECT *, u32 *, u8, u8, s32, s32, u8 *);
+void func_80026BDC(RECT *, s32, u8, u8, s32);
+void func_80027568(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
+void func_800275A4(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
+void func_800265B0(s32, s32, s32, s32, s32, s32);
+void func_800274CC(RECT *, s32);
+void func_80026900(s32, s32, s32, s32);
+void func_8002642C(s16, s16, s32, s32, u8, u8);
 u8 *func_80026C7C(s32, s32, u32 *, s32, u8, u8 *);
 void func_80026F8C(s32, s32, s32, s32);
+void func_80027A4C(s32, s32, s32, s32);
 u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
-void func_800275DC(s32, s32, s32, s32, s32);
+s32 func_800275DC(s32, s32, s32, s32, u8);
 void func_80028AF0(s32, s32, s32, s32, u8);
 
 void func_8002BAE4(s32, u8 *, s32, s32);
 void func_80027D18(void);
 void func_80027D4C(void);
-s32 func_80027D84(u8, u8);
+s32 func_80027D84(s32, s32);
 void func_80028204(s32, s32, s32, s32, s32, u8);
 void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
 void func_80028BE8(u8 *, s32);
-s32 func_80028DB0(s32, s32, u8);
+s32 func_80028DB0(s32, s32, s32);
 u8 *func_80029B4C(s32, s32, u32 *, s32, s32, u8 *);
 u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
-u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, u8 *);
+u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
 void func_8002B5B4(s32, s32, s32, u8 *, s32);
 u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
 void func_8002AF70(s16 *, s32);
-s32 func_80023938(void);
+s32 func_80023938(); /* takes an index; func_8002BE10 calls it without one */
 void func_8002C9B0(void);
 void func_8002E180(void);
 
 /* ---- 0x54-byte objects, 10 at D_80077530 (func_8002E260..8002E3F0) ---- */
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 unk0; /* item count */
+    u8 unk2;
+    u8 unk3;
     u8 unk4;
-    u8 unk5;
-    u8 unk6;
+    u8 unk5; /* scroll top */
+    u8 unk6; /* cursor row */
     u8 unk7;
-    s16 unk8[4];
-} Unk16; /* 16 bytes, 2-aligned (copied with lwl/lwr) */
+    u8 unk8;
+    u8 unk9;
+    u8 unkA; /* row height */
+    u8 unkB; /* flags */
+    u8 unkC;
+    u8 unkD;
+    u8 unkE;
+    u8 padF;
+} MenuList;
+typedef MenuList Unk16; /* older name */
 
 typedef struct {
     u8 unk0[4];
@@ -429,12 +535,11 @@ typedef struct Window {
     s16 unk2; /* y */
     s16 unk4; /* w */
     s16 unk6; /* h */
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
+    RECT unk8; /* inner/content rect */
     s16 unk10;
-    u8 pad12[0x18 - 0x12];
+    u8 pad12[0x14 - 0x12];
+    s16 unk14; /* open/close step x */
+    s16 unk16; /* open/close step y */
     s16 unk18; /* OT layer */
     u8 unk1A;
     u8 unk1B; /* index */
@@ -449,8 +554,9 @@ typedef struct Window {
     u8 unk28;
     u8 unk29;
     s16 unk2A;
-    u8 pad2C[4];
-    Unk16 unk30;
+    s16 unk2C;
+    s16 unk2E;
+    MenuList unk30;
     void (*unk40)(struct Window *);
     void (*unk44)(struct Window *);
     void (*unk48)(struct Window *);
@@ -472,7 +578,7 @@ extern u8 D_80077DBA;
 extern u8 D_80077DBB;
 extern u8 D_80077DB2;
 extern u8 D_80077DE0;
-extern s32 D_8007BB78;
+extern struct Unk8007B9C0 *D_8007BB78;
 extern s32 D_800834C8;
 extern s32 D_8006798C;
 extern u16 D_80073720;
@@ -501,50 +607,64 @@ typedef struct {
     u8 *unk0;
     u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
-    s32 unk18;
-    u8 pad1C[0x24 - 0x1C];
+    u8 *unk18;
+    u8 pad1C[0x20 - 0x1C];
+    s32 unk20;
     s32 unk24;
-    u8 pad28[0x30 - 0x28];
+    u32 unk28;
+    u32 unk2C;
     s32 unk30;
     u32 unk34; /* flags */
     s32 unk38;
-    u8 pad3C[0x5C - 0x3C];
-    u32 unk5C;
-    u8 pad60[0x64 - 0x60];
+    s32 unk3C;
+    s32 unk40;
+    u8 pad44[0x4C - 0x44];
+    s32 unk4C;
+    s32 unk50;
+    u8 pad54[0x58 - 0x54];
+    s32 unk58;
+    s32 unk5C;
+    s32 unk60;
     s32 unk64;
     u32 unk68;
-    u8 pad6C[0x78 - 0x6C];
+    s32 unk6C;
+    s32 unk70;
+    u8 pad74[0x78 - 0x74];
     s32 unk78;
     u8 pad7C[0x84 - 0x7C];
-    s32 unk84;
+    u32 unk84;
     u8 pad88[0x94 - 0x88];
     u16 unk94;
     u16 unk96;
     u16 unk98;
     u16 unk9A;
-    u8 pad9C[0xA0 - 0x9C];
+    u16 unk9C;
+    u16 unk9E;
     u16 unkA0;
     u16 unkA2[4]; /* loop counters */
     u16 unkAA[4];
     u16 unkB2;
-    u8 padB4[0xB8 - 0xB4];
+    u8 padB4[0xB6 - 0xB4];
+    s16 unkB6;
     s16 unkB8;
     s16 unkBA;
-    u8 padBC[0xBE - 0xBC];
+    s16 unkBC;
     u16 unkBE;
     s16 unkC0;
     s16 unkC2;
     u16 unkC4;
-    u8 padC6[0xC8 - 0xC6];
+    u16 unkC6;
     s16 unkC8;
     s16 unkCA;
     s16 unkCC;
     u8 padCE[0xD2 - 0xCE];
     s16 unkD2;
-    u8 padD4[0xD6 - 0xD4];
+    u16 unkD4;
     s16 unkD6;
     s16 unkD8;
-    u8 padDA[0xE0 - 0xDA];
+    u8 padDA[0xDC - 0xDA];
+    u16 unkDC;
+    u16 unkDE;
     s16 unkE0;
     u16 unkE2;
     s16 unkE4;
@@ -559,7 +679,9 @@ typedef struct {
     s16 unkF6;
     u16 unkF8;
     s16 unkFA;
-    u8 padFC[0x106 - 0xFC];
+    u8 padFC[0x100 - 0xFC];
+    u16 unk100;
+    u8 pad102[0x106 - 0x102];
     s16 unk106;
     s16 unk108;
     s16 unk10A;
@@ -568,7 +690,8 @@ typedef struct {
     s16 unk110;
     s16 unk112;
     s16 unk114;
-    u8 pad116[0x11C - 0x116];
+    u8 pad116[0x118 - 0x116];
+    u32 unk118; /* voice number */
     u32 unk11C;
     s32 unk120;
     s32 unk124;
@@ -586,14 +709,21 @@ typedef struct {
     u8 pad3[5];
 } Unk80035B90Frame;
 
+typedef struct {
+    s16 unk0; /* frame count */
+    u8 pad2[2];
+    Unk80035B90Frame unk4[1];
+} Unk80035B90Data;
+
 typedef struct Unk80035B90 {
     u8 unk0; /* active */
     u8 unk1; /* frame */
     u8 unk2; /* tick */
     u8 unk3; /* frame count */
-    u8 pad4[4];
+    Unk80035B90Data *unk4;
     Unk80035B90Frame *unk8;
-    u8 padC[0x14 - 0xC];
+    Unk80035B90Frame *unkC; /* end of frames */
+    Unk80035B90Data *unk10;
     void (*unk14)(); /* called with the object */
 } Unk80035B90;
 
@@ -604,13 +734,14 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 unk4;
-    u8 pad5[0x8 - 5];
-    u16 unk8;
+    u8 unk5;
+    u8 pad6[0x8 - 6];
+    s16 unk8;
     u16 unkA;
     s32 unkC;
     s32 unk10;
     u8 pad14[0x18 - 0x14];
-    s32 unk18;
+    u8 *unk18; /* packet buffer cursor */
     s32 unk1C;
     u8 pad20[0x24 - 0x20];
     u8 unk24;
@@ -628,7 +759,7 @@ typedef struct {
     s32 unk4;
     u8 *unk8; /* help text */
     void (*unkC)(void);
-    u8 pad10[0x18 - 0x10];
+    RECT unk10;
     u8 unk18;
     u8 unk19;
     u8 unk1A;
@@ -645,7 +776,7 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
-    u8 padC[0x10 - 0xC];
+    s32 unkC;
     s32 unk10;
     s32 unk14;
     s32 unk18;
@@ -656,13 +787,18 @@ typedef struct {
     u16 *unk30;
     s32 unk34;
     s32 unk38;
-    u8 pad3C[0x48 - 0x3C];
+    u32 unk3C;
+    u32 unk40;
+    u32 unk44;
     s32 unk48;
     s32 unk4C;
     s32 unk50;
     u8 pad54[0x58 - 0x54];
     s16 unk58;
-    u8 pad5A[0x66 - 0x5A];
+    u8 pad5A[0x5C - 0x5A];
+    s32 unk5C;
+    u8 pad60[0x64 - 0x60];
+    s16 unk64;
     s16 unk66;
     u16 unk68;
     u16 unk6A;
@@ -695,7 +831,9 @@ extern s32 D_80080A24;
 extern s32 *D_80066764;
 
 typedef struct {
-    u8 pad0[0xC];
+    void (*unk0)(void);
+    void (*unk4)(void);
+    u8 pad8[0xC - 8];
     u8 unkC;
     u8 padD[3];
 } Unk80077E44; /* 16-byte entries */
@@ -703,17 +841,37 @@ extern Unk80077E44 *D_80077E44;
 
 /* field / world object (actor) */
 typedef struct {
-    u8 pad0[5];
+    u8 pad0[4];
+    u8 unk4;
     u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
-    u8 pad8[0x11 - 8];
+    u8 pad8[0xB - 8];
+    u8 unkB;
+    u8 padC[0x11 - 0xC];
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
-    u8 pad24[0x40 - 0x24];
+    u8 pad24[0x26 - 0x24];
+    u8 unk26;
+    u8 pad27;
+    u16 unk28;
+    u16 unk2A;
+    u8 pad2C[0x2E - 0x2C];
+    s8 unk2E;
+    u8 pad2F[0x34 - 0x2F];
+    u16 unk34;
+    u8 pad36[0x3B - 0x36];
+    u8 unk3B;
+    u8 pad3C[0x40 - 0x3C];
     VECTOR unk40; /* previous position */
 } Unk8004AB64;
+
+typedef struct Unk8007AECCNode {
+    Unk8004AB64 *unk0; /* key */
+    u8 pad4[8 - 4];
+    struct Unk8007AECCNode *unk8; /* next */
+} Unk8007AECCNode;
 
 typedef struct Unk16D8 {
     struct Unk16D8 *unk0; /* next */
@@ -721,16 +879,34 @@ typedef struct Unk16D8 {
 } Unk16D8;
 
 typedef struct {
-    u8 pad0[0x16D8];
+    u8 pad0[0x1450];
+    Unk8007AECCNode unk1450[32];
+    Unk8007AECCNode *unk15D0; /* active list */
+    Unk8007AECCNode *unk15D4; /* free list */
+    Unk16D8 unk15D8[32];
     Unk16D8 *unk16D8;
-    u8 pad16DC[0x16E4 - 0x16DC];
+    Unk16D8 *unk16DC; /* tail */
+    Unk16D8 *unk16E0; /* free list */
     u8 unk16E4[8];
     u8 unk16EC;
     u8 unk16ED;
     u8 pad16EE[0x16FC - 0x16EE];
     s32 unk16FC;
+    s16 unk1700;
 } Unk8007AECC;
 extern Unk8007AECC *D_8007AECC;
+
+/* Inlined copy of func_8004B040 (find object by id). */
+static inline Unk8004AB64 *func_8004B040_inline(s32 id) {
+    Unk16D8 *n;
+    for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+        if (n->unk4->unk7 == id) {
+            break;
+        }
+    }
+    return n != NULL ? n->unk4 : NULL;
+}
+
 
 typedef struct {
     s32 unk0;
@@ -759,8 +935,9 @@ typedef struct {
     s32 unk4;
 } Unk8007B988;
 extern Unk8007B988 D_8007B988;
+extern s32 D_8007B994;
+extern s32 D_8007B998;
 
-extern u8 D_80076B0C;
 extern s32 D_80077E20;
 extern s32 D_8007ADFC;
 extern u32 D_800739A0[];
@@ -792,6 +969,9 @@ extern Unk4 D_80068158;
 
 extern u8 D_800739B8[];
 extern Unk80080A10 *D_8007F790;
+extern Unk80080A10 D_8007F8F0;
+void func_8005A320(s32, s32);
+void func_8005963C(s32, s32);
 extern s16 D_8007F95A;
 extern s32 D_8008322C;
 typedef struct {
@@ -806,7 +986,8 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3; /* selected party slot */
-    u8 unk4;
+    s32 unk4; /* frame counter */
+    s32 unk8;
 } Unk80077E50;
 extern Unk80077E50 D_80077E50;
 extern u8 D_80077E53;
@@ -814,7 +995,7 @@ extern s32 D_8007AE54;
 extern u8 D_8007954E;
 extern u8 D_8007AD1E;
 extern s32 D_8007BBA8[8];
-extern s32 D_8007BC0C;
+extern u8 *D_8007BC0C; /* help-arrow animation script */
 extern s32 D_8007BC08;
 extern s32 D_8007BBF0;
 extern volatile s32 D_800809E0;
@@ -832,7 +1013,7 @@ void func_8002FAAC(s32);
 void func_8002FB08(s32);
 void func_8002FB64(s32);
 void func_80030770(u8 *);
-s32 func_8002F5A0(s32);
+s32 func_8002F5A0(void (*)(void));
 void *func_80030B34(void *, void *, s32);
 void *func_80030EE4(void *, void *, s32);
 void *func_80031284(void *, void *, s32);
@@ -852,12 +1033,18 @@ void func_80014E20(s32, s32, s32, s32);
 void func_8003556C(void (*)(void));
 
 typedef struct {
+    u8 pad0[4];
+    u16 unk4; /* row count */
+    u16 unk6; /* offset of a u16[][6] flag table */
+} Unk8007BD44;
+
+typedef struct {
     u16 unk0;
     s16 unk2;
     s16 unk4;
     s16 unk6;
     s32 unk8;
-    s32 unkC;
+    Unk8007BD44 *unkC;
 } Unk8007BD38;
 extern Unk8007BD38 D_8007BD38;
 
@@ -895,7 +1082,9 @@ typedef struct {
     s32 unk4;
     s32 unk8;
     s32 unkC;
+    s32 unk10;
 } Unk80080AA0;
+void func_8005A014(); /* (Unk80080AA0 *, u8 *, u8 *, s32) */
 extern Unk80080AA0 D_80080AA0;
 
 typedef struct {
@@ -903,7 +1092,8 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[2];
+    u8 unk4;
+    u8 unk5;
 } Unk6; /* card inventory entry */
 
 typedef struct {
@@ -914,16 +1104,33 @@ typedef struct {
 } Unk80083248;
 extern Unk80083248 D_80083248;
 
-typedef struct {
-    u8 pad0[8];
+typedef struct Unk8007B9C0 {
+    struct Unk8007B9C0 *unk0; /* parent */
+    s16 unk4; /* x */
+    s16 unk6; /* y */
     s16 unk8;
-    u8 padA[0x14 - 0xA];
-    s32 unk14;
-    u8 pad18[0x2C - 0x18];
+    s16 unkA;
+    s32 (*unkC)(struct Unk8007B9C0 *, s32); /* input handler */
+    s32 unk10;
+    Window *unk14;
+    s16 unk18; /* w */
+    s16 unk1A;
+    s16 unk1C;
+    s16 unk1E; /* message index */
+    s16 unk20;
+    s16 unk22;
+    s16 unk24;
+    u8 unk26;
+    u8 unk27; /* h */
+    u8 unk28;
+    u8 pad29;
+    u8 unk2A;
+    u8 unk2B;
 } Unk8007B9C0;
 extern Unk8007B9C0 D_8007B9C0[];
 
 extern u8 D_80077E2F;
+extern s16 D_80077E30; /* = D_80077E28.unk8 */
 
 void func_80036470(void);
 void func_80059AA8(s32, s32);
@@ -978,16 +1185,18 @@ void *func_8001C7FC(s32, s32, s32); /* mode 4: address, 5: size */
 void func_8002CD4C(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
-s32 func_80021380(s32);
+s32 func_80021380(void (*)(u8, u8 *));
 void func_80021340(void);
 
 typedef struct {
     s32 unk0;
     s32 unk4;
-    u8 pad8[0xC - 8];
+    s16 unk8; /* fine tune */
+    s16 unkA; /* base note */
     u16 unkC;
     u16 unkE;
 } Unk8005EBB4;
+extern u32 D_8006F410[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 
@@ -1001,15 +1210,18 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2;
+    u8 unk2;
     u8 unk3;
     u8 unk4;
     u8 unk5;
     u8 unk6;
     u8 unk7; /* = D_80077E2F */
-    u8 pad8[0x10 - 8];
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
     s32 unk10; /* loaded file id */
-    u8 pad14[0x1C - 0x14];
+    RECT unk14;
     Unk80077E28Entry *unk1C;
     void (*unk20)(void);
 } Unk80077E28;
@@ -1080,17 +1292,14 @@ s32 func_8005703C(s32, s32);
 void func_80056614(void);
 void func_8006008C(AkaoChannel *, s32);
 void func_800600C0(AkaoChannel *, s32);
-u8 func_80022D3C(s32);
+u8 func_80022D3C(void (*)(u8 *));
 
-typedef struct {
-    u8 pad0[0xC];
-    s32 unkC;
-} Unk8005AA78;
+
 
 extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
 
-void func_8005A658(Unk8005AA78 *);
+void func_8005A658(Unk80080AA0 *);
 
 /* ---- hoisted from overlay headers ---- */
 
@@ -1118,23 +1327,7 @@ typedef struct {
 } SprtWords; /* SPRT written as whole words */
 
 /* menu list/cursor state passed to func_8002EE8C etc. */
-typedef struct {
-    u8 pad0[2];
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5; /* scroll top */
-    u8 unk6; /* cursor row */
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA; /* row height */
-    u8 unkB; /* flags */
-    u8 unkC;
-    u8 unkD;
-    u8 unkE;
-    u8 padF;
-} MenuList;
+
 
 /* visible window of a MenuList (func_8002F344) */
 typedef struct {
@@ -1183,8 +1376,8 @@ extern s32 D_80077DC0; /* frame counter? */
 s32 func_80012AD4(void);
 void func_80012D08(void);
 void func_80012D18(void);
-s32 func_80016EC0(s32, s32, s32, s32);
-void func_80016ED0(s32);
+s32 func_80016EC0(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
+s32 func_80016ED0(s32); /* BIOS EnableEvent */
 s32 func_8001C750(s32, s32);
 s32 func_8001C8B0(s32, s32, s32, s32);
 void func_8001CCB4(s32, s32, s32);
@@ -1195,14 +1388,207 @@ void func_8001DAA4(s32, s32, s32, RECT *);
 void func_8001DCB8(void);
 FileEntry *func_8001E218(s32, s32);
 void func_80021640(s32);
-void func_8002177C(void *, s32, s32, void *, s32, s32, s32);
+typedef struct CdReadCtx {
+    s32 unk0; /* start sector */
+    s32 unk4; /* total bytes */
+    u8 *unk8; /* destination */
+    s32 unkC; /* bytes done */
+    s32 unk10; /* chunk size, -1 = all */
+    void (*unk14)(struct CdReadCtx *); /* done callback */
+    s32 unk18;
+    s32 unk1C; /* state */
+    u8 *unk20;
+} CdReadCtx; /* GameData.unk854 */
+void func_80024070(void);
+void func_8002C5CC(s32, s32);
+void func_8002C694(s32, s32);
+void func_8002C740(s32, s32, s32);
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} Rgb32;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    Rgb32 unk24; /* current */
+    Rgb32 unk30; /* output */
+    s32 unk3C;
+    s32 unk40;
+    s32 unk44;
+} Unk80077D68; /* screen fade state */
+extern Unk80077D68 D_80077D68;
+s32 func_8002FD98(s32, s32);
+void func_80032B08(s32);
+void func_8002C974(s32, s32, s32);
+typedef struct {
+    s32 unk0;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 pad7;
+} Unk8006BC40;
+extern Unk8006BC40 D_8006BC40[23];
+typedef struct {
+    u8 x0, y0, x1, y1, x2, y2, x3, y3;
+} Unk80068F48;
+extern Unk80068F48 D_80068F48[];
+void func_80057708(s32, s32, s32);
+void func_80057788(s32, s32, s32);
+s32 func_80033964(u32);
+s32 func_8003502C(u8 *, s32);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+} Unk8006DD88; /* base stats per character class */
+extern Unk8006DD88 D_8006DD88[];
+void func_8002C210(void);
+void func_8002E490(void);
+void func_800225BC(u8 *);
+u8 func_80022C10(s32, void (*)(u8 *));
+void func_8005EC20(AkaoChannel *, u32);
+typedef struct {
+    u8 unk0[4]; /* stat bonuses */
+    u8 pad4[0xC - 4];
+} Unk8006D548;
+extern Unk8006D548 D_8006D548[];
+void func_80033BD0(u32);
+void func_8004EA30(Unk8007B9C0 *);
+Unk8007B9C0 *func_8004EA3C(void);
+extern s32 D_8007B968;
+extern s32 D_8007B970;
+extern Unk4 D_8007B99C;
+
+
+void func_800615F8(void);
+extern u8 D_8006F40C[];
+extern Unk80080A10 *D_800831C8[24];
+void func_800577BC(s32, s32, s32);
+void func_80035108(void);
+void func_80035680(void);
+void func_80035B90(Unk80035B90 *);
+void func_80032A18(u8 *);
+void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
+s32 func_80056750(s32 *, s32, s32, u32);
+typedef struct {
+    s32 unk0[4];
+} Unk80010CD0;
+extern Unk80010CD0 D_80010CD0; /* min widths per window style */
+void func_80059414(void);
+typedef struct {
+    s16 unk0; /* x */
+    s16 unk2; /* w */
+    u8 pad4[4];
+    u8 unk8; /* y */
+    u8 unk9; /* h */
+} Unk8004EBC0;
+extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
+extern u8 D_8006CACC[];
+void func_800329FC(u8 *);
+extern AkaoChannel D_80080AC8[];
+void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
+u16 func_800593C0(u32, AkaoChannel *);
+s32 func_8002B43C(s32);
+void func_8002B47C(s32);
+extern RECT D_8006BC38;
+void func_80061C1C(void);
+void func_80057688(s32, s32);
+void func_80057640(s32, s32, s32, s32);
+u8 func_8002F800(void);
+void func_80032238(void);
+u16 func_80019150(void);
+void func_80019160(u16, s32);
+void func_80019750(Unk4 *);
+void func_80019774(Unk4 *);
+extern u8 D_80077178;
+extern Unk4 D_8007717C;
+extern Unk4 D_8006BCF8;
+void func_80035E40(void);
+void func_80035F94(void);
+void func_80060D1C(s32, s32, s32, s32);
+void func_80060ED8(s32, s32, void (*)(void));
+s32 func_800C44F4(s16); /* field overlay (ovl_0a) */
+extern CdRequest D_80076148;
+s32 func_8005EB40(s32 *, s32, s32, s32);
+s32 func_80021320(void);
+void func_800233CC(); /* called with a u8 it ignores */
+u8 func_800240E8(void);
+void func_80023A6C(void);
+void func_8002417C(void);
+extern Unk80035B90Data D_80010E48;
+void func_80035B24(Unk80035B90 *, Unk80035B90Data *);
+s32 func_800565DC(s32 *);
+extern u16 *D_800809DC;
+extern u16 *D_800809E4;
+extern u16 *D_80083148;
+s32 func_8005A5FC(s32);
+void func_8005A20C(u8 **, u8 **, s32);
+void func_800575B4(u32);
+extern u8 *D_800809E8;
+extern s32 D_800809C0[];
+extern s32 D_800809D8; /* = D_800809C0[6] */
+void func_800616F8(s32, s32, s32, s32);
+s32 func_80021A1C(Unk80021938 *);
+u8 func_8002F8BC(); /* called with an argument it ignores */
+extern void (*D_8006CA64[])(void);
+extern s32 D_8006CA40[];
+void func_80032708(void);
+void func_80032798(void);
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk8006DDD0;
+extern Unk8006DDD0 D_8006DDD0[];
+typedef struct Unk8007BC20Node {
+    struct Unk8007BC20Node *unk0; /* next */
+    u8 pad4[0xC - 4];
+} Unk8007BC20Node;
+typedef struct {
+    Unk8007BC20Node *unk0; /* free list */
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    DR_TPAGE unk10;
+    DR_TPAGE unk18;
+    u8 pad20[0x24 - 0x20];
+    s32 unk24;
+} Unk8007BC20;
+extern u8 *D_8007BC18;
+extern u8 *D_8007BC48;
+extern Unk8007BC20 D_8007BC20;
+extern Unk8007BC20 D_8007BC50;
+void func_80032C4C(s32, s32, u32 *, u8);
+extern u32 D_8006CA78[];
+extern u32 D_80077CA4[];
+s32 func_80056700(s32, s32);
+void func_80051568(void);
+void func_8004E924(void);
+void func_8004E7E0(void);
+void func_8004BE00(s32);
+void func_8004AC80(void);
+extern u16 D_8007AE12;
+void func_80032384(void);
+void func_800326B0(void);
+void func_80036560(void);
+CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
 s32 func_800217C4(void *);
 void func_80021C60(void);
 void func_80021CDC(s32);
-s32 func_80021CFC(void);
+Unk80021938 *func_80021CFC(void);
 s32 func_800220E8(s32);
 void func_80022390(s32);
-void func_80022B28(void);
+s32 func_80022B28(void);
 void func_80022BD0(void);
 s32 func_80022DF0(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
 s32 func_800230A0(void);
@@ -1210,9 +1596,18 @@ u8 func_8002306C(void);
 void func_800239D0(void);
 void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
-void func_80027710(s32, s32, s32, void *, s32);
-void func_8002AD38(u8 *, u8 *);
-s32 func_8002AE7C(s32);
+s32 func_80027710(s32, s32, s32, void *, u8);
+u8 *func_8002AD38(u8 *, u8 *);
+s32 func_8002AE7C(u8 *);
+typedef struct {
+    u8 pad0[4];
+    u8 unk4; /* advance width */
+    u8 pad5[3];
+} Glyph8;
+extern Glyph8 D_80068690[]; /* indexed by ASCII code */
+extern Glyph8 D_80068890; /* & */
+extern Glyph8 D_80068CE0; /* . */
+extern Glyph8 D_80068DC8; /* _ */
 void func_8002B524(s32, s32, s32, s32, s32);
 void func_8002B56C(s32, s32, s32, u8 *, s32);
 void func_8002B5FC(s32, s32, s32, u8 *, s32);
@@ -1220,14 +1615,26 @@ u8 *func_8002BD54(u8 *, u8 *);
 void func_8002C064(s32);
 void func_8002C0DC(s32);
 void func_8002C308(s32);
-void func_8002C4B0(s32);
+void func_8002C4B0(u8);
 void func_8002D9B4(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
+Window *func_8002EA7C(RECT *, s32, s32, Window *);
+
+/* Inlined copy of func_8002DD00 (close window). */
+static inline void func_8002DD00_inline(Window *w) {
+    if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
+        w->unk1C = 2;
+        if (D_80077148.unk1 != 2) {
+            func_8002D1AC(w, w->unk28);
+        }
+    }
+}
+
 void func_8002DD00(Window *);
 void func_8002DE10(Window *);
 void func_8002DE60(void);
 void func_8002DEE4(RECT *, s32, s32);
-void func_8002E040(RECT *, s32, s32, void *);
+void func_8002E040(RECT *, s32, s32, MenuList *);
 void func_8002E2E4(Window *, void (*)(Window *));
 void func_8002E2EC(Window *, void (*)(Window *));
 void func_8002E2F4(Window *, void (*)(Window *));
@@ -1237,12 +1644,14 @@ void func_8002E31C(Window *, u8);
 void func_8002E334(Window *, s16);
 void func_8002EB64(s32, s32);
 void func_8002EB74(MenuList *);
-void func_8002ECA0(MenuList *, MenuView *);
+void func_8002D550(Window *);
+void func_8002D7E8(Window *);
+MenuView *func_8002ECA0(MenuList *, MenuView *);
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
 void func_8002EE8C(MenuList *, s32);
 void func_8002F044(MenuList *, s32);
 void func_8002F0EC(MenuList *, s32);
-void func_8002F344(MenuList *, MenuView *);
+MenuView *func_8002F344(MenuList *, MenuView *);
 void func_8002F40C(MenuList *, RECT *, RECT *);
 void func_8002F488(s32);
 void func_8002F514(s32);
@@ -1258,7 +1667,7 @@ void func_80032574(void);
 void func_80032628(void (*)(void));
 void func_80032634(u8);
 void func_80032640(u8);
-void func_80033CCC(s32, s32);
+s32 func_80033CCC(s32, s32);
 void func_80033D1C(u8);
 u8 func_800349BC(s32, s32);
 u8 func_80034A30(Character *);
@@ -1282,7 +1691,7 @@ s32 func_80056CAC(s32);
 s32 func_80056CBC(s32);
 void func_80062344(void);
 void func_8006237C(void);
-void func_80062420(u8, u8, u8, u8, s32, s32);
+s32 func_80062420(u8, u8, u8, u8, u8, u8);
 s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
@@ -1309,32 +1718,44 @@ void func_80065228(s32);
 typedef struct {
     u8 unk0[8];
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
+extern Unk8 D_80076B0C; /* last CD status/result bytes */
 
-void func_800384D0(s32, s32, s32, s32);
-void func_8005A284(Unk80080A10 *, AkaoChannel *, void *);
-void func_80062830(Unk6 *, u8, s32, s32);
+s32 func_800384D0(Unk8004AB64 *, s32, s32, s32);
+extern s32 D_8007AE34;
+extern CdlATV D_8007F718;
+void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
+void func_80062830(Unk6 *, u8);
 extern s32 D_8006FB40[];
 
 typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
+    s32 unkC; /* also accessed as D_80080A24 */
 } Unk80080A18;
 extern Unk80080A18 D_80080A18;
 
 
 extern AkaoChannel D_8007BD48[];
+extern s32 D_80080AC4;
 extern AkaoChannel D_8007E3D8[];
 extern s32 D_800831C4;
 
 typedef struct {
     s32 unk0;
-    u8 pad4[0x10 - 4];
+    u32 unk4;
+    u32 unk8;
+    u32 unkC;
     s32 unk10;
-    u8 pad14[0x28 - 0x14];
+    u8 pad14[0x1C - 0x14];
+    u32 unk1C;
+    u32 unk20;
+    u32 unk24;
     u16 unk28;
 } Unk80080A70;
 extern Unk80080A70 D_80080A70;
+void func_8005FD10(AkaoChannel *, u32);
+void func_8005FDD8(AkaoChannel *, u32);
 extern u16 D_80080A98; /* = D_80080A70.unk28 */
 extern s32 D_80080A80;
 
@@ -1353,6 +1774,13 @@ extern s32 D_8007B6F8;
 extern u8 **D_8007B70C;
 void func_80052DA0(void);
 s32 func_80052D40(void);
+void func_80052D70(s32);
+extern s32 D_8007B718;
+void func_8004E7FC(void);
+void func_8004883C(void);
+s32 func_80048F54(void);
+void func_8004FBD8(void);
+void func_8004FE0C(void);
 
 s16 func_800BEC64(s32); /* overlay code at 0x800BEC64 */
 void func_800363BC(void);
@@ -1360,12 +1788,18 @@ void func_80036444(void);
 void func_80036528(void);
 void func_8002F9F0(void);
 
-void func_8002267C(void *);
+void func_8002267C(CdRequest *);
+u8 func_800230B8(CdRequest *);
+void func_800231A0(u8, u8 *);
+void func_800227C8(u8, u8 *);
 s32 func_8005DD54(s32, s32);
 s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
 void func_80056644(void *, s32);
 void func_800566D0(void);
+void func_8005681C(void);
+void func_8005D6BC(void);
+extern u8 D_80080990[];
 void func_80056CCC(s32, s32);
 void func_800575D0(s32);
 s32 StopRCnt(s32);
@@ -1373,7 +1807,13 @@ void SpuQuit(void);
 extern s32 D_8006F318;
 extern u8 D_8006F334[];
 extern s32 D_8007B708;
-extern s32 *D_8007B954;
+/* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
+typedef struct {
+    s32 unk0; /* count */
+    u16 unk4[1];
+} Unk8007B954;
+extern Unk8007B954 *D_8007B954;
+extern u8 *D_8007BB80[];
 
 typedef struct {
     u8 pad0[2];
@@ -1384,11 +1824,9 @@ typedef struct {
 
 /* ---- main batch 2 ---- */
 
-typedef struct {
-    s32 unk0[9];
-} Unk24; /* 0x24-byte block copied from D_800761D0.unk944 */
-extern Unk24 D_80076178;
-extern s32 D_8007B704;
+extern CdRequest D_80076178;
+extern CdRequest D_800761A8;
+extern Unk8004AB64 *D_8007B704;
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
 extern s32 D_8007BBE0;
@@ -1401,7 +1839,7 @@ typedef struct {
     u8 pad6[2];
 } Unk8007F798;
 extern Unk8007F798 D_8007F798[24];
-void func_80058830(AkaoChannel *, s32, u16);
+void func_80058830(); /* (AkaoChannel *, s32 voice) */
 
 typedef struct {
     s32 unk0;
@@ -1410,12 +1848,20 @@ typedef struct {
     s32 unkC;
     s32 unk10;
     s32 unk14;
-    u8 pad18[0x48 - 0x18];
-    s32 unk48;
-    s32 unk4C;
-    s32 unk50;
-    u8 pad54[0x60 - 0x54];
-    u32 unk60;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    s32 unk2C;
+    Rgb32 unk30;
+    Rgb32 unk3C;
+    Rgb32 unk48; /* output */
+    s32 unk54;
+    s32 unk58;
+    s32 unk5C;
+    u32 unk60; /* first-phase frames */
+    s32 unk64; /* second-phase frames */
 } Unk80077D00;
 extern Unk80077D00 D_80077D00;
 
@@ -1432,8 +1878,11 @@ typedef struct {
     u8 pad4[4];
 } Unk8006D128; /* support abilities, indexed by id - 0xC0 */
 extern Unk8006D128 D_8006D128[];
-void func_8003493C(s32, s32, s32);
+void func_8003493C(s32, s32, u8);
 extern s32 D_8006E510[];
+extern RECT D_8006E508;
+extern Unk80077E28Entry D_8006E530[];
+extern Unk80077E28Entry D_8006E5B0[];
 u8 func_80022C60(s32, s32, void *, void (*)(u8 *));
 void func_80036634(u8 *);
 extern void *D_8007AED0[8];
@@ -1457,20 +1906,44 @@ extern u8 *D_8007B9A8;
 extern u32 D_8007B9B0[];
 extern u8 **D_8007BCA8;
 void func_80051004(u8);
+extern u8 D_8007B930[8]; /* name text being converted */
 
 typedef struct {
-    u8 pad0[8];
+    u8 *unk0; /* stream read pointer */
+    u8 *unk4; /* loop start */
     s32 unk8;
-    u8 padC[0x10 - 0xC];
+    u32 unkC;
     s32 unk10;
-    u8 pad14[0x34 - 0x14];
-    u8 unk34[4];
+    u32 unk14; /* bytes left */
+    u32 unk18; /* loop length (initial) */
+    u32 unk1C; /* loop length */
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    s32 unk2C;
+    s32 unk30;
+    s32 unk34;
+    u32 unk38;
+    u32 unk3C;
+    s32 unk40; /* volume */
+    u8 pad44[4];
+    s32 unk48;
+    s32 unk4C; /* pan in bits 8-15 */
+    u8 pad50[0x58 - 0x50];
+    s32 unk58;
 } Unk80083168;
+u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
+void func_80060FA8(void);
+void func_800599D4(Unk80080A10 *, AkaoChannel *, s32);
+void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
+void func_800618C0(s32, s32);
+void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
-void func_80061BC8(void *, s32);
+s32 func_80061BC8(s32 *, s32);
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void func_800576BC(s32, s32);
 void func_80062118(void);
+void func_80061E1C(s32, s32, void (*)(void));
 void func_800621D4(void);
 
 /* ---- main batch 5 ---- */
@@ -1480,6 +1953,8 @@ void func_80028B20(u8 *);
 u8 func_80033D28(void);
 void func_80012CF8(void);
 extern u8 *D_8007B720;
+extern u8 D_8007B724[]; /* random byte table */
+
 extern u8 D_8007B92D[];
 void func_8004BF20(void);
 
@@ -1500,9 +1975,36 @@ typedef struct {
     u8 unk1; /* ap needed? */
 } AbilityEntry;
 extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34 bits 12-16 */
+
+/* Inlined copy of func_80034430 (ability slot of a character). */
+static inline s32 func_80034430_inline(s32 ch, s32 id) {
+    s32 row;
+    s32 i;
+    if (ch >= 9) {
+        return -1;
+    }
+    row = ((D_8006794C->unk1C->unk3C + ch)->unk34 >> 12) & 0x1F;
+    if (row >= 16) {
+        return -1;
+    }
+    for (i = 0; i < 0x30; i++) {
+        if (D_8006CB28[row][i].unk0 == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void func_80025ED4(s32, s32, s32, s32, s32, s32, s32);
 extern u8 D_8007AF00;
-void func_80024428(s32, s32, s32, void *);
+typedef struct {
+    u8 unk0; /* show second character */
+    u8 unk1; /* slide direction */
+    u8 unk2; /* party slot */
+    u8 unk3; /* second party slot */
+    s32 unk4; /* slide step */
+} Unk80024428;
+void func_80024428(s32, s32, s32, Unk80024428 *);
 void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void func_800273C0(s32, s32, s32, s32, s32);
 void func_80033D38(u8 *, s32); /* default name by id */
@@ -1511,6 +2013,13 @@ s32 func_8002BCC0(u8 *); /* strlen */
 extern u32 D_80077DBC; /* = D_80077DB0.unkC, read on its own by ovl_3a */
 extern u32 D_80077520; /* pad buttons (repeat?) */
 void func_8002886C(void);
+void func_80028994(s32, RECT *, RECT *);
+typedef struct {
+    u32 *unk0; /* portrait image data, 0x6C0 bytes each */
+    s32 unk4;  /* count */
+} Unk80076F78;
+extern Unk80076F78 D_80076F78;
+extern u32 D_80076F80[]; /* first CLUT, right after D_80076F78 */
 s32 func_80027E5C(s32, s32);
 typedef struct {
     u8 pad0[4];
@@ -1527,7 +2036,7 @@ void func_8002C8AC(s32, s32, s32);
 s32 func_80022B18(void);
 s32 func_80062560(u8);
 Unk6 *func_800625A0(s32, s32);
-void func_800626D0(s32, s32);
+s32 func_800626D0(s32, s32);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* collector points */
@@ -1540,17 +2049,25 @@ void func_8003563C(u8);
 s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 D_800739A8[];
-u8 *func_80027834(s32, s32, u32 *, s32, s32, u8 *, u8 *);
+u8 *func_80027834(s32, s32, u32 *, s32, u8, s32 *, void *);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+} Unk8006BC0C;
+extern Unk8006BC0C D_8006BC0C[4];
 u8 func_8003561C(void);
 void func_80025A28(s32, s32, s32, s32, s32, s32);
 void func_8002EF58(MenuList *, u32);
+void func_8002F1CC(MenuList *, s32);
+void func_8002F284(MenuList *, s32);
 void func_8002EEF0(MenuList *, u32);
 extern u32 D_80077524; /* pad buttons */
 extern s32 D_80070430;
 extern u8 D_8007AF02;
 void func_8003384C(Character *);
 s32 func_80033280(s32, s32, u8 *);
-void func_80028720(u8 *, s32);
+void func_80028720(void *, s32);
 void func_8002C1E4(void);
 s32 func_80065EB0(s32);
 s32 func_80065EA0(s32);
@@ -1574,7 +2091,7 @@ s32 func_8004BC38(u8);
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
 void func_800362C8(void);
-void func_80054F80(void);
+s32 func_80054F80(void);
 void func_80050AAC(void);
 void func_8005546C(s32, s32);
 void func_80056228(void);
@@ -1582,15 +2099,305 @@ s32 func_80024030(void);
 s32 func_8002AA04(s32, u8 *, s32);
 extern s32 D_800704C0;
 extern u8 D_8006A218[]; /* item names */
+extern u8 D_8006ADAC[]; /* key item names */
+typedef struct {
+    s16 unk0; /* name offset into D_8006ADAC */
+    u8 pad2[6];
+} Unk8006B374;
+extern Unk8006B374 D_8006B374[];
 Unk16D8 *func_8004AE9C(void);
 extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
 void SetFarColor(s32, s32, s32);
 void SetFogNearFar(s32, s32, s32);
-u8 func_8003378C(void);
+s32 func_8003378C(void);
 extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
 void func_80015C38(const char *, ...); /* printf */
 
+/* Inlined body of func_8004E958 for one entry (close and unlink). */
+static inline void func_8004E958_inline(Unk8007B9C0 *p) {
+    Unk8007B9C0 *q;
+    if (p != NULL && p->unk8 != 0) {
+        p->unk8 = 0;
+        if (func_8004EA3C() == p) {
+            func_8004EA30(p->unk0);
+        }
+        for (q = D_8007B9C0; q < D_8007B9C0 + 10; q++) {
+            if (q->unk8 != 0 && q->unk0 == p) {
+                q->unk0 = NULL;
+            }
+        }
+    }
+}
+
+/* Inlined copy of func_8004EEA0 (close an entry, its window and its children). */
+static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
+    if (p != NULL && p->unk8 != 0) {
+        if (p->unk14 != NULL) {
+            func_8002DD00(p->unk14);
+        }
+        if (D_8007B968 >= 0 && D_8007B970 == p->unkA) {
+            func_80019774(&D_8007B99C);
+        }
+        func_8004E958_inline(p);
+    }
+}
+extern s32 D_8007B990;
+
+/* actor-like object updated by func_8004B9B8 */
+typedef struct {
+    u8 pad0[0xF];
+    u8 unkF;
+    u8 pad10[0x22 - 0x10];
+    u16 unk22;
+    u8 pad24[0x34 - 0x24];
+    u16 unk34;
+    u16 unk36;
+    u8 unk38;
+    u8 unk39;
+    u8 unk3A;
+    u8 unk3B;
+    u8 pad3C[0x50 - 0x3C];
+    u16 unk50;
+    u16 unk52;
+    u16 unk54;
+    u8 pad56[0x5A - 0x56];
+    u16 unk5A;
+    u8 pad5C;
+    u8 unk5D;
+    u8 pad5E[0x60 - 0x5E];
+    u8 unk60;
+    u8 unk61;
+    u8 unk62; /* flags */
+    u8 unk63; /* timer */
+    u8 unk64;
+    u8 pad65[0x69 - 0x65];
+    u8 unk69;
+    u8 pad6A[0x7C - 0x6A];
+    u8 unk7C[4];
+} Unk8004B9B8;
+u16 func_800216D8();
+s32 func_8001E350(s32);
+
+/* Inlined copy of func_8004B9B8. */
+static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
+    s32 v;
+    p->unk22 = p->unk52 & 0xFFF;
+    v = p->unk5A;
+    if (v != p->unk36) {
+        p->unk36 = v;
+        p->unk3A = 0;
+        p->unk64 = 0;
+        p->unk38 = func_800216D8(p->unk34, v);
+        p->unk5D = p->unk69;
+    }
+    p->unkF &= 0x7F;
+}
+
+s32 func_80037D6C(s32);
+extern u8 *D_800CF478;
+/* help-window rect plus frame style and x offset (func_80035214) */
+typedef struct {
+    RECT unk0;
+    s16 unk8; /* style */
+    s16 unkA; /* x offset */
+} Unk80035214;
+void func_80035214(Unk80035214 *);
+void func_80035C2C(s32, s32, s32, Unk80035B90 *);
+s32 func_8002FD70(s32, s32, s32);
+s32 func_8002FDE8(s32, s32, s32);
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} LineF2Words; /* LINE_F2 */
+extern u32 D_80068F20[][4]; /* line colours */
+/* Inlined copy of func_80027948 (SPRT + DR_TPAGE from a sprite descriptor). */
+static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+    DrTpageWords *t;
+    setlen(s, 4);
+    if (flag) {
+        s->rgbc = 0x66606060;
+    } else {
+        s->rgbc = 0x64808080;
+    }
+    s->xy = (x & 0xFFFF) | (y << 16);
+    s->uvclut = d->unk0;
+    s->wh = d->unk4 | (d->unk5 << 16);
+    addPrim(ot, s);
+    s++;
+    t = (DrTpageWords *)s;
+    setlen(t, 1);
+    t->code = (d->unk6 & 0x9FF) | 0xE1000600;
+    addPrim(ot, t);
+    *out = d->unk4;
+    return (u8 *)++t;
+}
+/* Inlined copy of func_8004B2F4 (move an object's node to the free list). */
+static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
+    Unk8007AECCNode *n;
+    Unk8007AECCNode *prev = NULL;
+    for (n = D_8007AECC->unk15D0; n != NULL; n = n->unk8) {
+        if (n->unk0 == key) {
+            break;
+        }
+        prev = n;
+    }
+    if (prev != NULL) {
+        prev->unk8 = n->unk8;
+    } else {
+        D_8007AECC->unk15D0 = n->unk8;
+    }
+    n->unk8 = D_8007AECC->unk15D4;
+    D_8007AECC->unk15D4 = n;
+}
+void func_8002E718(RECT *, s32, MenuList *);
+void func_8002E7FC(RECT *, s32, MenuList *, s32);
+void func_8002E960(RECT *, s32, MenuList *, s32);
+void func_80025108(RECT *, s32, s32, s32);
+void func_8002709C(RECT *, s32, u8, u8, s32);
+extern s32 D_8008315C;
+extern s16 D_8006F640;
+extern s16 D_8006F540[]; /* pan curve, 256 entries */
+/* item icon sprites (D_800689B0) */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u16 unk2; /* clut */
+    u8 unk4; /* w */
+    u8 unk5; /* h */
+    u16 unk6; /* tpage */
+} Unk800689B0;
+extern Unk800689B0 D_800689B0[];
+extern Unk800689B0 D_80068D70[];
+u8 func_8002E4BC(Window *);
+void func_8002CB18(Window *);
+void func_8002E588(Window *);
+/* sprite cell of a frame animation (func_800357E0) */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u8 unk2; /* x + 0x80 */
+    u8 unk3; /* y + 0x80 */
+    u32 unk4; /* clut | tpage bits << 16 */
+    u16 unk8; /* w */
+    u16 unkA; /* h */
+} Unk800357E0;
+/* debug/system text output (hand-written asm, 0x80051xxx) */
+void func_800515B8(void);
+void func_800512B8(s32, s32);
+void func_800512C8(s32, s32);
+void func_800513CC(s32);
+void func_80051610(void);
+extern s32 *D_8007B6F0; /* script value stack pointer */
+extern void *D_8007B700; /* script current object */
+
+/* Inlined copy of func_8004B404 (read script variable, refreshing 2-4). */
+static inline u16 func_8004B404_inline(s32 arg0) {
+    s32 i = arg0 & 7;
+
+    switch (i) {
+    case 2:
+        D_8007AE10[2] = func_800BEC64(0);
+        break;
+    case 3:
+        D_8007AE10[3] = func_800BEC64(1);
+        break;
+    case 4:
+        D_8007AE10[4] = func_800BEC64(2);
+        break;
+    }
+    return D_8007AE10[i];
+}
+extern s32 D_8007BB98;
+extern s32 D_8007B964;
+void func_8004C8C4(Unk8007B9C0 *, u8 *);
+void func_8004D2C0(Unk8007B9C0 *, u8 *);
+void func_8004D69C(Unk8007B9C0 *, u8 *);
+void func_80051300(void);
+void func_80051380(void);
+void func_80050F4C(s32);
+
+/* Inlined lookup of message i in the current offset table (D_8007B954). */
+static inline u8 *func_8004D940_msg(s32 i) {
+    u8 *e = NULL;
+    u16 *t;
+
+    if (i >= 0 && i < D_8007B954->unk0) {
+        t = D_8007B954->unk4;
+        e = (u8 *)t;
+        e += t[(D_8007B708 == 2 || D_8007B708 == 4) ? i * 2 : i * 4 + 2];
+    }
+    return e;
+}
+/* AP learned by a character for ability id, -1 if not learnable (inlined helper). */
+static inline s32 func_80034430_ap_inline(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    if (i < 0) {
+        return -1;
+    }
+    return D_8006794C->unk1C->unk3C[ch].unk58[i];
+}
+
+/* AP needed to master ability id (inlined form of func_800347D8). */
+static inline s32 func_800347D8_inline(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    if (i < 0) {
+        return 0;
+    }
+    return D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+}
+void func_800576A0(s32, s32);
+void func_80057738(s32, s32);
+void func_80057760(s32, s32);
+/* streamed AKAO sound header (func_800616F8) */
+typedef struct {
+    u8 pad0[0x10];
+    u32 unk10; /* data size */
+    u32 unk14; /* loop start offset */
+    s32 unk18; /* flags */
+    u16 unk1C;
+    u8 pad1E[0x20 - 0x1E];
+    u32 unk20; /* loop length */
+    u8 pad24[0x40 - 0x24];
+    u8 unk40[1]; /* sample data */
+} AkaoStream;
+s32 func_80060A08(void);
+void func_80061624(void);
+void func_8006100C(void);
+void func_80060A98(void);
+u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
+void func_8002E660(Window *);
+s32 func_80034A64(s32, s32, u8);
+s32 func_80034B50(s32, s32, u8);
+s32 func_80034C64(s32, s32, u8);
+s32 func_80034D78(s32, s32, u8);
+s32 func_80034F7C(s32, s32);
+s32 func_80034FD4(s32, s32);
+s32 func_80034E80(s32, s32, u8);
+void func_80033DCC(Character *);
+POLY_FT4 *func_80051530(void);
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u16 unk2; /* clut */
+} Unk80068788;
+extern Unk80068788 D_80068788;
+extern s32 D_8007BC00; /* colour */
+extern s32 D_8007BBF8; /* half width */
+extern s32 D_8007BBFC; /* height */
+extern s32 D_8007BC04;
+extern s32 D_8007AEC8;
+extern u8 D_8006E6D8[];
+extern u8 D_8006E690[];
+extern u8 D_8006E6F0[];
+Unk8004AB64 *func_8004B040(s32);
+void func_8004ACA4(Unk8004AB64 *, s32, s32);
+void func_8004F9A0(void);
 #endif

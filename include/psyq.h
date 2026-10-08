@@ -70,6 +70,23 @@ typedef struct {
 
 typedef struct {
     u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad1;
+    s16 x3, y3;
+    u8 u3, v3;
+    u16 pad2;
+} POLY_FT4;
+
+typedef struct {
+    u32 tag;
     u32 code[1];
 } DR_TPAGE;
 
@@ -88,6 +105,20 @@ typedef struct {
 typedef struct {
     u8 minute, second, sector, track;
 } CdlLOC;
+
+typedef struct {
+    u8 val0;
+    u8 val1;
+    u8 val2;
+    u8 val3;
+} CdlATV;
+int CdMix(CdlATV *vol);
+
+typedef struct {
+    CdlLOC pos;
+    u32 size;
+    char name[16];
+} CdlFILE;
 
 /* libgte */
 typedef struct {
@@ -133,6 +164,7 @@ DISPENV *SetDefDispEnv(DISPENV *env, int x, int y, int w, int h);
 int DrawSyncCallback(void (*func)(void));
 void SetDrawTPage(void *p, int dfe, int dtd, int tpage);
 void SetSemiTrans(void *p, int abe);
+void SetTile(TILE *p);
 u16 GetTPage(int tp, int abr, int x, int y);
 u16 GetClut(int x, int y);
 
@@ -143,17 +175,30 @@ int CdControlF(u8 com, u8 *param);
 int CD_getsector(void *madr, int size);
 int CD_getsector2(void *madr, int size);
 void *SpuSetTransferCallback(void (*func)(void));
+u32 SpuSetTransferStartAddr(u32 addr);
+void SpuSetReverb(int on_off);
+long GetRCnt(unsigned long spec);
+long SpuSetReverbModeType(long mode);
 void SpuSetIRQAddr(u32 addr);
+int SpuSetIRQ(int on_off);
+void SpuGetVoiceEnvelope(int vNum, short *envx);
 void *SpuSetIRQCallback(void (*func)(void));
 int CdControlB(u8 com, u8 *param, u8 *result);
 int CdReset(int mode);
 int CdDiskReady(int mode);
 int CdGetDiskType(void);
 CdlLOC *CdIntToPos(int i, CdlLOC *p);
+int CdPosToInt(CdlLOC *p);
+CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
 
 long _card_format(long chan);
 long _card_clear(long chan);
 
 long ratan2(long y, long x);
+void SpuStart(void);
+long SpuInitMalloc(long num, char *top);
+long SpuSetTransferMode(long mode);
+long SetRCnt(unsigned long spec, unsigned short target, long mode);
+long StartRCnt(unsigned long spec);
 
 #endif

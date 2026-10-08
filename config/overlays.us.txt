@@ -1,18 +1,18 @@
 # FF9.IMG dir 0 (id 1) code overlays: identical on all four discs.
 # <file id> <vram> <.text start> <.data start>   # purpose (guessed from strings)
-0a 800A7000 A48   22CD0   # field? ("DISC CHANGE", "Text Dump")
-0b 800A7000 159C  4E1E8   # battle ("Hi_RegisterSolidEffModel")
+0a 800A7000 A48   22CD0   # field (confirmed at runtime: resident in the field)
+0b 800A7000 159C  4E1E8   # battle (confirmed at runtime: resident in battle)
 0c 800A7000 1860  25A10   # world map ("w_movementChange", "MAP JUMP")
 0d 800A7000 52C   C660    # Tetra Master ("ENEMY CARD SELECT")
-14 800A7000 88    4230    # ? ("Fr: %d")
-15 800A7000 13C   70E0    # betting minigame? ("Bankroll", "Double")
+14 800A7000 88    4230    # opening / logo sequencer (resident during boot logos and intro FMV)
+15 800A7000 13C   70E0    # Blackjack minigame (6-deck shoe, hit/stand/double/split; from its code)
 32 801EDF00 9BC0  B7F0    # menu: Chocograph
 33 801EDF00 8C0   54B0    # menu: equip / abilities
 34 801EDF00 B1C   34F0    # menu: config
 36 801EDF00 29F4  51E0    # menu: card collector ranks
-37 801EDF00 2D18  5140    # menu: items
+37 801EDF00 2D18  5140    # menu: items (confirmed at runtime)
 38 801EDF00 540   1CB0    # menu: status
-39 801EDF00 6514  D080    # menu: save / load
+39 801EDF00 6514  D080    # menu: save / load (confirmed at runtime)
 3a 801EDF00 5974  6C50    # menu: name entry
 3b 801EDF00 58A8  6830    # menu: party select
 3c 801EDF00 6100  A8F0    # menu: ? (mostly graphics data)

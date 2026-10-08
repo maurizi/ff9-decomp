@@ -4011,12 +4011,12 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A83AC);
 
 void func_800EC730(Window *arg0) {
     u8 st = arg0->unk1C;
-    RECT *r = (RECT *)&arg0->unk8;
+    RECT *r = &arg0->unk8;
     s32 dy = 10;
     RECT rc;
     if (arg0->unk1C == 3) {
         if (func_800EB2A4() == 1 || (func_800EB2A4() == st && func_800F13BC() == 1 && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
-            func_800270EC(arg0->unk8 - 0xE, r->y + (D_80104FB0.unk0 * 15 + dy), arg0->unk18 - 1);
+            func_800270EC(arg0->unk8.x - 0xE, r->y + (D_80104FB0.unk0 * 15 + dy), arg0->unk18 - 1);
         }
     }
     if (arg0->unk1C != 3) {
@@ -4307,19 +4307,19 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE938);
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EEA98);
 
 void func_800EEBB8(Window *arg0) {
-    RECT *r = (RECT *)&arg0->unk8;
+    RECT *r = &arg0->unk8;
     s32 x;
     s32 y;
     s32 dy = 10;
     s32 dx = 0x74;
     if (D_80104FD0.unk8 != 0) {
-        func_8002B524(arg0->unk8 + 6, r->y - 4, arg0->unk18, D_80104FD0.unk8, 0);
+        func_8002B524(arg0->unk8.x + 6, r->y - 4, arg0->unk18, D_80104FD0.unk8, 0);
     }
     if (D_80104FD0.unkC != 0) {
-        func_8002B524(arg0->unk8 - (D_80104FD0.unk12 - dx), r->y - 4, arg0->unk18, D_80104FD0.unkC, 0);
+        func_8002B524(arg0->unk8.x - (D_80104FD0.unk12 - dx), r->y - 4, arg0->unk18, D_80104FD0.unkC, 0);
     }
     if (func_800EB2A4() == 2 || (func_800EB2A4() == 3 && func_800F13BC() == 2 && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
-        x = arg0->unk8 - 0x12;
+        x = arg0->unk8.x - 0x12;
         y = r->y + (arg0->unk30.unk6 * 15 + dy);
         if (D_80104FD0.unk0 == 0x17 || D_80104FD0.unk0 == 0x15) {
             func_800275DC(x + 7, y + 2, arg0->unk18, D_80104FD0.unk10 + 0x5A, 0);
@@ -4368,7 +4368,7 @@ void func_800EEE3C(void) {
 void func_800EEED4(Window *arg0) {
     RECT r;
     MenuView v;
-    RECT *rc = (RECT *)&arg0->unk8;
+    RECT *rc = &arg0->unk8;
     s32 i;
     func_8002ECA0((MenuList *)&arg0->unk30, &v);
     func_8002D9B4(0, 7, 1);
@@ -4414,7 +4414,7 @@ void func_800EF228(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     s32 x5;
     UnkPair *e = func_800EC114(arg2);
     Window *w = D_80104F88->unk12A4[2];
-    RECT *r = (RECT *)&w->unk8;
+    RECT *r = &w->unk8;
     s32 dy = w->unk6 - r->h;
     s32 n;
     u8 id;
@@ -4806,7 +4806,7 @@ void func_800F0BE0(Window *arg0) {
     Window *w = arg0;
     s32 n = 0;
     BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
-    RECT *r = (RECT *)&arg0->unk8;
+    RECT *r = &arg0->unk8;
     BtlUnit *p;
     RECT rc;
     s32 yl;
@@ -5127,7 +5127,7 @@ void func_800F1E84(Window *arg0) {
     BtlUnit *u;
     Window *w = arg0;
     s32 y = arg0->unk2 + 6;
-    s32 dy = arg0->unk6 - arg0->unkE;
+    s32 dy = arg0->unk6 - arg0->unk8.h;
     s32 c;
     for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != 0 && (u->unk68 & 1); u = u->unk0) {
         c = 3;
@@ -5149,7 +5149,7 @@ void func_800F1FBC(Window *arg0) {
     Window *w = arg0;
     s32 y = arg0->unk2 + 6;
     BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
-    s32 dy = arg0->unk6 - arg0->unkE;
+    s32 dy = arg0->unk6 - arg0->unk8.h;
     s32 yy;
     s32 c;
     while (u != NULL) {
@@ -5173,7 +5173,7 @@ void func_800F2118(Window *arg0) {
     s32 n;
     s32 x;
     Window *w = arg0;
-    s32 d = arg0->unk6 - arg0->unkE;
+    s32 d = arg0->unk6 - arg0->unk8.h;
     s32 y;
     u32 st;
     d -= 6;
@@ -5202,7 +5202,7 @@ void func_800F224C(Window *arg0) {
     s32 i;
     s32 x;
     Window *w = arg0;
-    s32 d = arg0->unk6 - arg0->unkE;
+    s32 d = arg0->unk6 - arg0->unk8.h;
     s32 y;
     u32 st;
     d -= 6;

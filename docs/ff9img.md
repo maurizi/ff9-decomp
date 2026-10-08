@@ -46,7 +46,7 @@ Only dir 0 contains MIPS code (`tools/ff9img.py ... code` on all four discs).
 
 Load addresses were found by voting internal `jal` targets against function prologues, then confirmed by byte-identical rebuilds. See `config/overlays.us.txt` for boundaries and purpose guesses.
 
-- **0x800A7000** (main overlay area; the exe's 1.3 MB zero-filled region starts here): 0x0A, 0x0B, 0x0C, 0x0D, 0x14, 0x15.
+- **0x800A7000** (main overlay area; the exe's 1.3 MB zero-filled region starts here): 0x0A field, 0x0B battle, 0x0C world map, 0x0D Tetra Master, 0x14 opening/logos, 0x15 Blackjack.
 - **0x801EDF00** (small slot ending below the stack): 0x32-0x3E, 0x65. Their strings use FF9's text encoding (letters are ASCII - 0x31).
 - **0x80198700**: 0x64, a debug FMV player that links PsyQ libpress.
 
