@@ -4,7 +4,28 @@ INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4414);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4538);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4664);
+void func_801F4664(void) {
+    if (D_80077528 & 0x10000) {
+        func_8002F488(0x65);
+        if (D_80077DB0.unk1 != 0) {
+            func_801F53B0();
+            return;
+        }
+        func_800361CC(0);
+        return;
+    }
+    if (D_80077528 & 0x10) {
+        func_8002F488(0x67);
+        D_80077DB0.unk2 = D_80077DB0.unk2 == 0 ? 1 : D_80077DB0.unk2 - 1;
+    }
+    if (D_80077528 & 0x40) {
+        func_8002F488(0x67);
+        D_80077DB0.unk2 = D_80077DB0.unk2 != 0 ? 0 : D_80077DB0.unk2 + 1;
+    }
+    if (D_80077528 & 0x20000) {
+        func_801F58E0();
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4760);
 
@@ -213,7 +234,36 @@ INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5A68);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5BE0);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5D00);
+void func_801F5D00(void) {
+    RECT r;
+    u8 *img;
+    u8 *buf;
+    s32 i;
+
+    img = D_801F2854;
+    buf = D_801FBACC;
+    r.x = 0;
+    r.y = 0xE0;
+    r.w = 0x100;
+    r.h = 1;
+    LoadImage(&r, (u32 *)buf);
+    DrawSync(0);
+    buf += 0x200;
+    r.x = 0x40;
+    r.w = 0x58;
+    r.y = 0x100;
+    r.h = 3;
+    for (i = 0; i < 11; i++) {
+        if (i == 0) {
+            LoadImage(&r, (u32 *)buf);
+        } else {
+            LoadImage(&r, (u32 *)img);
+            img += 0x210;
+        }
+        DrawSync(0);
+        r.y += 3;
+    }
+}
 
 void func_801F5DE0(void) {
     if (D_801FBAC8.unk0 != 0) {
@@ -495,7 +545,30 @@ s32 func_801F6F7C(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F6FE8);
+s32 func_801F6FE8(void) {
+    s32 port;
+    s32 n;
+    s32 prev;
+    s32 r;
+
+    prev = 0;
+    n = 0;
+    port = D_80077DB2 << 4;
+    do {
+        r = func_801FA1C4(port, (s32)&D_801FBF18);
+        if (n != 0 && prev != r) {
+            goto fail;
+        }
+        n++;
+        prev = r;
+    } while (n < 3);
+    if (func_801FA240(port) == 0) {
+        return r;
+    }
+fail:
+    func_801F72B4(0x2E);
+    return -1;
+}
 
 void func_801F7084(void) {
     D_801FBEF8.unk1 = 4;

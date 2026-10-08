@@ -223,6 +223,10 @@ extern u8 D_801EDF1C[];
 extern u8 D_801FB040[]; /* save icon per character model */
 extern u16 D_801FDEFE;
 void func_801F96CC(void);
+extern RECT D_801FAFE0;
+extern u8 D_801FBACC[]; /* CLUT + image buffer */
+extern u8 D_801F2854[]; /* icon images, 0x210 each */
+s32 func_801FA1C4(s32, s32);
 extern u8 D_801FC3B8[0x26]; /* name buffer */
 u8 func_800B5064(void); /* other overlay */
 void func_801F9024(u8 *);
