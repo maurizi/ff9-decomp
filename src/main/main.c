@@ -7918,7 +7918,28 @@ s32 func_8005EC8C(s32 a, s32 b) {
     return b;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005ECCC);
+void func_8005ECCC(AkaoChannel *c, s32 mask) {
+    Unk80080A10 *t;
+
+    if (c->unk94 == 0) {
+        t = D_80080A10;
+        if ((t->unk4 &= ~mask) == 0) {
+            D_800809B8 = 0;
+            t->unk6A = 0;
+            t->unk0 = 0;
+        }
+        D_80080A10->unk14 &= ~mask;
+        D_80080A10->unk8 &= ~mask;
+        D_80080A10->unkC &= ~mask;
+        D_80080A10->unk3C &= ~mask;
+        D_80080A10->unk40 &= ~mask;
+        D_80080A10->unk44 &= ~mask;
+    } else {
+        func_8005EC20(c, mask);
+    }
+    c->unk34 = 0;
+    D_80083158.unk8 |= 0x110;
+}
 
 void func_8005EDA0(AkaoChannel *c) {
     Unk80080A10 *a = D_80080A10;
