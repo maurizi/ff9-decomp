@@ -485,7 +485,7 @@ void func_80028BE8(u8 *, s32);
 s32 func_80028DB0(s32, s32, u8);
 u8 *func_80029B4C(s32, s32, u32 *, s32, s32, u8 *);
 u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
-u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, u8 *);
+u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
 void func_8002B5B4(s32, s32, s32, u8 *, s32);
 u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
 void func_8002AF70(s16 *, s32);
@@ -2119,11 +2119,14 @@ typedef struct {
     u16 unk34;
     u16 unk36;
     u8 unk38;
-    u8 pad39;
+    u8 unk39;
     u8 unk3A;
-    u8 pad3B[0x52 - 0x3B];
+    u8 unk3B;
+    u8 pad3C[0x50 - 0x3C];
+    u16 unk50;
     u16 unk52;
-    u8 pad54[0x5A - 0x54];
+    u16 unk54;
+    u8 pad56[0x5A - 0x56];
     u16 unk5A;
     u8 pad5C;
     u8 unk5D;
@@ -2135,7 +2138,26 @@ typedef struct {
     u8 unk64;
     u8 pad65[0x69 - 0x65];
     u8 unk69;
+    u8 pad6A[0x7C - 0x6A];
+    u8 unk7C[4];
 } Unk8004B9B8;
+u16 func_800216D8();
+s32 func_8001E350(s32);
+
+/* Inlined copy of func_8004B9B8. */
+static inline void func_8004B9B8_inline(Unk8004B9B8 *p) {
+    s32 v;
+    p->unk22 = p->unk52 & 0xFFF;
+    v = p->unk5A;
+    if (v != p->unk36) {
+        p->unk36 = v;
+        p->unk3A = 0;
+        p->unk64 = 0;
+        p->unk38 = func_800216D8(p->unk34, v);
+        p->unk5D = p->unk69;
+    }
+    p->unkF &= 0x7F;
+}
 
 s32 func_80037D6C(s32);
 extern u8 *D_800CF478;

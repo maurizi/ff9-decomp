@@ -4780,7 +4780,40 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80048E80);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80048F54);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800499D8);
+void func_800499D8(Unk8004B9B8 *p) {
+    s32 v;
+    u32 *q;
+
+    if (!(p->unk62 & 8)) {
+        v = p->unk54;
+        if (v != p->unk36) {
+            p->unk36 = v;
+            p->unk3A = 0;
+            p->unk64 = 0;
+            p->unk38 = func_800216D8(p->unk34, v);
+            p->unk5D = p->unk69;
+        }
+        p->unk3A = 0;
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        p->unk5D = p->unk7C[*D_8007B720++ & 3];
+        p->unk62 &= 0x39;
+        if (p->unkF & 0x80) {
+            func_8004B9B8_inline(p);
+        }
+        if (p->unk50 & 8) {
+            p->unk50 &= ~8;
+            q = (u32 *)func_8001E350(p->unk3B);
+            *q &= ~0x10;
+            p->unk60 = 0;
+            p->unk61 = 0xFF;
+        }
+    } else {
+        p->unk62 = (p->unk62 | 4) & 0x7D;
+        p->unk3A = p->unk39;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80049B48);
 
@@ -5088,17 +5121,7 @@ s32 func_8004B914(void) {
 }
 
 void func_8004B9B8(Unk8004B9B8 *p) {
-    s32 v;
-    p->unk22 = p->unk52 & 0xFFF;
-    v = p->unk5A;
-    if (v != p->unk36) {
-        p->unk36 = v;
-        p->unk3A = 0;
-        p->unk64 = 0;
-        p->unk38 = func_800216D8(p->unk34, v);
-        p->unk5D = p->unk69;
-    }
-    p->unkF &= 0x7F;
+    func_8004B9B8_inline(p);
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BA20);
@@ -7662,7 +7685,31 @@ void func_8005F960(AkaoChannel *c) {
     c->unk11C |= 0x10;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F984);
+void func_8005F984(AkaoChannel *c) {
+    s32 v;
+    u32 d;
+
+    c->unk34 |= 2;
+    v = *c->unk0++;
+    if (c->unk94 != 0) {
+        c->unkDC = 0;
+        if (v != 0) {
+            c->unkE2 = (v & 0x7F) << 8;
+        }
+    } else {
+        c->unkDC = v;
+    }
+    c->unk4C = *c->unk0++ << 12;
+    if (c->unk4C == 0) {
+        c->unk4C = 0x100000;
+    }
+    v = *c->unk0++;
+    d = 0x1000000 / ((u32)c->unk4C >> 12);
+    c->unkDE = c->unkDC;
+    c->unkE0 = 0;
+    c->unk20 = D_8006FB40[v & 7];
+    c->unk58 = d;
+}
 
 void func_8005FA54(AkaoChannel *c) {
     c->unkE2 = (*c->unk0++ & 0x7F) << 8;
