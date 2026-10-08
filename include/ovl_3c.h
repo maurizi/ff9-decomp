@@ -28,7 +28,7 @@ typedef struct {
     u8 unk0; /* state, index into D_801FC044 */
     u8 unk1; /* item count */
     u8 unk2; /* quantity */
-    u8 pad3;
+    u8 unk3; /* max quantity */
     u8 unk4; /* sells equipment */
     u8 pad5[3];
     RECT unk8;
@@ -55,7 +55,7 @@ typedef struct {
     u8 unk0; /* state, index into D_801FC09C */
     u8 unk1;
     u8 unk2; /* quantity */
-    u8 pad3;
+    u8 unk3; /* max quantity */
     u8 unk4;
     u8 pad5[3];
     RECT unk8;
@@ -73,7 +73,8 @@ extern ShopSynth D_801FC338;
 typedef struct {
     u8 unk0; /* state, index into D_801FC27C */
     u8 unk1; /* quantity */
-    u8 pad2[2];
+    u8 unk2; /* max quantity */
+    u8 pad3;
     MenuList unk4;
     RECT unk14;
     RECT unk1C;
@@ -101,6 +102,10 @@ extern RECT D_801FBC3C;
 extern u8 D_801FBC44[][0x20]; /* item list per shop, 0xFF = none */
 extern u8 D_801F36FC[];
 extern u8 D_801F3C9C[];
+extern u8 D_801FC098[]; /* gil suffix */
+extern u8 D_801FC0F8[]; /* gil suffix */
+extern RECT *D_801FC288;
+void func_801F84D8(void);
 typedef struct {
     RECT r[7];
 } RectTbl7;
@@ -154,6 +159,8 @@ void func_801F57C8(void);
 void func_801F5BCC(s32, s32, s32, MenuView *);
 void func_801F5D14(void);
 void func_801F5B64(void);
+void func_801F7614(void);
+void func_801F8680(void);
 void func_801F7528(void);
 void func_801F625C(void);
 void func_801F65C8(void);
