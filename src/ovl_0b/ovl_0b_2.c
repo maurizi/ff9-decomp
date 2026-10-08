@@ -1197,15 +1197,72 @@ s32 func_800DA8EC(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA92C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB424);
+u16 func_800DB424(BtlUnit9C8 *arg0) {
+    BtlObjSlot *p = func_800DC494();
+    if (p == NULL) {
+        sprintf(D_80101470, "Hi_RegisterSolidEffModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    if (p->unk0 == NULL) {
+        sprintf(D_80101470, "Hi_RegisterSolidEffModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    p->unk1C = 1;
+    p->unk1D = 0;
+    p->unk20 = 0;
+    p->unk22 = 0;
+    p->unk24 = 0;
+    p->unk0->unk8 = arg0;
+    p->unk0->unkC = NULL;
+    func_800C7730(p->unk0, NULL, NULL);
+    return p->unk1E;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB4EC);
+u16 func_800DB4EC(BtlUnit9C8 *arg0) {
+    BtlObjSlot *p = func_800DC494();
+    if (p == NULL) {
+        sprintf(D_80101470, "Hi_RegisterGouEffModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    if (p->unk0 == NULL) {
+        sprintf(D_80101470, "Hi_RegisterGouEffModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    p->unk1C = 1;
+    p->unk1D = 0;
+    p->unk20 = 1;
+    p->unk22 = 0;
+    p->unk24 = 0;
+    p->unk0->unk8 = arg0;
+    p->unk0->unkC = NULL;
+    func_800C7730(p->unk0, NULL, NULL);
+    return p->unk1E;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB5B4);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB6B8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB7F8);
+u16 func_800DB7F8(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
+    BtlObjSlot *p = func_800DC494();
+    if (p == NULL) {
+        sprintf(D_80101470, "Hi_RegisterTexPtrModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    if (p->unk0 == NULL) {
+        sprintf(D_80101470, "Hi_RegisterTexPtrModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    p->unk1C = 1;
+    p->unk1D = 0;
+    p->unk20 = 2;
+    p->unk22 = 0;
+    p->unk24 = 0;
+    p->unk0->unk8 = arg0;
+    p->unk0->unkC = NULL;
+    func_800C7730(p->unk0, arg1, arg2);
+    return p->unk1E;
+}
 
 s32 func_800DB8D8(void) {
     return 0;

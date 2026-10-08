@@ -772,11 +772,15 @@ extern Heap D_800FF470; /* 0x1800 bytes */
 
 typedef struct {
     BtlUnit9C *unk0;
-    u8 pad4[0x1C - 4];
+    s16 unk4[2];
+    u8 pad8[0x1C - 8];
     u8 unk1C; /* in use */
-    u8 pad1D;
+    u8 unk1D;
     s16 unk1E; /* index */
-    u8 pad20[0x28 - 0x20];
+    s16 unk20; /* kind */
+    s16 unk22;
+    s16 unk24;
+    u8 pad26[0x28 - 0x26];
 } BtlObjSlot; /* 0x28 */
 extern BtlObjSlot D_80100F1C[32];
 
@@ -1428,7 +1432,7 @@ s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
 s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
 void func_800CFA00(s16 *, s16 *, s32, s16 *);
 void func_800DB6B8(void *, Unk800E8F50Entry *, void *, s32);
-void func_800DB4EC(void *);
+u16 func_800DB4EC(BtlUnit9C8 *);
 void func_800CF808(s16 *, s16 *, s16 *);
 void func_800CFD78(s16 *, s16 *, s32, s16 *);
 
@@ -1612,5 +1616,8 @@ void func_800F0444(void);
 void func_800EFF14(void);
 void func_800F40D0(Unk800F412C *);
 void func_800F4010(s32);
+
+BtlObjSlot *func_800DC494(void);
+void func_800C7730(BtlUnit9C *, s16 *, s16 *);
 
 #endif
