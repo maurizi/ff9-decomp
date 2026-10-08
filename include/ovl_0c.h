@@ -132,7 +132,7 @@ typedef struct {
 
 /* list nodes (func_800BE6B4, func_800BD5D0) */
 typedef struct Unk800D375C {
-    s32 unk0;
+    struct Unk800D375C *unk0; /* prev */
     struct Unk800D375C *unk4; /* next */
     s32 unk8;
     s32 unkC;
@@ -294,6 +294,7 @@ void func_800CC8C8(void);
 void func_800CC940(void);
 
 /* ---- overlay data ---- */
+extern u8 *D_800CE058[5];
 extern char D_800A79D0[];
 extern char D_800A7A0C[];
 extern RECT *D_800CE054;
@@ -339,7 +340,7 @@ extern s32 D_800CF4B4;
 extern Unk800D1FD8 D_800D1FD8;
 extern Unk800D1FD8 D_800D1FE0[2];
 extern s32 D_800D3308;
-extern Unk800D375C *D_800D375C;
+extern Unk800D375C D_800D3758; /* list head */
 extern s32 D_800D3790;
 extern Unk800D335C D_800D3340;
 extern Unk800D335C *D_800D335C;

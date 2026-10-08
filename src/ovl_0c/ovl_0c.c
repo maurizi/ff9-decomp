@@ -1247,7 +1247,41 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BD78C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BDAB0);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE138);
+s32 func_800BE138(s16 arg0) {
+    Unk800D375C *n = D_800D3758.unk4;
+    u32 i = 0;
+
+    do {
+        if (n->unk10 == -1) {
+            if (i >= 20) {
+                n->unk10 = arg0;
+                n->unk0->unk4 = n->unk4;
+                n->unk4->unk0 = n->unk0;
+                n->unk4 = D_800D3758.unk4;
+                n->unk0 = &D_800D3758;
+                D_800D3790++;
+                D_800D3758.unk4->unk0 = n;
+                D_800D3758.unk4 = n;
+            } else {
+                n->unk10 = arg0;
+                n->unk12 = 0;
+            }
+            break;
+        }
+        if (n->unk10 == arg0) {
+            n->unk0->unk4 = n->unk4;
+            n->unk4->unk0 = n->unk0;
+            n->unk4 = D_800D3758.unk4;
+            n->unk0 = &D_800D3758;
+            D_800D3758.unk4->unk0 = n;
+            D_800D3758.unk4 = n;
+            break;
+        }
+        n = n->unk4;
+        i++;
+    } while (i < 40);
+    return i != 40;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE238);
 
@@ -1274,7 +1308,7 @@ void func_800BE6B4(void) {
     Unk800D375C *b;
 
     if (D_800D3790 != 0) {
-        a = D_800D375C;
+        a = D_800D3758.unk4;
         D_800D3790 = 0;
         b = a;
         for (i = 0; i < 20; i++) {
@@ -1720,7 +1754,29 @@ void func_800CC5CC(void) {
     D_80077E50.unk1 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CC5D8);
+void func_800CC5D8(u8 arg0) {
+    s32 i;
+    s32 j;
+    Character *c;
+    s32 id;
+
+    i = 0;
+    j = 5;
+    c = D_8006794C->unk1C->unk54C[D_80077E53];
+    do {
+        func_8002BE44(i, D_800CE058[i]);
+        id = c->unk39[i];
+        if (id != 0xFF) {
+            func_8002BE44(j, D_8006A218 + D_80069018[id].unk0);
+        } else {
+            func_8002BE44(j, func_80035774(0xD));
+        }
+        j++;
+        func_8002BE74(i, id);
+        i++;
+    } while (i < 5);
+    D_80077DE8.unk8 = func_80035774(4);
+}
 
 void func_800CC6E4(void) {
     RECT r;
