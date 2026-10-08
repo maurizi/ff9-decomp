@@ -4374,7 +4374,36 @@ Unk8007B9C0Sub *func_8004ED94(s32 i) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004EDD0);
+Unk8007B9C0 *func_8004EDD0(Unk8004EBC0 *r, s32 a, s32 idx, s32 flag) {
+    Unk8007B9C0 *e = &D_8007B9C0[idx];
+    e->unk8 = 1;
+    e->unk0 = a;
+    e->unkC = 0;
+    e->unk10 = 0;
+    e->unk6 = 0;
+    e->unk4 = 0;
+    e->unkA = 0;
+    if (r->unk0 != 0) {
+        e->unk4 = r->unk0;
+        e->unk6 = r->unk8;
+    } else {
+        e->unk4 = 160 - (r->unk2 >> 1);
+        e->unk6 = 120 - (r->unk9 >> 1);
+    }
+    e->unk18 = r->unk2;
+    e->unk27 = r->unk9;
+    if (flag != 0) {
+        e->unk28 = 2;
+    } else {
+        e->unk28 = 0;
+    }
+    e->unk1E = 0;
+    e->unk20 = 0;
+    e->unk1A = 0;
+    e->unk2B = 0;
+    e->unk14 = NULL;
+    return e;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004EEA0);
 

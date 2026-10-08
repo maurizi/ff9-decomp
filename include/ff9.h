@@ -1024,17 +1024,24 @@ typedef struct {
 } Unk8007B9C0Sub;
 
 typedef struct {
-    u8 pad0[4];
+    s32 unk0;
     s16 unk4; /* x */
     s16 unk6; /* y */
     s16 unk8;
-    u8 padA[0x14 - 0xA];
+    s16 unkA;
+    s32 unkC;
+    s32 unk10;
     Unk8007B9C0Sub *unk14;
     s16 unk18; /* w */
-    u8 pad1A[0x27 - 0x1A];
+    s16 unk1A;
+    u8 pad1C[0x1E - 0x1C];
+    s16 unk1E;
+    s16 unk20;
+    u8 pad22[0x27 - 0x22];
     u8 unk27; /* h */
     u8 unk28;
-    u8 pad29[0x2C - 0x29];
+    u8 pad29[0x2B - 0x29];
+    u8 unk2B;
 } Unk8007B9C0;
 extern Unk8007B9C0 D_8007B9C0[];
 
@@ -1317,6 +1324,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_80032A18(u8 *);
 void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
 typedef struct {
     s32 unk0[4];
