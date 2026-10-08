@@ -4164,7 +4164,14 @@ void func_800EEDD4(void) {
     D_80104FD0.unk10++;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EEDF0);
+s32 func_800EEDF0(void) {
+    s32 r = 0;
+    s32 (*f)(void) = D_800F8E58[D_80104FD4->unk6];
+    if (f != NULL) {
+        r = f();
+    }
+    return r;
+}
 
 void func_800EEE3C(void) {
     Window *w;
@@ -5326,7 +5333,20 @@ void func_800F3FDC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F4010);
+void func_800F4010(s32 arg0) {
+    BtlUnit *u = D_80105078->unk68[arg0];
+    Unk80104F88Entry *e = u->unkB4;
+    Unk80104F88Gauge *g;
+    s16 v;
+    e->unk0[0].unk4 = e->unk0[0].unk2 = u->unk28;
+    v = u->unk2A;
+    g = &e->unk0[1];
+    g->unk6 = 0;
+    g->unk4 = g->unk2 = v;
+    e->unk0[0].unk6 = 0;
+    e->unk0[1].unk0 = 0;
+    e->unk0[0].unk0 = 0;
+}
 
 void func_800F4060(s32 arg0) {
     BtlUnit *u = D_80105078->unk68[arg0];
