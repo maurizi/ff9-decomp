@@ -1087,7 +1087,8 @@ typedef struct {
     u8 unk7; /* = D_80077E2F */
     u8 pad8[0x10 - 8];
     s32 unk10; /* loaded file id */
-    u8 pad14[0x1C - 0x14];
+    u8 pad14[0x1A - 0x14];
+    s16 unk1A;
     Unk80077E28Entry *unk1C;
     void (*unk20)(void);
 } Unk80077E28;
@@ -1618,10 +1619,13 @@ typedef struct {
     s32 unk8;
     u32 unkC;
     s32 unk10;
-    u8 pad14[0x28 - 0x14];
+    u8 pad14[0x20 - 0x14];
+    s32 unk20;
+    s32 unk24;
     s32 unk28;
-    u8 pad2C[0x34 - 0x2C];
-    u8 unk34[4];
+    s32 unk2C;
+    s32 unk30;
+    s32 unk34;
     s32 unk38;
     u32 unk3C;
 } Unk80083168;

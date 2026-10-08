@@ -947,7 +947,18 @@ Unk80021938 *func_80021E20(void) {
     return &p->unk4[p->unk3];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021E5C);
+Unk80021938 *func_80021E5C(s32 id) {
+    Unk8C8 *t = D_8006794C->unk1C->unk8C8;
+    s32 i;
+    id &= 0xFFFFFF;
+    for (i = t->unk2 - 1; i >= 0; i--) {
+        Unk80021938 *e = &t->unk4[i];
+        if ((e->unk4 & 0xFFFFFF) == id) {
+            return e;
+        }
+    }
+    return NULL;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021ED4);
 
@@ -3460,7 +3471,21 @@ s32 func_8003631C(s32 a) {
     return func_800357C0(D_800110A0, a + 9);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036344);
+void func_80036344(void) {
+    if (D_80077E28.unk7 == 0) {
+        D_80077E28.unk1A += 8;
+        if (D_80077E28.unk1A >= 0x74) {
+            D_80077E28.unk1A = 0x74;
+            D_80077E28.unk1 = 0;
+        }
+    } else {
+        D_80077E28.unk1A -= 8;
+        if (D_80077E28.unk1A < 0x1B) {
+            D_80077E28.unk1A = 0x1A;
+            D_80077E28.unk1 = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800363BC);
 
@@ -5692,7 +5717,24 @@ void func_8005F64C(AkaoChannel *a) {
     a->unkCA = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F654);
+void func_8005F654(AkaoChannel *c) {
+    u8 *p = c->unk0;
+    u32 k;
+    u32 prod;
+    u32 r;
+    c->unk108 = (s8)*p;
+    k = c->unk2C;
+    r = (u8)c->unk108;
+    prod = k * r;
+    c->unk0 = p + 1;
+    if (c->unk108 < 0) {
+        r = (prod >> 8) - k;
+    } else {
+        r = prod >> 7;
+    }
+    c->unk84 = r;
+    c->unk11C |= 0x10;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F6B4);
 
@@ -6212,7 +6254,18 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062118);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800621D4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062290);
+void func_80062290(s32 *a) {
+    func_80060938();
+    D_80083168.unk34 = -1;
+    D_80083168.unk20 = 0;
+    D_80083168.unk24 = 0;
+    D_80083168.unk28 = 0;
+    D_80083168.unk38 = 0;
+    D_80083168.unk8 = 0x1000000;
+    D_80083168.unk3C = (u32)D_80080AA0.unk4 >> 12;
+    D_80083168.unk2C = a[0];
+    D_80083168.unk30 = a[1];
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetIRQAddr);
 
