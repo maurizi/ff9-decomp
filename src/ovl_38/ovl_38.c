@@ -79,7 +79,39 @@ INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE740);
 
 INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE9E8);
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EED18);
+void func_801EED18(void) {
+    u8 buf[16];
+    RECT *r;
+    StatusMenu *st;
+    Character *c;
+    u32 next;
+    s32 bit;
+    u8 show;
+
+    r = &D_801F120C.unk8;
+    st = &D_801F120C;
+    c = D_8006794C->unk1C->unk54C[st->unk2];
+    show = 0;
+    if (D_8007AF00 != 0) {
+        bit = c->unkA & 0x10;
+        show = bit == 0;
+    }
+    if (show) {
+        st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &D_8007716C[0x1D], func_80035774(0xB), 0, st->unk7C);
+        func_80025ED4(r->x + 0xB4, r->y + 0x3E, 0x1D, c->unk20, 0xFF, 1, 1);
+    }
+    func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, func_80035774(0xC), 0);
+    func_8002B5FC(r->x + 0x74, r->y + 0x53, 0x1D, func_80035774(0xD), 0);
+    func_8002BAE4(c->unkC, buf, 7, 1);
+    func_8002B56C(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
+    if (c->unkB >= 99) {
+        next = c->unkC;
+    } else {
+        next = D_8006DF5C[c->unkB];
+    }
+    func_8002BAE4(next - c->unkC, buf, 6, 1);
+    func_8002B56C(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
+}
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EDF00);
 
