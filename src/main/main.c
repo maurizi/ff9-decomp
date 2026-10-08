@@ -3315,7 +3315,29 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033280);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800333B0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033690);
+void func_80033690(void) {
+    Character **party = D_8006794C->unk1C->unk54C;
+    s32 i;
+    func_80033D1C(0);
+    func_8001D898((s32)party, 0, 0x1C);
+    for (i = 0; i < 9; i++) {
+        func_80032B08(i);
+    }
+    func_80033BD0(0);
+    func_80033BD0(1);
+    func_80033BD0(2);
+    func_80033BD0(3);
+    func_80033BD0(4);
+    func_80033BD0(5);
+    func_80033BD0(7);
+    func_80033BD0(6);
+    func_80033AF4(0, 0);
+    func_80033AF4(1, 1);
+    func_80033AF4(2, 2);
+    func_80033AF4(3, 3);
+    D_8006794C->unk1C->unk560 = 500;
+    D_8006794C->unk1C->unk55E = 0;
+}
 
 s32 func_8003378C(void) {
     GameData *gd = D_8006794C->unk1C;
@@ -3537,7 +3559,15 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033E84);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034070);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034220);
+s32 func_80034220(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    if (i < 0) {
+        return 0;
+    }
+    c->unk58[i] = D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+    return 1;
+}
 
 void func_8003431C(void) {
 }

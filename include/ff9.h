@@ -133,7 +133,8 @@ typedef struct {
     u16 unk3A;
     Character unk3C[9];
     Character *unk54C[4]; /* party */
-    u8 pad55C[0x560 - 0x55C];
+    u8 pad55C[0x55E - 0x55C];
+    s16 unk55E;
     u32 unk560; /* gil, capped at 9999999 */
     u8 pad564[0x568 - 0x564];
     s16 unk568;
@@ -974,7 +975,8 @@ void func_80014E20(s32, s32, s32, s32);
 void func_8003556C(void (*)(void));
 
 typedef struct {
-    u8 pad0[6];
+    u8 pad0[4];
+    u16 unk4; /* row count */
     u16 unk6; /* offset of a u16[][6] flag table */
 } Unk8007BD44;
 
@@ -1334,6 +1336,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_80032B08(s32);
 void func_8002C974(s32, s32, s32);
 typedef struct {
     s32 unk0;
