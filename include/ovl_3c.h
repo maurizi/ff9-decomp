@@ -71,7 +71,8 @@ extern ShopSynth D_801FC338;
 /* Sell menu (D_801FC438). */
 typedef struct {
     u8 unk0; /* state, index into D_801FC27C */
-    u8 pad1[3];
+    u8 unk1; /* quantity */
+    u8 pad2[2];
     MenuList unk4;
     RECT unk14;
     RECT unk1C;
@@ -102,6 +103,9 @@ extern u8 D_801F3C9C[];
 extern u8 D_801EDF3C[];
 
 extern u8 D_801F3E98[];
+/* main exe: candidates for ff9.h */
+s32 func_80027F34(s32); /* main.c defines it returning u8 */
+void func_80026C34(s32, s32, s32, s32, u8);
 extern u8 D_801F3F08[];
 extern u8 D_801F3F88[];
 void func_801F7250(void);

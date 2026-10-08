@@ -212,7 +212,22 @@ INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F51B8);
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F551C);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F56E4);
+void func_801F56E4(void) {
+    if (!func_8002F810()) {
+        if (D_801FC2F8.unk0 == 1 || (D_80077DC0 & 3)) {
+            D_80077DE8.unk4 = 0x14;
+            D_80077DE8.unk0 = D_801FC2F8.unk10.x - 8;
+            D_80077DE8.unk2 = D_801FC2F8.unk10.y + (s16)(D_801FC2F8.unk28.unk6 * 0xF + 0xB);
+            func_800355E4();
+        }
+        if (D_801FC2F8.unk0 == 2) {
+            D_80077DE8.unk0 = D_801FC2F8.unk38->unk0 - 0xE;
+            D_80077DE8.unk2 = D_801FC2F8.unk38->unk2 + 0x22;
+            D_80077DE8.unk4 = D_801FC2F8.unk38->unk18 - 1;
+            func_800355E4();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F57C8);
 
@@ -375,7 +390,22 @@ INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6714);
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6A7C);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6C50);
+void func_801F6C50(void) {
+    if (!func_8002F810()) {
+        if (D_801FC338.unk0 == 1 || (D_80077DC0 & 3)) {
+            D_80077DE8.unk4 = 0x14;
+            D_80077DE8.unk0 = D_801FC338.unk10.x - 8;
+            D_80077DE8.unk2 = D_801FC338.unk10.y + (s16)(D_801FC338.unk28.unk6 * 0xF + 0xB);
+            func_800355E4();
+        }
+        if (D_801FC338.unk0 == 2) {
+            D_80077DE8.unk0 = D_801FC338.unk38->unk0 - 0xE;
+            D_80077DE8.unk2 = D_801FC338.unk38->unk2 + 0x22;
+            D_80077DE8.unk4 = D_801FC338.unk38->unk18 - 1;
+            func_800355E4();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6D34);
 
@@ -518,7 +548,32 @@ void func_801F7FE0(void) {
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F80D0);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F8224);
+void func_801F8224(void) {
+    MenuList *l;
+    ShopSell *m;
+    Unk80069018 *it;
+    u8 id;
+    u32 price;
+    s32 n;
+    s32 i;
+
+    l = &D_801FC438.unk4;
+    m = &D_801FC438;
+    id = (D_8006794C->unk1C->unk574 + ((l->unk5 + l->unk6) * 2 + l->unk7))->unk0;
+    it = &D_80069018[id];
+    price = it->unk4 >> 1;
+    n = func_80027E5C(id, D_801FC438.unk1);
+    if (n != 0) {
+        D_8006794C->unk1C->unk560 += price * n;
+        if (D_8006794C->unk1C->unk560 > 9999999) {
+            D_8006794C->unk1C->unk560 = 9999999;
+        }
+        D_801FC438.unk0 = 0;
+        for (i = 0; i < 2; i++) {
+            func_8002DD00(D_801FC438.unk2C[i]);
+        }
+    }
+}
 
 void func_801F832C(void) {
     func_801F837C();
