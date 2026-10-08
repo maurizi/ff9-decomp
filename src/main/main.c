@@ -1606,7 +1606,18 @@ void func_80026E14(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80026EA0);
+void func_80026EA0(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
+    Character *p = D_8006794C->unk1C->unk54C[slot];
+    if (p != NULL && mode >= 0) {
+        if (mode < 3) {
+            func_800283E0(x, y, otz, slot, 0x29, p->unk10 == 0);
+            func_80026F8C(x + 0x26, y, otz, slot);
+        } else if (mode < 5) {
+            func_800283E0(x, y, otz, slot, 0x29, p->unk10 == 0);
+            func_80027A4C(x + 0x26, y, otz, slot);
+        }
+    }
+}
 
 void func_80026F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     func_8002423C(arg0, arg1, arg2, D_8006794C->unk1C->unk54C[arg3]);
@@ -2598,7 +2609,24 @@ void func_8002EEF0(MenuList *m, u32 pad) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EF58);
+void func_8002EF58(MenuList *m, u32 pad) {
+    if (pad & 0x40) {
+        if ((m->unk5 + m->unk6) * m->unk4 + m->unk7 + m->unk4 < m->unk0) {
+            if (m->unk6 >= m->unk3 - 1) {
+                if (m->unk5 < m->unk2 - m->unk3) {
+                    m->unk8 = 1;
+                    func_8002F488(0x67);
+                }
+            } else {
+                func_8002F488(0x67);
+                m->unk6++;
+            }
+        } else if (m->unk6 >= m->unk3 - 1 && m->unk5 < m->unk2 - m->unk3) {
+            m->unk8 = 9;
+            func_8002F488(0x67);
+        }
+    }
+}
 
 void func_8002F044(MenuList *arg0, s32 arg1) {
     arg1 &= 0x80;
