@@ -2593,7 +2593,20 @@ void func_800C883C(s32 arg0) {
     func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->unk17, c->unk1F);
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C8AE8);
+void func_800C8AE8(RECT *r, s32 otz) {
+    TileWords *p;
+
+    setlen(D_80077170, 3);
+    p = (TileWords *)D_80077170;
+    p->rgbc = 0x62000000;
+    p->xy = ((r->x + 8) & 0xFFFF) | (r->y << 16);
+    p->wh = 0x30002E;
+    D_80077170 = (u8 *)(p + 1);
+    addPrim(&D_8007716C[otz], p);
+    SetDrawTPage(D_80077170, 1, 1, 0);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += 8;
+}
 
 void func_800C8C08(void) {
     u8 buf[16];
