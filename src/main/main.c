@@ -925,7 +925,16 @@ void func_80021CDC(s32 a) {
     D_8006794C->unk1C->unk8C8->unk11C = a;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021CFC);
+Unk80021938 *func_80021CFC(void) {
+    Unk8C8 *t = D_8006794C->unk1C->unk8C8;
+    Unk80021938 *e = NULL;
+    if (t->unk2 < 6) {
+        e = &t->unk4[t->unk2];
+        func_80021938(e);
+        t->unk2++;
+    }
+    return e;
+}
 
 Unk80021938 *func_80021D7C(void) {
     Unk8C8 *p = D_8006794C->unk1C->unk8C8;
@@ -5340,7 +5349,21 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B3E4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B4CC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B64C);
+void func_8005B64C(u16 *a) {
+    u32 bit = 0x100;
+    u32 mask = D_80080A70.unk0;
+    u32 i;
+    AkaoChannel *c = D_8007E3D8;
+    for (i = 0; i < 16; i++, c++, bit <<= 1) {
+        if (mask & bit) {
+            if (!(c->unk28 & 0x2000000)) {
+                c->unk100 = (*a & 0x7F) << 8;
+                c->unkBC = 0;
+                c->unk11C |= 3;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B6C8);
 
@@ -5486,7 +5509,14 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C4D4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C5F0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C684);
+void func_8005C684(void) {
+    if (D_80083168.unkC != 0) {
+        func_80057688(D_80083168.unk10, 0);
+        func_80057688(D_80083168.unk10 + 1, 0);
+        func_80057640(D_80083168.unk10, 0, 0, 0);
+        func_80057640(D_80083168.unk10 + 1, 0, 0, 0);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C700);
 
@@ -6114,7 +6144,20 @@ void func_80060388(AkaoChannel *c) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800603F4);
+void func_800603F4(AkaoChannel *c) {
+    u8 *p = c->unk0;
+    s32 v = *p++;
+    c->unk0 = p;
+    if (v == 0) {
+        v = 0x100;
+    }
+    if (c->unkA2[c->unkF4] + 1 != v) {
+        c->unk0 = p + 2;
+    } else {
+        c->unk0 = p + (s16)(p[0] | (p[1] << 8));
+        c->unkF4 = (c->unkF4 - 1) & 3;
+    }
+}
 
 void func_80060470(AkaoChannel *c) {
     c->unkA2[c->unkF4]++;
