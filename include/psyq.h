@@ -77,6 +77,24 @@ typedef struct {
     u8 minute, second, sector, track;
 } CdlLOC;
 
+/* libgte */
+typedef struct {
+    s16 m[3][3];
+    s32 t[3];
+} MATRIX;
+
+typedef struct {
+    s32 vx, vy, vz, pad;
+} VECTOR;
+
+typedef struct {
+    s16 vx, vy, vz, pad;
+} SVECTOR;
+
+typedef struct {
+    u8 r, g, b, cd;
+} CVECTOR;
+
 long VSync(long mode);
 /* C library: gcc 2.8 expands small constant-size memcpy inline (lwl/lwr) */
 void *memcpy(void *, const void *, u32);

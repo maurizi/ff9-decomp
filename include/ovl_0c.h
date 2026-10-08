@@ -8,11 +8,22 @@
 
 /* object embedded in WorldMap (0x4C bytes) */
 typedef struct {
-    u8 pad0[0x1B];
+    u8 pad0[4];
+    void *unk4;
+    u8 pad8[0x10 - 8];
+    void *unk10; /* file 0x5xxxx */
+    void *unk14; /* file 0x6xxxx */
+    u8 pad18[0x1B - 0x18];
     u8 unk1B;
-    u8 pad1C[0x2C - 0x1C];
+    void *unk1C;
+    s32 unk20;
+    s16 unk24;
+    u8 pad26[0x2C - 0x26];
     u8 *unk2C;
-    u8 pad30[0x4C - 0x30];
+    s32 unk30;
+    u8 pad34[0x38 - 0x34];
+    void *unk38;
+    u8 pad3C[0x4C - 0x3C];
 } WorldMapObj;
 
 /* world map context, GameData.unk8E4.world */
@@ -45,6 +56,33 @@ typedef struct Unk800D3EAC {
     u16 unkC; /* low 6 bits: id */
     u8 unkE;
 } Unk800D3EAC;
+
+typedef struct {
+    u8 pad0[2];
+    s16 unk2;
+} Unk800CE0F0;
+
+/* relocatable block: offsets are turned into pointers by func_800BA528 */
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} WmPackEntry;
+
+typedef struct {
+    s8 unk0; /* count */
+    u8 pad1[3];
+    s32 unk4;
+    WmPackEntry *unk8[1];
+} WmPack;
+
+/* text windows (func_800CC820 .. func_800CC8C8) */
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* index into D_800CDFC0 */
+    u8 pad2[6];
+    WinDef unk8[6];
+} Unk800D5438;
 
 /* ---- overlay functions ---- */
 void func_800AD114(s32, s32, s32);
@@ -96,7 +134,7 @@ void func_800C1C98(void);
 void func_800C2048(void);
 void func_800C2134(void);
 void func_800C26E4(void);
-s32 func_800C497C(s32);
+s32 func_800C497C(u16);
 void func_800CBF18(void);
 void func_800CC050(void);
 void func_800CC13C(void);
@@ -107,6 +145,20 @@ void func_800CC940(void);
 
 /* ---- overlay data ---- */
 extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
+extern char D_800A7A40[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
+extern void (*D_800CDFC0[])(void);
+extern u8 D_800CDF30[];
+extern Unk800CE0F0 *D_800CE0F0;
+extern s8 D_800CE3C4;
+extern s32 D_800CFE10;
+extern s32 D_800CFE14;
+extern s32 D_800CFE18;
+extern s32 D_800CFE1C;
+extern u16 *D_800CF430;
+extern u8 D_800CF444;
+extern s32 D_800D32F0;
+extern s32 D_800D3304;
+extern MATRIX D_800D3770;
 extern s32 D_800CCE50; /* debug flags */
 extern Unk800CE0E8 *D_800CE0E8;
 extern u8 D_800CE25C;
@@ -139,7 +191,7 @@ extern s32 D_800D481C;
 extern s32 D_800D4820;
 extern s32 D_800D4824;
 extern s32 D_800D4828;
-extern u8 D_800D5438;
+extern Unk800D5438 D_800D5438;
 extern u8 D_800CF46C;
 
 #endif
