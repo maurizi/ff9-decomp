@@ -75,7 +75,25 @@ void func_800A8DE0(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8E24);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8E6C);
+void func_800A8E6C(void) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    s32 i;
+    b->unk0 = 0;
+    b->unk4 = 0;
+    for (i = 0; i < 16; i++) {
+        *(b->unk1354->unk0 + i) = 0;
+    }
+    for (i = 0; i < 4; i++) {
+        b->unk153C[i] = 0;
+        b->unk1538[i] = 0;
+    }
+    b->unk1530 = 0;
+    b->unk1534 = -1;
+    b->unk11C0 = 0;
+    for (i = 0; (u32)i < 2; i++) {
+        b->unk2[i] = 0;
+    }
+}
 
 s32 func_800A8F10(void) {
     return 0;
@@ -146,8 +164,8 @@ void func_800A9768(void) {
         p->unk3C[i] = D_80067948;
         D_80067948 += 0x1000;
     }
-    p->unk30 = D_80067948 + 0x400;
-    p->unk2C = D_80067948;
+    p->unk2C[1] = D_80067948 + 0x400;
+    p->unk2C[0] = D_80067948;
     p->unk34[0] = D_80067948 + 0x800;
     p->unk34[1] = p->unk34[0] + 0x20000;
     D_80067948 = p->unk34[1] + 0x20000;
@@ -1083,7 +1101,23 @@ void func_800B95BC(BtlCmd *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B96AC);
+s32 func_800B96AC(BtlUnit *arg0, s16 arg1) {
+    BtlUnit *u;
+    u32 f;
+    if (arg0->unk2A >= arg1) {
+        for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+            f = u->unk68;
+            if ((f & 1) && ((D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34 >> 4) & 0x1F) == 2) {
+                if (!(u->unk3C & 0x13021D0B) && !(arg0->unk3C & 0x13021D0B)) {
+                    return 1;
+                }
+                break;
+            }
+        }
+    }
+    func_800CD5C8(0xF);
+    return 0;
+}
 
 void func_800B97A0(BtlUnit *arg0) {
     BtlUnit9C *m;
@@ -3330,7 +3364,11 @@ s32 func_800CBEFC(BtlScript *arg0, BtlUnit *arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBF28);
+s32 func_800CBF28(BtlScript *arg0, BtlUnit *arg1) {
+    arg0->unk26 = arg0->unk27 = arg0->unk8[1];
+    arg0->unk8 += 2;
+    return 1;
+}
 
 s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
     arg1->unk68 = (arg1->unk68 & ~0x1000000) | ((arg0->unk8[1] & 1) << 24);

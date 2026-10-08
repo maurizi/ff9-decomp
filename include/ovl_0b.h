@@ -620,8 +620,7 @@ typedef struct Battle11C0 {
     Battle11C020 *unk20;
     s32 unk24;
     struct Battle11C028 *unk28;
-    s32 unk2C;
-    s32 unk30;
+    s32 unk2C[2]; /* per draw buffer */
     s32 unk34[2]; /* per draw buffer */
     s32 *unk3C;
     s32 unk40;
@@ -671,7 +670,7 @@ static inline void func_800B3CEC_inline(BtlCmd *arg0) {
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
-    u8 pad2[4 - 2];
+    u8 unk2[2];
     s32 unk4;
     s32 unk8[8][0x22]; /* per unit: loaded file addresses */
     u8 pad448[0x488 - 0x448];
@@ -923,7 +922,8 @@ typedef struct {
 
 typedef struct {
     BtlUnit9C *unk0;
-    u8 pad4[0x4C - 4];
+    s16 unk4[6][2];
+    s16 unk1C[6][4];
     u8 unk4C; /* in use */
     u8 unk4D;
     s16 unk4E; /* index */
@@ -1754,7 +1754,7 @@ void func_800ED3F8(s32, s32, s32, char *);
 s32 func_800EB2A4(void);
 s32 func_800F13BC(void);
 extern u8 D_800FD7AC[];
-void func_800EC928(void);
+void func_800EC928(); /* called without arguments from func_800EC628 */
 s32 func_800E865C(s32, s32);
 void func_800DDF10(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
@@ -1781,8 +1781,23 @@ void func_800F1484(void);
 s32 func_800AB6F0(s32, s32);
 void func_800AB758(s32, s32, s32 **, s32 **, s32 **);
 BtlUnit *func_800E9FCC(void);
+void func_800CA7CC(void);
+u8 *func_800CE1B4(MATRIX *, s32, s32, u32 *, s32);
+u8 *func_800E3EEC(u8 *);
+u8 *func_800CC4F0(u8 *);
 void func_800BD93C(BtlUnit *);
 void func_800BFAF4(BtlUnit *);
+extern u8 D_80104FC1; /* D_80104FC0.unk1 */
+void func_800ED02C(RECT *, s16);
+extern s32 D_800F8DE4[];
+Window *func_800F1370(void);
+void func_800EBE1C(RECT *, RECT *);
+void func_800EBD88(void);
+s32 func_8002BE88(void);
+void func_8002BE98(s32);
+void func_8002C138(u8);
+void func_8002DF18(RECT *, s32, s32, s32);
+extern RECT D_800F8DBC;
 void func_800BC21C(BtlUnit *, s32 *);
 void func_800B3460(GameData *, Battle *, BtlUnit *);
 void func_800B1764(Battle *);
