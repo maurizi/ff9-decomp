@@ -3260,9 +3260,29 @@ s32 func_800CBC38(BtlScript *arg0, BtlUnit *arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBD28);
+s32 func_800CBD28(BtlScript *arg0, BtlUnit *arg1) {
+    BtlUnit9C50 *g;
+    BtlUnit9C50 *e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    e->unk4 |= 1;
+    g = &arg1->unk9C->unk50[arg0->unk8[1]];
+    g->unkC = 0;
+    e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    e->unk12 = 0x1000;
+    arg0->unk8 += 2;
+    return 1;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBDC8);
+s32 func_800CBDC8(BtlScript *arg0, BtlUnit *arg1) {
+    BtlUnit9C50 *g;
+    BtlUnit9C50 *e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    e->unk4 |= 3;
+    g = &arg1->unk9C->unk50[arg0->unk8[1]];
+    g->unkC = 0;
+    e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    e->unk12 = 0x1000;
+    arg0->unk8 += 2;
+    return 1;
+}
 
 s32 func_800CBE68(BtlScript *arg0, BtlUnit *arg1) {
     u8 i = arg0->unk8[1];
