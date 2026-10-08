@@ -3593,7 +3593,32 @@ void func_80032120(s32 a, s32 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032140);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032238);
+void func_80032238(void) {
+    GameState *g;
+    s32 i;
+
+    D_80077DB0.unk7 = 0;
+    g = D_8006794C;
+    g->unk1C->unk0 |= 0x1C;
+    D_80077DB0.unk14 = g->unk9;
+    g->unk9 = 0;
+    D_80077DB0.unk20 = D_8006794C->unk10[0].r0;
+    D_80077DB0.unk21 = D_8006794C->unk10[0].g0;
+    D_80077DB0.unk22 = D_8006794C->unk10[0].b0;
+    D_8006794C->unk10[0].r0 = 0;
+    D_8006794C->unk10[0].g0 = 0;
+    D_8006794C->unk10[0].b0 = 0;
+    D_8006794C->unk10[1].r0 = 0;
+    D_8006794C->unk10[1].g0 = 0;
+    D_8006794C->unk10[1].b0 = 0;
+    func_8002DE60();
+    D_80077DB0.unk18 = D_80073998[0];
+    D_80073998[0] = 0x4000000;
+    func_8002C4B0(1);
+    for (i = 0; i < 2; i++) {
+        func_8002C584(i);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032384);
 
@@ -7979,7 +8004,33 @@ void func_8006100C(void) {
     func_80060ED8(0x2000, 0x2100, func_8006121C);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061070);
+void func_80061070(s32 a, s32 b, s32 n, void (*cb)(void)) {
+    if (D_80083168.unkC == 0 || D_80083168.unk14 == 0) {
+        return;
+    }
+    SpuSetTransferStartAddr(a);
+    func_80056614();
+    func_8005709C(D_80083168.unk0, n);
+    SpuSetIRQ(0);
+    if (D_80083168.unk14 > 0x800) {
+        SpuSetIRQCallback(cb);
+        D_80083168.unk14 -= 0x800;
+        D_80083168.unk0 += n;
+    } else if (D_80083168.unk4 != NULL) {
+        SpuSetIRQCallback(cb);
+        D_80083168.unk0 = D_80083168.unk4;
+        D_80083168.unk14 = D_80083168.unk1C;
+    } else {
+        SpuSetIRQCallback(func_80060938);
+        b = 0x1030;
+        a = b;
+        D_80083168.unk14 = 0;
+    }
+    func_800576BC(D_80083168.unk10, a);
+    func_800576BC(D_80083168.unk10 + 1, b);
+    SpuSetIRQAddr(a + 8);
+    SpuSetIRQ(1);
+}
 
 void func_800611BC(void) {
     func_80061070(0x1100, 0x1100, 0x800, func_800611EC);

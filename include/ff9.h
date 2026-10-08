@@ -406,9 +406,13 @@ typedef struct {
     u8 padA[2];
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
     s32 unk10; /* frame counter */
-    u8 pad14[0x1C - 0x14];
+    s32 unk14; /* saved VSync mode */
+    s32 unk18;
     s32 unk1C;
-    u8 pad20[4];
+    u8 unk20; /* saved background colour */
+    u8 unk21;
+    u8 unk22;
+    u8 pad23;
     s32 unk24;
 } Unk80077DB0;
 extern Unk80077DB0 D_80077DB0;
@@ -1868,13 +1872,14 @@ void func_80051004(u8);
 extern u8 D_8007B930[8]; /* name text being converted */
 
 typedef struct {
-    u8 *unk0;
-    u8 pad4[8 - 4];
+    u8 *unk0; /* stream read pointer */
+    u8 *unk4; /* loop start */
     s32 unk8;
     u32 unkC;
     s32 unk10;
-    u32 unk14;
-    u8 pad18[0x20 - 0x18];
+    u32 unk14; /* bytes left */
+    u8 pad18[0x1C - 0x18];
+    u32 unk1C; /* loop length */
     s32 unk20;
     s32 unk24;
     s32 unk28;
