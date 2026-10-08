@@ -82,7 +82,8 @@ typedef struct BtlUnit9C {
     u16 unk0; /* flags */
     u8 pad2[4 - 2];
     u8 unk4;
-    u8 pad5[8 - 5];
+    u8 unk5;
+    u8 pad6[8 - 6];
     BtlUnit9C8 *unk8;
     BtlUnit9CC *unkC;
     s32 unk10;

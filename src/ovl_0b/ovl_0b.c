@@ -3112,7 +3112,66 @@ u32 func_800C8DE0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C8E80);
+void func_800C8E80(BtlUnit9C *arg0, s32 arg1) {
+    u8 *p;
+    u32 i;
+    u8 code;
+    if (!(arg0->unk0 & 0x10)) {
+        arg0->unk5 = arg1;
+        p = (u8 *)arg0->unk10;
+        for (i = 0; i < arg0->unk8->unk3; i++) {
+            if (!(arg0->unk14 & (1 << i))) {
+                do {
+                    code = getcode(p);
+                    if (code == 0xFF) {
+                        p += sizeof(DR_TPAGE);
+                    } else if (code == 0xE1) {
+                        ((DR_TPAGE *)p)->code[0] = (u16)arg1 | 0xE1000000;
+                        p += sizeof(DR_TPAGE);
+                    } else {
+                        code &= 0x3C;
+                    }
+                    switch (code) {
+                    case 0x2C:
+                        setSemiTrans(p, 1);
+                        ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & ~0x60);
+                        p += sizeof(POLY_FT4);
+                        break;
+                    case 0x24:
+                        setSemiTrans(p, 1);
+                        ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & ~0x60);
+                        p += sizeof(POLY_FT3);
+                        break;
+                    case 0x3C:
+                        setSemiTrans(p, 1);
+                        ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & ~0x60);
+                        p += sizeof(POLY_GT4);
+                        break;
+                    case 0x34:
+                        setSemiTrans(p, 1);
+                        ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & ~0x60);
+                        p += sizeof(POLY_GT3);
+                        break;
+                    case 0x38:
+                        setSemiTrans(p, 1);
+                        p += sizeof(POLY_G4);
+                        break;
+                    case 0x30:
+                        setSemiTrans(p, 1);
+                        p += sizeof(POLY_G3);
+                        break;
+                    case 0x28:
+                        p += sizeof(POLY_F4);
+                        break;
+                    case 0x20:
+                        p += sizeof(POLY_F3);
+                        break;
+                    }
+                } while (code != 0xFF);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9040);
 

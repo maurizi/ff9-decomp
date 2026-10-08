@@ -94,6 +94,56 @@ typedef struct {
 
 typedef struct {
     u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad1;
+} POLY_FT3;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    u8 r1, g1, b1, p1;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    u8 r2, g2, b2, p2;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad2;
+} POLY_GT3;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    u8 r1, g1, b1, p1;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    u8 r2, g2, b2, p2;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad2;
+    u8 r3, g3, b3, p3;
+    s16 x3, y3;
+    u8 u3, v3;
+    u16 pad3;
+} POLY_GT4;
+
+typedef struct {
+    u32 tag;
     u32 code[1];
 } DR_TPAGE;
 
@@ -104,6 +154,25 @@ typedef struct {
     s16 x1, y1;
     s16 x2, y2;
 } POLY_F3;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    s16 x1, y1;
+    s16 x2, y2;
+    s16 x3, y3;
+} POLY_F4;
+
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, pad1;
+    s16 x1, y1;
+    u8 r2, g2, b2, pad2;
+    s16 x2, y2;
+} POLY_G3;
 
 typedef struct {
     u32 tag;
