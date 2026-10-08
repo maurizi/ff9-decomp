@@ -236,7 +236,34 @@ void func_800A9998(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9AAC);
+s32 func_800A9AAC(void) {
+    s32 best;
+    s32 i;
+    s32 min;
+    s32 v;
+
+    if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60 != 0) {
+        while (1) {
+            best = -1;
+            min = 0x7FFFFFFF;
+            for (i = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; i >= 0; i--) {
+                if (D_800C9F20[i] != -1) {
+                    v = func_8001E218(0xA, D_800C9F20[i])->unk4;
+                    if (v < min) {
+                        best = i;
+                        min = v;
+                    }
+                }
+            }
+            if (best == -1) {
+                break;
+            }
+            func_800AA4E8(D_800C9F20[best]);
+            D_800C9F20[best] = -1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9BDC);
 
@@ -259,7 +286,10 @@ s32 func_800AA0A8(void) {
     return 0;
 }
 
-s32 func_800AA0C8(FieldScene *arg0) {
+/* old-style definition: some callers pass a second argument */
+s32 func_800AA0C8(arg0)
+    FieldScene *arg0;
+{
     return func_8001C8B0((s32)arg0->unk24, 3, 0xA0000, 0);
 }
 
@@ -582,7 +612,34 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AF740);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AFAC0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AFCBC);
+u8 *func_800AFCBC(u8 *arg0) {
+    s32 i;
+    s32 n;
+    Unk800AFCBC *h;
+
+    func_800AA0C8(D_8006794C->unk1C->unk8E4.field->unkC->unk14, (s16)D_8006794C->unk1C->unkC);
+    i = 0;
+    n = 0x10;
+    h = (Unk800AFCBC *)arg0;
+    arg0 += sizeof(Unk800AFCBC);
+    h->unk4 = (u16 *)arg0;
+    arg0 += 0x20;
+    h->unk0 = 1;
+    h->unk2 = n;
+    h->unk3 = h->unk2;
+    for (; i < n; i++) {
+        h->unk4[i] = 0xFFFF;
+    }
+    h->unk8 = arg0;
+    arg0 += h->unk3 * 0x24;
+    for (i = 0; i < h->unk3; i++) {
+        func_800B00B0(h->unk8 + i * 0x24);
+    }
+    h->unkC = arg0;
+    h->unk10 = arg0 + 0x3000;
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk10 = h;
+    return arg0 + 0x6000;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AFDE8);
 
@@ -1015,7 +1072,28 @@ void func_800B559C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B5660);
+void func_800B5660(void) {
+    s32 y;
+    Unk80077DE8 *m;
+
+    func_8002B524(D_800C9D98.x + 8, D_800C9D98.y - 3, 0xA, "DISC CHANGE", 0);
+    func_8002B5FC(D_800C9D98.x + 0xE, D_800C9D98.y + 0xA, 0xA, func_80035774(0), 0);
+    func_8002B5FC(D_800C9D98.x + 0x30, D_800C9D98.y + 0x2E, 0xA, func_80035774(1), 0);
+    func_8002B5FC(D_800C9D98.x + 0x30, D_800C9D98.y + 0x3D, 0xA, func_80035774(2), 0);
+    if (!func_8002F810()) {
+        m = &D_80077DE8;
+        m->unk0 = D_800C9D98.x + 0x16;
+        y = D_800C9D98.y;
+        if (D_800CA058.unk3 == 0) {
+            m->unk2 = y + 0x32;
+        } else {
+            m->unk2 = y + 0x41;
+        }
+        D_80077DEC = 9;
+        func_800355E4();
+    }
+    func_8002DEE4(&D_800C9D98, 0xA, 2);
+}
 
 void func_800B5794(void) {
     if (D_800CA058.unk3 == 0) {

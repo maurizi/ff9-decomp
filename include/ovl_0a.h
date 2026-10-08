@@ -18,13 +18,24 @@ typedef struct Unk800AB0B0 {
     Unk800AB0B0Entry unk4[1];
 } Unk800AB0B0;
 
+/* initialised by func_800AFCBC */
+typedef struct Unk800AFCBC {
+    u16 unk0;
+    u8 unk2;
+    u8 unk3; /* count of 0x24-byte entries at unk8 */
+    u16 *unk4; /* 16 entries, follows this header */
+    u8 *unk8;
+    u8 *unkC;
+    u8 *unk10;
+} Unk800AFCBC; /* 0x14, followed by the buffers it points to */
+
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by func_800A9350) */
 typedef struct {
     u32 unk0; /* flags */
     u8 pad4[0xA - 4];
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
-    u8 pad10[0x14 - 0x10];
+    struct Unk800AFCBC *unk10;
     struct Unk800C9DB4 *unk14;
     void *unk18;
     void *unk1C; /* file 0x1Fxxxx */
@@ -516,7 +527,7 @@ typedef struct {
 } Unk800C95C8;
 
 /* ---- overlay functions ---- */
-void func_800AD944(s32, s32, s32);
+s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
 void func_800C6EEC();
 void func_80054A28(void *);
@@ -599,6 +610,7 @@ extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;
 extern u8 *D_800C9EAC[5];
 extern u8 D_800A7860[]; /* text */
+extern RECT D_800C9D98;
 
 /* text window contents passed to func_80063118 (as in ovl_38) */
 typedef struct {
@@ -649,7 +661,8 @@ void func_800A87DC(FieldMapObj *, s32);
 /* main exe: candidates for ff9.h */
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
-extern u8 *D_80077DF0;
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+extern s32 D_80077DEC; /* = D_80077DE8.unk4, referenced by its own name */
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 void func_800C85B8(s32, s32);
@@ -658,6 +671,8 @@ void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;
 void func_801F3488(void *); /* overlay 0x65 (loaded at 0x801F0000) */
+void func_8019A5B0(s32); /* overlay loaded at 0x80198000 */
+s32 func_8019AB70(void);
 void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
 void func_80023A0C(void);
