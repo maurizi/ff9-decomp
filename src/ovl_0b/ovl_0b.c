@@ -1099,7 +1099,16 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BBF5C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BC0D0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BC1E0);
+void func_800BC1E0(Unk800BC1E0 *arg0, s16 *arg1) {
+    if (!(arg0->unk0 & 8)) {
+        arg1[0] = 0;
+        arg1[1] = arg0->unk8;
+    } else {
+        arg1[0] = arg0->unk8;
+        arg1[1] = 0;
+    }
+    arg1[2] = arg0->unkA;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BC21C);
 
@@ -1880,7 +1889,18 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA7CC);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CAAD0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CAC24);
+s32 func_800CAC24(BtlScript *arg0) {
+    if (D_800F78A4->unk0->unk0 == -1) {
+        if (arg0->unk21 != 0) {
+            return 0;
+        }
+        if (!((arg0->unk0 >> 3) & 1)) {
+            func_800B3C00();
+        }
+        arg0->unk4 = 0;
+    }
+    return 0;
+}
 
 void func_800CAC98(BtlScript *arg0) {
     arg0->unk12 = arg0->unk8[1];
@@ -2051,7 +2071,14 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBD28);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBDC8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBE68);
+s32 func_800CBE68(BtlScript *arg0, BtlUnit *arg1) {
+    u8 i = arg0->unk8[1];
+    BtlUnit9C *m = arg1->unk9C;
+    BtlUnit9C50 *e;
+    (*(e = m->unk50 + i)).unk4 &= 0xFC;
+    arg0->unk8 += 2;
+    return 1;
+}
 
 s32 func_800CBEB4(BtlScript *arg0) {
     arg0->unk18 = arg0->unk8[1] | (arg0->unk8[2] << 8);
@@ -2171,7 +2198,13 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CD210);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CD5C8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CD70C);
+void func_800CD70C(u8 arg0) {
+    s32 n = 0;
+    while (arg0 >>= 1) {
+        n++;
+    }
+    func_800357C0(D_800F6CB4, n + 1);
+}
 
 u8 *func_800CD75C(u8 arg0) {
     return &D_8006A218[D_80069018[arg0].unk0];

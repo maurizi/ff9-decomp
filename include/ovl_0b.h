@@ -1261,6 +1261,7 @@ void func_800E3D80(void);
 u8 func_800EA038(void);
 void func_800EA164(s32);
 void func_800E9F68(u8);
+void func_800EF094(s32, s32, s32, MenuView *);
 void func_800F4DFC(void);
 s32 func_800AB26C(void **, s32);
 void func_800C02D4(BtlUnit *);
