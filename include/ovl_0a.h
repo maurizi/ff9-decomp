@@ -729,6 +729,31 @@ typedef struct FieldActorInfo {
     FieldActorExt *unk10;
 } FieldActorInfo;
 
+/* background VRAM animation (func_800BB090) */
+typedef struct {
+    RECT unk0;      /* destination area */
+    DVECTOR *unk8;  /* per-frame source position */
+} BgAnimRect; /* 0xC */
+
+typedef struct {
+    u8 unk0; /* flags: 1 active, 2 one-shot, 4 scroll */
+    u8 unk1; /* frame count */
+    s16 unk2; /* speed (20.12) */
+    u16 unk4; /* random delay base */
+    u16 unk6; /* random delay range */
+    s32 unk8; /* position (20.12) */
+    u8 unkC; /* rect count */
+    u8 padD;
+    u16 unkE; /* last frame */
+    BgAnimRect *unk10;
+} BgAnim; /* 0x14 */
+
+typedef struct {
+    u16 unk0; /* count */
+    u8 pad2[2];
+    BgAnim unk4[1];
+} BgAnimHdr;
+
 /* object model slot (func_8001E350) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */

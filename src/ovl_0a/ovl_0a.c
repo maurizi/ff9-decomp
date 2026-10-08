@@ -1767,7 +1767,79 @@ void func_800BA3CC(Unk800C95C8 *arg0, u16 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BA560);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB090);
+void func_800BB090(BgAnimHdr *arg0) {
+    RECT r;
+    u32 i;
+    u32 j;
+    BgAnim *a;
+    BgAnimRect *ar;
+    s32 pos;
+    s16 f;
+    s32 r8;
+    s32 v;
+    s16 last;
+
+    if (arg0 == NULL) {
+        return;
+    }
+    for (i = 0; i < arg0->unk0; i++) {
+        a = &arg0->unk4[i];
+        if (!(a->unk0 & 1)) {
+            continue;
+        }
+        if (a->unk1 != 0) {
+            pos = a->unk8;
+            f = pos >> 12;
+            last = a->unkE;
+            if (f >= 0) {
+                if (f != last) {
+                    for (j = 0; j < a->unkC; j++) {
+                        ar = &a->unk10[j];
+                        r.x = ar->unk8[f].vx;
+                        r.y = ar->unk8[f].vy;
+                        r.w = ar->unk0.w;
+                        r.h = ar->unk0.h;
+                        MoveImage(&r, ar->unk0.x, ar->unk0.y);
+                    }
+                    a->unkE = f;
+                }
+                pos += a->unk2;
+            } else {
+                pos += 0x1000;
+            }
+            if ((pos >> 12) < a->unk1) {
+                a->unk8 = pos;
+            } else if (a->unk6 != 0) {
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                    if (D_8007B720 >= D_8007B92D) {
+                        func_8004BF20();
+                    }
+                }
+                r8 = *D_8007B720++;
+                v = (a->unk6 + 1) * ((r8 << 8) | r8);
+                a->unk8 = -((a->unk4 + v / 0x10000) << 12);
+            } else if (a->unk0 & 2) {
+                a->unk0 &= ~3;
+            } else {
+                a->unk8 = 0;
+            }
+        } else if (a->unk0 & 4) {
+            pos = a->unk8;
+            f = pos >> 12;
+            for (j = 0; j < a->unkC; j++) {
+                ar = &a->unk10[j];
+                MoveImage(&ar->unk0, ar->unk0.x, ar->unk0.y - f);
+                r.x = ar->unk0.x;
+                r.y = ar->unk0.y - f;
+                r.w = ar->unk0.w;
+                r.h = f;
+                MoveImage(&r, ar->unk0.x, ar->unk0.y + ar->unk0.h - f);
+            }
+            a->unk8 = (pos & 0xFFF) + a->unk2;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB3C4);
 
