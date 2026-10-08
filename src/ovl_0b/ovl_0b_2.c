@@ -437,9 +437,47 @@ s32 func_800D7D64(s32 arg0, Unk800D955C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7E14);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7EA0);
+s32 func_800D7EA0(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+    if (arg0 == 0) {
+        *arg4 = 0x1C;
+    } else if (arg0 == 1) {
+        arg1->unk0 = 0x10;
+        arg1->unk1 = arg4[0];
+        arg1->unk8 = arg4[1];
+        arg1->unk4 = D_80100D88.unk0 | (D_80100D88.unk1 << 8);
+        arg1->unk2 = D_80100D88.unk2;
+        if (func_800D8ACC(arg1->unk0, arg1->unk1) != 0 || func_800D8A64(arg1->unk1) != 0) {
+            D_800FEC55 = arg0;
+            return 1;
+        }
+        D_800FEC55 = 0;
+    } else {
+        return func_800D974C(arg1, arg2, arg3);
+    }
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7F80);
+s32 func_800D7F80(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+    if (arg0 == 0) {
+        *arg4 = 0x1C;
+    } else if (arg0 == 1) {
+        arg1->unk0 = 0x10;
+        arg1->unk1 = arg4[0];
+        arg1->unk8 = arg4[1];
+        arg1->unk4 = D_80100D88.unk0 | (D_80100D88.unk1 << 8);
+        if (func_800D8ACC(arg1->unk0, arg1->unk1) != 0) {
+            D_800FEC55 = arg0;
+            return 1;
+        }
+        if (func_800D8A64(arg1->unk1) != 0) {
+            return 1;
+        }
+        D_800FEC55 = 0;
+    } else {
+        return func_800D9990(arg1, arg2, arg3);
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D805C);
 
@@ -2681,7 +2719,23 @@ void func_800EC1B0(void) {
     D_80104FA8->unk0 = n;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EC258);
+void func_800EC258(void) {
+    s32 n = 0;
+    s32 i = 0;
+    UnkPair *e;
+    Unk80104FA8 *p = D_80104FA8;
+    e = D_8006794C->unk1C->unk574;
+    for (; i < 0x100; i++, e++) {
+        if (e->unk1 != 0 && e->unk0 != 0xFF && e->unk0 < 0x58 && (D_8006E0E8[e->unk0].unk0 & 4)) {
+            p->unk80[n] = e;
+            n++;
+        }
+    }
+    for (i = n; i < 0x58; i++) {
+        D_80104FA8->unk80[i] = NULL;
+    }
+    D_80104FA8->unk2 = n;
+}
 
 void func_800EC334(s32 arg0) {
     s32 i;

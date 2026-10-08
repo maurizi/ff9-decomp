@@ -151,7 +151,7 @@ typedef struct BtlUnit {
     u8 unkBC; /* on screen */
     u8 padBD[0xC4 - 0xBD];
     u32 *unkC4;
-    u8 padC8[0xCA - 0xC8];
+    s16 unkC8; /* hp change shown */
     s16 unkCA;
     s16 unkCC;
     u8 unkCE;
@@ -528,7 +528,9 @@ static inline void func_800B3CEC_inline(BtlCmd *arg0) {
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
-    u8 pad2[0x488 - 2];
+    u8 pad2[8 - 2];
+    s32 unk8[8][0x22]; /* per unit: loaded file addresses */
+    u8 pad448[0x488 - 0x448];
     Battle488 unk488[16];
     u8 pad608[0x6F8 - 0x608];
     BtlUnit *unk6F8; /* list of active units */
@@ -844,7 +846,7 @@ typedef struct {
     s8 unk10;
     u8 pad11;
     u8 unk12;
-    u8 pad13;
+    u8 unk13;
     s32 unk14;
     s16 unk18;
 } Unk800CC278;
@@ -1507,5 +1509,12 @@ void func_8002C8E8(s32, s32, s32, s32);
 void func_8002C64C(s32);
 u8 func_800F47D8(void);
 void func_800E77D8(s32, s16 *);
+
+extern u16 D_800F524C[][0x22];
+Unk800CC278 *func_800CC31C(s32, s16, s16, u8);
+Unk800CC278 *func_800CC37C(s32, s16, s16, u8);
+void func_800EA338(s8);
+s32 func_800D9990(Unk800D7C9C *, s32, s32 *);
+s32 func_800D974C(Unk800D7C9C *, s32, s32 *);
 
 #endif
