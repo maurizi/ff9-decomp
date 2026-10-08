@@ -2877,7 +2877,41 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C9B0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002CB18);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002CD4C);
+void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
+    RECT t;
+
+    switch (style) {
+    case 2:
+        func_80026B30(r, otz, 1, 0, abr);
+        t.x = r->x + 4;
+        t.y = r->y + 4;
+        t.w = r->w - 8;
+        t.h = r->h - 8;
+        func_8002709C(&t, otz, 0, 0, abr);
+        break;
+    case 1:
+        t.x = r->x;
+        t.y = r->y + 4;
+        t.w = r->w;
+        t.h = r->h - 4;
+        func_80025A28(r->x, r->y, otz, 0, r->w - 2, abr);
+        func_80025108(&t, otz, 1, abr);
+        func_8002709C(&t, otz, 0, 0, abr);
+        break;
+    case 0:
+        func_80025108(r, otz, 0, abr);
+        func_8002709C(r, otz, 0, 0, abr);
+        break;
+    case 3:
+        func_80026B84(r, otz, 1, 0, abr);
+        t.x = r->x + 2;
+        t.y = r->y + 2;
+        t.w = r->w - 3;
+        t.h = r->h - 3;
+        func_8002709C(&t, otz, 0, 0, abr);
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002CF20);
 
