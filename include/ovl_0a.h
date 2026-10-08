@@ -780,6 +780,24 @@ typedef struct {
 extern FieldFade D_800CA140[];
 extern u16 D_800C9DA0; /* FieldFade count */
 
+/* palette fade packet (func_800C07D8), in the D_800C9DA4.unk2C buffer */
+typedef struct {
+    u8 unk0;
+    u8 unk1;  /* colour count */
+    u8 unk2;  /* first */
+    u8 unk3;  /* last */
+    s16 unk4; /* mode */
+    u8 pad6[2];
+    u32 unk8; /* frames */
+    s32 unkC;
+    s32 unk10; /* r step (16.16) */
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C; /* offset: saved colours */
+    s32 unk20; /* offset: work colours */
+    RECT unk24;
+} FieldPalAnim;
+
 /* pause screen (func_800AF740) */
 typedef struct {
     SPRT unk0;
