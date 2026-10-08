@@ -2367,4 +2367,15 @@ s32 func_80034F7C(s32, s32);
 s32 func_80034FD4(s32, s32);
 s32 func_80034E80(s32, s32, u8);
 void func_80033DCC(Character *);
+POLY_FT4 *func_80051530(void);
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u16 unk2; /* clut */
+} Unk80068788;
+extern Unk80068788 D_80068788;
+extern s32 D_8007BC00; /* colour */
+extern s32 D_8007BBF8; /* half width */
+extern s32 D_8007BBFC; /* height */
+extern s32 D_8007BC04;
 #endif
