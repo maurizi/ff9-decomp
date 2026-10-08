@@ -3697,7 +3697,23 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034B50);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034C64);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034D78);
+s32 func_80034D78(s32 ch, s32 lv, u8 add) {
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    u16 *bonus = c->unk3E;
+    Unk8006DD88 *e = &D_8006DD88[k];
+    s32 r;
+    s32 n;
+    if (add) {
+        n = c->unk17 == 0;
+        bonus[3] += n + func_8003502C(c->unk39, 3);
+    }
+    r = e->unk3 + lv * 3 / 20 + (bonus[3] >> 5);
+    if (r >= 51) {
+        r = 50;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034E80);
 

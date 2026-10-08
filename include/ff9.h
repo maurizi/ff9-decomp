@@ -1351,10 +1351,12 @@ s32 func_80033964(u32);
 s32 func_8003502C(u8 *, s32);
 typedef struct {
     u8 unk0;
-    u8 pad1[3];
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
     u8 unk4;
-    u8 pad5;
-} Unk8006DD88;
+    u8 unk5;
+} Unk8006DD88; /* base stats per character class */
 extern Unk8006DD88 D_8006DD88[];
 void func_8002C210(void);
 void func_8002E490(void);
