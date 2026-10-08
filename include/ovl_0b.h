@@ -1101,11 +1101,16 @@ extern volatile Unk80105060 D_80105060;
 
 
 typedef struct {
+    s16 unk0;
+    u16 unk2;
+} Unk801051F088;
+
+typedef struct {
     u8 unk0;
     u8 pad1[0x80 - 1];
     s32 unk80;
     s32 unk84;
-    Unk4 unk88;
+    Unk801051F088 unk88; /* text size */
     u8 unk8C;
     u8 unk8D;
     u8 pad8E[2];
@@ -1677,7 +1682,8 @@ extern U16Pair D_800FB1F0[];
 extern char D_800F96E4[];
 s32 func_800EEA98(s32);
 s32 *func_800F4FB4(s32);
-s32 func_800F5064(s32);
+u8 *func_800F5064(u8 *);
+u8 *func_800F4E70(u8 *);
 s32 func_800D9134(u8 *, s32, s32);
 extern s32 D_80104DE8;
 extern s32 D_800F78B4[];
