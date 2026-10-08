@@ -4258,7 +4258,16 @@ Unk8007B9C0 *func_8004EB68(void) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004EBC0);
+s32 func_8004EBC0(Unk8004EBC0 *r) {
+    Unk8007B9C0 *p;
+    for (p = D_8007B9C0; p < D_8007B9C0 + 8; p++) {
+        if (p->unk8 != 0 && r->unk0 < p->unk4 + p->unk18 && p->unk4 < r->unk0 + r->unk2 &&
+            r->unk8 < p->unk6 + p->unk27 && p->unk6 < r->unk8 + r->unk9) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void func_8004EC74(u32 i, s32 v) {
     if (i < 8) {

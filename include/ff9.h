@@ -718,7 +718,10 @@ typedef struct {
     s32 unk50;
     u8 pad54[0x58 - 0x54];
     s16 unk58;
-    u8 pad5A[0x66 - 0x5A];
+    u8 pad5A[0x5C - 0x5A];
+    s32 unk5C;
+    u8 pad60[0x64 - 0x60];
+    s16 unk64;
     s16 unk66;
     u16 unk68;
     u16 unk6A;
@@ -1017,11 +1020,15 @@ typedef struct {
 } Unk8007B9C0Sub;
 
 typedef struct {
-    u8 pad0[8];
+    u8 pad0[4];
+    s16 unk4; /* x */
+    s16 unk6; /* y */
     s16 unk8;
     u8 padA[0x14 - 0xA];
     Unk8007B9C0Sub *unk14;
-    u8 pad18[0x28 - 0x18];
+    s16 unk18; /* w */
+    u8 pad1A[0x27 - 0x1A];
+    u8 unk27; /* h */
     u8 unk28;
     u8 pad29[0x2C - 0x29];
 } Unk8007B9C0;
@@ -1306,6 +1313,14 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+typedef struct {
+    s16 unk0; /* x */
+    s16 unk2; /* w */
+    u8 pad4[4];
+    u8 unk8; /* y */
+    u8 unk9; /* h */
+} Unk8004EBC0;
+extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void func_800329FC(u8 *);
 extern AkaoChannel D_80080AC8[];
@@ -1591,7 +1606,7 @@ typedef struct {
 
 extern CdRequest D_80076178;
 extern CdRequest D_800761A8;
-extern s32 D_8007B704;
+extern Unk8004AB64 *D_8007B704;
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
 extern s32 D_8007BBE0;
