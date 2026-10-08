@@ -660,7 +660,49 @@ void func_800AC5C8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AC7D4);
+void func_800AC7D4(void) {
+    SVECTOR v;
+    WorldMapObj *o;
+    Unk8004AB64 *a;
+    WmObjSlot *s;
+
+    D_8007BD28 = 0;
+    D_8007BD30 = func_800B8114();
+    o = D_8006794C->unk1C->unk8E4.world->unk8;
+    o->unk19 = 0;
+    a = func_8004AE00();
+    if (a != NULL && (s = (WmObjSlot *)func_8001E350(a->unk3B)) != NULL) {
+        v.vx = ((MATRIX *)s->unk8->unk20)[1].t[0];
+        v.vy = ((MATRIX *)s->unk8->unk20)[1].t[1];
+        v.vz = ((MATRIX *)s->unk8->unk20)[1].t[2];
+        gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+        gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+        gte_ldv0(&v);
+        gte_rtps();
+        gte_stsxy(&D_8006794C->unk1C->unk8E4.world->unk8->unkC);
+        if ((u16)D_8006794C->unk1C->unk8E4.world->unk8->unkC >= 320 ||
+            D_8006794C->unk1C->unk8E4.world->unk8->unkE < 0 ||
+            D_8006794C->unk1C->unk8E4.world->unk8->unkE >= 218) {
+            D_8006794C->unk1C->unk8E4.world->unk8->unkC = 160;
+            D_8006794C->unk1C->unk8E4.world->unk8->unkE = 109;
+        }
+    }
+    D_8006794C->unk1C->unk8E4.world->unk0 &= ~0x400;
+    func_800AD180();
+    func_800ACE24();
+    if (D_8006794C->unk1C->unk81C[0] != D_8006794C->unk1C->unk8E4.world->unk8->unk26 &&
+        (D_8006794C->unk1C->unk0 & 0x20000000)) {
+        func_800559FC(0, 0xF, 0);
+    }
+    D_8006794C->unk1C->unk8E4.world->unk8->unk18 = 5;
+    func_800AB0C0(0xD000, 0x27C, 0, 0x80, 0x7F);
+    func_800AB0C0(0xD000, 0x27B, 0, 0x80, 0x7F);
+    func_800AB0C0(0xD000, 0x27A, 0, 0x80, 0x7F);
+    D_8006794C->unk1C->unk0 |= 0x2F;
+    D_8006794C->unk1C->unk8E4.world->unk0 |= 0x300;
+    D_8006794C->unk9 = 0;
+    D_80073998[0] |= 0x04000000;
+}
 
 void func_800ACAFC(void) {
     WorldMapObj *w;

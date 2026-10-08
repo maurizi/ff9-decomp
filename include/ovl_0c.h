@@ -641,6 +641,8 @@ extern s32 D_800CF460[];
 extern s32 D_800CF49C;
 extern s32 D_800CF4B4;
 extern s32 D_800CF43C; /* frame timing */
+extern s32 D_8007BD28;
+extern s32 D_8007BD30;
 extern s32 D_800CF458;
 extern s32 D_800CF470;
 extern s32 D_800CCE5C;
