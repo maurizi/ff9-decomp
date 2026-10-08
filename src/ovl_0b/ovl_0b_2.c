@@ -5183,7 +5183,26 @@ void func_800F36F8(BtlUnit *arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F386C);
+void func_800F386C(void) {
+    RECT a = D_800A858C;
+    RECT b = D_800A8594;
+    s16 h;
+    if (D_80105078->unk0 != 0 && D_80105078->unk5C != 0) {
+        a.x += D_801051E8[D_8006794C->unk1C->unk8 & 1][0];
+        b.x += D_801051E8[D_8006794C->unk1C->unk8 & 1][0];
+        a.y += D_801051E8[D_8006794C->unk1C->unk8 & 1][1] + D_80105078->unk60;
+        b.y += D_801051E8[D_8006794C->unk1C->unk8 & 1][1] + D_80105078->unk60;
+        h = D_80105078->unk5C * 12;
+        b.h = h;
+        a.h = h;
+        SetDrawMove((DR_MOVE *)D_80077170, &a, 0x3C0, 0x1B0);
+        addPrim(&D_8007716C[19], D_80077170);
+        D_80077170 += sizeof(DR_MOVE);
+        SetDrawMove((DR_MOVE *)D_80077170, &b, 0x3E0, 0x1B0);
+        addPrim(&D_8007716C[19], D_80077170);
+        D_80077170 += sizeof(DR_MOVE);
+    }
+}
 
 void func_800F3A8C(void) {
     s32 y = D_80105078->unk60 + 6;
@@ -5336,7 +5355,7 @@ void func_800F4180(void) {
 void func_800F41B8(BtlUnit *arg0, s32 arg1) {
     u8 buf[8];
     s32 dy = 6;
-    func_8002BAE4((s16)arg0->unkB4->unk2, buf, 4, 1);
+    func_8002BAE4(arg0->unkB4->unk0[0].unk2, buf, 4, 1);
     func_8002B5B4(0xD0, D_80105078->unk60 + (arg1 * 12 + dy), 0xE, buf, (u8)D_80105078->unk78[arg1]);
 }
 
@@ -5345,7 +5364,7 @@ void func_800F422C(BtlUnit *arg0, s32 arg1) {
     s32 mp;
     s32 c;
     s32 dy = 6;
-    mp = arg0->unkB4->unkA < 0 ? 0 : arg0->unkB4->unkA;
+    mp = arg0->unkB4->unk0[1].unk2 < 0 ? 0 : arg0->unkB4->unk0[1].unk2;
     c = ((s16)(arg0->unk24->unk2 / 6) >= mp) << 2;
     func_8002BAE4(mp, buf, 3, 1);
     func_8002B5B4(0xEF, D_80105078->unk60 + (arg1 * 12 + dy), 0xE, buf, c);

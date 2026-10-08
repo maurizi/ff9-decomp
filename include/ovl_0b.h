@@ -289,15 +289,17 @@ typedef struct {
     s8 unk8[4];
 } Unk800EB518;
 
+/* animated hp/mp readout */
+typedef struct {
+    s16 unk0; /* step */
+    s16 unk2; /* shown */
+    s16 unk4; /* target */
+    u8 unk6; /* frames left */
+    u8 pad7;
+} Unk80104F88Gauge;
+
 typedef struct Unk80104F88Entry {
-    s16 unk0;
-    u16 unk2; /* hp shown */
-    u16 unk4;
-    s16 unk6;
-    s16 unk8;
-    s16 unkA; /* mp shown */
-    u16 unkC;
-    s16 unkE;
+    Unk80104F88Gauge unk0[2]; /* hp, mp */
     struct BtlUnit *unk10;
     Character *unk14;
     u8 unk18;
@@ -566,7 +568,9 @@ typedef struct {
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
     u8 unk4;
-    u8 pad5[8 - 5];
+    u8 pad5;
+    u8 unk6;
+    u8 pad7;
     u8 unk8;
     u8 pad9;
     u8 unkA; /* mp cost */
@@ -1726,6 +1730,9 @@ extern u8 D_80104E6B;
 extern u8 D_800FDDF8[][3];
 extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
+extern s32 D_800FDF34;
+extern RECT D_800A858C;
+extern RECT D_800A8594;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
 void func_800DF15C(BtlUnit9C *, u8, u16);

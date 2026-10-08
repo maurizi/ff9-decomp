@@ -2013,7 +2013,70 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BDED4);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BE1E0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BE784);
+s32 func_800BE784(s32 arg0) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    s32 r = -1;
+    BtlUnit *u;
+    s32 k;
+    switch (arg0) {
+    case 32:
+        r = b->unk132C & 3;
+        break;
+    case 33:
+        r = D_8006794C->unk1C->unk560;
+        break;
+    case 34:
+        r = b->unkD80;
+        break;
+    case 35:
+        r = b->unkD81;
+        break;
+    case 36:
+        if (b->unk1088 != NULL && b->unk1088->unk4 != NULL) {
+            r = b->unk1088->unk4->unkB0;
+        }
+        break;
+    case 37:
+        if (b->unk1088 != NULL) {
+            r = (u16)b->unk1088->unkC;
+        }
+        break;
+    case 38:
+        if (b->unk1088 != NULL && b->unk1088->unk4 != NULL && b->unk1088->unk4->unk74 != NULL) {
+            r = b->unk1088->unk4->unk74[6];
+        }
+        break;
+    case 39:
+        if (b->unk1088 != NULL && b->unk1088->unk4 != NULL) {
+            r = 0;
+            if (!(b->unk1088->unk4->unkC4[1] & 1)) {
+                r = b->unk1088->unk8->unk6;
+            }
+        }
+        break;
+    case 40:
+        r = b->unkD85;
+        break;
+    case 41:
+        r = D_800FDF34;
+        break;
+    case 42:
+        r = 0;
+        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+            if (u->unk68 & 1) {
+                k = (D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34 >> 4) & 0x1F;
+            } else {
+                k = 0x13;
+            }
+            if ((u32)(k - 0xA) < 2) {
+                r = func_800B3EF8(u, 0x3A);
+                break;
+            }
+        }
+        break;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BE99C);
 
