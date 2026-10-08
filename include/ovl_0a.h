@@ -33,7 +33,8 @@ typedef struct {
     u8 *unk28; /* = unk6C */
     u8 pad2C[0x41 - 0x2C];
     u8 unk41;
-    u8 pad42[0x4A - 0x42];
+    s8 unk42;
+    u8 pad43[0x4A - 0x43];
     u8 unk4A;
     u8 pad4B;
     void *unk4C; /* file 0x1Exxxx */
@@ -109,12 +110,22 @@ typedef struct {
     u8 pad8[4];
 } Unk800C9D5C; /* 0xC */
 
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} __attribute__((aligned(4))) Unk800CA068Pair;
+
 /* field state (D_800CA068) */
 typedef struct {
     s32 unk0; /* flags */
-    u16 unk4;
-    u16 unk6;
-    u8 pad8[0x75 - 8];
+    Unk800CA068Pair unk4;
+    u8 pad8[0x10 - 8];
+    Unk800CA068Pair unk10;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A;
+    u8 pad1C[0x75 - 0x1C];
     u8 unk75;
     s16 unk76;
     u8 pad78[0xA8 - 0x78];
@@ -186,7 +197,7 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1;
-    s16 unk2;
+    u16 unk2; /* count of unk4 entries */
     struct Unk800C9DF4 *unk4;
     Unk800C9DF8 *unk8;
     u8 padC[0x10 - 0xC];
@@ -226,9 +237,15 @@ typedef struct {
     s16 unk1E;
 } Unk800C9EF0;
 
+/* text windows (same layout as ovl_0c's D_800D5438) */
 typedef struct {
     u8 unk0;
     u8 unk1; /* index into D_800C9E14 */
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 pad5[3];
+    WinDef unk8[6];
 } Unk800CB188;
 
 /* file 0x12xxxx lookup table (func_800AAF5C) */
@@ -269,6 +286,7 @@ void func_800B51D0(void);
 void func_800B5290(void);
 void func_800B52DC(void);
 void func_800B532C(void);
+s32 func_800C44F4(s16);
 void func_800B57C8(void);
 void func_800B1CE4(void);
 s32 func_800AA0C8(FieldScene *);
@@ -314,6 +332,7 @@ extern Unk800CAE98 D_800CAE98[];
 extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
+extern u16 D_800C9D44;
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
