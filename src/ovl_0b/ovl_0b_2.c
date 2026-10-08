@@ -4299,18 +4299,18 @@ void func_800F0DF8(void) {
     Unk80105020 *b = &D_80105020;
     u32 *clut = &D_800686D8;
     s32 i;
-    Unk800F0DF8 *p;
+    SprtWords *p;
     DR_TPAGE *t;
     if (b->unk0 >= 2 && !(D_80104E80 & 3)) {
         c = 0x64404040;
     }
     for (i = 0; i < b->unk0; i++) {
         setlen(D_80077170, 4);
-        p = (Unk800F0DF8 *)D_80077170;
-        p->unk4 = c;
-        p->unk8 = (u16)b->unk14[i][0] | (b->unk14[i][1] << 16);
-        p->unkC = *clut;
-        p->unk10 = 0xE0018;
+        p = (SprtWords *)D_80077170;
+        p->rgbc = c;
+        p->xy = (u16)b->unk14[i][0] | (b->unk14[i][1] << 16);
+        p->uvclut = *clut;
+        p->wh = 0xE0018;
         addPrim(&D_8007716C[17], p);
         D_80077170 = (u8 *)(p + 1);
     }

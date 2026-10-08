@@ -1279,14 +1279,6 @@ typedef struct {
     u8 pad62[0x69 - 0x62];
     u8 unk69;
 } Unk800C9D1C;
-/* SPRT written as words */
-typedef struct {
-    u32 tag;
-    u32 unk4; /* code + rgb */
-    u32 unk8; /* xy */
-    u32 unkC; /* uv + clut */
-    u32 unk10; /* wh */
-} Unk800F0DF8;
 extern u32 D_80104E80;
 typedef struct {
     SPRT unk0[4][2];
@@ -1728,6 +1720,8 @@ extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+void func_800CF58C(s32);
+void func_800C9374(BtlUnit9C50 *, s32);
 void func_800B0E04(BtlUnit *, u8 *);
 void func_800EEDD4(void);
 void func_800C2250(BtlUnit *, u16);
