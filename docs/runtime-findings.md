@@ -29,3 +29,16 @@ Format:
 - The top-level main menu (Triangle in the field) loads no 0x801EDF00 overlay, so its code is in the exe or `ovl_0a`.
   Opening Item loads `ovl_37`, which confirms "menu: items".
 - evidence: `tools/emu.py ovl` at save states `title_screen`, `field_burmecia_vault`, `menu_main`, `menu_items`.
+
+## Battle save states / ovl_0b residency  (status: proposed)
+- `ovl_0b` (0x800A7000, `.text` 0x800A859C-0x800F51E8) is resident in battle (100% .text match, replacing `ovl_0a`),
+  which confirms "battle". It's already resident on the black frame right after the encounter swirl.
+- Disc 2 states: `field_iifa_outer_root` (field, on the outer root below the Iifa Tree trunk, random-encounter screen),
+  `battle_iifa_start` (party HP/MP/ATB HUD up, no command menu), `battle_iifa_command` (Vivi's command menu open).
+- Reproduce (deterministic): `start --disc 2`, `load field_iifa_tree`, `frames 5`, `press up --hold 150 --wait 5`,
+  `press up+right --hold 120 --wait 5`, `press cross --wait 90`, `press down --hold 200 --wait 30`,
+  `press down --hold 200 --wait 60`, `press down+left --hold 200 --wait 60` (= `field_iifa_outer_root`), then
+  3x `press down+left --hold 200 --wait 10` → `ovl_0b` appears. `frames 465` → HUD (`battle_iifa_start`); the first
+  run reached Vivi's command menu ~490 frames after ovl_0b showed up (`battle_iifa_command`).
+  The `field_iifa_tree` screen itself never produced an encounter; walking down leaves it for the outer root screen.
+- confidence: high (ovl output and screenshots).

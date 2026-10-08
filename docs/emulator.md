@@ -58,8 +58,9 @@ FILE05 Burmecia vault Lv 12 (disc 1; 504), FILE06 Iifa Tree trunk Lv 32 (disc 2;
 If a game's file name is already on the card, `memcard import` moves the save to the next free number. FF9 accepts that.
 
 Existing Redux states. Disc 1: `title_screen`, `field_burmecia_vault` (Lv 99), `field_burmecia_vault_lv12`, `field_dali_inn`,
-`menu_main`, `menu_items`, `intro_test`. Disc 2 (`start --disc 2`): `disc2_load_menu`, `field_iifa_tree`.
-There is no battle state yet. Get into a fight from one of the field states, then `save battle_<place>`.
+`menu_main`, `menu_items`, `intro_test`. Disc 2 (`start --disc 2`): `disc2_load_menu`, `field_iifa_tree`,
+`field_iifa_outer_root` (random encounters), `battle_iifa_start` (battle HUD up, `ovl_0b` resident),
+`battle_iifa_command` (Vivi's command menu open). Steps to reproduce the battle are in `docs/runtime-findings.md`.
 
 ### Speed and the debugger
 
