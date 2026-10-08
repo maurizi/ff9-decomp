@@ -690,7 +690,7 @@ typedef struct {
     u8 unk4;
     u8 unk5;
     u8 pad6[0x8 - 6];
-    u16 unk8;
+    s16 unk8;
     u16 unkA;
     s32 unkC;
     s32 unk10;
@@ -1331,6 +1331,26 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    s32 unk2C;
+    u8 pad30[0x3C - 0x30];
+    s32 unk3C;
+    s32 unk40;
+    s32 unk44;
+} Unk80077D68; /* screen fade state */
+extern Unk80077D68 D_80077D68;
+s32 func_8002FD98(s32, s32);
 void func_80032B08(s32);
 void func_8002C974(s32, s32, s32);
 typedef struct {
