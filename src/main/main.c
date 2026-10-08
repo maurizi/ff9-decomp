@@ -5336,7 +5336,22 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E170);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E3FC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005EB40);
+s32 func_8005EB40(s32 *p, s32 target, s32 steps, s32 shift) {
+    s32 mask = (1 << shift) - 1;
+    s32 cur = *p & ~mask;
+    s32 step;
+    target <<= shift;
+    step = target - cur;
+    step = step / steps;
+    *p = cur;
+    if (target < cur) {
+        *p = cur | mask;
+        step--;
+    } else {
+        step++;
+    }
+    return step;
+}
 
 void func_8005EBB4(AkaoChannel *ch, Unk8005EBB4 *p, s32 arg2) {
     ch->unk120 = arg2;
@@ -5639,7 +5654,15 @@ void func_8005FD10(AkaoChannel *c, u32 mask) {
     D_80083158.unk8 |= 0x110;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005FD70);
+void func_8005FD70(AkaoChannel *c, u32 mask) {
+    if (c->unk94 == 0) {
+        D_80080A10->unk3C &= ~mask;
+    } else {
+        D_80080A70.unk1C &= ~mask;
+    }
+    D_80083158.unk8 |= 0x110;
+    c->unkF0 = 0;
+}
 
 void func_8005FDD8(AkaoChannel *c, u32 mask) {
     if (c->unk94 == 0) {
@@ -5650,7 +5673,15 @@ void func_8005FDD8(AkaoChannel *c, u32 mask) {
     D_80083158.unk8 |= 0x100;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005FE4C);
+void func_8005FE4C(AkaoChannel *c, u32 mask) {
+    if (c->unk94 == 0) {
+        D_80080A10->unk44 &= ~mask;
+    } else {
+        D_80080A70.unk24 &= ~mask;
+    }
+    D_80083158.unk8 |= 0x100;
+    c->unkF2 = 0;
+}
 
 void func_8005FEB4(AkaoChannel *c, u32 mask) {
     if (c->unk94 == 0) {
@@ -5876,7 +5907,13 @@ void func_800606EC(AkaoChannel *c) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8006071C);
+void func_8006071C(AkaoChannel *c, u32 mask) {
+    c->unk34 &= ~0x37;
+    func_8005FD70(c, mask);
+    func_8005FE4C(c, mask);
+    func_8005FF14(c, mask);
+    c->unkCC &= ~5;
+}
 
 void func_80060784(AkaoChannel *c) {
     c->unk34 |= 0x10;
@@ -6184,7 +6221,27 @@ void func_80062794(s32 a) {
     func_8002BA68(func_8006276C(a));
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800627BC);
+s32 func_800627BC(s32 x) {
+    if (x < 0x38) {
+        return 0;
+    }
+    if (x < 0x46) {
+        return 1;
+    }
+    if (x < 0x50) {
+        return 2;
+    }
+    if (x < 0x58) {
+        return 3;
+    }
+    if (x < 0x5D) {
+        return 4;
+    }
+    if (x < 0x5F) {
+        return 5;
+    }
+    return 6;
+}
 
 void *func_80062824(void) {
     return &D_80083248;
