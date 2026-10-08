@@ -955,7 +955,59 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEF10);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF08C);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF414);
+void func_800AF414(Unk8004AB64 *arg0, s32 arg1) {
+    s16 col[3];
+    s32 t;
+    s32 f;
+    s32 a;
+    s32 d;
+    s32 i;
+    s32 id;
+    WmPalAnim *e;
+    RECT *r;
+
+    id = arg0->unk34;
+    e = D_8006794C->unk1C->unk8E4.world->unk8->unk28;
+    t = -arg0->unk14.vy;
+    t -= 0xC1F;
+    t <<= 12;
+    t /= 2176;
+    if (t > 0x1000) {
+        t = 0x1000;
+    }
+    if (t < 0) {
+        t = 0;
+    }
+    a = func_800B81C0(D_800D3FA0.unk610[1].unk0, D_800D3FA0.unk610[0].unk0, t);
+    col[0] = func_800B81C0(D_800D3FA0.unk610[1].unk4[0], D_800D3FA0.unk610[0].unk4[0], t);
+    col[1] = func_800B81C0(D_800D3FA0.unk610[1].unk4[1], D_800D3FA0.unk610[0].unk4[1], t);
+    col[2] = func_800B81C0(D_800D3FA0.unk610[1].unk4[2], D_800D3FA0.unk610[0].unk4[2], t);
+    SetFarColor((u8)col[0], (u8)col[1], (u8)col[2]);
+    f = (arg1 * 8 + (d = a - 0x8000)) >> 2;
+    if (f < 0) {
+        f = 0;
+    }
+    if (f >= 0x1000) {
+        f = 0xFFF;
+    }
+    for (i = 0; i < D_8006794C->unk1C->unk8E4.world->unk8->unk1A; i++, e++) {
+        if (e->unk0 == id) {
+            r = (RECT *)D_800CF404;
+            if (f < 0) {
+                f = 0;
+            }
+            if (f > 0x1000) {
+                f = 0x1000;
+            }
+            func_800B3998(e->unk8, e->unk28[*D_800CF45C], f, D_800D45D4);
+            r->x = e->unk4;
+            r->y = e->unk6;
+            r->w = 16;
+            r->h = 1;
+            LoadImage(r, (u32 *)e->unk28[*D_800CF45C]);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF66C);
 
