@@ -2171,7 +2171,17 @@ void func_8002C144(u32 *a, u8 *b) {
     D_80077170 = b;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C158);
+void func_8002C158(s32 a) {
+    s32 buf = func_8002B43C(a);
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        if (D_8006794C->unk1C->unk54C[i] != NULL) {
+            func_8002B47C(i);
+        }
+    }
+    LoadImage(&D_8006BC38, (u32 *)buf);
+    DrawSync(0);
+}
 
 void func_8002C1E4(void) {
 }
@@ -5944,7 +5954,13 @@ void func_8005F370(AkaoChannel *arg0) {
     arg0->unk34 &= 0xE6FFEFF7;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F418);
+void func_8005F418(AkaoChannel *c) {
+    s32 i = func_8005DD54(D_80080A10->unk0, *c->unk0++);
+    func_8005EBB4(c, &D_8007F970[i], 0x1010);
+    c->unk9A = i;
+    c->unk12E = 0;
+    c->unk34 &= 0xE6FFEFF7;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F4A0);
 
