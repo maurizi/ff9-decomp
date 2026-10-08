@@ -52,9 +52,12 @@ typedef struct {
     u8 unkB;      /* level (exp table has 99 entries) */
     u32 unkC;     /* exp, capped at 9999999 */
     u16 unk10;    /* hp */
-    u8 pad12[0x17 - 0x12];
+    s16 unk12;    /* mp */
+    u8 pad14[0x17 - 0x14];
     u8 unk17;
-    u8 pad18[0x1F - 0x18];
+    u16 unk18;    /* max hp */
+    u16 unk1A;    /* max mp */
+    u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
     u8 pad21[0x34 - 0x21];

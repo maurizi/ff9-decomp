@@ -513,6 +513,7 @@ extern u8 D_800CF454;
 void func_800B94F8(s32, s32, s32);
 void func_800BD57C(void);
 void func_800BD674(void);
+void func_800CB8C8(s32, s32);
 void func_800C465C(u16);
 void func_800C46D8(u16);
 
@@ -554,6 +555,7 @@ extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0;
 s32 func_8002B980(u8 *, s32);
+extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 Unk800CE0E8 *func_8004AE00(void);
 void func_8004B20C(s32);
 
