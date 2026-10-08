@@ -810,7 +810,51 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B00B0);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B0124);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1A20);
+void func_800B1A20(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
+    SVECTOR v;
+    DVECTOR sxy;
+    s32 z;
+    s32 a;
+    s32 pan;
+    s32 b;
+
+    v.vx = arg0;
+    v.vy = arg1;
+    v.vz = arg2;
+    gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(&sxy);
+    gte_stsz(&z);
+    z = z / 4 + D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30;
+    if (z < 0) {
+        z = 0;
+    } else if (z >= 0x1000) {
+        z = 0xFFF;
+    }
+    a = z / 32;
+    b = (128 - a) * 2;
+    if ((u16)sxy.vx < 320) {
+        pan = sxy.vx * b / 320;
+        pan += a;
+    } else if (sxy.vx < 0) {
+        if (sxy.vx < -320) {
+            sxy.vx = -320;
+        }
+        pan = sxy.vx + 320;
+        pan = pan * a / 320;
+    } else {
+        if (sxy.vx >= 640) {
+            sxy.vx = 639;
+        }
+        pan = (sxy.vx - 320) * a / 320;
+        pan += 255;
+        pan -= a;
+    }
+    *arg4 = pan;
+    *arg5 = (0x1000 - z) * 127 / 4096;
+}
 
 void func_800B1C4C(void) {
     s32 i;

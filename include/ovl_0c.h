@@ -16,6 +16,14 @@ typedef struct WmPalAnim {
     u16 unk28[2][16]; /* per draw buffer */
 } WmPalAnim; /* 0x68 */
 
+/* per-object entry in WorldMapObj.unk1C (0x28 bytes) */
+typedef struct {
+    unsigned unk0 : 8;
+    unsigned unk1 : 12;
+    unsigned unk2 : 12;
+    u8 pad4[0x28 - 4];
+} WmObjEnt;
+
 /* object embedded in WorldMap (0x4C bytes) */
 typedef struct {
     s32 unk0;
@@ -29,7 +37,7 @@ typedef struct {
     s8 unk19;
     u8 unk1A;
     u8 unk1B;
-    void *unk1C;
+    WmObjEnt *unk1C;
     s32 unk20;
     s16 unk24; /* map id */
     u16 unk26;
@@ -94,11 +102,13 @@ typedef struct {
 
 typedef struct {
     u8 unk0;
-    u8 pad1[2];
+    u8 unk1;
+    u8 unk2;
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    u8 pad6[2];
+    u8 unk6;
+    u8 unk7;
     u32 unk8;
     s16 unkC;
     s16 unkE;
@@ -766,7 +776,10 @@ extern s8 D_800CE1F2;
 extern s32 D_800D3E60; /* navi mode */
 extern s8 D_800D3E64;
 extern s32 D_800D3E6C;
-extern s8 D_800D3E76;
+extern POLY_FT4 *D_800D3E68;
+extern s8 D_800D3E75;
+extern s32 D_800CCE40;
+extern u8 D_800D3E76;
 extern s8 D_800D3E77;
 extern s8 D_800D3E78;
 extern s8 D_800D3E79;
@@ -895,6 +908,8 @@ void func_80055698(s32);
 extern s32 D_800CF4B0;
 extern u8 D_800CF440;
 extern s16 D_800CF442;
+extern u16 D_800D45DC;
+extern u16 D_800D4754;
 extern u8 D_800CF47E;
 extern u8 D_800CF434;
 extern u8 D_800CF4A8;
