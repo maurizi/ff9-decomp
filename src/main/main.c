@@ -1571,7 +1571,20 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002642C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800265B0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80026900);
+void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
+    PolyF4Words *p;
+    Unk80068F48 *t;
+    setlen(D_80077170, 5);
+    p = (PolyF4Words *)D_80077170;
+    p->rgbc = 0x28A8B078;
+    t = &D_80068F48[idx];
+    p->xy0 = (x + t->x0) | ((y + t->y0) << 16);
+    p->xy1 = (x + t->x1) | ((y + t->y1) << 16);
+    p->xy2 = (x + t->x2) | ((y + t->y2) << 16);
+    p->xy3 = (x + t->x3) | ((y + t->y3) << 16);
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800269F4);
 
@@ -6196,7 +6209,36 @@ void func_8005C334(u16 *a) {
     D_80080A10->unk6C = *a;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C348);
+void func_8005C348(void) {
+    u32 m;
+    u32 bit;
+    s32 i;
+    Unk80080A10 *t;
+    s32 v;
+    if (D_80080A10->unk4 != 0) {
+        m = ~(D_80080A70.unk0 | D_80083168.unkC) & 0xFFFFFF;
+        if (m != 0) {
+            bit = 1;
+            i = 0;
+            do {
+                if (m & bit) {
+                    func_80057640(i, 0, 0, 0);
+                    func_80057688(i, 0);
+                    func_80057708(i, 0x7F, 1);
+                    func_80057788(i, 0x7F, 3);
+                    m &= ~bit;
+                }
+                bit <<= 1;
+                i++;
+            } while (m != 0);
+        }
+        t = D_80080A10;
+        v = t->unk4;
+        t->unk4 = 0;
+        t->unk1C = v;
+    }
+    D_800831C4 |= 1;
+}
 
 void func_8005C438(void) {
     AkaoChannel *ch;

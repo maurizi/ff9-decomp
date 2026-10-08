@@ -344,6 +344,15 @@ typedef struct {
 
 typedef struct {
     u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 xy1;
+    u32 xy2;
+    u32 xy3;
+} PolyF4Words; /* POLY_F4 written as whole words */
+
+typedef struct {
+    u32 tag;
     u32 code;
 } DrTpageWords;
 
@@ -1325,6 +1334,12 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+typedef struct {
+    u8 x0, y0, x1, y1, x2, y2, x3, y3;
+} Unk80068F48;
+extern Unk80068F48 D_80068F48[];
+void func_80057708(s32, s32, s32);
+void func_80057788(s32, s32, s32);
 s32 func_80033964(u32);
 s32 func_8003502C(u8 *, s32);
 typedef struct {
