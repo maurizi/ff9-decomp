@@ -4005,7 +4005,26 @@ s32 func_800EC49C(s32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EC4EC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EC628);
+void func_800EC628(Window *arg0) {
+    s32 y = arg0->unk2 + 6;
+    s32 x = arg0->unk0 + 0xA;
+    s32 i;
+    u8 *t;
+    if (D_80104FB0.unk11 != 0) {
+        func_800EC928();
+    }
+    for (i = 0; i < 4; i++) {
+        t = D_800FD7AC + D_800FD56C[D_80104FB0.unk4[i]].unk0;
+        if (D_80104FB0.unk8[i] == 0) {
+            func_80029058(x, y, arg0->unk18, t, 2);
+        } else {
+            func_80029058(x, y, arg0->unk18, t, 0);
+        }
+        do {
+            y += 15;
+        } while (0);
+    }
+}
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A83AC);
 
