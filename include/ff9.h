@@ -302,7 +302,7 @@ typedef struct {
     s32 unk8;
     CdChunk *unkC; /* chunk list; -1 = use unk1C */
     void (*unk10)(u8, u8 *);
-    void (*unk14)();
+    void (*unk14)(u8, u8 *); /* data-ready handler */
     void (*unk18)(); /* callback */
     CdChunk unk1C; /* single chunk */
 } CdRequest;
@@ -336,8 +336,9 @@ typedef struct {
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
     u8 pad6[2];
-    u8 unk8; /* kind */
-    u8 pad9[0xB - 9];
+    u8 unk8; /* kind (icon) */
+    u8 unk9; /* icon palette */
+    u8 padA;
     u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
@@ -922,7 +923,6 @@ extern Unk8007B988 D_8007B988;
 extern s32 D_8007B994;
 extern s32 D_8007B998;
 
-extern u8 D_80076B0C;
 extern s32 D_80077E20;
 extern s32 D_8007ADFC;
 extern u32 D_800739A0[];
@@ -1688,6 +1688,7 @@ void func_80065228(s32);
 typedef struct {
     u8 unk0[8];
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
+extern Unk8 D_80076B0C; /* last CD status/result bytes */
 
 s32 func_800384D0(Unk8004AB64 *, s32, s32, s32);
 extern s32 D_8007AE34;
@@ -1759,7 +1760,7 @@ void func_8002F9F0(void);
 void func_8002267C(CdRequest *);
 u8 func_800230B8(CdRequest *);
 void func_800231A0(u8, u8 *);
-void func_800227C8();
+void func_800227C8(u8, u8 *);
 s32 func_8005DD54(s32, s32);
 s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
@@ -2197,4 +2198,14 @@ void func_8002709C(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
 extern s16 D_8006F640;
 extern s16 D_8006F540[]; /* pan curve, 256 entries */
+/* item icon sprites (D_800689B0) */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u16 unk2; /* clut */
+    u8 unk4; /* w */
+    u8 unk5; /* h */
+    u16 unk6; /* tpage */
+} Unk800689B0;
+extern Unk800689B0 D_800689B0[];
 #endif

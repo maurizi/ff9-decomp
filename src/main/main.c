@@ -1363,12 +1363,12 @@ s32 func_80023018(void) {
 }
 
 u8 func_8002306C(void) {
-    CdControlB(1, NULL, &D_80076B0C);
+    CdControlB(1, NULL, D_80076B0C.unk0);
     return func_800230A0();
 }
 
 s32 func_800230A0(void) {
-    return (D_80076B0C >> 4) & 1;
+    return (D_80076B0C.unk0[0] >> 4) & 1;
 }
 
 u8 func_800230B8(CdRequest *r) {
@@ -1399,7 +1399,7 @@ void func_800231A0(u8 com, u8 *param) {
     void (*fn)(s32);
 
     if (param != NULL) {
-        *(Unk8 *)&D_80076B0C = *(Unk8 *)param;
+        D_80076B0C = *(Unk8 *)param;
     }
     if (D_800761D0.unk2 != 0) {
         func_8002325C(com);
@@ -1491,7 +1491,7 @@ void func_80023580(u8 com, u8 *param) {
 
 void func_800235A0(u8 com, u8 *param) {
     if (param != NULL) {
-        *(Unk8 *)&D_80076B0C = *(Unk8 *)param;
+        D_80076B0C = *(Unk8 *)param;
     }
     if (D_800761D0.unk2 != 0) {
         func_800213A0(NULL);
