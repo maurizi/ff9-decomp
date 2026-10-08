@@ -162,7 +162,29 @@ void func_801F06BC(void) {
     func_801EF644();
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F070C);
+void func_801F070C(void) {
+    MenuList *l;
+
+    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    if (l->unk8 == 0) {
+        if (D_80077528 & 0x10000) {
+            func_8002F488(0x65);
+            D_801FBF84.unk1 = 1;
+            return;
+        }
+        if (D_80077528 & 0x20000) {
+            if (D_801FBF84.unk0 == 0) {
+                func_801EFCB4();
+            } else {
+                func_801EFE2C();
+            }
+            return;
+        }
+        func_8002EE8C(l, D_80077528);
+        func_8002F044(l, D_80077528);
+        func_8002F0EC(l, D_80077528);
+    }
+}
 
 void func_801F07DC(void) {
     RECT *r;

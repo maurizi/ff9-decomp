@@ -38,7 +38,7 @@ typedef struct {
     RECT unk38;
     RECT unk40;
     RECT unk48;
-    u8 pad50[0x58 - 0x50];
+    RECT unk50;
     WinDef unk58;
     u8 unk68[0x100]; /* per item id */
     u8 pad168[0x668 - 0x168];
@@ -64,12 +64,15 @@ typedef struct {
     u8 unk3; /* party slot */
     MenuList unk4;
     RECT unk14;
-    u8 pad1C[0x34 - 0x1C];
+    RECT unk1C;
+    RECT unk24;
+    RECT unk2C;
     RECT unk34;
     UnkPair unk3C[0x100]; /* {item id, count} */
     WinDef unk23C;
     UnkBlink unk24C;
-    u8 pad258[0x260 - 0x258];
+    u8 pad258[0x25C - 0x258];
+    u8 unk25C[4]; /* party levels */
     u8 unk260;
     u8 unk261; /* state saved while switching characters */
 } AbilityMenu;
@@ -105,6 +108,17 @@ void func_801F0934(s32, s32, s32, MenuView *);
 void func_801F09CC(s32, s32, s32, Character *);
 void func_801F0AB8(s32, s32, s32, Character *);
 void func_801F307C(void);
+void func_801EFCB4(void);
+void func_801EFE2C(void);
+void func_801F3264(void);
+void func_801F3278(s32, s32);
+s32 func_801F0E64(s32);
+extern u8 D_801F3418[];
+extern u8 D_801F3428[];
+extern u16 D_801F893C[];
+extern u8 D_801EE648[];
+/* func_800355DC; this overlay's link only has the D_ name */
+void D_800355DC(void);
 void func_801EED10(void);
 void func_801F0DDC(void);
 s32 func_801EFB8C(s32, Character *);
