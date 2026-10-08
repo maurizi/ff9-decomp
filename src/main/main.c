@@ -2545,7 +2545,25 @@ void func_8002F044(MenuList *arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F0EC);
+void func_8002F0EC(MenuList *m, s32 pad) {
+    if (pad & 0x20) {
+        if ((m->unk5 + m->unk6) * m->unk4 + m->unk7 < m->unk0 - 1) {
+            if (m->unk7 >= m->unk4 - 1) {
+                if (m->unk6 < m->unk3 - 1) {
+                    func_8002F488(0x67);
+                    m->unk7 = 0;
+                    m->unk6++;
+                } else if (m->unk5 < m->unk2 - m->unk3) {
+                    func_8002F488(0x67);
+                    m->unk8 = 9;
+                }
+            } else {
+                func_8002F488(0x67);
+                m->unk7++;
+            }
+        }
+    }
+}
 
 void func_8002F1CC(MenuList *arg0, s32 arg1) {
     s32 t;

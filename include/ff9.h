@@ -1244,7 +1244,7 @@ typedef struct {
 
 /* menu list/cursor state passed to func_8002EE8C etc. */
 typedef struct {
-    u8 pad0[2];
+    s16 unk0; /* item count */
     u8 unk2;
     u8 unk3;
     u8 unk4;
@@ -1325,6 +1325,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_800225BC(u8 *);
+u8 func_80022C10(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
