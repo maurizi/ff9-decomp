@@ -34,7 +34,34 @@ INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F0E10);
 
 INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F0F50);
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F10C4);
+void func_801F10C4(s32 idx, MenuList *l) {
+    UnkPair *p;
+    Unk80069018 *it;
+    Unk8006B1F4 *e;
+    u8 ok;
+    s32 id;
+
+    p = &D_8006794C->unk1C->unk574[idx];
+    ok = 0;
+    if (p->unk1 != 0 && p->unk0 != 0xFF && p->unk0 >= 0xE0) {
+        id = p->unk0;
+        it = &D_80069018[id];
+        e = &D_8006B1F4[id - 0xE0];
+        if (it->unkF & 1) {
+            D_801FAB78.unk3 = e->unk0;
+            ok = 1;
+            D_801FAB78.unk4 = p->unk0 != 0xFB ? e->unk0_5 : 0;
+            if (D_801FAB78.unk4 == 0) {
+                func_801F2590(p->unk0);
+            } else {
+                func_801F1778();
+            }
+        }
+    }
+    if (!ok) {
+        func_8002F488(0x66);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F11E4);
 

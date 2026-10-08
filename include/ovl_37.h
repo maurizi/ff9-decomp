@@ -11,7 +11,7 @@ typedef struct {
     u8 unk0; /* active list, index into D_801F3040 */
     u8 unk1; /* state, index into D_801F307C */
     u8 unk2; /* party slot */
-    u8 pad3;
+    u8 unk3;
     u8 unk4;
     u8 unk5;
     u8 unk6;
@@ -55,7 +55,10 @@ extern RECT D_801F30B8;
 
 /* main exe: candidates for ff9.h */
 typedef struct {
-    u8 pad0[4];
+    unsigned int unk0 : 4;   /* target kind */
+    unsigned int unk0_4 : 1;
+    unsigned int unk0_5 : 3;
+    unsigned int pad0_8 : 24;
     u8 unk4;
     u8 pad5[3];
     s32 unk8;
@@ -72,7 +75,15 @@ extern u8 D_801F3140[];
 s8 func_800B8124(void);
 void func_800B81A0(void);
 
+extern UnkPair D_801FA968[0x100]; /* inventory sort buffer */
+extern UnkPair D_801FAB68;
+
 void func_801F0D18(void);
+void func_801F1778(void);
+void func_801F2590(s32);
+void func_801F2C58(void);
+u8 func_800281D0(s32); /* main exe */
+void func_80026C34(s32, s32, s32, s32, u8); /* main exe */
 void func_801F2B20(Window *);
 void func_801F2B58(Window *);
 void func_801F2D58(void);
@@ -101,8 +112,8 @@ void func_801F2488(void);
 void func_801F253C(s32);
 void func_801F262C(void);
 void func_801F27A0(void);
-void func_801F2870(s32);
-void func_801F29D0(s32);
+void func_801F2870(s32, s32, s32, MenuView *);
+void func_801F29D0(s32, s32, s32, MenuView *);
 void func_801F2BC0(void);
 void func_801F2F30(void);
 void func_801F2F38(s32);
