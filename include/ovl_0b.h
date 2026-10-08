@@ -128,7 +128,10 @@ typedef struct BtlUnit {
     u8 padB2;
     u8 unkB3;
     struct Unk80104F88Entry *unkB4; /* menu data (party members) */
-    u8 padB8[0xC4 - 0xB8];
+    s16 unkB8; /* screen x */
+    s16 unkBA; /* screen y */
+    u8 unkBC; /* on screen */
+    u8 padBD[0xC4 - 0xBD];
     u32 *unkC4;
     u8 padC8[0xCA - 0xC8];
     s16 unkCA;
@@ -241,14 +244,16 @@ typedef struct Unk80104F88Entry {
     u16 unk4;
     s16 unk6;
     s16 unk8;
-    u16 unkA; /* mp shown */
+    s16 unkA; /* mp shown */
     u16 unkC;
     s16 unkE;
     u8 pad10[0x14 - 0x10];
     Character *unk14;
-    u8 pad18[0x1B - 0x18];
+    u8 pad18;
+    u8 unk19;
+    u8 pad1A;
     u8 unk1B;
-    s32 unk1C[0xC0];
+    u8 *unk1C[0xC0]; /* -> Character.unk58[] */
     u8 unk31C[0xC0];
     u8 unk3DC[0xC0]; /* abilities available from equipment */
     Unk800EB518 unk49C;
@@ -363,8 +368,18 @@ extern s32 D_800FE51C;
 extern s16 D_80100DCC;
 extern s32 *D_80104DF8; /* offset table, entries relative to its start */
 extern u8 D_80104FFC;
-extern u8 D_80105020[];
-extern u8 D_80105058;
+typedef struct {
+    s16 unk0;          /* count of unk14 */
+    s16 unk2;          /* count of unk4 */
+    struct BtlUnit *unk4[4]; /* player units */
+    s16 unk14[8][2];   /* screen positions */
+} Unk80105020;
+extern Unk80105020 D_80105020;
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+} Unk80105058;
+extern Unk80105058 D_80105058;
 extern s32 D_80105274;
 extern u8 D_8010527C;
 extern s32 D_8010528C[];
@@ -373,7 +388,7 @@ typedef struct {
     u16 unk0;
     u8 unk2;
     u8 pad3[0xC - 3];
-    s32 unkC[2];
+    BtlUnit9CC *unkC[2];
     u8 pad14[0x24 - 0x14];
     u16 unk24;
 } Battle4880;
@@ -513,7 +528,7 @@ typedef struct Battle {
     s16 unk11BC;
     u16 unk11BE;
     struct Battle11C0 *unk11C0;
-    s32 *unk11C4;
+    BtlUnit9CC **unk11C4;
     u8 pad11C8[0x11CC - 0x11C8];
     s32 unk11CC[24];
     Battle122C unk122C[4];
@@ -844,8 +859,9 @@ typedef struct Unk800CEE74 {
 extern s8 D_800FEC55;
 
 typedef struct {
-    s16 unk0;
-    u8 pad2[8 - 2];
+    u16 unk0; /* sound id, 0 = free */
+    u16 unk2;
+    s32 unk4; /* unit id */
 } Unk80104E30Entry;
 
 typedef struct {
@@ -967,9 +983,10 @@ typedef struct {
 extern Unk80104FF0 D_80104FF0;
 extern u8 D_80104FFF;
 extern u8 D_80104FFA;
+extern BtlUnit *D_80104FE4;
 extern u8 D_800F8EE4[];
 extern u8 D_80105059;
-extern void (*D_800F8F04[])(s32);
+extern void (*D_800F8F04[])(Window *);
 
 typedef struct {
     s32 unk0;
@@ -1358,9 +1375,11 @@ extern u8 D_800FD8CC[];
 extern u16 D_800FD36C[];
 extern u8 D_800FB4F0[];
 extern s32 D_800F8E04[];
-extern u8 D_800F8EF4[];
-Window *func_8002DCAC(u8 *, s32, s32, s32);
+extern RECT D_800F8EF4;
+extern RECT D_800F8EFC;
+Window *func_8002DCAC(RECT *, s32, s32, s32);
 void func_800F1A8C(Window *);
+void func_800F29B4(Window *);
 void func_800F0A54(Window *);
 void func_800F0BE0(Window *);
 void func_800EE0FC(Window *);
@@ -1400,5 +1419,15 @@ u32 func_800CF690(void);
 s32 func_800D7D64(s32, Unk800D955C *, s32, s32 *, s32 *);
 s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
 
+
+extern u8 D_80104E6A;
+
+s32 func_8005553C(s32);
+void func_80055850(s32, s32, s32);
+s32 func_80034430(s32, s32);
+void func_800F3D3C(s32);
+void func_800F1BFC(Window *);
+s32 func_800D001C(s32, s32, s32 *);
+void func_800C4E84(s32, s16 *, s16 *, s16 *);
 
 #endif
