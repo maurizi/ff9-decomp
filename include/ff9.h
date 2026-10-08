@@ -113,7 +113,7 @@ typedef struct {
     u8 pad4[4];
     u8 unk8; /* draw buffer index (0/1) */
     u8 unk9;
-    u8 padA[2];
+    u16 unkA; /* projection distance (SetFogNearFar) */
     u16 unkC;
     u16 unkE;
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
@@ -151,7 +151,8 @@ typedef struct {
     s32 unk800;
     s32 unk804;
     s32 unk808;
-    u8 pad80C[0x814 - 0x80C];
+    u8 *unk80C; /* name text */
+    u8 pad810[0x814 - 0x810];
     void *unk814;
     s32 unk818;
     u16 unk81C[2];
@@ -160,7 +161,7 @@ typedef struct {
     u8 unk826[2];
     u8 pad828[0x838 - 0x828];
     void (*unk838)(s32, void *);
-    s32 (*unk83C)(s32, s32, s32, s32, s32);
+    void (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
@@ -687,10 +688,18 @@ typedef struct {
 } Unk80077E44; /* 16-byte entries */
 extern Unk80077E44 *D_80077E44;
 
+/* field / world object (actor) */
 typedef struct {
-    u8 pad0[6];
+    u8 pad0[5];
+    u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
+    u8 pad8[0x11 - 8];
+    u8 unk11;
+    u8 pad12[2];
+    VECTOR unk14; /* position */
+    u8 pad24[0x40 - 0x24];
+    VECTOR unk40; /* previous position */
 } Unk8004AB64;
 
 typedef struct Unk16D8 {
@@ -1540,6 +1549,11 @@ s32 func_8004BC38(u8);
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
 void func_800362C8(void);
+Unk16D8 *func_8004AE9C(void);
+extern s32 D_8007046C;
+void SetBackColor(s32, s32, s32);
+void SetFarColor(s32, s32, s32);
+void SetFogNearFar(s32, s32, s32);
 u8 func_8003378C(void);
 extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */

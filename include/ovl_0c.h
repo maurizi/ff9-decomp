@@ -56,7 +56,7 @@ typedef struct WmNode {
 typedef struct Unk800D3EAC {
     s32 unk0;
     struct Unk800D3EAC *unk4; /* next */
-    s32 unk8;
+    s32 *unk8; /* frame pack */
     u16 unkC; /* low 6 bits: id */
     u8 unkE;
 } Unk800D3EAC;
@@ -69,10 +69,16 @@ typedef struct {
 } Unk800CE0F0;
 
 typedef struct {
-    u8 pad0[8];
+    u8 unk0;
+    u8 pad1[7];
     u32 unk8;
-    u8 padC[4];
+    s16 unkC;
+    u16 unkE;
 } Unk800CCCC0; /* 0x10 */
+
+typedef struct {
+    s16 unk0[5];
+} Unk800CE1E8; /* 10 bytes */
 
 typedef struct {
     u8 unk0; /* mode */
@@ -157,7 +163,10 @@ typedef struct {
 } Unk800D3FA0Sub; /* 0xC */
 
 typedef struct {
-    u8 pad0[0x5E0];
+    u8 pad0[0x14A];
+    s16 unk14A;
+    s16 unk14C;
+    u8 pad14E[0x5E0 - 0x14E];
     SVECTOR unk5E0[3];
     SVECTOR unk5F8;
     u8 pad600[0x610 - 0x600];
@@ -194,6 +203,11 @@ typedef struct {
 } Unk800AA39C;
 
 /* ---- overlay functions ---- */
+s32 func_800C291C(void);
+void func_800C2A80(s32, s32, s32);
+s16 func_800B36B4(u8, u32, s32);
+void func_800B01F0(Unk8004AB64 *);
+void func_800BE748(VECTOR *, u32 *, s32 *, s32, u16 *);
 void func_800B4720(s32);
 void func_800B4BDC(s32);
 s32 func_800B5CD0(s32, s32, s32);
@@ -218,7 +232,7 @@ void func_800CC5D8(u8);
 s32 func_800B8498(void);
 s32 func_800B84C0(void);
 s32 func_800C3FE4(s32, Unk800C3FE4 *);
-void func_800B828C(s32);
+s32 func_800B828C(s32 *);
 void func_800B3A80(void);
 s32 func_800B3FEC(s32, s32, s32);
 void func_800AD114(s32, s32, s32);
@@ -280,6 +294,20 @@ void func_800CC8C8(void);
 void func_800CC940(void);
 
 /* ---- overlay data ---- */
+extern char D_800A79D0[];
+extern char D_800A7A0C[];
+extern RECT *D_800CE054;
+extern s16 D_800CE188;
+extern s16 D_800CE1A8;
+extern s16 D_800CE1C0;
+extern Unk800CE1E8 D_800CE1E8;
+extern Unk800CE1E8 D_800CE1F8;
+extern u8 D_800CF46D;
+extern s32 D_800CF4AC;
+extern MATRIX D_800CF4C0;
+extern MATRIX D_800CF520;
+extern MATRIX D_800CF540;
+extern u8 D_800D33F4;
 extern u8 D_800A8678[]; /* text */
 extern Unk800CCCC0 D_800CCCC0[];
 extern Unk800CE0E8 *D_800CE3DC;

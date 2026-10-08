@@ -3147,11 +3147,11 @@ u8 func_8004AE84(void) {
     return D_8007AECC->unk16EC;
 }
 
-s32 func_8004AE9C(void) {
+Unk16D8 *func_8004AE9C(void) {
     Unk8007AECC *p = D_8007AECC;
-    s32 r = 0;
+    Unk16D8 *r = NULL;
     if (p != NULL) {
-        r = (s32)p->unk16D8;
+        r = p->unk16D8;
     }
     return r;
 }
