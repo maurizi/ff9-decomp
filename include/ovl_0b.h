@@ -128,7 +128,10 @@ typedef struct BtlUnit {
     u8 unk6D;
     u8 unk6E;
     u8 unk6F;
-    u8 pad70[0x74 - 0x70];
+    u8 unk70;
+    u8 unk71;
+    u8 unk72;
+    u8 unk73;
     u8 *unk74;
     u8 unk78;
     u8 unk79;
