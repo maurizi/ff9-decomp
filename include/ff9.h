@@ -89,9 +89,10 @@ typedef struct {
 
 /* GameData.unk8E0 entry */
 typedef struct Unk8E0 {
-    u8 pad0[0xC];
-    Character *unkC;
-    u8 pad10[0x14 - 0x10];
+    u8 pad0[8];
+    struct BtlUnit9C *unk8;
+    struct BtlUnitA0 *unkC;
+    struct BtlUnit *unk10;
 } Unk8E0;
 
 typedef struct {
