@@ -563,6 +563,9 @@ extern s32 D_800CCE34;
 extern s32 D_800CCE38;
 extern s32 D_800CCE3C;
 extern u8 D_800CCA28[];
+extern u8 D_800CCFB4[];
+extern u8 D_800D30D8[];
+extern char D_800A7F48[];
 extern Unk800CE1E8 D_800CE1E8;
 extern Unk800CE1E8 D_800CE1F8;
 extern u8 D_800CF46D;
@@ -696,6 +699,8 @@ extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
 extern u8 D_800D30F8[];
+extern s32 D_800CD098;
+void func_800BCA6C(s16);
 extern s16 D_800D45D4[3];
 void func_800B3998(u16 *, u16 *, s32, s16 *);
 extern s32 D_800D3F8C;
@@ -747,7 +752,8 @@ typedef struct {
     u8 pad0[4];
     u16 unk4;
     u16 unk6;
-    u8 pad8[2];
+    u8 unk8; /* topograph << 2 */
+    u8 unk9; /* bit 0: fog */
 } Unk800CF450; /* 0xA */
 
 extern u16 D_800CFE88[8];

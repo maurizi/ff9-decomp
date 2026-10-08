@@ -715,7 +715,10 @@ typedef struct {
     u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
-    u8 pad8[0x11 - 8];
+    u8 pad8[0xE - 8];
+    u8 unkE;
+    u8 unkF;
+    u8 pad10;
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */

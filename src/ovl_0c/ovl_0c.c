@@ -2044,13 +2044,125 @@ void func_800BC690(void) {
     D_800D3408 = b;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BC84C);
+void func_800BC84C(s32 arg0) {
+    s32 missing[16];
+    s32 x;
+    s32 z;
+    s32 id;
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 k;
+    Unk800D335C *p;
+    Unk800D335C *h;
+    u8 c;
+
+    n = 0;
+    h = &D_800D3358;
+    func_800BC3C4(arg0, &x, &z);
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < 4; i++) {
+            func_800BC1FC(x + (i << 14), z - (j << 14), &id);
+            p = h->unk4;
+            for (k = 0; k < 16; k++, p = p->unk4) {
+                if (p->unkC == id) {
+                    c = D_800D30F8[p->unkC];
+                    if (c & 0x3F) {
+                        func_800C1DA4(c);
+                    }
+                    p->unk0->unk4 = p->unk4;
+                    p->unk4->unk0 = p->unk0;
+                    p->unk4 = h->unk4;
+                    p->unk0 = h;
+                    h->unk4->unk0 = p;
+                    h->unk4 = p;
+                    break;
+                }
+            }
+            if (k == 16) {
+                missing[n++] = id;
+            }
+        }
+    }
+    for (k = 0; k < n; k++) {
+        if (k == 4) {
+            D_800D3338++;
+    D_800D3338 %= 4;
+        }
+        func_800BCA6C(missing[k]);
+        c = D_800D30F8[missing[k]];
+        if (c & 0x3F) {
+            func_800C1DA4(c);
+        }
+    }
+    func_800BD5D0();
+    func_800C1F3C();
+    D_800D3338++;
+    D_800D3338 %= 4;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BCA6C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BCBDC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BD150);
+u8 func_800BD150(Unk800D335C **out, s32 *count, s32 *dir) {
+    Unk800D335C *h[10];
+    Unk800D335C *v[10];
+    s32 hhi;
+    s32 hlo;
+    s32 vhi;
+    s32 vlo;
+    s32 i;
+    Unk800D335C *p;
+
+    hhi = 4;
+    hlo = 4;
+    *dir = 0;
+    *count = 0;
+    vhi = 4;
+    vlo = 4;
+    for (p = D_800D3358.unk4; p->unk8 != NULL; p = p->unk4) {
+        if (p->unkE == 0 && p->unkC != -1 && p->unkF == D_800CD098) {
+            h[hlo] = p;
+            h[hhi] = p;
+            v[vlo] = p;
+            v[vhi] = p;
+            for (i = 0; i < 4; i++) {
+                for (p = D_800D3358.unk4; p->unk8 != NULL; p = p->unk4) {
+                    if (p->unkE == 0) {
+                        if (h[hlo]->unkC - 1 == p->unkC) {
+                            h[--hlo] = p;
+                        }
+                        if (h[hhi]->unkC + 1 == p->unkC) {
+                            h[++hhi] = p;
+                        }
+                        if (v[vlo]->unkC - 24 == p->unkC) {
+                            v[--vlo] = p;
+                        }
+                        if (v[vhi]->unkC + 24 == p->unkC) {
+                            v[++vhi] = p;
+                        }
+                    }
+                }
+            }
+            if (hhi - hlo < vhi - vlo) {
+                *dir = 24;
+                for (i = vlo; i <= vhi; i++) {
+                    out[(*count)++] = v[i];
+                }
+            } else {
+                *dir = 1;
+                for (i = hlo; i <= hhi; i++) {
+                    out[(*count)++] = h[i];
+                }
+            }
+            break;
+        }
+    }
+    D_800CD098++;
+    D_800CD098 %= 4;
+    return *count;
+}
 
 void func_800BD3F8(void) {
     s32 i;
