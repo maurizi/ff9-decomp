@@ -543,9 +543,12 @@ typedef struct {
     s32 unk38;
     s32 unk3C;
     s32 unk40;
-    u8 pad44[0x5C - 0x44];
-    u32 unk5C;
-    u8 pad60[0x64 - 0x60];
+    u8 pad44[0x4C - 0x44];
+    s32 unk4C;
+    s32 unk50;
+    u8 pad54[0x5C - 0x54];
+    s32 unk5C;
+    s32 unk60;
     s32 unk64;
     u32 unk68;
     u8 pad6C[0x70 - 0x6C];
