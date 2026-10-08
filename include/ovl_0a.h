@@ -7,10 +7,51 @@
 #include "ff9.h"
 
 /* field context, GameData.unk8E4.field */
+/* 0x38-byte object hanging off FieldMap.unkC */
+typedef struct {
+    u8 pad0[8];
+    void *unk8;  /* file 0x6xxxx */
+    void *unkC;
+    u16 unk10;
+    u8 pad12[0x1C - 0x12];
+    void *unk1C; /* file 0x1Fxxxx */
+    u8 pad20[0x24 - 0x20];
+    void *unk24;
+    u8 pad28[0x38 - 0x28];
+} FieldMapObj;
+
+/* field context, GameData.unk8E4.field (0x50 bytes) */
 typedef struct FieldMap {
-    u8 pad0[0xC];
-    u8 *unkC;
+    u32 unk0; /* flags */
+    s32 unk4;
+    s8 unk8;
+    s8 unk9;
+    s16 unkA;
+    FieldMapObj *unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    u8 pad1C[0x20 - 0x1C];
+    s32 unk20;
+    u8 unk24[0x2C];
 } FieldMap;
+
+/* 0x28-byte entries at D_800C9DF4 */
+typedef struct {
+    u8 pad0[4];
+    u16 unk4;
+    u16 unk6;
+    u8 pad8[0x1C - 8];
+    s32 unk1C;
+    s32 unk20;
+    u8 pad24[0x28 - 0x24];
+} Unk800C9DF4;
+
+/* 0xC-byte entries at D_800C9DCC */
+typedef struct {
+    u8 unk0;
+    u8 pad1[0xB];
+} Unk800C9DCC;
 
 /* field state (D_800CA068) */
 typedef struct {
@@ -20,7 +61,9 @@ typedef struct {
     u8 pad8[0x75 - 8];
     u8 unk75;
     s16 unk76;
-    u8 pad78[0xC8 - 0x78];
+    u8 pad78[0xA8 - 0x78];
+    s16 unkA8[4][2];
+    s16 unkB8[4][2];
     s16 unkC8[4];
     s16 unkD0[4];
 } Unk800CA068;
@@ -41,20 +84,37 @@ typedef struct {
 } Unk800C9DF0;
 
 typedef struct {
-    s16 unk0;
+    u16 unk0; /* flags */
     s16 unk2;
     s16 unk4;
     s16 unk6;
-    u8 pad8[0x12 - 8];
+    s16 unk8;
+    s16 unkA;
+    u8 padC[0x10 - 0xC];
+    s16 unk10;
     s16 unk12;
     u8 pad14[0x18 - 0x14];
 } Unk800CAE98; /* 0x18 */
 
 /* ---- overlay functions ---- */
 void func_800AD944(s32, s32, s32);
+void func_800A8588(void);
+void func_800B1CE4(void);
+s32 func_800AA0C8(FieldMapObj *);
+s32 func_800A8990(FieldMapObj *, s16);
 void func_800B5430(s32);
 s32 func_800B3BD8(s32);
 s32 func_800B3D10(s32);
+void func_800C951C(void);
+void func_800C95B8(void);
+void func_800C9580(void);
+void func_800B559C(void);
+void func_800B5660(void);
+void func_800B58B8(void);
+void func_800C8C08(void);
+void func_800C8D40(void);
+void func_800C8E2C(void);
+void func_800C9630(void);
 
 /* ---- overlay data ---- */
 extern s32 D_800C9D58;
@@ -64,7 +124,11 @@ extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
 extern Unk800C9DF0 D_800C9DF0;
-extern s32 D_800C9DF4;
+extern Unk800C9DF4 *D_800C9DF4;
+extern Unk800C9DCC *D_800C9DCC;
+extern s32 D_800C9F20[16];
+extern u8 D_800CA05B;
+extern s32 D_800CA0E0;
 extern u8 D_800CA059;
 extern u8 D_800CA05A;
 extern s16 D_800CA05C;
