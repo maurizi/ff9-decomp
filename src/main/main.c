@@ -2853,7 +2853,41 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D398);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D550);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D7E8);
+void func_8002D7E8(Window *w) {
+    if (w->unk28 == 0 || w->unk28 == 4) {
+        w->unk8.w -= w->unk14;
+        w->unk8.h -= w->unk16;
+        w->unk8.x += w->unk14 >> 1;
+        w->unk8.y += w->unk16 >> 1;
+        w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
+        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+    } else if (w->unk28 == 1) {
+        w->unk8.h -= w->unk16;
+        w->unk8.w -= w->unk14;
+        w->unk30.unkB = (w->unk6 - w->unk8.h) & 0x1F;
+    } else if (w->unk28 == 2) {
+        w->unk8.w -= w->unk2C + w->unk2E;
+        w->unk8.h -= w->unk16;
+        w->unk8.x += w->unk2C;
+        if (w->unk29 >= 2) {
+            w->unk8.y += w->unk16;
+        }
+        w->unk30.unkA = (w->unk8.x - w->unk0) & 0x1F;
+        w->unk30.unkB = (w->unk8.y - w->unk2) & 0x1F;
+    }
+    if (w->unk8.w < 0) {
+        w->unk8.w = 0;
+    }
+    if (w->unk8.h < 0) {
+        w->unk8.h = 0;
+    }
+    if (w->unk8.w == 0 || w->unk8.h == 0) {
+        w->unk1C = 0;
+        if (w->unk4C != NULL) {
+            w->unk4C(w);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D9B4);
 

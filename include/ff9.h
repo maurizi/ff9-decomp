@@ -526,7 +526,9 @@ typedef struct Window {
     s16 unk6; /* h */
     RECT unk8; /* inner/content rect */
     s16 unk10;
-    u8 pad12[0x18 - 0x12];
+    u8 pad12[0x14 - 0x12];
+    s16 unk14; /* open/close step x */
+    s16 unk16; /* open/close step y */
     s16 unk18; /* OT layer */
     u8 unk1A;
     u8 unk1B; /* index */
@@ -541,7 +543,8 @@ typedef struct Window {
     u8 unk28;
     u8 unk29;
     s16 unk2A;
-    u8 pad2C[4];
+    s16 unk2C;
+    s16 unk2E;
     MenuList unk30;
     void (*unk40)(struct Window *);
     void (*unk44)(struct Window *);
