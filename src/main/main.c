@@ -1655,7 +1655,32 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002423C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80024428);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800245F0);
+void func_800245F0(RECT *r, s32 otz) {
+    TileWords *p;
+    DrTpageWords *t;
+
+    setlen(D_80077170, 3);
+    ((TileWords *)D_80077170)->rgbc = 0x62000000;
+    p = (TileWords *)D_80077170;
+    p->xy = (r->x + 3) | ((r->y + r->h) << 16);
+    p->wh = r->w | 0x30000;
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+
+    setlen(D_80077170, 3);
+    ((TileWords *)D_80077170)->rgbc = 0x62000000;
+    p = (TileWords *)D_80077170;
+    p->xy = (r->x + r->w) | ((r->y + 3) << 16);
+    p->wh = 3 | ((r->h - 3) << 16);
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+
+    setlen(D_80077170, 1);
+    t = (DrTpageWords *)D_80077170;
+    t->code = 0xE1000600;
+    addPrim(&D_8007716C[otz], t);
+    D_80077170 = (u8 *)(t + 1);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80024764);
 
@@ -1673,7 +1698,31 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025A28);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025ED4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002642C);
+void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
+    Unk800689B0 *g = &D_80068D70[idx];
+    u32 clut;
+    SprtWords *p;
+    DrTpageWords *t;
+
+    if (!mode) {
+        clut = (g->unk2 - ((D_8006794C->unk24 >> 18) & 1) * 0xC0) << 16;
+    } else {
+        clut = 0x3EA40000;
+    }
+    setlen(D_80077170, 4);
+    ((SprtWords *)D_80077170)->rgbc = flag ? 0x66808080 : 0x64808080;
+    p = (SprtWords *)D_80077170;
+    p->xy = x | (y << 16);
+    p->uvclut = g->unk0 | (g->unk1 << 8) | clut;
+    p->wh = g->unk4 | (g->unk5 << 16);
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+    setlen(D_80077170, 1);
+    t = (DrTpageWords *)D_80077170;
+    t->code = (g->unk6 & 0x9FF) | 0xE1000600;
+    addPrim(&D_8007716C[otz], t);
+    D_80077170 = (u8 *)(t + 1);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800265B0);
 

@@ -466,7 +466,7 @@ void func_800275A4(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
 void func_800265B0(s32, s32, s32, s32, s32, s32);
 void func_800274CC(RECT *, s32);
 void func_80026900(s32, s32, s32, s32);
-void func_8002642C(s16, s16, s32, s32, s32, s32);
+void func_8002642C(s16, s16, s32, s32, u8, u8);
 u8 *func_80026C7C(s32, s32, u32 *, s32, u8, u8 *);
 void func_80026F8C(s32, s32, s32, s32);
 void func_80027A4C(s32, s32, s32, s32);
@@ -2237,6 +2237,7 @@ typedef struct {
     u16 unk6; /* tpage */
 } Unk800689B0;
 extern Unk800689B0 D_800689B0[];
+extern Unk800689B0 D_80068D70[];
 u8 func_8002E4BC(Window *);
 void func_8002CB18(Window *);
 void func_8002E588(Window *);
