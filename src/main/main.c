@@ -1653,7 +1653,41 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetDrawTPage);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002423C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80024428);
+void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
+    Character *a = D_8006794C->unk1C->unk54C[s->unk2];
+    Character *b = D_8006794C->unk1C->unk54C[s->unk3];
+    RECT r1;
+    RECT r2;
+    s32 d;
+    s32 px;
+    s32 t;
+
+    if (s->unk0 != 0) {
+        r1.w = 0x20;
+        r1.x = x;
+        r1.y = y;
+        r1.h = 0x2E;
+        func_8002D9B4(NULL, otz, 4);
+        d = 11 - s->unk4;
+        if (s->unk1 == 1) {
+            t = -(d * 3);
+        } else {
+            t = d * 3;
+        }
+        px = x + t;
+        r2.x = px - 2;
+        r2.y = y - 2;
+        r2.w = 0x24;
+        r2.h = 0x32;
+        func_80025108(&r2, otz, 0, (D_8006794C->unk24 >> 18) & 1);
+        func_80028AF0(px, y, otz, s->unk3, b->unk10 == 0);
+        func_8002D9B4(&r1, otz, 4);
+        func_8002423C(x + 0x26, y + 3, otz, D_8006794C->unk1C->unk54C[s->unk3]);
+    } else {
+        func_8002423C(x + 0x26, y + 3, otz, a);
+    }
+    func_80028AF0(x, y, otz, s->unk2, a->unk10 == 0);
+}
 
 void func_800245F0(RECT *r, s32 otz) {
     TileWords *p;

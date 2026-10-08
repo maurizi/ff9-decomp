@@ -1975,7 +1975,14 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
 
 void func_80025ED4(s32, s32, s32, s32, s32, s32, s32);
 extern u8 D_8007AF00;
-void func_80024428(s32, s32, s32, void *);
+typedef struct {
+    u8 unk0; /* show second character */
+    u8 unk1; /* slide direction */
+    u8 unk2; /* party slot */
+    u8 unk3; /* second party slot */
+    s32 unk4; /* slide step */
+} Unk80024428;
+void func_80024428(s32, s32, s32, Unk80024428 *);
 void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void func_800273C0(s32, s32, s32, s32, s32);
 void func_80033D38(u8 *, s32); /* default name by id */
