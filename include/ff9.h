@@ -1293,6 +1293,10 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_800329FC(u8 *);
+extern AkaoChannel D_80080AC8[];
+void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
+u16 func_800593C0(u32, AkaoChannel *);
 s32 func_8002B43C(s32);
 void func_8002B47C(s32);
 extern RECT D_8006BC38;

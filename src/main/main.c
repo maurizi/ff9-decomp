@@ -3020,7 +3020,16 @@ void func_800326B0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032708);
+void func_80032708(void) {
+    FileEntry *f;
+    if (func_80022B18() == 0) {
+        D_80077DB0.unk0 = 2;
+        D_80077DB0.unk6 = 1;
+        f = func_8001E218(0, D_8006CA40[D_80077DB0.unk1]);
+        func_80022C60(f->unk4 + D_8006794C->unk20, (f->unkC - f->unk4) << 11, (void *)0x801EDF00, func_800329FC);
+
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032798);
 
@@ -3151,7 +3160,43 @@ s32 func_8003380C(s32 i) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003384C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033964);
+s32 func_80033964(u32 x) {
+    switch (x) {
+    case 0:
+    case 16:
+        return 0;
+    case 1:
+        return 1;
+    case 2:
+        return 2;
+    case 3:
+        return 3;
+    case 4:
+        return 4;
+    case 5:
+        return 5;
+    case 6:
+        return 6;
+    case 7:
+        return 7;
+    case 8:
+    case 9:
+    case 17:
+        return 8;
+    case 10:
+    case 11:
+    case 18:
+        return 9;
+    case 12:
+    case 13:
+    case 19:
+        return 10;
+    case 14:
+    case 15:
+        return 11;
+    }
+    return -1;
+}
 
 u8 func_800339F4(s32 a, u8 b) {
     return D_8006CAA4[a][b != 0];
