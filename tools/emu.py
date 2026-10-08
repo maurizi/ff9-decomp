@@ -440,6 +440,21 @@ def card_saves(card):
 
 def insert_save(card, frame, blocks):
     card = bytearray(card)
+    # Two files can't share a name. Games number their saves in the name's last digits
+    # (FF9: BASLUS-0125100000-NN), so move a clash to the next free number.
+    frame = bytearray(frame)
+    taken = {fname for _, fname, _, _ in card_saves(card)}
+    name = frame[0x0A:0x1F].split(b"\0")[0].decode("ascii", "replace")
+    m = re.fullmatch(r"(.*?)(\d{2})", name)
+    if name in taken and m:
+        for k in range(100):
+            alt = f"{m.group(1)}{k:02d}"
+            if alt not in taken:
+                print(f"note: {name} already on the card; stored as {alt}")
+                frame[0x0A:0x1F] = alt.encode().ljust(0x15, b"\0")
+                break
+    elif name in taken:
+        raise EmuError(f"{name} is already on the card")
     n = len(blocks) // BLOCK
     free = [i for i in range(1, 16) if struct.unpack_from("<I", card, i * FRAME)[0] in (0xA0, 0)]
     if len(free) < n:
