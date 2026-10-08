@@ -1069,7 +1069,8 @@ typedef struct {
     u8 unk1;
     u8 pad2[2];
     u8 unk4[4];
-    u8 pad8[0x10 - 8];
+    u8 unk8[4];
+    u8 padC[0x10 - 0xC];
     u8 unk10;
     u8 unk11;
     u8 pad12[0x18 - 0x12];
@@ -1518,7 +1519,9 @@ void func_800CFD78(s16 *, s16 *, s32, s16 *);
 typedef struct {
     u8 pad0[2];
     u16 unk2; /* text offset into D_800FD8CC */
-    u8 pad4[8 - 4];
+    u8 pad4[6 - 4];
+    u8 unk6;
+    u8 pad7;
     s32 unk8;
 } Unk800FD56C; /* 0xC */
 extern Unk800FD56C D_800FD56C[];
@@ -1664,6 +1667,10 @@ s32 func_800A902C(void);
 s32 func_800A9090(void);
 void func_800A90B0(void);
 s32 func_800AF1C8(void);
+extern void (*D_800F8DF0[])(Unk800FD56C *);
+extern void (*D_800F8E00)(Unk800FD56C *);
+extern void (*D_800F9038[])(BtlUnit *, s32);
+void func_800F3390(void);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s32);
