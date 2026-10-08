@@ -921,7 +921,69 @@ void func_800AE788(void) {
     func_8004C204();
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE930);
+/* end of frame: flip buffers, draw and apply the queued flag changes */
+void func_800AE930(void) {
+    s32 i;
+    s32 j;
+    u32 f;
+
+    if ((D_800739A0[0] & 0xF09) == 0xF09 || (D_800739A0[1] & 0xF09) == 0xF09) {
+        D_8006794C->unk0 |= 1;
+    }
+    DrawSync(0);
+    if (!(func_80012AD4() & 2)) {
+        if ((D_8006794C->unk1C->unk0 & 0x1C) == 0x1C && (D_8006794C->unk1C->unk8E4.field->unk0 & 4)) {
+            D_8006794C->unk9 = 0;
+        } else {
+            D_8006794C->unk9 = 2;
+        }
+    }
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    if (D_800C9D44 & 8) {
+        func_80012D08();
+        func_80012CF8();
+        func_80012D18();
+        D_800C9D44 &= ~8;
+    }
+    if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 0x20)) {
+        PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    }
+    if (!(D_8006794C->unk1C->unk0 & 0x100)) {
+        f = D_8006794C->unk1C->unk8E4.field->unk0;
+        if (!(f & 0x40)) {
+            if (f & 0x400) {
+                PutDrawEnv(&D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+            } else if (f & 4) {
+                DrawOTagEnv(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][0xFFF], &D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+            } else {
+                DrawOTag(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8]);
+            }
+        }
+    }
+    if (!(D_8006794C->unk1C->unk0 & 0x20)) {
+        D_8006794C->unk1C->unk8 ^= 1;
+        func_8002C0DC(D_8006794C->unk1C->unk8);
+    }
+    if (!(D_8006794C->unk1C->unk0 & 0x100)) {
+        D_8006794C->unk1C->unk0 |= D_800C9EF0.unk0[0][0];
+        D_8006794C->unk1C->unk0 &= ~D_800C9EF0.unk0[1][0];
+        D_8006794C->unk1C->unk8E4.field->unk0 |= D_800C9EF0.unk10[0][0];
+        D_8006794C->unk1C->unk8E4.field->unk0 &= ~D_800C9EF0.unk10[1][0];
+        D_800C9D44 |= D_800C9EF0.unk20[0][0];
+        D_800C9D44 &= ~D_800C9EF0.unk20[1][0];
+        for (i = 0; i < 2; i++) {
+            for (j = 0; j < 3; j++) {
+                D_800C9EF0.unk0[i][j] = D_800C9EF0.unk0[i][j + 1];
+                D_800C9EF0.unk10[i][j] = D_800C9EF0.unk10[i][j + 1];
+                D_800C9EF0.unk20[i][j] = D_800C9EF0.unk20[i][j + 1];
+            }
+            D_800C9EF0.unk0[i][3] = 0;
+            D_800C9EF0.unk10[i][3] = 0;
+            D_800C9EF0.unk20[i][3] = 0;
+        }
+    }
+}
 
 void func_800AED04(void) {
     D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk41 = 0;

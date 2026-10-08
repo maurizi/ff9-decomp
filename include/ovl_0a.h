@@ -527,9 +527,12 @@ typedef struct {
     u16 unk32;
 } Unk800AA01C;
 
+/* deferred flag updates: [0] = set, [1] = clear, 4-frame queues for
+ * GameData.unk0, FieldMap.unk0 and D_800C9D44 */
 typedef struct {
-    s16 unk0[2][4];
-    s16 unk10[2][4];
+    u16 unk0[2][4];
+    u16 unk10[2][4];
+    u16 unk20[2][4];
 } Unk800C9EF0;
 
 /* text windows (same layout as ovl_0c's D_800D5438) */
