@@ -281,7 +281,8 @@ typedef struct {
 typedef struct {
     u8 pad0[2];
     s16 unk2;
-    u8 pad4[4];
+    u16 unk4; /* count of unk6 entries */
+    u16 unk6; /* offset: s32[] (Unk800C9E00 indices) */
 } Unk800C9DF8Pt; /* 8 bytes */
 
 typedef struct {
@@ -658,6 +659,7 @@ void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;
 void func_801F3488(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 void func_80032100(void);
+Unk8004AB64 *func_8004AE00(void);
 void func_80023A0C(void);
 void func_800223CC(void);
 

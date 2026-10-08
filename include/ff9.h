@@ -112,6 +112,12 @@ typedef union {
     struct Battle *battle;
 } Unk8E4Ptr;
 
+typedef struct Unk8E0 {
+    u8 pad0[0xC];
+    void *unkC; /* actor */
+    u8 pad10[4];
+} Unk8E0; /* 0x14 */
+
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
@@ -192,7 +198,8 @@ typedef struct {
     u8 pad8C0[0x8C4 - 0x8C0];
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
-    u8 pad8CC[0x8E4 - 0x8CC];
+    u8 pad8CC[0x8E0 - 0x8CC];
+    struct Unk8E0 *unk8E0; /* indexed by unk8E4.field->unk8 */
     Unk8E4Ptr unk8E4;
 } GameData;
 
