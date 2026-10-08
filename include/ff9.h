@@ -2251,4 +2251,30 @@ typedef struct {
     u16 unk8; /* w */
     u16 unkA; /* h */
 } Unk800357E0;
+/* debug/system text output (hand-written asm, 0x80051xxx) */
+void func_800515B8(void);
+void func_800512B8(s32, s32);
+void func_800512C8(s32, s32);
+void func_800513CC(s32);
+void func_80051610(void);
+extern s32 *D_8007B6F0; /* script value stack pointer */
+extern void *D_8007B700; /* script current object */
+
+/* Inlined copy of func_8004B404 (read script variable, refreshing 2-4). */
+static inline u16 func_8004B404_inline(s32 arg0) {
+    s32 i = arg0 & 7;
+
+    switch (i) {
+    case 2:
+        D_8007AE10[2] = func_800BEC64(0);
+        break;
+    case 3:
+        D_8007AE10[3] = func_800BEC64(1);
+        break;
+    case 4:
+        D_8007AE10[4] = func_800BEC64(2);
+        break;
+    }
+    return D_8007AE10[i];
+}
 #endif
