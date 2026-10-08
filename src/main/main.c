@@ -2902,7 +2902,56 @@ void func_8002C974(s32 a, s32 b, s32 v) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C9B0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002CB18);
+void func_8002CB18(Window *w) {
+    s32 abr;
+    RECT t;
+
+    abr = D_8006794C->unk24 >> 18;
+    abr &= 1;
+
+    if (w->unk1A == 2) {
+        func_80026B30(&w->unk8, w->unk18, w->unk1E, w->unk1D, abr);
+        if (w->unk1E == 0) {
+            return;
+        }
+        t.x = w->unk8.x + 4;
+        t.y = w->unk8.y + 4;
+        t.w = w->unk8.w - 8;
+        t.h = w->unk8.h - 8;
+    } else if (w->unk1A == 3) {
+        if (w->unk29 != 4) {
+            func_8002E660(w);
+        }
+        func_80026B84(&w->unk8, w->unk18, w->unk1E, w->unk1D, abr);
+        if (w->unk1E == 0) {
+            return;
+        }
+        t.x = w->unk8.x + 2;
+        t.y = w->unk8.y + 2;
+        t.w = w->unk8.w - 4;
+        t.h = w->unk8.h - 4;
+    } else {
+        if (w->unk1A == 1) {
+            t.x = w->unk8.x;
+            t.y = w->unk8.y + 4;
+            t.w = w->unk8.w;
+            t.h = w->unk8.h - 4;
+            func_80025A28(w->unk8.x, w->unk8.y, w->unk18, 0, w->unk8.w, abr);
+            func_80025108(&t, w->unk18, 1, abr);
+        } else {
+            t = w->unk8;
+            func_80025108(&t, w->unk18, 0, abr);
+        }
+        if (w->unk1E == 0) {
+            return;
+        }
+        if (w->unk30.unk8 & 4) {
+            func_8002E7FC(&t, w->unk18, &w->unk30, abr);
+            return;
+        }
+    }
+    func_8002709C(&t, w->unk18, w->unk30.unkA, w->unk30.unkB, abr);
+}
 
 void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
     RECT t;
@@ -3078,7 +3127,31 @@ void func_8002DF18(RECT *r, s32 otz, s32 style, s32 xoff) {
     func_800274CC(&t, otz);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E040);
+void func_8002E040(RECT *r, s32 otz, s32 mode, MenuList *m) {
+    RECT t;
+    s32 abr;
+
+    abr = D_8006794C->unk24 >> 18;
+    abr &= 1;
+
+    if (mode == 1) {
+        t.x = r->x;
+        t.y = r->y + 4;
+        t.w = r->w;
+        t.h = r->h - 4;
+        func_8002E718(r, otz, m);
+        func_80025A28(r->x, r->y, otz, 0, r->w - 2, abr);
+        func_80025108(&t, otz, 1, abr);
+    } else {
+        t = *r;
+        func_80025108(&t, otz, 0, abr);
+    }
+    if (m->unk8 & 4) {
+        func_8002E7FC(&t, otz, m, abr);
+    } else {
+        func_8002709C(&t, otz, 0, m->unkB, abr);
+    }
+}
 
 void func_8002E180(void) {
     s32 i;

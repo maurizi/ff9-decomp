@@ -2351,4 +2351,5 @@ typedef struct {
 s32 func_80060A08(void);
 void func_80061624(void);
 u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
+void func_8002E660(Window *);
 #endif
