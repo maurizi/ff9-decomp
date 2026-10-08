@@ -773,9 +773,10 @@ typedef struct {
     Unk8007AECCNode unk1450[32];
     s32 unk15D0;
     Unk8007AECCNode *unk15D4; /* free list */
-    u8 pad15D8[0x16D8 - 0x15D8];
+    Unk16D8 unk15D8[32];
     Unk16D8 *unk16D8;
-    u8 pad16DC[0x16E4 - 0x16DC];
+    s32 unk16DC;
+    Unk16D8 *unk16E0; /* free list */
     u8 unk16E4[8];
     u8 unk16EC;
     u8 unk16ED;
@@ -1259,6 +1260,15 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+extern void (*D_8006CA64[])(void);
+extern s32 D_8006CA40[];
+void func_80032708(void);
+void func_80032798(void);
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk8006DDD0;
+extern Unk8006DDD0 D_8006DDD0[];
 typedef struct {
     u8 pad0[8];
     s32 unk8;

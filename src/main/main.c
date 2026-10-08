@@ -2789,9 +2789,23 @@ void func_8003264C(void) {
     D_80077DB2 = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032658);
+void func_80032658(void) {
+    void (*fn)(void);
+    if (D_80077DB0.unk5 != 0) {
+        fn = D_8006CA64[D_80077DB0.unk0];
+        if (fn != NULL) {
+            fn();
+        }
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800326B0);
+void func_800326B0(void) {
+    if (D_8006CA40[D_80077DB0.unk1] != 0xFF) {
+        func_80032708();
+    } else {
+        func_80032798();
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032708);
 
@@ -3064,9 +3078,21 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034D78);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034E80);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034F7C);
+s32 func_80034F7C(s32 lv, s32 m) {
+    s32 r = D_8006DDD0[lv - 1].unk0 * m / 50;
+    if (r >= 10000) {
+        r = 9999;
+    }
+    return r;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034FD4);
+s32 func_80034FD4(s32 lv, s32 m) {
+    s32 r = D_8006DDD0[lv - 1].unk2 * m / 100;
+    if (r >= 1000) {
+        r = 999;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003502C);
 
@@ -3162,7 +3188,17 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800357E0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003595C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035B24);
+void func_80035B24(Unk80035B90 *a, Unk80035B90Data *d) {
+    a->unk4 = d;
+    a->unk8 = d->unk4;
+    a->unkC = &a->unk8[a->unk4->unk0];
+    a->unk10 = d;
+    a->unk0 = 0;
+    a->unk1 = 0;
+    a->unk2 = 0;
+    a->unk14 = 0;
+    a->unk3 = d->unk0;
+}
 
 u8 func_80035B64(Unk80035B90 *a, u8 b) {
     u8 old = a->unk0;
@@ -3467,7 +3503,16 @@ void func_8004B2A0(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B2F4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B378);
+void func_8004B378(void) {
+    Unk16D8 *p = D_8007AECC->unk15D8;
+    for (; p < &D_8007AECC->unk15D8[31]; p++) {
+        p->unk0 = p + 1;
+    }
+    p->unk0 = NULL;
+    D_8007AECC->unk16E0 = D_8007AECC->unk15D8;
+    D_8007AECC->unk16DC = 0;
+    D_8007AECC->unk16D8 = NULL;
+}
 
 void func_8004B3D0(s32 a, s32 b) {
     Unk800367D0 *p = func_800367D0(a, b, 0x38, 0x10);
