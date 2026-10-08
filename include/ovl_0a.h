@@ -456,7 +456,31 @@ extern RECT *D_800C9EA8;
 extern u8 *D_800C9EAC[5];
 extern u8 D_800A7860[]; /* text */
 
+/* text window contents passed to func_80063118 (as in ovl_38) */
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    u8 *unk4;
+    s32 unk8;
+    void (*unkC)(void);
+} TextWin;
+
+extern RECT D_800C9E20[6];
+extern TextWin D_800C9E60[4];
+extern u8 D_800CB168[16];
+extern u8 D_800CB178[16];
+extern u8 D_800C9EC0[];
+extern u8 D_800C9EC4[];
+extern u8 D_800C9ECC[];
+extern u8 D_800C9ED4[];
+extern u8 D_800C9EDC[];
+extern u8 D_800C9EE4[];
+
 /* main exe: candidates for ff9.h */
+extern u32 D_80076F80[]; /* VRAM save buffer */
+extern u8 D_80077E51;
+extern u8 *D_80077DF0;
+s32 func_8002B980(u8 *, s32);
 extern s32 D_80071E34;
 
 /* Inlined copy of func_800C8108. */
