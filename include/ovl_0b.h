@@ -438,6 +438,8 @@ typedef struct {
     BtlUnit9CC *unkC[2];
     u8 pad14[0x24 - 0x14];
     u16 unk24;
+    u8 pad26[0x30 - 0x26];
+    u16 unk30;
 } Battle4880;
 
 typedef struct {
