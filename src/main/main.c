@@ -1059,7 +1059,20 @@ s32 func_80022B18(void) {
     return D_800761D0.unk0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022B28);
+s32 func_80022B28(void) {
+    u8 buf[8];
+    s32 r = D_800761D0.unk0;
+    if (r != 0) {
+        func_800213A0(NULL);
+        func_80021380(0);
+        D_800761D0.unk2 = 0;
+        D_800761D0.unk3 = 0;
+        D_800761D0.unk0 = 0;
+        while (CdControlB(9, NULL, buf) == 0) {
+        }
+    }
+    return r;
+}
 
 void func_80022B9C(void) {
     func_80021340();
@@ -1303,7 +1316,10 @@ void func_8002345C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002350C);
+void func_8002350C(void) {
+    D_800761A8 = D_800761D0.unk944;
+    func_8002267C(&D_800761A8);
+}
 
 void func_80023580(u8 com, u8 *param) {
     CdControlF(com, param);
@@ -3562,7 +3578,28 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A8A4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A9E8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004AAF0);
+s32 func_8004AAF0(void) {
+    Unk8007AECC *p = D_8007AECC;
+    Unk16D8 *n;
+    s32 lim;
+    s32 cnt = 0;
+    if (p != NULL) {
+        n = p->unk16D8;
+        if (n != NULL) {
+            lim = D_8007ADFC - 9;
+            do {
+                Unk8004AB64 *e = n->unk4;
+                s32 t = 0;
+                if (e->unk6 < lim) {
+                    t = e->unk5 == 4;
+                }
+                cnt += t;
+                n = n->unk0;
+            } while (n != NULL);
+        }
+    }
+    return cnt;
+}
 
 s32 func_8004AB64(Unk8004AB64 *a) {
     s32 t = a->unk6 + 9;
