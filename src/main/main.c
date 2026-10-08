@@ -3397,7 +3397,16 @@ s32 func_80034584(s32 ch, s32 id) {
     return D_8006794C->unk1C->unk3C[ch].unk58[i];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034648);
+s32 func_80034648(s32 ch, s32 id, u8 v) {
+    s32 i = func_80034430_inline(ch, id);
+    s32 old;
+    if (i < 0) {
+        return -1;
+    }
+    old = D_8006794C->unk1C->unk3C[ch].unk58[i];
+    D_8006794C->unk1C->unk3C[ch].unk58[i] = v;
+    return old;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003470C);
 
@@ -4365,7 +4374,35 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F058);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F0C8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F1F0);
+s32 func_8004F1F0(u8 *s, s32 max) {
+    s32 n = 0;
+    s32 i;
+    u8 *p;
+    u32 c;
+    if (s != NULL) {
+        p = s;
+        c = *p++;
+        while (c != 0xF7) {
+            if (c == 0xFF) {
+                break;
+            }
+            if (c - 0xF9 < 5) {
+                p++;
+                n++;
+            }
+            n++;
+            c = *p++;
+        }
+        p = s;
+        if (n < max) {
+            max = n;
+        }
+        for (i = 0; i < max; i++) {
+            func_80051004(*p++);
+        }
+    }
+    return n;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F2B4);
 
