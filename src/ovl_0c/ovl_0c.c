@@ -1886,7 +1886,36 @@ void func_800C2830(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C291C);
+s32 func_800C291C(void) {
+    s32 dx;
+    s32 dz;
+    s32 r;
+    s32 d;
+
+    dx = (D_800CE3DC->unk14 >> 8) - 0x508;
+    dz = (D_800CE3DC->unk1C >> 8) + 0x3AD;
+    r = SquareRoot0(dx * dx + dz * dz) < 0x56;
+    dx = (D_800CE3DC->unk14 >> 8) - 0x50B;
+    dz = (D_800CE3DC->unk1C >> 8) + 0x3A0;
+    if (SquareRoot0(dx * dx + dz * dz) < 0x3B) {
+        r = 2;
+    }
+    dx = (D_800CE3DC->unk14 >> 8) - 0x1F4;
+    dz = (D_800CE3DC->unk1C >> 8) + 0x316;
+    if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
+        r = 1;
+    }
+    if (D_800CF444 == 4) {
+        dx = (D_800CE3DC->unk14 >> 8) - 0x2FE;
+        dz = (D_800CE3DC->unk1C >> 8) + 0x140;
+        d = SquareRoot0(dx * dx + dz * dz);
+        D_800D3F88 = d;
+        if (d < 0x65) {
+            r = 3;
+        }
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2A80);
 

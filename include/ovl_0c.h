@@ -44,6 +44,10 @@ typedef struct WorldMap {
 typedef struct {
     u8 pad0[0x11];
     u8 unk11;
+    u8 pad12[2];
+    s32 unk14; /* x (8.8) */
+    u8 pad18[4];
+    s32 unk1C; /* z (8.8) */
 } Unk800CE0E8;
 
 /* doubly linked list node; D_800D4848 is the list head */
@@ -572,6 +576,8 @@ void func_800BC0A8(s32 *, s32 *);
 void func_800BC130(s32, s32, s32 *);
 void func_800BC2C8(s32, s32 *, s32 *);
 void func_800C2040(void);
+void func_800C1824(s32, s32, s32, s32);
+extern s32 D_800D3F88;
 void func_800C26DC(void);
 
 /* main exe: candidates for ff9.h */
