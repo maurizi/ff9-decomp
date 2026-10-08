@@ -376,8 +376,8 @@ typedef struct {
     u8 unk4;
     u8 unk5;
     u8 pad6[2];
-    s16 unk8;
-    u8 padA[2];
+    s16 unk8; /* tpage */
+    s16 unkA; /* clut */
 } Unk800D2FF8; /* 0xC */
 
 typedef struct {
@@ -598,6 +598,19 @@ extern WmTexPack *D_800D32EC;
 extern s32 D_800D3304;
 extern MATRIX D_800D3770;
 extern s32 D_800CCE50; /* debug flags */
+/* texture transfer requests (func_800C24D8) */
+typedef struct {
+    s32 unk0;
+    u8 unk4;
+    u8 unk5;
+    u8 pad6[2];
+} Unk800D3F78;
+extern Unk800D3F78 D_800D3F78[];
+extern s16 D_800CDF14[2];
+extern s16 D_800CDF18[2];
+extern s16 D_800CDF1C[2];
+extern s16 D_800CDF20[2];
+extern char D_800A8118[];
 extern Unk800CE0E8 *D_800CE0E8;
 extern u8 D_800CE25C;
 extern u8 D_800CE26C;
@@ -818,6 +831,22 @@ s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 Unk8004AB64 *func_8004AE00(void);
 void func_8004B20C(s32);
+
+/* map-marker colour (func_800C1428) */
+extern u8 D_800CD710;
+extern u8 D_800CD714;
+extern u8 D_800CD718;
+void func_800BF544(s32, s32, s32, s32, CVECTOR, CVECTOR, s32, s32, s32, s32);
+
+static inline CVECTOR func_800C1428_color(void) {
+    CVECTOR c;
+
+    func_8001D898((s32)&c, 0, 4);
+    c.r = D_800CD710;
+    c.g = D_800CD714;
+    c.b = D_800CD718;
+    return c;
+}
 
 /* Inlined copy of func_800BC0A8 (wrap map coordinates). */
 static inline void func_800BC0A8_inline(s32 *x, s32 *z) {

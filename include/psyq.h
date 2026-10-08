@@ -16,6 +16,10 @@ typedef struct {
     u8 r0, g0, b0, code;
 } P_TAG;
 
+#define getTPage(tp, abr, x, y) \
+    ((((tp) & 0x3) << 7) | (((abr) & 0x3) << 5) | (((y) & 0x100) >> 4) | (((x) & 0x3ff) >> 6) | \
+     (((y) & 0x200) << 2))
+#define getClut(x, y) (((y) << 6) | (((x) >> 4) & 0x3f))
 #define setlen(p, _len) (((P_TAG *)(p))->len = (u8)(_len))
 #define setaddr(p, _addr) (((P_TAG *)(p))->addr = (u32)(_addr))
 #define getaddr(p) (u32)(((P_TAG *)(p))->addr)

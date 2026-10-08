@@ -2086,7 +2086,28 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C0888);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C0F34);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1428);
+void func_800C1428(void) {
+    CVECTOR c0;
+    s32 i;
+    u8 f;
+
+    c0 = func_800C1428_color();
+    {
+        CVECTOR c1 = func_800C1428_color();
+
+        for (i = 0; i < 64; i++) {
+            if ((D_800CD10C[D_800D3E74][i].unk0 | D_800CD10C[D_800D3E74][i].unk2) != 0) {
+                f = 0;
+                if (i >= 7 && (i < 11 || i == 15)) {
+                    f = 1;
+                }
+                if ((D_800D3E74 == 0 || !f) && (u8)func_800C1604(i)) {
+                    func_800BF544(D_800CD10C[D_800D3E74][i].unk0, D_800CD10C[D_800D3E74][i].unk2, 1, 1, c0, c1, 16, 40, 9, 1);
+                }
+            }
+        }
+    }
+}
 
 s32 func_800C1604(u32 arg0) {
     u32 bit = 0;
