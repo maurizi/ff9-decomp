@@ -595,7 +595,8 @@ typedef struct {
     s16 unk110;
     s16 unk112;
     s16 unk114;
-    u8 pad116[0x11C - 0x116];
+    u8 pad116[0x118 - 0x116];
+    u32 unk118; /* voice number */
     u32 unk11C;
     s32 unk120;
     s32 unk124;
@@ -931,7 +932,9 @@ typedef struct {
     s32 unk4;
     s32 unk8;
     s32 unkC;
+    s32 unk10;
 } Unk80080AA0;
+void func_8005A014(Unk80080AA0 *, s32, s32, s32);
 extern Unk80080AA0 D_80080AA0;
 
 typedef struct {
@@ -1235,6 +1238,9 @@ typedef struct {
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
+void func_80032C4C(s32, s32, s32, s32);
+extern u32 D_80077CA4[];
+s32 func_80056700(s32, s32);
 void func_80051568(void);
 void func_8004E924(void);
 void func_8004E7E0(void);
@@ -1307,7 +1313,7 @@ void func_80032574(void);
 void func_80032628(void (*)(void));
 void func_80032634(u8);
 void func_80032640(u8);
-void func_80033CCC(s32, s32);
+s32 func_80033CCC(s32, s32);
 void func_80033D1C(u8);
 u8 func_800349BC(s32, s32);
 u8 func_80034A30(Character *);
