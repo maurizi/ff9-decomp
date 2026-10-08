@@ -1694,11 +1694,54 @@ s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
     return r * 8;
 }
 
-void func_800DF738(s32 arg0, u16 arg1, s32 arg2, s32 arg3, s32 arg4) {
+void func_800DF738(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
     func_800DF7A0(func_800DCFB0(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF7A0);
+u16 func_800DF7A0(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
+    BtlMesh *m = &arg0->unk8->unk10[arg1];
+    if (arg4 == 0) {
+        *arg3 = arg2;
+        return m->unk2;
+    }
+    arg2 += m->unk2 << 5;
+    if (arg4 == 1) {
+        *arg3 = arg2;
+        return m->unk4;
+    }
+    arg2 += m->unk4 * 0x18;
+    if (arg4 == 2) {
+        *arg3 = arg2;
+        return m->unk6;
+    }
+    arg2 += m->unk6 << 5;
+    if (arg4 == 3) {
+        *arg3 = arg2;
+        return m->unk8;
+    }
+    arg2 += m->unk8 * 0x18;
+    if (arg4 == 4) {
+        *arg3 = arg2;
+        return m->unkA;
+    }
+    arg2 += m->unkA << 5;
+    if (arg4 == 5) {
+        *arg3 = arg2;
+        return m->unkC;
+    }
+    arg2 += m->unkC * 0x18;
+    if (arg4 == 6) {
+        *arg3 = arg2;
+        return m->unkE;
+    }
+    arg2 += m->unkE << 5;
+    if (arg4 == 7) {
+        *arg3 = arg2;
+        return m->unk10;
+    }
+    *arg3 = 0;
+    return 0;
+}
 
 void func_800DF920(void) {
 }
@@ -2045,7 +2088,38 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5DA8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5EAC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5F24);
+s32 func_800E5F24(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
+    s32 r;
+    s32 k;
+    if (arg0 == 1) {
+        r = 0;
+        switch (arg4[1]) {
+        case 0:
+            r = func_800DA3D8(arg3->unk8, arg4[0]);
+            break;
+        case 1:
+            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA[D_800FEC40.unkE]);
+            break;
+        case 2:
+            if (D_800FEC40.unkD != 0) {
+                D_800FEC40.unkE = func_800CF690() % D_800FEC40.unkD;
+            }
+            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA[D_800FEC40.unkE]);
+            break;
+        case 3:
+            k = D_800F78A4->unk2C->unk53;
+            if (k >= D_800FEC40.unkD) {
+                k = D_800FEC40.unkD - 1;
+            }
+            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA[k]);
+            break;
+        }
+        if (D_800F8D74 != 0) {
+            func_800C2F9C(r);
+        }
+    }
+    return 1;
+}
 
 void func_800E60A4(s32 arg0, s32 arg1) {
     s32 v;
@@ -4638,7 +4712,28 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F36F8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F386C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F3A8C);
+void func_800F3A8C(void) {
+    s32 y = D_80105078->unk60 + 6;
+    u8 v = 0xB0;
+    u32 i;
+    SPRT *a;
+    SPRT *b;
+    if (D_80105078->unk0 != 0 && D_80105078->unk5C != 0) {
+        for (i = 0; i < D_80105078->unk5C; i++) {
+            b = &D_801050D8->unk1B0[i][D_80077148.unk0];
+            a = &D_801050D8->unk250[i][D_80077148.unk0];
+            a->y0 = y;
+            b->y0 = y;
+            y += 12;
+            a->v0 = v;
+            b->v0 = v;
+            v += 12;
+            addPrim(&D_8007716C[18], b);
+            addPrim(&D_8007716C[18], a);
+        }
+        addPrim(&D_8007716C[18], &D_801050D8->unk300[D_80077148.unk0]);
+    }
+}
 
 void func_800F3C08(void) {
     s32 i;

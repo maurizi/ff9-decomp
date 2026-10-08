@@ -370,7 +370,7 @@ typedef struct {
     s16 unk8;
     u8 unkA[3];
     u8 unkD; /* count of unkA */
-    u8 padE;
+    u8 unkE;
     u8 unkF;
     s32 unk10;
     u8 pad14[0x18 - 0x14];
@@ -415,9 +415,10 @@ extern Unk80100DC0 D_80100DC0;
 typedef struct {
     s32 unk0;
     struct Unk80104FD4 *unk4;
-    u8 pad8[0x10 - 8];
+    s32 unk8;
+    s32 unkC;
     s16 unk10;
-    u8 pad12[0x14 - 0x12];
+    s16 unk12;
     struct BtlUnit *unk14;
     u8 pad18;
     u8 unk19;
@@ -542,7 +543,8 @@ typedef struct {
     u32 unk0_0 : 8;
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
-    u8 pad4[0xA - 4];
+    u8 unk4;
+    u8 pad5[0xA - 5];
     u8 unkA; /* mp cost */
     u8 unkB;
     u8 padC[0xE - 0xC];
@@ -1223,9 +1225,10 @@ typedef struct {
     SPRT unkD8[2];
     DR_TPAGE unk100[2];
     SPRT unk110[4][2];
-    u8 pad1B0[0x2F0 - 0x1B0];
+    SPRT unk1B0[4][2];
+    SPRT unk250[4][2];
     DR_TPAGE unk2F0[2];
-    u8 pad300[0x310 - 0x300];
+    DR_TPAGE unk300[2];
     POLY_G4 unk310[2];
     DR_TPAGE unk358[2];
 } Unk801050D8; /* 0x368, double-buffered menu primitives */
@@ -1455,7 +1458,7 @@ s32 func_800C09A4(BtlUnit *, u32);
 void func_800C09EC(BtlUnit *);
 s32 func_800C0B6C(BtlUnit *, u32);
 s32 func_800D87D0(s32);
-void func_800DF7A0(BtlUnit9C *, s32, s32, s32, s32);
+u16 func_800DF7A0(BtlUnit9C *, u16, s32, s32 *, s32);
 s32 func_800E7298(BtlUnit *);
 s32 func_800E7370(BtlUnit *);
 void func_800E748C(BtlUnit *, s16 *);
