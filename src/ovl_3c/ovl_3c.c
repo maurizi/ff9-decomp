@@ -51,7 +51,19 @@ s32 func_801F4458(void) {
     return D_801FC2D0.unk8;
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F4468);
+void func_801F4468(void) {
+    s32 i;
+
+    D_801FC2D0.unk14 = 0;
+    for (i = 0; i < 9; i++) {
+        if ((D_8006794C->unk1C->unk3C[i].unk34 >> 11) & 1) {
+            D_801FC2D0.unk18[D_801FC2D0.unk14] = i;
+            if (++D_801FC2D0.unk14 >= 8) {
+                break;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F44F4);
 
@@ -194,7 +206,21 @@ void func_801F5988(void) {
     func_8003556C(NULL);
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F59A8);
+s32 func_801F59A8(s32 shop) {
+    u8 *list;
+    s32 i;
+    u8 id;
+
+    list = D_801FBC44[shop];
+    for (i = 0; i < 0x20; i++) {
+        if (list[i] != 0xFF) {
+            if (!(D_80069018[list[i]].unkF & 0xF0)) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
 
 void func_801F5A1C(void) {
     void (*fn)(void);
@@ -266,7 +292,23 @@ void func_801F5D6C(void) {
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5D98);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5E4C);
+void func_801F5E4C(void) {
+    MenuList *l;
+    ShopBuy *b;
+    Unk80069018 *it;
+    u8 id;
+    s32 n;
+
+    l = &D_801FC2F8.unk28;
+    b = &D_801FC2F8;
+    id = b->unk3C[l->unk5 + l->unk6];
+    it = &D_80069018[id];
+    n = func_80027D84(id, b->unk2);
+    if (n != 0) {
+        D_8006794C->unk1C->unk560 -= it->unk4 * n;
+        func_801F5D14();
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5EEC);
 
@@ -486,7 +528,30 @@ void func_801F86FC(void) {
     func_801F442C(0x10);
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F8728);
+void func_801F8728(void) {
+    Unk80077DE8 *h;
+    MenuList *l;
+    s32 idx;
+    UnkPair *p;
+    u8 *text;
+
+    h = &D_80077DE8;
+    h->unk8 = NULL;
+    if (D_801FC438.unk0 == 1) {
+        l = &D_801FC438.unk4;
+        idx = (l->unk5 + l->unk6) * 2 + l->unk7;
+        p = &D_8006794C->unk1C->unk574[idx];
+        if (p->unk1 == 0) {
+            return;
+        }
+        text = func_801F87EC + D_80069018[p->unk0].unk2;
+    } else if (D_801FC438.unk0 == 2) {
+        text = func_80035774(3);
+    } else {
+        return;
+    }
+    h->unk8 = text;
+}
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F87EC);
 

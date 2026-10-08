@@ -17,8 +17,7 @@ typedef struct {
     s32 unk8;  /* shop id (D_80077DBC) */
     s32 unkC;  /* saved func_8002F8E4 mode */
     u8 *unk10; /* title text */
-    u8 unk14;  /* party member count */
-    u8 pad15[3];
+    s32 unk14; /* party member count */
     s8 unk18[8]; /* party member indices */
     s32 unk20;   /* OT layer */
 } ShopHub;
