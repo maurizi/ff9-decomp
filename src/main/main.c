@@ -3509,7 +3509,20 @@ void func_80035430(void) {
     func_80035B24(&D_80077DE8.unk20, &D_80010E48);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035490);
+void func_80035490(void) {
+    Unk80077DE8 *p;
+    if (D_80077DE8.unk1B == 0 && func_8002F810() == 0 && (D_80077528 & 0x8000000)) {
+        func_80035680();
+    }
+    p = &D_80077DE8;
+    if (p->unk18 != 0 && func_8002F810() == 0 && p->unkC != NULL) {
+        p->unkC();
+        if (p->unk8 != NULL && *p->unk8 != 0xFF) {
+            func_80035108();
+        }
+    }
+    func_80035B90(&D_80077DE8.unk20);
+}
 
 void func_80035564(void) {
 }
