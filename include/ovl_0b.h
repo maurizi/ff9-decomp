@@ -1136,6 +1136,8 @@ typedef struct {
     u8 pad10;
     u8 unk11;
     s8 unk12;
+    u8 pad13[0x20 - 0x13];
+    BtlUnit *unk20;
 } Unk80104FF0;
 extern Unk80104FF0 D_80104FF0;
 extern u8 D_80104FFF;
@@ -1704,6 +1706,9 @@ extern void (*D_800F8E00)(Unk800FD56C *);
 extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
 u8 func_800B3EF8(BtlUnit *, u8);
+void func_800F16DC(u8, u8);
+void func_800F1790(u8, u8);
+extern u8 D_800F8E68[][2];
 void func_800F1A20(s32);
 s32 func_8001DA6C(s16);
 s32 func_80063830(s32);
