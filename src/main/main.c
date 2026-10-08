@@ -4238,7 +4238,15 @@ void func_80033DCC(Character *c) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033E84);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034070);
+s32 func_80034070(s32 ch, s32 id) {
+    s32 ap = func_80034430_ap_inline(ch, id);
+    s32 need = func_800347D8_inline(ch, id);
+
+    if (ap < 0 || need < 0) {
+        return 0;
+    }
+    return ap >= need;
+}
 
 s32 func_80034220(s32 ch, s32 id) {
     s32 i = func_80034430_inline(ch, id);

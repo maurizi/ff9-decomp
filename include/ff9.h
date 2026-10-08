@@ -2303,4 +2303,22 @@ static inline u8 *func_8004D940_msg(s32 i) {
     }
     return e;
 }
+/* AP learned by a character for ability id, -1 if not learnable (inlined helper). */
+static inline s32 func_80034430_ap_inline(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    if (i < 0) {
+        return -1;
+    }
+    return D_8006794C->unk1C->unk3C[ch].unk58[i];
+}
+
+/* AP needed to master ability id (inlined form of func_800347D8). */
+static inline s32 func_800347D8_inline(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    if (i < 0) {
+        return 0;
+    }
+    return D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+}
 #endif
