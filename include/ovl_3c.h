@@ -30,7 +30,11 @@ typedef struct {
     u8 unk2; /* quantity */
     u8 pad3;
     u8 unk4; /* sells equipment */
-    u8 pad5[0x28 - 5];
+    u8 pad5[3];
+    RECT unk8;
+    RECT unk10;
+    RECT unk18;
+    RECT unk20;
     MenuList unk28;
     Window *unk38;
     u8 *unk3C; /* item list */
@@ -50,7 +54,13 @@ typedef struct {
     u8 unk0; /* state, index into D_801FC09C */
     u8 unk1;
     u8 unk2; /* quantity */
-    u8 pad3[0x28 - 3];
+    u8 pad3;
+    u8 unk4;
+    u8 pad5[3];
+    RECT unk8;
+    RECT unk10;
+    RECT unk18;
+    RECT unk20;
     MenuList unk28;
     Window *unk38;
     SynthRecipe unk3C[32];
@@ -63,7 +73,9 @@ typedef struct {
     u8 unk0; /* state, index into D_801FC27C */
     u8 pad1[3];
     MenuList unk4;
-    u8 pad14[0x2C - 0x14];
+    RECT unk14;
+    RECT unk1C;
+    RECT unk24;
     Window *unk2C[2];
 } ShopSell;
 extern ShopSell D_801FC438;
@@ -88,6 +100,22 @@ extern u8 D_801FBC44[][0x20]; /* item list per shop, 0xFF = none */
 extern u8 D_801F36FC[];
 extern u8 D_801F3C9C[];
 extern u8 D_801EDF3C[];
+
+extern u8 D_801F3E98[];
+extern u8 D_801F3F08[];
+extern u8 D_801F3F88[];
+void func_801F7250(void);
+void func_801F5EEC(void);
+void func_801F76C8(void);
+void func_801F8728(void);
+u8 func_801F42A8(s32, u8 *);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk8006D328; /* equipment stat bonuses, from item 0x58 */
+extern Unk8006D328 D_8006D328[];
 
 void func_801F4000(void);
 void func_801F40AC(void);
