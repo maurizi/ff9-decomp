@@ -9,7 +9,11 @@
 /* ---- battle units ---- */
 
 typedef struct BtlUnitA0 {
-    u8 pad0[0x3A];
+    u8 pad0[0x20];
+    s16 unk20;
+    s16 unk22;
+    s16 unk24;
+    u8 pad26[0x3A - 0x26];
     u8 unk3A;
 } BtlUnitA0;
 
@@ -117,7 +121,8 @@ typedef struct BtlUnit {
     u8 unkB3;
     u8 padB4[0xC4 - 0xB4];
     u32 *unkC4;
-    u8 padC8[0xCC - 0xC8];
+    u8 padC8[0xCA - 0xC8];
+    s16 unkCA;
     s16 unkCC;
     u8 unkCE;
     u8 padCF;
@@ -136,19 +141,28 @@ typedef struct BtlCalc {
     BtlUnit *unk0; /* caster */
     BtlUnit *unk4; /* target */
     BtlCalc8 *unk8;
-    u8 padC[0xF - 0xC];
-    u8 unkF;
+    u8 padC[0xE - 0xC];
+    s16 unkE;
     u8 pad10[0x12 - 0x10];
     s16 unk12;
     s16 unk14;
     s16 unk16;
     u16 unk18; /* result flags */
+    u8 unk1A;
+    u8 unk1B;
+    u8 pad1C[0x1E - 0x1C];
+    s16 unk1E;
 } BtlCalc;
 
 /* battle script interpreter context */
+typedef struct {
+    u8 pad0[0xC];
+    u16 unkC;
+} BtlScript4;
+
 typedef struct BtlScript {
     u32 unk0; /* flags */
-    s32 unk4;
+    BtlScript4 *unk4;
     u8 *unk8; /* script pointer */
     u8 padC[0x12 - 0xC];
     s16 unk12;
@@ -348,10 +362,16 @@ typedef struct {
 } Battle11C020;
 
 /* battle command (queued action) */
+typedef struct {
+    u8 pad0[0xA];
+    u8 unkA; /* mp cost */
+    u8 unkB;
+} BtlCmd8;
+
 typedef struct BtlCmd {
     struct BtlCmd *unk0; /* next */
-    u8 pad4[8 - 4];
-    s32 unk8;
+    BtlUnit *unk4;
+    BtlCmd8 *unk8;
     s16 unkC;
     u8 unkE;
     u8 unkF;
@@ -496,11 +516,6 @@ typedef struct {
 } Unk800FDF30;
 extern Unk800FDF30 D_800FDF30;
 
-typedef struct {
-    u8 pad0[0xE];
-    u8 unkE;
-    u8 unkF;
-} Unk800B4434;
 
 typedef struct {
     u8 pad0[0x19];
@@ -703,7 +718,8 @@ extern char D_800A825C[];
 typedef struct Unk800D8EA4 {
     u8 unk0;
     u8 unk1;
-    u8 pad2[2];
+    u8 unk2;
+    u8 pad3;
     s32 unk4;
 } Unk800D8EA4;
 
@@ -737,7 +753,10 @@ extern Unk80104E30 D_80104E30;
 extern u8 D_800FDF3A;
 extern s8 D_800FEC54;
 
+extern char D_80101470[];
+
 /* main exe: candidates for ff9.h */
+s32 func_80027F34(s32); /* main.c defines it returning u8 */
 typedef struct {
     u8 pad0[8];
     s32 unk8;
@@ -750,6 +769,28 @@ void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800B2804(BtlUnit *);
+void func_800B2DD4(Battle *);
+void func_800B4320(BtlCmd **, u8);
+void func_800B4434(BtlCmd *);
+void func_800B44C0(s32, s32, s32, s32);
+s32 func_800B9550(BtlUnit *, s16);
+void func_800B97A0(BtlUnit *);
+s32 func_800BF558(BtlUnit *, u32);
+s32 func_800C1E88(BtlUnit *, s32);
+void func_800C1524(void);
+void func_800C2E04(void);
+void func_800CBF90(void);
+void func_800CD5C8(s32, ...);
+u8 *func_800CD75C(u8);
+u32 func_800D89E8(s32);
+s32 func_800D9F5C(u8 *, s32, s32);
+void func_800DC634(char *);
+void func_800E3D80(void);
+u8 func_800EA038(void);
+void func_800EA164(s32);
+void func_800E9F68(s32);
+void func_800F4DFC(void);
 s32 func_800AB26C(void **, s32);
 void func_800C02D4(BtlUnit *);
 void func_800C0430(BtlUnit *, s32);
@@ -757,12 +798,12 @@ void func_800C2344(BtlUnit9C *);
 void func_800C8D18(BtlUnit9C *, s32, s32, s32, s32);
 s32 func_800CA5AC(void);
 struct Unk800CEE74 *func_800CEE74(void);
-s32 func_800D8D94(u8 *, s32, s32);
-s32 func_800D8E10(u8 *, s32, s32);
+s32 func_800D8D94(struct Unk800D8EA4 *, s32, s32 *);
+s32 func_800D8E10(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8EA4(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D8F1C(u8 *, s32, s32);
-s32 func_800D8FAC(u8 *, s32, s32);
-s32 func_800D908C(u8 *, s32, s32);
+s32 func_800D8F1C(struct Unk800D8EA4 *, s32, s32 *);
+s32 func_800D8FAC(struct Unk800D8EA4 *, s32, s32 *);
+s32 func_800D908C(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D9260(u8 *, s32, s32);
 s32 func_800D960C(struct Unk800D7E14 *, s32, s32);
 void func_800AD90C(s32, s32, s32, s32, s32);
@@ -783,7 +824,7 @@ void func_800BD414(BtlUnit *, u16);
 void func_800BD464(BtlUnit *, u16);
 s32 func_800C09A4(BtlUnit *, u32);
 void func_800C09EC(BtlUnit *);
-s32 func_800C0B6C(BtlUnit *, s32);
+s32 func_800C0B6C(BtlUnit *, u32);
 s32 func_800D87D0(s32);
 void func_800DF7A0(BtlUnit9C *, s32, s32, s32, s32);
 s32 func_800E7298(BtlUnit *);
@@ -865,7 +906,7 @@ void func_800EA124(s32);
 void func_800A9BE4(s32);
 void func_800ABBC4(s32, s32);
 u32 func_800D8C70(s32, u32);
-void func_800D8658(s32, s32);
+void func_800D8658(s32, u8);
 void func_800D8914(s32);
 void func_800D8A20(s32, s32);
 BtlUnit *func_800E716C(s32);
