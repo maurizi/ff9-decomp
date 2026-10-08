@@ -17,6 +17,11 @@ typedef struct {
     WinDef unk58;
     u8 pad68[0x768 - 0x68];
     u8 unk768;
+    u8 pad769[0x76B - 0x769];
+    u8 unk76B; /* animation tick (0-6) */
+    u8 unk76C; /* animation frame (0-6) */
+    u8 pad76D[0x770 - 0x76D];
+    UnkBlink unk770;
 } EquipMenu;
 extern EquipMenu D_801FBF84;
 
@@ -55,7 +60,16 @@ extern u8 D_801EE164[];
 extern u8 D_801FBD54[];
 extern u8 D_801FBD74[];
 
+typedef struct {
+    u8 pad0[0xA];
+    u8 unkA;
+    u8 unkB; /* bit 2: value x4 when D_8007AF02 */
+} Unk801F1018;
+
 void func_801EE978(void);
+void func_801F0024(void);
+void func_801F2AB4(void);
+void func_801F30D8(void);
 void func_801EEEA8(void);
 void func_801EEFDC(void);
 void func_801EF270(void);
