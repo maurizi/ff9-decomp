@@ -59,15 +59,22 @@ typedef struct {
     u8 unkB;      /* level (exp table has 99 entries) */
     u32 unkC;     /* exp, capped at 9999999 */
     u16 unk10;    /* hp */
-    u16 unk12;
-    u8 pad14[0x17 - 0x14];
+    s16 unk12;    /* mp */
+    u8 pad14[0x16 - 0x14];
+    u8 unk16;
     u8 unk17;
-    u16 unk18;
-    u16 unk1A;
+    u16 unk18;    /* max hp */
+    s16 unk1A;    /* max mp */
     u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
-    u8 pad21[0x34 - 0x21];
+    u8 pad21[0x2C - 0x21];
+    u16 unk2C;
+    u16 unk2E;
+    u8 unk30;
+    u8 unk31;
+    u8 unk32;
+    u8 unk33;
     u32 unk34; /* low nibble: character id (index into GameData.unk3C);
                 * bits 4-8 index D_8006BB8C; bit 11 tested;
                 * bits 12-16: ability table row */
@@ -1548,7 +1555,7 @@ extern u8 *D_8007BC18;
 extern u8 *D_8007BC48;
 extern Unk8007BC20 D_8007BC20;
 extern Unk8007BC20 D_8007BC50;
-void func_80032C4C(s32, s32, u32 *, s32);
+void func_80032C4C(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
 extern u32 D_80077CA4[];
 s32 func_80056700(s32, s32);
@@ -2352,4 +2359,12 @@ s32 func_80060A08(void);
 void func_80061624(void);
 u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
 void func_8002E660(Window *);
+s32 func_80034A64(s32, s32, u8);
+s32 func_80034B50(s32, s32, u8);
+s32 func_80034C64(s32, s32, u8);
+s32 func_80034D78(s32, s32, u8);
+s32 func_80034F7C(s32, s32);
+s32 func_80034FD4(s32, s32);
+s32 func_80034E80(s32, s32, u8);
+void func_80033DCC(Character *);
 #endif

@@ -4184,7 +4184,46 @@ void func_80032A44(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032B08);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032C4C);
+void func_80032C4C(s32 ch, s32 lv, u32 *heal, u8 f) {
+    Character *c = &D_8006794C->unk1C->unk3C[ch];
+    s32 hp;
+    s32 mp;
+    s32 d;
+
+    if (!f && c->unkB != lv) {
+        c->unkC = D_8006DF5C[lv - 1];
+    }
+    hp = c->unk10;
+    mp = c->unk12;
+    d = c->unk1F - c->unk17;
+    c->unkB = lv;
+    func_8001D898(&c->unk10, 0, 8);
+    func_8001D898(&c->unk18, 0, 8);
+    c->unk16 = 10;
+    c->unk30 = func_80034A64(ch, c->unkB, f);
+    c->unk31 = func_80034B50(ch, c->unkB, f);
+    c->unk32 = func_80034C64(ch, c->unkB, f);
+    c->unk33 = func_80034D78(ch, c->unkB, f);
+    c->unk18 = c->unk2C = func_80034F7C(c->unkB, c->unk31);
+    c->unk1A = c->unk2E = func_80034FD4(c->unkB, c->unk32);
+    c->unk1F = func_80034E80(ch, c->unkB, f);
+    c->unk10 = (hp < c->unk18) ? hp : c->unk18;
+    c->unk12 = (mp < c->unk1A) ? mp : c->unk1A;
+    c->unk17 = c->unk1F - d;
+    if (heal) {
+        c->unk10 = c->unk18;
+        c->unk12 = c->unk1A;
+        c->unk17 = c->unk1F;
+    }
+    func_8003384C(c);
+    if (f) {
+        c->unk10 = (hp < c->unk18) ? hp : c->unk18;
+        c->unk12 = (mp < c->unk1A) ? mp : c->unk1A;
+    }
+    if (c->unk1F < d) {
+        func_80033DCC(c);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032E84);
 
