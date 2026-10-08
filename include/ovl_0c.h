@@ -104,8 +104,8 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1; /* index into D_800CDFC0 */
-    u8 unk2;
-    u8 pad3;
+    u8 unk2; /* party slots being swapped */
+    u8 unk3;
     u8 unk4;
     u8 pad5[3];
     WinDef unk8[6];
@@ -203,6 +203,13 @@ typedef struct {
 } Unk800AA39C;
 
 /* ---- overlay functions ---- */
+void func_800CB9D8(s32, s32);
+void func_800B4270(void *);
+s32 func_800B4FD4(void *, s32, s32);
+void func_800B53FC(void *);
+s32 func_800B5880(void *, s32, s32);
+void func_800B6338(void *);
+s32 func_800B6598(void *, s32, s32);
 s32 func_800C291C(void);
 void func_800C2A80(s32, s32, s32);
 s16 func_800B36B4(u8, u32, s32);
@@ -294,6 +301,10 @@ void func_800CC8C8(void);
 void func_800CC940(void);
 
 /* ---- overlay data ---- */
+extern RECT *D_800CE04C;
+extern u8 D_800CE050[];
+extern u8 D_800CCE4B;
+extern Unk800D2FF8 *D_800D27F0;
 extern u8 *D_800CE058[5];
 extern char D_800A79D0[];
 extern char D_800A7A0C[];

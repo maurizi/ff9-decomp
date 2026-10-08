@@ -1549,6 +1549,9 @@ s32 func_8004BC38(u8);
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
 void func_800362C8(void);
+s32 func_80024030(void);
+s32 func_8002AA04(s32, u8 *, s32);
+extern s32 D_800704C0;
 extern u8 D_8006A218[]; /* item names */
 Unk16D8 *func_8004AE9C(void);
 extern s32 D_8007046C;

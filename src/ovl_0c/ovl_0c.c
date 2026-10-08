@@ -1706,7 +1706,25 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CB664);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CB73C);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CB8C8);
+void func_800CB8C8(s32 arg0, s32 arg1) {
+    Character *c;
+    Character *t;
+
+    if (arg0 == arg1) {
+        c = D_8006794C->unk1C->unk54C[arg1];
+        if (c != NULL) {
+            c->unk34 = (c->unk34 & ~0x200) | ((((c->unk34 >> 9) & 1) ^ 1) << 9);
+        }
+    } else {
+        t = D_8006794C->unk1C->unk54C[D_800D5438.unk2];
+        D_8006794C->unk1C->unk54C[D_800D5438.unk2] = D_8006794C->unk1C->unk54C[D_800D5438.unk3];
+        D_8006794C->unk1C->unk54C[D_800D5438.unk3] = t;
+        func_800CB9D8(arg0, arg1);
+        if (D_8006794C->unk1C->unk54C[D_80077E50.unk3] == NULL) {
+            D_80077E50.unk3 = func_8003378C();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CB9D8);
 
@@ -1714,7 +1732,20 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CBB4C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CBDF8);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CBF18);
+void func_800CBF18(void) {
+    u8 buf[16];
+    s32 v;
+
+    v = func_80024030();
+    func_800275DC(D_800CE04C->x + 6, D_800CE04C->y + 8, 0x13, 0xB1, 0);
+    func_800275DC(D_800CE04C->x + 6, D_800CE04C->y + 0x15, 0x13, 0xB2, 0);
+    func_8002B56C(D_800CE04C->x + 0x13, D_800CE04C->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
+    func_8002BAE4(D_8006794C->unk1C->unk560, buf, 7, 1);
+    func_80063108(buf, D_800CE050);
+    func_8002B56C(D_800CE04C->x + 0x13, D_800CE04C->y + 0x16, 0x13, buf, 0);
+    func_8002B524(D_800CE04C->x + 6, D_800CE04C->y - 3, 0x13, D_800704C0, 0);
+    func_8002DEE4(D_800CE04C, 0x14, 2);
+}
 
 void func_800CC050(void) {
     GameData *gd;
