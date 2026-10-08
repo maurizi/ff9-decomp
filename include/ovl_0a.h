@@ -869,6 +869,8 @@ extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
 extern u16 D_800C9D44;
 extern s16 D_800C9DDC;
+extern s16 D_800CA9D8[][3]; /* collision push vectors */
+extern s16 D_800CAA38[];
 /* mask-bit primitives, one per draw buffer (func_800AE788) */
 typedef struct {
     u32 tag;
