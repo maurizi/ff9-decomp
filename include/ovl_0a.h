@@ -9,14 +9,15 @@
 /* field context, GameData.unk8E4.field */
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by func_800A9350) */
 typedef struct {
-    u8 pad0[0xA];
+    u32 unk0; /* flags */
+    u8 pad4[0xA - 4];
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
     u8 pad10[0x14 - 0x10];
     struct Unk800C9DB4 *unk14;
     void *unk18;
     void *unk1C; /* file 0x1Fxxxx */
-    u8 pad20[0x24 - 0x20];
+    s32 unk20;
     void *unk24;
     u8 *unk28; /* = unk6C */
     u8 pad2C[0x4C - 0x2C];
@@ -63,7 +64,7 @@ typedef struct Unk800C9DF4 {
     s16 unk0;
     s16 unk2;
     u16 unk4;
-    u16 unk6;
+    s16 unk6;
     u8 pad8[0x1C - 8];
     s32 unk1C;
     s32 unk20;
@@ -123,9 +124,9 @@ typedef struct {
     s32 unkC;
     s32 unk10;
     s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
+    u8 *unk18;
+    u8 *unk1C; /* 3 bytes per entry */
+    u8 *unk20;
     u8 unk24;
     u8 pad25[3];
     void *unk28;
@@ -150,10 +151,20 @@ typedef struct {
 } Unk800C9DF8;
 
 typedef struct {
-    u8 pad0[4];
+    u16 unk0; /* flags */
+    u8 pad2[2];
     s16 unk4;
-    u8 pad6[0x10 - 6];
+    u8 pad6[2];
+    s32 unk8;
+    u8 padC[4];
 } Unk800C9E10; /* 0x10 */
+
+typedef struct {
+    u8 pad0[8];
+    u16 unk8;
+    s16 unkA;
+    u8 padC[0x28 - 0xC];
+} Unk800C9E00; /* 0x28 */
 
 typedef struct {
     u8 unk0;
@@ -161,7 +172,9 @@ typedef struct {
     s16 unk2;
     struct Unk800C9DF4 *unk4;
     Unk800C9DF8 *unk8;
-    u8 padC[0x20 - 0xC];
+    u8 padC[0x10 - 0xC];
+    Unk800C9E00 *unk10;
+    u8 pad14[0x20 - 0x14];
     Unk800C9E10 *unk20;
 } Unk800C9DF0;
 
@@ -172,16 +185,24 @@ typedef struct {
     s16 unk6;
     s16 unk8;
     s16 unkA;
-    u8 padC[0x10 - 0xC];
+    s16 unkC;
+    s16 unkE;
     s16 unk10;
     s16 unk12;
     s32 unk14;
 } Unk800CAE98; /* 0x18 */
 
+/* file 0x1C0000 header */
+typedef struct {
+    u8 pad0[0x30];
+    u16 unk30;
+    u16 unk32;
+} Unk800AA01C;
+
 /* ---- overlay functions ---- */
 void func_800AD944(s32, s32, s32);
 void func_800A8588(void);
-void func_800C6EEC(s32);
+void func_800C6EEC();
 void func_80054A28(void *);
 void func_800B0124(s32, s32, s32, s32, s32);
 void func_800B36E0(void);
@@ -190,6 +211,8 @@ void func_800B3ACC(void);
 s32 func_8001E350(s32);
 void func_800B31B8(s32, s32, s32, s32);
 void func_800B5938(void);
+void func_800AC67C(s32);
+void func_800C0038(s32, s32);
 void func_800B57C8(void);
 void func_800B1CE4(void);
 s32 func_800AA0C8(FieldScene *);
