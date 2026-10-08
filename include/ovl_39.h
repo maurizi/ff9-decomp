@@ -322,7 +322,7 @@ void func_801F53B0(void);
 void func_801F5960(void);
 void func_801F8C34(MenuList *, s32);
 void func_801F8CE8(MenuList *, s32);
-void func_801F8B10(MenuList *, MenuView *);
+MenuView *func_801F8B10(MenuList *, MenuView *);
 void func_801F49C4(RECT *, s32, s32);
 extern void (*D_801FAF8C[])(void);
 extern void (*D_801FAFC4[])(void);

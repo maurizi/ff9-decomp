@@ -830,7 +830,27 @@ void func_801F8C34(MenuList *l, s32 btn) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F8CE8);
+void func_801F8CE8(MenuList *l, s32 pad) {
+    s32 h;
+    s32 page;
+    s32 top;
+    s32 max;
+
+    if ((pad & 0x200000) && l->unk5 < l->unk2 - l->unk3) {
+        h = l->unkD;
+        l->unk9 = h >> 2;
+        page = l->unk3;
+        max = l->unk2 - page;
+        l->unk8 = 5;
+        top = l->unk5 + page;
+        l->unkE = (h - l->unk9 + 0xE) / 15;
+        if (top < max) {
+            max = top;
+        }
+        l->unkC = max;
+        func_8002F488(0x67);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F8DA4);
 
