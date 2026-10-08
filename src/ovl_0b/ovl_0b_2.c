@@ -1840,7 +1840,15 @@ void func_800DC6E8(s32 arg0) {
     func_800DCFB0(arg0, D_800A7F78)->unk1C = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC710);
+void func_800DC710(void) {
+    BtlObjSlot *p = D_80100F1C;
+    s32 i;
+    for (i = 0; i < 32; i++, p++) {
+        p->unk1C = 0;
+        p->unk1E = i;
+        p->unk0 = NULL;
+    }
+}
 
 void func_800DC748(BtlModel *arg0, s32 arg1) {
     Unk8010141C *p = D_8010141C;
