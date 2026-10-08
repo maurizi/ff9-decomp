@@ -539,7 +539,7 @@ typedef struct {
     s16 unkC0;
     s16 unkC2;
     u16 unkC4;
-    u8 padC6[0xC8 - 0xC6];
+    u16 unkC6;
     s16 unkC8;
     s16 unkCA;
     s16 unkCC;
@@ -667,7 +667,9 @@ typedef struct {
     u16 *unk30;
     s32 unk34;
     s32 unk38;
-    u8 pad3C[0x48 - 0x3C];
+    u32 unk3C;
+    u32 unk40;
+    u32 unk44;
     s32 unk48;
     s32 unk4C;
     s32 unk50;
@@ -1333,10 +1335,15 @@ typedef struct {
     s32 unk0;
     u8 pad4[0x10 - 4];
     s32 unk10;
-    u8 pad14[0x28 - 0x14];
+    u8 pad14[0x1C - 0x14];
+    u32 unk1C;
+    u32 unk20;
+    u32 unk24;
     u16 unk28;
 } Unk80080A70;
 extern Unk80080A70 D_80080A70;
+void func_8005FD10(AkaoChannel *, u32);
+void func_8005FDD8(AkaoChannel *, u32);
 extern u16 D_80080A98; /* = D_80080A70.unk28 */
 extern s32 D_80080A80;
 
@@ -1461,13 +1468,20 @@ extern u8 **D_8007BCA8;
 void func_80051004(u8);
 
 typedef struct {
-    u8 pad0[8];
+    u8 *unk0;
+    u8 pad4[8 - 4];
     s32 unk8;
-    u8 padC[0x10 - 0xC];
+    u32 unkC;
     s32 unk10;
     u8 pad14[0x34 - 0x14];
     u8 unk34[4];
 } Unk80083168;
+u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
+void func_80060FA8(void);
+void func_800599D4(Unk80080A10 *, AkaoChannel *, s32);
+void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
+void func_800618C0(s32, s32);
+void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
 void func_80061BC8(void *, s32);
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
