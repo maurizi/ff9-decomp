@@ -272,7 +272,23 @@ s32 func_800AE47C(s32 arg0, u16 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE4FC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE570);
+s32 func_800AE570(s32 arg0, s32 *arg1) {
+    FileEntry *e;
+    FileEntry *f;
+    if (((arg0 >> 16) & 0xFF) == 7) {
+        e = func_80063088(D_8006794C->unk1C->unk7E4, arg0);
+        if (arg1 != 0) {
+            *arg1 = e->unk8 << 11;
+        }
+        return e->unk4;
+    } else {
+        f = func_8001E218(11, arg0);
+        if (arg1 != 0) {
+            *arg1 = (f->unkC - f->unk4) << 11;
+        }
+        return f->unk4;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE618);
 

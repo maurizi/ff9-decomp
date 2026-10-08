@@ -237,8 +237,14 @@ typedef struct Unk800F78A40 {
 } Unk800F78A40;
 
 typedef struct {
+    u8 pad0[0x30];
+    s32 *unk30[1]; /* offset tables, entries relative to their start */
+} Unk800F78A44;
+
+typedef struct {
     Unk800F78A40 *unk0;
-    u8 pad4[0xC - 4];
+    Unk800F78A44 *unk4;
+    u8 pad8[0xC - 8];
     BtlUnitList *unkC;
     u8 pad10[0x14 - 0x10];
     MATRIX *unk14;
@@ -523,7 +529,7 @@ typedef struct BtlCmd {
 
 typedef struct Battle11C0 {
     u8 pad0[0xC];
-    u8 *unkC;
+    s32 *unkC; /* offset table, entries relative to its start */
     u8 pad10[0x14 - 0x10];
     u8 *unk14;
     u8 pad18[0x20 - 0x18];
@@ -1368,7 +1374,7 @@ void func_800C316C(s32);
 void func_800C36D0(void);
 void func_800CAEC4(void);
 Unk800CC278 *func_800CC278(s32);
-s32 func_800CC444(s16);
+s32 func_800CC444(u32);
 s32 func_800AE47C(s32, u16);
 void func_800C22CC(BtlUnit *, u16, u8);
 s32 func_800C37BC(void);
@@ -1688,8 +1694,16 @@ extern U16Pair D_800F9070[];
 s32 func_800C1F7C(s32);
 s32 func_800D8CB4(u8 *, s32, s32);
 void func_800EF044(void);
+extern u16 D_800F6A74[];
+extern struct Unk80100DC054 *D_80100E14; /* D_80100DC0.unk54 */
+s32 func_800D9FD8(u8 *, s32, s32 *);
+u8 func_800F29A4(void);
+void func_800F2890(s32);
+void func_800EBA10(Window *);
 
 /* main exe: candidates for ff9.h */
-void func_800562E0(u8 *, s32);
+void func_800562E0(s32 *, s32);
+void func_8002DD54(void);
+s32 func_80033A1C(Character *);
 
 #endif
