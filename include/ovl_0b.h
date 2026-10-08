@@ -1620,4 +1620,7 @@ void func_800F4010(s32);
 BtlObjSlot *func_800DC494(void);
 void func_800C7730(BtlUnit9C *, s16 *, s16 *);
 
+void func_800DF588(BtlUnit9C *, s32, s32);
+s32 func_800DF670(BtlUnit9C *, s32);
+
 #endif
