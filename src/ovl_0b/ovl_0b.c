@@ -1344,7 +1344,32 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BCDBC);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BCEF0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD31C);
+s32 func_800BD31C(BtlCmd *arg0) {
+    BtlUnit *u;
+    s32 r;
+    u32 bit = arg0->unk10_5;
+    do {
+        r = 1;
+        if (bit) {
+            return r;
+        }
+    } while (0);
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+        if ((u->unk68 >> 17) & 1) {
+            r = 0;
+            if (u->unkA0->unk3A >= u->unk9C->unkC->unk2) {
+                u->unk8C[2] = u->unk98->unk0[2];
+                if (u->unk68 & 1) {
+                    func_800BCC64(u);
+                } else {
+                    func_800BCDBC(u);
+                }
+                func_800BC78C(u);
+            }
+        }
+    }
+    return r;
+}
 
 void func_800BD414(BtlUnit *arg0, u16 arg1) {
     s32 i;
