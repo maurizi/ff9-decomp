@@ -1792,7 +1792,28 @@ void func_800E3DA8(void) {
     func_80054F80();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E3E08);
+void func_800E3E08(void) {
+    RECT r;
+    DR_MOVE *p;
+    s32 i;
+    r.x = D_800F78A4->unk18->disp.x;
+    r.y = D_800F78A4->unk18->disp.y;
+    r.w = 0x20;
+    r.h = 0xDA;
+    i = 0;
+    p = (DR_MOVE *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(p + 10);
+    do {
+        SetDrawMove(p, &r, D_800F78A4->unk1C->clip.x + i, D_800F78A4->unk1C->clip.y);
+        AddPrim(D_800F78A4->unk20, p++);
+        i += 0x20;
+        r.x += 0x20;
+    } while (i < 0x140);
+    if (D_800F78AC == 0) {
+        D_800F78AC = 1;
+        func_8005562C(2);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E3EEC);
 
@@ -1814,7 +1835,28 @@ void func_800E4098(void) {
     D_800F78A4->unk24 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4134);
+s32 func_800E4134(s32 arg0) {
+    RECT r;
+    s32 ret = 0;
+    s32 i;
+    u32 *p = (u32 *)0x801E7700;
+    if (arg0 == 0) {
+        FileEntry *e = func_8001E218(1, 0x2BF);
+        func_80022C60(D_8006794C->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
+    } else if (func_80022B18() == 0) {
+        func_800D0940();
+        r.w = 0x40;
+        r.h = 0x80;
+        for (i = 0; i < 4; i++) {
+            r.x = (i >> 1) * 64 + 0x300;
+            r.y = (i & 1) * 128 + 0x100;
+            LoadImage(&r, p);
+            p += 0x1000;
+        }
+        ret = 1;
+    }
+    return ret;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4218);
 

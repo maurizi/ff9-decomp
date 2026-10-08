@@ -1609,6 +1609,7 @@ typedef struct {
 extern s32 D_800F78AC;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void func_8005562C(s32);
+void func_800D0940(void);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s32);

@@ -677,7 +677,17 @@ s32 func_800B9550(BtlUnit *arg0, s16 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B95BC);
+void func_800B95BC(BtlCmd *arg0) {
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+    }
+    if ((arg0->unk4->unk7A >> 1) + arg0->unk4->unk33 < ((*D_8007B720 << 8) | *D_8007B720++) % 100) {
+        arg0->unk10_9 = 1;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B96AC);
 
