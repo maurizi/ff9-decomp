@@ -1373,7 +1373,61 @@ u32 func_800BA0F0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BA190);
+void func_800BA190(Unk800C95C8 *arg0, u16 arg1) {
+    u32 i;
+    u32 j;
+    u8 *p;
+    WmModelGroup *g;
+    u8 *s;
+
+    if (arg0->unk0 & 0x10) {
+        return;
+    }
+    for (i = 0; i < arg0->unk8->unk3; i++) {
+        g = &arg0->unk8->unk10[i];
+        s = g->unk1C;
+        p = arg0->unk44[i].unk4;
+        if (D_8006794C->unk1C->unk8 != 0) {
+            p += g->unk0;
+        }
+        for (j = 0; j < g->unk2; j++) {
+            if ((((WmSrcFT4 *)s)->unk15 & 1) || arg1 != 0) {
+                ((POLY_FT4 *)p)->code |= 2;
+            } else {
+                ((POLY_FT4 *)p)->code &= ~2;
+            }
+            p += sizeof(POLY_FT4);
+            s += sizeof(WmSrcFT4);
+        }
+        for (j = 0; j < g->unk4; j++) {
+            if ((((WmSrcFT3 *)s)->unk12 & 1) || arg1 != 0) {
+                ((POLY_FT3 *)p)->code |= 2;
+            } else {
+                ((POLY_FT3 *)p)->code &= ~2;
+            }
+            s += sizeof(WmSrcFT3);
+            p += sizeof(POLY_FT3);
+        }
+        for (j = 0; j < g->unk6; j++) {
+            if ((((WmSrcGT4 *)s)->unk1C & 1) || arg1 != 0) {
+                ((POLY_GT4 *)p)->code |= 2;
+            } else {
+                ((POLY_GT4 *)p)->code &= ~2;
+            }
+            s += sizeof(WmSrcGT4);
+            p += sizeof(POLY_GT4);
+        }
+        for (j = 0; j < g->unk8; j++) {
+            if ((((WmSrcGT3 *)s)->unkF & 1) || arg1 != 0) {
+                ((POLY_GT3 *)p)->code |= 2;
+            } else {
+                ((POLY_GT3 *)p)->code &= ~2;
+            }
+            s += sizeof(WmSrcGT3);
+            p += sizeof(POLY_GT3);
+        }
+    }
+}
 
 void func_800BA3CC(Unk800C95C8 *arg0, u16 arg1) {
     u32 i;
