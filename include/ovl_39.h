@@ -187,7 +187,16 @@ typedef struct {
 
 /* save block buffer at 0x801FCB00 */
 typedef struct {
-    u8 unk0[0x180]; /* header */
+    u8 pad0[4];
+    u8 unk4;   /* GameState.unkB */
+    u8 pad5[0x2C - 5];
+    s32 unk2C; /* func_80024000 */
+    u8 pad30[0x80 - 0x30];
+} SaveHdr;
+
+typedef struct {
+    u8 unk0[0x100]; /* header */
+    SaveHdr unk100;
     SaveData unk180;
     u8 pad13FC[2];
     u16 unk13FE; /* CRC-16 of everything before it */
@@ -209,6 +218,11 @@ extern u8 D_801EDF1C[];
 extern u8 D_801FB040[]; /* save icon per character model */
 extern u16 D_801FDEFE;
 void func_801F96CC(void);
+void func_80024000(s32); /* main exe */
+void func_801F9BEC(Unk801F9BEC *);
+void func_801F9F5C(void *);
+void func_801F9D18(void *);
+void func_801FA078(Unk801FA078 *);
 void func_801F8DA4(u8 *);
 u16 func_801F973C(u8 *, s32);
 void func_801F9B00(Unk801F9BEC *);
