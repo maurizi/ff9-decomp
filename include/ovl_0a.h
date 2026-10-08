@@ -84,7 +84,8 @@ typedef struct {
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by func_800A9350) */
 typedef struct {
     u32 unk0; /* flags */
-    u8 pad4[0xA - 4];
+    s32 unk4; /* end of the load area */
+    u8 pad8[0xA - 8];
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
     struct Unk800AFCBC *unk10;
@@ -94,7 +95,7 @@ typedef struct {
     s32 unk20;
     void *unk24;
     s32 *unk28; /* = unk6C, unk40 entries */
-    u8 pad2C[0x30 - 0x2C];
+    s32 unk2C;
     s16 unk30; /* sound depth bias */
     u8 pad32[0x3C - 0x32];
     s16 unk3C;
@@ -109,7 +110,8 @@ typedef struct {
     u8 unk4A;
     u8 unk4B; /* unk58 entry count */
     void *unk4C; /* file 0x1Exxxx */
-    struct Unk800AB0B0 *unk50;
+    s16 unk50;
+    s16 unk52;
     struct FieldActorInfo *unk54; /* = unk90 */
     struct FieldTrig *unk58; /* = unk270 */
     u8 unk5C;
@@ -526,13 +528,8 @@ typedef struct {
 } Unk800AA01C;
 
 typedef struct {
-    s16 unk0;
-    u8 pad2[2];
-    s16 unk4;
-    u8 pad6[0x14 - 6];
-    s16 unk14;
-    u8 pad16[0x1E - 0x16];
-    s16 unk1E;
+    s16 unk0[2][4];
+    s16 unk10[2][4];
 } Unk800C9EF0;
 
 /* text windows (same layout as ovl_0c's D_800D5438) */
@@ -685,7 +682,7 @@ typedef struct {
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
     u8 pad48[0x50 - 0x48];
-    void *unk50; /* file 0x19xxxx */
+    struct Unk800AB0B0 *unk50; /* file 0x19xxxx */
     u16 unk54; /* scale */
     u16 unk56;
     u16 unk58;

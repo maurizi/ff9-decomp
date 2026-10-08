@@ -209,7 +209,75 @@ s32 func_800A8990(FieldMapObj *arg0, s16 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A89C4);
+/* field start-up: load the map and set up the object slots */
+void func_800A89C4(s32 arg0) {
+    FieldScene *sc;
+    s32 i;
+    s32 j;
+
+    D_80067948 = D_8006794C->unk1C->unk8E4.field->unkC->unk4;
+    func_800A9350();
+    sc = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    func_800A939C();
+    func_8001CFB4();
+    D_8006794C->unk0 &= ~0x30F;
+    D_8006794C->unk1C->unk0 |= 0x20;
+    D_8006794C->unk1C->unk8E4.field->unk0 |= 4;
+    func_8001CCB4(0, 0, 0);
+    D_80073998[0] &= 0xFFFF0006;
+    for (i = 1; i >= 0; i--) {
+        for (j = 3; j >= 0; j--) {
+            D_800C9EF0.unk0[i][j] = 0;
+            D_800C9EF0.unk10[i][j] = 0;
+        }
+    }
+    D_8006794C->unk1C->unk8E4.field->unk8 = 0;
+    func_800AA4BC();
+    D_8006794C->unk1C->unk8E4.field->unk9 = 0;
+    D_8006794C->unk1C->unkC = arg0;
+    sc->unkA = arg0;
+    func_800A9BDC(sc, arg0);
+    func_800A97D4(sc, arg0);
+    func_800A9814(sc, arg0);
+    func_800A9860(sc, arg0);
+    func_800A9954(sc, arg0);
+    func_800AA01C(&D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk50, &D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk52);
+    func_800B3A80();
+    func_800A9998();
+    func_800B0124(0x900, -1, 0, 0, 0);
+    func_80049ED8(sc->unkC);
+    func_8004A06C(sc->unkC);
+    func_800AC474();
+    func_800A9AAC();
+    while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
+    }
+    func_8004BFB0();
+    D_8006794C->unk1C->unk38 = func_8004AAF0(0);
+    D_8006794C->unk1C->unk8DC = (Unk8D4 *)D_80067948;
+    D_8006794C->unk1C->unk8E0 = (Unk8E0 *)(D_8006794C->unk1C->unk8DC + D_8006794C->unk1C->unk38);
+    D_80067948 = (s32)(D_8006794C->unk1C->unk8E0 + D_8006794C->unk1C->unk38);
+    D_8006794C->unk1C->unk9 = 0;
+    for (i = 0; i < 9; i++) {
+        func_8001E3A4(&D_8006794C->unk1C->unk8D8[i]);
+        D_8006794C->unk1C->unk8D8[i].unk8 = &D_8006794C->unk1C->unk8D4[i];
+    }
+    D_8006794C->unk1C->unk39 = 0;
+    for (i = 0; i < D_8006794C->unk1C->unk38; i++) {
+        func_8001E3A4(&D_8006794C->unk1C->unk8E0[i]);
+        D_8006794C->unk1C->unk8E0[i].unk8 = &D_8006794C->unk1C->unk8DC[i];
+    }
+    sc->unk2C = D_80067948;
+    D_80067948 = func_800AD44C(D_80067948, D_8006794C->unk1C->unk38 + 9,
+                               D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk50,
+                               D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk52);
+    func_800B2528(sc, arg0);
+    func_800B1C98();
+    sc->unk20 = D_80067948;
+    sc->unk4 = D_80067948;
+    func_8004A8A4();
+    D_80073998[0] |= 0x40000;
+    D_8006794C->unk1C->unk0 &= ~0x20;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A8E58);
 
@@ -471,7 +539,7 @@ s32 func_800AAF5C(s32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AAFD4);
 
-s32 func_800AB0B0(FieldScene *arg0) {
+s32 func_800AB0B0(Unk800C95C8 *arg0) {
     Unk800AB0B0 *t = arg0->unk50;
     s32 i;
     Unk800AB0B0Entry *e;
@@ -781,10 +849,10 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE930);
 
 void func_800AED04(void) {
     D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk41 = 0;
-    D_800C9EF0.unk1E = 4;
-    D_800C9EF0.unk0 = 0x43;
-    D_800C9EF0.unk4 = 0x3C;
-    D_800C9EF0.unk14 = 0x1919;
+    D_800C9EF0.unk10[1][3] = 4;
+    D_800C9EF0.unk0[0][0] = 0x43;
+    D_800C9EF0.unk0[0][2] = 0x3C;
+    D_800C9EF0.unk10[0][2] = 0x1919;
     D_80073998[0] |= 0x04000000;
 }
 
