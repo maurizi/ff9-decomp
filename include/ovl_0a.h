@@ -535,7 +535,7 @@ void func_800B532C(void);
 s32 func_800C44F4(u32);
 void func_800B57C8(void);
 void func_800B1CE4(void);
-s32 func_800AA0C8(FieldScene *);
+/* func_800AA0C8: some callers pass two arguments; no prototype */
 s32 func_800A8990(FieldMapObj *, s16);
 void func_800B5430(s32);
 s32 *func_800B3BD8(s32);
@@ -649,6 +649,7 @@ void func_800B5794(void);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;
+void func_801F3488(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
