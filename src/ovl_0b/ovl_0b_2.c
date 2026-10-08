@@ -3494,7 +3494,7 @@ void func_800EB238(void) {
     D_80104F88->unk12C0++;
 }
 
-u8 func_800EB2A4(void) {
+s32 func_800EB2A4(void) {
     return D_80104F88->unk12B4;
 }
 
@@ -3929,7 +3929,34 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EC628);
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A83AC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EC730);
+void func_800EC730(Window *arg0) {
+    u8 st = arg0->unk1C;
+    RECT *r = (RECT *)&arg0->unk8;
+    s32 dy = 10;
+    RECT rc;
+    if (arg0->unk1C == 3) {
+        if (func_800EB2A4() == 1 || (func_800EB2A4() == st && func_800F13BC() == 1 && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
+            func_800270EC(arg0->unk8 - 0xE, r->y + (D_80104FB0.unk0 * 15 + dy), arg0->unk18 - 1);
+        }
+    }
+    if (arg0->unk1C != 3) {
+        func_8002D9B4(NULL, arg0->unk18, 4);
+    }
+    if (D_80104FC8 != NULL && !(func_800C09A4(D_80104FC8, 0x4000) & 0xFF)) {
+        func_8002B524(arg0->unk0 + 6, r->y - 3, arg0->unk18, D_800703FC.unk30, arg0->unk1E ? 0 : 2);
+    } else if (arg0->unk1E != 0) {
+        func_800ED3F8(arg0->unk0 + 6, r->y - 3, arg0->unk18, "TRANCE");
+    } else {
+        func_8002B524(arg0->unk0 + 6, r->y - 3, arg0->unk18, (s32)"TRANCE", 2);
+    }
+    if (arg0->unk1C != 3) {
+        rc.x = r->x;
+        rc.y = r->y - 3;
+        rc.w = r->w;
+        rc.h = 8;
+        func_8002D9B4(&rc, arg0->unk18, 4);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EC928);
 
@@ -4793,7 +4820,7 @@ s32 func_800F1388(void) {
     return ret;
 }
 
-u8 func_800F13BC(void) {
+s32 func_800F13BC(void) {
     return D_80104FF0.unk0;
 }
 
