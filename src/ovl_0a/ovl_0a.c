@@ -438,7 +438,18 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800ADB74);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE4F8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE5D4);
+void func_800AE5D4(void) {
+    FieldMap *f;
+
+    D_8006794C->unk1C->unk0 &= ~0x5D;
+    f = D_8006794C->unk1C->unk8E4.field;
+    D_800C9D44 &= 0xFE00;
+    f->unk0 &= ~0x1E01;
+    D_8006794C->unk9 = 2;
+    D_8006794C->unkC[0].disp.x = 0x140;
+    D_8006794C->unkC[1].disp.x = 0;
+    func_800B0124(0x6201, -1, D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk5C, 0, 0);
+}
 
 s32 func_800AE68C(void) {
     if ((u32)(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 - 6) < 2 && (D_800C9D44 & 2)
@@ -815,7 +826,20 @@ void func_800B50A4(void) {
     func_800B51D0();
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B5114);
+void func_800B5114(void) {
+    s32 i;
+
+    DrawSync(0);
+    for (i = 0; i < 2; i++) {
+        D_800CA058.unk8[i] = D_80073998[i];
+        D_80073998[i] = 0x04000300;
+    }
+    D_800CA058.unk0 = 1;
+    D_800CA058.unk3 = 0;
+    D_8006794C->unk1C->unk8E4.field->unk0 = 0;
+    func_8002DE60();
+    D_800C9D5C[D_800CA058.unk0].unk0();
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B51D0);
 
@@ -881,7 +905,27 @@ void func_800B5794(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B57C8);
+void func_800B57C8(void) {
+    RECT r;
+    s32 id;
+    Unk80077DE8 *m = &D_80077DE8;
+
+    m->unk8 = NULL;
+    if (!func_8002F810()) {
+        if (D_800CA058.unk3 == 0) {
+            func_80035580(NULL);
+            id = 3;
+        } else {
+            r.x = 0;
+            r.y = m->unk2;
+            r.w = D_8006794C->unkC->disp.w;
+            r.h = D_8006794C->unkC->disp.h - m->unk2;
+            func_80035580(&r);
+            id = 4;
+        }
+        m->unk8 = func_80035774(id);
+    }
+}
 
 void func_800B5870(void) {
     func_80032120(4, 2);
@@ -1191,7 +1235,26 @@ s32 func_800C1034(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C104C);
+s32 func_800C104C(void) {
+    Unk800C9DB4Cam *c;
+
+    if (!(D_800CA068.unk0 & 0x20)) {
+        return 0;
+    }
+    if (D_800C9DB4 != NULL) {
+        c = func_800C9DB4_cam(D_800CA068.unk75);
+        D_800CA068.unk24 = c->unk28;
+        D_800CA068.unk26 = c->unk2A;
+        D_800CA068.unk28 = c->unk2C;
+        D_800CA068.unk2A = c->unk2E;
+        c->unk28 = -0x8000;
+        c->unk2A = 0x7FFF;
+        c->unk2C = -0x8000;
+        c->unk2E = 0x7FFF;
+        D_800CA068.unk0 &= ~0x20;
+    }
+    return 1;
+}
 
 s32 func_800C1100(void) {
     Unk800C9DB4Cam *c;
@@ -1331,7 +1394,26 @@ s32 func_800C1668(s32 arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C16B0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C16F4);
+s32 func_800C16F4(s32 arg0, s32 arg1) {
+    s32 i;
+    Unk800C9DB4Path *p;
+    Unk800C9DB4Step *st;
+    Unk800C9DB4Obj *objs;
+
+    i = 0;
+    p = func_800C9DB4_path(arg0);
+    st = func_800C9DB4_steps(p);
+    objs = func_800C9DB4_obj(0);
+    for (; i < p->unk1; st++, i++) {
+        if (i == arg1) {
+            objs[st->unk0].unk0 |= 2;
+        } else {
+            objs[st->unk0].unk0 &= ~2;
+        }
+    }
+    p->unk0 = 1;
+    return 1;
+}
 
 s32 func_800C17AC(s32 arg0, s32 arg1) {
     Unk800C9DB4Path *p = func_800C9DB4_path(arg0);
@@ -1472,7 +1554,18 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3B80);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3D28);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3E18);
+s32 func_800C3E18(s32 arg0, s32 arg1) {
+    if (arg1 != 0) {
+        D_800C9DF0.unk4[arg0].unk0 |= 1;
+    } else {
+        D_800C9DF0.unk4[arg0].unk0 &= ~1;
+        D_800C9DF0.unk4[arg0].unk4 = -1;
+        D_800C9DF0.unk4[arg0].unk6 = -1;
+        D_800C9DF0.unk4[arg0].unk8 = -1;
+        D_800C9DF0.unk4[arg0].unkA = -1;
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3EC0);
 

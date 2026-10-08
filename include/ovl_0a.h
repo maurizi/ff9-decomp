@@ -41,7 +41,8 @@ typedef struct {
     struct Unk800AB0B0 *unk50;
     u8 *unk54; /* = unk90 */
     u8 *unk58; /* = unk270 */
-    u8 pad5C[0x6C - 0x5C];
+    u8 unk5C;
+    u8 pad5D[0x6C - 0x5D];
     u8 unk6C[0x90 - 0x6C];
     u8 unk90[0x270 - 0x90];
     u8 unk270[0x330 - 0x270];
@@ -79,10 +80,10 @@ typedef struct FieldMap {
 typedef struct Unk800C9DF4 {
     s16 unk0;
     s16 unk2;
-    u16 unk4;
+    s16 unk4;
     s16 unk6;
-    u16 unk8;
-    u16 unkA;
+    s16 unk8;
+    s16 unkA;
     u8 padC[0x1C - 0xC];
     s32 unk1C;
     s32 unk20;
@@ -102,6 +103,7 @@ typedef struct {
     u8 unk3;
     s16 unk4;
     s16 unk6;
+    s32 unk8[2]; /* saved D_80073998 */
 } Unk800CA058;
 
 typedef struct {
@@ -195,10 +197,10 @@ typedef struct {
     u16 unk20;
     u16 unk22;
     u8 pad24[0x28 - 0x24];
-    u16 unk28;
-    u16 unk2A;
-    u16 unk2C;
-    u16 unk2E;
+    s16 unk28;
+    s16 unk2A;
+    s16 unk2C;
+    s16 unk2E;
     u8 pad30[0x34 - 0x30];
 } Unk800C9DB4Cam; /* 0x34 */
 
