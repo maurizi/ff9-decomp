@@ -135,8 +135,16 @@ typedef struct {
     s16 unkD0[4];
 } Unk800CA068;
 
+/* walkmesh-like data block at D_800C9DB4: the header holds offsets (from the
+ * block start) of its tables */
 typedef struct Unk800C9DB4 {
-    u8 pad0[0x1C];
+    u8 pad0[4];
+    u16 unk4; /* entries in the unkC table */
+    u8 pad6[0xC - 6];
+    s32 unkC;  /* offset: Unk800C9DB4Path[] */
+    s32 unk10; /* offset: Unk800C9DB4Obj[] */
+    u8 pad14[0x18 - 0x14];
+    s32 unk18; /* offset: Unk800C9DB4Cam[] */
     u16 unk1C;
     u16 unk1E;
     u16 unk20;
@@ -144,6 +152,43 @@ typedef struct Unk800C9DB4 {
     u16 unk24;
     u16 unk26;
 } Unk800C9DB4;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+} Unk800C9DB4Step;
+
+typedef struct {
+    unsigned unk0 : 8; /* flags */
+    unsigned unk1 : 24; /* entries at unkC */
+    s32 unk4;
+    s16 unk8;
+    s16 unkA;
+    s32 unkC; /* offset: Unk800C9DB4Step[] */
+} Unk800C9DB4Path; /* 0x10 */
+
+typedef struct {
+    u8 unk0; /* flags */
+    u8 pad1[7];
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    u8 pad10[0x1C - 0x10];
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+    u32 unk24;
+    u8 pad28[0x38 - 0x28];
+} Unk800C9DB4Obj; /* 0x38 */
+
+typedef struct {
+    u8 pad0[0x20];
+    u16 unk20;
+    u16 unk22;
+    u8 pad24[0x34 - 0x24];
+} Unk800C9DB4Cam; /* 0x34 */
 
 typedef struct {
     s32 unk0;
@@ -337,6 +382,23 @@ extern u16 D_800C9D44;
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
     return &D_800CAE98[i];
+}
+
+/* tables inside the D_800C9DB4 block (stored as offsets from its start) */
+static inline Unk800C9DB4Path *func_800C9DB4_path(s32 i) {
+    return &((Unk800C9DB4Path *)((u8 *)D_800C9DB4 + D_800C9DB4->unkC))[i];
+}
+
+static inline Unk800C9DB4Obj *func_800C9DB4_obj(s32 i) {
+    return &((Unk800C9DB4Obj *)((u8 *)D_800C9DB4 + D_800C9DB4->unk10))[i];
+}
+
+static inline Unk800C9DB4Cam *func_800C9DB4_cam(s32 i) {
+    return &((Unk800C9DB4Cam *)((u8 *)D_800C9DB4 + D_800C9DB4->unk18))[i];
+}
+
+static inline Unk800C9DB4Step *func_800C9DB4_steps(Unk800C9DB4Path *p) {
+    return (Unk800C9DB4Step *)((u8 *)D_800C9DB4 + p->unkC);
 }
 
 #endif
