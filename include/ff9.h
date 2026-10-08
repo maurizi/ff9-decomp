@@ -1101,13 +1101,16 @@ typedef struct Unk8007B9C0 {
     Window *unk14;
     s16 unk18; /* w */
     s16 unk1A;
-    u8 pad1C[0x1E - 0x1C];
-    s16 unk1E;
+    s16 unk1C;
+    s16 unk1E; /* message index */
     s16 unk20;
-    u8 pad22[0x27 - 0x22];
+    s16 unk22;
+    s16 unk24;
+    u8 unk26;
     u8 unk27; /* h */
     u8 unk28;
-    u8 pad29[0x2B - 0x29];
+    u8 pad29;
+    u8 unk2A;
     u8 unk2B;
 } Unk8007B9C0;
 extern Unk8007B9C0 D_8007B9C0[];
@@ -2276,5 +2279,26 @@ static inline u16 func_8004B404_inline(s32 arg0) {
         break;
     }
     return D_8007AE10[i];
+}
+extern s32 D_8007BB98;
+extern s32 D_8007B964;
+void func_8004C8C4(Unk8007B9C0 *, u8 *);
+void func_8004D2C0(Unk8007B9C0 *, u8 *);
+void func_8004D69C(Unk8007B9C0 *, u8 *);
+void func_80051300(void);
+void func_80051380(void);
+void func_80050F4C(s32);
+
+/* Inlined lookup of message i in the current offset table (D_8007B954). */
+static inline u8 *func_8004D940_msg(s32 i) {
+    u8 *e = NULL;
+    u16 *t;
+
+    if (i >= 0 && i < D_8007B954->unk0) {
+        t = D_8007B954->unk4;
+        e = (u8 *)t;
+        e += t[(D_8007B708 == 2 || D_8007B708 == 4) ? i * 2 : i * 4 + 2];
+    }
+    return e;
 }
 #endif
