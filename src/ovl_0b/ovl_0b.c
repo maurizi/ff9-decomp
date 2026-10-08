@@ -1,4 +1,4 @@
-#include "common.h"
+#include "ovl_0b.h"
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A859C);
 
@@ -18,7 +18,9 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8E24);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8E6C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8F10);
+s32 func_800A8F10(void) {
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8F18);
 
@@ -26,7 +28,10 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8F8C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A902C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A9090);
+s32 func_800A9090(void) {
+    func_800E9D84();
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A90B0);
 
@@ -126,7 +131,9 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AEA48);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AEE68);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF1C8);
+s32 func_800AF1C8(void) {
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF1D0);
 
@@ -538,7 +545,9 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b", D_800A7948);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C28F4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C2DF4);
+u8 func_800C2DF4(void) {
+    return D_800FE470;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C2E04);
 
@@ -778,23 +787,39 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CE05C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CE1B4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEBAC);
+void func_800CEBAC(void) {
+    D_800F7274 = 0x1F;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEBBC);
+void func_800CEBBC(void) {
+    D_800F7274 = 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEBC8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEE74);
+s32 func_800CEE74(void) {
+    return D_800FE514;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEE84);
+void func_800CEE84(s32 arg0) {
+    D_800F7270 = arg0;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEE90);
+s32 func_800CEE90(void) {
+    return D_800FE50C;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEEA0);
+void func_800CEEA0(s32 arg0) {
+    D_800FE510 += arg0;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEEB8);
+s32 func_800CEEB8(void) {
+    return D_800FE510;
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEEC8);
+void func_800CEEC8(s32 arg0) {
+    D_800FE51C = arg0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CEED4);
 
