@@ -205,6 +205,8 @@ typedef struct {
     u8 pad3C[0x44 - 0x3C];
     s32 unk44;
     s32 unk48;
+    u8 pad4C[0xDC - 0x4C];
+    s32 unkDC; /* battle data file start sector */
 } GameStateUnk14;
 
 typedef struct {

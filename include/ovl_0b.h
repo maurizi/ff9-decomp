@@ -143,7 +143,7 @@ typedef struct BtlUnit {
     u16 unkAC;
     u16 unkAE;
     u16 unkB0;
-    u8 padB2;
+    u8 unkB2;
     u8 unkB3;
     struct Unk80104F88Entry *unkB4; /* menu data (party members) */
     s16 unkB8; /* screen x */
@@ -438,7 +438,9 @@ typedef struct {
     BtlUnit9CC *unkC[2];
     u8 pad14[0x24 - 0x14];
     u16 unk24;
-    u8 pad26[0x30 - 0x26];
+    u8 pad26[0x28 - 0x26];
+    u8 unk28;
+    u8 pad29[0x30 - 0x29];
     u16 unk30;
 } Battle4880;
 
@@ -510,6 +512,8 @@ typedef struct {
     u8 pad4[0xA - 4];
     u8 unkA; /* mp cost */
     u8 unkB;
+    u8 padC[0xE - 0xC];
+    u16 unkE; /* name text offset */
 } BtlCmd8;
 
 typedef struct BtlCmd {
@@ -581,7 +585,8 @@ static inline void func_800B3CEC_inline(BtlCmd *arg0) {
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
-    u8 pad2[8 - 2];
+    u8 pad2[4 - 2];
+    s32 unk4;
     s32 unk8[8][0x22]; /* per unit: loaded file addresses */
     u8 pad448[0x488 - 0x448];
     Battle488 unk488[16];
@@ -634,7 +639,9 @@ typedef struct Battle {
     u8 unk1529;
     u8 pad152A[0x152C - 0x152A];
     u8 unk152C;
-    u8 pad152D[0x1538 - 0x152D];
+    u8 pad152D[0x1530 - 0x152D];
+    s32 unk1530;
+    s32 unk1534; /* battle data file sector */
     u8 *unk1538;
     u8 pad153C[0x1548 - 0x153C];
     Battle1548 unk1548[20];
@@ -1131,7 +1138,12 @@ typedef struct {
 extern Unk801051F0 D_801051F0;
 extern s32 D_800FDE3C[];
 extern u32 D_80104E80;
-extern void *D_801050D8;
+typedef struct {
+    u8 pad0[0x310];
+    POLY_G4 unk310[2];
+    DR_TPAGE unk358[2];
+} Unk801050D8; /* 0x368 */
+extern Unk801050D8 *D_801050D8;
 extern u8 D_801051E0;
 extern u8 D_80104E94[2][0x18];
 
@@ -1621,6 +1633,19 @@ void func_800D0940(void);
 extern u8 D_800F6FB8[];
 void func_800F4F04(s32, s32);
 s32 func_800F4FC8(void);
+extern u8 D_80104E77;
+void func_800F11A4(BtlUnit *);
+void func_800F1150(BtlUnit *);
+void func_800AB810(s32, void *);
+void func_800A8E24(void);
+void func_800A8E6C(void);
+s32 func_800A8F10(void);
+s32 func_800A8F18(void);
+s32 func_800A8F8C(void);
+s32 func_800A902C(void);
+s32 func_800A9090(void);
+void func_800A90B0(void);
+s32 func_800AF1C8(void);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s32);

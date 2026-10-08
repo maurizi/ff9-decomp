@@ -36,7 +36,33 @@ void func_800A8BF4(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8CD4);
+void func_800A8CD4(void) {
+    GameData *g = D_8006794C->unk1C;
+    Battle *b;
+    func_800A8E24();
+    b = g->unk8E4.battle;
+    func_800A8E6C();
+    D_8006794C->unk9 = 4;
+    func_8001CD04(0xDA);
+    func_8001CFB4();
+    SetDispMask(1);
+    g->unk838 = func_800AB810;
+    g->unk83C = func_800AD90C;
+    D_8006794C->unk1C->unk8BC = func_800AF1C8;
+    func_80021C60();
+    g->unk39 = 0;
+    g->unk38 = 0;
+    g->unk84C = 0;
+    b->unk1534 = D_8006794C->unk20 + D_8006794C->unk14->unkDC;
+    func_800A90B0();
+    func_800A8F10();
+    func_800A8F18();
+    func_800A8F8C();
+    func_800A902C();
+    func_800A9090();
+    func_800B031C();
+    b->unk4 = D_80067948;
+}
 
 void func_800A8DE0(void) {
     s32 i;

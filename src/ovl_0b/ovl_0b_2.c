@@ -2397,7 +2397,25 @@ s32 func_800E84F0(s32 arg0) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E8554);
+s32 func_800E8554(s32 arg0, s32 arg1) {
+    s32 r = 0;
+    BtlUnit *u = func_800E716C(arg1);
+    if (arg0 == 0) {
+        if ((u8)func_800C09A4(u, 0x100)) {
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
+        } else if ((u->unk68 >> 19) & 1) {
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+        } else {
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+        }
+    } else if ((u8)func_800C09A4(u, 0x100) || ((u->unk68 >> 1) & 0xF) == 4) {
+        func_800E8554(0, 0x10);
+        r = 1;
+    } else {
+        func_800D85AC(0x10, 0x1C);
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E865C);
 
@@ -3202,7 +3220,30 @@ s32 func_800EB7B0(BtlUnit *arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EB81C);
+void func_800EB81C(void) {
+    BtlUnit *u;
+    u8 c;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+        c = u->unkB2;
+        if (c >= 2) {
+            if (c == 2) {
+                u->unkB2 = 0;
+                u->unk68 &= ~0x10000;
+                u->unk68 &= ~0x10000000;
+                if (D_80104F88->unk12B4 == 3) {
+                    func_800F11A4(u);
+                }
+            } else if (c == 3) {
+                u->unkB2 = 1;
+                u->unk68 |= 0x10000;
+                u->unk68 |= 0x10000000;
+                if (D_80104F88->unk12B4 == 3) {
+                    func_800F1150(u);
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EB924);
 
@@ -3796,7 +3837,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F0DF8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F0F60);
 
-void func_800F1150(void) {
+void func_800F1150(BtlUnit *arg0) {
     if (D_80104FF0.unk6 != 0 && D_800F8EE4[D_80104FF0.unk2] != 0) {
         func_800EFA10(0);
     }
