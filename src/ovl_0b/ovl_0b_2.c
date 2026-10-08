@@ -2039,7 +2039,20 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6624);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6764);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6C58);
+void func_800E6C58(SVECTOR *arg0) {
+    MATRIX m;
+    SVECTOR v;
+    func_8001D898((s32)&v, 0, 8);
+    if (arg0 == 0) {
+        arg0 = &v;
+    }
+    func_800316D8(arg0, &m);
+    m.t[1] = 0;
+    m.t[0] = 0;
+    m.t[2] = func_800645C4();
+    D_80104E10 = *D_800F78A4->unk14;
+    *D_800F78A4->unk14 = m;
+}
 
 void func_800E6D58(void) {
     *D_800F78A4->unk14 = D_80104E10;

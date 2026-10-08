@@ -2364,7 +2364,19 @@ void func_800CD808(s32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CD83C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CDC68);
+void func_800CDC68(BtlUnit *arg0) {
+    if (!(arg0->unk68 & 1)) {
+        D_8006794C->unk1C->unk8E4.battle->unk1524 = &D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF];
+        if (D_8006794C->unk1C->unk8E4.battle->unk1524->unk8 == -1) {
+            func_800F4F04(func_800357C0(D_800F6FB8, 9), 2);
+            D_8006794C->unk1C->unk8E4.battle->unk1529 = 4;
+            D_8006794C->unk1C->unk8E4.battle->unk1528 = func_800F4FC8() - 1;
+            return;
+        }
+        D_8006794C->unk1C->unk8E4.battle->unk1529 = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1528 = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CDD68);
 

@@ -445,7 +445,8 @@ typedef struct {
 typedef struct {
     Battle4880 *unk0;
     u32 unk4;
-    u8 pad8[0x18 - 8];
+    s32 unk8;
+    u8 padC[0x18 - 0xC];
 } Battle488; /* 0x18 */
 
 typedef struct {
@@ -628,8 +629,10 @@ typedef struct Battle {
     s16 unk151A;
     s32 unk151C;
     s32 unk1520;
-    s32 unk1524;
-    u8 pad1528[0x152C - 0x1528];
+    Battle488 *unk1524;
+    u8 unk1528;
+    u8 unk1529;
+    u8 pad152A[0x152C - 0x152A];
     u8 unk152C;
     u8 pad152D[0x1538 - 0x152D];
     u8 *unk1538;
@@ -1612,6 +1615,9 @@ extern s32 D_800F78AC;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void func_8005562C(s32);
 void func_800D0940(void);
+extern u8 D_800F6FB8[];
+void func_800F4F04(s32, s32);
+s32 func_800F4FC8(void);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s32);
