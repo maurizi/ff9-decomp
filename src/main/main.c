@@ -1699,7 +1699,14 @@ void func_800274CC(RECT *rect, s32 otz) {
     D_80077170 = (u8 *)(p + 1);
 }
 
-void func_80027568(s16 arg0, s16 arg1, s32 arg2, s32 arg3, u8 arg4) {
+/* K&R definition: callers pass plain ints */
+void func_80027568(arg0, arg1, arg2, arg3, arg4)
+    s16 arg0;
+    s16 arg1;
+    s32 arg2;
+    s32 arg3;
+    u8 arg4;
+{
     func_8002642C(arg0, arg1, arg2, arg3, arg4, 1);
 }
 
@@ -2495,7 +2502,25 @@ void func_8002DEE4(RECT *a, s32 b, s32 c) {
     func_8002CD4C(a, b, c, (D_8006794C->unk24 >> 18) & 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002DF18);
+void func_8002DF18(RECT *r, s32 otz, s32 style, s32 xoff) {
+    RECT t;
+    s32 y;
+    if (style != 4) {
+        if (style >= 2) {
+            y = r->y + r->h - 2;
+        } else {
+            y = r->y - 11;
+        }
+        func_80027568(r->x + xoff, y, otz, style, 0);
+        func_80026900(r->x + xoff, y, otz, style);
+    }
+    func_80026BDC(r, otz, 1, 0, (D_8006794C->unk24 >> 18) & 1);
+    t.x = r->x + 2;
+    t.y = r->y + 2;
+    t.w = r->w - 4;
+    t.h = r->h - 4;
+    func_800274CC(&t, otz);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E040);
 

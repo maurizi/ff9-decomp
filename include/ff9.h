@@ -432,7 +432,7 @@ void func_8002423C(s32, s32, s32, Character *);
 u8 *func_80024EB4(s32, u32 *, u8, u8, s32, u8 *);
 u8 *func_800253D4(RECT *, u32 *, u8, u8, s32, s32, u8 *);
 void func_80026BDC(RECT *, s32, u8, u8, s32);
-void func_80027568(s16, s16, s32, s32, u8);
+void func_80027568(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
 void func_800274CC(RECT *, s32);
 void func_80026900(s32, s32, s32, s32);
 void func_8002642C(s16, s16, s32, s32, s32, s32);
