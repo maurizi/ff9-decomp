@@ -1866,6 +1866,12 @@ s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 D_800739A8[];
 u8 *func_80027834(s32, s32, u32 *, s32, s32, u8 *, u8 *);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+} Unk8006BC0C;
+extern Unk8006BC0C D_8006BC0C[4];
 u8 func_8003561C(void);
 void func_80025A28(s32, s32, s32, s32, s32, s32);
 void func_8002EF58(MenuList *, u32);

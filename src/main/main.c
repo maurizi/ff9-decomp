@@ -2048,7 +2048,16 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002B644);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002B7B0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002B890);
+u8 *func_8002B890(s32 x, s32 y, u32 *ot, u32 mask, u8 b, u8 *c, u8 *pkt) {
+    u8 tmp[8];
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        if (mask & (1 << i)) {
+            pkt = func_80027834(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
+        }
+    }
+    return func_80027834(x, y, ot, 0xC, b, c, pkt);
+}
 
 void func_8002B980(s32 arg0, s32 idx) {
     D_8006BBEC[idx](arg0);
