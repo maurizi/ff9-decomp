@@ -2109,4 +2109,13 @@ void func_80035214(Unk80035214 *);
 void func_80035C2C(s32, s32, s32, Unk80035B90 *);
 s32 func_8002FD70(s32, s32, s32);
 s32 func_8002FDE8(s32, s32, s32);
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} LineF2Words; /* LINE_F2 */
+extern u32 D_80068F20[][4]; /* line colours */
 #endif

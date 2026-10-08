@@ -2113,7 +2113,27 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", GetClut);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028DB0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028F3C);
+s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
+    u32 *tbl = D_8006794C->unk1C->unk7D4->unkC;
+    u32 g;
+    s32 w;
+    SprtWords *p;
+
+    if (c == 0xFF) {
+        return 0;
+    }
+    g = tbl[c];
+    setlen(D_80077170, 4);
+    w = (g >> 16) & 0xF;
+    p = (SprtWords *)D_80077170;
+    p->rgbc = 0x64808080;
+    p->xy = (x + ((10 - w) >> 1)) | (y << 16);
+    p->uvclut = (g & 0x40FFFF) | (D_8006BBA0[mode] << 16);
+    p->wh = w | 0xD0000;
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+    return g >> 28;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029058);
 
