@@ -131,11 +131,49 @@ typedef struct {
     u8 unk14;
 } Unk801FA078;
 
+/* game data part of a save block */
+typedef struct {
+    u8 pad0[0x40];
+    u8 unk40[0x850 - 0x40];
+    u8 unk850[0xD88 - 0x850];
+    Unk801FA078 unkD88;
+    u8 unkDA0[0xFF8 - 0xDA0];
+    u8 unkFF8[0x127C - 0xFF8];
+} SaveData; /* 0x127C */
+
+/* save block buffer at 0x801FCB00 */
+typedef struct {
+    u8 unk0[0x180]; /* header */
+    SaveData unk180;
+    u8 pad13FC[2];
+    u16 unk13FE; /* CRC-16 of everything before it */
+} SaveBuf;
+
+void func_801F963C(SaveData *);
+void func_801FA01C(Unk801FA078 *);
 typedef struct {
     u8 pad0[0x12];
     u8 unk12; /* ASCII digits */
     u8 unk13;
 } Unk801F6D24;
+
+/* main exe: candidates for ff9.h */
+s32 func_80028954(s32); /* defined u8 in main; used unmasked */
+
+extern RECT func_801FAF74; /* a RECT in .data (splat starts .data late) */
+extern u8 D_801EDF1C[];
+extern u8 D_801FB040[]; /* save icon per character model */
+extern u16 D_801FDEFE;
+void func_801F96CC(void);
+void func_801F8DA4(u8 *);
+u16 func_801F973C(u8 *, s32);
+void func_801F9B00(void);
+void func_801F9D48(u8 *);
+void func_801F9904(u8 *);
+void func_801F9EA8(u8 *);
+void func_801F9CE8(void *);
+void func_801F6938(void);
+
 
 void func_801F4538(void);
 void func_801F53E0(void);
@@ -148,7 +186,7 @@ void func_801F75C8(s32, s32);
 void func_801F7084(void);
 void func_801F5E68(s32, s32, s32);
 void func_801F6A84(void);
-void func_801F6B48(Unk801FBEF8 *);
+void func_801F6B48(void);
 void func_801F72B4(s32);
 u8 func_801F77E4(void);
 void func_801F9788(s32, s32);
