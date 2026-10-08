@@ -448,7 +448,7 @@ void func_80028AF0(s32, s32, s32, s32, u8);
 void func_8002BAE4(s32, u8 *, s32, s32);
 void func_80027D18(void);
 void func_80027D4C(void);
-s32 func_80027D84(u8, u8);
+s32 func_80027D84(s32, s32);
 void func_80028204(s32, s32, s32, s32, s32, u8);
 void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
@@ -1481,13 +1481,22 @@ typedef struct {
     u16 unk2;
 } Unk8006DDD0;
 extern Unk8006DDD0 D_8006DDD0[];
+typedef struct Unk8007BC20Node {
+    struct Unk8007BC20Node *unk0; /* next */
+    u8 pad4[0xC - 4];
+} Unk8007BC20Node;
 typedef struct {
-    u8 pad0[8];
+    Unk8007BC20Node *unk0; /* free list */
+    s32 unk4;
     s32 unk8;
     s32 unkC;
-    u8 pad10[0x24 - 0x10];
+    DR_TPAGE unk10;
+    DR_TPAGE unk18;
+    u8 pad20[0x24 - 0x20];
     s32 unk24;
 } Unk8007BC20;
+extern u8 *D_8007BC18;
+extern u8 *D_8007BC48;
 extern Unk8007BC20 D_8007BC20;
 extern Unk8007BC20 D_8007BC50;
 void func_80032C4C(s32, s32, s32, s32);
@@ -2022,5 +2031,33 @@ static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
     }
 }
 extern s32 D_8007B990;
+
+/* actor-like object updated by func_8004B9B8 */
+typedef struct {
+    u8 pad0[0xF];
+    u8 unkF;
+    u8 pad10[0x22 - 0x10];
+    u16 unk22;
+    u8 pad24[0x34 - 0x24];
+    u16 unk34;
+    u16 unk36;
+    u8 unk38;
+    u8 pad39;
+    u8 unk3A;
+    u8 pad3B[0x52 - 0x3B];
+    u16 unk52;
+    u8 pad54[0x5A - 0x54];
+    u16 unk5A;
+    u8 pad5C;
+    u8 unk5D;
+    u8 pad5E[0x60 - 0x5E];
+    u8 unk60;
+    u8 unk61;
+    u8 unk62; /* flags */
+    u8 unk63; /* timer */
+    u8 unk64;
+    u8 pad65[0x69 - 0x65];
+    u8 unk69;
+} Unk8004B9B8;
 
 #endif
