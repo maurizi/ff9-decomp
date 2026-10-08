@@ -8080,7 +8080,7 @@ void func_800612F0(s32 *a) {
         func_80057640(d->unk10, v, 0, 0);
         func_80057640(d->unk10 + 1, 0, v, 0);
     } else {
-        pan = d->unk4D;
+        pan = (u8)(d->unk4C >> 8);
         l = v * D_8006F540[pan] >> 16;
         r = v * D_8006F540[pan ^ 0xFF] >> 16;
         func_80057640(d->unk10, l, r, 0);

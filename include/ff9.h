@@ -1891,8 +1891,7 @@ typedef struct {
     s32 unk40; /* volume */
     u8 pad44[4];
     s32 unk48;
-    u8 pad4C;
-    u8 unk4D; /* pan */
+    s32 unk4C; /* pan in bits 8-15 */
 } Unk80083168;
 u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
 void func_80060FA8(void);
