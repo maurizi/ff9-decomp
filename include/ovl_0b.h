@@ -885,7 +885,7 @@ extern s8 D_800FEC55;
 
 typedef struct {
     u16 unk0; /* sound id, 0 = free */
-    u16 unk2;
+    s16 unk2; /* age */
     s32 unk4; /* unit id */
 } Unk80104E30Entry;
 
@@ -1381,7 +1381,11 @@ typedef struct {
 } Unk800E8F50;
 
 typedef struct {
-    u8 pad0[0x24];
+    u8 pad0[0x10];
+    s32 unk10;
+    s32 unk14;
+    u8 pad18[0x20 - 0x18];
+    s32 unk20;
     s32 unk24;
 } Unk800AA08C;
 
@@ -1465,6 +1469,10 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     s16 unk4;
+    u8 pad6[8 - 6];
+    s32 unk8;
+    s16 unkC[4];
+    s16 unk14[4];
 } Unk800D7C9C;
 
 typedef struct {
@@ -1481,5 +1489,23 @@ s32 func_800D9488(Unk800D7C9C *, s32, s32 *);
 s32 func_800D9AB0(Unk800D805C *, s32, s32 *);
 s32 func_800D9D58(Unk800D805C *, s32, s32 *);
 s32 func_800D8ACC(s32, s32);
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    u8 pad8[0x44 - 8];
+    s32 unk44;
+    u8 pad48[0x4C - 0x48];
+} Unk800FE368;
+extern Unk800FE368 D_800FE368;
+extern u8 D_800FE4D8[];
+extern u8 D_80104E76;
+void func_80063864(void *, void *, s32);
+void func_800C94B8(void);
+u8 func_8002C700(s32, s32);
+void func_8002C8E8(s32, s32, s32, s32);
+void func_8002C64C(s32);
+u8 func_800F47D8(void);
+void func_800E77D8(s32, s16 *);
 
 #endif
