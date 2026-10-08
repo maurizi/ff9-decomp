@@ -477,7 +477,20 @@ void func_800C4654(void);
 void func_800C6EF8(void);
 void func_800B153C(void);
 void func_800C3EAC(void);
-void func_800B8DC0(void *, s32, s32, s32, s32, s32, s32);
+/* TIM image blocks */
+typedef struct {
+    u32 unk0; /* length */
+    RECT unk4;
+    u16 unk8[1];
+} WmTimBlk;
+
+typedef struct {
+    u32 unk0; /* id */
+    u32 unk4; /* flags: 8 = has CLUT */
+    WmTimBlk unk8;
+} WmTim;
+
+void func_800B8DC0(u32 *, s32, s32, s32, s32, s32, s8);
 void func_800CC3E0(s32);
 void func_800CC5D8(u8);
 s32 func_800B8498(void);
