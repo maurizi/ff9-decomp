@@ -917,6 +917,11 @@ typedef struct {
 extern BtlObjSlot D_80100F1C[32];
 
 typedef struct {
+    BtlUnit9C unk0;
+    u8 pad60[0x98 - 0x60];
+} BtlModel; /* 0x98 */
+
+typedef struct {
     BtlUnit9C *unk0;
     u8 pad4[0x4C - 4];
     u8 unk4C; /* in use */
@@ -1737,6 +1742,7 @@ extern RECT D_800A858C;
 extern RECT D_800A8594;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+s32 func_800E865C(s32, s32);
 void func_800DDF10(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
 void func_800DF15C(BtlUnit9C *, u8, u16);

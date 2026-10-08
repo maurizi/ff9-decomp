@@ -2722,7 +2722,11 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E865C);
+s32 func_800E865C(s32 arg0, s32 arg1) {
+    u32 f = func_800E716C(arg0)->unk68;
+    u8 k = D_800F8D70[arg1];
+    return ((f & 1) ? (D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34 >> 4) & 0x1F : 0x13) == k;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E86E0);
 
