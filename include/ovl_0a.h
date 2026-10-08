@@ -236,7 +236,8 @@ typedef struct {
 typedef struct {
     unsigned unk0 : 8; /* flags */
     unsigned unk1 : 24; /* entries at unkC */
-    s32 unk4;
+    unsigned unk4 : 8;
+    signed unk5 : 24; /* position (8.8 step index) */
     s16 unk8;
     s16 unkA;
     s32 unkC; /* offset: Unk800C9DB4Step[] */
@@ -368,12 +369,9 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[4];
-    s16 unk6;
-    u8 pad8[2];
-    u16 unkA;
-    u16 unkC;
-    u16 unkE;
+    u8 pad2[2];
+    s16 unk4[3]; /* base position */
+    u16 unkA[3]; /* current position */
     u8 pad10[0x1C - 0x10];
     u16 unk1C; /* count of unk1E entries */
     u16 unk1E; /* offset: s32[] (Unk800C9E00 indices) */

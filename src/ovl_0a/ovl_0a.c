@@ -1938,7 +1938,7 @@ s32 func_800C196C(s32 arg0, s32 arg1) {
     i = 0;
     p->unkA = 0;
     p->unk0 = 1;
-    p->unk4 &= 0xFF;
+    p->unk5 = 0;
     objs = (Unk800C9DB4Obj *)((u8 *)d + d->unk10);
     st = (Unk800C9DB4Step *)((u8 *)d + p->unkC);
     for (; i < p->unk1; i++) {
@@ -2009,7 +2009,7 @@ s32 func_800C1C30(void) {
         p[i].unk8 = 0x100;
         p[i].unkA = 0;
         p[i].unk0 = 1;
-        p[i].unk4 &= 0xFF;
+        p[i].unk5 = 0;
         objs[((Unk800C9DB4Step *)((u8 *)d + p[i].unkC))->unk0].unk0 |= 2;
     }
     return 1;
@@ -2181,9 +2181,9 @@ s32 func_800C420C(s32 arg0, s16 arg1) {
 
     n = &D_800C9DF0.unk10[(u16)arg1];
     t = &D_800C9DF0.unk1C[n->unk4];
-    v.vx = D_800C9DF0.unk8->unk8 + t->unkA;
-    v.vy = D_800C9DF0.unk8->unkA + t->unkC;
-    v.vz = D_800C9DF0.unk8->unkC + t->unkE;
+    v.vx = D_800C9DF0.unk8->unk8 + t->unkA[0];
+    v.vy = D_800C9DF0.unk8->unkA + t->unkA[1];
+    v.vz = D_800C9DF0.unk8->unkC + t->unkA[2];
     D_800C9DF0.unk4[arg0].unk4 = n->unk4;
     D_800C9DF0.unk4[arg0].unk6 = arg1;
     D_800C9DF0.unk4[arg0].unk24->unk14.vx = v.vx + n->unk1E;
@@ -2253,12 +2253,12 @@ s16 func_800C45C0(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, Unk800C9E00 **arg4) {
                 pl = &D_800C9DF0.unk14[k];
                 a = func_800C1DC4(pl->unk0, v.vx << 16);
                 v.vy = func_800C1DC4(n->unk24 - a - func_800C1DC4(pl->unk8, v.vz << 16), pl->unkC) >> 16;
-                v.vy += (s16)D_800C9DF0.unk1C[n->unk4].unkC - D_800C9DF0.unk1C[n->unk4].unk6;
+                v.vy += (s16)D_800C9DF0.unk1C[n->unk4].unkA[1] - D_800C9DF0.unk1C[n->unk4].unk4[1];
                 p.vy = v.vy;
             } else {
                 t = &D_800C9DF0.unk1C[n->unk4];
                 vx = &D_800C9DF0.unkC[n->unkC];
-                p.vy = vx->unk2 + (D_800C9DF0.unk8->unkA + t->unkC);
+                p.vy = vx->unk2 + (D_800C9DF0.unk8->unkA + t->unkA[1]);
             }
             y = p.vy;
             if (y >= y0 && y < best) {
@@ -2297,7 +2297,59 @@ s32 func_800C47E4(s32 arg0, s32 arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C48DC);
+s16 func_800C48DC(s16 arg0, s16 arg1) {
+    SVECTOR p;
+    VECTOR v;
+    u16 i;
+    Unk800C9E00 *n;
+    Unk800C9E04 *pl;
+    s32 a;
+    s16 k;
+    u8 hit;
+    GameData *g;
+
+    if (D_800C9DF0.unk8 == NULL) {
+        if (D_8006794C->unk8 == 5) {
+            g = D_8006794C->unk1C;
+            return ((Unk8004AB64 *)g->unk8E0[g->unk8E4.field->unk8].unkC)->unk14.vy;
+        }
+        if (D_8006794C->unk8 == 1) {
+            return func_8004AE00()->unk14.vy;
+        }
+        return 0;
+    }
+    goto start;
+plane:
+    v.vx = p.vx;
+    v.vy = p.vy;
+    v.vz = p.vz;
+    pl = &D_800C9DF0.unk14[k];
+    a = func_800C1DC4(pl->unk0, v.vx << 16);
+    v.vy = func_800C1DC4(n->unk24 - a - func_800C1DC4(pl->unk8, v.vz << 16), pl->unkC) >> 16;
+    v.vy += (s16)D_800C9DF0.unk1C[n->unk4].unkA[1] - D_800C9DF0.unk1C[n->unk4].unk4[1];
+    p.vy = v.vy;
+    return p.vy;
+start:
+    p.vx = arg0;
+    p.vy = -0x5CD7;
+    p.vz = arg1;
+    n = D_800C9DF0.unk10;
+    for (i = 0; i < D_800C9DF0.unk8->unk24; i++, n++) {
+        if ((u8)func_800C4EC8(D_800C9DF0.unk8, &D_800C9DF0.unk1C[n->unk4], n, &p)) {
+            k = n->unk6;
+            if (k >= 0) {
+                goto plane;
+            }
+            {
+                p.vy = D_800C9DF0.unk8->unkA;
+                p.vy += D_800C9DF0.unk1C[n->unk4].unkA[1];
+                p.vy += D_800C9DF0.unkC[n->unkC].unk2;
+                return p.vy;
+            }
+        }
+    }
+    return -0x7FFF;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C4B30);
 
@@ -2629,9 +2681,9 @@ s32 func_800C7938(s16 arg0, u16 *arg1) {
 s32 func_800C7968(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
     Unk800C9DF8Tri *t = func_800C9DF8_tri(arg0);
 
-    *arg1 = t->unkA;
-    *arg2 = t->unkC;
-    *arg3 = t->unkE;
+    *arg1 = t->unkA[0];
+    *arg2 = t->unkA[1];
+    *arg3 = t->unkA[2];
     return 1;
 }
 
