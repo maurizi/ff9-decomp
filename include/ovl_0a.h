@@ -799,7 +799,7 @@ s32 func_8001E350(s32);
 void func_800B31B8(s32, s32, s32, s32);
 void func_800B5938(void);
 void func_800AC67C(s32);
-void func_800C0038(s32, s32);
+s32 func_800C0038(s32, s32);
 void func_800A8198(void);
 void func_800A82F8(void);
 void func_800A7AAC(s32);
