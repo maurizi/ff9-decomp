@@ -5243,7 +5243,20 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F316C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F3390);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F34C0);
+void func_800F34C0(void) {
+    u8 c = D_80105078->unk2;
+    POLY_G4 *p;
+    s32 y;
+    s32 d = 4;
+    if (c != 0xFF && D_80104E77 != 0) {
+        y = D_80105078->unk60 + (c * 12 + d);
+        p = &D_801050D8->unk310[D_80077148.unk0];
+        p->y0 = p->y1 = y;
+        p->y2 = p->y3 = y + 13;
+        addPrim(&D_8007716C[20], p);
+        addPrim(&D_8007716C[20], &D_801050D8->unk358[D_80077148.unk0]);
+    }
+}
 
 void func_800F35C8(s32 arg0, u32 arg1) {
     s32 k = D_80105078->unk80[arg1];
