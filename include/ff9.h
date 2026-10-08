@@ -359,6 +359,15 @@ typedef struct {
 
 extern u16 D_8006BBA0[];
 
+/* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
+typedef struct {
+    u32 unk0; /* uv0 | clut << 16 */
+    u8 unk4;  /* w */
+    u8 unk5;  /* h */
+    u16 unk6; /* tpage */
+} Unk800686E8;
+extern Unk800686E8 D_800686E8;
+
 /* 12-tick toggle timer (func_80028CF8/D08/D2C) */
 typedef struct {
     u8 unk0; /* active */
@@ -425,7 +434,7 @@ extern Unk80077148 D_80077148;
 /* ---- functions (main exe) ---- */
 
 void func_8001C784(void *);
-void func_8001D898(s32, s32, s32);
+void func_8001D898(void *, s32, s32); /* memset */
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
@@ -790,7 +799,7 @@ extern s32 D_80080A24;
 extern s32 *D_80066764;
 
 typedef struct {
-    u8 pad0[4];
+    void (*unk0)(void);
     void (*unk4)(void);
     u8 pad8[0xC - 8];
     u8 unkC;
@@ -937,6 +946,7 @@ typedef struct {
     u8 unk2;
     u8 unk3; /* selected party slot */
     s32 unk4; /* frame counter */
+    s32 unk8;
 } Unk80077E50;
 extern Unk80077E50 D_80077E50;
 extern u8 D_80077E53;
@@ -1165,8 +1175,7 @@ typedef struct {
     s16 unkC;
     s16 unkE;
     s32 unk10; /* loaded file id */
-    u8 pad14[0x1A - 0x14];
-    s16 unk1A;
+    RECT unk14;
     Unk80077E28Entry *unk1C;
     void (*unk20)(void);
 } Unk80077E28;
@@ -1800,6 +1809,9 @@ typedef struct {
 extern Unk8006D128 D_8006D128[];
 void func_8003493C(s32, s32, u8);
 extern s32 D_8006E510[];
+extern RECT D_8006E508;
+extern Unk80077E28Entry D_8006E530[];
+extern Unk80077E28Entry D_8006E5B0[];
 u8 func_80022C60(s32, s32, void *, void (*)(u8 *));
 void func_80036634(u8 *);
 extern void *D_8007AED0[8];
