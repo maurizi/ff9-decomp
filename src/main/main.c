@@ -1767,7 +1767,25 @@ u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, Sprt
     return (u8 *)(t + 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027A4C);
+void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
+    Character *c = D_8006794C->unk1C->unk54C[slot];
+    u8 buf[16];
+    RECT r;
+
+    if (c == NULL) {
+        return;
+    }
+    func_8002BAE4(c->unkB, buf, 2, 1);
+    func_8002B5FC(x, y, otz, c->unk0, 0);
+    func_8002B56C(x + 0x26, y + 0xE, otz, buf, 0);
+    func_800275DC(x, y + 0xE, otz, 0xB4, 0);
+    func_80026FC4(x, y + 0x1C, otz, c->unk38, 0);
+    r.x = x - 4;
+    r.y = y + 0x18;
+    r.w = 0x60;
+    r.h = 0x12;
+    func_8002DEE4(&r, otz, 0);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027B5C);
 
@@ -3319,9 +3337,9 @@ void func_80031B6C(Unk80077C78 *p) {
     if (p->unk8 == 0) {
         p->unk8 = 16;
     }
-    D_80077D68.unk24 = D_80077D68.unk0 = p->unk28.unk0[0];
-    D_80077D68.unk28 = D_80077D68.unk4 = p->unk28.unk0[1];
-    D_80077D68.unk2C = D_80077D68.unk8 = p->unk28.unk0[2];
+    D_80077D68.unk24.unk0 = D_80077D68.unk0 = p->unk28.unk0[0];
+    D_80077D68.unk24.unk4 = D_80077D68.unk4 = p->unk28.unk0[1];
+    D_80077D68.unk24.unk8 = D_80077D68.unk8 = p->unk28.unk0[2];
     D_80077D68.unkC = p->unk24;
     D_80077D68.unk10 = p->unk25;
     D_80077D68.unk14 = p->unk26;
@@ -3345,7 +3363,21 @@ void func_80031B6C(Unk80077C78 *p) {
     D_80077D68.unk20 = func_8002FD98(D_80077D68.unk44, n);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031C88);
+void func_80031C88(Unk80077C78 *p) {
+    D_80077D68.unk24.unk0 = func_8002FD70(D_80077D68.unk24.unk0, D_80077D68.unk18, D_80077D68.unkC);
+    D_80077D68.unk24.unk4 = func_8002FD70(D_80077D68.unk24.unk4, D_80077D68.unk1C, D_80077D68.unk10);
+    D_80077D68.unk24.unk8 = func_8002FD70(D_80077D68.unk24.unk8, D_80077D68.unk20, D_80077D68.unk14);
+    if (p->unk4 != 0) {
+        D_80077D68.unk30.unk0 = func_8002FDE8(D_80077D68.unk24.unk0, D_80077D68.unk0, D_80077D68.unk3C);
+        D_80077D68.unk30.unk4 = func_8002FDE8(D_80077D68.unk24.unk4, D_80077D68.unk4, D_80077D68.unk40);
+        D_80077D68.unk30.unk8 = func_8002FDE8(D_80077D68.unk24.unk8, D_80077D68.unk8, D_80077D68.unk44);
+    } else {
+        D_80077D68.unk30 = D_80077D68.unk24;
+    }
+    p->unk28.unk0[0] = D_80077D68.unk30.unk0;
+    p->unk28.unk0[1] = D_80077D68.unk30.unk4;
+    p->unk28.unk0[2] = D_80077D68.unk30.unk8;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031D98);
 

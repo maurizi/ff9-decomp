@@ -1361,16 +1361,19 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
+} Rgb32;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
     s32 unkC;
     s32 unk10;
     s32 unk14;
     s32 unk18;
     s32 unk1C;
     s32 unk20;
-    s32 unk24;
-    s32 unk28;
-    s32 unk2C;
-    u8 pad30[0x3C - 0x30];
+    Rgb32 unk24; /* current */
+    Rgb32 unk30; /* output */
     s32 unk3C;
     s32 unk40;
     s32 unk44;
@@ -2095,4 +2098,14 @@ typedef struct {
 
 s32 func_80037D6C(s32);
 extern u8 *D_800CF478;
+/* help-window rect plus frame style and x offset (func_80035214) */
+typedef struct {
+    RECT unk0;
+    s16 unk8; /* style */
+    s16 unkA; /* x offset */
+} Unk80035214;
+void func_80035214(Unk80035214 *);
+void func_80035C2C(s32, s32, s32, Unk80035B90 *);
+s32 func_8002FD70(s32, s32, s32);
+s32 func_8002FDE8(s32, s32, s32);
 #endif
