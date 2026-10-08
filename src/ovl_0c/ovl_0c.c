@@ -493,7 +493,7 @@ void func_800AD204(void) {
     }
     D_800CE1A8 = 0;
     D_800CE188 = 0;
-    D_800CE1E8 = D_800CCA68.unkA;
+    D_800CE1E8 = D_800CCA68[1];
     D_800CE0EC = 0;
     D_800CE0ED = 0;
     D_800CE0EE = 0;
@@ -507,7 +507,28 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AD738);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AE280);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AE4C8);
+void func_800AE4C8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Unk800CE1E8 *arg4) {
+    Unk800CE1E8 *a;
+    Unk800CE1E8 *b;
+    Unk800CE1E8 *c;
+    s32 t;
+    s16 tmp[5];
+
+    c = &D_800CCA68[D_800CCACC[arg1][arg2][2]];
+    a = &D_800CCA68[D_800CCACC[arg1][arg2][0]];
+    b = &D_800CCA68[D_800CCACC[arg1][arg2][1]];
+    t = func_800AEA94(arg0) & 0xFFFF;
+    tmp[0] = func_800B822C(a->unk0[0], b->unk0[0], t, 9);
+    tmp[1] = func_800B822C(a->unk0[1], b->unk0[1], t, 0xE);
+    tmp[2] = func_800B822C(a->unk0[2], b->unk0[2], t, 0xD);
+    tmp[3] = func_800B822C(a->unk0[3], b->unk0[3], t, 0xD);
+    tmp[4] = func_800B822C(a->unk0[4], b->unk0[4], t, 0xD);
+    arg4->unk0[0] = func_800B822C(tmp[0], c->unk0[0], arg3, 9);
+    arg4->unk0[1] = func_800B822C(tmp[1], c->unk0[1], arg3, 0xE);
+    arg4->unk0[2] = func_800B822C(tmp[2], c->unk0[2], arg3, 0xD);
+    arg4->unk0[3] = func_800B822C(tmp[3], c->unk0[3], arg3, 0xD);
+    arg4->unk0[4] = func_800B822C(tmp[4], c->unk0[4], arg3, 0xD);
+}
 
 void func_800AE670(void) {
     u8 r;

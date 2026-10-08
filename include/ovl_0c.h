@@ -760,11 +760,8 @@ void func_800C1824(s32, s32, s32, s32);
 extern s32 D_800D3F88;
 void func_800C26DC(void);
 
-typedef struct {
-    u8 pad0[0xA];
-    Unk800CE1E8 unkA;
-} Unk800CCA68;
-extern Unk800CCA68 D_800CCA68;
+extern Unk800CE1E8 D_800CCA68[];
+extern u8 D_800CCACC[][3][3];
 extern VECTOR D_800CE1B0;
 extern s16 D_800CE100;
 extern u8 D_800CE1E1;
