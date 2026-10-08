@@ -1819,7 +1819,7 @@ void func_800BBD3C(BtlUnit *arg0, Unk8E0 *arg1) {
     arg0->unkAC = 0;
 }
 
-void func_800BBF30(Unk800BBF30 *arg0, s16 arg1) {
+void func_800BBF30(Unk8004AB64 *arg0, s16 arg1) {
     arg0->unk34 = arg1;
     arg0->unk3B = func_80021698();
 }

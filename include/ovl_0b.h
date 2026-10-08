@@ -867,12 +867,6 @@ typedef struct {
     s16 unk1C[4];
 } Unk800B44A0;
 
-typedef struct {
-    u8 pad0[0x34];
-    s16 unk34;
-    u8 pad36[0x3B - 0x36];
-    s8 unk3B;
-} Unk800BBF30;
 
 typedef struct {
     u8 unk0;
@@ -1796,6 +1790,11 @@ extern u8 D_800FDDF8[][3];
 extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
 void func_800B10F8(BtlUnit *);
+extern u16 D_800F5200[];
+void func_800BB4A0(Character *, BtlUnit *, u16, u16);
+void func_800C1990(BtlUnit *);
+void func_800C9A28(void);
+void func_800BBF30(Unk8004AB64 *, s16);
 extern s32 D_800FDF34;
 extern RECT D_800A858C;
 extern RECT D_800A8594;
