@@ -1715,6 +1715,8 @@ extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
 u8 func_800B3EF8(BtlUnit *, u8);
 void func_800F16DC(u8, u8);
+void func_800B41A4(BtlUnit *, u8);
+u32 func_800C8DE0(u32, s32, s32, s32);
 void func_8002F1CC(MenuList *, s32);
 void func_8002F284(MenuList *, s32);
 extern s16 D_800F9048[];
