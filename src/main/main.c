@@ -870,7 +870,15 @@ s32 func_80021A8C(Unk80021938 *p) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021AE0);
+s32 func_80021AE0(Unk80021938 *p) {
+    u16 f = p->unk0;
+    if ((f & 0x82) && !(f & 1)) {
+        if ((f & 0x20) && p->unk24 != 0 && p->unk26 != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021B34);
 
@@ -2272,7 +2280,12 @@ void func_8002E400(s32 a, s32 b) {
     func_8002709C(a, b, 0, 0, (D_8006794C->unk24 >> 18) & 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E43C);
+Window *func_8002E43C(s32 i) {
+    if (i >= 10) {
+        func_8002EB64(0x59, 0x53);
+    }
+    return &D_80077530[i];
+}
 
 void func_8002E490(void) {
     s32 i;
@@ -3432,7 +3445,15 @@ s32 func_8004B1FC(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B20C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B2A0);
+void func_8004B2A0(void) {
+    Unk8007AECCNode *p = D_8007AECC->unk1450;
+    for (; p < &D_8007AECC->unk1450[31]; p++) {
+        p->unk8 = p + 1;
+    }
+    p->unk8 = NULL;
+    D_8007AECC->unk15D4 = D_8007AECC->unk1450;
+    D_8007AECC->unk15D0 = 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B2F4);
 
@@ -4061,9 +4082,18 @@ s32 func_80055110(s32 *a) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055128);
+s32 func_80055128(s32 a, s32 b, s32 *out) {
+    Unk8007BD44 *h = D_8007BD38.unkC;
+    u16 *p = (u16 *)((u8 *)h + h->unk6) + a * 6 + b;
+    if (*p & 1) {
+        *out = 1;
+    } else {
+        *out = 0;
+    }
+    return 0;
+}
 
-s32 func_8005517C(s32 *a) {
+s32 func_8005517C(Unk8007BD44 **a) {
     *a = D_8007BD38.unkC;
     return 0;
 }
@@ -4662,9 +4692,23 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuGetVoiceEnvelope);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetReverbModeDepth);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005936C);
+u16 func_8005936C(u32 flags, AkaoChannel *c) {
+    if ((flags & 0x20) && (u16)(c->unk9A - 0x20) < 0x60) {
+        c->unk120 += 0x20000;
+        c->unk124 += 0x20000;
+        c->unk9A += 0x30;
+    }
+    return c->unk9A;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800593C0);
+u16 func_800593C0(u32 flags, AkaoChannel *c) {
+    if ((flags & 0x20) && (u16)(c->unk9A - 0x20) < 0x60) {
+        c->unk120 -= 0x20000;
+        c->unk124 -= 0x20000;
+        c->unk9A -= 0x30;
+    }
+    return c->unk9A;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80059414);
 

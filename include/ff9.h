@@ -641,7 +641,8 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 unk4;
-    u8 pad5[0x8 - 5];
+    u8 unk5;
+    u8 pad6[0x8 - 6];
     u16 unk8;
     u16 unkA;
     s32 unkC;
@@ -754,13 +755,22 @@ typedef struct {
     VECTOR unk40; /* previous position */
 } Unk8004AB64;
 
+typedef struct Unk8007AECCNode {
+    u8 pad0[8];
+    struct Unk8007AECCNode *unk8; /* next */
+} Unk8007AECCNode;
+
 typedef struct Unk16D8 {
     struct Unk16D8 *unk0; /* next */
     Unk8004AB64 *unk4;
 } Unk16D8;
 
 typedef struct {
-    u8 pad0[0x16D8];
+    u8 pad0[0x1450];
+    Unk8007AECCNode unk1450[32];
+    s32 unk15D0;
+    Unk8007AECCNode *unk15D4; /* free list */
+    u8 pad15D8[0x16D8 - 0x15D8];
     Unk16D8 *unk16D8;
     u8 pad16DC[0x16E4 - 0x16DC];
     u8 unk16E4[8];
@@ -891,12 +901,17 @@ void func_80014E20(s32, s32, s32, s32);
 void func_8003556C(void (*)(void));
 
 typedef struct {
+    u8 pad0[6];
+    u16 unk6; /* offset of a u16[][6] flag table */
+} Unk8007BD44;
+
+typedef struct {
     u16 unk0;
     s16 unk2;
     s16 unk4;
     s16 unk6;
     s32 unk8;
-    s32 unkC;
+    Unk8007BD44 *unkC;
 } Unk8007BD38;
 extern Unk8007BD38 D_8007BD38;
 
@@ -1564,6 +1579,7 @@ void func_80028B20(u8 *);
 u8 func_80033D28(void);
 void func_80012CF8(void);
 extern u8 *D_8007B720;
+
 extern u8 D_8007B92D[];
 void func_8004BF20(void);
 
