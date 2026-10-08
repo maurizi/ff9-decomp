@@ -1458,7 +1458,7 @@ void func_8002EDFC(MenuList *, s32, s32, s32, s32);
 void func_8002EE8C(MenuList *, s32);
 void func_8002F044(MenuList *, s32);
 void func_8002F0EC(MenuList *, s32);
-void func_8002F344(MenuList *, MenuView *);
+MenuView *func_8002F344(MenuList *, MenuView *);
 void func_8002F40C(MenuList *, RECT *, RECT *);
 void func_8002F488(s32);
 void func_8002F514(s32);

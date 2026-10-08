@@ -2589,7 +2589,21 @@ void func_8002F284(MenuList *arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F344);
+MenuView *func_8002F344(MenuList *m, MenuView *v) {
+    s32 q;
+    if (m->unk8 & 2) {
+        q = (m->unk9 + 12) / 15;
+        v->unk0 = q;
+        v->unk1 = m->unkC + (m->unk3 - v->unk0);
+        v->unk2 = m->unk9 - v->unk0 * 15 + 7;
+    } else {
+        s32 n = m->unk9;
+        v->unk2 = m->unkD - n;
+        v->unk0 = (n + 14) / 15;
+        v->unk1 = m->unkC;
+    }
+    return v;
+}
 
 void func_8002F40C(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
