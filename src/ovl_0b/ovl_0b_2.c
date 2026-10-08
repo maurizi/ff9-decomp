@@ -4386,7 +4386,42 @@ s32 func_800EFB3C(s32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EFD1C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EFF14);
+void func_800EFF14(void) {
+    u8 old = D_80104FF0.unk6;
+    BtlUnit *u;
+    BtlUnit *p;
+    s32 n;
+    if (D_80104FF0.unk9 != 0) {
+        if (old != 0) {
+            if ((D_80104FF0.unk24->unk68 >> 29) & 1) {
+                u = D_80104FF0.unk24;
+            } else {
+                u = BtlFindTargetCursor();
+            }
+            func_800F142C();
+            u->unk68 |= 0x20000000;
+            D_80104FF0.unk6 = 0;
+        } else {
+            p = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+            u = BtlFindTargetCursor();
+            n = 0;
+            D_80104FF0.unk24 = u;
+            func_800F142C();
+            for (; p != NULL; p = p->unk0) {
+                if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == (u->unk68 & 1) && (!(p->unk3C & 0x100) || D_80104FF0.unkB != 0)) {
+                    p->unk68 |= 0x20000000;
+                    n++;
+                }
+            }
+            if (n != 0) {
+                D_80104FF0.unk6 = 1;
+            }
+        }
+        if (old != D_80104FF0.unk6) {
+            func_8002F488(0x67);
+        }
+    }
+}
 
 s32 func_800F0118(void) {
     Unk800FD56C *e = &D_800FD56C[D_80104FF0.unk1];

@@ -1188,9 +1188,9 @@ typedef struct {
     u8 unk4;
     u8 pad5;
     u8 unk6;
-    s8 unk7;
-    s8 unk8;
-    s8 unk9;
+    u8 unk7;
+    u8 unk8;
+    u8 unk9;
     u8 unkA;
     u8 unkB;
     u8 unkC;
@@ -1207,6 +1207,7 @@ typedef struct {
     s16 unk1A;
     s32 unk1C;
     BtlUnit *unk20;
+    BtlUnit *unk24; /* last target */
 } Unk80104FF0;
 extern Unk80104FF0 D_80104FF0;
 extern u8 D_80104FFF;
