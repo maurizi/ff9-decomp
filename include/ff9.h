@@ -70,7 +70,8 @@ typedef struct {
                 * bits 12-16: ability table row */
     u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
     u8 unk39[5]; /* equipment item ids (0xFF = none) */
-    u8 pad3E[0x58 - 0x3E];
+    u16 unk3E;
+    u8 pad40[0x58 - 0x40];
     u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
     u32 unk88[2]; /* support abilities equipped: bit (id - 0xC0) */
 } Character; /* 0x90 */
@@ -1324,6 +1325,13 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+s32 func_80033964(u32);
+s32 func_8003502C(u8 *, s32);
+typedef struct {
+    u8 unk0;
+    u8 pad1[5];
+} Unk8006DD88;
+extern Unk8006DD88 D_8006DD88[];
 void func_8002C210(void);
 void func_8002E490(void);
 void func_800225BC(u8 *);

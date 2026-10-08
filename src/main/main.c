@@ -3607,7 +3607,19 @@ u8 func_80034A30(Character *a) {
     return (s32)((a->unk34 >> 12) & 0x1F) < 8;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034A64);
+s32 func_80034A64(s32 ch, s32 lv, u8 add) {
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    Unk8006DD88 *e = &D_8006DD88[func_80033964((c->unk34 >> 12) & 0x1F)];
+    s32 r;
+    if (add) {
+        c->unk3E += func_8003502C(c->unk39, 0);
+    }
+    r = e->unk0 + lv / 10 + (c->unk3E >> 5);
+    if (r >= 51) {
+        r = 50;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034B50);
 
