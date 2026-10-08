@@ -313,7 +313,21 @@ s32 func_800D73E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7414);
+s32 func_800D7414(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    if (arg0 == 0) {
+        *arg4 = 4;
+    } else if (arg0 == 1) {
+        arg1[0] = arg4[0];
+        arg1[1] = arg4[1];
+        if (func_800D8A64(arg1[0]) == 0 || arg1[1] == arg0) {
+            return 1;
+        }
+        return 0;
+    } else {
+        return func_800D8CB4(arg1, arg2, arg3);
+    }
+    return 0;
+}
 
 s32 func_800D74B8(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
