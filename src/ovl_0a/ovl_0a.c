@@ -1951,7 +1951,69 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD884);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BDC44);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BDED4);
+s32 func_800BDED4(u8 *arg0, BgSprt **arg1) {
+    Unk800C9DA4Hdr *h;
+    Unk800C9DB4Cam *c;
+    s32 x;
+    s32 y;
+    u32 n;
+    u32 size;
+    u32 i;
+    Unk800C9DB4Obj *o;
+    Unk800C9DB4Obj *objs;
+    Unk800C9DB4Obj *p;
+
+    h = D_800C9DA4.unk10;
+    func_800C0BCC(D_800CA068.unk75);
+    c = &((Unk800C9DB4Cam *)((u8 *)h + h->unk18))[D_800CA068.unk75];
+    x = (c->unk28 + c->unk2A) / 2;
+    D_800CA068.unk4.unk0 = (D_800CA068.unkA4 = x);
+    D_800CA068.unk4.unk2 = (D_800CA068.unkA6 = (c->unk2C + c->unk2E) / 2);
+    x -= 160;
+    h->unk30 = h->unk24 - x;
+    n = h->unk6;
+    objs = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
+    size = n * 3;
+    y = D_800CA068.unk4.unk2 - 112;
+    h->unk32 = h->unk26 - (s16)y;
+    D_800C9DA4.unk1C = arg0;
+    while (size / 4 * 4 != size) {
+        size++;
+    }
+    D_800C9DA4.unk20 = arg0 + size;
+    size += n;
+    while (size / 4 * 4 != size) {
+        size++;
+    }
+    *arg1 = (BgSprt *)(arg0 + size);
+    for (i = 0; i < 4; i++) {
+        D_800CA068.unkA8[i][0] = 0;
+        D_800CA068.unkA8[i][1] = 0;
+        D_800CA068.unkB8[i][0] = c->unk24;
+        D_800CA068.unkB8[i][1] = c->unk26;
+        D_800CA068.unkC8[i] = 0x100;
+        D_800CA068.unkD0[i] = 0x100;
+    }
+    for (i = 0; i < n; i++) {
+        o = &objs[i];
+        D_800C9DA4.unk1C[i * 3 + 0] = 0x80;
+        D_800C9DA4.unk1C[i * 3 + 1] = 0x80;
+        D_800C9DA4.unk1C[i * 3 + 2] = 0x80;
+        D_800C9DA4.unk20[i] = 0;
+        p = o;
+        if (func_800BD130(p, *arg1, arg1) != 1) {
+            return 0;
+        }
+        o->unk10 = -0x8000;
+        p->unk12 = 0x7FFF;
+        o->unk14 = -0x8000;
+        p->unk16 = 0x7FFF;
+    }
+    D_800CA068.unk73 = 0;
+    D_800CA068.unk72 = 0;
+    D_800CA068.unk0 &= ~0xC00;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BE158);
 
