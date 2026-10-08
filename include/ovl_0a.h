@@ -244,19 +244,46 @@ typedef struct {
     u8 pad30[0x34 - 0x30];
 } Unk800C9DB4Cam; /* 0x34 */
 
+/* sequence header (func_800BD3A0): offsets from the header start */
+typedef struct {
+    u8 pad0[6];
+    u16 unk6; /* track count */
+    u8 pad8[4];
+    s32 unkC; /* -> u32 table, 16-byte stride */
+    s32 unk10; /* -> track table, 0x38-byte stride */
+} Unk800C9DA4Hdr;
+
+typedef struct {
+    u8 unk0;
+    u8 pad1[0x38 - 1];
+} Unk800C9DA4Trk; /* 0x38 */
+
+typedef struct {
+    u32 unk0;
+    u8 pad4[0xC];
+} Unk800C9DA4Tbl; /* 0x10 */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 pad2[2];
+    s32 unk4;
+    s32 unk8;
+} Unk800C9DA4Ent; /* 0xC */
+
 typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
     s32 unkC;
-    s32 unk10;
+    Unk800C9DA4Hdr *unk10;
     s32 unk14;
     u8 *unk18;
     u8 *unk1C; /* 3 bytes per entry */
     u8 *unk20;
     u8 unk24;
     u8 pad25[3];
-    void *unk28;
+    Unk800C9DA4Ent *unk28;
     s32 unk2C;
     s32 unk30;
     s32 unk34;
