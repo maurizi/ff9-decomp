@@ -2528,7 +2528,81 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1E14);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1F98);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C20BC);
+/* closest point to arg0 on segment arg1-arg2 -> arg3; returns squared distance */
+s32 func_800C20BC(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, SVECTOR *arg3, s16 *arg4) {
+    SVECTOR c;
+    s32 ta;
+    s32 tb;
+    s32 s;
+    s32 dx;
+    s32 dy;
+    s32 dz;
+    s16 px;
+    s16 py;
+    s16 pz;
+    s16 ax;
+    s16 ay;
+    s16 az;
+    s16 bx;
+    s16 by;
+    s16 bz;
+
+    px = arg0->vx;
+    ax = arg1->vx;
+    bx = arg2->vx;
+    py = arg0->vy;
+    ay = arg1->vy;
+    by = arg2->vy;
+    pz = arg0->vz;
+    az = arg1->vz;
+    bz = arg2->vz;
+    ta = (px - ax) * (bx - ax);
+    ta += (py - ay) * (by - ay);
+    ta += (pz - az) * (bz - az);
+    if (ta <= 0) {
+        c.vx = arg1->vx;
+        c.vy = arg1->vy;
+        c.vz = arg1->vz;
+        if (ta == 0) {
+            *arg4 = 1;
+        } else {
+            *arg4 = 0;
+        }
+    } else {
+        tb = (px - bx) * (ax - bx);
+        tb += (py - by) * (ay - by);
+        tb += (pz - bz) * (az - bz);
+        if (tb <= 0) {
+            c.vx = arg2->vx;
+            c.vy = arg2->vy;
+            c.vz = arg2->vz;
+            if (tb == 0) {
+                *arg4 = 1;
+            } else {
+                *arg4 = 0;
+            }
+        } else {
+            while (ta > 0x10000 || tb > 0x10000) {
+                ta >>= 1;
+                tb = tb >> 1;
+            }
+            s = ta + tb;
+            c.vx = arg1->vx + (arg2->vx - arg1->vx) * ta / s;
+            c.vy = arg1->vy + (arg2->vy - arg1->vy) * ta / s;
+            c.vz = arg1->vz + (arg2->vz - arg1->vz) * ta / s;
+            *arg4 = 1;
+        }
+    }
+    dx = c.vx - arg0->vx;
+    dy = c.vy - arg0->vy;
+    dz = c.vz - arg0->vz;
+    arg3->vx = c.vx;
+    arg3->vy = c.vy;
+    s = dx * dx;
+    s += dy * dy;
+    arg3->vz = c.vz;
+    return s + dz * dz;
+}
 
 s32 func_800C2390(VECTOR *arg0, SVECTOR *arg1, s32 arg2, VECTOR *arg3) {
     VECTOR a;
