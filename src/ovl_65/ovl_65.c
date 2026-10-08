@@ -719,7 +719,22 @@ void func_801F2834(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F28F0);
+void func_801F28F0(void) {
+    Popup *p;
+    s32 i;
+
+    for (p = D_801F7A78.unk258, i = 0; i < 4; p++, i++) {
+        if (D_801F7A78.unk14[i] != 0) {
+            if (p->unk0 == 0) {
+                if (p->unk14 != 0) {
+                    func_801F2A6C(p);
+                }
+            } else if (p->unk2 != 0 && func_801F2AC8(p) == 4) {
+                func_801F2AAC(p);
+            }
+        }
+    }
+}
 
 void func_801F29BC(s32 arg0) {
     Character *m = D_8006794C->unk1C->unk54C[arg0];
