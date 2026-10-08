@@ -3377,11 +3377,25 @@ void func_80034404(s32 i) {
     c->unk88[0] = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034430);
+s32 func_80034430(s32 ch, s32 id) {
+    return func_80034430_inline(ch, id);
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800344C0);
+u8 *func_800344C0(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    if (i < 0) {
+        return NULL;
+    }
+    return &D_8006794C->unk1C->unk3C[ch].unk58[i];
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034584);
+s32 func_80034584(s32 ch, s32 id) {
+    s32 i = func_80034430_inline(ch, id);
+    if (i < 0) {
+        return -1;
+    }
+    return D_8006794C->unk1C->unk3C[ch].unk58[i];
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034648);
 

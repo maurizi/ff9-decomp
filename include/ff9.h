@@ -535,7 +535,8 @@ typedef struct {
     u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
     u8 *unk18;
-    u8 pad1C[0x24 - 0x1C];
+    u8 pad1C[0x20 - 0x1C];
+    s32 unk20;
     s32 unk24;
     u32 unk28;
     u32 unk2C;
@@ -547,7 +548,8 @@ typedef struct {
     u8 pad44[0x4C - 0x44];
     s32 unk4C;
     s32 unk50;
-    u8 pad54[0x5C - 0x54];
+    u8 pad54[0x58 - 0x54];
+    s32 unk58;
     s32 unk5C;
     s32 unk60;
     s32 unk64;
@@ -587,7 +589,9 @@ typedef struct {
     u16 unkD4;
     s16 unkD6;
     s16 unkD8;
-    u8 padDA[0xE0 - 0xDA];
+    u8 padDA[0xDC - 0xDA];
+    u16 unkDC;
+    u16 unkDE;
     s16 unkE0;
     u16 unkE2;
     s16 unkE4;
@@ -699,7 +703,7 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
-    u8 padC[0x10 - 0xC];
+    s32 unkC;
     s32 unk10;
     s32 unk14;
     s32 unk18;
@@ -1744,6 +1748,26 @@ typedef struct {
     u8 unk1; /* ap needed? */
 } AbilityEntry;
 extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34 bits 12-16 */
+
+/* Inlined copy of func_80034430 (ability slot of a character). */
+static inline s32 func_80034430_inline(s32 ch, s32 id) {
+    s32 row;
+    s32 i;
+    if (ch >= 9) {
+        return -1;
+    }
+    row = ((D_8006794C->unk1C->unk3C + ch)->unk34 >> 12) & 0x1F;
+    if (row >= 16) {
+        return -1;
+    }
+    for (i = 0; i < 0x30; i++) {
+        if (D_8006CB28[row][i].unk0 == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void func_80025ED4(s32, s32, s32, s32, s32, s32, s32);
 extern u8 D_8007AF00;
 void func_80024428(s32, s32, s32, void *);
