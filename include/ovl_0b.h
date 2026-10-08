@@ -801,6 +801,18 @@ typedef struct {
 
 extern BtlUnit *D_800FE484;
 
+typedef struct {
+    u8 pad0[0xC];
+    u8 unkC[0x18 - 0xC];
+    u8 unk18;
+    u8 unk19;
+    u8 unk1A;
+    u8 unk1B;
+    u8 unk1C;
+    u8 unk1D;
+    u8 pad1E[0x20 - 0x1E];
+} Unk800C412C; /* 0x20 */
+
 typedef struct Unk800FE3B8 {
     u8 pad0[0x50];
     s16 unk50;
@@ -808,14 +820,19 @@ typedef struct Unk800FE3B8 {
     u8 unk53;
     u8 pad54[0x5C - 0x54];
     u8 unk5C;
-    u8 pad5D;
+    u8 unk5D;
     s16 unk5E;
     s16 unk60;
-    u8 pad62[0xA8 - 0x62];
+    u8 pad62[0x68 - 0x62];
+    Unk800C412C unk68[2];
     s32 unkA8;
-    u8 padAC[0xB9 - 0xAC];
+    s32 unkAC;
+    s32 unkB0;
+    u8 padB4[0xB8 - 0xB4];
+    u8 unkB8;
     u8 unkB9;
-    u8 padBA[0xD0 - 0xBA];
+    u8 padBA[0xCC - 0xBA];
+    BtlUnit *unkCC;
 } Unk800FE3B8;
 extern Unk800FE3B8 D_800FE3B8;
 
@@ -832,14 +849,6 @@ typedef struct {
 extern Unk800FDF30 D_800FDF30;
 
 
-typedef struct {
-    u8 pad0[0x19];
-    u8 unk19;
-    u8 unk1A;
-    u8 unk1B;
-    u8 unk1C;
-    u8 unk1D;
-} Unk800C412C;
 
 typedef struct {
     u8 pad0[0xC];
@@ -1765,16 +1774,32 @@ typedef struct {
     u8 unk5;  /* h */
 } Unk800CCD00_1;
 
-extern u8 D_800FE488[0x64];
-extern u8 D_800FE4CE[]; /* inside D_800FE488 */
-extern u8 D_800FE4E2[]; /* inside D_800FE488 */
+typedef struct {
+    u8 pad0[8];
+    s32 unk8;
+    u8 padC[0x10 - 0xC];
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    s32 unk2C;
+    u8 pad30[0x45 - 0x30];
+    u8 unk45;
+    s16 unk46[5];
+    s16 unk50[5];
+    s16 unk5A[5];
+} Unk800FE488; /* 0x64 */
+extern Unk800FE488 D_800FE488;
 extern u32 D_800F8EA4[][4];
 extern void (*D_800F8E94[])(void);
 extern RECT D_800FDE58;
 u8 *func_800F511C(u8 *, RECT *);
 void func_800C7B84(BtlUnit9C *);
 void func_800DCB20(BtlUnit9C *, s32);
-void func_800C57A4(s32, u8 *);
+void func_800C57A4(BtlUnit *, s16 *);
 s32 func_800CF690(void);
 s32 func_800D7D64(s32, Unk800D955C *, s32, s32 *, s32 *);
 s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
@@ -1953,14 +1978,13 @@ s32 func_800D9D58(Unk800D8124 *, s32, s32 *);
 s32 func_800D8ACC(s32, s32);
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    BtlUnit *unk0;
+    BtlUnit *unk4;
     u8 pad8[0x44 - 8];
-    s32 unk44;
+    BtlUnit *unk44;
     u8 pad48[0x4C - 0x48];
 } Unk800FE368;
 extern Unk800FE368 D_800FE368;
-extern u8 D_800FE4D8[];
 extern u8 D_80104E76;
 void func_80063864(void *, void *, s32);
 void func_800C94B8(void);
@@ -2190,5 +2214,12 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     }
     return 0;
 }
+
+/* -O1 unit (ovl_0b_o1.c) */
+s32 func_800CA2B0(s32);
+void func_800C416C(s32, Unk800C412C *, u8 *);
+s32 func_800CF9DC(s32, s32, s32, s32);
+s32 func_800CF708(s32, s32);
+s32 func_800CF6B8(s32, s32);
 
 #endif
