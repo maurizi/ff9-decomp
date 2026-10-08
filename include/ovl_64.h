@@ -13,7 +13,6 @@ extern s8 D_80071E38;
 void func_80056228(void);
 void func_80065238(s32, s32);
 extern s8 D_80071E30;
-void func_80015C38(const char *, ...); /* printf */
 void func_80022F1C(s32, void (*)());
 void func_80022FD0(s32);
 void func_80023018(void);

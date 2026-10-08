@@ -8,8 +8,6 @@
 
 /* main exe: candidates for ff9.h */
 void func_800552B8(s32);
-void func_80019194(void);
-void func_80032098(void);
 void func_8001D9CC(s32, s32, s32, s32, s32);
 s32 func_80022AC4(s32);
 void func_80022ED4(s32);

@@ -3,7 +3,7 @@
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF284);
 
 void func_801EF45C(void) {
-    Unk11C0 *s = D_8006794C->unk1C->unk8E4->unk11C0;
+    Unk11C0 *s = D_8006794C->unk1C->unk8E4.ovl65->unk11C0;
     FileEntry *e;
 
     func_8001CFB4();
@@ -75,16 +75,16 @@ s32 func_801EF6F8(void) {
         while (func_800217C4(D_8006794C->unk1C->unk854)) {
         }
     }
-    D_8006794C->unk1C->unk8E4->unk1354->unk4 = D_80067948;
-    func_8001C750(D_8006794C->unk1C->unk8E4->unk1354->unk4, 0);
+    D_8006794C->unk1C->unk8E4.ovl65->unk1354->unk4 = D_80067948;
+    func_8001C750(D_8006794C->unk1C->unk8E4.ovl65->unk1354->unk4, 0);
     return 0;
 }
 
 s32 func_801EF814(void) {
-    Unk1354 *p = D_8006794C->unk1C->unk8E4->unk1354;
+    Unk1354 *p = D_8006794C->unk1C->unk8E4.ovl65->unk1354;
     if (p->unk4 != 0) {
         func_8001C784((void *)p->unk4);
-        D_8006794C->unk1C->unk8E4->unk1354->unk4 = 0;
+        D_8006794C->unk1C->unk8E4.ovl65->unk1354->unk4 = 0;
     }
     return 0;
 }

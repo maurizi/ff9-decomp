@@ -97,6 +97,16 @@ typedef struct {
     s32 unkC;
 } Unk880; /* copied as a block by ovl_39 */
 
+/* GameData.unk8E4: per-module context; its layout depends on the loaded
+ * overlay. */
+struct WorldMap; /* ovl_0c, include/ovl_0c.h */
+struct FieldMap; /* ovl_0a, include/ovl_0a.h */
+typedef union {
+    Unk8E4 *ovl65;
+    struct WorldMap *world;
+    struct FieldMap *field;
+} Unk8E4Ptr;
+
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
@@ -143,7 +153,7 @@ typedef struct {
     s32 unk808;
     u8 pad80C[0x814 - 0x80C];
     void *unk814;
-    u8 pad818[0x81C - 0x818];
+    s32 unk818;
     u16 unk81C[2];
     u16 unk820[2];
     u8 unk824[2];
@@ -170,12 +180,12 @@ typedef struct {
     s16 unk8B2;
     u16 unk8B4[2];
     u8 pad8B8[0x8BC - 0x8B8];
-    s32 unk8BC;
+    s32 (*unk8BC)(void);
     u8 pad8C0[0x8C4 - 0x8C0];
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
     u8 pad8CC[0x8E4 - 0x8CC];
-    Unk8E4 *unk8E4;
+    Unk8E4Ptr unk8E4;
 } GameData;
 
 typedef struct {
@@ -1515,5 +1525,10 @@ void func_80033AF4(s32, s32);
 /* ---- hoisted for the world map (ovl_0c) ---- */
 void func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
 extern s32 D_80073990;
+void func_80019194(void);
+void func_80032098(void);
+void func_80023A4C(void);
+void func_8001CD04(s32);
+void func_80015C38(const char *, ...); /* printf */
 
 #endif
