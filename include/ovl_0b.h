@@ -595,7 +595,9 @@ typedef struct {
     u32 unk0_29 : 1;
     u32 unk0_30 : 1;
     u32 unk0_31 : 1;
-    u8 pad4[0xE - 4];
+    u8 pad4[0xA - 4];
+    u8 unkA; /* mp cost */
+    u8 padB[0xE - 0xB];
     u16 unkE;
 } Battle16CC; /* 0x10 */
 
@@ -1849,6 +1851,7 @@ void func_800EBA10(Window *);
 
 /* main exe: candidates for ff9.h */
 void func_800562E0(s32 *, s32);
+void func_80029058(s32, s32, s32, u8 *, s32);
 void func_8002DD54(void);
 s32 func_80033A1C(Character *);
 

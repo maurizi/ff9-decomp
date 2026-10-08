@@ -4546,7 +4546,24 @@ void func_800F3EDC(s32 arg0) {
     func_800F2ED0(arg0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F3F10);
+void func_800F3F10(void) {
+    s32 i;
+    Unk800F412C *e = D_80105078->unk4;
+    for (i = 0; i < 5; i++) {
+        if (e->unkC != 0) {
+            e->unk8 += e->unkC->unk0;
+            e->unkA += e->unkC->unk2;
+            if (++e->unk6 >= e->unkC->unk4) {
+                e->unk6 = 0;
+                if (e->unkC->unk8 != 0) {
+                    e->unkC->unk8(e);
+                }
+                e->unkC = 0;
+            }
+        }
+        e++;
+    }
+}
 
 void func_800F3FDC(void) {
     Unk80105078 *p = D_80105078;

@@ -2377,7 +2377,30 @@ s32 func_800CA774(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA7CC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CAAD0);
+s32 func_800CAAD0(BtlScript *arg0, BtlUnit *arg1) {
+    BtlUnit9C *m = arg1->unk9C;
+    if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->unkA0->unk3A >= m->unkC->unk2) {
+        m->unkC = (BtlUnit9CC *)arg1->unkA4[(arg1->unk68 >> 18) & 1];
+        arg1->unkA0->unk3A = 0;
+        arg0->unk0 |= 4;
+    }
+    if ((arg1->unk3C & 0x02001002) || ((arg0->unk0 >> 2) & 1)) {
+        if (D_800F78A4->unk0->unk0 != -1) {
+            return 0;
+        }
+        if (arg0->unk21 != 0) {
+            return 0;
+        }
+        if (D_8006794C->unk1C->unk8E4.battle->unk151C != 0) {
+            return 0;
+        }
+        if (!((arg0->unk0 >> 3) & 1)) {
+            func_800B3C00();
+        }
+        arg0->unk4 = 0;
+    }
+    return 0;
+}
 
 s32 func_800CAC24(BtlScript *arg0) {
     if (D_800F78A4->unk0->unk0 == -1) {
