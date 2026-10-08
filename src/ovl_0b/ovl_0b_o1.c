@@ -102,9 +102,38 @@ void func_800C412C(Unk800C412C *arg0, u8 *arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C416C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C493C);
+void func_800C493C(s16 *arg0) {
+    s32 t;
+    if (D_800FE488.unk24 != 0) {
+        D_800FE488.unk24--;
+        t = func_800CF9DC(D_800FE488.unk2C, D_800FE488.unk28, D_800FE488.unk24, D_800FE488.unk20) * 2;
+        if (t != 0) {
+            if (!(D_800FE488.unk1C & 1)) {
+                arg0[1] += func_800CF708(0, t) * 4 - t;
+            }
+            if (!(D_800FE488.unk1C & 2)) {
+                arg0[0] += func_800CF708(0, t) * 4 - t;
+                arg0[2] += func_800CF708(0, t) * 4 - t;
+            }
+        }
+    }
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C4A3C);
+void func_800C4A3C(s16 *arg0, s16 *arg1) {
+    s32 dx = arg0[0] - arg1[0];
+    s32 dz = arg0[2] - arg1[2];
+    s32 d = func_800CF6B8(dx * dx + dz * dz, 0xF);
+    u32 v = 0;
+    if (D_800FE488.unk10 != 0) {
+        v = ((func_8004BB80(D_800FE488.unk14 << 6) * d) >> 13) * (D_800FE488.unk10 & 0xF0) >> 11;
+        D_800FE488.unk14 += D_800FE488.unk10 & 0xF;
+    } else if (D_800FE3B8.unkAC != 0) {
+        v = ((func_8004BB80(D_800FE3B8.unkB0 << 6) * d) >> 13) * (D_800FE3B8.unkAC & 0xF0) >> 11;
+        D_800FE3B8.unkB0 += D_800FE3B8.unkAC & 0xF;
+    }
+    arg0[1] += v;
+    arg1[1] += v;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C4B9C);
 
@@ -116,7 +145,22 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C52B4);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C5530);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C57A4);
+void func_800C57A4(BtlUnit *arg0, s16 *arg1) {
+    s32 i;
+    if (arg0->unk68 & 1) {
+        s32 h = arg0->unk9C->unk8->unk8;
+        s16 y = arg0->unk8C[1] >> 16;
+        arg1[0] = y - (h >> 2);
+        arg1[1] = y - (h >> 1);
+        arg1[2] = y - (h - (h >> 2));
+    } else {
+        for (i = 0; i < 3; i++) {
+            arg1[i] = arg0->unk9C->unk20[D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
+        }
+    }
+    arg1[3] = arg0->unk8C[0] >> 16;
+    arg1[4] = arg0->unk8C[2] >> 16;
+}
 
 s32 func_800C5890(s32 arg0) {
     s32 ret = 0;

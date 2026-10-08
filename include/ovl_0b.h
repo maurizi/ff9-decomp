@@ -802,8 +802,15 @@ typedef struct {
 extern BtlUnit *D_800FE484;
 
 typedef struct {
-    u8 pad0[0xC];
-    u8 unkC[0x18 - 0xC];
+    s16 unk0[4];
+    u8 unk8;
+    u8 unk9;
+    u8 padA[0xC - 0xA];
+} Unk800C412C0; /* 0xC */
+
+typedef struct {
+    Unk800C412C0 unk0;
+    Unk800C412C0 unkC;
     u8 unk18;
     u8 unk19;
     u8 unk1A;
@@ -826,7 +833,7 @@ typedef struct Unk800FE3B8 {
     u8 pad62[0x68 - 0x62];
     Unk800C412C unk68[2];
     s32 unkA8;
-    s32 unkAC;
+    u32 unkAC;
     s32 unkB0;
     u8 padB4[0xB8 - 0xB4];
     u8 unkB8;
@@ -1778,7 +1785,7 @@ typedef struct {
     u8 pad0[8];
     s32 unk8;
     u8 padC[0x10 - 0xC];
-    s32 unk10;
+    u32 unk10;
     s32 unk14;
     s32 unk18;
     s32 unk1C;
@@ -2217,7 +2224,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 
 /* -O1 unit (ovl_0b_o1.c) */
 s32 func_800CA2B0(s32);
-void func_800C416C(s32, Unk800C412C *, u8 *);
+void func_800C416C(s32, Unk800C412C *, Unk800C412C0 *);
 s32 func_800CF9DC(s32, s32, s32, s32);
 s32 func_800CF708(s32, s32);
 s32 func_800CF6B8(s32, s32);
