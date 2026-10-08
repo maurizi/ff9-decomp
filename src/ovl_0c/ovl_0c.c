@@ -904,7 +904,7 @@ void func_800AE784(s16 arg0, s16 arg1) {
     }
 }
 
-s32 func_800AE7F0(void) {
+s32 func_800AE7F0() {
     s16 v = D_800CE0F0->unk2;
 
     if (v == 0) {
@@ -1037,7 +1037,73 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEC74);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEF10);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF08C);
+void func_800AF08C(void) {
+    SVECTOR n;
+    VECTOR a;
+    VECTOR b;
+    VECTOR dv;
+    SVECTOR s;
+    s32 z;
+    s32 base;
+    s32 d;
+    s32 ang;
+    Unk16D8 *e;
+    Unk8004AB64 *act;
+    u8 f;
+
+    VectorNormalS((VECTOR *)D_800CE1D0, &n);
+    base = (-ratan2(n.vz, n.vx) + 0x400) % 4096;
+    func_80064CDC(10, 100);
+    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+        act = e->unk4;
+        if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1) && (u8)func_800BBE24(&act->unk14, &a, &b, &z)) {
+            f = 1;
+            dv.vx = act->unk14.vx - (D_800CE198[0] - n.vx);
+            dv.vz = act->unk14.vz - (D_800CE198[2] - n.vz);
+            if (dv.vx > D_800D32D8 - 0x8000) {
+                dv.vx -= D_800D32D8;
+            }
+            if (dv.vz > D_800D32DC - 0x8000) {
+                dv.vz -= D_800D32DC;
+            }
+            if (dv.vx < 0x8000 - D_800D32D8) {
+                dv.vx = D_800D32D8 + dv.vx;
+            }
+            if (dv.vz < 0x8000 - D_800D32DC) {
+                dv.vz = D_800D32DC + dv.vz;
+            }
+            ang = -ratan2(dv.vz, dv.vx) + 0x400;
+            d = ang % 4096;
+            d = d - base;
+            if (d < -0x800) {
+                d += 0x1000;
+            }
+            if (d > 0x800) {
+                d -= 0x1000;
+            }
+            if (((d < 0 ? -d : d) < 400 || func_800AE7F0(ang) != 0) && (b.vz >= 2001 && b.vz < 29000) && b.vx > -20000 && b.vx < 20000 && b.vy > -20000 && b.vy < 20000 && a.vx > -29000 && a.vx < 29000 && a.vz > -29000 && a.vz < 29000) {
+                s.vx = a.vx;
+                s.vy = a.vy;
+                s.vz = a.vz;
+                func_800AF414(act, b.vz >> 3);
+                func_800AF66C(act, &s, z);
+                if (act->unk11 == 8) {
+                    f = 0;
+                }
+                if (act->unk11 == 1 || act->unk11 == 2) {
+                    if ((u8)D_800CE3C4 >= 1 && (u8)D_800CE3C4 <= 6) {
+                        f = 0;
+                    }
+                }
+                if (D_800CCCC0[act->unk11].unkC < 4 && f) {
+                    func_800AF8C0(act, &s, b.vz);
+                }
+            }
+        }
+    }
+    func_80064C24(0);
+    SetFarColor(0, 0, 0);
+}
 
 void func_800AF414(Unk8004AB64 *arg0, s32 arg1) {
     s16 col[3];
