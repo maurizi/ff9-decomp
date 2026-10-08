@@ -2355,7 +2355,33 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6410);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E651C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6624);
+void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    RECT b;
+    RECT a;
+    DR_MOVE *p;
+    s32 m = arg0 % arg4;
+    s32 h;
+    p = (DR_MOVE *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(p + 2);
+    h = arg4 - m;
+    if (m != 0) {
+        a.x = arg5;
+        a.y = arg6;
+        a.w = arg3;
+        a.h = m;
+        SetDrawMove(p, &a, arg1, arg2 + h);
+        AddPrim(&D_800F78A4->unk20[0xFFF], p);
+    }
+    p++;
+    if (h != 0) {
+        b.x = arg5;
+        b.y = arg6 + m;
+        b.w = arg3;
+        b.h = h;
+        SetDrawMove(p, &b, arg1, arg2);
+        AddPrim(&D_800F78A4->unk20[0xFFF], p);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6764);
 
