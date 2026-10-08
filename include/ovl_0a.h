@@ -76,7 +76,8 @@ typedef struct {
 
 typedef struct {
     u32 unk0; /* flags */
-    u8 pad4[0xC - 4];
+    u8 pad4[4];
+    void *unk8; /* model (Unk800C95C8) */
     FieldEvtObj *unkC;
 } FieldEvtCtx;
 
@@ -109,7 +110,7 @@ typedef struct {
     u8 unk4B; /* unk58 entry count */
     void *unk4C; /* file 0x1Exxxx */
     struct Unk800AB0B0 *unk50;
-    u8 *unk54; /* = unk90 */
+    struct FieldActorInfo *unk54; /* = unk90 */
     struct FieldTrig *unk58; /* = unk270 */
     u8 unk5C;
     u8 pad5D[3];
@@ -704,6 +705,29 @@ typedef struct {
     u16 unk4; /* count */
     u16 unk6; /* offset of the id list */
 } Unk800C6C04E;
+
+/* per-actor extension (FieldActorInfo.unk10) */
+typedef struct FieldActorExt {
+    u32 unk0; /* flags */
+    u8 pad4[4];
+    Unk800C95C8 *unk8;
+    u8 padC[0xF8 - 0xC];
+    FieldEvtCtx *unkF8;
+    u8 padFC[0x10C - 0xFC];
+    u8 unk10C; /* rgb */
+    u8 unk10D;
+    u8 unk10E;
+    u8 unk10F; /* frames left */
+} FieldActorExt;
+
+/* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
+typedef struct FieldActorInfo {
+    u32 unk0; /* flags */
+    u8 pad4;
+    u8 unk5;
+    u8 pad6[0x10 - 6];
+    FieldActorExt *unk10;
+} FieldActorInfo;
 
 /* object model slot (func_8001E350) */
 typedef struct {

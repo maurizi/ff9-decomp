@@ -550,7 +550,78 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AB3CC);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800ABA98);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC02C);
+void func_800AC02C(FieldEvtCtx **arg0, s32 arg1) {
+    s32 i;
+    s32 j;
+    FieldEvtCtx *c;
+    FieldActorInfo *info;
+    FieldActorExt *x;
+    u32 vis;
+    u32 chg;
+    u32 f4;
+    u32 f2;
+    s32 upd;
+    s32 n;
+    FieldActorExt *y;
+
+    for (i = arg1 - 1; i >= 0; i--) {
+        c = arg0[i];
+        if (c == NULL) {
+            continue;
+        }
+        upd = 0;
+        info = &D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk54[c->unkC->unk3B];
+        vis = c->unk0 & 0x10000;
+        chg = (info->unk0 & 0x10000) ^ vis;
+        f4 = c->unk0 & 0x40000;
+        f2 = c->unk0 & 0x20000;
+        if (chg || f4 || f2) {
+            upd = 1;
+        }
+        if (upd) {
+            if (c->unk0 & 0x10000) {
+                func_800BA190(c->unk8, 1);
+            } else {
+                func_800BA190(c->unk8, 0);
+            }
+            if (vis) {
+                func_800BA3CC(c->unk8, ((s32)(info->unk5 << 24) >> 19) & 0xFFE0);
+            }
+            if (c->unk0 & 0x20000) {
+                c->unk0 &= ~0x20000;
+            }
+            c->unk0 &= ~0x40000;
+            if (chg || f4) {
+                c->unk0 |= 0x20000;
+            }
+            info->unk0 = (info->unk0 & ~0x10000) | vis;
+        }
+    }
+    for (i = arg1 - 1; i >= 0; i--) {
+        c = arg0[i];
+        if (c == NULL) {
+            continue;
+        }
+        info = &D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk54[c->unkC->unk3B];
+        x = info->unk10;
+        if (x != NULL && (x->unk0 & 0x01000000)) {
+            func_800BC33C(x->unk8);
+            y = x;
+            func_800B7F14(x->unk8, x->unkF8->unkC->unk3A);
+            n = x->unk8->unk8->unk3;
+            for (j = 0; j < n; j++) {
+                func_800B61A4(y->unk8, j & 0xFF);
+                func_800BC600(y->unk8, j & 0xFF);
+            }
+            if (x->unk10F != 0) {
+                for (j = n - 1; j >= 0; j--) {
+                    func_800B9E4C(y->unk8, j & 0xFF, x->unk10C, x->unk10D, x->unk10E);
+                }
+                x->unk10F--;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC344);
 
