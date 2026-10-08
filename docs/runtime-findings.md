@@ -21,7 +21,7 @@ Format:
 - confidence: medium. Probably the libetc vsync counter that `VSync()` polls, which would make `func_80016620`
   the vsync callback and `func_80016114` the interrupt dispatcher. Check them against the PsyQ libetc source.
 
-## Overlay usage seen at runtime  (status: proposed)
+## Overlay usage seen at runtime  (status: applied — config/overlays.us.txt purpose notes)
 - `ovl_14` (+ `ovl_64`) is resident during the boot logos / intro (Squaresoft logo, opening FMV), so it's probably the
   opening/logo sequencer, not a minigame.
 - `ovl_39` is resident on the title screen's Continue → memory-card slot and file select screens, which confirms "save / load".
@@ -30,7 +30,7 @@ Format:
   Opening Item loads `ovl_37`, which confirms "menu: items".
 - evidence: `tools/emu.py ovl` at save states `title_screen`, `field_burmecia_vault`, `menu_main`, `menu_items`.
 
-## Battle save states / ovl_0b residency  (status: proposed)
+## Battle save states / ovl_0b residency  (status: applied — config/overlays.us.txt purpose notes)
 - `ovl_0b` (0x800A7000, `.text` 0x800A859C-0x800F51E8) is resident in battle (100% .text match, replacing `ovl_0a`),
   which confirms "battle". It's already resident on the black frame right after the encounter swirl.
 - Disc 2 states: `field_iifa_outer_root` (field, on the outer root below the Iifa Tree trunk, random-encounter screen),
