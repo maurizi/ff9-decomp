@@ -1678,9 +1678,9 @@ void func_800C2250(BtlUnit *arg0, u16 arg1) {
 void func_800C22CC(BtlUnit *arg0, u16 arg1, u8 arg2) {
     SVECTOR v;
     if (arg1 != 0xFFFF) {
-        v.vx = arg0->unk8C >> 16;
-        v.vy = arg0->unk90 >> 16;
-        v.vz = arg0->unk94 >> 16;
+        v.vx = arg0->unk8C[0] >> 16;
+        v.vy = arg0->unk8C[1] >> 16;
+        v.vz = arg0->unk8C[2] >> 16;
         func_800AD90C(0xD000, arg1, 0, func_800E976C((s32)&v), arg2);
     }
 }
@@ -2072,7 +2072,22 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CB884);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBA58);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBBB0);
+void func_800CBBB0(BtlScript *arg0, BtlUnit *arg1) {
+    s16 *p = arg0->unk28;
+    s16 a = arg1->unk9C->unk54;
+    s16 v;
+    s16 r;
+    p[0] = a;
+    v = arg0->unk8[1] | (arg0->unk8[2] << 8);
+    if (v == -1) {
+        r = 0x1000;
+    } else {
+        r = a * v / 0x1000;
+    }
+    p[1] = r - p[0];
+    arg0->unk10 = 1;
+    p[2] = arg0->unk8[3];
+}
 
 s32 func_800CBC38(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;

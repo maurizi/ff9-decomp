@@ -82,9 +82,7 @@ typedef struct BtlUnit9C {
 } BtlUnit9C;
 
 typedef struct BtlUnit98 {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
+    s32 unk0[3];
 } BtlUnit98;
 
 typedef struct {
@@ -134,9 +132,7 @@ typedef struct BtlUnit {
     s16 unk82;
     u8 pad84[0x86 - 0x84];
     s16 unk86[3];
-    s32 unk8C; /* position, 16.16 */
-    s32 unk90;
-    s32 unk94;
+    s32 unk8C[3]; /* position, 16.16 */
     struct BtlUnit98 *unk98;
     BtlUnit9C *unk9C;
     BtlUnitA0 *unkA0;
@@ -213,7 +209,7 @@ typedef struct BtlScript {
     u8 unk25;
     u8 unk26;
     u8 unk27;
-    s16 unk28[3];
+    s16 unk28[8]; /* per-command work area */
 } BtlScript;
 
 /* D_800F78A4->unkC */
@@ -1638,6 +1634,8 @@ typedef struct {
     s32 unkC;
 } Unk800EE37C;
 void func_800EE37C(Unk800EE37C *);
+s32 func_800D8A94(s32, s32);
+s32 func_800DA064(u8 *, s32, s32);
 
 /* main exe: candidates for ff9.h */
 void func_800562E0(u8 *, s32);
