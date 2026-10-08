@@ -103,7 +103,7 @@ typedef struct {
     u8 pad1[7];
     u8 unk8;
     u8 unk9;
-    u8 padA;
+    u8 unkA;
     u8 unkB;
     u8 unkC;
     u8 padD[4];
@@ -621,6 +621,8 @@ extern u8 D_800CE0ED;
 extern u8 D_800CE0EE;
 extern s32 D_800CE108[];
 extern s32 D_800CE198[];
+extern s32 D_800CE1D0[];
+extern s32 D_800D3730[];
 extern s32 D_800CE27C;
 extern s32 D_800CF408;
 extern u8 D_800D30C4;
