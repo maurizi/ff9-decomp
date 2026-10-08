@@ -856,8 +856,8 @@ s32 func_800219FC(Unk80021938 *a) {
     return r;
 }
 
-s32 func_80021A1C(u16 *a) {
-    return *a & 1;
+s32 func_80021A1C(Unk80021938 *a) {
+    return a->unk0 & 1;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021A28);
@@ -953,7 +953,18 @@ void func_80022050(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002208C);
+Unk80021938 *func_8002208C(void) {
+    Unk80021938 *p = func_80021E20();
+    if (func_800219FC(p) == 0) {
+        return NULL;
+    }
+    if (func_80021A1C(p) != 0) {
+        func_80021C20(p);
+    }
+    while (func_80021FB4() > 0) {
+    }
+    return p;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800220E8);
 
@@ -2039,7 +2050,13 @@ void func_8002C084(s32 i) {
     D_80077170 = D_80077148.unkC[i];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C0DC);
+void func_8002C0DC(s32 i) {
+    u8 *prev = D_80077148.unkC[i ^ 1];
+    D_80077148.unk0 = i;
+    D_80077148.unk4 = (D_80077148.unkC[1] - D_80077148.unkC[0]) - (D_80077170 - prev);
+    D_8007716C = D_80077148.unk14[i];
+    D_80077170 = D_80077148.unkC[i];
+}
 
 void func_8002C138(u8 a) {
     D_80077148.unk0 = a;
@@ -2472,7 +2489,7 @@ s32 func_8002F8A8(void (*a)(void)) {
     return old;
 }
 
-u8 func_8002F8BC(void) {
+u8 func_8002F8BC() {
     u8 old = D_80077C78.unk4;
     D_80077C78.unk4 = 0;
     return old;
@@ -2549,9 +2566,19 @@ void func_8002FA30(void) {
     func_8002FB64(0xC);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FA50);
+void func_8002FA50(s32 a) {
+    func_8002F93C(0);
+    func_8002F8BC(1);
+    func_8002FC8C(1, 1, 0, 0xFFFFFF);
+    func_8002FC8C(1, 1, a, 0);
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FAAC);
+void func_8002FAAC(s32 a) {
+    func_8002F93C(0);
+    func_8002F8BC(1);
+    func_8002FC8C(1, 1, 0, 0);
+    func_8002FC8C(1, 1, a, 0xFFFFFF);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FB08);
 
@@ -5788,7 +5815,11 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800616F8);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800618C0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061B20);
+void func_80061B20(s32 *a) {
+    func_80060938();
+    func_800616F8(a[0], a[1], a[2], a[3]);
+    D_80080A70.unk0 &= ~D_80083168.unkC;
+}
 
 void func_80061B78(s32 *a) {
     func_80060938();
@@ -5881,7 +5912,19 @@ s32 func_80062560(u8 a) {
     return n;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800625A0);
+Unk6 *func_800625A0(s32 id, s32 n) {
+    s32 k = 0;
+    s32 i;
+    for (i = 0; i < 0x69; i++) {
+        if (D_80083248.unk6[i].unk0 == (u8)id) {
+            if (n == k) {
+                return &D_80083248.unk6[i];
+            }
+            k++;
+        }
+    }
+    return (Unk6 *)-1;
+}
 
 s32 func_800625F8(void) {
     s32 n = 0;

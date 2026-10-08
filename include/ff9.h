@@ -1271,6 +1271,9 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_800616F8(s32, s32, s32, s32);
+s32 func_80021A1C(Unk80021938 *);
+u8 func_8002F8BC(); /* called with an argument it ignores */
 extern void (*D_8006CA64[])(void);
 extern s32 D_8006CA40[];
 void func_80032708(void);
