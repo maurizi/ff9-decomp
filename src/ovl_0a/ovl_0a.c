@@ -920,7 +920,42 @@ u8 *func_800B3300(Unk800B3254 *arg0, u8 **arg1, u8 **arg2) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3378);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3444);
+s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
+    s32 start;
+    s32 size;
+    s32 end;
+
+    if (arg0 == 0 && arg1 == 0) {
+        if (arg2 != 0) {
+            if (!(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100)) {
+                start = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20;
+                if (start == 0) {
+                    start = D_80067948;
+                }
+                if (func_800221C0(start, 0x5000) != 0) {
+                    func_80022390(func_8002208C()->unk4);
+                }
+                if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20 != 0) {
+                    start = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20;
+                    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20 = func_80050BE0(start);
+                    size = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20 - start;
+                } else {
+                    start = D_80067948;
+                    end = func_80050BE0(start);
+                    size = end - start;
+                    D_80067948 = end;
+                }
+                func_800AC620();
+                func_80022280(start, size);
+                D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100;
+            }
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x200;
+        } else {
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x200;
+        }
+    }
+    return 0;
+}
 
 void func_800B3684(void) {
     if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x200) {

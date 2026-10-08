@@ -712,6 +712,15 @@ extern Unk800C9DF4 D_800CAAD8[24];
 Unk800C9E00 *func_800C1F98(Unk800C9DF4 *, Unk800C9E00 *, s32);
 u8 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s32);
 s32 func_800C4EC8(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+} Unk8002208C;
+Unk8002208C *func_8002208C(void);
+s32 func_800221C0(s32, s32);
+void func_80022280(s32, s32);
+s32 func_80050BE0(s32);
+
 extern RECT *D_800C9EA0;
 extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;
