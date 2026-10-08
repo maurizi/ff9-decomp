@@ -992,7 +992,7 @@ extern s32 D_8007AE54;
 extern u8 D_8007954E;
 extern u8 D_8007AD1E;
 extern s32 D_8007BBA8[8];
-extern s32 D_8007BC0C;
+extern u8 *D_8007BC0C; /* help-arrow animation script */
 extern s32 D_8007BC08;
 extern s32 D_8007BBF0;
 extern volatile s32 D_800809E0;
@@ -2378,4 +2378,11 @@ extern s32 D_8007BC00; /* colour */
 extern s32 D_8007BBF8; /* half width */
 extern s32 D_8007BBFC; /* height */
 extern s32 D_8007BC04;
+extern s32 D_8007AEC8;
+extern u8 D_8006E6D8[];
+extern u8 D_8006E690[];
+extern u8 D_8006E6F0[];
+Unk8004AB64 *func_8004B040(s32);
+void func_8004ACA4(Unk8004AB64 *, s32, s32);
+void func_8004F9A0(void);
 #endif
