@@ -1779,7 +1779,62 @@ void func_800B8ABC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B8B10);
+void func_800B8B10(void) {
+    RECT r;
+    u16 off;
+    s32 src;
+    s32 i;
+    s32 j;
+    Unk800CFF18 *e;
+    s32 a;
+    s32 b;
+    u16 *dst;
+
+    off = 0;
+    src = 0;
+    func_8001D898(&r, 0, 8);
+    r.h = 1;
+    D_800D1FD0 = 0;
+    D_800CFE98[0] = 0;
+    D_800CFE98[1] = 0;
+    for (i = 7; i >= 0; i--) {
+        D_800CFE88[i] = 0;
+    }
+    for (i = 0; i < 18; i++) {
+        e = &D_800CFF18[i];
+        r.x = e->unk0 + e->unk4;
+        r.y = e->unk2;
+        r.w = e->unk6;
+        r.h = 1;
+        if (r.w == 0) {
+            r.w = 1;
+        }
+        if (i < 18) {
+            if (i >= 15) {
+                dst = &D_800CFFD0[0][off];
+                func_80015C28((u8 *)dst, (u8 *)func_800B8388(D_800CF428, 2) + src, (u16)e->unk6 * 2);
+                src += (u16)e->unk6 * 2;
+            } else {
+                StoreImage(&r, (u32 *)&D_800CFFD0[0][off]);
+                DrawSync(0);
+            }
+        } else {
+            StoreImage(&r, (u32 *)&D_800CFFD0[0][off]);
+            DrawSync(0);
+        }
+        for (j = 0; j < r.w; j++) {
+            a = (j + r.w) % r.w;
+            b = (j + r.w - 1) % r.w;
+            D_800CFFD0[0][off + a + r.w] = D_800CFFD0[0][off + j];
+            D_800CFFD0[1][off + b + r.w] = D_800CFFD0[0][off + j];
+            D_800CFFD0[1][off + b] = D_800CFFD0[0][off + j];
+        }
+        D_800CFE20[i] = off;
+        D_800CFE70[i] = 0;
+        D_800CFE48[i] = 0;
+        off += (u16)e->unk6 * 2;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B8DC0);
 

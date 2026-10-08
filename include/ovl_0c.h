@@ -605,7 +605,7 @@ extern s32 D_800CF420[];
 extern MATRIX D_800CF4E0;
 extern MATRIX D_800CF500;
 extern MATRIX D_800CF560;
-extern u8 D_800CFFD0[];
+extern u16 D_800CFFD0[2][0x800]; /* palettes, [1] = shifted copy */
 /* texture animation entries (func_800B94F8) */
 typedef struct {
     s16 unk0;
