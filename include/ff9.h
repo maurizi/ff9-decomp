@@ -1177,10 +1177,12 @@ void func_80021340(void);
 typedef struct {
     s32 unk0;
     s32 unk4;
-    u8 pad8[0xC - 8];
+    s16 unk8; /* fine tune */
+    s16 unkA; /* base note */
     u16 unkC;
     u16 unkE;
 } Unk8005EBB4;
+extern u32 D_8006F410[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 

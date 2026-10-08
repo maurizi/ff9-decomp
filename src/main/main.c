@@ -7512,7 +7512,47 @@ s32 func_8005DD54(s32 a, s32 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005DD7C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005DFE0);
+u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out) {
+    s32 n = note - p->unkA;
+    s32 freq;
+    u32 f;
+
+    while (n < 0) {
+        n += 12;
+    }
+    n %= 12;
+    if (p->unk8 == 0) {
+        freq = D_8006F410[n] << 8;
+    } else if (p->unk8 < 0) {
+        freq = (D_8006F410[n] * (u16)p->unk8) >> 8;
+    } else {
+        freq = (D_8006F410[n] * p->unk8) >> 7;
+        freq += D_8006F410[n] << 8;
+    }
+    f = fine;
+    if (f != 0) {
+        if (f < 0x80) {
+            *out = ((u32)freq * f) >> 7;
+        } else {
+            *out = (((u32)freq * f) >> 8) - freq;
+        }
+    }
+    if (note < p->unkA) {
+        do {
+            *out >>= 1;
+            freq >>= 1;
+        } while ((note += 12) < p->unkA);
+    } else {
+        n = (note - p->unkA) / 12;
+        if (n != 0) {
+            freq <<= n;
+            *out <<= n;
+        }
+    }
+    *out >>= 8;
+    freq >>= 8;
+    return freq;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E170);
 
