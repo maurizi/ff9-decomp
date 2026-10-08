@@ -1265,7 +1265,29 @@ s32 func_800230A0(void) {
     return (D_80076B0C >> 4) & 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800230B8);
+u8 func_800230B8(CdRequest *r) {
+    volatile s32 st = D_800761D0.unk0;
+    D_800761D0.unk1 = 0;
+    if (st == 0) {
+        if (!(r->unk0 & 4)) {
+            goto run;
+        }
+        if (r->unk18 != NULL) {
+            r->unk18(&D_800761D0);
+        }
+        return 1;
+    }
+    if (D_800761D0.unk2 == 0) {
+        D_800761D0.unk968 = *r;
+        D_800761D0.unk2 = 1;
+        if (D_800761D0.unk0 == 0) {
+        run:
+            func_8002267C(r);
+        }
+        return 1;
+    }
+    return 0;
+}
 
 void func_800231A0(u8 com, u8 *param) {
     void (*fn)(s32);
