@@ -2284,7 +2284,27 @@ s32 func_8002C1EC(void) {
     return D_80077150 = VSync(-1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C210);
+void func_8002C210(void) {
+    s32 p;
+    s32 i;
+    u32 v;
+    D_80077178 = 1;
+    v = D_800739A0[0];
+    D_80077528 = v;
+    D_80077520 = v;
+    D_80077524 = v;
+    func_80019750(&D_8007717C);
+    for (p = 0; p < 2; p++) {
+        func_8002C52C(p);
+        for (i = 0; i < 23; i++) {
+            func_8002C5CC(p, i);
+            func_8002C740(p, i, D_8006BC40[i].unk4);
+            func_8002C974(p, i, D_8006BC40[i].unk0);
+            func_8002C870(p, i, D_8006BC40[i].unk5);
+            func_8002C8AC(p, i, D_8006BC40[i].unk6);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C308);
 

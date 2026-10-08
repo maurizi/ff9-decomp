@@ -1334,6 +1334,15 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_8002C974(s32, s32, s32);
+typedef struct {
+    s32 unk0;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 pad7;
+} Unk8006BC40;
+extern Unk8006BC40 D_8006BC40[23];
 typedef struct {
     u8 x0, y0, x1, y1, x2, y2, x3, y3;
 } Unk80068F48;
@@ -1477,7 +1486,16 @@ void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
 void func_80027710(s32, s32, s32, void *, s32);
 void func_8002AD38(u8 *, u8 *);
-s32 func_8002AE7C(s32);
+s32 func_8002AE7C(u8 *);
+typedef struct {
+    u8 pad0[4];
+    u8 unk4; /* advance width */
+    u8 pad5[3];
+} Glyph8;
+extern Glyph8 D_80068690[]; /* indexed by ASCII code */
+extern Glyph8 D_80068890; /* & */
+extern Glyph8 D_80068CE0; /* . */
+extern Glyph8 D_80068DC8; /* _ */
 void func_8002B524(s32, s32, s32, s32, s32);
 void func_8002B56C(s32, s32, s32, u8 *, s32);
 void func_8002B5FC(s32, s32, s32, u8 *, s32);
