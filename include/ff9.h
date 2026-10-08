@@ -253,7 +253,8 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* VSync(-1) at last update */
-    u8 pad[0x404];
+    u8 unk4[0x400];
+    u8 *unk404; /* write pointer into unk4 */
     UnkTimer unk408;
 } Unk80076B60;
 extern Unk80076B60 D_80076B60;
@@ -270,6 +271,20 @@ extern Unk80076F68 D_80076F68;
 
 /* ---- CD / streaming state near libcd ---- */
 
+/* CD request, queued by func_800230B8 (0x24 bytes) */
+typedef struct {
+    u8 unk0; /* command; bit 2: run unk18 directly when idle */
+    u8 pad1[3];
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    void (*unk10)(u8, u8 *);
+    void (*unk14)();
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+} CdRequest;
+
 typedef struct {
     u8 unk0;
     u8 pad1;
@@ -281,11 +296,13 @@ typedef struct {
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
     u8 unk944;
-    u8 pad945[0x958 - 0x945];
+    u8 pad945[0x948 - 0x945];
+    s32 unk948;
+    u8 pad94C[0x958 - 0x94C];
     void (*unk958)();
     void (*unk95C)(void *);
     u8 pad960[0x968 - 0x960];
-    u8 unk968[4]; /* passed to func_8002267C */
+    CdRequest unk968; /* passed to func_8002267C */
 } Unk800761D0;
 extern Unk800761D0 D_800761D0;
 
@@ -1198,7 +1215,20 @@ void func_8001DAA4(s32, s32, s32, RECT *);
 void func_8001DCB8(void);
 FileEntry *func_8001E218(s32, s32);
 void func_80021640(s32);
-void func_8002177C(void *, s32, s32, void *, s32, s32, s32);
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    void *unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    void *unk20;
+} CdReadCtx; /* GameData.unk854 */
+void func_80024070(void);
+void func_8002C5CC(s32, s32);
+CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, s32);
 s32 func_800217C4(void *);
 void func_80021C60(void);
 void func_80021CDC(s32);
@@ -1370,6 +1400,9 @@ void func_80036528(void);
 void func_8002F9F0(void);
 
 void func_8002267C(void *);
+u8 func_800230B8(CdRequest *);
+void func_800231A0(u8, u8 *);
+void func_800227C8();
 s32 func_8005DD54(s32, s32);
 s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
