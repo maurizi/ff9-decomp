@@ -673,7 +673,7 @@ typedef struct {
     s32 unk4;
     u8 *unk8; /* help text */
     void (*unkC)(void);
-    u8 pad10[0x18 - 0x10];
+    RECT unk10;
     u8 unk18;
     u8 unk19;
     u8 unk1A;
@@ -1271,6 +1271,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+extern s32 D_800809C0[];
+extern s32 D_800809D8; /* = D_800809C0[6] */
 void func_800616F8(s32, s32, s32, s32);
 s32 func_80021A1C(Unk80021938 *);
 u8 func_8002F8BC(); /* called with an argument it ignores */
