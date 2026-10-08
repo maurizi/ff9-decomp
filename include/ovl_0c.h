@@ -704,6 +704,11 @@ typedef struct {
 
 extern u16 D_800CFE88[8];
 extern Unk800CFEA0 D_800CFEA0[8];
+extern u16 D_800CFEF8;
+extern u16 D_800CFF02;
+extern void *D_800CE3F4;
+extern s8 D_800CFE98[2];
+extern s8 D_800CCFAC[];
 extern Unk800CF450 *D_800CF450;
 extern u16 (*D_800D32E4)[12];
 extern s32 D_800D32F8[3];
@@ -785,6 +790,20 @@ extern s32 D_800CCF70; /* debug: last update step */
 extern s32 D_800CE264;
 extern u8 D_800CF44C;
 extern u8 D_800CF47D;
+/* pause screen (func_800ACEEC) */
+typedef struct {
+    u8 pad0[0x75C];
+    u8 unk75C; /* text width */
+    u8 unk75D; /* text height */
+} Unk800686D0;
+extern Unk800686D0 D_800686D0;
+extern TILE D_800CE0C8;
+extern DR_TPAGE D_800CE0D8;
+extern u32 D_800CE0E0;
+extern u8 D_800CE098[];
+void func_80023F60(s32);
+void func_8005562C(s32);
+void func_80055698(s32);
 extern s32 D_800CF4B0;
 extern u8 D_800CF440;
 extern s16 D_800CF442;
