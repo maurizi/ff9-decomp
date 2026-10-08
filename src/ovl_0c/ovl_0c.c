@@ -196,7 +196,24 @@ s32 func_800A9A04(WorldMapObj *arg0, u16 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A9A44);
+void func_800A9A44(void) {
+    GameData *gd = D_8006794C->unk1C;
+    RECT *r;
+    u16 h;
+    u32 *dst;
+
+    if (gd->unk8E4.world->unk10 != -1) {
+        r = &D_800CE0B8[D_800CCA1C];
+        h = 0xDA;
+        r->x = D_8006794C->unk10[gd->unk8].clip.x;
+        r->y = D_8006794C->unk10[D_8006794C->unk1C->unk8].clip.y;
+        dst = (u32 *)(D_80067944 + 0x91800);
+        r->h = h;
+        r->w = ((u32)D_8006794C->unk1C->unk8E4.world->unk10 >> 1) / h + 1;
+        StoreImage(r, dst);
+        DrawSync(0);
+    }
+}
 
 void func_800A9B54(void) {
     u8 *dst;
@@ -2910,7 +2927,20 @@ void func_800CBB4C(s32 arg0) {
     func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->unk17, c->unk1F);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CBDF8);
+void func_800CBDF8(RECT *r, s32 otz) {
+    TileWords *p;
+
+    setlen(D_80077170, 3);
+    p = (TileWords *)D_80077170;
+    p->rgbc = 0x62000000;
+    p->xy = ((r->x + 8) & 0xFFFF) | (r->y << 16);
+    p->wh = 0x30002E;
+    D_80077170 = (u8 *)(p + 1);
+    addPrim(&D_8007716C[otz], p);
+    SetDrawTPage(D_80077170, 1, 1, 0);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += 8;
+}
 
 void func_800CBF18(void) {
     u8 buf[16];

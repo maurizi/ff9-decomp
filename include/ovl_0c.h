@@ -526,6 +526,18 @@ extern MATRIX D_800CF4E0;
 extern MATRIX D_800CF500;
 extern MATRIX D_800CF560;
 extern u8 D_800CFFD0[];
+/* texture animation entries (func_800B94F8) */
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6; /* frame count */
+    s16 unk8; /* speed */
+} Unk800CFF18; /* 0xA */
+extern Unk800CFF18 D_800CFF18[];
+extern s16 D_800CFE48[];
+extern u8 D_800CFE70[];
+extern u16 D_800CFE20[];
 extern Unk800D2FF8 D_800D2FF8[17];
 extern s8 D_800D3E74;
 extern char D_800A8098[];
