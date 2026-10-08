@@ -558,7 +558,8 @@ typedef struct {
     u16 unk96;
     u16 unk98;
     u16 unk9A;
-    u8 pad9C[0xA0 - 0x9C];
+    u16 unk9C;
+    u16 unk9E;
     u16 unkA0;
     u16 unkA2[4]; /* loop counters */
     u16 unkAA[4];
@@ -1294,10 +1295,10 @@ void func_8002417C(void);
 extern Unk80035B90Data D_80010E48;
 void func_80035B24(Unk80035B90 *, Unk80035B90Data *);
 s32 func_800565DC(s32 *);
-extern s32 *D_800809DC;
+extern u16 *D_800809DC;
 extern s32 *D_800809E4;
 extern s32 *D_80083148;
-extern s32 *D_800809E8;
+extern u8 *D_800809E8;
 extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
 void func_800616F8(s32, s32, s32, s32);

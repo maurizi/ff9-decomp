@@ -5288,7 +5288,21 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B790);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B870);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B9E8);
+void func_8005B9E8(u8 *a) {
+    u32 bit = 0x100;
+    u32 mask = D_80080A70.unk0;
+    u32 i;
+    AkaoChannel *c = D_8007E3D8;
+    for (i = 0; i < 16; i++, c++, bit <<= 1) {
+        if (mask & bit) {
+            if (!(c->unk28 & 0x2000000)) {
+                c->unk9C = *a << 8;
+                c->unk9E = 0;
+                c->unk11C |= 3;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BA60);
 
@@ -5437,7 +5451,27 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CDE4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CE04);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CE8C);
+void func_8005CE8C(u32 *a, u32 *b, u32 n) {
+    u32 t0, t1, t2, t3;
+    for (n >>= 2; n >> 1; n -= 2) {
+        t0 = a[0];
+        t1 = b[0];
+        t2 = a[1];
+        t3 = b[1];
+        b[0] = t0;
+        b[1] = t2;
+        a[0] = t1;
+        a[1] = t3;
+        a += 2;
+        b += 2;
+    }
+    if (n != 0) {
+        t0 = *a;
+        t1 = *b;
+        *b = t0;
+        *a = t1;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CF04);
 
