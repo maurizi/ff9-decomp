@@ -132,6 +132,32 @@ typedef struct {
 } Unk801FA078;
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2[0x20 - 2];
+    u16 unk20;
+    u16 unk22;
+    u16 unk24;
+    s16 unk26;
+    u16 unk28;
+    u16 unk2A;
+    u8 unk2C[0x14];
+} Unk801F9BEC;
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    Unk6 unk6[0x69];
+    u16 unk27C;
+    u16 unk27E;
+} CardData; /* Tetra Master cards (func_80062824) */
+
+/* other overlay */
+u16 func_800B5084(void);
+u16 func_800B5094(void);
+
+typedef struct {
     EventVars unk0;
     s32 unk800; /* D_8007AEC4 */
 } SaveEvents;
@@ -149,7 +175,7 @@ typedef struct {
 
 /* game data part of a save block */
 typedef struct {
-    u8 pad0[0x40];
+    Unk801F9BEC unk0;
     SaveEvents unk40;
     u8 pad844[0x850 - 0x844];
     SaveParty unk850;
@@ -185,7 +211,7 @@ extern u16 D_801FDEFE;
 void func_801F96CC(void);
 void func_801F8DA4(u8 *);
 u16 func_801F973C(u8 *, s32);
-void func_801F9B00(void);
+void func_801F9B00(Unk801F9BEC *);
 void func_801F9D48(SaveEvents *);
 void func_801F9DF8(SaveEvents *);
 void func_801F99FC(SaveParty *);
@@ -227,7 +253,7 @@ s32 func_801FAB08(void);
 void func_801FAE1C(void);
 void func_801F7780(s32);
 u8 func_801F79F4(s8);
-void func_801F9C58(void *, void *);
+void func_801F9C58(CardData *, CardData *);
 s32 func_801FA37C(s32);
 s32 func_801FA4E4(s32, s32, s32);
 s32 func_801FA5D0(s32, s32, s32);
@@ -285,17 +311,6 @@ extern void (*D_801FAFC4[])(void);
 extern void (*D_801FAFA8[])(void);
 extern void (*D_801FB014[])(void);
 
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 pad2[0x20 - 2];
-    u16 unk20;
-    u16 unk22;
-    u16 unk24;
-    u8 unk26;
-    u8 pad27;
-    u16 unk28;
-    u16 unk2A;
-} Unk801F9BEC;
+
 
 #endif

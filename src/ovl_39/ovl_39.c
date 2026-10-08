@@ -849,7 +849,7 @@ void func_801F95E4(void) {
 }
 
 void func_801F963C(SaveData *d) {
-    func_801F9B00();
+    func_801F9B00(&d->unk0);
     func_801F9D48(&d->unk40);
     func_801F9904(&d->unk850);
     func_801FA01C(&d->unkD88);
@@ -941,7 +941,31 @@ void func_801F99FC(SaveParty *s) {
     gd->unk56C = s->unk520;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9B00);
+void func_801F9B00(Unk801F9BEC *h) {
+    GameData *gd;
+    s32 i;
+
+    gd = D_8006794C->unk1C;
+    h->unk0 = D_8006794C->unk8;
+    h->unk1 = D_8006794C->unkA;
+    for (i = 0x1D; i >= 0; i--) {
+        h->unk2[i] = 0;
+    }
+    if (D_801FB1A8.unk0 == 2) {
+        h->unk20 = func_800B5084();
+        h->unk22 = func_800B5094();
+    } else {
+        h->unk20 = gd->unkC;
+        h->unk22 = gd->unk3A;
+    }
+    h->unk24 = gd->unkE;
+    h->unk26 = (s8)gd->unk848;
+    h->unk28 = gd->unk7DC;
+    h->unk2A = gd->unk7DE;
+    for (i = 0x13; i >= 0; i--) {
+        h->unk2C[i] = 0;
+    }
+}
 
 void func_801F9BEC(Unk801F9BEC *p) {
     GameState *gs = D_8006794C;
@@ -958,7 +982,23 @@ void func_801F9BEC(Unk801F9BEC *p) {
     gd->unk7DE = p->unk2A;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9C58);
+void func_801F9C58(CardData *d, CardData *s) {
+    s32 i;
+
+    d->unk0 = s->unk0;
+    d->unk2 = s->unk2;
+    d->unk4 = s->unk4;
+    for (i = 0; i < 0x69; i++) {
+        d->unk6[i].unk0 = s->unk6[i].unk0;
+        d->unk6[i].unk1 = s->unk6[i].unk1;
+        d->unk6[i].unk2 = s->unk6[i].unk2;
+        d->unk6[i].unk3 = s->unk6[i].unk3;
+        d->unk6[i].unk4 = s->unk6[i].unk4;
+        d->unk6[i].unk5 = s->unk6[i].unk5;
+    }
+    d->unk27C = s->unk27C;
+    d->unk27E = s->unk27E;
+}
 
 void func_801F9CE8(void *p) {
     func_801F9C58(p, func_80062824());
