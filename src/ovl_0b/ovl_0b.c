@@ -3676,7 +3676,47 @@ void func_800CDC68(BtlUnit *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CDD68);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CDEF0);
+void func_800CDEF0(BtlCmd *arg0) {
+    u8 *s = NULL;
+    u8 buf[32];
+    u16 t;
+    switch (arg0->unkE) {
+    case 0xE:
+    case 0xF:
+        s = func_800CD75C(arg0->unkF);
+        break;
+    case 0x32:
+        s = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->unk8->unkE;
+        break;
+    default:
+        if (arg0->unkF < 0xC0) {
+            t = D_800F7124[arg0->unkF];
+            switch (t) {
+            case 0:
+                break;
+            case 0xFF:
+                s = func_800EA0B4(arg0->unkF);
+                break;
+            case 0xFE:
+                s = buf;
+                func_8002BD54(s, func_800EA0B4(arg0->unkF));
+                func_8002AD38(s, (u8 *)func_800357C0(D_800F71E4, 0));
+                break;
+            default:
+                if (t < 0xC0) {
+                    s = func_800EA0B4(t);
+                } else {
+                    s = (u8 *)func_800357C0(D_800F71E4, (t & 0x3F) + 1);
+                }
+                break;
+            }
+        }
+        break;
+    }
+    if (s != NULL) {
+        func_800F4F44((s32)s, 1);
+    }
+}
 
 void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     s32 unused[4];

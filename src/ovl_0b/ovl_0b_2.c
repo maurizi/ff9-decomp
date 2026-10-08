@@ -5074,7 +5074,38 @@ void func_800F0904(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F0A54);
+void func_800F0A54(Window *arg0) {
+    s32 y1 = arg0->unk2 + 8;
+    s32 y2 = y1;
+    BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    s32 m;
+    u32 f;
+    u8 *name;
+    s32 c;
+    Window *w = arg0;
+    func_800269F4(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
+    m = func_8002BE88();
+    for (; u != NULL; u = u->unk0) {
+        name = func_800CD78C(u);
+        f = u->unk68;
+        if ((f >> 28) & 1) {
+            if (f & 1) {
+                if (u->unk28 != 0) {
+                    c = ((u16)(u->unk24->unk0 / 6) >= u->unk28) * 4;
+                } else {
+                    c = 3;
+                }
+                func_80029058(w->unk0 + 0x7A, y2, arg0->unk18, name, c);
+                y2 += 15;
+            } else {
+                c = ((u8)func_800C09A4(u, 0x100) != 0) * 2;
+                func_8002B5FC(w->unk0 + 0xC, y1, arg0->unk18, name, c);
+                y1 += 15;
+            }
+        }
+    }
+    func_8002BE98(m);
+}
 
 void func_800F0BE0(Window *arg0) {
     Window *w = arg0;
