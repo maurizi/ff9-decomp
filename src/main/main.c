@@ -4290,16 +4290,32 @@ void func_8004E924(void) {
     for (p = D_8007B9C0; p < D_8007B9C0 + 10; p++) {
         p->unk8 = 0;
     }
-    D_8007BB78 = 0;
+    D_8007BB78 = NULL;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004E958);
+void func_8004E958(void) {
+    Unk8007B9C0 *p;
+    Unk8007B9C0 *q;
+    for (p = D_8007B9C0; p < D_8007B9C0 + 8; p++) {
+        if (p != NULL && p->unk8 != 0) {
+            p->unk8 = 0;
+            if (func_8004EA3C() == p) {
+                func_8004EA30(p->unk0);
+            }
+            for (q = D_8007B9C0; q < D_8007B9C0 + 10; q++) {
+                if (q->unk8 != 0 && q->unk0 == p) {
+                    q->unk0 = NULL;
+                }
+            }
+        }
+    }
+}
 
-void func_8004EA30(s32 a) {
+void func_8004EA30(Unk8007B9C0 *a) {
     D_8007BB78 = a;
 }
 
-s32 func_8004EA3C(void) {
+Unk8007B9C0 *func_8004EA3C(void) {
     return D_8007BB78;
 }
 
@@ -4387,7 +4403,7 @@ Unk8007B9C0Sub *func_8004ED94(s32 i) {
     return r;
 }
 
-Unk8007B9C0 *func_8004EDD0(Unk8004EBC0 *r, s32 a, s32 idx, s32 flag) {
+Unk8007B9C0 *func_8004EDD0(Unk8004EBC0 *r, Unk8007B9C0 *a, s32 idx, s32 flag) {
     Unk8007B9C0 *e = &D_8007B9C0[idx];
     e->unk8 = 1;
     e->unk0 = a;
@@ -6949,7 +6965,24 @@ void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061EE4);
+void func_80061EE4(void) {
+    s32 a;
+    s32 b;
+    if (D_80083168.unk8 & 0x400) {
+        func_80060D1C(D_80083168.unk10, 1, 0x1100, 0x3100);
+        func_80060D1C(D_80083168.unk10 + 1, 2, 0x1900, 0x3900);
+        func_80060D1C(D_80083168.unk10 - 2, 1, 0x2100, 0x4100);
+        func_80060D1C(D_80083168.unk10 - 1, 2, 0x2900, 0x4900);
+        a = 0x4000;
+        b = 0x3100;
+    } else {
+        func_80060D1C(D_80083168.unk10, 1, 0x1100, 0x2100);
+        func_80060D1C(D_80083168.unk10 + 1, 2, 0x1900, 0x2900);
+        a = 0x2000;
+        b = 0x2100;
+    }
+    func_80061E1C(a, b, func_80062118);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061FBC);
 

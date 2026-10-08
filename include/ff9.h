@@ -505,7 +505,7 @@ extern u8 D_80077DBA;
 extern u8 D_80077DBB;
 extern u8 D_80077DB2;
 extern u8 D_80077DE0;
-extern s32 D_8007BB78;
+extern struct Unk8007B9C0 *D_8007BB78;
 extern s32 D_800834C8;
 extern s32 D_8006798C;
 extern u16 D_80073720;
@@ -1023,8 +1023,8 @@ typedef struct {
     s16 unk18;
 } Unk8007B9C0Sub;
 
-typedef struct {
-    s32 unk0;
+typedef struct Unk8007B9C0 {
+    struct Unk8007B9C0 *unk0; /* parent */
     s16 unk4; /* x */
     s16 unk6; /* y */
     s16 unk8;
@@ -1324,6 +1324,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_8004EA30(Unk8007B9C0 *);
+Unk8007B9C0 *func_8004EA3C(void);
 void func_800615F8(void);
 extern u8 D_8006F40C[];
 extern Unk80080A10 *D_800831C8[24];
@@ -1743,6 +1745,7 @@ s32 func_80061BC8(s32 *, s32);
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void func_800576BC(s32, s32);
 void func_80062118(void);
+void func_80061E1C(s32, s32, void (*)(void));
 void func_800621D4(void);
 
 /* ---- main batch 5 ---- */
