@@ -394,8 +394,11 @@ extern s32 D_80077150;
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2[6];
+    u8 pad2[2];
+    s32 unk4; /* free bytes in the packet buffer */
     s32 unk8;
+    u8 *unkC[2];   /* packet buffers */
+    u32 *unk14[2]; /* ordering tables */
 } Unk80077148;
 extern Unk80077148 D_80077148;
 
@@ -1255,6 +1258,7 @@ typedef struct {
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
+void func_8002C740(s32, s32, s32);
 typedef struct {
     u8 pad0[8];
     s32 unk8;
@@ -1556,8 +1560,12 @@ typedef struct {
     s32 unk8;
     u32 unkC;
     s32 unk10;
-    u8 pad14[0x34 - 0x14];
+    u8 pad14[0x28 - 0x14];
+    s32 unk28;
+    u8 pad2C[0x34 - 0x2C];
     u8 unk34[4];
+    s32 unk38;
+    u32 unk3C;
 } Unk80083168;
 u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
 void func_80060FA8(void);
@@ -1566,7 +1574,7 @@ void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
-void func_80061BC8(void *, s32);
+u32 func_80061BC8(u32 *, s32);
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void func_800576BC(s32, s32);
 void func_80062118(void);
@@ -1627,7 +1635,7 @@ void func_8002C8AC(s32, s32, s32);
 s32 func_80022B18(void);
 s32 func_80062560(u8);
 Unk6 *func_800625A0(s32, s32);
-void func_800626D0(s32, s32);
+s32 func_800626D0(s32, s32);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* collector points */
