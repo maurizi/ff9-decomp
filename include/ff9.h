@@ -324,7 +324,8 @@ typedef struct {
     u16 unk0; /* name offset into D_8006A218 */
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
-    u8 pad6[0xC - 6];
+    u8 pad6[0xB - 6];
+    u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
     u8 pad10[2];
@@ -1324,6 +1325,12 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+typedef struct {
+    u8 unk0[4]; /* stat bonuses */
+    u8 pad4[0xC - 4];
+} Unk8006D548;
+extern Unk8006D548 D_8006D548[];
+void func_80033BD0(u32);
 void func_8004EA30(Unk8007B9C0 *);
 Unk8007B9C0 *func_8004EA3C(void);
 void func_800615F8(void);

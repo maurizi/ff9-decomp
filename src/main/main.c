@@ -3283,7 +3283,21 @@ u8 func_80033A50(u32 x) {
     return tbl[i];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033AF4);
+void func_80033AF4(s32 slot, s32 ch) {
+    Character *old = D_8006794C->unk1C->unk54C[slot];
+    if (ch >= 9) {
+        ch = -1;
+    }
+    if (ch < 0) {
+        D_8006794C->unk1C->unk54C[slot] = NULL;
+    } else {
+        func_80033BD0(ch);
+        D_8006794C->unk1C->unk54C[slot] = &D_8006794C->unk1C->unk3C[ch];
+    }
+    if (old != D_8006794C->unk1C->unk54C[slot]) {
+        func_80033D1C(1);
+    }
+}
 
 void func_80033BD0(u32 i) {
     if (i < 9) {
