@@ -1674,7 +1674,7 @@ void func_8002705C(RECT *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-void func_8002709C(s32 arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+void func_8002709C(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     D_80077170 = func_80024EB4(arg0, &D_8007716C[otz], arg2, arg3, arg4, D_80077170);
 }
 
@@ -2792,7 +2792,7 @@ void func_8002E3F0(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
     arg0->unk22 = arg3;
 }
 
-void func_8002E400(s32 a, s32 b) {
+void func_8002E400(RECT *a, s32 b) {
     func_8002709C(a, b, 0, 0, (D_8006794C->unk24 >> 18) & 1);
 }
 
@@ -7883,7 +7883,35 @@ void func_800612D0(void) {
     func_80060938();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800612F0);
+void func_800612F0(s32 *a) {
+    Unk80083168 *d = &D_80083168;
+    s32 v = *a;
+    s32 l;
+    s32 r;
+    s32 pan;
+
+    d->unk48 = 0;
+    d->unk40 = v;
+    if (d->unkC == 0) {
+        return;
+    }
+    if (D_8008315C & 2) {
+        v = v * D_8006F640 >> 16;
+        func_80057640(d->unk10, v, v, 0);
+        func_80057640(d->unk10 + 1, v, v, 0);
+    } else if (d->unk8 & 1) {
+        v <<= 15;
+        v >>= 16;
+        func_80057640(d->unk10, v, 0, 0);
+        func_80057640(d->unk10 + 1, 0, v, 0);
+    } else {
+        pan = d->unk4D;
+        l = v * D_8006F540[pan] >> 16;
+        r = v * D_8006F540[pan ^ 0xFF] >> 16;
+        func_80057640(d->unk10, l, r, 0);
+        func_80057640(d->unk10 + 1, l, r, 0);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8006142C);
 

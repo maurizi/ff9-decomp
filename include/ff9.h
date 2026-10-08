@@ -450,7 +450,7 @@ void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
 void func_800235A0(u8, u8 *);
 void func_8002423C(s32, s32, s32, Character *);
-u8 *func_80024EB4(s32, u32 *, u8, u8, s32, u8 *);
+u8 *func_80024EB4(RECT *, u32 *, u8, u8, s32, u8 *);
 u8 *func_800253D4(RECT *, u32 *, u8, u8, s32, s32, u8 *);
 void func_80026BDC(RECT *, s32, u8, u8, s32);
 void func_80027568(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
@@ -1590,7 +1590,7 @@ void func_8002DD00(Window *);
 void func_8002DE10(Window *);
 void func_8002DE60(void);
 void func_8002DEE4(RECT *, s32, s32);
-void func_8002E040(RECT *, s32, s32, void *);
+void func_8002E040(RECT *, s32, s32, MenuList *);
 void func_8002E2E4(Window *, void (*)(Window *));
 void func_8002E2EC(Window *, void (*)(Window *));
 void func_8002E2F4(Window *, void (*)(Window *));
@@ -1875,6 +1875,11 @@ typedef struct {
     s32 unk34;
     u32 unk38;
     u32 unk3C;
+    s32 unk40; /* volume */
+    u8 pad44[4];
+    s32 unk48;
+    u8 pad4C;
+    u8 unk4D; /* pan */
 } Unk80083168;
 u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
 void func_80060FA8(void);
@@ -2036,6 +2041,12 @@ s32 func_80024030(void);
 s32 func_8002AA04(s32, u8 *, s32);
 extern s32 D_800704C0;
 extern u8 D_8006A218[]; /* item names */
+extern u8 D_8006ADAC[]; /* key item names */
+typedef struct {
+    s16 unk0; /* name offset into D_8006ADAC */
+    u8 pad2[6];
+} Unk8006B374;
+extern Unk8006B374 D_8006B374[];
 Unk16D8 *func_8004AE9C(void);
 extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
@@ -2165,4 +2176,11 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
     n->unk8 = D_8007AECC->unk15D4;
     D_8007AECC->unk15D4 = n;
 }
+void func_8002E718(RECT *, s32, MenuList *);
+void func_8002E7FC(RECT *, s32, MenuList *, s32);
+void func_80025108(RECT *, s32, s32, s32);
+void func_8002709C(RECT *, s32, u8, u8, s32);
+extern s32 D_8008315C;
+extern s16 D_8006F640;
+extern s16 D_8006F540[]; /* pan curve, 256 entries */
 #endif
