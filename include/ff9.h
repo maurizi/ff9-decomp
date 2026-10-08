@@ -1550,7 +1550,7 @@ u8 func_8002306C(void);
 void func_800239D0(void);
 void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
-void func_80027710(s32, s32, s32, void *, s32);
+s32 func_80027710(s32, s32, s32, void *, u8);
 void func_8002AD38(u8 *, u8 *);
 s32 func_8002AE7C(u8 *);
 typedef struct {
@@ -1800,10 +1800,15 @@ typedef struct {
     s32 unkC;
     s32 unk10;
     s32 unk14;
-    u8 pad18[0x48 - 0x18];
-    s32 unk48;
-    s32 unk4C;
-    s32 unk50;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    s32 unk2C;
+    Rgb32 unk30;
+    Rgb32 unk3C;
+    Rgb32 unk48; /* output */
     u8 pad54[0x60 - 0x54];
     u32 unk60;
 } Unk80077D00;
@@ -2118,4 +2123,25 @@ typedef struct {
     s16 y1;
 } LineF2Words; /* LINE_F2 */
 extern u32 D_80068F20[][4]; /* line colours */
+/* Inlined copy of func_80027948 (SPRT + DR_TPAGE from a sprite descriptor). */
+static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+    DrTpageWords *t;
+    setlen(s, 4);
+    if (flag) {
+        s->rgbc = 0x66606060;
+    } else {
+        s->rgbc = 0x64808080;
+    }
+    s->xy = (x & 0xFFFF) | (y << 16);
+    s->uvclut = d->unk0;
+    s->wh = d->unk4 | (d->unk5 << 16);
+    addPrim(ot, s);
+    s++;
+    t = (DrTpageWords *)s;
+    setlen(t, 1);
+    t->code = (d->unk6 & 0x9FF) | 0xE1000600;
+    addPrim(ot, t);
+    *out = d->unk4;
+    return (u8 *)++t;
+}
 #endif

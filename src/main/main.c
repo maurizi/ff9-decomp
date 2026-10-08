@@ -3292,7 +3292,22 @@ void func_8002FEB4(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FED4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80030030);
+void func_80030030(Unk80077C78 *p) {
+    if ((u32)p->unkC < D_80077D00.unk60) {
+        D_80077D00.unk30.unk0 = func_8002FD70(D_80077D00.unk30.unk0, D_80077D00.unk18, D_80077D00.unkC);
+        D_80077D00.unk30.unk4 = func_8002FD70(D_80077D00.unk30.unk4, D_80077D00.unk1C, D_80077D00.unk10);
+        D_80077D00.unk30.unk8 = func_8002FD70(D_80077D00.unk30.unk8, D_80077D00.unk20, D_80077D00.unk14);
+        D_80077D00.unk48 = D_80077D00.unk30;
+    } else {
+        D_80077D00.unk3C.unk0 = func_8002FD70(D_80077D00.unk3C.unk0, D_80077D00.unk24, D_80077D00.unkC);
+        D_80077D00.unk3C.unk4 = func_8002FD70(D_80077D00.unk3C.unk4, D_80077D00.unk28, D_80077D00.unk10);
+        D_80077D00.unk3C.unk8 = func_8002FD70(D_80077D00.unk3C.unk8, D_80077D00.unk2C, D_80077D00.unk14);
+        D_80077D00.unk48 = D_80077D00.unk3C;
+    }
+    p->unk28.unk0[0] = D_80077D00.unk48.unk0;
+    p->unk28.unk0[1] = D_80077D00.unk48.unk4;
+    p->unk28.unk0[2] = D_80077D00.unk48.unk8;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003015C);
 
@@ -3300,9 +3315,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800302D0);
 
 void func_80030770(u8 *arg0) {
     if ((u32)D_80077C78.unkC < D_80077D00.unk60) {
-        arg0[0] = D_80077D00.unk48;
-        arg0[1] = D_80077D00.unk4C;
-        arg0[2] = D_80077D00.unk50;
+        arg0[0] = D_80077D00.unk48.unk0;
+        arg0[1] = D_80077D00.unk48.unk4;
+        arg0[2] = D_80077D00.unk48.unk8;
         arg0[4] = D_80077D00.unk0;
         arg0[5] = D_80077D00.unk4;
         arg0[6] = D_80077D00.unk8;
@@ -3311,9 +3326,9 @@ void func_80030770(u8 *arg0) {
     arg0[0] = D_80077D00.unkC;
     arg0[1] = D_80077D00.unk10;
     arg0[2] = D_80077D00.unk14;
-    arg0[4] = D_80077D00.unk48;
-    arg0[5] = D_80077D00.unk4C;
-    arg0[6] = D_80077D00.unk50;
+    arg0[4] = D_80077D00.unk48.unk0;
+    arg0[5] = D_80077D00.unk48.unk4;
+    arg0[6] = D_80077D00.unk48.unk8;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetSemiTrans);
@@ -6841,7 +6856,40 @@ void func_8005C438(void) {
     D_800831C4 &= ~1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C4D4);
+void func_8005C4D4(void) {
+    u32 m;
+    u32 bit;
+    u32 i;
+    AkaoChannel *c;
+    s32 v;
+
+    if (D_80080A70.unk0 != 0) {
+        m = D_80080A70.unk0;
+        c = D_8007E3D8;
+        bit = 0x100;
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((m & bit) && (c->unk28 & 0x2000000)) {
+                m &= ~bit;
+            }
+        }
+        bit = 0x100;
+        v = 8;
+        D_80080A70.unk10 = m;
+        D_80080A70.unk0 &= ~m;
+        while (m != 0) {
+            if (m & bit) {
+                func_80057640(v, 0, 0, 0);
+                func_80057688(v, 0);
+                func_80057708(v, 0x7F, 1);
+                func_80057788(v, 0x7F, 3);
+                m &= ~bit;
+            }
+            bit <<= 1;
+            v++;
+        }
+    }
+    D_800831C4 |= 2;
+}
 
 void func_8005C5F0(void) {
     u32 mask;
