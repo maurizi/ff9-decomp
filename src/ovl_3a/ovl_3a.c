@@ -1,6 +1,40 @@
 #include "ovl_3a.h"
 
-INCLUDE_ASM("asm/us/ovl_3a/nonmatchings/ovl_3a", func_801F3874);
+void func_801F3874(void) {
+    u32 id;
+    s32 i;
+
+    func_8003575C(D_801EDF18);
+    func_80035580(&func_801F4B48);
+    func_8003556C(func_801F4A9C);
+    D_801F4BBC.unk0 = 1;
+    D_801F4BBC.unk1 = 0;
+    D_801F4BBC.unk2 = 0;
+    D_801F4BBC.unk3 = 0;
+    D_801F4BBC.unk24 = D_80077DBC < 12;
+    D_801F4BBC.unk12C = func_801F4A68(D_801F4BBC.unk24 ? D_80077DBC : D_80077DBC - 12);
+    D_801F4BBC.unk130 = func_801F4A84(D_801F4BBC.unk12C);
+    for (i = 0; i < 2; i++) {
+        D_801F4BBC.unk5[i] = D_801F4B50[i];
+    }
+    func_80033D38(D_801F4BBC.unk11, D_801F4BBC.unk12C);
+    func_8001D898(D_801F4BBC.unk7, 0xFF, 10);
+    if (D_801F4BBC.unk24) {
+        func_80033D38(D_801F4BBC.unk7, D_801F4BBC.unk12C);
+    } else {
+        func_8002BD54(D_801F4BBC.unk7, D_8006794C->unk1C->unk3C[D_801F4BBC.unk130].unk0);
+    }
+    D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk7);
+    for (i = 0; i < 2; i++) {
+        D_801F4BBC.unk1C[i] = func_80035774(i + 0xD);
+    }
+    setRECT(&D_801F4BBC.unk134[0], 0xF0, 8, 0x44, 0x1A);
+    setRECT(&D_801F4BBC.unk134[1], 0x16, 0x1A, 0x24, 0x32);
+    setRECT(&D_801F4BBC.unk134[2], 0xE, 0x52, 0x44, 0x69);
+    setRECT(&D_801F4BBC.unk134[3], 0x1C, 0x26, 0x118, 0x18);
+    setRECT(&D_801F4BBC.unk134[4], 0x1C, 0x3E, 0x118, 0xA0);
+    func_801F49A0(D_801F4BBC.unk130);
+}
 
 void func_801F3A98(void) {
     if (!func_8002F810()) {

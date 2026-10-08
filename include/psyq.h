@@ -91,6 +91,13 @@ typedef struct {
 } DR_TPAGE;
 
 typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    s16 x1, y1;
+} LINE_F2;
+
+typedef struct {
     u8 minute, second, sector, track;
 } CdlLOC;
 
