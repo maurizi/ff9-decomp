@@ -58,6 +58,33 @@ extern u8 D_801F0808[];
 extern u8 D_801F0E50[];
 extern u8 D_801EFC04[];
 
+/* status page tables in .data */
+extern u8 D_801EFBB4[4];       /* [1], [2] patched per character */
+extern u8 D_801EFBB8[][2];     /* by ability table row */
+extern s32 D_801EFBE0[4];      /* text ids */
+extern s32 D_801EFBF0[5];      /* text ids */
+
+/* local copy of the status label table (built on the stack from .rodata) */
+typedef struct {
+    u16 unk0; /* offset into the string pool */
+    u16 unk2;
+    s32 unk4;
+    s32 unk8;
+} StatusEntry;
+
+/* main exe: candidates for ff9.h */
+extern s32 D_8007042C;
+void func_80026C34(s32, s32, s32, s32, u8);
+typedef struct {
+    u8 unk0;
+    u8 pad1;
+    u16 unk2;
+    u8 pad4;
+    u8 unk5; /* attack power */
+    u8 pad6[0xC - 6];
+} Unk8006E0E8; /* weapon stats, 0xC (also in ovl_0b.h) */
+extern Unk8006E0E8 D_8006E0E8[];
+
 void func_801EE568(void);
 void func_801EE650(void);
 void func_801EE740(void);

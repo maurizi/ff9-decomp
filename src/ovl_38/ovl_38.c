@@ -57,7 +57,23 @@ void func_801EE568(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE650);
+void func_801EE650(void) {
+    RECT r;
+    Character *c;
+    RECT *w;
+    s16 x;
+    s16 y;
+
+    w = &D_801F120C.unk8;
+    c = D_8006794C->unk1C->unk54C[D_801F120C.unk2];
+    x = w->x + 0x72;
+    y = w->y + 4;
+    setRECT(&r, x, y, 0x5C, 0x12);
+    func_800273C0(x + 0x19, y + 0x14, 0x1E, c->unk17, c->unk1F);
+    func_80024428(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
+    func_80026FC4(r.x + 4, r.y + 4, 0x1D, c->unk38, 0);
+    func_8002DEE4(&r, 0x1D, 0);
+}
 
 INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE740);
 

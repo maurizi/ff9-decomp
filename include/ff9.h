@@ -68,7 +68,15 @@ typedef struct {
     u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
-    u8 pad21[0x2C - 0x21];
+    u8 pad21[0x24 - 0x21];
+    u8 unk24; /* base stats, shown by the status menu (ovl_38) */
+    u8 unk25;
+    u8 unk26;
+    u8 unk27;
+    u8 unk28;
+    u8 unk29;
+    u8 unk2A;
+    u8 unk2B;
     u16 unk2C;
     u16 unk2E;
     u8 unk30;
