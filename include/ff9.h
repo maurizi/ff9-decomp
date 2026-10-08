@@ -1553,7 +1553,7 @@ void func_800239D0(void);
 void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
 s32 func_80027710(s32, s32, s32, void *, u8);
-void func_8002AD38(u8 *, u8 *);
+u8 *func_8002AD38(u8 *, u8 *);
 s32 func_8002AE7C(u8 *);
 typedef struct {
     u8 pad0[4];

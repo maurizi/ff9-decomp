@@ -2151,7 +2151,46 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002A730);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AA04);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AD38);
+u8 *func_8002AD38(u8 *dst, u8 *src) {
+    s32 c;
+    u8 th;
+    u8 *p;
+    u8 *ret;
+    u8 *s;
+    s32 c2;
+    u8 th2;
+
+    ret = dst;
+    s = ret;
+    p = s;
+    th = D_8006794C->unk1C->unk7D4->unk4 >> 8;
+    while ((c = *p) != 0xFF) {
+        p++;
+        if (c == 0xF9) {
+            p++;
+            if ((u32)(p[-2] - 0x43) < 2) {
+                p++;
+            }
+        } else if (c >= th) {
+            p++;
+        }
+    }
+    dst += p - s;
+    th2 = D_8006794C->unk1C->unk7D4->unk4 >> 8;
+    while ((c2 = *src) != 0xFF) {
+        *dst++ = *src++;
+        if (c2 == 0xF9) {
+            *dst++ = *src++;
+            if ((u32)(src[-2] - 0x43) < 2) {
+                *dst++ = *src++;
+            }
+        } else if (c2 >= th2) {
+            *dst++ = *src++;
+        }
+    }
+    *dst = 0xFF;
+    return ret;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AE7C);
 
@@ -3436,7 +3475,21 @@ void func_80031C88(Unk80077C78 *p) {
     p->unk28.unk0[2] = D_80077D68.unk30.unk8;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031D98);
+void func_80031D98(Unk80077C78 *p, s32 n) {
+    D_80077D68.unk24.unk0 = func_8002FD70(D_80077D68.unk24.unk0, D_80077D68.unk18 * n, D_80077D68.unkC);
+    D_80077D68.unk24.unk4 = func_8002FD70(D_80077D68.unk24.unk4, D_80077D68.unk1C * n, D_80077D68.unk10);
+    D_80077D68.unk24.unk8 = func_8002FD70(D_80077D68.unk24.unk8, D_80077D68.unk20 * n, D_80077D68.unk14);
+    if (p->unk4 != 0) {
+        D_80077D68.unk30.unk0 = func_8002FDE8(D_80077D68.unk24.unk0, D_80077D68.unk0, D_80077D68.unk3C);
+        D_80077D68.unk30.unk4 = func_8002FDE8(D_80077D68.unk24.unk4, D_80077D68.unk4, D_80077D68.unk40);
+        D_80077D68.unk30.unk8 = func_8002FDE8(D_80077D68.unk24.unk8, D_80077D68.unk8, D_80077D68.unk44);
+    } else {
+        D_80077D68.unk30 = D_80077D68.unk24;
+    }
+    p->unk28.unk0[0] = D_80077D68.unk30.unk0;
+    p->unk28.unk0[1] = D_80077D68.unk30.unk4;
+    p->unk28.unk0[2] = D_80077D68.unk30.unk8;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031ED8);
 
