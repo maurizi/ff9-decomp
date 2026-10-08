@@ -80,20 +80,28 @@ typedef struct {
     s16 unk0[5];
 } Unk800CE1E8; /* 10 bytes */
 
+/* movement mode table entry (D_800CCB70[], current one at D_800CE3C8) */
 typedef struct {
     u8 unk0; /* mode */
-    u8 pad1[8];
+    u8 pad1[7];
+    u8 unk8;
     u8 unk9;
-    u8 padA[2];
-    u8 unkC;
-} Unk800CE3C8;
-
-typedef struct {
-    u8 pad0[0xB];
+    u8 padA;
     u8 unkB;
-    u8 padC[5];
+    u8 unkC;
+    u8 padD[4];
     u8 unk11;
-} Unk800CCB70;
+    u8 pad12[0x1C - 0x12];
+} Unk800CE3C8; /* 0x1C */
+
+/* doubly linked node (func_800C2134) */
+typedef struct WmLNode {
+    struct WmLNode *unk0; /* prev */
+    struct WmLNode *unk4; /* next */
+    s16 unk8;
+    u8 unkA;
+    u8 unkB;
+} WmLNode; /* 0xC */
 
 /* relocatable block: offsets are turned into pointers by func_800BA528 */
 typedef struct {
@@ -225,6 +233,10 @@ void func_800C42B0(u8);
 void func_800C4850(s32, u16, u8);
 void func_800AE784(s16, s16);
 void func_800B3638(void);
+void func_800CC54C(void);
+void func_800C48F4(s32);
+void func_800AFCE0(void);
+s32 func_800B88C0(s32);
 void func_800C2A80(s32, s32, s32);
 s16 func_800B36B4(s32, u32, u8 *);
 void func_800B01F0(Unk8004AB64 *);
@@ -422,10 +434,31 @@ extern Unk800D5438 D_800D5438;
 extern u8 D_800CF46C;
 extern char D_800A7CCC[];
 extern s16 D_800CCB28[][9];
-extern Unk800CCB70 D_800CCB70;
+extern Unk800CE3C8 D_800CCB70[];
 extern s16 D_800CE276;
 extern s16 D_800CE3BC;
 extern s32 D_800CFDB0[];
+extern s8 D_800CE1F2;
+extern s32 D_800D3E60; /* navi mode */
+extern s8 D_800D3E64;
+extern s32 D_800D3E6C;
+extern s8 D_800D3E76;
+extern s8 D_800D3E77;
+extern s8 D_800D3E78;
+extern s8 D_800D3E79;
+extern s8 D_800D3E80;
+extern s32 D_800D3E84;
+extern s8 D_800D3E88;
+extern s8 D_800D3E89;
+extern s32 D_800D3F20;
+extern WmLNode D_800D3F28;
+extern WmLNode D_800D3F38;
+extern s32 D_800D3F44;
+extern WmLNode D_800D3F48[4];
+
+/* main exe: candidates for ff9.h */
+Unk800CE0E8 *func_8004AE00(void);
+void func_8004B20C(s32);
 
 /* Inlined copy of func_800BC0A8 (wrap map coordinates). */
 static inline void func_800BC0A8_inline(s32 *x, s32 *z) {
