@@ -553,7 +553,7 @@ typedef struct {
     s32 unk60;
     s32 unk64;
     u32 unk68;
-    u8 pad6C[0x70 - 0x6C];
+    s32 unk6C;
     s32 unk70;
     u8 pad74[0x78 - 0x74];
     s32 unk78;
@@ -1475,7 +1475,9 @@ extern s32 D_800831C4;
 
 typedef struct {
     s32 unk0;
-    u8 pad4[0x10 - 4];
+    u32 unk4;
+    u32 unk8;
+    u8 padC[0x10 - 0xC];
     s32 unk10;
     u8 pad14[0x1C - 0x14];
     u32 unk1C;
