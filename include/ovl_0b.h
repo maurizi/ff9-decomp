@@ -1795,6 +1795,8 @@ void func_800BBF30(Unk8004AB64 *, s16);
 extern s32 D_800FDF34;
 extern RECT D_800A858C;
 extern RECT D_800A8594;
+void func_800C2F1C(s32);
+void func_800B2F24(Battle *);
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
 void func_800ED3F8(s32, s32, s32, char *);
