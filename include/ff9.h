@@ -1238,6 +1238,15 @@ typedef struct {
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
+typedef struct {
+    u8 pad0[8];
+    s32 unk8;
+    s32 unkC;
+    u8 pad10[0x24 - 0x10];
+    s32 unk24;
+} Unk8007BC20;
+extern Unk8007BC20 D_8007BC20;
+extern Unk8007BC20 D_8007BC50;
 void func_80032C4C(s32, s32, s32, s32);
 extern u32 D_80077CA4[];
 s32 func_80056700(s32, s32);
@@ -1374,6 +1383,7 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
+    s32 unkC; /* also accessed as D_80080A24 */
 } Unk80080A18;
 extern Unk80080A18 D_80080A18;
 

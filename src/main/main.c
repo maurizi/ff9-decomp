@@ -1005,7 +1005,17 @@ void func_80022A80(void) {
     func_8001D898((s32)&D_800761D0, 0, 0x98C);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022AC4);
+s32 func_80022AC4(char *name) {
+    CdlFILE f;
+    s32 r;
+    if (CdSearchFile(&f, name) != NULL) {
+        r = CdPosToInt(&f.pos);
+    } else {
+        func_80015C38("Cannot find file. (%s)\n", name);
+        r = -1;
+    }
+    return r;
+}
 
 s32 func_80022B18(void) {
     return D_800761D0.unk0;
@@ -4405,7 +4415,11 @@ void func_80056614(void) {
     SpuSetTransferCallback(func_800565F0);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056644);
+void func_80056644(void *a, s32 b) {
+    D_800809E0 = 1;
+    SpuSetTransferCallback(func_800565F0);
+    func_8005709C(a, b);
+}
 
 s32 func_80056694(s32 a, s32 b) {
     func_80056614();

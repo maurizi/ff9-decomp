@@ -77,6 +77,12 @@ typedef struct {
     u8 minute, second, sector, track;
 } CdlLOC;
 
+typedef struct {
+    CdlLOC pos;
+    u32 size;
+    char name[16];
+} CdlFILE;
+
 /* libgte */
 typedef struct {
     s16 m[3][3];
@@ -141,6 +147,8 @@ int CdReset(int mode);
 int CdDiskReady(int mode);
 int CdGetDiskType(void);
 CdlLOC *CdIntToPos(int i, CdlLOC *p);
+int CdPosToInt(CdlLOC *p);
+CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
 
 long _card_format(long chan);
 long _card_clear(long chan);
