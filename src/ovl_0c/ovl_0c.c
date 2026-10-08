@@ -59,7 +59,7 @@ void func_800A8B14(void) {
     func_8001CD04(0xDA);
     func_8001CFB4();
     SetDispMask(1);
-    D_8006794C->unk1C->unk838 = func_800AA15C;
+    D_8006794C->unk1C->unk838 = (void (*)(s32, void *))func_800AA15C;
     D_8006794C->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AB0C0;
     D_8006794C->unk1C->unk8BC = func_800AD10C;
     D_8006794C->unk1C->unk84C = 0;
@@ -393,7 +393,55 @@ s32 func_800AA060(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AA15C);
+u32 func_800AA15C(s32 arg0, Unk8004AB64 *arg1) {
+    WmObjSlot *o;
+    u32 id;
+    WmAnimHdr *h;
+    s32 t;
+    WmModel *m;
+    WmModelGroup *g;
+    u32 i;
+    s32 n;
+
+    t = func_8004AB64(arg1);
+    if ((u32)t < 9) {
+        id = t;
+        o = func_8001E350(t);
+    } else {
+        id = D_8006794C->unk1C->unk39 + 9;
+        o = func_8001E350(id);
+        D_8006794C->unk1C->unk39++;
+    }
+    o->unk4 = arg0;
+    o->unk8->unk8 = func_8001C7FC(4, arg0, 0);
+    if ((o->unk8->unkC = func_8001C7FC(4, func_800AA39C(o->unk4), 0)) != NULL) {
+        h = o->unk8->unkC;
+        if (h->unkC >= 0) {
+            t = h->unk10;
+            h->unkC = (s32)h + h->unkC;
+            if (t != 0) {
+                h->unk10 = (s32)o->unk8->unkC + t;
+            }
+        }
+    }
+    o->unkC = (s32)arg1;
+    m = o->unk8->unk8;
+    g = m->unk10;
+    n = 0;
+    if ((s32)g >= 0) {
+        g = (WmModelGroup *)((s32)g + (s32)m);
+    }
+    for (i = 0; i < m->unk3; i++) {
+        n += g[i].unk0;
+    }
+    n *= 2;
+    n += (o->unk8->unk8->unk2 << 5) + o->unk8->unk8->unk3 * 12;
+    func_800C7BA8(o->unk8, D_8006794C->unk1C->unk8E4.world->unk8->unk20);
+    func_800C7CF4(o->unk8, func_800634A8(o->unk4), func_800634D8(o->unk4));
+    D_8006794C->unk1C->unk8E4.world->unk8->unk20 += n;
+    o->unk0 |= 1;
+    return id;
+}
 
 s32 func_800AA39C(s32 arg0) {
     Unk800AA39C *t = func_8001C7FC(8, arg0, 0x120000);

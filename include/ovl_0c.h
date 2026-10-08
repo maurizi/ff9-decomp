@@ -231,11 +231,18 @@ typedef struct {
     u16 unk2; /* clut */
 } WmTexInfo;
 
+/* animation file header: offsets relocated by func_800AA15C */
+typedef struct WmAnimHdr {
+    u8 pad0[0xC];
+    s32 unkC;
+    s32 unk10;
+} WmAnimHdr;
+
 typedef struct {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[6];
     WmModel *unk8;
-    u8 padC[4];
+    struct WmAnimHdr *unkC;
     u8 *unk10; /* primitive buffer */
     s32 unk14;
     WmTexInfo *unk18;
@@ -256,6 +263,18 @@ typedef struct {
     u16 unk76;
     u16 unk78;
 } Unk800C95C8;
+
+/* model slot (func_8001E350) */
+typedef struct {
+    s32 unk0; /* flags: 1 = loaded */
+    s32 unk4; /* file id */
+    Unk800C95C8 *unk8;
+    s32 unkC;
+} WmObjSlot;
+WmObjSlot *func_8001E350(s32);
+s32 func_8004AB64(Unk8004AB64 *);
+u8 *func_800634A8(s32);
+u8 *func_800634D8(s32);
 
 /* relocatable block: offsets are turned into pointers by func_800BA528 */
 typedef struct {
@@ -475,7 +494,7 @@ s32 func_800A91B4(void);
 s32 func_800A9220(void);
 void func_800A924C(void);
 void func_800A95A0(void);
-void func_800AA15C(s32, void *);
+u32 func_800AA15C(s32, Unk8004AB64 *);
 void func_800AC580(void);
 void func_800AC5C8(void);
 void func_800AC7D4(void);
