@@ -3044,7 +3044,28 @@ void func_8002E660(Window *w) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E718);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E7FC);
+void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
+    RECT t;
+
+    func_8002E960(r, otz, m, abr);
+    t.x = r->x;
+    t.w = r->w;
+    if (m->unk8 & 2) {
+        t.y = r->y;
+        t.h = m->unk9 + 1;
+        func_8002709C(&t, otz, 0, (m->unkB + (r->h - m->unk9)) & 0x1F, abr);
+        t.y = r->y + m->unk9 - 1;
+        t.h = r->h - m->unk9;
+        func_8002709C(&t, otz, 0, (m->unkB + (m->unk9 - 1)) & 0x1F, abr);
+    } else {
+        t.y = r->y;
+        t.h = r->h - m->unk9;
+        func_8002709C(&t, otz, 0, m->unkB, abr);
+        t.y = r->y + t.h;
+        t.h = m->unk9;
+        func_8002709C(&t, otz, 0, m->unkB, abr);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E960);
 

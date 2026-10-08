@@ -1617,7 +1617,7 @@ void func_8002EB64(s32, s32);
 void func_8002EB74(MenuList *);
 void func_8002D550(Window *);
 void func_8002D7E8(Window *);
-void func_8002ECA0(MenuList *, MenuView *);
+MenuView *func_8002ECA0(MenuList *, MenuView *);
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
 void func_8002EE8C(MenuList *, s32);
 void func_8002F044(MenuList *, s32);
@@ -1827,8 +1827,11 @@ typedef struct {
     Rgb32 unk30;
     Rgb32 unk3C;
     Rgb32 unk48; /* output */
-    u8 pad54[0x60 - 0x54];
-    u32 unk60;
+    s32 unk54;
+    s32 unk58;
+    s32 unk5C;
+    u32 unk60; /* first-phase frames */
+    s32 unk64; /* second-phase frames */
 } Unk80077D00;
 extern Unk80077D00 D_80077D00;
 
@@ -2194,6 +2197,7 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
 }
 void func_8002E718(RECT *, s32, MenuList *);
 void func_8002E7FC(RECT *, s32, MenuList *, s32);
+void func_8002E960(RECT *, s32, MenuList *, s32);
 void func_80025108(RECT *, s32, s32, s32);
 void func_8002709C(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
