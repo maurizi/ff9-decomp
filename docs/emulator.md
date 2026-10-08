@@ -3,6 +3,29 @@
 `tools/emu.py` drives a PCSX-Redux instance playing FF9, so you can see what a function or a
 global does at runtime before naming it. It runs on the **host**, not in Docker.
 
+## Asking the game-tester agent (for decomp agents)
+
+When a function or global's purpose isn't clear from the code, delegate a runtime investigation instead of guessing:
+
+- Spawn the subagent with the Agent tool, `subagent_type: "game-tester"` (defined in `.claude/agents/game-tester.md`).
+  Sessions load agent types at startup. If `game-tester` isn't listed, use `subagent_type: "general-purpose"` and start
+  the prompt with "Read and follow `.claude/agents/game-tester.md`, then `docs/emulator.md`."
+- Give it:
+  - the symbols (`func_800A9B58`, `D_8006794C`) and binary (`main` / `ovl_0b`)
+  - what you already know or suspect (from the asm or your C draft)
+  - the question to answer (what does this flag mean? who calls this with which arguments? which screen uses it?)
+  - which game mode exercises the code. Overlay code only runs while its overlay is resident: field `ovl_0a`,
+    battle `ovl_0b`, world map `ovl_0c`, menus `ovl_3x`. Name a save state from the list below if one fits.
+- It reports evidence and proposed names in its final message and appends them to `docs/runtime-findings.md`.
+  It doesn't edit `src/`, `include/` or `config/`, and doesn't commit. You apply the names (`config/symbols*.txt`, then
+  `make resplit` / `make verify`), mark the entry **applied**, and commit.
+- One emulator at a time. All agents share the instance on port 8080 and the window on the user's display, so don't
+  run two investigations in parallel. Ask one agent several questions instead.
+- The emulator, BIOS, saves and states live in the main checkout's gitignored `tools/bin/`. Run investigations from
+  the main checkout (`/path/to/main/checkout`). A worktree doesn't have them unless you symlink `tools/bin` across.
+- For something quick, a decomp agent can run `tools/emu.py` itself, e.g. one `trace` or `watch` from a save state.
+  Delegate anything that needs exploring or playing through the game.
+
 ## Setup (once per machine)
 
 ```
