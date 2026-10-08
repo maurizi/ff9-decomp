@@ -3461,7 +3461,62 @@ s32 func_800C49EC(void) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C4A5C);
+void func_800C4A5C(void) {
+    s32 i;
+
+    for (i = 0; i < 10; i++) {
+        D_800D4870[i].vx = i << 7;
+        D_800D4870[i].vy = func_80062B3C() % 4096;
+        D_800D4870[i].vz = 0;
+        D_800D4830[i] = i * 0x14 + 0x200;
+        D_800D48F8[i] = 0x800;
+        D_800D48E8[i] = 0;
+        D_800D4910[i].vx = func_80062B3C() % 4096;
+        D_800D4910[i].vy = func_80062B3C() % 4096;
+        D_800D4910[i].vz = 0;
+    }
+    for (i = 0; i < 9; i++) {
+        D_800D4960[i].vx = 0;
+        D_800D4960[i].vy = 0;
+        D_800D4960[i].vz = 0;
+        D_800D49F0[i].vx = 0;
+        D_800D49F0[i].vy = 0;
+        D_800D49F0[i].vz = 0;
+    }
+    setVector(&D_800D4960[0], 0x4464C, -0x1E68, -0x32681);
+    setVector(&D_800D4960[1], 0x3805B, 0x1F4, -0x30847);
+    setVector(&D_800D4960[6], 0x2FFFA, -0x2A82, -0x14052);
+    D_800D4960[2] = D_800D4960[1];
+    D_800D4960[3] = D_800D4960[1];
+    D_800D4960[4] = D_800D4960[1];
+    D_800D4960[5] = D_800D4960[1];
+    D_800D4960[7] = D_800D4960[6];
+    D_800D4960[8] = D_800D4960[6];
+    D_800D4848.unk4 = NULL;
+    D_800D4848.unk8 = &D_800D4A40[0];
+    D_800D4A40[0].unk4 = &D_800D4848;
+    D_800D4A40[0].unk8 = &D_800D4A40[1];
+    for (i = 1; i < 59; i++) {
+        D_800D4A40[i].unk4 = &D_800D4A40[i - 1];
+        D_800D4A40[i].unk8 = &D_800D4A40[i + 1];
+    }
+    D_800D4A40[i].unk4 = &D_800D4A40[i - 1];
+    D_800D4A40[i].unk8 = &D_800D53E8;
+    D_800D53E8.unk4 = &D_800D4A40[i];
+    D_800D53E8.unk8 = NULL;
+    D_800D53A0.unk4 = NULL;
+    D_800D53A0.unk8 = &D_800D48C0;
+    D_800D48C0.unk4 = &D_800D53A0;
+    D_800D48C0.unk8 = NULL;
+    D_800CDF80.vy = 0;
+    D_800CDF88.vy = 0;
+    D_800CDF90.vy = 0;
+    D_800CDFA0[0].vy = 0;
+    D_800CDFA0[1].vy = 0;
+    D_800CDFA0[2].vy = 0;
+    D_800D4A38 = 0;
+    D_800D53CC = 0;
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A849C);
 

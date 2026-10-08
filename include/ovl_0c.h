@@ -689,6 +689,22 @@ extern s8 D_800CCE69;
 extern char D_800CCE6C[];
 extern WmNode D_800D4848;
 extern WmNode D_800D53A0;
+extern WmNode D_800D4A40[60]; /* free list nodes */
+extern WmNode D_800D53E8; /* list tail */
+extern WmNode D_800D48C0; /* list tail */
+extern s32 D_800D4A38;
+extern s32 D_800D53CC;
+extern SVECTOR D_800D4870[10];
+extern s16 D_800D4830[10];
+extern s16 D_800D48F8[10];
+extern u8 D_800D48E8[10];
+extern SVECTOR D_800D4910[10];
+extern VECTOR D_800D4960[9];
+extern SVECTOR D_800D49F0[9];
+extern SVECTOR D_800CDF80;
+extern SVECTOR D_800CDF88;
+extern SVECTOR D_800CDF90;
+extern SVECTOR D_800CDFA0[3];
 extern void **D_800CF428;
 typedef struct {
     s32 unk0;

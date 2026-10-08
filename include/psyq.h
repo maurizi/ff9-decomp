@@ -227,6 +227,8 @@ typedef struct {
 } CVECTOR;
 
 MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
+
+#define setVector(v, _x, _y, _z) (v)->vx = _x, (v)->vy = _y, (v)->vz = _z
 int VectorNormal(VECTOR *v0, VECTOR *v1);
 
 /* libgte inline macros (PsyQ inline_c.h); they expand to the same asm text */
