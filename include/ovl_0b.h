@@ -123,7 +123,8 @@ typedef struct BtlUnit {
     s16 unk2A; /* mp */
     s16 unk2C;
     s8 unk2E;
-    u8 pad2F[0x31 - 0x2F];
+    u8 pad2F;
+    u8 unk30;
     u8 unk31;
     u8 unk32;
     u8 unk33;
@@ -1181,7 +1182,7 @@ typedef struct Unk80104FD4 {
 } Unk80104FD4;
 extern Unk80104FD4 *D_80104FD4;
 extern s32 (*D_800F8E58[])(void);
-extern void (*D_800F8E48[])(void);
+extern void (*D_800F8E48[])(s32, s32, s32, MenuView *);
 extern u8 D_80104FE8;
 
 typedef struct {

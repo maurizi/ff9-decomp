@@ -2327,7 +2327,11 @@ void func_800E6D58(void) {
     *D_800F78A4->unk14 = D_80104E10;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6DB8);
+void func_800E6DB8(s32 arg0) {
+    s32 *p = &D_80104E00;
+    *p = func_800645C4();
+    func_800639D4(arg0);
+}
 
 void func_800E6DF4(void) {
     func_800639D4(D_80104E00);
@@ -4211,7 +4215,9 @@ void func_800EF044(void) {
     func_8002DD00(D_80104F88->unk12A4[2]);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF094);
+void func_800EF094(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
+    D_800F8E48[D_80104FD4->unk6](arg0, arg1, arg2, arg3);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF0D8);
 
