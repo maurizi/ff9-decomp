@@ -3072,7 +3072,34 @@ void func_800EA5C4(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EA650);
+void func_800EA650(void) {
+    BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    Unk80104F88Entry *e = D_80104F88->unk0;
+    s8 n = 0;
+    s8 f;
+    while (u != NULL && (u->unk68 & 1)) {
+        u->unkB4 = e;
+        u->unkCF = 0;
+        f = (u8)u->unk68 >> 5;
+        e->unk10 = u;
+        e->unk18 = f;
+        e->unk14 = &D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF];
+        e->unk19 = func_80034A30(e->unk14);
+        e->unk1A = func_800339F4(e->unk14->unk34 & 0xF, (e->unk14->unkA >> 4) & 1);
+        if ((D_8006794C->unk24 >> 5) & 1) {
+            f = ((s32)(D_8006794C->unk24 >> 20) >> e->unk1A) & 1;
+        } else {
+            f = 0;
+        }
+        e->unk1B = f;
+        func_800EB600(e);
+        func_800EB54C(&e->unk49C);
+        n++;
+        e++;
+        u = u->unk0;
+    }
+    D_80104F88->unk12B5 = n;
+}
 
 void func_800EA7B8(Unk80104F88Entry *arg0) {
     s32 k = (arg0->unk14->unk34 >> 12) & 0x1F;

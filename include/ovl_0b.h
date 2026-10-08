@@ -288,11 +288,11 @@ typedef struct Unk80104F88Entry {
     s16 unkA; /* mp shown */
     u16 unkC;
     s16 unkE;
-    u8 pad10[0x14 - 0x10];
+    struct BtlUnit *unk10;
     Character *unk14;
-    u8 pad18;
+    u8 unk18;
     u8 unk19;
-    u8 pad1A;
+    u8 unk1A;
     u8 unk1B;
     u8 *unk1C[0xC0]; /* -> Character.unk58[] */
     u8 unk31C[0xC0];
@@ -305,7 +305,7 @@ typedef struct {
     struct BtlUnit *unk12A0;
     Window *unk12A4[4];
     u8 unk12B4;
-    u8 pad12B5;
+    u8 unk12B5; /* party count */
     u8 unk12B6;
     u8 unk12B7;
     u16 unk12B8;
@@ -1224,6 +1224,9 @@ extern u8 D_801051E0;
 extern u8 D_80104E94[2][0x18];
 
 /* main exe: candidates for ff9.h */
+u8 func_800339F4(s32, u8);
+void func_80026C34(s32, s32, s32, s32, u8);
+extern u32 D_800686D8;
 void func_800316D8(void *, void *);
 void func_8002C084(s32);
 void func_8002C740(s32, s32, s32);
