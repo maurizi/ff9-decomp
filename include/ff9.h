@@ -181,7 +181,7 @@ typedef struct {
     s16 unk8B2;
     u16 unk8B4[2];
     u8 pad8B8[0x8BC - 0x8B8];
-    s32 (*unk8BC)(void);
+    void *unk8BC; /* callback, signature varies by module */
     u8 pad8C0[0x8C4 - 0x8C0];
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;

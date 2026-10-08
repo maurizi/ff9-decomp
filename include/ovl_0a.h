@@ -7,17 +7,39 @@
 #include "ff9.h"
 
 /* field context, GameData.unk8E4.field */
-/* 0x38-byte object hanging off FieldMap.unkC */
+/* 0x330-byte block, FieldMapObj.unk14 (allocated by func_800A9350) */
 typedef struct {
-    u8 pad0[8];
-    void *unk8;  /* file 0x6xxxx */
-    void *unkC;
-    u16 unk10;
-    u8 pad12[0x1C - 0x12];
+    u8 pad0[0xA];
+    s16 unkA;
+    void *unkC;  /* file 0x5xxxx */
+    u8 pad10[0x14 - 0x10];
+    struct Unk800C9DB4 *unk14;
+    void *unk18;
     void *unk1C; /* file 0x1Fxxxx */
     u8 pad20[0x24 - 0x20];
     void *unk24;
-    u8 pad28[0x38 - 0x28];
+    u8 *unk28; /* = unk6C */
+    u8 pad2C[0x4C - 0x2C];
+    void *unk4C; /* file 0x1Exxxx */
+    u8 pad50[0x54 - 0x50];
+    u8 *unk54; /* = unk90 */
+    u8 *unk58; /* = unk270 */
+    u8 pad5C[0x6C - 0x5C];
+    u8 unk6C[0x90 - 0x6C];
+    u8 unk90[0x270 - 0x90];
+    u8 unk270[0x330 - 0x270];
+} FieldScene;
+
+/* 0x38-byte object hanging off FieldMap.unkC */
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;    /* end of the load area */
+    void *unk8;  /* file 0x6xxxx */
+    void *unkC;
+    u16 unk10;
+    u8 pad12[0x14 - 0x12];
+    FieldScene *unk14;
+    u8 pad18[0x38 - 0x18];
 } FieldMapObj;
 
 /* field context, GameData.unk8E4.field (0x50 bytes) */
@@ -54,6 +76,21 @@ typedef struct {
     u8 pad1[0xB];
 } Unk800C9DCC;
 
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    s16 unk4;
+    s16 unk6;
+} Unk800CA058;
+
+typedef struct {
+    u8 pad0[4];
+    void (*unk4)(u8);
+    u8 pad8[4];
+} Unk800C9D5C; /* 0xC */
+
 /* field state (D_800CA068) */
 typedef struct {
     s32 unk0; /* flags */
@@ -69,7 +106,7 @@ typedef struct {
     s16 unkD0[4];
 } Unk800CA068;
 
-typedef struct {
+typedef struct Unk800C9DB4 {
     u8 pad0[0x1C];
     u16 unk1C;
     u16 unk1E;
@@ -80,7 +117,18 @@ typedef struct {
 } Unk800C9DB4;
 
 typedef struct {
-    u8 pad0[0x2C];
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    u8 unk24;
+    u8 pad25[3];
+    void *unk28;
     s32 unk2C;
     s32 unk30;
     s32 unk34;
@@ -134,13 +182,21 @@ typedef struct {
 void func_800AD944(s32, s32, s32);
 void func_800A8588(void);
 void func_800C6EEC(s32);
+void func_80054A28(void *);
+void func_800B0124(s32, s32, s32, s32, s32);
+void func_800B36E0(void);
+void func_800B4894(void);
+void func_800B3ACC(void);
+s32 func_8001E350(s32);
+void func_800B31B8(s32, s32, s32, s32);
+void func_800B5938(void);
 void func_800B57C8(void);
 void func_800B1CE4(void);
-s32 func_800AA0C8(FieldMapObj *);
+s32 func_800AA0C8(FieldScene *);
 s32 func_800A8990(FieldMapObj *, s16);
 void func_800B5430(s32);
-s32 func_800B3BD8(s32);
-s32 func_800B3D10(s32);
+s32 *func_800B3BD8(s32);
+s32 *func_800B3D10(s32);
 void func_800C951C(void);
 void func_800C95B8(void);
 void func_800C9580(void);
@@ -155,6 +211,7 @@ void func_800C9630(void);
 /* ---- overlay data ---- */
 extern u8 D_800A717C[]; /* text */
 extern s32 D_800C9D58;
+extern Unk800C9D5C D_800C9D5C[];
 extern Unk800C9DA4 D_800C9DA4;
 extern Unk800C9DB4 *D_800C9DB4;
 extern s32 D_800C9DD0;
@@ -165,12 +222,12 @@ extern Unk800C9DCC *D_800C9DCC;
 extern s32 D_800C9F20[16];
 extern s8 D_800C9FF0[5];
 extern s32 D_800C9FF8[5];
-extern u8 D_800CA05B;
 extern s32 D_800CA0E0;
-extern u8 D_800CA059;
-extern u8 D_800CA05A;
-extern s16 D_800CA05C;
-extern s16 D_800CA05E;
+extern s32 D_800CA010[8];
+extern s32 D_800CA030[8];
+extern u8 D_800CA050; /* D_800CA010 count */
+extern u8 D_800CA051; /* D_800CA030 count */
+extern Unk800CA058 D_800CA058;
 extern Unk800CA068 D_800CA068;
 extern u8 D_800CAA98[];
 extern u8 D_800CAAB8[];
