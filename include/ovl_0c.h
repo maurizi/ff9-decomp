@@ -516,7 +516,44 @@ void func_800BD674(void);
 void func_800C465C(u16);
 void func_800C46D8(u16);
 
+/* image pack loaded by func_800CB09C; offsets are from the header start */
+typedef struct {
+    s32 unk0; /* offset: Unk800CB09CClut */
+    s32 unk4; /* offset: images (RECT + pixels) */
+    s32 unk8; /* image count */
+} Unk800CB09C;
+
+typedef struct {
+    s32 unk0; /* offset: pixel data */
+    s32 unk4; /* count */
+    RECT unk8[1];
+} Unk800CB09CClut;
+
+/* text window contents passed to func_80063118 (as in ovl_38) */
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    u8 *unk4;
+    s32 unk8;
+    void (*unkC)(void);
+} TextWin;
+
+extern RECT D_800CDFCC[6];
+extern TextWin D_800CE00C[4];
+extern u8 D_800D5418[16];
+extern u8 D_800D5428[16];
+extern u8 D_800CE06C[];
+extern u8 D_800CE070[];
+extern u8 D_800CE078[];
+extern u8 D_800CE080[];
+extern u8 D_800CE088[];
+extern u8 D_800CE090[];
+
 /* main exe: candidates for ff9.h */
+extern u32 D_80076F80[]; /* VRAM save buffer */
+extern u8 D_80077E51;
+extern u8 *D_80077DF0;
+s32 func_8002B980(u8 *, s32);
 Unk800CE0E8 *func_8004AE00(void);
 void func_8004B20C(s32);
 
