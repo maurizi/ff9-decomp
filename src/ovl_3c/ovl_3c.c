@@ -290,7 +290,22 @@ void func_801F5D6C(void) {
     func_801F442C(0xF);
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5D98);
+void func_801F5D98(void) {
+    s32 i;
+
+    D_801FC2F8.unk3C = D_801FBC44[func_801F4458()];
+    D_801FC2F8.unk4 = 0;
+    D_801FC2F8.unk1 = 0;
+    for (i = 0; i < 0x20; i++) {
+        if (D_801FC2F8.unk3C[i] == 0xFF) {
+            break;
+        }
+        if (D_80069018[D_801FC2F8.unk3C[i]].unkF & 0xF8) {
+            D_801FC2F8.unk4 = 1;
+        }
+        D_801FC2F8.unk1++;
+    }
+}
 
 void func_801F5E4C(void) {
     MenuList *l;
