@@ -178,13 +178,16 @@ typedef struct Unk800D375C {
     s8 unk13;
 } Unk800D375C; /* 0x14 */
 
+/* list: D_800D3358 (head) -> D_800D34A8[32] -> D_800D3340 (tail) */
 typedef struct Unk800D335C {
-    s32 unk0;
+    struct Unk800D335C *unk0; /* prev */
     struct Unk800D335C *unk4; /* next */
     s32 unk8;
     s16 unkC;
     u8 unkE;
-} Unk800D335C;
+    u8 unkF;
+    u8 pad10[4];
+} Unk800D335C; /* 0x14 */
 
 /* colour + 2 values (8 bytes) */
 typedef struct {
@@ -261,7 +264,7 @@ s32 func_800B88C0(s32);
 void func_800C2A80(s32, s32, s32);
 s16 func_800B36B4(s32, u32, u8 *);
 void func_800B01F0(Unk8004AB64 *);
-void func_800BE748(VECTOR *, u32 *, s32 *, s32, u16 *);
+s32 func_800BE748(VECTOR *, u32 *, s32 *, s32, u16 *);
 void func_800B4720(s32);
 void func_800B4BDC(s32);
 s32 func_800B5CD0(s32, s32, s32);
@@ -404,7 +407,10 @@ extern Unk800D375C D_800D3798[40];
 extern Unk800D3AB8 D_800D3AB8[20];
 extern Unk800D375C D_800D3BF8; /* list tail */
 extern Unk800D335C D_800D3340;
-extern Unk800D335C *D_800D335C;
+extern Unk800D335C D_800D3358;
+extern Unk800D335C D_800D34A8[32];
+extern s32 D_800D3408;
+extern s32 D_800D3750;
 extern s32 D_800D33F0;
 extern Unk800D3FA0 D_800D3FA0;
 extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
@@ -550,7 +556,27 @@ extern u8 D_800CE080[];
 extern u8 D_800CE088[];
 extern u8 D_800CE090[];
 
+extern u8 D_800CCE49;
+extern s32 D_800CCF70; /* debug: last update step */
+extern s32 D_800CE264;
+extern u8 D_800CF44C;
+extern s32 D_800CF468;
+extern s32 D_800CF4A0;
+void func_800AF08C(void);
+void func_800BAEC0(void);
+void func_800BE984(void);
+void func_800C4DD8(void);
+s32 func_800BE4A8(s16, u8 *);
+s32 func_800B9808(s32, s32, VECTOR *, u32 *, s32 *, s32);
+void func_800BC0A8(s32 *, s32 *);
+void func_800BC130(s32, s32, s32 *);
+void func_800BC2C8(s32, s32 *, s32 *);
+void func_800C2040(void);
+void func_800C26DC(void);
+
 /* main exe: candidates for ff9.h */
+void func_800639D4(u16);
+s32 func_80050D38(s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0;

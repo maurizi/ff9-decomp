@@ -883,7 +883,36 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B6BC4);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B7098);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B72A4);
+void func_800B72A4(void) {
+    u8 mode = D_800CF46C;
+
+    if (mode == 2) {
+        if (D_800D3E60 != mode) {
+            D_800CCF70 = 0x64;
+            func_800639D4(D_8006794C->unk1C->unkA);
+            D_800CF468 = VSync(1);
+            if (D_800CCE49 < 2 && D_800CE264 != 0) {
+                func_800AF08C();
+            }
+            D_800CF468 = VSync(1) - D_800CF468;
+            D_800CCF70 = 0x65;
+            D_800CF4A0 = VSync(1);
+            func_800BAEC0();
+            D_800CF4A0 = VSync(1) - D_800CF4A0;
+            D_800CCF70 = 0x66;
+            func_800BE984();
+            D_800CCF70 = 0x67;
+            func_800C4DD8();
+            D_800CCF70 = 0x68;
+            if (D_800CF44C != 0 && D_800D3E60 != 2) {
+                D_800CF404 = func_80050D38(D_800CF404);
+            }
+        } else {
+            D_800CCF70 = 0x6A;
+            func_800BE984();
+        }
+    }
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A71F4);
 
@@ -1481,7 +1510,7 @@ void func_800BD5D0(void) {
     u32 i;
 
     if (D_800D33F0 != 0) {
-        b = D_800D335C;
+        b = D_800D3358.unk4;
         D_800D33F0 = 0;
         a = b;
         for (i = 0; i < 16; i++) {
@@ -1594,7 +1623,35 @@ void func_800BE6B4(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE748);
+s32 func_800BE748(VECTOR *arg0, u32 *arg1, s32 *arg2, s32 arg3, u16 *arg4) {
+    VECTOR pos;
+    VECTOR rel;
+    VECTOR o;
+    s32 cell;
+    u8 flag;
+    s32 r;
+
+    pos = *arg0;
+    func_800BC0A8(&pos.vx, &pos.vz);
+    func_800BC130(pos.vx, pos.vz, &cell);
+    r = func_800BE4A8(cell, &flag);
+    if (flag == 0 && r != 0) {
+        func_800BC2C8(cell, &o.vx, &o.vz);
+        rel.vx = pos.vx - o.vx;
+        rel.vy = pos.vy;
+        rel.vz = pos.vz - o.vz;
+        /* callers pass a 16-bit variable but a word is stored */
+        *(s32 *)arg4 = func_800B9808(cell, r, &rel, arg1, arg2, arg3);
+        if ((u8)D_800CE3C4 - 2U < 2) {
+            if (*arg1 - 0x38 < 2) {
+                *arg1 = 0x36;
+            }
+        }
+        return 1;
+    }
+    *(s32 *)arg4 = pos.vy;
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7F48);
 
