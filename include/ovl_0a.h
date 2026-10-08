@@ -219,9 +219,47 @@ typedef struct {
 
 /* header of the block D_800C9DF0.unk8 points to */
 typedef struct {
-    u8 pad0[0x2C];
+    u8 pad0[0x26];
+    u16 unk26; /* offset: Unk800C9DF8Node[] */
+    u8 pad28[2];
+    u16 unk2A; /* offset: Unk800C9DF8Link[] */
     u16 unk2C; /* entry count for D_800C9DF0.unk20 */
+    u8 pad2E[0x32 - 0x2E];
+    u16 unk32; /* offset: Unk800C9DF8Tri[] */
 } Unk800C9DF8;
+
+typedef struct {
+    u16 unk0; /* low byte: flags, high byte: mask */
+    u8 pad2[2];
+    u16 unk4;
+    u8 pad6[0x28 - 6];
+} Unk800C9DF8Node; /* 0x28 */
+
+typedef struct {
+    u16 unk0;
+    u8 pad2[2];
+} Unk800C9DF8Link; /* 4 bytes */
+
+typedef struct {
+    u8 pad0[0xA];
+    u16 unkA;
+    u16 unkC;
+    u16 unkE;
+    u8 pad10[0x20 - 0x10];
+} Unk800C9DF8Tri; /* 0x20 */
+
+typedef struct {
+    u8 pad0[2];
+    s16 unk2;
+    u8 pad4[4];
+} Unk800C9DF8Pt; /* 8 bytes */
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} Unk800C9E04; /* 0x10 */
 
 typedef struct {
     u16 unk0; /* flags */
@@ -233,7 +271,8 @@ typedef struct {
 } Unk800C9E10; /* 0x10 */
 
 typedef struct {
-    u8 pad0[8];
+    u8 pad0[6];
+    s16 unk6;
     u16 unk8;
     s16 unkA;
     u8 padC[0x28 - 0xC];
@@ -247,7 +286,8 @@ typedef struct {
     Unk800C9DF8 *unk8;
     u8 padC[0x10 - 0xC];
     Unk800C9E00 *unk10;
-    u8 pad14[0x20 - 0x14];
+    Unk800C9E04 *unk14;
+    u8 pad18[0x20 - 0x18];
     Unk800C9E10 *unk20;
 } Unk800C9DF0;
 
@@ -399,6 +439,19 @@ static inline Unk800C9DB4Cam *func_800C9DB4_cam(s32 i) {
 
 static inline Unk800C9DB4Step *func_800C9DB4_steps(Unk800C9DB4Path *p) {
     return (Unk800C9DB4Step *)((u8 *)D_800C9DB4 + p->unkC);
+}
+
+/* tables inside the D_800C9DF0.unk8 block (offsets from its start) */
+static inline Unk800C9DF8Node *func_800C9DF8_node(s32 i) {
+    return &((Unk800C9DF8Node *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk26))[i];
+}
+
+static inline Unk800C9DF8Link *func_800C9DF8_link(s32 i) {
+    return &((Unk800C9DF8Link *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk2A))[i];
+}
+
+static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
+    return &((Unk800C9DF8Tri *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk32))[i];
 }
 
 #endif
