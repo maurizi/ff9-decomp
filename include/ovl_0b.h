@@ -78,7 +78,7 @@ typedef struct BtlUnit9C {
     u8 pad5[8 - 5];
     BtlUnit9C8 *unk8;
     BtlUnit9CC *unkC;
-    u8 pad10[0x14 - 0x10];
+    s32 unk10;
     u32 unk14;
     BtlUnit9C18 *unk18;
     struct BtlUnit9C *unk1C;
@@ -544,7 +544,9 @@ typedef struct {
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
     u8 unk4;
-    u8 pad5[0xA - 5];
+    u8 pad5[8 - 5];
+    u8 unk8;
+    u8 pad9;
     u8 unkA; /* mp cost */
     u8 unkB;
     u8 padC[0xE - 0xC];
@@ -1658,6 +1660,7 @@ extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+void func_800C2250(BtlUnit *, u16);
 void func_800EA550(void);
 void func_800EB238(void);
 void func_800EBC30(void);

@@ -438,7 +438,36 @@ void func_800B0468(GameData *arg0, Battle *arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B05C0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B065C);
+s32 func_800B065C(BtlUnit *arg0, BtlUnit *arg1, BtlCmd *arg2) {
+    s32 r;
+    if (arg0->unk3C & 0x42001103) {
+        return 0;
+    }
+    if (arg2->unkE >= 0x30) {
+        return 0;
+    }
+    if ((arg0->unkC4[1] & 0x10) && (arg2->unk8->unk8 & 8)) {
+        r = arg0->unk33;
+        if (arg0->unkC4[1] & 0x80) {
+            r *= 2;
+        }
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+            }
+        }
+        if (((*D_8007B720 << 8) | *D_8007B720++) % 100 < r) {
+            func_800B3D54(arg0, 0x31, 0xB0, arg1->unkB0);
+            return 1;
+        }
+    }
+    if ((arg0->unkC4[1] & 0x400000) && (arg2->unk8->unk8 & 0x80)) {
+        func_800B3D54(arg0, 0x32, arg2->unkF, arg1->unkB0);
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B081C);
 
@@ -906,7 +935,33 @@ void func_800B8E9C(BtlCalc *arg0) {
     arg0->unk1E = v;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B8FF8);
+void func_800B8FF8(BtlCalc *arg0) {
+    BtlUnit *t;
+    BtlUnit *u;
+    BtlUnit9C *m;
+    if (arg0->unk8->unk8[5] != 0) {
+        if (arg0->unk4->unk3C & 0x100) {
+            arg0->unk18 |= 1;
+            return;
+        }
+        arg0->unk18 |= 0x80;
+        arg0->unk4->unk28 = arg0->unk8->unk8[5];
+        t = arg0->unk4;
+        t->unk86[1] = t->unkA0->unk22 = (t->unk68 & 1) * 0x800;
+        return;
+    }
+    u = arg0->unk4;
+    u->unk28 = 0;
+    u->unk68 |= 0x100000;
+    if (!(u->unk68 & 1)) {
+        func_800C2250(u, D_8006794C->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk30);
+    }
+    m = u->unk9C;
+    if ((s32)m->unkC != u->unkA4[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->unkC != u->unkA4[9]) && u != D_8006794C->unk1C->unk8E4.battle->unk1088->unk4) {
+        m->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+        u->unkA0->unk3A = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B918C);
 
