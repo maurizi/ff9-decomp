@@ -863,9 +863,9 @@ void func_800B6908(void) {
     D_800CF408 = 0x80138800;
     D_800CF420[0] = 0x801A2300;
     D_800CF420[1] = 0x801C8100;
-    D_800CE3E8[0] = 0x80180800;
-    D_800CE3E8[1] = 0x8018A000;
-    D_800CE3E8[2] = 0x80193800;
+    D_800CE3E8[0] = (s32 *)0x80180800;
+    D_800CE3E8[1] = (s32 *)0x8018A000;
+    D_800CE3E8[2] = (s32 *)0x80193800;
     D_800CE3F8 = 0x80100800;
     D_800CF404 = D_800CF420[*D_800CF45C];
 }
@@ -1535,7 +1535,42 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8020);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1DA4);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1F3C);
+void func_800C1F3C(void) {
+    Unk800D3EAC *p;
+    Unk800D3EAC *q;
+    u32 i;
+
+    D_800D3E90 = 0;
+    if (D_800D3EB8 != 0) {
+        p = D_800D3EA8.unk4;
+        i = 0;
+        D_800D3EB8 = 0;
+        q = p;
+        do {
+            p = p->unk4;
+            i++;
+        } while (i < 3);
+        for (;;) {
+            while ((p != &D_800D3E98) & (p->unk8 == NULL)) {
+                if ((p->unk8 == NULL) & (p->unkC != -1)) {
+                    p->unkC = -1;
+                }
+                p = p->unk4;
+            }
+            if (p == &D_800D3E98) {
+                break;
+            }
+            while (q->unk8 != NULL) {
+                q = q->unk4;
+            }
+            q->unk8 = p->unk8;
+            p->unk8 = NULL;
+            p->unkE = 0;
+            p->unkC = -1;
+            p = p->unk4;
+        }
+    }
+}
 
 void func_800C2040(void) {
 }
@@ -1553,7 +1588,7 @@ void func_800C20B0(s32 *arg0) {
         func_80015C38(D_800A8098, arg0);
     }
     func_800B828C(arg0);
-    p = D_800D3EAC;
+    p = D_800D3EA8.unk4;
     for (i = 0; i < 3;) {
         if (p->unk8 == arg0) {
             p->unkE = 1;
@@ -1570,7 +1605,42 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8098);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2230);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C23CC);
+void func_800C23CC(void) {
+    WmLNode *p;
+    WmLNode *q;
+    u32 i;
+
+    D_800D3F20 = 0;
+    if (D_800D3F44 != 0) {
+        p = D_800D3F38.unk4;
+        i = 0;
+        D_800D3F44 = 0;
+        q = p;
+        do {
+            p = p->unk4;
+            i++;
+        } while (i < 2);
+        for (;;) {
+            while ((p != &D_800D3F28) & (p->unkA == 0)) {
+                if (((u8)p->unkA == 0) & (p->unk8 != -1)) {
+                    p->unk8 = -1;
+                }
+                p = p->unk4;
+            }
+            if (p == &D_800D3F28) {
+                break;
+            }
+            while (q->unkA != 0) {
+                q = q->unk4;
+            }
+            q->unkA = p->unkA;
+            p->unkA = 0;
+            p->unkB = 0;
+            p->unk8 = -1;
+            p = p->unk4;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C24D8);
 

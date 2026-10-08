@@ -53,13 +53,15 @@ typedef struct WmNode {
     struct WmNode *unk8;
 } WmNode;
 
+/* frame pack slot list: D_800D3EA8 (head) -> D_800D3EC0[6] -> D_800D3E98 (tail) */
 typedef struct Unk800D3EAC {
-    s32 unk0;
+    struct Unk800D3EAC *unk0; /* prev */
     struct Unk800D3EAC *unk4; /* next */
     s32 *unk8; /* frame pack */
-    u16 unkC; /* low 6 bits: id */
+    s16 unkC; /* low 6 bits: id; -1: none */
     u8 unkE;
-} Unk800D3EAC;
+    u8 padF;
+} Unk800D3EAC; /* 0x10 */
 
 typedef struct {
     u8 pad0[2];
@@ -99,7 +101,7 @@ typedef struct WmLNode {
     struct WmLNode *unk0; /* prev */
     struct WmLNode *unk4; /* next */
     s16 unk8;
-    u8 unkA;
+    s8 unkA;
     u8 unkB;
 } WmLNode; /* 0xC */
 
@@ -160,15 +162,21 @@ typedef struct {
     s32 unk8[4];
 } Unk800C3FE4;
 
-/* list nodes (func_800BE6B4, func_800BD5D0) */
+typedef struct {
+    s32 unk0[4];
+} Unk800D3AB8; /* 0x10 */
+
+/* list nodes (func_800BE6B4, func_800BD5D0): D_800D3758 (head) ->
+ * D_800D3798[40] -> D_800D3BF8 (tail) */
 typedef struct Unk800D375C {
     struct Unk800D375C *unk0; /* prev */
     struct Unk800D375C *unk4; /* next */
     s32 unk8;
-    s32 unkC;
+    Unk800D3AB8 *unkC;
     s16 unk10;
     u8 unk12;
-} Unk800D375C;
+    s8 unk13;
+} Unk800D375C; /* 0x14 */
 
 typedef struct Unk800D335C {
     s32 unk0;
@@ -368,7 +376,7 @@ extern s32 D_800D32DC; /* map height (wraps) */
 extern RECT D_800A71E0;
 extern char D_800A720C[]; /* "w_frameSystemDestructor:\n" */
 extern Unk800CD10C D_800CD10C[][64];
-extern s32 D_800CE3E8[3];
+extern s32 *D_800CE3E8[3];
 extern s32 D_800CE3F8;
 extern u8 D_800CE400[];
 extern u8 *D_800CF400;
@@ -392,6 +400,9 @@ extern Unk800D1FD8 D_800D1FE0[2];
 extern s32 D_800D3308;
 extern Unk800D375C D_800D3758; /* list head */
 extern s32 D_800D3790;
+extern Unk800D375C D_800D3798[40];
+extern Unk800D3AB8 D_800D3AB8[20];
+extern Unk800D375C D_800D3BF8; /* list tail */
 extern Unk800D335C D_800D3340;
 extern Unk800D335C *D_800D335C;
 extern s32 D_800D33F0;
@@ -417,7 +428,11 @@ extern u8 D_800CE25C;
 extern u8 D_800CE26C;
 extern s32 D_800CE3E4;
 extern s32 D_800CF480;
-extern Unk800D3EAC *D_800D3EAC;
+extern Unk800D3EAC D_800D3E98;
+extern Unk800D3EAC D_800D3EA8;
+extern Unk800D3EAC D_800D3EC0[6];
+extern s32 D_800D3E90;
+extern s32 D_800D3EB8;
 extern WmNode D_800D4848;
 extern u8 D_800CCA1C;
 extern RECT D_800CE0B8[];
