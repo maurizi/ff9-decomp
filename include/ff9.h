@@ -1418,9 +1418,11 @@ extern s32 D_8006E510[];
 u8 func_80022C60(s32, s32, void *, void (*)(u8 *));
 void func_80036634(u8 *);
 extern void *D_8007AED0[8];
-s32 D_800BED6C(s32, s32); /* overlay code */
-s32 func_800BED10(s32, s32); /* overlay code */
-void func_800BE1E0(s32, s32, s32); /* overlay code */
+#ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
+s32 D_800BED6C(s32, s32);
+s32 func_800BED10(s32, s32);
+void func_800BE1E0(s32, s32, s32);
+#endif
 void func_80023304(s32);
 void func_8002325C(u8);
 extern void (*D_80068668[])(s32);
