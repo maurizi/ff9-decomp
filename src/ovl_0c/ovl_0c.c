@@ -464,7 +464,42 @@ void func_800AD180(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AD204);
+void func_800AD204(void) {
+    void *p = &D_8006794C->unk1C->unk880;
+
+    D_800CE0E8 = p;
+    D_800CE0F0 = p;
+    D_8006794C->unk1C->unkA = 0xDC;
+    SetGeomOffset(0xA0, 0x70);
+    D_800CE1B0.vx = 0;
+    D_800CE1B0.vy = -0x4E20;
+    D_800CE1B0.vz = 0;
+    D_800CE202 = 1;
+    D_800CE0EF = 0;
+    D_800CE100 = 0;
+    D_800CE1E1 = 0;
+    if (D_8006794C->unkA == 1 && D_8006794C->unk1C->unk890 == 0) {
+        D_800CE0F0->unk2 = 0;
+        D_800CE0F0->unk4 = 0;
+        D_800CE0F0->unk8 = 0;
+        D_800CE0F0->unkC = 0;
+        D_800CE0E8->unk11 = 0;
+    }
+    if (D_800CE0F0->unk4 < 0) {
+        D_800CE0F0->unk2 = 0;
+    }
+    if (D_800CE0F0->unk4 > 0) {
+        D_800CE0F0->unk2 = 0x1000;
+    }
+    D_800CE1A8 = 0;
+    D_800CE188 = 0;
+    D_800CE1E8 = D_800CCA68.unkA;
+    D_800CE0EC = 0;
+    D_800CE0ED = 0;
+    D_800CE0EE = 0;
+    D_800CE1F2 = 1;
+    D_800CE1F3 = 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AD39C);
 

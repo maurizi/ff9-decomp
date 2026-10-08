@@ -68,6 +68,7 @@ typedef struct {
     s16 unk2;
     s32 unk4;
     s32 unk8;
+    s16 unkC;
 } Unk800CE0F0;
 
 typedef struct {
@@ -593,6 +594,16 @@ extern char D_800A7BB8[];
 void func_800C1824(s32, s32, s32, s32);
 extern s32 D_800D3F88;
 void func_800C26DC(void);
+
+typedef struct {
+    u8 pad0[0xA];
+    Unk800CE1E8 unkA;
+} Unk800CCA68;
+extern Unk800CCA68 D_800CCA68;
+extern VECTOR D_800CE1B0;
+extern s16 D_800CE100;
+extern u8 D_800CE1E1;
+extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
 void func_800639D4(u16);

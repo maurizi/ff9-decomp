@@ -91,6 +91,7 @@ typedef struct {
 } POLY_FT4;
 
 long SquareRoot0(long a);
+void SetGeomOffset(long ofx, long ofy);
 
 typedef struct {
     u8 minute, second, sector, track;
