@@ -11,7 +11,8 @@ typedef struct {
     u8 unk0; /* active list, index into D_801F3040 */
     u8 unk1; /* state, index into D_801F307C */
     u8 unk2; /* party slot */
-    u8 pad3[2];
+    u8 pad3;
+    u8 unk4;
     u8 unk5;
     u8 unk6;
     u8 unk7;
@@ -26,7 +27,7 @@ typedef struct {
     u32 unk50; /* timer */
     u8 unk54;
     u8 unk55;
-    s8 unk56;
+    u8 unk56;
     u8 unk57;
     s32 unk58;
     u8 pad5C[4];
@@ -63,7 +64,20 @@ extern Unk8006B1F4 D_8006B1F4[];
 u8 func_800654F8(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
 
+extern u8 D_801F30E0[2][0x10];
+extern RECT D_801F3148;
+extern u8 D_801F3140[];
+
+/* other overlay */
+s8 func_800B8124(void);
+void func_800B81A0(void);
+
 void func_801F0D18(void);
+void func_801F2B20(Window *);
+void func_801F2B58(Window *);
+void func_801F2D58(void);
+void func_80028128(s32); /* main exe */
+void func_80026EA0(s32, s32, s32, s32, s32); /* main exe */
 void func_801F187C(void);
 void func_801F24DC(void);
 void func_801F2E18(void);
