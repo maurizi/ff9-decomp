@@ -4978,7 +4978,20 @@ void func_80056388(s32 a, s32 b) {
     func_8005C8BC(0xED);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800563C0);
+void func_800563C0(s32 *a, s32 b, s32 c, s32 d) {
+    s32 x;
+    if (func_800565DC(a) == 0) {
+        x = 0x59100;
+        if (c == 0) {
+            x = 0x4F100;
+        }
+        D_80080AA0.unk0 = (s32)a;
+        D_80080AA0.unk4 = (b & 0xFF) << 8;
+        D_80080AA0.unk8 = x;
+        D_80080AA0.unkC = d;
+        func_8005C8BC(0xEC);
+    }
+}
 
 s32 func_80056448(s32 a, s32 b) {
     if (b == 0) {
@@ -5656,7 +5669,24 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetReverbModeType);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CDE4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CE04);
+void func_8005CE04(u32 *src, u32 *dst, u32 n) {
+    u32 t0, t1, t2, t3;
+    for (n >>= 2; n & ~3; n -= 4) {
+        t0 = src[0];
+        t1 = src[1];
+        t2 = src[2];
+        t3 = src[3];
+        dst[0] = t0;
+        dst[1] = t1;
+        dst[2] = t2;
+        dst[3] = t3;
+        src += 4;
+        dst += 4;
+    }
+    for (; n != 0; n--) {
+        *dst++ = *src++;
+    }
+}
 
 void func_8005CE8C(u32 *a, u32 *b, u32 n) {
     u32 t0, t1, t2, t3;

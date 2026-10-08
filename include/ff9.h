@@ -1015,6 +1015,7 @@ typedef struct {
 extern Unk8007B9C0 D_8007B9C0[];
 
 extern u8 D_80077E2F;
+extern s16 D_80077E30; /* = D_80077E28.unk8 */
 
 void func_80036470(void);
 void func_80059AA8(s32, s32);
@@ -1092,13 +1093,16 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2;
+    u8 unk2;
     u8 unk3;
     u8 unk4;
     u8 unk5;
     u8 unk6;
     u8 unk7; /* = D_80077E2F */
-    u8 pad8[0x10 - 8];
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
     s32 unk10; /* loaded file id */
     u8 pad14[0x1A - 0x14];
     s16 unk1A;
