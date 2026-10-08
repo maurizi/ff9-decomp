@@ -2240,4 +2240,14 @@ extern Unk800689B0 D_800689B0[];
 u8 func_8002E4BC(Window *);
 void func_8002CB18(Window *);
 void func_8002E588(Window *);
+/* sprite cell of a frame animation (func_800357E0) */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u8 unk2; /* x + 0x80 */
+    u8 unk3; /* y + 0x80 */
+    u32 unk4; /* clut | tpage bits << 16 */
+    u16 unk8; /* w */
+    u16 unkA; /* h */
+} Unk800357E0;
 #endif
