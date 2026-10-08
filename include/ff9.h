@@ -363,7 +363,9 @@ typedef struct {
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    u8 pad6[9 - 6];
+    u8 unk6;
+    u8 unk7;
+    u8 pad8;
     u8 unk9;
     u8 padA[2];
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
@@ -857,6 +859,9 @@ extern Unk4 D_80068158;
 
 extern u8 D_800739B8[];
 extern Unk80080A10 *D_8007F790;
+extern Unk80080A10 D_8007F8F0;
+void func_8005A320(s32, s32);
+void func_8005963C(s32, s32);
 extern s16 D_8007F95A;
 extern s32 D_8008322C;
 typedef struct {
@@ -897,7 +902,7 @@ void func_8002FAAC(s32);
 void func_8002FB08(s32);
 void func_8002FB64(s32);
 void func_80030770(u8 *);
-s32 func_8002F5A0(s32);
+s32 func_8002F5A0(void (*)(void));
 void *func_80030B34(void *, void *, s32);
 void *func_80030EE4(void *, void *, s32);
 void *func_80031284(void *, void *, s32);
@@ -1163,15 +1168,12 @@ void func_8006008C(AkaoChannel *, s32);
 void func_800600C0(AkaoChannel *, s32);
 u8 func_80022D3C(void (*)(u8 *));
 
-typedef struct {
-    u8 pad0[0xC];
-    s32 unkC;
-} Unk8005AA78;
+
 
 extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
 
-void func_8005A658(Unk8005AA78 *);
+void func_8005A658(Unk80080AA0 *);
 
 /* ---- hoisted from overlay headers ---- */
 
@@ -1281,6 +1283,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+u8 func_8002F800(void);
+void func_80032238(void);
 u16 func_80019150(void);
 void func_80019160(u16, s32);
 void func_80019750(Unk4 *);

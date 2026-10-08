@@ -3002,7 +3002,19 @@ void func_800328E8(void) {
     D_80077DB0.unk10++;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032980);
+void func_80032980(void) {
+    D_80077DB0.unk7 = 1;
+    if (func_8002F800() == 0) {
+        if (func_8002F810() == 0) {
+            func_8002F9F0();
+            func_8002F8A8(func_80032238);
+        } else {
+            func_80032238();
+        }
+    } else {
+        func_8002F5A0(func_80032238);
+    }
+}
 
 void func_800329FC(u8 *a) {
     if (*a == 0) {
@@ -3209,7 +3221,17 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003470C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800347D8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800348C0);
+s32 func_800348C0(s32 ch) {
+    s32 sum = 0;
+    s32 i;
+    u32 *bits = D_8006794C->unk1C->unk3C[ch].unk88;
+    for (i = 0; i < 0x40; i++) {
+        if (bits[i >> 5] & (1 << (i & 0x1F))) {
+            sum += D_8006D128[i].unk1;
+        }
+    }
+    return sum;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003493C);
 
@@ -3686,7 +3708,18 @@ s32 func_8004AEBC(void) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004AEDC);
+s32 func_8004AEDC(void) {
+    s32 r;
+    if (D_8007B6F4 & 1) {
+        func_80052DA0();
+        r = func_80052D40();
+    } else {
+        r = *(*D_8007B70C)++;
+    }
+    D_8007B6F4 >>= 1;
+    D_8007B6F8 = 1;
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004AF58);
 
@@ -5235,7 +5268,14 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A320);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A5FC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A658);
+void func_8005A658(Unk80080AA0 *a) {
+    if (D_8007F8F0.unk6A != 0 && D_8007F8F0.unk6A == a->unk8) {
+        func_8005A320(a->unk0, 0);
+    } else {
+        func_8005963C(a->unk0, -1);
+        D_80080A10->unk6A = a->unk8;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A6D4);
 
@@ -5245,7 +5285,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A7E4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A8AC);
 
-void func_8005AA78(Unk8005AA78 *a) {
+void func_8005AA78(Unk80080AA0 *a) {
     s32 r;
     func_8005A658(a);
     r = 0;
