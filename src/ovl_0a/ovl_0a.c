@@ -2241,7 +2241,57 @@ s32 func_800C6E94(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C6EEC);
+/* old-style definition: func_800C7F34/func_800C7FBC call it without arguments */
+s32 func_800C6EEC(arg0)
+s32 arg0;
+{
+    Unk800CAE98 *e;
+    s32 step;
+    s16 range;
+    s16 v;
+
+    e = &D_800CAE98[arg0];
+    e->unk14 += e->unk12;
+    step = e->unk14 >> 8;
+    range = e->unkA - e->unk8;
+    if (e->unk10 != 0 && e->unk12 != 0 && range > 0) {
+        switch (e->unk6) {
+        case 0:
+            v = e->unk8 + step;
+            break;
+        case 1:
+            v = e->unk8 + range * ((s16)func_8004BB7C((s16)((step << 12) / range) + 0x800) + 0x1000) / 0x2000;
+            break;
+        default:
+            v = e->unk8 + step;
+            break;
+        }
+        e->unkE = e->unkC;
+        e->unkC = v;
+        if (e->unkA < v) {
+            if (e->unk0 & 0x10) {
+                e->unkC = e->unkA;
+                e->unk12 = -e->unk12;
+            } else {
+                e->unkC = e->unk8;
+            }
+            e->unk14 = (range << 8) - 0x100;
+            e->unk0 &= ~4;
+        } else if (v < e->unk8) {
+            if (e->unk0 & 0x10) {
+                e->unkC = e->unk8;
+                e->unk12 = -e->unk12;
+            } else {
+                e->unkC = e->unkA;
+            }
+            e->unk14 = 0;
+            e->unk0 &= ~4;
+        }
+    } else {
+        return 0;
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7100);
 

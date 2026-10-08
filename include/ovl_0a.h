@@ -425,13 +425,13 @@ typedef struct {
     u16 unk0; /* flags */
     s16 unk2;
     s16 unk4;
-    s16 unk6;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
-    s16 unk10;
-    s16 unk12;
+    u16 unk6; /* curve: 0 linear, 1 cosine */
+    s16 unk8; /* min */
+    s16 unkA; /* max */
+    s16 unkC; /* current */
+    s16 unkE; /* previous */
+    u16 unk10;
+    s16 unk12; /* speed (8.8) */
     s32 unk14;
 } Unk800CAE98; /* 0x18 */
 
@@ -615,7 +615,7 @@ typedef struct {
 /* ---- overlay functions ---- */
 s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
-void func_800C6EEC();
+s32 func_800C6EEC();
 void func_80054A28(void *);
 s32 func_800B0124(s32, s32, s32, s32, s32);
 void func_800B36E0(void);
