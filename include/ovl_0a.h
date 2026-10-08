@@ -30,8 +30,9 @@ typedef struct {
     void *unk1C; /* file 0x1Fxxxx */
     s32 unk20;
     void *unk24;
-    u8 *unk28; /* = unk6C */
-    u8 pad2C[0x41 - 0x2C];
+    s32 *unk28; /* = unk6C, unk40 entries */
+    u8 pad2C[0x40 - 0x2C];
+    u8 unk40;
     u8 unk41;
     s8 unk42;
     u8 pad43[0x4A - 0x43];
@@ -45,7 +46,7 @@ typedef struct {
     u8 pad5D[3];
     u8 unk60; /* D_800C9F20 count */
     u8 pad61[0x6C - 0x61];
-    u8 unk6C[0x90 - 0x6C];
+    s32 unk6C[9];
     u8 unk90[0x270 - 0x90];
     u8 unk270[0x330 - 0x270];
 } FieldScene;
@@ -198,7 +199,8 @@ typedef struct {
     u8 pad0[0x20];
     u16 unk20;
     u16 unk22;
-    u8 pad24[0x28 - 0x24];
+    s16 unk24;
+    s16 unk26;
     s16 unk28;
     s16 unk2A;
     s16 unk2C;
@@ -241,8 +243,13 @@ typedef struct {
     u8 pad28[2];
     u16 unk2A; /* offset: Unk800C9DF8Link[] */
     u16 unk2C; /* entry count for D_800C9DF0.unk20 */
-    u8 pad2E[0x32 - 0x2E];
+    u16 unk2E; /* offset: D_800C9DF0.unk20 */
+    u8 pad30[2];
     u16 unk32; /* offset: Unk800C9DF8Tri[] */
+    u8 pad34[2];
+    u16 unk36; /* offset: D_800C9DF0.unk14 */
+    u8 pad38[2];
+    u16 unk3A; /* offset: D_800C9DF0.unkC */
 } Unk800C9DF8;
 
 typedef struct {
@@ -301,10 +308,11 @@ typedef struct {
     u16 unk2; /* count of unk4 entries */
     struct Unk800C9DF4 *unk4;
     Unk800C9DF8 *unk8;
-    u8 padC[0x10 - 0xC];
+    void *unkC;
     Unk800C9E00 *unk10;
     Unk800C9E04 *unk14;
-    u8 pad18[0x20 - 0x18];
+    void *unk18;
+    void *unk1C;
     Unk800C9E10 *unk20;
 } Unk800C9DF0;
 
@@ -524,7 +532,7 @@ void func_800B51D0(void);
 void func_800B5290(void);
 void func_800B52DC(void);
 void func_800B532C(void);
-s32 func_800C44F4(s16);
+s32 func_800C44F4(u32);
 void func_800B57C8(void);
 void func_800B1CE4(void);
 s32 func_800AA0C8(FieldScene *);
@@ -624,6 +632,10 @@ u32 func_800AC380(Unk800C9CCC **);
 void func_800A86FC(void);
 void func_800A8724(void);
 /* func_800A879C: called before its definition without a prototype */
+s32 func_800C3EC0(s32, s16, s16, s16);
+s32 func_800C3608(Unk800C9DF4 *);
+void func_800C79B0(s32);
+s32 func_800C6E94(void);
 void func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
