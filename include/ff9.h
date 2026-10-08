@@ -1817,6 +1817,7 @@ void func_80028B20(u8 *);
 u8 func_80033D28(void);
 void func_80012CF8(void);
 extern u8 *D_8007B720;
+extern u8 D_8007B724[]; /* random byte table */
 
 extern u8 D_8007B92D[];
 void func_8004BF20(void);
