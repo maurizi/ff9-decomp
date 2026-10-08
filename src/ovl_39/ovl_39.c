@@ -649,7 +649,27 @@ INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801F42E4);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7AF4);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7C20);
+void func_801F7C20(void) {
+    switch (D_801FC388.unk2) {
+    case 1:
+        if (++D_801FC388.unk24 >= 4) {
+            D_801FC388.unk2 = 4;
+            D_801FC388.unk24 = 0;
+            D_801FB1A8.unk20 = func_80035774(0x1E);
+        }
+        break;
+    case 4:
+        if (++D_801FC388.unk24 >= 4) {
+            D_801FC388.unk24 = 0;
+            if (func_801F8478()) {
+                D_801FC388.unk2 = 5;
+            }
+        }
+        break;
+    case 5:
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7CD0);
 
