@@ -6,6 +6,16 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
+/* palette animation entry (func_800AF414) */
+typedef struct WmPalAnim {
+    u16 unk0; /* id */
+    u8 pad2[2];
+    s16 unk4; /* clut x */
+    s16 unk6; /* clut y */
+    u16 unk8[16]; /* source palette */
+    u16 unk28[2][16]; /* per draw buffer */
+} WmPalAnim; /* 0x68 */
+
 /* object embedded in WorldMap (0x4C bytes) */
 typedef struct {
     s32 unk0;
@@ -23,7 +33,7 @@ typedef struct {
     s32 unk20;
     s16 unk24; /* map id */
     u16 unk26;
-    s32 unk28;
+    struct WmPalAnim *unk28; /* count: unk1A */
     u8 *unk2C;
     u8 *unk30;
     void *unk34[2]; /* [1] freed by func_800A9DE4 */
@@ -329,7 +339,7 @@ typedef struct {
 typedef struct Unk800D375C {
     struct Unk800D375C *unk0; /* prev */
     struct Unk800D375C *unk4; /* next */
-    s32 unk8;
+    struct WmTexEnt *unk8;
     Unk800D3AB8 *unkC;
     s16 unk10;
     u8 unk12;
@@ -337,10 +347,18 @@ typedef struct Unk800D375C {
 } Unk800D375C; /* 0x14 */
 
 /* list: D_800D3358 (head) -> D_800D34A8[32] -> D_800D3340 (tail) */
+typedef struct WmTexEnt {
+    u8 unk0;
+    u8 unk1;
+} WmTexEnt;
+
 typedef struct WmTexPack {
-    s32 unk0;
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
     s32 unk4;
-    s32 unk8[4];
+    WmTexEnt *unk8[4];
 } WmTexPack;
 
 typedef struct Unk800D335C {
@@ -362,7 +380,7 @@ typedef struct {
 } Unk800D1FD8;
 
 typedef struct {
-    s16 unk0;
+    u16 unk0;
     s16 unk2;
     s16 unk4[3]; /* rgb */
     s16 pad;
@@ -678,6 +696,8 @@ extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
 extern u8 D_800D30F8[];
+extern s16 D_800D45D4[3];
+void func_800B3998(u16 *, u16 *, s32, s16 *);
 extern s32 D_800D3F8C;
 extern s32 D_800D3F90;
 extern s32 D_800D3F94;

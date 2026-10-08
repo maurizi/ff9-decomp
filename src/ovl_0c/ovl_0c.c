@@ -288,7 +288,7 @@ s32 func_800A9C1C(WorldMapObj *arg0) {
     q = (u8 *)func_8001C8B0(b, 4, 0x1D0000, 0);
     arg0->unk1A = *q;
     q += 4;
-    arg0->unk28 = (s32)q;
+    arg0->unk28 = (WmPalAnim *)q;
     arg0->unk30 = (u8 *)arg0->unk34[1] + func_8001CA70((s32)arg0->unk34[1]);
     return 0;
 }
@@ -1898,7 +1898,52 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB508);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BBBA8);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BBE24);
+s32 func_800BBE24(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
+    VECTOR v;
+    s32 s;
+
+    v.vx = arg0->vx - D_800CE198[0];
+    v.vy = arg0->vy - D_800CE198[1];
+    v.vz = arg0->vz - D_800CE198[2];
+    if (v.vx > D_800D32D8 - 0x8000) {
+        v.vx -= D_800D32D8;
+    }
+    if (v.vz > D_800D32DC - 0x8000) {
+        v.vz -= D_800D32DC;
+    }
+    if (v.vx < 0x8000 - D_800D32D8) {
+        v.vx = D_800D32D8 + v.vx;
+    }
+    if (v.vz < 0x8000 - D_800D32DC) {
+        v.vz = D_800D32DC + v.vz;
+    }
+    ApplyMatrixLV(D_800CF448, &v, arg2);
+    s = 0x1000 - ((arg2->vz >> 4) + (arg2->vz >> 6));
+    v.vy = ((arg0->vy * s) >> 12) - D_800CE198[1];
+    ApplyMatrixLV(D_800CF448, &v, arg2);
+    arg1->vx = arg0->vx - D_800CE108[0];
+    arg1->vy = ((arg0->vy * s) >> 12) - D_800CE108[1];
+    arg1->vz = arg0->vz - D_800CE108[2];
+    if (arg1->vx > 0xFFFF) {
+        arg1->vx -= 0x60000;
+    }
+    if (arg1->vz > 0xFFFF) {
+        arg1->vz -= 0x50000;
+    }
+    if (arg1->vx < -0xFFFF) {
+        arg1->vx += 0x60000;
+    }
+    if (arg1->vz < -0xFFFF) {
+        arg1->vz += 0x50000;
+    }
+    if (arg3 != NULL) {
+        *arg3 = s;
+    }
+    if (arg1->vx < -0x8000 || arg1->vx > 0x7FFF || arg1->vz > 0x7FFF || arg1->vz < -0x8000) {
+        return 0;
+    }
+    return 1;
+}
 
 void func_800BC098(void) {
 }
@@ -2120,7 +2165,51 @@ s32 func_800BE138(s16 arg0) {
     return i != 40;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE238);
+void func_800BE238(void) {
+    Unk800D375C *n;
+    Unk800D335C *p;
+    u32 i;
+    u32 j;
+    s32 id;
+    s16 m;
+    s32 k;
+
+    n = D_800D3758.unk4;
+    for (i = 0; i < 20; i++, n = n->unk4) {
+        if (n->unk10 < 0) {
+            return;
+        }
+        func_800BC354(n->unk10, &id);
+        n->unk12 = 0;
+        p = D_800D3358.unk4;
+        for (j = 0; j < 16; j++, p = p->unk4) {
+            if (id == p->unkC) {
+                if (p->unkE == 2) {
+                    n->unk12 = 2;
+                    func_800BC2C8(n->unk10, &n->unkC->unk0[0], &n->unkC->unk0[2]);
+                    n->unkC->unk0[1] = 0;
+                    m = n->unk10 % 2;
+                    k = m + (n->unk10 / D_800D32F0) % 2 * 2;
+                    if (p->unk10 != 0) {
+                        n->unk8 = p->unk8->unk8[k];
+                        n->unk8->unk1 = p->unk8->unk2;
+                    } else {
+                        n->unk8 = D_800D32EC->unk8[k];
+                        n->unk8->unk1 = 0;
+                    }
+                    break;
+                }
+                n->unk12 = 2;
+                n->unkC->unk0[1] = 0;
+                m = n->unk10 % 2;
+                k = m + (n->unk10 / D_800D32F0) % 2 * 2;
+                func_800BC2C8(n->unk10, &n->unkC->unk0[0], &n->unkC->unk0[2]);
+                n->unk8 = D_800D32EC->unk8[k];
+                n->unk8->unk1 = 0;
+            }
+        }
+    }
+}
 
 s32 func_800BE4A8(s16 arg0, u8 *arg1) {
     s32 id;
@@ -2139,9 +2228,9 @@ s32 func_800BE4A8(s16 arg0, u8 *arg1) {
             m = arg0 % 2;
             k = m + (arg0 / D_800D32F0) % 2 * 2;
             if (p->unk10 != 0) {
-                return p->unk8->unk8[k];
+                return (s32)p->unk8->unk8[k];
             }
-            return D_800D32EC->unk8[k];
+            return (s32)D_800D32EC->unk8[k];
         }
     }
     if (arg1 != NULL) {
@@ -2149,7 +2238,7 @@ s32 func_800BE4A8(s16 arg0, u8 *arg1) {
     }
     m = arg0 % 2;
     k = m + (arg0 / D_800D32F0) % 2 * 2;
-    return D_800D32EC->unk8[k];
+    return (s32)D_800D32EC->unk8[k];
 }
 
 void func_800BE674(void) {

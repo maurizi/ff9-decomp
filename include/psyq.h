@@ -333,6 +333,7 @@ void SetLightMatrix(MATRIX *m);
 void SetColorMatrix(MATRIX *m);
 MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
 void SetRotMatrix(MATRIX *m);
+VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
 int LoadImage(RECT *rect, u32 *p);
 int StoreImage(RECT *rect, u32 *p);

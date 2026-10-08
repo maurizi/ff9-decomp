@@ -719,7 +719,9 @@ typedef struct {
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
-    u8 pad24[0x40 - 0x24];
+    u8 pad24[0x34 - 0x24];
+    u16 unk34;
+    u8 pad36[0x40 - 0x36];
     VECTOR unk40; /* previous position */
 } Unk8004AB64;
 
