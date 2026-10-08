@@ -1808,7 +1808,7 @@ s32 func_800E3BF8(Heap *arg0, s32 arg1) {
     return ret;
 }
 
-void func_800E3C50(void) {
+void func_800E3C50(void *arg0) {
 }
 
 void func_800E3C58(void) {
@@ -4341,7 +4341,16 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F3390);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F34C0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F35C8);
+void func_800F35C8(s32 arg0, u32 arg1) {
+    s32 k = D_80105078->unk80[arg1];
+    SPRT *s = &D_801050D8->unk110[k][D_80077148.unk0];
+    s->y0 = D_80105078->unk60 + arg1 * 12 + 3;
+    s->clut = D_800F9048[(u8)D_80105078->unk78[arg1]] + ((k >> 1) << 6);
+    addPrim(&D_8007716C[16], s);
+    if (arg1 >= D_80105078->unk5C - 1) {
+        addPrim(&D_8007716C[16], &D_801050D8->unk2F0[D_80077148.unk0]);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F36F8);
 

@@ -836,9 +836,12 @@ typedef struct Heap {
 } Heap;
 
 typedef struct {
-    u8 pad0[4];
-    s32 unk4;
-    u8 pad8[0x18 - 8];
+    s32 unk0; /* frame */
+    s32 unk4; /* state */
+    u8 pad8[0xC - 8];
+    void *unkC; /* work data */
+    struct Unk800DA1B8 *unk10;
+    s32 (*unk14)(s32, void *, Unk800F78A4 *, s32 *, s32);
 } Unk80100C78Entry; /* 0x18 */
 
 typedef struct {
@@ -1078,6 +1081,8 @@ typedef struct {
     BtlUnit *unk64;
     BtlUnit *unk68[4];
     s8 unk78[4];
+    u8 pad7C[0x80 - 0x7C];
+    u8 unk80[4];
 } Unk80105078;
 extern Unk80105078 *D_80105078;
 extern Unk800F3F10 D_800F9084;
@@ -1707,6 +1712,9 @@ extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
 u8 func_800B3EF8(BtlUnit *, u8);
 void func_800F16DC(u8, u8);
+extern s16 D_800F9048[];
+void func_800E3C50(void *);
+s32 func_800DA2AC(Unk800DA1B8 *);
 void func_800F1790(u8, u8);
 extern u8 D_800F8E68[][2];
 void func_800F1A20(s32);
