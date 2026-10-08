@@ -534,7 +534,7 @@ typedef struct {
     u8 *unk0;
     u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
-    s32 unk18;
+    u8 *unk18;
     u8 pad1C[0x24 - 0x1C];
     s32 unk24;
     u32 unk28;
@@ -1498,7 +1498,7 @@ typedef struct {
 void func_800384D0(Unk8004AB64 *, s32, s32, s32);
 extern CdlATV D_8007F718;
 void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
-void func_80062830(Unk6 *, u8, s32, s32);
+void func_80062830(Unk6 *, u8);
 extern s32 D_8006FB40[];
 
 typedef struct {
