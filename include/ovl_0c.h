@@ -484,6 +484,38 @@ extern WmLNode D_800D3F38;
 extern s32 D_800D3F44;
 extern WmLNode D_800D3F48[4];
 
+/* scrolling texture strips (func_800B905C) */
+typedef struct {
+    u16 unk0; /* x */
+    u16 unk2; /* y */
+    u16 unk4; /* w */
+    u16 unk6; /* h */
+    u16 unk8; /* speed (8.8) */
+} Unk800CFEA0; /* 0xA */
+
+typedef struct {
+    u8 pad0[4];
+    u16 unk4;
+    u16 unk6;
+    u8 pad8[2];
+} Unk800CF450; /* 0xA */
+
+extern u16 D_800CFE88[8];
+extern Unk800CFEA0 D_800CFEA0[8];
+extern Unk800CF450 *D_800CF450;
+extern u16 (*D_800D32E4)[12];
+extern s32 D_800D32F8[3];
+extern u8 D_800D330C[3];
+extern u8 D_800D5410;
+extern u8 D_800D1FD0;
+extern u8 D_800D30CB;
+extern u8 D_800CF454;
+void func_800B94F8(s32, s32, s32);
+void func_800BD57C(void);
+void func_800BD674(void);
+void func_800C465C(u16);
+void func_800C46D8(u16);
+
 /* main exe: candidates for ff9.h */
 Unk800CE0E8 *func_8004AE00(void);
 void func_8004B20C(s32);
