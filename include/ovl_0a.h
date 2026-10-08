@@ -223,7 +223,8 @@ typedef struct {
 typedef struct {
     u8 pad0[6];
     u8 unk6; /* count */
-    u8 pad7[2];
+    u8 unk7; /* count */
+    u8 pad8;
     u8 unk9;
     u8 padA[2];
     u8 unkC[1][12];
@@ -476,6 +477,12 @@ extern u8 D_800C9ED4[];
 extern u8 D_800C9EDC[];
 extern u8 D_800C9EE4[];
 
+/* 8-byte entries following Unk800B3254.unkC[unk6] */
+typedef struct {
+    u16 unk0; /* id */
+    u8 pad2[6];
+} Unk800B3294;
+
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
  * .text (as "func_800C9CCC"), so the array is reached through that label. */
 typedef struct {
@@ -526,6 +533,10 @@ static inline Unk800C9DF8Node *func_800C9DF8_node(s32 i) {
 
 static inline Unk800C9DF8Link *func_800C9DF8_link(s32 i) {
     return &((Unk800C9DF8Link *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk2A))[i];
+}
+
+static inline Unk800C9DF8Pt *func_800C9DF8_pts(Unk800C9E10 *e) {
+    return (Unk800C9DF8Pt *)((u8 *)D_800C9DF0.unk8 + e->unkC);
 }
 
 static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {

@@ -582,7 +582,27 @@ u8 *func_800B3254(Unk800B3254 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3294);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3300);
+u8 *func_800B3300(Unk800B3254 *arg0, u8 **arg1, u8 **arg2) {
+    u8 *base;
+    u8 *p;
+
+    *arg1 = NULL;
+    *arg2 = NULL;
+    base = arg0->unkC[0];
+    if (arg0->unk7 == 0) {
+        return NULL;
+    }
+    p = arg0->unkC[arg0->unk7 - 1];
+    do {
+        if ((s8)p[0] == 1) {
+            *arg1 = p;
+        } else if ((s8)p[0] == 2) {
+            *arg2 = p;
+        }
+        p -= 12;
+    } while (p >= base);
+    return base;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3378);
 
