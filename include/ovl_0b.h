@@ -1117,7 +1117,9 @@ typedef struct {
     u8 pad7[0xB - 7];
     u8 unkB;
     u8 unkC;
-    u8 padD[0x11 - 0xD];
+    u8 padD[0xF - 0xD];
+    u8 unkF;
+    u8 pad10;
     u8 unk11;
     s8 unk12;
 } Unk80104FF0;
@@ -1685,6 +1687,7 @@ extern void (*D_800F8DF0[])(Unk800FD56C *);
 extern void (*D_800F8E00)(Unk800FD56C *);
 extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
+void func_800F1A20(s32);
 s32 func_8001DA6C(s16);
 s32 func_80063830(s32);
 void func_800BCAA4(BtlUnit *);
