@@ -946,6 +946,11 @@ void func_800C26DC(void);
 extern Unk800CE1E8 D_800CCA68[];
 extern u8 D_800CCACC[][3][3];
 extern VECTOR D_800CE1B0;
+extern SVECTOR D_800CE0F8; /* camera up vector */
+extern SVECTOR D_800CE190;
+extern SVECTOR D_800CE1C8;
+extern s32 D_800CE1C4;
+extern s32 D_800CCA24;
 extern s16 D_800CE100;
 extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;

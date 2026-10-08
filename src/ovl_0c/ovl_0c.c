@@ -790,7 +790,64 @@ void func_800AD204(void) {
     D_800CE1F3 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AD39C);
+void func_800AD39C(void) {
+    SVECTOR r;
+    VECTOR v;
+    MATRIX m;
+    s32 t;
+    s32 a;
+
+    if (D_800CE202 == 0) {
+        func_800AE280();
+    }
+    D_8006794C->unk1C->unkA = D_800CE1E8.unk0[0];
+    D_800CE0F0->unkC &= 0xFFF;
+    D_800CE1C4 = D_800CE1E8.unk0[4];
+    if ((u8)D_800CE3C4 == 8 || (u8)D_800CE3C4 == 9) {
+        t = D_800CE3DC->unk14.vy + 0x1518;
+        D_800CE1C4 = D_800CE1E8.unk0[4] - (t > 0 ? t >> 3 : t / 6);
+    }
+    D_800CE1C8.vx = func_8004BB80(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
+    D_800CE1C8.vy = D_800CE1E8.unk0[2];
+    D_800CE1C8.vz = func_8004BB7C(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
+    if (D_800CE202 == 0) {
+        func_800AD738();
+    }
+    D_800CE190.vx = D_800CE198[0] - D_800CE108[0];
+    D_800CE190.vy = D_800CE198[1] - D_800CE108[1];
+    D_800CE190.vz = D_800CE198[2] - D_800CE108[2];
+    func_8001D898(&r, 0, 8);
+    r.vz = D_800CE100;
+    r.vy = D_800CE0F0->unkC;
+    func_80030AF4(&r, &m);
+    m.t[0] = 0;
+    m.t[1] = 0;
+    m.t[2] = 0;
+    ApplyMatrixLV(&m, &D_800CE1B0, &v);
+    func_800AE880(D_800CF448, &D_800CE190, &D_800CE0F8, &v);
+    D_800CE1D0[1] = 0;
+    D_800CE1D0[0] = D_800CE108[0] - D_800CE198[0];
+    D_800CE1D0[2] = D_800CE108[2] - D_800CE198[2];
+    if (D_800CE1D0[0] > 0xFFFF) {
+        D_800CE1D0[0] -= 0x60000;
+    }
+    if (D_800CE1D0[2] > 0xFFFF) {
+        D_800CE1D0[2] -= 0x50000;
+    }
+    if (D_800CE1D0[0] < -0xFFFF) {
+        D_800CE1D0[0] += 0x60000;
+    }
+    if (D_800CE1D0[2] < -0xFFFF) {
+        D_800CE1D0[2] += 0x50000;
+    }
+    a = ratan2(D_800CE1D0[2], D_800CE1D0[0]);
+    D_800CE1D0[0] = func_8004BB7C(a);
+    D_800CE1D0[2] = func_8004BB80(a);
+    VectorNormal((VECTOR *)D_800CE1D0, (VECTOR *)D_800CE1D0);
+    if (*D_800CF430 < 0x137E && ((D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8) == 0xC) {
+        D_800CE0F0->unk8 = 1;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AD738);
 
