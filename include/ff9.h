@@ -57,7 +57,8 @@ typedef struct {
     u8 pad18[0x1F - 0x18];
     u8 unk1F;
     u8 unk20;
-    u8 pad21[0x34 - 0x21];
+    u8 unk21;
+    u8 pad22[0x34 - 0x22];
     u32 unk34; /* low nibble: character id (index into GameData.unk3C);
                 * bits 4-8 index D_8006BB8C; bit 11 tested;
                 * bits 12-16: ability table row */
