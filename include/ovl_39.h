@@ -61,7 +61,9 @@ extern Unk801FBEE0 D_801FBEE0;
 typedef struct {
     u8 unk0;
     u8 unk1; /* state, index into D_801FB014 */
-    u8 pad2[0xC - 2];
+    u8 unk2; /* slot */
+    u8 unk3; /* attempts */
+    u8 unk4[0xC - 4]; /* attempts per result */
     s32 unkC;  /* used slots */
     s32 unk10; /* file count */
     s32 unk14;
@@ -219,6 +221,13 @@ extern u8 D_801EDF1C[];
 extern u8 D_801FB040[]; /* save icon per character model */
 extern u16 D_801FDEFE;
 void func_801F96CC(void);
+extern u8 D_801FC3B8[0x26]; /* name buffer */
+u8 func_800B5064(void); /* other overlay */
+void func_801F9024(u8 *);
+extern u8 D_801FB02C[]; /* retries allowed per result */
+void func_801F6E68(s32);
+void func_801F6DAC(void);
+void func_801F6E1C(void);
 void func_801F70E4(void);
 char *strcpy(char *, const char *); /* C library (builtin) */
 s32 func_80065E60(char *, s32); /* main exe: open */

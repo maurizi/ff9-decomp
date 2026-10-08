@@ -320,7 +320,28 @@ void func_801F6378(void) {
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F63D8);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F65C4);
+void func_801F65C4(void) {
+    s32 r;
+
+    r = func_801FAAE4(D_80077DB2 << 4);
+    D_801FBEF8.unk3++;
+    D_801FBEF8.unk4[r]++;
+    if (D_801FBEF8.unk3 == D_801FBEF8.unk4[r]) {
+        if (D_801FBEF8.unk3 < D_801FB02C[r]) {
+            func_801F6E68(r);
+            return;
+        }
+        switch (r) {
+        case 0:
+            func_801F6DAC();
+            return;
+        case 3:
+            func_801F6E1C();
+            return;
+        }
+    }
+    func_801F72B4(0x2E);
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F6694);
 
