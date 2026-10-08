@@ -1489,9 +1489,64 @@ void func_800DBD10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBE98);
+void func_800DBE98(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    char *str = "Hi_DrawMorphEffModel()\nid:%d cannot use!";
+    BtlObjSlot *s = func_800DCFB0(arg3, str);
+    s32 n;
+    s32 i;
+    s->unk0->unk5C = func_800DCFB0(arg4, str)->unk0->unk8;
+    func_800DCA68(s->unk0, arg0, arg1, arg2);
+    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    s->unk0->unk10 = 0;
+    n = s->unk0->unk8->unk3;
+    for (i = 0; i < n; i++) {
+        func_800DF15C(s->unk0, i, arg5);
+        if (s->unk22 != 0) {
+            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+        } else {
+            switch ((u16)s->unk20) {
+            case 0:
+            case 2:
+                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                break;
+            case 1:
+                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                break;
+            }
+        }
+    }
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC048);
+void func_800DC048(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    char *str = "Hi_DrawMorphModelByBone()\nid:%d cannot use!";
+    BtlObjSlot *s = func_800DCFB0(arg1, str);
+    s32 n;
+    s32 i;
+    s->unk0->unk5C = func_800DCFB0(arg2, str)->unk0->unk8;
+    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    func_800DC988(arg4, arg5, (BtlBone *)&s->unk0->unk24);
+    if (arg0 != 0) {
+        func_800DCB20(s->unk0, arg0);
+    }
+    s->unk0->unk10 = 0;
+    n = s->unk0->unk8->unk3;
+    for (i = 0; i < n; i++) {
+        func_800DF15C(s->unk0, i, arg3);
+        if (s->unk22 != 0) {
+            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+        } else {
+            switch ((u16)s->unk20) {
+            case 0:
+            case 2:
+                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                break;
+            case 1:
+                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                break;
+            }
+        }
+    }
+}
 
 s32 func_800DC208(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     Unk8010141C *s = func_800DD02C(arg3, "Hi_DrawSummonModel()\nid:%d cannot use!");
