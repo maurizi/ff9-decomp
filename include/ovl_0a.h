@@ -35,7 +35,10 @@ typedef struct {
     u8 unk40;
     u8 unk41;
     s8 unk42;
-    u8 pad43[0x4A - 0x43];
+    s8 unk43;
+    u8 pad44[4];
+    s8 unk48;
+    s8 unk49;
     u8 unk4A;
     u8 pad4B;
     void *unk4C; /* file 0x1Exxxx */
@@ -265,11 +268,14 @@ typedef struct {
 } Unk800C9DF8Link; /* 4 bytes */
 
 typedef struct {
-    u8 pad0[0xA];
+    u16 unk0; /* flags */
+    u8 pad2[0xA - 2];
     u16 unkA;
     u16 unkC;
     u16 unkE;
-    u8 pad10[0x20 - 0x10];
+    u8 pad10[0x1C - 0x10];
+    u16 unk1C; /* count of unk1E entries */
+    u16 unk1E; /* offset: s32[] (Unk800C9E00 indices) */
 } Unk800C9DF8Tri; /* 0x20 */
 
 typedef struct {
@@ -295,7 +301,8 @@ typedef struct {
 } Unk800C9E10; /* 0x10 */
 
 typedef struct {
-    u8 pad0[6];
+    u16 unk0; /* flags */
+    u8 pad2[4];
     s16 unk6;
     u16 unk8;
     s16 unkA;
@@ -512,7 +519,7 @@ void func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
 void func_800C6EEC();
 void func_80054A28(void *);
-void func_800B0124(s32, s32, s32, s32, s32);
+s32 func_800B0124(s32, s32, s32, s32, s32);
 void func_800B36E0(void);
 void func_800B4894(void);
 void func_800B3ACC(void);
@@ -650,6 +657,9 @@ void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;
 void func_801F3488(void *); /* overlay 0x65 (loaded at 0x801F0000) */
+void func_80032100(void);
+void func_80023A0C(void);
+void func_800223CC(void);
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
