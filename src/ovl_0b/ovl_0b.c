@@ -931,7 +931,19 @@ void func_800BA078(BtlCalc *arg0) {
     arg0->unk14 = arg0->unk8->unk8[5];
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BA094);
+void func_800BA094(BtlCalc *arg0) {
+    s32 lo;
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+    }
+    lo = arg0->unk0->unk31;
+    arg0->unk14 = lo + ((*D_8007B720 << 8) | *D_8007B720++) % (((arg0->unk0->unk7A + lo) >> 3) + 1);
+    arg0->unkE = arg0->unk0->unk74[5] * arg0->unk8->unk8[5] / 10;
+    arg0->unk10 = arg0->unk4->unk6C;
+}
 
 void func_800BA1B4(BtlCalc *arg0) {
     u8 r;

@@ -103,7 +103,7 @@ typedef struct BtlUnit {
     struct BtlUnit *unk0; /* next */
     struct BtlCmd *unk4;
     s32 unk8;
-    u8 padC[0x10 - 0xC];
+    struct BtlCmd *unkC;
     struct BtlCmd *unk10;
     struct BtlCmd *unk14;
     s32 unk18;
@@ -112,7 +112,8 @@ typedef struct BtlUnit {
     u16 unk28; /* hp */
     s16 unk2A; /* mp */
     s16 unk2C;
-    u8 pad2E[0x31 - 0x2E];
+    s8 unk2E;
+    u8 pad2F[0x31 - 0x2F];
     u8 unk31;
     u8 unk32;
     u8 unk33;
@@ -120,8 +121,8 @@ typedef struct BtlUnit {
     u32 unk38; /* status */
     u32 unk3C; /* status */
     s16 unk40[3];
-    s16 unk46[14];
-    u8 pad62[0x68 - 0x62];
+    s16 unk46[16]; /* status timers */
+    u8 pad66[0x68 - 0x66];
     u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
     u8 unk6C;
     u8 unk6D;
