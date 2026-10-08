@@ -44,10 +44,6 @@ typedef struct WorldMap {
 typedef struct {
     u8 pad0[0x11];
     u8 unk11;
-    u8 pad12[2];
-    s32 unk14; /* x (8.8) */
-    u8 pad18[4];
-    s32 unk1C; /* z (8.8) */
 } Unk800CE0E8;
 
 /* doubly linked list node; D_800D4848 is the list head */
@@ -76,10 +72,14 @@ typedef struct {
 
 typedef struct {
     u8 unk0;
-    u8 pad1[7];
+    u8 pad1[2];
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 pad6[2];
     u32 unk8;
     s16 unkC;
-    u16 unkE;
+    s16 unkE;
 } Unk800CCCC0; /* 0x10 */
 
 typedef struct {
@@ -266,7 +266,7 @@ void func_800C48F4(s32);
 void func_800AFCE0(void);
 s32 func_800B88C0(s32);
 void func_800C2A80(s32, s32, s32);
-s16 func_800B36B4(s32, u32, u8 *);
+s32 func_800B36B4(s32, u32, u8 *);
 void func_800B01F0(Unk8004AB64 *);
 s32 func_800BE748(VECTOR *, u32 *, s32 *, s32, u16 *);
 void func_800B4720(s32);
@@ -376,7 +376,7 @@ extern MATRIX D_800CF540;
 extern u8 D_800D33F4;
 extern u8 D_800A8678[]; /* text */
 extern Unk800CCCC0 D_800CCCC0[];
-extern Unk800CE0E8 *D_800CE3DC;
+extern Unk8004AB64 *D_800CE3DC; /* player actor */
 extern Unk800CE3C8 *D_800CE3C8;
 extern s32 D_800D32D8; /* map width (wraps) */
 extern s32 D_800D32DC; /* map height (wraps) */
@@ -576,6 +576,20 @@ void func_800BC0A8(s32 *, s32 *);
 void func_800BC130(s32, s32, s32 *);
 void func_800BC2C8(s32, s32 *, s32 *);
 void func_800C2040(void);
+void func_800C20B0(s32 *);
+void func_800BA528(WmPack *);
+extern u8 D_800CE202;
+extern u8 D_800CE0EF;
+extern s32 D_800CD094;
+extern s32 D_800D3320[];
+extern Unk800D335C *D_800D33F8[];
+extern WmPack *D_800D3740[];
+extern s32 *D_800D3310[];
+extern s32 D_800CF580[5];
+extern s32 D_800CF598[5]; /* CD sectors */
+extern s32 D_800CCF84[5];
+extern s32 D_800CCF98[5];
+extern char D_800A7BB8[];
 void func_800C1824(s32, s32, s32, s32);
 extern s32 D_800D3F88;
 void func_800C26DC(void);
@@ -588,7 +602,7 @@ extern u8 D_80077E51;
 extern u8 *D_80077DF0;
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
-Unk800CE0E8 *func_8004AE00(void);
+Unk8004AB64 *func_8004AE00(void);
 void func_8004B20C(s32);
 
 /* Inlined copy of func_800BC0A8 (wrap map coordinates). */
