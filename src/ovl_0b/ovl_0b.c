@@ -126,7 +126,33 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A923C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A94F8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A9768);
+void func_800A9768(void) {
+    Battle11C0 *p;
+    s32 i;
+    D_8006794C->unk1C->unk8E4.battle->unk11C0 = (Battle11C0 *)D_80067948;
+    p = (Battle11C0 *)D_80067948;
+    D_80067948 = (s32)(p + 1);
+    p->unk24 = (s32)D_8006794C->unk1C->unk8E4.battle + 0x5800;
+    p->unk1C = p->unk24 + 0x2800;
+    p->unk44 = (s32 *)(p->unk1C + 0x6000);
+    D_80067948 = (s32)p->unk44 + 0x35800;
+    for (i = 0; i < 4; i++) {
+        D_8006794C->unk1C->unk8E4.battle->unk153C[i] = D_80067948;
+        D_80067948 += 0x13000;
+        D_8006794C->unk1C->unk8E4.battle->unk1538[i] = (Battle1538 *)(D_80067948 - 0x28);
+    }
+    p->unk3C = (s32 *)(p + 1);
+    for (i = 0; i < 4; i++) {
+        p->unk3C[i] = D_80067948;
+        D_80067948 += 0x1000;
+    }
+    p->unk30 = D_80067948 + 0x400;
+    p->unk2C = D_80067948;
+    p->unk34 = D_80067948 + 0x800;
+    p->unk38 = p->unk34 + 0x20000;
+    D_80067948 = p->unk38 + 0x20000;
+    p->unkC = (s32 *)(D_80067944 + 0x136700);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A98A0);
 

@@ -574,9 +574,12 @@ typedef struct Battle11C0 {
     s32 unk18;
     s32 unk1C;
     Battle11C020 *unk20;
-    u8 pad24[0x28 - 0x24];
+    s32 unk24;
     struct Battle11C028 *unk28;
-    u8 pad2C[0x3C - 0x2C];
+    s32 unk2C;
+    s32 unk30;
+    s32 unk34;
+    s32 unk38;
     s32 *unk3C;
     s32 unk40;
     s32 *unk44;
