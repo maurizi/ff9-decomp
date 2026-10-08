@@ -1317,6 +1317,10 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+typedef struct {
+    s32 unk0[4];
+} Unk80010CD0;
+extern Unk80010CD0 D_80010CD0; /* min widths per window style */
 void func_80059414(void);
 typedef struct {
     s16 unk0; /* x */

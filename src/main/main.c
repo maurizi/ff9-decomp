@@ -6724,7 +6724,24 @@ void func_80060918(AkaoChannel *c, s32 b) {
     func_8005ECCC(c, b);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060938);
+void func_80060938(void) {
+    u32 m;
+    if (D_80083168.unkC != 0) {
+        SpuSetIRQ(0);
+        SpuSetIRQCallback(NULL);
+        func_800575D0(D_80083168.unkC);
+        if (D_80083168.unk8 & 0x400) {
+            func_800576BC(D_80083168.unk10 - 2, 0x1030);
+            func_800576BC(D_80083168.unk10 - 1, 0x1030);
+        }
+        func_800576BC(D_80083168.unk10, 0x1030);
+        func_800576BC(D_80083168.unk10 + 1, 0x1030);
+        m = D_80083168.unkC;
+        D_80083168.unkC = 0;
+        D_80080A70.unk20 &= ~m;
+        D_80083158.unk8 |= 0x100;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060A08);
 
