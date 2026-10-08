@@ -2118,7 +2118,25 @@ s32 func_8002BEA4(s32 n, s32 idx) {
     return r - 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002BEEC);
+void func_8002BEEC(u32 *ot0, u32 *ot1, s32 pk0, s32 pk1) {
+    GameState *gs = D_8006794C;
+    D_80077148.unk14[0] = ot0;
+    D_80077148.unk14[1] = ot1;
+    D_80077148.unkC[0] = (u8 *)pk0;
+    D_80077148.unkC[1] = (u8 *)pk1;
+    D_80077148.unk1C = gs->unkC[0].disp.x;
+    D_80077148.unk1E = gs->unkC[0].disp.y;
+    D_80077148.unk20 = gs->unkC[1].disp.x;
+    D_80077148.unk22 = gs->unkC[1].disp.y;
+    D_80077148.unk0 = gs->unk1C->unk8;
+    D_80077170 = D_80077148.unkC[D_80077148.unk0];
+    D_8007716C = D_80077148.unk14[D_80077148.unk0];
+    func_8002C210();
+    func_8002E490();
+    D_80077148.unk1 = 0;
+    D_80077148.unk8 = VSync(-1);
+    D_80077148.unk2 = 0;
+}
 
 void func_8002BFD0(void) {
     s32 now = VSync(-1);
@@ -5921,7 +5939,29 @@ void func_8005B9E8(u8 *a) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BA60);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BB24);
+void func_8005BB24(Unk80080AA0 *a) {
+    AkaoChannel *c = D_8007E3D8;
+    u32 mask = D_80080A70.unk0;
+    u32 bit = 0x100;
+    u32 i;
+    if (a->unk4 != 0) {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((mask & bit) && (c->unk28 & a->unk4)) {
+                c->unk70 = (u8)a->unk8 << 8;
+                c->unkB6 = 0;
+                c->unk11C |= 0x10;
+            }
+        }
+    } else {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((mask & bit) && c->unk6C == a->unk0) {
+                c->unk70 = (u8)a->unk8 << 8;
+                c->unkB6 = 0;
+                c->unk11C |= 0x10;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BC04);
 

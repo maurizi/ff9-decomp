@@ -396,11 +396,16 @@ extern s32 D_80077150;
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2[2];
+    u8 unk2;
+    u8 pad3;
     s32 unk4; /* free bytes in the packet buffer */
     s32 unk8;
     u8 *unkC[2];   /* packet buffers */
     u32 *unk14[2]; /* ordering tables */
+    s16 unk1C; /* display x/y per buffer */
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
 } Unk80077148;
 extern Unk80077148 D_80077148;
 
@@ -1318,6 +1323,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_8002C210(void);
+void func_8002E490(void);
 void func_800225BC(u8 *);
 u8 func_80022C10(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
