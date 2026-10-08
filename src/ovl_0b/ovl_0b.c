@@ -3333,7 +3333,7 @@ void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
     }
 }
 
-void func_800C9EE0(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2) {
+void func_800C9EE0(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
     Battle488 *s = &b->unk488[(arg1->unk68 >> 1) & 0xF];
     Battle4880 *e;
@@ -3363,7 +3363,7 @@ void func_800C9EE0(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA0A0);
 
-void func_800CA28C(Vec4 *arg0, Vec4 *arg1) {
+void func_800CA28C(BtlCmd8 *arg0, BtlCmd8 *arg1) {
     *arg1 = *arg0;
 }
 
@@ -3376,7 +3376,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA2E4);
 
 u16 func_800CA378(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
-    return b->unk1334[b->unk1330->unk8].unk62;
+    return b->unk1334[b->unk1330->unk8[0].unk0].unk62;
 }
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA3CC);
