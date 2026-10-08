@@ -998,7 +998,7 @@ typedef struct {
     s32 unkC;
     s32 unk10;
 } Unk80080AA0;
-void func_8005A014(Unk80080AA0 *, s32, s32, s32);
+void func_8005A014(); /* (Unk80080AA0 *, u8 *, u8 *, s32) */
 extern Unk80080AA0 D_80080AA0;
 
 typedef struct {
@@ -1362,8 +1362,11 @@ extern Unk80035B90Data D_80010E48;
 void func_80035B24(Unk80035B90 *, Unk80035B90Data *);
 s32 func_800565DC(s32 *);
 extern u16 *D_800809DC;
-extern s32 *D_800809E4;
-extern s32 *D_80083148;
+extern u16 *D_800809E4;
+extern u16 *D_80083148;
+s32 func_8005A5FC(s32);
+void func_8005A20C(u8 **, u8 **, s32);
+void func_800575B4(u32);
 extern u8 *D_800809E8;
 extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
@@ -1698,7 +1701,8 @@ typedef struct {
     s32 unk8;
     u32 unkC;
     s32 unk10;
-    u8 pad14[0x20 - 0x14];
+    u32 unk14;
+    u8 pad18[0x20 - 0x18];
     s32 unk20;
     s32 unk24;
     s32 unk28;

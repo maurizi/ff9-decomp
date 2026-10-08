@@ -6821,7 +6821,22 @@ s32 func_80061BC8(s32 *p, s32 unused) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061C1C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061E1C);
+void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
+    if (D_80083168.unkC != 0) {
+        SpuSetTransferCallback(NULL);
+        D_800809E0 = 0;
+        if (D_80083168.unk14 >= 0xE61) {
+            D_80083168.unk0 += a;
+            SpuSetIRQCallback(cb);
+        } else {
+            SpuSetIRQCallback(func_80060938);
+            b = 0x1030;
+        }
+        SpuSetIRQAddr(b + 8);
+        func_800575B4(D_80083168.unkC);
+        SpuSetIRQ(1);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061EE4);
 
