@@ -481,6 +481,8 @@ extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0;
 s32 func_8002B980(u8 *, s32);
+extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
+void func_800C85B8(s32, s32);
 extern s32 D_80071E34;
 
 /* Inlined copy of func_800C8108. */
