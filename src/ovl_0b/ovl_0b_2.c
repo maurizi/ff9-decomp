@@ -444,7 +444,22 @@ s32 func_800D7A38(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7A94);
+s32 func_800D7A94(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    if (arg0 == 0) {
+        *arg4 = 0x18;
+    } else if (arg0 == 1) {
+        arg1[0] = arg4[0];
+        arg1[1] = arg4[1];
+        if (func_800D8ACC(arg1[0], arg1[1]) != 0) {
+            D_800FEC55 = arg0;
+            return 1;
+        }
+        D_800FEC55 = 0;
+    } else {
+        return func_800D9134(arg1, arg2, arg3);
+    }
+    return 0;
+}
 
 s32 func_800D7B2C(s32 arg0, Unk800D9260 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
@@ -3947,11 +3962,30 @@ void func_800F4180(void) {
     func_800EB2BC(D_80105078->unk58);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F41B8);
+void func_800F41B8(BtlUnit *arg0, s32 arg1) {
+    u8 buf[8];
+    s32 dy = 6;
+    func_8002BAE4((s16)arg0->unkB4->unk2, buf, 4, 1);
+    func_8002B5B4(0xD0, D_80105078->unk60 + (arg1 * 12 + dy), 0xE, buf, (u8)D_80105078->unk78[arg1]);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F422C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F42F0);
+void func_800F42F0(void) {
+    BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    s32 i = 0;
+    if (D_80105078->unk5C != 0 && D_80104E70 == 0) {
+        for (; u != 0; u = u->unk0) {
+            if (u->unk68 & 1) {
+                if (D_80105078->unk64 == u) {
+                    D_80105078->unk2 = i;
+                    return;
+                }
+                i++;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F4384);
 
@@ -4048,7 +4082,17 @@ void func_800F4DFC(void) {
 void func_800F4E68(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F4E70);
+s32 func_800F4E70(s32 arg0) {
+    if (D_801051F0.unk8C != 0) {
+        D_801051F0.unk98 = (u32 *)func_800F4FB4(D_8006794C->unk1C->unk8);
+        arg0 = func_800F5064(arg0);
+        if ((u32)++D_801051F0.unk80 >= (u32)D_801051F0.unk84) {
+            D_801051F0.unk8C = 0;
+            D_801051F0.unk90 = 0;
+        }
+    }
+    return arg0;
+}
 
 void func_800F4F04(s32 arg0, s32 arg1) {
     if (arg1 >= D_801051F0.unk90) {

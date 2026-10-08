@@ -255,7 +255,20 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AD4E4);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AD90C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE47C);
+s32 func_800AE47C(s32 arg0, u16 arg1) {
+    void **p;
+    GameData *g = D_8006794C->unk1C;
+    s32 f;
+    if (g->unk54C[arg0] == 0) {
+        return -1;
+    }
+    p = &g->unk8E4.battle->unk1354->unk20[arg0];
+    f = (s32)*p;
+    if (f == 0) {
+        return -1;
+    }
+    return func_8001C8B0(f, 3, arg1 | 0x80000, 0);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE4FC);
 

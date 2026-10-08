@@ -456,10 +456,14 @@ typedef struct {
     u16 unk4;
     u8 pad6[8 - 6];
     u8 unk8;
-} Battle1330;
+    u8 unk9;
+    u8 padA[0xC - 0xA];
+} Battle1330; /* 0xC */
 
 typedef struct {
-    u8 pad0[0x62];
+    u8 pad0[0x1E];
+    u16 unk1E;
+    u8 pad20[0x62 - 0x20];
     u16 unk62;
     u8 pad64[0x74 - 0x64];
 } Battle1334; /* 0x74 */
@@ -984,13 +988,15 @@ typedef struct Unk800F412C {
 
 typedef struct {
     u8 unk0;
-    u8 pad1[3];
+    u8 pad1;
+    u8 unk2;
+    u8 pad3;
     Unk800F412C unk4[5];
     u32 unk54;
     s32 unk58;
     u32 unk5C; /* count */
     s32 unk60;
-    s32 unk64;
+    BtlUnit *unk64;
     BtlUnit *unk68[4];
     s8 unk78[4];
 } Unk80105078;
@@ -1028,6 +1034,8 @@ extern Unk80104FC0 D_80104FC0;
 typedef struct {
     u8 pad0[6];
     u8 unk6;
+    u8 pad7;
+    s32 unk8;
 } Unk80104FD4;
 extern Unk80104FD4 *D_80104FD4;
 extern s32 (*D_800F8E58[])(void);
@@ -1636,6 +1644,14 @@ typedef struct {
 void func_800EE37C(Unk800EE37C *);
 s32 func_800D8A94(s32, s32);
 s32 func_800DA064(u8 *, s32, s32);
+extern u8 D_80104E70;
+extern u8 D_800FDD10[];
+extern U16Pair D_800FB1F0[];
+extern char D_800F96E4[];
+s32 func_800EEA98(s32);
+s32 *func_800F4FB4(s32);
+s32 func_800F5064(s32);
+s32 func_800D9134(u8 *, s32, s32);
 
 /* main exe: candidates for ff9.h */
 void func_800562E0(u8 *, s32);
