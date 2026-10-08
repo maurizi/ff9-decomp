@@ -1543,7 +1543,68 @@ s32 func_800BD3A0(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD4D4);
+s32 func_800BD4D4(void) {
+    Unk800C9DB4 *d = D_800C9DB4;
+    u32 i;
+    Unk800C9DB4Path *p;
+    Unk800C9DB4Path *paths;
+    u32 cnt;
+    Unk800C9DB4Obj *objs;
+    Unk800C9DB4Step *st;
+    u32 n;
+    s32 pos;
+    u32 j;
+    s32 v;
+
+    i = 0;
+    paths = (Unk800C9DB4Path *)((u8 *)d + d->unkC);
+    objs = (Unk800C9DB4Obj *)((u8 *)d + d->unk10);
+    n = d->unk4;
+    for (; i < n; i++) {
+        p = &paths[i];
+        pos = p->unk5;
+        if ((p->unk0 & 2) && (p->unk0 & 0x14) && p->unk4 == D_800CA068.unk75) {
+            st = (Unk800C9DB4Step *)((u8 *)d + p->unkC);
+            cnt = p->unk1;
+            for (j = 0; j < cnt; j++) {
+                objs[st[j].unk0].unk0 &= ~2;
+            }
+            objs[st[pos >> 8].unk0].unk0 |= 2;
+            if (st[pos >> 8].unk1 < 0) {
+                st[pos >> 8].unk1 = 0;
+                p->unkA = 0;
+                p->unk0 &= ~4;
+                return 1;
+            }
+            p->unkA++;
+            if ((u16)p->unkA < st[pos >> 8].unk1) {
+                continue;
+            }
+            p->unkA = 0;
+            p->unk5 = pos + p->unk8;
+            v = p->unk5 >> 8;
+            if (v >= p->unk1) {
+                if (p->unk0 & 0x20) {
+                    p->unk5 = (p->unk1 - 1) << 8;
+                    func_800C17F0(i, -p->unk8);
+                } else {
+                    p->unk5 = 0;
+                }
+            } else if (v < 0) {
+                if (p->unk0 & 0x20) {
+                    p->unk5 = 0;
+                    func_800C17F0(i, -p->unk8);
+                } else {
+                    p->unk5 = (p->unk1 - 1) << 8;
+                }
+            } else {
+                continue;
+            }
+            p->unk0 &= ~4;
+        }
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD724);
 
