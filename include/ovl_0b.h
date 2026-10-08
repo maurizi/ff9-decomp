@@ -18,6 +18,7 @@ typedef struct BtlUnit9C8 {
     u8 unk3;
     u8 pad4[8 - 4];
     u16 unk8;
+    u16 unkA;
 } BtlUnit9C8;
 
 typedef struct BtlUnit9CC {
@@ -39,7 +40,8 @@ typedef struct {
 } BtlUnit9C50; /* 0x14 */
 
 typedef struct BtlUnit9C {
-    u8 pad0[8];
+    u16 unk0; /* flags */
+    u8 pad2[8 - 2];
     BtlUnit9C8 *unk8;
     BtlUnit9CC *unkC;
     u8 pad10[0x14 - 0x10];
@@ -48,7 +50,15 @@ typedef struct BtlUnit9C {
     BtlBone *unk20;
     u8 pad24[0x50 - 0x24];
     BtlUnit9C50 *unk50;
+    s16 unk54;
+    s16 unk56;
+    s16 unk58;
 } BtlUnit9C;
+
+typedef struct BtlUnit98 {
+    u8 pad0[8];
+    s32 unk8;
+} BtlUnit98;
 
 typedef struct {
     u16 unk0; /* max hp */
@@ -58,26 +68,28 @@ typedef struct {
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
 typedef struct BtlUnit {
     struct BtlUnit *unk0; /* next */
-    u8 pad4[0x24 - 4];
+    s32 unk4;
+    s32 unk8;
+    u8 padC[0x24 - 0xC];
     BtlUnit24 *unk24;
     u16 unk28; /* hp */
     s16 unk2A; /* mp */
     s16 unk2C;
-    u8 pad2E[0x38 - 0x2E];
+    u8 pad2E[0x32 - 0x2E];
+    u8 unk32;
+    u8 pad33;
+    s32 unk34;
     u32 unk38; /* status */
     u32 unk3C; /* status */
-    u8 pad40[0x52 - 0x40];
-    u8 unk52;
-    u8 pad53[0x5C - 0x53];
-    u8 unk5C;
-    u8 pad5D;
-    s16 unk5E;
-    s16 unk60;
+    s16 unk40[3];
+    s16 unk46[14];
     u8 pad62[0x68 - 0x62];
     u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
     u8 pad6C[0x6D - 0x6C];
     u8 unk6D;
-    u8 pad6E[0x74 - 0x6E];
+    u8 pad6E;
+    u8 unk6F;
+    u8 pad70[0x74 - 0x70];
     u8 *unk74;
     u8 pad78;
     u8 unk79;
@@ -88,18 +100,21 @@ typedef struct BtlUnit {
     u16 unk7E;
     s16 unk80;
     s16 unk82;
-    u8 pad84[0x9C - 0x84];
+    u8 pad84[0x86 - 0x84];
+    s16 unk86[3];
+    u8 pad8C[0x94 - 0x8C];
+    s32 unk94;
+    struct BtlUnit98 *unk98;
     BtlUnit9C *unk9C;
     BtlUnitA0 *unkA0;
     s32 *unkA4;
     BtlUnit9C *unkA8;
-    u8 padAC[0xB0 - 0xAC];
+    u8 padAC[0xAE - 0xAC];
+    u16 unkAE;
     u16 unkB0;
     u8 padB2;
     u8 unkB3;
-    u8 padB4[0xB9 - 0xB4];
-    u8 unkB9;
-    u8 padBA[0xC4 - 0xBA];
+    u8 padB4[0xC4 - 0xB4];
     u32 *unkC4;
     u8 padC8[0xCC - 0xC8];
     s16 unkCC;
@@ -111,6 +126,8 @@ typedef struct BtlUnit {
 typedef struct BtlCalc8 {
     u8 pad0[8];
     u8 *unk8;
+    u8 padC[0x10 - 0xC];
+    u32 unk10;
 } BtlCalc8;
 
 typedef struct BtlCalc {
@@ -235,6 +252,8 @@ typedef struct {
     u8 pad30[0x58 - 0x30];
     s32 unk58;
     s32 unk5C;
+    u8 pad60[0x66 - 0x60];
+    u8 unk66;
 } Unk80100DC0;
 extern Unk80100DC0 D_80100DC0;
 
@@ -276,7 +295,9 @@ typedef struct {
 } Battle122C; /* 0x38 */
 
 typedef struct {
-    u8 pad0[8];
+    u8 pad0[4];
+    u16 unk4;
+    u8 pad6[8 - 6];
     u8 unk8;
 } Battle1330;
 
@@ -286,8 +307,20 @@ typedef struct {
     u8 pad64[0x74 - 0x64];
 } Battle1334; /* 0x74 */
 
+typedef struct {
+    u8 pad0[4];
+    u16 unk4;
+} Battle11C020;
+
+typedef struct {
+    u8 pad0[0xE];
+    u8 unkE;
+} Battle1088;
+
 typedef struct Battle11C0 {
-    u8 pad0[0x3C];
+    u8 pad0[0x20];
+    Battle11C020 *unk20;
+    u8 pad24[0x3C - 0x24];
     s32 *unk3C;
 } Battle11C0;
 
@@ -298,7 +331,11 @@ typedef struct Battle {
     u8 pad608[0x6F8 - 0x608];
     BtlUnit *unk6F8; /* list of active units */
     BtlUnit unk6FC[8];
-    u8 padD7C[0x11C0 - 0xD7C];
+    u8 padD7C[0xD80 - 0xD7C];
+    u8 unkD80;
+    u8 padD81[0x1088 - 0xD81];
+    Battle1088 *unk1088;
+    u8 pad108C[0x11C0 - 0x108C];
     struct Battle11C0 *unk11C0;
     u8 pad11C4[0x122C - 0x11C4];
     Battle122C unk122C[4];
@@ -444,14 +481,6 @@ typedef struct {
     u8 unk2E;
 } Unk800BD8F0;
 
-typedef struct {
-    u8 pad0[0x34];
-    s32 unk34;
-    s32 unk38;
-    s32 unk3C;
-    s16 unk40[3];
-    s16 unk46[14];
-} Unk800C09EC;
 
 typedef struct {
     u8 *unk0;
@@ -582,14 +611,58 @@ extern u32 *D_800FE360;
 extern s32 D_800FE36C;
 extern s32 D_800FE490;
 
+typedef struct {
+    s32 unk0;
+    u8 pad4[8 - 4];
+    s32 unk8;
+    s16 unkC;
+    u8 unkE;
+    u8 unkF;
+    u32 unk10_0 : 2;
+    u32 unk10_2 : 2;
+    u32 unk10_4 : 1;
+    u32 unk10_5 : 1;
+    u32 unk10_6 : 1;
+    u32 unk10_7 : 2;
+    u32 unk10_9 : 1;
+    u32 unk10_10 : 1;
+    u32 unk10_11 : 1;
+} Unk800B3CEC;
+
+extern u16 D_800FDF38;
+extern u8 D_800F8CF4[][4];
+extern char D_800A825C[];
+
 /* main exe: candidates for ff9.h */
+void func_800639D4(s32);
+s32 func_800645C4(void);
+s32 func_80055DCC(void);
+void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800B1250(s32, s32, s32, s32, s32);
+u8 func_800B3E7C(s32);
+void func_800BD414(BtlUnit *, u16);
+void func_800BD464(BtlUnit *, s32);
+s32 func_800C09A4(BtlUnit *, u32);
+void func_800C09EC(BtlUnit *);
+void func_800C0B6C(BtlUnit *, s32);
+u16 func_800D87D0(s32);
+void func_800DF7A0(BtlUnit9C *, s32, s32, s32, s32);
+s32 func_800E7298(BtlUnit *);
+u16 func_800E7370(BtlUnit *);
+void func_800E748C(BtlUnit *, s32);
+void func_800E753C(BtlUnit *, s32, s32);
+void func_800E78B4(s32, s32, s32, s32, s32, s32, s32);
+void func_800E7A44(s32, VECTOR *);
+void func_800E7FC0(BtlUnit *, s32);
+void func_800E9A00(s32, s32);
+BtlUnit *func_800BED10(u16);
 void func_800A8600(s16);
 void func_800A8CD4(void);
 void func_800A8DE0(void);
-void func_800AB324(s32, s32, s32);
+s32 func_800AB324(s32, s32 *, s32 *);
 s32 func_800D9038(u8 *, s32, s32);
 s32 func_800D9110(u8 *, s32, s32);
 s32 func_800DA030(u8 *, s32, s32);
@@ -636,7 +709,7 @@ void func_800E2000(Pool30 *, Pool6C *);
 void func_800E3B34(Heap *, s32);
 void func_800E3DA8(void);
 void func_800E4098(void);
-s32 func_800E788C(void);
+s32 func_800E788C(s32);
 void func_800E8B28(s32, s32, s32);
 s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
