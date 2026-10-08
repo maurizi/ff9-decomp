@@ -42,6 +42,9 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 - `make clean` or deleting `build/` also removes splat's linker scripts (`build/us/*.ld`), so run `make resplit` before building again.
 - Symbols go in `config/symbols.us.txt` (`name = 0xADDR; // type:func`), then `make resplit`. Renaming a decompiled function also needs its C definition renamed.
 
+## Runtime investigation (emulator)
+- `tools/emu.py` (host-side, not Docker) drives PCSX-Redux running FF9: trace calls to a function, watch who writes a global, diff RAM across a button press, take screenshots, and use save states. Setup and workflow: `docs/emulator.md`. The `game-tester` subagent (`.claude/agents/game-tester.md`) does this work and appends evidence plus proposed names to `docs/runtime-findings.md`; applying those names is the decomp side's job.
+
 ## Game data — never commit
 - Disc images (raw 2352-byte CloneCD `.img`) are in `disks/us/raw/`. The extracted exe is `disks/us/SLUS_012.51`, `FF9.IMG` is in `disks/us/discN/` (`make extract-img`), and the code overlays are in `disks/us/ovl/XX.bin` (`make extract-ovl`). Never commit `disks/`, `asm/`, `build/` or `assets/`.
 
