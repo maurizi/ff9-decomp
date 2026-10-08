@@ -5643,7 +5643,21 @@ s32 func_800584C8(s32 arg0) {
     return best;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058578);
+s32 func_80058578(s32 a) {
+    Unk8007F798 *p;
+    if (a != 0) {
+        a = 0;
+    } else {
+        a = D_80080A10->unk38;
+    }
+    while ((p = &D_8007F798[a])->unk4 != 0) {
+        a++;
+        if (a >= 0x18) {
+            break;
+        }
+    }
+    return a;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800585E0);
 
