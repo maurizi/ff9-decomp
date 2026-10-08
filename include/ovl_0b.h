@@ -149,15 +149,17 @@ typedef struct {
     BtlUnit *unk0;     /* id 0x10 */
     BtlUnit *unk4[8];  /* ids 0..7 */
     u8 unk24;          /* count of unk4 */
-    u8 pad25[2];
+    u8 unk25[2];
     u8 unk27;          /* count of unk28 */
     BtlUnit *unk28[7]; /* ids 8..14 */
     BtlUnit *unk44;    /* id 0x11 */
 } BtlUnitList;
 
-typedef struct {
+typedef struct Unk800F78A40 {
     s16 unk0;
-    u8 pad2[0xF - 2];
+    u8 pad2[0x8 - 2];
+    s16 unk8;
+    u8 padA[0xF - 0xA];
     u8 unkF;
     u8 pad10[0x1C - 0x10];
     u32 unk1C;
@@ -167,7 +169,9 @@ typedef struct {
     Unk800F78A40 *unk0;
     u8 pad4[0xC - 4];
     BtlUnitList *unkC;
-    u8 pad10[0x20 - 0x10];
+    u8 pad10[0x14 - 0x10];
+    MATRIX *unk14;
+    u8 pad18[0x20 - 0x18];
     s32 *unk20;
     u8 *unk24; /* next free primitive */
     s32 unk28;
@@ -282,6 +286,11 @@ typedef struct {
     u8 pad64[0x74 - 0x64];
 } Battle1334; /* 0x74 */
 
+typedef struct Battle11C0 {
+    u8 pad0[0x3C];
+    s32 *unk3C;
+} Battle11C0;
+
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u8 pad0[0x488];
@@ -289,7 +298,9 @@ typedef struct Battle {
     u8 pad608[0x6F8 - 0x608];
     BtlUnit *unk6F8; /* list of active units */
     BtlUnit unk6FC[8];
-    u8 padD7C[0x122C - 0xD7C];
+    u8 padD7C[0x11C0 - 0xD7C];
+    struct Battle11C0 *unk11C0;
+    u8 pad11C4[0x122C - 0x11C4];
     Battle122C unk122C[4];
     u8 pad130C[0x1310 - 0x130C];
     s32 unk1310;
@@ -473,12 +484,13 @@ typedef struct {
 extern BtlObjSlot D_80100F1C[32];
 
 typedef struct {
-    s32 unk0;
+    BtlUnit9C *unk0;
     u8 pad4[0x4C - 4];
     u8 unk4C; /* in use */
     u8 unk4D;
     s16 unk4E; /* index */
-    u8 pad50[0x54 - 0x50];
+    s16 unk50;
+    u8 pad52[0x54 - 0x52];
 } Unk8010141C; /* 0x54 */
 extern Unk8010141C D_8010141C[1];
 
@@ -502,10 +514,47 @@ extern u8 D_800F6CB4[];
 extern char D_800A7F60[];
 extern char D_800A7F78[];
 extern char D_800A81A8[];
-extern u8 D_801014B8[];
-extern u8 D_801044B8[];
-extern u8 D_801044C8[];
+typedef struct Pool6CEntry {
+    u8 pad0[0x30];
+    s16 unk30;
+    u8 pad32[0x6C - 0x32];
+} Pool6CEntry; /* 0x6C */
+
+typedef struct {
+    s32 unk0; /* count */
+    s32 unk4;
+    s32 unk8;
+    Pool6CEntry *unkC;
+    Pool6CEntry unk10[1];
+} Pool6C;
+
+typedef struct {
+    u8 pad0[0x1A];
+    u8 unk1A;
+    u8 unk1B;
+    u8 pad1C[0x1F - 0x1C];
+    u8 unk1F; /* in use */
+    u8 pad20[0x2C - 0x20];
+    Pool6CEntry *unk2C;
+} Pool30Entry; /* 0x30 */
+
+typedef struct {
+    s32 unk0; /* count */
+    s32 unk4;
+    s32 unk8;
+    Pool30Entry *unkC;
+} Pool30;
+
+extern Pool30Entry D_801014B8[0x100];
+extern Pool30 D_801044B8;
+extern Pool6C D_801044C8; /* 0x920 bytes */
 extern Unk80100D88 D_80104DF0;
+extern Unk80100D88 D_80104DF4;
+extern s32 D_80104E00;
+extern MATRIX D_80104E10;
+extern u16 D_800F8D0C[];
+extern u8 D_800F6A54[][8];
+extern char D_800A7F34[];
 
 typedef struct {
     u8 pad0[0xE];
@@ -537,6 +586,25 @@ extern s32 D_800FE490;
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800A8600(s16);
+void func_800A8CD4(void);
+void func_800A8DE0(void);
+void func_800AB324(s32, s32, s32);
+s32 func_800D9038(u8 *, s32, s32);
+s32 func_800D9110(u8 *, s32, s32);
+s32 func_800DA030(u8 *, s32, s32);
+void func_800C2200(BtlUnit *, BtlUnit *);
+Unk8010141C *func_800DD02C(s32, char *);
+void func_800DC710(void);
+void func_800DC7E0(void);
+void func_800D616C(void);
+void func_800D6D3C(void);
+void func_800DA4E8(void);
+void func_800E3C58(void);
+void func_800E72B8(void);
+void func_800E8F40(s32);
+void func_800E954C(void);
+void func_800E9930(s32, s32, s32);
 s32 func_800B4040(BtlUnit *);
 void func_800C316C(s32);
 void func_800C36D0(void);
@@ -557,11 +625,14 @@ void func_800DC9D0(BtlUnit9C *, s32, u16 *);
 void func_800DCA18(BtlUnit9C *, s32, BtlBone *);
 BtlObjSlot *func_800DCFB0(s32, char *);
 u8 func_800DD10C(BtlUnit9C *);
-void func_800E00DC(s32, u8 *, u8 *);
-void func_800E14D8(s32, u8 *);
-void func_800E1534(u8 *, u8 *, s32, s32);
-void func_800E1708(u8 *, s32, s32);
-void func_800E1810(u8 *, s32);
+void func_800E00DC(s32, Pool30Entry *, Pool30 *);
+void func_800E14D8(u32, Pool6C *);
+void func_800E1534(Pool30 *, Pool6C *, s32, s32);
+void func_800E1708(Pool30 *, s32, s32);
+void func_800E1810(Pool30 *, Pool6CEntry *);
+void func_800E0168(Pool30 *);
+void func_800E1874(Pool30 *, Pool6C *);
+void func_800E2000(Pool30 *, Pool6C *);
 void func_800E3B34(Heap *, s32);
 void func_800E3DA8(void);
 void func_800E4098(void);
@@ -575,7 +646,7 @@ void func_800D07B4(s32, s32 *);
 s32 func_800D6360(void);
 void func_800D64C8(s32);
 void func_800D85AC(s32, s32);
-void func_800D85F8(s32, s32, s32);
+void func_800D85F8(struct Unk800F78A40 *, s32, s32);
 void func_800D8820(s32, s32);
 void func_800D8988(s32, s32, s32);
 s32 func_800D8A64(s32);
