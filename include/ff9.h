@@ -1539,6 +1539,9 @@ void func_8001CD04(s32);
 s32 func_8004BC38(u8);
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
+void func_800362C8(void);
+u8 func_8003378C(void);
+extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
 void func_80015C38(const char *, ...); /* printf */

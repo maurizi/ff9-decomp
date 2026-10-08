@@ -64,7 +64,21 @@ typedef struct Unk800D3EAC {
 typedef struct {
     u8 pad0[2];
     s16 unk2;
+    s32 unk4;
+    s32 unk8;
 } Unk800CE0F0;
+
+typedef struct {
+    u8 pad0[8];
+    u32 unk8;
+    u8 padC[4];
+} Unk800CCCC0; /* 0x10 */
+
+typedef struct {
+    u8 unk0; /* mode */
+    u8 pad1[8];
+    u8 unk9;
+} Unk800CE3C8;
 
 /* relocatable block: offsets are turned into pointers by func_800BA528 */
 typedef struct {
@@ -84,7 +98,8 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1; /* index into D_800CDFC0 */
-    u8 pad2[2];
+    u8 unk2;
+    u8 pad3;
     u8 unk4;
     u8 pad5[3];
     WinDef unk8[6];
@@ -179,6 +194,17 @@ typedef struct {
 } Unk800AA39C;
 
 /* ---- overlay functions ---- */
+void func_800B4720(s32);
+void func_800B4BDC(s32);
+s32 func_800B5CD0(s32, s32, s32);
+s32 func_800B5FD0(s32, s32, s32);
+void func_800CBB4C(s32);
+void func_800CBDF8(RECT *, s32);
+void func_800B17B4(void);
+void func_800B1CD0(void);
+void func_800B20B8(void);
+void func_800CB434(void);
+void func_800CC324(void);
 void func_800B69AC(void);
 void func_800B8ABC(void);
 void func_800BC0A0(void);
@@ -254,6 +280,10 @@ void func_800CC8C8(void);
 void func_800CC940(void);
 
 /* ---- overlay data ---- */
+extern u8 D_800A8678[]; /* text */
+extern Unk800CCCC0 D_800CCCC0[];
+extern Unk800CE0E8 *D_800CE3DC;
+extern Unk800CE3C8 *D_800CE3C8;
 extern s32 D_800D32D8; /* map width (wraps) */
 extern s32 D_800D32DC; /* map height (wraps) */
 extern RECT D_800A71E0;
