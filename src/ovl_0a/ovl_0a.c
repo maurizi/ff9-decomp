@@ -1908,7 +1908,36 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1F98);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C20BC);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2390);
+s32 func_800C2390(VECTOR *arg0, SVECTOR *arg1, s32 arg2, VECTOR *arg3) {
+    VECTOR a;
+    VECTOR v;
+
+    v.vx = arg1->vx << 16;
+    v.vy = arg1->vy << 16;
+    v.vz = arg1->vz << 16;
+    a.vy = 0;
+    a.vz = v.vx;
+    a.vx = -v.vz;
+    arg3->vx = -arg1->vz;
+    arg3->vy = 0;
+    arg3->vz = arg1->vx;
+    if (arg0->vy >= 0) {
+        v.vx = func_800C1DC4(arg0->vy, a.vz);
+        v.vy = func_800C1DC4(arg0->vz, a.vx) - func_800C1DC4(arg0->vx, a.vz);
+        v.vz = -func_800C1DC4(arg0->vy, a.vx);
+    } else {
+        v.vx = -func_800C1DC4(arg0->vy, a.vz);
+        v.vy = func_800C1DC4(arg0->vx, a.vz) - func_800C1DC4(arg0->vz, a.vx);
+        v.vz = func_800C1DC4(arg0->vy, a.vx);
+    }
+    v.vx = (v.vx + 0x8000) & 0xFFFF0000;
+    v.vy = (v.vy + 0x8000) & 0xFFFF0000;
+    v.vz = (v.vz + 0x8000) & 0xFFFF0000;
+    arg1->vx = v.vx >> 16;
+    arg1->vy = v.vy >> 16;
+    arg1->vz = v.vz >> 16;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2524);
 
