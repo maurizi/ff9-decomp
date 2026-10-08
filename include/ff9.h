@@ -802,8 +802,21 @@ typedef struct {
     u8 unk16ED;
     u8 pad16EE[0x16FC - 0x16EE];
     s32 unk16FC;
+    s16 unk1700;
 } Unk8007AECC;
 extern Unk8007AECC *D_8007AECC;
+
+/* Inlined copy of func_8004B040 (find object by id). */
+static inline Unk8004AB64 *func_8004B040_inline(s32 id) {
+    Unk16D8 *n;
+    for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+        if (n->unk4->unk7 == id) {
+            break;
+        }
+    }
+    return n != NULL ? n->unk4 : NULL;
+}
+
 
 typedef struct {
     s32 unk0;
@@ -1482,7 +1495,8 @@ typedef struct {
     u8 unk0[8];
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
 
-void func_800384D0(s32, s32, s32, s32);
+void func_800384D0(Unk8004AB64 *, s32, s32, s32);
+extern CdlATV D_8007F718;
 void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
 void func_80062830(Unk6 *, u8, s32, s32);
 extern s32 D_8006FB40[];

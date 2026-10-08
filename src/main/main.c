@@ -3854,7 +3854,9 @@ s32 func_8004B120(s32 i) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B158);
+void func_8004B158(s32 a, s32 b, s32 c) {
+    func_800384D0(func_8004B040_inline(0), 1, 0x8000 | ((b << 8) & 0x3F00) | ((a << 2) & 0xFC) | (c & 3), 0);
+}
 
 s32 func_8004B1EC(void) {
     return D_8007AEB8;
@@ -3864,7 +3866,21 @@ s32 func_8004B1FC(void) {
     return D_8007AEBC;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B20C);
+void func_8004B20C(s32 a) {
+    Unk8007AECC *p = D_8007AECC;
+    s32 v;
+    if (p->unk1700 >= 0) {
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        v = *D_8007B720++ + 200;
+        if (a == 0) {
+            p->unk1700 = v * 4;
+        } else {
+            p->unk1700 = v * 2;
+        }
+    }
+}
 
 void func_8004B2A0(void) {
     Unk8007AECCNode *p = D_8007AECC->unk1450;

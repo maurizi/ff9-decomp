@@ -78,6 +78,14 @@ typedef struct {
 } CdlLOC;
 
 typedef struct {
+    u8 val0;
+    u8 val1;
+    u8 val2;
+    u8 val3;
+} CdlATV;
+int CdMix(CdlATV *vol);
+
+typedef struct {
     CdlLOC pos;
     u32 size;
     char name[16];
