@@ -3206,7 +3206,60 @@ u8 func_80033A1C(Character *c) {
     return D_8006CAB8[c->unk34 & 0xF][(c->unkA & 0x10) != 0];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033A50);
+u8 func_80033A50(u32 x) {
+    u8 *tbl = D_8006CACC;
+    s32 i;
+    switch (x) {
+    case 0:
+    case 16:
+        i = 0;
+        break;
+    case 1:
+        i = 1;
+        break;
+    case 2:
+        i = 2;
+        break;
+    case 3:
+        i = 3;
+        break;
+    case 4:
+        i = 4;
+        break;
+    case 5:
+        i = 5;
+        break;
+    case 6:
+        i = 6;
+        break;
+    case 7:
+        i = 7;
+        break;
+    case 8:
+    case 9:
+    case 17:
+        i = 8;
+        break;
+    case 10:
+    case 11:
+    case 18:
+        i = 9;
+        break;
+    case 12:
+    case 13:
+    case 19:
+        i = 10;
+        break;
+    case 14:
+    case 15:
+        i = 11;
+        break;
+    default:
+        i = -1;
+        break;
+    }
+    return tbl[i];
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033AF4);
 

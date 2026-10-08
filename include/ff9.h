@@ -1306,6 +1306,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+extern u8 D_8006CACC[];
 void func_800329FC(u8 *);
 extern AkaoChannel D_80080AC8[];
 void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
