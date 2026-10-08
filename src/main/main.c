@@ -5640,7 +5640,21 @@ void func_8005A6D4(Unk80080AA0 *a) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A754);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A7E4);
+void func_8005A7E4(Unk80080AA0 *a) {
+    Unk80080A10 *t;
+    if (D_80080A10->unk4 != 0 && (D_8007F790 == NULL || D_8007F790->unk6A == 0)) {
+        D_8007F790 = &D_8007F8F0;
+        D_8007F71C = D_80080AC8;
+        func_8005CE04(D_80080A10, &D_8007F8F0, 0x7C);
+        func_8005CE04(D_8007BD48, D_8007F71C, 0x2680);
+    }
+    func_8005963C(a->unk0, -1);
+    t = D_80080A10;
+    t->unk50 = (a->unk10 & 0x7F) << 16;
+    t->unk58 = 0;
+    t->unk6A = a->unk8;
+    func_80059414();
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A8AC);
 
