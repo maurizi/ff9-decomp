@@ -2730,7 +2730,14 @@ void func_800BC3C4(s32 arg0, s32 *arg1, s32 *arg2) {
     *arg2 = -((arg0 / D_800D3304) << 14);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BC450);
+void func_800BC450(s32 arg0, s32 arg1, WmCell *arg2) {
+    WmCell *cells;
+
+    cells = D_800CF40C->unk4;
+    arg2->unk0 = cells[arg0 * 2 + arg1].unk0;
+    arg2->unk2 = cells[arg0 * 2 + arg1].unk2;
+    arg2->unk3 = cells[arg0 * 2 + arg1].unk3;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BC490);
 
