@@ -98,7 +98,10 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A939C);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9570);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A97D4);
+s32 func_800A97D4(FieldMapObj *arg0, u16 arg1) {
+    arg0->unkC = func_8001C7FC(4, arg1 | 0x50000, 0);
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9814);
 
@@ -195,7 +198,9 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC67C);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC6C0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AD44C);
+void func_800AD44C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AD488);
 
@@ -251,7 +256,14 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1C98);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1CE4);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1D60);
+void func_800B1D60(void) {
+    s32 i;
+
+    for (i = 4; i >= 0; i--) {
+        D_800C9FF8[i] = -1;
+        D_800C9FF0[i] = -1;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1D9C);
 
@@ -277,9 +289,21 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B29F8);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2BC4);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2C40);
+void func_800B2C40(s32 arg0, u16 arg1) {
+    GameData *gd = D_8006794C->unk1C;
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2C80);
+    gd->unk826[0] = arg0;
+    if (arg0 == 0) {
+        gd->unk842 = arg1;
+        gd->unk8C4 = VSync(-1);
+    }
+}
+
+s32 func_800B2C80(void) {
+    GameData *gd = D_8006794C->unk1C;
+
+    return (u32)(VSync(-1) - gd->unk8C4) < gd->unk842;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2CC0);
 
@@ -287,7 +311,12 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2D10);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B31B8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3254);
+u8 *func_800B3254(Unk800B3254 *arg0) {
+    if (arg0 != NULL && arg0->unk9 != 0) {
+        return arg0->unkC[arg0->unk6];
+    }
+    return NULL;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3294);
 
@@ -379,7 +408,12 @@ s32 func_800B54CC(void) {
     return (D_8006794C->unk1C->unk8E4.field->unk0 >> 20) & 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B54FC);
+void func_800B54FC(void) {
+    func_8002F9D0();
+    func_80035430();
+    func_8003556C(func_800B57C8);
+    func_8003575C(D_800A717C);
+}
 
 void func_800B553C(void) {
     func_8002C308(0);
@@ -528,11 +562,24 @@ void func_800C0D8C(s32 arg0, s32 arg1) {
     D_800C9DA4.unk34 = 0;
 }
 
-void func_800C0DA4(s32 arg0) {
+void func_800C0DA4(Unk800C9DB4 *arg0) {
     D_800C9DB4 = arg0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0DB0);
+s32 func_800C0DB0(s32 arg0, s32 arg1, s32 arg2) {
+    u16 x = D_800C9DB4->unk20 + arg0;
+    u16 y = D_800C9DB4->unk22 + arg1;
+    u16 z;
+
+    D_800C9DB4->unk20 = x;
+    D_800C9DB4->unk22 = y;
+    D_800C9DB4->unk24 = x;
+    D_800C9DB4->unk26 = y;
+    z = D_800C9DB4->unk1C + arg2;
+    D_800C9DB4->unk1C = z;
+    D_800C9DB4->unk1E = z;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0DF4);
 
@@ -788,22 +835,31 @@ s32 func_800C7474(u8 *arg0) {
 }
 
 Unk800C9DF4 *func_800C748C(s32 arg0) {
-    return &D_800C9DF4[arg0];
+    return &D_800C9DF0.unk4[arg0];
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C74A8);
+s32 func_800C74A8(s32 arg0, FieldMapObj *arg1) {
+    D_800C9DF0.unk4[arg0].unk0 = 0;
+    D_800C9DF0.unk4[arg0].unk2 = 0;
+    D_800C9DF0.unk4[arg0].unk24 = (s32)arg1->unkC;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C74F0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7570);
+s32 func_800C7570(s32 arg0, u16 arg1) {
+    D_800C9DF0.unk4[arg0].unk1C = arg1;
+    D_800C9DF0.unk4[arg0].unk20 = arg1 * arg1;
+    return 1;
+}
 
 s32 func_800C75B4(s32 arg0, s32 *arg1) {
-    *arg1 = D_800C9DF4[arg0].unk1C;
+    *arg1 = D_800C9DF0.unk4[arg0].unk1C;
     return 1;
 }
 
 s32 func_800C75E0(s32 arg0, s32 *arg1) {
-    *arg1 = D_800C9DF4[arg0].unk20;
+    *arg1 = D_800C9DF0.unk4[arg0].unk20;
     return 1;
 }
 
@@ -812,7 +868,7 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C760C);
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C768C);
 
 s32 func_800C76E8(s32 arg0, u16 *arg1, u16 *arg2) {
-    Unk800C9DF4 *e = &D_800C9DF4[arg0];
+    Unk800C9DF4 *e = &D_800C9DF0.unk4[arg0];
 
     *arg1 = e->unk6;
     *arg2 = e->unk4;

@@ -37,14 +37,15 @@ typedef struct FieldMap {
 } FieldMap;
 
 /* 0x28-byte entries at D_800C9DF4 */
-typedef struct {
-    u8 pad0[4];
+typedef struct Unk800C9DF4 {
+    s16 unk0;
+    s16 unk2;
     u16 unk4;
     u16 unk6;
     u8 pad8[0x1C - 8];
     s32 unk1C;
     s32 unk20;
-    u8 pad24[0x28 - 0x24];
+    s32 unk24;
 } Unk800C9DF4;
 
 /* 0xC-byte entries at D_800C9DCC */
@@ -69,6 +70,16 @@ typedef struct {
 } Unk800CA068;
 
 typedef struct {
+    u8 pad0[0x1C];
+    u16 unk1C;
+    u16 unk1E;
+    u16 unk20;
+    u16 unk22;
+    u16 unk24;
+    u16 unk26;
+} Unk800C9DB4;
+
+typedef struct {
     u8 pad0[0x2C];
     s32 unk2C;
     s32 unk30;
@@ -76,11 +87,34 @@ typedef struct {
 } Unk800C9DA4;
 
 typedef struct {
+    u8 pad0[6];
+    u8 unk6; /* count */
+    u8 pad7[2];
+    u8 unk9;
+    u8 padA[2];
+    u8 unkC[1][12];
+} Unk800B3254;
+
+/* header of the block D_800C9DF0.unk8 points to */
+typedef struct {
+    u8 pad0[0x2C];
+    u16 unk2C; /* entry count for D_800C9DF0.unk20 */
+} Unk800C9DF8;
+
+typedef struct {
+    u8 pad0[4];
+    s16 unk4;
+    u8 pad6[0x10 - 6];
+} Unk800C9E10; /* 0x10 */
+
+typedef struct {
     u8 unk0;
     u8 unk1;
     s16 unk2;
-    s32 unk4;
-    s32 unk8;
+    struct Unk800C9DF4 *unk4;
+    Unk800C9DF8 *unk8;
+    u8 padC[0x20 - 0xC];
+    Unk800C9E10 *unk20;
 } Unk800C9DF0;
 
 typedef struct {
@@ -93,12 +127,14 @@ typedef struct {
     u8 padC[0x10 - 0xC];
     s16 unk10;
     s16 unk12;
-    u8 pad14[0x18 - 0x14];
+    s32 unk14;
 } Unk800CAE98; /* 0x18 */
 
 /* ---- overlay functions ---- */
 void func_800AD944(s32, s32, s32);
 void func_800A8588(void);
+void func_800C6EEC(s32);
+void func_800B57C8(void);
 void func_800B1CE4(void);
 s32 func_800AA0C8(FieldMapObj *);
 s32 func_800A8990(FieldMapObj *, s16);
@@ -117,16 +153,18 @@ void func_800C8E2C(void);
 void func_800C9630(void);
 
 /* ---- overlay data ---- */
+extern u8 D_800A717C[]; /* text */
 extern s32 D_800C9D58;
 extern Unk800C9DA4 D_800C9DA4;
-extern s32 D_800C9DB4;
+extern Unk800C9DB4 *D_800C9DB4;
 extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
 extern Unk800C9DF0 D_800C9DF0;
-extern Unk800C9DF4 *D_800C9DF4;
 extern Unk800C9DCC *D_800C9DCC;
 extern s32 D_800C9F20[16];
+extern s8 D_800C9FF0[5];
+extern s32 D_800C9FF8[5];
 extern u8 D_800CA05B;
 extern s32 D_800CA0E0;
 extern u8 D_800CA059;
