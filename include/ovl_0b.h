@@ -1219,6 +1219,14 @@ typedef struct {
 } Unk801051F0;
 extern Unk801051F0 D_801051F0;
 extern s32 D_800FDE3C[];
+/* SPRT written as words */
+typedef struct {
+    u32 tag;
+    u32 unk4; /* code + rgb */
+    u32 unk8; /* xy */
+    u32 unkC; /* uv + clut */
+    u32 unk10; /* wh */
+} Unk800F0DF8;
 extern u32 D_80104E80;
 typedef struct {
     SPRT unk0[4][2];
