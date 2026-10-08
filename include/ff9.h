@@ -26,14 +26,16 @@ typedef struct {
     s16 unk26;
 } Unk80021938; /* element passed to func_80021938 */
 
-typedef struct {
+typedef struct Unk8C8 {
     u8 unk0;
-    u8 unk1;
+    u8 unk1; /* state */
     s8 unk2; /* count */
     s8 unk3;
     Unk80021938 unk4[7];
-    s32 unk11C;
+    s32 (*unk11C)(struct Unk8C8 *); /* hook, nonzero = handled */
 } Unk8C8;
+Unk80021938 *func_80021B34(Unk80021938 *, Unk80021938 *);
+s32 func_80021ED4(void);
 
 typedef struct {
     u8 unk0;

@@ -1082,7 +1082,57 @@ void func_800223CC(void) {
     p->unk3 = -1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002246C);
+s32 func_8002246C(void) {
+    Unk8C8 *t = D_8006794C->unk1C->unk8C8;
+    Unk80021938 *e;
+
+    if (t->unk11C != NULL && t->unk11C(t) != 0) {
+        return 1;
+    }
+    for (;;) {
+        switch (t->unk1) {
+        case 4:
+            if (func_80021D7C() != NULL) {
+                t->unk1 = 5;
+            } else {
+                t->unk1 = 0;
+            }
+            break;
+        case 5:
+            e = func_80021E20();
+            if (func_800219FC(e) == 0 || func_80021A28(e) != 0) {
+                t->unk1 = 4;
+                break;
+            }
+            func_80021B34(&t->unk4[6], e);
+            t->unk1 = 8;
+            break;
+        case 8:
+            if (func_80022B18() != 0) {
+                return 0;
+            }
+            t->unk1 = 9;
+            return 0;
+        case 9:
+            if (func_80021ED4() == -1) {
+                t->unk1 = 5;
+                return 0;
+            }
+            t->unk1 = 10;
+            return 0;
+        case 10:
+            if (func_80021FB4() > 0) {
+                return 0;
+            }
+            func_80022050();
+            t->unk1 = 5;
+            return 0;
+        case 0:
+        default:
+            return 0;
+        }
+    }
+}
 
 void func_800225BC(u8 *arg0) {
     Unk8C8 *p = D_8006794C->unk1C->unk8C8;
