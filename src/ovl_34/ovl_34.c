@@ -95,7 +95,23 @@ void func_801F025C(void) {
     func_801F1168();
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F02CC);
+void func_801F02CC(MenuList *l, u32 pad) {
+    s32 h;
+    s32 top;
+
+    if ((pad & 0x100000) && !(D_80077524 & 0x200000) && l->unk5 != 0) {
+        h = l->unkD;
+        l->unk9 = h >> 2;
+        l->unk8 = 7;
+        top = l->unk5 - l->unk3;
+        l->unkE = (h - l->unk9 + 0xE) / 15;
+        if (top < 0) {
+            top = 0;
+        }
+        l->unkC = top;
+        func_8002F488(0x67);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F0380);
 
