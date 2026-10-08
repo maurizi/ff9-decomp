@@ -252,7 +252,11 @@ typedef struct {
 
 /* header of the block D_800C9DF0.unk8 points to */
 typedef struct {
-    u8 pad0[0x26];
+    u8 pad0[8];
+    s16 unk8; /* origin */
+    s16 unkA;
+    s16 unkC;
+    u8 padE[0x26 - 0xE];
     u16 unk26; /* offset: Unk800C9DF8Node[] */
     u8 pad28[2];
     u16 unk2A; /* offset: Unk800C9DF8Link[] */
@@ -314,11 +318,16 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[4];
+    u8 pad2[2];
+    s16 unk4; /* Unk800C9DF8Tri index */
     s16 unk6;
     u16 unk8;
     s16 unkA;
-    u8 padC[0x28 - 0xC];
+    u8 padC[0x1E - 0xC];
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+    u8 pad24[0x28 - 0x24];
 } Unk800C9E00; /* 0x28 */
 
 typedef struct {
@@ -331,7 +340,7 @@ typedef struct {
     Unk800C9E00 *unk10;
     Unk800C9E04 *unk14;
     void *unk18;
-    void *unk1C;
+    Unk800C9DF8Tri *unk1C;
     Unk800C9E10 *unk20;
 } Unk800C9DF0;
 

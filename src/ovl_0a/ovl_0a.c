@@ -1842,7 +1842,26 @@ s32 func_800C3E18(s32 arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3EC0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C420C);
+s32 func_800C420C(s32 arg0, s16 arg1) {
+    Unk800C9E00 *n;
+    Unk800C9DF8Tri *t;
+    SVECTOR v;
+
+    n = &D_800C9DF0.unk10[(u16)arg1];
+    t = &D_800C9DF0.unk1C[n->unk4];
+    v.vx = D_800C9DF0.unk8->unk8 + t->unkA;
+    v.vy = D_800C9DF0.unk8->unkA + t->unkC;
+    v.vz = D_800C9DF0.unk8->unkC + t->unkE;
+    D_800C9DF0.unk4[arg0].unk4 = n->unk4;
+    D_800C9DF0.unk4[arg0].unk6 = arg1;
+    D_800C9DF0.unk4[arg0].unk24->unk14.vx = v.vx + n->unk1E;
+    D_800C9DF0.unk4[arg0].unk24->unk14.vy = v.vy + n->unk20;
+    D_800C9DF0.unk4[arg0].unk24->unk14.vz = v.vz + n->unk22;
+    D_800C9DF0.unk4[arg0].unk24->unk40.vx = v.vx + n->unk1E;
+    D_800C9DF0.unk4[arg0].unk24->unk40.vy = v.vy + n->unk20;
+    D_800C9DF0.unk4[arg0].unk24->unk40.vz = v.vz + n->unk22;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C4378);
 
@@ -1945,7 +1964,7 @@ s32 func_800C72D8(Unk800C9DF8 *arg0) {
     D_800C9DF0.unk10 = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
     D_800C9DF0.unk14 = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
     D_800C9DF0.unk18 = (u8 *)arg0 + arg0->unk2A;
-    D_800C9DF0.unk1C = (u8 *)arg0 + arg0->unk32;
+    D_800C9DF0.unk1C = (Unk800C9DF8Tri *)((u8 *)arg0 + arg0->unk32);
     D_800C9DF0.unk20 = (Unk800C9E10 *)((u8 *)arg0 + arg0->unk2E);
     for (i = 0; i < D_800C9DF0.unk8->unk2C; i++) {
         func_800C79B0(i);
