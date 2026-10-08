@@ -17,12 +17,30 @@ typedef struct BtlUnitA0 {
     u8 unk3A;
 } BtlUnitA0;
 
+/* model mesh group: primitive counts per type */
+typedef struct {
+    u8 pad0[2];
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+    u16 unk8;
+    u16 unkA;
+    u16 unkC;
+    u16 unkE;
+    u16 unk10;
+    u8 pad12[0x1C - 0x12];
+    u32 *unk1C; /* primitives */
+    u8 pad20[0x28 - 0x20];
+} BtlMesh; /* 0x28 */
+
 typedef struct BtlUnit9C8 {
     u8 pad0[3];
-    u8 unk3;
+    u8 unk3; /* count of unk10 */
     u8 pad4[8 - 4];
     u16 unk8;
     u16 unkA;
+    u8 padC[0x10 - 0xC];
+    BtlMesh *unk10;
 } BtlUnit9C8;
 
 typedef struct BtlUnit9CC {
@@ -473,7 +491,14 @@ typedef struct Battle11C0 {
 } Battle11C0;
 
 typedef struct {
-    u8 pad0[0xE];
+    u32 unk0_0 : 4;
+    u32 unk0_4 : 1;
+    u32 unk0_5 : 3;
+    u32 unk0_8 : 21;
+    u32 unk0_29 : 1;
+    u32 unk0_30 : 1;
+    u32 unk0_31 : 1;
+    u8 pad4[0xE - 4];
     u16 unkE;
 } Battle16CC; /* 0x10 */
 
@@ -910,17 +935,29 @@ typedef struct {
 extern volatile Unk80104F90 D_80104F90;
 extern u8 D_80104E75;
 
+struct Unk800F412C;
+typedef struct Unk800F3F10 {
+    s16 unk0; /* dx per frame */
+    s16 unk2; /* dy per frame */
+    s32 unk4; /* frames */
+    void (*unk8)(struct Unk800F412C *); /* on finish */
+} Unk800F3F10;
+
+/* moving menu sprite */
+typedef struct Unk800F412C {
+    u8 pad0[4];
+    u8 unk4;
+    u8 pad5;
+    u16 unk6; /* frame */
+    u16 unk8; /* x */
+    u16 unkA; /* y */
+    Unk800F3F10 *unkC;
+} Unk800F412C; /* 0x10 */
+
 typedef struct {
     u8 unk0;
-    u8 pad1[0x18 - 1];
-    u8 unk18;
-    u8 pad19[0x28 - 0x19];
-    u8 unk28;
-    u8 pad29[0x38 - 0x29];
-    u8 unk38;
-    u8 pad39[0x48 - 0x39];
-    u8 unk48;
-    u8 pad49[0x54 - 0x49];
+    u8 pad1[3];
+    Unk800F412C unk4[5];
     u32 unk54;
     s32 unk58;
     s32 unk5C;
@@ -997,14 +1034,6 @@ typedef struct {
 } Unk80105060;
 extern volatile Unk80105060 D_80105060;
 
-typedef struct {
-    u8 pad0[4];
-    u8 unk4;
-    u8 pad5;
-    s16 unk6;
-    u8 pad8[0xC - 8];
-    s32 unkC;
-} Unk800F412C;
 
 typedef struct {
     u8 unk0;
@@ -1205,7 +1234,7 @@ s32 func_800AB26C(void **, s32);
 void func_800C02D4(BtlUnit *);
 void func_800C0430(BtlUnit *, s32);
 void func_800C2344(BtlUnit9C *);
-void func_800C8D18(BtlUnit9C *, s32, s32, s32, s32);
+void func_800C8D18(BtlUnit9C *, u8, s16, s16, s16);
 s32 func_800CA5AC(void);
 struct Unk800CEE74 *func_800CEE74(void);
 s32 func_800D8D94(struct Unk800D8EA4 *, s32, s32 *);
@@ -1429,5 +1458,28 @@ void func_800F3D3C(s32);
 void func_800F1BFC(Window *);
 s32 func_800D001C(s32, s32, s32 *);
 void func_800C4E84(s32, s16 *, s16 *, s16 *);
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    s16 unk4;
+} Unk800D7C9C;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    s32 unk4;
+    s32 unk8;
+} Unk800D805C;
+
+extern s8 D_800FEC56;
+s32 func_800D9488(Unk800D7C9C *, s32, s32 *);
+s32 func_800D9AB0(Unk800D805C *, s32, s32 *);
+s32 func_800D9D58(Unk800D805C *, s32, s32 *);
+s32 func_800D8ACC(s32, s32);
 
 #endif

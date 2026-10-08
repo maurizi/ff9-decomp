@@ -108,6 +108,7 @@ int MoveImage(RECT *rect, int x, int y);
 void ClearImage(RECT *rect, s32 r, s32 g, s32 b); /* real lib: u_char r, g, b */
 int ResetGraph(int mode);
 void SetDispMask(int mask);
+u32 *ClearOTag(u32 *ot, int n);
 u32 *ClearOTagR(u32 *ot, int n);
 void DrawOTag(u32 *p);
 void AddPrim(void *ot, void *p);

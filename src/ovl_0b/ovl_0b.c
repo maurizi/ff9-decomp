@@ -1518,7 +1518,20 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C8A3C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C8BE0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C8D18);
+void func_800C8D18(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    BtlMesh *g = &arg0->unk8->unk10[arg1];
+    u32 *p = g->unk1C;
+    u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
+    u32 i;
+    for (i = 0; i < g->unk2; i++) {
+        p[4] = (p[4] & 0xFF000000) | v;
+        p += 6;
+    }
+    for (i = 0; i < g->unk4; i++) {
+        p[2] = (p[2] & 0xFF000000) | v;
+        p += 5;
+    }
+}
 
 u32 func_800C8DE0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s16 b = arg3 + ((arg0 >> 16) & 0xFF);
@@ -1673,7 +1686,22 @@ BtlUnit *func_800CB17C(u16 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CB1D4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CB2E0);
+s32 func_800CB2E0(BtlScript *arg0, BtlUnit *arg1) {
+    u32 f;
+    u8 *p = arg0->unk8;
+    s32 idx;
+    if (p[1] == 0xFF) {
+        f = arg1->unk68;
+        arg1->unk9C->unkC = D_8006794C->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
+    } else {
+        idx = arg0->unk16 + p[1];
+        arg1->unk9C->unkC = D_8006794C->unk1C->unk8E4.battle->unk11C4[idx];
+    }
+    arg1->unkA0->unk3A = 0;
+    arg0->unk14 = 0;
+    arg0->unk8 += 2;
+    return 1;
+}
 
 s32 func_800CB3A4(BtlScript *arg0) {
     arg0->unk22 = arg0->unk8[1] | (arg0->unk8[2] << 8);
