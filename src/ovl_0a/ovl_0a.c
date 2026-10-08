@@ -664,7 +664,59 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AED6C);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AF740);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AFAC0);
+void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    Unk800AFCBC *h;
+    FieldEnt *e;
+
+    h = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk10;
+    if (h == NULL) {
+        return;
+    }
+    e = &h->unk8[arg0];
+    if (arg1 == 0x82) {
+        if (arg2 != -1) {
+            func_800B00B0(e);
+            e->unk1 = arg2;
+            e->unk18 = func_8001C7FC(4, (arg2 & 0xFFFF) | 0x160000, 0);
+            e->unkE = func_800C9700(e->unk18) * 16;
+        } else {
+            e->unk18 = NULL;
+        }
+    } else if (arg1 == 0x83) {
+        if (arg3 != 0) {
+            e->unk0_0 |= arg2;
+        } else {
+            e->unk0_0 &= ~arg2;
+        }
+    } else if (arg1 == 0x87) {
+        e->unk8 = arg2;
+        e->unkA = arg3;
+        e->unkC = arg4;
+    } else if (arg1 == 0x8C) {
+        e->unk10 = arg2;
+        e->unk12 = arg3;
+        e->unk14 = arg4;
+    } else if (arg1 == 0x91) {
+        e->unk4 = arg2;
+    } else if (arg1 == 0x96) {
+        e->unk2 = func_8004B098(arg2);
+        e->unk3 = arg3;
+    } else if (arg1 == 0x9B) {
+        e->unk7 = arg2;
+    } else if (arg1 == 0x9C) {
+        e->unk0_4 = arg2;
+    } else if (arg1 == 0xA0) {
+        e->unk6 = arg2;
+    } else if (arg1 == 0xA1) {
+        e->unk16 = arg2 * 16;
+    } else if (arg1 == 0xA5) {
+        e->unk1C = arg2;
+        e->unk1E = arg3;
+        e->unk20 = arg4;
+    } else if (arg1 == 0xAA) {
+        e->unk22 = arg2;
+    }
+}
 
 u8 *func_800AFCBC(u8 *arg0) {
     s32 i;
@@ -684,10 +736,10 @@ u8 *func_800AFCBC(u8 *arg0) {
     for (; i < n; i++) {
         h->unk4[i] = 0xFFFF;
     }
-    h->unk8 = arg0;
+    h->unk8 = (FieldEnt *)arg0;
     arg0 += h->unk3 * 0x24;
     for (i = 0; i < h->unk3; i++) {
-        func_800B00B0(h->unk8 + i * 0x24);
+        func_800B00B0(&h->unk8[i]);
     }
     h->unkC = arg0;
     h->unk10 = arg0 + 0x3000;

@@ -18,13 +18,38 @@ typedef struct Unk800AB0B0 {
     Unk800AB0B0Entry unk4[1];
 } Unk800AB0B0;
 
+/* 0x24-byte entries at Unk800AFCBC.unk8 (func_800AFAC0 sets them) */
+typedef struct {
+    u32 unk0_0 : 4; /* flags */
+    u32 unk0_4 : 4;
+    u32 unk1 : 8;
+    u32 unk2 : 8;
+    u32 unk3 : 8;
+    s16 unk4;
+    u8 unk6;
+    u8 unk7;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    void *unk18;
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+} FieldEnt; /* 0x24 */
+
 /* initialised by func_800AFCBC */
 typedef struct Unk800AFCBC {
     u16 unk0;
     u8 unk2;
     u8 unk3; /* count of 0x24-byte entries at unk8 */
     u16 *unk4; /* 16 entries, follows this header */
-    u8 *unk8;
+    FieldEnt *unk8;
     u8 *unkC;
     u8 *unk10;
 } Unk800AFCBC; /* 0x14, followed by the buffers it points to */
