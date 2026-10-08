@@ -915,7 +915,7 @@ typedef struct {
     u8 unk4C; /* in use */
     u8 unk4D;
     s16 unk4E; /* index */
-    s16 unk50;
+    u16 unk50; /* frame */
     u8 pad52[0x54 - 0x52];
 } Unk8010141C; /* 0x54 */
 extern Unk8010141C D_8010141C[1];
@@ -1724,6 +1724,12 @@ extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+u8 *func_800C7DAC(BtlUnit9C *, s32, u8 *);
+void func_800C6528(BtlUnit9C *, u8);
+u8 *func_800C58E4(BtlUnit9C *, u8, u8 *);
+void func_800DCA68(BtlUnit9C *, SVECTOR *, VECTOR *, s32);
+void func_800DC988(s32, s32, BtlBone *);
+void func_800C9040(BtlUnit9C50 *);
 BtlUnit *func_800C1DEC(void);
 void func_800CF58C(s32);
 void func_800C9374(BtlUnit9C50 *, s32);

@@ -1440,7 +1440,45 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBE98);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC048);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC208);
+s32 func_800DC208(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
+    Unk8010141C *s = func_800DD02C(arg3, "Hi_DrawSummonModel()\nid:%d cannot use!");
+    BtlUnit9CC *a;
+    s32 n;
+    s32 f;
+    s32 c;
+    s32 i;
+    func_800DCA68(s->unk0, arg0, arg1, arg2);
+    a = s->unk0->unkC;
+    if (a->unkC >= 0) {
+        a->unkC = (s32)a + a->unkC;
+        if (a->unk10 != 0) {
+            a->unk10 = (s32)s->unk0->unkC + a->unk10;
+        }
+    }
+    n = s->unk0->unkC->unk2;
+    if (s->unk50 >= n) {
+        if (arg4 & 1) {
+            s->unk50 = 0;
+        } else {
+            s->unk50 = n - 1;
+        }
+    }
+    if (s->unk4D != 0) {
+        func_800C9040(s->unk0->unk50);
+    }
+    f = s->unk50;
+    D_800F78A4->unk24 = func_800C7DAC(s->unk0, f, D_800F78A4->unk24);
+    s->unk50++;
+    s->unk0->unk10 = 0;
+    c = s->unk0->unk8->unk3;
+    for (i = 0; i < c; i++) {
+        if (!(s->unk0->unk14 & (1 << i))) {
+            func_800C6528(s->unk0, i);
+            D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+        }
+    }
+    return f;
+}
 
 void func_800DC3F8(BtlUnit9CC *arg0, s32 arg1) {
     Unk8010141C *p = func_800DD02C(arg1, "Hi_SetSummonMotion()\nid:%d cannot use!");
