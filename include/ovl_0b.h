@@ -1404,7 +1404,7 @@ typedef struct {
 } Unk800D9260;
 s32 func_800D9260(Unk800D9260 *, s32, s32 *);
 s32 func_800D960C(struct Unk800D7E14 *, s32, s32);
-void func_800AD90C(s32, s32, s32, s32, s32);
+s32 func_800AD90C(s32, s32, s32, s32, s32);
 void func_800B3C00(void);
 void func_800C0D24(BtlUnit *);
 void func_800C1594(void);

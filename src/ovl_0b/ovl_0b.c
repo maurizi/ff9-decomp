@@ -47,7 +47,7 @@ void func_800A8CD4(void) {
     func_8001CFB4();
     SetDispMask(1);
     g->unk838 = func_800AB810;
-    g->unk83C = func_800AD90C;
+    g->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AD90C;
     D_8006794C->unk1C->unk8BC = func_800AF1C8;
     func_80021C60();
     g->unk39 = 0;
@@ -2009,7 +2009,30 @@ u32 func_800C1F00(u32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C1F7C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C20B8);
+s32 func_800C20B8(GameData *arg0, u32 arg1, s32 arg2) {
+    Battle *b;
+    if (!(arg0->unk56F & 0x10)) {
+        func_800AD90C(0x8601, 0, arg1, 0, 0);
+        arg0->unk56F |= 0x10;
+    }
+    if (!(arg0->unk56F & 2)) {
+        b = D_8006794C->unk1C->unk8E4.battle;
+        b->unkD86 += 4;
+        if ((u32)(s8)b->unkD86 < arg1) {
+            return 0;
+        }
+        func_800AD90C(0x700, arg2, 0, 0, 0);
+        arg0->unk56F |= 2;
+    }
+    if (func_800AD90C(0xC00, 0, 0, 0, 0) != 0) {
+        return 0;
+    }
+    if (!(arg0->unk56F & 0x20)) {
+        func_800AD90C(0, arg2, 0, 0, 0);
+        arg0->unk56F |= 0x20;
+    }
+    return 1;
+}
 
 void func_800C2200(BtlUnit *arg0, BtlUnit *arg1) {
     if (!(arg1->unk7E & 0x20)) {
