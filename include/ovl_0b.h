@@ -1096,7 +1096,7 @@ typedef struct Unk80100DC054 {
     u16 unk24[6];
     u16 unk30[6];
     u8 *unk3C;
-    s32 unk40;
+    BtlUnit9C50 *unk40;
     u8 pad44[0x50 - 0x44];
     s32 *unk50;
     u8 pad54[0x90 - 0x54];
@@ -1795,7 +1795,9 @@ void func_800CF560(s32);
 s32 func_800CF574(void);
 UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
+u16 func_800DB8E0(struct Unk80100DC054 *, s16 *);
 s32 func_800AB2C8(void);
+Unk8010141C *func_800DC4CC(void);
 typedef struct {
     s16 unk0[12];
 } Unk800DD120;

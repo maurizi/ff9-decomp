@@ -1572,7 +1572,45 @@ s32 func_800DB8D8(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB8E0);
+u16 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
+    s16 t[6][2];
+    Unk8010141C *p = func_800DC4CC();
+    s32 i;
+    if (p == NULL) {
+        sprintf(D_80101470, "Hi_RegisterSummonModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    if (p->unk0 == NULL) {
+        sprintf(D_80101470, "Hi_RegisterSummonModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    p->unk4C = 1;
+    p->unk50 = 0;
+    p->unk0->unk8 = (BtlUnit9C8 *)arg0->unk3C;
+    p->unk0->unkC = (BtlUnit9CC *)arg0->unk180[0];
+    if (arg1 != NULL) {
+        p->unk4D = 1;
+    } else {
+        p->unk4D = 0;
+    }
+    for (i = 0; i < arg0->unk4; i++) {
+        p->unk4[i][0] = arg0->unk18[i];
+        p->unk4[i][1] = arg0->unk24[i];
+        t[i][0] = 0;
+        t[i][1] = arg0->unk30[i];
+        if (arg1 != NULL) {
+            p->unk1C[i][0] = arg1[0];
+            p->unk1C[i][1] = arg1[1];
+            p->unk1C[i][2] = arg1[2];
+            p->unk1C[i][3] = arg1[3];
+            arg1 += 4;
+        }
+    }
+    func_800C7730(p->unk0, p->unk4[0], t[0]);
+    p->unk0->unk50 = arg0->unk40;
+    func_800C9374(p->unk0->unk50, (s32)p->unk1C);
+    return p->unk4E;
+}
 
 void func_800DBA80(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawEffModel()\nid:%d cannot use!");

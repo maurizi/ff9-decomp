@@ -269,7 +269,20 @@ s32 func_800AB26C(void **arg0, s32 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AB2C8);
+s32 func_800AB2C8(void) {
+    FileTable *t = D_8006794C->unk1C->unk7E4;
+    FileEntry *base = t->unk4;
+    FileEntry *e = &base[t->unk2] - 1;
+    s32 v;
+    do {
+        v = e->unk0;
+        if ((u8)(e->unk0 >> 16) == 0xC) {
+            return v;
+        }
+        e--;
+    } while (e >= base);
+    return -1;
+}
 
 s32 func_800AB324(s32 arg0, s32 *arg1, s32 *arg2) {
     FileEntry *e = func_80063088(D_8006794C->unk1C->unk7E4, arg0);
