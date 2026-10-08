@@ -8,15 +8,28 @@
 
 typedef struct {
     u8 unk0; /* item id */
-    u8 pad1[3];
+    u8 unk1; /* index into D_801F6FEC */
+    u8 pad2[2];
 } EquipEntry;
+
+typedef struct {
+    u16 unk0; /* name offset into D_801F722C */
+    u8 pad2[4];
+    u8 unk6; /* kind */
+    u8 unk7; /* count */
+    s32 unk8; /* first index into D_801F734C */
+} Unk801F6FEC; /* 0xC */
+extern Unk801F6FEC D_801F6FEC[];
+extern u8 D_801F722C[];
+extern u8 D_801F734C[];
+extern u8 D_801F33D0[][2];
 
 /* Equipment menu state (D_801FBF84). */
 typedef struct {
     u8 unk0; /* active list */
     u8 unk1; /* state, index into D_801F33A8 */
     u8 unk2; /* party slot */
-    u8 pad3;
+    u8 unk3; /* party slot cursor; bit 7 toggled */
     u8 unk4[2]; /* per list: 0 = greyed title */
     u8 pad6[2];
     MenuList unk8[2];
@@ -37,7 +50,8 @@ typedef struct {
     u8 unk76B; /* animation tick (0-6) */
     u8 unk76C; /* animation frame (0-6) */
     u8 unk76D;
-    u8 pad76E[0x770 - 0x76E];
+    u8 pad76E;
+    u8 unk76F;
     UnkBlink unk770;
 } EquipMenu;
 extern EquipMenu D_801FBF84;
@@ -91,6 +105,8 @@ void func_801F0934(s32, s32, s32, MenuView *);
 void func_801F09CC(s32, s32, s32, Character *);
 void func_801F0AB8(s32, s32, s32, Character *);
 void func_801F307C(void);
+void func_801EED10(void);
+void func_801F0DDC(void);
 s32 func_801EFB8C(s32, Character *);
 u32 func_801F0CC4(s32, Character *);
 s32 func_801F1018(Unk801F34EC *);
@@ -100,6 +116,8 @@ extern u8 D_801F40EC[];  /* item names */
 extern u8 D_801F6540[];  /* ability names */
 /* main exe: candidates for ff9.h */
 extern s32 D_800704B8;
+extern s32 D_80070498;
+extern s32 D_8007042C;
 void func_80026EA0(s32, s32, s32, s32, s32);
 s32 func_80034430(s32, s32);
 void func_80026C34(s32, s32, s32, s32, u8); /* main exe */
