@@ -399,6 +399,13 @@ void func_800C8C08(void);
 void func_800C8D40(void);
 void func_800C8E2C(void);
 void func_800C9630(void);
+/* party/menu windows shared with ovl_0c (func_800CB434 .. func_800CC940) */
+void func_800C8124(void);
+void func_800C86C8(s32, s32);
+void func_800C9014(void);
+void func_800C90D0(s32);
+void func_800C923C(void);
+void func_800C92C8(u8);
 
 /* ---- overlay data ---- */
 extern u8 D_800A717C[]; /* text */
@@ -428,6 +435,11 @@ extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
 extern u16 D_800C9D44;
+extern RECT *D_800C9EA0;
+extern u8 D_800C9EA4[];
+extern RECT *D_800C9EA8;
+extern u8 *D_800C9EAC[5];
+extern u8 D_800A7860[]; /* text */
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
