@@ -56,9 +56,12 @@ typedef struct {
     u8 unkB;      /* level (exp table has 99 entries) */
     u32 unkC;     /* exp, capped at 9999999 */
     u16 unk10;    /* hp */
-    u8 pad12[0x17 - 0x12];
+    u16 unk12;
+    u8 pad14[0x17 - 0x14];
     u8 unk17;
-    u8 pad18[0x1F - 0x18];
+    u16 unk18;
+    u16 unk1A;
+    u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
     u8 pad21[0x34 - 0x21];
@@ -775,7 +778,8 @@ typedef struct {
 } Unk8004AB64;
 
 typedef struct Unk8007AECCNode {
-    u8 pad0[8];
+    s32 unk0; /* key */
+    u8 pad4[8 - 4];
     struct Unk8007AECCNode *unk8; /* next */
 } Unk8007AECCNode;
 
@@ -787,7 +791,7 @@ typedef struct Unk16D8 {
 typedef struct {
     u8 pad0[0x1450];
     Unk8007AECCNode unk1450[32];
-    s32 unk15D0;
+    Unk8007AECCNode *unk15D0; /* active list */
     Unk8007AECCNode *unk15D4; /* free list */
     Unk16D8 unk15D8[32];
     Unk16D8 *unk16D8;
@@ -1285,6 +1289,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_80061C1C(void);
 void func_80057688(s32, s32);
 void func_80057640(s32, s32, s32, s32);
 u8 func_8002F800(void);
@@ -1643,7 +1648,7 @@ typedef struct {
     s32 unk2C;
     s32 unk30;
     s32 unk34;
-    s32 unk38;
+    u32 unk38;
     u32 unk3C;
 } Unk80083168;
 u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */

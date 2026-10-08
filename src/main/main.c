@@ -3167,7 +3167,17 @@ void func_80033C0C(u32 i) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033C48);
+s32 func_80033C48(s32 ch, s32 b, u8 flag) {
+    Character *c = &D_8006794C->unk1C->unk3C[ch];
+    s32 lv = c->unkB;
+    c->unkB = 0;
+    func_80032C4C(ch, b, 0, 0);
+    if (flag) {
+        c->unk10 = c->unk18;
+        c->unk12 = c->unk1A;
+    }
+    return lv;
+}
 
 s32 func_80033CCC(s32 ch, s32 b) {
     Character *c = &D_8006794C->unk1C->unk3C[ch];
@@ -3808,10 +3818,26 @@ void func_8004B2A0(void) {
     }
     p->unk8 = NULL;
     D_8007AECC->unk15D4 = D_8007AECC->unk1450;
-    D_8007AECC->unk15D0 = 0;
+    D_8007AECC->unk15D0 = NULL;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B2F4);
+void func_8004B2F4(s32 key) {
+    Unk8007AECCNode *n;
+    Unk8007AECCNode *prev = NULL;
+    for (n = D_8007AECC->unk15D0; n != NULL; n = n->unk8) {
+        if (n->unk0 == key) {
+            break;
+        }
+        prev = n;
+    }
+    if (prev != NULL) {
+        prev->unk8 = n->unk8;
+    } else {
+        D_8007AECC->unk15D0 = n->unk8;
+    }
+    n->unk8 = D_8007AECC->unk15D4;
+    D_8007AECC->unk15D4 = n;
+}
 
 void func_8004B378(void) {
     Unk16D8 *p = D_8007AECC->unk15D8;
@@ -4964,7 +4990,17 @@ s32 func_80056448(s32 a, s32 b) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056488);
+s32 func_80056488(void) {
+    D_80083168.unk24++;
+    D_80083168.unk38++;
+    if (D_80083168.unk3C - 1 < D_80083168.unk38) {
+        D_80083168.unk38 = 0;
+    }
+    if ((D_80083168.unk8 & 0x1000000) && D_80083168.unk38 >= 2) {
+        func_80061C1C();
+    }
+    return D_80083168.unk34;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", CdMix);
 
