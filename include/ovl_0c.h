@@ -84,7 +84,16 @@ typedef struct {
     u8 unk0; /* mode */
     u8 pad1[8];
     u8 unk9;
+    u8 padA[2];
+    u8 unkC;
 } Unk800CE3C8;
+
+typedef struct {
+    u8 pad0[0xB];
+    u8 unkB;
+    u8 padC[5];
+    u8 unk11;
+} Unk800CCB70;
 
 /* relocatable block: offsets are turned into pointers by func_800BA528 */
 typedef struct {
@@ -211,8 +220,13 @@ s32 func_800B5880(void *, s32, s32);
 void func_800B6338(void *);
 s32 func_800B6598(void *, s32, s32);
 s32 func_800C291C(void);
+s32 func_800C3E88(void);
+void func_800C42B0(u8);
+void func_800C4850(s32, u16, u8);
+void func_800AE784(s16, s16);
+void func_800B3638(void);
 void func_800C2A80(s32, s32, s32);
-s16 func_800B36B4(u8, u32, s32);
+s16 func_800B36B4(s32, u32, u8 *);
 void func_800B01F0(Unk8004AB64 *);
 void func_800BE748(VECTOR *, u32 *, s32 *, s32, u16 *);
 void func_800B4720(s32);
@@ -406,6 +420,12 @@ extern s32 D_800D4824;
 extern s32 D_800D4828;
 extern Unk800D5438 D_800D5438;
 extern u8 D_800CF46C;
+extern char D_800A7CCC[];
+extern s16 D_800CCB28[][9];
+extern Unk800CCB70 D_800CCB70;
+extern s16 D_800CE276;
+extern s16 D_800CE3BC;
+extern s32 D_800CFDB0[];
 
 /* Inlined copy of func_800BC0A8 (wrap map coordinates). */
 static inline void func_800BC0A8_inline(s32 *x, s32 *z) {
