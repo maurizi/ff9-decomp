@@ -317,14 +317,21 @@ typedef struct Unk800D375C {
 } Unk800D375C; /* 0x14 */
 
 /* list: D_800D3358 (head) -> D_800D34A8[32] -> D_800D3340 (tail) */
+typedef struct WmTexPack {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8[4];
+} WmTexPack;
+
 typedef struct Unk800D335C {
     struct Unk800D335C *unk0; /* prev */
     struct Unk800D335C *unk4; /* next */
-    s32 unk8;
+    struct WmTexPack *unk8;
     s16 unkC;
     u8 unkE;
     u8 unkF;
-    u8 pad10[4];
+    u8 unk10;
+    u8 pad11[3];
 } Unk800D335C; /* 0x14 */
 
 /* colour + 2 values (8 bytes) */
@@ -587,6 +594,7 @@ extern s32 D_800CFE1C;
 extern u16 *D_800CF430;
 extern u8 D_800CF444;
 extern s32 D_800D32F0;
+extern WmTexPack *D_800D32EC;
 extern s32 D_800D3304;
 extern MATRIX D_800D3770;
 extern s32 D_800CCE50; /* debug flags */

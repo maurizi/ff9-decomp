@@ -255,7 +255,43 @@ void func_800A9B54(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A9C1C);
+s32 func_800A9C1C(WorldMapObj *arg0) {
+    GameData *gd;
+    u8 *buf;
+    s32 a;
+    s32 b;
+    s32 i;
+    s32 p;
+    u8 *q;
+    s32 c;
+
+    gd = D_8006794C->unk1C;
+    func_8002177C(gd->unk854, gd->unk800, gd->unk808 << 11, arg0->unk30, 0, -1, 0);
+    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    }
+    buf = arg0->unk30;
+    a = func_8001C8B0((s32)buf, 4, 0x1B0000, 0);
+    b = func_8001C8B0((s32)buf, 4, 0x1B0001, 0);
+    D_8006794C->unk1C->unk7E4 = (struct FileTable *)func_8001C8B0((s32)buf, 4, 0x140000, 0);
+    for (i = func_8001C8B0(a, 1, 0x40000, 0) - 1; i >= 0; i--) {
+        p = func_8001C8B0(a, 2, (i & 0xFFFF) | 0x40000, 0);
+        if (p != -1) {
+            func_8001D8A8(p);
+        }
+    }
+    DrawSync(0);
+    func_800AD114(a, b, func_8001CA70(b));
+    DrawSync(0);
+    b = a;
+    arg0->unk34[1] = (void *)b;
+    func_8001C750(b, 0);
+    q = (u8 *)func_8001C8B0(b, 4, 0x1D0000, 0);
+    arg0->unk1A = *q;
+    q += 4;
+    arg0->unk28 = (s32)q;
+    arg0->unk30 = (u8 *)arg0->unk34[1] + func_8001CA70((s32)arg0->unk34[1]);
+    return 0;
+}
 
 s32 func_800A9DE4(WorldMapObj *arg0) {
     if (arg0->unk34[1] != NULL) {
@@ -1903,7 +1939,35 @@ s32 func_800BE138(s16 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE238);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE4A8);
+s32 func_800BE4A8(s16 arg0, u8 *arg1) {
+    s32 id;
+    s32 i;
+    Unk800D335C *p;
+    s16 m;
+    s32 k;
+
+    p = D_800D3358.unk4;
+    func_800BC354(arg0, &id);
+    for (i = 0; i < 16; i++, p = p->unk4) {
+        if (id == p->unkC && p->unkE == 2) {
+            if (arg1 != NULL) {
+                *arg1 = 0;
+            }
+            m = arg0 % 2;
+            k = m + (arg0 / D_800D32F0) % 2 * 2;
+            if (p->unk10 != 0) {
+                return p->unk8->unk8[k];
+            }
+            return D_800D32EC->unk8[k];
+        }
+    }
+    if (arg1 != NULL) {
+        *arg1 = 1;
+    }
+    m = arg0 % 2;
+    k = m + (arg0 / D_800D32F0) % 2 * 2;
+    return D_800D32EC->unk8[k];
+}
 
 void func_800BE674(void) {
     D_800D3770.m[2][2] = 0x1000;
