@@ -1601,7 +1601,85 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A720C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B73F8);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B7A14);
+s32 func_800B7A14(s32 arg0) {
+    u32 v;
+    s32 hi;
+    s32 lo;
+    s32 r;
+    u8 ret;
+    s32 k;
+
+    v = D_800CCCC0[D_800CE3DC->unk11].unk8;
+    if ((D_800CCE50 & 0x80) && arg0 == 0xC8) {
+        func_80015C38("Event:CDAccessWait\n");
+    }
+    switch (arg0) {
+    case 0xC0:
+        return (v & 0x3F00) >> 8;
+    case 0xC1:
+        return (v & 0xFC) >> 2;
+    case 0xC2:
+        if (D_800CE3C4 == 6) {
+            return D_800CCCC0[D_800CE3DC->unk11].unkE + 400;
+        }
+        return D_800CCCC0[D_800CE3DC->unk11].unkE + D_800CCCC0[D_800CE3DC->unk11].unkC;
+    case 0xC3:
+        return D_800CF488;
+    case 0xC4:
+        return D_800CF48C;
+    case 0xC5:
+        return D_800CF490;
+    case 0xC6:
+        return D_8006794C->unk1C->unk844;
+    case 0xC7:
+        return D_800CE0F0->unkC >> 4;
+    case 0xC8:
+        return D_800CF454 | (D_800D4818 != 0);
+    case 0xC9:
+        return D_800CE3DC->unk14.vx;
+    case 0xCA:
+        return D_800CE3DC->unk14.vy;
+    case 0xCB:
+        return D_800CE3DC->unk14.vz;
+    case 0xCC:
+        return D_800D3F88;
+    case 0xCD:
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        hi = *D_8007B720++;
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        lo = *D_8007B720++;
+        r = ((hi << 8) | lo) % (D_800CF474 + 1);
+        ret = 0;
+        if (D_800CCE54 != 0 && D_800CE25E != 0) {
+            k = (s32)(v & 0xFC) >> 2;
+            if (k >= 0x24) {
+                if (k < 0x27 && D_800CF4B0 > 400) {
+                    ret = r == 1;
+                }
+            }
+        }
+        return ret;
+    case 0xCE:
+        return ((u16)((u32)D_800CE3DC->unk14.pad >> 16) & 0xFFF) >> 4;
+    case 0xCF:
+        return func_800BC528((v & 0x3F00) >> 8);
+    case 0xD0:
+        return D_800CCD7C;
+    case 0xD1:
+        return D_800CF46C == 2;
+    case 0xD2:
+        return D_800D3E88;
+    case 0xD3:
+        return (u8)D_800D3E64;
+    default:
+        func_80015C38("w_frameGetParameter: illigal function #%d\n", arg0);
+        return -1;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B7DAC);
 

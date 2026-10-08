@@ -662,6 +662,12 @@ extern WmTexPack *D_800D32EC;
 extern s32 D_800D3304;
 extern MATRIX D_800D3770;
 extern s32 D_800CCE50; /* debug flags */
+extern s16 D_800CCD7C;
+extern u8 D_800CCE54;
+extern u16 D_800CF474;
+extern s32 D_800CF488;
+extern s32 D_800CF48C;
+extern s32 D_800CF490;
 /* texture transfer requests (func_800C24D8) */
 typedef struct {
     s32 unk0;
@@ -857,7 +863,7 @@ extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
 extern s8 D_800CE209;
 extern s8 D_800CE25D;
-extern s8 D_800CE25E;
+extern u8 D_800CE25E;
 extern s32 D_800CE260;
 extern s32 D_800CE268;
 extern s8 D_800CE26D;
