@@ -518,7 +518,52 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF1D0);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF2E0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF578);
+s32 func_800AF578(GameData *arg0, Battle *arg1) {
+    BtlUnit *u = arg1->unk6F8;
+    s32 r = 1;
+    s32 sp = arg1->unk11C0->unk34[arg0->unk8];
+    BtlUnit9C *m;
+    BtlUnit9C *n;
+    u32 f;
+    u32 g;
+    for (; u != NULL; u = u->unk0) {
+        if (!((u->unk68 >> 22) & 1)) {
+            func_800BC21C(u, &sp);
+            if (arg1->unkD80 == 3) {
+                n = u->unk9C;
+                g = u->unk68 & ~0x200000;
+                u->unk68 = g;
+                if (u->unkA0->unk3A >= n->unkC->unk2) {
+                    if (!(u->unk3C & 0x100)) {
+                        n->unkC = (BtlUnit9CC *)u->unkA4[(g >> 18) & 1];
+                    }
+                    u->unkA0->unk3A = 0;
+                }
+                if (!(u->unk3C & 1)) {
+                    if ((s32)u->unk9C->unkC != u->unkA4[(u->unk68 >> 18) & 1] && (s32)u->unk9C->unkC != u->unkA4[4]) {
+                        r = 0;
+                    }
+                }
+            } else if (arg1->unkD80 == 6) {
+                f = u->unk68;
+                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C >> 6) & 1) && (((D_8006794C->unk1C->unk3C + ((f >> 1) & 0xF))->unk34 >> 10) & 1)) {
+                    m = u->unk9C;
+                    if (u->unkA0->unk3A >= m->unkC->unk2) {
+                        m->unkC = (BtlUnit9CC *)u->unkA4[19];
+                        u->unkA0->unk3A = 0;
+                    }
+                }
+            }
+            func_800BFF20(u);
+        }
+        func_800BCEF0(u);
+    }
+    if (arg1->unkD80 == 7 && !((arg1->unk132C >> 4) & 1) && (u8)func_800C20B8(arg0, 0x1E, 6) == 0) {
+        r = 0;
+    }
+    func_800B05C0(arg0, arg1, sp);
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF800);
 
