@@ -644,7 +644,50 @@ u16 func_800B081C(s32 arg0) {
     return best->unkB0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B0A6C);
+void func_800B0A6C(BtlUnit *arg0) {
+    if (arg0->unkC4[0] & 1) {
+        arg0->unk38 |= 0x20000000;
+    }
+    if (arg0->unkC4[0] & 2) {
+        arg0->unk38 |= 0x200000;
+    }
+    if (arg0->unkC4[0] & 4) {
+        arg0->unk38 |= 0x80000;
+        arg0->unk34 |= 0x100000;
+        arg0->unk2E = arg0->unk2E * 3 / 2;
+    }
+    if (arg0->unkC4[0] & 8) {
+        arg0->unk38 |= 0x40000;
+        func_800C0C00(arg0, 0x12);
+    }
+    if (arg0->unkC4[0] & 0x10) {
+        arg0->unk3C |= 0x2000;
+    }
+    if (arg0->unkC4[1] & 0x100) {
+        arg0->unk34 |= 0x03000000;
+    }
+    if (arg0->unkC4[1] & 0x10000) {
+        arg0->unk34 |= 0x20000;
+    }
+    if (arg0->unkC4[1] & 0x20000) {
+        arg0->unk34 |= 0x10002;
+    }
+    if (arg0->unkC4[1] & 0x40000) {
+        arg0->unk34 |= 0x10;
+    }
+    if (arg0->unkC4[1] & 0x80000) {
+        arg0->unk34 |= 8;
+    }
+    if (arg0->unkC4[1] & 0x200000) {
+        arg0->unk34 |= 0x80000001;
+    }
+    if (arg0->unkC4[1] & 0x02000000) {
+        arg0->unk34 |= 0x1000;
+    }
+    if (arg0->unkC4[1] & 0x04000000) {
+        arg0->unk34 |= 0x400;
+    }
+}
 
 s32 func_800B0CF8(s32 arg0, u32 arg1) {
     s32 i;

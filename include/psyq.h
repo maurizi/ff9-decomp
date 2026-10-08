@@ -149,6 +149,11 @@ typedef struct {
 
 typedef struct {
     u32 tag;
+    u32 code[2];
+} DR_STP;
+
+typedef struct {
+    u32 tag;
     u8 r0, g0, b0, code;
     s16 x0, y0;
     s16 x1, y1;

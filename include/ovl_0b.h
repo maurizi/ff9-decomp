@@ -1795,6 +1795,7 @@ extern u16 D_800F5200[];
 void func_800BB4A0(Character *, BtlUnit *, u16, u16);
 void func_800C1990(BtlUnit *);
 void func_800C9A28(void);
+void func_800C0C00(BtlUnit *, s32);
 void func_800BBF30(Unk8004AB64 *, s16);
 extern s32 D_800FDF34;
 extern RECT D_800A858C;
@@ -1822,6 +1823,24 @@ UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
 u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);
 u16 func_800DB8E0(struct Unk80100DC054 *, s16 *);
+typedef struct {
+    u32 unk0; /* uv/clut */
+    u8 unk4;  /* w */
+    u8 unk5;  /* h */
+    u16 unk6; /* tpage */
+} Unk80068EE8; /* sprite descriptor */
+extern Unk80068EE8 D_80068EE8[];
+extern u16 D_80068EEE; /* D_80068EE8[0].unk6 */
+extern Unk80068EE8 D_80068E90;
+extern Unk80068EE8 D_80068ED0;
+extern Unk80068EE8 D_80068ED8;
+extern Unk80068EE8 D_80068EE0;
+extern u8 D_80104E7D;
+extern SprtWords D_801050A0;
+extern SprtWords D_801050C0;
+extern DR_TPAGE D_80105080;
+extern DR_STP D_80105090;
+extern u32 D_801050D4;
 s32 func_800AB2C8(void);
 Unk8010141C *func_800DC4CC(void);
 typedef struct {
