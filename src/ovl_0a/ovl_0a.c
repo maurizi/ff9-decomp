@@ -1069,9 +1069,22 @@ s32 func_800C0EF0(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0F08);
+s32 func_800C0F08(void) {
+    Unk800C9DB4Cam *c = func_800C9DB4_cam(0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0FB0);
+    c += D_800CA068.unk75;
+    if (!(func_80012AD4() & 2) || D_80071E34 < 2) {
+        gte_SetGeomOffset((s16)c->unk20 + D_800CA068.unkC, (s16)c->unk22 + D_800CA068.unkE);
+    }
+    return 1;
+}
+
+s32 func_800C0FB0(void) {
+    if (!(func_80012AD4() & 2)) {
+        gte_SetGeomOffset(0xA0, 0x70);
+    }
+    return 1;
+}
 
 s32 func_800C0FF4(s32 arg0) {
     if (arg0 == -1) {

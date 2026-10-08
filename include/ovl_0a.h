@@ -119,7 +119,9 @@ typedef struct {
 typedef struct {
     s32 unk0; /* flags */
     Unk800CA068Pair unk4;
-    u8 pad8[0x10 - 8];
+    u8 pad8[0xC - 8];
+    s16 unkC; /* geometry offset adjust */
+    s16 unkE;
     Unk800CA068Pair unk10;
     s16 unk14;
     s16 unk16;
@@ -453,6 +455,9 @@ extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;
 extern u8 *D_800C9EAC[5];
 extern u8 D_800A7860[]; /* text */
+
+/* main exe: candidates for ff9.h */
+extern s32 D_80071E34;
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {

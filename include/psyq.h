@@ -118,6 +118,12 @@ MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
     "ctc2\t$13, $6;" \
     "ctc2\t$14, $7" \
     : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
+    "sll\t$12, %0, 16;" \
+    "sll\t$13, %1, 16;" \
+    "ctc2\t$12, $24;" \
+    "ctc2\t$13, $25" \
+    : : "r"(r0), "r"(r1) : "$12", "$13")
 #define gte_ldv0(r0) __asm__ volatile( \
     "lwc2\t$0, 0(%0);" \
     "lwc2\t$1, 4(%0)" \
