@@ -2390,7 +2390,19 @@ void func_8002EE8C(MenuList *m, s32 b) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EEF0);
+void func_8002EEF0(MenuList *m, u32 pad) {
+    if (pad & 0x10) {
+        if (m->unk6 == 0) {
+            if (m->unk5 != 0) {
+                func_8002F488(0x67);
+                m->unk8 = 2;
+            }
+        } else {
+            m->unk6--;
+            func_8002F488(0x67);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EF58);
 
@@ -5179,7 +5191,12 @@ void func_8005C0A0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C0F0);
+void func_8005C0F0(s32 *p) {
+    func_800599D4(D_80080A10, D_8007BD48, *p);
+    if (D_8007F790 != NULL && *p != 0) {
+        func_800599D4(D_8007F790, D_8007F71C, *p);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C158);
 
