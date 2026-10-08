@@ -333,7 +333,9 @@ typedef struct {
     u16 unk0; /* name offset into D_8006A218 */
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
-    u8 pad6[0xB - 6];
+    u8 pad6[2];
+    u8 unk8; /* kind */
+    u8 pad9[0xB - 9];
     u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
@@ -461,7 +463,7 @@ u8 *func_80026C7C(s32, s32, u32 *, s32, u8, u8 *);
 void func_80026F8C(s32, s32, s32, s32);
 void func_80027A4C(s32, s32, s32, s32);
 u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
-void func_800275DC(s32, s32, s32, s32, s32);
+s32 func_800275DC(s32, s32, s32, s32, u8);
 void func_80028AF0(s32, s32, s32, s32, u8);
 
 void func_8002BAE4(s32, u8 *, s32, s32);
@@ -837,7 +839,7 @@ typedef struct {
 } Unk8004AB64;
 
 typedef struct Unk8007AECCNode {
-    s32 unk0; /* key */
+    Unk8004AB64 *unk0; /* key */
     u8 pad4[8 - 4];
     struct Unk8007AECCNode *unk8; /* next */
 } Unk8007AECCNode;
@@ -854,7 +856,7 @@ typedef struct {
     Unk8007AECCNode *unk15D4; /* free list */
     Unk16D8 unk15D8[32];
     Unk16D8 *unk16D8;
-    s32 unk16DC;
+    Unk16D8 *unk16DC; /* tail */
     Unk16D8 *unk16E0; /* free list */
     u8 unk16E4[8];
     u8 unk16EC;
@@ -1855,6 +1857,7 @@ extern u8 *D_8007B9A8;
 extern u32 D_8007B9B0[];
 extern u8 **D_8007BCA8;
 void func_80051004(u8);
+extern u8 D_8007B930[8]; /* name text being converted */
 
 typedef struct {
     u8 *unk0;
@@ -2143,5 +2146,23 @@ static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8
     addPrim(ot, t);
     *out = d->unk4;
     return (u8 *)++t;
+}
+/* Inlined copy of func_8004B2F4 (move an object's node to the free list). */
+static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
+    Unk8007AECCNode *n;
+    Unk8007AECCNode *prev = NULL;
+    for (n = D_8007AECC->unk15D0; n != NULL; n = n->unk8) {
+        if (n->unk0 == key) {
+            break;
+        }
+        prev = n;
+    }
+    if (prev != NULL) {
+        prev->unk8 = n->unk8;
+    } else {
+        D_8007AECC->unk15D0 = n->unk8;
+    }
+    n->unk8 = D_8007AECC->unk15D4;
+    D_8007AECC->unk15D4 = n;
 }
 #endif
