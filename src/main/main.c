@@ -3693,9 +3693,47 @@ s32 func_80034A64(s32 ch, s32 lv, u8 add) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034B50);
+s32 func_80034B50(s32 ch, s32 lv, u8 add) {
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    u16 *bonus = c->unk3E;
+    Unk8006DD88 *e = &D_8006DD88[k];
+    s32 r;
+    s32 n;
+    if (add) {
+        n = 0;
+        if (c->unk17 == 0) {
+            n = 3;
+        }
+        bonus[1] += n + func_8003502C(c->unk39, 1);
+    }
+    r = e->unk1 + lv * 3 / 10 + (bonus[1] >> 5);
+    if (r >= 100) {
+        r = 99;
+    }
+    return r;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034C64);
+s32 func_80034C64(s32 ch, s32 lv, u8 add) {
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    u16 *bonus = c->unk3E;
+    Unk8006DD88 *e = &D_8006DD88[k];
+    s32 r;
+    s32 n;
+    if (add) {
+        n = 0;
+        if (c->unk17 == 0) {
+            n = 3;
+        }
+        bonus[2] += n + func_8003502C(c->unk39, 2);
+    }
+    r = e->unk2 + lv * 3 / 10 + (bonus[2] >> 5);
+    if (r >= 100) {
+        r = 99;
+    }
+    return r;
+}
 
 s32 func_80034D78(s32 ch, s32 lv, u8 add) {
     Character *c = D_8006794C->unk1C->unk3C + ch;
