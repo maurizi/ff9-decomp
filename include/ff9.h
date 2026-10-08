@@ -1147,7 +1147,9 @@ typedef struct {
 typedef struct {
     u8 pad0[4];
     s32 unk4;
-    u8 pad8[0x68 - 8];
+    u8 pad8[0x30 - 8];
+    s32 unk30;
+    u8 pad34[0x68 - 0x34];
     s32 unk68;
     u8 pad6C[0x7C - 0x6C];
     s32 unk7C;

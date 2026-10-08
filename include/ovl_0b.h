@@ -1185,7 +1185,9 @@ typedef struct {
     u8 unk2;
     u8 pad3[6 - 3];
     u8 unk6;
-    u8 pad7[0xA - 7];
+    u8 pad7;
+    u8 unk8;
+    u8 pad9;
     u8 unkA;
     u8 unkB;
     u8 unkC;
@@ -1976,5 +1978,32 @@ void func_800562E0(s32 *, s32);
 void func_80029058(s32, s32, s32, u8 *, s32);
 void func_8002DD54(void);
 s32 func_80033A1C(Character *);
+
+/* battle menu: unit under the target cursor (inlined by its callers) */
+static inline BtlUnit *BtlFindTargetCursor(void) {
+    BtlUnit *p;
+    for (p = D_8006794C->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->unk0) {
+        if ((p->unk68 & 0x30000000) == 0x30000000) {
+            return p;
+        }
+    }
+    return NULL;
+}
+
+/* inlined copy of func_800F1B78 */
+static inline s32 func_800F1B78_inline(void) {
+    BtlUnit *u;
+    s32 n;
+    if (D_80104FF0.unk2 >= 9 && D_80104FF0.unk2 <= 11) {
+        return 2;
+    }
+    n = 0;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+        if ((u->unk68 & 0x30000000) == 0x30000000) {
+            n++;
+        }
+    }
+    return n >= 2;
+}
 
 #endif
