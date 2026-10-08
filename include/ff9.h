@@ -431,7 +431,7 @@ typedef struct Window {
     u8 unk1B; /* index */
     u8 unk1C; /* state: 2 = fire callback */
     u8 unk1D;
-    u8 pad1E;
+    u8 unk1E;
     u8 unk1F;
     s16 unk20;
     s8 unk22;

@@ -126,7 +126,8 @@ typedef struct BtlUnit {
     u16 unkB0;
     u8 padB2;
     u8 unkB3;
-    u8 padB4[0xC4 - 0xB4];
+    struct Unk80104F88Entry *unkB4; /* menu data (party members) */
+    u8 padB8[0xC4 - 0xB8];
     u32 *unkC4;
     u8 padC8[0xCA - 0xC8];
     s16 unkCA;
@@ -233,8 +234,16 @@ typedef struct {
     s8 unk8[4];
 } Unk800EB518;
 
-typedef struct {
-    u8 pad0[0x14];
+typedef struct Unk80104F88Entry {
+    s16 unk0;
+    u16 unk2; /* hp shown */
+    u16 unk4;
+    s16 unk6;
+    s16 unk8;
+    u16 unkA; /* mp shown */
+    u16 unkC;
+    s16 unkE;
+    u8 pad10[0x14 - 0x10];
     Character *unk14;
     u8 pad18[0x1B - 0x18];
     u8 unk1B;
@@ -352,8 +361,6 @@ extern struct Unk800CEE74 *D_800FE514;
 extern s32 D_800FE51C;
 extern s16 D_80100DCC;
 extern s32 *D_80104DF8; /* offset table, entries relative to its start */
-extern s8 D_80104FC0;
-extern u8 D_80104FF0;
 extern u8 D_80104FFC;
 extern u8 D_80105020[];
 extern u8 D_80105058;
@@ -881,8 +888,22 @@ extern u8 D_80104E75;
 
 typedef struct {
     u8 unk0;
-    u8 pad1[0x5C - 1];
+    u8 pad1[0x18 - 1];
+    u8 unk18;
+    u8 pad19[0x28 - 0x19];
+    u8 unk28;
+    u8 pad29[0x38 - 0x29];
+    u8 unk38;
+    u8 pad39[0x48 - 0x39];
+    u8 unk48;
+    u8 pad49[0x54 - 0x49];
+    u32 unk54;
+    s32 unk58;
     s32 unk5C;
+    s32 unk60;
+    s32 unk64;
+    BtlUnit *unk68[4];
+    s8 unk78[4];
 } Unk80105078;
 extern Unk80105078 *D_80105078;
 
@@ -898,18 +919,91 @@ typedef struct {
     u8 unk10;
     u8 unk11;
     u8 pad12[0x18 - 0x12];
-    struct Unk80104FC8 *unk18;
+    BtlUnit *unk18;
 } Unk80104FB0;
 extern Unk80104FB0 D_80104FB0;
 extern void (*D_800F8D94[])(void);
 
-typedef struct Unk80104FC8 {
-    u8 pad0[0xB4];
-    Unk80104F88Entry *unkB4;
-} Unk80104FC8;
-extern Unk80104FC8 *D_80104FC8;
+extern BtlUnit *D_80104FC8;
+
+typedef struct {
+    s8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk80104FC0;
+extern Unk80104FC0 D_80104FC0;
+
+typedef struct {
+    u8 pad0[6];
+    u8 unk6;
+} Unk80104FD4;
+extern Unk80104FD4 *D_80104FD4;
+extern s32 (*D_800F8E58[])(void);
+extern void (*D_800F8E48[])(void);
+extern u8 D_80104FE8;
+
+typedef struct {
+    u8 unk0;
+    u8 pad1;
+    u8 unk2;
+    u8 pad3[6 - 3];
+    u8 unk6;
+    u8 pad7[0xC - 7];
+    u8 unkC;
+    u8 padD[0x11 - 0xD];
+    u8 unk11;
+    s8 unk12;
+} Unk80104FF0;
+extern Unk80104FF0 D_80104FF0;
+extern u8 D_80104FFF;
+extern u8 D_800F8EE4[];
+extern u8 D_80105059;
+extern void (*D_800F8F04[])(s32);
+
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* next free */
+    s32 unk8;
+    s32 unkC; /* used */
+    s32 unk10; /* free */
+} Unk80105060;
+extern volatile Unk80105060 D_80105060;
+
+typedef struct {
+    u8 pad0[4];
+    u8 unk4;
+    u8 pad5;
+    s16 unk6;
+    u8 pad8[0xC - 8];
+    s32 unkC;
+} Unk800F412C;
+
+typedef struct {
+    u8 unk0;
+    u8 pad1[0x80 - 1];
+    s32 unk80;
+    s32 unk84;
+    u8 pad88[0x8C - 0x88];
+    u8 unk8C;
+    u8 unk8D;
+    u8 pad8E[2];
+    s32 unk90;
+    u8 pad94[0xA4 - 0x94];
+    RECT unkA4;
+} Unk801051F0;
+extern Unk801051F0 D_801051F0;
+extern s32 D_800FDE3C[];
+extern u32 D_80104E80;
+extern void *D_801050D8;
+extern u8 D_801051E0;
+extern u8 D_80104E94[2][0x18];
 
 /* main exe: candidates for ff9.h */
+void func_8002C084(s32);
+void func_8002C740(s32, s32, s32);
+void func_8002E32C(Window *, s32);
+void func_8002E380(Window *, s32);
 void func_8002C584(s32);
 void func_8002DD00(Window *);
 Window *func_8002E43C(s32);
@@ -937,6 +1031,29 @@ void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800EB358(BtlUnit *);
+void func_800ECCA8(s32);
+s32 func_800EFB3C(s32);
+s32 func_800EFD1C(s32);
+void func_800EFA10(s32);
+void func_800EF7D4(Window *);
+void func_800F07F0(void);
+s32 func_800F0118(void);
+s32 func_800F028C(void);
+void func_800F0904(void);
+void func_800F1AF8(Window *);
+void func_800F2684(s32);
+void func_800F2C74(void);
+void func_800F2DC0(s32);
+void func_800F2ED0(s32);
+void func_800F316C(void);
+void func_800F3DE0(s32);
+void func_800F3EDC(s32);
+void func_800F3F10(void);
+void func_800F3FDC(void);
+void func_800F42F0(void);
+void func_800F4D80(u32 *, u32);
+void func_800F4FE8(s32);
 void func_800EB518(Unk800EB518 *, s32, s32, s8);
 void func_800EE120(Window *);
 s32 func_800D8CD8(u8 *, s32, s32);
