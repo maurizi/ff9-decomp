@@ -173,5 +173,8 @@ void func_800ADD04(void);
 u8 *func_800ADE14(u8 *, s32);
 void *func_800ADE30(s32, s32, u32 *, u8 *, void *);
 s32 func_800ADF90(u8 *);
+void *func_800AE028(s32, s32, u32 *, u32, s32 *, SprtWords *);
+s32 func_800A9228(Ovl15Hand *, Ovl15Hand *);
+s32 func_800A945C(Ovl15Hand *);
 
 #endif
