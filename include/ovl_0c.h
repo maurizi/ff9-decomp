@@ -19,9 +19,12 @@ typedef struct WmPalAnim {
 /* per-object entry in WorldMapObj.unk1C (0x28 bytes) */
 typedef struct {
     unsigned unk0 : 8;
-    unsigned unk1 : 12;
-    unsigned unk2 : 12;
-    u8 pad4[0x28 - 4];
+    unsigned unk1 : 12; /* scale x */
+    unsigned unk2 : 12; /* scale z */
+    unsigned unk4 : 12; /* angle */
+    signed unk4_12 : 10; /* offset x */
+    signed unk4_22 : 10; /* offset z */
+    u8 pad8[0x28 - 8];
 } WmObjEnt;
 
 /* object embedded in WorldMap (0x4C bytes) */
