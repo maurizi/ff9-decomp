@@ -1890,7 +1890,7 @@ typedef struct {
     u32 unkC;
     s32 unk10;
     u32 unk14; /* bytes left */
-    u8 pad18[0x1C - 0x18];
+    u32 unk18; /* loop length (initial) */
     u32 unk1C; /* loop length */
     s32 unk20;
     s32 unk24;
@@ -2321,4 +2321,21 @@ static inline s32 func_800347D8_inline(s32 ch, s32 id) {
     }
     return D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
 }
+void func_800576A0(s32, s32);
+void func_80057738(s32, s32);
+void func_80057760(s32, s32);
+/* streamed AKAO sound header (func_800616F8) */
+typedef struct {
+    u8 pad0[0x10];
+    u32 unk10; /* data size */
+    u8 pad14[0x18 - 0x14];
+    s32 unk18; /* flags */
+    u16 unk1C;
+    u8 pad1E[0x20 - 0x1E];
+    u32 unk20; /* loop length */
+    u8 pad24[0x40 - 0x24];
+    u8 unk40[1]; /* sample data */
+} AkaoStream;
+s32 func_80060A08(void);
+void func_80061624(void);
 #endif
