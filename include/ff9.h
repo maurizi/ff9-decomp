@@ -357,6 +357,8 @@ typedef struct {
     u32 code;
 } DrTpageWords;
 
+extern u16 D_8006BBA0[];
+
 /* 12-tick toggle timer (func_80028CF8/D08/D2C) */
 typedef struct {
     u8 unk0; /* active */
@@ -495,10 +497,7 @@ typedef struct Window {
     s16 unk2; /* y */
     s16 unk4; /* w */
     s16 unk6; /* h */
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    s16 unkE;
+    RECT unk8; /* inner/content rect */
     s16 unk10;
     u8 pad12[0x18 - 0x12];
     s16 unk18; /* OT layer */
@@ -885,6 +884,8 @@ typedef struct {
     s32 unk4;
 } Unk8007B988;
 extern Unk8007B988 D_8007B988;
+extern s32 D_8007B994;
+extern s32 D_8007B998;
 
 extern u8 D_80076B0C;
 extern s32 D_80077E20;
@@ -1058,7 +1059,7 @@ typedef struct Unk8007B9C0 {
     s16 unk6; /* y */
     s16 unk8;
     s16 unkA;
-    s32 unkC;
+    s32 (*unkC)(struct Unk8007B9C0 *, s32); /* input handler */
     s32 unk10;
     Window *unk14;
     s16 unk18; /* w */
@@ -1310,8 +1311,8 @@ extern s32 D_80077DC0; /* frame counter? */
 s32 func_80012AD4(void);
 void func_80012D08(void);
 void func_80012D18(void);
-s32 func_80016EC0(s32, s32, s32, s32);
-void func_80016ED0(s32);
+s32 func_80016EC0(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
+s32 func_80016ED0(s32); /* BIOS EnableEvent */
 s32 func_8001C750(s32, s32);
 s32 func_8001C8B0(s32, s32, s32, s32);
 void func_8001CCB4(s32, s32, s32);
@@ -1724,6 +1725,9 @@ s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
 void func_80056644(void *, s32);
 void func_800566D0(void);
+void func_8005681C(void);
+void func_8005D6BC(void);
+extern u8 D_80080990[];
 void func_80056CCC(s32, s32);
 void func_800575D0(s32);
 s32 StopRCnt(s32);
@@ -1731,7 +1735,13 @@ void SpuQuit(void);
 extern s32 D_8006F318;
 extern u8 D_8006F334[];
 extern s32 D_8007B708;
-extern s32 *D_8007B954;
+/* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
+typedef struct {
+    s32 unk0; /* count */
+    u16 unk4[1];
+} Unk8007B954;
+extern Unk8007B954 *D_8007B954;
+extern u8 *D_8007BB80[];
 
 typedef struct {
     u8 pad0[2];

@@ -163,4 +163,10 @@ CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
 long _card_format(long chan);
 long _card_clear(long chan);
 
+void SpuStart(void);
+long SpuInitMalloc(long num, char *top);
+long SpuSetTransferMode(long mode);
+long SetRCnt(unsigned long spec, unsigned short target, long mode);
+long StartRCnt(unsigned long spec);
+
 #endif
