@@ -1352,7 +1352,27 @@ u16 func_800DB4EC(BtlUnit9C8 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB5B4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DB6B8);
+u16 func_800DB6B8(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
+    BtlObjSlot *p = func_800DC494();
+    if (p == NULL) {
+        sprintf(D_80101470, "Hi_RegisterTexListModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    if (p->unk0 == NULL) {
+        sprintf(D_80101470, "Hi_RegisterTexListModel()\nmemory not enough!");
+        func_800DC634(D_80101470);
+    }
+    p->unk1C = 1;
+    p->unk1D = 0;
+    p->unk20 = 2;
+    p->unk22 = 0;
+    p->unk24 = 0;
+    p->unk0->unk8 = arg0;
+    p->unk0->unkC = NULL;
+    p->unk4 = *arg1;
+    func_800C7730(p->unk0, p->unk4.unk0, arg2);
+    return p->unk1E;
+}
 
 u16 func_800DB7F8(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
     BtlObjSlot *p = func_800DC494();
@@ -2511,7 +2531,7 @@ void func_800E8F50(Unk800E8F50 *arg0, s32 arg1) {
         for (i = 0; i < n; i++) {
             e[i].unk0 |= (arg1 & 3) << 5;
         }
-        func_800DB6B8(p, e, (u8 *)h + h->unk6, n);
+        func_800DB6B8(p, (BtlTexInfo *)e, (s16 *)((u8 *)h + h->unk6), n);
     } else {
         func_800DB4EC(p);
     }

@@ -805,9 +805,12 @@ extern Unk80100C78 D_80100C78;
 extern Heap D_800FF470; /* 0x1800 bytes */
 
 typedef struct {
+    s16 unk0[12];
+} BtlTexInfo; /* 0x18, passed to func_800C7730 */
+
+typedef struct {
     BtlUnit9C *unk0;
-    s16 unk4[2];
-    u8 pad8[0x1C - 8];
+    BtlTexInfo unk4;
     u8 unk1C; /* in use */
     u8 unk1D;
     s16 unk1E; /* index */
@@ -1477,7 +1480,7 @@ typedef struct {
 s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
 s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
 void func_800CFA00(s16 *, s16 *, s32, s16 *);
-void func_800DB6B8(void *, Unk800E8F50Entry *, void *, s32);
+u16 func_800DB6B8(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32);
 u16 func_800DB4EC(BtlUnit9C8 *);
 void func_800CF808(s16 *, s16 *, s16 *);
 void func_800CFD78(s16 *, s16 *, s32, s16 *);
