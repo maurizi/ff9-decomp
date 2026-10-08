@@ -2163,7 +2163,17 @@ s32 func_8002C47C(s32 i) {
     return ((D_80073940[i].unk0 >> 12) & 0xF) == 7;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C4B0);
+void func_8002C4B0(u8 on) {
+    if (on) {
+        D_80077178 = func_80019150() >> 15;
+        func_80019160(0x8000, 1);
+        func_80019750(&D_8007717C);
+        func_80019774(&D_8006BCF8);
+    } else {
+        func_80019160(0x8000, D_80077178);
+        func_80019774(&D_8007717C);
+    }
+}
 
 void func_8002C52C(s32 a) {
     s32 i;
@@ -2521,7 +2531,17 @@ void func_8002F284(MenuList *arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F344);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F40C);
+void func_8002F40C(MenuList *m, RECT *src, RECT *dst) {
+    dst->x = src->x;
+    dst->w = src->w;
+    if (m->unk8 & 2) {
+        dst->y = m->unk9 + src->y + 5;
+        dst->h = src->h - (m->unk9 + 4) - 1;
+    } else {
+        dst->y = src->y;
+        dst->h = src->h - m->unk9 - 1;
+    }
+}
 
 void func_8002F488(s32 a) {
     D_8006794C->unk1C->unk83C(0xD000, a, 0x800000, 0x80, 0x7F);
@@ -5984,7 +6004,23 @@ void func_80060174(AkaoChannel *c) {
     c->unk11C |= 0x100;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800601B8);
+void func_800601B8(AkaoChannel *c) {
+    u16 v = *c->unk0++;
+    u16 x = c->unk12C & 0x3FFF;
+    c->unk12C = x;
+    switch (v) {
+    case 3:
+        c->unk12C = x | 0x4000;
+        break;
+    case 5:
+        c->unk12C = x | 0x8000;
+        break;
+    case 7:
+        c->unk12C = x | 0xC000;
+        break;
+    }
+    c->unk11C |= 0x200;
+}
 
 void func_80060230(AkaoChannel *c) {
     s32 v = *c->unk0++;
@@ -6320,7 +6356,21 @@ void func_8006237C(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8006238C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062420);
+s32 func_80062420(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
+    s32 i;
+    for (i = 0; i < 0x69; i++) {
+        if (D_80083248.unk6[i].unk0 == 0xFF) {
+            D_80083248.unk6[i].unk0 = id;
+            D_80083248.unk6[i].unk1 = a;
+            D_80083248.unk6[i].unk2 = b;
+            D_80083248.unk6[i].unk3 = c;
+            D_80083248.unk6[i].unk4 = d;
+            D_80083248.unk6[i].unk5 = e;
+            return func_80062560(id) == 1;
+        }
+    }
+    return -1;
+}
 
 s16 func_80062498(void) {
     return D_80083248.unk0;

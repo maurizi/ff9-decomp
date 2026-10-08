@@ -975,7 +975,8 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[2];
+    u8 unk4;
+    u8 unk5;
 } Unk6; /* card inventory entry */
 
 typedef struct {
@@ -1280,6 +1281,13 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+u16 func_80019150(void);
+void func_80019160(u16, s32);
+void func_80019750(Unk4 *);
+void func_80019774(Unk4 *);
+extern u8 D_80077178;
+extern Unk4 D_8007717C;
+extern Unk4 D_8006BCF8;
 void func_80035E40(void);
 void func_80035F94(void);
 void func_80060D1C(s32, s32, s32, s32);
@@ -1359,7 +1367,7 @@ u8 *func_8002BD54(u8 *, u8 *);
 void func_8002C064(s32);
 void func_8002C0DC(s32);
 void func_8002C308(s32);
-void func_8002C4B0(s32);
+void func_8002C4B0(u8);
 void func_8002D9B4(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
 Window *func_8002EA7C(RECT *, s32, s32, Window *);
@@ -1422,7 +1430,7 @@ s32 func_80056CAC(s32);
 s32 func_80056CBC(s32);
 void func_80062344(void);
 void func_8006237C(void);
-void func_80062420(u8, u8, u8, u8, s32, s32);
+s32 func_80062420(u8, u8, u8, u8, u8, u8);
 s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
