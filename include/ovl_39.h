@@ -67,8 +67,10 @@ typedef struct {
     s32 unkC;  /* used slots */
     s32 unk10; /* file count */
     s32 unk14;
-    u8 pad18[0x1C - 0x18];
+    s32 unk18; /* file descriptor */
     Window *unk1C;
+    u8 pad20[0x2D0 - 0x20];
+    u8 unk2D0[0x180]; /* read buffer */
 } Unk801FBEF8;
 extern Unk801FBEF8 D_801FBEF8;
 
