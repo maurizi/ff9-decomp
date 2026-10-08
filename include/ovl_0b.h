@@ -14,7 +14,9 @@ typedef struct BtlUnitA0 {
 } BtlUnitA0;
 
 typedef struct BtlUnit9C8 {
-    u8 pad0[8];
+    u8 pad0[3];
+    u8 unk3;
+    u8 pad4[8 - 4];
     u16 unk8;
 } BtlUnit9C8;
 
@@ -23,10 +25,29 @@ typedef struct BtlUnit9CC {
     u16 unk2;
 } BtlUnit9CC;
 
+typedef struct {
+    s32 unk0[5];
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+} BtlBone; /* 0x20 */
+
+typedef struct {
+    u8 pad0[4];
+    u8 unk4;
+    u8 pad5[0x14 - 5];
+} BtlUnit9C50; /* 0x14 */
+
 typedef struct BtlUnit9C {
     u8 pad0[8];
     BtlUnit9C8 *unk8;
     BtlUnit9CC *unkC;
+    u8 pad10[0x14 - 0x10];
+    u32 unk14;
+    u8 pad18[0x20 - 0x18];
+    BtlBone *unk20;
+    u8 pad24[0x50 - 0x24];
+    BtlUnit9C50 *unk50;
 } BtlUnit9C;
 
 typedef struct BtlUnit {
@@ -114,7 +135,7 @@ typedef struct {
     s32 *unk20;
     u8 *unk24; /* next free primitive */
     s32 unk28;
-    struct Unk800FE3B8 *unk2C;
+    struct BtlModel *unk2C;
 } Unk800F78A4;
 extern Unk800F78A4 *D_800F78A4;
 
@@ -203,14 +224,25 @@ extern s32 D_80105274;
 extern u8 D_8010527C;
 extern s32 D_8010528C[];
 
+typedef struct BtlModel {
+    u8 pad0[0x5E];
+    s16 unk5E;
+    s16 unk60;
+    u8 pad62[0xB0 - 0x62];
+    u16 unkB0;
+    u8 padB2[0xD0 - 0xB2];
+} BtlModel; /* 0xD0 */
+
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
-    u8 pad0[0x131C];
+    u8 pad0[0x6FC];
+    BtlModel unk6FC[8];
+    u8 padD7C[0x131C - 0xD7C];
     u8 unk131C;
     u8 pad131D[0x133C - 0x131D];
     s16 *unk133C; /* offset table, entries relative to its start */
     u8 pad1340[0x1354 - 0x1340];
-    u8 *unk1354;
+    void **unk1354;
     u8 pad1358[0x151C - 0x1358];
     s32 unk151C;
     s32 unk1520;
@@ -259,13 +291,7 @@ typedef struct {
 
 extern BtlUnit *D_800FE484;
 
-typedef struct Unk800FE3B8 {
-    u8 pad0[0x5E];
-    s16 unk5E;
-    s16 unk60;
-    u8 pad62[0xD0 - 0x62];
-} Unk800FE3B8;
-extern Unk800FE3B8 D_800FE3B8;
+extern struct BtlModel D_800FE3B8;
 
 typedef struct {
     s32 unk0;
@@ -342,11 +368,114 @@ typedef struct {
     s16 unk66;
 } Unk800C09D8;
 
+typedef struct {
+    u8 pad0[0x2E];
+    u8 unk2E;
+} Unk800BD8F0;
+
+typedef struct {
+    u8 pad0[0x34];
+    s32 unk34;
+    s32 unk38;
+    s32 unk3C;
+    s16 unk40[3];
+    s16 unk46[14];
+} Unk800C09EC;
+
+typedef struct {
+    u8 *unk0;
+    s32 unk4;
+    s32 unk8;
+    u8 unkC[1];
+} Heap;
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+    u8 pad8[0x18 - 8];
+} Unk80100C78Entry; /* 0x18 */
+
+typedef struct {
+    s32 unk0;
+    Unk80100C78Entry unk4[11];
+} Unk80100C78;
+extern Unk80100C78 D_80100C78;
+extern Heap D_800FF470; /* 0x1800 bytes */
+
+typedef struct {
+    BtlUnit9C *unk0;
+    u8 pad4[0x1C - 4];
+    u8 unk1C; /* in use */
+    u8 pad1D;
+    s16 unk1E; /* index */
+    u8 pad20[0x28 - 0x20];
+} BtlObjSlot; /* 0x28 */
+extern BtlObjSlot D_80100F1C[32];
+
+typedef struct {
+    s32 unk0;
+    u8 pad4[0x4C - 4];
+    u8 unk4C; /* in use */
+    u8 unk4D;
+    s16 unk4E; /* index */
+    u8 pad50[0x54 - 0x50];
+} Unk8010141C; /* 0x54 */
+extern Unk8010141C D_8010141C[1];
+
+typedef struct {
+    u8 pad0[0x1F];
+    u8 unk1F;
+} Unk800E0134;
+
+typedef struct {
+    u8 pad0[0xC];
+    s16 unkC;
+    u8 padE[0x14 - 0xE];
+    s32 unk14;
+} Unk800E0134_1;
+
+extern u8 D_800FE415;
+extern s8 D_800FEC65;
+extern s32 D_800F750C;
+extern u16 D_800F73A0[][19];
+extern u8 D_800F6CB4[];
+extern char D_800A7F60[];
+extern char D_800A7F78[];
+extern char D_800A81A8[];
+extern u8 D_801014B8[];
+extern u8 D_801044B8[];
+extern u8 D_801044C8[];
+extern Unk80100D88 D_80104DF0;
+
 /* main exe: candidates for ff9.h */
 s8 func_80021698(void);
 
 /* ovl_0b functions */
-void func_800A91EC(void);
+s32 func_800AE47C(s32, s32);
+void func_800C22CC(BtlUnit *, s32, s32);
+s32 func_800C37BC(void);
+void func_800D6E70(s32, s32, s32, s32);
+void func_800D86E0(s32, s32);
+s32 func_800D8740(s32, s32);
+s32 func_800D8B20(s32);
+s32 func_800DA06C(s32, s32);
+s32 func_800DA3D8(s32, s32);
+void func_800DC510(char *);
+void func_800DC9D0(BtlUnit9C *, s32, u16 *);
+void func_800DCA18(BtlUnit9C *, s32, BtlBone *);
+BtlObjSlot *func_800DCFB0(s32, char *);
+u8 func_800DD10C(BtlUnit9C *);
+void func_800E00DC(s32, u8 *, u8 *);
+void func_800E14D8(s32, u8 *);
+void func_800E1534(u8 *, u8 *, s32, s32);
+void func_800E1708(u8 *, s32, s32);
+void func_800E1810(u8 *, s32);
+void func_800E3B34(Heap *, s32);
+void func_800E3DA8(void);
+void func_800E4098(void);
+s32 func_800E788C(void);
+void func_800E8B28(s32, s32, s32);
+s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
 s32 func_800CFC0C(s32);

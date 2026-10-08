@@ -42,7 +42,12 @@ s32 func_800A9090(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A90B0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A91EC);
+s32 func_800A91EC(void) {
+    s32 *p = (s32 *)D_8006794C->unk1C->unk8E4.battle->unk1354;
+    func_8001C784(*p);
+    *p = 0;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A923C);
 
@@ -519,7 +524,14 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BCEF0);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD31C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD414);
+void func_800BD414(BtlUnit *arg0, u16 arg1) {
+    s32 i;
+    for (i = 0; i < 16; i++) {
+        if ((arg1 >> i) & 1) {
+            arg0->unk9C->unk14 |= 1 << i;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD464);
 
@@ -540,7 +552,16 @@ void func_800BD8C0(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1) {
     arg0->unk7 = arg1->unk7;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD8F0);
+void func_800BD8F0(Unk800BD8F0 *arg0) {
+    s32 v;
+    arg0->unk2E = 10;
+    v = (D_8006794C->unk24 >> 8) & 7;
+    if (v == 0) {
+        arg0->unk2E = 8;
+    } else if (v == 2) {
+        arg0->unk2E = 14;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD93C);
 
@@ -574,7 +595,16 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BEC64);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BED10);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BED6C);
+BtlModel *func_800BED6C(u16 arg0) {
+    s32 i;
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    for (i = 0; i < 8; i++) {
+        if (b->unk6FC[i].unkB0 == arg0) {
+            return &b->unk6FC[i];
+        }
+    }
+    return NULL;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BEDBC);
 
@@ -606,7 +636,20 @@ void func_800C09D8(Unk800C09D8 *arg0, Unk800C09D8 *arg1) {
     arg0->unk38 = arg1->unk3C & 0x7F;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C09EC);
+void func_800C09EC(Unk800C09EC *arg0) {
+    u32 i;
+    s16 *p;
+    arg0->unk3C = 0;
+    arg0->unk38 = 0;
+    arg0->unk34 = 0;
+    p = arg0->unk40;
+    for (i = 0; i < 3; i++) {
+        p[i] = 0;
+    }
+    for (i = 0; i < 14; i++) {
+        p[i + 3] = 0;
+    }
+}
 
 void func_800C0A3C(Unk800C09D8 *arg0) {
     s32 t = (0x3C - arg0->unk33) * 8;
@@ -678,7 +721,11 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C1F7C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C20B8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C2200);
+void func_800C2200(BtlUnit *arg0, BtlUnit *arg1) {
+    if (!(arg1->unk7E & 0x20)) {
+        func_800C22CC(arg0, (u16)func_800AE47C((u8)arg0->unk68 >> 5, 1), 0x7F);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C2250);
 

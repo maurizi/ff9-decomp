@@ -121,6 +121,7 @@ u16 GetTPage(int tp, int abr, int x, int y);
 u16 GetClut(int x, int y);
 
 void *memmove(void *dst, const void *src, int n);
+int sprintf(char *buf, const char *fmt, ...);
 
 int CdControlF(u8 com, u8 *param);
 int CD_getsector(void *madr, int size);
