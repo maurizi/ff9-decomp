@@ -3091,7 +3091,47 @@ void func_800C42B0(u32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C43F0);
+void func_800C43F0(void) {
+    Unk800C3FE4 s;
+    s32 i;
+    s32 j0;
+    s32 m0;
+    s32 j1;
+    s32 m1;
+    s32 j2;
+    s32 m2;
+
+    for (i = 0; i < 7; i++) {
+        if (func_800C3FE4(i, &s) & 0xFF) {
+            m0 = s.unk0;
+            for (j0 = 0; j0 < s.unk4; j0++) {
+                func_800AB0C0(0x5100, s.unk8[j0], m0, 0, 0);
+                m0 >>= 1;
+            }
+        }
+    }
+    for (i = 20; i < 26; i++) {
+        if (func_800C3FE4(i, &s) & 0xFF) {
+            m1 = s.unk0;
+            for (j1 = 0; j1 < s.unk4; j1++) {
+                func_800AB0C0(0x5100, s.unk8[j1], m1, 0, 0);
+                m1 >>= 1;
+            }
+        }
+    }
+    for (i = 30; i < 42; i++) {
+        if (func_800C3FE4(i, &s) & 0xFF) {
+            m2 = s.unk0;
+            for (j2 = 0; j2 < s.unk4; j2++) {
+                func_800AB0C0(0x5100, s.unk8[j2], m2, 0, 0);
+                m2 >>= 1;
+            }
+        }
+    }
+    if ((u8)func_800C49EC() && D_800CF49C != 3) {
+        D_8006794C->unk1C->unk0 |= 0x400000;
+    }
+}
 
 s32 func_800C45D8(void) {
     u16 sc = D_8007AEF0.h[0];
