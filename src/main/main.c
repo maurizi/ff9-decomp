@@ -5595,7 +5595,27 @@ u32 func_800595F0(AkaoChannel *c, u32 mask) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005963C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800599D4);
+void func_800599D4(Unk80080A10 *a, AkaoChannel *c, s32 id) {
+    u32 i;
+    if (a->unk4 != 0 && (id == 0 || id == a->unk6A)) {
+        a->unk18 = -1;
+        for (i = 32; i != 0; i--) {
+            c->unk96 = 3;
+            c->unk98 = 1;
+            c->unk0 = D_8006F40C;
+            c++;
+        }
+        a->unk6A = 0;
+        a->unk14 = 0;
+        a->unk10 = 0;
+        for (i = 0; i < 24; i++) {
+            if (D_800831C8[i] == a) {
+                D_800831C8[i] = NULL;
+                func_800577BC(i, 5, 3);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80059AA8);
 
