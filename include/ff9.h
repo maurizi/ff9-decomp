@@ -444,14 +444,23 @@ void func_8002E180(void);
 /* ---- 0x54-byte objects, 10 at D_80077530 (func_8002E260..8002E3F0) ---- */
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 unk0; /* item count */
+    u8 unk2;
+    u8 unk3;
     u8 unk4;
-    u8 unk5;
-    u8 unk6;
+    u8 unk5; /* scroll top */
+    u8 unk6; /* cursor row */
     u8 unk7;
-    s16 unk8[4];
-} Unk16; /* 16 bytes, 2-aligned (copied with lwl/lwr) */
+    u8 unk8;
+    u8 unk9;
+    u8 unkA; /* row height */
+    u8 unkB; /* flags */
+    u8 unkC;
+    u8 unkD;
+    u8 unkE;
+    u8 padF;
+} MenuList;
+typedef MenuList Unk16; /* older name */
 
 typedef struct {
     u8 unk0[4];
@@ -484,7 +493,7 @@ typedef struct Window {
     u8 unk29;
     s16 unk2A;
     u8 pad2C[4];
-    Unk16 unk30;
+    MenuList unk30;
     void (*unk40)(struct Window *);
     void (*unk44)(struct Window *);
     void (*unk48)(struct Window *);
@@ -1243,23 +1252,7 @@ typedef struct {
 } SprtWords; /* SPRT written as whole words */
 
 /* menu list/cursor state passed to func_8002EE8C etc. */
-typedef struct {
-    s16 unk0; /* item count */
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5; /* scroll top */
-    u8 unk6; /* cursor row */
-    u8 unk7;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA; /* row height */
-    u8 unkB; /* flags */
-    u8 unkC;
-    u8 unkD;
-    u8 unkE;
-    u8 padF;
-} MenuList;
+
 
 /* visible window of a MenuList (func_8002F344) */
 typedef struct {

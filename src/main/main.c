@@ -2448,7 +2448,7 @@ void func_8002E380(Window *arg0, s16 arg1) {
     func_8002D1AC(arg0, arg0->unk28);
 }
 
-void func_8002E3A8(Window *arg0, Unk16 *arg1) {
+void func_8002E3A8(Window *arg0, MenuList *arg1) {
     arg0->unk30 = *arg1;
 }
 
