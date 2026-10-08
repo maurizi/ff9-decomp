@@ -381,7 +381,19 @@ u8 func_800B3EF8(BtlUnit *arg0, u8 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B3F98);
+void func_800B3F98(BtlCmd *arg0) {
+    BtlUnit *u = arg0->unk4;
+    BtlCmd *p;
+    for (p = (BtlCmd *)&D_8006794C->unk1C->unk8E4.battle->unk1074; p != NULL; p = p->unk0) {
+        if (p->unk0 == arg0) {
+            if (u != NULL && arg0 != u->unk10 && arg0 != u->unk14) {
+                u->unk68 &= ~0x80000;
+            }
+            func_800B4320(&p->unk0, 0);
+            return;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B4040);
 
