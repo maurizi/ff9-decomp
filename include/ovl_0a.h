@@ -7,6 +7,17 @@
 #include "ff9.h"
 
 /* field context, GameData.unk8E4.field */
+typedef struct {
+    u8 unk0; /* flags */
+    u8 pad1[0x14 - 1];
+} Unk800AB0B0Entry; /* 0x14 */
+
+typedef struct Unk800AB0B0 {
+    u16 unk0; /* count */
+    u8 pad2[2];
+    Unk800AB0B0Entry unk4[1];
+} Unk800AB0B0;
+
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by func_800A9350) */
 typedef struct {
     u32 unk0; /* flags */
@@ -20,9 +31,13 @@ typedef struct {
     s32 unk20;
     void *unk24;
     u8 *unk28; /* = unk6C */
-    u8 pad2C[0x4C - 0x2C];
+    u8 pad2C[0x41 - 0x2C];
+    u8 unk41;
+    u8 pad42[0x4A - 0x42];
+    u8 unk4A;
+    u8 pad4B;
     void *unk4C; /* file 0x1Exxxx */
-    u8 pad50[0x54 - 0x50];
+    struct Unk800AB0B0 *unk50;
     u8 *unk54; /* = unk90 */
     u8 *unk58; /* = unk270 */
     u8 pad5C[0x6C - 0x5C];
@@ -199,6 +214,21 @@ typedef struct {
     u16 unk32;
 } Unk800AA01C;
 
+typedef struct {
+    s16 unk0;
+    u8 pad2[2];
+    s16 unk4;
+    u8 pad6[0x14 - 6];
+    s16 unk14;
+    u8 pad16[0x1E - 0x16];
+    s16 unk1E;
+} Unk800C9EF0;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* index into D_800C9E14 */
+} Unk800CB188;
+
 /* ---- overlay functions ---- */
 void func_800AD944(s32, s32, s32);
 void func_800A8588(void);
@@ -213,6 +243,12 @@ void func_800B31B8(s32, s32, s32, s32);
 void func_800B5938(void);
 void func_800AC67C(s32);
 void func_800C0038(s32, s32);
+void func_800A8198(void);
+void func_800A82F8(void);
+void func_800A7AAC(s32);
+void func_800A7B10(s16);
+void func_800A85F4(s32);
+void func_800A8698(void);
 void func_800B57C8(void);
 void func_800B1CE4(void);
 s32 func_800AA0C8(FieldScene *);
@@ -255,7 +291,9 @@ extern Unk800CA068 D_800CA068;
 extern u8 D_800CAA98[];
 extern u8 D_800CAAB8[];
 extern Unk800CAE98 D_800CAE98[];
-extern u8 D_800CB188;
+extern Unk800CB188 D_800CB188;
+extern void (*D_800C9E14[])(void);
+extern Unk800C9EF0 D_800C9EF0;
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
