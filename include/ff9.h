@@ -2347,7 +2347,7 @@ void func_80057760(s32, s32);
 typedef struct {
     u8 pad0[0x10];
     u32 unk10; /* data size */
-    u8 pad14[0x18 - 0x14];
+    u32 unk14; /* loop start offset */
     s32 unk18; /* flags */
     u16 unk1C;
     u8 pad1E[0x20 - 0x1E];
@@ -2357,6 +2357,8 @@ typedef struct {
 } AkaoStream;
 s32 func_80060A08(void);
 void func_80061624(void);
+void func_8006100C(void);
+void func_80060A98(void);
 u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
 void func_8002E660(Window *);
 s32 func_80034A64(s32, s32, u8);
