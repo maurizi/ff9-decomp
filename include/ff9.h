@@ -228,6 +228,12 @@ typedef struct {
 extern GameState *D_8006794C;
 void func_8001DE50(GameState *);
 
+/* Inlined copy of func_80034A04 (support ability bit test). */
+static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
+    b -= 0xC0;
+    return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
+}
+
 /* Inlined copy of func_80027EDC (item search); the original source inlines it. */
 static inline UnkPair *func_80027EDC_inline(s32 id) {
     s32 i;
@@ -1228,6 +1234,16 @@ typedef struct {
 } CdReadCtx; /* GameData.unk854 */
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
+void func_8002C694(s32, s32);
+void func_80051568(void);
+void func_8004E924(void);
+void func_8004E7E0(void);
+void func_8004BE00(s32);
+void func_8004AC80(void);
+extern u16 D_8007AE12;
+void func_80032384(void);
+void func_800326B0(void);
+void func_80036560(void);
 CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, s32);
 s32 func_800217C4(void *);
 void func_80021C60(void);

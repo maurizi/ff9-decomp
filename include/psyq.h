@@ -132,6 +132,7 @@ int CD_getsector2(void *madr, int size);
 void *SpuSetTransferCallback(void (*func)(void));
 u32 SpuSetTransferStartAddr(u32 addr);
 void SpuSetReverb(int on_off);
+long GetRCnt(unsigned long spec);
 long SpuSetReverbModeType(long mode);
 void SpuSetIRQAddr(u32 addr);
 void *SpuSetIRQCallback(void (*func)(void));
