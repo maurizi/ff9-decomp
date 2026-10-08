@@ -1659,7 +1659,32 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7F94);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7FB8);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE894);
+void func_800BE894(void) {
+    s32 i;
+    u8 *b;
+
+    D_800D3E78 = 1;
+    D_800D3E80 = 1;
+    D_800D3E84 = -1;
+    D_800D3E76 = 0;
+    D_800D3E6C = 0x14;
+    D_800D3E89 = 0x3F;
+    D_800D3E79 = 0;
+    D_800D3E88 = 3;
+    D_800D3E77 = 1;
+    D_800D3E64 = 1;
+    D_800D3E60 = (b = D_8007AEF0.b)[0x64];
+    i = 0x2E;
+    if (*D_800CF430 >= 0x1766) {
+        D_8007AEF0.h[i] |= 0x7C0;
+        if (D_8007AEF0.h[i] & 0xC000) {
+            D_8007AEF0.h[i] |= 0xC000;
+        }
+    }
+    if (D_800CCE50 & 0x80) {
+        func_80015C38("DEF SET NAVIMODE :%d\n", D_800D3E60);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BE984);
 
