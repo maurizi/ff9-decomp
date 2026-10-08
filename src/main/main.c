@@ -1132,7 +1132,7 @@ u8 func_80022C10(s32 a, void (*b)(u8 *)) {
     r.unk10 = func_800231A0;
     r.unk4 = a;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk14 = func_800227C8;
     r.unk18 = b;
     return func_800230B8(&r);
@@ -1140,12 +1140,12 @@ u8 func_80022C10(s32 a, void (*b)(u8 *)) {
 
 u8 func_80022C60(s32 a, s32 b, void *c, void (*d)(u8 *)) {
     D_80076148.unk0 = 3;
-    D_80076148.unkC = -1;
+    D_80076148.unkC = (CdChunk *)-1;
     D_80076148.unk10 = func_800231A0;
     D_80076148.unk4 = a;
     D_80076148.unk8 = b;
-    D_80076148.unk1C = b;
-    D_80076148.unk20 = c;
+    D_80076148.unk1C.unk0 = b;
+    D_80076148.unk1C.unk4 = c;
     D_80076148.unk14 = func_800227C8;
     D_80076148.unk18 = d;
     return func_800230B8(&D_80076148);
@@ -1159,7 +1159,7 @@ u8 func_80022D3C(void (*a)(u8 *)) {
     r.unk18 = a;
     r.unk4 = 0;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
     return func_800230B8(&r);
@@ -1171,7 +1171,7 @@ s32 func_80022D84(s32 a) {
     r.unk10 = func_800231A0;
     r.unk4 = a;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk14 = func_800227C8;
     r.unk18 = NULL;
     if (func_800230B8(&r) == 0) {
@@ -1184,12 +1184,12 @@ s32 func_80022D84(s32 a) {
 
 s32 func_80022DF0(s32 a, s32 b, void *c) {
     D_80076148.unk0 = 3;
-    D_80076148.unkC = -1;
+    D_80076148.unkC = (CdChunk *)-1;
     D_80076148.unk10 = func_800231A0;
     D_80076148.unk4 = a;
     D_80076148.unk8 = b;
-    D_80076148.unk1C = b;
-    D_80076148.unk20 = c;
+    D_80076148.unk1C.unk0 = b;
+    D_80076148.unk1C.unk4 = c;
     D_80076148.unk14 = func_800227C8;
     D_80076148.unk18 = NULL;
     if (func_800230B8(&D_80076148) == 0) {
@@ -1205,7 +1205,7 @@ s32 func_80022E70(void) {
     r.unk0 = 4;
     r.unk4 = 0;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
     r.unk18 = NULL;
@@ -1222,7 +1222,7 @@ u8 func_80022ED4(s32 a) {
     r.unk0 = 9;
     r.unk4 = a;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk18 = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
@@ -1234,7 +1234,7 @@ u8 func_80022F1C(s32 a, void (*b)()) {
     r.unk0 = 0xB;
     r.unk4 = a;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = b;
     r.unk18 = NULL;
@@ -1257,7 +1257,7 @@ u8 func_80022FD0(void (*a)(u8 *)) {
     r.unk18 = a;
     r.unk4 = 0;
     r.unk8 = 0;
-    r.unkC = 0;
+    r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
     return func_800230B8(&r);
@@ -4415,7 +4415,26 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A06C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A8A4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A9E8);
+void func_8004A9E8(void) {
+    u8 *s;
+    s32 n;
+    func_8004E958();
+    func_8004FF98(0);
+    if (D_8007B708 == 3) {
+        s = D_800CF478;
+        n = (func_80037D6C(0xC0) * 2) & 0x7F;
+        while (n != 0) {
+            while (*s++ != 0) {
+            }
+            n--;
+        }
+        D_8006794C->unk1C->unk80C = s;
+        while (*s++ != 0) {
+        }
+        D_8006794C->unk1C->unk810 = s;
+        func_800384D0(func_8004B040_inline(0), 1, 4, 0);
+    }
+}
 
 s32 func_8004AAF0(void) {
     Unk8007AECC *p = D_8007AECC;

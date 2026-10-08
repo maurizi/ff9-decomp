@@ -163,7 +163,7 @@ typedef struct {
     s32 unk804;
     s32 unk808;
     u8 *unk80C; /* name text */
-    u8 pad810[0x814 - 0x810];
+    u8 *unk810;
     void *unk814;
     s32 unk818;
     u16 unk81C[2];
@@ -287,17 +287,22 @@ extern Unk80076F68 D_80076F68;
 /* ---- CD / streaming state near libcd ---- */
 
 /* CD request, queued by func_800230B8 (0x24 bytes) */
+/* one contiguous read: byte count and destination */
+typedef struct {
+    u32 unk0; /* size */
+    u8 *unk4; /* destination */
+} CdChunk;
+
 typedef struct {
     u8 unk0; /* command; bit 2: run unk18 directly when idle */
     u8 pad1[3];
     s32 unk4;
     s32 unk8;
-    s32 unkC;
+    CdChunk *unkC; /* chunk list; -1 = use unk1C */
     void (*unk10)(u8, u8 *);
     void (*unk14)();
     void (*unk18)(); /* callback */
-    s32 unk1C;
-    void *unk20; /* destination */
+    CdChunk unk1C; /* single chunk */
 } CdRequest;
 
 typedef struct {
@@ -305,9 +310,11 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[0xC - 4];
+    s32 unk4; /* sectors left */
+    u8 pad8[0xC - 8];
     s32 unkC;
-    u8 pad10[0x18 - 0x10];
+    u32 unk10; /* offset in current chunk */
+    s32 unk14; /* current chunk */
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
     CdRequest unk944; /* current request */
@@ -809,11 +816,14 @@ extern Unk80077E44 *D_80077E44;
 
 /* field / world object (actor) */
 typedef struct {
-    u8 pad0[5];
+    u8 pad0[4];
+    u8 unk4;
     u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
-    u8 pad8[0x11 - 8];
+    u8 pad8[0xB - 8];
+    u8 unkB;
+    u8 padC[0x11 - 0xC];
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
@@ -1659,7 +1669,8 @@ typedef struct {
     u8 unk0[8];
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
 
-void func_800384D0(Unk8004AB64 *, s32, s32, s32);
+s32 func_800384D0(Unk8004AB64 *, s32, s32, s32);
+extern s32 D_8007AE34;
 extern CdlATV D_8007F718;
 void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
 void func_80062830(Unk6 *, u8);
@@ -2082,4 +2093,6 @@ typedef struct {
     u8 unk69;
 } Unk8004B9B8;
 
+s32 func_80037D6C(s32);
+extern u8 *D_800CF478;
 #endif
