@@ -1369,6 +1369,25 @@ extern Unk8006D548 D_8006D548[];
 void func_80033BD0(u32);
 void func_8004EA30(Unk8007B9C0 *);
 Unk8007B9C0 *func_8004EA3C(void);
+extern s32 D_8007B968;
+extern s32 D_8007B970;
+extern Unk4 D_8007B99C;
+
+/* Inlined body of func_8004E958 for one entry (close and unlink). */
+static inline void func_8004E958_inline(Unk8007B9C0 *p) {
+    Unk8007B9C0 *q;
+    if (p != NULL && p->unk8 != 0) {
+        p->unk8 = 0;
+        if (func_8004EA3C() == p) {
+            func_8004EA30(p->unk0);
+        }
+        for (q = D_8007B9C0; q < D_8007B9C0 + 10; q++) {
+            if (q->unk8 != 0 && q->unk0 == p) {
+                q->unk0 = NULL;
+            }
+        }
+    }
+}
 void func_800615F8(void);
 extern u8 D_8006F40C[];
 extern Unk80080A10 *D_800831C8[24];
