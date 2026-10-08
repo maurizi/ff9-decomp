@@ -1118,7 +1118,7 @@ typedef struct Unk800F412C {
 
 typedef struct {
     u8 unk0;
-    u8 pad1;
+    u8 unk1;
     u8 unk2;
     u8 pad3;
     Unk800F412C unk4[5];
@@ -1135,6 +1135,7 @@ typedef struct {
     u8 unk88[4];
 } Unk80105078;
 extern Unk80105078 *D_80105078;
+extern s32 D_800F9028[];
 extern Unk800F3F10 D_800F9084;
 extern Unk800F3F10 D_800F9090;
 
@@ -1184,7 +1185,8 @@ typedef struct {
     u8 unk2;
     u8 pad3[6 - 3];
     u8 unk6;
-    u8 pad7[0xB - 7];
+    u8 pad7[0xA - 7];
+    u8 unkA;
     u8 unkB;
     u8 unkC;
     u8 unkD;

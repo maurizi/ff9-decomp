@@ -4733,7 +4733,35 @@ void *func_800F2A60(s32 arg0) {
     return (void *)p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2AAC);
+void func_800F2AAC(void) {
+    BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    s32 n = 0;
+    for (; u != NULL; u = u->unk0) {
+        if (u->unk68 & 1) {
+            D_80105078->unk68[n] = u;
+            D_80105078->unk7C[n] = (func_800C09A4(u, 0x42021D03) & 0xFF) != 0;
+            D_80105078->unk80[n] = (u8)u->unk68 >> 5;
+            if (func_800C09A4(u, 0x101000) & 0xFF) {
+                D_80105078->unk84[n] = 2;
+            } else if (func_800C09A4(u, 0x80000) & 0xFF) {
+                D_80105078->unk84[n] = 3;
+            } else {
+                D_80105078->unk84[n] = 0;
+            }
+            if ((u->unk68 >> 30) & 1) {
+                D_80105078->unk88[n] = (func_800C09A4(u, 0x4000) & 0xFF) ? 2 : 1;
+            } else {
+                D_80105078->unk88[n] = 0;
+            }
+            n++;
+        }
+    }
+    D_80105078->unk64 = D_80104F88->unk12A0;
+    D_80105078->unk5C = n;
+    D_80105078->unk60 = D_800F9028[n - 1];
+    D_80105078->unk1 = 0;
+    D_80105078->unk2 = 0xFF;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2C74);
 
