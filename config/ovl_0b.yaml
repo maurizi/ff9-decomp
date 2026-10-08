@@ -43,8 +43,12 @@ segments:
     bss_size: 0x0
     subsegments:
       - [0x0, .rodata, ovl_0b]
+      - [0x960, .rodata, ovl_0b_o1]
+      - [0xBAC, .rodata, ovl_0b_3]
       - [0xC24, .rodata, ovl_0b_2]
       - [0x159C, c, ovl_0b]
+      - [0x1B598, c, ovl_0b_o1]   # separate translation unit compiled with -O1 (see Makefile)
+      - [0x21BE0, c, ovl_0b_3]
       - [0x28A80, textbin]    # u16 lookup table embedded in .text (0x1000, 0xFE0, ...)
       - [0x28C0C, c, ovl_0b_2]
       - [0x4E1E8, data]

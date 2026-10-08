@@ -78,6 +78,9 @@ $(BUILD_DIR)/%.s.o: %.s
 	@mkdir -p $(dir $@)
 	$(AS) $(ASFLAGS) -o $@ $<
 
+# Some original source files were built with -O1: name them *_o1.c (splat subsegment name).
+$(BUILD_DIR)/%_o1.c.o: CC_FLAGS := -O1 -G0
+
 # cpp -> cc1 -> maspsx (emulates ASPSX expansions) -> GNU as
 $(BUILD_DIR)/%.c.o: %.c $(wildcard include/*.h)
 	@mkdir -p $(dir $@)
