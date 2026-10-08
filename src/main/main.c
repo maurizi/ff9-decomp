@@ -6756,7 +6756,24 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060AE0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060D1C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060ED8);
+void func_80060ED8(s32 a, s32 b, void (*cb)(void)) {
+    if (D_80083168.unkC != 0) {
+        SpuSetTransferCallback(NULL);
+        D_800809E0 = 0;
+        if (D_80083168.unk14 > 0x1000) {
+            D_80083168.unk14 -= 0x1000;
+            D_80083168.unk0 += a;
+            SpuSetIRQCallback(cb);
+        } else {
+            SpuSetIRQCallback(func_80060938);
+            b = 0x1030;
+            D_80083168.unk14 = 0;
+        }
+        SpuSetIRQAddr(b + 8);
+        func_800575B4(D_80083168.unkC);
+        SpuSetIRQ(1);
+    }
+}
 
 void func_80060FA8(void) {
     func_80060D1C(D_80083168.unk10, 0, 0x1100, 0x2100);
