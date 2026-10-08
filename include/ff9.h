@@ -290,7 +290,7 @@ typedef struct {
     s32 unkC;
     void (*unk10)(u8, u8 *);
     void (*unk14)();
-    void (*unk18)(u8 *); /* callback */
+    void (*unk18)(); /* callback */
     s32 unk1C;
     void *unk20; /* destination */
 } CdRequest;
@@ -305,13 +305,7 @@ typedef struct {
     u8 pad10[0x18 - 0x10];
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
-    u8 unk944;
-    u8 pad945[0x948 - 0x945];
-    s32 unk948;
-    u8 pad94C[0x958 - 0x94C];
-    void (*unk958)();
-    void (*unk95C)(void *);
-    u8 pad960[0x968 - 0x960];
+    CdRequest unk944; /* current request */
     CdRequest unk968; /* passed to func_8002267C */
 } Unk800761D0;
 extern Unk800761D0 D_800761D0;
@@ -1345,7 +1339,7 @@ void func_80021CDC(s32);
 s32 func_80021CFC(void);
 s32 func_800220E8(s32);
 void func_80022390(s32);
-void func_80022B28(void);
+s32 func_80022B28(void);
 void func_80022BD0(void);
 s32 func_80022DF0(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
 s32 func_800230A0(void);
@@ -1546,10 +1540,8 @@ typedef struct {
 
 /* ---- main batch 2 ---- */
 
-typedef struct {
-    s32 unk0[9];
-} Unk24; /* 0x24-byte block copied from D_800761D0.unk944 */
-extern Unk24 D_80076178;
+extern CdRequest D_80076178;
+extern CdRequest D_800761A8;
 extern s32 D_8007B704;
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
