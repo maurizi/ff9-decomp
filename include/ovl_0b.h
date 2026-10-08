@@ -1043,7 +1043,7 @@ typedef struct Unk800CEE74 {
     u8 unkC;
     u8 unkD;
     u8 unkE;
-    u8 padF;
+    u8 unkF;
     u8 unk10[1]; /* data */
 } Unk800CEE74;
 
