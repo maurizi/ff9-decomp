@@ -297,7 +297,7 @@ typedef struct {
 
 typedef struct {
     u8 unk0;
-    u8 pad1;
+    u8 unk1;
     u8 unk2;
     u8 unk3;
     u8 pad4[0xC - 4];
@@ -1282,6 +1282,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_80060D1C(s32, s32, s32, s32);
+void func_80060ED8(s32, s32, void (*)(void));
 s32 func_800C44F4(s16); /* field overlay (ovl_0a) */
 extern CdRequest D_80076148;
 s32 func_8005EB40(s32 *, s32, s32, s32);
@@ -1710,6 +1712,8 @@ u8 *func_80027834(s32, s32, u32 *, s32, s32, u8 *, u8 *);
 u8 func_8003561C(void);
 void func_80025A28(s32, s32, s32, s32, s32, s32);
 void func_8002EF58(MenuList *, u32);
+void func_8002F1CC(MenuList *, s32);
+void func_8002F284(MenuList *, s32);
 void func_8002EEF0(MenuList *, u32);
 extern u32 D_80077524; /* pad buttons */
 extern s32 D_80070430;
