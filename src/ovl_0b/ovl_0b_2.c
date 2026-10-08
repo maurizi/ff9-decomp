@@ -3769,7 +3769,31 @@ void func_800EE31C(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE37C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE54C);
+void func_800EE54C(void) {
+    MenuList *l = (MenuList *)&D_80104F88->unk12A4[2]->unk30;
+    Window *w;
+    if (l->unk8 == 0) {
+        if (D_80077528 & 0x10000) {
+            func_8002F488(0x65);
+            w = D_80104F88->unk12A4[2];
+            func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.unk6);
+            if (D_80104FD0.unk10 == 0) {
+                func_800EF044();
+            } else {
+                D_80104FD0.unk10--;
+            }
+        } else if (D_80077528 & 0x20000) {
+            func_800EEE3C();
+        } else {
+            func_8002EEF0(l, D_80077528);
+            func_8002EF58(l, D_80077528);
+            if (D_8006794C->unk1C->unk8E4.battle->unkD83 == 0) {
+                func_8002F1CC(l, D_80077528);
+                func_8002F284(l, D_80077528);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE680);
 

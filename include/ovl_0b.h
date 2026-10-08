@@ -410,7 +410,7 @@ typedef struct {
     s32 unk0;
     struct Unk80104FD4 *unk4;
     u8 pad8[0x10 - 8];
-    u16 unk10;
+    s16 unk10;
     u8 pad12[0x14 - 0x12];
     struct BtlUnit *unk14;
     u8 pad18;
@@ -1712,6 +1712,8 @@ extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
 u8 func_800B3EF8(BtlUnit *, u8);
 void func_800F16DC(u8, u8);
+void func_8002F1CC(MenuList *, s32);
+void func_8002F284(MenuList *, s32);
 extern s16 D_800F9048[];
 void func_800E3C50(void *);
 s32 func_800DA2AC(Unk800DA1B8 *);
