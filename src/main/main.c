@@ -1588,15 +1588,15 @@ void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800269F4);
 
-void func_80026B30(s32 arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+void func_80026B30(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     D_80077170 = func_800253D4(arg0, &D_8007716C[otz], arg2, arg3, 0, arg4, D_80077170);
 }
 
-void func_80026B84(s32 arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+void func_80026B84(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     D_80077170 = func_800253D4(arg0, &D_8007716C[otz], arg2, arg3, 1, arg4, D_80077170);
 }
 
-void func_80026BDC(s32 arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+void func_80026BDC(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     D_80077170 = func_800253D4(arg0, &D_8007716C[otz], arg2, arg3, 2, arg4, D_80077170);
 }
 
