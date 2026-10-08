@@ -502,7 +502,9 @@ typedef struct BtlCmd {
 } BtlCmd;
 
 typedef struct Battle11C0 {
-    u8 pad0[0x14];
+    u8 pad0[0xC];
+    u8 *unkC;
+    u8 pad10[0x14 - 0x10];
     u8 *unk14;
     u8 pad18[0x20 - 0x18];
     Battle11C020 *unk20;
@@ -651,7 +653,8 @@ typedef struct {
 extern BtlUnit *D_800FE484;
 
 typedef struct Unk800FE3B8 {
-    u8 pad0[0x52];
+    u8 pad0[0x50];
+    s16 unk50;
     u8 unk52;
     u8 unk53;
     u8 pad54[0x5C - 0x54];
@@ -996,6 +999,8 @@ typedef struct {
     s8 unk78[4];
 } Unk80105078;
 extern Unk80105078 *D_80105078;
+extern Unk800F3F10 D_800F9084;
+extern Unk800F3F10 D_800F9090;
 
 extern void *D_80104FA0;
 extern s32 (*D_800F8DC4[])(void);
@@ -1069,8 +1074,7 @@ typedef struct {
     u8 pad1[0x80 - 1];
     s32 unk80;
     s32 unk84;
-    s16 unk88;
-    u16 unk8A;
+    Unk4 unk88;
     u8 unk8C;
     u8 unk8D;
     u8 pad8E[2];
@@ -1623,5 +1627,19 @@ void func_800C7730(BtlUnit9C *, s16 *, s16 *);
 
 void func_800DF588(BtlUnit9C *, s32, s32);
 s32 func_800DF670(BtlUnit9C *, s32);
+
+/* argument block of func_800EE37C */
+typedef struct {
+    s16 unk0;
+    u8 unk2;
+    u8 pad3;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} Unk800EE37C;
+void func_800EE37C(Unk800EE37C *);
+
+/* main exe: candidates for ff9.h */
+void func_800562E0(u8 *, s32);
 
 #endif

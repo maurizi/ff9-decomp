@@ -561,7 +561,20 @@ void func_800B4320(BtlCmd **arg0, u8 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B4390);
+s32 func_800B4390(BtlCmd *arg0) {
+    s32 mp = arg0->unk8->unkA;
+    if (D_8007AF02 != 0 && (arg0->unk8->unkB & 4)) {
+        mp <<= 2;
+    }
+    if (arg0->unkE == 0x32) {
+        return 1;
+    }
+    if (func_800B9550(arg0->unk4, mp) & 0xFF) {
+        return 1;
+    }
+    func_800CD5C8(0x16);
+    return 0;
+}
 
 void func_800B440C(LinkNode *arg0, LinkNode **arg1) {
     arg0->unk0 = *arg1;
@@ -1078,7 +1091,15 @@ void func_800BAF3C(BtlCalc *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BAF70);
+void func_800BAF70(BtlCalc *arg0) {
+    s16 id = arg0->unk8->unk8[7];
+    if (func_80027F34(id) == 0) {
+        func_800CD5C8(10);
+    } else {
+        func_800EA164(id);
+        func_800CD5C8(0x1F, func_800CD75C(id));
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BAFEC);
 
