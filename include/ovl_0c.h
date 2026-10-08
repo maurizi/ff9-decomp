@@ -74,11 +74,12 @@ typedef struct Unk800D3EAC {
 } Unk800D3EAC; /* 0x10 */
 
 typedef struct {
-    u8 pad0[2];
+    s16 unk0;
     s16 unk2;
     s32 unk4;
     s32 unk8;
-    s16 unkC;
+    u16 unkC; /* camera angle */
+    u16 unkE;
 } Unk800CE0F0;
 
 typedef struct {
@@ -518,6 +519,13 @@ extern RECT *D_800CE054;
 extern s16 D_800CE188;
 extern s16 D_800CE1A8;
 extern s16 D_800CE1C0;
+extern s8 D_800CCA20;
+extern s32 D_800CCE2C;
+extern s32 D_800CCE30;
+extern s32 D_800CCE34;
+extern s32 D_800CCE38;
+extern s32 D_800CCE3C;
+extern u8 D_800CCA28[];
 extern Unk800CE1E8 D_800CE1E8;
 extern Unk800CE1E8 D_800CE1F8;
 extern u8 D_800CF46D;
@@ -650,6 +658,7 @@ extern u8 D_800D30C4;
 extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
+extern u8 D_800D30F8[];
 extern s32 D_800D3F8C;
 extern s32 D_800D3F90;
 extern s32 D_800D3F94;
@@ -777,9 +786,9 @@ extern s8 D_800CE274;
 extern s32 D_800CE278;
 extern s32 D_800CE280;
 extern s32 D_800CE284;
-extern s8 D_800CE3BE;
+extern u8 D_800CE3BE;
 extern s32 D_800CE3C0;
-extern s16 D_800CE3CC;
+extern u16 D_800CE3CC;
 extern s32 D_800CE3D0;
 extern s32 D_800CE3D4;
 extern s32 D_800CE3D8;
