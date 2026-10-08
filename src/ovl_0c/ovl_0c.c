@@ -508,7 +508,64 @@ void func_800AAD0C(s32 arg0, s32 arg1) {
     func_80062E3C(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AAD48);
+/* object matrix facing the joint's direction (in the xz plane) */
+void func_800AAD48(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3, s32 arg4) {
+    MATRIX m;
+    s32 *d;
+    s32 *s;
+    SVECTOR v;
+    VECTOR dir;
+    VECTOR side;
+    VECTOR up;
+    VECTOR fwd;
+
+    /* word-wise copy of the joint matrix */
+    d = (s32 *)&m;
+    s = (s32 *)&((MATRIX *)arg1->unk8->unk20)[arg4];
+    d[0] = s[0];
+    d[1] = s[1];
+    d[2] = s[2];
+    d[3] = s[3];
+    d[4] = s[4];
+    d[5] = s[5];
+    d[6] = s[6];
+    d[7] = s[7];
+    m.t[2] = 0;
+    m.t[1] = 0;
+    m.t[0] = 0;
+    v.vx = 0;
+    v.vy = -0x1000;
+    v.vz = 0;
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    gte_ldv0(&v);
+    gte_rtv0tr();
+    gte_stlvnl(&dir);
+    dir.vy = 0;
+    VectorNormal(&dir, &fwd);
+    up.vy = 0x1000;
+    up.vx = 0;
+    up.vz = 0;
+    fwd.vx = -fwd.vx;
+    fwd.vy = -fwd.vy;
+    fwd.vz = -fwd.vz;
+    gte_ldopv1(&up);
+    gte_ldopv2(&fwd);
+    gte_op12();
+    gte_stlvnl(&side);
+    arg2->m[0][0] = side.vx * arg0->unk1 >> 12;
+    arg2->m[1][0] = side.vy * arg0->unk1 >> 12;
+    arg2->m[2][0] = side.vz * arg0->unk1 >> 12;
+    arg2->m[0][1] = up.vx;
+    arg2->m[1][1] = up.vy;
+    arg2->m[2][1] = up.vz;
+    arg2->m[0][2] = fwd.vx * arg0->unk2 >> 12;
+    arg2->m[1][2] = fwd.vy * arg0->unk2 >> 12;
+    arg2->m[2][2] = fwd.vz * arg0->unk2 >> 12;
+    arg2->t[0] = ((side.vx * arg0->unk4_12 + fwd.vx * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[arg4].t[0];
+    arg2->t[1] = ((side.vy * arg0->unk4_12 + fwd.vy * arg0->unk4_22) >> 12) + arg3;
+    arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[arg4].t[2];
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7000);
 
