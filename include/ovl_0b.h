@@ -175,7 +175,7 @@ typedef struct BtlScript {
     u8 padC[0x12 - 0xC];
     s16 unk12;
     s16 unk14;
-    u8 pad16;
+    u8 unk16;
     u8 unk17;
     s16 unk18;
     u8 pad1A;
@@ -228,13 +228,20 @@ typedef struct {
 extern Unk800F78A4 *D_800F78A4;
 
 typedef struct {
+    s32 unk0;
+    s8 unk4[4];
+    s8 unk8[4];
+} Unk800EB518;
+
+typedef struct {
     u8 pad0[0x14];
     Character *unk14;
-    u8 pad18[0x1C - 0x18];
+    u8 pad18[0x1B - 0x18];
+    u8 unk1B;
     s32 unk1C[0xC0];
     u8 unk31C[0xC0];
     u8 unk3DC[0xC0]; /* abilities available from equipment */
-    u8 pad49C[0x4A8 - 0x49C];
+    Unk800EB518 unk49C;
 } Unk80104F88Entry; /* 0x4A8, one per party member */
 
 typedef struct {
@@ -357,7 +364,9 @@ extern s32 D_8010528C[];
 typedef struct {
     u16 unk0;
     u8 unk2;
-    u8 pad3[0x24 - 3];
+    u8 pad3[0xC - 3];
+    s32 unkC[2];
+    u8 pad14[0x24 - 0x14];
     u16 unk24;
 } Battle4880;
 
@@ -496,7 +505,8 @@ typedef struct Battle {
     s16 unk11BC;
     u16 unk11BE;
     struct Battle11C0 *unk11C0;
-    u8 pad11C4[0x11CC - 0x11C4];
+    s32 *unk11C4;
+    u8 pad11C8[0x11CC - 0x11C8];
     s32 unk11CC[24];
     Battle122C unk122C[4];
     u8 pad130C[0x1310 - 0x130C];
@@ -856,11 +866,6 @@ extern char D_800A83AC[];
 extern u8 D_800F909C[];
 extern void (*D_800F8DA8[])(void);
 
-typedef struct {
-    s32 unk0;
-    s8 unk4[4];
-    s8 unk8[4];
-} Unk800EB518;
 
 typedef struct {
     u8 unk0;
@@ -893,12 +898,20 @@ typedef struct {
     u8 unk10;
     u8 unk11;
     u8 pad12[0x18 - 0x12];
-    void *unk18;
+    struct Unk80104FC8 *unk18;
 } Unk80104FB0;
 extern Unk80104FB0 D_80104FB0;
 extern void (*D_800F8D94[])(void);
 
+typedef struct Unk80104FC8 {
+    u8 pad0[0xB4];
+    Unk80104F88Entry *unkB4;
+} Unk80104FC8;
+extern Unk80104FC8 *D_80104FC8;
+
 /* main exe: candidates for ff9.h */
+void func_8002C584(s32);
+void func_8002DD00(Window *);
 Window *func_8002E43C(s32);
 UnkPair *func_80027EDC(s32);
 typedef struct {
@@ -924,6 +937,9 @@ void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800EB518(Unk800EB518 *, s32, s32, s8);
+void func_800EE120(Window *);
+s32 func_800D8CD8(u8 *, s32, s32);
 void func_800C1854(BtlUnit *, s32);
 void func_800C19F8(u8);
 void func_800CC044(BtlUnit *);
