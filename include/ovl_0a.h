@@ -671,6 +671,7 @@ typedef struct {
     u32 code[5];
 } Unk800C9F60; /* 0x18 */
 extern Unk800C9F60 D_800C9F60[2];
+extern Unk800C9DF4 D_800CAAD8[24];
 extern RECT *D_800C9EA0;
 extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;

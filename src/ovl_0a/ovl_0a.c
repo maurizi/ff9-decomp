@@ -1949,7 +1949,39 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C31F8);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3608);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3B80);
+s32 func_800C3B80(Unk800C9DF8 *arg0) {
+    u16 i;
+    Unk800C9E10 *p;
+
+    D_800C9DF0.unk8 = arg0;
+    D_800C9DF0.unkC = (u8 *)arg0 + arg0->unk3A;
+    D_800C9DF0.unk10 = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
+    D_800C9DF0.unk14 = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
+    D_800C9DF0.unk18 = (u8 *)arg0 + arg0->unk2A;
+    D_800C9DF0.unk1C = (Unk800C9DF8Tri *)((u8 *)arg0 + arg0->unk32);
+    p = (Unk800C9E10 *)((u8 *)arg0 + arg0->unk2E);
+    D_800C9DF0.unk1 = 0xFF;
+    D_800C9DF0.unk2 = 9;
+    D_800C9DF0.unk4 = D_800CAAD8;
+    D_800C9DF0.unk20 = p;
+    for (i = 0; i < 24; i++) {
+        D_800C9DF0.unk4[i].unk0 = 0;
+        D_800C9DF0.unk4[i].unk2 = 0;
+        D_800C9DF0.unk4[i].unk4 = -1;
+        D_800C9DF0.unk4[i].unk6 = -1;
+        D_800C9DF0.unk4[i].unk8 = -1;
+        D_800C9DF0.unk4[i].unkA = -1;
+        D_800C9DF0.unk4[i].unk1C = 0x60;
+        D_800C9DF0.unk4[i].unk20 = 0x2400;
+        D_800C9DF0.unk4[i].unk24 = NULL;
+    }
+    D_800C9DF0.unk0 = 1;
+    for (i = 0; i < D_800C9DF0.unk8->unk2C; i++) {
+        func_800C79B0(i);
+    }
+    func_800C6E94();
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3D28);
 
