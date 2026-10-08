@@ -795,7 +795,7 @@ s32 func_800C6EEC();
 void func_80054A28(void *);
 s32 func_800B0124(s32, s32, s32, s32, s32);
 void func_800B1A20(s16, s16, s16, u8 *, u8 *);
-void func_800B36E0(void);
+s32 func_800B36E0(s32, s32);
 s32 func_800B4894(void);
 void func_800B3ACC(void);
 s32 func_8001E350(s32);
