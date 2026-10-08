@@ -549,7 +549,10 @@ typedef struct {
 /* file 0x12xxxx lookup table (func_800AAF5C) */
 typedef struct {
     u16 unk0;
-    u16 unk2;
+    u16 unk2; /* file 0x3xxxx */
+    u16 unk4;
+    u16 unk6;
+    u16 unk8; /* file 0x19xxxx */
 } Unk800AA39CEntry;
 
 typedef struct {
@@ -673,7 +676,7 @@ typedef struct {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[6];
     WmModel *unk8;
-    u8 padC[4];
+    WmModel *unkC; /* file 0x3xxxx */
     u8 *unk10; /* primitive buffer */
     s32 unk14;
     WmTexInfo *unk18;
@@ -682,7 +685,7 @@ typedef struct {
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
     u8 pad48[0x50 - 0x48];
-    s32 unk50;
+    void *unk50; /* file 0x19xxxx */
     u16 unk54; /* scale */
     u16 unk56;
     u16 unk58;
@@ -782,7 +785,7 @@ typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
     Unk800C95C8 *unk8;
-    s32 unkC;
+    void *unkC; /* actor */
 } FieldObjSlot;
 
 /* ---- overlay functions ---- */

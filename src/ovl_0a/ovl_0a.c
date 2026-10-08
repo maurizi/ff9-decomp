@@ -3197,14 +3197,14 @@ Unk800C9DF4 *func_800C748C(s32 arg0) {
     return &D_800C9DF0.unk4[arg0];
 }
 
-s32 func_800C74A8(s32 arg0, FieldScene *arg1) {
+s32 func_800C74A8(s32 arg0, FieldObjSlot *arg1) {
     D_800C9DF0.unk4[arg0].unk0 = 0;
     D_800C9DF0.unk4[arg0].unk2 = 0;
     D_800C9DF0.unk4[arg0].unk24 = arg1->unkC;
     return 1;
 }
 
-s32 func_800C74F0(FieldScene *arg0) {
+s32 func_800C74F0(FieldObjSlot *arg0) {
     D_800C9DF0.unk4[D_800C9DF0.unk2].unk0 = 0;
     D_800C9DF0.unk4[D_800C9DF0.unk2].unk2 = 0;
     D_800C9DF0.unk4[D_800C9DF0.unk2].unk24 = arg0->unkC;
