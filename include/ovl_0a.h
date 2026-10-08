@@ -682,6 +682,14 @@ typedef struct {
     u16 unk78;
 } Unk800C95C8;
 
+/* object model slot (func_8001E350) */
+typedef struct {
+    s32 unk0; /* flags: 1 = loaded */
+    s32 unk4; /* file id */
+    Unk800C95C8 *unk8;
+    s32 unkC;
+} FieldObjSlot;
+
 /* ---- overlay functions ---- */
 s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);

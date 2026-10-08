@@ -487,7 +487,64 @@ s32 func_800AB0B0(FieldScene *arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AB110);
+s32 func_800AB110(FieldObjSlot **arg0) {
+    s32 n;
+    Unk16D8 *e;
+    FieldObjSlot *s;
+    s32 i;
+    WmModel *m;
+    WmModelGroup *g;
+    u32 sum;
+    u32 k;
+    Unk800C95C8 *o;
+    Unk8004AB64 *a;
+    u16 *p;
+
+    n = 0;
+    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+        a = e->unk4;
+        if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
+            s = (FieldObjSlot *)func_8001E350(a->unk3B);
+            if (s->unk8->unk1C == NULL) {
+                arg0[n++] = s;
+            }
+        }
+    }
+    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+        a = e->unk4;
+        if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
+            s = (FieldObjSlot *)func_8001E350(a->unk3B);
+            p = s->unk8->unk1C;
+            if (p != NULL) {
+                for (i = 0; i < n; i++) {
+                    if ((u16 *)arg0[i]->unk8 == p) {
+                        arg0[n++] = s;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 != 0) {
+        for (i = 0; i < n; i++) {
+            o = arg0[i]->unk8;
+            m = o->unk8;
+            g = m->unk10;
+            sum = 0;
+            if ((s32)g >= 0) {
+                g = (WmModelGroup *)((u8 *)m + (s32)g);
+            }
+            for (k = 0; k < m->unk3; k++) {
+                sum += g->unk0;
+                g++;
+            }
+            if (o->unk10 + (sum * 2 + (o->unk8->unk2 * 32 + o->unk8->unk3 * 12)) >= D_80067944 + 0xF1700) {
+                arg0[i] = NULL;
+            }
+        }
+    }
+    return n;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AB3CC);
 
