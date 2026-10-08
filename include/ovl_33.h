@@ -11,9 +11,16 @@ typedef struct {
     u8 unk0; /* active list */
     u8 unk1; /* state, index into D_801F33A8 */
     u8 unk2; /* party slot */
-    u8 pad3[5];
+    u8 pad3;
+    u8 unk4[2]; /* per list: 0 = greyed title */
+    u8 pad6[2];
     MenuList unk8[2];
-    u8 pad28[0x58 - 0x28];
+    RECT unk28;
+    RECT unk30;
+    RECT unk38;
+    RECT unk40;
+    RECT unk48;
+    u8 pad50[0x58 - 0x50];
     WinDef unk58;
     u8 pad68[0x768 - 0x68];
     u8 unk768;
@@ -32,9 +39,10 @@ typedef struct {
     u8 unk2;
     u8 unk3; /* party slot */
     MenuList unk4;
-    u8 pad14[0x34 - 0x14];
+    RECT unk14;
+    u8 pad1C[0x34 - 0x1C];
     RECT unk34;
-    u8 pad3C[0x23C - 0x3C];
+    UnkPair unk3C[0x100]; /* {item id, count} */
     WinDef unk23C;
     UnkBlink unk24C;
     u8 pad258[0x260 - 0x258];
@@ -69,6 +77,14 @@ typedef struct {
 void func_801EE978(void);
 void func_801F0024(void);
 void func_801F2AB4(void);
+extern s32 D_801F33C0[2]; /* title x offsets */
+extern s32 D_801F7430[3];
+void func_801F0934(s32, s32, s32, MenuView *);
+void func_801F09CC(s32, s32, s32, Character *);
+void func_801F0AB8(s32, s32, s32, Character *);
+void func_801F307C(void);
+void func_80026C34(s32, s32, s32, s32, u8); /* main exe */
+void func_801F32E0(Character *);
 void func_801F30D8(void);
 void func_801EEEA8(void);
 void func_801EEFDC(void);
