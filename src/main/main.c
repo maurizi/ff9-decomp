@@ -1163,7 +1163,23 @@ s32 func_80022D84(s32 a) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022DF0);
+s32 func_80022DF0(s32 a, s32 b, void *c) {
+    D_80076148.unk0 = 3;
+    D_80076148.unkC = -1;
+    D_80076148.unk10 = func_800231A0;
+    D_80076148.unk4 = a;
+    D_80076148.unk8 = b;
+    D_80076148.unk1C = b;
+    D_80076148.unk20 = c;
+    D_80076148.unk14 = func_800227C8;
+    D_80076148.unk18 = NULL;
+    if (func_800230B8(&D_80076148) == 0) {
+        return 0;
+    }
+    while (func_80022B18() != 0) {
+    }
+    return 1;
+}
 
 s32 func_80022E70(void) {
     CdRequest r;
@@ -2199,7 +2215,13 @@ void func_8002C584(s32 a) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C5CC);
+void func_8002C5CC(s32 a, s32 b) {
+    Unk80077188 *e = &D_80077188[a][b];
+    e->unk4 = D_800739A0[a];
+    e->unk8 = VSync(-1);
+    e->unk2 = 0;
+    e->unk1 = 0;
+}
 
 void func_8002C64C(s32 a) {
     s32 i;
@@ -3242,7 +3264,15 @@ s32 func_800348C0(s32 ch) {
     return sum;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003493C);
+void func_8003493C(s32 ch, s32 id, u8 on) {
+    u32 *bits = D_8006794C->unk1C->unk3C[ch].unk88;
+    id -= 0xC0;
+    if (on) {
+        bits[id >> 5] |= 1 << (id & 0x1F);
+    } else {
+        bits[id >> 5] &= ~(1 << (id & 0x1F));
+    }
+}
 
 u8 func_800349BC(s32 ch, s32 id) {
     return func_80034A04_inline(D_8006794C->unk1C->unk3C[ch].unk88, id);
@@ -4424,7 +4454,23 @@ s32 func_80054FB8(s32 a) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054FE0);
+s32 func_80054FE0(s32 on) {
+    s32 v;
+    if (on) {
+        D_8007BD38.unk0 |= 6;
+        v = D_8007BD38.unk8 >> 8;
+        if (v < D_8007BD38.unk2 || D_8007BD38.unk4 < v) {
+            D_8007BD38.unk8 = D_8007BD38.unk2 << 8;
+        }
+    } else {
+        D_800739B0[0].unk0 = 0;
+        D_800739B0[0].unk1 = 0;
+        D_800739B0[1].unk0 = 0;
+        D_800739B0[1].unk1 = 0;
+        D_8007BD38.unk0 &= ~6;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055060);
 

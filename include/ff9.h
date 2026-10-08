@@ -1604,7 +1604,7 @@ typedef struct {
     u8 pad4[4];
 } Unk8006D128; /* support abilities, indexed by id - 0xC0 */
 extern Unk8006D128 D_8006D128[];
-void func_8003493C(s32, s32, s32);
+void func_8003493C(s32, s32, u8);
 extern s32 D_8006E510[];
 u8 func_80022C60(s32, s32, void *, void (*)(u8 *));
 void func_80036634(u8 *);
