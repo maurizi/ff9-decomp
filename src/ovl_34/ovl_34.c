@@ -338,4 +338,18 @@ void func_801F12D0(u8 on) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F1334);
+ScrollPos *func_801F1334(MenuList *l, ScrollPos *p) {
+    s32 v;
+
+    if (l->unk8 & 2) {
+        p->unk0 = (l->unk9 + 0x13) / 20;
+        p->unk1 = l->unkC + (l->unk3 - p->unk0);
+        p->unk2 = l->unk9 - p->unk0 * 0x14;
+    } else {
+        v = l->unk9;
+        p->unk2 = l->unkD - v;
+        p->unk0 = (v + 0x13) / 20;
+        p->unk1 = l->unkC;
+    }
+    return p;
+}
