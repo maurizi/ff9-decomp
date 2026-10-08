@@ -798,13 +798,60 @@ u8 *func_800AFCBC(u8 *arg0) {
     for (i = 0; i < h->unk3; i++) {
         func_800B00B0(&h->unk8[i]);
     }
-    h->unkC = arg0;
-    h->unk10 = arg0 + 0x3000;
+    h->unkC[0] = arg0;
+    h->unkC[1] = arg0 + 0x3000;
     D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk10 = h;
     return arg0 + 0x6000;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AFDE8);
+void func_800AFDE8(void) {
+    Unk800AFCBC *h;
+    SVECTOR rot;
+    s32 xy[2];
+    s32 i;
+    FieldEnt *e;
+    u8 *prim;
+    u32 *ot;
+    long *t;
+
+    h = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk10;
+    if (h == NULL) {
+        return;
+    }
+    if (D_800C9D44 & 0x40) {
+        func_8019AE0C(&xy[0], &xy[1]);
+        SetGeomOffset(xy[0], xy[1]);
+    } else {
+        func_800C0F08();
+    }
+    prim = h->unkC[D_8006794C->unk1C->unk8];
+    ot = &D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30];
+    for (i = 0; i < h->unk3; i++) {
+        e = &h->unk8[i];
+        if (e->unk18 != NULL && (e->unk0_0 & 1)) {
+            if ((s8)e->unk2 != -1) {
+                t = ((MATRIX *)((FieldObjSlot *)func_8001E350((s8)e->unk2))->unk8->unk20)[e->unk3].t;
+                e->unk8 = t[0] + e->unk1C;
+                e->unkA = t[1] + e->unk1E;
+                e->unkC = t[2] + e->unk20;
+            }
+            rot.vx = e->unk10;
+            rot.vy = e->unk12;
+            rot.vz = e->unk14;
+            rot.pad = 0;
+            prim = func_800C970C(prim, e->unk18, &e->unk8, &rot, e->unk4, e->unk16 >> 4, e->unk0_4 < 4 ? e->unk0_4 : 0xFF, e->unk7 << 4, &ot[e->unk22]);
+            e->unk16 += (s8)e->unk6;
+            if (e->unk16 >= e->unkE) {
+                e->unk16 = 0;
+            } else if (e->unk16 < 0) {
+                e->unk16 = ((e->unkE >> 4) - 1) << 4;
+            }
+        }
+    }
+    if (!(D_800C9D44 & 0x40)) {
+        func_800C0FB0();
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B00B0);
 

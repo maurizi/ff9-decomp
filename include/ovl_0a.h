@@ -50,8 +50,7 @@ typedef struct Unk800AFCBC {
     u8 unk3; /* count of 0x24-byte entries at unk8 */
     u16 *unk4; /* 16 entries, follows this header */
     FieldEnt *unk8;
-    u8 *unkC;
-    u8 *unk10;
+    u8 *unkC[2]; /* primitive buffers, per draw buffer */
 } Unk800AFCBC; /* 0x14, followed by the buffers it points to */
 
 /* trigger table entry (func_800B2218) */
@@ -194,7 +193,7 @@ typedef struct {
 typedef struct {
     s32 unk0; /* flags */
     Unk800CA068Pair unk4;
-    u8 pad8[0xC - 8];
+    Unk800CA068Pair unk8;
     s16 unkC; /* geometry offset adjust */
     s16 unkE;
     Unk800CA068Pair unk10;
@@ -292,7 +291,9 @@ typedef struct {
 
 typedef struct {
     u8 unk0; /* flags */
-    u8 pad1[7];
+    u8 pad1[3];
+    u16 unk4; /* scroll wrap x */
+    u16 unk6; /* scroll wrap y */
     s16 unk8;
     s16 unkA;
     s16 unkC;
