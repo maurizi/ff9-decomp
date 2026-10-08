@@ -43,8 +43,7 @@ extern ShopBuy D_801FC2F8;
 
 typedef struct {
     u16 unk0; /* price */
-    u8 unk2;  /* ingredient */
-    u8 unk3;  /* ingredient */
+    u8 unk2[2]; /* ingredients */
     u8 unk4;  /* result */
     u8 unk5;  /* shop mask */
 } SynthRecipe;
@@ -105,6 +104,7 @@ extern u8 D_801F3C9C[];
 extern u8 D_801FC098[]; /* gil suffix */
 extern u8 D_801FC0F8[]; /* gil suffix */
 extern RECT *D_801FC288;
+extern u8 D_801FC28C[]; /* gil suffix */
 void func_801F84D8(void);
 typedef struct {
     RECT r[7];
@@ -115,6 +115,11 @@ extern u8 D_801EDF3C[];
 extern u8 D_801F3E98[];
 /* main exe: candidates for ff9.h */
 s32 func_80027F34(s32); /* main.c defines it returning u8 */
+s32 func_80027F94(s32);
+extern s32 D_801FC050[3]; /* row y offsets */
+extern u8 D_801FC05C[4];
+extern u8 D_801FC060[]; /* gil suffix */
+extern s32 D_801FC064[3]; /* row label text ids */
 void func_80026C34(s32, s32, s32, s32, u8);
 extern u8 D_801F3F08[];
 extern u8 D_801F3F88[];
