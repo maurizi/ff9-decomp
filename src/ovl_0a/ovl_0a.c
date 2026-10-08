@@ -1383,7 +1383,55 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B9134);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B9738);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B9E4C);
+void func_800B9E4C(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    WmModelGroup *g;
+    u32 c;
+    u8 *p;
+    u32 j;
+
+    if (arg0->unk0 & 0x10) {
+        return;
+    }
+    g = &arg0->unk8->unk10[arg1];
+    c = (arg4 << 16) | (arg3 << 8) | arg2;
+    if (D_8006794C->unk1C->unk8 != 0) {
+        p = arg0->unk44[arg1].unk4 + g->unk0;
+    } else {
+        p = arg0->unk44[arg1].unk4;
+    }
+    for (j = 0; j < g->unk2; j++) {
+        *(u32 *)&((POLY_FT4 *)p)->r0 = c | (((POLY_FT4 *)p)->code << 24);
+        p += sizeof(POLY_FT4);
+    }
+    for (j = 0; j < g->unk4; j++) {
+        *(u32 *)&((POLY_FT3 *)p)->r0 = c | (((POLY_FT3 *)p)->code << 24);
+        p += sizeof(POLY_FT3);
+    }
+    for (j = 0; j < g->unk6; j++) {
+        *(u32 *)&((POLY_GT4 *)p)->r0 = c | (((POLY_GT4 *)p)->code << 24);
+        p += sizeof(POLY_GT4);
+    }
+    for (j = 0; j < g->unk8; j++) {
+        *(u32 *)&((POLY_GT3 *)p)->r0 = c | (((POLY_GT3 *)p)->code << 24);
+        p += sizeof(POLY_GT3);
+    }
+    for (j = 0; j < g->unkA; j++) {
+        *(u32 *)&((POLY_G4 *)p)->r0 = c | (((POLY_G4 *)p)->code << 24);
+        p += sizeof(POLY_G4);
+    }
+    for (j = 0; j < g->unkC; j++) {
+        *(u32 *)&((POLY_G3 *)p)->r0 = c | (((POLY_G3 *)p)->code << 24);
+        p += sizeof(POLY_G3);
+    }
+    for (j = 0; j < g->unkE; j++) {
+        *(u32 *)&((POLY_F4 *)p)->r0 = c | (((POLY_F4 *)p)->code << 24);
+        p += sizeof(POLY_F4);
+    }
+    for (j = 0; j < g->unk10; j++) {
+        *(u32 *)&((POLY_F3 *)p)->r0 = c | (((POLY_F3 *)p)->code << 24);
+        p += sizeof(POLY_F3);
+    }
+}
 
 u32 func_800BA0F0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s16 b = arg3 + ((arg0 >> 16) & 0xFF);
@@ -1881,11 +1929,11 @@ s32 func_800C152C(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     if (arg4 != 0) {
         o->unk1C = arg3;
         o->unk1E = arg2;
-        o->unk24 |= 0x100;
+        o->unk25 = 1;
     } else {
         o->unk1C = arg2;
         o->unk1E = arg3;
-        o->unk24 &= ~0x100;
+        o->unk25 = 0;
     }
     o->unk20 = 0;
     o->unk22 = 0;
@@ -1919,7 +1967,7 @@ s32 func_800C1614(s32 arg0, s16 arg1, s16 arg2) {
 s32 func_800C1668(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
-    o->unk24 = (o->unk24 & 0xFFFF01FF) | ((arg1 & 0x7F) << 9);
+    o->unk25_1 = arg1;
     return 1;
 }
 

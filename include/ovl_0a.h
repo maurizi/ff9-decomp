@@ -56,23 +56,28 @@ typedef struct Unk800AFCBC {
 
 /* trigger table entry (func_800B2218) */
 typedef struct FieldTrig {
-    u8 unk0; /* object uid */
-    u8 pad1;
+    u8 unk0; /* object uid; low 2 bits also select a channel */
+    u8 unk1;
     u16 unk2;
     u16 unk4;
     s16 unk6;
-    u16 unk8;
-    u16 unkA;
+    u16 unk8[2];
 } FieldTrig; /* 0xC */
 
 /* script object (func_800B2218) */
 typedef struct {
-    u8 pad0[0x3B];
+    u8 pad0[0x14];
+    VECTOR unk14; /* position */
+    u8 pad24[0x36 - 0x24];
+    u16 unk36;
+    u8 pad38[2];
+    u8 unk3A;
     u8 unk3B; /* uid */
 } FieldEvtObj;
 
 typedef struct {
-    u8 pad0[0xC];
+    u32 unk0; /* flags */
+    u8 pad4[0xC - 4];
     FieldEvtObj *unkC;
 } FieldEvtCtx;
 
@@ -200,10 +205,15 @@ typedef struct {
     u16 unk26;
     u16 unk28;
     u16 unk2A;
-    u8 pad2C[0x75 - 0x2C];
+    u8 pad2C[0x72 - 0x2C];
+    u8 unk72;
+    u8 unk73;
+    u8 pad74;
     u8 unk75;
     s16 unk76;
-    u8 pad78[0xA8 - 0x78];
+    u8 pad78[0xA4 - 0x78];
+    s16 unkA4;
+    s16 unkA6;
     s16 unkA8[4][2];
     s16 unkB8[4][2];
     s16 unkC8[4];
@@ -243,6 +253,38 @@ typedef struct {
     s32 unkC; /* offset: Unk800C9DB4Step[] */
 } Unk800C9DB4Path; /* 0x10 */
 
+/* background sprite: DR_TPAGE followed by a SPRT_16 (0x18 bytes) */
+typedef struct {
+    u32 tag;
+    u32 tpage;
+    u32 tag2;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+} BgSprt;
+
+/* packed tile position: x in the top 10 bits, y below it */
+typedef struct {
+    unsigned pad : 12;
+    unsigned y : 10;
+    unsigned x : 10;
+} BgPos;
+
+/* packed tile texture info (8 bytes) */
+typedef struct {
+    unsigned clutY : 9;
+    unsigned clutX : 6;
+    unsigned tpY : 1;
+    unsigned tpX : 4;
+    unsigned tp : 2;
+    unsigned abr : 2;
+    unsigned v : 8;
+    unsigned u : 8;
+    unsigned pad : 20;
+    unsigned trans : 1;
+} BgTile;
+
 typedef struct {
     u8 unk0; /* flags */
     u8 pad1[7];
@@ -250,13 +292,24 @@ typedef struct {
     s16 unkA;
     s16 unkC;
     s16 unkE;
-    u8 pad10[0x1C - 0x10];
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    u16 unk18;
+    u16 unk1A;
     s16 unk1C;
     s16 unk1E;
     s16 unk20;
     s16 unk22;
-    u32 unk24;
-    u8 pad28[0x38 - 0x28];
+    unsigned unk24 : 8;
+    unsigned unk25 : 1;
+    unsigned unk25_1 : 7;
+    u16 unk26;  /* tile count */
+    s32 unk28;  /* offset: BgPos[] */
+    s32 unk2C;  /* offset: BgTile[] */
+    BgSprt *unk30;
+    u8 pad34[4];
 } Unk800C9DB4Obj; /* 0x38 */
 
 typedef struct {
@@ -279,6 +332,14 @@ typedef struct {
     u8 pad8[4];
     s32 unkC; /* -> u32 table, 16-byte stride */
     s32 unk10; /* -> track table, 0x38-byte stride */
+    u8 pad14[4];
+    s32 unk18; /* -> Unk800C9DB4Cam[] */
+    u8 pad1C[0x24 - 0x1C];
+    u16 unk24;
+    u16 unk26;
+    u8 pad28[0x30 - 0x28];
+    u16 unk30;
+    u16 unk32;
 } Unk800C9DA4Hdr;
 
 typedef struct {
@@ -627,6 +688,7 @@ s32 func_800A8588(void);
 s32 func_800C6EEC();
 void func_80054A28(void *);
 s32 func_800B0124(s32, s32, s32, s32, s32);
+void func_800B1A20(s16, s16, s16, u8 *, u8 *);
 void func_800B36E0(void);
 s32 func_800B4894(void);
 void func_800B3ACC(void);
