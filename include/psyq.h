@@ -134,6 +134,7 @@ DRAWENV *SetDefDrawEnv(DRAWENV *env, int x, int y, int w, int h);
 DISPENV *SetDefDispEnv(DISPENV *env, int x, int y, int w, int h);
 void SetDrawTPage(void *p, int dfe, int dtd, int tpage);
 void SetSemiTrans(void *p, int abe);
+void SetTile(TILE *p);
 u16 GetTPage(int tp, int abr, int x, int y);
 u16 GetClut(int x, int y);
 

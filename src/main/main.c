@@ -3687,7 +3687,32 @@ void func_80031D98(Unk80077C78 *p, s32 n) {
     p->unk28.unk0[2] = D_80077D68.unk30.unk8;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031ED8);
+void func_80031ED8(Unk80077C78 *p) {
+    u32 *ot = func_8002FBC0(D_8006794C->unk1C->unk8);
+    s32 tp = 0x40;
+    TILE *t;
+    u8 *dr;
+
+    if (p->unk1 == 0) {
+        tp = 0x20;
+    }
+    t = (TILE *)D_80077C78.unk18;
+    SetTile(t);
+    t->r0 = D_80077D68.unk30.unk0;
+    t->g0 = D_80077D68.unk30.unk4;
+    t->b0 = D_80077D68.unk30.unk8;
+    t->y0 = 0;
+    t->x0 = 0;
+    t->w = D_8006794C->unkC->disp.w;
+    t->h = D_8006794C->unkC->disp.h;
+    SetSemiTrans(t, 1);
+    addPrim(ot, t);
+    D_80077C78.unk18 += sizeof(TILE);
+    dr = D_80077C78.unk18;
+    SetDrawTPage(dr, 0, 1, tp);
+    addPrim(ot, dr);
+    D_80077C78.unk18 += sizeof(DR_TPAGE);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetTile);
 
@@ -6430,7 +6455,24 @@ void func_800566D0(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056700);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056750);
+s32 func_80056750(s32 *buf, s32 wait, s32 slot, u32 addr) {
+    s32 *h;
+
+    func_800566D0();
+    h = buf;
+    if (h[0] == 0x4F414B41) {
+        SpuSetTransferStartAddr(addr);
+        buf += 16;
+        func_80056644(buf + h[7] * 4, h[5]);
+        func_8005658C(buf, &D_8007F970[slot], addr, h[7]);
+        if (wait != 0) {
+            func_800566D0();
+        }
+        return 0;
+    }
+    D_800809E0 = -1;
+    return -1;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005681C);
 

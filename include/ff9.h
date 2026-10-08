@@ -727,7 +727,7 @@ typedef struct {
     s32 unkC;
     s32 unk10;
     u8 pad14[0x18 - 0x14];
-    s32 unk18;
+    u8 *unk18; /* packet buffer cursor */
     s32 unk1C;
     u8 pad20[0x24 - 0x20];
     u8 unk24;
