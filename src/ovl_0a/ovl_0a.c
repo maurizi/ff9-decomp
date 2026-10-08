@@ -84,7 +84,18 @@ s32 func_800A8588(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A85F4);
+void func_800A85F4(s32 arg0) {
+    FieldMapObj *o;
+
+    D_80067948 = D_8006794C->unk1C->unk8E4.field->unk4;
+    func_800A86FC();
+    o = D_8006794C->unk1C->unk8E4.field->unkC;
+    func_800A8724();
+    func_8001CFB4();
+    func_800A87DC(o, arg0);
+    func_800A879C(o, arg0);
+    o->unk4 = D_80067948;
+}
 
 void func_800A8698(void) {
     GameData *gd = D_8006794C->unk1C;
@@ -358,7 +369,26 @@ u32 func_800AC380(Unk800C9CCC **arg0) {
     return min;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC3D8);
+s32 func_800AC3D8(s32 arg0, s32 arg1) {
+    Unk800C9CCC *e;
+    u32 lo;
+    u32 min;
+    u32 a;
+
+    e = func_800AC344(arg0);
+    min = func_800AC380(NULL);
+    lo = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20;
+    if (lo == 0) {
+        lo = D_80067948;
+    }
+    a = min - arg1;
+    if (lo < a) {
+        e->unk4 = a;
+        e->unk8 = arg1;
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC474);
 

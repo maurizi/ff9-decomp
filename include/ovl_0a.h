@@ -162,7 +162,7 @@ typedef struct Unk800C9DB4 {
 
 typedef struct {
     u8 unk0;
-    u8 unk1;
+    s8 unk1;
 } Unk800C9DB4Step;
 
 typedef struct {
@@ -359,17 +359,140 @@ typedef struct {
     Unk800AA39CEntry unk4[1];
 } Unk800AA39C;
 
-/* object tested by func_800B7E30 (same code in ovl_0b/ovl_0c) */
+/* model object (same layout in ovl_0a, ovl_0b and ovl_0c) */
+
+/* primitive sources of a model group; index fields select vertices (unk0..),
+ * uv pairs (WmModelGroup.unk20) and colours (WmModelGroup.unk24) */
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4]; /* uv */
+    u8 unk10[3]; /* rgb */
+    u8 unk13;    /* texture */
+    u8 unk14;
+    u8 unk15; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 pad16[2];
+} WmSrcFT4; /* 0x18 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 unk6; /* texture */
+    u8 pad7;
+    u8 unk8[3]; /* rgb */
+    u8 padB;
+    u16 unkC[3]; /* uv */
+    u8 unk12;    /* flags */
+    u8 pad13;
+} WmSrcFT3; /* 0x14 */
+
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4];  /* uv */
+    u16 unk10[4]; /* colours */
+    u8 pad18[4];
+    u8 unk1C; /* flags */
+    u8 unk1D; /* texture */
+    u8 pad1E[2];
+} WmSrcGT4; /* 0x20 */
+
+typedef struct {
+    u16 unk0[3];
+    u16 unk6[3]; /* uv */
+    u8 padC[3];
+    u8 unkF;      /* flags */
+    u16 unk10[3]; /* colours */
+    u8 unk16;     /* texture */
+    u8 pad17;
+} WmSrcGT3; /* 0x18 */
+
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4]; /* colours */
+    u8 pad10[8];
+} WmSrcG4; /* 0x18 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 pad6[2];
+    u16 unk8[3]; /* colours */
+    u8 padE[6];
+} WmSrcG3; /* 0x14 */
+
+typedef struct {
+    u16 unk0[4];
+    u8 unk8[3]; /* rgb */
+    u8 padB[5];
+} WmSrcF4; /* 0x10 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 pad6[2];
+    u8 unk8[3]; /* rgb */
+    u8 padB;
+} WmSrcF3; /* 0xC */
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;  /* FT4 count */
+    u16 unk4;  /* FT3 */
+    u16 unk6;  /* GT4 */
+    u16 unk8;  /* GT3 */
+    u16 unkA;  /* G4 */
+    u16 unkC;  /* G3 */
+    u16 unkE;  /* F4 */
+    u16 unk10; /* F3 */
+    u8 pad12[2];
+    void *unk14;
+    void *unk18;
+    u8 *unk1C;      /* primitive sources, in the order above */
+    u8 (*unk20)[2]; /* uv */
+    u8 (*unk24)[4]; /* colours */
+} WmModelGroup; /* 0x28 */
+
+typedef struct {
+    u16 unk0; /* flags: 1 = relocated */
+    u8 unk2;
+    u8 unk3; /* group count */
+    u8 pad4[0xC - 4];
+    s32 unkC;
+    WmModelGroup *unk10;
+} WmModel;
+
+typedef struct {
+    s16 unk0;
+    u8 pad2[2];
+    void *unk4; /* first primitive */
+    s32 unk8;
+} WmModelOut; /* 0xC */
+
+typedef struct {
+    u16 unk0; /* tpage */
+    u16 unk2; /* clut */
+} WmTexInfo;
+
 typedef struct {
     u16 unk0; /* flags; 0x10: behind the camera */
-    u8 pad2[0x1C - 2];
+    u8 pad2[6];
+    WmModel *unk8;
+    u8 padC[4];
+    u8 *unk10; /* primitive buffer */
+    s32 unk14;
+    WmTexInfo *unk18;
     u16 *unk1C; /* parent flags */
-    u8 pad20[0x24 - 0x20];
+    u8 *unk20;
     MATRIX unk24; /* t: position */
-    u8 pad44[0x54 - 0x44];
+    WmModelOut *unk44;
+    u8 pad48[0x50 - 0x48];
+    s32 unk50;
     u16 unk54; /* scale */
     u16 unk56;
     u16 unk58;
+    u8 pad5A[2];
+    s32 unk5C;
+    s32 unk60;
+    u8 pad64[0x74 - 0x64];
+    u16 unk74;
+    u16 unk76;
+    u16 unk78;
 } Unk800C95C8;
 
 /* ---- overlay functions ---- */
@@ -492,6 +615,12 @@ typedef struct {
     s32 unk8; /* size */
 } Unk800C9CCC; /* 0xC */
 extern Unk800C9CCC func_800C9CCC[10];
+Unk800C9CCC *func_800AC344(s32);
+u32 func_800AC380(Unk800C9CCC **);
+void func_800A86FC(void);
+void func_800A8724(void);
+/* func_800A879C: called before its definition without a prototype */
+void func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
 extern u32 D_80076F80[]; /* VRAM save buffer */
