@@ -119,7 +119,7 @@ typedef struct {
     u16 unkC;
     u16 unkE;
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
-    u8 pad18[0x38 - 0x18];
+    MATRIX unk18;
     u8 unk38;
     u8 unk39;
     u16 unk3A;
