@@ -8,22 +8,26 @@
 
 /* object embedded in WorldMap (0x4C bytes) */
 typedef struct {
-    u8 pad0[4];
+    s32 unk0;
     void *unk4;
-    u8 pad8[0x10 - 8];
+    u8 unk8[4];
+    s16 unkC;
+    s16 unkE;
     void *unk10; /* file 0x5xxxx */
     void *unk14; /* file 0x6xxxx */
-    u8 pad18[0x1B - 0x18];
+    u8 unk18;
+    u8 unk19;
+    u8 unk1A;
     u8 unk1B;
     void *unk1C;
     s32 unk20;
-    s16 unk24;
-    u8 pad26[0x2C - 0x26];
+    s16 unk24; /* map id */
+    u16 unk26;
+    s32 unk28;
     u8 *unk2C;
-    s32 unk30;
-    u8 pad34[0x38 - 0x34];
-    void *unk38;
-    u8 pad3C[0x4C - 0x3C];
+    u8 *unk30;
+    void *unk34[2]; /* [1] freed by func_800A9DE4 */
+    u8 unk3C[16];
 } WorldMapObj;
 
 /* world map context, GameData.unk8E4.world */
@@ -80,7 +84,9 @@ typedef struct {
 typedef struct {
     u8 unk0;
     u8 unk1; /* index into D_800CDFC0 */
-    u8 pad2[6];
+    u8 pad2[2];
+    u8 unk4;
+    u8 pad5[3];
     WinDef unk8[6];
 } Unk800D5438;
 
@@ -136,9 +142,28 @@ typedef struct {
 } Unk800D3FA0Sub; /* 0xC */
 
 typedef struct {
-    u8 pad0[0x610];
+    u8 pad0[0x5E0];
+    SVECTOR unk5E0[3];
+    SVECTOR unk5F8;
+    u8 pad600[0x610 - 0x600];
     Unk800D3FA0Sub unk610[3];
 } Unk800D3FA0;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    u8 unk4;
+    u8 unk5;
+    u8 pad6[2];
+    s16 unk8;
+    u8 padA[2];
+} Unk800D2FF8; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    u8 pad4[0xC - 4];
+} Unk800CD10C; /* 0xC */
 
 /* file 0x12xxxx lookup table (func_800AA39C) */
 typedef struct {
@@ -154,6 +179,18 @@ typedef struct {
 } Unk800AA39C;
 
 /* ---- overlay functions ---- */
+void func_800B69AC(void);
+void func_800B8ABC(void);
+void func_800BC0A0(void);
+void func_800C4654(void);
+void func_800C6EF8(void);
+void func_800B153C(void);
+void func_800C3EAC(void);
+void func_800B8DC0(void *, s32, s32, s32, s32, s32, s32);
+void func_800CC3E0(s32);
+void func_800CC5D8(u8);
+s32 func_800B8498(void);
+s32 func_800B84C0(void);
 s32 func_800C3FE4(s32, Unk800C3FE4 *);
 void func_800B828C(s32);
 void func_800B3A80(void);
@@ -195,7 +232,7 @@ s32 func_800B6BC4(void);
 void func_800B69B4(void);
 void func_800B8068(void);
 s32 func_800C45D8(void);
-void func_800AB0C0(s32, s32, s32, s32, s32);
+s32 func_800AB0C0(s32, s32, s32, s32, s32);
 void func_800AD738(void);
 void func_800AE280(void);
 void func_800B30C0(void);
@@ -217,6 +254,22 @@ void func_800CC8C8(void);
 void func_800CC940(void);
 
 /* ---- overlay data ---- */
+extern s32 D_800D32D8; /* map width (wraps) */
+extern s32 D_800D32DC; /* map height (wraps) */
+extern RECT D_800A71E0;
+extern char D_800A720C[]; /* "w_frameSystemDestructor:\n" */
+extern Unk800CD10C D_800CD10C[][64];
+extern s32 D_800CE3E8[3];
+extern s32 D_800CE3F8;
+extern u8 D_800CE400[];
+extern u8 *D_800CF400;
+extern s32 D_800CF420[];
+extern MATRIX D_800CF4E0;
+extern MATRIX D_800CF500;
+extern MATRIX D_800CF560;
+extern u8 D_800CFFD0[];
+extern Unk800D2FF8 D_800D2FF8[17];
+extern s8 D_800D3E74;
 extern char D_800A8098[];
 extern s32 D_800CF404;
 extern WmCellTable *D_800CF40C;
@@ -227,8 +280,6 @@ extern s32 D_800CF49C;
 extern s32 D_800CF4B4;
 extern Unk800D1FD8 D_800D1FD8;
 extern Unk800D1FD8 D_800D1FE0[2];
-extern s32 D_800D32D8;
-extern s32 D_800D32DC;
 extern s32 D_800D3308;
 extern Unk800D375C *D_800D375C;
 extern s32 D_800D3790;
@@ -278,12 +329,28 @@ extern s32 D_800D3F90;
 extern s32 D_800D3F94;
 extern s32 D_800D3F98;
 extern u8 D_800D3F9C;
-extern u8 D_800D4818;
+extern s8 D_800D4818;
 extern s32 D_800D481C;
 extern s32 D_800D4820;
 extern s32 D_800D4824;
 extern s32 D_800D4828;
 extern Unk800D5438 D_800D5438;
 extern u8 D_800CF46C;
+
+/* Inlined copy of func_800BC0A8 (wrap map coordinates). */
+static inline void func_800BC0A8_inline(s32 *x, s32 *z) {
+    if (*x < 0) {
+        *x += D_800D32D8;
+    }
+    if (*x >= D_800D32D8) {
+        *x -= D_800D32D8;
+    }
+    if (*z > 0) {
+        *z -= D_800D32DC;
+    }
+    if (*z <= -D_800D32DC) {
+        *z += D_800D32DC;
+    }
+}
 
 #endif

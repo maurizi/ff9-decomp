@@ -160,7 +160,7 @@ typedef struct {
     u8 unk826[2];
     u8 pad828[0x838 - 0x828];
     void (*unk838)(s32, void *);
-    void (*unk83C)(s32, s32, s32, s32, s32);
+    s32 (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
@@ -1538,6 +1538,9 @@ void func_80023A4C(void);
 void func_8001CD04(s32);
 s32 func_8004BC38(u8);
 u8 func_80036300(s32);
+s32 func_8003631C(s32);
+extern u8 D_8007393A; /* pad analog stick */
+extern u8 D_8007393B;
 void func_80015C38(const char *, ...); /* printf */
 
 #endif
