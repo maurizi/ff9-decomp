@@ -486,7 +486,40 @@ void func_800AC580(void) {
     ClearOTagR(gd->unk10[gd->unk8] - 8, 0x1010);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AC5C8);
+void func_800AC5C8(void) {
+    GameState *gs;
+    GameData *gd;
+    s32 f;
+
+    if ((D_800739A0[0] & 0xF09) == 0xF09 || (D_800739A0[1] & 0xF09) == 0xF09) {
+        D_8006794C->unk0 |= 1;
+    }
+    DrawSync(0);
+    gs = D_8006794C;
+    f = gs->unk1C->unk8E4.world->unk0;
+    if (!(f & 0x400)) {
+        gs->unk9 = 2;
+    } else if ((f & 0x1000) || (gs->unk1C->unk0 & 0x1C) == 0x1C) {
+        gs->unk9 = 0;
+    } else {
+        gs->unk9 = 3;
+    }
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    gd = D_8006794C->unk1C;
+    if (!(gd->unk0 & 0x100)) {
+        if (gd->unk8E4.world->unk0 & 0x400) {
+            DrawOTagEnv(gd->unk10[gd->unk8] + 0xFFF, &D_8006794C->unk10[gd->unk8]);
+        } else {
+            DrawOTag(gd->unk10[gd->unk8]);
+        }
+    }
+    if (!(D_8006794C->unk1C->unk0 & 0x20)) {
+        D_8006794C->unk1C->unk8 ^= 1;
+        func_8002C0DC(D_8006794C->unk1C->unk8);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AC7D4);
 
@@ -1109,7 +1142,53 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A71E0);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B6BC4);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B7098);
+void func_800B7098(void) {
+    switch (D_800CF46C) {
+    case 0:
+        D_8006794C->unk9 = 0;
+        func_800B83FC();
+        if (func_8004AE00() != NULL) {
+            D_800CE3DC = func_8004AE00();
+        }
+        break;
+    case 1:
+    case 2:
+        if (D_800D3E60 != 2) {
+            D_8006794C->unk9 = 3;
+            D_8006794C->unk1C->unk8E4.world->unk0 &= ~0x1000;
+            SetSpadStack(0x1F8003FC);
+            func_800AFCE0();
+            ResetSpadStack();
+            func_800B83FC();
+            SetSpadStack(0x1F8003FC);
+            func_800C53DC();
+            func_800AD39C();
+            func_800BB07C();
+            func_800C26EC();
+            func_800BEECC();
+            func_800B969C();
+            ResetSpadStack();
+        } else {
+            D_8006794C->unk9 = 0;
+            D_8006794C->unk1C->unk8E4.world->unk0 |= 0x1000;
+            func_800C4850(0x26, 0x14, 0);
+            func_800B83FC();
+            func_800BEECC();
+        }
+        break;
+    }
+    if (D_800CE3DC->unk14.vx != D_800CE3DC->unk40.vx || D_800CE3DC->unk14.vy != D_800CE3DC->unk40.vy ||
+        D_800CE3DC->unk14.vz != D_800CE3DC->unk40.vz) {
+        D_800CE25E = 1;
+    } else {
+        D_800CE25E = 0;
+    }
+    D_800CCF70 = 10;
+    func_800C3EAC();
+    if ((u8)(D_800D30C5 - 1) < 199) {
+        D_800D30C5++;
+    }
+}
 
 void func_800B72A4(void) {
     u8 mode = D_800CF46C;

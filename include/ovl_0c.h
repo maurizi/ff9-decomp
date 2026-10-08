@@ -784,6 +784,16 @@ extern u8 D_800CCE49;
 extern s32 D_800CCF70; /* debug: last update step */
 extern s32 D_800CE264;
 extern u8 D_800CF44C;
+extern u8 D_800CF47D;
+extern s32 D_800CF4B0;
+extern u8 D_800CF440;
+extern s16 D_800CF442;
+extern u8 D_800CF47E;
+extern u8 D_800CF434;
+extern u8 D_800CF4A8;
+extern u8 D_800CF47C;
+void func_80050E34(u8 *);
+void func_80050EFC(s32, s32);
 extern s32 D_800CF468;
 extern s32 D_800CF4A0;
 void func_800AF08C(void);
@@ -831,6 +841,11 @@ s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 Unk8004AB64 *func_8004AE00(void);
 void func_8004B20C(s32);
+
+/* run on the scratchpad stack (top of the 1 KB scratchpad) */
+#define SetSpadStack(addr) \
+    __asm__ volatile("move $8, %0\n\tsw $29, 0($8)\n\taddiu $8, $8, -4\n\tmove $29, $8" : : "r"(addr) : "$8", "memory")
+#define ResetSpadStack() __asm__ volatile("addiu $29, $29, 4\n\tlw $29, 0($29)" : : : "memory")
 
 /* map-marker colour (func_800C1428) */
 extern u8 D_800CD710;
