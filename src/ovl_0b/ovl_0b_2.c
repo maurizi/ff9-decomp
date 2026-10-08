@@ -27,7 +27,32 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFE88);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFF40);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D001C);
+s32 func_800D001C(s32 arg0, s32 arg1, s32 *arg2) {
+    s32 s;
+    s32 d;
+    s32 ad;
+    s32 neg;
+    arg0 &= 0xFFF;
+    arg1 &= 0xFFF;
+    s = -1;
+    if (arg1 < arg0) {
+        s = 1;
+    }
+    d = arg0 - arg1;
+    neg = d < 0;
+    ad = d;
+    if (neg) {
+        ad = -ad;
+    }
+    if (ad > 0x800) {
+        s = -s;
+        ad = 0x1000 - ad;
+    }
+    if (arg2 != NULL) {
+        *arg2 = ad;
+    }
+    return s;
+}
 
 void func_800D006C(s16 *arg0, s16 *arg1, s32 arg2) {
     s32 sp10;

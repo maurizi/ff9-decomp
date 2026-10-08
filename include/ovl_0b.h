@@ -1444,7 +1444,7 @@ void func_800EC4EC(void);
 void func_800EE154(void);
 void func_800EE24C(void);
 void func_800EE31C(void);
-void func_800BC78C(BtlUnit *);
+s32 func_800BC78C(BtlUnit *);
 u32 func_800C0ACC(BtlUnit *, u32);
 void func_800C8A3C(BtlUnit9C *, s32, s32, s32);
 void func_800C8E80(BtlUnit9C *, s32);
