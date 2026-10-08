@@ -1854,7 +1854,37 @@ s32 func_800C1604(u32 arg0) {
     return (mask >> bit) & 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C16C0);
+void func_800C16C0(void) {
+    u32 *ot;
+
+    ot = (u32 *)D_800CF460[*D_800CF45C];
+    ((POLY_FT4 *)D_800CF404)->y0 = 0x60;
+    ((POLY_FT4 *)D_800CF404)->y1 = 0x60;
+    ((POLY_FT4 *)D_800CF404)->x0 = 0xF9;
+    ((POLY_FT4 *)D_800CF404)->x1 = 0x123;
+    ((POLY_FT4 *)D_800CF404)->y2 = 0x7C;
+    ((POLY_FT4 *)D_800CF404)->x2 = 0xF9;
+    ((POLY_FT4 *)D_800CF404)->x3 = 0x123;
+    ((POLY_FT4 *)D_800CF404)->y3 = 0x7C;
+    ((POLY_FT4 *)D_800CF404)->u0 = 0x30;
+    ((POLY_FT4 *)D_800CF404)->v0 = 0xB0;
+    ((POLY_FT4 *)D_800CF404)->u1 = 0x5A;
+    ((POLY_FT4 *)D_800CF404)->v1 = 0xB0;
+    ((POLY_FT4 *)D_800CF404)->u2 = 0x30;
+    ((POLY_FT4 *)D_800CF404)->v2 = 0xCC;
+    ((POLY_FT4 *)D_800CF404)->u3 = 0x5A;
+    ((POLY_FT4 *)D_800CF404)->v3 = 0xCC;
+    ((POLY_FT4 *)D_800CF404)->r0 = 0x80;
+    ((POLY_FT4 *)D_800CF404)->g0 = 0x80;
+    ((POLY_FT4 *)D_800CF404)->b0 = 0x80;
+    ((POLY_FT4 *)D_800CF404)->tpage = 0x8C;
+    ((POLY_FT4 *)D_800CF404)->clut = 0x3DA8;
+    setlen(D_800CF404, 9);
+    ((POLY_FT4 *)D_800CF404)->code = 0x2C;
+    addPrim(&ot[10], D_800CF404);
+    D_800CF404 += sizeof(POLY_FT4);
+    func_800C1824(0xF5, 0x5C, 9, 0);
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1824);
 
