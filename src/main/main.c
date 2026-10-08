@@ -4600,7 +4600,9 @@ Unk8007B9C0 *func_8004EA3C(void) {
     return D_8007BB78;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004EA4C);
+void func_8004EA4C(s32 i) {
+    func_8004EEA0_inline(&D_8007B9C0[i]);
+}
 
 Unk8007B9C0 *func_8004EB68(void) {
     Unk8007B9C0 *p;
