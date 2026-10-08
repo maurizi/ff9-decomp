@@ -156,7 +156,10 @@ typedef struct BtlUnit {
     s16 unkB8; /* screen x */
     s16 unkBA; /* screen y */
     u8 unkBC; /* on screen */
-    u8 padBD[0xC4 - 0xBD];
+    u8 padBD[0xBF - 0xBD];
+    u8 unkBF;
+    u8 unkC0;
+    u8 padC1[0xC4 - 0xC1];
     u32 *unkC4;
     s16 unkC8; /* hp change shown */
     s16 unkCA;
@@ -549,6 +552,13 @@ typedef struct BtlCmd {
     u32 unk10_11 : 1;
 } BtlCmd;
 
+typedef struct Battle11C028 {
+    u32 unk0_0 : 8;
+    u32 unk0_8 : 12;
+    u32 unk0_20 : 12;
+    u8 pad4[0x28 - 4];
+} Battle11C028; /* 0x28 */
+
 typedef struct Battle11C0 {
     s32 unk0;
     u16 unk4;
@@ -562,7 +572,7 @@ typedef struct Battle11C0 {
     s32 unk1C;
     Battle11C020 *unk20;
     u8 pad24[0x28 - 0x24];
-    s32 unk28;
+    struct Battle11C028 *unk28;
     u8 pad2C[0x3C - 0x2C];
     s32 *unk3C;
     s32 unk40;

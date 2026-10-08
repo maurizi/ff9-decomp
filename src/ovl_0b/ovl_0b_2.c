@@ -3541,7 +3541,15 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ECCA8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ECDB8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ECF0C);
+void func_800ECF0C(void) {
+    s32 i;
+    if (D_80104F88->unk12A4[3]->unk1C == 2 || D_80104F88->unk12A4[3]->unk1C == 3) {
+        for (i = 0; i < 4; i++) {
+            addPrim(&D_8007716C[18], &D_801050D8->unk0[i][D_80077148.unk0]);
+        }
+        addPrim(&D_8007716C[18], &D_801050D8->unkA0[D_80077148.unk0]);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED02C);
 
