@@ -780,6 +780,17 @@ typedef struct {
 extern FieldFade D_800CA140[];
 extern u16 D_800C9DA0; /* FieldFade count */
 
+/* pause screen (func_800AF740) */
+typedef struct {
+    SPRT unk0;
+    DR_TPAGE unk14;
+    u8 pad1C[0x40 - 0x1C];
+} FieldPausePkt;
+extern DR_TPAGE D_800C9F90;
+extern u32 D_800C9F98;
+extern FieldPausePkt D_800C9FA0;
+extern TILE D_800C9FE0;
+
 /* 3D sprite data (FieldEnt.unk18) */
 typedef struct {
     u16 unk0; /* frame count | 0x8000 */

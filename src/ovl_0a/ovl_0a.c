@@ -996,7 +996,67 @@ void func_800AED04(void) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AED6C);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AF740);
+/* toggle the pause screen */
+void func_800AF740(void) {
+    u8 c[4];
+    u8 buf[8];
+    s32 tmp;
+    s32 i;
+    s32 bright;
+    s32 v;
+    u32 a;
+    SPRT *sp;
+
+    D_8006794C->unk1C->unk0 ^= 0x100;
+    if (D_8006794C->unk1C->unk0 & 0x100) {
+        func_8005562C(0);
+        func_80023F60(1);
+        for (i = 1; i >= 0; i--) {
+            D_800739B0[i].unk1 = 0;
+            D_800739B0[i].unk0 = 0;
+        }
+        ClearOTag(&D_800C9F98, 1);
+        func_80027834((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &D_800C9F98, 0xEB, 0, &tmp, &D_800C9FA0);
+        bright = 0;
+        if (func_8002F800() || func_8002F810()) {
+            bright = 1;
+        }
+        v = func_8002F864();
+        if (bright && v == 0) {
+            if (func_8002F854() == 2) {
+                func_8002FC10(buf);
+                c[0] = (buf[0] + buf[4]) >> 1;
+                c[1] = (buf[1] + buf[5]) >> 1;
+                c[2] = (buf[2] + buf[6]) >> 1;
+            } else {
+                func_8002F9A8(c);
+            }
+            if (c[0] >= 200 && c[1] >= 200 && c[2] >= 200) {
+                D_800C9FA0.unk0.code |= 2;
+                sp = &D_800C9FA0.unk0;
+                sp++;
+                SetDrawTPage(sp, 1, 1,
+                             getTPage(0, 2, func_8001DA30((s16)D_800686D0[235].unk6), func_8001DA3C((s16)D_800686D0[235].unk6)));
+            }
+        }
+        setlen(&D_800C9FE0, 3);
+        D_800C9FE0.code = 0x62;
+        setRGB0(&D_800C9FE0, 0x60, 0x60, 0x60);
+        setWH(&D_800C9FE0, 320, 224);
+        setXY0(&D_800C9FE0, 0, 0);
+        setlen(&D_800C9F90, 1);
+        a = getaddr(&D_800C9F98);
+        D_800C9F90.code[0] = 0xE1000240;
+        setaddr(&D_800C9FE0, a), setaddr(&D_800C9F98, &D_800C9FE0);
+        addPrim(&D_800C9F98, &D_800C9F90);
+        DrawOTag(&D_800C9F98);
+        D_8006794C->unk1C->unk0 |= 0x20;
+    } else {
+        func_80023F60(0);
+        func_80055698(0);
+        D_8006794C->unk1C->unk0 &= ~0x20;
+    }
+}
 
 void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     Unk800AFCBC *h;
