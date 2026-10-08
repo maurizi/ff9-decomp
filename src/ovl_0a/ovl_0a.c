@@ -2093,7 +2093,7 @@ s32 func_800C3B80(Unk800C9DF8 *arg0) {
     Unk800C9E10 *p;
 
     D_800C9DF0.unk8 = arg0;
-    D_800C9DF0.unkC = (u8 *)arg0 + arg0->unk3A;
+    D_800C9DF0.unkC = (Unk800C9DFC *)((u8 *)arg0 + arg0->unk3A);
     D_800C9DF0.unk10 = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
     D_800C9DF0.unk14 = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
     D_800C9DF0.unk18 = (u8 *)arg0 + arg0->unk2A;
@@ -2181,7 +2181,61 @@ s32 func_800C44F4(u32 arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C45C0);
+s16 func_800C45C0(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, Unk800C9E00 **arg4) {
+    SVECTOR p;
+    VECTOR v;
+    s16 y0;
+    s32 best;
+    s16 found;
+    s16 i;
+    Unk800C9E00 *n;
+    Unk800C9DF8 *b;
+    Unk800C9E04 *pl;
+    s32 a;
+    Unk800C9DF8Tri *t;
+    s16 k;
+    s16 y;
+    Unk800C9DFC *vx;
+
+    best = 0x7FFF;
+    *arg3 = -1;
+    *arg4 = NULL;
+    n = D_800C9DF0.unk10;
+    b = D_800C9DF0.unk8;
+    found = 0;
+    p.vx = arg0;
+    p.vy = arg1;
+    p.vz = arg2;
+    i = 0;
+    y0 = arg1;
+    for (; i < b->unk24; n++, i++) {
+        if ((u8)func_800C4EC8(b, &D_800C9DF0.unk1C[n->unk4], n, &p)) {
+            k = n->unk6;
+            if (k >= 0) {
+                v.vx = p.vx;
+                v.vy = p.vy;
+                v.vz = p.vz;
+                pl = &D_800C9DF0.unk14[k];
+                a = func_800C1DC4(pl->unk0, v.vx << 16);
+                v.vy = func_800C1DC4(n->unk24 - a - func_800C1DC4(pl->unk8, v.vz << 16), pl->unkC) >> 16;
+                v.vy += (s16)D_800C9DF0.unk1C[n->unk4].unkC - D_800C9DF0.unk1C[n->unk4].unk6;
+                p.vy = v.vy;
+            } else {
+                t = &D_800C9DF0.unk1C[n->unk4];
+                vx = &D_800C9DF0.unkC[n->unkC];
+                p.vy = vx->unk2 + (D_800C9DF0.unk8->unkA + t->unkC);
+            }
+            y = p.vy;
+            if (y >= y0 && y < best) {
+                found = 1;
+                *arg3 = i;
+                best = y;
+                *arg4 = n;
+            }
+        }
+    }
+    return found;
+}
 
 s32 func_800C47E4(s32 arg0, s32 arg1) {
     Unk800C9DF8 *b = D_800C9DF0.unk8;
@@ -2353,7 +2407,7 @@ s32 func_800C72D8(Unk800C9DF8 *arg0) {
     s32 i;
 
     D_800C9DF0.unk8 = arg0;
-    D_800C9DF0.unkC = (u8 *)arg0 + arg0->unk3A;
+    D_800C9DF0.unkC = (Unk800C9DFC *)((u8 *)arg0 + arg0->unk3A);
     D_800C9DF0.unk10 = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
     D_800C9DF0.unk14 = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
     D_800C9DF0.unk18 = (u8 *)arg0 + arg0->unk2A;

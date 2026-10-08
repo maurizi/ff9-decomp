@@ -326,13 +326,21 @@ typedef struct {
     u8 unkC[1][12];
 } Unk800B3254;
 
+/* 6-byte vertex entries at D_800C9DF0.unkC */
+typedef struct Unk800C9DFC {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+} Unk800C9DFC;
+
 /* header of the block D_800C9DF0.unk8 points to */
 typedef struct {
     u8 pad0[8];
     s16 unk8; /* origin */
     s16 unkA;
     s16 unkC;
-    u8 padE[0x26 - 0xE];
+    u8 padE[0x24 - 0xE];
+    u16 unk24; /* node count */
     u16 unk26; /* offset: Unk800C9DF8Node[] */
     u8 pad28[2];
     u16 unk2A; /* offset: Unk800C9DF8Link[] */
@@ -360,7 +368,9 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[0xA - 2];
+    u8 pad2[4];
+    s16 unk6;
+    u8 pad8[2];
     u16 unkA;
     u16 unkC;
     u16 unkE;
@@ -399,12 +409,13 @@ typedef struct {
     s16 unk6;
     u16 unk8;
     s16 unkA;
-    u8 padC[0x18 - 0xC];
+    s16 unkC; /* Unk800C9DFC index */
+    u8 padE[0x18 - 0xE];
     s16 unk18[3]; /* neighbour node ids, -1 = none */
     s16 unk1E;
     s16 unk20;
     s16 unk22;
-    u8 pad24[0x28 - 0x24];
+    s32 unk24; /* plane distance (16.16) */
 } Unk800C9E00; /* 0x28 */
 
 typedef struct {
@@ -413,7 +424,7 @@ typedef struct {
     u16 unk2; /* count of unk4 entries */
     struct Unk800C9DF4 *unk4;
     Unk800C9DF8 *unk8;
-    void *unkC;
+    struct Unk800C9DFC *unkC;
     Unk800C9E00 *unk10;
     Unk800C9E04 *unk14;
     void *unk18;
@@ -700,6 +711,7 @@ extern Unk800C9F60 D_800C9F60[2];
 extern Unk800C9DF4 D_800CAAD8[24];
 Unk800C9E00 *func_800C1F98(Unk800C9DF4 *, Unk800C9E00 *, s32);
 u8 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s32);
+s32 func_800C4EC8(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
 extern RECT *D_800C9EA0;
 extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;
