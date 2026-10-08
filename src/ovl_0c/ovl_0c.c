@@ -136,7 +136,34 @@ s32 func_800A8F8C(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A8FF0);
+s32 func_800A8FF0(void) {
+    s32 id;
+    FileEntry *f;
+    u8 *buf;
+    Unk80021938 *e;
+
+    id = func_800A9228();
+    f = func_8001E218(1, id);
+    buf = D_80067944 + 0x34000;
+    if (func_800220E8(id) != 0) {
+        e = func_80021E5C(id);
+        func_8001DAA4((s32)buf, e->unk8, e->unkC, 0);
+        DrawSync(0);
+        if (e->unkC < e->unk1C) {
+            func_8002177C(D_8006794C->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, buf + e->unkC, e->unkC, -1, 0);
+            while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+            }
+        }
+        func_80022390(id);
+    } else {
+        func_8002177C(D_8006794C->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, buf, 0, -1, 0);
+        while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+        }
+    }
+    D_8006794C->unk1C->unk8E4.world->unkC = buf;
+    func_8001C750((s32)D_8006794C->unk1C->unk8E4.world->unkC, 0);
+    return 0;
+}
 
 s32 func_800A919C(void) {
     return 0;
@@ -1610,13 +1637,43 @@ void func_800BAD98(void) {
     func_800BD57C();
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BAEC0);
-
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB07C);
-
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7D20);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7D38);
+void func_800BAEC0(void) {
+    Unk800B8388 *p;
+    MATRIX *o;
+
+    SetBackColor(D_800D3FA0.unk600, D_800D3FA0.unk602, D_800D3FA0.unk604);
+    SetLightMatrix(&D_800CF540);
+    SetColorMatrix(&D_800CF500);
+    func_800BD5A8();
+    func_800BD78C();
+    SetBackColor(D_800D3FA0.unk608, D_800D3FA0.unk60A, D_800D3FA0.unk60C);
+    if (D_800CF46D != 0) {
+        MATRIX m1 = { { { 0x1000, 0, 0 }, { 0, 0x1000, 0 }, { 0, 0, 0x1000 } }, { 0, 0xE10, 0 } };
+        MATRIX out;
+        MATRIX m2 = *D_800CF448;
+
+        if (D_800CCE4B != 0) {
+            m1.t[1] = -D_800CE19C - 0x9C4;
+        } else {
+            m1.t[1] = -D_800CE19C - 0x258;
+        }
+        SetLightMatrix(&D_800CF520);
+        SetColorMatrix(&D_800CF4E0);
+        p = func_800B8388(D_800CF428, 0x3B);
+        m2.t[0] = 0;
+        m2.t[1] = 0;
+        m2.t[2] = 0;
+        o = &out;
+        CompMatrix(&m1, &m2, o);
+        SetRotMatrix(o);
+        SetTransMatrix(o);
+        func_800BA3F4(p->unk8, 0);
+    }
+}
+
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB07C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB508);
 

@@ -325,6 +325,11 @@ long VSync(long mode);
 void *memcpy(void *, const void *, u32);
 
 int DrawSync(int mode);
+void SetLightMatrix(MATRIX *m);
+void SetColorMatrix(MATRIX *m);
+MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
+void SetRotMatrix(MATRIX *m);
+void SetTransMatrix(MATRIX *m);
 int LoadImage(RECT *rect, u32 *p);
 int StoreImage(RECT *rect, u32 *p);
 int MoveImage(RECT *rect, int x, int y);

@@ -348,7 +348,18 @@ typedef struct {
     u8 pad14E[0x5E0 - 0x14E];
     SVECTOR unk5E0[3];
     SVECTOR unk5F8;
-    u8 pad600[0x610 - 0x600];
+    u8 unk600; /* back colour 1 */
+    u8 pad601;
+    u8 unk602;
+    u8 pad603;
+    u8 unk604;
+    u8 pad605[3];
+    u8 unk608; /* back colour 2 */
+    u8 pad609;
+    u8 unk60A;
+    u8 pad60B;
+    u8 unk60C;
+    u8 pad60D[3];
     Unk800D3FA0Sub unk610[3];
 } Unk800D3FA0;
 
@@ -448,7 +459,7 @@ void func_800A8D28(void);
 s32 func_800A8D78(void);
 s32 func_800A8F18(void);
 s32 func_800A8F8C(void);
-void func_800A8FF0(void);
+s32 func_800A8FF0(void);
 s32 func_800A919C(void);
 s32 func_800A91A4(void);
 s32 func_800A91AC(void);
@@ -594,6 +605,14 @@ extern char D_800CCE6C[];
 extern WmNode D_800D4848;
 extern WmNode D_800D53A0;
 extern void **D_800CF428;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} Unk800B8388;
+extern MATRIX *D_800CF448;
+extern s32 D_800CE19C;
+void func_800BA3F4(s32, s32);
 extern u8 D_800CCA1C;
 extern RECT D_800CE0B8[];
 extern u8 D_800CCFB4[];
