@@ -19,7 +19,9 @@ typedef struct {
     s32 unk10;
     u8 pad14[0x1C - 0x14];
     s32 unk1C;
-    u8 pad20[0x28 - 0x20];
+    u8 pad20[0x24 - 0x20];
+    s16 unk24;
+    s16 unk26;
 } Unk80021938; /* element passed to func_80021938 */
 
 typedef struct {
@@ -1287,6 +1289,7 @@ void func_8002C308(s32);
 void func_8002C4B0(s32);
 void func_8002D9B4(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
+Window *func_8002EA7C(RECT *, s32, s32, Window *);
 void func_8002DD00(Window *);
 void func_8002DE10(Window *);
 void func_8002DE60(void);
