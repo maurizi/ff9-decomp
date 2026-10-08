@@ -487,7 +487,11 @@ s32 func_800AC25C(void) {
     return (u32)(VSync(-1) - gd->unk8C4) < gd->unk842;
 }
 
-s32 func_800AC29C(s32 arg0, s32 *arg1) {
+/* old-style definition: func_800ACAFC passes a third (unused) argument */
+s32 func_800AC29C(arg0, arg1)
+s32 arg0;
+s32 *arg1;
+{
     FileEntry *e;
     FileEntry *f;
 
@@ -571,7 +575,54 @@ void func_800AC5C8(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AC7D4);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800ACAFC);
+void func_800ACAFC(void) {
+    WorldMapObj *w;
+    WorldMapObj *o;
+    GameState *gs;
+    GameData *gd;
+    s32 size;
+
+    w = D_8006794C->unk1C->unk8E4.world->unk8;
+    if (!(w->unk0 & 1)) {
+        if (w->unk19 >= 2) {
+            if ((u8)func_80053A10(w->unkC, w->unkE)) {
+                D_8006794C->unk1C->unk8E4.world->unk8->unk0 |= 1;
+            }
+        } else {
+            w->unk19++;
+        }
+    }
+    gs = D_8006794C;
+    gd = gs->unk1C;
+    o = gd->unk8E4.world->unk8;
+    if (o->unk18 > 0) {
+        o->unk18--;
+    } else if (o->unk18 == 0) {
+        if (o->unk26 != 0xFFFF && o->unk26 != gd->unk81C[0]) {
+            func_80022C10(D_8006794C->unk20 + func_800AC29C(o->unk26 | 0x70000, &size, gs), 0);
+            if (D_8006794C->unk1C->unk0 & 0x20000000) {
+                func_800AB0C0(0x800, D_8006794C->unk1C->unk81C[0], 0, 0, 0);
+            }
+            func_800AB0C0(0x700, D_8006794C->unk1C->unk8E4.world->unk8->unk26, 0, 0, 0);
+            D_8006794C->unk1C->unk8E4.world->unk8->unk18 = -1;
+        } else {
+            func_80022C10(D_8006794C->unk20 + func_8001E218(0, 0x1000B)->unk4, 0);
+            D_8006794C->unk1C->unk8E4.world->unk8->unk18 = -2;
+        }
+    } else if (o->unk18 == -1) {
+        if (func_800AB0C0(0xC00, 0, 0, 0, 0) == 0) {
+            func_80022C10(D_8006794C->unk20 + func_8001E218(0, 0x1000B)->unk4, 0);
+            func_800AB0C0(0, D_8006794C->unk1C->unk8E4.world->unk8->unk26, 0, 0, 0);
+            func_800559C8(0, 0x7F);
+            D_8006794C->unk1C->unk8E4.world->unk8->unk18 = -2;
+        }
+    } else if (o->unk18 == -2 && (o->unk0 & 1)) {
+        gd->unk0 &= ~0x2F;
+        D_8006794C->unk1C->unk8E4.world->unk0 &= ~0x300;
+        D_80073998[0] &= ~0x04000000;
+        D_8006794C->unk0 |= 0x1000;
+    }
+}
 
 void func_800ACE24(void) {
     GameData *gd = D_8006794C->unk1C;

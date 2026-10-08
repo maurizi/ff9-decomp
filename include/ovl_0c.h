@@ -25,8 +25,8 @@ typedef struct {
     s16 unkE;
     void *unk10; /* file 0x5xxxx */
     void *unk14; /* file 0x6xxxx */
-    u8 unk18;
-    u8 unk19;
+    s8 unk18;
+    s8 unk19;
     u8 unk1A;
     u8 unk1B;
     void *unk1C;
@@ -111,7 +111,8 @@ typedef struct {
 /* movement mode table entry (D_800CCB70[], current one at D_800CE3C8) */
 typedef struct {
     u8 unk0; /* mode */
-    u8 pad1[7];
+    u8 unk1;
+    u8 pad2[6];
     u8 unk8;
     u8 unk9;
     u8 unkA;
@@ -119,7 +120,8 @@ typedef struct {
     u8 unkC;
     u8 padD[4];
     u8 unk11;
-    u8 pad12[0x1C - 0x12];
+    u8 pad12[2];
+    u8 unk14[8]; /* allowed cell types */
 } Unk800CE3C8; /* 0x1C */
 
 /* doubly linked node (func_800C2134) */
@@ -712,6 +714,9 @@ extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
 extern u8 D_800D30F8[];
+extern u8 D_800CCB18[];
+extern u8 D_800CCB20[];
+u8 func_800B3340(u8 *, s32);
 extern s32 D_800CD098;
 void func_800BCA6C(s16);
 extern s16 D_800D45D4[3];
@@ -906,7 +911,19 @@ extern s32 D_800CF598[5]; /* CD sectors */
 extern s32 D_800CCF84[5];
 extern s32 D_800CCF98[5];
 extern char D_800A7BB8[];
-void func_800C1824(s32, s32, s32, s32);
+/* sprite table (func_800C1824) */
+typedef struct {
+    s16 unk0; /* x */
+    s16 unk2; /* y */
+    u8 unk4; /* u */
+    u8 pad5;
+    u8 unk6; /* v */
+    u8 pad7;
+    s16 unk8; /* w */
+    s16 unkA; /* h */
+} Unk800CD744; /* 0xC */
+extern Unk800CD744 D_800CD744[4];
+void func_800C1824();
 extern s32 D_800D3F88;
 void func_800C26DC(void);
 
