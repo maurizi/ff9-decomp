@@ -985,7 +985,7 @@ typedef struct {
     Unk800F412C unk4[5];
     u32 unk54;
     s32 unk58;
-    s32 unk5C;
+    u32 unk5C; /* count */
     s32 unk60;
     s32 unk64;
     BtlUnit *unk68[4];
@@ -1483,7 +1483,7 @@ u8 *func_800F511C(u8 *, RECT *);
 void func_800C7B84(BtlUnit9C *);
 void func_800DCB20(BtlUnit9C *, s32);
 void func_800C57A4(s32, u8 *);
-u32 func_800CF690(void);
+s32 func_800CF690(void);
 s32 func_800D7D64(s32, Unk800D955C *, s32, s32 *, s32 *);
 s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
 
@@ -1602,5 +1602,15 @@ void func_800EF80C(Unk800EF80C *);
 void func_800BCC64(BtlUnit *);
 void func_800BCDBC(BtlUnit *);
 s32 func_800D9F88(u8 *, s32, s32 *);
+
+extern u16 D_800FEC42;
+extern Unk800F412C D_800F8FD8[5];
+s32 func_8004BB7C(s32);
+void func_800E8DC8(s32);
+void func_800E8E84(s32);
+void func_800F0444(void);
+void func_800EFF14(void);
+void func_800F40D0(Unk800F412C *);
+void func_800F4010(s32);
 
 #endif
