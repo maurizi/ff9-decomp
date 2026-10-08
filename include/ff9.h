@@ -1482,6 +1482,8 @@ void func_8002E31C(Window *, u8);
 void func_8002E334(Window *, s16);
 void func_8002EB64(s32, s32);
 void func_8002EB74(MenuList *);
+void func_8002D550(Window *);
+void func_8002D7E8(Window *);
 void func_8002ECA0(MenuList *, MenuView *);
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
 void func_8002EE8C(MenuList *, s32);

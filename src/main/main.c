@@ -2385,7 +2385,22 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002DF18);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E040);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E180);
+void func_8002E180(void) {
+    s32 i;
+    Window *w = D_80077530;
+    for (i = 0; i < 10; w++, i++) {
+        u8 st = w->unk1C;
+        if (st == 3) {
+            if (w->unk30.unk3 < w->unk30.unk2 && w->unk30.unk8 != 0) {
+                func_8002EB74(&w->unk30);
+            }
+        } else if (st == 1) {
+            func_8002D550(w);
+        } else if (st == 2 && D_80077148.unk1 != 2) {
+            func_8002D7E8(w);
+        }
+    }
+}
 
 void func_8002E260(void) {
     s32 i;
