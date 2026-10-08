@@ -172,7 +172,8 @@ typedef struct {
     u8 unk826[2];
     u8 pad828[0x830 - 0x828];
     u16 unk830[2];
-    u8 pad834[0x838 - 0x834];
+    u16 unk834;
+    u16 unk836;
     void (*unk838)(s32, void *);
     void (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;

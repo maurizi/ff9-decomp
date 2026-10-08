@@ -654,7 +654,7 @@ void func_800A8724(void);
 /* func_800A879C: called before its definition without a prototype */
 s32 func_800C3EC0(s32, s16, s16, s16);
 s32 func_800C3608(Unk800C9DF4 *);
-void func_800C79B0(s32);
+s32 func_800C79B0(u32);
 s32 func_800C6E94(void);
 void func_800A87DC(FieldMapObj *, s32);
 
@@ -667,6 +667,7 @@ s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 void func_800C85B8(s32, s32);
 void func_800B5794(void);
+void func_800AAB30(s32, void *);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;

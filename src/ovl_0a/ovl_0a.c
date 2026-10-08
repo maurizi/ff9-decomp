@@ -36,7 +36,41 @@ void func_800A80A4(void) {
     D_80067950++;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A8198);
+void func_800A8198(void) {
+    FieldMap *f;
+    GameData *gd;
+    GameData *gd2;
+
+    func_800A8344();
+    f = D_8006794C->unk1C->unk8E4.field;
+    func_800A8380();
+    D_8006794C->unk9 = 2;
+    func_8001CD04(0xE0);
+    func_8001CFB4();
+    SetDispMask(1);
+    D_8006794C->unk1C->unk838 = func_800AAB30;
+    D_8006794C->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800B0124;
+    D_8006794C->unk1C->unk8BC = func_800B36E0;
+    func_80021CDC(0);
+    D_8006794C->unk0 &= ~7;
+    D_8006794C->unk1C->unk84C = 0;
+    gd = D_8006794C->unk1C;
+    gd->unk39 = 0;
+    gd->unk38 = 0;
+    gd2 = D_8006794C->unk1C;
+    gd2->unk836 = 0xFFFF;
+    gd2->unk834 = 0xFFFF;
+    func_800B1D60();
+    func_800AC5F0();
+    func_800A847C();
+    func_800A83E0();
+    func_800239D0();
+    if (D_8006794C->unk1C->unk0 & 0x400000) {
+        func_800B0124(0x8601, 0, 0x78, 0, 0);
+    }
+    func_8002FC30();
+    f->unk4 = D_80067948;
+}
 
 void func_800A82F8(void) {
     s32 i;
@@ -2087,7 +2121,36 @@ s32 func_800C7968(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C79B0);
+s32 func_800C79B0(u32 arg0) {
+    Unk800C9DF8 *b;
+    Unk800C9E10 *e;
+    Unk800C9DF8Pt *pt;
+    s32 *ids;
+    s32 i;
+    s32 j;
+    Unk800C9E00 *n;
+
+    b = D_800C9DF0.unk8;
+    if (arg0 >= b->unk2C) {
+        return 0;
+    }
+    e = &D_800C9DF0.unk20[arg0];
+    pt = (Unk800C9DF8Pt *)((u8 *)b + e->unkC);
+    for (i = 0; i < e->unk2; pt++, i++) {
+        ids = (s32 *)((u8 *)b + pt->unk6);
+        for (j = 0; j < pt->unk4; j++) {
+            n = &D_800C9DF0.unk10[*ids];
+            if (i == 0) {
+                n->unk0 |= 1;
+                func_800C6DA4(b, e, pt);
+            } else {
+                n->unk0 &= ~1;
+            }
+            ids++;
+        }
+    }
+    return 1;
+}
 
 s32 func_800C7AF8(u32 arg0, u32 arg1) {
     Unk800C9E10 *e;
