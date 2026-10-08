@@ -1271,6 +1271,18 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+s32 func_80021320(void);
+void func_800233CC(); /* called with a u8 it ignores */
+u8 func_800240E8(void);
+void func_80023A6C(void);
+void func_8002417C(void);
+extern Unk80035B90Data D_80010E48;
+void func_80035B24(Unk80035B90 *, Unk80035B90Data *);
+s32 func_800565DC(s32 *);
+extern s32 *D_800809DC;
+extern s32 *D_800809E4;
+extern s32 *D_80083148;
+extern s32 *D_800809E8;
 extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
 void func_800616F8(s32, s32, s32, s32);
