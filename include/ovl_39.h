@@ -131,11 +131,29 @@ typedef struct {
     u8 unk14;
 } Unk801FA078;
 
+typedef struct {
+    EventVars unk0;
+    s32 unk800; /* D_8007AEC4 */
+} SaveEvents;
+
+typedef struct {
+    Character unk0[9];
+    u8 unk510[4]; /* party: character index, 9 = none */
+    u16 unk514;
+    u16 unk516;
+    u32 unk518; /* gil */
+    u16 unk51C;
+    u16 unk51E;
+    u16 unk520;
+} SaveParty; /* 0x524 */
+
 /* game data part of a save block */
 typedef struct {
     u8 pad0[0x40];
-    u8 unk40[0x850 - 0x40];
-    u8 unk850[0xD88 - 0x850];
+    SaveEvents unk40;
+    u8 pad844[0x850 - 0x844];
+    SaveParty unk850;
+    u8 padD74[0xD88 - 0xD74];
     Unk801FA078 unkD88;
     u8 unkDA0[0xFF8 - 0xDA0];
     u8 unkFF8[0x127C - 0xFF8];
@@ -168,8 +186,11 @@ void func_801F96CC(void);
 void func_801F8DA4(u8 *);
 u16 func_801F973C(u8 *, s32);
 void func_801F9B00(void);
-void func_801F9D48(u8 *);
-void func_801F9904(u8 *);
+void func_801F9D48(SaveEvents *);
+void func_801F9DF8(SaveEvents *);
+void func_801F99FC(SaveParty *);
+void func_801F9904(SaveParty *);
+extern s32 D_8007AEC4;
 void func_801F9EA8(u8 *);
 void func_801F9CE8(void *);
 void func_801F6938(void);

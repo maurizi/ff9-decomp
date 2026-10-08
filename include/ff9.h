@@ -151,7 +151,7 @@ typedef struct {
     u16 unk3A;
     Character unk3C[9];
     Character *unk54C[4]; /* party */
-    u8 pad55C[0x55E - 0x55C];
+    u16 unk55C;
     s16 unk55E;
     u32 unk560; /* gil, capped at 9999999 */
     u8 pad564[0x568 - 0x564];
