@@ -196,7 +196,15 @@ void func_801F0BE8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F0C78);
+void func_801F0C78(void) {
+    MenuList *l;
+    s32 blink;
+
+    l = &D_801F1558.unk3C;
+    blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
+    func_800275DC(0x12E, 0x2C, 0x14, 0xB8, l->unk5 != 0 ? blink : 1);
+    func_800275DC(0x12E, 0xCF, 0x14, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
+}
 
 INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F0D20);
 
