@@ -537,11 +537,13 @@ typedef struct {
     u8 pad1C[0x24 - 0x1C];
     s32 unk24;
     u32 unk28;
-    u8 pad2C[0x30 - 0x2C];
+    u32 unk2C;
     s32 unk30;
     u32 unk34; /* flags */
     s32 unk38;
-    u8 pad3C[0x5C - 0x3C];
+    s32 unk3C;
+    s32 unk40;
+    u8 pad44[0x5C - 0x44];
     u32 unk5C;
     u8 pad60[0x64 - 0x60];
     s32 unk64;
@@ -551,7 +553,7 @@ typedef struct {
     u8 pad74[0x78 - 0x74];
     s32 unk78;
     u8 pad7C[0x84 - 0x7C];
-    s32 unk84;
+    u32 unk84;
     u8 pad88[0x94 - 0x88];
     u16 unk94;
     u16 unk96;
@@ -577,7 +579,7 @@ typedef struct {
     s16 unkCC;
     u8 padCE[0xD2 - 0xCE];
     s16 unkD2;
-    u8 padD4[0xD6 - 0xD4];
+    u16 unkD4;
     s16 unkD6;
     s16 unkD8;
     u8 padDA[0xE0 - 0xDA];
@@ -1271,6 +1273,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 func_80021320(void);
 void func_800233CC(); /* called with a u8 it ignores */
 u8 func_800240E8(void);
@@ -1435,7 +1438,7 @@ typedef struct {
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
 
 void func_800384D0(s32, s32, s32, s32);
-void func_8005A284(Unk80080A10 *, AkaoChannel *, void *);
+void func_8005A284(); /* (Unk80080A10 *, AkaoChannel *) */
 void func_80062830(Unk6 *, u8, s32, s32);
 extern s32 D_8006FB40[];
 

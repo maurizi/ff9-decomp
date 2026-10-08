@@ -4967,7 +4967,11 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A014);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A20C);
 
-void func_8005A284(Unk80080A10 *a, AkaoChannel *c, void *unused) {
+/* K&R definition: callers pass two or three arguments */
+void func_8005A284(a, c)
+    Unk80080A10 *a;
+    AkaoChannel *c;
+{
     u32 mask;
     u32 bit;
     if (a->unk4 != 0) {
@@ -5134,9 +5138,23 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C0F0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C158);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C234);
+void func_8005C234(void) {
+    D_80083158.unk4 = 1;
+    func_8005A284(D_80080A10, D_8007BD48);
+    if (D_8007F790 != NULL) {
+        func_8005A284(D_8007F790, D_8007F71C);
+    }
+    func_8005A2CC();
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C294);
+void func_8005C294(void) {
+    D_80083158.unk4 = 2;
+    func_8005A284(D_80080A10, D_8007BD48);
+    if (D_8007F790 != NULL) {
+        func_8005A284(D_8007F790, D_8007F71C);
+    }
+    func_8005A2CC();
+}
 
 void func_8005C2F4(s32 *arg0) {
     u32 i;
@@ -5475,7 +5493,14 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F834);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F894);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F900);
+void func_8005F900(AkaoChannel *c) {
+    s32 v = *c->unk0++;
+    if (v == 0) {
+        v = 0x100;
+    }
+    c->unkD2 = v;
+    c->unk40 = func_8005EB40(&c->unk3C, *c->unk0++, v, 0xC);
+}
 
 void func_8005F960(AkaoChannel *c) {
     c->unk110 = 0;
