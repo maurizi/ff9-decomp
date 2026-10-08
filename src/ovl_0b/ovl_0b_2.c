@@ -4573,7 +4573,53 @@ void func_800F0904(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F0A54);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F0BE0);
+void func_800F0BE0(Window *arg0) {
+    Window *w = arg0;
+    s32 n = 0;
+    BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    RECT *r = (RECT *)&arg0->unk8;
+    BtlUnit *p;
+    RECT rc;
+    s32 yl;
+    s32 yr;
+    for (p = u; p != NULL; p = p->unk0) {
+        if ((p->unk68 >> 29) & 1) {
+            n++;
+        }
+    }
+    if (arg0->unk1C != 3) {
+        func_8002D9B4(NULL, arg0->unk18, 4);
+    }
+    func_8002B524(w->unk0 + 8, r->y - 3, arg0->unk18, D_800703FC.unk3C, 0);
+    func_8002B524(w->unk0 + 0x76, r->y - 3, arg0->unk18, D_800703FC.unkA0, 0);
+    if (arg0->unk1C != 3) {
+        rc.x = r->x;
+        rc.y = r->y - 3;
+        rc.w = r->w;
+        rc.h = 8;
+        func_8002D9B4(&rc, arg0->unk18, 4);
+    }
+    if (arg0->unk1C == 3 && (n < 2 || !(D_80104E80 & 1))) {
+        yl = r->y + 0xC;
+        yr = yl;
+        for (; u != NULL; u = u->unk0) {
+            if ((u->unk68 >> 28) & 1) {
+                if ((u->unk68 >> 29) & 1) {
+                    if (u->unk68 & 1) {
+                        func_800270EC(r->x + 0x62, yr, arg0->unk18 - 1);
+                    } else {
+                        func_800270EC(r->x - 0xC, yl, arg0->unk18 - 1);
+                    }
+                }
+                if (u->unk68 & 1) {
+                    yr += 15;
+                } else {
+                    yl += 15;
+                }
+            }
+        }
+    }
+}
 
 void func_800F0DF8(void) {
     u32 c = 0x64808080;

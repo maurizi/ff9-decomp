@@ -1149,7 +1149,9 @@ typedef struct {
     s32 unk4;
     u8 pad8[0x30 - 8];
     s32 unk30;
-    u8 pad34[0x68 - 0x34];
+    u8 pad34[0x3C - 0x34];
+    s32 unk3C;
+    u8 pad40[0x68 - 0x40];
     s32 unk68;
     u8 pad6C[0x7C - 0x6C];
     s32 unk7C;
@@ -1157,7 +1159,9 @@ typedef struct {
     s32 unk88;
     u8 pad8C[0x94 - 0x8C];
     s32 unk94;
-    u8 pad98[0xC0 - 0x98];
+    u8 pad98[0xA0 - 0x98];
+    s32 unkA0;
+    u8 padA4[0xC0 - 0xA4];
     s32 unkC0;
 } Unk800703FC; /* text table? */
 extern Unk800703FC D_800703FC;

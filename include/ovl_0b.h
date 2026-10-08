@@ -1184,11 +1184,13 @@ typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2;
-    u8 pad3[6 - 3];
+    u8 unk3;
+    u8 unk4;
+    u8 pad5;
     u8 unk6;
-    u8 pad7;
-    u8 unk8;
-    u8 pad9;
+    s8 unk7;
+    s8 unk8;
+    s8 unk9;
     u8 unkA;
     u8 unkB;
     u8 unkC;
