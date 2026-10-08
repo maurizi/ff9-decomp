@@ -35,6 +35,8 @@ The frame counter is the bridge's own vsync count. It keeps counting across stat
 
 **Save states are the main tool.** Get to a scene once, `save field_alexandria`, and then
 `load` it before each experiment. Names are `[A-Za-z0-9_-]`. `states` lists them.
+States are stored per disc (`redux-home/SLUS01251/` is disc 1, `SLUS01295/` disc 2, ...), so `states` and `load` only
+see the states for the disc the emulator was started with (`start --disc N`).
 
 ### Memory cards
 
