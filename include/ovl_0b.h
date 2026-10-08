@@ -821,7 +821,8 @@ typedef struct {
 } Unk800C412C; /* 0x20 */
 
 typedef struct Unk800FE3B8 {
-    u8 pad0[0x50];
+    SVECTOR unk0[6];
+    SVECTOR unk30[4];
     s16 unk50;
     u8 unk52;
     u8 unk53;
@@ -830,15 +831,21 @@ typedef struct Unk800FE3B8 {
     u8 unk5D;
     s16 unk5E;
     s16 unk60;
-    u8 pad62[0x68 - 0x62];
+    u8 pad62[0x65 - 0x62];
+    u8 unk65;
+    u8 unk66;
+    u8 pad67;
     Unk800C412C unk68[2];
     s32 unkA8;
     u32 unkAC;
     s32 unkB0;
-    u8 padB4[0xB8 - 0xB4];
+    s32 unkB4;
     u8 unkB8;
     u8 unkB9;
-    u8 padBA[0xCC - 0xBA];
+    u8 unkBA;
+    u8 unkBB;
+    SVECTOR unkBC;
+    SVECTOR unkC4;
     BtlUnit *unkCC;
 } Unk800FE3B8;
 extern Unk800FE3B8 D_800FE3B8;
@@ -1784,7 +1791,7 @@ typedef struct {
 typedef struct {
     u8 pad0[8];
     s32 unk8;
-    u8 padC[0x10 - 0xC];
+    s32 unkC;
     u32 unk10;
     s32 unk14;
     s32 unk18;
@@ -1946,7 +1953,9 @@ s32 func_80034430(s32, s32);
 void func_800F3D3C(s32);
 void func_800F1BFC(Window *);
 s32 func_800D001C(s32, s32, s32 *);
-void func_800C4E84(s32, s16 *, s16 *, s16 *);
+s32 func_800C4E84(s32, s16 *, s16 *, s32 *);
+void func_800C4DC4(s32, s32, s16 *, s16 *, s32 *);
+s32 func_800C5890(s32);
 
 typedef struct {
     u8 unk0;
@@ -1987,7 +1996,10 @@ s32 func_800D8ACC(s32, s32);
 typedef struct {
     BtlUnit *unk0;
     BtlUnit *unk4;
-    u8 pad8[0x44 - 8];
+    u8 pad8[0x38 - 8];
+    s32 unk38;
+    s32 unk3C;
+    u8 pad40[0x44 - 0x40];
     BtlUnit *unk44;
     u8 pad48[0x4C - 0x48];
 } Unk800FE368;
@@ -2228,5 +2240,10 @@ void func_800C416C(s32, Unk800C412C *, Unk800C412C0 *);
 s32 func_800CF9DC(s32, s32, s32, s32);
 s32 func_800CF708(s32, s32);
 s32 func_800CF6B8(s32, s32);
+s32 func_800EA004(void);
+s32 func_800EA094(void);
+
+/* main exe: candidates for ff9.h */
+void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
 
 #endif
