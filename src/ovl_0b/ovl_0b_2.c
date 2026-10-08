@@ -3536,7 +3536,23 @@ void func_800EEE3C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EEED4);
+void func_800EEED4(Window *arg0) {
+    RECT r;
+    MenuView v;
+    RECT *rc = (RECT *)&arg0->unk8;
+    s32 i;
+    func_8002ECA0((MenuList *)&arg0->unk30, &v);
+    func_8002D9B4(0, 7, 1);
+    for (i = 0; i < v.unk0; i++) {
+        func_800EF094(0, i, v.unk1 + i, &v);
+    }
+    if (((MenuList *)&arg0->unk30)->unk8 & 4) {
+        func_8002F40C((MenuList *)&arg0->unk30, rc, &r);
+        func_8002D9B4(&r, 7, 1);
+        func_800EEFA8(arg0);
+    }
+    func_8002D9B4(rc, 7, 1);
+}
 
 void func_800EEFA8(Window *arg0) {
     MenuView v;
