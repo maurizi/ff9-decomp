@@ -1700,6 +1700,7 @@ extern void (*D_800F8DF0[])(Unk800FD56C *);
 extern void (*D_800F8E00)(Unk800FD56C *);
 extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
+u8 func_800B3EF8(BtlUnit *, u8);
 void func_800F1A20(s32);
 s32 func_8001DA6C(s16);
 s32 func_80063830(s32);
