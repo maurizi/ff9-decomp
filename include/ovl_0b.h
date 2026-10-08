@@ -95,6 +95,7 @@ typedef struct BtlUnit9C {
     s16 unk54;
     s16 unk56;
     s16 unk58;
+    s16 unk5A;
     BtlUnit9C8 *unk5C; /* morph target */
 } BtlUnit9C;
 
@@ -1736,6 +1737,8 @@ extern RECT D_800A858C;
 extern RECT D_800A8594;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+void func_800DDF10(BtlUnit9C *, u8);
+u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
 void func_800DF15C(BtlUnit9C *, u8, u16);
 u8 *func_800DD27C(BtlUnit9C *, u8, u8 *, s32);
 u8 *func_800C7DAC(BtlUnit9C *, s32, u8 *);

@@ -1457,7 +1457,20 @@ void func_800DBA80(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DBBFC);
+void func_800DBBFC(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
+    BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawSliceEffModel()\nid:%d cannot use!");
+    s32 n;
+    s32 i;
+    func_800DCA68(s->unk0, arg0, arg1, arg2);
+    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    s->unk0->unk10 = 0;
+    s->unk0->unk5A = arg1->vy - s->unk24;
+    n = s->unk0->unk8->unk3;
+    for (i = 0; i < n; i++) {
+        func_800DDF10(s->unk0, i);
+        D_800F78A4->unk24 = func_800DE11C(s->unk0, i, D_800F78A4->unk24);
+    }
+}
 
 void func_800DBD10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     BtlObjSlot *s = func_800DCFB0(arg1, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
