@@ -1998,7 +1998,41 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028204);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800283E0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028720);
+void func_80028720(void *data, s32 n) {
+    RECT r0;
+    RECT r1;
+    s32 i;
+    u32 *prev = data;
+    u32 *q = prev;
+    u32 *cur;
+
+    D_80076F78.unk4 = n;
+    D_80076F78.unk0 = prev;
+    func_80028994(0, &r0, &r1);
+    StoreImage(&r0, D_80076F80);
+    DrawSync(0);
+    LoadImage(&r0, prev);
+    DrawSync(0);
+    LoadImage(&r1, prev + 0x40);
+    DrawSync(0);
+    cur = prev + 0x1B0;
+    for (i = 1; i < D_80076F78.unk4; i++) {
+        func_80028994(i, &r0, &r1);
+        StoreImage(&r0, prev);
+        DrawSync(0);
+        if (i >= 4) {
+            StoreImage(&r1, q + 0x40);
+            DrawSync(0);
+            q += 0x1B0;
+        }
+        LoadImage(&r0, cur);
+        DrawSync(0);
+        LoadImage(&r1, cur + 0x40);
+        DrawSync(0);
+        cur += 0x1B0;
+        prev += 0x1B0;
+    }
+}
 
 void func_8002886C(void) {
     RECT clut;

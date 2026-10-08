@@ -311,7 +311,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     s32 unk4; /* sectors left */
-    u8 pad8[0xC - 8];
+    CdlLOC unk8; /* current position */
     s32 unkC;
     u32 unk10; /* offset in current chunk */
     s32 unk14; /* current chunk */
@@ -1161,7 +1161,7 @@ void *func_8001C7FC(s32, s32, s32); /* mode 4: address, 5: size */
 void func_8002CD4C(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
-s32 func_80021380(s32);
+s32 func_80021380(void (*)(u8, u8 *));
 void func_80021340(void);
 
 typedef struct {
@@ -1750,7 +1750,7 @@ void func_80036444(void);
 void func_80036528(void);
 void func_8002F9F0(void);
 
-void func_8002267C(void *);
+void func_8002267C(CdRequest *);
 u8 func_800230B8(CdRequest *);
 void func_800231A0(u8, u8 *);
 void func_800227C8();
@@ -2017,7 +2017,7 @@ extern s32 D_80070430;
 extern u8 D_8007AF02;
 void func_8003384C(Character *);
 s32 func_80033280(s32, s32, u8 *);
-void func_80028720(u8 *, s32);
+void func_80028720(void *, s32);
 void func_8002C1E4(void);
 s32 func_80065EB0(s32);
 s32 func_80065EA0(s32);
