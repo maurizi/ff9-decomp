@@ -64,7 +64,9 @@ typedef struct {
     s32 unk20;
     void *unk24;
     s32 *unk28; /* = unk6C, unk40 entries */
-    u8 pad2C[0x40 - 0x2C];
+    u8 pad2C[0x3C - 0x2C];
+    s16 unk3C;
+    s16 unk3E;
     u8 unk40;
     u8 unk41;
     s8 unk42;

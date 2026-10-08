@@ -1312,7 +1312,39 @@ u32 func_800BA0F0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BA190);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BA3CC);
+void func_800BA3CC(Unk800C95C8 *arg0, u16 arg1) {
+    u32 i;
+    u32 j;
+    u8 *p;
+    WmModelGroup *g;
+
+    if (arg0->unk0 & 0x10) {
+        return;
+    }
+    for (i = 0; i < arg0->unk8->unk3; i++) {
+        g = &arg0->unk8->unk10[i];
+        p = arg0->unk44[i].unk4;
+        if (D_8006794C->unk1C->unk8 != 0) {
+            p += g->unk0;
+        }
+        for (j = 0; j < g->unk2; j++) {
+            ((POLY_FT4 *)p)->tpage = arg1 | (((POLY_FT4 *)p)->tpage & 0xFF9F);
+            p += sizeof(POLY_FT4);
+        }
+        for (j = 0; j < g->unk4; j++) {
+            ((POLY_FT3 *)p)->tpage = arg1 | (((POLY_FT3 *)p)->tpage & 0xFF9F);
+            p += sizeof(POLY_FT3);
+        }
+        for (j = 0; j < g->unk6; j++) {
+            ((POLY_GT4 *)p)->tpage = arg1 | (((POLY_GT4 *)p)->tpage & 0xFF9F);
+            p += sizeof(POLY_GT4);
+        }
+        for (j = 0; j < g->unk8; j++) {
+            ((POLY_GT3 *)p)->tpage = arg1 | (((POLY_GT3 *)p)->tpage & 0xFF9F);
+            p += sizeof(POLY_GT3);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BA560);
 
