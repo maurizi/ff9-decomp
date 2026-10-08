@@ -514,7 +514,49 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7000);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AB0C0);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AC020);
+void func_800AC020(s16 arg0, s16 arg1, s16 arg2, s32 arg3, u8 *arg4, u8 *arg5) {
+    SVECTOR v;
+    DVECTOR sxy;
+    s32 z;
+    s32 a;
+    s32 pan;
+    s32 b;
+
+    v.vx = arg0;
+    v.vy = arg1;
+    v.vz = arg2;
+    gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(&sxy);
+    gte_stsz(&z);
+    z /= 8;
+    if (z < 0) {
+        z = 0;
+    } else if (z >= 0x1000) {
+        z = 0xFFF;
+    }
+    a = z / 32;
+    b = (128 - a) * 2;
+    if ((u16)sxy.vx < 320) {
+        pan = sxy.vx * b / 320;
+        pan += a;
+    } else if (sxy.vx < 0) {
+        if (sxy.vx < -320) {
+            sxy.vx = -320;
+        }
+        pan = (sxy.vx + 320) * a / 320;
+    } else {
+        if (sxy.vx >= 640) {
+            sxy.vx = 639;
+        }
+        pan = (sxy.vx - 320) * a / 320;
+        pan += 255 - a;
+    }
+    *arg4 = pan;
+    *arg5 = (0x1000 - z) * 127 / 4096;
+}
 
 void func_800AC21C(s32 arg0, u16 arg1) {
     GameData *gd = D_8006794C->unk1C;
