@@ -26,7 +26,7 @@ typedef struct {
 
 /* visible rows of the item list (func_801F1334) */
 typedef struct {
-    s8 unk0;  /* row count */
+    u8 unk0;  /* row count */
     u8 unk1;  /* first item */
     s16 unk2; /* y offset */
 } ScrollPos;

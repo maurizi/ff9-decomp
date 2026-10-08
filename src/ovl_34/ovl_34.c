@@ -110,7 +110,24 @@ void func_801F043C(MenuList *m, RECT *src, RECT *dst) {
     dst->h = src->h - m->unk9;
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F049C);
+void func_801F049C(void) {
+    ScrollPos sp;
+    RECT r;
+    s32 i;
+    s32 y;
+
+    func_801F1334(&D_801F1558.unk3C, &sp);
+    i = 0;
+    r.x = 8;
+    r.w = 0x12C;
+    r.y = 0;
+    r.h = 0x14;
+    for (; i < sp.unk0; i++) {
+        r.y = i * 0x14 + (s16)(sp.unk2 + 0x2A);
+        func_801F0550(&r, 0x17, sp.unk1 + i);
+        func_8002DEE4(&r, 0x17, 0);
+    }
+}
 
 void func_801F0550(RECT *r, s32 otz, s32 i) {
     func_800269F4(r->x + 0x70, r->y + 1, otz, 4 - r->h);
