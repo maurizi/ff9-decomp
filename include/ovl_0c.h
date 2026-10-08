@@ -283,7 +283,6 @@ typedef struct {
     Unk800C95C8 *unk8;
     s32 unkC;
 } WmObjSlot;
-WmObjSlot *func_8001E350(s32);
 s32 func_8004AB64(Unk8004AB64 *);
 u8 *func_800634A8(s32);
 u8 *func_800634D8(s32);
@@ -862,13 +861,6 @@ extern s32 D_800CCF70; /* debug: last update step */
 extern s32 D_800CE264;
 extern u8 D_800CF44C;
 extern u8 D_800CF47D;
-/* pause screen (func_800ACEEC) */
-typedef struct {
-    u8 pad0[0x75C];
-    u8 unk75C; /* text width */
-    u8 unk75D; /* text height */
-} Unk800686D0;
-extern Unk800686D0 D_800686D0;
 extern TILE D_800CE0C8;
 extern DR_TPAGE D_800CE0D8;
 extern u32 D_800CE0E0;

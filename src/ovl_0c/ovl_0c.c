@@ -59,7 +59,7 @@ void func_800A8B14(void) {
     func_8001CD04(0xDA);
     func_8001CFB4();
     SetDispMask(1);
-    D_8006794C->unk1C->unk838 = (void (*)(s32, void *))func_800AA15C;
+    D_8006794C->unk1C->unk838 = (s32 (*)(s32, void *))func_800AA15C;
     D_8006794C->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AB0C0;
     D_8006794C->unk1C->unk8BC = func_800AD10C;
     D_8006794C->unk1C->unk84C = 0;
@@ -406,10 +406,10 @@ u32 func_800AA15C(s32 arg0, Unk8004AB64 *arg1) {
     t = func_8004AB64(arg1);
     if ((u32)t < 9) {
         id = t;
-        o = func_8001E350(t);
+        o = (WmObjSlot *)func_8001E350(t);
     } else {
         id = D_8006794C->unk1C->unk39 + 9;
-        o = func_8001E350(id);
+        o = (WmObjSlot *)func_8001E350(id);
         D_8006794C->unk1C->unk39++;
     }
     o->unk4 = arg0;
@@ -658,7 +658,7 @@ void func_800ACEEC(void) {
             D_800739B0[i].unk0 = 0;
         }
         ClearOTag(&D_800CE0E0, 1);
-        func_80027834((320 - D_800686D0.unk75C) / 2, (218 - D_800686D0.unk75D) / 2, &D_800CE0E0, 0xEB, 0, buf, D_800CE098);
+        func_80027834((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &D_800CE0E0, 0xEB, 0, buf, D_800CE098);
         setlen(&D_800CE0C8, 3);
         D_800CE0C8.code = 0x62;
         setRGB0(&D_800CE0C8, 0x60, 0x60, 0x60);

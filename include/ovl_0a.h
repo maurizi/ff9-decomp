@@ -646,7 +646,6 @@ void func_800B51D0(void);
 void func_800B5290(void);
 void func_800B52DC(void);
 void func_800B532C(void);
-s32 func_800C44F4(u32);
 void func_800B57C8(void);
 void func_800B1CE4(void);
 /* func_800AA0C8: some callers pass two arguments; no prototype */
@@ -781,7 +780,7 @@ s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 void func_800C85B8(s32, s32);
 void func_800B5794(void);
-void func_800AAB30(s32, void *);
+s32 func_800AAB30(s32, void *);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 D_80071E34;

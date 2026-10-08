@@ -15,7 +15,10 @@ import sys
 
 DEFAULT_YAMLS = ["config/slus_012.51.yaml"]
 
-FUNC_DEF = re.compile(r"^[A-Za-z_][^;{}()]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{", re.M)
+# ANSI or K&R definitions (`f(a, b)\n    s32 a;\n    u16 b;\n{`).
+FUNC_DEF = re.compile(
+    r"^[A-Za-z_][^;{}()]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:[A-Za-z_][^;{}()]*;\s*)*\{", re.M)
+ASM_SLOT = re.compile(r'^INCLUDE_ASM\("[^"]+",\s*(\w+)\);', re.M)
 INCLUDE = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*(\w+)\);\n', re.M)
 # Data converted from INCLUDE_RODATA to C, e.g. `const u8 D_801EDF84[0x1260] = {...};`
 DATA_DEF = re.compile(r"^(?:static\s+)?(?:const\s+)?[A-Za-z_][\w \*]*?\b(D_[0-9A-F]{8})\b[^;={(]*=\s*\{", re.M)
@@ -97,6 +100,14 @@ def main():
         _, bodies = split_c(text)
         for name, body in bodies.items():
             if EMPTY_BODY.search(body):
+                # splat regenerates trivial functions as `void f(void) {}`; keep the
+                # hand-written signature if it differs.
+                for npath in [p for p in new if os.path.dirname(p) == os.path.dirname(path)]:
+                    _, nb = split_c(new[npath])
+                    if name in nb and EMPTY_BODY.search(nb[name]):
+                        if nb[name] != body:
+                            new[npath] = new[npath].replace(nb[name], body, 1)
+                        break
                 continue
             pat = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
             # Only files of the same binary: overlays at the same address reuse names.
@@ -107,6 +118,17 @@ def main():
                     break
             else:
                 missing.append((path, name))
+
+    # Safety net: anything that was C before must not come back as INCLUDE_ASM.
+    for path, text in old.items():
+        was_asm = set(ASM_SLOT.findall(text))
+        siblings = [p for p in new if os.path.dirname(p) == os.path.dirname(path)]
+        now_asm = set().union(*(set(ASM_SLOT.findall(new[p])) for p in siblings)) if siblings else set()
+        old_asm_all = set().union(*(set(ASM_SLOT.findall(old[p])) for p in old
+                                    if os.path.dirname(p) == os.path.dirname(path)))
+        for name in sorted(now_asm - old_asm_all):
+            if re.search(r"\b" + re.escape(name) + r"\s*\(", text):
+                missing.append((path, name + " (was C, would revert to asm)"))
 
     for path, text in new.items():
         open(path, "w").write(text)
