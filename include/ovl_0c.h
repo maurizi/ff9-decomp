@@ -103,6 +103,17 @@ typedef struct WmLNode {
     u8 unkB;
 } WmLNode; /* 0xC */
 
+/* object tested by func_800C95C8 (same code in ovl_0a/ovl_0b) */
+typedef struct {
+    u16 unk0; /* flags; 0x10: behind the camera */
+    u8 pad2[0x1C - 2];
+    u16 *unk1C; /* parent flags */
+    u8 pad20[0x38 - 0x20];
+    s32 unk38; /* position */
+    s32 unk3C;
+    s32 unk40;
+} Unk800C95C8;
+
 /* relocatable block: offsets are turned into pointers by func_800BA528 */
 typedef struct {
     s32 unk0;

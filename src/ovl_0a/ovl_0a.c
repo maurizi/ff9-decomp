@@ -843,7 +843,27 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B71E0);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B7CEC);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B7E30);
+void func_800B7E30(Unk800C95C8 *arg0) {
+    SVECTOR v;
+    s32 sz;
+
+    arg0->unk0 &= ~0x10;
+    if (arg0->unk1C != NULL) {
+        arg0->unk0 |= *arg0->unk1C & 0x10;
+    } else {
+        v.vx = arg0->unk38;
+        v.vy = arg0->unk3C;
+        v.vz = arg0->unk40;
+        gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+        gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+        gte_ldv0(&v);
+        gte_rtps();
+        gte_stsz(&sz);
+        if (sz == 0) {
+            arg0->unk0 |= 0x10;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B7F14);
 

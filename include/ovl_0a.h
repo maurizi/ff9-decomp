@@ -356,6 +356,17 @@ typedef struct {
     Unk800AA39CEntry unk4[1];
 } Unk800AA39C;
 
+/* object tested by func_800B7E30 (same code in ovl_0b/ovl_0c) */
+typedef struct {
+    u16 unk0; /* flags; 0x10: behind the camera */
+    u8 pad2[0x1C - 2];
+    u16 *unk1C; /* parent flags */
+    u8 pad20[0x38 - 0x20];
+    s32 unk38; /* position */
+    s32 unk3C;
+    s32 unk40;
+} Unk800C95C8;
+
 /* ---- overlay functions ---- */
 void func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);

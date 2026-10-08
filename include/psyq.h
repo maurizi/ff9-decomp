@@ -97,6 +97,39 @@ typedef struct {
 
 MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
 
+/* libgte inline macros (PsyQ inline_c.h); they expand to the same asm text */
+#define gte_SetRotMatrix(r0) __asm__ volatile( \
+    "lw\t$12, 0(%0);" \
+    "lw\t$13, 4(%0);" \
+    "ctc2\t$12, $0;" \
+    "ctc2\t$13, $1;" \
+    "lw\t$12, 8(%0);" \
+    "lw\t$13, 12(%0);" \
+    "lw\t$14, 16(%0);" \
+    "ctc2\t$12, $2;" \
+    "ctc2\t$13, $3;" \
+    "ctc2\t$14, $4" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetTransMatrix(r0) __asm__ volatile( \
+    "lw\t$12, 20(%0);" \
+    "lw\t$13, 24(%0);" \
+    "ctc2\t$12, $5;" \
+    "lw\t$14, 28(%0);" \
+    "ctc2\t$13, $6;" \
+    "ctc2\t$14, $7" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_ldv0(r0) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 4(%0)" \
+    : : "r"(r0))
+/* GTE command words; the two leading nops are emitted as .word 0 so that the
+ * assembler (reorder mode) keeps them */
+#define GTE_NOPS ".word\t0x00000000;.word\t0x00000000;"
+#define gte_rtps() __asm__ volatile(GTE_NOPS ".word\t0x4A180001")
+#define gte_stsz(r0) __asm__ volatile( \
+    "swc2\t$19, 0(%0)" \
+    : : "r"(r0) : "memory")
+
 long VSync(long mode);
 /* C library: gcc 2.8 expands small constant-size memcpy inline (lwl/lwr) */
 void *memcpy(void *, const void *, u32);
