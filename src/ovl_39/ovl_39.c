@@ -833,7 +833,38 @@ void func_801F89A0(Window *w) {
     D_801FB1A8.unk2 = 2;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F89B8);
+MenuView *func_801F89B8(MenuList *l, MenuView *v) {
+    s32 d;
+    u8 f;
+
+    f = l->unk8;
+    if (f & 4) {
+        if (f & 2) {
+            d = l->unkD - l->unk9;
+            v->unk0 = (d + 0x3B) / 60;
+            v->unk1 = l->unk5 + (l->unk3 - v->unk0);
+            v->unk2 = (l->unk3 - v->unk0) * 60;
+        } else {
+            d = l->unkD - l->unk9;
+            v->unk0 = (d + 0x3B) / 60;
+            v->unk1 = l->unk5;
+            v->unk2 = 0;
+        }
+    } else if (f & 2) {
+        v->unk0 = l->unk3 + 1;
+        v->unk1 = l->unk5 - 1;
+        v->unk2 = l->unk9 - 60;
+    } else if (f & 1) {
+        v->unk1 = l->unk5;
+        v->unk0 = l->unk3 + 1;
+        v->unk2 = -l->unk9;
+    } else {
+        v->unk1 = l->unk5;
+        v->unk0 = l->unk3;
+        v->unk2 = 0;
+    }
+    return v;
+}
 
 MenuView *func_801F8B10(MenuList *l, MenuView *v) {
     s32 x;
