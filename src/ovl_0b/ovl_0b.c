@@ -606,7 +606,43 @@ s32 func_800B065C(BtlUnit *arg0, BtlUnit *arg1, BtlCmd *arg2) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B081C);
+u16 func_800B081C(s32 arg0) {
+    BtlUnit *best = NULL;
+    BtlUnit *t = func_800BED10(arg0);
+    BtlUnit *u;
+    GameData *g;
+    s32 v;
+    if (t->unk3C & 0x101) {
+        return 0;
+    }
+    g = D_8006794C->unk1C;
+    if (((g->unk3C + ((t->unk68 >> 1) & 0xF))->unkA & 2) && t->unk28 < (t->unk24->unk0 >> 1)) {
+        for (u = g->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+            if ((u->unkC4[1] & 0x40) && !(u->unk3C & 0x43001103) && u != t && (best == NULL || best->unk28 < u->unk28)) {
+                best = u;
+            }
+        }
+    }
+    if (best == NULL && (t->unk3C & 0x200)) {
+        for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+            if ((u->unkC4[1] & 0x20) && !(u->unk3C & 0x43001103) && u != t && (best == NULL || best->unk28 < u->unk28)) {
+                best = u;
+            }
+        }
+    }
+    if (best == NULL) {
+        return 0;
+    }
+    v = (best->unk68 & 1) << 11;
+    best->unkA0->unk22 = v;
+    best->unk86[1] = v;
+    best->unk8C[0] = t->unk8C[0];
+    best->unk8C[2] = t->unk8C[2];
+    t->unk8C[2] += 0xFE700000;
+    best->unk9C->unkC = (BtlUnit9CC *)best->unkA4[15];
+    best->unk68 |= 0x2000000;
+    return best->unkB0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B0A6C);
 
