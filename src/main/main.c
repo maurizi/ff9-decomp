@@ -1896,7 +1896,45 @@ void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
     func_8002DEE4(&r, otz, 0);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027B5C);
+u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
+    s32 idx;
+    s32 adv;
+    Unk800686E8 *g;
+    DrTpageWords *t;
+
+    while (*s != 0) {
+        if (*s != ' ') {
+            if (*s == '/') {
+                idx = 11;
+                adv = 4;
+            } else {
+                adv = 5;
+                if (*s != '%') {
+                    idx = *s - '0';
+                } else {
+                    idx = 10;
+                }
+            }
+            setlen(p, 4);
+            p->rgbc = 0x64808080;
+            p->xy = (x & 0xFFFF) | (y << 16);
+            g = &D_800687E0[idx];
+            p->wh = g->unk4 | (g->unk5 << 16);
+            p->uvclut = g->unk0;
+            addPrim(ot, p);
+            p++;
+        } else {
+            adv = 5;
+        }
+        s++;
+        x += adv;
+    }
+    t = (DrTpageWords *)p;
+    setlen(t, 1);
+    t->code = 0xE100061F;
+    addPrim(ot, t);
+    return (u8 *)(t + 1);
+}
 
 void func_80027CB0(void) {
     u8 *p = D_8006BB74;

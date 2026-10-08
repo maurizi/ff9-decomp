@@ -380,6 +380,7 @@ typedef struct {
 } Unk800686E8;
 extern Unk800686E8 D_800686E8;
 extern Unk800686E8 D_800686D0[];
+extern Unk800686E8 D_800687E0[]; /* digit glyphs */
 
 /* 12-tick toggle timer (func_80028CF8/D08/D2C) */
 typedef struct {
