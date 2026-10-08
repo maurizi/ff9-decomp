@@ -2763,7 +2763,35 @@ s32 func_800E9A00(s32 arg0, s32 arg1) {
     return v;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E9A74);
+void func_800E9A74(void) {
+    GameData *g;
+    D_80104E68.unk1 = 1;
+    func_800EA5C4();
+    func_800EA548();
+    func_800F4778();
+    if (D_80104E68.unkF != 0) {
+        func_800E9BBC();
+    }
+    g = D_8006794C->unk1C;
+    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->unk0 & 0x20)) {
+        if (D_80104E68.unkC == 0 && (u8)func_800E9FF4()) {
+            func_800EB578(0xBA);
+            func_800F4D40();
+            func_800EA4D0();
+            func_800EA378();
+            func_800EA400();
+            func_800EA440();
+            func_800EA498();
+            func_800F4A00();
+            func_800EB578(0xBB);
+        }
+    }
+    D_80104E68.unk1C++;
+    D_80077148.unk8++;
+    D_80104E68.unk18++;
+    D_80104E68.unkF = 0;
+    D_80104E68.unk1 = 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E9BBC);
 
@@ -3235,7 +3263,7 @@ void func_800EB54C(Unk800EB518 *arg0) {
     }
 }
 
-void func_800EB578(void) {
+void func_800EB578(s32 arg0) {
 }
 
 u8 *func_800EB580(void) {

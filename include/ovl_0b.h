@@ -330,7 +330,7 @@ extern Unk80104FA8 *D_80104FA8;
 /* battle menu / frame state */
 typedef struct {
     u8 unk0;
-    u8 pad1;
+    u8 unk1;
     u8 unk2;
     s8 unk3;
     u8 unk4;
@@ -351,7 +351,8 @@ typedef struct {
     u8 unk13;
     s8 unk14;
     u8 unk15;
-    u8 pad16[0x1C - 0x16];
+    u8 pad16[0x18 - 0x16];
+    s32 unk18;
     s32 unk1C;
 } Unk80104E68;
 extern volatile Unk80104E68 D_80104E68;
@@ -1723,6 +1724,18 @@ typedef struct {
 extern Unk800F8F98 D_800F8F98[];
 extern Unk800F8F98 D_800F8F18[];
 void func_800B41A4(BtlUnit *, u8);
+void func_800E9BBC(void);
+s32 func_800E9FF4(void);
+void func_800EA5C4(void);
+void func_800EA548(void);
+void func_800F4778(void);
+void func_800EB578(s32);
+void func_800F4D40(void);
+void func_800EA4D0(void);
+void func_800EA400(void);
+void func_800EA440(void);
+void func_800EA498(void);
+void func_800F4A00(void);
 s32 func_800B0CF8(s32, u32);
 u32 func_800C8DE0(u32, s32, s32, s32);
 void func_8002F1CC(MenuList *, s32);
