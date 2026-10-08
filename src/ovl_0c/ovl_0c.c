@@ -1262,7 +1262,121 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF66C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF8C0);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AFCE0);
+void func_800AFCE0(void) {
+    s32 tmp;
+    s32 h;
+    s32 cell;
+    Unk16D8 *e;
+    Unk8004AB64 *act;
+    Unk800CCCC0 *cc;
+
+    D_800CCE54 = 0;
+    D_800CE3C0 = 0;
+    D_800CE278 = 0;
+    D_800CE3E0 = 0;
+    if (func_8004AE00() != NULL) {
+        D_800CE3DC = func_8004AE00();
+        D_800CE3DC->unk40.vx = D_800CE3DC->unk14.vx;
+        D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy;
+        D_800CE3DC->unk40.vz = D_800CE3DC->unk14.vz;
+    }
+    for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
+        act = e->unk4;
+        cc = &D_800CCCC0[act->unk11];
+        if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1)) {
+            switch (act->unk11) {
+            case 7:
+                cc->unk3 = D_800CE3C4 == 6;
+                break;
+            case 11:
+                D_800CE270 = act;
+                break;
+            }
+            if (act == D_800CE3DC && func_8004AE84() != 0) {
+                func_800B0378(cc);
+            } else {
+                cc = &D_800CCCC0[act->unk11];
+                func_800BE748(&act->unk14, &cc->unk8, &tmp, &D_800CE288[cc->unk5], (u16 *)&h);
+                if (act->unk11 == 8) {
+                    h = 0;
+                }
+                cc->unkE = h;
+            }
+            func_800B01F0(act);
+        }
+    }
+    func_80064C24(0);
+    switch (D_800CE3C8->unk0) {
+    case 0:
+    case 3:
+        if (D_800D33F4 != 0) {
+            func_800B2C24();
+        }
+        break;
+    case 1:
+    case 2:
+        func_800B2E54();
+        break;
+    }
+    if ((u8)D_800CE3C4 >= 1 && (u8)D_800CE3C4 <= 6) {
+        D_800CCCC0[1].unkC = D_800CCCC0[D_800CE3DC->unk11].unkC;
+    }
+    if (D_800CE268 != NULL) {
+        if (D_800CE268->unk24 < 0) {
+            D_800CE268->unk24 += 10;
+        }
+        if (D_800CE268->unk24 > 0) {
+            D_800CE268->unk24 -= 10;
+        }
+        if (D_800CE268->unk24 > -10 && D_800CE268->unk24 < 10) {
+            D_800CE268->unk24 = 0;
+        }
+    }
+    if (D_800CE3D0 != NULL) {
+        if (D_800CE3C8->unk0 != 1) {
+            if (D_800CE3D0->unk24 < 14) {
+                D_800CE3D0->unk24 += 10;
+            }
+            if (D_800CE3D0->unk24 >= 15) {
+                D_800CE3D0->unk24 -= 10;
+            }
+            if (D_800CE3D0->unk24 >= 5 && D_800CE3D0->unk24 < 24) {
+                D_800CE3D0->unk24 = 14;
+            }
+        } else if (D_800CE209 == 0) {
+            if (D_800CE3D0->unk24 < 14) {
+                D_800CE3D0->unk24 += 16;
+            }
+            if (D_800CE3D0->unk24 >= 15) {
+                D_800CE3D0->unk24 -= 16;
+            }
+            if (D_800CE3D0->unk24 >= -1 && D_800CE3D0->unk24 < 30) {
+                D_800CE3D0->unk24 = 14;
+            }
+        }
+    }
+    if (func_8004AE00() != NULL) {
+        if (D_800CE3E0 == 0 || D_800CE3C0 < 300) {
+            if (D_800CE100 > 0) {
+                D_800CE100 -= 10;
+                if (D_800CE100 < 0) {
+                    D_800CE100 = 0;
+                }
+            }
+            if (D_800CE100 < 0) {
+                D_800CE100 += 10;
+                if (D_800CE100 > 0) {
+                    D_800CE100 = 0;
+                }
+            }
+        }
+        cc = &D_800CCCC0[D_800CE3DC->unk11];
+        if ((cc->unk8 & 0xC000) && D_800CCE4D != 0) {
+            func_800BC130(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, &cell);
+            func_8004B158(cell % D_800D32F0, cell / D_800D32F0, (cc->unk8 & 0xC000) >> 14);
+        }
+    }
+}
 
 void func_800B01F0(Unk8004AB64 *arg0) {
     u8 flat;
@@ -1342,7 +1456,7 @@ void func_800B30C0(void) {
             if (o->unk5 == 4) {
                 pos = o->unk14;
                 c = &D_800CCCC0[o->unk11];
-                func_800BE748(&pos, &c->unk8, &tmp, 0, &h);
+                func_800BE748(&pos, &c->unk8, &tmp, NULL, &h);
                 c->unkE = h;
                 c->unkC = func_800B36B4(c->unk0, c->unk8, 0);
                 func_800B01F0(o);
@@ -2912,7 +3026,7 @@ void func_800BE6B4(void) {
     }
 }
 
-s32 func_800BE748(VECTOR *arg0, u32 *arg1, s32 *arg2, s32 arg3, u16 *arg4) {
+s32 func_800BE748(VECTOR *arg0, u32 *arg1, s32 *arg2, Unk800CE288 *arg3, u16 *arg4) {
     VECTOR pos;
     VECTOR rel;
     VECTOR o;

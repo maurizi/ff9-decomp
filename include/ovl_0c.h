@@ -471,7 +471,6 @@ s32 func_800B88C0(s32);
 void func_800C2A80(s32, s32, s32);
 s32 func_800B36B4(s32, u32, u8 *);
 void func_800B01F0(Unk8004AB64 *);
-s32 func_800BE748(VECTOR *, u32 *, s32 *, s32, u16 *);
 void func_800B4720(s32);
 void func_800B4BDC(s32);
 s32 func_800B5CD0(s32, s32, s32);
@@ -574,6 +573,7 @@ void func_800CC940(void);
 extern RECT *D_800CE04C;
 extern u8 D_800CE050[];
 extern u8 D_800CCE4B;
+extern u8 D_800CCE4D;
 extern Unk800D2FF8 *D_800D27F0;
 extern u8 *D_800CE058[5];
 extern char D_800A79D0[];
@@ -821,6 +821,11 @@ extern Unk800CF450 *D_800CF450;
 extern u16 (*D_800D32E4)[12];
 extern s32 D_800D32F8[3];
 extern u8 D_800D330C[3];
+extern s32 D_800CD078[3]; /* sound source x */
+extern s32 D_800CD084[3]; /* sound source z */
+extern u8 D_800CD090[3]; /* sound ids */
+extern u8 D_800D30CD;
+extern s32 D_800D3300;
 extern u8 D_800D5410;
 extern u8 D_800D1FD0;
 extern u8 D_800D30CB;
@@ -872,15 +877,16 @@ typedef struct {
     s16 unk4[6];
     u16 unk10[6];
 } Unk800CE288; /* 0x1C */
+s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
 extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
-extern s8 D_800CE209;
+extern u8 D_800CE209;
 extern s8 D_800CE25D;
 extern u8 D_800CE25E;
 extern s32 D_800CE260;
-extern s32 D_800CE268;
+extern Unk8004AB64 *D_800CE268;
 extern s8 D_800CE26D;
-extern s32 D_800CE270;
+extern Unk8004AB64 *D_800CE270;
 extern s8 D_800CE274;
 extern s32 D_800CE278;
 extern s32 D_800CE280;
@@ -888,7 +894,7 @@ extern s32 D_800CE284;
 extern u8 D_800CE3BE;
 extern s32 D_800CE3C0;
 extern u16 D_800CE3CC;
-extern s32 D_800CE3D0;
+extern Unk8004AB64 *D_800CE3D0;
 extern s32 D_800CE3D4;
 extern s32 D_800CE3D8;
 extern s32 D_800CE3E0;

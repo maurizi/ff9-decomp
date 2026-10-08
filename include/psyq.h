@@ -398,6 +398,7 @@ void SetTile(TILE *p);
 u16 GetTPage(int tp, int abr, int x, int y);
 u16 GetClut(int x, int y);
 void SetPolyFT4(POLY_FT4 *p);
+void SetPolyF4(POLY_F4 *p);
 
 void *memmove(void *dst, const void *src, int n);
 int sprintf(char *buf, const char *fmt, ...);

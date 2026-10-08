@@ -368,10 +368,9 @@ typedef struct {
 } Unk800C9DA4Ent; /* 0xC */
 
 typedef struct {
-    s32 unk0;
+    u8 *unk0; /* -> draw buffer index */
     s32 unk4;
-    s32 unk8;
-    s32 unkC;
+    u32 *unk8[2]; /* ordering tables, per draw buffer */
     Unk800C9DA4Hdr *unk10;
     s32 unk14;
     u8 *unk18;
@@ -754,6 +753,23 @@ typedef struct {
     BgAnim unk4[1];
 } BgAnimHdr;
 
+/* screen fade quads (D_800CA140, func_800C02D0) */
+typedef struct {
+    u8 unk0; /* flags */
+    u8 unk1; /* rgb */
+    u8 unk2;
+    u8 unk3;
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    u8 padA[2];
+    POLY_F4 unkC[2][4]; /* per draw buffer */
+    DR_TPAGE unkCC[2];
+} FieldFade; /* 0xDC */
+
+extern FieldFade D_800CA140[];
+extern u16 D_800C9DA0; /* FieldFade count */
+
 /* object model slot (func_8001E350) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */
@@ -842,6 +858,7 @@ extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
 extern u16 D_800C9D44;
+extern s16 D_800C9DDC;
 /* mask-bit primitives, one per draw buffer (func_800AE788) */
 typedef struct {
     u32 tag;

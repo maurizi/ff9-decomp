@@ -1979,10 +1979,10 @@ void func_800C0D38(void) {
 }
 
 void func_800C0D40(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
-    D_800C9DA4.unk0 = arg0;
+    D_800C9DA4.unk0 = (u8 *)arg0;
     D_800C9DA4.unk4 = arg1;
-    D_800C9DA4.unk8 = arg2;
-    D_800C9DA4.unkC = arg3;
+    D_800C9DA4.unk8[0] = (u32 *)arg2;
+    D_800C9DA4.unk8[1] = (u32 *)arg3;
     D_800C9DA4.unk10 = 0;
     D_800C9DA4.unk24 = 0;
     D_800C9DA4.unk28 = NULL;
