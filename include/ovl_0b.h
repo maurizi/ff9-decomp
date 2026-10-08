@@ -1675,7 +1675,7 @@ void func_800CF808(s16 *, s16 *, s16 *);
 void func_800CFD78(s16 *, s16 *, s32, s16 *);
 
 typedef struct {
-    u8 pad0[2];
+    u16 unk0; /* text offset into D_800FD7AC */
     u16 unk2; /* text offset into D_800FD8CC */
     u8 pad4[6 - 4];
     u8 unk6;
@@ -1742,6 +1742,8 @@ extern RECT D_800A858C;
 extern RECT D_800A8594;
 extern s16 D_801051E8[][2];
 void func_800B4234(BtlUnit *);
+extern u8 D_800FD7AC[];
+void func_800EC928(void);
 s32 func_800E865C(s32, s32);
 void func_800DDF10(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);

@@ -1346,7 +1346,22 @@ void func_800BA4F0(BtlCalc *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BA534);
+void func_800BA534(BtlCalc *arg0) {
+    BtlUnit *t = arg0->unk4;
+    BtlUnit *u;
+    s32 d;
+    if (arg0->unk0->unkA0->unk22 == t->unkA0->unk22 || (D_8006794C->unk1C->unk8E4.battle->unkD83 != 0 && (t->unk68 & 1))) {
+        arg0->unk14 = arg0->unk14 * 3 >> 1;
+    }
+    u = arg0->unk0;
+    if (!(u->unk68 & 1) || (!(u->unkC4[0] & 0x800) && !(u->unk74[0] & 2))) {
+        d = (u->unk68 >> 8) & 3;
+        d -= (arg0->unk4->unk68 >> 8) & 3;
+        if ((d < 0 ? -d : d) >= 2) {
+            arg0->unk14 /= 2;
+        }
+    }
+}
 
 void func_800BA660(BtlCalc *arg0) {
     BtlUnit *u = arg0->unk0;
