@@ -1345,6 +1345,7 @@ void func_80035680(void);
 void func_80035B90(Unk80035B90 *);
 void func_80032A18(u8 *);
 void func_8005658C(s32 *, Unk8005EBB4 *, u32, s32);
+s32 func_80056750(s32 *, s32, s32, u32);
 typedef struct {
     s32 unk0[4];
 } Unk80010CD0;
