@@ -252,6 +252,9 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "ctc2\t$13, $6;" \
     "ctc2\t$14, $7" \
     : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetGeomScreen(r0) __asm__ volatile( \
+    "ctc2\t%0, $26" \
+    : : "r"(r0))
 #define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
     "sll\t$12, %0, 16;" \
     "sll\t$13, %1, 16;" \

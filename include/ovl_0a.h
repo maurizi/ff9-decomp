@@ -202,7 +202,8 @@ typedef struct {
     s16 unk16;
     s16 unk18;
     s16 unk1A;
-    u8 pad1C[0x24 - 0x1C];
+    MATRIX *unk1C;
+    u16 *unk20;
     u16 unk24;
     u16 unk26;
     u16 unk28;
@@ -238,7 +239,10 @@ typedef struct Unk800C9DB4 {
     u16 unk22;
     u16 unk24;
     u16 unk26;
-    u8 pad28[0x30 - 0x28];
+    u8 pad28[2];
+    u16 unk2A;
+    u8 pad2C[2];
+    u16 unk2E;
     u16 unk30; /* screen origin x */
     u16 unk32; /* screen origin y */
 } Unk800C9DB4;
@@ -320,7 +324,9 @@ typedef struct {
 } Unk800C9DB4Obj; /* 0x38 */
 
 typedef struct {
-    u8 pad0[0x20];
+    u16 unk0; /* projection distance */
+    s16 unk2[3][3];
+    s32 unk14[3];
     u16 unk20;
     u16 unk22;
     s16 unk24;
@@ -329,7 +335,8 @@ typedef struct {
     s16 unk2A;
     s16 unk2C;
     s16 unk2E;
-    u8 pad30[0x34 - 0x30];
+    u16 unk30;
+    u8 pad32[0x34 - 0x32];
 } Unk800C9DB4Cam; /* 0x34 */
 
 /* sequence header (func_800BD3A0): offsets from the header start */

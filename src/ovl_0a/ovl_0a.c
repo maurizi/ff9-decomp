@@ -1973,7 +1973,33 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0650);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C07D8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0BCC);
+s32 func_800C0BCC(s32 arg0) {
+    Unk800C9DB4Cam *c;
+    Unk800C9DB4 *h;
+
+    h = D_800C9DB4;
+    c = (Unk800C9DB4Cam *)((u8 *)h + h->unk18) + arg0;
+    *D_800CA068.unk20 = c->unk0;
+    gte_SetGeomScreen(c->unk0);
+    D_800CA068.unk1C->m[0][0] = c->unk2[0][0];
+    D_800CA068.unk1C->m[0][1] = c->unk2[0][1];
+    D_800CA068.unk1C->m[0][2] = c->unk2[0][2];
+    D_800CA068.unk1C->m[1][0] = c->unk2[1][0];
+    D_800CA068.unk1C->m[1][1] = c->unk2[1][1];
+    D_800CA068.unk1C->m[1][2] = c->unk2[1][2];
+    D_800CA068.unk1C->m[2][0] = c->unk2[2][0];
+    D_800CA068.unk1C->m[2][1] = c->unk2[2][1];
+    D_800CA068.unk1C->m[2][2] = c->unk2[2][2];
+    D_800CA068.unk1C->t[0] = c->unk14[0];
+    D_800CA068.unk1C->t[1] = c->unk14[1];
+    D_800CA068.unk1C->t[2] = c->unk14[2];
+    h->unk2A = c->unk2A;
+    h->unk2E = c->unk2E;
+    D_800CA068.unk75 = arg0;
+    D_800CA068.unk0 |= 0x80;
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30 = c->unk30;
+    return 1;
+}
 
 void func_800C0D38(void) {
 }
