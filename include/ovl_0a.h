@@ -777,6 +777,33 @@ typedef struct {
 extern FieldFade D_800CA140[];
 extern u16 D_800C9DA0; /* FieldFade count */
 
+/* 3D sprite data (FieldEnt.unk18) */
+typedef struct {
+    u16 unk0; /* frame count | 0x8000 */
+    u16 unk2; /* tpage */
+    u16 unk4; /* clut */
+    u8 unk6;  /* width */
+    u8 unk7;  /* height */
+    u16 unk8[1]; /* frame offsets, then the u16-counted table */
+} FieldSprHdr;
+
+/* parameter block for func_800C9AB8 */
+typedef struct {
+    u16 *unk0;
+    u8 *unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+} FieldSprArgs;
+
+u8 *func_800C970C(u8 *, FieldSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, u32 *);
+u8 *func_800C9AB8(u8 *, FieldSprArgs *, u8 *, u32 *);
+void func_800316D8(SVECTOR *, MATRIX *);
+
 /* object placement (func_800AD488) */
 typedef struct {
     unsigned unk0 : 8;
