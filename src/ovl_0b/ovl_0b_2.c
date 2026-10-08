@@ -3339,7 +3339,25 @@ void func_800EBD88(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EBE1C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EBEFC);
+void func_800EBEFC(s32 arg0) {
+    s32 i;
+    if (func_80027E5C(arg0, 1) != 0) {
+        if (arg0 >= 0xE0) {
+            i = func_800EC44C(arg0);
+            if (i != 0xFF && D_80104FA8->unk4[i]->unk1 == 0) {
+                D_80104FA8->unk4[i] = 0;
+                D_80104FA8->unk0--;
+            }
+        }
+        if (arg0 < 0x58 && (D_8006E0E8[arg0].unk0 & 4)) {
+            i = func_800EC49C(arg0);
+            if (i != 0xFF && D_80104FA8->unk80[i]->unk1 == 0) {
+                D_80104FA8->unk80[i] = 0;
+                D_80104FA8->unk2--;
+            }
+        }
+    }
+}
 
 void func_800EC008(void) {
     Unk80104FA8 *p = func_800F2A60(0x2E0);
