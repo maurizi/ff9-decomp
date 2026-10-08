@@ -434,12 +434,12 @@ void func_801F5D14(void) {
     func_8002DD00(D_801FC2F8.unk38);
 }
 
-void func_801F5D40(void) {
+void func_801F5D40(Window *w) {
     D_801FC2F8.unk0 = 2;
     func_801F442C(0x12);
 }
 
-void func_801F5D6C(void) {
+void func_801F5D6C(Window *w) {
     D_801FC2F8.unk0 = 1;
     func_801F442C(0xF);
 }

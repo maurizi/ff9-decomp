@@ -120,6 +120,10 @@ extern s32 D_801FC050[3]; /* row y offsets */
 extern u8 D_801FC05C[4];
 extern u8 D_801FC060[]; /* gil suffix */
 extern s32 D_801FC064[3]; /* row label text ids */
+extern s32 D_801FC0A8[4];
+extern u8 D_801FC0B8[4];
+extern u8 D_801FC0BC[]; /* gil suffix */
+extern s32 D_801FC0C0[4];
 void func_80026C34(s32, s32, s32, s32, u8);
 extern u8 D_801F3F08[];
 extern u8 D_801F3F88[];
@@ -164,6 +168,10 @@ void func_801F57C8(void);
 void func_801F5BCC(s32, s32, s32, MenuView *);
 void func_801F5D14(void);
 void func_801F5B64(void);
+void func_801F551C(Window *);
+void func_801F5D40(Window *);
+void func_801F5D6C(Window *);
+extern s32 D_800704A4;
 void func_801F7614(void);
 void func_801F8680(void);
 void func_801F7528(void);

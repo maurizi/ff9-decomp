@@ -117,6 +117,28 @@ typedef struct {
     s32 unk5AC;
 } TmState;
 
+typedef struct {
+    u8 v[8];
+} TmDirMask; /* card arrow bit for each direction */
+extern TmDirMask D_800A73BC;
+
+typedef struct {
+    u32 unk0; /* id */
+    u32 unk4; /* flags: bpp in low bits */
+    u32 unk8; /* clut block length */
+    s16 unkC[4]; /* clut rect */
+    u32 clut[1];
+} TmTim; /* TIM image */
+
+typedef struct {
+    u32 len;
+    s16 x;
+    s16 y;
+    s16 w;
+    s16 h;
+    u32 data[1];
+} TmTimImage; /* TIM pixel block */
+
 extern s32 D_800B365C;
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
@@ -135,7 +157,7 @@ s32 func_800A7884(void);
 s32 func_800A78B8(void);
 u8 *func_800A93A0(s32);
 void func_800ABEC4(TmState *);
-void func_800AF2CC(TmState *, TmCard *, s32, s32);
+void func_800AF2CC(TmState *, TmCard *, s32);
 void func_800AF388(TmState *, TmCard *);
 void func_800AF3E8(TmState *, TmCard *, s32, s32);
 void func_800B0618(TmState *);
@@ -151,6 +173,7 @@ void func_800AB8E8(s32);
 void func_800AE54C(TmState *);
 void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
+void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
 TmCard *func_800AE9D0(TmState *, s32, s32);
 void func_800AEA24(TmState *);

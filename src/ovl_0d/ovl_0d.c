@@ -576,7 +576,9 @@ void func_800AF2A8(TmState *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF2CC);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF388);
+void func_800AF388(TmState *s, TmCard *c) {
+    func_800AF2CC(s, c, func_80062B3C() % 3);
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF3E8);
 
@@ -669,7 +671,21 @@ INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B1010);
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B1110);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B12F0);
+TmCard *func_800B12F0(TmState *s, TmPos *p, s32 dir, s32 owner) {
+    TmDirMask m = D_800A73BC;
+    TmCell *cell;
+    TmCard *c;
+
+    func_800B13C0(p, dir);
+    cell = func_800B19D4(s, p->unk0, p->unk4);
+    if (cell->unk0 == 0) {
+        c = cell->unk4;
+        if (c->unk14 != owner && (c->unk1 & m.v[dir])) {
+            return c;
+        }
+    }
+    return NULL;
+}
 
 void func_800B13C0(TmPos *p, s32 dir) {
     if (dir == 0) {

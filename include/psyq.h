@@ -151,6 +151,8 @@ u32 *ClearOTagR(u32 *ot, int n);
 void DrawOTag(u32 *p);
 void AddPrim(void *ot, void *p);
 void SetSprt(SPRT *p);
+u16 LoadTPage(u32 *pix, s32 tp, s32 abr, s32 x, s32 y, s32 w, s32 h);
+u16 LoadClut(u32 *clut, s32 x, s32 y);
 void DrawOTagEnv(u32 *p, DRAWENV *env);
 DRAWENV *PutDrawEnv(DRAWENV *env);
 DISPENV *PutDispEnv(DISPENV *env);
