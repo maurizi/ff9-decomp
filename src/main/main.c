@@ -2542,7 +2542,15 @@ void func_80032574(void) {
     func_80035430();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800325A4);
+void func_800325A4(void) {
+    D_80077DB0.unk0 = 0;
+    D_80077DB0.unk5 = 0;
+    D_80077DB0.unk1C = 0;
+    D_80077DB0.unk24 = 0;
+    D_80077DB0.unk4 = 0;
+    D_80077DB0.unk3 = 0;
+    func_80035430();
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800325E0);
 
@@ -2676,7 +2684,9 @@ u8 func_800339F4(s32 a, u8 b) {
     return D_8006CAA4[a][b != 0];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033A1C);
+u8 func_80033A1C(Character *c) {
+    return D_8006CAB8[c->unk34 & 0xF][(c->unkA & 0x10) != 0];
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033A50);
 
@@ -3175,7 +3185,15 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B040);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B098);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B120);
+s32 func_8004B120(s32 i) {
+    s32 t = D_8007AECC->unk16E4[i] + 9;
+    u32 r = t - D_8007ADFC;
+    s32 ret = 0;
+    if (r < 9) {
+        ret = r;
+    }
+    return ret;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B158);
 
@@ -3752,7 +3770,17 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054B78);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054E88);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054F80);
+s32 func_80054F80(void) {
+    D_800739B0[0].unk0 = 0;
+    D_800739B0[0].unk1 = 0;
+    D_800739B0[1].unk0 = 0;
+    D_800739B0[1].unk1 = 0;
+    D_8007BD38.unk0 = 0;
+    D_8007BD38.unk2 = 0;
+    D_8007BD38.unk4 = 0;
+    D_8007BD38.unkC = 0;
+    return 0;
+}
 
 s32 func_80054FB8(s32 a) {
     D_8007BD38.unk2 = a;
@@ -3942,7 +3970,12 @@ void func_8005581C(s32 a, s32 b) {
     func_8005C8BC(0xAB);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055850);
+void func_80055850(s32 a, s32 b, u8 c) {
+    D_80080AA0.unk0 = a;
+    D_80080AA0.unk4 = b & 0xFFFFFF;
+    D_80080AA0.unk8 = c;
+    func_8005C8BC(0xA2);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055894);
 
@@ -3957,7 +3990,12 @@ void func_80055908(s32 a, s32 b) {
     func_8005C8BC(0xAD);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005593C);
+void func_8005593C(s32 a, s32 b, u8 c) {
+    D_80080AA0.unk0 = a;
+    D_80080AA0.unk4 = b & 0xFFFFFF;
+    D_80080AA0.unk8 = c;
+    func_8005C8BC(0xA4);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055980);
 
@@ -4077,7 +4115,14 @@ void func_80055D60(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055D80);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055DCC);
+s32 func_80055DCC(void) {
+    s32 a[2];
+    do {
+        a[0] = D_800809E0;
+        a[1] = D_800809E0;
+    } while (a[0] != a[1]);
+    return a[0];
+}
 
 s32 func_80055DF4(void) {
     D_8008322C = 0;
@@ -4166,7 +4211,15 @@ s32 func_80056694(s32 a, s32 b) {
     return func_8005703C(a, b);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800566D0);
+void func_800566D0(void) {
+    s32 a[2];
+    do {
+        do {
+            a[0] = D_800809E0;
+            a[1] = D_800809E0;
+        } while (a[0] != a[1]);
+    } while (a[0] == 1);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056700);
 
@@ -4514,7 +4567,16 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C234);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C294);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C2F4);
+void func_8005C2F4(s32 *arg0) {
+    u32 i;
+    AkaoChannel *ch;
+    D_80080AC4 = *arg0;
+    ch = D_8007BD48;
+    for (i = 0; i < 0x20; i++) {
+        ch->unk11C |= 3;
+        ch++;
+    }
+}
 
 void func_8005C334(u16 *a) {
     D_80080A10->unk6C = *a;
@@ -4617,7 +4679,13 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E3FC);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005EB40);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005EBB4);
+void func_8005EBB4(AkaoChannel *ch, Unk8005EBB4 *p, s32 arg2) {
+    ch->unk120 = arg2;
+    ch->unk124 = p->unk4;
+    ch->unk12A = p->unkC;
+    ch->unk12C = p->unkE;
+    ch->unk11C |= 0x1FF80;
+}
 
 void func_8005EBE8(AkaoChannel *c, s32 i) {
     c->unk9A = i;
@@ -4706,7 +4774,14 @@ void func_8005F250(AkaoChannel *c) {
     c->unk34 &= ~0x40;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F264);
+void func_8005F264(AkaoChannel *ch) {
+    u8 *p = ch->unk0;
+    s32 v = *p;
+    ch->unk0 = p + 1;
+    ch->unkC0 = 0;
+    ch->unk11C |= 3;
+    ch->unkBE = ((v + 0x40) & 0xFF) << 8;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F298);
 

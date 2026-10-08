@@ -339,11 +339,18 @@ typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2; /* memory card slot */
-    u8 pad3[9 - 3];
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 pad6[9 - 6];
     u8 unk9;
     u8 padA[2];
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
     s32 unk10; /* frame counter */
+    u8 pad14[0x1C - 0x14];
+    s32 unk1C;
+    u8 pad20[4];
+    s32 unk24;
 } Unk80077DB0;
 extern Unk80077DB0 D_80077DB0;
 
@@ -400,7 +407,7 @@ u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, u8 *);
 void func_8002B5B4(s32, s32, s32, u8 *, s32);
 u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
 void func_8002AF70(s16 *, s32);
-s32 func_80023938(void);
+s32 func_80023938(); /* takes an index; func_8002BE10 calls it without one */
 void func_8002C9B0(void);
 void func_8002E180(void);
 
@@ -583,14 +590,21 @@ typedef struct {
     u8 pad3[5];
 } Unk80035B90Frame;
 
+typedef struct {
+    s16 unk0; /* frame count */
+    u8 pad2[2];
+    Unk80035B90Frame unk4[1];
+} Unk80035B90Data;
+
 typedef struct Unk80035B90 {
     u8 unk0; /* active */
     u8 unk1; /* frame */
     u8 unk2; /* tick */
     u8 unk3; /* frame count */
-    u8 pad4[4];
+    Unk80035B90Data *unk4;
     Unk80035B90Frame *unk8;
-    u8 padC[0x14 - 0xC];
+    Unk80035B90Frame *unkC; /* end of frames */
+    Unk80035B90Data *unk10;
     void (*unk14)(); /* called with the object */
 } Unk80035B90;
 
@@ -1311,6 +1325,7 @@ extern Unk80080A18 D_80080A18;
 
 
 extern AkaoChannel D_8007BD48[];
+extern s32 D_80080AC4;
 extern AkaoChannel D_8007E3D8[];
 extern s32 D_800831C4;
 
@@ -1561,7 +1576,7 @@ s32 func_8004BC38(u8);
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
 void func_800362C8(void);
-void func_80054F80(void);
+s32 func_80054F80(void);
 void func_80050AAC(void);
 void func_8005546C(s32, s32);
 void func_80056228(void);
@@ -1574,7 +1589,7 @@ extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
 void SetFarColor(s32, s32, s32);
 void SetFogNearFar(s32, s32, s32);
-u8 func_8003378C(void);
+s32 func_8003378C(void);
 extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
