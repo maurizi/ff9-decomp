@@ -1744,7 +1744,29 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800275DC);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027710);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027834);
+u8 *func_80027834(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
+    SprtWords *s = pkt;
+    DrTpageWords *t;
+    Unk800686E8 *d;
+    setlen(s, 4);
+    d = &D_800686D0[i];
+    if (flag) {
+        s->rgbc = 0x66606060;
+    } else {
+        s->rgbc = 0x64808080;
+    }
+    s->xy = (x & 0xFFFF) | (y << 16);
+    s->uvclut = d->unk0;
+    s->wh = d->unk4 | (d->unk5 << 16);
+    addPrim(ot, s);
+    s++;
+    t = (DrTpageWords *)s;
+    setlen(t, 1);
+    t->code = (d->unk6 & 0x9FF) | 0xE1000600;
+    addPrim(ot, t);
+    *out = d->unk4;
+    return (u8 *)(t + 1);
+}
 
 u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
@@ -2174,8 +2196,8 @@ u8 *func_8002B7B0(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p
     return (u8 *)(p + 1);
 }
 
-u8 *func_8002B890(s32 x, s32 y, u32 *ot, u32 mask, u8 b, u8 *c, u8 *pkt) {
-    u8 tmp[8];
+u8 *func_8002B890(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
+    s32 tmp[2];
     s32 i;
     for (i = 0; i < 4; i++) {
         if (mask & (1 << i)) {

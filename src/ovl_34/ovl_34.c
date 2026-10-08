@@ -207,7 +207,7 @@ void func_801F0F48(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
 }
 
 void func_801F0F94(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
-    u8 buf[8];
+    s32 buf[2];
 
     D_801F1558.unk4C = func_80027834(x, y, &D_8007716C[otz], n, arg4, buf, D_801F1558.unk4C);
 }
