@@ -2346,7 +2346,18 @@ void func_8002DE10(Window *w) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002DE60);
+void func_8002DE60(void) {
+    s32 i;
+    Window *w = D_80077530;
+    for (i = 0; i < 10; w++, i++) {
+        if (w->unk1C != 0 && w != NULL) {
+            if (w->unk4C != NULL) {
+                w->unk4C(w);
+            }
+            w->unk1C = 0;
+        }
+    }
+}
 
 void func_8002DEE4(RECT *a, s32 b, s32 c) {
     func_8002CD4C(a, b, c, (D_8006794C->unk24 >> 18) & 1);
@@ -5145,7 +5156,24 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058578);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800585E0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058830);
+void func_80058830(AkaoChannel *c, s32 voice, u16 unused) {
+    u32 i;
+    for (i = 0; i < 32; i++) {
+        if (voice == c->unk118) {
+            c->unk118 = 0x18;
+        }
+        c++;
+    }
+    if (D_8007F790 != NULL) {
+        c = D_8007F71C;
+        for (i = 0; i < 32; i++) {
+            if (voice == c->unk118) {
+                c->unk118 = 0x18;
+            }
+            c++;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800588B0);
 
@@ -5332,7 +5360,14 @@ void func_8005A658(Unk80080AA0 *a) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A6D4);
+void func_8005A6D4(Unk80080AA0 *a) {
+    if (D_8007F8F0.unk6A != 0 && D_8007F8F0.unk6A == a->unk8) {
+        func_8005A320(a->unk0, 0);
+    } else {
+        func_8005963C(a->unk0, a->unkC);
+        D_80080A10->unk6A = a->unk8;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A754);
 
