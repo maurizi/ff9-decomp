@@ -57,7 +57,7 @@ typedef struct {
     s32 unk1C;
 } BtlBone; /* 0x20 */
 
-typedef struct {
+typedef struct BtlUnit9C50 {
     u8 pad0[4];
     u8 unk4;
     u8 pad5[0xC - 5];
@@ -162,7 +162,7 @@ typedef struct BtlUnit {
     u8 padBD[0xBF - 0xBD];
     u8 unkBF;
     u8 unkC0;
-    u8 padC1[0xC4 - 0xC1];
+    u8 unkC1[3];
     u32 *unkC4;
     s16 unkC8; /* hp change shown */
     s16 unkCA;
@@ -217,7 +217,9 @@ typedef struct BtlScript {
     s16 unk18;
     u8 pad1A;
     u8 unk1B;
-    u8 pad1C[0x21 - 0x1C];
+    u16 unk1C;
+    s16 unk1E;
+    u8 unk20;
     u8 unk21;
     s16 unk22;
     u8 unk24;
@@ -426,6 +428,12 @@ extern s32 D_800FE50C;
 extern s32 D_800FE510;
 extern struct Unk800CEE74 *D_800FE514;
 extern s32 D_800FE51C;
+extern s32 D_800FE4F0;
+extern struct BtlUnit9C50 *D_800FE4F4;
+extern s32 D_800FE4F8;
+extern u8 *D_800FE504;
+extern s32 D_800FE508;
+extern s32 D_800FE518;
 extern s16 D_80100DCC;
 extern s32 *D_80104DF8; /* offset table, entries relative to its start */
 extern u8 D_80104FFC;
@@ -579,8 +587,7 @@ typedef struct Battle11C0 {
     struct Battle11C028 *unk28;
     s32 unk2C;
     s32 unk30;
-    s32 unk34;
-    s32 unk38;
+    s32 unk34[2]; /* per draw buffer */
     s32 *unk3C;
     s32 unk40;
     s32 *unk44;
@@ -994,10 +1001,17 @@ typedef struct Unk800D7E14 {
 } Unk800D7E14;
 
 typedef struct Unk800CEE74 {
-    u8 pad0[0xC];
+    s16 unk0;
+    s16 unk2; /* count of D_800FE4F4 entries */
+    s16 unk4;
+    s16 unk6;
+    u8 pad8[0xA - 8];
+    s16 unkA;
     u8 unkC;
     u8 unkD;
     u8 unkE;
+    u8 padF;
+    u8 unk10[1]; /* data */
 } Unk800CEE74;
 
 extern s8 D_800FEC55;
@@ -1567,7 +1581,7 @@ typedef struct {
     u16 unk2; /* text offset into D_800FD8CC */
     u8 pad4[6 - 4];
     u8 unk6;
-    u8 pad7;
+    u8 unk7;
     s32 unk8;
 } Unk800FD56C; /* 0xC */
 extern Unk800FD56C D_800FD56C[];
@@ -1621,6 +1635,19 @@ s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
 
 
 extern u8 D_80104E6A;
+extern u8 D_80104E6B;
+extern u8 D_800FDDF8[][3];
+extern u8 D_800FDDD0[][2];
+extern RECT D_800A8584;
+extern s16 D_801051E8[][2];
+void func_800B4234(BtlUnit *);
+BtlUnit *func_800E9FCC(void);
+void func_800BD93C(BtlUnit *);
+void func_800BFAF4(BtlUnit *);
+void func_800BC21C(BtlUnit *, s32 *);
+void func_800B3460(GameData *, Battle *, BtlUnit *);
+void func_800B1764(Battle *);
+void func_800B05C0(GameData *, Battle *, s32);
 
 s32 func_8005553C(s32);
 void func_80055850(s32, s32, s32);
