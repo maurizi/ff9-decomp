@@ -567,6 +567,8 @@ extern Unk800D3EAC D_800D3EA8;
 extern Unk800D3EAC D_800D3EC0[6];
 extern s32 D_800D3E90;
 extern s32 D_800D3EB8;
+extern s8 D_800CCE69;
+extern char D_800CCE6C[];
 extern WmNode D_800D4848;
 extern u8 D_800CCA1C;
 extern RECT D_800CE0B8[];

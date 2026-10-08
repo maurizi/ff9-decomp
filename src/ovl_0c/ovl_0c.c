@@ -1904,7 +1904,51 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8000);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8020);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1DA4);
+s32 func_800C1DA4(s16 arg0) {
+    Unk800D3EAC *p;
+    u32 i;
+
+    p = D_800D3EA8.unk4;
+    i = 0;
+    while (1) {
+        if (p->unkC == arg0) {
+            p->unk0->unk4 = p->unk4;
+            p->unk4->unk0 = p->unk0;
+            p->unk4 = D_800D3EA8.unk4;
+            p->unk0 = &D_800D3EA8;
+            D_800D3EA8.unk4->unk0 = p;
+            D_800D3EA8.unk4 = p;
+            break;
+        }
+        if (p->unkC == -1) {
+            D_800D3E90++;
+            if (D_800D3E90 >= 4) {
+                sprintf(D_800CCE6C, "w_readtxRequest/reqover[%d/%d]\n", D_800D3E90, 3);
+                func_80015C38("==== ERROR ===== / %s", D_800CCE6C);
+                D_800CCE69 = 1;
+            }
+            p->unkC = arg0;
+            p->unk0->unk4 = p->unk4;
+            p->unk4->unk0 = p->unk0;
+            p->unk4 = D_800D3EA8.unk4;
+            p->unk0 = &D_800D3EA8;
+            D_800D3EB8++;
+            D_800D3EA8.unk4->unk0 = p;
+            D_800D3EA8.unk4 = p;
+            break;
+        }
+        p = p->unk4;
+        i++;
+        if (i >= 6) {
+            break;
+        }
+    }
+    if (i == 6) {
+        func_80015C38("-- w_readtxRequest Error --\n");
+        return 0;
+    }
+    return 1;
+}
 
 void func_800C1F3C(void) {
     Unk800D3EAC *p;
@@ -1974,7 +2018,57 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2134);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8098);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2230);
+const char D_800A80BC[] = "w_frmbufRequest:reqover [%d/%d]\n";
+const char D_800A80E0[] = "==== ERROR ===== / %s";
+const char D_800A80F8[] = "-- w_framebufRequest Error --\n";
+
+s32 func_800C2230(s16 arg0) {
+    WmLNode *p;
+    u32 i;
+
+    if (arg0 & 0x3F) {
+        p = D_800D3F38.unk4;
+        i = 0;
+        while (1) {
+            if (p->unk8 == arg0) {
+                p->unk0->unk4 = p->unk4;
+                p->unk4->unk0 = p->unk0;
+                p->unk4 = D_800D3F38.unk4;
+                p->unk0 = &D_800D3F38;
+                D_800D3F38.unk4->unk0 = p;
+                D_800D3F38.unk4 = p;
+                break;
+            }
+            if (p->unk8 == -1) {
+                D_800D3F20++;
+                if (D_800D3F20 >= 3) {
+                    sprintf(D_800CCE6C, D_800A80BC, D_800D3F20, 2);
+                    func_80015C38(D_800A80E0, D_800CCE6C);
+                    D_800CCE69 = 1;
+                }
+                p->unk8 = arg0;
+                p->unk0->unk4 = p->unk4;
+                p->unk4->unk0 = p->unk0;
+                p->unk4 = D_800D3F38.unk4;
+                p->unk0 = &D_800D3F38;
+                D_800D3F44++;
+                D_800D3F38.unk4->unk0 = p;
+                D_800D3F38.unk4 = p;
+                break;
+            }
+            p = p->unk4;
+            i++;
+            if (i >= 4) {
+                break;
+            }
+        }
+        if (i == 4) {
+            func_80015C38(D_800A80F8);
+            return 0;
+        }
+    }
+    return 1;
+}
 
 void func_800C23CC(void) {
     WmLNode *p;
