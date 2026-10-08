@@ -665,6 +665,12 @@ extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
 extern u16 D_800C9D44;
+/* mask-bit primitives, one per draw buffer (func_800AE788) */
+typedef struct {
+    u32 tag;
+    u32 code[5];
+} Unk800C9F60; /* 0x18 */
+extern Unk800C9F60 D_800C9F60[2];
 extern RECT *D_800C9EA0;
 extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;

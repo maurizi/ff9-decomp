@@ -636,7 +636,18 @@ void func_800AE760(void) {
     func_800AD944(1, 0, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE788);
+void func_800AE788(void) {
+    if (D_8006794C->unk1C->unk8E4.field->unk0 & 0x200) {
+        ClearOTag(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
+        setlen(&D_800C9F60[D_8006794C->unk1C->unk8 ^ 1], 2);
+        D_800C9F60[D_8006794C->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
+        D_800C9F60[D_8006794C->unk1C->unk8 ^ 1].code[1] = 0;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8 ^ 1][0xFFF], &D_800C9F60[D_8006794C->unk1C->unk8 ^ 1]);
+    } else {
+        ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
+    }
+    func_8004C204();
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE930);
 
