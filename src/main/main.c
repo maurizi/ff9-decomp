@@ -860,7 +860,20 @@ s32 func_80021A1C(Unk80021938 *a) {
     return a->unk0 & 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021A28);
+s32 func_80021A28(Unk80021938 *p) {
+    u16 f;
+    if (p->unk2 == 0) {
+        return func_80021A8C(p);
+    }
+    if (p->unk2 != 1) {
+        return 0;
+    }
+    f = p->unk0;
+    if ((f & 0x82) && !(f & 1)) {
+        return 1;
+    }
+    return 0;
+}
 
 s32 func_80021A8C(Unk80021938 *p) {
     u16 f = p->unk0;
@@ -885,7 +898,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021B34);
 s32 func_80021C20(Unk80021938 *e) {
     s32 r = 0;
     if (e->unk0 & 1) {
-        while (func_80022D3C(0) == 0) {
+        while (func_80022D3C(NULL) == 0) {
         }
         r = 1;
     }
@@ -1061,7 +1074,7 @@ void func_80022BD0(void) {
     CdControlB(8, NULL, NULL);
 }
 
-u8 func_80022C10(s32 a, s32 b) {
+u8 func_80022C10(s32 a, void (*b)(u8 *)) {
     CdRequest r;
     r.unk0 = 1;
     r.unk10 = func_800231A0;
@@ -1073,11 +1086,22 @@ u8 func_80022C10(s32 a, s32 b) {
     return func_800230B8(&r);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022C60);
+u8 func_80022C60(s32 a, s32 b, void *c, void (*d)(u8 *)) {
+    D_80076148.unk0 = 3;
+    D_80076148.unkC = -1;
+    D_80076148.unk10 = func_800231A0;
+    D_80076148.unk4 = a;
+    D_80076148.unk8 = b;
+    D_80076148.unk1C = b;
+    D_80076148.unk20 = c;
+    D_80076148.unk14 = func_800227C8;
+    D_80076148.unk18 = d;
+    return func_800230B8(&D_80076148);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022CC4);
 
-u8 func_80022D3C(s32 a) {
+u8 func_80022D3C(void (*a)(u8 *)) {
     CdRequest r;
     r.unk0 = 4;
     r.unk18 = a;
@@ -1101,7 +1125,7 @@ s32 func_80022E70(void) {
     r.unkC = 0;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
-    r.unk18 = 0;
+    r.unk18 = NULL;
     if (func_800230B8(&r) == 0) {
         return 0;
     }
@@ -1116,7 +1140,7 @@ u8 func_80022ED4(s32 a) {
     r.unk4 = a;
     r.unk8 = 0;
     r.unkC = 0;
-    r.unk18 = 0;
+    r.unk18 = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
     return func_800230B8(&r);
@@ -1130,7 +1154,7 @@ u8 func_80022F1C(s32 a, void (*b)()) {
     r.unkC = 0;
     r.unk10 = func_800231A0;
     r.unk14 = b;
-    r.unk18 = 0;
+    r.unk18 = NULL;
     return func_800230B8(&r);
 }
 
@@ -1144,7 +1168,7 @@ s32 func_80022F64(s32 a) {
     return 1;
 }
 
-u8 func_80022FD0(s32 a) {
+u8 func_80022FD0(void (*a)(u8 *)) {
     CdRequest r;
     r.unk0 = 4;
     r.unk18 = a;

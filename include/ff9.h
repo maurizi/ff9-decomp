@@ -17,9 +17,11 @@ typedef struct {
     u32 unk8;
     s32 unkC;
     s32 unk10;
-    u8 pad14[0x1C - 0x14];
+    s32 unk14;
+    s32 unk18;
     s32 unk1C;
-    u8 pad20[0x24 - 0x20];
+    s16 unk20;
+    s16 unk22;
     s16 unk24;
     s16 unk26;
 } Unk80021938; /* element passed to func_80021938 */
@@ -288,9 +290,9 @@ typedef struct {
     s32 unkC;
     void (*unk10)(u8, u8 *);
     void (*unk14)();
-    s32 unk18;
+    void (*unk18)(u8 *); /* callback */
     s32 unk1C;
-    s32 unk20;
+    void *unk20; /* destination */
 } CdRequest;
 
 typedef struct {
@@ -763,7 +765,11 @@ typedef struct {
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
-    u8 pad24[0x40 - 0x24];
+    u8 pad24[0x34 - 0x24];
+    u16 unk34;
+    u8 pad36[0x3B - 0x36];
+    u8 unk3B;
+    u8 pad3C[0x40 - 0x3C];
     VECTOR unk40; /* previous position */
 } Unk8004AB64;
 
@@ -1156,7 +1162,7 @@ s32 func_8005703C(s32, s32);
 void func_80056614(void);
 void func_8006008C(AkaoChannel *, s32);
 void func_800600C0(AkaoChannel *, s32);
-u8 func_80022D3C(s32);
+u8 func_80022D3C(void (*)(u8 *));
 
 typedef struct {
     u8 pad0[0xC];
@@ -1276,6 +1282,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+s32 func_800C44F4(s16); /* field overlay (ovl_0a) */
+extern CdRequest D_80076148;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 func_80021320(void);
 void func_800233CC(); /* called with a u8 it ignores */
