@@ -749,7 +749,9 @@ extern s32 D_80080A24;
 extern s32 *D_80066764;
 
 typedef struct {
-    u8 pad0[0xC];
+    u8 pad0[4];
+    void (*unk4)(void);
+    u8 pad8[0xC - 8];
     u8 unkC;
     u8 padD[3];
 } Unk80077E44; /* 16-byte entries */
@@ -874,7 +876,7 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3; /* selected party slot */
-    u8 unk4;
+    s32 unk4; /* frame counter */
 } Unk80077E50;
 extern Unk80077E50 D_80077E50;
 extern u8 D_80077E53;
@@ -1282,6 +1284,8 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_80035E40(void);
+void func_80035F94(void);
 void func_80060D1C(s32, s32, s32, s32);
 void func_80060ED8(s32, s32, void (*)(void));
 s32 func_800C44F4(s16); /* field overlay (ovl_0a) */
