@@ -630,7 +630,7 @@ typedef struct Battle11C0 {
     s32 unk2C[2]; /* per draw buffer */
     s32 unk34[2]; /* per draw buffer */
     s32 *unk3C;
-    s32 unk40;
+    BtlUnit9C50 *unk40;
     s32 *unk44;
     s32 *unk48;
 } Battle11C0;
@@ -1792,6 +1792,12 @@ void func_800CF560(s32);
 s32 func_800CF574(void);
 UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
+s32 func_800AB2C8(void);
+typedef struct {
+    s16 unk0[12];
+} Unk800DD120;
+u8 *func_800634A8(s32);
+u8 *func_800634D8(s32);
 typedef struct {
     u32 unk0_0 : 4;
     u32 unk0_4 : 1;

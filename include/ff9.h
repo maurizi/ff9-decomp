@@ -87,6 +87,13 @@ typedef struct {
     u32 unk88[2]; /* support abilities equipped: bit (id - 0xC0) */
 } Character; /* 0x90 */
 
+/* GameData.unk8E0 entry */
+typedef struct Unk8E0 {
+    u8 pad0[0xC];
+    Character *unkC;
+    u8 pad10[0x14 - 0x10];
+} Unk8E0;
+
 typedef struct {
     u8 pad0[4];
     s32 unk4; /* load address */
@@ -209,7 +216,8 @@ typedef struct {
     u8 pad8C0[0x8C4 - 0x8C0];
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
-    u8 pad8CC[0x8E4 - 0x8CC];
+    u8 pad8CC[0x8E0 - 0x8CC];
+    struct Unk8E0 *unk8E0; /* [unit id] */
     Unk8E4Ptr unk8E4;
 } GameData;
 

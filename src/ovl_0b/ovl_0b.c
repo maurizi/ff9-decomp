@@ -203,7 +203,29 @@ s32 func_800A99AC(Unk800AA08C *arg0, s32 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A9A7C);
+s32 func_800A9A7C(Battle11C0 *arg0) {
+    s32 id = func_800AB2C8();
+    s32 i;
+    RECT r;
+    arg0->unk1C = (s32)func_8001C7FC(4, id, 0);
+    arg0->unk18 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x1A0000), 0);
+    if (func_8001C7FC(0xB, id, 0x190000) != 0) {
+        arg0->unk40 = func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x190000), 0);
+    }
+    for (i = 0; i < (s32)func_8001C7FC(0xB, id, 0x40000); i++) {
+        func_8001D8A8((s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, (i & 0xFFFF) | 0x40000), 0));
+    }
+    if (arg0->unk40 != NULL) {
+        r.y = 0;
+        r.x = 0;
+        r.h = 0;
+        r.w = 0;
+        func_800C9374(arg0->unk40, 0);
+    }
+    DrawSync(0);
+    D_8006794C->unk1C->unk8E4.battle->unk0 |= 1;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A9BE4);
 
@@ -2322,7 +2344,37 @@ void func_800C072C(void) {
     LoadImage(&D_800FDF50, D_800FE360);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0840);
+void func_800C0840(void) {
+    s32 i;
+    s32 j;
+    s8 c[3];
+    s8 v;
+    u16 *p;
+    D_800FDF50.x = 0x100;
+    D_800FDF50.y = 0xF2;
+    D_800FDF50.w = 0x100;
+    D_800FDF50.h = 1;
+    for (i = 2; i < 0xC; i += 3) {
+        j = 0;
+        p = (u16 *)D_800FE360;
+        for (; j < 0x100; j++) {
+            c[0] = p[(i << 8) + j] & 0x1F;
+            c[1] = (p[(i << 8) + j] >> 5) & 0x1F;
+            c[2] = (p[(i << 8) + j] >> 10) & 0x1F;
+            if (c[0] == 0 && c[1] == 0 && c[2] == 0) {
+                v = 0;
+            } else {
+                v = (c[0] + c[1] + c[2]) / 3;
+                if (v <= 0) {
+                    v = 1;
+                }
+            }
+            p[(i << 8) + j] = v + ((v << 10) + (v << 5));
+        }
+        D_800FDF50.y = i + 0xF2;
+        LoadImage(&D_800FDF50, (u32 *)((u16 *)D_800FE360 + (i << 8)));
+    }
+}
 
 s32 func_800C09A4(BtlUnit *arg0, u32 arg1) {
     s32 ret = 0;
