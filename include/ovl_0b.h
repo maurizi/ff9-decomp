@@ -151,7 +151,7 @@ typedef struct BtlCalc {
     BtlCalc8 *unk8;
     u8 padC[0xE - 0xC];
     s16 unkE;
-    u8 pad10[0x12 - 0x10];
+    s16 unk10;
     s16 unk12;
     s16 unk14;
     s16 unk16;
@@ -240,9 +240,7 @@ typedef struct {
 typedef struct {
     Unk80104F88Entry unk0[4];
     struct BtlUnit *unk12A0;
-    s32 unk12A4;
-    u8 pad12A8[0x12B0 - 0x12A8];
-    void *unk12B0;
+    Window *unk12A4[4];
     u8 unk12B4;
     u8 pad12B5;
     u8 unk12B6;
@@ -287,7 +285,7 @@ typedef struct {
     u8 unk10;
     u8 pad11;
     u8 unk12;
-    u8 pad13;
+    u8 unk13;
     s8 unk14;
     u8 unk15;
     u8 pad16[0x1C - 0x16];
@@ -372,7 +370,8 @@ typedef struct {
 typedef struct {
     void *unk0[4];
     void *unk10[4];
-    s32 unk20[4];
+    void *unk20[4];
+    void *unk30[4];
 } Battle1354;
 
 typedef struct {
@@ -451,6 +450,24 @@ typedef struct {
     u8 pad4[0x1C - 4];
 } Battle1358; /* 0x1C */
 
+/* Inlined copy of func_800B3CEC (clear a command); the original source inlines it. */
+static inline void func_800B3CEC_inline(BtlCmd *arg0) {
+    arg0->unk0 = 0;
+    arg0->unk8 = 0;
+    arg0->unkC = 0;
+    arg0->unkE = 0;
+    arg0->unkF = 0;
+    arg0->unk10_0 = 0;
+    arg0->unk10_2 = 0;
+    arg0->unk10_4 = 0;
+    arg0->unk10_5 = 0;
+    arg0->unk10_6 = 0;
+    arg0->unk10_7 = 0;
+    arg0->unk10_9 = 0;
+    arg0->unk10_10 = 0;
+    arg0->unk10_11 = 0;
+}
+
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
@@ -468,13 +485,13 @@ typedef struct Battle {
     u8 unkD85;
     u8 unkD86;
     u8 unkD87;
-    u8 padD88[0x1074 - 0xD88];
-    BtlCmd *unk1074; /* list head */
-    u8 pad1078[0x1088 - 0x1078];
+    u8 padD88[0x1060 - 0xD88];
+    BtlCmd unk1060;
+    BtlCmd unk1074;  /* list head (only unk0 used) */
     BtlCmd *unk1088; /* current command */
     u8 pad108C[0x11B8 - 0x108C];
     u16 unk11B8;
-    u8 pad11BA;
+    u8 unk11BA;
     u8 unk11BB;
     s16 unk11BC;
     u16 unk11BE;
@@ -867,7 +884,22 @@ extern Unk80105078 *D_80105078;
 extern void *D_80104FA0;
 extern s32 (*D_800F8DC4[])(void);
 
+typedef struct {
+    u8 unk0; /* cursor */
+    u8 unk1;
+    u8 pad2[2];
+    u8 unk4[4];
+    u8 pad8[0x10 - 8];
+    u8 unk10;
+    u8 unk11;
+    u8 pad12[0x18 - 0x12];
+    void *unk18;
+} Unk80104FB0;
+extern Unk80104FB0 D_80104FB0;
+extern void (*D_800F8D94[])(void);
+
 /* main exe: candidates for ff9.h */
+Window *func_8002E43C(s32);
 UnkPair *func_80027EDC(s32);
 typedef struct {
     u8 unk0;
@@ -892,6 +924,19 @@ void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+void func_800C1854(BtlUnit *, s32);
+void func_800C19F8(u8);
+void func_800CC044(BtlUnit *);
+s32 func_800E8D60(void);
+void func_800EA650(void);
+BtlUnit *func_800EAD94(void);
+void func_800EAE8C(void);
+void func_800EB5AC(void);
+s32 func_800EB7B0(BtlUnit *);
+void func_800EC4EC(void);
+void func_800EE154(void);
+void func_800EE24C(void);
+void func_800EE31C(void);
 void func_800BC78C(BtlUnit *);
 u32 func_800C0ACC(BtlUnit *, u32);
 void func_800C8A3C(BtlUnit9C *, s32, s32, s32);
