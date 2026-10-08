@@ -48,14 +48,14 @@ typedef struct {
 
 /* 0x38-byte object hanging off FieldMap.unkC */
 typedef struct {
-    u8 pad0[4];
+    s32 unk0;
     s32 unk4;    /* end of the load area */
     void *unk8;  /* file 0x6xxxx */
     void *unkC;
     u16 unk10;
-    u8 pad12[0x14 - 0x12];
+    u8 unk12[2];
     FieldScene *unk14;
-    u8 pad18[0x38 - 0x18];
+    u8 unk18[0x20];
 } FieldMapObj;
 
 /* field context, GameData.unk8E4.field (0x50 bytes) */
@@ -66,7 +66,7 @@ typedef struct FieldMap {
     s8 unk9;
     s16 unkA;
     FieldMapObj *unkC;
-    s32 unk10;
+    void *unk10;
     s32 unk14;
     s32 unk18;
     u8 pad1C[0x20 - 0x1C];
@@ -80,10 +80,12 @@ typedef struct Unk800C9DF4 {
     s16 unk2;
     u16 unk4;
     s16 unk6;
-    u8 pad8[0x1C - 8];
+    u16 unk8;
+    u16 unkA;
+    u8 padC[0x1C - 0xC];
     s32 unk1C;
     s32 unk20;
-    s32 unk24;
+    Unk8004AB64 *unk24;
 } Unk800C9DF4;
 
 /* 0xC-byte entries at D_800C9DCC */
@@ -167,11 +169,11 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[2];
+    u16 unk2; /* count */
     s16 unk4;
-    u8 pad6[2];
+    s16 unk6;
     s32 unk8;
-    u8 padC[4];
+    s32 unkC; /* offset into D_800C9DF0.unk8 */
 } Unk800C9E10; /* 0x10 */
 
 typedef struct {
@@ -229,9 +231,22 @@ typedef struct {
     u8 unk1; /* index into D_800C9E14 */
 } Unk800CB188;
 
+/* file 0x12xxxx lookup table (func_800AAF5C) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk800AA39CEntry;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* count */
+    u8 pad2[2];
+    Unk800AA39CEntry unk4[1];
+} Unk800AA39C;
+
 /* ---- overlay functions ---- */
 void func_800AD944(s32, s32, s32);
-void func_800A8588(void);
+s32 func_800A8588(void);
 void func_800C6EEC();
 void func_80054A28(void *);
 void func_800B0124(s32, s32, s32, s32, s32);
@@ -249,6 +264,11 @@ void func_800A7AAC(s32);
 void func_800A7B10(s16);
 void func_800A85F4(s32);
 void func_800A8698(void);
+void func_800B5114(void);
+void func_800B51D0(void);
+void func_800B5290(void);
+void func_800B52DC(void);
+void func_800B532C(void);
 void func_800B57C8(void);
 void func_800B1CE4(void);
 s32 func_800AA0C8(FieldScene *);
