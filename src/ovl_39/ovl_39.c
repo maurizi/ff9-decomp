@@ -799,7 +799,21 @@ void func_801F89A0(Window *w) {
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F89B8);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F8B10);
+MenuView *func_801F8B10(MenuList *l, MenuView *v) {
+    s32 x;
+
+    if (l->unk8 & 2) {
+        v->unk0 = (l->unk9 + 0x3B) / 60;
+        v->unk1 = l->unkC + (l->unk3 - v->unk0);
+        v->unk2 = l->unk9 - v->unk0 * 60;
+    } else {
+        x = l->unk9;
+        v->unk2 = l->unkD - x;
+        v->unk0 = (x + 0x3B) / 60;
+        v->unk1 = l->unkC;
+    }
+    return v;
+}
 
 void func_801F8BD4(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
