@@ -36,6 +36,22 @@ The frame counter is the bridge's own vsync count. It keeps counting across stat
 **Save states are the main tool.** Get to a scene once, `save field_alexandria`, and then
 `load` it before each experiment. Names are `[A-Za-z0-9_-]`. `states` lists them.
 
+### Memory cards
+
+Redux uses `tools/bin/redux-home/memcard{1,2}.mcd`. `tools/emu.py memcard list [--card 2]` shows the saves on a card.
+`tools/emu.py memcard import FILE... [--card N] [--replace]` adds downloaded saves to it, with the emulator stopped.
+Supported formats: DexDrive `.gme`, raw `.mcr`/`.mcd`, `.vgs`/`.mem` card images, and single-save `.mcs`/`.psx`.
+Saves are appended to free blocks; `--replace` starts from a blank card, and the old card is kept as `.mcd.bak`.
+To use a save, load it in-game once (title screen → Continue; the cursor already starts on Continue), then `save` a Redux state
+so later runs skip the menus.
+
+Downloaded saves go in `tools/bin/saves/`. `final-fantasy-ix.3455.gme` (GameFAQs save 3455, now on card 1) has
+six Lv 99 saves: FILE01 Burmecia (disc 1), FILE02 Lucid Plains (disc 2), FILE03 Hadris Basin (disc 3),
+FILE04 Pandemonium (disc 3), FILE05 Treno (disc 4), FILE06 Crystal World (disc 4). A save only loads with its own
+disc inserted (`start --disc N`).
+
+Existing Redux states (disc 1): `title_screen`, `field_burmecia_vault`, `menu_main`, `menu_items` (and `intro_test`).
+
 ### Speed and the debugger
 
 Breakpoints need the interpreter with Redux's debugger on, and the debugger halves the speed

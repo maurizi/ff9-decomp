@@ -20,3 +20,12 @@ Format:
   at `func_80015DD0+0x74`, which `VSync` calls (a busy-wait loop), and also read inside `VSync` itself.
 - confidence: medium. Probably the libetc vsync counter that `VSync()` polls, which would make `func_80016620`
   the vsync callback and `func_80016114` the interrupt dispatcher. Check them against the PsyQ libetc source.
+
+## Overlay usage seen at runtime  (status: proposed)
+- `ovl_14` (+ `ovl_64`) is resident during the boot logos / intro (Squaresoft logo, opening FMV), so it's probably the
+  opening/logo sequencer, not a minigame.
+- `ovl_39` is resident on the title screen's Continue → memory-card slot and file select screens, which confirms "save / load".
+- `ovl_0a` is resident in the field (Burmecia vault after loading a save), which confirms "field".
+- The top-level main menu (Triangle in the field) loads no 0x801EDF00 overlay, so its code is in the exe or `ovl_0a`.
+  Opening Item loads `ovl_37`, which confirms "menu: items".
+- evidence: `tools/emu.py ovl` at save states `title_screen`, `field_burmecia_vault`, `menu_main`, `menu_items`.

@@ -387,6 +387,119 @@ def cmd_audio(a):
         print(f"recorded {a.seconds}s to {path}")
 
 
+# ---------------------------------------------------------------- memory cards
+
+CARD_SIZE = 0x20000
+BLOCK = 0x2000
+FRAME = 0x80
+
+
+def card_path(n):
+    return HOME / f"memcard{n}.mcd"  # Redux's default card files in portable mode
+
+
+def frame_checksum(frame):
+    c = 0
+    for b in frame[:0x7F]:
+        c ^= b
+    return c
+
+
+def parse_save_file(data, name):
+    """('card', 128K raw image) or ('saves', [(dir frame, blocks)]) for common save formats."""
+    if len(data) == CARD_SIZE and data[:2] == b"MC":
+        return "card", data                                    # .mcr / .mcd / .ddf / .mc raw
+    if data[:11] == b"123-456-STD" and len(data) >= 0xF40 + CARD_SIZE:
+        return "card", data[0xF40:0xF40 + CARD_SIZE]           # DexDrive .gme
+    if data[:4] == b"VgsM" and len(data) >= 0x40 + CARD_SIZE:
+        return "card", data[0x40:0x40 + CARD_SIZE]             # .vgs / .mem
+    if len(data) > FRAME and (len(data) - FRAME) % BLOCK == 0 and data[0] == 0x51:
+        return "saves", [(data[:FRAME], data[FRAME:])]          # .mcs / .psx single save
+    raise EmuError(f"{name}: unrecognised save format ({len(data)} bytes); "
+                   "supported: raw .mcr/.mcd, DexDrive .gme, .vgs/.mem, single-save .mcs/.psx")
+
+
+def card_saves(card):
+    """[(first block, product code + name, title, blocks)] for saves on a raw card."""
+    out = []
+    for i in range(1, 16):
+        f = card[i * FRAME:(i + 1) * FRAME]
+        if struct.unpack_from("<I", f, 0)[0] != 0x51:
+            continue
+        size = struct.unpack_from("<I", f, 4)[0]
+        fname = f[0x0A:0x1F].split(b"\0")[0].decode("ascii", "replace")
+        raw_title = card[i * BLOCK + 4:i * BLOCK + 0x44].split(b"\0")[0]
+        try:
+            import unicodedata
+            title = unicodedata.normalize("NFKC", raw_title.decode("shift_jis", "replace"))
+        except LookupError:
+            title = raw_title.decode("ascii", "replace")
+        out.append((i, fname, title.strip(), max(1, size // BLOCK)))
+    return out
+
+
+def insert_save(card, frame, blocks):
+    card = bytearray(card)
+    n = len(blocks) // BLOCK
+    free = [i for i in range(1, 16) if struct.unpack_from("<I", card, i * FRAME)[0] in (0xA0, 0)]
+    if len(free) < n:
+        raise EmuError("not enough free blocks on the card")
+    slots = free[:n]
+    for k, i in enumerate(slots):
+        f = bytearray(FRAME)
+        if k == 0:
+            f[:] = frame
+            struct.pack_into("<I", f, 0, 0x51)
+            struct.pack_into("<I", f, 4, n * BLOCK)
+        else:
+            struct.pack_into("<I", f, 0, 0x53 if k == n - 1 else 0x52)
+        struct.pack_into("<H", f, 8, slots[k + 1] - 1 if k + 1 < n else 0xFFFF)
+        f[0x7F] = frame_checksum(f)
+        card[i * FRAME:(i + 1) * FRAME] = f
+        card[i * BLOCK:(i + 1) * BLOCK] = blocks[k * BLOCK:(k + 1) * BLOCK]
+    return bytes(card)
+
+
+def blank_card():
+    card = bytearray(CARD_SIZE)
+    card[0:2] = b"MC"
+    card[0x7F] = frame_checksum(card[:FRAME])
+    for i in range(1, 16):
+        f = bytearray(FRAME)
+        struct.pack_into("<IIH", f, 0, 0xA0, 0, 0xFFFF)
+        f[0x7F] = frame_checksum(f)
+        card[i * FRAME:(i + 1) * FRAME] = f
+    return bytes(card)
+
+
+def cmd_memcard(a):
+    path = card_path(a.card)
+    if a.action == "list":
+        card = path.read_bytes() if path.exists() else blank_card()
+        saves = card_saves(card)
+        print(f"{path}: {len(saves)} saves")
+        for i, fname, title, n in saves:
+            print(f"  block {i:2}  {fname:<20} {title}" + (f"  ({n} blocks)" if n > 1 else ""))
+        return
+    if api_up():
+        raise EmuError("stop the emulator first (`tools/emu.py stop`): Redux rewrites the card file")
+    card = blank_card() if a.replace or not path.exists() else path.read_bytes()
+    for f in a.files:
+        kind, payload = parse_save_file(Path(f).read_bytes(), f)
+        if kind == "card":
+            if not card_saves(card):
+                card = payload  # onto an empty card: take the image as-is
+                continue
+            payload = [(payload[i * FRAME:(i + 1) * FRAME], payload[i * BLOCK:(i + n) * BLOCK])
+                       for i, _, _, n in card_saves(payload)]
+        for frame, blocks in payload:
+            card = insert_save(card, frame, blocks)
+    if path.exists():
+        path.with_suffix(".mcd.bak").write_bytes(path.read_bytes())
+    path.write_bytes(card)
+    cmd_memcard(argparse.Namespace(action="list", card=a.card))
+
+
 # ---------------------------------------------------------------- setup
 
 # Pinned PCSX-Redux dev build (distrib.app build 379, commit 8d1aaadf); newer builds should also work.
@@ -928,6 +1041,12 @@ def main():
     s.set_defaults(fn=cmd_load)
     sub.add_parser("states", help="list named save states").set_defaults(fn=cmd_states)
 
+    s = sub.add_parser("memcard", help="list saves on a memory card, or import save files into it")
+    s.add_argument("action", choices=["list", "import"])
+    s.add_argument("files", nargs="*", help="import: .gme/.mcr/.mcd/.vgs card images or .mcs single saves")
+    s.add_argument("--card", type=int, default=1, choices=[1, 2])
+    s.add_argument("--replace", action="store_true", help="import: start from a blank card")
+    s.set_defaults(fn=cmd_memcard)
     s = sub.add_parser("audio", help="on/off: hear the emulator; record: capture its output to WAV")
     s.add_argument("action", choices=["on", "off", "status", "record"])
     s.add_argument("--seconds", type=float, default=5)
