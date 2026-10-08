@@ -1868,7 +1868,58 @@ void func_800C3EAC(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C3FE4);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C42B0);
+const char D_800A832C[] = "w_musicRequestSend : Normal Song";
+const char D_800A8350[] = "w_musicRequestSend : Air Ship Song";
+const char D_800A8374[] = "w_musicRequestSend : Chocobo Song";
+const char D_800A8398[] = "w_musicRequestSend : Disc4 Song";
+const char D_800A83B8[] = "w_musicRequestSend : Field Song 1";
+const char D_800A83DC[] = "w_musicRequestSend : Field Song 2";
+const char D_800A8400[] = "w_musicRequestSend : Unknown Error";
+const char D_800A8424[] = "(Accepted)\n";
+const char D_800A8430[] = "(Denied / same request)\n";
+/* padded: the jump table that follows is 8-aligned in its object */
+const char D_800A844C[0x38] = "w_musicRequestSend : music status is not ready now\n";
+
+void func_800C42B0(u32 arg0) {
+    if (D_800D4818 == 0) {
+        if (D_800CCE50 & 4) {
+            switch (arg0) {
+            case 0:
+                func_80015C38(D_800A832C);
+                break;
+            case 2:
+                func_80015C38(D_800A8350);
+                break;
+            case 1:
+                func_80015C38(D_800A8374);
+                break;
+            case 3:
+                func_80015C38(D_800A8398);
+                break;
+            case 4:
+                func_80015C38(D_800A83B8);
+                break;
+            case 5:
+                func_80015C38(D_800A83DC);
+                break;
+            default:
+                func_80015C38(D_800A8400);
+                break;
+            }
+        }
+        if (D_800D4828 != arg0) {
+            D_800D4818 = 1;
+            D_800D4828 = arg0;
+            if (D_800CCE50 & 4) {
+                func_80015C38(D_800A8424);
+            }
+        } else if (D_800CCE50 & 4) {
+            func_80015C38(D_800A8430);
+        }
+    } else if (D_800CCE50 & 4) {
+        func_80015C38(D_800A844C);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C43F0);
 
