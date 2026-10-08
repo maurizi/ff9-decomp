@@ -1579,7 +1579,7 @@ s32 func_800E7298(BtlUnit *);
 s32 func_800E7370(BtlUnit *);
 void func_800E748C(BtlUnit *, s16 *);
 void func_800E753C(BtlUnit *, s32, s16 *);
-void func_800E78B4(s32, s32, s32, s32, s32, s32, s32);
+void func_800E78B4(s32, s16 *, s32, s32, s32, s32, s32);
 void func_800E7A44(s32, VECTOR *);
 void func_800E7FC0(BtlUnit *, s32);
 s32 func_800E9A00(s32, s32);
@@ -1787,6 +1787,9 @@ void func_800DDF10(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
 void func_800DF15C(BtlUnit9C *, u8, u16);
 u8 *func_800DD27C(BtlUnit9C *, u8, u8 *, s32);
+void func_800CB1D4(u16, u16 *, u16 *);
+void func_800CF560(s32);
+s32 func_800CF574(void);
 UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
 typedef struct {

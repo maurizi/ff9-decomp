@@ -2291,12 +2291,45 @@ s32 func_800E4134(s32 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4218);
 
-void func_800E436C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+void func_800E436C(s32 arg0, s16 *arg1, s32 arg2, s32 arg3) {
     func_800D87D0(arg0);
     func_800E78B4(arg0, arg1, arg2, 2, 0, arg3, 3);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E43D8);
+s32 func_800E43D8(s32 arg0, s32 arg1, s16 *arg2, s32 arg3) {
+    s16 a[4];
+    s16 b[4];
+    s32 n;
+    s32 t;
+    func_800E73EC(arg0, a);
+    if (arg1 == 0) {
+        func_800E750C(arg0, arg2);
+        if (arg2[0] == a[0] && arg2[2] == a[2]) {
+            return -1;
+        }
+        if (arg3 == 0) {
+            func_800D85AC(arg0, 0x1E);
+        }
+        func_800E78B4(arg0, a, 0, 0, 0, 0, 0);
+    }
+    if (arg3 == 0) {
+        arg3 = func_800D87D0(arg0);
+    } else {
+        arg3 = 0x18;
+    }
+    n = arg3;
+    if (arg1 < n) {
+        func_800E7650(arg0, arg2);
+        func_800E7650(arg0, a);
+    }
+    t = ((arg1 + 1) << 12) / n;
+    if (t > 0x1000) {
+        t = 0x1000;
+    }
+    func_800CFA00(arg2, a, t, b);
+    func_800E76DC(arg0, b);
+    return arg1 >= n;
+}
 
 u16 *func_800E4530(s32 arg0) {
     s32 *p = (s32 *)0x801E9700;
@@ -2456,7 +2489,38 @@ void func_800E60A4(s32 arg0, s32 arg1) {
     func_800D6E70(0xA, -1, v, arg1);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E60EC);
+s32 func_800E60EC(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+    s32 n;
+    s32 v;
+    if (arg0 == 0) {
+        *arg4 = 8;
+        return 0;
+    }
+    if (arg0 == 1) {
+        arg1->unk4 = func_800CF574() & 0xFF;
+        arg1->unk6 = arg4[0];
+        if (arg1->unk6 == 0xFF) {
+            arg1->unk6 = 0x80;
+        }
+        arg1->unk6 -= arg1->unk4;
+        if ((arg1->unk0 = arg4[1]) == 0 || arg1->unk6 == 0) {
+            func_800CF560(arg1->unk4 + arg1->unk6);
+            return 1;
+        }
+        return 0;
+    }
+    n = *arg3;
+    v = arg1->unk4 + n * arg1->unk6 / arg1->unk0;
+    if (v < 0x10) {
+        v = 0;
+    }
+    func_800CF560(v);
+    if (n < arg1->unk0) {
+        *arg3 = n;
+        return 0;
+    }
+    return 1;
+}
 
 void func_800E6244(s32 arg0, s32 arg1) {
     func_800D6E70(4, -1, arg0 & 0xFF, arg1 & 0xFF);
