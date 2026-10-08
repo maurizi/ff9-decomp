@@ -41,7 +41,7 @@ void func_801EF5C8(void) {
     if (!(g->unk56F & 8) && (g->unk0 & 0x20000000) && g->unk81C[0] != 0xFFFF) {
         g->unk0 |= 0x400000;
     }
-    D_8006794C->unk1C->unk7E4 = -1;
+    D_8006794C->unk1C->unk7E4 = (FileTable *)-1;
     if (D_8006794C->unk8 == 0) {
         func_800AD90C(0x8601, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {

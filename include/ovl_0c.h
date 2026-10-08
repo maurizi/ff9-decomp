@@ -84,7 +84,80 @@ typedef struct {
     WinDef unk8[6];
 } Unk800D5438;
 
+/* map cell (4 bytes) */
+typedef struct {
+    u16 unk0;
+    u8 unk2;
+    u8 unk3;
+} WmCell;
+
+typedef struct {
+    s32 unk0;
+    WmCell unk4[1];
+} WmCellTable;
+
+/* filled by func_800C3FE4 */
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* count */
+    s32 unk8[4];
+} Unk800C3FE4;
+
+/* list nodes (func_800BE6B4, func_800BD5D0) */
+typedef struct Unk800D375C {
+    s32 unk0;
+    struct Unk800D375C *unk4; /* next */
+    s32 unk8;
+    s32 unkC;
+    s16 unk10;
+    u8 unk12;
+} Unk800D375C;
+
+typedef struct Unk800D335C {
+    s32 unk0;
+    struct Unk800D335C *unk4; /* next */
+    s32 unk8;
+    s16 unkC;
+    u8 unkE;
+} Unk800D335C;
+
+/* colour + 2 values (8 bytes) */
+typedef struct {
+    CVECTOR unk0;
+    u16 unk4;
+    u16 unk6;
+} Unk800D1FD8;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4[3]; /* rgb */
+    s16 pad;
+} Unk800D3FA0Sub; /* 0xC */
+
+typedef struct {
+    u8 pad0[0x610];
+    Unk800D3FA0Sub unk610[3];
+} Unk800D3FA0;
+
+/* file 0x12xxxx lookup table (func_800AA39C) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk800AA39CEntry;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* count */
+    u8 pad2[2];
+    Unk800AA39CEntry unk4[1];
+} Unk800AA39C;
+
 /* ---- overlay functions ---- */
+s32 func_800C3FE4(s32, Unk800C3FE4 *);
+void func_800B828C(s32);
+void func_800B3A80(void);
+s32 func_800B3FEC(s32, s32, s32);
 void func_800AD114(s32, s32, s32);
 void func_800BC098(void);
 void func_800C43F0(void);
@@ -144,6 +217,25 @@ void func_800CC8C8(void);
 void func_800CC940(void);
 
 /* ---- overlay data ---- */
+extern char D_800A8098[];
+extern s32 D_800CF404;
+extern WmCellTable *D_800CF40C;
+extern WmCellTable *D_800CF410;
+extern u8 *D_800CF45C;
+extern s32 D_800CF460[];
+extern s32 D_800CF49C;
+extern s32 D_800CF4B4;
+extern Unk800D1FD8 D_800D1FD8;
+extern Unk800D1FD8 D_800D1FE0[2];
+extern s32 D_800D32D8;
+extern s32 D_800D32DC;
+extern s32 D_800D3308;
+extern Unk800D375C *D_800D375C;
+extern s32 D_800D3790;
+extern Unk800D335C D_800D3340;
+extern Unk800D335C *D_800D335C;
+extern s32 D_800D33F0;
+extern Unk800D3FA0 D_800D3FA0;
 extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
 extern char D_800A7A40[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
 extern void (*D_800CDFC0[])(void);

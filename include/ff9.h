@@ -142,7 +142,7 @@ typedef struct {
     s16 unk7DC;
     u16 unk7DE;
     s32 unk7E0;
-    s32 unk7E4;
+    struct FileTable *unk7E4; /* -1 = none */
     u16 unk7E8;
     u16 unk7EA;
     s32 unk7EC[2];
@@ -1080,6 +1080,13 @@ typedef struct {
     s32 unkC; /* end sector / next id */
 } FileEntry;
 
+/* file id table (GameData.unk7E4) */
+typedef struct FileTable {
+    u16 unk0;
+    u16 unk2; /* count */
+    FileEntry unk4[1];
+} FileTable;
+
 typedef struct {
     u32 tag;
     u32 rgbc;
@@ -1248,7 +1255,7 @@ s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
 s32 func_8006276C(s32); /* number to string */
-FileEntry *func_80063088(s32, s32);
+FileEntry *func_80063088(FileTable *, s32);
 void func_80063108(u8 *, u8 *);
 /* text window (func_80063118 / func_800631AC) */
 typedef struct {
@@ -1529,6 +1536,8 @@ void func_80019194(void);
 void func_80032098(void);
 void func_80023A4C(void);
 void func_8001CD04(s32);
+s32 func_8004BC38(u8);
+u8 func_80036300(s32);
 void func_80015C38(const char *, ...); /* printf */
 
 #endif
