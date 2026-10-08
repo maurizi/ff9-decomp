@@ -3684,9 +3684,9 @@ s32 func_80034A64(s32 ch, s32 lv, u8 add) {
     Unk8006DD88 *e = &D_8006DD88[func_80033964((c->unk34 >> 12) & 0x1F)];
     s32 r;
     if (add) {
-        c->unk3E += func_8003502C(c->unk39, 0);
+        c->unk3E[0] += func_8003502C(c->unk39, 0);
     }
-    r = e->unk0 + lv / 10 + (c->unk3E >> 5);
+    r = e->unk0 + lv / 10 + (c->unk3E[0] >> 5);
     if (r >= 51) {
         r = 50;
     }
@@ -4621,9 +4621,9 @@ void func_8004ED3C(void) {
     }
 }
 
-Unk8007B9C0Sub *func_8004ED94(s32 i) {
+Window *func_8004ED94(s32 i) {
     Unk8007B9C0 *e = &D_8007B9C0[i];
-    Unk8007B9C0Sub *r = NULL;
+    Window *r = NULL;
     if (e->unk8 != 0) {
         r = e->unk14;
     }
