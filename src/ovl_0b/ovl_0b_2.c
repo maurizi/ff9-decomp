@@ -538,7 +538,21 @@ s32 func_800D7D64(s32 arg0, Unk800D955C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7E14);
+s32 func_800D7E14(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    if (arg0 == 0) {
+        *arg4 = 0x10;
+    } else if (arg0 != 1) {
+        return func_800D960C(arg1, arg2, arg3);
+    } else {
+        arg1->unk0 = arg4[0];
+        arg1->unk1 = arg4[1];
+        arg1->unk4 = D_80100D88.unk0;
+        do {
+            D_800FEC55 = 0;
+        } while (0);
+    }
+    return 0;
+}
 
 s32 func_800D7EA0(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
@@ -2053,7 +2067,16 @@ void func_800E702C(void) {
     D_800F78A4->unk14 = &D_8006794C->unk1C->unk18;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E70D0);
+void func_800E70D0(u8 *arg0, s32 *arg1) {
+    Unk800F78A4 *p = D_800F78A4;
+    GameState *g = D_8006794C;
+    p->unk28 = 0;
+    p->unk20 = arg1;
+    p->unk18 = &g->unkC[g->unk1C->unk8];
+    p->unk1C = &g->unk10[g->unk1C->unk8];
+    p->unk14 = &g->unk1C->unk18;
+    p->unk24 = arg0;
+}
 
 u8 *func_800E7154(void) {
     return D_800F78A4->unk24;
@@ -2795,7 +2818,24 @@ void func_800EA34C(void) {
     D_80077148.unk0 = v;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EA378);
+void func_800EA378(void) {
+    GameState *g = D_8006794C;
+    s32 r = 0;
+    volatile Unk80104E68 *p = &D_80104E68;
+    s32 f;
+    if (((g->unk1C->unk8E4.battle->unk11B8 >> 1) ^ 1) & 1) {
+        r = 1;
+    } else {
+        do {
+            f = (g->unk24 >> 19) & 1;
+            if (f == 1) {
+                r = 1;
+            }
+        } while (0);
+    }
+    p->unk3 = r;
+    D_80104E68.unk4 = func_800F13CC() >= 2;
+}
 
 void func_800EA400(void) {
     if (D_80104E68.unk2 != 0) {
