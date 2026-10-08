@@ -6,6 +6,11 @@
  * different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
+typedef struct {
+    u8 unk0; /* item id */
+    u8 pad1[3];
+} EquipEntry;
+
 /* Equipment menu state (D_801FBF84). */
 typedef struct {
     u8 unk0; /* active list */
@@ -22,12 +27,17 @@ typedef struct {
     RECT unk48;
     u8 pad50[0x58 - 0x50];
     WinDef unk58;
-    u8 pad68[0x768 - 0x68];
+    u8 unk68[0x100]; /* per item id */
+    u8 pad168[0x668 - 0x168];
+    EquipEntry unk668[0x30]; /* item list */
+    u8 unk728[0x40];         /* ability list */
     u8 unk768;
-    u8 pad769[0x76B - 0x769];
+    u8 unk769; /* item list length */
+    u8 pad76A;
     u8 unk76B; /* animation tick (0-6) */
     u8 unk76C; /* animation frame (0-6) */
-    u8 pad76D[0x770 - 0x76D];
+    u8 unk76D;
+    u8 pad76E[0x770 - 0x76E];
     UnkBlink unk770;
 } EquipMenu;
 extern EquipMenu D_801FBF84;
@@ -53,7 +63,11 @@ extern AbilityMenu D_801FC840;
 
 typedef struct {
     u8 unk0; /* low nibble: item kind */
-    u8 pad1[0xF];
+    u8 pad1[0xA - 1];
+    u8 unkA;
+    u8 unkB; /* bit 0: usable from the menu; bit 2: value x4 when D_8007AF02 */
+    u8 padC[2];
+    u16 unkE; /* name offset into D_801F40EC */
 } Unk801F34EC; /* 0x10 */
 extern Unk801F34EC D_801F34EC[];
 
@@ -68,12 +82,6 @@ extern u8 D_801EE164[];
 extern u8 D_801FBD54[];
 extern u8 D_801FBD74[];
 
-typedef struct {
-    u8 pad0[0xA];
-    u8 unkA;
-    u8 unkB; /* bit 2: value x4 when D_8007AF02 */
-} Unk801F1018;
-
 void func_801EE978(void);
 void func_801F0024(void);
 void func_801F2AB4(void);
@@ -83,6 +91,17 @@ void func_801F0934(s32, s32, s32, MenuView *);
 void func_801F09CC(s32, s32, s32, Character *);
 void func_801F0AB8(s32, s32, s32, Character *);
 void func_801F307C(void);
+s32 func_801EFB8C(s32, Character *);
+u32 func_801F0CC4(s32, Character *);
+s32 func_801F1018(Unk801F34EC *);
+void func_801F0F38(s32, s32, s32, s32);
+extern s32 D_801F740C[]; /* colour by state */
+extern u8 D_801F40EC[];  /* item names */
+extern u8 D_801F6540[];  /* ability names */
+/* main exe: candidates for ff9.h */
+extern s32 D_800704B8;
+void func_80026EA0(s32, s32, s32, s32, s32);
+s32 func_80034430(s32, s32);
 void func_80026C34(s32, s32, s32, s32, u8); /* main exe */
 void func_801F32E0(Character *);
 void func_801F30D8(void);
