@@ -779,16 +779,16 @@ extern s16 D_800CE3BC;
 extern s32 D_800CFDB0[];
 extern s8 D_800CE1F2;
 extern s32 D_800D3E60; /* navi mode */
-extern s8 D_800D3E64;
+extern u8 D_800D3E64;
 extern s32 D_800D3E6C;
 extern POLY_FT4 *D_800D3E68;
 extern s8 D_800D3E75;
 extern s32 D_800CCE40;
 extern u8 D_800D3E76;
-extern s8 D_800D3E77;
+extern u8 D_800D3E77;
 extern s8 D_800D3E78;
 extern s8 D_800D3E79;
-extern s8 D_800D3E80;
+extern u8 D_800D3E80;
 extern s32 D_800D3E84;
 extern s8 D_800D3E88;
 extern s8 D_800D3E89;
@@ -998,10 +998,17 @@ void func_8004B20C(s32);
 #define ResetSpadStack() __asm__ volatile("addiu $29, $29, 4\n\tlw $29, 0($29)" : : : "memory")
 
 /* map-marker colour (func_800C1428) */
+extern s32 D_800CD104; /* navi cursor */
+extern s32 D_800CD108;
+extern CVECTOR D_800A7FF0; /* marker colours */
+extern CVECTOR D_800A7FF4;
+extern CVECTOR D_800A7FF8;
+extern CVECTOR D_800A7FFC;
 extern u8 D_800CD710;
 extern u8 D_800CD714;
 extern u8 D_800CD718;
 void func_800BF544(s32, s32, s32, s32, CVECTOR, CVECTOR, s32, s32, s32, s32);
+void func_800C1B00(s32, s32, s32 *, s32 *, u8);
 
 static inline CVECTOR func_800C1428_color(void) {
     CVECTOR c;
