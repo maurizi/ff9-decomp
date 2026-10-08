@@ -130,6 +130,7 @@ DRAWENV *PutDrawEnv(DRAWENV *env);
 DISPENV *PutDispEnv(DISPENV *env);
 DRAWENV *SetDefDrawEnv(DRAWENV *env, int x, int y, int w, int h);
 DISPENV *SetDefDispEnv(DISPENV *env, int x, int y, int w, int h);
+int DrawSyncCallback(void (*func)(void));
 void SetDrawTPage(void *p, int dfe, int dtd, int tpage);
 void SetSemiTrans(void *p, int abe);
 u16 GetTPage(int tp, int abr, int x, int y);

@@ -1328,7 +1328,29 @@ void func_800BD8F0(Unk800BD8F0 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BD93C);
+void func_800BD93C(BtlUnit *arg0) {
+    if (arg0->unk24->unk0 < arg0->unk28 * 6) {
+        func_800BF558(arg0, 0x200);
+        if (arg0->unk24->unk0 < arg0->unk28) {
+            arg0->unk28 = arg0->unk24->unk0;
+        }
+        goto clamp;
+    }
+    if (arg0->unk28 == 0) {
+        if (arg0->unk7D == 0) {
+            func_800BEDBC(arg0, 0x100);
+        }
+    } else {
+        if (!(arg0->unk3C & 0x200)) {
+            func_800BEDBC(arg0, 0x200);
+        }
+    clamp:
+        arg0->unk2A = arg0->unk24->unk2 < arg0->unk2A ? arg0->unk24->unk2 : arg0->unk2A;
+        if (arg0->unk68 & 1) {
+            arg0->unk68 = (arg0->unk68 & ~0x40000) | ((func_800C09A4(arg0, 0x30202) & 1) << 18);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BDA60);
 

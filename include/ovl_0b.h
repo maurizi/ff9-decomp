@@ -1178,7 +1178,9 @@ extern u32 D_80104E80;
 typedef struct {
     SPRT unk0[4][2];
     DR_TPAGE unkA0[2];
-    u8 padB0[0x110 - 0xB0];
+    SPRT unkB0[2];
+    SPRT unkD8[2];
+    DR_TPAGE unk100[2];
     SPRT unk110[4][2];
     u8 pad1B0[0x2F0 - 0x1B0];
     DR_TPAGE unk2F0[2];

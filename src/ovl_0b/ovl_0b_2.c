@@ -4188,7 +4188,14 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F224C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2374);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2560);
+void func_800F2560(void) {
+    SPRT *a = &D_801050D8->unkB0[D_80077148.unk0];
+    SPRT *b = &D_801050D8->unkD8[D_80077148.unk0];
+    a->y0 = b->y0 = func_800F3EA4()->unk60 - 4;
+    addPrim(&D_8007716C[18], a);
+    addPrim(&D_8007716C[18], b);
+    addPrim(&D_8007716C[18], &D_801050D8->unk100[D_80077148.unk0]);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2684);
 
