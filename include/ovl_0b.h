@@ -100,7 +100,8 @@ typedef struct BtlUnit {
     u8 padC[0x10 - 0xC];
     struct BtlCmd *unk10;
     struct BtlCmd *unk14;
-    u8 pad18[0x24 - 0x18];
+    u8 pad18[0x1C - 0x18];
+    u16 unk1C[4];
     BtlUnit24 *unk24;
     u16 unk28; /* hp */
     s16 unk2A; /* mp */
@@ -121,7 +122,7 @@ typedef struct BtlUnit {
     u8 unk6F;
     u8 pad70[0x74 - 0x70];
     u8 *unk74;
-    u8 pad78;
+    u8 unk78;
     u8 unk79;
     u8 unk7A;
     u8 pad7B;
@@ -355,7 +356,10 @@ typedef struct {
     u16 unk1A;
     u8 pad1C[0x2C - 0x1C];
     s16 unk2C[2];
-    u8 pad30[0x50 - 0x30];
+    u8 pad30[0x38 - 0x30];
+    s32 unk38;
+    struct Heap *unk3C[2];
+    u8 pad44[0x50 - 0x44];
     s16 unk50;
     u8 pad52[0x54 - 0x52];
     struct Unk80100DC054 *unk54;
@@ -431,9 +435,21 @@ typedef struct {
 } Battle1548; /* 0xC */
 
 typedef struct {
-    u8 pad0[4];
-    s32 unk4;
-    u8 pad8[0x38 - 8];
+    s32 unk0;
+    struct BtlCmd *unk4;
+    s32 unk8;
+    s32 unkC;
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    u8 unk16;
+    u8 unk17;
+    u8 pad18[0x21 - 0x18];
+    u8 unk21;
+    u8 pad22[0x25 - 0x22];
+    u8 unk25;
+    u8 unk26;
+    u8 pad27[0x38 - 0x27];
 } Battle122C; /* 0x38 */
 
 typedef struct {
@@ -456,7 +472,10 @@ typedef struct {
 
 /* battle command (queued action) */
 typedef struct {
-    u8 pad0[0xA];
+    u32 unk0_0 : 8;
+    u32 unk0_8 : 9;
+    u32 unk0_17 : 15;
+    u8 pad4[0xA - 4];
     u8 unkA; /* mp cost */
     u8 unkB;
 } BtlCmd8;
@@ -556,7 +575,7 @@ typedef struct Battle {
     u16 unk11BE;
     struct Battle11C0 *unk11C0;
     BtlUnit9CC **unk11C4;
-    u8 pad11C8[0x11CC - 0x11C8];
+    u8 *unk11C8;
     s32 unk11CC[24];
     Battle122C unk122C[4];
     s32 unk130C;
@@ -727,7 +746,7 @@ typedef struct {
 } Unk800BD8F0;
 
 
-typedef struct {
+typedef struct Heap {
     u8 *unk0;
     s32 unk4;
     s32 unk8;
@@ -1093,6 +1112,7 @@ void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+u16 func_800B4478(u16 *);
 void func_800EB358(BtlUnit *);
 void func_800ECCA8(s32);
 s32 func_800EFB3C(s32);
@@ -1237,7 +1257,7 @@ void func_800C02D4(BtlUnit *);
 void func_800C0430(BtlUnit *, s32);
 void func_800C2344(BtlUnit9C *);
 void func_800C8D18(BtlUnit9C *, u8, s16, s16, s16);
-s32 func_800CA5AC(void);
+Battle122C *func_800CA5AC(BtlCmd *);
 struct Unk800CEE74 *func_800CEE74(void);
 s32 func_800D8D94(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8E10(struct Unk800D8EA4 *, s32, s32 *);
@@ -1516,5 +1536,23 @@ Unk800CC278 *func_800CC37C(s32, s16, s16, u8);
 void func_800EA338(s8);
 s32 func_800D9990(Unk800D7C9C *, s32, s32 *);
 s32 func_800D974C(Unk800D7C9C *, s32, s32 *);
+
+typedef struct {
+    u8 pad0[8];
+    s16 unk8; /* heap index */
+    s16 unkA; /* use the shared heap */
+} Unk800D6D8C;
+
+typedef struct {
+    u32 tag;
+    u32 code[5];
+} DR_MOVE;
+
+extern s32 D_800F78AC;
+void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
+void func_8005562C(s32);
+void func_800BCAA4(BtlUnit *);
+s32 func_800E3B70(Heap *, s32);
+void func_800C2598(BtlCmd *, s32, s32);
 
 #endif
