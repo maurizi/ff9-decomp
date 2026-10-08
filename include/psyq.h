@@ -150,6 +150,7 @@ long GetRCnt(unsigned long spec);
 long SpuSetReverbModeType(long mode);
 void SpuSetIRQAddr(u32 addr);
 int SpuSetIRQ(int on_off);
+void SpuGetVoiceEnvelope(int vNum, short *envx);
 void *SpuSetIRQCallback(void (*func)(void));
 int CdControlB(u8 com, u8 *param, u8 *result);
 int CdReset(int mode);

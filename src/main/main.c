@@ -5530,7 +5530,11 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058578);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800585E0);
 
-void func_80058830(AkaoChannel *c, s32 voice, u16 unused) {
+/* K&R definition: callers pass two or three arguments */
+void func_80058830(c, voice)
+    AkaoChannel *c;
+    s32 voice;
+{
     u32 i;
     for (i = 0; i < 32; i++) {
         if (voice == c->unk118) {
@@ -5549,7 +5553,24 @@ void func_80058830(AkaoChannel *c, s32 voice, u16 unused) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800588B0);
+void func_800588B0(u32 extra) {
+    u32 m = (D_80080A10->unk4 & D_80080A10->unkC) | extra;
+    u32 i;
+    Unk8007F798 *p;
+    if (D_8007F790 != NULL) {
+        m |= D_8007F790->unk4 & D_8007F790->unkC;
+    }
+    for (i = 0, p = D_8007F798; i < 24; i++, p++) {
+        if (m & (1 << i)) {
+            p->unk4 = 0x7FFF;
+        } else {
+            SpuGetVoiceEnvelope(i, &p->unk4);
+            if (p->unk4 == 0) {
+                func_80058830(D_8007BD48, i);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058990);
 
@@ -5856,7 +5877,29 @@ void func_8005B64C(u16 *a) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B6C8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B790);
+void func_8005B790(Unk80080AA0 *a) {
+    AkaoChannel *c = D_8007E3D8;
+    u32 mask = D_80080A70.unk0;
+    u32 bit = 0x100;
+    u32 i;
+    if (a->unk4 != 0) {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((mask & bit) && (c->unk28 & a->unk4)) {
+                c->unk9C = (u8)a->unk8 << 8;
+                c->unk9E = 0;
+                c->unk11C |= 3;
+            }
+        }
+    } else {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((mask & bit) && c->unk6C == a->unk0) {
+                c->unk9C = (u8)a->unk8 << 8;
+                c->unk9E = 0;
+                c->unk11C |= 3;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B870);
 

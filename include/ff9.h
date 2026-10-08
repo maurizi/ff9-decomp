@@ -1665,7 +1665,7 @@ typedef struct {
     u8 pad6[2];
 } Unk8007F798;
 extern Unk8007F798 D_8007F798[24];
-void func_80058830(AkaoChannel *, s32, u16);
+void func_80058830(); /* (AkaoChannel *, s32 voice) */
 
 typedef struct {
     s32 unk0;
