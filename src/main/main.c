@@ -4365,7 +4365,23 @@ void func_80033DCC(Character *c) {
     } while (i < 64);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033E84);
+s32 func_80033E84(s32 ch, s32 id, s32 add) {
+    s32 i = func_80034430_inline(ch, id);
+    s32 old;
+    s32 need;
+
+    if (i < 0) {
+        return 0;
+    }
+    old = D_8006794C->unk1C->unk3C[ch].unk58[i];
+    need = func_800347D8_inline(ch, id);
+    if (need - D_8006794C->unk1C->unk3C[ch].unk58[i] < add) {
+        D_8006794C->unk1C->unk3C[ch].unk58[i] = need;
+    } else {
+        D_8006794C->unk1C->unk3C[ch].unk58[i] += add;
+    }
+    return D_8006794C->unk1C->unk3C[ch].unk58[i] - old;
+}
 
 s32 func_80034070(s32 ch, s32 id) {
     s32 ap = func_80034430_ap_inline(ch, id);

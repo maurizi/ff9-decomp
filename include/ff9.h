@@ -43,7 +43,8 @@ typedef struct {
 } UnkPair;
 
 typedef struct {
-    u8 pad0[4];
+    u16 unk0; /* (second table) high byte: first two-byte code */
+    u8 pad2[2];
     u16 unk4; /* high byte: first text code that takes an extra byte */
     u16 unk6;
     u8 pad8[4];
@@ -182,7 +183,7 @@ typedef struct {
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
     u8 unk848;
     u8 pad849[0x84C - 0x849];
-    s32 unk84C;
+    Unk7D4 *unk84C; /* second (kanji) font table */
     u8 unk850;
     u8 pad851[0x854 - 0x851];
     u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
@@ -2348,4 +2349,5 @@ typedef struct {
 } AkaoStream;
 s32 func_80060A08(void);
 void func_80061624(void);
+u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
 #endif
