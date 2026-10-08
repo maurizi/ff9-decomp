@@ -784,7 +784,20 @@ void func_800BA2AC(BtlCalc *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BA308);
+void func_800BA308(BtlCalc *arg0) {
+    s32 r;
+    if ((arg0->unk4->unkC4[0] & 0x04000000) && arg0->unk10 != 0) {
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+            }
+        }
+        r = *D_8007B720;
+        D_8007B720++;
+        arg0->unk10 = ((r << 8) | r) % (arg0->unk10 * 2);
+    }
+}
 
 void func_800BA3FC(BtlCalc *arg0) {
     if (arg0->unk4->unk3C & 0x808000) {
@@ -1917,7 +1930,19 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBA58);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBBB0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBC38);
+s32 func_800CBC38(BtlScript *arg0, BtlUnit *arg1) {
+    s16 *p = arg0->unk28;
+    u16 v = arg0->unk28[0] + p[1] * arg0->unk10 / p[2];
+    func_800BE1E0((s32)arg1, 0x37, v);
+    if (v == 0x1000) {
+        arg1->unk9C->unk0 &= ~2;
+    }
+    if (arg0->unk10 >= p[2]) {
+        arg0->unk8 += 4;
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CBD28);
 
@@ -1964,7 +1989,27 @@ void func_800CBF90(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CC044);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CC1A0);
+void func_800CC1A0(BtlUnit *arg0) {
+    u8 f = arg0->unkCE;
+    u8 n = 0;
+    if (!((arg0->unk68 >> 22) & 1)) {
+        if (f & 1) {
+            func_800CC31C((s32)arg0, arg0->unkC8, (f & 8) ? 0 : 0xC0, 0)->unk13 = 1;
+            n = 4;
+        }
+        if (f & 2) {
+            func_800CC31C((s32)arg0, arg0->unkCA, 0, n)->unk13 = 1;
+            n += 4;
+        }
+        if (f & 4) {
+            func_800CC37C((s32)arg0, arg0->unkCC, 0, n)->unk13 = 1;
+        }
+    }
+    arg0->unkCE = 0;
+    arg0->unkC8 = 0;
+    arg0->unkCA = 0;
+    arg0->unkCC = 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CC278);
 

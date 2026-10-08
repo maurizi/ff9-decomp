@@ -196,7 +196,8 @@ typedef struct BtlScript {
     u32 unk0; /* flags */
     BtlScript4 *unk4;
     u8 *unk8; /* script pointer */
-    u8 padC[0x12 - 0xC];
+    u8 padC[0x10 - 0xC];
+    s16 unk10;
     s16 unk12;
     s16 unk14;
     u8 unk16;
@@ -211,6 +212,7 @@ typedef struct BtlScript {
     u8 unk25;
     u8 unk26;
     u8 unk27;
+    s16 unk28[3];
 } BtlScript;
 
 /* D_800F78A4->unkC */
@@ -1112,6 +1114,8 @@ void func_80056388(s32, s32);
 s8 func_80021698(void);
 
 /* ovl_0b functions */
+s32 func_800D71C8(s32, s16 *, s32, s32, s32, s16 *);
+void func_800E7824(s32, s16 *);
 u16 func_800B4478(u16 *);
 void func_800EB358(BtlUnit *);
 void func_800ECCA8(s32);
@@ -1265,7 +1269,14 @@ s32 func_800D8EA4(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8F1C(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8FAC(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D908C(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D9260(u8 *, s32, s32);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 pad2[2];
+    s32 unk4;
+    s16 unk8[4];
+} Unk800D9260;
+s32 func_800D9260(Unk800D9260 *, s32, s32 *);
 s32 func_800D960C(struct Unk800D7E14 *, s32, s32);
 void func_800AD90C(s32, s32, s32, s32, s32);
 void func_800B3C00(void);
@@ -1491,7 +1502,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     s16 unk4;
-    u8 pad6[8 - 6];
+    s16 unk6;
     s32 unk8;
     s16 unkC[4];
     s16 unk14[4];
@@ -1554,5 +1565,8 @@ void func_8005562C(s32);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s32);
+
+s32 func_800D9350(Unk800D7C9C *, s32, s32 *);
+s32 func_8004BB80(s32);
 
 #endif
