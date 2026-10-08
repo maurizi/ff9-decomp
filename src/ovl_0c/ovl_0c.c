@@ -592,7 +592,56 @@ s32 func_800AEA94(s32 arg0) {
     return arg0 & 0xFFFF;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEADC);
+void func_800AEADC(void) {
+    s32 i;
+    s32 j;
+
+    D_800CE3DC = &D_800CE210;
+    D_800CE3D8 = 0;
+    D_800CE3D0 = 0;
+    D_800CE268 = 0;
+    D_800CE270 = 0;
+    D_800CE3C4 = -1;
+    D_800CE3C8 = 0;
+    D_800CE25E = 0;
+    D_800CE3BE = 0;
+    D_800CE3C0 = 0;
+    D_800CE278 = 0;
+    D_800CE3E0 = 0;
+    D_800CE3BC = 0;
+    D_800CE276 = 0;
+    D_800CE3CC = 0;
+    D_800CE284 = 0;
+    D_800CE3D4 = 0x1000;
+    D_800CE260 = 0;
+    D_800CE264 = 1;
+    D_800CE274 = 0;
+    D_800CE280 = 0;
+    D_800CE25C = 0;
+    D_800CE27C = 0;
+    D_800CE25D = 0;
+    D_800CE26D = 0;
+    D_800CE209 = 0;
+    for (i = 0; i < 11; i++) {
+        D_800CE288[i].unk0 = 0;
+        for (j = 0; j < 6; j++) {
+            D_800CE288[i].unk4[j] = j;
+            D_800CE288[i].unk10[j] = -1;
+        }
+    }
+    for (i = 0; i < 22; i++) {
+        D_800CCCC0[i].unk8 = 0;
+        D_800CCCC0[i].unkC = 0;
+        D_800CCCC0[i].unkE = 0;
+    }
+    if (D_800CF444 == 4) {
+        D_800CCB70[9].unkB = 3;
+        D_800CCB70[0].unkB = 3;
+    } else {
+        D_800CCB70[9].unkB = 2;
+        D_800CCB70[0].unkB = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEC74);
 
@@ -1888,7 +1937,26 @@ void func_800C16C0(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1824);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1B00);
+void func_800C1B00(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3, u8 arg4) {
+    switch (arg4) {
+    case 0:
+        *arg2 = ((arg0 - 0x30000) * 14 / 16 >> 11) + 15;
+        *arg3 = ((-0x22000 - arg1) * 14 / 16 >> 11) + 6;
+        break;
+    case 1:
+        *arg2 = (arg0 - 0x30000) / 819 * 14 / 16 + 31;
+        *arg3 = (-0x22000 - arg1) / 819 * 14 / 16 + 12;
+        break;
+    case 2:
+        *arg2 = arg0 >> 12;
+        *arg3 = -arg1 >> 12;
+        break;
+    case 3:
+        *arg2 = arg0 / 1638;
+        *arg3 = -arg1 / 1638;
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1C98);
 

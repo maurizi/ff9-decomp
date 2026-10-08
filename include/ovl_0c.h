@@ -686,6 +686,34 @@ extern u8 D_800CE080[];
 extern u8 D_800CE088[];
 extern u8 D_800CE090[];
 
+/* func_800AEADC init state */
+typedef struct {
+    s8 unk0;
+    u8 pad1[3];
+    s16 unk4[6];
+    u16 unk10[6];
+} Unk800CE288; /* 0x1C */
+extern Unk800CE288 D_800CE288[11];
+extern Unk8004AB64 D_800CE210;
+extern s8 D_800CE209;
+extern s8 D_800CE25D;
+extern s8 D_800CE25E;
+extern s32 D_800CE260;
+extern s32 D_800CE268;
+extern s8 D_800CE26D;
+extern s32 D_800CE270;
+extern s8 D_800CE274;
+extern s32 D_800CE278;
+extern s32 D_800CE280;
+extern s32 D_800CE284;
+extern s8 D_800CE3BE;
+extern s32 D_800CE3C0;
+extern s16 D_800CE3CC;
+extern s32 D_800CE3D0;
+extern s32 D_800CE3D4;
+extern s32 D_800CE3D8;
+extern s32 D_800CE3E0;
+
 extern u8 D_800CCE49;
 extern s32 D_800CCF70; /* debug: last update step */
 extern s32 D_800CE264;
