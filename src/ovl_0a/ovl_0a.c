@@ -1941,7 +1941,40 @@ s32 func_800C2390(VECTOR *arg0, SVECTOR *arg1, s32 arg2, VECTOR *arg3) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2524);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2920);
+u16 func_800C2920(Unk800C9DF4 *arg0, Unk800C9E00 **arg1, s32 arg2, s32 arg3) {
+    Unk800C9E00 *p[2];
+    u16 i;
+
+    if (arg3 < 9) {
+        p[0] = *arg1;
+        if (func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[p[0]->unk4], p[0], arg2)) {
+            return 1;
+        }
+        for (i = 0; i < 3; i++) {
+            p[1] = func_800C1F98(arg0, p[0], i);
+            if (p[1] != NULL && func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[p[1]->unk4], p[1], arg2)) {
+                arg0->unk6 = p[0]->unk18[i];
+                if (arg0->unk6 >= 0) {
+                    p[1] = &D_800C9DF0.unk10[arg0->unk6];
+                    arg0->unk4 = p[1]->unk4;
+                    *arg1 = p[1];
+                    return 1;
+                }
+            }
+        }
+        for (i = 0; i < 3; i++) {
+            p[1] = func_800C1F98(arg0, p[0], i);
+            if (p[1] != NULL && !(p[1]->unk0 & 0x80)) {
+                p[1]->unk0 |= 0x80;
+                if (func_800C2920(arg0, &p[1], arg2, arg3 + 1) == 1) {
+                    *arg1 = p[1];
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2AF0);
 

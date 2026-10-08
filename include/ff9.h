@@ -183,7 +183,8 @@ typedef struct {
     u8 pad849[0x84C - 0x849];
     s32 unk84C;
     u8 unk850;
-    u8 pad851[0x854 - 0x851];
+    u8 unk851;
+    u16 unk852;
     u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
     Unk880 unk880;
     u8 unk890;

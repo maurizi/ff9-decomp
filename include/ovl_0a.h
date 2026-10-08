@@ -374,7 +374,8 @@ typedef struct {
     s16 unk6;
     u16 unk8;
     s16 unkA;
-    u8 padC[0x1E - 0xC];
+    u8 padC[0x18 - 0xC];
+    s16 unk18[3]; /* neighbour node ids, -1 = none */
     s16 unk1E;
     s16 unk20;
     s16 unk22;
@@ -593,7 +594,7 @@ void func_800C6EEC();
 void func_80054A28(void *);
 s32 func_800B0124(s32, s32, s32, s32, s32);
 void func_800B36E0(void);
-void func_800B4894(void);
+s32 func_800B4894(void);
 void func_800B3ACC(void);
 s32 func_8001E350(s32);
 void func_800B31B8(s32, s32, s32, s32);
@@ -672,6 +673,8 @@ typedef struct {
 } Unk800C9F60; /* 0x18 */
 extern Unk800C9F60 D_800C9F60[2];
 extern Unk800C9DF4 D_800CAAD8[24];
+Unk800C9E00 *func_800C1F98(Unk800C9DF4 *, Unk800C9E00 *, s32);
+u8 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s32);
 extern RECT *D_800C9EA0;
 extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;
