@@ -1723,6 +1723,7 @@ typedef struct {
 extern Unk800F8F98 D_800F8F98[];
 extern Unk800F8F98 D_800F8F18[];
 void func_800B41A4(BtlUnit *, u8);
+s32 func_800B0CF8(s32, u32);
 u32 func_800C8DE0(u32, s32, s32, s32);
 void func_8002F1CC(MenuList *, s32);
 void func_8002F284(MenuList *, s32);
