@@ -100,13 +100,14 @@ typedef struct BtlUnit {
     u8 padC[0x10 - 0xC];
     struct BtlCmd *unk10;
     struct BtlCmd *unk14;
-    u8 pad18[0x1C - 0x18];
+    s32 unk18;
     u16 unk1C[4];
     BtlUnit24 *unk24;
     u16 unk28; /* hp */
     s16 unk2A; /* mp */
     s16 unk2C;
-    u8 pad2E[0x32 - 0x2E];
+    u8 pad2E[0x31 - 0x2E];
+    u8 unk31;
     u8 unk32;
     u8 unk33;
     s32 unk34;
@@ -116,9 +117,9 @@ typedef struct BtlUnit {
     s16 unk46[14];
     u8 pad62[0x68 - 0x62];
     u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
-    u8 pad6C[0x6D - 0x6C];
+    u8 unk6C;
     u8 unk6D;
-    u8 pad6E;
+    u8 unk6E;
     u8 unk6F;
     u8 pad70[0x74 - 0x70];
     u8 *unk74;
@@ -127,7 +128,7 @@ typedef struct BtlUnit {
     u8 unk7A;
     u8 pad7B;
     u8 unk7C;
-    u8 pad7D;
+    u8 unk7D;
     u16 unk7E;
     s16 unk80;
     s16 unk82;
@@ -670,7 +671,8 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s16 unk8;
-    u8 padA[2];
+    u8 unkA;
+    u8 padB;
     u8 unkC[16];
     u8 unk1C;
     u8 unk1D;
@@ -1568,5 +1570,37 @@ void func_800C2598(BtlCmd *, s32, s32);
 
 s32 func_800D9350(Unk800D7C9C *, s32, s32 *);
 s32 func_8004BB80(s32);
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
+    u8 unk8;
+    u8 unk9;
+} Unk800EF80C;
+
+typedef struct {
+    u8 pad0[8];
+    s32 unk8;
+} Unk800EDE6C;
+
+typedef struct {
+    u32 unk0; /* tag */
+    u32 unk4;
+    u32 unk8;
+    u32 unkC; /* ordering table */
+} Unk800D0940;
+
+extern s32 D_800F7278;
+void func_800EF80C(Unk800EF80C *);
+
+void func_800BCC64(BtlUnit *);
+void func_800BCDBC(BtlUnit *);
+s32 func_800D9F88(u8 *, s32, s32 *);
 
 #endif

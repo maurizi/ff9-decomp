@@ -568,7 +568,29 @@ s32 func_800D81EC(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D8270);
+s32 func_800D8270(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+    s32 v;
+    s32 w;
+    if (arg0 == 0) {
+        *arg4 = 4;
+    } else if (arg0 == 1) {
+        arg1[0] = arg4[0];
+        arg1[1] = arg4[1];
+        arg1[2] = D_80100D88.unk0;
+        if (func_800DA06C(arg1[0], arg1[2]) == 0) {
+            D_800FEC57 = arg0;
+            return 1;
+        }
+        if ((v = arg1[2]) == arg0 && (w = func_800D8A94(arg1[0], arg1[1])) == v) {
+            D_800FEC57 = w;
+            return 1;
+        }
+        D_800FEC57 = 0;
+    } else {
+        return func_800D9F88(arg1, arg2, arg3);
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D8368);
 
@@ -2458,7 +2480,27 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EAAFC);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EAC88);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EAD94);
+BtlUnit *func_800EAD94(void) {
+    BtlUnit *u;
+    u8 ok;
+    for (;;) {
+        if (D_80104F88->unk12C4 == 0 || D_80104F88->unk12B4 != 0) {
+            return NULL;
+        }
+        u = D_80104F88->unk12C8[D_80104F88->unk12C5];
+        D_80104F88->unk12C4--;
+        D_80104F88->unk12C5 = (D_80104F88->unk12C5 + 1) & 3;
+        if (u == NULL || u->unk28 == 0 || (func_800C09A4(u, 0x42021D03) & 0xFF) || !((D_800FDF30.unkA >> ((u8)u->unk68 >> 5)) & 1)) {
+            ok = 0;
+        } else {
+            ok = 1;
+        }
+        if (ok) {
+            return u;
+        }
+        u->unkCF = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EAE8C);
 
@@ -2974,7 +3016,25 @@ void func_800EDDF8(void) {
     func_8002DD00(D_80104F88->unk12A4[3]);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EDE6C);
+void func_800EDE6C(Unk800EDE6C *arg0) {
+    u32 hidden;
+    Unk800EF80C s;
+    Battle16CC *e;
+    u8 b = D_80104FB0.unk4[D_80104FB0.unk0];
+    e = &D_8006794C->unk1C->unk8E4.battle->unk16CC[arg0->unk8];
+    s.unk6 = arg0->unk8;
+    s.unk0 = 1;
+    s.unk1 = b;
+    s.unk9 = D_80104FB0.unk1;
+    s.unk2 = e->unk0_0;
+    s.unk3 = e->unk0_4;
+    s.unk4 = e->unk0_31;
+    s.unk7 = e->unk0_5;
+    hidden = e->unk0_29;
+    s.unk8 = 0;
+    s.unk5 = hidden;
+    func_800EF80C(&s);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EDF34);
 
