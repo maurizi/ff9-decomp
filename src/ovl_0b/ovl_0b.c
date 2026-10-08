@@ -1478,11 +1478,54 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BFF20);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C02D4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0430);
+void func_800C0430(BtlUnit *arg0, s32 arg1) {
+    s8 d;
+    s8 i;
+    d = 6;
+    if (arg0->unk68 & 1) {
+        d = -12;
+    }
+    if (arg1 & 0xFF) {
+        d *= -1;
+    }
+    i = 0;
+    if (arg0->unk68 & 1) {
+        arg0->unkA8->unk18->unk2 = ((d + func_8001DA6C(arg0->unkA8->unk18->unk2)) << 6) | 0x10;
+    }
+    while (i < func_80063830(arg0->unk84 | 0x20000)) {
+        arg0->unk9C->unk18[i].unk2 = ((d + func_8001DA6C(arg0->unk9C->unk18[i].unk2)) << 6) | 0x10;
+        i++;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0544);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C072C);
+void func_800C072C(void) {
+    u16 *p = (u16 *)D_800FE360;
+    s32 i;
+    s8 c[3];
+    s8 v;
+    for (i = 0; i < 0x600; i++) {
+        c[0] = *p & 0x1F;
+        c[1] = (*p >> 5) & 0x1F;
+        c[2] = (*p >> 10) & 0x1F;
+        if (c[0] == 0 && c[1] == 0 && c[2] == 0) {
+            v = 0;
+        } else {
+            v = (c[0] + c[1] + c[2]) / 3;
+            if (v <= 0) {
+                v = 1;
+            }
+        }
+        *p = v + ((v << 10) + (v << 5));
+        p++;
+    }
+    D_800FDF50.x = 0x100;
+    D_800FDF50.y = 0xDA;
+    D_800FDF50.h = 6;
+    D_800FDF50.w = 0x100;
+    LoadImage(&D_800FDF50, D_800FE360);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0840);
 

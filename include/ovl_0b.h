@@ -66,6 +66,11 @@ typedef struct {
     s16 unk12;
 } BtlUnit9C50; /* 0x14 */
 
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* tpage */
+} BtlUnit9C18;
+
 typedef struct BtlUnit9C {
     u16 unk0; /* flags */
     u8 pad2[8 - 2];
@@ -73,7 +78,8 @@ typedef struct BtlUnit9C {
     BtlUnit9CC *unkC;
     u8 pad10[0x14 - 0x10];
     u32 unk14;
-    u8 pad18[0x20 - 0x18];
+    BtlUnit9C18 *unk18;
+    u8 pad1C[0x20 - 0x1C];
     BtlBone *unk20;
     MATRIX unk24;
     u8 pad44[0x50 - 0x44];
@@ -132,7 +138,7 @@ typedef struct BtlUnit {
     u16 unk7E;
     s16 unk80;
     s16 unk82;
-    u8 pad84[0x86 - 0x84];
+    u16 unk84; /* model id */
     s16 unk86[3];
     s32 unk8C[3]; /* position, 16.16 */
     struct BtlUnit98 *unk98;
@@ -440,7 +446,9 @@ typedef struct {
     u16 unk24;
     u8 pad26[0x28 - 0x26];
     u8 unk28;
-    u8 pad29[0x30 - 0x29];
+    u8 pad29[0x2B - 0x29];
+    u8 unk2B;
+    u8 pad2C[0x30 - 0x2C];
     u16 unk30;
 } Battle4880;
 
@@ -1155,10 +1163,16 @@ extern Unk801051F0 D_801051F0;
 extern s32 D_800FDE3C[];
 extern u32 D_80104E80;
 typedef struct {
-    u8 pad0[0x310];
+    SPRT unk0[4][2];
+    DR_TPAGE unkA0[2];
+    u8 padB0[0x110 - 0xB0];
+    SPRT unk110[4][2];
+    u8 pad1B0[0x2F0 - 0x1B0];
+    DR_TPAGE unk2F0[2];
+    u8 pad300[0x310 - 0x300];
     POLY_G4 unk310[2];
     DR_TPAGE unk358[2];
-} Unk801050D8; /* 0x368 */
+} Unk801050D8; /* 0x368, double-buffered menu primitives */
 extern Unk801050D8 *D_801050D8;
 extern u8 D_801051E0;
 extern u8 D_80104E94[2][0x18];
@@ -1383,9 +1397,9 @@ s32 func_800C0B6C(BtlUnit *, u32);
 s32 func_800D87D0(s32);
 void func_800DF7A0(BtlUnit9C *, s32, s32, s32, s32);
 s32 func_800E7298(BtlUnit *);
-u16 func_800E7370(BtlUnit *);
+s32 func_800E7370(BtlUnit *);
 void func_800E748C(BtlUnit *, s16 *);
-void func_800E753C(BtlUnit *, s32, s32);
+void func_800E753C(BtlUnit *, s32, s16 *);
 void func_800E78B4(s32, s32, s32, s32, s32, s32, s32);
 void func_800E7A44(s32, VECTOR *);
 void func_800E7FC0(BtlUnit *, s32);
@@ -1671,6 +1685,8 @@ extern void (*D_800F8DF0[])(Unk800FD56C *);
 extern void (*D_800F8E00)(Unk800FD56C *);
 extern void (*D_800F9038[])(BtlUnit *, s32);
 void func_800F3390(void);
+s32 func_8001DA6C(s16);
+s32 func_80063830(s32);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s32);
