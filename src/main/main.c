@@ -1154,7 +1154,35 @@ void func_800225BC(u8 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002267C);
+void func_8002267C(CdRequest *r) {
+    volatile s32 st = D_800761D0.unk0;
+    u32 n;
+
+    D_800761D0.unk2 = 0;
+    D_800761D0.unk3 = 0;
+    D_800761D0.unk944 = *r;
+    D_800761D0.unk0 = 1;
+    n = (u32)(r->unk8 + 0x7FF) >> 11;
+    D_800761D0.unk14 = 0;
+    D_800761D0.unk10 = 0;
+    D_800761D0.unkC = 0;
+    D_800761D0.unk4 = n;
+    func_800213A0(NULL);
+    func_80021380(r->unk10);
+    if (r->unk0 & 1) {
+        D_800761D0.unk0 = 1;
+        CdIntToPos(r->unk4, &D_800761D0.unk8);
+        func_80023580(2, (u8 *)&D_800761D0.unk8);
+    } else if (st != 4) {
+        D_800761D0.unk0 = 4;
+        func_80023580(9, NULL);
+    } else {
+        D_800761D0.unk0 = 0;
+        if (D_800761D0.unk944.unk18 != NULL) {
+            D_800761D0.unk944.unk18(&D_800761D0);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800227C8);
 
