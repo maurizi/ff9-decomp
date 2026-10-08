@@ -2325,7 +2325,7 @@ void func_800E753C(BtlUnit *arg0, s32 arg1, s16 *arg2) {
     } else {
         func_800E73B4(arg0, (u16 *)arg2);
         if (arg1 == 1) {
-            arg2[1] = arg0->unk9C->unk20[D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk2B].unk18;
+            arg2[1] = arg0->unk9C->unk20[D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[2]].unk18;
         }
     }
 }

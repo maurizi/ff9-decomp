@@ -848,7 +848,24 @@ s32 func_800B8664(BtlCalc *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B87D0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B8A24);
+void func_800B8A24(BtlCalc *arg0) {
+    u32 f = arg0->unk4->unk68;
+    u32 c;
+    Battle4880 *e;
+    BtlUnit *u;
+    if (!(f & 1)) {
+        c = arg0->unk0->unkC4[0];
+        e = D_8006794C->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0;
+        if (((c & 0x2000) && (e->unk2 & 0x80)) || ((c & 0x4000) && (e->unk2 & 0x40)) || ((c & 0x8000) && (e->unk2 & 0x20)) || ((c & 0x10000) && (e->unk2 & 0x10)) || ((c & 0x20000) && (e->unk2 & 8)) || ((c & 0x40000) && (e->unk2 & 4)) || ((c & 0x80000) && (e->unk2 & 2)) || ((c & 0x100000) && (e->unk2 & 1))) {
+            arg0->unk14 = arg0->unk14 * 3 >> 1;
+        }
+    }
+    u = arg0->unk0;
+    if ((u->unkC4[0] & 0x1000) && u->unk2A > 0) {
+        arg0->unk14 = arg0->unk14 * 3 >> 1;
+        arg0->unk18 |= 4;
+    }
+}
 
 void func_800B8BE8(BtlCalc *arg0) {
     u8 s = arg0->unk0->unk33 >> 2;
@@ -2640,9 +2657,68 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9794);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9A28);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9D1C);
+void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
+    s16 i;
+    BtlUnit9CC *h;
+    arg1->unk24 = arg0->unk1C;
+    arg1->unk2 = arg0->unk41;
+    arg1->unk3 = arg0->unk40;
+    arg1->unk27 = arg0->unk47;
+    arg1->unk4.unk0 = arg0->unkC;
+    arg1->unk4.unk2 = arg0->unkE;
+    arg1->unk44 = arg0->unk10;
+    arg1->unk46 = arg0->unk12;
+    arg1->unk4C = arg0->unk69;
+    arg1->unk48 = arg0->unk14;
+    for (i = 0; i < 6; i++) {
+        h = func_8001C7FC(4, arg0->unk20[i] | 0x30000, 0);
+        arg1->unkC[i] = h;
+        if (h->unkC >= 0) {
+            h->unkC = (s32)h + h->unkC;
+            if (h->unk10 != 0) {
+                h->unk10 = (s32)arg1->unkC[i] + h->unk10;
+            }
+        }
+    }
+    for (i = 0; i < 3; i++) {
+        arg1->unk29[i] = arg0->unk48[i];
+    }
+    arg1->unk30 = arg0->unk4C;
+    arg1->unk26 = arg0->unk4E;
+    for (i = 0; i < 6; i++) {
+        arg1->unk32[i] = arg0->unk50[i];
+        arg1->unk38[i] = arg0->unk56[i];
+        arg1->unk3E[i] = arg0->unk5C[i];
+    }
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9EE0);
+void func_800C9EE0(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    Battle488 *s = &b->unk488[(arg1->unk68 >> 1) & 0xF];
+    Battle4880 *e;
+    s16 r;
+    s->unk0 = &b->unk4E8[arg0->unk0];
+    arg1->unk68 = (((arg1->unk68 & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
+    e = &D_8006794C->unk1C->unk8E4.battle->unk4E8[arg0->unk0];
+    arg1->unk24 = &e->unk4;
+    arg1->unk28 = e->unk4.unk0;
+    arg1->unk2A = arg1->unk24->unk2;
+    s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
+    if (!((s->unk4 >> 9) & 1)) {
+        arg1->unk8C[0] = arg1->unk98->unk0[0] = arg1->unkA0->unk14 = arg0->unk4 << 16;
+        arg1->unk8C[1] = arg1->unk98->unk0[1] = arg1->unkA0->unk18 = arg0->unk6 << 16;
+        arg1->unk8C[2] = arg1->unk98->unk0[2] = arg1->unkA0->unk1C = arg0->unk8 << 16;
+        arg1->unkA0->unk20 = 0;
+        arg1->unk86[0] = 0;
+        arg1->unkA0->unk24 = 0;
+        arg1->unk86[2] = 0;
+        r = (arg0->unkA + D_800F5850[*arg2 & 3]) & 0xFFF;
+        arg1->unkA0->unk22 = r;
+        arg1->unk86[1] = r;
+    }
+    arg1->unkA4 = (s32 *)s->unk0->unkC;
+    arg1->unk9C->unkC = s->unk0->unkC[0];
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA0A0);
 
@@ -2665,7 +2741,7 @@ u16 func_800CA378(void) {
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA3CC);
 
 void func_800CA530(BtlCmd *arg0) {
-    if (D_8006794C->unk1C->unk8E4.battle->unk11CC[arg0->unkF] != 0 && func_800CA5AC(arg0) != NULL) {
+    if (D_8006794C->unk1C->unk8E4.battle->unk11C4.unk8[arg0->unkF] != 0 && func_800CA5AC(arg0) != NULL) {
         BtlUnit *u = arg0->unk4;
         if (!(u->unk68 & 1)) {
             u->unk86[1] = 0;
@@ -2679,7 +2755,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800CA694);
 
 s32 func_800CA774(void) {
     s16 i;
-    Battle122C *p = D_8006794C->unk1C->unk8E4.battle->unk122C;
+    Battle122C *p = D_8006794C->unk1C->unk8E4.battle->unk11C4.unk68;
     for (i = 0; i < 4; i++, p++) {
         if (p->unk4 != 0) {
             return 1;
@@ -2843,7 +2919,7 @@ s32 func_800CB2E0(BtlScript *arg0, BtlUnit *arg1) {
         arg1->unk9C->unkC = D_8006794C->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
-        arg1->unk9C->unkC = D_8006794C->unk1C->unk8E4.battle->unk11C4[idx];
+        arg1->unk9C->unkC = D_8006794C->unk1C->unk8E4.battle->unk11C4.unk0[idx];
     }
     arg1->unkA0->unk3A = 0;
     arg0->unk14 = 0;

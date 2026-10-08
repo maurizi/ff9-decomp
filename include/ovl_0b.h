@@ -9,7 +9,10 @@
 /* ---- battle units ---- */
 
 typedef struct BtlUnitA0 {
-    u8 pad0[0x20];
+    u8 pad0[0x14];
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
     s16 unk20;
     s16 unk22;
     s16 unk24;
@@ -48,6 +51,9 @@ typedef struct BtlUnit9C8 {
 typedef struct BtlUnit9CC {
     u8 pad0[2];
     u16 unk2;
+    u8 pad4[0xC - 4];
+    s32 unkC; /* offset, relocated on load */
+    s32 unk10; /* offset, relocated on load */
 } BtlUnit9CC;
 
 typedef struct {
@@ -460,17 +466,25 @@ extern s32 D_8010528C[];
 typedef struct {
     u16 unk0;
     u8 unk2;
-    u8 pad3[0xC - 3];
-    BtlUnit9CC *unkC[2];
-    u8 pad14[0x24 - 0x14];
+    u8 unk3;
+    BtlUnit24 unk4; /* max stats */
+    u8 padA[0xC - 0xA];
+    BtlUnit9CC *unkC[6];
     u16 unk24;
-    u8 pad26[0x28 - 0x26];
+    u8 unk26;
+    u8 unk27;
     u8 unk28;
-    u8 pad29[0x2B - 0x29];
-    u8 unk2B;
+    u8 unk29[3];
     u8 pad2C[0x30 - 0x2C];
     u16 unk30;
-} Battle4880;
+    u8 unk32[6];
+    u8 unk38[6];
+    u8 unk3E[6];
+    u16 unk44;
+    u16 unk46;
+    s32 unk48;
+    s32 unk4C;
+} Battle4880; /* 0x50 */
 
 typedef struct {
     Battle4880 *unk0;
@@ -515,6 +529,13 @@ typedef struct {
     u8 unk26;
     u8 pad27[0x38 - 0x27];
 } Battle122C; /* 0x38 */
+
+typedef struct Battle11C4 {
+    BtlUnit9CC **unk0; /* animations */
+    u8 *unk4;
+    s32 unk8[24]; /* model data */
+    Battle122C unk68[4];
+} Battle11C4;
 
 typedef struct {
     u8 pad0[4];
@@ -647,8 +668,9 @@ typedef struct Battle {
     s32 unk4;
     s32 unk8[8][0x22]; /* per unit: loaded file addresses */
     u8 pad448[0x488 - 0x448];
-    Battle488 unk488[16];
-    u8 pad608[0x6F8 - 0x608];
+    Battle488 unk488[4];
+    Battle4880 unk4E8[4];
+    u8 pad628[0x6F8 - 0x628];
     BtlUnit *unk6F8; /* list of active units */
     BtlUnit unk6FC[8];
     s32 unkD7C;
@@ -671,10 +693,7 @@ typedef struct Battle {
     s16 unk11BC;
     u16 unk11BE;
     struct Battle11C0 *unk11C0;
-    BtlUnit9CC **unk11C4;
-    u8 *unk11C8;
-    s32 unk11CC[24];
-    Battle122C unk122C[4];
+    struct Battle11C4 unk11C4;
     s32 unk130C;
     s32 unk1310;
     u8 pad1314[0x131C - 0x1314];
@@ -683,7 +702,7 @@ typedef struct Battle {
     u32 unk132C;
     Battle1330 *unk1330;
     Battle1334 *unk1334;
-    u8 pad1338[0x133C - 0x1338];
+    u16 *unk1338; /* model file table */
     s16 *unk133C; /* offset table, entries relative to its start */
     u8 pad1340[0x1354 - 0x1340];
     Battle1354 *unk1354;
@@ -1219,6 +1238,44 @@ typedef struct {
 } Unk801051F0;
 extern Unk801051F0 D_801051F0;
 extern s32 D_800FDE3C[];
+typedef struct {
+    u8 unk0; /* enemy type */
+    u8 unk1;
+    u8 pad2[2];
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+} Unk800C9EE0;
+extern s16 D_800F5850[];
+/* enemy data record (func_800C9D1C) */
+typedef struct {
+    u8 pad0[0xC];
+    u16 unkC;
+    u16 unkE;
+    u16 unk10;
+    u16 unk12;
+    s32 unk14;
+    u8 pad18[0x1C - 0x18];
+    u16 unk1C;
+    u8 pad1E[0x20 - 0x1E];
+    u16 unk20[6]; /* file ids */
+    u8 pad2C[0x40 - 0x2C];
+    u8 unk40;
+    u8 unk41;
+    u8 pad42[0x47 - 0x42];
+    u8 unk47;
+    u8 unk48[3];
+    u8 pad4B;
+    u16 unk4C;
+    u8 unk4E;
+    u8 pad4F;
+    u8 unk50[6];
+    u8 unk56[6];
+    u8 unk5C[6];
+    u8 pad62[0x69 - 0x62];
+    u8 unk69;
+} Unk800C9D1C;
 /* SPRT written as words */
 typedef struct {
     u32 tag;
