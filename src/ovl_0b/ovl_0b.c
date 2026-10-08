@@ -2945,7 +2945,35 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9374);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C94B8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C9600);
+Battle1330 *func_800C9600(Battle11C020 *arg0) {
+    Battle1330 *e;
+    u16 r;
+    u16 sum;
+    u16 i;
+    s8 v;
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    r = (*D_8007B720++ * 100) / 256;
+    e = arg0->unk8;
+    sum = e->unk0;
+    i = 0;
+    while (r >= sum) {
+        e++;
+        sum += e->unk0;
+        i++;
+    }
+    v = D_8006794C->unk1C->unk848;
+    if (v != -1) {
+        i = v;
+        if (i >= arg0->unk1) {
+            i = 0;
+        }
+        e = &arg0->unk8[i];
+    }
+    D_8006794C->unk1C->unk8E4.battle->unk1340 = i;
+    return e;
+}
 
 void func_800C972C(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;

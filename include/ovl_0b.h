@@ -543,13 +543,16 @@ typedef struct Battle11C4 {
 } Battle11C4;
 
 typedef struct {
-    u8 pad0[4];
+    u8 unk0; /* weight */
+    u8 pad1;
+    u8 unk2;
+    u8 pad3;
     u16 unk4;
     u8 pad6[8 - 6];
     u8 unk8;
     u8 unk9;
-    u8 padA[0xC - 0xA];
-} Battle1330; /* 0xC */
+    u8 padA[0x38 - 0xA];
+} Battle1330; /* 0x38 */
 
 typedef struct {
     u8 pad0[0x1E];
@@ -560,8 +563,12 @@ typedef struct {
 } Battle1334; /* 0x74 */
 
 typedef struct {
-    u8 pad0[4];
+    u8 unk0;
+    u8 unk1; /* count of unk8 */
+    u8 pad2[4 - 2];
     u16 unk4;
+    u8 pad6[8 - 6];
+    Battle1330 unk8[1];
 } Battle11C020;
 
 /* battle command (queued action) */
@@ -716,7 +723,8 @@ typedef struct Battle {
     Battle1334 *unk1334;
     u16 *unk1338; /* model file table */
     s16 *unk133C; /* offset table, entries relative to its start */
-    u8 pad1340[0x1354 - 0x1340];
+    u8 unk1340;
+    u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
     Battle1358 unk1358[16];
     s16 unk1518;
@@ -1396,7 +1404,7 @@ s32 func_800F028C(void);
 void func_800F0904(void);
 void func_800F1AF8(Window *);
 void func_800F2684(s32);
-void func_800F2C74(void);
+void func_800F2C74(s32);
 void func_800F2DC0(s32);
 void func_800F2ED0(s32);
 void func_800F316C(void);
@@ -1779,6 +1787,19 @@ void func_800DDF10(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
 void func_800DF15C(BtlUnit9C *, u8, u16);
 u8 *func_800DD27C(BtlUnit9C *, u8, u8 *, s32);
+UnkPair *func_800EC114(s32);
+Battle1330 *func_800C9600(Battle11C020 *);
+typedef struct {
+    u32 unk0_0 : 4;
+    u32 unk0_4 : 1;
+    u32 unk0_5 : 3;
+    u32 unk0_8 : 21;
+    u32 unk0_29 : 1;
+    u32 unk0_30 : 1;
+    u32 unk0_31 : 1;
+    u8 pad4[0xC - 4];
+} Unk8006A774;
+extern Unk8006A774 D_8006A774[];
 u8 *func_800C7DAC(BtlUnit9C *, s32, u8 *);
 void func_800C6528(BtlUnit9C *, u8);
 u8 *func_800C58E4(BtlUnit9C *, u8, u8 *);
