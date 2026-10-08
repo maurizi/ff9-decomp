@@ -339,13 +339,38 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC02C);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC344);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC380);
+u32 func_800AC380(Unk800C9CCC **arg0) {
+    u32 min;
+    s32 i;
+
+    min = 0x801EDF00;
+    if (arg0 != NULL) {
+        *arg0 = NULL;
+    }
+    for (i = 9; i >= 0; i--) {
+        if (func_800C9CCC[i].unk4 != 0 && func_800C9CCC[i].unk4 < min) {
+            min = func_800C9CCC[i].unk4;
+            if (arg0 != NULL) {
+                *arg0 = &func_800C9CCC[i];
+            }
+        }
+    }
+    return min;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC3D8);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC474);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC5F0);
+void func_800AC5F0(void) {
+    s32 i;
+
+    for (i = 9; i >= 0; i--) {
+        func_800C9CCC[i].unk0 = 0;
+        func_800C9CCC[i].unk4 = 0;
+        func_800C9CCC[i].unk8 = 0;
+    }
+}
 
 void func_800AC620(void) {
     s32 v = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20;
@@ -356,7 +381,16 @@ void func_800AC620(void) {
     func_800AC67C(v);
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC67C);
+void func_800AC67C(s32 arg0) {
+    s32 i;
+
+    for (i = 9; i >= 0; i--) {
+        if (func_800C9CCC[i].unk4 != 0 && (u32)arg0 >= func_800C9CCC[i].unk4) {
+            func_800C9CCC[i].unk8 = 0;
+            func_800C9CCC[i].unk4 = 0;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC6C0);
 
@@ -1672,7 +1706,14 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7DF0);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7EE8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7F34);
+s32 func_800C7F34(s32 arg0, s32 arg1) {
+    Unk800CAE98 *e = &D_800CAE98[arg0];
+
+    e->unk14 = arg1 << 8;
+    e->unk0 |= 5;
+    func_800C6EEC();
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7F7C);
 

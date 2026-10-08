@@ -476,6 +476,16 @@ extern u8 D_800C9ED4[];
 extern u8 D_800C9EDC[];
 extern u8 D_800C9EE4[];
 
+/* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
+ * .text (as "func_800C9CCC"), so the array is reached through that label. */
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* id */
+    u32 unk4; /* address (0 = free) */
+    s32 unk8; /* size */
+} Unk800C9CCC; /* 0xC */
+extern Unk800C9CCC func_800C9CCC[10];
+
 /* main exe: candidates for ff9.h */
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
