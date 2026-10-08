@@ -1325,6 +1325,7 @@ void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
 void func_8002C740(s32, s32, s32);
+void func_8005EC20(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
     u8 pad4[0xC - 4];
@@ -1583,7 +1584,7 @@ typedef struct {
     s32 unk0;
     u32 unk4;
     u32 unk8;
-    u8 padC[0x10 - 0xC];
+    u32 unkC;
     s32 unk10;
     u8 pad14[0x1C - 0x14];
     u32 unk1C;

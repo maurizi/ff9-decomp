@@ -5898,7 +5898,19 @@ void func_8005C0F0(s32 *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C158);
+void func_8005C158(void) {
+    AkaoChannel *c = D_8007E3D8;
+    u32 bit = 0x100;
+    u32 i;
+    for (i = 0; i < 16; i++, c++, bit <<= 1) {
+        if ((D_80080A70.unk0 & bit) && !(c->unk28 & 0x2000000)) {
+            D_80080A70.unkC |= bit;
+            func_8005EC20(c, bit);
+            c->unk34 = 0;
+        }
+    }
+    D_80083158.unk8 |= 0x110;
+}
 
 void func_8005C234(void) {
     D_80083158.unk4 = 1;
