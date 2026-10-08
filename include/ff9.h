@@ -1754,6 +1754,7 @@ extern s32 D_8007B6F8;
 extern u8 **D_8007B70C;
 void func_80052DA0(void);
 s32 func_80052D40(void);
+void func_80052D70(s32);
 extern s32 D_8007B718;
 void func_8004E7FC(void);
 void func_8004883C(void);
