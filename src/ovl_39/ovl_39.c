@@ -1159,7 +1159,21 @@ s32 func_801FA37C(s32 chan) {
     return func_80066170(chan);
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801FA3D8);
+s32 func_801FA3D8(s32 port, char *name) {
+    char path[32];
+
+    func_80065228(0);
+    func_80065228(1);
+    D_801FB080 = port;
+    if (port == 0) {
+        strcpy(path, "bu00:");
+    } else {
+        strcpy(path, "bu10:");
+    }
+    func_80063108((u8 *)path, (u8 *)name);
+    func_801FAAF4();
+    return func_80065E60(path, 0x8003);
+}
 
 s32 func_801FA478(s32 chan) {
     func_80065228(0);
@@ -1227,7 +1241,24 @@ s32 func_801FA644(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801FA6AC);
+u8 func_801FA6AC(s32 port, char *name) {
+    char path[32];
+    s32 fd;
+    s32 ok;
+
+    func_80065228(0);
+    func_80065228(1);
+    if (port == 0) {
+        strcpy(path, "bu00:");
+    } else {
+        strcpy(path, "bu10:");
+    }
+    func_80063108((u8 *)path, (u8 *)name);
+    fd = func_80065E60(path, 0x10200);
+    ok = fd != -1;
+    func_80065EA0(fd);
+    return ok;
+}
 
 s32 func_801FA754(s32 chan) {
     func_80065228(0);
@@ -1235,10 +1266,6 @@ s32 func_801FA754(s32 chan) {
     func_801FAAF4();
     return _card_format(chan);
 }
-
-INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801F43EC);
-
-INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801F43F4);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801FA794);
 

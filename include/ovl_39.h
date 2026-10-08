@@ -218,6 +218,10 @@ extern u8 D_801EDF1C[];
 extern u8 D_801FB040[]; /* save icon per character model */
 extern u16 D_801FDEFE;
 void func_801F96CC(void);
+char *strcpy(char *, const char *); /* C library (builtin) */
+s32 func_80065E60(char *, s32); /* main exe: open */
+s32 func_801FA3D8(s32, char *);
+u8 func_801FA6AC(s32, char *);
 void func_80024000(s32); /* main exe */
 void func_801F9BEC(Unk801F9BEC *);
 void func_801F9F5C(void *);
