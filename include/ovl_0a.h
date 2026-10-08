@@ -29,6 +29,28 @@ typedef struct Unk800AFCBC {
     u8 *unk10;
 } Unk800AFCBC; /* 0x14, followed by the buffers it points to */
 
+/* trigger table entry (func_800B2218) */
+typedef struct FieldTrig {
+    u8 unk0; /* object uid */
+    u8 pad1;
+    u16 unk2;
+    u16 unk4;
+    s16 unk6;
+    u16 unk8;
+    u16 unkA;
+} FieldTrig; /* 0xC */
+
+/* script object (func_800B2218) */
+typedef struct {
+    u8 pad0[0x3B];
+    u8 unk3B; /* uid */
+} FieldEvtObj;
+
+typedef struct {
+    u8 pad0[0xC];
+    FieldEvtObj *unkC;
+} FieldEvtCtx;
+
 /* 0x330-byte block, FieldMapObj.unk14 (allocated by func_800A9350) */
 typedef struct {
     u32 unk0; /* flags */
@@ -51,11 +73,11 @@ typedef struct {
     s8 unk48;
     s8 unk49;
     u8 unk4A;
-    u8 pad4B;
+    u8 unk4B; /* unk58 entry count */
     void *unk4C; /* file 0x1Exxxx */
     struct Unk800AB0B0 *unk50;
     u8 *unk54; /* = unk90 */
-    u8 *unk58; /* = unk270 */
+    struct FieldTrig *unk58; /* = unk270 */
     u8 unk5C;
     u8 pad5D[3];
     u8 unk60; /* D_800C9F20 count */

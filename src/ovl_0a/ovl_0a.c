@@ -592,7 +592,16 @@ void func_800ADA7C(s8 arg0, s8 arg1, s8 arg2) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800ADB74);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AE4F8);
+void func_800AE4F8(void) {
+    if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x1000) {
+        D_80073998[0] &= ~0x04000000;
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x1000;
+    }
+    func_8019A9D8();
+    func_80022B28();
+    D_800C9D44 |= 4;
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 7;
+}
 
 void func_800AE5D4(void) {
     FieldMap *f;
@@ -736,7 +745,25 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2100);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B21A0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2218);
+s32 func_800B2218(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
+    FieldTrig *base;
+    FieldTrig *last;
+    FieldTrig *e;
+
+    base = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk58;
+    e = &base[D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4B] - 1;
+    last = e;
+    do {
+        if (e->unk0 == arg0->unkC->unk3B && e->unk4 == arg1 && e->unk6 == arg2) {
+            if (e != last) {
+                *e = *last;
+            }
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4B--;
+        }
+        e--;
+    } while (e >= base);
+    return -1;
+}
 
 s32 func_800B2328(s32 arg0) {
     FileTable *t = D_8006794C->unk1C->unk7E4;
