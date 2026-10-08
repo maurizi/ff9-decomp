@@ -11,7 +11,9 @@ typedef struct {
     s32 unk0; /* version tag, 0x30005 */
     u8 unk4[0x1A - 4];
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
-    u8 pad1B[0x4C - 0x1B];
+    u8 pad1B[0x44 - 0x1B];
+    u8 unk44;
+    u8 pad45[0x4C - 0x45];
     u32 unk4C; /* save counter */
     u8 pad50[0x98 - 0x50];
 } SaveSlot;
@@ -217,6 +219,7 @@ extern u8 D_801EDF1C[];
 extern u8 D_801FB040[]; /* save icon per character model */
 extern u16 D_801FDEFE;
 void func_801F96CC(void);
+void func_801F70E4(void);
 char *strcpy(char *, const char *); /* C library (builtin) */
 s32 func_80065E60(char *, s32); /* main exe: open */
 s32 func_801FA3D8(s32, char *);
