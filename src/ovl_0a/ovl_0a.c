@@ -2579,7 +2579,35 @@ s32 func_800C6408(u32 arg0, u32 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C65CC);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C6C04);
+s32 func_800C6C04(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
+    Unk800C6C04E *e;
+    s32 *tbl;
+    s32 *ids;
+    Unk800C9DF4 *a;
+    u16 i;
+    u16 j;
+
+    if (arg3 == -1) {
+        return 0;
+    }
+    e = (Unk800C6C04E *)(arg0 + arg1->unkC);
+    e += arg3;
+    tbl = (s32 *)(arg0 + arg2->unk6);
+    a = D_800C9DF0.unk4;
+    for (i = 0; i < D_800C9DF0.unk2; a++, i++) {
+        if (a->unk0 & 1) {
+            ids = (s32 *)(arg0 + e->unk6);
+            for (j = 0; j < e->unk4; j++, ids++) {
+                if (a->unk6 == *ids) {
+                    func_800C65CC(arg0, a, &D_800C9DF0.unk10[a->unk6], &D_800C9DF0.unk10[tbl[j]]);
+                    a->unk6 = tbl[j];
+                    a->unk4 = D_800C9DF0.unk10[tbl[j]].unk4;
+                }
+            }
+        }
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C6DA4);
 

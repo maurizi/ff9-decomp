@@ -684,6 +684,23 @@ typedef struct {
     u16 unk78;
 } Unk800C95C8;
 
+/* walkmesh swap tables (func_800C6C04) */
+typedef struct {
+    u8 pad0[0xC];
+    s32 unkC; /* offset of 8-byte link entries */
+} Unk800C6C04A;
+
+typedef struct {
+    u8 pad0[6];
+    u16 unk6; /* offset of the replacement id table */
+} Unk800C6C04B;
+
+typedef struct {
+    u8 pad0[4];
+    u16 unk4; /* count */
+    u16 unk6; /* offset of the id list */
+} Unk800C6C04E;
+
 /* object model slot (func_8001E350) */
 typedef struct {
     s32 unk0; /* flags: 1 = loaded */
