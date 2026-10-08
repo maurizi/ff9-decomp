@@ -177,9 +177,36 @@ void func_801F2A04(s32 x, s32 y, s32 otz, CardSlot *card) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2AB8);
+void func_801F2AB8(s32 x, s32 y, s32 otz, Unk6 *card) {
+    u8 s[4];
+    u32 color;
+    s32 i;
+    s32 dx;
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2B94);
+    color = func_801F30C8();
+    s[0] = (card->unk2 >> 4) + 0xA;
+    s[1] = card->unk3 + 0x1A;
+    s[2] = (card->unk4 >> 4) + 0xA;
+    s[3] = (card->unk5 >> 4) + 0xA;
+    for (i = 0; i < 4; i++) {
+        func_801F1D6C(x + 9 + i * 6, y + 0x26, otz, s[i], color);
+    }
+}
+
+void func_801F2B94(void) {
+    CardTurn *t;
+
+    t = &D_801F347C.unk1941;
+    if (t->unk0 != 0) {
+        if (++t->unk2 >= 4) {
+            if (t->unk1 == 1) {
+                D_801F347C.unk6C[t->unk3] = D_801F347C.unk6C[t->unk3] >= D_801F347C.unk8[t->unk3] - 1 ? 0 : D_801F347C.unk6C[t->unk3] + 1;
+            }
+            t->unk2 = 0;
+            t->unk0 = 0;
+        }
+    }
+}
 
 void func_801F2C14(void) {
     CardCache *c = &D_801F347C.unk1900;
@@ -192,7 +219,28 @@ void func_801F2C14(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2C5C);
+void func_801F2C5C(s32 id) {
+    CardCache *c;
+    CardSlot *s;
+    u8 prev;
+    s32 owned;
+
+    owned = D_801F347C.unk8[id];
+    c = &D_801F347C.unk1900;
+    prev = c->unk5;
+    c->unk9 = 1;
+    c->unk8 = 0;
+    c->unk5 = id;
+    c->unk6 = prev;
+    if (owned != 0) {
+        s = func_801F2D30(id);
+        if (s == NULL) {
+            c->unk4 = id;
+            return;
+        }
+        func_801F2D88(s);
+    }
+}
 
 void func_801F2CD4(void) {
     CardCache *c = &D_801F347C.unk1900;
