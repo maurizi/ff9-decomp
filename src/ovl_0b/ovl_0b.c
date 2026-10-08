@@ -1758,7 +1758,34 @@ void func_800C19F8(u8 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C1A8C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C1CA0);
+u16 func_800C1CA0(u32 arg0, s32 arg1) {
+    BtlUnit *u;
+    s32 r = 0;
+    s32 all;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+        all = arg1 == 0;
+        if (all || (u8)func_800C09A4(u, arg1)) {
+            if ((u->unk68 >> 28) & 1) {
+                switch (arg0) {
+                case 0:
+                    if (!(u->unk68 & 1)) {
+                        break;
+                    }
+                    r |= u->unkB0;
+                    break;
+                case 1:
+                    if (u->unk68 & 1) {
+                        break;
+                    }
+                case 2:
+                    r |= u->unkB0;
+                    break;
+                }
+            }
+        }
+    }
+    return r;
+}
 
 BtlUnit *func_800C1D8C(s32 arg0) {
     BtlUnit *u;
