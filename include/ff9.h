@@ -2780,7 +2780,7 @@ typedef struct {
     MainCalcCmd *unk8;
     s32 unkC;
     u8 unk10; /* bit 0: miss */
-    u8 pad11;
+    u8 unk11;
     s16 unk12;
     s16 unk14;
     s16 unk16;
@@ -2791,5 +2791,8 @@ typedef struct {
 u8 func_800539FC(Character *, s32);
 s32 func_8005398C(Character *, s32);
 void func_800637C0(s32); /* BIOS B0 call */
+
+void func_80065D90(Character *, s32);
+void func_80065DF4(Character *, s32);
 
 #endif
