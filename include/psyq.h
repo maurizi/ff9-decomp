@@ -325,6 +325,7 @@ typedef struct {
 } SPRT_16;
 long SquareRoot0(long a);
 void SetGeomOffset(long ofx, long ofy);
+void ReadGeomOffset(long *ofx, long *ofy);
 typedef struct {
     s16 vx, vy;
 } DVECTOR;

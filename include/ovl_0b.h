@@ -156,6 +156,12 @@ typedef struct {
 } Unk8006CB88;
 extern Unk8006CB88 D_8006CB88[]; /* abilities */
 
+/* draw environment pair built in the primitive buffer by func_800E6E1C */
+typedef struct {
+    DRAWENV unk0;
+    DRAWENV unk5C; /* previous */
+} DrawEnvPair; /* 0xB8 */
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;
@@ -556,6 +562,8 @@ extern Unk80104FD0 D_80104FD0;
 extern u8 D_800FE470;
 extern s32 D_800F7270;
 extern s32 D_800F7274;
+extern MATRIX D_800F8D50;
+void func_800CEEC8(s32);
 extern s32 D_800FE50C;
 extern s32 D_800FE510;
 extern struct Unk800CEE74 *D_800FE514;

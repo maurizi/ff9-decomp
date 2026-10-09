@@ -3314,7 +3314,44 @@ void func_800E6DF4(void) {
     func_800639D4(D_80104E00);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6E1C);
+void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 arg7) {
+    long ox;
+    long oy;
+    s32 save;
+    s32 mode;
+    DrawEnvPair *e;
+
+    save = D_800F7274;
+    e = (DrawEnvPair *)D_800F78A4->unk24;
+    D_800F7274 = 0;
+    D_800F78A4->unk24 = (u8 *)(e + 1);
+    SetDefDrawEnv(&e->unk0, x, y, w, h);
+    e->unk0.isbg = 1;
+    e->unk0.dtd = 0;
+    e->unk0.dfe = 0;
+    e->unk0.r0 = 7;
+    e->unk0.g0 = 7;
+    e->unk0.b0 = 7;
+    e->unk5C = *(DRAWENV *)&D_800F78A4->unk1C;
+    ClearOTag(ot, 0x100);
+    mode = func_800645C4();
+    ReadGeomOffset(&ox, &oy);
+    func_800639D4(0x200);
+    SetGeomOffset(w >> 1, h >> 1);
+    D_800F8D50.t[0] = -arg5;
+    D_800F8D50.t[1] = arg6;
+    D_800F8D50.t[2] = arg7 + 0x2900;
+    func_800CEEC8(2);
+    D_800F78A4->unk24 = func_800CE1B4(&D_800F8D50, D_8006794C->unk1C->unk8E4.battle->unk11C0->unk1C, (s32)D_800F78A4->unk24, NULL, (s32)ot);
+    func_800CEEC8(0xF);
+    func_80012D08();
+    DrawOTagEnv(ot, &e->unk0);
+    PutDrawEnv(&e->unk5C);
+    func_80012D18();
+    D_800F7274 = save;
+    func_800639D4(mode);
+    SetGeomOffset(ox, oy);
+}
 
 void func_800E701C(BtlUnitList *arg0) {
     D_800F78A4->unkC = arg0;
