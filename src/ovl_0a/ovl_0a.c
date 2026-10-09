@@ -1794,7 +1794,35 @@ s32 *func_800B3DE4(s32 arg0) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3E48);
+/* start streaming a file into the free area */
+s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u32 top;
+    s32 size;
+    Unk80021938 *p;
+
+    if (arg0 == -1 || arg2 == 0) {
+        return 0;
+    }
+    if (arg1 == 0 && arg3 == 0) {
+        return 0;
+    }
+    top = func_800AC380(NULL);
+    if ((u32)(D_80067944 + 0x153F00) < top) {
+        top = (u32)(D_80067944 + 0x153F00);
+    }
+    size = top - D_800C9D58;
+    size = size / 2048 * 2048;
+    if (arg1 == 0 && size < 0x8000) {
+        return 0;
+    }
+    p = func_80021CFC();
+    if (p == NULL) {
+        return 0;
+    }
+    func_80021974(p, arg1, arg0, arg1 == 0 ? D_800C9D58 : 0, size, arg3, arg2, arg3);
+    D_800C9D58 += arg3;
+    return (s32)p;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3F8C);
 
