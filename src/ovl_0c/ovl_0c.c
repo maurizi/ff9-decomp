@@ -1839,7 +1839,62 @@ void func_800B01F0(Unk8004AB64 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B0378);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B0D6C);
+s32 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
+    VECTOR v;
+    u32 cell;
+    s32 h;
+    Unk800CE3C8 *mode;
+    Unk800CE288 *c;
+    u8 ok;
+    s32 k;
+    s32 ang;
+    u8 a;
+    u8 b;
+    u8 x;
+    u8 y;
+
+    k = D_800CCCC0[D_800CE3DC->unk11].unk5;
+    mode = &D_800CCB70[arg2];
+    v = *arg0;
+    c = &D_800CE288[k];
+    v.vx += func_8004BB80(D_800CE3CC + (ang = arg1 + 0x800)) * arg3 >> 12;
+    v.vz += func_8004BB7C(D_800CE3CC + ang) * arg3 >> 12;
+    if ((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 == 0x34 && D_800CE3C8->unk0 != 1) {
+        func_800BE748(&v, &cell, &h, NULL, (u16 *)&v.vy);
+    } else {
+        func_800BE748(&v, &cell, &h, c, (u16 *)&v.vy);
+    }
+    if (h >= 0) {
+        ok = func_800B3340(mode->unk14, cell);
+        if (ok) {
+            if (mode->unk1 != 0) {
+                a = func_800B3340(D_800CCB20, cell);
+                b = func_800B3340(D_800CCB18, cell);
+                x = func_800B3340(D_800CCB20, D_800CCCC0[D_800CE3DC->unk11].unk8);
+                y = func_800B3340(D_800CCB18, D_800CCCC0[D_800CE3DC->unk11].unk8);
+                if (b & x) {
+                    ok = 0;
+                }
+                if (y & a) {
+                    ok = 0;
+                }
+            }
+            if (ok) {
+                if (arg0 != NULL) {
+                    *arg0 = v;
+                }
+                if (arg5 != NULL) {
+                    *arg5 = h;
+                }
+                if (arg4 != NULL) {
+                    *arg4 = cell;
+                }
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B105C);
 

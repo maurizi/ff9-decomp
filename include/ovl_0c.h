@@ -944,6 +944,7 @@ typedef struct {
     u16 unk10[6];
 } Unk800CE288; /* 0x1C */
 s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
+s32 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
 extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
 extern u8 D_800CE209;
