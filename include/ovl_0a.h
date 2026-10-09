@@ -230,7 +230,8 @@ typedef struct {
 typedef struct Unk800C9DB4 {
     u8 pad0[4];
     u16 unk4; /* entries in the unkC table */
-    u8 pad6[0xC - 6];
+    u16 unk6; /* entries in the unk10 table */
+    u8 pad8[0xC - 8];
     s32 unkC;  /* offset: Unk800C9DB4Path[] */
     s32 unk10; /* offset: Unk800C9DB4Obj[] */
     u8 pad14[0x18 - 0x14];
