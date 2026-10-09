@@ -221,7 +221,7 @@ typedef struct {
 typedef struct BtlUnit {
     struct BtlUnit *unk0; /* next */
     struct BtlCmd *unk4;
-    s32 unk8;
+    struct BtlCmd *unk8;
     struct BtlCmd *unkC;
     struct BtlCmd *unk10;
     struct BtlCmd *unk14;
@@ -727,7 +727,8 @@ typedef struct Battle11C020 {
 
 /* battle command (queued action) */
 typedef struct BtlCmd8 {
-    u32 unk0_0 : 8;
+    u32 unk0_0 : 4;
+    u32 unk0_4 : 4;
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
     u8 unk4;
@@ -1110,8 +1111,27 @@ typedef struct {
     s16 unkA; /* use the shared heap */
     void *unkC; /* work data */
     struct Unk800DA1B8 *unk10;
-    s32 (*unk14)(s32, void *, Unk800F78A4 *, s32 *, s32);
+    s32 (*unk14)(s32, void *, Unk800F78A4 *, void *, void *);
 } Unk80100C78Entry; /* 0x18 */
+
+/* effect handler: (mode, work, camera, entry, args) */
+typedef s32 (*EffFn)(s32, void *, Unk800F78A4 *, void *, void *);
+extern EffFn *D_80100C70[];
+extern EffFn D_800F8D10[];
+extern EffFn D_800F72E0[];
+
+/* filled by an EffFn in mode 0 */
+typedef struct {
+    s32 unk0; /* work size */
+    s32 unk4;
+    s32 unk8;
+    s32 padC[2];
+    s32 unk14;
+} EffInit;
+
+s32 func_800D6D8C(Unk80100C78Entry *, s32);
+s32 func_800DA104(s32, s32);
+void func_800DA138(void *, Unk80100C78Entry *, s32, s32, s32);
 
 typedef struct {
     s32 unk0;
@@ -2281,12 +2301,6 @@ Unk800CC278 *func_800CC37C(s32, s16, s16, u8);
 void func_800EA338(s8);
 s32 func_800D9990(Unk800D7C9C *, s32, s32 *);
 s32 func_800D974C(Unk800D7C9C *, s32, s32 *);
-
-typedef struct {
-    u8 pad0[8];
-    s16 unk8; /* heap index */
-    s16 unkA; /* use the shared heap */
-} Unk800D6D8C;
 
 typedef struct {
     u32 tag;

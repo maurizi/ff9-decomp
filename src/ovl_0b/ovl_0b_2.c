@@ -485,7 +485,7 @@ void func_800D6D3C(void) {
     }
 }
 
-s32 func_800D6D8C(Unk800D6D8C *arg0, s32 arg1) {
+s32 func_800D6D8C(Unk80100C78Entry *arg0, s32 arg1) {
     s32 r = 0;
     s32 size = arg1 + 4;
     s32 i = 0;
@@ -508,7 +508,65 @@ s32 func_800D6D8C(Unk800D6D8C *arg0, s32 arg1) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D6E70);
+void func_800D6E70(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    Unk80100C78Entry *e;
+    s32 i;
+    EffFn *tbl;
+    s32 idx;
+    Unk80100C78 *d = &D_80100C78;
+    EffInit init;
+    s32 args[2];
+
+    e = d->unk4;
+    i = 0;
+loop:
+    if (e->unk4.h != 0) {
+        i++;
+        e++;
+        if (i < 11) {
+            goto loop;
+        }
+    }
+    d->unk0++;
+    e->unk4.h = 1;
+    e->unkA = 1;
+    e->unk0 = 0;
+    e->unk8 = arg1;
+    if (arg0 >= 0x80) {
+        e->unk14 = D_80100C70[arg1][arg0 - 0x80];
+    } else {
+        if (arg0 < 0x30) {
+            e->unk14 = D_800F8D10[arg0];
+        } else {
+            e->unk14 = D_800F72E0[arg0 - 0x30];
+        }
+    }
+    init.unk4 = 0;
+    init.unk0 = 0;
+    e->unk10 = 0;
+    e->unkC = 0;
+    if (e->unk14(0, 0, 0, 0, &init) == 0) {
+        if (init.unk4 != 0) {
+            e->unk10 = (void *)func_800D6D8C(e, func_800DA104(init.unk8, init.unk4));
+            func_800DA138(e->unk10, e, init.unk8, init.unk4, init.unk14);
+        }
+        if (init.unk0 != 0) {
+            e->unkC = (void *)func_800D6D8C(e, func_800CFC0C(init.unk0));
+        }
+    }
+    args[0] = arg2;
+    args[1] = arg3;
+    if (e->unk14(1, e->unkC, D_800F78A4, e, args) != 0) {
+        e->unk4.h = 0;
+        d->unk0--;
+        if (e->unkC != 0) {
+            func_800E3C50(e->unkC);
+        }
+        if (e->unk10 != 0) {
+            func_800E3C50(e->unk10);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7094);
 
