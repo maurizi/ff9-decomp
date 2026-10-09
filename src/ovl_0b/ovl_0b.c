@@ -2891,7 +2891,38 @@ void func_800C0430(BtlUnit *arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0544);
+void func_800C0544(BtlUnit *arg0) {
+    s16 i;
+    s16 j;
+    u8 c[3];
+    u8 g;
+
+    for (i = 0; i < func_80063830(arg0->unk84 | 0x20000); i++) {
+        D_800FDF50.x = 0x100;
+        D_800FDF50.y = func_8001DA6C(arg0->unk9C->unk18[i].unk2);
+        D_800FDF50.w = 0x100;
+        D_800FDF50.h = 1;
+        StoreImage(&D_800FDF50, (u32 *)D_800FDF60[i]);
+        DrawSync(0);
+        for (j = 0; j < 0x100; j++) {
+            c[0] = D_800FDF60[i][j] & 0x1F;
+            c[1] = (D_800FDF60[i][j] >> 5) & 0x1F;
+            c[2] = (D_800FDF60[i][j] >> 10) & 0x1F;
+            if (c[0] == 0 && c[1] == 0 && c[2] == 0) {
+                g = 0;
+            } else {
+                g = (c[0] + c[1] + c[2]) / 3;
+                if (g == 0) {
+                    g = 1;
+                }
+            }
+            D_800FDF60[i][j] = (g << 10) + (g << 5) + g;
+        }
+        D_800FDF50.y += 12;
+        LoadImage(&D_800FDF50, (u32 *)D_800FDF60[i]);
+    }
+    DrawSync(0);
+}
 
 void func_800C072C(void) {
     u16 *p = (u16 *)D_800FE360;

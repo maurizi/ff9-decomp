@@ -1199,6 +1199,7 @@ typedef struct {
 typedef Battle1358 Unk800CC278;
 
 extern RECT D_800FDF50;
+extern u16 D_800FDF60[][0x100]; /* CLUT rows */
 extern u32 *D_800FE360;
 extern s32 D_800FE36C;
 extern s32 D_800FE490;
