@@ -92,11 +92,72 @@ INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1AE8);
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1C88);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1D6C);
+void func_801F1D6C(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
+    SprtWords *p;
+    Ovl36Sprite *t;
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1EA0);
+    setlen(D_80077170, 4);
+    p = (SprtWords *)D_80077170;
+    t = &D_801F3188[idx];
+    p->rgbc = rgbc;
+    p->xy = x | (y << 16);
+    p->uvclut = t->unk0;
+    p->wh = t->unk4 | (t->unk5 << 16);
+    D_80077170 = (u8 *)(p + 1);
+    addPrim(&D_8007716C[z], p);
+    SetDrawTPage(D_80077170, 1, 1, t->unk6 | 0x20);
+    addPrim(&D_8007716C[z], D_80077170);
+    D_80077170 += 8;
+}
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1FE8);
+void func_801F1EA0(u8 *buf) {
+    RECT a = D_801EDF08;
+    RECT b = D_801EDF10;
+    s32 i;
+
+    StoreImage(&D_801F3348, (u32 *)buf);
+    buf += 0x200;
+    StoreImage(&D_801F3350, (u32 *)buf);
+    buf += 0x200;
+    StoreImage(&D_801F3358, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    for (i = 0; i < 12; i++) {
+        a.y = i + 0x1F4;
+        b.x = (i % 3) * 0x13;
+        b.y = (i / 3) * 0x2F + 0x100;
+        StoreImage(&a, (u32 *)buf);
+        DrawSync(0);
+        StoreImage(&b, (u32 *)(buf + 0x200));
+        DrawSync(0);
+        buf += 0x8FC;
+    }
+}
+
+void func_801F1FE8(u8 *buf) {
+    RECT a = D_801EDF08;
+    RECT b = D_801EDF10;
+    s32 i;
+
+    LoadImage(&D_801F3360, (u32 *)buf);
+    buf += 0x200;
+    LoadImage(&D_801F3368, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    LoadImage(&D_801F3370, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    for (i = 0; i < 12; i++) {
+        a.y = i + 0x1F4;
+        b.x = (i % 3) * 0x13;
+        b.y = (i / 3) * 0x2F + 0x100;
+        LoadImage(&a, (u32 *)buf);
+        DrawSync(0);
+        LoadImage(&b, (u32 *)(buf + 0x200));
+        DrawSync(0);
+        buf += 0x8FC;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2138);
 
@@ -182,11 +243,26 @@ void func_801F2578(void) {
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2664);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2730);
+void func_801F2730(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
+    Unk6 *card;
+    s32 c;
+
+    if (flag) {
+        if (dim == 0) {
+            card = func_800625A0(id, (s32)D_801F347C.unk6C[id] % (s32)D_801F347C.unk8[id]);
+            func_801F2AB8(x, y, 0x14, card);
+            func_801F2A04(x, y, 0x14, card);
+        }
+        func_801F1AE8(x, y, 0x14, dim);
+        return;
+    }
+    c = 0x80 - dim * 0x16;
+    func_801F1D6C(x, y, 0x14, 1, c | (c << 8) | (c << 16) | 0x64000000);
+}
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2860);
 
-void func_801F2A04(s32 x, s32 y, s32 otz, CardSlot *card) {
+void func_801F2A04(s32 x, s32 y, s32 otz, Unk6 *card) {
     u32 color;
     s32 i;
 
