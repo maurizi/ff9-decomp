@@ -576,4 +576,6 @@ s32 IsIdleGPU(s32 max);
 void GetDrawEnv2(DR_ENV *p);
 void ContinueDraw(u32 *insaddr, s32 contaddr);
 
+MATRIX *MulRotMatrix(MATRIX *m0);
+
 #endif

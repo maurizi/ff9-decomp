@@ -2070,10 +2070,10 @@ typedef struct {
     s16 unkA;
     u8 padC[0x10 - 0xC];
     union {
-        s32 w[2];
-        u16 h[4];
+        s32 w[4];
+        u16 h[8];
     } unk10;
-    u8 pad18[0x24 - 0x18];
+    u8 pad20[0x24 - 0x20];
     s32 unk24;
 } Unk800AA958; /* party model load state */
 
@@ -2810,5 +2810,30 @@ extern DR_MODE D_80105120[2];
 extern DR_STP D_80105140[2];
 extern DR_ENV D_80105160[2];
 extern RECT D_800FDE34;
+
+#define gte_lddp(r0) __asm__ volatile("mtc2\t%0, $8" : : "r"(r0))
+#define gte_ldir(r0) __asm__ volatile( \
+    "lwc2\t$9, 0(%0);" \
+    "lwc2\t$10, 4(%0);" \
+    "lwc2\t$11, 8(%0)" \
+    : : "r"(r0))
+#define gte_stir(r0) __asm__ volatile( \
+    "swc2\t$9, 0(%0);" \
+    "swc2\t$10, 4(%0);" \
+    "swc2\t$11, 8(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_rtv0tr_nn() __asm__ volatile(".word\t0x4A480012")
+
+typedef struct {
+    u32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+} Unk800D1680Ctx;
+
+void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
 
 #endif

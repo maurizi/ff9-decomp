@@ -280,7 +280,92 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D12C4);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1494);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1680);
+void func_800D1680(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+    VECTOR s;
+    union {
+        SVECTOR v;
+        s32 w[2];
+    } zero;
+    MATRIX m;
+    Unk800D1680Ctx c;
+    u8 *prim;
+    u8 *d;
+    u8 *e;
+    s32 off;
+    u16 *o;
+    Unk800D1BC4 *h = (Unk800D1BC4 *)arg0;
+    s32 k;
+
+    if (arg2 == NULL) {
+        arg2 = &zero.v;
+        zero.w[0] = 0;
+        zero.w[1] = 0;
+    }
+    k = arg4;
+    off = h->unk0 & 0x7FFF;
+    if (k >= off) {
+        k = off - 1;
+    }
+    o = &h->unk6[k];
+    c.unk10 = h->unk2;
+    off = *o;
+    c.unk14 = *(u16 *)(arg0 + off);
+    off += 2;
+    if (c.unk14 & 0x8000) {
+        d = arg0 + off;
+        off += 4;
+        c.unk0 = *(u16 *)d | (d[2] << 16);
+        if (arg6 >= 0) {
+            gte_DpqColorFar(&c.unk0, arg6);
+        }
+    } else {
+        if (arg6 < 0) {
+            arg6 = 0x1000;
+        }
+        arg6 = (arg6 >> 5) & 0xFF;
+        c.unk0 = arg6 | (arg6 << 8) | (arg6 << 16);
+    }
+    s.vz = 0x1000;
+    if (c.unk14 & 0x4000) {
+        e = arg0 + off;
+        s.vx = *(u16 *)e;
+        s.vy = *(u16 *)(e + 2);
+        if (arg3 >= 0) {
+            gte_lddp(arg3);
+            gte_ldir(&s);
+            gte_gpf12();
+            gte_stir(&s);
+        }
+        off += 4;
+    } else {
+        if (arg3 < 0) {
+            arg3 = 0x1000;
+        }
+        s.vx = s.vy = arg3;
+    }
+    arg0 += off;
+    c.unk14 &= 0x3FFF;
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + c.unk14 * 40;
+    gte_rtv0tr_nn();
+    func_800316D8(arg2, &m);
+    ScaleMatrix(&m, &s);
+    gte_stlvnl(m.t);
+    if (arg2->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    c.unk0 |= (arg5 == 0xFF) ? 0x2C000000 : 0x2E000000;
+    c.unkC = (arg5 & 3) << 5;
+    c.unk4 = arg7;
+    c.unk8 = arg8;
+    c.unk18 = D_800F78A4->unk28;
+    func_800D4478(arg0, &c, prim, D_800F78A4->unk20);
+}
 
 void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     DVECTOR sxy;
