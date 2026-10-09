@@ -1523,7 +1523,7 @@ void func_8002B47C(s32);
 extern RECT D_8006BC38;
 void func_80061C1C(void);
 void func_80057688(s32, s32);
-void func_80057640(s32, s32, s32, s32);
+void func_80057640(s32, u32, u32, s32);
 u8 func_8002F800(void);
 void func_80032238(void);
 u16 func_80019150(void);
@@ -2440,4 +2440,33 @@ typedef struct {
 } Unk8004F5D4;
 void func_80051600(void);
 void func_8004D940(s32);
+/* 8-byte message-table entry (D_8007B954 in modes other than 4) */
+typedef struct {
+    u32 unk0;
+    u16 unk4;
+    u8 unk6;
+    u8 unk7;
+} MsgEntry8;
+
+typedef struct {
+    u8 pad0[2];
+    s16 unk2;
+    u8 pad4[9 - 4];
+    u8 unk9;
+} MsgInfo;
+/* SPU hardware voice registers (0x1F801C00 + voice * 16) */
+typedef struct {
+    u16 unk0; /* volume left */
+    u16 unk2; /* volume right */
+    u16 unk4; /* pitch */
+    u16 unk6; /* start address */
+    u16 unk8; /* adsr 1 */
+    u16 unkA; /* adsr 2 */
+    u16 unkC;
+    u16 unkE; /* loop address */
+} SpuVoiceReg;
+#define SPU_VOICE_REG(v, r) (*(u16 *)(0x1F801C00 + (r) + (v) * 16))
+#define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
+#define SPU_REG16(a) (*(u16 *)(a))
+extern s16 D_80080AC2;
 #endif

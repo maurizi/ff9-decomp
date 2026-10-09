@@ -5904,7 +5904,23 @@ void func_8004EFA0(void) {
     D_8007B950 = 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004EFB0);
+u8 *func_8004EFB0(s32 i, MsgInfo *out) {
+    u8 *e = NULL;
+    u16 *t;
+    s32 v;
+    u32 k;
+
+    if (i >= 0 && i < D_8007B954->unk0) {
+        e = (u8 *)D_8007B954->unk4;
+        v = ((u32 *)e)[D_8007B708 == 4 ? i : i * 2];
+        if (out != NULL) {
+            out->unk2 = ((v >> 16) & 0xFFF) + 9;
+            out->unk9 = (D_8007B708 == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+        }
+        e += v & 0xFFFF;
+    }
+    return e;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F058);
 
@@ -7022,9 +7038,15 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057518);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057534);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800575B4);
+void func_800575B4(u32 x) {
+    SPU_REG16(0x1F801D88) = x;
+    SPU_REG16(0x1F801D8A) = x >> 16;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800575D0);
+void func_800575D0(s32 x) {
+    SPU_REG16(0x1F801D8C) = x;
+    SPU_REG16(0x1F801D8E) = (u32)x >> 16;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800575EC);
 
@@ -7032,27 +7054,56 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057608);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057624);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057640);
+void func_80057640(s32 v, u32 l, u32 r, s32 vol) {
+    if (vol != 0) {
+        l *= vol;
+        r *= vol;
+        l >>= 7;
+        r >>= 7;
+    }
+    ((SpuVoiceReg *)0x1F801C00)[v].unk0 = l & 0x7FFF;
+    ((SpuVoiceReg *)0x1F801C00)[v].unk2 = r & 0x7FFF;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057688);
+void func_80057688(s32 v, s32 x) {
+    SPU_VOICE_REG(v, 0x4) = x;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800576A0);
+void func_800576A0(s32 v, s32 x) {
+    SPU_VOICE_REG(v, 0x6) = (u32)x >> 3;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800576BC);
+void func_800576BC(s32 v, s32 x) {
+    SPU_VOICE_REG(v, 0xE) = (u32)x >> 3;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800576D8);
+void func_800576D8(s32 v, u16 x) {
+    SPU_VOICE_REG(v, 0x8) = x;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800576F0);
+void func_800576F0(s32 v, u16 x) {
+    SPU_VOICE_REG(v, 0xA) = x;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057708);
+void func_80057708(s32 v, s32 a, s32 b) {
+    SPU_VOICE_REG(v, 0x8) = SPU_VOICE_REG8(v, 0x8) | ((((u32)b >> 2) << 15) | (a << 8));
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057738);
+void func_80057738(s32 v, s32 x) {
+    SPU_VOICE_REG(v, 0x8) = (SPU_VOICE_REG(v, 0x8) & 0xFF0F) | (x << 4);
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057760);
+void func_80057760(s32 v, s32 x) {
+    SPU_VOICE_REG(v, 0x8) = (SPU_VOICE_REG(v, 0x8) & 0xFFF0) | x;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057788);
+void func_80057788(s32 v, s32 a, s32 b) {
+    SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0x3F) | ((((u32)b >> 1) << 14) | (a << 6));
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800577BC);
+void func_800577BC(s32 v, s32 a, s32 b) {
+    SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0xFFC0) | ((((u32)b >> 2) << 5) | a);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800577EC);
 
@@ -7153,7 +7204,15 @@ void func_800588B0(u32 extra) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058990);
+void func_80058990(AkaoChannel *c) {
+    s32 v;
+    D_80080A18.unkC = v = c->unk50;
+    v >>= 16;
+    v *= D_80080A18.unk0 >> 8;
+    v /= 127;
+    v <<= 8;
+    c->unk50 = v;
+}
 
 void func_800589E0(Unk800589E0 *a) {
     a->unk50 = D_80080A24;
@@ -7820,7 +7879,11 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C8BC);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetReverbModeType);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CDE4);
+void func_8005CDE4(void) {
+    s32 v = D_80080AC2;
+    SPU_REG16(0x1F801DB0) = v;
+    SPU_REG16(0x1F801DB2) = v;
+}
 
 void func_8005CE04(u32 *src, u32 *dst, u32 n) {
     u32 t0, t1, t2, t3;
