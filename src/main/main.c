@@ -4793,7 +4793,32 @@ s32 func_80034FD4(s32 lv, s32 m) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003502C);
+s32 func_8003502C(u8 *eq, s32 k) {
+    s32 sum = 0;
+    s32 i;
+    u8 *e;
+
+    for (i = 0; i < 5; i++) {
+        if (eq[i] != 0xFF) {
+            e = D_8006D548[D_80069018[eq[i]].unkB].unk0;
+            switch (k) {
+            case 0:
+                sum += e[0];
+                break;
+            case 1:
+                sum += e[1];
+                break;
+            case 2:
+                sum += e[2];
+                break;
+            case 3:
+                sum += e[3];
+                break;
+            }
+        }
+    }
+    return sum;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035108);
 

@@ -119,7 +119,9 @@ typedef struct {
 } Unk11C0;
 
 typedef struct {
-    u8 pad0[0x11C0];
+    u8 pad0[0xD80];
+    u8 unkD80;
+    u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *unk11C0;
     u8 pad11C4[0x1354 - 0x11C4];
     Unk1354 *unk1354;
@@ -2499,4 +2501,9 @@ typedef struct {
     s16 unk18; /* volume left */
     s16 unk1A; /* volume right */
 } Unk800577EC;
+/* script object (D_8007AED0[]) */
+typedef struct {
+    u8 pad0[0xE];
+    u8 unkE;
+} Unk8007AED0;
 #endif
