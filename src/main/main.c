@@ -6527,7 +6527,33 @@ void func_80035D3C(void) {
     t[D_80077E52].unk0();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035E40);
+void func_80035E40(void) {
+    u8 all = 0;
+    RECT *r = &D_80077E28.unk14;
+    s32 sel;
+    s32 i;
+    s32 y;
+
+    if (D_80077E52 == 0 || (D_80077E28.unk0 != 0 && (*(u32 *)&D_80077E28 & 0xFFFF00))) {
+        all = 1;
+    }
+    func_8002D9B4(NULL, 2, 2);
+    if (D_80077E28.unk7 != 0) {
+        sel = D_80077E28.unk7 - 1;
+    } else {
+        sel = D_80077E52 - 1;
+    }
+    for (i = 0; i < 7; i++) {
+        y = i * 15 + 6;
+        if (all || i == sel) {
+            func_8002B5FC(r->x + 10, r->y + y + D_80077E28.unk8, 2,
+                          (u8 *)func_800357C0(D_800110A0, i), 0);
+        }
+    }
+    func_8002D9B4(r, 2, 2);
+    func_8002DEE4(r, 2, 2);
+    func_8002705C(r, 2, 2);
+}
 
 void func_80035F94(void) {
     if (D_80077E28.unk0 != 0) {
