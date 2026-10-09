@@ -11426,7 +11426,12 @@ u8 *func_800634D8(s32 a) {
     return p + (((u32 *)p)[1] & 0xFFFFFF) + p[7] * 4;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063514);
+u8 *func_80063514(s32 a) {
+    DbEntry12 *p = (DbEntry12 *)func_800633E4(a);
+    s32 n = p->unk7;
+    u8 *q = (u8 *)p + p->unk4;
+    return (long long)n * 8 + q;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", NormalClip);
 
@@ -11581,7 +11586,15 @@ void func_80064CDC(u16 a, u16 b) {
     func_80051610();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80064D28);
+void func_80064D28(void) {
+    TimHeader *tim = &D_800834D0;
+    TimBlock *b;
+    LoadImage((RECT *)&tim->clut.x, (u32 *)(tim + 1));
+    b = &tim->clut;
+    b = (TimBlock *)((u8 *)b + tim->clut.bnum);
+    LoadImage((RECT *)&b->x, (u32 *)(b + 1));
+    DrawSync(0);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetFogNearFar);
 
