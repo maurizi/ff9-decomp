@@ -1489,6 +1489,21 @@ typedef struct {
     s32 unkC; /* end sector / next id */
 } FileEntry;
 
+/* D_8006794C->unk14[i]: per-directory header (func_8001E218) */
+typedef struct {
+    s32 unk0; /* 3 = flat u16 table at unk18[13] */
+    s32 unk4; /* entry count */
+    s32 unk8;
+    s32 unkC;
+} FileDirEntry;
+
+/* D_8006794C->unk18[i]: 8-byte {id, sector} entries searched by func_8001E218 */
+typedef struct {
+    u16 unk0; /* id */
+    u16 unk2;
+    s32 unk4;
+} FileIdEntry;
+
 /* file id table (GameData.unk7E4) */
 typedef struct FileTable {
     u16 unk0;
@@ -1695,7 +1710,7 @@ s32 func_800C44F4(u32); /* field overlay (ovl_0a) */
 extern CdRequest D_80076148;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 func_80021320(void);
-void func_800233CC(); /* called with a u8 it ignores */
+s32 func_800233CC(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
 u8 func_800240E8(void);
 void func_80023A6C(void);
 void func_8002417C(void);
