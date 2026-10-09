@@ -5216,7 +5216,22 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003579C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800357C0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800357E0);
+void func_800357E0(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
+    u32 t = d->unk4;
+    SprtWords *s;
+
+    setlen(D_80077170, 4);
+    s = (SprtWords *)D_80077170;
+    s->rgbc = 0x64808080;
+    s->xy = ((x + d->unk2 - 0x80) & 0xFFFF) | ((y + d->unk3 - 0x80) << 16);
+    s->uvclut = d->unk0 | (d->unk1 << 8) | ((u16)d->unk4 << 16);
+    D_80077170 = (u8 *)(s + 1);
+    s->wh = d->unk8 | (d->unkA << 16);
+    addPrim(&D_8007716C[otz], s);
+    SetDrawTPage(D_80077170, 1, 1, ((t >> 16) & 0x1F) | (((t >> 21) & 3) << 5) | (((t >> 23) & 3) << 7));
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += 8;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003595C);
 

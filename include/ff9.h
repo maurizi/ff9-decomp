@@ -911,6 +911,12 @@ typedef struct Unk8004AB64 {
     u8 unk3B;
     u8 pad3C[0x40 - 0x3C];
     VECTOR unk40; /* previous position */
+    u16 unk50; /* flags */
+    u8 pad52[0x62 - 0x52];
+    u8 unk62;
+    u8 pad63[0x6E - 0x63];
+    s16 unk6E; /* also used as a tiny script buffer */
+    u8 unk70;
 } Unk8004AB64;
 
 typedef struct Unk8007AECCNode {
