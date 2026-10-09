@@ -805,12 +805,12 @@ s32 func_80039C38(void) {
         actor->unk14.vx = ((s16)actor->unkA4 * (b - a) + actor->unk94 * a) / b;
         actor->unk14.vy = (s16)actor->unkA6 + a * a * 8 + a * (actor->unkAA - (s16)actor->unkA6) / b - a * (b << 3);
         actor->unk14.vz = ((s16)actor->unkA8 * (b - a) + actor->unk96 * a) / b;
-        if (a < b) {
-            D_8007B70C->unk0 = D_8007AEA0;
-            D_8007B6F8 = 1;
-            return 1;
+        if (a >= b) {
+            return 0;
         }
-        return 0;
+        D_8007B70C->unk0 = D_8007AEA0;
+        D_8007B6F8 = 1;
+        return 1;
     case 0x29: {
         u32 cnt;
         pt = ((Unk80039C38Quad *)D_8007B704)->unk18;
