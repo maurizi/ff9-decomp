@@ -40,7 +40,8 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
-    u8 padC[0x14 - 0xC];
+    s32 unkC;
+    TmCard *unk10;
 } TmUnk350;
 
 typedef struct {
@@ -115,7 +116,7 @@ typedef struct {
     s32 unk478;
     s32 unk47C;
     u8 pad480[0x484 - 0x480];
-    s32 unk484;
+    Window *unk484;
     u8 pad488[0x48C - 0x488];
     TmCard *unk48C[8];
     s32 unk4AC;
@@ -154,6 +155,9 @@ typedef struct {
     s32 unk5A4;
     s32 unk5A8;
     s32 unk5AC;
+    s32 unk5B0;
+    s32 unk5B4;
+    s32 unk5B8;
 } TmState;
 
 typedef struct {
@@ -221,6 +225,7 @@ void func_800AE6EC(TmState *, s32);
 void func_800ADE5C(TmState *);
 void func_800AD974(TmState *);
 void func_800AF170(TmState *);
+void func_800AF100(TmState *);
 void func_800AF288(TmState *);
 void func_800B3488(TmState *);
 void func_800AA3C0(Window *);

@@ -643,7 +643,67 @@ void func_800AB8F4(s16 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AB928);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800ABC74);
+void func_800ABC74(TmState *s) {
+    s32 pad;
+    s32 i;
+    TmCard *c;
+
+    if (D_800B3CD0 == 0) {
+        pad = D_80077528;
+        if (pad & 0x10) {
+            if (s->unk5B4 != 0) {
+                s->unk5B4 = 0;
+            } else {
+                s->unk5B4 = 1;
+            }
+            func_800B01E8(1);
+        }
+        if (pad & 0x40) {
+            if (s->unk5B4 != 1) {
+                s->unk5B4 = 1;
+            } else {
+                s->unk5B4 = 0;
+            }
+            func_800B01E8(1);
+        }
+        if (pad & 0x10000) {
+            if (s->unk5B4 != 1) {
+                s->unk5B4 = 1;
+                func_800B01E8(3);
+            }
+        } else if (pad & 0x20000) {
+            if (s->unk5B4 == 0) {
+                for (i = 0; i < s->unk47C; i++) {
+                    c = &s->unk10[i];
+                    func_80062420(c->unk0, c->unk1, c->unk2, c->unk3,
+                                  c->unk4, c->unk5);
+                }
+                s->unk47C = 0;
+                func_80062750(1);
+                s->unk5B8 = 1;
+                func_800B35F8(s);
+            } else {
+                s->unk0 = 0x12;
+            }
+            func_8002DD00(s->unk484);
+            func_800B01E8(1);
+        }
+        if (s->unk5B4 == 0) {
+            D_80077DE8.unk0 = 0x7B;
+            D_80077DE8.unk2 = 0x6C;
+            D_80077DE8.unk8 = func_80035774(0x2E);
+            func_800270EC(0x7B, 0x6C, 3);
+        } else {
+            D_80077DE8.unk0 = 0x7B;
+            D_80077DE8.unk2 = 0x7B;
+            D_80077DE8.unk8 = func_80035774(0x2F);
+            func_800270EC(0x7B, 0x7B, 3);
+        }
+        func_800AB8F4(0x8D);
+    } else {
+        D_80077DE8.unk8 = NULL;
+    }
+}
 
 void func_800ABE74(Window *arg0) {
     func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, func_80035774(0x2D), 0);
