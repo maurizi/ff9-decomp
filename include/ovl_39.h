@@ -430,4 +430,19 @@ extern void (*D_801FB014[])(void);
 
 
 
+/* Inlined copy of func_801F5340 (slot usable?). */
+static inline u8 func_801F5340_inline(s32 slot, u8 any) {
+    s32 st = D_801FB1A8.unk4[slot];
+    s32 r;
+
+    if (any) {
+        r = 0;
+        if (st == 0 || st == 3) {
+            r = 1;
+        }
+        return r;
+    }
+    return st == 0;
+}
+
 #endif
