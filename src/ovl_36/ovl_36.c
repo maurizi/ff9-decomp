@@ -364,7 +364,16 @@ void func_801F240C(void) {
     func_801F2EE8();
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F24A0);
+void func_801F24A0(void) {
+    void (*f)();
+
+    if (!func_8002F810() && D_801F347C.unk1941.unk0 == 0) {
+        f = D_801F30F4[D_801F347C.unk0];
+        if (f != NULL) {
+            f();
+        }
+    }
+}
 
 void func_801F2508(void) {
     func_801F0DB0();
@@ -421,7 +430,33 @@ void func_801F2730(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
     func_801F1D6C(x, y, 0x14, 1, c | (c << 8) | (c << 16) | 0x64000000);
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2860);
+void func_801F2860(s32 x, s32 y, s32 z, s32 id) {
+    s32 n;
+    s32 icon;
+    s32 q;
+    s32 d;
+
+    n = D_801F347C.unk8[id];
+    if (n == 0) {
+        icon = 0x1E;
+    } else if (n < 2) {
+        icon = func_800627BC(id) + 0x1F;
+    } else {
+        icon = func_800627BC(id) + 0x26;
+        d = n % 10;
+        q = n / 10;
+        func_801F1D6C(x + 9, y + 7, 0x14, d + 0x2D, 0x64808080);
+        if (n >= 10) {
+            d = q % 10;
+            func_801F1D6C(x + 5, y + 7, 0x14, d + 0x2D, 0x64808080);
+        }
+        if (n >= 100) {
+            d = n / 100;
+            func_801F1D6C(x + 1, y + 7, 0x14, d + 0x2D, 0x64808080);
+        }
+    }
+    func_801F1D6C(x, y, 0x14, icon, 0x64808080);
+}
 
 void func_801F2A04(s32 x, s32 y, s32 otz, Unk6 *card) {
     u32 color;
