@@ -41,7 +41,7 @@ typedef struct {
     RECT unk50;
     WinDef unk58;
     u8 unk68[0x100]; /* per item id */
-    u8 pad168[0x668 - 0x168];
+    u8 unk168[0x100][5]; /* per ability id: item giving it, per slot */
     EquipEntry unk668[0x30]; /* item list */
     u8 unk728[0x40];         /* ability list */
     u8 unk768;
@@ -121,6 +121,13 @@ void func_801F3278(s32, s32);
 void func_801EF900(s32, s32);
 void func_801F0ED4(void);
 void func_801F0890(void);
+void func_80027110(s32, s32, s32, s32, s32, u8, u8); /* main exe */
+s32 func_80034584(s32, s32); /* main exe */
+u8 func_800347D8(s32, s32); /* main exe */
+extern u8 D_8007AFD3;
+u8 func_801F0C10(s32, Character *);
+void func_801F1048(void);
+void func_801F0410(void);
 extern s32 D_8007043C; /* main exe */
 extern u8 D_801EE644[];
 extern u16 D_801F8968[]; /* character masks */

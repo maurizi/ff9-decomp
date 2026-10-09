@@ -100,7 +100,28 @@ INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1FE8);
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2138);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F22DC);
+void func_801F22DC(void) {
+    RECT r;
+    u8 n;
+
+    D_80077DE8.unk8 = NULL;
+    func_80035580(NULL);
+    if (D_801F347C.unk0 == 1) {
+        n = D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1];
+        if (n != 0) {
+            D_80077DE8.unk8 = func_80035774(n >= 2 ? 0x24 : 0x23);
+        }
+    } else if (D_801F347C.unk0 == 2) {
+        if (D_801F347C.unk5 == 1) {
+            r.x = 0;
+            r.y = 0x8C;
+            r.w = D_8006794C->unkC->disp.w;
+            r.h = D_8006794C->unkC->disp.h - 0x8C;
+            func_80035580(&r);
+        }
+        D_80077DE8.unk8 = func_80035774(D_801F347C.unk5 + 0x25);
+    }
+}
 
 void func_801F23DC(void) {
     func_801F24A0();
