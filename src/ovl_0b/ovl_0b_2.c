@@ -7676,7 +7676,26 @@ void func_800F316C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F3390);
+void func_800F3390(void) {
+    RECT r;
+    s32 i;
+    Unk800F412C *e;
+
+    func_80025A28(0x8E, D_80105078->unk60, 8, 1, 0xA9, (D_8006794C->unk24 >> 18) & 1);
+    r.x = 0x8E;
+    r.y = D_80105078->unk60 - 3;
+    r.w = D_8006794C->unkC->disp.w - 0x8E;
+    r.h = 7;
+    func_8002D9B4(NULL, 7, 4);
+    e = D_80105078->unk4;
+    for (i = 0; i < 5; e++, i++) {
+        if (e->unk4 != 0) {
+            func_8002B524((s16)e->unk8, D_80105078->unk60 + (s16)e->unkA, 7,
+                          ((s32 *)&D_800703FC)[e->unk0], 0);
+        }
+    }
+    func_8002D9B4(&r, 7, 4);
+}
 
 void func_800F34C0(void) {
     u8 c = D_80105078->unk2;
