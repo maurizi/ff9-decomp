@@ -14,13 +14,13 @@ static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
         return 4;
     }
     if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34 & 0xF, id);
+        slot = func_80034430(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->unk58[slot];
-            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][slot].unk1;
+            need = D_8006CB28[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -308,13 +308,13 @@ s32 func_801EFB8C(s32 id, Character *c) {
 
     info = &D_801F34EC[id];
     if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34 & 0xF, id);
+        slot = func_80034430(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->unk58[slot];
-            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][slot].unk1;
+            need = D_8006CB28[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -385,7 +385,7 @@ void func_801EFE2C(void) {
         sup = &D_8006D128[id - 0xC0];
         st = func_801F0CC4_inline(id, c);
         if (st >= 3) {
-            func_8003493C(c->unk34 & 0xF, id, st == 3);
+            func_8003493C(c->unk34.b.id, id, st == 3);
             ap = c->unk17;
             if (st == 3) {
                 c->unk17 = ap - sup->unk1;
@@ -557,7 +557,7 @@ u8 func_801F0C10(s32 id, Character *c) {
     Unk801F6FEC *e;
 
     for (i = 0; i < 2; i++) {
-        k = D_801F33D0[(c->unk34 >> 12) & 0x1F][i];
+        k = D_801F33D0[c->unk34.b.row][i];
         e = &D_801F6FEC[k];
         if (e->unk6 == 1) {
             for (j = 0; j < e->unk7; j++) {
@@ -583,13 +583,13 @@ u32 func_801F0CC4(s32 id, Character *c) {
         return 4;
     }
     if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34 & 0xF, id);
+        slot = func_80034430(c->unk34.b.id, id);
         if (slot < 0) {
             return 0;
         }
         if (func_80034A30(c)) {
             ap = c->unk58[slot];
-            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][slot].unk1;
+            need = D_8006CB28[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -905,11 +905,11 @@ void func_801F26C4(Character *c) {
                 }
             }
         }
-        a = D_8006CB28[(c->unk34 >> 12) & 0x1F];
+        a = D_8006CB28[c->unk34.b.row];
         for (i = 0; i < 0x30; i++, a++) {
-            if (a->unk0 >= 0xC0 && func_800349BC(c->unk34 & 0xF, a->unk0)) {
+            if (a->unk0 >= 0xC0 && func_800349BC(c->unk34.b.id, a->unk0)) {
                 if (D_801FC700[a->unk0 - 0xC0] == 0 && c->unk58[i] < a->unk1) {
-                    func_8003493C(c->unk34 & 0xF, a->unk0, 0);
+                    func_8003493C(c->unk34.b.id, a->unk0, 0);
                     if (c->unk1F - c->unk17 >= D_8006D128[a->unk0 - 0xC0].unk1) {
                         c->unk17 += D_8006D128[a->unk0 - 0xC0].unk1;
                     } else {
@@ -1165,7 +1165,7 @@ void func_801F3278(s32 slot, s32 dir) {
 void func_801F32E0(Character *c) {
     func_801F26C4(c);
     func_8003384C(c);
-    c->unk34 = (c->unk34 & ~0x1F0) | ((func_80033280(c->unk34 & 0xF, (c->unkA >> 4) & 1, c->unk39) & 0x1F) << 4);
+    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->unk39);
 }
 
 void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color) {

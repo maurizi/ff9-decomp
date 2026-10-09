@@ -612,7 +612,7 @@ s32 func_800AF578(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->unkD80 == 6) {
                 f = u->unk68;
-                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C >> 6) & 1) && (((D_8006794C->unk1C->unk3C + ((f >> 1) & 0xF))->unk34 >> 10) & 1)) {
+                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C >> 6) & 1) && (D_8006794C->unk1C->unk3C + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->unk9C;
                     if (u->unkA0->unk3A >= m->unkC->unk2) {
                         m->unkC = (BtlUnit9CC *)u->unkA4[19];
@@ -644,7 +644,7 @@ void func_800B031C(void) {
     if (gd->unk571 != 0) {
         v = 8;
     }
-    gd->unk3C[3].unk34 = (gd->unk3C[3].unk34 & ~0x1F0) | (v << 4);
+    gd->unk3C[3].unk34.w = (gd->unk3C[3].unk34.w & ~0x1F0) | (v << 4);
     D_8006794C->unk1C->unk56E = 0;
     func_800C1524();
     func_800E3D80();
@@ -1508,7 +1508,7 @@ s32 func_800B96AC(BtlUnit *arg0, s16 arg1) {
     if (arg0->unk2A >= arg1) {
         for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
             f = u->unk68;
-            if ((f & 1) && ((D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34 >> 4) & 0x1F) == 2) {
+            if ((f & 1) && D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34.b.unk4 == 2) {
                 if (!(u->unk3C & 0x13021D0B) && !(arg0->unk3C & 0x13021D0B)) {
                     return 1;
                 }
@@ -2107,7 +2107,7 @@ void func_800BBF5C(Character *arg0, BtlUnit *arg1) {
     func_800C7730(arg1->unkA8, (s16 *)a, (s16 *)b);
     func_800C2344(arg1->unkA8);
     arg1->unkA8->unkC = 0;
-    switch ((arg0->unk34 >> 4) & 0x1F) {
+    switch (arg0->unk34.b.unk4) {
     case 0:
         arg0->unk21 = 0xD;
         break;
@@ -2620,7 +2620,7 @@ s32 func_800BE784(s32 arg0) {
         r = 0;
         for (u = b->unk6F8; u != NULL; u = u->unk0) {
             if (u->unk68 & 1) {
-                k = (D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34 >> 4) & 0x1F;
+                k = D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
             } else {
                 k = 0x13;
             }
@@ -3355,7 +3355,7 @@ void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         if (u->unkB0 & mask) {
             l->unk28[l->unk27++] = u;
         }
-        if (arg0->unkE == 0x1F && (u->unk68 & 1) && ((D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34 >> 4) & 0x1F) == 2) {
+        if (arg0->unkE == 0x1F && (u->unk68 & 1) && D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
             l->unk44 = u;
         }
     }

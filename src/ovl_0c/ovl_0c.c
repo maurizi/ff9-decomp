@@ -5589,7 +5589,7 @@ void func_800CB8C8(s32 arg0, s32 arg1) {
     if (arg0 == arg1) {
         c = D_8006794C->unk1C->unk54C[arg1];
         if (c != NULL) {
-            c->unk34 = (c->unk34 & ~0x200) | ((((c->unk34 >> 9) & 1) ^ 1) << 9);
+            c->unk34.b.unk9 ^= 1;
         }
     } else {
         t = D_8006794C->unk1C->unk54C[D_800D5438.unk2];
@@ -5647,7 +5647,7 @@ void func_800CBB4C(s32 arg0) {
     c = D_8006794C->unk1C->unk54C[arg0];
     r = &D_800D5438.unk8[arg0].unk4;
     x = r->x + 8;
-    if (!((c->unk34 >> 9) & 1)) {
+    if (!c->unk34.b.unk9) {
         x = r->x + 0x16;
     }
     func_800283E0(x, r->y + 1, 0x14, arg0, 0x2D, c->unk10 == 0);

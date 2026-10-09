@@ -1124,11 +1124,11 @@ u8 func_801F7970(Character *c) {
     if (c == NULL) {
         return 0xFF;
     }
-    m = func_80028954(c->unk34 & 0xF);
+    m = func_80028954(c->unk34.b.id);
     if (m == 0xFF) {
         return 0xFF;
     }
-    if (m == 2 && (s32)((c->unk34 >> 4) & 0x1F) >= 5) {
+    if (m == 2 && (s32)(c->unk34.b.unk4) >= 5) {
         return 3;
     }
     return D_801FB040[m];
@@ -1635,7 +1635,28 @@ void func_801F98D0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9904);
+void func_801F9904(SaveParty *s) {
+    GameData *gd;
+    s32 i;
+
+    gd = D_8006794C->unk1C;
+    for (i = 0; i < 9; i++) {
+        s->unk0[i] = gd->unk3C[i];
+    }
+    for (i = 0; i < 4; i++) {
+        if (gd->unk54C[i] != NULL) {
+            s->unk510[i] = gd->unk54C[i]->unk34.b.id;
+        } else {
+            s->unk510[i] = 9;
+        }
+    }
+    s->unk514 = gd->unk55C;
+    s->unk516 = gd->unk55E;
+    s->unk518 = gd->unk560;
+    s->unk51C = gd->unk568;
+    s->unk51E = gd->unk56A;
+    s->unk520 = gd->unk56C;
+}
 
 void func_801F99FC(SaveParty *s) {
     GameData *gd;

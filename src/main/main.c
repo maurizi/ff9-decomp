@@ -2731,7 +2731,7 @@ s32 func_80027F94(s32 id) {
     s32 n = 0;
 
     for (i = 0; i < 9; i++) {
-        if ((D_8006794C->unk1C->unk3C[i].unk34 >> 11) & 1) {
+        if (D_8006794C->unk1C->unk3C[i].unk34.b.unkB) {
             for (j = 0; j < 5; j++) {
                 if (id == D_8006794C->unk1C->unk3C[i].unk39[j]) {
                     n++;
@@ -2848,7 +2848,7 @@ void func_8002886C(void) {
 }
 
 u8 func_80028954(s32 arg0) {
-    return D_8006BB8C[(D_8006794C->unk1C->unk3C[arg0].unk34 >> 4) & 0x1F];
+    return D_8006BB8C[D_8006794C->unk1C->unk3C[arg0].unk34.b.unk4];
 }
 
 void func_80028994(s32 arg0, RECT *clut, RECT *img) {
@@ -2909,7 +2909,7 @@ void func_80028B20(u8 *buf) {
         Character *p = d->unk54C[i];
 
         if (p != NULL) {
-            func_80028BE8(buf + D_8006BB8C[(d->unk3C[p->unk34 & 0xF].unk34 >> 4) & 0x1F] * 0x6C0, i);
+            func_80028BE8(buf + D_8006BB8C[d->unk3C[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
         }
     }
 }
@@ -4996,15 +4996,15 @@ void func_80032B08(s32 ch) {
     func_8001D898(c, 0, 0x90);
     tbl = D_8006CA78;
     init = tbl + ch;
-    c->unk34 = *init;
+    c->unk34.w = *init;
     c->unk38 = 0;
-    c->unkA = func_80033A50((c->unk34 >> 12) & 0x1F);
+    c->unkA = func_80033A50(c->unk34.b.row);
     func_8001D898(c->unk3E, 0, 10);
     func_80034394(ch);
     r = func_80033A1C(c);
     func_80033D38(c->unk0, r);
     func_80033D8C(c->unk39, r);
-    c->unk34 = (c->unk34 & ~0x1F0) | ((func_80033280(c->unk34 & 0xF, (c->unkA >> 4) & 1, c->unk39) & 0x1F) << 4);
+    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->unk39);
     func_80032C4C(ch, 1, init, 0);
     c->unk10 = c->unk18;
     c->unk12 = c->unk1A;
@@ -5233,7 +5233,7 @@ u8 func_800339F4(s32 a, u8 b) {
 }
 
 s32 func_80033A1C(Character *c) {
-    return D_8006CAB8[c->unk34 & 0xF][(c->unkA & 0x10) != 0];
+    return D_8006CAB8[c->unk34.b.id][(c->unkA & 0x10) != 0];
 }
 
 u8 func_80033A50(u32 x) {
@@ -5309,13 +5309,13 @@ void func_80033AF4(s32 slot, s32 ch) {
 
 void func_80033BD0(u32 i) {
     if (i < 9) {
-        D_8006794C->unk1C->unk3C[i].unk34 |= 0x800;
+        D_8006794C->unk1C->unk3C[i].unk34.b.unkB = 1;
     }
 }
 
 void func_80033C0C(u32 i) {
     if (i < 9) {
-        D_8006794C->unk1C->unk3C[i].unk34 &= ~0x800;
+        D_8006794C->unk1C->unk3C[i].unk34.b.unkB = 0;
     }
 }
 
@@ -5362,7 +5362,7 @@ void func_80033DCC(Character *c) {
 
     i = 0;
     e = D_8006D128;
-    id = c->unk34 & 0xF;
+    id = c->unk34.b.id;
     c->unk17 = c->unk1F;
     do {
         if (func_800349BC(id, i + 0xC0)) {
@@ -5411,7 +5411,7 @@ s32 func_80034220(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    c->unk58[i] = D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+    c->unk58[i] = D_8006CB28[c->unk34.b.row][i].unk1;
     return 1;
 }
 
@@ -5498,7 +5498,7 @@ u8 func_800347D8(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+    return D_8006CB28[c->unk34.b.row][i].unk1;
 }
 
 s32 func_800348C0(s32 ch) {
@@ -5536,12 +5536,12 @@ u8 func_80034A30(Character *a) {
     if (a->unkA & 0x10) {
         return 0;
     }
-    return (s32)((a->unk34 >> 12) & 0x1F) < 8;
+    return (s32)a->unk34.b.row < 8;
 }
 
 s32 func_80034A64(s32 ch, s32 lv, u8 add) {
     Character *c = D_8006794C->unk1C->unk3C + ch;
-    Unk8006DD88 *e = &D_8006DD88[func_80033964((c->unk34 >> 12) & 0x1F)];
+    Unk8006DD88 *e = &D_8006DD88[func_80033964(c->unk34.b.row)];
     s32 r;
     if (add) {
         c->unk3E[0] += func_8003502C(c->unk39, 0);
@@ -5555,7 +5555,7 @@ s32 func_80034A64(s32 ch, s32 lv, u8 add) {
 
 s32 func_80034B50(s32 ch, s32 lv, u8 add) {
     Character *c = D_8006794C->unk1C->unk3C + ch;
-    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    s32 k = func_80033964(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &D_8006DD88[k];
     s32 r;
@@ -5576,7 +5576,7 @@ s32 func_80034B50(s32 ch, s32 lv, u8 add) {
 
 s32 func_80034C64(s32 ch, s32 lv, u8 add) {
     Character *c = D_8006794C->unk1C->unk3C + ch;
-    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    s32 k = func_80033964(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &D_8006DD88[k];
     s32 r;
@@ -5597,7 +5597,7 @@ s32 func_80034C64(s32 ch, s32 lv, u8 add) {
 
 s32 func_80034D78(s32 ch, s32 lv, u8 add) {
     Character *c = D_8006794C->unk1C->unk3C + ch;
-    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    s32 k = func_80033964(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &D_8006DD88[k];
     s32 r;
@@ -5616,7 +5616,7 @@ s32 func_80034D78(s32 ch, s32 lv, u8 add) {
 s32 func_80034E80(s32 ch, s32 lv, u8 add) {
     Character *c = D_8006794C->unk1C->unk3C + ch;
     u16 *bonus = c->unk3E;
-    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    s32 k = func_80033964(c->unk34.b.row);
     Unk8006DD88 *e = &D_8006DD88[k];
     s32 r;
     s32 n;
@@ -6961,7 +6961,7 @@ s32 func_8004E7A4(s32 i) {
     if (p == NULL) {
         return -1;
     }
-    return p->unk34 & 0xF;
+    return p->unk34.b.id;
 }
 
 void func_8004E7E0(void) {

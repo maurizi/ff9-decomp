@@ -101,7 +101,7 @@ void func_801F4468(void) {
 
     D_801FC2D0.unk14 = 0;
     for (i = 0; i < 9; i++) {
-        if ((D_8006794C->unk1C->unk3C[i].unk34 >> 11) & 1) {
+        if (D_8006794C->unk1C->unk3C[i].unk34.b.unkB) {
             D_801FC2D0.unk18[D_801FC2D0.unk14] = i;
             if (++D_801FC2D0.unk14 >= 8) {
                 break;

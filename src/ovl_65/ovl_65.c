@@ -653,9 +653,9 @@ void func_801F1A04(s32 arg0, u32 arg1) {
                 e = &D_80069018[c->unk39[i]];
                 for (j = 0; j < 3; j++) {
                     if (e->unkC[j] != 0) {
-                        k = func_80034430(c->unk34 & 0xF, e->unkC[j]);
+                        k = func_80034430(c->unk34.b.id, e->unkC[j]);
                         if (k >= 0) {
-                            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][k].unk1;
+                            need = D_8006CB28[c->unk34.b.row][k].unk1;
                             have = c->unk58[k];
                             if (have < need) {
                                 if (arg1 >= need - have) {
@@ -685,7 +685,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
 
     ret = 0;
     eq = c->unk39;
-    ch = c->unk34 & 0xF;
+    ch = c->unk34.b.id;
     func_8001D898(D_801F8208, 0, 0x30);
     for (i = 0; i < 5; i++) {
         if (eq[i] != 0xFF) {
@@ -695,7 +695,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
                     k = func_80034430(ch & 0xFF, e->unkC[j]);
                     if (k >= 0) {
                         have = c->unk58[k];
-                        if (have < D_8006CB28[(c->unk34 >> 12) & 0x1F][k].unk1) {
+                        if (have < D_8006CB28[c->unk34.b.row][k].unk1) {
                             D_801F8208[k]++;
                         }
                     }
@@ -706,7 +706,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     for (i = 0; i < 0x30; i++) {
         if (D_801F8208[i] != 0) {
             have = c->unk58[i];
-            if (D_801F8208[i] * arg1 >= D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1 - have) {
+            if (D_801F8208[i] * arg1 >= D_8006CB28[c->unk34.b.row][i].unk1 - have) {
                 ret = 1;
                 break;
             }
@@ -738,7 +738,7 @@ s32 func_801F20A8(s32 i) {
     u32 ap = D_801F7A78.unk24.unk4;
     Counter *c = &D_801F7A78.unk24.unk4C[i];
 
-    if (func_800349BC(D_8006794C->unk1C->unk54C[i]->unk34 & 0xF, 0xEC)) {
+    if (func_800349BC(D_8006794C->unk1C->unk54C[i]->unk34.b.id, 0xEC)) {
         c->unk0 = ap * 2;
     } else {
         c->unk0 = ap;
@@ -850,7 +850,7 @@ u32 func_801F26F8(s32 arg0) {
     u32 step;
 
     c->unk0 = exp;
-    if (func_800349BC(m->unk34 & 0xF, 0xEB)) {
+    if (func_800349BC(m->unk34.b.id, 0xEB)) {
         c->unk0 += exp >> 1;
     }
     if (exp < 16) {
@@ -916,7 +916,7 @@ void func_801F28F0(void) {
 void func_801F29BC(s32 arg0) {
     Character *m = D_8006794C->unk1C->unk54C[arg0];
 
-    func_80033CCC(m->unk34 & 0xF, m->unkB + 1);
+    func_80033CCC(m->unk34.b.id, m->unkB + 1);
     D_801F7A78.unk158[arg0].unk4++;
     D_801F7A78.unk258[arg0].unk14++;
 }
@@ -983,7 +983,7 @@ void func_801F2BBC(void) {
 
     for (i = 0; i < 4; i++) {
         m = D_8006794C->unk1C->unk54C[i];
-        if (m != NULL && func_800349BC(m->unk34 & 0xF, 0xED)) {
+        if (m != NULL && func_800349BC(m->unk34.b.id, 0xED)) {
             found = 1;
         }
     }

@@ -52,6 +52,20 @@ typedef struct {
     u32 unkC[1]; /* glyph info, width in the top 4 bits */
 } Unk7D4;
 
+/* Character.unk34: packed ids, also read as a whole word */
+typedef union {
+    u32 w;
+    struct {
+        u32 id : 4;    /* character id (index into GameData.unk3C) */
+        u32 unk4 : 5;  /* index into D_8006BB8C */
+        u32 unk9 : 1;
+        u32 unkA : 1;
+        u32 unkB : 1;
+        u32 row : 5;   /* ability table row (D_8006CB28) */
+        u32 unk11 : 15;
+    } b;
+} CharBits;
+
 /* Character record: 9 of them at GameData+0x3C; GameData.unk54C[] points at
  * the party members. */
 typedef struct {
@@ -85,9 +99,7 @@ typedef struct {
     u8 unk31;
     u8 unk32;
     u8 unk33;
-    u32 unk34; /* low nibble: character id (index into GameData.unk3C);
-                * bits 4-8 index D_8006BB8C; bit 11 tested;
-                * bits 12-16: ability table row */
+    CharBits unk34;
     u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
     u8 unk39[5]; /* equipment item ids (0xFF = none) */
     u16 unk3E[5]; /* stat bonuses from equipment */
@@ -2091,7 +2103,7 @@ typedef struct {
     u8 unk0; /* ability id, 0 = none */
     u8 unk1; /* ap needed? */
 } AbilityEntry;
-extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34 bits 12-16 */
+extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34.b.row */
 
 /* Inlined copy of func_80034430 (ability slot of a character). */
 static inline s32 func_80034430_inline(s32 ch, s32 id) {
@@ -2100,7 +2112,7 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
     if (ch >= 9) {
         return -1;
     }
-    row = ((D_8006794C->unk1C->unk3C + ch)->unk34 >> 12) & 0x1F;
+    row = ((D_8006794C->unk1C->unk3C + ch)->unk34.w >> 12) & 0x1F;
     if (row >= 16) {
         return -1;
     }
@@ -2475,7 +2487,7 @@ static inline s32 func_800347D8_inline(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1;
+    return D_8006CB28[c->unk34.b.row][i].unk1;
 }
 void func_800576A0(s32, s32);
 void func_80057738(s32, s32);

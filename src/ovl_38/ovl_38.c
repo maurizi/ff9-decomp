@@ -237,9 +237,9 @@ void func_801EF568(s32 slot, s32 dir) {
     D_801F120C.unk2 = slot;
     D_801F120C.unk3 = 0;
     D_801F120C.unk4 = 0;
-    if ((s32)((c->unk34 >> 12) & 0x1F) < 0x10) {
+    if ((s32)(c->unk34.b.row) < 0x10) {
         for (i = 0; i < 0x30; i++) {
-            if (D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk0 != 0) {
+            if (D_8006CB28[c->unk34.b.row][i].unk0 != 0) {
                 D_801F120C.unk4++;
             }
         }

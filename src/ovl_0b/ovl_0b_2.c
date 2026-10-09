@@ -984,7 +984,7 @@ s32 func_800D8ACC(s32 arg0, s32 arg1) {
 
 s32 func_800D8B20(s32 arg0) {
     s32 idx = (func_800E716C(arg0)->unk68 >> 1) & 0xF;
-    return (D_8006794C->unk1C->unk3C[idx].unk34 >> 4) & 0x1F;
+    return D_8006794C->unk1C->unk3C[idx].unk34.b.unk4;
 }
 
 s32 func_800D8B70(s32 arg0) {
@@ -3401,7 +3401,7 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
 s32 func_800E865C(s32 arg0, s32 arg1) {
     u32 f = func_800E716C(arg0)->unk68;
     u8 k = D_800F8D70[arg1];
-    return ((f & 1) ? (D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34 >> 4) & 0x1F : 0x13) == k;
+    return ((f & 1) ? D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
 }
 
 void func_800E86E0(s32 *arg0, s32 *arg1, u32 arg2) {
@@ -4098,7 +4098,7 @@ void func_800EA650(void) {
         e->unk18 = f;
         e->unk14 = &D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF];
         e->unk19 = func_80034A30(e->unk14);
-        e->unk1A = func_800339F4(e->unk14->unk34 & 0xF, (e->unk14->unkA >> 4) & 1);
+        e->unk1A = func_800339F4(e->unk14->unk34.b.id, (e->unk14->unkA >> 4) & 1);
         if ((D_8006794C->unk24 >> 5) & 1) {
             f = ((s32)(D_8006794C->unk24 >> 20) >> e->unk1A) & 1;
         } else {
@@ -4115,7 +4115,7 @@ void func_800EA650(void) {
 }
 
 void func_800EA7B8(Unk80104F88Entry *arg0) {
-    s32 k = (arg0->unk14->unk34 >> 12) & 0x1F;
+    s32 k = arg0->unk14->unk34.b.row;
     u8 *s = D_800FDDF8[k];
     u8 *t = D_800FDDD0[k];
     Unk800FD56C *a;
@@ -4404,9 +4404,9 @@ void func_800EB63C(Unk80104F88Entry *arg0) {
     c = arg0->unk14;
     if (arg0->unk19 != 0) {
         i = 0;
-        row = D_8006CB28[(c->unk34 >> 12) & 0x1F];
+        row = D_8006CB28[c->unk34.b.row];
         for (; i < 0xC0; i++) {
-            v = func_80034430(c->unk34 & 0xF, i);
+            v = func_80034430(c->unk34.b.id, i);
             if (v >= 0) {
                 arg0->unk1C[i] = &c->unk58[v];
                 arg0->unk31C[i] = row[v].unk1;
