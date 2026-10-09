@@ -503,5 +503,8 @@ VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
 void SetPolyFT4(POLY_FT4 *p);
 void SetPolyF4(POLY_F4 *p);
+void SetPolyF3(POLY_F3 *p);
+void SetPolyG3(POLY_G3 *p);
+void SetPolyG4(POLY_G4 *p);
 
 #endif

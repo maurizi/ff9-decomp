@@ -7387,7 +7387,7 @@ static inline s32 func_80053960_inline(Unk800539FC *a, s32 b) {
     return 1;
 }
 
-s32 func_8005398C(Unk800539FC *a, s32 mask) {
+s32 func_8005398C(Character *a, s32 mask) {
     s32 r = 1;
     u32 i;
 
@@ -7402,7 +7402,7 @@ s32 func_8005398C(Unk800539FC *a, s32 mask) {
     return r;
 }
 
-s32 func_800539FC(Unk800539FC *a, s32 b) {
+u8 func_800539FC(Character *a, s32 b) {
     return (a->unk38 & b) != 0;
 }
 
@@ -11039,17 +11039,53 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063514);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", NormalClip);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063580);
+void func_80063580(DR_TPAGE *p, s32 tpage) {
+    SetDrawTPage(p, 0, 1, tpage);
+    SetSprt((SPRT *)(p + 1));
+    if (MargePrim(p, p + 1)) {
+        func_800637C0(-1);
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800635E0);
+void func_800635E0(DR_TPAGE *p, s32 tpage) {
+    SetDrawTPage(p, 0, 1, tpage);
+    SetTile((TILE *)(p + 1));
+    if (MargePrim(p, p + 1)) {
+        func_800637C0(-1);
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063640);
+void func_80063640(DR_TPAGE *p, s32 tpage) {
+    SetDrawTPage(p, 0, 1, tpage);
+    SetPolyF3((POLY_F3 *)(p + 1));
+    if (MargePrim(p, p + 1)) {
+        func_800637C0(-1);
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800636A0);
+void func_800636A0(DR_TPAGE *p, s32 tpage) {
+    SetDrawTPage(p, 0, 1, tpage);
+    SetPolyF4((POLY_F4 *)(p + 1));
+    if (MargePrim(p, p + 1)) {
+        func_800637C0(-1);
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063700);
+void func_80063700(DR_TPAGE *p, s32 tpage) {
+    SetDrawTPage(p, 0, 1, tpage);
+    SetPolyG3((POLY_G3 *)(p + 1));
+    if (MargePrim(p, p + 1)) {
+        func_800637C0(-1);
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063760);
+void func_80063760(DR_TPAGE *p, s32 tpage) {
+    SetDrawTPage(p, 0, 1, tpage);
+    SetPolyG4((POLY_G4 *)(p + 1));
+    if (MargePrim(p, p + 1)) {
+        func_800637C0(-1);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800637C0);
 
@@ -11194,7 +11230,13 @@ s32 func_8006573C(Unk8006573C *a, s16 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8006576C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800657F0);
+s32 func_800657F0(MainCalc *c) {
+    if (func_800539FC(c->unk4, 0x41) || c->unk4->unk10 == 0) {
+        c->unk10 |= 1;
+        return 0;
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065850);
 
@@ -11202,7 +11244,11 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800658DC);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800659D0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800659EC);
+void func_800659EC(MainCalc *c) {
+    if (func_800539FC(c->unk0, 0)) {
+        c->unk16 /= 2;
+    }
+}
 
 void func_80065A44(Unk80065A44 *a) {
     if (a->unk0->unk8C & 2) {
@@ -11210,7 +11256,11 @@ void func_80065A44(Unk80065A44 *a) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065A80);
+void func_80065A80(MainCalc *c) {
+    if (c->unkC == 1 && (u32)((c->unk8->unk0 & 0xF) - 3) < 3) {
+        c->unk16 /= 2;
+    }
+}
 
 void func_80065ADC(Unk80065ADC *a) {
     u16 v = a->unk12 * a->unk16;
@@ -11230,19 +11280,43 @@ void func_80065B9C(Unk80065ADC *a) {
     a->unk1A = v;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065BD4);
+void func_80065BD4(MainCalc *c) {
+    c->unk4->unk10 = c->unk4->unk18;
+    c->unk4->unk12 = c->unk4->unk1A;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065BFC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065C8C);
+void func_80065C8C(MainCalc *c) {
+    c->unk18 = c->unk4->unk18 >> 1;
+    c->unk1A = c->unk4->unk1A >> 1;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065CBC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065D40);
+void func_80065D40(MainCalc *c) {
+    if (func_8005398C(c->unk4, c->unk8->unk8) != 2) {
+        c->unk10 |= 1;
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065D90);
+void func_80065D90(Character *u, s32 n) {
+    if (!func_800539FC(u, 1)) {
+        u->unk10 += n;
+        if (u->unk10 > u->unk18) {
+            u->unk10 = u->unk18;
+        }
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065DF4);
+void func_80065DF4(Character *u, s32 n) {
+    if (!func_800539FC(u, 1)) {
+        u->unk12 += n;
+        if (u->unk12 > u->unk1A) {
+            u->unk12 = u->unk1A;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065E60);
 

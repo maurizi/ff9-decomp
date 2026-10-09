@@ -875,10 +875,7 @@ typedef struct {
 } Unk80080A10;
 extern Unk80080A10 *D_80080A10;
 
-typedef struct {
-    u8 pad0[0x38];
-    u8 unk38;
-} Unk800539FC;
+typedef Character Unk800539FC;
 
 typedef struct {
     u8 pad0[0x50];
@@ -2767,5 +2764,32 @@ typedef struct {
     u32 *unk0[10];
 } LoadAddrs;
 extern LoadAddrs D_80010034;
+
+/* battle calculation context (func_800657F0 ... func_80065DF4) */
+typedef struct {
+    u32 unk0; /* low nibble: kind */
+    u8 pad4;
+    u8 unk5; /* power */
+    u8 pad6[2];
+    u8 unk8; /* checked against the target by func_8005398C */
+} MainCalcCmd;
+
+typedef struct {
+    Character *unk0; /* caster */
+    Character *unk4; /* target */
+    MainCalcCmd *unk8;
+    s32 unkC;
+    u8 unk10; /* bit 0: miss */
+    u8 pad11;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A;
+} MainCalc;
+
+u8 func_800539FC(Character *, s32);
+s32 func_8005398C(Character *, s32);
+void func_800637C0(s32); /* BIOS B0 call */
 
 #endif
