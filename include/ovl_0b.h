@@ -1063,6 +1063,7 @@ typedef struct LinkNode {
     u8 pad4[0x10 - 4];
     u32 unk10;
 } LinkNode;
+void func_800B440C(LinkNode *, LinkNode **);
 
 typedef struct {
     u8 pad0[0x1C];

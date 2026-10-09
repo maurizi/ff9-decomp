@@ -1173,7 +1173,43 @@ void func_800B2F24(Battle *arg0) {
     arg0->unk11B8 &= ~0xC;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B3090);
+void func_800B3090(BtlCmd *arg0) {
+    BtlCmd *p = &D_8006794C->unk1C->unk8E4.battle->unk1074;
+    BtlCmd *n;
+    s32 c;
+    u32 e;
+
+    for (; p != NULL; p = p->unk0) {
+        if (arg0->unk10.b.unk10_4) {
+            n = p->unk0;
+            if (n == NULL) {
+                goto insert;
+            }
+            if (arg0->unkE >= 0x3C || arg0->unkE == 0x36) {
+                e = n->unkE;
+                c = e < 0x3C;
+                goto chk;
+            }
+            if (arg0->unkE == 0x3B) {
+                e = n->unkE;
+                c = e < 0x3B;
+            chk:
+                if (c == 0 || e == 0x36) {
+                    continue;
+                }
+            insert:
+                func_800B440C((LinkNode *)arg0, (LinkNode **)&p->unk0);
+                return;
+            }
+            c = n->unk10.b.unk10_4;
+        } else {
+            c = (s32)p->unk0;
+        }
+        if (c == 0) {
+            goto insert;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B3188);
 
