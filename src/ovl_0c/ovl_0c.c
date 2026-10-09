@@ -3287,7 +3287,91 @@ void func_800B8B10(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B8DC0);
+/* upload TIM arg1 of table arg0, offset by (arg2, arg3) (image) and (arg4, arg5) (clut) */
+void func_800B8DC0(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s8 arg6) {
+    u32 *tim;
+    RECT *clut;
+    u32 *cdata;
+    u32 *img;
+    u8 has;
+    RECT r;
+    RECT r2;
+    RECT *q;
+    RECT *q2;
+    RECT *q3;
+    s32 n;
+    RECT *rect;
+    u32 *data;
+
+    tim = (u32 *)arg0[arg1 + 1];
+    if ((arg2 | arg3 | arg4 | arg5) == 0) {
+        if (arg6 != 0) {
+            func_8001D8A8((s32)tim);
+            return;
+        }
+    }
+    clut = NULL;
+    cdata = NULL;
+    has = tim[1] >> 3;
+    img = tim + 2;
+    if (has) {
+        clut = (RECT *)(tim + 3);
+        cdata = tim + 5;
+        n = (tim[2] >> 2) - 3;
+        img = cdata + n;
+    }
+    rect = (RECT *)++img;
+    data = (u32 *)(rect + 1);
+    if (D_800CF47D != 0) {
+        r = *rect;
+        r.x += arg2;
+        r.y += arg3;
+        LoadImage(&r, data);
+    } else {
+        q = (RECT *)D_800CF404;
+        q->x = rect->x + arg2;
+        q->y = rect->y + arg3;
+        q->w = rect->w;
+        q->h = rect->h;
+        LoadImage(q, data);
+        q++;
+        D_800CF404 = (s32)q;
+    }
+    if (arg6 != 2) {
+        if (has) {
+            if (D_800CF47D != 0) {
+                r2 = *clut;
+                r2.x += arg4;
+                r2.y += arg5;
+                if (r2.w == 0x100) {
+                    r2.w = 0xF0;
+                }
+                LoadImage(&r2, cdata);
+            } else {
+                q2 = (RECT *)D_800CF404;
+                q2->x = clut->x + arg4;
+                q2->y = clut->y + arg5;
+                q2->w = clut->w;
+                q2->h = clut->h;
+                if (q2->w == 0x100) {
+                    q2->w = 0xF0;
+                }
+                LoadImage(q2, cdata);
+                q2++;
+                D_800CF404 = (s32)q2;
+            }
+        }
+    } else {
+        q3 = (RECT *)D_800CF404;
+        q3->x = 0x280;
+        q3->y = 0xF6;
+        q3->w = 0x80;
+        q3->h = 1;
+        LoadImage(q3, cdata);
+        q3++;
+        D_800CF404 = (s32)q3;
+    }
+}
 
 void func_800B905C(void) {
     s32 i;
