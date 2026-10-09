@@ -2589,4 +2589,10 @@ typedef struct {
     s16 x2, y2;
     s16 x3, y3;
 } PolyF4Half; /* POLY_F4 with the colour/code written as one word */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 xy1;
+} LineF2W; /* LINE_F2 written as whole words */
 #endif

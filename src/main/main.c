@@ -1867,7 +1867,30 @@ void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
     D_80077170 = (u8 *)(p + 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800269F4);
+void func_800269F4(s32 x, s32 y, s32 otz, s32 len) {
+    u32 col[3];
+    s32 i;
+    LineF2W *p;
+
+    col[0] = D_80068F20[(D_8006794C->unk24 >> 18) & 1][1];
+    col[1] = 0x40403838;
+    col[2] = D_80068F20[(D_8006794C->unk24 >> 18) & 1][0];
+
+    for (i = 0; i < 3; i++) {
+        p = (LineF2W *)D_80077170;
+        setlen(p, 3);
+        p->rgbc = col[i];
+        if (len < 0) {
+            p->xy0 = (x + i) | (y << 16);
+            p->xy1 = (x + i) | ((y - len) << 16);
+        } else {
+            p->xy0 = x | ((y + i) << 16);
+            p->xy1 = (x + len - 1) | ((y + i) << 16);
+        }
+        addPrim(&D_8007716C[otz], p);
+        D_80077170 += sizeof(LineF2W);
+    }
+}
 
 void func_80026B30(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     D_80077170 = func_800253D4(arg0, &D_8007716C[otz], arg2, arg3, 0, arg4, D_80077170);
