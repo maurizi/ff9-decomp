@@ -11,12 +11,20 @@ typedef struct {
     s32 unk0; /* version tag, 0x30005 */
     u8 unk4[0x1A - 4];
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
-    u8 pad1B[0x44 - 0x1B];
+    u8 unk1B; /* slot index */
+    u8 pad1C[0x44 - 0x1C];
     u8 unk44;
     u8 pad45[0x48 - 0x45];
     s32 unk48; /* config bit */
     u32 unk4C; /* save counter */
-    u8 pad50[0x98 - 0x50];
+    u8 pad50[0x58 - 0x50];
+    struct {
+        u8 unk0; /* present */
+        u8 pad1;
+        u8 unk2[0xA]; /* name */
+        u8 unkC; /* level */
+        u8 padD[3];
+    } unk58[4]; /* party */
 } SaveSlot;
 
 /* Save menu state (D_801FB1A8). */
@@ -65,13 +73,16 @@ typedef struct {
     u8 unk1; /* state, index into D_801FB014 */
     u8 unk2; /* slot */
     u8 unk3; /* attempts */
-    u8 unk4[0xC - 4]; /* attempts per result */
+    u8 unk4[4]; /* attempts per result */
+    s32 unk8;
     s32 unkC;  /* used slots */
     s32 unk10; /* file count */
     s32 unk14;
     s32 unk18; /* file descriptor */
     Window *unk1C;
-    u8 pad20[0x2D0 - 0x20];
+    u8 pad20[0x2B4 - 0x20];
+    u8 unk2B4[15];
+    u8 pad2C3[0x2D0 - 0x2C3];
     u8 unk2D0[0x180]; /* read buffer */
 } Unk801FBEF8;
 extern Unk801FBEF8 D_801FBEF8;
@@ -237,6 +248,12 @@ void func_801F5A60(void);
 void func_801F5BE0(void);
 void func_801F500C(void);
 u8 func_801F8524(void);
+void func_801F6EDC(Window *);
+void func_801F6F3C(Window *);
+void func_801F6F74(Window *);
+u8 func_801F5E54(u8);
+extern RECT D_801FB00C;
+extern s32 D_80070420;
 void func_801F6368(Window *);
 void func_801F6378(Window *);
 void func_801F5FE4(Window *);
@@ -246,6 +263,9 @@ void func_801F5688(void);
 void func_801F573C(void);
 void func_801F8BD4(MenuList *, RECT *, RECT *);
 extern s32 D_80070444;
+extern u8 D_801FB0A8[]; /* help text buffer */
+void func_8002BE5C(s32, s32); /* main exe */
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
 extern void (*D_801FAFE8[])(RECT *, s32, s32); /* slot drawer per state */
 typedef struct {
     u8 unk0; /* u */

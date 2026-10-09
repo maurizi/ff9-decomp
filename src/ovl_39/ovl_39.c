@@ -643,7 +643,61 @@ void func_801F6378(Window *w) {
     D_801FB1A8.unk2 = 2;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F63D8);
+void func_801F63D8(void) {
+    s32 sl;
+    s32 i;
+
+    D_801FB1A8.unk1 = 2;
+    D_801FB1A8.unk6 = 0;
+    D_801FB1A8.unk10 = 0;
+    D_801FB1A8.unkC = 0;
+    D_801FBEF8.unk1 = 0;
+    D_801FBEF8.unk0 = 1;
+    D_801FBEF8.unk1C = func_8002DC54(&D_801FB00C, 0x1E, 2);
+    D_801FBEF8.unk18 = 0xFF;
+    D_801FBEF8.unk3 = 0;
+    D_801FBEF8.unk10 = 0;
+    D_801FBEF8.unk14 = 0;
+    D_801FBEF8.unkC = 0;
+    D_801FBEF8.unk8 = 0;
+    D_801FBEF8.unk2 = 0;
+    for (i = 0; i < 4; i++) {
+        D_801FBEF8.unk4[i] = 0;
+    }
+    for (i = 0; i < 15; i++) {
+        D_801FB1A8.unk34[i].unk1A = 1;
+        D_801FB1A8.unk34[i].unk1B = i;
+        D_801FBEF8.unk2B4[i] = 0;
+    }
+    func_801F5E40();
+    func_801F5E54(1);
+    func_8002E2EC(D_801FBEF8.unk1C, func_801F6EDC);
+    func_8002E2E4(D_801FBEF8.unk1C, func_801F6F3C);
+    func_8002E2FC(D_801FBEF8.unk1C, func_801F6F74);
+    func_8002E304(D_801FBEF8.unk1C, D_80070420);
+    func_8002E31C(D_801FBEF8.unk1C, 1);
+    sl = D_80077DB0.unk2;
+    switch (D_801FB1A8.unk4[sl]) {
+    case 3:
+        D_801FBEF8.unk1 = 1;
+        if (func_801FA2E8(D_80077DB0.unk2 * 0x10) != 0) {
+            func_801F72B4(0x2E);
+        }
+        break;
+    case 0:
+        D_801FBEF8.unk1 = 2;
+        if (func_801FA350(D_80077DB0.unk2 * 0x10, func_801F65C4) == 0) {
+            func_801F72B4(0x2E);
+        }
+        break;
+    case 2:
+        func_801F72B4(0x2D);
+        break;
+    case 1:
+        func_801F72B4(0x2E);
+        break;
+    }
+}
 
 void func_801F65C4(void) {
     s32 r;
@@ -808,12 +862,12 @@ void func_801F6EDC(Window *w) {
     func_8002B5FC(w->unk0 + 0x4A, w->unk2 + 0xE, w->unk18, func_80035774(0x12), 0);
 }
 
-void func_801F6F3C(void) {
+void func_801F6F3C(Window *w) {
     D_801FB1A8.unk2 = 2;
     D_801FB1A8.unk20 = func_80035774(0x17);
 }
 
-void func_801F6F74(void) {
+void func_801F6F74(Window *w) {
 }
 
 s32 func_801F6F7C(void) {
