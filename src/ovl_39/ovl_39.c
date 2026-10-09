@@ -228,7 +228,46 @@ void func_801F500C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5114);
+void func_801F5114(void) {
+    MenuList *l;
+    SaveMember *m;
+    s32 idx;
+    s32 n;
+    s32 i;
+    s32 st;
+
+    l = &D_801FB1A8.unk24;
+    idx = l->unk5 + l->unk6;
+    st = D_801FB1A8.unk34[idx].unk1A;
+    switch (st) {
+    case 1:
+    case 2:
+    case 3:
+        D_80077DF0 = func_80035774(st + 9);
+        break;
+    case 4:
+        D_801FB0A8[0] = 0xFF;
+        n = 0;
+        m = D_801FB1A8.unk34[idx].unk58;
+        for (i = 0; i < 4; i++) {
+            if (m[i].unk0 != 0) {
+                n = i + 1;
+            }
+        }
+        for (i = 0; i < n; i++) {
+            if (m[i].unk0 != 0) {
+                func_8002BE44(i, m[i].unk2);
+                func_8002BE5C(i, m[i].unkC);
+                func_8002AD38(D_801FB0A8, func_80035774(i + 0xD));
+                if (i < n - 1) {
+                    func_8002AD38(D_801FB0A8, func_80035774(0x11));
+                }
+            }
+        }
+        D_80077DF0 = D_801FB0A8;
+        break;
+    }
+}
 
 void func_801F5280(void) {
     func_801F53E0();
@@ -423,7 +462,24 @@ void func_801F5A24(void) {
 void func_801F5A60(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5A68);
+void func_801F5A68(s32 x, s32 y, s32 z, s32 idx) {
+    u32 clut;
+    Ovl39Sprite *e;
+
+    clut = GetClut(0, 0xE0);
+    setlen(D_80077170, 4);
+    e = &D_801FAFFC[idx];
+    ((SprtWords *)D_80077170)->rgbc = 0x64808080;
+    ((SprtWords *)D_80077170)->xy = x | (y << 16);
+    ((SprtWords *)D_80077170)->uvclut = e->unk0 | (e->unk1 << 8) | (clut << 16);
+    ((SprtWords *)D_80077170)->wh = e->unk2 | (e->unk3 << 16);
+    addPrim(&D_8007716C[z], D_80077170);
+    D_80077170 += sizeof(SprtWords);
+    setlen(D_80077170, 2);
+    SetDrawTPage(D_80077170, 0, 1, 0x91);
+    addPrim(&D_8007716C[z], D_80077170);
+    D_80077170 += sizeof(DR_TPAGE);
+}
 
 void func_801F5BE0(void) {
     RECT r;
