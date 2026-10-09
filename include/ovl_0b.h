@@ -1891,6 +1891,7 @@ s32 func_800D9260(Unk800D9260 *, s32, s32 *);
 s32 func_800D960C(struct Unk800D7E14 *, s32, s32);
 s32 func_800AD90C(s32, s32, s32, s32, s32);
 void func_800B3C00(void);
+void func_800B3090(struct BtlCmd *);
 void func_800C0D24(BtlUnit *);
 void func_800C1594(void);
 void func_800C86C8(BtlUnit9C *, s32, s32, s32);
@@ -1901,7 +1902,7 @@ s32 func_800D905C(u8 *, s32, struct Unk800F78A40 *);
 void func_800E8408(BtlUnit *);
 void func_800E8460(BtlUnit *);
 s32 func_800E976C(s32); /* unit id, or an SVECTOR pointer */
-void func_800B1250(s32, s32, s32, s32, s32);
+void func_800B1250(); /* (BtlCmd *, u32, s32, s32, s32); callers pass the command as s32 */
 u8 func_800B3E7C(BtlCmd *);
 void func_800BD414(BtlUnit *, u16);
 void func_800BD464(BtlUnit *, u16);
@@ -2417,6 +2418,7 @@ void func_8001E3A4(void *);
 void func_800C072C(void);
 void func_800B2804(struct BtlUnit *);
 void func_800B3C00(void);
+void func_800B3090(struct BtlCmd *);
 void func_800C0840(void);
 void func_800C0C7C(u32 *);
 void func_800C0CD0(u32 *);

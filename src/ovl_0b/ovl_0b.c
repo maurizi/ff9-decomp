@@ -1310,7 +1310,82 @@ void func_800B10F8(BtlUnit *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1250);
+void func_800B1250(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    BtlUnit *u = arg0->unk4;
+    BtlUnit9C *m;
+    s32 *a;
+    BtlUnit9CC *c;
+
+    switch (arg1) {
+    case 10:
+    case 11:
+        D_8006794C->unk1C->unk8E4.battle->unk11B8 |= 0x10;
+        arg0->unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[arg2];
+        break;
+    case 15:
+        arg0->unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[0xBE];
+        break;
+    case 0x32:
+        arg0->unk8 = &D_8006794C->unk1C->unk8E4.battle->unk5D8[arg2];
+        break;
+    case 0x38:
+        if (D_8006794C->unk1C->unk8E4.battle->unk11B8 & 1) {
+            arg0->unkF = arg2;
+            return;
+        }
+        D_8006794C->unk1C->unk8E4.battle->unk11B8 |= 1;
+        arg0->unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[0xB4];
+        break;
+    case 14:
+    case 0x33:
+    case 0x3C:
+    case 0x3D:
+    case 0x3E:
+        arg0->unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[0];
+        break;
+    case 2:
+        if (u->unkC4[1] & 0x20000000) {
+            arg2 = 0xB5;
+        }
+    default:
+        arg0->unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[arg2];
+        break;
+    }
+    arg0->unkC = arg3;
+    arg0->unkE = arg1;
+    arg0->unkF = arg2;
+    arg0->unk10.w = (arg0->unk10.w & ~3) | (arg4 & 3);
+    arg0->unk10.w &= ~0x20;
+    arg0->unk10.w &= ~0x40;
+    arg0->unk10.w &= ~0x180;
+    if (arg1 >= 0x31) {
+        arg0->unk10.w |= 0x10;
+    } else {
+        func_800BF558(u, 0x8000);
+    }
+    if (arg1 < 0x37) {
+        if (D_8006794C->unk1C->unk8E4.battle->unk1088 != u->unk14) {
+            m = u->unk9C;
+            a = u->unkA4;
+            c = m->unkC;
+            if (c == (BtlUnit9CC *)a[0]) {
+                m->unkC = (BtlUnit9CC *)a[10];
+                u->unkA0->unk3A = 0;
+            } else if (c == (BtlUnit9CC *)a[1]) {
+                m->unkC = (BtlUnit9CC *)a[11];
+                u->unkA0->unk3A = 0;
+            } else if (c == (BtlUnit9CC *)a[13] && arg1 < 0x30) {
+                m->unkC = (BtlUnit9CC *)a[14];
+                u->unkA0->unk3A = 0;
+            }
+        }
+        u->unk68 |= 0x80000;
+    }
+    func_800B3090(arg0);
+}
+
+/* padded: the next jump table is 8-aligned in its object */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1520);
 
