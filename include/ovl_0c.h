@@ -470,6 +470,8 @@ void func_800AE784(s16, s16);
 void func_800B3638(void);
 void func_800CC54C(void);
 void func_800C48F4(s32);
+void func_800C4718(s32, u8);
+void func_800C47B0(s32, u8);
 void func_800AFCE0(void);
 s32 func_800B88C0(s32);
 void func_800C2A80(s32, s32, s32);
@@ -686,7 +688,7 @@ extern s32 D_800CCE50; /* debug flags */
 extern s16 D_800CCD7C;
 extern u8 D_800CCE54;
 extern u16 D_800CF474;
-extern s32 D_800CF488;
+extern s32 D_800CF488[4]; /* script request parameters */
 extern s32 D_800CF48C;
 extern s32 D_800CF490;
 /* texture transfer requests (func_800C24D8) */

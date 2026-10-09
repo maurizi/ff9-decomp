@@ -2194,7 +2194,249 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A71F4);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A720C);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B73F8);
+/* script request (w_frameSetParameter) */
+void func_800B73F8(u32 arg0, s32 arg1) {
+    switch (arg0) {
+    case 1:
+        func_800B153C();
+        break;
+    case 0:
+        if (arg1 == 4) {
+            D_800D3F9C = 1;
+            D_800D3F8C = -1;
+        } else {
+            D_800D3F9C = 0;
+            func_800C2A80(arg1, 2, D_800CF488[0]);
+        }
+        break;
+    case 4:
+        D_800D3E60 = arg1;
+        break;
+    case 2:
+        D_800D3E80 = arg1;
+        break;
+    case 5:
+        D_800CE0EF = arg1;
+        break;
+    case 10:
+        func_800C6F00(D_800CF488[0], D_800CF488[1], D_800CF488[2], arg1, D_800CF488[3]);
+        break;
+    case 11:
+        D_800D3E6C = arg1;
+        break;
+    case 15:
+        D_800D3F9C = arg1;
+        break;
+    case 6:
+    case 14:
+    case 16:
+        D_800CF488[0] = arg1;
+        break;
+    case 7:
+    case 17:
+        D_800CF488[1] = arg1;
+        break;
+    case 8:
+    case 18:
+        D_800CF488[2] = arg1;
+        break;
+    case 9:
+    case 19:
+        D_800CF488[3] = arg1;
+        break;
+    case 20:
+        func_800C4718(D_800CF488[0], D_800CF488[1]);
+        break;
+    case 21:
+        func_800C47B0(D_800CF488[0], D_800CF488[1]);
+        break;
+    case 22:
+        func_800C4850(D_800CF488[0], D_800CF488[2], D_800CF488[1]);
+        break;
+    case 23:
+        func_800C48F4(D_800CF488[0]);
+        break;
+    case 24:
+        func_800AB0C0(0x8601, 0, D_800CF488[2], D_800CF488[1], 0);
+        break;
+    case 25:
+        func_800AE860();
+        break;
+    case 26:
+        D_800CF474 = arg1;
+        break;
+    case 27:
+        D_800D3E78 = arg1;
+        break;
+    case 28:
+        if (!(u8)func_800B105C(D_800CF488)) {
+            D_800CF488[0] = 10000;
+            D_800CF488[1] = 10000;
+            D_800CF488[2] = 10000;
+        }
+        break;
+    case 29:
+        func_800B81A0();
+        break;
+    case 30:
+        func_800B31B8();
+        break;
+    case 31:
+        func_800B326C();
+        break;
+    case 32:
+        func_800C4710(arg1);
+        break;
+    case 33:
+        func_800AB0C0(0x8601, 0, arg1, 0, 0);
+        break;
+    case 34:
+        func_800B35F4();
+        break;
+    case 35:
+        D_800CF440 = arg1;
+        break;
+    case 36:
+        D_800D3E77 = arg1;
+        break;
+    case 37:
+        D_800CE276 = 0;
+        D_800CE3BC = 0;
+        break;
+    case 38:
+        func_800B3638();
+        break;
+    case 39:
+        D_800CF454 = 3;
+        break;
+    case 40:
+        D_800CF454 = 0;
+        break;
+    case 41:
+        D_800CF4A8 = 1;
+        break;
+    }
+    if (D_800CCE50 & 0x80) {
+        switch (arg0) {
+        case 0:
+            func_80015C38("*[ Request from script:Weather:%d ]\n", arg1);
+            break;
+        case 2:
+            func_80015C38("*[ Request from script:Navi Active:%d ]\n", arg1);
+            break;
+        case 1:
+            func_80015C38("*[ Request from script:Actor:%d ]\n", arg1);
+            break;
+        case 4:
+            func_80015C38("*[ Request from script:Navi mode:%d ]\n", arg1);
+            break;
+        case 5:
+            func_80015C38("*[ Request from script:Camera Lookup Fix mode:%d ]\n", arg1);
+            break;
+        case 11:
+            func_80015C38("*[ Request from script:Title Draw Time:%d ]\n", arg1);
+            break;
+        case 14:
+            func_80015C38("*[ Request from script:Whather Speed:%d ]\n", arg1);
+            break;
+        case 15:
+            func_80015C38("*[ Request from script:Whather Auto:%d ]\n", arg1);
+            break;
+        case 16:
+            func_80015C38("*[ Request from script:SE Param0:%d ]\n", arg1);
+            break;
+        case 17:
+            func_80015C38("*[ Request from script:SE Param1:%d ]\n", arg1);
+            break;
+        case 18:
+            func_80015C38("*[ Request from script:SE Param2:%d ]\n", arg1);
+            break;
+        case 19:
+            func_80015C38("*[ Request from script:SE Param3:%d ]\n", arg1);
+            break;
+        case 20:
+            func_80015C38("*[ Request from script:SE Play ]\n");
+            break;
+        case 21:
+            func_80015C38("*[ Request from script:SE Vol ]\n");
+            break;
+        case 22:
+            func_80015C38("*[ Request from script:SE Vol Intpl ]\n");
+            break;
+        case 23:
+            func_80015C38("*[ Request from script:SE Stop ]\n");
+            break;
+        case 24:
+            func_80015C38("*[ Request from script:Music Vol Intpl:Prm1 %d Prm2 %d]\n", D_800CF488[1],
+                          D_800CF488[2]);
+            break;
+        case 25:
+            func_80015C38("*[ Request from script:Camera Smooth ]\n");
+            break;
+        case 26:
+            func_80015C38("*[ Request from script:EventBattleProbability %d]\n", arg1);
+            break;
+        case 27:
+            func_80015C38("*[ Request from script:Navi Cursol\n");
+            break;
+        case 28:
+            func_80015C38("*[ Request from script:Get Getoffpos ]\n");
+            func_80015C38("Value X:%d\n", D_800CF488[0]);
+            func_80015C38("Value Y:%d\n", D_800CF488[1]);
+            func_80015C38("Value Z:%d\n", D_800CF488[2]);
+            break;
+        case 29:
+            func_80015C38("*[ Request from script:Call Chocobo ]\n");
+            break;
+        case 30:
+            func_80015C38("*[ Request from script:Get Getoff SP1 ]\n");
+            break;
+        case 31:
+            func_80015C38("*[ Request from script:Get Getoff SP2 ]\n");
+            break;
+        case 32:
+            func_80015C38("*[ Request from script:Music Fade ]\n");
+            break;
+        case 33:
+            func_80015C38("*[ Request from script:Music Fade Force]\n");
+            break;
+        case 34:
+            func_80015C38("*[ Request from script:Auto Pilot ON]\n");
+            break;
+        case 35:
+            func_80015C38("*[ Request from script:Mog choice %d]\n", arg1);
+            break;
+        case 36:
+            func_80015C38("*[ Request from script:Cursol Draw %d]\n", arg1);
+            break;
+        case 37:
+            func_80015C38("*[ Request from script:Alpha 0%d]\n", arg1);
+            break;
+        case 38:
+            func_80015C38("*[ Request from script:Auto Pilot OFF]\n");
+            break;
+        case 39:
+            func_80015C38("*[ Request from script:CD Use ON]\n");
+            break;
+        case 40:
+            func_80015C38("*[ Request from script:CD Use OFF]\n");
+            break;
+        case 41:
+            func_80015C38("*[ Request from script:Map Jump]\n");
+            break;
+        case 3:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+            break;
+        default:
+            func_80015C38("w_frameSetParameter: illigal function #%d\n", arg0);
+            break;
+        }
+    }
+}
 
 s32 func_800B7A14(s32 arg0) {
     u32 v;
@@ -2219,7 +2461,7 @@ s32 func_800B7A14(s32 arg0) {
         }
         return D_800CCCC0[D_800CE3DC->unk11].unkE + D_800CCCC0[D_800CE3DC->unk11].unkC;
     case 0xC3:
-        return D_800CF488;
+        return D_800CF488[0];
     case 0xC4:
         return D_800CF48C;
     case 0xC5:
