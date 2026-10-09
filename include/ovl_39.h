@@ -292,6 +292,9 @@ void func_801F7840(Window *);
 void func_801F5114(void);
 u8 *func_801F6320(void);
 void func_801F7CD0(Window *);
+s32 func_801FA2B8();
+s32 func_801FA2C8();
+void func_801F7FD4(s32, s32, s32, s32, s32);
 void func_801F8408(Window *);
 void func_801F8424(Window *);
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
