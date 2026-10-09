@@ -11627,7 +11627,73 @@ void func_80059FB8(AkaoChannel *c, u32 voice) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A014);
+void func_8005A014(VoiceParams *p, u8 *a, u8 *b, s32 flag) {
+    AkaoChannel *c;
+    u32 bit;
+    s32 n;
+    u32 busy;
+
+    if (a == NULL && b == NULL) {
+        return;
+    }
+    if (flag == 0 && p->unk4 != 0) {
+        func_80059AA8(0, p->unk4);
+    }
+    do {
+        c = &D_8007E3D8[15];
+        bit = 0x800000;
+        busy = D_80080A70.unk0 | D_80080A70.unk10 | D_80083168.unkC;
+        if (a != NULL && b != NULL) {
+            n = 15;
+            c--;
+            bit = 0x400000;
+        loop:
+            if (busy & (bit | (bit << 1))) {
+                n--;
+                c--;
+                bit >>= 1;
+                if (n == 0) {
+                    goto fail;
+                }
+                goto loop;
+            }
+        } else {
+            n = 16;
+        loop2:
+            if (busy & bit) {
+                n--;
+                c--;
+                bit >>= 1;
+                if (n != 0) {
+                    goto loop2;
+                }
+            }
+        }
+        if (n == 0) {
+        fail:
+            func_80059AA8(0, 0x40000000);
+            if (busy == (D_80080A70.unk0 | D_80080A70.unk10 | D_80083168.unkC)) {
+                return;
+            }
+        }
+    } while (n == 0);
+    if (a != NULL) {
+        func_80059E10(c, p, bit, a);
+        func_80059FB8(D_8007BD48, c->unk118);
+    }
+    if (b != NULL) {
+        if (a != NULL) {
+            c++;
+            bit <<= 1;
+        }
+        func_80059E10(c, p, bit, b);
+        func_80059FB8(D_8007BD48, c->unk118);
+        if (a != NULL) {
+            c->unk34 |= 0x10000;
+        }
+    }
+    D_80083158.unk8 |= 0x110;
+}
 
 static inline u8 *func_8005A20C_get(s32 i) {
     return D_800809DC[i] != 0xFFFF ? D_800809E8 + D_800809DC[i] : NULL;
