@@ -2,7 +2,29 @@
 
 INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", D_801EDF00);
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F0C18);
+INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", D_801EDF04);
+
+void func_801F0C18(void) {
+    D_801FAB78.unk1 = 2;
+    D_801FAB78.unk0 = 0;
+    D_801FAB78.unk5 = 0;
+    D_801FAB78.unk8 = 0;
+    D_801FAB78.unk6 = 0;
+    D_801FAB78.unk50 = 0;
+    D_801FAB78.unk54 = 0;
+    D_801FAB78.unk55 = 0;
+    func_801F3038();
+    func_801F2CEC();
+    func_8003575C(D_801EDF04);
+    func_8003556C(D_800355DC);
+    func_80035674(1);
+    func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
+    func_8002EDFC(&D_801FAB78.unk1C, D_801FAB78.unkB0, 0xB, 2, 0xAD);
+    setRECT(&D_801FAB78.unk2C, 8, 8, 0xE4, 0x1A);
+    setRECT(&D_801FAB78.unk34, 8, 0x2A, 0x12C, 0xAD);
+    func_80063118(&D_801FAB78.unk3C, 0, 0);
+    func_801F2EDC();
+}
 
 void func_801F0D18(void) {
     if (D_80077528 & 0x10000) {
@@ -63,7 +85,39 @@ void func_801F10C4(s32 idx, MenuList *l) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F11E4);
+void func_801F11E4(void) {
+    MenuView view;
+    ItemList *il;
+    s32 w;
+    s32 row;
+    s32 col;
+    s32 idx;
+
+    il = &D_801F3040[D_801FAB78.unk0];
+    func_8002B524(D_801F30A8->x + 0xE, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
+    func_8002B524(D_801F30A8->x + 0xA4, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
+    if (D_801FAB78.unk0 != 2) {
+        w = func_8002AE7C((u8 *)D_800703FC.unk94);
+        func_8002B524((D_801F30A8->x + 0x8A) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
+        func_8002B524((D_801F30A8->x + 0x120) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
+    }
+    func_8002ECA0(il->unk8, &view);
+    func_8002E040(D_801F30A8, 0x1D, 1, il->unk8);
+    func_8002705C(D_801F30A8, 0x1D, 1);
+    idx = view.unk1 * 2;
+    func_8002D9B4(NULL, 0x1C, 1);
+    for (row = 0; row < view.unk0; row++) {
+        for (col = 0; col < 2; col++) {
+            il->unk4(col, row, idx++, &view);
+        }
+    }
+    if (il->unk8->unk8 & 4) {
+        func_8002F40C(il->unk8, D_801F30A8, &D_801FA958);
+        func_8002D9B4(&D_801FA958, 0x1C, 1);
+        func_801F26E0();
+    }
+    func_8002D9B4(D_801F30A8, 0x1C, 1);
+}
 
 INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F13F8);
 

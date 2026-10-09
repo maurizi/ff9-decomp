@@ -66,6 +66,14 @@ typedef struct {
 extern Unk8006B1F4 D_8006B1F4[];
 u8 func_800654F8(Character *, Character *, Unk8006B1F4 *, s32, s32);
 extern s32 D_80070408;
+/* func_800355DC; this overlay's link only has the D_ name */
+void D_800355DC(void);
+void func_801F3038(void);
+void func_801F2CEC(void);
+void func_801F2EDC(void);
+void func_801F26E0(void);
+extern RECT *D_801F30A8;
+extern RECT D_801FA958;
 
 extern u8 D_801F30E0[2][0x10];
 extern RECT D_801F3148;
