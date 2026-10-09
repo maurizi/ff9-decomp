@@ -734,7 +734,7 @@ typedef struct {
     s32 unk7C;
     s32 unk80;
     u32 unk84;
-    u8 pad88[0x8C - 0x88];
+    s32 unk88;
     s32 unk8C;
     s32 unk90;
     u16 unk94;
@@ -807,6 +807,17 @@ typedef struct {
     s16 unk12E;
     u8 pad130[4];
 } AkaoChannel; /* 0x134 */
+
+/* voice setup parameters for func_80059E10 */
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    u8 unk8;
+    u8 pad9[0xC - 0x9];
+    u16 unkC;
+    u8 padE[0x10 - 0xE];
+    s32 unk10;
+} VoiceParams;
 
 /* frame animation (func_80035B90) */
 typedef struct {
@@ -960,11 +971,11 @@ typedef struct Unk8004AB64 {
     u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
-    u8 pad8;
+    u8 unk8;
     u8 unk9;
     u8 unkA;
     u8 unkB;
-    u8 padC;
+    u8 unkC;
     u8 unkD;
     u8 unkE;
     u8 unkF;
@@ -1338,12 +1349,7 @@ typedef struct {
 } Unk80073940; /* 0x24-byte entries */
 extern Unk80073940 D_80073940[];
 
-typedef struct {
-    u8 pad0[5];
-    u8 unk5;
-    u8 pad6[0xF - 6];
-    u8 unkF;
-} Unk800367D0;
+typedef Unk8004AB64 Unk800367D0; /* func_800367D0 creates a script object */
 
 typedef struct {
     u8 pad0[0x12];
@@ -3288,6 +3294,7 @@ void func_80021680();
 void func_8004FF98(s32);
 void func_80052D0C(u8 **);
 Unk16D8 *func_80036978(Unk8004AB64 *);
+Unk8004AB64 *func_80036650(s32);
 void func_800499D8(Unk8004B9B8 *);
 
 extern s32 D_8007AE2C;

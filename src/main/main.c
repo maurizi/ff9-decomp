@@ -6750,7 +6750,69 @@ void func_80036634(u8 *a) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036650);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800367D0);
+Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
+    Unk8004AB64 *o;
+    Unk16D8 *n;
+    Unk8007AECC *d;
+    s32 nw, nv;
+    u32 *p;
+    u32 *end;
+
+    if (id == 0) {
+        id = idx;
+    }
+    o = func_8004B040(id);
+    if (o != NULL) {
+        func_80036978(o);
+    }
+    nw = (a2 + 3) >> 2;
+    nv = (((ScriptEntry *)D_8007ADF8)[idx].unk4 + 3) >> 2;
+    o = func_80036650(nw + nv + a3);
+    end = (u32 *)o + nw + nv;
+    for (p = (u32 *)o; p < end; p++) {
+        *p = 0;
+    }
+    d = D_8007AECC;
+    n = d->unk16E0;
+    d->unk16E0 = n->unk0;
+    if (d->unk16DC != NULL) {
+        d->unk16DC->unk0 = n;
+        d->unk16DC = n;
+    } else {
+        d->unk16D8 = n;
+        d->unk16DC = n;
+    }
+    n->unk0 = NULL;
+    n->unk4 = o;
+    o->unk6 = idx;
+    o->unk7 = id;
+    o->unk5 = 0;
+    {
+        u8 *h = D_8007ADF8 + ((ScriptEntry *)D_8007ADF8)[idx].unk0;
+        s32 c = *(u16 *)h >> 8;
+        u16 *q = (u16 *)(h + 2);
+
+        while (c != 0) {
+            if (*q++ == 0) {
+                break;
+            }
+            c--;
+            q++;
+        }
+        if (c != 0) {
+            h += *q + 2;
+        } else {
+            h = NULL;
+        }
+        o->unk0 = h;
+    }
+    o->unk9 = nw + nv;
+    o->unk8 = nw;
+    o->unkC = a3;
+    o->unkE = 0;
+    o->unk10 = 0xFF;
+    return o;
+}
 
 Unk16D8 *func_80036978(Unk8004AB64 *obj) {
     Unk16D8 *n;
@@ -11399,7 +11461,52 @@ void func_800599D4(Unk80080A10 *a, AkaoChannel *c, s32 id) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80059AA8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80059E10);
+void func_80059E10(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
+    AkaoChannel *ch;
+    s32 bit;
+    s32 n;
+
+    c->unk6C = p->unk0;
+    c->unk28 = p->unk4;
+    c->unk9C = p->unk8 << 8;
+    c->unk9E = 0;
+    c->unkBE = 0x8000;
+    c->unkC0 = 0;
+    c->unk100 = (p->unkC & 0x7F) << 8;
+    c->unkBC = 0;
+    c->unk38 = p->unk10;
+    c->unk96 = 2;
+    c->unk98 = 1;
+    c->unk94 = 1;
+    c->unk88 = -2;
+    c->unk70 = 0;
+    c->unkB6 = 0;
+    func_80059548(c, data);
+    D_800831C8[c->unk118] = NULL;
+    func_800577BC(c->unk118, 5, 3);
+    D_80080A70.unk0 |= mask;
+    D_80080A70.unkC |= mask;
+    mask = ~mask;
+    D_80080A70.unk4 &= mask;
+    D_80080A70.unk8 &= mask;
+    D_80080A70.unk1C &= mask;
+    D_80080A70.unk20 &= mask;
+    D_80080A70.unk24 &= mask;
+    if (D_800831C4 & 2) {
+        mask = 0x100;
+        c = D_8007E3D8;
+        n = 16;
+        do {
+            if ((D_80080A70.unk0 & mask) && !(c->unk28 & 0x2000000)) {
+                D_80080A70.unk0 &= ~mask;
+                D_80080A70.unk10 |= mask;
+            }
+            n--;
+            c++;
+            mask <<= 1;
+        } while (n != 0);
+    }
+}
 
 void func_80059FB8(AkaoChannel *c, u32 voice) {
     u32 i;
