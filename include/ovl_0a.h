@@ -1190,6 +1190,8 @@ s32 func_800C6E94(void);
 s32 func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
+extern s32 D_800711A8[]; /* projected screen xy per model vertex */
+extern s32 D_80070520[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;

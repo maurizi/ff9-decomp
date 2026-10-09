@@ -483,6 +483,46 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
 #define gte_op12() __asm__ volatile(GTE_NOPS ".word\t0x4B78000C")
 #define gte_gpf0() __asm__ volatile(GTE_NOPS ".word\t0x4B90003D")
 #define gte_gpf12() __asm__ volatile(GTE_NOPS ".word\t0x4B98003D")
+/* The original assembler (ASPSX) inserted the nops a GTE command needs after
+ * the last mtc2/ctc2 itself, so a command with 0 or 1 scheduled instruction
+ * in front of it needs a variant with fewer nops: _b has none, _n1 has one. */
+#define GTE_NOP1 ".word\t0x00000000;"
+#define gte_rtps_b() __asm__ volatile(".word\t0x4A180001")
+#define gte_rtpt_b() __asm__ volatile(".word\t0x4A280030")
+#define gte_rtir_b() __asm__ volatile(".word\t0x4A49E012")
+#define gte_rtir_n1() __asm__ volatile(GTE_NOP1 ".word\t0x4A49E012")
+#define gte_rtv0tr_b() __asm__ volatile(".word\t0x4A480012")
+#define gte_rtv0tr_n1() __asm__ volatile(GTE_NOP1 ".word\t0x4A480012")
+#define gte_nclip_b() __asm__ volatile(".word\t0x4B400006")
+#define gte_avsz3_b() __asm__ volatile(".word\t0x4B58002D")
+#define gte_avsz4() __asm__ volatile(GTE_NOPS ".word\t0x4B68002E")
+#define gte_avsz4_b() __asm__ volatile(".word\t0x4B68002E")
+#define gte_ldv3c(r0) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 4(%0);" \
+    "lwc2\t$2, 8(%0);" \
+    "lwc2\t$3, 12(%0);" \
+    "lwc2\t$4, 16(%0);" \
+    "lwc2\t$5, 20(%0)" \
+    : : "r"(r0))
+#define gte_stsxy3c(r0) __asm__ volatile( \
+    "swc2\t$12, 0(%0);" \
+    "swc2\t$13, 4(%0);" \
+    "swc2\t$14, 8(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stsz3c(r0) __asm__ volatile( \
+    "swc2\t$17, 0(%0);" \
+    "swc2\t$18, 4(%0);" \
+    "swc2\t$19, 8(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_ldlv0(r0) __asm__ volatile( \
+    "lhu\t$13, 4(%0);" \
+    "lhu\t$12, 0(%0);" \
+    "sll\t$13, $13, 16;" \
+    "or\t$12, $12, $13;" \
+    "mtc2\t$12, $0;" \
+    "lwc2\t$1, 8(%0)" \
+    : : "r"(r0) : "$12", "$13")
 #define gte_MulMatrix0(r1, r2, r3) \
     { \
         gte_SetRotMatrix(r1); \
