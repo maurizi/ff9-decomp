@@ -6526,7 +6526,28 @@ s32 func_80053960(Unk800539FC *a, s32 b) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005398C);
+static inline s32 func_80053960_inline(Unk800539FC *a, s32 b) {
+    if (a->unk38 & b) {
+        a->unk38 &= ~b;
+        return 2;
+    }
+    return 1;
+}
+
+s32 func_8005398C(Unk800539FC *a, s32 mask) {
+    s32 r = 1;
+    u32 i;
+
+    for (i = 0; i < 8; i++) {
+        u8 m = mask & (1 << i);
+        if (m) {
+            if (func_80053960_inline(a, 1 << i) == 2) {
+                r = 2;
+            }
+        }
+    }
+    return r;
+}
 
 s32 func_800539FC(Unk800539FC *a, s32 b) {
     return (a->unk38 & b) != 0;
