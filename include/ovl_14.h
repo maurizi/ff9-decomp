@@ -20,6 +20,14 @@ typedef struct {
     s32 unk4; /* start; the next entry's start ends it */
 } Ovl14Dir;
 
+/* main exe: candidates for ff9.h */
+s32 func_80022AC4(char *);
+u8 func_80022ED4(s32);
+
+/* ovl_64 (FMV player) */
+void func_8019C98C(s32);
+extern char **D_8019DC68;
+
 /* other overlay (0x801F....) */
 u8 func_801F5330(void);
 void func_8019A9D8(void);
@@ -55,6 +63,8 @@ extern Ovl14Pos D_800AB2A0;
 extern Ovl14Pos D_800AB2A4;
 extern Ovl14Pos D_800AB2A8[3];
 extern u16 D_800AB2C4;
+extern s32 D_800AB2C8;
+extern s16 D_800AB3B8[2][4];
 extern void *D_800AB2D4;
 extern void *D_800AB2F0;
 extern s32 D_800AB3C8;

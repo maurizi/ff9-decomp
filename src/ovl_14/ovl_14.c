@@ -629,7 +629,41 @@ void func_800A9180(void) {
 
 INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A9220);
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A9968);
+s32 func_800A9968(void) {
+    FileEntry *f;
+    s32 h;
+    s32 i, j;
+
+    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    }
+    f = func_8001E218(0, 0x64);
+    func_8002177C(D_8006794C->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
+    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    }
+    func_80012D08();
+    func_80012CF8();
+    func_80012D18();
+    if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+        h = func_80022AC4(*D_8019DC68);
+        func_80022ED4(h);
+        while (func_80022B18() != 0) {
+        }
+        func_8019C98C(h);
+    }
+    func_800320B8(1, 1, 0, 0xFFFFFF);
+    D_800AB3C8 = 0;
+    D_800AB2C4 = 0;
+    for (i = 1; i >= 0; i--) {
+        for (j = 3; j >= 0; j--) {
+            D_800AB3B8[i][j] = 0;
+        }
+    }
+    D_800AB2C8 = 0;
+    func_800A82F4(0);
+    func_800A812C(1);
+    D_80073998[0] = 0;
+    return 0;
+}
 
 void func_800A9B14(void) {
     GameData *ctx = D_8006794C->unk1C;
