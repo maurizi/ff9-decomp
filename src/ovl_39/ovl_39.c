@@ -456,7 +456,16 @@ u8 func_801F6C60(u8 v) {
     return old;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F6C74);
+s32 func_801F6C74(void) {
+    s32 i;
+
+    for (i = 0; i < 15; i++) {
+        if (D_801FB1A8.unk34[14 - i].unk1A == 1) {
+            return 14 - i;
+        }
+    }
+    return -1;
+}
 
 s32 func_801F6CD0(s32 n) {
     s32 found = 0;
@@ -1305,7 +1314,19 @@ INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801F43A8);
 
 INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801F43B8);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801FA0F4);
+s32 func_801FA0F4(s32 mode, s32 chan) {
+    char path[16];
+
+    if (mode == 0) {
+        strcpy(path, "bu00:*");
+    } else {
+        strcpy(path, "bu10:*");
+    }
+    func_80065228(0);
+    func_80065228(1);
+    func_801FAAF4();
+    return firstfile(path, chan);
+}
 
 s32 func_801FA184(s32 chan) {
     func_80065228(0);

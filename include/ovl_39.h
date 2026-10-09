@@ -217,6 +217,7 @@ typedef struct {
 } Unk801F6D24;
 
 /* main exe: candidates for ff9.h */
+s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
 s32 func_80028954(s32); /* defined u8 in main; used unmasked */
 
 extern RECT D_801FAF74; /* a RECT in .data (splat starts .data late) */
