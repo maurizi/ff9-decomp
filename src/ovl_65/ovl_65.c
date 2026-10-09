@@ -22,12 +22,12 @@ void func_801EF45C(void) {
         e = func_80063088(D_8006794C->unk1C->unk7E4, D_8006794C->unk1C->unkC | 0x50000);
         if (e != NULL) {
             D_8006794C->unk1C->unk3A = e->unkC;
-            D_8006794C->unk1C->unk800 = e->unk4;
-            D_8006794C->unk1C->unk808 = e->unk8;
+            D_8006794C->unk1C->unk7FC[1] = e->unk4;
+            D_8006794C->unk1C->unk804[1] = e->unk8;
             e = func_80063088(D_8006794C->unk1C->unk7E4, e->unkC);
             if (e != NULL) {
-                D_8006794C->unk1C->unk7FC = e->unk4;
-                D_8006794C->unk1C->unk804 = e->unk8;
+                D_8006794C->unk1C->unk7FC[0] = e->unk4;
+                D_8006794C->unk1C->unk804[0] = e->unk8;
             }
         }
     }

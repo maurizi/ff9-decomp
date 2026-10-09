@@ -6662,7 +6662,7 @@ s32 func_8004B68C(Unk8004AB64 *o, s32 prop) {
     case 2:
         return o->unk14.vz;
     case 3:
-        return (u8)(((u16 *)&o->unk14.pad)[1] >> 4); /* high half of the pad word */
+        return (u8)((u16)o->unk14.unk22 >> 4);
     case 4:
         return o->unkF;
     case 5:

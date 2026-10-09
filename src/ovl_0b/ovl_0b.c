@@ -260,7 +260,7 @@ s32 func_800AA08C(Unk800AA08C *arg0) {
     GameData *gd = D_8006794C->unk1C;
     u8 *cd = gd->unk854;
     Battle *b = gd->unk8E4.battle;
-    func_8002177C(cd, gd->unk7FC, gd->unk804 << 11, (void *)arg0->unk24, 0, 0x2800, 0);
+    func_8002177C(cd, gd->unk7FC[0], gd->unk804[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
     while (func_800217C4(cd) != 0) {
     }
     b->unk1354->unk0[2] = (void *)v;
@@ -288,7 +288,7 @@ s16 func_800AA140(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     } else if (st->unk0 == 2) {
         gd2 = D_8006794C->unk1C;
         st->unk24 = arg0->unk1C;
-        func_8002177C(cd, gd2->unk800, gd2->unk808 << 11, (void *)st->unk24, 0, -1, 0);
+        func_8002177C(cd, gd2->unk7FC[1], gd2->unk804[1] << 11, (void *)st->unk24, 0, -1, 0);
         st->unk2 = 4;
         st->unk0 = 1;
     } else if (st->unk0 == 4) {

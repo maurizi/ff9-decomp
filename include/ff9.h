@@ -98,7 +98,8 @@ typedef struct {
 
 /* GameData.unk8E0 entry */
 typedef struct Unk8E0 {
-    u8 pad0[8];
+    s32 unk0; /* flags */
+    u8 pad4[8 - 4];
     struct BtlUnit9C *unk8;
     struct BtlUnitA0 *unkC;
     struct BtlUnit *unk10;
@@ -172,6 +173,18 @@ typedef struct Unk8D4 {
     u8 pad0[0x98];
 } Unk8D4;
 
+typedef struct CdReadCtx {
+    s32 unk0; /* start sector */
+    s32 unk4; /* total bytes */
+    u8 *unk8; /* destination */
+    s32 unkC; /* bytes done */
+    s32 unk10; /* chunk size, -1 = all */
+    void (*unk14)(struct CdReadCtx *); /* done callback */
+    s32 unk18;
+    s32 unk1C; /* state */
+    u8 *unk20;
+} CdReadCtx; /* GameData.unk854 */
+
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
@@ -213,10 +226,8 @@ typedef struct {
     u16 unk7EA;
     s32 unk7EC[2];
     s32 unk7F4[2];
-    s32 unk7FC;
-    s32 unk800;
-    s32 unk804;
-    s32 unk808;
+    s32 unk7FC[2]; /* CD sector, per area */
+    s32 unk804[2]; /* sector count */
     u8 *unk80C; /* name text */
     u8 *unk810;
     void *unk814;
@@ -236,24 +247,28 @@ typedef struct {
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
     u8 unk848;
-    u8 pad849[0x84C - 0x849];
+    u8 pad849;
+    u16 unk84A;
     Unk7D4 *unk84C; /* second (kanji) font table */
     u8 unk850;
     u8 unk851;
     u16 unk852;
-    u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
+    CdReadCtx unk854[1]; /* CD read context (func_8002177C) */
+    u8 pad878[0x87C - 0x878];
+    s32 unk87C; /* end of the world map data */
     Unk880 unk880;
     u8 unk890;
     u8 pad891;
     u8 unk892;
-    u8 pad893[0x8AC - 0x893];
+    u8 pad893[0x8A8 - 0x893];
+    s32 unk8A8;
     s32 unk8AC;
     u16 unk8B0;
     s16 unk8B2;
     u16 unk8B4[2];
     u8 pad8B8[0x8BC - 0x8B8];
     void *unk8BC; /* callback, signature varies by module */
-    u8 pad8C0[0x8C4 - 0x8C0];
+    s32 unk8C0;
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
     u8 pad8CC[0x8D4 - 0x8CC];
@@ -276,7 +291,10 @@ typedef struct {
     u8 pad3C[0x44 - 0x3C];
     s32 unk44;
     s32 unk48;
-    u8 pad4C[0xDC - 0x4C];
+    u8 pad4C[0x94 - 0x4C];
+    s32 unk94;
+    s32 unk98;
+    u8 pad9C[0xDC - 0x9C];
     s32 unkDC; /* battle data file start sector */
 } GameStateUnk14;
 
@@ -901,6 +919,15 @@ typedef struct {
 } Unk80077E44; /* 16-byte entries */
 extern Unk80077E44 *D_80077E44;
 
+/* actor position (VECTOR layout, the pad word holds two rotation angles) */
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+    s16 unk20; /* rotation x */
+    s16 unk22; /* rotation y */
+} ActorPos;
+
 /* field / world object (actor) */
 typedef struct Unk8004AB64 {
     u8 *unk0; /* script pc */
@@ -919,8 +946,8 @@ typedef struct Unk8004AB64 {
     u8 pad10;
     u8 unk11;
     u8 pad12[2];
-    VECTOR unk14; /* position */
-    s16 unk24;
+    ActorPos unk14; /* position, rotation x/y */
+    s16 unk24; /* rotation z */
     u8 unk26;
     u8 pad27;
     u16 unk28;
@@ -929,11 +956,12 @@ typedef struct Unk8004AB64 {
     s8 unk2E;
     u8 pad2F[0x34 - 0x2F];
     u16 unk34;
-    u8 pad36[0x3A - 0x36];
+    u16 unk36; /* animation file */
+    u8 pad38[0x3A - 0x38];
     u8 unk3A;
     u8 unk3B;
     u8 pad3C[0x40 - 0x3C];
-    VECTOR unk40; /* previous position */
+    ActorPos unk40; /* previous position */
     u16 unk50; /* flags */
     u8 pad52[0x60 - 0x52];
     u8 unk60;
@@ -1461,6 +1489,7 @@ s32 func_80016EC0(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
 s32 func_80016ED0(s32); /* BIOS EnableEvent */
 s32 func_8001C750(s32, s32);
 s32 func_8001C8B0(s32, s32, s32, s32);
+s32 func_8001CA70(s32); /* file size */
 void func_8001CCB4(s32, s32, s32);
 void func_8001CFB4(void);
 void func_8001D8A8(s32);
@@ -1469,17 +1498,6 @@ void func_8001DAA4(s32, s32, s32, RECT *);
 void func_8001DCB8(void);
 FileEntry *func_8001E218(s32, s32);
 void func_80021640(s32);
-typedef struct CdReadCtx {
-    s32 unk0; /* start sector */
-    s32 unk4; /* total bytes */
-    u8 *unk8; /* destination */
-    s32 unkC; /* bytes done */
-    s32 unk10; /* chunk size, -1 = all */
-    void (*unk14)(struct CdReadCtx *); /* done callback */
-    s32 unk18;
-    s32 unk1C; /* state */
-    u8 *unk20;
-} CdReadCtx; /* GameData.unk854 */
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
@@ -1767,7 +1785,7 @@ s32 func_800551F0(void);
 void func_80055D40(void);
 void func_80055D60(void);
 s32 func_80055DF4(void);
-void func_80055E14(s32, s32, s32);
+s32 func_80055E14(s32, s32, s32);
 s32 func_80056CAC(s32);
 s32 func_80056CBC(s32);
 void func_80062344(void);
