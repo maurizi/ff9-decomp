@@ -4053,7 +4053,35 @@ Unk80104E34 *func_800E9730(s32 arg0) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E976C);
+s32 func_800E976C(s32 arg0) {
+    SVECTOR pos;
+    SVECTOR *v;
+    DVECTOR sxy;
+    s32 x;
+    s32 sign;
+
+    if (arg0 == -1) {
+        return 0x80;
+    }
+    if (arg0 & 0x90000000) {
+        v = (SVECTOR *)arg0;
+    } else {
+        v = &pos;
+        func_800E750C(arg0, (s16 *)v);
+    }
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(v);
+    gte_rtps();
+    gte_stsxy(&sxy);
+    x = sxy.vx - 160;
+    sign = (x < 0) ? -1 : 1;
+    x = (x >= 0) ? x : -x;
+    if (x > 170) {
+        x = 170;
+    }
+    return sign * (x * 63 / 170) + 0x80;
+}
 
 void func_800E9884(s32 arg0) {
     Unk80104E34 *p = func_800E9730(arg0);
