@@ -2142,7 +2142,7 @@ extern u8 *D_8007B9A4;
 extern u8 *D_8007B9A8;
 extern u32 D_8007B9B0[];
 extern u8 **D_8007BCA8;
-void func_80051004(u8);
+void func_80051004(s32);
 extern u8 D_8007B930[8]; /* name text being converted */
 
 typedef struct {

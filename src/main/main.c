@@ -9516,7 +9516,37 @@ void *func_8004F058(s32 i) {
     return e;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F0C8);
+s32 func_8004F0C8(s32 v, s32 n) {
+    s32 d;
+    s32 digits;
+    s32 i;
+    s32 q;
+    s32 ch;
+
+    if (v < 0) {
+        v = 0;
+    }
+    d = 10;
+    digits = 1;
+    while (v >= d) {
+        d *= 10;
+        digits++;
+    }
+    for (i = 0; i < n; i++) {
+        d /= 10;
+        if (d == 0) {
+            break;
+        }
+        q = v / d;
+        if (d < 2 || q != 0) {
+            ch = q % 10;
+        } else {
+            ch = 0xF;
+        }
+        func_80051004(ch);
+    }
+    return digits;
+}
 
 s32 func_8004F1F0(u8 *s, s32 max) {
     s32 n = 0;
