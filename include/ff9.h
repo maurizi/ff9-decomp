@@ -2964,4 +2964,379 @@ typedef struct {
 } AkaoSeqHdr;
 
 
+
+/* ---- event script interpreter (func_80039C38) ---- */
+/* overlay entry points as called from the main exe (the overlays have their own prototypes) */
+#if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
+void func_800AFAC0(s32, s32, s32, s32, s32);
+void func_800B1A20(s16, s16, s16, u8 *arg4, u8 *arg5);
+s32 func_800B2CC0(s32, s32, s32, s32);
+void func_800B5004(s32, s16);
+void func_800B73F8(u32, s32);
+s32 func_800C02D0(s32, s16, s16, s8, u8, u8, u8);
+s32 func_800C0BCC(s32);
+s32 func_800C0DB0(s16, s16, s16);
+s32 func_800C0DF4(s16, s16, u16, s32);
+s32 func_800C0E6C(u16 *arg0, u16 *arg1);
+s32 func_800C0E94(s32, s32, s32);
+s32 func_800C1024(s16);
+s32 func_800C104C(void);
+s32 func_800C1100(void);
+s32 func_800C119C(s32, s16, s16, s16, s16);
+s32 func_800C11C8(s32, s32, s32);
+s32 func_800C11E8(s32, s16, s16, s16);
+s32 func_800C1368(s32, u8, u8, u8);
+s32 func_800C142C(s32, s32);
+s32 func_800C147C(s32, s32, s32, s32);
+s32 func_800C14DC(s32, s32);
+s32 func_800C152C(s32, s32, s32, s32, s32);
+s32 func_800C15BC(s32, s32, s32, s32);
+s32 func_800C1614(s32, s32, s32);
+s32 func_800C1668(s32, s32);
+s32 func_800C16B0(s32, s32);
+s32 func_800C16F4(s32, s32);
+s32 func_800C17AC(s32, s32);
+s32 func_800C17F0(s32, s32);
+s32 func_800C1868(s32, s32, s32);
+s32 func_800C18A0(s32, s32);
+s32 func_800C18D4(s32, u32, u32);
+s32 func_800C196C(s32, s32);
+s32 func_800C1A8C(s32, s16, s16, s16, s16);
+s32 func_800C47E4(s32, s32);
+s32 func_800C6408(u32, u32);
+s32 func_800C7464(u8);
+s32 func_800C778C(s32, s32);
+s32 func_800C7AF8(u32, u32);
+s32 func_800C7B68(u32, s32);
+s32 func_800C7BC4(u32, s16);
+s32 func_800C7C04(u32, s32);
+s32 func_800C7C70(u32, u32, s32);
+s32 func_800C7CDC(u32, s32);
+s32 func_800C7DF0(u32, s32);
+s32 func_800C7F34(s32, s32);
+s32 func_800C7F7C(s32, s32);
+s32 func_800C7FBC(s32, s32);
+s32 func_800C8010(s32, s32);
+s32 func_800C8044(s32, s32);
+s32 func_800C8068(s32, s16);
+s32 func_800C808C(s32, s32);
+s32 func_800C80B0(s32, s16, s16);
+s32 func_800C80E4(s32, s32);
+void func_800F4F04(s32, s32);
+void func_801F0FF4(void);
+void func_800AA3F4(s32);
+s32 func_800C3E18(s32, s32);
+s32 func_800C7570(s32, u16);
+void func_800B1520(s32, s32, s32, s32);
+void func_800CA694(s32, s32, u16);
+void func_800BE99C(s32, s32);
+void func_800ABA98(s32, s32, s32, s32, s32);
+void func_800AD944(s32, s32, s32);
+VECTOR *func_800AE750(void);
+VECTOR *func_800AE744(void);
+void func_800C7D30(s32, s32, s32);
+#endif
+
+extern u8 *D_8007AEA0;
+extern s32 D_8007AE04;
+Unk8004AB64 *func_80038150(void);
+void func_80038278(Unk8004AB64 *);
+s32 func_800500A8(Unk8004AB64 *, s32);
+s32 func_80050410(Unk8004AB64 *, s32);
+s32 func_80050744(Unk8004AB64 *, s32);
+
+extern s32 D_8007AEA4;
+extern Unk8004AB64 *D_8007AE68;
+extern s32 D_8007AE6C;
+extern s32 D_8007BBD8;
+void func_800398D0(Unk8004AB64 *, s32, s32, s32);
+s32 func_80052F24(s32, s32);
+void func_8004EC74(u32, s32);
+void func_8004ED00(s32, s32);
+void func_8004EFA0(void);
+WinLayout *func_80039660(s32, s32, s32);
+void func_8004DCEC(s32, s32, WinLayout *, s32);
+
+static inline s32 func_8004AF58_inline(void) {
+    s32 r;
+    if (D_8007B6F4 & 1) {
+        func_80052DA0();
+        r = func_80052D40();
+    } else {
+        Unk8004AB64 *pp = D_8007B70C;
+        r = *pp->unk0++;
+        r |= *pp->unk0++ << 8;
+        r = (s16)r;
+    }
+    D_8007B6F4 >>= 1;
+    D_8007B6F8 = 1;
+    return r;
+}
+
+/* uid of the object the current script runs for */
+#define CUR_UID() (((u8 *)((s32 *)D_8007B70C + D_8007B70C->unk9) + D_8007B70C->unkA * 4)[-1])
+
+static inline s32 func_8004AEDC_inline(void) {
+    s32 r;
+    if (D_8007B6F4 & 1) {
+        func_80052DA0();
+        r = func_80052D40();
+    } else {
+        r = *D_8007B70C->unk0++;
+    }
+    D_8007B6F4 >>= 1;
+    D_8007B6F8 = 1;
+    return r;
+}
+
+extern s32 D_8007B710;
+extern s32 D_8007AE24;
+extern s32 D_8007AE28;
+void func_8004EA4C(s32);
+void func_8004E924(void);
+void func_8002DD54(void);
+void func_8004ED3C(void);
+void *func_8004F058(s32);
+s32 func_80038990(s32, s32, s32, s32);
+void func_8004B9B8(Unk8004B9B8 *);
+
+/* Inlined helper: start the animation set up in unk60/unk61/unk62. */
+static inline void func_80039C38_anim(Unk8004AB64 *p, s32 anim) {
+    if ((p->unk62 & 0x80) && (p->unkF & 0x80)) {
+        func_8004B9B8((Unk8004B9B8 *)p);
+    }
+    p->unk36 = anim;
+    p->unk3A = p->unk60;
+    p->unk62 &= ~0x46;
+    p->unk62 |= (p->unk60 > p->unk61) ? 0xC0 : 0x80;
+    p->unk64 = 0;
+    p->unk38 = func_800216D8(p->unk34, anim);
+    p->unk5D = p->unk69;
+}
+
+/* event region (quad) object, same header as Unk8004AB64 */
+typedef struct {
+    s16 unk0; /* x */
+    s16 unk2; /* z */
+} Unk80039C38Pt;
+typedef struct {
+    u8 pad0[0x14];
+    s32 unk14; /* vertex count */
+    Unk80039C38Pt unk18[8];
+} Unk80039C38Quad;
+
+typedef struct {
+    u8 pad0[4];
+    u8 unk4;
+    u8 pad5[0xC - 5];
+    s32 unkC;
+    u8 pad10[0x12 - 0x10];
+    s16 unk12;
+} Unk8004AFF0Sub; /* 0x14 */
+
+/* model object (Unk8E0.unk8) */
+typedef struct Unk8004AFF0 {
+    u16 unk0; /* flags */
+    u8 pad2[4 - 2];
+    u8 unk4;
+    u8 pad5[0x14 - 5];
+    u32 unk14;
+    u8 pad18[0x1C - 0x18];
+    struct Unk8004AFF0 *unk1C;
+    u8 pad20[0x50 - 0x20];
+    struct { Unk8004AFF0Sub unk0[1]; } *unk50;
+    s16 unk54;
+    s16 unk56;
+    s16 unk58;
+    u8 pad5A[0x74 - 0x5A];
+    s16 unk74;
+    s16 unk76;
+    s16 unk78;
+} Unk8004AFF0;
+
+/* Inlined copy of func_8004AFF0. */
+static inline Unk8004AFF0 *func_8004AFF0_inline(Unk8004AB64 *p) {
+    Unk8E0 *q;
+
+    if (p != NULL) {
+        if (p->unk34 == 0xFFFF) {
+            return NULL;
+        }
+        q = (Unk8E0 *)func_8001E350(p->unk3B);
+        if (q != NULL) {
+            return (Unk8004AFF0 *)q->unk8;
+        }
+    }
+    return NULL;
+}
+
+extern u8 D_8007BD2C;
+extern s32 D_8007AE50;
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    u8 unk8;
+} Unk8007AE40;
+extern Unk8007AE40 D_8007AE40;
+extern u8 D_8006E658[];
+void func_80021660(u16);
+void func_80021680();
+void func_8004FF98(s32);
+void func_80052D0C(u8 **);
+Unk16D8 *func_80036978(Unk8004AB64 *);
+void func_800499D8(Unk8004B9B8 *);
+
+extern s32 D_8007AE2C;
+extern s32 D_8007AE30;
+extern s32 D_8007AE38;
+extern s32 D_8007AE3C;
+void func_80050068(s32);
+void func_80050080(s32);
+void func_8004A9E8(void);
+void func_80028074(s32);
+void func_800280CC(s32);
+s32 func_8006238C(s32);
+void func_80033C0C(u32);
+
+/* Inlined copy of func_8004B914 (24-bit script argument). */
+static inline s32 func_8004B914_inline(void) {
+    s32 v;
+    Unk8004AB64 *pp;
+
+    if (D_8007B6F4 & 1) {
+        func_80052DA0();
+        v = func_80052D40();
+    } else {
+        pp = D_8007B70C;
+        v = *pp->unk0++;
+        v |= *pp->unk0++ << 8;
+        v |= *pp->unk0++ << 16;
+    }
+    D_8007B6F4 >>= (D_8007B6F8 = 1);
+    return v;
+}
+
+extern u8 D_8006E630[];
+extern u8 D_8006E63C[];
+s32 func_8004E7A4(s32);
+void func_800333B0(s32, u8, s32);
+s32 func_8003470C(s32, s32);
+s32 func_80034220(s32, s32);
+s32 func_80053960(Unk800539FC *, s32);
+void func_8002412C(s32);
+void func_800240B0(u8);
+void func_800240F8(u8);
+void func_8004BA20(SVECTOR *, s32 *, s32 *);
+s32 func_80054FB8(s32);
+s32 func_80054FE0(s32);
+void func_80054E88(s32, s32, s32);
+s32 func_80055060(s32, s32, s32);
+s32 func_800550C0(s16);
+s32 func_800550D0(s32);
+s32 func_800550F0(s32, s32);
+extern u8 D_8007AE90[];
+extern u8 *D_8007AE8C;
+
+typedef struct {
+    s32 unk0;
+    u8 unk4[4]; /* party character ids */
+    u8 unk8[8];
+    u8 unk10[9];
+} Unk8007AE70;
+extern Unk8007AE70 D_8007AE70;
+
+/* Inlined helper: rebuild D_8007AECC->unk16E4 from the current party. */
+static inline void func_80039C38_party(void) {
+    s32 mask = 0;
+    s32 i = 0;
+    u8 *p = D_8007AECC->unk16E4;
+    s32 r;
+
+    *(s32 *)D_8007AECC->unk16E4 = -1;
+    for (; i < 4; i++) {
+        r = func_8004E7A4(i);
+        if (r >= 0) {
+            mask |= 1 << D_8006E63C[r];
+        }
+    }
+    for (i = 0; mask != 0; i++) {
+        if (mask & 1) {
+            *p++ = D_8007ADFC - 9 + D_8006E630[i];
+        }
+        mask >>= 1;
+    }
+}
+
+static inline void func_8004B3A8_inline(s32 a, s32 b) {
+    func_800367D0(a, b, 0x14, 0x10)->unk5 = 2;
+}
+
+static inline void func_8004B3D0_inline(s32 a, s32 b) {
+    Unk800367D0 *p = func_800367D0(a, b, 0x38, 0x10);
+    p->unk5 = 3;
+    p->unkF = 1;
+}
+
+static inline void func_80039C38_newactor(s32 uid, s32 b) {
+    Unk8004AB64 *p;
+
+    p = (Unk8004AB64 *)func_800367D0(uid, b, 0xAC, 0x10);
+    p->unk3C = 0x10;
+    p->unk3D = 0x10;
+    p->unk34 = 0xFFFF;
+    p->unk3E = 0xFF;
+    p->unk2F = 0x40;
+    p->unk5 = 4;
+    p->unk69 = 0x10;
+    p->unk5C = 0x1E;
+    p->unk5D = 0x10;
+    p->unk61 = 0xFF;
+    p->unk5E = 0x1F;
+    p->unk5F = 0x10;
+    p->unk6E = 4;
+    p->unk71 = 0x50;
+    p->unk72 = 4;
+    p->unk73 = 0x10;
+    p->unk93 = 0xFF;
+    p->unk7C.w = 0x10101010;
+    p->unkF |= 4;
+    switch (D_8007B708) {
+    case 1:
+        func_800AA3F4(uid);
+        break;
+    case 2:
+        D_8007AED0[D_8007AE04++] = p;
+        break;
+    }
+}
+
+/* Inlined helper: give the window opened by obj the focus (b = window flags). */
+static inline void func_80039C38_window(Unk8004AB64 *obj, s32 b, s32 c) {
+    Unk16D8 *n;
+    Unk8004AB64 *o;
+
+    if ((b & 0xA0) == 0x80 && obj->unk5 == 4) {
+        for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+            o = n->unk4;
+            if (o->unk5 == 4 && o->unk3E == c) {
+                o->unk3E = 0xFF;
+            }
+        }
+        obj->unk3E = c;
+        D_8007AE68 = obj;
+        D_8007AE6C = 0;
+    }
+}
+
+/* Inlined helper: script character id -> GameData.unk3C index. */
+static inline s32 func_80039C38_chr(s32 id) {
+    if (id >= 9) {
+        id -= 4;
+    }
+    return id;
+}
+
+
 #endif
