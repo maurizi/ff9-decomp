@@ -73,7 +73,15 @@ void func_800A8DE0(void) {
     func_800A91EC();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8E24);
+void func_800A8E24(void) {
+    BattleMem *m;
+    D_80067948 = D_80067944 + 0x61800;
+    m = (BattleMem *)D_80067948;
+    D_8006794C->unk1C->unk8E4.battle = &m->unk0;
+    D_80067948 = (s32)m->unk241C;
+    m->unk0.unk1354 = (Battle1354 *)m->unk23CC;
+    m->unk0.unk1538 = (struct Battle1538 **)m->unk240C;
+}
 
 void func_800A8E6C(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;

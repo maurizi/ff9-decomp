@@ -89,7 +89,12 @@ void func_800D08C4(s32 arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D090C);
+DR_TPAGE *func_800D090C(s32 arg0, s32 arg1) {
+    DR_TPAGE *p = (DR_TPAGE *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(p + 1);
+    p->code[0] = arg0 | ((arg1 & 3) << 5) | 0xE1000200;
+    return p;
+}
 
 void func_800D0940(void) {
     s32 n;
@@ -379,7 +384,13 @@ s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5) 
     return arg2 >= arg3 - 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D73AC);
+s32 func_800D73AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    if (arg0 == 1) {
+        D_80100D88.unk0 = arg4[0];
+        D_80100D88.unk1 = arg4[1];
+    }
+    return 1;
+}
 
 s32 func_800D73E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
     if (arg0 == 1) {
