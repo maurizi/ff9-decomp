@@ -643,7 +643,15 @@ void func_800AA4BC(void) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AA4E8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AAA54);
+s32 func_800AAA54(void) {
+    s32 i;
+
+    for (i = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk40 - 1; i >= 0; i--) {
+        func_8001C784((void *)D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk28[i]);
+    }
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk40 = 0;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AAB30);
 
@@ -1606,7 +1614,27 @@ FieldLight *func_800B3254(Unk800B3254 *arg0) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3294);
+Unk800B3294 *func_800B3294(Unk800B3254 *arg0, u16 arg1) {
+    Unk800B3294 *base;
+    Unk800B3294 *p;
+    s32 id;
+    u32 v;
+
+    v = arg1;
+    if (arg0->unk9 == 0) {
+        return NULL;
+    }
+    id = v & 0xFFFF;
+    base = (Unk800B3294 *)&arg0->unkC[arg0->unk6];
+    p = &base[arg0->unk9] - 1;
+    do {
+        if (p->unk0 == id) {
+            return p;
+        }
+        p--;
+    } while (p >= base);
+    return NULL;
+}
 
 FieldLight *func_800B3300(Unk800B3254 *arg0, FieldLight **arg1, FieldLight **arg2) {
     FieldLight *base;

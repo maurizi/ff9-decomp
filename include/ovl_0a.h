@@ -926,7 +926,7 @@ typedef struct {
 s32 func_800AC3D8(s32, s32);
 
 FieldLight *func_800B3254(Unk800B3254 *);
-Unk800B3294 *func_800B3294(Unk800B3254 *, s32);
+Unk800B3294 *func_800B3294(Unk800B3254 *, u16);
 s32 func_800C76E8(s32, u16 *, u16 *);
 s32 func_800C6DA4(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
