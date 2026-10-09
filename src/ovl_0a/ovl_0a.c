@@ -3630,7 +3630,75 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BF0C4);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BF660);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BFCE8);
+/* reset the field background state; returns the end of its allocations */
+BgSprt *func_800BFCE8(void) {
+    SVECTOR v;
+    BgSprt *spr;
+    Unk800C9DA4Hdr *h;
+    Unk800C9DA4Anim *anims;
+    Unk800C9DA4Trk *trk;
+    u32 i;
+    u32 n;
+    s32 t;
+    s32 x;
+    union {
+        s32 w;
+        DVECTOR v;
+    } u; /* projected origin */
+
+    D_800CA068.unk0 = 0x60;
+    D_800CA068.unk74 = 0x40;
+    D_800CA068.unk76 = 0x144;
+    D_800CA068.unk78 = 0xE10;
+    *(s32 *)&D_800CA068.unk4 = 0;
+    *(s32 *)&D_800CA068.unk8 = 0;
+    *(s32 *)&D_800CA068.unkC = 0;
+    *(s32 *)&D_800CA068.unk10 = 0;
+    *(s32 *)&D_800CA068.unk14 = 0;
+    *(s32 *)&D_800CA068.unk18 = 0;
+    *(s32 *)&D_800CA068.unk24 = 0;
+    *(s32 *)&D_800CA068.unk28 = 0;
+    *(s32 *)&D_800CA068.unk2C = 0;
+    D_800CA068.unk75 = 0;
+    D_800CA068.unk9C = 0;
+    D_800CA068.unkA0 = 0;
+    D_800CA068.unkA1 = 0xFF;
+    D_800CA068.unkA2 = 0xFF;
+    D_800CA068.unkA3 = 0xFF;
+    *(s32 *)&D_800CA068.unkA4 = 0;
+    D_800CA068.unk1C = (MATRIX *)D_800C9DA4.unk14;
+    D_800CA068.unk20 = (u16 *)D_800C9DA4.unk4;
+    if (func_800BDED4(D_800C9DA4.unk18, &spr) != 1) {
+        return NULL;
+    }
+    h = D_800C9DA4.unk10;
+    anims = (Unk800C9DA4Anim *)((u8 *)h + h->unkC);
+    trk = (Unk800C9DA4Trk *)((u8 *)h + h->unk10);
+    n = h->unk4;
+    for (i = 0; i < n; i++) {
+        anims[i].unk4 &= 0xFF;
+        anims[i].unk8 = 0x100;
+        anims[i].unkA = 0;
+        anims[i].unk0 = 1;
+        trk[*((u8 *)h + anims[i].unkC)].unk0 |= 2;
+    }
+    func_800BD3A0();
+    func_800BD724();
+    v.vx = 0;
+    v.vy = 0;
+    v.vz = 0;
+    gte_SetGeomOffset(0xA0, 0x70);
+    gte_SetRotMatrix(D_800CA068.unk1C);
+    gte_SetTransMatrix(D_800CA068.unk1C);
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(&u.w);
+    t = u.w;
+    x = u.v.vx;
+    D_800CA068.unk2C = x;
+    D_800CA068.unk2E = t >> 16;
+    return spr;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BFEE0);
 
