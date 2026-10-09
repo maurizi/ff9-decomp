@@ -1944,8 +1944,6 @@ void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 /* apply the field lights to the object colours */
-/* apply the field lights to the object colours */
-/* apply the field lights to the object colours */
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2D10);
 
 /* set the object's light colour */
@@ -4433,7 +4431,129 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2AF0);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C31F8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3608);
+/* clears the visited flag of every walkmesh triangle first */
+static inline s32 func_800C2524_inline(Unk800C9DF4 *e, SVECTOR *pos, Unk800C9E00 *nd, s16 *edge) {
+    u16 k;
+    Unk800C9E00 *n;
+    s32 cnt;
+    u16 m = ~0x80;
+
+    n = D_800C9DF0.unk10;
+    cnt = D_800C9DF0.unk8->unk24;
+    for (k = 0; k < cnt; k++) {
+        n->unk0 &= m;
+        n++;
+    }
+    D_800C9DDC = 0;
+    return func_800C2524(e, pos, nd, edge);
+}
+
+s32 func_800C3608(Unk800C9DF4 *arg0) {
+    SVECTOR cur;
+    SVECTOR prev;
+    Unk800C9E00 *node;
+    s16 edge;
+    s32 ret;
+    s32 id;
+    s16 save;
+    s32 k;
+    Unk800C9DFC *vt;
+    Unk800C9E04 *pl;
+    s32 a;
+    Unk800C9DF8Tri *t;
+
+    ret = 2;
+    D_800C9DDE = 0;
+    for (k = 0; k < 10; k++) {
+        D_800CAA98[k] = -1;
+    }
+    D_800C9DE0 = 0;
+    for (k = 0; k < 10; k++) {
+        D_800CAAB8[k] = -1;
+    }
+    cur.vx = arg0->unk24->unk14.vx;
+    cur.vy = arg0->unk24->unk14.vy;
+    cur.vz = arg0->unk24->unk14.vz;
+    prev.vx = arg0->unk24->unk40.vx;
+    prev.vy = arg0->unk24->unk40.vy;
+    prev.vz = arg0->unk24->unk40.vz;
+    if (cur.vx == prev.vx && cur.vy == prev.vy && cur.vz == prev.vz) {
+        arg0->unk8 = arg0->unk4;
+        arg0->unkA = arg0->unk6;
+        return ret | 4;
+    }
+    id = arg0->unk6;
+    node = &D_800C9DF0.unk10[id];
+    save = arg0->unk6;
+    if (func_800C2AF0(arg0, &node, &prev, &cur, 1, 0, 0, 0) != 0) {
+        arg0->unk6 = save;
+        if (id >= 0) {
+            arg0->unk4 = D_800C9DF0.unk10[id].unk4;
+        } else {
+            arg0->unk4 = -1;
+        }
+        arg0->unk24->unk14.vx = arg0->unk24->unk40.vx;
+        arg0->unk24->unk14.vy = arg0->unk24->unk40.vy;
+        arg0->unk24->unk14.vz = arg0->unk24->unk40.vz;
+        ret |= 1;
+        if (arg0->unkA >= 0) {
+            if (!(u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[arg0->unk8], &D_800C9DF0.unk10[arg0->unkA], &prev.vx)) {
+                arg0->unk8 = arg0->unk4;
+                arg0->unkA = arg0->unk6;
+            }
+        }
+        return ret;
+    }
+    if (!(u8)func_800C2524_inline(arg0, &cur, node, &edge)) {
+        if ((u8)func_800C31F8(arg0, &cur, &node, &edge)) {
+            ret |= 9;
+        } else {
+            arg0->unk6 = save;
+            if (save >= 0) {
+                arg0->unk4 = D_800C9E00[save].unk4;
+            } else {
+                arg0->unk4 = -1;
+            }
+            arg0->unk24->unk14.vx = arg0->unk24->unk40.vx;
+            arg0->unk24->unk14.vy = arg0->unk24->unk40.vy;
+            arg0->unk24->unk14.vz = arg0->unk24->unk40.vz;
+            ret |= 1;
+            if (arg0->unkA >= 0 && arg0->unk8 >= 0) {
+            if (!(u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[arg0->unk8], &D_800C9DF0.unk10[arg0->unkA], &prev.vx)) {
+                arg0->unk8 = arg0->unk4;
+                arg0->unkA = arg0->unk6;
+            }
+            }
+            return ret;
+        }
+    }
+    if (cur.vx != arg0->unk24->unk14.vx || cur.vz != arg0->unk24->unk14.vz) {
+        arg0->unk24->unk14.vx = cur.vx;
+        ret |= 0x10;
+        arg0->unk24->unk14.vz = cur.vz;
+    }
+    if (node->unk6 >= 0) {
+        pl = &D_800C9DF0.unk14[node->unk6];
+        if ((u32)(pl->unk4 + 0x50F4) > 0xA1E8) {
+            a = func_800C1DC4(pl->unk0, arg0->unk24->unk14.vx << 16);
+            arg0->unk24->unk14.vy = func_800C1DC4(node->unk24 - a - func_800C1DC4(pl->unk8, arg0->unk24->unk14.vz << 16), pl->unkC) >> 16;
+            arg0->unk24->unk14.vy += (s16)D_800C9DF0.unk1C[node->unk4].unkA[1] - D_800C9DF0.unk1C[node->unk4].unk4[1];
+        } else {
+            arg0->unk24->unk14.vy = cur.vy;
+        }
+    } else {
+        t = D_800C9DF0.unk1C + node->unk4;
+        vt = D_800C9DF0.unkC + node->unkC[0];
+        arg0->unk24->unk14.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t->unkA[1]));
+    }
+    arg0->unkA = save;
+    if (save >= 0) {
+        arg0->unk8 = D_800C9E00[save].unk4;
+    } else {
+        arg0->unk8 = -1;
+    }
+    return ret;
+}
 
 s32 func_800C3B80(Unk800C9DF8 *arg0) {
     u16 i;
@@ -5324,7 +5444,7 @@ s32 func_800C778C(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C77DC(u16 *arg0, u8 **arg1) {
+s32 func_800C77DC(u16 *arg0, s16 **arg1) {
     *arg0 = D_800C9DDE;
     *arg1 = D_800CAA98;
     return 1;
@@ -5352,7 +5472,7 @@ s32 func_800C78D8(s16 arg0, u16 *arg1) {
     return 1;
 }
 
-s32 func_800C7914(u16 *arg0, u8 **arg1) {
+s32 func_800C7914(u16 *arg0, s16 **arg1) {
     *arg0 = D_800C9DE0;
     *arg1 = D_800CAAB8;
     return 1;
