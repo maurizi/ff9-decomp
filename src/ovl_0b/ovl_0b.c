@@ -1044,7 +1044,7 @@ void func_800B3B5C(BtlUnit *arg0) {
 void func_800B3C00(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
     BtlCmd *c = b->unk1088;
-    s8 k = c->unk10_7;
+    s8 k = c->unk10.b.unk10_7;
     BtlUnit *u;
     if (k == 2) {
         c->unkC = func_800B4478(c->unk4->unk1C);
@@ -1064,15 +1064,15 @@ void func_800B3CEC(BtlCmd *arg0) {
     arg0->unkC = 0;
     arg0->unkE = 0;
     arg0->unkF = 0;
-    arg0->unk10_0 = 0;
-    arg0->unk10_2 = 0;
-    arg0->unk10_4 = 0;
-    arg0->unk10_5 = 0;
-    arg0->unk10_6 = 0;
-    arg0->unk10_7 = 0;
-    arg0->unk10_9 = 0;
-    arg0->unk10_10 = 0;
-    arg0->unk10_11 = 0;
+    arg0->unk10.b.unk10_0 = 0;
+    arg0->unk10.b.unk10_2 = 0;
+    arg0->unk10.b.unk10_4 = 0;
+    arg0->unk10.b.unk10_5 = 0;
+    arg0->unk10.b.unk10_6 = 0;
+    arg0->unk10.b.unk10_7 = 0;
+    arg0->unk10.b.unk10_9 = 0;
+    arg0->unk10.b.unk10_10 = 0;
+    arg0->unk10.b.unk10_11 = 0;
 }
 
 void func_800B3D54(BtlUnit *arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -1191,8 +1191,8 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B4234);
 void func_800B4320(BtlCmd **arg0, u8 arg1) {
     BtlCmd *p = *arg0;
     *arg0 = p->unk0;
-    p->unk10_2 = 0;
-    p->unk10_4 = 0;
+    p->unk10.b.unk10_2 = 0;
+    p->unk10.b.unk10_4 = 0;
     if (arg1 && p->unkE == 0x38) {
         D_8006794C->unk1C->unk8E4.battle->unk11B8 &= ~1;
     }
@@ -1530,7 +1530,7 @@ void func_800B95BC(BtlCmd *arg0) {
         }
     }
     if ((arg0->unk4->unk7A >> 1) + arg0->unk4->unk33 < ((*D_8007B720 << 8) | *D_8007B720++) % 100) {
-        arg0->unk10_9 = 1;
+        arg0->unk10.b.unk10_9 = 1;
     }
 }
 
@@ -1585,7 +1585,7 @@ void func_800B989C(BtlCmd *arg0) {
             r = r < 0xAA;
         }
         if (r) {
-            arg0->unk10_10 = 1;
+            arg0->unk10.b.unk10_10 = 1;
         }
     }
 }
@@ -2303,7 +2303,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BCEF0);
 s32 func_800BD31C(BtlCmd *arg0) {
     BtlUnit *u;
     s32 r;
-    u32 bit = arg0->unk10_5;
+    u32 bit = arg0->unk10.b.unk10_5;
     do {
         r = 1;
         if (bit) {
@@ -3394,7 +3394,7 @@ void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
     c->unk7E = 0;
     c->unk82 = 0;
     c->unk80 = 0;
-    if (arg0->unk10_7 == 0) {
+    if (arg0->unk10.b.unk10_7 == 0) {
         mask = func_800B3188(arg0);
         e = arg0->unkE;
         if (e == 0xE || e == 0x33) {
@@ -3404,10 +3404,10 @@ void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         } else if ((u8)(e - 0x39) < 2) {
             l->unk40 = 1;
         }
-    } else if (arg0->unk10_7 == 2) {
-        arg0->unk10_7 = 1;
+    } else if (arg0->unk10.b.unk10_7 == 2) {
+        arg0->unk10.b.unk10_7 = 1;
         if (!(arg0->unk4->unk68 & 1)) {
-            arg0->unk10_11 = 1;
+            arg0->unk10.b.unk10_11 = 1;
         }
         l->unk40 = 0x11;
     }

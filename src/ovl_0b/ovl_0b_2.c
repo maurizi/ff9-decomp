@@ -2781,7 +2781,27 @@ void func_800E5D48(s8 arg0, s8 arg1, s8 arg2, s32 arg3, s32 arg4, s32 arg5) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5DA8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5EAC);
+s32 func_800E5EAC(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
+    s32 v;
+    Unk800FEC40 *p;
+    s16 *h;
+
+    if (arg0 == 1) {
+        v = arg4[0];
+        if (v == 0xFF) {
+            h = D_800FEC40.unkA.h;
+            h[0] = 0;
+            h[1] = 0;
+        } else {
+            p = &D_800FEC40;
+            if (p->unkA.b.unk3 < 3) {
+                p->unkA.b.unk0[p->unkA.b.unk3] = v;
+                p->unkA.b.unk3++;
+            }
+        }
+    }
+    return 1;
+}
 
 s32 func_800E5F24(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
     s32 r;
@@ -2793,20 +2813,20 @@ s32 func_800E5F24(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
             r = func_800DA3D8(arg3->unk8, arg4[0]);
             break;
         case 1:
-            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA[D_800FEC40.unkE]);
+            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA.b.unk0[D_800FEC40.unkE]);
             break;
         case 2:
-            if (D_800FEC40.unkD != 0) {
-                D_800FEC40.unkE = func_800CF690() % D_800FEC40.unkD;
+            if (D_800FEC40.unkA.b.unk3 != 0) {
+                D_800FEC40.unkE = func_800CF690() % D_800FEC40.unkA.b.unk3;
             }
-            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA[D_800FEC40.unkE]);
+            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA.b.unk0[D_800FEC40.unkE]);
             break;
         case 3:
             k = D_800F78A4->unk2C->unk53;
-            if (k >= D_800FEC40.unkD) {
-                k = D_800FEC40.unkD - 1;
+            if (k >= D_800FEC40.unkA.b.unk3) {
+                k = D_800FEC40.unkA.b.unk3 - 1;
             }
-            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA[k]);
+            r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA.b.unk0[k]);
             break;
         }
         if (D_800F8D74 != 0) {
