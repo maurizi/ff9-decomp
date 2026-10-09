@@ -110,18 +110,28 @@ typedef struct {
 } Unk1354;
 
 typedef struct {
-    u8 pad0[6];
+    u8 pad0[4];
+    s16 unk4; /* set by func_8001E2AC */
     u8 unk6;
     u8 pad7[0x10 - 7];
     s32 unk10;
     s32 unk14;
     u8 pad18[4];
     u8 *unk1C; /* load address */
+    u8 pad20[4];
+    s16 unk24; /* set by func_8001E2AC */
 } Unk11C0;
+
+typedef struct {
+    u8 pad0[0xA];
+    s16 unkA; /* set by func_8001E2AC */
+} Unk8E4C14;
 
 typedef struct {
     u8 pad0[8];
     struct Unk8007B954 *unk8; /* message table */
+    u8 padC[0x14 - 0xC];
+    Unk8E4C14 *unk14;
 } Unk8E4C;
 
 typedef struct {
@@ -165,7 +175,7 @@ typedef struct Unk8D4 {
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
-    u8 pad4[4];
+    u32 unk4; /* allocator top (D_80067940) after setup */
     u8 unk8; /* draw buffer index (0/1) */
     u8 unk9;
     u16 unkA; /* projection distance (SetFogNearFar) */
@@ -215,7 +225,8 @@ typedef struct {
     u16 unk820[2];
     u8 unk824[2];
     u8 unk826[2];
-    u8 pad828[0x830 - 0x828];
+    void *unk828;
+    void *unk82C;
     u16 unk830[2];
     u16 unk834;
     u16 unk836;
@@ -279,7 +290,7 @@ typedef struct {
     DISPENV *unkC;    /* [2] */
     DRAWENV *unk10;   /* [2] */
     GameStateUnk14 *unk14;
-    void *unk18;
+    void **unk18; /* file tables, indexed like unk14 */
     GameData *unk1C;
     s32 unk20; /* base CD sector added to file start sectors */
     u32 unk24;
@@ -2665,5 +2676,11 @@ s32 func_80022A28(void);
 void func_800236A4(s32);
 void func_80016BA0(void);
 void func_80018F20(void);
+
+s32 func_8001D610(void);
+void func_8001D32C(void);
+void func_8001D3C4(void);
+void func_8001D67C(void);
+void func_8001D768(void);
 
 #endif

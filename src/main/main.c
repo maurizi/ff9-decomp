@@ -643,7 +643,20 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetDefDrawEnv);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetDefDispEnv);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001D268);
+void func_8001D268(void) {
+    GameData *gd;
+
+    D_80067940 = D_8006794C->unk4;
+    func_8001D32C();
+    gd = D_8006794C->unk1C;
+    func_8001D3C4();
+    PutDispEnv(&D_8006794C->unkC[gd->unk8]);
+    func_80021C60();
+    func_8001D768();
+    func_8001D610();
+    func_8001D67C();
+    gd->unk4 = D_80067940;
+}
 
 void func_8001D30C(void) {
     func_8001D848();
@@ -785,7 +798,19 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001DE50);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001E218);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001E2AC);
+void func_8001E2AC(u16 arg0) {
+    switch (D_8006794C->unk8) {
+    case 1:
+        D_8006794C->unk1C->unk8E4.ovl65->unkC->unk14->unkA = arg0;
+        break;
+    case 2:
+        D_8006794C->unk1C->unk8E4.ovl65->unk11C0->unk4 = arg0;
+        break;
+    case 3:
+        D_8006794C->unk1C->unk8E4.ovl65->unk8->unk24 = arg0;
+        break;
+    }
+}
 
 s32 func_8001E350(s32 arg0) {
     if (arg0 < 9) {
@@ -1407,7 +1432,23 @@ u8 func_80022C60(s32 a, s32 b, void *c, void (*d)(u8 *)) {
     return func_800230B8(&D_80076148);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022CC4);
+u8 func_80022CC4(s32 sector, CdChunk *chunks, s32 n, void (*cb)(u8 *)) {
+    CdRequest r;
+    s32 i;
+    s32 total = 0;
+
+    for (i = 0; i < n; i++) {
+        total += chunks[i].unk0;
+    }
+    r.unk0 = 3;
+    r.unk10 = func_800231A0;
+    r.unk4 = sector;
+    r.unk8 = total;
+    r.unkC = chunks;
+    r.unk14 = func_800227C8;
+    r.unk18 = cb;
+    return func_800230B8(&r);
+}
 
 u8 func_80022D3C(void (*a)(u8 *)) {
     CdRequest r;
