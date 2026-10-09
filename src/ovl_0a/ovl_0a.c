@@ -364,7 +364,7 @@ void func_800A89C4(s32 arg0) {
         func_8001E3A4(&D_8006794C->unk1C->unk8E0[i]);
         D_8006794C->unk1C->unk8E0[i].unk8 = &D_8006794C->unk1C->unk8DC[i];
     }
-    sc->unk2C = D_80067948;
+    sc->unk2C = (FieldObjPlace *)D_80067948;
     D_80067948 = func_800AD44C(D_80067948, D_8006794C->unk1C->unk38 + 9,
                                D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk50,
                                D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk52);
@@ -1466,37 +1466,39 @@ void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     func_800B31B8(func_8001E350(arg0), arg1, arg2, arg3);
 }
 
+/* apply the field lights to the object colours */
+/* apply the field lights to the object colours */
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2D10);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B31B8);
 
-u8 *func_800B3254(Unk800B3254 *arg0) {
+FieldLight *func_800B3254(Unk800B3254 *arg0) {
     if (arg0 != NULL && arg0->unk9 != 0) {
-        return arg0->unkC[arg0->unk6];
+        return &arg0->unkC[arg0->unk6];
     }
     return NULL;
 }
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3294);
 
-u8 *func_800B3300(Unk800B3254 *arg0, u8 **arg1, u8 **arg2) {
-    u8 *base;
-    u8 *p;
+FieldLight *func_800B3300(Unk800B3254 *arg0, FieldLight **arg1, FieldLight **arg2) {
+    FieldLight *base;
+    FieldLight *p;
 
     *arg1 = NULL;
     *arg2 = NULL;
-    base = arg0->unkC[0];
+    base = arg0->unkC;
     if (arg0->unk7 == 0) {
         return NULL;
     }
-    p = arg0->unkC[arg0->unk7 - 1];
+    p = &arg0->unkC[arg0->unk7 - 1];
     do {
-        if ((s8)p[0] == 1) {
+        if (p->unk0 == 1) {
             *arg1 = p;
-        } else if ((s8)p[0] == 2) {
+        } else if (p->unk0 == 2) {
             *arg2 = p;
         }
-        p -= 12;
+        p--;
     } while (p >= base);
     return base;
 }

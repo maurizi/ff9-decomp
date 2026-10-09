@@ -76,7 +76,7 @@ typedef struct {
 
 typedef struct {
     u32 unk0; /* flags */
-    u8 pad4[4];
+    s32 unk4; /* light id */
     void *unk8; /* model (Unk800C95C8) */
     FieldEvtObj *unkC;
 } FieldEvtCtx;
@@ -95,7 +95,7 @@ typedef struct {
     s32 unk20;
     void *unk24;
     s32 *unk28; /* = unk6C, unk40 entries */
-    s32 unk2C;
+    struct FieldObjPlace *unk2C; /* object placements */
     s16 unk30; /* sound depth bias */
     u8 pad32[0x3C - 0x32];
     s16 unk3C;
@@ -394,6 +394,16 @@ typedef struct {
     s32 unk34;
 } Unk800C9DA4;
 
+/* field light (12 bytes) */
+typedef struct {
+    s8 unk0; /* type: 1, 2 */
+    u8 pad1;
+    s8 unk2; /* sprite colour offsets */
+    s8 unk3;
+    u32 unk4; /* colour */
+    u8 pad8[4];
+} FieldLight;
+
 typedef struct {
     u8 pad0[6];
     u8 unk6; /* count */
@@ -401,7 +411,7 @@ typedef struct {
     u8 pad8;
     u8 unk9;
     u8 padA[2];
-    u8 unkC[1][12];
+    FieldLight unkC[1];
 } Unk800B3254;
 
 /* 6-byte vertex entries at D_800C9DF0.unkC */
@@ -755,9 +765,11 @@ typedef struct FieldActorExt {
 /* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
 typedef struct FieldActorInfo {
     u32 unk0; /* flags */
-    u8 pad4;
+    u8 unk4; /* light index */
     u8 unk5;
-    u8 pad6[0x10 - 6];
+    u8 pad6[2];
+    u32 unk8; /* colour (bit 24: pending) */
+    u32 unkC; /* next colour */
     FieldActorExt *unk10;
 } FieldActorInfo;
 
@@ -868,6 +880,17 @@ typedef struct {
     signed unk4_12 : 10; /* offset x */
     signed unk4_22 : 10; /* offset z */
 } FieldObjEnt;
+
+/* object placement entries (FieldScene.unk2C) */
+typedef struct FieldObjPlace {
+    FieldObjEnt unk0;
+    u8 pad8[0x28 - 8];
+} FieldObjPlace; /* 0x28 */
+
+FieldLight *func_800B3254(Unk800B3254 *);
+FieldLight *func_800B3294(Unk800B3254 *, s32);
+FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
+FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, u8 *);
 
 /* object model slot (func_8001E350) */
 typedef struct {
