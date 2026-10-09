@@ -269,7 +269,37 @@ s32 func_800AA08C(Unk800AA08C *arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA140);
+s16 func_800AA140(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
+    GameData *gd = D_8006794C->unk1C;
+    Battle *b = gd->unk8E4.battle;
+    u8 *cd = gd->unk854;
+    Unk800AA08C *st;
+    s32 v;
+    GameData *gd2;
+    st = arg2;
+    if (arg1 == -1) {
+        b->unk0 &= ~1;
+        st->unk0 = 2;
+    }
+    if (st->unk0 == 1) {
+        if (func_800217C4(cd) == 0) {
+            st->unk0 = st->unk2;
+        }
+    } else if (st->unk0 == 2) {
+        gd2 = D_8006794C->unk1C;
+        st->unk24 = arg0->unk1C;
+        func_8002177C(cd, gd2->unk800, gd2->unk808 << 11, (void *)st->unk24, 0, -1, 0);
+        st->unk2 = 4;
+        st->unk0 = 1;
+    } else if (st->unk0 == 4) {
+        v = arg0->unk1C;
+        b->unk1354->unk0[3] = (void *)v;
+        func_8001C750(v, 0);
+        b->unk0 |= 1;
+        st->unk0 = 0;
+    }
+    return st->unk0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA24C);
 
