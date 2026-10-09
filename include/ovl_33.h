@@ -80,7 +80,9 @@ extern AbilityMenu D_801FC840;
 
 typedef struct {
     u8 unk0; /* low nibble: item kind */
-    u8 pad1[0xA - 1];
+    u8 pad1[0x4 - 1];
+    u8 unk4;
+    u8 pad5[0xA - 5];
     u8 unkA;
     u8 unkB; /* bit 0: usable from the menu; bit 2: value x4 when D_8007AF02 */
     u8 padC[2];
@@ -91,6 +93,10 @@ extern Unk801F34EC D_801F34EC[];
 extern void (*D_801F33A8[])(void);
 extern void (*D_801F7420[])(void);
 extern u8 D_801F3458[];
+extern u8 D_801FC740[]; /* help text buffer */
+extern u8 D_801F8988[]; /* "ABILITY" */
+extern u8 D_801F8990[]; /* item help texts */
+u8 func_800654F8(Character *, Character *, Unk801F34EC *, s32, s32);
 extern u8 D_801F3468[];
 extern RECT D_801F3484;
 extern RECT D_801F348C;

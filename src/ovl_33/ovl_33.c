@@ -30,7 +30,38 @@ INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EEA50);
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EEBE0);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EED10);
+void func_801EED10(void) {
+    u8 ok;
+    MenuList *l;
+    Character *c;
+    Unk801F34EC *it;
+    s32 i;
+    s32 cost;
+
+    ok = 0;
+    c = D_8006794C->unk1C->unk54C[D_801FBF84.unk2];
+    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    it = &D_801F34EC[D_801FBF84.unk668[(l->unk5 + l->unk6) * 2 + l->unk7].unk0];
+    if (!(D_801FBF84.unk3 >> 7)) {
+        ok = func_800654F8(c, D_8006794C->unk1C->unk54C[D_801FBF84.unk3], it, it->unk4, 0);
+    } else {
+        for (i = 0; i < 4; i++) {
+            if (D_8006794C->unk1C->unk54C[i] != NULL) {
+                ok |= func_800654F8(c, D_8006794C->unk1C->unk54C[i], it, it->unk4, 1);
+            }
+        }
+    }
+    if (ok) {
+        func_8002F488(0x6A);
+        cost = func_801F1018(it);
+        c->unk12 -= cost;
+        if (c->unk12 < cost) {
+            func_801F0DDC();
+        }
+    } else {
+        func_8002F488(0x66);
+    }
+}
 
 void func_801EEEA8(void) {
     RECT box;
