@@ -412,24 +412,37 @@ typedef struct Unk800C9DFC {
 
 /* header of the block D_800C9DF0.unk8 points to */
 typedef struct {
-    u8 pad0[8];
-    s16 unk8; /* origin */
+    u16 unk0; /* data size */
+    s16 unk2; /* original position */
+    s16 unk4;
+    s16 unk6;
+    s16 unk8; /* origin (current position) */
     s16 unkA;
     s16 unkC;
-    u8 padE[0x24 - 0xE];
-    u16 unk24; /* node count */
-    u16 unk26; /* offset: Unk800C9DF8Node[] */
-    u8 pad28[2];
+    s16 unkE; /* minimum */
+    s16 unk10;
+    s16 unk12;
+    s16 unk14; /* maximum */
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A; /* default character position */
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20; /* active floor */
+    s16 unk22; /* active triangle */
+    u16 unk24; /* triangle count */
+    u16 unk26; /* offset: Unk800C9E00[] */
+    u16 unk28; /* edge count */
     u16 unk2A; /* offset: Unk800C9DF8Link[] */
-    u16 unk2C; /* entry count for D_800C9DF0.unk20 */
+    u16 unk2C; /* keyframe animation count (D_800C9DF0.unk20) */
     u16 unk2E; /* offset: D_800C9DF0.unk20 */
-    u8 pad30[2];
+    u16 unk30; /* floor count */
     u16 unk32; /* offset: Unk800C9DF8Tri[] */
-    u8 pad34[2];
+    u16 unk34; /* normal count */
     u16 unk36; /* offset: D_800C9DF0.unk14 */
-    u8 pad38[2];
+    u16 unk38; /* vertex count */
     u16 unk3A; /* offset: D_800C9DF0.unkC */
-} Unk800C9DF8;
+} Unk800C9DF8; /* walkmesh ("BGI") header */
 
 typedef struct {
     u16 unk0; /* low byte: flags, high byte: mask */
@@ -439,16 +452,17 @@ typedef struct {
 } Unk800C9DF8Node; /* 0x28 */
 
 typedef struct {
-    u16 unk0;
-    u8 pad2[2];
-} Unk800C9DF8Link; /* 4 bytes */
+    u16 unk0; /* flags */
+    s16 unk2; /* clone */
+} Unk800C9DF8Link; /* edge, 4 bytes */
 
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[2];
+    u16 unk2; /* floor index */
     s16 unk4[3]; /* base position */
     u16 unkA[3]; /* current position */
-    u8 pad10[0x1C - 0x10];
+    s16 unk10[3]; /* minimum */
+    s16 unk16[3]; /* maximum */
     u16 unk1C; /* count of unk1E entries */
     u16 unk1E; /* offset: s32[] (Unk800C9E00 indices) */
 } Unk800C9DF8Tri; /* 0x20 */
@@ -476,15 +490,23 @@ typedef struct {
     s32 unkC; /* offset into D_800C9DF0.unk8 */
 } Unk800C9E10; /* 0x10 */
 
+/* keyframe of a walkmesh animation (Unk800C9E10.unkC) */
 typedef struct {
     u16 unk0; /* flags */
-    u8 pad2[2];
+    s16 unk2; /* value */
+    u16 unk4; /* triangle count */
+    u16 unk6; /* offset: s32 triangle indices */
+} Unk800C9E10Frame;
+
+typedef struct {
+    u16 unk0; /* flags */
+    u16 unk2; /* data */
     s16 unk4; /* Unk800C9DF8Tri index */
     s16 unk6;
     u16 unk8;
     s16 unkA;
     s16 unkC[3]; /* Unk800C9DFC (vertex) indices */
-    u8 pad12[0x18 - 0x12];
+    s16 unk12[3]; /* edge indices */
     s16 unk18[3]; /* neighbour node ids, -1 = none */
     s16 unk1E;
     s16 unk20;
@@ -935,6 +957,7 @@ extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
 extern u16 D_800C9D44;
 extern s16 D_800C9DDC;
+extern char D_800A7814[]; /* "          1/ny = %lx\n" (walkmesh dump) */
 extern s16 D_800CA9D8[][3]; /* collision push vectors */
 extern s16 D_800CAA38[];
 extern s32 D_800CAA58[];

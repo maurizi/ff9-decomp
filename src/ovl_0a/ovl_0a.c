@@ -3378,7 +3378,109 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C519C);
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/ovl_0a", D_800A717C);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C5A7C);
+/* debug: print a walkmesh */
+void func_800C5A7C(Unk800C9DF8 *arg0) {
+    Unk800C9E00 *tri;
+    Unk800C9DF8Link *edge;
+    Unk800C9E10 *anim;
+    Unk800C9E10Frame *frame;
+    Unk800C9DF8Tri *floor;
+    Unk800C9DFC *vtx;
+    Unk800C9E04 *nrm;
+    s32 *ids;
+    s32 i;
+    s32 j;
+    s32 k;
+
+    if (arg0 == NULL) {
+        return;
+    }
+    func_80015C38("BGI Text Dump\n");
+    func_80015C38("=============\n");
+    func_80015C38("Data Size\t\t : %d [+4 for file magic]\n", arg0->unk0);
+    func_80015C38("Original Position: (%6d,%6d,%6d)\n", arg0->unk2, arg0->unk4, arg0->unk6);
+    func_80015C38("Current Position : (%6d,%6d,%6d)\n", arg0->unk8, arg0->unkA, arg0->unkC);
+    func_80015C38("Minimum Values   : (%6d,%6d,%6d)\n", arg0->unkE, arg0->unk10, arg0->unk12);
+    func_80015C38("Maximum Values   : (%6d,%6d,%6d)\n", arg0->unk14, arg0->unk16, arg0->unk18);
+    func_80015C38("Default Char Pos : (%6d,%6d,%6d)\n", arg0->unk1A, arg0->unk1C, arg0->unk1E);
+    func_80015C38("Active Floor\t : %d\n", arg0->unk20);
+    func_80015C38("Active Triangle  : %d\n", arg0->unk22);
+    func_80015C38("Triangle Count   : %d\n", arg0->unk24);
+    func_80015C38("Triangle Offset  : %d\n", arg0->unk26);
+    tri = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
+    for (i = 0; i < arg0->unk24; tri++, i++) {
+        func_80015C38("  %4d: Flags\t\t\t= 0x%04X\n", i, tri->unk0);
+        func_80015C38("\t\tData\t\t\t = %d\n", tri->unk2);
+        func_80015C38("\t\tFloor Index \t = %d\n", tri->unk4);
+        func_80015C38("\t\tNormal Index\t = %d\n", tri->unk6);
+        func_80015C38("\t\tTheta X \t\t = %d\n", (s16)tri->unk8);
+        func_80015C38("\t\tTheta Z \t\t = %d\n", tri->unkA);
+        func_80015C38("\t\tD\t\t\t\t = %ld\n", tri->unk24);
+        func_80015C38("\t\tCenter  \t\t = (%6d,%6d,%6d)\n", tri->unk1E, tri->unk20, tri->unk22);
+        func_80015C38("\t\tVertex Indices   = (%6d,%6d,%6d)\n", tri->unkC[0], tri->unkC[1], tri->unkC[2]);
+        func_80015C38("\t\tEdge Indices\t = (%6d,%6d,%6d)\n", tri->unk12[0], tri->unk12[1], tri->unk12[2]);
+        func_80015C38("\t\tNeighbor Indices = (%6d,%6d,%6d)\n", tri->unk18[0], tri->unk18[1], tri->unk18[2]);
+    }
+    func_80015C38("Edge Count  \t : %d\n", arg0->unk28);
+    func_80015C38("Edge Offset \t : %d\n", arg0->unk2A);
+    edge = (Unk800C9DF8Link *)((u8 *)arg0 + arg0->unk2A);
+    for (i = 0; i < arg0->unk28; edge++, i++) {
+        func_80015C38("  %4d: Flags\t   = 0x%04X\n", i, edge->unk0);
+        func_80015C38("\t\tEdge Clone  = %d\n", edge->unk2);
+    }
+    func_80015C38("Keyframe Animation Count  : %d\n", arg0->unk2C);
+    func_80015C38("Keyframe Animation Offset : %d\n", arg0->unk2E);
+    anim = (Unk800C9E10 *)((u8 *)arg0 + arg0->unk2E);
+    for (i = 0; i < arg0->unk2C; anim++, i++) {
+        func_80015C38("  %4d: Flags\t\t  = 0x%04X\n", i, anim->unk0);
+        func_80015C38("\t\tFrame Count    = %d\n", anim->unk2);
+        func_80015C38("\t\tCurrent Frame  = %ld\n", anim->unk8);
+        func_80015C38("\t\tFrame Rate     = %d\n", anim->unk4);
+        func_80015C38("\t\tCounter \t   = %d\n", (u16)anim->unk6);
+        func_80015C38("\t\tFrame Offset   = %ld\n", anim->unkC);
+        frame = (Unk800C9E10Frame *)((u8 *)arg0 + anim->unkC);
+        for (j = 0; j < anim->unk2; frame++, j++) {
+            func_80015C38("\t\t%4d: Frame Flags     = 0x%04X\n", j, frame->unk0);
+            func_80015C38("              Value           = %d\n", frame->unk2);
+            func_80015C38("              Triangle Count  = %d\n", frame->unk4);
+            func_80015C38("\t\t\t  Triangle Offset = %d\n", frame->unk6);
+            ids = (s32 *)((u8 *)arg0 + frame->unk6);
+            for (k = 0; k < frame->unk4; ids++, k++) {
+                func_80015C38("\t\t\t\t%4d: Triangle Ndx = %ld\n", j, *ids);
+            }
+        }
+    }
+    func_80015C38("Floor Count \t : %d\n", arg0->unk30);
+    func_80015C38("Floor Offset\t : %d\n", arg0->unk32);
+    floor = (Unk800C9DF8Tri *)((u8 *)arg0 + arg0->unk32);
+    for (i = 0; i < arg0->unk30; floor++, i++) {
+        func_80015C38("  %4d: Flags\t\t\t\t= %d\n", i, floor->unk0);
+        func_80015C38("\t\tFloor Index \t\t  = %d\n", floor->unk2);
+        func_80015C38("\t\tOriginal Position\t  = (%6d,%6d,%6d)\n", floor->unk4[0], floor->unk4[1], floor->unk4[2]);
+        func_80015C38("\t\tCurrent Position\t  = (%6d,%6d,%6d)\n", (s16)floor->unkA[0], (s16)floor->unkA[1], (s16)floor->unkA[2]);
+        func_80015C38("\t\tMinumim Values  \t  = (%6d,%6d,%6d)\n", floor->unk10[0], floor->unk10[1], floor->unk10[2]);
+        func_80015C38("\t\tMaximum Values  \t  = (%6d,%6d,%6d)\n", floor->unk16[0], floor->unk16[1], floor->unk16[2]);
+        func_80015C38("\t\tTriangle Count  \t  = %d\n", floor->unk1C);
+        func_80015C38("\t\tTriangle Index Offset = %d\n", floor->unk1E);
+        ids = (s32 *)((u8 *)arg0 + floor->unk1E);
+        for (j = 0; j < floor->unk1C; ids++, j++) {
+            func_80015C38("\t\t  %4d: Triangle Ndx = %ld\n", j, *ids);
+        }
+    }
+    func_80015C38("Vertex Count\t : %d\n", arg0->unk38);
+    func_80015C38("Vertex Offset\t : %d\n", arg0->unk3A);
+    vtx = (Unk800C9DFC *)((u8 *)arg0 + arg0->unk3A);
+    for (i = 0; i < arg0->unk38; vtx++, i++) {
+        func_80015C38("  %4d: (%d,%d,%d)\n", i, vtx->unk0, vtx->unk2, vtx->unk4);
+    }
+    func_80015C38("Normal Count\t : %d\n", arg0->unk34);
+    func_80015C38("Normal Offset\t : %d\n", arg0->unk36);
+    nrm = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
+    for (i = 0; i < arg0->unk34; nrm++, i++) {
+        func_80015C38("  %4d: (%lx,%lx,%lx)\n", i, nrm->unk0, nrm->unk4, nrm->unk8);
+        func_80015C38(D_800A7814, nrm->unkC);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C60F0);
 
