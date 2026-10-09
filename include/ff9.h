@@ -2658,10 +2658,10 @@ typedef struct {
     u8 pad4[0x18 - 4];
     s16 unk18;
     u8 pad1A[0x50 - 0x1A];
-    s32 unk50;
+    Unk8007B9C0 *unk50;
 } Unk8004F5D4;
 void func_80051600(void);
-void func_8004D940(s32);
+void func_8004D940(Unk8007B9C0 *);
 /* 8-byte message-table entry (D_8007B954 in modes other than 4) */
 typedef struct {
     u32 unk0;
@@ -2925,14 +2925,10 @@ typedef struct {
 } Ff9ImgHeader;
 
 
-/* pad button bindings */
-typedef struct {
-    u32 unk0; /* button mask */
-    s32 unk4; /* action index */
-} Unk800686C0;
 extern u32 D_80068680[8];
 extern s32 D_800686A0[];
-extern Unk800686C0 D_800686C0[1];
+extern u32 D_800686C0[1]; /* extra button masks (parallel to D_800686C4) */
+extern s32 D_800686C4[1]; /* their action indices */
 void func_80019708(s32, u32, s32);
 extern s32 D_80073730[2][32]; /* indexed by leading-zero count (func_80019708) */
 
@@ -3420,5 +3416,19 @@ static inline s32 func_80039C38_chr(s32 id) {
     return id;
 }
 
+
+
+/* Inlined helpers for the pad binding setup (func_80023784): GameState.unk24 bit 1
+ * enables the custom button map in unk28 (4 bits per action). */
+static inline s32 func_80023784_custom(u32 *c) {
+    return (c[0] >> 1) & 1;
+}
+static inline s32 func_80023784_remap(s32 k) {
+    u32 *c = &D_8006794C->unk24;
+    if (func_80023784_custom(c) == 1) {
+        return (c[1] >> (k * 4)) & 0xF;
+    }
+    return k;
+}
 
 #endif
