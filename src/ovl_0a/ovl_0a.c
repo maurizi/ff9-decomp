@@ -299,7 +299,42 @@ s32 func_800A879C(FieldMapObj *arg0, u16 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A87DC);
+s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
+    s32 id;
+    GameData *gd;
+    Unk80021938 *e;
+    CdReadCtx *cd;
+    GameData *g;
+    s32 t;
+
+    gd = D_8006794C->unk1C;
+    id = (u16)arg1 | 0x60000;
+    cd = gd->unk854;
+    if (func_800220E8(id) != 0) {
+        e = func_80021E5C(id);
+        D_8006794C->unk1C->unk854->unk20 = (u8 *)(e->unk8 + e->unkC);
+        D_8006794C->unk1C->unk854->unk10 = e->unkC;
+        D_8006794C->unk1C->unk854->unk4 = e->unk1C;
+        func_8001DAA4(D_80067948, e->unk8, e->unkC, NULL);
+        func_80022390(id);
+        DrawSync(0);
+        g = D_8006794C->unk1C;
+        t = g->unk854->unk10;
+        if (t < g->unk854->unk4) {
+            func_8002177C(g->unk854, g->unk7FC[0], g->unk804[0] << 11, (void *)(D_80067948 + t), t, -1, NULL);
+            while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+            }
+        }
+    } else {
+        func_8002177C(cd, gd->unk7FC[0], gd->unk804[0] << 11, (void *)D_80067948, 0, -1, NULL);
+        while (func_800217C4(cd) != 0) {
+        }
+    }
+    arg0->unkC = (void *)D_80067948;
+    func_8001C750(D_80067948, 0);
+    D_80067948 += func_8001CA70((s32)arg0->unkC);
+    return 0;
+}
 
 s32 func_800A8990(FieldMapObj *arg0, s16 arg1) {
     func_8001C784(arg0->unkC);
