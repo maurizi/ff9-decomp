@@ -2302,7 +2302,14 @@ s32 func_800B81F0(s8 arg0, s8 arg1, s32 arg2) {
     return ((((arg0 << 0xA) * (0x1000 - arg2)) >> 0xC) + (((arg1 << 0xA) * arg2) >> 0xC)) >> 0xA;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B822C);
+/* fixed-point lerp of two values with arg3 bits of headroom */
+s32 func_800B822C(s32 arg0, s16 arg1, s32 arg2, s32 arg3) {
+    s32 s = 16 - arg3;
+
+    arg0 = (((arg0 << 16) >> 16 << s) * (0x400 - arg2 / 4)) >> 10;
+    arg0 += ((arg1 << s) * (arg2 / 4)) >> 10;
+    return arg0 >> s;
+}
 
 s32 func_800B828C(s32 *arg0) {
     u32 i;
