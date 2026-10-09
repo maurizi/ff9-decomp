@@ -213,7 +213,32 @@ void *func_800A96B0(u32 *ot, SPRT_16 *p, TmState *s) {
     return tp;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A986C);
+void func_800A986C(TmTim *tim, s32 x, s32 y, s32 cx, s32 cy) {
+    TmTimImage *img;
+    s32 tp;
+
+    img = (TmTimImage *)((u8 *)tim + (tim->unk8 + 8));
+    switch ((s32)(tim->unk4 & 3)) {
+    case 0:
+        tp = 0;
+        LoadTPage(img->data, tp, 0, x, y, img->w << 2, img->h);
+        DrawSync(0);
+        LoadClut(tim->clut, cx, cy);
+        DrawSync(0);
+        break;
+    case 1:
+        tp = 1;
+        LoadTPage(img->data, tp, 0, x, y, img->w << tp, img->h);
+        DrawSync(0);
+        LoadClut(tim->clut, cx, cy);
+        DrawSync(0);
+        break;
+    case 2:
+        break;
+    default:
+        return;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A993C);
 
@@ -934,7 +959,59 @@ s32 func_800ADE14(TmState *arg0, s32 arg1) {
     return n;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800ADE5C);
+void func_800ADE5C(TmState *s) {
+    RECT r;
+    s32 owner;
+    s32 x;
+    s32 i;
+    s32 found;
+    s32 j;
+    TmCard *c;
+
+    owner = 1;
+    if (s->unk45C == 0) {
+        owner = 0;
+        j = 5;
+        x = 0x10;
+    } else {
+        j = 0;
+        x = 0x104;
+    }
+    found = 0;
+    c = s->unk10;
+    for (i = 0; i < 5; i++) {
+        if ((c + j)[i].unk14 == owner && (c + j)[i].unkC == x) {
+            found = 1;
+            s->unk470 = &(c + j)[i];
+            s->unk460 = 0xA;
+            s->unk2E8 = 0;
+            (c + j)[i].unk20 = (c + j)[i].unkC << 8;
+            (c + j)[i].unk24 = (c + j)[i].unk10 << 8;
+            break;
+        }
+    }
+    if (found == 0) {
+        if (func_800625F8() > 100) {
+            r.w = func_8002BA68(func_80035774(0x16)) + 0x12;
+            r.x = 0xA0 - r.w / 2;
+            r.y = 0x5B;
+            r.h = 0x2A;
+            s->unk4B8 = func_8002DC54(&r, 5, 2);
+            func_8002E2EC(s->unk4B8, func_800ADFFC);
+            func_8002E31C(s->unk4B8, 1);
+            func_800AB89C(s->unk4B8);
+            func_800AF288(s);
+            func_800B29DC(s);
+            s->unk0 = 0x16;
+            func_800B01E8(2);
+        } else {
+            func_800B3488(s);
+        }
+    } else {
+        s->unk0 = 0xD;
+        func_800B01E8(5);
+    }
+}
 
 void func_800ADFFC(Window *arg0) {
     func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, func_80035774(0x16), 0);
@@ -992,9 +1069,88 @@ void func_800AE54C(TmState *arg0) {
     func_8002DD00(arg0->unk458);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AE5A0);
+void *func_800AE5A0(u32 *ot, void *p, TmState *s) {
+    TmCard *c;
+    s32 dx;
+    s32 dy;
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AE6EC);
+    c = s->unk470;
+    if (s->unk2E8 < s->unk460) {
+        if (s->unk45C == 0) {
+            dx = (0x10400 - c->unk20) / s->unk460;
+        } else {
+            dx = (0x1000 - c->unk20) / s->unk460;
+        }
+        dy = (0x9900 - c->unk24) / s->unk460;
+        c->unkC = (c->unk20 + dx * s->unk2E8) >> 8;
+        c->unk10 = (c->unk24 + dy * s->unk2E8) >> 8;
+    } else {
+        c->unk10 = 0x19;
+        if (s->unk45C == 0) {
+            c->unkC = 0x104;
+        } else {
+            c->unkC = 0x10;
+        }
+        func_800AE6EC(s, 1);
+        func_800ADE5C(s);
+    }
+    return p;
+}
+
+void func_800AE6EC(TmState *s, s32 flag) {
+    s32 side;
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 x;
+    s32 y;
+    s32 step;
+    TmCard *c;
+    TmCard *first;
+    TmCard *second;
+
+    for (side = 0; side < 2; side++) {
+        if (side == 0) {
+            first = &s->unk10[0];
+            second = &s->unk10[5];
+            x = 0x104;
+        } else {
+            first = &s->unk10[5];
+            second = &s->unk10[0];
+            x = 0x10;
+        }
+        n = 0;
+        c = s->unk10;
+        for (i = 0; i < 10; i++) {
+            if (c[i].unkC == x) {
+                n++;
+            }
+        }
+        step = 0x20;
+        if (n >= 5) {
+            step = 0x80 / (n - 1);
+        }
+        j = 0;
+        for (i = 0; i < 5; i++) {
+            if (first[i].unkC == x) {
+                if (flag != 0) {
+                    first[i].unk30 = 0x3C - j;
+                }
+                first[i].unk10 = j * step + 0x19;
+                j++;
+            }
+        }
+        for (i = 0; i < 5; i++) {
+            if (second[i].unkC == x) {
+                if (flag != 0) {
+                    second[i].unk30 = 0x3C - j;
+                }
+                second[i].unk10 = j * step + 0x19;
+                j++;
+            }
+        }
+    }
+}
 
 s32 func_800AE830(TmState *arg0, s32 arg1) {
     s32 n = 0;
@@ -1294,9 +1450,63 @@ void func_800AF388(TmState *s, TmCard *c) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF3E8);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF760);
+void func_800AF760(TmState *s) {
+    s32 i;
+    s32 t;
+    s32 d;
+    TmCard *c;
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF890);
+    c = &s->unk10[5];
+    for (i = 0; i < 5; i++) {
+        d = s->unk2E8 - 0xF;
+        t = i * 6 - d;
+        if (t <= 0) {
+            t = 0;
+            if (s->unk590[i] == 0) {
+                s->unk590[i] = 1;
+                func_800B01E8(5);
+            }
+        }
+        c[i].unk30 = 0x3C - i;
+        c[i].unk10 = t * t + i * 0xE + 0x1A;
+    }
+    if (s->unk2E8 >= 0x29 && s->unk5AC != 0) {
+        s->unk2E8 = 0;
+        s->unk418 = 0;
+        if (func_80062B3C() & 1) {
+            s->unk434 = 0;
+        } else {
+            s->unk434 = 1;
+        }
+        s->unk0 = 0x1C;
+        func_800B01E8(6);
+    }
+}
+
+void func_800AF890(TmState *s) {
+    s32 n;
+    s32 i;
+    TmCard *c;
+
+    n = 0;
+    c = &s->unk10[5];
+    for (i = 0; i < 5; i++) {
+        if (c[i].unk18 == 0) {
+            c[i].unkC = 0x10;
+            if (s->unk418 == 1) {
+                if (n == s->unk2E8 / 4) {
+                    c[i].unkC = 0x1A;
+                }
+            } else if (n == 0) {
+                c[i].unkC = 0x1A;
+            }
+            n++;
+        }
+    }
+    if (s->unk2E8 != 0 && s->unk418 == 1 && !(s->unk2E8 & 3)) {
+        func_800B01E8(5);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF95C);
 
@@ -1626,7 +1836,24 @@ INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B2F60);
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B3198);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B33CC);
+void *func_800B33CC(u32 *ot, SPRT *p, s32 x, s32 y, s32 n) {
+    s32 u;
+
+    SetSprt(p);
+    p->w = 10;
+    p->h = 16;
+    u = n * 10 + 0x18;
+    p->v0 = 0xF0;
+    p->x0 = x;
+    p->y0 = y;
+    p->r0 = 0x80;
+    p->g0 = 0x80;
+    p->b0 = 0x80;
+    p->u0 = u;
+    p->clut = 0x3B40;
+    AddPrim(ot + 11, p);
+    return p + 1;
+}
 
 s32 func_800B3480(s32 arg0, s32 arg1) {
     return arg1;

@@ -187,7 +187,7 @@ extern TmArrowTbl D_800A73C4;
 
 typedef struct {
     u32 unk0; /* id */
-    u32 unk4; /* flags: bpp in low bits */
+    s32 unk4; /* flags: bpp in low bits */
     u32 unk8; /* clut block length */
     s16 unkC[4]; /* clut rect */
     u32 clut[1];
@@ -238,7 +238,7 @@ void func_800AA3C0(Window *);
 void func_800ADFFC(Window *);
 void func_800AB0A8(Window *);
 void *func_800B16A4(u32 *, void *, TmState *, s32, s32, s32);
-void *func_800B33CC(u32 *, SPRT *, s16, s16, s32);
+void *func_800B33CC(u32 *, SPRT *, s32, s32, s32);
 s32 func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
 void func_800A755C(void);
