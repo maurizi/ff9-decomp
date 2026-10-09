@@ -5296,7 +5296,15 @@ s32 func_800EF598(BtlCmd8 *arg0) {
     return cost;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF5E0);
+char *func_800EF5E0(void) {
+    MenuList *l = &D_80104F88->unk12A4[2]->unk30;
+    s32 n = l->unk6 + l->unk5;
+    u8 k = D_800FDD10[D_80104FD4->unk8 + n];
+    if (func_800EEA98(k) == 0) {
+        return NULL;
+    }
+    return D_800F96E4 + D_800FB1F0[k].unk0;
+}
 
 u8 *func_800EF674(void) {
     Unk16 *w = &D_80104F88->unk12A4[2]->unk30;
