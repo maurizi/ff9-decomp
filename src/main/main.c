@@ -7822,11 +7822,20 @@ void func_800575D0(s32 x) {
     SPU_REG16(0x1F801D8E) = (u32)x >> 16;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800575EC);
+void func_800575EC(u32 x) {
+    SPU_REG16(0x1F801D98) = x;
+    SPU_REG16(0x1F801D9A) = x >> 16;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057608);
+void func_80057608(u32 x) {
+    SPU_REG16(0x1F801D94) = x;
+    SPU_REG16(0x1F801D96) = x >> 16;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057624);
+void func_80057624(u32 x) {
+    SPU_REG16(0x1F801D90) = x;
+    SPU_REG16(0x1F801D92) = x >> 16;
+}
 
 void func_80057640(s32 v, u32 l, u32 r, s32 vol) {
     if (vol != 0) {
