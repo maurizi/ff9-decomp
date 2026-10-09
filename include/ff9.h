@@ -1585,7 +1585,9 @@ u8 func_80022C10(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
-    u8 pad4[0xC - 4];
+    u8 unk4[4]; /* OR'd into BtlUnit.unk70[] (func_800BC0D0) */
+    u8 unk8;    /* OR'd into BtlUnit.unk79 */
+    u8 pad9[0xC - 9];
 } Unk8006D548;
 extern Unk8006D548 D_8006D548[];
 void func_80033BD0(u32);

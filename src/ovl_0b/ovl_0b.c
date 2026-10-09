@@ -2154,7 +2154,21 @@ void func_800BBF5C(Character *arg0, BtlUnit *arg1) {
     arg1->unkA8->unk4 = arg0->unk21;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BC0D0);
+void func_800BC0D0(Character *c, BtlUnit *u) {
+    s32 i;
+
+    u->unk79 = 0;
+    u->unk73 = 0;
+    u->unk72 = 0;
+    u->unk71 = 0;
+    u->unk70 = 0;
+    for (i = 0; i < 5; i++) {
+        if (c->unk39[i] != 0xFF) {
+            func_800BDACC(&u->unk70, D_8006D548[D_80069018[c->unk39[i]].unkB].unk4);
+            u->unk79 |= D_8006D548[D_80069018[c->unk39[i]].unkB].unk8;
+        }
+    }
+}
 
 void func_800BC1E0(Unk800BC1E0 *arg0, s16 *arg1) {
     if (!(arg0->unk0 & 8)) {
