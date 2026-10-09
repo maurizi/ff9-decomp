@@ -349,7 +349,10 @@ typedef struct {
     u8 unk12B5; /* party count */
     u8 unk12B6;
     u8 unk12B7;
-    u16 unk12B8;
+    union {
+        u16 h; /* tested as a halfword */
+        u8 b[2];
+    } unk12B8;
     u8 pad12BA[0x12BC - 0x12BA];
     s32 unk12BC;
     u32 unk12C0;
@@ -987,8 +990,12 @@ typedef struct Heap {
 
 typedef struct {
     s32 unk0; /* frame */
-    s32 unk4; /* state */
-    u8 pad8[0xC - 8];
+    union {
+        s32 w; /* cleared as a word */
+        s16 h;
+    } unk4; /* state */
+    s16 unk8; /* heap index */
+    s16 unkA; /* use the shared heap */
     void *unkC; /* work data */
     struct Unk800DA1B8 *unk10;
     s32 (*unk14)(s32, void *, Unk800F78A4 *, s32 *, s32);
