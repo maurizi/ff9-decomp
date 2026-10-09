@@ -79,8 +79,10 @@ typedef struct {
 extern AbilityMenu D_801FC840;
 
 typedef struct {
-    u8 unk0; /* low nibble: item kind */
-    u8 pad1[0x4 - 1];
+    unsigned int unk0 : 4; /* item kind */
+    unsigned int unk0_4 : 1;
+    unsigned int unk0_5 : 3;
+    unsigned int pad0_8 : 24;
     u8 unk4;
     u8 pad5[0xA - 5];
     u8 unkA;
@@ -147,8 +149,9 @@ extern u8 D_801EDF04[];
 s32 func_801F0E64(s32);
 extern u8 D_801F3418[];
 extern u8 D_801F3428[];
-extern u16 D_801F893C[];
+extern s32 D_801F893C[3]; /* cursor x per column */
 extern u8 D_801EE648[];
+extern s32 D_801F8918[]; /* text index per party slot */
 /* func_800355DC; this overlay's link only has the D_ name */
 void D_800355DC(void);
 void func_801EED10(void);
@@ -162,6 +165,7 @@ extern u8 D_801F40EC[];  /* item names */
 extern u8 D_801F6540[];  /* ability names */
 /* main exe: candidates for ff9.h */
 extern s32 D_800704B8;
+extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
 void func_80026EA0(s32, s32, s32, s32, s32);

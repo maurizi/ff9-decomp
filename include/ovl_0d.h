@@ -15,7 +15,8 @@ typedef struct {
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    u8 pad6[0xC - 6];
+    u8 pad6[2];
+    s32 unk8;
     s32 unkC;  /* x */
     s32 unk10; /* y */
     s32 unk14; /* owner: 0 player, 1 enemy */
@@ -39,7 +40,8 @@ typedef struct {
     s32 unk0;
     s32 unk4;
     s32 unk8;
-    u8 padC[0x14 - 0xC];
+    s32 unkC;
+    TmCard *unk10;
 } TmUnk350;
 
 typedef struct {
@@ -60,6 +62,23 @@ typedef struct {
 } TmFileEntry; /* file table loaded at 0x80104A00 */
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+} TmCardData; /* card stats table loaded at 0x80103800 */
+
+typedef struct {
+    u8 v[16];
+} TmDeckOdds; /* card id by rarity roll, loaded at 0x80103C00 */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+} TmLevel; /* opponent level table, loaded at 0x80104000 */
+
+typedef struct {
     s32 unk0; /* state */
     s32 unk4;
     s32 unk8;
@@ -72,17 +91,19 @@ typedef struct {
     TmUnk2F0 unk2F0[6];
     TmUnk350 unk350[10];
     s32 unk418;
-    u8 pad41C[0x424 - 0x41C];
+    s32 unk41C;
+    s32 unk420;
     s32 unk424;
     s32 unk428;
     s32 unk42C;
     s32 unk430;
     s32 unk434;
-    u8 pad438[0x43C - 0x438];
+    s32 unk438;
     s32 unk43C; /* wins */
     s32 unk440; /* losses */
     s32 unk444; /* draws */
-    u8 pad448[0x450 - 0x448];
+    s32 unk448;
+    s32 unk44C;
     s32 unk450;
     u8 pad454[0x458 - 0x454];
     Window *unk458;
@@ -96,16 +117,35 @@ typedef struct {
     s32 unk478;
     s32 unk47C;
     u8 pad480[0x484 - 0x480];
-    s32 unk484;
-    u8 pad488[0x4B4 - 0x488];
+    Window *unk484;
+    u8 pad488[0x48C - 0x488];
+    TmCard *unk48C[8];
+    s32 unk4AC;
+    TmCard *unk4B0;
     s32 unk4B4;
     Window *unk4B8;
     s32 unk4BC;
     s32 unk4C0;
     Window *unk4C4;
-    u8 pad4C8[0x4F0 - 0x4C8];
+    s32 unk4C8[9];
+    s32 unk4EC;
     s32 unk4F0;
-    u8 pad4F4[0x550 - 0x4F4];
+    s32 unk4F4;
+    s32 unk4F8;
+    s32 unk4FC;
+    s32 unk500;
+    s32 unk504;
+    TmCard *unk508;
+    u8 unk50C;
+    u8 pad50D[0x510 - 0x50D];
+    u8 unk510;
+    u8 unk511;
+    u8 unk512;
+    u8 unk513;
+    u8 unk514;
+    u8 unk515;
+    u8 pad516[0x54C - 0x516];
+    s32 unk54C;
     s32 unk550;
     s32 unk554;
     u8 pad558[0x564 - 0x558];
@@ -113,19 +153,37 @@ typedef struct {
     s32 unk568;
     s32 unk56C;
     s32 unk570;
-    u8 pad574[0x57C - 0x574];
+    s32 unk574;
+    s32 unk578;
     s32 unk57C;
     u8 pad580[0x590 - 0x580];
     s32 unk590[5];
     s32 unk5A4;
     s32 unk5A8;
     s32 unk5AC;
+    s32 unk5B0;
+    s32 unk5B4;
+    s32 unk5B8;
 } TmState;
 
 typedef struct {
     u8 v[8];
 } TmDirMask; /* card arrow bit for each direction */
 extern TmDirMask D_800A73BC;
+
+typedef struct {
+    s32 unk0; /* x */
+    s32 unk4; /* y */
+    s32 unk8; /* x when flipped */
+    s32 unkC; /* y when flipped */
+    s32 unk10; /* u */
+    s32 unk14; /* v */
+} TmArrow;
+
+typedef struct {
+    TmArrow v[8];
+} TmArrowTbl; /* arrow sprite for each direction */
+extern TmArrowTbl D_800A73C4;
 
 typedef struct {
     u32 unk0; /* id */
@@ -173,10 +231,15 @@ void func_800AE6EC(TmState *, s32);
 void func_800ADE5C(TmState *);
 void func_800AD974(TmState *);
 void func_800AF170(TmState *);
+void func_800AF100(TmState *);
 void func_800AF288(TmState *);
 void func_800B3488(TmState *);
 void func_800AA3C0(Window *);
-void func_800B1110(TmState *, s32, s32, s32, s32, s32);
+void func_800ADFFC(Window *);
+void func_800AB0A8(Window *);
+void *func_800B16A4(u32 *, void *, TmState *, s32, s32, s32);
+void *func_800B33CC(u32 *, SPRT *, s16, s16, s32);
+s32 func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
 void func_800A755C(void);
 void func_800A75E0(void);
@@ -187,6 +250,8 @@ void func_800AB8E8(s32);
 void func_800AE54C(TmState *);
 void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
+TmCard *func_800B12F0(TmState *, TmPos *, s32, s32);
+void func_800AEBB4(TmState *);
 void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
 s32 func_800AE94C(TmState *, s32);

@@ -76,11 +76,20 @@ typedef struct {
     u8 pad3;
     MenuList unk4;
     RECT unk14;
-    RECT unk1C;
-    RECT unk24;
+    RECT unk1C[2];
     Window *unk2C[2];
 } ShopSell;
 extern ShopSell D_801FC438;
+
+typedef struct {
+    s32 unk0; /* OT layer */
+    void (*unk4)(Window *);
+    s32 unk8;
+    s32 unkC; /* text index into D_800703FC */
+} ShopWinDef;
+extern ShopWinDef D_801FC2B0[2];
+void func_801F86D0(Window *);
+void func_801F86FC(Window *);
 
 extern void (*D_801FC044[])(void);
 extern void (*D_801FC09C[])(void);

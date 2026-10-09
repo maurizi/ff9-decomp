@@ -651,6 +651,8 @@ extern s32 D_80077DD4;
 extern u8 D_80077DBA;
 extern u8 D_80077DBB;
 extern u8 D_80077DB2;
+extern s32 D_800704C8;
+extern s32 D_8007041C;
 extern u8 D_80077DE0;
 extern struct Unk8007B9C0 *D_8007BB78;
 extern s32 D_800834C8;
@@ -1446,7 +1448,7 @@ typedef struct {
 } MenuView;
 
 typedef struct {
-    u8 pad0[4];
+    s32 unk0[1]; /* indexed past its end: text table */
     s32 unk4;
     u8 pad8[0x30 - 8];
     s32 unk30;
@@ -1456,9 +1458,11 @@ typedef struct {
     s32 unk68;
     u8 pad6C[0x7C - 0x6C];
     s32 unk7C;
-    u8 pad80[0x88 - 0x80];
+    s32 unk80;
+    s32 unk84;
     s32 unk88;
-    u8 pad8C[0x94 - 0x8C];
+    s32 unk8C;
+    s32 unk90;
     s32 unk94;
     u8 pad98[0xA0 - 0x98];
     s32 unkA0;
@@ -1791,6 +1795,7 @@ s32 func_80056CBC(s32);
 void func_80062344(void);
 void func_8006237C(void);
 s32 func_80062420(u8, u8, u8, u8, u8, u8);
+void func_8006238C(s32);
 s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
@@ -2205,7 +2210,8 @@ extern u8 D_8006A218[]; /* item names */
 extern u8 D_8006ADAC[]; /* key item names */
 typedef struct {
     s16 unk0; /* name offset into D_8006ADAC */
-    u8 pad2[6];
+    s16 unk2; /* help offset */
+    u8 pad4[4];
 } Unk8006B374;
 extern Unk8006B374 D_8006B374[];
 Unk16D8 *func_8004AE9C(void);

@@ -1,6 +1,39 @@
 #include "ovl_65.h"
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF284);
+void func_801EF284(void) {
+    Unk11C0 *s;
+    GameData *ctx;
+    u8 i;
+
+    s = D_8006794C->unk1C->unk8E4.ovl65->unk11C0;
+    func_801EF45C();
+    do {
+        ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
+        func_80019194();
+        switch (func_801F3A7C()) {
+        case 1:
+            D_8006794C->unk8 = s->unk6;
+            break;
+        case 2:
+            D_8006794C->unk8 = 0;
+            break;
+        }
+        func_80023A0C();
+        func_80032098();
+        func_80023A4C();
+        func_8002246C();
+        DrawSync(0);
+        VSync(D_8006794C->unk9);
+        ResetGraph(1);
+        PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+        ctx = D_8006794C->unk1C;
+        i = ctx->unk8;
+        DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+        D_8006794C->unk1C->unk8 ^= 1;
+        func_8002C0DC(D_8006794C->unk1C->unk8);
+    } while (D_8006794C->unk8 == 8);
+    func_801EF5C8();
+}
 
 void func_801EF45C(void) {
     Unk11C0 *s = D_8006794C->unk1C->unk8E4.ovl65->unk11C0;
@@ -605,7 +638,19 @@ void func_801F2080(void) {
     func_801F1848();
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F20A8);
+s32 func_801F20A8(s32 i) {
+    u32 ap = D_801F7A78.unk24.unk4;
+    Counter *c = &D_801F7A78.unk24.unk4C[i];
+
+    if (func_800349BC(D_8006794C->unk1C->unk54C[i]->unk34 & 0xF, 0xEC)) {
+        c->unk0 = ap * 2;
+    } else {
+        c->unk0 = ap;
+    }
+    c->unk4 = 1;
+    c->unk8 = 0;
+    return c->unk0;
+}
 
 void func_801F213C(void) {
     s32 i;
@@ -632,7 +677,43 @@ void func_801F2248(Window *arg0) {
     D_801F7A78.unk1D8[arg0->unk50].unk0 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2264);
+void func_801F2264(s32 x, s32 y, s32 otz, Popup *p) {
+    SprtWords *s;
+    u8 *pkt;
+    u32 clut;
+    u32 xy;
+    DR_TPAGE *t;
+
+    if (p->unk0 != 0 && p->unk1 != 3) {
+        y += p->unk16;
+        clut = GetClut(0, 0x1FF) << 16;
+        setlen(D_80077170, 4);
+        xy = (x & 0xFFFF) | (y << 16);
+        pkt = D_80077170;
+        s = (SprtWords *)pkt;
+        s->rgbc = 0x64808080;
+        s->xy = xy;
+        s->uvclut = clut | 0xB000;
+        s->wh = 0x14004C;
+        D_80077170 = (u8 *)(s + 1);
+        addPrim(&D_8007716C[otz], s);
+        t = (DR_TPAGE *)D_80077170;
+        SetDrawTPage(t, 1, 1, 0x9F);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DR_TPAGE);
+        setlen(D_80077170, 4);
+        s = (SprtWords *)D_80077170;
+        s->rgbc = 0x66808080;
+        s->xy = xy;
+        s->uvclut = clut | 0xC400;
+        s->wh = 0x14004C;
+        D_80077170 = (u8 *)(s + 1);
+        addPrim(&D_8007716C[otz], s);
+        SetDrawTPage((DR_TPAGE *)D_80077170, 1, 1, 0xDF);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DR_TPAGE);
+    }
+}
 
 void func_801F2490(void) {
     s32 i;
@@ -904,7 +985,13 @@ void func_801F332C(void) {
     func_8002E334(D_801F7A78.unk368, 0x10);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F33A0);
+void func_801F33A0(Window *w) {
+    s32 n = func_8002AE7C((u8 *)D_800703FC.unk94);
+    s32 k = 0x97;
+
+    func_8002B524(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, D_800703FC.unk68, 0);
+    func_8002B524(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, D_800703FC.unk94, 0);
+}
 
 void func_801F3434(Window *arg0) {
     func_8002B5FC(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, func_80035774(0xA), 0);

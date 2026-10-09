@@ -7,7 +7,14 @@
 #include "ff9.h"
 
 typedef struct {
-    u32 unk0; /* uv + clut */
+    union {
+        u32 w; /* uv + clut, copied as one word */
+        struct {
+            u8 u;
+            u8 v;
+            u16 clut;
+        } s;
+    } unk0;
     u8 unk4;  /* w */
     u8 unk5;  /* h */
     u16 unk6; /* tpage */
@@ -19,6 +26,20 @@ typedef struct {
     u16 unk2;
     s32 unk4; /* start; the next entry's start ends it */
 } Ovl14Dir;
+
+/* main exe: candidates for ff9.h */
+void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
+typedef struct {
+    u32 unk0;
+    u32 unk4; /* flags: bpp in low bits */
+} TmTimLike; /* TIM header */
+s32 func_80022AC4(char *);
+extern s32 D_80071E34;
+u8 func_80022ED4(s32);
+
+/* ovl_64 (FMV player) */
+void func_8019C98C(s32);
+extern char **D_8019DC68;
 
 /* other overlay (0x801F....) */
 u8 func_801F5330(void);
@@ -55,6 +76,8 @@ extern Ovl14Pos D_800AB2A0;
 extern Ovl14Pos D_800AB2A4;
 extern Ovl14Pos D_800AB2A8[3];
 extern u16 D_800AB2C4;
+extern s32 D_800AB2C8;
+extern s16 D_800AB3B8[2][4];
 extern void *D_800AB2D4;
 extern void *D_800AB2F0;
 extern s32 D_800AB3C8;
@@ -112,7 +135,7 @@ void func_800A8618(void);
 void func_800A86D8(void);
 void func_800A87AC(void);
 void func_800A87E4(void);
-void func_800A8868(void *);
+void func_800A8868(s32 *);
 void func_800A8A0C(void);
 void func_800A8A8C(void);
 void func_800A8A94(void);

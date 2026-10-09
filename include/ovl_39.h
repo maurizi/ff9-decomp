@@ -11,11 +11,20 @@ typedef struct {
     s32 unk0; /* version tag, 0x30005 */
     u8 unk4[0x1A - 4];
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
-    u8 pad1B[0x44 - 0x1B];
+    u8 unk1B; /* slot index */
+    u8 pad1C[0x44 - 0x1C];
     u8 unk44;
-    u8 pad45[0x4C - 0x45];
+    u8 pad45[0x48 - 0x45];
+    s32 unk48; /* config bit */
     u32 unk4C; /* save counter */
-    u8 pad50[0x98 - 0x50];
+    u8 pad50[0x58 - 0x50];
+    struct {
+        u8 unk0; /* present */
+        u8 pad1;
+        u8 unk2[0xA]; /* name */
+        u8 unkC; /* level */
+        u8 padD[3];
+    } unk58[4]; /* party */
 } SaveSlot;
 
 /* Save menu state (D_801FB1A8). */
@@ -49,7 +58,7 @@ extern Unk801FBAC8 D_801FBAC8;
 typedef struct Unk801FBEE0 {
     u8 unk0;
     u8 unk1;
-    u8 pad2[2];
+    u16 unk2; /* text size: w | rows << 12 */
     s32 unk4;
     Window *unk8;
     void (*unkC)(struct Unk801FBEE0 *);
@@ -64,13 +73,16 @@ typedef struct {
     u8 unk1; /* state, index into D_801FB014 */
     u8 unk2; /* slot */
     u8 unk3; /* attempts */
-    u8 unk4[0xC - 4]; /* attempts per result */
+    u8 unk4[4]; /* attempts per result */
+    s32 unk8;
     s32 unkC;  /* used slots */
     s32 unk10; /* file count */
     s32 unk14;
     s32 unk18; /* file descriptor */
     Window *unk1C;
-    u8 pad20[0x2D0 - 0x20];
+    u8 pad20[0x2B4 - 0x20];
+    u8 unk2B4[15];
+    u8 pad2C3[0x2D0 - 0x2C3];
     u8 unk2D0[0x180]; /* read buffer */
 } Unk801FBEF8;
 extern Unk801FBEF8 D_801FBEF8;
@@ -85,17 +97,20 @@ extern Unk801FC348 D_801FC348;
 
 typedef struct {
     u8 unk0;
-    u8 pad1[3];
+    u8 pad1;
+    u16 unk2; /* text size: w | rows << 12 */
     Window *unk4;
+    u8 *unk8; /* text */
 } Unk801FC358;
 extern Unk801FC358 D_801FC358;
 
 typedef struct {
     u8 unk0;
-    u8 pad1;
+    u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[2];
+    u8 unk4;
+    u8 unk5;
     char unk6[0x1C - 6]; /* file name */
     Window *unk1C;
     s32 unk20; /* card channel */
@@ -115,7 +130,6 @@ extern s32 D_801FC604;
 extern void (*D_801FB098)(void); /* memory card completion callback */
 extern s32 D_801FB09C;
 extern s32 D_801FB0A0;
-extern u8 *D_801FC360;
 extern u8 D_801EE4D4[];
 extern u16 D_801FC3E0[256]; /* CRC-16 table */
 extern s32 D_801FC5E0;
@@ -217,6 +231,61 @@ typedef struct {
 } Unk801F6D24;
 
 /* main exe: candidates for ff9.h */
+extern RECT D_801EDF14;
+extern s32 D_801FB050[]; /* text index per mode */
+extern RECT D_801FB058;
+void func_801F5E40(void);
+void func_801F5E90(s32, s32, s32);
+void func_801F95E4(); /* also used as a Unk801FBEE0 callback */
+void func_801F62F0(void (*)(Unk801FBEE0 *));
+void func_801F6BD4(void);
+void func_801F770C(void);
+void func_801F734C(void);
+void func_801F61B0(void);
+void func_801F830C(void);
+void func_801F7928(void);
+void func_801F5A60(void);
+void func_801F5BE0(void);
+void func_801F500C(void);
+u8 func_801F8524(void);
+void func_801F6EDC(Window *);
+void func_801F6F3C(Window *);
+void func_801F6F74(Window *);
+u8 func_801F5E54(u8);
+extern RECT D_801FB00C;
+extern s32 D_80070420;
+void func_801F6368(Window *);
+void func_801F6378(Window *);
+void func_801F5FE4(Window *);
+void func_801F60DC(Window *);
+void func_801F49C4(RECT *, s32, s32);
+void func_801F5688(void);
+void func_801F573C(void);
+void func_801F8BD4(MenuList *, RECT *, RECT *);
+extern s32 D_80070444;
+extern u8 D_801FB0A8[]; /* help text buffer */
+void func_8002BE5C(s32, s32); /* main exe */
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+extern void (*D_801FAFE8[])(RECT *, s32, s32); /* slot drawer per state */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u8 unk2; /* w */
+    u8 unk3; /* h */
+} Ovl39Sprite;
+extern Ovl39Sprite D_801FAFFC[];
+u8 func_801F7E68(void);
+extern RECT D_801FAF7C;
+extern RECT D_801FAF84;
+void func_801F77F4(Window *);
+void func_801F7830(Window *);
+void func_801F7840(Window *);
+void func_801F5114(void);
+u8 *func_801F6320(void);
+void func_801F7CD0(Window *);
+void func_801F8408(Window *);
+void func_801F8424(Window *);
+s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
 s32 func_80028954(s32); /* defined u8 in main; used unmasked */
 
 extern RECT D_801FAF74; /* a RECT in .data (splat starts .data late) */
@@ -288,7 +357,7 @@ void func_801F889C(s32);
 s32 func_801FAB08(void);
 void func_801FAE1C(void);
 void func_801F7780(s32);
-u8 func_801F79F4(s8);
+u8 func_801F79F4(s32);
 void func_801F9C58(CardData *, CardData *);
 s32 func_801FA37C(s32);
 s32 func_801FA4E4(s32, s32, s32);

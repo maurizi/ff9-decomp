@@ -162,7 +162,29 @@ void func_801F8130(void) {
     func_8002B56C(r->x + 0x5E, r->y + 0x13, 0x1C, buf, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F8240);
+void func_801F8240(void) {
+    RECT *r = &D_801F9850.unk50;
+    Ovl32State *st = &D_801F9850;
+    s32 id;
+    s32 n;
+    s32 i;
+
+    id = st->unk10.unk5 + st->unk10.unk6;
+    func_8002B524(r->x + 8, r->y - 3, 0x1C, D_80070454, 0);
+    func_8002DEE4(r, 0x1D, 1);
+    func_8002705C(r, 0x1E, 1);
+    if (st->unk1 == 2 && (st->unk8 & (1 << id))) {
+        func_801F95E8(id);
+        func_801F88F4(r->x + 0xC, r->y + 0xC, 0x1C, id, 0);
+        func_801F8AB0(r->x + 8, r->y + 8, 0x1C, 0);
+        st->unk2058 = func_8002920C(r->x + 0xC, r->y + 0x31, &D_8007716C[0x1C], func_80035774(id + 0x3A), 0, st->unk2058);
+        func_8002B5FC(r->x + 0x42, r->y + 6, 0x1C, func_80035774(9), 0);
+        n = func_801F95E8(id);
+        for (i = 0; i <= n; i++) {
+            func_801F9518(r->x + 0x42 + i * 0x13, r->y + 0x16, 0x1C, i < st->unk4 ? i : 0xB, i >= st->unk4);
+        }
+    }
+}
 
 void func_801F8404(void) {
     func_80035674(D_801F9850.unk1 != 1);
@@ -282,7 +304,26 @@ void func_801F8800(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F88F4);
+void func_801F88F4(s32 x, s32 y, s32 z, s32 id, u8 dim) {
+    SprtWords *p;
+    u16 cl;
+    u16 clut = GetClut(0, id + 0x1E8);
+    s32 u = (id % 3) * 0x2A;
+    s32 v = (id / 3) * 0x1C;
+
+    setlen(D_80077170, 4);
+    cl = clut;
+    ((SprtWords *)D_80077170)->rgbc = dim ? 0x66808080 : 0x64808080;
+    p = (SprtWords *)D_80077170;
+    p->xy = x | (y << 16);
+    p->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (cl << 16);
+    p->wh = 0x1C002A;
+    D_80077170 = (u8 *)(p + 1);
+    addPrim(&D_8007716C[z], p);
+    SetDrawTPage(D_80077170, 0, 1, 0x90);
+    addPrim(&D_8007716C[z], D_80077170);
+    D_80077170 += 8;
+}
 
 INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F8AB0);
 
@@ -371,7 +412,28 @@ void func_801F9394(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F93FC);
+void func_801F93FC(s32 col, s32 row, s32 id, MenuView *v) {
+    u8 got;
+    u8 near;
+    s32 y;
+    s32 icon;
+    s32 k = 0x6B;
+    s32 x;
+
+    if (D_801F9850.unk8 & (1 << id)) {
+        got = (D_801F9850.unkC & (1 << id)) != 0;
+        near = func_801F95E8(id) < D_801F9850.unk4;
+        x = 0xE;
+        y = row * 0xF + (v->unk2 + k);
+        if (got) {
+            icon = near ? 0xD : 0xF;
+        } else {
+            icon = near ? 0xC : 0xE;
+        }
+        func_801F9518(x, y, 0x1C, icon, near == 0);
+        func_8002B5FC(x + 0x11, y, 0x1C, func_80035774(id + 0xA), near ? 0 : 2);
+    }
+}
 
 void func_801F9518(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
     RectTbl16 rects = D_801EDF04;
@@ -398,7 +460,16 @@ void func_801F9600(s32 idx) {
 void func_801F9660(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F9668);
+void func_801F9668(s32 i, RECT *a, RECT *b) {
+    a->x = 0;
+    a->y = i + 0x1E8;
+    a->w = 0x40;
+    a->h = 1;
+    b->x = (i % 3) * 0x15;
+    b->y = (i / 3) * 0x1C + 0x100;
+    b->w = 0x15;
+    b->h = 0x1C;
+}
 
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EF1E4);
 
