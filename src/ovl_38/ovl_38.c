@@ -119,7 +119,28 @@ INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EDF04);
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EE144);
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EEF00);
+INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EE264);
+
+void func_801EEF00(void) {
+    RECT *r = &D_801F120C.unk8;
+    StatusMenu *st;
+    Character *c;
+    s32 i;
+    u8 id;
+    u8 buf[8];
+
+    st = &D_801F120C;
+    c = D_8006794C->unk1C->unk54C[st->unk2];
+    for (i = 0; i < 5; i++) {
+        D_801F120C.unk7C = func_80027834(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &D_8007716C[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &D_8007716C[0x1D], D_801EE264, 0, D_801F120C.unk7C);
+        id = c->unk39[i];
+        if (id != 0xFF) {
+            func_80026C34(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
+            D_801F120C.unk7C = func_8002920C(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &D_8007716C[0x1D], D_8006A218 + D_80069018[id].unk0, 0, D_801F120C.unk7C);
+        }
+    }
+}
 
 void func_801EF0A0(void) {
     s32 i, j;
