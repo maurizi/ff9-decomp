@@ -1503,7 +1503,7 @@ s32 func_800DA2AC(Unk800DA1B8 *arg0) {
 s32 func_800DA3A4(s32 arg0) {
     s32 i;
     for (i = 0; i < 2; i++) {
-        if (arg0 == D_80100DC0.unk2C[i]) {
+        if (arg0 == D_80100DC0.unk2C.h[i]) {
             break;
         }
     }
@@ -1539,7 +1539,34 @@ void func_800DA4E8(void) {
     D_80100DCC = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA4F4);
+s32 func_800DA4F4(s32 arg0) {
+    s32 sector;
+
+    if (D_80100DC0.unkC != 0) {
+        return -1;
+    }
+    sector = D_8006794C->unk1C->unk8E4.battle->unk1534 + (u16)func_8001E218(0xD, arg0)->unk0;
+    D_80100DC0.unk2C.w = -1;
+    D_80100DC0.unk4 = arg0;
+    D_80100DC0.unk8 = 0;
+    D_80100DC0.unk1A = 0;
+    D_80100DC0.unkC = 1;
+    D_80100DC0.unkE = 0;
+    D_80100DC0.unk50 = 0;
+    D_80100DC0.unk52 = 0;
+    D_80100DC0.unk53 = 0;
+    D_80100DC0.unk68 = 0;
+    D_80100DC0.unk69 = 0;
+    D_80100DC0.unk64 = 0;
+    D_80100DC0.unk66 = 0;
+    D_80100DC0.unk65 = 0;
+    D_80100DC0.unk67 = 0;
+    D_80100DC0.unk38 = 0;
+    D_80100DC0.unk3C[0] = NULL;
+    D_80100DC0.unk3C[1] = NULL;
+    D_80100DC0.unk0 = sector;
+    return 0;
+}
 
 s32 func_800DA5C4(void) {
     if (D_80100DC0.unkC != 0) {
@@ -1554,7 +1581,7 @@ s32 func_800DA5C4(void) {
     D_80100DC0.unk67 = 0;
     D_80100DC0.unk1A++;
     D_80100DC0.unk8 = (D_80100DC0.unk8 + 1) & 1;
-    D_80100DC0.unk2C[D_80100DC0.unk8] = -1;
+    D_80100DC0.unk2C.h[D_80100DC0.unk8] = -1;
     return 0;
 }
 

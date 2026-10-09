@@ -325,7 +325,35 @@ Battle122C *func_800CA5AC(BtlCmd *arg0) {
     return e;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CA694);
+void func_800CA694(u16 mask, s16 arg1, u16 id) {
+    Battle *b;
+    BtlUnit *u;
+    BtlCmd *c;
+    Battle122C *e;
+
+    b = D_8006794C->unk1C->unk8E4.battle;
+    if (b->unk11C4.unk8[id] == 0) {
+        return;
+    }
+    for (u = b->unk6F8; u != NULL; u = u->unk0) {
+        if (u->unkB0 & mask) {
+            break;
+        }
+    }
+    if (u != NULL) {
+        c = u->unk4;
+        c->unkE = 0;
+        c->unkF = id;
+        c->unkC = arg1;
+        c->unk4 = u;
+        c->unk8 = &D_8006794C->unk1C->unk8E4.battle->unk5D8[id];
+        c->unk10.w = 0;
+        e = func_800CA5AC(c);
+        if (e != NULL) {
+            e->unk0 |= 8;
+        }
+    }
+}
 
 s32 func_800CA774(void) {
     s16 i;

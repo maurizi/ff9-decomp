@@ -414,20 +414,25 @@ typedef struct {
 extern Unk800FEC40 D_800FEC40;
 
 typedef struct {
-    u8 pad0[8];
+    s32 unk0;
+    s32 unk4;
     s32 unk8;
     s16 unkC;
     s16 unkE;
     u8 pad10[0x1A - 0x10];
     u16 unk1A;
     u8 pad1C[0x2C - 0x1C];
-    s16 unk2C[2];
+    union {
+        s16 h[2];
+        s32 w; /* set to -1 as a word */
+    } unk2C;
     u8 pad30[0x38 - 0x30];
     s32 unk38;
     struct Heap *unk3C[2];
     u8 pad44[0x50 - 0x44];
     s16 unk50;
-    u8 pad52[0x54 - 0x52];
+    u8 unk52;
+    u8 unk53;
     struct Unk80100DC054 *unk54;
     s32 unk58;
     s32 unk5C;
@@ -437,6 +442,7 @@ typedef struct {
     u8 unk66;
     u8 unk67;
     u8 unk68;
+    u8 unk69;
 } Unk80100DC0;
 extern Unk80100DC0 D_80100DC0;
 
@@ -627,15 +633,20 @@ typedef struct BtlCmd {
     s16 unkC;
     u8 unkE;
     u8 unkF;
-    u32 unk10_0 : 2;
-    u32 unk10_2 : 2;
-    u32 unk10_4 : 1;
-    u32 unk10_5 : 1;
-    u32 unk10_6 : 1;
-    u32 unk10_7 : 2;
-    u32 unk10_9 : 1;
-    u32 unk10_10 : 1;
-    u32 unk10_11 : 1;
+    union {
+        struct {
+            u32 unk0_0 : 2;
+            u32 unk0_2 : 2;
+            u32 unk0_4 : 1;
+            u32 unk0_5 : 1;
+            u32 unk0_6 : 1;
+            u32 unk0_7 : 2;
+            u32 unk0_9 : 1;
+            u32 unk0_10 : 1;
+            u32 unk0_11 : 1;
+        } b;
+        u32 w; /* cleared as a word */
+    } unk10;
 } BtlCmd;
 
 typedef struct Battle11C028 {
@@ -720,15 +731,15 @@ static inline void func_800B3CEC_inline(BtlCmd *arg0) {
     arg0->unkC = 0;
     arg0->unkE = 0;
     arg0->unkF = 0;
-    arg0->unk10_0 = 0;
-    arg0->unk10_2 = 0;
-    arg0->unk10_4 = 0;
-    arg0->unk10_5 = 0;
-    arg0->unk10_6 = 0;
-    arg0->unk10_7 = 0;
-    arg0->unk10_9 = 0;
-    arg0->unk10_10 = 0;
-    arg0->unk10_11 = 0;
+    arg0->unk10.b.unk0_0 = 0;
+    arg0->unk10.b.unk0_2 = 0;
+    arg0->unk10.b.unk0_4 = 0;
+    arg0->unk10.b.unk0_5 = 0;
+    arg0->unk10.b.unk0_6 = 0;
+    arg0->unk10.b.unk0_7 = 0;
+    arg0->unk10.b.unk0_9 = 0;
+    arg0->unk10.b.unk0_10 = 0;
+    arg0->unk10.b.unk0_11 = 0;
 }
 
 typedef struct Battle108C {
