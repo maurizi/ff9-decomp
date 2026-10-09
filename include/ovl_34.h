@@ -35,7 +35,8 @@ typedef struct {
 extern ConfigMenu D_801F1558;
 extern RECT D_801F1534[2]; /* option window rects */
 extern u8 D_801F1524[];
-extern u8 D_801F1464[]; /* window contents for func_80063118 */
+extern u8 D_801F1464[];
+extern u8 D_801F14AC[]; /* window contents for func_80063118 */
 extern s32 D_801F1474[8]; /* button mask per pad config slot */
 extern s32 D_801F14F0; /* text ids */
 extern s32 D_801F14F4;
@@ -88,6 +89,12 @@ void func_801F1168(void);
 u8 func_801F126C(void);
 void func_801F12D0(u8);
 ScrollPos *func_801F1334(MenuList *, ScrollPos *);
+ScrollPos *func_801EFF58(MenuList *, ScrollPos *);
+void func_801F043C(MenuList *, RECT *, RECT *);
+void func_801F049C(void);
+void func_801F0F48(s32, s32, s32, u8 *, s32);
+void func_801F0F94(s32, s32, s32, s32, u8);
+void func_801F11C4(s32, s32);
 u8 func_801F125C(void);
 
 #endif
