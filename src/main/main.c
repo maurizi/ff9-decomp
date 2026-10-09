@@ -245,7 +245,45 @@ void func_800169B8(void) {
     func_80022A28();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80016A28);
+void func_80016A28(void) {
+    RECT r;
+    s32 i;
+
+    SetDispMask(0);
+    VSyncCallback(NULL);
+    DrawSyncCallback(NULL);
+    SetGeomOffset(0xA0, 0x70);
+    r.w = 0x3FF;
+    r.x = 0;
+    r.y = 0;
+    r.h = 0x1FF;
+    ClearImage(&r, 0, 0, 0);
+    DrawSync(0);
+    func_80022A80();
+    func_8001C6F8();
+    func_80018F50();
+    D_80073690.mask = 0x19;
+    D_80073690.mode = 0x100;
+    D_80073690.depth.left = 0;
+    D_80073690.depth.right = 0;
+    D_80073690.delay = 0;
+    D_80073690.feedback = 0;
+    SpuSetReverbModeParam(&D_80073690);
+    SpuSetReverbDepth(&D_80073690);
+    func_80018750(&D_800736A4);
+    SpuClearReverbWorkArea(D_800736A4);
+    func_800551F0();
+    func_80018750(&D_800736A4);
+    SpuClearReverbWorkArea(D_800736A4);
+    for (i = 0; i < 90; i++) {
+        VSync(0);
+    }
+    func_8004BBF0();
+    func_80053924();
+    func_800320D8();
+    func_80032078();
+    func_80021770();
+}
 
 void func_80016B6C(void) {
     func_80055210();
@@ -660,7 +698,34 @@ void func_8001CCB4(s32 r, s32 g, s32 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001CD04);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001CFB4);
+void func_8001CFB4(void) {
+    Unk4 func_8002F9A8(void); /* ovl_0a declares it with an out-pointer */
+    Unk4 col;
+    s32 fade;
+    s32 busy;
+
+    if (D_8006794C->unk1C != NULL) {
+        VSync(0);
+        PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+        fade = 0;
+        memmove(&D_80073C88, &D_8006794C->unk10[D_8006794C->unk1C->unk8 ^ 1], sizeof(DRAWENV));
+        if (func_8002F800() || func_8002F810()) {
+            fade = 1;
+        }
+        busy = func_8002F864();
+        col = func_8002F9A8();
+        if (fade && !busy) {
+            D_80073C88.isbg = 1;
+            D_80073C88.r0 = col.unk0[0];
+            D_80073C88.g0 = col.unk0[1];
+            D_80073C88.b0 = col.unk0[2];
+        } else {
+            D_80073C88.isbg = 0;
+        }
+        PutDrawEnv(&D_80073C88);
+        DrawSync(0);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", memmove);
 

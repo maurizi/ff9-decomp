@@ -295,6 +295,23 @@ CdlLOC *CdIntToPos(int i, CdlLOC *p);
 int CdPosToInt(CdlLOC *p);
 CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
 int CdInit(void);
+typedef struct {
+    short left;
+    short right;
+} SpuVolume;
+
+typedef struct {
+    unsigned long mask;
+    long mode;
+    SpuVolume depth;
+    long delay;
+    long feedback;
+} SpuReverbAttr;
+
+long SpuSetReverbModeParam(SpuReverbAttr *attr);
+void SpuSetReverbDepth(SpuReverbAttr *attr);
+long SpuClearReverbWorkArea(long mode);
+void VSyncCallback(void (*f)(void));
 void ResetCallback(void);
 int SetGraphDebug(int level);
 void InitGeom(void);

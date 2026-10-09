@@ -2720,4 +2720,14 @@ s32 func_800213C0(void *, s32);
 s32 func_80021A8C(Unk80021938 *);
 void func_8002291C(void);
 
+extern SpuReverbAttr D_80073690;
+extern s32 D_800736A4; /* reverb mode */
+extern DRAWENV D_80073C88;
+void func_80018F50(void);
+void func_80022A80(void);
+void func_8001C6F8(void);
+void func_80021770(void);
+void func_800320D8(void);
+void func_80053924(void);
+
 #endif
