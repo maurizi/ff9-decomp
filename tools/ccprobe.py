@@ -88,7 +88,7 @@ def score(exe, code, syms, masks):
 
 
 def show(name, obj):
-    dis = run(["mipsel-linux-gnu-objdump", "-d", "-r", "--no-show-raw-insn", f"--disassemble={name}", obj])
+    dis = run(["mipsel-linux-gnu-objdump", "-d", "-z", "-r", "--no-show-raw-insn", f"--disassemble={name}", obj])
     ours = []
     for line in dis.splitlines():
         if "R_MIPS" in line:
