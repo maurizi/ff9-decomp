@@ -3076,7 +3076,82 @@ s32 func_800C2390(VECTOR *arg0, SVECTOR *arg1, s32 arg2, VECTOR *arg3) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2524);
+/* push a position out of the walkmesh triangle edges (recurses into neighbours) */
+s32 func_800C2524(Unk800C9DF4 *arg0, SVECTOR *arg1, Unk800C9E00 *arg2, s16 *arg3) {
+    Unk800C9DFC *e[2];
+    SVECTOR p;
+    Unk800C9DFC v[3];
+    VECTOR push;
+    s16 on;
+    Unk800C9DF8Tri *t;
+    Unk800C9E00 *nb;
+    s16 i;
+    s32 hit;
+    s32 d;
+    s16 n;
+    Unk800C9DFC *vt;
+
+    t = &D_800C9DF0.unk1C[arg2->unk4];
+    p.vx = D_800C9DF0.unk8->unk8 + t->unkA[0];
+    p.vy = D_800C9DF0.unk8->unkA + t->unkA[1];
+    p.vz = D_800C9DF0.unk8->unkC + t->unkA[2];
+    vt = D_800C9DF0.unkC;
+    for (i = 0; i < 3; i++) {
+        v[i].unk0 = p.vx + vt[arg2->unkC[i]].unk0;
+        v[i].unk2 = p.vy + vt[arg2->unkC[i]].unk2;
+        v[i].unk4 = p.vz + vt[arg2->unkC[i]].unk4;
+    }
+    e[0] = &v[2];
+    hit = 0;
+    for (i = 0; i < 3; i++) {
+        e[1] = &v[i];
+        d = func_800C20BC(arg1, (SVECTOR *)e[0], (SVECTOR *)e[1], &p, &on);
+        if ((u32)arg0->unk20 >= d) {
+            nb = func_800C1F98(arg0, arg2, i);
+            if (nb != NULL) {
+                if (!(nb->unk0 & 0x80)) {
+                    nb->unk0 |= 0x80;
+                    if (func_800C2524(arg0, arg1, nb, arg3) == 0) {
+                        *arg3 = i;
+                        hit = 1;
+                    }
+                }
+            } else {
+                do {
+                    hit = 1;
+                } while (0);
+                if (d != 0) {
+                    d = (s16)SquareRoot0(d);
+                    if (p.vx == arg1->vx) {
+                        push.vx = 0;
+                    } else {
+                        push.vx = (s16)((arg1->vx - p.vx) * arg0->unk1C / d);
+                    }
+                    if (p.vz == arg1->vz) {
+                        push.vz = 0;
+                    } else {
+                        push.vz = (s16)((arg1->vz - p.vz) * arg0->unk1C / d);
+                    }
+                    n = D_800C9DDC;
+                    if (n + 1 < 16) {
+                        push.vx = p.vx - arg1->vx + push.vx;
+                        push.vz = p.vz - arg1->vz + push.vz;
+                        D_800CA9D8[n][0] = push.vx;
+                        D_800C9DDC++;
+                        D_800CA9D8[n][2] = push.vz;
+                        D_800CAA38[n] = on;
+                        D_800CAA58[n] = d;
+                    }
+                    hit = 1;
+                    arg2->unk0 |= 0x80;
+                    *arg3 = i;
+                }
+            }
+        }
+        e[0] = e[1];
+    }
+    return hit ^ 1;
+}
 
 u16 func_800C2920(Unk800C9DF4 *arg0, Unk800C9E00 **arg1, s32 arg2, s32 arg3) {
     Unk800C9E00 *p[2];
