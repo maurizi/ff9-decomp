@@ -4075,7 +4075,30 @@ void func_80032120(s32 a, s32 b) {
     func_80032140(a, b);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032140);
+void func_80032140(s32 a, s32 b) {
+    GameState *st = D_8006794C;
+
+    if (!(st->unk1C->unk0 & 1) && D_80077DB0.unk5 == 0 && D_80077DB0.unk0 == 0 && (u32)a < 9) {
+        D_80077DB0.unk5 = 1;
+        D_80077DB0.unk1 = a;
+        D_80077DB0.unkC = b;
+        D_80077DB0.unk1C = 0;
+        D_80077DB0.unk6 = 0;
+        D_80077DB0.unk7 = 0;
+        D_80077DB0.unk9 = 1;
+        D_80077DB0.unkA = 1;
+        D_80077DB0.unkB = 1;
+        D_80077DB0.unk24 = 0;
+        D_80077DB0.unk0 = 1;
+        if (st->unk8 == 1) {
+            st->unk1C->unk8E4.ovl65->unk0 |= 0x1000;
+        }
+        D_8006794C->unk1C->unk0 |= 2;
+        func_80035430();
+        func_800326B0();
+        func_80032980();
+    }
+}
 
 void func_80032238(void) {
     GameState *g;

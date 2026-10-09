@@ -119,7 +119,8 @@ typedef struct {
 } Unk11C0;
 
 typedef struct {
-    u8 pad0[0xD80];
+    u32 unk0;
+    u8 pad4[0xD80 - 4];
     u8 unkD80;
     u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *unk11C0;
@@ -438,7 +439,8 @@ typedef struct {
     u8 unk7;
     u8 pad8;
     u8 unk9;
-    u8 padA[2];
+    u8 unkA;
+    u8 unkB;
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
     s32 unk10; /* frame counter */
     s32 unk14; /* saved VSync mode */
