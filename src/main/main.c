@@ -4358,7 +4358,29 @@ void func_80032A44(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032B08);
+void func_80032B08(s32 ch) {
+    Character *c = &D_8006794C->unk1C->unk3C[ch];
+    u32 *init;
+    u32 *tbl;
+    s32 r;
+
+    func_8001D898(c, 0, 0x90);
+    tbl = D_8006CA78;
+    init = tbl + ch;
+    c->unk34 = *init;
+    c->unk38 = 0;
+    c->unkA = func_80033A50((c->unk34 >> 12) & 0x1F);
+    func_8001D898(c->unk3E, 0, 10);
+    func_80034394(ch);
+    r = func_80033A1C(c);
+    func_80033D38(c->unk0, r);
+    func_80033D8C(c->unk39, r);
+    c->unk34 = (c->unk34 & ~0x1F0) | ((func_80033280(c->unk34 & 0xF, (c->unkA >> 4) & 1, c->unk39) & 0x1F) << 4);
+    func_80032C4C(ch, 1, init, 0);
+    c->unk10 = c->unk18;
+    c->unk12 = c->unk1A;
+    c->unk17 = c->unk1F;
+}
 
 void func_80032C4C(s32 ch, s32 lv, u32 *heal, u8 f) {
     Character *c = &D_8006794C->unk1C->unk3C[ch];
@@ -4530,7 +4552,7 @@ u8 func_800339F4(s32 a, u8 b) {
     return D_8006CAA4[a][b != 0];
 }
 
-u8 func_80033A1C(Character *c) {
+s32 func_80033A1C(Character *c) {
     return D_8006CAB8[c->unk34 & 0xF][(c->unkA & 0x10) != 0];
 }
 

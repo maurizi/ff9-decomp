@@ -303,7 +303,8 @@ static inline UnkPair *func_80027EDC_inline(s32 id) {
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2[6];
+    u8 pad2[2];
+    s32 unk4;
     s32 unk8;
     s32 unkC;
 } UnkTimer;
@@ -2576,4 +2577,8 @@ extern s32 D_8007B94C;
 void func_8002DD54(void);
 void func_8004E16C(void);
 extern u8 *D_8007ADF8; /* script data */
+u8 func_80033A50(u32);
+void func_80034394(s32);
+s32 func_80033A1C(Character *);
+void func_80033D8C(u8 *, s32);
 #endif
