@@ -1503,7 +1503,34 @@ FieldLight *func_800B3300(Unk800B3254 *arg0, FieldLight **arg1, FieldLight **arg
     return base;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3378);
+/* find the floor light covering the object's current floor */
+FieldLight *func_800B3378(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) {
+    u16 tri;
+    FieldLight *p;
+    s32 n;
+    s32 v;
+
+    func_800C76E8(arg1->unkC->unk3B, &tri, (u16 *)arg2);
+    if (arg0->unk7 != 0) {
+        if ((u8)*arg2 == 0xFF) {
+            return NULL;
+        }
+        p = &arg0->unkC[arg0->unk7 - 1];
+        do {
+            if (p->unk0 == 0) {
+                v = p->unk8;
+                for (n = 3; n >= 0; n--) {
+                    if ((v & 0xFF) == *arg2) {
+                        return p;
+                    }
+                    v >>= 8;
+                }
+            }
+            p--;
+        } while (p >= arg0->unkC);
+    }
+    return NULL;
+}
 
 s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
     s32 start;

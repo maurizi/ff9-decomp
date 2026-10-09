@@ -401,8 +401,16 @@ typedef struct {
     s8 unk2; /* sprite colour offsets */
     s8 unk3;
     u32 unk4; /* colour */
-    u8 pad8[4];
+    s32 unk8; /* 4 floor ids (type 0) */
 } FieldLight;
+
+/* 8-byte entries following Unk800B3254.unkC[unk6] */
+typedef struct {
+    u16 unk0; /* id */
+    s8 unk2;
+    s8 unk3;
+    u32 unk4; /* colour */
+} Unk800B3294;
 
 typedef struct {
     u8 pad0[6];
@@ -888,9 +896,10 @@ typedef struct FieldObjPlace {
 } FieldObjPlace; /* 0x28 */
 
 FieldLight *func_800B3254(Unk800B3254 *);
-FieldLight *func_800B3294(Unk800B3254 *, s32);
+Unk800B3294 *func_800B3294(Unk800B3254 *, s32);
+s32 func_800C76E8(s32, u16 *, u16 *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
-FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, u8 *);
+FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
 /* object model slot (func_8001E350) */
 typedef struct {
@@ -1032,10 +1041,7 @@ extern u8 D_800C9EDC[];
 extern u8 D_800C9EE4[];
 
 /* 8-byte entries following Unk800B3254.unkC[unk6] */
-typedef struct {
-    u16 unk0; /* id */
-    u8 pad2[6];
-} Unk800B3294;
+
 
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
  * .text (as "func_800C9CCC"), so the array is reached through that label. */
