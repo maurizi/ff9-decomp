@@ -294,6 +294,15 @@ int CdGetDiskType(void);
 CdlLOC *CdIntToPos(int i, CdlLOC *p);
 int CdPosToInt(CdlLOC *p);
 CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
+int CdInit(void);
+void ResetCallback(void);
+int SetGraphDebug(int level);
+void InitGeom(void);
+void SpuInit(void);
+void InitCARD(long val);
+long StartCARD(void);
+void PadInitDirect(u8 *pad1, u8 *pad2);
+int PadStartCom(void);
 
 long _card_format(long chan);
 long _card_clear(long chan);

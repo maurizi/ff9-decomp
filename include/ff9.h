@@ -194,7 +194,7 @@ typedef struct {
     u8 unk774[0x40];       /* 2 bits per item id */
     u8 pad7B4[0x7D4 - 0x7B4];
     Unk7D4 *unk7D4;
-    u8 pad7D8[0x7DC - 0x7D8];
+    void *unk7D8;
     s16 unk7DC;
     u16 unk7DE;
     s32 unk7E0;
@@ -271,7 +271,7 @@ typedef struct {
 
 typedef struct {
     u32 unk0; /* flags */
-    u8 pad4[4];
+    u32 unk4; /* allocator top after boot (D_80067940) */
     u8 unk8;
     u8 unk9; /* VSync mode */
     u8 unkA;
@@ -279,7 +279,7 @@ typedef struct {
     DISPENV *unkC;    /* [2] */
     DRAWENV *unk10;   /* [2] */
     GameStateUnk14 *unk14;
-    u8 pad18[4];
+    void *unk18;
     GameData *unk1C;
     s32 unk20; /* base CD sector added to file start sectors */
     u32 unk24;
@@ -288,7 +288,7 @@ typedef struct {
 } GameState;
 
 extern GameState *D_8006794C;
-void func_8001DE50(GameState *);
+void func_8001DE50(); /* func_8001CB08 calls it without arguments */
 
 /* Inlined copy of func_80034A04 (support ability bit test). */
 static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
@@ -505,7 +505,7 @@ extern Unk80077148 D_80077148;
 
 /* ---- functions (main exe) ---- */
 
-void func_8001C784(void *);
+s32 func_8001C784(void *);
 void func_8001D898(void *, s32, s32); /* memset */
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
@@ -1214,7 +1214,7 @@ void func_800565F0(void);
 typedef struct {
     s16 unk0;
     s16 unk2; /* count */
-    s32 unk4[16];
+    void *unk4[16];
 } Unk80073C40;
 extern Unk80073C40 D_80073C40;
 
@@ -2633,4 +2633,37 @@ typedef struct {
 extern Unk800689B0 D_80068DC0;
 extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
+/* ---- main: boot, system setup, TIM helpers ---- */
+
+/* GameState.unk24/unk28 viewed as a pair */
+typedef struct {
+    u32 unk0_0 : 1;
+    u32 unk0_1 : 1; /* unk4 remaps indices (4 bits each) */
+    u32 unk0_2 : 30;
+    u32 unk4;
+} GameStateUnk24;
+
+/* TIM image: header, optional CLUT block (flag bit 3), then the pixel block */
+typedef struct {
+    u32 bnum; /* block size in bytes, header included */
+    s16 x;
+    s16 y;
+    s16 w;
+    s16 h;
+} TimBlock;
+
+typedef struct {
+    u32 id;
+    u32 flag;
+    TimBlock clut;
+} TimHeader;
+
+extern u32 D_80067940; /* bump allocator for the boot-time state block */
+void func_8001CB78(void);
+void func_8001CBD0(void);
+s32 func_80022A28(void);
+void func_800236A4(s32);
+void func_80016BA0(void);
+void func_80018F20(void);
+
 #endif
