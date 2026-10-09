@@ -3135,7 +3135,26 @@ u32 func_800C1F00(u32 arg0) {
     return n;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C1F7C);
+s32 func_800C1F7C(s32 arg0) {
+    u16 ids[4];
+    u16 n = 0;
+    BtlUnit *u;
+    if (arg0 != 0) {
+        arg0 = 1;
+    }
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if ((u->unk68 & 1) == arg0 && !(u->unk3C & 0x100) && ((u->unk68 >> 28) & 1)) {
+            ids[n++] = u->unkB0;
+        }
+    }
+    if (n == 0) {
+        return 0;
+    }
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    return ids[*D_8007B720++ % n];
+}
 
 s32 func_800C20B8(GameData *arg0, u32 arg1, s32 arg2) {
     Battle *b;
