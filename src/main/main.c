@@ -1195,7 +1195,19 @@ u16 func_800216D8(a, b)
     return ((u16 *)func_8001C7FC(4, b | 0x30000, 0))[1];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002170C);
+s32 func_8002170C(Unk8004AB64 *p) {
+    if (D_8006794C->unk8 == 3) {
+        goto ret0;
+    }
+    if (p->unk5 != 4) {
+        return 0;
+    }
+    if (p->unk34 == 0xFFFF) {
+    ret0:
+        return 0;
+    }
+    return func_800C44F4(p->unk3B);
+}
 
 void func_80021770(void) {
     D_80071E32 = 0;
@@ -1416,7 +1428,25 @@ Unk80021938 *func_80021E5C(s32 id) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021ED4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021FB4);
+s32 func_80021FB4(void) {
+    Unk80021938 *p = func_80021E20();
+    s32 t;
+
+    if (p == NULL) {
+        return 0;
+    }
+    if (func_800219FC(p) == 0) {
+        return -1;
+    }
+    if (p->unk0 & 1) {
+        if (p->unk0 & 0x80) {
+            return -1;
+        }
+        t = p->unk0 & 2;
+        return t == 0;
+    }
+    return 0;
+}
 
 void func_80022020(void) {
     while (func_80021FB4() > 0) {
@@ -4815,7 +4845,20 @@ s32 func_8002FD70(s32 a, s32 b, s32 lim) {
     return a;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FD98);
+s32 func_8002FD98(s32 a, s32 b) {
+    s32 t;
+
+    if (a >= 0) {
+        t = a - 1;
+        t += b;
+        b = t / b;
+    } else {
+        t = a + 1;
+        t -= b;
+        b = t / b;
+    }
+    return b;
+}
 
 s32 func_8002FDE8(s32 x, s32 a, s32 b) {
     s32 t;
@@ -9032,7 +9075,15 @@ u8 *func_8004EFB0(s32 i, MsgInfo *out) {
     return e;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F058);
+void *func_8004F058(s32 i) {
+    u8 *e = NULL;
+
+    if (i >= 0 && i < D_8007B954->unk0) {
+        e = (u8 *)D_8007B954->unk4;
+        e += *(u16 *)&((u32 *)e)[(D_8007B708 == 2 || D_8007B708 == 4) ? i : i * 2 + 1];
+    }
+    return e;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F0C8);
 
@@ -12140,7 +12191,23 @@ void func_8005F6B4(AkaoChannel *c) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F718);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005F834);
+void func_8005F834(AkaoChannel *c) {
+    s32 k;
+    s16 v;
+    u32 n;
+    u32 r;
+
+    c->unkD6 = *c->unk0++ << 8;
+    k = c->unk2C;
+    v = c->unkD6;
+    n = (v & 0x7F00) >> 8;
+    if (!(v & 0x8000)) {
+        r = n * ((s32)(k * 15) >> 8);
+    } else {
+        r = n * k;
+    }
+    c->unkD4 = r >> 7;
+}
 
 void func_8005F894(AkaoChannel *c) {
     s32 n = *c->unk0++;
