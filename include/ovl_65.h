@@ -103,6 +103,9 @@ typedef struct {
 } Unk801F7A78;
 
 extern Unk801F7A78 D_801F7A78;
+extern RECT D_801F81F8;  /* level-up window rect */
+extern RECT *D_801F8200; /* window it is placed under */
+extern u8 D_801F5228[];  /* level-up text */
 extern u8 D_801EDF04[];
 extern void (*D_801F3B88[])(void);
 extern s32 D_801F3BA0[]; /* sound effect per state */

@@ -433,7 +433,7 @@ void func_800A880C(void) {
 
     e = func_8001E218(1, 0x3C);
     func_80022DF0(D_8006794C->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
-    func_800A8868((void *)0x801CDF00);
+    func_800A8868((s32 *)0x801CDF00);
 }
 
 INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A8868);
@@ -597,7 +597,7 @@ void func_800A903C(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
     p = (SprtWords *)D_80077170;
     p->rgbc = (c << 1) | (c << 9) | (c << 17) | 0x66000000;
     p->xy = x | (y << 16);
-    p->uvclut = t->unk0;
+    p->uvclut = t->unk0.w;
     p->wh = t->unk4 | (t->unk5 << 16);
     D_80077170 = (u8 *)(p + 1);
     addPrim(&D_8007716C[z], p);

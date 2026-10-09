@@ -7,7 +7,14 @@
 #include "ff9.h"
 
 typedef struct {
-    u32 unk0; /* uv + clut */
+    union {
+        u32 w; /* uv + clut, copied as one word */
+        struct {
+            u8 u;
+            u8 v;
+            u16 clut;
+        } s;
+    } unk0;
     u8 unk4;  /* w */
     u8 unk5;  /* h */
     u16 unk6; /* tpage */
@@ -21,6 +28,11 @@ typedef struct {
 } Ovl14Dir;
 
 /* main exe: candidates for ff9.h */
+void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
+typedef struct {
+    u32 unk0;
+    u32 unk4; /* flags: bpp in low bits */
+} TmTimLike; /* TIM header */
 s32 func_80022AC4(char *);
 extern s32 D_80071E34;
 u8 func_80022ED4(s32);
@@ -123,7 +135,7 @@ void func_800A8618(void);
 void func_800A86D8(void);
 void func_800A87AC(void);
 void func_800A87E4(void);
-void func_800A8868(void *);
+void func_800A8868(s32 *);
 void func_800A8A0C(void);
 void func_800A8A8C(void);
 void func_800A8A94(void);
