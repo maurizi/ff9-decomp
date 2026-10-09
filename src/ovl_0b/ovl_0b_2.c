@@ -30,7 +30,19 @@ void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFD78);
+void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
+    MATRIX m;
+
+    func_800316D8(arg1, &m);
+    gte_SetRotMatrix(&m);
+    m.t[0] = arg0[0];
+    m.t[1] = arg0[1];
+    m.t[2] = arg0[2];
+    gte_SetTransMatrix(&m);
+    func_800CF8EC(arg2, 0, (s32)arg3);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 void func_800CFE88(MATRIX *arg0, s32 arg1, s32 arg2) {
     gte_SetRotMatrix(arg0);
@@ -131,7 +143,27 @@ void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0580);
+void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
+    s16 a[4];
+    s32 b[2];
+    struct {
+        XY32 xy;
+        s16 z;
+    } r;
+    MATRIX m;
+
+    r.xy = *arg1;
+    r.z = arg2;
+    func_800316D8(&r, &m);
+    gte_SetRotMatrix(&m);
+    gte_ldtr0();
+    b[1] = 0;
+    b[0] = 0;
+    func_800CF8EC(0, 0x1000, (s32)a);
+    func_800CF808((s16 *)b, a, arg0);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 *arg5) {
     SVECTOR v;
@@ -1968,7 +2000,7 @@ void func_800DBD10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
     func_800DC988(arg2, arg3, (BtlBone *)&s->unk0->unk24);
     if (arg0 != 0) {
-        func_800DCB20(s->unk0, arg0);
+        func_800DCB20(s->unk0, (VECTOR *)arg0);
     }
     s->unk0->unk10 = 0;
     n = s->unk0->unk8->unk3;
@@ -2027,7 +2059,7 @@ void func_800DC048(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
     func_800DC988(arg4, arg5, (BtlBone *)&s->unk0->unk24);
     if (arg0 != 0) {
-        func_800DCB20(s->unk0, arg0);
+        func_800DCB20(s->unk0, (VECTOR *)arg0);
     }
     s->unk0->unk10 = 0;
     n = s->unk0->unk8->unk3;
@@ -2272,7 +2304,7 @@ void func_800DCA18(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {
     *arg2 = arg0->unk20[arg1];
 }
 
-void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3) {
+void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
     SVECTOR r;
     VECTOR t;
     if (arg1 != NULL) {
