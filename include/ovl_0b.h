@@ -755,7 +755,7 @@ typedef struct BtlCmd8 {
     u8 pad9;
     u8 unkA; /* mp cost */
     u8 unkB;
-    u8 padC[0xE - 0xC];
+    u16 unkC;
     u16 unkE; /* name text offset */
 } BtlCmd8;
 
@@ -1703,7 +1703,10 @@ void func_8002C158(void *);
 void func_800553EC(s32, s32, s32, s32);
 s32 func_80027F34(s32); /* main.c defines it returning u8 */
 typedef struct {
-    u8 pad0[8];
+    u32 unk0_0 : 8;
+    u32 unk0_8 : 9;
+    u32 unk0_17 : 15;
+    u8 pad4[4];
     s32 unk8;
 } Unk8006B1F4; /* 0xC */
 extern Unk8006B1F4 D_8006B1F4[];
@@ -2332,6 +2335,8 @@ typedef struct {
 
 void func_800C9040(TexAnimSet *);
 BtlUnit *func_800C1DEC(void);
+u16 func_800B081C(s32);
+void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);
 void func_800C9374(BtlUnit9C50 *, s32);

@@ -5689,4 +5689,151 @@ void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b", D_800A7948);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C28F4);
+void func_800C28F4(BtlCmd *cmd) {
+    BtlUnit *u = cmd->unk4;
+    s32 id;
+    s32 k;
+    u16 t;
+
+    switch (cmd->unkE) {
+    case 0x1:
+    case 0x31:
+    case 0x34:
+        if (u->unk68 & 1) {
+            id = D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x64;
+        } else {
+            id = 0x77;
+        }
+        func_800C2598(cmd, id, 0);
+        break;
+    case 0x2:
+        if (u->unk68 & 1) {
+            k = D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
+        } else {
+            k = 0x13;
+        }
+        switch (k) {
+        case 0:
+            func_800C2598(cmd, 0xC8, 0);
+            break;
+        case 1:
+            func_800C2598(cmd, 0x111, 0);
+            break;
+        case 0xE:
+            func_800C2598(cmd, 0x13, 0);
+            break;
+        case 0xF:
+            func_800C2598(cmd, 0x77, 0);
+            break;
+        default:
+            func_800C2598(cmd, 0x14, 0);
+            break;
+        }
+        break;
+    case 0x4:
+        func_800CDEF0(cmd);
+        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[12];
+        u->unkA0->unk3A = 0;
+        func_800B2804(u);
+        return;
+    case 0x7:
+        func_800CDEF0(cmd);
+        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+        return;
+    case 0xE:
+    case 0x33:
+        func_800C2598(cmd, D_8006B1F4[cmd->unkF - 0xE0].unk0_8, 0);
+        break;
+    case 0xF:
+        /* padded: the first jump table is 8-aligned in its object */
+        __asm__(".section .rodata\n\t.word 0\n\t.section .text");
+        switch (D_80069018[cmd->unkF].unk8) {
+        case 1:
+            func_800C2598(cmd, 0x110, 0);
+            break;
+        case 2:
+            func_800C2598(cmd, 0x10A, 0);
+            break;
+        case 3:
+        case 4:
+            func_800C2598(cmd, 0x10B, 0);
+            break;
+        case 5:
+            func_800C2598(cmd, 0x10C, 0);
+            break;
+        case 6:
+            func_800C2598(cmd, 0x10D, 0);
+            break;
+        case 7:
+            func_800C2598(cmd, 0x109, 0);
+            break;
+        case 8:
+        case 9:
+        case 10:
+            func_800C2598(cmd, 0x10E, 0);
+            break;
+        case 11:
+            func_800C2598(cmd, 0x10F, 0);
+            break;
+        case 12:
+            func_800C2598(cmd, 0x115, 0);
+            break;
+        }
+        break;
+    case 0x2F:
+        if ((u16)cmd->unkC < 0x10 && (cmd->unk8->unk8 & 8) && !cmd->unk10.b.unk0_0) {
+            t = func_800B081C((u16)cmd->unkC);
+            if (t) {
+                cmd->unkC = t;
+                cmd->unk10.b.unk0_5 = 1;
+            }
+        }
+    case 0x35:
+    case 0x36:
+    case 0x37:
+        func_800CA530(cmd);
+        return;
+    case 0x3B:
+        id = 0x1E9;
+        if (u->unk3C & 0x4000) {
+            id = 0x101;
+        }
+        func_800C2598(cmd, id, 0);
+        break;
+    case 0x12:
+        switch (cmd->unkF) {
+        case 0x31:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x99;
+            break;
+        case 0x33:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x9A;
+            break;
+        case 0x35:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x9B;
+            break;
+        case 0x37:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x9C;
+            break;
+        case 0x3A:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x9D;
+            break;
+        case 0x3C:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x9E;
+            break;
+        case 0x3E:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0x9F;
+            break;
+        case 0x40:
+            D_8006794C->unk1C->unk8E4.battle->unk11BB = 0xA0;
+            break;
+        }
+    default:
+        if ((cmd->unk8->unk0_0 == 3 && !cmd->unk10.b.unk0_0) || (cmd->unk10.w & 0x600) ||
+            cmd->unkE == 0x20 || cmd->unkE == 0x21) {
+            func_800C2598(cmd, cmd->unk8->unkC, 0);
+        } else {
+            func_800C2598(cmd, cmd->unk8->unk0_8, 0);
+        }
+        break;
+    }
+}
