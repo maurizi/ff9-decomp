@@ -2796,4 +2796,16 @@ void func_800637C0(s32); /* BIOS B0 call */
 void func_80065D90(Character *, s32);
 void func_80065DF4(Character *, s32);
 
+/* 12-byte entry of a type-0x12 resource table (func_800633E4) */
+typedef struct {
+    u16 unk0; /* id */
+    u16 unk2;
+    u32 unk4 : 24; /* data offset from the entry */
+    u32 unk7 : 8;
+    u32 unk8;
+} DbEntry12;
+
+extern TimHeader D_800834D0;
+extern s32 D_8007BCB0;
+
 #endif

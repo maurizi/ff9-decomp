@@ -11001,7 +11001,20 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", MatrixNormal);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062E3C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063088);
+FileEntry *func_80063088(FileTable *t, s32 id) {
+    FileEntry *e;
+    FileEntry *end;
+
+    id &= 0xFFFFFF;
+    e = t->unk4;
+    end = e + t->unk2;
+    for (; e < end; e++) {
+        if ((e->unk0 & 0xFFFFFF) == id) {
+            return e;
+        }
+    }
+    return NULL;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetPolyF4);
 
@@ -11023,7 +11036,28 @@ s32 func_800632B4(s32 n, s8 *p) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", MulRotMatrix);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800633E4);
+u16 *func_800633E4(s32 id) {
+    s32 i;
+    s32 j;
+    u8 *blk;
+    DbEntry12 *tab;
+    DbEntry12 *e;
+
+    for (i = D_80073C40.unk2 - 1; i >= 0; i--) {
+        blk = (u8 *)func_8001C8B0((s32)D_80073C40.unk4[i], 2, 0x120000, 0);
+        if (blk != (u8 *)-1) {
+            j = blk[1] - 1;
+            tab = (DbEntry12 *)(blk + 4);
+            for (; j >= 0; j--) {
+                e = &tab[j];
+                if (e->unk0 == (u16)id) {
+                    return (u16 *)e;
+                }
+            }
+        }
+    }
+    return NULL;
+}
 
 u8 *func_800634A8(s32 a) {
     u16 *p = func_800633E4(a);
@@ -11176,7 +11210,12 @@ void func_80064CA4(u8 r, u8 g, u8 b) {
     func_800512E4(r | (g << 8) | (b << 16));
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80064CDC);
+void func_80064CDC(u16 a, u16 b) {
+    func_800515B8();
+    func_800512B8(a, b);
+    D_8007BCB0 = a;
+    func_80051610();
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80064D28);
 
