@@ -1273,6 +1273,7 @@ typedef struct {
     s32 unk8;
     s32 unkC;
     s32 unk10;
+    s32 unk14;
 } Unk80080AA0;
 void func_8005A014(); /* (Unk80080AA0 *, u8 *, u8 *, s32) */
 extern Unk80080AA0 D_80080AA0;
