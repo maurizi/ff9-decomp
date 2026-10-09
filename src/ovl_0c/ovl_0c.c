@@ -2912,7 +2912,16 @@ void func_800BC450(s32 arg0, s32 arg1, WmCell *arg2) {
     arg2->unk3 = cells[arg0 * 2 + arg1].unk3;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BC490);
+void func_800BC490(s32 arg0, s32 arg1, WmCell *arg2) {
+    s32 k;
+    WmCell *cells;
+
+    k = arg0 % D_800D3304 * D_800D3308 + arg0 / D_800D3304;
+    cells = D_800CF410->unk4;
+    arg2->unk0 = cells[k * 2 + arg1].unk0;
+    arg2->unk2 = cells[k * 2 + arg1].unk2;
+    arg2->unk3 = cells[k * 2 + arg1].unk3;
+}
 
 u8 func_800BC528(s32 arg0) {
     return D_800CCFB4[arg0];
