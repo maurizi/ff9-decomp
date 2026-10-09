@@ -2730,4 +2730,25 @@ void func_80021770(void);
 void func_800320D8(void);
 void func_80053924(void);
 
+#define ARRAY_COUNT(a) (sizeof(a) / sizeof((a)[0]))
+
+/* first sector of FF9.IMG: directory records copied to GameState.unk14 */
+typedef struct {
+    u8 pad0[8];
+    s32 unk8; /* directory count */
+    u8 padC[4];
+    DirInfo unk10[15];
+} Ff9ImgHeader;
+
+
+/* pad button bindings */
+typedef struct {
+    u32 unk0; /* button mask */
+    s32 unk4; /* action index */
+} Unk800686C0;
+extern u32 D_80068680[8];
+extern s32 D_800686A0[];
+extern Unk800686C0 D_800686C0[1];
+void func_80019708(s32, u32, s32);
+
 #endif

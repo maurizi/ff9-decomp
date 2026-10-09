@@ -896,17 +896,38 @@ void func_8001DA78(u8 **arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001DAA4);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800103B0);
+void func_8001DCB8(void) {
+    CdlFILE fp;
+    char *names[4] = { "\\SLUS_012.51;1", "\\SLUS_012.95;1", "\\SLUS_012.96;1", "\\SLUS_012.97;1" };
+    s32 i;
+    Ff9ImgHeader *hdr;
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800103C0);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800103D0);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800103E0);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800103F0);
-
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001DCB8);
+    D_8006794C->unkB = 0xFF;
+    for (i = 0; i < ARRAY_COUNT(names); i++) {
+        if (CdSearchFile(&fp, names[i])) {
+            D_8006794C->unkB = 1 << (i % 4);
+            break;
+        }
+    }
+    if (D_8006794C->unkB != 0xFF) {
+        while (func_80022B18()) {
+        }
+        while ((D_8006794C->unk20 = func_80022AC4("\\FF9.IMG;1")) == -1) {
+            while (func_80022B18()) {
+            }
+        }
+        while (func_80022B18()) {
+        }
+        while (func_80022B18()) {
+        }
+        hdr = (Ff9ImgHeader *)((u8 *)D_8006794C - 0x1800);
+        func_80022C60(D_8006794C->unk20, 0x800, hdr, NULL);
+        while (func_80022B18()) {
+        }
+        D_8006794C->unk30 = hdr->unk8;
+        memmove(D_8006794C->unk14, hdr->unk10, D_8006794C->unk30 * sizeof(DirInfo));
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001DE50);
 
