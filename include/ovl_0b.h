@@ -102,6 +102,30 @@ typedef struct {
 } Unk80100E30;
 extern Unk80100E30 D_80100E30;
 
+/* model animation event list (func_8001C8B0 section 2, tag 0x14) */
+typedef struct {
+    union {
+        s32 w; /* sound id */
+        struct {
+            u8 pad0[2];
+            u8 unk2; /* kind */
+        } b;
+    } unk0;
+    u8 pad4[0x10 - 4];
+} BtlAnimEvt; /* 0x10 */
+
+typedef struct {
+    u16 unk0;
+    u16 unk2; /* count */
+    BtlAnimEvt unk4[1];
+} BtlAnimEvtList;
+
+/* battle task with a step counter (func_800AE618) */
+typedef struct {
+    u8 pad0[6];
+    s16 unk6; /* step */
+} BtlStepTask;
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;

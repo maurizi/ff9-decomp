@@ -560,7 +560,34 @@ s32 func_800AE570(s32 arg0, s32 *arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE618);
+s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
+    BtlAnimEvtList *l;
+    s32 i;
+    BtlAnimEvt *e;
+    void **m;
+
+    switch (arg1->unk6) {
+    case 1:
+        return ++arg1->unk6;
+    case 2:
+        m = &D_8006794C->unk1C->unk8E4.battle->unk1354->unk20[arg0];
+        l = (BtlAnimEvtList *)func_8001C8B0((s32)*m, 2, 0x140000, 0);
+        e = l->unk4;
+        for (i = l->unk2 - 1; i >= 0; i--) {
+            if (e[i].unk0.b.unk2 == 9) {
+                func_800AD90C(0x7700, e[i].unk0.w, arg0 + 4, 0, 0);
+                break;
+            }
+        }
+        return ++arg1->unk6;
+    case 3:
+        if (func_800AD90C(0xC00, 0, 0, 0, 0) == 0) {
+            arg1->unk6 = 0;
+        }
+        return arg1->unk6;
+    }
+    return 0;
+}
 
 s32 func_800AE764(s32 arg0) {
     FileTable *t = D_8006794C->unk1C->unk7E4;
