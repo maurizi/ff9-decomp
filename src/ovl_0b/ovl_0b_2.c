@@ -2715,7 +2715,7 @@ void func_800E3C98(void) {
 }
 
 void func_800E3CEC(s32 arg0, s32 arg1) {
-    func_800E1534(&D_801044B8, &D_801044C8, arg0, arg1);
+    func_800E1534(&D_801044B8, &D_801044C8, (u8 *)arg0, arg1);
 }
 
 void func_800E3D20(s32 arg0, s32 arg1) {

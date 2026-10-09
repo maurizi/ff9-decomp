@@ -1140,12 +1140,49 @@ extern u8 D_800F6CB4[];
 extern char D_800A7F60[];
 extern char D_800A7F78[];
 extern char D_800A81A8[];
+/* effect element (0x28) in an effect file, after the header */
+typedef struct {
+    u8 unk0; /* kind, 9 = no texture */
+    u8 unk1; /* 0xFF = no second texture */
+    u8 pad2[0x1C - 2];
+    s32 unk1C; /* offset, relocated on load */
+    s32 unk20; /* offset, relocated on load */
+    u8 pad24[0x28 - 0x24];
+} EffElem; /* 0x28 */
+
+typedef struct {
+    u8 pad0[4];
+    s16 unk4; /* count of EffElem following */
+    u8 pad6[0x14 - 6];
+} EffElemHdr; /* 0x14 */
+
+typedef struct {
+    s32 unk0;
+    u8 pad4[0x3C - 4];
+    s32 unk3C;
+} EffTail;
+
 typedef struct Pool6CEntry {
-    u8 pad0[0x28];
+    u8 *unk0; /* effect file */
+    u8 *unk4;
+    u8 pad8[0xE - 8];
+    s16 unkE;
+    s16 unk10;
+    u8 pad12[0x14 - 0x12];
+    s32 unk14;
+    EffElem *unk18;
+    u8 pad1C[0x22 - 0x1C];
+    s16 unk22;
+    EffTail *unk24;
     SVECTOR *unk28;
-    u8 pad2C[0x30 - 0x2C];
-    s16 unk30;
-    u8 pad32[0x6C - 0x32];
+    s32 unk2C;
+    s16 unk30; /* in use */
+    s16 unk32;
+    s16 unk34;
+    s16 unk36;
+    u8 pad38[0x3A - 0x38];
+    s16 unk3A;
+    u8 pad3C[0x6C - 0x3C];
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
@@ -1822,7 +1859,7 @@ BtlObjSlot *func_800DCFB0(s32, char *);
 u8 func_800DD10C(BtlUnit9C *);
 void func_800E00DC(s32, Pool30Entry *, Pool30 *);
 void func_800E14D8(u32, Pool6C *);
-void func_800E1534(Pool30 *, Pool6C *, s32, s32);
+Pool6CEntry *func_800E1534(Pool30 *, Pool6C *, u8 *, s32);
 void func_800E1708(Pool30 *, s32, s32);
 void func_800E1810(Pool30 *, Pool6CEntry *);
 void func_800E0168(Pool30 *);
@@ -2046,7 +2083,7 @@ void func_800CB1D4(u16, u16 *, u16 *);
 void func_800C2FFC(s32);
 void func_800CA28C(BtlCmd8 *, BtlCmd8 *);
 void func_800C9EE0(Unk800C9EE0 *, BtlUnit *, s32 *, s32);
-void func_800CA0A0(Unk800C9D1C *, BtlUnit *, s32);
+void func_800CA0A0(Unk800C9D1C *, BtlUnit *);
 void func_800C9D1C(Unk800C9D1C *, Battle4880 *);
 s32 func_800C1184(u32 *);
 void func_800CF560(s32);
