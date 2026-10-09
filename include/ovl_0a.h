@@ -288,8 +288,9 @@ typedef struct {
 } BgTile;
 
 typedef struct {
-    u8 unk0; /* flags */
-    u8 pad1[3];
+    unsigned unk0 : 8; /* flags */
+    unsigned unk1 : 12; /* depth */
+    unsigned unk2 : 12; /* depth */
     u16 unk4; /* scroll wrap x */
     u16 unk6; /* scroll wrap y */
     s16 unk8;
@@ -523,6 +524,12 @@ typedef struct {
     s32 unk24; /* plane distance (16.16) */
 } Unk800C9E00; /* 0x28 */
 
+/* walkmesh edge */
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* index in the neighbour's edge list, -1 = none */
+} Unk800C9E08;
+
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -532,7 +539,7 @@ typedef struct {
     struct Unk800C9DFC *unkC;
     Unk800C9E00 *unk10;
     Unk800C9E04 *unk14;
-    void *unk18;
+    Unk800C9E08 *unk18;
     Unk800C9DF8Tri *unk1C;
     Unk800C9E10 *unk20;
 } Unk800C9DF0;
@@ -889,6 +896,7 @@ typedef struct FieldObjPlace {
 FieldLight *func_800B3254(Unk800B3254 *);
 Unk800B3294 *func_800B3294(Unk800B3254 *, s32);
 s32 func_800C76E8(s32, u16 *, u16 *);
+s32 func_800C6DA4(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
 FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, s16 *);
 

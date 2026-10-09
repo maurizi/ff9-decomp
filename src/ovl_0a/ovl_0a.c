@@ -4140,7 +4140,37 @@ s32 func_800C6C04(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C6DA4);
+/* link the neighbour edges between the nodes of different triangles */
+s32 func_800C6DA4(Unk800C9DF8 *arg0, Unk800C9E10 *arg1, Unk800C9DF8Pt *arg2) {
+    s32 *ids = (s32 *)((u8 *)arg0 + arg2->unk6);
+    Unk800C9E00 *n;
+    Unk800C9E00 *m;
+    Unk800C9E08 *e;
+    s16 nb;
+    u16 i;
+    u16 j;
+    u16 k;
+
+    for (i = 0; i < arg2->unk4; i++, ids++) {
+        n = &D_800C9DF0.unk10[*ids];
+        for (j = 0; j < 3; j++) {
+            nb = n->unk18[j];
+            if (nb >= 0) {
+                m = &D_800C9DF0.unk10[nb];
+                if (n->unk4 != m->unk4) {
+                    e = &D_800C9DF0.unk18[n->unk12[j]];
+                    if (e->unk2 >= 0) {
+                        k = e->unk2;
+                        m->unk18[k] = *ids;
+                        e = &D_800C9DF0.unk18[m->unk12[k]];
+                        e->unk2 = j;
+                    }
+                }
+            }
+        }
+    }
+    return 1;
+}
 
 s32 func_800C6E94(void) {
     s32 i;
