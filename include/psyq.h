@@ -299,4 +299,177 @@ long SpuSetTransferMode(long mode);
 long SetRCnt(unsigned long spec, unsigned short target, long mode);
 long StartRCnt(unsigned long spec);
 
+/* merged from field/world-map agent */
+#define getTPage(tp, abr, x, y) \
+    ((((tp) & 0x3) << 7) | (((abr) & 0x3) << 5) | (((y) & 0x100) >> 4) | (((x) & 0x3ff) >> 6) | \
+     (((y) & 0x200) << 2))
+#define getClut(x, y) (((y) << 6) | (((x) >> 4) & 0x3f))
+#define setXY4(p, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3) \
+    ((p)->x0 = (_x0), (p)->y0 = (_y0), (p)->x1 = (_x1), (p)->y1 = (_y1), (p)->x2 = (_x2), (p)->y2 = (_y2), \
+     (p)->x3 = (_x3), (p)->y3 = (_y3))
+#define setXYWH(p, _x0, _y0, _w, _h) \
+    ((p)->x0 = (_x0), (p)->y0 = (_y0), (p)->x1 = (_x0) + (_w), (p)->y1 = (_y0), (p)->x2 = (_x0), \
+     (p)->y2 = (_y0) + (_h), (p)->x3 = (_x0) + (_w), (p)->y3 = (_y0) + (_h))
+#define setUV4(p, _u0, _v0, _u1, _v1, _u2, _v2, _u3, _v3) \
+    ((p)->u0 = (_u0), (p)->v0 = (_v0), (p)->u1 = (_u1), (p)->v1 = (_v1), (p)->u2 = (_u2), (p)->v2 = (_v2), \
+     (p)->u3 = (_u3), (p)->v3 = (_v3))
+#define setUVWH(p, _u0, _v0, _w, _h) \
+    ((p)->u0 = (_u0), (p)->v0 = (_v0), (p)->u1 = (_u0) + (_w), (p)->v1 = (_v0), (p)->u2 = (_u0), \
+     (p)->v2 = (_v0) + (_h), (p)->u3 = (_u0) + (_w), (p)->v3 = (_v0) + (_h))
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+} SPRT_16;
+long SquareRoot0(long a);
+void SetGeomOffset(long ofx, long ofy);
+typedef struct {
+    s16 vx, vy;
+} DVECTOR;
+#define setVector(v, _x, _y, _z) (v)->vx = _x, (v)->vy = _y, (v)->vz = _z
+int VectorNormal(VECTOR *v0, VECTOR *v1);
+#define gte_SetRotMatrix(r0) __asm__ volatile( \
+    "lw\t$12, 0(%0);" \
+    "lw\t$13, 4(%0);" \
+    "ctc2\t$12, $0;" \
+    "ctc2\t$13, $1;" \
+    "lw\t$12, 8(%0);" \
+    "lw\t$13, 12(%0);" \
+    "lw\t$14, 16(%0);" \
+    "ctc2\t$12, $2;" \
+    "ctc2\t$13, $3;" \
+    "ctc2\t$14, $4" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetTransMatrix(r0) __asm__ volatile( \
+    "lw\t$12, 20(%0);" \
+    "lw\t$13, 24(%0);" \
+    "ctc2\t$12, $5;" \
+    "lw\t$14, 28(%0);" \
+    "ctc2\t$13, $6;" \
+    "ctc2\t$14, $7" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetGeomScreen(r0) __asm__ volatile( \
+    "ctc2\t%0, $26" \
+    : : "r"(r0))
+#define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
+    "sll\t$12, %0, 16;" \
+    "sll\t$13, %1, 16;" \
+    "ctc2\t$12, $24;" \
+    "ctc2\t$13, $25" \
+    : : "r"(r0), "r"(r1) : "$12", "$13")
+#define gte_ldv0(r0) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 4(%0)" \
+    : : "r"(r0))
+#define gte_ldv1(r0) __asm__ volatile( \
+    "lwc2\t$2, 0(%0);" \
+    "lwc2\t$3, 4(%0)" \
+    : : "r"(r0))
+#define gte_ldv2(r0) __asm__ volatile( \
+    "lwc2\t$4, 0(%0);" \
+    "lwc2\t$5, 4(%0)" \
+    : : "r"(r0))
+#define gte_ldv3(r0, r1, r2) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 4(%0);" \
+    "lwc2\t$2, 0(%1);" \
+    "lwc2\t$3, 4(%1);" \
+    "lwc2\t$4, 0(%2);" \
+    "lwc2\t$5, 4(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldclmv(r0) __asm__ volatile( \
+    "lhu\t$12, 0(%0);" \
+    "lhu\t$13, 6(%0);" \
+    "lhu\t$14, 12(%0);" \
+    "mtc2\t$12, $9;" \
+    "mtc2\t$13, $10;" \
+    "mtc2\t$14, $11" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_stclmv(r0) __asm__ volatile( \
+    "mfc2\t$12, $9;" \
+    "mfc2\t$13, $10;" \
+    "mfc2\t$14, $11;" \
+    "sh\t$12, 0(%0);" \
+    "sh\t$13, 6(%0);" \
+    "sh\t$14, 12(%0)" \
+    : : "r"(r0) : "$12", "$13", "$14", "memory")
+#define gte_stsxy(r0) __asm__ volatile( \
+    "swc2\t$14, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stsxy3(r0, r1, r2) __asm__ volatile( \
+    "swc2\t$12, 0(%0);" \
+    "swc2\t$13, 0(%1);" \
+    "swc2\t$14, 0(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2) : "memory")
+#define gte_stsz(r0) __asm__ volatile( \
+    "swc2\t$19, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stotz(r0) __asm__ volatile( \
+    "swc2\t$7, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stopz(r0) __asm__ volatile( \
+    "swc2\t$24, 0(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stflg(r0) __asm__ volatile( \
+    "cfc2\t$12, $31;" \
+    "nop;" \
+    "sw\t$12, 0(%0)" \
+    : : "r"(r0) : "$12", "memory")
+#define GTE_NOPS ".word\t0x00000000;.word\t0x00000000;"
+#define gte_rtps() __asm__ volatile(GTE_NOPS ".word\t0x4A180001")
+#define gte_rtpt() __asm__ volatile(GTE_NOPS ".word\t0x4A280030")
+#define gte_nclip() __asm__ volatile(GTE_NOPS ".word\t0x4B400006")
+#define gte_avsz3() __asm__ volatile(GTE_NOPS ".word\t0x4B58002D")
+#define gte_ldopv1(r0) __asm__ volatile( \
+    "lw\t$12, 0(%0);" \
+    "lw\t$13, 4(%0);" \
+    "ctc2\t$12, $0;" \
+    "lw\t$14, 8(%0);" \
+    "ctc2\t$13, $2;" \
+    "ctc2\t$14, $4" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_ldopv2(r0) __asm__ volatile( \
+    "lwc2\t$11, 8(%0);" \
+    "lwc2\t$9, 0(%0);" \
+    "lwc2\t$10, 4(%0)" \
+    : : "r"(r0))
+#define gte_stlvnl(r0) __asm__ volatile( \
+    "swc2\t$25, 0(%0);" \
+    "swc2\t$26, 4(%0);" \
+    "swc2\t$27, 8(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_rtir() __asm__ volatile(GTE_NOPS ".word\t0x4A49E012")
+#define gte_rtir_sf0() __asm__ volatile(GTE_NOPS ".word\t0x4A41E012")
+#define gte_rtv0() __asm__ volatile(GTE_NOPS ".word\t0x4A486012")
+#define gte_rtv0tr() __asm__ volatile(GTE_NOPS ".word\t0x4A480012")
+#define gte_op0() __asm__ volatile(GTE_NOPS ".word\t0x4B70000C")
+#define gte_op12() __asm__ volatile(GTE_NOPS ".word\t0x4B78000C")
+#define gte_gpf0() __asm__ volatile(GTE_NOPS ".word\t0x4B90003D")
+#define gte_gpf12() __asm__ volatile(GTE_NOPS ".word\t0x4B98003D")
+#define gte_MulMatrix0(r1, r2, r3) \
+    { \
+        gte_SetRotMatrix(r1); \
+        gte_ldclmv(r2); \
+        gte_rtir(); \
+        gte_stclmv(r3); \
+        gte_ldclmv((s16 *)(r2) + 1); \
+        gte_rtir(); \
+        gte_stclmv((s16 *)(r3) + 1); \
+        gte_ldclmv((s16 *)(r2) + 2); \
+        gte_rtir(); \
+        gte_stclmv((s16 *)(r3) + 2); \
+    }
+long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3, long *sxy0, long *sxy1, long *sxy2, long *sxy3, long *p, long *flag);
+int MargePrim(void *p0, void *p1);
+void SetLightMatrix(MATRIX *m);
+void SetColorMatrix(MATRIX *m);
+MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
+void SetRotMatrix(MATRIX *m);
+VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
+void SetTransMatrix(MATRIX *m);
+void SetPolyFT4(POLY_FT4 *p);
+void SetPolyF4(POLY_F4 *p);
+
 #endif

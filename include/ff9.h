@@ -60,11 +60,10 @@ typedef struct {
     u32 unkC;     /* exp, capped at 9999999 */
     u16 unk10;    /* hp */
     s16 unk12;    /* mp */
-    u8 pad14[0x16 - 0x14];
-    u8 unk16;
+    u8 pad14[0x17 - 0x14];
     u8 unk17;
     u16 unk18;    /* max hp */
-    s16 unk1A;    /* max mp */
+    u16 unk1A;    /* max mp */
     u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
@@ -144,6 +143,18 @@ typedef union {
     struct Battle *battle;
 } Unk8E4Ptr;
 
+typedef struct Unk8E0 {
+    u8 pad0[8];
+    void *unk8; /* -> 0x98-byte record (Unk8D4) */
+    void *unkC; /* actor */
+    u8 pad10[4];
+} Unk8E0; /* 0x14 */
+
+/* 0x98-byte per-object record (GameData.unk8D4 / unk8DC) */
+typedef struct Unk8D4 {
+    u8 pad0[0x98];
+} Unk8D4;
+
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
@@ -199,7 +210,8 @@ typedef struct {
     u8 unk826[2];
     u8 pad828[0x830 - 0x828];
     u16 unk830[2];
-    u8 pad834[0x838 - 0x834];
+    u16 unk834;
+    u16 unk836;
     s32 (*unk838)(s32, void *);
     void (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
@@ -209,7 +221,8 @@ typedef struct {
     u8 pad849[0x84C - 0x849];
     Unk7D4 *unk84C; /* second (kanji) font table */
     u8 unk850;
-    u8 pad851[0x854 - 0x851];
+    u8 unk851;
+    u16 unk852;
     u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
     Unk880 unk880;
     u8 unk890;
@@ -225,8 +238,11 @@ typedef struct {
     u8 pad8C0[0x8C4 - 0x8C0];
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
-    u8 pad8CC[0x8E0 - 0x8CC];
-    struct Unk8E0 *unk8E0; /* [unit id] */
+    u8 pad8CC[0x8D4 - 0x8CC];
+    struct Unk8D4 *unk8D4; /* [9] */
+    struct Unk8E0 *unk8D8; /* [9] */
+    struct Unk8D4 *unk8DC;
+    struct Unk8E0 *unk8E0; /* indexed by unk8E4.field->unk8 */
     Unk8E4Ptr unk8E4;
 } GameData;
 
@@ -866,11 +882,14 @@ typedef struct {
     u8 unk7;
     u8 pad8[0xB - 8];
     u8 unkB;
-    u8 padC[0x11 - 0xC];
+    u8 padC[0xE - 0xC];
+    u8 unkE;
+    u8 unkF;
+    u8 pad10;
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
-    u8 pad24[0x26 - 0x24];
+    s16 unk24;
     u8 unk26;
     u8 pad27;
     u16 unk28;
@@ -1537,7 +1556,7 @@ void func_80035E40(void);
 void func_80035F94(void);
 void func_80060D1C(s32, s32, s32, s32);
 void func_80060ED8(s32, s32, void (*)(void));
-s32 func_800C44F4(s16); /* field overlay (ovl_0a) */
+s32 func_800C44F4(u32); /* field overlay (ovl_0a) */
 extern CdRequest D_80076148;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 func_80021320(void);
