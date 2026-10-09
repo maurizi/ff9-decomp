@@ -464,14 +464,14 @@ s16 func_800A9BE4(s32 arg0) {
     switch (*state) {
     case 1:
         if (arg0 & 0x200) {
-            func_800AA24C(D_8006794C->unk1C->unkE, 0x8000, ld);
+            func_800AA24C(D_8006794C->unk1C->unkE, 0x8000, (Unk800AA24C *)ld);
             *state = 2;
             break;
         }
         *state = 3;
         break;
     case 2:
-        if (func_800AA24C(D_8006794C->unk1C->unkE, arg0, ld) == 0) {
+        if (func_800AA24C(D_8006794C->unk1C->unkE, arg0, (Unk800AA24C *)ld) == 0) {
             *state = 3;
         }
         break;
@@ -558,7 +558,7 @@ s16 func_800A9BE4(s32 arg0) {
     return *state;
 }
 
-/* padded: the next jump table is 8-aligned in its object */
+/* padded: a zero word follows func_800A9BE4's jump table */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 s32 func_800AA08C(Unk800AA08C *arg0, s32 arg1) {
@@ -607,7 +607,87 @@ s16 func_800AA140(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     return st->unk0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA24C);
+s32 func_800AA24C(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
+    Unk800AA24C *st;
+    GameData *gd;
+    Battle *b;
+    CdReadCtx *cd;
+    s16 *hb;
+    s32 n;
+    s16 *p;
+    s32 sz;
+    s32 h;
+
+    st = arg2;
+    gd = D_8006794C->unk1C;
+    b = gd->unk8E4.battle;
+    cd = gd->unk854;
+    if (arg1 & 0x8000) {
+        b->unk0 &= ~2;
+        st->unk0 = 2;
+    }
+loop:
+    switch (st->unk0) {
+    case 1:
+        if (func_800217C4(cd) != 0) {
+            break;
+        }
+        func_8001DA78(&arg2->unk24, cd->unk10);
+        st->unk0 = arg2->unk2;
+        goto loop;
+    case 2:
+        arg2->unk24 = b->unk153C[0];
+        arg2->unk8.w[0] = -1;
+        arg2->unk8.w[1] = -1;
+        arg2->unk8.w[2] = -1;
+        arg2->unk8.w[3] = -1;
+        arg2->unk8.h[0] = 0x201;
+        if (arg1 & 0x100) {
+            func_800AA24C_collect(&arg2->unk8.h[4], 9, 2);
+        }
+        st->unk0 = 5;
+        goto loop;
+    case 5:
+        hb = arg2->unk8.h;
+        n = func_800AAEF0(0xB, (u16 *)hb, (u16 *)&arg2->unk8.h[6], (u16 **)&p, &sz);
+        if (n != -1) {
+            func_8002177C(cd, n, sz << 11, (void *)arg2->unk24, 0, -1, 0);
+            if (*p == 0x201) {
+                arg2->unk4 = -1;
+            } else {
+                arg2->unk4 = p - hb;
+            }
+            *p = -1;
+            arg2->unk2 = 6;
+            st->unk0 = 1;
+            break;
+        }
+        st->unk0 = 7;
+        goto loop;
+    case 6:
+        if (func_80055DCC() != 0) {
+            break;
+        }
+        h = func_8001C8B0((s32)cd->unk8, 2, 0x90000, 0);
+        if (arg2->unk4 == -1) {
+            func_80055D80(h, 0);
+        } else {
+            func_80056048(h, arg2->unk4 & 3, 0);
+        }
+        st->unk0 = 5;
+        goto loop;
+    case 7:
+        if (func_80055DCC() != 0) {
+            break;
+        }
+        st->unk0 = 0;
+        break;
+    }
+    return st->unk0;
+}
+
+/* padded: a zero word follows func_800AA24C's jump table */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA504);
 

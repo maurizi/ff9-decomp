@@ -2913,12 +2913,73 @@ void func_80023F60(s32);
 void func_80055698(s32);
 void func_800EA34C(void);
 
-s32 func_800AA24C(s16, s32, void *);
 s32 func_800AA958(s32, Unk800AA958 *);
 s32 func_800AABC4(s32, Unk800AA958 *);
 s32 func_800ABB60(s32);
 BtlUnit *func_800C1D8C(s32);
 void func_800BD698(BtlUnit *, s32, s32);
 u8 *func_80063514(s32);
+
+typedef struct {
+    s16 unk0; /* state */
+    u16 unk2; /* next state */
+    s16 unk4;
+    u8 pad6[8 - 6];
+    union {
+        s32 w[4];
+        s16 h[8];
+    } unk8;
+    u8 pad18[0x24 - 0x18];
+    s32 unk24;
+} Unk800AA24C; /* model file load state (func_800AA24C) */
+
+typedef union {
+    u32 w;
+    struct {
+        u16 id;
+        u8 type;
+        u8 kind;
+    } b;
+} FileEntryId;
+
+typedef struct {
+    FileEntryId unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} FileEntryX;
+
+s32 func_800AA24C(s16, s32, Unk800AA24C *);
+
+/* inlined into func_800AA24C: append the ids of file-table entries of the
+ * given type/kind to dst, skipping duplicates */
+static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
+    FileTable *t = D_8006794C->unk1C->unk7E4;
+    FileEntryX *first = (FileEntryX *)t->unk4;
+    FileEntryX *e = &first[t->unk2] - 1;
+    s16 *q = dst;
+    s16 *s;
+    u32 w;
+
+    do {
+        w = e->unk0.w;
+        if (e->unk0.b.type == type && (w >> 24) == kind) {
+            w &= 0xFFFF;
+            s = q - 1;
+            do {
+                if (*s == w) {
+                    goto next;
+                }
+                s--;
+            } while (s >= dst);
+            *q++ = w;
+        }
+    next:
+        e--;
+    } while (e >= first);
+}
+
+/* main exe: candidates for ff9.h */
+void func_8001DA78(void *, s32);
 
 #endif
