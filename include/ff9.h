@@ -710,9 +710,9 @@ typedef struct {
     u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
     u8 *unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
+    s32 (*unk1C)(u32); /* LFO wave functions (pitch, volume, pan) */
+    s32 (*unk20)(u32);
+    s32 (*unk24)(u32);
     u32 unk28;
     u32 unk2C;
     s32 unk30;
@@ -724,7 +724,7 @@ typedef struct {
     s32 unk48;
     s32 unk4C;
     s32 unk50;
-    u8 pad54[0x58 - 0x54];
+    s32 unk54;
     s32 unk58;
     s32 unk5C;
     s32 unk60;
@@ -804,11 +804,12 @@ typedef struct {
     u32 unk11C;
     s32 unk120;
     s32 unk124;
-    u8 pad128[0x12A - 0x128];
+    u16 unk128; /* pitch */
     u16 unk12A;
     u16 unk12C;
     s16 unk12E;
-    u8 pad130[4];
+    s16 unk130; /* volume left */
+    s16 unk132; /* volume right */
 } AkaoChannel; /* 0x134 */
 
 /* voice setup parameters for func_80059E10 */
