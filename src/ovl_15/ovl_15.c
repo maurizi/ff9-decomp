@@ -1002,7 +1002,29 @@ u8 *func_800ADE14(u8 *arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800ADE30);
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800ADF90);
+s32 func_800ADF90(u8 *s) {
+    Unk7D4 *f;
+    s32 n;
+    s32 c;
+    u8 hi;
+    u32 *g;
+
+    n = 0;
+    f = D_8006794C->unk1C->unk7D4;
+    hi = f->unk4 >> 8;
+    while ((c = *s) != 0xFF) {
+        if (c >= hi) {
+            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            s++;
+            n += (f->unkC[c] >> 28) + 1;
+        } else {
+            g = &f->unkC[c];
+            n += (*g >> 28) + 1;
+        }
+        s++;
+    }
+    return n;
+}
 
 void *func_800AE028(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
     u32 n;
