@@ -13923,7 +13923,57 @@ s32 func_80061BC8(p)
     return *p;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061C1C);
+void func_80061C1C(void) {
+    StreamHeader *h;
+    Unk80083168 *d;
+    s32 v;
+    s32 vol;
+    s32 mask;
+
+    v = func_80060A08();
+    if (v == -1) {
+        return;
+    }
+    SpuSetIRQ(0);
+    SpuSetIRQCallback(NULL);
+    h = (StreamHeader *)(D_80083168.unk2C + 0x80);
+    if (h->unk28 != 0 && D_80083168.unk48 == 0) {
+        vol = D_80083168.unk40;
+        D_80083168.unk40 = 0;
+        func_80056278(h->unk28, vol >> 8);
+    }
+    d = &D_80083168;
+    D_80083168.unk0 = (u8 *)d->unk2C;
+    d->unk14 = h->unk10;
+    d->unk18 = h->unk20;
+    mask = (1 << v) | (1 << (v + 1));
+    d->unk10 = v;
+    d->unkC = mask;
+    d->unk34 = 0;
+    func_800575D0(mask);
+    d->unk8 = h->unk18;
+    d->unk58 = h->unk1C;
+    SpuSetTransferMode(0);
+    SpuSetTransferStartAddr(0x1100);
+    D_800809E0 = 1;
+    SpuSetTransferCallback(func_80061EE4);
+    if (d->unk8 & 0x400) {
+        func_8005709C(D_80083168.unk0 + 0xD0, 0x4000);
+        func_80061BC8(&d->unk34);
+        func_80061BC8(&d->unk34);
+        func_80061BC8(&d->unk34);
+        func_80061BC8(&d->unk34);
+        d->unkC |= (1 << (v - 2)) | (1 << (v - 1));
+    } else {
+        func_8005709C(D_80083168.unk0 + 0xD0, 0x2000);
+        func_80061BC8(&d->unk34);
+        func_80061BC8(&d->unk34);
+    }
+    D_80080A70.unk20 &= ~D_80083174;
+    D_80080A70.unk24 &= ~D_80083174;
+    D_80080A70.unk1C &= ~D_80083174;
+    D_80083158.unk8 |= 0x100;
+}
 
 void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
     if (D_80083168.unkC != 0) {

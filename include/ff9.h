@@ -3478,4 +3478,20 @@ extern u16 D_8007BD1E;
 extern u8 D_8006F308[];
 extern u8 D_8006F310[];
 
+/* sound stream header (D_80083168.unk2C + 0x80), func_80061C1C */
+typedef struct {
+    u8 pad0[0x10];
+    s32 unk10;
+    u8 pad14[0x18 - 0x14];
+    s32 unk18;
+    u16 unk1C;
+    u8 pad1E[0x20 - 0x1E];
+    s32 unk20;
+    u8 pad24[0x28 - 0x24];
+    s32 unk28;
+} StreamHeader;
+
+void func_80056278(s32 a, s32 b);
+void func_80061EE4(void);
+
 #endif
