@@ -1340,7 +1340,7 @@ s32 func_80021C20(Unk80021938 *e) {
     return r;
 }
 
-void func_80021C60(void) {
+void func_80021C60() {
     s32 i;
     Unk8C8 *p;
 
@@ -6774,7 +6774,9 @@ void func_8004BBF0(void) {
     func_8004AC80();
 }
 
-s32 func_8004BC38(u8 a) {
+s32 func_8004BC38(a)
+u8 a;
+{
     s32 r = 0;
     if (D_8007B718 == 0) {
         func_8004E7FC();
@@ -11354,7 +11356,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetPolyF4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063108);
 
-s32 func_800631AC(Tween *t) {
+s32 func_800631AC(WinDef *t) {
     if (t->unkC == NULL) {
         return 0;
     }
@@ -11362,10 +11364,10 @@ s32 func_800631AC(Tween *t) {
         t->unk0--;
     } else {
         if (t->unkC->unk4 != NULL) {
-            t->unk4 += t->unkC->unk4[t->unk2];
+            t->unk4.x += t->unkC->unk4[t->unk2];
         }
         if (t->unkC->unk8 != NULL) {
-            t->unk6 += t->unkC->unk8[t->unk2];
+            t->unk4.y += t->unkC->unk8[t->unk2];
         }
         if (++t->unk2 < t->unkC->unk2) {
             return 0;

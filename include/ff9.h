@@ -1686,7 +1686,7 @@ void func_800326B0(void);
 void func_80036560(void);
 CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
 s32 func_800217C4(void *);
-void func_80021C60(void);
+void func_80021C60(); /* takes no args, but ovl_0b passes one */
 void func_80021CDC(s32);
 Unk80021938 *func_80021CFC(void);
 s32 func_800220E8(s32);
@@ -1806,11 +1806,21 @@ void func_8006252C(void);
 void func_80062750(s32);
 FileEntry *func_80063088(FileTable *, s32);
 void func_80063108(u8 *, u8 *);
+/* per-frame offset animation of a window (func_80063118 / func_800631AC) */
+typedef struct TweenDef {
+    u8 pad0[2];
+    s16 unk2; /* frame count */
+    s8 *unk4; /* x deltas */
+    s8 *unk8; /* y deltas */
+    void (*unkC)(struct TweenDef *); /* called when done */
+} TweenDef;
+
 /* text window (func_80063118 / func_800631AC) */
 typedef struct {
-    u8 pad0[4];
+    s16 unk0; /* start delay */
+    s16 unk2; /* frame */
     RECT unk4;
-    s32 unkC;
+    TweenDef *unkC; /* running animation, NULL when idle */
 } WinDef; /* 0x10 */
 void func_80063118(void *, void *, s32);
 void func_80063580(DR_TPAGE *, s32);
@@ -2195,7 +2205,7 @@ void func_80019194(void);
 void func_80032098(void);
 void func_80023A4C(void);
 void func_8001CD04(s32);
-s32 func_8004BC38(u8);
+s32 func_8004BC38(); /* defined K&R-style: u8 param (unused); some callers pass none */
 u8 func_80036300(s32);
 s32 func_8003631C(s32);
 void func_800362C8(void);
@@ -2874,24 +2884,7 @@ extern s32 D_8007AE60;
 extern s32 D_8007AE64;
 
 
-/* per-frame offset animation (func_80063118 / func_800631AC) */
-typedef struct TweenDef {
-    u8 pad0[2];
-    s16 unk2; /* frame count */
-    s8 *unk4; /* x deltas */
-    s8 *unk8; /* y deltas */
-    void (*unkC)(struct TweenDef *); /* called when done */
-} TweenDef;
-
-typedef struct {
-    s16 unk0; /* start delay */
-    s16 unk2; /* frame */
-    s16 unk4; /* x */
-    s16 unk6; /* y */
-    u8 pad8[4];
-    TweenDef *unkC;
-} Tween;
-s32 func_800631AC(Tween *);
+s32 func_800631AC(WinDef *);
 
 /* AKAO sequence header (func_8005ACB4) */
 typedef struct {

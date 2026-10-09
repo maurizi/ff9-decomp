@@ -321,7 +321,28 @@ void func_801F0978(void) {
     D_801F7A78.unk8++;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F0A44);
+void func_801F0A44(void) {
+    s32 i;
+    Character *c;
+
+    for (i = 0; i < 4; i++) {
+        D_801F7A78.unk18[i] = 0;
+        D_801F7A78.unk14[i] = 0;
+    }
+    i = 0;
+    D_801F7A78.unk9 = 0;
+    for (; i < 4; i++) {
+        if ((D_800FDF30.unkA >> i) & 1) {
+            if (D_8006794C->unk1C->unk54C[i] != NULL) {
+                D_801F7A78.unk14[i] = func_801F_canExp(D_8006794C->unk1C->unk54C[i]);
+                D_801F7A78.unk18[i] = func_801F_canAp(D_8006794C->unk1C->unk54C[i]);
+                if (D_801F7A78.unk14[i]) {
+                    D_801F7A78.unk9++;
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F0C0C);
 
@@ -359,7 +380,7 @@ void func_801F0E30(void) {
     }
 }
 
-s32 func_801F0F04(void) {
+u8 func_801F0F04(void) {
     if (D_801F7A78.unk1 != 0) {
         if (D_801F7A78.unk2 != 0) {
             goto count;
@@ -615,9 +636,84 @@ void func_801F17FC(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F1848);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F1A04);
+void func_801F1A04(s32 arg0, u32 arg1) {
+    Character *c;
+    s32 i;
+    s32 j;
+    Unk80069018 *e;
+    s32 k;
+    s32 need;
+    s32 have;
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F1BA4);
+    c = D_8006794C->unk1C->unk54C[arg0];
+    if (arg1 != 0 && func_80034A30(c)) {
+        D_801F7A78.unk24.unk4C[arg0].unk8 += arg1;
+        for (i = 0; i < 5; i++) {
+            if (c->unk39[i] != 0xFF) {
+                e = &D_80069018[c->unk39[i]];
+                for (j = 0; j < 3; j++) {
+                    if (e->unkC[j] != 0) {
+                        k = func_80034430(c->unk34 & 0xF, e->unkC[j]);
+                        if (k >= 0) {
+                            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][k].unk1;
+                            have = c->unk58[k];
+                            if (have < need) {
+                                if (arg1 >= need - have) {
+                                    c->unk58[k] = need;
+                                    func_801F21DC(arg0, e->unkC[j]);
+                                } else {
+                                    c->unk58[k] = have + arg1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+u8 func_801F1BA4(Character *c, s32 arg1) {
+    u8 ret;
+    s32 i;
+    s32 j;
+    s32 ch;
+    s32 k;
+    u8 *eq;
+    Unk80069018 *e;
+    s32 have;
+
+    ret = 0;
+    eq = c->unk39;
+    ch = c->unk34 & 0xF;
+    func_8001D898(D_801F8208, 0, 0x30);
+    for (i = 0; i < 5; i++) {
+        if (eq[i] != 0xFF) {
+            e = &D_80069018[eq[i]];
+            for (j = 0; j < 3; j++) {
+                if (e->unkC[j] != 0) {
+                    k = func_80034430(ch & 0xFF, e->unkC[j]);
+                    if (k >= 0) {
+                        have = c->unk58[k];
+                        if (have < D_8006CB28[(c->unk34 >> 12) & 0x1F][k].unk1) {
+                            D_801F8208[k]++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (i = 0; i < 0x30; i++) {
+        if (D_801F8208[i] != 0) {
+            have = c->unk58[i];
+            if (D_801F8208[i] * arg1 >= D_8006CB28[(c->unk34 >> 12) & 0x1F][i].unk1 - have) {
+                ret = 1;
+                break;
+            }
+        }
+    }
+    return ret;
+}
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F1D94);
 
@@ -1052,6 +1148,37 @@ void func_801F3A20(s32 arg0) {
     func_8001D8A8(arg0);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3A7C);
+s32 func_801F3A7C(void) {
+    GameData *g;
+
+    g = D_8006794C->unk1C;
+    func_8004C204();
+    switch (g->unk56E) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 7:
+        if (!func_801F0F04()) {
+            if (g->unk56E == 2) {
+                g->unk56E = 1;
+            }
+            func_800F4E68();
+            func_801F0FC4();
+            return 1;
+        }
+        func_8004BC38();
+        return 0;
+    case 6:
+        if (func_800240E8()) {
+            func_800240B0(0);
+        }
+        func_800F4E68();
+        func_801F3488((s32)D_8006794C->unk1C->unk8E4.ovl65->unk11C0->unk1C);
+        return 2;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EF27C);

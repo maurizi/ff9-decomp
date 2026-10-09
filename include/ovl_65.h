@@ -9,6 +9,10 @@
 /* other overlays (battle, 0x800A7000+ / 0x800E....) */
 void func_800AD90C(s32, s32, s32, s32, s32);
 void func_800E9DBC(void);
+void func_800F4E68(void);
+
+/* main exe: candidates for ff9.h */
+void func_800240B0(u8);
 
 /* Battle result (D_800FDF30). */
 typedef struct {
@@ -161,6 +165,28 @@ static inline u8 func_801F_alive(Character *c) {
     return 1;
 }
 
+/* Member can still gain exp (alive, exp below the cap). */
+static inline u8 func_801F_canExp(Character *c) {
+    if (!func_801F_alive(c)) {
+        return 0;
+    }
+    if (c->unkC > 9999998) {
+        return 0;
+    }
+    return 1;
+}
+
+/* Member can learn abilities (alive, func_80034A30). */
+static inline u8 func_801F_canAp(Character *c) {
+    if (!func_801F_alive(c)) {
+        return 0;
+    }
+    if (!func_80034A30(c)) {
+        return 0;
+    }
+    return 1;
+}
+
 /* Amount to add to a counter this frame. */
 static inline u32 Counter_step(Counter *c) {
     u32 step;
@@ -211,7 +237,7 @@ void func_801F0C0C(void);
 void func_801F0D98(s32, s32, s32, u8 *, s32);
 void func_801F0DE4(s32, s32, s32, u8 *, s32);
 void func_801F0E30(void);
-s32 func_801F0F04(void);
+u8 func_801F0F04(void);
 void func_801F0FC4(void);
 void func_801F0FF4(void);
 s32 func_801F1004(void);

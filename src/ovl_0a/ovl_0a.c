@@ -37,7 +37,7 @@ void func_800A7B10(s32 arg0) {
                 func_8004A9E8();
             }
             if (!(D_8006794C->unk1C->unk0 & 2)) {
-                switch (((s32(*)())func_8004BC38)()) {
+                switch (func_8004BC38()) {
                 case 3:
                     D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A = 2;
                     func_800AED04();
