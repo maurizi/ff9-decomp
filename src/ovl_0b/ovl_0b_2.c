@@ -6777,7 +6777,75 @@ void func_800F3060(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F316C);
+void func_800F316C(void) {
+    BtlUnit *u;
+    Unk80104F88Entry *e;
+    Unk80104F88Gauge *g;
+    Unk80104F88Gauge *mp;
+    s32 i;
+    s32 cur;
+    s32 max;
+    s32 d;
+    s32 a;
+    s32 t;
+
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if (!(u->unk68 & 1)) {
+            continue;
+        }
+        e = u->unkB4;
+        mp = &e->unk0[1];
+        for (i = 0; i < 2; i++) {
+            g = mp;
+            if (i == 0) {
+                g = &e->unk0[0];
+            }
+            if (g->unk6 != 0) {
+                if (g->unk0 >= 0) {
+                    if (g->unk2 + g->unk0 >= g->unk4) {
+                        g->unk2 = g->unk4;
+                        g->unk6 = 0;
+                    } else {
+                        g->unk2 += g->unk0;
+                        g->unk6--;
+                    }
+                } else {
+                    if (g->unk2 + g->unk0 <= g->unk4) {
+                        g->unk2 = g->unk4;
+                        g->unk6 = 0;
+                    } else {
+                        g->unk2 += g->unk0;
+                        g->unk6--;
+                    }
+                }
+            } else {
+                cur = (i == 0) ? u->unk28 : u->unk2A;
+                max = (i == 0) ? u->unk24->unk0 : u->unk24->unk2;
+                d = cur - g->unk2;
+                if (d != 0) {
+                    a = (d >= 0) ? d : -d;
+                    g->unk4 = cur;
+                    if (a < 0x10) {
+                        g->unk6 = a;
+                    } else {
+                        g->unk6 = (a << 6) / max;
+                        if (g->unk6 < 0x10) {
+                            a = 0x10;
+                            g->unk6 = a;
+                        }
+                    }
+                    if (d >= 0) {
+                        t = d - 1;
+                        g->unk0 = (t + g->unk6) / g->unk6;
+                    } else {
+                        t = d + 1;
+                        g->unk0 = (t - g->unk6) / g->unk6;
+                    }
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F3390);
 
