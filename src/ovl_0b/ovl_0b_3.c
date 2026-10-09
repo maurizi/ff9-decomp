@@ -638,7 +638,31 @@ s32 func_800CB68C(BtlScript *arg0, BtlUnit *arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CB700);
+s32 func_800CB700(BtlScript *arg0, BtlUnit *arg1) {
+    u8 *pc;
+    Battle *b;
+    u8 *txt;
+    u16 idx;
+    u16 ofs;
+
+    pc = arg0->unk8;
+    idx = pc[1];
+    b = D_8006794C->unk1C->unk8E4.battle;
+    txt = b->unk11C0->unk14;
+    if (idx & 0x80) {
+        func_800F4F44((s32)(txt + arg0->unk4->unk8->unkE), 1);
+    } else {
+        idx += b->unk488[(arg1->unk68 >> 1) & 0xF].unk0->unk28;
+        ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
+        if (pc[0] == 0x21) {
+            func_800F4F44((s32)(txt + ofs), 3);
+        } else {
+            func_800F4F04((s32)(txt + ofs), 3);
+        }
+    }
+    arg0->unk8 += 2;
+    return 1;
+}
 
 s32 func_800CB808(BtlScript *arg0, BtlUnit *arg1) {
     arg1->unk68 = (arg1->unk68 & ~0x40000) | ((arg0->unk8[1] & 1) << 18);
