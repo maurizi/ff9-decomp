@@ -1192,13 +1192,13 @@ void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             e->unk0_0 &= ~arg2;
         }
     } else if (arg1 == 0x87) {
-        e->unk8 = arg2;
-        e->unkA = arg3;
-        e->unkC = arg4;
+        e->unk8[0] = arg2;
+        e->unk8[1] = arg3;
+        e->unk8[2] = arg4;
     } else if (arg1 == 0x8C) {
-        e->unk10 = arg2;
-        e->unk12 = arg3;
-        e->unk14 = arg4;
+        e->unk10[0] = arg2;
+        e->unk10[1] = arg3;
+        e->unk10[2] = arg4;
     } else if (arg1 == 0x91) {
         e->unk4 = arg2;
     } else if (arg1 == 0x96) {
@@ -1213,9 +1213,9 @@ void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     } else if (arg1 == 0xA1) {
         e->unk16 = arg2 * 16;
     } else if (arg1 == 0xA5) {
-        e->unk1C = arg2;
-        e->unk1E = arg3;
-        e->unk20 = arg4;
+        e->unk1C[0] = arg2;
+        e->unk1C[1] = arg3;
+        e->unk1C[2] = arg4;
     } else if (arg1 == 0xAA) {
         e->unk22 = arg2;
     }
@@ -1277,15 +1277,15 @@ void func_800AFDE8(void) {
         if (e->unk18 != NULL && (e->unk0_0 & 1)) {
             if ((s8)e->unk2 != -1) {
                 t = ((MATRIX *)((FieldObjSlot *)func_8001E350((s8)e->unk2))->unk8->unk20)[e->unk3].t;
-                e->unk8 = t[0] + e->unk1C;
-                e->unkA = t[1] + e->unk1E;
-                e->unkC = t[2] + e->unk20;
+                e->unk8[0] = t[0] + e->unk1C[0];
+                e->unk8[1] = t[1] + e->unk1C[1];
+                e->unk8[2] = t[2] + e->unk1C[2];
             }
-            rot.vx = e->unk10;
-            rot.vy = e->unk12;
-            rot.vz = e->unk14;
+            rot.vx = e->unk10[0];
+            rot.vy = e->unk10[1];
+            rot.vz = e->unk10[2];
             rot.pad = 0;
-            prim = func_800C970C(prim, e->unk18, &e->unk8, &rot, e->unk4, e->unk16 >> 4, e->unk0_4 < 4 ? e->unk0_4 : 0xFF, e->unk7 << 4, &ot[e->unk22]);
+            prim = func_800C970C(prim, e->unk18, e->unk8, &rot, e->unk4, e->unk16 >> 4, e->unk0_4 < 4 ? e->unk0_4 : 0xFF, e->unk7 << 4, &ot[e->unk22]);
             e->unk16 += (s8)e->unk6;
             if (e->unk16 >= e->unkE) {
                 e->unk16 = 0;
@@ -1299,7 +1299,28 @@ void func_800AFDE8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B00B0);
+/* reset a field entity */
+void func_800B00B0(FieldEnt *arg0) {
+    s32 i;
+
+    arg0->unk4 = 0x1000;
+    arg0->unk6 = 0x10;
+    arg0->unk7 = 0x80;
+    arg0->unk0_0 = 1;
+    arg0->unk0_4 = 0xF;
+    arg0->unk1 = -1;
+    arg0->unk2 = -1;
+    arg0->unk3 = 0;
+    for (i = 0; i < 3; i++) {
+        arg0->unk8[i] = 0;
+        arg0->unk10[i] = 0;
+        arg0->unk1C[i] = 0;
+    }
+    arg0->unk16 = 0;
+    arg0->unkE = 0;
+    arg0->unk18 = NULL;
+    arg0->unk22 = 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B0124);
 
@@ -1384,7 +1405,21 @@ void func_800B1D60(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1D9C);
+/* drop the queued entries except categories 1 and 4 */
+void func_800B1D9C(s32 arg0) {
+    s32 i;
+    u8 t;
+
+    if (arg0 >= 0x40000) {
+        for (i = 4; i >= 0; i--) {
+            t = (u32)D_800C9FF8[i] >> 24;
+            if (t != 4 && t != 1) {
+                D_800C9FF8[i] = -1;
+                D_800C9FF0[i] = -1;
+            }
+        }
+    }
+}
 
 void func_800B1E04(FieldScene *arg0) {
     s32 t = (s32)arg0->unk24;

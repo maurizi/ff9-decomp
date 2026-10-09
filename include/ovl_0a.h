@@ -22,24 +22,18 @@ typedef struct Unk800AB0B0 {
 typedef struct {
     u32 unk0_0 : 4; /* flags */
     u32 unk0_4 : 4;
-    u32 unk1 : 8;
-    u32 unk2 : 8;
+    s32 unk1 : 8;
+    s32 unk2 : 8;
     u32 unk3 : 8;
     s16 unk4;
     u8 unk6;
     u8 unk7;
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
+    s16 unk8[3]; /* position */
     s16 unkE;
-    s16 unk10;
-    s16 unk12;
-    s16 unk14;
+    s16 unk10[3]; /* rotation */
     s16 unk16;
     void *unk18;
-    s16 unk1C;
-    s16 unk1E;
-    s16 unk20;
+    s16 unk1C[3]; /* offset */
     s16 unk22;
 } FieldEnt; /* 0x24 */
 
@@ -67,7 +61,8 @@ typedef struct FieldTrig {
 typedef struct {
     u8 pad0[0x14];
     VECTOR unk14; /* position */
-    u8 pad24[0x36 - 0x24];
+    u8 pad24[0x34 - 0x24];
+    u16 unk34;
     u16 unk36;
     u8 pad38[2];
     u8 unk3A;
