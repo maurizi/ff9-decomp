@@ -2318,7 +2318,7 @@ typedef struct {
     u16 unk6;
     s32 unk8; /* position (20.12) */
     u8 unkC; /* rect count */
-    u8 padD;
+    u8 unkD; /* index into the offset table (func_800C9374) */
     u16 unkE; /* last frame shown */
     TexAnimRect *unk10;
 } TexAnim; /* 0x14 */

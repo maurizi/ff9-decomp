@@ -1973,7 +1973,54 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1764);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1B48);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B23B4);
+/* Narrow a command's target mask to units that can still be targeted. */
+s32 func_800B23B4(Battle *b, BtlCmd *cmd) {
+    BtlCmd8 *a;
+    BtlUnit *u;
+    Unk8006B1F4 *tbl;
+    s32 i;
+    u16 mask = 0;
+    u16 f;
+    u16 r;
+
+    if ((u16)cmd->unkC != 0) {
+        switch (cmd->unkE) {
+        case 0xE:
+        case 0x33:
+            tbl = D_8006B1F4;
+            i = cmd->unkF - 0xE0;
+            a = (BtlCmd8 *)(tbl + i);
+            f = (*(u32 *)a >> 29) & 1;
+            break;
+        case 0x3B:
+            return 1;
+        default:
+            a = cmd->unk8;
+            f = (*(u32 *)a >> 29) & 1;
+            break;
+        }
+        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+            if (((u->unk68 >> 28) & 1) && (u->unkB0 & (u16)cmd->unkC) &&
+                ((f && (u->unk68 & 1)) || !(u->unk3C & 0x100))) {
+                mask |= u->unkB0;
+            }
+        }
+        if (mask) {
+            cmd->unkC = mask;
+            return 1;
+        }
+        if (cmd->unk10.w & 3) {
+            return 0;
+        }
+        if (!f) {
+            r = cmd->unkC = func_800C1F7C(cmd->unkC & 0xF);
+            if (r) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 void func_800B253C(BtlCmd *arg0) {
     Battle *b;
