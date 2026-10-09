@@ -4088,7 +4088,84 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BEDBC);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BF558);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BFAF4);
+void func_800BFAF4(BtlUnit *arg0) {
+    BtlUnit34 *t = (BtlUnit34 *)&arg0->unk34;
+    BtlCmd *c;
+    Battle *b;
+    u16 fl;
+
+    func_800BFF20(arg0);
+    if (arg0->unk3C & 0x100) {
+        func_800BCEF0(arg0);
+    } else if (!(arg0->unk3C & 1)) {
+        if (!(arg0->unk3C & 0x40001101)) {
+            arg0->unk68 |= 0x10000;
+        }
+        if (func_800EA038()) {
+            if ((arg0->unk68 >> 16) & 1) {
+                if (arg0->unk3C & 2) {
+                    if (t->unkC <= 0) {
+                        func_800C0C00(arg0, 1);
+                        func_800BDD24(arg0);
+                        func_800BDE78(arg0);
+                        func_800CC1A0(arg0);
+                    } else {
+                        t->unkC -= arg0->unk2E;
+                    }
+                }
+                if (arg0->unk3C & 0x10000) {
+                    if (t->unkE <= 0) {
+                        func_800C0C00(arg0, 0x10);
+                        func_800BDD24(arg0);
+                        func_800CC1A0(arg0);
+                    } else {
+                        t->unkE -= arg0->unk2E;
+                    }
+                }
+                if (BtlUnitHasStatus(arg0, 0x40000)) {
+                    if (t->unk10 <= 0) {
+                        func_800C0C00(arg0, 0x12);
+                        func_800BDDA0(arg0);
+                        func_800CC1A0(arg0);
+                    } else {
+                        t->unk10 -= arg0->unk2E;
+                    }
+                }
+                if ((arg0->unk3C & 0x4000) && ((arg0->unk68 >> 1) & 0xF) == 2) {
+                    b = D_8006794C->unk1C->unk8E4.battle;
+                    fl = b->unk11B8;
+                    if (fl & 4) {
+                        if (!(fl & 8)) {
+                            if (b->unk11BC <= 0) {
+                                func_800B1250(arg0->unk10, 0x39, D_8006794C->unk1C->unk8E4.battle->unk11BB, func_800C1CA0(1, 0), 8);
+                                D_8006794C->unk1C->unk8E4.battle->unk11B8 |= 8;
+                            } else {
+                                b->unk11BC -= arg0->unk2E;
+                            }
+                        }
+                    }
+                }
+                func_800C0DAC(arg0);
+            } else if ((arg0->unk3C & 0x40000000) && !(D_8006794C->unk1C->unk8E4.battle->unk11B8 & 0x10)) {
+                t->unk2E -= arg0->unk2E;
+                if (t->unk2E < 0) {
+                    c = arg0->unk10;
+                    if (c->unkE == 3) {
+                        func_800B3D54(arg0, 0xA, 0xB9, (u16)c->unkC);
+                    } else {
+                        func_800B3D54(arg0, 0xB, 0xBA, (u16)c->unkC);
+                    }
+                }
+            }
+        }
+    }
+    if ((arg0->unk3C & 0x400) && arg0 != D_8006794C->unk1C->unk8E4.battle->unk1088->unk4) {
+        if (arg0->unk9C->unkC == (BtlUnit9CC *)arg0->unkA4[0] || arg0->unk9C->unkC == (BtlUnit9CC *)arg0->unkA4[1] ||
+            ((arg0->unk68 & 1) && arg0->unk9C->unkC == (BtlUnit9CC *)arg0->unkA4[9])) {
+            arg0->unk86[1] += 0x80;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BFF20);
 

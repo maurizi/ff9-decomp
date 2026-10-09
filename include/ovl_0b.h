@@ -2872,4 +2872,24 @@ void func_800E9DFC(void);
 /* main exe: candidates for ff9.h */
 u32 *func_8002FBC0(s32);
 
+void func_800CC1A0(BtlUnit *);
+void func_800C0DAC(BtlUnit *);
+
+/* BtlUnit.unk34 viewed as one block (status timers at unkC..) */
+typedef struct {
+    s32 unk0;
+    u32 unk4;
+    u32 unk8;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12[14];
+    s16 unk2E;
+} BtlUnit34;
+
+/* status bits set in either status word */
+static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
+    return (u->unk38 & m) || (u->unk3C & m);
+}
+
 #endif
