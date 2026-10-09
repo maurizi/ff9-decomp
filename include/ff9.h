@@ -812,6 +812,18 @@ typedef struct {
     s16 unk132; /* volume right */
 } AkaoChannel; /* 0x134 */
 
+/* 8-byte key-split region of an AKAO instrument (AkaoChannel.unk18) */
+typedef struct {
+    u8 unk0; /* sample */
+    u8 unk1; /* low key */
+    u8 unk2; /* high key */
+    u8 unk3;
+    u8 unk4;
+    u8 unk5; /* 0 = end */
+    u8 unk6;
+    u8 unk7;
+} AkaoRegion;
+
 /* voice setup parameters for func_80059E10 */
 typedef struct {
     s32 unk0;

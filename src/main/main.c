@@ -13390,7 +13390,61 @@ s32 func_8005DD54(s32 a, s32 b) {
     return b;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005DD7C);
+void func_8005DD7C(AkaoChannel *c, u32 key) {
+    AkaoRegion *e;
+    Unk8005EBB4 *p;
+    u32 f;
+    s32 v;
+
+    if (c->unk10A < key || c->unk10A == 0xFF) {
+        e = (AkaoRegion *)c->unk18;
+        while (e[1].unk5 != 0 && e->unk2 < key) {
+            e++;
+        }
+    } else if (key < c->unk10A) {
+        e = (AkaoRegion *)c->unk18;
+        while (e[1].unk5 != 0 && !(key < e[1].unk1)) {
+            e++;
+        }
+    } else {
+        return;
+    }
+    f = c->unk34;
+    v = func_8005DD54(D_80080A10->unk0, e->unk0);
+    c->unk9A = v;
+    p = &D_8007F970[v];
+    c->unk120 = p->unk0;
+    c->unk124 = p->unk4;
+    if (!(f & 0x1000000)) {
+        c->unk12A = e->unk3 << 8;
+    } else {
+        c->unk12A &= 0x7F00;
+    }
+    c->unk12A |= p->unkC & 0x80FF;
+    if (!(f & 0x8000000)) {
+        c->unk12C &= 0x201F;
+        c->unk12C |= e->unk4 << 6;
+    } else {
+        c->unk12C &= 0x3FDF;
+    }
+    switch (e->unk5) {
+    case 3:
+        c->unk12C |= 0x4000;
+        break;
+    case 5:
+        c->unk12C |= 0x8000;
+        break;
+    case 7:
+        c->unk12C |= 0xC000;
+        break;
+    }
+    if (!(f & 0x10000000)) {
+        c->unk12C &= 0xFFE0;
+        c->unk12C |= e->unk6;
+    }
+    c->unk12C |= p->unkE & 0x20;
+    c->unk12E = e->unk7;
+}
 
 u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out) {
     s32 n = note - p->unkA;
