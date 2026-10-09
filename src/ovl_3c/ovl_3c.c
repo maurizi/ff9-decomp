@@ -81,7 +81,21 @@ void func_801F44F4(s32 x, s32 y, s32 z, s32 icon, u8 arg4) {
     func_80027710(x, y, z, &rects.r[icon], arg4);
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F45E4);
+void func_801F45E4(void) {
+    D_801FC2D0.unk8 = D_80077DBC;
+    D_801FC2D0.unk0 = func_801F4A90(D_80077DBC);
+    D_801FC2D0.unk1 = 0;
+    D_801FC2D0.unk3 = 0;
+    D_801FC2D0.unk2 = func_801F48F4(D_801FC2D0.unk0);
+    D_801FC2D0.unkC = func_8002F8E4(7);
+    D_801FC2D0.unk20 = 5;
+    D_801FC2D0.unk4 = 0;
+    func_801F442C(0xD);
+    func_8003575C(D_801F3C9C);
+    func_8003556C(func_801F49C4);
+    func_80028720(D_801EDF3C, 0xD);
+    func_801F4A44();
+}
 
 void func_801F4688(void) {
     func_801F4748();
@@ -479,7 +493,19 @@ void func_801F5E4C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5EEC);
+void func_801F5EEC(void) {
+    MenuList *l;
+    u8 id;
+
+    D_80077DE8.unk8 = NULL;
+    l = &D_801FC2F8.unk28;
+    if (D_801FC2F8.unk0 == 1) {
+        id = D_801FC2F8.unk3C[l->unk5 + l->unk6];
+        D_80077DE8.unk8 = D_801F87EC + D_80069018[id].unk2;
+    } else if (D_801FC2F8.unk0 == 2) {
+        D_80077DE8.unk8 = func_80035774(3);
+    }
+}
 
 void func_801F5F88(void) {
     func_801F7250();
@@ -730,7 +756,19 @@ void func_801F7614(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F76C8);
+void func_801F76C8(void) {
+    MenuList *l;
+    u8 id;
+
+    D_80077DE8.unk8 = NULL;
+    l = &D_801FC338.unk28;
+    if (D_801FC338.unk0 == 1) {
+        id = D_801FC338.unk3C[l->unk5 + l->unk6].unk4;
+        D_80077DE8.unk8 = D_801F87EC + D_80069018[id].unk2;
+    } else if (D_801FC338.unk0 == 2) {
+        D_80077DE8.unk8 = func_80035774(4);
+    }
+}
 
 void func_801F7770(void) {
     D_801FC438.unk0 = 1;
@@ -961,7 +999,23 @@ void func_801F84D8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F856C);
+void func_801F856C(s32 col, s32 row, s32 i, MenuView *v) {
+    UnkPair *p = &D_8006794C->unk1C->unk574[i];
+    Unk80069018 *it;
+    s32 x, y;
+    s32 k = 0x2A;
+    u8 buf[8];
+
+    if (p->unk1 != 0) {
+        it = &D_80069018[p->unk0];
+        x = col * 0x96;
+        y = v->unk2 + (row * 0xF + k);
+        func_8002BAE4(p->unk1, buf, 2, 1);
+        func_8002B5FC(x + 0x28, y, 0x1E, D_8006A218 + it->unk0, 0);
+        func_80026C34(x + 0x18, y, 0x1E, p->unk0, 1);
+        func_8002B56C(x + 0x84, y + 4, 0x1E, buf, 0);
+    }
+}
 
 void func_801F8680(void) {
     s32 i;
