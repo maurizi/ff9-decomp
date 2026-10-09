@@ -2869,4 +2869,14 @@ typedef struct {
 } Tween;
 s32 func_800631AC(Tween *);
 
+/* AKAO sequence header (func_8005ACB4) */
+typedef struct {
+    u8 pad0[4];
+    s32 unk4; /* track count */
+    s32 unk8; /* id */
+    u8 padC[4];
+    u32 unk10[1]; /* track offsets */
+} AkaoSeqHdr;
+
+
 #endif

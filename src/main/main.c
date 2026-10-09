@@ -9086,7 +9086,48 @@ void func_8005ABEC(Unk80080AA0 *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005ACB4);
+void func_8005ACB4(Unk80080AA0 *s) {
+    AkaoSeqHdr *h = (AkaoSeqHdr *)s->unk0;
+    u32 *offs = h->unk10;
+    s32 i;
+    u8 *base;
+    u16 *p;
+    u8 *a;
+    u8 *b;
+    s32 n;
+
+    s->unk10 = func_8005A5FC(h->unk8);
+    n = h->unk4;
+    base = (u8 *)(offs + n);
+    p = (u16 *)(base + offs[0]);
+    if (*p != 0xFFFF) {
+        a = (u8 *)(*p + (s32)p + 4);
+    } else {
+        a = NULL;
+    }
+    p++;
+    if (*p != 0xFFFF) {
+        b = (u8 *)(*p + (s32)p + 2);
+    } else {
+        b = NULL;
+    }
+    func_8005A014(s, a, b, 0);
+    for (i = 1; --n != 0; i++) {
+        p = (u16 *)(base + offs[i]);
+        if (*p != 0xFFFF) {
+            a = (u8 *)(*p + (s32)p + 4);
+        } else {
+            a = NULL;
+        }
+        p++;
+        if (*p != 0xFFFF) {
+            b = (u8 *)(*p + (s32)p + 2);
+        } else {
+            b = NULL;
+        }
+        func_8005A014(s, a, b, 1);
+    }
+}
 
 void func_8005ADE8(s32 *a) {
     func_80059AA8(a[0], a[1]);
