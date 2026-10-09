@@ -1674,7 +1674,90 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AF8C0);
+/* shadow under world map object arg0 at arg1; arg2 = distance from the camera */
+void func_800AF8C0(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
+    Unk800CCCC0 *c;
+    s32 k;
+    s32 d;
+    s32 sx;
+    s32 sz;
+    s32 f;
+    s32 a;
+    s32 s;
+    u32 *ot;
+
+    c = &D_800CCCC0[arg0->unk11];
+    k = arg0->unk3B;
+    sx = 0x1000;
+    if (arg0->unk11 != 0xE) {
+        d = c->unkE - arg0->unk14.vy;
+        arg1->vy += d;
+        arg1->vy -= d / 8;
+        sz = sx - d / 2;
+        sx -= d / 4;
+        D_800CF442 = -c->unk1 * 4 - (s8)c->unk7;
+        if (c->unk1 == 0) {
+            return;
+        }
+        sx = (c->unk1 * sx) >> 11;
+        sz = (c->unk2 * sz) >> 12;
+        f = (0x8000 - arg2) >> 3;
+        f *= D_800D45DC;
+        f >>= 12;
+        if (f < 0) {
+            f = 0;
+        }
+        if (f >= 0x1000) {
+            f = 0xFFF;
+        }
+        sz *= f;
+        sz >>= 12;
+        if (sz >= 0x100) {
+            sz = 0xFF;
+        }
+        if (sz < 0) {
+            sz = 0;
+        }
+        D_8006794C->unk1C->unk8E4.world->unk8->unk1C[k].unk1 = sx * 14;
+        D_8006794C->unk1C->unk8E4.world->unk8->unk1C[k].unk2 = sx * 12;
+        D_8006794C->unk1C->unk8E4.world->unk8->unk1C[k].unk0 = sz;
+        ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8];
+        D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] = ot + D_800CF442;
+        func_800AA418(D_8006794C->unk1C->unk8E4.world->unk8->unk1C, k, arg1->vy, c->unk6);
+        D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] = ot;
+    } else {
+        s = 0x7D0;
+        if (D_800CCE4B != 0) {
+            s = 0xAF0;
+        }
+        f = (0x7060 - arg2) >> 2;
+        f *= D_800D4754;
+        f >>= 12;
+        if (f < 0) {
+            f = 0;
+        }
+        if (f >= 0x1000) {
+            f = 0xFFF;
+        }
+        a = (c->unk2 * s) >> 12;
+        a *= f;
+        a >>= 12;
+        if (a >= 0x100) {
+            a = 0xFF;
+        }
+        if (a < 0) {
+            a = 0;
+        }
+        D_8006794C->unk1C->unk8E4.world->unk8->unk1C[k].unk1 = 0x302;
+        D_8006794C->unk1C->unk8E4.world->unk8->unk1C[k].unk2 = 0x294;
+        D_8006794C->unk1C->unk8E4.world->unk8->unk1C[k].unk0 = a;
+        ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8];
+        D_800CF442 = -0x46;
+        D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] -= 0x46;
+        func_800AA418(D_8006794C->unk1C->unk8E4.world->unk8->unk1C, k, arg1->vy, c->unk6);
+        D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] = ot;
+    }
+}
 
 void func_800AFCE0(void) {
     s32 tmp;

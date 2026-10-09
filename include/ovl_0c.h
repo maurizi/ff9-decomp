@@ -328,6 +328,7 @@ void func_800C709C(Unk800C95C8 *, u8);
 void func_800C7914(Unk800C95C8 *, u8);
 void func_800C9484(Unk800C95C8 *);
 void func_800C96AC(Unk800C95C8 *, u16);
+void func_800AA418(WmObjEnt *, s32, s32, s32); /* draw a shadow */
 void func_800C9FCC(Unk800C95C8 *, u8);
 void func_800CA1D8(Unk800C95C8 *, u8);
 u8 *func_800634A8(s32);
