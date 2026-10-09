@@ -2009,7 +2009,7 @@ s32 func_800D8A64(s32);
 s32 func_800D8B70(s32);
 s32 func_800DA0B8(s32);
 void func_800EA124(s32);
-void func_800A9BE4(s32);
+s16 func_800A9BE4(s32);
 void func_800ABBC4(s32, s32);
 u32 func_800D8C70(s32, u32);
 void func_800D8658(s32, u8);
@@ -2912,5 +2912,13 @@ extern u8 D_800FDE60[];
 void func_80023F60(s32);
 void func_80055698(s32);
 void func_800EA34C(void);
+
+s32 func_800AA24C(s16, s32, void *);
+s32 func_800AA958(s32, Unk800AA958 *);
+s32 func_800AABC4(s32, Unk800AA958 *);
+s32 func_800ABB60(s32);
+BtlUnit *func_800C1D8C(s32);
+void func_800BD698(BtlUnit *, s32, s32);
+u8 *func_80063514(s32);
 
 #endif

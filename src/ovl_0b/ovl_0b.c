@@ -437,7 +437,129 @@ s32 func_800A9A7C(Battle11C0 *arg0, s32 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A9BE4);
+s16 func_800A9BE4(s32 arg0) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    s16 *state = (s16 *)&b->unk11C0->unkC[0x9FD8 / 4];
+    Unk800AA958 *ld = (Unk800AA958 *)state - 1;
+    s32 i;
+    Character *ch;
+    s32 cid;
+    Unk8E0 *e;
+    BtlUnit *u;
+    s32 id;
+    s32 k;
+    s32 id2;
+    s32 *pa;
+    s32 *pb;
+    s32 *pc;
+    s32 p;
+    s32 v;
+    BtlUnit9C *m;
+    u8 save;
+
+    if (arg0 & 0x8000) {
+        b->unk0 &= ~4;
+        *state = 1;
+    }
+    switch (*state) {
+    case 1:
+        if (arg0 & 0x200) {
+            func_800AA24C(D_8006794C->unk1C->unkE, 0x8000, ld);
+            *state = 2;
+            break;
+        }
+        *state = 3;
+        break;
+    case 2:
+        if (func_800AA24C(D_8006794C->unk1C->unkE, arg0, ld) == 0) {
+            *state = 3;
+        }
+        break;
+    case 3:
+        func_800AA958(0x8000, ld);
+        *state = 4;
+        break;
+    case 4:
+        if (func_800AA958(arg0, ld) == 0) {
+            *state = 5;
+        }
+        break;
+    case 5:
+        func_800AABC4(0x8000, ld);
+        *state = 6;
+        break;
+    case 6:
+        if (func_800AABC4(arg0, ld) == 0) {
+            if (arg0 & 4) {
+                *state = 7;
+            } else {
+                goto done;
+            }
+        }
+        break;
+    case 7:
+        for (i = 0; i < 4; i++) {
+            ch = D_8006794C->unk1C->unk54C[i];
+            if (ch == NULL) {
+                continue;
+            }
+            cid = ch->unk34.b.id;
+            e = &D_8006794C->unk1C->unk8D8[cid];
+            u = func_800C1D8C(i);
+            if (u == NULL) {
+                continue;
+            }
+            id = func_800ABA10(i, arg0 & ~0x10);
+            e->unk8->unk8 = func_8001C7FC(4, id, 0);
+            k = (id & 0xFFFFFF) | (cid << 24);
+            pa = (s32 *)func_800634A8(k);
+            pb = (s32 *)func_800634D8(k);
+            pc = (s32 *)func_80063514(k);
+            func_800C7730(e->unk8, (s16 *)pa, (s16 *)pb);
+            p = (s32)func_8001C7FC(9, id, 0x190000);
+            if (p != -1) {
+                v = (s32)func_8001C7FC(4, p, 0);
+            } else {
+                v = 0;
+            }
+            e->unk8->unk50 = (BtlUnit9C50 *)v;
+            if (v != 0) {
+                func_800C9374(e->unk8->unk50, (s32)pc);
+            }
+            func_800BD698(u, D_8006794C->unk1C->unk54C[i]->unk34.b.unk4, u - D_8006794C->unk1C->unk8E4.battle->unk6FC);
+            if (u->unk3C & 0x100) {
+                if (u != D_8006794C->unk1C->unk8E4.battle->unk1088->unk4) {
+                    u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
+                } else {
+                    goto use9;
+                }
+            } else if (u == D_8006794C->unk1C->unk8E4.battle->unk1088->unk4 || ((u->unk68 >> 19) & 1)) {
+            use9:
+                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+            } else {
+                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+            }
+            e->unkC->unk3A = 0;
+            m = u->unkA8;
+            save = m->unk4;
+            id2 = ((Unk8006E0E8 *)u->unk74)->unk2 | 0x20000;
+            m->unk8 = (BtlUnit9C8 *)func_800ABB60(i);
+            func_800AB758(id2, i, &pa, &pb, &pc);
+            func_800C7730(m, (s16 *)pa, (s16 *)pb);
+            m->unkC = 0;
+            m->unk1C = e->unk8;
+            m->unk4 = save;
+        }
+    done:
+        D_8006794C->unk1C->unk8E4.battle->unk0 |= 4;
+        *state = 0;
+        break;
+    }
+    return *state;
+}
+
+/* padded: the next jump table is 8-aligned in its object */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 s32 func_800AA08C(Unk800AA08C *arg0, s32 arg1) {
     s32 v = arg0->unk24;
@@ -489,7 +611,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA24C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA504);
 
-s16 func_800AA958(s32 arg0, Unk800AA958 *arg1) {
+s32 func_800AA958(s32 arg0, Unk800AA958 *arg1) {
     Unk800AA958 *st;
     Battle *b;
     Unk800AA958Req *req;
@@ -760,9 +882,9 @@ s32 func_800ABA10(s32 arg0, s32 arg1) {
     return D_800F5200[idx] | 0x20000;
 }
 
-void func_800ABB60(s32 arg0) {
+s32 func_800ABB60(s32 arg0) {
     s32 v = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk3C[arg0];
-    func_8001C8B0(func_8001C8B0(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
+    return func_8001C8B0(func_8001C8B0(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
 }
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800ABBC4);
