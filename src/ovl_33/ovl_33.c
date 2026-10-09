@@ -527,7 +527,21 @@ void func_801F0E4C(void) {
     D_801FBF84.unk768 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0E64);
+s32 func_801F0E64(s32 id) {
+    s32 kind = D_801F34EC[id].unk0;
+    s32 n = 0;
+    s32 i;
+
+    for (i = 0; i < 4; i++) {
+        if (D_8006794C->unk1C->unk54C[i] != NULL) {
+            n++;
+        }
+    }
+    if (n < 2) {
+        return 0;
+    }
+    return (u32)(kind - 3) < 3;
+}
 
 void func_801F0ED4(void) {
     D_801FBF84.unk1 = 1;

@@ -79,8 +79,8 @@ typedef struct {
 extern AbilityMenu D_801FC840;
 
 typedef struct {
-    u8 unk0; /* low nibble: item kind */
-    u8 pad1[0x4 - 1];
+    unsigned int unk0 : 4; /* item kind */
+    unsigned int pad0_4 : 28;
     u8 unk4;
     u8 pad5[0xA - 5];
     u8 unkA;
