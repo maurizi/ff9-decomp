@@ -2850,6 +2850,22 @@ typedef struct {
 } Unk800D50A0Ctx;
 void func_800D50A0(s32, Unk800D50A0Ctx *, u8 *, s32 *);
 
+/* sprite animation header (func_800D1494); followed by u32 frame entries and colors */
+typedef struct {
+    u16 unk0; /* frame count */
+    u16 unk2;
+    s16 unk4;
+    u16 unk6;
+    u8 unk8;
+    u8 unk9;
+    u16 unkA; /* first frame entry, in 8-byte units */
+} Unk800D1494;
+
+s32 func_800CF5A4(u8 *, s32, s32, s32);
+void func_800D12C4(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
+void func_800D0E14(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
+void func_800D0FFC(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
+
 typedef struct {
     u16 unk0;
     u16 unk2;

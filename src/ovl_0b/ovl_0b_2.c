@@ -315,7 +315,58 @@ void func_800D12C4(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1494);
+void func_800D1494(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5, s32 tp, u8 *out, s32 mode) {
+    s32 n;
+    s32 k;
+    s32 cnt;
+    s32 a;
+    s32 b;
+    s32 c;
+    s32 x;
+    s32 d;
+    s32 y;
+    s32 v;
+    u32 *data;
+
+    if (out == NULL) {
+        return;
+    }
+    n = ((Unk800D1494 *)p)->unk2;
+    k = ((Unk800D1494 *)p)->unkA;
+    cnt = ((Unk800D1494 *)p)->unk0;
+    x = ((Unk800D1494 *)p)->unk4;
+    y = ((Unk800D1494 *)p)->unk6;
+    c = ((Unk800D1494 *)p)->unk8 - 1;
+    d = ((Unk800D1494 *)p)->unk9 - 1;
+    p += sizeof(Unk800D1494);
+    if (frame == -1) {
+        out[1] = n;
+        out[0] = n;
+        out[2] = 0;
+        return;
+    }
+    data = (u32 *)p;
+    if (frame >= cnt) {
+        frame = cnt - 1;
+    }
+    p = (u8 *)data + (k * 8 + frame * 4);
+    v = p[2];
+    v = (v * scale) >> 12;
+    a = p[0];
+    b = p[1];
+    k = p[3];
+    data += k * 2;
+    if (arg1 != 0) {
+        n = func_800CF5A4(out, n, v, arg1);
+    }
+    if (mode == 0) {
+        func_800D12C4((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
+    } else if (mode == 1) {
+        func_800D0E14((s32)out, arg2, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
+    } else {
+        func_800D0FFC((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
+    }
+}
 
 void func_800D1680(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     VECTOR s;
