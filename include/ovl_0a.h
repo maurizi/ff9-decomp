@@ -893,6 +893,38 @@ typedef struct FieldObjPlace {
     u8 pad8[0x28 - 8];
 } FieldObjPlace; /* 0x28 */
 
+/* texture set tables (func_800AA4E8) */
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+} FieldTexPair; /* tpage/clut or u/v */
+
+typedef struct {
+    s16 unk0; /* flags: bit 0 = 8-bit */
+    s16 unk2;
+    s16 unk4; /* vram x */
+    s16 unk6; /* vram y */
+} FieldTexEnt;
+
+/* VRAM allocation cursor (file 0x1C0000) */
+typedef struct {
+    s16 unk0; /* 8-bit page x */
+    s16 unk2; /* 8-bit page y */
+    u8 pad4[4];
+    s16 unk8; /* 8-bit clut x */
+    s16 unkA; /* 8-bit clut y */
+    u8 padC[4];
+    s16 unk10; /* 4-bit page x */
+    s16 unk12; /* 4-bit page y */
+    u8 pad14[4];
+    s16 unk18; /* 4-bit clut x */
+    s16 unk1A; /* 4-bit clut y */
+    u8 pad1C[4];
+    s16 unk20; /* x to skip */
+} FieldVramPos;
+
+s32 func_800AC3D8(s32, s32);
+
 FieldLight *func_800B3254(Unk800B3254 *);
 Unk800B3294 *func_800B3294(Unk800B3254 *, s32);
 s32 func_800C76E8(s32, u16 *, u16 *);
