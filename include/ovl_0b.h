@@ -709,8 +709,8 @@ typedef struct Battle11C0 {
     s32 unk34[2]; /* per draw buffer */
     s32 *unk3C;
     BtlUnit9C50 *unk40;
-    s32 *unk44;
-    s32 *unk48;
+    u8 *unk44; /* work heap start */
+    u8 *unk48; /* work heap cursor */
 } Battle11C0;
 
 typedef struct {
