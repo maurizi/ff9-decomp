@@ -586,6 +586,7 @@ void func_80027D18(void);
 void func_80027D4C(void);
 s32 func_80027D84(s32, s32);
 void func_80028204(s32, s32, s32, s32, s32, u8);
+extern s32 D_80076F7C; /* number of portraits (func_80028204) */
 void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
 void func_80028BE8(u8 *, s32);
@@ -969,7 +970,8 @@ typedef struct Unk8004AB64 {
     u8 unkF;
     u8 unk10;
     u8 unk11;
-    u8 pad12[0x14 - 0x12];
+    u8 unk12;
+    u8 pad13;
     ActorPos unk14; /* position, rotation x/y */
     s16 unk24; /* rotation z */
     u8 unk26;
@@ -2012,6 +2014,32 @@ typedef struct {
 extern CdRequest D_80076178;
 extern CdRequest D_800761A8;
 extern Unk8004AB64 *D_8007B704;
+
+/* Same as func_8004AEDC_inline, but written as `>>= (D_8007B6F8 = 1)` (srav). */
+static inline s32 func_8004AEDC_inline2(void) {
+    s32 r;
+    if (D_8007B6F4 & 1) {
+        func_80052DA0();
+        r = func_80052D40();
+    } else {
+        r = *D_8007B70C->unk0++;
+    }
+    D_8007B6F4 >>= (D_8007B6F8 = 1);
+    return r;
+}
+
+/* Inlined copy of func_8004B4C4 (resolve a script object reference). */
+static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
+    if (id == 0xFF) {
+        return D_8007B704;
+    }
+    if (id == 0xFA) {
+        id = D_8007AECC->unk16ED;
+    } else if ((u32)(id - 0xFB) < 4) {
+        id = D_8007AECC->unk16E4[id - 0xFB];
+    }
+    return func_8004B040_inline(id);
+}
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
 extern s32 D_8007BBE0;
@@ -2180,7 +2208,7 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
     return -1;
 }
 
-void func_80025ED4(s32, s32, s32, s32, s32, s32, s32);
+void func_80025ED4(s32, s32, s32, s32, s32, s32, u8);
 extern u8 D_8007AF00;
 typedef struct {
     u8 unk0; /* show second character */
@@ -2404,6 +2432,15 @@ typedef struct {
     s16 y1;
 } LineF2Words; /* LINE_F2 */
 extern u32 D_80068F20[][4]; /* line colours */
+extern s8 D_80068F94[4][4]; /* shadow line offsets (func_80025108) */
+typedef struct {
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} LineXY;
+u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s);
+u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of func_80027948 (SPRT + DR_TPAGE from a sprite descriptor). */
 static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
@@ -2423,7 +2460,8 @@ static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8
     t->code = (d->unk6 & 0x9FF) | 0xE1000600;
     addPrim(ot, t);
     *out = d->unk4;
-    return (u8 *)++t;
+    s = (SprtWords *)(t + 1);
+    return (u8 *)s;
 }
 /* Inlined copy of func_8004B2F4 (move an object's node to the free list). */
 static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
@@ -2446,7 +2484,7 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
 void func_8002E718(RECT *, s32, MenuList *);
 void func_8002E7FC(RECT *, s32, MenuList *, s32);
 void func_8002E960(RECT *, s32, MenuList *, s32);
-void func_80025108(RECT *, s32, s32, s32);
+void func_80025108(RECT *, s32, u8, s32);
 void func_8002709C(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
 extern s16 D_8006F640;
@@ -2747,6 +2785,33 @@ typedef struct {
     u32 code[2];
 } DrMode2Words; /* DR_MODE / DR_TWIN */
 extern Unk800689B0 D_80068DC0;
+extern Unk800689B0 D_80068CE8;
+/* window frame tables (func_800253D4) */
+extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
+extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
+extern u8 D_80068FB4[][4]; /* corner sprites (D_800686D0 index) per style */
+extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
+extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy;
+    u32 uvclut;
+} Sprt8Words; /* SPRT_8 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 uv0clut;
+    u32 xy1;
+    u32 uv1tpage;
+    u32 xy2;
+    u32 uv2;
+    u32 xy3;
+    u32 uv3;
+} PolyFT4Words; /* POLY_FT4 written as whole words */
+
+u16 func_800274B4(s32, s32);
 extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
@@ -2853,6 +2918,7 @@ extern u32 D_80068680[8];
 extern s32 D_800686A0[];
 extern Unk800686C0 D_800686C0[1];
 void func_80019708(s32, u32, s32);
+extern s32 D_80073730[2][32]; /* indexed by leading-zero count (func_80019708) */
 
 void __main(void);
 void func_80012900(s32);
