@@ -1823,6 +1823,8 @@ void func_800E9F68(u8);
 void func_800EF094(s32, s32, s32, MenuView *);
 void func_800F4DFC(void);
 s32 func_800AB26C(void **, s32);
+void func_800AB43C(void);
+void func_800E9E80(void);
 void func_800C02D4(BtlUnit *);
 void func_800C0430(BtlUnit *, s32);
 void func_800C2344(BtlUnit9C *);

@@ -97,7 +97,8 @@ typedef struct {
 
 /* GameData.unk8E0 entry */
 typedef struct Unk8E0 {
-    u8 pad0[8];
+    u32 unk0; /* bit 0: flag cleared on battle exit */
+    u8 pad4[8 - 4];
     struct BtlUnit9C *unk8;
     struct BtlUnitA0 *unkC;
     struct BtlUnit *unk10;
