@@ -162,8 +162,16 @@ typedef struct BtlUnit98 {
 typedef struct {
     u16 unk0; /* max hp */
     s16 unk2; /* max mp (<< 4) */
-    s16 unk4;
+    s16 unk4; /* max atb */
 } BtlUnit24;
+
+/* current stats at BtlUnit.unk28, parallel to BtlUnit24 */
+typedef struct {
+    u16 unk0; /* hp */
+    s16 unk2; /* mp */
+    s16 unk4; /* atb */
+    s8 unk6;  /* atb speed */
+} BtlUnit28;
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
 typedef struct BtlUnit {
@@ -1937,6 +1945,7 @@ extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
 extern Unk800686E8 D_80068BE8;
+s32 func_8004AB7C(s32, s32, s32, s32);
 void func_80030AF4(void *, void *); /* rotation -> matrix */
 s32 func_800CF91C(SVECTOR *, s32, s32);
 void func_800CF8EC(s32, s32, s32);

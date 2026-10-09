@@ -4383,7 +4383,47 @@ void func_800EA7B8(Unk80104F88Entry *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EA908);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EAAFC);
+void func_800EAAFC(void) {
+    BtlUnit *u;
+    BtlUnit28 *s;
+    BtlUnit24 *m;
+
+    u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    if (func_800EA038() == 0) {
+        return;
+    }
+    for (; u != NULL; u = u->unk0) {
+        if (u->unkB3 != 0 || u->unkCF != 0 || u->unk28 == 0) {
+            continue;
+        }
+        if (!((u->unk68 >> 16) & 1)) {
+            continue;
+        }
+        if ((u->unk68 & 1) == D_80104F88->unk12B6) {
+            continue;
+        }
+        s = (BtlUnit28 *)&u->unk28;
+        m = u->unk24;
+        s->unk4 += s->unk6;
+        if (s->unk4 < m->unk4) {
+            continue;
+        }
+        s->unk4 = m->unk4;
+        if ((u8)func_800C09A4(u, 0x02020002) != 0) {
+            continue;
+        }
+        if (u->unk68 & 1) {
+            if ((u8)func_800C09A4(u, 0xC00) != 0) {
+                u->unkB3 = 1;
+                func_800B3B5C(u);
+            } else {
+                func_800EB358(u);
+            }
+        } else if (func_8004AB7C(0x2F, u->unkB0, 0, 0) != 0) {
+            u->unkB3 = 1;
+        }
+    }
+}
 
 void func_800EAC88(void) {
     BtlUnit *u;
