@@ -72,11 +72,7 @@ static inline void func_80039C38_anim(Unk8004AB64 *p, s32 anim) {
     p->unk36 = anim;
     p->unk3A = p->unk60;
     p->unk62 &= ~0x46;
-    if (p->unk61 < p->unk60) {
-        p->unk62 |= 0xC0;
-    } else {
-        p->unk62 |= 0x80;
-    }
+    p->unk62 |= (p->unk60 > p->unk61) ? 0xC0 : 0x80;
     p->unk64 = 0;
     p->unk38 = func_800216D8(p->unk34, anim);
     p->unk5D = p->unk69;
@@ -796,9 +792,9 @@ s32 func_80039C38(void) {
         }
         actor->unk68 = 0;
         actor->unk92 = a;
+        actor->unkA4 = actor->unk14.vx;
         actor->unkA6 = actor->unk14.vy;
         actor->unkA8 = actor->unk14.vz;
-        actor->unkA4 = actor->unk14.vx;
         actor->unk5D = ((actor->unk61 - actor->unk60) << 4) / a;
         if (D_8007B708 == 1 && po->unk34 != 0xFFFF) {
             func_800C3E18(po->unk3B, 0);
@@ -808,7 +804,7 @@ s32 func_80039C38(void) {
         b = actor->unk92;
         a = ++actor->unk68;
         actor->unk14.vx = ((s16)actor->unkA4 * (b - a) + actor->unk94 * a) / b;
-        actor->unk14.vy = (s16)actor->unkA6 + a * a * 8 + a * (actor->unkAA - (s16)actor->unkA6) / b - a * (b * 8);
+        actor->unk14.vy = (s16)actor->unkA6 + a * a * 8 + a * (actor->unkAA - (s16)actor->unkA6) / b - a * (b << 3);
         actor->unk14.vz = ((s16)actor->unkA8 * (b - a) + actor->unk96 * a) / b;
         if (a < b) {
             D_8007B70C->unk0 = D_8007AEA0;
@@ -1720,8 +1716,8 @@ s32 func_80039C38(void) {
             VECTOR *v = func_800AE750();
             actor->unk14.vx = v->vx;
             actor->unk14.vy = v->vy;
-            actor->unk50 |= 0x40;
             actor->unk14.vz = v->vz;
+            actor->unk50 |= 0x40;
         }
         return 0;
     case 0xB8:
@@ -1729,8 +1725,8 @@ s32 func_80039C38(void) {
             VECTOR *v = func_800AE744();
             actor->unk14.vx = v->vx;
             actor->unk14.vy = v->vy;
-            actor->unk50 |= 0x80;
             actor->unk14.vz = v->vz;
+            actor->unk50 |= 0x80;
         }
         return 0;
     case 0xC4:
