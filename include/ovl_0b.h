@@ -1844,6 +1844,13 @@ typedef struct {
 void func_8002BBE8(s32, u8 *, s32);
 
 u8 *func_800CD75C(u8);
+typedef struct {
+    u8 pad0[8];
+    u8 unk8[4]; /* steal items, 0xFF = none */
+} Unk800B7F20; /* enemy steal slots */
+
+void func_800EA1B0(s32);
+
 u32 func_800D89E8(s32);
 s32 func_800D9F5C(u8 *, s32, s32);
 void func_800DC634(char *);

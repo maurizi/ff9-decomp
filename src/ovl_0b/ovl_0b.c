@@ -1565,7 +1565,48 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B44C0);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B7954);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B7F20);
+void func_800B7F20(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
+    u8 id = arg1->unk8[arg2];
+    GameData *gd;
+    GameData *g;
+    u32 r;
+
+    if (id != 0xFF) {
+        arg1->unk8[arg2] = 0xFF;
+        g = D_8006794C->unk1C;
+        if (g->unk56A < 9999) {
+            g->unk56A++;
+        }
+        func_800EA1B0(id);
+        func_800CD5C8(0xC, func_800CD75C(id));
+        if (arg0->unk0->unkC4[1] & 0x20000000) {
+            arg0->unk1B |= 1;
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                }
+            }
+            arg0->unk1E = ((*D_8007B720 << 8) | *D_8007B720++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) >> 1);
+        }
+        if (arg0->unk0->unkC4[0] & 0x800000) {
+            gd = D_8006794C->unk1C;
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                }
+            }
+            gd->unk560 = D_8006794C->unk1C->unk560 +
+                         ((*D_8007B720 << 8) | *D_8007B720++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) / 4 + 1);
+            if (D_8006794C->unk1C->unk560 > 9999999) {
+                D_8006794C->unk1C->unk560 = 9999999;
+            }
+        }
+    } else {
+        func_800CD5C8(0xA);
+    }
+}
 
 void func_800B81C4(BtlCalc *arg0, u8 arg1) {
     BtlUnit *u;
