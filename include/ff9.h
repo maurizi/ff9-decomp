@@ -296,6 +296,8 @@ typedef struct {
     u32 unk24;
     u32 unk28; /* 4-bit fields */
     u32 unk2C; /* frame counter? divided by 60 */
+    s32 unk30;
+    u8 unk34[15];
 } GameState;
 
 extern GameState *D_8006794C;
@@ -2650,9 +2652,40 @@ void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 typedef struct {
     u32 unk0_0 : 1;
     u32 unk0_1 : 1; /* unk4 remaps indices (4 bits each) */
-    u32 unk0_2 : 30;
+    u32 unk0_2 : 1;
+    u32 unk0_3 : 1;
+    u32 unk0_4 : 1;
+    u32 unk0_5 : 1;
+    u32 unk0_6 : 1;
+    u32 unk0_7 : 1;
+    u32 unk0_8 : 3;
+    u32 unk0_11 : 3;
+    u32 unk0_14 : 3;
+    u32 unk0_17 : 15;
     u32 unk4;
 } GameStateUnk24;
+
+/* GameState.unk14 viewed as its 15 directory records */
+typedef struct {
+    s32 unk0; /* kind; 3 = table of u16 ids */
+    s32 unk4; /* entry count */
+    s32 unk8;
+    s32 unkC;
+} DirInfo;
+
+/* 8-byte file directory entry (GameState.unk18 tables) */
+typedef struct {
+    u16 unk0; /* id */
+    u16 unk2;
+    s32 unk4;
+} DirEntry;
+
+/* Unk80021938.unk4 split into its parts */
+typedef struct {
+    u16 unk0;
+    u8 unk2;
+    u8 unk3;
+} FileIdParts;
 
 /* TIM image: header, optional CLUT block (flag bit 3), then the pixel block */
 typedef struct {
@@ -2681,6 +2714,6 @@ s32 func_8001D610(void);
 void func_8001D32C(void);
 void func_8001D3C4(void);
 void func_8001D67C(void);
-void func_8001D768(void);
+s32 func_8001D768(void);
 
 #endif

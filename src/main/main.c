@@ -617,7 +617,32 @@ void func_8001CB78(void) {
     D_80067940 = 0x8008B250;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001CBD0);
+void func_8001CBD0(void) {
+    GameState *gs = D_8006794C;
+    s32 i;
+
+    gs->unk0 = 0x100000;
+    gs->unkB = 0xFF;
+    gs->unk4 = 0;
+    gs->unk8 = 0;
+    gs->unkA = 0;
+    gs->unk20 = -1;
+    gs->unk1C = NULL;
+    func_8001CCB4(0, 0, 0);
+    func_8001CD04(0xE0);
+    gs->unk9 = 0;
+    for (i = 14; i >= 0; i--) {
+        ((DirInfo *)gs->unk14)[i].unk0 = i;
+        ((DirInfo *)gs->unk14)[i].unk4 = 0;
+        ((DirInfo *)gs->unk14)[i].unk8 = 0;
+        ((DirInfo *)gs->unk14)[i].unkC = 0;
+        gs->unk18[i] = NULL;
+    }
+    gs->unk30 = 0;
+    for (i = 0; (u32)i < 15; i++) {
+        gs->unk34[i] = 0;
+    }
+}
 
 void func_8001CCB4(s32 r, s32 g, s32 b) {
     DRAWENV *env;
@@ -677,7 +702,18 @@ s32 func_8001D610(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001D67C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001D768);
+s32 func_8001D768(void) {
+    FileEntry *f = func_8001E218(1, 0x271A);
+
+    func_8002177C(D_8006794C->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)D_80067940, 0,
+                  -1, NULL);
+    while (func_800217C4(D_8006794C->unk1C->unk854)) {
+    }
+    D_8006794C->unk1C->unk7D8 = (void *)D_80067940;
+    func_8001C750((s32)D_8006794C->unk1C->unk7D8, 0);
+    D_80067940 = func_8001C8B0((s32)D_8006794C->unk1C->unk7D8, 0, 0x90000, 0);
+    return 0;
+}
 
 s32 func_8001D848(void) {
     func_8001C784(D_8006794C->unk1C->unk7D8);
@@ -1716,7 +1752,28 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", CdReset);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800236A4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800236C4);
+void func_800236C4(void) {
+    GameStateUnk24 *p = (GameStateUnk24 *)&D_8006794C->unk24;
+    s32 i;
+
+    p->unk0_0 = 0;
+    p->unk0_1 = 0;
+    p->unk0_2 = 0;
+    p->unk0_3 = 1;
+    p->unk0_4 = 0;
+    p->unk0_5 = 0;
+    p->unk0_6 = 0;
+    p->unk0_7 = 1;
+    p->unk0_8 = 1;
+    p->unk0_11 = 3;
+    p->unk0_14 = 3;
+    p->unk0_17 = 0;
+    p->unk4 = 0;
+    for (i = 0; i < 8; i++) {
+        p->unk4 |= i << (i * 4);
+    }
+    func_8002397C();
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80023784);
 
