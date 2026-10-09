@@ -2372,7 +2372,46 @@ u8 *func_80024EB4(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     return pkt + sizeof(DrMode2Words);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025108);
+void func_80025108(RECT *r, s32 otz, u8 skip, s32 abr) {
+    LineXY l[4];
+    s32 i;
+    u32 *col;
+    LineF2W *p;
+
+    l[0].x0 = r->x + 1;
+    l[0].y0 = r->y + 1;
+    l[0].x1 = r->x + r->w - 3;
+    l[0].y1 = r->y + 1;
+    l[1].x0 = r->x + 1;
+    l[1].y0 = r->y + 2;
+    l[1].x1 = r->x + 1;
+    l[1].y1 = r->y + r->h - 3;
+    l[2].x0 = r->x + 1;
+    l[2].y0 = r->y + r->h - 2;
+    l[2].x1 = r->x + r->w - 2;
+    l[2].y1 = r->y + r->h - 2;
+    l[3].x0 = r->x + r->w - 2;
+    l[3].y0 = r->y;
+    l[3].x1 = r->x + r->w - 2;
+    l[3].y1 = r->y + r->h - 3;
+    col = D_80068F20[abr];
+    for (i = skip != 0; i < 4; i++) {
+        p = (LineF2W *)D_80077170;
+        setlen(p, 3);
+        p->rgbc = col[i >> 1];
+        p->xy0 = (u16)l[i].x0 | (l[i].y0 << 16);
+        p->xy1 = (u16)l[i].x1 | (l[i].y1 << 16);
+        addPrim(&D_8007716C[otz], p);
+        D_80077170 += sizeof(LineF2W);
+        p = (LineF2W *)D_80077170;
+        setlen(p, 3);
+        p->rgbc = col[(i >> 1) + 2];
+        p->xy0 = ((l[i].x0 + D_80068F94[i][0]) & 0xFFFF) | ((l[i].y0 + D_80068F94[i][1]) << 16);
+        p->xy1 = ((l[i].x1 + D_80068F94[i][2]) & 0xFFFF) | ((l[i].y1 + D_80068F94[i][3]) << 16);
+        addPrim(&D_8007716C[otz], p);
+        D_80077170 += sizeof(LineF2W);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800253D4);
 

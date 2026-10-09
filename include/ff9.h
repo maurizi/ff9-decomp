@@ -2431,6 +2431,13 @@ typedef struct {
     s16 y1;
 } LineF2Words; /* LINE_F2 */
 extern u32 D_80068F20[][4]; /* line colours */
+extern s8 D_80068F94[4][4]; /* shadow line offsets (func_80025108) */
+typedef struct {
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} LineXY;
 /* Inlined copy of func_80027948 (SPRT + DR_TPAGE from a sprite descriptor). */
 static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
@@ -2473,7 +2480,7 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
 void func_8002E718(RECT *, s32, MenuList *);
 void func_8002E7FC(RECT *, s32, MenuList *, s32);
 void func_8002E960(RECT *, s32, MenuList *, s32);
-void func_80025108(RECT *, s32, s32, s32);
+void func_80025108(RECT *, s32, u8, s32);
 void func_8002709C(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
 extern s16 D_8006F640;
