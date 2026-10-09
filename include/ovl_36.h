@@ -79,6 +79,7 @@ typedef struct {
     Unk801F4DC4 unk1948[4];
 } CardMenu;
 extern CardMenu D_801F347C;
+void func_801F2860(s32, s32, s32, s32);
 
 typedef struct {
     s16 unk0; /* icon */

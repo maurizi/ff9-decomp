@@ -74,7 +74,44 @@ void func_801F0CC8(void) {
     func_8002F488(0x66);
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F0DB0);
+void func_801F0DB0(void) {
+    u8 buf[8];
+    RECT *r;
+    s32 a;
+    s32 b;
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 x;
+    s32 y;
+    u8 *s;
+    s32 w;
+    s32 k = 8;
+    s32 k2 = 0x80;
+
+    r = &D_801F347C.unk18D0;
+    a = func_800625F8();
+    b = func_80062638();
+    func_8002B524(r->x + 8, r->y - 3, 0x1E, D_8007041C, 0);
+    func_8002DEE4(r, 0x1E, 1);
+    func_8002705C(r, 0x1E, 1);
+    s = func_80035774(0x27);
+    w = func_8002BA68(s);
+    func_8002BAE4(a, buf, 3, 1);
+    func_8002B5FC(r->x + 8, r->y + 0xA2, 0x14, s, 0);
+    func_8002B5B4(r->x + (w + k), r->y + 0xA4, 0x14, buf, 0);
+    s = func_80035774(0x28);
+    w = func_8002BA68(s);
+    func_8002BAE4(b, buf, 3, 1);
+    func_8002B5B4(r->x + 0x80, r->y + 0xA4, 0x14, buf, 0);
+    func_8002B5FC(r->x - (w - k2), r->y + 0xA2, 0x14, s, 0);
+    for (n = 0, i = 0, x = 4; i < 10; i++, x += 15) {
+        for (j = 0, y = 10; j < 10; j++, y += 15) {
+            func_801F2860(r->x + x, r->y + y, 0x14, n);
+            n++;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F0F9C);
 
