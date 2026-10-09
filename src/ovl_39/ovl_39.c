@@ -760,7 +760,7 @@ void func_801F6938(void) {
         func_801F72B4(0x2E);
         return;
     }
-    func_801F7190(&D_801FB1A8.unk34[D_801FBEF8.unk2], &D_801FBEF8.unk2D0[0x100]);
+    func_801F7190(&D_801FB1A8.unk34[D_801FBEF8.unk2], (SaveHeader *)&D_801FBEF8.unk2D0[0x100]);
     if (++D_801FBEF8.unk14 < D_801FBEF8.unk10) {
         func_801F7108_inline(func_801F6CD0(D_801FBEF8.unk14));
         return;
@@ -981,7 +981,24 @@ void func_801F7108(s32 slot) {
     func_801FA5A4(fd, (s32)D_801FBEF8.unk2D0, 0x180, func_801F6938);
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7190);
+void func_801F7190(SaveSlot *s, SaveHeader *h) {
+    s32 i;
+
+    s->unk0 = h->unk0;
+    s->unk1E = h->unk6;
+    s->unk28 = h->unk10;
+    s->unk1E.v[7] = 0xFF;
+    s->unk1C = h->unk4;
+    s->unk1D = h->unk5;
+    s->unk50 = h->unk2C;
+    s->unk54 = h->unk30;
+    s->unk48 = h->unk74;
+    s->unk4C = h->unk78;
+    s->unk44 = h->unk7C;
+    for (i = 0; i < 4; i++) {
+        s->unk58[i] = h->unk34[i];
+    }
+}
 
 void func_801F72B4(s32 a) {
     D_801FBEF8.unk1 = 5;
