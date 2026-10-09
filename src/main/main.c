@@ -5060,7 +5060,58 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010CD0);
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010CE0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033280);
+s32 func_80033280(s32 kind, s32 flag, u8 *item) {
+    u8 t = D_8006CAA4[kind][(u8)flag != 0];
+    u8 k = D_80069018[*item].unk8;
+    s32 r;
+
+    switch (t) {
+    case 0:
+        return k != 1;
+    case 1:
+        return 2;
+    case 2:
+        if ((u16)D_8007AEF0.h[0] >= 10300) {
+            r = 5;
+            if (k == 7) {
+                r = 6;
+            }
+            return r;
+        }
+        r = 3;
+        if (k == 7) {
+            r = 4;
+        }
+        return r;
+    case 3:
+        return 7;
+    case 4:
+        return 12;
+    case 5:
+        return 9;
+    case 6:
+        r = 10;
+        if (k == 7) {
+            r = 11;
+        }
+        return r;
+    case 7:
+        return 13;
+    case 8:
+        return 14;
+    case 9:
+        return 15;
+    case 10:
+        r = 16;
+        if ((u16)(D_8007AEF0.h[0] - 1500) < 100) {
+            r = 17;
+        }
+        return r;
+    case 11:
+        return 18;
+    }
+    return -1;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800333B0);
 
