@@ -859,7 +859,18 @@ void func_800AC02C(FieldEvtCtx **arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC344);
+Unk800C9CCC *func_800AC344(s32 arg0) {
+    u32 id;
+    s32 i;
+
+    id = (u16)arg0;
+    for (i = 9; i >= 0; i--) {
+        if (D_800C9CCC[i].unk2 == id) {
+            return &D_800C9CCC[i];
+        }
+    }
+    return NULL;
+}
 
 u32 func_800AC380(Unk800C9CCC **arg0) {
     u32 min;
@@ -1508,7 +1519,24 @@ FieldTrig *func_800B2100(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B21A0);
+void func_800B21A0(FieldEvtCtx *arg0, s16 arg1, s16 arg2) {
+    FieldScene *sc = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    u8 i = sc->unk4B;
+    FieldTrig *e;
+    u16 id;
+    s32 n;
+
+    n = i + 1;
+    sc->unk4B = n;
+    e = &sc->unk58[i];
+    e->unk0 = arg0->unkC->unk3B;
+    id = arg0->unkC->unk34;
+    e->unk4 = arg1;
+    do {
+        e->unk6 = arg2;
+    } while (0);
+    e->unk2 = id;
+}
 
 s32 func_800B2218(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
     FieldTrig *base;
@@ -3556,7 +3584,20 @@ s32 func_800C18A0(s32 arg0, s32 arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C18D4);
+s32 func_800C18D4(s32 arg0, u32 arg1, u32 arg2) {
+    Unk800C9DB4 *b = D_800C9DB4;
+    Unk800C9DB4Path *p = &((Unk800C9DB4Path *)((u8 *)b + b->unkC))[arg0];
+    Unk800C9DB4Step *st = (Unk800C9DB4Step *)((u8 *)b + p->unkC);
+
+    p->unkA = 0;
+    p->unk0 |= 6;
+    p->unk5 = arg1 << 8;
+    st[arg2].unk1 = -1;
+    if ((p->unk8 > 0 && arg2 < arg1) || (p->unk8 < 0 && arg1 < arg2)) {
+        p->unk8 = -p->unk8;
+    }
+    return 1;
+}
 
 s32 func_800C196C(s32 arg0, s32 arg1) {
     Unk800C9DB4 *d = D_800C9DB4;
@@ -4855,7 +4896,15 @@ s32 func_800C7F34(s32 arg0, s32 arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7F7C);
+s32 func_800C7F7C(s32 arg0, s32 arg1) {
+    Unk800CAE98 *e = func_800C8108_inline(arg0);
+
+    arg1 <<= 8;
+    e->unk14 = arg1;
+    e->unk0 = 0;
+    func_800C6EEC();
+    return 1;
+}
 
 s32 func_800C7FBC(s32 arg0, s32 arg1) {
     Unk800CAE98 *e = func_800C8108_inline(arg0);
