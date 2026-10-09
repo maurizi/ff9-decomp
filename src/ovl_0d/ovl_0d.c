@@ -1375,7 +1375,51 @@ void func_800B026C(TmState *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B030C);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B0618);
+void func_800B0618(TmState *s) {
+    s32 i;
+    u32 r;
+    s32 n;
+    s32 x;
+    s32 y;
+    TmCell *cell;
+    TmUnk2F0 *base;
+
+    base = s->unk2F0;
+    for (i = 0; i < 6; i++) {
+        base[i].unk0 = 1;
+        base[i].unk4 = 0;
+    }
+    r = func_80062B3C() % 100;
+    if (r < 3) {
+        n = 0;
+    } else if (r >= 3 && r < 7) {
+        n = 1;
+    } else if (r >= 7 && r < 12) {
+        n = 2;
+    } else if (r >= 12 && r < 17) {
+        n = 3;
+    } else if (r >= 17 && r < 27) {
+        n = 4;
+    } else if (r >= 27 && r < 97) {
+        n = 5;
+    } else {
+        n = 6;
+    }
+    s->unk570 = n;
+    s->unk56C = 0;
+    for (i = 0; i < n; i++) {
+        do {
+            x = func_80062B3C() & 3;
+            y = func_80062B3C() & 3;
+            cell = func_800B19D4(s, x, y);
+        } while (cell->unk0 != 1);
+        cell->unk0 = 2;
+        base[i].unk4 = x * 43 + 0x48;
+        base[i].unk0 = 1;
+        base[i].unk8 = y * 52 + 8;
+        base[i].unkC = func_80062B3C() & 1;
+    }
+}
 
 s32 func_800B07DC(s32 arg0, s32 arg1, TmState *s) {
     if (func_800AE830(s, 1) == 0) {
