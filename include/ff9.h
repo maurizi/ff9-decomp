@@ -2713,7 +2713,11 @@ void func_80018F20(void);
 s32 func_8001D610(void);
 void func_8001D32C(void);
 void func_8001D3C4(void);
-void func_8001D67C(void);
+s32 func_8001D67C(void);
 s32 func_8001D768(void);
+
+s32 func_800213C0(void *, s32);
+s32 func_80021A8C(Unk80021938 *);
+void func_8002291C(void);
 
 #endif
