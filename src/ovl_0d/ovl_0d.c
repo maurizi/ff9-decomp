@@ -763,7 +763,66 @@ void func_800ABEC4(TmState *s) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC060);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC4C8);
+void func_800AC4C8(s32 unused, TmPos *out, TmCard *a, TmCard *b) {
+    s32 atk;
+    s32 def;
+    s32 aatk;
+    s32 apdef;
+    s32 amdef;
+    s32 batk;
+    s32 bpdef;
+    s32 bmdef;
+
+    atk = 0;
+    aatk = a->unk2;
+    apdef = a->unk4;
+    amdef = a->unk5;
+    batk = b->unk2;
+    bpdef = b->unk4;
+    bmdef = b->unk5;
+    def = 0;
+    switch (a->unk3) {
+    case 0:
+        atk = aatk;
+        def = bpdef;
+        break;
+    case 1:
+        atk = aatk;
+        def = bmdef;
+        break;
+    case 2:
+        atk = aatk;
+        def = bpdef;
+        if (bmdef < def) {
+            def = bmdef;
+        }
+        break;
+    case 3:
+        atk = aatk;
+        if (atk < apdef) {
+            atk = apdef;
+        }
+        if (atk < amdef) {
+            atk = amdef;
+        }
+        def = batk;
+        if (bpdef < def) {
+            def = bpdef;
+        }
+        if (bmdef < def) {
+            def = bmdef;
+        }
+        break;
+    }
+    if (atk == 0) {
+        atk = 1;
+    }
+    if (def == 0) {
+        def = 1;
+    }
+    out->unk0 = atk;
+    out->unk4 = def;
+}
 
 void func_800AC5AC(TmState *arg0) {
     if (func_800B0EB8(arg0, arg0->unk434, arg0->unk42C, arg0->unk430, (TmCard *)-1) != 0) {
