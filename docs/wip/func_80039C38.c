@@ -71,7 +71,7 @@ static inline void func_80039C38_anim(Unk8004AB64 *p, s32 anim) {
     }
     p->unk36 = anim;
     p->unk3A = p->unk60;
-    p->unk62 &= 0xB9;
+    p->unk62 &= ~0x46;
     if (p->unk61 < p->unk60) {
         p->unk62 |= 0xC0;
     } else {
@@ -140,11 +140,14 @@ static inline Unk8004AFF0 *func_8004AFF0_inline(Unk8004AB64 *p) {
 
 extern u8 D_8007BD2C;
 extern s32 D_8007AE50;
-extern u8 D_8007AE48;
-extern s16 D_8007AE40;
-extern s16 D_8007AE42;
-extern s16 D_8007AE44;
-extern s16 D_8007AE46;
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    u8 unk8;
+} Unk8007AE40;
+extern Unk8007AE40 D_8007AE40;
 extern u8 D_8006E658[];
 void func_80021660(u16);
 void func_80021680(s16);
@@ -158,7 +161,7 @@ void func_800B1A20(s16, s16, s16, u8 *arg4, u8 *arg5);
 s32 func_800B2CC0(s32, s32, s32, s32);
 void func_800B5004(s32, s16);
 void func_800B73F8(u32, s32);
-s32 func_800C02D0(s16, s16, s16, s8, u8, u8, u8);
+s32 func_800C02D0(s32, s16, s16, s8, u8, u8, u8);
 s32 func_800C0BCC(s32);
 s32 func_800C0DB0(s32, s32, s32);
 s32 func_800C0DF4(s16, s16, s16, s32);
@@ -209,11 +212,11 @@ s32 func_800C80B0(s32, s16, s16);
 s32 func_800C80E4(s32, s16);
 void func_800F4F04(s32, s32);
 void func_801F0FF4(void);
-void func_800AA3F4(s32, s32, s32, s32);
+void func_800AA3F4(s32);
 s32 func_800C3E18(s32, s32);
 s32 func_800C7570(s32, u16);
-void func_800B1520(u16, u16, s32, s32);
-void func_800CA694(u16, u16, s32);
+void func_800B1520(s32, s32, s32, s32);
+void func_800CA694(s32, s32, u16);
 void func_800BE99C(s32, s32);
 void func_800ABA98(s32, s32, s32, s32, s32);
 extern s32 D_8007AE2C;
@@ -301,6 +304,68 @@ static inline void func_80039C38_party(void) {
     }
 }
 
+static inline void func_8004B3A8_inline(s32 a, s32 b) {
+    func_800367D0(a, b, 0x14, 0x10)->unk5 = 2;
+}
+
+static inline void func_8004B3D0_inline(s32 a, s32 b) {
+    Unk800367D0 *p = func_800367D0(a, b, 0x38, 0x10);
+    p->unk5 = 3;
+    p->unkF = 1;
+}
+
+static inline void func_80039C38_newactor(s32 uid, s32 b) {
+    Unk8004AB64 *p;
+
+    p = (Unk8004AB64 *)func_800367D0(uid, b, 0xAC, 0x10);
+    p->unk34 = 0xFFFF;
+    p->unk2F = 0x40;
+    p->unk5 = 4;
+    p->unk5C = 0x1E;
+    p->unk5E = 0x1F;
+    p->unk71 = 0x50;
+    p->unk3C = 0x10;
+    p->unk3D = 0x10;
+    p->unk3E = 0xFF;
+    p->unk69 = 0x10;
+    p->unk5D = 0x10;
+    p->unk61 = 0xFF;
+    p->unk5F = 0x10;
+    p->unk6E = 4;
+    p->unk72 = 4;
+    p->unk73 = 0x10;
+    p->unk93 = 0xFF;
+    *(u32 *)p->unk7C = 0x10101010;
+    p->unkF |= 4;
+    switch (D_8007B708) {
+    case 1:
+        func_800AA3F4(uid);
+        break;
+    case 2:
+        D_8007AED0[D_8007AE04++] = p;
+        break;
+    }
+}
+
+/* Inlined helper: give the window opened by obj the focus (b = window flags). */
+static inline void func_80039C38_window(Unk8004AB64 *obj, s32 b) {
+    Unk16D8 *n;
+    Unk8004AB64 *o;
+    s32 c = D_8007B704->unk10;
+
+    if ((b & 0xA0) == 0x80 && obj->unk5 == 4) {
+        for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+            o = n->unk4;
+            if (o->unk5 == 4 && o->unk3E == c) {
+                o->unk3E = 0xFF;
+            }
+        }
+        obj->unk3E = c;
+        D_8007AE68 = obj;
+        D_8007AE6C = 0;
+    }
+}
+
 /* ---- function ---- */
 s32 func_80039C38(void) {
     Unk8004AB64 *po = D_8007B704;
@@ -321,50 +386,20 @@ s32 func_80039C38(void) {
 
     switch (op) {
     case 0x07:
-        func_800367D0(D_8007B6F4, *D_8007B70C->unk0++, 0x14, 0x10)->unk5 = 2;
+        func_8004B3A8_inline(D_8007B6F4, *D_8007B70C->unk0++);
         D_8007B6F8 = 1;
         return 0;
-    case 0x08: {
-        Unk800367D0 *p = func_800367D0(D_8007B6F4, *D_8007B70C->unk0++, 0x38, 0x10);
-        p->unk5 = 3;
-        p->unkF = 1;
+    case 0x08:
+        func_8004B3D0_inline(D_8007B6F4, *D_8007B70C->unk0++);
         D_8007B6F8 = 1;
         return 0;
-    }
     case 0x09:
         a = D_8007B6F4;
         b = *D_8007B70C->unk0++;
         if ((u32)(a - 0xFB) < 4) {
             a = D_8007AECC->unk16E4[a - 0xFB];
         }
-        obj = (Unk8004AB64 *)func_800367D0(a, b, 0xAC, 0x10);
-        obj->unk34 = 0xFFFF;
-        obj->unk2F = 0x40;
-        obj->unk5 = 4;
-        obj->unk5C = 0x1E;
-        obj->unk5E = 0x1F;
-        obj->unk71 = 0x50;
-        obj->unk3C = 0x10;
-        obj->unk3D = 0x10;
-        obj->unk3E = 0xFF;
-        obj->unk69 = 0x10;
-        obj->unk5D = 0x10;
-        obj->unk61 = 0xFF;
-        obj->unk5F = 0x10;
-        obj->unk6E = 4;
-        obj->unk72 = 4;
-        obj->unk73 = 0x10;
-        obj->unk93 = 0xFF;
-        *(u32 *)obj->unk7C = 0x10101010;
-        obj->unkF |= 4;
-        switch (D_8007B708) {
-        case 1:
-            func_800AA3F4(a, 0x10, 0xFF, 0x10101010);
-            break;
-        case 2:
-            D_8007AED0[D_8007AE04++] = obj;
-            break;
-        }
+        func_80039C38_newactor(a, b);
         D_8007B6F8 = 1;
         return 0;
     case 0x46:
@@ -519,9 +554,6 @@ s32 func_80039C38(void) {
         po->unk14.vx = po->unk40.vx = a;
         po->unk14.vy = po->unk40.vy = b;
         po->unk14.vz = po->unk40.vz = c;
-        if (d) {
-            func_800C3E18(po->unk3B, 1);
-        }
         if (po->unk5 == 4) {
             po->unk78 = 0x7FFFFFFF;
             po->unk30 = 0;
@@ -558,9 +590,9 @@ s32 func_80039C38(void) {
     case 0xBB:
         actor = func_80038150();
     case 0x56:
-        a = func_8004AEDC_inline();
+        a = func_8004AEDC_inline() << 4;
         b = func_8004AEDC_inline();
-        func_800398D0(actor, a << 4, 1, b);
+        func_800398D0(actor, a, 1, b);
         return 0;
     case 0xA7:
         a = func_8004AEDC_inline();
@@ -605,18 +637,7 @@ s32 func_80039C38(void) {
     case 0x1F:
         D_8007B704->unk10 = func_8004AEDC_inline();
         b = func_8004AEDC_inline();
-        c = D_8007B704->unk10;
-        if ((b & 0xA0) == 0x80 && D_8007B704->unk5 == 4) {
-            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
-                obj = n->unk4;
-                if (obj->unk5 == 4 && obj->unk3E == c) {
-                    obj->unk3E = 0xFF;
-                }
-            }
-            D_8007B704->unk3E = c;
-            D_8007AE68 = D_8007B704;
-            D_8007AE6C = 0;
-        }
+        func_80039C38_window(D_8007B704, b);
         a = func_8004AF58_inline();
         func_8004DCEC(a, D_8007B704->unk10, func_80039660(D_8007B704, a, b), b);
         D_8007B704->unkD = 0xFE;
@@ -624,18 +645,7 @@ s32 func_80039C38(void) {
     case 0x20:
         D_8007B704->unk10 = func_8004AEDC_inline();
         b = func_8004AEDC_inline();
-        c = D_8007B704->unk10;
-        if ((b & 0xA0) == 0x80 && D_8007B704->unk5 == 4) {
-            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
-                obj = n->unk4;
-                if (obj->unk5 == 4 && obj->unk3E == c) {
-                    obj->unk3E = 0xFF;
-                }
-            }
-            D_8007B704->unk3E = c;
-            D_8007AE68 = D_8007B704;
-            D_8007AE6C = 0;
-        }
+        func_80039C38_window(D_8007B704, b);
         a = func_8004AF58_inline();
         func_8004DCEC(a, D_8007B704->unk10, func_80039660(D_8007B704, a, b), b);
         return 0;
@@ -643,18 +653,7 @@ s32 func_80039C38(void) {
         po = func_80038150();
         D_8007B704->unk10 = func_8004AEDC_inline();
         b = func_8004AEDC_inline();
-        c = D_8007B704->unk10;
-        if ((b & 0xA0) == 0x80 && po->unk5 == 4) {
-            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
-                obj = n->unk4;
-                if (obj->unk5 == 4 && obj->unk3E == c) {
-                    obj->unk3E = 0xFF;
-                }
-            }
-            po->unk3E = c;
-            D_8007AE68 = po;
-            D_8007AE6C = 0;
-        }
+        func_80039C38_window(po, b);
         a = func_8004AF58_inline();
         func_8004DCEC(a, D_8007B704->unk10, func_80039660(po, a, b), b);
         D_8007B704->unkD = 0xFE;
@@ -663,18 +662,7 @@ s32 func_80039C38(void) {
         po = func_80038150();
         D_8007B704->unk10 = func_8004AEDC_inline();
         b = func_8004AEDC_inline();
-        c = D_8007B704->unk10;
-        if ((b & 0xA0) == 0x80 && po->unk5 == 4) {
-            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
-                obj = n->unk4;
-                if (obj->unk5 == 4 && obj->unk3E == c) {
-                    obj->unk3E = 0xFF;
-                }
-            }
-            po->unk3E = c;
-            D_8007AE68 = po;
-            D_8007AE6C = 0;
-        }
+        func_80039C38_window(po, b);
         a = func_8004AF58_inline();
         func_8004DCEC(a, D_8007B704->unk10, func_80039660(po, a, b), b);
         return 0;
@@ -825,16 +813,17 @@ s32 func_80039C38(void) {
             return 1;
         }
         return 0;
-    case 0x29:
+    case 0x29: {
+        u32 cnt;
         pt = ((Unk80039C38Quad *)D_8007B704)->unk18;
-        a = func_8004AEDC_inline();
-        ((Unk80039C38Quad *)D_8007B704)->unk14 = a;
-        while (a-- != 0) {
+        cnt = ((Unk80039C38Quad *)D_8007B704)->unk14 = func_8004AEDC_inline();
+        while (cnt-- != 0) {
             pt->unk0 = func_8004AF58_inline();
             pt->unk2 = func_8004AF58_inline();
             pt++;
         }
         return 0;
+    }
     case 0xA4:
         obj = func_8004B040_inline(D_8007AECC->unk16ED);
         if (obj != NULL) {
@@ -926,17 +915,16 @@ s32 func_80039C38(void) {
         func_80021660(a & 0x7FFF);
         return 3;
     case 0x57:
-        D_8007AECC->unk16EF = func_8004AEDC_inline();
-        if (D_8007AECC->unk16EF == 0) {
+        if ((D_8007AECC->unk16EF = func_8004AEDC_inline()) == 0) {
             D_8007AE50 = 0;
         }
         return 0;
     case 0x3C:
-        D_8007AE48 = func_8004AEDC_inline();
-        D_8007AE40 = func_8004AF58_inline();
-        D_8007AE42 = func_8004AF58_inline();
-        D_8007AE44 = func_8004AF58_inline();
-        D_8007AE46 = func_8004AF58_inline();
+        D_8007AE40.unk8 = func_8004AEDC_inline();
+        D_8007AE40.unk0 = func_8004AF58_inline();
+        D_8007AE40.unk2 = func_8004AF58_inline();
+        D_8007AE40.unk4 = func_8004AF58_inline();
+        D_8007AE40.unk6 = func_8004AF58_inline();
         return 0;
     case 0x2C:
         D_8007AECC->unk16ED = D_8007B70C->unk7;
@@ -1149,21 +1137,29 @@ s32 func_80039C38(void) {
         return 0;
     case 0x38:
         switch (D_8007B70C->unk4) {
-        case 0:
-            func_800B1520(D_8007AE10[1], D_8007AE10[0], 0x36, func_8004AEDC_inline());
+        case 0: {
+            s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+            func_800B1520(x, z, 0x36, func_8004AEDC_inline());
             break;
-        case 1:
-            func_800B1520(D_8007AE10[1], D_8007AE10[0], 0x35, func_8004AEDC_inline());
+        }
+        case 1: {
+            s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+            func_800B1520(x, z, 0x35, func_8004AEDC_inline());
             break;
-        case 3:
-            func_800B1520(D_8007AE10[1], D_8007AE10[0], 0x2F, func_8004AEDC_inline());
+        }
+        case 3: {
+            s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+            func_800B1520(x, z, 0x2F, func_8004AEDC_inline());
             D_8007B70C->unkB = 0;
             break;
         }
+        }
         return 0;
-    case 0xE5:
-        func_800CA694(D_8007AE10[1], D_8007AE10[0], func_8004AEDC_inline());
+    case 0xE5: {
+        s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
+        func_800CA694(x, z, func_8004AEDC_inline());
         return 0;
+    }
     case 0x4A:
         a = func_8004AEDC_inline();
         func_800BE99C(a, func_8004AF58_inline());
@@ -1510,19 +1506,21 @@ s32 func_80039C38(void) {
     case 0xAB:
         D_80073998[0] |= 0x40000;
         return 1;
-    case 0x48:
+    case 0x48: {
+        u32 cnt;
         a = func_8004AF58_inline();
-        b = func_8004AEDC_inline();
+        cnt = func_8004AEDC_inline();
         if (a < 0x100) {
-            func_80027D84(a, b);
+            func_80027D84(a, cnt);
         } else if (a < 0x200) {
             func_80028074(a - 0x100);
         } else {
-            while (b-- != 0) {
+            while (cnt-- != 0) {
                 func_8006238C(a - 0x200);
             }
         }
         return 0;
+    }
     case 0x49:
         a = func_8004AF58_inline();
         b = func_8004AEDC_inline();
@@ -1533,14 +1531,12 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xCE:
-        D_8006794C->unk1C->unk560 += func_8004B914_inline();
-        if (D_8006794C->unk1C->unk560 > 9999999) {
+        if ((D_8006794C->unk1C->unk560 += func_8004B914_inline()) > 9999999) {
             D_8006794C->unk1C->unk560 = 9999999;
         }
         return 0;
     case 0xCF:
-        D_8006794C->unk1C->unk560 -= func_8004B914_inline();
-        if (D_8006794C->unk1C->unk560 > 9999999) {
+        if ((D_8006794C->unk1C->unk560 -= func_8004B914_inline()) > 9999999) {
             D_8006794C->unk1C->unk560 = 0;
         }
         return 0;
