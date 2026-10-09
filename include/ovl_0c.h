@@ -727,6 +727,7 @@ extern u8 D_800D48E8[10];
 extern SVECTOR D_800D4910[10];
 extern VECTOR D_800D4960[9];
 extern SVECTOR D_800D49F0[9];
+extern SVECTOR D_800CDF48;
 extern SVECTOR D_800CDF80;
 extern SVECTOR D_800CDF88;
 extern SVECTOR D_800CDF90;
@@ -838,6 +839,7 @@ extern u8 D_800D30CD;
 extern s32 D_800D3300;
 extern u8 D_800D5410;
 extern u8 D_800D1FD0;
+extern u8 D_800D30D2;
 extern u8 D_800D30CB;
 extern u8 D_800CF454;
 void func_800B94F8(s32, s32, s32);
@@ -1001,6 +1003,21 @@ void func_8004B20C(s32);
 #define SetSpadStack(addr) \
     __asm__ volatile("move $8, %0\n\tsw $29, 0($8)\n\taddiu $8, $8, -4\n\tmove $29, $8" : : "r"(addr) : "$8", "memory")
 #define ResetSpadStack() __asm__ volatile("addiu $29, $29, 4\n\tlw $29, 0($29)" : : : "memory")
+
+/* world effect emitter table entry (func_800C69F4) */
+typedef struct {
+    s32 unk0; /* position */
+    s32 unk4;
+    s32 unk8;
+    s32 unkC; /* random range */
+    s32 unk10;
+    s32 unk14;
+    u8 pad18[0x24 - 0x18];
+    s16 unk24; /* effect, -1 = end */
+    s16 unk26;
+    s16 unk28; /* chance (of 4096) */
+    u8 pad2A[0x40 - 0x2A];
+} WmEmitter; /* 0x40 */
 
 /* map-marker colour (func_800C1428) */
 extern s32 D_800CD104; /* navi cursor */
