@@ -3215,7 +3215,41 @@ s32 func_800C1184(u32 *arg0) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C12CC);
+void func_800C12CC(Battle4880 *arg0) {
+    u8 n;
+    u8 it;
+    Unk800FDF30 *d;
+
+    n = 0;
+    d = &D_800FDF30;
+    d->unk0 += arg0->unk44;
+    d->unk4 += arg0->unk46;
+    for (; n < 16; n++) {
+        if (d->unkC[n] == 0xFF) {
+            break;
+        }
+    }
+    if (n < 16) {
+        if (rand8_inline() < 1 && (it = arg0->unk48.b[3]) != 0xFF) {
+            d->unkC[n++] = it;
+            arg0->unk48.b[3] = 0xFF;
+        } else if (rand8_inline() < 0x20 && (it = arg0->unk48.b[2]) != 0xFF) {
+            d->unkC[n++] = it;
+            arg0->unk48.b[2] = 0xFF;
+        } else if (rand8_inline() < 0x60 && (it = arg0->unk48.b[1]) != 0xFF) {
+            d->unkC[n++] = it;
+            arg0->unk48.b[1] = 0xFF;
+        }
+        if ((it = arg0->unk48.b[0]) != 0xFF) {
+            d->unkC[n] = it;
+        }
+    }
+    if (d->unk1C == 0xFF && (u32)arg0->unk4C < 100) {
+        if (rand8_inline() < 0x20) {
+            d->unk1C = arg0->unk4C;
+        }
+    }
+}
 
 void func_800C1524(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;

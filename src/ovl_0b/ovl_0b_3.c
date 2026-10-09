@@ -171,7 +171,7 @@ void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
     arg1->unk44 = arg0->unk10;
     arg1->unk46 = arg0->unk12;
     arg1->unk4C = arg0->unk69;
-    arg1->unk48 = arg0->unk14;
+    arg1->unk48.w = arg0->unk14;
     for (i = 0; i < 6; i++) {
         h = func_8001C7FC(4, arg0->unk20[i] | 0x30000, 0);
         arg1->unkC[i] = h;

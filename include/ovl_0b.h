@@ -162,6 +162,14 @@ typedef struct {
     DRAWENV unk5C; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
+/* next byte of the random table, refilling it when exhausted (inlined) */
+static inline s32 rand8_inline(void) {
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    return *D_8007B720++;
+}
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;
@@ -610,10 +618,13 @@ typedef struct {
     u8 unk32[6];
     u8 unk38[6];
     u8 unk3E[6];
-    u16 unk44;
-    u16 unk46;
-    s32 unk48;
-    s32 unk4C;
+    u16 unk44; /* exp */
+    u16 unk46; /* gil */
+    union {
+        s32 w;
+        u8 b[4]; /* item drops, rarest last */
+    } unk48;
+    s32 unk4C; /* card */
 } Battle4880; /* 0x50 */
 
 typedef struct {
