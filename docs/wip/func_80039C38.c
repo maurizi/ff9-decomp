@@ -15,11 +15,11 @@ extern s32 D_8007AE6C;
 extern s32 D_8007BBD8;
 void func_800398D0(Unk8004AB64 *, s32, s32, s32);
 s32 func_80052F24(s32, s32);
-void func_8004EC74(s32, s32);
+void func_8004EC74(u32, s32);
 void func_8004ED00(s32, s32);
 void func_8004EFA0(void);
-s32 func_80039660(Unk8004AB64 *, s32, s32);
-void func_8004DCEC(s32, s32, s32, s32);
+WinLayout *func_80039660(s32, s32, s32);
+void func_8004DCEC(s32, s32, WinLayout *, s32);
 
 static inline s32 func_8004AF58_inline(void) {
     s32 r;
@@ -641,7 +641,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)D_8007B704, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x20:
@@ -649,7 +649,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)D_8007B704, b, c), c);
         return 0;
     case 0x95:
         po = func_80038150();
@@ -657,7 +657,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)po, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x96:
@@ -666,7 +666,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)po, b, c), c);
         return 0;
     case 0x21:
         a = func_8004AEDC_inline();
@@ -850,7 +850,7 @@ s32 func_80039C38(void) {
             s32 *sp = (s32 *)po + po->unk9 + po->unkA;
             Unk16D8 *nn;
             sp[0] = po->unk0 - D_8007AECC->unk16F0;
-            sp[1] = (D_8007B70C->unk7 << 24) | 0xFF0000 | (po->unk4 << 8) | po->unkD;
+            sp[1] = po->unkD | po->unk4 << 8 | 0xFF << 16 | D_8007B70C->unk7 << 24;
             po->unk4 = 0;
             po->unkD = 0;
             po->unkA += 2;
