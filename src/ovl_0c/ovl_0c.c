@@ -256,7 +256,37 @@ void func_800A98B8(void) {
     D_80067948 = (s32)(wm + 1);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A98F8);
+/* reset the world map object */
+void func_800A98F8(void) {
+    WorldMapObj *o = D_8006794C->unk1C->unk8E4.world->unk8;
+    s32 i;
+
+    o->unkC = 0xA0;
+    o->unkE = 0x6D;
+    o->unk0 = 0;
+    o->unk4 = NULL;
+    o->unk10 = NULL;
+    o->unk14 = NULL;
+    o->unk1C = NULL;
+    o->unk28 = NULL;
+    o->unk1A = 0;
+    o->unk20 = 0;
+    o->unk19 = 0;
+    o->unk18 = 0;
+    o->unk26 = 0xFFFF;
+    o->unk30 = o->unk2C;
+    for (i = 1; i >= 0; i--) {
+        o->unk34[i] = NULL;
+    }
+    o->unk24 = -1;
+    o->unk1B = 3;
+    for (i = 0; i < sizeof(o->unk8); i++) {
+        o->unk8[i] = 0;
+    }
+    for (i = 0; i < sizeof(o->unk3C); i++) {
+        o->unk3C[i] = 0;
+    }
+}
 
 s32 func_800A99C4(WorldMapObj *arg0, u16 arg1) {
     arg0->unk14 = func_8001C7FC(4, arg1 | 0x60000, 0);
