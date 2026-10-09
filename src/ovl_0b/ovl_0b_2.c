@@ -329,7 +329,39 @@ void func_800D616C(void) {
     D_800FEC40.unk24 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D6188);
+s32 func_800D6188(s32 arg0) {
+    s32 id;
+    s32 i;
+    u8 *p;
+    s32 bit;
+    GameState *g;
+
+    id = arg0;
+    if (func_800E8498(0) >= 0x385) {
+        for (p = D_800F727C[0]; *p != 0xFF; p += 2) {
+            if (p[0] == arg0) {
+                id = p[1];
+                break;
+            }
+        }
+    }
+    bit = 1;
+    g = D_8006794C;
+    for (i = 0; i < 16; i++, bit <<= 1) {
+        if (D_800F72A0[i][0] == id && !(g->unk1C->unk55E & bit)) {
+            id = D_800F72A0[i][1];
+            g->unk1C->unk55E |= bit;
+            break;
+        }
+        if (D_800F72A0[i][1] == id) {
+            if (!(g->unk1C->unk55E & bit)) {
+                g->unk1C->unk55E |= bit;
+            }
+            break;
+        }
+    }
+    return id;
+}
 
 s32 func_800D62A0(s32 arg0) {
     if (D_800FEC40.unk0 != -1) {
