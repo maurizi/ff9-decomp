@@ -208,6 +208,14 @@ typedef struct {
 } LINE_F2;
 
 typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, p1;
+    s16 x1, y1;
+} LINE_G2;
+
+typedef struct {
     u8 minute, second, sector, track;
 } CdlLOC;
 
@@ -535,6 +543,11 @@ MATRIX *ScaleMatrix(MATRIX *m, VECTOR *v);
 VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
 VECTOR *ApplyMatrix(MATRIX *m, SVECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
+void SetLineG2(LINE_G2 *p);
+void SetDrawStp(DR_STP *p, int pbw);
+void PushMatrix(void);
+void PopMatrix(void);
+long RotTransPers(SVECTOR *v0, long *sxy, long *p, long *flag);
 void SetPolyFT4(POLY_FT4 *p);
 void SetPolyF4(POLY_F4 *p);
 void SetPolyF3(POLY_F3 *p);

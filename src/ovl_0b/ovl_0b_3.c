@@ -1264,7 +1264,48 @@ void func_800CEBBC(void) {
     D_800F7274 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CEBC8);
+u8 *func_800CEBC8(u8 *arg0, u32 *arg1, MATRIX *arg2) {
+    SVECTOR v;
+    MATRIX m;
+    long p;
+    long flag;
+    s32 i;
+
+    func_800639D4(0x200);
+    i = 0;
+    PushMatrix();
+    SetDrawStp((DR_STP *)arg0, 0);
+    AddPrim(&arg1[2], arg0);
+    arg0 += sizeof(DR_STP);
+    m = *arg2;
+    m.t[0] = 0;
+    m.t[1] = 0;
+    m.t[2] = 1000;
+    SetTransMatrix(&m);
+    for (; i < D_800F7274; i++) {
+        SetLineG2((LINE_G2 *)arg0);
+        SetSemiTrans(arg0, 1);
+        v.vx = (((func_80062B3C() & 0x1FF) - 0x100) * 41) / 32;
+        v.vy = ((func_80062B3C() & 0xFF) * 50) / 32 - 0xDC;
+        v.vz = (((func_80062B3C() & 0x1FF) - 0x100) * 41) / 32;
+        RotTransPers(&v, (long *)&((LINE_G2 *)arg0)->x0, &p, &flag);
+        v.vy += 0x55 + (func_80062B3C() & 0x1F);
+        RotTransPers(&v, (long *)&((LINE_G2 *)arg0)->x1, &p, &flag);
+        setRGB0((LINE_G2 *)arg0, 0x19, 0x19, 0x32);
+        setRGB1((LINE_G2 *)arg0, 0x50, 0x50, 0x82);
+        AddPrim(&arg1[2], arg0);
+        arg0 += sizeof(LINE_G2);
+    }
+    SetDrawStp((DR_STP *)arg0, 1);
+    AddPrim(&arg1[2], arg0);
+    arg0 += sizeof(DR_STP);
+    SetDrawTPage(arg0, 0, 0, GetTPage(0, 3, 0, 0));
+    AddPrim(&arg1[2], arg0);
+    PopMatrix();
+    arg0 += sizeof(DR_TPAGE);
+    func_800639D4(D_8006794C->unk1C->unkA);
+    return arg0;
+}
 
 Unk800CEE74 *func_800CEE74(void) {
     return D_800FE514;
