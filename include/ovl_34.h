@@ -35,6 +35,16 @@ typedef struct {
 extern ConfigMenu D_801F1558;
 extern RECT D_801F1534[2]; /* option window rects */
 extern u8 D_801F1524[];
+extern u8 D_801F1464[]; /* window contents for func_80063118 */
+extern s32 D_801F1474[8]; /* button mask per pad config slot */
+extern s32 D_801F14F0; /* text ids */
+extern s32 D_801F14F4;
+extern u8 D_801F14F8[];
+typedef struct {
+    u8 unk0; /* text id */
+    u8 unk1; /* icon */
+} ConfigPadEntry;
+extern ConfigPadEntry D_801F14FC[8];
 /* func_800355DC; this overlay's link only has the D_ name */
 void D_800355DC(void);
 
