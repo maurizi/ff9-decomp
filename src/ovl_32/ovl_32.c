@@ -400,8 +400,6 @@ void func_801F9660(void) {
 
 INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F9668);
 
-INCLUDE_ASM("asm/us/ovl_32/nonmatchings/ovl_32", func_801F96E8);
-
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EF1E4);
 
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EF6FC);

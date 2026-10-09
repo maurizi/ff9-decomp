@@ -278,6 +278,4 @@ void func_801EFAF8(void) {
 
 INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EFB08);
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EFBA8);
-
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EE2A0);

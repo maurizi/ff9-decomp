@@ -35,7 +35,7 @@ extern PartySelect D_801F4748;
 
 /* RECTs, not code: splat starts .data at 0x6830 instead of 0x6828, so the
  * first one keeps a func_ name. */
-extern RECT func_801F4728;
+extern RECT D_801F4728;
 extern RECT D_801F4730;
 extern RECT D_801F4738;
 extern RECT D_801F4740;

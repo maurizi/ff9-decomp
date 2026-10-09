@@ -957,8 +957,6 @@ void func_801F32E0(Character *c) {
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F3344);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F33AC);
-
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/ovl_33", D_801EDF00);
 
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/ovl_33", D_801EDF04);

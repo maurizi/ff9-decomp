@@ -28,7 +28,7 @@ extern NameEntry D_801F4BBC;
 
 /* A RECT, not code: splat starts .data at 0x6C50 instead of 0x6C48, so the
  * symbol keeps the func_ name. */
-extern RECT func_801F4B48;
+extern RECT D_801F4B48;
 extern u8 D_801F4B50[2];
 extern RECT *D_801F4B54; /* window pointers into D_801F4BBC.unk134 */
 extern RECT *D_801F4B58;

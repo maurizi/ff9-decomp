@@ -453,8 +453,6 @@ INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F3034);
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F30C8);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F30D8);
-
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EE1B4);
 
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EEFB4);

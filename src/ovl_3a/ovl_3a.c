@@ -5,7 +5,7 @@ void func_801F3874(void) {
     s32 i;
 
     func_8003575C(D_801EDF18);
-    func_80035580(&func_801F4B48);
+    func_80035580(&D_801F4B48);
     func_8003556C(func_801F4A9C);
     D_801F4BBC.unk0 = 1;
     D_801F4BBC.unk1 = 0;
@@ -219,7 +219,7 @@ void func_801F47E8(void) {
     if (D_80077528 & 0x20) {
         func_8002F488(0x67);
         D_801F4BBC.unk0 = 1;
-        func_80035580(&func_801F4B48);
+        func_80035580(&D_801F4B48);
     }
 }
 
@@ -270,8 +270,6 @@ void func_801F4AE0(void) {
         D_801F4BBC.unk3 = D_801F4BBC.unk5[1] + (u8)(D_801F4BBC.unk3 % 15 - 15);
     }
 }
-
-INCLUDE_ASM("asm/us/ovl_3a/nonmatchings/ovl_3a", func_801F4B48);
 
 INCLUDE_RODATA("asm/us/ovl_3a/nonmatchings/ovl_3a", D_801EDF18);
 

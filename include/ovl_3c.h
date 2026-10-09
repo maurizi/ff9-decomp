@@ -86,7 +86,7 @@ extern void (*D_801FC044[])(void);
 extern void (*D_801FC09C[])(void);
 extern void (*D_801FC27C[])(void);
 /* item names: data, splat starts .data at 0xA8F0 instead of 0xA8EC */
-extern u8 func_801F87EC[];
+extern u8 D_801F87EC[];
 
 /* {init, update, exit} per shop kind and option */
 extern void (*D_801FBBA0[][3][3])(void);

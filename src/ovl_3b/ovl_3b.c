@@ -222,9 +222,9 @@ void func_801F4150(void) {
 }
 
 void func_801F4190(void) {
-    func_8002DEE4(&func_801F4728, 8, 2);
-    func_8002705C(&func_801F4728, 8, 2);
-    func_8002B5FC(func_801F4728.x + 9, func_801F4728.y + 6, 6, func_80035774(0), 0);
+    func_8002DEE4(&D_801F4728, 8, 2);
+    func_8002705C(&D_801F4728, 8, 2);
+    func_8002B5FC(D_801F4728.x + 9, D_801F4728.y + 6, 6, func_80035774(0), 0);
 }
 
 void func_801F4204(void) {
@@ -334,7 +334,5 @@ u8 func_801F465C(void) {
 void func_801F46FC(void) {
     D_80077DE8.unk8 = func_80035774(D_801F4748.unk0 + 0xA);
 }
-
-INCLUDE_ASM("asm/us/ovl_3b/nonmatchings/ovl_3b", func_801F4728);
 
 INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDFE8);

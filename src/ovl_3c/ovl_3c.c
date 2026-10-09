@@ -998,7 +998,7 @@ void func_801F8728(void) {
         if (p->unk1 == 0) {
             return;
         }
-        text = func_801F87EC + D_80069018[p->unk0].unk2;
+        text = D_801F87EC + D_80069018[p->unk0].unk2;
     } else if (D_801FC438.unk0 == 2) {
         text = func_80035774(3);
     } else {
@@ -1006,8 +1006,6 @@ void func_801F8728(void) {
     }
     h->unk8 = text;
 }
-
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F87EC);
 
 INCLUDE_RODATA("asm/us/ovl_3c/nonmatchings/ovl_3c", D_801EDF00);
 
