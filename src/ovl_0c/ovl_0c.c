@@ -4415,7 +4415,63 @@ void func_800BD674(void) {
     D_800D3BF8.unk0 = NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BD78C);
+void func_800BD78C(void) {
+    Unk800D375C *n;
+    Unk800D3AB8 *pos;
+    MATRIX m;
+    Unk800A7FB8 quad = D_800A7FB8;
+    long sxy[4];
+    VECTOR a;
+    VECTOR b;
+    long p;
+    long flag;
+    long xy3;
+    u8 snd;
+    s32 far;
+    s32 k;
+    u32 *ot;
+    POLY_F4 *f4;
+
+    n = D_800D3758.unk4;
+    while (n->unk10 != -1) {
+        pos = n->unkC;
+        D_800D3770.t[0] = pos->unk0[0] - D_800CE108[0];
+        D_800D3770.t[1] = pos->unk0[1] - D_800CE108[1];
+        D_800D3770.t[2] = pos->unk0[2] - D_800CE108[2];
+        CompMatrix(D_800CF448, &D_800D3770, &m);
+        SetRotMatrix(&m);
+        SetTransMatrix(&m);
+        func_800BBE24((VECTOR *)pos, &a, &b, 0);
+        far = b.vz < -10000 || b.vz > 11000;
+        k = n->unk10 % D_800D32F0 + n->unk10 / D_800D32F0;
+        if (n->unk12 == 2) {
+            func_800BA2DC((u8 *)n->unk8, (n->unk10 % D_800D32F0 + n->unk10 / D_800D32F0) % 2, far);
+            if (RotTransPers4(&quad.v[0], &quad.v[1], &quad.v[2], &quad.v[3], &sxy[0], &sxy[1], &sxy[2], &sxy[3], &p, &flag) < 7000
+                && D_800CE3DC->unk14.vy > -7000) {
+                f4 = (POLY_F4 *)D_800CF404;
+                ot = (u32 *)D_800CF460[*D_800CF45C];
+                *(s32 *)&f4->x0 = sxy[0];
+                *(s32 *)&f4->x1 = sxy[1];
+                *(s32 *)&f4->x2 = sxy[2];
+                xy3 = sxy[3];
+                setlen(f4, 5);
+                setRGB0(f4, 0, 0, 0);
+                f4->code = 0x28;
+                *(s32 *)&f4->x3 = xy3;
+                addPrim(&ot[0xFFA], f4);
+                f4++;
+                D_800CF404 = (s32)f4;
+            }
+        }
+        if (n->unk8 != NULL) {
+            snd = n->unk8->unk21;
+            if (snd != 0) {
+                func_800C5A48(snd);
+            }
+        }
+        n = n->unk4;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BDAB0);
 
