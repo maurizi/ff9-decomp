@@ -552,6 +552,45 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
         gte_rtir(); \
         gte_stclmv((s16 *)(r3) + 2); \
     }
+/* GTE sequences hand-written by Square (field func_800BB508, world map func_800C9FCC) */
+/* store the transformed vertex: x, y clamped to arg2 (flagging the depth) and z */
+#define gte_stsvclamp(r0, r1, r2) __asm__ volatile( \
+    "mfc2\t$12, $9;" \
+    "mfc2\t$13, $10;" \
+    "mfc2\t$14, $11;" \
+    "sh\t$12, 0(%0);" \
+    "ori\t$12, $0, 0xFFFF;" \
+    "slt\t$1, $13, %2;" \
+    "bnez\t$1, 1f;" \
+    "and\t$14, $14, $12;" \
+    "addu\t$13, %2, $0;" \
+    "lui\t$1, 0x1000;" \
+    "or\t$14, $14, $1;" \
+    "1:;" \
+    "sh\t$13, 2(%0);" \
+    "sw\t$14, 0(%1)" \
+    : : "r"(r0), "r"(r1), "r"(r2) : "$1", "$12", "$13", "$14", "memory")
+
+/* three vertices: xy from r0, z from r1 */
+#define gte_ldv3xyz(r0, r1) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 0(%1);" \
+    "lwc2\t$2, 4(%0);" \
+    "lwc2\t$3, 4(%1);" \
+    "lwc2\t$4, 8(%0);" \
+    "lwc2\t$5, 8(%1);" \
+    "nop" \
+    : : "r"(r0), "r"(r1))
+
+#define gte_stsz3h(r0) __asm__ volatile( \
+    "mfc2\t$12, $17;" \
+    "mfc2\t$13, $18;" \
+    "mfc2\t$14, $19;" \
+    "sh\t$12, 0(%0);" \
+    "sh\t$13, 4(%0);" \
+    "sh\t$14, 8(%0)" \
+    : : "r"(r0) : "$12", "$13", "$14", "memory")
+
 long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3, long *sxy0, long *sxy1, long *sxy2, long *sxy3, long *p, long *flag);
 int MargePrim(void *p0, void *p1);
 void SetLightMatrix(MATRIX *m);

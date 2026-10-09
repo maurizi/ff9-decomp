@@ -3518,7 +3518,29 @@ void func_800B93B8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B94F8);
+/* advance the palette animations arg0..arg1 and upload the new frames (y offset arg2) */
+void func_800B94F8(s32 arg0, s32 arg1, s32 arg2) {
+    RECT *r;
+    s32 i;
+    s32 n;
+
+    for (i = arg0; i <= arg1; i++) {
+        D_800CFE48[i] += D_800CFF18[i].unk8;
+        n = D_800CFE48[i] / 256;
+        D_800CFE48[i] &= 0xFF;
+        if (n != 0) {
+            r = (RECT *)D_800CF404;
+            r->x = D_800CFF18[i].unk0 + D_800CFF18[i].unk4;
+            r->y = D_800CFF18[i].unk2 + arg2;
+            r->w = D_800CFF18[i].unk6;
+            r->h = 1;
+            D_800CFE70[i] += n;
+            D_800CFE70[i] %= r->w;
+            LoadImage(r++, (u32 *)&D_800CFFD0[D_800CFE70[i] & 1][D_800CFE20[i] + (D_800CFE70[i] & 0xFFFE)]);
+            D_800CF404 = (s32)r;
+        }
+    }
+}
 
 void func_800B969C(void) {
     func_800B905C();
@@ -5684,7 +5706,71 @@ void func_800C7050(WmNode *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C709C);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C7914);
+void func_800C7914(Unk800C95C8 *arg0, u8 arg1) {
+    MATRIX m;
+    WmModelGroup *g;
+    MATRIX *bone;
+    SVECTOR *vtx;
+    s32 *sxy;
+    s32 *sz;
+    s32 k;
+    u32 i;
+    s32 n;
+    u32 cnt;
+    MATRIX *b;
+    SVECTOR *v;
+    s16 *c1;
+    s16 *c2;
+
+    g = &arg0->unk8->unk10[arg1];
+    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    sxy = D_800711A8;
+    sz = D_80070520;
+    k = 0;
+    cnt = arg0->unk8->unk2;
+    bone = (MATRIX *)arg0->unk20;
+    for (i = 0; i < cnt; bone++) {
+        n = ((u16 *)g->unk14)[i++];
+        if (n != 0) {
+            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            b = bone;
+            gte_ldclmv(b);
+            c1 = &b->m[0][1];
+            c2 = &b->m[0][2];
+            gte_rtir_b();
+            sxy = &D_800711A8[k];
+            gte_stclmv(&m);
+            gte_ldclmv(c1);
+            gte_rtir();
+            sz = &D_80070520[k];
+            gte_stclmv(&m.m[0][1]);
+            gte_ldclmv(c2);
+            c1 = (s16 *)b->t;
+            gte_rtir_n1();
+            vtx = &((SVECTOR *)g->unk18)[k];
+            gte_stclmv(&m.m[0][2]);
+            gte_ldlv0(c1);
+            k += n;
+            gte_rtv0tr_n1();
+            gte_ldv3c(vtx);
+            gte_stlvnl(m.t);
+            gte_SetRotMatrix(&m);
+            gte_SetTransMatrix(&m);
+            v = vtx;
+            do {
+                v += 3;
+                n -= 3;
+                gte_rtpt_b();
+                gte_ldv3c(v);
+                gte_stsxy3c(sxy);
+                gte_stsz3c(sz);
+                sxy += 3;
+                sz += 3;
+            } while (n > 0);
+        }
+    }
+}
 
 /* attach a model file (relocating it once) and lay out its work buffers at arg1 */
 void func_800C7BA8(Unk800C95C8 *arg0, u8 *arg1) {
@@ -5795,7 +5881,63 @@ void func_800C95C8(Unk800C95C8 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C96AC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C9FCC);
+void func_800C9FCC(Unk800C95C8 *arg0, u8 arg1) {
+    WmModelGroup *g;
+    MATRIX *bone;
+    SVECTOR *vtx;
+    s32 *sxy;
+    s32 *sz;
+    s32 k;
+    u32 i;
+    u32 j;
+    u32 n;
+    u32 cnt;
+    s32 ymax;
+
+    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    sxy = D_800711A8;
+    sz = D_80070520;
+    k = 0;
+    g = &arg0->unk8->unk10[arg1];
+    bone = (MATRIX *)arg0->unk20;
+    cnt = arg0->unk8->unk2;
+    ymax = (s16)arg0->unk5A;
+    vtx = g->unk18;
+    for (i = 0; i < cnt; bone++) {
+        n = ((u16 *)g->unk14)[i++];
+        if (n != 0) {
+            sxy = &D_800711A8[k];
+            sz = &D_80070520[k];
+            gte_SetRotMatrix(bone);
+            gte_SetTransMatrix(bone);
+            j = 0;
+            do {
+                gte_ldv0(vtx);
+                j++;
+                vtx++;
+                gte_rtv0tr_b();
+                gte_stsvclamp(sxy, sz, ymax);
+                sxy++;
+                sz++;
+            } while (j < n);
+            sxy = &D_800711A8[k];
+            sz = &D_80070520[k];
+            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            j = 0;
+            do {
+                gte_ldv3xyz(sxy, sz);
+                j += 3;
+                gte_rtpt_b();
+                gte_stsxy3c(sxy);
+                sxy += 3;
+                gte_stsz3h(sz);
+                sz += 3;
+            } while (j < n);
+            k += n;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CA1D8);
 
