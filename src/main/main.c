@@ -5949,7 +5949,43 @@ s32 func_8004B5CC(void) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011A44);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B68C);
+s32 func_8004B68C(Unk8004AB64 *o, s32 prop) {
+    s32 r;
+    s32 i;
+    void *u;
+
+    switch (prop) {
+    case 0:
+        return o->unk14.vx;
+    case 1:
+        return o->unk14.vy;
+    case 2:
+        return o->unk14.vz;
+    case 3:
+        return (u8)(((u16 *)&o->unk14.pad)[1] >> 4); /* high half of the pad word */
+    case 4:
+        return o->unkF;
+    case 5:
+        return o->unk7;
+    case 6:
+        return o->unk4;
+    case 7:
+        return o->unk3A;
+    }
+    r = 0;
+    for (i = 0; i < 8; i++) {
+        if (D_8007AED0[i] == o) {
+            break;
+        }
+    }
+    if (i < 8) {
+        u = ((void *(*)(u16))func_800BED10)(1 << i);
+        if (u != NULL) {
+            r = func_800BDED4(u, prop);
+        }
+    }
+    return r;
+}
 
 void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
     s32 i;

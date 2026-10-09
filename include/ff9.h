@@ -891,7 +891,9 @@ typedef struct Unk8004AB64 {
     u8 unkB;
     u8 padC;
     u8 unkD;
-    u8 padE[0x11 - 0xE];
+    u8 padE;
+    u8 unkF;
+    u8 pad10;
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
@@ -904,7 +906,8 @@ typedef struct Unk8004AB64 {
     s8 unk2E;
     u8 pad2F[0x34 - 0x2F];
     u16 unk34;
-    u8 pad36[0x3B - 0x36];
+    u8 pad36[0x3A - 0x36];
+    u8 unk3A;
     u8 unk3B;
     u8 pad3C[0x40 - 0x3C];
     VECTOR unk40; /* previous position */
