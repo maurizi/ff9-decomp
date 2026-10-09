@@ -7069,11 +7069,75 @@ s32 func_80057234(u32 x) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005729C);
+static inline s32 func_800574A0_curve(s32 r, u32 x) {
+    if (x < 3) {
+        switch (x) {
+        case 1:
+            r /= 2;
+            break;
+        case 2:
+            r = r * 3 / 4;
+            break;
+        default:
+            r /= 4;
+            break;
+        }
+    }
+    return r;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057364);
+s32 func_8005729C(u32 x) {
+    s32 v = x & 0xFF;
+    s32 r;
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800573CC);
+    x >>= 8;
+    if (!(x & 1)) {
+        v = 0x100 - v;
+    }
+    r = func_8005715C(0x10000 - v * v);
+    if (x & 2) {
+        r = ~r;
+        r++;
+    }
+    x >>= 2;
+    return func_800574A0_curve(r, x);
+}
+
+s32 func_80057364(u32 x) {
+    s32 v = (x & 0xFF) << 8;
+
+    switch ((x >> 8) & 3) {
+    case 3:
+        v -= 0x10000;
+        break;
+    case 2:
+        v = -v;
+        break;
+    case 1:
+        v = 0x10000 - v;
+        break;
+    }
+    return v;
+}
+
+s32 func_800573CC(u32 x) {
+    s32 v = (x & 0xFF) << 8;
+
+    x >>= 8;
+    switch (x & 3) {
+    case 3:
+        v -= 0x10000;
+        break;
+    case 2:
+        v = -v;
+        break;
+    case 1:
+        v = 0x10000 - v;
+        break;
+    }
+    x >>= 2;
+    return func_800574A0_curve(v, x);
+}
 
 s32 func_80057488(s32 a) {
     s32 r = 0x10000;
@@ -7083,9 +7147,34 @@ s32 func_80057488(s32 a) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800574A0);
+s32 func_800574A0(u32 x) {
+    s32 r = (x & 0x100) ? -0x10000 : 0x10000;
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057518);
+    x >>= 9;
+    if (x < 3) {
+        switch (x) {
+        case 1:
+            r /= 2;
+            break;
+        case 2:
+            r = r * 3 / 4;
+            break;
+        default:
+            r /= 4;
+            break;
+        }
+    }
+    return r;
+}
+
+static inline s32 func_80057518_inline(s32 x) {
+    s32 i = x & 0xFF;
+    return D_8006F440[i] << 8;
+}
+
+s32 func_80057518(s32 x) {
+    return func_80057518_inline(x);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057534);
 
