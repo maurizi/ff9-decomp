@@ -5092,7 +5092,30 @@ void func_800EE54C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE680);
+s32 func_800EE680(void) {
+    Unk800EF80C s;
+    MenuList *l = &D_80104F88->unk12A4[2]->unk30;
+    s32 n = l->unk6 + l->unk5;
+    u8 k = D_800FDD10[D_80104FD0.unk4->unk8 + n];
+    s32 r = func_800EEA98(k);
+    if (r != 2) {
+        return 0;
+    }
+    {
+        s.unk0 = r;
+        s.unk1 = D_80104FD0.unk0;
+        s.unk6 = func_800EF4D8(k);
+        s.unk2 = D_8006794C->unk1C->unk8E4.battle->unk16CC[k].unk0_0;
+        s.unk3 = D_8006794C->unk1C->unk8E4.battle->unk16CC[k].unk0_4;
+        s.unk4 = D_8006794C->unk1C->unk8E4.battle->unk16CC[k].unk0_31;
+        s.unk7 = D_8006794C->unk1C->unk8E4.battle->unk16CC[k].unk0_5;
+        s.unk5 = D_8006794C->unk1C->unk8E4.battle->unk16CC[k].unk0_29;
+        s.unk8 = D_80104FD0.unk10;
+        s.unk9 = D_80104FD0.unk19;
+        func_800EF80C(&s);
+        return 1;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE7F8);
 
