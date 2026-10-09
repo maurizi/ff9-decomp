@@ -681,19 +681,19 @@ typedef struct {
     u8 padCE[0xD2 - 0xCE];
     s16 unkD2;
     u16 unkD4;
-    s16 unkD6;
+    u16 unkD6;
     s16 unkD8;
-    u8 padDA[0xDC - 0xDA];
+    s16 unkDA;
     u16 unkDC;
     u16 unkDE;
     s16 unkE0;
     u16 unkE2;
     s16 unkE4;
-    u8 padE6[0xE8 - 0xE6];
+    s16 unkE6;
     u16 unkE8;
     u16 unkEA;
     s16 unkEC;
-    u8 padEE[0xF0 - 0xEE];
+    s16 unkEE;
     u16 unkF0;
     u16 unkF2;
     u16 unkF4; /* loop depth */
@@ -2474,16 +2474,8 @@ typedef struct {
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
 #define SPU_REG16(a) (*(u16 *)(a))
 extern s16 D_80080AC2;
-typedef struct {
-    s32 unk0;
-    u16 unk4;
-} Unk8005B30C;
 extern s32 D_80080A28;
 s32 func_8005715C(s32);
-typedef struct {
-    s32 unk0;
-    s8 unk4;
-} Unk8005BECC;
 extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
 #endif
