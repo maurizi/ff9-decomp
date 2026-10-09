@@ -6425,7 +6425,48 @@ s32 func_800C9700(u16 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C970C);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C9968);
+/* upload the images and palettes of a texture file to VRAM */
+void func_800C9968(s32 *arg0) {
+    RECT r;
+    RECT *q;
+    u16 *p;
+    u8 *data;
+    s32 n;
+    s32 i;
+    s32 sz;
+    s32 m;
+    s32 ofs;
+
+    ofs = arg0[0];
+    q = (RECT *)((u8 *)arg0 + ofs);
+    ofs = arg0[1];
+    i = 0;
+    p = (u16 *)((u8 *)arg0 + ofs);
+    ofs = *(s32 *)q;
+    n = arg0[2];
+    data = (u8 *)arg0 + ofs;
+    for (; i < n; i++) {
+        r.x = p[0];
+        r.y = p[1];
+        r.w = p[2];
+        r.h = p[3];
+        sz = r.w * r.h * 2;
+        p += 4;
+        LoadImage(&r, (u32 *)p);
+        p = (u16 *)((u8 *)p + sz);
+    }
+    m = ((s32 *)q)[1];
+    q++;
+    for (i = 0; i < m; i++) {
+        r.x = q->x;
+        r.y = q->y;
+        r.w = q->w;
+        r.h = q->h;
+        LoadImage(&r, (u32 *)data);
+        q++;
+        data += r.w * r.h * 2;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C9AB8);
 
