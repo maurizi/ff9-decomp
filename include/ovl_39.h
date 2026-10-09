@@ -380,6 +380,7 @@ void func_801F5D00(void);
 u8 func_801F6694(void);
 s32 func_801F6CD0(s32);
 void func_801F7108(s32);
+void func_801F7190(SaveSlot *, u8 *);
 void func_801F7950(void);
 void func_801F89A0(Window *);
 s32 func_801FA478(s32);

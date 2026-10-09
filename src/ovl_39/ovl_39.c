@@ -732,7 +732,41 @@ void func_801F65C4(void) {
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F6694);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F6938);
+/* Inlined copy of func_801F7108 */
+static inline void func_801F7108_inline(s32 slot) {
+    s32 fd;
+
+    D_801FBEF8.unk2 = slot;
+    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4);
+    D_801FBEF8.unk18 = fd;
+    if (fd < 0) {
+        func_801F72B4(0x2E);
+        return;
+    }
+    func_801FA5A4(fd, (s32)D_801FBEF8.unk2D0, 0x180, func_801F6938);
+}
+
+void func_801F6938(void) {
+    if (func_801FA478(D_801FBEF8.unk18) < 0) {
+        func_801F72B4(0x2E);
+        return;
+    }
+    switch (func_801FAAE4(D_80077DB2 << 4)) {
+    case 2:
+        func_801F72B4(0x2D);
+        return;
+    case 1:
+    case 3:
+        func_801F72B4(0x2E);
+        return;
+    }
+    func_801F7190(&D_801FB1A8.unk34[D_801FBEF8.unk2], &D_801FBEF8.unk2D0[0x100]);
+    if (++D_801FBEF8.unk14 < D_801FBEF8.unk10) {
+        func_801F7108_inline(func_801F6CD0(D_801FBEF8.unk14));
+        return;
+    }
+    func_801F7084();
+}
 
 void func_801F6A84(void) {
     D_801FB1A8.unk2 = 2;
