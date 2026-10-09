@@ -872,7 +872,23 @@ s32 func_800AEA08(void) {
     return (u32)(VSync(-1) - gd->unk8C4) < gd->unk842;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AEA48);
+void func_800AEA48(void) {
+    ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] - 8, 0x1010);
+    ClearOTagR((u32 *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unk2C[D_8006794C->unk1C->unk8], 0x100);
+    ClearOTagR(func_8002FBC0(D_8006794C->unk1C->unk8), 1);
+    ClearOTagR((u32 *)func_800F4FB4(D_8006794C->unk1C->unk8), 1);
+    setlen(&D_800FDEB8[D_8006794C->unk1C->unk8].unk0, 2);
+    ((u32 *)&D_800FDEB8[D_8006794C->unk1C->unk8].unk0)[1] = 0xE6000000;
+    ((u32 *)&D_800FDEB8[D_8006794C->unk1C->unk8].unk0)[2] = 0;
+    addPrim(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], &D_800FDEB8[D_8006794C->unk1C->unk8].unk0);
+    setlen(&D_800FDEB8[D_8006794C->unk1C->unk8].unkC, 2);
+    ((u32 *)&D_800FDEB8[D_8006794C->unk1C->unk8].unkC)[1] = 0xE6000000;
+    ((u32 *)&D_800FDEB8[D_8006794C->unk1C->unk8].unkC)[2] = 0;
+    addPrim((u32 *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unk2C[D_8006794C->unk1C->unk8], &D_800FDEB8[D_8006794C->unk1C->unk8].unkC);
+    addPrim(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], func_8002FBC0(D_8006794C->unk1C->unk8));
+    addPrim(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], func_800F4FB4(D_8006794C->unk1C->unk8));
+    func_800E9DFC();
+}
 
 void func_800AEE68(void) {
     if (!(D_8006794C->unk1C->unk0 & 0x100) && ((D_800739A0[0] & 0xF09) == 0xF09 || (D_800739A0[1] & 0xF09) == 0xF09)) {

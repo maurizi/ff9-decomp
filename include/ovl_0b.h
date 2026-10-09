@@ -2096,7 +2096,8 @@ extern s16 D_800F51EC;
 s32 func_8001CA70(s32);
 void func_80056048(s32, s32, s32);
 
-s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s16, s32);
+s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s32, s32);
+s32 func_800ABA10(s32, s32);
 
 
 s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
@@ -2865,5 +2866,10 @@ typedef struct {
     u8 pad18[0x30 - 0x18];
 } Unk800FDED0;
 extern Unk800FDED0 D_800FDED0[2];
+extern Unk800FDED0 D_800FDEB8[2];
+void func_800E9DFC(void);
+
+/* main exe: candidates for ff9.h */
+u32 *func_8002FBC0(s32);
 
 #endif
