@@ -1,0 +1,3 @@
+# Functions that are SDK/library or hand-written asm rather than Square game C, found by inspection
+# (no PsyQ signature match). Excluded from the game totals by tools/progress.py, like
+# config/symbols.psyq*.txt. One per line: <binary> <function> <reason>

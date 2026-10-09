@@ -47,7 +47,8 @@ typedef struct {
     u8 pad2[2];
     u16 unk4; /* high byte: first text code that takes an extra byte */
     u16 unk6;
-    u8 pad8[4];
+    s16 unk8;
+    u8 padA[2];
     u32 unkC[1]; /* glyph info, width in the top 4 bits */
 } Unk7D4;
 
@@ -120,7 +121,18 @@ typedef struct {
 } Unk11C0;
 
 typedef struct {
-    u8 pad0[0x11C0];
+    u8 pad0[8];
+    struct Unk8007B954 *unk8; /* message table */
+} Unk8E4C;
+
+typedef struct {
+    u32 unk0;
+    u8 pad4[4];
+    Unk11C0 *unk8;
+    Unk8E4C *unkC;
+    u8 pad10[0xD80 - 0x10];
+    u8 unkD80;
+    u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *unk11C0;
     u8 pad11C4[0x1354 - 0x11C4];
     Unk1354 *unk1354;
@@ -320,7 +332,8 @@ static inline UnkPair *func_80027EDC_inline(s32 id) {
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2[6];
+    u8 pad2[2];
+    s32 unk4;
     s32 unk8;
     s32 unkC;
 } UnkTimer;
@@ -465,7 +478,8 @@ typedef struct {
     u8 unk7;
     u8 pad8;
     u8 unk9;
-    u8 padA[2];
+    u8 unkA;
+    u8 unkB;
     u32 unkC; /* bits 0-13: id, bits 14-15: disc */
     s32 unk10; /* frame counter */
     s32 unk14; /* saved VSync mode */
@@ -532,7 +546,7 @@ u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
 s32 func_800275DC(s32, s32, s32, s32, u8);
 void func_80028AF0(s32, s32, s32, s32, u8);
 
-void func_8002BAE4(s32, u8 *, s32, s32);
+void func_8002BAE4(s32, u8 *, s32, u8);
 void func_80027D18(void);
 void func_80027D4C(void);
 s32 func_80027D84(s32, s32);
@@ -584,7 +598,7 @@ typedef struct Window {
     s16 unk6; /* h */
     RECT unk8; /* inner/content rect */
     s16 unk10;
-    u8 pad12[0x14 - 0x12];
+    s16 unk12;
     s16 unk14; /* open/close step x */
     s16 unk16; /* open/close step y */
     s16 unk18; /* OT layer */
@@ -655,7 +669,7 @@ typedef struct {
     u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
     u8 *unk18;
-    u8 pad1C[0x20 - 0x1C];
+    s32 unk1C;
     s32 unk20;
     s32 unk24;
     u32 unk28;
@@ -665,7 +679,8 @@ typedef struct {
     s32 unk38;
     s32 unk3C;
     s32 unk40;
-    u8 pad44[0x4C - 0x44];
+    s32 unk44;
+    s32 unk48;
     s32 unk4C;
     s32 unk50;
     u8 pad54[0x58 - 0x54];
@@ -676,11 +691,14 @@ typedef struct {
     u32 unk68;
     s32 unk6C;
     s32 unk70;
-    u8 pad74[0x78 - 0x74];
+    s32 unk74;
     s32 unk78;
-    u8 pad7C[0x84 - 0x7C];
+    s32 unk7C;
+    u8 pad80[0x84 - 0x80];
     u32 unk84;
-    u8 pad88[0x94 - 0x88];
+    u8 pad88[0x8C - 0x88];
+    s32 unk8C;
+    s32 unk90;
     u16 unk94;
     u16 unk96;
     u16 unk98;
@@ -691,7 +709,7 @@ typedef struct {
     u16 unkA2[4]; /* loop counters */
     u16 unkAA[4];
     u16 unkB2;
-    u8 padB4[0xB6 - 0xB4];
+    u16 unkB4;
     s16 unkB6;
     s16 unkB8;
     s16 unkBA;
@@ -704,31 +722,34 @@ typedef struct {
     s16 unkC8;
     s16 unkCA;
     s16 unkCC;
-    u8 padCE[0xD2 - 0xCE];
+    u16 unkCE;
+    u16 unkD0;
     s16 unkD2;
     u16 unkD4;
-    s16 unkD6;
+    u16 unkD6;
     s16 unkD8;
-    u8 padDA[0xDC - 0xDA];
+    s16 unkDA;
     u16 unkDC;
     u16 unkDE;
     s16 unkE0;
     u16 unkE2;
     s16 unkE4;
-    u8 padE6[0xE8 - 0xE6];
+    s16 unkE6;
     u16 unkE8;
     u16 unkEA;
     s16 unkEC;
-    u8 padEE[0xF0 - 0xEE];
+    s16 unkEE;
     u16 unkF0;
     u16 unkF2;
     u16 unkF4; /* loop depth */
     s16 unkF6;
     u16 unkF8;
     s16 unkFA;
-    u8 padFC[0x100 - 0xFC];
+    s16 unkFC;
+    s16 unkFE;
     u16 unk100;
-    u8 pad102[0x106 - 0x102];
+    s16 unk102;
+    s16 unk104;
     s16 unk106;
     s16 unk108;
     s16 unk10A;
@@ -784,13 +805,13 @@ typedef struct {
     u8 unk5;
     u8 pad6[0x8 - 6];
     s16 unk8;
-    u16 unkA;
+    s16 unkA;
     s32 unkC;
     s32 unk10;
     u8 pad14[0x18 - 0x14];
     u8 *unk18; /* packet buffer cursor */
     s32 unk1C;
-    u8 pad20[0x24 - 0x20];
+    Unk4 unk20;
     u8 unk24;
     u8 unk25;
     u8 unk26;
@@ -840,11 +861,11 @@ typedef struct {
     s32 unk48;
     s32 unk4C;
     s32 unk50;
-    u8 pad54[0x58 - 0x54];
+    s32 unk54;
     s16 unk58;
     u8 pad5A[0x5C - 0x5A];
     s32 unk5C;
-    u8 pad60[0x64 - 0x60];
+    s32 unk60;
     s16 unk64;
     s16 unk66;
     u16 unk68;
@@ -896,15 +917,18 @@ typedef struct {
 } ActorPos;
 
 /* field / world object (actor) */
-typedef struct {
-    u8 pad0[4];
+typedef struct Unk8004AB64 {
+    u8 *unk0; /* script pc */
     u8 unk4;
     u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
-    u8 pad8[0xB - 8];
+    u8 pad8;
+    u8 unk9;
+    u8 unkA;
     u8 unkB;
-    u8 padC[0xE - 0xC];
+    u8 padC;
+    u8 unkD;
     u8 unkE;
     u8 unkF;
     u8 pad10;
@@ -926,6 +950,12 @@ typedef struct {
     u8 unk3B;
     u8 pad3C[0x40 - 0x3C];
     ActorPos unk40; /* previous position */
+    u16 unk50; /* flags */
+    u8 pad52[0x62 - 0x52];
+    u8 unk62;
+    u8 pad63[0x6E - 0x63];
+    s16 unk6E; /* also used as a tiny script buffer */
+    u8 unk70;
 } Unk8004AB64;
 
 typedef struct Unk8007AECCNode {
@@ -951,7 +981,9 @@ typedef struct {
     u8 unk16E4[8];
     u8 unk16EC;
     u8 unk16ED;
-    u8 pad16EE[0x16FC - 0x16EE];
+    u8 pad16EE[0x16F0 - 0x16EE];
+    u8 *unk16F0; /* script data base */
+    u8 pad16F4[0x16FC - 0x16F4];
     s32 unk16FC;
     s16 unk1700;
 } Unk8007AECC;
@@ -1086,7 +1118,7 @@ void func_80032658(void);
 void func_80032140(s32, s32);
 void func_80056B18(void);
 void func_80056C08(void);
-u16 func_8005C8BC(s32);
+s32 func_8005C8BC(s32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
@@ -1262,7 +1294,7 @@ extern Unk8005EBB4 D_8007F970[];
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 
 typedef struct {
-    s32 unk0;
+    void (*unk0)(void);
     s32 unk4;
     void (*unk8)(void);
     s32 unkC;
@@ -1556,7 +1588,7 @@ void func_8002B47C(s32);
 extern RECT D_8006BC38;
 void func_80061C1C(void);
 void func_80057688(s32, s32);
-void func_80057640(s32, s32, s32, s32);
+void func_80057640(s32, u32, u32, s32);
 u8 func_8002F800(void);
 void func_80032238(void);
 u16 func_80019150(void);
@@ -1827,7 +1859,7 @@ void func_80035490(void);
 
 extern s32 D_8007B6F4;
 extern s32 D_8007B6F8;
-extern u8 **D_8007B70C;
+extern struct Unk8004AB64 *D_8007B70C; /* current script object */
 void func_80052DA0(void);
 s32 func_80052D40(void);
 void func_80052D70(s32);
@@ -1864,7 +1896,7 @@ extern s32 D_8006F318;
 extern u8 D_8006F334[];
 extern s32 D_8007B708;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
-typedef struct {
+typedef struct Unk8007B954 {
     s32 unk0; /* count */
     u16 unk4[1];
 } Unk8007B954;
@@ -1982,7 +2014,7 @@ typedef struct {
     u32 unk38;
     u32 unk3C;
     s32 unk40; /* volume */
-    u8 pad44[4];
+    s32 unk44;
     s32 unk48;
     s32 unk4C; /* pan in bits 8-15 */
     u8 pad50[0x58 - 0x50];
@@ -2090,7 +2122,7 @@ void func_800270EC(s32, s32, s32);
 void func_8002C870(s32, s32, s32);
 void func_8002C8AC(s32, s32, s32);
 s32 func_80022B18(void);
-s32 func_80062560(u8);
+s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked */
 Unk6 *func_800625A0(s32, s32);
 s32 func_800626D0(s32, s32);
 typedef struct {
@@ -2371,7 +2403,12 @@ static inline u16 func_8004B404_inline(s32 arg0) {
     }
     return D_8007AE10[i];
 }
-extern s32 D_8007BB98;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} Unk8007BB98;
+extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
 void func_8004C8C4(Unk8007B9C0 *, u8 *);
 void func_8004D2C0(Unk8007B9C0 *, u8 *);
@@ -2457,4 +2494,161 @@ extern u8 D_8006E6F0[];
 Unk8004AB64 *func_8004B040(s32);
 void func_8004ACA4(Unk8004AB64 *, s32, s32);
 void func_8004F9A0(void);
+/* zero the first three bytes (r, g, b) of a 4-byte colour */
+static inline void func_8002FC38_clear3(u8 *p) {
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+}
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    u8 pad4[0x18 - 4];
+    s16 unk18;
+    u8 pad1A[0x50 - 0x1A];
+    s32 unk50;
+} Unk8004F5D4;
+void func_80051600(void);
+void func_8004D940(s32);
+/* 8-byte message-table entry (D_8007B954 in modes other than 4) */
+typedef struct {
+    u32 unk0;
+    u16 unk4;
+    u8 unk6;
+    u8 unk7;
+} MsgEntry8;
+
+typedef struct {
+    u8 pad0[2];
+    s16 unk2;
+    u8 pad4[9 - 4];
+    u8 unk9;
+} MsgInfo;
+/* SPU hardware voice registers (0x1F801C00 + voice * 16) */
+typedef struct {
+    u16 unk0; /* volume left */
+    u16 unk2; /* volume right */
+    u16 unk4; /* pitch */
+    u16 unk6; /* start address */
+    u16 unk8; /* adsr 1 */
+    u16 unkA; /* adsr 2 */
+    u16 unkC;
+    u16 unkE; /* loop address */
+} SpuVoiceReg;
+#define SPU_VOICE_REG(v, r) (*(u16 *)(0x1F801C00 + (r) + (v) * 16))
+#define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
+#define SPU_REG16(a) (*(u16 *)(a))
+extern s16 D_80080AC2;
+extern s32 D_80080A28;
+s32 func_8005715C(s32);
+extern s32 D_8007F8E8;
+extern s32 D_8007F8E4;
+extern s32 D_8007F740;
+extern Unk80080AA0 D_800809F0;
+typedef struct {
+    u16 unk0[6];
+} Unk8007BD44Row;
+extern u32 D_80083174;
+/* voice parameter block written to the SPU by func_800577EC */
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+    u32 unk8;  /* start address */
+    u32 unkC;  /* loop address */
+    u16 unk10; /* pitch */
+    u16 unk12; /* adsr 1 */
+    u16 unk14; /* adsr 2 */
+    u16 unk16; /* volume scale */
+    s16 unk18; /* volume left */
+    s16 unk1A; /* volume right */
+} Unk800577EC;
+/* script object (D_8007AED0[]) */
+typedef struct {
+    u8 pad0[0xE];
+    u8 unkE;
+} Unk8007AED0;
+typedef struct {
+    void (*unk0)(Unk80077C78 *);
+    s32 unk4;
+    s32 unk8;
+} Unk8006BD04;
+extern Unk8006BD04 D_8006BD04[];
+extern u8 D_8006BCFC[]; /* window style -> colour */
+typedef struct {
+    u8 unk0[8];
+} Bytes8;
+typedef struct {
+    u8 unk0[5];
+} Bytes5;
+typedef struct {
+    u32 unk0[2];
+} Words2;
+/* stat calculation input (func_80032E84) */
+typedef struct {
+    Bytes8 unk0; /* = Character.unk2C..unk33 */
+    Words2 unk8; /* = Character.unk88 */
+    u16 unk10;
+    u16 unk12;
+    Bytes5 unk14; /* equipment */
+} Unk80032E84In;
+/* stat calculation output (func_80032E84) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+    u8 unk8;
+    u8 unk9;
+    u8 unkA;
+    u8 unkB;
+    u16 unkC;
+    u16 unkE;
+    u16 unk10;
+    u16 unk12;
+    u16 unk14;
+} Unk80032E84Out;
+void func_80032E84(Unk80032E84In *, Unk80032E84Out *);
+extern void (*D_8006BD28[])(Unk80077C78 *, s32);
+extern s32 D_8007BBD4;
+extern u32 *D_8007BBCC;
+extern s32 D_8007B94C;
+void func_8002DD54(void);
+void func_8004E16C(void);
+extern u8 *D_8007ADF8; /* script data */
+u8 func_80033A50(u32);
+void func_80034394(s32);
+s32 func_80033A1C(Character *);
+void func_80033D8C(u8 *, s32);
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    s16 x0, y0;
+    s16 x1, y1;
+    s16 x2, y2;
+    s16 x3, y3;
+} PolyF4Half; /* POLY_F4 with the colour/code written as one word */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 xy1;
+} LineF2W; /* LINE_F2 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 rgbc0;
+    u32 xy0;
+    u32 rgb1;
+    u32 xy1;
+    u32 rgb2;
+    u32 xy2;
+    u32 rgb3;
+    u32 xy3;
+} PolyG4Words; /* POLY_G4 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DrMode2Words; /* DR_MODE / DR_TWIN */
+extern Unk800689B0 D_80068DC0;
+extern RECT D_80068F40;
+void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 #endif
