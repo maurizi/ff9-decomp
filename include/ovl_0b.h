@@ -2415,6 +2415,8 @@ s32 func_800AD4AC(s32, s32);
 s32 func_8004AAF0(s32);
 void func_8001E3A4(void *);
 void func_800C072C(void);
+void func_800B2804(struct BtlUnit *);
+void func_800B3C00(void);
 void func_800C0840(void);
 void func_800C0C7C(u32 *);
 void func_800C0CD0(u32 *);
