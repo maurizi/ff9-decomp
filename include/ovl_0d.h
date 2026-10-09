@@ -73,6 +73,11 @@ typedef struct {
 } TmDeckOdds; /* card id by rarity roll, loaded at 0x80103C00 */
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+} TmLevel; /* opponent level table, loaded at 0x80104000 */
+
+typedef struct {
     s32 unk0; /* state */
     s32 unk4;
     s32 unk8;
@@ -96,7 +101,7 @@ typedef struct {
     s32 unk440; /* losses */
     s32 unk444; /* draws */
     s32 unk448;
-    u8 pad44C[0x450 - 0x44C];
+    s32 unk44C;
     s32 unk450;
     u8 pad454[0x458 - 0x454];
     Window *unk458;
@@ -120,7 +125,8 @@ typedef struct {
     s32 unk4BC;
     s32 unk4C0;
     Window *unk4C4;
-    u8 pad4C8[0x4F0 - 0x4C8];
+    s32 unk4C8[9];
+    s32 unk4EC;
     s32 unk4F0;
     u8 pad4F4[0x50C - 0x4F4];
     u8 unk50C;
@@ -219,6 +225,8 @@ void func_800AF288(TmState *);
 void func_800B3488(TmState *);
 void func_800AA3C0(Window *);
 void func_800ADFFC(Window *);
+void func_800AB0A8(Window *);
+void *func_800B16A4(u32 *, void *, TmState *, s32, s32, s32);
 void *func_800B33CC(u32 *, void *, s32, s32, s32);
 void func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
