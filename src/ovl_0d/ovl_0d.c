@@ -156,7 +156,42 @@ INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A9B2C);
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A9F10);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AA1FC);
+void func_800AA1FC(TmState *s) {
+    RECT r;
+
+    if ((D_80077528 & 0x30000) && s->unk2E8 >= 0x22) {
+        s->unk468 = 0;
+        s->unk464 = 0;
+        s->unk46C = 0;
+        switch (s->unk45C) {
+        case 0:
+            func_800AD974(s);
+            break;
+        case 1:
+            func_800AD974(s);
+            break;
+        case 2:
+            func_800AF170(s);
+            func_800AF288(s);
+            if ((u32)(s->unk450 - 0x7C) < 4) {
+                r.x = 0x59;
+                r.w = 0x8F;
+                r.w = func_8002BA68(func_80035774(0x19)) + 0x12;
+                r.x = 0xA0 - r.w / 2;
+                r.y = 0x59;
+                r.h = 0x2B;
+                s->unk4B8 = func_8002DC54(&r, 5, 2);
+                func_8002E2EC(s->unk4B8, func_800AA3C0);
+                func_8002E31C(s->unk4B8, 1);
+                func_800AB89C(s->unk4B8);
+                s->unk0 = 0x1A;
+            } else {
+                func_800B3488(s);
+            }
+            break;
+        }
+    }
+}
 
 void func_800AA368(TmState *arg0) {
     if (D_800B3CD0 == 0 && (D_80077528 & 0x30000)) {
@@ -283,7 +318,7 @@ INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC060);
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC4C8);
 
 void func_800AC5AC(TmState *arg0) {
-    if (func_800B0EB8(arg0, arg0->unk434, arg0->unk42C, arg0->unk430, -1) != 0) {
+    if (func_800B0EB8(arg0, arg0->unk434, arg0->unk42C, arg0->unk430, (TmCard *)-1) != 0) {
         func_800B1110(arg0, arg0->unk434, arg0->unk42C, arg0->unk430, -1, 2);
     } else {
         func_800ABEC4(arg0);
@@ -292,7 +327,7 @@ void func_800AC5AC(TmState *arg0) {
 
 void func_800AC624(TmState *arg0) {
     s32 who = arg0->unk434 == 0;
-    if (func_800B0EB8(arg0, who, arg0->unk424, arg0->unk428, -1) != 0) {
+    if (func_800B0EB8(arg0, who, arg0->unk424, arg0->unk428, (TmCard *)-1) != 0) {
         func_800B1110(arg0, who, arg0->unk424, arg0->unk428, 8, 2);
     } else {
         arg0->unk0 = 8;
@@ -739,7 +774,48 @@ s32 func_800B0E58(TmState *arg0, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B0EB8);
+s32 func_800B0EB8(TmState *s, s32 owner, s32 x, s32 y, TmCard *c) {
+    TmPos p;
+    TmDirMask m = D_800A73BC;
+    TmCell *cell;
+    TmCard *t;
+    s32 i;
+    s32 win;
+    s32 lose;
+    u8 bits;
+
+    win = 0;
+    lose = 0;
+    if (c == (TmCard *)-1) {
+        c = func_800AEE08(s, x, y);
+    }
+    bits = c->unk1;
+    for (i = 0; i < 8; i++, bits >>= 1) {
+        if (bits & 1) {
+            p.unk0 = x;
+            p.unk4 = y;
+            func_800B13C0(&p, i);
+            cell = func_800B19D4(s, p.unk0, p.unk4);
+            if (cell->unk0 == 0) {
+                t = cell->unk4;
+                if (t->unk14 != owner) {
+                    if (t->unk1 & m.v[i]) {
+                        win++;
+                    } else {
+                        lose++;
+                    }
+                }
+            }
+        }
+    }
+    if (win != 0) {
+        return -win;
+    }
+    if (lose != 0) {
+        return lose;
+    }
+    return 0;
+}
 
 TmCard *func_800B1010(TmState *s, s32 x, s32 y, TmCard *c) {
     TmPos p;
