@@ -3827,7 +3827,32 @@ u32 func_800E7D18(s32 arg0) {
     return (u8)func_800E716C(arg0)->unk68 >> 5;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E7D3C);
+void func_800E7D3C(s32 arg0, s32 arg1, s16 *arg2) {
+    BtlUnit *u;
+    s32 bone;
+    MATRIX m;
+
+    SVECTOR v;
+
+    u = func_800E716C(arg0);
+    bone = (D_8006794C->unk1C->unk3C + ((u->unk68 >> 1) & 0xF))->unk21;
+    if (arg1 == 0) {
+        func_800DC818(arg0, bone, (u16 *)arg2);
+    } else {
+        func_800DC8AC(arg0, bone, (BtlBone *)&m);
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        func_800BC1E0((Unk800BC1E0 *)u->unk74, (s16 *)&v);
+        gte_ldv0(&v);
+        gte_rtv0tr();
+        gte_stlvnl(m.t);
+        arg2[0] = m.t[0];
+        arg2[1] = m.t[1];
+        arg2[2] = m.t[2];
+    }
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 void func_800E7EC0(BtlUnit *arg0, s32 arg1) {
     s32 f;
