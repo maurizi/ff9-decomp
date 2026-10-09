@@ -581,7 +581,24 @@ void func_801F1168(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F11C4);
+void func_801F11C4(s32 slot, s32 v) {
+    s32 i;
+    s32 j;
+    u32 w;
+    u32 old;
+
+    for (i = 0; i < 8; i++) {
+        if (v == ((D_8006794C->unk28 >> (i * 4)) & 7)) {
+            j = i;
+            goto found;
+        }
+    }
+    j = 0;
+found:
+    w = D_8006794C->unk28;
+    old = (w >> (slot * 4)) & 7;
+    D_8006794C->unk28 = (((w & ~(7 << (slot * 4))) | (v << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
+}
 
 void func_801F1250(void) {
     D_801F1558.unk2 = 0;

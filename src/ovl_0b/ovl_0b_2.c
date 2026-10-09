@@ -308,7 +308,7 @@ void func_800D6D3C(void) {
     func_800E3B34(&D_800FF470, 0x1800);
     p = D_80100C78.unk4;
     for (i = 10; i >= 0; i--) {
-        p->unk4 = 0;
+        p->unk4.w = 0;
         p++;
     }
 }
