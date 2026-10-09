@@ -1021,7 +1021,44 @@ void func_800AB4FC(void) {
     b->unk0 &= ~2;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AB580);
+s16 func_800AB580(s32 arg0) {
+    GameData *g = D_8006794C->unk1C;
+    s16 *state = (s16 *)&g->unk8E4.battle->unk11C0->unkC[0x9FD8 / 4];
+    s16 *st;
+    s32 id = (s16)g->unkE;
+    Unk800AA958 *ld;
+    s16 s;
+
+    ld = (Unk800AA958 *)state - 1;
+    st = state;
+    if (arg0 != 0) {
+        func_800AA24C(id, 0x8100, (Unk800AA24C *)ld);
+        *state = 1;
+    }
+    s = *state;
+    if (s == 1) {
+        if (func_800AA24C(id, 0x100, (Unk800AA24C *)ld) == 0) {
+            func_800AA504(id, 0x8000, (Unk800AA24C *)ld);
+            (*st)++;
+        }
+    } else if (s == 2) {
+        if (func_800AA504(id, 0, (Unk800AA24C *)ld) == 0) {
+            func_800AA958(0x8000, ld);
+            (*st)++;
+        }
+    } else if (s == 3) {
+        if (func_800AA958(0x22, ld) == 0) {
+            func_800AABC4(0x8020, ld);
+            (*st)++;
+        }
+    } else if (s == 4) {
+        if (func_800AABC4(0x22, ld) == 0) {
+            D_8006794C->unk1C->unk8E4.battle->unk0 |= 4;
+            *state = 0;
+        }
+    }
+    return *st;
+}
 
 s32 func_800AB6F0(s32 arg0, s32 arg1) {
     s32 v = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk3C[arg1];

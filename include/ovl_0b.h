@@ -1385,7 +1385,7 @@ void func_800CE05C(struct Unk800CEE74 *, BtlUnit9C50 *);
 void func_800B0EF8(struct Battle *);
 void func_800B0FC0(struct Battle *);
 void func_800C972C(void);
-void func_800AB580(s32);
+s16 func_800AB580(s32);
 extern s8 D_800FEC54;
 
 extern char D_80101470[];
@@ -1520,6 +1520,7 @@ typedef struct {
     BtlUnit *unk18;
 } Unk80104FB0;
 extern Unk80104FB0 D_80104FB0;
+extern Unk80104FC0 D_80104FC0; /* D_80104FB0.unk10, also addressed by its own label */
 extern void (*D_800F8D94[])(void);
 
 
@@ -2950,6 +2951,7 @@ typedef struct {
 } FileEntryX;
 
 s32 func_800AA24C(s16, s32, Unk800AA24C *);
+s32 func_800AA504(s32, s32, Unk800AA24C *);
 
 /* inlined into func_800AA24C: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */
