@@ -859,7 +859,7 @@ void func_801F24EC(void) {
         } else {
             cur = -1;
         }
-        for (j = 0, max = -1, p = D_8006794C->unk1C->unk574; j < 0x100; j++, p++) {
+        for (j = 0, max = -1, p = D_8006794C->unk1C->unk574.unk0; j < 0x100; j++, p++) {
             if (p->unk1 != 0) {
                 it = &D_80069018[p->unk0];
                 if ((it->unkF & D_801F8948[i]) && (it->unk6 & D_801F8950[kind])) {
@@ -940,10 +940,10 @@ void func_801F2894(void) {
     D_801FC840.unk3C[0].unk0 = 0xFF;
     for (i = 0; i < 0x100; i++) {
 
-        if (D_8006794C->unk1C->unk574[i].unk1 != 0) {
-            it = &D_80069018[D_8006794C->unk1C->unk574[i].unk0];
+        if (D_8006794C->unk1C->unk574.unk0[i].unk1 != 0) {
+            it = &D_80069018[D_8006794C->unk1C->unk574.unk0[i].unk0];
             if ((it->unk6 & mask) && (it->unkF & slot)) {
-                D_801FC840.unk3C[n] = D_8006794C->unk1C->unk574[i];
+                D_801FC840.unk3C[n] = D_8006794C->unk1C->unk574.unk0[i];
                 n++;
             }
         }

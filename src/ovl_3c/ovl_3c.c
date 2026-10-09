@@ -901,7 +901,7 @@ void func_801F7BC4(Window *w) {
     u32 price;
 
     l = &D_801FC438.unk4;
-    id = (D_8006794C->unk1C->unk574 + ((l->unk5 + l->unk6) * 2 + l->unk7))->unk0;
+    id = (D_8006794C->unk1C->unk574.unk0 + ((l->unk5 + l->unk6) * 2 + l->unk7))->unk0;
     it = &D_80069018[id];
     price = it->unk4 >> 1;
     func_80026C34(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
@@ -944,7 +944,7 @@ void func_801F80D0(void) {
     UnkPair *p;
     s32 i;
 
-    p = &D_8006794C->unk1C->unk574[(l->unk5 + l->unk6) * 2 + l->unk7];
+    p = &D_8006794C->unk1C->unk574.unk0[(l->unk5 + l->unk6) * 2 + l->unk7];
     if (p->unk1 != 0) {
         D_801FC438.unk1 = 1;
         D_801FC438.unk2 = p->unk1;
@@ -975,7 +975,7 @@ void func_801F8224(void) {
 
     l = &D_801FC438.unk4;
     m = &D_801FC438;
-    id = (D_8006794C->unk1C->unk574 + ((l->unk5 + l->unk6) * 2 + l->unk7))->unk0;
+    id = (D_8006794C->unk1C->unk574.unk0 + ((l->unk5 + l->unk6) * 2 + l->unk7))->unk0;
     it = &D_80069018[id];
     price = it->unk4 >> 1;
     n = func_80027E5C(id, D_801FC438.unk1);
@@ -1058,7 +1058,7 @@ void func_801F84D8(void) {
 }
 
 void func_801F856C(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &D_8006794C->unk1C->unk574[i];
+    UnkPair *p = &D_8006794C->unk1C->unk574.unk0[i];
     Unk80069018 *it;
     s32 x, y;
     s32 k = 0x2A;
@@ -1106,7 +1106,7 @@ void func_801F8728(void) {
     if (D_801FC438.unk0 == 1) {
         l = &D_801FC438.unk4;
         idx = (l->unk5 + l->unk6) * 2 + l->unk7;
-        p = &D_8006794C->unk1C->unk574[idx];
+        p = &D_8006794C->unk1C->unk574.unk0[idx];
         if (p->unk1 == 0) {
             return;
         }

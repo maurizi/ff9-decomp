@@ -197,6 +197,16 @@ typedef struct CdReadCtx {
     u8 *unk20;
 } CdReadCtx; /* GameData.unk854 */
 
+/* GameData.unk574: item inventory, copied as a block by the save code (ovl_39) */
+typedef struct {
+    UnkPair unk0[0x100]; /* {id, count} */
+} __attribute__((aligned(4))) ItemInventory; /* block copies are word-aligned */
+
+/* GameData.unk774: 2 bits per item id */
+typedef struct {
+    u8 unk0[0x40];
+} __attribute__((aligned(4))) ItemFlags;
+
 /* D_8006794C->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
@@ -225,8 +235,8 @@ typedef struct {
     u8 unk570;
     u8 unk571;
     u8 pad572[2];
-    UnkPair unk574[0x100]; /* {id, count}: likely the item inventory */
-    u8 unk774[0x40];       /* 2 bits per item id */
+    ItemInventory unk574;
+    ItemFlags unk774;
     u8 pad7B4[0x7D4 - 0x7B4];
     Unk7D4 *unk7D4;
     void *unk7D8;
@@ -342,7 +352,7 @@ static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
 /* Inlined copy of func_80027EDC (item search); the original source inlines it. */
 static inline UnkPair *func_80027EDC_inline(s32 id) {
     s32 i;
-    UnkPair *e = D_8006794C->unk1C->unk574;
+    UnkPair *e = D_8006794C->unk1C->unk574.unk0;
 
     for (i = 0; i < 0x100; i++, e++) {
         if (e->unk1 != 0 && e->unk0 == id) {

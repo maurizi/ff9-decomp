@@ -67,8 +67,8 @@ void func_801F0E10(void) {
         }
         if (D_80077528 & 0x20000) {
             i = (l->unk5 + l->unk6) * 2 + l->unk7;
-            func_801F2590(D_8006794C->unk1C->unk574[i].unk0);
-            if (D_8006794C->unk1C->unk574[i].unk1 == 0) {
+            func_801F2590(D_8006794C->unk1C->unk574.unk0[i].unk0);
+            if (D_8006794C->unk1C->unk574.unk0[i].unk1 == 0) {
                 func_801F2C58();
             }
         } else if (D_80077528 & 0x10) {
@@ -111,9 +111,9 @@ void func_801F0F50(void) {
             }
             func_8002F488(0x67);
             i = (l->unk6 + l->unk5) * 2 + l->unk7;
-            tmp = D_8006794C->unk1C->unk574[D_801FAB78.unk6];
-            D_8006794C->unk1C->unk574[D_801FAB78.unk6] = D_8006794C->unk1C->unk574[i];
-            D_8006794C->unk1C->unk574[i] = tmp;
+            tmp = D_8006794C->unk1C->unk574.unk0[D_801FAB78.unk6];
+            D_8006794C->unk1C->unk574.unk0[D_801FAB78.unk6] = D_8006794C->unk1C->unk574.unk0[i];
+            D_8006794C->unk1C->unk574.unk0[i] = tmp;
             D_801FAB78.unk7 = 0;
             return;
         }
@@ -130,7 +130,7 @@ void func_801F10C4(s32 idx, MenuList *l) {
     u8 ok;
     s32 id;
 
-    p = &D_8006794C->unk1C->unk574[idx];
+    p = &D_8006794C->unk1C->unk574.unk0[idx];
     ok = 0;
     if (p->unk1 != 0 && p->unk0 != 0xFF && p->unk0 >= 0xE0) {
         id = p->unk0;
@@ -293,7 +293,7 @@ void func_801F1B78(void) {
     } else {
         return;
     }
-    p = &D_8006794C->unk1C->unk574[func_801F2FC4(l)];
+    p = &D_8006794C->unk1C->unk574.unk0[func_801F2FC4(l)];
     if (p->unk1 != 0) {
         h->unk8 = &D_801F3168[D_80069018[p->unk0].unk2];
     }
@@ -500,7 +500,7 @@ void func_801F27A0(void) {
 }
 
 void func_801F2870(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &D_8006794C->unk1C->unk574[i];
+    UnkPair *p = &D_8006794C->unk1C->unk574.unk0[i];
     Unk80069018 *it;
     u8 ok;
     s32 x, y, x2;

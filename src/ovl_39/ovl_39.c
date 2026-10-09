@@ -1551,7 +1551,7 @@ void func_801F963C(SaveData *d) {
     func_801F9D48(&d->unk40);
     func_801F9904(&d->unk850);
     func_801FA01C(&d->unkD88);
-    func_801F9EA8(d->unkDA0);
+    func_801F9EA8(&d->unkDA0);
     func_801F9CE8(d->unkFF8);
 }
 
@@ -1620,7 +1620,7 @@ u8 func_801F9804(void) {
         func_801F9DF8(&((SaveBuf *)0x801FCB00)->unk180.unk40);
         func_801F99FC(&((SaveBuf *)0x801FCB00)->unk180.unk850);
         func_801FA078(&((SaveBuf *)0x801FCB00)->unk180.unkD88);
-        func_801F9F5C(((SaveBuf *)0x801FCB00)->unk180.unkDA0);
+        func_801F9F5C(&((SaveBuf *)0x801FCB00)->unk180.unkDA0);
         func_801F9D18(((SaveBuf *)0x801FCB00)->unk180.unkFF8);
     } else {
         func_801F7780(0x35);
@@ -1758,9 +1758,18 @@ void func_801F9DF8(SaveEvents *s) {
     D_8007AEC4 = s->unk800;
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9EA8);
+void func_801F9EA8(SaveItems *s) {
+    s->unk0 = D_8006794C->unk1C->unk574;
+    s->unk200 = D_8006794C->unk1C->unk774;
+    s->unk240 = *(GameStateUnk24 *)&D_8006794C->unk24;
+}
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9F5C);
+void func_801F9F5C(SaveItems *s) {
+    D_8006794C->unk1C->unk574 = s->unk0;
+    D_8006794C->unk1C->unk774 = s->unk200;
+    *(GameStateUnk24 *)&D_8006794C->unk24 = s->unk240;
+    func_8002397C();
+}
 
 void func_801FA01C(Unk801FA078 *p) {
     p->unk0 = D_8006794C->unk1C->unk844;

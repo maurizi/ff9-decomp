@@ -193,6 +193,14 @@ typedef struct {
     u16 unk520;
 } SaveParty; /* 0x524 */
 
+/* inventory part of a save block (func_801F9EA8 / func_801F9F5C) */
+typedef struct {
+    ItemInventory unk0;
+    ItemFlags unk200;
+    GameStateUnk24 unk240; /* GameState.unk24/unk28 */
+    u8 pad248[0x258 - 0x248];
+} SaveItems;
+
 /* game data part of a save block */
 typedef struct {
     Unk801F9BEC unk0;
@@ -201,7 +209,7 @@ typedef struct {
     SaveParty unk850;
     u8 padD74[0xD88 - 0xD74];
     Unk801FA078 unkD88;
-    u8 unkDA0[0xFF8 - 0xDA0];
+    SaveItems unkDA0;
     u8 unkFF8[0x127C - 0xFF8];
 } SaveData; /* 0x127C */
 
@@ -231,6 +239,7 @@ typedef struct {
 } Unk801F6D24;
 
 /* main exe: candidates for ff9.h */
+void func_8002397C(void);
 extern RECT D_801EDF14;
 extern s32 D_801FB050[]; /* text index per mode */
 extern RECT D_801FB058;
@@ -311,7 +320,7 @@ s32 func_801FA3D8(s32, char *);
 u8 func_801FA6AC(s32, char *);
 void func_80024000(s32); /* main exe */
 void func_801F9BEC(Unk801F9BEC *);
-void func_801F9F5C(void *);
+void func_801F9F5C(SaveItems *);
 void func_801F9D18(void *);
 void func_801FA078(Unk801FA078 *);
 void func_801F8DA4(u8 *);
@@ -322,7 +331,7 @@ void func_801F9DF8(SaveEvents *);
 void func_801F99FC(SaveParty *);
 void func_801F9904(SaveParty *);
 extern s32 D_8007AEC4;
-void func_801F9EA8(u8 *);
+void func_801F9EA8(SaveItems *);
 void func_801F9CE8(void *);
 void func_801F6938(void);
 

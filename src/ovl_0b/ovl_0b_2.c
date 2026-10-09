@@ -4668,7 +4668,7 @@ s32 func_800EC194(s32 arg0) {
 void func_800EC1B0(void) {
     s32 n = 0;
     s32 i;
-    UnkPair *p = D_8006794C->unk1C->unk574;
+    UnkPair *p = D_8006794C->unk1C->unk574.unk0;
     Unk80104FA8 *f = D_80104FA8;
     for (i = 0; i < 0x100; i++, p++) {
         if (p->unk1 != 0 && p->unk0 != 0xFF && p->unk0 >= 0xE0) {
@@ -4687,7 +4687,7 @@ void func_800EC258(void) {
     s32 i = 0;
     UnkPair *e;
     Unk80104FA8 *p = D_80104FA8;
-    e = D_8006794C->unk1C->unk574;
+    e = D_8006794C->unk1C->unk574.unk0;
     for (; i < 0x100; i++, e++) {
         if (e->unk1 != 0 && e->unk0 != 0xFF && e->unk0 < 0x58 && (D_8006E0E8[e->unk0].unk0 & 4)) {
             p->unk80[n] = e;

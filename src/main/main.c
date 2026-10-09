@@ -2653,7 +2653,7 @@ void func_80027D18(void) {
     s32 i;
 
     for (i = 0; i < 0x100; i++) {
-        D_8006794C->unk1C->unk574[i].unk1 = 0;
+        D_8006794C->unk1C->unk574.unk0[i].unk1 = 0;
     }
 }
 
@@ -2661,7 +2661,7 @@ void func_80027D4C(void) {
     s32 i;
 
     for (i = 0; i < 0x40; i++) {
-        D_8006794C->unk1C->unk774[i] = 0;
+        D_8006794C->unk1C->unk774.unk0[i] = 0;
     }
 }
 
@@ -2671,7 +2671,7 @@ s32 func_80027D84(s32 id, s32 n) {
     if (id == 0xFF) {
         return 0;
     }
-    e = D_8006794C->unk1C->unk574;
+    e = D_8006794C->unk1C->unk574.unk0;
     for (i = 0; i < 0x100; e++, i++) {
         if (e->unk1 != 0 && e->unk0 == id) {
             if (e->unk1 + n >= 100) {
@@ -2681,7 +2681,7 @@ s32 func_80027D84(s32 id, s32 n) {
             return n;
         }
     }
-    e = D_8006794C->unk1C->unk574;
+    e = D_8006794C->unk1C->unk574.unk0;
     for (i = 0; i < 0x100; i++, e++) {
         if (e->unk1 == 0) {
             e->unk0 = id;
@@ -2694,7 +2694,7 @@ s32 func_80027D84(s32 id, s32 n) {
 
 s32 func_80027E5C(s32 id, s32 count) {
     s32 i;
-    UnkPair *e = D_8006794C->unk1C->unk574;
+    UnkPair *e = D_8006794C->unk1C->unk574.unk0;
 
     for (i = 0; i < 0x100; e++, i++) {
         if (e->unk1 != 0 && e->unk0 == id) {
@@ -2710,7 +2710,7 @@ s32 func_80027E5C(s32 id, s32 count) {
 
 UnkPair *func_80027EDC(s32 id) {
     s32 i;
-    UnkPair *e = D_8006794C->unk1C->unk574;
+    UnkPair *e = D_8006794C->unk1C->unk574.unk0;
 
     for (i = 0; i < 0x100; i++, e++) {
         if (e->unk1 != 0 && e->unk0 == id) {
@@ -2757,31 +2757,31 @@ s32 func_80028014(s32 arg0) {
 void func_80028074(s32 id) {
     s32 idx = id >> 2;
 
-    D_8006794C->unk1C->unk774[idx] |= 1 << ((id & 3) * 2);
-    D_8006794C->unk1C->unk774[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    D_8006794C->unk1C->unk774.unk0[idx] |= 1 << ((id & 3) * 2);
+    D_8006794C->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void func_800280CC(s32 id) {
     s32 idx = id >> 2;
 
-    D_8006794C->unk1C->unk774[idx] &= ~(1 << ((id & 3) * 2));
-    D_8006794C->unk1C->unk774[idx] &= ~(1 << ((id & 3) * 2 + 1));
+    D_8006794C->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2));
+    D_8006794C->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 void func_80028128(s32 id) {
-    D_8006794C->unk1C->unk774[id >> 2] |= 1 << ((id & 3) * 2 + 1);
+    D_8006794C->unk1C->unk774.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
 }
 
 void func_80028164(s32 id) {
-    D_8006794C->unk1C->unk774[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
+    D_8006794C->unk1C->unk774.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
 s32 func_800281A4(s32 arg0) {
-    return (D_8006794C->unk1C->unk774[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
+    return (D_8006794C->unk1C->unk774.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
 }
 
 s32 func_800281D0(s32 id) {
-    return (D_8006794C->unk1C->unk774[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
+    return (D_8006794C->unk1C->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028204);
