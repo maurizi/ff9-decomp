@@ -2462,7 +2462,23 @@ s32 func_800DF550(s32 arg0, s32 arg1) {
     return func_800DF670(func_800DCFB0(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF588);
+void func_800DF588(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
+    s32 n;
+    BtlMesh *m;
+    s32 i;
+
+    n = arg0->unk8->unk3;
+    m = arg0->unk8->unk10;
+    for (i = 0; i < n; i++) {
+        if (arg1 == -1 || arg1 == i) {
+            arg2 = func_800DF940(arg0, i, arg2);
+            if (m->unk14[i] >= 0x322) {
+                func_80015C38("warning:GeoSplitVertices() overflow vertex buffer!(%d)\n", m->unk14[i]);
+                m->unk14[i] = 0x321;
+            }
+        }
+    }
+}
 
 s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
     BtlUnit9C8 *m = arg0->unk8;

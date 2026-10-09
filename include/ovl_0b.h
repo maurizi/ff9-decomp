@@ -2344,7 +2344,7 @@ s32 func_800D6188(s32);
 extern u8 D_800F727C[][2];  /* summon id upgrades */
 extern u16 D_800F72A0[16][2];
 void func_800C30B8(void);
-s32 func_800DF940(BtlUnit9C *, u16, s32);
+u32 func_800DF940(BtlUnit9C *, u16, s32);
 extern Unk800F3F10 D_800F9058;
 extern Unk800F3F10 D_800F9064;
 extern U16Pair D_800F9070[];
