@@ -4844,7 +4844,9 @@ void func_800EA290(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EA30C);
+u8 func_800EA30C(void) {
+    return D_80104E68.unk6 ? D_80104E68.unkB : 0;
+}
 
 void func_800EA338(s8 arg0) {
     D_80104E68.unkB = arg0;

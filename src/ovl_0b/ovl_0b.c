@@ -1566,7 +1566,17 @@ void func_800B0468(GameData *arg0, Battle *arg1) {
     func_800B05C0(arg0, arg1, sp10);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B05C0);
+void func_800B05C0(GameData *arg0, Battle *arg1, s32 arg2) {
+    if (arg1->unk11BE) {
+        arg1->unk11BE -= 1;
+    }
+    func_800CA7CC();
+    arg2 = (s32)func_800CE1B4(&arg0->unk18, arg1->unk11C0->unk1C, arg2, arg0->unk10[arg0->unk8],
+                              arg1->unk11C0->unk2C[arg0->unk8]);
+    arg2 = (s32)func_800E3EEC((u8 *)arg2);
+    arg2 = (s32)func_800CC4F0((u8 *)arg2);
+    func_800F4E70((u8 *)arg2);
+}
 
 s32 func_800B065C(BtlUnit *arg0, BtlUnit *arg1, BtlCmd *arg2) {
     s32 r;
