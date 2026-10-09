@@ -557,7 +557,7 @@ typedef struct Window {
     s16 unk6; /* h */
     RECT unk8; /* inner/content rect */
     s16 unk10;
-    u8 pad12[0x14 - 0x12];
+    s16 unk12;
     s16 unk14; /* open/close step x */
     s16 unk16; /* open/close step y */
     s16 unk18; /* OT layer */
@@ -770,7 +770,7 @@ typedef struct {
     u8 pad14[0x18 - 0x14];
     u8 *unk18; /* packet buffer cursor */
     s32 unk1C;
-    u8 pad20[0x24 - 0x20];
+    Unk4 unk20;
     u8 unk24;
     u8 unk25;
     u8 unk26;
@@ -2506,4 +2506,10 @@ typedef struct {
     u8 pad0[0xE];
     u8 unkE;
 } Unk8007AED0;
+typedef struct {
+    void (*unk0)(Unk80077C78 *);
+    s32 unk4;
+    s32 unk8;
+} Unk8006BD04;
+extern Unk8006BD04 D_8006BD04[];
 #endif

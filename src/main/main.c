@@ -3777,7 +3777,30 @@ void func_8002FC38(void) {
     func_8002FC38_clear3(&D_80077C78.unk24);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FC8C);
+void func_8002FC8C(s32 a, s32 b, s32 c, s32 col) {
+    u8 old;
+    void (*fn)(Unk80077C78 *);
+
+    if (c == 0) {
+        D_80077C78.unk28 = *(Unk4 *)&col;
+    } else {
+        D_80077C78.unk20 = D_80077C78.unk28;
+        old = D_80077C78.unk0;
+        D_80077C78.unk0 = a;
+        D_80077C78.unk1 = b;
+        D_80077C78.unkC = 0;
+        D_80077C78.unk8 = c;
+        D_80077C78.unk5 = old;
+        *(Unk4 *)&D_80077C78.unk24 = *(Unk4 *)&col;
+        D_80077C78.unk2 = 1;
+        D_80077C78.unk10 = 0;
+        D_80077C78.unk3 = (*(s32 *)&D_80077C78.unk24 & 0xFFFFFF) != 0;
+        fn = D_8006BD04[a].unk0;
+        if (fn != NULL) {
+            fn(&D_80077C78);
+        }
+    }
+}
 
 s32 func_8002FD70(s32 a, s32 b, s32 lim) {
     a += b;
