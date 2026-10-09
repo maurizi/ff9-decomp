@@ -1652,7 +1652,7 @@ typedef struct {
     s16 unk6;
     s32 unk8;
 } Unk800E6270;
-void func_800E813C(s32, s32);
+s32 func_800E813C(u32, s32);
 
 /* main exe: candidates for ff9.h */
 void func_8002E260(void);
@@ -2442,6 +2442,7 @@ extern s16 D_800F9048[];
 void func_800E3C50(void *);
 s32 func_800DA2AC(Unk800DA1B8 *);
 void func_800F1790(u8, u8);
+BtlUnit *func_800F18F0(u8);
 extern u8 D_800F8E68[][2];
 void func_800F1A20(s32);
 s32 func_8001DA6C(s16);
