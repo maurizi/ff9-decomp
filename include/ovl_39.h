@@ -7,6 +7,10 @@
 #include "ff9.h"
 
 typedef struct {
+    u8 v[0x16];
+} __attribute__((aligned(2))) SaveFileName; /* memory card file name, copied as a halfword-aligned block */
+
+typedef struct {
     u8 v[10];
 } __attribute__((aligned(2))) SaveName; /* 10 bytes, copied as a halfword-aligned block */
 
@@ -25,7 +29,7 @@ typedef struct {
 /* Per-slot entry of the save list (0x98 bytes; the first byte is the state). */
 typedef struct {
     s32 unk0; /* version tag, 0x30005 */
-    u8 unk4[0x1A - 4];
+    SaveFileName unk4;
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
     u8 unk1B; /* slot index */
     u8 unk1C;
@@ -140,7 +144,7 @@ typedef struct {
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    char unk6[0x1C - 6]; /* file name */
+    SaveFileName unk6; /* file name */
     Window *unk1C;
     s32 unk20; /* card channel */
     s32 unk24;
@@ -447,7 +451,7 @@ u8 func_801F8478(void);
 void func_80065238(char *, u8 *); /* main exe: string copy */
 void func_801F8588(void);
 MenuView *func_801F89B8(MenuList *, MenuView *);
-void func_801F8704(s32, void *);
+void func_801F8704(s32, SaveHeader *);
 u8 func_801F9804(void);
 void func_801F5384(void);
 void func_801F53B0(void);

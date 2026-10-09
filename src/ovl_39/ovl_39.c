@@ -793,7 +793,7 @@ static inline void func_801F7108_inline(s32 slot) {
     s32 fd;
 
     D_801FBEF8.unk2 = slot;
-    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4);
+    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4.v);
     D_801FBEF8.unk18 = fd;
     if (fd < 0) {
         func_801F72B4(0x2E);
@@ -1028,7 +1028,7 @@ void func_801F7108(s32 slot) {
     s32 fd;
 
     D_801FBEF8.unk2 = slot;
-    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4);
+    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4.v);
     D_801FBEF8.unk18 = fd;
     if (fd < 0) {
         func_801F72B4(0x2E);
@@ -1447,8 +1447,8 @@ u8 func_801F8478(void) {
 
     port = D_80077DB2 << 4;
     sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
-    func_80065238(D_801FC388.unk6, sl->unk4);
-    fd = func_801FA3D8(port, D_801FC388.unk6);
+    func_80065238((char *)D_801FC388.unk6.v, sl->unk4.v);
+    fd = func_801FA3D8(port, (char *)D_801FC388.unk6.v);
     D_801FC388.unk20 = fd;
     if (fd < 0) {
         func_801F889C(0x34);
@@ -1515,7 +1515,28 @@ void func_801F86C0(s32 i) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F8704);
+void func_801F8704(s32 slot, SaveHeader *h) {
+    SaveSlot *s;
+    SaveFileName *n;
+    s32 i;
+
+    s = &D_801FB1A8.unk34[slot];
+    n = &D_801FC388.unk6;
+    s->unk4 = *n;
+    s->unk1A = 4;
+    s->unk1C = h->unk4;
+    s->unk1D = h->unk5;
+    s->unk1E = h->unk6;
+    s->unk28 = h->unk10;
+    s->unk50 = h->unk2C;
+    s->unk54 = h->unk30;
+    s->unk48 = h->unk74;
+    s->unk4C = h->unk78;
+    s->unk44 = h->unk7C;
+    for (i = 0; i < 4; i++) {
+        s->unk58[i] = h->unk34[i];
+    }
+}
 
 void func_801F889C(s32 msg) {
     D_801FB1A8.unk8 = 1;
