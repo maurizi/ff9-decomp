@@ -2813,4 +2813,8 @@ extern s32 D_8007BCB0;
 
 void func_8002BBE8(s32, u8 *, s32);
 
+extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
+
+typedef void (*FadeFn)(Unk80077C78 *);
+
 #endif

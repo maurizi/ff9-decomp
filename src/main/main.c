@@ -4246,7 +4246,37 @@ s32 func_8002F5A0(void (*fn)(void)) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F6C8);
+void func_8002F6C8(void) {
+    u8 *buf = D_80077878[0];
+    Unk80077C78 *f = &D_80077C78;
+    FadeFn fn;
+
+    if (D_8006794C->unk1C->unk8 != 0) {
+        buf = D_80077878[1];
+    }
+    f->unk18 = buf;
+    if (f->unk2 != 0) {
+        fn = (FadeFn)D_8006BD04[f->unk0].unk4;
+        if (fn != NULL) {
+            fn(f);
+        }
+    }
+    if (*(u32 *)&D_80077C78 & 0xFFFF0000) {
+        fn = (FadeFn)D_8006BD04[D_80077C78.unk0].unk8;
+        if (fn != NULL) {
+            fn(&D_80077C78);
+        }
+    }
+    if (D_80077C78.unk2 != 0) {
+        if (++D_80077C78.unkC >= (u32)D_80077C78.unk8) {
+            D_80077C78.unk2 = 0;
+            fn = (FadeFn)D_80077C78.unk10;
+            if (fn != NULL) {
+                fn(&D_80077C78);
+            }
+        }
+    }
+}
 
 u8 func_8002F7E8(u8 a) {
     u8 old = D_80077C78.unk2;
