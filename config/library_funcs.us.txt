@@ -1,3 +1,223 @@
 # Functions that are SDK/library or hand-written asm rather than Square game C, found by inspection
 # (no PsyQ signature match). Excluded from the game totals by tools/progress.py, like
 # config/symbols.psyq*.txt. One per line: <binary> <function> <reason>
+main func_80012CE8 BIOS A0 call stub
+main func_80012CF8 BIOS A0 call stub
+main func_80012D08 BIOS syscall (Enter/ExitCriticalSection)
+main func_80012D18 BIOS syscall (Enter/ExitCriticalSection)
+main func_80012AD4 boot: SN startup helper
+main func_8001310C libgpu: RECT check / GPU debug print
+main func_800140E8 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014358 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014378 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014410 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_800144A8 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_800144C4 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_8001455C libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_8001463C libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_8001486C libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014AA8 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014D28 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014D44 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014D84 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014DCC libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014DFC libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80014E20 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_800150D0 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80015330 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_8001546C libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_800155A8 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_800155DC libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80015720 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80015C00 libgpu internals (GPU queue/DMA, D_80066660 state)
+main func_80015C28 BIOS A0/B0/C0 call stub
+main func_80015C38 BIOS A0/B0/C0 call stub
+main func_80015C48 BIOS A0/B0/C0 call stub
+main func_80015E88 BIOS A0/B0/C0 call stub
+main func_80015E98 BIOS A0/B0/C0 call stub
+main func_80016598 BIOS A0/B0/C0 call stub
+main func_800165A8 BIOS A0/B0/C0 call stub
+main func_800165B8 BIOS A0/B0/C0 call stub
+main func_80016EC0 BIOS A0/B0/C0 call stub
+main func_80016ED0 BIOS A0/B0/C0 call stub
+main func_80017A20 BIOS A0/B0/C0 call stub
+main func_80018740 BIOS A0/B0/C0 call stub
+main func_80018AF0 BIOS A0/B0/C0 call stub
+main func_80018B00 BIOS A0/B0/C0 call stub
+main func_80018B10 BIOS A0/B0/C0 call stub
+main func_80018B20 BIOS A0/B0/C0 call stub
+main func_80018B30 BIOS A0/B0/C0 call stub
+main func_80018C50 BIOS A0/B0/C0 call stub
+main func_80018C60 BIOS A0/B0/C0 call stub
+main func_80018C70 BIOS A0/B0/C0 call stub
+main func_8001A878 BIOS A0/B0/C0 call stub
+main func_8001D898 BIOS A0/B0/C0 call stub
+main func_8001ED30 BIOS A0/B0/C0 call stub
+main func_8001ED40 BIOS A0/B0/C0 call stub
+main func_80015DD0 libetc: VSync timeout handler
+main func_8001603C libetc: interrupt manager internals
+main func_80016114 libetc: interrupt manager internals
+main func_800162E4 libetc: interrupt manager internals
+main func_8001642C libetc: interrupt manager internals
+main func_800164CC libetc: interrupt manager internals
+main func_80016544 libetc: interrupt manager internals
+main func_80016620 libetc: interrupt manager internals
+main func_8001668C libetc: interrupt manager internals
+main func_800166B8 libetc: interrupt manager internals
+main func_80016734 libetc: DMA callback internals
+main func_800168B4 libetc: DMA callback internals
+main func_80016960 libetc: DMA callback internals
+main func_80016D0C libetc: hand-written exception handler fragment
+main func_80017160 libspu internals
+main func_80017968 libspu internals
+main func_80017990 libspu internals
+main func_800189CC libcard/libapi internals
+main func_80018A44 libcard/libapi internals
+main func_80018AAC libcard/libapi internals
+main func_80018CC4 libcard: BIOS patch code
+main func_80018CF0 libcard: BIOS patch code
+main func_80018D34 libcard: BIOS patch code
+main func_80019854 libpad internals
+main func_8001987C libpad internals
+main func_800199E4 libpad internals
+main func_80019A3C libpad internals
+main func_80019F28 libpad internals
+main func_80019F90 libpad internals
+main func_8001A094 libpad internals
+main func_8001A150 libpad internals
+main func_8001A3CC libpad internals
+main func_8001A3EC libpad internals
+main func_8001A4FC libpad internals
+main func_8001A848 libpad internals
+main func_8001ADB4 libpad internals
+main func_8001B80C libpad internals
+main func_8001B8B4 libpad internals
+main func_8001BE14 libpad internals
+main func_8001BE5C libpad internals
+main func_8001BF34 libpad internals
+main func_8001BFE0 libpad internals
+main func_8001C0FC libpad internals
+main func_8001E6B8 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_8001E97C libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_8001EA20 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_8001ECBC libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_8001ED50 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_800201F4 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_800207D4 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_80020A48 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_80020B18 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main func_800207A0 libcd wrapper
+main func_800211D0 libcd wrapper
+main func_8002120C libcd wrapper
+main func_80021234 libcd wrapper
+main func_8002125C libcd wrapper
+main func_80021330 libcd wrapper
+main func_80021340 libcd wrapper
+main func_80021360 libcd wrapper
+main func_80021380 libcd wrapper
+main func_800213A0 libcd wrapper
+main func_80021620 libcd wrapper
+main func_800236A4 libcd wrapper
+main func_8002EB64 BIOS A0/B0/C0 call stub
+main func_80056CAC BIOS A0/B0/C0 call stub
+main func_80056CBC BIOS A0/B0/C0 call stub
+main func_80056CCC BIOS A0/B0/C0 call stub
+main func_80062B3C BIOS A0/B0/C0 call stub
+main func_800637C0 BIOS A0/B0/C0 call stub
+main func_80063864 BIOS A0/B0/C0 call stub
+main func_80064524 BIOS A0/B0/C0 call stub
+main func_80064534 BIOS A0/B0/C0 call stub
+main func_80065208 BIOS A0/B0/C0 call stub
+main func_80065E60 BIOS A0/B0/C0 call stub
+main func_80066160 BIOS A0/B0/C0 call stub
+main func_80066170 BIOS A0/B0/C0 call stub
+main func_800661C0 BIOS A0/B0/C0 call stub
+main func_800661D0 BIOS A0/B0/C0 call stub
+main func_800665A0 BIOS A0/B0/C0 call stub
+main func_800665B0 BIOS A0/B0/C0 call stub
+main func_80063108 BIOS stub merged with following library function
+main func_800639D4 libgte: GTE control register access
+main func_800645C4 libgte: GTE control register access
+main func_80064EA8 libgte: GTE control register access
+main func_80064EB8 libgte: GTE control register access
+main func_80062C8C libgte: hand-written GTE asm
+main func_8005658C libspu
+main func_80056700 libspu
+main func_8005703C libspu
+main func_8005709C libspu
+main func_80059504 libspu
+main func_80064C24 out of scope (prior analysis; calls hand-written asm func_800512E4 register ABI)
+main func_8003575C hand-written asm (addi, odd scheduling)
+main func_80035774 hand-written asm (addi, odd scheduling)
+main func_8003579C hand-written asm (addi, odd scheduling)
+main func_800357C0 hand-written asm (addi, odd scheduling)
+main func_8004BB7C hand-written asm (sin/cos table, fallthrough entry points)
+main func_8004BB80 hand-written asm (sin/cos table, fallthrough entry points)
+main func_8004BBBC hand-written asm (sin/cos table, fallthrough entry points)
+main func_8004BBD0 hand-written asm (sin/cos table, fallthrough entry points)
+main func_8004BBDC hand-written asm (sin/cos table, fallthrough entry points)
+main func_8004BF20 hand-written asm (sin/cos table, fallthrough entry points)
+main func_8004BF74 hand-written asm (sin/cos table, fallthrough entry points)
+main func_80050F4C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80050F68 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051004 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051084 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051094 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005116C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005127C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800512B4 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800512B8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800512C8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800512E4 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051300 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051324 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051358 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051380 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800513A4 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800513CC hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051444 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005145C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800514AC hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800514E8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051530 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051568 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800515B8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800515EC hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051600 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051610 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051638 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051668 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800516A0 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005179C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051830 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051878 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051920 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051B58 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051CA8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051D4C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051DF4 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051E8C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051F18 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80051F54 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052834 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052870 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052CD0 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052D0C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052D40 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052D70 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052DA0 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052DEC hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052E48 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052EC0 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052EEC hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80052F24 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005309C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800530A8 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80053124 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_800531D0 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005338C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_8005345C hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80053498 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80053658 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80053728 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80053764 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
