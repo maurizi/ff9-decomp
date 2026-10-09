@@ -2341,6 +2341,7 @@ typedef struct {
     u8 unk3;
     s32 unk4;
     s32 unk8;
+    s16 unkC[3]; /* rotation delta (func_800D9AB0) */
 } Unk800D805C;
 
 typedef struct {
