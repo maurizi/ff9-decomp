@@ -5828,7 +5828,280 @@ void func_800C7BA8(Unk800C95C8 *arg0, u8 *arg1) {
     arg0->unk44 = (WmModelOut *)(pp + m->unk2 * 32);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C7CF4);
+void func_800C7CF4(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
+    WmModel *m;
+    WmModelGroup *g;
+    WmModelOut *out;
+    WmModelOut *o;
+    u8 *prim;
+    u8 *src;
+    u8 (*col)[4];
+    u8 *c;
+    u32 k;
+    u32 j;
+    u32 i;
+    s32 du;
+    s32 dv;
+    u16 tp;
+    POLY_FT4 *pFT4;
+    WmSrcFT4 *sFT4;
+    POLY_FT3 *pFT3;
+    WmSrcFT3 *sFT3;
+    POLY_GT4 *pGT4;
+    WmSrcGT4 *sGT4;
+    POLY_GT3 *pGT3;
+    WmSrcGT3 *sGT3;
+    POLY_G4 *pG4;
+    WmSrcG4 *sG4;
+    POLY_G3 *pG3;
+    WmSrcG3 *sG3;
+    POLY_F4 *pF4;
+    WmSrcF4 *sF4;
+    POLY_F3 *pF3;
+    WmSrcF3 *sF3;
+
+    prim = arg0->unk10;
+    m = arg0->unk8;
+    arg0->unk18 = arg1;
+    o = arg0->unk44;
+    for (k = 0; k < m->unk3; k++) {
+        out = &o[k];
+        g = &m->unk10[k];
+        col = g->unk24;
+        out->unk4 = prim;
+        out->unk0 = 0;
+        out->unk8 = 0;
+        for (j = 0; j < 2; j++) {
+            src = g->unk1C;
+            pFT4 = (POLY_FT4 *)prim;
+            sFT4 = (WmSrcFT4 *)src;
+            for (i = 0; i < g->unk2; i++) {
+                setPolyFT4(pFT4);
+                pFT4->r0 = sFT4->unk10[0];
+                pFT4->g0 = sFT4->unk10[1];
+                pFT4->b0 = sFT4->unk10[2];
+                pFT4->u0 = g->unk20[sFT4->unk8[0]][0];
+                pFT4->v0 = g->unk20[sFT4->unk8[0]][1];
+                pFT4->u1 = g->unk20[sFT4->unk8[1]][0];
+                pFT4->v1 = g->unk20[sFT4->unk8[1]][1];
+                pFT4->u2 = g->unk20[sFT4->unk8[2]][0];
+                pFT4->v2 = g->unk20[sFT4->unk8[2]][1];
+                pFT4->u3 = g->unk20[sFT4->unk8[3]][0];
+                pFT4->v3 = g->unk20[sFT4->unk8[3]][1];
+                pFT4->clut = arg0->unk18[sFT4->unk13].unk2;
+                pFT4->tpage = tp = arg0->unk18[sFT4->unk13].unk0 & ~0x20;
+                if (sFT4->unk15 & 1) {
+                    pFT4->tpage = tp | (sFT4->unk15 & 0xE0);
+                    setSemiTrans(pFT4, 1);
+                }
+                prim += sizeof(POLY_FT4);
+                du = arg2[sFT4->unk13][0];
+                dv = arg2[sFT4->unk13][1];
+                pFT4->u0 += du;
+                pFT4->v0 += dv;
+                pFT4->u1 += du;
+                pFT4->v1 += dv;
+                pFT4->u2 += du;
+                pFT4->v2 += dv;
+                pFT4->u3 += du;
+                pFT4->v3 += dv;
+                pFT4++;
+                sFT4++;
+                src += sizeof(WmSrcFT4);
+            }
+            pFT3 = (POLY_FT3 *)prim;
+            sFT3 = (WmSrcFT3 *)src;
+            for (i = 0; i < g->unk4; i++) {
+                setPolyFT3(pFT3);
+                pFT3->r0 = sFT3->unk8[0];
+                pFT3->g0 = sFT3->unk8[1];
+                pFT3->b0 = sFT3->unk8[2];
+                pFT3->u0 = g->unk20[sFT3->unkC[0]][0];
+                pFT3->v0 = g->unk20[sFT3->unkC[0]][1];
+                pFT3->u1 = g->unk20[sFT3->unkC[1]][0];
+                pFT3->v1 = g->unk20[sFT3->unkC[1]][1];
+                pFT3->u2 = g->unk20[sFT3->unkC[2]][0];
+                pFT3->v2 = g->unk20[sFT3->unkC[2]][1];
+                pFT3->clut = arg0->unk18[sFT3->unk6].unk2;
+                pFT3->tpage = tp = arg0->unk18[sFT3->unk6].unk0 & ~0x20;
+                if (sFT3->unk12 & 1) {
+                    pFT3->tpage = tp | (sFT3->unk12 & 0xE0);
+                    setSemiTrans(pFT3, 1);
+                }
+                prim += sizeof(POLY_FT3);
+                du = arg2[sFT3->unk6][0];
+                dv = arg2[sFT3->unk6][1];
+                pFT3->u0 += du;
+                pFT3->v0 += dv;
+                pFT3->u1 += du;
+                pFT3->v1 += dv;
+                pFT3->u2 += du;
+                pFT3->v2 += dv;
+                pFT3++;
+                sFT3++;
+                src += sizeof(WmSrcFT3);
+            }
+            pGT4 = (POLY_GT4 *)prim;
+            sGT4 = (WmSrcGT4 *)src;
+            for (i = 0; i < g->unk6; i++) {
+                setPolyGT4(pGT4);
+                c = col[sGT4->unk10[0]];
+                pGT4->r0 = c[0];
+                pGT4->g0 = c[1];
+                pGT4->b0 = c[2];
+                c = col[sGT4->unk10[1]];
+                pGT4->r1 = c[0];
+                pGT4->g1 = c[1];
+                pGT4->b1 = c[2];
+                c = col[sGT4->unk10[2]];
+                pGT4->r2 = c[0];
+                pGT4->g2 = c[1];
+                pGT4->b2 = c[2];
+                c = col[sGT4->unk10[3]];
+                pGT4->r3 = c[0];
+                pGT4->g3 = c[1];
+                pGT4->b3 = c[2];
+                pGT4->u0 = g->unk20[sGT4->unk8[0]][0];
+                pGT4->v0 = g->unk20[sGT4->unk8[0]][1];
+                pGT4->u1 = g->unk20[sGT4->unk8[1]][0];
+                pGT4->v1 = g->unk20[sGT4->unk8[1]][1];
+                pGT4->u2 = g->unk20[sGT4->unk8[2]][0];
+                pGT4->v2 = g->unk20[sGT4->unk8[2]][1];
+                pGT4->u3 = g->unk20[sGT4->unk8[3]][0];
+                pGT4->v3 = g->unk20[sGT4->unk8[3]][1];
+                pGT4->clut = arg0->unk18[sGT4->unk1D].unk2;
+                pGT4->tpage = tp = arg0->unk18[sGT4->unk1D].unk0 & ~0x20;
+                if (sGT4->unk1C & 1) {
+                    pGT4->tpage = tp | (sGT4->unk1C & 0xE0);
+                    setSemiTrans(pGT4, 1);
+                }
+                prim += sizeof(POLY_GT4);
+                du = arg2[sGT4->unk1D][0];
+                dv = arg2[sGT4->unk1D][1];
+                pGT4->u0 += du;
+                pGT4->v0 += dv;
+                pGT4->u1 += du;
+                pGT4->v1 += dv;
+                pGT4->u2 += du;
+                pGT4->v2 += dv;
+                pGT4->u3 += du;
+                pGT4->v3 += dv;
+                pGT4++;
+                sGT4++;
+                src += sizeof(WmSrcGT4);
+            }
+            pGT3 = (POLY_GT3 *)prim;
+            sGT3 = (WmSrcGT3 *)src;
+            for (i = 0; i < g->unk8; i++) {
+                setPolyGT3(pGT3);
+                c = col[sGT3->unk10[0]];
+                pGT3->r0 = c[0];
+                pGT3->g0 = c[1];
+                pGT3->b0 = c[2];
+                c = col[sGT3->unk10[1]];
+                pGT3->r1 = c[0];
+                pGT3->g1 = c[1];
+                pGT3->b1 = c[2];
+                c = col[sGT3->unk10[2]];
+                pGT3->r2 = c[0];
+                pGT3->g2 = c[1];
+                pGT3->b2 = c[2];
+                pGT3->u0 = g->unk20[sGT3->unk6[0]][0];
+                pGT3->v0 = g->unk20[sGT3->unk6[0]][1];
+                pGT3->u1 = g->unk20[sGT3->unk6[1]][0];
+                pGT3->v1 = g->unk20[sGT3->unk6[1]][1];
+                pGT3->u2 = g->unk20[sGT3->unk6[2]][0];
+                pGT3->v2 = g->unk20[sGT3->unk6[2]][1];
+                pGT3->clut = arg0->unk18[sGT3->unk16].unk2;
+                pGT3->tpage = tp = arg0->unk18[sGT3->unk16].unk0 & ~0x20;
+                if (sGT3->unkF & 1) {
+                    pGT3->tpage = tp | (sGT3->unkF & 0xE0);
+                    setSemiTrans(pGT3, 1);
+                }
+                prim += sizeof(POLY_GT3);
+                du = arg2[sGT3->unk16][0];
+                dv = arg2[sGT3->unk16][1];
+                pGT3->u0 += du;
+                pGT3->v0 += dv;
+                pGT3->u1 += du;
+                pGT3->v1 += dv;
+                pGT3->u2 += du;
+                pGT3->v2 += dv;
+                pGT3++;
+                sGT3++;
+                src += sizeof(WmSrcGT3);
+            }
+            pG4 = (POLY_G4 *)prim;
+            sG4 = (WmSrcG4 *)src;
+            for (i = 0; i < g->unkA; i++) {
+                setPolyG4(pG4);
+                c = col[sG4->unk8[0]];
+                pG4->r0 = c[0];
+                pG4->g0 = c[1];
+                pG4->b0 = c[2];
+                c = col[sG4->unk8[1]];
+                pG4->r1 = c[0];
+                pG4->g1 = c[1];
+                pG4->b1 = c[2];
+                c = col[sG4->unk8[2]];
+                pG4->r2 = c[0];
+                pG4->g2 = c[1];
+                pG4->b2 = c[2];
+                c = col[sG4->unk8[3]];
+                pG4->r3 = c[0];
+                pG4->g3 = c[1];
+                pG4->b3 = c[2];
+                prim += sizeof(POLY_G4);
+                pG4++;
+                sG4++;
+                src += sizeof(WmSrcG4);
+            }
+            pG3 = (POLY_G3 *)prim;
+            sG3 = (WmSrcG3 *)src;
+            for (i = 0; i < g->unkC; i++) {
+                setPolyG3(pG3);
+                c = col[sG3->unk8[0]];
+                pG3->r0 = c[0];
+                pG3->g0 = c[1];
+                pG3->b0 = c[2];
+                c = col[sG3->unk8[1]];
+                pG3->r1 = c[0];
+                pG3->g1 = c[1];
+                pG3->b1 = c[2];
+                c = col[sG3->unk8[2]];
+                pG3->r2 = c[0];
+                pG3->g2 = c[1];
+                pG3->b2 = c[2];
+                prim += sizeof(POLY_G3);
+                pG3++;
+                sG3++;
+                src += sizeof(WmSrcG3);
+            }
+            pF4 = (POLY_F4 *)prim;
+            sF4 = (WmSrcF4 *)src;
+            for (i = 0; i < g->unkE; i++) {
+                setPolyF4(pF4);
+                pF4->r0 = sF4->unk8[0];
+                pF4->g0 = sF4->unk8[1];
+                pF4->b0 = sF4->unk8[2];
+                prim += sizeof(POLY_F4);
+                pF4++;
+                sF4++;
+                src += sizeof(WmSrcF4);
+            }
+            for (i = 0; i < g->unk10; i++) {
+                pF3 = (POLY_F3 *)prim;
+                sF3 = (WmSrcF3 *)src;
+                setPolyF3(pF3);
+                pF3->r0 = sF3->unk8[0];
+                pF3->g0 = sF3->unk8[1];
+                pF3->b0 = sF3->unk8[2];
+                prim += sizeof(POLY_F3);
+                src += sizeof(WmSrcF3);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C8950);
 
