@@ -108,7 +108,7 @@ typedef struct Unk8004AFF0 {
     u8 pad18[0x1C - 0x18];
     struct Unk8004AFF0 *unk1C;
     u8 pad20[0x50 - 0x20];
-    Unk8004AFF0Sub *unk50;
+    struct { Unk8004AFF0Sub unk0[1]; } *unk50;
     s16 unk54;
     s16 unk56;
     s16 unk58;
@@ -999,9 +999,9 @@ s32 func_80039C38(void) {
         m = func_8004AFF0_inline(o);
         b = func_8004AEDC_inline();
         if (m != NULL) {
-            m->unk50[b].unk4 |= 1;
-            m->unk50[b].unkC = 0;
-            m->unk50[b].unk12 = 0x1000;
+            m->unk50->unk0[b].unk4 |= 1;
+            m->unk50->unk0[b].unkC = 0;
+            m->unk50->unk0[b].unk12 = 0x1000;
         }
         return 0;
     case 0xC1:
@@ -1009,9 +1009,9 @@ s32 func_80039C38(void) {
         m = func_8004AFF0_inline(o);
         b = func_8004AEDC_inline();
         if (m != NULL) {
-            m->unk50[b].unk4 |= 3;
-            m->unk50[b].unkC = 0;
-            m->unk50[b].unk12 = 0x1000;
+            m->unk50->unk0[b].unk4 |= 3;
+            m->unk50->unk0[b].unkC = 0;
+            m->unk50->unk0[b].unk12 = 0x1000;
         }
         return 0;
     case 0xC2:
@@ -1019,7 +1019,7 @@ s32 func_80039C38(void) {
         m = func_8004AFF0_inline(o);
         b = func_8004AEDC_inline();
         if (m != NULL) {
-            m->unk50[b].unk4 &= 0xFC;
+            m->unk50->unk0[b].unk4 &= 0xFC;
         }
         return 0;
     case 0xCC: {
