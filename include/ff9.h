@@ -3531,4 +3531,47 @@ s32 func_8002414C(void);
 s32 func_8006275C(void);
 s32 func_8004ECC4(void);
 
+/* random encounter check (func_80038D3C). ovl_0c declares func_800BBBA8 with its own
+ * table type, so these are hidden there. */
+#ifndef OVL_0C_H
+extern s32 D_8007AE4C;
+extern u8 D_8006E648[][4];
+Unk8007AE40 *func_800BBBA8();
+
+static inline s32 func_80038D3C_rand(void) {
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    return *D_8007B720++;
+}
+
+static inline u16 func_80038D3C_pick(void) {
+    Unk8007AE40 *t;
+    s32 r;
+    s32 i;
+    u8 *tbl;
+
+    if (D_8007B708 != 1) {
+        t = func_800BBBA8();
+    } else {
+        t = &D_8007AE40;
+    }
+    r = func_80038D3C_rand();
+    tbl = D_8006E648[t->unk8 & 3];
+    if (r >= tbl[0]) {
+        if (r >= tbl[1]) {
+            i = 6;
+            if (r < tbl[2]) {
+                i = 4;
+            }
+        } else {
+            i = 2;
+        }
+    } else {
+        i = 0;
+    }
+    return *(u16 *)((u8 *)t + i); /* i is a byte offset into unk0..unk6 */
+}
+#endif
+
 #endif
