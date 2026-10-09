@@ -7874,7 +7874,37 @@ void func_800F48E4(void) {
     DrawSync(0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F4A00);
+void func_800F4A00(void) {
+    RECT *tw;
+    Unk80104E68 *p;
+
+    setlen(&D_80105140[D_801051E0], 2);
+    D_80105140[D_801051E0].code[0] = 0xE6000001;
+    D_80105140[D_801051E0].code[1] = 0;
+    setlen(&D_80105120[D_801051E0], 2);
+    ((u32 *)&D_80105120[D_801051E0])[1] = 0xE1000600;
+    tw = &D_800FDE34;
+    ((u32 *)&D_80105120[D_801051E0])[2] = get_tw(tw);
+    SetDrawOffset(&D_801050E0[D_801051E0], D_801051E8[D_80077148.unk0 ^ 1]);
+    SetDrawArea(&D_80105100[D_801051E0], &D_8006794C->unkC[D_80077148.unk0 ^ 1].disp);
+    addPrim(&D_8007716C[0x17], &D_80105140[D_801051E0]);
+    addPrim(&D_8007716C[0x17], &D_80105120[D_801051E0]);
+    addPrim(&D_8007716C[0x17], &D_801050E0[D_801051E0]);
+    addPrim(&D_8007716C[0x17], &D_80105100[D_801051E0]);
+    addPrim(&D_8007716C[1], &D_80105160[D_801051E0]);
+    p = (Unk80104E68 *)&D_80104E68;
+    if (p->unk10 == 0) {
+        s32 r = BreakDraw();
+        if (r == -1) {
+            p->unk24++;
+        } else {
+            while (IsIdleGPU(1) != 0) {
+            }
+            GetDrawEnv2(&D_80105160[D_801051E0]);
+            ContinueDraw(&D_8007716C[0x17], r);
+        }
+    }
+}
 
 void func_800F4D20(void) {
     DRAWENV *env = D_8006794C->unk10;

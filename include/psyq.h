@@ -554,4 +554,26 @@ void SetPolyF3(POLY_F3 *p);
 void SetPolyG3(POLY_G3 *p);
 void SetPolyG4(POLY_G4 *p);
 
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DR_MODE;
+
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DR_AREA;
+
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DR_OFFSET;
+
+void SetDrawOffset(DR_OFFSET *p, s16 *ofs);
+void SetDrawArea(DR_AREA *p, RECT *r);
+s32 BreakDraw(void);
+s32 IsIdleGPU(s32 max);
+void GetDrawEnv2(DR_ENV *p);
+void ContinueDraw(u32 *insaddr, s32 contaddr);
+
 #endif

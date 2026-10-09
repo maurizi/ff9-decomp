@@ -504,6 +504,8 @@ typedef struct {
     u8 pad16[0x18 - 0x16];
     s32 unk18;
     s32 unk1C;
+    s32 unk20;
+    s32 unk24;
 } Unk80104E68;
 extern volatile Unk80104E68 D_80104E68;
 
@@ -2773,5 +2775,12 @@ u8 *func_800D45FC(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
 
 /* rtps without the leading GTE_NOPS (original scheduled code into the slots) */
 #define gte_rtps_nn() __asm__ volatile(".word\t0x4A180001")
+
+extern DR_OFFSET D_801050E0[2];
+extern DR_AREA D_80105100[2];
+extern DR_MODE D_80105120[2];
+extern DR_STP D_80105140[2];
+extern DR_ENV D_80105160[2];
+extern RECT D_800FDE34;
 
 #endif
