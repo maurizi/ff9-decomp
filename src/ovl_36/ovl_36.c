@@ -194,7 +194,29 @@ void func_801F1AE8(s32 x, s32 y, s32 z, s32 dim) {
     func_801F1D6C(x, y, 0x14, 0, rgbc);
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1C88);
+void func_801F1C88(void) {
+    s32 i;
+    u8 n;
+    CardMenu *m;
+
+    func_8003556C(func_800625F8() ? func_801F22DC : NULL);
+    for (i = 0; i < 100; i++) {
+        n = func_80062560(i);
+        D_801F347C.unk8[i] = n;
+        if (D_801F347C.unk6C[i] >= n) {
+            D_801F347C.unk6C[i] = n - 1;
+        }
+    }
+    func_801F2138(D_801F347C.unk18F0);
+    m = &D_801F347C;
+    m->unk7 = 0x20;
+    for (i = 1; i < 0x20; i++) {
+        if (m->unk18F0[3] < D_801F3128[i]) {
+            m->unk7 = i - 1;
+            return;
+        }
+    }
+}
 
 void func_801F1D6C(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
     SprtWords *p;
