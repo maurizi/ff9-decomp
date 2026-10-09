@@ -4435,7 +4435,27 @@ void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E960);
+void func_8002E960(RECT *r, s32 otz, MenuList *m, s32 style) {
+    LineF2Words *p;
+    u32 c;
+    s16 y;
+
+    c = D_80068F20[style][(m->unk8 & 2) ? 1 : 0];
+    p = (LineF2Words *)D_80077170;
+    setlen(p, 3);
+    ((LineF2Words *)D_80077170)->rgbc = c;
+    p->x0 = r->x + 2;
+    p->x1 = r->x + r->w - 3;
+    if (m->unk8 & 2) {
+        y = r->y + m->unk9 + 4;
+    } else {
+        y = r->y + r->h - (m->unk9 + 1) - 2;
+    }
+    p->y1 = y;
+    p->y0 = y;
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 += sizeof(LineF2Words);
+}
 
 Window *func_8002EA7C(RECT *r, s32 otz, s32 style, Window *w) {
     w->unk1A = style;
