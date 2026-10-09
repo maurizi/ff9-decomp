@@ -1194,7 +1194,26 @@ void func_800B41A4(BtlUnit *arg0, u8 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B4234);
+void func_800B4234(BtlUnit *arg0) {
+    DVECTOR sxy;
+    SVECTOR v;
+    BtlBone *b;
+
+    if (!((arg0->unk68 >> 22) & 1)) {
+        gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+        gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+        b = &arg0->unk9C->unk20[arg0->unk7C];
+        v.vx = b->unk14;
+        v.vy = b->unk18;
+        v.vz = b->unk1C;
+        gte_ldv0(&v);
+        gte_rtps();
+        gte_stsxy(&sxy);
+        arg0->unkB8 = sxy.vx;
+        arg0->unkBA = sxy.vy;
+    }
+    arg0->unkBC = 1;
+}
 
 void func_800B4320(BtlCmd **arg0, u8 arg1) {
     BtlCmd *p = *arg0;
