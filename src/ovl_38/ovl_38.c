@@ -77,7 +77,44 @@ void func_801EE650(void) {
 
 INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE740);
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE9E8);
+void func_801EE9E8(void) {
+    u8 buf[16];
+    RECT *r;
+    StatusMenu *m;
+    Character *c;
+    s32 y;
+    s32 i;
+
+    m = &D_801F120C;
+    r = &m->unk8;
+    c = D_8006794C->unk1C->unk54C[m->unk2];
+    y = 0x3D;
+    for (i = 0; i < 4; i++) {
+        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, D_8007716C + 0x1D, func_80035774(D_801EFBE0[i]), 0, D_801F120C.unk7C);
+    }
+    y = 0x72;
+    for (i = 0; i < 5; i++) {
+        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, D_8007716C + 0x1D, func_80035774(D_801EFBF0[i]), 0, D_801F120C.unk7C);
+    }
+    func_8002BAE4(c->unk24, buf, 2, 1);
+    func_8002B56C(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
+    func_8002BAE4(c->unk25, buf, 2, 1);
+    func_8002B56C(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
+    func_8002BAE4(c->unk26, buf, 2, 1);
+    func_8002B56C(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
+    func_8002BAE4(c->unk27, buf, 2, 1);
+    func_8002B56C(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
+    func_8002BAE4(D_8006E0E8[c->unk39[0]].unk5, buf, 3, 1);
+    func_8002B56C(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
+    func_8002BAE4(c->unk28, buf, 3, 1);
+    func_8002B56C(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
+    func_8002BAE4(c->unk29, buf, 3, 1);
+    func_8002B56C(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
+    func_8002BAE4(c->unk2A, buf, 3, 1);
+    func_8002B56C(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
+    func_8002BAE4(c->unk2B, buf, 3, 1);
+    func_8002B56C(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
+}
 
 void func_801EED18(void) {
     u8 buf[16];
