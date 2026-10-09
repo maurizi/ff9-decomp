@@ -463,7 +463,21 @@ void func_801F2FA0(void) {
     D_801FAB78.unk58 = 0x48;
 }
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F2FC4);
+s32 func_801F2FC4(MenuList *l) {
+    s32 r, t;
+    s32 step;
+
+    if (l->unk8 & 8) {
+        t = l->unk7 ^ 1;
+        step = 1;
+        r = l->unk6;
+        if (l->unk8 & 2) {
+            return (l->unk5 + (r - step)) * 2 + t;
+        }
+        return (l->unk5 + (r + step)) * 2 + t;
+    }
+    return (l->unk5 + l->unk6) * 2 + l->unk7;
+}
 
 void func_801F3038(void) {
 }
