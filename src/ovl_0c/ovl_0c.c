@@ -117,7 +117,35 @@ void func_800A8D28(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800A8D78);
+/* load the world map background image and the sound bank */
+s32 func_800A8D78(void) {
+    u16 ids[2] = { 0x17B, 0x139 };
+    s32 i;
+    s32 id;
+    u32 *addr;
+    u32 size;
+    RECT *r;
+
+    for (i = 1; i >= 0; i--) {
+        id = ids[i] | 0x90000;
+        addr = func_8001C7FC(4, id, 0);
+        size = (u32)func_8001C7FC(5, id, 0);
+        if (ids[i] == 0x17B) {
+            r = &D_800CE0B8[D_800CCA1C];
+            r->x = D_8006794C->unk10[D_8006794C->unk1C->unk8].clip.x;
+            r->y = D_8006794C->unk10[D_8006794C->unk1C->unk8].clip.y;
+            r->h = 218;
+            r->w = size / 2 / r->h + 1;
+            LoadImage(r, addr);
+            DrawSync(0);
+            D_8006794C->unk1C->unk8E4.world->unk10 = size;
+        } else {
+            func_80055DF4();
+            func_80055E14((s32)addr, size, 1);
+        }
+    }
+    return 0;
+}
 
 s32 func_800A8F18(void) {
     s32 addr = (s32)func_8001C7FC(4, 0x70064, 0);

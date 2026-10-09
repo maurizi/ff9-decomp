@@ -765,7 +765,7 @@ extern u8 D_800CCB18[];
 extern u8 D_800CCB20[];
 u8 func_800B3340(u8 *, s32);
 extern s32 D_800CD098;
-void func_800BCA6C(s16);
+s32 func_800BCA6C(s16);
 extern s16 D_800D45D4[3];
 void func_800B3998(u16 *, u16 *, s32, s16 *);
 extern s32 D_800D3F8C;
