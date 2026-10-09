@@ -605,7 +605,19 @@ void func_801F2080(void) {
     func_801F1848();
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F20A8);
+s32 func_801F20A8(s32 i) {
+    u32 ap = D_801F7A78.unk24.unk4;
+    Counter *c = &D_801F7A78.unk24.unk4C[i];
+
+    if (func_800349BC(D_8006794C->unk1C->unk54C[i]->unk34 & 0xF, 0xEC)) {
+        c->unk0 = ap * 2;
+    } else {
+        c->unk0 = ap;
+    }
+    c->unk4 = 1;
+    c->unk8 = 0;
+    return c->unk0;
+}
 
 void func_801F213C(void) {
     s32 i;
@@ -904,7 +916,13 @@ void func_801F332C(void) {
     func_8002E334(D_801F7A78.unk368, 0x10);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F33A0);
+void func_801F33A0(Window *w) {
+    s32 n = func_8002AE7C((u8 *)D_800703FC.unk94);
+    s32 k = 0x97;
+
+    func_8002B524(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, D_800703FC.unk68, 0);
+    func_8002B524(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, D_800703FC.unk94, 0);
+}
 
 void func_801F3434(Window *arg0) {
     func_8002B5FC(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, func_80035774(0xA), 0);
