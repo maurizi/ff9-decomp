@@ -4248,7 +4248,39 @@ void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002CF20);
+void func_8002CF20(Window *w, s32 mode) {
+    s16 h;
+
+    w->unk28 = mode;
+    if (mode == 0) {
+        w->unk14 = ((w->unk4 + w->unk10 - 0x11) / w->unk10) & ~1;
+        w->unk16 = ((w->unk6 + w->unk10 - 0x11) / w->unk10) & ~1;
+        w->unk8.w = w->unk4 - w->unk14 * w->unk10;
+        w->unk8.h = w->unk6 - w->unk16 * w->unk10;
+        w->unk8.x = w->unk0 + w->unk10 * (w->unk14 >> 1);
+        w->unk8.y = w->unk2 + w->unk10 * (w->unk16 >> 1);
+    } else if (mode == 4) {
+        w->unk14 = ((w->unk4 + w->unk10 - 0x11) / w->unk10) & ~1;
+        w->unk16 = 0;
+        w->unk8.h = w->unk6;
+        w->unk8.y = w->unk2;
+        w->unk8.w = w->unk4 - w->unk14 * w->unk10;
+        w->unk8.x = w->unk0 + w->unk10 * (w->unk14 >> 1);
+    } else if (mode == 1) {
+        w->unk14 = 0;
+        w->unk30.unkB = 0;
+        w->unk30.unkA = 0;
+        h = w->unk6 >> 2;
+        w->unk8.x = w->unk0;
+        w->unk8.y = w->unk2;
+        w->unk8.w = w->unk4;
+        w->unk8.h = h;
+        w->unk16 = (w->unk6 - h + (w->unk10 - 1)) / w->unk10;
+    } else if (mode == 3) {
+        w->unk8 = *(RECT *)w;
+        w->unk1C = mode;
+    }
+}
 
 void func_8002D1AC(Window *w, s32 mode) {
     w->unk28 = mode;
