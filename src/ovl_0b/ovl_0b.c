@@ -790,7 +790,36 @@ s32 func_800AE7C8(s32 arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE844);
+void func_800AE844(Unk800AE844 *arg0) {
+    s32 p = arg0->unk8;
+    s32 id = D_8006794C->unk1C->unk852 | 0x90000;
+    s32 f;
+    s32 base;
+    s32 n;
+
+    if (arg0->unkC == 0) {
+        f = func_8001C8B0(p, 2, 0x1B0000, 0);
+        base = p;
+        if (f == -1) {
+            p = func_8001C8B0(p, 4, id, 0);
+            D_8006794C->unk1C->unk87C = func_8001CA70(base);
+        } else {
+            p = func_8001C8B0(f, 4, id, 0);
+            D_8006794C->unk1C->unk87C = func_8001C8B0(base, 2, 0x1B0001, 0) - D_8006794C->unk1C->unk8C0;
+        }
+    }
+    n = D_8006794C->unk1C->unk87C - arg0->unkC;
+    if (arg0->unk10 < n) {
+        n = arg0->unk10;
+    }
+    n = arg0->unk8 + n - p;
+    if (D_800F51EC == -1) {
+        func_80055E14(p, n, 0);
+    } else {
+        func_80056048(p, D_800F51EC, 0);
+    }
+    arg0->unk8 = p;
+}
 
 void func_800AE9C8(s32 arg0, s16 arg1) {
     GameData *gd = D_8006794C->unk1C;

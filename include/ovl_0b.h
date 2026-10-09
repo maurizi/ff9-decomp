@@ -2046,6 +2046,17 @@ typedef struct {
 } Unk800AA958Req; /* CD read request */
 
 void func_80022CC4(s32, void *, s32, s32);
+typedef struct {
+    u8 pad0[8];
+    s32 unk8; /* file address */
+    s32 unkC; /* bytes done */
+    s32 unk10; /* chunk size */
+} Unk800AE844; /* streamed file read */
+
+extern s16 D_800F51EC;
+s32 func_8001CA70(s32);
+void func_80056048(s32, s32, s32);
+
 s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s16, s32);
 
 

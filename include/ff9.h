@@ -219,7 +219,8 @@ typedef struct {
     u8 unk850;
     u8 unk851;
     u16 unk852;
-    u8 unk854[0x880 - 0x854]; /* CD read context (func_8002177C) */
+    u8 unk854[0x87C - 0x854]; /* CD read context (func_8002177C) */
+    s32 unk87C;
     Unk880 unk880;
     u8 unk890;
     u8 pad891;
@@ -231,7 +232,7 @@ typedef struct {
     u16 unk8B4[2];
     u8 pad8B8[0x8BC - 0x8B8];
     void *unk8BC; /* callback, signature varies by module */
-    u8 pad8C0[0x8C4 - 0x8C0];
+    s32 unk8C0;
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
     u8 pad8CC[0x8D4 - 0x8CC];
