@@ -753,15 +753,40 @@ typedef struct {
     u16 unk2; /* clut */
 } WmTexInfo;
 
+/* skeleton bone (WmModel.unkC, 4 bytes) */
+typedef struct {
+    s16 unk0; /* length: z offset from the parent */
+    u8 unk2;
+    u8 unk3; /* parent bone */
+} WmBone;
+
+/* animation track: three 16-bit offsets/constants (x, y in unk0, z in unk4)
+ * and their flags in the high half of unk4 (see gte_ldrotkey) */
+typedef struct {
+    u32 unk0;
+    u32 unk4;
+} WmAnimKey;
+
+/* animation file (Unk800C95C8.unkC) */
+typedef struct {
+    u8 pad0[4];
+    s16 unk4[3]; /* root position: constant, or offset of s16[frame] */
+    u16 unkA;    /* 1, 2, 4: unk4[i] is a constant */
+    WmAnimKey *unkC;  /* rotation tracks, one per bone */
+    WmAnimKey *unk10; /* low rotation bits, packed two frames per byte */
+} WmAnim;
+
 typedef struct Unk800C95C8 {
     u16 unk0; /* flags; 0x10: behind the camera */
-    u8 pad2[6];
+    u8 pad2[2];
+    u8 unk4; /* bone in the parent */
+    u8 pad5[3];
     WmModel *unk8;
     WmModel *unkC; /* file 0x3xxxx */
     u8 *unk10; /* primitive buffer */
     s32 unk14;
     WmTexInfo *unk18;
-    u16 *unk1C; /* parent flags */
+    struct Unk800C95C8 *unk1C; /* parent */
     u8 *unk20;
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
@@ -1223,6 +1248,7 @@ void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
 void func_80023A0C(void);
 void func_800223CC(void);
+void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
