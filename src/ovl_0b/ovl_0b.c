@@ -4708,7 +4708,71 @@ void func_800C0DAC(BtlUnit *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0EC8);
+void func_800C0EC8(BtlUnit *arg0) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    s32 found;
+    BtlUnit *u;
+    u32 f;
+    s32 k;
+    s32 n;
+
+    n = 6;
+    for (u = b->unk6F8; u != NULL; u = u->unk0) {
+        if ((u->unk68 & 1) == (arg0->unk68 & 1)) {
+            if (!(u->unk3C & 0x1103) || ((u->unk3C & 0x100) && u->unk7D != n)) {
+                return;
+            }
+        }
+    }
+    if (!(arg0->unk68 & 1)) {
+        found = 0;
+        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+            if (u->unk68 & 1) {
+                if (!(u->unk3C & 0x1103) || ((u->unk28 == 0 || (u->unk3C & 0x100)) && (u->unk3C & 0x2000)) || func_800B3EF8(u, 0x3D)) {
+                    found = 1;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            return;
+        }
+        if (b->unkD81 != 1) {
+            b->unkD81 = 0;
+        }
+    } else {
+        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+            f = u->unk68;
+            if (f & 1) {
+                k = D_8006794C->unk1C->unk3C[(f >> 1) & 0xF].unk34.b.unk4;
+            } else {
+                k = 0x13;
+            }
+            if ((u32)(k - 10) < 2) {
+                if (u->unk3C & 0x1043) {
+                    break;
+                }
+                if (func_800B3EF8(u, 0x3A)) {
+                    return;
+                }
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                }
+                k = func_80027F34(0xF9);
+                if (*D_8007B720++ < k) {
+                    func_800E9F68(1);
+                    func_800B1250(u->unk4, 0x3A, 0x49, func_800BEC64(0) & 0xFFFF, 1);
+                    return;
+                }
+            }
+        }
+        b->unkD81 = 1;
+        func_800CD5C8(5);
+    }
+    func_800E9F68(0);
+    b->unkD80 = 5;
+    func_800B2F24(b);
+}
 
 s32 func_800C1184(u32 *arg0) {
     s32 r = 2;
