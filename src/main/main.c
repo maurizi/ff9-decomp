@@ -8697,7 +8697,34 @@ void func_8004AC80(void) {
     D_8007AD1E = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004ACA4);
+void func_8004ACA4(Unk8004AB64 *o, s32 dx, s32 dy) {
+    SVECTOR v;
+    SVECTOR *pv = &v;
+    s32 p[2];
+    volatile s32 sxy;
+    GameData *gd;
+
+    v.vx = o->unk14.vx;
+    v.vy = o->unk14.vy + ((o->unk32 * (s8)o->unk2F) >> 6) - 50;
+    v.vz = o->unk14.vz;
+    if (D_8007B708 == 1) {
+        func_800C0F08();
+    }
+    gd = D_8006794C->unk1C;
+    gte_SetRotMatrix(&gd->unk18);
+    gte_SetTransMatrix(&gd->unk18);
+    gte_ldv0(pv);
+    gte_rtps();
+    gte_stsxy((s32 *)&sxy);
+    if (D_8007B708 == 1) {
+        func_800C0FB0();
+    }
+    p[0] = *(s16 *)&sxy;
+    p[1] = sxy >> 16;
+    func_800515B8();
+    func_800512B8(p[0] + dx, p[1] + dy);
+    func_80051610();
+}
 
 Unk8004AB64 *func_8004AE00(void) {
     Unk8004AB64 *p = NULL;
