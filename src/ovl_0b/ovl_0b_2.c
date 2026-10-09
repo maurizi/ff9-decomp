@@ -1411,7 +1411,26 @@ void func_800DA1B8(Unk800DA1B8 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA1F4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA2AC);
+s32 func_800DA2AC(Unk800DA1B8 *arg0) {
+    Unk800DA1B8 *pool = arg0;
+    s16 *p = (s16 *)pool->unkC;
+    s32 i = 0;
+    s32 n = i;
+    s32 (*fn)(s32, void *, Unk800F78A4 *, Unk800DA1B88 *, s32, struct Unk800DA1B8 *, s32) = pool->unk4;
+    s32 stride = pool->unk0;
+    for (; i < pool->unk2; i++, p = (s16 *)((u8 *)p + stride)) {
+        if (p[0] != 0) {
+            D_800F78A4->unk28 = 0;
+            n++;
+            if (fn(2, p + 2, D_800F78A4, pool->unk8, p[1], pool, pool->unk8->unkC) != 0) {
+                *(s32 *)p = 0;
+            } else {
+                p[1]++;
+            }
+        }
+    }
+    return n;
+}
 
 s32 func_800DA3A4(s32 arg0) {
     s32 i;
