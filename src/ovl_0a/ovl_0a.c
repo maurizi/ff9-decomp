@@ -2198,7 +2198,6 @@ void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 /* apply the field lights to the object colours */
-/* apply the field lights to the object colours */
 void func_800B2D10(FieldEvtCtx **arg0, s32 arg1) {
     FieldScene *sc;
     Unk800B3254 *lt;
