@@ -1028,6 +1028,7 @@ extern s32 D_800CD70C; /* marker snap distance */
 extern s32 D_800CD108;
 typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
+extern RECT D_800A71D8; /* palette area (func_800B69B4) */
 extern CVECTOR D_800A7FF0; /* marker colours */
 extern CVECTOR D_800A7FF4;
 extern CVECTOR D_800A7FF8;

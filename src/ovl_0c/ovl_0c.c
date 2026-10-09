@@ -1952,7 +1952,59 @@ void func_800B6908(void) {
 void func_800B69AC(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B69B4);
+/* world map start-up */
+void func_800B69B4(void) {
+    RECT r = D_800A71D8;
+
+    D_800CF47D = 1;
+    if (D_8007AEF0.b[0x65] & 1) {
+        func_8002FB64(1);
+    } else {
+        func_8002FAAC(1);
+    }
+    D_800CF430 = D_8007AEF0.h;
+    if ((u16)D_8007AEF0.h[0] >= 0x2B52) {
+        D_800CF444 = 4;
+    } else {
+        D_800CF444 = 1;
+    }
+    func_800B8A80();
+    D_800CF4B0 = 0;
+    D_800CF4AC = 0;
+    D_800CF454 = 0;
+    D_800CF46C = 0;
+    D_800CF44C = 0;
+    D_800CF46D = 1;
+    D_800CF440 = 0;
+    D_800CF47C = 0;
+    D_800CF442 = 0;
+    D_800CF47E = 0;
+    D_800CF434 = 0;
+    D_800CF4A8 = 0;
+    D_800CF45C = &D_8006794C->unk1C->unk8;
+    D_800CF460[0] = (s32)D_8006794C->unk1C->unk10[0];
+    D_800CF460[1] = (s32)D_8006794C->unk1C->unk10[1];
+    D_800CF448 = &D_8006794C->unk1C->unk18;
+    ResetGraph(1);
+    func_800C461C();
+    StoreImage(&r, (u32 *)D_800CFFD0);
+    DrawSync(0);
+    func_800B6908();
+    func_800B872C();
+    func_800AD204();
+    func_800C4A5C();
+    func_800AEADC();
+    DrawSync(0);
+    func_800BA58C();
+    func_800BE894();
+    func_800C3DEC();
+    func_800B8574();
+    func_800BA29C();
+    func_80050E34(D_800CF400);
+    func_80050EFC(0x24, 0x30);
+    func_800325A4();
+    D_80073998[0] |= 0xF0000;
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A71D8);
 
