@@ -24,6 +24,7 @@ int CdPosToInt(CdlLOC *p);
 
 /* PsyQ libpress */
 void DecDCToutCallback(void (*func)());
+extern volatile u32 *D_8019E008; /* MDEC1 register pointer */
 
 /* ---- this overlay ---- */
 
