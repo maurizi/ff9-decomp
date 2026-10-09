@@ -11422,7 +11422,14 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetPolyG3);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetSprt);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063830);
+s32 func_80063830(s32 id) {
+    DbEntry12 *e = (DbEntry12 *)func_800633E4(id);
+
+    if (e != NULL) {
+        return e->unk7;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063864);
 
@@ -11609,7 +11616,11 @@ void func_800658DC(MainCalc *c) {
     c->unk14 = c->unk4->unk2A;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800659D0);
+void func_800659D0(MainCalc *c) {
+    c->unk16 = 10;
+    c->unk12 = c->unk8->unk5;
+    c->unk14 = 0;
+}
 
 void func_800659EC(MainCalc *c) {
     if (func_800539FC(c->unk0, 0)) {
