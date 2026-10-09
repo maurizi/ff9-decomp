@@ -626,7 +626,7 @@ typedef struct {
     u8 *unk4[4]; /* loop start addresses */
     u8 *unk14; /* return address? */
     u8 *unk18;
-    u8 pad1C[0x20 - 0x1C];
+    s32 unk1C;
     s32 unk20;
     s32 unk24;
     u32 unk28;
@@ -636,7 +636,8 @@ typedef struct {
     s32 unk38;
     s32 unk3C;
     s32 unk40;
-    u8 pad44[0x4C - 0x44];
+    s32 unk44;
+    s32 unk48;
     s32 unk4C;
     s32 unk50;
     u8 pad54[0x58 - 0x54];
@@ -678,7 +679,8 @@ typedef struct {
     s16 unkC8;
     s16 unkCA;
     s16 unkCC;
-    u8 padCE[0xD2 - 0xCE];
+    u16 unkCE;
+    u16 unkD0;
     s16 unkD2;
     u16 unkD4;
     u16 unkD6;
@@ -2479,4 +2481,5 @@ s32 func_8005715C(s32);
 extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
 extern s32 D_8007F740;
+extern Unk80080AA0 D_800809F0;
 #endif

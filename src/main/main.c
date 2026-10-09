@@ -8916,7 +8916,26 @@ void func_800607C0(AkaoChannel *c) {
     c->unk34 &= ~0x20;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800607D4);
+static inline u8 *func_800607D4_ref(u8 *p) {
+    s32 o = (p[1] << 8) | p[0];
+    return o != 0 ? p + o + 2 : NULL;
+}
+
+void func_800607D4(AkaoChannel *c) {
+    u8 *p = c->unk0;
+    u8 *a;
+    u8 *b;
+
+    a = func_800607D4_ref(p);
+    p += 2;
+    b = func_800607D4_ref(p);
+    D_800809F0.unk0 = 0;
+    D_800809F0.unk4 = 0;
+    D_800809F0.unk8 = c->unkBE >> 8;
+    D_800809F0.unkC = c->unk78 >> 23;
+    func_8005A014(&D_800809F0, a, b, 0);
+    c->unk0 += 4;
+}
 
 void func_8006088C(AkaoChannel *c) {
     c->unk34 |= 0x100000;
