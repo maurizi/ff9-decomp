@@ -125,7 +125,8 @@ typedef struct {
 typedef struct {
     u8 unk0; /* mode */
     u8 unk1;
-    u8 pad2[6];
+    s16 unk2; /* speed */
+    u8 pad4[4];
     u8 unk8;
     u8 unk9;
     u8 unkA;
@@ -720,6 +721,8 @@ extern WmNode D_800D53E8; /* list tail */
 extern WmNode D_800D48C0; /* list tail */
 extern s32 D_800D4A38;
 extern s32 D_800D53CC;
+extern s32 D_800D53C8;
+extern VECTOR D_800CDF50;
 extern SVECTOR D_800D4870[10];
 extern s16 D_800D4830[10];
 extern s16 D_800D48F8[10];
