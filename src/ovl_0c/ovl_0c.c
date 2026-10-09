@@ -6431,7 +6431,204 @@ void func_800C95C8(Unk800C95C8 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C96AC);
+void func_800C96AC(Unk800C95C8 *arg0, u16 arg1) {
+    SVECTOR sv;
+    u16 nb;
+    VECTOR *vec;
+    WmAnimHdr *anim;
+    MATRIX *bones;
+    MATRIX *m;
+    MATRIX *end;
+    MATRIX *p;
+    WmAnimKey *key;
+    WmAnimKey *key2;
+    WmBone *b;
+    SVECTOR *rot;
+    s16 *c1;
+    s16 *c2;
+    s32 w0, w1, w2, w3;
+
+    anim = arg0->unkC;
+    if (anim == NULL) {
+        if (arg0->unk1C != NULL) {
+            /* attached to a bone of the parent model */
+            w0 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[0];
+            w1 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[1];
+            w2 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[2];
+            w3 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[3];
+            ((s32 *)arg0->unk20)[0] = w0;
+            ((s32 *)arg0->unk20)[1] = w1;
+            ((s32 *)arg0->unk20)[2] = w2;
+            ((s32 *)arg0->unk20)[3] = w3;
+            w0 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[4];
+            w1 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[5];
+            w2 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[6];
+            w3 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[7];
+            ((s32 *)arg0->unk20)[4] = w0;
+            ((s32 *)arg0->unk20)[5] = w1;
+            ((s32 *)arg0->unk20)[6] = w2;
+            ((s32 *)arg0->unk20)[7] = w3;
+            gte_SetRotMatrix(arg0->unk20);
+            gte_ldv0(&arg0->unk74);
+            gte_rtv0();
+            gte_stsv(&sv);
+            ((MATRIX *)arg0->unk20)->t[0] += sv.vx;
+            ((MATRIX *)arg0->unk20)->t[1] += sv.vy;
+            ((MATRIX *)arg0->unk20)->t[2] += sv.vz;
+        } else {
+            ((MATRIX *)arg0->unk20)->m[0][0] = arg0->unk24.m[0][0];
+            ((MATRIX *)arg0->unk20)->m[0][1] = -arg0->unk24.m[0][1];
+            ((MATRIX *)arg0->unk20)->m[0][2] = -arg0->unk24.m[0][2];
+            ((MATRIX *)arg0->unk20)->m[1][0] = arg0->unk24.m[1][0];
+            ((MATRIX *)arg0->unk20)->m[1][1] = -arg0->unk24.m[1][1];
+            ((MATRIX *)arg0->unk20)->m[1][2] = -arg0->unk24.m[1][2];
+            ((MATRIX *)arg0->unk20)->m[2][0] = arg0->unk24.m[2][0];
+            ((MATRIX *)arg0->unk20)->m[2][1] = -arg0->unk24.m[2][1];
+            ((MATRIX *)arg0->unk20)->m[2][2] = -arg0->unk24.m[2][2];
+            ((MATRIX *)arg0->unk20)->t[0] = arg0->unk24.t[0];
+            ((MATRIX *)arg0->unk20)->t[1] = arg0->unk24.t[1];
+            ((MATRIX *)arg0->unk20)->t[2] = arg0->unk24.t[2];
+        }
+        return;
+    }
+    nb = arg0->unk8->unk2;
+    bones = (MATRIX *)0x1F800018;
+    if (nb >= 31) {
+        bones = (MATRIX *)arg0->unk20;
+    }
+    m = bones;
+    vec = (VECTOR *)0x1F800008;
+    vec->vx = 0;
+    vec->vy = 0;
+    key = (WmAnimKey *)anim->unkC;
+    key2 = (WmAnimKey *)anim->unk10;
+    rot = (SVECTOR *)0x1F800000;
+    if (anim->unkA & 1) {
+        bones->t[0] = anim->unk4[0];
+    } else {
+        bones->t[0] = ((s16 *)((u8 *)anim + (u16)anim->unk4[0]))[arg1];
+    }
+    if (anim->unkA & 2) {
+        m->t[1] = anim->unk4[1];
+    } else {
+        m->t[1] = ((s16 *)((u8 *)anim + (u16)anim->unk4[1]))[arg1];
+    }
+    if (anim->unkA & 4) {
+        m->t[2] = anim->unk4[2];
+    } else {
+        m->t[2] = ((s16 *)((u8 *)anim + (u16)anim->unk4[2]))[arg1];
+    }
+    end = &bones[nb];
+    do {
+        gte_ldrotkey(key, anim, arg1, rot);
+        if (key2 != NULL) {
+            gte_ldrotkey_lo(key2, anim, arg1, rot);
+            key2++;
+        }
+        key++;
+        func_80031264(rot, m);
+        m++;
+    } while (m < end);
+    if (arg0->unk1C != NULL) {
+        {
+            s32 x0, x1, x2, x3;
+
+            x0 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[0];
+            x1 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[1];
+            x2 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[2];
+            x3 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[3];
+            ((s32 *)bones)[0] = x0;
+            ((s32 *)bones)[1] = x1;
+            ((s32 *)bones)[2] = x2;
+            ((s32 *)bones)[3] = x3;
+        }
+        {
+            s32 x0, x1, x2, x3;
+
+            x0 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[4];
+            x1 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[5];
+            x2 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[6];
+            x3 = ((s32 *)&((MATRIX *)arg0->unk1C->unk20)[arg0->unk4])[7];
+            ((s32 *)bones)[4] = x0;
+            ((s32 *)bones)[5] = x1;
+            ((s32 *)bones)[6] = x2;
+            ((s32 *)bones)[7] = x3;
+        }
+        gte_SetRotMatrix(bones);
+        gte_ldv0(&arg0->unk74);
+        gte_rtv0();
+        gte_stsv(&sv);
+        bones->t[0] += sv.vx;
+        bones->t[1] += sv.vy;
+        bones->t[2] += sv.vz;
+    } else {
+        gte_SetRotMatrix(&arg0->unk24);
+        gte_SetTransMatrix(&arg0->unk24);
+        gte_ldclmv(bones);
+        c1 = &bones->m[0][1];
+        c2 = &bones->m[0][2];
+        gte_rtir_b();
+        gte_stclmv(bones);
+        gte_ldclmv(c1);
+        gte_rtir();
+        gte_stclmv(c1);
+        gte_ldclmv(c2);
+        c1 = (s16 *)bones->t;
+        gte_rtir_n1();
+        gte_stclmv(c2);
+        gte_ldlv0(c1);
+        gte_rtv0tr();
+        gte_stlvnl(c1);
+    }
+    b = (WmBone *)arg0->unk8->unkC + 1;
+    m = bones + 1;
+    p = &bones[b->unk3];
+    do {
+        gte_SetRotMatrix(p);
+        gte_ldclmv(m);
+        gte_rtir();
+        gte_SetTransMatrix(p);
+        gte_stclmv(m);
+        gte_ldclmv(&m->m[0][1]);
+        gte_rtir();
+        vec->vz = b->unk0;
+        gte_stclmv(&m->m[0][1]);
+        gte_ldclmv(&m->m[0][2]);
+        gte_rtir();
+        b++;
+        gte_stclmv(&m->m[0][2]);
+        gte_ldlv0(vec);
+        gte_rtv0tr();
+        p = &bones[b->unk3];
+        gte_stlvnl(m->t);
+        m++;
+    } while (m < end);
+    if (nb < 31) {
+        m = (MATRIX *)arg0->unk20;
+        do {
+            s32 x0, x1, x2, x3;
+
+            x0 = ((s32 *)bones)[0];
+            x1 = ((s32 *)bones)[1];
+            x2 = ((s32 *)bones)[2];
+            x3 = ((s32 *)bones)[3];
+            ((s32 *)m)[0] = x0;
+            ((s32 *)m)[1] = x1;
+            ((s32 *)m)[2] = x2;
+            ((s32 *)m)[3] = x3;
+            x0 = ((s32 *)bones)[4];
+            x1 = ((s32 *)bones)[5];
+            x2 = ((s32 *)bones)[6];
+            x3 = ((s32 *)bones)[7];
+            ((s32 *)m)[4] = x0;
+            ((s32 *)m)[5] = x1;
+            ((s32 *)m)[6] = x2;
+            ((s32 *)m)[7] = x3;
+            m++;
+            bones++;
+        } while (bones < end);
+    }
+}
 
 void func_800C9FCC(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
