@@ -6931,9 +6931,151 @@ s32 func_80036AAC(s32 op) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800110A0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036CCC);
+s32 func_80036CCC(s32 op) {
+    s32 r = 0;
+    s32 w = D_8007B6F0[-3];
+    s32 mask;
+    s32 v;
+    s32 i;
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036FFC);
+    if (((w >> 26) & 7) == 5) {
+        mask = func_8004B404_inline(w);
+    } else {
+        D_8007B6F0 -= 2;
+        mask = func_80052D40();
+        D_8007B6F0 += 3;
+    }
+    v = func_80052D40();
+    for (i = 0; i < 8; i++) {
+        if (mask & 1) {
+            D_8007B700 = D_8007AED0[i];
+            switch (op) {
+            case 0x2D:
+                r = v;
+                break;
+            case 0x36:
+                r = func_80052D40() * v;
+                D_8007B6F0++;
+                break;
+            case 0x37:
+                if (v != 0) {
+                    r = func_80052D40() / v;
+                } else {
+                    r = func_80052D40();
+                }
+                D_8007B6F0++;
+                break;
+            case 0x38:
+                if (v != 0) {
+                    r = func_80052D40() % v;
+                } else {
+                    r = func_80052D40();
+                }
+                D_8007B6F0++;
+                break;
+            case 0x39:
+                r = func_80052D40() + v;
+                D_8007B6F0++;
+                break;
+            case 0x3A:
+                r = func_80052D40() - v;
+                D_8007B6F0++;
+                break;
+            case 0x3B:
+                r = func_80052D40() << v;
+                D_8007B6F0++;
+                break;
+            case 0x3C:
+                r = func_80052D40() >> v;
+                D_8007B6F0++;
+                break;
+            case 0x40:
+                r = func_80052D40() & v;
+                D_8007B6F0++;
+                break;
+            case 0x41:
+                r = func_80052D40() ^ v;
+                D_8007B6F0++;
+                break;
+            case 0x42:
+                r = func_80052D40() | v;
+                D_8007B6F0++;
+                break;
+            }
+            func_80052D70(r);
+            D_8007B6F0++;
+        }
+        mask >>= 1;
+    }
+    D_8007B6F0 -= 2;
+    return r;
+}
+
+s32 func_80036FFC(s32 op) {
+    s32 r = 0;
+    s32 idx = r;
+    s32 w = D_8007B6F0[-2];
+    s32 mask;
+    s32 i;
+    s32 x;
+
+    if (((w >> 26) & 7) == 5) {
+        mask = func_8004B404_inline(w);
+    } else {
+        D_8007B6F0--;
+        mask = func_80052D40();
+        D_8007B6F0 += 2;
+    }
+    switch (op) {
+    case 0xF:
+        for (i = 0; i < 8; i++) {
+            r >>= 1;
+            if (mask & 1) {
+                D_8007B700 = D_8007AED0[i];
+                if (func_80052D40() == 0) {
+                    r |= 0x80;
+                }
+                D_8007B6F0++;
+            }
+            mask >>= 1;
+        }
+        break;
+    case 0x4B:
+        r = -0x8000;
+        for (i = 0; i < 8; i++) {
+            if (mask & 1) {
+                D_8007B700 = D_8007AED0[i];
+                x = func_80052D40();
+                D_8007B6F0++;
+                if (r < x) {
+                    r = x;
+                    idx = i;
+                }
+            }
+            mask >>= 1;
+        }
+        r = 1 << idx;
+        break;
+    case 0x4C:
+        r = 0x7FFF;
+        for (i = 0; i < 8; i++) {
+            if (mask & 1) {
+                D_8007B700 = D_8007AED0[i];
+                x = func_80052D40();
+                D_8007B6F0++;
+                if (x < r) {
+                    r = x;
+                    idx = i;
+                }
+            }
+            mask >>= 1;
+        }
+        r = 1 << idx;
+        break;
+    }
+    D_8007B6F0 -= 2;
+    return r;
+}
 
 s32 func_800372A4(s32 op) {
     s32 r = 0;
