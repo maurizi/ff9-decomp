@@ -548,7 +548,31 @@ void func_801F09CC(s32 x, s32 y, s32 idx, Character *c) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0AB8);
+void func_801F0AB8(s32 x, s32 y, s32 i, Character *c) {
+    u8 buf[0x10];
+    Unk8006D128 *sup;
+    s32 id;
+    u32 st;
+    s32 col;
+
+    id = D_801FBF84.unk728[i];
+    sup = &D_8006D128[id - 0xC0];
+    st = func_801F0CC4(id, c);
+    if (st != 0) {
+        col = D_801F740C[st];
+        if (st == 4) {
+            func_801F0F38(x + 8, y, 0x1C, D_801FBF84.unk76C);
+        }
+        if (!((D_8006794C->unk24 >> 18) & 1)) {
+            func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 9 : 10);
+        } else {
+            func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 7 : 8);
+        }
+        func_8002B5FC(x + 0x18, y, 0x1C, D_801F6540 + sup->unk2, col);
+        func_8002BAE4(sup->unk1, buf, 3, 1);
+        func_8002B56C(x + 0x6C, y + 4, 0x1C, buf, col);
+    }
+}
 
 u8 func_801F0C10(s32 id, Character *c) {
     s32 i;
