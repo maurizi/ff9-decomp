@@ -998,7 +998,7 @@ typedef struct Unk8004AB64 {
     s16 unk74;
     u16 unk76;
     s32 unk78;
-    u8 unk7C[4];
+    union { u32 w; u8 b[4]; } unk7C; /* colour */
     u8 pad80[0x90 - 0x80];
     u8 unk90;
     u8 unk91;
