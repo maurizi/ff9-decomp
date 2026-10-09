@@ -1890,7 +1890,7 @@ s32 func_800551F0(void);
 void func_80055D40(void);
 void func_80055D60(void);
 s32 func_80055DF4(void);
-s32 func_80055E14(s32, s32, s32);
+s32 func_80055E14(s32 *, u32, s32);
 s32 func_80056CAC(s32);
 s32 func_80056CBC(s32);
 void func_80062344(void);
@@ -3493,5 +3493,16 @@ typedef struct {
 
 void func_80056278(s32 a, s32 b);
 void func_80061EE4(void);
+
+/* AKAO sample stream state, func_80055E14 */
+typedef struct {
+    Unk8005EBB4 *unk0; /* destination of the next sample-info copy */
+    u32 unk4;          /* SPU transfer address */
+    u32 unk8;          /* sample bytes left */
+    u32 unkC;          /* sample-info bytes left */
+} Unk80083228;
+extern Unk80083228 D_80083228;
+extern s32 D_80080A30[16]; /* AKAO header copy */
+extern u32 D_80083230; /* = D_80083228.unk8 */
 
 #endif

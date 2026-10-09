@@ -10740,7 +10740,70 @@ s32 func_80055DF4(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055E14);
+s32 func_80055E14(s32 *buf, u32 size, s32 wait) {
+    u32 n;
+    u32 m;
+    s32 slot;
+
+    if (D_80083158.unk0 & 1) {
+        if (D_80083228.unk4 == 0) {
+            if (buf[0] == 0x4F414B41) {
+                func_8005CE04(buf, D_80080A30, 0x40);
+                buf += 16;
+                size -= 0x40;
+                D_80083228.unk4 = D_80080A30[4];
+                D_80080A30[6] = slot = D_80080A30[6];
+                D_80083228.unk8 = D_80080A30[5];
+                D_80083228.unk0 = &D_8007F970[slot];
+                D_80083228.unkC = D_80080A30[7] * 16;
+            } else {
+                size = 0;
+                D_80083228.unk8 = 0;
+                D_80083228.unkC = 0;
+            }
+        }
+        if (D_80083228.unkC != 0) {
+            n = D_80083228.unkC;
+            if (size == 0) {
+                goto end;
+            }
+            if (n >= size) {
+                n = size;
+            }
+            func_8005CE04(buf, D_80083228.unk0, n);
+            buf += n >> 2;
+            size -= n;
+            D_80083228.unk0 = (Unk8005EBB4 *)((s32 *)D_80083228.unk0 + (n >> 2));
+            D_80083228.unkC -= n;
+            if (D_80083228.unkC == 0) {
+                func_8005658C((s32 *)&D_8007F970[D_80080A30[6]], &D_8007F970[D_80080A30[6]], D_80080A30[4], D_80080A30[7]);
+            }
+        }
+        if (size != 0) {
+            if (D_80083228.unk8 == 0) {
+                goto clear;
+            }
+            m = D_80083228.unk8;
+            if (m >= size) {
+                m = size;
+            }
+            size = m;
+            SpuSetTransferStartAddr(D_80083228.unk4);
+            func_80056644(buf, size);
+            D_80083228.unk4 += size;
+            D_80083228.unk8 -= size;
+            if (wait != 0) {
+                func_800566D0();
+            }
+        }
+    end:
+        if (D_80083230 == 0) {
+        clear:
+            D_80083158.unk0 &= ~1;
+        }
+    }
+    return D_80083230;
+}
 
 void func_80056028(s32 a, s32 b) {
     func_80055D80(a, b);
