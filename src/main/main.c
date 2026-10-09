@@ -4170,9 +4170,46 @@ void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002CF20);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D1AC);
+void func_8002D1AC(Window *w, s32 mode) {
+    w->unk28 = mode;
+    if (mode == 0 || mode == 4) {
+        w->unk14 = (w->unk4 + w->unk12 - 0x11) / w->unk12;
+        w->unk16 = (w->unk6 + w->unk12 - 0x11) / w->unk12;
+    } else if (mode == 1) {
+        w->unk14 = 0;
+        w->unk16 = (w->unk8.h + w->unk12 - 1) / w->unk12;
+    } else if (mode == 2) {
+        w->unk2C = (w->unk2A + w->unk12 - 9) / w->unk12;
+        w->unk2E = (w->unk4 - (w->unk2A + 0x18) + w->unk12 - 1) / w->unk12;
+        w->unk16 = (w->unk6 + w->unk12 - 0x11) / w->unk12;
+    } else if (mode == 3) {
+        w->unk1C = 0;
+    }
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D398);
+void func_8002D398(Window *w, s32 mode, s32 off) {
+    RECT *r = (RECT *)w;
+
+    if (w->unk1A != 4) {
+        w->unk28 = 2;
+        if (mode == 1 || mode == 3) {
+            off -= 0x10;
+        }
+        w->unk29 = mode;
+        w->unk2A = off;
+        w->unk2C = (off + w->unk10 - 9) / w->unk10;
+        w->unk2E = (r->w - (off + 0x18) + w->unk10 - 1) / w->unk10;
+        w->unk16 = (w->unk10 + r->h - 0x11) / w->unk10;
+        w->unk8.w = r->w - (w->unk2C + w->unk2E) * w->unk10;
+        w->unk8.h = r->h - w->unk16 * w->unk10;
+        w->unk8.x = r->x + w->unk2C * w->unk10;
+        if ((u32)(mode - 2) < 2) {
+            w->unk8.y = r->y + r->h - (s16)(w->unk8.h + 1);
+        } else {
+            w->unk8.y = r->y;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002D550);
 
@@ -11352,7 +11389,46 @@ void func_80058F34(AkaoChannel *c, u32 *out, u32 mask, u32 keep) {
     *out &= keep;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058F94);
+void func_80058F94(void) {
+    u32 out;
+    u32 keep;
+    u32 m;
+    u32 a;
+    u32 b;
+
+    a = 0;
+    out = 0;
+    keep = ~((D_80080A70.unk0 | D_80080A70.unk10) | D_80083174);
+    if (D_8007F790 != NULL) {
+        a = D_8007F790->unk18;
+        m = a & D_8007F790->unk8;
+        if (m != 0) {
+            func_80058F34(D_8007F71C, &out, m, keep);
+            D_8007F790->unk18 &= ~D_8007F790->unk8;
+            a &= ~D_8007F790->unk8;
+        }
+    }
+    b = D_80080A10->unk18;
+    m = b & D_80080A10->unk8;
+    if (m != 0) {
+        func_80058F34(D_8007BD48, &out, m, keep);
+        D_80080A10->unk18 &= ~D_80080A10->unk8;
+        b &= ~D_80080A10->unk8;
+    }
+    if (D_8007F790 != NULL && a != 0) {
+        func_80058F34(D_8007F71C, &out, a, keep);
+        D_8007F790->unk18 = 0;
+    }
+    if (b != 0) {
+        func_80058F34(D_8007BD48, &out, b, keep);
+        D_80080A10->unk18 = 0;
+    }
+    out |= D_80080A70.unkC;
+    D_80080A70.unkC = 0;
+    if (out != 0) {
+        func_800575D0(out);
+    }
+}
 
 void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
     u32 a;
