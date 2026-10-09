@@ -773,7 +773,111 @@ end:
     return st->unk0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AABC4);
+s32 func_800AABC4(s32 arg0, Unk800AA958 *arg1) {
+    s32 i;
+    Unk800AA958 *st;
+    Battle *b;
+    Unk800AA958Req *req;
+    s16 *h;
+    s16 *p;
+    s16 *q;
+    s16 *p2;
+    s32 k;
+    s32 sz;
+    s32 sz2;
+    s32 n;
+    s16 j;
+    s32 v;
+    void **pp;
+    FileEntry16 *f;
+
+    st = arg1;
+    b = D_8006794C->unk1C->unk8E4.battle;
+    req = (Unk800AA958Req *)&b->unk11C0->unkC[0x9FA0 / 4];
+    if (arg0 & 0x8000) {
+        b->unk0 &= ~4;
+        st->unk0 = 1;
+    }
+loop:
+    switch (st->unk0) {
+    case 2:
+        if (func_80022B18() != 0) {
+            goto end;
+        }
+        st->unk0 = arg1->unk2;
+        goto loop;
+    case 1:
+        h = (s16 *)arg1->unk10.h;
+        q = (s16 *)&arg1->unk10.h[3];
+        arg1->unk10.w[0] = -1;
+        arg1->unk10.w[1] = -1;
+        arg1->unk10.w[2] = 0;
+        arg1->unk10.w[3] = 0;
+        do {
+            *q = func_800ABA10(q - h, arg0 & ~0x10);
+            q--;
+        } while (q >= h);
+        st->unk0 = 5;
+        goto loop;
+    found:
+        req->unkC = b->unk153C[k];
+        goto done;
+    case 5:
+        h = (s16 *)arg1->unk10.h;
+        q = (s16 *)&arg1->unk10.h[3];
+        n = func_800AAEF0(0xA, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
+        if (n != -1) {
+            i = -1;
+            f = (FileEntry16 *)func_8001E218(0xA, *p);
+            p[0] = i;
+            p[4] = i;
+            arg1->unkA = p - h;
+            arg1->unk24 = b->unk153C[arg1->unkA];
+            req->unkC = 0;
+            if (func_800AAEF0(0xA, (u16 *)h, (u16 *)q, (u16 **)&p2, &sz2) != i) {
+                q = (s16 *)&arg1->unk10.h[7];
+                i = p2 - h;
+                h = (s16 *)&arg1->unk10.h[4];
+                do {
+                    if (*q != -1) {
+                        k = q - h;
+                        if (k != i) {
+                            goto found;
+                        }
+                    }
+                    q--;
+                } while (q >= h);
+            }
+        done:
+            if (req->unkC == 0) {
+                req->unkC = (s32)b->unk11C0->unkC;
+            }
+            req->unk0 = f->unk2 << 11;
+            req->unk4 = arg1->unk24;
+            req->unk8 = (sz - f->unk2) << 11;
+            func_80022CC4(D_8006794C->unk20 + n, req, 2, 0);
+            arg1->unk2 = 7;
+            st->unk0 = 2;
+        } else {
+            st->unk0 = 8;
+        }
+        goto end;
+    case 7:
+        j = arg1->unkA;
+        v = func_800AB07C(arg1, req, j, 1);
+        pp = &D_8006794C->unk1C->unk8E4.battle->unk1354->unk30[j];
+        *pp = (void *)v;
+        func_8001C750(v, 0);
+        st->unk0 = 5;
+        goto loop;
+    case 8:
+        st->unk0 = 0;
+    default:
+        goto end;
+    }
+end:
+    return st->unk0;
+}
 
 u32 func_800AAEF0(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
     u32 best = -1;
