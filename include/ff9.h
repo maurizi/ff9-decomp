@@ -3491,7 +3491,7 @@ extern u8 D_8006F310[];
 typedef struct {
     u8 pad0[0x10];
     s32 unk10;
-    u8 pad14[0x18 - 0x14];
+    u32 unk14;
     s32 unk18;
     u16 unk1C;
     u8 pad1E[0x20 - 0x1E];
