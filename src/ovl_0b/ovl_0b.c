@@ -1432,7 +1432,44 @@ s32 func_800B8664(BtlCalc *arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B87D0);
+void func_800B87D0(BtlCalc *arg0, u8 arg1) {
+    s32 r;
+
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+    }
+    r = ((*D_8007B720 << 8) | *D_8007B720++) % (((arg0->unk0->unk7A + arg0->unk0->unk31) >> 3) + 1);
+    arg0->unkE = arg0->unk0->unk74[5];
+    arg0->unk10 = arg0->unk4->unk6C;
+    switch (arg1) {
+    case 7:
+        arg0->unkE += arg0->unk0->unk7A;
+    case 1:
+        arg0->unk14 = arg0->unk0->unk31 + r;
+        break;
+    case 2:
+        arg0->unk14 = ((arg0->unk0->unk31 + arg0->unk0->unk33) >> 1) + r;
+        break;
+    case 3:
+        arg0->unk14 = ((arg0->unk0->unk31 + arg0->unk0->unk30) >> 1) + r;
+        break;
+    case 4:
+        arg0->unk14 = ((arg0->unk0->unk31 + arg0->unk0->unk32) >> 1) + r;
+        break;
+    case 5:
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+            }
+        }
+        arg0->unk14 = ((*D_8007B720 << 8) | *D_8007B720++) % arg0->unk0->unk31 + r;
+        break;
+    }
+}
 
 void func_800B8A24(BtlCalc *arg0) {
     u32 f = arg0->unk4->unk68;
