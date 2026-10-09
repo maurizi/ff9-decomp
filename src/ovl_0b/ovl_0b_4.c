@@ -138,4 +138,83 @@ void func_800C86C8(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C8A3C);
+/* padded: the next jump table is 8-aligned in its object */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
+
+void func_800C8A3C(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
+    u32 i;
+    BtlPrim *p;
+    u32 col;
+    u8 code;
+
+    i = 0;
+    if (!(arg0->unk0 & 0x10)) {
+    col = (b << 16) | ((g << 16) >> 8) | (s16)r;
+    p = (BtlPrim *)arg0->unk10;
+    if (arg0->unk8->unk3 != 0) {
+    do {
+        if (!(arg0->unk14 & (1 << i))) {
+        do {
+            code = p->tag.code;
+            if (code == 0xFF || code == 0xE1) {
+                p = (BtlPrim *)&p->w[2];
+                continue;
+            }
+            switch (code & 0x3C) {
+            case 0x2C:
+                p->w[1] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[10];
+                break;
+            case 0x24:
+                p->w[1] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[8];
+                break;
+            case 0x3C:
+                p->w[1] = col;
+                p->w[4] = col;
+                p->w[7] = col;
+                p->w[10] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[13];
+                break;
+            case 0x34:
+                p->w[1] = col;
+                p->w[4] = col;
+                p->w[7] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[10];
+                break;
+            case 0x38:
+                p->w[1] = col;
+                p->w[3] = col;
+                p->w[5] = col;
+                p->w[7] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[9];
+                break;
+            case 0x30:
+                p->w[1] = col;
+                p->w[3] = col;
+                p->w[5] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[7];
+                break;
+            case 0x28:
+                p->w[1] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[6];
+                break;
+            case 0x20:
+                p->w[1] = col;
+                p->tag.code = code;
+                p = (BtlPrim *)&p->w[5];
+                break;
+            }
+        } while (code != 0xFF);
+        }
+    } while (++i < arg0->unk8->unk3);
+    }
+    }
+}
