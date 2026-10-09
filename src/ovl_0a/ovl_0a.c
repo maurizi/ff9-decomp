@@ -2198,7 +2198,113 @@ void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 /* apply the field lights to the object colours */
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2D10);
+/* apply the field lights to the object colours */
+void func_800B2D10(FieldEvtCtx **arg0, s32 arg1) {
+    FieldScene *sc;
+    Unk800B3254 *lt;
+    FieldLight *amb;
+    FieldLight *dir;
+    FieldActorInfo *infos;
+    Unk800B3294 *def;
+    s32 i;
+    FieldEvtCtx *c;
+    s32 chg;
+    FieldActorInfo *info;
+    Unk800B3294 *l;
+    u32 shade;
+    FieldLight *fl;
+    s16 floor;
+    u32 a;
+    u32 b;
+    u32 col;
+    s32 dx;
+    s32 dy;
+    s32 j;
+    s32 k;
+    FieldActorInfo *inf2;
+
+    sc = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    lt = sc->unk1C;
+    if (lt == NULL || func_800B3254(lt) == NULL) {
+        return;
+    }
+    amb = NULL;
+    dir = NULL;
+    infos = sc->unk54;
+    def = (Unk800B3294 *)func_800B3294(lt, -1);
+    func_800B3300(lt, &amb, &dir);
+    for (i = arg1 - 1; i >= 0; i--) {
+        c = arg0[i];
+        chg = 0;
+        if (c == NULL) {
+            continue;
+        }
+        info = &infos[c->unkC->unk3B];
+        l = (Unk800B3294 *)func_800B3294(lt, c->unk4);
+        shade = c->unk0 & 4;
+        fl = func_800B3378(lt, c, &floor);
+        if ((u8)info->unk4 != (u8)floor || shade != (info->unk0 & 4) || !(c->unk0 & 0x100)) {
+            chg = 1;
+        }
+        if (chg) {
+            if (!(c->unk0 & 0x400)) {
+                b = 0;
+                if (l != NULL) {
+                    a = l->unk4;
+                } else {
+                    a = def->unk4;
+                }
+                if (shade && dir != NULL) {
+                    b = dir->unk4;
+                } else if (fl != NULL) {
+                    b = fl->unk4;
+                } else if (amb != NULL) {
+                    b = amb->unk4;
+                }
+                col = ((((a & 0xFF) + (b & 0xFF)) * 8) & 0xFF) | ((((a & 0xFF00) + (b & 0xFF00)) * 8) & 0xFF00)
+                    | ((((a & 0xFF0000) + (b & 0xFF0000)) * 8) & 0xFF0000) | 0x01000000;
+                info->unkC.w = col;
+                info->unk8.w = col;
+                c->unk0 |= 0x100;
+            }
+            if (l != NULL) {
+                dx = l->unk2;
+                dy = l->unk3;
+            } else {
+                dx = def->unk2;
+                dy = def->unk3;
+            }
+            if (fl != NULL) {
+                dx += fl->unk2;
+                dy += fl->unk3;
+            } else if (amb != NULL) {
+                dx += amb->unk2;
+                dy += amb->unk3;
+            }
+            dx *= 8;
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk2C[c->unkC->unk3B].unk0.unk0 = dx;
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk2C[c->unkC->unk3B].unk0.unk1 = dy * 14;
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk2C[c->unkC->unk3B].unk0.unk2 = dy * 12;
+        }
+        info->unk4 = floor;
+        info->unk0 = (info->unk0 & ~4) | shade;
+    }
+    for (i = arg1 - 1; i >= 0; i--) {
+        c = arg0[i];
+        if (c == NULL) {
+            continue;
+        }
+        inf2 = &infos[c->unkC->unk3B];
+        k = inf2->unk8.w;
+        if (k >> 24 != 0) {
+            for (j = ((Unk800C95C8 *)c->unk8)->unk8->unk3 - 1; j >= 0; j--) {
+                func_800B9E4C(c->unk8, j & 0xFF, (s16)(k & 0xFF), (s16)((k >> 8) & 0xFF), ((u32)k >> 16) & 0xFF);
+            }
+            inf2->unk8.w = inf2->unkC.w;
+            inf2->unkC.w = 0;
+        }
+    }
+}
 
 /* set the object's light colour */
 s32 func_800B31B8(FieldEvtCtx *arg0, s32 arg1, s32 arg2, s32 arg3) {
