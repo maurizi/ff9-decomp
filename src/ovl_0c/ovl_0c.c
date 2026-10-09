@@ -4061,7 +4061,44 @@ void func_800BD5D0(void) {
 void func_800BD66C(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BD674);
+/* initialise the texture list */
+void func_800BD674(void) {
+    u32 i;
+
+    D_800D3790 = 0;
+    D_800D3798[0].unk0 = &D_800D3758;
+    D_800D3798[0].unkC = &D_800D3AB8[0];
+    D_800D3798[0].unk4 = &D_800D3798[1];
+    D_800D3798[0].unk8 = NULL;
+    D_800D3798[0].unk12 = 0;
+    D_800D3798[0].unk10 = -1;
+    D_800D3798[0].unk13 = 0;
+    for (i = 1; i < 39; i++) {
+        D_800D3798[i].unk0 = &D_800D3798[i - 1];
+        D_800D3798[i].unk4 = &D_800D3798[i + 1];
+        D_800D3798[i].unk8 = NULL;
+        D_800D3798[i].unkC = NULL;
+        D_800D3798[i].unk12 = 0;
+        D_800D3798[i].unk10 = -1;
+        D_800D3798[i].unk13 = -1;
+    }
+    for (i = 1; i < 20; i++) {
+        D_800D3798[i].unkC = &D_800D3AB8[i];
+        D_800D3798[i].unk13 = i;
+    }
+    i = 39;
+    D_800D3798[i].unk0 = &D_800D3798[i - 1];
+    D_800D3798[i].unk4 = &D_800D3BF8;
+    D_800D3798[i].unk8 = NULL;
+    D_800D3798[i].unkC = NULL;
+    D_800D3798[i].unk12 = 0;
+    D_800D3798[i].unk10 = -1;
+    D_800D3798[i].unk13 = -1;
+    D_800D3758.unk0 = NULL;
+    D_800D3758.unk4 = &D_800D3798[0];
+    D_800D3BF8.unk4 = &D_800D3798[20];
+    D_800D3BF8.unk0 = NULL;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BD78C);
 
@@ -4570,7 +4607,38 @@ void func_800C1B00(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3, u8 arg4) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1C98);
+/* initialise the frame pack slot list */
+void func_800C1C98(void) {
+    u32 i;
+
+    D_800D3EC0[0].unk0 = &D_800D3EA8;
+    D_800D3EC0[0].unk4 = &D_800D3EC0[1];
+    D_800D3EC0[0].unkE = 0;
+    D_800D3EC0[0].unkC = -1;
+    D_800D3EC0[0].unk8 = D_800CE3E8[0];
+    for (i = 1; i < 5; i++) {
+        D_800D3EC0[i].unk0 = &D_800D3EC0[i - 1];
+        D_800D3EC0[i].unk4 = &D_800D3EC0[i + 1];
+        D_800D3EC0[i].unk8 = NULL;
+        D_800D3EC0[i].unkE = 0;
+        D_800D3EC0[i].unkC = -1;
+    }
+    for (i = 1; i < 3; i++) {
+        D_800D3EC0[i].unk8 = D_800CE3E8[i];
+    }
+    i = 5;
+    D_800D3EC0[i].unk0 = &D_800D3EC0[i - 1];
+    D_800D3EC0[i].unk4 = &D_800D3E98;
+    D_800D3EC0[i].unkC = -1;
+    D_800D3EC0[i].unk8 = NULL;
+    D_800D3EC0[i].unkE = 0;
+    D_800D3EA8.unk0 = NULL;
+    D_800D3EA8.unk4 = &D_800D3EC0[0];
+    D_800D3E98.unk4 = &D_800D3EC0[3];
+    D_800D3E90 = 0;
+    D_800D3E98.unk0 = NULL;
+    D_800D3EB8 = 0;
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7FF0);
 
