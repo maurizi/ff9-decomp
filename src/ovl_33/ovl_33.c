@@ -176,7 +176,38 @@ void func_801EF270(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF3A8);
+void func_801EF3A8(void) {
+    RECT sub;
+    MenuView view;
+    s32 row;
+    s32 col;
+    s32 idx;
+    MenuList *l;
+    RECT *r = &D_801FBF84.unk48;
+
+    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    func_8002B524(r->x + 0xE, r->y - 3, 0x1C, D_800703FC.unk4, 0);
+    func_8002B524(r->x + 0xA4, r->y - 3, 0x1C, D_800703FC.unk4, 0);
+    func_8002B524(r->x + 0x7C, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
+    func_8002B524(r->x + 0x112, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
+    func_8002E040(r, 0x1D, 1, l);
+    if (l->unk0 != 0) {
+        func_8002ECA0(l, &view);
+        func_8002D9B4(NULL, 0x1C, 1);
+        idx = view.unk1 * 2;
+        for (row = 0; row < view.unk0; row++) {
+            for (col = 0; col < 2; col++) {
+                func_801F0934(col, row, idx++, &view);
+            }
+        }
+        if (l->unk8 & 4) {
+            func_8002F40C(l, r, &sub);
+            func_8002D9B4(&sub, 0x1C, 1);
+            func_801F0890();
+        }
+        func_8002D9B4(r, 0x1C, 1);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF560);
 
@@ -560,9 +591,88 @@ INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F20A0);
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F239C);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F24EC);
+void func_801F24EC(void) {
+    s32 best;
+    s32 i;
+    s32 j;
+    s32 max;
+    s32 kind;
+    s32 cur;
+    Character *c;
+    UnkPair *p;
+    Unk80069018 *it;
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F26C4);
+    best = 0;
+    i = 0;
+    c = D_8006794C->unk1C->unk54C[D_801FC840.unk3];
+    kind = func_80033A1C(c);
+    for (; i < 5; i++) {
+        if (c->unk39[i] != 0xFF) {
+            cur = D_80069018[c->unk39[i]].unkA;
+        } else {
+            cur = -1;
+        }
+        for (j = 0, max = -1, p = D_8006794C->unk1C->unk574; j < 0x100; j++, p++) {
+            if (p->unk1 != 0) {
+                it = &D_80069018[p->unk0];
+                if ((it->unkF & D_801F8948[i]) && (it->unk6 & D_801F8950[kind])) {
+                    if (it->unkA > max) {
+                        max = it->unkA;
+                        best = p->unk0;
+                    }
+                }
+            }
+        }
+        if (cur < max) {
+            if (c->unk39[i] != 0xFF) {
+                func_80027D84(c->unk39[i], 1);
+            }
+            if (func_80027E5C(best, 1) != 0) {
+                c->unk39[i] = best;
+            }
+        }
+    }
+    func_801F32E0(c);
+    func_8002F488(0x6B);
+}
+
+void func_801F26C4(Character *c) {
+    s32 i;
+    s32 j;
+    AbilityEntry *a;
+    Unk80069018 *it;
+    s32 id;
+
+    if (func_80034A30(c)) {
+        func_8001D898(D_801FC700, 0, 0x40);
+        for (i = 0; i < 5; i++) {
+            if (c->unk39[i] != 0xFF) {
+                it = &D_80069018[c->unk39[i]];
+                for (j = 0; j < 3; j++) {
+                    id = it->unkC[j];
+                    if (id != 0) {
+                        if (id >= 0xC0) {
+                            D_801FC700[id - 0xC0] = 1;
+                        }
+                    }
+                }
+            }
+        }
+        a = D_8006CB28[(c->unk34 >> 12) & 0x1F];
+        for (i = 0; i < 0x30; i++, a++) {
+            if (a->unk0 >= 0xC0 && func_800349BC(c->unk34 & 0xF, a->unk0)) {
+                if (D_801FC700[a->unk0 - 0xC0] == 0 && c->unk58[i] < a->unk1) {
+                    func_8003493C(c->unk34 & 0xF, a->unk0, 0);
+                    if (c->unk1F - c->unk17 >= D_8006D128[a->unk0 - 0xC0].unk1) {
+                        c->unk17 += D_8006D128[a->unk0 - 0xC0].unk1;
+                    } else {
+                        c->unk17 = c->unk1F;
+                    }
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F2894);
 
@@ -750,7 +860,7 @@ void func_801F3278(s32 slot, s32 dir) {
 }
 
 void func_801F32E0(Character *c) {
-    func_801F26C4();
+    func_801F26C4(c);
     func_8003384C(c);
     c->unk34 = (c->unk34 & ~0x1F0) | ((func_80033280(c->unk34 & 0xF, (c->unkA >> 4) & 1, c->unk39) & 0x1F) << 4);
 }

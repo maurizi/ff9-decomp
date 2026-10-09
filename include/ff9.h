@@ -351,10 +351,10 @@ typedef struct {
     u16 unk0; /* name offset into D_8006A218 */
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
-    u8 pad6[2];
+    u16 unk6; /* who can equip (mask) */
     u8 unk8; /* kind (icon) */
     u8 unk9; /* icon palette */
-    u8 padA;
+    u8 unkA; /* equip rank */
     u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
@@ -1347,7 +1347,9 @@ typedef struct {
     s32 unk4;
     u8 pad8[0x68 - 8];
     s32 unk68;
-    u8 pad6C[0x88 - 0x6C];
+    u8 pad6C[0x7C - 0x6C];
+    s32 unk7C;
+    u8 pad80[0x88 - 0x80];
     s32 unk88;
     u8 pad8C[0x94 - 0x8C];
     s32 unk94;

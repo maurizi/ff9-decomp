@@ -120,6 +120,11 @@ void func_801F3264(void);
 void func_801F3278(s32, s32);
 void func_801EF900(s32, s32);
 void func_801F0ED4(void);
+void func_801F0890(void);
+s32 func_80033A1C(Character *); /* main exe (returns u8) */
+extern u8 D_801FC700[0x40];
+extern u8 D_801F8948[5]; /* slot masks */
+extern u16 D_801F8950[]; /* character masks */
 void func_801F0EE4(void);
 void func_801F1148(void);
 void func_801F301C(void);
@@ -168,7 +173,7 @@ void func_801F189C(void);
 void func_801F1A94(void);
 void func_801F1F08(void);
 void func_801F239C(void);
-void func_801F26C4(void);
+void func_801F26C4(Character *);
 void func_801F2C78(void);
 void func_801F2CD0(void);
 void func_801F2D18(void);
