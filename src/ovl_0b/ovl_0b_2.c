@@ -3402,7 +3402,38 @@ void func_800E9578(void) {
     p->unk0 = n;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E9638);
+s32 func_800E9638(s32 arg0) {
+    Unk80104E30Entry *best = NULL;
+    s32 bestbit = 0;
+    s32 max = -1;
+    s32 bit = 1;
+    Unk80104E30 *p = &D_80104E30;
+    Unk80104E30Entry *e = p->unk4;
+    s32 i;
+    for (i = 0; i < 6; i++, e++, bit <<= 1) {
+        if (e->unk0 == 0) {
+            break;
+        }
+        if (max < e->unk2) {
+            max = e->unk2;
+            best = e;
+            bestbit = bit;
+        }
+    }
+    if (i >= 6) {
+        bit = bestbit;
+        e = best;
+    }
+    if (func_8005553C(bit) != 0) {
+        func_8005546C(0, bit);
+    }
+    if (e != NULL) {
+        e->unk0 = bit;
+        e->unk4 = arg0;
+        e->unk2 = 0;
+    }
+    return bit;
+}
 
 void func_800E970C(void) {
     func_8005546C(0, 0x3F);
