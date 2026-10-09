@@ -142,7 +142,7 @@ void func_800C316C(s32 arg) {
         case 2:
             switch ((*t >> 12) & 3) {
             case 0:
-                n = D_8006794C->unk1C->unk8E4.battle->unk132C & 3;
+                n = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                 if (n == 2) {
                     D_800FE3B8.unkA8 = n;
                 } else {
@@ -182,7 +182,7 @@ void func_800C316C(s32 arg) {
                 } else if ((D_800FE3B8.unkCC->unk3C & 0x40001103) || !((D_800FDF30.unkA >> ((u8)D_800FE3B8.unkCC->unk68 >> 5)) & 1)) {
                     D_800FE3B8.unkA8 = 0;
                 } else {
-                    n = D_8006794C->unk1C->unk8E4.battle->unk132C & 3;
+                    n = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                     if (n == 2) {
                         D_800FE3B8.unkA8 = n;
                     } else {
@@ -405,7 +405,7 @@ s32 func_800C37BC(void) {
     if (e == 1) {
         b = D_8006794C->unk1C->unk8E4.battle;
         if ((b->unkD85 & 7) == 7) {
-            if ((b->unk132C >> 2) & 1) {
+            if ((b->unk132C.unk0 >> 2) & 1) {
                 b->unkD80 = e;
             } else {
                 D_8006794C->unk1C->unk8E4.battle->unkD80 = 3;
@@ -696,8 +696,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n == 0xB) {
         gs = D_8006794C;
-        arg1[0] = gs->unk1C->unk8E4.battle->unk1330->unk8[0].unk4;
-        arg1[2] = gs->unk1C->unk8E4.battle->unk1330->unk8[0].unk8;
+        arg1[0] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk4;
+        arg1[2] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk8;
         return;
     }
     s = D_800FE488.unk46;
@@ -782,7 +782,60 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C52B4);
+void func_800C52B4(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2) {
+    VECTOR d;
+    VECTOR x;
+    VECTOR y;
+    VECTOR z;
+    VECTOR up;
+    MATRIX m;
+    SVECTOR r;
+
+    up.vx = 0;
+    up.vy = -30000;
+    up.vz = 0;
+    d.vx = arg2->vx - arg1->vx;
+    d.vy = arg2->vy - arg1->vy;
+    d.vz = arg2->vz - arg1->vz;
+    VectorNormal(&d, &z);
+    if (z.vz == up.vz) {
+        z.vz++;
+    }
+    gte_ldopv1(&z);
+    gte_ldopv2(&up);
+    gte_op12();
+    gte_stlvnl(&d);
+    VectorNormal(&d, &x);
+    gte_ldopv1(&z);
+    gte_ldopv2(&x);
+    gte_op12();
+    gte_stlvnl(&d);
+    VectorNormal(&d, &y);
+    arg0->m[0][0] = x.vx;
+    arg0->m[0][1] = x.vy;
+    arg0->m[0][2] = x.vz;
+    arg0->m[1][0] = y.vx;
+    arg0->m[1][1] = y.vy;
+    arg0->m[1][2] = y.vz;
+    arg0->m[2][0] = z.vx;
+    arg0->m[2][1] = z.vy;
+    arg0->m[2][2] = z.vz;
+    gte_SetRotMatrix(arg0);
+    gte_ldv0(arg1);
+    gte_rtv0();
+    gte_stlvnl(arg0->t);
+    arg0->t[0] = -arg0->t[0];
+    arg0->t[1] = -arg0->t[1];
+    arg0->t[2] = -arg0->t[2];
+    r.vx = 0;
+    r.vy = 0;
+    r.vz = arg1->pad;
+    func_80030AF4(&r, &m);
+    m.t[0] = 0;
+    m.t[1] = 0;
+    m.t[2] = 0;
+    CompMatrix(&m, arg0, arg0);
+}
 
 void func_800C5530(SVECTOR *arg0, SVECTOR *arg1) {
     s32 a, b;

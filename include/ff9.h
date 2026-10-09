@@ -224,7 +224,7 @@ typedef struct {
     Character unk3C[9];
     Character *unk54C[4]; /* party */
     u16 unk55C;
-    s16 unk55E;
+    u16 unk55E;
     u32 unk560; /* gil, capped at 9999999 */
     u8 pad564[0x568 - 0x564];
     s16 unk568;
@@ -1967,7 +1967,7 @@ s32 func_80048F54(void);
 void func_8004FBD8(void);
 void func_8004FE0C(void);
 
-s16 func_800BEC64(s32); /* overlay code at 0x800BEC64 */
+u16 func_800BEC64(u32); /* overlay code at 0x800BEC64 */
 void func_800363BC(void);
 void func_80036444(void);
 void func_80036528(void);
@@ -2267,7 +2267,7 @@ void func_80033AF4(s32, s32);
 
 
 /* ---- hoisted for the world map (ovl_0c) ---- */
-void func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
+s32 func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
 extern s32 D_80073990;
 void func_80019194(void);
 void func_80032098(void);

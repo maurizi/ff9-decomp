@@ -208,6 +208,14 @@ typedef struct {
 } LINE_F2;
 
 typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 r1, g1, b1, p1;
+    s16 x1, y1;
+} LINE_G2;
+
+typedef struct {
     u8 minute, second, sector, track;
 } CdlLOC;
 
@@ -367,6 +375,7 @@ typedef struct {
 } SPRT_8;
 long SquareRoot0(long a);
 void SetGeomOffset(long ofx, long ofy);
+void ReadGeomOffset(long *ofx, long *ofy);
 typedef struct {
     s16 vx, vy;
 } DVECTOR;
@@ -384,6 +393,18 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "ctc2\t$13, $3;" \
     "ctc2\t$14, $4" \
     : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetLightMatrix(r0) __asm__ volatile( \
+    "lw\t$12, 0(%0);" \
+    "lw\t$13, 4(%0);" \
+    "ctc2\t$12, $8;" \
+    "ctc2\t$13, $9;" \
+    "lw\t$12, 8(%0);" \
+    "lw\t$13, 12(%0);" \
+    "lw\t$14, 16(%0);" \
+    "ctc2\t$12, $10;" \
+    "ctc2\t$13, $11;" \
+    "ctc2\t$14, $12" \
+    : : "r"(r0) : "$12", "$13", "$14")
 #define gte_SetTransMatrix(r0) __asm__ volatile( \
     "lw\t$12, 20(%0);" \
     "lw\t$13, 24(%0);" \
@@ -392,6 +413,15 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "ctc2\t$13, $6;" \
     "ctc2\t$14, $7" \
     : : "r"(r0) : "$12", "$13", "$14")
+#define gte_ldtr(r0, r1, r2) __asm__ volatile( \
+    "ctc2\t%0, $5;" \
+    "ctc2\t%1, $6;" \
+    "ctc2\t%2, $7" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldtr0() __asm__ volatile( \
+    "ctc2\t$0, $5;" \
+    "ctc2\t$0, $6;" \
+    "ctc2\t$0, $7")
 #define gte_SetGeomScreen(r0) __asm__ volatile( \
     "ctc2\t%0, $26" \
     : : "r"(r0))
@@ -509,13 +539,43 @@ void SetLightMatrix(MATRIX *m);
 void SetColorMatrix(MATRIX *m);
 MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
 void SetRotMatrix(MATRIX *m);
+MATRIX *ScaleMatrix(MATRIX *m, VECTOR *v);
 VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
 VECTOR *ApplyMatrix(MATRIX *m, SVECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
+void SetLineG2(LINE_G2 *p);
+void SetDrawStp(DR_STP *p, int pbw);
+void PushMatrix(void);
+void PopMatrix(void);
+long RotTransPers(SVECTOR *v0, long *sxy, long *p, long *flag);
 void SetPolyFT4(POLY_FT4 *p);
 void SetPolyF4(POLY_F4 *p);
 void SetPolyF3(POLY_F3 *p);
 void SetPolyG3(POLY_G3 *p);
 void SetPolyG4(POLY_G4 *p);
+
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DR_MODE;
+
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DR_AREA;
+
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DR_OFFSET;
+
+void SetDrawOffset(DR_OFFSET *p, s16 *ofs);
+void SetDrawArea(DR_AREA *p, RECT *r);
+s32 BreakDraw(void);
+s32 IsIdleGPU(s32 max);
+void GetDrawEnv2(DR_ENV *p);
+void ContinueDraw(u32 *insaddr, s32 contaddr);
+
+MATRIX *MulRotMatrix(MATRIX *m0);
 
 #endif
