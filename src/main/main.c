@@ -7412,7 +7412,19 @@ u8 *func_80050BE0(Unk8007BC20Node *buf) {
     return (u8 *)p + 0x4560;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80050CA8);
+void func_80050CA8(s32 a, u32 b) {
+    if (a != 0 && b != 0) {
+        Unk8007BC20 *p = &D_8007BC20;
+
+        if (a < 0x83) {
+            p->unk8 = a;
+        } else {
+            p->unk8 = 0x82;
+        }
+    }
+    D_8007BC20.unkC = b * 16;
+    D_8007BC20.unk24 = a == 0 && b != 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", GetTPage);
 
@@ -7439,7 +7451,19 @@ u8 *func_80050E34(Unk8007BC20Node *buf) {
     return (u8 *)p;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80050EFC);
+void func_80050EFC(s32 a, u32 b) {
+    if (a != 0 && b != 0) {
+        Unk8007BC20 *p = &D_8007BC50;
+
+        if (a < 0x83) {
+            p->unk8 = a;
+        } else {
+            p->unk8 = 0x82;
+        }
+    }
+    D_8007BC50.unkC = b * 16;
+    D_8007BC50.unk24 = a == 0 && b != 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80050F4C);
 
