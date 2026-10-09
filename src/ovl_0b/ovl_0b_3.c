@@ -296,7 +296,34 @@ void func_800CA530(BtlCmd *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CA5AC);
+Battle122C *func_800CA5AC(BtlCmd *arg0) {
+    Battle122C *e = D_8006794C->unk1C->unk8E4.battle->unk11C4.unk68;
+    GameState *g;
+    s16 i;
+    for (i = 0; i < 4; i++, e++) {
+        if (e->unk4 == NULL) {
+            break;
+        }
+    }
+    if (i < 0) {
+        return NULL;
+    }
+    g = D_8006794C;
+    e->unk0 = 0;
+    e->unk4 = arg0;
+    e->unk8 = g->unk1C->unk8E4.battle->unk11C4.unk8[arg0->unkF];
+    e->unkC = 0;
+    e->unk10 = 0;
+    e->unk12 = 0;
+    e->unk14 = 0;
+    e->unk16 = g->unk1C->unk8E4.battle->unk11C4.unk4[arg0->unkF];
+    e->unk17 = 0;
+    e->unk21 = 0;
+    e->unk25 = 0;
+    e->unk26 = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk131C = 0;
+    return e;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CA694);
 
