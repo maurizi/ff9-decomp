@@ -361,7 +361,9 @@ typedef struct {
 
 typedef struct {
     u8 unk0;
-    u8 pad1[0x38 - 1];
+    u8 pad1[0x24 - 1];
+    u8 unk24;
+    u8 pad25[0x38 - 0x25];
 } Unk800C9DA4Trk; /* 0x38 */
 
 typedef struct {

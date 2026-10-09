@@ -1324,8 +1324,8 @@ void func_800AEADC(void) {
     s32 j;
 
     D_800CE3DC = &D_800CE210;
-    D_800CE3D8 = 0;
-    D_800CE3D0 = 0;
+    D_800CE3D8 = NULL;
+    D_800CE3D0 = NULL;
     D_800CE268 = 0;
     D_800CE270 = 0;
     D_800CE3C4 = -1;

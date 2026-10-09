@@ -132,7 +132,8 @@ typedef struct {
     u8 unkA;
     u8 unkB;
     u8 unkC;
-    u8 padD[4];
+    u8 padD[3];
+    u8 unk10;
     u8 unk11;
     u8 pad12[2];
     u8 unk14[8]; /* allowed cell types */
@@ -946,7 +947,7 @@ extern s32 D_800CE3C0;
 extern u16 D_800CE3CC;
 extern Unk8004AB64 *D_800CE3D0;
 extern s32 D_800CE3D4;
-extern s32 D_800CE3D8;
+extern Unk8004AB64 *D_800CE3D8;
 extern s32 D_800CE3E0;
 
 extern u8 D_800CCE49;
