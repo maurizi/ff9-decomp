@@ -58,6 +58,7 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 - `D_8006794C` is the main game-state pointer (`GameState` in `include/ff9.h`); `->unk1C` points to a large `GameData` block.
 
 ## Parallel agents (worktrees)
+- **Memory safety:** a host-side Python script once grew to 50 GB and the kernel's OOM killer took down the whole Claude Code session. Run analysis/search scripts inside Docker (`tools/docker.sh python3 ...`, capped at 8 GB by docker.sh), never as long-running host processes. If something must run on the host, prefix it with `ulimit -v 4000000;` (4 GB). Bound any search you write (no unbounded permutations/products held in memory).
 - In a new worktree, run `tools/worktree_setup.sh /path/to/main/checkout` before anything else. It copies the game binaries and submodule checkouts in and splits; Docker only mounts the worktree.
 - Each agent owns specific binaries and edits only `src/<its binaries>/`, `include/ovl_XX.h` for those overlays, and scratch files under `build/`. Only the agent assigned to `main` edits `src/main/`, `include/ff9.h` and `include/psyq.h`. Nobody else edits configs, tools, `CLAUDE.md` or other agents' files.
 - An overlay that needs main-exe or PsyQ declarations missing from `ff9.h`/`psyq.h` declares them in its own `ovl_XX.h` under a `/* main exe: candidates for ff9.h */` heading. The coordinator hoists them later.

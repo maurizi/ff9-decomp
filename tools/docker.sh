@@ -14,4 +14,5 @@ fi
 TTY=()
 [ -t 0 ] && [ -t 1 ] && TTY=(-it)
 
-exec docker run --rm --init "${TTY[@]}" -u "$(id -u):$(id -g)" -v "$ROOT:/ff9" -w /ff9 "$IMAGE:$HASH" "${@:-bash}"
+# Cap memory so a runaway job (permuter, analysis script) cannot take down the host.
+exec docker run --rm --init --memory=8g --memory-swap=8g "${TTY[@]}" -u "$(id -u):$(id -g)" -v "$ROOT:/ff9" -w /ff9 "$IMAGE:$HASH" "${@:-bash}"
