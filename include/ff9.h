@@ -710,7 +710,7 @@ typedef struct {
     s16 unkBA;
     s16 unkBC;
     u16 unkBE;
-    s16 unkC0;
+    u16 unkC0;
     s16 unkC2;
     u16 unkC4;
     u16 unkC6;
