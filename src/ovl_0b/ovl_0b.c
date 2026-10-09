@@ -898,7 +898,86 @@ void func_800AF1D0(void) {
     func_80021974(func_80021CFC(), 0, 0x2713, (s32)dst, size, size, f->unk4, size);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF2E0);
+s32 func_800AF2E0(void) {
+    GameData *g = D_8006794C->unk1C;
+    Battle *b = g->unk8E4.battle;
+    BtlUnit *u;
+    u16 id;
+    s32 n;
+
+    func_800C3770();
+    switch (b->unkD80) {
+    case 2:
+        func_800B0060(g, b);
+        break;
+    case 1:
+        func_800AF578(g, b);
+        break;
+    case 3:
+        if ((u8)func_800AF578(g, b)) {
+            b->unkD80 = 4;
+            b->unkD86 = 0;
+            b->unkD7C &= 0xF;
+            for (u = b->unk6F8; u != NULL; u = u->unk0) {
+                if (!(u->unk68 & 1) && (id = func_800CA378()) != 0xFFFF) {
+                    func_800C22CC(u, id, 0x7F);
+                    break;
+                }
+            }
+            if (D_8007AFB1 == 0) {
+                func_800E9F3C(1);
+                func_800E9F68(1);
+            }
+            n = b->unk132C.unk0 & 3;
+            if (n == 0) {
+                func_800CD5C8(2);
+            } else if (n == 1) {
+                func_800CD5C8(1);
+            }
+        }
+        break;
+    case 4:
+        func_800B0468(g, b);
+        break;
+    case 5:
+        func_800E9F68(0);
+        func_800AF800(g, b);
+        if (b->unkD81 != 3) {
+            b->unkD83 = 0;
+        }
+        break;
+    case 6:
+        func_800AF578(g, b);
+        if (b->unkD81 == 1) {
+            func_8002FAAC(0x20);
+            b->unkD81++;
+        } else if (b->unkD81 == 2) {
+            if (b->unkD82++ > 0x20) {
+                return (u8)func_800C1794(b);
+            }
+        }
+        break;
+    case 7:
+    case 8:
+        if ((u8)func_800AF578(g, b)) {
+            g->unk56F |= 0x40;
+            if (b->unkD81 == 0) {
+                if (g->unk56E != 5) {
+                    func_8002FAAC(0x20);
+                }
+                b->unkD81++;
+            } else if (b->unkD81 == 1) {
+                if (b->unkD82++ > 0x20) {
+                    return (u8)func_800C1794(b);
+                }
+            }
+        }
+        break;
+    }
+    func_8004BC38();
+    b->unkD7C++;
+    return 0;
+}
 
 s32 func_800AF578(GameData *arg0, Battle *arg1) {
     BtlUnit *u = arg1->unk6F8;
