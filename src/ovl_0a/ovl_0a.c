@@ -3272,7 +3272,70 @@ s32 func_800BD724(void) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD884);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BDC44);
+s32 func_800BDC44(void) {
+    SVECTOR v;
+    s32 sxy;
+    Unk800CA068 *st;
+    Unk800C9DB4 *bg;
+    Unk800C9DB4Obj *objs;
+    Unk800C9DB4Obj *o;
+    Unk8004AB64 *a;
+    FieldFade *f;
+    u8 i;
+    u8 mode;
+    u16 sx;
+    u16 sy;
+    s16 y;
+    s16 x;
+
+    if (D_800C9DA0 == 0) {
+        return 0;
+    } else {
+        st = &D_800CA068;
+        bg = D_800C9DB4;
+        objs = (Unk800C9DB4Obj *)((u8 *)bg + bg->unk10);
+        mode = D_8006794C->unk8;
+        if (mode == 5) {
+            a = (Unk8004AB64 *)D_8006794C->unk1C->unk8E0[D_8006794C->unk1C->unk8E4.field->unk8].unkC;
+        } else if (mode == 1) {
+            a = func_8004AE00();
+        } else {
+            a = NULL;
+        }
+        if (a != NULL) {
+            v.vx = a->unk14.vx;
+            v.vy = a->unk14.vy - D_800CA068.unk76;
+            v.vz = a->unk14.vz;
+        } else {
+            v.vx = 0;
+            v.vy = 0;
+            v.vz = 0;
+        }
+        func_800C0F08();
+        gte_SetRotMatrix(D_800CA068.unk1C);
+        gte_SetTransMatrix(D_800CA068.unk1C);
+        gte_SetGeomScreen(*D_800CA068.unk20);
+        gte_ldv0(&v);
+        gte_rtps();
+        gte_stsxy(&sxy);
+        sx = sxy;
+        sy = sxy >> 16;
+        f = D_800CA140;
+        for (i = 0; i < D_800C9DA0; i++, f++) {
+            o = (Unk800C9DB4Obj *)((u16)f->unk4 * sizeof(Unk800C9DB4Obj) + (u32)objs);
+            if ((o->unk0 & 2) && o->unk24 == st->unk75) {
+                x = st->unk4.unk0 + (sx - bg->unk24 - (f->unk6 + 0xA0));
+                y = f->unk8;
+                o->unkC = x;
+                o->unkE = st->unk4.unk2 + (sy - bg->unk24 - (y + 0x70));
+                if (f->unk0 >= 0) {
+                    func_800BD884(bg, o, st, f);
+                }
+            }
+        }
+        return 1;
+    }
+}
 
 s32 func_800BDED4(u8 *arg0, BgSprt **arg1) {
     Unk800C9DA4Hdr *h;
