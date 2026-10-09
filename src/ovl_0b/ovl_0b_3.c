@@ -1099,7 +1099,31 @@ Unk800CC278 *func_800CC3E0(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
     return p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC444);
+/* Packs n (< 9999) as decimal digits, one per nibble, with the digit count in bits 16+. */
+s32 func_800CC444(u32 n) {
+    u32 r = 0;
+    u16 d;
+    u16 i;
+    u32 t;
+    do {
+        if (n >= 9999) {
+            return 0x49999;
+        }
+        for (i = 3; i != 0; i--) {
+            d = 0;
+            if (n >= D_800F6A74[i]) {
+                d = n / D_800F6A74[i];
+                n = n % D_800F6A74[i];
+            }
+            r = (r << 4) | d;
+        }
+        r = (r << 4) | n;
+    } while (0);
+    for (i = 1, t = r >> 4; t != 0; t >>= 4) {
+        i++;
+    }
+    return r | (i << 16);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC4F0);
 
