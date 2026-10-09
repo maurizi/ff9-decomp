@@ -10088,7 +10088,39 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetDrawMove);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", ScaleMatrix);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054A28);
+s32 func_80054A28(Unk8007BD44 *t) {
+    u32 max;
+    u32 *pm = &max;
+    u16 *r;
+    s32 i;
+    s32 j;
+    Unk8007BD44 *c;
+
+    D_8007BD38.unk0 = 1;
+    D_8007BD38.unk6 = 0x100;
+    D_8007BD38.unk8 = 0;
+    D_8007BD38.unkC = t;
+    D_8007BD38.unk2 = 0;
+    *pm = 0;
+    r = (u16 *)((u8 *)t + t->unk6);
+    for (i = 0; i < t->unk4; r += 6, i++) {
+        func_80054A28_max(pm, r[2]);
+        func_80054A28_max(pm, r[3]);
+    }
+    D_8007BD38.unk4 = max - 1;
+    c = D_8007BD38.unkC;
+    for (j = 0; j < c->unk4; j++) {
+        func_80054E88(j, 0, 0);
+        func_80054E88(j, 1, 0);
+    }
+    func_80054E88(0, 0, 1);
+    func_80054E88(0, 1, 1);
+    D_800739B0[0].unk0 = 0;
+    D_800739B0[0].unk1 = 0;
+    D_800739B0[1].unk0 = 0;
+    D_800739B0[1].unk1 = 0;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054B78);
 

@@ -3333,7 +3333,7 @@ void func_800240F8(u8);
 void func_8004BA20(SVECTOR *, s32 *, s32 *);
 s32 func_80054FB8(s32);
 s32 func_80054FE0(s32);
-void func_80054E88(s32, s32, s32);
+s32 func_80054E88(s32, s32, s32);
 s32 func_80055060(s32, s32, s32);
 s32 func_800550C0(s16);
 s32 func_800550D0(s32);
@@ -3453,6 +3453,14 @@ static inline s32 func_80023784_remap(s32 k) {
         return (c[1] >> (k * 4)) & 0xF;
     }
     return k;
+}
+
+
+/* Inlined max helper of func_80054A28 (keeps the running maximum in memory). */
+static inline void func_80054A28_max(u32 *m, u32 v) {
+    if (*m < v) {
+        *m = v;
+    }
 }
 
 #endif
