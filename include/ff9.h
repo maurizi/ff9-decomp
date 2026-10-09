@@ -703,7 +703,7 @@ typedef struct {
     u16 unkF8;
     s16 unkFA;
     s16 unkFC;
-    u8 padFE[0x100 - 0xFE];
+    s16 unkFE;
     u16 unk100;
     u8 pad102[0x104 - 0x102];
     s16 unk104;
