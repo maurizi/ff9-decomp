@@ -418,7 +418,20 @@ s32 func_800CAEC4(BtlScript *arg0, BtlUnit *arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CAF90);
+void func_800CAF90(BtlScript *arg0, BtlUnit *arg1) {
+    s32 *v;
+    s16 i;
+    s16 *p = arg0->unk28;
+    p[7] = 2;
+    arg0->unk10 = 1;
+    p[6] = arg0->unk8[1];
+    for (i = 0; i < 3; i++) {
+        s16 *q = p + i;
+        q[0] = arg1->unk8C[i] >> 16;
+        v = arg1->unk98->unk0;
+        q[3] = v[i] >> 16;
+    }
+}
 
 void func_800CB008(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;
