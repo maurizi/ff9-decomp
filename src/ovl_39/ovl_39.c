@@ -27,7 +27,24 @@ void func_801F4664(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4760);
+void func_801F4760(void) {
+    s32 i;
+    s32 ok;
+    u8 *str;
+    u8 s;
+
+    func_8002DEE4(&D_801FAFE0, 0x34, 2);
+    func_8002705C(&D_801FAFE0, 0x34, 2);
+    for (i = 0; i < 2; i++) {
+        str = func_80035774(i + 3);
+        ok = 0;
+        s = D_801FB1A8.unk4[i];
+        if (s == 0 || s == 3) {
+            ok = 1;
+        }
+        func_8002B5FC(D_801FAFE0.x + 10, D_801FAFE0.y + 10 + i * 18, 0x33, str, (ok ^ 1) * 2);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4840);
 
@@ -39,7 +56,40 @@ INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4B18);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4E00);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4F30);
+void func_801F4F30(void) {
+    MenuList *l = &D_801FB1A8.unk24;
+    s32 v;
+    s32 dec;
+
+    if (D_801FB1A8.unk4[D_80077DB2] != 0) {
+        func_801F77A8(0x2D);
+        return;
+    }
+    if (l->unk8 != 0) {
+        if (!(l->unk8 & 4)) {
+            dec = l->unk8 & 2;
+            l->unk9 += 6;
+            if (l->unk9 >= 0x3C) {
+                v = l->unk5;
+                if (dec) {
+                    v--;
+                } else {
+                    v++;
+                }
+                l->unk5 = v;
+                l->unk8 = 0;
+                l->unk9 = 0;
+            }
+        } else {
+            l->unk9 += 9;
+            if (l->unk9 >= 0xB4) {
+                l->unk8 = 0;
+                l->unk9 = 0;
+                l->unk5 = l->unkC;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F500C);
 
@@ -296,7 +346,22 @@ INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5E90);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5FE4);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F60DC);
+void func_801F60DC(Window *w) {
+    u32 a = func_8003579C(0x21);
+    u32 b = func_8003579C(0x22) & 0xFFF;
+    s32 z;
+
+    if (b < (a & 0xFFF)) {
+        b = a & 0xFFF;
+    }
+    if (w->unk1C == 3) {
+        D_80077DE8.unk0 = w->unk0 + ((s32)(w->unk4 - b) >> 1) - 0x1A;
+        D_80077DE8.unk2 = w->unk2 + (s16)(w->unk6 + (s16)(D_801FBEE0.unk1 * 15 - 0x26)) + 3;
+        z = w->unk18;
+        D_80077DE8.unk4 = z;
+        func_800270EC(D_80077DE8.unk0, D_80077DE8.unk2, z - 1);
+    }
+}
 
 void func_801F61B0(void) {
     D_801FBEE0.unk0 = 0;
