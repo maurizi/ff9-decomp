@@ -581,7 +581,10 @@ typedef struct {
 typedef struct {
     Battle4880 *unk0;
     u32 unk4;
-    s32 unk8;
+    union {
+        s32 w;
+        u8 b[4]; /* item drops, -1 = none */
+    } unk8;
     u8 padC[0x18 - 0xC];
 } Battle488; /* 0x18 */
 
@@ -2205,6 +2208,7 @@ void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void func_8005562C(s32);
 void func_800D0940(void);
 extern u8 D_800F6FB8[];
+extern u8 D_800A7C20[]; /* "/\xFF" suffix string */
 void func_800F4F04(s32, s32);
 void func_800F4F44(s32, s32);
 s32 func_800F4FC8(void);
