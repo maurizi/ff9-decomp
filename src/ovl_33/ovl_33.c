@@ -564,7 +564,21 @@ Icon *func_801F0F90(s32 i) {
     return &D_801F3494[i];
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0FA4);
+s32 func_801F0FA4(MenuList *l) {
+    s32 r, t;
+    s32 step;
+
+    if (l->unk8 & 8) {
+        t = l->unk7 ^ 1;
+        step = 1;
+        r = l->unk6;
+        if (l->unk8 & 2) {
+            return (l->unk5 + (r - step)) * 2 + t;
+        }
+        return (l->unk5 + (r + step)) * 2 + t;
+    }
+    return (l->unk5 + l->unk6) * 2 + l->unk7;
+}
 
 s32 func_801F1018(Unk801F34EC *p) {
     s32 v;
