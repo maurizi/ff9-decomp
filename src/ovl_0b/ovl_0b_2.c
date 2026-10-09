@@ -5410,7 +5410,38 @@ void func_800EE31C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE37C);
+void func_800EE37C(Unk800EE37C *arg0) {
+    MenuList l;
+    Unk80104F88Entry *e;
+    u8 n;
+    u8 f;
+    Unk800EB518 *c;
+
+    func_800EB2BC(4);
+    D_80104FD0.unk14 = D_80104F88->unk12A0;
+    D_80104FD0.unk0 = arg0->unk0;
+    D_80104FD0.unk4 = (struct Unk80104FD4 *)arg0->unk4;
+    D_80104FD0.unk8 = arg0->unk8;
+    D_80104FD0.unkC = arg0->unkC;
+    D_80104FD0.unk19 = arg0->unk2;
+    D_80104FD0.unk10 = 0;
+    D_80104FD0.unk12 = (arg0->unkC != 0) ? func_8002AE7C((u8 *)arg0->unkC) : 0;
+    D_80104FD0.unk18 = func_800349BC((D_80104FD0.unk14->unk68 >> 1) & 0xF, 0xE2);
+    n = D_80104FD0.unk4->unk7;
+    func_8002EDFC(&l, n, (n < 5) ? n : 4, 1, 0x44);
+    f = (D_8006794C->unk24 >> 2) & 1;
+    if (f == 1) {
+        e = D_80104FD0.unk14->unkB4;
+        c = &e->unk49C;
+        l.unk5 = c->unk8[e->unk49C.unk0];
+        l.unk6 = c->unk4[e->unk49C.unk0];
+    }
+    D_80104F88->unk12A4[2] = func_8002DCAC(&D_800F8E30, 8, 1, 2);
+    func_8002E3A8(D_80104F88->unk12A4[2], &l);
+    func_8002E2EC(D_80104F88->unk12A4[2], func_800EEED4);
+    func_8002E2F4(D_80104F88->unk12A4[2], func_800EEBB8);
+    func_8002E2E4(D_80104F88->unk12A4[2], (void (*)(Window *))func_800EF00C);
+}
 
 void func_800EE54C(void) {
     MenuList *l = (MenuList *)&D_80104F88->unk12A4[2]->unk30;

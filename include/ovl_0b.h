@@ -533,7 +533,7 @@ typedef struct {
     s16 unk10;
     s16 unk12;
     struct BtlUnit *unk14;
-    u8 pad18;
+    u8 unk18;
     u8 unk19;
 } Unk80104FD0;
 extern Unk80104FD0 D_80104FD0;
@@ -1400,7 +1400,7 @@ extern Unk80104FC0 D_80104FC0;
 typedef struct Unk80104FD4 {
     u8 pad0[6];
     u8 unk6;
-    u8 pad7;
+    u8 unk7; /* count */
     s32 unk8;
 } Unk80104FD4;
 extern Unk80104FD4 *D_80104FD4;
@@ -2343,6 +2343,11 @@ typedef struct {
     s32 unkC;
 } Unk800EE37C;
 void func_800EE37C(Unk800EE37C *);
+extern RECT D_800F8E30;
+void func_8002E3A8(Window *, MenuList *);
+void func_800EEED4(Window *);
+void func_800EEBB8(Window *);
+void func_800EF00C(void);
 s32 func_800D8A94(s32, s32);
 s32 func_800DA064(u8 *, s32, s32);
 extern u8 D_80104E70;
