@@ -5435,7 +5435,56 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038150);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038278);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800384D0);
+/* Find the entry point for `key` in script `idx`. */
+static inline u8 *func_800384D0_find(s32 idx, s32 key) {
+    u8 *h = D_8007ADF8 + *(u16 *)(D_8007ADF8 + idx * 8);
+    s32 n = *(u16 *)h >> 8;
+    u16 *p = (u16 *)(h + 2);
+
+    while (n != 0) {
+        if (*p++ == key) {
+            break;
+        }
+        n--;
+        p++;
+    }
+    return n != 0 ? h + (*p + 2) : NULL;
+}
+
+s32 func_800384D0(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
+    u8 *e = NULL;
+    u32 *slot;
+    u16 w;
+    u32 hi;
+    u32 x;
+
+    if (o != NULL && lv < o->unk4) {
+        e = func_800384D0_find(o->unk6, key);
+        if (e != NULL) {
+            slot = &((u32 *)o + o->unk9)[o->unkA];
+            slot[0] = o->unk0 - D_8007AECC->unk16F0;
+            w = o->unkD | (o->unk4 << 8);
+            hi = D_8007B70C->unk7 << 24;
+            if (save) {
+                x = (D_8007B70C->unk4 << 16);
+                x = x | w;
+                x |= hi;
+            } else {
+                x = hi | 0xFF0000;
+                x = x | w;
+            }
+            slot[1] = x;
+            if (save) {
+                D_8007B70C->unkD = 0xFF;
+            }
+            o->unk0 = e;
+            o->unk4 = lv;
+            o->unkD = 0;
+            o->unkA += 2;
+        }
+    }
+    return e != NULL;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038618);
 
@@ -5627,7 +5676,7 @@ s32 func_8004AEDC(void) {
         func_80052DA0();
         r = func_80052D40();
     } else {
-        r = *(*D_8007B70C)++;
+        r = *D_8007B70C->unk0++;
     }
     D_8007B6F4 >>= 1;
     D_8007B6F8 = 1;
@@ -5640,9 +5689,9 @@ s32 func_8004AF58(void) {
         func_80052DA0();
         r = func_80052D40();
     } else {
-        u8 **pp = D_8007B70C;
-        r = *(*pp)++;
-        r |= *(*pp)++ << 8;
+        Unk8004AB64 *pp = D_8007B70C;
+        r = *pp->unk0++;
+        r |= *pp->unk0++ << 8;
         r = (s16)r;
     }
     D_8007B6F4 >>= 1;
@@ -5817,16 +5866,16 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B85C);
 
 s32 func_8004B914(void) {
     s32 v;
-    u8 **pp;
+    Unk8004AB64 *pp;
 
     if (D_8007B6F4 & 1) {
         func_80052DA0();
         v = func_80052D40();
     } else {
         pp = D_8007B70C;
-        v = *(*pp)++;
-        v |= *(*pp)++ << 8;
-        v |= *(*pp)++ << 16;
+        v = *pp->unk0++;
+        v |= *pp->unk0++ << 8;
+        v |= *pp->unk0++ << 16;
     }
     D_8007B6F4 >>= (D_8007B6F8 = 1);
     return v;

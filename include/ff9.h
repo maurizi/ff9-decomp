@@ -878,15 +878,19 @@ typedef struct {
 extern Unk80077E44 *D_80077E44;
 
 /* field / world object (actor) */
-typedef struct {
-    u8 pad0[4];
+typedef struct Unk8004AB64 {
+    u8 *unk0; /* script pc */
     u8 unk4;
     u8 unk5; /* kind: 4 = ... */
     u8 unk6;
     u8 unk7;
-    u8 pad8[0xB - 8];
+    u8 pad8;
+    u8 unk9;
+    u8 unkA;
     u8 unkB;
-    u8 padC[0x11 - 0xC];
+    u8 padC;
+    u8 unkD;
+    u8 padE[0x11 - 0xE];
     u8 unk11;
     u8 pad12[2];
     VECTOR unk14; /* position */
@@ -928,7 +932,9 @@ typedef struct {
     u8 unk16E4[8];
     u8 unk16EC;
     u8 unk16ED;
-    u8 pad16EE[0x16FC - 0x16EE];
+    u8 pad16EE[0x16F0 - 0x16EE];
+    u8 *unk16F0; /* script data base */
+    u8 pad16F4[0x16FC - 0x16F4];
     s32 unk16FC;
     s16 unk1700;
 } Unk8007AECC;
@@ -1814,7 +1820,7 @@ void func_80035490(void);
 
 extern s32 D_8007B6F4;
 extern s32 D_8007B6F8;
-extern u8 **D_8007B70C;
+extern struct Unk8004AB64 *D_8007B70C; /* current script object */
 void func_80052DA0(void);
 s32 func_80052D40(void);
 void func_80052D70(s32);
@@ -2569,4 +2575,5 @@ extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
 void func_8002DD54(void);
 void func_8004E16C(void);
+extern u8 *D_8007ADF8; /* script data */
 #endif
