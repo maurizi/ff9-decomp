@@ -47,7 +47,8 @@ typedef struct {
     u8 pad2[2];
     u16 unk4; /* high byte: first text code that takes an extra byte */
     u16 unk6;
-    u8 pad8[4];
+    s16 unk8;
+    u8 padA[2];
     u32 unkC[1]; /* glyph info, width in the top 4 bits */
 } Unk7D4;
 
@@ -119,8 +120,16 @@ typedef struct {
 } Unk11C0;
 
 typedef struct {
+    u8 pad0[8];
+    struct Unk8007B954 *unk8; /* message table */
+} Unk8E4C;
+
+typedef struct {
     u32 unk0;
-    u8 pad4[0xD80 - 4];
+    u8 pad4[4];
+    Unk11C0 *unk8;
+    Unk8E4C *unkC;
+    u8 pad10[0xD80 - 0x10];
     u8 unkD80;
     u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *unk11C0;
@@ -1842,7 +1851,7 @@ extern s32 D_8006F318;
 extern u8 D_8006F334[];
 extern s32 D_8007B708;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
-typedef struct {
+typedef struct Unk8007B954 {
     s32 unk0; /* count */
     u16 unk4[1];
 } Unk8007B954;
@@ -2349,7 +2358,12 @@ static inline u16 func_8004B404_inline(s32 arg0) {
     }
     return D_8007AE10[i];
 }
-extern s32 D_8007BB98;
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+} Unk8007BB98;
+extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
 void func_8004C8C4(Unk8007B9C0 *, u8 *);
 void func_8004D2C0(Unk8007B9C0 *, u8 *);
@@ -2550,4 +2564,9 @@ typedef struct {
 } Unk80032E84Out;
 void func_80032E84(Unk80032E84In *, Unk80032E84Out *);
 extern void (*D_8006BD28[])(Unk80077C78 *, s32);
+extern s32 D_8007BBD4;
+extern u32 *D_8007BBCC;
+extern s32 D_8007B94C;
+void func_8002DD54(void);
+void func_8004E16C(void);
 #endif

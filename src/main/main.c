@@ -5512,7 +5512,30 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80049ED8);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A06C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A8A4);
+void func_8004A8A4(void) {
+    Unk16D8 *n;
+    Unk8004AB64 *o;
+    s16 *q;
+
+    if ((D_8007B708 == 1 || D_8007B708 == 3 || D_8006794C->unkA == 9) && D_8007AD1E != 0) {
+        for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+            o = n->unk4;
+            if (o->unk5 == 4 && o->unk34 != 0xFFFF) {
+                o->unk3B = func_80021698(o);
+                if (D_8007B708 == 1) {
+                    q = (s16 *)func_800C748C(o->unk3B);
+                    func_800C7570(o->unk3B, o->unk26 * 4);
+                    if (q != NULL) {
+                        q[4] = q[2] = o->unk2E;
+                        q[5] = q[3] = o->unk28;
+                        q[0] = o->unk2A;
+                    }
+                }
+            }
+        }
+        D_8007AD1E = 0;
+    }
+}
 
 void func_8004A9E8(void) {
     u8 *s;
@@ -5895,7 +5918,38 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BF20);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BF74);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BFB0);
+void func_8004BFB0(void) {
+    GameState *s;
+    Unk7D4 *f;
+
+    if (D_8007B950 != 0) {
+        D_8007B950 = 0;
+    } else {
+        func_8004E924();
+        func_8002DD54();
+    }
+    s = D_8006794C;
+    D_8007BBD4 = 0;
+    f = s->unk1C->unk7D4;
+    D_8007BB98.unk0 = 0;
+    D_8007BBCC = f->unkC;
+    D_8007BB98.unk4 = *(s32 *)&f->unk4;
+    D_8007B94C = f->unk8;
+    D_8007BB98.unk8 = -1;
+    switch (s->unk8) {
+    case 1:
+        D_8007B954 = s->unk1C->unk8E4.ovl65->unkC->unk8;
+        break;
+    case 3:
+        D_8007B954 = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk8->unk14;
+        break;
+    case 2:
+        D_8007B954 = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk11C0->unk14;
+        break;
+    }
+    D_8007BBD4 = 1;
+    func_8004E16C();
+}
 
 static inline void func_8004C0E8_set(s32 type, u32 bits) {
     D_8007B988.unk0 = type;
