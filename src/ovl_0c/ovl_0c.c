@@ -4051,7 +4051,115 @@ void func_800BB07C(void) {
     D_8006794C->unk1C->unk570 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB508);
+/* mark the map cells changed by the story progress */
+void func_800BB508(void) {
+    s32 i;
+    s32 n;
+    u8 *p;
+
+    i = 15;
+    p = &D_800D30C8[i];
+    for (; i >= 0; i--) {
+        *p-- = 0;
+    }
+    for (i = 10; i >= 0; i--) {
+        if (D_800CD060[i] <= *D_800CF430) {
+            break;
+        }
+    }
+    if (D_800CCE50 & 0x10) {
+        func_80015C38("Scene:%d / Status:%d\n", *D_800CF430, i);
+    }
+    if (i >= 0 && D_800CF444 == 1) {
+        for (n = 0; n < 7; n++) {
+            switch (D_800CD010[n][i]) {
+            case 1:
+                WM_CELL(18, 14) |= 0x80;
+                WM_CELL(17, 12) |= 0x80;
+                D_800D30C8[0] = 1;
+                break;
+            case 6:
+                WM_CELL(13, 12) |= 0x80;
+                WM_CELL(14, 12) |= 0x80;
+                D_800D30C8[5] = 1;
+                break;
+            case 5:
+                WM_CELL(13, 16) |= 0x80;
+                WM_CELL(13, 17) |= 0x80;
+                WM_CELL(14, 16) |= 0x80;
+                WM_CELL(14, 17) |= 0x80;
+                D_800D30C8[4] = 1;
+                break;
+            case 9:
+                WM_CELL(14, 6) |= 0x80;
+                WM_CELL(21, 10) |= 0x80;
+                WM_CELL(22, 14) |= 0x80;
+                D_800D30C8[8] = 1;
+                break;
+            case 3:
+                WM_CELL(19, 10) |= 0x80;
+                WM_CELL(19, 11) |= 0x80;
+                WM_CELL(20, 10) |= 0x80;
+                WM_CELL(20, 11) |= 0x80;
+                D_800D30C8[2] = 1;
+                break;
+            case 11:
+                WM_CELL(3, 9) |= 0x80;
+                WM_CELL(9, 1) |= 0x80;
+                D_800D30C8[10] = 1;
+                break;
+            case 4:
+                WM_CELL(7, 1) |= 0x80;
+                WM_CELL(8, 1) |= 0x80;
+                WM_CELL(14, 15) |= 0x80;
+                D_800D30C8[3] = 1;
+                break;
+            }
+            /* the original second jump table is 8-aligned */
+            __asm__(".rdata\n\t.word 0\n\t.text");
+            if (D_800CCE50 & 0x10) {
+                switch (D_800CD010[n][i]) {
+                case 0:
+                    func_80015C38("BGI Form : SGATE\n");
+                    break;
+                case 5:
+                    func_80015C38("BGI Form : CLAY\n");
+                    break;
+                case 4:
+                    func_80015C38("BGI Form : LIND\n");
+                    break;
+                case 8:
+                    func_80015C38("BGI Form : KUROMA\n");
+                    break;
+                case 2:
+                    func_80015C38("BGI Form : ALEX\n");
+                    break;
+                case 10:
+                    func_80015C38("BGI Form : HOKORA(MIZU)\n");
+                    break;
+                case 3:
+                    func_80015C38("BGI Form : HOKORA(HI)\n");
+                    break;
+                }
+            }
+        }
+    }
+    func_80015C38("General Global Flag = %x\n", D_8007AF55);
+    if (D_8007AF55 & 0x80) {
+        func_80015C38("- Replace Mog Net -\n");
+        WM_CELL(16, 1) |= 0x80;
+        WM_CELL(13, 4) |= 0x80;
+        WM_CELL(14, 5) |= 0x80;
+        D_800D30C8[12] = 1;
+    }
+    if (D_8007AF55 & 0x40) {
+        func_80015C38("- Replace Chocobo Heaven -\n");
+        WM_CELL(0, 0) |= 0x80;
+        WM_CELL(16, 14) |= 0x80;
+        WM_CELL(9, 17) |= 0x80;
+        D_800D30C8[7] = 1;
+    }
+}
 
 /* pick the encounter table entry for the player's area, zone and fog */
 Unk800CF450 *func_800BBBA8(void) {

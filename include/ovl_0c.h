@@ -835,7 +835,11 @@ extern u8 D_800D30C4;
 extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
-extern u8 D_800D30F8[];
+extern u8 D_800D30F8[]; /* map cells, D_800D3304 per row */
+#define WM_CELL(x, y) D_800D30F8[(y) * D_800D3304 + (x)]
+extern u16 D_800CD060[11]; /* story progress thresholds (func_800BB508) */
+extern u8 D_800CD010[][11];
+extern u8 D_8007AF55; /* = D_8007AEF0.b[0x65], general global flags */
 extern u32 D_800CCB18[2]; /* cell type masks */
 extern u32 D_800CCB20[2];
 u8 func_800B3340(u32 *, u32);
