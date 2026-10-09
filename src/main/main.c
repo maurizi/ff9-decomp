@@ -4698,7 +4698,21 @@ s32 func_80034648(s32 ch, s32 id, u8 v) {
     return old;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003470C);
+static inline s32 func_80034648_inline(s32 ch, s32 id, s32 v) {
+    s32 i = func_80034430_inline(ch, id);
+    s32 old;
+    if (i < 0) {
+        return -1;
+    }
+    old = D_8006794C->unk1C->unk3C[ch].unk58[i];
+    D_8006794C->unk1C->unk3C[ch].unk58[i] = v;
+    return old;
+}
+
+s32 func_8003470C(s32 ch, s32 id) {
+    s32 r = func_80034648_inline(ch, id, 0);
+    return r;
+}
 
 u8 func_800347D8(s32 ch, s32 id) {
     s32 i = func_80034430_inline(ch, id);
@@ -5765,7 +5779,28 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BFB0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C0E8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C204);
+void func_8004C204(void) {
+    GameState *s = D_8006794C;
+    GameData *g;
+    u8 **pp;
+    u32 *tbl;
+    u8 *cur;
+
+    if (s->unk8 == 2 || s->unk8 == 6) {
+        D_8007B9A0 = 1;
+        pp = &D_8007B9A8;
+        tbl = &D_8007B9B0[s->unk1C->unk8];
+        D_8007BCA8 = pp;
+        D_8007B9A4 = D_8007B9A8 = (u8 *)tbl;
+    } else {
+        D_8007B9A0 = 0x4000;
+        cur = D_80077170;
+        D_8007BCA8 = &D_80077170;
+        D_8007B9A4 = cur;
+    }
+    g = D_8006794C->unk1C;
+    D_8007BCA4 = g->unk10[g->unk8];
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C2C0);
 
