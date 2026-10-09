@@ -249,7 +249,50 @@ void func_801F04BC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F0594);
+void func_801F0594(void) {
+    s32 i;
+    Window *w;
+    Window *w2;
+    s32 dx;
+    s32 dy;
+    s32 tx;
+    s32 ty;
+    TweenDef *t;
+    WinDef *d;
+
+    for (i = 0; i < 4; i++) {
+        if (D_801F7A78.unk14[i] != 0) {
+            w = D_801F7A78.unk158[i].unk0;
+            if (w != NULL && w->unk1C != 0) {
+                tx = w->unk0 - 0x26;
+                dx = D_801F7A78.unkAC[i + 2].unk4.x - tx;
+                ty = w->unk2 - 2;
+                dy = D_801F7A78.unkAC[i + 2].unk4.y - ty;
+                w->unk0 += dx;
+                D_801F7A78.unk158[i].unk0->unk8.x += dx;
+                D_801F7A78.unk158[i].unk0->unk2 += dy;
+                D_801F7A78.unk158[i].unk0->unk8.y += dy;
+            }
+        }
+        if (D_801F7A78.unk18[i] != 0) {
+            w2 = D_801F7A78.unk1D8[i].unk0;
+            d = &D_801F7A78.unkAC[i + 2];
+            if (w2 != NULL && w2->unk1C != 0) {
+                t = d->unkC;
+                if (t != NULL && d->unk2 >= 2) {
+                    if (t->unk4 != NULL) {
+                        w2->unk0 += t->unk4[d->unk2];
+                        D_801F7A78.unk1D8[i].unk0->unk8.x += t->unk4[d->unk2];
+                    }
+                    if (t->unk8 != NULL) {
+                        D_801F7A78.unk1D8[i].unk0->unk2 += t->unk8[d->unk2];
+                        D_801F7A78.unk1D8[i].unk0->unk8.y += t->unk8[d->unk2];
+                    }
+                }
+            }
+        }
+    }
+}
 
 void func_801F076C(void) {
     s32 se;
