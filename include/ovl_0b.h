@@ -816,8 +816,7 @@ typedef struct {
 } Unk800C412C0; /* 0xC */
 
 typedef struct {
-    Unk800C412C0 unk0;
-    Unk800C412C0 unkC;
+    Unk800C412C0 unk0[2];
     u8 unk18;
     u8 unk19;
     u8 unk1A;
@@ -2244,7 +2243,8 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 
 /* -O1 unit (ovl_0b_o1.c) */
 s32 func_800CA2B0(s32);
-void func_800C416C(s32, Unk800C412C *, Unk800C412C0 *);
+void func_800C416C(s32, Unk800C412C *, s16 *);
+s16 func_800CF9B0(s32, s32, s32);
 s32 func_800CF9DC(s32, s32, s32, s32);
 s32 func_800CF708(s32, s32);
 s32 func_800CF6B8(s32, s32);

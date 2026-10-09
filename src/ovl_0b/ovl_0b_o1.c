@@ -236,7 +236,7 @@ void func_800C36D0(void) {
     for (i = 0; i < 2; i++) {
         t = D_800FE3B8.unk68[i].unk1D != 0;
         if (t && (u32)(D_800FE3B8.unk68[i].unk18 - 2) < 2) {
-            func_800C416C(1, &D_800FE3B8.unk68[i], &D_800FE3B8.unk68[i].unkC);
+            func_800C416C(1, &D_800FE3B8.unk68[i], D_800FE3B8.unk68[i].unk0[1].unk0);
             D_800FE3B8.unk68[i].unk18 = 1;
         }
     }
@@ -261,7 +261,159 @@ void func_800C412C(Unk800C412C *arg0, u8 *arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C416C);
+void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
+    s32 coef[4];
+    SVECTOR v[2];
+    SVECTOR out;
+    SVECTOR w[2];
+    s32 wa[2];
+    s32 wb[2];
+    s32 z;
+    s32 i;
+    s32 t;
+    s32 k;
+    s32 d;
+    s16 *a;
+    s16 *b;
+    s32 dx;
+    s32 dy;
+    s32 dz;
+    s32 h;
+
+    if ((u32)(arg1->unk18 - 2) < 2 && arg1->unk1D == 0) {
+        arg1->unk18 = 1;
+    }
+    if (arg1->unk18 >= 2) {
+        t = arg1->unk1A;
+        for (i = 0; i < 2; i++) {
+            if (arg1->unk1C == 0 || arg1->unk1D == 0) {
+                wa[i] = 0;
+            } else {
+                k = (u32)((0x1000 - arg1->unk1C * D_800FE488.unk8) << 17) / (u32)(arg1->unk1C * arg1->unk1C);
+                switch (t & 3) {
+                case 0:
+                    wa[i] = (0x10000000 / arg1->unk1C * arg1->unk1D) >> 16;
+                    break;
+                case 1:
+                    d = arg1->unk1C - arg1->unk1D;
+                    wa[i] = 0x1000 - ((k * d * d) >> 17) - d * D_800FE488.unk8;
+                    break;
+                case 2:
+                    d = arg1->unk1D;
+                    wa[i] = ((k * d * d) >> 17) + d * D_800FE488.unk8;
+                    break;
+                }
+            }
+            wb[i] = 0x1000 - wa[i];
+            t >>= 2;
+        }
+    }
+    for (i = 0; i < 2; i++) {
+        v[i].vx = arg1->unk0[i].unk0[0];
+        v[i].vy = arg1->unk0[i].unk0[1];
+        v[i].vz = arg1->unk0[i].unk0[2];
+        v[i].pad = arg1->unk0[i].unk0[3];
+    }
+    if (arg1->unk18 >= 2) {
+        t = arg1->unk19;
+        a = &v[0].vx;
+        b = &v[1].vx;
+        for (i = 0; i < 3; i++) {
+            switch (t & 3) {
+            case 0:
+                if (*a != *b) {
+                    if ((*a - *b) & 0x800) {
+                        if (*a >= *b) {
+                            *b += 0x1000;
+                        }
+                    } else if (*a <= *b) {
+                        *a += 0x1000;
+                    }
+                }
+                break;
+            case 1:
+                if (*a >= *b) {
+                    *b += 0x1000;
+                }
+                break;
+            case 2:
+                if (*a <= *b) {
+                    *a += 0x1000;
+                }
+                break;
+            }
+            a++;
+            b++;
+            t >>= 2;
+        }
+    }
+    LoadAverageShort12(&v[0], &v[1], wa[0], wb[0], &out);
+    switch (arg1->unk18) {
+    case 2:
+        out.pad = func_800CF9B0(v[0].pad, v[1].pad, wb[1]);
+        if (arg0 != 0) {
+            arg2[0] = out.vx;
+            arg2[1] = out.vy;
+            arg2[2] = out.vz;
+            arg2[3] = out.pad;
+            return;
+        }
+        func_800C4B9C(arg1->unk0[1].unk8, arg1->unk0[1].unk9, &out.vx, arg2);
+        goto tail;
+    case 3:
+        if (arg0 != 0) {
+            for (i = 0; i < 2; i++) {
+                func_800C4B9C(arg1->unk0[i].unk8, arg1->unk0[i].unk9, &v[i].vx, &w[i].vx);
+            }
+            LoadAverageShort12(&w[0], &w[1], wa[0], wb[0], &w[1]);
+            func_800C4DC4(arg1->unk0[1].unk8, arg1->unk0[1].unk9, &w[0].vx, &v[0].vx, &z);
+            dx = w[1].vx - w[0].vx;
+            dy = w[1].vy - w[0].vy;
+            dz = w[1].vz - w[0].vz;
+            h = dx * dx + dz * dz;
+            arg2[1] = (ratan2(dx, dz) + 0x1800) & 0xFFF;
+            arg2[0] = (ratan2(dy, func_800CF6B8(h, 0x14)) + 0x1000) & 0xFFF;
+            arg2[2] = out.vz;
+            arg2[3] = func_800CF6B8(h + dy * dy, 0x14);
+            arg1->unk0[1].unk9 |= 0xC0;
+            return;
+        }
+        for (i = 0; i < 2; i++) {
+            func_800C4B9C(arg1->unk0[i].unk8, arg1->unk0[i].unk9, &v[i].vx, &w[i].vx);
+        }
+        LoadAverageShort12(&w[0], &w[1], wa[0], wb[0], (SVECTOR *)arg2);
+    tail:
+        arg2[3] = out.vz;
+        if (arg1->unk1D == 0) {
+            arg1->unk18 = 1;
+        }
+        break;
+    case 4:
+        wa[0] >>= 4;
+        wb[0] >>= 4;
+        coef[0] = (wa[0] * wa[0] * wa[0]) >> 12;
+        coef[1] = (wb[0] * wa[0] * wa[0] * 6) >> 12;
+        coef[2] = (wb[0] * wb[0] * wa[0] * 6) >> 12;
+        coef[3] = (wb[0] * wb[0] * wb[0]) >> 12;
+        arg2[0] = 0;
+        arg2[1] = 0;
+        arg2[2] = 0;
+        arg2[3] = out.vz;
+        for (i = 0; i < 4; i++) {
+            arg2[0] += (D_800FE3B8.unk0[i].vx * coef[i]) >> 12;
+            arg2[1] += (D_800FE3B8.unk0[i].vy * coef[i]) >> 12;
+            arg2[2] += (D_800FE3B8.unk0[i].vz * coef[i]) >> 12;
+        }
+        break;
+    default:
+        func_800C4B9C(arg1->unk0[1].unk8, arg1->unk0[1].unk9, &v[1].vx, arg2);
+        arg2[3] = v[1].vz;
+        if ((u32)((arg1->unk0[1].unk8 & 0x1F) - 0x19) < 2) {
+            D_800FE3B8.unkBB++;
+        }
+        break;
+    }
+}
 
 void func_800C493C(s16 *arg0) {
     s32 t;
