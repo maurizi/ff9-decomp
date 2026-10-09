@@ -1878,6 +1878,11 @@ typedef struct {
     u32 unk7 : 8;  /* table length */
 } Unk800AB758;
 
+/* rotation part of a MATRIX, used where no translation is stored */
+typedef struct {
+    s16 m[3][3];
+} RotMatrix33;
+
 /* packed screen coordinate */
 typedef union {
     s32 w;

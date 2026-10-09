@@ -19,13 +19,40 @@ s32 func_800CFC2C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFCA8);
+void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
+    RotMatrix33 m;
+
+    func_800316D8(arg0, &m);
+    gte_SetRotMatrix(&m);
+    gte_ldtr0();
+    func_800CF8EC(arg1, 0, arg2);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFD78);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFE88);
+void func_800CFE88(MATRIX *arg0, s32 arg1, s32 arg2) {
+    gte_SetRotMatrix(arg0);
+    gte_SetTransMatrix(arg0);
+    func_800CF8EC(arg1, 0, arg2);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800CFF40);
+void func_800CFF40(MATRIX *arg0, s16 *arg1) {
+    s16 a[4];
+    s32 b[2];
+
+    gte_SetRotMatrix(arg0);
+    gte_SetTransMatrix(arg0);
+    b[1] = 0;
+    b[0] = 0;
+    func_800CF8EC(0x1000, 0, (s32)a);
+    func_800CF808((s16 *)b, a, arg1);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 s32 func_800D001C(s32 arg0, s32 arg1, s32 *arg2) {
     s32 s;
@@ -68,7 +95,19 @@ void func_800D006C(s16 *arg0, s16 *arg1, s32 arg2) {
     sp10 = v;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0130);
+void func_800D0130(SVECTOR *arg0, MATRIX *arg1) {
+    MATRIX m;
+
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg0);
+    gte_rtv0tr();
+    if (arg1 == NULL) {
+        arg1 = &m;
+    }
+    gte_stlvnl(arg1->t);
+    gte_SetTransMatrix(arg1);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D01D4);
 
@@ -100,9 +139,7 @@ void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 ar
         XY32 xy;
         s16 z;
     } r;
-    struct {
-        s16 m[3][3];
-    } m;
+    RotMatrix33 m;
 
     v.vx = arg0->vx - arg1->vx;
     v.vy = arg0->vy - arg1->vy;
