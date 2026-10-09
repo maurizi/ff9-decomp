@@ -79,6 +79,15 @@ typedef struct {
     s16 unk2; /* tpage */
 } BtlUnit9C18;
 
+/* FileEntry viewed with its first word split (func_8001E218 type 0xD) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} FileEntry16;
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;
@@ -420,20 +429,25 @@ typedef struct {
 extern Unk800FEC40 D_800FEC40;
 
 typedef struct {
-    u8 pad0[8];
+    s32 unk0;
+    s32 unk4;
     s32 unk8;
     s16 unkC;
     s16 unkE;
     u8 pad10[0x1A - 0x10];
     u16 unk1A;
     u8 pad1C[0x2C - 0x1C];
-    s16 unk2C[2];
+    union {
+        s32 w; /* set as a word */
+        s16 h[2];
+    } unk2C;
     u8 pad30[0x38 - 0x30];
     s32 unk38;
     struct Heap *unk3C[2];
     u8 pad44[0x50 - 0x44];
     s16 unk50;
-    u8 pad52[0x54 - 0x52];
+    u8 unk52;
+    u8 unk53;
     struct Unk80100DC054 *unk54;
     s32 unk58;
     s32 unk5C;
@@ -443,6 +457,7 @@ typedef struct {
     u8 unk66;
     u8 unk67;
     u8 unk68;
+    u8 unk69;
 } Unk80100DC0;
 extern Unk80100DC0 D_80100DC0;
 
