@@ -2,7 +2,73 @@
 
 INCLUDE_RODATA("asm/us/ovl_14/nonmatchings/ovl_14", D_800A7000);
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A7088);
+void func_800A7088(void) {
+    s32 n;
+
+    n = 0;
+    func_800A767C();
+    func_800A7FF0();
+    D_800AB300 = D_80067950 == 0 ? 6 : 0;
+    while (D_800AB300 < 7) {
+        switch (D_800AB300) {
+        case 0:
+            if (func_800A9220() != 0) {
+                D_800AB300 = 7;
+            } else {
+                D_800AB300 = 1;
+            }
+            break;
+        case 1:
+            if (func_800A9E14(0) != 0) {
+                D_800AB300 = 7;
+            } else if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+                n = 180;
+                D_800AB300 = 2;
+            } else {
+                D_800AB300 = 4;
+            }
+            break;
+        case 2:
+            VSync(0);
+            if (--n == 0) {
+                D_800AB300 = 3;
+            }
+            break;
+        case 3:
+            if (func_800A9220() == 0) {
+                D_800AB300 = 4;
+            } else {
+                D_800AB300 = 7;
+            }
+            break;
+        case 4:
+            if (func_800A9E14(1) != 0) {
+                D_800AB300 = 7;
+            } else if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+                n = 180;
+                D_800AB300 = 5;
+            } else {
+                D_800AB300 = 1;
+            }
+            break;
+        case 5:
+            VSync(0);
+            if (--n == 0) {
+                D_800AB300 = 0;
+            }
+            break;
+        case 6:
+            func_800AAADC();
+            D_800AB300 = 0;
+            break;
+        }
+    }
+    D_8006794C->unk0 |= 0x100000;
+    func_8001DE50(D_8006794C);
+    func_800A741C();
+    func_800A80D4();
+    func_800A77BC();
+}
 
 void func_800A727C(void) {
     GameData *ctx = D_8006794C->unk1C;

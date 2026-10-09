@@ -1293,7 +1293,7 @@ typedef struct {
     s16 unk12;
 } Unk8006573C;
 
-extern u16 D_80067950;
+extern s16 D_80067950;
 extern u32 D_80077DB4;
 extern u8 D_8006CAB8[][2];
 
