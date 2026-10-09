@@ -214,13 +214,22 @@ typedef struct {
     u16 unk26;
     u16 unk28;
     u16 unk2A;
-    u8 pad2C[0x72 - 0x2C];
+    s16 unk2C; /* projected origin */
+    s16 unk2E;
+    u8 pad30[0x72 - 0x30];
     u8 unk72;
     u8 unk73;
-    u8 pad74;
+    u8 unk74;
     u8 unk75;
     s16 unk76;
-    u8 pad78[0xA4 - 0x78];
+    s32 unk78;
+    u8 pad7C[0x9C - 0x7C];
+    s16 unk9C;
+    u8 pad9E[2];
+    u8 unkA0;
+    u8 unkA1;
+    u8 unkA2;
+    u8 unkA3;
     s16 unkA4;
     s16 unkA6;
     s16 unkA8[4][2];
@@ -344,7 +353,8 @@ typedef struct {
 
 /* sequence header (func_800BD3A0): offsets from the header start */
 typedef struct {
-    u8 pad0[6];
+    u8 pad0[4];
+    u16 unk4; /* Unk800C9DA4Anim count */
     u16 unk6; /* track count */
     u8 pad8[4];
     s32 unkC; /* -> u32 table, 16-byte stride */
@@ -370,6 +380,16 @@ typedef struct {
     u32 unk0;
     u8 pad4[0xC];
 } Unk800C9DA4Tbl; /* 0x10 */
+
+/* the same 0x10-byte table, as animation state */
+typedef struct {
+    u8 unk0;
+    u8 pad1[3];
+    u32 unk4;
+    s16 unk8;
+    s16 unkA;
+    s32 unkC; /* offset: u8 track index */
+} Unk800C9DA4Anim;
 
 typedef struct {
     u8 unk0;
@@ -996,7 +1016,16 @@ typedef struct {
     u16 unk6;
 } BgSprOfs;
 
+/* streamed sound bank request (func_800B29F8, as ovl_0c func_800AC424) */
+typedef struct {
+    u8 pad0[8];
+    s32 unk8; /* address */
+    s32 unkC; /* offset */
+    s32 unk10; /* size */
+} Unk800B29F8;
+
 /* ---- overlay functions ---- */
+void func_800B1D9C(s32);
 s32 func_800AA074(FieldScene *, s16);
 s32 func_800AA0A8(FieldScene *, s16);
 void func_800B1E04(FieldScene *, s16);
@@ -1154,6 +1183,7 @@ s32 func_800C6E94(void);
 s32 func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
+s32 func_80056048(s32, s32, s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */

@@ -136,7 +136,7 @@ typedef struct {
     u8 unk10;
     u8 unk11;
     u8 pad12[2];
-    u8 unk14[8]; /* allowed cell types */
+    u32 unk14[2]; /* allowed cell types (bit mask) */
 } Unk800CE3C8; /* 0x1C */
 
 /* doubly linked node (func_800C2134) */
@@ -806,8 +806,8 @@ extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
 extern u8 D_800D30F8[];
-extern u8 D_800CCB18[];
-extern u8 D_800CCB20[];
+extern u32 D_800CCB18[2]; /* cell type masks */
+extern u32 D_800CCB20[2];
 u8 func_800B3340(u32 *, s32);
 extern s32 D_800CD098;
 s32 func_800BCA6C(s16);
