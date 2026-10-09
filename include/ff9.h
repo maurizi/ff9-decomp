@@ -648,7 +648,7 @@ typedef struct {
     u32 unk68;
     s32 unk6C;
     s32 unk70;
-    u8 pad74[0x78 - 0x74];
+    s32 unk74;
     s32 unk78;
     s32 unk7C;
     u8 pad80[0x84 - 0x80];
@@ -705,7 +705,7 @@ typedef struct {
     s16 unkFC;
     s16 unkFE;
     u16 unk100;
-    u8 pad102[0x104 - 0x102];
+    s16 unk102;
     s16 unk104;
     s16 unk106;
     s16 unk108;
