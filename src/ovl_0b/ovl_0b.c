@@ -3121,7 +3121,67 @@ void func_800BC1E0(Unk800BC1E0 *arg0, s16 *arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BC21C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BC78C);
+s32 func_800BC78C(BtlUnit *u) {
+    GameData *g = D_8006794C->unk1C;
+    Battle *b = g->unk8E4.battle;
+    BtlCmd *cmd = b->unk1088;
+    s32 cur;
+    s32 *a;
+    BtlUnit9C *m;
+
+    if (u->unk3C & 0x100) {
+        if ((u->unk68 & 0x20001) == 1 && u != cmd->unk4 && u->unk7D == 0) {
+            cur = (s32)u->unk9C->unkC;
+            if (cur != u->unkA4[4] && cur != u->unkA4[9]) {
+                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+            }
+        }
+        return 0;
+    }
+    if ((u->unk3C & 0x42001003) || ((u->unk68 >> 17) & 1)
+        || ((u->unk68 & 1) && g->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2 && cmd->unkE == 0x1F)) {
+        return 0;
+    }
+    {
+        if (u == cmd->unk4 && (u32)(cmd->unkE - 0x37) >= 7) {
+            cur = (s32)u->unk9C->unkC;
+            if (cur == u->unkA4[10] || cur == u->unkA4[11]) {
+                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+            }
+            return 0;
+        }
+        if (u->unk68 & 1) {
+            if (!(u->unk68 & 0x06000000)) {
+                if ((b->unkD83 != 0 || (b->unk11B8 & 1)) && !(u->unk3C & 0x42021143)) {
+                    u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[17];
+                } else if (u->unk3C & 0x8000) {
+                    u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[13];
+                } else if ((u->unk68 >> 19) & 1) {
+                    if ((s32)u->unk9C->unkC == u->unkA4[(u->unk68 >> 18) & 1]) {
+                        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[((u->unk68 >> 18) & 1) + 10];
+                    } else {
+                        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+                    }
+                } else {
+                    m = u->unk9C;
+                    a = u->unkA4;
+                    cur = (s32)m->unkC;
+                    if (cur == a[0] && (u->unk3C & 0x30202)) {
+                        m->unkC = (BtlUnit9CC *)a[7];
+                    } else if ((cur == a[1] || cur == a[6]) && !(u->unk3C & 0x30202)) {
+                        m->unkC = (BtlUnit9CC *)a[5];
+                    } else {
+                        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+                    }
+                }
+            }
+        } else {
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+        }
+        u->unkA0->unk3A = 0;
+        return 1;
+    }
+}
 
 void func_800BCAA4(BtlUnit *arg0) {
     u32 f;
