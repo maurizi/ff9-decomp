@@ -3391,7 +3391,123 @@ void func_800BDE78(BtlUnit *arg0) {
     arg0->unkCE |= 4;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BDED4);
+u32 func_800BDED4(BtlUnit *arg0, s32 arg1) {
+    u32 r = 0xFFFFFF;
+
+    switch (arg1) {
+    case 0x23:
+        r = arg0->unk24->unk0;
+        break;
+    case 0x24:
+        r = arg0->unk28;
+        break;
+    case 0x25:
+        r = arg0->unk24->unk2;
+        break;
+    case 0x26:
+        r = arg0->unk2A;
+        break;
+    case 0x27:
+        r = arg0->unk24->unk4;
+        break;
+    case 0x29:
+        if (arg0->unk68 & 1) {
+            r = (D_8006794C->unk1C->unk3C + ((arg0->unk68 >> 1) & 0xF))->unkB;
+        } else {
+            r = D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk3;
+        }
+        break;
+    case 0x2A:
+        r = ((u8 *)&arg0->unk34)[3];
+        break;
+    case 0x2B:
+        r = arg0->unk34 & 0xFFFFFF;
+        break;
+    case 0x2C:
+        r = ((u8 *)&arg0->unk38)[3];
+        break;
+    case 0x2D:
+        r = arg0->unk38 & 0xFFFFFF;
+        break;
+    case 0x2E:
+        r = ((u8 *)&arg0->unk3C)[3];
+        break;
+    case 0x2F:
+        r = arg0->unk3C & 0xFFFFFF;
+        break;
+    case 0x30:
+        r = arg0->unk70;
+        break;
+    case 0x31:
+        r = arg0->unk71;
+        break;
+    case 0x32:
+        r = arg0->unk72;
+        break;
+    case 0x33:
+        r = arg0->unk73;
+        break;
+    case 0x34:
+        r = arg0->unk68 >> 28;
+        r &= 1;
+        break;
+    case 0x35:
+        r = arg0->unk68 >> 22;
+        r &= 1;
+        break;
+    case 0x39:
+        r = (s16)arg0->unk84;
+        break;
+    case 0x3A:
+        r = arg0->unkAC;
+        break;
+    case 0x40:
+        r = arg0->unk68 >> 8;
+        r &= 3;
+        break;
+    case 0x41:
+        r = (u8)arg0->unk68;
+        r >>= 5;
+        break;
+    case 0x42:
+        r = (D_8006794C->unk1C->unk3C + ((arg0->unk68 >> 1) & 0xF))->unk34.w >> 4;
+        r &= 0x1F;
+        break;
+    case 0x43:
+        r = (D_8006794C->unk1C->unk3C + ((arg0->unk68 >> 1) & 0xF))->unkA;
+        break;
+    case 0x44:
+        r = D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk2;
+        break;
+    case 0x45:
+        r = arg0->unk68 >> 18;
+        r &= 1;
+        break;
+    case 0x46:
+        r = arg0->unk68 >> 1;
+        r &= 0xF;
+        break;
+    case 0x48:
+        r = arg0->unk31;
+        break;
+    case 0x49:
+        r = arg0->unk32;
+        break;
+    case 0x4A:
+        r = arg0->unk6C;
+        break;
+    case 0x4B:
+        r = arg0->unk6D;
+        break;
+    case 0x4C:
+        r = arg0->unk6E;
+        break;
+    case 0x4D:
+        r = arg0->unk6F;
+        break;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BE1E0);
 
