@@ -6036,7 +6036,90 @@ s32 func_800C3E18(s32 arg0, s32 arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3EC0);
+/* put entry arg0 on the floor below (arg1, arg2, arg3) */
+s32 func_800C3EC0(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+    SVECTOR pos;
+    VECTOR v;
+    s16 tmp;
+    Unk800C9E00 *n;
+    Unk800C9DF8 *b;
+    Unk800C9DF4 *a;
+    Unk800C9E04 *pl;
+    s16 ymin;
+    u16 found;
+    s16 bi;
+    s16 bt;
+    u16 i;
+    u16 hit;
+    s32 t;
+    s32 cnt;
+    Unk800C9E00 *p;
+    u16 j;
+    u16 m;
+    s32 k;
+    Unk800C9DF8Tri *tri;
+    Unk800C9DFC *vt;
+
+    ymin = 0x7FFF;
+    bi = -1;
+    bt = -1;
+    found = 0;
+    i = 0;
+    pos.vx = arg1;
+    pos.vy = arg2;
+    pos.vz = arg3;
+    n = D_800C9DF0.unk10;
+    b = D_800C9DF0.unk8;
+    a = &D_800C9DF0.unk4[arg0];
+    for (; i < b->unk24; i++, n++) {
+        hit = 0;
+        if ((u8)func_800C4EC8(b, &D_800C9DF0.unk1C[n->unk4], n, &pos)) {
+            m = ~0x80;
+            p = D_800C9DF0.unk10;
+            cnt = D_800C9DF0.unk8->unk24;
+            for (j = hit; j < cnt; j++) {
+                p->unk0 &= m;
+                p++;
+            }
+            D_800C9DDC = 0;
+            if (func_800C2524(a, &pos, n, &tmp) || func_800C31F8(a, &pos, &n, &tmp)) {
+                hit = 1;
+            }
+            if (hit) {
+                k = n->unk6;
+                if (k >= 0) {
+                    v.vx = pos.vx;
+                    v.vy = pos.vy;
+                    v.vz = pos.vz;
+                    pl = &D_800C9DF0.unk14[k];
+                    t = func_800C1DC4(pl->unk0, v.vx << 16);
+                    v.vy = func_800C1DC4(n->unk24 - t - func_800C1DC4(pl->unk8, v.vz << 16), pl->unkC) >> 16;
+                    v.vy += (s16)D_800C9DF0.unk1C[n->unk4].unkA[1] - D_800C9DF0.unk1C[n->unk4].unk4[1];
+                    pos.vy = v.vy;
+                } else {
+                    tri = D_800C9DF0.unk1C + n->unk4;
+                    vt = D_800C9DF0.unkC + n->unkC[0];
+                    pos.vy = vt->unk2 + (D_800C9DF0.unk8->unk8[1] + tri->unkA[1]);
+                }
+                if (pos.vy >= arg2 && pos.vy < ymin) {
+                    found = 1;
+                    ymin = pos.vy;
+                    bi = i;
+                    bt = n->unk4;
+                }
+            }
+        }
+    }
+    if (found) {
+        a->unk4 = bt;
+        a->unk6 = bi;
+        a->unk24->unk14.vx = arg1;
+        a->unk24->unk14.vy = ymin;
+        a->unk24->unk14.vz = arg3;
+        return 1;
+    }
+    return 0;
+}
 
 s32 func_800C420C(s32 arg0, s16 arg1) {
     Unk800C9E00 *n;
