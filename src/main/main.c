@@ -1,8 +1,92 @@
 #include "ff9.h"
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800127A0);
+/* __main and __do_global_dtors (SN startup) walk an empty constructor list
+ * that starts at the beginning of .rodata, where main's jump table sits. */
+__asm__(".section .rodata\n.globl jtbl_80010000\njtbl_80010000:\n.section .text");
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012900);
+void func_800127A0(void) {
+    __main();
+    func_800169B8();
+    for (;;) {
+        func_80016A28();
+        func_8001CB08();
+        func_8001D268();
+        do {
+            switch (D_8006794C->unk8) {
+            case 0:
+                func_80012900(0);
+                func_800A7088();
+                break;
+            case 1:
+                func_80012900(1);
+                func_800A7A48();
+                break;
+            case 2:
+                func_80012900(2);
+                func_800A859C();
+                break;
+            case 8:
+                func_80012900(8);
+                func_801EF284();
+                break;
+            case 3:
+                func_80012900(3);
+                func_800A8860();
+                break;
+            case 9:
+                func_80012900(9);
+                func_800A752C();
+                break;
+            case 7:
+                func_80012900(7);
+                func_800A80A4();
+                break;
+            case 4:
+                func_80012900(4);
+                func_800A713C();
+                break;
+            }
+        } while (!(D_8006794C->unk0 & 1));
+        func_8001D30C();
+        func_8001CB70();
+        func_80016B6C();
+    }
+}
+
+void func_80012900(s32 mode) {
+    u32 loaded = 0;
+    u8 files[10] = { 20, 10, 11, 12, 21, 0xFF, 0xFF, 101, 101, 13 };
+    LoadAddrs addrs = D_80010034;
+    s32 id;
+    Unk80021938 *e;
+    FileEntry *f;
+
+    func_8001CFB4();
+    id = files[mode] | 0x10000;
+    while (func_80022B18()) {
+    }
+    if (func_800220E8(id)) {
+        e = func_80021E5C(id);
+        if (func_80021AE0(e)) {
+            StoreImage((RECT *)&e->unk20, addrs.unk0[mode]);
+        } else if ((s32)addrs.unk0[mode] != e->unk8) {
+            func_8001DAA4((s32)addrs.unk0[mode], e->unk8, e->unkC, NULL);
+        }
+        loaded = e->unkC >> 11;
+        func_80022390(id);
+        DrawSync(0);
+    }
+    f = func_8001E218(0, id);
+    if (loaded < f->unkC - f->unk4) {
+        func_80022DF0(D_8006794C->unk20 + f->unk4 + loaded, (f->unkC - (f->unk4 + loaded)) << 11,
+                      (u8 *)addrs.unk0[mode] + (loaded << 11));
+    }
+    func_80012D08();
+    func_80012CF8();
+    func_80012D18();
+}
+
+INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012AD4);
 
@@ -23,12 +107,6 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012CF8);
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012D08);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012D18);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", jtbl_80010000);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010028);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", ResetGraph);
 

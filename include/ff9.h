@@ -2751,4 +2751,21 @@ extern s32 D_800686A0[];
 extern Unk800686C0 D_800686C0[1];
 void func_80019708(s32, u32, s32);
 
+void __main(void);
+void func_80012900(s32);
+void func_80012CF8(void); /* BIOS FlushCache */
+void func_80012D08(void); /* BIOS EnterCriticalSection */
+void func_80012D18(void); /* BIOS ExitCriticalSection */
+void func_8001D30C(void);
+void func_8001CB70(void);
+void func_80016B6C(void);
+void func_8001CFB4(void);
+
+/* overlay load addresses by game mode (func_80012900). The rodata block
+ * D_80010034 also holds the next word and libgpu's version string. */
+typedef struct {
+    u32 *unk0[10];
+} LoadAddrs;
+extern LoadAddrs D_80010034;
+
 #endif
