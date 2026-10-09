@@ -2056,7 +2056,31 @@ void func_800DC500(void) {
 void func_800DC508(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC510);
+void func_800DC510(char *arg0) {
+    D_80100E30.unkE8 = &D_80100E30.unk0[1];
+    D_80100E30.unk0[0].unk70 = 0;
+    D_80100E30.unk0[1].unk70 = 1;
+    SetDefDrawEnv(&D_80100E30.unk0[0].unk0, 0, 0, 320, 240);
+    SetDefDrawEnv(&D_80100E30.unk0[1].unk0, 0, 240, 320, 240);
+    SetDefDispEnv(&D_80100E30.unk0[0].unk5C, 0, 240, 320, 240);
+    SetDefDispEnv(&D_80100E30.unk0[1].unk5C, 0, 0, 320, 240);
+    D_80100E30.unk0[1].unk0.isbg = 1;
+    D_80100E30.unk0[0].unk0.isbg = 1;
+    setRGB0(&D_80100E30.unk0[0].unk0, 0, 0, 0);
+    setRGB0(&D_80100E30.unk0[1].unk0, 0, 0, 0);
+    func_80012D08();
+    VSyncCallback(NULL);
+    DrawSyncCallback(NULL);
+    func_80012D18();
+    SetDispMask(1);
+    while (1) {
+        D_80100E30.unkE8 = (D_80100E30.unkE8 == &D_80100E30.unk0[0]) ? &D_80100E30.unk0[1] : &D_80100E30.unk0[0];
+        DrawSync(0);
+        VSync(0);
+        PutDispEnv(&D_80100E30.unkE8->unk5C);
+        PutDrawEnv(&D_80100E30.unkE8->unk0);
+    }
+}
 
 void func_800DC634(char *arg0) {
     char buf[0x100];

@@ -88,6 +88,20 @@ typedef struct {
     s32 unkC;
 } FileEntry16;
 
+/* double buffer used by the standalone display loop func_800DC510 */
+typedef struct {
+    DRAWENV unk0;
+    DISPENV unk5C;
+    s16 unk70;
+    u8 pad72[0x74 - 0x72];
+} Unk80100E30Buf; /* 0x74 */
+
+typedef struct {
+    Unk80100E30Buf unk0[2];
+    Unk80100E30Buf *unkE8; /* current */
+} Unk80100E30;
+extern Unk80100E30 D_80100E30;
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;
