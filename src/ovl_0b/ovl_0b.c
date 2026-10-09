@@ -3296,4 +3296,77 @@ void func_800C24E8(BtlUnit *arg0, s32 arg1) {
     }
 }
 
+void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    s32 sum[4];
+    BtlUnitList *l;
+    BtlUnit *u;
+    BtlUnit *c;
+    s32 mask;
+    u8 e;
+
+    func_8001D898(sum, 0, 0x10);
+    mask = 0;
+    b->unk116C.unk0 = arg0->unk4;
+    l = &b->unk116C;
+    if (arg2 != NULL) {
+        l->unk25[0] = arg2[0];
+        l->unk25[1] = arg2[1];
+        l->unk42 = arg2[2];
+        l->unk40 = arg2[3];
+    } else {
+        l->unk42 = 0;
+        l->unk40 = 0;
+        l->unk25[1] = 0;
+        l->unk25[0] = 0;
+    }
+    l->unk27 = 0;
+    l->unk24 = 0;
+    c = arg0->unk4;
+    c->unk7E = 0;
+    c->unk82 = 0;
+    c->unk80 = 0;
+    if (arg0->unk10_7 == 0) {
+        mask = func_800B3188(arg0);
+        e = arg0->unkE;
+        if (e == 0xE || e == 0x33) {
+            l->unk40 = 2;
+        } else if (e == 0x1F) {
+            l->unk40 = 4;
+        } else if ((u8)(e - 0x39) < 2) {
+            l->unk40 = 1;
+        }
+    } else if (arg0->unk10_7 == 2) {
+        arg0->unk10_7 = 1;
+        if (!(arg0->unk4->unk68 & 1)) {
+            arg0->unk10_11 = 1;
+        }
+        l->unk40 = 0x11;
+    }
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if (u->unkB0 & (u16)arg0->unkC) {
+            l->unk4[l->unk24++] = u;
+            u->unk7E = 0;
+            u->unk82 = 0;
+            u->unk80 = 0;
+            sum[0] += u->unk98->unk0[0] >> 16;
+            sum[2] += u->unk98->unk0[2] >> 16;
+        }
+        if (u->unkB0 & mask) {
+            l->unk28[l->unk27++] = u;
+        }
+        if (arg0->unkE == 0x1F && (u->unk68 & 1) && ((D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34 >> 4) & 0x1F) == 2) {
+            l->unk44 = u;
+        }
+    }
+    l->unk38 = sum[0] / (s8)l->unk24;
+    l->unk3A = 0;
+    l->unk3C = sum[2] / (s8)l->unk24;
+    func_800E3DA8();
+    func_800E701C(l);
+    func_800D62A0(arg1);
+}
+
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b", D_800A7948);
+
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C28F4);

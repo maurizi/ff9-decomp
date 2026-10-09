@@ -1,9 +1,5 @@
 #include "ovl_0b.h"
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C2598);
-
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C28F4);
-
 u8 func_800C2DF4(void) {
     return D_800FE470;
 }
