@@ -6382,7 +6382,17 @@ s32 func_80054FE0(s32 on) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055060);
+s32 func_80055060(s32 a, s32 b, s32 on) {
+    Unk8007BD44Row *e;
+
+    e = (Unk8007BD44Row *)((u8 *)D_8007BD38.unkC + D_8007BD38.unkC->unk6) + a;
+    if (on) {
+        e->unk0[b] |= 1;
+    } else {
+        e->unk0[b] &= ~1;
+    }
+    return 0;
+}
 
 s32 func_800550C0(s16 a) {
     D_8007BD38.unk6 = a;

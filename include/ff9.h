@@ -2482,4 +2482,8 @@ extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
 extern s32 D_8007F740;
 extern Unk80080AA0 D_800809F0;
+typedef struct {
+    u16 unk0[6];
+} Unk8007BD44Row;
+extern u32 D_80083174;
 #endif
