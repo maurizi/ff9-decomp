@@ -222,6 +222,18 @@ extern RECT D_801EDF14;
 extern s32 D_801FB050[]; /* text index per mode */
 extern RECT D_801FB058;
 void func_801F5E40(void);
+void func_801F5E90(s32, s32, s32);
+void func_801F95E4(); /* also used as a Unk801FBEE0 callback */
+void func_801F62F0(void (*)(Unk801FBEE0 *));
+void func_801F6BD4(void);
+void func_801F770C(void);
+void func_801F734C(void);
+void func_801F61B0(void);
+void func_801F830C(void);
+void func_801F7928(void);
+void func_801F5A60(void);
+void func_801F5BE0(void);
+void func_801F500C(void);
 void func_801F5114(void);
 u8 *func_801F6320(void);
 void func_801F7CD0(Window *);

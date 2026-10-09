@@ -1,6 +1,37 @@
 #include "ovl_39.h"
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4414);
+void func_801F4414(void) {
+    s32 i;
+
+    D_801FB1A8.unk0 = D_80077DB0.unkC;
+    D_801FB1A8.unk14 = func_8002F8E4(7);
+    D_801FB1A8.unk1 = 1;
+    D_801FB1A8.unk2 = 2;
+    D_801FB1A8.unk7 = 0;
+    D_801FB1A8.unk8 = 1;
+    D_801FB1A8.unkC = 0;
+    D_801FB1A8.unk10 = 0;
+    D_80077DB0.unk2 &= 1;
+    func_801F6BD4();
+    func_801F770C();
+    func_801F734C();
+    func_801F61B0();
+    func_801F830C();
+    func_801F7928();
+    func_801F5BE0();
+    func_8003556C(func_801F500C);
+    func_8003575C(D_801EDF1C);
+    D_801FB1A8.unk20 = func_80035774(0x16);
+    D_801FB1A8.unk4[0] = 1;
+    D_801FB1A8.unk4[1] = 1;
+    func_801FA0C8();
+    func_801FAC68();
+    func_801F5A60();
+    for (i = 0; i < 2; i++) {
+        D_801FB1A8.unk18[i] = D_80073998[i];
+        D_80073998[i] |= 0x300;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4538);
 
@@ -304,7 +335,41 @@ void func_801F5A60(void) {
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5A68);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5BE0);
+void func_801F5BE0(void) {
+    RECT r;
+    u8 *img = D_801F2854;
+    u8 *buf = D_801FBACC;
+    u8 *src = img;
+    s32 i;
+
+    r.y = 0xE0;
+    r.x = 0;
+    r.w = 0x100;
+    r.h = 1;
+    StoreImage(&r, (u32 *)buf);
+    DrawSync(0);
+    LoadImage(&r, (u32 *)img);
+    DrawSync(0);
+    buf += 0x200;
+    img += 0x200;
+    r.x = 0x40;
+    r.w = 0x58;
+    r.y = 0x100;
+    r.h = 3;
+    for (i = 0; i < 11; i++) {
+        if (i == 0) {
+            StoreImage(&r, (u32 *)buf);
+        } else {
+            StoreImage(&r, (u32 *)src);
+            src += 0x210;
+        }
+        DrawSync(0);
+        LoadImage(&r, (u32 *)img);
+        DrawSync(0);
+        r.y += 3;
+        img += 0x210;
+    }
+}
 
 void func_801F5D00(void) {
     RECT r;
@@ -1206,7 +1271,30 @@ INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9024);
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9120);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F94D0);
+void func_801F94D0(s32 slot, s32 unused) {
+    D_801FB1A8.unk3 = slot;
+    if (D_801FB1A8.unk6 == 0) {
+        func_8002F488(0x67);
+        func_801F62F0(func_801F95E4);
+        func_801F5E90(D_80077DB2 + 0x23, 0x25, 0x26);
+        return;
+    }
+    switch (D_801FB1A8.unk34[D_801FB1A8.unk3].unk1A) {
+    case 1:
+    case 3:
+        func_8002F488(0x67);
+        func_801F95E4();
+        break;
+    case 4:
+        func_8002F488(0x67);
+        func_801F62F0(func_801F95E4);
+        func_801F5E90(0x27, 0x28, 0x29);
+        break;
+    case 2:
+        func_8002F488(0x66);
+        break;
+    }
+}
 
 void func_801F95E4(void) {
     func_801F96CC();
