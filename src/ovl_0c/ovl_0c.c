@@ -5212,7 +5212,95 @@ s32 func_800C291C(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2A80);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C3954);
+/* blend the sky parameter blocks arg1 -> arg2 by arg3 (0..0x1000) into arg0 */
+void func_800C3954(WmSky *arg0, WmSky *arg1, WmSky *arg2, s32 arg3, s32 arg4) {
+    s16 *d;
+    s16 *a;
+    s16 *b;
+
+    if (arg3 < 0) {
+        arg3 = 0;
+    }
+    if (arg3 > 0x1000) {
+        arg3 = 0x1000;
+    }
+    if (arg4 < 0) {
+        arg4 = 0;
+    }
+    if (arg4 > 0x1000) {
+        arg4 = 0x1000;
+    }
+    arg0->unk0[0].vx = func_800B822C(arg1->unk0[0].vx, arg2->unk0[0].vx, arg3, 0xD);
+    arg0->unk0[0].vy = func_800B822C(arg1->unk0[0].vy, arg2->unk0[0].vy, arg3, 0xD);
+    arg0->unk0[0].vz = func_800B822C(arg1->unk0[0].vz, arg2->unk0[0].vz, arg3, 0xD);
+    d = &arg0->unk0[1].vx;
+    a = &arg1->unk0[1].vx;
+    b = &arg2->unk0[1].vx;
+    d[0] = func_800B822C(a[0], b[0], arg3, 0xD);
+    d[1] = func_800B822C(a[1], b[1], arg3, 0xD);
+    d[2] = func_800B822C(a[2], b[2], arg3, 0xD);
+    d = &arg0->unk0[2].vx;
+    a = &arg1->unk0[2].vx;
+    b = &arg2->unk0[2].vx;
+    d[0] = func_800B822C(a[0], b[0], arg3, 0xD);
+    d[1] = func_800B822C(a[1], b[1], arg3, 0xD);
+    d[2] = func_800B822C(a[2], b[2], arg3, 0xD);
+    d = &arg0->unk18.vx;
+    a = &arg1->unk18.vx;
+    b = &arg2->unk18.vx;
+    d[0] = func_800B822C(a[0], b[0], arg3, 0xD);
+    d[1] = func_800B822C(a[1], b[1], arg3, 0xD);
+    d[2] = func_800B822C(a[2], b[2], arg3, 0xD);
+    d = arg0->unk54;
+    a = arg1->unk54;
+    b = arg2->unk54;
+    d[0] = func_800B822C(a[0], b[0], arg3, 0xD);
+    d[1] = func_800B822C(a[1], b[1], arg3, 0xD);
+    d[2] = func_800B822C(a[2], b[2], arg3, 0xD);
+    arg0->unk5C = func_800B822C((s16)arg1->unk5C, (s16)arg2->unk5C, arg3, 0xD);
+    d = &arg0->unk20.v.vx;
+    a = &arg1->unk20.v.vx;
+    b = &arg2->unk20.v.vx;
+    d[0] = func_800B81C0(a[0] << 12, b[0] << 12, arg3) >> 12;
+    d[1] = func_800B81C0(a[1] << 12, b[1] << 12, arg3) >> 12;
+    d[2] = func_800B81C0(a[2] << 12, b[2] << 12, arg3) >> 12;
+    d = &arg0->unk28.v.vx;
+    a = &arg1->unk28.v.vx;
+    b = &arg2->unk28.v.vx;
+    d[0] = func_800B81C0(a[0] << 12, b[0] << 12, arg3) >> 12;
+    d[1] = func_800B81C0(a[1] << 12, b[1] << 12, arg3) >> 12;
+    d[2] = func_800B81C0(a[2] << 12, b[2] << 12, arg3) >> 12;
+    d = arg0->unk30[0].unk4;
+    a = arg1->unk30[0].unk4;
+    b = arg2->unk30[0].unk4;
+    d[0] = func_800B81C0(a[0], b[0], arg3);
+    d[1] = func_800B81C0(a[1], b[1], arg3);
+    d[2] = func_800B81C0(a[2], b[2], arg3);
+    d = arg0->unk30[1].unk4;
+    a = arg1->unk30[1].unk4;
+    b = arg2->unk30[1].unk4;
+    d[0] = func_800B81C0(a[0], b[0], arg3);
+    d[1] = func_800B81C0(a[1], b[1], arg3);
+    d[2] = func_800B81C0(a[2], b[2], arg3);
+    d = arg0->unk30[2].unk4;
+    a = arg1->unk30[2].unk4;
+    b = arg2->unk30[2].unk4;
+    d[0] = func_800B81C0(a[0], b[0], arg3);
+    d[1] = func_800B81C0(a[1], b[1], arg3);
+    d[2] = func_800B81C0(a[2], b[2], arg3);
+    arg0->unk30[0].unk0 = func_800B81C0(arg1->unk30[0].unk0, arg2->unk30[0].unk0, arg3);
+    arg0->unk30[0].unk2 = func_800B81C0((u16)arg1->unk30[0].unk2, (u16)arg2->unk30[0].unk2, arg3);
+    arg0->unk30[1].unk0 = func_800B81C0(arg1->unk30[1].unk0, arg2->unk30[1].unk0, arg3);
+    arg0->unk30[1].unk2 = func_800B81C0((u16)arg1->unk30[1].unk2, (u16)arg2->unk30[1].unk2, arg3);
+    arg0->unk30[2].unk0 = func_800B81C0(arg1->unk30[2].unk0, arg2->unk30[2].unk0, arg3);
+    arg0->unk30[2].unk2 = func_800B81C0((u16)arg1->unk30[2].unk2, (u16)arg2->unk30[2].unk2, arg3);
+    arg0->unk30[0].unk0 &= 0xFFFE;
+    arg0->unk30[0].unk2 = (u16)arg0->unk30[0].unk2 & 0xFFFE;
+    arg0->unk30[1].unk0 &= 0xFFFE;
+    arg0->unk30[1].unk2 = (u16)arg0->unk30[1].unk2 & 0xFFFE;
+    arg0->unk30[2].unk0 &= 0xFFFE;
+    arg0->unk30[2].unk2 = (u16)arg0->unk30[2].unk2 & 0xFFFE;
+}
 
 void func_800C3DEC(void) {
     D_800D3F9C = 1;
