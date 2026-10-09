@@ -396,7 +396,64 @@ s32 func_800CA774(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CA7CC);
+void func_800CA7CC(void) {
+    s16 i = 3;
+    BtlScript *s = (BtlScript *)D_8006794C->unk1C->unk8E4.battle->unk11C4.unk68;
+    BtlUnit *u;
+    u8 op;
+    s16 v[4];
+
+    do {
+        if (s->unk4 != NULL) {
+            s->unk10++;
+            s->unk12--;
+            s->unk14++;
+            u = s->unk4->unk4;
+            do {
+                op = *s->unk8;
+                if (op >= 0x23) {
+                    op = 0;
+                }
+                if ((s->unk0 & 1) && D_800F78A4->unk0->unk23 != 0) {
+                    s->unk0 = (s->unk0 | 2) & ~1;
+                }
+                if (s->unk8 != s->unkC && D_800F5858[op].unk0 != NULL) {
+                    D_800F5858[op].unk0(s, u);
+                }
+                s->unkC = s->unk8;
+            } while ((u16)D_800F5858[op].unk4(s, u));
+            if (s->unk21 != 0) {
+                u->unk86[1] = s->unk1C + s->unk1E * s->unk20 / s->unk21;
+                if (s->unk20++ >= s->unk21) {
+                    s->unk21 = 0;
+                }
+            }
+            if (s->unk17 != 0) {
+                if (--s->unk17 == 0) {
+                    func_800C22CC(u, s->unk18, s->unk1B);
+                }
+            }
+            if (s->unk25 != 0) {
+                if (--s->unk25 == 0) {
+                    func_800E3DA8();
+                    v[0] = s->unk24;
+                    v[1] = 0;
+                    v[2] = 0;
+                    v[3] = 0;
+                    func_800C2598((BtlCmd *)s->unk4, (u16)s->unk22, v);
+                }
+            }
+            if (s->unk26 != 0) {
+                s->unk27--;
+                func_800C24E8(u, (s->unk27 << 5) / s->unk26);
+                if (s->unk27 == 0) {
+                    s->unk26 = 0;
+                }
+            }
+        }
+        s++;
+    } while (--i != -1);
+}
 
 s32 func_800CAAD0(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->unk9C;

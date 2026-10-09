@@ -325,7 +325,8 @@ typedef struct BtlCalc {
 
 /* battle script interpreter context */
 typedef struct {
-    u8 pad0[8];
+    u8 pad0[4];
+    struct BtlUnit *unk4;
     struct BtlCmd8 *unk8;
     u16 unkC;
 } BtlScript4;
@@ -334,7 +335,7 @@ typedef struct BtlScript {
     u32 unk0; /* flags */
     BtlScript4 *unk4;
     u8 *unk8; /* script pointer */
-    u8 padC[0x10 - 0xC];
+    u8 *unkC; /* previous script pointer */
     s16 unk10;
     s16 unk12;
     s16 unk14;
@@ -354,6 +355,13 @@ typedef struct BtlScript {
     u8 unk27;
     s16 unk28[8]; /* per-command work area */
 } BtlScript;
+typedef struct {
+    void (*unk0)(BtlScript *, BtlUnit *);
+    s32 (*unk4)(BtlScript *, BtlUnit *);
+} BtlScriptOp; /* script opcode handlers: on entry, per frame */
+extern BtlScriptOp D_800F5858[];
+void func_800C24E8(BtlUnit *, s32);
+
 
 /* D_800F78A4->unkC */
 typedef struct {
@@ -382,6 +390,8 @@ typedef struct Unk800F78A40 {
     u8 unkF;
     u8 pad10[0x1C - 0x10];
     u32 unk1C;
+    u8 pad20[0x23 - 0x20];
+    u8 unk23;
 } Unk800F78A40;
 
 typedef struct {
