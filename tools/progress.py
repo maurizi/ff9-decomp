@@ -44,13 +44,22 @@ def remaining():
     return names
 
 
+LIB_LIST = "config/library_funcs.us.txt"
+
+
 def library():
+    """Names excluded from game totals: PsyQ signature matches plus the hand-made list."""
     names = set()
     for path in glob.glob(LIB_GLOB):
         for line in open(path):
             m = re.match(r"(\w+) = 0x", line)
             if m:
                 names.add(m.group(1))
+    if os.path.exists(LIB_LIST):
+        for line in open(LIB_LIST):
+            f = line.split("#")[0].split()
+            if len(f) >= 2:
+                names.add(f[1])
     return names
 
 
@@ -93,7 +102,7 @@ def main():
     g, l = stats(game), stats(libs)
     print("-" * 70)
     row("game total", g)
-    print(f"psyq libs : {l[1]:5d} funcs, {l[3]:7d} bytes (identified by signature, not decompiled)")
+    print(f"library   : {l[1]:5d} funcs, {l[3]:7d} bytes (PsyQ signatures + config/library_funcs.us.txt; not decompiled)")
 
     if a.csv:
         commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True,
