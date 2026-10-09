@@ -85,8 +85,10 @@ extern Unk801FC348 D_801FC348;
 
 typedef struct {
     u8 unk0;
-    u8 pad1[3];
+    u8 pad1;
+    u16 unk2; /* text size: w | rows << 12 */
     Window *unk4;
+    u8 *unk8; /* text */
 } Unk801FC358;
 extern Unk801FC358 D_801FC358;
 
@@ -116,7 +118,6 @@ extern s32 D_801FC604;
 extern void (*D_801FB098)(void); /* memory card completion callback */
 extern s32 D_801FB09C;
 extern s32 D_801FB0A0;
-extern u8 *D_801FC360;
 extern u8 D_801EE4D4[];
 extern u16 D_801FC3E0[256]; /* CRC-16 table */
 extern s32 D_801FC5E0;
@@ -234,6 +235,13 @@ void func_801F7928(void);
 void func_801F5A60(void);
 void func_801F5BE0(void);
 void func_801F500C(void);
+u8 func_801F8524(void);
+u8 func_801F7E68(void);
+extern RECT D_801FAF7C;
+extern RECT D_801FAF84;
+void func_801F77F4(Window *);
+void func_801F7830(Window *);
+void func_801F7840(Window *);
 void func_801F5114(void);
 u8 *func_801F6320(void);
 void func_801F7CD0(Window *);
