@@ -347,9 +347,9 @@ typedef struct {
 
 /* filled by func_800C3FE4 */
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* volume mask */
     s32 unk4; /* count */
-    s32 unk8[4];
+    s32 unk8[3]; /* sound ids */
 } Unk800C3FE4;
 
 typedef struct {
@@ -480,6 +480,16 @@ typedef struct {
     s32 unkC; /* offset */
     s32 unk10; /* size */
 } Unk800AC424;
+
+/* POLY_F4 with the screen coordinates as packed words */
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s32 xy0;
+    s32 xy1;
+    s32 xy2;
+    s32 xy3;
+} WmPolyF4;
 
 /* ---- overlay functions ---- */
 s32 func_800A9DE4(WorldMapObj *, s16);

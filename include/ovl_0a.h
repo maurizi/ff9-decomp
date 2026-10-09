@@ -997,6 +997,9 @@ typedef struct {
 } BgSprOfs;
 
 /* ---- overlay functions ---- */
+s32 func_800AA074(FieldScene *, s16);
+s32 func_800AA0A8(FieldScene *, s16);
+void func_800B1E04(FieldScene *, s16);
 s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
 s32 func_800C6EEC();

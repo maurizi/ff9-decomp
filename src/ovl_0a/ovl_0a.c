@@ -412,7 +412,90 @@ void func_800A89C4(s32 arg0) {
     D_8006794C->unk1C->unk0 &= ~0x20;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A8E58);
+void func_800A8E58(void) {
+    FieldScene *sc;
+    s32 i;
+    s32 id;
+
+    sc = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    DrawSync(0);
+    func_800B1E04(sc, D_8006794C->unk1C->unkC);
+    D_80073998[0] &= 0xFFFF0006;
+    func_800AA0A8(sc, D_8006794C->unk1C->unkC);
+    func_800AA074(sc, D_8006794C->unk1C->unkC);
+    func_800AAA54();
+    for (i = 0; i < 9; i++) {
+        if (D_8006794C->unk1C->unk8D8[i].unk0 & 1) {
+            D_8006794C->unk1C->unk8D8[i].unk0 &= ~1;
+        }
+    }
+    for (i = 0; i < D_8006794C->unk1C->unk38; i++) {
+        if (D_8006794C->unk1C->unk8E0[i].unk0 & 1) {
+            D_8006794C->unk1C->unk8E0[i].unk0 &= ~1;
+        }
+    }
+    for (i = 1; i >= 0; i--) {
+        D_8006794C->unk1C->unk7EC[i] = D_8006794C->unk1C->unk7FC[i];
+        D_8006794C->unk1C->unk7F4[i] = D_8006794C->unk1C->unk804[i];
+    }
+    switch (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A) {
+    case 2:
+        func_800AA194(func_800AA0F4(sc->unkA, &D_8006794C->unk1C->unk7FC[0], &D_8006794C->unk1C->unk804[0]),
+                      &D_8006794C->unk1C->unk7FC[1], &D_8006794C->unk1C->unk804[1]);
+        D_8006794C->unk1C->unkE = sc->unkA;
+        D_8006794C->unk8 = 2;
+        D_8006794C->unkA = 1;
+        break;
+    case 3:
+        id = func_800AA330(func_800AA290(sc->unkA, &D_8006794C->unk1C->unk7FC[1], &D_8006794C->unk1C->unk804[1]),
+                           &D_8006794C->unk1C->unk7FC[0], &D_8006794C->unk1C->unk804[0]);
+        D_8006794C->unk1C->unk7DC = sc->unkA;
+        D_8006794C->unk1C->unk7DE = id;
+        D_8006794C->unk8 = 3;
+        D_8006794C->unkA = 1;
+        break;
+    case 9:
+        if (D_8006794C->unk1C->unk0 & 0x20000000) {
+            func_800B0124(0x800, D_8006794C->unk1C->unk81C[0], 0, 0, 0);
+        }
+        func_800B1C4C();
+        func_80056228();
+        D_8006794C->unk8 = 9;
+        D_8006794C->unkA = 1;
+        break;
+    case 7:
+        func_8005546C(-1, 0);
+        func_80056228();
+        D_8006794C->unk8 = 7;
+        D_8006794C->unkA = 1;
+        break;
+    case 4:
+        func_8005546C(-1, 0);
+        func_80056228();
+        D_8006794C->unk8 = 4;
+        D_8006794C->unkA = 1;
+        break;
+    case 1:
+        if (D_8006794C->unk1C->unk8E4.field->unk0 & 0x10000) {
+            id = (s16)D_8006794C->unk1C->unk8E4.field->unkC->unk10;
+        } else {
+            id = func_800AA330(func_800AA290(sc->unkA, &D_8006794C->unk1C->unk7FC[1], &D_8006794C->unk1C->unk804[1]),
+                               &D_8006794C->unk1C->unk7FC[0], &D_8006794C->unk1C->unk804[0]);
+        }
+        if (id != (D_8006794C->unk1C->unk3A | 0x60000)) {
+            D_8006794C->unk0 |= 4;
+        }
+        D_8006794C->unk1C->unk8E4.field->unk0 &= ~0x10000;
+        D_8006794C->unk1C->unk8E4.field->unkC->unk10 = id;
+        D_8006794C->unk1C->unk8E4.field->unkA = D_8006794C->unk1C->unkC;
+        D_8006794C->unk1C->unkC = sc->unkA;
+        break;
+    default:
+        func_8002EB64(0x39, 0xC9);
+        break;
+    }
+    D_8006794C->unk1C->unk7E4 = (struct FileTable *)-1;
+}
 
 /* allocate the field scene block and its tables */
 void func_800A9350(void) {
@@ -671,13 +754,13 @@ s32 func_800AA01C(u16 *arg0, u16 *arg1) {
     return 0;
 }
 
-s32 func_800AA074(FieldScene *arg0) {
+s32 func_800AA074(FieldScene *arg0, s16 arg1) {
     func_8001C784(arg0->unk24);
     arg0->unk24 = NULL;
     return 0;
 }
 
-s32 func_800AA0A8(void) {
+s32 func_800AA0A8(FieldScene *arg0, s16 arg1) {
     func_80054F80();
     return 0;
 }
@@ -1642,7 +1725,7 @@ void func_800B1D9C(s32 arg0) {
     }
 }
 
-void func_800B1E04(FieldScene *arg0) {
+void func_800B1E04(FieldScene *arg0, s16 arg1) {
     s32 t = (s32)arg0->unk24;
     s32 i;
 
