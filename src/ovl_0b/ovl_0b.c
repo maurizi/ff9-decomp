@@ -1487,7 +1487,58 @@ void func_800B1250(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 /* padded: the next jump table is 8-aligned in its object */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1520);
+void func_800B1520(s32 arg0, s16 arg1, u32 arg2, u32 arg3) {
+    Battle *b;
+    BtlUnit *u;
+    BtlCmd *c;
+
+    u = func_800BED10(arg0);
+    b = D_8006794C->unk1C->unk8E4.battle;
+    if (b->unk11B8 & 1 || (u->unk3C & 0x02021103)) {
+        goto fail;
+    }
+    if (arg2 == 0x2F) {
+        if (b->unkD80 != 4) {
+            goto fail;
+        }
+        c = u->unk4;
+        if (u->unk3C & 0x400) {
+            arg1 = func_800C1F7C(RAND8() & 1);
+            arg3 = D_8006794C->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk26;
+        } else if (u->unk3C & 0x800) {
+            arg1 = func_800C1F7C(1);
+            arg3 = D_8006794C->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk26;
+        }
+    } else {
+        if (arg2 != 0x35) {
+            if (arg2 != 0x36) {
+fail:
+                u->unkB3 = 0;
+                return;
+            }
+        }
+        c = u->unk8;
+    }
+    c->unk8 = &D_8006794C->unk1C->unk8E4.battle->unk5D8[arg3];
+    c->unkC = arg1;
+    c->unkE = arg2;
+    c->unkF = arg3;
+    if ((u32)(c->unk8->unk0_0 - 6) < 7) {
+        c->unk10.b.unk0_0 = 1;
+    } else {
+        c->unk10.b.unk0_0 = 0;
+    }
+    if (arg2 > 0x30) {
+        c->unk10.b.unk0_4 = 1;
+    } else {
+        func_800BF558(c->unk4, 0x8000);
+    }
+    c->unk10.b.unk0_5 = 0;
+    c->unk10.b.unk0_6 = 0;
+    c->unk10.b.unk0_7 = 0;
+    u->unk68 |= 0x80000;
+    func_800B3090(c);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1764);
 
@@ -2083,7 +2134,52 @@ void func_800B81C4(BtlCalc *arg0, u8 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B8390);
+s32 func_800B8390(BtlCalc *arg0) {
+    if (arg0->unk0->unk3C & 0x410) {
+        arg0->unk16 /= 2;
+    }
+    if (arg0->unk0->unk3C & 0x04004000) {
+        arg0->unk12 = 0;
+    }
+    if (arg0->unk4->unkC4[0] & 0x400) {
+        arg0->unk16 /= 2;
+    }
+    if (arg0->unk4->unk3C & 0x02021417) {
+        arg0->unk12 = 0;
+    }
+    if (arg0->unk4->unk3C & 0x8000) {
+        arg0->unk16 /= 2;
+    }
+    if (arg0->unk4->unk3C & 0x04000000) {
+        arg0->unk16 = 0;
+    }
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+    }
+    if (((*D_8007B720 << 8) | *D_8007B720++) % 100 >= arg0->unk16) {
+        arg0->unk18 |= 1;
+        return 0;
+    }
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+    }
+    if (((*D_8007B720 << 8) | *D_8007B720++) % 100 < arg0->unk12) {
+        if (arg0->unk4 != arg0->unk0) {
+            arg0->unk18 |= 1;
+            if (!((arg0->unk4->unk68 >> 25) & 1)) {
+                arg0->unk18 |= 3;
+            }
+            return 0;
+        }
+    }
+    return 1;
+}
 
 s32 func_800B8664(BtlCalc *arg0) {
     if (D_8007B720 >= D_8007B92D) {
