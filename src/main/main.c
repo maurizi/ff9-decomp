@@ -6883,7 +6883,51 @@ Unk16D8 *func_80036978(Unk8004AB64 *obj) {
     return next;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036AAC);
+s32 func_80036AAC(s32 op) {
+    s32 r = 0;
+    s32 w = D_8007B6F0[-2];
+    s32 mask;
+    s32 i;
+
+    if (((w >> 26) & 7) == 5) {
+        mask = func_8004B404_inline(w);
+    } else {
+        D_8007B6F0--;
+        mask = func_80052D40();
+        D_8007B6F0 += 2;
+    }
+    for (i = 0; i < 8; i++) {
+        if (mask & 1) {
+            D_8007B700 = D_8007AED0[i];
+            switch (op) {
+            case 8:
+                r = func_80052D40();
+                D_8007B6F0++;
+                func_80052D70(r + 1);
+                break;
+            case 9:
+                r = func_80052D40();
+                D_8007B6F0++;
+                func_80052D70(r - 1);
+                break;
+            case 10:
+                r = func_80052D40() + 1;
+                D_8007B6F0++;
+                func_80052D70(r);
+                break;
+            case 11:
+                r = func_80052D40() - 1;
+                D_8007B6F0++;
+                func_80052D70(r);
+                break;
+            }
+            D_8007B6F0++;
+        }
+        mask >>= 1;
+    }
+    D_8007B6F0 -= 2;
+    return r;
+}
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800110A0);
 
