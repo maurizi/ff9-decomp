@@ -1493,7 +1493,9 @@ u8 func_80022C10(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
-    u8 pad4[0xC - 4];
+    u8 unk4[4];
+    u8 unk8;
+    u8 pad9[0xC - 9];
 } Unk8006D548;
 extern Unk8006D548 D_8006D548[];
 void func_80033BD0(u32);
@@ -1819,7 +1821,7 @@ s32 func_80048F54(void);
 void func_8004FBD8(void);
 void func_8004FE0C(void);
 
-s16 func_800BEC64(s32); /* overlay code at 0x800BEC64 */
+u16 func_800BEC64(u32); /* overlay code at 0x800BEC64 */
 void func_800363BC(void);
 void func_80036444(void);
 void func_80036528(void);

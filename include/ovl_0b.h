@@ -79,6 +79,12 @@ typedef struct {
     s16 unk2; /* tpage */
 } BtlUnit9C18;
 
+/* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
+typedef union {
+    P_TAG tag;
+    u32 w[13]; /* w[1], w[3]/w[4], ...: rgb + code words */
+} BtlPrim;
+
 typedef struct BtlUnit9C {
     u16 unk0; /* flags */
     u8 pad2[4 - 2];
@@ -652,7 +658,7 @@ typedef struct Battle11C0 {
     s32 *unkC; /* offset table, entries relative to its start */
     s32 unk10;
     u8 *unk14;
-    s32 unk18;
+    struct Unk800CEE74 *unk18;
     s32 unk1C;
     Battle11C020 *unk20;
     s32 unk24;
@@ -1125,6 +1131,12 @@ typedef struct {
 extern Unk80104E30 D_80104E30;
 
 extern u8 D_800FDF3A;
+extern u8 D_800FDF3B;
+void func_800CE05C(struct Unk800CEE74 *, BtlUnit9C50 *);
+void func_800B0EF8(struct Battle *);
+void func_800B0FC0(struct Battle *);
+void func_800C972C(void);
+void func_800AB580(s32);
 extern s8 D_800FEC54;
 
 extern char D_80101470[];
