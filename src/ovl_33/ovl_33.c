@@ -511,7 +511,12 @@ u32 func_801F0CC4(s32 id, Character *c) {
     return 3;
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0DDC);
+void func_801F0DDC(void) {
+    MenuList *l = &D_801FBF84.unk8[D_801FBF84.unk0];
+
+    func_80063118(&D_801FBF84.unk58, l->unk7 == 0 ? D_801F3458 : D_801F3468, 0);
+    D_801FBF84.unk1 = 4;
+}
 
 void func_801F0E3C(void) {
     D_801FBF84.unk1 = 3;
@@ -955,7 +960,9 @@ void func_801F32E0(Character *c) {
     c->unk34 = (c->unk34 & ~0x1F0) | ((func_80033280(c->unk34 & 0xF, (c->unkA >> 4) & 1, c->unk39) & 0x1F) << 4);
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F3344);
+void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color) {
+    func_8002B5FC(x, y - 4, z, func_80035774(id), color);
+}
 
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/ovl_33", D_801EDF00);
 
