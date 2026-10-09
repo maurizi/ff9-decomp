@@ -126,16 +126,18 @@ typedef struct {
     u8 unk0; /* mode */
     u8 unk1;
     s16 unk2; /* speed */
-    u8 pad4[4];
+    u8 unk4; /* turn speed */
+    u8 pad5[3];
     u8 unk8;
     u8 unk9;
     u8 unkA;
     u8 unkB;
     u8 unkC;
-    u8 padD[4];
+    u8 padD[3];
+    u8 unk10;
     u8 unk11;
     u8 pad12[2];
-    u8 unk14[8]; /* allowed cell types */
+    u32 unk14[2]; /* allowed cell types (bit mask) */
 } Unk800CE3C8; /* 0x1C */
 
 /* doubly linked node (func_800C2134) */
@@ -295,9 +297,15 @@ typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
     Unk800C95C8 *unk8;
-    s32 unkC;
+    Unk8004AB64 *unkC;
 } WmObjSlot;
 s32 func_8004AB64(Unk8004AB64 *);
+void func_800C709C(Unk800C95C8 *, u8);
+void func_800C7914(Unk800C95C8 *, u8);
+void func_800C9484(Unk800C95C8 *);
+void func_800C96AC(Unk800C95C8 *, u8);
+void func_800C9FCC(Unk800C95C8 *, u8);
+void func_800CA1D8(Unk800C95C8 *, u8);
 u8 *func_800634A8(s32);
 u8 *func_800634D8(s32);
 
@@ -340,9 +348,9 @@ typedef struct {
 
 /* filled by func_800C3FE4 */
 typedef struct {
-    s32 unk0;
+    s32 unk0; /* volume mask */
     s32 unk4; /* count */
-    s32 unk8[4];
+    s32 unk8[3]; /* sound ids */
 } Unk800C3FE4;
 
 typedef struct {
@@ -403,27 +411,34 @@ typedef struct {
     s16 pad;
 } Unk800D3FA0Sub; /* 0xC */
 
+typedef union {
+    SVECTOR v;
+    u8 c[8];
+} WmSkyCol;
+
+/* sky / lighting parameter block (0x5E bytes); func_800C3954 blends them */
+typedef struct {
+    SVECTOR unk0[3]; /* light directions */
+    SVECTOR unk18;
+    WmSkyCol unk20; /* back colour 1 */
+    WmSkyCol unk28; /* back colour 2 */
+    Unk800D3FA0Sub unk30[3];
+    s16 unk54[3];
+    u8 pad5A[2];
+    u16 unk5C;
+} WmSky; /* 0x5E */
+
 typedef struct {
     u8 pad0[0x14A];
     s16 unk14A;
     s16 unk14C;
     u8 pad14E[0x5E0 - 0x14E];
-    SVECTOR unk5E0[3];
-    SVECTOR unk5F8;
-    u8 unk600; /* back colour 1 */
-    u8 pad601;
-    u8 unk602;
-    u8 pad603;
-    u8 unk604;
-    u8 pad605[3];
-    u8 unk608; /* back colour 2 */
-    u8 pad609;
-    u8 unk60A;
-    u8 pad60B;
-    u8 unk60C;
-    u8 pad60D[3];
-    Unk800D3FA0Sub unk610[3];
+    WmSky unk5E0[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
 } Unk800D3FA0;
+void func_800C3954(WmSky *, WmSky *, WmSky *, s32, s32);
+void func_800C2830(void);
+void func_800B9774(void);
+void func_800B8664(void);
 
 typedef struct {
     s16 unk0;
@@ -454,7 +469,35 @@ typedef struct {
     Unk800AA39CEntry unk4[1];
 } Unk800AA39C;
 
+/* streamed load request (func_800AC424) */
+typedef struct {
+    u8 pad0[8];
+    s32 unk8; /* address */
+    s32 unkC; /* offset */
+    s32 unk10; /* size */
+} Unk800AC424;
+
+/* POLY_F4 with the screen coordinates as packed words */
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s32 xy0;
+    s32 xy1;
+    s32 xy2;
+    s32 xy3;
+} WmPolyF4;
+
 /* ---- overlay functions ---- */
+s32 func_800B3398(s32 *);
+s32 func_800B345C(s32 *);
+s32 func_800B3524(s32 *);
+void func_800C6F00(s32, s32, s32, s32, s32);
+s32 func_800A9DE4(WorldMapObj *, s16);
+s32 func_800A9E24(s16, s32 *, s32 *);
+s32 func_800A9EC4(s32, s32 *, s32 *);
+s32 func_800A9FC0(s16, s32 *, s32 *);
+s32 func_800AA060(s32, s32 *, s32 *);
+void func_800B8024(void);
 void func_800CB9D8(s32, s32);
 void func_800B4270(void *);
 s32 func_800B4FD4(void *, s32, s32);
@@ -515,7 +558,7 @@ s32 func_800B8498(void);
 s32 func_800B84C0(void);
 s32 func_800C3FE4(s32, Unk800C3FE4 *);
 s32 func_800B828C(s32 *);
-void func_800B3A80(void);
+void func_800B3A80(s32);
 s32 func_800B3FEC(s32, s32, s32);
 void func_800AD114(s32, s32, s32);
 void func_800BC098(void);
@@ -589,6 +632,9 @@ extern s16 D_800CE188;
 extern s16 D_800CE1A8;
 extern s16 D_800CE1C0;
 extern s8 D_800CCA20;
+extern s32 D_800CCE20;
+extern s32 D_800CCE24;
+extern s32 D_800CCE28;
 extern s32 D_800CCE2C;
 extern s32 D_800CCE30;
 extern s32 D_800CCE34;
@@ -763,9 +809,9 @@ extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
 extern u8 D_800D30F8[];
-extern u8 D_800CCB18[];
-extern u8 D_800CCB20[];
-u8 func_800B3340(u8 *, s32);
+extern u32 D_800CCB18[2]; /* cell type masks */
+extern u32 D_800CCB20[2];
+u8 func_800B3340(u32 *, s32);
 extern s32 D_800CD098;
 s32 func_800BCA6C(s16);
 extern s16 D_800D45D4[3];
@@ -792,6 +838,7 @@ extern s8 D_800CE1F2;
 extern s32 D_800D3E60; /* navi mode */
 extern u8 D_800D3E64;
 extern s32 D_800D3E6C;
+extern POLY_G3 *D_800D3E7C;
 extern POLY_FT4 *D_800D3E68;
 extern s8 D_800D3E75;
 extern s32 D_800CCE40;
@@ -898,7 +945,7 @@ s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
 extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
 extern u8 D_800CE209;
-extern s8 D_800CE25D;
+extern u8 D_800CE25D;
 extern u8 D_800CE25E;
 extern s32 D_800CE260;
 extern Unk8004AB64 *D_800CE268;
@@ -913,7 +960,7 @@ extern s32 D_800CE3C0;
 extern u16 D_800CE3CC;
 extern Unk8004AB64 *D_800CE3D0;
 extern s32 D_800CE3D4;
-extern s32 D_800CE3D8;
+extern Unk8004AB64 *D_800CE3D8;
 extern s32 D_800CE3E0;
 
 extern u8 D_800CCE49;
@@ -994,6 +1041,10 @@ extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
+void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
+void func_80030AF4(SVECTOR *, MATRIX *);
+s32 func_8004BB7C(s32); /* cos */
+s32 func_8004BB80(s32); /* sin */
 void func_800639D4(u16);
 s32 func_80050D38(s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
@@ -1030,6 +1081,7 @@ extern s32 D_800CD70C; /* marker snap distance */
 extern s32 D_800CD108;
 typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
+extern Unk800A7FB8 D_800A8020; /* radar arrow */
 extern RECT D_800A71D8;
 extern char D_800A7F48[]; /* encounter fallback message */ /* palette area (func_800B69B4) */
 extern CVECTOR D_800A7FF0; /* marker colours */
@@ -1066,6 +1118,34 @@ static inline void func_800BC0A8_inline(s32 *x, s32 *z) {
     if (*z <= -D_800D32DC) {
         *z += D_800D32DC;
     }
+}
+
+/* pad state, only read in mode 2 (func_800B7DAC) */
+static inline u32 func_800B7DAC_pad(void) {
+    return D_800CF46C == 2 ? D_800739A0[0] : 0;
+}
+
+static inline u32 func_800B7DAC_trg(void) {
+    if (D_800CF46C != 2) {
+        return 0;
+    }
+    return D_80073990;
+}
+
+/* Inlined copy of func_800B3340 (cell type bit test). */
+static inline u8 func_800B3340_inline(u32 *a, u32 k) {
+    u32 w;
+
+    if (k >= 32) {
+        w = a[0];
+        k -= 32;
+    } else {
+        w = a[1];
+    }
+    if ((w >> k) & 1) {
+        return 1;
+    }
+    return 0;
 }
 
 #endif

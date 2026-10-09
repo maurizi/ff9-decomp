@@ -440,8 +440,8 @@ typedef struct {
     u8 unk12B6;
     u8 unk12B7;
     union {
-        u16 h; /* tested as a halfword */
-        u8 b[2];
+        u8 b[2]; /* set separately by func_800EAC88 */
+        u16 h;   /* tested together */
     } unk12B8;
     u8 pad12BA[0x12BC - 0x12BA];
     s32 unk12BC;
@@ -504,7 +504,7 @@ typedef struct {
             u8 unk0[3];
             u8 unk3; /* count of unk0 */
         } b;
-        s16 h[2]; /* cleared as halfwords */
+        u16 h[2]; /* cleared as two halfwords (func_800E5EAC) */
     } unkA;
     u8 unkE;
     u8 unkF;
@@ -531,8 +531,8 @@ typedef struct {
     u16 unk1A;
     u8 pad1C[0x2C - 0x1C];
     union {
-        s32 w; /* set as a word */
         s16 h[2];
+        s32 w; /* set to -1 as a word */
     } unk2C;
     u8 pad30[0x38 - 0x30];
     s32 unk38;
@@ -751,18 +751,18 @@ typedef struct BtlCmd {
     u8 unkE;
     u8 unkF;
     union {
-        u32 w; /* cleared as a word */
         struct {
-            u32 unk10_0 : 2;
-            u32 unk10_2 : 2;
-            u32 unk10_4 : 1;
-            u32 unk10_5 : 1;
-            u32 unk10_6 : 1;
-            u32 unk10_7 : 2;
-            u32 unk10_9 : 1;
-            u32 unk10_10 : 1;
-            u32 unk10_11 : 1;
+            u32 unk0_0 : 2;
+            u32 unk0_2 : 2;
+            u32 unk0_4 : 1;
+            u32 unk0_5 : 1;
+            u32 unk0_6 : 1;
+            u32 unk0_7 : 2;
+            u32 unk0_9 : 1;
+            u32 unk0_10 : 1;
+            u32 unk0_11 : 1;
         } b;
+        u32 w; /* cleared as a word */
     } unk10;
 } BtlCmd;
 
@@ -814,6 +814,7 @@ typedef struct {
     u16 unkE;
 } Battle16CC; /* 0x10 */
 
+/* Battle.unk1358 ring entry (func_800CC278 hands out the next one) */
 typedef struct {
     u8 *unk0; /* animation, 0xFF-terminated */
     u16 unk4; /* glyph index into D_800686D0 */
@@ -846,9 +847,9 @@ typedef struct Battle1358 {
 
 typedef struct {
     Battle1358 unk0[16];
-    s16 unk1C0;
+    s16 unk1C0; /* last entry handed out (counts down, wraps to 15) */
     s16 unk1C2;
-} Battle1358List;
+} Battle1358Ring; /* Battle.unk1358 */
 
 /* Inlined copy of func_800B3CEC (clear a command); the original source inlines it. */
 static inline void func_800B3CEC_inline(BtlCmd *arg0) {
@@ -857,15 +858,15 @@ static inline void func_800B3CEC_inline(BtlCmd *arg0) {
     arg0->unkC = 0;
     arg0->unkE = 0;
     arg0->unkF = 0;
-    arg0->unk10.b.unk10_0 = 0;
-    arg0->unk10.b.unk10_2 = 0;
-    arg0->unk10.b.unk10_4 = 0;
-    arg0->unk10.b.unk10_5 = 0;
-    arg0->unk10.b.unk10_6 = 0;
-    arg0->unk10.b.unk10_7 = 0;
-    arg0->unk10.b.unk10_9 = 0;
-    arg0->unk10.b.unk10_10 = 0;
-    arg0->unk10.b.unk10_11 = 0;
+    arg0->unk10.b.unk0_0 = 0;
+    arg0->unk10.b.unk0_2 = 0;
+    arg0->unk10.b.unk0_4 = 0;
+    arg0->unk10.b.unk0_5 = 0;
+    arg0->unk10.b.unk0_6 = 0;
+    arg0->unk10.b.unk0_7 = 0;
+    arg0->unk10.b.unk0_9 = 0;
+    arg0->unk10.b.unk0_10 = 0;
+    arg0->unk10.b.unk0_11 = 0;
 }
 
 typedef struct Battle108C {
@@ -923,7 +924,7 @@ typedef struct Battle {
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
-    Battle1358List unk1358;
+    Battle1358Ring unk1358;
     s32 unk151C;
     s32 unk1520;
     Battle488 *unk1524;
@@ -1030,7 +1031,7 @@ typedef struct {
     s32 unk4;
     s16 unk8;
     u8 unkA;
-    u8 padB;
+    u8 unkB;
     u8 unkC[16];
     u8 unk1C;
     u8 unk1D;
@@ -1478,6 +1479,13 @@ extern void *D_80104FA0;
 extern s32 (*D_800F8DC4[])(void);
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk80104FC0; /* D_80104FB0.unk10 */
+
+typedef struct {
     u8 unk0; /* cursor */
     u8 unk1;
     u8 unk2;
@@ -1485,23 +1493,14 @@ typedef struct {
     u8 unk4[4];
     u8 unk8[4];
     u8 unkC[4];
-    u8 unk10;
-    u8 unk11;
-    u8 pad12[0x18 - 0x12];
+    Unk80104FC0 unk10;
+    u8 pad14[0x18 - 0x14];
     BtlUnit *unk18;
 } Unk80104FB0;
 extern Unk80104FB0 D_80104FB0;
 extern void (*D_800F8D94[])(void);
 
-extern BtlUnit *D_80104FC8;
 
-typedef struct {
-    s8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-} Unk80104FC0;
-extern Unk80104FC0 D_80104FC0;
 
 typedef struct Unk80104FD4 {
     u8 pad0[6];
@@ -1941,7 +1940,7 @@ s32 func_800B4040(BtlUnit *);
 void func_800C316C(s32);
 void func_800C36D0(void);
 s32 func_800CAEC4(BtlScript *, BtlUnit *);
-Battle1358 *func_800CC278(struct BtlUnit *);
+Unk800CC278 *func_800CC278(struct BtlUnit *);
 s32 func_800CC444(u32);
 s32 func_800AE47C(s32, u16);
 void func_800C22CC(BtlUnit *, u16, u8);
@@ -1997,6 +1996,10 @@ void func_800EC070(s32);
 void func_800EC14C(s32);
 void func_800EC170(s32);
 void func_800ECB5C(void);
+extern RECT D_800F8DDC; /* command window rect */
+void func_800EC628(Window *);
+void func_800EC730(Window *);
+void func_800EDC3C(); /* used as a Window callback */
 s32 func_800EB2BC(s32);
 u8 func_800F1360(void);
 
@@ -2294,7 +2297,6 @@ u8 *func_800E3EEC(u8 *);
 u8 *func_800CC4F0(u8 *);
 void func_800BD93C(BtlUnit *);
 void func_800BFAF4(BtlUnit *);
-extern u8 D_80104FC1; /* D_80104FC0.unk1 */
 void func_800ED02C(RECT *, s16);
 extern s32 D_800F8DE4[];
 Window *func_800F1370(void);

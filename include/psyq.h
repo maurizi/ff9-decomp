@@ -16,14 +16,23 @@ typedef struct {
     u8 r0, g0, b0, code;
 } P_TAG;
 
+#define ABS(x) ((x) < 0 ? -(x) : (x))
 #define setlen(p, _len) (((P_TAG *)(p))->len = (u8)(_len))
 #define setaddr(p, _addr) (((P_TAG *)(p))->addr = (u32)(_addr))
 #define getaddr(p) (u32)(((P_TAG *)(p))->addr)
 #define addPrim(ot, p) setaddr(p, getaddr(ot)), setaddr(ot, p)
 #define setcode(p, _code) (((P_TAG *)(p))->code = (u8)(_code))
 #define getcode(p) (u8)(((P_TAG *)(p))->code)
+#define _get_mode(dfe, dtd, tpage) ((0xe1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9ff))
+#define setDrawTPage(p, dfe, dtd, tpage) (setlen(p, 1), ((u32 *)(p))[1] = _get_mode(dfe, dtd, tpage))
 #define setSemiTrans(p, abe) ((abe) ? setcode(p, getcode(p) | 0x02) : setcode(p, getcode(p) & ~0x02))
 #define setPolyG4(p) setlen(p, 8), setcode(p, 0x38)
+/* libgpu.h primitive-word helpers */
+#define get_mode(dfe, dtd, tpage) \
+    ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))
+#define get_tw(p) \
+    (0xE2000000 | ((p)->y & 0xFF) >> 3 << 15 | ((p)->x & 0xFF) >> 3 << 10 | \
+     (~((p)->h - 1) & 0xFF) >> 3 << 5 | (~((p)->w - 1) & 0xFF) >> 3)
 
 #define setRECT(r, _x, _y, _w, _h) ((r)->x = (_x), (r)->y = (_y), (r)->w = (_w), (r)->h = (_h))
 #define setXY0(p, _x0, _y0) ((p)->x0 = (_x0), (p)->y0 = (_y0))
@@ -288,6 +297,32 @@ int CdGetDiskType(void);
 CdlLOC *CdIntToPos(int i, CdlLOC *p);
 int CdPosToInt(CdlLOC *p);
 CdlFILE *CdSearchFile(CdlFILE *fp, char *name);
+int CdInit(void);
+typedef struct {
+    short left;
+    short right;
+} SpuVolume;
+
+typedef struct {
+    unsigned long mask;
+    long mode;
+    SpuVolume depth;
+    long delay;
+    long feedback;
+} SpuReverbAttr;
+
+long SpuSetReverbModeParam(SpuReverbAttr *attr);
+void SpuSetReverbDepth(SpuReverbAttr *attr);
+long SpuClearReverbWorkArea(long mode);
+void VSyncCallback(void (*f)(void));
+void ResetCallback(void);
+int SetGraphDebug(int level);
+void InitGeom(void);
+void SpuInit(void);
+void InitCARD(long val);
+long StartCARD(void);
+void PadInitDirect(u8 *pad1, u8 *pad2);
+int PadStartCom(void);
 
 long _card_format(long chan);
 long _card_clear(long chan);
@@ -323,6 +358,13 @@ typedef struct {
     u8 u0, v0;
     u16 clut;
 } SPRT_16;
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+} SPRT_8;
 long SquareRoot0(long a);
 void SetGeomOffset(long ofx, long ofy);
 void ReadGeomOffset(long *ofx, long *ofy);
@@ -491,8 +533,12 @@ MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
 void SetRotMatrix(MATRIX *m);
 MATRIX *ScaleMatrix(MATRIX *m, VECTOR *v);
 VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
+VECTOR *ApplyMatrix(MATRIX *m, SVECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
 void SetPolyFT4(POLY_FT4 *p);
 void SetPolyF4(POLY_F4 *p);
+void SetPolyF3(POLY_F3 *p);
+void SetPolyG3(POLY_G3 *p);
+void SetPolyG4(POLY_G4 *p);
 
 #endif
