@@ -27,6 +27,13 @@ typedef struct {
 #define setDrawTPage(p, dfe, dtd, tpage) (setlen(p, 1), ((u32 *)(p))[1] = _get_mode(dfe, dtd, tpage))
 #define setSemiTrans(p, abe) ((abe) ? setcode(p, getcode(p) | 0x02) : setcode(p, getcode(p) & ~0x02))
 #define setPolyG4(p) setlen(p, 8), setcode(p, 0x38)
+#define setPolyF3(p) setlen(p, 4), setcode(p, 0x20)
+#define setPolyFT3(p) setlen(p, 7), setcode(p, 0x24)
+#define setPolyG3(p) setlen(p, 6), setcode(p, 0x30)
+#define setPolyGT3(p) setlen(p, 9), setcode(p, 0x34)
+#define setPolyF4(p) setlen(p, 5), setcode(p, 0x28)
+#define setPolyFT4(p) setlen(p, 9), setcode(p, 0x2C)
+#define setPolyGT4(p) setlen(p, 12), setcode(p, 0x3C)
 /* libgpu.h primitive-word helpers */
 #define get_mode(dfe, dtd, tpage) \
     ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))
