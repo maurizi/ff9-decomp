@@ -3650,7 +3650,18 @@ void func_800C2040(void) {
 void func_800C2048(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2050);
+/* find the loaded frame pack for (id, variant) */
+s32 func_800C2050(s32 arg0, s32 arg1) {
+    Unk800D3EAC *p = D_800D3EA8.unk4;
+    s32 i;
+
+    for (i = 0; i < 3; i++, p = p->unk4) {
+        if ((p->unkC & 0x3F) == (arg0 & 0x3F) && p->unkE == (arg1 & 0xFF)) {
+            return (s32)p->unk8;
+        }
+    }
+    return 0;
+}
 
 void func_800C20B0(s32 *arg0) {
     Unk800D3EAC *p;
