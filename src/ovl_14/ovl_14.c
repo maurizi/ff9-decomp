@@ -670,7 +670,41 @@ void func_800A9B14(void) {
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A9B58);
+void func_800A9B58(void) {
+    s32 i, j;
+    GameData *g;
+
+    DrawSync(0);
+    if (func_80012AD4() & 2) {
+        if (D_80071E34 != 0 && D_80071E34 == D_80071E34 / 50 * 50) {
+            D_8006794C->unk9 = 3;
+        } else {
+            D_8006794C->unk9 = 4;
+        }
+    } else {
+        D_8006794C->unk9 = 0;
+    }
+    VSync(D_8006794C->unk9);
+    ResetGraph(1);
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    if (D_800AB2C4 & 4) {
+        PutDrawEnv(&D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+    } else {
+        g = D_8006794C->unk1C;
+        DrawOTagEnv(g->unk10[g->unk8] + 0xFFF, &D_8006794C->unk10[g->unk8]);
+    }
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+    D_800AB2C4 |= D_800AB3B8[0][0];
+    D_800AB2C4 &= ~D_800AB3B8[1][0];
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 3; j++) {
+            D_800AB3B8[i][j] = D_800AB3B8[i][j + 1];
+        }
+        D_800AB3B8[i][3] = 0;
+    }
+    D_800AB2C8++;
+}
 
 void func_800A9DD4(void) {
     func_8019A9D8();

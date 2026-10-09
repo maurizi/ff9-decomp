@@ -22,6 +22,7 @@ typedef struct {
 
 /* main exe: candidates for ff9.h */
 s32 func_80022AC4(char *);
+extern s32 D_80071E34;
 u8 func_80022ED4(s32);
 
 /* ovl_64 (FMV player) */
