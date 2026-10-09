@@ -950,7 +950,7 @@ s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
 extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
 extern u8 D_800CE209;
-extern s8 D_800CE25D;
+extern u8 D_800CE25D;
 extern u8 D_800CE25E;
 extern s32 D_800CE260;
 extern Unk8004AB64 *D_800CE268;
@@ -1135,6 +1135,22 @@ static inline u32 func_800B7DAC_trg(void) {
         return 0;
     }
     return D_80073990;
+}
+
+/* Inlined copy of func_800B3340 (cell type bit test). */
+static inline u8 func_800B3340_inline(u32 *a, u32 k) {
+    u32 w;
+
+    if (k >= 32) {
+        w = a[0];
+        k -= 32;
+    } else {
+        w = a[1];
+    }
+    if ((w >> k) & 1) {
+        return 1;
+    }
+    return 0;
 }
 
 #endif
