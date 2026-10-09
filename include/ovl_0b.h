@@ -2181,7 +2181,15 @@ s32 func_800EEA98(s32);
 s32 *func_800F4FB4(s32);
 u8 *func_800F5064(u8 *);
 u8 *func_800F4E70(u8 *);
-s32 func_800D9134(u8 *, s32, s32);
+typedef struct Unk800D9134 {
+    u8 unk0;
+    u8 unk1;
+    u8 pad2[2];
+    s32 unk4;
+    s16 unk8[4];
+    s16 unk10[4];
+} Unk800D9134;
+s32 func_800D9134(Unk800D9134 *, s32, s32 *);
 extern s32 D_80104DE8;
 extern s32 D_800F78B4[];
 extern u16 D_800F8CB4[];
