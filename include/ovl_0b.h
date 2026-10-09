@@ -1812,7 +1812,26 @@ s32 func_800C1E88(BtlUnit *, s32);
 void func_800C1524(void);
 void func_800C2E04(void);
 void func_800CBF90(void);
-void func_800CD5C8(s32, ...);
+void func_800CD5C8(u32, ...);
+/* psyq-style varargs (stdarg.h) */
+typedef char *va_list;
+#define __va_rounded_size(TYPE) (((sizeof(TYPE) + sizeof(int) - 1) / sizeof(int)) * sizeof(int))
+#define va_start(AP, LASTARG) (AP = ((char *)&(LASTARG) + __va_rounded_size(LASTARG)))
+#define va_arg(AP, TYPE) (AP += __va_rounded_size(TYPE), *((TYPE *)(AP - __va_rounded_size(TYPE))))
+
+typedef struct {
+    s16 unk0; /* offset from unk4 */
+    s16 unk2;
+} TextTblEnt;
+
+typedef struct {
+    u16 unk0; /* count */
+    u16 pad2;
+    TextTblEnt unk4[1];
+} TextTbl; /* message table (D_800F6CB4) */
+
+void func_8002BBE8(s32, u8 *, s32);
+
 u8 *func_800CD75C(u8);
 u32 func_800D89E8(s32);
 s32 func_800D9F5C(u8 *, s32, s32);

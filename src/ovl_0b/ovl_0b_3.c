@@ -1059,7 +1059,46 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CCDB8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CD210);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CD5C8);
+void func_800CD5C8(u32 arg0, ...) {
+    u8 buf[0x50];
+    va_list ap;
+    TextTbl *t = (TextTbl *)D_800F6CB4;
+    TextTblEnt *e;
+    u8 *src;
+    u8 *dst;
+    u8 *special;
+    s32 kind;
+    u8 c;
+    s32 v;
+
+    arg0 += 8;
+    if (arg0 < t->unk0) {
+        va_start(ap, arg0);
+        dst = &buf[1];
+        e = t->unk4;
+        src = (u8 *)e + e[arg0].unk0;
+        kind = *src++;
+        special = (u8 *)e + t->unk4[0].unk0;
+        c = buf[0] = *src++;
+        while (c != 0xFF) {
+            if (c == special[0]) {
+                dst--;
+                v = va_arg(ap, s32);
+                if (v != 0) {
+                    func_8002BD54(dst, (u8 *)v);
+                    goto adv;
+                }
+            } else if (c == special[1]) {
+                dst--;
+                func_8002BBE8(va_arg(ap, s32), dst, 0);
+            adv:
+                dst += func_8002BCC0(dst);
+            }
+            c = *dst++ = *src++;
+        }
+        func_800F4F04((s32)buf, kind);
+    }
+}
 
 void func_800CD70C(u8 arg0) {
     s32 n = 0;
