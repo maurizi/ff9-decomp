@@ -866,7 +866,87 @@ void func_8001D30C(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001D32C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001D3C4);
+void func_8001D3C4(void) {
+    GameData *gd = D_8006794C->unk1C;
+    s32 i;
+
+    gd->unkA = 0x200;
+    gd->unk18.m[0][0] = gd->unk18.m[1][1] = gd->unk18.m[2][2] = 0x1000;
+    gd->unk3A = 1;
+    gd->unkE = 0x235;
+    gd->unk848 = -1;
+    gd->unk7DC = 0x2331;
+    gd->unk7DE = 0x44;
+    gd->unk0 = 0;
+    gd->unk4 = 0;
+    gd->unk8 = 0;
+    gd->unk9 = 0;
+    gd->unk38 = 0;
+    gd->unk39 = 0;
+    gd->unk18.t[0] = gd->unk18.t[1] = gd->unk18.t[2] = 0;
+    gd->unk18.m[0][1] = gd->unk18.m[0][2] = gd->unk18.m[1][0] = gd->unk18.m[1][2] = gd->unk18.m[2][0] =
+        gd->unk18.m[2][1] = 0;
+    gd->unkC = 0;
+    gd->unk7D4 = NULL;
+    gd->unk84C = NULL;
+    gd->unk80C = NULL;
+    gd->unk810 = NULL;
+    gd->unk844 = 0;
+    gd->unk851 = 0;
+    gd->unk8C4 = 0;
+    gd->unk852 = 0xFFFF;
+    for (i = 1; i >= 0; i--) {
+        gd->unk81C[i] = 0xFFFF;
+        gd->unk820[i] = 0xFFFF;
+        gd->unk824[i] = 0;
+        gd->unk826[i] = 0x7F;
+    }
+    gd->unk842 = 0x1E;
+    gd->unk7E8 = 0xFFFF;
+    gd->unk840 = 0xFFFF;
+    gd->unk7EA = 0xFFFF;
+    gd->unk850 = 0;
+    gd->unk8A8 = -1;
+    gd->unk84A = 0xFFFF;
+    gd->unk8AC = -1;
+    gd->unk8B0 = 0xFFFF;
+    for (i = 1; i >= 0; i--) {
+        gd->unk830[i] = 0xFFFF;
+        (&gd->unk834)[i] = 0xFFFF;
+        gd->unk8B8[i] = 0x7F;
+        gd->unk8BA[i] = 0x80;
+        gd->unk8B4[i] = 0xFFFF;
+    }
+    gd->unk838 = NULL;
+    gd->unk83C = NULL;
+    for (i = 8; i >= 0; i--) {
+        func_8001E3A4(&gd->unk8D8[i]);
+        gd->unk8D8[i].unk8 = (struct BtlUnit9C *)&gd->unk8D4[i];
+    }
+    gd->unk8DC = NULL;
+    gd->unk8E0 = NULL;
+    gd->unk7D8 = NULL;
+    for (i = 1; i >= 0; i--) {
+        gd->unk7EC[i] = -1;
+        gd->unk7F4[i] = -1;
+        gd->unk7FC[i] = -1;
+        gd->unk804[i] = -1;
+    }
+    gd->unk7E4 = (struct FileTable *)-1;
+    gd->unk8C0 = 0;
+    gd->unk878 = 0;
+    gd->unk87C = 0;
+    func_8001D898(&gd->unk880, 0, 0x28);
+    gd->unk8B2 = 0;
+    gd->unk8BC = NULL;
+    gd->unk8E4.ovl65 = NULL;
+    for (i = 0; i >= 0; i--) {
+        gd->unk849[i] = 0;
+    }
+    for (i = 7; i >= 0; i--) {
+        gd->unk8CC[i] = 0;
+    }
+}
 
 s32 func_8001D610(void) {
     s32 addr = (s32)func_8001C7FC(4, 0x90084, 0);

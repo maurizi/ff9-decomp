@@ -271,14 +271,14 @@ typedef struct {
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
     s8 unk848;
-    u8 pad849;
+    u8 unk849[1];
     u16 unk84A;
     Unk7D4 *unk84C; /* second (kanji) font table */
     u8 unk850;
     u8 unk851;
     u16 unk852;
     CdReadCtx unk854[1]; /* CD read context (func_8002177C) */
-    u8 pad878[0x87C - 0x878];
+    s32 unk878;
     s32 unk87C; /* end of the world map data */
     Unk880 unk880;
     u8 unk890;
@@ -290,12 +290,13 @@ typedef struct {
     u16 unk8B0;
     s16 unk8B2;
     u16 unk8B4[2];
-    u8 pad8B8[0x8BC - 0x8B8];
+    u8 unk8B8[2];
+    u8 unk8BA[2];
     void *unk8BC; /* callback, signature varies by module */
     s32 unk8C0;
     s32 unk8C4; /* VSync(-1) timestamp */
     Unk8C8 *unk8C8;
-    u8 pad8CC[0x8D4 - 0x8CC];
+    u8 unk8CC[8];
     struct Unk8D4 *unk8D4; /* [9] */
     struct Unk8E0 *unk8D8; /* [9] */
     struct Unk8D4 *unk8DC;
@@ -2928,6 +2929,7 @@ void func_80018F20(void);
 s32 func_8001D610(void);
 void func_8001D32C(void);
 void func_8001D3C4(void);
+void func_8001E3A4(); /* (Unk8001E3A4 *); ovl_0b declares it with void * */
 s32 func_8001D67C(void);
 s32 func_8001D768(void);
 
