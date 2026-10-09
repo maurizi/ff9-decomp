@@ -2850,6 +2850,29 @@ typedef struct {
 } Unk800D50A0Ctx;
 void func_800D50A0(s32, Unk800D50A0Ctx *, u8 *, s32 *);
 
+/* same fields as Unk800D50A0Ctx, without the padding (func_800D4D6C / func_800D5568) */
+typedef struct {
+    s32 unk0; /* ot base z */
+    s32 unk4;
+    s32 unk8; /* 0x1000 / count */
+    union {
+        u32 w;
+        u8 b[4]; /* b[3]: primitive code */
+    } unkC;   /* rgb */
+    u32 unk10; /* rgb */
+    s16 unk14;
+    s16 unk16;
+    s32 unk18; /* tpage << 16 */
+    s32 unk1C; /* clut << 16 */
+    s32 unk20; /* 0x1000 / count */
+    s16 unk24;
+    s16 unk26;
+    s32 unk28;
+    s32 unk2C;
+} Unk800D4D6CCtx;
+void func_800D4D6C(s32, Unk800D4D6CCtx *, u8 *, s32 *);
+void func_800D5568(s32, Unk800D4D6CCtx *, u8 *, s32 *);
+
 /* sprite animation header (func_800D1494); followed by u32 frame entries and colors */
 typedef struct {
     u16 unk0; /* frame count */
