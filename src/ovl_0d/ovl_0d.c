@@ -751,7 +751,78 @@ void func_800AEA24(TmState *s) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AEBB4);
+void func_800AEBB4(TmState *s) {
+    s32 i;
+    s32 r;
+    s32 k;
+    u8 id;
+    TmCard *c;
+    TmCard *base;
+    TmDeckOdds *odds;
+
+    odds = (TmDeckOdds *)0x80103C00;
+    s->unk550 = func_80062B3C() % 5;
+    base = &s->unk10[5];
+    for (i = 0; i < 5; i++) {
+        c = &base[i];
+        c->unkC = 0x10;
+        c->unk10 = 0x12C;
+        c->unk14 = 1;
+        c->unk18 = 0;
+        c->unk8 = 1;
+        c->unk1C = 0;
+        c->unk30 = 0x28;
+        r = func_80062B3C() & 0xFF;
+        if (r < 20) {
+            k = 0;
+        } else if (r < 40) {
+            k = 1;
+        } else if (r < 60) {
+            k = 2;
+        } else if (r < 80) {
+            k = 3;
+        } else if (r < 100) {
+            k = 4;
+        } else if (r < 120) {
+            k = 5;
+        } else if (r < 140) {
+            k = 6;
+        } else if (r < 160) {
+            k = 7;
+        } else if (r < 180) {
+            k = 8;
+        } else if (r < 200) {
+            k = 9;
+        } else if (r < 220) {
+            k = 10;
+        } else if (r < 240) {
+            k = 11;
+        } else if (r < 252) {
+            k = 12;
+        } else if (r < 254) {
+            k = 13;
+        } else if (r < 255) {
+            k = 14;
+        } else {
+            k = 15;
+        }
+        id = odds[s->unk448].v[k];
+        if (s->unk438 != 0) {
+            id = func_80062B3C() % 100;
+        }
+        if (i == s->unk550 && s->unk54C != 0) {
+            c->unk0 = s->unk510;
+            c->unk2 = s->unk512;
+            c->unk1 = s->unk511;
+            c->unk3 = s->unk513;
+            c->unk4 = s->unk514;
+            c->unk5 = s->unk515;
+        } else {
+            func_800AF3E8(s, c, id, 1);
+        }
+        c->unk34 = 1;
+    }
+}
 
 TmCard *func_800AEE08(TmState *arg0, s32 arg1, s32 arg2) {
     return func_800B19D4(arg0, arg1, arg2)->unk4;
