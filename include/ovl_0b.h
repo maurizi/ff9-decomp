@@ -1131,7 +1131,7 @@ typedef struct {
 
 s32 func_800D6D8C(Unk80100C78Entry *, s32);
 s32 func_800DA104(s32, s32);
-void func_800DA138(void *, Unk80100C78Entry *, s32, s32, s32);
+void func_800DA138(struct Unk800DA1B8 *, Unk80100C78Entry *, s32, s32, s32);
 
 typedef struct {
     s32 unk0;
