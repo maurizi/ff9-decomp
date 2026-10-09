@@ -215,7 +215,12 @@ void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 ar
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D07B4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0858);
+void func_800D0858(u32 arg0, s32 arg1, void *arg2) {
+    s32 z = (arg1 - D_800F78A4->unk28) >> 2;
+    if ((u32)z < 0x1000) {
+        addPrimLen(&D_800F78A4->unk20[z], arg2, arg0);
+    }
+}
 
 void func_800D08C4(s32 arg0, s32 arg1) {
     u32 i = (arg1 - D_800F78A4->unk28) >> 2;

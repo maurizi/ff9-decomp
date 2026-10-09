@@ -2836,4 +2836,20 @@ typedef struct {
 
 void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
 
+/* addPrim written as inline asm (len word in a register it clobbers) */
+#define addPrimLen(ot, p, len) __asm__ volatile( \
+    "lw\t$14, 0(%2);" \
+    "nop;" \
+    "sll\t$15, $14, 8;" \
+    "srl\t$15, $15, 8;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%1);" \
+    "sll\t%0, %1, 8;" \
+    "srl\t%0, %0, 8;" \
+    "srl\t$15, $14, 24;" \
+    "sll\t$15, $15, 24;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%2)" \
+    : "=r"(len) : "r"(p), "r"(ot), "0"(len) : "$14", "$15", "memory")
+
 #endif
