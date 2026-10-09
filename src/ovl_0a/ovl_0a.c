@@ -4161,7 +4161,30 @@ s32 func_800C3B80(Unk800C9DF8 *arg0) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3D28);
+Unk800C9DF4 *func_800C3D28(s32 *arg0) {
+    Unk8004AB64 *a;
+    s32 i;
+    u8 mode;
+
+    *arg0 = 0;
+    mode = D_8006794C->unk8;
+    if (mode == 5) {
+        a = (Unk8004AB64 *)D_8006794C->unk1C->unk8E0[D_8006794C->unk1C->unk8E4.field->unk8].unkC;
+    } else if (mode == 1) {
+        a = func_8004AE00();
+    } else {
+        a = NULL;
+    }
+    if (a != NULL) {
+        for (i = 0; i < D_800C9DF0.unk2; i++) {
+            if (D_800C9DF0.unk4[i].unk24 == a) {
+                *arg0 = i;
+                return &D_800C9DF0.unk4[i];
+            }
+        }
+    }
+    return NULL;
+}
 
 s32 func_800C3E18(s32 arg0, s32 arg1) {
     if (arg1 != 0) {

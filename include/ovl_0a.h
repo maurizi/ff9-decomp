@@ -963,6 +963,37 @@ typedef struct {
     s32 unk4; /* sector */
 } FieldDirEnt;
 
+/* background sprite sets (func_800BB3C4); offsets from the header start */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u8 pad4[8 - 4];
+    u32 unk8; /* offset: u16 (x, y) pairs */
+} BgSprPart; /* 0xC */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* vertex count */
+    u8 pad2[0xC - 2];
+    u8 unkC; /* part count */
+    u8 unkD; /* BgSprOfs index */
+    u16 unkE;
+    u32 unk10; /* offset: BgSprPart[] */
+} BgSprSet; /* 0x14 */
+
+typedef struct {
+    u16 unk0; /* set count */
+    u8 pad2[2];
+    BgSprSet unk4[1];
+} BgSprHdr;
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+} BgSprOfs;
+
 /* ---- overlay functions ---- */
 s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
