@@ -3316,7 +3316,24 @@ void func_800E87C4(s32 arg0) {
     D_80100DC0.unk54->unk50 = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk44;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E8854);
+void func_800E8854(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 n;
+    BtlMesh *m;
+    BtlUnit9C8 *g = arg0;
+    for (i = 0; i < g->unk3; i++) {
+        m = &g->unk10[i];
+        n = 0;
+        for (j = 0; j < g->unk2; j++) {
+            for (k = 0; k < m->unk14[j]; k++) {
+                arg1(&m->unk18[n + k], n + k);
+            }
+            n += m->unk14[j];
+        }
+    }
+}
 
 void func_800E8980(s32 arg0) {
     D_800F78A4->unkC->unk44 = func_800BED10(D_800F78A4->unkC->unk25[arg0]);

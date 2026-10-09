@@ -34,13 +34,14 @@ typedef struct {
     u16 unk10;
     u8 pad12[0x14 - 0x12];
     u16 *unk14;
-    u8 pad18[0x1C - 0x18];
+    SVECTOR *unk18;
     u32 *unk1C; /* primitives */
     u8 pad20[0x28 - 0x20];
 } BtlMesh; /* 0x28 */
 
 typedef struct BtlUnit9C8 {
-    u8 pad0[3];
+    u8 pad0[2];
+    u8 unk2;
     u8 unk3; /* count of unk10 */
     u8 pad4[8 - 4];
     u16 unk8;
