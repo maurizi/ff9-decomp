@@ -4501,7 +4501,30 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1DF4);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1E04);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1E14);
+/* does the segment from arg0 to arg1 cross the edge arg2-arg3 (on axes x, z)? */
+s32 func_800C1E14(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z) {
+    s32 t2;
+    s32 t3;
+    s32 t4;
+    s32 ex;
+    s32 ez;
+
+    t2 = (arg1[x] - arg0[x]) * (ez = arg3[z] - arg2[z]);
+    ex = arg3[x] - arg2[x];
+    t3 = (arg0[z] - arg2[z]) * ex;
+    t2 -= (arg1[z] - arg0[z]) * ex;
+    t3 -= (arg0[x] - arg2[x]) * ez;
+    if (ABS(t3) <= ABS(t2)) {
+        if ((t3 >= 0 && t2 >= 0) || (t3 <= 0 && t2 < 0)) {
+            t4 = (arg0[z] - arg2[z]) * (arg1[x] - arg0[x]);
+            t4 -= (arg0[x] - arg2[x]) * (arg1[z] - arg0[z]);
+            if ((t4 >= 0 && t2 >= 0) || (t4 <= 0 && t2 < 0)) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1F98);
 
