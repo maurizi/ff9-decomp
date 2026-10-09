@@ -17,7 +17,7 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 ## Decomp workflow
 1. Pick a target: `make progress` shows per-binary totals. `python3 tools/progress.py --list [--bin ovl_0a] --min 40 --max 160 [--range 0x80026000-0x80030000]` lists remaining game functions.
 2. Draft: `tools/docker.sh python3 tools/m2c/m2c.py asm/us/main/nonmatchings/main/<func>.s`. m2c guesses arguments from register use. A function that only touches `$a3` still takes 4 params, and `jalr` on `$a2` doesn't mean `$a2` is a parameter.
-3. Batch-test in isolation: write several functions in a scratch file under `build/` (e.g. `build/batchN.c`) that only includes `ff9.h` (or `ovl_XX.h`), then run `tools/docker.sh python3 tools/ccprobe.py build/batchN.c --cc gcc-2.8.0-psx --aspsx 2.77 [--bin ovl_XX]`. A `*` means a byte match with relocations masked. A compile error prints `FAILED`, so don't read a missing score as a match.
+3. Batch-test in isolation: write several functions in a scratch file under `build/` (e.g. `build/batchN.c`) that only includes `ff9.h` (or `ovl_XX.h`), then run `tools/docker.sh python3 tools/ccprobe.py build/batchN.c --cc gcc-2.8.1-psx --aspsx 2.77 [--bin ovl_XX]`. A `*` means a byte match with relocations masked. A compile error prints `FAILED`, so don't read a missing score as a match.
 4. Near misses: add `--show func_X` to ccprobe for our output next to the original. Typical fixes: param/return types (`andi`/`lbu` show u8, `sll`/`sra 16` show s16, `multu` shows unsigned), statement order, a temporary in a new local, and pointer-vs-index loops. Register-allocation-only differences go to the permuter: `tools/docker.sh python3 tools/permute.py <file.c> func_X --run -j 8` (results in `build/permuter/func_X/output-*/source.c`). Clean up its output before keeping it.
 5. `python3 tools/integrate.py build/batchN.c [func ...] [--into src/ovl_XX/ovl_XX.c]` moves function bodies over their `INCLUDE_ASM` lines (default target `src/main/main.c`). Then `tools/docker.sh make verify` (under 1 s); only a sha1 `OK` counts.
 6. In a built tree, `tools/docker.sh python3 tools/asm-differ/diff.py --no-pager -s <func>` also works. `-s` stops at `jr ra`.
@@ -29,8 +29,8 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 
 ## Compiler (verified empirically, not documented anywhere)
 - Some original source files were built with **-O1** (e.g. ovl_0b 0x800C2DF4-0x800C8BE0: `$ra` is saved first and the prologue isn't scheduled; 0x800C7730-0x800C8BE0 inside it may use yet other flags). Give such a range its own splat C subsegment named `*_o1` (plus its own `.rodata` subsegment); the Makefile compiles `*_o1.c` with `-O1 -G0`. Probe with `ccprobe --flags "-O1 -G0"`.
-- FF9 game code is **gcc 2.8.x** with `-O2 -G0`, plus maspsx `--expand-div` (divides carry the ASPSX `break 7`/`break 6` guards). In `tools/probes/compiler_id_game.c`, 6 of 6 Square functions match only under 2.8.0 and 2.8.1; 2.7.2-cdk (FF8's main compiler) misses 3. 2.8.0 and 2.8.1 have produced identical output so far, so it's unknown which was used.
-- `ASPSX_VERSION=2.77` is a guess; nothing tested so far depends on it.
+- FF9 game code is **gcc 2.8.1** (`gcc-2.8.1-psx`, the Makefile default) with `-O2 -G0`, plus maspsx `--expand-div` (divides carry the ASPSX `break 7`/`break 6` guards). In `tools/probes/compiler_id_game.c`, 6 of 6 Square functions match only under 2.8.0 and 2.8.1; 2.7.2-cdk (FF8's main compiler) misses 3. 2.8.0 and 2.8.1 give identical output for everything except the event-script interpreter func_80039C38, which only matches under 2.8.1, so use 2.8.1 (`--cc gcc-2.8.1-psx` with ccprobe).
+- `ASPSX_VERSION=2.77`: every version from 2.56 to 2.86 builds all 20 binaries identically, and below 2.50 they all fail.
 - PsyQ library code was built by Sony with a different toolchain (e.g. `CdInit` stores globals via `lui $at`), so don't use library functions to test compiler hypotheses.
 
 ## Library code

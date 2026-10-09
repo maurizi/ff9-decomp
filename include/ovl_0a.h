@@ -80,7 +80,8 @@ typedef struct {
 typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* end of the load area */
-    u8 pad8[0xA - 8];
+    u8 unk8;
+    u8 unk9;
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
     struct Unk800AFCBC *unk10;
@@ -92,14 +93,17 @@ typedef struct {
     s32 *unk28; /* = unk6C, unk40 entries */
     struct FieldObjPlace *unk2C; /* object placements */
     s16 unk30; /* sound depth bias */
-    u8 pad32[0x3C - 0x32];
-    s16 unk3C;
-    s16 unk3E;
+    u8 pad32[0x34 - 0x32];
+    u8 *unk34;
+    s16 unk38;
+    s16 unk3A;
+    u16 unk3C;
+    u16 unk3E;
     u8 unk40;
     u8 unk41;
     s8 unk42;
     s8 unk43;
-    u8 pad44[4];
+    s32 unk44;
     s8 unk48;
     s8 unk49;
     u8 unk4A;
@@ -110,9 +114,14 @@ typedef struct {
     struct FieldActorInfo *unk54; /* = unk90 */
     struct FieldTrig *unk58; /* = unk270 */
     u8 unk5C;
-    u8 pad5D[3];
+    u8 unk5D;
+    u8 unk5E;
+    u8 unk5F;
     u8 unk60; /* D_800C9F20 count */
-    u8 pad61[0x6C - 0x61];
+    u8 unk61[1];
+    s16 unk62;
+    s32 unk64;
+    u8 unk68[4];
     s32 unk6C[9];
     u8 unk90[0x270 - 0x90];
     u8 unk270[0x330 - 0x270];
@@ -205,13 +214,22 @@ typedef struct {
     u16 unk26;
     u16 unk28;
     u16 unk2A;
-    u8 pad2C[0x72 - 0x2C];
+    s16 unk2C; /* projected origin */
+    s16 unk2E;
+    u8 pad30[0x72 - 0x30];
     u8 unk72;
     u8 unk73;
-    u8 pad74;
+    u8 unk74;
     u8 unk75;
     s16 unk76;
-    u8 pad78[0xA4 - 0x78];
+    s32 unk78;
+    u8 pad7C[0x9C - 0x7C];
+    s16 unk9C;
+    u8 pad9E[2];
+    u8 unkA0;
+    u8 unkA1;
+    u8 unkA2;
+    u8 unkA3;
     s16 unkA4;
     s16 unkA6;
     s16 unkA8[4][2];
@@ -335,7 +353,8 @@ typedef struct {
 
 /* sequence header (func_800BD3A0): offsets from the header start */
 typedef struct {
-    u8 pad0[6];
+    u8 pad0[4];
+    u16 unk4; /* Unk800C9DA4Anim count */
     u16 unk6; /* track count */
     u8 pad8[4];
     s32 unkC; /* -> u32 table, 16-byte stride */
@@ -352,13 +371,25 @@ typedef struct {
 
 typedef struct {
     u8 unk0;
-    u8 pad1[0x38 - 1];
+    u8 pad1[0x24 - 1];
+    u8 unk24;
+    u8 pad25[0x38 - 0x25];
 } Unk800C9DA4Trk; /* 0x38 */
 
 typedef struct {
     u32 unk0;
     u8 pad4[0xC];
 } Unk800C9DA4Tbl; /* 0x10 */
+
+/* the same 0x10-byte table, as animation state */
+typedef struct {
+    u8 unk0;
+    u8 pad1[3];
+    u32 unk4;
+    s16 unk8;
+    s16 unkA;
+    s32 unkC; /* offset: u8 track index */
+} Unk800C9DA4Anim;
 
 typedef struct {
     u8 unk0;
@@ -420,15 +451,18 @@ typedef struct Unk800C9DFC {
     s16 unk4;
 } Unk800C9DFC;
 
+/* the same vertex viewed as an array (func_800C4B30) */
+typedef struct {
+    s16 unk0[3];
+} Unk800C9DFCv;
+
 /* header of the block D_800C9DF0.unk8 points to */
 typedef struct {
     u16 unk0; /* data size */
     s16 unk2; /* original position */
     s16 unk4;
     s16 unk6;
-    s16 unk8; /* origin (current position) */
-    s16 unkA;
-    s16 unkC;
+    s16 unk8[3]; /* origin (current position) */
     s16 unkE; /* minimum */
     s16 unk10;
     s16 unk12;
@@ -546,8 +580,8 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags */
-    s16 unk2;
-    s16 unk4;
+    u16 unk2; /* walkmesh floor */
+    u16 unk4; /* axis */
     u16 unk6; /* curve: 0 linear, 1 cosine */
     s16 unk8; /* min */
     s16 unkA; /* max */
@@ -769,13 +803,20 @@ typedef struct FieldActorExt {
 } FieldActorExt;
 
 /* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
+/* rgb + flag byte (bit 24 of the word: pending) */
+typedef union {
+    u32 w;
+    u8 c[4];
+} FieldColor;
+
 typedef struct FieldActorInfo {
     u32 unk0; /* flags */
-    u8 unk4; /* light index */
+    s8 unk4; /* light index, -1 = none */
     u8 unk5;
-    u8 pad6[2];
-    u32 unk8; /* colour (bit 24: pending) */
-    u32 unkC; /* next colour */
+    u8 unk6;
+    u8 unk7;
+    FieldColor unk8; /* colour */
+    FieldColor unkC; /* next colour */
     FieldActorExt *unk10;
 } FieldActorInfo;
 
@@ -926,7 +967,7 @@ typedef struct {
 s32 func_800AC3D8(s32, s32);
 
 FieldLight *func_800B3254(Unk800B3254 *);
-Unk800B3294 *func_800B3294(Unk800B3254 *, s32);
+Unk800B3294 *func_800B3294(Unk800B3254 *, u16);
 s32 func_800C76E8(s32, u16 *, u16 *);
 s32 func_800C6DA4(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
@@ -940,7 +981,57 @@ typedef struct {
     void *unkC; /* actor */
 } FieldObjSlot;
 
+/* field directory entry (func_800A9570): the next entry's unk4 ends this one */
+typedef struct {
+    u16 unk0; /* id */
+    u16 unk2;
+    s32 unk4; /* sector */
+} FieldDirEnt;
+
+/* background sprite sets (func_800BB3C4); offsets from the header start */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u8 pad4[8 - 4];
+    u32 unk8; /* offset: u16 (x, y) pairs */
+} BgSprPart; /* 0xC */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* vertex count */
+    u8 pad2[0xC - 2];
+    u8 unkC; /* part count */
+    u8 unkD; /* BgSprOfs index */
+    u16 unkE;
+    u32 unk10; /* offset: BgSprPart[] */
+} BgSprSet; /* 0x14 */
+
+typedef struct {
+    u16 unk0; /* set count */
+    u8 pad2[2];
+    BgSprSet unk4[1];
+} BgSprHdr;
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+} BgSprOfs;
+
+/* streamed sound bank request (func_800B29F8, as ovl_0c func_800AC424) */
+typedef struct {
+    u8 pad0[8];
+    s32 unk8; /* address */
+    s32 unkC; /* offset */
+    s32 unk10; /* size */
+} Unk800B29F8;
+
 /* ---- overlay functions ---- */
+void func_800B1D9C(s32);
+s32 func_800AA074(FieldScene *, s16);
+s32 func_800AA0A8(FieldScene *, s16);
+void func_800B1E04(FieldScene *, s16);
 s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
 s32 func_800C6EEC();
@@ -1033,7 +1124,7 @@ typedef struct {
 extern Unk800C9F60 D_800C9F60[2];
 extern Unk800C9DF4 D_800CAAD8[24];
 Unk800C9E00 *func_800C1F98(Unk800C9DF4 *, Unk800C9E00 *, s32);
-u8 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s32);
+s32 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *);
 s32 func_800C4EC8(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
 typedef struct {
     s32 unk0;
@@ -1092,9 +1183,10 @@ s32 func_800C3EC0(s32, s16, s16, s16);
 s32 func_800C3608(Unk800C9DF4 *);
 s32 func_800C79B0(u32);
 s32 func_800C6E94(void);
-void func_800A87DC(FieldMapObj *, s32);
+s32 func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
+s32 func_80056048(s32, s32, s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
@@ -1153,5 +1245,8 @@ static inline Unk800C9DF8Pt *func_800C9DF8_pts(Unk800C9E10 *e) {
 static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
     return &((Unk800C9DF8Tri *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk32))[i];
 }
+
+s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
+s32 func_800C0F08(void);
 
 #endif
