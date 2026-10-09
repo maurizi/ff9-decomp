@@ -4821,7 +4821,95 @@ void func_800C5A7C(Unk800C9DF8 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C60F0);
+s32 func_800C60F0(void) {
+    Unk800C9DF8 *b;
+    Unk800C9E10 *e;
+    u16 cnt;
+    Unk800C9E00 *nodes;
+    u16 i;
+    s16 old;
+    Unk800C9DF8Pt *pts;
+    Unk800C9DF8Pt *pt;
+    u16 j;
+    u16 k;
+    s32 *ids;
+    Unk800C9E00 *n;
+    s32 pos;
+
+    s32 v;
+    u16 f;
+    u16 num;
+    u16 m;
+
+    b = D_800C9DF0.unk8;
+    e = D_800C9DF0.unk20;
+    cnt = b->unk2C;
+    nodes = D_800C9DF0.unk10;
+    for (i = 0; i < cnt; e++, i++) {
+        if (!(e->unk0 & 1)) {
+            continue;
+        }
+        if (!(e->unk0 & 0xC)) {
+            continue;
+        }
+        old = -1;
+        pts = (Unk800C9DF8Pt *)((u8 *)b + e->unkC);
+        num = e->unk2;
+        for (j = 0; j < num; j++) {
+            ids = (s32 *)((u8 *)b + pts[j].unk6);
+            m = pts[j].unk4;
+            for (k = 0; k < m; k++, ids++) {
+                f = nodes[*ids].unk0;
+                if (f & 1) {
+                    old = j;
+                }
+                nodes[*ids].unk0 = f & ~1;
+            }
+        }
+        pos = e->unk8;
+        j = pos >> 8;
+        ids = (s32 *)((u8 *)b + pts[j].unk6);
+        m = pts[j].unk4;
+        for (k = 0; k < m; k++) {
+            nodes[*ids++].unk0 |= 1;
+        }
+        if (old != j) {
+            pt = &pts[j];
+            func_800C6C04(b, e, pt, old, j);
+            func_800C6DA4(b, e, pt);
+        }
+        if (pts[j].unk2 < 0) {
+            pts[j].unk2 = 0;
+            e->unk6 = 0;
+            e->unk0 &= ~4;
+            return 1;
+        }
+        e->unk6++;
+        if ((u16)e->unk6 >= pts[j].unk2) {
+            e->unk6 = 0;
+            e->unk8 = pos + e->unk4;
+            v = e->unk8 >> 8;
+            if (v >= e->unk2) {
+                if (e->unk0 & 0x10) {
+                    e->unk8 = ((e->unk2 - 1) << 8) | 0xFF;
+                    func_800C7BC4(i, (s16)-e->unk4);
+                } else {
+                    e->unk8 = 0;
+                }
+                e->unk0 &= ~4;
+            } else if (v < 0) {
+                if (e->unk0 & 0x10) {
+                    e->unk8 = 0;
+                    func_800C7BC4(i, (s16)-e->unk4);
+                } else {
+                    e->unk8 = ((e->unk2 - 1) << 8) | 0xFF;
+                }
+                e->unk0 &= ~4;
+            }
+        }
+    }
+    return 1;
+}
 
 s32 func_800C6408(u32 arg0, u32 arg1) {
     Unk800C9DF8 *b;
