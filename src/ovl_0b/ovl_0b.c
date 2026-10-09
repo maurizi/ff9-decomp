@@ -189,7 +189,33 @@ void func_800A9768(void) {
     p->unkC = (s32 *)(D_80067944 + 0x136700);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A98A0);
+void func_800A98A0(void) {
+    Battle11C0 *p = D_8006794C->unk1C->unk8E4.battle->unk11C0;
+    s32 i;
+    p->unk0 = 0;
+    p->unk8 = 0;
+    p->unk6 = D_8006794C->unkA;
+    if (D_8006794C->unkA == 1) {
+        p->unk4 = D_8006794C->unk1C->unkC;
+    } else if (D_8006794C->unkA == 3) {
+        p->unk4 = D_8006794C->unk1C->unk7DC;
+    } else {
+        p->unk4 = -1;
+    }
+    p->unk20 = NULL;
+    p->unk10 = 0;
+    p->unk14 = NULL;
+    p->unk18 = 0;
+    p->unk40 = NULL;
+    p->unk28 = NULL;
+    p->unk48 = p->unk44;
+    for (i = 0; i < sizeof(p->unk7); i++) {
+        p->unk7[i] = 0;
+    }
+    for (i = 0; i < 4; i++) {
+        D_8006794C->unk1C->unk8E4.battle->unk1538[i]->unk20 = D_8006794C->unk1C->unk8E4.battle->unk1538[i]->unk24 = D_8006794C->unk1C->unk8E4.battle->unk153C[i];
+    }
+}
 
 s32 func_800A99AC(Unk800AA08C *arg0, s32 arg1) {
     s32 id = (arg1 & 0xFFFF) | 0x110000;

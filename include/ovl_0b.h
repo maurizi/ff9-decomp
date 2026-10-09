@@ -644,7 +644,7 @@ typedef struct Battle11C028 {
 
 typedef struct Battle11C0 {
     s32 unk0;
-    u16 unk4;
+    s16 unk4;
     u8 unk6;
     u8 unk7[1];
     s32 unk8;
