@@ -8902,7 +8902,27 @@ void func_8004B9B8(Unk8004B9B8 *p) {
     func_8004B9B8_inline(p);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BA20);
+void func_8004BA20(SVECTOR *v, s32 *x, s32 *y) {
+    DVECTOR s;
+    GameData *gd;
+
+    if (x != NULL && y != NULL) {
+        if (D_8007B708 == 1) {
+            func_800C0F08();
+        }
+        gd = D_8006794C->unk1C;
+        gte_SetRotMatrix(&gd->unk18);
+        gte_SetTransMatrix(&gd->unk18);
+        gte_ldv0(v);
+        gte_rtps();
+        gte_stsxy(&s);
+        if (D_8007B708 == 1) {
+            func_800C0FB0();
+        }
+        *x = s.vx;
+        *y = s.vy;
+    }
+}
 
 void func_8004BB30(void *p) {
     s32 i;
@@ -10676,7 +10696,46 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetTransferMode);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetTransferCallback);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005715C);
+s32 func_8005715C(s32 x) {
+    s32 n = 5;
+    u32 xs = x << 8;
+    u32 r = 0;
+    u32 q = 0;
+    u32 rem = 0;
+    u32 d;
+
+    do {
+        rem |= xs >> 24;
+        q <<= 4;
+        r <<= 4;
+        if (rem >= (q | 1)) {
+            if ((q | 12) * 12 < rem) {
+                d = 15;
+            } else if ((q | 8) * 8 < rem) {
+                d = 12;
+            } else if ((q | 4) * 4 < rem) {
+                d = 8;
+            } else {
+                d = 4;
+            }
+            while (rem < (q | d) * d) {
+                d--;
+            }
+            q |= d;
+            rem -= q * d;
+            q += d;
+            r |= d;
+        }
+        xs <<= 8;
+        rem <<= 8;
+        if (--n == 0) {
+            goto end;
+        }
+    } while (rem | xs);
+    r <<= n * 4;
+end:
+    return r;
+}
 
 s32 func_80057234(u32 x) {
     s32 v = x & 0xFF;
