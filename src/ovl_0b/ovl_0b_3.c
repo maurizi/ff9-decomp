@@ -896,7 +896,7 @@ Unk800CC278 *func_800CC31C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     p->unk10.b.unk2 = 0;
     p->unk10.b.unk0 = arg3;
     p->unk18 = arg2;
-    p->unk14 = func_800CC444(arg1);
+    p->unk14.w = func_800CC444(arg1);
     return p;
 }
 
@@ -905,7 +905,7 @@ Unk800CC278 *func_800CC37C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     p->unk10.b.unk2 = 1;
     p->unk10.b.unk0 = arg3;
     p->unk18 = arg2;
-    p->unk14 = func_800CC444(arg1);
+    p->unk14.w = func_800CC444(arg1);
     return p;
 }
 
@@ -913,7 +913,7 @@ Unk800CC278 *func_800CC3E0(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
     Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
     p->unk10.b.unk2 = 2;
     p->unk10.b.unk0 = arg3;
-    p->unk14 = (s32)&D_800F6A54[arg1];
+    p->unk14.p = &D_800F6A54[arg1];
     p->unk18 = arg2;
     return p;
 }
@@ -924,7 +924,29 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC4F0);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC818);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC9C8);
+void func_800CC9C8(Battle1358 *arg0, Unk800CCD00 *arg1) {
+    u8 *anim;
+    u8 c;
+    Unk800686E8 *g;
+
+    anim = arg0->unk14.p->unk0;
+    c = anim[arg0->unkE];
+    if (!(arg0->unk0->unk9C->unk0 & 0x10)) {
+        arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
+        arg1->unk14 = arg0->unk18;
+        g = &D_800686D0[arg0->unk14.p->unk4];
+        arg1->unk10.s.x -= g->unk4 >> 1;
+        arg1->unk10.s.y -= (g->unk5 >> 1) + (c & 0x1F);
+        if (arg0->unk10.b.unk3 == 0) {
+            func_800CCAF0(arg0, arg1, g->unk4, g->unk5);
+        }
+        func_800CCD00(arg1, g);
+    }
+    arg0->unkE++;
+    if (anim[arg0->unkE] == 0xFF) {
+        arg0->unk0 = NULL;
+    }
+}
 
 void func_800CCAF0(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
     if (arg0->unkE == 0) {
@@ -947,7 +969,27 @@ void func_800CCAF0(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CCBC0);
+void func_800CCBC0(Unk800CCD00 *arg0, u32 arg1) {
+    DVECTOR xy;
+    s16 i;
+    Unk800686E8 *g;
+
+    i = (arg1 >> 16) - 1;
+    xy.vx = arg0->unk10.s.x + (((s32)arg1 >> 16) - 1) * 8;
+    xy.vy = arg0->unk10.s.y;
+    for (; i != -1; i--) {
+        arg0->unk0[0] = 0x04000000;
+        arg0->unk0[1] = arg0->unk8 | 0x64000000;
+        arg0->unk0[2] = *(s32 *)&xy;
+        g = &D_80068BF0[arg1 & 0xF];
+        arg0->unk0[3] = g->unk0 + (arg0->unk14 << 16);
+        arg0->unk0[4] = (g->unk5 << 16) | g->unk4;
+        addPrim(arg0->unk4, arg0->unk0);
+        arg0->unk0 += 5;
+        xy.vx -= 8;
+        arg1 >>= 4;
+    }
+}
 
 void func_800CCD00(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
     arg0->unk0[0] = 0x04000000;

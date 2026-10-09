@@ -715,6 +715,12 @@ typedef struct {
     u16 unkE;
 } Battle16CC; /* 0x10 */
 
+typedef struct {
+    u8 *unk0; /* animation, 0xFF-terminated */
+    u16 unk4; /* glyph index into D_800686D0 */
+    u8 pad6[8 - 6];
+} Unk800F6A54;
+
 typedef struct Battle1358 {
     struct BtlUnit *unk0;
     u8 pad4[8 - 4];
@@ -731,7 +737,10 @@ typedef struct Battle1358 {
             u8 unk3;
         } b;
     } unk10;
-    u32 unk14;
+    union {
+        u32 w; /* packed digits (func_800CC444) */
+        Unk800F6A54 *p;
+    } unk14;
     u16 unk18;
     u8 pad1A[0x1C - 0x1A];
 } Battle1358; /* 0x1C */
@@ -1104,7 +1113,7 @@ extern Unk80100D88 D_80104DF4;
 extern s32 D_80104E00;
 extern MATRIX D_80104E10;
 extern u16 D_800F8D0C[];
-extern u8 D_800F6A54[][8];
+extern Unk800F6A54 D_800F6A54[];
 extern char D_800A7F34[];
 
 typedef struct {
@@ -1841,18 +1850,21 @@ typedef struct {
     u32 unk7 : 8;  /* table length */
 } Unk800AB758;
 
+/* packed screen coordinate */
+typedef union {
+    s32 w;
+    struct {
+        s16 x;
+        s16 y;
+    } s;
+} XY32;
+
 typedef struct {
     u32 *unk0; /* next free primitive */
     u32 *unk4; /* ordering table entry */
     s32 unk8;  /* rgb */
     u8 padC[0x10 - 0xC];
-    union {
-        s32 w;
-        struct {
-            s16 x;
-            s16 y;
-        } s;
-    } unk10; /* xy */
+    XY32 unk10;
     u16 unk14; /* clut */
 } Unk800CCD00;
 
@@ -1863,6 +1875,7 @@ extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
 extern Unk800686E8 D_80068BE8;
+extern Unk800686E8 D_80068BF0[]; /* digits */
 
 typedef struct {
     u8 *unk0; /* camera script */
