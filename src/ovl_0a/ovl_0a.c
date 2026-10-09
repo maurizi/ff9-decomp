@@ -3243,7 +3243,31 @@ s32 func_800C11C8(s32 arg0, s16 arg1, s16 arg2) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C11E8);
+/* move a background object, clamped to its limits */
+s32 func_800C11E8(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+    Unk800C9DB4Obj *o = &((Unk800C9DB4Obj *)((u8 *)D_800C9DB4 + D_800C9DB4->unk10))[arg0];
+    s16 x = o->unk8 + arg1;
+    s16 y = o->unkA + arg2;
+    s16 z = arg3 + o->unk2;
+
+    if (x < o->unk10) {
+        x = o->unk10;
+    } else if (x > o->unk12) {
+        x = o->unk12;
+    }
+    if (y < o->unk14) {
+        y = o->unk14;
+    } else if (y > o->unk16) {
+        y = o->unk16;
+    }
+    o->unk8 = x;
+    o->unk2 = z;
+    o->unkA = y;
+    o->unkC = x;
+    o->unkE = y;
+    o->unk1 = z;
+    return 1;
+}
 
 s32 func_800C130C(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
     *arg1 = D_800C9DA4.unk1C[arg0 * 3];
