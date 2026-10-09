@@ -2458,6 +2458,19 @@ void func_800E3C50(void *);
 s32 func_800DA2AC(Unk800DA1B8 *);
 void func_800F1790(u8, u8);
 BtlUnit *func_800F18F0(u8);
+extern u8 D_80104FF2;
+
+/* first unit flagged as the current target (bits 28 and 29 of unk68) */
+static inline BtlUnit *find_target(void) {
+    BtlUnit *u;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if ((u->unk68 & 0x30000000) == 0x30000000) {
+            return u;
+        }
+    }
+    return NULL;
+}
+
 extern u8 D_800F8E68[][2];
 void func_800F1A20(s32);
 s32 func_8001DA6C(s16);
