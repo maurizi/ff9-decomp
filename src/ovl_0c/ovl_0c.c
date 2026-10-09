@@ -3834,7 +3834,46 @@ u8 func_800BC528(s32 arg0) {
     return D_800CCFB4[arg0];
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BC540);
+/* initialise the texture pack list */
+void func_800BC540(void) {
+    u32 i;
+
+    D_800D33F0 = 0;
+    D_800D34A8[0].unk0 = &D_800D3358;
+    D_800D34A8[0].unkE = 0;
+    D_800D34A8[0].unk4 = &D_800D34A8[1];
+    D_800D34A8[0].unkC = -1;
+    D_800D34A8[0].unkF = 0;
+    D_800D34A8[0].unk8 = (WmTexPack *)D_800CF408;
+    for (i = 1; i < 31; i++) {
+        D_800D34A8[i].unk0 = &D_800D34A8[i - 1];
+        D_800D34A8[i].unk4 = &D_800D34A8[i + 1];
+        D_800D34A8[i].unk8 = NULL;
+        D_800D34A8[i].unkE = 0;
+        D_800D34A8[i].unkC = -1;
+        D_800D34A8[i].unkF = 0;
+    }
+    for (i = 1; i < 16; i++) {
+        D_800D34A8[i].unk8 = (WmTexPack *)(D_800CF408 + i * 0x4800);
+        D_800D34A8[i].unkF = 0;
+    }
+    i = 31;
+    D_800D34A8[i].unk0 = &D_800D34A8[i - 1];
+    D_800D34A8[i].unk4 = &D_800D3340;
+    D_800D34A8[i].unkC = -1;
+    D_800D34A8[i].unk8 = NULL;
+    D_800D34A8[i].unkE = 0;
+    D_800D34A8[i].unkF = 0;
+    D_800D3358.unk0 = NULL;
+    D_800D3358.unk4 = &D_800D34A8[0];
+    D_800D3340.unk4 = &D_800D34A8[16];
+    D_800D3750 = 0;
+    D_800D3408 = -1;
+    D_800D3340.unk0 = NULL;
+    D_800D33F4 = 0;
+    func_800C2040();
+    func_800C26DC();
+}
 
 void func_800BC690(void) {
     s32 t;
@@ -5553,7 +5592,61 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C709C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C7914);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C7BA8);
+/* attach a model file (relocating it once) and lay out its work buffers at arg1 */
+void func_800C7BA8(Unk800C95C8 *arg0, u8 *arg1) {
+    WmModel *m;
+    WmModelGroup *g;
+    u32 i;
+    u32 n;
+    u32 k;
+    s32 size;
+    u8 *pp;
+    WmModelGroup *p;
+    WmModelGroup *g2;
+
+    m = arg0->unk8;
+    if (!(m->unk0 & 1)) {
+        i = 0;
+        m->unk0 |= 1;
+        m->unkC = (s32)m + m->unkC;
+        g = (WmModelGroup *)((u8 *)m + (s32)m->unk10);
+        m->unk10 = g;
+        for (p = g; i < m->unk3; i++, p++) {
+            p->unk14 = (u8 *)m + (s32)p->unk14;
+            p->unk18 = (u8 *)m + (s32)p->unk18;
+            p->unk1C = (u8 *)m + (s32)p->unk1C;
+            p->unk20 = (void *)((u8 *)m + (s32)p->unk20);
+            p->unk24 = (void *)((u8 *)m + (s32)p->unk24);
+        }
+    }
+    g2 = arg0->unk8->unk10;
+    size = 0;
+    if ((s32)g2 >= 0) {
+        g2 = (WmModelGroup *)((u8 *)g2 + (s32)arg0->unk8);
+    }
+    n = arg0->unk8->unk3;
+    for (k = 0; k < n; k++) {
+        size += g2->unk0;
+        g2++;
+    }
+    arg0->unk54 = 0x1000;
+    arg0->unk56 = 0x1000;
+    arg0->unk58 = 0x1000;
+    arg0->unk1C = NULL;
+    arg0->unk60 = NULL;
+    arg0->unk5C = 0;
+    arg0->unk14 = 0;
+    arg0->unk74 = 0;
+    arg0->unk76 = 0;
+    arg0->unk78 = 0;
+    arg0->unk10 = arg1;
+    arg0->unk50 = NULL;
+    pp = arg1 + size * 2;
+    arg0->unk20 = pp;
+    arg0->unk0 |= 2;
+    *(volatile u16 *)&arg0->unk0 = 0;
+    arg0->unk44 = (WmModelOut *)(pp + m->unk2 * 32);
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C7CF4);
 
