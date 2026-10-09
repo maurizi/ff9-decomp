@@ -60,10 +60,11 @@ typedef struct {
     u32 unkC;     /* exp, capped at 9999999 */
     u16 unk10;    /* hp */
     s16 unk12;    /* mp */
-    u8 pad14[0x17 - 0x14];
+    u8 pad14[0x16 - 0x14];
+    u8 unk16;
     u8 unk17;
     u16 unk18;    /* max hp */
-    u16 unk1A;    /* max mp */
+    s16 unk1A;    /* max mp */
     u8 pad1C[0x1F - 0x1C];
     u8 unk1F;
     u8 unk20;
@@ -143,12 +144,6 @@ typedef union {
     struct Battle *battle;
 } Unk8E4Ptr;
 
-typedef struct Unk8E0 {
-    u8 pad0[8];
-    void *unk8; /* -> 0x98-byte record (Unk8D4) */
-    void *unkC; /* actor */
-    u8 pad10[4];
-} Unk8E0; /* 0x14 */
 
 /* 0x98-byte per-object record (GameData.unk8D4 / unk8DC) */
 typedef struct Unk8D4 {

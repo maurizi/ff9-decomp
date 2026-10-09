@@ -1075,14 +1075,14 @@ extern u8 D_800C9EE4[];
 
 
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
- * .text (as "func_800C9CCC"), so the array is reached through that label. */
+ * .text (as "D_800C9CCC"), so the array is reached through that label. */
 typedef struct {
     s16 unk0;
     s16 unk2; /* id */
     u32 unk4; /* address (0 = free) */
     s32 unk8; /* size */
 } Unk800C9CCC; /* 0xC */
-extern Unk800C9CCC func_800C9CCC[10];
+extern Unk800C9CCC D_800C9CCC[10];
 Unk800C9CCC *func_800AC344(s32);
 u32 func_800AC380(Unk800C9CCC **);
 void func_800A86FC(void);

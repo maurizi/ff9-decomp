@@ -106,6 +106,17 @@ def main():
         had = set().union(*(set(RODATA_SLOT.findall(t)) for t in olds))
         new[npath] = RODATA_SLOT.sub(lambda m: m.group(0) if m.group(1) in had else "", new[npath])
 
+    # Comments documenting still-unmatched functions sit directly above their INCLUDE_ASM line;
+    # carry them over (deduplicated).
+    for path, text in old.items():
+        for m in re.finditer(r'((?:^(?:/\*.*\*/|//.*)\n)+)INCLUDE_ASM\("[^"]+",\s*(\w+)\);', text, re.M):
+            lines = list(dict.fromkeys(m.group(1).splitlines(keepends=True)))
+            pat = re.compile(r'^(INCLUDE_ASM\("[^"]+",\s*' + re.escape(m.group(2)) + r'\);)', re.M)
+            for npath in [p for p in new if os.path.dirname(p) == os.path.dirname(path)]:
+                new[npath], n = pat.subn(lambda mm: "".join(lines) + mm.group(1), new[npath], count=1)
+                if n:
+                    break
+
     # Put every hand-written body back over its INCLUDE_ASM slot, in whichever file it now lives.
     # Empty bodies are skipped: splat regenerates trivial functions as C itself.
     missing, kept = [], {}

@@ -827,10 +827,10 @@ u32 func_800AC380(Unk800C9CCC **arg0) {
         *arg0 = NULL;
     }
     for (i = 9; i >= 0; i--) {
-        if (func_800C9CCC[i].unk4 != 0 && func_800C9CCC[i].unk4 < min) {
-            min = func_800C9CCC[i].unk4;
+        if (D_800C9CCC[i].unk4 != 0 && D_800C9CCC[i].unk4 < min) {
+            min = D_800C9CCC[i].unk4;
             if (arg0 != NULL) {
-                *arg0 = &func_800C9CCC[i];
+                *arg0 = &D_800C9CCC[i];
             }
         }
     }
@@ -864,9 +864,9 @@ void func_800AC5F0(void) {
     s32 i;
 
     for (i = 9; i >= 0; i--) {
-        func_800C9CCC[i].unk0 = 0;
-        func_800C9CCC[i].unk4 = 0;
-        func_800C9CCC[i].unk8 = 0;
+        D_800C9CCC[i].unk0 = 0;
+        D_800C9CCC[i].unk4 = 0;
+        D_800C9CCC[i].unk8 = 0;
     }
 }
 
@@ -883,9 +883,9 @@ void func_800AC67C(s32 arg0) {
     s32 i;
 
     for (i = 9; i >= 0; i--) {
-        if (func_800C9CCC[i].unk4 != 0 && (u32)arg0 >= func_800C9CCC[i].unk4) {
-            func_800C9CCC[i].unk8 = 0;
-            func_800C9CCC[i].unk4 = 0;
+        if (D_800C9CCC[i].unk4 != 0 && (u32)arg0 >= D_800C9CCC[i].unk4) {
+            D_800C9CCC[i].unk8 = 0;
+            D_800C9CCC[i].unk4 = 0;
         }
     }
 }
