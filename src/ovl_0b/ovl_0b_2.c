@@ -5440,7 +5440,28 @@ void func_800ECB5C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ECCA8);
+void func_800ECCA8(s32 arg0) {
+    s32 i;
+    s32 u = 0x3C0;
+    s32 y = 0x9A;
+
+    for (i = 0; i < 4; i++) {
+        setlen(&D_801050D8->unk0[i][arg0], 4);
+        setcode(&D_801050D8->unk0[i][arg0], 0x64);
+        setRGB0(&D_801050D8->unk0[i][arg0], 0x80, 0x80, 0x80);
+        D_801050D8->unk0[i][arg0].x0 = 0;
+        D_801050D8->unk0[i][arg0].y0 = y;
+        D_801050D8->unk0[i][arg0].u0 = u & 0x3F;
+        D_801050D8->unk0[i][arg0].v0 = 0xE0;
+        D_801050D8->unk0[i][arg0].w = 0xE;
+        D_801050D8->unk0[i][arg0].h = 0x10;
+        D_801050D8->unk0[i][arg0].clut = 0;
+        u += 0x10;
+        y += 0x10;
+    }
+    setlen(&D_801050D8->unkA0[arg0], 1);
+    *D_801050D8->unkA0[arg0].code = 0xE100071F;
+}
 
 void func_800ECDB8(void) {
     RECT r = D_800A8584;
