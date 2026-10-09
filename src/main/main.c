@@ -6935,7 +6935,66 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036CCC);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036FFC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800372A4);
+s32 func_800372A4(s32 op) {
+    s32 r = 0;
+    s32 c = r;
+    s32 w = D_8007B6F0[-3];
+    s32 mask;
+    s32 v;
+    s32 i;
+
+    if (((w >> 26) & 7) == 5) {
+        mask = func_8004B404_inline(w);
+    } else {
+        D_8007B6F0 -= 2;
+        mask = func_80052D40();
+        D_8007B6F0 += 3;
+    }
+    v = func_80052D40();
+    for (i = 0; i < 8; i++) {
+        r >>= 1;
+        if (mask & 1) {
+            D_8007B700 = D_8007AED0[i];
+            switch (op) {
+            case 0x1C:
+                c = func_80052D40() < v;
+                break;
+            case 0x1D:
+                c = func_80052D40() > v;
+                break;
+            case 0x1E:
+                c = func_80052D40() <= v;
+                break;
+            case 0x1F:
+                c = func_80052D40() >= v;
+                break;
+            case 0x22:
+                c = func_80052D40() == v;
+                break;
+            case 0x23:
+                c = func_80052D40() != v;
+                break;
+            case 0x54:
+                c = (func_80052D40() & v) != 0;
+                break;
+            case 0x55:
+                c = (func_80052D40() & v) == 0;
+                break;
+            case 0x56:
+                c = (func_80052D40() ^ v) != 0;
+                break;
+            case 0x57:
+                c = (func_80052D40() | v) != 0;
+                break;
+            }
+            r |= c << 7;
+            D_8007B6F0++;
+        }
+        mask >>= 1;
+    }
+    D_8007B6F0 -= 2;
+    return r;
+}
 
 s32 func_80037528(s32 op) {
     s32 r = 0;
