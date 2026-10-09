@@ -6824,7 +6824,45 @@ s32 arg0;
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7100);
+s32 func_800C7100(void) {
+    Unk800CAE98 *e;
+    Unk800C9DF4 *a;
+    Unk800C9DF8Tri *t;
+    s32 i;
+    s32 j;
+    Unk8004AB64 *p;
+    u16 flags;
+
+    e = D_800CAE98;
+    for (i = 0; i < 30; e++, i++) {
+        if (!(e->unk0 & 1) || !(e->unk0 & 0xC)) {
+            continue;
+        }
+        t = &D_800C9DF0.unk1C[e->unk2];
+        t->unkA[e->unk4] = t->unk4[e->unk4] + e->unkC;
+        a = D_800C9DF0.unk4;
+        for (j = 0; j < D_800C9DF0.unk2; a++, j++) {
+            flags = a->unk0;
+            if ((flags & 1) && a->unk4 == e->unk2 && a->unk6 >= 0) {
+                p = a->unk24;
+                ((ActorPosView *)p)->unk14[e->unk4] += e->unkC - e->unkE;
+                switch (e->unk4) {
+                case 0:
+                    a->unk24->unk40.vx = a->unk24->unk14.vx;
+                    break;
+                case 1:
+                    a->unk24->unk40.vy = a->unk24->unk14.vy;
+                    break;
+                case 2:
+                    a->unk24->unk40.vz = a->unk24->unk14.vz;
+                    break;
+                }
+            }
+        }
+        func_800C6EEC(i);
+    }
+    return 1;
+}
 
 s32 func_800C72D8(Unk800C9DF8 *arg0) {
     s32 i;

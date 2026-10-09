@@ -753,6 +753,12 @@ typedef struct {
     u16 unk2; /* clut */
 } WmTexInfo;
 
+/* Unk8004AB64 position (unk14) seen as an array, indexed by axis */
+typedef struct {
+    u8 pad0[0x14];
+    s32 unk14[3];
+} ActorPosView;
+
 /* skeleton bone (WmModel.unkC, 4 bytes) */
 typedef struct {
     s16 unk0; /* length: z offset from the parent */
