@@ -16,8 +16,8 @@ EXE      := $(BUILD_DIR)/$(MAIN)
 
 ### Toolchain (paths are inside the docker image) ###
 CC_DIR   ?= /opt/cc
-# gcc 2.8.x matches FF9 game code (2.8.0 vs 2.8.1 not yet distinguished) -- see CLAUDE.md
-CC_VER   ?= gcc-2.8.0-psx
+# gcc 2.8.1: everything matches under 2.8.0 too, except func_80039C38 (2.8.1 only) -- see CLAUDE.md
+CC_VER   ?= gcc-2.8.1-psx
 CC1      := $(CC_DIR)/$(CC_VER)/cc1
 CPP      := cpp
 AS       := mipsel-linux-gnu-as

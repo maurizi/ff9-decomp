@@ -35,7 +35,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("c_file")
     ap.add_argument("func")
-    ap.add_argument("--cc", default="gcc-2.8.0-psx")
+    ap.add_argument("--cc", default="gcc-2.8.1-psx")
     ap.add_argument("--cflags", default="-O2 -G0")
     ap.add_argument("--aspsx", default="2.77")
     ap.add_argument("--run", action="store_true")
