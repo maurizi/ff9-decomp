@@ -552,12 +552,15 @@ typedef struct {
     s32 unk8;
     u8 *unkC[2];   /* packet buffers */
     u32 *unk14[2]; /* ordering tables */
-    s16 unk1C; /* display x/y per buffer */
-    s16 unk1E;
-    s16 unk20;
-    s16 unk22;
+    DVECTOR unk1C[2]; /* display x/y per buffer */
 } Unk80077148;
 extern Unk80077148 D_80077148;
+
+/* window frame insets per style (rodata, func_8002D9B4) */
+typedef struct {
+    s8 unk0[5][4];
+} Unk80010CE0;
+extern Unk80010CE0 D_80010CE0;
 
 /* ---- functions (main exe) ---- */
 
