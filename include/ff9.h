@@ -2223,7 +2223,7 @@ void func_80033AF4(s32, s32);
 
 
 /* ---- hoisted for the world map (ovl_0c) ---- */
-void func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
+s32 func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
 extern s32 D_80073990;
 void func_80019194(void);
 void func_80032098(void);

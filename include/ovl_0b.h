@@ -2410,7 +2410,12 @@ extern u8 D_80104E77;
 void func_800F11A4(BtlUnit *);
 void func_800F1150(BtlUnit *);
 u32 func_800AB810(s32, s32);
-void func_800A923C(void);
+void func_800A923C(); /* takes the battle id (s32), called without it */
+s32 func_800AD4AC(s32, s32);
+s32 func_8004AAF0(s32);
+void func_8001E3A4(void *);
+s32 func_800A9A7C(Battle11C0 *, s32);
+s32 func_800AA08C(Unk800AA08C *, s32);
 void func_800AEA48(void);
 void func_800A8BF4(void);
 u8 func_800EA30C(void);
