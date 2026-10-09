@@ -116,9 +116,9 @@ typedef struct {
     s32 unk474;
     s32 unk478;
     s32 unk47C;
-    u8 pad480[0x484 - 0x480];
+    s32 unk480; /* cursor animation frame */
     Window *unk484;
-    u8 pad488[0x48C - 0x488];
+    s32 unk488;
     TmCard *unk48C[8];
     s32 unk4AC;
     TmCard *unk4B0;
