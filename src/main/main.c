@@ -4856,7 +4856,27 @@ s32 func_80034D78(s32 ch, s32 lv, u8 add) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80034E80);
+s32 func_80034E80(s32 ch, s32 lv, u8 add) {
+    Character *c = D_8006794C->unk1C->unk3C + ch;
+    u16 *bonus = c->unk3E;
+    s32 k = func_80033964((c->unk34 >> 12) & 0x1F);
+    Unk8006DD88 *e = &D_8006DD88[k];
+    s32 r;
+    s32 n;
+
+    if (add) {
+        n = 0;
+        if (c->unk17 == 0) {
+            n = 5;
+        }
+        bonus[4] += n;
+    }
+    r = e->unk4 + lv * 4 / 10 + (bonus[4] >> 5);
+    if (r >= 100) {
+        r = 99;
+    }
+    return r;
+}
 
 s32 func_80034F7C(s32 lv, s32 m) {
     s32 r = D_8006DDD0[lv - 1].unk0 * m / 50;
