@@ -24,6 +24,9 @@ typedef struct {
 #define setaddr(p, _addr) (((P_TAG *)(p))->addr = (u32)(_addr))
 #define getaddr(p) (u32)(((P_TAG *)(p))->addr)
 #define addPrim(ot, p) setaddr(p, getaddr(ot)), setaddr(ot, p)
+#define getcode(p) (u8)(((P_TAG *)(p))->code)
+#define setcode(p, _code) (((P_TAG *)(p))->code = (u8)(_code))
+#define setSemiTrans(p, abe) ((abe) ? setcode(p, getcode(p) | 0x02) : setcode(p, getcode(p) & ~0x02))
 
 #define setRECT(r, _x, _y, _w, _h) ((r)->x = (_x), (r)->y = (_y), (r)->w = (_w), (r)->h = (_h))
 #define setXY0(p, _x0, _y0) ((p)->x0 = (_x0), (p)->y0 = (_y0))

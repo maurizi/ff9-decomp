@@ -2986,7 +2986,35 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BFEE0);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0038);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C02D0);
+/* add a screen fade: rectangle (arg0..arg2), mode arg3, colour arg4..arg6 */
+s32 func_800C02D0(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
+    u32 i;
+
+    D_800CA140[D_800C9DA0].unk4 = arg0;
+    D_800CA140[D_800C9DA0].unk6 = arg1;
+    D_800CA140[D_800C9DA0].unk8 = arg2;
+    D_800CA140[D_800C9DA0].unk0 = arg3;
+    if (arg3 >= 0) {
+        D_800CA140[D_800C9DA0].unk1 = arg4;
+        D_800CA140[D_800C9DA0].unk2 = arg5;
+        D_800CA140[D_800C9DA0].unk3 = arg6;
+        for (i = 0; i < 4; i++) {
+            SetPolyF4(&D_800CA140[D_800C9DA0].unkC[0][i]);
+            setRGB0(&D_800CA140[D_800C9DA0].unkC[0][i], arg4, arg5, arg6);
+            SetPolyF4(&D_800CA140[D_800C9DA0].unkC[0][i + 4]); /* = unkC[1][i] */
+            setRGB0(&D_800CA140[D_800C9DA0].unkC[1][i], arg4, arg5, arg6);
+            if (arg3 >= 4) {
+                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[0][i], 0);
+                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[1][i], 0);
+            } else {
+                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[0][i], 1);
+                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[1][i], 1);
+            }
+        }
+    }
+    D_800C9DA0++;
+    return 1;
+}
 
 /* toggle a background object's tint */
 s32 func_800C0650(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
