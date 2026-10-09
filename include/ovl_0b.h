@@ -2793,6 +2793,63 @@ void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
     "swc2\t$22, 0(%0)" \
     : : "r"(rgb), "r"(p) : "$14", "memory")
 
+/* gte_DpqColorFar without the store: the result is fetched later by gte_strgb */
+#define gte_DpqColorFar_nst(rgb, p) __asm__ volatile( \
+    "ctc2\t$0, $21;" \
+    "ctc2\t$0, $22;" \
+    "ctc2\t$0, $23;" \
+    "lwc2\t$6, 0(%0);" \
+    "addiu\t$14, $0, 0x1000;" \
+    "subu\t$14, $14, %1;" \
+    "mtc2\t$14, $8;" \
+    GTE_NOPS ".word\t0x4A780010" \
+    : : "r"(rgb), "r"(p) : "$14")
+#define gte_strgb(r0) __asm__ volatile("swc2\t$22, 0(%0)" : : "r"(r0) : "memory")
+
+/* sprite-strip context passed to func_800D5C30 / func_800D50A0 */
+typedef struct {
+    s32 unk0; /* ot base z */
+    s32 unk4;
+    s32 unk8; /* 0x1000 / count */
+    union {
+        u32 w;
+        u8 b[4]; /* b[3]: primitive code */
+    } unkC;   /* rgb */
+    u32 unk10; /* rgb */
+    s16 unk14;
+    s16 unk16;
+    s32 unk18; /* tpage << 16 */
+    s32 unk1C; /* clut << 16 */
+    s32 unk20; /* 0x1000 / count */
+    s16 unk24;
+    s16 unk26;
+    u8 pad28[0x70 - 0x28];
+} Unk800D5C30Ctx;
+void func_800D5C30(s32, Unk800D5C30Ctx *, u8 *, s32 *);
+
+/* same as Unk800D5C30Ctx plus two words (func_800D50A0) */
+typedef struct {
+    s32 unk0; /* ot base z */
+    s32 unk4;
+    s32 unk8; /* 0x1000 / count */
+    union {
+        u32 w;
+        u8 b[4]; /* b[3]: primitive code */
+    } unkC;   /* rgb */
+    u32 unk10; /* rgb */
+    s16 unk14;
+    s16 unk16;
+    s32 unk18; /* tpage << 16 */
+    s32 unk1C; /* clut << 16 */
+    s32 unk20; /* 0x1000 / count */
+    s16 unk24;
+    s16 unk26;
+    s32 unk28;
+    s32 unk2C;
+    u8 pad30[0x60 - 0x30];
+} Unk800D50A0Ctx;
+void func_800D50A0(s32, Unk800D50A0Ctx *, u8 *, s32 *);
+
 typedef struct {
     u16 unk0;
     u16 unk2;
