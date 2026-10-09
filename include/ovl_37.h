@@ -78,6 +78,10 @@ extern RECT D_801FA958;
 extern u8 D_801F30E0[2][0x10];
 extern RECT D_801F3148;
 extern u8 D_801F3140[];
+extern RECT D_801F3150;
+extern u8 D_801F3168[]; /* item help text */
+extern u8 D_801F651C[]; /* key item help text */
+s32 func_801F2FC4(MenuList *);
 
 /* other overlay */
 s8 func_800B8124(void);

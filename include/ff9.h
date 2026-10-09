@@ -2145,7 +2145,8 @@ extern u8 D_8006A218[]; /* item names */
 extern u8 D_8006ADAC[]; /* key item names */
 typedef struct {
     s16 unk0; /* name offset into D_8006ADAC */
-    u8 pad2[6];
+    s16 unk2; /* help offset */
+    u8 pad4[4];
 } Unk8006B374;
 extern Unk8006B374 D_8006B374[];
 Unk16D8 *func_8004AE9C(void);
