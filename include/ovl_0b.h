@@ -2061,6 +2061,7 @@ s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
 
 extern u8 D_80104E6A;
 extern u8 D_80104E6B;
+extern u8 D_800F8E84[];
 extern u8 D_800FDDF8[][3];
 extern u8 D_800FDDD0[][2];
 extern RECT D_800A8584;
