@@ -3206,7 +3206,63 @@ void func_800BB090(BgAnimHdr *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB3C4);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB508);
+void func_800BB508(Unk800C95C8 *arg0, u8 arg1) {
+    WmModelGroup *g;
+    MATRIX *bone;
+    SVECTOR *vtx;
+    s32 *sxy;
+    s32 *sz;
+    s32 k;
+    u32 i;
+    u32 j;
+    u32 n;
+    u32 cnt;
+    s32 ymax;
+
+    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    sxy = D_800711A8;
+    sz = D_80070520;
+    k = 0;
+    g = &arg0->unk8->unk10[arg1];
+    bone = (MATRIX *)arg0->unk20;
+    cnt = arg0->unk8->unk2;
+    ymax = arg0->unk5A;
+    vtx = g->unk18;
+    for (i = 0; i < cnt; bone++) {
+        n = ((u16 *)g->unk14)[i++];
+        if (n != 0) {
+            sxy = &D_800711A8[k];
+            sz = &D_80070520[k];
+            gte_SetRotMatrix(bone);
+            gte_SetTransMatrix(bone);
+            j = 0;
+            do {
+                gte_ldv0(vtx);
+                j++;
+                vtx++;
+                gte_rtv0tr_b();
+                gte_stsvclamp(sxy, sz, ymax);
+                sxy++;
+                sz++;
+            } while (j < n);
+            sxy = &D_800711A8[k];
+            sz = &D_80070520[k];
+            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            j = 0;
+            do {
+                gte_ldv3xyz(sxy, sz);
+                j += 3;
+                gte_rtpt_b();
+                gte_stsxy3c(sxy);
+                sxy += 3;
+                gte_stsz3h(sz);
+                sz += 3;
+            } while (j < n);
+            k += n;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB714);
 
