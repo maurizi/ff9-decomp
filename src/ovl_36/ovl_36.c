@@ -449,9 +449,33 @@ void func_801F2FCC(void) {
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2FE0);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F3034);
+s32 func_801F3034(u8 *src, u8 *dst) {
+    RleHeader *h = (RleHeader *)src;
+    u8 *start = dst;
+    u8 *end;
+    u8 key;
+    s32 n, i;
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F30C8);
+    key = ~h->unk1;
+    src += 4;
+    end = src + h->unk2;
+    while (src < end) {
+        if (*src <= key) {
+            *dst++ = *src++;
+        } else {
+            n = *src++ - key;
+            for (i = 0; i < n; i++) {
+                *dst++ = *src;
+            }
+            src++;
+        }
+    }
+    return dst - start;
+}
+
+u32 func_801F30C8(void) {
+    return 0x64808080;
+}
 
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EE1B4);
 

@@ -43,6 +43,14 @@ typedef struct {
     s32 unk4;
 } Unk801F4DC4;
 
+/* Run-length packed block (func_801F3034). */
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* ~key: bytes above key start a run */
+    u16 unk2; /* packed size */
+    u8 unk4[1];
+} RleHeader;
+
 /* Card menu state (D_801F347C). */
 typedef struct {
     u8 unk0; /* state, index into D_801F30F4 */
