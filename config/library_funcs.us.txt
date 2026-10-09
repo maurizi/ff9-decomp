@@ -224,3 +224,21 @@ main func_80053764 hand-written asm module 0x80050F4C-0x80053924 (global regs $t
 main func_80064A2C libgpu: GP1 0x10 info query via GPU register pointers
 main func_8006605C libcard: patches a BIOS device-table (0x150) entry by name
 main func_800661E0 libcard: memory card sector write/verify with checksum retries
+ovl_0c func_800B3844 hand-written asm (agent report)
+ovl_0c func_800B3998 hand-written asm (agent report)
+ovl_0c func_800B3A80 hand-written asm (agent report)
+ovl_0c func_800B3FEC hand-written asm (agent report)
+ovl_0c func_800B4270 hand-written asm (agent report)
+ovl_0c func_800B4720 hand-written asm (agent report)
+ovl_0c func_800B4BDC hand-written asm (agent report)
+ovl_0c func_800B4FD4 hand-written asm (agent report)
+ovl_0c func_800B53FC hand-written asm (agent report)
+ovl_0c func_800B5880 hand-written asm (agent report)
+ovl_0c func_800B5CD0 hand-written asm (agent report)
+ovl_0c func_800B5FD0 hand-written asm (agent report)
+ovl_0c func_800B6338 hand-written asm (agent report)
+ovl_0c func_800B6598 hand-written asm (agent report)
+ovl_0a func_800C1DC4 hand-written asm (agent report)
+ovl_0a func_800C1DE0 hand-written asm (agent report)
+ovl_0a func_800C1DF4 hand-written asm (agent report)
+ovl_0a func_800C1E04 hand-written asm (agent report)
