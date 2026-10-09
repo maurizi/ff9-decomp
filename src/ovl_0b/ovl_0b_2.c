@@ -5189,7 +5189,48 @@ void func_800EA7B8(Unk80104F88Entry *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EA908);
+/* character 3: also list the abilities of character record 1 and its equipment */
+void func_800EA908(Unk80104F88Entry *arg0) {
+    Unk800FD6E0 *m = &D_800FD6E0;
+    Character *c = &D_8006794C->unk1C->unk3C[1];
+    Unk8006CB88 *ab = D_8006CB88;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 slot;
+    s32 v;
+    s32 id;
+    s32 e;
+    Unk80069018 *it;
+
+    if (arg0->unk14->unk34.b.id == 3) {
+        for (i = 0; i < m->unk7; i++) {
+            slot = D_800FDD10[m->unk8 + i];
+            v = func_80034430(1, D_800F8D84[i]);
+            if (v >= 0) {
+                arg0->unk1C[slot] = &c->unk58[v];
+                arg0->unk31C[slot] = ab[v].unk1;
+            }
+        }
+        for (i = 0; i < 5; i++) {
+            e = c->unk39[i];
+            if (e != 0xFF) {
+                it = &D_80069018[e];
+                for (j = 0; j < 3; j++) {
+                    id = it->unkC[j];
+                    if (id != 0 && id < 0xC0) {
+                        for (k = 0; k < m->unk7; k++) {
+                            if (id == D_800F8D84[k]) {
+                                slot = D_800FDD10[m->unk8 + k];
+                                arg0->unk3DC[slot] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 void func_800EAAFC(void) {
     BtlUnit *u;
