@@ -715,24 +715,24 @@ typedef struct {
     u16 unkE;
 } Battle16CC; /* 0x10 */
 
-typedef struct {
+typedef struct Battle1358 {
     struct BtlUnit *unk0;
     u8 pad4[8 - 4];
     s16 unk8;
     s16 unkA;
     s16 unkC;
-    s16 unkE;
+    u16 unkE; /* frame */
     union {
         s32 w; /* cleared as a word */
         struct {
             s8 unk0;
-            u8 pad1;
+            s8 unk1; /* y offset */
             u8 unk2;
             u8 unk3;
         } b;
     } unk10;
-    s32 unk14;
-    s16 unk18;
+    u32 unk14;
+    u16 unk18;
     u8 pad1A[0x1C - 0x1A];
 } Battle1358; /* 0x1C */
 
@@ -1243,8 +1243,8 @@ typedef struct Unk800F3F10 {
 
 /* moving menu sprite */
 typedef struct Unk800F412C {
-    u16 unk0;
-    u8 pad2[4 - 2];
+    s16 unk0; /* text id */
+    s16 unk2;
     u8 unk4;
     u8 pad5;
     u16 unk6; /* frame */
@@ -1846,15 +1846,23 @@ typedef struct {
     u32 *unk4; /* ordering table entry */
     s32 unk8;  /* rgb */
     u8 padC[0x10 - 0xC];
-    s32 unk10; /* xy */
+    union {
+        s32 w;
+        struct {
+            s16 x;
+            s16 y;
+        } s;
+    } unk10; /* xy */
     u16 unk14; /* clut */
 } Unk800CCD00;
 
-typedef struct {
-    s32 unk0; /* uv */
-    u8 unk4;  /* w */
-    u8 unk5;  /* h */
-} Unk800CCD00_1;
+void func_800CCD00(Unk800CCD00 *, Unk800686E8 *);
+void func_800CCBC0(Unk800CCD00 *, u32);
+void func_800CCAF0(struct Battle1358 *, Unk800CCD00 *, s32, s32);
+extern u8 D_800F6A28[];
+extern u8 D_800F6A38[];
+/* main exe: candidates for ff9.h */
+extern Unk800686E8 D_80068BE8;
 
 typedef struct {
     u8 *unk0; /* camera script */

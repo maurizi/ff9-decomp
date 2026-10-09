@@ -6570,7 +6570,11 @@ void func_800F4060(s32 arg0) {
     D_80105078->unk78[arg0] = ((s32)(u16)(u->unk24->unk0 / 6) >= hp) << 2;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F40D0);
+void func_800F40D0(Unk800F412C *arg0) {
+    if (arg0->unk2 == 1) {
+        arg0->unk8 -= func_8002AE7C(((u8 **)&D_800703FC)[arg0->unk0]);
+    }
+}
 
 void func_800F412C(Unk800F412C *arg0, Unk800F3F10 *arg1) {
     arg0->unkC = arg1;

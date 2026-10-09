@@ -926,14 +926,33 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC818);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC9C8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CCAF0);
+void func_800CCAF0(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
+    if (arg0->unkE == 0) {
+        if (arg1->unk10.s.y - 21 < 0) {
+            arg0->unk10.b.unk1 = 21 - arg1->unk10.s.y;
+        } else if (arg1->unk10.s.y + h >= 211) {
+            arg0->unk10.b.unk1 = -46 - (arg1->unk10.s.y + h);
+        }
+    }
+    if (arg1->unk10.s.x < 8) {
+        arg1->unk10.s.x = 8;
+    } else if (arg1->unk10.s.x + w >= 313) {
+        arg1->unk10.s.x = 312 - w;
+    }
+    arg1->unk10.s.y += arg0->unk10.b.unk1;
+    if (arg1->unk10.s.y < 8) {
+        arg1->unk10.s.y = 8;
+    } else if (arg1->unk10.s.y + h >= 211) {
+        arg1->unk10.s.y = 210 - h;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CCBC0);
 
-void func_800CCD00(Unk800CCD00 *arg0, Unk800CCD00_1 *arg1) {
+void func_800CCD00(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
     arg0->unk0[0] = 0x04000000;
     arg0->unk0[1] = arg0->unk8 | 0x64000000;
-    arg0->unk0[2] = arg0->unk10;
+    arg0->unk0[2] = arg0->unk10.w;
     arg0->unk0[3] = arg1->unk0 + (arg0->unk14 << 16);
     arg0->unk0[4] = (arg1->unk5 << 16) | arg1->unk4;
     addPrim(arg0->unk4, arg0->unk0);
