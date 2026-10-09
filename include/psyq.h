@@ -24,6 +24,12 @@ typedef struct {
 #define getcode(p) (u8)(((P_TAG *)(p))->code)
 #define setSemiTrans(p, abe) ((abe) ? setcode(p, getcode(p) | 0x02) : setcode(p, getcode(p) & ~0x02))
 #define setPolyG4(p) setlen(p, 8), setcode(p, 0x38)
+/* libgpu.h primitive-word helpers */
+#define get_mode(dfe, dtd, tpage) \
+    ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))
+#define get_tw(p) \
+    (0xE2000000 | ((p)->y & 0xFF) >> 3 << 15 | ((p)->x & 0xFF) >> 3 << 10 | \
+     (~((p)->h - 1) & 0xFF) >> 3 << 5 | (~((p)->w - 1) & 0xFF) >> 3)
 
 #define setRECT(r, _x, _y, _w, _h) ((r)->x = (_x), (r)->y = (_y), (r)->w = (_w), (r)->h = (_h))
 #define setXY0(p, _x0, _y0) ((p)->x0 = (_x0), (p)->y0 = (_y0))

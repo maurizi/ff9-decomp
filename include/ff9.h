@@ -2595,4 +2595,21 @@ typedef struct {
     u32 xy0;
     u32 xy1;
 } LineF2W; /* LINE_F2 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 rgbc0;
+    u32 xy0;
+    u32 rgb1;
+    u32 xy1;
+    u32 rgb2;
+    u32 xy2;
+    u32 rgb3;
+    u32 xy3;
+} PolyG4Words; /* POLY_G4 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 code[2];
+} DrMode2Words; /* DR_MODE / DR_TWIN */
+extern Unk800689B0 D_80068DC0;
+extern RECT D_80068F40;
 #endif

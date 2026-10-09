@@ -6193,7 +6193,23 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004DAD0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004DCEC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004E16C);
+void func_8004E16C(void) {
+    s32 i;
+    u8 *e;
+
+    D_8007B958 = 0;
+    D_8007B974 = -1;
+    D_8007B968 = -1;
+    for (i = 0; i < 4; i++) {
+        e = func_8004D940_msg(i);
+        if (e == NULL || e[0] != 0xF9 || e[1] != 4) {
+            break;
+        }
+        D_8007BB80[i] = e + 2;
+    }
+    D_8007BB94 = 0;
+    D_8007BBC8 = 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004E248);
 
