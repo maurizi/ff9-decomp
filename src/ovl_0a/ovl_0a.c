@@ -744,7 +744,80 @@ s32 func_800A9AAC(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9BDC);
+s32 func_800A9BDC(FieldScene *sc, s32 arg1) {
+    s32 size;
+    s32 id;
+    Unk80021938 *e;
+    s32 base;
+    s32 i;
+    s32 r;
+    s32 rest;
+    s32 k;
+
+    size = D_8006794C->unk1C->unk804[1] << 11;
+    if ((s32)(0x801EDF00 - (D_80067948 + size)) < 0x17000) {
+        size = 0x801D6F00 - D_80067948;
+        size = size / 2048 * 2048;
+    }
+    id = (u16)arg1 | 0x50000;
+    if (func_800220E8(id)) {
+        e = func_80021E5C(id);
+        D_8006794C->unk1C->unk854[0].unk20 = (u8 *)(e->unk8 + e->unkC);
+        D_8006794C->unk1C->unk854[0].unk10 = e->unkC;
+        D_8006794C->unk1C->unk854[0].unk4 = e->unk1C;
+        func_8001DAA4(D_80067948, e->unk8, e->unkC, NULL);
+        func_80022390(id);
+        DrawSync(0);
+    } else {
+        func_8002177C(D_8006794C->unk1C->unk854, D_8006794C->unk1C->unk7FC[1], D_8006794C->unk1C->unk804[1] << 11,
+                      (void *)D_80067948, 0, size, NULL);
+        while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+        }
+    }
+    func_800AC67C((s32)D_8006794C->unk1C->unk854[0].unk20);
+    base = D_80067948;
+    D_8006794C->unk1C->unk7E4 = (FileTable *)func_8001C8B0(base, 4, 0x140000, 0);
+    id = func_8001C8B0(base, 2, 0x1B0000, 0);
+    if (id != 0) {
+        r = func_8001C8B0(base, 5, 0x1B0000, 0);
+        if ((u32)(D_80067948 + D_8006794C->unk1C->unk854[0].unk10) < (u32)(id + r)) {
+            rest = D_8006794C->unk1C->unk854[0].unk10;
+            func_8002177C(D_8006794C->unk1C->unk854, D_8006794C->unk1C->unk7FC[1], D_8006794C->unk1C->unk804[1] << 11,
+                          (void *)(D_80067948 + rest), rest, size - D_8006794C->unk1C->unk854[0].unk10, NULL);
+            while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+            }
+            D_8006794C->unk1C->unk854[0].unk10 += rest;
+            func_800AC67C((s32)D_8006794C->unk1C->unk854[0].unk20);
+        }
+        for (i = func_8001C8B0(id, 1, 0x40000, 0) - 1; i >= 0; i--) {
+            k = func_8001C8B0(id, 2, (u16)i | 0x40000, 0);
+            if (k != -1) {
+                func_8001D8A8(k);
+            }
+        }
+        for (i = func_8001C8B0(id, 1, 0x170000, 0) - 1; i >= 0; i--) {
+            k = func_8001C8B0(id, 2, (u16)i | 0x170000, 0);
+            if (k != -1) {
+                func_800C9968((s32 *)k);
+            }
+        }
+        DrawSync(0);
+    }
+    sc->unk24 = (void *)func_8001C8B0(base, 2, 0x1B0001, 0);
+    size = D_8006794C->unk1C->unk854[0].unk10 - ((s32)sc->unk24 - base);
+    func_8001DAA4(id, (s32)sc->unk24, size, NULL);
+    DrawSync(0);
+    sc->unk24 = (void *)id;
+    if (D_8006794C->unk1C->unk854[0].unk10 < D_8006794C->unk1C->unk854[0].unk4) {
+        func_8002177C(D_8006794C->unk1C->unk854, D_8006794C->unk1C->unk7FC[1], D_8006794C->unk1C->unk804[1] << 11,
+                      (void *)(id + size), D_8006794C->unk1C->unk854[0].unk10, -1, NULL);
+        while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+        }
+    }
+    func_8001C750((s32)sc->unk24, 0);
+    D_80067948 = (s32)sc->unk24 + func_8001CA70((s32)sc->unk24);
+    return 0;
+}
 
 s32 func_800AA01C(u16 *arg0, u16 *arg1) {
     Unk800AA01C *p = func_8001C7FC(4, 0x1C0000, 0);
@@ -2188,7 +2261,106 @@ void func_800B3684(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B36E0);
+s32 func_800B36E0(s32 arg0, s32 arg1) {
+    s32 flag;
+    s32 id;
+    s32 k;
+    u8 type;
+    s32 x;
+    Unk80021938 *e;
+    Unk80021938 *p;
+    Unk80021938 *q;
+    FileEntry *f;
+
+    type = arg0;
+    flag = 0;
+    if ((s8)type < 0) {
+        type -= 0x80;
+        flag = 1;
+    }
+    switch (type & 0xFF) {
+    default:
+        return -1;
+    case 0x11:
+        k = 0x1000B;
+        if (flag && func_800B3D10(0x1000B)) {
+            return -1;
+        }
+        if (func_800B3BD8(0x1000B)) {
+            return -1;
+        }
+        if (func_80021E5C(0x1000B)) {
+            return -1;
+        }
+        if (flag) {
+            func_800B3DE4(0x1000B);
+        } else {
+            func_800B3CAC(0x1000B);
+        }
+        if (!(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
+            goto done;
+        }
+        p = func_80021E20();
+        if (p != NULL && p->unk4 != k) {
+            func_80021C20(p);
+        }
+        if (flag || func_80021E5C(k) != NULL) {
+            goto set;
+        }
+        goto clear;
+    case 5:
+        id = (u16)arg1 | 0x50000;
+        if ((u16)arg1 >= 9000) {
+            return -1;
+        }
+        f = func_80063088(D_8006794C->unk1C->unk7E4, id);
+        if (f == NULL) {
+            return -1;
+        }
+        if (f->unk8 == 0) {
+            return -1;
+        }
+        if (flag && func_800B3D10(id)) {
+            return -1;
+        }
+        if (func_800B3BD8(id)) {
+            return -1;
+        }
+        e = func_80021E5C(id);
+        if (e != NULL && e->unk2 == 0) {
+            if (func_80021A1C(e)) {
+                return -1;
+            }
+            if (!func_80021A1C(e) && (e->unk1C >> 2) < e->unkC) {
+                return -1;
+            }
+        }
+        if (flag) {
+            x = id;
+        } else {
+            func_800B3CAC(id);
+            x = 0x1000B;
+        }
+        func_800B3DE4(x);
+        if (!(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
+            goto done;
+        }
+        e = func_80021E20();
+        if (e != NULL && e->unk4 != id && func_80021A1C(e)) {
+            func_80021C20(e);
+        }
+        q = func_80021E5C(id);
+        if (!flag && (q == NULL || q->unk2 != 0)) {
+        clear:
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x100000;
+        }
+    set:
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x800000;
+    done:
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x200000;
+        return 0;
+    }
+}
 
 void func_800B3A80(void) {
     func_80021C60();

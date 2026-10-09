@@ -373,7 +373,9 @@ typedef struct {
     u8 unk0;
     u8 pad1[0x24 - 1];
     u8 unk24;
-    u8 pad25[0x38 - 0x25];
+    u8 pad25[0x2C - 0x25];
+    s32 unk2C; /* offset: u32 palette position (y in the low 9 bits) */
+    u8 pad30[0x38 - 0x30];
 } Unk800C9DA4Trk; /* 0x38 */
 
 typedef struct {
