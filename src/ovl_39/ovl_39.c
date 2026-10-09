@@ -344,7 +344,21 @@ void func_801F5E68(s32 x, s32 y, s32 otz) {
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5E90);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F5FE4);
+void func_801F5FE4(Window *w) {
+    u32 a = func_8003579C(0x21);
+    u32 b = func_8003579C(0x22) & 0xFFF;
+    s32 d1 = 0x26;
+    s32 d2 = 0x17;
+    s16 m;
+
+    if (b < (a & 0xFFF)) {
+        b = a & 0xFFF;
+    }
+    func_8002B5FC(w->unk0 + 8, w->unk2 + 8, w->unk18, (u8 *)D_801FBEE0.unk4, 0);
+    m = b;
+    func_8002B5FC(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d1) + w->unk6, w->unk18, func_80035774(0x21), 0);
+    func_8002B5FC(w->unk0 + ((s32)(w->unk4 - m) >> 1), (w->unk2 - d2) + w->unk6, w->unk18, func_80035774(0x22), 0);
+}
 
 void func_801F60DC(Window *w) {
     u32 a = func_8003579C(0x21);
