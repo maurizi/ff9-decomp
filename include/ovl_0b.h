@@ -1003,7 +1003,9 @@ extern char D_800A7F60[];
 extern char D_800A7F78[];
 extern char D_800A81A8[];
 typedef struct Pool6CEntry {
-    u8 pad0[0x30];
+    u8 pad0[0x28];
+    SVECTOR *unk28;
+    u8 pad2C[0x30 - 0x2C];
     s16 unk30;
     u8 pad32[0x6C - 0x32];
 } Pool6CEntry; /* 0x6C */
@@ -1017,7 +1019,8 @@ typedef struct {
 } Pool6C;
 
 typedef struct {
-    u8 pad0[0x1A];
+    VECTOR unk0;
+    u8 pad10[0x1A - 0x10];
     u8 unk1A;
     u8 unk1B;
     u8 pad1C[0x1F - 0x1C];

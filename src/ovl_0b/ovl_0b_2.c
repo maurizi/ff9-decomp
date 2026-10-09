@@ -2297,7 +2297,26 @@ void func_800E14D8(u32 arg0, Pool6C *arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E1534);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E1708);
+void func_800E1708(Pool30 *arg0, s32 arg1, s32 arg2) {
+    Pool6CEntry *m = (Pool6CEntry *)arg1;
+    SVECTOR *v = (SVECTOR *)arg2;
+    VECTOR d;
+    Pool30Entry *e;
+    s32 i;
+    d.vx = (v->vx - m->unk28->vx) << 12;
+    d.vy = (v->vy - m->unk28->vy) << 12;
+    d.vz = (v->vz - m->unk28->vz) << 12;
+    e = arg0->unkC;
+    for (i = 0; i < arg0->unk0; i++, e++) {
+        if (e->unk1F != 0 && e->unk2C == m) {
+            e->unk0.vx += d.vx;
+            e->unk0.vy += d.vy;
+            e->unk0.vz += d.vz;
+        }
+    }
+    *(s32 *)&m->unk28->vx = *(s32 *)&v->vx;
+    m->unk28->vz = v->vz;
+}
 
 void func_800E1810(Pool30 *arg0, Pool6CEntry *arg1) {
     s32 i = 0;
