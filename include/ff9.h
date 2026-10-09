@@ -2142,7 +2142,7 @@ extern u8 *D_8007B9A4;
 extern u8 *D_8007B9A8;
 extern u32 D_8007B9B0[];
 extern u8 **D_8007BCA8;
-void func_80051004(u8);
+void func_80051004(s32);
 extern u8 D_8007B930[8]; /* name text being converted */
 
 typedef struct {
@@ -2176,7 +2176,7 @@ void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
-s32 func_80061BC8(s32 *, s32);
+s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void func_800576BC(s32, s32);
 void func_80062118(void);
@@ -2615,7 +2615,9 @@ void func_80057738(s32, s32);
 void func_80057760(s32, s32);
 /* streamed AKAO sound header (func_800616F8) */
 typedef struct {
-    u8 pad0[0x10];
+    s32 unk0; /* "AKAO" */
+    s32 unk4;
+    u8 pad8[0x10 - 0x8];
     u32 unk10; /* data size */
     u32 unk14; /* loop start offset */
     s32 unk18; /* flags */
@@ -3331,7 +3333,7 @@ void func_800240F8(u8);
 void func_8004BA20(SVECTOR *, s32 *, s32 *);
 s32 func_80054FB8(s32);
 s32 func_80054FE0(s32);
-void func_80054E88(s32, s32, s32);
+s32 func_80054E88(s32, s32, s32);
 s32 func_80055060(s32, s32, s32);
 s32 func_800550C0(s16);
 s32 func_800550D0(s32);
@@ -3451,6 +3453,14 @@ static inline s32 func_80023784_remap(s32 k) {
         return (c[1] >> (k * 4)) & 0xF;
     }
     return k;
+}
+
+
+/* Inlined max helper of func_80054A28 (keeps the running maximum in memory). */
+static inline void func_80054A28_max(u32 *m, u32 v) {
+    if (*m < v) {
+        *m = v;
+    }
 }
 
 #endif
