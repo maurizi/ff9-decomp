@@ -1810,7 +1810,44 @@ void func_80024764(RECT *r, s32 otz) {
     D_80077170 = (u8 *)(t + 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800249A8);
+void func_800249A8(RECT *r, s32 otz) {
+    PolyF4Half *p;
+    DrTpageWords *t;
+
+    p = (PolyF4Half *)D_80077170;
+    setlen(p, 5);
+    p->rgbc = 0x2A000000;
+    p->x0 = r->x + 2;
+    p->y0 = r->y + r->h;
+    p->x1 = r->x + r->w + 1;
+    p->y1 = r->y + r->h;
+    p->x2 = r->x + 4;
+    p->y2 = r->y + r->h + 2;
+    p->x3 = r->x + r->w - 1;
+    p->y3 = r->y + r->h + 2;
+    D_80077170 += sizeof(PolyF4Half);
+    addPrim(&D_8007716C[otz], p);
+
+    p = (PolyF4Half *)D_80077170;
+    setlen(p, 5);
+    p->rgbc = 0x2A000000;
+    p->x0 = r->x + r->w - 3;
+    p->y0 = r->y;
+    p->x1 = r->x + r->w + 2;
+    p->y1 = r->y + 5;
+    p->x2 = r->x + r->w - 3;
+    p->y2 = r->y + r->h;
+    p->x3 = r->x + r->w + 2;
+    p->y3 = r->y + r->h;
+    D_80077170 += sizeof(PolyF4Half);
+    addPrim(&D_8007716C[otz], p);
+
+    setlen(D_80077170, 1);
+    t = (DrTpageWords *)D_80077170;
+    t->code = 0xE1000600;
+    addPrim(&D_8007716C[otz], t);
+    D_80077170 = (u8 *)(t + 1);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80024BD8);
 
