@@ -4446,7 +4446,29 @@ s32 func_8003380C(s32 i) {
     return i;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003384C);
+void func_8003384C(Character *c) {
+    Unk80032E84In in;
+    Unk80032E84Out out;
+
+    in.unk0 = *(Bytes8 *)&c->unk2C;
+    in.unk10 = c->unk10;
+    in.unk12 = c->unk12;
+    in.unk8 = *(Words2 *)c->unk88;
+    in.unk14 = *(Bytes5 *)c->unk39;
+    func_80032E84(&in, &out);
+    c->unk24 = out.unk8;
+    c->unk25 = out.unk9;
+    c->unk26 = out.unkA;
+    c->unk27 = out.unkB;
+    c->unk28 = out.unkE;
+    c->unk29 = out.unk10;
+    c->unk2A = out.unk12;
+    c->unk2B = out.unk14;
+    c->unk10 = out.unk0;
+    c->unk12 = out.unk2;
+    c->unk18 = out.unk4;
+    c->unk1A = out.unk6;
+}
 
 s32 func_80033964(u32 x) {
     switch (x) {

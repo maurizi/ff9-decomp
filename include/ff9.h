@@ -2515,4 +2515,38 @@ typedef struct {
 } Unk8006BD04;
 extern Unk8006BD04 D_8006BD04[];
 extern u8 D_8006BCFC[]; /* window style -> colour */
+typedef struct {
+    u8 unk0[8];
+} Bytes8;
+typedef struct {
+    u8 unk0[5];
+} Bytes5;
+typedef struct {
+    u32 unk0[2];
+} Words2;
+/* stat calculation input (func_80032E84) */
+typedef struct {
+    Bytes8 unk0; /* = Character.unk2C..unk33 */
+    Words2 unk8; /* = Character.unk88 */
+    u16 unk10;
+    u16 unk12;
+    Bytes5 unk14; /* equipment */
+} Unk80032E84In;
+/* stat calculation output (func_80032E84) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+    u8 unk8;
+    u8 unk9;
+    u8 unkA;
+    u8 unkB;
+    u16 unkC;
+    u16 unkE;
+    u16 unk10;
+    u16 unk12;
+    u16 unk14;
+} Unk80032E84Out;
+void func_80032E84(Unk80032E84In *, Unk80032E84Out *);
 #endif
