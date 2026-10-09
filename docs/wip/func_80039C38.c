@@ -150,7 +150,7 @@ typedef struct {
 extern Unk8007AE40 D_8007AE40;
 extern u8 D_8006E658[];
 void func_80021660(u16);
-void func_80021680(s16);
+void func_80021680();
 void func_8004FF98(s32);
 void func_80052D0C(u8 **);
 Unk16D8 *func_80036978(Unk8004AB64 *);
@@ -163,23 +163,23 @@ void func_800B5004(s32, s16);
 void func_800B73F8(u32, s32);
 s32 func_800C02D0(s32, s16, s16, s8, u8, u8, u8);
 s32 func_800C0BCC(s32);
-s32 func_800C0DB0(s32, s32, s32);
-s32 func_800C0DF4(s16, s16, s16, s32);
+s32 func_800C0DB0(s16, s16, s16);
+s32 func_800C0DF4(s16, s16, u16, s32);
 s32 func_800C0E6C(u16 *arg0, u16 *arg1);
 s32 func_800C0E94(s32, s32, s32);
 s32 func_800C1024(s16);
 s32 func_800C104C(void);
 s32 func_800C1100(void);
 s32 func_800C119C(s32, s16, s16, s16, s16);
-s32 func_800C11C8(s32, s16, s16);
+s32 func_800C11C8(s32, s32, s32);
 s32 func_800C11E8(s32, s16, s16, s16);
 s32 func_800C1368(s32, u8, u8, u8);
 s32 func_800C142C(s32, s32);
-s32 func_800C147C(s32, s32, s16, s16);
+s32 func_800C147C(s32, s32, s32, s32);
 s32 func_800C14DC(s32, s32);
-s32 func_800C152C(s32, s32, s16, s16, s32);
-s32 func_800C15BC(s32, s32, s16, s16);
-s32 func_800C1614(s32, s16, s16);
+s32 func_800C152C(s32, s32, s32, s32, s32);
+s32 func_800C15BC(s32, s32, s32, s32);
+s32 func_800C1614(s32, s32, s32);
 s32 func_800C1668(s32, s32);
 s32 func_800C16B0(s32, s32);
 s32 func_800C16F4(s32, s32);
@@ -252,7 +252,7 @@ static inline s32 func_8004B914_inline(void) {
 extern u8 D_8006E630[];
 extern u8 D_8006E63C[];
 s32 func_8004E7A4(s32);
-void func_800333B0(s32, u8, s32, s32);
+void func_800333B0(s32, u8, s32);
 s32 func_8003470C(s32, s32);
 s32 func_80034220(s32, s32);
 s32 func_80053960(Unk800539FC *, s32);
@@ -298,7 +298,7 @@ static inline void func_80039C38_party(void) {
     }
     for (i = 0; mask != 0; i++) {
         if (mask & 1) {
-            *p++ = D_8006E630[i] + (*(u8 *)&D_8007ADFC - 9);
+            *p++ = D_8007ADFC - 9 + D_8006E630[i];
         }
         mask >>= 1;
     }
@@ -854,7 +854,7 @@ s32 func_80039C38(void) {
         if (po != NULL) {
             s32 *sp = (s32 *)po + po->unk9 + po->unkA;
             sp[0] = po->unk0 - D_8007AECC->unk16F0;
-            sp[1] = po->unkD | (po->unk4 << 8) | (D_8007B70C->unk7 << 24) | 0xFF0000;
+            sp[1] = (D_8007B70C->unk7 << 24) | 0xFF0000 | (po->unk4 << 8) | po->unkD;
             po->unk4 = 0;
             po->unkD = 0;
             po->unkA += 2;
@@ -868,18 +868,15 @@ s32 func_80039C38(void) {
     case 0x76: {
         Unk80039C38Quad *q = (Unk80039C38Quad *)D_8007B704;
         q->unk14 = 2;
-        q->unk18[1].unk0 = q->unk18[0].unk0 = func_8004AF58_inline();
-        q->unk18[1].unk2 = q->unk18[0].unk2 = func_8004AF58_inline();
+        q->unk18[0].unk0 = q->unk18[1].unk0 = func_8004AF58_inline();
+        q->unk18[0].unk2 = q->unk18[1].unk2 = func_8004AF58_inline();
         return 0;
     }
     case 0x77: {
         Unk80039C38Quad *q = (Unk80039C38Quad *)D_8007B704;
         Unk80039C38Pt *p;
         a = q->unk14;
-        if (a <= 0) {
-            a = 1;
-        }
-        p = &q->unk18[a - 1];
+        p = &q->unk18[(a > 0 ? a : 1) - 1];
         p->unk0 = func_8004AF58_inline();
         p->unk2 = func_8004AF58_inline();
         return 0;
@@ -1572,7 +1569,7 @@ s32 func_80039C38(void) {
             if (d != 0xFF) {
                 ch->unk34 = (ch->unk34 & 0xFFFE0FFF) | ((d & 0x1F) << 12);
             }
-            func_800333B0(a, b & 0xFF, c, d);
+            func_800333B0(a, b & 0xFF, c);
         } else {
             func_8004AEDC_inline();
             func_8004AEDC_inline();
