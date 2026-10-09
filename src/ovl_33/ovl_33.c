@@ -131,7 +131,42 @@ void func_801EEA50(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EEBE0);
+void func_801EEBE0(void) {
+    s32 cur;
+    s32 next;
+
+    if (D_80077528 & 0x10000) {
+        func_8002F488(0x65);
+        func_801F0DDC();
+        return;
+    }
+    if (D_80077528 & 0x10) {
+        if (!(D_801FBF84.unk3 & 0x80)) {
+            cur = D_801FBF84.unk3;
+            next = func_800337D0(cur);
+            if (cur != next) {
+                D_801FBF84.unk3 = next;
+                func_8002F488(0x67);
+            }
+        }
+    } else if (D_80077528 & 0x40) {
+        if (!(D_801FBF84.unk3 & 0x80)) {
+            cur = D_801FBF84.unk3;
+            next = func_8003380C(cur);
+            if (cur != next) {
+                D_801FBF84.unk3 = next;
+                func_8002F488(0x67);
+            }
+        }
+    } else if (D_80077528 & 0x3000A0) {
+        if (D_801FBF84.unk76F != 0) {
+            func_8002F488(0x67);
+            D_801FBF84.unk3 ^= 0x80;
+        }
+    } else if (D_80077528 & 0x20000) {
+        func_801EED10();
+    }
+}
 
 void func_801EED10(void) {
     u8 ok;
@@ -245,7 +280,21 @@ void func_801EF3A8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF560);
+void func_801EF560(void) {
+    RECT *r = &D_801FBF84.unk58.unk4;
+    EquipMenu *m = &D_801FBF84;
+    s32 i;
+
+    if (m->unk768 != 0) {
+        func_8002B524(r->x + 8, r->y - 3, 0x14, D_800704B8, 0);
+        func_8002DEE4(r, 0x14, 2);
+        for (i = 0; i < 4; i++) {
+            if (D_8006794C->unk1C->unk54C[i] != NULL) {
+                func_80026EA0(r->x + 8, r->y + 6 + i * 0x2B, 0x13, i, D_801FBF84.unk76D);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF644);
 
@@ -929,7 +978,22 @@ void func_801F2ED4(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F2F3C);
+void func_801F2F3C(s32 col, s32 row, s32 i, MenuView *v) {
+    WinDef *w;
+    UnkPair *p;
+    s32 x;
+    s32 y;
+    u8 buf[16];
+
+    p = D_801FC840.unk3C + i;
+    x = D_801FC840.unk23C.unk4.x;
+    w = &D_801FC840.unk23C;
+    y = w->unk4.y + row * 0xF + v->unk2;
+    func_80026C34(x + 0xB, y, 0x13, p->unk0, 1);
+    func_8002B5FC(x + 0x1B, y, 0x13, D_8006A218 + D_80069018[p->unk0].unk0, 0);
+    func_8002BAE4(p->unk1, buf, 2, 1);
+    func_8002B56C(x + 0x8A, y + 4, 0x13, buf, 0);
+}
 
 void func_801F301C(void) {
     WinDef *w = &D_801FC840.unk23C;
