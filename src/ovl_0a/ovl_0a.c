@@ -1158,7 +1158,64 @@ s32 func_800AC3D8(s32 arg0, s32 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC474);
+/* drop the cached textures no longer listed and pack the rest at the top of RAM */
+void func_800AC474(void) {
+    u32 top;
+    Unk800C9CCC *s;
+    s32 i;
+    s32 j;
+    s32 found;
+    s32 bi;
+    u32 end;
+    u32 best;
+    u32 addr;
+    s32 id;
+    u32 sz;
+    Unk800C9CCC *t;
+
+    top = 0x801EDF00;
+    for (i = 9; i >= 0; i--) {
+        s = &D_800C9CCC[i];
+        id = s->unk2;
+        if (s->unk4 != 0) {
+            found = 0;
+            for (j = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; j >= 0; j--) {
+                if ((u16)D_800C9F20[j] == id) {
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found) {
+                s->unk4 = 0;
+                s->unk8 = 0;
+            }
+        }
+    }
+    for (;;) {
+        best = 0;
+        bi = -1;
+        for (i = 9; i >= 0; i--) {
+            t = &D_800C9CCC[i];
+            sz = t->unk8;
+            end = t->unk4 + sz;
+            if (t->unk4 != 0 && end <= top && best < end) {
+                best = end;
+                bi = i;
+            }
+        }
+        if (bi == -1) {
+            break;
+        }
+        s = &D_800C9CCC[bi];
+        addr = top - s->unk8;
+        if (s->unk4 != addr) {
+            func_8001DAA4(addr, s->unk4, s->unk8, NULL);
+            s->unk4 = addr;
+        }
+        top = addr;
+    }
+    DrawSync(0);
+}
 
 void func_800AC5F0(void) {
     s32 i;
