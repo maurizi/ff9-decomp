@@ -577,8 +577,8 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags */
-    s16 unk2;
-    s16 unk4;
+    u16 unk2; /* walkmesh floor */
+    u16 unk4; /* axis */
     u16 unk6; /* curve: 0 linear, 1 cosine */
     s16 unk8; /* min */
     s16 unkA; /* max */

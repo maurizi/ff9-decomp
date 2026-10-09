@@ -126,7 +126,8 @@ typedef struct {
     u8 unk0; /* mode */
     u8 unk1;
     s16 unk2; /* speed */
-    u8 pad4[4];
+    u8 unk4; /* turn speed */
+    u8 pad5[3];
     u8 unk8;
     u8 unk9;
     u8 unkA;
@@ -492,6 +493,10 @@ typedef struct {
 } WmPolyF4;
 
 /* ---- overlay functions ---- */
+s32 func_800B3398(s32 *);
+s32 func_800B345C(s32 *);
+s32 func_800B3524(s32 *);
+void func_800C6F00(s32, s32, s32, s32, s32);
 s32 func_800A9DE4(WorldMapObj *, s16);
 s32 func_800A9E24(s16, s32 *, s32 *);
 s32 func_800A9EC4(s32, s32 *, s32 *);
@@ -632,6 +637,9 @@ extern s16 D_800CE188;
 extern s16 D_800CE1A8;
 extern s16 D_800CE1C0;
 extern s8 D_800CCA20;
+extern s32 D_800CCE20;
+extern s32 D_800CCE24;
+extern s32 D_800CCE28;
 extern s32 D_800CCE2C;
 extern s32 D_800CCE30;
 extern s32 D_800CCE34;

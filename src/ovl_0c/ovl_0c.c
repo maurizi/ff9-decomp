@@ -1847,7 +1847,70 @@ void func_800B153C(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B17B4);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B1CD0);
+void func_800B1CD0(void) {
+    s32 lx;
+    s32 rx;
+    s32 ly;
+    s16 v;
+    s32 sp;
+    s32 vol;
+    s32 a;
+    s32 ang;
+    Unk800CE3C8 *m;
+    s32 dx;
+    s32 dz;
+
+    func_800B3524(&lx);
+    func_800B3398(&rx);
+    if ((u8)func_800B345C(&ly)) {
+        ly = 0;
+    }
+    ly = -ly;
+    if (lx > 0 && ly < lx) {
+        ly = lx;
+    }
+    if (lx < 0 && lx < ly) {
+        ly = lx;
+    }
+    a = D_800CE3C8->unk4 * rx >> 7;
+    D_800CE3BE = 0;
+    D_800CE3E0 = a;
+    if (func_800B8498() & 0x100000) {
+        D_800CE3BE = 1;
+        D_800CE0F0->unkC -= 0x20;
+    }
+    if (func_800B8498() & 0x200000) {
+        D_800CE3BE = 1;
+        D_800CE0F0->unkC += 0x20;
+    }
+    D_800CE0F0->unkE = 0;
+    D_800CE0F0->unkC &= 0xFFF;
+    m = D_800CE3C8;
+    v = D_800CE3BC + (m->unk2 * ly / D_800CCE20 - D_800CE3BC) / D_800CCE24;
+    D_800CE3BC = v;
+    sp = v / D_800CCE28;
+    D_800CE3C0 = sp;
+    vol = ABS(sp) / 8 + 0x14;
+    if (vol >= 0x80) {
+        vol = 0x7F;
+    }
+    func_800C4850(m->unkC, 0x3C, vol);
+    D_800CE3CC = D_800CE3DC->unk14.unk22 = (D_800CE3DC->unk14.unk22 + D_800CE3E0) & 0xFFF;
+    if (ABS(D_800CE3C0) > 80 && D_800CE25E != 0) {
+        ang = (D_800CE3C0 <= 0) << 11;
+        dx = func_8004BB80(ang + D_800CE3DC->unk14.unk22) >> 2;
+        dz = func_8004BB7C(ang + D_800CE3DC->unk14.unk22) >> 2;
+        func_800C6F00(D_800CE3DC->unk14.vx + dx, -100, D_800CE3DC->unk14.vz + dz, 15, 15000);
+        if (D_800CF4B0 & 1) {
+            dx = func_8004BB80(ang + D_800CE3DC->unk14.unk22 + 0x80) >> 3;
+            dz = func_8004BB7C(ang + D_800CE3DC->unk14.unk22 + 0x80) >> 3;
+            func_800C6F00(D_800CE3DC->unk14.vx + dx, -100, D_800CE3DC->unk14.vz + dz, 10, 15000);
+            dx = func_8004BB80(ang + D_800CE3DC->unk14.unk22 - 0x80) >> 3;
+            dz = func_8004BB7C(ang + D_800CE3DC->unk14.unk22 - 0x80) >> 3;
+            func_800C6F00(D_800CE3DC->unk14.vx + dx, -100, D_800CE3DC->unk14.vz + dz, 10, 15000);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B20B8);
 
