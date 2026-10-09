@@ -3650,7 +3650,38 @@ void func_800C16C0(void) {
     func_800C1824(0xF5, 0x5C, 9, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C1824);
+/* draw the four compass frame pieces at (arg0, arg1) */
+void func_800C1824(s32 arg0, s32 arg1) {
+    POLY_FT4 *p;
+    s16 clut;
+    u32 *ot;
+    s32 i;
+
+    p = (POLY_FT4 *)D_800CF404;
+    clut = GetClut(0x280, 0xF0);
+    ot = (u32 *)D_800CF460[*D_800CF45C];
+    for (i = 0; i < 4; i++) {
+        SetPolyFT4(p);
+        if (i < 2) {
+            setXYWH(p, D_800CD744[i].unk0 + arg0, D_800CD744[i].unk2 + arg1, D_800CD744[i].unk8,
+                    D_800CD744[i].unkA);
+        } else {
+            /* rotated a quarter turn */
+            setXY4(p, D_800CD744[i].unk0 + arg0, D_800CD744[i].unk2 + arg1 + D_800CD744[i].unk8,
+                   D_800CD744[i].unk0 + arg0, arg1 + D_800CD744[i].unk2 - (i != 2),
+                   D_800CD744[i].unk0 + arg0 + D_800CD744[i].unkA,
+                   D_800CD744[i].unk2 + arg1 + D_800CD744[i].unk8,
+                   D_800CD744[i].unk0 + arg0 + D_800CD744[i].unkA, arg1 + D_800CD744[i].unk2 - (i != 2));
+        }
+        setUVWH(p, D_800CD744[i].unk4, D_800CD744[i].unk6, D_800CD744[i].unk8, D_800CD744[i].unkA);
+        setRGB0(p, 0x80, 0x80, 0x80);
+        p->tpage = 0xC;
+        p->clut = clut;
+        addPrim(&ot[10], p);
+        p++;
+    }
+    D_800CF404 = (s32)p;
+}
 
 void func_800C1B00(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3, u8 arg4) {
     switch (arg4) {

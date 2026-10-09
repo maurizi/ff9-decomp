@@ -30,6 +30,18 @@ typedef struct {
 #define setUV0(p, _u0, _v0) ((p)->u0 = (_u0), (p)->v0 = (_v0))
 #define setWH(p, _w, _h) ((p)->w = (_w), (p)->h = (_h))
 #define setRGB0(p, _r0, _g0, _b0) ((p)->r0 = (_r0), (p)->g0 = (_g0), (p)->b0 = (_b0))
+#define setXY4(p, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3) \
+    ((p)->x0 = (_x0), (p)->y0 = (_y0), (p)->x1 = (_x1), (p)->y1 = (_y1), (p)->x2 = (_x2), (p)->y2 = (_y2), \
+     (p)->x3 = (_x3), (p)->y3 = (_y3))
+#define setXYWH(p, _x0, _y0, _w, _h) \
+    ((p)->x0 = (_x0), (p)->y0 = (_y0), (p)->x1 = (_x0) + (_w), (p)->y1 = (_y0), (p)->x2 = (_x0), \
+     (p)->y2 = (_y0) + (_h), (p)->x3 = (_x0) + (_w), (p)->y3 = (_y0) + (_h))
+#define setUV4(p, _u0, _v0, _u1, _v1, _u2, _v2, _u3, _v3) \
+    ((p)->u0 = (_u0), (p)->v0 = (_v0), (p)->u1 = (_u1), (p)->v1 = (_v1), (p)->u2 = (_u2), (p)->v2 = (_v2), \
+     (p)->u3 = (_u3), (p)->v3 = (_v3))
+#define setUVWH(p, _u0, _v0, _w, _h) \
+    ((p)->u0 = (_u0), (p)->v0 = (_v0), (p)->u1 = (_u0) + (_w), (p)->v1 = (_v0), (p)->u2 = (_u0), \
+     (p)->v2 = (_v0) + (_h), (p)->u3 = (_u0) + (_w), (p)->v3 = (_v0) + (_h))
 
 typedef struct {
     u32 tag;
