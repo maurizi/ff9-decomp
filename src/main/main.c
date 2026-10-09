@@ -2342,7 +2342,35 @@ void func_800249A8(RECT *r, s32 otz) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80024BD8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80024EB4);
+u8 *func_80024EB4(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
+    s32 clut = func_800274B4(D_80068CE8.unk2, pal);
+    RECT tw;
+
+    tw.x = D_80068CE8.unk0;
+    tw.y = D_80068CE8.unk1;
+    tw.w = D_80068CE8.unk4;
+    tw.h = D_80068CE8.unk5;
+
+    setlen(pkt, 2);
+    ((DrMode2Words *)pkt)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)pkt)->code[1] = 0;
+    addPrim(ot, pkt);
+    pkt += sizeof(DrMode2Words);
+
+    setlen(pkt, 4);
+    ((SprtWords *)pkt)->rgbc = 0x64808080;
+    ((SprtWords *)pkt)->xy = (u16)r->x | (r->y << 16);
+    ((SprtWords *)pkt)->uvclut = u | (v << 8) | (clut << 16);
+    ((SprtWords *)pkt)->wh = r->w | (r->h << 16);
+    addPrim(ot, pkt);
+    pkt += sizeof(SprtWords);
+
+    setlen(pkt, 2);
+    ((DrMode2Words *)pkt)->code[0] = get_mode(1, 1, D_80068CE8.unk6);
+    ((DrMode2Words *)pkt)->code[1] = get_tw(&tw);
+    addPrim(ot, pkt);
+    return pkt + sizeof(DrMode2Words);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025108);
 

@@ -2774,6 +2774,8 @@ typedef struct {
     u32 code[2];
 } DrMode2Words; /* DR_MODE / DR_TWIN */
 extern Unk800689B0 D_80068DC0;
+extern Unk800689B0 D_80068CE8;
+u16 func_800274B4(s32, s32);
 extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
