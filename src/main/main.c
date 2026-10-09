@@ -7644,7 +7644,17 @@ void func_80059FB8(AkaoChannel *c, u32 voice) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A014);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005A20C);
+static inline u8 *func_8005A20C_get(s32 i) {
+    return D_800809DC[i] != 0xFFFF ? D_800809E8 + D_800809DC[i] : NULL;
+}
+
+void func_8005A20C(u8 **a, u8 **b, s32 idx) {
+    idx &= 0x3FF;
+    idx *= 2;
+    *a = func_8005A20C_get(idx);
+    idx++;
+    *b = func_8005A20C_get(idx);
+}
 
 /* K&R definition: callers pass two or three arguments */
 void func_8005A284(a, c)
