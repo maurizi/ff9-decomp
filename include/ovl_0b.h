@@ -2269,6 +2269,14 @@ s32 func_800CF6B8(s32, s32);
 s32 func_800EA004(void);
 s32 func_800EA094(void);
 
+typedef struct {
+    u8 pad0[0x17];
+    u8 unk17;
+    u8 pad18[0x44 - 0x18];
+    RECT *unk44;
+    s16 unk48;
+} Unk800DA790;
+
 /* main exe: candidates for ff9.h */
 void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
 

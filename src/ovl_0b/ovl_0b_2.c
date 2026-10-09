@@ -1486,7 +1486,34 @@ void func_800DA71C(RECT *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA790);
+void func_800DA790(RECT *arg0, u32 *arg1, Unk800DA790 *arg2) {
+    s32 i;
+    s32 n = arg2->unk17;
+    Unk800DA790 *e;
+    RECT *r;
+    arg0->w = 0x40;
+    arg0->h = 0x80;
+    func_800D0940();
+    for (i = 0; i < n; i++) {
+        e = arg2;
+        r = e->unk44;
+        if (++e->unk48 >= 2) {
+            arg0->x = r->x;
+            arg0->y = r->y + 0x80;
+            goto next;
+        }
+        arg0->x = r->x;
+        arg0->y = r->y;
+        if ((u16)r->h == 0x80) {
+        next:
+            e->unk48 = 0;
+            e->unk44++;
+        }
+        LoadImage(arg0, arg1);
+        func_800DA71C(arg0);
+        arg1 += 0x1000;
+    }
+}
 
 void func_800DA898(void) {
     if (D_800F750C == 2) {
