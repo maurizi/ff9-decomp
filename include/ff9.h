@@ -822,7 +822,7 @@ typedef struct {
     s16 unk58;
     u8 pad5A[0x5C - 0x5A];
     s32 unk5C;
-    u8 pad60[0x64 - 0x60];
+    s32 unk60;
     s16 unk64;
     s16 unk66;
     u16 unk68;
@@ -2495,7 +2495,7 @@ typedef struct {
     u16 unk10; /* pitch */
     u16 unk12; /* adsr 1 */
     u16 unk14; /* adsr 2 */
-    u8 pad16[2];
+    u16 unk16; /* volume scale */
     s16 unk18; /* volume left */
     s16 unk1A; /* volume right */
 } Unk800577EC;
