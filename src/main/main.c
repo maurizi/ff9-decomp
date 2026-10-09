@@ -5863,7 +5863,21 @@ void func_80035B90(Unk80035B90 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035C2C);
+void func_80035C2C(s32 x, s32 y, s32 otz, Unk80035B90 *a) {
+    s32 i;
+    Unk80035B90Frame *f = &a->unk8[a->unk1];
+    AnimCellList *cl = &((AnimCellList *)a->unkC)[f->unk0];
+    AnimCell *c = (AnimCell *)((u8 *)a->unk10 + cl->unk2);
+
+    for (i = 0; i < cl->unk0; i++) {
+        if (!((c->unk0.unk4 >> 26) & 1)) {
+            func_800357E0(x + f->unk4, y + f->unk6, otz, (s32)a, &c->unk0);
+        } else {
+            func_8003595C(x + f->unk4, y + f->unk6, otz, a, c);
+        }
+        c++;
+    }
+}
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010E48);
 

@@ -767,9 +767,11 @@ typedef struct {
 
 /* frame animation (func_80035B90) */
 typedef struct {
-    u8 pad0[2];
+    u16 unk0; /* cell list index */
     u8 unk2; /* ticks */
-    u8 pad3[5];
+    u8 pad3;
+    s16 unk4; /* x offset */
+    s16 unk6; /* y offset */
 } Unk80035B90Frame;
 
 typedef struct {
@@ -2816,5 +2818,19 @@ void func_8002BBE8(s32, u8 *, s32);
 extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
 
 typedef void (*FadeFn)(Unk80077C78 *);
+
+/* frame animation cells (func_80035C2C) */
+typedef struct {
+    s16 unk0; /* cell count */
+    s16 unk2; /* byte offset of the first cell in unk10 */
+} AnimCellList;
+
+typedef struct {
+    Unk800357E0 unk0;
+    u8 padC[0x14 - 0xC];
+} AnimCell;
+
+void func_8003595C(s32, s32, s32, Unk80035B90 *, AnimCell *);
+
 
 #endif
