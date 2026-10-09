@@ -334,7 +334,10 @@ typedef struct {
     u8 unk12B5; /* party count */
     u8 unk12B6;
     u8 unk12B7;
-    u16 unk12B8;
+    union {
+        u8 b[2]; /* set separately by func_800EAC88 */
+        u16 h;   /* tested together */
+    } unk12B8;
     u8 pad12BA[0x12BC - 0x12BA];
     s32 unk12BC;
     u32 unk12C0;
