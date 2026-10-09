@@ -864,7 +864,20 @@ s32 func_800AA330(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AA3F4);
+s32 func_800AA3F4(void) {
+    s32 id;
+
+    id = func_800AAEF8();
+    if (id == -1) {
+        return 0;
+    }
+    id = func_800AAEC4(id);
+    if (func_8001C7FC(4, id, 0) == NULL) {
+        D_800C9F20[D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60] = id;
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60++;
+    }
+    return 0;
+}
 
 void func_800AA4BC(void) {
     s32 i;
