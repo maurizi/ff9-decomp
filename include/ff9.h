@@ -1795,7 +1795,7 @@ s32 func_80056CBC(s32);
 void func_80062344(void);
 void func_8006237C(void);
 s32 func_80062420(u8, u8, u8, u8, u8, u8);
-void func_8006238C(s32);
+s32 func_8006238C(s32);
 s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
