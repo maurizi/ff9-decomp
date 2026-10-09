@@ -4050,7 +4050,36 @@ void func_8002C974(s32 a, s32 b, s32 v) {
     D_80077188[a][b].unkC = v;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C9B0);
+void func_8002C9B0(void) {
+    Window *w;
+    s32 i;
+
+    w = D_80077530;
+    for (i = 0; i < 10; w++, i++) {
+        if (w->unk1C != 0 && func_8002E4BC(w)) {
+            if (w->unk24 != 0) {
+                func_8002E588(w);
+            }
+            if (w->unk44 != NULL) {
+                w->unk44(w);
+            }
+            if (w->unk1C == 3 && w->unk30.unk3 < w->unk30.unk2) {
+                func_8002E718(&w->unk8, w->unk18, &w->unk30);
+            }
+            func_8002D9B4(NULL, w->unk18, w->unk1A);
+            if (w->unk40 != NULL && w->unk1E != 0) {
+                w->unk40(w);
+            }
+            func_8002D9B4(&w->unk8, w->unk18, w->unk1A);
+            if (w->unk1A != 4) {
+                func_8002CB18(w);
+            }
+            if (w->unk1F != 0) {
+                func_8002705C(&w->unk8, w->unk18, w->unk1A);
+            }
+        }
+    }
+}
 
 void func_8002CB18(Window *w) {
     s32 abr;
