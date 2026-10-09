@@ -8020,7 +8020,38 @@ void func_80058F34(AkaoChannel *c, u32 *out, u32 mask, u32 keep) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058F94);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80059140);
+void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
+    u32 a;
+    u32 r;
+    u32 keep;
+    u32 b;
+    Unk80080A10 *s;
+
+    keep = ~((D_80080A70.unk0 | D_80080A70.unk10) | D_80083174);
+    a = 0;
+    r = 0;
+    s = D_8007F790;
+    if (s != NULL) {
+        a = s->unk4 & m1;
+        if (a & s->unk8) {
+            func_80058F34(D_8007F71C, &r, a & s->unk8, keep);
+            a &= ~D_8007F790->unk8;
+        }
+    }
+    b = D_80080A10->unk4 & m2;
+    if (b & D_80080A10->unk8) {
+        func_80058F34(D_8007BD48, &r, b & D_80080A10->unk8, keep);
+        b &= ~D_80080A10->unk8;
+    }
+    if (D_8007F790 != NULL && a != 0) {
+        func_80058F34(D_8007F71C, &r, a, keep);
+    }
+    if (b != 0) {
+        func_80058F34(D_8007BD48, &r, b, keep);
+    }
+    *out = r |= extra;
+    D_80083158.unk8 |= 0x100;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetNoiseClock);
 
