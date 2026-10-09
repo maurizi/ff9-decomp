@@ -3270,7 +3270,72 @@ s32 func_800BD724(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD884);
+s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f) {
+    u32 *ot;
+    POLY_F4 *p;
+    DR_TPAGE *tp;
+    s16 x;
+    s16 y;
+    s16 u;
+    s16 v;
+    s16 w;
+
+    ot = D_800C9DA4.unk8[*D_800C9DA4.unk0];
+    x = o->unkC + bg->unk24 - (st->unk4.unk0 - 0xA0);
+    y = o->unkE + bg->unk26 - (st->unk4.unk2 - 0x70);
+    if (x > 0) {
+        p = &f->unkC[*D_800C9DA4.unk0][0];
+        u = y;
+        if (u < 0) {
+            u = 0;
+        }
+        setXY4(p, 0, u, x, u, 0, 0xE0, x, 0xE0);
+        addPrim(&ot[7], p);
+    }
+    if (y > 0) {
+        u = x + o->unk4;
+        p = &f->unkC[*D_800C9DA4.unk0][1];
+        if (u > 0x140) {
+            u = 0x140;
+        }
+        v = y;
+        if (v < 0) {
+            v = 0;
+        }
+        setXY4(p, 0, 0, u, 0, 0, v, u, v);
+        addPrim(&ot[7], p);
+    }
+    if (x + o->unk4 < 0x140) {
+        u = x + o->unk4;
+        v = y + o->unk6;
+        p = &f->unkC[*D_800C9DA4.unk0][2];
+        w = 0x140 - u;
+        if (v > 0xE0) {
+            v = 0xE0;
+        }
+        setXYWH(p, u, 0, w, v);
+        addPrim(&ot[7], p);
+    }
+    if (y + o->unk6 < 0xE0) {
+        p = &f->unkC[*D_800C9DA4.unk0][3];
+        v = x;
+        if (v < 0) {
+            v = 0;
+        }
+        u = y + o->unk6;
+        if (u < 0) {
+            u = 0;
+        }
+        setXY4(p, v, u, 0x140, u, v, 0xE0, 0x140, 0xE0);
+        addPrim(&ot[7], p);
+    }
+    if (f->unk0 < 4) {
+        tp = &f->unkCC[*D_800C9DA4.unk0];
+        SetDrawTPage(tp, 1, 1, GetTPage(2, f->unk0, 0, 0));
+        addPrim(&ot[7], tp);
+    }
+    return 1;
+}
 
 s32 func_800BDC44(void) {
     SVECTOR v;

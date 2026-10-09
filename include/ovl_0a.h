@@ -1243,7 +1243,7 @@ static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
     return &((Unk800C9DF8Tri *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk32))[i];
 }
 
-void func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
+s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
 s32 func_800C0F08(void);
 
 #endif
