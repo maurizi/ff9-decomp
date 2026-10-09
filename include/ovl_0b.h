@@ -949,7 +949,7 @@ extern Unk80100C78 D_80100C78;
 extern Heap D_800FF470; /* 0x1800 bytes */
 
 typedef struct {
-    s16 unk0[12];
+    s16 unk0[6][2];
 } BtlTexInfo; /* 0x18, passed to func_800C7730 */
 
 typedef struct {
@@ -1900,7 +1900,7 @@ extern u32 D_801050D4;
 s32 func_800AB2C8(void);
 Unk8010141C *func_800DC4CC(void);
 typedef struct {
-    s16 unk0[12];
+    s16 unk0[6][2];
 } Unk800DD120;
 u8 *func_800634A8(s32);
 u8 *func_800634D8(s32);

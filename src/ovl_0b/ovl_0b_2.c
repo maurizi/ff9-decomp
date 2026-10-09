@@ -1557,11 +1557,11 @@ u16 func_800DB5B4(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4) {
     p->unk24 = 0;
     p->unk0->unk8 = arg0;
     p->unk0->unkC = NULL;
-    p->unk4.unk0[0] = arg1;
-    p->unk4.unk0[1] = arg2;
+    p->unk4.unk0[0][0] = arg1;
+    p->unk4.unk0[0][1] = arg2;
     v[0] = arg3;
     v[1] = arg4;
-    func_800C7730(p->unk0, p->unk4.unk0, v);
+    func_800C7730(p->unk0, p->unk4.unk0[0], v);
     return p->unk1E;
 }
 
@@ -1583,7 +1583,7 @@ u16 func_800DB6B8(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
     p->unk0->unk8 = arg0;
     p->unk0->unkC = NULL;
     p->unk4 = *arg1;
-    func_800C7730(p->unk0, p->unk4.unk0, arg2);
+    func_800C7730(p->unk0, p->unk4.unk0[0], arg2);
     return p->unk1E;
 }
 
@@ -1874,7 +1874,24 @@ void func_800DC634(char *arg0) {
     func_800DC510(buf);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC668);
+void func_800DC668(BtlModel *arg0, s32 arg1) {
+    BtlObjSlot *p = D_80100F1C;
+    s32 i;
+    s32 j;
+    for (i = 0; i < 32; i++, p++) {
+        p->unk1C = 0;
+        p->unk1E = i;
+        p->unk0 = NULL;
+        for (j = 0; j < 6; j++) {
+            p->unk4.unk0[j][0] = 0;
+            p->unk4.unk0[j][1] = 0;
+        }
+    }
+    p = D_80100F1C;
+    for (i = 0; i < arg1; i++, p++, arg0++) {
+        p->unk0 = &arg0->unk0;
+    }
+}
 
 void func_800DC6E8(s32 arg0) {
     func_800DCFB0(arg0, D_800A7F78)->unk1C = 0;
@@ -1914,7 +1931,16 @@ void func_800DC748(BtlModel *arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DC7E0);
+void func_800DC7E0(void) {
+    Unk8010141C *p = D_8010141C;
+    s32 i;
+    for (i = 0; i < 1; i++, p++) {
+        p->unk4C = 0;
+        p->unk4D = 0;
+        p->unk4E = i;
+        p->unk0 = NULL;
+    }
+}
 
 void func_800DC818(s32 arg0, s32 arg1, u16 *arg2) {
     func_800DC9D0(func_800E716C(arg0)->unk9C, arg1, arg2);

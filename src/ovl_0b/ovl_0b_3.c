@@ -233,7 +233,16 @@ s32 func_800CA2B0(s32 arg0) {
     return (s32)t + t[arg0];
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CA2E4);
+s16 func_800CA2E4(s16 arg0) {
+    Unk800C9EE0 *e = &D_8006794C->unk1C->unk8E4.battle->unk1330->unk8[arg0];
+    s32 r;
+    if (arg0 > 0 && (e->unk1 & 2)) {
+        r = -1;
+    } else {
+        r = D_8006794C->unk1C->unk8E4.battle->unk1334[e->unk0].unk1E;
+    }
+    return r;
+}
 
 u16 func_800CA378(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
