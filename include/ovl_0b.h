@@ -1902,7 +1902,11 @@ s32 func_800E7298(BtlUnit *);
 s32 func_800E7370(BtlUnit *);
 void func_800E748C(BtlUnit *, s16 *);
 void func_800E753C(BtlUnit *, s32, s16 *);
-void func_800E78B4(s32, s16 *, s32, s32, s32, s32, s32);
+typedef union {
+    s32 w[2];
+    s16 h[4];
+} SVec4; /* SVECTOR accessed as words */
+void func_800E78B4(s32, s16 *, s16 *, s32, s32, s32, s32);
 void func_800E7A44(s32, VECTOR *);
 void func_800E7FC0(BtlUnit *, s32);
 s32 func_800E9A00(s32, s32);

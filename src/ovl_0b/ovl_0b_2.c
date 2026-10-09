@@ -2977,7 +2977,7 @@ s32 func_800E4218(s32 arg0, s32 arg1, s32 arg2) {
 
 void func_800E436C(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s32 arg4) {
     func_800D87D0(arg0);
-    func_800E78B4(arg0, arg1, arg2, 2, 0, arg3, 3);
+    func_800E78B4(arg0, arg1, (s16 *)arg2, 2, 0, arg3, 3);
 }
 
 s32 func_800E43D8(s32 arg0, s32 arg1, s16 *arg2, s32 arg3) {
@@ -3672,7 +3672,49 @@ s32 func_800E788C(s32 arg0) {
     return (func_800E716C(arg0)->unk68 & 1) ^ 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E78B4);
+void func_800E78B4(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    SVec4 rot;
+    SVec4 tmp;
+    SVec4 cur;
+    s32 t;
+
+    if (arg6 < arg5) {
+        return;
+    }
+    func_800E716C(arg0);
+    if (arg6 == 0) {
+        arg6 = 1;
+    }
+    t = (arg5 << 12) / arg6;
+    if (arg5 == 0 || arg2 == NULL) {
+        if (arg2 == NULL) {
+            arg2 = tmp.h;
+            t = 0x1000;
+        }
+        func_800E77D8(arg0, arg2);
+    }
+    if (arg1 != NULL) {
+        func_800E750C(arg0, cur.h);
+        if (cur.w[0] != ((SVec4 *)arg1)->w[0] || cur.h[2] != arg1[2]) {
+            func_800CF808(cur.h, arg1, rot.h);
+            if (!(arg3 & 1)) {
+                rot.h[0] = 0;
+            }
+            if (!(arg3 & 2)) {
+                rot.h[1] += 0x800;
+            }
+        } else {
+            rot.w[0] = ((SVec4 *)arg2)->w[0];
+            rot.w[1] = ((SVec4 *)arg2)->w[1];
+        }
+    } else {
+        rot.h[0] = 0;
+        rot.h[1] = 0;
+    }
+    rot.h[2] = arg4;
+    func_800D006C(arg2, rot.h, 0x1000 - t);
+    func_800E7824(arg0, rot.h);
+}
 
 void func_800E7A44(s32 arg0, VECTOR *arg1) {
     BtlUnit *u = func_800E716C(arg0);
