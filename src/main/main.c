@@ -3215,7 +3215,7 @@ UnkPair *func_80027EDC(s32 id) {
     return NULL;
 }
 
-u8 func_80027F34(s32 id) {
+s32 func_80027F34(s32 id) {
     UnkPair *e = func_80027EDC_inline(id);
 
     return e != NULL ? e->unk1 : 0;
@@ -7185,7 +7185,87 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80037738);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800378C4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80037ACC);
+s32 func_80037ACC(s32 op) {
+    s32 r = 0;
+    s16 px;
+    s16 py;
+    s32 x;
+    GameData *gd;
+    Unk8004AB64 *o;
+
+    switch (op) {
+    case 0x8:
+    case 0x9:
+    case 0xA:
+    case 0xB:
+        r = func_80036AAC(op);
+        break;
+    case 0xF:
+    case 0x4B:
+    case 0x4C:
+        r = func_80036FFC(op);
+        break;
+    case 0x2E:
+    case 0x43:
+    case 0x44:
+    case 0x45:
+        r = func_80037528(op);
+        break;
+    case 0x64:
+        x = func_80052D40();
+        if (x < 0x100) {
+            r = func_80027F34(x);
+        } else if (x < 0x200) {
+            r = (u8)func_800281A4(x - 0x100);
+        } else {
+            r = func_80062560(x - 0x200);
+        }
+        break;
+    case 0x65:
+        func_800C7EE8(func_80052D40(), &r);
+        break;
+    case 0x52:
+        gd = D_8006794C->unk1C;
+        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk10;
+        break;
+    case 0x53:
+        gd = D_8006794C->unk1C;
+        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk18;
+        break;
+    case 0x6E:
+        gd = D_8006794C->unk1C;
+        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk12;
+        break;
+    case 0x6F:
+        gd = D_8006794C->unk1C;
+        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk1A;
+        break;
+    case 0x70:
+        px = -1;
+        o = (Unk8004AB64 *)func_80052D40();
+        if (o != NULL && o->unk5 == 4) {
+            func_800C76E8(o->unk3B, (u16 *)&px, (u16 *)&py);
+        }
+        r = px;
+        break;
+    case 0x71:
+        py = -1;
+        o = (Unk8004AB64 *)func_80052D40();
+        if (o != NULL && o->unk5 == 4) {
+            func_800C76E8(o->unk3B, (u16 *)&px, (u16 *)&py);
+        }
+        r = py;
+        break;
+    case 0x6C:
+        func_80052D40();
+    case 0x5A:
+    case 0x5B:
+    case 0x5C:
+        func_80052D40();
+        break;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80037D6C);
 

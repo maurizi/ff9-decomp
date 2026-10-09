@@ -3505,4 +3505,16 @@ extern Unk80083228 D_80083228;
 extern s32 D_80080A30[16]; /* AKAO header copy */
 extern u32 D_80083230; /* = D_80083228.unk8 */
 
+/* ovl_0a functions called from the main script interpreter */
+s32 func_800C76E8(s32, u16 *, u16 *);
+s32 func_800C7EE8(u32, s32 *);
+
+/* party member index -> character slot (9.. map to 5..) */
+static inline s32 func_80037ACC_chr(s32 i) {
+    if (i >= 9) {
+        i -= 4;
+    }
+    return i;
+}
+
 #endif
