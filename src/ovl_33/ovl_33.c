@@ -432,7 +432,20 @@ void func_801F0890(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0934);
+void func_801F0934(s32 col, s32 row, s32 z, MenuView *v) {
+    Character *c = D_8006794C->unk1C->unk54C[D_801FBF84.unk2];
+    s32 x, y;
+    s32 dx = 8;
+    s32 dy = 0x5E;
+
+    x = col * 0x96 + (D_801FBF84.unk48.x + dx);
+    y = row * 0xF + (v->unk2 + dy);
+    if (D_801FBF84.unk0 == 0) {
+        func_801F09CC(x, y, z, c);
+    } else {
+        func_801F0AB8(x, y, z, c);
+    }
+}
 
 void func_801F09CC(s32 x, s32 y, s32 idx, Character *c) {
     u8 buf[8];
