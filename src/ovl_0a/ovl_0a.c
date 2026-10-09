@@ -1433,7 +1433,20 @@ void func_800B1E04(FieldScene *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1E8C);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2100);
+/* find the trigger matching the object, id and value (searching backwards) */
+FieldTrig *func_800B2100(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
+    FieldScene *sc = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    FieldTrig *base = sc->unk58;
+    FieldTrig *e = &base[sc->unk4B] - 1;
+
+    do {
+        if (e->unk0 == arg0->unkC->unk3B && e->unk4 == arg1 && e->unk6 == arg2) {
+            return e;
+        }
+        e--;
+    } while (e >= base);
+    return NULL;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B21A0);
 
@@ -1509,7 +1522,7 @@ s32 func_800B2C80(void) {
 }
 
 void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    func_800B31B8(func_8001E350(arg0), arg1, arg2, arg3);
+    func_800B31B8((FieldEvtCtx *)func_8001E350(arg0), arg1, arg2, arg3);
 }
 
 /* apply the field lights to the object colours */
@@ -1517,7 +1530,22 @@ void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 /* apply the field lights to the object colours */
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2D10);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B31B8);
+/* set the object's light colour */
+s32 func_800B31B8(FieldEvtCtx *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u32 f = arg0->unk0;
+    FieldActorInfo *info = &D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk54[arg0->unkC->unk3B];
+    u32 col;
+
+    if (!(f & 0x800)) {
+        col = (arg1 & 0xFF) | ((arg2 << 8) & 0xFF00) | ((arg3 << 16) & 0xFF0000) | 0x01000000;
+        info->unkC = col;
+        info->unk8 = col;
+        arg0->unk0 |= 0xC00;
+        return 1;
+    }
+    arg0->unk0 = f & ~0x800;
+    return 0;
+}
 
 FieldLight *func_800B3254(Unk800B3254 *arg0) {
     if (arg0 != NULL && arg0->unk9 != 0) {

@@ -262,13 +262,8 @@ typedef struct {
 
 /* background sprite: DR_TPAGE followed by a SPRT_16 (0x18 bytes) */
 typedef struct {
-    u32 tag;
-    u32 tpage;
-    u32 tag2;
-    u8 r0, g0, b0, code;
-    s16 x0, y0;
-    u8 u0, v0;
-    u16 clut;
+    DR_TPAGE unk0;
+    SPRT_16 unk8;
 } BgSprt;
 
 /* packed tile position: x in the top 10 bits, y below it */
@@ -915,7 +910,7 @@ s32 func_800B36E0(s32, s32);
 s32 func_800B4894(void);
 void func_800B3ACC(void);
 s32 func_8001E350(s32);
-void func_800B31B8(s32, s32, s32, s32);
+s32 func_800B31B8(FieldEvtCtx *, s32, s32, s32);
 void func_800B5938(void);
 void func_800AC67C(s32);
 s32 func_800C0038(s32, s32);
