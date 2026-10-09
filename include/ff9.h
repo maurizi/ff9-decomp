@@ -1048,7 +1048,7 @@ void func_80032658(void);
 void func_80032140(s32, s32);
 void func_80056B18(void);
 void func_80056C08(void);
-u16 func_8005C8BC(s32);
+s32 func_8005C8BC(s32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
@@ -1954,7 +1954,7 @@ typedef struct {
     u32 unk38;
     u32 unk3C;
     s32 unk40; /* volume */
-    u8 pad44[4];
+    s32 unk44;
     s32 unk48;
     s32 unk4C; /* pan in bits 8-15 */
     u8 pad50[0x58 - 0x50];
