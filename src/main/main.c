@@ -3399,7 +3399,28 @@ void func_8002EB74(MenuList *p) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002ECA0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EDFC);
+void func_8002EDFC(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
+    m->unk0 = count;
+    if (cols != 0) {
+        m->unk2 = (count + cols - 1) / cols;
+    } else {
+        m->unk2 = 0;
+    }
+    m->unk4 = cols;
+    if (m->unk2 < rows) {
+        rows = m->unk2;
+    }
+    m->unk3 = rows;
+    m->unk8 = 0;
+    m->unkC = 0;
+    m->unkB = 0;
+    m->unkA = 0;
+    m->unk9 = 0;
+    m->unk7 = 0;
+    m->unk6 = 0;
+    m->unk5 = 0;
+    m->unkD = e;
+}
 
 void func_8002EE8C(MenuList *m, s32 b) {
     if (m->unk8 == 0) {
@@ -3743,7 +3764,18 @@ void func_8002FC10(void *a) {
 void func_8002FC30(void) {
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FC38);
+void func_8002FC38(void) {
+    D_80077C78.unk1C = 1;
+    D_80077C78.unkA = -1;
+    D_80077C78.unk2 = 0;
+    D_80077C78.unk10 = 0;
+    D_80077C78.unk4 = 0;
+    D_80077C78.unk3 = 0;
+    D_80077C78.unk5 = 0;
+    D_80077C78.unk0 = 0;
+    func_8002FC38_clear3(D_80077C78.unk28.unk0);
+    func_8002FC38_clear3(&D_80077C78.unk24);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FC8C);
 
@@ -5362,7 +5394,20 @@ s32 func_8004AF58(void) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004AFF0);
+s32 func_8004AFF0(Unk8004AB64 *p) {
+    s32 *q;
+
+    if (p != NULL) {
+        if (p->unk34 == 0xFFFF) {
+            return 0;
+        }
+        q = (s32 *)func_8001E350(p->unk3B);
+        if (q != NULL) {
+            return q[2];
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B040);
 
@@ -5950,7 +5995,17 @@ s32 func_8004F4A4(s32 ch, s32 n) {
     return i;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F5D4);
+void func_8004F5D4(Unk8004F5D4 *p) {
+    GameData *g = D_8006794C->unk1C;
+
+    D_8007BCA4 = g->unk10[g->unk8] + p->unk18;
+    func_800515B8();
+    func_80051300();
+    func_800512B8(p->unk0 + 2, p->unk2 + 2);
+    func_8004D940(p->unk50);
+    func_80051380();
+    func_80051600();
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F660);
 

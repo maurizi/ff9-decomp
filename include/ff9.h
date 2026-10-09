@@ -755,7 +755,7 @@ typedef struct {
     u8 unk5;
     u8 pad6[0x8 - 6];
     s16 unk8;
-    u16 unkA;
+    s16 unkA;
     s32 unkC;
     s32 unk10;
     u8 pad14[0x18 - 0x14];
@@ -2424,4 +2424,20 @@ extern u8 D_8006E6F0[];
 Unk8004AB64 *func_8004B040(s32);
 void func_8004ACA4(Unk8004AB64 *, s32, s32);
 void func_8004F9A0(void);
+/* zero the first three bytes (r, g, b) of a 4-byte colour */
+static inline void func_8002FC38_clear3(u8 *p) {
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+}
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    u8 pad4[0x18 - 4];
+    s16 unk18;
+    u8 pad1A[0x50 - 0x1A];
+    s32 unk50;
+} Unk8004F5D4;
+void func_80051600(void);
+void func_8004D940(s32);
 #endif
