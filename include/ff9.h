@@ -2880,6 +2880,7 @@ extern u32 D_80068680[8];
 extern s32 D_800686A0[];
 extern Unk800686C0 D_800686C0[1];
 void func_80019708(s32, u32, s32);
+extern s32 D_80073730[2][32]; /* indexed by leading-zero count (func_80019708) */
 
 void __main(void);
 void func_80012900(s32);

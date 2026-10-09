@@ -489,6 +489,12 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "nop;" \
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
+#define gte_ldlzc(r0) __asm__ volatile( \
+    "mtc2\t%0, $30" \
+    : : "r"(r0))
+#define gte_stlzc(r0) __asm__ volatile( \
+    "swc2\t$31, 0(%0)" \
+    : : "r"(r0) : "memory")
 #define GTE_NOPS ".word\t0x00000000;.word\t0x00000000;"
 #define gte_rtps() __asm__ volatile(GTE_NOPS ".word\t0x4A180001")
 #define gte_rtpt() __asm__ volatile(GTE_NOPS ".word\t0x4A280030")

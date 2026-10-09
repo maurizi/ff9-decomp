@@ -524,7 +524,15 @@ void func_80019160(u16 a, s32 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80019194);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80019708);
+void func_80019708(s32 a, u32 b, s32 c) {
+    s32 n = 31;
+    gte_ldlzc(b);
+    if (b != 0x80000000) {
+        gte_stlzc(&b);
+        n -= b;
+    }
+    D_80073730[a][n] = c;
+}
 
 void func_80019750(Unk4 *a) {
     *a = D_80068158;
@@ -1610,7 +1618,21 @@ void func_8002291C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80022A28);
+s32 func_80022A28(void) {
+    s32 v = 1;
+    s32 ok;
+
+    while (CdInit() == 0) {
+    }
+    ok = v;
+    if (ok) {
+        func_800236A4(0);
+        v = 0x80; /* CdlModeSpeed */
+        CdControlB(0xE, (u8 *)v, 0);
+        VSync(3);
+    }
+    return ok;
+}
 
 void func_80022A80(void) {
     CdReset(1);
@@ -5348,7 +5370,13 @@ u8 func_80033D28(void) {
     return D_80077DE0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80033D38);
+/* default character names: count, then {offset, length} entries */
+INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010DC4);
+
+void func_80033D38(u8 *dst, s32 id) {
+    func_8001D898(dst, 0xFF, 10);
+    func_8002BD54(dst, (u8 *)func_800357C0((u8 *)D_80010DC4, id));
+}
 
 void func_80033D8C(u8 *dst, s32 b) {
     s32 i;
