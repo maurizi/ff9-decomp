@@ -32,7 +32,11 @@ typedef struct {
 } ScrollPos;
 extern ConfigMenu D_801F1558;
 
-extern u8 D_801F13F0[13][4]; /* per item: {title, option 0, option 1, ...} text ids */
+typedef struct {
+    u8 unk0;    /* title text id */
+    u8 unk1[3]; /* option text ids */
+} ConfigText;
+extern ConfigText D_801F13F0[13];
 extern void (*D_801F1424[])(void);
 extern void (*D_801F14BC[13])(RECT *, s32);
 
