@@ -2046,6 +2046,7 @@ typedef struct {
 } CardInfo; /* 5 bytes */
 extern CardInfo D_800121C8[]; /* card table */
 CardInfo *func_80062B30(void);
+s32 func_800627BC(s32);
 extern s32 D_800704C4;
 extern s32 D_80070418;
 void func_8003563C(u8);

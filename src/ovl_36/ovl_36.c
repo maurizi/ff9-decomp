@@ -159,7 +159,42 @@ void func_801F1FE8(u8 *buf) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2138);
+void func_801F2138(s32 *out) {
+    s32 kinds;
+    s32 arrows;
+    s32 types;
+    s32 i;
+    s32 j;
+    CardInfo *e;
+    Unk6 *c;
+
+    e = func_80062B30();
+    kinds = 0;
+    arrows = 0;
+    types = 0;
+    for (i = 0; i < 100; i++) {
+        if (D_801F347C.unk8[i] != 0) {
+            kinds += e[i].unk4;
+        }
+    }
+    func_8001D898(D_801F337C, 0, 0x100);
+    for (i = 0; i < 100; i++) {
+        for (j = 0; j < D_801F347C.unk8[i]; j++) {
+            c = func_800625A0(i, j);
+            D_801F337C[c->unk1] = 1;
+            arrows += D_801F3378[c->unk3];
+        }
+    }
+    for (i = 0; i < 0x100; i++) {
+        if (D_801F337C[i] != 0) {
+            types += 5;
+        }
+    }
+    out[0] = kinds;
+    out[1] = arrows;
+    out[2] = types;
+    out[3] = kinds + arrows + types;
+}
 
 void func_801F22DC(void) {
     RECT r;
