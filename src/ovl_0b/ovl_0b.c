@@ -580,7 +580,23 @@ s32 func_800AF1C8(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF1D0);
+void func_800AF1D0(void) {
+    Battle11C0 *b;
+    FileEntry *f;
+    s32 size;
+    s32 *dst;
+
+    b = D_8006794C->unk1C->unk8E4.battle->unk11C0;
+    func_80021C60();
+    D_8006794C->unk1C->unk8BC = NULL;
+    f = func_8001E218(0, 0x10065);
+    size = (f->unkC - f->unk4) << 11;
+    func_80021974(func_80021CFC(), 0, 0x10065, 0x801EDF00, size, size, f->unk4, size);
+    f = func_8001E218(1, 0x2713);
+    dst = b->unkC;
+    size = (f->unkC - f->unk4) << 11;
+    func_80021974(func_80021CFC(), 0, 0x2713, (s32)dst, size, size, f->unk4, size);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF2E0);
 
@@ -653,7 +669,25 @@ void func_800B031C(void) {
     func_800F4DFC();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B03B0);
+void func_800B03B0(void) {
+    Battle *b;
+    Battle11C0 *p;
+
+    b = D_8006794C->unk1C->unk8E4.battle;
+    p = b->unk11C0;
+    func_800CE05C(p->unk18, p->unk40);
+    b->unkD85 |= 1;
+    func_800B0EF8(b);
+    func_800B0FC0(b);
+    func_800C972C();
+    D_800FDF30.unkB = (b->unk132C >> 13) & 1;
+    func_8004C204();
+    func_8004BC38();
+    func_800AB580(1);
+    func_8002FA50(0x20);
+    func_800C2F1C(func_800CA2B0(0));
+    b->unkD80 = 2;
+}
 
 void func_800B0468(GameData *arg0, Battle *arg1) {
     BtlUnit *u;

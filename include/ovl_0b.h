@@ -863,7 +863,7 @@ typedef struct {
     s32 unk4;
     s16 unk8;
     u8 unkA;
-    u8 padB;
+    u8 unkB;
     u8 unkC[16];
     u8 unk1C;
     u8 unk1D;
