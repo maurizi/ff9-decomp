@@ -1377,6 +1377,8 @@ extern Unk80104E34 D_80104E34[6];
 extern u16 D_800F51E8[];
 extern u8 D_800F8D70[];
 extern s32 D_800F8D74;
+extern u8 D_800F8D78[5]; /* battle message ids */
+BtlUnit *func_800E9124(void);
 extern u8 D_800F8D80;
 extern u8 D_800F8D81;
 extern char D_800A83AC[];
