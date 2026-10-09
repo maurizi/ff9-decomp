@@ -15202,7 +15202,85 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", CdDiskReady);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", CdGetDiskType);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800654F8);
+u8 func_800654F8(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
+    MainCalc c;
+
+    c.unk0 = a;
+    c.unk4 = t;
+    c.unk8 = cmd;
+    c.unkC = e;
+    c.unk10 = 0;
+    c.unk1A = 0;
+    c.unk18 = 0;
+    switch (kind) {
+    case 10:
+        if (func_800657F0(&c)) {
+            if (t->unk10 == t->unk18) {
+                goto full;
+            }
+            func_800658DC(&c);
+            func_80065A44((Unk80065A44 *)&c);
+            func_800659EC(&c);
+            func_80065A80(&c);
+            func_80065ADC((Unk80065ADC *)&c);
+        }
+        break;
+    case 12:
+        func_80065CBC(&c);
+        break;
+    case 13:
+        if (func_80065850(&c)) {
+            func_80065B14(&c);
+        }
+        break;
+    case 69:
+        if (func_800657F0(&c)) {
+            if (t->unk10 == t->unk18) {
+                goto full;
+            }
+            func_800659D0(&c);
+            func_80065ADC((Unk80065ADC *)&c);
+        }
+        break;
+    case 70:
+        if (func_800657F0(&c)) {
+            if (t->unk12 == t->unk1A) {
+                goto full;
+            }
+            func_800659D0(&c);
+            func_80065B9C((Unk80065ADC *)&c);
+        }
+        break;
+    case 71:
+        if (func_800657F0(&c)) {
+            if (*(u32 *)&t->unk10 == *(u32 *)&t->unk18) { /* hp and mp both full */
+            full:
+                c.unk10 |= 1;
+                break;
+            }
+            func_80065BD4(&c);
+        }
+        break;
+    case 72:
+        if (func_80065850(&c)) {
+            func_80065BFC(&c);
+        }
+        break;
+    case 62:
+    case 73:
+        if (((cmd->unk0 >> 8) & 0x1FF) == 0x121) {
+            return func_801F1A7C();
+        }
+        func_80065D40(&c);
+        break;
+    case 76:
+        if (func_800657F0(&c)) {
+            func_80065C8C(&c);
+        }
+        break;
+    }
+    return func_8006576C(&c);
+}
 
 s32 func_8006573C(Unk8006573C *a, s16 b) {
     if (a->unk12 < b) {
@@ -15212,7 +15290,7 @@ s32 func_8006573C(Unk8006573C *a, s16 b) {
     return 1;
 }
 
-s32 func_8006576C(MainCalc *c) {
+u8 func_8006576C(MainCalc *c) {
     if (c->unk10 & 1) {
         c->unk11 |= 0x20;
         return 0;
@@ -15226,7 +15304,7 @@ s32 func_8006576C(MainCalc *c) {
     return 1;
 }
 
-s32 func_800657F0(MainCalc *c) {
+u8 func_800657F0(MainCalc *c) {
     if (func_800539FC(c->unk4, 0x41) || c->unk4->unk10 == 0) {
         c->unk10 |= 1;
         return 0;
@@ -15234,7 +15312,7 @@ s32 func_800657F0(MainCalc *c) {
     return 1;
 }
 
-s32 func_80065850(MainCalc *c) {
+u8 func_80065850(MainCalc *c) {
     if (func_800539FC(c->unk4, 1) || c->unk4->unk10 != 0 ||
         (func_800539FC(c->unk4, 0x40) && c->unk4->unk10 == 0)) {
         c->unk10 |= 1;

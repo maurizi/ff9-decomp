@@ -3006,6 +3006,10 @@ typedef struct {
 
 u8 func_800539FC(Character *, s32);
 s32 func_8005398C(Character *, s32);
+u8 func_8006576C(MainCalc *);
+u8 func_800657F0(MainCalc *);
+u8 func_80065850(MainCalc *);
+s32 func_801F1A7C(void); /* ovl_37 */
 void func_800637C0(s32); /* BIOS B0 call */
 
 void func_80065D90(Character *, s32);
