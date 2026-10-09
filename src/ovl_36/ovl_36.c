@@ -624,7 +624,22 @@ void func_801F2FCC(void) {
     t->unk2 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2FE0);
+void func_801F2FE0(s32 card, s32 dir) {
+    CardTurn *t;
+
+    t = &D_801F347C.unk1941;
+    t->unk0 = 1;
+    t->unk2 = 0;
+    t->unk1 = dir;
+    t->unk3 = card;
+    if (dir == 0) {
+        if (D_801F347C.unk6C[t->unk3] != 0) {
+            D_801F347C.unk6C[t->unk3]--;
+        } else {
+            D_801F347C.unk6C[t->unk3] = D_801F347C.unk8[t->unk3] - 1;
+        }
+    }
+}
 
 s32 func_801F3034(u8 *src, u8 *dst) {
     RleHeader *h = (RleHeader *)src;
