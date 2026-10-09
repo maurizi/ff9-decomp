@@ -3210,7 +3210,46 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB508);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB714);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BC33C);
+/* reflect the mirrored model across the plane (unk64 normal, unk6C point) */
+void func_800BC33C(Unk800C95C8 *arg0) {
+    MATRIX *m;
+    s32 nx;
+    s32 ny;
+    s32 nz;
+    s32 d;
+
+    if (arg0->unk60 != NULL) {
+        nx = arg0->unk64[0];
+        ny = arg0->unk64[1];
+        nz = arg0->unk64[2];
+        d = (arg0->unk6C[0] * nx + arg0->unk6C[1] * ny + arg0->unk6C[2] * nz) >> 11;
+        m = (MATRIX *)0x1F800000;
+        m->m[0][0] = 0x1000 - ((nx * nx) >> 11);
+        m->m[1][1] = 0x1000 - ((ny * ny) >> 11);
+        m->m[2][2] = 0x1000 - ((nz * nz) >> 11);
+        m->m[0][1] = m->m[1][0] = (nx * ny) >> 11;
+        m->m[0][2] = m->m[2][0] = (nx * nz) >> 11;
+        m->m[1][2] = m->m[2][1] = (ny * nz) >> 11;
+        m->t[0] = (d * nx) >> 12;
+        m->t[1] = (d * ny) >> 12;
+        m->t[2] = (d * nz) >> 12;
+        gte_SetRotMatrix(m);
+        gte_ldclmv(&arg0->unk60->unk24);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24);
+        gte_ldclmv(&arg0->unk60->unk24.m[0][1]);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24.m[0][1]);
+        gte_ldclmv(&arg0->unk60->unk24.m[0][2]);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24.m[0][2]);
+        gte_SetTransMatrix(m);
+        gte_ldlv0(arg0->unk60->unk24.t);
+        gte_rtv0tr();
+        gte_stlvnl(arg0->unk24.t);
+        arg0->unkC = arg0->unk60->unkC;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BC600);
 

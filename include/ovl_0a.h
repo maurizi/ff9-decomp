@@ -683,27 +683,32 @@ typedef struct {
 typedef struct {
     u16 unk0[4];
     u16 unk8[4]; /* colours */
-    u8 pad10[8];
+    u8 pad10[4];
+    u8 unk14; /* flags */
+    u8 pad15[3];
 } WmSrcG4; /* 0x18 */
 
 typedef struct {
     u16 unk0[3];
     u8 pad6[2];
     u16 unk8[3]; /* colours */
-    u8 padE[6];
+    u8 padE[5];
+    u8 unk13; /* flags */
 } WmSrcG3; /* 0x14 */
 
 typedef struct {
     u16 unk0[4];
     u8 unk8[3]; /* rgb */
-    u8 padB[5];
+    u8 padB[2];
+    u8 unkD; /* flags */
+    u8 padE[2];
 } WmSrcF4; /* 0x10 */
 
 typedef struct {
     u16 unk0[3];
     u8 pad6[2];
     u8 unk8[3]; /* rgb */
-    u8 padB;
+    u8 unkB; /* flags */
 } WmSrcF3; /* 0xC */
 
 typedef struct {
@@ -716,7 +721,8 @@ typedef struct {
     u16 unkC;  /* G3 */
     u16 unkE;  /* F4 */
     u16 unk10; /* F3 */
-    u8 pad12[2];
+    u8 pad12;
+    s8 unk13; /* ordering table bias */
     void *unk14;
     void *unk18;
     u8 *unk1C;      /* primitive sources, in the order above */
@@ -745,7 +751,7 @@ typedef struct {
     u16 unk2; /* clut */
 } WmTexInfo;
 
-typedef struct {
+typedef struct Unk800C95C8 {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[6];
     WmModel *unk8;
@@ -764,8 +770,11 @@ typedef struct {
     u16 unk58;
     u8 pad5A[2];
     s32 unk5C;
-    s32 unk60;
-    u8 pad64[0x74 - 0x64];
+    struct Unk800C95C8 *unk60; /* mirrored model (func_800BC33C) */
+    s16 unk64[3]; /* mirror plane normal */
+    u8 pad6A[2];
+    s16 unk6C[3]; /* point on the mirror plane */
+    u8 pad72[2];
     u16 unk74;
     u16 unk76;
     u16 unk78;

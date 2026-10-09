@@ -515,6 +515,22 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "swc2\t$18, 4(%0);" \
     "swc2\t$19, 8(%0)" \
     : : "r"(r0) : "memory")
+#define gte_ldsxy3(r0, r1, r2) __asm__ volatile( \
+    "mtc2\t%0, $12;" \
+    "mtc2\t%2, $14;" \
+    "mtc2\t%1, $13" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldsz3(r0, r1, r2) __asm__ volatile( \
+    "mtc2\t%0, $17;" \
+    "mtc2\t%1, $18;" \
+    "mtc2\t%2, $19" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldsz4(r0, r1, r2, r3) __asm__ volatile( \
+    "mtc2\t%0, $16;" \
+    "mtc2\t%1, $17;" \
+    "mtc2\t%2, $18;" \
+    "mtc2\t%3, $19" \
+    : : "r"(r0), "r"(r1), "r"(r2), "r"(r3))
 #define gte_ldlv0(r0) __asm__ volatile( \
     "lhu\t$13, 4(%0);" \
     "lhu\t$12, 0(%0);" \
