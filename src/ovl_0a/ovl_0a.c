@@ -2631,7 +2631,61 @@ void func_800B61A4(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B6438);
+/* attach a model file (relocating it once) and lay out its work buffers at arg1 */
+void func_800B6438(Unk800C95C8 *arg0, u8 *arg1) {
+    WmModel *m;
+    WmModelGroup *g;
+    u32 i;
+    u32 n;
+    u32 k;
+    s32 size;
+    u8 *pp;
+    WmModelGroup *p;
+    WmModelGroup *g2;
+
+    m = arg0->unk8;
+    if (!(m->unk0 & 1)) {
+        i = 0;
+        m->unk0 |= 1;
+        m->unkC = (s32)m + m->unkC;
+        g = (WmModelGroup *)((u8 *)m + (s32)m->unk10);
+        m->unk10 = g;
+        for (p = g; i < m->unk3; i++, p++) {
+            p->unk14 = (u8 *)m + (s32)p->unk14;
+            p->unk18 = (u8 *)m + (s32)p->unk18;
+            p->unk1C = (u8 *)m + (s32)p->unk1C;
+            p->unk20 = (void *)((u8 *)m + (s32)p->unk20);
+            p->unk24 = (void *)((u8 *)m + (s32)p->unk24);
+        }
+    }
+    g2 = arg0->unk8->unk10;
+    size = 0;
+    if ((s32)g2 >= 0) {
+        g2 = (WmModelGroup *)((u8 *)g2 + (s32)arg0->unk8);
+    }
+    n = arg0->unk8->unk3;
+    for (k = 0; k < n; k++) {
+        size += g2->unk0;
+        g2++;
+    }
+    arg0->unk54 = 0x1000;
+    arg0->unk56 = 0x1000;
+    arg0->unk58 = 0x1000;
+    arg0->unk1C = NULL;
+    arg0->unk60 = NULL;
+    arg0->unk5C = 0;
+    arg0->unk14 = 0;
+    arg0->unk74 = 0;
+    arg0->unk76 = 0;
+    arg0->unk78 = 0;
+    arg0->unk10 = arg1;
+    arg0->unk50 = NULL;
+    pp = arg1 + size * 2;
+    arg0->unk20 = pp;
+    arg0->unk0 |= 2;
+    *(volatile u16 *)&arg0->unk0 = 0;
+    arg0->unk44 = (WmModelOut *)(pp + m->unk2 * 32);
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B6584);
 
