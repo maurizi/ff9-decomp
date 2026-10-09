@@ -2772,6 +2772,7 @@ typedef struct {
     u8 unk5; /* power */
     u8 pad6[2];
     u8 unk8; /* checked against the target by func_8005398C */
+    u8 unk9;
 } MainCalcCmd;
 
 typedef struct {

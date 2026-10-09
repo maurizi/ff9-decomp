@@ -11259,7 +11259,23 @@ s32 func_80065850(MainCalc *c) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800658DC);
+void func_800658DC(MainCalc *c) {
+    Character *a;
+    s32 lv;
+
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    a = c->unk0;
+    lv = a->unk26;
+    c->unk16 = lv + ((*D_8007B720 << 8) | *D_8007B720) % (((a->unkB + lv) >> 3) + 1);
+    D_8007B720++;
+    c->unk12 = c->unk8->unk5;
+    c->unk14 = c->unk4->unk2A;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800659D0);
 
@@ -11333,7 +11349,13 @@ void func_80065C8C(MainCalc *c) {
     c->unk1A = c->unk4->unk1A >> 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065CBC);
+void func_80065CBC(MainCalc *c) {
+    u8 masks[6] = { 0, 0, 0, 2, 1, 24 };
+
+    if (func_8005398C(c->unk4, masks[c->unk8->unk9]) != 2) {
+        c->unk10 |= 1;
+    }
+}
 
 void func_80065D40(MainCalc *c) {
     if (func_8005398C(c->unk4, c->unk8->unk8) != 2) {
@@ -11385,4 +11407,3 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800665B0);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetLineF2);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80012798);

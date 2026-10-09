@@ -221,3 +221,4 @@ main func_80053498 hand-written asm module 0x80050F4C-0x80053924 (global regs $t
 main func_80053658 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80053728 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80053764 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
+main func_80064A2C libgpu: GP1 0x10 info query via GPU register pointers
