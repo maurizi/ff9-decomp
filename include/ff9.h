@@ -1370,7 +1370,7 @@ typedef struct {
 } MenuView;
 
 typedef struct {
-    u8 pad0[4];
+    s32 unk0[1]; /* indexed past its end: text table */
     s32 unk4;
     u8 pad8[0x30 - 8];
     s32 unk30;

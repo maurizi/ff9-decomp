@@ -45,7 +45,42 @@ void func_801F4198(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F42A8);
+u8 func_801F42A8(s32 stat, u8 *equip) {
+    u32 r = 0;
+    u8 sum[4];
+    s32 i;
+    s32 j;
+    Unk8006D328 *b;
+
+    func_8001D898(sum, r, 4);
+    for (i = 1; i < 5; i++) {
+        if (equip[i] != 0xFF) {
+            if (equip[i] < 0xE0) {
+                j = equip[i] - 0x58;
+                b = &D_8006D328[j];
+                sum[0] += b->unk0;
+                sum[1] += b->unk1;
+                sum[2] += b->unk2;
+                sum[3] += b->unk3;
+            }
+        }
+    }
+    switch (stat) {
+    case 1:
+        r = sum[2];
+        break;
+    case 2:
+        r = sum[1];
+        break;
+    case 3:
+        r = sum[0];
+        break;
+    case 4:
+        r = 0;
+        break;
+    }
+    return r;
+}
 
 void func_801F43F8(void) {
     D_801FC2D0.unk20 = 5;
@@ -778,8 +813,8 @@ void func_801F7770(void) {
     func_8003556C(func_801F8728);
     func_8002EDFC(&D_801FC438.unk4, 0xFF, 0xB, 2, 0xAD);
     setRECT(&D_801FC438.unk14, 8, 0x2A, 0x12C, 0xAD);
-    setRECT(&D_801FC438.unk1C, 0x62, 0x40, 0x7C, 0x45);
-    setRECT(&D_801FC438.unk24, 0x62, 0x87, 0x7C, 0x3E);
+    setRECT(&D_801FC438.unk1C[0], 0x62, 0x40, 0x7C, 0x45);
+    setRECT(&D_801FC438.unk1C[1], 0x62, 0x87, 0x7C, 0x3E);
 }
 
 void func_801F7848(void) {
@@ -904,7 +939,30 @@ void func_801F7FE0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F80D0);
+void func_801F80D0(void) {
+    MenuList *l = &D_801FC438.unk4;
+    UnkPair *p;
+    s32 i;
+
+    p = &D_8006794C->unk1C->unk574[(l->unk5 + l->unk6) * 2 + l->unk7];
+    if (p->unk1 != 0) {
+        D_801FC438.unk1 = 1;
+        D_801FC438.unk2 = p->unk1;
+        D_801FC438.unk0 = 0;
+        for (i = 0; i < 2; i++) {
+            D_801FC438.unk2C[i] = func_8002DC54(&D_801FC438.unk1C[i], D_801FC2B0[i].unk8, D_801FC2B0[i].unk0);
+            func_8002E2EC(D_801FC438.unk2C[i], D_801FC2B0[i].unk4);
+            func_8002E2E4(D_801FC438.unk2C[i], func_801F86D0);
+            func_8002E2FC(D_801FC438.unk2C[i], func_801F86FC);
+            func_8002CF20(D_801FC438.unk2C[i], 0);
+            func_8002E31C(D_801FC438.unk2C[i], 1);
+            func_8002E304(D_801FC438.unk2C[i], D_800703FC.unk0[D_801FC2B0[i].unkC]);
+        }
+        func_8002F488(0x67);
+    } else {
+        func_8002F488(0x66);
+    }
+}
 
 void func_801F8224(void) {
     MenuList *l;
@@ -1026,12 +1084,12 @@ void func_801F8680(void) {
     }
 }
 
-void func_801F86D0(void) {
+void func_801F86D0(Window *w) {
     D_801FC438.unk0 = 2;
     func_801F442C(0x13);
 }
 
-void func_801F86FC(void) {
+void func_801F86FC(Window *w) {
     D_801FC438.unk0 = 1;
     func_801F442C(0x10);
 }
