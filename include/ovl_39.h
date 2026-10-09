@@ -7,8 +7,23 @@
 #include "ff9.h"
 
 typedef struct {
-    u8 v[0x16];
-} __attribute__((aligned(2))) SaveFileName; /* memory card file name, copied as a halfword-aligned block */
+    u8 v[20];
+} SaveName20; /* memory card file name (DIRENTRY.name) */
+
+typedef struct {
+    SaveName20 unk0;
+    u8 unk14[2]; /* terminator */
+} __attribute__((aligned(2))) SaveFileName; /* copied as a halfword-aligned block */
+
+/* PsyQ libapi struct DIRENTRY */
+typedef struct {
+    SaveName20 unk0; /* name */
+    s32 unk14; /* attr */
+    s32 unk18; /* size */
+    void *unk1C; /* next */
+    s32 unk20; /* head */
+    u8 unk24[4]; /* system */
+} DirEnt;
 
 typedef struct {
     u8 v[10];
@@ -113,7 +128,8 @@ typedef struct {
     s32 unk14;
     s32 unk18; /* file descriptor */
     Window *unk1C;
-    u8 pad20[0x2B4 - 0x20];
+    DirEnt unk20[15];
+    u8 pad278[0x2B4 - 0x278];
     u8 unk2B4[15];
     u8 pad2C3[0x2D0 - 0x2C3];
     u8 unk2D0[0x180]; /* read buffer */

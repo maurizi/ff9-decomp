@@ -793,7 +793,7 @@ static inline void func_801F7108_inline(s32 slot) {
     s32 fd;
 
     D_801FBEF8.unk2 = slot;
-    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4.v);
+    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4.unk0.v);
     D_801FBEF8.unk18 = fd;
     if (fd < 0) {
         func_801F72B4(0x2E);
@@ -1028,7 +1028,7 @@ void func_801F7108(s32 slot) {
     s32 fd;
 
     D_801FBEF8.unk2 = slot;
-    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4.v);
+    fd = func_801FA3D8(D_80077DB2 << 4, (char *)D_801FB1A8.unk34[slot].unk4.unk0.v);
     D_801FBEF8.unk18 = fd;
     if (fd < 0) {
         func_801F72B4(0x2E);
@@ -1447,8 +1447,8 @@ u8 func_801F8478(void) {
 
     port = D_80077DB2 << 4;
     sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
-    func_80065238((char *)D_801FC388.unk6.v, sl->unk4.v);
-    fd = func_801FA3D8(port, (char *)D_801FC388.unk6.v);
+    func_80065238((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
+    fd = func_801FA3D8(port, (char *)D_801FC388.unk6.unk0.v);
     D_801FC388.unk20 = fd;
     if (fd < 0) {
         func_801F889C(0x34);
