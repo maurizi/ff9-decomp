@@ -32,6 +32,9 @@ typedef struct {
 } ScrollPos;
 extern ConfigMenu D_801F1558;
 
+/* main exe: candidates for ff9.h */
+extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
+
 typedef struct {
     u8 unk0;    /* title text id */
     u8 unk1[3]; /* option text ids */
@@ -69,6 +72,6 @@ void func_801F1168(void);
 u8 func_801F126C(void);
 void func_801F12D0(u8);
 ScrollPos *func_801F1334(MenuList *, ScrollPos *);
-s32 func_801F125C(void);
+u8 func_801F125C(void);
 
 #endif
