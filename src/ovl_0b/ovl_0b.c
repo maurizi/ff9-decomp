@@ -3342,7 +3342,84 @@ s32 func_800BE784(s32 arg0) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BE99C);
+/* padded: this jump table is 8-aligned in its object */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
+
+void func_800BE99C(s32 arg0, s32 arg1) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    BtlUnit *u;
+    u32 f;
+
+    switch (arg0) {
+    case 32:
+        func_800E9F68(0);
+        b->unkD80 = 5;
+        b->unkD83 = 0;
+        b->unkD81 = 2;
+        b->unk11B8 &= ~1;
+        func_800B2F24(b);
+        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+            u->unk68 &= ~0x80000;
+        }
+        break;
+    case 33:
+        if (b->unkD80 == 1) {
+            D_8006794C->unk1C->unk56E = arg1;
+            if (arg1 == 1 && ((b->unk132C.unk0 >> 6) & 1)) {
+                b->unkD80 = 5;
+                b->unkD81 = 4;
+            } else {
+                if (D_8006794C->unk1C->unk56E == 1) {
+                    D_8006794C->unk1C->unk56E = 2;
+                }
+                b->unkD80 = 8;
+                b->unkD81 = 0;
+            }
+        }
+        break;
+    case 34:
+        if (b->unkD80 == 1) {
+            b->unkD80 = 7;
+            b->unkD81 = 0;
+            D_8006794C->unk1C->unk56E = 3;
+        }
+        break;
+    case 35:
+        if (b->unkD80 == 1) {
+            f = b->unk132C.unk0;
+            b->unkD80 = 3;
+            b->unkD81 = 0;
+            if ((f & 0xC) != 0xC) {
+                b->unk132C.unk0 = (f & ~3) | 2;
+            }
+        }
+        break;
+    case 36:
+        if (b->unkD80 == 1) {
+            func_800C2F1C(func_800CA2B0(arg1));
+        }
+        break;
+    case 37:
+        D_8006794C->unk1C->unk56F |= 1;
+        func_80021640(arg1);
+        break;
+    case 38:
+        D_8006794C->unk1C->unk560 += arg1;
+        if (D_8006794C->unk1C->unk560 > 9999999) {
+            D_8006794C->unk1C->unk560 = 9999999;
+        }
+        break;
+    case 39:
+        if (D_8006794C->unk1C->unk56C < 9999) {
+            D_8006794C->unk1C->unk56C++;
+        }
+        break;
+    case 40:
+        func_800AD90C(0x8601, 0, 0x1E, 0, 0);
+        D_8006794C->unk1C->unk56F |= 0x10;
+        break;
+    }
+}
 
 u16 func_800BEC64(u32 arg0) {
     BtlUnit *u;
