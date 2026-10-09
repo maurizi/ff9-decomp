@@ -677,7 +677,43 @@ void func_801F2248(Window *arg0) {
     D_801F7A78.unk1D8[arg0->unk50].unk0 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2264);
+void func_801F2264(s32 x, s32 y, s32 otz, Popup *p) {
+    SprtWords *s;
+    u8 *pkt;
+    u32 clut;
+    u32 xy;
+    DR_TPAGE *t;
+
+    if (p->unk0 != 0 && p->unk1 != 3) {
+        y += p->unk16;
+        clut = GetClut(0, 0x1FF) << 16;
+        setlen(D_80077170, 4);
+        xy = (x & 0xFFFF) | (y << 16);
+        pkt = D_80077170;
+        s = (SprtWords *)pkt;
+        s->rgbc = 0x64808080;
+        s->xy = xy;
+        s->uvclut = clut | 0xB000;
+        s->wh = 0x14004C;
+        D_80077170 = (u8 *)(s + 1);
+        addPrim(&D_8007716C[otz], s);
+        t = (DR_TPAGE *)D_80077170;
+        SetDrawTPage(t, 1, 1, 0x9F);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DR_TPAGE);
+        setlen(D_80077170, 4);
+        s = (SprtWords *)D_80077170;
+        s->rgbc = 0x66808080;
+        s->xy = xy;
+        s->uvclut = clut | 0xC400;
+        s->wh = 0x14004C;
+        D_80077170 = (u8 *)(s + 1);
+        addPrim(&D_8007716C[otz], s);
+        SetDrawTPage((DR_TPAGE *)D_80077170, 1, 1, 0xDF);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DR_TPAGE);
+    }
+}
 
 void func_801F2490(void) {
     s32 i;
