@@ -1137,7 +1137,77 @@ void func_800AE044(Window *arg0) {
     func_8002B5FC(0x82, 0x10, arg0->unk18, func_80035774(0x17), 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AE084);
+void *func_800AE084(u32 *ot, void *p, TmState *s) {
+    RECT r;
+    u8 buf[64];
+    TmCard *c;
+    TmCard *found;
+    TmCard *cards;
+    s32 i;
+    s32 dx;
+    s32 dy;
+    s32 n;
+    s32 w;
+    u8 id;
+
+    c = s->unk470;
+    if (s->unk2E8 < s->unk460) {
+        dx = (0x8B00 - c->unk20) / s->unk460;
+        dy = (0x5500 - c->unk24) / s->unk460;
+        c->unkC = (c->unk20 + dx * s->unk2E8) >> 8;
+        c->unk10 = (c->unk24 + dy * s->unk2E8) >> 8;
+        func_800AE6EC(s, 0);
+        return p;
+    }
+    if (s->unk45C == 0) {
+        D_800B3CDC = func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+    } else {
+        s->unk510 = c->unk0;
+        s->unk512 = c->unk2;
+        s->unk511 = c->unk1;
+        s->unk513 = c->unk3;
+        s->unk514 = c->unk4;
+        s->unk515 = c->unk5;
+        s->unk54C = 1;
+        D_800B3CDC = 0;
+        if (func_80062560(c->unk0) == 0) {
+            found = NULL;
+            cards = s->unk10;
+            for (i = 0; i < 5; i++) {
+                if (cards[i].unk0 == c->unk0) {
+                    found = &cards[i];
+                }
+            }
+            if (found == c) {
+                D_800B3CDC = 1;
+            }
+        }
+    }
+    n = s->unk45C;
+    c->unkC = 0x8B;
+    c->unk10 = 0x55;
+    D_800B3CE0 = n;
+    D_800B3CD8 = id = c->unk0;
+    func_8002BD54(buf, (u8 *)func_8006276C(id));
+    if (D_800B3CE0 == 0) {
+        func_8002AD38(buf, func_80035774(3));
+    } else {
+        func_8002AD38(buf, func_80035774(4));
+    }
+    func_8002AD38(buf, func_80035774(7));
+    w = func_8002BA68(buf) + 0x10;
+    r.x = 0xA0 - w / 2;
+    r.y = 0x96;
+    r.w = w;
+    r.h = 0x1A;
+    s->unk458 = func_8002DC54(&r, 5, 2);
+    func_8002E2EC(s->unk458, func_800AE494);
+    func_8002E31C(s->unk458, 1);
+    func_800AB89C(s->unk458);
+    func_800B01E8(s->unk45C == 0 ? 4 : 0xC);
+    s->unk0 = 0x10;
+    return p;
+}
 
 void *func_800AE398(u32 *ot, SPRT *p, TmState *s) {
     u8 b;
@@ -1564,7 +1634,90 @@ void func_800AF388(TmState *s, TmCard *c) {
     func_800AF2CC(s, c, func_80062B3C() % 3);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF3E8);
+void func_800AF3E8(TmState *s, TmCard *c, s32 arg2, s32 random) {
+    TmDirMask dirs;
+    TmCardData *tbl;
+    u8 v;
+    s32 r;
+    s32 n;
+    s32 id;
+    s32 i;
+    s32 done;
+    u8 *bp;
+    s32 p0, p1, p2, p3, p4, p5, p6, p7;
+
+    dirs = D_800A73B4;
+    tbl = (TmCardData *)0x80103800;
+    c->unk0 = arg2;
+    id = arg2;
+    if (random == 0) {
+        c->unk2 = tbl[(u8)id].unk0;
+        c->unk4 = tbl[(u8)id].unk2;
+        c->unk5 = tbl[(u8)id].unk3;
+    } else {
+        v = tbl[(u8)id].unk0 >> 1;
+        if (v != 0) {
+            c->unk2 = v + func_80062B3C() % v;
+        } else {
+            c->unk2 = 0;
+        }
+        v = tbl[(u8)id].unk2 >> 1;
+        if (v != 0) {
+            c->unk4 = v + func_80062B3C() % v;
+        } else {
+            c->unk4 = 0;
+        }
+        v = tbl[(u8)id].unk3 >> 1;
+        if (v != 0) {
+            c->unk5 = v + func_80062B3C() % v;
+        } else {
+            c->unk5 = 0;
+        }
+    }
+    r = func_80062B3C() % 100;
+    p0 = s->unk4C8[0];
+    p1 = s->unk4C8[1];
+    p2 = s->unk4C8[2];
+    p3 = s->unk4C8[3];
+    p4 = s->unk4C8[4];
+    p5 = s->unk4C8[5];
+    p6 = s->unk4C8[6];
+    p7 = s->unk4C8[7];
+    if (r < p0) {
+        n = 0;
+    } else if (r < p0 + p1) {
+        n = 1;
+    } else if (r < p0 + p1 + p2) {
+        n = 2;
+    } else if (r < p0 + p1 + p2 + p3) {
+        n = 3;
+    } else if (r < p0 + p1 + p2 + p3 + p4) {
+        n = 4;
+    } else if (r < p0 + p1 + p2 + p3 + p4 + p5) {
+        n = 5;
+    } else if (r < p0 + p1 + p2 + p3 + p4 + p5 + p6) {
+        n = 6;
+    } else if (r < p0 + p1 + p2 + p3 + p4 + p5 + p6 + p7) {
+        n = 7;
+    } else {
+        n = 8;
+    }
+    c->unk1 = 0;
+    for (i = 0; i < n; i++) {
+        done = 0;
+        while (done == 0) {
+            bp = &dirs.v[func_80062B3C() & 7];
+            if (!(c->unk1 & *bp)) {
+                c->unk1 |= *bp;
+                done = 1;
+            }
+        }
+    }
+    c->unk3 = tbl[(u8)id].unk1;
+    if (!(func_80062B3C() & 0x7F)) {
+        c->unk3 = 2;
+    }
+}
 
 void func_800AF760(TmState *s) {
     s32 i;
@@ -1624,7 +1777,40 @@ void func_800AF890(TmState *s) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AF95C);
+void *func_800AF95C(u32 *ot, SPRT *p, TmState *s, TmCard *card, u8 c) {
+    s32 x;
+    s32 y;
+
+    x = card->unkC;
+    y = card->unk10;
+    if (card->unk1C != 0) {
+        x -= 5;
+        y -= 13;
+    } else {
+        y -= 2;
+    }
+    p = func_800AFB60(ot, p, (s32)s, x + 9, y + 0x28, card->unk2 >> 4, c);
+    switch (card->unk3) {
+    case 0:
+        p = func_800AFB60(ot, p, (s32)s, x + 15, y + 0x28, 0x10, c);
+        break;
+    case 1:
+        p = func_800AFB60(ot, p, (s32)s, x + 15, y + 0x28, 0x11, c);
+        break;
+    case 2:
+        p = func_800AFB60(ot, p, (s32)s, x + 15, y + 0x28, 0x12, c);
+        break;
+    case 3:
+        p = func_800AFB60(ot, p, (s32)s, x + 15, y + 0x28, 0xA, c);
+        break;
+    }
+    p = func_800AFB60(ot, p, (s32)s, x + 0x15, y + 0x28, card->unk4 >> 4, c);
+    p = func_800AFB60(ot, p, (s32)s, x + 0x1B, y + 0x28, card->unk5 >> 4, c);
+    setlen((DR_TPAGE *)p, 1);
+    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+    AddPrim(ot, p);
+    return (DR_TPAGE *)p + 1;
+}
 
 SPRT *func_800AFB60(void *ot, SPRT *p, s32 unused, s32 x, s32 y, s32 n, s32 c) {
     setlen(p, 4);

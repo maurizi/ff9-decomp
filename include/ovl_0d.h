@@ -169,6 +169,7 @@ typedef struct {
 typedef struct {
     u8 v[8];
 } TmDirMask; /* card arrow bit for each direction */
+extern TmDirMask D_800A73B4; /* single-bit masks, one per arrow */
 extern TmDirMask D_800A73BC;
 
 typedef struct {
@@ -262,5 +263,7 @@ void func_800B295C(TmState *);
 void func_800B29DC(TmState *);
 void func_800AB89C(Window *);
 void func_800B355C(Window *);
+SPRT *func_800AFB60(void *, SPRT *, s32, s32, s32, s32, s32);
+void func_800AE494(Window *);
 
 #endif
