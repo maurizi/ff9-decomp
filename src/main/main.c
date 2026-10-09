@@ -3348,7 +3348,28 @@ void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E960);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EA7C);
+Window *func_8002EA7C(RECT *r, s32 otz, s32 style, Window *w) {
+    w->unk1A = style;
+    *(RECT *)w = *r;
+    w->unk1C = 1;
+    w->unk10 = 7;
+    w->unk12 = 5;
+    w->unk23 = 1;
+    w->unk1D = 0;
+    w->unk18 = otz;
+    w->unk4C = 0;
+    w->unk44 = 0;
+    w->unk40 = 0;
+    w->unk48 = 0;
+    func_8002CF20(w, D_8006BCFC[style]);
+    w->unk1F = w->unk1A == 3;
+    func_8002EDFC(&w->unk30, 0, 0, 0, r->h);
+    w->unk29 = 4;
+    w->unk1E = 1;
+    w->unk24 = 0;
+    w->unk2A = 0;
+    return w;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002EB64);
 

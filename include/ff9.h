@@ -2514,4 +2514,5 @@ typedef struct {
     s32 unk8;
 } Unk8006BD04;
 extern Unk8006BD04 D_8006BD04[];
+extern u8 D_8006BCFC[]; /* window style -> colour */
 #endif
