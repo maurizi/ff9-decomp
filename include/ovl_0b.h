@@ -2336,6 +2336,10 @@ typedef struct {
 void func_800C9040(TexAnimSet *);
 BtlUnit *func_800C1DEC(void);
 u16 func_800B081C(s32);
+s32 func_800BD5A0(BtlUnit *);
+void func_800C0EC8(BtlUnit *);
+void func_800C12CC(Battle4880 *);
+void func_800C1938(BtlUnit *);
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);
