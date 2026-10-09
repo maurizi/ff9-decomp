@@ -797,7 +797,7 @@ extern u8 D_800D3338;
 extern u8 D_800D30F8[];
 extern u8 D_800CCB18[];
 extern u8 D_800CCB20[];
-u8 func_800B3340(u8 *, s32);
+u8 func_800B3340(u32 *, s32);
 extern s32 D_800CD098;
 s32 func_800BCA6C(s16);
 extern s16 D_800D45D4[3];

@@ -80,7 +80,8 @@ typedef struct {
 typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* end of the load area */
-    u8 pad8[0xA - 8];
+    u8 unk8;
+    u8 unk9;
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
     struct Unk800AFCBC *unk10;
@@ -92,14 +93,17 @@ typedef struct {
     s32 *unk28; /* = unk6C, unk40 entries */
     struct FieldObjPlace *unk2C; /* object placements */
     s16 unk30; /* sound depth bias */
-    u8 pad32[0x3C - 0x32];
-    s16 unk3C;
-    s16 unk3E;
+    u8 pad32[0x34 - 0x32];
+    u8 *unk34;
+    s16 unk38;
+    s16 unk3A;
+    u16 unk3C;
+    u16 unk3E;
     u8 unk40;
     u8 unk41;
     s8 unk42;
     s8 unk43;
-    u8 pad44[4];
+    s32 unk44;
     s8 unk48;
     s8 unk49;
     u8 unk4A;
@@ -110,9 +114,14 @@ typedef struct {
     struct FieldActorInfo *unk54; /* = unk90 */
     struct FieldTrig *unk58; /* = unk270 */
     u8 unk5C;
-    u8 pad5D[3];
+    u8 unk5D;
+    u8 unk5E;
+    u8 unk5F;
     u8 unk60; /* D_800C9F20 count */
-    u8 pad61[0x6C - 0x61];
+    u8 unk61[1];
+    s16 unk62;
+    s32 unk64;
+    u8 unk68[4];
     s32 unk6C[9];
     u8 unk90[0x270 - 0x90];
     u8 unk270[0x330 - 0x270];
@@ -769,13 +778,20 @@ typedef struct FieldActorExt {
 } FieldActorExt;
 
 /* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
+/* rgb + flag byte (bit 24 of the word: pending) */
+typedef union {
+    u32 w;
+    u8 c[4];
+} FieldColor;
+
 typedef struct FieldActorInfo {
     u32 unk0; /* flags */
-    u8 unk4; /* light index */
+    s8 unk4; /* light index, -1 = none */
     u8 unk5;
-    u8 pad6[2];
-    u32 unk8; /* colour (bit 24: pending) */
-    u32 unkC; /* next colour */
+    u8 unk6;
+    u8 unk7;
+    FieldColor unk8; /* colour */
+    FieldColor unkC; /* next colour */
     FieldActorExt *unk10;
 } FieldActorInfo;
 

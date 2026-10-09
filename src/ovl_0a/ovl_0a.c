@@ -427,7 +427,95 @@ void func_800A9350(void) {
     D_80067948 += 0xC0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A939C);
+void func_800A939C(void) {
+    FieldScene *sc;
+    s32 i;
+    FieldActorInfo *info;
+    u8 *base;
+    FieldTrig *t;
+    u8 *c;
+    u8 *c2;
+
+    sc = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    sc->unk8 = 0;
+    sc->unk0 = 0;
+    sc->unk4 = 0;
+    sc->unkC = NULL;
+    sc->unk4C = NULL;
+    sc->unk14 = NULL;
+    sc->unk18 = NULL;
+    base = D_80067944 + 0x106700;
+    sc->unk30 = 0;
+    sc->unk10 = NULL;
+    sc->unk2C = NULL;
+    sc->unk20 = 0;
+    sc->unk42 = 0;
+    sc->unk43 = 0;
+    sc->unk44 = 0;
+    sc->unk48 = 0;
+    sc->unk49 = 0;
+    sc->unk1C = NULL;
+    sc->unk34 = base;
+    for (i = 23; i >= 0; i--) {
+        info = &sc->unk54[i];
+        info->unk0 = 0;
+        info->unk4 = -1;
+        info->unk5 = 0;
+        info->unk7 = 0;
+        info->unk6 = 0;
+        c = info->unk8.c;
+        c[2] = 0;
+        c[1] = 0;
+        c[0] = 0;
+        info->unk8.c[3] = 0;
+        c2 = info->unkC.c;
+        c = c2;
+        c[2] = 0;
+        c[1] = 0;
+        c[0] = 0;
+        info->unkC.c[3] = 0;
+        info->unk10 = NULL;
+    }
+    sc->unk38 = 0xA0;
+    sc->unk3A = 0x70;
+    sc->unk3C = 0xFFFF;
+    sc->unk3E = 0xFFFF;
+    sc->unk41 = 0;
+    sc->unk9 = 0;
+    sc->unk5C = 0x7F;
+    sc->unk5D = 0x7F;
+    sc->unk5F = 0;
+    sc->unk52 = 0;
+    sc->unk50 = 0;
+    sc->unk24 = NULL;
+    for (i = 0; i < 9; i++) {
+        sc->unk28[i] = 0;
+    }
+    sc->unkA = -1;
+    sc->unk40 = 0;
+    sc->unk4A = 1;
+    sc->unk4B = 0;
+    for (i = 15; i >= 0; i--) {
+        t = &sc->unk58[i];
+        t->unk0 = 0xFF;
+        t->unk1 = 0;
+        t->unk2 = 0xFFFF;
+        t->unk4 = 0xFFFF;
+        t->unk6 = -1;
+        t->unk8[1] = 0xFFFF;
+        t->unk8[0] = 0xFFFF;
+    }
+    sc->unk5E = 0;
+    sc->unk60 = 0;
+    sc->unk62 = 0;
+    sc->unk64 = 0;
+    for (i = 0; i >= 0; i--) {
+        sc->unk61[i] = 0;
+    }
+    for (i = 3; i >= 0; i--) {
+        sc->unk68[i] = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9570);
 
@@ -1626,8 +1714,8 @@ s32 func_800B31B8(FieldEvtCtx *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
     if (!(f & 0x800)) {
         col = (arg1 & 0xFF) | ((arg2 << 8) & 0xFF00) | ((arg3 << 16) & 0xFF0000) | 0x01000000;
-        info->unkC = col;
-        info->unk8 = col;
+        info->unkC.w = col;
+        info->unk8.w = col;
         arg0->unk0 |= 0xC00;
         return 1;
     }
