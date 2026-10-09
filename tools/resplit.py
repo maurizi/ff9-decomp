@@ -35,6 +35,7 @@ def split_c(text):
     """Return (preamble, {name: body}) for a C file."""
     starts = [m.start() for m in INCLUDE.finditer(text)] + [m.start() for m in FUNC_DEF.finditer(text)]
     first = min(starts) if starts else len(text)
+    first = _with_comment(text, first)
     preamble = text[:first]
     bodies = {}
     for m in FUNC_DEF.finditer(text):
@@ -94,6 +95,16 @@ def main():
             new_pre, _ = split_c(text)
             text = pre + text[len(new_pre):]
         new[path] = text
+
+    # Rodata the old sources no longer INCLUDE_RODATA (now emitted by C, e.g. string literals)
+    # must not come back as a slot.
+    RODATA_SLOT = re.compile(r'^INCLUDE_RODATA\("[^"]+",\s*(\w+)\);\n(?:\n)?', re.M)
+    for npath in new:
+        olds = [old[p] for p in old if os.path.dirname(p) == os.path.dirname(npath)]
+        if not olds:
+            continue
+        had = set().union(*(set(RODATA_SLOT.findall(t)) for t in olds))
+        new[npath] = RODATA_SLOT.sub(lambda m: m.group(0) if m.group(1) in had else "", new[npath])
 
     # Put every hand-written body back over its INCLUDE_ASM slot, in whichever file it now lives.
     # Empty bodies are skipped: splat regenerates trivial functions as C itself.
