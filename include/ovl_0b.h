@@ -634,7 +634,7 @@ typedef struct {
         s32 w;
         u8 b[4]; /* item drops, -1 = none */
     } unk8;
-    u8 padC[0x18 - 0xC];
+    u8 unkC[0x18 - 0xC]; /* position block (BtlUnit.unk98) */
 } Battle488; /* 0x18 */
 
 typedef struct {
@@ -1065,6 +1065,12 @@ typedef struct LinkNode {
     u32 unk10;
 } LinkNode;
 void func_800B440C(LinkNode *, LinkNode **);
+Unk16D8 *func_8004AEBC(void);
+s16 func_800CA2E4(s16);
+void func_800BBD3C(struct BtlUnit *, struct Unk8E0 *);
+void func_800C9794(void);
+void func_800CA3CC(void);
+extern u8 D_800F5244[];
 
 typedef struct {
     u8 pad0[0x1C];

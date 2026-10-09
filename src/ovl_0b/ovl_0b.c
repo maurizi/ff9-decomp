@@ -2510,7 +2510,54 @@ void func_800BAFEC(Battle *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BB1F4);
+void func_800BB1F4(Battle *arg0) {
+    s16 i = 0;
+    s16 n = 4;
+    Unk16D8 *p = func_8004AEBC()->unk0;
+    BtlUnit *prev = NULL;
+    Battle488 *e;
+    BtlUnit *u;
+    s16 m;
+    s32 k;
+
+    for (; i < D_8006794C->unk1C->unk8E4.battle->unk132C.unk4->unk1; i++, n++) {
+        e = &arg0->unk488[i];
+        e->unk4 = (e->unk4 & ~0x3F) | 0x20;
+        u = &arg0->unk6FC[n];
+        u->unk84 = m = func_800CA2E4(i);
+        if (m < 0) {
+            e->unk4 |= 0x200;
+        } else {
+            func_800BBF30(p->unk4, m);
+            e->unk4 &= ~0x200;
+            p = p->unk0;
+        }
+        k = i;
+        u->unkB0 = 0x10 << k;
+        u->unk68 &= ~1;
+        u->unk68 = (u->unk68 & ~0x1E) | ((k & 0xF) << 1);
+        u->unk68 = (u->unk68 & ~0xE0) | (((k + 4) & 7) << 5);
+        u->unk68 &= ~0x40000000;
+        u->unk68 = (u->unk68 & ~0x800000) | (((e->unk4 >> 9) & 1) << 23);
+        func_800BBD3C(u, &D_8006794C->unk1C->unk8E0[k]);
+        u->unk98 = (struct BtlUnit98 *)&e->unkC;
+        u->unkA8 = NULL;
+        u->unkC4 = (u32 *)D_800F5244;
+        u->unk68 &= ~0x40000;
+        if (prev != NULL) {
+            prev->unk0 = u;
+        }
+        prev = u;
+    }
+    for (; n < 8; n++) {
+        arg0->unk6FC[n].unkB0 = 0;
+    }
+    prev->unk0 = NULL;
+    arg0->unk6F8 = &arg0->unk6FC[4];
+    arg0->unkD85 |= 8;
+    func_800C9794();
+    func_800CA3CC();
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BB4A0);
 
