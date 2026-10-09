@@ -387,7 +387,48 @@ void func_801F0A44(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F0C0C);
+void func_801F0C0C(void) {
+    Rewards *rw;
+    u32 j;
+    u8 found;
+    s32 i;
+    u32 q;
+
+    rw = &D_801F7A78.unk24;
+    func_8001D898(rw, 0, 0x88);
+    func_801F0A44();
+    if (D_801F7A78.unk9 != 0) {
+        q = D_800FDF30.unk4 / D_801F7A78.unk9;
+    } else {
+        q = 0;
+    }
+    rw->unk0 = q;
+    rw->unkC = 0;
+    rw->unk4 = D_800FDF30.unk8;
+    rw->unk7C.unk0 = D_800FDF30.unk0;
+    rw->unk8 = (func_800625F8() < 100) ? D_800FDF30.unk1C : 0xFF;
+    for (i = 0; i < 16; i++) {
+        found = 0;
+        if (D_800FDF30.unkC[i] == 0xFF) {
+            continue;
+        }
+        for (j = 0; j < rw->unkC; j++) {
+            if (D_800FDF30.unkC[i] == rw->unk10[j][0]) {
+                found = 1;
+                rw->unk10[j][1]++;
+                break;
+            }
+        }
+        if (!found) {
+            if (rw->unkC >= 6) {
+                return;
+            }
+            rw->unk10[rw->unkC][0] = D_800FDF30.unkC[i];
+            rw->unk10[rw->unkC][1] = 1;
+            rw->unkC++;
+        }
+    }
+}
 
 void func_801F0D98(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
     D_801F7A78.unk374 = func_80029D60(arg0, arg1, D_8007716C + arg2, arg3, arg4, D_801F7A78.unk374);

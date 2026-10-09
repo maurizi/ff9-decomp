@@ -33,6 +33,27 @@ typedef struct {
     s16 unk2; /* y offset */
 } ScrollPos;
 extern ConfigMenu D_801F1558;
+extern const u8 D_801EDF38[]; /* menu text block */
+
+/* GameState.unk24 config bits, written through bitfields by func_801EF50C */
+typedef struct {
+    u32 b0 : 1;
+    u32 b1 : 1;
+    u32 b2 : 1;
+    u32 b3 : 1;
+    u32 b4 : 1;
+    u32 b5 : 1;
+    u32 b6 : 1;
+    u32 b7 : 1;
+    u32 b8 : 3;
+    u32 b11 : 3;
+    u32 b14 : 3;
+    u32 b17 : 1;
+    u32 b18 : 1;
+    u32 b19 : 1;
+    u32 b20 : 12;
+} ConfigBits;
+#define CFG (*(ConfigBits *)&D_8006794C->unk24)
 extern RECT D_801F1534[2]; /* option window rects */
 extern u8 D_801F1524[];
 extern u8 D_801F1464[];
@@ -72,7 +93,7 @@ void func_801F0184(void);
 void func_801F025C(void);
 void func_801EEB68(void);
 void func_801EF3F8(void);
-void func_801EF50C(s32);
+void func_801EF50C(u8);
 void func_801EF938(void);
 void func_801EFC20(s32, s32, s32, s32, s32);
 void func_801F02CC(MenuList *, u32);

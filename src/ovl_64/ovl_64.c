@@ -470,8 +470,12 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D22C);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D2C0);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D354);
+u32 func_8019D354(void) {
+    return *D_8019E008;
+}
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D36C);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D3F0);
+u16 func_8019D3F0(u16 *p) {
+    return *p;
+}

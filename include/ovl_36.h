@@ -88,7 +88,7 @@ typedef struct {
 } Unk801F3108; /* card arrow marker */
 
 extern s32 D_801F30E4[4];
-extern void (*D_801F30F4[])(CardMenu *);
+extern void (*D_801F30F4[])(); /* state handlers, called without arguments */
 extern RECT D_801F3100;
 extern Unk801F3108 D_801F3108[8];
 extern s16 D_801F3128[32]; /* points needed per rank */

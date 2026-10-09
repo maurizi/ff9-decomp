@@ -318,7 +318,37 @@ s32 func_800A91F0(Ovl15Hand *hand, s16 x, s16 y) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A9228);
+s32 func_800A9228(Ovl15Hand *a, Ovl15Hand *b) {
+    s32 r;
+    u16 v;
+
+    a->unk2 = 1;
+    a->unk8 = 0x1E;
+    a->unkA = 0x8C;
+    func_800A91F0(b, 0x1E, 0x60);
+    b->unk2 = 1;
+    b->unkC[0] = a->unkC[1];
+    r = (u32)a->unkC[1] >> 2;
+    if (r < 9) {
+        v = r + 2;
+    } else if (r == 12) {
+        a->unk4 = 11;
+        a->unk6 = 1;
+        a->unk0 |= 9;
+        b->unk4 = 11;
+        b->unk6 = 1;
+        b->unk0 |= 9;
+        goto end;
+    } else {
+        v = 10;
+    }
+    a->unk4 = v;
+    a->unk6 = v;
+    b->unk4 = v;
+    b->unk6 = v;
+end:
+    return 0;
+}
 
 s32 func_800A92FC(Ovl15Hand *hand) {
     s32 ret = 0;
@@ -972,8 +1002,45 @@ u8 *func_800ADE14(u8 *arg0, s32 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800ADE30);
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800ADF90);
+s32 func_800ADF90(u8 *s) {
+    Unk7D4 *f;
+    s32 n;
+    s32 c;
+    u8 hi;
+    u32 *g;
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AE028);
+    n = 0;
+    f = D_8006794C->unk1C->unk7D4;
+    hi = f->unk4 >> 8;
+    while ((c = *s) != 0xFF) {
+        if (c >= hi) {
+            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            s++;
+            n += (f->unkC[c] >> 28) + 1;
+        } else {
+            g = &f->unkC[c];
+            n += (*g >> 28) + 1;
+        }
+        s++;
+    }
+    return n;
+}
+
+void *func_800AE028(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
+    u32 n;
+
+    setlen(p, 4);
+    p->rgbc = 0x64808080;
+    p->xy = ((x + ((a >> 20) & 3)) & 0xFFFF) | (y << 16);
+    p->uvclut = (a & 0x40FFFF) + 0x38270000;
+    p->wh = ((a >> 16) & 0xF) | 0xD0000;
+    addPrim(ot, p);
+    p++;
+    n = a >> 28;
+    if (out != NULL) {
+        *out = n + 1;
+    }
+    return p;
+}
 
 INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A70EC);

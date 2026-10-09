@@ -133,6 +133,10 @@ extern s32 D_801FC0A8[4];
 extern u8 D_801FC0B8[4];
 extern u8 D_801FC0BC[]; /* gil suffix */
 extern s32 D_801FC0C0[4];
+extern s32 D_801FC290[3]; /* sell: row y offsets */
+extern u8 D_801FC29C[4];
+extern u8 D_801FC2A0[]; /* gil suffix */
+extern s32 D_801FC2A4[3]; /* sell: row label text ids */
 void func_80026C34(s32, s32, s32, s32, u8);
 extern u8 D_801F3F08[];
 extern u8 D_801F3F88[];

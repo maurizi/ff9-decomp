@@ -822,7 +822,42 @@ void func_801F1454(void) {
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F15E0);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F189C);
+void func_801F189C(void) {
+    Character *c;
+    RECT *r;
+    s32 i;
+    s32 grey;
+    u8 sel;
+    s32 y8;
+    s32 y12;
+    s32 y10;
+    Unk80069018 *it;
+
+    r = &D_801FC840.unk24;
+    c = D_8006794C->unk1C->unk54C[D_801FC840.unk3];
+    if (D_801FC840.unk1 == 3) {
+        return;
+    }
+    func_8002B524(r->x + 6, r->y - 3, 0x1E, D_8007043C, 0);
+    func_8002DEE4(r, 0x1E, 2);
+    func_8002705C(r, 0x1E, 2);
+    for (i = 0, grey = 2, y8 = 8, y12 = 12, y10 = 10; i < 5; i++) {
+        sel = 0;
+        if (D_801FC840.unk0 == grey) {
+            sel = (i == 0);
+        }
+        func_800275DC(r->x + 10, r->y + y10, 0x1D, i + 0xF9, sel);
+        func_8002B56C(r->x + 0x19, r->y + y12, 0x1D, D_801EE644, sel ? grey : 0);
+        if (c->unk39[i] != 0xFF) {
+            it = &D_80069018[c->unk39[i]];
+            func_80026C34(r->x + 0x21, r->y + y8, 0x1D, c->unk39[i], !sel);
+            func_8002B5FC(r->x + 0x31, r->y + y8, 0x1D, D_8006A218 + it->unk0, sel ? grey : 0);
+        }
+        y8 += 17;
+        y12 += 17;
+        y10 += 17;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F1A94);
 

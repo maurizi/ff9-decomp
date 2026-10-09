@@ -116,9 +116,9 @@ typedef struct {
     s32 unk474;
     s32 unk478;
     s32 unk47C;
-    u8 pad480[0x484 - 0x480];
+    s32 unk480; /* cursor animation frame */
     Window *unk484;
-    u8 pad488[0x48C - 0x488];
+    s32 unk488;
     TmCard *unk48C[8];
     s32 unk4AC;
     TmCard *unk4B0;
@@ -169,6 +169,7 @@ typedef struct {
 typedef struct {
     u8 v[8];
 } TmDirMask; /* card arrow bit for each direction */
+extern TmDirMask D_800A73B4; /* single-bit masks, one per arrow */
 extern TmDirMask D_800A73BC;
 
 typedef struct {
@@ -187,7 +188,7 @@ extern TmArrowTbl D_800A73C4;
 
 typedef struct {
     u32 unk0; /* id */
-    u32 unk4; /* flags: bpp in low bits */
+    s32 unk4; /* flags: bpp in low bits */
     u32 unk8; /* clut block length */
     s16 unkC[4]; /* clut rect */
     u32 clut[1];
@@ -238,7 +239,7 @@ void func_800AA3C0(Window *);
 void func_800ADFFC(Window *);
 void func_800AB0A8(Window *);
 void *func_800B16A4(u32 *, void *, TmState *, s32, s32, s32);
-void *func_800B33CC(u32 *, SPRT *, s16, s16, s32);
+void *func_800B33CC(u32 *, SPRT *, s32, s32, s32);
 s32 func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
 void func_800A755C(void);
@@ -262,5 +263,7 @@ void func_800B295C(TmState *);
 void func_800B29DC(TmState *);
 void func_800AB89C(Window *);
 void func_800B355C(Window *);
+SPRT *func_800AFB60(void *, SPRT *, s32, s32, s32, s32, s32);
+void func_800AE494(Window *);
 
 #endif

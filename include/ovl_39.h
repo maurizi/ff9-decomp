@@ -6,26 +6,74 @@
  * overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
+typedef struct {
+    u8 v[20];
+} SaveName20; /* memory card file name (DIRENTRY.name) */
+
+typedef struct {
+    SaveName20 unk0;
+    u8 unk14[2]; /* terminator */
+} __attribute__((aligned(2))) SaveFileName; /* copied as a halfword-aligned block */
+
+/* PsyQ libapi struct DIRENTRY */
+typedef struct {
+    SaveName20 unk0; /* name */
+    s32 unk14; /* attr */
+    s32 unk18; /* size */
+    void *unk1C; /* next */
+    s32 unk20; /* head */
+    u8 unk24[4]; /* system */
+} DirEnt;
+
+typedef struct {
+    u8 v[10];
+} __attribute__((aligned(2))) SaveName; /* 10 bytes, copied as a halfword-aligned block */
+
+typedef struct {
+    s32 v[7];
+} SaveBlk1C;
+
+typedef struct {
+    u8 unk0; /* present */
+    u8 pad1;
+    u8 unk2[0xA]; /* name */
+    u8 unkC; /* level */
+    u8 padD[3];
+} SaveMember;
+
 /* Per-slot entry of the save list (0x98 bytes; the first byte is the state). */
 typedef struct {
     s32 unk0; /* version tag, 0x30005 */
-    u8 unk4[0x1A - 4];
+    SaveFileName unk4;
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
     u8 unk1B; /* slot index */
-    u8 pad1C[0x44 - 0x1C];
+    u8 unk1C;
+    u8 unk1D;
+    SaveName unk1E;
+    SaveBlk1C unk28;
     u8 unk44;
     u8 pad45[0x48 - 0x45];
     s32 unk48; /* config bit */
     u32 unk4C; /* save counter */
-    u8 pad50[0x58 - 0x50];
-    struct {
-        u8 unk0; /* present */
-        u8 pad1;
-        u8 unk2[0xA]; /* name */
-        u8 unkC; /* level */
-        u8 padD[3];
-    } unk58[4]; /* party */
+    s32 unk50;
+    s32 unk54;
+    SaveMember unk58[4]; /* party */
 } SaveSlot;
+
+/* Save file header block read into D_801FBEF8.unk2D0 + 0x100 (func_801F7190). */
+typedef struct {
+    s32 unk0;
+    u8 unk4;
+    u8 unk5;
+    SaveName unk6;
+    SaveBlk1C unk10;
+    s32 unk2C;
+    s32 unk30;
+    SaveMember unk34[4];
+    s32 unk74;
+    s32 unk78;
+    u8 unk7C;
+} SaveHeader;
 
 /* Save menu state (D_801FB1A8). */
 typedef struct {
@@ -80,7 +128,8 @@ typedef struct {
     s32 unk14;
     s32 unk18; /* file descriptor */
     Window *unk1C;
-    u8 pad20[0x2B4 - 0x20];
+    DirEnt unk20[15];
+    u8 pad278[0x2B4 - 0x278];
     u8 unk2B4[15];
     u8 pad2C3[0x2D0 - 0x2C3];
     u8 unk2D0[0x180]; /* read buffer */
@@ -111,7 +160,7 @@ typedef struct {
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    char unk6[0x1C - 6]; /* file name */
+    SaveFileName unk6; /* file name */
     Window *unk1C;
     s32 unk20; /* card channel */
     s32 unk24;
@@ -292,6 +341,9 @@ void func_801F7840(Window *);
 void func_801F5114(void);
 u8 *func_801F6320(void);
 void func_801F7CD0(Window *);
+s32 func_801FA2B8();
+s32 func_801FA2C8();
+void func_801F7FD4(s32, s32, s32, s32, s32);
 void func_801F8408(Window *);
 void func_801F8424(Window *);
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
@@ -377,6 +429,7 @@ void func_801F5D00(void);
 u8 func_801F6694(void);
 s32 func_801F6CD0(s32);
 void func_801F7108(s32);
+void func_801F7190(SaveSlot *, SaveHeader *);
 void func_801F7950(void);
 void func_801F89A0(Window *);
 s32 func_801FA478(s32);
@@ -414,7 +467,7 @@ u8 func_801F8478(void);
 void func_80065238(char *, u8 *); /* main exe: string copy */
 void func_801F8588(void);
 MenuView *func_801F89B8(MenuList *, MenuView *);
-void func_801F8704(s32, void *);
+void func_801F8704(s32, SaveHeader *);
 u8 func_801F9804(void);
 void func_801F5384(void);
 void func_801F53B0(void);
@@ -429,5 +482,20 @@ extern void (*D_801FAFA8[])(void);
 extern void (*D_801FB014[])(void);
 
 
+
+/* Inlined copy of func_801F5340 (slot usable?). */
+static inline u8 func_801F5340_inline(s32 slot, u8 any) {
+    s32 st = D_801FB1A8.unk4[slot];
+    s32 r;
+
+    if (any) {
+        r = 0;
+        if (st == 0 || st == 3) {
+            r = 1;
+        }
+        return r;
+    }
+    return st == 0;
+}
 
 #endif

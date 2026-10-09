@@ -502,7 +502,47 @@ void func_800A880C(void) {
     func_800A8868((s32 *)0x801CDF00);
 }
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A8868);
+void func_800A8868(s32 *pack) {
+    RECT *clut;
+    RECT *img;
+    TmTimLike *tim;
+    s32 i;
+    s32 n;
+    u32 mode;
+    s32 sh;
+    s32 u;
+    s32 tp;
+    s32 yb;
+    s32 xb;
+    s32 y2;
+    s32 *p;
+
+    n = pack[0];
+    p = pack + 1;
+    for (i = 0; i < n; i++) {
+        tim = (TmTimLike *)((u8 *)pack + p[i]);
+        func_8001D8A8((s32)tim);
+        func_8001D910(tim, &clut, &img);
+        u = img->x & 0x3F;
+        mode = tim->unk4 & 3;
+        sh = 2 - mode;
+        D_800AB320.unk24[i].unk0.s.u = u << sh;
+        D_800AB320.unk24[i].unk0.s.v = img->y;
+        D_800AB320.unk24[i].unk4 = img->w << sh;
+        D_800AB320.unk24[i].unk5 = img->h;
+        tp = mode << 7;
+        yb = (s16)((s16)(img->y & 0x100) >> 4);
+        xb = (img->x & 0x3FF) >> 6;
+        y2 = (s16)(img->y & 0x200) << 2;
+        D_800AB320.unk24[i].unk6 = ((i == 10) ? (tp | (yb | 0x20)) : (tp | yb)) | xb | y2;
+        if (mode < 2) {
+            D_800AB320.unk24[i].unk0.s.clut = (clut->y << 6) | ((clut->x >> 4) & 0x3F);
+        } else {
+            D_800AB320.unk24[i].unk0.s.clut = 0;
+        }
+        DrawSync(0);
+    }
+}
 
 void func_800A8A0C(void) {
     if (D_800AB320.unk3 == 1 && func_800A8EA4() == 0) {

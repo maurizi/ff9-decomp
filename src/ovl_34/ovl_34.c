@@ -2,9 +2,32 @@
 
 INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF00);
 
-INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", jtbl_801EDF04);
+void func_801EEA1C(void) {
+    ConfigMenu *m;
+    s32 i;
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801EEA1C);
+    func_8003575C(D_801EDF38);
+    func_8002EDFC(&D_801F1558.unk3C, 0xD, 9, 1, 0xB4);
+    m = &D_801F1558;
+    m->unk0 = 0;
+    m->unk2 = 0;
+    m->unk3 = 0;
+    m->unk4 = 0;
+    m->unk5 = 0;
+    m->unk6 = 0;
+    m->unk50[0] = (u8 *)0x801F9F00;
+    m->unk50[1] = (u8 *)0x801FBF00;
+    m->unk4C = m->unk50[D_8006794C->unk1C->unk8 ^ 1];
+    m->unk1 = 0;
+    for (i = 0; i < 9; i++) {
+        if (D_8006794C->unk1C->unk3C[i].unk34.b.unkB) {
+            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(D_8006794C->unk1C->unk3C[i].unk34.b.row);
+            D_801F1558.unk11[D_801F1558.unk1] = i;
+            D_801F1558.unk1++;
+        }
+    }
+    func_8003556C(D_800355DC);
+}
 
 void func_801EEB68(void) {
     ScrollPos sp;
@@ -185,7 +208,103 @@ void func_801EF3F8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801EF50C);
+void func_801EF50C(u8 v) {
+    u8 changed = 0;
+
+    switch (D_801F1558.unk3C.unk5 + D_801F1558.unk3C.unk6) {
+    case 0:
+        if (CFG.b0 != v) {
+            changed = 1;
+        }
+        CFG.b0 = v;
+        break;
+    case 1:
+        if (CFG.b1 != v) {
+            changed = 1;
+        }
+        CFG.b1 = v;
+        break;
+    case 2:
+        if (CFG.b2 != v) {
+            changed = 1;
+        }
+        CFG.b2 = v;
+        break;
+    case 3:
+        if (CFG.b3 != v) {
+            changed = 1;
+        }
+        CFG.b3 = v;
+        break;
+    case 4:
+        if (CFG.b4 != v) {
+            changed = 1;
+        }
+        CFG.b4 = v;
+        break;
+    case 5:
+        if (CFG.b5 != v) {
+            changed = 1;
+        }
+        CFG.b5 = v;
+        break;
+    case 6:
+        if (CFG.b6 != v) {
+            changed = 1;
+        }
+        CFG.b6 = v;
+        break;
+    case 9:
+        if (CFG.b17 != v) {
+            changed = 1;
+        }
+        CFG.b17 = v;
+        break;
+    case 10:
+        if (CFG.b18 != v) {
+            changed = 1;
+        }
+        CFG.b18 = v;
+        break;
+    case 11:
+        if (CFG.b19 != v) {
+            changed = 1;
+        }
+        CFG.b19 = v;
+        break;
+    case 7:
+        if (v != 0 ? (s32)CFG.b8 < 2 : CFG.b8 != 0) {
+            D_801F1558.unk4 = v != 0 ? 1 : 2;
+            changed = 1;
+        }
+        break;
+    case 8:
+        if (v != 0 ? (s32)CFG.b14 < 6 : CFG.b14 != 0) {
+            D_801F1558.unk4 = v != 0 ? 1 : 2;
+            changed = 1;
+        }
+        break;
+    case 12:
+        if (!func_801F126C()) {
+            func_8002F488(0x66);
+            return;
+        }
+        if (CFG.b7 != v) {
+            changed = 1;
+            CFG.b7 = v;
+            if (v == 0) {
+                D_801F1558.unk3 = changed;
+                D_801F1558.unk6 = 0;
+                func_801F12D0(1);
+            }
+        }
+        break;
+    }
+    if (changed) {
+        func_8002F488(0x67);
+        func_8002397C();
+    }
+}
 
 void func_801EF938(void) {
     s32 on;
@@ -653,3 +772,7 @@ ScrollPos *func_801F1334(MenuList *l, ScrollPos *p) {
     }
     return p;
 }
+
+/* Defined last: its .rodata follows func_801EF50C's jump table. */
+/* menu text block */
+INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF38);
