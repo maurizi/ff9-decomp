@@ -6970,7 +6970,34 @@ void func_80056028(s32 a, s32 b) {
     func_80055D80(a, b);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056048);
+s32 func_80056048(s32 *a, s32 b, s32 c) {
+    s32 *h = a;
+    s32 y;
+    s32 id;
+    u32 i;
+
+    for (i = 0; i < 7; i++) {
+        if (D_800809C0[i] == h[1]) {
+            D_800809C0[i] = 0;
+        }
+    }
+    i = h[6] + b * 8;
+    y = h[4];
+    if (b != 0) {
+        id = h[1];
+        if ((u32)(id - 500) < 100) {
+            y += b << 12;
+        } else if ((u32)(id - 200) < 100) {
+            y += (b * 5) << 12;
+        } else if ((u32)(id - 300) < 200) {
+            y += b << 14;
+            b += 4;
+        }
+    }
+    D_800809C0[b] = h[1];
+    func_80056750(a, c, i, y);
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056130);
 
