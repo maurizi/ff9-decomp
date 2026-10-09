@@ -1790,7 +1790,6 @@ typedef struct {
     s32 unkC;
 } WinDef; /* 0x10 */
 void func_80063118(void *, void *, s32);
-void func_800631AC(void *);
 void func_80063580(DR_TPAGE *, s32);
 void func_800635E0(DR_TPAGE *, s32);
 void func_800651D8(void);
@@ -2850,5 +2849,24 @@ extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
 extern s32 D_8007AE64;
 
+
+/* per-frame offset animation (func_80063118 / func_800631AC) */
+typedef struct TweenDef {
+    u8 pad0[2];
+    s16 unk2; /* frame count */
+    s8 *unk4; /* x deltas */
+    s8 *unk8; /* y deltas */
+    void (*unkC)(struct TweenDef *); /* called when done */
+} TweenDef;
+
+typedef struct {
+    s16 unk0; /* start delay */
+    s16 unk2; /* frame */
+    s16 unk4; /* x */
+    s16 unk6; /* y */
+    u8 pad8[4];
+    TweenDef *unkC;
+} Tween;
+s32 func_800631AC(Tween *);
 
 #endif

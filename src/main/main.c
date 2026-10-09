@@ -11313,7 +11313,30 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetPolyF4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063108);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800631AC);
+s32 func_800631AC(Tween *t) {
+    if (t->unkC == NULL) {
+        return 0;
+    }
+    if (t->unk0 != 0) {
+        t->unk0--;
+    } else {
+        if (t->unkC->unk4 != NULL) {
+            t->unk4 += t->unkC->unk4[t->unk2];
+        }
+        if (t->unkC->unk8 != NULL) {
+            t->unk6 += t->unkC->unk8[t->unk2];
+        }
+        if (++t->unk2 < t->unkC->unk2) {
+            return 0;
+        }
+        if (t->unkC->unkC != NULL) {
+            t->unkC->unkC(t->unkC);
+        }
+        t->unkC = NULL;
+        return 1;
+    }
+    return 0;
+}
 
 s32 func_800632B4(s32 n, s8 *p) {
     s32 sum = 0;
