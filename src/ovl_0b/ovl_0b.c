@@ -481,7 +481,17 @@ s32 func_800AE570(s32 arg0, s32 *arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE618);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE764);
+s32 func_800AE764(s32 arg0) {
+    FileTable *t = D_8006794C->unk1C->unk7E4;
+    FileEntry *e = t->unk4;
+    s32 i;
+    for (i = t->unk2 - 1; i >= 0; i--) {
+        if (e[i].unk0 == arg0) {
+            return e[i].unkC;
+        }
+    }
+    return -1;
+}
 
 s32 func_800AE7C8(s32 arg0) {
     s32 v = func_8001C8B0(arg0, 3, 0x70000, 0);
@@ -1522,7 +1532,12 @@ void func_800B9C30(BtlCalc *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B9C74);
+void func_800B9C74(BtlCalc *arg0) {
+    BtlCalc8 *c = arg0->unk8;
+    if ((c->unk10 & 3) == 1 && (u32)((*(u32 *)c->unk8 & 0xF) - 3) < 3) {
+        arg0->unk16 /= 2;
+    }
+}
 
 s32 func_800B9CDC(BtlCalc *arg0) {
     if (arg0->unk4->unk7A % arg0->unk8->unk8[7] != 0) {

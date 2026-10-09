@@ -3215,7 +3215,16 @@ void func_800E8D14(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E8D60);
+s32 func_800E8D60(void) {
+    s32 r = 0;
+    if (func_800E788C(0x10) != 0) {
+        if (D_800F78A4->unkC->unk25[0] == 0) {
+            return r;
+        }
+        r = (u8)(D_800F78A4->unk0->unk1C >> 8) >> 7;
+    }
+    return r;
+}
 
 void func_800E8DC8(s32 arg0) {
     s32 i;
