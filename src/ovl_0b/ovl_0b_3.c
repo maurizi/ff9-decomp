@@ -185,7 +185,33 @@ void func_800C9040(TexAnimSet *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C9374);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C94B8);
+Battle11C020 *func_800C94B8(void) {
+    Battle *b;
+    Battle11C020 *s = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk20;
+    u16 *t = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk24;
+    s32 r;
+    Battle132C *sc = &D_8006794C->unk1C->unk8E4.battle->unk132C;
+    u8 n;
+    u8 m;
+
+    sc->unkC = (u16 *)((u8 *)t + t[0]);
+    sc->unk10 = (s16 *)((u8 *)t + t[1]);
+    sc->unk4 = func_800C9600(D_8006794C->unk1C->unk8E4.battle->unk11C0->unk20);
+    sc->unk8 = (Battle1334 *)&D_8006794C->unk1C->unk8E4.battle->unk11C0->unk20->unk8[s->unk1];
+    n = sc->unk4->unk2;
+    b = D_8006794C->unk1C->unk8E4.battle;
+    if (n >= 3) {
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        r = *D_8007B720++;
+        m = r % 3;
+    } else {
+        m = n;
+    }
+    b->unk131C = m;
+    return s;
+}
 
 Battle1330 *func_800C9600(Battle11C020 *arg0) {
     Battle1330 *e;
