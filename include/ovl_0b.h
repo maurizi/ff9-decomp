@@ -252,9 +252,16 @@ typedef struct {
     u8 unk24;          /* count of unk4 */
     u8 unk25[2];
     u8 unk27;          /* count of unk28 */
-    BtlUnit *unk28[7]; /* ids 8..14 */
+    BtlUnit *unk28[4]; /* ids 8.. */
+    s16 unk38;
+    s16 unk3A;
+    s16 unk3C;
+    u8 pad3E[0x40 - 0x3E];
+    u16 unk40;
+    u16 unk42;
     BtlUnit *unk44;    /* id 0x11 */
-} BtlUnitList;
+    u8 pad48[0x4C - 0x48];
+} BtlUnitList; /* 0x4C */
 
 typedef struct Unk800F78A40 {
     s16 unk0;
@@ -727,7 +734,7 @@ typedef struct Battle {
     BtlCmd unk1074;  /* list head (only unk0 used) */
     BtlCmd *unk1088; /* current command */
     struct Battle108C unk108C[2][4];
-    u8 pad116C[0x11B8 - 0x116C];
+    BtlUnitList unk116C;
     u16 unk11B8;
     u8 unk11BA;
     u8 unk11BB;
@@ -1789,7 +1796,8 @@ typedef struct {
 } Unk800CCD00_1;
 
 typedef struct {
-    u8 pad0[8];
+    u16 *unk0;
+    s32 unk4;
     s32 unk8;
     s32 unkC;
     u32 unk10;
@@ -2091,7 +2099,7 @@ s32 func_8001DA6C(s16);
 s32 func_80063830(s32);
 void func_800BCAA4(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
-void func_800C2598(BtlCmd *, s32, s32);
+void func_800C2598(BtlCmd *, s32, s16 *);
 
 s32 func_800D9350(Unk800D7C9C *, s32, s32 *);
 s32 func_8004BB80(s32);

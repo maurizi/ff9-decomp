@@ -485,7 +485,7 @@ s32 func_800CB3EC(BtlScript *arg0) {
     v[1] = arg0->unk8[5] | (arg0->unk8[6] << 8);
     v[2] = arg0->unk8[7] | (arg0->unk8[8] << 8);
     v[3] = arg0->unk8[0] == 0x1A;
-    func_800C2598((BtlCmd *)arg0->unk4, id, (s32)v);
+    func_800C2598((BtlCmd *)arg0->unk4, id, v);
     arg0->unk0 |= 1;
     arg0->unk8 += 9;
     return 1;
