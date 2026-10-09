@@ -2848,7 +2848,7 @@ s32 func_800E4218(s32 arg0, s32 arg1, s32 arg2) {
     return 1;
 }
 
-void func_800E436C(s32 arg0, s16 *arg1, s32 arg2, s32 arg3) {
+void func_800E436C(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s32 arg4) {
     func_800D87D0(arg0);
     func_800E78B4(arg0, arg1, arg2, 2, 0, arg3, 3);
 }
@@ -2958,7 +2958,51 @@ void func_800E4C54(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4C88);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5538);
+s32 func_800E5538(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 *arg4) {
+    s32 t;
+
+    if (arg0 == 0) {
+        *arg4 = 0x28;
+        return 0;
+    }
+    if (arg0 == 1) {
+        arg1->unk1 = 0;
+        arg1->unk2 = *arg4;
+        if (arg2->unkC->unk40 & 4) {
+            arg1->unk2 = 0x11;
+        }
+        if (arg2->unkC->unk40 & 1) {
+            return 1;
+        }
+        if (func_800E788C(arg1->unk2) != 0) {
+            return 1;
+        }
+        arg1->unk3 = func_800C09A4(func_800E716C(arg1->unk2), 0x1000);
+        return 0;
+    }
+    t = *arg3;
+    if (arg1->unk1 == 0) {
+        if (func_800E43D8(arg1->unk2, t, arg1->unkC, arg1->unk3) != 0) {
+            t = -1;
+            arg1->unk1 = 1;
+            if (func_800E84F0(arg1->unk2) != 0) {
+                func_800D85AC(arg1->unk2, 9);
+                return 1;
+            }
+            if (arg1->unk3 == 0) {
+                func_800D85AC(arg1->unk2, 0x20);
+            }
+        }
+    } else {
+        func_800E436C(arg1->unk2, NULL, (s32)arg1->unk1C, t, 1);
+        if (t >= func_800D87D0(arg1->unk2) - 1) {
+            func_800D8658(arg1->unk2, 1);
+            return 1;
+        }
+    }
+    *arg3 = t;
+    return 0;
+}
 
 s32 func_800E56DC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
     switch (arg0) {

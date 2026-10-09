@@ -126,6 +126,21 @@ typedef struct {
     s16 unk6; /* step */
 } BtlStepTask;
 
+/* work area of the effect step func_800E5538 */
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* phase */
+    u8 unk2; /* unit id */
+    u8 unk3;
+    u8 pad4[0xC - 4];
+    s16 unkC[8];
+    s16 unk1C[6];
+} Unk800E5538; /* 0x28 */
+
+void func_800E436C(s32, s16 *, s32, s32, s32);
+s32 func_800E43D8(s32, s32, s16 *, s32);
+s32 func_800E84F0(s32);
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;
