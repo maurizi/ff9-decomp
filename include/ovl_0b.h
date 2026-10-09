@@ -1208,6 +1208,20 @@ extern s8 D_800FEC54;
 
 extern char D_80101470[];
 
+/* summon model header ('so' magic) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk800E9000Ent;
+
+typedef struct {
+    u16 unk0; /* 0x6F73 */
+    u16 unk2;
+    u16 unk4; /* offset */
+    u16 unk6; /* offset */
+    Unk800E9000Ent unk8[1];
+} Unk800E9000;
+
 typedef struct Unk80100DC054 {
     u8 pad0[2];
     s16 unk2;
@@ -1889,6 +1903,9 @@ extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
 extern Unk800686E8 D_80068BE8;
+void func_80030AF4(void *, void *); /* rotation -> matrix */
+s32 func_800CF91C(SVECTOR *, s32, s32);
+void func_800CF8EC(s32, s32, s32);
 extern Unk800686E8 D_80068BF0[]; /* digits */
 
 typedef struct {

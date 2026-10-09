@@ -72,11 +72,50 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0130);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D01D4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D044C);
+void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 arg5) {
+    struct {
+        XY32 xy;
+        s16 z;
+    } r;
+    MATRIX m;
+
+    r.xy = *arg3;
+    r.z = arg5;
+    func_800316D8(&r, &m);
+    gte_SetRotMatrix(&m);
+    m.t[0] = arg0->vx;
+    m.t[1] = arg0->vy;
+    m.t[2] = arg0->vz;
+    gte_SetTransMatrix(&m);
+    func_800CF8EC(arg2, arg4, arg1);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0580);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0674);
+void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 *arg5) {
+    SVECTOR v;
+    struct {
+        XY32 xy;
+        s16 z;
+    } r;
+    struct {
+        s16 m[3][3];
+    } m;
+
+    v.vx = arg0->vx - arg1->vx;
+    v.vy = arg0->vy - arg1->vy;
+    v.vz = arg0->vz - arg1->vz;
+    r.xy.w = (-arg2->vx & 0xFFFF) | (-arg2->vy << 16);
+    r.z = 0;
+    func_80030AF4(&r.xy, &m);
+    gte_SetRotMatrix(&m);
+    gte_ldtr0();
+    *arg5 = func_800CF91C(&v, arg3, arg4);
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D07B4);
 
