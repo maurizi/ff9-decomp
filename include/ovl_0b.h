@@ -1255,6 +1255,13 @@ extern void *D_80104FA0;
 extern s32 (*D_800F8DC4[])(void);
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk80104FC0; /* D_80104FB0.unk10 */
+
+typedef struct {
     u8 unk0; /* cursor */
     u8 unk1;
     u8 unk2;
@@ -1262,23 +1269,14 @@ typedef struct {
     u8 unk4[4];
     u8 unk8[4];
     u8 unkC[4];
-    u8 unk10;
-    u8 unk11;
-    u8 pad12[0x18 - 0x12];
+    Unk80104FC0 unk10;
+    u8 pad14[0x18 - 0x14];
     BtlUnit *unk18;
 } Unk80104FB0;
 extern Unk80104FB0 D_80104FB0;
 extern void (*D_800F8D94[])(void);
 
-extern BtlUnit *D_80104FC8;
 
-typedef struct {
-    s8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-} Unk80104FC0;
-extern Unk80104FC0 D_80104FC0;
 
 typedef struct Unk80104FD4 {
     u8 pad0[6];
@@ -1742,6 +1740,10 @@ void func_800EC070(s32);
 void func_800EC14C(s32);
 void func_800EC170(s32);
 void func_800ECB5C(void);
+extern RECT D_800F8DDC; /* command window rect */
+void func_800EC628(Window *);
+void func_800EC730(Window *);
+void func_800EDC3C(); /* used as a Window callback */
 s32 func_800EB2BC(s32);
 u8 func_800F1360(void);
 
@@ -1980,7 +1982,6 @@ u8 *func_800E3EEC(u8 *);
 u8 *func_800CC4F0(u8 *);
 void func_800BD93C(BtlUnit *);
 void func_800BFAF4(BtlUnit *);
-extern u8 D_80104FC1; /* D_80104FC0.unk1 */
 void func_800ED02C(RECT *, s16);
 extern s32 D_800F8DE4[];
 Window *func_800F1370(void);
