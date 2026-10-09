@@ -288,3 +288,7 @@ ovl_0b func_800DFE54 hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 b
 ovl_0b func_800DFF5C hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 block)
 ovl_0b func_800DFF64 hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 block)
 ovl_0b func_800E0014 hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 block)
+ovl_0a func_800B5958 hand-written asm (field agent)
+ovl_0a func_800C9AB8 hand-written asm (field agent)
+ovl_0c func_800CB1EC hand-written asm (field agent)
+ovl_0c func_800C709C hand-written asm (field agent)
