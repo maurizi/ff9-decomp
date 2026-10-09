@@ -877,7 +877,38 @@ void func_800B0FC0(Battle *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B10F8);
+void func_800B10F8(BtlUnit *arg0) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    BtlCmd *c;
+    s32 k;
+    s32 i;
+    s32 j;
+    if (b->unkD80 == 2) {
+        arg0->unkB2 = 1;
+    }
+    arg0->unkB3 = 0;
+    arg0->unkBC = 0;
+    if (arg0->unk68 & 1) {
+        k = ((arg0->unk68 >> 5) & 7) * 6;
+    } else {
+        k = (((arg0->unk68 >> 5) & 7) - 4) * 3 + 0x18;
+    }
+    c = &b->unkD90[k];
+    /* unk4..unk18 are the unit's six command slots */
+    for (i = 0; i < 6; i++) {
+        if ((arg0->unk68 & 1) || i < 3) {
+            (&arg0->unk4)[i] = c;
+            c->unk4 = arg0;
+            c++;
+            func_800B3CEC_inline((&arg0->unk4)[i]);
+        } else {
+            (&arg0->unk4)[i] = NULL;
+        }
+    }
+    for (j = 3; j >= 0; j--) {
+        arg0->unk1C[j] = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B1250);
 

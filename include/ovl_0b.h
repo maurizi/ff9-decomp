@@ -730,7 +730,8 @@ typedef struct Battle {
     u8 unkD85;
     u8 unkD86;
     u8 unkD87;
-    u8 padD88[0x1060 - 0xD88];
+    u8 padD88[0xD90 - 0xD88];
+    BtlCmd unkD90[36]; /* per unit: 6 (players) or 3 (enemies) */
     BtlCmd unk1060;
     BtlCmd unk1074;  /* list head (only unk0 used) */
     BtlCmd *unk1088; /* current command */
