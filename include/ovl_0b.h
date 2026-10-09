@@ -2471,6 +2471,10 @@ void func_800C0CD0(u32 *);
 void func_800C1A8C(struct BtlUnit *, u32);
 void func_800BAFEC(struct Battle *);
 u32 *func_800BB974(struct Battle *, u32 *);
+void func_800BD8F0(Unk800BD8F0 *);
+void func_800C0A3C(Unk800C09D8 *);
+void func_80031244(SVECTOR *, MATRIX *);
+
 s32 func_800A9A7C(Battle11C0 *, s32);
 s32 func_800AA08C(Unk800AA08C *, s32);
 void func_800AEA48(void);

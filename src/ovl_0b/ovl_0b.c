@@ -3002,7 +3002,71 @@ void func_800BB1F4(Battle *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BB4A0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BB974);
+u32 *func_800BB974(Battle *arg0, u32 *arg1) {
+    SVECTOR r2;
+    SVECTOR r;
+    BtlUnit *u;
+    BtlUnit9CC *cc;
+    s32 t;
+    BtlUnitA0 *a0;
+    s32 i;
+    Battle4880 *p;
+
+    for (i = 0; i < D_8006794C->unk1C->unk8E4.battle->unk132C.unk4->unk1; i++) {
+        {
+            p = arg0->unk488[i].unk0;
+            u = &arg0->unk6FC[i + 4];
+            u->unk7A = p->unk3;
+            u->unk24->unk4 = (0x3C - u->unk30) * 160;
+            func_800BD8F0((Unk800BD8F0 *)u);
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                }
+            }
+            u->unk2C = ((*D_8007B720 << 8) | *D_8007B720++) % u->unk24->unk4;
+            u->unk74 = NULL;
+            func_800C0A3C((Unk800C09D8 *)u);
+            func_800BD414(u, u->unkAC);
+            if ((u->unk68 >> 23) & 1) {
+                u->unk2C = 0;
+                u->unk2E = 0;
+                func_8001D898(&r, 0, 8);
+                r.vx = u->unk86[0];
+                r.vy = u->unk86[1];
+                r.vz = u->unk86[2];
+                r2 = r;
+                func_80031244(&r2, &u->unk9C->unk24);
+                u->unk9C->unk24.t[0] = u->unkA0->unk14 >> 16;
+                u->unk9C->unk24.t[1] = u->unkA0->unk18 >> 16;
+                u->unk9C->unk24.t[2] = u->unkA0->unk1C >> 16;
+                cc = u->unk9C->unkC;
+                if (cc->unkC >= 0) {
+                    t = cc->unk10;
+                    cc->unkC = (s32)cc + cc->unkC;
+                    if (t != 0) {
+                        cc->unk10 = (s32)u->unk9C->unkC + t;
+                    }
+                }
+                arg1 = (u32 *)func_800C7DAC(u->unk9C, 0, (u8 *)arg1);
+                u->unk98->unk0[0] = u->unk9C->unk20[u->unk7C].unk14 << 16;
+                u->unk98->unk0[1] = 0;
+                u->unk98->unk0[2] = u->unk9C->unk20[u->unk7C].unk1C << 16;
+            } else {
+                u->unk98->unk0[0] = u->unkA0->unk14;
+                u->unk98->unk0[1] = u->unkA0->unk18;
+                u->unk98->unk0[2] = u->unkA0->unk1C;
+                a0 = u->unkA0;
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                }
+                a0->unk3A = *D_8007B720++ % u->unk9C->unkC->unk2;
+            }
+        }
+    }
+    return arg1;
+}
 
 void func_800BBD3C(BtlUnit *arg0, Unk8E0 *arg1) {
     s32 i;
