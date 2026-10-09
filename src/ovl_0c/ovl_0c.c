@@ -2551,7 +2551,33 @@ s32 func_800B88C0(s32 arg0) {
     return *p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B89B0);
+/* pop the heap stack */
+s32 func_800B89B0(void) {
+    s32 *stack;
+    s32 n;
+    s32 prev;
+    s32 size;
+
+    if (D_800CFE14 == 0) {
+        func_80015C38("w_memorymanHeapFree:no allocated heap.\n");
+        return 0;
+    }
+    if (D_800CCE50 & 0x40) {
+        func_80015C38("w_memorymanHeapFree : [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
+    }
+    stack = D_800CFDB0;
+    n = D_800CFE14 - 1;
+    prev = stack[n];
+    size = D_800CFE18;
+    size -= prev;
+    D_800CFE14 = n;
+    D_800CFE18 = prev;
+    D_800CFE10 -= size;
+    if (D_800CCE50 & 0x40) {
+        func_80015C38("%x\n", D_800CFE18);
+    }
+    return 1;
+}
 
 void func_800B8A80(void) {
     D_800CFE10 = 0;
