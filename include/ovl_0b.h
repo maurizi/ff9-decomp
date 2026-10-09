@@ -2366,6 +2366,14 @@ extern RECT D_800F8DBC;
 void func_800BC21C(BtlUnit *, s32 *);
 void func_800B3460(GameData *, Battle *, BtlUnit *);
 void func_800B1764(Battle *);
+s32 func_800B1B48(Battle *, BtlCmd *);
+s32 func_800B23B4(Battle *, BtlCmd *);
+s32 func_800B4390(BtlCmd *);
+void func_800B3F98(BtlCmd *);
+s32 func_800BD31C(BtlCmd *);
+void func_800B253C(BtlCmd *);
+void func_800C28F4(BtlCmd *);
+void func_800B2988(Battle *);
 void func_800B05C0(GameData *, Battle *, s32);
 
 s32 func_8005553C(s32);
