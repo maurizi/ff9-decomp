@@ -2733,9 +2733,19 @@ s16 func_800CF9B0(s32, s32, s32);
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u16 unk2;
-    u16 unk4;
+    u16 unk2_0 : 7;
+    u16 unk2_7 : 7;
+    u16 unk2_14 : 2;
+    u16 unk4_0 : 7;
+    u16 unk4_7 : 7;
 } Unk800C3F78;
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk800F5758;
+extern Unk800F5758 D_800F5758[];
 void func_800C3F78(Unk800C412C *, Unk800C3F78 *);
 void func_800C412C(Unk800C412C *, u8 *);
 void func_800C52B4(MATRIX *, SVECTOR *, SVECTOR *);
@@ -2891,5 +2901,16 @@ typedef struct {
 static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
     return (u->unk38 & m) || (u->unk3C & m);
 }
+
+/* disc cover open screen (func_800A882C) */
+extern u32 D_800FDEB0[1];
+extern DR_STP D_800FDF18;
+extern TILE D_800FDE98;
+extern DR_TPAGE D_800FDEA8;
+extern DR_STP D_800FDF24;
+extern u8 D_800FDE60[];
+void func_80023F60(s32);
+void func_80055698(s32);
+void func_800EA34C(void);
 
 #endif

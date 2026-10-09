@@ -45,7 +45,67 @@ void func_800A8600(s16 arg0) {
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b", D_800A7000);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A882C);
+void func_800A882C(void) {
+    GameData *gd = D_8006794C->unk1C;
+    u16 f = gd->unk8E4.battle->unk0;
+    s32 i;
+    s32 w;
+
+    if (!(f & 0x1000)) {
+        if (!(gd->unk0 & 0x100) || (f & 0x20)) {
+            gd->unk0 |= 0x100;
+            func_8005562C(0);
+            func_80023F60(1);
+            for (i = 1; i >= 0; i--) {
+                D_800739B0[i].unk1 = 0;
+                D_800739B0[i].unk0 = 0;
+            }
+            if (D_8006794C->unk1C->unk8E4.battle->unk0 & 0x20) {
+                D_80073998[0] |= 8;
+            }
+            ClearOTag(D_800FDEB0, 1);
+            setlen(&D_800FDF18, 2);
+            D_800FDF18.code[0] = 0xE6000000;
+            D_800FDF18.code[1] = 0;
+            addPrim(D_800FDEB0, &D_800FDF18);
+            if (D_8006794C->unk1C->unk8E4.battle->unk0 & 0x20) {
+                func_80029D60(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unk34[D_8006794C->unk1C->unk8]);
+            } else {
+                func_80027834((0x140 - D_800686D0[0xEB].unk4) / 2, (0xDA - D_800686D0[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
+            }
+            setlen(&D_800FDE98, 3);
+            D_800FDE98.code = 0x62;
+            D_800FDE98.r0 = 0x60;
+            D_800FDE98.g0 = 0x60;
+            D_800FDE98.b0 = 0x60;
+            D_800FDE98.w = 0x140;
+            D_800FDE98.h = 0xDA;
+            D_800FDE98.x0 = 0;
+            D_800FDE98.y0 = 0;
+            addPrim(D_800FDEB0, &D_800FDE98);
+            setlen(&D_800FDEA8, 1);
+            D_800FDEA8.code[0] = 0xE1000240;
+            addPrim(D_800FDEB0, &D_800FDEA8);
+            D_800FDF24.code[0] = 0xE6000001;
+            setlen(&D_800FDF24, 2);
+            D_800FDF24.code[1] = 0;
+            addPrim(D_800FDEB0, &D_800FDF24);
+            DrawOTag(D_800FDEB0);
+            D_8006794C->unk1C->unk0 |= 0x20;
+            func_800EA338(0);
+            return;
+        }
+    } else if (f & 0x20) {
+        return;
+    }
+    func_80023F60(0);
+    func_80055698(0);
+    D_80073998[0] &= ~8;
+    func_800EA34C();
+    D_8006794C->unk1C->unk0 &= ~0x20;
+    func_800EA338(0);
+    D_8006794C->unk1C->unk0 &= ~0x100;
+}
 
 void func_800A8BF4(void) {
     volatile u8 a;
