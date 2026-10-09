@@ -63,7 +63,7 @@ typedef struct {
     s32 unk54;
     s32 unk58;
     s32 unk5C;
-    void (*unk60)(s8 *);
+    void (*unk60)(); /* end callback (called without arguments) */
     s32 unk64;
 } Ovl64State;
 extern Ovl64State D_8019DC94;

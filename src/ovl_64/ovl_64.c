@@ -111,7 +111,20 @@ s32 func_8019AAB4(s32 arg0) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019AAF8);
+s32 func_8019AAF8(void) {
+    func_80056228();
+    func_8019C864();
+    D_800739B0[0].unk0 = 0;
+    D_800739B0[0].unk1 = 0;
+    D_80071E32--;
+    if (D_8019DC94.unk60 != NULL) {
+        D_8019DC94.unk60();
+    }
+    DecDCToutCallback(0);
+    func_8019A7A8(0xE0, 0);
+    ResetGraph(3);
+    return 0;
+}
 
 s32 func_8019AB70(void) {
     if (D_80071E32 != 0) {
@@ -151,7 +164,7 @@ void func_8019AC14(u32 arg0) {
     }
 }
 
-void func_8019AC3C(void (*arg0)(s8 *)) {
+void func_8019AC3C(void (*arg0)()) {
     D_8019DC94.unk60 = arg0;
 }
 

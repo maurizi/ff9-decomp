@@ -358,7 +358,8 @@ typedef struct {
     u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
-    u8 pad10[2];
+    u8 unk10;   /* sort key */
+    u8 pad11;
 } Unk80069018; /* item table, 0x12-byte entries */
 extern Unk80069018 D_80069018[];
 extern u8 D_8006BB84[];
