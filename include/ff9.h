@@ -2479,4 +2479,11 @@ typedef struct {
     u16 unk4;
 } Unk8005B30C;
 extern s32 D_80080A28;
+s32 func_8005715C(s32);
+typedef struct {
+    s32 unk0;
+    s8 unk4;
+} Unk8005BECC;
+extern s32 D_8007F8E8;
+extern s32 D_8007F8E4;
 #endif

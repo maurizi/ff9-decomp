@@ -7016,7 +7016,21 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetTransferCallback);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005715C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057234);
+s32 func_80057234(u32 x) {
+    s32 v = x & 0xFF;
+    s32 r;
+
+    x >>= 8;
+    if (!(x & 1)) {
+        v = 0x100 - v;
+    }
+    r = func_8005715C(0x10000 - v * v);
+    if (x & 2) {
+        r = ~r;
+        r++;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005729C);
 
@@ -7638,7 +7652,15 @@ void func_8005BEB0(s8 *a) {
     D_80083154 = v << 16;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BECC);
+void func_8005BECC(Unk8005BECC *p) {
+    s32 n = 1;
+
+    if (p->unk0 != 0) {
+        n = p->unk0;
+    }
+    D_8007F8E8 = ((p->unk4 << 16) - D_80083154) / n;
+    D_8007F96E = n;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BF34);
 
@@ -7648,7 +7670,15 @@ void func_8005BFA8(s8 *a) {
     D_80083150 = v << 16;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005BFC4);
+void func_8005BFC4(Unk8005BECC *p) {
+    s32 n = 1;
+
+    if (p->unk0 != 0) {
+        n = p->unk0;
+    }
+    D_8007F8E4 = ((p->unk4 << 16) - D_80083150) / n;
+    D_8007F96C = n;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C02C);
 
