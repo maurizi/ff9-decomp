@@ -2758,4 +2758,14 @@ typedef struct {
 u8 *func_800D45FC(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
 
 
+#define gte_stszotz(r0) __asm__ volatile( \
+    "mfc2\t$12, $19;" \
+    "nop;" \
+    "sra\t$12, $12, 2;" \
+    "sw\t$12, 0(%0)" \
+    : : "r"(r0) : "$12", "memory")
+
+/* rtps without the leading GTE_NOPS (original scheduled code into the slots) */
+#define gte_rtps_nn() __asm__ volatile(".word\t0x4A180001")
+
 #endif

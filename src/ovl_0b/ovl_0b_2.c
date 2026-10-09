@@ -282,7 +282,62 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1494);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1680);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D198C);
+void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
+    DVECTOR sxy;
+    Unk800D1BC4Ctx c;
+    s32 z;
+    u8 *prim;
+    u8 *d;
+    s32 off;
+    u16 *o;
+    Unk800D1BC4 *h = (Unk800D1BC4 *)arg0;
+
+    off = h->unk0 & 0x7FFF;
+    if (arg2 >= off) {
+        arg2 = off - 1;
+    }
+    o = &h->unk6[arg2];
+    c.unk10 = h->unk2;
+    off = *o;
+    c.unk14 = *(u16 *)(arg0 + off);
+    off += 2;
+    if (c.unk14 & 0x8000) {
+        d = arg0 + off;
+        off += 4;
+        c.unk0 = *(u16 *)d | (d[2] << 16);
+        if (arg4 >= 0) {
+            gte_DpqColorFar(&c.unk0, arg4);
+        }
+    } else {
+        if (arg4 < 0) {
+            arg4 = 0x1000;
+        }
+        arg4 = (arg4 >> 5) & 0xFF;
+        c.unk0 = arg4 | (arg4 << 8) | (arg4 << 16);
+    }
+    if (c.unk14 & 0x4000) {
+        off += 4;
+    }
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    arg0 += off;
+    c.unk14 &= 0x3FFF;
+    gte_rtps_nn();
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + c.unk14 * 20;
+    gte_stsxy(&sxy);
+    gte_stszotz(&z);
+    c.unk0 |= (arg3 == 0xFF) ? 0x64000000 : 0x66000000;
+    c.unkC = (arg3 & 3) << 5;
+    c.unk4 = sxy.vx;
+    c.unk8 = sxy.vy;
+    c.unk18 = D_800F78A4->unk24;
+    z = (z - D_800F78A4->unk28) >> 2;
+    if ((u32)z < 0x1000) {
+        D_800F78A4->unk24 = func_800D45FC(arg0, &c, prim, &D_800F78A4->unk20[z]);
+    }
+}
 
 void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Unk800D1BC4Ctx c;
