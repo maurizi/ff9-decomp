@@ -15,9 +15,11 @@ typedef struct {
     u8 unk4; /* slider moving: 1 = right, else left */
     u8 unk5; /* slider ticks */
     u8 unk6; /* blink ticks */
-    u8 pad7[0x1C - 7];
-    WinDef unk1C;
-    WinDef unk2C;
+    u8 unk7;
+    u8 unk8[9];  /* per menu row: text id */
+    u8 unk11[9]; /* per menu row: character index */
+    u8 pad1A[2];
+    WinDef unk1C[2]; /* option windows */
     MenuList unk3C; /* .unk5 = scroll top, .unk6 = cursor row */
     u8 *unk4C;      /* next free primitive */
     u8 *unk50[2];   /* primitive buffers */
@@ -31,6 +33,10 @@ typedef struct {
     s16 unk2; /* y offset */
 } ScrollPos;
 extern ConfigMenu D_801F1558;
+extern RECT D_801F1534[2]; /* option window rects */
+extern u8 D_801F1524[];
+/* func_800355DC; this overlay's link only has the D_ name */
+void D_800355DC(void);
 
 /* main exe: candidates for ff9.h */
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
