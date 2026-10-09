@@ -222,3 +222,5 @@ main func_80053658 hand-written asm module 0x80050F4C-0x80053924 (global regs $t
 main func_80053728 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80053764 hand-written asm module 0x80050F4C-0x80053924 (global regs $t5/$s6/$s7, no ABI)
 main func_80064A2C libgpu: GP1 0x10 info query via GPU register pointers
+main func_8006605C libcard: patches a BIOS device-table (0x150) entry by name
+main func_800661E0 libcard: memory card sector write/verify with checksum retries
