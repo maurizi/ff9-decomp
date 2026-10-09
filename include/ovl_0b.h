@@ -141,6 +141,21 @@ void func_800E436C(s32, s16 *, s32, s32, s32);
 s32 func_800E43D8(s32, s32, s16 *, s32);
 s32 func_800E84F0(s32);
 
+typedef struct {
+    u8 pad0[7];
+    u8 unk7; /* count */
+    s32 unk8; /* index into D_800FDD10 */
+} Unk800FD6E0;
+extern Unk800FD6E0 D_800FD6E0;
+extern u8 D_800F8D84[]; /* ability ids */
+
+/* main exe: candidates for ff9.h */
+typedef struct {
+    u8 unk0;
+    u8 unk1; /* ap needed */
+} Unk8006CB88;
+extern Unk8006CB88 D_8006CB88[]; /* abilities */
+
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
 typedef union {
     P_TAG tag;

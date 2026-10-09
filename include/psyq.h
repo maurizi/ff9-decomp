@@ -342,6 +342,18 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "ctc2\t$13, $3;" \
     "ctc2\t$14, $4" \
     : : "r"(r0) : "$12", "$13", "$14")
+#define gte_SetLightMatrix(r0) __asm__ volatile( \
+    "lw\t$12, 0(%0);" \
+    "lw\t$13, 4(%0);" \
+    "ctc2\t$12, $8;" \
+    "ctc2\t$13, $9;" \
+    "lw\t$12, 8(%0);" \
+    "lw\t$13, 12(%0);" \
+    "lw\t$14, 16(%0);" \
+    "ctc2\t$12, $10;" \
+    "ctc2\t$13, $11;" \
+    "ctc2\t$14, $12" \
+    : : "r"(r0) : "$12", "$13", "$14")
 #define gte_SetTransMatrix(r0) __asm__ volatile( \
     "lw\t$12, 20(%0);" \
     "lw\t$13, 24(%0);" \
@@ -476,6 +488,7 @@ void SetLightMatrix(MATRIX *m);
 void SetColorMatrix(MATRIX *m);
 MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
 void SetRotMatrix(MATRIX *m);
+MATRIX *ScaleMatrix(MATRIX *m, VECTOR *v);
 VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
 void SetPolyFT4(POLY_FT4 *p);

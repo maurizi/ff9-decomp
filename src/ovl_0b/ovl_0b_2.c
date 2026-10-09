@@ -121,7 +121,34 @@ void func_800D0130(SVECTOR *arg0, MATRIX *arg1) {
     gte_SetTransMatrix(arg1);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D01D4);
+void func_800D01D4(SVECTOR *arg0, VECTOR *arg1, MATRIX *arg2, s32 arg3) {
+    MATRIX m;
+    RotMatrix33 l;
+
+    if (arg2 == NULL) {
+        arg2 = &m;
+    }
+    func_800316D8(arg0, arg2);
+    if (arg1 != NULL) {
+        ScaleMatrix(arg2, arg1);
+    }
+    if (arg0->pad != 0) {
+        gte_ldclmv(arg2);
+        gte_rtir();
+        gte_stclmv(arg2);
+        gte_ldclmv((s16 *)arg2 + 1);
+        gte_rtir();
+        gte_stclmv((s16 *)arg2 + 1);
+        gte_ldclmv((s16 *)arg2 + 2);
+        gte_rtir();
+        gte_stclmv((s16 *)arg2 + 2);
+    }
+    if (arg3 != 0) {
+        gte_MulMatrix0(&l, arg2, &l);
+        gte_SetLightMatrix(&l);
+    }
+    gte_SetRotMatrix(arg2);
+}
 
 void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 arg5) {
     struct {
