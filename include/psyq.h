@@ -190,6 +190,10 @@ typedef struct {
     u8 r3, g3, b3, pad3;
     s16 x3, y3;
 } POLY_G4;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    s16 x1, y1;
+} LINE_F2;
 
 typedef struct {
     u8 minute, second, sector, track;
@@ -245,6 +249,8 @@ u32 *ClearOTagR(u32 *ot, int n);
 void DrawOTag(u32 *p);
 void AddPrim(void *ot, void *p);
 void SetSprt(SPRT *p);
+u16 LoadTPage(u32 *pix, s32 tp, s32 abr, s32 x, s32 y, s32 w, s32 h);
+u16 LoadClut(u32 *clut, s32 x, s32 y);
 void DrawOTagEnv(u32 *p, DRAWENV *env);
 DRAWENV *PutDrawEnv(DRAWENV *env);
 DISPENV *PutDispEnv(DISPENV *env);

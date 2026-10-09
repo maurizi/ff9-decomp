@@ -95,9 +95,45 @@ void func_801F025C(void) {
     func_801F1168();
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F02CC);
+void func_801F02CC(MenuList *l, u32 pad) {
+    s32 h;
+    s32 top;
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F0380);
+    if ((pad & 0x100000) && !(D_80077524 & 0x200000) && l->unk5 != 0) {
+        h = l->unkD;
+        l->unk9 = h >> 2;
+        l->unk8 = 7;
+        top = l->unk5 - l->unk3;
+        l->unkE = (h - l->unk9 + 0xE) / 15;
+        if (top < 0) {
+            top = 0;
+        }
+        l->unkC = top;
+        func_8002F488(0x67);
+    }
+}
+
+void func_801F0380(MenuList *l, u32 pad) {
+    s32 h;
+    s32 page;
+    s32 top;
+    s32 max;
+
+    if ((pad & 0x200000) && l->unk5 < l->unk2 - l->unk3) {
+        h = l->unkD;
+        l->unk9 = h >> 2;
+        page = l->unk3;
+        max = l->unk2 - page;
+        l->unk8 = 5;
+        top = l->unk5 + page;
+        l->unkE = (h - l->unk9 + 0xE) / 15;
+        if (top < max) {
+            max = top;
+        }
+        l->unkC = max;
+        func_8002F488(0x67);
+    }
+}
 
 void func_801F043C(MenuList *m, RECT *src, RECT *dst) {
     dst->x = src->x;
@@ -110,7 +146,24 @@ void func_801F043C(MenuList *m, RECT *src, RECT *dst) {
     dst->h = src->h - m->unk9;
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F049C);
+void func_801F049C(void) {
+    ScrollPos sp;
+    RECT r;
+    s32 i;
+    s32 y;
+
+    func_801F1334(&D_801F1558.unk3C, &sp);
+    i = 0;
+    r.x = 8;
+    r.w = 0x12C;
+    r.y = 0;
+    r.h = 0x14;
+    for (; i < sp.unk0; i++) {
+        r.y = i * 0x14 + (s16)(sp.unk2 + 0x2A);
+        func_801F0550(&r, 0x17, sp.unk1 + i);
+        func_8002DEE4(&r, 0x17, 0);
+    }
+}
 
 void func_801F0550(RECT *r, s32 otz, s32 i) {
     func_800269F4(r->x + 0x70, r->y + 1, otz, 4 - r->h);
@@ -196,7 +249,15 @@ void func_801F0BE8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F0C78);
+void func_801F0C78(void) {
+    MenuList *l;
+    s32 blink;
+
+    l = &D_801F1558.unk3C;
+    blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
+    func_800275DC(0x12E, 0x2C, 0x14, 0xB8, l->unk5 != 0 ? blink : 1);
+    func_800275DC(0x12E, 0xCF, 0x14, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
+}
 
 INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F0D20);
 
@@ -277,4 +338,18 @@ void func_801F12D0(u8 on) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801F1334);
+ScrollPos *func_801F1334(MenuList *l, ScrollPos *p) {
+    s32 v;
+
+    if (l->unk8 & 2) {
+        p->unk0 = (l->unk9 + 0x13) / 20;
+        p->unk1 = l->unkC + (l->unk3 - p->unk0);
+        p->unk2 = l->unk9 - p->unk0 * 0x14;
+    } else {
+        v = l->unk9;
+        p->unk2 = l->unkD - v;
+        p->unk0 = (v + 0x13) / 20;
+        p->unk1 = l->unkC;
+    }
+    return p;
+}

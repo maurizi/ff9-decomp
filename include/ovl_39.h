@@ -11,7 +11,9 @@ typedef struct {
     s32 unk0; /* version tag, 0x30005 */
     u8 unk4[0x1A - 4];
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
-    u8 pad1B[0x4C - 0x1B];
+    u8 pad1B[0x44 - 0x1B];
+    u8 unk44;
+    u8 pad45[0x4C - 0x45];
     u32 unk4C; /* save counter */
     u8 pad50[0x98 - 0x50];
 } SaveSlot;
@@ -55,16 +57,21 @@ typedef struct Unk801FBEE0 {
     u16 unk12;
 } Unk801FBEE0;
 extern Unk801FBEE0 D_801FBEE0;
+s32 func_8003579C(s32); /* main exe */
 
 typedef struct {
     u8 unk0;
     u8 unk1; /* state, index into D_801FB014 */
-    u8 pad2[0xC - 2];
+    u8 unk2; /* slot */
+    u8 unk3; /* attempts */
+    u8 unk4[0xC - 4]; /* attempts per result */
     s32 unkC;  /* used slots */
     s32 unk10; /* file count */
     s32 unk14;
-    u8 pad18[0x1C - 0x18];
+    s32 unk18; /* file descriptor */
     Window *unk1C;
+    u8 pad20[0x2D0 - 0x20];
+    u8 unk2D0[0x180]; /* read buffer */
 } Unk801FBEF8;
 extern Unk801FBEF8 D_801FBEF8;
 
@@ -89,8 +96,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 pad4[2];
-    u8 unk6;
-    u8 pad7[0x1C - 7];
+    char unk6[0x1C - 6]; /* file name */
     Window *unk1C;
     s32 unk20; /* card channel */
     s32 unk24;
@@ -132,10 +138,125 @@ typedef struct {
 } Unk801FA078;
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2[0x20 - 2];
+    u16 unk20;
+    u16 unk22;
+    u16 unk24;
+    s16 unk26;
+    u16 unk28;
+    u16 unk2A;
+    u8 unk2C[0x14];
+} Unk801F9BEC;
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    Unk6 unk6[0x69];
+    u16 unk27C;
+    u16 unk27E;
+} CardData; /* Tetra Master cards (func_80062824) */
+
+/* other overlay */
+u16 func_800B5084(void);
+u16 func_800B5094(void);
+
+typedef struct {
+    EventVars unk0;
+    s32 unk800; /* D_8007AEC4 */
+} SaveEvents;
+
+typedef struct {
+    Character unk0[9];
+    u8 unk510[4]; /* party: character index, 9 = none */
+    u16 unk514;
+    u16 unk516;
+    u32 unk518; /* gil */
+    u16 unk51C;
+    u16 unk51E;
+    u16 unk520;
+} SaveParty; /* 0x524 */
+
+/* game data part of a save block */
+typedef struct {
+    Unk801F9BEC unk0;
+    SaveEvents unk40;
+    u8 pad844[0x850 - 0x844];
+    SaveParty unk850;
+    u8 padD74[0xD88 - 0xD74];
+    Unk801FA078 unkD88;
+    u8 unkDA0[0xFF8 - 0xDA0];
+    u8 unkFF8[0x127C - 0xFF8];
+} SaveData; /* 0x127C */
+
+/* save block buffer at 0x801FCB00 */
+typedef struct {
+    u8 pad0[4];
+    u8 unk4;   /* GameState.unkB */
+    u8 pad5[0x2C - 5];
+    s32 unk2C; /* func_80024000 */
+    u8 pad30[0x80 - 0x30];
+} SaveHdr;
+
+typedef struct {
+    u8 unk0[0x100]; /* header */
+    SaveHdr unk100;
+    SaveData unk180;
+    u8 pad13FC[2];
+    u16 unk13FE; /* CRC-16 of everything before it */
+} SaveBuf;
+
+void func_801F963C(SaveData *);
+void func_801FA01C(Unk801FA078 *);
+typedef struct {
     u8 pad0[0x12];
     u8 unk12; /* ASCII digits */
     u8 unk13;
 } Unk801F6D24;
+
+/* main exe: candidates for ff9.h */
+s32 func_80028954(s32); /* defined u8 in main; used unmasked */
+
+extern RECT func_801FAF74; /* a RECT in .data (splat starts .data late) */
+extern u8 D_801EDF1C[];
+extern u8 D_801FB040[]; /* save icon per character model */
+extern u16 D_801FDEFE;
+void func_801F96CC(void);
+extern RECT D_801FAFE0;
+extern u8 D_801FBACC[]; /* CLUT + image buffer */
+extern u8 D_801F2854[]; /* icon images, 0x210 each */
+s32 func_801FA1C4(s32, s32);
+extern u8 D_801FC3B8[0x26]; /* name buffer */
+u8 func_800B5064(void); /* other overlay */
+void func_801F9024(u8 *);
+extern u8 D_801FB02C[]; /* retries allowed per result */
+void func_801F6E68(s32);
+void func_801F6DAC(void);
+void func_801F6E1C(void);
+void func_801F70E4(void);
+char *strcpy(char *, const char *); /* C library (builtin) */
+s32 func_80065E60(char *, s32); /* main exe: open */
+s32 func_801FA3D8(s32, char *);
+u8 func_801FA6AC(s32, char *);
+void func_80024000(s32); /* main exe */
+void func_801F9BEC(Unk801F9BEC *);
+void func_801F9F5C(void *);
+void func_801F9D18(void *);
+void func_801FA078(Unk801FA078 *);
+void func_801F8DA4(u8 *);
+u16 func_801F973C(u8 *, s32);
+void func_801F9B00(Unk801F9BEC *);
+void func_801F9D48(SaveEvents *);
+void func_801F9DF8(SaveEvents *);
+void func_801F99FC(SaveParty *);
+void func_801F9904(SaveParty *);
+extern s32 D_8007AEC4;
+void func_801F9EA8(u8 *);
+void func_801F9CE8(void *);
+void func_801F6938(void);
+
 
 void func_801F4538(void);
 void func_801F53E0(void);
@@ -148,7 +269,7 @@ void func_801F75C8(s32, s32);
 void func_801F7084(void);
 void func_801F5E68(s32, s32, s32);
 void func_801F6A84(void);
-void func_801F6B48(Unk801FBEF8 *);
+void func_801F6B48(void);
 void func_801F72B4(s32);
 u8 func_801F77E4(void);
 void func_801F9788(s32, s32);
@@ -168,7 +289,7 @@ s32 func_801FAB08(void);
 void func_801FAE1C(void);
 void func_801F7780(s32);
 u8 func_801F79F4(s8);
-void func_801F9C58(void *, void *);
+void func_801F9C58(CardData *, CardData *);
 s32 func_801FA37C(s32);
 s32 func_801FA4E4(s32, s32, s32);
 s32 func_801FA5D0(s32, s32, s32);
@@ -212,6 +333,9 @@ void func_801F74F4(Window *);
 void func_801F7510(Window *);
 void func_801F7560(Window *);
 u8 func_801F8478(void);
+void func_80065238(char *, u8 *); /* main exe: string copy */
+void func_801F8588(void);
+MenuView *func_801F89B8(MenuList *, MenuView *);
 void func_801F8704(s32, void *);
 u8 func_801F9804(void);
 void func_801F5384(void);
@@ -219,24 +343,13 @@ void func_801F53B0(void);
 void func_801F5960(void);
 void func_801F8C34(MenuList *, s32);
 void func_801F8CE8(MenuList *, s32);
-void func_801F8B10(MenuList *, MenuView *);
+MenuView *func_801F8B10(MenuList *, MenuView *);
 void func_801F49C4(RECT *, s32, s32);
 extern void (*D_801FAF8C[])(void);
 extern void (*D_801FAFC4[])(void);
 extern void (*D_801FAFA8[])(void);
 extern void (*D_801FB014[])(void);
 
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 pad2[0x20 - 2];
-    u16 unk20;
-    u16 unk22;
-    u16 unk24;
-    u8 unk26;
-    u8 pad27;
-    u16 unk28;
-    u16 unk2A;
-} Unk801F9BEC;
+
 
 #endif

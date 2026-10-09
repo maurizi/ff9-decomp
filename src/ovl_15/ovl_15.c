@@ -366,7 +366,12 @@ s32 func_800A9334(Ovl15Hand *hand, s32 dx, s32 dy, s32 count) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A945C);
+s32 func_800A945C(Ovl15Hand *h) {
+    if (h->unk4 == 0x15 && h->unk2 == 2) {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A9488);
 

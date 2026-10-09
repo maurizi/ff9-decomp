@@ -78,7 +78,11 @@ typedef struct {
     s32 unk42C;
     s32 unk430;
     s32 unk434;
-    u8 pad438[0x450 - 0x438];
+    u8 pad438[0x43C - 0x438];
+    s32 unk43C; /* wins */
+    s32 unk440; /* losses */
+    s32 unk444; /* draws */
+    u8 pad448[0x450 - 0x448];
     s32 unk450;
     u8 pad454[0x458 - 0x454];
     Window *unk458;
@@ -111,17 +115,41 @@ typedef struct {
     s32 unk570;
     u8 pad574[0x57C - 0x574];
     s32 unk57C;
-    u8 pad580[0x5A4 - 0x580];
+    u8 pad580[0x590 - 0x580];
+    s32 unk590[5];
     s32 unk5A4;
     s32 unk5A8;
     s32 unk5AC;
 } TmState;
+
+typedef struct {
+    u8 v[8];
+} TmDirMask; /* card arrow bit for each direction */
+extern TmDirMask D_800A73BC;
+
+typedef struct {
+    u32 unk0; /* id */
+    u32 unk4; /* flags: bpp in low bits */
+    u32 unk8; /* clut block length */
+    s16 unkC[4]; /* clut rect */
+    u32 clut[1];
+} TmTim; /* TIM image */
+
+typedef struct {
+    u32 len;
+    s16 x;
+    s16 y;
+    s16 w;
+    s16 h;
+    u32 data[1];
+} TmTimImage; /* TIM pixel block */
 
 extern s32 D_800B365C;
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;
 extern s32 D_800B3CD8;
+extern s32 D_800B3CDC;
 extern s32 D_800B3CE0;
 extern TmCell D_800B3CE8; /* returned for out-of-range board squares */
 extern s32 D_800B3CF0;
@@ -135,11 +163,19 @@ s32 func_800A7884(void);
 s32 func_800A78B8(void);
 u8 *func_800A93A0(s32);
 void func_800ABEC4(TmState *);
-void func_800AF2CC(TmState *, TmCard *, s32, s32);
+void func_800AF2CC(TmState *, TmCard *, s32);
 void func_800AF388(TmState *, TmCard *);
 void func_800AF3E8(TmState *, TmCard *, s32, s32);
 void func_800B0618(TmState *);
-s32 func_800B0EB8(TmState *, s32, s32, s32, s32);
+s32 func_800B0EB8(TmState *, s32, s32, s32, TmCard *);
+TmCard *func_800AEE08(TmState *, s32, s32);
+void func_800AE6EC(TmState *, s32);
+void func_800ADE5C(TmState *);
+void func_800AD974(TmState *);
+void func_800AF170(TmState *);
+void func_800AF288(TmState *);
+void func_800B3488(TmState *);
+void func_800AA3C0(Window *);
 void func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
 void func_800A755C(void);
@@ -151,7 +187,9 @@ void func_800AB8E8(s32);
 void func_800AE54C(TmState *);
 void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
+void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
+s32 func_800AE94C(TmState *, s32);
 TmCard *func_800AE9D0(TmState *, s32, s32);
 void func_800AEA24(TmState *);
 void func_800B1A24(TmState *);

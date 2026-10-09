@@ -92,15 +92,132 @@ INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1AE8);
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1C88);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1D6C);
+void func_801F1D6C(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
+    SprtWords *p;
+    Ovl36Sprite *t;
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1EA0);
+    setlen(D_80077170, 4);
+    p = (SprtWords *)D_80077170;
+    t = &D_801F3188[idx];
+    p->rgbc = rgbc;
+    p->xy = x | (y << 16);
+    p->uvclut = t->unk0;
+    p->wh = t->unk4 | (t->unk5 << 16);
+    D_80077170 = (u8 *)(p + 1);
+    addPrim(&D_8007716C[z], p);
+    SetDrawTPage(D_80077170, 1, 1, t->unk6 | 0x20);
+    addPrim(&D_8007716C[z], D_80077170);
+    D_80077170 += 8;
+}
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1FE8);
+void func_801F1EA0(u8 *buf) {
+    RECT a = D_801EDF08;
+    RECT b = D_801EDF10;
+    s32 i;
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2138);
+    StoreImage(&D_801F3348, (u32 *)buf);
+    buf += 0x200;
+    StoreImage(&D_801F3350, (u32 *)buf);
+    buf += 0x200;
+    StoreImage(&D_801F3358, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    for (i = 0; i < 12; i++) {
+        a.y = i + 0x1F4;
+        b.x = (i % 3) * 0x13;
+        b.y = (i / 3) * 0x2F + 0x100;
+        StoreImage(&a, (u32 *)buf);
+        DrawSync(0);
+        StoreImage(&b, (u32 *)(buf + 0x200));
+        DrawSync(0);
+        buf += 0x8FC;
+    }
+}
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F22DC);
+void func_801F1FE8(u8 *buf) {
+    RECT a = D_801EDF08;
+    RECT b = D_801EDF10;
+    s32 i;
+
+    LoadImage(&D_801F3360, (u32 *)buf);
+    buf += 0x200;
+    LoadImage(&D_801F3368, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    LoadImage(&D_801F3370, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    for (i = 0; i < 12; i++) {
+        a.y = i + 0x1F4;
+        b.x = (i % 3) * 0x13;
+        b.y = (i / 3) * 0x2F + 0x100;
+        LoadImage(&a, (u32 *)buf);
+        DrawSync(0);
+        LoadImage(&b, (u32 *)(buf + 0x200));
+        DrawSync(0);
+        buf += 0x8FC;
+    }
+}
+
+void func_801F2138(s32 *out) {
+    s32 kinds;
+    s32 arrows;
+    s32 types;
+    s32 i;
+    s32 j;
+    CardInfo *e;
+    Unk6 *c;
+
+    e = func_80062B30();
+    kinds = 0;
+    arrows = 0;
+    types = 0;
+    for (i = 0; i < 100; i++) {
+        if (D_801F347C.unk8[i] != 0) {
+            kinds += e[i].unk4;
+        }
+    }
+    func_8001D898(D_801F337C, 0, 0x100);
+    for (i = 0; i < 100; i++) {
+        for (j = 0; j < D_801F347C.unk8[i]; j++) {
+            c = func_800625A0(i, j);
+            D_801F337C[c->unk1] = 1;
+            arrows += D_801F3378[c->unk3];
+        }
+    }
+    for (i = 0; i < 0x100; i++) {
+        if (D_801F337C[i] != 0) {
+            types += 5;
+        }
+    }
+    out[0] = kinds;
+    out[1] = arrows;
+    out[2] = types;
+    out[3] = kinds + arrows + types;
+}
+
+void func_801F22DC(void) {
+    RECT r;
+    u8 n;
+
+    D_80077DE8.unk8 = NULL;
+    func_80035580(NULL);
+    if (D_801F347C.unk0 == 1) {
+        n = D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1];
+        if (n != 0) {
+            D_80077DE8.unk8 = func_80035774(n >= 2 ? 0x24 : 0x23);
+        }
+    } else if (D_801F347C.unk0 == 2) {
+        if (D_801F347C.unk5 == 1) {
+            r.x = 0;
+            r.y = 0x8C;
+            r.w = D_8006794C->unkC->disp.w;
+            r.h = D_8006794C->unkC->disp.h - 0x8C;
+            func_80035580(&r);
+        }
+        D_80077DE8.unk8 = func_80035774(D_801F347C.unk5 + 0x25);
+    }
+}
 
 void func_801F23DC(void) {
     func_801F24A0();
@@ -161,11 +278,26 @@ void func_801F2578(void) {
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2664);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2730);
+void func_801F2730(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
+    Unk6 *card;
+    s32 c;
+
+    if (flag) {
+        if (dim == 0) {
+            card = func_800625A0(id, (s32)D_801F347C.unk6C[id] % (s32)D_801F347C.unk8[id]);
+            func_801F2AB8(x, y, 0x14, card);
+            func_801F2A04(x, y, 0x14, card);
+        }
+        func_801F1AE8(x, y, 0x14, dim);
+        return;
+    }
+    c = 0x80 - dim * 0x16;
+    func_801F1D6C(x, y, 0x14, 1, c | (c << 8) | (c << 16) | 0x64000000);
+}
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2860);
 
-void func_801F2A04(s32 x, s32 y, s32 otz, CardSlot *card) {
+void func_801F2A04(s32 x, s32 y, s32 otz, Unk6 *card) {
     u32 color;
     s32 i;
 
@@ -177,9 +309,36 @@ void func_801F2A04(s32 x, s32 y, s32 otz, CardSlot *card) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2AB8);
+void func_801F2AB8(s32 x, s32 y, s32 otz, Unk6 *card) {
+    u8 s[4];
+    u32 color;
+    s32 i;
+    s32 dx;
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2B94);
+    color = func_801F30C8();
+    s[0] = (card->unk2 >> 4) + 0xA;
+    s[1] = card->unk3 + 0x1A;
+    s[2] = (card->unk4 >> 4) + 0xA;
+    s[3] = (card->unk5 >> 4) + 0xA;
+    for (i = 0; i < 4; i++) {
+        func_801F1D6C(x + 9 + i * 6, y + 0x26, otz, s[i], color);
+    }
+}
+
+void func_801F2B94(void) {
+    CardTurn *t;
+
+    t = &D_801F347C.unk1941;
+    if (t->unk0 != 0) {
+        if (++t->unk2 >= 4) {
+            if (t->unk1 == 1) {
+                D_801F347C.unk6C[t->unk3] = D_801F347C.unk6C[t->unk3] >= D_801F347C.unk8[t->unk3] - 1 ? 0 : D_801F347C.unk6C[t->unk3] + 1;
+            }
+            t->unk2 = 0;
+            t->unk0 = 0;
+        }
+    }
+}
 
 void func_801F2C14(void) {
     CardCache *c = &D_801F347C.unk1900;
@@ -192,7 +351,28 @@ void func_801F2C14(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2C5C);
+void func_801F2C5C(s32 id) {
+    CardCache *c;
+    CardSlot *s;
+    u8 prev;
+    s32 owned;
+
+    owned = D_801F347C.unk8[id];
+    c = &D_801F347C.unk1900;
+    prev = c->unk5;
+    c->unk9 = 1;
+    c->unk8 = 0;
+    c->unk5 = id;
+    c->unk6 = prev;
+    if (owned != 0) {
+        s = func_801F2D30(id);
+        if (s == NULL) {
+            c->unk4 = id;
+            return;
+        }
+        func_801F2D88(s);
+    }
+}
 
 void func_801F2CD4(void) {
     CardCache *c = &D_801F347C.unk1900;

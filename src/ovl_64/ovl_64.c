@@ -111,7 +111,20 @@ s32 func_8019AAB4(s32 arg0) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019AAF8);
+s32 func_8019AAF8(void) {
+    func_80056228();
+    func_8019C864();
+    D_800739B0[0].unk0 = 0;
+    D_800739B0[0].unk1 = 0;
+    D_80071E32--;
+    if (D_8019DC94.unk60 != NULL) {
+        D_8019DC94.unk60();
+    }
+    DecDCToutCallback(0);
+    func_8019A7A8(0xE0, 0);
+    ResetGraph(3);
+    return 0;
+}
 
 s32 func_8019AB70(void) {
     if (D_80071E32 != 0) {
@@ -151,7 +164,7 @@ void func_8019AC14(u32 arg0) {
     }
 }
 
-void func_8019AC3C(void (*arg0)(s8 *)) {
+void func_8019AC3C(void (*arg0)()) {
     D_8019DC94.unk60 = arg0;
 }
 
@@ -353,7 +366,23 @@ s32 func_8019CAC0(CdlLOC *loc) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019CAEC);
+s32 func_8019CAEC(u8 **data, Ovl64RingHdr **hdr, s32 *kind) {
+    Ovl64RingHdr *h;
+
+    h = &D_8019DE10.unk74[D_8019DE10.unk70];
+    if (h->unk0 & 0x1000) {
+        *kind = 0;
+    } else if (h->unk0 & 0x8000) {
+        *kind = 1;
+    } else if (h->unk0 & 0x2000) {
+        *kind = 2;
+    } else if (h->unk0 & 0x4000) {
+        *kind = 3;
+    }
+    *hdr = h;
+    *data = D_8019DE10.unk78 + (h->unk4 + D_8019DE10.unk70 * D_8019DE10.unk5C) * 0x8F4;
+    return 0;
+}
 
 s32 func_8019CBA0(s32 *count) {
     Ovl64RingHdr *h = D_8019DE10.unk74;

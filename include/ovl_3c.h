@@ -17,8 +17,7 @@ typedef struct {
     s32 unk8;  /* shop id (D_80077DBC) */
     s32 unkC;  /* saved func_8002F8E4 mode */
     u8 *unk10; /* title text */
-    u8 unk14;  /* party member count */
-    u8 pad15[3];
+    s32 unk14; /* party member count */
     s8 unk18[8]; /* party member indices */
     s32 unk20;   /* OT layer */
 } ShopHub;
@@ -29,9 +28,13 @@ typedef struct {
     u8 unk0; /* state, index into D_801FC044 */
     u8 unk1; /* item count */
     u8 unk2; /* quantity */
-    u8 pad3;
+    u8 unk3; /* max quantity */
     u8 unk4; /* sells equipment */
-    u8 pad5[0x28 - 5];
+    u8 pad5[3];
+    RECT unk8;
+    RECT unk10;
+    RECT unk18;
+    RECT unk20;
     MenuList unk28;
     Window *unk38;
     u8 *unk3C; /* item list */
@@ -40,18 +43,24 @@ extern ShopBuy D_801FC2F8;
 
 typedef struct {
     u16 unk0; /* price */
-    u8 unk2;  /* ingredient */
-    u8 unk3;  /* ingredient */
+    u8 unk2[2]; /* ingredients */
     u8 unk4;  /* result */
-    u8 pad5;
+    u8 unk5;  /* shop mask */
 } SynthRecipe;
+extern SynthRecipe D_801FC0FC[64];
 
 /* Synthesis menu (D_801FC338). */
 typedef struct {
     u8 unk0; /* state, index into D_801FC09C */
     u8 unk1;
     u8 unk2; /* quantity */
-    u8 pad3[0x28 - 3];
+    u8 unk3; /* max quantity */
+    u8 unk4;
+    u8 pad5[3];
+    RECT unk8;
+    RECT unk10;
+    RECT unk18;
+    RECT unk20;
     MenuList unk28;
     Window *unk38;
     SynthRecipe unk3C[32];
@@ -62,9 +71,13 @@ extern ShopSynth D_801FC338;
 /* Sell menu (D_801FC438). */
 typedef struct {
     u8 unk0; /* state, index into D_801FC27C */
-    u8 pad1[3];
+    u8 unk1; /* quantity */
+    u8 unk2; /* max quantity */
+    u8 pad3;
     MenuList unk4;
-    u8 pad14[0x2C - 0x14];
+    RECT unk14;
+    RECT unk1C;
+    RECT unk24;
     Window *unk2C[2];
 } ShopSell;
 extern ShopSell D_801FC438;
@@ -88,7 +101,44 @@ extern RECT D_801FBC3C;
 extern u8 D_801FBC44[][0x20]; /* item list per shop, 0xFF = none */
 extern u8 D_801F36FC[];
 extern u8 D_801F3C9C[];
+extern u8 D_801FC098[]; /* gil suffix */
+extern u8 D_801FC0F8[]; /* gil suffix */
+extern RECT *D_801FC288;
+extern u8 D_801FC28C[]; /* gil suffix */
+void func_801F84D8(void);
+typedef struct {
+    RECT r[7];
+} RectTbl7;
+extern RectTbl7 D_801EDF04; /* icon source rects */
 extern u8 D_801EDF3C[];
+
+extern u8 D_801F3E98[];
+/* main exe: candidates for ff9.h */
+s32 func_80027F34(s32); /* main.c defines it returning u8 */
+s32 func_80027F94(s32);
+extern s32 D_801FC050[3]; /* row y offsets */
+extern u8 D_801FC05C[4];
+extern u8 D_801FC060[]; /* gil suffix */
+extern s32 D_801FC064[3]; /* row label text ids */
+extern s32 D_801FC0A8[4];
+extern u8 D_801FC0B8[4];
+extern u8 D_801FC0BC[]; /* gil suffix */
+extern s32 D_801FC0C0[4];
+void func_80026C34(s32, s32, s32, s32, u8);
+extern u8 D_801F3F08[];
+extern u8 D_801F3F88[];
+void func_801F7250(void);
+void func_801F5EEC(void);
+void func_801F76C8(void);
+void func_801F8728(void);
+u8 func_801F42A8(s32, u8 *);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk8006D328; /* equipment stat bonuses, from item 0x58 */
+extern Unk8006D328 D_8006D328[];
 
 void func_801F4000(void);
 void func_801F40AC(void);
@@ -117,6 +167,14 @@ void func_801F5A74(void);
 void func_801F57C8(void);
 void func_801F5BCC(s32, s32, s32, MenuView *);
 void func_801F5D14(void);
+void func_801F5B64(void);
+void func_801F551C(Window *);
+void func_801F5D40(Window *);
+void func_801F5D6C(Window *);
+extern s32 D_800704A4;
+void func_801F7614(void);
+void func_801F8680(void);
+void func_801F7528(void);
 void func_801F625C(void);
 void func_801F65C8(void);
 void func_801F6714(void);

@@ -93,6 +93,24 @@ extern u8 D_801EE1B4[];
 extern u8 D_801EEFB4[];
 extern s32 D_801F0274[];
 
+typedef struct {
+    u32 unk0; /* uv + clut */
+    u8 unk4;  /* w */
+    u8 unk5;  /* h */
+    u16 unk6; /* tpage */
+} Ovl36Sprite;
+extern Ovl36Sprite D_801F3188[];
+extern RECT D_801EDF08;
+extern RECT D_801EDF10;
+extern RECT D_801F3348;
+extern RECT D_801F3350;
+extern RECT D_801F3358;
+extern RECT D_801F3360;
+extern RECT D_801F3368;
+extern RECT D_801F3370;
+void func_801F2A04(s32, s32, s32, Unk6 *);
+void func_801F2AB8(s32, s32, s32, Unk6 *);
+void func_801F1AE8(s32, s32, s32, s32);
 void func_801F0CC8(void);
 void func_801F0DB0(void);
 void func_801F0F9C(void);

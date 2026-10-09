@@ -43,6 +43,13 @@ extern u8 D_801F4BB0[12];
 extern u8 D_801EDF18[];
 extern u8 D_801EE0B4[][0x6C0];
 
+/* main exe: candidates for ff9.h */
+void SetLineF2(LINE_F2 *);
+extern s32 D_8007047C;
+s32 func_80028F3C(s32, s32, s32, u8, s32);
+u8 *func_8002BA90(u32 *, void *);
+
+void func_801F3874(void);
 void func_801F3A98(void);
 void func_801F3BBC(void);
 void func_801F3D9C(void);

@@ -69,7 +69,15 @@ typedef struct {
     u8 unk1F;
     u8 unk20;
     u8 unk21;
-    u8 pad22[0x2C - 0x22];
+    u8 pad22[0x24 - 0x22];
+    u8 unk24; /* base stats, shown by the status menu (ovl_38) */
+    u8 unk25;
+    u8 unk26;
+    u8 unk27;
+    u8 unk28;
+    u8 unk29;
+    u8 unk2A;
+    u8 unk2B;
     u16 unk2C;
     u16 unk2E;
     u8 unk30;
@@ -152,7 +160,7 @@ typedef struct {
     u16 unk3A;
     Character unk3C[9];
     Character *unk54C[4]; /* party */
-    u8 pad55C[0x55E - 0x55C];
+    u16 unk55C;
     s16 unk55E;
     u32 unk560; /* gil, capped at 9999999 */
     u8 pad564[0x568 - 0x564];
@@ -355,14 +363,15 @@ typedef struct {
     u16 unk0; /* name offset into D_8006A218 */
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
-    u8 pad6[2];
+    u16 unk6; /* who can equip (mask) */
     u8 unk8; /* kind (icon) */
     u8 unk9; /* icon palette */
-    u8 padA;
+    u8 unkA; /* equip rank */
     u8 unkB; /* stat bonus row (D_8006D548) */
     u8 unkC[3]; /* abilities taught */
     u8 unkF;    /* mask tested against D_8006BB84[] */
-    u8 pad10[2];
+    u8 unk10;   /* sort key */
+    u8 pad11;
 } Unk80069018; /* item table, 0x12-byte entries */
 extern Unk80069018 D_80069018[];
 extern u8 D_8006BB84[];
@@ -1363,7 +1372,8 @@ typedef struct {
     s32 unk94;
     u8 pad98[0xA0 - 0x98];
     s32 unkA0;
-    u8 padA4[0xC0 - 0xA4];
+    s32 unkA4;
+    u8 padA8[0xC0 - 0xA8];
     s32 unkC0;
 } Unk800703FC; /* text table? */
 extern Unk800703FC D_800703FC;
@@ -1705,6 +1715,10 @@ s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
 s32 func_8006276C(s32); /* number to string */
+void func_800624A8(void);
+void func_800624E8(void);
+void func_8006252C(void);
+void func_80062750(s32);
 FileEntry *func_80063088(FileTable *, s32);
 void func_80063108(u8 *, u8 *);
 /* text window (func_80063118 / func_800631AC) */
@@ -2052,6 +2066,7 @@ typedef struct {
 } CardInfo; /* 5 bytes */
 extern CardInfo D_800121C8[]; /* card table */
 CardInfo *func_80062B30(void);
+s32 func_800627BC(s32);
 extern s32 D_800704C4;
 extern s32 D_80070418;
 void func_8003563C(u8);

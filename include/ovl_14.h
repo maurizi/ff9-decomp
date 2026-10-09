@@ -13,6 +13,13 @@ typedef struct {
     u16 unk6; /* tpage */
 } Ovl14Text; /* 8-byte item drawn by func_80027710 */
 
+/* 8-byte directory entry in the area at D_80067944 + 0x14C700 */
+typedef struct {
+    u16 unk0; /* id */
+    u16 unk2;
+    s32 unk4; /* start; the next entry's start ends it */
+} Ovl14Dir;
+
 /* other overlay (0x801F....) */
 u8 func_801F5330(void);
 void func_8019A9D8(void);

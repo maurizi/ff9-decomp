@@ -51,7 +51,9 @@ def split_c(text):
         bodies[m.group(1)] = text[_with_comment(text, m.start()):end.end()]
     # Rodata that splat migrated into a function's asm has no slot of its own; keep it
     # glued to the function that directly follows it.
-    for name in [n for n in bodies if n.startswith("D_")]:
+    # Same for file-local helpers (`static [inline] f(...) {...}`) written next to their user.
+    for name in [n for n in bodies if n.startswith("D_") or bodies[n].lstrip().startswith(("static", "/*"))
+                 and re.search(r"^static\b", bodies[n], re.M)]:
         data = bodies[name]
         after = text[text.index(data) + len(data):]
         nxt = FUNC_DEF.match(after.lstrip("\n"))
