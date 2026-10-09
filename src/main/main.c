@@ -5135,7 +5135,31 @@ void func_80035D3C(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035E40);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035F94);
+void func_80035F94(void) {
+    if (D_80077E28.unk0 != 0) {
+        if (D_80077E28.unk3 != 0) {
+            func_80036444();
+        }
+        if (D_80077E28.unk1 != 0) {
+            func_80036344();
+        }
+        if (D_80077E28.unk2 != 0) {
+            func_800360B0();
+        }
+        if (D_80077E28.unk6 == 0 && D_80077E28.unk3 == 0 && *(u16 *)&D_80077E28.unk4 == 0 &&
+            !(*(u32 *)&D_80077E28 & 0xFFFF00)) {
+            D_80077E28.unk0 = 0;
+            D_80077E50.unk4 = 0;
+            D_80077E50.unk2 = D_80077E28.unk7;
+            func_8002F9D0();
+            DrawSync(0);
+            func_80012D08();
+            func_80012CF8();
+            func_80012D18();
+            D_80077E28.unk1C[D_80077E50.unk2].unk0();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800360B0);
 
@@ -5833,7 +5857,40 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BF74);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BFB0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C0E8);
+static inline void func_8004C0E8_set(s32 type, u32 bits) {
+    D_8007B988.unk0 = type;
+    D_8007B988.unk4 = bits;
+}
+
+void func_8004C0E8(void) {
+    s32 f = 0;
+    u32 cur = D_800739A0[0] & 0x3FFFFFF;
+    u32 x;
+
+    x = ~cur & D_8007B978;
+    D_8007B97C = cur & ~D_8007B978;
+    D_8007B980 = x;
+    if (x != 0) {
+        func_8004C0E8_set(4, x);
+    }
+    if (D_8007B978 != cur) {
+        D_8007B990 = 16;
+    }
+    D_8007B990 = D_8006794C->unk9 != 0 ? D_8007B990 - 2 : D_8007B990 - 1;
+    if (D_8007B990 < 0 && !(D_8007B990 & 3)) {
+        f = 1;
+        D_8007B978 &= ~0xF0;
+    }
+    x = cur & ~D_8007B978;
+    if (x != 0) {
+        s32 v = 1;
+        if (f) {
+            v = 2;
+        }
+        func_8004C0E8_set(v, x);
+    }
+    D_8007B978 = cur;
+}
 
 void func_8004C204(void) {
     GameState *s = D_8006794C;
