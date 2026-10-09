@@ -8186,7 +8186,26 @@ s32 func_80056048(s32 *a, s32 b, s32 c) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056130);
+s32 func_80056130(s32 vol) {
+    u8 v;
+
+    if (D_8008315C & 2) {
+        CdlATV *atv = &D_8007F718;
+
+        v = (u32)(vol * 46448) >> 17;
+        atv->val3 = v;
+        atv->val1 = v;
+        atv->val2 = v;
+        D_8007F718.val0 = v;
+    } else {
+        D_8007F718.val2 = vol;
+        D_8007F718.val0 = vol;
+        D_8007F718.val3 = 0;
+        D_8007F718.val1 = 0;
+    }
+    CdMix(&D_8007F718);
+    return 0;
+}
 
 void func_800561C4(s32 *a, s32 b, s32 c) {
     if (func_800565DC(a) == 0) {
