@@ -874,7 +874,28 @@ s32 func_800AEA08(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AEA48);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AEE68);
+void func_800AEE68(void) {
+    if (!(D_8006794C->unk1C->unk0 & 0x100) && ((D_800739A0[0] & 0xF09) == 0xF09 || (D_800739A0[1] & 0xF09) == 0xF09)) {
+        D_8006794C->unk0 |= 1;
+    }
+    func_800E9EC4();
+    setlen(&D_800FDED0[D_8006794C->unk1C->unk8].unk0, 2);
+    ((u32 *)&D_800FDED0[D_8006794C->unk1C->unk8].unk0)[1] = 0xE6000001;
+    ((u32 *)&D_800FDED0[D_8006794C->unk1C->unk8].unk0)[2] = 0;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][0xFFF], &D_800FDED0[D_8006794C->unk1C->unk8].unk0);
+    setlen(&D_800FDED0[D_8006794C->unk1C->unk8].unkC, 2);
+    ((u32 *)&D_800FDED0[D_8006794C->unk1C->unk8].unkC)[1] = 0xE6000001;
+    ((u32 *)&D_800FDED0[D_8006794C->unk1C->unk8].unkC)[2] = 0;
+    addPrim(&((u32 *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unk2C[D_8006794C->unk1C->unk8])[0xFF], &D_800FDED0[D_8006794C->unk1C->unk8].unkC);
+    func_800EA290();
+    if (!(D_8006794C->unk1C->unk0 & 0x100) && !(D_8006794C->unk1C->unk8E4.ovl65->unk0 & 0x200)) {
+        func_800EA1F8(&((u32 *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unk2C[D_8006794C->unk1C->unk8])[0xFF], &D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+        DrawOTag(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][0xFFF]);
+    }
+    if (!(D_8006794C->unk1C->unk0 & 0x20)) {
+        D_8006794C->unk1C->unk8 ^= 1;
+    }
+}
 
 s32 func_800AF1C8(void) {
     return 0;

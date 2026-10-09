@@ -2486,6 +2486,9 @@ void func_800E9D30(void);
 void func_800AF1D0(void);
 s32 func_8002246C(void);
 void func_800AEE68(void);
+void func_800E9EC4(void);
+void func_800EA290(void);
+void func_800EA1F8(u32 *, DRAWENV *);
 void func_800A94F8(void);
 s32 func_800AC280(u32, s32 **, s32 **, s32 **);
 u32 func_8004AB64(s32);
@@ -2851,5 +2854,12 @@ void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
     "or\t$15, $15, %0;" \
     "sw\t$15, 0(%2)" \
     : "=r"(len) : "r"(p), "r"(ot), "0"(len) : "$14", "$15", "memory")
+
+typedef struct {
+    DR_STP unk0;
+    DR_STP unkC;
+    u8 pad18[0x30 - 0x18];
+} Unk800FDED0;
+extern Unk800FDED0 D_800FDED0[2];
 
 #endif
