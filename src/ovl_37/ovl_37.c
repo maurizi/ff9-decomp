@@ -89,7 +89,39 @@ void func_801F0E10(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F0F50);
+void func_801F0F50(void) {
+    MenuList *l = D_801F3040[1].unk8;
+    UnkPair tmp;
+    s32 i;
+    u8 j;
+
+    if (l->unk8 == 0) {
+        if (D_80077528 & 0x10000) {
+            func_8002F488(0x65);
+            D_801FAB78.unk1 = 4;
+            return;
+        }
+        if (D_80077528 & 0x20000) {
+            if (D_801FAB78.unk7 == 0) {
+                func_8002F488(0x67);
+                j = l->unk7 + (l->unk6 + l->unk5) * 2;
+                D_801FAB78.unk7 = 1;
+                D_801FAB78.unk6 = j;
+                return;
+            }
+            func_8002F488(0x67);
+            i = (l->unk6 + l->unk5) * 2 + l->unk7;
+            tmp = D_8006794C->unk1C->unk574[D_801FAB78.unk6];
+            D_8006794C->unk1C->unk574[D_801FAB78.unk6] = D_8006794C->unk1C->unk574[i];
+            D_8006794C->unk1C->unk574[i] = tmp;
+            D_801FAB78.unk7 = 0;
+            return;
+        }
+        func_8002EE8C(l, D_80077528);
+        func_8002F044(l, D_80077528);
+        func_8002F0EC(l, D_80077528);
+    }
+}
 
 void func_801F10C4(s32 idx, MenuList *l) {
     UnkPair *p;
@@ -408,7 +440,26 @@ void func_801F27A0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F2870);
+void func_801F2870(s32 col, s32 row, s32 i, MenuView *v) {
+    UnkPair *p = &D_8006794C->unk1C->unk574[i];
+    Unk80069018 *it;
+    u8 ok;
+    s32 x, y, x2;
+    s32 k = 0x2A;
+    u8 buf[8];
+
+    if (p->unk1 != 0 && p->unk0 != 0xFF) {
+        it = &D_80069018[p->unk0];
+        ok = it->unkF & 1;
+        x = col * 0x96;
+        y = row * 0xF + (v->unk2 + k);
+        func_8002BAE4(p->unk1, buf, 2, 1);
+        x2 = x + 0x18;
+        func_8002B5FC(x + 0x28, y, 0x1C, D_8006A218 + it->unk0, ok ? 0 : 2);
+        func_80026C34(x2, y, 0x1C, p->unk0, ok);
+        func_8002B56C(x2 + 0x6C, y + 4, 0x1C, buf, ok ? 0 : 2);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F29D0);
 
