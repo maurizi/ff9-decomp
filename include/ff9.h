@@ -732,7 +732,7 @@ typedef struct {
     s32 unk74;
     s32 unk78;
     s32 unk7C;
-    u8 pad80[0x84 - 0x80];
+    s32 unk80;
     u32 unk84;
     u8 pad88[0x8C - 0x88];
     s32 unk8C;
@@ -1708,6 +1708,8 @@ void func_80035F94(void);
 void func_80060D1C(s32, s32, s32, s32);
 void func_80060ED8(s32, s32, void (*)(void));
 s32 func_800C44F4(u32); /* field overlay (ovl_0a) */
+s32 func_800C0F08(void); /* field overlay (ovl_0a) */
+s32 func_800C0FB0(void); /* field overlay (ovl_0a) */
 extern CdRequest D_80076148;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 func_80021320(void);
@@ -1757,6 +1759,10 @@ extern u8 *D_8007BC18;
 extern u8 *D_8007BC48;
 extern Unk8007BC20 D_8007BC20;
 extern Unk8007BC20 D_8007BC50;
+void func_8005338C(s32);  /* hand-written asm module */
+s32 func_80053498(s32, u8, u32 *, s32);
+void func_80053658(s32);
+s32 func_80053764(s32, u8, u32 *, s32);
 void func_80032C4C(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
 extern u32 D_80077CA4[];
@@ -2322,7 +2328,7 @@ u8 func_80036300(s32);
 s32 func_8003631C(s32);
 void func_800362C8(void);
 s32 func_80054F80(void);
-void func_80050AAC(void);
+s32 func_80050AAC(void);
 void func_8005546C(s32, s32);
 void func_80056228(void);
 s32 func_80024030(void);
