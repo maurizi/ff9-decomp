@@ -921,7 +921,48 @@ void func_801F26C4(Character *c) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F2894);
+void func_801F2894(void) {
+    UnkPair tmp;
+    Unk80069018 *it;
+    s32 n;
+    s32 i;
+    s32 j;
+    u16 mask;
+    u8 slot;
+    u8 a;
+    u8 b;
+    u8 ra;
+    u8 rb;
+
+    n = 0;
+    mask = D_801F8968[func_80033A1C(D_8006794C->unk1C->unk54C[D_801FC840.unk3])];
+    slot = D_801F8980[D_801FC840.unk2];
+    D_801FC840.unk3C[0].unk0 = 0xFF;
+    for (i = 0; i < 0x100; i++) {
+
+        if (D_8006794C->unk1C->unk574[i].unk1 != 0) {
+            it = &D_80069018[D_8006794C->unk1C->unk574[i].unk0];
+            if ((it->unk6 & mask) && (it->unkF & slot)) {
+                D_801FC840.unk3C[n] = D_8006794C->unk1C->unk574[i];
+                n++;
+            }
+        }
+    }
+    for (i = 0; i < n - 1; i++) {
+        for (j = i + 1; j < n; j++) {
+            a = D_801FC840.unk3C[i].unk0;
+            b = D_801FC840.unk3C[j].unk0;
+            ra = D_80069018[a].unkA;
+            rb = D_80069018[b].unkA;
+            if ((ra == rb && b < a) || rb < ra) {
+                tmp = D_801FC840.unk3C[i];
+                D_801FC840.unk3C[i] = D_801FC840.unk3C[j];
+                D_801FC840.unk3C[j] = tmp;
+            }
+        }
+    }
+    func_8002EDFC(&D_801FC840.unk4, n, 6, 1, 0x62);
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F2AB4);
 
