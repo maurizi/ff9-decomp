@@ -392,7 +392,87 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA24C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA504);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AA958);
+s16 func_800AA958(s32 arg0, Unk800AA958 *arg1) {
+    Unk800AA958 *st;
+    Battle *b;
+    Unk800AA958Req *req;
+    u16 *p;
+    u16 *q;
+    s32 n;
+    s32 sz;
+    s32 i;
+    s16 j;
+    void **pp;
+    s32 v;
+    Character **c;
+    Character **e;
+    GameData *gd;
+
+    st = arg1;
+    b = D_8006794C->unk1C->unk8E4.battle;
+    req = (Unk800AA958Req *)&b->unk11C0->unkC[0x9FA0 / 4];
+    if (arg0 & 0x8000) {
+        b->unk0 &= ~4;
+        st->unk0 = 2;
+    }
+loop:
+    switch (st->unk0) {
+        case 1:
+            if (func_80022B18() != 0) {
+                goto end;
+            }
+            st->unk0 = arg1->unk2;
+            goto loop;
+        case 2:
+            arg1->unk10.w[0] = -1;
+            arg1->unk10.w[1] = -1;
+            gd = D_8006794C->unk1C;
+            e = gd->unk54C;
+            c = &gd->unk54C[3];
+            q = &arg1->unk10.h[3];
+            do {
+                if (*c != NULL) {
+                    *q = D_8006E0E8[(*c)->unk39[0]].unk2;
+                }
+                c--;
+                q--;
+            } while (c >= e);
+            st->unk0 = 5;
+            goto loop;
+        case 5:
+            n = func_800AAEF0(8, arg1->unk10.h, &arg1->unk10.h[3], &p, &sz);
+            if (n != -1) {
+                *(s16 *)p = -1;
+                i = p - arg1->unk10.h;
+                arg1->unkA = i;
+                arg1->unk24 = b->unk11C0->unk3C[i];
+                req->unk0 = 0x1000;
+                req->unk4 = arg1->unk24;
+                req->unk8 = (sz << 11) - 0x1000;
+                req->unkC = b->unk153C[i];
+                func_80022CC4(D_8006794C->unk20 + n, req, 2, 0);
+                arg1->unk2 = 7;
+                st->unk0 = 1;
+            } else {
+                st->unk0 = 8;
+            }
+            goto end;
+        case 7:
+            j = arg1->unkA;
+            v = func_800AB07C(arg1, req, j, 0);
+            pp = &b->unk1354->unk20[j];
+            *pp = (void *)v;
+            func_8001C750(v, 0);
+            st->unk0 = 5;
+            goto loop;
+        case 8:
+            st->unk0 = 0;
+        default:
+            goto end;
+    }
+end:
+    return st->unk0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AABC4);
 

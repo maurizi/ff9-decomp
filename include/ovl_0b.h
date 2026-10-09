@@ -1994,6 +1994,31 @@ typedef struct {
     s32 unk24;
 } Unk800AA08C;
 
+typedef struct {
+    s16 unk0; /* state */
+    u16 unk2; /* next state */
+    u8 pad4[0xA - 0x4];
+    s16 unkA;
+    u8 padC[0x10 - 0xC];
+    union {
+        s32 w[2];
+        u16 h[4];
+    } unk10;
+    u8 pad18[0x24 - 0x18];
+    s32 unk24;
+} Unk800AA958; /* party model load state */
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} Unk800AA958Req; /* CD read request */
+
+void func_80022CC4(s32, void *, s32, s32);
+s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s16, s32);
+
+
 s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
 s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
 void func_800CFA00(s16 *, s16 *, s32, s16 *);
