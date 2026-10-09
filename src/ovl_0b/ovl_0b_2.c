@@ -4114,7 +4114,48 @@ void func_800E80CC(s32 arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E813C);
+s32 func_800E813C(u32 type, s32 arg1) {
+    BtlUnit *u;
+    s32 n = 0;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        switch (type) {
+        case 0:
+            if (u->unk68 & 1) {
+                func_800E7FC0(u, arg1);
+                n++;
+            }
+            break;
+        case 1:
+            if (!(u->unk68 & 1)) {
+                func_800E7FC0(u, arg1);
+                n++;
+            }
+            break;
+        case 9:
+            if (u == func_800E716C(0x10)) {
+                func_800E7FC0(u, arg1);
+                n++;
+            }
+            break;
+        case 2:
+            func_800E7FC0(u, arg1);
+            n++;
+            break;
+        case 8:
+            if (func_800E788C(0x10)) {
+                if (!(u->unk68 & 1)) {
+                    func_800E7FC0(u, arg1);
+                    n++;
+                }
+            } else if (u != func_800E716C(0x10) && (u->unk68 & 1)) {
+                func_800E7FC0(u, arg1);
+                n++;
+            }
+            break;
+        }
+    }
+    return n;
+}
 
 void func_800E8274(s32 arg0) {
     if (func_800E788C(arg0) != 0) {
