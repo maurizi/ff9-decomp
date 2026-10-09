@@ -1226,7 +1226,7 @@ extern Unk8005EBB4 D_8007F970[];
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 
 typedef struct {
-    s32 unk0;
+    void (*unk0)(void);
     s32 unk4;
     void (*unk8)(void);
     s32 unkC;
