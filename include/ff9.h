@@ -943,34 +943,75 @@ typedef struct Unk8004AB64 {
     u8 unkD;
     u8 unkE;
     u8 unkF;
-    u8 pad10;
+    u8 unk10;
     u8 unk11;
-    u8 pad12[2];
+    u8 pad12[0x14 - 0x12];
     ActorPos unk14; /* position, rotation x/y */
     s16 unk24; /* rotation z */
     u8 unk26;
     u8 pad27;
     u16 unk28;
     u16 unk2A;
-    u8 pad2C[0x2E - 0x2C];
+    u8 unk2C;
+    u8 unk2D;
     s8 unk2E;
-    u8 pad2F[0x34 - 0x2F];
+    u8 unk2F;
+    s16 unk30;
+    s16 unk32;
     u16 unk34;
     u16 unk36; /* animation file */
-    u8 pad38[0x3A - 0x38];
+    u8 unk38;
+    u8 pad39;
     u8 unk3A;
     u8 unk3B;
-    u8 pad3C[0x40 - 0x3C];
+    u8 unk3C;
+    u8 unk3D;
+    u8 unk3E;
+    u8 pad3F;
     ActorPos unk40; /* previous position */
     u16 unk50; /* flags */
-    u8 pad52[0x60 - 0x52];
+    u8 pad52[0x54 - 0x52];
+    s16 unk54;
+    s16 unk56;
+    s16 unk58;
+    u8 pad5A[0x5C - 0x5A];
+    u8 unk5C;
+    u8 unk5D;
+    u8 unk5E;
+    u8 unk5F;
     u8 unk60;
     u8 unk61;
     u8 unk62;
     u8 unk63;
-    u8 pad64[0x6E - 0x64];
+    u8 unk64;
+    u8 pad65[0x68 - 0x65];
+    u8 unk68;
+    u8 unk69;
+    u8 unk6A;
+    u8 unk6B;
+    u8 pad6C[0x6E - 0x6C];
     s16 unk6E; /* also used as a tiny script buffer */
     u8 unk70;
+    u8 unk71;
+    u8 unk72;
+    u8 unk73;
+    s16 unk74;
+    u16 unk76;
+    s32 unk78;
+    u8 unk7C[4];
+    u8 pad80[0x90 - 0x80];
+    u8 unk90;
+    u8 unk91;
+    u8 unk92;
+    u8 unk93;
+    s16 unk94;
+    s16 unk96;
+    u8 pad98[0xA0 - 0x98];
+    struct Unk8004AB64 *unkA0;
+    u16 unkA4;
+    u16 unkA6;
+    u16 unkA8;
+    s16 unkAA;
 } Unk8004AB64;
 
 typedef struct Unk8007AECCNode {
@@ -996,9 +1037,12 @@ typedef struct {
     u8 unk16E4[8];
     u8 unk16EC;
     u8 unk16ED;
-    u8 pad16EE[0x16F0 - 0x16EE];
+    u8 pad16EE;
+    u8 unk16EF;
     u8 *unk16F0; /* script data base */
-    u8 pad16F4[0x16FC - 0x16F4];
+    u8 pad16F4[0x16F8 - 0x16F4];
+    u8 unk16F8;
+    u8 pad16F9[0x16FC - 0x16F9];
     s32 unk16FC;
     s16 unk1700;
 } Unk8007AECC;
