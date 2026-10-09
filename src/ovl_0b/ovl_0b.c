@@ -8,7 +8,40 @@ void func_800A859C(void) {
     func_800A8DE0();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800A8600);
+void func_800A8600(s16 arg0) {
+    func_800A923C();
+    SetDispMask(1);
+    do {
+        func_800AEA48();
+        if (!(D_8006794C->unk1C->unk8E4.battle->unk0 & 0x1000)) {
+            func_800A8BF4();
+            if (func_800EA30C() != 0) {
+                func_800A882C();
+            }
+            if (!(D_8006794C->unk1C->unk0 & 0x100)) {
+                if (func_800AF2E0() == 1) {
+                    D_8006794C->unk1C->unk8E4.battle->unk0 |= 0x1000;
+                }
+                if (!(D_8006794C->unk1C->unk8E4.battle->unk0 & 0x10) && (D_8006794C->unk1C->unk8E4.battle->unkD85 & 7) == 7) {
+                    func_800E9D30();
+                    D_8006794C->unk1C->unk8E4.battle->unk0 |= 0x10;
+                }
+                if (!(D_8006794C->unk1C->unk8E4.battle->unk0 & 0x40) && (D_8006794C->unk1C->unk56F & 0x40)) {
+                    func_800AF1D0();
+                    D_8006794C->unk1C->unk8E4.battle->unk0 |= 0x40;
+                }
+                func_80023A4C();
+                func_80032098();
+                func_8002246C();
+            }
+        } else {
+            D_8006794C->unk8 = 8;
+            D_8006794C->unk0 |= 0x100;
+        }
+        func_800AEE68();
+    } while (!(D_8006794C->unk0 & 0x301));
+    func_800A94F8();
+}
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b", D_800A7000);
 

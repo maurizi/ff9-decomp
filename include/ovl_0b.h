@@ -2292,7 +2292,27 @@ s32 func_800F4FC8(void);
 extern u8 D_80104E77;
 void func_800F11A4(BtlUnit *);
 void func_800F1150(BtlUnit *);
-void func_800AB810(s32, void *);
+u32 func_800AB810(s32, s32);
+void func_800A923C(void);
+void func_800AEA48(void);
+void func_800A8BF4(void);
+u8 func_800EA30C(void);
+void func_800A882C(void);
+s32 func_800AF2E0(void);
+void func_800E9D30(void);
+void func_800AF1D0(void);
+s32 func_8002246C(void);
+void func_800AEE68(void);
+void func_800A94F8(void);
+s32 func_800AC280(u32, s32 **, s32 **, s32 **);
+u32 func_8004AB64(s32);
+/* object slot returned by func_8001E350 in battle */
+typedef struct {
+    u32 unk0; /* flags */
+    s32 unk4; /* model id */
+    BtlUnit9C *unk8;
+    s32 unkC;
+} BtlObj;
 void func_800A8E24(void);
 void func_800A8E6C(void);
 s32 func_800A8F10(void);
