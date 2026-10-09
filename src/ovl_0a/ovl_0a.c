@@ -1735,7 +1735,63 @@ void func_800B1E04(FieldScene *arg0, s16 arg1) {
     func_80056228();
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B1E8C);
+void func_800B1E8C(FieldEvtCtx **arg0, s32 arg1) {
+    s16 a;
+    s16 b;
+    u16 c;
+    u8 vol;
+    u8 pan;
+    FieldTrig *base;
+    u8 n;
+    s32 i;
+    s32 j;
+    FieldEvtCtx *ctx;
+    FieldTrig *t;
+    s32 r;
+    s32 ch;
+    s32 snd;
+    s32 v;
+
+    base = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk58;
+    n = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4B;
+    for (i = arg1 - 1; i >= 0; i--) {
+        ctx = arg0[i];
+        if (ctx == NULL || (ctx->unk0 & 0x40)) {
+            continue;
+        }
+        for (j = n - 1; j >= 0; j--) {
+            t = &base[j];
+            if (t->unk0 == ctx->unkC->unk3B && t->unk4 == ctx->unkC->unk36 && t->unk6 == ctx->unkC->unk3A) {
+                r = 0;
+                a = 0;
+                b = 0;
+                c = 0;
+                vol = 0x80;
+                pan = 0x7F;
+                func_800C76E8(ctx->unkC->unk3B, (u16 *)&a, (u16 *)&b);
+                if (a != -1) {
+                    func_800C7800(a, &c);
+                    c = (s16)c >> 8;
+                }
+                ch = t->unk0 & 3;
+                ch = (0x10000 << ch) & 0xF0000;
+                snd = t->unk8[(c >> 4) & 1] | 0x80000;
+                if (t->unk1 != 0) {
+                    if (D_8007B720 >= D_8007B92D) {
+                        func_8004BF20();
+                    }
+                    v = *D_8007B720++;
+                    r = (v >> 4) - 8;
+                }
+                func_800B1A20(ctx->unkC->unk14.vx, ctx->unkC->unk14.vy, ctx->unkC->unk14.vz, &vol, &pan);
+                func_800B0124(0xD000, snd, ch, vol, pan);
+                if (r != 0) {
+                    func_800B0124(0x9203, snd, ch, r, 0);
+                }
+            }
+        }
+    }
+}
 
 /* find the trigger matching the object, id and value (searching backwards) */
 FieldTrig *func_800B2100(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
