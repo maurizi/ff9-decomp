@@ -113,7 +113,75 @@ void func_800C8E80(BtlUnit9C *arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C9040);
+void func_800C9040(TexAnimSet *arg0) {
+    RECT r;
+    u32 i;
+    u32 j;
+    TexAnim *e;
+    TexAnimRect *t;
+    s32 pos;
+    s16 frame;
+    s16 last;
+
+    if (arg0 == NULL) {
+        return;
+    }
+    for (i = 0; i < arg0->unk0; i++) {
+        e = &arg0->unk4[i];
+        if (!(e->unk0 & 1)) {
+            continue;
+        }
+        if (e->unk1 != 0) {
+            pos = e->unk8;
+            frame = pos >> 12;
+            last = e->unkE;
+            if (frame >= 0) {
+                if (frame != last) {
+                    for (j = 0; j < e->unkC; j++) {
+                        t = &e->unk10[j];
+                        r.x = t->unk8[frame][0];
+                        r.y = t->unk8[frame][1];
+                        r.w = t->unk4;
+                        r.h = t->unk6;
+                        MoveImage(&r, t->unk0, t->unk2);
+                    }
+                    e->unkE = frame;
+                }
+                pos += e->unk2;
+            } else {
+                pos += 0x1000;
+            }
+            if ((pos >> 12) < e->unk1) {
+                e->unk8 = pos;
+            } else if (e->unk6 != 0) {
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                    if (D_8007B720 >= D_8007B92D) {
+                        func_8004BF20();
+                    }
+                }
+                e->unk8 = -((e->unk4 + (e->unk6 + 1) * ((*D_8007B720 << 8) | *D_8007B720++) / 0x10000) << 12);
+            } else if (e->unk0 & 2) {
+                e->unk0 &= 0xFC;
+            } else {
+                e->unk8 = 0;
+            }
+        } else if (e->unk0 & 4) {
+            pos = e->unk8;
+            frame = pos >> 12;
+            for (j = 0; j < e->unkC; j++) {
+                t = &e->unk10[j];
+                MoveImage((RECT *)t, t->unk0, t->unk2 - frame);
+                r.x = t->unk0;
+                r.y = t->unk2 - frame;
+                r.w = t->unk4;
+                r.h = frame;
+                MoveImage(&r, t->unk0, t->unk2 + t->unk6 - frame);
+            }
+            e->unk8 = (pos & 0xFFF) + e->unk2;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C9374);
 

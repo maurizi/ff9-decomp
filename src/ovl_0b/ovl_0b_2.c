@@ -2416,7 +2416,7 @@ s32 func_800DC208(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
     }
     if (s->unk4D != 0) {
-        func_800C9040(s->unk0->unk50);
+        func_800C9040((TexAnimSet *)s->unk0->unk50);
     }
     f = s->unk50;
     D_800F78A4->unk24 = func_800C7DAC(s->unk0, f, D_800F78A4->unk24);

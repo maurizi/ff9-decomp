@@ -2299,7 +2299,35 @@ void func_800C6528(BtlUnit9C *, u8);
 u8 *func_800C58E4(BtlUnit9C *, u8, u8 *);
 void func_800DCA68(BtlUnit9C *, SVECTOR *, VECTOR *, VECTOR *);
 void func_800DC988(s32, s32, BtlBone *);
-void func_800C9040(BtlUnit9C50 *);
+/* texture (VRAM) animations */
+typedef struct {
+    s16 unk0; /* dest x */
+    s16 unk2; /* dest y */
+    s16 unk4; /* w */
+    s16 unk6; /* h */
+    s16 (*unk8)[2]; /* source x/y per frame */
+} TexAnimRect; /* 0xC */
+
+typedef struct {
+    u8 unk0; /* flags */
+    u8 unk1; /* frame count */
+    s16 unk2; /* speed (20.12) */
+    u16 unk4;
+    u16 unk6;
+    s32 unk8; /* position (20.12) */
+    u8 unkC; /* rect count */
+    u8 padD;
+    u16 unkE; /* last frame shown */
+    TexAnimRect *unk10;
+} TexAnim; /* 0x14 */
+
+typedef struct {
+    u16 unk0; /* count */
+    u16 pad2;
+    TexAnim unk4[1];
+} TexAnimSet;
+
+void func_800C9040(TexAnimSet *);
 BtlUnit *func_800C1DEC(void);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);
