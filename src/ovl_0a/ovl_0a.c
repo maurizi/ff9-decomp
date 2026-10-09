@@ -7141,7 +7141,32 @@ s32 func_800C7CDC(u32 arg0, s32 arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C7D30);
+s32 func_800C7D30(u32 arg0, u32 arg1, u32 arg2) {
+    Unk800C9DF8 *b = D_800C9DF0.unk8;
+    Unk800C9E10 *e;
+    Unk800C9DF8Pt *pt;
+
+    if (arg0 >= b->unk2C) {
+        return 0;
+    }
+    e = &D_800C9DF0.unk20[arg0];
+    if (arg1 >= e->unk2) {
+        return 0;
+    }
+    if (arg2 >= e->unk2) {
+        return 0;
+    }
+    pt = (Unk800C9DF8Pt *)((u8 *)b + e->unkC);
+    e->unk8 = arg1 << 8;
+    e->unk6 = 0;
+    e->unk0 |= 5;
+    pt += arg2;
+    pt->unk2 = -1;
+    if ((e->unk4 > 0 && arg2 < arg1) || (e->unk4 < 0 && arg1 < arg2)) {
+        e->unk4 = -e->unk4;
+    }
+    return 1;
+}
 
 s32 func_800C7DF0(u32 arg0, s32 arg1) {
     Unk800C9DF8 *b = D_800C9DF0.unk8;
