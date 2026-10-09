@@ -479,7 +479,30 @@ void func_800AB758(s32 arg0, s32 arg1, s32 **arg2, s32 **arg3, s32 **arg4) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AB810);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800ABA10);
+s32 func_800ABA10(s32 arg0, s32 arg1) {
+    BtlUnit *u;
+    s32 m;
+    s32 idx;
+
+    m = 0;
+    if (D_8006794C->unk1C->unk54C[arg0] == NULL) {
+        return -1;
+    }
+    if (!(arg1 & 0x20)) {
+        u = func_800C1D8C(arg0);
+        if (u != NULL) {
+            m = ((s16)u->unk84 != D_800F5200[(u->unk68 & 1) ? (D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34 >> 4) & 0x1F : 0x13]) << 4;
+        }
+    }
+    idx = D_8006794C->unk1C->unk54C[arg0]->unk34 >> 4;
+    idx &= 0x1F;
+    if ((arg1 & 0x10) != m) {
+        if (!(arg1 & 0x20)) {
+            idx += 0x13;
+        }
+    }
+    return D_800F5200[idx] | 0x20000;
+}
 
 void func_800ABB60(s32 arg0) {
     s32 v = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk3C[arg0];
