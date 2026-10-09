@@ -1,5 +1,41 @@
 #include "ovl_33.h"
 
+/* Inlined copy of func_801F0CC4 (support ability state). */
+static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
+    Unk8006D128 *sup;
+    s32 slot;
+    s32 ap;
+    s32 need;
+
+    if (id < 0xC0) {
+        return 0;
+    }
+    if (func_80034A04(c->unk88, id)) {
+        return 4;
+    }
+    if (D_801FBF84.unk68[id] == 0) {
+        slot = func_80034430(c->unk34 & 0xF, id);
+        if (slot < 0) {
+            return 0;
+        }
+        if (func_80034A30(c)) {
+            ap = c->unk58[slot];
+            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][slot].unk1;
+            if (ap == 0) {
+                return 0;
+            }
+            if (ap < need) {
+                return 0;
+            }
+        }
+    }
+    sup = &D_8006D128[id - 0xC0];
+    if (sup->unk1 > c->unk17) {
+        return 2;
+    }
+    return 3;
+}
+
 void func_801EE7C0(void) {
     s32 i;
 
@@ -252,45 +288,38 @@ s32 func_801EFB8C(s32 id, Character *c) {
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EFCB4);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EFE2C);
+void func_801EFE2C(void) {
+    MenuList *l;
+    Character *c;
+    s32 idx;
+    s32 id;
+    u8 ap;
+    Unk8006D128 *sup;
+    s32 st;
+
+    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    c = D_8006794C->unk1C->unk54C[D_801FBF84.unk2];
+    if (l->unk2 != 0 && (idx = (l->unk5 + l->unk6) * 2 + l->unk7) < D_801FBF84.unk76A) {
+        id = D_801FBF84.unk728[idx];
+        sup = &D_8006D128[id - 0xC0];
+        st = func_801F0CC4_inline(id, c);
+        if (st >= 3) {
+            func_8003493C(c->unk34 & 0xF, id, st == 3);
+            ap = c->unk17;
+            if (st == 3) {
+                c->unk17 = ap - sup->unk1;
+            } else {
+                c->unk17 = ap + sup->unk1;
+            }
+            func_8003384C(c);
+            func_8002F488(0x6B);
+            return;
+        }
+    }
+    func_8002F488(0x66);
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0024);
-
-/* Inlined copy of func_801F0CC4 (support ability state). */
-static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
-    Unk8006D128 *sup;
-    s32 slot;
-    s32 ap;
-    s32 need;
-
-    if (id < 0xC0) {
-        return 0;
-    }
-    if (func_80034A04(c->unk88, id)) {
-        return 4;
-    }
-    if (D_801FBF84.unk68[id] == 0) {
-        slot = func_80034430(c->unk34 & 0xF, id);
-        if (slot < 0) {
-            return 0;
-        }
-        if (func_80034A30(c)) {
-            ap = c->unk58[slot];
-            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][slot].unk1;
-            if (ap == 0) {
-                return 0;
-            }
-            if (ap < need) {
-                return 0;
-            }
-        }
-    }
-    sup = &D_8006D128[id - 0xC0];
-    if (sup->unk1 > c->unk17) {
-        return 2;
-    }
-    return 3;
-}
 
 void func_801F0410(void) {
     s32 i;
