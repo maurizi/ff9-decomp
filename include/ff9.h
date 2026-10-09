@@ -3018,7 +3018,9 @@ typedef struct {
 
 typedef struct {
     Unk800357E0 unk0;
-    u8 padC[0x14 - 0xC];
+    u8 padC[0x10 - 0xC];
+    u16 unk10; /* x scale, 4096 = 1.0 (func_8003595C) */
+    u16 unk12; /* y scale */
 } AnimCell;
 
 void func_8003595C(s32, s32, s32, Unk80035B90 *, AnimCell *);
