@@ -6859,7 +6859,28 @@ void func_800562B0(s32 a) {
     func_8005C8BC(0xE6);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800562E0);
+s32 func_800562E0(s32 *a, s32 b) {
+    s32 r = func_800565DC(a);
+    s32 addr;
+    s32 *h;
+
+    if (r == 0) {
+        func_800566D0();
+        addr = 0x59100;
+        if (b == 0) {
+            addr = 0x4F100;
+        }
+        h = a;
+        a += 0x10;
+        SpuSetTransferStartAddr(addr);
+        func_80056644(a, h[4]);
+        h[8] = addr;
+        func_8005CE04(h, D_8007F720, 0x70);
+    } else {
+        D_8007F740 = 0;
+    }
+    return r;
+}
 
 void func_80056388(s32 a, s32 b) {
     D_80080AA0.unk0 = (a & 0xFF) << 8;
@@ -8189,7 +8210,19 @@ void func_8005EDA0(AkaoChannel *c) {
     a->unk68 = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005EDEC);
+void func_8005EDEC(AkaoChannel *c) {
+    s32 x;
+    s32 m;
+
+    if ((D_80080A10->unk68 = *c->unk0++) == 0) {
+        D_80080A10->unk68 = 0x100;
+    }
+    x = (c->unk0[0] << 16) | (c->unk0[1] << 24);
+    c->unk0 += 2;
+    m = D_80080A10->unk20 & 0xFFFF0000;
+    D_80080A10->unk24 = (x - m) / D_80080A10->unk68;
+    D_80080A10->unk20 = m;
+}
 
 void func_8005EE8C(AkaoChannel *c) {
     Unk80080A10 *a = D_80080A10;
@@ -8932,7 +8965,26 @@ void func_80060938(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060A08);
+s32 func_80060A08(void) {
+    u32 mask;
+    s32 i;
+    u32 bit;
+
+    do {
+        bit = 0xC00000;
+        mask = D_80080A70.unk0 | D_80080A70.unk10;
+        for (i = 15; i != 0; i--, bit >>= 1) {
+            if (!(mask & bit)) {
+                break;
+            }
+        }
+        if (i != 0) {
+            return i + 7;
+        }
+        func_80059AA8(0, 0x40000000);
+    } while (mask != (D_80080A70.unk0 | D_80080A70.unk10));
+    return -1;
+}
 
 void func_80060A98(void) {
     u8 *p = D_80083168.unk0 + 0x800;
@@ -9222,7 +9274,20 @@ void func_8006237C(void) {
     D_800834C8 = 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8006238C);
+s32 func_8006238C(s32 a) {
+    s32 i;
+
+    if (func_800625F8() >= 100) {
+        return -1;
+    }
+    for (i = 0; i < 100; i++) {
+        if (D_80083248.unk6[i].unk0 == 0xFF) {
+            func_80062830(&D_80083248.unk6[i], a);
+            return func_80062560(a) == 1;
+        }
+    }
+    return -1;
+}
 
 s32 func_80062420(u8 id, u8 a, u8 b, u8 c, u8 d, u8 e) {
     s32 i;
@@ -9270,7 +9335,9 @@ void func_8006252C(void) {
     }
 }
 
-s32 func_80062560(u8 a) {
+s32 func_80062560(a)
+    u8 a;
+{
     s32 n = 0;
     s32 i;
     for (i = 0; i < 0x69; i++) {

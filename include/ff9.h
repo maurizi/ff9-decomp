@@ -2062,7 +2062,7 @@ void func_800270EC(s32, s32, s32);
 void func_8002C870(s32, s32, s32);
 void func_8002C8AC(s32, s32, s32);
 s32 func_80022B18(void);
-s32 func_80062560(u8);
+s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked */
 Unk6 *func_800625A0(s32, s32);
 s32 func_800626D0(s32, s32);
 typedef struct {
@@ -2478,4 +2478,5 @@ extern s32 D_80080A28;
 s32 func_8005715C(s32);
 extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
+extern s32 D_8007F740;
 #endif
