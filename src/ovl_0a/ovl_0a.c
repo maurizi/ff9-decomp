@@ -2988,7 +2988,48 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0038);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C02D0);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0650);
+/* toggle a background object's tint */
+s32 func_800C0650(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    Unk800C9DA4Hdr *h;
+    Unk800C9DB4Obj *o;
+    BgSprt *s;
+    u8 t;
+    u16 n;
+    s32 off;
+    u16 i;
+
+    t = D_800C9DA4.unk20[arg0];
+    h = D_800C9DA4.unk10;
+    if (t != 0) {
+        o = &((Unk800C9DB4Obj *)((u8 *)h + h->unk10))[arg0];
+        n = o->unk26;
+        s = o->unk30;
+        off = 0;
+        if (*D_800C9DA4.unk0 != 0) {
+            off = n;
+        }
+        for (i = 0; i < n; i++) {
+            setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
+        }
+        D_800C9DA4.unk20[arg0] = 0;
+        return 0;
+    }
+    D_800C9DA4.unk1C[arg0 * 3 + 0] = arg1;
+    D_800C9DA4.unk1C[arg0 * 3 + 1] = arg2;
+    D_800C9DA4.unk1C[arg0 * 3 + 2] = arg3;
+    o = &((Unk800C9DB4Obj *)((u8 *)h + h->unk10))[arg0];
+    n = o->unk26;
+    s = o->unk30;
+    off = 0;
+    if (*D_800C9DA4.unk0 != 0) {
+        off = n;
+    }
+    for (i = 0; i < n; i++) {
+        setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
+    }
+    D_800C9DA4.unk20[arg0] = 1;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C07D8);
 
@@ -3211,7 +3252,30 @@ s32 func_800C130C(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1368);
+s32 func_800C1368(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    Unk800C9DA4Hdr *h;
+    Unk800C9DB4Obj *o;
+    BgSprt *s;
+    u16 n;
+    s32 off;
+    u16 i;
+
+    h = D_800C9DA4.unk10;
+    D_800C9DA4.unk1C[arg0 * 3 + 0] = arg1;
+    D_800C9DA4.unk1C[arg0 * 3 + 1] = arg2;
+    D_800C9DA4.unk1C[arg0 * 3 + 2] = arg3;
+    o = &((Unk800C9DB4Obj *)((u8 *)h + h->unk10))[arg0];
+    n = o->unk26;
+    s = o->unk30;
+    off = 0;
+    if (*D_800C9DA4.unk0 != 0) {
+        off = n;
+    }
+    for (i = 0; i < n; i++) {
+        setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
+    }
+    return 1;
+}
 
 s32 func_800C142C(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
@@ -3495,7 +3559,18 @@ s32 func_800C1D08(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1D10);
+s32 func_800C1D10(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+    Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
+    u16 n = o->unk26;
+    BgSprt *s = o->unk30;
+    u16 i;
+
+    for (i = 0; i < n; i++) {
+        setRGB0(&s[i].unk8, arg1, arg2, arg3);
+        setRGB0(&s[i + n].unk8, arg1, arg2, arg3);
+    }
+    return 1;
+}
 
 s32 func_800C1DAC(void) {
     return 1;
