@@ -517,7 +517,7 @@ u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
 s32 func_800275DC(s32, s32, s32, s32, u8);
 void func_80028AF0(s32, s32, s32, s32, u8);
 
-void func_8002BAE4(s32, u8 *, s32, s32);
+void func_8002BAE4(s32, u8 *, s32, u8);
 void func_80027D18(void);
 void func_80027D4C(void);
 s32 func_80027D84(s32, s32);
@@ -2581,4 +2581,12 @@ u8 func_80033A50(u32);
 void func_80034394(s32);
 s32 func_80033A1C(Character *);
 void func_80033D8C(u8 *, s32);
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    s16 x0, y0;
+    s16 x1, y1;
+    s16 x2, y2;
+    s16 x3, y3;
+} PolyF4Half; /* POLY_F4 with the colour/code written as one word */
 #endif
