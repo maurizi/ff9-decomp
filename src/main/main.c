@@ -3072,7 +3072,35 @@ s32 func_800281D0(s32 id) {
     return (D_8006794C->unk1C->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028204);
+void func_80028204(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
+    u16 clut = GetClut(0, id + 0x1F3);
+    s32 u;
+    s32 v;
+    s32 tpage;
+
+    if (id >= 0 && id < D_80076F7C) {
+        u = id << 5;
+        if (id < 4) {
+            v = 0xB0;
+            tpage = 0x9F;
+        } else {
+            u = ((id - 4) & 3) << 5;
+            v = ((id - 4) >> 2) * 46;
+            tpage = 0x90;
+        }
+        setlen(D_80077170, 4);
+        ((SprtWords *)D_80077170)->rgbc = flag == 0 ? 0x64808080 : 0x66606060;
+        ((SprtWords *)D_80077170)->xy = x | (y << 16);
+        ((SprtWords *)D_80077170)->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
+        ((SprtWords *)D_80077170)->wh = (h << 16) | 0x20;
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(SprtWords);
+        setlen(D_80077170, 2);
+        SetDrawTPage(D_80077170, 1, 1, tpage);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DrTpageWords);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800283E0);
 

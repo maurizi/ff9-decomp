@@ -586,6 +586,7 @@ void func_80027D18(void);
 void func_80027D4C(void);
 s32 func_80027D84(s32, s32);
 void func_80028204(s32, s32, s32, s32, s32, u8);
+extern s32 D_80076F7C; /* number of portraits (func_80028204) */
 void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
 void func_80028BE8(u8 *, s32);
