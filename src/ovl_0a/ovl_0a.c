@@ -974,6 +974,7 @@ void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
     }
 }
 
+/* field request dispatcher */
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AD944);
 
 void func_800ADA7C(s8 arg0, s8 arg1, s8 arg2) {
@@ -2824,7 +2825,29 @@ s32 func_800BD4D4(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD724);
+/* initialise the screen fade quads */
+s32 func_800BD724(void) {
+    u16 i;
+    u16 j;
+
+    D_800C9DA0 = 0;
+    for (i = 0; i < 10; i++) {
+        D_800CA140[i].unk0 = -1;
+        D_800CA140[i].unk1 = 0x80;
+        D_800CA140[i].unk2 = 0x80;
+        D_800CA140[i].unk3 = 0x80;
+        D_800CA140[i].unk4 = -1;
+        D_800CA140[i].unk6 = 0;
+        D_800CA140[i].unk8 = 0;
+        for (j = 0; j < 4; j++) {
+            SetPolyF4(&D_800CA140[i].unkC[0][j]);
+            setRGB0(&D_800CA140[i].unkC[0][j], D_800CA140[i].unk1, D_800CA140[i].unk2, D_800CA140[i].unk3);
+            SetPolyF4(&D_800CA140[i].unkC[1][j]);
+            setRGB0(&D_800CA140[i].unkC[1][j], D_800CA140[i].unk1, D_800CA140[i].unk2, D_800CA140[i].unk3);
+        }
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD884);
 

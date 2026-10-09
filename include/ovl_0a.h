@@ -806,7 +806,7 @@ typedef struct {
 
 /* screen fade quads (D_800CA140, func_800C02D0) */
 typedef struct {
-    u8 unk0; /* flags */
+    s8 unk0; /* flags */
     u8 unk1; /* rgb */
     u8 unk2;
     u8 unk3;
