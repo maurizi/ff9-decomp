@@ -2631,7 +2631,24 @@ void func_80026C34(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
     D_80077170 = func_80026C7C(arg0, arg1, &D_8007716C[otz], arg3, arg4, D_80077170);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80026C7C);
+u8 *func_80026C7C(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
+    Unk80069018 *e = &D_80069018[item];
+    Unk800689B0 *d = &D_800689B0[e->unk8];
+    s32 clut;
+
+    clut = d->unk2 + (flag ? e->unk9 << 6 : 0x3C0);
+    setlen(pkt, 4);
+    ((SprtWords *)pkt)->rgbc = (flag == 0 ? 0x66808080 : 0x64808080);
+    ((SprtWords *)pkt)->xy = (x & 0xFFFF) | (y << 16);
+    ((SprtWords *)pkt)->uvclut = d->unk0 | (d->unk1 << 8) | (clut << 16);
+    ((SprtWords *)pkt)->wh = d->unk4 | (d->unk5 << 16);
+    addPrim(ot, pkt);
+    pkt += sizeof(SprtWords);
+    setlen(pkt, 1);
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->unk6);
+    addPrim(ot, pkt);
+    return pkt + sizeof(DrTpageWords);
+}
 
 void func_80026DCC(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
     D_80077170 = func_80026C7C(arg0, arg1, &D_8007716C[otz], arg3, arg4, D_80077170);
