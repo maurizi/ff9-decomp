@@ -112,7 +112,23 @@ void func_800D0940(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0A0C);
+void func_800D0A0C(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    TILE *t;
+    s32 i;
+    t = (TILE *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(t + 8);
+    for (i = 0; i < 8; i++, t++) {
+        t->code = arg1 == 0xFF ? 0x60 : 0x62;
+        t->w = 0x50;
+        t->h = 0x6E;
+        t->x0 = (i & 3) * 0x50;
+        t->r0 = arg2;
+        t->g0 = arg3;
+        t->b0 = arg4;
+        t->y0 = (i >> 2) * 0x6E;
+        func_800D07B4(0x03000000, arg0, t, arg1);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0B18);
 
