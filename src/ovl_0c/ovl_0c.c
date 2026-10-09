@@ -3547,12 +3547,12 @@ void func_800BAEC0(void) {
     Unk800B8388 *p;
     MATRIX *o;
 
-    SetBackColor(D_800D3FA0.unk5E0[0].unk20, D_800D3FA0.unk5E0[0].unk22, D_800D3FA0.unk5E0[0].unk24);
+    SetBackColor(D_800D3FA0.unk5E0[0].unk20.c[0], D_800D3FA0.unk5E0[0].unk20.c[2], D_800D3FA0.unk5E0[0].unk20.c[4]);
     SetLightMatrix(&D_800CF540);
     SetColorMatrix(&D_800CF500);
     func_800BD5A8();
     func_800BD78C();
-    SetBackColor(D_800D3FA0.unk5E0[0].unk28, D_800D3FA0.unk5E0[0].unk2A, D_800D3FA0.unk5E0[0].unk2C);
+    SetBackColor(D_800D3FA0.unk5E0[0].unk28.c[0], D_800D3FA0.unk5E0[0].unk28.c[2], D_800D3FA0.unk5E0[0].unk28.c[4]);
     if (D_800CF46D != 0) {
         MATRIX m1 = { { { 0x1000, 0, 0 }, { 0, 0x1000, 0 }, { 0, 0, 0x1000 } }, { 0, 0xE10, 0 } };
         MATRIX out;

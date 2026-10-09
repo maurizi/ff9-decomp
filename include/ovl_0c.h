@@ -411,22 +411,17 @@ typedef struct {
     s16 pad;
 } Unk800D3FA0Sub; /* 0xC */
 
+typedef union {
+    SVECTOR v;
+    u8 c[8];
+} WmSkyCol;
+
 /* sky / lighting parameter block (0x5E bytes); func_800C3954 blends them */
 typedef struct {
     SVECTOR unk0[3]; /* light directions */
     SVECTOR unk18;
-    u8 unk20; /* back colour 1 */
-    u8 pad21;
-    u8 unk22;
-    u8 pad23;
-    u8 unk24;
-    u8 pad25[3];
-    u8 unk28; /* back colour 2 */
-    u8 pad29;
-    u8 unk2A;
-    u8 pad2B;
-    u8 unk2C;
-    u8 pad2D[3];
+    WmSkyCol unk20; /* back colour 1 */
+    WmSkyCol unk28; /* back colour 2 */
     Unk800D3FA0Sub unk30[3];
     s16 unk54[3];
     u8 pad5A[2];
