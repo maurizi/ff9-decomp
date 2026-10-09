@@ -11,14 +11,112 @@ void func_800A7A48(void) {
 void func_800A7AAC(s32 arg0) {
     func_800A85F4(arg0);
     do {
-        func_800A7B10(D_8006794C->unk1C->unkC);
+        func_800A7B10((s16)D_8006794C->unk1C->unkC);
     } while (!(D_8006794C->unk0 & 7));
     func_800A8698();
 }
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/ovl_0a", D_800A7000);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A7B10);
+/* field main loop */
+void func_800A7B10(s32 arg0) {
+    func_800A89C4(arg0);
+    SetDispMask(1);
+    do {
+        func_800AE788();
+        func_80019194();
+        if ((D_80073990 & 0x04000000) && (D_800739A0[0] & 0xF8) && !(D_800739A0[0] & 0xFE0001)) {
+            func_800AF740();
+        }
+        if (!(D_8006794C->unk1C->unk0 & 0x100)) {
+            func_800ADB74();
+            if (!(D_8006794C->unk1C->unk0 & 1) && (D_80073990 & 0x40000) && (D_800739A0[0] & 0x400F0) &&
+                !(D_800739A0[0] & 0x04FA0009)) {
+                D_8006794C->unk1C->unk0 |= 2;
+                func_80032120(0, 0);
+                func_8004A9E8();
+            }
+            if (!(D_8006794C->unk1C->unk0 & 2)) {
+                switch (((s32(*)())func_8004BC38)()) {
+                case 3:
+                    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A = 2;
+                    func_800AED04();
+                    break;
+                case 4:
+                    if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unkA == 0x3E80) {
+                        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A = 4;
+                        D_8006794C->unk0 |= 2;
+                    } else {
+                        D_8006794C->unk0 |= 8;
+                    }
+                    break;
+                case 5:
+                    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A = 3;
+                    D_8006794C->unk0 |= 2;
+                    break;
+                case 7:
+                    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A = 9;
+                    D_8006794C->unk0 |= 2;
+                    break;
+                case 8:
+                    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk4A = 7;
+                    D_8006794C->unk0 |= 2;
+                    break;
+                }
+            }
+            if (!(D_8006794C->unk1C->unk0 & 1)) {
+                func_80032100();
+            }
+            if (D_8006794C->unk0 & 0x100000) {
+                D_8006794C->unk0 |= 8;
+                D_8006794C->unk1C->unk8E4.field->unk0 |= 0x10000;
+                break;
+            }
+            if (!(D_8006794C->unk1C->unk0 & 8)) {
+                func_800BFEE0();
+            }
+            if (!(D_8006794C->unk1C->unk0 & 4)) {
+                func_800AB3CC();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 8)) {
+                func_800C60F0();
+                func_800C7100();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 0x10)) {
+                func_80054B78();
+            }
+            if (!(D_8006794C->unk1C->unk0 & 0x10)) {
+                func_800AFDE8();
+            }
+            if (!(D_8006794C->unk1C->unk0 & 8)) {
+                func_800B3684();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 1)) {
+                func_80023A0C();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 0x800)) {
+                func_80032098();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 4)) {
+                func_800AED6C();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 0x80)) {
+                func_80023A4C();
+            }
+            if (!(D_8006794C->unk1C->unk8E4.field->unk0 & 0x1000)) {
+                func_8002246C();
+            }
+        }
+        func_800AE930();
+    } while (!(D_8006794C->unk0 & 0xF));
+    if (func_800B4F9C() != 0) {
+        func_800B4A5C();
+    }
+    if ((u8)func_800B54CC()) {
+        func_800B50A4();
+    }
+    func_800A8E58();
+}
 
 void func_800A80A4(void) {
     s32 i;
