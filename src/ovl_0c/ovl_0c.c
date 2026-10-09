@@ -1231,7 +1231,81 @@ void func_800AEADC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEC74);
+__asm__(".section .rodata\n\t.align 3\n\t.section .text");
+
+void func_800AEC74(void) {
+    s32 id;
+    s32 k;
+    WmPalAnim *e;
+    u16 *pal;
+    u16 *dst;
+    Unk16D8 *n;
+    Unk8004AB64 *a;
+    s32 c;
+    s32 i;
+    s32 j;
+
+    id = 0;
+    k = 0;
+    e = D_8006794C->unk1C->unk8E4.world->unk8->unk28;
+    pal = func_800B8388(D_800CF428, 1);
+    func_800B36AC();
+    for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
+        a = n->unk4;
+        if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
+            if ((a->unk11 >= 3 && a->unk11 < 8)) {
+                id = a->unk34;
+                switch (a->unk11) {
+                case 3:
+                    k = 0;
+                    break;
+                case 4:
+                    k = 1;
+                    break;
+                case 5:
+                    k = 2;
+                    break;
+                case 6:
+                    k = 3;
+                    break;
+                case 7:
+                    k = 4;
+                    break;
+                }
+                if (D_800CE280 != 0) {
+                    k = D_800CE280 - 1;
+                }
+            }
+        }
+    }
+    c = 0;
+    for (i = 0; i < D_8006794C->unk1C->unk8E4.world->unk8->unk1A; i++, e++) {
+        if (e->unk0 == id) {
+            dst = e->unk8;
+            switch (c) {
+            case 0:
+                for (j = 0; j < 16; j++) {
+                    *dst++ = pal[k * 48 + j + 32];
+                }
+                break;
+            case 1:
+                for (j = 0; j < 16; j++) {
+                    *dst++ = pal[k * 48 + j + 16];
+                }
+                break;
+            case 2:
+                for (j = 0; j < 16; j++) {
+                    *dst++ = pal[k * 48 + j + 0];
+                }
+                break;
+            }
+            c++;
+        }
+    }
+}
+
+/* jump table padding emitted by the original toolchain */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEF10);
 
