@@ -2814,7 +2814,12 @@ s32 func_800275DC(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
     return w;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027710);
+s32 func_80027710(s32 x, s32 y, s32 otz, void *d, u8 flag) {
+    s32 w;
+
+    D_80077170 = func_80027948_inline(x, y, &D_8007716C[otz], d, flag, &w, (SprtWords *)D_80077170);
+    return w;
+}
 
 u8 *func_80027834(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     SprtWords *s = pkt;
