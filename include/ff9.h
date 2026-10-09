@@ -1118,6 +1118,7 @@ extern s32 D_8007B998;
 
 extern s32 D_80077E20;
 extern s32 D_8007ADFC;
+extern s32 D_8007AE00; /* party mask, set by func_80049ED8 */
 extern u32 D_800739A0[];
 extern u32 D_8007B97C;
 extern u32 D_8007B980;
@@ -2503,6 +2504,8 @@ void func_8002E960(RECT *, s32, MenuList *, s32);
 void func_80025108(RECT *, s32, u8, s32);
 void func_8002709C(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
+extern s32 D_800831A8; /* sound effect volume */
+extern s32 D_800831C0;
 extern s16 D_8006F640;
 extern s16 D_8006F540[]; /* pan curve, 256 entries */
 /* item icon sprites (D_800689B0) */
@@ -2767,6 +2770,15 @@ extern s32 D_8007B94C;
 void func_8002DD54(void);
 void func_8004E16C(void);
 extern u8 *D_8007ADF8; /* script data */
+/* 8-byte entry of the field script directory at D_8007ADF8 */
+typedef struct {
+    u16 unk0; /* offset from D_8007ADF8 */
+    u16 unk2; /* size */
+    u8 unk4;
+    u8 unk5; /* flags */
+    u8 pad6[2];
+} ScriptEntry;
+
 u8 func_80033A50(u32);
 void func_80034394(s32);
 s32 func_80033A1C(Character *);

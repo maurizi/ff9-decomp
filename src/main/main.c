@@ -12990,7 +12990,38 @@ void func_80060A98(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060AE0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80060D1C);
+void func_80060D1C(s32 v, s32 mode, s32 a, s32 b) {
+    s16 l;
+    s16 r;
+    s16 h;
+    s32 pan;
+
+    if (D_8008315C & 2) {
+        l = r = (D_800831A8 * D_8006F640) >> 16;
+    } else if (mode == 1) {
+        r = 0;
+        l = (u32)D_800831A8 >> 1;
+    } else if (mode == 2) {
+        l = 0;
+        r = (u32)D_800831A8 >> 1;
+    } else if (mode == 3) {
+        h = D_800831A8 >> 1;
+        l = r = (h >> 1) + (h >> 2);
+    } else {
+        pan = (u8)(D_80083168.unk4C >> 8);
+        l = (u32)(D_80083168.unk40 * D_8006F540[pan]) >> 16;
+        r = (u32)(D_80083168.unk40 * D_8006F540[pan ^ 0xFF]) >> 16;
+    }
+    func_80057640(v, l, r, 0);
+    func_80057688(v, D_800831C0);
+    func_800576A0(v, a);
+    func_800576BC(v, b);
+    func_80057708(v, 0, 1);
+    func_80057738(v, 0xF);
+    func_80057760(v, 0xF);
+    func_80057788(v, 0x7F, 3);
+    func_800577BC(v, 6, 3);
+}
 
 void func_80060ED8(s32 a, s32 b, void (*cb)(void)) {
     if (D_80083168.unkC != 0) {
