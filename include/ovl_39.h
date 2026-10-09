@@ -49,7 +49,7 @@ extern Unk801FBAC8 D_801FBAC8;
 typedef struct Unk801FBEE0 {
     u8 unk0;
     u8 unk1;
-    u8 pad2[2];
+    u16 unk2; /* text size: w | rows << 12 */
     s32 unk4;
     Window *unk8;
     void (*unkC)(struct Unk801FBEE0 *);
@@ -236,6 +236,15 @@ void func_801F5A60(void);
 void func_801F5BE0(void);
 void func_801F500C(void);
 u8 func_801F8524(void);
+void func_801F6368(Window *);
+void func_801F6378(Window *);
+void func_801F5FE4(Window *);
+void func_801F60DC(Window *);
+void func_801F49C4(RECT *, s32, s32);
+void func_801F5688(void);
+void func_801F573C(void);
+void func_801F8BD4(MenuList *, RECT *, RECT *);
+extern s32 D_80070444;
 u8 func_801F7E68(void);
 extern RECT D_801FAF7C;
 extern RECT D_801FAF84;
