@@ -314,20 +314,20 @@ static inline void func_80039C38_newactor(s32 uid, s32 b) {
     Unk8004AB64 *p;
 
     p = (Unk8004AB64 *)func_800367D0(uid, b, 0xAC, 0x10);
-    p->unk34 = 0xFFFF;
-    p->unk2F = 0x40;
-    p->unk5 = 4;
-    p->unk5C = 0x1E;
-    p->unk5E = 0x1F;
-    p->unk71 = 0x50;
     p->unk3C = 0x10;
     p->unk3D = 0x10;
+    p->unk34 = 0xFFFF;
     p->unk3E = 0xFF;
+    p->unk2F = 0x40;
+    p->unk5 = 4;
     p->unk69 = 0x10;
+    p->unk5C = 0x1E;
     p->unk5D = 0x10;
     p->unk61 = 0xFF;
+    p->unk5E = 0x1F;
     p->unk5F = 0x10;
     p->unk6E = 4;
+    p->unk71 = 0x50;
     p->unk72 = 4;
     p->unk73 = 0x10;
     p->unk93 = 0xFF;
@@ -1275,9 +1275,11 @@ s32 func_80039C38(void) {
         b = func_8004AF58_inline();
         c = func_8004AEDC_inline();
         f = func_8004AEDC_inline();
-        d = func_8004AEDC_inline();
-        e = func_8004AEDC_inline();
-        func_800C02D0(a, b, c, f, d, e, func_8004AEDC_inline());
+        {
+            s32 g = func_8004AEDC_inline();
+            e = func_8004AEDC_inline();
+            func_800C02D0(a, b, c, f, g, e, func_8004AEDC_inline());
+        }
         return 0;
     case 0xE6:
         a = func_8004AEDC_inline();
