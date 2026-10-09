@@ -366,7 +366,23 @@ s32 func_8019CAC0(CdlLOC *loc) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019CAEC);
+s32 func_8019CAEC(u8 **data, Ovl64RingHdr **hdr, s32 *kind) {
+    Ovl64RingHdr *h;
+
+    h = &D_8019DE10.unk74[D_8019DE10.unk70];
+    if (h->unk0 & 0x1000) {
+        *kind = 0;
+    } else if (h->unk0 & 0x8000) {
+        *kind = 1;
+    } else if (h->unk0 & 0x2000) {
+        *kind = 2;
+    } else if (h->unk0 & 0x4000) {
+        *kind = 3;
+    }
+    *hdr = h;
+    *data = D_8019DE10.unk78 + (h->unk4 + D_8019DE10.unk70 * D_8019DE10.unk5C) * 0x8F4;
+    return 0;
+}
 
 s32 func_8019CBA0(s32 *count) {
     Ovl64RingHdr *h = D_8019DE10.unk74;
