@@ -2110,9 +2110,104 @@ void func_800B1CD0(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B20B8);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B2C24);
+void func_800B2C24(void) {
+    s32 a;
+    s32 cam;
+    s32 d;
+    s32 t;
+    s32 q;
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B2E54);
+    a = (D_800CE0F0->unkC + D_800CE0F0->unkE) & 0xFFF;
+    cam = D_800CE3CC & 0xFFF;
+    if (a - cam >= 0x800) {
+        a -= 0x1000;
+    }
+    if (a - cam < -0x800) {
+        a += 0x1000;
+    }
+    d = (D_800CE3CC - a) * 0xC00 / 4096;
+    D_800CCE3C = abs(D_800CE0F0->unk0) >> 3;
+    if (abs(d) < D_800CCE3C) {
+        d = 0;
+    }
+    if (D_800CE3C0 != 0) {
+        D_800CE3D4 = 0x1000;
+    } else {
+        D_800CE3D4 -= 0x200;
+        if (D_800CE3D4 < 0) {
+            D_800CE3D4 = 0;
+        }
+    }
+    if (D_800CE3BE == 0 && D_800CE0E8->unk11 == 0 && D_800CF46C == 2) {
+        D_800CCE30 = abs(d);
+        if (abs(d) < D_800CCE34) {
+            D_800CCE30 = D_800CCE34;
+        }
+        if (D_800CCE30 > D_800CCE38) {
+            D_800CCE30 = D_800CCE38;
+        }
+        t = (((0x800 - abs(d)) * D_800CCE2C >> 12) + 0x800) * (2 * D_800CE3D4);
+        q = (d * 256 / D_800CCE30) * (t / 4096);
+        D_800CE0F0->unkC += q / 4096;
+    }
+    D_800CE0F0->unkC &= 0xFFF;
+}
+
+void func_800B2E54(void) {
+    s32 a;
+    s32 step;
+    s32 q;
+    s32 cur;
+
+    a = D_800CE0F0->unkC;
+    if (a - D_800CE3DC->unk14.unk22 > 0x800) {
+        D_800CE0F0->unkC = a - 0x1000;
+    }
+    if (D_800CE0F0->unkC - D_800CE3DC->unk14.unk22 < -0x800) {
+        D_800CE0F0->unkC += 0x1000;
+    }
+    if (a < 0) {
+        a += 0x1000;
+    }
+    a %= 4096;
+    cur = D_800CE3DC->unk14.unk22;
+    if (a - cur > 0x800) {
+        a -= 0x1000;
+    }
+    if (a - cur < -0x800) {
+        a += 0x1000;
+    }
+    a = cur - a;
+    a %= 4096;
+    if (D_800CE3BE == 0 && D_800CE0E8->unk11 == 0) {
+        step = 16;
+        if (D_800CE27C != 0) {
+            step = ABS(a) * 256 >> 12;
+            if (step == 0) {
+                step = 1;
+            }
+        }
+        q = a % 4096 / step;
+        if (q != 0) {
+            D_800CE0F0->unkC += q;
+        } else if (step >= 2) {
+            do {
+                step /= 2;
+                if (step == 0) {
+                    break;
+                }
+                q = a % 4096 / step;
+            } while (q == 0);
+            D_800CE0F0->unkC += q;
+        } else {
+            D_800CE0F0->unkC = D_800CE3DC->unk14.unk22;
+        }
+        D_800CE0F0->unkC &= 0xFFF;
+        if (ABS(a) < 100) {
+            D_800CE27C = 0;
+        }
+    }
+}
 
 void func_800B30C0(void) {
     Unk16D8 *n;

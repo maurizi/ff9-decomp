@@ -17,6 +17,7 @@ typedef struct {
 } P_TAG;
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
+int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define setlen(p, _len) (((P_TAG *)(p))->len = (u8)(_len))
 #define setaddr(p, _addr) (((P_TAG *)(p))->addr = (u32)(_addr))
 #define getaddr(p) (u32)(((P_TAG *)(p))->addr)
