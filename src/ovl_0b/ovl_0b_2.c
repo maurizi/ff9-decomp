@@ -8154,7 +8154,49 @@ void func_800F42F0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F4384);
+void func_800F4384(void) {
+    GameData *g = D_8006794C->unk1C;
+    Unk80068EE8 *s;
+    s32 f;
+
+    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->unk0 & 0x20) && D_80104E68.unk0 != 0 &&
+        (f = (D_8006794C->unk24 >> 5) & 1) == 1) {
+        ClearOTag(&D_801050D4, 1);
+        if (D_80104E68.unk18 & 0x20) {
+            if (D_80104E68.unk15 == 0) {
+                s = &D_80068ED8;
+            } else {
+                s = &D_80068EE0;
+            }
+            setlen(&D_801050C0, 4);
+            D_801050C0.rgbc = 0x64808080;
+            D_801050C0.xy = 0x6012B;
+            D_801050C0.uvclut = s->unk0;
+            D_801050C0.wh = s->unk4 | (s->unk5 << 16);
+            addPrim(&D_801050D4, &D_801050C0);
+        }
+        if (D_80104E7D == 0) {
+            s = &D_80068E90;
+        } else {
+            s = &D_80068ED0;
+        }
+        setlen(&D_801050A0, 4);
+        D_801050A0.rgbc = 0x64808080;
+        D_801050A0.xy = 0x60124;
+        D_801050A0.uvclut = s->unk0;
+        D_801050A0.wh = s->unk4 | (s->unk5 << 16);
+        addPrim(&D_801050D4, &D_801050A0);
+        setlen(&D_80105080, 1);
+        D_80105080.code[0] = 0xE1000600 | (s->unk6 & 0x9FF);
+        addPrim(&D_801050D4, &D_80105080);
+        setlen(&D_80105090, 2);
+        D_80105090.code[0] = 0xE6000001;
+        D_80105090.code[1] = 0;
+        addPrim(&D_801050D4, &D_80105090);
+        DrawOTag(&D_801050D4);
+        DrawSync(0);
+    }
+}
 
 void func_800F4630(void) {
     s32 i;
