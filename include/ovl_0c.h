@@ -1004,6 +1004,7 @@ void func_8004B20C(s32);
 
 /* map-marker colour (func_800C1428) */
 extern s32 D_800CD104; /* navi cursor */
+extern s32 D_800CD70C; /* marker snap distance */
 extern s32 D_800CD108;
 extern CVECTOR D_800A7FF0; /* marker colours */
 extern CVECTOR D_800A7FF4;
