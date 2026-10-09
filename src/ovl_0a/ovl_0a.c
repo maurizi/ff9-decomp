@@ -4333,9 +4333,9 @@ s32 func_800C2524(Unk800C9DF4 *arg0, SVECTOR *arg1, Unk800C9E00 *arg2, s16 *arg3
     Unk800C9DFC *vt;
 
     t = &D_800C9DF0.unk1C[arg2->unk4];
-    p.vx = D_800C9DF0.unk8->unk8 + t->unkA[0];
-    p.vy = D_800C9DF0.unk8->unkA + t->unkA[1];
-    p.vz = D_800C9DF0.unk8->unkC + t->unkA[2];
+    p.vx = D_800C9DF0.unk8->unk8[0] + t->unkA[0];
+    p.vy = D_800C9DF0.unk8->unk8[1] + t->unkA[1];
+    p.vz = D_800C9DF0.unk8->unk8[2] + t->unkA[2];
     vt = D_800C9DF0.unkC;
     for (i = 0; i < 3; i++) {
         v[i].unk0 = p.vx + vt[arg2->unkC[i]].unk0;
@@ -4400,12 +4400,12 @@ u16 func_800C2920(Unk800C9DF4 *arg0, Unk800C9E00 **arg1, s32 arg2, s32 arg3) {
 
     if (arg3 < 9) {
         p[0] = *arg1;
-        if (func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[p[0]->unk4], p[0], arg2)) {
+        if ((u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[p[0]->unk4], p[0], (s16 *)arg2)) {
             return 1;
         }
         for (i = 0; i < 3; i++) {
             p[1] = func_800C1F98(arg0, p[0], i);
-            if (p[1] != NULL && func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[p[1]->unk4], p[1], arg2)) {
+            if (p[1] != NULL && (u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[p[1]->unk4], p[1], (s16 *)arg2)) {
                 arg0->unk6 = p[0]->unk18[i];
                 if (arg0->unk6 >= 0) {
                     p[1] = &D_800C9DF0.unk10[arg0->unk6];
@@ -4516,9 +4516,9 @@ s32 func_800C420C(s32 arg0, s16 arg1) {
 
     n = &D_800C9DF0.unk10[(u16)arg1];
     t = &D_800C9DF0.unk1C[n->unk4];
-    v.vx = D_800C9DF0.unk8->unk8 + t->unkA[0];
-    v.vy = D_800C9DF0.unk8->unkA + t->unkA[1];
-    v.vz = D_800C9DF0.unk8->unkC + t->unkA[2];
+    v.vx = D_800C9DF0.unk8->unk8[0] + t->unkA[0];
+    v.vy = D_800C9DF0.unk8->unk8[1] + t->unkA[1];
+    v.vz = D_800C9DF0.unk8->unk8[2] + t->unkA[2];
     D_800C9DF0.unk4[arg0].unk4 = n->unk4;
     D_800C9DF0.unk4[arg0].unk6 = arg1;
     D_800C9DF0.unk4[arg0].unk24->unk14.vx = v.vx + n->unk1E;
@@ -4540,9 +4540,9 @@ s32 func_800C4378(s32 arg0, u16 arg1, u16 arg2) {
     t = &D_800C9DF0.unk1C[arg1];
     ids = (s32 *)((u8 *)D_800C9DF0.unk8 + t->unk1E);
     id = ids[arg2];
-    v.vx = D_800C9DF0.unk8->unk8 + t->unkA[0];
-    v.vy = D_800C9DF0.unk8->unkA + t->unkA[1];
-    v.vz = D_800C9DF0.unk8->unkC + t->unkA[2];
+    v.vx = D_800C9DF0.unk8->unk8[0] + t->unkA[0];
+    v.vy = D_800C9DF0.unk8->unk8[1] + t->unkA[1];
+    v.vz = D_800C9DF0.unk8->unk8[2] + t->unkA[2];
     n = &D_800C9DF0.unk10[id];
     D_800C9DF0.unk4[arg0].unk4 = arg1;
     D_800C9DF0.unk4[arg0].unk6 = ids[arg2];
@@ -4616,7 +4616,7 @@ s16 func_800C45C0(s16 arg0, s16 arg1, s16 arg2, s16 *arg3, Unk800C9E00 **arg4) {
             } else {
                 t = &D_800C9DF0.unk1C[n->unk4];
                 vx = &D_800C9DF0.unkC[n->unkC[0]];
-                p.vy = vx->unk2 + (D_800C9DF0.unk8->unkA + t->unkA[1]);
+                p.vy = vx->unk2 + (D_800C9DF0.unk8->unk8[1] + t->unkA[1]);
             }
             y = p.vy;
             if (y >= y0 && y < best) {
@@ -4699,7 +4699,7 @@ start:
                 goto plane;
             }
             {
-                p.vy = D_800C9DF0.unk8->unkA;
+                p.vy = D_800C9DF0.unk8->unk8[1];
                 p.vy += D_800C9DF0.unk1C[n->unk4].unkA[1];
                 p.vy += D_800C9DF0.unkC[n->unkC[0]].unk2;
                 return p.vy;
@@ -4709,7 +4709,86 @@ start:
     return -0x7FFF;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C4B30);
+s32 func_800C4B30(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
+    s8 c[2];
+    s32 d[2];
+    Unk800C9DFCv *pv[2];
+    s16 o[3];
+    Unk800C9DFCv v[3];
+    u8 i;
+    s32 r;
+    u8 x;
+    u8 z;
+    Unk800C9DFCv *vtx;
+    Unk800C9E04 *pl;
+    s32 a;
+    s32 cz;
+
+    x = 0;
+    z = 2;
+    if (n->unk6 >= 0) {
+        pl = &D_800C9DF0.unk14[n->unk6];
+        if ((u32)(pl->unk4 + 0x50F4) <= 0xA1E8) {
+            a = pl->unk0;
+            cz = pl->unk8;
+            if (ABS(a) > ABS(cz)) {
+                x = 1;
+                z = 2;
+            } else {
+                x = 0;
+                z = 1;
+            }
+        }
+    }
+    r = 0;
+    i = 0;
+    vtx = (Unk800C9DFCv *)D_800C9DF0.unkC;
+    o[x] = b->unk8[x] + t->unkA[x];
+    o[z] = b->unk8[z] + t->unkA[z];
+    c[0] = 0;
+    c[1] = 0;
+    for (; i < 3; i++) {
+        v[i].unk0[x] = o[x] + vtx[n->unkC[i]].unk0[x];
+        v[i].unk0[z] = o[z] + vtx[n->unkC[i]].unk0[z];
+        if (v[i].unk0[x] == p[x]) {
+            c[0]++;
+            if (v[i].unk0[z] <= p[z]) {
+                c[0] = -c[0];
+            }
+        }
+        if (v[i].unk0[z] == p[z]) {
+            c[1]++;
+            if (v[i].unk0[x] <= p[x]) {
+                c[1] = -c[1];
+            }
+        }
+    }
+    if (c[0] == -2) {
+        return 1;
+    }
+    if (c[1] == -2) {
+        return 1;
+    }
+    pv[0] = &v[2];
+    c[0] = p[z] >= pv[0]->unk0[z];
+    for (i = 0; i < 3; i++) {
+        pv[1] = &v[i];
+        c[1] = p[z] >= pv[1]->unk0[z];
+        if (c[0] != c[1]) {
+            d[0] = (pv[1]->unk0[z] - p[z]) * (pv[0]->unk0[x] - pv[1]->unk0[x]);
+            d[1] = (pv[1]->unk0[x] - p[x]) * (pv[0]->unk0[z] - pv[1]->unk0[z]);
+            if (d[0] == d[1]) {
+                return 1;
+            }
+            if ((d[1] < d[0]) == c[1]) {
+                r ^= 1;
+            }
+        }
+        pv[0] = pv[1];
+        c[0] = c[1];
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C4EC8);
 
@@ -4738,7 +4817,7 @@ void func_800C5A7C(Unk800C9DF8 *arg0) {
     func_80015C38("=============\n");
     func_80015C38("Data Size\t\t : %d [+4 for file magic]\n", arg0->unk0);
     func_80015C38("Original Position: (%6d,%6d,%6d)\n", arg0->unk2, arg0->unk4, arg0->unk6);
-    func_80015C38("Current Position : (%6d,%6d,%6d)\n", arg0->unk8, arg0->unkA, arg0->unkC);
+    func_80015C38("Current Position : (%6d,%6d,%6d)\n", arg0->unk8[0], arg0->unk8[1], arg0->unk8[2]);
     func_80015C38("Minimum Values   : (%6d,%6d,%6d)\n", arg0->unkE, arg0->unk10, arg0->unk12);
     func_80015C38("Maximum Values   : (%6d,%6d,%6d)\n", arg0->unk14, arg0->unk16, arg0->unk18);
     func_80015C38("Default Char Pos : (%6d,%6d,%6d)\n", arg0->unk1A, arg0->unk1C, arg0->unk1E);

@@ -451,15 +451,18 @@ typedef struct Unk800C9DFC {
     s16 unk4;
 } Unk800C9DFC;
 
+/* the same vertex viewed as an array (func_800C4B30) */
+typedef struct {
+    s16 unk0[3];
+} Unk800C9DFCv;
+
 /* header of the block D_800C9DF0.unk8 points to */
 typedef struct {
     u16 unk0; /* data size */
     s16 unk2; /* original position */
     s16 unk4;
     s16 unk6;
-    s16 unk8; /* origin (current position) */
-    s16 unkA;
-    s16 unkC;
+    s16 unk8[3]; /* origin (current position) */
     s16 unkE; /* minimum */
     s16 unk10;
     s16 unk12;
@@ -1121,7 +1124,7 @@ typedef struct {
 extern Unk800C9F60 D_800C9F60[2];
 extern Unk800C9DF4 D_800CAAD8[24];
 Unk800C9E00 *func_800C1F98(Unk800C9DF4 *, Unk800C9E00 *, s32);
-u8 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s32);
+s32 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *);
 s32 func_800C4EC8(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
 typedef struct {
     s32 unk0;
