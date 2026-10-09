@@ -156,7 +156,9 @@ typedef struct {
     u8 unkD80;
     u8 padD81[0x11C0 - 0xD81];
     Unk11C0 *unk11C0;
-    u8 pad11C4[0x1354 - 0x11C4];
+    u8 pad11C4[0x1340 - 0x11C4];
+    u8 unk1340;
+    u8 pad1341[0x1354 - 0x1341];
     Unk1354 *unk1354;
 } Unk8E4;
 
@@ -3140,7 +3142,7 @@ void func_800B1520(s32, s32, s32, s32);
 void func_800CA694(s32, s32, u16);
 void func_800BE99C(s32, s32);
 void func_800ABA98(s32, s32, s32, s32, s32);
-void func_800AD944(s32, s32, s32);
+s32 func_800AD944(s32, s32, s32);
 VECTOR *func_800AE750(void);
 VECTOR *func_800AE744(void);
 void func_800C7D30(s32, s32, s32);
@@ -3516,5 +3518,17 @@ static inline s32 func_80037ACC_chr(s32 i) {
     }
     return i;
 }
+
+/* func_80037D6C (script system variables) */
+extern s32 D_8007AE20;
+extern s32 D_8007AEC4;
+s32 func_800C1B5C(u8 *);
+s32 func_800CA774(void);
+s32 func_800B7A14(s32);
+s32 func_800BE784(s32);
+u32 func_80024048(void);
+s32 func_8002414C(void);
+s32 func_8006275C(void);
+s32 func_8004ECC4(void);
 
 #endif

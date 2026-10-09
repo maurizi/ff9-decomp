@@ -7267,7 +7267,131 @@ s32 func_80037ACC(s32 op) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80037D6C);
+s32 func_80037D6C(s32 op) {
+    s32 r;
+    u8 buf[8];
+    Unk8004AB64 *o;
+    s32 id;
+
+    switch ((u32)op) {
+    case 0:
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        r = *D_8007B720++;
+        break;
+    case 1:
+        func_800C1B5C(buf);
+        r = buf[0];
+        break;
+    case 2:
+        r = D_8007AECC->unk16EC;
+        break;
+    case 3:
+        r = func_800B0124(0xC00, -1, 0, 0, 0);
+        break;
+    case 4:
+        r = D_8007AE20;
+        break;
+    case 5:
+        id = ((u8 *)&((u32 *)D_8007B70C + D_8007B70C->unk9)[D_8007B70C->unkA])[-1];
+        o = func_8004B040_inline(id);
+        r = -1;
+        if (o != NULL) {
+            r = o->unk6 - (D_8007ADFC - 9);
+        }
+        break;
+    case 6:
+        r = D_8006794C->unk1C->unk560;
+        break;
+    case 7:
+        r = D_8007AEC4;
+        break;
+    case 8:
+        r = D_8007BBD8;
+        break;
+    case 9:
+        r = func_8004ECC4();
+        break;
+    case 10:
+        r = D_8007AE24;
+        break;
+    case 11:
+        r = D_8007AE28;
+        break;
+    case 12:
+        r = D_8007AE2C;
+        break;
+    case 13:
+        r = D_8007AE30;
+        break;
+    case 14:
+        r = func_800AD944(4, 0, 0);
+        break;
+    case 15:
+        r = func_800AD944(3, 0, 0);
+        break;
+    case 16:
+        r = D_8006794C->unk1C->unk568;
+        break;
+    case 17:
+        r = func_8002414C();
+        break;
+    case 18:
+        r = func_8006275C();
+        break;
+    case 19:
+        r = func_800625F8();
+        break;
+    case 20:
+        r = func_80024048();
+        if (r > 0x7FFFFF) {
+            r = 0x7FFFFF;
+        }
+        break;
+    case 21:
+        r = func_800240E8();
+        break;
+    case 22:
+        r = D_8007AE38;
+        break;
+    case 23:
+        r = D_8007AE3C;
+        break;
+    case 24:
+        r = (s16)D_8006794C->unk1C->unkE;
+        break;
+    case 25:
+        r = (u8)func_800CA774();
+        break;
+    case 26:
+        r = D_8007B708 == 4;
+        break;
+    case 27:
+        r = D_8006794C->unk1C->unk56E;
+        break;
+    case 28:
+        r = (D_8007AE34 >> 8) & 0xFF;
+        break;
+    case 29:
+        r = (u8)D_8007AE34;
+        break;
+    case 30:
+        r = D_8006794C->unk1C->unk8E4.ovl65->unkD80;
+        break;
+    case 31:
+        r = D_8006794C->unk1C->unk8E4.ovl65->unk1340;
+        break;
+    default:
+        if (op >= 0xC0) {
+            r = func_800B7A14(op);
+        } else {
+            r = func_800BE784(op);
+        }
+        break;
+    }
+    return r;
+}
 
 Unk8004AB64 *func_80038150(void) {
     return func_8004B4C4_inline(func_8004AEDC_inline2());
