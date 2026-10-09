@@ -13,7 +13,8 @@ typedef struct {
     u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
     u8 pad1B[0x44 - 0x1B];
     u8 unk44;
-    u8 pad45[0x4C - 0x45];
+    u8 pad45[0x48 - 0x45];
+    s32 unk48; /* config bit */
     u32 unk4C; /* save counter */
     u8 pad50[0x98 - 0x50];
 } SaveSlot;
@@ -245,6 +246,14 @@ void func_801F5688(void);
 void func_801F573C(void);
 void func_801F8BD4(MenuList *, RECT *, RECT *);
 extern s32 D_80070444;
+extern void (*D_801FAFE8[])(RECT *, s32, s32); /* slot drawer per state */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u8 unk2; /* w */
+    u8 unk3; /* h */
+} Ovl39Sprite;
+extern Ovl39Sprite D_801FAFFC[];
 u8 func_801F7E68(void);
 extern RECT D_801FAF7C;
 extern RECT D_801FAF84;

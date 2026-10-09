@@ -125,7 +125,27 @@ void func_801F4840(void) {
 
 INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801EDF00);
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F49C4);
+void func_801F49C4(RECT *r, s32 otz, s32 slot) {
+    char name[8];
+    void (*fn)(RECT *, s32, s32);
+    s32 v;
+
+    strcpy(name, "File00");
+    name[4] = (slot + 1) / 10 + 0x30;
+    name[5] = (slot + 1) % 10 + 0x30;
+    func_8002B56C(r->x + 6, r->y + 3, otz, (u8 *)name, 0);
+    fn = D_801FAFE8[D_801FB1A8.unk34[slot].unk1A];
+    if (fn != NULL) {
+        fn(r, otz, slot);
+    }
+    if (D_801FB1A8.unk34[slot].unk1A == 4) {
+        v = D_801FB1A8.unk34[slot].unk48;
+    } else {
+        v = D_8006794C->unk24 >> 18;
+        v &= 1;
+    }
+    func_8002CD4C(r, 0x2D, 0, v);
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4B18);
 
