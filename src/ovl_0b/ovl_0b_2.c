@@ -6480,7 +6480,24 @@ void func_800F224C(Window *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2374);
+void func_800F2374(void) {
+    Unk80105078 *p;
+    RECT r;
+
+    p = func_800F3EA4();
+    setRECT(&r, 0xD0, p->unk60 - 4, 0x40, 4);
+    r.x += D_801051E8[D_8006794C->unk1C->unk8 & 1][0];
+    r.y += D_801051E8[D_8006794C->unk1C->unk8 & 1][1];
+    SetDrawMove((DR_MOVE *)D_80077170, &r, 0x3C0, 0x1F8);
+    addPrim(&D_8007716C[19], D_80077170);
+    D_80077170 += sizeof(DR_MOVE);
+    setRECT(&r, 0x110, p->unk60 - 4, 0x30, 4);
+    r.x += D_801051E8[D_8006794C->unk1C->unk8 & 1][0];
+    r.y += D_801051E8[D_8006794C->unk1C->unk8 & 1][1];
+    SetDrawMove((DR_MOVE *)D_80077170, &r, 0x3C0, 0x1FC);
+    addPrim(&D_8007716C[19], D_80077170);
+    D_80077170 += sizeof(DR_MOVE);
+}
 
 void func_800F2560(void) {
     SPRT *a = &D_801050D8->unkB0[D_80077148.unk0];
