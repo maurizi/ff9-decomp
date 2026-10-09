@@ -1,6 +1,39 @@
 #include "ovl_65.h"
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF284);
+void func_801EF284(void) {
+    Unk11C0 *s;
+    GameData *ctx;
+    u8 i;
+
+    s = D_8006794C->unk1C->unk8E4.ovl65->unk11C0;
+    func_801EF45C();
+    do {
+        ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
+        func_80019194();
+        switch (func_801F3A7C()) {
+        case 1:
+            D_8006794C->unk8 = s->unk6;
+            break;
+        case 2:
+            D_8006794C->unk8 = 0;
+            break;
+        }
+        func_80023A0C();
+        func_80032098();
+        func_80023A4C();
+        func_8002246C();
+        DrawSync(0);
+        VSync(D_8006794C->unk9);
+        ResetGraph(1);
+        PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+        ctx = D_8006794C->unk1C;
+        i = ctx->unk8;
+        DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
+        D_8006794C->unk1C->unk8 ^= 1;
+        func_8002C0DC(D_8006794C->unk1C->unk8);
+    } while (D_8006794C->unk8 == 8);
+    func_801EF5C8();
+}
 
 void func_801EF45C(void) {
     Unk11C0 *s = D_8006794C->unk1C->unk8E4.ovl65->unk11C0;
