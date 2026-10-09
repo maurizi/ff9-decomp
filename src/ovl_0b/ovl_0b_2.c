@@ -4165,7 +4165,30 @@ void func_800E8274(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E82CC);
+s32 func_800E82CC(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
+    BtlUnit *u;
+    s32 r = 0;
+
+    if (*iter == (BtlUnit *)-1) {
+        u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    } else {
+        if (*iter == NULL) {
+            return -2;
+        }
+        u = *iter;
+    }
+    func_800E753C(u, 0, arg1);
+    if (((u8)func_800C09A4(u, 0x100) && u != func_800E716C(id)) || !((u->unk68 >> 28) & 1)) {
+        *iter = u->unk0;
+        return -1;
+    }
+    if (u == func_800E716C(id)) {
+        r = 1;
+    }
+    *out = u->unk68 & 1;
+    *iter = u->unk0;
+    return r;
+}
 
 void func_800E83EC(void) {
     D_8007AEF0.b[0xC7] |= 0x10;
