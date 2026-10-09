@@ -918,7 +918,8 @@ typedef struct Unk8004AB64 {
     u8 unkF;
     u8 pad10;
     u8 unk11;
-    u8 pad12[2];
+    u8 unk12;
+    u8 pad13;
     VECTOR unk14; /* position */
     s16 unk24;
     u8 unk26;

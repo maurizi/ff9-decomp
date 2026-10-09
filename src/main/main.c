@@ -6535,7 +6535,21 @@ s32 func_8004AFF0(Unk8004AB64 *p) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B040);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B098);
+s32 func_8004B098(s32 id) {
+    Unk8004AB64 *p = func_8004B040_inline(id);
+    s32 r;
+
+    if (p != NULL) {
+        if (p->unk5 == 4) {
+            r = p->unk3B;
+        } else {
+            r = -1;
+        }
+    } else {
+        r = -1;
+    }
+    return r;
+}
 
 s32 func_8004B120(s32 i) {
     s32 t = D_8007AECC->unk16E4[i] + 9;
