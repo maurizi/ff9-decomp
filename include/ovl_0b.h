@@ -2009,7 +2009,7 @@ s32 func_800D8A64(s32);
 s32 func_800D8B70(s32);
 s32 func_800DA0B8(s32);
 void func_800EA124(s32);
-void func_800A9BE4(s32);
+s16 func_800A9BE4(s32);
 void func_800ABBC4(s32, s32);
 u32 func_800D8C70(s32, u32);
 void func_800D8658(s32, u8);
@@ -2096,7 +2096,8 @@ extern s16 D_800F51EC;
 s32 func_8001CA70(s32);
 void func_80056048(s32, s32, s32);
 
-s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s16, s32);
+s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s32, s32);
+s32 func_800ABA10(s32, s32);
 
 
 s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
@@ -2732,9 +2733,19 @@ s16 func_800CF9B0(s32, s32, s32);
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u16 unk2;
-    u16 unk4;
+    u16 unk2_0 : 7;
+    u16 unk2_7 : 7;
+    u16 unk2_14 : 2;
+    u16 unk4_0 : 7;
+    u16 unk4_7 : 7;
 } Unk800C3F78;
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+} Unk800F5758;
+extern Unk800F5758 D_800F5758[];
 void func_800C3F78(Unk800C412C *, Unk800C3F78 *);
 void func_800C412C(Unk800C412C *, u8 *);
 void func_800C52B4(MATRIX *, SVECTOR *, SVECTOR *);
@@ -2865,5 +2876,110 @@ typedef struct {
     u8 pad18[0x30 - 0x18];
 } Unk800FDED0;
 extern Unk800FDED0 D_800FDED0[2];
+extern Unk800FDED0 D_800FDEB8[2];
+void func_800E9DFC(void);
+
+/* main exe: candidates for ff9.h */
+u32 *func_8002FBC0(s32);
+
+void func_800CC1A0(BtlUnit *);
+void func_800C0DAC(BtlUnit *);
+
+/* BtlUnit.unk34 viewed as one block (status timers at unkC..) */
+typedef struct {
+    s32 unk0;
+    u32 unk4;
+    u32 unk8;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12[14];
+    s16 unk2E;
+} BtlUnit34;
+
+/* status bits set in either status word */
+static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
+    return (u->unk38 & m) || (u->unk3C & m);
+}
+
+/* disc cover open screen (func_800A882C) */
+extern u32 D_800FDEB0[1];
+extern DR_STP D_800FDF18;
+extern TILE D_800FDE98;
+extern DR_TPAGE D_800FDEA8;
+extern DR_STP D_800FDF24;
+extern u8 D_800FDE60[];
+void func_80023F60(s32);
+void func_80055698(s32);
+void func_800EA34C(void);
+
+s32 func_800AA958(s32, Unk800AA958 *);
+s32 func_800AABC4(s32, Unk800AA958 *);
+s32 func_800ABB60(s32);
+BtlUnit *func_800C1D8C(s32);
+void func_800BD698(BtlUnit *, s32, s32);
+u8 *func_80063514(s32);
+
+typedef struct {
+    s16 unk0; /* state */
+    u16 unk2; /* next state */
+    s16 unk4;
+    u8 pad6[8 - 6];
+    union {
+        s32 w[4];
+        s16 h[8];
+    } unk8;
+    u8 pad18[0x24 - 0x18];
+    s32 unk24;
+} Unk800AA24C; /* model file load state (func_800AA24C) */
+
+typedef union {
+    u32 w;
+    struct {
+        u16 id;
+        u8 type;
+        u8 kind;
+    } b;
+} FileEntryId;
+
+typedef struct {
+    FileEntryId unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} FileEntryX;
+
+s32 func_800AA24C(s16, s32, Unk800AA24C *);
+
+/* inlined into func_800AA24C: append the ids of file-table entries of the
+ * given type/kind to dst, skipping duplicates */
+static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
+    FileTable *t = D_8006794C->unk1C->unk7E4;
+    FileEntryX *first = (FileEntryX *)t->unk4;
+    FileEntryX *e = &first[t->unk2] - 1;
+    s16 *q = dst;
+    s16 *s;
+    u32 w;
+
+    do {
+        w = e->unk0.w;
+        if (e->unk0.b.type == type && (w >> 24) == kind) {
+            w &= 0xFFFF;
+            s = q - 1;
+            do {
+                if (*s == w) {
+                    goto next;
+                }
+                s--;
+            } while (s >= dst);
+            *q++ = w;
+        }
+    next:
+        e--;
+    } while (e >= first);
+}
+
+/* main exe: candidates for ff9.h */
+void func_8001DA78(void *, s32);
 
 #endif
