@@ -832,15 +832,15 @@ typedef struct Unk800FE3B8 {
     s16 unk50;
     u8 unk52;
     u8 unk53;
-    u8 pad54[0x5C - 0x54];
+    SVECTOR unk54;
     u8 unk5C;
     u8 unk5D;
-    s16 unk5E;
-    s16 unk60;
+    u16 unk5E;
+    u16 unk60;
     u8 pad62[0x65 - 0x62];
     u8 unk65;
     u8 unk66;
-    u8 pad67;
+    u8 unk67;
     Unk800C412C unk68[2];
     s32 unkA8;
     u32 unkAC;
@@ -1795,8 +1795,8 @@ typedef struct {
 } Unk800CCD00_1;
 
 typedef struct {
-    u16 *unk0;
-    s32 unk4;
+    u8 *unk0; /* camera script */
+    u32 unk4;
     s32 unk8;
     s32 unkC;
     u32 unk10;
@@ -1807,7 +1807,12 @@ typedef struct {
     s32 unk24;
     s32 unk28;
     s32 unk2C;
-    u8 pad30[0x45 - 0x30];
+    s32 unk30;
+    s32 unk34;
+    s32 unk38;
+    s32 unk3C;
+    s32 unk40;
+    u8 unk44;
     u8 unk45;
     s16 unk46[5];
     s16 unk50[5];
@@ -2245,6 +2250,19 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 s32 func_800CA2B0(s32);
 void func_800C416C(s32, Unk800C412C *, s16 *);
 s16 func_800CF9B0(s32, s32, s32);
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u16 unk2;
+    u16 unk4;
+} Unk800C3F78;
+void func_800C3F78(Unk800C412C *, Unk800C3F78 *);
+void func_800C412C(Unk800C412C *, u8 *);
+void func_800C52B4(MATRIX *, SVECTOR *, SVECTOR *);
+void func_800C5530(SVECTOR *, SVECTOR *);
+void func_800C4A3C(s16 *, s16 *);
+void func_800C493C(s16 *);
 s32 func_800CF9DC(s32, s32, s32, s32);
 s32 func_800CF708(s32, s32);
 s32 func_800CF6B8(s32, s32);
