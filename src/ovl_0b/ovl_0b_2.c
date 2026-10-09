@@ -209,7 +209,22 @@ void func_800D6340(void) {
     D_800FEC40.unk18 -= 3;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D6360);
+s32 func_800D6360(s32 arg0) {
+    s32 i;
+    u8 *p;
+    s32 n;
+    for (i = 0, p = (u8 *)0x801E7700; i < 0x200; i++) {
+        n = p[0];
+        if (p[1] & 0x80) {
+            n += 0x100;
+        }
+        if (n == arg0) {
+            break;
+        }
+        p += (p[1] & 0x7F) * 3 + 2;
+    }
+    return (s32)(p + 2);
+}
 
 void func_800D63B0(s32 arg0, u32 *arg1, s32 arg2) {
     RECT r;
@@ -245,7 +260,7 @@ void func_800D63B0(s32 arg0, u32 *arg1, s32 arg2) {
 void func_800D64C8(s32 arg0) {
     D_800FEC38 = 1;
     D_800FEC3C = D_800FEC40.unk18;
-    D_800FEC40.unk18 = func_800D6360();
+    D_800FEC40.unk18 = func_800D6360(arg0);
 }
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D650C);
@@ -2165,7 +2180,18 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFF64);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E0014);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E00DC);
+void func_800E00DC(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
+    s32 i = 0;
+    arg2->unk0 = arg0 / (s32)sizeof(Pool30Entry);
+    arg2->unkC = arg1;
+    arg2->unk4 = 0;
+    arg2->unk8 = 0;
+    for (; i < arg2->unk0;) {
+        i++;
+        arg1->unk1F = 0;
+        arg1++;
+    }
+}
 
 s32 func_800E0134(Unk800E0134 *arg0, Unk800E0134_1 *arg1) {
     s32 p = arg1->unk14;
@@ -2182,7 +2208,19 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A825C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E0168);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E14D8);
+void func_800E14D8(u32 arg0, Pool6C *arg1) {
+    s32 i;
+    Pool6CEntry *e = arg1->unk10;
+    arg1->unk0 = (arg0 - 0x10) / sizeof(Pool6CEntry);
+    arg1->unkC = e;
+    arg1->unk4 = 0;
+    arg1->unk8 = 0;
+    for (i = 0; i < arg1->unk0;) {
+        i++;
+        e->unk30 = 0;
+        e++;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E1534);
 
@@ -6135,7 +6173,15 @@ u8 func_800F47D8(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F4884);
+void func_800F4884(void) {
+    s32 i;
+    D_801050D8 = func_800F2A60(0x368);
+    for (i = 0; i < 2; i++) {
+        func_800ECCA8(i);
+        func_800F2684(i);
+        func_800F3EDC(i);
+    }
+}
 
 void func_800F48DC(void) {
 }

@@ -1683,7 +1683,7 @@ void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
 s32 func_800CFC0C(s32);
 void func_800D07B4(s32, s32 *);
-s32 func_800D6360(void);
+s32 func_800D6360(s32);
 void func_800D64C8(s32);
 void func_800D85AC(s32, s32);
 void func_800D85F8(struct Unk800F78A40 *, s32, s32);
