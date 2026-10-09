@@ -46,7 +46,7 @@ typedef struct {
     u8 unk728[0x40];         /* ability list */
     u8 unk768;
     u8 unk769; /* item list length */
-    u8 pad76A;
+    u8 unk76A; /* ability list length */
     u8 unk76B; /* animation tick (0-6) */
     u8 unk76C; /* animation frame (0-6) */
     u8 unk76D;

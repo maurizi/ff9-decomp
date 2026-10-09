@@ -256,7 +256,68 @@ INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EFE2C);
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0024);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0410);
+/* Inlined copy of func_801F0CC4 (support ability state). */
+static inline s32 func_801F0CC4_inline(s32 id, Character *c) {
+    Unk8006D128 *sup;
+    s32 slot;
+    s32 ap;
+    s32 need;
+
+    if (id < 0xC0) {
+        return 0;
+    }
+    if (func_80034A04(c->unk88, id)) {
+        return 4;
+    }
+    if (D_801FBF84.unk68[id] == 0) {
+        slot = func_80034430(c->unk34 & 0xF, id);
+        if (slot < 0) {
+            return 0;
+        }
+        if (func_80034A30(c)) {
+            ap = c->unk58[slot];
+            need = D_8006CB28[(c->unk34 >> 12) & 0x1F][slot].unk1;
+            if (ap == 0) {
+                return 0;
+            }
+            if (ap < need) {
+                return 0;
+            }
+        }
+    }
+    sup = &D_8006D128[id - 0xC0];
+    if (sup->unk1 > c->unk17) {
+        return 2;
+    }
+    return 3;
+}
+
+void func_801F0410(void) {
+    s32 i;
+    s32 sel;
+    s32 row;
+    Character *c;
+    MenuList *l;
+
+    sel = 0;
+    i = 0;
+    c = D_8006794C->unk1C->unk54C[D_801FBF84.unk2];
+    l = &D_801FBF84.unk8[1];
+    for (; i < D_801FBF84.unk76A; i++) {
+        if (func_801F0CC4_inline(D_801FBF84.unk728[i], c) >= 3) {
+            sel = i;
+            break;
+        }
+    }
+    row = sel / 2;
+    l->unk7 = sel % 2;
+    if (row - 7 >= 0) {
+        l->unk5 = row - 7;
+    } else {
+        l->unk5 = 0;
+    }
+    l->unk6 = row - l->unk5;
+}
 
 void func_801F05FC(void) {
     func_801F0664();
