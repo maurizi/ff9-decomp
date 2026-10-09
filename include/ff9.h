@@ -2833,4 +2833,22 @@ typedef struct {
 void func_8003595C(s32, s32, s32, Unk80035B90 *, AnimCell *);
 
 
+/* dialog window layout (func_8004E248 / func_80039660) */
+typedef struct {
+    s16 unk0; /* x */
+    s16 unk2; /* w */
+    s16 unk4;
+    u16 unk6; /* flags */
+    s8 unk8;  /* y */
+    u8 unk9;  /* h */
+    u8 unkA;  /* anchor */
+} WinLayout;
+
+WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
+void func_80038FD8(s32, WinLayout *, s32, s32);
+extern s32 D_8007AE5C;
+extern s32 D_8007AE60;
+extern s32 D_8007AE64;
+
+
 #endif

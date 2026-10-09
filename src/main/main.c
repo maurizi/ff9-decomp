@@ -6241,7 +6241,81 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038FD8);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80039444);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80039660);
+WinLayout *func_80039660(s32 obj, s32 id, s32 flags) {
+    WinLayout *w = func_8004E248(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
+    s32 ww;
+    s32 wh;
+
+    w->unk4 = 0;
+    w->unk6 = 0;
+    if ((flags & 0x40) && w->unk2 < 0x72) {
+        w->unk2 = 0x72;
+    }
+    if (flags & 0x80) {
+        if (w->unk2 < 0x1D) {
+            w->unk2 = 0x1D;
+        }
+        switch (w->unkA) {
+        case 0x50:
+        case 0x51:
+        case 0x52:
+        case 0x53:
+            func_80038FD8(obj, w, w->unkA & 3, 0);
+            break;
+        case 0x58:
+        case 0x59:
+        case 0x5A:
+        case 0x5B:
+            func_80038FD8(obj, w, w->unkA & 3, 1);
+            break;
+        default:
+            func_80038FD8(obj, w, -1, 0);
+            break;
+        }
+    } else {
+        ww = w->unk2;
+        wh = w->unk9;
+        switch (w->unkA) {
+        case 0x53:
+            w->unk0 = 12;
+            w->unk8 = 12;
+            break;
+        case 0x55:
+            w->unk0 = 160 - (ww >> 1);
+            w->unk8 = 12;
+            break;
+        case 0x52:
+            w->unk0 = 308 - ww;
+            w->unk8 = 12;
+            break;
+        case 0x5C:
+            w->unk0 = 160 - (ww >> 1);
+            w->unk8 = 74 - (wh >> 1);
+            break;
+        case 0x51:
+            w->unk0 = 12;
+            w->unk8 = -48 - wh;
+            break;
+        case 0x54:
+            w->unk0 = 160 - (ww >> 1);
+            w->unk8 = -48 - wh;
+            break;
+        case 0x50:
+            w->unk0 = 308 - ww;
+            w->unk8 = -48 - wh;
+            break;
+        case 0:
+            w->unk0 = 160 - (ww >> 1);
+            w->unk8 = 110 - (wh >> 1);
+            break;
+        }
+    }
+    if ((flags & 4) && w->unk2 < 0x1D) {
+        w->unk2 = 0x1D;
+    }
+    w->unk6 |= flags & 0x30;
+    return w;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800398D0);
 
