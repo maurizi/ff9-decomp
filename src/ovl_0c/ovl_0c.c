@@ -3184,7 +3184,48 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB07C);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BB508);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BBBA8);
+/* pick the encounter table entry for the player's area, zone and fog */
+Unk800CF450 *func_800BBBA8(void) {
+    u8 zone;
+    s32 area;
+    s32 lo;
+    s32 hi;
+    s32 i;
+    u32 t;
+    s32 f;
+    s32 add;
+
+    area = (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8;
+    zone = D_800CCFB4[area];
+    lo = D_800D30D8[zone];
+    hi = D_800D30D8[zone + 1];
+    if (D_800CCE50 & 8) {
+        func_80015C38("- Encount Information -\n");
+        func_80015C38("Now Area :%d\n", (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8);
+        func_80015C38("Now Zone :%d\n", zone);
+        func_80015C38("Now Fog  :%d\n", D_800CCE4B);
+        func_80015C38("Topograph:%d\n", (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2);
+    }
+    for (i = lo; i < hi; i++) {
+        t = D_800CF450[i].unk8 >> 2;
+        f = D_800CF450[i].unk9 & 1;
+        if (D_800CCE50 & 8) {
+            func_80015C38("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
+        }
+        if (t == (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 && f == D_800CCE4B) {
+            if (D_800CCE50 & 8) {
+                func_80015C38("Hit %d encount data\n", i);
+            }
+            add = 0;
+            if (D_800CF444 == 4 && i < 100) {
+                add = 0xFE;
+            }
+            return &D_800CF450[i + add];
+        }
+    }
+    func_80015C38(D_800A7F48);
+    return &D_800CF450[i + add - 1];
+}
 
 s32 func_800BBE24(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
     VECTOR v;
