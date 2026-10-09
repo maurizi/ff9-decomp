@@ -6916,7 +6916,28 @@ void func_800F2560(void) {
     addPrim(&D_8007716C[18], &D_801050D8->unk100[D_80077148.unk0]);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F2684);
+void func_800F2684(s32 arg0) {
+    setlen(&D_801050D8->unkB0[arg0], 4);
+    setcode(&D_801050D8->unkB0[arg0], 0x64);
+    setRGB0(&D_801050D8->unkB0[arg0], 0x80, 0x80, 0x80);
+    D_801050D8->unkB0[arg0].x0 = 0xD0;
+    D_801050D8->unkB0[arg0].u0 = 0;
+    D_801050D8->unkB0[arg0].v0 = 0xF8;
+    D_801050D8->unkB0[arg0].clut = 0;
+    D_801050D8->unkB0[arg0].w = 0x40;
+    D_801050D8->unkB0[arg0].h = 4;
+    setlen(&D_801050D8->unkD8[arg0], 4);
+    setcode(&D_801050D8->unkD8[arg0], 0x64);
+    setRGB0(&D_801050D8->unkD8[arg0], 0x80, 0x80, 0x80);
+    D_801050D8->unkD8[arg0].x0 = 0x110;
+    D_801050D8->unkD8[arg0].u0 = 0;
+    D_801050D8->unkD8[arg0].v0 = 0xFC;
+    D_801050D8->unkD8[arg0].clut = 0;
+    D_801050D8->unkD8[arg0].w = 0x30;
+    D_801050D8->unkD8[arg0].h = 4;
+    setlen(&D_801050D8->unk100[arg0], 1);
+    *D_801050D8->unk100[arg0].code = 0xE100071F;
+}
 
 void func_800F27CC(s32 arg0) {
     Unk80105078 *p = func_800F3EA4();
