@@ -461,7 +461,31 @@ void func_801F2870(s32 col, s32 row, s32 i, MenuView *v) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_37/nonmatchings/ovl_37", func_801F29D0);
+void func_801F29D0(s32 col, s32 row, s32 i, MenuView *v) {
+    u8 blink = (u32)D_80077DC0 % 48 >= 0x10;
+    u8 id;
+    s32 x, y;
+    s32 k = 0x2A;
+    u8 *name;
+    s32 w;
+    Unk8006B374 *t;
+    u8 got;
+
+    if (i < D_801FAB78.unkB0) {
+        id = D_801FAB78.unk60[i];
+        t = &D_8006B374[id];
+        got = func_800281D0(id);
+        x = col * 0x96 + 0x18;
+        y = row * 0xF + (v->unk2 + k);
+        name = D_8006ADAC + t->unk0;
+        if (!got) {
+            w = x + func_8002BA68((s32)name);
+            func_800275DC(w + 5, y + 2, 0x1C, 0xB6, blink);
+            func_800275DC(w - 1, y - 1, 0x1C, 0xB5, 0);
+        }
+        func_8002B5FC(x, y, 0x1C, name, 0);
+    }
+}
 
 void func_801F2B20(Window *w) {
     if (D_8006794C->unk8 == 3) {
