@@ -2233,7 +2233,73 @@ void func_800B2804(BtlUnit *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B2988);
+void func_800B2988(Battle *b) {
+    BtlCmd *cmd = b->unk1088;
+    BtlUnit *u = cmd->unk4;
+    u32 n;
+
+    if (cmd->unkE < 0x30) {
+        if ((cmd == u->unk4 && cmd->unkE != 3 && cmd->unkE != 0xC) ||
+            (cmd->unkE == 0x15 && ((u->unk68 >> 1) & 0xF) == 6 && cmd == u->unk10 && !func_800B3E7C(u->unk4))) {
+            u->unk2C = 0;
+            u->unkB3 = 0;
+        } else if (cmd->unkE == 0xA) {
+            func_800BF558(u, 0x40000000);
+            D_8006794C->unk1C->unk8E4.battle->unk11B8 &= ~0x10;
+        } else if (cmd->unkE == 0xB) {
+            func_800BEDBC(u, 0x40000000);
+            u->unkB2 = 2;
+            u->unk68 |= 0x400000;
+            D_8006794C->unk1C->unk8E4.battle->unk11B8 &= ~0x10;
+        }
+        if ((u->unk3C & 0x4000) && cmd->unkE != 3 && cmd->unkE != 0xC) {
+            n = (0x12C - u->unk7A) / u->unk33 * 10;
+            if (cmd->unkE == 0x15 || cmd->unkE == 0x17) {
+                n = (u8)n >> 1;
+            }
+            if ((u8)n < u->unk78) {
+                u->unk78 -= n;
+            } else {
+                func_800BF558(u, 0x4000);
+            }
+            if (cmd->unkE == 0x12 && b->unk11BB != 0) {
+                b->unk11B8 |= 4;
+                b->unk11BC = (0x3C - u->unk33) * 200;
+            }
+        }
+    } else if (cmd->unkE == 0x39) {
+        b->unk11B8 &= ~8;
+        b->unk11BC = (0x3C - u->unk33) * 200;
+    } else if (cmd->unkE < 0x35 && func_800B3E7C(u->unk4)) {
+        u->unk68 |= 0x80000;
+    }
+    if (cmd->unk10.b.unk0_5) {
+        for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+            if (u->unk68 & 1) {
+                u->unk8C[0] = u->unk98->unk0[0];
+                u->unk8C[1] = u->unk98->unk0[1];
+                u->unk8C[2] = u->unk98->unk0[2];
+                if ((u->unk68 >> 25) & 1) {
+                    u->unk68 &= ~0x2000000;
+                    func_800BC78C(u);
+                }
+            }
+        }
+    }
+    if (cmd->unk10.b.unk0_6) {
+        u = func_800BED10(cmd->unkC);
+        u->unk68 &= ~0x4000000;
+        if (u->unk68 & 1) {
+            func_800BC78C(u);
+        } else if ((u->unk68 >> 23) & 1) {
+            u = func_800C1DEC();
+        }
+        u->unk8C[2] = u->unk98->unk0[2];
+    }
+    func_800B3CEC_inline(cmd);
+    b->unk1088 = NULL;
+    b->unk11BA = 0;
+}
 
 void func_800B2DD4(Battle *arg0) {
     BtlCmd *p = &arg0->unk1074;
