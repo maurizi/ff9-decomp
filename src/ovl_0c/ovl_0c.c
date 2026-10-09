@@ -4593,7 +4593,7 @@ void func_800C95C8(Unk800C95C8 *arg0) {
 
     arg0->unk0 &= ~0x10;
     if (arg0->unk1C != NULL) {
-        arg0->unk0 |= *arg0->unk1C & 0x10;
+        arg0->unk0 |= arg0->unk1C->unk0 & 0x10;
     } else {
         v.vx = arg0->unk24.t[0];
         v.vy = arg0->unk24.t[1];

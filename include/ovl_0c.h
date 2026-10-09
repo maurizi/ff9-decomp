@@ -264,7 +264,7 @@ typedef struct WmAnimHdr {
     s32 unk10;
 } WmAnimHdr;
 
-typedef struct {
+typedef struct Unk800C95C8 {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[6];
     WmModel *unk8;
@@ -272,7 +272,7 @@ typedef struct {
     u8 *unk10; /* primitive buffer */
     s32 unk14;
     WmTexInfo *unk18;
-    u16 *unk1C; /* parent flags */
+    struct Unk800C95C8 *unk1C; /* parent */
     u8 *unk20;
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
@@ -281,7 +281,7 @@ typedef struct {
     u16 unk54; /* scale */
     u16 unk56;
     u16 unk58;
-    u8 pad5A[2];
+    u16 unk5A;
     s32 unk5C;
     s32 unk60;
     u8 pad64[0x74 - 0x64];
