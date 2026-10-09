@@ -517,7 +517,69 @@ void func_800A939C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800A9570);
+void func_800A9570(void) {
+    GameState *gs;
+    GameState *gs2;
+    GameData *gd;
+    GameData *gd2;
+    s32 key;
+    FieldMap *f;
+    GameStateUnk14 *g;
+    s32 id;
+    s32 t;
+    u8 *base;
+    FieldDirEnt *start;
+    FieldDirEnt *e;
+
+    gs = D_8006794C;
+    gd = gs->unk1C;
+    f = gd->unk8E4.field;
+    id = -1;
+    if (f->unk0 & 0x10000) {
+        gs2 = gs;
+        gd2 = gd;
+        g = gs2->unk14;
+        t = g->unk8;
+        base = D_80067944 + ((t << 11) + 0x14C700);
+        start = (FieldDirEnt *)(base + ((g->unk48 - t) << 11));
+        e = &start[g->unk44] - 1;
+        key = f->unkC->unk14->unkA;
+        do {
+            if (e->unk0 == key) {
+                id = e->unk2;
+                gd2->unk7FC[1] = e->unk4;
+                gd2->unk804[1] = e[1].unk4 - e->unk4;
+                break;
+            }
+            e--;
+        } while (e >= start);
+        start = (FieldDirEnt *)(base + ((gs2->unk14->unk28 - t) << 11));
+        e = &start[gs2->unk14->unk24] - 1;
+        do {
+            if (e->unk0 == id) {
+                gd2->unk7FC[0] = e->unk4;
+                gd2->unk804[0] = e[1].unk4 - e->unk4;
+                break;
+            }
+            e--;
+        } while (e >= start);
+        D_8006794C->unk1C->unk8E4.field->unkC->unk10 = id;
+        D_8006794C->unk1C->unk8A8 = -1;
+        D_8006794C->unk1C->unk84A = 0xFFFF;
+        start = (FieldDirEnt *)(base + ((gs2->unk14->unk98 - t) << 11));
+        e = &start[gs2->unk14->unk94] - 1;
+        do {
+            if (e->unk0 == D_8006794C->unk1C->unk81C[0]) {
+                D_8006794C->unk1C->unk8A8 = e->unk4;
+                D_8006794C->unk1C->unk84A = e[1].unk4 - e->unk4;
+                break;
+            }
+            e--;
+        } while (e >= start);
+        func_800AC5F0();
+        func_80022280((s32)D_8006794C->unk1C->unk854[0].unk8, D_8006794C->unk1C->unk854[0].unk10);
+    }
+}
 
 s32 func_800A97D4(FieldScene *arg0, u16 arg1) {
     arg0->unkC = func_8001C7FC(4, arg1 | 0x50000, 0);

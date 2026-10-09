@@ -224,7 +224,8 @@ typedef struct {
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
     u8 unk848;
-    u8 pad849[0x84C - 0x849];
+    u8 pad849;
+    u16 unk84A;
     Unk7D4 *unk84C; /* second (kanji) font table */
     u8 unk850;
     u8 unk851;
@@ -236,7 +237,8 @@ typedef struct {
     u8 unk890;
     u8 pad891;
     u8 unk892;
-    u8 pad893[0x8AC - 0x893];
+    u8 pad893[0x8A8 - 0x893];
+    s32 unk8A8;
     s32 unk8AC;
     u16 unk8B0;
     s16 unk8B2;
@@ -266,7 +268,10 @@ typedef struct {
     u8 pad3C[0x44 - 0x3C];
     s32 unk44;
     s32 unk48;
-    u8 pad4C[0xDC - 0x4C];
+    u8 pad4C[0x94 - 0x4C];
+    s32 unk94;
+    s32 unk98;
+    u8 pad9C[0xDC - 0x9C];
     s32 unkDC; /* battle data file start sector */
 } GameStateUnk14;
 

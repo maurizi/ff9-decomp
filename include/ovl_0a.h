@@ -956,6 +956,13 @@ typedef struct {
     void *unkC; /* actor */
 } FieldObjSlot;
 
+/* field directory entry (func_800A9570): the next entry's unk4 ends this one */
+typedef struct {
+    u16 unk0; /* id */
+    u16 unk2;
+    s32 unk4; /* sector */
+} FieldDirEnt;
+
 /* ---- overlay functions ---- */
 s32 func_800AD944(s32, s32, s32);
 s32 func_800A8588(void);
