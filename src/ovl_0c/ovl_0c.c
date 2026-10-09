@@ -3303,7 +3303,12 @@ void func_800BA2DC(u8 *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BA3F4);
+void func_800BA3F4(s32 arg0, s32 arg1) {
+    s32 ot = D_800CF460[*D_800CF45C];
+
+    func_800B3A80(arg0);
+    D_800CF404 = func_800B3FEC(arg0, D_800CF404, ot);
+}
 
 void func_800BA458(s32 arg0, s32 arg1, u32 arg2) {
     s32 p = D_800CF460[*D_800CF45C] + arg1 * 4;

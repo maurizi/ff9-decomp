@@ -548,7 +548,7 @@ s32 func_800B8498(void);
 s32 func_800B84C0(void);
 s32 func_800C3FE4(s32, Unk800C3FE4 *);
 s32 func_800B828C(s32 *);
-void func_800B3A80(void);
+void func_800B3A80(s32);
 s32 func_800B3FEC(s32, s32, s32);
 void func_800AD114(s32, s32, s32);
 void func_800BC098(void);
