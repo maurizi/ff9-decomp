@@ -13515,7 +13515,10 @@ void func_80061B78(s32 *a) {
     D_80080A70.unk0 &= ~D_80083168.unkC;
 }
 
-s32 func_80061BC8(s32 *p, s32 unused) {
+/* K&R definition: callers pass one or two arguments */
+s32 func_80061BC8(p)
+    s32 *p;
+{
     D_80083168.unk28++;
     (*p)++;
     if (D_80083168.unk3C - 1 < *p) {
@@ -13562,7 +13565,38 @@ void func_80061EE4(void) {
     func_80061E1C(a, b, func_80062118);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80061FBC);
+s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
+    AkaoStream *h;
+
+    if (D_80083168.unkC != 0) {
+        h = (AkaoStream *)(D_80083168.unk0 + 0x80);
+        if (h->unk0 == 0x4F414B41) {
+            SpuSetIRQ(0);
+            SpuSetTransferStartAddr(a);
+            func_80056614();
+            func_80061BC8(&D_80083168.unk34);
+            func_8005709C(D_80083168.unk0 + 0xD0, n - 0xD0);
+            D_80083168.unk20 = h->unk4;
+            D_80083168.unk18 = h->unk20;
+            if (h->unk10 > h->unk20) {
+                SpuSetIRQCallback(cb);
+                D_80083168.unk0 += n;
+                if (D_80083168.unk34 == 0) {
+                    D_80083168.unk0 = (u8 *)D_80083168.unk2C;
+                }
+            } else {
+                SpuSetIRQCallback(func_80060938);
+                b = 0x1030;
+                a = b;
+            }
+            func_800576BC(D_80083168.unk10, a);
+            func_800576BC(D_80083168.unk10 + 1, b);
+            SpuSetIRQAddr(a + 8);
+            SpuSetIRQ(1);
+        }
+    }
+    return a;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062118);
 

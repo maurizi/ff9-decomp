@@ -2176,7 +2176,7 @@ void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
-s32 func_80061BC8(s32 *, s32);
+s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void func_800576BC(s32, s32);
 void func_80062118(void);
@@ -2615,7 +2615,9 @@ void func_80057738(s32, s32);
 void func_80057760(s32, s32);
 /* streamed AKAO sound header (func_800616F8) */
 typedef struct {
-    u8 pad0[0x10];
+    s32 unk0; /* "AKAO" */
+    s32 unk4;
+    u8 pad8[0x10 - 0x8];
     u32 unk10; /* data size */
     u32 unk14; /* loop start offset */
     s32 unk18; /* flags */
