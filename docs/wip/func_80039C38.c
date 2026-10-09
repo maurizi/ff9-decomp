@@ -432,10 +432,10 @@ s32 func_80039C38(void) {
         c = *D_8007B70C->unk0++;
         if (obj != NULL && a < obj->unk4) {
             func_800384D0(obj, a, c, 1);
-            return 1;
+        } else {
+            D_8007B70C->unk0 = D_8007AEA0;
+            D_8007B6F8 = 1;
         }
-        D_8007B70C->unk0 = D_8007AEA0;
-        D_8007B6F8 = 1;
         return 1;
     case 0x16:
         a = func_8004AEDC_inline();
@@ -454,10 +454,10 @@ s32 func_80039C38(void) {
         a = func_8004AEDC_inline();
         if (func_8004B040_inline(CUR_UID()) != NULL && a < func_8004B040_inline(CUR_UID())->unk4) {
             func_800384D0(func_8004B040_inline(CUR_UID()), a, *D_8007B70C->unk0++, 1);
-            return 1;
+        } else {
+            D_8007B70C->unk0 = D_8007AEA0;
+            D_8007B6F8 = 1;
         }
-        D_8007B70C->unk0 = D_8007AEA0;
-        D_8007B6F8 = 1;
         return 1;
     case 0x97:
         obj = func_80038150();
@@ -1195,7 +1195,7 @@ s32 func_80039C38(void) {
     case 0xDB:
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
-            D_8006794C->unk1C->unk3C[a].unk34 = (D_8006794C->unk1C->unk3C[a].unk34 & ~0x400) | ((func_8004AEDC_inline() & 1) << 10);
+            D_8006794C->unk1C->unk3C[a].unk34.w = (D_8006794C->unk1C->unk3C[a].unk34.w & ~0x400) | ((func_8004AEDC_inline() & 1) << 10);
         }
         return 0;
     case 0x67:
@@ -1563,7 +1563,7 @@ s32 func_80039C38(void) {
             }
             d = func_8004AEDC_inline();
             if (d != 0xFF) {
-                ch->unk34 = (ch->unk34 & 0xFFFE0FFF) | ((d & 0x1F) << 12);
+                ch->unk34.w = (ch->unk34.w & 0xFFFE0FFF) | ((d & 0x1F) << 12);
             }
             func_800333B0(a, b & 0xFF, c);
         } else {
@@ -1575,7 +1575,7 @@ s32 func_80039C38(void) {
         a = func_80039C38_chr(func_8004AEDC_inline());
         for (i = 0; i < 4; i++) {
             Character *ch = D_8006794C->unk1C->unk54C[i];
-            if (ch != NULL && (ch->unk34 & 0xF) == a) {
+            if (ch != NULL && (ch->unk34.w & 0xF) == a) {
                 break;
             }
         }
@@ -1589,7 +1589,7 @@ s32 func_80039C38(void) {
         a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
-            a |= (D_8006794C->unk1C->unk3C[i].unk34 >> 11) & 1;
+            a |= (D_8006794C->unk1C->unk3C[i].unk34.w >> 11) & 1;
         }
         b = func_8004AF58_inline();
         for (i = 0; i < 9; i++) {
@@ -1599,7 +1599,7 @@ s32 func_80039C38(void) {
         for (i = 0; i < 4; i++) {
             Character *ch = D_8006794C->unk1C->unk54C[i];
             if (ch != NULL) {
-                b = ch->unk34 & 0xF;
+                b = ch->unk34.w & 0xF;
                 a &= ~(1 << b);
                 D_8007AE70.unk4[i] = b;
             } else {
@@ -1656,7 +1656,7 @@ s32 func_80039C38(void) {
     case 0x62:
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
-            D_8006794C->unk1C->unk3C[a].unk34 = (D_8006794C->unk1C->unk3C[a].unk34 & ~0x200) | ((func_8004AEDC_inline() & 1) << 9);
+            D_8006794C->unk1C->unk3C[a].unk34.w = (D_8006794C->unk1C->unk3C[a].unk34.w & ~0x200) | ((func_8004AEDC_inline() & 1) << 9);
         }
         return 0;
     case 0xE0:

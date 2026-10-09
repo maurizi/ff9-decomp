@@ -268,7 +268,7 @@ typedef struct {
     u16 unk840;
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */
-    u8 unk848;
+    s8 unk848;
     u8 pad849;
     u16 unk84A;
     Unk7D4 *unk84C; /* second (kanji) font table */
