@@ -4,7 +4,35 @@ INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF00);
 
 INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", jtbl_801EDF04);
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801EEA1C);
+/* menu text block */
+INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF38);
+
+void func_801EEA1C(void) {
+    ConfigMenu *m;
+    s32 i;
+
+    func_8003575C(D_801EDF38);
+    func_8002EDFC(&D_801F1558.unk3C, 0xD, 9, 1, 0xB4);
+    m = &D_801F1558;
+    m->unk0 = 0;
+    m->unk2 = 0;
+    m->unk3 = 0;
+    m->unk4 = 0;
+    m->unk5 = 0;
+    m->unk6 = 0;
+    m->unk50[0] = (u8 *)0x801F9F00;
+    m->unk50[1] = (u8 *)0x801FBF00;
+    m->unk4C = m->unk50[D_8006794C->unk1C->unk8 ^ 1];
+    m->unk1 = 0;
+    for (i = 0; i < 9; i++) {
+        if (D_8006794C->unk1C->unk3C[i].unk34.b.unkB) {
+            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(D_8006794C->unk1C->unk3C[i].unk34.b.row);
+            D_801F1558.unk11[D_801F1558.unk1] = i;
+            D_801F1558.unk1++;
+        }
+    }
+    func_8003556C(D_800355DC);
+}
 
 void func_801EEB68(void) {
     ScrollPos sp;
