@@ -2280,6 +2280,13 @@ typedef struct {
     s16 unk48;
 } Unk800DA790;
 
+typedef struct {
+    s32 unk0; /* frames */
+    s32 unk4; /* shade */
+} Unk800E6410;
+
+void func_800D0A0C(u32 *, s32, s32, s32, s32);
+
 /* main exe: candidates for ff9.h */
 void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
 
