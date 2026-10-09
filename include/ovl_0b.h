@@ -1135,6 +1135,17 @@ s32 func_800DA104(s32, s32);
 void func_800DA138(struct Unk800DA1B8 *, Unk80100C78Entry *, s32, s32, s32);
 
 typedef struct {
+    u16 unk0;
+    u16 unk2; /* tpage */
+    u16 unk4; /* clut */
+    u16 pad6;
+    u16 unk8; /* abr, 0xFF = opaque */
+} SprInfo; /* sprite texture info (func_800D2C78) */
+
+void func_800D0858(u32, s32, void *);
+
+
+typedef struct {
     s32 unk0;
     Unk80100C78Entry unk4[11];
 } Unk80100C78;

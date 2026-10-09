@@ -294,7 +294,49 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D23D8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2938);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2C78);
+void func_800D2C78(SprInfo *arg0, s16 arg1, s16 arg2, s16 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+                   CVECTOR *arg9, s32 arg10, s32 arg11) {
+    POLY_FT4 *p;
+    s32 c;
+    u16 tp;
+
+    p = (POLY_FT4 *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(p + 1);
+    p->code = (arg0->unk8 != 0xFF) ? 0x2E : 0x2C;
+    p->clut = arg0->unk4;
+    if (arg0->unk8 != 0xFF) {
+        arg0->unk2 |= (arg0->unk8 & 3) << 5;
+    }
+    tp = arg0->unk2;
+    p->x0 = arg1;
+    c = arg5 + arg7 + arg10;
+    p->x1 = arg1 + arg7 + arg10;
+    p->x3 = arg2 + arg7 + arg10;
+    p->y2 = arg3 + arg8 + arg11;
+    p->y3 = arg4 + arg8 + arg11;
+    p->x2 = arg2;
+    p->y0 = arg3;
+    p->y1 = arg4;
+    p->u2 = arg5;
+    p->u0 = arg5;
+    p->tpage = tp;
+    if (c >= 0x100) {
+        c--;
+    }
+    p->u3 = c;
+    p->u1 = c;
+    c = arg6 + arg8 - arg11;
+    p->v1 = arg6;
+    p->v0 = arg6;
+    if (c >= 0x100) {
+        c--;
+    }
+    p->v3 = c;
+    p->v2 = c;
+    *(u16 *)&p->r0 = *(u16 *)&arg9->r;
+    p->b0 = arg9->b;
+    func_800D0858(0x09000000, 0xFFE, p);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2DBC);
 
