@@ -1930,7 +1930,39 @@ s32 func_800B2328(s32 arg0) {
     return -1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B238C);
+void func_800B238C(void) {
+    FieldScene *o;
+    FileEntry *base;
+    s32 i;
+    s32 j;
+    s32 id;
+    s32 key;
+    s32 v;
+    s32 w;
+
+    o = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    o->unk3C = D_8006794C->unk1C->unk81C[0];
+    key = (u16)o->unkA;
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk3E = D_8006794C->unk1C->unk820[0];
+    base = D_8006794C->unk1C->unk7E4->unk4;
+    key |= 0x110000;
+    w = key;
+    for (i = 0; i < D_8006794C->unk1C->unk7E4->unk2; i++) {
+        id = base[i].unkC;
+        if (base[i].unk0 == w && ((id >> 16) & 0xFF) == 7) {
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk3C = id;
+            for (j = 0; j < D_8006794C->unk1C->unk7E4->unk2; j++) {
+                w = base[j].unkC;
+                v = base[j].unk0;
+                if (((base[j].unk0 >> 16) & 0xFF) == 9 && w == id) {
+                    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk3E = v;
+                    return;
+                }
+            }
+            return;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2528);
 
@@ -2316,7 +2348,35 @@ s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3F8C);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B4894);
+s32 func_800B4894(void) {
+    FieldScene *s;
+
+    if ((u32)(D_8006794C->unk1C->unk851 - 1) < 5) {
+        return 1;
+    }
+    s = D_8006794C->unk1C->unk8E4.field->unkC->unk14;
+    if (s->unk0 & 0x800000) {
+        if (func_80021FB4() <= 0) {
+            func_800223CC();
+            if (!(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
+                func_800B3B2C(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20);
+                func_800B3F8C();
+                D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100000;
+            }
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x800000;
+        }
+        return 1;
+    }
+    if (s->unk0 & 0x100000) {
+        return 0;
+    }
+    if (s->unk0 & 0x10000) {
+        func_800B3B2C(s->unk20);
+        func_800B3F8C();
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100000;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B4A5C);
 
@@ -4789,7 +4849,22 @@ s32 func_800C1C30(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1CC0);
+s32 func_800C1CC0(void) {
+    u32 i;
+    s32 ret;
+    s32 type;
+
+    ret = 1;
+    for (i = 0; i < D_800C9DA4.unk24; i++) {
+        type = D_800C9DA4.unk28[i].unk0;
+        if (type == 0x10) {
+            type = 0;
+        } else if (type == 0x40) {
+            type = ret;
+        }
+    }
+    return ret;
+}
 
 s32 func_800C1D08(void) {
     return 1;
@@ -4853,7 +4928,43 @@ s32 func_800C1E14(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1F98);
+Unk800C9E00 *func_800C1F98(Unk800C9DF4 *arg0, Unk800C9E00 *arg1, s32 arg2) {
+    Unk800C9E00 *n;
+    Unk8004AB64 *a;
+    s16 id;
+    u8 m;
+    u8 mode;
+
+    id = arg1->unk18[arg2];
+    if (id == -1) {
+        goto fail;
+    }
+    n = &D_800C9DF0.unk10[id];
+    if (!(n->unk0 & 1)) {
+        goto fail;
+    }
+    if ((m = (n->unk0 >> 8) & D_800C9DF0.unk1) & 0xC0) {
+        mode = D_8006794C->unk8;
+        if (mode == 5) {
+            a = (Unk8004AB64 *)D_8006794C->unk1C->unk8E0[D_8006794C->unk1C->unk8E4.field->unk8].unkC;
+        } else if (mode == 1) {
+            a = func_8004AE00();
+        } else {
+            a = NULL;
+        }
+        if (arg0->unk24 == a) {
+            if (m & 0x80) {
+            fail:
+                return NULL;
+            }
+            return n;
+        }
+        if (m & 0x40) {
+            return NULL;
+        }
+    }
+    return n;
+}
 
 /* closest point to arg0 on segment arg1-arg2 -> arg3; returns squared distance */
 s32 func_800C20BC(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, SVECTOR *arg3, s16 *arg4) {
