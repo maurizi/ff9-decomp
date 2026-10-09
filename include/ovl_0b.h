@@ -162,6 +162,10 @@ typedef struct {
     DRAWENV unk5C; /* previous */
 } DrawEnvPair; /* 0xB8 */
 
+/* same as a GNU statement expression: the operand order around it differs
+ * from the inline function (func_800B3188) */
+#define RAND8() ({ if (D_8007B720 >= D_8007B92D) { func_8004BF20(); } (s32)*D_8007B720++; })
+
 /* next byte of the random table, refilling it when exhausted (inlined) */
 static inline s32 rand8_inline(void) {
     if (D_8007B720 >= D_8007B92D) {

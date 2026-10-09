@@ -1573,7 +1573,50 @@ void func_800B3090(BtlCmd *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B3188);
+s32 func_800B3188(BtlCmd *arg0) {
+    u16 buf[4];
+    s16 n;
+    s16 m;
+    s32 i;
+    u32 mask = 0;
+    u32 side;
+    BtlUnit *v;
+
+    if ((u32)(arg0->unkE - 14) >= 2 && arg0->unkE != 0x33 && (arg0->unk8->unk8 & 1) &&
+        !(arg0->unk4->unkC4[0] & 0x40000000)) {
+        n = 0;
+        m = 0;
+        v = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+        side = (u16)arg0->unkC >= 0x10;
+        for (; v != NULL; v = v->unk0) {
+            if (v->unkB0 & (u16)arg0->unkC) {
+                if (!(v->unk3C & 1) && (u8)func_800C09A4(v, 0x20000000)) {
+                    m++;
+                    mask |= v->unkB0;
+                }
+            } else if (!(v->unk3C & 0x100) && (v->unk68 & 1) == side && ((v->unk68 >> 28) & 1)) {
+                buf[n++] = v->unkB0;
+            }
+        }
+        if (m != 0 && n != 0) {
+            for (i = 0; i < 4; i++) {
+                if (i < m) {
+                    arg0->unk4->unk1C[i] = buf[RAND8() % n];
+                } else {
+                    arg0->unk4->unk1C[i] = 0;
+                }
+            }
+            if ((u16)mask == (u16)arg0->unkC) {
+                arg0->unk10.b.unk0_7 = 1;
+                arg0->unkC = func_800B4478(arg0->unk4->unk1C);
+            } else {
+                arg0->unk10.b.unk0_7 = 2;
+                arg0->unkC &= ~mask;
+            }
+        }
+    }
+    return (u16)mask;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B3460);
 
