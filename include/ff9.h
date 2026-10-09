@@ -2549,4 +2549,5 @@ typedef struct {
     u16 unk14;
 } Unk80032E84Out;
 void func_80032E84(Unk80032E84In *, Unk80032E84Out *);
+extern void (*D_8006BD28[])(Unk80077C78 *, s32);
 #endif

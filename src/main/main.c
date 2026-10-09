@@ -3627,7 +3627,25 @@ void func_8002F55C(s32 a) {
     D_8006794C->unk1C->unk83C(0x5100, a, 0, 0, 0);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F5A0);
+s32 func_8002F5A0(void (*fn)(void)) {
+    Unk80077C78 *p = &D_80077C78;
+    s32 d = p->unk8 - p->unkC;
+    Unk4 c1;
+    Unk4 c2;
+
+    if (p->unk2 == 0) {
+        return 0;
+    }
+    c1 = p->unk20;
+    c2 = *(Unk4 *)&p->unk24;
+    func_8002F93C(p->unkA ^ 0x800);
+    func_8002FC8C(D_80077C78.unk0, p->unk1, 0, c2.unk0[0] | (c2.unk0[1] << 8) | (c2.unk0[2] << 16));
+    func_8002FC8C(D_80077C78.unk0, p->unk1, p->unk8, c1.unk0[0] | (c1.unk0[1] << 8) | (c1.unk0[2] << 16));
+    D_8006BD28[D_80077C78.unk0](p, d);
+    p->unk10 = (s32)fn;
+    p->unkC += d;
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002F6C8);
 
