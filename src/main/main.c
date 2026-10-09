@@ -9085,7 +9085,42 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047B90);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047E1C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004883C);
+void func_8004883C(void) {
+    Unk8007AECC *e = D_8007AECC;
+    Unk8004AB64 *p;
+    Unk8004AB64 *o;
+    Unk8007AECC *e2;
+
+    if (e == NULL || e->unk16EC == 0) {
+        return;
+    }
+    e->unk1700 -= e->unk1700 > 0;
+    if (e->unk1700 != 0) {
+        return;
+    }
+    o = func_8004B040_inline(e->unk16ED);
+    if (o == NULL || o->unk5 != 4) {
+        return;
+    }
+    p = o;
+    if (p->unk3A != p->unk38 - 1) {
+        return;
+    }
+    e2 = D_8007AECC;
+    if (e2->unk1700 >= 0) {
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+        }
+        e2->unk1700 = (*D_8007B720++ + 0xC8) * 2;
+    }
+    if (p->unk74 != 0 && !(p->unk62 & 0x84)) {
+        func_8004883C_idle(p);
+        if (p->unk7 == D_8007AECC->unk16ED) {
+            D_8007B710++;
+        }
+        p->unk62 |= 2;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80048A5C);
 

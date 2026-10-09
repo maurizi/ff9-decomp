@@ -1034,7 +1034,7 @@ typedef struct Unk8004AB64 {
     u8 unk71;
     u8 unk72;
     u8 unk73;
-    s16 unk74;
+    u16 unk74; /* idle animation */
     u16 unk76;
     s32 unk78;
     union { u32 w; u8 b[4]; } unk7C; /* colour */
@@ -3573,5 +3573,12 @@ static inline u16 func_80038D3C_pick(void) {
     return *(u16 *)((u8 *)t + i); /* i is a byte offset into unk0..unk6 */
 }
 #endif
+
+/* start an object's idle animation (func_8004883C) */
+static inline void func_8004883C_idle(Unk8004AB64 *q) {
+    q->unk60 = 0;
+    q->unk61 = 0xFF;
+    func_80039C38_anim(q, q->unk74);
+}
 
 #endif
