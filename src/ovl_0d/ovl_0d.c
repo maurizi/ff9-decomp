@@ -311,7 +311,53 @@ s32 func_800ABEBC(s32 arg0, s32 arg1) {
     return arg1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800ABEC4);
+void func_800ABEC4(TmState *s) {
+    TmPos pos;
+    s32 n;
+    s32 dir;
+    s32 y;
+    u8 arrows;
+    s32 owner;
+    TmCard *c;
+    s32 v;
+
+    n = 0;
+    s->unk57C = 0;
+    c = func_800AEE08(s, s->unk424, s->unk428);
+    owner = c->unk14;
+    arrows = c->unk1;
+    for (dir = 0; dir < 8; dir++) {
+        if (arrows & 1) {
+            pos.unk0 = s->unk424;
+            pos.unk4 = s->unk428;
+            if (func_800B12F0(s, &pos, dir, owner) != NULL) {
+                s->unk42C = pos.unk0;
+                y = pos.unk4;
+                s->unk2E8 = 0;
+                s->unk430 = y;
+                s->unk4B0 = func_800B19D4(s, s->unk424, s->unk428)->unk4;
+                s->unk48C[n] = func_800B19D4(s, pos.unk0, pos.unk4)->unk4;
+                n++;
+            }
+        }
+        arrows >>= 1;
+    }
+    if (n == 1) {
+        s->unk0 = 7;
+    } else if (n >= 2) {
+        if (s->unk434 == 0 && s->unk438 == 0) {
+            s->unk2E8 = 0;
+            s->unk4AC = n;
+            s->unk0 = 6;
+        } else {
+            s->unk0 = 7;
+        }
+    } else if (func_800B0EB8(s, owner, s->unk424, s->unk428, (TmCard *)-1) != 0) {
+        func_800B1110(s, owner, s->unk424, s->unk428, 8, 1);
+    } else {
+        s->unk0 = 8;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC060);
 
@@ -581,7 +627,60 @@ TmCard *func_800AE9D0(TmState *arg0, s32 arg1, s32 arg2) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AEA24);
+void func_800AEA24(TmState *s) {
+    TmCard *c;
+    TmCard *base;
+    TmCardData *tbl;
+    s32 v;
+    s32 i;
+    s32 r;
+    u8 id;
+
+    tbl = (TmCardData *)0x80103800;
+    base = s->unk10;
+
+    for (i = 0; i < 10; i++) {
+        c = &base[i];
+        c->unkC = 0xDC;
+        c->unk10 = i * 30;
+        c->unk14 = 0;
+        c->unk18 = 0;
+        c->unk8 = 0;
+        c->unk30 = 0x28;
+        c->unk0 = 0;
+        c->unk1 = func_80062B3C();
+        c->unk2 = func_80062B3C();
+        r = func_80062B3C() & 3;
+        switch (r) {
+        case 0:
+            c->unk3 = 0;
+            break;
+        case 1:
+            c->unk3 = r;
+            break;
+        case 2:
+            c->unk3 = 3;
+            break;
+        case 3:
+            c->unk3 = 2;
+            break;
+        }
+        c->unk4 = func_80062B3C();
+        c->unk5 = func_80062B3C();
+        id = i;
+        c->unk0 = id;
+        c->unk1 = func_80062B3C();
+        c->unk2 = tbl[id].unk0;
+        c->unk3 = tbl[id].unk1;
+        c->unk4 = tbl[id].unk2;
+        v = tbl[id].unk3;
+        c->unk34 = 0;
+        c->unk5 = v;
+    }
+    for (i = 5; i < 10; i++) {
+        base[i].unk34 = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AEBB4);
 

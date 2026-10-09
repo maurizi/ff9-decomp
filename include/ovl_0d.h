@@ -15,7 +15,8 @@ typedef struct {
     u8 unk3;
     u8 unk4;
     u8 unk5;
-    u8 pad6[0xC - 6];
+    u8 pad6[2];
+    s32 unk8;
     s32 unkC;  /* x */
     s32 unk10; /* y */
     s32 unk14; /* owner: 0 player, 1 enemy */
@@ -60,6 +61,14 @@ typedef struct {
 } TmFileEntry; /* file table loaded at 0x80104A00 */
 
 typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+} TmCardData; /* card stats table loaded at 0x80103800 */
+
+typedef struct {
     s32 unk0; /* state */
     s32 unk4;
     s32 unk8;
@@ -78,7 +87,7 @@ typedef struct {
     s32 unk42C;
     s32 unk430;
     s32 unk434;
-    u8 pad438[0x43C - 0x438];
+    s32 unk438;
     s32 unk43C; /* wins */
     s32 unk440; /* losses */
     s32 unk444; /* draws */
@@ -97,7 +106,10 @@ typedef struct {
     s32 unk47C;
     u8 pad480[0x484 - 0x480];
     s32 unk484;
-    u8 pad488[0x4B4 - 0x488];
+    u8 pad488[0x48C - 0x488];
+    TmCard *unk48C[8];
+    s32 unk4AC;
+    TmCard *unk4B0;
     s32 unk4B4;
     Window *unk4B8;
     s32 unk4BC;
@@ -187,6 +199,7 @@ void func_800AB8E8(s32);
 void func_800AE54C(TmState *);
 void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
+TmCard *func_800B12F0(TmState *, TmPos *, s32, s32);
 void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
 s32 func_800AE94C(TmState *, s32);
