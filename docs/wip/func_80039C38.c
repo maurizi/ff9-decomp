@@ -1433,26 +1433,26 @@ s32 func_80039C38(void) {
         return 0;
     case 0xC5:
         a = func_8004AF58_inline();
-        D_8006794C->unk1C->unk83C(a, func_8004AF58_inline(), 0, 0, 0);
+        ((s32 (*)(s32, s32, s32, s32, s32))D_8006794C->unk1C->unk83C)(a, func_8004AF58_inline(), 0, 0, 0);
         return 0;
     case 0xC6:
         a = func_8004AF58_inline();
         b = func_8004AF58_inline();
         c = func_8004B914_inline();
-        D_8006794C->unk1C->unk83C(a, b, c, 0, 0);
+        ((s32 (*)(s32, s32, s32, s32, s32))D_8006794C->unk1C->unk83C)(a, b, c, 0, 0);
         return 0;
     case 0xC7:
         a = func_8004AF58_inline();
         b = func_8004AF58_inline();
         c = func_8004B914_inline();
-        D_8006794C->unk1C->unk83C(a, b, c, func_8004AEDC_inline(), 0);
+        ((s32 (*)(s32, s32, s32, s32, s32))D_8006794C->unk1C->unk83C)(a, b, c, func_8004AEDC_inline(), 0);
         return 0;
     case 0xC8:
         a = func_8004AF58_inline();
         b = func_8004AF58_inline();
         c = func_8004B914_inline();
         d = func_8004AEDC_inline();
-        D_8006794C->unk1C->unk83C(a, b, c, d, func_8004AEDC_inline());
+        ((s32 (*)(s32, s32, s32, s32, s32))D_8006794C->unk1C->unk83C)(a, b, c, d, func_8004AEDC_inline());
         return 0;
     case 0x89: {
         u8 vol, pan;
@@ -1764,7 +1764,7 @@ s32 func_80039C38(void) {
         return 0;
     case 0xFD:
         a = func_8004AEDC_inline();
-        ((void (*)(s32, s32))D_8006794C->unk1C->unk8BC)(a & 0xFF, func_8004AF58_inline() & 0xFFFF);
+        ((s32 (*)(s32, s32))D_8006794C->unk1C->unk8BC)(a & 0xFF, func_8004AF58_inline() & 0xFFFF);
         return 0;
     case 0xFF:
         op = D_8007B6F4 | 0xFF00;
