@@ -649,9 +649,12 @@ typedef struct {
     s32 unk70;
     u8 pad74[0x78 - 0x74];
     s32 unk78;
-    u8 pad7C[0x84 - 0x7C];
+    s32 unk7C;
+    u8 pad80[0x84 - 0x80];
     u32 unk84;
-    u8 pad88[0x94 - 0x88];
+    u8 pad88[0x8C - 0x88];
+    s32 unk8C;
+    s32 unk90;
     u16 unk94;
     u16 unk96;
     u16 unk98;
@@ -662,7 +665,7 @@ typedef struct {
     u16 unkA2[4]; /* loop counters */
     u16 unkAA[4];
     u16 unkB2;
-    u8 padB4[0xB6 - 0xB4];
+    u16 unkB4;
     s16 unkB6;
     s16 unkB8;
     s16 unkBA;
@@ -697,9 +700,11 @@ typedef struct {
     s16 unkF6;
     u16 unkF8;
     s16 unkFA;
-    u8 padFC[0x100 - 0xFC];
+    s16 unkFC;
+    u8 padFE[0x100 - 0xFE];
     u16 unk100;
-    u8 pad102[0x106 - 0x102];
+    u8 pad102[0x104 - 0x102];
+    s16 unk104;
     s16 unk106;
     s16 unk108;
     s16 unk10A;
@@ -2469,4 +2474,9 @@ typedef struct {
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
 #define SPU_REG16(a) (*(u16 *)(a))
 extern s16 D_80080AC2;
+typedef struct {
+    s32 unk0;
+    u16 unk4;
+} Unk8005B30C;
+extern s32 D_80080A28;
 #endif
