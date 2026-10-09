@@ -2013,6 +2013,32 @@ typedef struct {
 extern CdRequest D_80076178;
 extern CdRequest D_800761A8;
 extern Unk8004AB64 *D_8007B704;
+
+/* Same as func_8004AEDC_inline, but written as `>>= (D_8007B6F8 = 1)` (srav). */
+static inline s32 func_8004AEDC_inline2(void) {
+    s32 r;
+    if (D_8007B6F4 & 1) {
+        func_80052DA0();
+        r = func_80052D40();
+    } else {
+        r = *D_8007B70C->unk0++;
+    }
+    D_8007B6F4 >>= (D_8007B6F8 = 1);
+    return r;
+}
+
+/* Inlined copy of func_8004B4C4 (resolve a script object reference). */
+static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
+    if (id == 0xFF) {
+        return D_8007B704;
+    }
+    if (id == 0xFA) {
+        id = D_8007AECC->unk16ED;
+    } else if ((u32)(id - 0xFB) < 4) {
+        id = D_8007AECC->unk16E4[id - 0xFB];
+    }
+    return func_8004B040_inline(id);
+}
 extern s32 D_8007B710;
 extern s32 D_8007BBC8;
 extern s32 D_8007BBE0;
