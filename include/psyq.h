@@ -642,6 +642,103 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "sh\t$14, 8(%0)" \
     : : "r"(r0) : "$12", "$13", "$14", "memory")
 
+#define gte_stsv(r0) __asm__ volatile( \
+    "mfc2\t$12, $9;" \
+    "mfc2\t$13, $10;" \
+    "mfc2\t$14, $11;" \
+    "sh\t$12, 0(%0);" \
+    "sh\t$13, 2(%0);" \
+    "sh\t$14, 4(%0)" \
+    : : "r"(r0) : "$12", "$13", "$14", "memory")
+
+/* Square's bone rotation decoder (field func_800B7F14, world map func_800C96AC):
+ * r0 -> two words holding three 16-bit offsets/constants and their flags,
+ * r1 = animation base, r2 = frame, r3 -> SVECTOR result (x | y << 16, z).
+ * The first form reads one signed byte per axis (<< 4); the second adds the
+ * low nibbles packed two frames per byte. */
+#define gte_ldrotkey(r0, r1, r2, r3) __asm__ volatile( \
+    "lw\t$11, 4(%0);" \
+    "lw\t$10, 0(%0);" \
+    "srl\t$12, $11, 16;" \
+    "andi\t$13, $12, 1;" \
+    "bnez\t$13, 1f;" \
+    "andi\t$9, $10, 0xFFFF;" \
+    "addu\t$9, $9, %1;" \
+    "addu\t$9, $9, %2;" \
+    "lb\t$9, 0($9);" \
+    "1:;" \
+    "andi\t$13, $12, 2;" \
+    "sll\t$9, $9, 4;" \
+    "bnez\t$13, 2f;" \
+    "srl\t$10, $10, 16;" \
+    "addu\t$10, $10, %1;" \
+    "addu\t$10, $10, %2;" \
+    "lb\t$10, 0($10);" \
+    "2:;" \
+    "andi\t$13, $12, 4;" \
+    "sll\t$10, $10, 20;" \
+    "bnez\t$13, 3f;" \
+    "andi\t$11, $11, 0xFFFF;" \
+    "addu\t$11, $11, %1;" \
+    "addu\t$11, $11, %2;" \
+    "lb\t$11, 0($11);" \
+    "3:;" \
+    "andi\t$9, $9, 0xFFFF;" \
+    "or\t$13, $10, $9;" \
+    "sll\t$11, $11, 4;" \
+    "sw\t$13, 0(%3);" \
+    "sw\t$11, 4(%3)" \
+    : : "r"(r0), "r"(r1), "r"(r2), "r"(r3) : "$9", "$10", "$11", "$12", "$13", "memory")
+#define gte_ldrotkey_lo(r0, r1, r2, r3) __asm__ volatile( \
+    "srl\t$8, %2, 1;" \
+    "andi\t$14, %2, 1;" \
+    "lw\t$11, 4(%0);" \
+    "lw\t$10, 0(%0);" \
+    "srl\t$12, $11, 16;" \
+    "andi\t$13, $12, 1;" \
+    "bnez\t$13, 1f;" \
+    "andi\t$9, $10, 0xFFFF;" \
+    "addu\t$9, $9, %1;" \
+    "addu\t$9, $9, $8;" \
+    "lb\t$9, 0($9);" \
+    "beqz\t$14, 1f;" \
+    "nop;" \
+    "srl\t$9, $9, 4;" \
+    "1:;" \
+    "andi\t$13, $12, 2;" \
+    "andi\t$9, $9, 0xF;" \
+    "bnez\t$13, 2f;" \
+    "srl\t$10, $10, 16;" \
+    "addu\t$10, $10, %1;" \
+    "addu\t$10, $10, $8;" \
+    "lb\t$10, 0($10);" \
+    "beqz\t$14, 2f;" \
+    "nop;" \
+    "srl\t$10, $10, 4;" \
+    "2:;" \
+    "andi\t$13, $12, 4;" \
+    "andi\t$10, $10, 0xF;" \
+    "bnez\t$13, 3f;" \
+    "andi\t$11, $11, 0xFFFF;" \
+    "addu\t$11, $11, %1;" \
+    "addu\t$11, $11, $8;" \
+    "lb\t$11, 0($11);" \
+    "beqz\t$14, 3f;" \
+    "nop;" \
+    "srl\t$11, $11, 4;" \
+    "3:;" \
+    "andi\t$13, $12, 4;" \
+    "andi\t$11, $11, 0xF;" \
+    "lw\t$12, 0(%3);" \
+    "lw\t$13, 4(%3);" \
+    "or\t$12, $12, $9;" \
+    "sll\t$10, $10, 16;" \
+    "or\t$12, $12, $10;" \
+    "or\t$13, $13, $11;" \
+    "sw\t$12, 0(%3);" \
+    "sw\t$13, 4(%3)" \
+    : : "r"(r0), "r"(r1), "r"(r2), "r"(r3) : "$8", "$9", "$10", "$11", "$12", "$13", "$14", "memory")
+
 long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3, long *sxy0, long *sxy1, long *sxy2, long *sxy3, long *p, long *flag);
 int MargePrim(void *p0, void *p1);
 void SetLightMatrix(MATRIX *m);
