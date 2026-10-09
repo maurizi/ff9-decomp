@@ -295,9 +295,15 @@ typedef struct {
     s32 unk0; /* flags: 1 = loaded */
     s32 unk4; /* file id */
     Unk800C95C8 *unk8;
-    s32 unkC;
+    Unk8004AB64 *unkC;
 } WmObjSlot;
 s32 func_8004AB64(Unk8004AB64 *);
+void func_800C709C(Unk800C95C8 *, u8);
+void func_800C7914(Unk800C95C8 *, u8);
+void func_800C9484(Unk800C95C8 *);
+void func_800C96AC(Unk800C95C8 *, u8);
+void func_800C9FCC(Unk800C95C8 *, u8);
+void func_800CA1D8(Unk800C95C8 *, u8);
 u8 *func_800634A8(s32);
 u8 *func_800634D8(s32);
 
@@ -403,27 +409,39 @@ typedef struct {
     s16 pad;
 } Unk800D3FA0Sub; /* 0xC */
 
+/* sky / lighting parameter block (0x5E bytes); func_800C3954 blends them */
+typedef struct {
+    SVECTOR unk0[3]; /* light directions */
+    SVECTOR unk18;
+    u8 unk20; /* back colour 1 */
+    u8 pad21;
+    u8 unk22;
+    u8 pad23;
+    u8 unk24;
+    u8 pad25[3];
+    u8 unk28; /* back colour 2 */
+    u8 pad29;
+    u8 unk2A;
+    u8 pad2B;
+    u8 unk2C;
+    u8 pad2D[3];
+    Unk800D3FA0Sub unk30[3];
+    s16 unk54[3];
+    u8 pad5A[2];
+    u16 unk5C;
+} WmSky; /* 0x5E */
+
 typedef struct {
     u8 pad0[0x14A];
     s16 unk14A;
     s16 unk14C;
     u8 pad14E[0x5E0 - 0x14E];
-    SVECTOR unk5E0[3];
-    SVECTOR unk5F8;
-    u8 unk600; /* back colour 1 */
-    u8 pad601;
-    u8 unk602;
-    u8 pad603;
-    u8 unk604;
-    u8 pad605[3];
-    u8 unk608; /* back colour 2 */
-    u8 pad609;
-    u8 unk60A;
-    u8 pad60B;
-    u8 unk60C;
-    u8 pad60D[3];
-    Unk800D3FA0Sub unk610[3];
+    WmSky unk5E0[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
 } Unk800D3FA0;
+void func_800C3954(WmSky *, WmSky *, WmSky *, s32, s32);
+void func_800C2830(void);
+void func_800B9774(void);
+void func_800B8664(void);
 
 typedef struct {
     s16 unk0;
@@ -454,7 +472,21 @@ typedef struct {
     Unk800AA39CEntry unk4[1];
 } Unk800AA39C;
 
+/* streamed load request (func_800AC424) */
+typedef struct {
+    u8 pad0[8];
+    s32 unk8; /* address */
+    s32 unkC; /* offset */
+    s32 unk10; /* size */
+} Unk800AC424;
+
 /* ---- overlay functions ---- */
+s32 func_800A9DE4(WorldMapObj *, s16);
+s32 func_800A9E24(s16, s32 *, s32 *);
+s32 func_800A9EC4(s32, s32 *, s32 *);
+s32 func_800A9FC0(s16, s32 *, s32 *);
+s32 func_800AA060(s32, s32 *, s32 *);
+void func_800B8024(void);
 void func_800CB9D8(s32, s32);
 void func_800B4270(void *);
 s32 func_800B4FD4(void *, s32, s32);
@@ -792,6 +824,7 @@ extern s8 D_800CE1F2;
 extern s32 D_800D3E60; /* navi mode */
 extern u8 D_800D3E64;
 extern s32 D_800D3E6C;
+extern POLY_G3 *D_800D3E7C;
 extern POLY_FT4 *D_800D3E68;
 extern s8 D_800D3E75;
 extern s32 D_800CCE40;
@@ -994,6 +1027,10 @@ extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
+void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
+void func_80030AF4(SVECTOR *, MATRIX *);
+s32 func_8004BB7C(s32); /* cos */
+s32 func_8004BB80(s32); /* sin */
 void func_800639D4(u16);
 s32 func_80050D38(s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
@@ -1030,6 +1067,7 @@ extern s32 D_800CD70C; /* marker snap distance */
 extern s32 D_800CD108;
 typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
+extern Unk800A7FB8 D_800A8020; /* radar arrow */
 extern RECT D_800A71D8;
 extern char D_800A7F48[]; /* encounter fallback message */ /* palette area (func_800B69B4) */
 extern CVECTOR D_800A7FF0; /* marker colours */

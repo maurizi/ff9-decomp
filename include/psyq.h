@@ -468,6 +468,7 @@ void SetColorMatrix(MATRIX *m);
 MATRIX *CompMatrix(MATRIX *m0, MATRIX *m1, MATRIX *m2);
 void SetRotMatrix(MATRIX *m);
 VECTOR *ApplyMatrixLV(MATRIX *m, VECTOR *v0, VECTOR *v1);
+VECTOR *ApplyMatrix(MATRIX *m, SVECTOR *v0, VECTOR *v1);
 void SetTransMatrix(MATRIX *m);
 void SetPolyFT4(POLY_FT4 *p);
 void SetPolyF4(POLY_F4 *p);

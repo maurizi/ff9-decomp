@@ -234,7 +234,7 @@ s32 func_800AA08C(Unk800AA08C *arg0) {
     GameData *gd = D_8006794C->unk1C;
     u8 *cd = gd->unk854;
     Battle *b = gd->unk8E4.battle;
-    func_8002177C(cd, gd->unk7FC, gd->unk804 << 11, (void *)arg0->unk24, 0, 0x2800, 0);
+    func_8002177C(cd, gd->unk7FC[0], gd->unk804[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
     while (func_800217C4(cd) != 0) {
     }
     b->unk1354->unk0[2] = (void *)v;

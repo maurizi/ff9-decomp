@@ -1092,7 +1092,7 @@ s32 func_800C3EC0(s32, s16, s16, s16);
 s32 func_800C3608(Unk800C9DF4 *);
 s32 func_800C79B0(u32);
 s32 func_800C6E94(void);
-void func_800A87DC(FieldMapObj *, s32);
+s32 func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
 extern u32 D_80076F80[]; /* VRAM save buffer */
