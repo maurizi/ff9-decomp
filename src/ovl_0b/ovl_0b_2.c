@@ -5752,7 +5752,26 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE7F8);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EE938);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EEA98);
+s32 func_800EEA98(s32 arg0) {
+    Unk80104F88Entry *e = D_80104FE4->unkB4;
+    Battle16CC *a = &D_8006794C->unk1C->unk8E4.battle->unk16CC[arg0];
+
+    if (e->unk19 != 0 && e->unk3DC[arg0] == 0 && (s16)*e->unk1C[arg0] < (s16)e->unk31C[arg0]) {
+        return 0;
+    }
+    if (a->unk8 & 2) {
+        if ((u8)func_800C09A4(D_80104FE4, 8)) {
+            return 1;
+        }
+        if ((D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 >> 9) & 1) {
+            return 1;
+        }
+    }
+    if (func_800EF598((BtlCmd8 *)a) > D_80104FE4->unk2A) {
+        return 1;
+    }
+    return 2;
+}
 
 void func_800EEBB8(Window *arg0) {
     RECT *r = &arg0->unk8;

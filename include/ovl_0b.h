@@ -2167,6 +2167,7 @@ extern u8 D_800F71E4[];
 void func_800CB1D4(u16, u16 *, u16 *);
 void func_800C2FFC(s32);
 void func_800CA28C(BtlCmd8 *, BtlCmd8 *);
+s32 func_800EF598(BtlCmd8 *);
 void func_800C9EE0(Unk800C9EE0 *, BtlUnit *, s32 *, s32);
 void func_800CA0A0(Unk800C9D1C *, BtlUnit *);
 void func_800C9D1C(Unk800C9D1C *, Battle4880 *);
