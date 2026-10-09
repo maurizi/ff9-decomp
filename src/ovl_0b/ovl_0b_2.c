@@ -6612,7 +6612,59 @@ s32 func_800F1B78(void) {
     return n >= 2;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F1BFC);
+void func_800F1BFC(Window *arg0) {
+    Window *w = arg0;
+    s32 n = 0;
+    BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    Unk80105020 *b = func_800F1548();
+    Unk80105078 *m = func_800F3EA4();
+    u32 c;
+    s32 y;
+    s32 x;
+    s32 k;
+    s32 yy;
+    Unk80068EE8 *d;
+    SprtWords *p;
+    DR_TPAGE *t;
+
+    if (b->unk2 == 0 || arg0->unk1C != 3 || m->unk0 == 0) {
+        return;
+    }
+    c = 0x64808080;
+    if (b->unk2 >= 2 && !(D_80104E80 & 3)) {
+        c = 0x64404040;
+    }
+    y = w->unk2 + 5;
+    x = w->unk0 - 0xE;
+    for (; u != NULL; u = u->unk0) {
+        if (!(u->unk68 & 1)) {
+            continue;
+        }
+        if (u == b->unk4[n]) {
+            for (k = 0, yy = y; k < 2; k++, yy += 6) {
+                d = &D_80068EE8[k];
+                setlen(D_80077170, 4);
+                p = (SprtWords *)D_80077170;
+                p->rgbc = c;
+                p->xy = x | (yy << 16);
+                p->uvclut = d->unk0;
+                p->wh = d->unk4 | (d->unk5 << 16);
+                addPrim(&D_8007716C[arg0->unk18 - 1], p);
+                D_80077170 = (u8 *)(p + 1);
+            }
+            n++;
+            if (n >= b->unk2) {
+                break;
+            }
+        }
+        y += 0xC;
+    }
+    setlen(D_80077170, 1);
+    t = (DR_TPAGE *)D_80077170;
+    t->code[0] = (D_80068EEE & 0x9FF) | 0xE1000600;
+    addPrim(&D_8007716C[arg0->unk18], t);
+    D_80077170 = (u8 *)(t + 1);
+}
 
 void func_800F1E84(Window *arg0) {
     u8 a[8];
