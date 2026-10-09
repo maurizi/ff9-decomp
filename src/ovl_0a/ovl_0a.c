@@ -1846,7 +1846,23 @@ void func_800B5114(void) {
     D_800C9D5C[D_800CA058.unk0].unk0();
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B51D0);
+/* leave the current field mode */
+void func_800B51D0(void) {
+    FieldMap *f;
+    s32 i;
+
+    if (D_800C9D5C[D_800CA058.unk0].unk8 != NULL) {
+        D_800C9D5C[D_800CA058.unk0].unk8();
+    }
+    DrawSync(0);
+    for (i = 0; i < 2; i++) {
+        D_80073998[i] = D_800CA058.unk8[i];
+    }
+    f = D_8006794C->unk1C->unk8E4.field;
+    f->unk0 |= 0x10000;
+    func_8001DE50((GameState *)f);
+    func_800A9570();
+}
 
 void func_800B5290(void) {
     GameData *gd = D_8006794C->unk1C;
