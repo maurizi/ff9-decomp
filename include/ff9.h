@@ -933,9 +933,12 @@ typedef struct Unk8004AB64 {
     u8 pad3C[0x40 - 0x3C];
     VECTOR unk40; /* previous position */
     u16 unk50; /* flags */
-    u8 pad52[0x62 - 0x52];
+    u8 pad52[0x60 - 0x52];
+    u8 unk60;
+    u8 unk61;
     u8 unk62;
-    u8 pad63[0x6E - 0x63];
+    u8 unk63;
+    u8 pad64[0x6E - 0x64];
     s16 unk6E; /* also used as a tiny script buffer */
     u8 unk70;
 } Unk8004AB64;
@@ -2555,7 +2558,7 @@ typedef struct {
     s16 unk1A; /* volume right */
 } Unk800577EC;
 /* script object (D_8007AED0[]) */
-typedef struct {
+typedef struct Unk8007AED0 {
     u8 pad0[0xE];
     u8 unkE;
 } Unk8007AED0;
@@ -2807,5 +2810,7 @@ typedef struct {
 
 extern TimHeader D_800834D0;
 extern s32 D_8007BCB0;
+
+void func_8002BBE8(s32, u8 *, s32);
 
 #endif

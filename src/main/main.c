@@ -3171,7 +3171,42 @@ u8 *func_8002BA90(u32 *ot, DrTpageWords *p) {
     return (u8 *)(p + 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002BAE4);
+void func_8002BAE4(s32 n, u8 *buf, s32 width, u8 ascii) {
+    s32 base = 0;
+    s32 fill;
+    s32 i;
+    s32 q;
+    s32 d;
+    u8 *end;
+
+    if (ascii) {
+        base = '0';
+    }
+    fill = ' ';
+    if (!ascii) {
+        fill = 0xF;
+    }
+    if (width < 0) {
+        func_8002BBE8(n, buf, ascii);
+        return;
+    }
+    func_8001D898(buf, fill, width);
+    for (i = 0; i < width; i++) {
+        d = n % 10;
+        q = n / 10;
+        buf[width - i - 1] = d + base;
+        if (q == 0) {
+            break;
+        }
+        n = q;
+    }
+    end = buf + width;
+    if (!ascii) {
+        *end = 0xFF;
+    } else {
+        *end = 0;
+    }
+}
 
 void func_8002BBE8(s32 v, u8 *buf, s32 ascii) {
     u8 tmp[16];
