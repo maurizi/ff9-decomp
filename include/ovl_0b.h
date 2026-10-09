@@ -391,8 +391,13 @@ typedef struct {
     s16 unk4;
     s16 unk6;
     s16 unk8;
-    u8 unkA[3];
-    u8 unkD; /* count of unkA */
+    union {
+        struct {
+            u8 unk0[3];
+            u8 unk3; /* count of unk0 */
+        } b;
+        u16 h[2]; /* cleared as two halfwords (func_800E5EAC) */
+    } unkA;
     u8 unkE;
     u8 unkF;
     s32 unk10;
@@ -681,10 +686,32 @@ typedef struct {
     u16 unkE;
 } Battle16CC; /* 0x10 */
 
+/* Battle.unk1358 ring entry (func_800CC278 hands out the next one) */
 typedef struct {
     struct BtlUnit *unk0;
-    u8 pad4[0x1C - 4];
+    u8 pad4[8 - 4];
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    u16 unkE;
+    union {
+        struct {
+            s8 unk0;
+            u8 pad1;
+            u8 unk2;
+            u8 unk3;
+        } b;
+        s32 w; /* cleared as a word */
+    } unk10;
+    s32 unk14;
+    s16 unk18;
 } Battle1358; /* 0x1C */
+
+typedef struct {
+    Battle1358 unk0[16];
+    s16 unk1C0; /* last entry handed out (counts down, wraps to 15) */
+    s16 unk1C2;
+} Battle1358Ring; /* Battle.unk1358 */
 
 /* Inlined copy of func_800B3CEC (clear a command); the original source inlines it. */
 static inline void func_800B3CEC_inline(BtlCmd *arg0) {
@@ -754,9 +781,7 @@ typedef struct Battle {
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
-    Battle1358 unk1358[16];
-    s16 unk1518;
-    s16 unk151A;
+    Battle1358Ring unk1358;
     s32 unk151C;
     s32 unk1520;
     Battle488 *unk1524;
@@ -1060,15 +1085,7 @@ typedef struct {
     s32 *unk98;
 } Unk800CB090;
 
-typedef struct {
-    u8 pad0[0x10];
-    s8 unk10;
-    u8 pad11;
-    u8 unk12;
-    u8 unk13;
-    s32 unk14;
-    s16 unk18;
-} Unk800CC278;
+typedef Battle1358 Unk800CC278;
 
 extern RECT D_800FDF50;
 extern u32 *D_800FE360;
@@ -1655,7 +1672,7 @@ s32 func_800B4040(BtlUnit *);
 void func_800C316C(s32);
 void func_800C36D0(void);
 s32 func_800CAEC4(BtlScript *, BtlUnit *);
-Unk800CC278 *func_800CC278(s32);
+Unk800CC278 *func_800CC278(struct BtlUnit *);
 s32 func_800CC444(u32);
 s32 func_800AE47C(s32, u16);
 void func_800C22CC(BtlUnit *, u16, u8);

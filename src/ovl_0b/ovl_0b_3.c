@@ -760,10 +760,10 @@ s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
 void func_800CBF90(void) {
     s16 i;
     Battle1358 *p;
-    D_8006794C->unk1C->unk8E4.battle->unk1518 = 0;
-    D_8006794C->unk1C->unk8E4.battle->unk151A = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C0 = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C2 = 0;
     D_8006794C->unk1C->unk8E4.battle->unk152C = 0xFF;
-    p = D_8006794C->unk1C->unk8E4.battle->unk1358;
+    p = D_8006794C->unk1C->unk8E4.battle->unk1358.unk0;
     for (i = 15; i != -1; i--) {
         p->unk0 = NULL;
         p++;
@@ -825,15 +825,15 @@ void func_800CC1A0(BtlUnit *arg0) {
     u8 n = 0;
     if (!((arg0->unk68 >> 22) & 1)) {
         if (f & 1) {
-            func_800CC31C((s32)arg0, arg0->unkC8, (f & 8) ? 0 : 0xC0, 0)->unk13 = 1;
+            func_800CC31C((s32)arg0, arg0->unkC8, (f & 8) ? 0 : 0xC0, 0)->unk10.b.unk3 = 1;
             n = 4;
         }
         if (f & 2) {
-            func_800CC31C((s32)arg0, arg0->unkCA, 0, n)->unk13 = 1;
+            func_800CC31C((s32)arg0, arg0->unkCA, 0, n)->unk10.b.unk3 = 1;
             n += 4;
         }
         if (f & 4) {
-            func_800CC37C((s32)arg0, arg0->unkCC, 0, n)->unk13 = 1;
+            func_800CC37C((s32)arg0, arg0->unkCC, 0, n)->unk10.b.unk3 = 1;
         }
     }
     arg0->unkCE = 0;
@@ -842,30 +842,51 @@ void func_800CC1A0(BtlUnit *arg0) {
     arg0->unkCC = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC278);
+Unk800CC278 *func_800CC278(BtlUnit *u) {
+    Battle1358Ring *r;
+    Battle1358 *p;
+    BtlBone *bone;
+    s16 i;
+
+    r = &D_8006794C->unk1C->unk8E4.battle->unk1358;
+    i = r->unk1C0 - 1;
+    if (i < 0) {
+        i = 15;
+    }
+    r->unk1C0 = i;
+    p = &r->unk0[i];
+    p->unk0 = u;
+    p->unkE = 0;
+    p->unk10.w = 0;
+    bone = &u->unk9C->unk20[u->unk7C];
+    p->unk8 = bone->unk14;
+    p->unkA = bone->unk18 - 4;
+    p->unkC = bone->unk1C;
+    return p;
+}
 
 Unk800CC278 *func_800CC31C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
-    Unk800CC278 *p = func_800CC278(arg0);
-    p->unk12 = 0;
-    p->unk10 = arg3;
+    Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
+    p->unk10.b.unk2 = 0;
+    p->unk10.b.unk0 = arg3;
     p->unk18 = arg2;
     p->unk14 = func_800CC444(arg1);
     return p;
 }
 
 Unk800CC278 *func_800CC37C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
-    Unk800CC278 *p = func_800CC278(arg0);
-    p->unk12 = 1;
-    p->unk10 = arg3;
+    Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
+    p->unk10.b.unk2 = 1;
+    p->unk10.b.unk0 = arg3;
     p->unk18 = arg2;
     p->unk14 = func_800CC444(arg1);
     return p;
 }
 
 Unk800CC278 *func_800CC3E0(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
-    Unk800CC278 *p = func_800CC278(arg0);
-    p->unk12 = 2;
-    p->unk10 = arg3;
+    Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
+    p->unk10.b.unk2 = 2;
+    p->unk10.b.unk0 = arg3;
     p->unk14 = (s32)&D_800F6A54[arg1];
     p->unk18 = arg2;
     return p;
