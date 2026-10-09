@@ -7640,7 +7640,31 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005AE14);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005AEC8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B004);
+void func_8005B004(Unk80080AA0 *p) {
+    s32 n = 1;
+    Unk80080A10 *s;
+    AkaoChannel *c;
+    s32 v;
+
+    if (p->unk4 != 0) {
+        n = p->unk4;
+    }
+    if (p->unk0 == 0 || p->unk0 == D_80080A10->unk6A) {
+        s = D_80080A10;
+        c = D_8007BD48;
+    } else {
+        s = D_8007F790;
+        if (s == NULL || p->unk0 == 0 || p->unk0 != s->unk6A) {
+            return;
+        }
+        c = D_8007F71C;
+    }
+    v = ((p->unk8 & 0x7F) << 16) | 0x8000;
+    s->unk50 = v;
+    s->unk54 = ((((p->unkC & 0x7F) << 16) | 0x8000) - v) / n;
+    s->unk58 = n;
+    func_8005A284(s, c);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B104);
 

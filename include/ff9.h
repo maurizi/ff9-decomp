@@ -818,7 +818,7 @@ typedef struct {
     s32 unk48;
     s32 unk4C;
     s32 unk50;
-    u8 pad54[0x58 - 0x54];
+    s32 unk54;
     s16 unk58;
     u8 pad5A[0x5C - 0x5A];
     s32 unk5C;
@@ -2486,4 +2486,17 @@ typedef struct {
     u16 unk0[6];
 } Unk8007BD44Row;
 extern u32 D_80083174;
+/* voice parameter block written to the SPU by func_800577EC */
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+    u32 unk8;  /* start address */
+    u32 unkC;  /* loop address */
+    u16 unk10; /* pitch */
+    u16 unk12; /* adsr 1 */
+    u16 unk14; /* adsr 2 */
+    u8 pad16[2];
+    s16 unk18; /* volume left */
+    s16 unk1A; /* volume right */
+} Unk800577EC;
 #endif
