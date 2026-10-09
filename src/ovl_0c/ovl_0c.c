@@ -4273,7 +4273,83 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BF978);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C0888);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C0F34);
+void func_800C0F34(void) {
+    u32 *ot;
+    POLY_FT4 *p;
+    u32 a;
+    u32 b;
+
+    ot = (u32 *)D_800CF460[*D_800CF45C];
+    D_800D3E88 = 0;
+    a = D_800D3E6C + 0x78;
+    b = D_800D3E6C + 0xB4;
+    if ((u32)D_800D3E6C < (u32)D_800CF4AC) {
+        D_800D3E88 = 1;
+    }
+    if (a < (u32)D_800CF4AC) {
+        D_800D3E88 = 2;
+    }
+    if (b < (u32)D_800CF4AC) {
+        D_800D3E88 = 3;
+    }
+    if (b <= (u32)D_800CF4AC) {
+        D_80073998[0] &= ~0x02080000;
+    } else {
+        D_80073998[0] |= 0x02080000;
+    }
+    if (D_800D3E88 == 1) {
+        if (D_800D3E76 == 0) {
+            *D_800CF430 += 10;
+        }
+        if (D_800D3E76 != 0x80) {
+            D_800D3E76 += 4;
+        }
+    }
+    if (D_800D3E88 == 2) {
+        if (D_800D3E76 != 0) {
+            D_800D3E76 -= 4;
+        }
+    }
+    if (D_800D3E88 == 3) {
+        D_800D3E75 = -1;
+    }
+    D_800D3E68 = (POLY_FT4 *)D_800CF404;
+    if (D_800D3E76 != 0 && D_800D3E88 != 0) {
+        setRGB0(D_800D3E68, D_800D3E76, D_800D3E76, D_800D3E76);
+        if (D_800CCE40 == 0) {
+            setXY4(D_800D3E68, 0x60, 0x32, 0xDF, 0x32, 0x60, 0x71, 0xDF, 0x71);
+            setUV4(D_800D3E68, 0, 0x40, 0x7F, 0x40, 0, 0x7F, 0x7F, 0x7F);
+        } else {
+            setXY4(D_800D3E68, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
+            setUV4(D_800D3E68, 0, 0x40, 0xFF, 0x40, 0, 0x5F, 0xFF, 0x5F);
+        }
+        D_800D3E68->tpage = 0x2C;
+        D_800D3E68->clut = 0x3D28;
+        setlen(D_800D3E68, 9);
+        setcode(D_800D3E68, 0x2C);
+        setSemiTrans(D_800D3E68, 1);
+        addPrim(&ot[10], D_800D3E68);
+        D_800D3E68++;
+        setRGB0(D_800D3E68, D_800D3E76, D_800D3E76, D_800D3E76);
+        if (D_800CCE40 == 0) {
+            setXY4(D_800D3E68, 0x60, 0x32, 0xDF, 0x32, 0x60, 0x71, 0xDF, 0x71);
+            setUV4(D_800D3E68, 0x80, 0x40, 0xFF, 0x40, 0x80, 0x7F, 0xFF, 0x7F);
+        } else {
+            setXY4(D_800D3E68, 0x20, 0x32, 0x11F, 0x32, 0x20, 0x51, 0x11F, 0x51);
+            setUV4(D_800D3E68, 0, 0x60, 0xFF, 0x60, 0, 0x7F, 0xFF, 0x7F);
+        }
+        D_800D3E68->tpage = 0x4C;
+        D_800D3E68->clut = 0x3D28;
+        setlen(D_800D3E68, 9);
+        setcode(D_800D3E68, 0x2C);
+        setSemiTrans(D_800D3E68, 1);
+        p = D_800D3E68;
+        setaddr(p, getaddr(&ot[10]));
+        D_800D3E68 = p + 1;
+        setaddr(&ot[10], p);
+    }
+    D_800CF404 = (s32)D_800D3E68;
+}
 
 void func_800C1428(void) {
     CVECTOR c0;
