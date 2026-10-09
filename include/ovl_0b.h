@@ -975,7 +975,10 @@ typedef struct Heap {
 
 typedef struct {
     s32 unk0; /* frame */
-    s32 unk4; /* state */
+    union {
+        s32 w; /* cleared as a word */
+        s16 h; /* state: 0 = free, 2 = done */
+    } unk4;
     u8 pad8[0xC - 8];
     void *unkC; /* work data */
     struct Unk800DA1B8 *unk10;
