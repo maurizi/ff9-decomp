@@ -1582,7 +1582,9 @@ void func_8001CCB4(s32, s32, s32);
 void func_8001CFB4(void);
 void func_8001D8A8(s32);
 void func_8001D9CC(s32, s32, s32, s32, s32);
-void func_8001DAA4(s32, s32, s32, RECT *);
+s32 func_8001DAA4(s32, s32, s32, RECT *); /* copy through VRAM, returns bytes done */
+extern u8 D_80068234;      /* next slot in D_80073CE8 */
+extern RECT D_80073CE8[6]; /* transfer rects (func_8001DAA4) */
 void func_8001DCB8(void);
 FileEntry *func_8001E218(s32, s32);
 void func_80021640(s32);

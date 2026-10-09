@@ -1006,7 +1006,55 @@ void func_8001DA78(u8 **arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001DAA4);
+s32 func_8001DAA4(s32 dst, s32 src, s32 size, RECT *rc) {
+    s32 done = 0;
+    RECT *r;
+    u32 left;
+    u32 h;
+    u32 n;
+    u32 i;
+
+    if (size != 0) {
+        while (done < size) {
+            left = size - done;
+            i = D_80068234;
+            D_80068234 = i + 1;
+            r = &D_80073CE8[i];
+            if (i >= 5) {
+                D_80068234 = 0;
+            }
+            if (rc != NULL) {
+                r->x = rc->x;
+                r->y = rc->y;
+                r->w = rc->w;
+                r->h = rc->h;
+            } else {
+                r->x = D_8006794C->unk10[D_8006794C->unk1C->unk8].clip.x;
+                r->y = D_8006794C->unk10[D_8006794C->unk1C->unk8].clip.y;
+                r->w = 320;
+                r->h = 218;
+            }
+            h = left >> 1;
+            n = h / r->h;
+            if (n == 0 && left != 0) {
+                n = 1;
+                r->h = h;
+                if ((s16)h == 0) {
+                    r->h = h + 1;
+                }
+            } else if (r->w < (s32)n) {
+                n = r->w;
+            }
+            r->w = n;
+            LoadImage(r, (u32 *)(src + done));
+            while (func_80022B18() != 0) {
+            }
+            StoreImage(r, (u32 *)(dst + done));
+            done += r->w * r->h * 2;
+        }
+    }
+    return done;
+}
 
 void func_8001DCB8(void) {
     CdlFILE fp;
