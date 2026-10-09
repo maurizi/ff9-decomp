@@ -1693,6 +1693,10 @@ s32 func_800625F8(void);
 s32 func_80062638(void);
 s32 func_80062B3C(void);
 s32 func_8006276C(s32); /* number to string */
+void func_800624A8(void);
+void func_800624E8(void);
+void func_8006252C(void);
+void func_80062750(s32);
 FileEntry *func_80063088(FileTable *, s32);
 void func_80063108(u8 *, u8 *);
 /* text window (func_80063118 / func_800631AC) */

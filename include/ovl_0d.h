@@ -78,7 +78,11 @@ typedef struct {
     s32 unk42C;
     s32 unk430;
     s32 unk434;
-    u8 pad438[0x450 - 0x438];
+    u8 pad438[0x43C - 0x438];
+    s32 unk43C; /* wins */
+    s32 unk440; /* losses */
+    s32 unk444; /* draws */
+    u8 pad448[0x450 - 0x448];
     s32 unk450;
     u8 pad454[0x458 - 0x454];
     Window *unk458;
@@ -144,6 +148,7 @@ extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;
 extern s32 D_800B3CD8;
+extern s32 D_800B3CDC;
 extern s32 D_800B3CE0;
 extern TmCell D_800B3CE8; /* returned for out-of-range board squares */
 extern s32 D_800B3CF0;
@@ -175,6 +180,7 @@ void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
 void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
+s32 func_800AE94C(TmState *, s32);
 TmCard *func_800AE9D0(TmState *, s32, s32);
 void func_800AEA24(TmState *);
 void func_800B1A24(TmState *);
