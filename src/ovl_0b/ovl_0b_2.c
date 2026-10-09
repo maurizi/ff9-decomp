@@ -2593,7 +2593,40 @@ s32 func_800E4134(s32 arg0) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4218);
+s32 func_800E4218(s32 arg0, s32 arg1, s32 arg2) {
+    s32 a[2];
+    s32 b[2];
+    s32 c[2];
+    s32 d[2];
+    s32 n;
+    s32 t;
+    func_800E73EC(arg0, (s16 *)a);
+    c[0] = a[0];
+    c[1] = a[1];
+    if (arg1 == 0xFF) {
+        arg1 = 0;
+    }
+    if (func_800E788C(arg1) != 0) {
+        func_800E77D8(arg0, (s16 *)d);
+        func_800CFD78((s16 *)c, (s16 *)d, 400, (s16 *)b);
+        if (arg2 == 0) {
+            func_800D85AC(arg0, 0x1D);
+        }
+        n = func_800D87D0(arg0);
+        if (arg2 < n) {
+            func_800E7650(arg0, (s16 *)a);
+            func_800E7650(arg0, (s16 *)b);
+        }
+        t = ((arg2 + 1) << 12) / n;
+        if (t > 0x1000) {
+            t = 0x1000;
+        }
+        func_800CFA00((s16 *)a, (s16 *)b, t, (s16 *)c);
+        func_800E76DC(arg0, (s16 *)c);
+        return arg2 >= n;
+    }
+    return 1;
+}
 
 void func_800E436C(s32 arg0, s16 *arg1, s32 arg2, s32 arg3) {
     func_800D87D0(arg0);

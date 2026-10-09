@@ -2297,6 +2297,10 @@ typedef struct {
 
 void func_800D0A0C(u32 *, s32, s32, s32, s32);
 
+void func_800E73EC(s32, s16 *);
+void func_800E76DC(s32, s16 *);
+void func_800E7650(s32, s16 *);
+
 /* main exe: candidates for ff9.h */
 void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
 
