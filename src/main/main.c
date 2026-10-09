@@ -3288,7 +3288,22 @@ void func_8002E490(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E4BC);
+u8 func_8002E4BC(Window *w) {
+    Unk80010CD0 min = D_80010CD0;
+    u8 r = 0;
+
+    if (w->unk23 == 0) {
+        return r;
+    }
+    if (w->unk1A == 2 || w->unk1A == 3) {
+        if (w->unk8.w >= min.unk0[w->unk1A] && w->unk8.h >= 16) {
+            r = 1;
+        }
+    } else if ((u16)w->unk8.w | (u16)w->unk8.h) {
+        r = 1;
+    }
+    return r;
+}
 
 void func_8002E588(Window *w) {
     RECT r;
