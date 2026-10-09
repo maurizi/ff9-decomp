@@ -3826,9 +3826,9 @@ void func_800E9168(void) {
             r = 0;
         } else {
             if (b->unk68 & 1) {
-                v = D_8006794C->unk1C->unk8E4.battle->unk132C >> 11;
+                v = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 >> 11;
             } else {
-                v = D_8006794C->unk1C->unk8E4.battle->unk132C >> 12;
+                v = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 >> 12;
             }
             v &= 1;
             r = v == 0;
@@ -4462,7 +4462,7 @@ void func_800EB05C(void) {
     p->unk12B4 = 0;
     p->unk12A0 = NULL;
     D_80104F88->unk12C0 = 0;
-    D_80104F88->unk12BC = D_8006794C->unk1C->unk8E4.battle->unk132C & 3;
+    D_80104F88->unk12BC = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
     D_80104F88->unk12B6 = func_800EB9E0();
     func_800EB5AC();
     func_800EA650();

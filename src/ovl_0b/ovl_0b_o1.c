@@ -142,7 +142,7 @@ void func_800C316C(s32 arg) {
         case 2:
             switch ((*t >> 12) & 3) {
             case 0:
-                n = D_8006794C->unk1C->unk8E4.battle->unk132C & 3;
+                n = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                 if (n == 2) {
                     D_800FE3B8.unkA8 = n;
                 } else {
@@ -182,7 +182,7 @@ void func_800C316C(s32 arg) {
                 } else if ((D_800FE3B8.unkCC->unk3C & 0x40001103) || !((D_800FDF30.unkA >> ((u8)D_800FE3B8.unkCC->unk68 >> 5)) & 1)) {
                     D_800FE3B8.unkA8 = 0;
                 } else {
-                    n = D_8006794C->unk1C->unk8E4.battle->unk132C & 3;
+                    n = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                     if (n == 2) {
                         D_800FE3B8.unkA8 = n;
                     } else {
@@ -405,7 +405,7 @@ s32 func_800C37BC(void) {
     if (e == 1) {
         b = D_8006794C->unk1C->unk8E4.battle;
         if ((b->unkD85 & 7) == 7) {
-            if ((b->unk132C >> 2) & 1) {
+            if ((b->unk132C.unk0 >> 2) & 1) {
                 b->unkD80 = e;
             } else {
                 D_8006794C->unk1C->unk8E4.battle->unkD80 = 3;
@@ -696,8 +696,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n == 0xB) {
         gs = D_8006794C;
-        arg1[0] = gs->unk1C->unk8E4.battle->unk1330->unk8[0].unk4;
-        arg1[2] = gs->unk1C->unk8E4.battle->unk1330->unk8[0].unk8;
+        arg1[0] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk4;
+        arg1[2] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk8;
         return;
     }
     s = D_800FE488.unk46;

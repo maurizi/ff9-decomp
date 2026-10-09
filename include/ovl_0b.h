@@ -631,7 +631,7 @@ typedef struct {
     u8 pad64[0x74 - 0x64];
 } Battle1334; /* 0x74 */
 
-typedef struct {
+typedef struct Battle11C020 {
     u8 unk0;
     u8 unk1; /* count of unk8 */
     u8 unk2; /* count of enemy records following unk8 */
@@ -703,7 +703,7 @@ typedef struct Battle11C0 {
     struct Unk800CEE74 *unk18;
     s32 unk1C;
     Battle11C020 *unk20;
-    s32 unk24;
+    u16 *unk24; /* two offsets: model file table, offset table */
     struct Battle11C028 *unk28;
     s32 unk2C[2]; /* per draw buffer */
     s32 unk34[2]; /* per draw buffer */
@@ -788,6 +788,15 @@ typedef struct Battle108C {
     POLY_F3 unk8;
 } Battle108C; /* 0x1C */
 
+/* battle scene data (Battle.unk132C) */
+typedef struct {
+    u32 unk0; /* flags */
+    Battle1330 *unk4;
+    Battle1334 *unk8;
+    u16 *unkC; /* model file table */
+    s16 *unk10; /* offset table, entries relative to its start */
+} Battle132C;
+
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
@@ -825,11 +834,7 @@ typedef struct Battle {
     struct Battle11C4 unk11C4;
     u8 unk131C;
     u8 pad131D[0x132C - 0x131D];
-    u32 unk132C;
-    Battle1330 *unk1330;
-    Battle1334 *unk1334;
-    u16 *unk1338; /* model file table */
-    s16 *unk133C; /* offset table, entries relative to its start */
+    Battle132C unk132C;
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
@@ -2137,7 +2142,7 @@ typedef struct {
 extern Unk800FE368 D_800FE368;
 extern u8 D_80104E76;
 void func_80063864(void *, void *, s32);
-void func_800C94B8(void);
+struct Battle11C020 *func_800C94B8(void);
 u8 func_8002C700(s32, s32);
 void func_8002C8E8(s32, s32, s32, s32);
 void func_8002C64C(s32);

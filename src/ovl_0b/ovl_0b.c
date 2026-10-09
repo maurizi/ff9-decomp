@@ -175,8 +175,8 @@ void func_800A9768(void) {
     D_8006794C->unk1C->unk8E4.battle->unk11C0 = (Battle11C0 *)D_80067948;
     p = (Battle11C0 *)D_80067948;
     D_80067948 = (s32)(p + 1);
-    p->unk24 = (s32)D_8006794C->unk1C->unk8E4.battle + 0x5800;
-    p->unk1C = p->unk24 + 0x2800;
+    p->unk24 = (u16 *)((s32)D_8006794C->unk1C->unk8E4.battle + 0x5800);
+    p->unk1C = (s32)p->unk24 + 0x2800;
     p->unk44 = (u8 *)(p->unk1C + 0x6000);
     D_80067948 = (s32)p->unk44 + 0x35800;
     for (i = 0; i < 4; i++) {
@@ -653,7 +653,7 @@ s32 func_800AF578(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->unkD80 == 6) {
                 f = u->unk68;
-                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C >> 6) & 1) && (((D_8006794C->unk1C->unk3C + ((f >> 1) & 0xF))->unk34 >> 10) & 1)) {
+                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C.unk0 >> 6) & 1) && (((D_8006794C->unk1C->unk3C + ((f >> 1) & 0xF))->unk34 >> 10) & 1)) {
                     m = u->unk9C;
                     if (u->unkA0->unk3A >= m->unkC->unk2) {
                         m->unkC = (BtlUnit9CC *)u->unkA4[19];
@@ -665,7 +665,7 @@ s32 func_800AF578(GameData *arg0, Battle *arg1) {
         }
         func_800BCEF0(u);
     }
-    if (arg1->unkD80 == 7 && !((arg1->unk132C >> 4) & 1) && (u8)func_800C20B8(arg0, 0x1E, 6) == 0) {
+    if (arg1->unkD80 == 7 && !((arg1->unk132C.unk0 >> 4) & 1) && (u8)func_800C20B8(arg0, 0x1E, 6) == 0) {
         r = 0;
     }
     func_800B05C0(arg0, arg1, sp);
@@ -703,7 +703,7 @@ void func_800B03B0(void) {
     func_800B0EF8(b);
     func_800B0FC0(b);
     func_800C972C();
-    D_800FDF3B = (b->unk132C >> 13) & 1;
+    D_800FDF3B = (b->unk132C.unk0 >> 13) & 1;
     func_8004C204();
     ((s32(*)())func_8004BC38)();
     func_800AB580(1);
@@ -1960,7 +1960,7 @@ void func_800BA8F0(BtlCalc *arg0) {
 }
 
 void func_800BA938(Unk800BA938 *arg0) {
-    if ((D_8006794C->unk1C->unk8E4.battle->unk132C >> 10) & 1) {
+    if ((D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 >> 10) & 1) {
         arg0->unkE = 0x3C - arg0->unkE;
         if (arg0->unkE <= 0) {
             arg0->unkE = 1;
@@ -2085,7 +2085,7 @@ void func_800BAE44(BtlCalc *arg0) {
 s32 func_800BAEA8(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
     BtlUnit *u;
-    if ((u8)b->unk132C >> 7 == 0) {
+    if ((u8)b->unk132C.unk0 >> 7 == 0) {
         return 0;
     }
     for (u = b->unk6F8; u != NULL; u = u->unk0) {
@@ -2665,7 +2665,7 @@ s32 func_800BE784(s32 arg0) {
     s32 k;
     switch (arg0) {
     case 32:
-        r = b->unk132C & 3;
+        r = b->unk132C.unk0 & 3;
         break;
     case 33:
         r = D_8006794C->unk1C->unk560;
@@ -3128,7 +3128,7 @@ void func_800C1704(void) {
 s32 func_800C1794(Battle *arg0) {
     GameData *gd = D_8006794C->unk1C;
     u8 v = gd->unk56E;
-    if ((v == 3 || v == 6) && !((arg0->unk132C >> 4) & 1)) {
+    if ((v == 3 || v == 6) && !((arg0->unk132C.unk0 >> 4) & 1)) {
         gd->unk56E = 6;
     } else {
         BtlUnit *u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
@@ -3191,7 +3191,7 @@ void func_800C1990(BtlUnit *arg0) {
 void func_800C19F8(u8 arg0) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
     if (!(b->unk11B8 & 1)) {
-        if ((u8)b->unk132C >> 7 == 0) {
+        if ((u8)b->unk132C.unk0 >> 7 == 0) {
             func_800CD5C8(4);
         } else if (arg0 && (func_800EA038() & 0xFF)) {
             func_800B44C0(0, 0, 0, 0x38);
