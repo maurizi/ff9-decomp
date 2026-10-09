@@ -3128,7 +3128,31 @@ void func_800E5D48(s8 arg0, s8 arg1, s8 arg2, s32 arg3, s32 arg4, s32 arg5) {
     func_800D6E70(1, D_800F78A4->unk0->unk8, arg3, arg4);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E5DA8);
+s32 func_800E5DA8(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32 *arg4) {
+    s32 id;
+    s32 *a;
+
+    if (arg0 == 1) {
+        a = arg4;
+        id = a[0];
+        if (id == 0xFF) {
+            id = -1;
+        } else if (id == 0xFE) {
+            id = func_800CF690() % D_800F78A4->unkC->unk24;
+        }
+        if (a[1] == 0) {
+            func_800E8DC8(id);
+            return 1;
+        }
+        if (a[1] == 1) {
+            if (D_80100D8C == 0x16D || (u32)(D_800FEC42 - 0x6B) >= 2 || id != 0x10) {
+                func_800E8E84(id);
+            }
+            return 1;
+        }
+    }
+    return 1;
+}
 
 s32 func_800E5EAC(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
     s32 v;
