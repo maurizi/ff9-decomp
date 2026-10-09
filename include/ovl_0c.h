@@ -1107,4 +1107,16 @@ static inline void func_800BC0A8_inline(s32 *x, s32 *z) {
     }
 }
 
+/* pad state, only read in mode 2 (func_800B7DAC) */
+static inline u32 func_800B7DAC_pad(void) {
+    return D_800CF46C == 2 ? D_800739A0[0] : 0;
+}
+
+static inline u32 func_800B7DAC_trg(void) {
+    if (D_800CF46C != 2) {
+        return 0;
+    }
+    return D_80073990;
+}
+
 #endif

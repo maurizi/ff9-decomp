@@ -2701,7 +2701,57 @@ s32 func_800B7A14(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B7DAC);
+void func_800B7DAC(void) {
+    DISPENV env;
+    s32 mode;
+    u32 pad;
+
+    mode = 0;
+    SetDefDispEnv(&env, 0, 0, 640, 480);
+    env.screen.y = 0;
+    env.screen.x = 0;
+    env.screen.h = 255;
+    env.screen.w = 255;
+    PutDispEnv(&env);
+    while (1) {
+        func_80019194();
+        pad = func_800B7DAC_pad();
+        if (func_800B7DAC_trg() & 1) {
+            switch (mode) {
+            case 0:
+                mode = 1;
+                SetDefDispEnv(&env, 0, 0, 640, 480);
+                break;
+            case 1:
+                mode = 0;
+                SetDefDispEnv(&env, 0, 0, 256, 256);
+                break;
+            }
+            env.screen.y = 0;
+            env.screen.x = 0;
+            env.screen.h = 255;
+            env.screen.w = 255;
+            PutDispEnv(&env);
+        }
+        if (pad & 0x80) {
+            env.disp.x -= 2;
+        }
+        if (pad & 0x20) {
+            env.disp.x += 2;
+        }
+        if (pad & 0x10) {
+            env.disp.y -= 2;
+        }
+        if (pad & 0x40) {
+            env.disp.y += 2;
+        }
+        if (pad & 0x4000) {
+            break;
+        }
+        VSync(0);
+        PutDispEnv(&env);
+    }
+}
 
 void func_800B7F7C(void) {
     RECT r = D_800A71E0;
