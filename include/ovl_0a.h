@@ -580,11 +580,12 @@ typedef struct {
 /* file 0x12xxxx lookup table (func_800AAF5C) */
 typedef struct {
     u16 unk0;
-    u16 unk2; /* file 0x3xxxx */
-    u16 unk4;
-    u16 unk6;
-    u16 unk8; /* file 0x19xxxx */
-} Unk800AA39CEntry;
+    u16 unk2;          /* file 0x3xxxx */
+    unsigned unk4 : 24; /* offset from the entry: 3 tables of unk7 words */
+    unsigned unk7 : 8;
+    u16 unk8;          /* file 0x19xxxx */
+    u8 padA[2];
+} Unk800AA39CEntry; /* 0xC */
 
 typedef struct {
     u8 unk0;

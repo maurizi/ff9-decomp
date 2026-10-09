@@ -646,7 +646,23 @@ s32 func_800AAF5C(s32 arg0) {
     return -1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AAFD4);
+/* look up the three tables of an area entry */
+s32 func_800AAFD4(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
+    Unk800AA39C *t = func_8001C7FC(8, arg0, 0x120000);
+    Unk800AA39CEntry *e = t->unk4;
+    s32 i;
+
+    for (i = t->unk1 - 1; i >= 0; i--) {
+        if (e->unk0 == (u16)arg0) {
+            *arg1 = (s32 *)((u8 *)e + e->unk4);
+            *arg2 = *arg1 + e->unk7;
+            *arg3 = *arg2 + e->unk7;
+            break;
+        }
+        e++;
+    }
+    return 0;
+}
 
 s32 func_800AB0B0(Unk800C95C8 *arg0) {
     Unk800AB0B0 *t = arg0->unk50;
@@ -3345,7 +3361,29 @@ s32 func_800C1A78(s32 arg0) {
     return D_800C9DD0 + (arg0 << 9);
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1A8C);
+/* set the camera scroll limits */
+s32 func_800C1A8C(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    Unk800C9DB4Cam *c = &((Unk800C9DB4Cam *)((u8 *)D_800C9DB4 + D_800C9DB4->unk18))[arg0];
+    s16 v;
+
+    c->unk28 = v = arg1 + 160;
+    if (v > c->unk24 - 160) {
+        c->unk28 = c->unk24 - 160;
+    }
+    c->unk2A = v = arg2 - 160;
+    if (v < 160) {
+        c->unk2A = 160;
+    }
+    c->unk2C = v = arg3 + 112;
+    if (v > c->unk26 - 112) {
+        c->unk2C = c->unk26 - 112;
+    }
+    c->unk2E = v = arg4 - 112;
+    if (v < 112) {
+        c->unk2E = 112;
+    }
+    return 1;
+}
 
 s32 func_800C1B5C(u8 *arg0) {
     *arg0 = D_800CA068.unk75;
