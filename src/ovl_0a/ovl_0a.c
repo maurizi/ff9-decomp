@@ -864,7 +864,20 @@ s32 func_800AA330(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AA3F4);
+s32 func_800AA3F4(void) {
+    s32 id;
+
+    id = func_800AAEF8();
+    if (id == -1) {
+        return 0;
+    }
+    id = func_800AAEC4(id);
+    if (func_8001C7FC(4, id, 0) == NULL) {
+        D_800C9F20[D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60] = id;
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60++;
+    }
+    return 0;
+}
 
 void func_800AA4BC(void) {
     s32 i;
@@ -1145,7 +1158,64 @@ s32 func_800AC3D8(s32 arg0, s32 arg1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC474);
+/* drop the cached textures no longer listed and pack the rest at the top of RAM */
+void func_800AC474(void) {
+    u32 top;
+    Unk800C9CCC *s;
+    s32 i;
+    s32 j;
+    s32 found;
+    s32 bi;
+    u32 end;
+    u32 best;
+    u32 addr;
+    s32 id;
+    u32 sz;
+    Unk800C9CCC *t;
+
+    top = 0x801EDF00;
+    for (i = 9; i >= 0; i--) {
+        s = &D_800C9CCC[i];
+        id = s->unk2;
+        if (s->unk4 != 0) {
+            found = 0;
+            for (j = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; j >= 0; j--) {
+                if ((u16)D_800C9F20[j] == id) {
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found) {
+                s->unk4 = 0;
+                s->unk8 = 0;
+            }
+        }
+    }
+    for (;;) {
+        best = 0;
+        bi = -1;
+        for (i = 9; i >= 0; i--) {
+            t = &D_800C9CCC[i];
+            sz = t->unk8;
+            end = t->unk4 + sz;
+            if (t->unk4 != 0 && end <= top && best < end) {
+                best = end;
+                bi = i;
+            }
+        }
+        if (bi == -1) {
+            break;
+        }
+        s = &D_800C9CCC[bi];
+        addr = top - s->unk8;
+        if (s->unk4 != addr) {
+            func_8001DAA4(addr, s->unk4, s->unk8, NULL);
+            s->unk4 = addr;
+        }
+        top = addr;
+    }
+    DrawSync(0);
+}
 
 void func_800AC5F0(void) {
     s32 i;
@@ -1944,8 +2014,6 @@ void func_800B2CC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 /* apply the field lights to the object colours */
-/* apply the field lights to the object colours */
-/* apply the field lights to the object colours */
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2D10);
 
 /* set the object's light colour */
@@ -2497,11 +2565,402 @@ void func_800B5938(void) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B5958);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B61A4);
+void func_800B61A4(Unk800C95C8 *arg0, u8 arg1) {
+    MATRIX m;
+    WmModelGroup *g;
+    MATRIX *bone;
+    SVECTOR *vtx;
+    s32 *sxy;
+    s32 *sz;
+    s32 k;
+    u32 i;
+    s32 n;
+    u32 cnt;
+    MATRIX *b;
+    SVECTOR *v;
+    s16 *c1;
+    s16 *c2;
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B6438);
+    g = &arg0->unk8->unk10[arg1];
+    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    sxy = D_800711A8;
+    sz = D_80070520;
+    k = 0;
+    cnt = arg0->unk8->unk2;
+    bone = (MATRIX *)arg0->unk20;
+    for (i = 0; i < cnt; bone++) {
+        n = ((u16 *)g->unk14)[i++];
+        if (n != 0) {
+            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            b = bone;
+            gte_ldclmv(b);
+            c1 = &b->m[0][1];
+            c2 = &b->m[0][2];
+            gte_rtir_b();
+            sxy = &D_800711A8[k];
+            gte_stclmv(&m);
+            gte_ldclmv(c1);
+            gte_rtir();
+            sz = &D_80070520[k];
+            gte_stclmv(&m.m[0][1]);
+            gte_ldclmv(c2);
+            c1 = (s16 *)b->t;
+            gte_rtir_n1();
+            vtx = &((SVECTOR *)g->unk18)[k];
+            gte_stclmv(&m.m[0][2]);
+            gte_ldlv0(c1);
+            k += n;
+            gte_rtv0tr_n1();
+            gte_ldv3c(vtx);
+            gte_stlvnl(m.t);
+            gte_SetRotMatrix(&m);
+            gte_SetTransMatrix(&m);
+            v = vtx;
+            do {
+                v += 3;
+                n -= 3;
+                gte_rtpt_b();
+                gte_ldv3c(v);
+                gte_stsxy3c(sxy);
+                gte_stsz3c(sz);
+                sxy += 3;
+                sz += 3;
+            } while (n > 0);
+        }
+    }
+}
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B6584);
+/* attach a model file (relocating it once) and lay out its work buffers at arg1 */
+void func_800B6438(Unk800C95C8 *arg0, u8 *arg1) {
+    WmModel *m;
+    WmModelGroup *g;
+    u32 i;
+    u32 n;
+    u32 k;
+    s32 size;
+    u8 *pp;
+    WmModelGroup *p;
+    WmModelGroup *g2;
+
+    m = arg0->unk8;
+    if (!(m->unk0 & 1)) {
+        i = 0;
+        m->unk0 |= 1;
+        m->unkC = (s32)m + m->unkC;
+        g = (WmModelGroup *)((u8 *)m + (s32)m->unk10);
+        m->unk10 = g;
+        for (p = g; i < m->unk3; i++, p++) {
+            p->unk14 = (u8 *)m + (s32)p->unk14;
+            p->unk18 = (u8 *)m + (s32)p->unk18;
+            p->unk1C = (u8 *)m + (s32)p->unk1C;
+            p->unk20 = (void *)((u8 *)m + (s32)p->unk20);
+            p->unk24 = (void *)((u8 *)m + (s32)p->unk24);
+        }
+    }
+    g2 = arg0->unk8->unk10;
+    size = 0;
+    if ((s32)g2 >= 0) {
+        g2 = (WmModelGroup *)((u8 *)g2 + (s32)arg0->unk8);
+    }
+    n = arg0->unk8->unk3;
+    for (k = 0; k < n; k++) {
+        size += g2->unk0;
+        g2++;
+    }
+    arg0->unk54 = 0x1000;
+    arg0->unk56 = 0x1000;
+    arg0->unk58 = 0x1000;
+    arg0->unk1C = NULL;
+    arg0->unk60 = NULL;
+    arg0->unk5C = 0;
+    arg0->unk14 = 0;
+    arg0->unk74 = 0;
+    arg0->unk76 = 0;
+    arg0->unk78 = 0;
+    arg0->unk10 = arg1;
+    arg0->unk50 = NULL;
+    pp = arg1 + size * 2;
+    arg0->unk20 = pp;
+    arg0->unk0 |= 2;
+    *(volatile u16 *)&arg0->unk0 = 0;
+    arg0->unk44 = (WmModelOut *)(pp + m->unk2 * 32);
+}
+
+void func_800B6584(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
+    WmModel *m;
+    WmModelGroup *g;
+    WmModelOut *out;
+    WmModelOut *o;
+    u8 *prim;
+    u8 *src;
+    u8 (*col)[4];
+    u8 *c;
+    u32 k;
+    u32 j;
+    u32 i;
+    s32 du;
+    s32 dv;
+    u16 tp;
+    POLY_FT4 *pFT4;
+    WmSrcFT4 *sFT4;
+    POLY_FT3 *pFT3;
+    WmSrcFT3 *sFT3;
+    POLY_GT4 *pGT4;
+    WmSrcGT4 *sGT4;
+    POLY_GT3 *pGT3;
+    WmSrcGT3 *sGT3;
+    POLY_G4 *pG4;
+    WmSrcG4 *sG4;
+    POLY_G3 *pG3;
+    WmSrcG3 *sG3;
+    POLY_F4 *pF4;
+    WmSrcF4 *sF4;
+    POLY_F3 *pF3;
+    WmSrcF3 *sF3;
+
+    prim = arg0->unk10;
+    m = arg0->unk8;
+    arg0->unk18 = arg1;
+    o = arg0->unk44;
+    for (k = 0; k < m->unk3; k++) {
+        out = &o[k];
+        g = &m->unk10[k];
+        col = g->unk24;
+        out->unk4 = prim;
+        out->unk0 = 0;
+        out->unk8 = 0;
+        for (j = 0; j < 2; j++) {
+            src = g->unk1C;
+            pFT4 = (POLY_FT4 *)prim;
+            sFT4 = (WmSrcFT4 *)src;
+            for (i = 0; i < g->unk2; i++) {
+                setPolyFT4(pFT4);
+                pFT4->r0 = sFT4->unk10[0];
+                pFT4->g0 = sFT4->unk10[1];
+                pFT4->b0 = sFT4->unk10[2];
+                pFT4->u0 = g->unk20[sFT4->unk8[0]][0];
+                pFT4->v0 = g->unk20[sFT4->unk8[0]][1];
+                pFT4->u1 = g->unk20[sFT4->unk8[1]][0];
+                pFT4->v1 = g->unk20[sFT4->unk8[1]][1];
+                pFT4->u2 = g->unk20[sFT4->unk8[2]][0];
+                pFT4->v2 = g->unk20[sFT4->unk8[2]][1];
+                pFT4->u3 = g->unk20[sFT4->unk8[3]][0];
+                pFT4->v3 = g->unk20[sFT4->unk8[3]][1];
+                pFT4->clut = arg0->unk18[sFT4->unk13].unk2;
+                pFT4->tpage = tp = arg0->unk18[sFT4->unk13].unk0 & ~0x20;
+                if (sFT4->unk15 & 1) {
+                    pFT4->tpage = tp | (sFT4->unk15 & 0xE0);
+                    setSemiTrans(pFT4, 1);
+                }
+                prim += sizeof(POLY_FT4);
+                du = arg2[sFT4->unk13][0];
+                dv = arg2[sFT4->unk13][1];
+                pFT4->u0 += du;
+                pFT4->v0 += dv;
+                pFT4->u1 += du;
+                pFT4->v1 += dv;
+                pFT4->u2 += du;
+                pFT4->v2 += dv;
+                pFT4->u3 += du;
+                pFT4->v3 += dv;
+                pFT4++;
+                sFT4++;
+                src += sizeof(WmSrcFT4);
+            }
+            pFT3 = (POLY_FT3 *)prim;
+            sFT3 = (WmSrcFT3 *)src;
+            for (i = 0; i < g->unk4; i++) {
+                setPolyFT3(pFT3);
+                pFT3->r0 = sFT3->unk8[0];
+                pFT3->g0 = sFT3->unk8[1];
+                pFT3->b0 = sFT3->unk8[2];
+                pFT3->u0 = g->unk20[sFT3->unkC[0]][0];
+                pFT3->v0 = g->unk20[sFT3->unkC[0]][1];
+                pFT3->u1 = g->unk20[sFT3->unkC[1]][0];
+                pFT3->v1 = g->unk20[sFT3->unkC[1]][1];
+                pFT3->u2 = g->unk20[sFT3->unkC[2]][0];
+                pFT3->v2 = g->unk20[sFT3->unkC[2]][1];
+                pFT3->clut = arg0->unk18[sFT3->unk6].unk2;
+                pFT3->tpage = tp = arg0->unk18[sFT3->unk6].unk0 & ~0x20;
+                if (sFT3->unk12 & 1) {
+                    pFT3->tpage = tp | (sFT3->unk12 & 0xE0);
+                    setSemiTrans(pFT3, 1);
+                }
+                prim += sizeof(POLY_FT3);
+                du = arg2[sFT3->unk6][0];
+                dv = arg2[sFT3->unk6][1];
+                pFT3->u0 += du;
+                pFT3->v0 += dv;
+                pFT3->u1 += du;
+                pFT3->v1 += dv;
+                pFT3->u2 += du;
+                pFT3->v2 += dv;
+                pFT3++;
+                sFT3++;
+                src += sizeof(WmSrcFT3);
+            }
+            pGT4 = (POLY_GT4 *)prim;
+            sGT4 = (WmSrcGT4 *)src;
+            for (i = 0; i < g->unk6; i++) {
+                setPolyGT4(pGT4);
+                c = col[sGT4->unk10[0]];
+                pGT4->r0 = c[0];
+                pGT4->g0 = c[1];
+                pGT4->b0 = c[2];
+                c = col[sGT4->unk10[1]];
+                pGT4->r1 = c[0];
+                pGT4->g1 = c[1];
+                pGT4->b1 = c[2];
+                c = col[sGT4->unk10[2]];
+                pGT4->r2 = c[0];
+                pGT4->g2 = c[1];
+                pGT4->b2 = c[2];
+                c = col[sGT4->unk10[3]];
+                pGT4->r3 = c[0];
+                pGT4->g3 = c[1];
+                pGT4->b3 = c[2];
+                pGT4->u0 = g->unk20[sGT4->unk8[0]][0];
+                pGT4->v0 = g->unk20[sGT4->unk8[0]][1];
+                pGT4->u1 = g->unk20[sGT4->unk8[1]][0];
+                pGT4->v1 = g->unk20[sGT4->unk8[1]][1];
+                pGT4->u2 = g->unk20[sGT4->unk8[2]][0];
+                pGT4->v2 = g->unk20[sGT4->unk8[2]][1];
+                pGT4->u3 = g->unk20[sGT4->unk8[3]][0];
+                pGT4->v3 = g->unk20[sGT4->unk8[3]][1];
+                pGT4->clut = arg0->unk18[sGT4->unk1D].unk2;
+                pGT4->tpage = tp = arg0->unk18[sGT4->unk1D].unk0 & ~0x20;
+                if (sGT4->unk1C & 1) {
+                    pGT4->tpage = tp | (sGT4->unk1C & 0xE0);
+                    setSemiTrans(pGT4, 1);
+                }
+                prim += sizeof(POLY_GT4);
+                du = arg2[sGT4->unk1D][0];
+                dv = arg2[sGT4->unk1D][1];
+                pGT4->u0 += du;
+                pGT4->v0 += dv;
+                pGT4->u1 += du;
+                pGT4->v1 += dv;
+                pGT4->u2 += du;
+                pGT4->v2 += dv;
+                pGT4->u3 += du;
+                pGT4->v3 += dv;
+                pGT4++;
+                sGT4++;
+                src += sizeof(WmSrcGT4);
+            }
+            pGT3 = (POLY_GT3 *)prim;
+            sGT3 = (WmSrcGT3 *)src;
+            for (i = 0; i < g->unk8; i++) {
+                setPolyGT3(pGT3);
+                c = col[sGT3->unk10[0]];
+                pGT3->r0 = c[0];
+                pGT3->g0 = c[1];
+                pGT3->b0 = c[2];
+                c = col[sGT3->unk10[1]];
+                pGT3->r1 = c[0];
+                pGT3->g1 = c[1];
+                pGT3->b1 = c[2];
+                c = col[sGT3->unk10[2]];
+                pGT3->r2 = c[0];
+                pGT3->g2 = c[1];
+                pGT3->b2 = c[2];
+                pGT3->u0 = g->unk20[sGT3->unk6[0]][0];
+                pGT3->v0 = g->unk20[sGT3->unk6[0]][1];
+                pGT3->u1 = g->unk20[sGT3->unk6[1]][0];
+                pGT3->v1 = g->unk20[sGT3->unk6[1]][1];
+                pGT3->u2 = g->unk20[sGT3->unk6[2]][0];
+                pGT3->v2 = g->unk20[sGT3->unk6[2]][1];
+                pGT3->clut = arg0->unk18[sGT3->unk16].unk2;
+                pGT3->tpage = tp = arg0->unk18[sGT3->unk16].unk0 & ~0x20;
+                if (sGT3->unkF & 1) {
+                    pGT3->tpage = tp | (sGT3->unkF & 0xE0);
+                    setSemiTrans(pGT3, 1);
+                }
+                prim += sizeof(POLY_GT3);
+                du = arg2[sGT3->unk16][0];
+                dv = arg2[sGT3->unk16][1];
+                pGT3->u0 += du;
+                pGT3->v0 += dv;
+                pGT3->u1 += du;
+                pGT3->v1 += dv;
+                pGT3->u2 += du;
+                pGT3->v2 += dv;
+                pGT3++;
+                sGT3++;
+                src += sizeof(WmSrcGT3);
+            }
+            pG4 = (POLY_G4 *)prim;
+            sG4 = (WmSrcG4 *)src;
+            for (i = 0; i < g->unkA; i++) {
+                setPolyG4(pG4);
+                c = col[sG4->unk8[0]];
+                pG4->r0 = c[0];
+                pG4->g0 = c[1];
+                pG4->b0 = c[2];
+                c = col[sG4->unk8[1]];
+                pG4->r1 = c[0];
+                pG4->g1 = c[1];
+                pG4->b1 = c[2];
+                c = col[sG4->unk8[2]];
+                pG4->r2 = c[0];
+                pG4->g2 = c[1];
+                pG4->b2 = c[2];
+                c = col[sG4->unk8[3]];
+                pG4->r3 = c[0];
+                pG4->g3 = c[1];
+                pG4->b3 = c[2];
+                prim += sizeof(POLY_G4);
+                pG4++;
+                sG4++;
+                src += sizeof(WmSrcG4);
+            }
+            pG3 = (POLY_G3 *)prim;
+            sG3 = (WmSrcG3 *)src;
+            for (i = 0; i < g->unkC; i++) {
+                setPolyG3(pG3);
+                c = col[sG3->unk8[0]];
+                pG3->r0 = c[0];
+                pG3->g0 = c[1];
+                pG3->b0 = c[2];
+                c = col[sG3->unk8[1]];
+                pG3->r1 = c[0];
+                pG3->g1 = c[1];
+                pG3->b1 = c[2];
+                c = col[sG3->unk8[2]];
+                pG3->r2 = c[0];
+                pG3->g2 = c[1];
+                pG3->b2 = c[2];
+                prim += sizeof(POLY_G3);
+                pG3++;
+                sG3++;
+                src += sizeof(WmSrcG3);
+            }
+            pF4 = (POLY_F4 *)prim;
+            sF4 = (WmSrcF4 *)src;
+            for (i = 0; i < g->unkE; i++) {
+                setPolyF4(pF4);
+                pF4->r0 = sF4->unk8[0];
+                pF4->g0 = sF4->unk8[1];
+                pF4->b0 = sF4->unk8[2];
+                prim += sizeof(POLY_F4);
+                pF4++;
+                sF4++;
+                src += sizeof(WmSrcF4);
+            }
+            for (i = 0; i < g->unk10; i++) {
+                pF3 = (POLY_F3 *)prim;
+                sF3 = (WmSrcF3 *)src;
+                setPolyF3(pF3);
+                pF3->r0 = sF3->unk8[0];
+                pF3->g0 = sF3->unk8[1];
+                pF3->b0 = sF3->unk8[2];
+                prim += sizeof(POLY_F3);
+                src += sizeof(WmSrcF3);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B71E0);
 
@@ -3144,11 +3603,106 @@ void func_800BB090(BgAnimHdr *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB3C4);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB508);
+void func_800BB508(Unk800C95C8 *arg0, u8 arg1) {
+    WmModelGroup *g;
+    MATRIX *bone;
+    SVECTOR *vtx;
+    s32 *sxy;
+    s32 *sz;
+    s32 k;
+    u32 i;
+    u32 j;
+    u32 n;
+    u32 cnt;
+    s32 ymax;
+
+    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    sxy = D_800711A8;
+    sz = D_80070520;
+    k = 0;
+    g = &arg0->unk8->unk10[arg1];
+    bone = (MATRIX *)arg0->unk20;
+    cnt = arg0->unk8->unk2;
+    ymax = arg0->unk5A;
+    vtx = g->unk18;
+    for (i = 0; i < cnt; bone++) {
+        n = ((u16 *)g->unk14)[i++];
+        if (n != 0) {
+            sxy = &D_800711A8[k];
+            sz = &D_80070520[k];
+            gte_SetRotMatrix(bone);
+            gte_SetTransMatrix(bone);
+            j = 0;
+            do {
+                gte_ldv0(vtx);
+                j++;
+                vtx++;
+                gte_rtv0tr_b();
+                gte_stsvclamp(sxy, sz, ymax);
+                sxy++;
+                sz++;
+            } while (j < n);
+            sxy = &D_800711A8[k];
+            sz = &D_80070520[k];
+            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            j = 0;
+            do {
+                gte_ldv3xyz(sxy, sz);
+                j += 3;
+                gte_rtpt_b();
+                gte_stsxy3c(sxy);
+                sxy += 3;
+                gte_stsz3h(sz);
+                sz += 3;
+            } while (j < n);
+            k += n;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB714);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BC33C);
+/* reflect the mirrored model across the plane (unk64 normal, unk6C point) */
+void func_800BC33C(Unk800C95C8 *arg0) {
+    MATRIX *m;
+    s32 nx;
+    s32 ny;
+    s32 nz;
+    s32 d;
+
+    if (arg0->unk60 != NULL) {
+        nx = arg0->unk64[0];
+        ny = arg0->unk64[1];
+        nz = arg0->unk64[2];
+        d = (arg0->unk6C[0] * nx + arg0->unk6C[1] * ny + arg0->unk6C[2] * nz) >> 11;
+        m = (MATRIX *)0x1F800000;
+        m->m[0][0] = 0x1000 - ((nx * nx) >> 11);
+        m->m[1][1] = 0x1000 - ((ny * ny) >> 11);
+        m->m[2][2] = 0x1000 - ((nz * nz) >> 11);
+        m->m[0][1] = m->m[1][0] = (nx * ny) >> 11;
+        m->m[0][2] = m->m[2][0] = (nx * nz) >> 11;
+        m->m[1][2] = m->m[2][1] = (ny * nz) >> 11;
+        m->t[0] = (d * nx) >> 12;
+        m->t[1] = (d * ny) >> 12;
+        m->t[2] = (d * nz) >> 12;
+        gte_SetRotMatrix(m);
+        gte_ldclmv(&arg0->unk60->unk24);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24);
+        gte_ldclmv(&arg0->unk60->unk24.m[0][1]);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24.m[0][1]);
+        gte_ldclmv(&arg0->unk60->unk24.m[0][2]);
+        gte_rtir();
+        gte_stclmv(&arg0->unk24.m[0][2]);
+        gte_SetTransMatrix(m);
+        gte_ldlv0(arg0->unk60->unk24.t);
+        gte_rtv0tr();
+        gte_stlvnl(arg0->unk24.t);
+        arg0->unkC = arg0->unk60->unkC;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BC600);
 
@@ -3529,7 +4083,75 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BF0C4);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BF660);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BFCE8);
+/* reset the field background state; returns the end of its allocations */
+BgSprt *func_800BFCE8(void) {
+    SVECTOR v;
+    BgSprt *spr;
+    Unk800C9DA4Hdr *h;
+    Unk800C9DA4Anim *anims;
+    Unk800C9DA4Trk *trk;
+    u32 i;
+    u32 n;
+    s32 t;
+    s32 x;
+    union {
+        s32 w;
+        DVECTOR v;
+    } u; /* projected origin */
+
+    D_800CA068.unk0 = 0x60;
+    D_800CA068.unk74 = 0x40;
+    D_800CA068.unk76 = 0x144;
+    D_800CA068.unk78 = 0xE10;
+    *(s32 *)&D_800CA068.unk4 = 0;
+    *(s32 *)&D_800CA068.unk8 = 0;
+    *(s32 *)&D_800CA068.unkC = 0;
+    *(s32 *)&D_800CA068.unk10 = 0;
+    *(s32 *)&D_800CA068.unk14 = 0;
+    *(s32 *)&D_800CA068.unk18 = 0;
+    *(s32 *)&D_800CA068.unk24 = 0;
+    *(s32 *)&D_800CA068.unk28 = 0;
+    *(s32 *)&D_800CA068.unk2C = 0;
+    D_800CA068.unk75 = 0;
+    D_800CA068.unk9C = 0;
+    D_800CA068.unkA0 = 0;
+    D_800CA068.unkA1 = 0xFF;
+    D_800CA068.unkA2 = 0xFF;
+    D_800CA068.unkA3 = 0xFF;
+    *(s32 *)&D_800CA068.unkA4 = 0;
+    D_800CA068.unk1C = (MATRIX *)D_800C9DA4.unk14;
+    D_800CA068.unk20 = (u16 *)D_800C9DA4.unk4;
+    if (func_800BDED4(D_800C9DA4.unk18, &spr) != 1) {
+        return NULL;
+    }
+    h = D_800C9DA4.unk10;
+    anims = (Unk800C9DA4Anim *)((u8 *)h + h->unkC);
+    trk = (Unk800C9DA4Trk *)((u8 *)h + h->unk10);
+    n = h->unk4;
+    for (i = 0; i < n; i++) {
+        anims[i].unk4 &= 0xFF;
+        anims[i].unk8 = 0x100;
+        anims[i].unkA = 0;
+        anims[i].unk0 = 1;
+        trk[*((u8 *)h + anims[i].unkC)].unk0 |= 2;
+    }
+    func_800BD3A0();
+    func_800BD724();
+    v.vx = 0;
+    v.vy = 0;
+    v.vz = 0;
+    gte_SetGeomOffset(0xA0, 0x70);
+    gte_SetRotMatrix(D_800CA068.unk1C);
+    gte_SetTransMatrix(D_800CA068.unk1C);
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(&u.w);
+    t = u.w;
+    x = u.v.vx;
+    D_800CA068.unk2C = x;
+    D_800CA068.unk2E = t >> 16;
+    return spr;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BFEE0);
 
@@ -4206,7 +4828,30 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1DF4);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1E04);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1E14);
+/* does the segment from arg0 to arg1 cross the edge arg2-arg3 (on axes x, z)? */
+s32 func_800C1E14(s16 *arg0, s16 *arg1, s16 *arg2, s16 *arg3, u8 x, u8 z) {
+    s32 t2;
+    s32 t3;
+    s32 t4;
+    s32 ex;
+    s32 ez;
+
+    t2 = (arg1[x] - arg0[x]) * (ez = arg3[z] - arg2[z]);
+    ex = arg3[x] - arg2[x];
+    t3 = (arg0[z] - arg2[z]) * ex;
+    t2 -= (arg1[z] - arg0[z]) * ex;
+    t3 -= (arg0[x] - arg2[x]) * ez;
+    if (ABS(t3) <= ABS(t2)) {
+        if ((t3 >= 0 && t2 >= 0) || (t3 <= 0 && t2 < 0)) {
+            t4 = (arg0[z] - arg2[z]) * (arg1[x] - arg0[x]);
+            t4 -= (arg0[x] - arg2[x]) * (arg1[z] - arg0[z]);
+            if ((t4 >= 0 && t2 >= 0) || (t4 <= 0 && t2 < 0)) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C1F98);
 
@@ -4433,7 +5078,129 @@ INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C2AF0);
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C31F8);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C3608);
+/* clears the visited flag of every walkmesh triangle first */
+static inline s32 func_800C2524_inline(Unk800C9DF4 *e, SVECTOR *pos, Unk800C9E00 *nd, s16 *edge) {
+    u16 k;
+    Unk800C9E00 *n;
+    s32 cnt;
+    u16 m = ~0x80;
+
+    n = D_800C9DF0.unk10;
+    cnt = D_800C9DF0.unk8->unk24;
+    for (k = 0; k < cnt; k++) {
+        n->unk0 &= m;
+        n++;
+    }
+    D_800C9DDC = 0;
+    return func_800C2524(e, pos, nd, edge);
+}
+
+s32 func_800C3608(Unk800C9DF4 *arg0) {
+    SVECTOR cur;
+    SVECTOR prev;
+    Unk800C9E00 *node;
+    s16 edge;
+    s32 ret;
+    s32 id;
+    s16 save;
+    s32 k;
+    Unk800C9DFC *vt;
+    Unk800C9E04 *pl;
+    s32 a;
+    Unk800C9DF8Tri *t;
+
+    ret = 2;
+    D_800C9DDE = 0;
+    for (k = 0; k < 10; k++) {
+        D_800CAA98[k] = -1;
+    }
+    D_800C9DE0 = 0;
+    for (k = 0; k < 10; k++) {
+        D_800CAAB8[k] = -1;
+    }
+    cur.vx = arg0->unk24->unk14.vx;
+    cur.vy = arg0->unk24->unk14.vy;
+    cur.vz = arg0->unk24->unk14.vz;
+    prev.vx = arg0->unk24->unk40.vx;
+    prev.vy = arg0->unk24->unk40.vy;
+    prev.vz = arg0->unk24->unk40.vz;
+    if (cur.vx == prev.vx && cur.vy == prev.vy && cur.vz == prev.vz) {
+        arg0->unk8 = arg0->unk4;
+        arg0->unkA = arg0->unk6;
+        return ret | 4;
+    }
+    id = arg0->unk6;
+    node = &D_800C9DF0.unk10[id];
+    save = arg0->unk6;
+    if (func_800C2AF0(arg0, &node, &prev, &cur, 1, 0, 0, 0) != 0) {
+        arg0->unk6 = save;
+        if (id >= 0) {
+            arg0->unk4 = D_800C9DF0.unk10[id].unk4;
+        } else {
+            arg0->unk4 = -1;
+        }
+        arg0->unk24->unk14.vx = arg0->unk24->unk40.vx;
+        arg0->unk24->unk14.vy = arg0->unk24->unk40.vy;
+        arg0->unk24->unk14.vz = arg0->unk24->unk40.vz;
+        ret |= 1;
+        if (arg0->unkA >= 0) {
+            if (!(u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[arg0->unk8], &D_800C9DF0.unk10[arg0->unkA], &prev.vx)) {
+                arg0->unk8 = arg0->unk4;
+                arg0->unkA = arg0->unk6;
+            }
+        }
+        return ret;
+    }
+    if (!(u8)func_800C2524_inline(arg0, &cur, node, &edge)) {
+        if ((u8)func_800C31F8(arg0, &cur, &node, &edge)) {
+            ret |= 9;
+        } else {
+            arg0->unk6 = save;
+            if (save >= 0) {
+                arg0->unk4 = D_800C9E00[save].unk4;
+            } else {
+                arg0->unk4 = -1;
+            }
+            arg0->unk24->unk14.vx = arg0->unk24->unk40.vx;
+            arg0->unk24->unk14.vy = arg0->unk24->unk40.vy;
+            arg0->unk24->unk14.vz = arg0->unk24->unk40.vz;
+            ret |= 1;
+            if (arg0->unkA >= 0 && arg0->unk8 >= 0) {
+            if (!(u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[arg0->unk8], &D_800C9DF0.unk10[arg0->unkA], &prev.vx)) {
+                arg0->unk8 = arg0->unk4;
+                arg0->unkA = arg0->unk6;
+            }
+            }
+            return ret;
+        }
+    }
+    if (cur.vx != arg0->unk24->unk14.vx || cur.vz != arg0->unk24->unk14.vz) {
+        arg0->unk24->unk14.vx = cur.vx;
+        ret |= 0x10;
+        arg0->unk24->unk14.vz = cur.vz;
+    }
+    if (node->unk6 >= 0) {
+        pl = &D_800C9DF0.unk14[node->unk6];
+        if ((u32)(pl->unk4 + 0x50F4) > 0xA1E8) {
+            a = func_800C1DC4(pl->unk0, arg0->unk24->unk14.vx << 16);
+            arg0->unk24->unk14.vy = func_800C1DC4(node->unk24 - a - func_800C1DC4(pl->unk8, arg0->unk24->unk14.vz << 16), pl->unkC) >> 16;
+            arg0->unk24->unk14.vy += (s16)D_800C9DF0.unk1C[node->unk4].unkA[1] - D_800C9DF0.unk1C[node->unk4].unk4[1];
+        } else {
+            arg0->unk24->unk14.vy = cur.vy;
+        }
+    } else {
+        t = D_800C9DF0.unk1C + node->unk4;
+        vt = D_800C9DF0.unkC + node->unkC[0];
+        arg0->unk24->unk14.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t->unkA[1]));
+    }
+    arg0->unkA = save;
+    if (save >= 0) {
+        arg0->unk8 = D_800C9E00[save].unk4;
+    } else {
+        arg0->unk8 = -1;
+    }
+    return ret;
+}
 
 s32 func_800C3B80(Unk800C9DF8 *arg0) {
     u16 i;
@@ -5324,7 +6091,7 @@ s32 func_800C778C(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C77DC(u16 *arg0, u8 **arg1) {
+s32 func_800C77DC(u16 *arg0, s16 **arg1) {
     *arg0 = D_800C9DDE;
     *arg1 = D_800CAA98;
     return 1;
@@ -5352,7 +6119,7 @@ s32 func_800C78D8(s16 arg0, u16 *arg1) {
     return 1;
 }
 
-s32 func_800C7914(u16 *arg0, u8 **arg1) {
+s32 func_800C7914(u16 *arg0, s16 **arg1) {
     *arg0 = D_800C9DE0;
     *arg1 = D_800CAAB8;
     return 1;
@@ -6078,7 +6845,48 @@ s32 func_800C9700(u16 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C970C);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C9968);
+/* upload the images and palettes of a texture file to VRAM */
+void func_800C9968(s32 *arg0) {
+    RECT r;
+    RECT *q;
+    u16 *p;
+    u8 *data;
+    s32 n;
+    s32 i;
+    s32 sz;
+    s32 m;
+    s32 ofs;
+
+    ofs = arg0[0];
+    q = (RECT *)((u8 *)arg0 + ofs);
+    ofs = arg0[1];
+    i = 0;
+    p = (u16 *)((u8 *)arg0 + ofs);
+    ofs = *(s32 *)q;
+    n = arg0[2];
+    data = (u8 *)arg0 + ofs;
+    for (; i < n; i++) {
+        r.x = p[0];
+        r.y = p[1];
+        r.w = p[2];
+        r.h = p[3];
+        sz = r.w * r.h * 2;
+        p += 4;
+        LoadImage(&r, (u32 *)p);
+        p = (u16 *)((u8 *)p + sz);
+    }
+    m = ((s32 *)q)[1];
+    q++;
+    for (i = 0; i < m; i++) {
+        r.x = q->x;
+        r.y = q->y;
+        r.w = q->w;
+        r.h = q->h;
+        LoadImage(&r, (u32 *)data);
+        q++;
+        data += r.w * r.h * 2;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C9AB8);
 

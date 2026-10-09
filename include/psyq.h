@@ -27,6 +27,13 @@ typedef struct {
 #define setDrawTPage(p, dfe, dtd, tpage) (setlen(p, 1), ((u32 *)(p))[1] = _get_mode(dfe, dtd, tpage))
 #define setSemiTrans(p, abe) ((abe) ? setcode(p, getcode(p) | 0x02) : setcode(p, getcode(p) & ~0x02))
 #define setPolyG4(p) setlen(p, 8), setcode(p, 0x38)
+#define setPolyF3(p) setlen(p, 4), setcode(p, 0x20)
+#define setPolyFT3(p) setlen(p, 7), setcode(p, 0x24)
+#define setPolyG3(p) setlen(p, 6), setcode(p, 0x30)
+#define setPolyGT3(p) setlen(p, 9), setcode(p, 0x34)
+#define setPolyF4(p) setlen(p, 5), setcode(p, 0x28)
+#define setPolyFT4(p) setlen(p, 9), setcode(p, 0x2C)
+#define setPolyGT4(p) setlen(p, 12), setcode(p, 0x3C)
 /* libgpu.h primitive-word helpers */
 #define get_mode(dfe, dtd, tpage) \
     ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))
@@ -520,6 +527,62 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
 #define gte_op12() __asm__ volatile(GTE_NOPS ".word\t0x4B78000C")
 #define gte_gpf0() __asm__ volatile(GTE_NOPS ".word\t0x4B90003D")
 #define gte_gpf12() __asm__ volatile(GTE_NOPS ".word\t0x4B98003D")
+/* The original assembler (ASPSX) inserted the nops a GTE command needs after
+ * the last mtc2/ctc2 itself, so a command with 0 or 1 scheduled instruction
+ * in front of it needs a variant with fewer nops: _b has none, _n1 has one. */
+#define GTE_NOP1 ".word\t0x00000000;"
+#define gte_rtps_b() __asm__ volatile(".word\t0x4A180001")
+#define gte_rtpt_b() __asm__ volatile(".word\t0x4A280030")
+#define gte_rtir_b() __asm__ volatile(".word\t0x4A49E012")
+#define gte_rtir_n1() __asm__ volatile(GTE_NOP1 ".word\t0x4A49E012")
+#define gte_rtv0tr_b() __asm__ volatile(".word\t0x4A480012")
+#define gte_rtv0tr_n1() __asm__ volatile(GTE_NOP1 ".word\t0x4A480012")
+#define gte_nclip_b() __asm__ volatile(".word\t0x4B400006")
+#define gte_avsz3_b() __asm__ volatile(".word\t0x4B58002D")
+#define gte_avsz4() __asm__ volatile(GTE_NOPS ".word\t0x4B68002E")
+#define gte_avsz4_b() __asm__ volatile(".word\t0x4B68002E")
+#define gte_ldv3c(r0) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 4(%0);" \
+    "lwc2\t$2, 8(%0);" \
+    "lwc2\t$3, 12(%0);" \
+    "lwc2\t$4, 16(%0);" \
+    "lwc2\t$5, 20(%0)" \
+    : : "r"(r0))
+#define gte_stsxy3c(r0) __asm__ volatile( \
+    "swc2\t$12, 0(%0);" \
+    "swc2\t$13, 4(%0);" \
+    "swc2\t$14, 8(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_stsz3c(r0) __asm__ volatile( \
+    "swc2\t$17, 0(%0);" \
+    "swc2\t$18, 4(%0);" \
+    "swc2\t$19, 8(%0)" \
+    : : "r"(r0) : "memory")
+#define gte_ldsxy3(r0, r1, r2) __asm__ volatile( \
+    "mtc2\t%0, $12;" \
+    "mtc2\t%2, $14;" \
+    "mtc2\t%1, $13" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldsz3(r0, r1, r2) __asm__ volatile( \
+    "mtc2\t%0, $17;" \
+    "mtc2\t%1, $18;" \
+    "mtc2\t%2, $19" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldsz4(r0, r1, r2, r3) __asm__ volatile( \
+    "mtc2\t%0, $16;" \
+    "mtc2\t%1, $17;" \
+    "mtc2\t%2, $18;" \
+    "mtc2\t%3, $19" \
+    : : "r"(r0), "r"(r1), "r"(r2), "r"(r3))
+#define gte_ldlv0(r0) __asm__ volatile( \
+    "lhu\t$13, 4(%0);" \
+    "lhu\t$12, 0(%0);" \
+    "sll\t$13, $13, 16;" \
+    "or\t$12, $12, $13;" \
+    "mtc2\t$12, $0;" \
+    "lwc2\t$1, 8(%0)" \
+    : : "r"(r0) : "$12", "$13")
 #define gte_MulMatrix0(r1, r2, r3) \
     { \
         gte_SetRotMatrix(r1); \
@@ -533,6 +596,45 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
         gte_rtir(); \
         gte_stclmv((s16 *)(r3) + 2); \
     }
+/* GTE sequences hand-written by Square (field func_800BB508, world map func_800C9FCC) */
+/* store the transformed vertex: x, y clamped to arg2 (flagging the depth) and z */
+#define gte_stsvclamp(r0, r1, r2) __asm__ volatile( \
+    "mfc2\t$12, $9;" \
+    "mfc2\t$13, $10;" \
+    "mfc2\t$14, $11;" \
+    "sh\t$12, 0(%0);" \
+    "ori\t$12, $0, 0xFFFF;" \
+    "slt\t$1, $13, %2;" \
+    "bnez\t$1, 1f;" \
+    "and\t$14, $14, $12;" \
+    "addu\t$13, %2, $0;" \
+    "lui\t$1, 0x1000;" \
+    "or\t$14, $14, $1;" \
+    "1:;" \
+    "sh\t$13, 2(%0);" \
+    "sw\t$14, 0(%1)" \
+    : : "r"(r0), "r"(r1), "r"(r2) : "$1", "$12", "$13", "$14", "memory")
+
+/* three vertices: xy from r0, z from r1 */
+#define gte_ldv3xyz(r0, r1) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$1, 0(%1);" \
+    "lwc2\t$2, 4(%0);" \
+    "lwc2\t$3, 4(%1);" \
+    "lwc2\t$4, 8(%0);" \
+    "lwc2\t$5, 8(%1);" \
+    "nop" \
+    : : "r"(r0), "r"(r1))
+
+#define gte_stsz3h(r0) __asm__ volatile( \
+    "mfc2\t$12, $17;" \
+    "mfc2\t$13, $18;" \
+    "mfc2\t$14, $19;" \
+    "sh\t$12, 0(%0);" \
+    "sh\t$13, 4(%0);" \
+    "sh\t$14, 8(%0)" \
+    : : "r"(r0) : "$12", "$13", "$14", "memory")
+
 long RotTransPers4(SVECTOR *v0, SVECTOR *v1, SVECTOR *v2, SVECTOR *v3, long *sxy0, long *sxy1, long *sxy2, long *sxy3, long *p, long *flag);
 int MargePrim(void *p0, void *p1);
 void SetLightMatrix(MATRIX *m);

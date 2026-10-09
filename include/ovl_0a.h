@@ -683,27 +683,32 @@ typedef struct {
 typedef struct {
     u16 unk0[4];
     u16 unk8[4]; /* colours */
-    u8 pad10[8];
+    u8 pad10[4];
+    u8 unk14; /* flags */
+    u8 pad15[3];
 } WmSrcG4; /* 0x18 */
 
 typedef struct {
     u16 unk0[3];
     u8 pad6[2];
     u16 unk8[3]; /* colours */
-    u8 padE[6];
+    u8 padE[5];
+    u8 unk13; /* flags */
 } WmSrcG3; /* 0x14 */
 
 typedef struct {
     u16 unk0[4];
     u8 unk8[3]; /* rgb */
-    u8 padB[5];
+    u8 padB[2];
+    u8 unkD; /* flags */
+    u8 padE[2];
 } WmSrcF4; /* 0x10 */
 
 typedef struct {
     u16 unk0[3];
     u8 pad6[2];
     u8 unk8[3]; /* rgb */
-    u8 padB;
+    u8 unkB; /* flags */
 } WmSrcF3; /* 0xC */
 
 typedef struct {
@@ -716,7 +721,8 @@ typedef struct {
     u16 unkC;  /* G3 */
     u16 unkE;  /* F4 */
     u16 unk10; /* F3 */
-    u8 pad12[2];
+    u8 pad12;
+    s8 unk13; /* ordering table bias */
     void *unk14;
     void *unk18;
     u8 *unk1C;      /* primitive sources, in the order above */
@@ -745,7 +751,7 @@ typedef struct {
     u16 unk2; /* clut */
 } WmTexInfo;
 
-typedef struct {
+typedef struct Unk800C95C8 {
     u16 unk0; /* flags; 0x10: behind the camera */
     u8 pad2[6];
     WmModel *unk8;
@@ -762,10 +768,13 @@ typedef struct {
     u16 unk54; /* scale */
     u16 unk56;
     u16 unk58;
-    u8 pad5A[2];
+    s16 unk5A; /* screen y limit (func_800BB508) */
     s32 unk5C;
-    s32 unk60;
-    u8 pad64[0x74 - 0x64];
+    struct Unk800C95C8 *unk60; /* mirrored model (func_800BC33C) */
+    s16 unk64[3]; /* mirror plane normal */
+    u8 pad6A[2];
+    s16 unk6C[3]; /* point on the mirror plane */
+    u8 pad72[2];
     u16 unk74;
     u16 unk76;
     u16 unk78;
@@ -967,7 +976,7 @@ typedef struct {
 s32 func_800AC3D8(s32, s32);
 
 FieldLight *func_800B3254(Unk800B3254 *);
-Unk800B3294 *func_800B3294(Unk800B3254 *, u16);
+/* func_800B3294: called before its definition without a prototype */
 s32 func_800C76E8(s32, u16 *, u16 *);
 s32 func_800C6DA4(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
@@ -1104,8 +1113,8 @@ extern u8 D_800CA050; /* D_800CA010 count */
 extern u8 D_800CA051; /* D_800CA030 count */
 extern Unk800CA058 D_800CA058;
 extern Unk800CA068 D_800CA068;
-extern u8 D_800CAA98[];
-extern u8 D_800CAAB8[];
+extern s16 D_800CAA98[];
+extern s16 D_800CAAB8[];
 extern Unk800CAE98 D_800CAE98[];
 extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
@@ -1181,11 +1190,17 @@ void func_800A8724(void);
 /* func_800A879C: called before its definition without a prototype */
 s32 func_800C3EC0(s32, s16, s16, s16);
 s32 func_800C3608(Unk800C9DF4 *);
+s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+s32 func_800C31F8(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
+s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
+extern Unk800C9E00 *D_800C9E00; /* = D_800C9DF0.unk10, referenced by its own name */
 s32 func_800C79B0(u32);
 s32 func_800C6E94(void);
 s32 func_800A87DC(FieldMapObj *, s32);
 
 /* main exe: candidates for ff9.h */
+extern s32 D_800711A8[]; /* projected screen xy per model vertex */
+extern s32 D_80070520[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;
