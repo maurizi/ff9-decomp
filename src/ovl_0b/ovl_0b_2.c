@@ -284,7 +284,56 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1680);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D198C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1BC4);
+void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    Unk800D1BC4Ctx c;
+    u8 *prim;
+    u8 *d;
+    s32 off;
+    s32 n;
+    u16 *o;
+    Unk800D1BC4 *h = (Unk800D1BC4 *)arg1;
+
+    s32 k = arg4;
+
+    n = h->unk0 & 0x7FFF;
+    if (k >= n) {
+        k = n - 1;
+    }
+    o = &h->unk6[k];
+    c.unk10 = h->unk2;
+    off = *o;
+    c.unk14 = *(u16 *)(arg1 + off);
+    off += 2;
+    if (c.unk14 & 0x8000) {
+        d = arg1 + off;
+        off += 4;
+        c.unk0 = *(u16 *)d | (d[2] << 16);
+        if (arg6 >= 0) {
+            gte_DpqColorFar(&c.unk0, arg6);
+        }
+    } else {
+        if (arg6 < 0) {
+            arg6 = 0x1000;
+        }
+        arg6 = (arg6 >> 5) & 0xFF;
+        c.unk0 = arg6 | (arg6 << 8) | (arg6 << 16);
+    }
+    if (c.unk14 & 0x4000) {
+        off += 4;
+    }
+    arg1 += off;
+    c.unk14 &= 0x3FFF;
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + c.unk14 * 20;
+    c.unk0 |= (arg5 == 0xFF) ? 0x64000000 : 0x66000000;
+    c.unkC = (arg5 & 3) << 5;
+    c.unk4 = arg2;
+    c.unk8 = arg3;
+    c.unk18 = D_800F78A4->unk24;
+    if (arg0 < 0x1000) {
+        D_800F78A4->unk24 = func_800D45FC(arg1, &c, prim, &D_800F78A4->unk20[arg0]);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1D74);
 

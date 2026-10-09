@@ -2726,4 +2726,36 @@ void func_800E7650(s32, s16 *);
 /* main exe: candidates for ff9.h */
 void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
 
+#define gte_DpqColorFar(rgb, p) __asm__ volatile( \
+    "ctc2\t$0, $21;" \
+    "ctc2\t$0, $22;" \
+    "ctc2\t$0, $23;" \
+    "lwc2\t$6, 0(%0);" \
+    "addiu\t$14, $0, 0x1000;" \
+    "subu\t$14, $14, %1;" \
+    "mtc2\t$14, $8;" \
+    GTE_NOPS ".word\t0x4A780010;" \
+    "swc2\t$22, 0(%0)" \
+    : : "r"(rgb), "r"(p) : "$14", "memory")
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6[1];
+} Unk800D1BC4;
+
+typedef struct {
+    u32 unk0;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    u8 *unk18;
+} Unk800D1BC4Ctx;
+
+u8 *func_800D45FC(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
+
+
 #endif
