@@ -344,10 +344,9 @@ static inline void func_80039C38_newactor(s32 uid, s32 b) {
 }
 
 /* Inlined helper: give the window opened by obj the focus (b = window flags). */
-static inline void func_80039C38_window(Unk8004AB64 *obj, s32 b) {
+static inline void func_80039C38_window(Unk8004AB64 *obj, s32 b, s32 c) {
     Unk16D8 *n;
     Unk8004AB64 *o;
-    s32 c = D_8007B704->unk10;
 
     if ((b & 0xA0) == 0x80 && obj->unk5 == 4) {
         for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
@@ -640,7 +639,7 @@ s32 func_80039C38(void) {
     case 0x1F:
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(D_8007B704, c);
+        func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
         func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
         D_8007B704->unkD = 0xFE;
@@ -648,7 +647,7 @@ s32 func_80039C38(void) {
     case 0x20:
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(D_8007B704, c);
+        func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
         func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
         return 0;
@@ -656,7 +655,7 @@ s32 func_80039C38(void) {
         po = func_80038150();
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(po, c);
+        func_80039C38_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
         func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
         D_8007B704->unkD = 0xFE;
@@ -665,7 +664,7 @@ s32 func_80039C38(void) {
         po = func_80038150();
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(po, c);
+        func_80039C38_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
         func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
         return 0;
@@ -849,6 +848,7 @@ s32 func_80039C38(void) {
         po = func_8004B040_inline(D_8007AECC->unk16ED);
         if (po != NULL) {
             s32 *sp = (s32 *)po + po->unk9 + po->unkA;
+            Unk16D8 *nn;
             sp[0] = po->unk0 - D_8007AECC->unk16F0;
             sp[1] = (D_8007B70C->unk7 << 24) | 0xFF0000 | (po->unk4 << 8) | po->unkD;
             po->unk4 = 0;
@@ -856,8 +856,8 @@ s32 func_80039C38(void) {
             po->unkA += 2;
             po->unk0 = D_8006E658;
             D_8007AECC->unk16EC = 0;
-            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
-                n->unk4->unkF |= 6;
+            for (nn = D_8007AECC->unk16D8; nn != NULL; nn = nn->unk0) {
+                nn->unk4->unkF |= 6;
             }
         }
         return 0;
