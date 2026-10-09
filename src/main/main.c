@@ -14589,7 +14589,62 @@ void func_80061624(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800616F8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800618C0);
+void func_800618C0(s32 unused, s32 flag) {
+    s32 *h = D_8007F720;
+    s32 *h2;
+    s32 v;
+    s32 mask;
+    s32 irq;
+    s32 old;
+
+    if (h[8] == 0) {
+        return;
+    }
+    v = func_80060A08();
+    if (v == -1) {
+        return;
+    }
+    SpuSetIRQ(0);
+    SpuSetIRQCallback(NULL);
+    mask = (1 << v) | (1 << (v + 1));
+    old = D_80083168.unkC;
+    D_80083168.unk10 = v;
+    D_80083168.unkC = mask;
+    func_800575D0(mask | old);
+    h2 = h;
+    D_80083168.unk8 = h2[6];
+    D_80083168.unk58 = (u16)h2[7];
+    if (flag) {
+        D_80080A70.unk20 |= D_80083168.unkC;
+    } else {
+        D_80080A70.unk20 &= ~D_80083168.unkC;
+    }
+    irq = h2[8] + ((u32)h2[4] >> 1) + 8;
+    D_80080A70.unk24 &= ~D_80083168.unkC;
+    D_80080A70.unk1C &= ~D_80083168.unkC;
+    D_80083158.unk8 |= 0x100;
+    SpuSetIRQAddr(irq);
+    SpuSetIRQCallback(func_800615F8);
+    if (h2[6] & 1) {
+        if (h2[6] & 2) {
+            func_80060D1C(D_80083168.unk10, 1, h2[8], h2[8] + h2[5]);
+            func_80060D1C(D_80083168.unk10 + 1, 2, h2[8] + h2[9], h2[8] + h2[9] + h2[5]);
+        } else {
+            func_80060D1C(D_80083168.unk10, 1, h2[8], 0x1030);
+            func_80060D1C(D_80083168.unk10 + 1, 2, h2[8] + h2[9], 0x1030);
+        }
+    } else {
+        if (h2[6] & 2) {
+            func_80060D1C(D_80083168.unk10, 3, h2[8], h2[8] + h2[5]);
+            func_80060D1C(D_80083168.unk10 + 1, 3, h2[8], h2[8] + h2[5]);
+        } else {
+            func_80060D1C(D_80083168.unk10, 3, h2[8], 0x1030);
+            func_80060D1C(D_80083168.unk10 + 1, 3, h2[8], 0x1030);
+        }
+    }
+    func_800575B4(D_80083174);
+    SpuSetIRQ(1);
+}
 
 void func_80061B20(s32 *a) {
     func_80060938();
