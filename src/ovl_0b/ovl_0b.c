@@ -949,7 +949,73 @@ s32 func_800AF578(GameData *arg0, Battle *arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AF800);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B0060);
+void func_800B0060(GameData *arg0, Battle *arg1) {
+    u32 *ot;
+    BtlUnit *u;
+    u8 f;
+    u8 g;
+
+    ot = (u32 *)arg1->unk11C0->unk34[arg0->unk8];
+    func_800AB580(0);
+    if ((arg1->unk0 & 2) && (*(u32 *)&arg1->unkD84 & 0x2800) == 0x800) {
+        func_800C072C();
+        arg1->unkD85 |= 0x20;
+    } else if ((arg1->unk0 & 4) && (*(u32 *)&arg1->unkD84 & 0x5000) == 0x1000) {
+        func_800C0840();
+        arg1->unkD85 |= 0x40;
+    }
+    for (u = arg1->unk6F8; u != NULL; u = u->unk0) {
+        if ((u->unk68 >> 22) & 1) {
+            continue;
+        }
+        func_800BC21C(u, (s32 *)&ot);
+        if (u->unk68 & 1) {
+            func_800C1A8C(u, (s8)arg1->unkD86);
+        } else if (!((u->unk68 >> 23) & 1)) {
+            func_800C1A8C(u, (s8)arg1->unkD87);
+        }
+        func_800BFF20(u);
+    }
+    if (arg1->unkD85 & 2) {
+        func_800CA7CC();
+    }
+    if (arg1->unk0 & 1) {
+        ot = (u32 *)func_800CE1B4(&arg0->unk18, arg1->unk11C0->unk1C, (s32)ot, arg0->unk10[arg0->unk8],
+                                  arg1->unk11C0->unk2C[arg0->unk8]);
+    }
+    ot = (u32 *)func_800F4E70((u8 *)ot);
+    if (arg1->unk0 & 2) {
+        f = arg1->unkD85;
+        if (!(f & 2)) {
+            if (!(f & 8)) {
+                func_800C0C7C(ot);
+                func_800BB1F4(arg1);
+                ot = func_800BB974(arg1, ot);
+            } else if (f & 0x20) {
+                if ((s8)arg1->unkD87 >= 0x20) {
+                    arg1->unkD85 = f | 2;
+                } else {
+                    arg1->unkD87 += 4;
+                }
+            }
+        }
+    }
+    if (arg1->unk0 & 4) {
+        g = arg1->unkD85;
+        if (!(g & 4)) {
+            if (!(g & 0x10)) {
+                func_800C0CD0(ot);
+                func_800BAFEC(arg1);
+            } else if (g & 0x40) {
+                if ((s8)arg1->unkD86 >= 0x20) {
+                    arg1->unkD85 = g | 4;
+                } else {
+                    arg1->unkD86 += 4;
+                }
+            }
+        }
+    }
+}
 
 void func_800B031C(void) {
     GameData *gd;
