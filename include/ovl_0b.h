@@ -1092,6 +1092,7 @@ typedef struct Unk800D7E14 {
     u8 unk1;
     u8 pad2[2];
     s32 unk4;
+    s16 unk8[4];
 } Unk800D7E14;
 
 typedef struct Unk800CEE74 {

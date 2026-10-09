@@ -1254,7 +1254,44 @@ s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D960C);
+s32 func_800D960C(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
+    s16 sp18[4];
+    s32 n = *(s32 *)arg2;
+    s32 v;
+    switch (arg0->unk1) {
+    case 0:
+        sp18[0] = 0;
+        sp18[1] = 0;
+        sp18[2] = -0x100;
+        break;
+    case 1:
+        func_800E73EC(arg0->unk0, sp18);
+        break;
+    case 2:
+        sp18[0] = ((Unk800F78A4 *)arg1)->unkC->unk38;
+        sp18[1] = ((Unk800F78A4 *)arg1)->unkC->unk3A;
+        sp18[2] = ((Unk800F78A4 *)arg1)->unkC->unk3C;
+        break;
+    default:
+        sp18[0] = 0;
+        sp18[1] = 0;
+        sp18[2] = 0;
+        break;
+    }
+    if (n == 0) {
+        v = arg0->unk4;
+        if (v == 1) {
+            func_800E76DC(arg0->unk0, sp18);
+            D_800FEC55 = v;
+            return 1;
+        }
+    }
+    if (func_800D71C8(arg0->unk0, sp18, n + 1, arg0->unk4, 0, arg0->unk8) != 0) {
+        D_800FEC55 = 1;
+        return 1;
+    }
+    return 0;
+}
 
 s32 func_800D974C(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     s16 a[4];
