@@ -50,7 +50,7 @@ typedef struct {
     u8 unk76B; /* animation tick (0-6) */
     u8 unk76C; /* animation frame (0-6) */
     u8 unk76D;
-    u8 pad76E;
+    u8 unk76E; /* party size */
     u8 unk76F;
     UnkBlink unk770;
 } EquipMenu;
@@ -118,6 +118,16 @@ void func_801EFCB4(void);
 void func_801EFE2C(void);
 void func_801F3264(void);
 void func_801F3278(s32, s32);
+void func_801EF900(s32, s32);
+void func_801F0ED4(void);
+void func_801F0EE4(void);
+void func_801F1148(void);
+void func_801F301C(void);
+void func_801F31B0(void);
+void func_801F2894(void);
+void func_801F24EC(void);
+void func_80036270(s32); /* main exe */
+extern u8 D_801EDF04[];
 s32 func_801F0E64(s32);
 extern u8 D_801F3418[];
 extern u8 D_801F3428[];
