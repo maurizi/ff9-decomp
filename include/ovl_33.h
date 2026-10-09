@@ -80,7 +80,9 @@ extern AbilityMenu D_801FC840;
 
 typedef struct {
     unsigned int unk0 : 4; /* item kind */
-    unsigned int pad0_4 : 28;
+    unsigned int unk0_4 : 1;
+    unsigned int unk0_5 : 3;
+    unsigned int pad0_8 : 24;
     u8 unk4;
     u8 pad5[0xA - 5];
     u8 unkA;
