@@ -1446,7 +1446,52 @@ void func_800AEC74(void) {
 /* jump table padding emitted by the original toolchain */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AEF10);
+/* find the world map actors (vehicles) and sync the camera with the player */
+void func_800AEF10(void) {
+    Unk16D8 *n;
+    Unk8004AB64 *a;
+
+    for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
+        if (n->unk4->unk5 == 4) {
+            a = n->unk4;
+            switch (a->unk11) {
+            case 1:
+            case 2:
+                D_800CE3D8 = a;
+                break;
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+                D_800CE268 = a;
+                break;
+            case 8:
+                D_800CE3D0 = a;
+                break;
+            case 9:
+                D_800CE3D0 = a;
+                break;
+            case 10:
+                D_800CE3D0 = a;
+                break;
+            }
+            if (a == func_8004AE00()) {
+                if (D_8006794C->unkA == 1 && D_8006794C->unk1C->unk892 == 0) {
+                    if (D_800CE3C8->unk10 != 0) {
+                        D_800CE0F0->unkE = 0x800;
+                    } else {
+                        D_800CE0F0->unkE = 0;
+                    }
+                    D_800CE0F0->unkC = a->unk14.unk22 + D_800CE0F0->unkE;
+                }
+                D_800CE3CC = a->unk14.unk22;
+            }
+        }
+    }
+    D_8006794C->unk1C->unk890 = 0;
+    D_800CF47C = 1;
+}
 
 void func_800AF08C(void) {
     SVECTOR n;
@@ -3966,7 +4011,56 @@ void func_800BC84C(s32 arg0) {
     D_800D3338 %= 4;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BCA6C);
+/* request texture pack arg0: reuse a free or matching slot and move it behind the loaded ones */
+s32 func_800BCA6C(s16 arg0) {
+    Unk800D335C *prev;
+    Unk800D335C *p;
+    u32 n;
+
+    n = 0;
+    prev = &D_800D3358;
+    while (prev->unk4->unkE == 1) {
+        if (prev->unk4->unkC == arg0) {
+            return 0;
+        }
+        prev = prev->unk4;
+        n++;
+    }
+    p = prev->unk4;
+    do {
+        if (p->unkC == -1) {
+            if (n >= 16) {
+                p->unkC = arg0;
+                p->unk0->unk4 = p->unk4;
+                p->unk4->unk0 = p->unk0;
+                p->unk4 = prev->unk4;
+                p->unk0 = prev;
+                D_800D33F0++;
+                prev->unk4->unk0 = p;
+                prev->unk4 = p;
+            } else {
+                p->unkC = arg0;
+                p->unkE = 0;
+            }
+            break;
+        }
+        if (p->unkC == arg0) {
+            p->unk0->unk4 = p->unk4;
+            p->unk4->unk0 = p->unk0;
+            p->unk4 = prev->unk4;
+            p->unk0 = prev;
+            prev->unk4->unk0 = p;
+            prev->unk4 = p;
+            break;
+        }
+        p = p->unk4;
+        n++;
+    } while (p != &D_800D3340);
+    if (p != &D_800D3340) {
+        p->unkF = D_800D3338;
+    }
+    return n != 32;
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BCBDC);
 
@@ -5711,7 +5805,48 @@ s32 func_800CAE00(u16 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CAE0C);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CB09C);
+/* upload every image and clut of an image pack (c walks the clut RECTs in the second loop) */
+void func_800CB09C(Unk800CB09C *arg0) {
+    RECT r;
+    Unk800CB09CClut *c;
+    s16 *img;
+    s32 i;
+    s32 n;
+    s32 n2;
+    s32 ofs;
+    s32 size;
+    u8 *pix;
+
+    ofs = arg0->unk0;
+    c = (Unk800CB09CClut *)((u8 *)arg0 + ofs);
+    ofs = arg0->unk4;
+    i = 0;
+    img = (s16 *)((u8 *)arg0 + ofs);
+    ofs = c->unk0;
+    pix = (u8 *)arg0 + ofs;
+    n = arg0->unk8;
+    for (; i < n; i++) {
+        r.x = img[0];
+        r.y = img[1];
+        r.w = img[2];
+        r.h = img[3];
+        size = r.w * r.h * 2;
+        img += 4;
+        LoadImage(&r, (u32 *)img);
+        img = (s16 *)((u8 *)img + size);
+    }
+    n2 = c->unk4;
+    c = (Unk800CB09CClut *)c->unk8;
+    for (i = 0; i < n2; i++) {
+        r.x = ((RECT *)c)->x;
+        r.y = ((RECT *)c)->y;
+        r.w = ((RECT *)c)->w;
+        r.h = ((RECT *)c)->h;
+        LoadImage(&r, (u32 *)pix);
+        c = (Unk800CB09CClut *)((RECT *)c + 1);
+        pix += r.w * r.h * 2;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800CB1EC);
 
