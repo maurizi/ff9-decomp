@@ -22,8 +22,24 @@ LIB_GLOB = "config/symbols.psyq*.txt"
 CSV = "docs/progress.csv"
 
 
+INDEX = "config/functions.us.txt"
+
+
 def functions():
-    """{(binary, name): (size, addr)}; binary is the asm/us/<dir> name (main, ovl_0a, ...)."""
+    """{(binary, name): (size, addr)} for every function. Read from the committed index
+    (written by --write-index after a full split), because a plain split only emits asm
+    for functions still INCLUDE_ASM'd."""
+    if os.path.exists(INDEX):
+        out = {}
+        for line in open(INDEX):
+            f = line.split()
+            if len(f) == 4 and not line.startswith("#"):
+                out[(f[0], f[1])] = (int(f[2], 16), int(f[3], 16))
+        return out
+    return functions_from_asm()
+
+
+def functions_from_asm():
     out = {}
     for path in glob.glob(ASM_GLOB):
         text = open(path).read()
@@ -71,7 +87,18 @@ def main():
     ap.add_argument("--max", type=lambda x: int(x, 0), default=1 << 30)
     ap.add_argument("--range", default="0-0xFFFFFFFF")
     ap.add_argument("--bin", help="restrict to one binary (main, ovl_0a, ...)")
+    ap.add_argument("--write-index", action="store_true",
+                    help="rewrite config/functions.us.txt from asm/ (needs a FULL split: make resplit)")
     a = ap.parse_args()
+
+    if a.write_index:
+        funcs = functions_from_asm()
+        with open(INDEX, "w") as f:
+            f.write("# binary function size addr -- every function, from a full split; tools/progress.py --write-index\n")
+            for (b, n), (size, addr) in sorted(funcs.items(), key=lambda kv: (kv[0][0], kv[1][1])):
+                f.write(f"{b} {n} {size:#x} {addr:#010x}\n")
+        print(f"wrote {len(funcs)} functions to {INDEX}")
+        return
 
     funcs, todo, lib = functions(), remaining(), library()
     if not funcs:

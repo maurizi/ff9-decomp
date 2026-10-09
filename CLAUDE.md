@@ -42,6 +42,7 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 - splat **never rewrites an existing `.c` file**. After adding symbols or changing a yaml, run `tools/docker.sh make resplit` (`tools/resplit.py`): it re-splits every binary and merges each file's preamble and hand-written bodies back in, even when a function moves to a different file. If it reports missing slots it keeps `*.bak` files and refuses to run again until they're resolved; merge by hand, then delete them. Never delete a `.c` file to regenerate it. Commit before risky resplits.
 - Only run `make resplit` after a config or symbol change, never after a plain merge (the asm only depends on configs). Hand-written C can contain things `resplit` can't round-trip, like top-level `__asm__` padding statements and string constants. Check `git diff src` after every resplit.
 - `make clean` or deleting `build/` also removes splat's linker scripts (`build/us/*.ld`), so run `make resplit` before building again.
+- `make progress` reads every function from the committed index `config/functions.us.txt`. A plain `make split` only writes asm for functions still `INCLUDE_ASM`'d. After any config change that moves function boundaries, run a full `make resplit` (restore `src/` from git if it mangles anything) and then `python3 tools/progress.py --write-index`.
 - Symbols go in `config/symbols.us.txt` (`name = 0xADDR; // type:func`), then `make resplit`. Renaming a decompiled function also needs its C definition renamed.
 
 ## Runtime investigation (emulator)
