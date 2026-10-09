@@ -1585,8 +1585,8 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xB2:
-        a = 0;
         D_8007AE70.unk0 = func_8004AEDC_inline();
+        a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
             a |= (D_8006794C->unk1C->unk3C[i].unk34 >> 11) & 1;
