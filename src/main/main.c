@@ -2413,7 +2413,99 @@ void func_80025108(RECT *r, s32 otz, u8 skip, s32 abr) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800253D4);
+u8 *func_800253D4(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *pkt) {
+    s32 n = 1;
+    s32 semi = (abe != 0) << 25;
+    Unk800689B0 *d;
+    s32 clut;
+    s32 i;
+    s32 j;
+    s32 x;
+    s32 y;
+    RECT tw;
+
+    if (flag) {
+        n = 2;
+    }
+    d = NULL;
+    if (style != 2) {
+        clut = func_800274B4(D_800686D0[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
+    } else {
+        clut = 0x3EA40000;
+    }
+    for (i = 0, y = r->y; i < 2; i++) {
+        for (j = 0, x = r->x; j < 2; j++) {
+            if (flag || i || !j) {
+                d = (Unk800689B0 *)&D_800686D0[D_80068FB4[style][i * 2 + j]];
+                setlen(pkt, 3);
+                ((Sprt8Words *)pkt)->rgbc = D_80068FAC[flag] | semi;
+                ((Sprt8Words *)pkt)->xy = (u16)x | (y << 16);
+                ((Sprt8Words *)pkt)->uvclut = d->unk0 | (d->unk1 << 8) | clut;
+                addPrim(ot, pkt);
+                pkt += sizeof(Sprt8Words);
+                x += r->w - 8;
+            }
+        }
+        y += r->h - 8;
+    }
+
+    setlen(pkt, 2);
+    ((DrMode2Words *)pkt)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)pkt)->code[1] = 0;
+    addPrim(ot, pkt);
+    pkt += sizeof(DrMode2Words);
+
+    if (r->w - 16 > 0) {
+        y = r->y + r->h - 8;
+        for (i = 0; i < n; i++) {
+            d = (Unk800689B0 *)&D_800686D0[D_80068FC0[style][i]];
+            setlen(pkt, 4);
+            ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
+            ((SprtWords *)pkt)->xy = ((r->x + 8) & 0xFFFF) | (y << 16);
+            ((SprtWords *)pkt)->uvclut = clut;
+            ((SprtWords *)pkt)->wh = (r->w - 16) | 0x80000;
+            addPrim(ot, pkt);
+            y -= r->h - 8;
+            tw.x = d->unk0;
+            tw.y = d->unk1;
+            tw.w = d->unk4;
+            tw.h = d->unk5;
+            pkt += sizeof(SprtWords);
+            setlen(pkt, 2);
+            ((DrMode2Words *)pkt)->code[0] = get_tw(&tw);
+            ((DrMode2Words *)pkt)->code[1] = 0;
+            addPrim(ot, pkt);
+            pkt += sizeof(DrMode2Words);
+        }
+    }
+    if (r->h - 16 > 0) {
+        x = r->x;
+        for (i = 0; i < n; i++) {
+            d = (Unk800689B0 *)&D_800686D0[D_80068FC8[style][i]];
+            setlen(pkt, 4);
+            ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
+            ((SprtWords *)pkt)->xy = (x & 0xFFFF) | ((r->y + 8) << 16);
+            ((SprtWords *)pkt)->uvclut = clut;
+            ((SprtWords *)pkt)->wh = ((r->h - 16) << 16) | 8;
+            addPrim(ot, pkt);
+            x += r->w - 8;
+            tw.x = d->unk0;
+            tw.y = d->unk1;
+            tw.w = d->unk4;
+            tw.h = d->unk5;
+            pkt += sizeof(SprtWords);
+            setlen(pkt, 2);
+            ((DrMode2Words *)pkt)->code[0] = get_tw(&tw);
+            ((DrMode2Words *)pkt)->code[1] = 0;
+            addPrim(ot, pkt);
+            pkt += sizeof(DrMode2Words);
+        }
+    }
+    setlen(pkt, 1);
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, d->unk6);
+    addPrim(ot, pkt);
+    return pkt + sizeof(DrTpageWords);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025A28);
 

@@ -2782,6 +2782,18 @@ typedef struct {
 } DrMode2Words; /* DR_MODE / DR_TWIN */
 extern Unk800689B0 D_80068DC0;
 extern Unk800689B0 D_80068CE8;
+/* window frame tables (func_800253D4) */
+extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
+extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
+extern u8 D_80068FB4[][4]; /* corner sprites (D_800686D0 index) per style */
+extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
+extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy;
+    u32 uvclut;
+} Sprt8Words; /* SPRT_8 written as whole words */
 u16 func_800274B4(s32, s32);
 extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
