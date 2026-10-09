@@ -2184,7 +2184,128 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B9738);
+/* recolour a model group in the current draw buffer (linked prims only) */
+void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    u32 *col;
+    WmModelGroup *g;
+    u8 *p;
+    u8 *s;
+    u32 j;
+    u8 c;
+
+    if (arg0->unk0 & 0x10) {
+        return;
+    }
+    g = &arg0->unk8->unk10[arg1];
+    p = arg0->unk44[arg1].unk4;
+    s = g->unk1C;
+    if (D_8006794C->unk1C->unk8 != 0) {
+        p += g->unk0;
+    }
+    for (j = 0; j < g->unk2; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_FT4 *)p)->code;
+            *(u32 *)&((POLY_FT4 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcFT4 *)s)->unk10, arg2, arg3, arg4);
+            ((POLY_FT4 *)p)->code = c;
+        }
+        p += sizeof(POLY_FT4);
+        s += sizeof(WmSrcFT4);
+    }
+
+    for (j = 0; j < g->unk4; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_FT3 *)p)->code;
+            *(u32 *)&((POLY_FT3 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcFT3 *)s)->unk8, arg2, arg3, arg4);
+            ((POLY_FT3 *)p)->code = c;
+        }
+        p += sizeof(POLY_FT3);
+        s += sizeof(WmSrcFT3);
+    }
+
+    for (j = 0; j < g->unk6; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_GT4 *)p)->code;
+            col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[0]];
+            *(u32 *)&((POLY_GT4 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[1]];
+            *(u32 *)&((POLY_GT4 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[2]];
+            *(u32 *)&((POLY_GT4 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[3]];
+            *(u32 *)&((POLY_GT4 *)p)->r3 = func_800BA0F0(*col, arg2, arg3, arg4);
+            ((POLY_GT4 *)p)->code = c;
+        }
+        p += sizeof(POLY_GT4);
+        s += sizeof(WmSrcGT4);
+    }
+
+    for (j = 0; j < g->unk8; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_GT3 *)p)->code;
+            col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[0]];
+            *(u32 *)&((POLY_GT3 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[1]];
+            *(u32 *)&((POLY_GT3 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[2]];
+            *(u32 *)&((POLY_GT3 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            ((POLY_GT3 *)p)->code = c;
+        }
+        p += sizeof(POLY_GT3);
+        s += sizeof(WmSrcGT3);
+    }
+
+    for (j = 0; j < g->unkA; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_G4 *)p)->code;
+            col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[0]];
+            *(u32 *)&((POLY_G4 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[1]];
+            *(u32 *)&((POLY_G4 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[2]];
+            *(u32 *)&((POLY_G4 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[3]];
+            *(u32 *)&((POLY_G4 *)p)->r3 = func_800BA0F0(*col, arg2, arg3, arg4);
+            ((POLY_G4 *)p)->code = c;
+        }
+        p += sizeof(POLY_G4);
+        s += sizeof(WmSrcG4);
+    }
+
+    for (j = 0; j < g->unkC; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_G3 *)p)->code;
+            col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[0]];
+            *(u32 *)&((POLY_G3 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[1]];
+            *(u32 *)&((POLY_G3 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[2]];
+            *(u32 *)&((POLY_G3 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            ((POLY_G3 *)p)->code = c;
+        }
+        p += sizeof(POLY_G3);
+        s += sizeof(WmSrcG3);
+    }
+
+    for (j = 0; j < g->unkE; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_F4 *)p)->code;
+            *(u32 *)&((POLY_F4 *)p)->r0 |= func_800BA0F0(*(u32 *)((WmSrcF4 *)s)->unk8, arg2, arg3, arg4);
+            ((POLY_F4 *)p)->code = c;
+        }
+        p += sizeof(POLY_F4);
+        s += sizeof(WmSrcF4);
+    }
+
+    for (j = 0; j < g->unk10; j++) {
+        if (*(u32 *)p & 0xFFFFFF) {
+            c = ((POLY_F3 *)p)->code;
+            *(u32 *)&((POLY_F3 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcF3 *)s)->unk8, arg2, arg3, arg4);
+            ((POLY_F3 *)p)->code = c;
+        }
+        p += sizeof(POLY_F3);
+        s += sizeof(WmSrcF3);
+    }
+}
 
 void func_800B9E4C(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     WmModelGroup *g;
