@@ -899,13 +899,18 @@ typedef struct {
     s16 *unk10; /* offset table, entries relative to its start */
 } Battle132C;
 
+typedef struct {
+    BtlUnit9C unk0;
+    u8 pad60[0x98 - 0x60];
+} BtlModel; /* 0x98 */
+
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
     u16 unk0; /* flags */
     u8 unk2[2];
     s32 unk4;
-    s32 unk8[8][0x22]; /* per unit: loaded file addresses */
-    u8 pad448[0x488 - 0x448];
+    s32 unk8[4][0x22]; /* per party member: loaded file addresses */
+    BtlModel unk228[4]; /* per party member: model */
     Battle488 unk488[4];
     Battle4880 unk4E8[3];
     struct BtlCmd8 unk5D8[18]; /* commands/abilities */
@@ -1192,10 +1197,6 @@ typedef struct {
 } BtlObjSlot; /* 0x28 */
 extern BtlObjSlot D_80100F1C[32];
 
-typedef struct {
-    BtlUnit9C unk0;
-    u8 pad60[0x98 - 0x60];
-} BtlModel; /* 0x98 */
 
 typedef struct {
     BtlUnit9C *unk0;
@@ -2352,7 +2353,7 @@ u8 *func_800E3EEC(u8 *);
 u8 *func_800CC4F0(u8 *);
 void func_800BD93C(BtlUnit *);
 void func_800BFAF4(BtlUnit *);
-void func_800ED02C(RECT *, s16);
+void func_800ED02C(RECT *, s32);
 extern s32 D_800F8DE4[];
 Window *func_800F1370(void);
 void func_800EBE1C(RECT *, RECT *);

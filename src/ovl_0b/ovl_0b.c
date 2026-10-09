@@ -3572,7 +3572,83 @@ void func_800BB1F4(Battle *arg0) {
     func_800CA3CC();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BB4A0);
+void func_800BB4A0(Character *c, BtlUnit *u, u16 slot, u16 n) {
+    s32 k;
+    s32 s;
+    s32 i;
+
+    u->unkB0 = 1 << n;
+    D_800FDF30.unkA |= 1 << (s = slot);
+    u->unk68 |= 1;
+    u->unk68 = (u->unk68 & ~0x1E) | ((c->unk34.w & 0xF) << 1);
+    u->unk68 |= 0x10000000;
+    u->unk68 = (u->unk68 & ~0xE0) | ((s & 7) << 5);
+    u->unk68 &= ~0x800000;
+    if (D_8007AEF0.b[0x10] == 0 || (c->unkA & 0x10) ||
+        (((u->unk68 >> 1) & 0xF) == 2 && D_8007AEF0.b[0x11] != 0)) {
+        u->unk78 = 0;
+        u->unk68 &= ~0x40000000;
+    } else {
+        u->unk68 |= 0x40000000;
+        u->unk78 = c->unk20;
+    }
+    u->unk7C = 0;
+    u->unkC4 = c->unk88;
+    u->unk30 = c->unk24;
+    u->unk31 = c->unk25;
+    u->unk32 = c->unk26;
+    u->unk33 = c->unk27;
+    u->unk7A = c->unkB;
+    u->unk24 = (BtlUnit24 *)&c->unk18;
+    func_800BD8C0((Unk800BD8C0 *)&u->unk28, (Unk800BD8C0 *)&c->unk10);
+    func_800BBD3C(u, &D_8006794C->unk1C->unk8D8[c->unk34.w & 0xF]);
+    u->unkAE = 0xFFFF;
+    func_800C0A3C((Unk800C09D8 *)u);
+    u->unk24->unk4 = (0x3C - u->unk30) * 160;
+    func_800BD8F0((Unk800BD8F0 *)u);
+    k = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+    if (k == 0) {
+        u->unk2C = 0;
+    } else if (k == 1) {
+        u->unk2C = u->unk24->unk4 - 1;
+    } else {
+        if (D_8007B720 >= D_8007B92D) {
+            func_8004BF20();
+            if (D_8007B720 >= D_8007B92D) {
+                func_8004BF20();
+            }
+        }
+        u->unk2C = ((*D_8007B720 << 8) | *D_8007B720++) % u->unk24->unk4;
+    }
+    u->unkA8 = &D_8006794C->unk1C->unk8E4.battle->unk228[n].unk0;
+    func_800BD698(u, (c->unk34.w >> 4) & 0x1F, n);
+    func_800BBF5C(c, u);
+    u->unk6C = c->unk28;
+    u->unk6D = c->unk29;
+    u->unk6E = c->unk2A;
+    u->unk6F = c->unk2B;
+    func_800BC0D0(c, u);
+    for (i = 0; i < u->unkA8->unk8->unk3; i++) {
+        func_800C8D18(u->unkA8, i, 0, 0, 0);
+    }
+    if (u->unk28 * 6 < u->unk24->unk0) {
+        u->unk3C |= 0x200;
+    }
+    func_800C0ACC(u, c->unk38 & 0xFE);
+    if (c->unk38 & 1) {
+        func_800BEDBC(u, 1);
+    }
+    func_800B0A6C(u);
+    u->unk98 = (struct BtlUnit98 *)&u->unkA0->unk14;
+    if (u->unk28 == 0 && func_800BEDBC(u, 0x100) == 2) {
+        u->unk7D = 5;
+        func_800BD5A0(u);
+        return;
+    }
+    u->unk68 = (u->unk68 & ~0x40000) | ((func_800C09A4(u, 0x30202) & 1) << 18);
+    u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+    u->unkA0->unk3A = 0;
+}
 
 u32 *func_800BB974(Battle *arg0, u32 *arg1) {
     SVECTOR r2;
