@@ -2459,7 +2459,8 @@ static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8
     t->code = (d->unk6 & 0x9FF) | 0xE1000600;
     addPrim(ot, t);
     *out = d->unk4;
-    return (u8 *)++t;
+    s = (SprtWords *)(t + 1);
+    return (u8 *)s;
 }
 /* Inlined copy of func_8004B2F4 (move an object's node to the free list). */
 static inline void func_8004B2F4_inline(Unk8004AB64 *key) {

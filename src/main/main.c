@@ -2806,7 +2806,13 @@ void func_800275A4(arg0, arg1, arg2, arg3, arg4)
     func_8002642C(arg0, arg1, arg2, arg3, arg4, 0);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800275DC);
+s32 func_800275DC(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
+    s32 w;
+    Unk800686E8 *d = &D_800686D0[id];
+
+    D_80077170 = func_80027948_inline(x, y, &D_8007716C[otz], d, flag, &w, (SprtWords *)D_80077170);
+    return w;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027710);
 
