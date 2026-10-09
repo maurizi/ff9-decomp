@@ -734,9 +734,11 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags: 1 = relocated */
-    u8 unk2;
+    u8 unk2;  /* bone count */
     u8 unk3; /* group count */
-    u8 pad4[0xC - 4];
+    u8 pad4[2];
+    u8 unk6; /* look-at bone (func_800BA560) */
+    u8 pad7[0xC - 7];
     s32 unkC;
     WmModelGroup *unk10;
 } WmModel;
@@ -796,7 +798,8 @@ typedef struct Unk800C95C8 {
     u8 *unk20;
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
-    u8 pad48[0x50 - 0x48];
+    s16 unk48[3]; /* look-at target (func_800BA560) */
+    u8 pad4E[2];
     struct Unk800AB0B0 *unk50; /* file 0x19xxxx */
     u16 unk54; /* scale */
     u16 unk56;
@@ -1258,6 +1261,7 @@ void func_8019A5B0(s32); /* overlay loaded at 0x80198000 */
 s32 func_8019AB70(void);
 void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
+u32 func_8004AB64(void *); /* actor -> model slot */
 void func_80023A0C(void);
 void func_800223CC(void);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */

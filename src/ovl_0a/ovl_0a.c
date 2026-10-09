@@ -972,7 +972,86 @@ s32 func_800AAA54(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AAB30);
+s32 func_800AAB30(s32 arg0, void *arg1) {
+    s32 *tex;
+    s32 *uv;
+    s32 *spr;
+    s32 sprId;
+    FieldObjSlot *s;
+    s32 slot;
+    u32 k;
+    u32 sum;
+    WmModel *m;
+    WmModelGroup *g;
+    Unk800AA39C *t;
+    Unk800AA39CEntry *e;
+    s32 i;
+    u32 r;
+    WmModel *a;
+
+    sprId = -1;
+    r = func_8004AB64(arg1);
+    if (r < 9) {
+        slot = r;
+        s = (FieldObjSlot *)func_8001E350(r);
+    } else {
+        slot = D_8006794C->unk1C->unk39 + 9;
+        s = (FieldObjSlot *)func_8001E350(slot);
+        D_8006794C->unk1C->unk39++;
+    }
+    arg0 = func_800AAEC4(arg0);
+    s->unk4 = arg0;
+    s->unkC = arg1;
+    s->unk8->unk8 = func_8001C7FC(4, arg0, 0);
+    if ((s->unk8->unkC = func_8001C7FC(4, func_800AAF5C(arg0), 0)) != NULL) {
+        a = s->unk8->unkC;
+        if (a->unkC >= 0) {
+            a->unkC = (s32)a + a->unkC;
+            if (a->unk10 != NULL) {
+                a->unk10 = (WmModelGroup *)((u8 *)s->unk8->unkC + (s32)a->unk10);
+            }
+        }
+    }
+    func_800AAFD4(arg0, &tex, &uv, &spr);
+    m = s->unk8->unk8;
+    g = m->unk10;
+    sum = 0;
+    if ((s32)g >= 0) {
+        g = (WmModelGroup *)((u8 *)m + (s32)g);
+    }
+    for (k = 0; k < m->unk3; k++) {
+        sum += g->unk0;
+        g++;
+    }
+    sum *= 2;
+    sum += s->unk8->unk8->unk2 * 32 + s->unk8->unk8->unk3 * 12;
+    func_800B6438(s->unk8, (u8 *)D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20);
+    func_800B6584(s->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20 += sum;
+    func_800AC620();
+    t = func_8001C7FC(8, arg0, 0x120000);
+    e = t->unk4;
+    for (i = t->unk1 - 1; i >= 0; i--) {
+        if (e->unk0 == (u16)arg0) {
+            sprId = e->unk8 | 0x190000;
+        }
+    }
+    if (sprId != -1) {
+        s->unk8->unk50 = func_8001C7FC(4, sprId, 0);
+        func_800BB3C4((BgSprHdr *)s->unk8->unk50, (BgSprOfs *)spr);
+    }
+    if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk18 != NULL) {
+        if (slot < 9) {
+            func_800C74A8(slot, s);
+        } else {
+            func_800C74F0(s);
+        }
+        func_800C3E18(slot, 1);
+    }
+    D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x10000;
+    s->unk0 |= 1;
+    return slot;
+}
 
 s32 func_800AAEC4(s32 arg0) {
     if ((arg0 & 0xFFFF) == 0xB9 && D_8007AEF0.h[0] >= 0x283C) {
