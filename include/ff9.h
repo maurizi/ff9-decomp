@@ -2438,6 +2438,8 @@ typedef struct {
     s16 x1;
     s16 y1;
 } LineXY;
+u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s);
+u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
 /* Inlined copy of func_80027948 (SPRT + DR_TPAGE from a sprite descriptor). */
 static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;

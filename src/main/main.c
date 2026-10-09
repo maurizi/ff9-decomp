@@ -2711,7 +2711,48 @@ void func_80027110(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4, u8 arg5, u8 
     D_80077170 = func_80027170(arg0, arg1, &D_8007716C[otz], arg3, arg4, arg5, arg6, D_80077170);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80027170);
+u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 *pkt) {
+    u8 buf[16];
+    s32 tmp[2];
+    s32 w;
+    s32 t;
+    u32 rgbc;
+    Unk800686E8 *d = &D_800686E8;
+
+    if (max < cur) {
+        cur = max;
+    }
+    if (cur != 0 && cur >= max) {
+        pkt = func_80027834(x + 4, y, ot, 0xC0, flag, tmp, pkt);
+    } else if (show) {
+        func_8002BAE4(cur, buf, 3, 1);
+        func_8002BAE4(max, buf + 4, -1, 1);
+        buf[3] = 0x2F;
+        pkt = func_80027B5C(x + 3, y + 2, ot, buf, flag ? 0x66606060 : 0x64808080, (SprtWords *)pkt);
+    }
+    if (cur != 0) {
+        t = d->unk4 - 6;
+        if (max != 0) {
+            w = cur * t / max;
+        } else {
+            w = t;
+        }
+        setlen(pkt, 3);
+        rgbc = 0x6070A838;
+        if (cur >= max) {
+            rgbc = 0x602838A8;
+        }
+        if (flag) {
+            rgbc |= 0x02000000;
+        }
+        ((TileWords *)pkt)->rgbc = rgbc;
+        ((TileWords *)pkt)->xy = ((x + 3) & 0xFFFF) | ((y + 1) << 16);
+        ((TileWords *)pkt)->wh = w | 0x30000;
+        addPrim(ot, pkt);
+        pkt += sizeof(TileWords);
+    }
+    return func_80027948(x, y, ot, d, flag, tmp, (SprtWords *)pkt);
+}
 
 void func_800273C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 buf[8];
