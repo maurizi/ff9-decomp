@@ -92,10 +92,11 @@ extern Unk801FC358 D_801FC358;
 
 typedef struct {
     u8 unk0;
-    u8 pad1;
+    u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[2];
+    u8 unk4;
+    u8 unk5;
     char unk6[0x1C - 6]; /* file name */
     Window *unk1C;
     s32 unk20; /* card channel */
@@ -217,6 +218,15 @@ typedef struct {
 } Unk801F6D24;
 
 /* main exe: candidates for ff9.h */
+extern RECT D_801EDF14;
+extern s32 D_801FB050[]; /* text index per mode */
+extern RECT D_801FB058;
+void func_801F5E40(void);
+void func_801F5114(void);
+u8 *func_801F6320(void);
+void func_801F7CD0(Window *);
+void func_801F8408(Window *);
+void func_801F8424(Window *);
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
 s32 func_80028954(s32); /* defined u8 in main; used unmasked */
 
@@ -289,7 +299,7 @@ void func_801F889C(s32);
 s32 func_801FAB08(void);
 void func_801FAE1C(void);
 void func_801F7780(s32);
-u8 func_801F79F4(s8);
+u8 func_801F79F4(s32);
 void func_801F9C58(CardData *, CardData *);
 s32 func_801FA37C(s32);
 s32 func_801FA4E4(s32, s32, s32);
