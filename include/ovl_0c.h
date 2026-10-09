@@ -915,6 +915,7 @@ extern s32 D_800CD078[3]; /* sound source x */
 extern s32 D_800CD084[3]; /* sound source z */
 extern u8 D_800CD090[3]; /* sound ids */
 extern u8 D_800D30CD;
+extern u8 D_800D30C8[]; /* flags (func_800BB508); [5] is D_800D30CD */
 extern s32 D_800D3300;
 extern u8 D_800D5410;
 extern u8 D_800D1FD0;
