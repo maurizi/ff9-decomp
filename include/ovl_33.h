@@ -149,6 +149,7 @@ extern u8 D_801F3418[];
 extern u8 D_801F3428[];
 extern u16 D_801F893C[];
 extern u8 D_801EE648[];
+extern s32 D_801F8918[]; /* text index per party slot */
 /* func_800355DC; this overlay's link only has the D_ name */
 void D_800355DC(void);
 void func_801EED10(void);

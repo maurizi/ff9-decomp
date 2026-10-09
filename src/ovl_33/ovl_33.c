@@ -721,7 +721,37 @@ INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F189C);
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F1A94);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F1F08);
+void func_801F1F08(void) {
+    RECT sub;
+    MenuView view;
+    WinDef *wd = &D_801FC840.unk23C;
+    RECT *r = &wd->unk4;
+    AbilityMenu *m = &D_801FC840;
+    MenuList *l = &D_801FC840.unk4;
+    s32 w;
+    s32 k = 0x97;
+    s32 i;
+
+    if (m->unk260 != 0) {
+        w = func_8002AE7C((u8 *)D_800703FC.unk94);
+        func_8002B524(wd->unk4.x + 6, r->y - 3, 0x14, D_800703FC.unk0[D_801F8918[m->unk2]], 0);
+        func_8002B524(wd->unk4.x - (w - k), r->y - 3, 0x14, D_800703FC.unk94, 0);
+        func_8002E040(r, 0x14, 1, l);
+        func_8002ECA0(l, &view);
+        func_8002D9B4(NULL, 0x13, 1);
+        for (i = 0; i < view.unk0; i++) {
+            func_801F2F3C(0, i, view.unk1 + i, &view);
+        }
+        if (l->unk8 & 4) {
+            func_8002F40C(l, r, &sub);
+            func_8002D9B4(&sub, 0x13, 1);
+            func_801F2ED4();
+        }
+        if (wd->unkC == 0) {
+            func_8002D9B4(r, 0x13, 1);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F20A0);
 
