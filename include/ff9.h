@@ -2207,7 +2207,7 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
     return -1;
 }
 
-void func_80025ED4(s32, s32, s32, s32, s32, s32, s32);
+void func_80025ED4(s32, s32, s32, s32, s32, s32, u8);
 extern u8 D_8007AF00;
 typedef struct {
     u8 unk0; /* show second character */
@@ -2794,6 +2794,19 @@ typedef struct {
     u32 xy;
     u32 uvclut;
 } Sprt8Words; /* SPRT_8 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 uv0clut;
+    u32 xy1;
+    u32 uv1tpage;
+    u32 xy2;
+    u32 uv2;
+    u32 xy3;
+    u32 uv3;
+} PolyFT4Words; /* POLY_FT4 written as whole words */
+
 u16 func_800274B4(s32, s32);
 extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);

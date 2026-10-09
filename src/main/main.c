@@ -2537,7 +2537,43 @@ void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     D_80077170 = (u8 *)(t + 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800265B0);
+void func_800265B0(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
+    RECT tw;
+    Unk80068F48 *o;
+    u16 clut;
+
+    clut = D_80068CE8.unk2 - ((D_8006794C->unk24 >> 18) & 1) * 0xC0;
+    tw.x = D_80068CE8.unk0;
+    tw.y = D_80068CE8.unk1;
+    tw.w = D_80068CE8.unk4;
+    tw.h = D_80068CE8.unk5;
+
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = get_tw(&D_80068F40);
+    ((DrMode2Words *)D_80077170)->code[1] = 0;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+
+    setlen(D_80077170, 9);
+    o = &D_80068F48[shape];
+    ((PolyFT4Words *)D_80077170)->rgbc = 0x2C808080;
+    ((PolyFT4Words *)D_80077170)->xy0 = (x + o->x0) | ((y + o->y0) << 16);
+    ((PolyFT4Words *)D_80077170)->uv0clut = (u + o->x0) | ((v + o->y0) << 8) | (clut << 16);
+    ((PolyFT4Words *)D_80077170)->xy1 = (x + o->x1) | ((y + o->y1) << 16);
+    ((PolyFT4Words *)D_80077170)->uv1tpage = (u + o->x1) | ((v + o->y1) << 8) | (D_80068CE8.unk6 << 16);
+    ((PolyFT4Words *)D_80077170)->xy2 = (x + o->x2) | ((y + o->y2) << 16);
+    ((PolyFT4Words *)D_80077170)->uv2 = (u + o->x2) | ((v + o->y2) << 8);
+    ((PolyFT4Words *)D_80077170)->xy3 = (x + o->x3) | ((y + o->y3) << 16);
+    ((PolyFT4Words *)D_80077170)->uv3 = (u + o->x3) | ((v + o->y3) << 8);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(PolyFT4Words);
+
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = get_tw(&tw);
+    ((DrMode2Words *)D_80077170)->code[1] = 0;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+}
 
 void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
     PolyF4Words *p;
