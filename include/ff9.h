@@ -3470,4 +3470,11 @@ static inline void func_80054A28_max(u32 *m, u32 v) {
     }
 }
 
+/* primitive buffer / ordering table used by func_800540E8 */
+extern u32 *D_8007BD0C;
+extern u32 *D_8007BD10;
+extern u16 D_8007BD1E;
+extern u8 D_8006F308[];
+extern u8 D_8006F310[];
+
 #endif

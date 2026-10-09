@@ -10140,7 +10140,37 @@ u8 func_800539FC(Character *a, s32 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80053A10);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800540E8);
+void func_800540E8(s32 x, s32 y) {
+    u32 *p;
+    s32 i;
+    u32 v;
+    u8 c1, c2;
+    u32 xy;
+    u32 g2;
+
+    p = D_8007BD10;
+    v = D_8007BD1E << 16;
+    c1 = v >> 20;
+    c2 = v >> 23;
+    g2 = (c2 << 16) | (c2 << 8) | c2;
+    setlen(p, 1);
+    p[1] = 0xE1000340;
+    p += 7;
+    for (i = 0; i < 4; i++) {
+        p[0] = 0x06000000;
+        p[1] = ((c1 << 16) | (c1 << 8) | c1) | 0x32000000;
+        p[2] = ((D_8006F310[i] * D_8006794C->unk10->clip.h) << 16) | ((D_8006F308[i] * 320) & 0xFFFF);
+        p[3] = (c1 << 16) | (c1 << 8) | c1;
+        p[4] = ((D_8006F310[i + 1] * D_8006794C->unk10->clip.h) << 16) | ((D_8006F308[i + 1] * 320) & 0xFFFF);
+        p[5] = g2;
+        p[6] = (y << 16) | (x & 0xFFFF);
+        setaddr(p - 7, p);
+        p += 7;
+    }
+    setaddr(p - 7, getaddr(&D_8007BD0C[2]));
+    setaddr(&D_8007BD0C[2], D_8007BD10);
+    D_8007BD10 = p;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054294);
 
