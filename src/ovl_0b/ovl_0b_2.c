@@ -5916,7 +5916,30 @@ void func_800EF094(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
     D_800F8E48[D_80104FD4->unk6](arg0, arg1, arg2, arg3);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800EF0D8);
+void func_800EF0D8(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
+    u8 buf[8];
+    u8 k = D_800FDD10[D_80104FD4->unk8 + arg2];
+    Window *w = D_80104F88->unk12A4[2];
+    RECT *r = &w->unk8;
+    s32 dy = w->unk6 - r->h;
+    s32 res = func_800EEA98(k);
+    s16 x;
+    s32 y;
+    Battle16CC *a;
+    s32 c;
+
+    if (res != 0) {
+        x = r->x;
+        a = &D_8006794C->unk1C->unk8E4.battle->unk16CC[k];
+        y = r->y + arg1 * 15 + arg3->unk2 - dy;
+        c = (res != 2) * 2;
+        func_80029058(x + 6, y, 7, D_800F909C + a->unkE, c);
+        if (a->unkA != 0) {
+            func_8002BAE4(func_800EF598((BtlCmd8 *)a), buf, 3, 1);
+            func_8002B56C(x + 0x60, y + 4, 7, buf, c);
+        }
+    }
+}
 
 void func_800EF228(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
     u8 buf[8];
