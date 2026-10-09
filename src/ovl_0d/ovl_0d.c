@@ -90,7 +90,28 @@ void func_800A8B80(void) {
     ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A8BC4);
+void func_800A8BC4(TmState *s) {
+    GameData *ctx;
+
+    if ((D_80077524 & 0xF09) == 0xF09) {
+        D_8006794C->unk0 |= 1;
+        s->unk0 = 0xC;
+    }
+    if (&D_8006794C->unk10[D_8006794C->unk1C->unk8].dfe != NULL) {
+        DrawSync(0);
+        VSync(D_8006794C->unk9);
+    } else {
+        DrawSync(0);
+        VSync(D_8006794C->unk9);
+        ResetGraph(1);
+    }
+    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    PutDrawEnv(&D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+    ctx = D_8006794C->unk1C;
+    DrawOTag(ctx->unk10[ctx->unk8] + 0xFFF);
+    D_8006794C->unk1C->unk8 ^= 1;
+    func_8002C0DC(D_8006794C->unk1C->unk8);
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A8D74);
 
@@ -142,7 +163,55 @@ void func_800A93C8(u8 *arg0, s32 arg1, s32 arg2) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A9424);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A96B0);
+void *func_800A96B0(u32 *ot, SPRT_16 *p, TmState *s) {
+    u8 c;
+    s32 x;
+    s32 y;
+    DR_TPAGE *tp;
+
+    c = s->unk2EC;
+    if (s->unk0 == 0x15) {
+        c = s->unk2E8 * 4;
+    }
+    for (x = 0; x < 14; x++) {
+        for (y = 0; y < 15; y++) {
+            setlen(p, 3);
+            p->code = 0x7C;
+            if (s->unk0 == 0x15) {
+                p->code = 0x7E;
+            }
+            p->x0 = x * 16 + 0x30;
+            p->y0 = y * 16;
+            p->v0 = y * 16;
+            p->r0 = c;
+            p->g0 = c;
+            p->b0 = c;
+            p->u0 = x * 16;
+            p->clut = 0x39C0;
+            AddPrim(ot + 0xFFA, p);
+            p++;
+        }
+    }
+    tp = (DR_TPAGE *)p;
+    setlen(tp, 1);
+    tp->code[0] = (GetTPage(1, 1, 0x340, 0) & 0x9FF) | 0xE1000000;
+    AddPrim(ot + 0xFFA, tp);
+    tp++;
+    if (s->unk0 == 0x15 && s->unk2E8 >= 0x20) {
+        s->unk468 = 1;
+        func_800AEBB4(s);
+        s->unk464 = 1;
+        for (y = 4; y >= 0; y--) {
+            s->unk590[y] = 0;
+        }
+        s->unk46C = 1;
+        s->unk5AC = 0;
+        s->unk5A8 = 0;
+        s->unk2E8 = 0;
+        s->unk0 = 0x21;
+    }
+    return tp;
+}
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A986C);
 

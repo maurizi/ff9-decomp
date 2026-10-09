@@ -117,7 +117,9 @@ typedef struct {
     Window *unk4C4;
     u8 pad4C8[0x4F0 - 0x4C8];
     s32 unk4F0;
-    u8 pad4F4[0x550 - 0x4F4];
+    u8 pad4F4[0x50C - 0x4F4];
+    u8 unk50C;
+    u8 pad50D[0x550 - 0x50D];
     s32 unk550;
     s32 unk554;
     u8 pad558[0x564 - 0x558];
@@ -138,6 +140,20 @@ typedef struct {
     u8 v[8];
 } TmDirMask; /* card arrow bit for each direction */
 extern TmDirMask D_800A73BC;
+
+typedef struct {
+    s32 unk0; /* x */
+    s32 unk4; /* y */
+    s32 unk8; /* x when flipped */
+    s32 unkC; /* y when flipped */
+    s32 unk10; /* u */
+    s32 unk14; /* v */
+} TmArrow;
+
+typedef struct {
+    TmArrow v[8];
+} TmArrowTbl; /* arrow sprite for each direction */
+extern TmArrowTbl D_800A73C4;
 
 typedef struct {
     u32 unk0; /* id */
@@ -200,6 +216,7 @@ void func_800AE54C(TmState *);
 void func_800B01E8(s32);
 TmCell *func_800B19D4(TmState *, s32, s32);
 TmCard *func_800B12F0(TmState *, TmPos *, s32, s32);
+void func_800AEBB4(TmState *);
 void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
 s32 func_800AE94C(TmState *, s32);

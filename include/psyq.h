@@ -323,6 +323,13 @@ typedef struct {
     u8 u0, v0;
     u16 clut;
 } SPRT_16;
+typedef struct {
+    u32 tag;
+    u8 r0, g0, b0, code;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+} SPRT_8;
 long SquareRoot0(long a);
 void SetGeomOffset(long ofx, long ofy);
 typedef struct {
