@@ -1055,6 +1055,12 @@ typedef struct {
     u16 unk6;
 } BgSprOfs;
 
+/* sprite vertex (BgSprPart.unk8) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} BgSprVtx;
+
 /* streamed sound bank request (func_800B29F8, as ovl_0c func_800AC424) */
 typedef struct {
     u8 pad0[8];

@@ -4312,7 +4312,46 @@ void func_800BB090(BgAnimHdr *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BB3C4);
+void func_800BB3C4(BgSprHdr *hdr, BgSprOfs *ofs) {
+    u32 i, j, k;
+    u32 p;
+    BgSprPart *part;
+    u8 idx;
+
+    if (hdr == NULL) {
+        return;
+    }
+    for (i = 0; i < hdr->unk0; i++) {
+        hdr->unk4[i].unkE = 1;
+        p = hdr->unk4[i].unk10;
+        if (p > 0x80000000) {
+            return;
+        }
+        if (p == 0) {
+            continue;
+        }
+        idx = hdr->unk4[i].unkD;
+        p += (u32)hdr;
+        hdr->unk4[i].unk10 = p;
+        if (ofs != NULL) {
+            ((BgSprPart *)p)->unk0 += ofs[idx].unk4;
+            ((BgSprPart *)p)->unk2 += ofs[idx].unk6;
+        }
+        part = (BgSprPart *)p;
+        for (j = 0; j < hdr->unk4[i].unkC; j++) {
+            p = part[j].unk8;
+            p += (u32)hdr;
+            part[j].unk8 = p;
+            if (ofs != NULL) {
+                for (k = 0; k < hdr->unk4[i].unk1; k++) {
+                    ((BgSprVtx *)p)->unk0 += ofs[idx].unk0;
+                    ((BgSprVtx *)p)->unk2 += ofs[idx].unk2;
+                    p += sizeof(BgSprVtx);
+                }
+            }
+        }
+    }
+}
 
 void func_800BB508(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
