@@ -1472,7 +1472,35 @@ Unk80021938 *func_80021E5C(s32 id) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021ED4);
+s32 func_80021ED4(void) {
+    Unk80021938 *e = &D_8006794C->unk1C->unk8C8->unk4[6];
+    Unk80021938 *p = func_80021E20();
+    u8 r;
+    s32 ret;
+
+    if (p == NULL) {
+        return 0;
+    }
+    do {
+        if (!func_800219FC(p)) {
+            return -1;
+        }
+        if (p->unk2 == 0) {
+            r = func_80022C60(D_8006794C->unk20 + e->unk18, e->unk1C, (void *)e->unk8, func_800225BC);
+        } else if (p->unk2 == 1) {
+            r = func_80022C10(D_8006794C->unk20 + e->unk18, func_800225BC);
+        } else {
+            goto done;
+        }
+        if (r == 0) {
+            return -1;
+        }
+    done:
+        p->unk0 |= 1;
+        ret = 0;
+    } while (0);
+    return ret;
+}
 
 s32 func_80021FB4(void) {
     Unk80021938 *p = func_80021E20();
@@ -1520,7 +1548,27 @@ Unk80021938 *func_8002208C(void) {
     return p;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800220E8);
+s32 func_800220E8(s32 id) {
+    s32 r = 0;
+    Unk80021938 *p = func_80021E5C(id);
+
+    if (p != NULL) {
+        if (func_80021A1C(p)) {
+            func_80022020();
+        }
+        if (func_80021AE0(p) || func_80021A8C(p)) {
+            r = 1;
+        }
+    } else {
+        p = func_80021E20();
+        if (p != NULL && func_800219FC(p)) {
+            if (((p->unk4 >> 16) & 0xFF) == ((id >> 16) & 0xFF) && (p->unk4 & 0xFFFF) != (id & 0xFFFF)) {
+                func_80021C20(p);
+            }
+        }
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800221C0);
 
@@ -8263,7 +8311,34 @@ s32 func_80039C38(void) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800475D8);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047AB8);
+s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
+    s32 *sp;
+    s32 ok;
+    s32 x;
+    u32 hi;
+    s32 w;
+
+    if (!(p->unk50 & 0x400)) {
+        ok = 0;
+        if (!(p->unk62 & 0x80) && p->unk6E == 0xA7) {
+            ok = 0 < p->unk4;
+        }
+        if (ok) {
+            p->unk70 = b >> 4;
+            sp = &((s32 *)p + p->unk9)[p->unkA];
+            sp[0] = p->unk0 - D_8007AECC->unk16F0;
+            w = p->unkD | (p->unk4 << 8);
+            hi = D_8007B70C->unk7 << 24;
+            x = hi | 0xFF0000;
+            sp[1] = w | x;
+            p->unk0 = (u8 *)&p->unk6E;
+            p->unk4 = 0;
+            p->unkD = 0;
+            p->unkA += 2;
+        }
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047B90);
 
