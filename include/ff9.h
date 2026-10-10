@@ -562,6 +562,7 @@ extern Unk80077DB0 D_80077DB0;
 
 extern s32 D_80077140;
 extern s32 D_80077144;
+extern u8 D_80010BD0[]; /* font glyph start/width nibbles, func_80028DB0 */
 extern void (*D_80068F80[])(RECT *, s32);
 extern s32 (*D_8006BBEC[])(u8 *); /* text width of a value, per format */
 extern u8 D_8006A20E;

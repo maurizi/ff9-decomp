@@ -3940,7 +3940,55 @@ void func_80028D2C(UnkBlink *b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", GetClut);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028DB0);
+s32 func_80028DB0(s32 x, s32 hi, s32 c) {
+    u8 buf[16];
+    u8 w;
+    u8 start;
+    u8 width;
+    u8 *dst;
+    u8 *src;
+    s32 row;
+    s32 i;
+    s32 j;
+    u8 b;
+    u8 *p;
+    s32 px;
+    u8 v, o;
+    u8 t;
+
+    dst = (u8 *)D_80077144;
+    w = D_80010BD0[c];
+    start = w >> 4;
+    width = (w & 0xF) + 1;
+    src = (u8 *)D_80077140 + (c << 6);
+    func_8001D898(buf, 0, 0x10);
+    for (row = 0; row < 12; row++) {
+        for (i = 0; i < 4; i++) {
+            b = src[row * 4 + i];
+            for (j = 0; j < 4; j++) {
+                buf[i * 4 + j] = b & 3;
+                b >>= 2;
+            }
+        }
+        for (i = 0; i < width; i++) {
+            px = x + i;
+            if (!(px & 1)) {
+                p = dst + (px >> 1);
+                v = buf[start + i];
+                o = *p;
+                if (hi) { *p = o | (v << 2); } else { *p = o | v; }
+            } else {
+                v = buf[start + i];
+                px >>= 1;
+                p = dst + px;
+                o = *p;
+                t = v << 4; if (hi) { *p = o | (v << 6); } else { *p = o | t; }
+            }
+        }
+        dst += 0x54;
+    }
+    return width + x;
+}
 
 s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     u32 *tbl = D_8006794C->unk1C->unk7D4->unkC;
