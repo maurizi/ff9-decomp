@@ -570,7 +570,28 @@ void func_801F5B64(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5BCC);
+void func_801F5BCC(s32 unused, s32 row, s32 idx, MenuView *v) {
+    u8 buf[16];
+    Unk80069018 *it;
+    s32 y;
+    s32 x;
+    u8 id;
+    u8 ok;
+
+    ok = 0;
+    id = D_801FC2F8.unk3C[idx];
+    it = &D_80069018[id];
+    if (func_80027F34(id) < 99) {
+        ok = D_8006794C->unk1C->unk560 >= it->unk4;
+    }
+    x = 0x18;
+    y = 0x26;
+    y = row * 15 + (v->unk2 + y);
+    func_8002BAE4(it->unk4, buf, 5, 1);
+    func_80026C34(x, y, 0x1E, id, ok);
+    func_8002B5FC(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, ok ? 0 : 2);
+    func_8002B56C(x + 0x72, y + 4, 0x1E, buf, ok ? 0 : 2);
+}
 
 void func_801F5D14(void) {
     D_801FC2F8.unk0 = 0;

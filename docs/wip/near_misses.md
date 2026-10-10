@@ -166,13 +166,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   constant 1 vs lui in a delay slot), 64 99B4 (MBG_init; the original rematerialises each big
   constant in a3 right before use, not reproduced), 64 B7C4 / 3a 4238 (the original hoists fewer
   loop invariants than ours), 64 C434 (CD ready callback, CSE reach), 36 1A48 (5),
-  36 2664 (7), 33 EF900 (13), 3c 5BCC (7).
+  36 2664 (7), 33 EF900 (13), 3c 6D34 (25, goto loop).
   65 F2560 is probably right in C: gcc leaves the first branch delay slot empty in `.set reorder`
   mode with `li 0x98967E` split into lui/ori after it, and the original has the lui in the delay
   slot. ASPSX seems to fill such slots and maspsx emits a nop; a maspsx fix may unlock others.
   Tricks that matched things in this pass: a pointer that the original computes into a temp and
   then copies to an s-register (`a1` -> `addu s3,a1`) comes from `m2 = &X; m2->f = n; m = m2;`
-  (3c F6F00); an uninitialised local that the original passes on one path holds whatever its
+  (3c F6F00); constants the original keeps in a register come from locals (`x = 0x18; y = 0x26;
+  y = row * 15 + (v->unk2 + y);` then `x + 0x72`, 3c F5BCC); an uninitialised local that the original passes on one path holds whatever its
   register had, so assigning it the value that register held (`info = (void *)&D_8019DE10;`)
   reproduces it (64 BCE8); a call result that the original uses without `andi` means the callee
   was declared returning int there (3c 42A8 now returns s32, 3c 51B8 declares func_80028954 s32);
