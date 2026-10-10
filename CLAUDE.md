@@ -47,20 +47,13 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 
 ## Runtime investigation (emulator)
 - `tools/emu.py` (host-side, not Docker) drives PCSX-Redux running FF9: trace calls to a function, watch who writes a global, diff RAM across a button press, take screenshots, and use save states (field, menu and battle states already exist). Setup and workflow: `docs/emulator.md`.
-- **When a symbol's purpose is unclear, delegate a runtime investigation:** use the Agent tool with `subagent_type: "game-tester"`, or `general-purpose` told to follow `.claude/agents/game-tester.md` if that type isn't loaded. Give it the symbols, binary, your hypothesis, and the game mode or save state that runs the code. See "Asking the game-tester agent" in `docs/emulator.md`.
-- It records evidence and proposed names in `docs/runtime-findings.md`. Applying the names (symbols file, `make resplit`, `make verify`) and marking entries **applied** is the decomp side's job. Only one investigation runs at a time, since there's a single shared emulator, from the main checkout.
+- Investigations record evidence and proposed names in `docs/runtime-findings.md`. Applying the names (symbols file, `make resplit`, `make verify`) and marking entries **applied** is the decomp side's job. Only one investigation runs at a time, since there's a single shared emulator.
 
 ## Game data — never commit
 - Disc images (raw 2352-byte CloneCD `.img`) are in `disks/us/raw/`. The extracted exe is `disks/us/SLUS_012.51`, `FF9.IMG` is in `disks/us/discN/` (`make extract-img`), and the code overlays are in `disks/us/ovl/XX.bin` (`make extract-ovl`). Never commit `disks/`, `asm/`, `build/` or `assets/`.
+- Don't copy game data into C either. Text banks and other blobs stay `INCLUDE_RODATA` (give the symbol `// force_not_migration:True` in the symbols file so splat emits its `.s` even after the function that uses it is decompiled). Short debug/printf strings and small numeric tables that functions need to match are fine in C.
 
 ## Layout facts
 - Boot exe `SLUS_012.51` (sha1 `e37e8c4d…1764`) is **byte-identical** on all 4 discs, as are the code overlays. Per-disc differences are data in other `FF9.IMG` directories.
 - Exe: vram `0x80010000`, entry `__SN_ENTRY_POINT` `0x80012B68`, gp=0. `.rodata` 0x800 → `.text` 0x2FA0 → `.data` 0x56DE0–end.
 - `D_8006794C` is the main game-state pointer (`GameState` in `include/ff9.h`); `->unk1C` points to a large `GameData` block.
-
-## Parallel agents (worktrees)
-- **Memory safety:** a host-side Python script once grew to 50 GB and the kernel's OOM killer took down the whole Claude Code session. Run analysis/search scripts inside Docker (`tools/docker.sh python3 ...`, capped at 8 GB by docker.sh), never as long-running host processes. If something must run on the host, prefix it with `ulimit -v 4000000;` (4 GB). Bound any search you write (no unbounded permutations/products held in memory).
-- In a new worktree, run `tools/worktree_setup.sh /path/to/main/checkout` before anything else. It copies the game binaries and submodule checkouts in and splits; Docker only mounts the worktree.
-- Each agent owns specific binaries and edits only `src/<its binaries>/`, `include/ovl_XX.h` for those overlays, and scratch files under `build/`. Only the agent assigned to `main` edits `src/main/`, `include/ff9.h` and `include/psyq.h`. Nobody else edits configs, tools, `CLAUDE.md` or other agents' files.
-- An overlay that needs main-exe or PsyQ declarations missing from `ff9.h`/`psyq.h` declares them in its own `ovl_XX.h` under a `/* main exe: candidates for ff9.h */` heading. The coordinator hoists them later.
-- Commit after every verified batch, i.e. when `tools/docker.sh make -j8 verify` shows all 20 binaries OK. Commit messages look like `ovl_37: decompile 12 functions`.

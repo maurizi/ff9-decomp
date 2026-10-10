@@ -22,4 +22,4 @@ __pycache__/
 tools/bin/
 
 CLAUDE.local.md
-.claude/settings.local.json
+.claude/

@@ -3,28 +3,12 @@
 `tools/emu.py` drives a PCSX-Redux instance playing FF9, so you can see what a function or a
 global does at runtime before naming it. It runs on the **host**, not in Docker.
 
-## Asking the game-tester agent (for decomp agents)
+## Ground rules
 
-When a function or global's purpose isn't clear from the code, delegate a runtime investigation instead of guessing:
-
-- Spawn the subagent with the Agent tool, `subagent_type: "game-tester"` (defined in `.claude/agents/game-tester.md`).
-  Sessions load agent types at startup. If `game-tester` isn't listed, use `subagent_type: "general-purpose"` and start
-  the prompt with "Read and follow `.claude/agents/game-tester.md`, then `docs/emulator.md`."
-- Give it:
-  - the symbols (`func_800A9B58`, `D_8006794C`) and binary (`main` / `ovl_0b`)
-  - what you already know or suspect (from the asm or your C draft)
-  - the question to answer (what does this flag mean? who calls this with which arguments? which screen uses it?)
-  - which game mode exercises the code. Overlay code only runs while its overlay is resident: field `ovl_0a`,
-    battle `ovl_0b`, world map `ovl_0c`, menus `ovl_3x`. Name a save state from the list below if one fits.
-- It reports evidence and proposed names in its final message and appends them to `docs/runtime-findings.md`.
-  It doesn't edit `src/`, `include/` or `config/`, and doesn't commit. You apply the names (`config/symbols*.txt`, then
-  `make resplit` / `make verify`), mark the entry **applied**, and commit.
-- One emulator at a time. All agents share the instance on port 8080 and the window on the user's display, so don't
-  run two investigations in parallel. Ask one agent several questions instead.
-- The emulator, BIOS, saves and states live in the main checkout's gitignored `tools/bin/`. Run investigations from
-  the main checkout (`/path/to/main/checkout`). A worktree doesn't have them unless you symlink `tools/bin` across.
-- For something quick, a decomp agent can run `tools/emu.py` itself, e.g. one `trace` or `watch` from a save state.
-  Delegate anything that needs exploring or playing through the game.
+- One emulator per port (`FF9_EMU_PORT`, default 8080). It also owns a window on your display, so run one
+  investigation at a time.
+- The emulator, BIOS, saves and states live in the gitignored `tools/bin/` of the checkout you ran `setup` in.
+  A git worktree doesn't have them unless you symlink `tools/bin` across.
 
 ## Setup (once per machine)
 
@@ -136,9 +120,24 @@ Transport quirk: Redux only passes the URL to Lua web handlers, and it rejects U
 250 bytes, so `emu.py` sends longer code in pieces. Large memory reads use
 `/api/v1/cpu/ram/raw` directly.
 
+## Investigation workflow
+
+- Start with `tools/emu.py status`. If it isn't running, `tools/emu.py start` (add `--state NAME` when a fitting save
+  state exists; `tools/emu.py states` lists them).
+- Read the function's asm (`asm/us/<bin>/nonmatchings/...`) or its C in `src/` first, form a hypothesis, then test it:
+  `trace` for callers, args and frequency; `watch` for who reads or writes a global; `snap`/`press`/`diff` for what an
+  action changes; `find` for values shown on screen; `shot` to see the screen.
+- Keep the emulator paused between commands and work from save states, so experiments are repeatable. When you reach a
+  useful scene, save it under a descriptive name (`field_alexandria_start`, `battle_first_goblin`, `menu_items_open`).
+- Overlay code (0x800A7000, 0x801EDF00, 0x80198700) is only valid while its overlay is resident. Check `tools/emu.py ovl`
+  before setting breakpoints there, and get into the right game mode first: field `ovl_0a`, battle `ovl_0b`, world map
+  `ovl_0c`, menus `ovl_3x`.
+- Leave no breakpoints behind (`bp list` / `bp clear`): they halve emulation speed.
+- Audio is muted by default; `audio record` captures sound when it matters (e.g. identifying a sound-effect function).
+
 ## Recording findings
 
 Append what you learn to `docs/runtime-findings.md`, one entry per symbol, with the evidence
-(the commands and what they showed) and a proposed name. Don't edit `config/symbols*.txt`,
-`include/` or `src/` from an investigation. The decomp agent or the coordinator applies the
-names, since renames have to go through `make resplit` and `make verify`.
+(the commands and what they showed, at which save state) and a proposed name. An investigation
+only records findings. Names are applied separately through `config/symbols*.txt`, `make resplit`
+and `make verify`, and the entry is then marked **applied**.
