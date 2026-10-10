@@ -18262,7 +18262,135 @@ void func_8005CE8C(u32 *a, u32 *b, u32 n) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CF04);
+void func_8005CF04(void) {
+    s32 v;
+    AkaoChannel *c;
+    u32 mask;
+    Unk80083168 *s;
+    s32 old;
+    s32 k;
+
+    D_8008314C = (D_8008314C + 1) & 0xFF;
+    if (D_80080A2C != 0) {
+        D_80080A2C--;
+        D_80080AC0 += D_80080A28;
+        func_8005CDE4();
+    }
+    s = &D_80083168;
+    if (s->unkC != 0 && s->unk48 != 0) {
+        s->unk48--;
+        old = s->unk40;
+        v = old + s->unk44;
+        if ((v & 0xFF00) != (old & 0xFF00)) {
+            if (D_8008315C & 2) {
+                old = (old * D_8006F640) >> 16;
+                func_80057640(s->unk10, old, old, 0);
+                func_80057640(s->unk10 + 1, old, old, 0);
+            } else {
+                old = v << 15;
+                old >>= 16;
+                func_80057640(s->unk10, old, 0, 0);
+                func_80057640(s->unk10 + 1, 0, old, 0);
+            }
+        }
+        D_800831A8 = v & 0xFFFF;
+    }
+    if (D_8007F96E != 0) {
+        D_8007F96E--;
+        D_80083154 += D_8007F8E8;
+    }
+    if (D_8007F96C != 0) {
+        D_8007F96C--;
+        v = D_80083150 + D_8007F8E4;
+        if ((v & 0xFF0000) != (D_80083150 & 0xFF0000)) {
+            k = 32;
+            c = D_8007BD48;
+            do {
+                k--;
+                c->unk11C |= 0x10;
+                c++;
+            } while (k != 0);
+        }
+        D_80083150 = v;
+    }
+    if (D_80080A10->unk4 != 0) {
+        if (D_80080A10->unk58 != 0) {
+            D_80080A10->unk58--;
+            v = D_80080A10->unk50 + D_80080A10->unk54;
+            if ((v & 0x7F0000) != (D_80080A10->unk50 & 0x7F0000)) {
+                func_8005A284(D_80080A10, D_8007BD48);
+            }
+            D_80080A10->unk50 = v;
+        }
+        if (D_80080A10->unk64 != 0) {
+            D_80080A10->unk64--;
+            v = D_80080A10->unk5C + D_80080A10->unk60;
+            if ((v & 0x7F0000) != (D_80080A10->unk5C & 0x7F0000)) {
+                func_8005A284(D_80080A10, D_8007BD48);
+            }
+            D_80080A10->unk5C = v;
+        }
+    }
+    if (D_8007F790 != NULL && D_8007F790->unk4 != 0) {
+        if (D_8007F790->unk58 != 0) {
+            D_8007F790->unk58--;
+            v = D_8007F790->unk50 + D_8007F790->unk54;
+            if ((v & 0x7F0000) != (D_8007F790->unk50 & 0x7F0000)) {
+                func_8005A284(D_8007F790, D_8007F71C);
+            }
+            D_8007F790->unk50 = v;
+        }
+        if (D_8007F790->unk64 != 0) {
+            D_8007F790->unk58--;
+            v = D_8007F790->unk5C + D_8007F790->unk60;
+            if ((v & 0x7F0000) != (D_8007F790->unk5C & 0x7F0000)) {
+                func_8005A284(D_8007F790, D_8007F71C);
+            }
+            D_8007F790->unk5C = v;
+        }
+    }
+    if (D_80080A70.unk0 != 0) {
+        mask = D_80080A70.unk0;
+        c = D_8007E3D8;
+        k = 0x100;
+        do {
+            if (mask & k) {
+                if ((u16)c->unkBC != 0) {
+                    c->unkBC = (u16)c->unkBC - 1;
+                    v = (s16)c->unk100 + c->unk102;
+                    if ((v & 0xFF00) != ((s16)c->unk100 & 0xFF00)) {
+                        c->unk11C |= 3;
+                    }
+                    c->unk100 = v;
+                }
+                if (c->unk9E != 0) {
+                    c->unk9E--;
+                    v = c->unk9C + c->unkFE;
+                    if ((v & 0xFF00) != (c->unk9C & 0xFF00)) {
+                        c->unk11C |= 3;
+                    }
+                    c->unk9C = v;
+                }
+                if ((u16)c->unkB6 != 0) {
+                    c->unkB6 = (u16)c->unkB6 - 1;
+                    v = c->unk70 + c->unk74;
+                    if ((v & 0xFF00) != (c->unk70 & 0xFF00)) {
+                        c->unk11C |= 0x10;
+                    }
+                    c->unk70 = v;
+                }
+                /* identical branches (jump2 merges them), as in func_80030EE4 */
+                if (v) {
+                    mask ^= k;
+                } else {
+                    mask ^= k;
+                }
+            }
+            k <<= 1;
+            c++;
+        } while (mask != 0);
+    }
+}
 
 u32 func_8005D384(AkaoChannel *chans, s32 sub) {
     u32 tempo;
