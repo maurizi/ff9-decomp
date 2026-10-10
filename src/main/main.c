@@ -13508,7 +13508,58 @@ void func_8004F660(Window *w) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F74C);
+void func_8004F74C(Unk8004AB64 *o) {
+    POLY_FT4 *p;
+    Unk80068790 *s;
+    s32 pos;
+    s32 n;
+    s32 x;
+    s32 nx;
+
+    if (D_8007AECC->unk16EC != 0 && (func_8004E8EC() & 1)) {
+        D_8007BBE8 = 60;
+        D_8007BBE0 = 1;
+    }
+    if (D_8007BBE8 > 0 && D_8007AEC8 == 0) {
+        n = --D_8007BBE8;
+        if (n == 0) {
+            D_8007BBE0 = 0;
+        }
+        if (D_8007B708 == 1 && !(D_8006794C->unk1C->unk0 & 0x1C) && n < 58) {
+            s = &D_80068790;
+            func_800515B8();
+            func_80051300();
+            func_8004ACA4(o, 0, 0);
+            if (D_8007BBE8 == 57) {
+                D_8007BBE4 = D_8007BC9C.s.x < 24;
+            }
+            pos = D_8007BC9C.w;
+            if ((pos >> 16) < 16) {
+                func_800512B8(pos & 0xFFFF, 16);
+            }
+            func_800512C8(0, -((D_8007BBE8 >> 2) % 3));
+            p = func_80051530();
+            p->x1 = p->x3 = p->x0;
+            x = p->x0;
+            if (D_8007BBE4) {
+                nx = x + s->unk4;
+            } else {
+                nx = x - s->unk4;
+            }
+            p->x2 = p->x0 = nx;
+            p->y2 = p->y3 = p->y0;
+            p->y1 = p->y0 = p->y0 - s->unk5;
+            p->u0 = p->u2 = s->unk0;
+            p->v0 = p->v1 = s->unk1;
+            p->u1 = p->u3 = s->unk0 + s->unk4 - (u8)D_8007BBE4;
+            p->v2 = p->v3 = s->unk1 + s->unk5;
+            p->tpage = 0x5F;
+            p->clut = s->unk2;
+            func_80051380();
+            func_80051610();
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F9A0);
 

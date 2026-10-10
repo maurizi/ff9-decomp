@@ -2812,6 +2812,24 @@ extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
 void func_8004C8C4(Unk8007B9C0 *, u8 *); /* draw a window's text */
 extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
+typedef union {
+    s32 w;
+    struct {
+        s16 x;
+        s16 y;
+    } s;
+} PenPos;
+extern PenPos D_8007BC9C; /* current pen position */
+/* "!" balloon sprite (func_8004F74C) */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u16 unk2; /* clut */
+    u8 unk4; /* w */
+    u8 unk5; /* h */
+} Unk80068790;
+extern Unk80068790 D_80068790;
+extern s32 D_8007BBE4; /* balloon flipped (pen x < 24) */
 extern u8 D_8006E67C[];
 void func_800512B4(s32);
 void func_80051444(void);
