@@ -74,7 +74,7 @@ u8 *func_801990A0(Ovl64Out *out) {
     if (D_80071E34 >= D_8019DCF8->unk8) {
         D_8019DC94.unk0 = 1;
     }
-    if (D_8019DC94.unk8[9] != hdr->unk10 || D_8019DC94.unk8[10] != hdr->unk12) {
+    if (D_8019DC94.unk2C != hdr->unk10 || D_8019DC94.unk30 != hdr->unk12) {
         hi = D_80071E31;
         if (hi) {
             r.x = 0;
@@ -82,18 +82,18 @@ u8 *func_801990A0(Ovl64Out *out) {
             r.w = 0x3C0;
             r.h = 0xE0;
         }
-        D_8019DC94.unk8[9] = hdr->unk10;
-        D_8019DC94.unk8[10] = hdr->unk12;
+        D_8019DC94.unk2C = hdr->unk10;
+        D_8019DC94.unk30 = hdr->unk12;
         if (hi) {
-            out->unk1C = D_8019DC94.unk8[9] * 3 / 2;
-            out->unk24 = D_8019DC94.unk8[9] * 3 / 2;
+            out->unk1C = D_8019DC94.unk2C * 3 / 2;
+            out->unk24 = D_8019DC94.unk2C * 3 / 2;
         } else {
-            out->unk1C = D_8019DC94.unk8[9];
-            out->unk24 = D_8019DC94.unk8[9];
+            out->unk1C = D_8019DC94.unk2C;
+            out->unk24 = D_8019DC94.unk2C;
         }
-        out->unk1E = D_8019DC94.unk8[10];
-        out->unk26 = D_8019DC94.unk8[10];
-        out->unk2E = D_8019DC94.unk8[10];
+        out->unk1E = D_8019DC94.unk30;
+        out->unk26 = D_8019DC94.unk30;
+        out->unk2E = D_8019DC94.unk30;
     }
     return data;
 }
@@ -176,7 +176,35 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_80199B28);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_80199F30);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019A5B0);
+s32 func_8019A5B0(s32 on) {
+    s8 k;
+
+    if (D_80071E31 >= 0) {
+        if (on != 0) {
+            if (D_80071E31 != 0) {
+                return 0;
+            }
+        } else if (D_80071E31 != 1) {
+            return 0;
+        }
+    }
+    if (func_80012AD4() & 2) {
+        D_8019DC97 = 1;
+    } else if (on != 0) {
+        k = 1;
+        D_80071E31 = k;
+        D_8019DC94.unk1 = k;
+        D_8019F4D8.unk18[0].x = 0x1E0;
+        D_8019F4D8.unk28.w = 0x18;
+        D_8019DC94.unk3 = 2;
+    } else {
+        D_80071E31 = 0;
+        D_8019DC94.unk1 = 0;
+        D_8019F4D8.unk18[0].x = 0x140;
+        D_8019F4D8.unk28.w = 0x10;
+    }
+    return 1;
+}
 
 void func_8019A688(s32 h, s32 hires, s32 i) {
     s32 w = 0x140;
