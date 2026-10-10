@@ -11109,7 +11109,25 @@ void func_800F4FE8(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F5064);
+/* draws the battle help text (D_801051F0 starts with the text buffer) centred in its window */
+u8 *func_800F5064(u8 *arg0) {
+    RECT *r;
+    RECT *t;
+
+    if (D_801051F0.unk8C != 0 && D_801051F0.unk0 != 0xFF) {
+        if (D_801051F0.unk8D != 0) {
+            r = &D_801051F0.unkA4;
+        } else {
+            t = &D_800FDE58;
+            t->h = D_801051F0.unk88.unk2 + 6;
+            r = t;
+        }
+        arg0 = func_800F511C(func_8002920C(r->x + ((r->w - D_801051F0.unk88.unk0) >> 1), r->y + 3,
+                                           D_801051F0.unk98, &D_801051F0.unk0, 0, arg0),
+                             r);
+    }
+    return arg0;
+}
 
 u8 *func_800F511C(u8 *arg0, RECT *arg1) {
     RECT r;
