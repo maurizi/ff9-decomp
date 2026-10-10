@@ -2809,7 +2809,1254 @@ void func_800B44A0(Unk800B44A0 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B44C0);
+void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
+    BtlCalc c;
+    BtlCmd sub;
+    BtlCmd sub2;
+
+    c.unk0 = caster;
+    c.unk4 = target;
+    c.unk8 = (BtlCalc8 *)cmd;
+    c.unk18 = 0;
+    c.unk1A = c.unk1B = 0;
+    c.unk1C = c.unk1E = c.unk20 = c.unk22 = 0;
+    switch ((u8)type) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 7:
+        if (func_800B9418(&c)) {
+            func_800B9AE4(&c);
+            if (func_800B9C14(&c) || func_800B8390(&c)) {
+                func_800B87D0(&c, type);
+                func_800B8A24(&c);
+                func_800BA2AC(&c);
+                func_800BA308(&c);
+                func_800BA3FC(&c);
+                if ((caster->unk3C & 0x4000) && ((caster->unk68 >> 1) & 0xF) == 3) {
+                    c.unk14 *= 2;
+                }
+                func_800BA534(&c);
+                func_800BA660(&c);
+                if (func_800BA6A4(&c)) {
+                    func_800B8BE8(&c);
+                    func_800BA938((Unk800BA938 *)&c);
+                    func_800B8E9C(&c);
+                    func_800BAF3C(&c);
+                    func_800BAE44(&c);
+                    if (c.unk0->unkC4[0] & 0x02000000) {
+                        c.unkC = caster->unk74[7];
+                        RAND_REFILL2();
+                        if (RAND16() % 100 < c.unkC) {
+                            c.unk18 |= 0x100;
+                        }
+                    }
+                }
+            }
+        }
+        break;
+    case 6:
+        {
+            s32 v;
+            s32 d;
+            if (func_800B9E20(&c) && func_800B9DA4(&c) && func_800B9418(&c)) {
+                func_800B9AE4(&c);
+                if (func_800B9C14(&c) || func_800B8390(&c)) {
+                    func_800B87D0(&c, 1);
+                    func_800B8A24(&c);
+                    func_800BA2AC(&c);
+                    func_800BA308(&c);
+                    func_800BA3FC(&c);
+                    func_800BA534(&c);
+                    func_800B8BE8(&c);
+                    func_800BA938((Unk800BA938 *)&c);
+                    func_800B9A5C(&c);
+                    d = c.unkE - c.unk10;
+                    if (d <= 0) {
+                        d = 1;
+                    }
+                    if (c.unk14 <= 0) {
+                        c.unk14 = 1;
+                    }
+                    v = d * c.unk14;
+                    if (v >= 10000) {
+                        v = 9999;
+                    }
+                    c.unk1C = v;
+                    c.unk1E = v;
+                    func_800BAE44(&c);
+                }
+            }
+            break;
+        }
+    case 8:
+        if (func_800B9418(&c)) {
+            func_800B9AE4(&c);
+            if (func_800B8390(&c)) {
+                func_800B9E88(&c);
+                func_800BA2AC(&c);
+                func_800BA308(&c);
+                func_800BA3FC(&c);
+                func_800BA534(&c);
+                func_800BA8F0(&c);
+                if (func_800B8D58(&c)) {
+                    func_800B8BE8(&c);
+                    func_800B8E9C(&c);
+                    func_800BAF3C(&c);
+                    func_800BABAC(&c);
+                }
+            }
+        }
+        break;
+    case 9:
+        func_800B9F80(&c);
+        func_800BA468(&c);
+        func_800BA4AC(&c);
+        func_800BA858(&c);
+        func_800BA8F0(&c);
+        if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+            func_800BAA28(&c);
+            func_800BABAC(&c);
+        }
+        break;
+    case 10:
+        func_800B9F80(&c);
+        func_800BA4F0(&c);
+        func_800BA468(&c);
+        func_800BA858(&c);
+        func_800BA994(&c);
+        break;
+    case 0x6C:
+        if (func_800B9E50(&c)) {
+            func_800B9AFC(&c);
+            func_800B9C30(&c);
+            func_800B9C74(&c);
+            if (func_800B8664(&c)) {
+                func_800BACB4(&c);
+            }
+        }
+        break;
+    case 0xC:
+        func_800BAD64(&c);
+        break;
+    case 0xD:
+        {
+            s32 v;
+            if (func_800B9DDC(&c) && (func_800B9B64(&c) || func_800B8664(&c))) {
+                if (!(target->unk3C & 0x40) && func_800C1E88(target, 0x10) == 0) {
+                    if (func_800B9D6C(&c)) {
+                        v = target->unk24->unk0 * (target->unk33 + cmd->unk8->unk5);
+                        if (caster->unkC4[1] & 2) {
+                            v = v / 50;
+                        } else {
+                            v = v / 100;
+                        }
+                        if (v >= 10000) {
+                            v = 9999;
+                        }
+                        c.unk1E = v;
+                        c.unk1B |= 3;
+                        func_800BAD64(&c);
+                    }
+                } else {
+                    func_800B97A0(target);
+                }
+            }
+            break;
+        }
+    case 0xE:
+        if (func_800B9E50(&c)) {
+            if ((target->unk3C & 0x40) || func_800C1E88(target, 0x10) != 0) {
+                if (func_800B9DA4(&c)) {
+                    target->unk28 = target->unk24->unk0;
+                }
+            } else {
+                func_800B9AFC(&c);
+                if (func_800B8664(&c)) {
+                    func_800BACB4(&c);
+                }
+            }
+        }
+        break;
+    case 0xF:
+        {
+            s32 v;
+            s32 d;
+            if (func_800B9E20(&c) && func_800B9DA4(&c)) {
+                func_800B9F80(&c);
+                func_800BA468(&c);
+                func_800BA4AC(&c);
+                v = 0;
+                c.unk1B |= 8;
+                d = c.unkE - c.unk10;
+                c.unk1A |= 8;
+                if (d > 0) {
+                    if (c.unk14 <= 0) {
+                        c.unk14 = 1;
+                    }
+                    v = d * c.unk14 >> 2;
+                    if (v >= 10000) {
+                        v = 9999;
+                    }
+                }
+                if ((target->unk3C & 0x40) || func_800C1E88(target, 0x10) != 0) {
+                    c.unk1B |= 0x10;
+                    if (caster->unk2A < v) {
+                        v = caster->unk2A;
+                    }
+                } else {
+                    c.unk1A |= 0x10;
+                    if (target->unk2A < v) {
+                        v = target->unk2A;
+                    }
+                }
+                c.unk20 = v;
+                c.unk22 = v;
+            }
+            break;
+        }
+    case 0x10:
+        {
+            s32 v;
+            s32 d;
+            if (func_800B9E20(&c) && func_800B9DA4(&c)) {
+                func_800B9F80(&c);
+                func_800BA468(&c);
+                func_800BA4AC(&c);
+                func_800B9A5C(&c);
+                d = c.unkE - c.unk10;
+                if (d > 0) {
+                    if (c.unk14 <= 0) {
+                        c.unk14 = 1;
+                    }
+                    v = d * c.unk14;
+                    if (v >= 10000) {
+                        v = 9999;
+                    }
+                    c.unk1C = v;
+                    c.unk1E = v;
+                }
+            }
+            break;
+        }
+    case 0x11:
+    case 0x5B:
+        {
+            s32 v;
+            if (func_800B9D34(&c)) {
+                func_800B9AFC(&c);
+                func_800B9C30(&c);
+                func_800B9C74(&c);
+                if (func_800B8664(&c)) {
+                    func_800BA078(&c);
+                    func_800BA8F0(&c);
+                    if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+                        if ((u8)type == 0x11) {
+                            func_800BAAE4(&c);
+                        } else {
+                            if (c.unk14 > 100) {
+                                c.unk14 = 100;
+                            }
+                            v = target->unk28 * c.unk14 / 100;
+                            if (v >= 10000) {
+                                v = 9999;
+                            }
+                            c.unk1B |= 1;
+                            if (c.unk18 & 8) {
+                                c.unk1B |= 2;
+                            }
+                            c.unk1E = v;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+    case 0x12:
+        if ((cmd->unk8->unk0_8 != 0x38 || RAND8() < 0xAB) && (cmd->unkF != 0x2E || !cmd->unk10.b.unk0_9)) {
+            RAND_REFILL2();
+            c.unk14 = RAND16() % (caster->unk32 + caster->unk7A);
+            c.unkE = cmd->unk8->unk5;
+            c.unk10 = 0;
+            func_800BA468(&c);
+            func_800BA4AC(&c);
+            func_800BA858(&c);
+            func_800BA8F0(&c);
+            if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+                func_800BAA28(&c);
+                func_800BABAC(&c);
+            }
+        } else {
+            c.unk18 |= 1;
+        }
+        break;
+    case 0x13:
+        func_800BA094(&c);
+        func_800BA2AC(&c);
+        func_800BA3FC(&c);
+        func_800BA8F0(&c);
+        if (func_800BA6A4(&c)) {
+            func_800BAA28(&c);
+            func_800BABAC(&c);
+        }
+        break;
+    case 0x14:
+        {
+            s32 i;
+            RAND_REFILL2();
+            i = caster->unk31;
+            c.unk14 = i + RAND16() % (((caster->unk7A + i) >> 3) + 1);
+            c.unkE = caster->unk74[5] * cmd->unk8->unk5 / 10;
+            c.unk10 = target->unk6E;
+            func_800BA468(&c);
+            func_800BA4AC(&c);
+            func_800BA8F0(&c);
+            if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+                func_800BAA28(&c);
+                func_800BABAC(&c);
+            }
+            break;
+        }
+    case 0x15:
+        func_800B9F80(&c);
+        if (target->unk7A == caster->unk7A) {
+            c.unk14 += caster->unk7A;
+            c.unk10 = 0;
+        }
+        func_800BA468(&c);
+        func_800BA4AC(&c);
+        func_800BAA28(&c);
+        break;
+    case 0x16:
+        if (func_800B9CDC(&c) && func_800B9DA4(&c)) {
+            func_800B8FF8(&c);
+        }
+        break;
+    case 0x17:
+        if (func_800B9CDC(&c) && func_800B9DA4(&c)) {
+            func_800B9F80(&c);
+            func_800BA468(&c);
+            func_800BA4AC(&c);
+            func_800BA8F0(&c);
+            if (func_800B8D58(&c)) {
+                func_800BAA28(&c);
+            }
+        }
+        break;
+    case 0x18:
+        if (func_800B9CDC(&c) && func_800B9DA4(&c)) {
+            if (target->unk6C != 0) {
+                RAND_REFILL2();
+                target->unk6C = RAND16() % target->unk6C;
+            }
+            if (target->unk6E != 0) {
+                RAND_REFILL2();
+                target->unk6E = RAND16() % target->unk6E;
+            }
+        }
+        break;
+    case 0x19:
+        if (func_800B9D34(&c) && func_800B9DA4(&c)) {
+            func_800B8FF8(&c);
+        }
+        break;
+    case 0x1B:
+        if (func_800B9D34(&c) && func_800B9DA4(&c)) {
+            func_800B9AFC(&c);
+            func_800B9C30(&c);
+            if (func_800B8664(&c)) {
+                func_800B8FF8(&c);
+            }
+        }
+        break;
+    case 0x1C:
+        if (caster->unk28 == 1) {
+            c.unk1B |= 1;
+            c.unk1E = cmd->unk8->unk7 + cmd->unk8->unk5 * 100;
+        } else {
+            c.unk18 |= 1;
+        }
+        break;
+    case 0x1A:
+        c.unk1B |= 1;
+        c.unk1E = cmd->unk8->unk7 + cmd->unk8->unk5 * 100;
+        break;
+    case 0x1D:
+        c.unk1B |= 1;
+        c.unk1E = caster->unk24->unk0 - caster->unk28;
+        break;
+    case 0x1E:
+        c.unk1B |= 1;
+        if (!(target->unk3C & 0x40)) {
+            c.unk1B |= 2;
+        }
+        c.unk1E = caster->unk24->unk0 / 3;
+        break;
+    case 0x1F:
+        c.unk1B |= 8;
+        if (target->unk2A != 0) {
+            RAND_REFILL2();
+            c.unk22 = RAND16() % target->unk2A;
+            if (c.unk22 >= 10000) {
+                c.unk22 = 9999;
+            }
+        }
+        break;
+    case 0x20:
+        {
+            s32 v;
+            s32 d;
+            func_800BA094(&c);
+            func_800BA8F0(&c);
+            if (func_800B8D58(&c)) {
+                c.unk1B |= 1;
+                d = c.unkE - c.unk10;
+                if (d > 0) {
+                    if (c.unk14 <= 0) {
+                        c.unk14 = 1;
+                    }
+                    v = d * c.unk14;
+                    c.unk1A |= 1;
+                    c.unk1C = caster->unk24->unk0 >> 3;
+                    if (v >= 10000) {
+                        v = 9999;
+                    }
+                    if (c.unk18 & 8) {
+                        c.unk1B |= 2;
+                    }
+                    c.unk1E = v;
+                }
+            }
+            break;
+        }
+    case 0x21:
+    case 0x22:
+    case 0x23:
+    case 0x24:
+        func_800B9AFC(&c);
+        func_800B9C30(&c);
+        if (func_800B8664(&c)) {
+            if ((u8)type == 0x21) {
+                target->unk6C >>= 1;
+            } else if ((u8)type == 0x22) {
+                target->unk31 = target->unk31 * 3 / 4;
+            } else if ((u8)type == 0x23) {
+                target->unk6E >>= 1;
+            } else if ((u8)type == 0x24) {
+                target->unk32 = target->unk32 * 3 / 4;
+            }
+        }
+        break;
+    case 0x25:
+        c.unk1B |= 0x1B;
+        if (caster->unkC4[0] & 0x20000000) {
+            c.unk1E = target->unk24->unk0 * cmd->unk8->unk5 / 50;
+            c.unk22 = target->unk24->unk2 * cmd->unk8->unk5 / 50;
+        } else {
+            c.unk1E = target->unk24->unk0 * cmd->unk8->unk5 / 100;
+            c.unk22 = target->unk24->unk2 * cmd->unk8->unk5 / 100;
+        }
+        break;
+    case 0x26:
+        {
+            u32 v;
+            u32 d;
+            v = cmd->unk8->unk5 * caster->unk7A;
+            d = D_8006794C->unk1C->unk560 + v;
+            c.unk1B |= 1;
+            v = v * v / 10;
+            v = v * caster->unk33 / d;
+            if (cmd->unkE == 0x1D) {
+                v = v / func_800C1F00(0);
+            }
+            if (v < 10000) {
+                c.unk1E = v;
+            } else {
+                c.unk1E = 9999;
+            }
+            break;
+        }
+    case 0x27:
+        {
+            s32 v;
+            s32 d;
+            func_800BA094(&c);
+            func_800BA2AC(&c);
+            func_800BA3FC(&c);
+            c.unk1B |= 9;
+            d = c.unkE - c.unk10;
+            if (d > 0) {
+                if (c.unk14 <= 0) {
+                    c.unk14 = 1;
+                }
+                v = d * c.unk14;
+                if (v >= 10000) {
+                    v = 9999;
+                }
+                c.unk1E = v;
+                c.unk22 = v >> 4;
+            }
+            break;
+        }
+    case 0x28:
+        {
+            s32 v;
+            BtlUnit *u;
+            v = target->unk24->unk0 - target->unk28;
+            c.unk1B |= 1;
+            if (v >= 10000) {
+                v = 9999;
+            }
+            c.unk1E = v;
+            for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+                if ((u->unk68 & 0x10000001) == 0x10000000) {
+                    c.unk4 = u;
+                    func_800B7954(&c);
+                    func_800CC044(u);
+                }
+            }
+            return;
+        }
+    case 0x29:
+        {
+            BtlUnit *u;
+            if (!(target->unk3C & 0x100)) {
+                c.unk1A = 0x18;
+                RAND_REFILL2();
+                c.unk20 = RAND16() % (target->unk7A * 2);
+                for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+                    if ((u->unk68 & 0x10000001) == 0x10000001) {
+                        c.unk0 = u;
+                        func_800B7954(&c);
+                        func_800CC044(u);
+                    }
+                }
+                return;
+            }
+            c.unk18 |= 1;
+            break;
+        }
+    case 0x2A:
+        {
+            s32 i;
+            if (func_800B9418(&c)) {
+                RAND_REFILL2();
+                i = caster->unk31;
+                c.unk14 = i + RAND16() % (((caster->unk7A + i) >> 3) + 1);
+                c.unkE = D_8006E0E8[cmd->unkF].unk5 * 2;
+                c.unk10 = target->unk6C;
+                if (caster->unkC4[0] & 0x10000000) {
+                    c.unk14 = c.unk14 * 3 >> 1;
+                }
+                func_800BA2AC(&c);
+                func_800BA3FC(&c);
+                if (func_800C1E88(target, 0x80) != 0) {
+                    c.unk14 = c.unk14 * 3 >> 1;
+                }
+                func_800B8E9C(&c);
+            }
+            break;
+        }
+    case 0x2B:
+        target->unk31 += target->unk31 / cmd->unk8->unk5;
+        if (target->unk31 >= 100) {
+            target->unk31 = 99;
+        }
+        break;
+    case 0x2C:
+        target->unk32 += target->unk32 / cmd->unk8->unk5;
+        if (target->unk32 >= 100) {
+            target->unk32 = 99;
+        }
+        break;
+    case 0x2D:
+        if (!(target->unk3C & 0x100) && !(caster->unk3C & 0x101)) {
+            target->unk28 = target->unk24->unk0;
+            target->unk2A = target->unk24->unk2;
+            caster->unk2A = 0;
+            func_800B97A0(caster);
+        } else {
+            c.unk18 |= 1;
+        }
+        break;
+    case 0x2E:
+        {
+            s32 v;
+            s32 d;
+            if ((u32)(D_8006794C->unk1C->unk3C[(caster->unk68 >> 1) & 0xF].unk39[0] - 7) < 9) {
+                v = D_8006794C->unk1C->unk8E4.battle->unk22CC[caster->unk74[1]];
+                if (!(v & 0x100) || func_800B9E50(&c)) {
+                    d = func_800C0ACC(target, v);
+                    if (d == 0) {
+                        c.unk18 |= 0x40;
+                    } else if (d == 1) {
+                        c.unk18 |= 1;
+                    }
+                }
+            } else {
+                c.unk18 |= 1;
+            }
+            break;
+        }
+    case 0x30:
+    case 0x53:
+        {
+            s32 v;
+            s32 d;
+            func_800B87D0(&c, (u8)type == 0x30 ? 1 : 5);
+            if (caster->unkC4[0] & 0x200000) {
+                c.unk14 *= 2;
+            } else {
+                c.unk14 = c.unk14 * 3 >> 1;
+            }
+            func_800BA468(&c);
+            func_800BA3FC(&c);
+            if ((u8)type == 0x30) {
+                func_800B8E9C(&c);
+            } else {
+                d = c.unkE - c.unk10;
+                if (d <= 0) {
+                    d = 1;
+                }
+                c.unk1B |= 1;
+                if (c.unk14 < 4) {
+                    c.unk14 = 4;
+                }
+                v = (u32)(d * c.unk14) / func_800C1F00(0);
+                if (v >= 10000) {
+                    v = 9999;
+                }
+                c.unk1E = v;
+            }
+            break;
+        }
+    case 0x31:
+        {
+            s32 i;
+            func_800B3CEC(&sub);
+            sub.unkE = cmd->unkE;
+            sub.unk10.b.unk0_10 = cmd->unk10.b.unk0_10;
+            if (target->unk68 & 1) {
+                sub.unkF = 0x49;
+                i = 13;
+            } else {
+                sub.unkF = 0x48;
+                i = 9;
+            }
+            sub.unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[sub.unkF];
+            func_800B44C0(caster, target, &sub, i);
+            return;
+        }
+    case 0x32:
+        {
+            s8 v;
+            if (func_800B9DA4(&c)) {
+                RAND_REFILL2();
+                v = RAND16() % 100;
+                if (v < 10) {
+                    target->unk28 = target->unk24->unk0;
+                    target->unk2A = target->unk24->unk2;
+                } else if (v < 30) {
+                    target->unk28 = target->unk24->unk0;
+                } else if (v < 50) {
+                    target->unk2A = target->unk24->unk2;
+                } else if (v < 65) {
+                    target->unk28 = 1;
+                } else if (v < 80) {
+                    target->unk2A = 1;
+                } else {
+                    target->unk28 = 1;
+                    target->unk2A = 1;
+                }
+            }
+            break;
+        }
+    case 0x33:
+        target->unk73 |= cmd->unk8->unk6;
+        target->unk70 &= ~cmd->unk8->unk6;
+        target->unk71 &= ~cmd->unk8->unk6;
+        target->unk72 &= ~cmd->unk8->unk6;
+        func_800CD5C8(0xE, func_800CD70C(cmd->unk8->unk6));
+        break;
+    case 0x34:
+        if (func_80027F34(cmd->unk8->unk5) != 0) {
+            func_800B3CEC(&sub2);
+            sub2.unkE = 0xE;
+            sub2.unkF = cmd->unk8->unk5;
+            sub2.unk8 = (BtlCmd8 *)&D_8006794C->unk1C->unk8E4.battle->unk16CC[0];
+            func_800B44C0(caster, target, &sub2, D_8006B1F4[sub2.unkF - 0xE0].unk4);
+            func_800EA164(sub2.unkF);
+            return;
+        }
+        c.unk18 |= 1;
+        break;
+    case 0x35:
+        {
+            s32 v;
+            c.unk1B |= 1;
+            v = caster->unk28 % 10;
+            if (v == 7) {
+                switch (RAND8() % 4) {
+                case 0:
+                    c.unk1E = 7;
+                    break;
+                case 1:
+                    c.unk1E = 77;
+                    break;
+                case 2:
+                    c.unk1E = 777;
+                    break;
+                default:
+                    c.unk1E = 7777;
+                    break;
+                }
+            } else {
+                c.unk1E = 1;
+            }
+            break;
+        }
+    case 0x36:
+        {
+            s32 v;
+            if ((target->unk68 & 1) || !((D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 >> 2) & 1)) {
+                v = (caster->unk68 & 1) << 11;
+                target->unk86[1] = v;
+                target->unkA0->unk22 = v;
+                if ((target->unk68 & 1) && (&D_8006794C->unk1C->unk3C[(target->unk68 >> 1) & 0xF])->unk34.b.unk9 != ((target->unk68 >> 8) & 3)) {
+                    func_800BDA60(target);
+                }
+            } else {
+                c.unk18 |= 1;
+            }
+            break;
+        }
+    case 0x37:
+        func_800BDA60(target);
+        break;
+    case 0x38:
+        if (func_800BAEA8(&c)) {
+            func_800B918C(&c);
+        }
+        break;
+    case 0x39:
+        func_800C19F8(0);
+        if (func_800BAEA8(&c)) {
+            func_800B1250(&D_8006794C->unk1C->unk8E4.battle->unk1060, 0x38, 0, 0xF, 1);
+        }
+        break;
+    case 0x3A:
+        {
+            s32 v;
+            s16 d;
+            s16 k;
+            Battle488 *e;
+            e = &D_8006794C->unk1C->unk8E4.battle->unk488[(target->unk68 >> 1) & 0xF];
+            d = 0;
+            for (k = 0; k < 4; k++) {
+                if (e->unk8.b[k] != 0xFF) {
+                    d = 1;
+                }
+            }
+            if (!d) {
+                func_800CD5C8(0xB);
+                break;
+            }
+            if (!(caster->unkC4[1] & 0x40000000)) {
+                c.unk16 = caster->unk7A + caster->unk33;
+                c.unk12 = target->unk7A;
+                RAND_REFILL2();
+                RAND_REFILL2();
+                v = ((*D_8007B720 << 8) | *D_8007B720) % c.unk16 < ((*D_8007B720 << 8) | *D_8007B720) % c.unk12;
+                D_8007B720++;
+                if (v) {
+                    func_800CD5C8(0xA);
+                    break;
+                }
+            }
+            if (caster->unkC4[0] & 0x400000) {
+                if (e->unk8.b[3] != 0xFF && RAND8() < 32) {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 3);
+                } else if (e->unk8.b[2] != 0xFF && RAND8() < 32) {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 2);
+                } else if (e->unk8.b[1] != 0xFF && RAND8() < 64) {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 1);
+                } else {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 0);
+                }
+            } else {
+                if (RAND8() < 1) {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 3);
+                } else if (RAND8() < 16) {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 2);
+                } else if (RAND8() < 64) {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 1);
+                } else {
+                    func_800B7F20(&c, (Unk800B7F20 *)e, 0);
+                }
+            }
+            break;
+        }
+    case 0x3B:
+        if (func_800B9D34(&c)) {
+            func_800CD808((s32)target);
+        }
+        break;
+    case 0x3C:
+        func_800CDC68(target);
+        break;
+    case 0x3D:
+        {
+            u16 v;
+            u16 d;
+            BtlUnit *u;
+            if ((c.unk18 = func_800C1CA0(0, 0x200)) != 0) {
+                d = 0;
+                for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+                    if ((u->unkB0 & c.unk18) && !(u->unk3C & 0x42021D03)) {
+                        d = 1;
+                        v = func_800C1F7C(0);
+                        if (v == 0) {
+                            return;
+                        }
+                        func_800B3D54(u, 0x34, 0xB0, v);
+                    }
+                }
+                if (!d) {
+                    c.unk18 = 0;
+                }
+            }
+            if (c.unk18 == 0) {
+                func_800CD5C8(0x1A);
+            }
+            return;
+        }
+    case 0x3E:
+        if (func_800C1E88(target, 0x20) != 0) {
+            if (func_800B9DA4(&c)) {
+                func_800B97A0(target);
+                func_800CD5C8(0x19);
+            }
+        } else {
+            func_800BADD4(&c);
+        }
+        break;
+    case 0x3F:
+        {
+            s32 i;
+            RAND_REFILL2();
+            i = caster->unk31;
+            c.unk14 = i + RAND16() % (((caster->unk7A + i) >> 3) + 1);
+            c.unkE = caster->unk74[5] + cmd->unk8->unk5;
+            c.unk10 = target->unk6C;
+            func_800BA8F0(&c);
+            if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+                func_800BAA28(&c);
+            }
+            break;
+        }
+    case 0x41:
+        {
+            u8 i;
+            if (func_800B9D34(&c) && func_800B9DA4(&c) && func_800C1E88(target, 1) == 0) {
+                if (target->unk24->unk0 / cmd->unk8->unk5 < target->unk28) {
+                    func_800CD5C8(0x10);
+                } else {
+                    i = D_8006794C->unk1C->unk8E4.battle->unk488[(target->unk68 >> 1) & 0xF].unk0->unk27;
+                    func_800B97A0(target);
+                    if (i != 0 && !func_80034070((caster->unk68 >> 1) & 0xF, i)) {
+                        func_80034220((caster->unk68 >> 1) & 0xF, i);
+                        func_800CD5C8(0x11, func_800EA0B4(i));
+                    } else {
+                        func_800CD5C8(0x12);
+                    }
+                }
+            } else {
+                func_800CD5C8(0x1D);
+            }
+            break;
+        }
+    case 0x42:
+        {
+            s32 v;
+            c.unk1B |= 1;
+            v = D_8006794C->unk1C->unk568;
+            if (v != 0) {
+                v = v * caster->unk7A;
+                if (v >= 10000) {
+                    c.unk1E = 9999;
+                } else {
+                    c.unk1E = v;
+                }
+            } else {
+                c.unk1E = 1;
+            }
+            break;
+        }
+    case 0x43:
+        {
+            s32 v;
+            c.unk1B |= 1;
+            v = D_8006794C->unk1C->unk56A * caster->unk30 / 2;
+            if (v >= 10000) {
+                c.unk1E = 9999;
+            } else {
+                c.unk1E = v;
+            }
+            break;
+        }
+    case 0x44:
+        {
+            c.unk1B |= 1;
+            if (D_8006794C->unk1C->unk56C * D_8006794C->unk1C->unk56C < 10000) {
+                c.unk1E = (u16)D_8006794C->unk1C->unk56C * (u16)D_8006794C->unk1C->unk56C;
+            } else {
+                c.unk1E = 9999;
+            }
+            break;
+        }
+    case 0x45:
+    case 0x46:
+        {
+            s32 v;
+            c.unk14 = 15;
+            c.unkE = D_8006B1F4[cmd->unkF - 0xE0].unk5;
+            c.unk10 = 0;
+            if (caster->unkC4[0] & 0x08000000) {
+                c.unk14 = 30;
+            }
+            if ((u8)type == 0x45) {
+                func_800BA994(&c);
+            } else {
+                v = c.unkE * c.unk14;
+                if (v >= 10000) {
+                    v = 9999;
+                }
+                c.unk1B |= 8;
+                if (!(target->unk3C & 0x40) && func_800C1E88(target, 0x10) == 0) {
+                    c.unk1B |= 0x10;
+                }
+                c.unk22 = v;
+            }
+            break;
+        }
+    case 0x47:
+        if (func_800B9DA4(&c)) {
+            if (!(target->unk3C & 0x40) && func_800C1E88(target, 0x10) == 0) {
+                target->unk28 = target->unk24->unk0;
+                target->unk2A = target->unk24->unk2;
+            } else {
+                target->unk2A = 0;
+                func_800B97A0(target);
+            }
+        }
+        break;
+    case 0x48:
+        if (func_800B9DDC(&c)) {
+            if ((target->unk3C & 0x40) || func_800C1E88(target, 0x10) != 0) {
+                target->unk28 = RAND8() % 10;
+                if (target->unk28 == 0) {
+                    func_800B97A0(target);
+                }
+            } else if (func_800B9D6C(&c)) {
+                if (target->unk3C & 0x100) {
+                    target->unk28 = RAND8() % 10 + 1;
+                }
+                func_800BADD4(&c);
+            }
+        }
+        break;
+    case 0x49:
+        func_800BADD4(&c);
+        break;
+    case 0x4A:
+        c.unk1B |= 3;
+        c.unk1E = D_8006B1F4[cmd->unkF - 0xE0].unk5 * (func_80027F34(cmd->unkF) + 1);
+        break;
+    case 0x4B:
+        c.unk1B |= 1;
+        c.unk1E = D_8006B1F4[cmd->unkF - 0xE0].unk5 * (func_80027F34(cmd->unkF) + 1);
+        break;
+    case 0x4C:
+        c.unk1B |= 0x1B;
+        c.unk1E = target->unk24->unk0 >> 1;
+        c.unk22 = target->unk24->unk2 >> 1;
+        RAND_REFILL2();
+        if (D_8006B1F4[cmd->unkF - 0xE0].unk7 < RAND16() % 100) {
+            func_800CD5C8(0xD);
+            func_800C0ACC(target, D_8006B1F4[cmd->unkF - 0xE0].unk8);
+        }
+        break;
+    case 0x4D:
+        if (func_800B9DA4(&c)) {
+            c.unk1E = 9999;
+            c.unk1B |= 1;
+        }
+        break;
+    case 0x54:
+        func_800B9AFC(&c);
+        func_800B9C30(&c);
+        if (func_800B8664(&c)) {
+            func_800EA1B0(0xFE);
+        }
+        break;
+    case 0x55:
+        func_800B9F80(&c);
+        func_800BA468(&c);
+        func_800BA4AC(&c);
+        func_800BA8F0(&c);
+        if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+            /* padded: a zero word follows the first jump table */
+            __asm__(".section .rodata\n\t.word 0\n\t.section .text");
+            switch (cmd->unkF) {
+            case 0x31:
+                c.unkE += func_80027F34(0xE9);
+                break;
+            case 0x33:
+                c.unkE += func_80027F34(0xEA);
+                break;
+            case 0x35:
+                c.unkE += func_80027F34(0xE7);
+                break;
+            case 0x3C:
+                c.unkE += func_80027F34(0xE2);
+                break;
+            case 0x3E:
+                c.unkE += func_80027F34(0xE0);
+                break;
+            case 0x40:
+                c.unkE += func_80027F34(0xEB);
+                break;
+            case 0x42:
+            case 0x43:
+                c.unkE += func_80027F34(0xE8);
+                break;
+            case 0x4A:
+                c.unkE += caster->unk7A;
+                break;
+            }
+            func_800BAA28(&c);
+            func_800BABAC(&c);
+        }
+        break;
+    case 0x56:
+        if (func_800B9D34(&c)) {
+            func_800BA078(&c);
+            func_800BA8F0(&c);
+            if (func_800B8D58(&c) && func_800BA7D0(&c)) {
+                c.unk14 += func_80027F34(0xE1);
+                func_800BAAE4(&c);
+            }
+        }
+        break;
+    case 0x57:
+        {
+            s32 i;
+            if (func_800B9E50(&c)) {
+                func_800B9AFC(&c);
+                c.unk16 += func_80027F34(0xFE) >> 1;
+                if (func_800B8664(&c)) {
+                    func_800BACB4(&c);
+                }
+            }
+            if ((c.unk18 & 0x41) && (caster->unkC4[1] & 0x10000000)) {
+                c.unk18 &= ~0x41;
+                RAND_REFILL2();
+                i = caster->unk32;
+                c.unk14 = i + RAND16() % (((caster->unk7A + i) >> 3) + 1);
+                c.unkE = cmd->unk8->unk5 + 100 - func_80027F34(0xFE);
+                c.unk10 = target->unk6E;
+                func_800BAA28(&c);
+            }
+            break;
+        }
+    case 0x58:
+        c.unk1B |= 1;
+        if (caster->unk28 != 0) {
+            caster->unk80 = caster->unk28;
+            func_800B97A0(caster);
+        }
+        c.unk1E = caster->unk80;
+        if (c.unk1E >= 10000) {
+            c.unk1E = 9999;
+        }
+        break;
+    case 0x59:
+        {
+            u32 v;
+            if (func_800B9D34(&c) && func_800B9DA4(&c)) {
+                v = caster->unk28;
+                caster->unk28 = target->unk28;
+                if (caster->unk24->unk0 < caster->unk28) {
+                    caster->unk28 = caster->unk24->unk0;
+                }
+                target->unk28 = v;
+                if (target->unk24->unk0 < v) {
+                    target->unk28 = target->unk24->unk0;
+                }
+            }
+            break;
+        }
+    case 0x5A:
+        target->unk6C >>= 1;
+        target->unk6E >>= 1;
+        break;
+    case 0x5C:
+        func_800EA1B0(c.unk8->unk8[5]);
+        break;
+    case 0x5D:
+        if (func_800B9D34(&c) && func_800B9DA4(&c)) {
+            c.unk18 |= 0x80;
+            target->unk28 = RAND8() % 9 + 1;
+            func_800C0ACC(target, D_8006794C->unk1C->unk8E4.battle->unk22CC[cmd->unk8->unk9]);
+        }
+        break;
+    case 0x5E:
+        {
+            target->unk32 >>= 1;
+            if (caster->unk32 * 2 >= 0x100) {
+                caster->unk32 = 0xFF;
+            } else {
+                caster->unk32 = caster->unk32 * 2;
+            }
+            break;
+        }
+    case 0x5F:
+        {
+            target->unk31 >>= 1;
+            if (caster->unk31 * 2 >= 0x100) {
+                caster->unk31 = 0xFF;
+            } else {
+                caster->unk31 = caster->unk31 * 2;
+            }
+            break;
+        }
+    case 0x60:
+        target->unk78 = 0xFF;
+        func_800BEDBC(target, 0x4000);
+        break;
+    case 0x61:
+        if ((&D_8006794C->unk1C->unk3C[(target->unk68 >> 1) & 0xF])->unkA & 2) {
+            c.unk18 |= 1;
+        } else {
+            func_800BACB4(&c);
+        }
+        break;
+    case 0x62:
+        if ((&D_8006794C->unk1C->unk3C[(target->unk68 >> 1) & 0xF])->unkA & 8) {
+            c.unk18 |= 1;
+        } else {
+            func_800B9E88(&c);
+            func_800BAA28(&c);
+        }
+        break;
+    case 0x63:
+        func_800B9AFC(&c);
+        func_800B9C30(&c);
+        func_800B9C74(&c);
+        if (func_800B8664(&c)) {
+            c.unk1B |= 1;
+            c.unk1E = target->unk7A * cmd->unk8->unk5;
+        }
+        break;
+    case 0x64:
+        if (!func_800B9418(&c)) {
+            break;
+        }
+    case 0x6B:
+        func_800BA1B4(&c);
+        func_800BA2AC(&c);
+        func_800BA308(&c);
+        func_800BA3FC(&c);
+        func_800BA534(&c);
+        func_800BA8F0(&c);
+        if (func_800B8D58(&c)) {
+            func_800BAA28(&c);
+            if ((u8)type == 0x6B && ((target->unk68 >> 8) & 3)) {
+                func_800BDA60(target);
+            }
+            func_800BABAC(&c);
+        }
+        break;
+    case 0x65:
+        func_800B9AE4(&c);
+        if (func_800B8390(&c)) {
+            func_800BAF70(&c);
+        } else {
+            func_800CD5C8(0xA);
+        }
+        break;
+    case 0x66:
+        func_800BA1B4(&c);
+        func_800BA2AC(&c);
+        func_800BA308(&c);
+        func_800BA3FC(&c);
+        func_800BA534(&c);
+        func_800BAA28(&c);
+        func_800BAF70(&c);
+        break;
+    case 0x68:
+        c.unk1B |= 1;
+        if (D_8007AEF0.b[0xC0] >= 14) {
+            c.unk1E = 9999;
+        } else {
+            c.unk1E = 1 << (D_8007AEF0.b[0xC0] - 1);
+        }
+        break;
+    case 0x69:
+        {
+            s32 i;
+            s32 bit;
+            if (func_800B9DA4(&c)) {
+                for (bit = 1, i = 0; i < 32; i++, bit <<= 1) {
+                    if ((RAND8() >> 5) == 0) {
+                        if (bit & 0x1B031D79) {
+                            func_800BEDBC(target, bit);
+                        } else if ((bit & 0x200) && !(target->unk3C & 0x100)) {
+                            c.unk18 |= 0x80;
+                            target->unk28 = RAND8() % 9 + 1;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+    case 0x6A:
+        D_800FDF30.unkA &= ~(1 << ((u8)target->unk68 >> 5));
+        func_800B3DBC(target);
+        func_800B4114(target);
+        func_800C1854(target, 1);
+        func_800C1938(target);
+        break;
+    case 0x6D:
+        if (!(target->unk3C & 0x10000000)) {
+            func_800B9AFC(&c);
+            func_800B9C30(&c);
+            func_800B9C74(&c);
+            if (func_800B8664(&c)) {
+                func_800BACB4(&c);
+            }
+        } else {
+            func_800BACB4(&c);
+        }
+        break;
+    case 0xB:
+        func_800B9AFC(&c);
+        func_800B9C30(&c);
+        func_800B9C74(&c);
+        if (func_800B8664(&c)) {
+            func_800BACB4(&c);
+        }
+        break;
+    case 0x67:
+        func_800BACB4(&c);
+        break;
+    }
+    if (caster != NULL && target != NULL) {
+        func_800B7954(&c);
+    }
+}
 
 void func_800B7954(BtlCalc *c) {
     BtlUnit *t = c->unk4;
@@ -3009,7 +4256,7 @@ void func_800B81C4(BtlCalc *arg0, u8 arg1) {
     }
 }
 
-s32 func_800B8390(BtlCalc *arg0) {
+u8 func_800B8390(BtlCalc *arg0) {
     if (arg0->unk0->unk3C & 0x410) {
         arg0->unk16 /= 2;
     }
@@ -3056,7 +4303,7 @@ s32 func_800B8390(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B8664(BtlCalc *arg0) {
+u8 func_800B8664(BtlCalc *arg0) {
     if (D_8007B720 >= D_8007B92D) {
         func_8004BF20();
         if (D_8007B720 >= D_8007B92D) {
@@ -3160,7 +4407,7 @@ void func_800B8BE8(BtlCalc *arg0) {
     }
 }
 
-s32 func_800B8D58(BtlCalc *arg0) {
+u8 func_800B8D58(BtlCalc *arg0) {
     BtlUnit *t;
     u8 e = arg0->unk8->unk8[6];
     if (arg0->unk0->unkC4[1] & 1) {
@@ -3249,7 +4496,7 @@ void func_800B8FF8(BtlCalc *arg0) {
     }
 }
 
-void func_800B918C(void) {
+void func_800B918C(BtlCalc *arg0) {
     s8 np;
     s8 ne;
     s16 lp;
@@ -3296,7 +4543,7 @@ void func_800B918C(void) {
     }
 }
 
-s32 func_800B9418(BtlCalc *arg0) {
+u8 func_800B9418(BtlCalc *arg0) {
     BtlUnit *u;
     BtlUnit9C *m;
     if ((arg0->unk4->unk3C & 0x02000001) != 0x02000000) {
@@ -3435,7 +4682,7 @@ void func_800B9AFC(BtlCalc *arg0) {
     arg0->unk12 = arg0->unk4->unk6F;
 }
 
-s32 func_800B9B64(BtlCalc *arg0) {
+u8 func_800B9B64(BtlCalc *arg0) {
     BtlUnit *t = arg0->unk4;
     if ((t->unk3C & 0x40) || func_800C1E88(t, 0x10) != 0) {
         BtlUnit *c = arg0->unk0;
@@ -3468,7 +4715,7 @@ void func_800B9C74(BtlCalc *arg0) {
     }
 }
 
-s32 func_800B9CDC(BtlCalc *arg0) {
+u8 func_800B9CDC(BtlCalc *arg0) {
     if (arg0->unk4->unk7A % arg0->unk8->unk8[7] != 0) {
         arg0->unk18 |= 1;
         return 0;
@@ -3476,7 +4723,7 @@ s32 func_800B9CDC(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B9D34(BtlCalc *arg0) {
+u8 func_800B9D34(BtlCalc *arg0) {
     if (arg0->unk4->unk3C & 0x80) {
         arg0->unk18 |= 1;
         return 0;
@@ -3484,7 +4731,7 @@ s32 func_800B9D34(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B9D6C(BtlCalc *arg0) {
+u8 func_800B9D6C(BtlCalc *arg0) {
     if (!(arg0->unk4->unk68 & 1)) {
         arg0->unk18 |= 1;
         return 0;
@@ -3492,7 +4739,7 @@ s32 func_800B9D6C(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B9DA4(BtlCalc *arg0) {
+u8 func_800B9DA4(BtlCalc *arg0) {
     if (arg0->unk4->unk3C & 0x101) {
         arg0->unk18 |= 1;
         return 0;
@@ -3500,7 +4747,7 @@ s32 func_800B9DA4(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B9DDC(BtlCalc *arg0) {
+u8 func_800B9DDC(BtlCalc *arg0) {
     u32 st = arg0->unk4->unk3C;
     if ((st & 1) || (st & 0x140) == 0x140) {
         arg0->unk18 |= 1;
@@ -3509,7 +4756,7 @@ s32 func_800B9DDC(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B9E20(BtlCalc *arg0) {
+u8 func_800B9E20(BtlCalc *arg0) {
     if (arg0->unk4 == arg0->unk0) {
         arg0->unk18 |= 1;
         return 0;
@@ -3517,7 +4764,7 @@ s32 func_800B9E20(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800B9E50(BtlCalc *arg0) {
+u8 func_800B9E50(BtlCalc *arg0) {
     if (arg0->unk4->unk3C & 0x80) {
         arg0->unk18 |= 0x40;
         return 0;
@@ -3675,7 +4922,7 @@ void func_800BA660(BtlCalc *arg0) {
     }
 }
 
-s32 func_800BA6A4(BtlCalc *arg0) {
+u8 func_800BA6A4(BtlCalc *arg0) {
     BtlUnit *t = arg0->unk4;
     u8 e = arg0->unk0->unk74[6];
     if (t->unk70 & e) {
@@ -3701,7 +4948,7 @@ s32 func_800BA6A4(BtlCalc *arg0) {
     return 1;
 }
 
-s32 func_800BA7D0(BtlCalc *arg0) {
+u8 func_800BA7D0(BtlCalc *arg0) {
     if ((func_800C09A4(arg0->unk4, 0x200000) & 0xFF) || func_800C1E88(arg0->unk4, 0x80) != 0) {
         if (arg0->unk8->unk8[6] & 8) {
             arg0->unk18 |= 1;
@@ -3848,7 +5095,7 @@ void func_800BAE44(BtlCalc *arg0) {
     }
 }
 
-s32 func_800BAEA8(void) {
+u8 func_800BAEA8(BtlCalc *arg0) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
     BtlUnit *u;
     if ((u8)b->unk132C.unk0 >> 7 == 0) {

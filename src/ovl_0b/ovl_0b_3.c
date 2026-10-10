@@ -1374,12 +1374,12 @@ void func_800CD5C8(u32 arg0, ...) {
     }
 }
 
-void func_800CD70C(u8 arg0) {
+s32 func_800CD70C(u8 arg0) {
     s32 n = 0;
     while (arg0 >>= 1) {
         n++;
     }
-    func_800357C0(D_800F6CB4, n + 1);
+    return func_800357C0(D_800F6CB4, n + 1);
 }
 
 u8 *func_800CD75C(u8 arg0) {

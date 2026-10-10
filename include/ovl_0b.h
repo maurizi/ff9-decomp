@@ -317,7 +317,7 @@ typedef struct BtlCalc {
     BtlUnit *unk0; /* caster */
     BtlUnit *unk4; /* target */
     BtlCalc8 *unk8;
-    u8 padC[0xE - 0xC];
+    s16 unkC;
     s16 unkE;
     s16 unk10;
     s16 unk12;
@@ -783,9 +783,9 @@ typedef struct BtlCmd8 {
     u8 unk4;
     u8 unk5;
     u8 unk6;
-    u8 pad7;
+    u8 unk7;
     u8 unk8;
-    u8 pad9;
+    u8 unk9;
     u8 unkA; /* mp cost */
     u8 unkB;
     u16 unkC;
@@ -1810,7 +1810,9 @@ typedef struct {
     u8 unk0;
     u8 pad1;
     u16 unk2;
-    u8 pad4[0xC - 4];
+    u8 pad4;
+    u8 unk5; /* attack */
+    u8 pad6[0xC - 6];
 } Unk8006E0E8; /* 0xC */
 extern Unk8006E0E8 D_8006E0E8[];
 void VSyncCallback(void (*)(void));
@@ -1821,7 +1823,10 @@ typedef struct {
     u32 unk0_0 : 8;
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
-    u8 pad4[4];
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
     s32 unk8;
 } Unk8006B1F4; /* 0xC */
 extern Unk8006B1F4 D_8006B1F4[];
@@ -2493,6 +2498,79 @@ s32 func_800C1EDC(BtlUnit *);
 void func_800C0544(BtlUnit *);
 void func_800B81C4(BtlCalc *, u8);
 s32 func_800B9994(BtlCalc *);
+/* ability effect helpers called by func_800B44C0 */
+void func_800B7954(BtlCalc *);
+void func_800B7F20(BtlCalc *, Unk800B7F20 *, s32);
+u8 func_800B8390(BtlCalc *);
+u8 func_800B8664(BtlCalc *);
+void func_800B87D0(BtlCalc *, u8);
+void func_800B8A24(BtlCalc *);
+void func_800B8BE8(BtlCalc *);
+u8 func_800B8D58(BtlCalc *);
+void func_800B8E9C(BtlCalc *);
+void func_800B8FF8(BtlCalc *);
+void func_800B918C(BtlCalc *);
+u8 func_800B9418(BtlCalc *);
+void func_800B9A5C(BtlCalc *);
+void func_800B9AE4(BtlCalc *);
+void func_800B9AFC(BtlCalc *);
+u8 func_800B9B64(BtlCalc *);
+u32 func_800B9C14(BtlCalc *);
+void func_800B9C30(BtlCalc *);
+void func_800B9C74(BtlCalc *);
+u8 func_800B9CDC(BtlCalc *);
+u8 func_800B9D34(BtlCalc *);
+u8 func_800B9D6C(BtlCalc *);
+u8 func_800B9DA4(BtlCalc *);
+u8 func_800B9DDC(BtlCalc *);
+u8 func_800B9E20(BtlCalc *);
+u8 func_800B9E50(BtlCalc *);
+void func_800B9E88(BtlCalc *);
+void func_800B9F80(BtlCalc *);
+void func_800BA078(BtlCalc *);
+void func_800BA094(BtlCalc *);
+void func_800BA1B4(BtlCalc *);
+void func_800BA2AC(BtlCalc *);
+void func_800BA308(BtlCalc *);
+void func_800BA3FC(BtlCalc *);
+void func_800BA468(BtlCalc *);
+void func_800BA4AC(BtlCalc *);
+void func_800BA4F0(BtlCalc *);
+void func_800BA534(BtlCalc *);
+void func_800BA660(BtlCalc *);
+u8 func_800BA6A4(BtlCalc *);
+u8 func_800BA7D0(BtlCalc *);
+void func_800BA858(BtlCalc *);
+void func_800BA8F0(BtlCalc *);
+void func_800BA994(BtlCalc *);
+void func_800BAA28(BtlCalc *);
+void func_800BAAE4(BtlCalc *);
+void func_800BABAC(BtlCalc *);
+void func_800BACB4(BtlCalc *);
+void func_800BAD64(BtlCalc *);
+void func_800BADD4(BtlCalc *);
+void func_800BAE44(BtlCalc *);
+u8 func_800BAEA8(BtlCalc *);
+void func_800BAF3C(BtlCalc *);
+void func_800BAF70(BtlCalc *);
+void func_800BDA60(BtlUnit *);
+s32 func_800CD70C(u8);
+void func_800CD808(s32);
+void func_800CDC68(BtlUnit *);
+u8 *func_800EA0B4(s32);
+
+/* random table: two refill checks, then one byte read as (b << 8 | b) */
+#define RAND_REFILL2()                         \
+    if (D_8007B720 >= D_8007B92D) {            \
+        func_8004BF20();                       \
+        if (D_8007B720 >= D_8007B92D) {        \
+            func_8004BF20();                   \
+        }                                      \
+    }
+#define RAND16() ((*D_8007B720 << 8) | *D_8007B720++)
+
+/* main exe: candidates for ff9.h */
+u8 func_80034070(s32, s32);
 void func_800BDB20(BtlUnit *, s32, u8);
 void func_800BDC04(BtlUnit *, s32);
 void func_800BDC64(BtlUnit *, s32);
