@@ -1706,7 +1706,43 @@ loop:
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D7094);
+s32 func_800D7094(void) {
+    Unk80100C78 *d = &D_80100C78;
+    Unk80100C78Entry *e;
+    s32 n;
+    s32 i;
+    s32 r;
+
+    e = d->unk4;
+    n = 0;
+    for (i = 0; i < 11; i++, e++) {
+        if (e->unk4.h != 0) {
+            n++;
+            D_800F78A4->unk28 = 0;
+            if (e->unk14(2, e->unkC, D_800F78A4, e, NULL) != 0) {
+                e->unk4.h = 2;
+            } else {
+                e->unk0++;
+            }
+            if (e->unk10 != NULL) {
+                r = func_800DA2AC(e->unk10);
+            } else {
+                r = 0;
+            }
+            if (r == 0 && e->unk4.h == 2) {
+                e->unk4.h = 0;
+                d->unk0--;
+                if (e->unkC != NULL) {
+                    func_800E3C50(e->unkC);
+                }
+                if (e->unk10 != NULL) {
+                    func_800E3C50(e->unk10);
+                }
+            }
+        }
+    }
+    return n;
+}
 
 s32 func_800D71C8(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s32 arg4, s16 *arg5) {
     s16 sp10[4];
