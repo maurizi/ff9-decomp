@@ -368,7 +368,8 @@ typedef struct {
 } WmCell;
 
 typedef struct {
-    s32 unk0;
+    s16 unk0; /* width */
+    s16 unk2; /* height */
     WmCell unk4[1];
 } WmCellTable;
 
@@ -1230,6 +1231,19 @@ u8 func_800BD150(Unk800D335C **, s32 *, s32 *);
 void func_800BC450(s32, s32, WmCell *);
 void func_800BC490(s32, s32, WmCell *);
 void func_800BD3F8(void);
+
+typedef struct {
+    u8 b[0x1E0];
+} WmCellMap; /* D_800D30F8 as one block */
+typedef struct {
+    Unk800CFEA0 e[30];
+} Unk800CFEA0Tbl; /* D_800CFEA0 and the entries after it */
+extern u8 D_800CCFF4[];
+extern s32 D_800D32F4;
+void func_800BB508(void);
+void func_800BC540(void);
+void func_800BE674(void);
+void func_800CB09C(Unk800CB09C *);
 
 /* main exe: candidates for ff9.h */
 void func_80022CC4(s32, void *, s32, s32);

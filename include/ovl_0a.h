@@ -9,7 +9,11 @@
 /* field context, GameData.unk8E4.field */
 typedef struct {
     u8 unk0; /* flags */
-    u8 pad1[0x14 - 1];
+    u8 pad1[7];
+    s32 unk8;
+    u8 padC[2];
+    s16 unkE;
+    u8 pad10[4];
 } Unk800AB0B0Entry; /* 0x14 */
 
 typedef struct Unk800AB0B0 {
@@ -1337,5 +1341,19 @@ static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
 
 s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
 s32 func_800C0F08(void);
+
+
+/* field object drawing (func_800AB3CC) */
+s32 func_800C768C(s32, s16 *, u16 *);
+void func_800B7CEC(Unk800C95C8 *);
+void func_800B7F14(Unk800C95C8 *, u16);
+s32 func_800AB0B0(Unk800C95C8 *);
+void func_800BB090(BgAnimHdr *);
+void func_800B2D10(FieldEvtCtx **, s32);
+void func_800B1E8C(FieldEvtCtx **, s32);
+void func_800AC02C(FieldEvtCtx **, s32);
+void func_800BA560(Unk800C95C8 *, u8);
+void func_800AC6C0(struct FieldObjPlace *, u8);
+s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
 
 #endif
