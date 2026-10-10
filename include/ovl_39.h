@@ -185,6 +185,9 @@ extern s32 D_801FB09C;
 extern s32 D_801FB0A0;
 extern u8 D_801EE4D4[];
 extern u16 D_801FC3E0[256]; /* CRC-16 table */
+/* CRC accumulator: the union initializer emits a clobber, so gcc cannot prove
+   the upper bits are zero and keeps both andi 0xFFFF (func_801F973C). */
+typedef union { s32 w; u16 h; } Crc16;
 extern s32 D_801FC5E0;
 extern s32 D_801FC5E4;
 extern s32 D_801FC5E8;
