@@ -3146,6 +3146,13 @@ typedef struct {
     u16 clut;
 } Sprt8Fields; /* SPRT_8 with rgb+code as one word */
 typedef struct {
+    u16 uv;
+    u16 clut;
+    u8 w;
+    u8 h;
+    u16 tpage;
+} SpriteDesc16; /* Unk800686E8 with uv and clut as halves */
+typedef struct {
     u32 tag;
     u32 rgbc;
     u32 xy0;

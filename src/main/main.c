@@ -4054,7 +4054,63 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002920C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002995C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029B4C);
+u8 *func_80029B4C(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
+    u8 *s = (u8 *)str;
+    SprtWords *p = (SprtWords *)pkt;
+    SpriteDesc16 *g = NULL;
+    SpriteDesc16 *tbl;
+    u32 rgbc;
+    u16 clut;
+    s32 c;
+    s32 w;
+
+    rgbc = 0x64404040;
+    if (mode == 0) {
+        rgbc = 0x64808080;
+    }
+    tbl = (SpriteDesc16 *)D_800686D0;
+    clut = tbl[46].clut;
+    if (mode == 1) {
+        clut += 0x40;
+        rgbc = 0x66000000;
+    }
+    if (s == NULL) {
+        return (u8 *)p;
+    }
+    while ((c = *s) != 0) {
+        if ((u32)(c - 'A') < 26) {
+            g = &((SpriteDesc16 *)D_800686D0)[*s - 8];
+        } else if ((u32)(c - 'a') < 26) {
+            g = &((SpriteDesc16 *)D_800686D0)[*s - 0x28];
+        } else if ((u32)(c - '0') < 10) {
+            g = &((SpriteDesc16 *)D_800686D0)[*s - 2];
+        } else if ((u8)c == '&') {
+            g = (SpriteDesc16 *)&D_80068890;
+        } else if ((u8)c == '.') {
+            g = (SpriteDesc16 *)&D_80068CE0;
+        } else if ((u8)c == '_') {
+            g = (SpriteDesc16 *)&D_80068DC8;
+        }
+        if (*s != ' ') {
+            setlen(p, 4);
+            p->rgbc = rgbc;
+            p->xy = (x & 0xFFFF) | (y << 16);
+            w = g->w;
+            p->uvclut = g->uv | (clut << 16);
+            p->wh = g->w | (g->h << 16);
+            addPrim(ot, p);
+            p++;
+        } else {
+            w = 5;
+        }
+        s++;
+        x += w - 1;
+    }
+    setlen(p, 1);
+    ((DrTpageWords *)p)->code = 0xE100061F;
+    addPrim(ot, p);
+    return (u8 *)p + 8;
+}
 
 u8 *func_80029D60(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
     Sprt8Fields *p = (Sprt8Fields *)pkt;
