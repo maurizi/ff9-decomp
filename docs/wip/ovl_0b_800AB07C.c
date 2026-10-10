@@ -1,4 +1,4 @@
-/* WIP func_800AB07C: 51 differing rows (build/cmp.py-style aligned diff). loop shape right (texture list walked backwards); left: y + 0xE5 reassociation and s-register assignment. An index-based do/while (a[n], r[n]) gets the givs but hoists invariants and spills. */
+/* WIP func_800AB07C: 24 differing rows (build/cmp.py-style aligned diff), same length. Pass 9: the loop walks separate pointers pa/pb/pr set from b, r and r + n (the original computes them in temps and copies), getTPage(1, 0, x, h) / getClut(0x100, yy), yy = y + 0xE5 + pr->unk2. Left: s-register numbering only (original: m s2, yy s1, pr s3, n s4; here n s2, yy s3, m s4, pr s1). The permuter reached 14 rows by wrapping everything after b = a + n in do { ... } while (0) (pr/yy/m then rotate by one). Earlier: the goto loop is needed (while/do-while: 54+). */
 #include "ovl_0b.h"
 
 typedef struct {
@@ -17,6 +17,9 @@ s32 func_800AB07C(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s32 arg3) {
     Unk800AA504Pos *a;
     Unk800AA504Pos *b;
     Pos8 *r;
+    Unk800AA504Pos *pa;
+    Unk800AA504Pos *pb;
+    Pos8 *pr;
     s32 x;
     s32 y;
     s32 yy;
@@ -34,32 +37,32 @@ s32 func_800AB07C(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s32 arg3) {
     if (n > 0) {
         x = arg2 * 64 + 0xC0;
         y = arg2 * 3;
-        r += n;
-        b += n;
-        a += n;
+        pr = r + n;
+        pb = (Unk800AA504Pos *)r;
+        pa = b;
     loop:
-            r--;
-            b--;
-            a--;
+            pr--;
+            pb--;
+            pa--;
             n--;
             m = func_8001C8B0(dst, 2, (n & 0xFFFF) | 0x40000, 0);
             if (arg3) {
-                yy = r->unk2 + 0xE5 + y;
-                h = (r->unk2 << 7) + 0x80;
+                yy = y + 0xE5 + pr->unk2;
+                h = (pr->unk2 << 7) + 0x80;
             } else {
                 yy = y + 0xE8;
                 h = 0x1D0;
             }
             func_8001D9CC(m, 0x100, yy, x, h);
             func_8001D8A8(m);
-            a->unk0 = ((h & 0x100) >> 4) | (((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
-            a->unk2 = (yy << 6) | 0x10;
-            b->unk0 = 0;
-            b->unk2 = h % 256 - h % 128;
-            r->unk4 = x;
-            r->unk0 = x;
-            r->unk6 = h;
-            r->unk2 = h;
+            pa->unk0 = getTPage(1, 0, x, h);
+            pa->unk2 = getClut(0x100, yy);
+            pb->unk0 = 0;
+            pb->unk2 = h % 256 - h % 128;
+            pr->unk4 = x;
+            pr->unk0 = x;
+            pr->unk6 = h;
+            pr->unk2 = h;
             if (n > 0) {
                 goto loop;
             }

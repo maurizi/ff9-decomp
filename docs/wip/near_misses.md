@@ -70,8 +70,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   t2), 80062E3C (separate giv for node+4), 80038278 (search loop shape).
 
 ## ovl_0b (battle)
-- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794, BFF20,
-  ED3F8, CCDB8, D9D58, D0E14, AB810, ED02C, ED7C0, E1534, BE1E0 (big switch), E4A3C (odd
+- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
+  ED3F8, D0E14, AB810, ED02C, ED7C0, E1534, E4A3C (odd
   argument-slot stack use).
 - Large-function pass 2 (drafts in the agent worktree's build/nm_<addr>.c; "~N" = differing insns):
   80047B90 ~35 (needs &v held in s0 with m[1][1] stored via s0+0x10), 80024BD8 ~12 (POLY_G4 store
@@ -140,6 +140,22 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - Parameters kept in their stack homes (E4A3C) come from taking their addresses; an inline that copies through the
     pointers gets everything but the entry `sw a3` and a dead load of the 5th slot.
   New drafts: E4A3C 8, D1D74 22, D2DBC 63. Updated headers: AA504, C0C00, C3F78, D9D58, DA138, E1534.
+- Pass 9 (matched: CCDB8, BE1E0, C7730, D9D58). What fixed them:
+  - A separate local per switch case for the same `arg2 * 20` offset (BE1E0 cases 0x3D/0x3E/0x3F): one shared
+    variable is global-allocated and splits its multiply temps off; per-case locals stay local and keep the whole
+    chain in one register with the (base + off) operand order. Its jump table needs the 8-byte padding word
+    before and after (`__asm__(".section .rodata\n\t.word 0...")`).
+  - shorten_binary_op: `(u16)a % (u16 & 0x7FFF)` becomes divu; put the dividend in an s32 local first (CCDB8).
+  - Types decide copies: `s16 y, z` holding `(ty[k] << 24) >> 20` gives the original's y0 -> y copies (CCDB8); the
+    row index used inline (no k variable) and `(rot.pad = e->unkF) != 0`; `for (e = tbl, i = 11; ...; e++, i--)`.
+  - C7730 (-O2 despite sitting in the old -O1 range): `arg0->unk0 |= 2` must come before the other stores
+    (else flow deletes it as dead before `unk0 = 0`), relocation stores in field order, the scratch pointer
+    `mark = (u8 *)D_80070520` set inside the outer loop, and k reused for the clear loop.
+  - D9D58: `*(volatile s16 *)&u->unk86[2] = a->unk24` keeps that store ahead of the D_800FEC56 store.
+  - One variable for two roles again (CD210 draft): the bone index variable reused as the level keeps the
+    (s16) extension on the index; in BFF20 the D7C counter n doubles as the float flag.
+  New drafts: BFF20 7, CD210 25, D1FFC 27, E57B0 34. AB07C 51 -> 24 (separate loop pointers pa/pb/pr set from
+  b, r, r + n; getTPage/getClut; permuter: 14 with a do/while(0) around the tail).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
