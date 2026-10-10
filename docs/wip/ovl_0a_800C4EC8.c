@@ -8,6 +8,9 @@
  * SImode register was known to hold 0 when t6 was set. With `u8 r` the t6 copy goes away but
  * the final `return r` then needs an andi (also with a u8 return type). Tried: x/z/i types
  * (u8/s8/u16/s16/s32/u32), all orders of the x/z/r/i/vtx initialisations.
+ * Pass 9: the t6 = 0 is loop.c's hoisted x * 2 offset (inserted before the loop, after r = 0),
+ * so for reload_cse not to see t7 = 0 the t6 set must precede r's set at that point (sched2 then
+ * swaps them back). Moving `r = 0;` / `i = 0;` anywhere before the loop does not change it.
  */
 #include "ovl_0a.h"
 

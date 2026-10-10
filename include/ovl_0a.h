@@ -371,7 +371,9 @@ typedef struct {
     s32 unk10; /* -> track table, 0x38-byte stride */
     u8 pad14[4];
     s32 unk18; /* -> Unk800C9DB4Cam[] */
-    u8 pad1C[0x24 - 0x1C];
+    u8 pad1C[2];
+    u16 unk1E; /* base depth */
+    u8 pad20[0x24 - 0x20];
     u16 unk24;
     u16 unk26;
     u8 pad28[0x30 - 0x28];
@@ -1262,12 +1264,24 @@ s32 func_800C3608(Unk800C9DF4 *);
 s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 func_800C31F8(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
+s32 func_800BE158(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
+s32 func_800BF660(void); /* camera follow */
 extern Unk800C9E00 *D_800C9E00; /* = D_800C9DF0.unk10, referenced by its own name */
 s32 func_800C79B0(u32);
 s32 func_800C6E94(void);
 s32 func_800A87DC(FieldMapObj *, s32);
+void func_800B5958(Unk800C95C8 *, u8);
+void func_800BB508(Unk800C95C8 *, u8);
+void func_800BB714(Unk800C95C8 *, u8);
+
+/* run on a 12-byte frame at the top of the scratchpad (0x1F8003FC) and switch back */
+#define SetSpadStack12(addr) \
+    __asm__ volatile("move $8, %0\n\tsw $29, 0($8)\n\taddiu $8, $8, -12\n\tmove $29, $8" : : "r"(addr) : "$8", "memory")
+#define ResetSpadStack12() __asm__ volatile("addiu $29, $29, 12\n\tlw $29, 0($29)" : : : "memory")
 
 /* main exe: candidates for ff9.h */
+void func_80031244(SVECTOR *, MATRIX *);
+MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
 extern s32 D_800711A8[]; /* projected screen xy per model vertex */
 extern s32 D_80070520[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
