@@ -19121,7 +19121,165 @@ s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E3FC);
+void func_8005E3FC(AkaoChannel *c, u32 mask) {
+    u32 op;
+    u32 vel;
+    u32 tmp;
+    u32 f;
+    u16 len;
+    u32 v;
+
+    do {
+        op = *c->unk0++;
+        if (op >= 0xA0) {
+            if (op == 0xFE) {
+                vel = *c->unk0++;
+                D_8006FCE0[vel](c, mask);
+            } else if (op - 0xF0 < 14) {
+                op = (op - 0xF0) * 11;
+                c->unk96 = *c->unk0++;
+            } else {
+                if (op == 0xFF) {
+                    op = 0xA0;
+                } else if (op == 0xCA && (c->unk34 & 0x200000)) {
+                    op = 0xA0;
+                    D_80080A70.unkC |= mask;
+                }
+                D_8006FB60[op - 0xA0](c, mask);
+            }
+        }
+        c->unkA0++;
+    } while (op > 0xA0);
+    if (op == 0xA0) {
+        if (c->unk94 == 0) {
+            D_80080A10->unk18 |= mask;
+        }
+        return;
+    }
+    vel = func_8005DB40(c) & 0xFF;
+    if (c->unkFA != 0) {
+        c->unk96 = c->unk98 = c->unkFA;
+    }
+    if (c->unk96 != 0) {
+        if (vel >= 0x8F || (vel < 0x84 && !(c->unkCC & 5))) {
+            c->unk98 -= 2;
+        }
+    } else {
+        c->unk96 = D_8006F3F4[op % 11];
+        len = c->unk96;
+        if ((vel < 0x84 || vel >= 0x8F) && !(c->unkCC & 5)) {
+            len -= 2;
+        }
+        c->unk98 = len;
+    }
+    if (c->unk94 == 0 && (c->unk34 & 0x40)) {
+        c->unk98 = c->unk96;
+    }
+    c->unkF8 = c->unk96;
+    c->unk11C |= 0x4000;
+    if (op >= 0x8F) {
+        if (c->unk94 == 0) {
+            D_80080A10->unk14 &= ~mask;
+            if (c->unk118 < 0x18) {
+                D_80080A10->unk18 |= mask;
+            }
+        }
+        c->unkCA = 0;
+        c->unk110 = 0;
+        c->unk112 = 0;
+        c->unkCC &= ~2;
+        return;
+    }
+    if (op < 0x84) {
+        op /= 11;
+        op += c->unkC4 * 12;
+        f = c->unk34;
+        if (f & 8) {
+            vel = func_8005E170(c, mask, op);
+        } else {
+            if (!(c->unkCC & 2)) {
+                if (c->unk94 == 0) {
+                    if (f & 0x1000) {
+                        func_8005DD7C(c, op);
+                    }
+                    D_80080A10->unk10 |= mask;
+                    if ((D_80080A10->unk14 & mask) && c->unk118 < 0x18) {
+                        D_80080A10->unk18 |= mask;
+                    }
+                    if (c->unkBA != 0) {
+                        c->unkB8 = c->unkBA;
+                        c->unk78 = c->unk8C;
+                        c->unk7C = c->unk90;
+                    }
+                } else {
+                    D_80080A70.unk4 |= mask;
+                }
+                c->unkC2 = 0;
+            }
+            if (c->unkCA != 0 && c->unkC8 != 0) {
+                c->unkC6 = c->unkCA;
+                c->unk10C = c->unk106 + op - c->unkC8 - c->unk10E;
+                c->unk10A = c->unkC8 - (c->unk106 - c->unk10E);
+                op = c->unkC8 + c->unk10E;
+            } else {
+                c->unk10A = op;
+                op += c->unk106;
+            }
+            vel = ((s32 (*)())func_8005DFE0)(&D_8007F970[c->unk9A], op, c->unk108, &c->unk84);
+            if (c->unkF6 != 0) {
+                tmp = (u32)(vel * c->unkF6) >> 8;
+                tmp *= (u8)D_8006F440[D_8008314C];
+                if ((u8)D_8006F440[D_8008314C] & 0x80) {
+                    tmp >>= 9;
+                    vel -= tmp;
+                } else {
+                    tmp >>= 7;
+                    vel += tmp;
+                }
+            }
+        }
+        c->unk2C = vel;
+        if (c->unk94 == 0) {
+            D_80080A10->unk14 |= mask;
+        } else {
+            D_80080A70.unk8 |= mask;
+        }
+        op = c->unk34;
+        c->unk11C |= 0x13;
+        if (op & 1) {
+            v = (c->unkD6 & 0x7F00) >> 8;
+            if (!(c->unkD6 & 0x8000)) {
+                v = (v * ((u32)(vel * 15) >> 8)) >> 7;
+            } else {
+                v = (v * vel) >> 7;
+            }
+            c->unkD4 = v;
+            if (!(c->unkCC & 2)) {
+                c->unk44 = 0;
+                c->unkD0 = c->unkCE;
+                c->unk48 = 0x1000000 / ((u32)c->unk3C >> 12);
+            }
+        }
+        if ((op & 2) && !(c->unkCC & 2)) {
+            c->unk54 = 0;
+            c->unkDE = c->unkDC;
+            c->unk58 = 0x1000000 / ((u32)c->unk4C >> 12);
+        }
+        c->unk110 = 0;
+        c->unk112 = 0;
+        c->unk30 = 0;
+    }
+    c->unkCC = (c->unkCC & ~2) | ((c->unkCC & 1) << 1);
+    if (c->unk10C != 0) {
+        c->unk10A += c->unk10C;
+        vel = ((s32 (*)())func_8005DFE0)(&D_8007F970[c->unk9A], c->unk10A + c->unk106, c->unk108, &tmp) << 16;
+        c->unkC2 = c->unkC6;
+        c->unk10C = 0;
+        c->unk80 = (s32)(vel - ((c->unk2C << 16) + c->unk30)) / (u16)c->unkC2;
+    }
+    c->unkC8 = c->unk10A;
+    c->unk10E = c->unk106;
+}
 
 s32 func_8005EB40(s32 *p, s32 target, s32 steps, s32 shift) {
     s32 mask = (1 << shift) - 1;
