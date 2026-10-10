@@ -798,15 +798,15 @@ typedef struct {
     u16 unkB4;
     s16 unkB6;
     s16 unkB8;
-    s16 unkBA;
+    u16 unkBA;
     s16 unkBC;
     u16 unkBE;
     u16 unkC0;
     s16 unkC2;
     u16 unkC4;
     u16 unkC6;
-    s16 unkC8;
-    s16 unkCA;
+    u16 unkC8;
+    u16 unkCA;
     s16 unkCC;
     u16 unkCE;
     u16 unkD0;
@@ -828,7 +828,7 @@ typedef struct {
     u16 unkF0;
     u16 unkF2;
     u16 unkF4; /* loop depth */
-    s16 unkF6;
+    u16 unkF6;
     u16 unkF8;
     s16 unkFA;
     s16 unkFC;
@@ -2451,6 +2451,12 @@ s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 D_800739A8[];
 u8 *func_80027834(s32, s32, u32 *, s32, u8, s32 *, void *);
+u8 *func_8002995C(s32, s32, u32 *, Character *, s32 *, u8 *);
+u8 *func_8002B890(s32, s32, u32 *, u32, u8, s32 *, u8 *);
+u8 *func_80029FE4(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
+#if !defined(OVL_3A_H)
+u8 *func_8002BA90(u32 *, DrTpageWords *);
+#endif
 typedef struct {
     u8 unk0;
     u8 unk1;

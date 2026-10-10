@@ -3808,7 +3808,168 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029B4C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029D60);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029FE4);
+u8 *func_80029FE4(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
+    pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
+    switch (code & 0xFF) {
+    case 0x21:
+        D_800770AC = 1;
+        *w = 0;
+        break;
+    case 0x23:
+        D_800770AC = 3;
+        *w = 0;
+        break;
+    case 0x26:
+        D_800770AC = 6;
+        *w = 0;
+        break;
+    case 0x27:
+        D_800770AC = 7;
+        *w = 0;
+        break;
+    case 0x25:
+        D_800770AC = 5;
+        *w = 0;
+        break;
+    case 0x24:
+        D_800770AC = 4;
+        *w = 0;
+        break;
+    case 0x20:
+        D_800770AC = 0;
+        *w = 0;
+        break;
+    case 0x22:
+        D_800770AC = 2;
+        *w = 0;
+        break;
+    case 0x28:
+        D_800770AC = 8;
+        *w = 0;
+        break;
+    case 0x29:
+        D_800770AC = 9;
+        *w = 0;
+        break;
+    case 0x30:
+        pkt = func_80027834(x, y + 2, ot, 5, 0, w, pkt);
+        break;
+    case 0x31:
+        pkt = func_80027834(x, y + 2, ot, 4, 0, w, pkt);
+        break;
+    case 0x32:
+        pkt = func_80027834(x, y + 2, ot, 7, 0, w, pkt);
+        break;
+    case 0x33:
+        pkt = func_80027834(x, y + 2, ot, 6, 0, w, pkt);
+        break;
+    case 0x34:
+        pkt = func_80027834(x, y + 2, ot, 8, 0, w, pkt);
+        break;
+    case 0x35:
+        pkt = func_80027834(x, y + 2, ot, 10, 0, w, pkt);
+        break;
+    case 0x36:
+        pkt = func_80027834(x, y + 2, ot, 9, 0, w, pkt);
+        break;
+    case 0x37:
+        pkt = func_80027834(x, y + 2, ot, 11, 0, w, pkt);
+        break;
+    case 0x60:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(1), 0, w, pkt);
+        break;
+    case 0x61:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(0), 0, w, pkt);
+        break;
+    case 0x62:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(2), 0, w, pkt);
+        break;
+    case 0x63:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(3), 0, w, pkt);
+        break;
+    case 0x64:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(4), 0, w, pkt);
+        break;
+    case 0x65:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(5), 0, w, pkt);
+        break;
+    case 0x66:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(6), 0, w, pkt);
+        break;
+    case 0x67:
+        pkt = func_80027834(x, y + 2, ot, func_8002BE10(7), 0, w, pkt);
+        break;
+    case 0x38:
+        pkt = func_80027834(x, y + 2, ot, 0x11, 0, w, pkt);
+        break;
+    case 0x39:
+        pkt = func_80027834(x, y + 2, ot, 0x12, 0, w, pkt);
+        break;
+    case 0x3A:
+        pkt = func_8002B890(x, y + 2, ot, 1, 0, w, pkt);
+        break;
+    case 0x3B:
+        pkt = func_8002B890(x, y + 2, ot, 2, 0, w, pkt);
+        break;
+    case 0x3C:
+        pkt = func_8002B890(x, y + 2, ot, 4, 0, w, pkt);
+        break;
+    case 0x3D:
+        pkt = func_8002B890(x, y + 2, ot, 8, 0, w, pkt);
+        break;
+    case 0x3E:
+        pkt = func_8002B890(x, y + 2, ot, 3, 0, w, pkt);
+        break;
+    case 0x3F:
+        pkt = func_8002B890(x, y + 2, ot, 12, 0, w, pkt);
+        break;
+    case 0x10:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[0], w, pkt);
+        break;
+    case 0x11:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[1], w, pkt);
+        break;
+    case 0x12:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[2], w, pkt);
+        break;
+    case 0x13:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[3], w, pkt);
+        break;
+    case 0x14:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[4], w, pkt);
+        break;
+    case 0x15:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[5], w, pkt);
+        break;
+    case 0x16:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[6], w, pkt);
+        break;
+    case 0x17:
+        pkt = func_8002995C(x, y, ot, &D_8006794C->unk1C->unk3C[7], w, pkt);
+        break;
+    case 0x18:
+        if (D_8006794C->unk1C->unk54C[0] != NULL) {
+            pkt = func_8002995C(x, y, ot, D_8006794C->unk1C->unk54C[0], w, pkt);
+        }
+        break;
+    case 0x19:
+        if (D_8006794C->unk1C->unk54C[1] != NULL) {
+            pkt = func_8002995C(x, y, ot, D_8006794C->unk1C->unk54C[1], w, pkt);
+        }
+        break;
+    case 0x1A:
+        if (D_8006794C->unk1C->unk54C[2] != NULL) {
+            pkt = func_8002995C(x, y, ot, D_8006794C->unk1C->unk54C[2], w, pkt);
+        }
+        break;
+    case 0x1B:
+        if (D_8006794C->unk1C->unk54C[3] != NULL) {
+            pkt = func_8002995C(x, y, ot, D_8006794C->unk1C->unk54C[3], w, pkt);
+        }
+        break;
+    }
+    return pkt;
+}
 
 s32 func_8002A730(s32 c) {
     s32 r = 0;
