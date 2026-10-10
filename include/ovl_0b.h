@@ -3887,6 +3887,12 @@ void func_800D6340(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
 extern const u8 D_800A857C[]; /* "TRANCE" label */
+/* func_800DA92C */
+extern u16 D_800FEC68[];
+extern s32 D_80100D90[][2];
+s32 func_800E8AD0(void);
+void func_800DC748(BtlModel *, s32);
+typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */
 void func_80054A28(void *);
 
