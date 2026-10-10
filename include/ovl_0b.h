@@ -822,7 +822,7 @@ typedef struct Battle11C028 {
     u32 unk4_0 : 12;
     u32 unk4_12 : 10;
     u32 unk4_22 : 10;
-    u8 pad8[0x28 - 8];
+    POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
 } Battle11C028; /* 0x28 */
 
 typedef struct Battle11C0 {
