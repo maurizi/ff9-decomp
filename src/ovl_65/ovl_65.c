@@ -995,7 +995,27 @@ void func_801F2538(void) {
     func_801F28F0();
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2560);
+void func_801F2560(s32 i, u32 exp) {
+    u32 need;
+    Character *c = D_8006794C->unk1C->unk54C[i];
+
+    if (exp != 0) {
+        if (c->unkC > 9999998) {
+            c->unkC = 9999999;
+            return;
+        }
+        D_801F7A78.unk24.unk1C[i].unk8 += exp;
+        c->unkC += exp;
+        if (c->unkC > 9999998) {
+            c->unkC = 9999999;
+        }
+        if (c->unkB < 99 && (need = D_8006DF5C[c->unkB]) <= c->unkC) {
+            do {
+                func_801F29BC(i);
+            } while (c->unkB < 99 && (need = D_8006DF5C[c->unkB]) <= c->unkC);
+        }
+    }
+}
 
 void func_801F269C(s32 arg0) {
     Popup *p = &D_801F7A78.unk258[arg0];
