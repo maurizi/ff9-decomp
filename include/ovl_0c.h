@@ -1240,6 +1240,17 @@ static inline u32 func_800B7DAC_trg(void) {
     return D_80073990;
 }
 
+void func_800C7050(WmNode *);
+s32 func_800CAE00(u16 *);
+
+/* random byte from the main exe's table (func_8004BF20 refills it) */
+static inline s32 wm_rand8(void) {
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    return *D_8007B720++;
+}
+
 /* Inlined copy of func_800B3340 (cell type bit test). */
 static inline u8 func_800B3340_inline(u32 *a, u32 k) {
     u32 w;

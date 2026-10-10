@@ -7736,7 +7736,82 @@ void func_800C4DD8(void) {
 /* jump table padding emitted by the original toolchain */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C53DC);
+void func_800C53DC(void) {
+    WmNode *o;
+    WmNode *cur;
+    s16 spd;
+    u8 flag;
+
+    flag = 0;
+    o = D_800D53A0.unk8;
+    spd = D_800CE3C8->unk2;
+    if (spd != 0) {
+        D_800D53C8 = abs((D_800CE3C0 << 12) / spd);
+    } else {
+        D_800D53C8 = 0;
+    }
+    D_800D4A38 += (D_800D53C8 - D_800D4A38) / 32;
+    while (o->unk8 != NULL) {
+        /* dead flag: combine folds the test (flag is only ever 0) and jump2 drops the
+         * body after register allocation, which leaves s7 = 0 and its save behind */
+        if (flag) {
+            func_800C7050(o);
+        }
+        switch ((u8)o->unkD) {
+        case 2:
+            o->unk14 -= 60 + wm_rand8() % 24;
+            o->unk10 -= 30 - wm_rand8() % 60;
+            o->unk18 -= 30 - wm_rand8() % 60;
+            break;
+        case 3:
+            o->unk14 -= 60 + wm_rand8() % 24;
+            o->unk10 -= 60 - wm_rand8() % 60;
+            o->unk18 -= 30 - wm_rand8() % 60;
+            break;
+        case 23:
+            o->unk10 = func_8004BB80((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vx;
+            o->unk14 -= 80;
+            o->unk18 = func_8004BB7C((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vz;
+            /* fallthrough */
+        case 24:
+            o->unk10 -= 40 + wm_rand8() % 130;
+            o->unk14 -= 40 - wm_rand8() % 80;
+            o->unk18 += 300 + wm_rand8() % 300;
+            break;
+        }
+        o->unk1C++;
+        cur = o;
+        o = o->unk8;
+        switch ((u8)cur->unkD) {
+        case 2:
+            if (cur->unk1C >= 77) {
+                func_800C7050(cur);
+            }
+            break;
+        case 3:
+            if (cur->unk1C >= 46) {
+                func_800C7050(cur);
+            }
+            break;
+        case 16:
+        case 17:
+            if (cur->unk1C >= 9) {
+                func_800C7050(cur);
+            }
+            break;
+        case 32:
+            if (abs(cur->unk10 - D_800CE3DC->unk14.vx) > 32000 || abs(cur->unk18 - D_800CE3DC->unk14.vz) > 32000) {
+                func_800C7050(cur);
+            }
+            break;
+        default:
+            if (cur->unk1C == func_800CAE00((u16 *)cur->unk0)) {
+                func_800C7050(cur);
+            }
+            break;
+        }
+    }
+}
 
 void func_800C5A48(u8 arg0) {
     VECTOR v;
