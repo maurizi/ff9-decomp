@@ -562,7 +562,13 @@ extern Unk80077DB0 D_80077DB0;
 extern s32 D_80077140;
 extern s32 D_80077144;
 extern void (*D_80068F80[])(RECT *, s32);
-extern void (*D_8006BBEC[])(s32);
+extern s32 (*D_8006BBEC[])(u8 *); /* text width of a value, per format */
+extern u8 D_8006A20E;
+s32 func_8002A730(s32);
+s32 func_8002BEA4(s32, s32);
+#if !defined(OVL_0A_H) && !defined(OVL_0C_H)
+s32 func_8002B980(u8 *, s32);
+#endif
 extern s32 D_8006BBFC[];
 extern s32 D_8006BC18[];
 extern s32 D_800770AC;
@@ -630,7 +636,15 @@ u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
 u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
 void func_8002B5B4(s32, s32, s32, u8 *, s32);
 u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
-void func_8002AF70(s16 *, s32);
+typedef struct {
+    s16 w;
+    s16 h;
+} TextSize;
+#if defined(OVL_0B_H) /* ovl_0b passes its own buffer types */
+void func_8002AF70(void *, s32);
+#else
+TextSize func_8002AF70(u8 *); /* measure a text string */
+#endif
 s32 func_80023938(); /* takes an index; func_8002BE10 calls it without one */
 void func_8002C9B0(void);
 void func_8002E180(void);

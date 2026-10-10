@@ -3932,7 +3932,120 @@ u8 *func_8002AD38(u8 *dst, u8 *src) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AE7C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AF70);
+TextSize func_8002AF70(u8 *s) {
+    TextSize r;
+    s32 w;
+    s32 maxw;
+    s32 h;
+    s32 c;
+    s32 code;
+    Unk7D4 *font;
+    Unk7D4 *kanji;
+    u8 th;
+    u8 th2;
+    s32 idx;
+    Unk7D4 *tbl;
+
+    func_8001D898(&r, 0, 4);
+    w = 0;
+    maxw = 0;
+    font = D_8006794C->unk1C->unk7D4;
+    kanji = D_8006794C->unk1C->unk84C;
+    h = 15;
+    th2 = 0;
+    if (s == NULL) {
+        return r;
+    }
+    th = font->unk4 >> 8;
+    if (kanji != NULL) {
+        th2 = kanji->unk0 >> 8;
+    }
+    while ((c = *s) != 0xFF) {
+        if (c == 0xF9) {
+            s++;
+            if (*s == 0x43) {
+                s++;
+                w += (s8)*s;
+            } else if (*s == 0x44) {
+                s++;
+                w = *s;
+            } else if (*s == 0x40) {
+                s++;
+                w += func_8002BEA4(D_8007BBA8[*s], 0);
+            } else if (*s == 0x68) {
+                s++;
+                w += func_8002BEA4(D_800770F0[*s], 0);
+            } else if (*s == 0x69) {
+                s++;
+                w += D_8006BBEC[0](D_800770B0[*s]);
+            } else if (*s == 0x6A) {
+                s++;
+                w += func_8002BEA4(D_800770F0[*s], 1);
+            } else if (*s == 0x6B) {
+                s++;
+                w += D_8006BBEC[1](D_800770B0[*s]);
+            } else if (*s == 0x6E) {
+                s++;
+                w += func_8002BEA4(D_800770F0[*s], 2);
+            } else if (*s == 0x6F) {
+                s++;
+                w += D_8006BBEC[2](D_800770B0[*s]);
+            } else if (*s == 0x6C) {
+                s++;
+                w += func_8002BEA4(D_800770F0[*s], 3);
+            } else if (*s == 0x6D) {
+                s++;
+                w += D_8006BBEC[3](D_800770B0[*s]);
+            } else if (*s == 0x4B) {
+                s++;
+                w += D_800686D0[*s].unk4;
+            } else if (*s == 0x4C) {
+                s++;
+                if (*s == 0xFF) {
+                    w += D_800686D0[D_8006A20E + 0x5C].unk4;
+                }
+            } else if (*s == 0x4D) {
+                s++;
+                w += D_800686D0[D_80077130[*s]].unk4;
+            } else if (*s == 0x4E) {
+                s++;
+                if (D_80077130[*s] == 0xFF) {
+                    w += D_800686D0[D_8006A20E + 0x5C].unk4;
+                }
+            } else if (*s == 0x49) {
+                s++;
+                h += *s;
+            } else if (*s == 0x4A) {
+                s++;
+                h -= *s;
+            } else {
+                w += func_8002A730(*s);
+            }
+        } else if (c == 0xF7) {
+            h += 15;
+            if (maxw < w) {
+                maxw = w;
+            }
+            w = 0;
+        } else if (kanji != NULL && c >= th2) {
+            code = (c << 8) + s[1];
+            c = code - kanji->unk0;
+            s++;
+            w += 1 + (*(kanji->unkC + c) >> 28);
+        } else if (c < th) {
+            w += 1 + (*(font->unkC + c) >> 28);
+        } else {
+            code = (c << 8) + s[1];
+            c = code - font->unk4 + font->unk6;
+            s++;
+            w += 1 + (*(font->unkC + c) >> 28);
+        }
+        s++;
+    }
+    r.w = maxw > w ? maxw : w;
+    r.h = h;
+    return r;
+}
 
 s32 func_8002B43C(s32 arg0) {
     D_80077140 = arg0;
@@ -4004,8 +4117,8 @@ u8 *func_8002B890(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
     return func_80027834(x, y, ot, 0xC, b, c, pkt);
 }
 
-void func_8002B980(s32 arg0, s32 idx) {
-    D_8006BBEC[idx](arg0);
+s32 func_8002B980(u8 *s, s32 idx) {
+    return D_8006BBEC[idx](s);
 }
 
 s32 func_8002B9B8(u8 *s) {
@@ -4035,10 +4148,7 @@ s32 func_8002BA10(u8 *s) {
 }
 
 s32 func_8002BA68(s32 arg0) {
-    s16 v;
-
-    func_8002AF70(&v, arg0);
-    return v;
+    return func_8002AF70((u8 *)arg0).w;
 }
 
 u8 *func_8002BA90(u32 *ot, DrTpageWords *p) {
