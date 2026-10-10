@@ -5666,7 +5666,85 @@ void func_8003015C(Unk80077C78 *p, s32 n) {
     p->unk28.unk0[2] = D_80077D00.unk48.unk8;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800302D0);
+void func_800302D0(Unk80077C78 *arg0) {
+    DVECTOR xy[4];
+    MATRIX m;
+    long ofx, ofy;
+    long p, flag;
+    s32 tpage;
+    u32 *ot;
+    s32 h;
+    s32 hw, hh;
+    s32 r;
+    s32 i, j;
+    POLY_G4 *poly;
+    DR_TPAGE *tp;
+
+    tpage = 64;
+    ot = func_8002FBC0(D_8006794C->unk1C->unk8);
+    if (arg0->unk1 == 0) {
+        tpage = 32;
+    }
+    ReadGeomOffset(&ofx, &ofy);
+    SetGeomOffset(D_8006794C->unkC->disp.w >> 1, D_8006794C->unkC->disp.h >> 1);
+    gte_ReadGeomScreen_r(h);
+    hw = D_8006794C->unkC->disp.w >> 1;
+    hh = D_8006794C->unkC->disp.h >> 1;
+    PushMatrix();
+    D_80077CB0.vx = 0;
+    D_80077CB0.vy = 0;
+    D_80077CB0.vz = arg0->unkA;
+    func_80030AF4(&D_80077CB0, &m);
+    m.t[2] = 0;
+    m.t[1] = 0;
+    m.t[0] = 0;
+    SetRotMatrix(&m);
+    SetTransMatrix(&m);
+    r = SquareRoot0(hw * hw + hh * hh);
+    setVector(&D_80077CC0[0][0], -r, -r, h);
+    setVector(&D_80077CC0[0][1], 0, -r, h);
+    setVector(&D_80077CC0[0][2], -r, r, h);
+    setVector(&D_80077CC0[0][3], 0, r, h);
+    setVector(&D_80077CC0[1][0], 0, -r, h);
+    setVector(&D_80077CC0[1][1], r, -r, h);
+    setVector(&D_80077CC0[1][2], 0, r, h);
+    setVector(&D_80077CC0[1][3], r, r, h);
+    for (i = 0; i < 2; i++) {
+        for (j = 0; j < 4; j++) {
+            RotTransPers(&D_80077CC0[i][j], (long *)&xy[j], &p, &flag);
+        }
+        poly = (POLY_G4 *)D_80077C78.unk18;
+        SetPolyG4(poly);
+        if ((u32)arg0->unkC < D_80077D00.unk60) {
+            setRGB0(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
+            setRGB1(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
+            setRGB2(poly, D_80077D00.unk0, D_80077D00.unk4, D_80077D00.unk8);
+            setRGB3(poly, D_80077D00.unk0, D_80077D00.unk4, D_80077D00.unk8);
+        } else {
+            setRGB0(poly, D_80077D00.unkC, D_80077D00.unk10, D_80077D00.unk14);
+            setRGB1(poly, D_80077D00.unkC, D_80077D00.unk10, D_80077D00.unk14);
+            setRGB2(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
+            setRGB3(poly, D_80077D00.unk48.unk0, D_80077D00.unk48.unk4, D_80077D00.unk48.unk8);
+        }
+        poly->x0 = xy[0].vx;
+        poly->y0 = xy[0].vy;
+        poly->x1 = xy[1].vx;
+        poly->y1 = xy[1].vy;
+        poly->x2 = xy[2].vx;
+        poly->y2 = xy[2].vy;
+        poly->x3 = xy[3].vx;
+        poly->y3 = xy[3].vy;
+        SetSemiTrans(poly, 1);
+        addPrim(ot, poly);
+        D_80077C78.unk18 += sizeof(POLY_G4);
+    }
+    tp = (DR_TPAGE *)D_80077C78.unk18;
+    SetDrawTPage(tp, 0, 1, tpage);
+    addPrim(ot, tp);
+    D_80077C78.unk18 += sizeof(DR_TPAGE);
+    PopMatrix();
+    SetGeomOffset(ofx, ofy);
+}
 
 void func_80030770(u8 *arg0) {
     if ((u32)D_80077C78.unkC < D_80077D00.unk60) {

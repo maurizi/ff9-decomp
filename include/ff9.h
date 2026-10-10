@@ -917,6 +917,13 @@ typedef struct {
     Unk4 unk28;
 } Unk80077C78;
 extern Unk80077C78 D_80077C78;
+u32 *func_8002FBC0(s32);
+#if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */
+void func_80030AF4(void *, void *); /* rotation -> matrix */
+#endif
+s32 func_8004BB7C(s32); /* cos */
+extern SVECTOR D_80077CB0;
+extern SVECTOR D_80077CC0[2][4]; /* two screen-filling quads */
 
 /* menu cursor / help window (layout merged from main + ovl_14 + ovl_32) */
 typedef struct {

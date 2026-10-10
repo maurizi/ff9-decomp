@@ -430,6 +430,8 @@ int VectorNormal(VECTOR *v0, VECTOR *v1);
     "ctc2\t$0, $5;" \
     "ctc2\t$0, $6;" \
     "ctc2\t$0, $7")
+/* read the projection distance H straight into a register */
+#define gte_ReadGeomScreen_r(r) __asm__ volatile("cfc2\t%0, $26" : "=r"(r))
 #define gte_SetGeomScreen(r0) __asm__ volatile( \
     "ctc2\t%0, $26" \
     : : "r"(r0))
