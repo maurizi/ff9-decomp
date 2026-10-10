@@ -1415,7 +1415,7 @@ s32 func_80021698(Unk8004AB64 *a) {
     return D_8006794C->unk1C->unk838(a->unk34 | 0x20000, a);
 }
 
-u16 func_800216D8(a, b)
+s32 func_800216D8(a, b)
     s32 a;
     u16 b;
 {
@@ -8025,7 +8025,83 @@ WinLayout *func_80039660(s32 obj, s32 id, s32 flags) {
     return w;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800398D0);
+void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
+    s32 cur;
+    s32 rate;
+    s32 frames;
+    s16 a;
+
+    p->unk52 = d & 0xFFF;
+    cur = p->unk14.unk22 & 0xFFF;
+    d -= cur;
+    if (wrap) {
+        if (d > 0x800) {
+            d -= 0x1000;
+        } else if (d < -0x800) {
+            d += 0x1000;
+        }
+    }
+    if (d == 0) {
+        return;
+    }
+    p->unk60 = 0;
+    p->unk61 = 0xFF;
+    p->unk80 = cur;
+    p->unk5A = p->unk36;
+    p->unkF |= 0x80;
+    if (speed == 0) {
+        speed = 0x10;
+    }
+    if (d < 0) {
+        frames = func_800216D8(p->unk34, (u16)p->unk40.unk20);
+        rate = frames * 16 / speed;
+        if (-d < 0x400) {
+            rate = rate * -d >> 10;
+        }
+        if (rate >= 6) {
+            p->unk6C = (d + 0x400) / rate;
+            p->unk62 = 0;
+            func_80039C38_anim(p, (u16)p->unk40.unk20);
+            if (p->unk7 == D_8007AECC->unk16ED) {
+                D_8007B710++;
+            }
+            p->unk5D = frames * 16 / rate;
+        } else {
+            p->unk6C = 0x7FFE;
+            a = cur;
+            if (p->unk52 >= cur) {
+                a = cur | 0x1000;
+            }
+            p->unk14.unk22 = a;
+        }
+    } else {
+        frames = func_800216D8(p->unk34, (u16)p->unk40.unk22);
+        rate = frames * 16 / speed;
+        if (d < 0x400) {
+            rate = rate * d >> 10;
+        }
+        if (rate >= 6) {
+            p->unk6C = (d - 0x400) / rate;
+            p->unk62 = 0;
+            func_80039C38_anim(p, (u16)p->unk40.unk22);
+            if (p->unk7 == D_8007AECC->unk16ED) {
+                D_8007B710++;
+            }
+            p->unk5D = frames * 16 / rate;
+        } else {
+            p->unk6C = 0x7FFF;
+            a = cur;
+            if (cur >= p->unk52) {
+                a = cur | 0xF000;
+            }
+            p->unk14.unk22 = a;
+        }
+    }
+    if (rate <= 0) {
+        rate = 1;
+    }
+    p->unk82 = d / rate;
+}
 
 s32 func_80039C38(void) {
     Unk8004AB64 *po = D_8007B704;

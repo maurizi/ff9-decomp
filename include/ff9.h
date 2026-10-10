@@ -1052,13 +1052,13 @@ typedef struct Unk8004AB64 {
     u8 unk3D;
     u8 unk3E;
     u8 pad3F;
-    ActorPos unk40; /* previous position */
+    ActorPos unk40; /* previous position; unk20/unk22: turn left/right anims */
     u16 unk50; /* flags */
-    u8 pad52[0x54 - 0x52];
+    s16 unk52; /* target direction */
     s16 unk54;
     s16 unk56;
     s16 unk58;
-    u8 pad5A[0x5C - 0x5A];
+    u16 unk5A; /* animation to restore after turning */
     u8 unk5C;
     u8 unk5D;
     u8 unk5E;
@@ -2520,7 +2520,7 @@ typedef struct {
     u8 pad6A[0x7C - 0x6A];
     u8 unk7C[4];
 } Unk8004B9B8;
-u16 func_800216D8();
+s32 func_800216D8();
 s32 func_8001E350(s32);
 
 /* Inlined copy of func_8004B9B8. */
