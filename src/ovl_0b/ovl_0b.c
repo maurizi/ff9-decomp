@@ -1493,7 +1493,19 @@ s32 func_800AE47C(s32 arg0, u16 arg1) {
     return func_8001C8B0(f, 3, arg1 | 0x80000, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AE4FC);
+s32 func_800AE4FC(s32 arg0) {
+    Character *c = D_8006794C->unk1C->unk54C[arg0];
+
+    if (c == NULL) {
+        /* two nested do-while(0) wrappers (macros?): they change the block structure enough to load the table base after the NULL check */
+        do {
+            do {
+                return -1;
+            } while (0);
+        } while (0);
+    }
+    return ((FileEntry16 *)func_8001E218(8, D_8006E0E8[c->unk39[0]].unk2))->unk2 | 0x90000;
+}
 
 s32 func_800AE570(s32 arg0, s32 *arg1) {
     FileEntry *e;

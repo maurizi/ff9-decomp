@@ -106,6 +106,21 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   table base before index scale), C0C00 5, AE4FC 5, DA138 6, DA1F4 14, AA504 18 (main checkout
   build/drafts/ovl_0b; the collect loop is not the AA24C inline), E8B28 17, EFD1C 18, D7094 30, C9374 32, AB07C 51, CBA58 60,
   AC37C ~150, C67BC ~300.
+- Pass 7 (matched: DA92C, E9000, E8B28, AE4FC, D7094, C9A28, ED7C0, ED3F8). What fixed them:
+  - sched1 "birthing" priority: an insn that sets a pseudo with a single set (REG_N_SETS == 1) and no deaths
+    gets max priority, so splitting a reused variable into a fresh one reorders loads (DA92C: fresh cnt2 for
+    hdr[2]); moving constant-holding locals (ED3F8 tp/stp) or the xy/wh computations changes the order too.
+  - ARRAY_REF vs pointer arithmetic: `base[c ? 1 : 0]` through a pointer gets folded into `c ? base+20 : base`;
+    indexing an array member of a struct (BtlUnit9C50Arr) keeps the 0/0x14 value materialised (E8B28).
+  - Per-branch copies that cross-jump: `u = t = &c[k]` in both branches leaves a `move t0,t2` at the join (ED7C0).
+  - Two nested empty `do { } while (0)` around `return -1` (permuter find) fixed the table-base register (AE4FC).
+  - Loop pointer + separate n = 0 after it (D7094); `for (...; i++, s++) *dst = *s` (E9000);
+    in-place `m = x & ~0x300; m |= ...; u->unk68 = m` (C9A28); `if (f()) v = K; else v = 0` so v isn't live
+    across the call (C9A28); a reloaded pointer read after the first store (D9D58 draft).
+  - Loop giv base follows the last e->field referenced in the loop (E1534 draft).
+  - jump.c cross-jumping (B1B48 notes): the processed jump is replaced; a conditional jump around the block counts
+    as a match, so a lone `v0 = 0; j epi` merges into the first chain candidate.
+  New drafts with headers: AB810 8, C9794 26, D0E14 3, D9D58 5, E1534 4, ED02C 4, AA504 3, C9374 2, EFD1C 16.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -172,6 +187,26 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   New scripts in the agent worktree's build/: cmp.py-based vt.py (score files), try.py/tryv.py (apply
   replacements), perm.py/perm2.py (greedy permutations of contiguous lines), movel.py (move one line through
   a range), combo.py (2^k on/off sites), rename.py (rename locals inside a range).
+- Pass 8 (big skipped functions): matched 0c func_800AB0C0 (0xF60) and 0a func_800C2AF0 (0x708). WIPs:
+  docs/wip/ovl_0a_800BF0C4.c (1 row, `addu` operand order), ovl_0a_800BF660.c (39 rows, x/base register swap
+  plus fold reassociation of `wx - (lim - 160)`), ovl_0a_800B0124.c (17 rows, first `D_8006794C` load of the
+  kind-9 block lands in v0 instead of a1). Not attempted: C519C, BE158, 15 A9488 (Blackjack), BB714.
+  What worked:
+  * global-alloc priority is floor_log2(refs) * refs / live_length; `cc1 -dl -dg` gives refs/length in .lreg
+    and dispositions in .greg (build/prio.py). That shows which statement order changes a pseudo's s-reg;
+  * a param that is spilled and reloaded but never used afterwards points to a dead test that the original
+    kept (B0124: `if ((arg0 & 0x3F) == 1)` in the kind switch);
+  * CSE keeps a copy into a user variable only when the variable lives beyond the extended basic block, so
+    `g = D_8006794C->unk1C` must also be used later (B0124 state 2);
+  * GNU case ranges (`case 1 ... 3:`) give a decision tree around a small inner switch (fewer than 5 cases);
+  * `s16 *arg2` instead of a struct pointer changed alias classes (MEM_IN_STRUCT) and fixed C2AF0's
+    scheduling; mixed `pp = &p` / `p.vx` access also mattered;
+  * jump tables at 8-byte offsets in the original object need `__asm__(".rdata\n\t.word 0\n\t.text");` pads
+    at the start of the switching case, not on a label next to delay slots (AB0C0, B0124);
+  * a `return -1` vs `break` choice decides which duplicate tail jump2 cross-jumps (AB0C0).
+  * tools/permute.py strips `static inline` bodies (also those from headers), so the permuter scores the
+    wrong code for any function using an inline helper; build/fixinl.py in this worktree restores them before
+    running decomp-permuter directly. Earlier permuter runs on such functions may have been meaningless.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`

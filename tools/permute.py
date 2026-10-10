@@ -9,6 +9,7 @@ build/permuter/func_X/output-*/source.c.
 """
 import argparse
 import os
+import re
 import shutil
 import stat
 import subprocess
@@ -31,6 +32,28 @@ rm -f "$TMP"
 """
 
 
+def restore_inlines(full, base_path):
+    """strip_other_fns drops the bodies of `static inline` helpers (including ones from headers),
+    leaving bodiless prototypes, so the permuter would score code without the inlined calls.
+    Put the bodies back from the fully preprocessed source."""
+    defs = {}
+    for m in re.finditer(r'^static inline [^\n;{]*?(\w+)\s*\([^;{]*\)\s*\{', full, re.M):
+        i, depth = m.end(), 1
+        while depth:
+            depth += full[i] == '{'
+            depth -= full[i] == '}'
+            i += 1
+        defs[m.group(1)] = full[m.start():i]
+    base = open(base_path).read()
+    n = 0
+    for name, body in defs.items():
+        pat = re.compile(r'^(static )?inline [^\n;{]*?\b' + name + r'\s*\([^;{]*\)\s*;', re.M)
+        base, k = pat.subn(lambda _: body, base, count=1)
+        n += k
+    open(base_path, "w").write(base)
+    return n, len(defs)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("c_file")
@@ -50,7 +73,11 @@ def main():
 
     base = os.path.join(d, "base.c")
     subprocess.run(f"cpp -P {CPP_FLAGS} {a.c_file} -o {base}", shell=True, check=True)
+    full = open(base).read()
     subprocess.run([sys.executable, f"{PERMUTER}/strip_other_fns.py", base, a.func], check=True)
+    n, total = restore_inlines(full, base)
+    if total:
+        print(f"restored {n} of {total} static inline bodies")
 
     with open(os.path.join(d, "target.s"), "w") as f:
         f.write('.include "macro.inc"\n.set noat\n.set noreorder\n.section .text\n')

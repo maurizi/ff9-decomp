@@ -1,4 +1,4 @@
-/* WIP func_800C3F78: 3 differing rows (build/cmp.py-style aligned diff, -O1 -G0). -O1 unit. Left: case 5 test is bne->other + j case5 in the original (beq->case5 + j other here), and the table base lui/addiu comes before the index sll. */
+/* WIP func_800C3F78: 3 differing rows (build/cmp.py-style aligned diff, -O1 -G0). -O1 unit. Left: case 5 test is bne->other + j case5 in the original (beq->case5 + j other here), and the table base lui/addiu comes before the index sll. Pass 7: no change from default-first, case 5 before case 1 (6 rows: gives the bne->other but body order flips), if/else chain, switch index casts (s16 worse), found-label gotos. gcc emits leaf tests as beq + final j default, so the bne + j c5 must come from jump/reorg with case 5's label right after `j other` at that time. */
 #include "ovl_0b.h"
 
 void func_800C3F78(Unk800C412C *arg0, Unk800C3F78 *arg1) {

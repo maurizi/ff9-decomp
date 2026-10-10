@@ -1,4 +1,4 @@
-/* WIP func_800EFD1C: 18 differing rows (build/cmp.py-style aligned diff). first loop: found path should set cur in the beq delay slot (cur = 0 in the bnez slot); side = !k should reuse k (andi a0,0xFF sits in the unk8 beqz delay slot); second loop u/list-pointer regs a0/a1 swapped. */
+/* WIP func_800EFD1C: 16 differing rows (build/cmp.py-style aligned diff). First loop fixed in pass 7 (cur = u; goto found; after the loop cur = NULL; found:). Left: side = !k: the original computes k = lw & 1 in v0, sltiu v0,v0,1 in the bne delay slot then s3 = v0, with arg0's andi scheduled up into the unk8 beqz delay slot (ours loads with lbu since side is u8; a fresh s32 k or reusing n/i/arg0 makes it worse, 22-38 rows); second loop u/list-pointer regs a0/a1 swapped. */
 #define func_800EFD1C func_800EFD1C_hdr
 #include "ovl_0b.h"
 #undef func_800EFD1C
@@ -12,13 +12,14 @@ s32 func_800EFD1C(u8 arg0) {
     s32 i;
     u8 side;
 
-    cur = NULL;
     for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             cur = u;
-            break;
+            goto found;
         }
     }
+    cur = NULL;
+found:
     if (D_80104FF0.unk8 != 0) {
         if (arg0 == (cur->unk68 & 1)) {
             return 0;

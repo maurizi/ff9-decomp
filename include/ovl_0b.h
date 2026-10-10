@@ -3887,6 +3887,30 @@ void func_800D6340(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
 extern const u8 D_800A857C[]; /* "TRANCE" label */
+/* BtlUnit9C.unk50 seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (func_800E8B28) */
+typedef struct {
+    BtlUnit9C50 e[3];
+} BtlUnit9C50Arr;
+/* func_800C9A28: per-character battle setup row (5 bytes, indexed by Character.unk34.b.unk4) */
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+} Unk800F57F0;
+extern Unk800F57F0 D_800F57F0[];
+void func_800C23C8(BtlUnit *, s32, u32);
+/* func_800ED3F8 */
+extern u8 D_800F8E18[]; /* text measured for the highlight bar width */
+extern CVECTOR D_800F8E20[4]; /* highlight bar gradient colours */
+void func_800ED7C0(s32, s32, s32, s32, s32, CVECTOR *);
+/* func_800DA92C */
+extern u16 D_800FEC68[];
+extern s32 D_80100D90[][2];
+s32 func_800E8AD0(void);
+void func_800DC748(BtlModel *, s32);
+typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */
 void func_80054A28(void *);
 
