@@ -2737,7 +2737,127 @@ void *func_800B07DC(u32 *ot, void *p, TmState *s) {
     return p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B08CC);
+void func_800B08CC(TmState *s) {
+    s32 score[80];
+    TmPos res;
+    s32 bc;
+    s32 by;
+    s32 bx;
+    s32 wgt;
+    s32 mul;
+    s32 best;
+    s32 cnt;
+    s32 k;
+    s32 c;
+    s32 x;
+    s32 y;
+    s32 v;
+    s32 f;
+    s32 r;
+    TmCard *card;
+    TmCell *cell;
+    TmCard *sel;
+
+    if (func_800AE830(s, 1) == 0) {
+        return;
+    }
+    if (func_800AE998(s, 1) == func_800AE998(s, 0)) {
+        wgt = 0x40;
+        mul = 1;
+    } else if (func_800AE998(s, 1) >= func_800AE998(s, 0)) {
+        wgt = 0x43;
+        mul = 1;
+    } else {
+        wgt = 1;
+        mul = 5;
+    }
+    if (s->unk44C == 0 && func_80062B3C() % 100 >= 0x1D) {
+        wgt = 0;
+        mul = 0;
+    }
+    if (s->unk44C == 1 && func_80062B3C() % 100 >= 0x3F) {
+        wgt = 0;
+        mul = 0;
+    }
+    if (s->unk44C == 2 && func_80062B3C() % 100 >= 0x5D) {
+        wgt = 0;
+        mul = 0;
+    }
+    best = -0x7FFF;
+    cnt = 0;
+    k = 0;
+    for (c = 0; c < func_800AE830(s, 1); c++) {
+        for (x = 0; x < 4; x++) {
+            for (y = 0; y < 4; y++) {
+                score[k] = 0;
+                if (func_800B19D4(s, x, y)->unk0 != 1) {
+                    score[k] = -0x7FFF;
+                } else {
+                    card = func_800AE9D0(s, 1, c);
+                    v = func_800B0EB8(s, 1, x, y, card);
+                    if (v > 0) {
+                        score[k] += v * wgt;
+                    }
+                    if (v < 0) {
+                        func_800AC4C8((s32)s, &res, card, func_800B1010(s, x, y, card));
+                        r = res.unk0 * 100 / (res.unk0 + res.unk4);
+                        if (s->unk44C == 3) {
+                            mul = 1;
+                            if (r < 0x3C) {
+                                r = r - 100;
+                            } else {
+                                r = 0x91 - r;
+                            }
+                        }
+                        score[k] += r * mul;
+                    }
+                }
+                if (score[k] == best) {
+                    cnt++;
+                }
+                if (score[k] > best) {
+                    best = score[k];
+                    cnt = 1;
+                }
+                k++;
+            }
+        }
+    }
+    bx = 0;
+    best = -0x7FFF;
+    k = 0;
+    by = 0;
+    bc = 0;
+    for (c = 0; c < func_800AE830(s, 1); c++) {
+        for (x = 0; x < 4; x++) {
+            for (y = 0; y < 4; y++) {
+                f = best < score[k];
+                if (best == score[k] && func_80062B3C() % 1000 < 1000 / cnt) {
+                    f++;
+                }
+                if (f) {
+                    bx = x;
+                    bc = c;
+                    by = y;
+                    best = score[k];
+                }
+                k++;
+            }
+        }
+    }
+    sel = func_800AE9D0(s, 1, bc);
+    cell = func_800B19D4(s, bx, by);
+    cell->unk0 = 0;
+    cell->unk4 = sel;
+    sel->unkC = bx * 43 + 0x48;
+    sel->unk10 = by * 52 + 8;
+    sel->unk8 = 0;
+    sel->unk18 = 1;
+    s->unk424 = bx;
+    s->unk428 = by;
+    func_800B01E8(5);
+    func_800ABEC4(s);
+}
 
 s32 func_800B0E58(TmState *arg0, s32 arg1, s32 arg2, s32 arg3) {
     TmCell *cell = func_800B19D4(arg0, arg2, arg3);

@@ -304,7 +304,7 @@ void *func_800AB574(u32 *, void *, TmState *);
 void *func_800AB928(u32 *, void *, TmState *);
 void *func_800ABEBC(u32 *, void *, TmState *);
 void *func_800AC060(u32 *, void *, TmState *);
-void *func_800AC708(u32 *, void *, TmState *);
+void *func_800AC708(u32 *, TILE *, TmState *);
 void *func_800ACDA0(u32 *, TILE *, TmState *);
 void *func_800AD400(u32 *, void *, TmState *);
 void *func_800AD9F8(u32 *, void *, TmState *);
@@ -344,6 +344,8 @@ void func_800B026C(TmState *);
 void func_800B08CC(TmState *);
 void func_800B35A4(TmState *);
 
+void func_800AC4C8(s32, TmPos *, TmCard *, TmCard *);
+TmCard *func_800B1010(TmState *, s32, s32, TmCard *);
 void func_800AB060(Window *);
 void func_800AB52C(Window *);
 void func_800ABE74(Window *);
