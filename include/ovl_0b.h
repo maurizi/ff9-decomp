@@ -3259,4 +3259,58 @@ void func_8001DA78(void *, s32);
 extern s32 D_800711A8[]; /* projected screen xy per model vertex */
 extern s32 D_80070520[]; /* projected z per model vertex */
 
+/* func_800D23D8: multi-frame sprite sheets */
+#define gte_zero_vz012() __asm__ volatile( \
+    "mtc2\t$0, $1;" \
+    "mtc2\t$0, $3;" \
+    "mtc2\t$0, $5" : : )
+
+typedef struct {
+    u16 unk0;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
+} Unk800D23D8Hdr;
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk800D23D8Scale;
+
+typedef struct {
+    u32 unk0;
+    s32 unk4;
+    u16 *unk8;
+    u16 *unkC;
+    u16 *unk10;
+    u16 *unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x40 - 0x2C];
+} Unk800D4768Ctx;
+
+typedef struct {
+    u32 unk0;
+    s32 unk4;
+    u32 *unk8;
+    u32 *unkC;
+    u16 *unk10;
+    u32 *unk14;
+    s32 unk18;
+    s32 unk1C;
+    u32 *unk20;
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x40 - 0x2C];
+} Unk800D4A30Ctx;
+
+void func_800D4768(s32, Unk800D4768Ctx *, u8 *, s32 *);
+void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
+
 #endif

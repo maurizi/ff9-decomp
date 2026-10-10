@@ -613,7 +613,136 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1D74);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1FFC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D23D8);
+void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    VECTOR s;
+    union {
+        SVECTOR v;
+        s32 w[2];
+    } zero;
+    MATRIX m;
+    Unk800D4768Ctx c;
+    Unk800D4A30Ctx d;
+    Unk800D23D8Hdr *h = (Unk800D23D8Hdr *)arg0;
+    Unk800D23D8Scale *e;
+    Unk800D23D8Scale *sc;
+    u16 *s1;
+    s32 f;
+    s32 type;
+    s32 cnt;
+    s32 w;
+    s32 nf;
+    s32 n;
+    u16 *q;
+    u16 *t;
+    u8 *prim;
+    s32 k;
+    u32 *col;
+    s32 m2;
+
+    if (arg2 == NULL) {
+        arg2 = &zero.v;
+        zero.w[0] = 0;
+        zero.w[1] = 0;
+    }
+    n = h->unk0;
+    if (arg4 >= n) {
+        arg4 %= n;
+    }
+    type = h->unk5;
+    cnt = h->unk6;
+    w = h->unk7;
+    e = (Unk800D23D8Scale *)(h + 1);
+    s.vz = 0x1000;
+    if (((Unk800D23D8Hdr *)e)[-1].unk4 & 2) {
+        sc = &e[arg4];
+        s.vx = sc->unk0;
+        s.vy = sc->unk2;
+        if (arg3 >= 0) {
+            gte_lddp(arg3);
+            gte_ldir(&s);
+            gte_gpf12();
+            gte_stir(&s);
+        }
+        s1 = (u16 *)&e[n];
+    } else {
+        s1 = (u16 *)e;
+        if (arg3 < 0) {
+            arg3 = 0x1000;
+        }
+        s.vx = s.vy = arg3;
+    }
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    nf = s1[1];
+    f = 0;
+    if (n >= 2) {
+        f = arg4 * (nf - 1) / (n - 1);
+    }
+    gte_rtv0tr_nn();
+    func_800316D8(arg2, &m);
+    ScaleMatrix(&m, &s);
+    gte_stlvnl(m.t);
+    if (arg2->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    gte_zero_vz012();
+    switch (type) {
+    case 1:
+        c.unk14 = (u16 *)((u32 *)s1 + (nf + 1));
+        col = (u32 *)s1 + (f + 1);
+        if (arg6 >= 0) {
+            gte_DpqColorFar_nst(col, arg6);
+        } else {
+            gte_DpqColorFar_nst(col, 0x1000);
+        }
+        gte_strgb(&c.unk0);
+        q = c.unk14;
+        k = q[0];
+        c.unk28 = (q[2] | ((arg5 & 3) << 5)) << 16;
+        c.unk4 = q[3] << 16;
+        c.unk14 = q = q + 4;
+        t = q + (cnt + 1) * (k + 2);
+        c.unk8 = t + n;
+        c.unkC = c.unk8 + 2;
+        c.unk10 = c.unkC + cnt + 1;
+        c.unk20 = t[arg4];
+        prim = D_800F78A4->unk24;
+        D_800F78A4->unk24 = prim + w * cnt * 40;
+        ((u8 *)&c.unk0)[3] = (arg5 != 0xFF) ? 0x2E : 0x2C;
+        c.unk24 = cnt;
+        c.unk1C = w;
+        c.unk18 = D_800F78A4->unk28;
+        func_800D4768(k, &c, prim, D_800F78A4->unk20);
+        break;
+    case 2:
+        m2 = s1[0] ? 2 : 1;
+        d.unk20 = (u32 *)s1 + (f * m2 * (cnt + 1) + 1);
+        if (s1[0]) {
+            d.unk14 = d.unk20 + 1;
+        } else {
+            d.unk14 = d.unk20;
+        }
+        if (arg6 < 0) {
+            arg6 = 0x1000;
+        }
+        d.unk8 = (u32 *)s1 + (nf * m2 * (cnt + 1) + 1);
+        d.unkC = d.unk8 + 1;
+        d.unk10 = (u16 *)d.unkC + cnt + 1;
+        prim = D_800F78A4->unk24;
+        D_800F78A4->unk24 = prim + w * cnt * 44;
+        d.unk0 = (arg5 != 0xFF) ? 0x3A000000 : 0x38000000;
+        d.unk4 = arg6;
+        d.unk24 = cnt;
+        d.unk28 = (arg5 & 3) << 5;
+        d.unk1C = w;
+        d.unk18 = D_800F78A4->unk28;
+        func_800D4A30(m2, &d, prim, D_800F78A4->unk20);
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2938);
 
