@@ -2944,7 +2944,15 @@ s32 func_800DA480(s32 arg0, s32 arg1) {
     return func_800DA3D8(arg0, arg1 + 1) - v;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA4C4);
+/* takes arg0 bytes from the effect work area (D_80100DC0.unk58/unk5C), returns the old pointer */
+s32 func_800DA4C4(s32 arg0) {
+    Unk80100DC0 *d = &D_80100DC0;
+    s32 p = d->unk58;
+
+    d->unk5C -= arg0;
+    d->unk58 = p + arg0;
+    return p;
+}
 
 void func_800DA4E8(void) {
     D_80100DCC = 0;
