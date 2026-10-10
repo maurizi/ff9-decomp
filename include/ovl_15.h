@@ -134,10 +134,16 @@ extern u32 D_800AE0EC[8]; /* CLUT */
 extern DrTpageWords D_800AE4E8;
 extern s32 D_800B0DF8;
 extern SPRT D_800AE5F8[2][256];
+/* Pip positions on a card face, [rank][pip]; rank 0-8 (cards 2-10) has rank + 2 pips. */
+typedef struct {
+    s32 x;
+    s32 y;
+} Ovl15Pip;
+extern Ovl15Pip D_800AE10C[][10];
 
 s32 func_800A8528(s32, s32);
 s32 func_800A91F0(Ovl15Hand *, s16, s16);
-void func_800A8630(s32, s32, s32, s32);
+s32 func_800A8630(s32, s32, s32, s32);
 void func_800AB1C8(void);
 void func_800A7838(void);
 void func_800A787C(void);

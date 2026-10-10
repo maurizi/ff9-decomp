@@ -223,7 +223,147 @@ s32 func_800A8528(s32 x, s32 y) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A8630);
+s32 func_800A8630(s32 rank, s32 suit, s32 x, s32 y) {
+    SPRT *p;
+    s32 i;
+    s32 f;
+    s32 px;
+    s32 py;
+
+    p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+    setlen(p, 4);
+    p->code = 0x64;
+    setRGB0(p, 0x80, 0x80, 0x80);
+    p->x0 = x + 2;
+    p->y0 = y + 1;
+    p->u0 = (suit & 1) ? 0x58 : 0x6C;
+    p->v0 = rank * 14;
+    p->w = 9;
+    p->h = 0xE;
+    p->clut = 0x3980;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+    D_800AE4D8++;
+
+    p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+    setlen(p, 4);
+    p->code = 0x64;
+    setRGB0(p, 0x80, 0x80, 0x80);
+    p->x0 = x + 0x2C;
+    p->y0 = y + 0x38;
+    p->u0 = (suit & 1) ? 0x62 : 0x76;
+    p->v0 = rank * 14;
+    p->w = 9;
+    p->h = 0xE;
+    p->clut = 0x3980;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+    D_800AE4D8++;
+
+    p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+    p->x0 = x + 1;
+    p->y0 = y + 0xF;
+    setlen(p, 4);
+    p->code = 0x64;
+    setRGB0(p, 0x80, 0x80, 0x80);
+    p->u0 = suit * 12;
+    p->v0 = 0xD5;
+    p->w = 0xB;
+    p->h = 0xB;
+    p->clut = 0x3900;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+    D_800AE4D8++;
+
+    p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+    p->x0 = x + 0x2B;
+    setlen(p, 4);
+    p->code = 0x64;
+    setRGB0(p, 0x80, 0x80, 0x80);
+    p->u0 = suit * 12;
+    p->v0 = 0xCA;
+    p->y0 = y + 0x2D;
+    p->w = 0xB;
+    p->h = 0xB;
+    p->clut = 0x3900;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+    D_800AE4D8++;
+
+    if (rank >= 9) {
+        f = rank - 9;
+        if (rank == 12) {
+            p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+            setlen(p, 4);
+            p->code = 0x64;
+            setRGB0(p, 0x80, 0x80, 0x80);
+            p->u0 = suit * 12;
+            p->v0 = 0xD5;
+            p->x0 = x + 0x16;
+            p->y0 = y + 0x1E;
+            p->w = 0xB;
+            p->h = 0xB;
+            p->clut = 0x3900;
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+            D_800AE4D8++;
+        } else {
+            p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+            p->x0 = x + 7;
+            p->y0 = y + 0xA;
+            setlen(p, 4);
+            p->code = 0x64;
+            setRGB0(p, 0x80, 0x80, 0x80);
+            if (f & 1) {
+                p->u0 = 0x2C;
+            } else {
+                p->u0 = 0;
+            }
+            if (f >> 1) {
+                p->v0 = 0x40;
+            } else {
+                p->v0 = 0;
+            }
+            p->w = 0x2A;
+            p->h = 0x33;
+            p->clut = (f + 0xE0) << 6;
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+            D_800AE4D8++;
+        }
+    } else {
+        for (i = 0; i <= rank + 1; i++) {
+            px = D_800AE10C[rank][i].x;
+            py = D_800AE10C[rank][i].y;
+            p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+            setlen(p, 4);
+            p->code = 0x64;
+            setRGB0(p, 0x80, 0x80, 0x80);
+            p->u0 = suit * 12;
+            p->x0 = x + px;
+            p->y0 = y + py;
+            if (py >= 0x1F) {
+                p->v0 = 0xCA;
+            } else {
+                p->v0 = 0xD5;
+            }
+            p->w = 0xB;
+            p->h = 0xB;
+            p->clut = 0x3900;
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+            D_800AE4D8++;
+        }
+    }
+
+    p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+    setlen(p, 4);
+    p->code = 0x64;
+    setRGB0(p, 0x80, 0x80, 0x80);
+    p->u0 = 0;
+    p->v0 = 0x80;
+    p->w = 0x38;
+    p->h = 0x48;
+    p->x0 = x;
+    p->y0 = y;
+    p->clut = 0x3900;
+    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+    D_800AE4D8++;
+    return 0;
+}
 
 s32 func_800A8F00(s32 x, s32 y) {
     s32 i;
