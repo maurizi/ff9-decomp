@@ -1131,7 +1131,7 @@ s32 func_800AA848(s32 idx) {
     return 0;
 }
 
-s32 func_800AA960(void) {
+s32 func_800AA960(s32 arg0) {
     func_8001C784(D_800AB2D4);
     D_800AB2D4 = NULL;
     return 0;

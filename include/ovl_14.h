@@ -148,7 +148,7 @@ void func_800A80D4(void);
 void func_800A77BC(void);
 extern u16 D_800AB2D8[];
 extern s32 D_800AB2F4;
-extern s32 D_800AB440;
+extern u32 D_800AB440;
 extern s16 D_800AB2D0;
 
 void func_800A7578(void);

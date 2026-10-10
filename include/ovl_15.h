@@ -119,7 +119,7 @@ extern u16 D_800AE432;
 extern u8 D_800B0F44; /* double allowed */
 extern s32 D_800B0F48; /* bet */
 extern u8 D_800B0F4C; /* split allowed */
-extern s32 D_800B0FD0;
+extern u32 D_800B0FD0;
 extern s16 D_800AE4A8;
 extern s32 D_800AE4AC;
 extern u8 *D_800AE4B0; /* next free primitive */
