@@ -67,7 +67,8 @@ typedef struct {
     u8 pad38[2];
     u8 unk3A;
     u8 unk3B; /* uid */
-} FieldEvtObj;
+    u8 pad3C[0x4C - 0x3C];
+} FieldEvtObj; /* 0x4C */
 
 typedef struct {
     u32 unk0; /* flags */
@@ -734,9 +735,11 @@ typedef struct {
 
 typedef struct {
     u16 unk0; /* flags: 1 = relocated */
-    u8 unk2;
+    u8 unk2;  /* bone count */
     u8 unk3; /* group count */
-    u8 pad4[0xC - 4];
+    u8 pad4[2];
+    u8 unk6; /* look-at bone (func_800BA560) */
+    u8 pad7[0xC - 7];
     s32 unkC;
     WmModelGroup *unk10;
 } WmModel;
@@ -753,6 +756,12 @@ typedef struct {
     u16 unk2; /* clut */
 } WmTexInfo;
 
+/* Unk8004AB64 position (unk14) seen as an array, indexed by axis */
+typedef struct {
+    u8 pad0[0x14];
+    s32 unk14[3];
+} ActorPosView;
+
 /* skeleton bone (WmModel.unkC, 4 bytes) */
 typedef struct {
     s16 unk0; /* length: z offset from the parent */
@@ -766,6 +775,17 @@ typedef struct {
     u32 unk0;
     u32 unk4;
 } WmAnimKey;
+
+/* SVECTOR copied as two words */
+typedef union {
+    struct {
+        s16 vx;
+        s16 vy;
+        s16 vz;
+        s16 pad;
+    } v;
+    s32 w[2];
+} SVECTOR4;
 
 /* animation file (Unk800C95C8.unkC) */
 typedef struct {
@@ -790,7 +810,8 @@ typedef struct Unk800C95C8 {
     u8 *unk20;
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
-    u8 pad48[0x50 - 0x48];
+    s16 unk48[3]; /* look-at target (func_800BA560) */
+    u8 pad4E[2];
     struct Unk800AB0B0 *unk50; /* file 0x19xxxx */
     u16 unk54; /* scale */
     u16 unk56;
@@ -798,10 +819,8 @@ typedef struct Unk800C95C8 {
     s16 unk5A; /* screen y limit (func_800BB508) */
     s32 unk5C;
     struct Unk800C95C8 *unk60; /* mirrored model (func_800BC33C) */
-    s16 unk64[3]; /* mirror plane normal */
-    u8 pad6A[2];
-    s16 unk6C[3]; /* point on the mirror plane */
-    u8 pad72[2];
+    SVECTOR4 unk64; /* mirror plane normal */
+    SVECTOR4 unk6C; /* point on the mirror plane */
     u16 unk74;
     u16 unk76;
     u16 unk78;
@@ -824,26 +843,28 @@ typedef struct {
     u16 unk6; /* offset of the id list */
 } Unk800C6C04E;
 
-/* per-actor extension (FieldActorInfo.unk10) */
-typedef struct FieldActorExt {
-    u32 unk0; /* flags */
-    u8 pad4[4];
-    Unk800C95C8 *unk8;
-    u8 padC[0xF8 - 0xC];
-    FieldEvtCtx *unkF8;
-    u8 padFC[0x10C - 0xFC];
-    u8 unk10C; /* rgb */
-    u8 unk10D;
-    u8 unk10E;
-    u8 unk10F; /* frames left */
-} FieldActorExt;
-
-/* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
-/* rgb + flag byte (bit 24 of the word: pending) */
 typedef union {
     u32 w;
     u8 c[4];
 } FieldColor;
+
+/* per-actor extension (FieldActorInfo.unk10) */
+typedef struct FieldActorExt {
+    u32 unk0; /* flags */
+    s32 unk4; /* model file id */
+    Unk800C95C8 *unk8; /* = unk14 */
+    FieldEvtObj *unkC; /* = unkAC */
+    s32 unk10;
+    u8 unk14[0xAC - 0x14]; /* mirrored model */
+    u8 unkAC[0xF8 - 0xAC]; /* copy of the object */
+    FieldEvtCtx *unkF8;
+    SVECTOR4 unkFC; /* mirror plane point */
+    SVECTOR4 unk104; /* mirror plane normal */
+    FieldColor unk10C; /* rgb, [3]: frames left */
+} FieldActorExt; /* 0x110 */
+
+/* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
+/* rgb + flag byte (bit 24 of the word: pending) */
 
 typedef struct FieldActorInfo {
     u32 unk0; /* flags */
@@ -1055,6 +1076,12 @@ typedef struct {
     u16 unk6;
 } BgSprOfs;
 
+/* sprite vertex (BgSprPart.unk8) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} BgSprVtx;
+
 /* streamed sound bank request (func_800B29F8, as ovl_0c func_800AC424) */
 typedef struct {
     u8 pad0[8];
@@ -1246,9 +1273,28 @@ void func_8019A5B0(s32); /* overlay loaded at 0x80198000 */
 s32 func_8019AB70(void);
 void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
+u32 func_8004AB64(void *); /* actor -> model slot */
 void func_80023A0C(void);
 void func_800223CC(void);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
+
+/* field state for func_800AD944 command 3: 0x11, 1 or 0x10/0 */
+static inline s32 func_800AD944_state(void) {
+    s8 v;
+
+    if (D_8006794C->unkB != 0xFF) {
+        v = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42;
+        if (v != 0x11) {
+            goto other;
+        }
+    }
+    return 0x11;
+other:
+    if (v == 8) {
+        return 1;
+    }
+    return (v < 5) << 4;
+}
 
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {

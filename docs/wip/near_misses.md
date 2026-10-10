@@ -35,3 +35,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   helper shape unknown), 8001DE50 (draft only), 80030EE4 (dead copy of arg2; maybe libgte RotMatrix*).
   Also 8005CF04 ~75 (v/old vs %hi(D_80080A10) s-register priority), 8004DCEC (window-init inline
   boundary; caller stores get rescheduled), 8005D6BC ~76 (&D_80083158 hoisted to fp, tick count spilled).
+
+## ovl_0a / ovl_0c (field / world map)
+- 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
+- 0a B4A5C: identical except the stack frame is 8 bytes too small.
+- 0a C0038 (11 diff rows), C07D8 (24), C970C, BA560, BD130, C65CC, BFEE0 (36-64).
+- 0c BA1E4 (31 diff rows), C53DC and BEECC (~110-120), BF544; twin pair 0a BB714 / 0c CA1D8 (large diffs).

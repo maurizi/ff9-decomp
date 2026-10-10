@@ -197,27 +197,32 @@ typedef struct {
 typedef struct {
     u16 unk0[4];
     u16 unk8[4]; /* colours */
-    u8 pad10[8];
+    u8 pad10[4];
+    u8 unk14; /* flags */
+    u8 pad15[3];
 } WmSrcG4; /* 0x18 */
 
 typedef struct {
     u16 unk0[3];
     u8 pad6[2];
     u16 unk8[3]; /* colours */
-    u8 padE[6];
+    u8 padE[5];
+    u8 unk13; /* flags */
 } WmSrcG3; /* 0x14 */
 
 typedef struct {
     u16 unk0[4];
     u8 unk8[3]; /* rgb */
-    u8 padB[5];
+    u8 padB[2];
+    u8 unkD; /* flags */
+    u8 padE[2];
 } WmSrcF4; /* 0x10 */
 
 typedef struct {
     u16 unk0[3];
     u8 pad6[2];
     u8 unk8[3]; /* rgb */
-    u8 padB;
+    u8 unkB; /* flags */
 } WmSrcF3; /* 0xC */
 
 typedef struct {
@@ -230,7 +235,8 @@ typedef struct {
     u16 unkC;  /* G3 */
     u16 unkE;  /* F4 */
     u16 unk10; /* F3 */
-    u8 pad12[2];
+    u8 pad12;
+    s8 unk13; /* ordering table bias */
     void *unk14;
     void *unk18;
     u8 *unk1C;      /* primitive sources, in the order above */
@@ -322,6 +328,7 @@ void func_800C709C(Unk800C95C8 *, u8);
 void func_800C7914(Unk800C95C8 *, u8);
 void func_800C9484(Unk800C95C8 *);
 void func_800C96AC(Unk800C95C8 *, u16);
+void func_800AA418(WmObjEnt *, s32, s32, s32); /* draw a shadow */
 void func_800C9FCC(Unk800C95C8 *, u8);
 void func_800CA1D8(Unk800C95C8 *, u8);
 u8 *func_800634A8(s32);
@@ -828,7 +835,11 @@ extern u8 D_800D30C4;
 extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
-extern u8 D_800D30F8[];
+extern u8 D_800D30F8[]; /* map cells, D_800D3304 per row */
+#define WM_CELL(x, y) D_800D30F8[(y) * D_800D3304 + (x)]
+extern u16 D_800CD060[11]; /* story progress thresholds (func_800BB508) */
+extern u8 D_800CD010[][11];
+extern u8 D_8007AF55; /* = D_8007AEF0.b[0x65], general global flags */
 extern u32 D_800CCB18[2]; /* cell type masks */
 extern u32 D_800CCB20[2];
 u8 func_800B3340(u32 *, u32);
@@ -908,6 +919,7 @@ extern s32 D_800CD078[3]; /* sound source x */
 extern s32 D_800CD084[3]; /* sound source z */
 extern u8 D_800CD090[3]; /* sound ids */
 extern u8 D_800D30CD;
+extern u8 D_800D30C8[]; /* flags (func_800BB508); [5] is D_800D30CD */
 extern s32 D_800D3300;
 extern u8 D_800D5410;
 extern u8 D_800D1FD0;
