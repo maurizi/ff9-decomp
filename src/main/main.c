@@ -3940,7 +3940,55 @@ void func_80028D2C(UnkBlink *b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", GetClut);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80028DB0);
+s32 func_80028DB0(s32 x, s32 hi, s32 c) {
+    u8 buf[16];
+    u8 w;
+    u8 start;
+    u8 width;
+    u8 *dst;
+    u8 *src;
+    s32 row;
+    s32 i;
+    s32 j;
+    u8 b;
+    u8 *p;
+    s32 px;
+    u8 v, o;
+    u8 t;
+
+    dst = (u8 *)D_80077144;
+    w = D_80010BD0[c];
+    start = w >> 4;
+    width = (w & 0xF) + 1;
+    src = (u8 *)D_80077140 + (c << 6);
+    func_8001D898(buf, 0, 0x10);
+    for (row = 0; row < 12; row++) {
+        for (i = 0; i < 4; i++) {
+            b = src[row * 4 + i];
+            for (j = 0; j < 4; j++) {
+                buf[i * 4 + j] = b & 3;
+                b >>= 2;
+            }
+        }
+        for (i = 0; i < width; i++) {
+            px = x + i;
+            if (!(px & 1)) {
+                p = dst + (px >> 1);
+                v = buf[start + i];
+                o = *p;
+                if (hi) { *p = o | (v << 2); } else { *p = o | v; }
+            } else {
+                v = buf[start + i];
+                px >>= 1;
+                p = dst + px;
+                o = *p;
+                t = v << 4; if (hi) { *p = o | (v << 6); } else { *p = o | t; }
+            }
+        }
+        dst += 0x54;
+    }
+    return width + x;
+}
 
 s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     u32 *tbl = D_8006794C->unk1C->unk7D4->unkC;
@@ -4569,7 +4617,42 @@ void func_8002B5FC(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
     D_80077170 = func_8002920C(arg0, arg1, &D_8007716C[otz], arg3, arg4, D_80077170);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002B644);
+u8 *func_8002B644(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
+    SprtWords *p = pkt;
+    DrTpageWords *t;
+    u32 rgbc = 0x64808080;
+    s32 c;
+    s32 u;
+
+    if (style == 2) {
+        rgbc = 0x66606060;
+    }
+    while ((c = *s) != 0) {
+        if ((u8)c != ' ') {
+            do { } while (0);
+            if ((u8)c != '/') {
+                u = 0x1E8;
+                u = c * 8 - u;
+            } else {
+                u = 0xE8;
+            }
+            setlen(p, 4);
+            p->rgbc = rgbc;
+            p->xy = (x & 0xFFFF) | (y << 16);
+            p->wh = 0xA0008;
+            p->uvclut = ((u & 0xFF) | 0x4000) | ((D_8006BBB4[style] + 0x3EE4) << 16);
+            addPrim(ot, p);
+            p++;
+        }
+        s++;
+        x += 7;
+    }
+    t = (DrTpageWords *)p;
+    setlen(t, 1);
+    t->code = 0xE100061F;
+    addPrim(ot, t);
+    return (u8 *)(t + 1);
+}
 
 u8 *func_8002B7B0(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p) {
     u32 rgbc = 0x66000000;
@@ -6469,7 +6552,55 @@ void func_80030B14(void *a, void *b) {
     func_80030B34(a, b, 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80030B34);
+MATRIX *func_80030B34(SVECTOR *r, MATRIX *m, s32 mode) {
+    s16 sx, cx, sy, cy, sz, cz;
+    s32 x, y, z;
+    s32 tx, ty, tz;
+    s16 t1, t2;
+
+    x = r->vx & 0xFFF;
+    y = r->vy & 0xFFF;
+    z = r->vz & 0xFFF;
+    ISIN(sx, r->vx, x);
+    tx = 0x400 - x;
+    x = tx & 0xFFF;
+    ISIN(cx, tx, x);
+    ISIN(sy, y, y);
+    ty = 0x400 - y;
+    y = ty & 0xFFF;
+    ISIN(cy, ty, y);
+    ISIN(sz, z, z);
+    tz = 0x400 - z;
+    z = tz & 0xFFF;
+    ISIN(cz, tz, z);
+    /* Both branches are identical; jump2 merges them, leaving only the dead copy of mode. */
+    if (mode) {
+        t1 = (sx * sy) >> 12;
+        t2 = (cx * sy) >> 12;
+        m->m[0][0] = (cy * cz) >> 12;
+        m->m[0][1] = (-cy * sz) >> 12;
+        m->m[0][2] = sy;
+        m->m[1][0] = (t1 * cz + cx * sz) >> 12;
+        m->m[1][1] = (-t1 * sz + cx * cz) >> 12;
+        m->m[1][2] = (-sx * cy) >> 12;
+        m->m[2][0] = (-t2 * cz + sx * sz) >> 12;
+        m->m[2][1] = (t2 * sz + sx * cz) >> 12;
+        m->m[2][2] = (cx * cy) >> 12;
+    } else {
+        t1 = (sx * sy) >> 12;
+        t2 = (cx * sy) >> 12;
+        m->m[0][0] = (cy * cz) >> 12;
+        m->m[0][1] = (-cy * sz) >> 12;
+        m->m[0][2] = sy;
+        m->m[1][0] = (t1 * cz + cx * sz) >> 12;
+        m->m[1][1] = (-t1 * sz + cx * cz) >> 12;
+        m->m[1][2] = (-sx * cy) >> 12;
+        m->m[2][0] = (-t2 * cz + sx * sz) >> 12;
+        m->m[2][1] = (t2 * sz + sx * cz) >> 12;
+        m->m[2][2] = (cx * cy) >> 12;
+    }
+    return m;
+}
 
 void func_80030EA4(void *a, void *b) {
     func_80030EE4(a, b, 0);
@@ -6479,7 +6610,55 @@ void func_80030EC4(void *a, void *b) {
     func_80030EE4(a, b, 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80030EE4);
+MATRIX *func_80030EE4(SVECTOR *r, MATRIX *m, s32 mode) {
+    s16 sx, cx, sy, cy, sz, cz;
+    s32 x, y, z;
+    s32 tx, ty, tz;
+    s16 t1, t2;
+
+    x = r->vx & 0xFFF;
+    y = r->vy & 0xFFF;
+    z = r->vz & 0xFFF;
+    ISIN(sx, r->vx, x);
+    tx = 0x400 - x;
+    x = tx & 0xFFF;
+    ISIN(cx, tx, x);
+    ISIN(sy, y, y);
+    ty = 0x400 - y;
+    y = ty & 0xFFF;
+    ISIN(cy, ty, y);
+    ISIN(sz, z, z);
+    tz = 0x400 - z;
+    z = tz & 0xFFF;
+    ISIN(cz, tz, z);
+    /* Both branches are identical; jump2 merges them, leaving only the dead copy of mode. */
+    if (mode) {
+        t1 = (sx * sz) >> 12;
+        t2 = (sx * cz) >> 12;
+        m->m[0][0] = (cz * cy - t1 * sy) >> 12;
+        m->m[0][1] = (-cx * sz) >> 12;
+        m->m[0][2] = (cz * sy + t1 * cy) >> 12;
+        m->m[1][0] = (sz * cy + t2 * sy) >> 12;
+        m->m[1][1] = (cx * cz) >> 12;
+        m->m[1][2] = (sz * sy - t2 * cy) >> 12;
+        m->m[2][0] = (-cx * sy) >> 12;
+        m->m[2][1] = sx;
+        m->m[2][2] = (cx * cy) >> 12;
+    } else {
+        t1 = (sx * sz) >> 12;
+        t2 = (sx * cz) >> 12;
+        m->m[0][0] = (cz * cy - t1 * sy) >> 12;
+        m->m[0][1] = (-cx * sz) >> 12;
+        m->m[0][2] = (cz * sy + t1 * cy) >> 12;
+        m->m[1][0] = (sz * cy + t2 * sy) >> 12;
+        m->m[1][1] = (cx * cz) >> 12;
+        m->m[1][2] = (sz * sy - t2 * cy) >> 12;
+        m->m[2][0] = (-cx * sy) >> 12;
+        m->m[2][1] = sx;
+        m->m[2][2] = (cx * cy) >> 12;
+    }
+    return m;
+}
 
 void func_80031244(void *a, void *b) {
     func_80031284(a, b, 0);
@@ -6499,7 +6678,76 @@ void func_800316F8(void *a, void *b) {
     func_80031718(a, b, 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031718);
+MATRIX *func_80031718(SVECTOR *r, MATRIX *m, s32 mode) {
+    s16 sx, cx, sy, cy, sz, cz;
+    s32 x, y, z;
+    s32 t;
+    s32 tx, ty, tz;
+    s16 t1, t2;
+    s32 a, b, c, d, e, f;
+
+    x = r->vx & 0xFFF;
+    y = r->vy & 0xFFF;
+    z = r->vz & 0xFFF;
+    ISIN(sx, r->vx, x);
+    tx = 0x400 - x;
+    x = tx & 0xFFF;
+    ISIN(cx, tx, x);
+    ISIN(sy, y, y);
+    ty = 0x400 - y;
+    y = ty & 0xFFF;
+    ISIN(cy, ty, y);
+    ISIN(sz, z, z);
+    tz = 0x400 - z;
+    z = tz & 0xFFF;
+    ISIN(cz, tz, z);
+    if (mode == 0) {
+        t1 = (sx * sy) >> 12;
+        t2 = (sx * cy) >> 12;
+        m->m[0][0] = (cy * cz + t1 * sz) >> 12;
+        m->m[0][1] = (-cy * sz + t1 * cz) >> 12;
+        m->m[0][2] = (cx * sy) >> 12;
+        m->m[1][0] = (cx * sz) >> 12;
+        m->m[1][1] = (cx * cz) >> 12;
+        m->m[1][2] = -sx;
+        m->m[2][0] = (-sy * cz + t2 * sz) >> 12;
+        m->m[2][1] = (sy * sz + t2 * cz) >> 12;
+        m->m[2][2] = (cx * cy) >> 12;
+    } else {
+        gte_ldir0123(cx, sy, cy, cz);
+        m->m[1][2] = -sx;
+        gte_gpf12_n1();
+        a = cy * cz;
+        gte_stmac123(d, e, f);
+        gte_ldir0123(sz, cx, cy, sy);
+        do {
+            b = sy * cz;
+            m->m[0][2] = d;
+            gte_gpf12_b();
+            a >>= 12;
+            b >>= 12;
+            m->m[2][2] = e;
+            m->m[1][1] = f;
+        } while (0);
+        gte_stmac123(d, c, t);
+        gte_ldir0123(sx, b, a, t);
+        m->m[1][0] = d;
+        gte_gpf12_n1();
+        gte_stmac123(d, e, f);
+        gte_ldir12(t, c);
+        d -= c;
+        m->m[0][1] = d;
+        gte_gpf12_b();
+        e += t;
+        m->m[2][1] = e;
+        gte_stmac12(d, e);
+        d += a;
+        e -= b;
+        m->m[0][0] = d;
+        m->m[2][0] = e;
+    }
+    return m;
+}
 
 void func_80031B6C(Unk80077C78 *p) {
     s32 n;
@@ -16091,7 +16339,122 @@ u32 func_800595F0(AkaoChannel *c, u32 mask) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005963C);
+void func_8005963C(s32 addr, s32 mask) {
+    AkaoSeqHeader *seq;
+    u32 active;
+    AkaoChannel *c;
+    u16 *ofs;
+    u32 bit;
+    u32 i;
+    u32 x;
+    u8 *p;
+
+    D_80080A10->unk2C = (u8 *)addr;
+    active = ((AkaoSeqHeader *)addr)->unk20;
+    seq = (AkaoSeqHeader *)addr;
+    if (D_8007F790 != NULL) {
+        bit = func_800595F0(D_8007F71C, D_8007F790->unk4);
+    } else {
+        bit = 0;
+    }
+    x = 0xFFFFFF;
+    D_80080A70.unkC |= ~bit & (~(D_80080A70.unk0 | D_80083174) & x);
+    D_80080A10->unk18 = 0;
+    if (D_800831C4 & 1) {
+        D_80080A10->unk4 = 0;
+        D_80080A10->unk1C |= active & mask;
+    } else {
+        D_80080A10->unk1C = 0;
+        D_80080A10->unk4 |= active & mask;
+    }
+    D_80080A10->unk8 = seq->unk24;
+    D_80080A10->unkC = seq->unk28;
+    D_80080A10->unk0 &= ~0x33;
+    D_80080A10->unk0 = seq->unk14 == D_8007F8DC ? D_80080A10->unk0 | 0x20 : D_80080A10->unk0 | 0x10;
+    p = (u8 *)seq + (seq->unk30 + 0x30);
+    D_80080A10->unk30 = seq->unk30 != 0 ? (u16 *)p : NULL;
+    p = (u8 *)seq + (seq->unk34 + 0x34);
+    D_80080A10->unk34 = seq->unk34 != 0 ? (s32)p : 0;
+    D_80080A10->unk38 = 0;
+    bit = 1;
+    i = 0;
+    c = D_8007BD48;
+    ofs = (u16 *)(addr + 0x40);
+    for (; i < 32; i++) {
+        if (active & bit & mask) {
+            c->unk0 = (u8 *)ofs + *ofs;
+            c->unk96 = 4;
+            c->unk98 = 2;
+            c->unkB2 = 0x7F00;
+            c->unk78 = 0x3FFF0000;
+            c->unk100 = 0x4000;
+            c->unk108 = 0;
+            c->unk106 = 0;
+            c->unkCA = 0;
+            c->unk30 = 0;
+            c->unk10C = 0;
+            c->unkC2 = 0;
+            c->unkFA = 0;
+            c->unkF8 = 0;
+            c->unkBE = 0x8000;
+            c->unkC0 = 0;
+            c->unkCA = 0;
+            c->unkBC = 0;
+            c->unkB8 = 0;
+            c->unk84 = 0;
+            c->unkBA = 0;
+            c->unkF6 = 0;
+            c->unkCC = 0;
+            c->unk114 = 0;
+            c->unkF4 = 0;
+            c->unk34 = !(D_80080A10->unkC & bit) << 6;
+            ofs++;
+            c->unkEA = 0;
+            c->unkE2 = 0;
+            c->unkD6 = 0;
+            c->unkEC = 0;
+            c->unkE4 = 0;
+            c->unkD8 = 0;
+            c->unkE8 = 0;
+            c->unkE0 = 0;
+            c->unkD2 = 0;
+            c->unkF2 = 0;
+            c->unkF0 = 0;
+            func_8005EBE8(c, 0);
+        } else {
+            if ((active & bit) && !(bit & mask)) {
+                ofs++;
+            }
+            c->unk96 = 3;
+            c->unk98 = 1;
+            c->unk0 = D_8006F40C;
+            c->unk11C |= 0x4400;
+            c->unk12C = (c->unk12C & 0xFFE0) | 5;
+        }
+        c->unk118 = 0x18;
+        active &= ~bit;
+        c++;
+        bit <<= 1;
+    }
+    D_80080A10->unk20.w = 0xFFFF0000;
+    D_80080A10->unk28 = 1;
+    D_80080A10->unk68 = 0;
+    D_80080A10->unk48 = 0;
+    D_80080A10->unk66 = 0;
+    D_80080A10->unk4C = 0;
+    D_80083158.unk8 = 0;
+    D_80080A10->unk76 = 0;
+    D_80080A10->unk74 = 0;
+    D_80080A10->unk72 = 0;
+    D_80080A10->unk78 = 0;
+    D_80080A10->unk3C = 0;
+    D_80080A10->unk40 = 0;
+    D_80080A10->unk44 = 0;
+    D_80080A10->unk6C = 0;
+    D_80080A10->unk14 = 0;
+    D_80080A10->unk10 = 0;
+    D_80083158.unk8 |= 0x100;
+}
 
 void func_800599D4(Unk80080A10 *a, AkaoChannel *c, s32 id) {
     u32 i;
@@ -16617,7 +16980,43 @@ void func_8005AE14(Unk80080AA0 *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005AEC8);
+void func_8005AEC8(Unk80080AA0 *p) {
+    s32 n = 1;
+    Unk80080A10 *s;
+    Unk80080A10 *t;
+    s32 v;
+    s32 cur;
+
+    if (p->unk4 != 0) {
+        n = p->unk4;
+    }
+    v = ((p->unk8 & 0x7F) << 16) | 0x8000;
+    if (p->unk0 == 0 || p->unk0 == D_80080A10->unk6A) {
+        s = D_80080A10;
+        do { } while (0);
+        cur = s->unk50 & 0xFFFF0000; cur |= 0x8000;
+        v = v - cur;
+        v /= n;
+        s->unk58 = n;
+        s->unk50 = cur;
+        s->unk54 = v;
+        func_8005A284(s, D_8007BD48);
+    } else {
+        t = D_8007F790;
+        if (t == NULL || p->unk0 == 0 || p->unk0 != t->unk6A) {
+            return;
+        }
+        cur = t->unk50 & 0xFFFF0000; cur |= 0x8000;
+        v = v - cur;
+        do { } while (0);
+        v /= n;
+        s = t;
+        s->unk58 = n;
+        s->unk50 = cur;
+        s->unk54 = v;
+        func_8005A284(s, D_8007F71C);
+    }
+}
 
 void func_8005B004(Unk80080AA0 *p) {
     s32 n = 1;
@@ -16665,7 +17064,36 @@ void func_8005B104(Unk80080AA0 *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005B1B8);
+void func_8005B1B8(Unk80080AA0 *p) {
+    s32 n = 1;
+    Unk80080A10 *s;
+    s32 v;
+
+    if (p->unk4 != 0) {
+        n = p->unk4;
+    }
+    v = (p->unk8 & 0x7F) << 16;
+    if (p->unk0 == 0 || p->unk0 == D_80080A10->unk6A) {
+        s = D_80080A10;
+        v = v - s->unk5C;
+        do { } while (0);
+        v /= n;
+        s->unk64 = n;
+        s->unk60 = v;
+        func_8005A284(s, D_8007BD48);
+    } else {
+        s = D_8007F790;
+        if (s == NULL || p->unk0 == 0 || p->unk0 != s->unk6A) {
+            return;
+        }
+        v = v - s->unk5C;
+        do { } while (0);
+        v /= n;
+        s->unk64 = n;
+        s->unk60 = v;
+        func_8005A284(s, D_8007F71C);
+    }
+}
 
 void func_8005B2D8(u16 *a) {
     D_80080A2C = 0;
@@ -17250,7 +17678,94 @@ void func_8005C86C(s32 mode) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005C8BC);
+s32 func_8005C8BC(u32 cmd) {
+    s32 r = 0;
+    AkaoSeqHeader *seq;
+    Unk80080AA0 *blk;
+
+    func_80056CBC(D_8006F318);
+    blk = &D_80080970;
+    cmd &= 0xFF;
+    switch (cmd) {
+    case 0x10:
+    case 0x12:
+    case 0x14:
+    case 0x19:
+    case 0x1A:
+        if (func_800565DC((s32 *)D_80080AA0.unk0) == 0) {
+        seq = (AkaoSeqHeader *)D_80080AA0.unk0;
+        if (D_80080A10->unk6A != seq->unk4 || (D_8007F790 != NULL && D_8007F790->unk6A != D_80080A10->unk6A)) {
+            if (cmd != 0x19) {
+                func_8005C86C(seq->unk8);
+            }
+            blk->unk0 = (s32)seq;
+            blk->unk8 = seq->unk4;
+            switch (cmd) {
+            case 0x14:
+                blk->unkC = D_80080AA0.unk4 != 0 ? D_80080AA0.unk4 | 1 : -1;
+                break;
+            case 0x12:
+                blk->unkC = D_80080AA0.unk4;
+                break;
+            case 0x19:
+                blk->unk10 = D_80080AA0.unk4;
+                break;
+            case 0x1A:
+                blk->unk10 = D_80080AA0.unk4;
+                blk->unk14 = D_80080AA0.unk8;
+                break;
+            }
+            r = seq->unk4;
+        } else {
+            cmd = 0;
+            r = 0;
+        }
+        } else {
+            cmd = 0;
+            r = -1;
+        }
+        break;
+    case 0xD8:
+        blk->unk0 = D_80080AA0.unk0;
+        D_8006F740[0xD0](blk);
+        cmd = 0xD4;
+        break;
+    case 0xD9:
+        blk->unk0 = D_80080AA0.unk0;
+        blk->unk4 = D_80080AA0.unk4;
+        D_8006F740[0xD1](blk);
+        cmd = 0xD5;
+        break;
+    case 0xDA:
+        blk->unk0 = D_80080AA0.unk0;
+        blk->unk4 = D_80080AA0.unk4;
+        blk->unk8 = D_80080AA0.unk8;
+        D_8006F740[0xD2](blk);
+        cmd = 0xD6;
+        break;
+    case 0x99:
+        D_8006F740[0x9B](blk);
+        D_8006F740[0x9D](blk);
+        cmd = 0x9F;
+        break;
+    case 0x98:
+        D_8006F740[0x9A](blk);
+        D_8006F740[0x9C](blk);
+        cmd = 0x9E;
+        break;
+    default:
+        blk->unk0 = D_80080AA0.unk0;
+        blk->unk4 = D_80080AA0.unk4;
+        blk->unk8 = D_80080AA0.unk8;
+        blk->unkC = D_80080AA0.unkC;
+        blk->unk10 = D_80080AA0.unk10;
+        blk->unk14 = D_80080AA0.unk14;
+        break;
+    }
+    D_8006F740[cmd](blk);
+    func_80016ED0(D_8006F318);
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetReverbModeType);
 

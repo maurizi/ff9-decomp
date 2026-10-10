@@ -507,6 +507,7 @@ typedef struct {
 } DrTpageWords;
 
 extern u16 D_8006BBA0[];
+extern u32 D_8006BBB4[]; /* per-style clut row offset for func_8002B644 */
 
 /* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
 typedef struct {
@@ -561,6 +562,7 @@ extern Unk80077DB0 D_80077DB0;
 
 extern s32 D_80077140;
 extern s32 D_80077144;
+extern u8 D_80010BD0[]; /* font glyph start/width nibbles, func_80028DB0 */
 extern void (*D_80068F80[])(RECT *, s32);
 extern s32 (*D_8006BBEC[])(u8 *); /* text width of a value, per format */
 extern u8 D_8006A20E;
@@ -1344,10 +1346,24 @@ void func_8002FB08(s32);
 void func_8002FB64(s32);
 void func_80030770(u8 *);
 s32 func_8002F5A0(void (*)(void));
-void *func_80030B34(void *, void *, s32);
-void *func_80030EE4(void *, void *, s32);
-void *func_80031284(void *, void *, s32);
-void *func_80031718(void *, void *, s32);
+MATRIX *func_80030B34(SVECTOR *, MATRIX *, s32);
+MATRIX *func_80030EE4(SVECTOR *, MATRIX *, s32);
+MATRIX *func_80031284(SVECTOR *, MATRIX *, s32);
+MATRIX *func_80031718(SVECTOR *, MATRIX *, s32);
+
+/* sine table, 0x400 entries for a quarter wave (4096 = 360 degrees) */
+extern s16 D_8006C1C4[];
+
+/* out = sin(a) from D_8006C1C4. a is the angle (bits above 0xFFF ignored), mk the same angle & 0xFFF. */
+#define ISIN(out, a, mk)                              \
+    if ((a) & 0x400) {                                \
+        out = D_8006C1C4[0x400 - ((a) & 0x3FF)];      \
+    } else {                                          \
+        out = D_8006C1C4[(a) & 0x3FF];                \
+    }                                                 \
+    if ((mk) & 0x800) {                               \
+        out = -out;                                   \
+    }
 void func_8002FC38(void);
 void func_8002F6C8(void);
 void func_8002FC8C(s32, s32, s32, s32);
