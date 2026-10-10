@@ -2650,6 +2650,27 @@ void func_800CCAF0(struct Battle1358 *, Unk800CCD00 *, s32, s32);
 extern void (*D_800F6A7C[])(struct Battle1358 *, Unk800CCD00 *);
 void func_800CD210(Unk800CCD00 *);
 void func_800CCDB8(Unk800CCD00 *);
+
+/* status-effect sprites drawn on battle units (func_800CCDB8) */
+typedef struct {
+    s32 unk0; /* status mask that shows it */
+    s32 unk4; /* status mask that hides it */
+    u8 *unk8; /* sprite data */
+    u8 unkC;  /* attach point index */
+    u8 unkD;  /* semi-trans mode */
+    u8 unkE;  /* flat (func_800D198C) */
+    u8 unkF;  /* turns with the unit */
+} Unk800F6A88;
+
+extern Unk800F6A88 D_800F6A88[];
+/* per player model (Character.unk34.b.unk4): attach points (bone, y, z) */
+extern u8 D_800F6B48[][6];
+extern u8 D_800F6BBC[][6];
+extern u8 D_800F6C30[][6];
+
+void func_800E70D0(u8 *, s32 *);
+u8 *func_800E7154(void);
+void func_800D198C(u8 *, SVECTOR *, s32, s32, s32);
 void func_800CD83C(void);
 void func_800CDD68(void);
 extern u8 D_800F6A28[];

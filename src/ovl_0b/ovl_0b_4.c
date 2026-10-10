@@ -70,7 +70,114 @@ void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C67BC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C7730);
+void func_800C7730(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
+    BtlUnit9C8 *h;
+    BtlMesh *m;
+    u32 i;
+    u32 j;
+    u32 k;
+    u8 *src;
+    WmSrcFT4 *ft4;
+    WmSrcFT3 *ft3;
+    WmSrcGT4 *gt4;
+    WmSrcGT3 *gt3;
+    u8 *mark;
+    s32 du;
+    s32 dv;
+
+    arg0->unk54 = 0x1000;
+    arg0->unk56 = 0x1000;
+    arg0->unk58 = 0x1000;
+    arg0->unk0 |= 2;
+    h = arg0->unk8;
+    arg0->unk18 = (BtlUnit9C18 *)arg1;
+    arg0->unk1C = NULL;
+    arg0->unk60 = NULL;
+    arg0->unk5C = NULL;
+    arg0->unk44 = 0;
+    arg0->unk20 = NULL;
+    arg0->unk10 = 0;
+    arg0->unk50 = NULL;
+    arg0->unk74 = 0;
+    arg0->unk76 = 0;
+    arg0->unk78 = 0;
+    arg0->unk14 = 0;
+    arg0->unk0 = 0;
+    if (!(h->unk0 & 1)) {
+        h->unk0 |= 1;
+        m = h->unk10 = (BtlMesh *)((u8 *)h + (s32)h->unk10);
+        h->unkC = (s32)h + h->unkC;
+        for (i = 0; i < h->unk3; i++, m++) {
+            m->unk14 = (u16 *)((u8 *)h + (s32)m->unk14);
+            m->unk18 = (SVECTOR *)((u8 *)h + (s32)m->unk18);
+            m->unk1C = (u32 *)((u8 *)h + (s32)m->unk1C);
+            m->unk20 = (void *)((u8 *)h + (s32)m->unk20);
+            m->unk24 = (void *)((u8 *)h + (s32)m->unk24);
+        }
+        if (arg2 != NULL) {
+            for (i = 0; i < h->unk3; i++) {
+                mark = (u8 *)D_80070520;
+                for (k = 0; k < 0x1908; k++) {
+                    mark[k] = 0;
+                }
+                m = &h->unk10[i];
+                src = (u8 *)m->unk1C;
+                for (k = 0; k < m->unk2; k++) {
+                    ft4 = (WmSrcFT4 *)src;
+                    du = arg2[ft4->unk13 * 2];
+                    dv = arg2[ft4->unk13 * 2 + 1];
+                    for (j = 0; j < 4; j++) {
+                        if (mark[ft4->unk8[j]] == 0) {
+                            m->unk20[ft4->unk8[j]][0] += du;
+                            m->unk20[ft4->unk8[j]][1] += dv;
+                            mark[ft4->unk8[j]] = 1;
+                        }
+                    }
+                    src += sizeof(WmSrcFT4);
+                }
+                for (k = 0; k < m->unk4; k++) {
+                    ft3 = (WmSrcFT3 *)src;
+                    du = arg2[ft3->unk6 * 2];
+                    dv = arg2[ft3->unk6 * 2 + 1];
+                    for (j = 0; j < 3; j++) {
+                        if (mark[ft3->unkC[j]] == 0) {
+                            m->unk20[ft3->unkC[j]][0] += du;
+                            m->unk20[ft3->unkC[j]][1] += dv;
+                            mark[ft3->unkC[j]] = 1;
+                        }
+                    }
+                    src += sizeof(WmSrcFT3);
+                }
+                for (k = 0; k < m->unk6; k++) {
+                    gt4 = (WmSrcGT4 *)src;
+                    du = arg2[gt4->unk1D * 2];
+                    dv = arg2[gt4->unk1D * 2 + 1];
+                    for (j = 0; j < 4; j++) {
+                        if (mark[gt4->unk8[j]] == 0) {
+                            m->unk20[gt4->unk8[j]][0] += du;
+                            m->unk20[gt4->unk8[j]][1] += dv;
+                            mark[gt4->unk8[j]] = 1;
+                        }
+                    }
+                    src += sizeof(WmSrcGT4);
+                }
+                for (k = 0; k < m->unk8; k++) {
+                    gt3 = (WmSrcGT3 *)src;
+                    du = arg2[gt3->unk16 * 2];
+                    dv = arg2[gt3->unk16 * 2 + 1];
+                    for (j = 0; j < 3; j++) {
+                        if (mark[gt3->unk6[j]] == 0) {
+                            m->unk20[gt3->unk6[j]][0] += du;
+                            m->unk20[gt3->unk6[j]][1] += dv;
+                            mark[gt3->unk6[j]] = 1;
+                        }
+                    }
+                    src += sizeof(WmSrcGT3);
+                }
+            }
+        }
+    }
+}
 
 void func_800C7B84(BtlUnit9C *arg0) {
     union {
