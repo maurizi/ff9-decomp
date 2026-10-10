@@ -12345,7 +12345,23 @@ s32 func_80055210(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80055230);
+s32 func_80055230(u8 *a) {
+    s32 r;
+    u8 *p;
+
+    r = func_800565DC((s32 *)a);
+    if (r == 0) {
+        p = a + 0x10;
+        D_800809DC = (u16 *)p;
+        p = a + 0x210;
+        D_800809E4 = (u16 *)p;
+        p = a + 0x310;
+        D_80083148 = (u16 *)p;
+        p = a + 0x410;
+        D_800809E8 = p;
+    }
+    return r;
+}
 
 void func_80055290(s32 a) {
     D_80080AA0.unk0 = a;
@@ -12422,7 +12438,26 @@ void func_800554A8(s32 a) {
     func_8005C8BC(0x30);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800554D4);
+u32 func_800554D4(void) {
+    u32 mask = D_80080A70.unk0;
+    AkaoChannel *c;
+    u32 r;
+    u32 bit;
+
+    if (mask == 0) {
+        return 0;
+    }
+    c = D_8007E3D8;
+    r = 0;
+    for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
+        if (mask & bit) {
+            r |= c->unk28;
+        }
+        c++;
+    }
+    r &= 0xFFFFFF;
+    return r;
+}
 
 s32 func_8005553C(u32 id) {
     u32 mask;
