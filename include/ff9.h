@@ -919,9 +919,13 @@ typedef struct {
     s32 unk14;
     s32 unk18;
     s32 unk1C;
-    s32 unk20;
+    union {
+        s32 w;
+        u16 h[2];
+    } unk20; /* tempo, 16.16 */
     s32 unk24;
-    u8 pad28[0x30 - 0x28];
+    s32 unk28; /* tempo accumulator */
+    u8 pad2C[0x30 - 0x2C];
     u16 *unk30;
     s32 unk34;
     s32 unk38;
@@ -1529,6 +1533,9 @@ u8 func_80022D3C(void (*)(u8 *));
 
 extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
+extern u8 D_80083156; /* tempo scale */
+void func_8005E3FC(AkaoChannel *, u32);
+void func_800579B4(AkaoChannel *, u32, s32);
 
 void func_8005A658(Unk80080AA0 *);
 

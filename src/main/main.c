@@ -13511,7 +13511,81 @@ void func_8005CE8C(u32 *a, u32 *b, u32 n) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005CF04);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005D384);
+u32 func_8005D384(AkaoChannel *chans, s32 sub) {
+    u32 tempo;
+    u32 m;
+    s32 acc;
+    AkaoChannel *c;
+    u32 bit;
+    u32 active;
+    s32 flags;
+
+    tempo = D_80080A10->unk20.h[1];
+    m = D_80083156;
+    if (m != 0) {
+        if (m < 0x80) {
+            tempo += (tempo * m) >> 7;
+        } else {
+            tempo = (tempo * m) >> 8;
+        }
+    }
+    acc = D_80080A10->unk28 + tempo;
+    D_80080A10->unk28 = acc;
+    if ((acc & 0xFFFF0000) || (D_800831C4 & 4)) {
+        D_80080A10->unk28 = acc & 0xFFFF;
+        do {
+            for (;;) {
+                c = chans;
+                bit = 1;
+                active = D_80080A10->unk4;
+                do {
+                    if (active & bit) {
+                        c->unk96--;
+                        c->unk98--;
+                        if (c->unk96 == 0) {
+                            func_8005E3FC(c, bit);
+                        } else if (c->unk98 == 0) {
+                            D_80080A10->unk18 |= bit;
+                        }
+                        func_800579B4(c, bit, 0);
+                        active &= ~bit;
+                    }
+                    c++;
+                    bit <<= 1;
+                } while (active != 0);
+                if (D_80080A10->unk68 != 0) {
+                    D_80080A10->unk68--;
+                    D_80080A10->unk20.w += D_80080A10->unk24;
+                }
+                if (D_80080A10->unk66 != 0) {
+                    D_80080A10->unk66--;
+                    D_80080A10->unk48 += D_80080A10->unk4C;
+                    flags = D_80083158.unk8;
+                    flags |= 0x80;
+                    if (sub == 0) {
+                        D_80083158.unk8 = flags;
+                    }
+                }
+                if (D_80080A10->unk74 != 0) {
+                    if (++D_80080A10->unk76 == D_80080A10->unk74) {
+                        D_80080A10->unk76 = 0;
+                        if (++D_80080A10->unk72 == D_80080A10->unk70) {
+                            D_80080A10->unk72 = 0;
+                            D_80080A10->unk78++;
+                            if (sub == 0 && D_800809B8 != 0) {
+                                D_800809B8--;
+                            }
+                        }
+                    }
+                }
+                if (sub != 0 || D_800809B8 == 0) {
+                    break;
+                }
+            }
+        } while (0);
+    }
+    return D_80080A10->unk4;
+}
 
 void func_8005D628(Unk80080A10 *arg0, AkaoChannel *arg1) {
     s32 t;
@@ -13784,8 +13858,8 @@ void func_8005ECCC(AkaoChannel *c, s32 mask) {
 void func_8005EDA0(AkaoChannel *c) {
     Unk80080A10 *a = D_80080A10;
     s32 v = c->unk0[0] << 16;
-    a->unk20 = v;
-    a->unk20 = v | (c->unk0[1] << 24);
+    a->unk20.w = v;
+    a->unk20.w = v | (c->unk0[1] << 24);
     c->unk0 += 2;
     a->unk68 = 0;
 }
@@ -13799,9 +13873,9 @@ void func_8005EDEC(AkaoChannel *c) {
     }
     x = (c->unk0[0] << 16) | (c->unk0[1] << 24);
     c->unk0 += 2;
-    m = D_80080A10->unk20 & 0xFFFF0000;
+    m = D_80080A10->unk20.w & 0xFFFF0000;
     D_80080A10->unk24 = (x - m) / D_80080A10->unk68;
-    D_80080A10->unk20 = m;
+    D_80080A10->unk20.w = m;
 }
 
 void func_8005EE8C(AkaoChannel *c) {
