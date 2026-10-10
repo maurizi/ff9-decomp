@@ -3624,7 +3624,7 @@ s32 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
     }
     func_800C7730(p->unk0, p->unk4[0], t[0]);
     p->unk0->unk50 = arg0->unk40;
-    func_800C9374(p->unk0->unk50, (s32)p->unk1C);
+    func_800C9374((TexAnimSet *)p->unk0->unk50, (u16 (*)[4])p->unk1C);
     return (u16)p->unk4E;
 }
 

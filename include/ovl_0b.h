@@ -2908,7 +2908,7 @@ void func_800C1704(); /* defined as (void); callers pass the unit */
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);
-void func_800C9374(BtlUnit9C50 *, s32);
+void func_800C9374(TexAnimSet *, u16 (*)[4]);
 void func_800B0E04(BtlUnit *, u8 *);
 void func_800EEDD4(void);
 void func_800C2250(BtlUnit *, u16);
