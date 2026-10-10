@@ -19,3 +19,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
 - 800579B4 matches alone (243/243) but breaks 800584C8 unless 80057D80 (215/230) and 80058118
   (229/236) are also C; both differ only in LFO temp regs (a0 vs v1). Drafts build/b36.c, b37.c.
+
+## ovl_0b (battle)
+- Register allocation / scheduling (left as INCLUDE_ASM): C9A28 (2 insns), AB07C, F5064, CBA58, C9794,
+  BFF20, ED3F8, CCDB8, DA4C4, C1594 (strength-reduced loop), C0C00, DA138, E3B70, D07B4 (39/41), F28F0,
+  DA1F4, E9000, EE24C, EE154, D9D58, E651C, D7094 (unfilled delay slot after jalr), C3F78 (one branch
+  inverted), E8B28, EE7F8, EE938, D0E14, AB810, EFD1C, C9374, AE4FC, ED02C, ED7C0, E1534.
+- Operand order seems to need byte-offset pointer arithmetic: DCCE4, BE1E0.
+- Odd argument-slot stack use: E4A3C.
