@@ -164,6 +164,8 @@ typedef struct {
     s32 unk5B0;
     s32 unk5B4;
     s32 unk5B8;
+    s32 unk5BC;
+    s32 unk5C0;
 } TmState;
 
 typedef struct {
