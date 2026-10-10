@@ -4874,7 +4874,116 @@ BtlUnit *func_800BED6C(u16 arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BEDBC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BF558);
+s32 func_800BF558(BtlUnit *u, u32 f) {
+    BtlUnit34 *s = (BtlUnit34 *)&u->unk34;
+    BtlUnit9C *m;
+    s32 *a4;
+    BtlCmd *c;
+
+    if (s->unk4 & f) {
+        return 1;
+    }
+    if (!(s->unk8 & f)) {
+        return 1;
+    }
+    if (!(u->unk68 & 1) && D_8006794C->unk1C->unk8E4.battle->unkD80 == 5 && (f & 0x1003)) {
+        return 1;
+    }
+    s->unk8 &= ~f;
+    switch (f) {
+    case 0x1:
+        func_800C0430(u, 0);
+        break;
+    case 0x800:
+        if ((u8)func_800B4040(u)) {
+            u->unk2C = 0;
+            u->unkB3 = 0;
+            u->unk68 &= ~0x10000;
+        }
+    case 0x40:
+    case 0x1000000:
+    case 0x2000000:
+        if (u->unk3C & 0x3000840) {
+            func_800C02D4(u);
+        }
+        break;
+    case 0x100:
+        m = u->unk9C;
+        a4 = u->unkA4;
+        u->unk7D = 0;
+        u->unk7B = 0;
+        u->unk68 &= ~0x20000;
+        u->unk68 &= ~0x80000;
+        u->unk68 &= ~0x100000;
+        u->unk68 &= ~0x200000;
+        if ((s32)m->unkC == a4[4] || (s32)m->unkC == a4[8]) {
+            m->unk50[2].unk4 |= 1;
+            u->unk9C->unk50[2].unkC = 0;
+            u->unk9C->unk50[2].unk12 = 0x1000;
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[6];
+            u->unkA0->unk3A = 0;
+        }
+        c = D_8006794C->unk1C->unk8E4.battle->unk1088;
+        if (c->unk4 != u || c->unkE > 0x30) {
+            u->unkB3 = 0;
+        }
+        func_800B41A4(u, 0x3C);
+        if (u->unk38 & 0x40000) {
+            func_800C0C00(u, 0x12);
+        }
+        break;
+    case 0x400:
+        u->unk86[1] = u->unkA0->unk22;
+        if ((u8)func_800B4040(u)) {
+            u->unk2C = 0;
+            u->unkB3 = 0;
+            u->unk68 &= ~0x10000;
+        }
+        break;
+    case 0x4000:
+        u->unk78 = 0;
+        func_800B3DBC(u);
+        if (u->unk3C & 0x40000000) {
+            func_800BF558(u, 0x40000000);
+            u->unk68 &= ~0x400000;
+            u->unk8C[0] = u->unk98->unk0[0];
+            u->unk8C[1] = u->unk98->unk0[1];
+            u->unk8C[2] = u->unk98->unk0[2];
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+            u->unkA0->unk3A = 0;
+        }
+        func_800B1250(u->unk14, 0x3B, 0, u->unkB0, 0);
+        break;
+    case 0x80000:
+    case 0x100000:
+        func_800BD8F0((Unk800BD8F0 *)u);
+        break;
+    case 0x200000:
+        u->unk8C[1] = 0;
+        u->unk98->unk0[1] = 0;
+        break;
+    case 0x4000000:
+        func_800BD464(u, u->unkAE);
+        break;
+    case 0x10000000:
+        u->unk9C->unk0 &= ~2;
+        D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[func_800C1EDC(u)].unk0_8 = u->unkBF * 14;
+        D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[func_800C1EDC(u)].unk0_20 = u->unkC0 * 12;
+        break;
+    case 0x40000000:
+        u->unkB2 = 3;
+        u->unk2C = 0;
+        u->unkB3 = 0;
+        u->unk68 |= 0x10000;
+        u->unk10->unkE = 0;
+        u->unk10->unkC = 0;
+        break;
+    case 0x80000000:
+        func_800B41A4(u, 0x3E);
+        break;
+    }
+    return 2;
+}
 
 void func_800BFAF4(BtlUnit *arg0) {
     BtlUnit34 *t = (BtlUnit34 *)&arg0->unk34;

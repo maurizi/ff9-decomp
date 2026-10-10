@@ -2340,6 +2340,7 @@ s32 func_800BD5A0(BtlUnit *);
 void func_800C0EC8(BtlUnit *);
 void func_800C12CC(Battle4880 *);
 void func_800C1938(BtlUnit *);
+s32 func_800C1EDC(BtlUnit *);
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);
