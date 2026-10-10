@@ -1,4 +1,4 @@
-/* STATUS: draft, 102 rows (mostly s-register naming). ovl_65 func_801EF890 (0x308, battle-result module setup: load the result overlays/data with func_80021974). Logic and call arguments right; the end-of-RAM constant has to stay in a local (k = -0x146F00) or gcc folds it into D_80067944 (the original keeps 0xFFEB9100 in s5). Left: register assignment (original s0 = the constant 1 for both b->unk6 == 1 tests and later the rounded size, s1 = size, s2 = f/sector, s3 = id; ours s0 = size, s1 = f, s2 = id, s3 = 1/at) and the first if/else layout (original: bne, j). Permuter (15 min) found nothing. */
+/* STATUS: draft, 72 rows (mostly s-register naming). ovl_65 func_801EF890 (0x308, battle-result module setup: load the result overlays/data with func_80021974). Logic and call arguments right; the end-of-RAM constant has to stay in a local (k = -0x146F00) or gcc folds it into D_80067944 (the original keeps 0xFFEB9100 in s5). Three do { } while (0) wraps (build/dwgreedy.py) fix s2/s3 (102 -> 72 rows). Left: s0/s1 swapped (original s0 = the constant 1 for both b->unk6 == 1 tests and later the rounded size, s1 = size), the first if/else layout (original: bne, j), and the order of the D_80067944 load in blocks 3/4. Permuter (15 min) found nothing. */
 #include "ovl_65.h"
 
 void func_801EF890(void) {
@@ -44,15 +44,21 @@ void func_801EF890(void) {
     if (b->unk6 != 1) {
         return;
     }
-    g = D_8006794C->unk1C;
+    do {
+        g = D_8006794C->unk1C;
+    } while (0);
     sector = g->unk7FC[0];
     id = g->unk3A | 0x60000;
     size = g->unk804[0] << 11;
-    at = (D_80067944 - (dst + k)) / 0x800 * 0x800;
+    do {
+        at = (D_80067944 - (dst + k)) / 0x800 * 0x800;
+    } while (0);
     func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     g = D_8006794C->unk1C;
-    sector = g->unk7FC[1];
+    do {
+        sector = g->unk7FC[1];
+    } while (0);
     id = g->unkC | 0x50000;
     size = g->unk804[1] << 11;
     at = (D_80067944 - (dst + k)) / 0x800 * 0x800;

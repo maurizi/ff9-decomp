@@ -1,4 +1,4 @@
-/* STATUS: near miss, 62 rows (same function as ovl_39 func_801F7FD4: one solution gives both). ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle sprite and a DR_TPAGE). Logic and stores right; left: register pressure. The original keeps x/y/otz*4/w+8/&D_80068988/&D_80068990 and the two OT masks in s0-s7/fp and spills the CSEd &D_8007716C and &D_80068998 pseudos (rematerialised through t6 at each use); ours spills ic/mid or w+8 instead. Permuter (25 min) found nothing better. */
+/* STATUS: near miss, 46 rows (was 62) (same function as ovl_39 func_801F7FD4: one solution gives both). ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle sprite and a DR_TPAGE). Logic and stores right; left: register pressure. The original keeps x/y/otz*4/w+8/&D_80068988/&D_80068990 and the two OT masks in s0-s7/fp and spills the CSEd &D_8007716C and &D_80068998 pseudos (rematerialised through t6 at each use); ours spills ic/mid or w+8 instead. Permuter (25 min) found nothing better. Pass 4: do { } while (0) around the func_80027710 call (build/dwgreedy.py) gives 46 rows; a further 20-min permuter run found nothing that cmp.py scores better. */
 #include "ovl_34.h"
 
 typedef struct {
@@ -45,7 +45,9 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             D_80077170 = (u8 *)(l + 1);
         }
     }
-    func_80027710(x, y, otz, ic, 0);
+    do {
+        func_80027710(x, y, otz, ic, 0);
+    } while (0);
     func_80027710(x + w - D_80068998.unk4, y, otz, &D_80068998, 0);
     SetTexWindow(D_80077170, &D_801F1544);
     addPrim(&D_8007716C[otz], D_80077170);
