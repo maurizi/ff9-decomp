@@ -2112,7 +2112,48 @@ void func_8002267C(CdRequest *r) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800227C8);
+void func_800227C8(u8 intr, u8 *result) {
+    u8 err = 0;
+    u32 pos[3];
+    s32 prev;
+    s32 n;
+
+    if (result != NULL) {
+        D_80076B0C = *(Unk8 *)result;
+    }
+    if (intr == 1) {
+        func_800213C0(pos, 3);
+        n = CdPosToInt((CdlLOC *)pos);
+        prev = D_800761D0.unk18;
+        if (prev == 0) {
+            if (n != D_800761D0.unk944.unk4) {
+                err = 1;
+            }
+        } else {
+            if (n != prev + 1) {
+                err = 1;
+            }
+        }
+        if (err == 0) {
+            D_800761D0.unk18 = n;
+            func_8002291C();
+            if (D_800761D0.unk4 == 0 || D_800761D0.unk2 != 0) {
+                func_800213A0(0);
+                D_800761D0.unk0 = 4;
+                func_80023580(9, 0);
+            }
+        }
+    } else {
+        err = 1;
+    }
+    if (err != 0) {
+        func_800213A0(0);
+        D_800761D0.unk0 = 4;
+        D_800761D0.unk3 = 1;
+        D_800761D0.unk1++;
+        func_80023580(9, 0);
+    }
+}
 
 void func_8002291C(void) {
     CdChunk *c;
