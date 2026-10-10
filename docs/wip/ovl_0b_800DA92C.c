@@ -1,5 +1,6 @@
-/* WIP func_800DA92C: 8 differing rows. Left: case 0 header-load order (lw hdr[1] first) and the base
-   register (s2 in the original, s1 here) in cases 4/5. */
+/* WIP func_800DA92C: 2 differing rows. Left: case 0 header-load order (original: lw hdr[1], hdr[0], hdr[2];
+   ours always schedules the hdr[1] load second, whatever the statement order). Fixed in pass 6: dst reused as
+   the base pointer in cases 4/5, base used for the case 9 pointer and m for its bit mask. */
 #include "ovl_0b.h"
 
 extern u16 D_800FEC68[];
@@ -227,15 +228,15 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                 case 4:
                     cnt = 0;
                     e = d->unk54;
-                    base = (u8 *)e + e->unk0;
+                    dst = (u8 *)e + e->unk0;
                     r.r.x = 0x100;
                     r.r.y = 0xE6;
                     r.r.w = 0x100;
                     r.r.h = e->unk6;
                     func_800D0940();
-                    LoadImage(&r.r, (u32 *)(base + e->unk8));
+                    LoadImage(&r.r, (u32 *)(dst + e->unk8));
                     k = e->unk4;
-                    for (src = base; cnt < k; src += 0x4000, cnt++) {
+                    for (src = dst; cnt < k; src += 0x4000, cnt++) {
                         r.r.x = (e->unk18[cnt] & 0xF) << 6;
                         r.r.y = e->unk30[cnt] + ((e->unk18[cnt] & 0x10) << 4);
                         r.r.w = 0x40;
@@ -246,13 +247,13 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 case 5:
                     e = d->unk54;
-                    base = (u8 *)e;
-                    e->unk3C = base + e->unk0;
-                    e->unk40 = (BtlUnit9C50 *)(base + e->unk14);
+                    dst = (u8 *)e;
+                    e->unk3C = dst + e->unk0;
+                    e->unk40 = (BtlUnit9C50 *)(dst + e->unk14);
                     for (ni = 0; ni < e->unk2; ni++) {
-                        e->unk180[ni] += (s32)base;
+                        e->unk180[ni] += (s32)dst;
                     }
-                    e->unk44 = base + e->unk10;
+                    e->unk44 = dst + e->unk10;
                     d->unk58 = (s32)e->unk44;
                     e->unk48 = 0x50000 - e->unk10;
                     d->unk5C = e->unk48;
@@ -274,31 +275,31 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     d->unk68 = 2;
                     break;
                 case 9:
-                    bit = 1;
+                    m = 1;
                     d->unk53 = 1;
                     if (D_800F78A4->unkC->unk40 & 8) {
                         func_800AB43C();
-                        dst = (u8 *)D_8006794C->unk1C->unk8E4.battle->unk153C[0];
+                        base = (void *)D_8006794C->unk1C->unk8E4.battle->unk153C[0];
                     } else {
-                        dst = (u8 *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC;
+                        base = (void *)D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC;
                     }
                     r.r.w = 0x40;
                     r.r.h = 0x80;
                     func_800D0940();
                     for (i = 0; i < 8; i++) {
-                        if (bit & d->unk17) {
+                        if (m & d->unk17) {
                             if (i < 4) {
                                 r.r.x = ((i >> 1) << 6) + 0x300;
                             } else {
                                 r.r.x = (((i - 4) >> 1) << 6) + 0x140;
                             }
                             r.r.y = ((i & 1) << 7) + 0x100;
-                            LoadImage(&r.r, (u32 *)dst);
+                            LoadImage(&r.r, (u32 *)base);
                             func_800DA71C(&r.r);
-                            dst += 0x4000;
+                            base += 0x4000;
                         }
                         if (i >= 4 || (i & 1)) {
-                            bit <<= 1;
+                            m <<= 1;
                         }
                     }
                     d->unk69++;
