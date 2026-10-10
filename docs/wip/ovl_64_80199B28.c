@@ -1,4 +1,4 @@
-/* STATUS: near miss, 63 rows. ovl_64 func_80199B28 (0x408, start a movie: pick the table entry, set up the MDEC/decode state, open the CD stream, decode the first frame). Everything up to the first-frame loop is close; the loop is the same code as in func_80199F30 (likely a shared static inline, kept here as func_8019_decode_first), and the original hoists &D_8019F4D8, &D_8019DC94, its %hi, &D_8019DC94.unk24 and the constant 1 as copies (s3-s7). Left: those copies and the ok-flag merge after func_8019C7E4/func_8019C1B0 (the original keeps it in v0). The permuter strips static inlines, so it cannot be used on this form. */
+/* STATUS: near miss, 46 rows (was 63). ovl_64 func_80199B28 (0x408, start a movie: pick the table entry, set up the MDEC/decode state, open the CD stream, decode the first frame). Pass 5: the first-frame loop (func_8019_decode_first, shared with func_80199F30) is a do/while that only fetches and tests; a non-NULL frame does 'goto found' to a block placed after the loop, the unk0 == 1 exit is 'res = -1; goto check' (cross-jumped into the too-big path), and res = -1 is set at the top of the outer while(1). That fixed the loop layout. Left: register assignment (original s3 &D_8019F4D8, s4 &D_8019DC94, s5 its copy, s6 &unk24, s7 the constant 1, s0 tries, s1 res, s2 data; ours shifted), the constant 1 hoisted into s7 is also used by the setup stores before the loop (st->unk6 = 1, D_80071E32++), and the ok flag after func_8019C7E4/func_8019C1B0 (original keeps it in v0). The permuter strips static inlines (now restored by tools/permute.py). */
 #include "ovl_64.h"
 
 extern char D_8019903C[];
@@ -19,6 +19,7 @@ u32 func_8019D3F0(u16 *p);
 void func_80199554(void);
 int DecDCTReset(int);
 
+
 static inline s32 func_8019_decode_first(void) {
     s32 tries;
     s32 res;
@@ -30,28 +31,31 @@ static inline s32 func_8019_decode_first(void) {
         do {
             data = (u8 *)func_801990A0((Ovl64Out *)&D_8019F4D8);
             if (data != NULL) {
-                D_80071E34++;
-                D_8019F4D8.unk8 ^= 1;
-                if (func_8019D3F0((u16 *)data) > 0x4000) {
-                    func_8019CCBC(data);
-                    res = -1;
-                } else {
-                    func_8019AEC0(data, D_8019F4D8.unk0[D_8019F4D8.unk8], D_8019DC94.unk44);
-                    if (D_80071E38) {
-                        func_8019CC0C();
-                        res = 0;
-                    } else {
-                        func_8019CCBC(data);
-                        res = 0;
-                    }
-                }
-                break;
+                goto found;
             }
             if ((s8)D_8019DC94.unk0 == 1) {
                 res = -1;
-                break;
+                goto check;
             }
         } while (--tries != 0);
+        goto check;
+    found:
+        D_80071E34++;
+        D_8019F4D8.unk8 ^= 1;
+        if (func_8019D3F0((u16 *)data) > 0x4000) {
+            func_8019CCBC(data);
+            res = -1;
+        } else {
+            func_8019AEC0(data, D_8019F4D8.unk0[D_8019F4D8.unk8], D_8019DC94.unk44);
+            if (D_80071E38) {
+                func_8019CC0C();
+                res = 0;
+            } else {
+                func_8019CCBC(data);
+                res = 0;
+            }
+        }
+    check:
         if (res != -1) {
             return 1;
         }

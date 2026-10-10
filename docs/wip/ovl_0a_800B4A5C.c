@@ -9,6 +9,10 @@
  * same; a scalar whose address is taken in dead code is dropped. The hole must be something
  * allocated after the call that leaves no code. Also: setRECT self-assignments explain the dead
  * lhu loads.
+ * Pass 9: a `{ RECT u; }` block placed after the func_8001D910 call still lands at 0x20, below
+ * clut/img, so clut/img get their slots later than any declaration; an address-taken scalar in
+ * a block there is dropped. Since the locals end at 0x28 and the saves start at 0x30, the hole
+ * may be a single 4-byte slot (a reload spill whose code was later deleted?).
  */
 #include "ovl_0a.h"
 

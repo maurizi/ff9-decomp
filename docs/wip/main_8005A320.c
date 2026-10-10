@@ -1,4 +1,4 @@
-/* 9 rows differ, all in the post-loop D_80080A70.unkC |= ~active & (~(D_80083174 | D_80080A70.unk0) & 0xFFFFFF): the original ANDs the 0xFFFFFF into the nor result first; we AND it into ~active. */
+/* 6 rows differ: post-loop scheduling only (the &D_80080A70 address and the D_80080A10->unk18 = 0 store). The x = 0xFFFFFF temp fixed the mask association (same fix as func_8005963C, which matched). */
 #include "ff9.h"
 
 void func_8005A320(s32 addr, s32 restore) {
@@ -63,7 +63,8 @@ void func_8005A320(s32 addr, s32 restore) {
     }
     D_80080A10->unk18 = 0;
     D_8007F95A = 0;
-    D_80080A70.unkC |= ~active & (0xFFFFFF & ~(D_80083174 | D_80080A70.unk0));
+    x = 0xFFFFFF;
+    D_80080A70.unkC |= ~active & (~(D_80083174 | D_80080A70.unk0) & x);
     D_80083158.unk8 |= 0x100;
     if (D_800831C4 & 1) {
         D_80080A10->unk1C = D_80080A10->unk4;

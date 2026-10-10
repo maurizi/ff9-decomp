@@ -1,0 +1,8 @@
+D_800A7018 = 0x800A7018; // force_not_migration:True
+D_800A701C = 0x800A701C; // force_not_migration:True
+D_800A7028 = 0x800A7028; // force_not_migration:True
+D_800A702C = 0x800A702C; // force_not_migration:True
+D_800A7034 = 0x800A7034; // force_not_migration:True
+D_800A703C = 0x800A703C; // force_not_migration:True
+D_800A7040 = 0x800A7040; // force_not_migration:True
+D_800A7048 = 0x800A7048; // force_not_migration:True

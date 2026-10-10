@@ -4,64 +4,70 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Tricks that matched 12 main functions (8001D32C, 80036650, 8004D2C0, 8004DCEC, 80035108,
-  8004F74C, 800227C8, 80062118, 800621D4, 8005F718, 800616F8, 8002FED4). Search scripts are in
-  the agent worktree's build/: hc.py (greedy statement moves), hcm.py (permute independent blocks),
-  dw.py/dw2.py (insert one or two `do { } while (0);`), dd.py (aligned diff, `--bin main`).
+- Pass 5 matched 9 (8002B644, 8005B1B8, 8005AEC8, 8005963C, 80028DB0, 8005C8BC, 80030EE4,
+  80030B34, 80031718). What worked:
+  - Cross-jumping: the original sometimes has one call per branch whose identical tails jump2
+    merged (8005B1B8/8005AEC8: `func_8005A284(s, D_8007BD48)` in each branch, not a shared call
+    with a pointer variable). Conversely, an `if (mode) { X } else { X }` with identical bodies
+    leaves only a dead param copy (`move t5,a2`) and an extra saved s-reg: that is the signature
+    of the rsin matrix functions 80030B34/80030EE4.
+  - Statement-order sweeps of declaration initialisers (move them into statements and try all
+    orders): 80028DB0 (dst before w), 8005963C (bit, i, c, ofs), 8005C8BC (blk = &D_80080970 after
+    the first call, so its hi part no longer crosses a call and gets a3).
+  - Reading a value back through the struct instead of a u8 temp (`v->unk0 = q; ... m->unk3 -
+    v->unk0`): CSE turns the reload into a fresh `andi v0,a0,0xFF` (8002ECA0 first branch).
+  - Constant in a temp (`x = 0xFFFFFF;` then `... & x`) fixes `~a & (~(b|c) & 0xFFFFFF)`
+    association (8005963C, 8005A320, 80059414's early lui).
+  - Per-angle temps (tx/ty/tz instead of one t) and separate `*p = ...` stores in each branch
+    (80028DB0) change allocation in the right direction.
+- rsin/GTE template (80030B34, 80030EE4, 80031284, 80031718): `ISIN(out, a, mk)` macro and
+  `D_8006C1C4` in ff9.h; `gte_ldir0123`, `gte_ldir12`, `gte_stmac123`, `gte_stmac12`,
+  `gte_gpf12_b/_n1` in psyq.h. Sin for x uses the raw `r->vx` (`ISIN(sx, r->vx, x)`), y/z use the
+  masked value. 80031718 needed a `do { } while (0)` around the second gpf block.
+  80031284 (docs/wip/main_80031284.c) is at 27 rows, registers only (m and sy swapped).
+- Drafts in docs/wip/main_*.c (first line gives the status): 8004B85C (3), 800585E0 (4),
+  8005A320 (6), 80024BD8 (9), 80029D60 (10), 80048E80 (10), 80047B90 (11), 8002ECA0 (11),
+  8003595C (12), 80059414 (12), 8002E718 (16), 80031284 (27), 8004DAD0 (30).
+  - 80047B90: the original addresses `mat.m[1][1]` as `16(s0)` with s0 = &v. Writing the store as
+    `*(s16 *)((u8 *)pv + 16) = 0x1000` after `pv = &v` reproduces that, but we then keep &mat in
+    an extra s-reg (12 rows); the original rematerialises `addiu a0,sp,40` per call.
+  - 80048E80: the `sh v0,6(v1)` through a la base after the loop-invariant setup looks like the
+    store was emitted after loop.c's pre-header insns; no C form found.
+  - 8004DAD0: needs the first SE call (unk26 == 0xFF path) not to be cross-jumped with the three
+    list-cursor SE calls; an inline wrapper did not stop it.
+- Tricks from earlier passes (matched 8001D32C, 80036650, 8004D2C0, 8004DCEC, 80035108,
+  8004F74C, 800227C8, 80062118, 800621D4, 8005F718, 800616F8, 8002FED4):
   - An empty `do { } while (0);` (a disabled debug macro) changes register allocation and the CSE
-    of address pseudos. It matched 80035108 and 8002FED4 and got 8005B1B8 and 8002B644 within
-    2 rows; try every position.
+    of address pseudos. Try every position (build/search/main/dw.py, dw2.py).
   - Loop-invariant hoisting depends on loop size: giving a fall-through switch case its own copy
     of the body (8004D2C0) stopped the outer jump-table address from being hoisted into an s-reg.
   - Copies like `move a1,s0` come from re-reading a global the compiler already holds
     (`nn->unk8 = D_8007AECC->unk15D0`, `D->unk1C = x; gd = D->unk1C;`), or from block-scoped locals.
   - `addu v1,v1,v0` vs `addu v1,v0,v1`: assign the result to a separate variable inside the if/else
     (8004F74C: `x = p->x0; if (k) y = x + w; else y = x - w;`).
-  - Duplicating a compare in both branches (`if (prev == 0) { if (n != a) err = 1; } else { if (n != prev + 1) err = 1; }`)
-    beat any merged form (800227C8).
+  - Duplicating a compare in both branches beat any merged form (800227C8).
   - `func_80061BC8` takes one argument. Passing a second kept reorg from filling the beqz delay slot
     (80062118/800621D4).
   - The scheduler reverses pairs of independent stores, so write field stores in the opposite
     order from the asm (8005A320, 8004DCEC).
   - Rodata: a jump table after a string or a second jump table needs
     `__asm__(".section .rodata\n\t.word 0\n\t.section .text");` padding (8004D2C0, after 8004DCEC).
-- Drafts in docs/wip/main_*.c (each first line gives the differing rows): 8002B644 (1),
-  8005B1B8 (2), 800585E0 (4), 8005AEC8 (8), 80024BD8 (9), 8005A320 (9), 80029D60 (10),
-  80048E80 (10), 80047B90 (11), 80059414 (13), 8002ECA0 (13), 80028DB0 (15), 8005C8BC (15),
-  8002E718 (23).
-  8005A320 and 8005963C share the `~active & (~(D_80083174 | D_80080A70.unk0) & 0xFFFFFF)` problem:
-  the original ANDs the mask into the nor first. A static inline returning the masked value gets
-  the association right but moves `~active`.
-- 80030B34, 80030EE4, 80031284, 80031718: one template (rsin/rcos table D_8006C1C4, then a C or GTE
-  matrix path picked by the third argument). They sit next to libgte and are large; no draft beyond
-  the old nm_80030EE4 (185/216 rows differ).
 - gcc 2.8.1 cross-function leak (explains the old "order dependency" of 800584C8): combine.c
   only resets its static `mem_last_set` *after* the initial nonzero-bits scan, so during that scan
   the cuid of the previous function's last store/call is still there. A `(reg) = (mem)` whose insn
   cuid is <= that stale value is treated as clobbered, `nonzero_bits` gives the full mask, and a
   later `zero_extend` of that u16/u8 register is not removed (extra `andi`). Any predecessor
-  that ends with a store leaks; an empty function in between resets it. The original build was
-  multi-file, so some functions were compiled in a fresh state. Fix in C: write such functions so
-  the extension is not needed (800584C8 now hoists `m = (u16)e->unk4` and keeps `s32 min`).
-  80057D80 (97/226 draft build/hc/d80b.c) and 80058118 still open: product temps are `mflo a2` in
-  the original (global.c prefers the register with the fewest local refs) but `a1` for us.
-- Loop shapes (search loop without gcc's empty-list shortcut; bit scans): 80038278, 8004B85C.
-  (8004B040, 8004AE00, 8004B098, 8004B4C4, 80038150, 80049B48, 8002AE7C, 80037738, 8004AB7C
-  are matched.) The script bit-scan idiom (one peeled iteration, `srav`/`and` by the register
-  holding 1) is `i = 0; if (!(mask & 1)) { i = 1; mask >>= 1; while (i < 8 && !(mask & 1)) {
-  mask >>= 1; i++; } }` (statement order of `i = 1`/`mask >>= 1` decides `sra` vs `srav`).
-  8004B85C is at 42/46 (build/hc/k/d1.c): the loop lives in an inline helper
-  `find(key, slot)` called as `find(key_inline(slot), slot)` so the key temp is copied into a
-  fresh pseudo (`addu a3,v1,zero`), and the kind test is `ge = kind >= 14; if (slot >= 8) { if
-  (kind < 14) continue; } else { if (ge) continue; } break;`. Only the registers of `slti`/`xori`
-  are swapped (we get lt=v0, ge=v1): `lt` inherits a v0 preference from the local `kind`
-  (global.c set_preference), the original must have lacked it; not found.
-- Large-function pass (drafts in the agent worktree's build/nm_*.c, scores matched/total insns):
-  8001C8B0 (prologue arg moves), 8002995C 59/125 (s1/s2 swap), 800378C4 77/127 (f<14 branch shape),
-  80029B4C 108/133 (needs u16 clut view of D_800686D0; ovl_0b uses Unk800686E8), 8005DB40 (loop
-  hoisting of D_80080A10 load), 80035214 120/135 (compare scheduling), 80039444 (reassociation),
-  8004DAD0 (cross-jumped SE calls), 80038618 137/221 (inline-param copy), 8004F9A0 (extra prim ptr
-  copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
+  that ends with a store leaks; an empty function in between resets it. Fix in C: write such
+  functions so the extension is not needed (800584C8 hoists `m = (u16)e->unk4`, keeps `s32 min`).
+  80057D80 and 80058118 still open: product temps are `mflo a2` in the original (global.c prefers
+  the register with the fewest local refs) but `a1` for us.
+- Old large-function drafts (main checkout build/drafts/main/nm_*.c, rows differing): 8005E3FC (67),
+  8005CF04 (75), 8001DE50 (89), 800283E0 (97), 8004E248 (98), 800589F0 (122), 80023A6C (156),
+  80025ED4 (178), 8002920C (231). Notes from earlier passes: 8001C8B0 (prologue arg moves),
+  8002995C (s1/s2 swap), 800378C4 (f<14 branch shape), 80029B4C (needs a u16 clut view of
+  D_800686D0), 8005DB40 (loop hoisting of D_80080A10), 80035214 (compare scheduling), 80039444
+  (reassociation), 80038618 (inline-param copy), 8004F9A0 (extra prim ptr copy), 80054650 (a3 vs
+  t2), 80062E3C (separate giv for node+4), 80038278 (search loop shape).
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794, BFF20,
@@ -207,6 +213,38 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * tools/permute.py strips `static inline` bodies (also those from headers), so the permuter scores the
     wrong code for any function using an inline helper; build/fixinl.py in this worktree restores them before
     running decomp-permuter directly. Earlier permuter runs on such functions may have been meaningless.
+- Pass 9: matched 0a BF0C4, BFEE0, AB3CC. New drafts in docs/wip/: C519C (140 rows, was not attempted;
+  control flow and frame match, register allocation left), BE158 (194 rows, first draft; n must not
+  need a callee-saved register). B0124 17 -> 12 rows (`d = g->unk850; g->unk826[0] = d;`). Not
+  improved: C4EC8 (1), B4A5C (13), C31F8 (19), BF660 (39), BB714/CA1D8, AA4E8. Not attempted: 15 A9488.
+  What worked:
+  * sched1 ranks a `birthing` insn (sets a pseudo with REG_N_SETS == 1, live at block end) at
+    0x7f000001, so a set-once local is scheduled after multi-set ones regardless of statement order
+    (`cc1 -dS` prints the ready lists). AB3CC: `lim = 100` came after `j = 0` until lim was also the
+    later part count (s4 holds both in the original), i.e. set twice;
+  * a loop counter compared/used through the index (`&o[j]`, `D_800C9DA4.unk1C + j * 3`) instead of
+    walking pointers: loop.c's giv inits then appear as the original's copies after the loop guard
+    (`addu s2,s3` = k init 0 rewritten by reload_cse, `addu s0,a0` = o init) (BFEE0);
+  * a dead `switch` whose results are overwritten later keeps only its loads and the hoisted case
+    constants; it must assign a variable that is live afterwards (BFEE0 assigns j, reset to 0 later);
+  * `do { } while (0)` around a whole loop (not one statement) raised the loop depth weighting of
+    its pseudos and fixed the counter/limit registers (BFEE0, found by the permuter; build/dwblk.py in
+    the pass 9 worktree wraps every statement or block in turn and scores them in parallel);
+  * an extra copy of a loop bound before the second loop (`cnt = lim; for (j1 = 0; j1 < cnt; ...)`)
+    fixed AB3CC's last s4/s5 swap (permuter);
+  * reusing a result variable for an operand (`d = q[x]; d = ... * (p[x] - d);`) made the original's
+    spills (edge to 0x68, &q[x] to 0x70) appear in C519C (237 -> 147 rows);
+  * an `ABS(d) < ae` the original compiles as two compare-and-branch arms (`bltz d`, then
+    `slt; beqz cont; j next` and `negu; slt; bnez next`) only came out of explicit gotos
+    (`if (d >= 0) { if (d >= ae) goto c; goto next; } if (-d < ae) goto next; c:`); every expression
+    form is cross-jumped into one bnez (C519C);
+  * `s = (s32)h - -s;` keeps `addu a1, s4, a1` operand order where `(s32)h + s` gets swapped by
+    expand_binop (BF0C4; ugly but the only form found);
+  * a block-scope prototype (`void f(T *, u8);` inside the function) gives one function the u8
+    argument conversion without changing an earlier-matched caller that relies on the implicit
+    int declaration (AB3CC / AC02C and func_800B61A4);
+  * fake permuter outputs are hints: B3198's `if (y) y = t + 0x12; else y = t + 0x12;` meant the
+    assignment belongs in both branches (`y = a->unk10 + 0x12;` / `y = b->unk10 + 0x12;`).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -247,6 +285,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   find `y = b->unkC; x = y + 8;`), B030C (20 rows: 0x40 kept in fp), AC708 (unchanged; a goto loop loses the
   original's giv). 0d A93A0 (40 B): every spelling of `tbl[i*2] * 0x800 + 0x80104A00` CSEs the two
   0x80104A00 constants. 0d AC060 compiles with `void *vp` (91 rows, a should outrank s for s0).
+- Pass 9 (0d/14/15): matched 0d B3198 (y assigned in both branches, see the ovl_0a pass 9 notes) and
+  0d A93A0 (`s32 *p = (s32 *)0x80104A00; p += i * 2; return (u8 *)0x80104A00 + *p * 0x800;`: the
+  pointer variable is modified, so CSE no longer knows the first constant and rematerialises the
+  second). Still open: 0d ACFFC (2 rows; with -dS the preheader block has all-equal priorities, so
+  sched keeps source order and `y = 0x1A` always precedes loop.c's hoisted `li fp, 0x10` / giv init;
+  in the original it comes after them, so it is probably not a plain preheader assignment), 0d B030C
+  (20), 14 A741C (the original enters both search loops with `j cmp` into a `while (e->unk0 != key)
+  { e--; if (e < start) goto skip; }` shape; jump.c duplicates the exit test here instead, 59 rows
+  with that form vs 49 for the goto draft), 15 ADE30 (28: x/f/s/p s-register order and the
+  `x += w` delay slot).
 - 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
   with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
   let that go.
@@ -354,3 +402,27 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (33 F1150).
   - `(l = &D_801FC840.unk4)->unk2` inside the condition gives the original's `addiu v1, a0, 4` without
     disturbing the a0/a1 assignment that a separate `l = ...;` statement changes (33 F2AB4).
+- Menus/FMV pass 5: matched 39 F973C (CRC-16) and 64 999B4 (MBG_init). New drafts: 15 A9488 (Blackjack
+  main loop, 413 of 1575 rows; integrating it needs a rodata split for its UI strings, see its header),
+  15 ADE30 (28), 14 A741C (36). Improved: 64 99B28 (63 -> 46). Unchanged: 36 F1A48 (5), 36 F1778 (30),
+  64 B7C4, 65 F1848 (permuter 20 min found nothing valid).
+  Tricks that matched things in this pass:
+  - An accumulator whose upper bits gcc must not know (the original keeps `andi 0xFFFF` before the
+    shift and at the return): a union with an initializer, `union { s32 w; u16 h; } c = { 0xFFFF };`,
+    then `c.w = tbl[(c.w ^ *p++) & 0xFF] ^ (c.h >> 8); return c.w;` (39 F973C). The initializer emits a
+    clobber, so combine's nonzero-bits tracking gives up; `c.h = 0xFFFF` alone gives `ori v1, v1`.
+  - Large constants reloaded right before each use into the same register: one local assigned before
+    each use (`off = 0x43E20; p->unk5C = b + off;`) (64 999B4).
+  - A `v0` that holds 1 from a mid-function store to the end with no return statement in the draft: the
+    function returns that constant (`return 1;`, 64 999B4).
+  - Loop layout where the "found" block sits after the loop: `do { d = f(); if (d != NULL) goto found;
+    if (flag == 1) { res = -1; goto check; } } while (--tries != 0); goto check; found: ...` (64 99B28).
+  - A random byte whose `&a[i]` address the original computes before the refill check: use a statement
+    expression with an s32 temp, `(({ s32 r; if (D_8007B720 >= D_8007B92D) func_8004BF20(); r =
+    *D_8007B720++; r; }) % 3)`. The ff9.h inline function evaluates the rhs first, and a plain u8
+    statement expression gives multu (15 A9488).
+  - `x -= (h.unk0 & 4) ? bet * 2 : bet;` on a global makes gcc keep the global's address in a0 and store
+    through it after the branch (`addiu a0, t1, %lo(X)` ... `sw v1, 0(a0)`) (15 A9488).
+  - Calls without `andi 0xFF` on the result of a u8 function defined later in the same file: the
+    original had no prototype (implicit int), so leave them undeclared (15 A9488: func_800AB1B8,
+    func_800ACF48).

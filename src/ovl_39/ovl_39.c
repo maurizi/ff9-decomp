@@ -1960,7 +1960,14 @@ void func_801F96CC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F973C);
+u16 func_801F973C(u8 *p, s32 n) {
+    Crc16 c = { 0xFFFF };
+
+    while (--n >= 0) {
+        c.w = D_801FC3E0[(c.w ^ *p++) & 0xFF] ^ (c.h >> 8);
+    }
+    return c.w;
+}
 
 void func_801F9788(s32 slot, s32 arg1) {
     SaveSlot *s;
