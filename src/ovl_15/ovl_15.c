@@ -1367,7 +1367,124 @@ void func_800AD77C(void) {
     func_8002FA50(0x20);
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AD7DC);
+s32 func_800AD7DC(void) {
+    s32 t;
+    s32 page;
+    u32 *ot;
+    u8 *msg;
+    s32 x;
+
+    page = 1;
+    t = -1;
+    func_800ADC3C();
+    do {
+        func_800ADC98();
+        func_80019194();
+        switch (D_800B5000) {
+        case 0:
+            page = 1;
+            t = -1;
+            D_800B5000 = 1;
+            break;
+        case 1:
+            if (t == -1) {
+                t = 0xA0;
+                func_800320B8(1, 1, 0x14, 0);
+            } else if (t != 0) {
+                ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 8;
+                msg = func_800ADE14(D_800A70EC, 0);
+                x = 0xA0 - (func_800ADF90(msg) >> 1);
+                D_800AE4B0 = func_800ADE30(x, 0x64, ot, msg, D_800AE4B0);
+                if (t == 0x14) {
+                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                }
+                t--;
+            } else {
+                t = -1;
+                D_800B5000 = 5;
+            }
+            break;
+        case 2:
+            if (t == -1) {
+                t = 0xDC;
+                func_800320B8(1, 1, 0x14, 0);
+            } else if (t != 0) {
+                ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 8;
+                msg = func_800ADE14(D_800A70EC, 1);
+                x = 0xA0 - (func_800ADF90(msg) >> 1);
+                D_800AE4B0 = func_800ADE30(x, 0x5F, ot, msg, D_800AE4B0);
+                if (t < 0x8C) {
+                    msg = func_800ADE14(D_800A70EC, 2);
+                    x = 0xA0 - (func_800ADF90(msg) >> 1);
+                    D_800AE4B0 = func_800ADE30(x, 0x7D, ot, msg, D_800AE4B0);
+                }
+                if (t == 0x14) {
+                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                }
+                t--;
+            } else {
+                t = -1;
+                D_800B5000 = 5;
+            }
+            break;
+        case 3:
+            if (t == -1) {
+                t = 0xA0;
+                func_800320B8(1, 1, 0x14, 0);
+            } else if (t != 0) {
+                ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 8;
+                msg = func_800ADE14(D_800A70EC, 3);
+                x = 0xA0 - (func_800ADF90(msg) >> 1);
+                D_800AE4B0 = func_800ADE30(x, 0x64, ot, msg, D_800AE4B0);
+                if (t == 0x14) {
+                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                }
+                t--;
+            } else {
+                t = -1;
+                D_800B5000 = 5;
+            }
+            break;
+        case 4:
+            if (t == -1) {
+                t = 0x118;
+                func_800320B8(1, 1, 0x14, 0);
+            } else if (t != 0) {
+                ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 8;
+                msg = func_800ADE14(D_800A70EC, 4);
+                x = 0xA0 - (func_800ADF90(msg) >> 1);
+                D_800AE4B0 = func_800ADE30(x, 0x5F, ot, msg, D_800AE4B0);
+                if (t < 0x8C) {
+                    msg = func_800ADE14(D_800A70EC, 5);
+                    x = 0xA0 - (func_800ADF90(msg) >> 1);
+                    D_800AE4B0 = func_800ADE30(x, 0x7D, ot, msg, D_800AE4B0);
+                }
+                if (t == 0x14) {
+                    func_800320B8(1, 1, 0x14, 0xFFFFFF);
+                }
+                t--;
+            } else {
+                t = -1;
+                D_800B5000 = 6;
+            }
+            break;
+        case 5:
+            if (t == -1) {
+                t = 0x3C;
+            } else if (t != 0) {
+                t--;
+            } else {
+                t = -1;
+                D_800B5000 = page + 1;
+                page++;
+            }
+            break;
+        }
+        func_80032098();
+        func_800ADD04();
+    } while (D_800B5000 < 6);
+    return 0;
+}
 
 s32 func_800ADC3C(void) {
     D_8006794C->unk9 = 0;

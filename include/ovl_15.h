@@ -136,7 +136,7 @@ extern u32 D_800AE4B8; /* main state */
 extern s32 D_800AE4D8;
 extern s32 D_800AE4DC;
 extern u8 D_800B1000[2][0x2000]; /* primitive buffers */
-extern s32 D_800B5000;
+extern u32 D_800B5000;
 extern RECT D_800AE4E0;
 extern u32 D_800AE0EC[8]; /* CLUT */
 extern DrTpageWords D_800AE4E8;

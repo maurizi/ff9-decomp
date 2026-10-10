@@ -1126,7 +1126,7 @@ s32 func_800AA848(s32 idx) {
     func_8001C750((s32)buf, 0);
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800AB440 = 0;
-    D_800AB2D0 = 0;
+    D_800AB2D0.unk0 = 0;
     D_80073998[0] = 0;
     return 0;
 }

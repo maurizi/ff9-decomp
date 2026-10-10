@@ -155,7 +155,10 @@ void func_800A77BC(void);
 extern u16 D_800AB2D8[];
 extern s32 D_800AB2F4;
 extern u32 D_800AB440;
-extern s16 D_800AB2D0;
+typedef struct {
+    u16 unk0; /* flags */
+} Ovl14Flags; /* a struct member in the original: loads of it are not moved above OT stores */
+extern Ovl14Flags D_800AB2D0;
 
 void func_800A7578(void);
 void func_800A75C8(void);
