@@ -3676,7 +3676,23 @@ void func_800DCCA0(s32 arg0, s32 arg1) {
     func_800DD02C(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 |= 1 << arg1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DCCE4);
+/* starts texture animation arg1 of summon model arg0 (arg2: also set flag 2) */
+void func_800DCCE4(s32 arg0, s32 arg1, u8 arg2) {
+    Unk8010141C *p = func_800DD02C(arg0, "Hi_StartSummonTexAnim()\nid:%d cannot use!");
+    s32 off;
+
+    if (arg2) {
+        off = arg1 * 4;
+        off = (off + arg1) * 4; /* arg1 * sizeof(BtlUnit9C50) */
+        ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk4 |= 3;
+    } else {
+        off = arg1 * 4;
+        off = (off + arg1) * 4;
+        ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk4 |= 1;
+    }
+    ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unkC = 0;
+    ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk12 = 0x1000;
+}
 
 void func_800DCDA4(s32 arg0, s32 arg1) {
     BtlUnit9C50 *e = &func_800DD02C(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->unk50[arg1];
