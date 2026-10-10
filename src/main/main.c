@@ -11290,7 +11290,35 @@ s32 func_8004F1F0(u8 *s, s32 max) {
     return n;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004F2B4);
+s32 func_8004F2B4(s32 id, s32 n) {
+    s32 esc = 0;
+    u8 *s;
+    s32 len;
+    s32 i;
+    u8 *t;
+
+    if (id < 0x100) {
+        t = (D_8006A218 + D_80069018[id].unk0);
+    } else if (id < 0x200) {
+        t = (D_8006ADAC + D_8006B374[id - 0x100].unk0);
+    } else {
+        t = (u8 *)func_8006276C(id - 0x200);
+    }
+    s = t;
+    for (len = 0; len < 32; len++) {
+        if (!esc && s[len] == 0xFF) {
+            break;
+        }
+        esc = !esc && s[len] == 0xFA;
+    }
+    if (len < n) {
+        n = len;
+    }
+    for (i = 0; i < n; i++) {
+        func_80051004(s[i]);
+    }
+    return len;
+}
 
 s32 func_8004F3E8(s32 arg0, s32 n) {
     u8 *name = D_8006794C->unk1C->unk3C[arg0].unk0;
