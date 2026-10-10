@@ -1823,7 +1823,129 @@ void func_800ADA7C(s8 arg0, s8 arg1, s8 arg2) {
     D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800ADB74);
+void func_800ADB74(void) {
+    s32 b;
+    s32 done;
+    s32 t;
+    s32 d;
+
+    switch (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42) {
+    case 1:
+        if (func_80022B18() == 0) {
+            if (func_800217C4(D_8006794C->unk1C->unk854) == 0) {
+                FileEntry *f = func_8001E218(0, 0x64);
+                func_8002177C(D_8006794C->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
+                              (void *)(D_80067944 + 0xF1700), 0, 0x15000, NULL);
+            }
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 2;
+        }
+        break;
+    case 2:
+        if (func_800217C4(D_8006794C->unk1C->unk854) == 0) {
+            D_800C9D44 |= 8;
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 3;
+        }
+        break;
+    case 3:
+        if (!(D_800C9D44 & 8)) {
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk44 = func_80022AC4(
+                D_8019DC5C[D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk48]
+                    .unk4[D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk49].unk0);
+            if (func_80022B18() == 0) {
+                func_80022ED4(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk44);
+                D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 4;
+            }
+        }
+        break;
+    case 4:
+        if (func_80022B18() == 0) {
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 5;
+        }
+        break;
+    case 5:
+        if (D_800C9D44 & 1) {
+            b = 1;
+            if (D_8006794C->unk1C->unk8 != 0) {
+                b = 2;
+            }
+            D_800C9EF0.unk10[0][b - 1] = 0x600;
+            D_800C9EF0.unk0[0][b - 1] = 0x19;
+            D_800C9EF0.unk10[0][b - 1] |= 0x800;
+            if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk43 != 0) {
+                D_800C9EF0.unk0[0][b - 1] |= 0x44;
+                D_800C9EF0.unk10[0][b - 1] |= 1;
+            }
+            D_800C9EF0.unk20[0][b - 1] = 0x40;
+            D_800C9EF0.unk20[1][b] = 0x40;
+            D_800C9EF0.unk20[0][b] = 2;
+            if (!(D_80073998[0] & 0x04000000)) {
+                D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x1000;
+                D_80073998[0] |= 0x04000000;
+            }
+            D_8006794C->unk9 = 4;
+            func_80056248(0);
+            func_80056228();
+            DrawSync(0);
+            func_801999B4(1, &D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk34);
+            func_8019A5B0(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk43);
+            func_8019AC3C(func_800AE4F8);
+            D_800C9D46 = D_80071E34;
+            func_8019AB98(2, 4, D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk5D);
+            func_80199B28(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk48,
+                          D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk49);
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 6;
+        }
+        break;
+    case 6:
+        if (D_800C9D44 & 0x40) {
+            func_8019AD4C((void *)&D_8006794C->unk1C->unk18, &D_8006794C->unk1C->unkA);
+        }
+        if ((D_800C9D44 & 2) && (func_80012AD4() & 2)) {
+            done = func_80199F30(0);
+            t = func_8019AD0C();
+            if (!(D_800C9D44 & 0x20) && (u32)t < 99999) {
+                d = t - D_80071E34;
+                if (d < 4) {
+                    func_80056278(d * 4, 0);
+                    D_800C9D44 |= 0x20;
+                }
+            }
+            if (done != 0) {
+                setlen(&D_800C9F6C[D_8006794C->unk1C->unk8 ^ 1], 2);
+                D_800C9F6C[D_8006794C->unk1C->unk8 ^ 1].code[0] = 0xE6000002;
+                D_800C9F6C[D_8006794C->unk1C->unk8 ^ 1].code[1] = 0;
+                addPrim(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8 ^ 1],
+                        &D_800C9F6C[D_8006794C->unk1C->unk8 ^ 1]);
+                DrawOTag(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8 ^ 1]);
+            } else if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk43 != 0 && D_8006794C->unk1C->unk8 == 0) {
+                D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+            }
+            if ((D_80071E34 >= t || D_800C9D46 >= D_80071E34) && !(D_800C9D44 & 0x100)) {
+                if (D_800C9D46 >= D_80071E34) {
+                    ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
+                    D_8006794C->unk1C->unk0 &= ~0x1D;
+                    D_8006794C->unk1C->unk8E4.field->unk0 &= ~0xE01;
+                    if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk43 != 0 && D_8006794C->unk1C->unk8 == 0) {
+                        D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+                    }
+                    func_80015C38("Fr: %d\n", D_800C9D46);
+                } else {
+                    D_800C9EF0.unk0[1][0] = 0x1D;
+                    D_800C9EF0.unk10[1][0] = 0xE01;
+                }
+                D_800C9D44 |= 0x100;
+            }
+            D_800C9D46 = D_80071E34;
+        }
+        break;
+    case 7:
+        if ((D_800C9D44 & 4) && func_80022B18() == 0) {
+            func_800AE5D4();
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42 = 8;
+        }
+        break;
+    }
+}
 
 void func_800AE4F8(void) {
     if (D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x1000) {

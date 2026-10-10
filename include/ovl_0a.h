@@ -107,10 +107,10 @@ typedef struct {
     u8 unk40;
     u8 unk41;
     s8 unk42;
-    s8 unk43;
+    u8 unk43;
     s32 unk44;
-    s8 unk48;
-    s8 unk49;
+    u8 unk48;
+    u8 unk49;
     u8 unk4A;
     u8 unk4B; /* unk58 entry count */
     void *unk4C; /* file 0x1Exxxx */
@@ -1385,5 +1385,36 @@ s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
     }
 
 void func_800AD488(FieldObjEnt *, FieldObjSlot *, MATRIX *);
+
+
+/* field movie playback (func_800ADB74) */
+typedef struct {
+    u32 tag;
+    u32 code[5];
+} Unk800C9F6C; /* 0x18: mask-bit draw mode packet, per draw buffer */
+typedef struct {
+    char *unk0; /* movie file name */
+    s32 pad4[4];
+} Unk8019DC5CEnt; /* 0x14 */
+typedef struct {
+    s32 unk0;
+    Unk8019DC5CEnt *unk4;
+} Unk8019DC5C;
+extern Unk8019DC5C D_8019DC5C[]; /* overlay loaded at 0x80198000 */
+extern u16 D_800C9D46;
+extern Unk800C9F6C D_800C9F6C[2];
+void func_800AE4F8(void);
+void func_800AE5D4(void);
+void func_801999B4(s32, void *); /* overlay loaded at 0x80198000 */
+void func_8019AC3C(void (*)());
+void func_8019AB98(s32, s32, s32);
+void func_80199B28(s32, s32);
+s32 func_8019AD4C(void *, u16 *);
+s32 func_80199F30(s32);
+s32 func_8019AD0C(void);
+/* main exe: candidates for ff9.h */
+s32 func_80022AC4(char *);
+u8 func_80022ED4(s32);
+void func_80056248(s32);
 
 #endif
