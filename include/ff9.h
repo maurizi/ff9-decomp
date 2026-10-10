@@ -151,6 +151,8 @@ typedef struct Unk11C0Slot {
 typedef struct {
     u8 pad0[0xA];
     s16 unkA; /* set by func_8001E2AC */
+    u8 padC[0x2C - 0xC];
+    struct Unk11C0Slot *unk2C; /* per-object model slots, indexed by unk3B */
 } Unk8E4C14;
 
 typedef struct {

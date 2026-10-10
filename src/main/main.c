@@ -11006,7 +11006,55 @@ void func_80050080(s32 a) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800500A8);
+s32 func_800500A8(Unk8004AB64 *o, s32 op) {
+    s32 a;
+    s32 b;
+    u32 *p;
+    GameState *gs;
+
+    switch (op) {
+    case 0x7F:
+        *(u32 *)func_8001E350(o->unk3B) &= ~0x10;
+        return 0;
+    case 0x80:
+        *(u32 *)func_8001E350(o->unk3B) |= 0x10;
+        return 0;
+    case 0x81:
+        a = func_8004AEDC();
+        b = func_8004AEDC();
+        D_8006794C->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_8 = a * 14;
+        D_8006794C->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_20 = b * 12;
+        return 0;
+    case 0x82:
+        a = func_8004AF58();
+        b = func_8004AF58();
+        D_8006794C->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_12 = a;
+        D_8006794C->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_22 = b;
+        return 0;
+    case 0x83:
+        a = func_8004AEDC();
+        p = (u32 *)func_8001E350(o->unk3B);
+        gs = D_8006794C;
+        *p |= 0x20;
+        gs->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk4_0 = a * 16;
+        return 0;
+    case 0x84:
+        *(u32 *)func_8001E350(o->unk3B) &= ~0x20;
+        return 0;
+    case 0x85:
+        D_8006794C->unk1C->unk8E4.ovl65->unkC->unk14->unk2C[o->unk3B].unk0_0 = func_8004AEDC();
+        return 0;
+    case 0xD8:
+        func_800B3444(0, 0, 1);
+        a = func_8004AEDC();
+        func_80050CA8(a, func_8004AEDC());
+        D_8006794C->unk1C->unk570 = a;
+        return 0;
+    default:
+        return 1;
+    }
+    return 0;
+}
 
 s32 func_80050410(Unk8004AB64 *o, s32 op) {
     s32 a;
