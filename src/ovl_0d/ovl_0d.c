@@ -381,7 +381,88 @@ void func_800A9B0C(void) {
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A9B2C);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A9F10);
+void *func_800A9F10(u32 *ot, void *p, TmState *s) {
+    TmCell *cell;
+    TmCard *c;
+    s32 pad;
+    s32 cx;
+    s32 cy;
+    s32 ox;
+    s32 oy;
+    s32 x;
+    s32 y;
+    s32 one;
+
+    if (func_800AE830(s, 0) == 0) {
+        return p;
+    }
+    pad = D_80077528;
+    func_800AE9D0(s, 0, s->unk4);
+    cell = func_800B19D4(s, s->unk8, s->unkC);
+    cx = s->unk8 * 43 + 0x48;
+    cy = s->unkC * 52 + 8;
+    p = func_800B16A4(ot, p, s, cx - 0xF, cy + 6, 0);
+    c = func_800AE9D0(s, 0, s->unk4);
+    if (func_800AE878(s, 0) != 5) {
+        x = c->unkC - 0xF;
+        y = c->unk10 + 6;
+    } else {
+        x = c->unkC - 0x12;
+        y = c->unk10 + 3;
+    }
+    p = func_800B16A4(ot, p, s, x, y, 1);
+    D_80077DE8.unk0 = cx - 0xD;
+    D_80077DE8.unk2 = cy + 7;
+    if (cell->unk0 == 1) {
+        D_80077DE8.unk8 = func_80035774(0x22);
+    } else {
+        D_80077DE8.unk8 = func_80035774(0x30);
+    }
+    func_80035580(NULL);
+    if (pad & 0x10000) {
+        s->unk564 = 0;
+        s->unk0 = 0;
+        s->unk480 = s->unk488;
+        func_800B01E8(3);
+        return p;
+    }
+    if (pad & 0x20000) {
+        if (cell->unk0 == 1) {
+            c = func_800AE9D0(s, 0, s->unk4);
+            c->unkC = cx;
+            c->unk10 = cy;
+            c->unk18 = 1;
+            c->unk1C = 0;
+            cell->unk0 = 0;
+            cell->unk4 = c;
+            s->unk4 = 0;
+            s->unk424 = s->unk8;
+            s->unk428 = s->unkC;
+            func_800ABEC4(s);
+            func_800B01E8(5);
+            return p;
+        }
+        func_800B01E8(2);
+    }
+    ox = s->unk8;
+    oy = s->unkC;
+    if ((pad & 0x20) && s->unk8 != 3) {
+        s->unk8++;
+    }
+    if ((pad & 0x80) && s->unk8 != 0) {
+        s->unk8--;
+    }
+    if ((pad & 0x10) && s->unkC != 0) {
+        s->unkC--;
+    }
+    if ((pad & 0x40) && s->unkC != 3) {
+        s->unkC++;
+    }
+    if (ox != s->unk8 || oy != s->unkC) {
+        func_800B01E8(1);
+    }
+    return p;
+}
 
 void func_800AA1FC(TmState *s) {
     RECT r;

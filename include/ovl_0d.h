@@ -255,6 +255,7 @@ TmCard *func_800B12F0(TmState *, TmPos *, s32, s32);
 void func_800AEBB4(TmState *);
 void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
+s32 func_800AE878(TmState *, s32);
 s32 func_800AE94C(TmState *, s32);
 TmCard *func_800AE9D0(TmState *, s32, s32);
 void func_800AEA24(TmState *);
