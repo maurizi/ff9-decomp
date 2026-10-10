@@ -1826,6 +1826,7 @@ Unk8007B9C0 *func_8004EA3C(void);
 extern s32 D_8007B968;
 extern s32 D_8007B970;
 extern Unk4 D_8007B99C;
+extern Unk4 D_80011A6C; /* rodata constant, used by func_8004D2C0 */
 
 
 void func_800615F8(void);

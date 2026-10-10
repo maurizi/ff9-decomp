@@ -12736,7 +12736,141 @@ void func_8004C8C4(Unk8007B9C0 *w, u8 *s) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004D2C0);
+void func_8004D2C0(Unk8007B9C0 *w, u8 *e) {
+    u8 *p;
+    s32 c;
+    u8 *start;
+    Unk4 tmp;
+    s32 n;
+
+    p = e + w->unk20;
+    start = p;
+    while (w->unk26 == 0 && w->unk2A == 0 && w->unk24 >= 8) {
+        start = p;
+        c = *p++;
+        switch (c) {
+        case 0xF9:
+            /* padding between the two jump tables in the original rodata */
+            __asm__(".section .rodata\n\t.word 0\n\t.section .text");
+            c = *p++;
+            switch (c) {
+            case 0x48:
+                p += 2;
+                func_8004C2C0(&p, &c);
+                break;
+            case 0x41:
+                if (!(w->unk28 & 4)) {
+                    w->unk26 = *p++;
+                } else {
+                    p++;
+                }
+                break;
+            case 0:
+            case 1:
+                w->unk28 = (w->unk28 & ~4) | 8;
+            set26:
+                w->unk26 = *p++;
+                break;
+            case 2:
+                w->unk29 = *p++;
+                break;
+            case 0x42:
+                w->unk29 = D_8006E688[(D_8006794C->unk24 >> 14) & 7];
+                break;
+            case 0xC:
+                w->unk28 |= 4;
+                break;
+            case 7:
+                p += 2;
+                break;
+            case 8:
+                tmp = D_80011A6C;
+                n = D_8007BB7C;
+                func_80019750(&D_8007B99C);
+                func_80019774(&tmp);
+                D_8007B968 = n;
+                w->unk28 |= 2;
+                break;
+            case 9:
+                w->unk26 = 0xFF;
+            case 0x45:
+                w->unk28 |= 0x40;
+                break;
+            case 0xA:
+                w->unk28 |= 8;
+                break;
+            case 0xF:
+                D_8007BBD8 = *p++;
+                break;
+            case 0x46:
+                D_8007BBD8++;
+                break;
+            case 6:
+                p++;
+            case 0xE:
+            case 0x40:
+                p++;
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+            case 0x17:
+            case 0x18:
+            case 0x19:
+            case 0x1A:
+            case 0x1B:
+            case 0x80:
+            case 0x81:
+            case 0x82:
+            case 0x83:
+            case 0x84:
+            case 0x85:
+            case 0x86:
+            case 0x87:
+                if (!(w->unk28 & 4)) {
+                    w->unk2A = 1;
+                    w->unk24 = 0;
+                }
+                break;
+            case 0x43:
+            case 0x44:
+            case 0x49:
+            case 0x4A:
+            case 0x4B:
+            case 0x70:
+            skip1:
+                p++;
+                break;
+            }
+            break;
+        case 0xFE:
+        case 0xFF:
+            w->unk26 = 0xFF;
+            break;
+        case 0xF7:
+            D_8007BB7C++;
+            break;
+        case 0xFA:
+        case 0xFB:
+        case 0xFC:
+        case 0xFD:
+            p++;
+        default:
+            if (!(w->unk28 & 4)) {
+                w->unk24 -= 8;
+            }
+            break;
+        }
+    }
+    w->unk20 = (w->unk26 != 0 ? start : p) - e;
+    if (w->unk26 == 0xFF) {
+        w->unk28 &= ~4;
+    }
+    w->unk24 += w->unk29;
+}
 
 void func_8004D69C(Unk8007B9C0 *w, u8 *e) {
     u8 *p = e + w->unk20;
