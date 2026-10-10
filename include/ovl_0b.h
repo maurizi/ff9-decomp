@@ -2524,6 +2524,30 @@ extern s16 D_800F51EC;
 s32 func_8001CA70(s32);
 void func_80056048(s32, s32, s32);
 
+/* func_800AD90C: sound/streamed music command handler */
+s32 func_800AE570(s32, s32 *);
+s32 func_800AE764(s32);
+s32 func_800AE7C8(s32);
+void func_800AE844(Unk800AE844 *);
+extern s32 D_800F51F0;
+extern u8 D_800F51F2; /* byte 2 of D_800F51F0 */
+extern s32 D_800F51F4;
+extern s8 D_800F51F8;
+/* main exe: candidates for ff9.h */
+void func_800552B8(s32);
+s32 func_80055290(void *);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
+void func_80055604(s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_800557F0(s32);
+void func_80055730(s32, s32);
+void func_8005581C(s32, s32);
+
 s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s32, s32);
 s32 func_800ABA10(s32, s32);
 
