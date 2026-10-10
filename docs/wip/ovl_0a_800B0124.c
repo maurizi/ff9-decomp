@@ -2,21 +2,26 @@
  * ovl_0a func_800B0124 (0x18FC bytes): field music/sound request handler (GameData.unk83C),
  * the field version of ovl_0c func_800AB0C0 (matched) with the two sound-effect bank slots
  * (unk828/unk830/unk8B4/unk8B8/unk8BA), the 0x18xxxx ambient sounds and the 9 (resume) case.
- * WIP: 1598 of 1599 instructions, 60 aligned diff rows (build/s/cmp.py). Control flow, the
- * jump tables and the stack frame match. Left:
- *  - id and the case-1 "persistent" flag (fp) are swapped: the original has id in s7 and the
- *    flag in fp (global-alloc order); splitting id per case or retyping the flag made it worse;
- *  - kind 9 of case 0: the original keeps a copy of D_8006794C->unk1C (addu v1,a0) and loads
- *    unk840 into t's register directly; our CSE merges the copy.
- * Notes:
+ * WIP: 1598 of 1599 instructions, 18 aligned diff rows (build/s/cmp.py), all in the kind-9
+ * block of case 0: the original keeps a copy of D_8006794C->unk1C (`addu v1,a0,zero`, one extra
+ * instruction) and so `ok` lands in t0, the D_8006794C reload in a2 and 0x70000 in a1; our CSE
+ * folds the copy. Everything else matches, including the jump tables (one `.word 0` pad before
+ * the second table).
+ * How the rest was found (dump with `cc1 -dl -dg`, then priority = floor_log2(refs) * refs /
+ * live_length from the .lreg "Register N used X times across Y insns" lines):
  *  - arg0 must lose its register (the original reloads it from its home slot 0x58 everywhere);
  *    that happens once case 1 of the kind switch has a dead `if ((arg0 & 0x3F) == 1)` around
- *    two identical bodies (the original has a dead `lw t2,0x58(sp)` there);
+ *    two identical bodies (the original keeps a dead `lw t2,0x58(sp)` there);
+ *  - id (s7) vs the case-1 persistent flag (fp): id is at 36/199 vs the flag's 45/247; moving
+ *    `t = -1` above the case-0 id and `h = 0` above the case-1 id shortens id to 197 insns and
+ *    puts it above the flag but still below arg1 (42/217);
  *  - case 2's subcommand switch is a decision tree in the original: it only works as
  *    `case 1 ... 3:` around an inner switch {1,2,3,4} (so subcommand 4 is unreachable there);
- *  - jump tables: one `.word 0` pad before the second table (see the asm statement);
- *  - the case-2 sound handle reuses `slot`, the case-1 kind-9 flag reuses `t`.
- * The declarations below the header belong in ovl_0a.h when this is integrated.
+ *  - GameData.unk828/unk82C must be an array (`void *unk828[2]`) for the `base + slot*4`
+ *    operand order; GameDataSfx below stands in until ff9.h has it;
+ *  - the case-2 sound handle reuses `slot`, the case-1 kind-9 flag reuses `t`, the division
+ *    temps in states 2/3/4 need the `x = ...; x = x / 2048 * 2048;` two-statement form.
+ * The declarations above the function belong in ovl_0a.h when this is integrated.
  */
 #include "ovl_0a.h"
 
@@ -58,6 +63,11 @@ void func_800561C4(s32, s32, s32);
 void func_80056228(void);
 void func_800562B0(s32);
 
+typedef struct {
+    u8 pad[0x828];
+    s32 unk828[2];
+} GameDataSfx;
+#define SFXH(i) (((GameDataSfx *)D_8006794C->unk1C)->unk828[i])
 #define SCENE (D_8006794C->unk1C->unk8E4.field->unkC->unk14)
 
 s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -82,8 +92,8 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
     switch ((arg0 >> 12) & 3) {
     case 0:
-        id = (arg1 & 0xFFFF) | 0x70000;
         t = -1;
+        id = (arg1 & 0xFFFF) | 0x70000;
         switch (kind) {
         case 9:
             ok = 0;
@@ -93,9 +103,10 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 D_800C9D4C = kind;
                 g->unk826[0] = g->unk850;
                 arg1 = g->unk7E8;
+                t = g->unk840;
                 id = arg1 | 0x70000;
-                t = g->unk840 | 0x90000;
                 D_8006794C->unk1C->unk8A8 = D_8006794C->unk1C->unk8AC;
+                t |= 0x90000;
                 D_8006794C->unk1C->unk84A = D_8006794C->unk1C->unk8B0;
             }
             D_8006794C->unk1C->unk7E8 = 0xFFFF;
@@ -250,13 +261,11 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 1:
-        /* the original jump tables are 8-aligned within their object */
-        __asm__(".rdata\n\t.word 0\n\t.text");
         fp = 0;
         slot = 0;
         mask = 0;
-        id = (arg1 & 0xFFFF) | 0x80000;
         h = 0;
+        id = (arg1 & 0xFFFF) | 0x80000;
         if (kind != 5 && kind != 6) {
             fp = (arg0 >> 7) & 1;
             if (fp != 0) {
@@ -277,17 +286,16 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 mask2 = mask >> 1;
                 if (kind == 0 && D_8006794C->unk1C->unk830[slot] != arg1) {
                     if (D_8006794C->unk1C->unk0 & mask) {
-                        func_8005546C(((s32 *)&D_8006794C->unk1C->unk828)[slot], arg2);
+                        func_8005546C(SFXH(slot), arg2);
                         D_8006794C->unk1C->unk0 ^= mask | mask2;
                     }
-                    n = (s32)func_8001C7FC(4, id, 0);
-                    func_80015C28((void *)((s32 *)&D_8006794C->unk1C->unk828)[slot], (u8 *)n, (s32)func_8001C7FC(5, id, 0));
+                    func_80015C28((void *)SFXH(slot), func_8001C7FC(4, id, 0), (s32)func_8001C7FC(5, id, 0));
                     D_8006794C->unk1C->unk830[slot] = arg1;
                     D_8006794C->unk1C->unk8B8[slot] = 0x7F;
                     D_8006794C->unk1C->unk8BA[slot] = 0x80;
                     D_8006794C->unk1C->unk0 |= mask2;
                 }
-                h = ((s32 *)&D_8006794C->unk1C->unk828)[slot];
+                h = SFXH(slot);
             } else {
                 h = (s32)func_8001C7FC(4, id, 0);
             }
@@ -458,6 +466,7 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         return -1;
     case 3:
+        __asm__(".rdata\n\t.word 0\n\t.text");
         id = (arg1 & 0xFFFF) | 0x90000;
         switch (kind) {
         case 7:
