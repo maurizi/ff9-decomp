@@ -168,19 +168,21 @@ static inline s32 func_801F0F9C_width(u8 *s) {
     return func_8002BA68((s32)s);
 }
 
-/* Inlined copy of func_801F2D88 (show a cached card picture). */
+/* Inlined copy of func_801F2D88 (show a cached card picture), as expanded in func_801F1778. The
+   x, y, w, h statement order matters there: the w/h constants live in s-registers and their stores
+   go through the &a argument register, so they get output dependences on the x/y stores. */
 static inline void func_801F2D88_inline(CardSlot *s) {
     RECT a, b;
     u32 n = s->unk2;
 
     a.x = 0;
+    a.y = n + 0x1F4;
     a.w = 0x100;
     a.h = 1;
-    b.w = 0x13;
-    b.h = 0x2F;
-    a.y = n + 0x1F4;
     b.x = (u8)(n % 3) * 0x13;
     b.y = (u8)(n / 3) * 0x2F + 0x100;
+    b.w = 0x13;
+    b.h = 0x2F;
     MoveImage(&a, 0, 0x1F2);
     MoveImage(&b, 0x3C0, 0x1B0);
     DrawSync(0);

@@ -314,7 +314,49 @@ void func_801F166C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1778);
+void func_801F1778(void) {
+    RECT a, b;
+    CardCache *cc;
+    CardSlot *s;
+    s32 *ofs;
+    s32 n;
+    u32 k;
+
+    cc = &D_801F347C.unk1900;
+    ofs = D_801F0274;
+    if (cc->unk2 >= 12) {
+        cc->unkD[cc->unk0].unk0 = 0;
+        cc->unk2++;
+        cc->unk0 = (cc->unk0 + 1) % 12;
+    }
+    s = &cc->unkD[cc->unk1];
+    {
+        u8 id = D_801F347C.unk4;
+        s->unk0 = 1;
+        s->unk1 = id;
+    }
+    cc->unk2++;
+    cc->unk1 = (cc->unk1 + 1) % 12;
+    n = func_801F3034(D_801F347C.unk10D0, D_801F347C.unkD0);
+    if (ofs[D_801F347C.unk4 + 1] != ofs[D_801F347C.unk4]) {
+        func_801F3034((u8 *)D_801F0274 - 4 + ofs[D_801F347C.unk4], D_801F347C.unkD0 + n);
+    }
+    k = s->unk2;
+    a.x = 0;
+    a.w = 0x100;
+    a.h = 1;
+    b.w = 0x13;
+    b.h = 0x2F;
+    a.y = k + 0x1F4;
+    b.x = (u8)(k % 3) * 0x13;
+    b.y = (u8)(k / 3) * 0x2F + 0x100;
+    LoadImage(&a, (u32 *)D_801F347C.unkD0);
+    LoadImage(&b, (u32 *)D_801F347C.unk2D0);
+    DrawSync(0);
+    if (s->unk1 == cc->unk5) {
+        func_801F2D88_inline(s);
+    }
+}
 
 void func_801F1A48(void) {
     CardCache *c = &D_801F347C.unk1900;
