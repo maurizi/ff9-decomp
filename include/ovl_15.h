@@ -142,6 +142,7 @@ extern u32 D_800AE0EC[8]; /* CLUT */
 extern DrTpageWords D_800AE4E8;
 extern s32 D_800B0DF8;
 extern SPRT D_800AE5F8[2][256];
+extern DR_TPAGE D_800AE4F8[2][16];
 /* Pip positions on a card face, [rank][pip]; rank 0-8 (cards 2-10) has rank + 2 pips. */
 typedef struct {
     s32 x;
