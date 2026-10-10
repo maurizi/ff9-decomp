@@ -1199,6 +1199,8 @@ extern u8 D_800CD714;
 extern u8 D_800CD718;
 void func_800BF544(s32, s32, s32, s32, CVECTOR, CVECTOR, s32, s32, s32, s32);
 void func_800C1B00(s32, s32, s32 *, s32 *, u8);
+void func_800BEECC(void);
+s32 func_800C1604(u32);
 
 static inline CVECTOR func_800C1428_color(void) {
     CVECTOR c;
