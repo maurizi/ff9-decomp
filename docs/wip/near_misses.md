@@ -245,6 +245,31 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     int declaration (AB3CC / AC02C and func_800B61A4);
   * fake permuter outputs are hints: B3198's `if (y) y = t + 0x12; else y = t + 0x12;` meant the
     assignment belongs in both branches (`y = a->unk10 + 0x12;` / `y = b->unk10 + 0x12;`).
+- Pass 10: matched 0a C4EC8, C31F8, B3F8C. Improved drafts (docs/wip/): BF660 4 rows, B4A5C 5,
+  C07D8 11, BD130 12, C0038 19 (was 39/13/35/48/44). Unchanged: B0124 (12), BB714/CA1D8, C519C,
+  BE158, AA4E8, C970C (26), C65CC (104). What worked:
+  * reload_cse only reuses a register holding the same constant in the same or a wider mode.
+    C4EC8's `t2 = t7` copy with `li t6, 0` next to it meant r was a narrow type: `u8 r` with
+    `r = !r` (a `^= 1` keeps the return andi, `!r` doesn't);
+  * C31F8's `addu t2, t6` (i = 0 copied from any) came from `any = 0; i = 0;` at the top of the
+    else arm: reload_cse sees both in one block, then reorg moves `any = 0` into the branch's
+    delay slot;
+  * sched2 runs before jump2's cross-jumping. Statements written at the end of both if/else arms
+    are cross-jumped into one tail afterwards but were scheduled as separate blocks, so the call
+    setup after the join can't fill their load delays (C31F8's two nops);
+  * gcc 2.8's MEM_IN_STRUCT_P heuristic lets a store to a scalar global pass a struct-field store
+    through a pointer; `*(s32 *)((u8 *)p + off)` (not in-struct) keeps them in order;
+  * refs of a variable that combine later deletes still count for global-alloc priority:
+    `key = func_800B3B64(); if (key == 0)` (B3F8C, three calls) or a temp of the same variable
+    (`key = x & 0xFFFF; if (key < 9000 && ... grp(key))`, permuter) moved key above e;
+  * a dead `p = (u8 *)&pad;` right after the call that takes &clut/&img puts pad's stack slot after
+    theirs (B4A5C's 8-byte hole); `(void)&pad` is never expanded and does nothing;
+  * clamps `if (v < c->lo) ... else if (c->hi < v) ...` re-reading the limit in each arm (jump2
+    cross-jumps the tails, reorg fills both delay slots) instead of `(t = c->lo) ... (t = c->hi)`
+    (BF660, C0038);
+  * reusing a variable that an earlier statement reads (WAR) pins sched1's order of two
+    independent computations (BF660 `x = A - 112; y += x;` after `cx = lim + x`);
+  * `GetTPage(tile->tp ? 1 : 0, ...)` came out as a branch only with the call in both arms (BD130).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -295,6 +320,22 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   { e--; if (e < start) goto skip; }` shape; jump.c duplicates the exit test here instead, 59 rows
   with that form vs 49 for the goto draft), 15 ADE30 (28: x/f/s/p s-register order and the
   `x += w` delay slot).
+- Pass 10 (0d): matched 0d ACFFC, B030C, AD400; AEE2C matches but is not integrated (its "NO" label
+  D_800A7398 is rodata migrated into func_800AEE2C.s; needs `// force_not_migration:True` and a
+  resplit, see docs/wip/ovl_0d_800AEE2C.c). Improved drafts: AC060 19 rows (compiles now), B16A4 37.
+  What worked:
+  * a value set after loop.c's movables is a strength-reduced giv init: ACFFC's `li s5, 0x1A` is
+    `c->unk10 = n * 14 + 0x1A; n++;` (no y variable);
+  * update_equiv_regs doubles the live length of a pseudo with a REG_EQUIV constant, which lost
+    B030C's hoisted 0x40 its fp. The original stores v0 = 0x40 in both arms of the SPRT u0 if/else
+    (more refs; jump2 cross-jumps the stores) - the permuter's fake `if (p) x = 0x40; else x = 0x40;`
+    pointed at it;
+  * `do { } while (0)` around a use raises its pseudo's refs (loop-depth weighting) - also a hint
+    that the real fix is a second use;
+  * AEE2C: c0 also holds the func_800AF268(s) results passed straight to the next call (combine
+    deletes the copies, the refs stay), which lifts it above s and m;
+  * AD400: `cards[i].field` in most places instead of `c->` lowers c's priority; the FT4 uv stores
+    are u0, u1, v0, v1, u2, v2, u3, v3 (brute force over orders).
 - 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
   with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
   let that go.
