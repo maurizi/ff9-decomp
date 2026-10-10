@@ -50,19 +50,25 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   helper shape unknown), 8001DE50 (draft only), 80030EE4 (dead copy of arg2; maybe libgte RotMatrix*).
   Also 8005CF04 ~75 (v/old vs %hi(D_80080A10) s-register priority), 8004DCEC (window-init inline
   boundary; caller stores get rescheduled), 8005D6BC ~76 (&D_80083158 hoisted to fp, tick count spilled).
-- Pass 4 (drafts in the agent worktree's build/nm_*.c): E4C88 4 rows (copy of the E788C result scheduled early), AD90C ~44 (unk851 test inverted to bnez, kind-7 delay slot, gx/m regs), DA92C ~80 (temp regs t0/v0, loop copies), D650C ~70 (op/a copied into a0 for the switches, cross-jump of cont=0 tails).
+- Pass 5 (matched: AD90C, E4C88, D650C, E2000, D0B18, E6764). WIP drafts in docs/wip/ovl_0b_<addr>.c, rows =
+  differing insns: B1B48 3 (which return-0 block the later returns cross-jump to), D2938 8 (temp regs; needs the
+  prototype changed to Unk800D2938 *), DA92C 8 (case 0 header-load order, base var s1 vs s2), AF800 17 (case 0
+  test cross-jumped into case 1; unk56F |= 8 CSE'd instead of reloaded), AC37C ~150, C67BC ~300.
+  Tricks that fixed the matched ones: reuse a variable or add a fresh one to change live ranges (AD90C k2,
+  E4C88), msg/ok assignments placed where reorg wants them, duplicated case bodies instead of fallthrough to
+  raise a pointer's priority (E2000), r * arg10 instead of a running sum and biv increment order via the for
+  clause (D0B18), and a struct-typed store ((XY32 *)&v[0])->w to create the original's alias dependency (E6764).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
 - 0a B4A5C: identical except the stack frame is 8 bytes too small.
 - 0a C0038 (11 diff rows), C07D8 (24), C970C, BA560, BD130, C65CC, BFEE0 (36-64).
 - 0c BA1E4 (31 diff rows), C53DC and BEECC (~110-120), BF544; twin pair 0a BB714 / 0c CA1D8 (large diffs).
-- Large/GTE pass (drafts in the main checkout's build/drafts/ovl_0b/, diff = differing insns): D2938 7 (base
-  pointer temp regs), C7730 ~18 (relocation prologue regs/delay slot), AA504 23 (collect loop regs a0/v1),
+- Large/GTE pass (drafts in the main checkout's build/drafts/ovl_0b/, diff = differing insns): C7730 ~18 (relocation prologue regs/delay slot), AA504 23 (collect loop regs a0/v1),
   D1D74 ~30 (frame index n/k regs), D2DBC ~65 (header load scheduling), CD210 ~36 (bone index needs sext,
-  q copied to a 2nd reg), E6764 9 (first inner-loop stores scheduled), D1FFC ~60 (like D1D74),
-  E57B0 ~117 (constant 1 kept in s0 and used by sllv), AF800 ~135 (case 0 branch order, 56F not reloaded),
-  ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement), DE11C ~690 (model
+  q copied to a 2nd reg), D1FFC ~60 (like D1D74),
+  E57B0 ~117 (constant 1 kept in s0 and used by sllv),
+  ABBC4 ~220 (regs in case 5 texture loop; frame 8 bytes too big), DE11C ~690 (model
   renderer: all 8 primitive loops written, register allocation/spills differ).
 - Large-function pass 3 (drafts in the agent worktree's build/nm_<addr>.c): 80054294 159/238
   (needs a pointer to ys set inside the 3rd loop; py/x/y s-register priority), 800475D8 (dir/collision
