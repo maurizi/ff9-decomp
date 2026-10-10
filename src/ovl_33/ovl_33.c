@@ -344,7 +344,66 @@ void func_801EF560(void) {
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF644);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF900);
+void func_801EF900(s32 slot, s32 arg1) {
+    EquipMenu *m;
+    EquipMenu *m2;
+    UnkBlink *b;
+    Character *c;
+    AbilityEntry *a;
+    Unk80069018 *it;
+    s32 j;
+    s32 nItems;
+    s32 nAbils;
+    s32 id;
+
+    b = &D_801FBF84.unk770;
+    c = D_8006794C->unk1C->unk54C[slot];
+    m = &D_801FBF84;
+    nItems = 0;
+    nAbils = 0;
+    func_80028D08(b, m->unk2, slot, arg1);
+    if (arg1 != 0) {
+        m->unk1 = 5;
+    }
+    m->unk2 = slot;
+    if (c->unk34.b.row < 16) {
+        m2 = m;
+        slot = 0;
+        a = D_8006CB28[c->unk34.b.row];
+        for (; slot < 0x30; slot++) {
+            if (a->unk0 != 0) {
+                if (a->unk0 < 0xC0) {
+                    D_801FBF84.unk668[nItems].unk0 = a->unk0;
+                    D_801FBF84.unk668[nItems].unk1 = func_801F0C10(a->unk0, c);
+                    nItems++;
+                } else {
+                    *(nAbils + m2->unk728) = a->unk0;
+                    nAbils++;
+                }
+            }
+            a++;
+        }
+    }
+    func_8002EDFC(&D_801FBF84.unk8[0], nItems, 8, 2, 0x80);
+    func_8002EDFC(&D_801FBF84.unk8[1], nAbils, 8, 2, 0x80);
+    D_801FBF84.unk769 = nItems;
+    D_801FBF84.unk76A = nAbils;
+    func_8001D898(D_801FBF84.unk68, 0, 0x100);
+    for (slot = 0; slot < 5; slot++) {
+        id = c->unk39[slot];
+        if (id != 0xFF) {
+            it = &D_80069018[id];
+            for (j = 0; j < 3; j++) {
+                D_801FBF84.unk68[it->unkC[j]] |= 1 << slot;
+                D_801FBF84.unk168[it->unkC[j]][slot] = id;
+            }
+        }
+    }
+    D_801FBF84.unk4[0] = c->unk10 != 0 && !(c->unk38 & 9) && nItems != 0 && D_8007AFD3 == 0;
+    D_801FBF84.unk4[1] = func_80034A30(c);
+    func_801F1048();
+    func_801F0410();
+}
 
 s32 func_801EFB8C(s32 id, Character *c) {
     Unk801F34EC *info;
