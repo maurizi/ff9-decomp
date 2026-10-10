@@ -5202,7 +5202,169 @@ void func_800BD78C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BDAB0);
+void func_800BDAB0(void) {
+    VECTOR pos;
+    VECTOR p2;
+    s16 sx[20];
+    s16 sy[20];
+    s32 z[20];
+    VECTOR d;
+    WmNearCell tmp;
+    MATRIX m;
+    SVECTOR sv;
+    VECTOR out;
+    s32 cell;
+    long flag;
+    long p;
+    long sxy;
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 hit;
+    s32 cnt;
+    s32 cnt2;
+    s32 last;
+    s32 id;
+    WmTexEnt *e;
+    SVECTOR *verts;
+    WmScrRect *r;
+    WmNearCell *c;
+    Unk800D375C *nd;
+    s32 lim;
+    s32 t;
+
+    pos.vy = 0;
+    func_800BD674();
+    func_80064CDC(10, 10);
+    n = 0;
+    if (D_800CE3C4 < 6) {
+        if (D_800CE3DC->unk14.vy >= -0x9C3) {
+            D_800CD09C[1].y0 = D_800CD09C[0].y0 = -0x3C;
+        } else {
+            D_800CD09C[1].y0 = D_800CD09C[0].y0 = -0x1E;
+        }
+    }
+    for (j = -3; j < 4; j++) {
+        for (i = -3; i < 4; i++) {
+            func_800BC130(D_800CE108[0] + (i << 13) + D_800CE1D0[0] * 2,
+                          D_800CE108[2] - (j << 13) + D_800CE1D0[2] * 2, &cell);
+            e = (WmTexEnt *)func_800BE4A8(cell, NULL);
+            if (e != NULL) {
+                func_800BC2C8(cell, &pos.vx, &pos.vz);
+                D_800D3770.t[0] = pos.vx - D_800CE108[0];
+                D_800D3770.t[1] = pos.vy - D_800CE108[1];
+                D_800D3770.t[2] = pos.vz - D_800CE108[2];
+                CompMatrix(D_800CF448, &D_800D3770, &m);
+                SetRotMatrix(&m);
+                SetTransMatrix(&m);
+                hit = 0;
+                if (m.t[2] >= -0x1D4B) {
+                    k = (func_800AE7F0() == 0) * 2;
+                    if (D_800CE3C8->unk0 == 1) {
+                        k += 4;
+                    }
+                    if (D_800CE3C8->unk0 == 2) {
+                        k += 8;
+                    }
+                    verts = e->unk4;
+                    for (cnt = 0; cnt < e->unk20; cnt++) {
+                        sv = verts[e->unkC[cnt]];
+                        RotTrans(&sv, &out, &flag);
+                        sv.vy = sv.vy * (0x1000 - (out.vz >> 4)) >> 12;
+                        z[cnt] = RotTransPers(&sv, &sxy, &p, &flag);
+                        sy[cnt] = (u32)sxy >> 16;
+                        sx[cnt] = sxy;
+                        if (z[cnt] < 0x898) {
+                            k |= 1;
+                        } else {
+                            k &= ~1;
+                        }
+                        if ((sx[cnt] >= D_800CD09C[k].x0) & (D_800CD09C[k].x1 >= sx[cnt]) & (sy[cnt] >= D_800CD09C[k].y0) & (D_800CD09C[k].y1 >= sy[cnt])) {
+                            hit = 1;
+                            break;
+                        }
+                    }
+                }
+                if (hit == 1) {
+                    p2.vx = pos.vx + 0x1000;
+                    p2.vy = pos.vy;
+                    p2.vz = pos.vz - 0x1000;
+                    d.vx = p2.vx - D_800CE198[0];
+                    d.vz = p2.vz - D_800CE198[2];
+                    if (d.vx > 0xFFFF) {
+                        d.vx -= D_800D32D8;
+                    }
+                    if (d.vx < -0xFFFF) {
+                        d.vx += D_800D32D8;
+                    }
+                    if (d.vz > 0xFFFF) {
+                        d.vz -= D_800D32DC;
+                    }
+                    if (d.vz < -0xFFFF) {
+                        d.vz += D_800D32DC;
+                    }
+                    D_800D3C10[n].unk8 = SquareRoot0((d.vx >> 2) * (d.vx >> 2) + (d.vz >> 2) * (d.vz >> 2));
+                    D_800D3C10[n].unk4 = e;
+                    D_800D3C10[n].unk0 = cell;
+                    n++;
+                }
+            }
+        }
+    }
+    for (j = 0; j < n - 1; j++) {
+        for (i = n - 1; j < i; i = t) {
+            t = i - 1;
+            if (D_800D3C10[t].unk8 > D_800D3C10[i].unk8) {
+                tmp = D_800D3C10[i];
+                D_800D3C10[i] = D_800D3C10[t];
+                D_800D3C10[t] = tmp;
+            }
+        }
+    }
+    lim = 16;
+    if (D_800CE3C4 == 7) {
+        lim = 14;
+    }
+    if (D_800CCE4B == 0) {
+        lim++;
+    }
+    if (lim < n) {
+        n = lim;
+    }
+    cnt2 = 0;
+    last = -1;
+    for (i = 0; i < n; i++) {
+        id = D_800D3C10[i].unk4->unk1;
+        func_800BE138(D_800D3C10[i].unk0);
+        if (id != 0) {
+            if (cnt2 < 2) {
+                func_800C2230(id);
+            }
+            if (id != last) {
+                cnt2++;
+            }
+            if (cnt2 == 1) {
+                last = id;
+            }
+        }
+    }
+    func_800C23CC();
+    func_800C24D8();
+    func_800BE6B4();
+    func_800BE238();
+    nd = D_800D3758.unk4;
+    D_800D1FD0 = 0;
+    while (nd->unk10 != -1) {
+        {
+            u8 s = nd->unk8->unk21;
+            if (s != 0) {
+                func_800C69F4(s);
+            }
+        }
+        nd = nd->unk4;
+    }
+}
 
 s32 func_800BE138(s16 arg0) {
     Unk800D375C *n = D_800D3758.unk4;

@@ -402,9 +402,27 @@ typedef struct Unk800D375C {
 typedef struct WmTexEnt {
     u8 unk0;
     u8 unk1;
-    u8 pad2[0x21 - 2];
+    u8 pad2[2];
+    SVECTOR *unk4; /* vertices */
+    u8 pad8[4];
+    u8 unkC[0x14]; /* vertex indices */
+    u8 unk20; /* vertex count */
     u8 unk21; /* sound id */
 } WmTexEnt;
+
+/* visible cells sorted by distance (func_800BDAB0) */
+typedef struct {
+    s32 unk0; /* cell */
+    WmTexEnt *unk4;
+    s32 unk8; /* distance */
+} WmNearCell;
+
+typedef struct {
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} WmScrRect;
 
 typedef struct WmTexPack {
     u8 unk0;
@@ -1082,6 +1100,8 @@ extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
+void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
+void func_80064CDC(s32, s32);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
 void func_80030AF4(SVECTOR *, MATRIX *);
@@ -1125,6 +1145,16 @@ typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
 extern Unk800A7FB8 D_800A8020; /* radar arrow */
 extern Unk800A7FB8 D_800A8000; /* big-map arrow */
+extern WmScrRect D_800CD09C[]; /* on-screen test rects */
+extern WmNearCell D_800D3C10[];
+s32 func_800AE7F0();
+void func_800C23CC(void);
+void func_800C24D8(void);
+void func_800BE6B4(void);
+void func_800BE238(void);
+s32 func_800BE138(s16);
+s32 func_800C2230(s16);
+void func_800C69F4(s32);
 extern u8 D_800CD728; /* big-map cone colour */
 extern u8 D_800CD72C;
 extern u8 D_800CD730;
