@@ -1107,7 +1107,9 @@ typedef struct Unk8004AB64 {
     s16 unk84; /* smoothed look-at point (func_80047B90) */
     s16 unk86;
     s16 unk88;
-    u8 pad8A[0x90 - 0x8A];
+    s16 unk8A; /* speech bubble anchor offset (copied from D_8007AE5C..64) */
+    s16 unk8C;
+    s16 unk8E;
     u8 unk90;
     u8 unk91;
     u8 unk92;
@@ -1810,6 +1812,7 @@ typedef struct {
     u8 unk8; /* y */
     u8 unk9; /* h */
 } Unk8004EBC0;
+s32 func_8004EBC0(Unk8004EBC0 *r);
 extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void func_800329FC(u8 *);
@@ -3250,7 +3253,7 @@ void func_8004F5D4(Unk8004F5D4 *);
 void func_8004F660(Window *);
 
 WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
-void func_80038FD8(s32, WinLayout *, s32, s32);
+void func_80038FD8(Unk8004AB64 *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
 extern s32 D_8007AE64;
@@ -3360,7 +3363,7 @@ s32 func_80052F24(s32, s32);
 void func_8004EC74(u32, s32);
 void func_8004ED00(s32, s32);
 void func_8004EFA0(void);
-WinLayout *func_80039660(s32, s32, s32);
+WinLayout *func_80039660(Unk8004AB64 *, s32, s32);
 void func_8004DCEC(s32, s32, WinLayout *, s32);
 
 static inline s32 func_8004AF58_inline(void) {

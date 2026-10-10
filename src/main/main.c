@@ -8194,11 +8194,131 @@ s32 func_80038D3C(void) {
     return id != 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038FD8);
+/* screen position of an actor's speech-bubble anchor */
+static inline void func_80038FD8_pos(Unk8004AB64 *obj, s32 *x, s32 *y) {
+    SVECTOR sv;
+
+    sv.vx = obj->unk14.vx;
+    sv.vy = obj->unk14.vy + ((obj->unk32 * (s8)obj->unk2F) >> 6) - 50;
+    sv.vz = obj->unk14.vz;
+    if (obj->unk5 == 4) {
+        sv.vx += obj->unk8A;
+        sv.vy += obj->unk8C;
+        sv.vz += obj->unk8E;
+    }
+    func_8004BA20(&sv, x, y);
+}
+
+static inline void func_80038FD8_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
+    s32 width = w->unk2;
+    s32 tx, l, r;
+
+    if (right) {
+        tx = sx - 6;
+        if (tx < 32) {
+            tx = 32;
+        }
+        if (tx > 304) {
+            tx = 304;
+        }
+        l = tx + 8 - width;
+        r = tx - 24;
+    } else {
+        tx = sx + 6;
+        if (tx > 288) {
+            tx = 288;
+        }
+        if (tx < 16) {
+            tx = 16;
+        }
+        l = tx + 24 - width;
+        r = tx - 8;
+    }
+    *ptx = tx;
+    if (l < 8) {
+        l = 8;
+    }
+    if (r > 312 - width) {
+        r = 312 - width;
+    }
+    w->unk0 = (l + r) >> 1;
+}
+
+static inline void func_80038FD8_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
+    s32 h = w->unk9;
+    s32 ty;
+
+    if (*below) {
+        ty = sy - h - 16;
+        if (!fixed && ty < 8) {
+            *below ^= 1;
+            ty = sy + 32;
+        }
+    } else {
+        ty = sy + 32;
+        if (!fixed && ty > 212 - h) {
+            *below = 1;
+            ty = sy - h - 16;
+        }
+    }
+    if (ty < 8) {
+        ty = 8;
+    } else if (ty > 212 - h) {
+        ty = 212 - h;
+    }
+    w->unk8 = ty;
+}
+
+void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
+    s32 sx, sy;
+    s32 ox, oy;
+    s32 tx;
+    s32 below;
+    s32 right;
+    s32 id;
+    Unk8004AB64 *other;
+
+    if (obj->unk5 == 4) {
+        obj->unk8A = D_8007AE5C;
+        obj->unk8C = D_8007AE60;
+        obj->unk8E = D_8007AE64;
+    }
+    func_80038FD8_pos(obj, &sx, &sy);
+    if (dir < 0) {
+        if (obj->unk7 == D_8007AECC->unk16ED) {
+            id = obj->unk93;
+        } else {
+            id = D_8007AECC->unk16ED;
+        }
+        other = func_8004B040_inline(id);
+        if (other != NULL) {
+            func_80038FD8_pos(other, &ox, &oy);
+            below = sy < oy;
+            right = sx < ox;
+        } else {
+            below = 1;
+            right = 0;
+        }
+    } else {
+        below = (dir >> 1) & 1;
+        right = dir & 1;
+    }
+    if (fixed == 0) {
+        right = right ? right ^ (sx < 40) : sx > 280;
+    }
+    func_80038FD8_x(w, sx, right, &tx);
+    func_80038FD8_y(w, sy, &below, fixed);
+    if (fixed == 0 && func_8004EBC0((Unk8004EBC0 *)w)) {
+        below ^= 1;
+        func_80038FD8_y(w, sy, &below, 0);
+    }
+    w->unk4 = tx - w->unk0;
+    w->unk6 = (below << 1) | right;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80039444);
 
-WinLayout *func_80039660(s32 obj, s32 id, s32 flags) {
+WinLayout *func_80039660(Unk8004AB64 *obj, s32 id, s32 flags) {
     WinLayout *w = func_8004E248(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
     s32 ww;
     s32 wh;
@@ -8623,7 +8743,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)D_8007B704, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x20:
@@ -8631,7 +8751,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)D_8007B704, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
         return 0;
     case 0x95:
         po = func_80038150();
@@ -8639,7 +8759,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)po, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x96:
@@ -8648,7 +8768,7 @@ s32 func_80039C38(void) {
         c = func_8004AEDC_inline();
         func_80039C38_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660((s32)po, b, c), c);
+        func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
         return 0;
     case 0x21:
         a = func_8004AEDC_inline();
