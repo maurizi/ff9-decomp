@@ -4,8 +4,8 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Pass 8 matched 7 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8).
-  What worked:
+- Pass 8 matched 9 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8,
+  80048E80, 80062E3C). What worked:
   - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
     permuter found it; mflo a2 everywhere then follows). 80058118: pan reused for the LFO depth
     temp in the first block (`pan = (s16)...; x = pan; if (pan < 0) x = pan >> 1;`). 8005E3FC: one
@@ -30,8 +30,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - 80024BD8: `p->rgbc0` first, then `p->xy2 = 0x800000; p->xy3 = w | 0x800000;` and
     `->wh = w | 0x800000` (no `w |=`), found by moving single statements (build/mvall.py moves
     every single-line statement within its straight-line run; it also took 8005681C 51 -> 14).
-  - Drafts updated: 8004E248 (38, ~11 of them symbol-only), 8001DE50 (19), 80062E3C (63),
-    8005681C (14, new), 8005A320 (5), 80059414 (9). Headers have the details.
+  - 80048E80: `i = 3; D_8007AE10[i] = func_800BEC64(1); m = (u16)D_8007AE10[i];` (the loop
+    counter as the index) keeps the `la` base for `sh v0,6(v1)`; no inline needed.
+  - 80062E3C: `q->unk4_0 = 0` first among the slot header stores (mvall), then the permuter split
+    getClut into `clut = cy << 6; clut |= (cx >> 4) & 0x3F;`. cx is reused for the tpage value.
+  - build/splitx.py splits `x = a OP b` into `x = a; x OP= b;` at every top-level operator; no hits
+    on the remaining drafts.
+  - Drafts updated: 8004E248 (38, ~11 of them symbol-only), 8001DE50 (19), 8005681C (14, new),
+    8005A320 (5), 80059414 (9). Headers have the details.
 - Pass 7 matched 4 (8004B85C, 800378C4, 80035214, 80038618). What worked:
   - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
     parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
