@@ -11,6 +11,23 @@ void func_800552B8(s32);
 void func_8001D9CC(s32, s32, s32, s32, s32);
 s32 func_80022AC4(s32);
 void func_80022ED4(s32);
+s32 func_80055290(void *);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800558DC(s32);
+void func_80055908(s32, s32);
+void func_8005593C(s32, s32, s32);
+void func_80055980(s32, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player, 0x80198700) */
 void func_801999B4(s32, u8 **);
@@ -92,6 +109,7 @@ extern Ovl15Pos D_800AE494[1];
 extern Ovl15Pos D_800AE498[4];
 extern void *D_800AE440;
 
+extern s8 D_800AE43C; /* sound request kind, -1 = none */
 extern u16 D_800AE0E0; /* flags */
 extern s32 D_800AE0E4; /* frame counter */
 extern u16 D_800AE4C8[2][4]; /* queued flag sets / clears */
@@ -142,7 +160,7 @@ void func_800AB39C(void);
 void func_800AD358(void);
 void func_800AD644(void);
 void func_800AB45C(void);
-void func_800AC598(s32, s32, s32, s32, s32);
+s32 func_800AC598(s32, s32, s32, s32, s32);
 void func_800ACCB4(void);
 void func_800ACD70(void);
 void func_800ACF58(s32);

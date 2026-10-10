@@ -608,7 +608,155 @@ void func_800AC494(void) {
     func_8002C0DC(D_8006794C->unk1C->unk8);
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AC598);
+s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    GameData *g;
+    s32 kind;
+    s32 h;
+    s32 id;
+
+    kind = (arg0 >> 8) & 0xF;
+    switch ((arg0 >> 12) & 3) {
+    case 0:
+        id = (arg1 & 0xFFFF) | 0x70000;
+        switch (kind) {
+        case 0:
+            if (D_8006794C->unk1C->unk851 != 0) {
+                return -1;
+            }
+            if (D_800AE43C == -1) {
+                D_800AE43C = kind;
+            }
+            if (D_8006794C->unk1C->unk81C[0] != arg1) {
+                if (D_8006794C->unk1C->unk0 & 0x20000000) {
+                    func_800552B8(D_8006794C->unk1C->unk824[0]);
+                }
+                D_8006794C->unk1C->unk0 &= 0xCFFFFFFF;
+                D_8006794C->unk1C->unk820[0] = 0x1F3;
+                D_8006794C->unk1C->unk81C[0] = arg1;
+                D_8006794C->unk1C->unk826[0] = 0x7F;
+            }
+            D_8006794C->unk1C->unk824[0] = func_80055290(D_8006794C->unk1C->unk814);
+            g = D_8006794C->unk1C;
+            if (!(g->unk0 & 0x20000000)) {
+                func_80055A34(g->unk824[0], 0xA, 0, g->unk826[0]);
+            }
+            D_800AE43C = -1;
+            D_8006794C->unk1C->unk0 |= 0x30000000;
+            return 0;
+        case 1:
+            if (D_8006794C->unk1C->unk81C[0] == (u16)id) {
+                func_800552B8(D_8006794C->unk1C->unk824[0]);
+                D_8006794C->unk1C->unk826[0] = 0x7F;
+                D_8006794C->unk1C->unk0 &= 0xDFFFFFFF;
+            }
+            return 0;
+        case 2:
+            if ((arg0 & 0x3F) != 1) {
+                break;
+            }
+            func_800559C8(D_8006794C->unk1C->unk824[0], arg2);
+            D_8006794C->unk1C->unk826[0] = arg2;
+            return 0;
+        case 3:
+            if ((arg0 & 0x3F) != 1) {
+                break;
+            }
+            func_800559FC(D_8006794C->unk1C->unk824[0], arg2, arg3);
+            D_8006794C->unk1C->unk826[0] = arg3;
+            return 0;
+        case 4:
+            if ((arg0 & 0x3F) != 1) {
+                break;
+            }
+            func_80055A34(D_8006794C->unk1C->unk824[0], arg2, arg3, arg4);
+            D_8006794C->unk1C->unk826[0] = arg4;
+            return 0;
+        case 6:
+            if ((arg0 & 0x3F) != 1) {
+                break;
+            }
+            func_800559FC(0, arg2, arg3);
+            D_8006794C->unk1C->unk826[0] = arg3;
+            return 0;
+        case 11:
+            if ((arg0 & 0x3F) != 1) {
+                break;
+            }
+            func_80055A34(0, arg2, arg3, arg4);
+            D_8006794C->unk1C->unk826[0] = arg4;
+            return 0;
+        }
+        return -1;
+    case 1:
+        id = (arg1 & 0xFFFF) | 0x80000;
+        h = 0;
+        if (kind != 5 && kind != 6) {
+            h = (s32)func_8001C7FC(4, id, 0);
+        }
+        switch (kind) {
+        case 0:
+            func_800553EC(h, arg2, arg3, arg4);
+            return 0;
+        case 1:
+            func_8005546C(h, arg2);
+            return 0;
+        case 2:
+            switch (arg0 & 0x3F) {
+            case 1:
+                func_80055764(h, arg2, arg3);
+                return 0;
+            case 5:
+                func_80055850(h, arg2, arg3);
+                return 0;
+            case 3:
+                func_8005593C(h, arg2, arg3);
+                return 0;
+            }
+            return -1;
+        case 3:
+            switch (arg0 & 0x3F) {
+            case 1:
+                func_800557A8(h, arg2, arg3, arg4);
+                return 0;
+            case 5:
+                func_80055894(h, arg2, arg3, arg4);
+                return 0;
+            case 3:
+                func_80055980(h, arg2, arg3, arg4);
+                return 0;
+            }
+            return -1;
+        case 5:
+            switch (arg0 & 0x3F) {
+            case 1:
+                func_80055704(arg2);
+                return 0;
+            case 5:
+                func_800557F0(arg2);
+                return 0;
+            case 3:
+                func_800558DC(arg2);
+                return 0;
+            }
+            return -1;
+        case 6:
+            switch (arg0 & 0x3F) {
+            case 1:
+                func_80055730(arg2, arg3);
+                return -1;
+            case 5:
+                func_8005581C(arg2, arg3);
+                return -1;
+            case 3:
+                func_80055908(arg2, arg3);
+                return -1;
+            }
+            return -1;
+        }
+        return -1;
+    }
+    return -1;
+}
 
 void func_800ACB98(void) {
     s32 i;
@@ -617,7 +765,7 @@ void func_800ACB98(void) {
         D_800739B0[i].unk1 = 0;
         D_800739B0[i].unk0 = 0;
     }
-    D_8006794C->unk1C->unk83C = func_800AC598;
+    D_8006794C->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AC598;
     func_800ACD70();
     func_800ACCB4();
     func_800239D0();
