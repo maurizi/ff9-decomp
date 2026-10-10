@@ -1055,7 +1055,11 @@ typedef struct Unk8004AB64 {
     u16 unk76;
     s32 unk78;
     union { u32 w; u8 b[4]; } unk7C; /* colour */
-    u8 pad80[0x90 - 0x80];
+    u8 pad80[0x84 - 0x80];
+    s16 unk84; /* smoothed look-at point (func_80047B90) */
+    s16 unk86;
+    s16 unk88;
+    u8 pad8A[0x90 - 0x8A];
     u8 unk90;
     u8 unk91;
     u8 unk92;
@@ -1069,6 +1073,15 @@ typedef struct Unk8004AB64 {
     u16 unkA8;
     s16 unkAA;
 } Unk8004AB64;
+
+/* model header as seen by func_80047B90 (BtlUnit9C in ovl_0b) */
+typedef struct {
+    u16 unk0; /* flags */
+    u8 pad2[0x48 - 0x2];
+    s16 unk48; /* look-at point */
+    s16 unk4A;
+    s16 unk4C;
+} Unk80047B90;
 
 typedef struct Unk8007AECCNode {
     Unk8004AB64 *unk0; /* key */
@@ -1403,6 +1416,19 @@ typedef struct {
 } Unk8005EBB4;
 extern u32 D_8006F410[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
+u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
+
+/* drum kit key entry (func_8005E170) */
+typedef struct {
+    u8 unk0; /* sample */
+    u8 unk1; /* note */
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7; /* pan, bit 7: flag */
+} AkaoDrumKey;
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 
 typedef struct {

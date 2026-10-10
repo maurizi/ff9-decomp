@@ -13615,7 +13615,64 @@ u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out) {
     return freq;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E170);
+s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
+    AkaoDrumKey *e;
+    Unk8005EBB4 *p;
+    u32 f;
+    s32 v;
+    s32 r;
+
+    e = (AkaoDrumKey *)D_80080A10->unk34;
+    e += key;
+    D_80080A10->unk10 |= mask;
+    if (D_80080A10->unk14 & mask) {
+        D_80080A10->unk18 |= mask;
+    }
+    f = c->unk34;
+    v = func_8005DD54(D_80080A10->unk0, e->unk0);
+    c->unk9A = v;
+    p = &D_8007F970[v];
+    c->unk120 = p->unk0;
+    c->unk124 = p->unk4;
+    if (!(f & 0x1000000)) {
+        c->unk12A = e->unk2 << 8;
+    } else {
+        c->unk12A &= 0x7F00;
+    }
+    c->unk12A |= p->unkC & 0x80FF;
+    if (!(f & 0x8000000)) {
+        c->unk12C &= 0x201F;
+        c->unk12C |= e->unk3 << 6;
+    } else {
+        c->unk12C &= 0x3FDF;
+    }
+    switch (e->unk4) {
+    case 3:
+        c->unk12C |= 0x4000;
+        break;
+    case 5:
+        c->unk12C |= 0x8000;
+        break;
+    case 7:
+        c->unk12C |= 0xC000;
+        break;
+    }
+    if (!(f & 0x10000000)) {
+        c->unk12C &= 0xFFE0;
+        c->unk12C |= e->unk5;
+    }
+    c->unk12C |= p->unkE & 0x20;
+    r = ((s32 (*)())func_8005DFE0)(p, e->unk1, c->unk108, &c->unk84);
+    c->unk12E = e->unk6;
+    c->unkBE = ((e->unk7 & 0x7F) + 0x40) << 8;
+    if (e->unk7 & 0x80) {
+        D_80080A10->unk40 |= mask;
+    } else {
+        D_80080A10->unk40 &= ~mask;
+    }
+    D_80083158.unk8 |= 0x100;
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005E3FC);
 
