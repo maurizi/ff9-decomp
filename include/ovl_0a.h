@@ -1259,7 +1259,7 @@ void func_800A8724(void);
 /* func_800A879C: called before its definition without a prototype */
 s32 func_800C3EC0(s32, s16, s16, s16);
 s32 func_800C3608(Unk800C9DF4 *);
-s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, SVECTOR *, SVECTOR *, s16, s16, s32, s32);
 s32 func_800C31F8(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
 extern Unk800C9E00 *D_800C9E00; /* = D_800C9DF0.unk10, referenced by its own name */
