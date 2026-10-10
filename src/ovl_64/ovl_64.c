@@ -306,7 +306,92 @@ end:
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019BCE8);
+void func_8019BCE8(void) {
+    Ovl64StreamSect *s;
+    Ovl64FrameInfo *info;
+    Ovl64RingHdr *h;
+    u32 cur;
+
+    info = (Ovl64FrameInfo *)&D_8019DE10; /* what the callback gets when the sector has no frame info */
+    D_8019DE10.unk44++;
+    s = (Ovl64StreamSect *)(D_8019DE10.unk90 + (D_8019DE10.unk80 << 11));
+    if (++D_8019DE10.unk4C >= D_8019DE10.unk50) {
+        D_8019DE10.unk4C = 0;
+    }
+    if (D_8019DE10.unk4C == 2) {
+        if (s->unk12 == 1) {
+            if (D_8019DE10.unk10 == 1) {
+                info = &s->unk14[1];
+            } else {
+                info = &s->unk14[0];
+            }
+            D_8019F510[D_8019DE10.unk68].unk0 = info->unk0;
+            D_8019F510[D_8019DE10.unk68].unk2 = info->unk2;
+            D_8019F510[D_8019DE10.unk68].unk4 = info->unk4;
+            D_8019F510[D_8019DE10.unk68].unk6 = info->unk6;
+            D_8019F510[D_8019DE10.unk68].unk8 = info->unk8;
+            D_8019F510[D_8019DE10.unk68].unkA = info->unkA;
+            D_8019F510[D_8019DE10.unk68].unkC = info->unkC;
+            D_8019F510[D_8019DE10.unk68].unkE = info->unkE;
+            D_8019F510[D_8019DE10.unk68].unk10 = info->unk10;
+            D_8019F510[D_8019DE10.unk68].unk12 = info->unk12;
+            D_8019F510[D_8019DE10.unk68].unk14 = info->unk14;
+            D_8019F510[D_8019DE10.unk68].unk18 = info->unk18;
+            D_8019F510[D_8019DE10.unk68].unk1C = info->unk1C;
+            D_8019F510[D_8019DE10.unk68].unk20 = info->unk20;
+            D_8019F510[D_8019DE10.unk68].unk22 = info->unk22;
+            D_8019DE10.unk3 = 1;
+        }
+        if (s->unk5C < 0) {
+            if (((u32)s->unk5C >> 8 & 0xFF) >= 0x80) {
+                D_8019F7D0[D_8019DE10.unk68].unk0 = 1;
+            } else {
+                D_8019F7D0[D_8019DE10.unk68].unk0 = 0;
+            }
+            D_8019F7D0[D_8019DE10.unk68].unk1 = s->unk5C;
+        } else {
+            D_8019F7D0[D_8019DE10.unk68].unk0 = 0;
+            D_8019F7D0[D_8019DE10.unk68].unk1 = 0;
+        }
+        if (D_8019DE10.unk4 != NULL) {
+            D_8019DE10.unk4(D_8019DE10.unk90 + ((D_8019DE10.unk80 - 1) << 11),
+                            D_8019DE10.unk90 + (D_8019DE10.unk80 << 11), info);
+        }
+    }
+    cur = D_8019DE10.unk80;
+    D_8019DE10.unk84 = cur;
+    D_8019DE10.unk88++;
+    if (D_8019DE10.unk88 > D_8019DE10.unk8C) {
+        D_8019DE10.unk8C = D_8019DE10.unk88;
+    }
+    if (++D_8019DE10.unk80 >= D_8019DE10.unk7C) {
+        D_8019DE10.unk80 = 0;
+    }
+    if (++D_8019DE10.unk48 >= D_8019DE10.unk54) {
+        D_8019DE10.unk48 = 0;
+        D_8019DE10.unk58++;
+        if (D_8019DE10.unk8 != NULL) {
+            D_8019DE10.unk8();
+        }
+        h = &D_8019DE10.unk74[D_8019DE10.unk68];
+        h->unk4 = D_8019DE10.unk5C - D_8019DE10.unk64;
+        h->unk0 = (h->unk0 & 0xFFF) | 0xC000;
+        if (D_8019DE10.unk58 > D_8019DE10.unk3C) {
+            D_8019DE10.unk2 = 1;
+            func_80023018();
+        }
+        D_8019DE10.unk64 = 0;
+        if (D_8019DE10.unk68 == 0) {
+            D_8019DE10.unk68 = D_8019DE10.unk6C;
+        }
+        D_8019DE10.unk68--;
+        D_8019F750[D_8019DE10.unk68].unk0 = 0;
+        D_8019F750[D_8019DE10.unk68].unk4 = 0;
+    }
+    if (s->unk60 != 0xEEEEEEEE && s->unk60 != D_8019DE10.unk3C) {
+        D_8019DE10.unk3C = s->unk60;
+    }
+}
 
 s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4) {
     CdlLOC *loc;
@@ -338,11 +423,11 @@ s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4) 
     D_8019DEA4 = 0;
     func_800236A4(0);
     func_80022F1C(D_8019DE10.unk44, func_8019C434);
-    func_80056448(D_8019DE10.unk90, D_8019DE10.unk7C << 11);
+    func_80056448((s32)D_8019DE10.unk90, D_8019DE10.unk7C << 11);
     return 0;
 }
 
-s32 func_8019C2F4(u8 **data, Ovl64RingHdr **hdr, u8 **arg2, Ovl64Pair **arg3, u16 **arg4) {
+s32 func_8019C2F4(u8 **data, Ovl64RingHdr **hdr, Ovl64FrameInfo **arg2, Ovl64Pair **arg3, Ovl64Flag **arg4) {
     Ovl64RingHdr *h = &D_8019DE10.unk74[D_8019DE10.unk70];
 
     if (!(h->unk0 & 0x8000)) {
@@ -354,7 +439,7 @@ s32 func_8019C2F4(u8 **data, Ovl64RingHdr **hdr, u8 **arg2, Ovl64Pair **arg3, u1
     *hdr = h;
     *data = D_8019DE10.unk78 + (h->unk4 + D_8019DE10.unk70 * D_8019DE10.unk5C) * 0x8F4;
     if (D_8019DE10.unk3 != 0) {
-        *arg2 = D_8019F510[D_8019DE10.unk70];
+        *arg2 = &D_8019F510[D_8019DE10.unk70];
         *arg3 = &D_8019F750[D_8019DE10.unk70];
     } else {
         *arg2 = NULL;
@@ -371,7 +456,7 @@ s32 func_8019C2F4(u8 **data, Ovl64RingHdr **hdr, u8 **arg2, Ovl64Pair **arg3, u1
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019C434);
 
 s32 func_8019C7E4(void) {
-    if (D_8019DE10.unk90 == 0 || D_8019DE10.unk74 == NULL || D_8019DE10.unk78 == NULL || D_8019DE10.unk60 == 0 ||
+    if (D_8019DE10.unk90 == NULL || D_8019DE10.unk74 == NULL || D_8019DE10.unk78 == NULL || D_8019DE10.unk60 == 0 ||
         D_8019DE10.unk7C == 0) {
         return 4;
     }
@@ -417,7 +502,7 @@ s32 func_8019C884(Ovl64RingHdr *ring, u32 per, u32 size) {
     return 0;
 }
 
-s32 func_8019C954(s32 arg0, s32 arg1, s32 arg2) {
+s32 func_8019C954(u8 *arg0, s32 arg1, u32 arg2) {
     if (arg1 != 2) {
         return 2;
     }
