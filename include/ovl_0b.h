@@ -869,7 +869,18 @@ typedef struct {
     Battle1358 unk0[16];
     s16 unk1C0; /* last entry handed out (counts down, wraps to 15) */
     s16 unk1C2;
-} Battle1358Ring; /* Battle.unk1358 */
+    s32 unk1C4; /* unit being scanned (BtlUnit *) */
+    union {
+        s32 w; /* cleared as a word */
+        u8 b[4]; /* b[0]: delay, b[1]: item index, b[2]: state */
+    } unk1C8;
+    Battle488 *unk1CC;
+    u8 unk1D0;
+    u8 unk1D1;
+    u8 pad1D2[0x1D4 - 0x1D2];
+    u8 unk1D4; /* units hidden from status effects (mask) */
+    u8 pad1D5[0x1D8 - 0x1D5];
+} Battle1358Ring; /* Battle.unk1358 (0x1D8) */
 
 /* Inlined copy of func_800B3CEC (clear a command); the original source inlines it. */
 static inline void func_800B3CEC_inline(BtlCmd *arg0) {
@@ -950,17 +961,6 @@ typedef struct Battle {
     u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
     Battle1358Ring unk1358;
-    s32 unk151C; /* unit being scanned (BtlUnit *) */
-    union {
-        s32 w; /* cleared as a word */
-        u8 b[4]; /* b[0]: delay, b[1]: item index, b[2]: state */
-    } unk1520;
-    Battle488 *unk1524;
-    u8 unk1528;
-    u8 unk1529;
-    u8 pad152A[0x152C - 0x152A];
-    u8 unk152C;
-    u8 pad152D[0x1530 - 0x152D];
     s32 unk1530;
     s32 unk1534; /* battle data file sector */
     struct Battle1538 **unk1538;

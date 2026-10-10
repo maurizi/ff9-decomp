@@ -2126,7 +2126,7 @@ void func_800B253C(BtlCmd *arg0) {
     }
     b = D_8006794C->unk1C->unk8E4.battle;
     u = arg0->unk4;
-    if (b->unk151C != 0 || b->unk1524 != NULL) {
+    if (b->unk1358.unk1C4 != 0 || b->unk1358.unk1CC != NULL) {
         return;
     }
     if (arg0->unkE == 4) {

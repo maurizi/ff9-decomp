@@ -563,7 +563,7 @@ s32 func_800CAAD0(BtlScript *arg0, BtlUnit *arg1) {
         if (arg0->unk21 != 0) {
             return 0;
         }
-        if (D_8006794C->unk1C->unk8E4.battle->unk151C != 0) {
+        if (D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C4 != 0) {
             return 0;
         }
         if (!((arg0->unk0 >> 3) & 1)) {
@@ -995,14 +995,14 @@ void func_800CBF90(void) {
     Battle1358 *p;
     D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C0 = 0;
     D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C2 = 0;
-    D_8006794C->unk1C->unk8E4.battle->unk152C = 0xFF;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D4 = 0xFF;
     p = D_8006794C->unk1C->unk8E4.battle->unk1358.unk0;
     for (i = 15; i != -1; i--) {
         p->unk0 = NULL;
         p++;
     }
-    D_8006794C->unk1C->unk8E4.battle->unk151C = 0;
-    D_8006794C->unk1C->unk8E4.battle->unk1524 = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C4 = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1CC = 0;
 }
 
 void func_800CC044(BtlUnit *arg0) {
@@ -1339,13 +1339,13 @@ void *func_800CD78C(BtlUnit *arg0) {
 }
 
 void func_800CD808(s32 arg0) {
-    D_8006794C->unk1C->unk8E4.battle->unk151C = arg0;
-    D_8006794C->unk1C->unk8E4.battle->unk1520.w = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C4 = arg0;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.w = 0;
 }
 
 void func_800CD83C(void) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
-    BtlUnit *s = (BtlUnit *)b->unk151C;
+    BtlUnit *s = (BtlUnit *)b->unk1358.unk1C4;
     u8 buf[64];
     u32 k;
     u32 j;
@@ -1355,16 +1355,16 @@ void func_800CD83C(void) {
     if (s == NULL) {
         return;
     }
-    if (--b->unk1520.b[0] != 0xFF) {
+    if (--b->unk1358.unk1C8.b[0] != 0xFF) {
         return;
     }
     c = D_8006794C->unk1C->unk8E4.battle;
-    switch (c->unk1520.b[2]) {
+    switch (c->unk1358.unk1C8.b[2]) {
     case 0:
         func_8002BD54(buf, func_800CD78C(s));
         func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 10));
         func_8002BBE8(s->unk7A, buf + func_8002BCC0(buf), 0);
-        D_8006794C->unk1C->unk8E4.battle->unk1520.b[2] = 1;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 1;
         break;
     case 1:
         func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, 11));
@@ -1375,50 +1375,50 @@ void func_800CD83C(void) {
         func_8002BBE8(s->unk2A, buf + func_8002BCC0(buf), 0);
         func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 13));
         func_8002BBE8(s->unk24->unk2, buf + func_8002BCC0(buf), 0);
-        D_8006794C->unk1C->unk8E4.battle->unk1520.b[1] = 0;
-        D_8006794C->unk1C->unk8E4.battle->unk1520.b[2] = 2;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[1] = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 2;
         break;
     case 2:
         if (!(s->unk68 & 1)) {
             mask = c->unk488[(s->unk68 >> 1) & 0xF].unk0->unk2;
-            while ((j = D_8006794C->unk1C->unk8E4.battle->unk1520.b[1]++) < 8) {
+            while ((j = D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[1]++) < 8) {
                 if ((mask >> j) & 1) {
                     func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, j));
                     goto show;
                 }
             }
         }
-        D_8006794C->unk1C->unk8E4.battle->unk1520.b[1] = 0;
-        D_8006794C->unk1C->unk8E4.battle->unk1520.b[2] = 3;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[1] = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 3;
     case 3:
         mask = s->unk73 & ~s->unk70;
-        while ((k = D_8006794C->unk1C->unk8E4.battle->unk1520.b[1]++) < 8) {
+        while ((k = D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[1]++) < 8) {
             if ((mask >> k) & 1) {
                 func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, k + 14));
                 goto show;
             }
         }
     default:
-        D_8006794C->unk1C->unk8E4.battle->unk151C = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C4 = 0;
         func_800F4F04(0, 2);
         return;
     }
 show:
-    D_8006794C->unk1C->unk8E4.battle->unk1520.b[0] = func_800F4FC8() - 1;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1C8.b[0] = func_800F4FC8() - 1;
     func_800F4F04((s32)buf, 2);
 }
 
 void func_800CDC68(BtlUnit *arg0) {
     if (!(arg0->unk68 & 1)) {
-        D_8006794C->unk1C->unk8E4.battle->unk1524 = &D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF];
-        if (D_8006794C->unk1C->unk8E4.battle->unk1524->unk8.w == -1) {
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1CC = &D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF];
+        if (D_8006794C->unk1C->unk8E4.battle->unk1358.unk1CC->unk8.w == -1) {
             func_800F4F04(func_800357C0(D_800F6FB8, 9), 2);
-            D_8006794C->unk1C->unk8E4.battle->unk1529 = 4;
-            D_8006794C->unk1C->unk8E4.battle->unk1528 = func_800F4FC8() - 1;
+            D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D1 = 4;
+            D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
             return;
         }
-        D_8006794C->unk1C->unk8E4.battle->unk1529 = 0;
-        D_8006794C->unk1C->unk8E4.battle->unk1528 = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D1 = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D0 = 0;
     }
 }
 
@@ -1429,16 +1429,16 @@ void func_800CDD68(void) {
     u8 *s;
     s32 kind;
 
-    if (D_8006794C->unk1C->unk8E4.battle->unk1524 == NULL) {
+    if (D_8006794C->unk1C->unk8E4.battle->unk1358.unk1CC == NULL) {
         return;
     }
-    if (--D_8006794C->unk1C->unk8E4.battle->unk1528 != 0xFF) {
+    if (--D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D0 != 0xFF) {
         return;
     }
-    while ((i = D_8006794C->unk1C->unk8E4.battle->unk1529++) < 4) {
-        id = D_8006794C->unk1C->unk8E4.battle->unk1524->unk8.b[3 - i];
+    while ((i = D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D1++) < 4) {
+        id = D_8006794C->unk1C->unk8E4.battle->unk1358.unk1CC->unk8.b[3 - i];
         if (id != 0xFF) {
-            D_8006794C->unk1C->unk8E4.battle->unk1528 = func_800F4FC8() - 1;
+            D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
             func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, 8));
             func_8002AD38(buf, func_800CD75C(id));
             func_8002AD38(buf, D_800A7C20);
@@ -1449,7 +1449,7 @@ void func_800CDD68(void) {
     }
     s = NULL;
     kind = 1;
-    D_8006794C->unk1C->unk8E4.battle->unk1524 = NULL;
+    D_8006794C->unk1C->unk8E4.battle->unk1358.unk1CC = NULL;
 show:
     func_800F4F04((s32)s, kind);
 }
