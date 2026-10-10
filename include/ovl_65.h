@@ -147,7 +147,7 @@ extern RECT D_801EF27C; /* const {0, 0, 640, 224} */
 typedef struct {
     DRAWENV draw;
     DISPENV disp;
-    u8 pad70[8];
+    u32 unk70[2]; /* ordering table */
     DR_TPAGE unk78;
     SPRT unk80;
     DR_TPAGE unk94;

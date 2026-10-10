@@ -1227,7 +1227,71 @@ INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EE19C);
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EF260);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3488);
+void func_801F3488(s32 arg0) {
+    s16 c = 0xFF;
+    u8 state = 0;
+    DispBuf b[2];
+    RECT rect = D_801EF260;
+    DispBuf *cur;
+
+    func_801F3818(b);
+    cur = b;
+    DrawSync(0);
+    func_801F3A20(arg0);
+    while (1) {
+        cur = (cur == &b[0]) ? &b[1] : &b[0];
+        ClearOTag(cur->unk70, 2);
+        switch (state) {
+        case 0:
+            state++;
+            break;
+        case 1:
+            setRGB0(&cur->unkB8, c, c, c);
+            c -= 4;
+            addPrim(&cur->unk70[0], &cur->unk78);
+            addPrim(&cur->unk70[0], &cur->unk94);
+            addPrim(&cur->unk70[1], &cur->unkB0);
+            if (c < 0) {
+                c = 0;
+                state++;
+            }
+            break;
+        case 2:
+            setRGB0(&cur->unkB8, 0, 0, 0);
+            addPrim(&cur->unk70[0], &cur->unk78);
+            addPrim(&cur->unk70[0], &cur->unk94);
+            addPrim(&cur->unk70[1], &cur->unkB0);
+            if (D_80073990[0] & 0x20000) {
+                state++;
+            }
+            break;
+        case 3:
+            c += 4;
+            if (c >= 0x100) {
+                ClearImage(&rect, 0, 0, 0);
+                DrawSync(0);
+                if (c > 0x100) {
+                    state++;
+                }
+            } else {
+                setRGB0(&cur->unkB8, c, c, c);
+                addPrim(&cur->unk70[0], &cur->unk78);
+                addPrim(&cur->unk70[0], &cur->unk94);
+                addPrim(&cur->unk70[1], &cur->unkB0);
+            }
+            break;
+        case 4:
+            ClearImage(&rect, 0, 0, 0);
+            DrawSync(0);
+            return;
+        }
+        func_80019194();
+        DrawSync(0);
+        VSync(0);
+        PutDispEnv(&cur->disp);
+        DrawOTagEnv(cur->unk70, &cur->draw);
+    }
+}
 
 void func_801F3818(DispBuf *b) {
     RECT rect = D_801EF27C;
