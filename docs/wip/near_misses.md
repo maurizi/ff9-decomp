@@ -5,7 +5,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
 - Register allocation / scheduling / branch order (>=90%):
-  800343C0, 8005F718,
+  8005F718,
   800616F8, 8002FED4, 8002ECA0, 8002E718, 80062118, 800621D4, 8005B1B8, 8005AEC8, 8002B644.
 - Order dependency: 800577EC / 80057898 match alone but break 800584C8; need 800579B4, 80057D80,
   80058118 matched first (work in address order).

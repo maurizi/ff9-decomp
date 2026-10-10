@@ -6880,7 +6880,17 @@ void func_80034394(s32 a) {
     func_80034404(a);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800343C0);
+void func_800343C0(s32 ch) {
+    s32 i;
+    Character *c;
+
+    if (ch < 8) {
+        c = &D_8006794C->unk1C->unk3C[ch];
+        for (i = 0; i < 0x30; i++) {
+            c->unk58[i] = 0;
+        }
+    }
+}
 
 void func_80034404(s32 i) {
     Character *c = &D_8006794C->unk1C->unk3C[i];
