@@ -2871,7 +2871,189 @@ void func_800AFBE4(TmState *s) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AFCE4);
+void *func_800AFCE4(u32 *ot, SPRT *p, TmState *s) {
+    u8 c;
+    s32 snd;
+
+    c = s->unk2E8 * 8;
+    if (s->unk2E8 * 8 >= 0x100) {
+        c = 0xFF;
+    }
+    if ((u8)(c - 0xF5) < 8) {
+        switch (s->unk45C) {
+        case 0:
+            if (func_800AE94C(s, 0) != 10) {
+                snd = 0xD;
+            } else {
+                snd = 8;
+            }
+            break;
+        case 1:
+            snd = 0xE;
+            break;
+        default:
+            snd = 0xF;
+            break;
+        }
+        func_800B01E8(snd);
+    }
+    switch (s->unk45C) {
+    case 0:
+        if (func_800AE94C(s, 0) == 10) {
+            setlen(p, 4);
+            p->code = 0x66;
+            p->x0 = 0x4A;
+            p->y0 = 0x58;
+            p->w = 0xA8;
+            p->h = 0x28;
+            p->r0 = c;
+            p->g0 = c;
+            p->b0 = c;
+            p->u0 = 0;
+            p->v0 = 0x50;
+            p->clut = 0x3A40;
+            AddPrim(ot + 1, p);
+            p++;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            AddPrim(ot + 1, p);
+            p = (SPRT *)((DR_TPAGE *)p + 1);
+            setlen(p, 4);
+            p->code = 0x66;
+            p->x0 = 0x4A;
+            p->y0 = 0x58;
+            p->w = 0xB0;
+            p->h = 0x28;
+            p->r0 = c;
+            p->g0 = c;
+            p->b0 = c;
+            p->u0 = 0;
+            p->v0 = 0x78;
+            p->clut = 0x3A40;
+            AddPrim(ot + 1, p);
+            p++;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            AddPrim(ot + 1, p);
+            p = (SPRT *)((DR_TPAGE *)p + 1);
+        } else {
+            setlen(p, 4);
+            p->code = 0x66;
+            p->x0 = 0x6C;
+            p->y0 = 0x58;
+            p->w = 0x68;
+            p->h = 0x28;
+            p->u0 = 0;
+            p->v0 = 0;
+            p->r0 = c;
+            p->g0 = c;
+            p->b0 = c;
+            p->clut = 0x3A40;
+            AddPrim(ot + 1, p);
+            p++;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            AddPrim(ot + 1, p);
+            p = (SPRT *)((DR_TPAGE *)p + 1);
+            setlen(p, 4);
+            p->code = 0x66;
+            p->x0 = 0x6C;
+            p->y0 = 0x58;
+            p->w = 0x70;
+            p->h = 0x28;
+            p->r0 = c;
+            p->g0 = c;
+            p->b0 = c;
+            p->u0 = 0x68;
+            p->v0 = 0;
+            p->clut = 0x3A40;
+            AddPrim(ot + 1, p);
+            p++;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+            AddPrim(ot + 1, p);
+            p = (SPRT *)((DR_TPAGE *)p + 1);
+        }
+        break;
+    case 1:
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = 0x6A;
+        p->y0 = 0x58;
+        p->w = 0x68;
+        p->h = 0x28;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+        p->u0 = 0;
+        p->v0 = 0x28;
+        p->clut = 0x3A40;
+        AddPrim(ot + 1, p);
+        p++;
+        setlen((DR_TPAGE *)p, 1);
+        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        AddPrim(ot + 1, p);
+        p = (SPRT *)((DR_TPAGE *)p + 1);
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = 0x6A;
+        p->y0 = 0x58;
+        p->w = 0x70;
+        p->h = 0x28;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+        p->u0 = 0x68;
+        p->v0 = 0x28;
+        p->clut = 0x3A40;
+        AddPrim(ot + 1, p);
+        p++;
+        setlen((DR_TPAGE *)p, 1);
+        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        AddPrim(ot + 1, p);
+        p = (SPRT *)((DR_TPAGE *)p + 1);
+        break;
+    default:
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = 0x5C;
+        p->y0 = 0x58;
+        p->w = 0x88;
+        p->h = 0x28;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+        p->u0 = 0;
+        p->v0 = 0xA0;
+        p->clut = 0x3A40;
+        AddPrim(ot + 1, p);
+        p++;
+        setlen((DR_TPAGE *)p, 1);
+        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        AddPrim(ot + 1, p);
+        p = (SPRT *)((DR_TPAGE *)p + 1);
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = 0x5C;
+        p->y0 = 0x58;
+        p->w = 0x90;
+        p->h = 0x28;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+        p->u0 = 0;
+        p->v0 = 0xC8;
+        p->clut = 0x3A40;
+        AddPrim(ot + 1, p);
+        p++;
+        setlen((DR_TPAGE *)p, 1);
+        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        AddPrim(ot + 1, p);
+        p = (SPRT *)((DR_TPAGE *)p + 1);
+        break;
+    }
+    return p;
+}
 
 void func_800B01E8(s32 arg0) {
     func_800A78EC(0xD000, D_800B3C8C[arg0], 0, 0x80, 0x7F);

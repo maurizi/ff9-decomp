@@ -316,7 +316,7 @@ void *func_800AD9F8(u32 *, void *, TmState *);
 void *func_800AE084(u32 *, void *, TmState *);
 void *func_800AE398(u32 *, SPRT *, TmState *);
 void *func_800AE5A0(u32 *, void *, TmState *);
-void *func_800AFCE4(u32 *, void *, TmState *);
+void *func_800AFCE4(u32 *, SPRT *, TmState *);
 void *func_800B030C(u32 *, void *, TmState *);
 void *func_800B07DC(u32 *, void *, TmState *);
 void *func_800B1A84(u32 *, SPRT *, TmState *);
