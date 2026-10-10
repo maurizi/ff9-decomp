@@ -15305,7 +15305,75 @@ void func_800540E8(s32 x, s32 y) {
     D_8007BD10 = p;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054294);
+u32 *func_80054294(u32 *buf, s32 x, s32 y) {
+    s16 xs[9];
+    s16 ys[9];
+    SVECTOR sv;
+    VECTOR v;
+    MATRIX m;
+    s32 i;
+    s32 dx, dy;
+    s32 t;
+    s32 ex, ey;
+    s16 *py;
+    s16 *q;
+    DVECTOR *pts;
+    WarpVert *p;
+
+    D_8007BD14 = (DVECTOR *)buf;
+    D_8007BD18 = (WarpVert *)((u8 *)buf + 0x24);
+    buf = (u32 *)((u8 *)buf + 0x2AC);
+    dx = D_8006794C->unkC->disp.w - x;
+    dy = D_8006794C->unkC->disp.h - y;
+    for (i = 0; i < 5; i++) {
+        xs[4 - i] = x - (x * i) / 4;
+        xs[4 + i] = x + (dx * i) / 4;
+        ys[4 - i] = y - (y * i) / 4;
+        ys[4 + i] = y + (dy * i) / 4;
+    }
+    for (i = 0; i < 5; i++) {
+        t = func_8004BB7C(i << 8);
+        pts = D_8007BD14;
+        pts[i].vx = x - (x * t) / 4096;
+        pts[8 - i].vx = x + (dx * t) / 4096;
+        pts[i].vy = y - (y * t) / 4096;
+        pts[8 - i].vy = y + (dy * t) / 4096;
+    }
+    for (i = 1; i < 8; i++) {
+        ex = ((pts[i].vx - xs[i]) * D_8007BD24) / 4096;
+        py = ys;
+        ey = ((pts[i].vy - ys[i]) * D_8007BD24) / 4096;
+        pts[i].vx = xs[i] + ex;
+        pts[i].vy = ys[i] + ey;
+    }
+    sv.vy = 0;
+    sv.vx = 0;
+    sv.vz = (s16)D_8007BD20 >> 4;
+    func_80030AF4(&sv, &m);
+    v.vx = v.vy = D_8007BD08->unk4;
+    v.vz = 0;
+    ScaleMatrix(&m, &v);
+    m.t[0] = x;
+    m.t[1] = y;
+    m.t[2] = 0;
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    p = D_8007BD18;
+    for (ex = 0; ex < 9; ex++) {
+        q = py;
+        sv.vx = xs[ex] - x;
+        for (ey = 0; ey < 9; ey++) {
+            sv.vy = q[ey] - y;
+            gte_ldv0(&sv);
+            gte_rtv0tr();
+            gte_stlvnl(&v);
+            p->x = v.vx;
+            p->y = v.vy;
+            p++;
+        }
+    }
+    return buf;
+}
 
 void func_80054650(void) {
     u32 *p;
