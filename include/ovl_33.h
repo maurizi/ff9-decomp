@@ -149,7 +149,7 @@ extern u8 D_801EDF04[];
 s32 func_801F0E64(s32);
 extern u8 D_801F3418[];
 extern u8 D_801F3428[];
-extern s32 D_801F893C[3]; /* cursor x per column */
+extern s16 D_801F893C[3][2]; /* cursor x per column */
 extern u8 D_801EE648[];
 extern s32 D_801F8918[]; /* text index per party slot */
 /* func_800355DC; this overlay's link only has the D_ name */
