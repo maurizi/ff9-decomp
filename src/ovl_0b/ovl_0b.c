@@ -2692,12 +2692,10 @@ void func_800B7954(BtlCalc *c) {
     s32 back = 0;
     u16 i;
     u16 n;
-    s16 v;
     u32 a;
     u16 who;
     s32 id;
     BtlUnit *w;
-    s32 k;
 
     if ((t->unk68 & 1) && !(s->unk68 & 1)) {
         back = func_800B065C(t, s, (BtlCmd *)c->unk8);
