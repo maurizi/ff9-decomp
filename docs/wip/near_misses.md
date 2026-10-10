@@ -590,3 +590,19 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - Calls without `andi 0xFF` on the result of a u8 function defined later in the same file: the
     original had no prototype (implicit int), so leave them undeclared (15 A9488: func_800AB1B8,
     func_800ACF48).
+- Pass 11 (overlays except 0b; row counts from the new build/search/cmp.py, which also compares symbol
+  names: its rows for `%hi/%lo(func_X)` are false positives because ours drop func_ names outside jal,
+  and offset-named symbols like D_800CA06E vs D_800CA068+6 count as rows but link identically).
+  Matched 15 ADE30. Improved drafts: 14 A741C 34, 37 F13F8 40, 65 F1848 20, 0a BD130 12 (see their
+  headers). No change on the rest; dup.py (identical-arm `if (var)`), build/sink.py (move the statement
+  after / before an if chain into every arm), declaration shuffles and 25-minute permuter runs were tried
+  on every draft in docs/wip/ for these overlays. What worked:
+  * a statement after an if/else written at the end of both arms (`x += w;` in both glyph branches of
+    ADE30) - jump2 merges the copies, but the arms were allocated with the extra references; the dup.py
+    hit `if (p) { x += w; } else { x += w; }` pointed at it;
+  * `*(f->unkC + c)` instead of `f->unkC[c]` gives the `addu v0, v0, s3` (index first) operand order
+    (ADE30; main.c's func_80029058 has the same form);
+  * a per-iteration element pointer (`BgSprt *sp = &arg1[i];`) changes the order of loop.c's giv
+    increments at the loop end (BD130);
+  * a struct field read through the global (`D_801F7A78.unk18[i]`) instead of a pointer local lets CSE
+    derive the base from a related register (`addiu s5, s1, -0x1D8`), as the original does (F1848).
