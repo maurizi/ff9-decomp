@@ -10439,7 +10439,189 @@ s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047B90);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047E1C);
+/* point 500 units ahead of o at angle a, at head height */
+static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
+    SVECTOR v;
+    MATRIX m;
+
+    m.m[0][2] = func_8004BB80(a);
+    m.m[1][1] = 0x1000;
+    m.m[2][2] = func_8004BB7C(a);
+    m.m[0][0] = m.m[0][1] = m.m[1][0] = m.m[1][2] = m.m[2][0] = m.m[2][1] = 0;
+    m.t[0] = o->unk14.vx;
+    m.t[1] = o->unk14.vy;
+    m.t[2] = o->unk14.vz;
+    SetRotMatrix(&m);
+    SetTransMatrix(&m);
+    v.vx = 0;
+    v.vy = (o->unk32 * (s8)o->unk2F) >> 6;
+    v.vz = -500;
+    gte_ldv0(&v);
+    gte_rtv0tr();
+    gte_stlvnl(out);
+}
+
+/* move the look-at point towards t */
+static inline void func_80047E1C_approach(Unk8004AB64 *o, Unk80047B90 *mdl, VECTOR *t) {
+    s32 d;
+
+    d = func_80052EC0(t->vx - o->unk84, t->vy - o->unk86, t->vz - o->unk88);
+    if (d < 100) {
+        d = 100;
+    }
+    o->unk84 += (t->vx - o->unk84) * 100 / d;
+    o->unk86 += (t->vy - o->unk86) * 100 / d;
+    o->unk88 += (t->vz - o->unk88) * 100 / d;
+    mdl->unk0 |= 1;
+    mdl->unk48 = o->unk84;
+    mdl->unk4A = o->unk86;
+    mdl->unk4C = o->unk88;
+}
+
+/* is the look-at point still in front of o (within ~80 degrees)? */
+static inline s32 func_80047E1C_infront(Unk8004AB64 *o) {
+    s32 ok = 1;
+    s32 d;
+
+    if (!(o->unk50 & 0x400)) {
+        d = (func_80052F24(o->unk84 - o->unk14.vx, o->unk88 - o->unk14.vz) - o->unk14.unk22) & 0xFFF;
+        if (d > 0x800) {
+            d -= 0x1000;
+        }
+        ok = (u32)(d + 0x37F) < 0x6FF;
+        if (!ok) {
+            o->unk50 &= ~0x100;
+        }
+    }
+    return ok;
+}
+
+static inline s32 func_80047E1C_infront2(Unk8004AB64 *o, s32 *pa) {
+    s32 ok = 1;
+    s32 a;
+    s32 d;
+
+    if (!(o->unk50 & 0x400)) {
+        a = func_80052F24(o->unk84 - o->unk14.vx, o->unk88 - o->unk14.vz);
+        d = (a - o->unk14.unk22) & 0xFFF;
+        if (d > 0x800) {
+            d -= 0x1000;
+        }
+        ok = (u32)(d + 0x37F) < 0x6FF;
+        if (!ok) {
+            o->unk50 &= ~0x100;
+        }
+        *pa = a;
+    }
+    return ok;
+}
+
+void func_80047E1C(Unk8004AB64 *o) {
+    VECTOR t;
+    s32 ang;
+    s32 save;
+    s32 x, y, z;
+    Unk80047B90 *mdl;
+    Unk8004AB64 *tgt;
+    Unk8004AB64 *best;
+    Unk8004AB64 *q;
+    Unk16D8 *n;
+    u8 mask;
+    s32 bestd;
+    s32 d;
+    s32 a;
+    s32 ok;
+
+    save = 0;
+    mdl = (Unk80047B90 *)((Unk8E0 *)func_8001E350(o->unk3B))->unk8;
+    tgt = NULL;
+    if ((o->unk50 & 4) && D_8007AE68 != NULL && D_8007AE68 != o &&
+        func_80052E48(o->unk14.vx - D_8007AE68->unk14.vx, o->unk14.vz - D_8007AE68->unk14.vz, 0) >= 1000) {
+        tgt = D_8007AE68;
+        o->unk50 |= 0x200;
+    }
+    if (tgt != NULL || ((o->unk50 & 1) && !(o->unk62 & 2))) {
+        if (o->unkF & 0x80) {
+            save = o->unk14.unk22;
+            o->unk14.unk22 = o->unk80;
+        }
+        if (tgt == NULL) {
+            best = NULL;
+            x = o->unk14.vx;
+            y = o->unk14.vy;
+            z = o->unk14.vz;
+            mask = o->unk6B;
+            bestd = 0;
+            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+                q = n->unk4;
+                if (q != o && q->unk5 == 4 && (u32)(q->unk14.vy - y + 399) < 799 && (q->unk50 & 2) &&
+                    (mask & q->unk6A)) {
+                    d = func_80052DEC(q->unk14.vx - x, q->unk14.vz - z, 0);
+                    if (d >= 1000) {
+                        a = func_800531D0(o, q, o->unk14.unk22);
+                        d -= 4000000;
+                        if (a < 0) {
+                            a = -a;
+                        }
+                        a -= 640;
+                        if (a < 0) {
+                            d += a;
+                            if (d < bestd) {
+                                bestd = d;
+                                best = q;
+                            }
+                        }
+                    }
+                }
+            }
+            tgt = best;
+        }
+        if (tgt != NULL) {
+            if (!(o->unk50 & 0x100)) {
+                if (!(o->unkF & 0x80)) {
+                    o->unk50 |= 0x100;
+                    func_80047E1C_ahead(o, o->unk14.unk22, &t);
+                    o->unk84 = t.vx;
+                    o->unk86 = t.vy;
+                    o->unk88 = t.vz;
+                }
+            }
+            if ((o->unk50 & 0x100) && func_80047E1C_infront(o)) {
+                {
+                    t.vx = tgt->unk14.vx;
+                    t.vy = tgt->unk14.vy;
+                    t.vz = tgt->unk14.vz;
+                    ang = func_80052F24(t.vx - o->unk14.vx, t.vz - o->unk14.vz);
+                    d = (ang - o->unk14.unk22) & 0xFFF;
+                    if (d > 0x800) {
+                        d -= 0x1000;
+                    }
+                    if ((u32)(d + 0x27F) < 0x4FF) {
+                        t.vy = (((o->unk14.vy << 6) + o->unk32 * (s8)o->unk2F) * 3 + (t.vy << 6) +
+                                tgt->unk32 * (s8)tgt->unk2F) >> 8;
+                        func_80047E1C_approach(o, mdl, &t);
+                    } else if (func_80047AB8(o, ang)) {
+                        a = d > 0x280 ? 0x280 : -0x280;
+                        func_80047E1C_ahead(o, a + o->unk14.unk22, &t);
+                        func_80047E1C_approach(o, mdl, &t);
+                    }
+                }
+            }
+        } else if ((o->unk50 & 0x100) && func_80047E1C_infront2(o, &ang) && func_80047AB8(o, ang)) {
+            {
+                func_80047B90(o, mdl);
+            }
+        }
+        if (o->unkF & 0x80) {
+            o->unk14.unk22 = save;
+        }
+    } else if ((o->unk50 & 0x100) && func_80047E1C_infront(o)) {
+        func_80047B90(o, mdl);
+    }
+    if (!(o->unk50 & 0x100)) {
+        mdl->unk0 &= ~1;
+    }
+}
 
 void func_8004883C(void) {
     Unk8007AECC *e = D_8007AECC;
