@@ -3565,7 +3565,171 @@ s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return (s32)p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3F8C);
+static inline s32 func_800B3F8C_grp(s32 id) {
+    return id / 50;
+}
+
+void func_800B3F8C(void) {
+    FileEntry *tbl;
+    FileEntry *e;
+    FileEntry *f;
+    FileEntry *g;
+    s32 i;
+    s32 cnt;
+    s32 best;
+    s32 sel;
+    s32 cur;
+    s32 key;
+    s32 x;
+
+    tbl = D_8006794C->unk1C->unk7E4->unk4;
+    key = func_800B3B64();
+    if (key == 0) {
+        cnt = 0;
+        key = func_800B3B40();
+        if (key != 0) {
+            cnt = 1;
+        } else {
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                if (((tbl[i].unk0 >> 16) & 0xFF) == 0x11) {
+                    cnt = 1;
+                    break;
+                }
+            }
+        }
+        if (cnt != 0) {
+            g = func_8001E218(0, 0x1000B);
+            func_800B3E48(0x1000B, 0, g->unk4, (g->unkC - g->unk4) << 11);
+            key = func_800B3B40();
+            if (key != 0) {
+                func_800B3C24(0x1000B);
+            }
+        }
+    }
+    if (func_800B3B88() != 0) {
+        for (i = 0; i < D_800CA050; i++) {
+            key = D_800CA010[i];
+            if (((D_800CA010[i] >> 16) & 0xFF) == 5) {
+                e = func_80063088(D_8006794C->unk1C->unk7E4, key);
+                if (e != NULL) {
+                    if ((e->unkC & 0xFFFF) != (s16)D_8006794C->unk1C->unk3A) {
+                        f = func_80063088(D_8006794C->unk1C->unk7E4, e->unkC);
+                        if (f != NULL) {
+                            func_800B3E48(e->unkC & 0xFFFFFF, 0, f->unk4, f->unk8 << 11);
+                        }
+                    }
+                    func_800B3E48(key, 0, e->unk4, e->unk8 << 11);
+                    func_800B3C24(key);
+                }
+            }
+        }
+    } else {
+        best = 0;
+        sel = -1;
+        cur = -1;
+        for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+            x = tbl[i].unk0;
+            if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && func_800B3D10(x) == NULL &&
+                    func_800B3F8C_grp(x & 0xFFFF) == func_800B3F8C_grp(D_8006794C->unk1C->unkC) && best < tbl[i].unk8) {
+                    best = tbl[i].unk8;
+                    sel = i;
+                }
+            }
+        }
+        if (sel == -1) {
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                x = tbl[i].unk0;
+                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if ((x & 0xFFFF) < 9000 && func_800B3D10(x) == NULL && (x & 0xFFFF) == D_8006794C->unk1C->unk8E4.field->unkA) {
+                        best = tbl[i].unk8;
+                        sel = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if (sel == -1) {
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                x = tbl[i].unk0;
+                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && func_800B3D10(x) == NULL &&
+                        best < tbl[i].unk8) {
+                        sel = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if (sel != -1) {
+            if ((tbl[sel].unkC & 0xFFFF) != (s16)D_8006794C->unk1C->unk3A) {
+                for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                    if (tbl[i].unk0 == tbl[sel].unkC) {
+                        func_800B3E48(tbl[i].unk0 & 0xFFFFFF, 0, tbl[i].unk4, tbl[i].unk8 << 11);
+                        break;
+                    }
+                }
+            }
+            cnt = tbl[sel].unk0 & 0xFFFFFF;
+            func_800B3E48(cnt, 0, tbl[sel].unk4, tbl[sel].unk8 << 11);
+            cur = cnt;
+        }
+        if (cur != -1) {
+            best = 0;
+            sel = -1;
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                x = tbl[i].unk0;
+                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    key = x & 0xFFFF;
+                    if (key < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                        func_800B3D10(x) == NULL && func_800B3F8C_grp(key) == func_800B3F8C_grp(D_8006794C->unk1C->unkC) &&
+                        best < tbl[i].unk8) {
+                        best = tbl[i].unk8;
+                        sel = i;
+                        break;
+                    }
+                }
+            }
+            if (sel == -1) {
+                for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                    x = tbl[i].unk0;
+                    if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != (cur & 0xFFFF) && func_800B3D10(x) == NULL &&
+                            (x & 0xFFFF) == D_8006794C->unk1C->unk8E4.field->unkA) {
+                            best = tbl[i].unk8;
+                            sel = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (sel == -1) {
+                for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                    x = tbl[i].unk0;
+                    if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                            func_800B3D10(x) == NULL && best < tbl[i].unk8) {
+                            sel = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (sel != -1) {
+                if ((tbl[sel].unkC & 0xFFFF) != (s16)D_8006794C->unk1C->unk3A) {
+                    for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                        if (tbl[i].unk0 == tbl[sel].unkC) {
+                            func_800B3E48(tbl[i].unk0 & 0xFFFFFF, 1, tbl[i].unk4, -1);
+                            return;
+                        }
+                    }
+                } else {
+                    func_800B3E48(tbl[sel].unk0 & 0xFFFFFF, 1, tbl[sel].unk4, -1);
+                }
+            }
+        }
+    }
+}
 
 s32 func_800B4894(void) {
     FieldScene *s;
