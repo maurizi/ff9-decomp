@@ -3811,4 +3811,30 @@ extern u8 D_800FEC53; /* D_800FEC40.unk10.b[3] */
 extern s32 D_800FEC5C; /* D_800FEC40.unk1C */
 
 
+/* func_800D650C: battle event script */
+s32 func_800AB3E4(s32, s32);
+s32 func_800AB410(s32);
+void func_800C2E4C(void);
+void func_800C30F4(void);
+void func_800D63B0(s32, u32 *, s32);
+s32 func_800DA3A4(s32);
+s32 func_800DA4F4(s32);
+s32 func_800DA5C4(void);
+s32 func_800DA634(s32);
+s32 func_800DA6B4(s32, s32);
+void func_800E4984(s32);
+u32 func_800E7D18(s32);
+void func_800E89D0(void);
+void func_800E8A80(s32);
+s32 func_800E8CE4(void);
+void func_800E9168(void);
+void func_800E9290(s32);
+void func_800E970C(void);
+void func_800D6340(void);
+extern s32 D_800FE530[];
+extern u8 D_800FF068[];
+/* main exe: candidates for ff9.h */
+void func_80054A28(void *);
+
+
 #endif
