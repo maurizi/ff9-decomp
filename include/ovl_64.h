@@ -115,13 +115,29 @@ typedef struct {
     u8 pad8[0x20 - 8];
 } Ovl64RingHdr; /* 0x20 */
 
+/* sector header at the end of each ring slot */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u8 pad4[4];
+    s32 unk8;
+    u8 padC[0x1C - 0xC];
+    union {
+        u32 w;
+        struct {
+            u16 lo;
+            u16 hi;
+        } h;
+    } unk1C;
+} Ovl64SectHdr;
+
 typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2;
     u8 unk3;
     u8 pad4[4];
-    s32 unk8;
+    void (*unk8)(void); /* sector callback */
     s32 unkC;
     s32 unk10;
     s32 unk14;
@@ -130,14 +146,14 @@ typedef struct {
     CdlLOC unk20;
     u8 pad24[0x38 - 0x24];
     s32 unk38;
-    s32 unk3C;
+    u32 unk3C;
     s32 unk40;
     s32 unk44;
-    s32 unk48;
-    s32 unk4C;
-    s32 unk50;
-    s32 unk54;
-    s32 unk58;
+    u32 unk48;
+    u32 unk4C;
+    u32 unk50;
+    u32 unk54;
+    u32 unk58;
     u32 unk5C; /* sectors per slot */
     u32 unk60;
     s32 unk64;

@@ -245,11 +245,70 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019B3D4);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019B7C4);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019BA70);
+void func_8019BA70(void) {
+    Ovl64SectHdr *s;
+    u32 *p;
+    u32 *src;
+    u32 *dst;
+    u32 i;
+    Ovl64RingHdr *h;
+
+    p = (u32 *)(D_8019DE10.unk78 +
+                (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 + 1 - D_8019DE10.unk5C)) * 0x8F4);
+    p -= 8;
+    if (D_8019DE10.unk64 == 0) {
+        dst = (u32 *)&D_8019DE10.unk74[D_8019DE10.unk68];
+        for (i = 0, src = p; i < 8; i++) {
+            *dst++ = *src++;
+        }
+        s = (Ovl64SectHdr *)p;
+        if (s->unk8 != D_8019DE10.unk58) {
+            D_8019DE10.unk2 = 2;
+            func_80023018();
+        }
+        if (s->unk2 != 4) {
+            goto end;
+        }
+    }
+    s = (Ovl64SectHdr *)p;
+    if ((s->unk1C.w >> 28) & 2) {
+        D_8019F750[D_8019DE10.unk68].unk0 = s->unk1C.w & 0xFFFF;
+        D_8019F750[D_8019DE10.unk68].unk4 = (s32)((u8 *)s + (s->unk1C.h.hi & 0xFFF));
+    }
+end:
+    D_8019DE10.unk44++;
+    if (++D_8019DE10.unk48 >= D_8019DE10.unk54) {
+        D_8019DE10.unk64++;
+        D_8019DE10.unk48 = 0;
+        D_8019DE10.unk58++;
+        if (D_8019DE10.unk8 != NULL) {
+            D_8019DE10.unk8();
+        }
+        h = &D_8019DE10.unk74[D_8019DE10.unk68];
+        h->unk4 = D_8019DE10.unk5C - D_8019DE10.unk64;
+        h->unk0 = (h->unk0 & 0xFFF) | 0xC000;
+        if (D_8019DE10.unk58 > D_8019DE10.unk3C) {
+            D_8019DE10.unk2 = 1;
+            func_80023018();
+        }
+        D_8019DE10.unk64 = 0;
+        if (D_8019DE10.unk68 == 0) {
+            D_8019DE10.unk68 = D_8019DE10.unk6C;
+        }
+        D_8019DE10.unk68--;
+        D_8019F750[D_8019DE10.unk68].unk0 = 0;
+        D_8019F750[D_8019DE10.unk68].unk4 = 0;
+    } else {
+        D_8019DE10.unk64++;
+    }
+    if (++D_8019DE10.unk4C >= D_8019DE10.unk50) {
+        D_8019DE10.unk4C = 0;
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019BCE8);
 
-s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4) {
     CdlLOC *loc;
     s32 i;
     Ovl64Pair *p;
