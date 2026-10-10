@@ -127,6 +127,19 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - jump.c cross-jumping (B1B48 notes): the processed jump is replaced; a conditional jump around the block counts
     as a match, so a lone `v0 = 0; j epi` merges into the first chain candidate.
   New drafts with headers: AB810 8, C9794 26, D0E14 3, D9D58 5, E1534 4, ED02C 4, AA504 3, C9374 2, EFD1C 16.
+- Pass 8 (matched: C9374, D0E14, ED02C). What fixed them:
+  - One variable for two roles: C9374's f holds the relocated rect pointer and then each frame-table pointer
+    (r = (TexAnimRect *)f is the loop base), which puts the frame-table load straight into f's register.
+  - Load early into a temp, store late: D0E14 needed `inv = arg1[1]` read right after c.unk28 and `c.unk2C = inv`
+    as the last store (found by brute-forcing 600 orders with build/mv.py-style specs).
+  - Build a value in place: ED02C's uvclut is `w = unk0; w |= unk1 << 8; p->uvclut = w | clut`.
+  - An unmodified stack-passed parameter is rematerialised from its slot where it is used; `x %= n` on the parameter
+    itself makes it load at entry (D1D74: copy to a local first).
+  - Locals whose address reaches GTE asm live in memory; in D2DBC the colour plus the mode/ctab/clut values the loop
+    reloads from sp+0x18..0x20 are one struct.
+  - Parameters kept in their stack homes (E4A3C) come from taking their addresses; an inline that copies through the
+    pointers gets everything but the entry `sw a3` and a dead load of the 5th slot.
+  New drafts: E4A3C 8, D1D74 22, D2DBC 63. Updated headers: AA504, C0C00, C3F78, D9D58, DA138, E1534.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
