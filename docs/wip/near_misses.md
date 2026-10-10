@@ -612,3 +612,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (a rotated for/while); a `goto test` into a do/while keeps a single copy of the loop test (A741C).
   Left with notes in their headers: B4A5C (filler slots), C07D8 (lbu placement), A741C (n/blk and
   id/base/gs order), B16A4 (ot s1 vs s3), B0124 (kind-9 block, condition spellings score 14-20).
+  * loop.c moves an invariant only if `threshold * savings * lifetime >= insn_count` (threshold =
+    (1 + non-fixed regs) with calls in the loop, minus 3 per insn already moved; lifetime = LUID
+    distance between the pseudo's set and last use, deleted-insn notes count). A `%hi` for a global
+    store is emitted before the stored expression, so `D_801F8200 = r = &D_801F7A78.unkAC[i + 2].unk4;`
+    (chained) gives it a lifetime of several insns and it is hoisted into s6, while `D_801F8200 = r;`
+    (lifetime 1) stays in the loop. `rr = &D_801F81F8;` written inside the block (hoisted too) keeps
+    its preheader order after that lui (65 F1848, matched this pass).
