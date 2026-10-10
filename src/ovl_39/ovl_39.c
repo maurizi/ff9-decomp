@@ -1387,7 +1387,36 @@ void func_801F7CD0(Window *w) {
     func_8002B5FC(r->x + 0x32, r->y + 0x20, w->unk18, func_80035774(0x12), 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7E68);
+u8 func_801F7E68(void) {
+    SaveSlot *sl;
+    s32 port;
+    s32 fd;
+
+    port = D_80077DB2 << 4;
+    sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
+    if ((u32)(sl->unk1A - 3) >= 2) {
+        func_80065238((char *)D_801FC388.unk6.unk0.v, func_801F83B8());
+        func_80063108(D_801FC388.unk6.unk0.v, "00000-");
+        D_801FC388.unk6.unk0.v[0x12] = D_801FB1A8.unk3 / 10 + '0';
+        D_801FC388.unk6.unk0.v[0x13] = D_801FB1A8.unk3 % 10 + '0';
+        /* called before its definition without a prototype: int result */
+        if (!((s32 (*)(s32, char *))func_801FA6AC)(port, (char *)D_801FC388.unk6.unk0.v)) {
+            func_801F889C(0x33);
+            return 0;
+        }
+    } else {
+        func_80065238((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
+    }
+    fd = func_801FA3D8(port, (char *)D_801FC388.unk6.unk0.v);
+    D_801FC388.unk20 = fd;
+    if (fd < 0) {
+        func_801F889C(0x33);
+        return 0;
+    }
+    func_801FA4B8(fd, 0x801FCB00, 0x1400, func_801F8588);
+    func_801F5E54(1);
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7FD4);
 
@@ -1668,7 +1697,50 @@ void func_801F8CE8(MenuList *l, s32 pad) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F8DA4);
+void func_801F8DA4(u8 *buf) {
+    SaveHeader *h;
+    Unk8004AB64 *o;
+    s32 t;
+    s32 i;
+    u8 n;
+
+    h = (SaveHeader *)(buf + 0x100);
+    t = func_80024030();
+    func_801F9120(buf, t);
+    n = 0;
+    o = func_8004AE00();
+    if (o != NULL) {
+        n = o->unk3B;
+    }
+    if (D_801FB1A8.unk0 == 2) {
+        h->unk4 = func_800B5074();
+    } else {
+        h->unk4 = D_8006794C->unkB;
+    }
+    h->unk4 = func_801F9688();
+    h->unk0 = 0x30005;
+    h->unk5 = D_8006794C->unk1C->unk3C[n].unkB;
+    h->unk2C = t;
+    h->unk30 = D_8006794C->unk1C->unk560;
+    h->unk74 = (D_8006794C->unk24 >> 18) & 1;
+    h->unk78 = ++D_801FB1A8.unkC;
+    h->unk7C = D_801FB1A8.unk24.unk6;
+    h->unk6 = *(SaveName *)D_8006794C->unk1C->unk3C[n].unk0;
+    func_801F9024((u8 *)&h->unk10);
+    for (i = 0; i < 4; i++) {
+        if (D_8006794C->unk1C->unk54C[i] != NULL) {
+            h->unk34[i].unk0 = 1;
+            h->unk34[i].unk1 = func_801F7970(D_8006794C->unk1C->unk54C[i]);
+            h->unk34[i].unkC = D_8006794C->unk1C->unk54C[i]->unkB;
+            *(Name10 *)h->unk34[i].unk2 = *(Name10 *)D_8006794C->unk1C->unk54C[i]->unk0;
+        } else {
+            h->unk34[i].unk0 = 0;
+            h->unk34[i].unk1 = 0xFF;
+            h->unk34[i].unkC = 0;
+            func_8001D898(h->unk34[i].unk2, 0xFF, 10);
+        }
+    }
+}
 
 void func_801F9024(u8 *dst) {
     u8 *name;
