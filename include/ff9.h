@@ -3128,6 +3128,45 @@ extern s32 D_8007BCB0;
 
 void func_8002BBE8(s32, u8 *, s32);
 
+/* Inlined copy of func_8002BAE4 (number to fixed-width text). */
+static inline void func_8002BAE4_inline(s32 n, u8 *buf, s32 width, u8 ascii) {
+    s32 base = 0;
+    s32 fill;
+    s32 i;
+    s32 q;
+    s32 d;
+    u8 *end;
+
+    if (ascii) {
+        base = '0';
+    }
+    fill = ' ';
+    if (!ascii) {
+        fill = 0xF;
+    }
+    if (width < 0) {
+        func_8002BBE8(n, buf, ascii);
+        return;
+    }
+    func_8001D898(buf, fill, width);
+    for (i = 0; i < width; i++) {
+        d = n % 10;
+        q = n / 10;
+        buf[width - i - 1] = d + base;
+        if (q == 0) {
+            break;
+        }
+        n = q;
+    }
+    end = buf + width;
+    if (!ascii) {
+        *end = 0xFF;
+    } else {
+        *end = 0;
+    }
+}
+extern s32 D_8006BBD4[];
+
 extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
 
 typedef void (*FadeFn)(Unk80077C78 *);

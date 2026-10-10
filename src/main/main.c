@@ -3786,7 +3786,53 @@ s32 func_8002A730(s32 c) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AA04);
+s32 func_8002AA04(s32 frames, u8 *buf, s32 blink) {
+    s32 r = 0;
+    s32 sec;
+    s32 min;
+    s32 hr;
+    u8 sub;
+
+    sec = (u32)frames / 60;
+    min = sec / 60;
+    sec %= 60;
+    hr = min / 60;
+    min %= 60;
+    if (hr >= 601) {
+        hr = 599;
+        sec = 59;
+        min = 59;
+    }
+    if (hr >= 100) {
+        r = D_8006BBD4[hr / 100];
+        hr %= 100;
+    }
+    if ((u8)blink) {
+        sub = (u32)frames % 60;
+    } else {
+        sub = 0;
+    }
+    func_8002BAE4_inline(hr, buf, 2, 1);
+    func_8002BAE4_inline(min, buf + 3, 2, 1);
+    if (buf[3] == ' ') {
+        buf[3] = '0';
+    }
+    func_8002BAE4_inline(sec, buf + 6, 2, 1);
+    if (buf[6] == ' ') {
+        buf[6] = '0';
+    }
+    if ((u8)sub < 30) {
+        buf[2] = ':';
+        buf[5] = ':';
+    } else {
+        buf[5] = ' ';
+        buf[2] = ' ';
+    }
+    if (hr < 10) {
+        buf[0] = '0';
+    }
+    return r;
+}
 
 u8 *func_8002AD38(u8 *dst, u8 *src) {
     s32 c;
