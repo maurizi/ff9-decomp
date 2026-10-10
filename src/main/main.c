@@ -740,7 +740,27 @@ s32 func_8001C784(void *arg0) {
     return -1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001C7FC);
+void *func_8001C7FC(s32 mode, s32 a1, s32 a2) {
+    s32 i;
+    s32 r = -1;
+    void *ret;
+
+    for (i = D_80073C40.unk2 - 1; i >= 0; i--) {
+        r = func_8001C8B0((s32)D_80073C40.unk4[i], mode, a1, a2);
+        if (r != -1) {
+            return (void *)r;
+        }
+    }
+    ret = (void *)-1;
+    if (r == -1) {
+        r = mode & 1;
+        ret = NULL;
+        if (r != 0) {
+            ret = (void *)-1;
+        }
+    }
+    return ret;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001C8B0);
 
