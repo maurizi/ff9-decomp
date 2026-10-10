@@ -3808,7 +3808,9 @@ extern s16 D_8007BD22 __asm__("D_8007BD20+2"); /* no symbol of its own */
 extern s16 D_8007BD24;
 extern s32 D_8007BD28; /* frame */
 #if !defined(OVL_0C_H) /* ovl_0c declares it as s32 */
+#if !defined(OVL_0A_H) && !defined(OVL_0C_H) /* the overlays type it themselves */
 extern u32 *D_8007BD30;
+#endif
 #endif
 void func_8002F884(void);
 s32 func_8004BB80(s32); /* sin */
