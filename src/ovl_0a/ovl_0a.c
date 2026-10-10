@@ -6459,7 +6459,44 @@ BgSprt *func_800BFCE8(void) {
     return spr;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BFEE0);
+s32 func_800BFEE0(void) {
+    Unk800C9DA4Hdr *h;
+    Unk800C9DB4Obj *o;
+    Unk800CA068 *c;
+    u32 i;
+    s32 j;
+
+    func_800BD4D4();
+    /* the switch results are dead; only the loads and the hoisted 0x10/0x40 survive */
+    do {
+        for (i = 0; i < D_800C9DA4.unk24; i++) {
+            switch (D_800C9DA4.unk28[i].unk0) {
+            case 0x10:
+                j = 1;
+                break;
+            case 0x40:
+                j = 2;
+                break;
+            }
+        }
+    } while (0);
+    j = 0;
+    func_800BF0C4();
+    func_800BF660();
+    func_800BEDE8(D_800C9DA4.unk10);
+    func_800BDC44();
+    c = &D_800CA068;
+    h = D_800C9DA4.unk10;
+    h->unk30 = h->unk24 - (s16)(c->unk4.unk0 - 0xA0);
+    h->unk32 = h->unk26 - (s16)(c->unk4.unk2 - 0x70);
+    o = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
+    for (j = 0; j < h->unk6; j++) {
+        if ((o[j].unk0 & 2) && o[j].unk24 == c->unk75) {
+            func_800BE158(&o[j], D_800C9DA4.unk1C + j * 3);
+        }
+    }
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0038);
 

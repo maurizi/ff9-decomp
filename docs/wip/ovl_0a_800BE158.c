@@ -18,7 +18,7 @@
  */
 #include "ovl_0a.h"
 
-s32 func_800BE158(Unk800C9DB4Obj *o) {
+s32 func_800BE158(Unk800C9DB4Obj *o, u8 *arg1) {
     BgSprt *spr;
     u32 *ot;
     Unk800C9DA4Hdr *h;

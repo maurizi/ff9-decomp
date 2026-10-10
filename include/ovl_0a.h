@@ -1264,6 +1264,8 @@ s32 func_800C3608(Unk800C9DF4 *);
 s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 func_800C31F8(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
+s32 func_800BE158(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
+s32 func_800BF660(void); /* camera follow */
 extern Unk800C9E00 *D_800C9E00; /* = D_800C9DF0.unk10, referenced by its own name */
 s32 func_800C79B0(u32);
 s32 func_800C6E94(void);
