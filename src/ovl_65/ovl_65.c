@@ -764,7 +764,46 @@ void func_801F17FC(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
     D_801F7A78.unk374 = func_8002B644(arg0, arg1, D_8007716C + arg2, arg3, arg4, D_801F7A78.unk374);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F1848);
+void func_801F1848(void) {
+    WinSlot *w;
+    RECT *r;
+    s32 i;
+    RECT *rr;
+
+    w = D_801F7A78.unk1D8;
+    for (i = 0; i < 4; w++, i++) {
+        if (D_801F7A78.unk18[i] != 0) {
+            if (w->unk8 == 0) {
+                if (w->unk0 == NULL) {
+                    if (w->unk4 != 0) {
+                        D_801F8200 = r = &D_801F7A78.unkAC[i + 2].unk4;
+                        D_801F81F8.x = r->x + 0x26;
+                        rr = &D_801F81F8;
+                        rr->y = r->y + 0x1B;
+                        rr->w = 0x70;
+                        rr->h = 0x19;
+                        w->unk0 = func_8002DC54(rr, 6, 2);
+                        w->unk0->unk50 = i;
+                        func_8002E304(w->unk0, (s32)D_801F5228);
+                        func_8002E2EC(w->unk0, func_801F1D94);
+                        func_8002E2FC(w->unk0, func_801F2248);
+                        func_8002CF20(w->unk0, 0);
+                        func_8002F488(0x413);
+                        w->unk4--;
+                    }
+                } else if (++w->unk1C >= 0x40) {
+                    func_8002D1AC(w->unk0, 0);
+                    func_8002DD00(w->unk0);
+                    w->unk8 = 4;
+                    w->unk1C = 0;
+                    w->unk6++;
+                }
+            } else {
+                w->unk8--;
+            }
+        }
+    }
+}
 
 void func_801F1A04(s32 arg0, u32 arg1) {
     Character *c;
