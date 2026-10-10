@@ -10158,7 +10158,28 @@ void func_800F2890(s32 arg0) {
     D_80105058.unk0 = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800F28F0);
+/* resizes the battle list window to the current entry count */
+void func_800F28F0(void) {
+    Unk80105078 *p = func_800F3EA4();
+    Window *w;
+    RECT *r;
+    s16 h;
+
+    if (D_80105058.unk0 != 0 && p->unk5C != 0) {
+        w = D_80104F88->unk12A4[1];
+        r = &w->unk8;
+        r->y = w->unk2 = p->unk60;
+        h = p->unk5C * 12 + 8;
+        w->unk6 = h;
+        if (w->unk1C == 2 || w->unk1C == 3) {
+            r->h = h;
+        } else if (w->unk1C == 1) {
+            if (h < r->h) {
+                r->h = h;
+            }
+        }
+    }
+}
 
 u8 func_800F29A4(void) {
     return D_80105058.unk0;
