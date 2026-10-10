@@ -10,6 +10,9 @@ INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF10);
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F08F4);
 
+/* table and text after func_801F08F4's "-" (not referenced by it) */
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF1C);
+
 void func_801F0AE8(void) {
     s32 cur;
     s32 next;
