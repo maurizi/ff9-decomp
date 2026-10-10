@@ -4494,7 +4494,219 @@ void func_800B9774(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7CCC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B9808);
+s32 func_800B9808(s32 cell, WmTexEnt *tex, VECTOR *pos, u32 *attr, s32 *idx, Unk800CE288 *cache) {
+    VECTOR v1;
+    VECTOR v3;
+    VECTOR v2;
+    VECTOR v4;
+    VECTOR w1;
+    VECTOR w3;
+    VECTOR w2;
+    VECTOR o1;
+    VECTOR o3;
+    VECTOR o2;
+    WmPoly *polys;
+    WmPoly *poly;
+    u8 found;
+    s32 p;
+    u16 count;
+    u16 *cpoly;
+    u16 *ccell;
+    u8 *slot;
+    s32 nfall;
+    s32 fidx;
+    s32 fy;
+    SVECTOR *verts;
+    SVECTOR *a;
+    SVECTOR *b;
+    SVECTOR *c;
+    s32 px;
+    s32 pz;
+    u16 n;
+    s32 i;
+    s32 k;
+    s32 y;
+    s32 y0;
+    s16 d;
+    s16 best;
+    s16 bi;
+    WmPoly *pp;
+    s32 m;
+
+    found = 0;
+    nfall = 0;
+    fidx = -1;
+    poly = polys = tex->unk8;
+    verts = tex->unk4;
+    count = tex->unk2;
+    px = pos->vx;
+    pz = pos->vz;
+    cpoly = cache->unk4;
+    ccell = cache->unk10;
+    slot = &cache->unk0;
+    v2.vy = 0;
+    v3.vy = 0;
+    v1.vy = 0;
+    w3.vy = 0;
+    w2.vy = 0;
+    w1.vy = 0;
+    n = 0;
+    fy = 0;
+    if (D_800D30C6 == 0) {
+        cache = NULL;
+    }
+    if (cache != NULL) {
+        for (i = 0; i < 6; i++) {
+            k = (*slot + i) % 6;
+            if (ccell[k] != cell) {
+                continue;
+            }
+            p = cpoly[k];
+            if (p >= count) {
+                continue;
+            }
+            pp = (WmPoly *)((p << 4) + (s32)polys);
+            a = &verts[pp->unk0];
+            c = &verts[pp->unk2];
+            b = &verts[pp->unk1];
+            v1.vx = c->vx - a->vx;
+            v1.vz = c->vz - a->vz;
+            w1.vx = px - a->vx;
+            w1.vz = pz - a->vz;
+            OuterProduct0(&v1, &w1, &o1);
+            if (o1.vy > 0) {
+                continue;
+            }
+            v2.vx = a->vx - b->vx;
+            v2.vz = a->vz - b->vz;
+            w2.vx = px - b->vx;
+            w2.vz = pz - b->vz;
+            OuterProduct0(&v2, &w2, &o2);
+            if (o2.vy > 0) {
+                continue;
+            }
+            v3.vx = b->vx - c->vx;
+            v3.vz = b->vz - c->vz;
+            w3.vx = px - c->vx;
+            w3.vz = pz - c->vz;
+            OuterProduct0(&v3, &w3, &o3);
+            if (o3.vy > 0) {
+                continue;
+            }
+            if (o1.vy == 0 || o3.vy == 0 || o2.vy == 0) {
+                continue;
+            }
+            v4.vx = b->vx - a->vx;
+            v4.vy = b->vy - a->vy;
+            v4.vz = b->vz - a->vz;
+            v1.vy = c->vy - a->vy;
+            OuterProduct0(&v4, &v1, &o1);
+            if (abs(o1.vy) >= 0x20) {
+                y = ((o1.vx >> 5) * (a->vx - px) + (o1.vy >> 5) * a->vy + (o1.vz >> 5) * (a->vz - pz)) / (o1.vy >> 5);
+            } else {
+                y = (a->vy + b->vy + c->vy) / 3;
+            }
+            n = 1;
+            D_800D27F8[0] = y;
+            found = n;
+            D_800D2DF8[0] = p;
+            break;
+        }
+    }
+    if (!found) {
+        for (i = 0; i < count; i++, poly++) {
+            a = &verts[poly->unk0];
+            c = &verts[poly->unk2];
+            b = &verts[poly->unk1];
+            v1.vx = c->vx - a->vx;
+            v1.vz = c->vz - a->vz;
+            w1.vx = px - a->vx;
+            w1.vz = pz - a->vz;
+            OuterProduct0(&v1, &w1, &o1);
+            if (o1.vy > 0) {
+                continue;
+            }
+            v2.vx = a->vx - b->vx;
+            v2.vz = a->vz - b->vz;
+            w2.vx = px - b->vx;
+            w2.vz = pz - b->vz;
+            OuterProduct0(&v2, &w2, &o2);
+            if (o2.vy > 0) {
+                continue;
+            }
+            v3.vx = b->vx - c->vx;
+            v3.vz = b->vz - c->vz;
+            w3.vx = px - c->vx;
+            w3.vz = pz - c->vz;
+            OuterProduct0(&v3, &w3, &o3);
+            if (o3.vy > 0) {
+                continue;
+            }
+            if (o1.vy == 0 && o3.vy == 0 && o2.vy == 0) {
+                continue;
+            }
+            v4.vx = b->vx - a->vx;
+            v4.vy = b->vy - a->vy;
+            v4.vz = b->vz - a->vz;
+            v1.vy = c->vy - a->vy;
+            OuterProduct0(&v4, &v1, &o1);
+            if (abs(o1.vy) >= 0x20) {
+                y = ((o1.vx >> 5) * (a->vx - px) + (o1.vy >> 5) * a->vy + (o1.vz >> 5) * (a->vz - pz)) / (o1.vy >> 5);
+            } else {
+                y = (a->vy + b->vy + c->vy) / 3;
+            }
+            if ((o1.vy == 0 || o3.vy == 0 || o2.vy == 0) && (u8)poly->unkE >> 2 == 0x3A) {
+                nfall++;
+                fidx = i;
+                fy = y;
+            } else {
+                m = n;
+                n++;
+                D_800D27F8[m] = y;
+                D_800D2DF8[m] = i;
+            }
+        }
+    }
+    if (n != 0) {
+        y0 = pos->vy;
+        best = abs(D_800D27F8[0] - y0);
+        bi = 0;
+        for (i = 1; i < n; i++) {
+            d = abs(D_800D27F8[i] - y0);
+            if (d < best) {
+                best = d;
+                bi = i;
+            }
+        }
+        *idx = D_800D2DF8[bi];
+        *attr = polys[*idx].unkE;
+        y = D_800D27F8[bi];
+        if (cache != NULL && !found) {
+            (*slot)++;
+            *slot %= 6;
+            ccell[*slot] = cell;
+            cpoly[*slot] = *idx;
+        }
+    } else if (nfall != 0) {
+        *idx = fidx;
+        *attr = polys[fidx].unkE;
+        y = fy;
+    } else {
+        *idx = -1;
+        *attr = 0;
+        y = pos->vy;
+        func_80015C38("Not hit polygon\n");
+        if (D_800D30C5 >= 2) {
+            sprintf(D_800CCE6C, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy,
+                    D_800CE3DC->unk14.vz, found);
+            func_80015C38(D_800A7D20, D_800CCE6C);
+            if (D_800CCE69 == 0) {
+                D_800CCE69 = 1;
+            }
+        }
+    }
+    return y;
+}
 
 void func_800BA1E4(void) {
     s32 i;

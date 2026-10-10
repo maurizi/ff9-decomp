@@ -1353,6 +1353,12 @@ void func_80022CC4(s32, void *, s32, s32);
 s32 func_8004B1EC(void);
 s32 func_8004B1FC(void);
 void func_8002FA10(void);
+void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
+
+/* func_800B9808 (walkmesh height lookup) */
+extern s16 D_800D27F8[];
+extern u16 D_800D2DF8[];
+extern char D_800A7D20[];
 
 /* func_800B0378 (walkmesh movement) */
 void func_800B3760(void);
