@@ -213,7 +213,18 @@ void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 ar
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D07B4);
+/* adds prim to ot with the given code/len word; tpage != 0xFF also adds a DR_TPAGE (semi-trans mode) */
+void func_800D07B4(u32 code, u32 *ot, void *prim, s32 tpage) {
+    DR_TPAGE *p;
+
+    addPrimLenIn(ot, prim, code);
+    if (tpage != 0xFF) {
+        p = (DR_TPAGE *)D_800F78A4->unk24;
+        D_800F78A4->unk24 = (u8 *)(p + 1);
+        p->code[0] = ((tpage & 3) << 5) | 0xE1000200;
+        addPrimLenIn(ot, p, 0x1000000);
+    }
+}
 
 void func_800D0858(u32 arg0, s32 arg1, void *arg2) {
     s32 z = (arg1 - D_800F78A4->unk28) >> 2;
@@ -225,7 +236,7 @@ void func_800D0858(u32 arg0, s32 arg1, void *arg2) {
 void func_800D08C4(s32 arg0, s32 arg1) {
     u32 i = (arg1 - D_800F78A4->unk28) >> 2;
     if (i < 0x1000) {
-        func_800D07B4(arg0, &D_800F78A4->unk20[i]);
+        ((void (*)())func_800D07B4)(arg0, &D_800F78A4->unk20[i]); /* prim/tpage left in a2/a3 */
     }
 }
 

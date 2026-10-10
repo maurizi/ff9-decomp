@@ -2453,7 +2453,7 @@ s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
 s32 func_800CFC0C(s32);
-void func_800D07B4(); /* (s32 code, u32 *ot, void *prim, s32 tpage) */
+void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage); func_800D08C4 passes only 2 */
 u8 *func_800D6360(s32);
 void func_800D64C8(s32);
 void func_800D85AC(s32, s32);
@@ -3597,6 +3597,23 @@ void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
     "or\t$15, $15, %0;" \
     "sw\t$15, 0(%2)" \
     : "=r"(len) : "r"(p), "r"(ot), "0"(len) : "$14", "$15", "memory")
+
+/* the same, but len is a plain input that the asm overwrites (only safe when len is dead afterwards);
+   lets a constant len get its own register (func_800D07B4) */
+#define addPrimLenIn(ot, p, len) __asm__ volatile( \
+    "lw\t$14, 0(%2);" \
+    "nop;" \
+    "sll\t$15, $14, 8;" \
+    "srl\t$15, $15, 8;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%1);" \
+    "sll\t%0, %1, 8;" \
+    "srl\t%0, %0, 8;" \
+    "srl\t$15, $14, 24;" \
+    "sll\t$15, $15, 24;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%2)" \
+    : : "r"(len), "r"(p), "r"(ot) : "$14", "$15", "memory")
 
 typedef struct {
     DR_STP unk0;
