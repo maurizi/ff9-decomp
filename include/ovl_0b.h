@@ -3879,6 +3879,30 @@ typedef struct {
     Pool6CEntry *unk24;
 } Unk800E4C88; /* 0x28 */
 
+/* func_800E57B0 effect state (sprite sheet on a unit) */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 unk1; /* unit id, 0xFF = none */
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE; /* frame count */
+    void *unk10;
+    s32 unk14; /* frame */
+    s16 unk18;
+    s16 unk1A;
+    SVECTOR unk1C;
+    s16 unk24[3];
+} Unk800E57B0; /* 0x2C */
+
+extern u16 D_800F8D04[];
+s32 func_800E7C54(s32, s32);
+s32 func_800E7CC4(s32, s32);
+void func_800E7D3C(s32, s32, s16 *);
+
 void func_800E750C(s32, s16 *);
 void func_800E769C(s32, s32, s16 *);
 void func_800E60A4(s32, s32);
