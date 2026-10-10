@@ -2940,7 +2940,23 @@ u8 func_800DD10C(BtlUnit9C *arg0) {
     return arg0->unk8->unk3;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DD120);
+void func_800DD120(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
+    s32 k;
+    BtlTexInfo *a;
+    BtlTexInfo *b;
+    u16 i;
+    Unk8E0 *e;
+
+    i = (func_800E716C(0x10)->unk68 >> 1) & 0xF;
+    e = &D_8006794C->unk1C->unk8E0[i];
+    k = arg2 & 0xFFFF;
+    k |= 0x20000;
+    k |= e->unkC->unk3B << 24;
+    a = (BtlTexInfo *)func_800634A8(k);
+    b = (BtlTexInfo *)func_800634D8(k);
+    *arg0 = *a;
+    *arg1 = *b;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DD27C);
 
