@@ -1240,6 +1240,17 @@ static inline u32 func_800B7DAC_trg(void) {
     return D_80073990;
 }
 
+void func_800C7050(WmNode *);
+s32 func_800CAE00(u16 *);
+
+/* random byte from the main exe's table (func_8004BF20 refills it) */
+static inline s32 wm_rand8(void) {
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    return *D_8007B720++;
+}
+
 /* Inlined copy of func_800B3340 (cell type bit test). */
 static inline u8 func_800B3340_inline(u32 *a, u32 k) {
     u32 w;
@@ -1339,5 +1350,31 @@ void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 
 /* main exe: candidates for ff9.h */
 void func_80022CC4(s32, void *, s32, s32);
+s32 func_8004B1EC(void);
+s32 func_8004B1FC(void);
+void func_8002FA10(void);
+void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
+
+/* func_800B9808 (walkmesh height lookup) */
+extern s16 D_800D27F8[];
+extern u16 D_800D2DF8[];
+extern char D_800A7D20[];
+
+/* func_800B0378 (walkmesh movement) */
+void func_800B3760(void);
+extern u8 D_800CCE4A;
+extern u8 D_800CCE55;
+extern u8 D_800CCF6C;
+extern u8 D_800CE208;
+
+/* func_800AD738 (camera follow) */
+extern u8 D_800CE1E0;
+extern Unk800CE288 D_800CE118[4];
+extern s32 D_800CCAFC;
+extern s32 D_800CCB04;
+extern s32 D_800CCB08;
+extern s32 D_800CCB0C;
+extern s32 D_800CCB10;
+extern s32 D_800CCB14;
 
 #endif

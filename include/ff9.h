@@ -1161,8 +1161,8 @@ s32 func_80052DEC(s32, s32, s32); /* distance */
 s32 func_80052E48(s32, s32, s32);
 
 typedef struct Unk8007AECCNode {
-    Unk8004AB64 *unk0; /* key */
-    u8 pad4[8 - 4];
+    Unk8004AB64 *unk0; /* key = start of the block in unk50 */
+    u32 *unk4; /* end of the block */
     struct Unk8007AECCNode *unk8; /* next */
 } Unk8007AECCNode;
 
@@ -1173,7 +1173,7 @@ typedef struct Unk16D8 {
 
 typedef struct {
     u8 unk0[0x50]; /* cleared by func_8004A06C */
-    u8 pad50[0x1450 - 0x50];
+    u32 unk50[0x500]; /* object pool (func_80036650) */
     Unk8007AECCNode unk1450[32];
     Unk8007AECCNode *unk15D0; /* active list */
     Unk8007AECCNode *unk15D4; /* free list */
@@ -1826,6 +1826,7 @@ Unk8007B9C0 *func_8004EA3C(void);
 extern s32 D_8007B968;
 extern s32 D_8007B970;
 extern Unk4 D_8007B99C;
+extern Unk4 D_80011A6C; /* rodata constant, used by func_8004D2C0 */
 
 
 void func_800615F8(void);
@@ -2811,6 +2812,24 @@ extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
 void func_8004C8C4(Unk8007B9C0 *, u8 *); /* draw a window's text */
 extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
+typedef union {
+    s32 w;
+    struct {
+        s16 x;
+        s16 y;
+    } s;
+} PenPos;
+extern PenPos D_8007BC9C; /* current pen position */
+/* "!" balloon sprite (func_8004F74C) */
+typedef struct {
+    u8 unk0; /* u */
+    u8 unk1; /* v */
+    u16 unk2; /* clut */
+    u8 unk4; /* w */
+    u8 unk5; /* h */
+} Unk80068790;
+extern Unk80068790 D_80068790;
+extern s32 D_8007BBE4; /* balloon flipped (pen x < 24) */
 extern u8 D_8006E67C[];
 void func_800512B4(s32);
 void func_80051444(void);
@@ -3926,5 +3945,7 @@ static inline void func_8004883C_idle(Unk8004AB64 *q) {
 }
 
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */
+extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
+extern const u8 D_80011F10[]; /* "MOGNET" window title */
 
 #endif

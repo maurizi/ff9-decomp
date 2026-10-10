@@ -4,7 +4,9 @@
  * loop into a stack slot, which the original never does. Splitting it as
  * `w = t * 42; w /= 28;` stops the full hoist but 21t still moves.
  * Original keeps t in fp, e in s2, the prim pointer in s4 (giv p+6 in s0)
- * and spills i/x/w/h/len/magic/ex/ey at sp+0xF0..0x10C. Needs TmFlashTbl in ovl_0d.h. */
+ * and spills i/x/w/h/len/magic/ex/ey at sp+0xF0..0x10C. Needs TmFlashTbl in ovl_0d.h.
+ * Pass 7: a goto loop (no loop.c) drops to 397 insns and ~500 rows, so the original does use
+ * loop.c (the p+6 giv); the hoisting difference has to come from elsewhere. */
 
 typedef struct {
     s32 unk0; /* 0: horizontal bar, 1: corner, 2: vertical bar */

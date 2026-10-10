@@ -2,14 +2,18 @@
  * ovl_0a func_800BB714 (0xC28 bytes): field model renderer, depth-sorted variant of
  * func_800B71E0 (8 primitive loops FT4/FT3/GT4/GT3/G4/G3/F4/F3, Z sum + 0x3FFFFFFF /
  * 0x2FFFFFFF far-clip test before the nclip). ovl_0c func_800CA1D8 is a byte-identical twin.
- * WIP: 772 of 778 instructions. Control flow and per-loop code shape match; left:
- *  - 3-vertex loops: the original recomputes `i2 * 4` for the Z lookup (sll twice) where we
- *    CSE it (one instruction per loop, x4);
- *  - register allocation: the original uses all of s0-s7 (count n in s0, mfhi in s7) where we
- *    put n in t9 and leave s7 free, so most t/s registers are shifted by one.
- *  Giving every loop its own count variable (n0..n7) puts the count in s0 like the original
- *  (build/b3n.c variant in this session); the index computations then still come out in a
- *  different order (i2 is computed after the xy0/xy1 loads in the original).
+ * WIP: 774 of 778 instructions, ~260 aligned diff rows (build/cmp.py; was ~930 before pass 7).
+ * Control flow and per-loop code shape match; left:
+ *  - pass 7: writing the FT4 loop's low halves as `a & 0xFFFF` / `b & 0xFFFF` expressions
+ *    (no i0/i2 locals) and the FT3 loop's third index as `sFT3->unk0[2]` (no i2) fixed the
+ *    first two loops' scheduling; doing the same in the other loops makes it worse again;
+ *  - 3-vertex loops: the original computes `i2 * 4` twice (sll for the xy table and again
+ *    for the Z table) where we CSE it; u16/u32/s32 index types, a u16 local and explicit
+ *    byte-offset pointer arithmetic all still CSE it;
+ *  - FT4 loop: `b` is in t1 and `a >> 16` in a0 in the original (we swap them); renaming
+ *    a/b/i1/i3 among themselves (build/rename.py) gets 259 rows at best;
+ *  - register allocation: the original uses all of s0-s7 (count n in s0, mfhi in s7).
+ *  Giving every loop its own count variable (n0..n7) puts the count in s0 like the original.
  *  `otz &= 0xFFFFF; otz >>= 4;` as two statements is needed to keep and+sra (one statement
  *  folds into srl+andi).
  */
@@ -59,12 +63,10 @@ void func_800BB714(Unk800C95C8 *arg0, u8 arg1) {
         b = *(u32 *)&sFT4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        i0 = a & 0xFFFF;
-        i2 = b & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[a & 0xFFFF];
         xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2] + D_80070520[i3];
+        xy2 = D_800711A8[b & 0xFFFF];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -92,13 +94,12 @@ void func_800BB714(Unk800C95C8 *arg0, u8 arg1) {
     sFT3 = (WmSrcFT3 *)sFT4;
     for (i = 0; i < n; sFT3++, pFT3++) {
         a = *(u32 *)&sFT3->unk0[0];
-        i2 = sFT3->unk0[2];
         i1 = a >> 16;
         i0 = a & 0xFFFF;
         xy0 = D_800711A8[i0];
         xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2];
+        xy2 = D_800711A8[sFT3->unk0[2]];
+        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[sFT3->unk0[2]];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;

@@ -203,7 +203,132 @@ void func_800A7A84(void) {
     D_800AE4C0 = 3;
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A7ABC);
+s32 func_800A7ABC(s32 kind, s32 c, s32 x, s32 y) {
+    SPRT *p;
+    DR_TPAGE *t;
+    s32 x1;
+    s32 x2;
+
+    switch (kind) {
+    case 0:
+        p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x;
+        p->y0 = y;
+        p->u0 = 0;
+        p->v0 = 0;
+        setRGB0(p, c, c, c);
+        p->w = 0x68;
+        p->h = 0x28;
+        p->clut = 0x3A40;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+        D_800AE4D8++;
+        t = &D_800AE4F8[D_8006794C->unk1C->unk8][D_800AE4DC];
+        setlen(t, 1);
+        t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], t);
+        D_800AE4DC++;
+        p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x;
+        p->y0 = y;
+        setRGB0(p, c, c, c);
+        p->u0 = 0x68;
+        p->v0 = 0;
+        p->w = 0x70;
+        p->h = 0x28;
+        p->clut = 0x3A40;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+        D_800AE4D8++;
+        t = &D_800AE4F8[D_8006794C->unk1C->unk8][D_800AE4DC];
+        setlen(t, 1);
+        t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], t);
+        D_800AE4DC++;
+        break;
+    case 1:
+        x1 = x - 2;
+        p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x1;
+        p->y0 = y;
+        setRGB0(p, c, c, c);
+        p->u0 = 0;
+        p->w = 0x68;
+        p->h = 0x28;
+        p->v0 = 0x28;
+        p->clut = 0x3A40;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+        D_800AE4D8++;
+        t = &D_800AE4F8[D_8006794C->unk1C->unk8][D_800AE4DC];
+        setlen(t, 1);
+        t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], t);
+        D_800AE4DC++;
+        p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x1;
+        p->y0 = y;
+        p->w = 0x70;
+        setRGB0(p, c, c, c);
+        p->u0 = 0x68;
+        p->v0 = 0x28;
+        p->h = 0x28;
+        p->clut = 0x3A40;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+        D_800AE4D8++;
+        t = &D_800AE4F8[D_8006794C->unk1C->unk8][D_800AE4DC];
+        setlen(t, 1);
+        t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], t);
+        D_800AE4DC++;
+        break;
+    case 2:
+        x2 = x - 0x10;
+        p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x2;
+        p->y0 = y;
+        p->w = 0x88;
+        setRGB0(p, c, c, c);
+        p->u0 = 0;
+        p->v0 = 0xA0;
+        p->h = 0x28;
+        p->clut = 0x3A40;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+        D_800AE4D8++;
+        t = &D_800AE4F8[D_8006794C->unk1C->unk8][D_800AE4DC];
+        setlen(t, 1);
+        t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], t);
+        D_800AE4DC++;
+        p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x2;
+        p->y0 = y;
+        setRGB0(p, c, c, c);
+        p->v0 = 0xC8;
+        p->u0 = 0;
+        p->w = 0x90;
+        p->h = 0x28;
+        p->clut = 0x3A40;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], p);
+        D_800AE4D8++;
+        t = &D_800AE4F8[D_8006794C->unk1C->unk8][D_800AE4DC];
+        setlen(t, 1);
+        t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][10], t);
+        D_800AE4DC++;
+        break;
+    }
+    return 0;
+}
 
 s32 func_800A8528(s32 x, s32 y) {
     SPRT *p = &D_800AE5F8[D_8006794C->unk1C->unk8][D_800AE4D8];

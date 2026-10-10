@@ -8522,6 +8522,9 @@ void func_800EC628(Window *arg0) {
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A83AC);
 
+/* TRANCE label */
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A857C);
+
 void func_800EC730(Window *arg0) {
     u8 st = arg0->unk1C;
     RECT *r = &arg0->unk8;
@@ -8538,9 +8541,9 @@ void func_800EC730(Window *arg0) {
     if (D_80104FB0.unk18 != NULL && !(func_800C09A4(D_80104FB0.unk18, 0x4000) & 0xFF)) {
         func_8002B524(arg0->unk0 + 6, r->y - 3, arg0->unk18, D_800703FC.unk30, arg0->unk1E ? 0 : 2);
     } else if (arg0->unk1E != 0) {
-        func_800ED3F8(arg0->unk0 + 6, r->y - 3, arg0->unk18, "TRANCE");
+        func_800ED3F8(arg0->unk0 + 6, r->y - 3, arg0->unk18, D_800A857C);
     } else {
-        func_8002B524(arg0->unk0 + 6, r->y - 3, arg0->unk18, (s32)"TRANCE", 2);
+        func_8002B524(arg0->unk0 + 6, r->y - 3, arg0->unk18, (s32)D_800A857C, 2);
     }
     if (arg0->unk1C != 3) {
         rc.x = r->x;

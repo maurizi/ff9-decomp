@@ -354,9 +354,17 @@ TmCard *func_800B1010(TmState *, s32, s32, TmCard *);
 void func_800AB060(Window *);
 void func_800AB52C(Window *);
 void func_800ABE74(Window *);
+s32 func_800AF268(TmState *);
+void func_800AB8F4(s16);
+extern u8 D_800A74A8[];
 
 /* main exe: candidates for ff9.h */
 void func_80023A0C(void);
+void SetSprt16(SPRT_16 *);
+s32 func_80062794(s32); /* width of a number string? */
+s32 func_80062498(void);
+s32 func_800624D8(void);
+s32 func_8006251C(void);
 u8 func_8002C700(s32, s32);
 void D_800355DC(void);
 void func_80062724();

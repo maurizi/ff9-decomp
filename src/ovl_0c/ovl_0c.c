@@ -1232,7 +1232,270 @@ void func_800AD39C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AD738);
+void func_800AD738(void) {
+    VECTOR v;
+    u32 c0;
+    s32 t;
+    s32 h0;
+    u32 c1;
+    s32 h1;
+    u32 c2;
+    s32 h2;
+    u32 c3;
+    s32 h3;
+    u32 cell;
+    s32 h;
+    s32 res;
+    s32 x;
+    s32 y;
+    s32 z;
+    s32 d;
+    s32 dir;
+    s32 step;
+    s32 a;
+    s32 k;
+    s32 x2, y2, z2, d2, step2, dir2;
+    s32 dx, dz, s, r;
+    u8 *p;
+
+    res = 0;
+    if (func_8004B1FC() == 0) {
+        y = D_800CE3DC->unk14.vy + D_800CE1C4;
+        x = D_800CE3DC->unk14.vx;
+        z = D_800CE3DC->unk14.vz;
+        if ((D_800CE1E0 = D_800CE0EC | D_800CE0ED | D_800CE0EE) != 0) {
+            if (D_800CE0EC == 1) {
+                if (abs(D_800CE108[0] - x) < 16) {
+                    D_800CE0EC = 0;
+                } else {
+                    D_800CE108[0] += (func_8004AE00()->unk14.vx - D_800CE108[0]) / 8;
+                }
+            }
+            if (D_800CE0ED == 1) {
+                if (abs(D_800CE108[1] - y) < 16) {
+                    D_800CE0ED = 0;
+                } else {
+                    D_800CE108[1] += (func_8004AE00()->unk14.vy - D_800CE108[1] + D_800CE1C4) / 8;
+                }
+            }
+            if (D_800CE0EE == 1) {
+                if (abs(D_800CE108[2] - z) < 16) {
+                    D_800CE0EE = 0;
+                } else {
+                    D_800CE108[2] += (func_8004AE00()->unk14.vz - D_800CE108[2]) / 8;
+                }
+            }
+            if (D_800CE0EC == 0) {
+                D_800CE108[0] = x;
+            }
+            if (D_800CE0ED == 0) {
+                D_800CE108[1] = y;
+            }
+            if (D_800CE0EE == 0) {
+                D_800CE108[2] = z;
+            }
+        } else {
+            step = 0;
+            d = y - D_800CE108[1];
+            dir = d > 0x80;
+            if (d < -0x80) {
+                dir = 2;
+            }
+            D_800CCAFC = (d >= 0 ? d : -d) >> 5;
+            if (D_800CCAFC < 0x20) {
+                D_800CCAFC = 0x20;
+            }
+            if (D_800CCAFC > 0x100) {
+                D_800CCAFC = 0x100;
+            }
+            if (dir != 0) {
+                switch (D_800CE3C8->unk0) {
+                case 1:
+                case 2:
+                    switch (dir) {
+                    case 2:
+                        step = (d + 0x80) / 8;
+                        break;
+                    case 1:
+                        step = (d - 0x80) / 2;
+                        break;
+                    }
+                    break;
+                case 0:
+                case 3:
+                    switch (dir) {
+                    case 2:
+                        step = ((d + 0x80) << 8) / (D_800CCAFC << 5);
+                        break;
+                    case 1:
+                        step = ((d - 0x80) << 8) / (D_800CCAFC << 5);
+                        break;
+                    }
+                    break;
+                }
+            }
+            D_800CE108[0] = x;
+            D_800CE108[2] = z;
+            if (ABS(step) >= 5 && D_800CE0EF == 0) {
+                D_800CE108[1] += step;
+            }
+        }
+    } else {
+        D_800CE3DC->unk14.vx = D_800CE108[0];
+        D_800CE3DC->unk14.vy = D_800CE108[1];
+        D_800CE3DC->unk14.vz = D_800CE108[2];
+    }
+    if (func_8004B1EC() == 0) {
+        k = 0;
+        y2 = D_800CE3DC->unk14.vy + D_800CE1C8.vy;
+        x2 = D_800CE3DC->unk14.vx + D_800CE1C8.vx;
+        z2 = D_800CE3DC->unk14.vz + D_800CE1C8.vz;
+        v.vx = x2 + (D_800CE1D0[0] >> 2);
+        v.vy = y2;
+        v.vz = z2 + (D_800CE1D0[2] >> 2);
+        if (D_800CE1F2 != 0) {
+            v.vx += 0x580;
+            func_800BC0A8(&v.vx, &v.vz);
+            func_800BE748(&v, &c0, &t, &D_800CE118[0], (u16 *)&h0);
+            v.vx -= 0xB00;
+            func_800BC0A8(&v.vx, &v.vz);
+            func_800BE748(&v, &c1, &t, &D_800CE118[1], (u16 *)&h1);
+            v.vx += 0x580;
+            v.vz += 0x580;
+            func_800BC0A8(&v.vx, &v.vz);
+            func_800BE748(&v, &c2, &t, &D_800CE118[2], (u16 *)&h2);
+            v.vz -= 0xB00;
+            func_800BC0A8(&v.vx, &v.vz);
+            func_800BE748(&v, &c3, &t, &D_800CE118[3], (u16 *)&h3);
+            h = h0;
+            cell = c0;
+            if (h1 < h) {
+                h = h1;
+                cell = c1;
+            }
+            if (h2 < h) {
+                h = h2;
+                cell = c2;
+            }
+            if (h3 < h) {
+                h = h3;
+                cell = c3;
+            }
+        } else {
+            func_800BC0A8(&v.vx, &v.vz);
+            func_800BE748(&v, &cell, &t, &D_800CE118[0], (u16 *)&h);
+        }
+        if (D_800CE3C8->unk0 == 1) {
+            if (h < -0x2134) {
+                h = -0x2134;
+            }
+        } else if (h < -0x251C) {
+            h = -0x251C;
+        }
+        if (D_800CE1E8.unk0[3] + h < y2) {
+            k = ((u8)cell >> 2 == 0x31) * 2;
+            if (D_800CE26D != 0) {
+                k = 2;
+            }
+            if (D_800CE25D != 0) {
+                k = 2;
+            }
+            if (D_800CE0F0->unk2 != 0 && D_800CE0F0->unk2 != 0x1000) {
+                k = 3;
+            }
+            y2 = D_800CE1E8.unk0[3] + h;
+        }
+        if (D_800CE3C8->unk0 == 1 && y2 > -0x1194) {
+            y2 = -0x1194;
+        }
+        d = y2 - D_800CE198[1];
+        dir = d > 0x100;
+        step = 0;
+        if (d < -0x100) {
+            dir = 2;
+        }
+        D_800CCAFC = (d >= 0 ? d : -d) >> D_800CCB04;
+        if (D_800CCAFC < D_800CCB08) {
+            D_800CCAFC = D_800CCB08;
+        }
+        if (D_800CCAFC > D_800CCB0C) {
+            D_800CCAFC = D_800CCB0C;
+        }
+        if (dir != 0) {
+            switch (D_800CE3C8->unk0) {
+            case 1:
+            case 2:
+                switch (dir) {
+                case 2:
+                    step = (d + 0x100) / 4;
+                    break;
+                case 1:
+                    step = (d - 0x100) / 32;
+                    break;
+                }
+                break;
+            case 0:
+            case 3:
+                switch (dir) {
+                case 2:
+                    step = ((d + 0x100) << 8) / (((D_800CCB10 - 2) * D_800CCAFC * 7) >> k);
+                    break;
+                case 1:
+                    step = ((d - 0x100) << 8) / (D_800CCB10 * D_800CCAFC * 3);
+                    break;
+                }
+                a = step >= 0 ? step : -step;
+                if (a > 0x200) {
+                    a = 0x200;
+                }
+                a = (((0x200 - a) * D_800CCB14 >> 12) + 0x800) << 1;
+                step *= a;
+                step /= 4096;
+                break;
+            }
+        }
+        D_800CE198[0] = x2;
+        D_800CE198[2] = z2;
+        if (ABS(step) >= 5 && D_800CE0EF == 0) {
+            D_800CE198[1] += step;
+        }
+        res = y2;
+    }
+    dx = D_800CE198[0] - 0x2FF77;
+    dz = D_800CE198[2] + 0x14031;
+    if (ABS(dx) < 0x36B0 && ABS(dz) < 0x36B0) {
+        s = 0xBAEB900 - dx * dx;
+        s -= dz * dz;
+        r = -SquareRoot0(s) + 0x898;
+        if (s > 0 && r < D_800CE198[1]) {
+            D_800CE198[1] = r;
+        }
+    }
+    switch (D_800CE1F3) {
+    case 0:
+        if (D_800D33F4 != 0) {
+            D_800CE1F3 = 1;
+            D_800CE198[1] = res;
+            D_800CE108[1] = D_800CE3DC->unk14.vy + D_800CE1C4;
+        }
+        break;
+    case 1:
+        D_800CE1F3 = 2;
+        p = &D_8007AEF0.b[0x65];
+        if (*p & 1) {
+            func_8002FA10();
+            D_8007AEF0.b[0x65] &= ~1;
+        } else {
+            func_8002F9D0();
+        }
+        break;
+    }
+    if (D_800CE198[1] < -0x47CF) {
+        D_800CE198[1] = -0x47CF;
+    }
+    func_800BC0A8(&D_800CE108[0], &D_800CE108[2]);
+    func_800BC0A8(&D_800CE198[0], &D_800CE198[2]);
+}
 
 void func_800AE280(void) {
     s32 k;
@@ -2023,7 +2286,183 @@ void func_800B01F0(Unk8004AB64 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B0378);
+void func_800B0378(Unk800CCCC0 *cc) {
+    ActorPos p;
+    ActorPos q;
+    u32 cell;
+    s32 h;
+    u32 cell2;
+    s32 h2;
+    s32 saved;
+    s32 spd;
+    s32 i;
+    s32 j;
+    s32 dx, dy, dz;
+    s32 ex, ez;
+    s32 k;
+    s32 dist;
+    s32 m;
+    s32 off, lim, y, zz, wz, r1, r2;
+
+    if (D_800CE3C8->unkD != 0 && D_800CE25E != 0 && func_800B7A14(0xC1) != 0x34 && D_800D3E75 == -1) {
+        D_800CCE54 = D_800CCE55;
+    }
+    if (D_800CCE4A == 0 && D_800D3E60 != 2 && D_800D4818 == 0 && D_800D33F4 != 0 && D_800CE1E0 == 0) {
+        func_800B3760();
+    }
+    spd = D_800CE3C0;
+    if (spd < 0) {
+        spd /= 2;
+    }
+    D_800D30C6 = 1;
+    if (D_800CE3C8->unk8 == 0) {
+        saved = D_800CE3C4;
+        if (D_800CCF6C != 0) {
+            D_800CE3C4 = 10;
+            spd *= 4;
+        }
+        i = 0;
+        do {
+            j = i;
+            cell = -1;
+            h = -1;
+            p = D_800CE3DC->unk14;
+            if (func_800B0D6C((VECTOR *)&p, i, D_800CE3C4, spd, &cell, &h) ||
+                func_800B0D6C((VECTOR *)&p, j = -i, D_800CE3C4, spd, &cell, &h)) {
+                dx = p.vx - D_800CE3DC->unk40.vx;
+                dy = p.vy - D_800CE3DC->unk40.vy;
+                dz = p.vz - D_800CE3DC->unk40.vz;
+                if (func_800B36B4(cc->unk0, cell, 0) != 0) {
+                    dist = SquareRoot0(dx * dx + dz * dz);
+                } else {
+                    dist = SquareRoot0(dx * dx + dy * dy + dz * dz);
+                }
+                if (dist != 0) {
+                    k = spd * spd / dist;
+                    if (spd < 0) {
+                        k = -k;
+                    }
+                } else {
+                    k = 0;
+                }
+                q = D_800CE3DC->unk14;
+                if (func_800B0D6C((VECTOR *)&q, j, D_800CE3C4, k, &cell, &h)) {
+                    D_800CE3DC->unk14 = q;
+                    cc->unk8 = cell;
+                    cc->unkE = q.vy;
+                    D_800CE208 = h;
+                    break;
+                }
+            }
+            i += 0x80;
+        } while (i < 0x400);
+        if (D_800CCF6C != 0) {
+            D_800CE3C4 = saved;
+        }
+    } else {
+        q = D_800CE3DC->unk14;
+        if (func_800B0D6C((VECTOR *)&q, 0, D_800CE3C4, spd, &cell2, &h2)) {
+            D_800CE3DC->unk14.vx = q.vx;
+            D_800CE3DC->unk14.vz = q.vz;
+            D_800CE260 = D_800CE3DC->unk14.vy + 0x2A30;
+            if (D_800CE260 < 0x7E8 && D_800CE202 == 0 && D_800CE0EF == 0 && D_800CE278 < 0) {
+                m = (D_800CE278 << 1) * D_800CE260;
+                m >>= 12;
+                D_800CE3DC->unk14.vy += m;
+            } else {
+                D_800CE3DC->unk14.vy += D_800CE278;
+            }
+            cc->unk8 = cell2;
+            cc->unkE = q.vy;
+            D_800CE208 = h2;
+        }
+        off = 0x1C20;
+        if (D_800CF444 == 1) {
+            off = 0x1964;
+            lim = 0x1E78;
+        } else {
+            lim = 0x2134;
+        }
+        /* ez holds the x offset here; the names follow the original register use */
+        ez = D_800CE3DC->unk14.vx - 0x2FF77;
+        y = D_800CE3DC->unk14.vy;
+        wz = D_800CE3DC->unk14.vz + 0x14031;
+        dy = y + off;
+        if (ABS(ez) < 0x9C4 && ABS(wz) < 0x9C4) {
+            dx = 0x5F5E10 - ez * ez;
+            zz = wz * wz;
+            dz = dx - dy * dy - zz;
+            if (-lim < y) {
+                D_800D30C6 = 0;
+            }
+            if (dz > 0) {
+                r1 = SquareRoot0(dz);
+                r2 = SquareRoot0(dz);
+                dz = dy - r1;
+                if (dz < 0) {
+                    dz = -dz;
+                }
+                dz = dz < abs(dy + r2);
+                if (dz) {
+                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = SquareRoot0(dx - zz) - off;
+                } else {
+                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = -SquareRoot0(dx - zz) - off;
+                }
+            }
+        }
+    }
+    ex = D_800CE3DC->unk14.vx - 0x407F7;
+    ez = D_800CE3DC->unk14.vz + 0x3BDC3;
+    if (ABS(ex) < 0x800 && ABS(ez) < 0x800) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x37FA8;
+    ez = D_800CE3DC->unk14.vz + 0x1606D;
+    if (ABS(ex) < 0xC00 && ABS(ez) < 0xC00) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x4AD96;
+    ez = D_800CE3DC->unk14.vz + 0x32133;
+    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x489E4;
+    ez = D_800CE3DC->unk14.vz + 0x34BBF;
+    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x250D4;
+    ez = D_800CE3DC->unk14.vz + 0x46B95;
+    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x36F54;
+    ez = D_800CE3DC->unk14.vz + 0xF131;
+    if (ABS(ex) < 0x60C && ABS(ez) < 0x800) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x3D3D2;
+    ez = D_800CE3DC->unk14.vz + 0x36C0F;
+    if (ABS(ex) < 0x500 && ABS(ez) < 0x500) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x4A02F;
+    ez = D_800CE3DC->unk14.vz + 0x11DD8;
+    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0xC02F;
+    ez = D_800CE3DC->unk14.vz + 0x1D9EC;
+    if (ABS(ex) < 0x500 && ABS(ez) < 0x500) {
+        D_800D30C6 = 0;
+    }
+    ex = D_800CE3DC->unk14.vx - 0x17A3B;
+    ez = D_800CE3DC->unk14.vz + 0x4014A;
+    if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
+        D_800D30C6 = 0;
+    }
+    func_800BC0A8(&D_800CE3DC->unk14.vx, &D_800CE3DC->unk14.vz);
+}
 
 u8 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
     VECTOR v;
@@ -4055,7 +4494,219 @@ void func_800B9774(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7CCC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B9808);
+s32 func_800B9808(s32 cell, WmTexEnt *tex, VECTOR *pos, u32 *attr, s32 *idx, Unk800CE288 *cache) {
+    VECTOR v1;
+    VECTOR v3;
+    VECTOR v2;
+    VECTOR v4;
+    VECTOR w1;
+    VECTOR w3;
+    VECTOR w2;
+    VECTOR o1;
+    VECTOR o3;
+    VECTOR o2;
+    WmPoly *polys;
+    WmPoly *poly;
+    u8 found;
+    s32 p;
+    u16 count;
+    u16 *cpoly;
+    u16 *ccell;
+    u8 *slot;
+    s32 nfall;
+    s32 fidx;
+    s32 fy;
+    SVECTOR *verts;
+    SVECTOR *a;
+    SVECTOR *b;
+    SVECTOR *c;
+    s32 px;
+    s32 pz;
+    u16 n;
+    s32 i;
+    s32 k;
+    s32 y;
+    s32 y0;
+    s16 d;
+    s16 best;
+    s16 bi;
+    WmPoly *pp;
+    s32 m;
+
+    found = 0;
+    nfall = 0;
+    fidx = -1;
+    poly = polys = tex->unk8;
+    verts = tex->unk4;
+    count = tex->unk2;
+    px = pos->vx;
+    pz = pos->vz;
+    cpoly = cache->unk4;
+    ccell = cache->unk10;
+    slot = &cache->unk0;
+    v2.vy = 0;
+    v3.vy = 0;
+    v1.vy = 0;
+    w3.vy = 0;
+    w2.vy = 0;
+    w1.vy = 0;
+    n = 0;
+    fy = 0;
+    if (D_800D30C6 == 0) {
+        cache = NULL;
+    }
+    if (cache != NULL) {
+        for (i = 0; i < 6; i++) {
+            k = (*slot + i) % 6;
+            if (ccell[k] != cell) {
+                continue;
+            }
+            p = cpoly[k];
+            if (p >= count) {
+                continue;
+            }
+            pp = (WmPoly *)((p << 4) + (s32)polys);
+            a = &verts[pp->unk0];
+            c = &verts[pp->unk2];
+            b = &verts[pp->unk1];
+            v1.vx = c->vx - a->vx;
+            v1.vz = c->vz - a->vz;
+            w1.vx = px - a->vx;
+            w1.vz = pz - a->vz;
+            OuterProduct0(&v1, &w1, &o1);
+            if (o1.vy > 0) {
+                continue;
+            }
+            v2.vx = a->vx - b->vx;
+            v2.vz = a->vz - b->vz;
+            w2.vx = px - b->vx;
+            w2.vz = pz - b->vz;
+            OuterProduct0(&v2, &w2, &o2);
+            if (o2.vy > 0) {
+                continue;
+            }
+            v3.vx = b->vx - c->vx;
+            v3.vz = b->vz - c->vz;
+            w3.vx = px - c->vx;
+            w3.vz = pz - c->vz;
+            OuterProduct0(&v3, &w3, &o3);
+            if (o3.vy > 0) {
+                continue;
+            }
+            if (o1.vy == 0 || o3.vy == 0 || o2.vy == 0) {
+                continue;
+            }
+            v4.vx = b->vx - a->vx;
+            v4.vy = b->vy - a->vy;
+            v4.vz = b->vz - a->vz;
+            v1.vy = c->vy - a->vy;
+            OuterProduct0(&v4, &v1, &o1);
+            if (abs(o1.vy) >= 0x20) {
+                y = ((o1.vx >> 5) * (a->vx - px) + (o1.vy >> 5) * a->vy + (o1.vz >> 5) * (a->vz - pz)) / (o1.vy >> 5);
+            } else {
+                y = (a->vy + b->vy + c->vy) / 3;
+            }
+            n = 1;
+            D_800D27F8[0] = y;
+            found = n;
+            D_800D2DF8[0] = p;
+            break;
+        }
+    }
+    if (!found) {
+        for (i = 0; i < count; i++, poly++) {
+            a = &verts[poly->unk0];
+            c = &verts[poly->unk2];
+            b = &verts[poly->unk1];
+            v1.vx = c->vx - a->vx;
+            v1.vz = c->vz - a->vz;
+            w1.vx = px - a->vx;
+            w1.vz = pz - a->vz;
+            OuterProduct0(&v1, &w1, &o1);
+            if (o1.vy > 0) {
+                continue;
+            }
+            v2.vx = a->vx - b->vx;
+            v2.vz = a->vz - b->vz;
+            w2.vx = px - b->vx;
+            w2.vz = pz - b->vz;
+            OuterProduct0(&v2, &w2, &o2);
+            if (o2.vy > 0) {
+                continue;
+            }
+            v3.vx = b->vx - c->vx;
+            v3.vz = b->vz - c->vz;
+            w3.vx = px - c->vx;
+            w3.vz = pz - c->vz;
+            OuterProduct0(&v3, &w3, &o3);
+            if (o3.vy > 0) {
+                continue;
+            }
+            if (o1.vy == 0 && o3.vy == 0 && o2.vy == 0) {
+                continue;
+            }
+            v4.vx = b->vx - a->vx;
+            v4.vy = b->vy - a->vy;
+            v4.vz = b->vz - a->vz;
+            v1.vy = c->vy - a->vy;
+            OuterProduct0(&v4, &v1, &o1);
+            if (abs(o1.vy) >= 0x20) {
+                y = ((o1.vx >> 5) * (a->vx - px) + (o1.vy >> 5) * a->vy + (o1.vz >> 5) * (a->vz - pz)) / (o1.vy >> 5);
+            } else {
+                y = (a->vy + b->vy + c->vy) / 3;
+            }
+            if ((o1.vy == 0 || o3.vy == 0 || o2.vy == 0) && (u8)poly->unkE >> 2 == 0x3A) {
+                nfall++;
+                fidx = i;
+                fy = y;
+            } else {
+                m = n;
+                n++;
+                D_800D27F8[m] = y;
+                D_800D2DF8[m] = i;
+            }
+        }
+    }
+    if (n != 0) {
+        y0 = pos->vy;
+        best = abs(D_800D27F8[0] - y0);
+        bi = 0;
+        for (i = 1; i < n; i++) {
+            d = abs(D_800D27F8[i] - y0);
+            if (d < best) {
+                best = d;
+                bi = i;
+            }
+        }
+        *idx = D_800D2DF8[bi];
+        *attr = polys[*idx].unkE;
+        y = D_800D27F8[bi];
+        if (cache != NULL && !found) {
+            (*slot)++;
+            *slot %= 6;
+            ccell[*slot] = cell;
+            cpoly[*slot] = *idx;
+        }
+    } else if (nfall != 0) {
+        *idx = fidx;
+        *attr = polys[fidx].unkE;
+        y = fy;
+    } else {
+        *idx = -1;
+        *attr = 0;
+        y = pos->vy;
+        func_80015C38("Not hit polygon\n");
+        if (D_800D30C5 >= 2) {
+            sprintf(D_800CCE6C, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy,
+                    D_800CE3DC->unk14.vz, found);
+            func_80015C38(D_800A7D20, D_800CCE6C);
+            if (D_800CCE69 == 0) {
+                D_800CCE69 = 1;
+            }
+        }
+    }
+    return y;
+}
 
 void func_800BA1E4(void) {
     s32 i;
@@ -7473,7 +8124,82 @@ void func_800C4DD8(void) {
 /* jump table padding emitted by the original toolchain */
 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C53DC);
+void func_800C53DC(void) {
+    WmNode *o;
+    WmNode *cur;
+    s16 spd;
+    u8 flag;
+
+    flag = 0;
+    o = D_800D53A0.unk8;
+    spd = D_800CE3C8->unk2;
+    if (spd != 0) {
+        D_800D53C8 = abs((D_800CE3C0 << 12) / spd);
+    } else {
+        D_800D53C8 = 0;
+    }
+    D_800D4A38 += (D_800D53C8 - D_800D4A38) / 32;
+    while (o->unk8 != NULL) {
+        /* dead flag: combine folds the test (flag is only ever 0) and jump2 drops the
+         * body after register allocation, which leaves s7 = 0 and its save behind */
+        if (flag) {
+            func_800C7050(o);
+        }
+        switch ((u8)o->unkD) {
+        case 2:
+            o->unk14 -= 60 + wm_rand8() % 24;
+            o->unk10 -= 30 - wm_rand8() % 60;
+            o->unk18 -= 30 - wm_rand8() % 60;
+            break;
+        case 3:
+            o->unk14 -= 60 + wm_rand8() % 24;
+            o->unk10 -= 60 - wm_rand8() % 60;
+            o->unk18 -= 30 - wm_rand8() % 60;
+            break;
+        case 23:
+            o->unk10 = func_8004BB80((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vx;
+            o->unk14 -= 80;
+            o->unk18 = func_8004BB7C((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vz;
+            /* fallthrough */
+        case 24:
+            o->unk10 -= 40 + wm_rand8() % 130;
+            o->unk14 -= 40 - wm_rand8() % 80;
+            o->unk18 += 300 + wm_rand8() % 300;
+            break;
+        }
+        o->unk1C++;
+        cur = o;
+        o = o->unk8;
+        switch ((u8)cur->unkD) {
+        case 2:
+            if (cur->unk1C >= 77) {
+                func_800C7050(cur);
+            }
+            break;
+        case 3:
+            if (cur->unk1C >= 46) {
+                func_800C7050(cur);
+            }
+            break;
+        case 16:
+        case 17:
+            if (cur->unk1C >= 9) {
+                func_800C7050(cur);
+            }
+            break;
+        case 32:
+            if (abs(cur->unk10 - D_800CE3DC->unk14.vx) > 32000 || abs(cur->unk18 - D_800CE3DC->unk14.vz) > 32000) {
+                func_800C7050(cur);
+            }
+            break;
+        default:
+            if (cur->unk1C == func_800CAE00((u16 *)cur->unk0)) {
+                func_800C7050(cur);
+            }
+            break;
+        }
+    }
+}
 
 void func_800C5A48(u8 arg0) {
     VECTOR v;

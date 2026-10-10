@@ -4,9 +4,37 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Register allocation / scheduling / branch order (>=90%):
-  8005F718,
-  800616F8, 8002FED4, 8002ECA0, 8002E718, 80062118, 800621D4, 8005B1B8, 8005AEC8, 8002B644.
+- Tricks that matched 12 main functions (8001D32C, 80036650, 8004D2C0, 8004DCEC, 80035108,
+  8004F74C, 800227C8, 80062118, 800621D4, 8005F718, 800616F8, 8002FED4). Search scripts are in
+  the agent worktree's build/: hc.py (greedy statement moves), hcm.py (permute independent blocks),
+  dw.py/dw2.py (insert one or two `do { } while (0);`), dd.py (aligned diff, `--bin main`).
+  - An empty `do { } while (0);` (a disabled debug macro) changes register allocation and the CSE
+    of address pseudos. It matched 80035108 and 8002FED4 and got 8005B1B8 and 8002B644 within
+    2 rows; try every position.
+  - Loop-invariant hoisting depends on loop size: giving a fall-through switch case its own copy
+    of the body (8004D2C0) stopped the outer jump-table address from being hoisted into an s-reg.
+  - Copies like `move a1,s0` come from re-reading a global the compiler already holds
+    (`nn->unk8 = D_8007AECC->unk15D0`, `D->unk1C = x; gd = D->unk1C;`), or from block-scoped locals.
+  - `addu v1,v1,v0` vs `addu v1,v0,v1`: assign the result to a separate variable inside the if/else
+    (8004F74C: `x = p->x0; if (k) y = x + w; else y = x - w;`).
+  - Duplicating a compare in both branches (`if (prev == 0) { if (n != a) err = 1; } else { if (n != prev + 1) err = 1; }`)
+    beat any merged form (800227C8).
+  - `func_80061BC8` takes one argument. Passing a second kept reorg from filling the beqz delay slot
+    (80062118/800621D4).
+  - The scheduler reverses pairs of independent stores, so write field stores in the opposite
+    order from the asm (8005A320, 8004DCEC).
+  - Rodata: a jump table after a string or a second jump table needs
+    `__asm__(".section .rodata\n\t.word 0\n\t.section .text");` padding (8004D2C0, after 8004DCEC).
+- Drafts in docs/wip/main_*.c (each first line gives the differing rows): 8002B644 (1),
+  8005B1B8 (2), 800585E0 (4), 8005AEC8 (8), 80024BD8 (9), 8005A320 (9), 80029D60 (10),
+  80048E80 (10), 80047B90 (11), 80059414 (13), 8002ECA0 (13), 80028DB0 (15), 8005C8BC (15),
+  8002E718 (23).
+  8005A320 and 8005963C share the `~active & (~(D_80083174 | D_80080A70.unk0) & 0xFFFFFF)` problem:
+  the original ANDs the mask into the nor first. A static inline returning the masked value gets
+  the association right but moves `~active`.
+- 80030B34, 80030EE4, 80031284, 80031718: one template (rsin/rcos table D_8006C1C4, then a C or GTE
+  matrix path picked by the third argument). They sit next to libgte and are large; no draft beyond
+  the old nm_80030EE4 (185/216 rows differ).
 - gcc 2.8.1 cross-function leak (explains the old "order dependency" of 800584C8): combine.c
   only resets its static `mem_last_set` *after* the initial nonzero-bits scan, so during that scan
   the cuid of the previous function's last store/call is still there. A `(reg) = (mem)` whose insn
@@ -127,6 +155,23 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * goto loops instead of do/while (no loop.c givs/hoisting, and refs are no longer weighted by loop depth);
   * an address-taken pair as one aggregate (`VECTOR q; f(&q.vx); g(&q.vy)`) explains unused frame space;
   * `x >= 0 ? x : -x` vs `if (x < 0) x = -x` vs ABS() give three different abs sequences.
+- Pass 7 (close-out): matched 0c AD738, C53DC, B0378, B9808 (and 0d B1A84, A9B2C, B1110, 15 A7ABC, see below).
+  Drafts left in docs/wip/ with headers: 0a AB3CC (4 rows), C4EC8 (1), B4A5C (13), C31F8 (19), BB714 (~260,
+  was ~930), AA4E8 (unchanged). What worked:
+  * `abs()` (the builtin) emits the abssi2 insn: same `bgez; nop; negu` as `if (v < 0) v = -v`, but it is one
+    insn, not a jump, so reorg's register-liveness scan (find_dead_or_set_registers, max ~2 conditional
+    jumps) sees further. That fixed AD738's last delay slot (filled from the branch target);
+  * a dead `u8 flag = 0` whose only use is `if (flag) {...}` explains a saved s-register set to 0 and never
+    read (C53DC): combine folds the test through nonzero_bits, but the pseudo keeps flow's stale life info
+    across the loop and gets a callee-saved register; the body is dropped by jump2;
+  * a product that ends up as `mflo tN` + reload instead of a plain register: `m = a * b; m >>= 12; x += m;`
+    (B0378). Variable reuse found by build/rename.py-style search: B0378's else branch keeps the x offset in
+    `ez` and z in a fresh local;
+  * `(WmPoly *)((p << 4) + (s32)polys)` for an `addu` with the index register first (B9808);
+  * early spill stores move with the statement (B9808 `fy = 0` after the other inits).
+  New scripts in the agent worktree's build/: cmp.py-based vt.py (score files), try.py/tryv.py (apply
+  replacements), perm.py/perm2.py (greedy permutations of contiguous lines), movel.py (move one line through
+  a range), combo.py (2^k on/off sites), rename.py (rename locals inside a range).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -157,6 +202,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   `x != 0x7C && ... != 0x7F` into a range check (0d AA790); `c = cond ? 1 : 2` used as an index folds
   into byte offsets 4/2 (14 A9220); computing a call argument in its own statement first changes
   the order of hoisted constants (15 AD7DC).
+- Pass 7 (0d/15 close-out): matched 0d B1A84 (the else branch's third sprite uses the same two-armed
+  if/else colour block as the second, which cross-jumps to the original's shape and stops CSE across it),
+  15 A7ABC (spilled-arg reloads can't move above earlier stores, so the statements that use y/c go first:
+  greedy permutation of each sprite's stores, build/perm2.py), 0d A9B2C (new; a per-arm `if (s->unk4 == 3)`
+  that cross-jumps into one compare, `k = s->unk564 * 12 - 0x78; r.x -= k;`, `code` stored right after
+  setlen) and 0d B1110 (the draft only lacked the `s` argument of func_800ACFC8).
+  Drafts in docs/wip/ with headers: 0d ACFFC (2 rows: preheader order of `y = 0x1A`), B3198 (2 rows, permuter
+  find `y = b->unkC; x = y + 8;`), B030C (20 rows: 0x40 kept in fp), AC708 (unchanged; a goto loop loses the
+  original's giv). 0d A93A0 (40 B): every spelling of `tbl[i*2] * 0x800 + 0x80104A00` CSEs the two
+  0x80104A00 constants. 0d AC060 compiles with `void *vp` (91 rows, a should outrank s for s0).
 - 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
   with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
   let that go.
