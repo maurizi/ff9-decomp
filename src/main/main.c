@@ -12942,7 +12942,110 @@ void func_8004D940(Unk8007B9C0 *w) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004DAD0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004DCEC);
+static inline Unk8007B9C0 *func_8004DCEC_init(s32 id, WinLayout *l) {
+    Unk8007B9C0 *w;
+    Unk8007B9C0 *parent;
+
+    func_8004EEA0_inline(&D_8007B9C0[id]);
+    parent = D_8007BB78;
+    w = &D_8007B9C0[id];
+    w->unk8 = 1;
+    w->unkC = NULL;
+    w->unk10 = 0;
+    w->unk6 = 0;
+    w->unk4 = 0;
+    w->unkA = 0;
+    w->unk0 = parent;
+    if (l->unk0 != 0) {
+        w->unk4 = l->unk0;
+        w->unk6 = (u8)l->unk8;
+    } else {
+        w->unk4 = 0xA0 - (l->unk2 >> 1);
+        w->unk6 = 0x78 - (l->unk9 >> 1);
+    }
+    w->unk18 = l->unk2;
+    w->unk27 = l->unk9;
+    w->unk28 = 0;
+    w->unk1E = 0;
+    w->unk20 = 0;
+    w->unk1A = 0;
+    w->unk2B = 0;
+    w->unk14 = NULL;
+    return w;
+}
+
+void func_8004DCEC(s32 msg, s32 id, WinLayout *l, s32 flags) {
+    Unk8007B9C0 *w;
+    RECT r;
+    s32 style;
+    s32 n;
+    u8 *e;
+
+    e = NULL;
+    if (msg >= 0 && msg < D_8007B954->unk0) {
+        e = (u8 *)D_8007B954->unk4;
+        e += *(u16 *)&((u32 *)e)[(D_8007B708 == 2 || D_8007B708 == 4) ? msg : msg * 2 + 1];
+    }
+    if (e == NULL) {
+        return;
+    }
+    w = func_8004DCEC_init(id, l);
+    w->unkC = func_8004DAD0;
+    w->unk26 = 0;
+    w->unkA = id;
+    w->unk1E = msg;
+    w->unk29 = D_8006E688[(D_8006794C->unk24 >> 14) & 7];
+    w->unk22 = 0;
+    w->unk24 = 8;
+    w->unk2A = 0;
+    w->unk1A = l->unk4;
+    w->unk2B = l->unk6;
+    w->unk1C = l->unk2;
+    w->unk28 |= 0x10;
+    if (!(l->unkB & 1)) {
+        D_8007BB78 = w;
+    }
+    r.x = w->unk4;
+    r.y = w->unk6;
+    r.w = w->unk18 + 3;
+    r.h = w->unk27 + 3;
+    style = 4;
+    if (!(l->unk6 & 0x10)) {
+        style = 3;
+        if (l->unk4 == 0 && !(flags & 4)) {
+            style = 2;
+        }
+    }
+    w->unk14 = func_8002DCAC(&r, 2, style, id);
+    if (w->unk14 != NULL) {
+        w->unk14->unk50 = (s32)w;
+        func_8002E2EC(w->unk14, (void (*)(Window *))func_8004F5D4);
+        func_8002E2F4(w->unk14, func_8004F660);
+        if (l->unk4 != 0 && !(flags & 4)) {
+            func_8002D398(w->unk14, l->unk6 & 3, l->unk4);
+        }
+        if (D_8007BB90 != 0) {
+            func_8002CF20(w->unk14, 3);
+        }
+        if (flags & 0x40) {
+            func_8002E304(w->unk14, (s32)"ACTIVE TIME EVENT");
+        } else if (flags & 8) {
+            func_8002E304(w->unk14, (s32)"MOGNET");
+        }
+    }
+    if (!(l->unkB & 1)) {
+        D_8007B968 = -1;
+        n = D_8007BB94;
+        D_8007BB94 = 0;
+        D_8007B970 = id;
+        D_8007B958 = n;
+    }
+    D_8007BBC8++;
+    func_8004FF98(0);
+}
+
+/* padding before the next jump table in the original rodata */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 void func_8004E16C(void) {
     s32 i;
