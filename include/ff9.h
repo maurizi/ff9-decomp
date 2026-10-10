@@ -1021,7 +1021,7 @@ typedef struct Unk8004AB64 {
     u16 unk34;
     u16 unk36; /* animation file */
     u8 unk38;
-    u8 pad39;
+    u8 unk39;
     u8 unk3A;
     u8 unk3B;
     u8 unk3C;
@@ -1049,7 +1049,7 @@ typedef struct Unk8004AB64 {
     u8 unk69;
     u8 unk6A;
     u8 unk6B;
-    u8 pad6C[0x6E - 0x6C];
+    u16 unk6C; /* rotation y speed */
     s16 unk6E; /* also used as a tiny script buffer */
     u8 unk70;
     u8 unk71;
@@ -1059,7 +1059,8 @@ typedef struct Unk8004AB64 {
     u16 unk76;
     s32 unk78;
     union { u32 w; u8 b[4]; } unk7C; /* colour */
-    u8 pad80[0x84 - 0x80];
+    u16 unk80;
+    u16 unk82;
     s16 unk84; /* smoothed look-at point (func_80047B90) */
     s16 unk86;
     s16 unk88;
@@ -1086,6 +1087,7 @@ typedef struct {
     s16 unk4A;
     s16 unk4C;
 } Unk80047B90;
+void func_80049B48(Unk8004AB64 *);
 
 typedef struct Unk8007AECCNode {
     Unk8004AB64 *unk0; /* key */

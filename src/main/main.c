@@ -9425,7 +9425,99 @@ void func_800499D8(Unk8004B9B8 *p) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80049B48);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80049C14);
+void func_80049C14(Unk8004AB64 *p) {
+    Unk8004AB64 *q;
+    u8 f;
+    s32 last;
+    s32 t;
+    s32 lo;
+    u8 old;
+    s32 t2, lo2, t3, lo3;
+    u8 old2, old3;
+
+    f = p->unk62;
+    if (f & 4) {
+        return;
+    }
+    if (f & 0x80) {
+        if (p->unkA0 != NULL) {
+            q = p->unkA0;
+            if (q->unk36 == (u16)q->unk54) {
+                p->unk36 = p->unk54;
+            } else if (q->unk36 == (u16)q->unk56) {
+                p->unk36 = p->unk56;
+            } else if (q->unk36 == (u16)q->unk58) {
+                p->unk36 = p->unk58;
+            }
+            p->unk3A = q->unk3A;
+        } else if (!(f & 0x40)) {
+            last = p->unk61;
+            if (p->unk38 - 1 < last) {
+                last = p->unk38 - 1;
+            }
+            t = p->unk3A * 16 + (s8)p->unk64 + p->unk5D;
+            lo = t & 0xF;
+            p->unk64 = lo;
+            if (p->unk62 & 0x40) {
+                p->unk64 = lo - 0xF;
+            }
+            old = p->unk3A;
+            t >>= 4;
+            p->unk3A = t;
+            p->unk39 = old;
+            if (last < t) {
+                func_80049B48(p);
+            }
+            if (p->unkF & 0x80) {
+                p->unk14.unk22 = (p->unk14.unk22 + p->unk6C) & 0xFFF;
+                p->unk80 = (p->unk80 + p->unk82) & 0xFFF;
+            }
+        } else {
+            t2 = p->unk3A * 16 + (s8)p->unk64 - p->unk5D;
+            t2 += 0xF;
+            lo2 = t2 & 0xF;
+            p->unk64 = lo2;
+            if (p->unk62 & 0x40) {
+                p->unk64 = lo2 - 0xF;
+            }
+            old2 = p->unk3A;
+            t2 >>= 4;
+            p->unk3A = t2;
+            p->unk39 = old2;
+            if (t2 < p->unk61) {
+                func_80049B48(p);
+            }
+        }
+    } else {
+        lo3 = p->unk3A * 16 + (s8)p->unk64;
+        if (f & 0x40) {
+            t3 = lo3 - p->unk5D;
+        } else {
+            t3 = lo3 + p->unk5D;
+        }
+        if (p->unk62 & 0x40) {
+            t3 += 0xF;
+        }
+        lo3 = t3 & 0xF;
+        p->unk64 = lo3;
+        if (p->unk62 & 0x40) {
+            p->unk64 = lo3 - 0xF;
+        }
+        old3 = p->unk3A;
+        t3 >>= 4;
+        p->unk3A = t3;
+        p->unk39 = old3;
+        if (t3 >= p->unk38) {
+            p->unk3A = 0;
+            if (p->unk36 == (u16)p->unk54) {
+                if (D_8007B720 >= D_8007B92D) {
+                    func_8004BF20();
+                }
+                p->unk5D = p->unk7C.b[*D_8007B720++ & 3];
+            }
+        }
+    }
+}
 
 u8 *func_80049ED8(u8 *p) {
     s32 mask = 0;
