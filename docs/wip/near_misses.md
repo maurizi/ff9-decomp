@@ -4,6 +4,40 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 8 matched 9 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8,
+  80048E80, 80062E3C). What worked:
+  - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
+    permuter found it; mflo a2 everywhere then follows). 80058118: pan reused for the LFO depth
+    temp in the first block (`pan = (s16)...; x = pan; if (pan < 0) x = pan >> 1;`). 8005E3FC: one
+    `op` for opcode/key/note/flags, one `vel` for the 0xFE index, velocity and both pitches.
+    80054294: the second grid loop uses ex/ey as counters (not i/j), plus a per-row `q = py`.
+    build/reuse.py (this worktree) generates merges and live-range renames of every variable pair;
+    many outputs change semantics, so check each hit by hand.
+  - Statement-order sweeps over small blocks (build/cv.py: combinations of text substitutions;
+    gen*.py in build/a): 8005E3FC's `c->unk10A = ...` before `note = ...`, 80058118's
+    `pan = ... + 0x80; pan &= 0xFF;` in an if/else with `pan = 0x80` in the else.
+  - Pointer vs array access: 80054650 writes the prims through `u32 *p` (p[0]..p[9], setaddr(p - 10,
+    p)) so the stores alias D_8007BD14 and it is reloaded in the inner loop; the vertex pointer
+    `v++` per prim; tp computed before u0/u1; `p = D_8007BD10; ... p += 10;`; the trailer via
+    setaddr/getaddr. 80054294's loop 3 needs `ys[i]` (not py[i]) with `py = ys` still assigned
+    inside the loop (it feeds loop 4).
+  - 8005DB40: two jump tables. The C emits both tables in its own .rodata, so the
+    INCLUDE_RODATA of D_80012198 (second table) was removed from main.c. A future resplit may put
+    it back; delete it again if so. `if (*p++ <= D_80080A10->unk6C)` (not `>=` with swapped
+    operands) stops loop.c hoisting the D_80080A10 load; `c->unkCC = (u16)c->unkCC & ~5` gives
+    andi 0xFFFA instead of a hoisted -6; `n--; n &= 3;`; `op = p[0] + (p[1] << 8); p += (s16)op;`.
+  - `while (--i != -1)` gives gcc's precheck + compare-to--1 count-down loop (8004E248 draft).
+  - 80024BD8: `p->rgbc0` first, then `p->xy2 = 0x800000; p->xy3 = w | 0x800000;` and
+    `->wh = w | 0x800000` (no `w |=`), found by moving single statements (build/mvall.py moves
+    every single-line statement within its straight-line run; it also took 8005681C 51 -> 14).
+  - 80048E80: `i = 3; D_8007AE10[i] = func_800BEC64(1); m = (u16)D_8007AE10[i];` (the loop
+    counter as the index) keeps the `la` base for `sh v0,6(v1)`; no inline needed.
+  - 80062E3C: `q->unk4_0 = 0` first among the slot header stores (mvall), then the permuter split
+    getClut into `clut = cy << 6; clut |= (cx >> 4) & 0x3F;`. cx is reused for the tpage value.
+  - build/splitx.py splits `x = a OP b` into `x = a; x OP= b;` at every top-level operator; no hits
+    on the remaining drafts.
+  - Drafts updated: 8004E248 (38, ~11 of them symbol-only), 8001DE50 (19), 8005681C (14, new),
+    8005A320 (5), 80059414 (9). Headers have the details.
 - Pass 7 matched 4 (8004B85C, 800378C4, 80035214, 80038618). What worked:
   - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
     parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
@@ -226,6 +260,30 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   AB810 8, AB07C 24 (10 with the do/while(0) wrap plus `yy = y;`, 1 with an extra identical-arm if; both hacks),
   C9794 14 (was 26), DA1F4 14 (now same length), D1D74 22, CD210 25, D1FFC 27, CBA58 45, D2DBC 63, AC37C ~175,
   C67BC ~300. DE11C and ABBC4 have no drafts.
+- Pass 11 (big functions; matched ABBC4, 0x680). What fixed it:
+  - Index form inside the texture loop (`a[j]`, `b[j]`, `r[j]` instead of pointer increments): loop.c then makes
+    the reduced givs with `move s3,a0`-style copies from the bases, and `r[j].unk2` stops getting its own +2 giv
+    (that giv was the extra spill that made the frame 8 bytes too big).
+  - The search pointer is reused for the hit: `e = t->unk4; for (...) if (e[i].unk0 == id) { e = &e[i]; ...}`.
+    Since e is set inside the loop it is not invariant, so only i*12 is reduced (`addu a2,a1,zero` init) and the
+    address is rebuilt each iteration (`addu a0,a2,t0`).
+  - Invariant hoisting depends on movable order: `arg0 * 3` is hoisted only if it comes before x/c in the inner
+    loop; spill slots follow pseudo numbers, so c must be an expression hoisted after k3, and
+    `(s16)(((x & 0x3FF) >> 6) | 0x80)` keeps fold from pulling the `| 0x80` back into the loop.
+  - `s = r[j].unk2 + 0xE5; y = arg0 * 3 + s;` gives `addu s0,t2,s0` (a separate target keeps expand_binop from
+    swapping the operands); a separate variable per switch case for the file id and the anim pointer (one shared
+    variable crossed calls and took an s-register); read f->unk4/unkC and D_8006794C->unk20 into locals before the
+    request stores.
+  - Colour copies in the model renderers (DE11C, C67BC): the original copies each colour through one reused
+    pointer (`cp = (u32 *)col[i]; p->rN = *cp;`). A multi-set pseudo is not "birthing", so sched1 pipelines the
+    address/load/store chain exactly like the original; setlen/setcode go after the last colour copy (the prim giv
+    base follows the last field referenced, +7 = code).
+  - DE11C 3-vertex loops index the Z table with `i2 & 0xFFFF` (CSE keeps two `sll`, combine then drops the and);
+    C67BC's GT3/G3 recompute `andi`+`sll` for i0 and do `andi a0,a0` in place: both point at u16 index variables
+    (`u16 i0..i3` gives C67BC exactly 989 insns but needs the index statements reworked).
+  Status: DE11C 430 rows (18 with registers masked, global allocation right; WIP docs/wip/ovl_0b_800DE11C.c),
+  C67BC 234 (was ~300; 16 masked), AC37C 175 (notes on the tu/tv registers and the D_8006794C lo_sum CSE in the WIP
+  header), CBA58 45 (notes added). D2DBC not attempted.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).

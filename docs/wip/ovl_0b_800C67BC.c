@@ -1,3 +1,4 @@
+/* WIP func_800C67BC: 234 aligned diff rows (was ~300), 16 with registers masked; 981 of 989 insns. Pass 11 (from the func_800DE11C work): colours copied through one reused pointer cp, setlen/setcode after the last colour copy, G3 stotz before setlen, FT3/F4 r0 copy before setlen. Left: the 8 missing insns are the GT3/G3 Z index recompute (`andi v1,a0,0xFFFF; sll` on the saved i0) and nops; the original does `andi a0,a0` / `andi t0,t0` in place and all four srl/andi before the sll, which points at u16 i0..i3 (`u16 i0, i1, i2, i3` gives exactly 989 insns but 526 rows; needs the index statements reworked). */
 #include "ovl_0b.h"
 
 u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
@@ -12,6 +13,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     u32 i;
     s32 xy0, xy1, xy2;
     u32 a, b;
+    u32 *cp;
     u32 i0, i1, i2, i3;
     u32 t;
     u32 hi;
@@ -117,11 +119,11 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
+        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->unk8;
         setlen(pFT3, 7);
         *(s32 *)&pFT3->x0 = xy0;
         *(s32 *)&pFT3->x1 = xy1;
         *(s32 *)&pFT3->x2 = xy2;
-        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->unk8;
         setcode(pFT3, 0x24);
         gte_ldsz3(D_80070520[i0], D_80070520[i1], D_80070520[i2]);
         t = tex[sFT3->unk6];
@@ -181,12 +183,16 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         t = tex[sGT4->unk1D];
         hi = t & 0xFFFF0000;
         t <<= 16;
-        *(u32 *)&pGT4->r0 = *(u32 *)col[i0];
-        *(u32 *)&pGT4->r1 = *(u32 *)col[i1];
-        *(u32 *)&pGT4->r2 = *(u32 *)col[i2];
+        cp = (u32 *)col[i0];
+        *(u32 *)&pGT4->r0 = *cp;
+        cp = (u32 *)col[i1];
+        *(u32 *)&pGT4->r1 = *cp;
+        cp = (u32 *)col[i2];
+        *(u32 *)&pGT4->r2 = *cp;
+        cp = (u32 *)col[i3];
+        *(u32 *)&pGT4->r3 = *cp;
         setlen(pGT4, 12);
         setcode(pGT4, 0x3C);
-        *(u32 *)&pGT4->r3 = *(u32 *)col[i3];
         a = *(u32 *)&sGT4->unk8[0];
         b = *(u32 *)&sGT4->unk8[2];
         i1 = a >> 16;
@@ -239,11 +245,14 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i2 = sGT3->unk10[2];
         i1 = a >> 16;
         i0 = a & 0xFFFF;
-        *(u32 *)&pGT3->r0 = *(u32 *)col[i0];
-        *(u32 *)&pGT3->r1 = *(u32 *)col[i1];
+        cp = (u32 *)col[i0];
+        *(u32 *)&pGT3->r0 = *cp;
+        cp = (u32 *)col[i1];
+        *(u32 *)&pGT3->r1 = *cp;
+        cp = (u32 *)col[i2];
+        *(u32 *)&pGT3->r2 = *cp;
         setlen(pGT3, 9);
         setcode(pGT3, 0x34);
-        *(u32 *)&pGT3->r2 = *(u32 *)col[i2];
         a = *(u32 *)&sGT3->unk6[1];
         i0 = sGT3->unk6[0];
         i2 = a >> 16;
@@ -293,12 +302,16 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i3 = b >> 16;
         i0 = a & 0xFFFF;
         i2 = b & 0xFFFF;
-        *(u32 *)&pG4->r0 = *(u32 *)col[i0];
-        *(u32 *)&pG4->r1 = *(u32 *)col[i1];
-        *(u32 *)&pG4->r2 = *(u32 *)col[i2];
+        cp = (u32 *)col[i0];
+        *(u32 *)&pG4->r0 = *cp;
+        cp = (u32 *)col[i1];
+        *(u32 *)&pG4->r1 = *cp;
+        cp = (u32 *)col[i2];
+        *(u32 *)&pG4->r2 = *cp;
+        cp = (u32 *)col[i3];
+        *(u32 *)&pG4->r3 = *cp;
         setlen(pG4, 8);
         setcode(pG4, 0x38);
-        *(u32 *)&pG4->r3 = *(u32 *)col[i3];
         otz >>= 6;
         addPrim(&ot[otz], pG4);
         prim += sizeof(POLY_G4);
@@ -333,9 +346,12 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i2 = sG3->unk8[2];
         i1 = a >> 16;
         i0 = a & 0xFFFF;
-        *(u32 *)&pG3->r0 = *(u32 *)col[i0];
-        *(u32 *)&pG3->r1 = *(u32 *)col[i1];
-        *(u32 *)&pG3->r2 = *(u32 *)col[i2];
+        cp = (u32 *)col[i0];
+        *(u32 *)&pG3->r0 = *cp;
+        cp = (u32 *)col[i1];
+        *(u32 *)&pG3->r1 = *cp;
+        cp = (u32 *)col[i2];
+        *(u32 *)&pG3->r2 = *cp;
         gte_stotz(&otz);
         setlen(pG3, 6);
         setcode(pG3, 0x30);
@@ -367,11 +383,11 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             }
         }
         otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2] + D_80070520[i3];
+        *(u32 *)&pF4->r0 = *(u32 *)sF4->unk8;
         setlen(pF4, 5);
         *(s32 *)&pF4->x0 = xy0;
         *(s32 *)&pF4->x1 = xy1;
         *(s32 *)&pF4->x2 = xy2;
-        *(u32 *)&pF4->r0 = *(u32 *)sF4->unk8;
         setcode(pF4, 0x28);
         *(s32 *)&pF4->x3 = D_800711A8[i3];
         otz >>= 6;

@@ -1546,6 +1546,12 @@ typedef struct {
 extern u32 D_8006F410[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
 u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
+extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
+extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
+s32 func_8005DB40(AkaoChannel *c);
+extern void (*D_8006FB60[])(AkaoChannel *, u32); /* opcode 0xA0-0xFF handlers */
+extern void (*D_8006FCE0[])(AkaoChannel *, u32); /* 0xFE xx opcode handlers */
+extern u16 D_8006F3F4[]; /* note lengths */
 
 /* drum kit key entry (func_8005E170) */
 typedef struct {
@@ -3840,6 +3846,13 @@ static inline void func_80054A28_max(u32 *m, u32 v) {
 extern u32 *D_8007BD0C;
 extern u32 *D_8007BD10;
 extern u16 D_8007BD1E;
+/* battle-entry warp grid (func_80054294 fills it, func_80054650 draws it) */
+typedef struct {
+    s16 x, y;
+    s16 pad[2];
+} WarpVert; /* 9x9 screen vertices */
+extern DVECTOR *D_8007BD14; /* 9 texture columns/rows */
+extern WarpVert *D_8007BD18;
 /* battle-entry swirl (func_80053A10) */
 typedef struct {
     s16 unk0; /* rotation */
