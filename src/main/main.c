@@ -13364,11 +13364,183 @@ void func_800577BC(s32 v, s32 a, s32 b) {
     SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0xFFC0) | ((((u32)b >> 2) << 5) | a);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800577EC);
+void func_800577EC(s32 v, Unk800577EC *p, s32 vol) {
+    u16 *r;
+    s32 a;
+    s32 b;
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057898);
+    p->unk4 = 0;
+    r = (u16 *)(0x1F801C00 + v * 16);
+    if (vol == 0) {
+        a = p->unk18;
+        b = p->unk1A;
+    } else {
+        a = p->unk18 * vol;
+        a >>= 7;
+        b = p->unk1A * vol;
+        b >>= 7;
+    }
+    *r = a & 0x7FFF;
+    *++r = b & 0x7FFF;
+    *++r = p->unk10;
+    *++r = p->unk8 >> 3;
+    *++r = p->unk12;
+    *++r = p->unk14;
+    r[2] = p->unkC >> 3;
+}
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800579B4);
+void func_80057898(s32 v, Unk800577EC *p) {
+    s32 f = p->unk4;
+
+    if (f == 0) {
+        return;
+    }
+    p->unk4 = 0;
+    if (f & 0x10) {
+        f &= ~0x10;
+        func_80057688(v, p->unk10);
+        if (f == 0) {
+            return;
+        }
+    }
+    if (f & 3) {
+        f &= ~3;
+        func_80057640(v, p->unk18, p->unk1A, p->unk16);
+        if (f == 0) {
+            return;
+        }
+    }
+    if (f & 0x80) {
+        f &= ~0x80;
+        func_800576A0(v, p->unk8);
+        if (f == 0) {
+            return;
+        }
+    }
+    if (f & 0x10000) {
+        f &= ~0x10000;
+        func_800576BC(v, p->unkC);
+        if (f == 0) {
+            return;
+        }
+    }
+    if (f & 0x6600) {
+        f &= ~0x6600;
+        func_800576F0(v, p->unk14);
+        if (f == 0) {
+            return;
+        }
+    }
+    if (f & 0x9900) {
+        func_800576D8(v, p->unk12);
+    }
+}
+
+void func_800579B4(AkaoChannel *c, u32 mask, s32 kind) {
+    s32 nw;
+    if ((u16)c->unkB8 != 0) {
+        s32 old;
+        c->unkB8 = (u16)c->unkB8 - 1;
+        old = c->unk78;
+        nw = old + c->unk7C;
+        if ((nw & 0xFFE00000) != (old & 0xFFE00000)) {
+            c->unk11C |= 3;
+        }
+        c->unk78 = nw;
+    }
+    if (kind == 0 && c->unkB4 != 0) {
+        u16 old;
+        c->unkB4--;
+        old = c->unkB2;
+        nw = old + c->unkFC;
+        if ((nw & 0x7F00) != (old & 0x7F00)) {
+            c->unk11C |= 3;
+        }
+        c->unkB2 = nw;
+    }
+    if (c->unkC0 != 0) {
+        u16 old;
+        c->unkC0--;
+        old = c->unkBE;
+        nw = old + c->unk104;
+        if ((nw & 0xFF00) != (old & 0xFF00)) {
+            c->unk11C |= 3;
+        }
+        c->unkBE = nw;
+    }
+    if (c->unkD0 != 0) {
+        c->unkD0--;
+    }
+    if (c->unkDE != 0) {
+        c->unkDE--;
+    }
+    if ((u16)c->unkD2 != 0) {
+        c->unkD2 = (u16)c->unkD2 - 1;
+        c->unk3C += c->unk40;
+        c->unk48 = 0x1000000 / ((u32)c->unk3C >> 12);
+    }
+    if ((u16)c->unkE0 != 0) {
+        c->unkE0 = (u16)c->unkE0 - 1;
+        c->unk4C += c->unk50;
+        c->unk58 = 0x1000000 / ((u32)c->unk4C >> 12);
+    }
+    if (c->unkE8 != 0) {
+        c->unkE8--;
+        c->unk5C += c->unk60;
+        c->unk68 = 0x1000000 / ((u32)c->unk5C >> 12);
+    }
+    if (c->unkF0 != 0) {
+        if (--c->unkF0 == 0) {
+            if (kind == 0) {
+                D_80080A10->unk3C ^= mask;
+            } else {
+                D_80080A70.unk1C ^= mask;
+            }
+            D_80083158.unk8 |= 0x110;
+        }
+    }
+    if (c->unkF2 != 0) {
+        if (--c->unkF2 == 0) {
+            if (kind == 0) {
+                D_80080A10->unk44 ^= mask;
+            } else {
+                D_80080A70.unk24 ^= mask;
+            }
+            D_80083158.unk8 |= 0x100;
+        }
+    }
+    if ((u16)c->unkD8 != 0) {
+        u32 v;
+        u32 n;
+        c->unkD8 = (u16)c->unkD8 - 1;
+        v = c->unkD6 + (u16)c->unkDA;
+        c->unkD6 = v;
+        n = (v & 0x7F00) >> 8;
+        if (v & 0x8000) {
+            c->unkD4 = (n * c->unk2C) >> 7;
+        } else {
+            c->unkD4 = (n * ((c->unk2C * 15) >> 8)) >> 7;
+        }
+    }
+    if ((u16)c->unkE4 != 0) {
+        c->unkE4 = (u16)c->unkE4 - 1;
+        c->unkE2 += c->unkE6;
+    }
+    if ((u16)c->unkEC != 0) {
+        c->unkEC = (u16)c->unkEC - 1;
+        c->unkEA += c->unkEE;
+    }
+    if ((u16)c->unkC2 != 0) {
+        s32 old;
+        c->unkC2 = (u16)c->unkC2 - 1;
+        old = c->unk30;
+        nw = old + c->unk80;
+        if ((nw & 0xFFFF0000) != (old & 0xFFFF0000)) {
+            c->unk11C |= 0x10;
+        }
+        c->unk30 = nw;
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057D80);
 
@@ -13376,8 +13548,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058118);
 
 s32 func_800584C8(s32 arg0) {
     s32 i;
-    u16 min;
+    s32 min;
     s32 best;
+    u32 m;
     Unk8007F798 *e;
 
     if (arg0 != 0) {
@@ -13389,8 +13562,9 @@ s32 func_800584C8(s32 arg0) {
     best = 24;
     e = &D_8007F798[i];
     do {
+        m = (u16)e->unk4;
         if (e->unk4 < (s16)min) {
-            min = e->unk4;
+            min = m;
             best = i;
         }
         i++;
