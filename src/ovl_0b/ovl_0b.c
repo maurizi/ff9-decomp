@@ -6737,7 +6737,153 @@ u32 func_800BDED4(BtlUnit *arg0, s32 arg1) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BE1E0);
+/* padded: this jump table is 8-aligned in its object */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
+
+void func_800BE1E0(BtlUnit *arg0, s32 arg1, u32 arg2) {
+    s32 k;
+    s32 off;
+    s32 w;
+    s32 x;
+
+    switch (arg1) {
+    case 0x20:
+        func_800C1990(arg0);
+        break;
+    case 0x21:
+        func_800B4040(arg0);
+        func_800C1938(arg0);
+        break;
+    case 0x22:
+        if ((u8)func_800B4040(arg0)) {
+            arg0->unkB3 = 0;
+        }
+        break;
+    case 0x23:
+        arg0->unk24->unk0 = arg2;
+        break;
+    case 0x24:
+        arg0->unk28 = arg2;
+        break;
+    case 0x25:
+        arg0->unk24->unk2 = arg2;
+        break;
+    case 0x26:
+        arg0->unk2A = arg2;
+        break;
+    case 0x28:
+        arg0->unk2C = arg2;
+        break;
+    case 0x30:
+        arg0->unk70 = arg2;
+        break;
+    case 0x31:
+        arg0->unk71 = arg2;
+        break;
+    case 0x32:
+        arg0->unk72 = arg2;
+        break;
+    case 0x33:
+        arg0->unk73 = arg2;
+        break;
+    case 0x34:
+        if (D_8006794C->unk1C->unk8E4.battle->unkD80 == 2) {
+            arg0->unkB2 = 0;
+            arg0->unk68 &= ~0x10000000;
+            arg0->unk68 &= ~0x10000;
+            arg0->unk68 &= ~0x20000000;
+        } else {
+            arg0->unkB2 = arg2 + 2;
+        }
+        break;
+    case 0x35:
+        arg0->unk68 = (arg0->unk68 & ~0x400000) | ((arg2 & 1) << 22);
+        if (arg2 != 0 && D_8006794C->unk1C->unk8E4.battle->unkD80 == 2) {
+            func_800C2344(arg0->unk9C);
+            k = func_800C1EDC(arg0);
+            D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_0 = func_800CEE74()->unkF;
+        }
+        break;
+    case 0x36:
+        arg0->unk68 = (arg0->unk68 & ~0x1000000) | ((arg2 & 1) << 24);
+        break;
+    case 0x37:
+        arg0->unk9C->unk0 |= 2;
+        arg0->unk9C->unk54 = arg2;
+        arg0->unk9C->unk56 = arg2;
+        arg0->unk9C->unk58 = arg2;
+        k = func_800C1EDC(arg0);
+        D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = ((u32)(arg0->unkBF * arg2) >> 12) * 14;
+        k = func_800C1EDC(arg0);
+        D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_20 = ((u32)(arg0->unkC0 * arg2) >> 12) * 12;
+        break;
+    case 0x38:
+        arg0->unk9C->unk0 &= ~2;
+        k = func_800C1EDC(arg0);
+        D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = arg0->unkBF * 14;
+        k = func_800C1EDC(arg0);
+        D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_20 = arg0->unkC0 * 12;
+        break;
+    case 0x3B:
+        func_800BD414(arg0, arg2);
+        arg0->unkAC |= arg2;
+        break;
+    case 0x3C:
+        func_800BD464(arg0, arg2);
+        arg0->unkAC &= ~arg2;
+        break;
+    case 0x3D:
+        off = arg2 * 20;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + off))->unk4 |= 1;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + off))->unkC = 0;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + off))->unk12 = 0x1000;
+        break;
+    case 0x3E:
+        w = arg2 * 20;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + w))->unk4 &= ~3;
+        break;
+    case 0x3F:
+        x = arg2 * 20;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + x))->unk4 |= 3;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + x))->unkC = 0;
+        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + x))->unk12 = 0x1000;
+        break;
+    case 0x45:
+        arg0->unk68 = (arg0->unk68 & ~0x40000) | ((arg2 & 1) << 18);
+        break;
+    case 0x47:
+        func_800C12CC(D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0);
+        break;
+    case 0x48:
+        arg0->unk31 = arg2;
+        break;
+    case 0x49:
+        arg0->unk32 = arg2;
+        break;
+    case 0x4A:
+        arg0->unk6C = arg2;
+        break;
+    case 0x4B:
+        arg0->unk6D = arg2;
+        break;
+    case 0x4C:
+        arg0->unk6E = arg2;
+        break;
+    case 0x4D:
+        arg0->unk6F = arg2;
+        break;
+    case 0x4E:
+        arg0->unk2C = arg0->unk24->unk4;
+        arg0->unkB3 = 1;
+        func_800B1250(arg0->unk4, 0x14, 0xBB, (u16)arg2, 8);
+        func_800E9F3C(1);
+        func_800E9F68(1);
+        break;
+    }
+}
+
+/* padded: this jump table is 8-aligned in its object */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 s32 func_800BE784(s32 arg0) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
