@@ -9,6 +9,12 @@
  * the 0xE1000600 tpage constant a few slots earlier, and `addiu s2, sp, 0x18` (&tp[0]) sits
  * two slots earlier. Permuter hint: `spr[i]->u0 = (spr[i]->v0 = 0);` fixes exactly those rows
  * but drops the spr[i] reload between the two byte stores (4 rows, 334 vs 336 instructions).
+ * Pass 12 (sched2 trace, cc1 -dS): the five loop fillers (p += 0x14, lui/ori 0xE1000600, &tp[0])
+ * are priority-1 insns that gcc's backward list scheduler drops into the load-delay slots as they
+ * become ready; ours fills the slots 0x108..0x164 and leaves 0xFC empty, the original fills
+ * 0xFC..0x158 and leaves 0x164 (between the second spr[i] reload and sb zero,13) empty, i.e.
+ * every filler became ready one slot later there. No C spelling found that delays them: setUV0/
+ * setWH/setXY0 macros and the chained u0/v0 stores change nothing or lose the reload.
  */
 #include "ovl_0a.h"
 

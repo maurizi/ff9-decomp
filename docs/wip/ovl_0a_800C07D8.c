@@ -9,6 +9,11 @@
  * Left: the original loads the u8 stack args 5-7 (lbu t3-t5) right at the top, ours a few
  * slots later (after e->unk8 = size), and the volatile read-back loop uses a0/v1 where we use
  * v1/v0. 40 permuter minutes found nothing more.
+ * Pass 12: the lbu loads of arg5-7 only float to the top if sched1 does not launch them
+ * (their pseudos are single-set, so they are 'birthing' and get scheduled next to the first
+ * QImode store, which aliases the stack); a second assignment to the args does not change it.
+ * The e->unk8/e->unk0 store order decides which of the two stores sched1 keeps last (ties go to
+ * the later statement); swapping them reorders the whole prologue (39 rows).
  */
 #include "ovl_0a.h"
 
