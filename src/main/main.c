@@ -3877,7 +3877,57 @@ void func_80028204(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800283E0);
+void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
+    s16 h0;
+    s32 cx;
+    s32 cy;
+    u16 clut;
+    s32 u, v;
+    SprtWords *p;
+    SprtWords *q;
+
+    h0 = 0x20;
+    if (h < 0x20) {
+        h0 = h;
+    }
+    if (D_8006794C->unk8 == 3) {
+        cx = 0x280;
+        cy = 0xDC;
+    } else {
+        cx = 0x100;
+        cy = 0xFD;
+    }
+    clut = GetClut(cx + ((slot & 1) << 7), cy + (slot >> 1));
+    u = slot << 5;
+    v = 0xE0;
+    setlen(D_80077170, 4);
+    ((SprtWords *)D_80077170)->rgbc = flag == 0 ? 0x64808080 : 0x66808080;
+    p = (SprtWords *)D_80077170;
+    D_80077170 += sizeof(SprtWords);
+    p->xy = (x & 0xFFFF) | (y << 16);
+    p->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
+    p->wh = (h0 << 16) | 0x20;
+    addPrim(&D_8007716C[otz], p);
+    SetDrawTPage(D_80077170, 1, 1, 0x88);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrTpageWords);
+    if (h > 0x20) {
+        u = ((slot & 1) << 5) + 0x20;
+        v = (slot >> 1) * 14 - 0x20;
+        h -= h0;
+        setlen(D_80077170, 4);
+        ((SprtWords *)D_80077170)->rgbc = flag == 0 ? 0x64808080 : 0x66808080;
+        q = (SprtWords *)D_80077170;
+        D_80077170 += sizeof(SprtWords);
+        q->xy = (x & 0xFFFF) | ((y + 0x20) << 16);
+        q->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
+        q->wh = (h << 16) | 0x20;
+        addPrim(&D_8007716C[otz], q);
+        SetDrawTPage(D_80077170, 1, 1, 0x89);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DrTpageWords);
+    }
+}
 
 void func_80028720(void *data, s32 n) {
     RECT r0;
