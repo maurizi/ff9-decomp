@@ -86,7 +86,7 @@ typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* end of the load area */
     u8 unk8;
-    u8 unk9;
+    s8 unk9;
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
     struct Unk800AFCBC *unk10;
@@ -105,7 +105,7 @@ typedef struct {
     u16 unk3C;
     u16 unk3E;
     u8 unk40;
-    u8 unk41;
+    s8 unk41;
     s8 unk42;
     u8 unk43;
     s32 unk44;
@@ -1416,5 +1416,18 @@ s32 func_8019AD0C(void);
 s32 func_80022AC4(char *);
 u8 func_80022ED4(s32);
 void func_80056248(s32);
+
+/* field setup (func_800AED6C) */
+void func_800AC5F0(void);
+void func_800B238C(void);
+void func_800B1C4C(void);
+/* main exe: candidates for ff9.h */
+extern s32 D_8007BD28;
+extern u8 *D_8007BD30;
+void func_800559FC(s32, s32, s32);
+void func_800557A8(void *, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800219D8(Unk80021938 *, s16, s16, s16, s16);
+u8 func_80053A10(s32, s32);
 
 #endif
