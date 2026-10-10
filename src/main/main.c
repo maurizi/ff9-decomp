@@ -1829,7 +1829,29 @@ s32 func_800220E8(s32 id) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800221C0);
+s32 func_800221C0(u32 addr, s32 size) {
+    Unk8C8 *c = D_8006794C->unk1C->unk8C8;
+    s32 i;
+    Unk80021938 *e;
+    u32 end;
+    s32 n;
+
+    end = addr + size;
+    for (i = c->unk2 - 1; i >= 0; i--) {
+        e = &c->unk4[i];
+        if (e->unk4 != -1 && e->unk2 == 0) {
+            if (e->unk1C < e->unk10) {
+                n = e->unk1C;
+            } else {
+                n = e->unk10;
+            }
+            if (e->unk8 < end && addr < e->unk8 + n) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 s32 func_80022280(u32 addr, s32 size) {
     Unk8C8 *q = D_8006794C->unk1C->unk8C8;
