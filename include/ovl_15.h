@@ -11,6 +11,23 @@ void func_800552B8(s32);
 void func_8001D9CC(s32, s32, s32, s32, s32);
 s32 func_80022AC4(s32);
 void func_80022ED4(s32);
+s32 func_80055290(void *);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800558DC(s32);
+void func_80055908(s32, s32);
+void func_8005593C(s32, s32, s32);
+void func_80055980(s32, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player, 0x80198700) */
 void func_801999B4(s32, u8 **);
@@ -92,6 +109,7 @@ extern Ovl15Pos D_800AE494[1];
 extern Ovl15Pos D_800AE498[4];
 extern void *D_800AE440;
 
+extern s8 D_800AE43C; /* sound request kind, -1 = none */
 extern u16 D_800AE0E0; /* flags */
 extern s32 D_800AE0E4; /* frame counter */
 extern u16 D_800AE4C8[2][4]; /* queued flag sets / clears */
@@ -101,7 +119,15 @@ extern u16 D_800AE432;
 extern u8 D_800B0F44; /* double allowed */
 extern s32 D_800B0F48; /* bet */
 extern u8 D_800B0F4C; /* split allowed */
-extern s32 D_800B0FD0;
+extern u32 D_800B0FD0;
+extern SPRT D_800B0F60[2][2];
+extern DR_TPAGE D_800B0FB0[2][2];
+extern s32 D_800AE3EC;
+extern u32 D_800AE3F0[16];
+s32 func_800AC374(void);
+s32 func_800AC448(void);
+void func_800AC450(void);
+void func_800AC494(void);
 extern s16 D_800AE4A8;
 extern s32 D_800AE4AC;
 extern u8 *D_800AE4B0; /* next free primitive */
@@ -110,16 +136,22 @@ extern u32 D_800AE4B8; /* main state */
 extern s32 D_800AE4D8;
 extern s32 D_800AE4DC;
 extern u8 D_800B1000[2][0x2000]; /* primitive buffers */
-extern s32 D_800B5000;
+extern u32 D_800B5000;
 extern RECT D_800AE4E0;
 extern u32 D_800AE0EC[8]; /* CLUT */
 extern DrTpageWords D_800AE4E8;
 extern s32 D_800B0DF8;
 extern SPRT D_800AE5F8[2][256];
+/* Pip positions on a card face, [rank][pip]; rank 0-8 (cards 2-10) has rank + 2 pips. */
+typedef struct {
+    s32 x;
+    s32 y;
+} Ovl15Pip;
+extern Ovl15Pip D_800AE10C[][10];
 
 s32 func_800A8528(s32, s32);
 s32 func_800A91F0(Ovl15Hand *, s16, s16);
-void func_800A8630(s32, s32, s32, s32);
+s32 func_800A8630(s32, s32, s32, s32);
 void func_800AB1C8(void);
 void func_800A7838(void);
 void func_800A787C(void);
@@ -142,7 +174,7 @@ void func_800AB39C(void);
 void func_800AD358(void);
 void func_800AD644(void);
 void func_800AB45C(void);
-void func_800AC598(s32, s32, s32, s32, s32);
+s32 func_800AC598(s32, s32, s32, s32, s32);
 void func_800ACCB4(void);
 void func_800ACD70(void);
 void func_800ACF58(s32);
