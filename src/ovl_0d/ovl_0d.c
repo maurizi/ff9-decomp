@@ -1280,7 +1280,112 @@ void func_800AD974(TmState *arg0) {
     arg0->unk0 = 0xE;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AD9F8);
+void *func_800AD9F8(u32 *ot, void *p, TmState *s) {
+    TmCard *c;
+    TmCard *cards;
+    TmUnk350 *e;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 skip;
+    s32 flag;
+    s32 n;
+    s32 a;
+    s32 b;
+    s32 st;
+
+    if (s->unk2E8 < s->unk460) {
+        cards = s->unk10;
+        for (i = 0; i < 10; i++) {
+            c = &cards[i];
+            a = (c->unk28 - c->unk20) / s->unk460;
+            b = (c->unk2C - c->unk24) / s->unk460;
+            c->unkC = (c->unk20 + a * s->unk2E8) >> 8;
+            c->unk10 = (c->unk24 + b * s->unk2E8) >> 8;
+        }
+    } else {
+        cards = s->unk10;
+        for (i = 0; i < 10; i++) {
+            if (i < 5) {
+                cards[i].unkC = 0x104;
+                cards[i].unk10 = i * 32 + 0x19;
+            } else {
+                cards[i].unkC = 0x10;
+                cards[i].unk10 = i * 32 - 0x87;
+            }
+        }
+    }
+    if (s->unk460 + 10 < s->unk2E8) {
+        if (s->unk45C == 0) {
+            if (func_800AE998(s, 0) != 10 && func_800AE8D0(s) != 1) {
+                s->unk5B0 = 0;
+                st = 0x22;
+                goto done;
+            }
+        }
+        if (s->unk45C == 0) {
+            if (s->unk54C != 0 && (&s->unk10[5])[s->unk550].unk14 == 0) {
+                s->unk54C = 0;
+            }
+        }
+        flag = 0;
+        if (s->unk45C == 0) {
+            n = func_800AE998(s, 0);
+            skip = -1;
+            if (n == 10) {
+                s->unk54C = 0;
+            }
+        } else {
+            n = func_800ADE14(s, 0);
+            skip = (func_80062B3C() & 0xFF) % (5 - n);
+        }
+        cards = s->unk10;
+        e = s->unk350;
+        func_800ACFC8(s);
+        k = 0;
+        j = 0;
+        for (i = 0; i < 10; i++) {
+            c = &cards[i];
+            if (i < 5) {
+                if (c->unk14 == 1) {
+                    if (k != skip && func_800AE998(s, 1) != 10) {
+                        e[j].unk10 = c;
+                        e[j].unk0 = 1;
+                        e[j].unkC = 0;
+                        j++;
+                        flag = 1;
+                    }
+                    if (s->unk45C == 1) {
+                        k++;
+                    }
+                }
+            } else if (c->unk14 == 0) {
+                st = s->unk45C;
+                if (st == 1) {
+                    e[j].unk10 = c;
+                    e[j].unk0 = st;
+                    e[j].unkC = st;
+                    j++;
+                    flag = 1;
+                }
+            }
+        }
+        if (flag == 0) {
+            if (s->unk45C == 0) {
+                func_800AF170(s);
+            } else {
+                func_800AF100(s);
+            }
+            func_800ADE5C(s);
+            return p;
+        }
+        s->unk504 = 1;
+        st = 0xF;
+    done:
+        s->unk0 = st;
+    }
+    return p;
+}
 
 s32 func_800ADDCC(TmState *arg0) {
     s32 n = 0;
