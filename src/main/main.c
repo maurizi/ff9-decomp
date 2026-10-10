@@ -1060,7 +1060,32 @@ void func_8001D30C(void) {
     func_8001D848();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001D32C);
+void func_8001D32C(void) {
+    GameData *gd;
+    u8 *q;
+    s32 i;
+    s32 w;
+
+    D_8006794C->unk1C = (GameData *)D_80067940;
+    gd = D_8006794C->unk1C;
+    q = (u8 *)(gd + 1);
+    for (i = 0; i < 2; i++) {
+        gd->unk10[i] = (u32 *)(q + 0x20);
+        q += 0x4040;
+    }
+    gd->unk8D8 = (void *)(q + 0x558);
+    gd->unk8D4 = (void *)q;
+    gd->unk7E0 = (s32)(q + 0x60C);
+    D_80067940 = gd->unk7E0 + 0x8000;
+    gd->unk8C8 = (void *)D_80067940;
+    D_80067940 += 0x120;
+    gd->unk814 = (void *)D_80067940;
+    w = D_80067940 + 0x6800;
+    gd->unk818 = w;
+    gd->unk828 = (void *)(w + 0x2000);
+    gd->unk82C = (void *)(w + 0x2800);
+    D_80067940 = w + 0x3000;
+}
 
 void func_8001D3C4(void) {
     GameData *gd = D_8006794C->unk1C;
