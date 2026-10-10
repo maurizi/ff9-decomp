@@ -1312,6 +1312,68 @@ typedef struct {
 
 void func_800D0858(u32, s32, void *);
 
+/* scrolling/waving 2D background layer (func_800D3030) */
+typedef struct {
+    u16 unk0; /* kind: 0 scroll, 1 horizontal wave, 2 fade, 3 vertical wave */
+    u16 unk2; /* tpage */
+    u16 unk4; /* clut */
+    u8 unk6;  /* u */
+    u8 unk7;  /* v */
+    u16 unk8; /* abr */
+    u16 unkA; /* palette frames */
+    s32 unkC; /* palette animation offset */
+    union {
+        struct BtlBgScrollP {
+            u8 unk0; /* x: sine motion */
+            u8 unk1; /* y: sine motion */
+            u8 pad2[2];
+            s16 unk4; /* x speed */
+            s16 unk6; /* y speed */
+            u16 unk8; /* x amplitude */
+            u16 unkA; /* y amplitude */
+        } scroll;
+        struct BtlBgWaveP {
+            u16 unk0; /* strip size */
+            u16 unk2; /* strip count */
+            u16 unk4; /* phase step */
+            u16 unk6; /* phase speed */
+            u16 unk8; /* amplitude */
+            s16 unkA; /* scroll speed */
+        } wave;
+        struct BtlBgFadeP {
+            s32 unk0; /* data offset */
+            u8 pad4;
+            u8 unk5;  /* delay */
+            u16 unk6; /* duration */
+            s16 unk8;
+            s16 unkA;
+        } fade;
+    } unk10;
+} BtlBgLayer;
+
+typedef struct {
+    u16 unk0; /* layer count */
+    u8 unk2;  /* width */
+    u8 unk3;  /* height */
+    u16 unk4; /* x */
+    u16 unk6; /* y */
+    s32 unk8[1]; /* layer offsets */
+} BtlBgLayers;
+
+
+/* positive modulo: wt holds the dividend */
+#define BG_WRAP(a, n)          \
+    {                       \
+        (a) = (a) / (n);    \
+        if (wt < 0) {       \
+            (a)--;          \
+        }                   \
+        (a) *= (n);         \
+        (a) = wt - (a);     \
+    }
+void func_800E651C(u8 *, CVECTOR *, s32);
+void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
+
 
 typedef struct {
     s32 unk0;

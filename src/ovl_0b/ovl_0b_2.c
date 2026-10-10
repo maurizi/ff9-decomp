@@ -746,8 +746,16 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2938);
 
-void func_800D2C78(SprInfo *arg0, s16 arg1, s16 arg2, s16 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
-                   CVECTOR *arg9, s32 arg10, s32 arg11) {
+/* old-style definition: callers pass the coordinates unpromoted (no prototype) */
+void func_800D2C78(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
+SprInfo *arg0;
+s16 arg1;
+s16 arg2;
+s16 arg3;
+s32 arg4, arg5, arg6, arg7, arg8;
+CVECTOR *arg9;
+s32 arg10, arg11;
+{
     POLY_FT4 *p;
     s32 c;
     u16 tp;
@@ -792,7 +800,177 @@ void func_800D2C78(SprInfo *arg0, s16 arg1, s16 arg2, s16 arg3, s32 arg4, s32 ar
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2DBC);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D3030);
+void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
+    RECT r;
+    s16 ofs[2];
+    CVECTOR col;
+    DR_TPAGE *tp;
+    DR_AREA *da;
+    DR_OFFSET *dofs;
+    s32 *offs;
+    s32 i;
+    s32 n;
+    s32 w;
+    s32 h;
+    s32 step;
+    s32 x, y;
+    BtlBgLayer *L;
+    s32 u, v;
+    s32 a;
+    s32 k;
+    s32 j;
+    s32 tw;
+    s32 cnt;
+    s32 wt;
+    TILE *t;
+    struct BtlBgScrollP *sc;
+    struct BtlBgWaveP *wv;
+    struct BtlBgWaveP *wv3;
+    struct BtlBgFadeP *fd;
+
+    da = (DR_AREA *)D_800F78A4->unk24;
+    n = arg0->unk0;
+    w = arg0->unk2;
+    h = arg0->unk3;
+    x = arg0->unk4;
+    y = arg0->unk6;
+    D_800F78A4->unk24 = (u8 *)(da + 2);
+    r.x = x;
+    r.y = y;
+    r.w = w;
+    r.h = h;
+    SetDrawArea(da, &r);
+    ((XY32 *)&r)[0].w = ((XY32 *)&D_800F78A4->unk1C->clip)[0].w;
+    ((XY32 *)&r)[1].w = ((XY32 *)&D_800F78A4->unk1C->clip)[1].w;
+    SetDrawArea(&da[1], &r);
+    i = 0;
+    dofs = (DR_OFFSET *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(dofs + 2);
+    ofs[0] = x;
+    ofs[1] = y;
+    SetDrawOffset(dofs, ofs);
+    SetDrawOffset(&dofs[1], D_800F78A4->unk1C->ofs);
+    tp = (DR_TPAGE *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(tp + 2);
+    tp[0].code[0] = 0xE1000000;
+    tp[1].code[0] = 0xE1000200;
+    func_800D0858(0x01000000, 0xFFE, &tp[1]);
+    func_800D0858(0x02000000, 0xFFE, &da[1]);
+    func_800D0858(0x02000000, 0xFFE, &dofs[1]);
+    offs = arg0->unk8;
+    for (; i < n; i++) {
+        L = (BtlBgLayer *)((u8 *)arg0 + offs[i]);
+        if (L->unkC != 0) {
+            func_800E651C((u8 *)arg0 + L->unkC, &col, arg1 % L->unkA);
+        } else {
+            *(s32 *)&col = 0x808080;
+        }
+        switch (L->unk0) {
+        case 0:
+            sc = &L->unk10.scroll;
+            if (sc->unk0 == 0) {
+                wt = u = arg1 * sc->unk4;
+            } else {
+                wt = u = (func_8004BB80(sc->unk4 * arg1) * sc->unk8) >> 12;
+            }
+            BG_WRAP(u, w);
+            if (sc->unk1 == 0) {
+                wt = v = arg1 * sc->unk6;
+            } else {
+                wt = v = (func_8004BB80(sc->unk6 * arg1) * sc->unkA) >> 12;
+            }
+            BG_WRAP(v, h);
+            func_800D2C78((SprInfo *)L, u, u, v, v, L->unk6, L->unk7, w, h, &col, 1, 1);
+            if (u != 0) {
+                func_800D2C78((SprInfo *)L, u - w, u - w, v, v, L->unk6, L->unk7, w, h, &col, 0, 1);
+            }
+            if (v != 0) {
+                func_800D2C78((SprInfo *)L, u, u, v - h, v - h, L->unk6, L->unk7, w, h, &col, 1, 0);
+            }
+            if (u != 0 && v != 0) {
+                func_800D2C78((SprInfo *)L, u - w, u - w, v - h, v - h, L->unk6, L->unk7, w, h, &col, 0, 0);
+            }
+            break;
+        case 1:
+            wv = &L->unk10.wave;
+            wt = v = arg1 * wv->unkA;
+            BG_WRAP(v, h);
+            cnt = 1;
+            if (v != 0) {
+                cnt = 2;
+            }
+            step = wv->unk4;
+            tw = wv->unk0;
+            a = arg1 * wv->unk6 + v * step / tw;
+            do {
+                k = 0;
+                for (j = 0; j < wv->unk2; j++) {
+                    u = ((func_8004BB80(a) * wv->unk8) >> 12) - (w >> 1);
+                    a += step;
+                    func_800D2C78((SprInfo *)L, u, ((func_8004BB80(a) * wv->unk8) >> 12) - (w >> 1), v, v, L->unk6, L->unk7 + k, w * 2, tw, &col, 0, 0);
+                    v += tw;
+                    k += tw;
+                }
+                cnt--;
+                v -= h * 2;
+                a -= step * wv->unk2 * 2;
+            } while (cnt != 0);
+            break;
+        case 2:
+            fd = &L->unk10.fade;
+            if (arg1 >= fd->unk5) {
+                s32 e, f;
+                e = arg1 - fd->unk5;
+                if (e < fd->unk6) {
+                    f = (e << 12) / fd->unk6;
+                } else {
+                    f = 0x1000;
+                }
+                if (fd->unk0 != 0) {
+                    func_800D2DBC((u8 *)arg0 + fd->unk0 + 4, fd->unk8, fd->unkA, e, L->unk8, f);
+                }
+            }
+            break;
+        case 3:
+            wv3 = &L->unk10.wave;
+            wt = v = arg1 * wv3->unkA;
+            BG_WRAP(v, w);
+            cnt = 1;
+            if (v != 0) {
+                cnt = 2;
+            }
+            step = wv3->unk4;
+            tw = wv3->unk0;
+            a = arg1 * wv3->unk6 + v * step / tw;
+            do {
+                k = 0;
+                for (j = 0; j < wv3->unk2; j++) {
+                    u = ((func_8004BB80(a) * wv3->unk8) >> 12) - (h >> 1);
+                    a += step;
+                    func_800D2C78((SprInfo *)L, v, v, u, ((func_8004BB80(a) * wv3->unk8) >> 12) - (h >> 1), L->unk6 + k, L->unk7, tw, h * 2, &col, 0, 0);
+                    v += tw;
+                    k += tw;
+                }
+                cnt--;
+                v -= w * 2;
+                a -= step * wv3->unk2 * 2;
+            } while (cnt != 0);
+            break;
+        }
+    }
+    t = (TILE *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(t + 1);
+    *(s32 *)&t->r0 = 0;
+    t->code = 0x60;
+    t->y0 = 0;
+    t->x0 = 0;
+    t->w = w;
+    t->h = h;
+    func_800D0858(0x03000000, 0xFFE, t);
+    func_800D0858(0x01000000, 0xFFE, tp);
+    func_800D0858(0x02000000, 0xFFE, da);
+    func_800D0858(0x02000000, 0xFFE, dofs);
+}
 
 s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
     s32 r = 0;
