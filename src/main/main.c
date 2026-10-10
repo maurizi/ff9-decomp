@@ -11298,9 +11298,9 @@ s32 func_8004F2B4(s32 id, s32 n) {
     u8 *t;
 
     if (id < 0x100) {
-        t = (D_8006A218 + D_80069018[id].unk0);
+        t = D_8006A218 + D_80069018[id].unk0;
     } else if (id < 0x200) {
-        t = (D_8006ADAC + D_8006B374[id - 0x100].unk0);
+        t = D_8006ADAC + D_8006B374[id - 0x100].unk0;
     } else {
         t = (u8 *)func_8006276C(id - 0x200);
     }
@@ -12138,7 +12138,28 @@ s32 func_80054B78(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054E88);
+s32 func_80054E88(s32 row, s32 col, s32 sel) {
+    Unk8007BD44Row *r;
+    s32 i;
+
+    r = (Unk8007BD44Row *)((u8 *)D_8007BD38.unkC + D_8007BD38.unkC->unk6);
+    for (i = 0; i < D_8007BD38.unkC->unk4; r++, i++) {
+        r->unk0[col] &= ~1;
+    }
+    r = (Unk8007BD44Row *)((u8 *)D_8007BD38.unkC + D_8007BD38.unkC->unk6) + row;
+    if (sel) {
+        r->unk0[col] |= 1;
+        D_800739B0[0].unk0 = 0;
+        D_800739B0[0].unk1 = 0;
+        D_800739B0[1].unk0 = 0;
+        D_800739B0[1].unk1 = 0;
+        D_8007BD38.unk0 &= ~6;
+        D_8007BD38.unk8 = D_8007BD38.unk2 << 8;
+    } else {
+        r->unk0[col] &= ~1;
+    }
+    return 0;
+}
 
 s32 func_80054F80(void) {
     D_800739B0[0].unk0 = 0;
