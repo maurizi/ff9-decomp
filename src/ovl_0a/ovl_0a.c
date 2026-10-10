@@ -3595,11 +3595,14 @@ void func_800B559C(void) {
     }
 }
 
+/* DISC CHANGE label */
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/ovl_0a", D_800A7170);
+
 void func_800B5660(void) {
     s32 y;
     Unk80077DE8 *m;
 
-    func_8002B524(D_800C9D98.x + 8, D_800C9D98.y - 3, 0xA, "DISC CHANGE", 0);
+    func_8002B524(D_800C9D98.x + 8, D_800C9D98.y - 3, 0xA, D_800A7170, 0);
     func_8002B5FC(D_800C9D98.x + 0xE, D_800C9D98.y + 0xA, 0xA, func_80035774(0), 0);
     func_8002B5FC(D_800C9D98.x + 0x30, D_800C9D98.y + 0x2E, 0xA, func_80035774(1), 0);
     func_8002B5FC(D_800C9D98.x + 0x30, D_800C9D98.y + 0x3D, 0xA, func_80035774(2), 0);

@@ -1437,6 +1437,7 @@ u8 func_80053A10(s32, s32);
 
 /* func_800C2AF0 (walkmesh slide along the triangle edges) */
 extern VECTOR D_800C9DE4; /* normal used when a triangle has none */
+extern const u8 D_800A7170[]; /* "DISC CHANGE" label */
 s32 func_800C519C(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *, SVECTOR *, SVECTOR *, s16 *, s32);
 
 /* clears the visited flag (0x80) of every walkmesh triangle */
