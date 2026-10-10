@@ -36,17 +36,18 @@ typedef struct {
     u16 *unk14;
     SVECTOR *unk18;
     u32 *unk1C; /* primitives */
-    u8 pad20[0x28 - 0x20];
+    u8 (*unk20)[2]; /* uv */
+    void *unk24;
 } BtlMesh; /* 0x28 */
 
 typedef struct BtlUnit9C8 {
-    u8 pad0[2];
+    u16 unk0; /* flags: 1 = relocated */
     u8 unk2;
     u8 unk3; /* count of unk10 */
     u8 pad4[8 - 4];
     u16 unk8;
     u16 unkA;
-    u8 padC[0x10 - 0xC];
+    s32 unkC; /* offset, relocated on load */
     BtlMesh *unk10;
 } BtlUnit9C8;
 
@@ -194,13 +195,19 @@ typedef struct BtlUnit9C {
     struct BtlUnit9C *unk1C;
     BtlBone *unk20;
     MATRIX unk24;
-    u8 pad44[0x50 - 0x44];
+    s32 unk44;
+    u8 pad48[0x50 - 0x48];
     BtlUnit9C50 *unk50;
     s16 unk54;
     s16 unk56;
     s16 unk58;
     s16 unk5A;
     BtlUnit9C8 *unk5C; /* morph target */
+    void *unk60;
+    u8 pad64[0x74 - 0x64];
+    s16 unk74;
+    s16 unk76;
+    s16 unk78;
 } BtlUnit9C;
 
 typedef struct BtlUnit98 {
@@ -908,6 +915,11 @@ typedef struct Battle108C {
     POLY_F3 unk8;
 } Battle108C; /* 0x1C */
 
+/* target cursor: four faces per draw buffer */
+typedef struct Battle108CSet {
+    Battle108C unk0[4];
+} Battle108CSet;
+
 /* battle scene data (Battle.unk132C) */
 typedef struct {
     u32 unk0; /* flags */
@@ -919,7 +931,7 @@ typedef struct {
 
 typedef struct {
     BtlUnit9C unk0;
-    u8 pad60[0x98 - 0x60];
+    u8 pad7C[0x98 - sizeof(BtlUnit9C)];
 } BtlModel; /* 0x98 */
 
 /* GameData.unk8E4 while in battle */
@@ -948,7 +960,7 @@ typedef struct Battle {
     BtlCmd unk1060;
     BtlCmd unk1074;  /* list head (only unk0 used) */
     BtlCmd *unk1088; /* current command */
-    struct Battle108C unk108C[2][4];
+    struct Battle108CSet unk108C[2]; /* per draw buffer */
     BtlUnitList unk116C;
     u16 unk11B8;
     u8 unk11BA;
@@ -2051,7 +2063,7 @@ s32 func_800D8B70(s32);
 s32 func_800DA0B8(s32);
 void func_800EA124(s32);
 s16 func_800A9BE4(s32);
-void func_800ABBC4(s32, s32);
+s16 func_800ABBC4(s32, s32);
 u32 func_800D8C70(s32, u32);
 void func_800D8658(s32, u8);
 void func_800D8914(s32);
@@ -2107,14 +2119,17 @@ typedef struct {
 typedef struct {
     s16 unk0; /* state */
     u16 unk2; /* next state */
-    u8 pad4[0xA - 0x4];
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
     s16 unkA;
-    u8 padC[0x10 - 0xC];
+    u8 padC[0xE - 0xC];
+    s16 unkE;
     union {
         s32 w[4];
         u16 h[8];
     } unk10;
-    u8 pad20[0x24 - 0x20];
+    s32 unk20;
     s32 unk24;
 } Unk800AA958; /* party model load state */
 

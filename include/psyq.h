@@ -389,6 +389,7 @@ typedef struct {
 } DVECTOR;
 #define setVector(v, _x, _y, _z) (v)->vx = _x, (v)->vy = _y, (v)->vz = _z
 int VectorNormal(VECTOR *v0, VECTOR *v1);
+long NormalClip(long sxy0, long sxy1, long sxy2);
 #define gte_SetRotMatrix(r0) __asm__ volatile( \
     "lw\t$12, 0(%0);" \
     "lw\t$13, 4(%0);" \
