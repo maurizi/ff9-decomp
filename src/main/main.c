@@ -1629,7 +1629,33 @@ s32 func_80021AE0(Unk80021938 *p) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021B34);
+Unk80021938 *func_80021B34(Unk80021938 *dst, Unk80021938 *src) {
+    s32 len;
+    s32 t;
+
+    if (func_80021A8C(src)) {
+        func_80021938(dst);
+    } else {
+        func_80021938(dst);
+        dst->unk2 = src->unk2;
+        dst->unk4 = src->unk4;
+        t = src->unk8;
+        t += src->unkC;
+        dst->unk8 = t;
+        len = src->unk8 + src->unk10 - t;
+        dst->unk10 = len;
+        t = src->unk14;
+        if (len < t) {
+            t = len;
+        }
+        dst->unk14 = t;
+        dst->unk14 = t / 2048 * 2048;
+        t = dst->unk14;
+        dst->unk18 = src->unk18 + (src->unkC >> 11);
+        dst->unk1C = dst->unk14;
+    }
+    return dst;
+}
 
 s32 func_80021C20(Unk80021938 *e) {
     s32 r = 0;
