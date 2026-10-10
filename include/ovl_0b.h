@@ -2057,6 +2057,9 @@ typedef struct {
 s32 func_800E813C(u32, s32);
 
 /* main exe: candidates for ff9.h */
+extern Unk800689B0 D_80068E78[3];
+s32 func_80027480(s32);
+void SetTexWindow(void *, RECT *); /* PsyQ */
 void func_8002E260(void);
 u8 func_800339F4(s32, u8);
 void func_80026C34(s32, s32, s32, s32, u8);
@@ -2483,6 +2486,7 @@ void func_800EC14C(s32);
 void func_800EC170(s32);
 void func_800ECB5C(void);
 extern RECT D_800F8DDC; /* command window rect */
+extern RECT D_800F8E10; /* title bar texture window (func_800ED02C) */
 void func_800EC628(Window *);
 void func_800EC730(Window *);
 void func_800EDC3C(); /* used as a Window callback */
@@ -2908,7 +2912,7 @@ void func_800C1704(); /* defined as (void); callers pass the unit */
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);
-void func_800C9374(BtlUnit9C50 *, s32);
+void func_800C9374(TexAnimSet *, u16 (*)[4]);
 void func_800B0E04(BtlUnit *, u8 *);
 void func_800EEDD4(void);
 void func_800C2250(BtlUnit *, u16);

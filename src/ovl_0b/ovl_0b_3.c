@@ -183,7 +183,50 @@ void func_800C9040(TexAnimSet *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C9374);
+void func_800C9374(TexAnimSet *set, u16 (*ofs)[4]) {
+    u32 i;
+    u32 j;
+    u32 k;
+    TexAnimRect *r;
+    u16 *f;
+    u16 *g;
+    u8 idx;
+
+    if (set == NULL) {
+        return;
+    }
+    for (i = 0; i < set->unk0; i++) {
+        set->unk4[i].unkE = 1;
+        f = (u16 *)set->unk4[i].unk10;
+        if ((u32)f > 0x80000000) {
+            return;
+        }
+        if (f == NULL) {
+            continue;
+        }
+        idx = set->unk4[i].unkD;
+        f = (u16 *)((u8 *)f + (s32)set);
+        set->unk4[i].unk10 = (TexAnimRect *)f;
+        if (ofs != NULL) {
+            f[0] += ofs[idx][2];
+            f[1] += ofs[idx][3];
+        }
+        r = (TexAnimRect *)f;
+        for (j = 0; j < set->unk4[i].unkC; j++) {
+            f = (u16 *)r[j].unk8;
+            f = (u16 *)((u8 *)f + (s32)set);
+            r[j].unk8 = (void *)f;
+            if (ofs != NULL) {
+                for (k = 0; k < set->unk4[i].unk1; k++) {
+                    g = f + 1;
+                    *f += ofs[idx][0];
+                    *g += ofs[idx][1];
+                    f += 2;
+                }
+            }
+        }
+    }
+}
 
 Battle11C020 *func_800C94B8(void) {
     Battle *b;
@@ -1640,7 +1683,7 @@ void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     D_800FE4F4 = arg1;
     D_800FE508 = D_800FE514->unk2;
     if (D_800FE508 != 0) {
-        func_800C9374(arg1, 0);
+        func_800C9374((TexAnimSet *)arg1, NULL);
         for (i = 0; i < D_800FE508; i++) {
             BtlUnit9C50 *a;
             BtlUnit9C50 *e;

@@ -430,7 +430,7 @@ s32 func_800A9A7C(Battle11C0 *arg0, s32 arg1) {
         r.x = 0;
         r.h = 0;
         r.w = 0;
-        func_800C9374(arg0->unk40, 0);
+        func_800C9374((TexAnimSet *)arg0->unk40, NULL);
     }
     DrawSync(0);
     D_8006794C->unk1C->unk8E4.battle->unk0 |= 1;
@@ -524,7 +524,7 @@ s32 func_800A9BE4(s32 arg0) {
             }
             e->unk8->unk50 = (BtlUnit9C50 *)v;
             if (v != 0) {
-                func_800C9374(e->unk8->unk50, (s32)pc);
+                func_800C9374((TexAnimSet *)e->unk8->unk50, (u16 (*)[4])pc);
             }
             func_800BD698(u, D_8006794C->unk1C->unk54C[i]->unk34.b.unk4, u - D_8006794C->unk1C->unk8E4.battle->unk6FC);
             if (u->unk3C & 0x100) {

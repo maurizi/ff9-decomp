@@ -8,6 +8,7 @@
 
 /* main exe: candidates for ff9.h */
 void func_800552B8(s32);
+s32 func_8002B9B8(u8 *); /* text width */
 void func_8001D9CC(s32, s32, s32, s32, s32);
 s32 func_80022AC4(s32);
 void func_80022ED4(s32);
@@ -159,7 +160,7 @@ void func_800A787C(void);
 s32 func_800A766C(s32, s32);
 void func_800A7A84(void);
 s32 func_800A7378(s32, s32);
-void func_800A9488(void);
+s32 func_800A9488(void);
 s32 func_800AB490(void);
 void func_800ACB98(void);
 void func_800ACC08(void);
@@ -209,5 +210,15 @@ s32 func_800ADF90(u8 *);
 void *func_800AE028(s32, s32, u32 *, u32, s32 *, SprtWords *);
 s32 func_800A9228(Ovl15Hand *, Ovl15Hand *);
 s32 func_800A945C(Ovl15Hand *);
+
+/* func_800A9488's format strings and UI labels (INCLUDE_RODATA, never C literals) */
+extern const char D_800A7018[]; /* "%2d" */
+extern const char D_800A701C[]; /* "Bankroll" */
+extern const char D_800A7028[]; /* "%ld" */
+extern const char D_800A702C[]; /* "Wager" */
+extern const char D_800A7034[]; /* "Stand" */
+extern const char D_800A703C[]; /* "Hit" */
+extern const char D_800A7040[]; /* "Double" */
+extern const char D_800A7048[]; /* "Split" */
 
 #endif

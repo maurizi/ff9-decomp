@@ -170,7 +170,57 @@ void func_80199554(void) {
 
 INCLUDE_RODATA("asm/us/ovl_64/nonmatchings/ovl_64", D_80198700);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_801999B4);
+s32 func_801999B4(s32 mode, u8 **buf) {
+    u8 *b;
+    s32 off;
+
+    if (D_80071E32 != 0) {
+        func_80015C38("Warning! MBG_init() called when already initialized\n");
+        D_80071E32 = 0;
+    }
+    switch (mode) {
+    case 1:
+        b = buf[0];
+        D_8019DC94.unk48 = b;
+        off = 0x10000;
+        D_8019DC94.unk4C = b + off;
+        off = 0x20000;
+        D_8019DC94.unk58 = b + off;
+        off = 0x43E20;
+        D_8019DC94.unk5C = b + off;
+        off = 0x49E20;
+        D_8019DC94.unk50 = b + off;
+        off = 0x4CB20;
+        D_8019DC94.unk54 = b + off;
+        break;
+    case 2:
+        b = buf[0];
+        D_8019DC94.unk48 = b;
+        off = 0x10000;
+        D_8019DC94.unk4C = b + off;
+        off = 0x20000;
+        D_8019DC94.unk50 = b + off;
+        off = 0x22D00;
+        D_8019DC94.unk54 = b + off;
+        b = buf[1];
+        D_8019DC94.unk58 = b;
+        off = 0x23E20;
+        D_8019DC94.unk5C = b + off;
+        break;
+    }
+    SetGraphDebug(0);
+    D_80071E31 = -1;
+    D_80071E32 = 1;
+    D_80071E34 = 0;
+    D_80071E30 = 0;
+    D_8019DC94.unk38 = 3;
+    D_8019DC94.unk3C = 4;
+    D_8019DC94.unk40 = 0x7F;
+    D_8019DC94.unk3 = 0;
+    D_8019DC94.unk44 = D_8019F288;
+    return 1;
+
+}
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_80199B28);
 

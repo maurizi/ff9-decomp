@@ -668,6 +668,23 @@ s32 func_800A945C(Ovl15Hand *h) {
     return 0;
 }
 
+/* func_800A9488's format strings and Blackjack UI labels */
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A7018);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A701C);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A7028);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A702C);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A7034);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A703C);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A7040);
+
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ovl_15", D_800A7048);
+
 INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800A9488);
 
 s32 func_800AAD24(void) {
