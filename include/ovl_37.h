@@ -133,4 +133,6 @@ void func_801F2F30(void);
 void func_801F2F38(s32);
 void func_801F2FA0(void);
 
+extern const u8 D_801EDF04[]; /* text bank for this menu */
+
 #endif
