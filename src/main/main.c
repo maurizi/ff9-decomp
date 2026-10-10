@@ -8074,7 +8074,67 @@ void func_80036634(u8 *a) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80036650);
+Unk8004AB64 *func_80036650(s32 n) {
+    Unk8007AECCNode *cur = D_8007AECC->unk15D0;
+    Unk8007AECCNode *nn = NULL;
+    Unk8007AECCNode *next;
+
+    if (cur != NULL) {
+        if ((u32 *)cur->unk0 >= D_8007AECC->unk50 + n) {
+            nn = D_8007AECC->unk15D4;
+            D_8007AECC->unk15D4 = nn->unk8;
+            nn->unk8 = D_8007AECC->unk15D0;
+            D_8007AECC->unk15D0 = nn;
+            {
+                u32 *p1 = D_8007AECC->unk50;
+                nn->unk0 = (Unk8004AB64 *)p1;
+                nn->unk4 = p1 + n;
+            }
+        } else {
+            for (next = cur->unk8; next != NULL; next = cur->unk8) {
+                if ((u32 *)next->unk0 >= cur->unk4 + n) {
+                    break;
+                }
+                cur = next;
+            }
+            if (next != NULL) {
+                nn = D_8007AECC->unk15D4;
+                D_8007AECC->unk15D4 = nn->unk8;
+                nn->unk8 = cur->unk8;
+                cur->unk8 = nn;
+                {
+                    u32 *p2 = cur->unk4;
+                    nn->unk0 = (Unk8004AB64 *)p2;
+                    nn->unk4 = p2 + n;
+                }
+            } else if (cur->unk4 + n <= D_8007AECC->unk50 + 0x500) {
+                nn = D_8007AECC->unk15D4;
+                D_8007AECC->unk15D4 = nn->unk8;
+                nn->unk8 = NULL;
+                cur->unk8 = nn;
+                {
+                    u32 *p3 = cur->unk4;
+                    nn->unk0 = (Unk8004AB64 *)p3;
+                    nn->unk4 = p3 + n;
+                }
+            }
+        }
+    } else if (n <= 0x500) {
+        nn = D_8007AECC->unk15D4;
+        D_8007AECC->unk15D4 = nn->unk8;
+        nn->unk8 = NULL;
+        D_8007AECC->unk15D0 = nn;
+        {
+            u32 *p4 = D_8007AECC->unk50;
+            nn->unk0 = (Unk8004AB64 *)p4;
+            nn->unk4 = p4 + n;
+        }
+    }
+    if (nn != NULL) {
+        return nn->unk0;
+    }
+    return NULL;
+}
 
 Unk8004AB64 *func_800367D0(s32 idx, s32 id, s32 a2, s32 a3) {
     Unk8004AB64 *o;

@@ -1161,8 +1161,8 @@ s32 func_80052DEC(s32, s32, s32); /* distance */
 s32 func_80052E48(s32, s32, s32);
 
 typedef struct Unk8007AECCNode {
-    Unk8004AB64 *unk0; /* key */
-    u8 pad4[8 - 4];
+    Unk8004AB64 *unk0; /* key = start of the block in unk50 */
+    u32 *unk4; /* end of the block */
     struct Unk8007AECCNode *unk8; /* next */
 } Unk8007AECCNode;
 
@@ -1173,7 +1173,7 @@ typedef struct Unk16D8 {
 
 typedef struct {
     u8 unk0[0x50]; /* cleared by func_8004A06C */
-    u8 pad50[0x1450 - 0x50];
+    u32 unk50[0x500]; /* object pool (func_80036650) */
     Unk8007AECCNode unk1450[32];
     Unk8007AECCNode *unk15D0; /* active list */
     Unk8007AECCNode *unk15D4; /* free list */
