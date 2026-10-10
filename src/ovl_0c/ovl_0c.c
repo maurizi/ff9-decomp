@@ -1922,7 +1922,7 @@ void func_800B01F0(Unk8004AB64 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B0378);
 
-s32 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
+u8 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
     VECTOR v;
     u32 cell;
     s32 h;
@@ -1979,7 +1979,139 @@ s32 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *ar
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B105C);
+u8 func_800B105C(ActorPos *out) {
+    Unk8004AB64 *act;
+    s32 d[2];
+    ActorPos v;
+    u32 cell;
+    u8 ok;
+    u8 r;
+    s32 a;
+    s32 i;
+    s32 j;
+    s32 t;
+    s32 k;
+    s32 x;
+    s32 z;
+
+    func_8001D898(&v, 0, sizeof(v));
+    ok = 0;
+    if (D_800D32FC < 0x16 && ((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2) == 0x17) {
+        return 0;
+    }
+    D_800CE209 = 0;
+    act = D_800CE3DC;
+    D_800D30C4 = 1;
+    v = act->unk14;
+    switch (D_800CE3C4) {
+    case 8:
+    case 9:
+        x = (D_800CE3DC->unk14.vx >> 3) - 0x17FC;
+        z = (D_800CE3DC->unk14.vz >> 3) + 0x3B48;
+        if (SquareRoot0(x * x + z * z) < 0xB4) {
+            return 0;
+        }
+        if (!func_800B0D6C((VECTOR *)&v, 0, 0, 0, &cell, 0)) {
+            return 0;
+        }
+        t = (u8)cell >> 2;
+        if (t >= 0x2D && (t < 0x2F || t == 0x34)) {
+            return 0;
+        }
+        break;
+    case 7:
+        if (!func_800B0D6C((VECTOR *)&v, 0, 10, 0, &cell, 0)) {
+            return 0;
+        }
+        if (((u8)cell >> 2) != 0x35) {
+            return 0;
+        }
+        break;
+    default:
+        if (!func_800B0D6C((VECTOR *)&v, 0, 0, 0, &cell, 0)) {
+            return 0;
+        }
+        if (((u8)cell >> 2) == 0x34) {
+            return 0;
+        }
+        break;
+    }
+    D_800D30C4 = 0;
+    for (a = 0; a < 0x800; a += 0x100) {
+        d[0] = (a + 0xC00) % 0x1000;
+        d[1] = -a + 0xC00;
+        for (i = 0; i < 2; i++) {
+            r = 1;
+            if (ok) {
+                continue;
+            }
+            for (j = 1; j < 9; j++) {
+                t = D_800CE3C8->unkE * j / 8;
+                v = D_800CE3DC->unk14;
+                r &= func_800B0D6C((VECTOR *)&v, d[i], 0, t, &cell, 0);
+            }
+            ok = r;
+            if (ok) {
+                switch (D_800CE3C4) {
+                case 0:
+                    if (abs(v.vy - D_800CE3DC->unk14.vy) >= 0x1F5) {
+                        ok = 0;
+                    }
+                    break;
+                case 7:
+                    if (func_800B3340(D_800CCB18, cell)) {
+                        ok = 0;
+                    }
+                    break;
+                case 8:
+                case 9:
+                    if (abs(v.vy - func_800B7A14(0xC2)) >= 0x15F) {
+                        ok = 0;
+                    }
+                    break;
+                }
+            }
+        }
+        if (ok) {
+            k = (u8)cell >> 2;
+            switch (k) {
+            case 0x24:
+            case 0x25:
+            case 0x26:
+                k = 0;
+                break;
+            case 0x35:
+                k = 1;
+                break;
+            case 0x36:
+                k = 2;
+                break;
+            case 0x37:
+                k = 3;
+                break;
+            case 0x38:
+                k = 4;
+                break;
+            case 0x39:
+                k = 5;
+                break;
+            case 0x33:
+                k = 6;
+                break;
+            case 0x30:
+                k = 7;
+                break;
+            default:
+                k = 8;
+                break;
+            }
+            v.vy += D_800CCB28[1][k];
+            *out = v;
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void func_800B153C(void) {
     s8 old;
@@ -2899,7 +3031,7 @@ void func_800B73F8(u32 arg0, s32 arg1) {
         D_800D3E78 = arg1;
         break;
     case 28:
-        if (!(u8)func_800B105C(D_800CF488)) {
+        if (!func_800B105C((ActorPos *)D_800CF488)) {
             D_800CF488[0] = 10000;
             D_800CF488[1] = 10000;
             D_800CF488[2] = 10000;

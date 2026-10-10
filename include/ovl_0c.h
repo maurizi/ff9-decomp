@@ -133,7 +133,8 @@ typedef struct {
     u8 unkA;
     u8 unkB;
     u8 unkC;
-    u8 padD[3];
+    u8 padD;
+    s16 unkE;
     u8 unk10;
     u8 unk11;
     u8 pad12[2];
@@ -832,6 +833,7 @@ extern s32 D_800D3730[];
 extern s32 D_800CE27C;
 extern s32 D_800CF408;
 extern u8 D_800D30C4;
+extern s32 D_800D32FC;
 extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
@@ -974,7 +976,8 @@ typedef struct {
     u16 unk10[6];
 } Unk800CE288; /* 0x1C */
 s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
-s32 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
+u8 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
+u8 func_800B105C(ActorPos *);
 extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
 extern u8 D_800CE209;
