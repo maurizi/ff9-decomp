@@ -11,6 +11,11 @@
  * a1, and n = unk26 straight into s4) and the order of the pos/arg1 giv increments at the loop end
  * (original: s2 (pos) before s0 (arg1)). Permuter hint: `n = arg0->unk2C; tile = ... + n;` puts
  * arg0/n in s5/s4 like the original but breaks the prologue order (24 rows).
+ * Pass 11 (new build/search/cmp.py): a per-iteration `BgSprt *sp = &arg1[i];` fixes the giv
+ * increment order at the loop end (pos before arg1), 14 -> 12 rows. Left: only the prologue (the
+ * original loads D_800C9DB4 before D_800CA108 and computes pos and tile back to back); all 5040 orders
+ * of the seven prologue statements, variable reuse for the unk28/unk2C/D_800CA108 loads and declaration
+ * shuffles keep 12.
  */
 #include "ovl_0a.h"
 
@@ -35,28 +40,29 @@ s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     arg0->unk25_1 = 0;
     for (buf = 0; buf < 2; buf++) {
         for (i = 0; i < n; i++) {
-            setlen(&arg1[i].unk8, 3);
-            arg1[i].unk8.code = 0x7C;
-            arg1[i].unk8.r0 = 0x80;
-            arg1[i].unk8.g0 = 0x80;
-            arg1[i].unk8.b0 = 0x80;
-            arg1[i].unk8.x0 = arg0->unk18 + pos[i].x;
-            arg1[i].unk8.y0 = arg0->unk1A + pos[i].y;
-            arg1[i].unk8.u0 = tile[i].u;
-            arg1[i].unk8.v0 = tile[i].v;
+            BgSprt *sp = &arg1[i];
+            setlen(&sp->unk8, 3);
+            sp->unk8.code = 0x7C;
+            sp->unk8.r0 = 0x80;
+            sp->unk8.g0 = 0x80;
+            sp->unk8.b0 = 0x80;
+            sp->unk8.x0 = arg0->unk18 + pos[i].x;
+            sp->unk8.y0 = arg0->unk1A + pos[i].y;
+            sp->unk8.u0 = tile[i].u;
+            sp->unk8.v0 = tile[i].v;
             if (tile[i].trans) {
-                arg1[i].unk8.code |= 2;
+                sp->unk8.code |= 2;
             } else {
-                arg1[i].unk8.code &= ~2;
+                sp->unk8.code &= ~2;
             }
-            arg1[i].unk8.clut = GetClut(tile[i].clutX << 4, tile[i].clutY);
+            sp->unk8.clut = GetClut(tile[i].clutX << 4, tile[i].clutY);
             if (tile[i].tp == 0) {
                 t = GetTPage(0, tile[i].abr, tile[i].tpX << 6, tile[i].tpY << 8);
             } else {
                 t = GetTPage(1, tile[i].abr, tile[i].tpX << 6, tile[i].tpY << 8);
             }
-            setDrawTPage(&arg1[i].unk0, 1, 1, t);
-            MargePrim(&arg1[i].unk0, &arg1[i].unk8);
+            setDrawTPage(&sp->unk0, 1, 1, t);
+            MargePrim(&sp->unk0, &sp->unk8);
             x = tile[i].clutY;
             if (w < x) {
                 w = x;

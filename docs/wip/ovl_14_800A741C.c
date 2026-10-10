@@ -1,4 +1,4 @@
-/* STATUS: near miss, 36 rows. ovl_14 func_800A741C (0x15C, look up the current area/field ids in the two directories at D_80067944 + 0x14C700 and store their sector ranges). Control flow matches: loop 1 is entered with 'goto test' into a do/while, loop 2 is a for(;;) with the found block inside (gcc then duplicates its first load the way the original does); mode and id must be s32 (no andi). Left: register assignment only (original t0 id, t1 base, t2 gs, t3 area, t4 mode, a1 ctx, a2 f; ours shifted by one) and the blk/n loads in the if/else come out in v0/v1 swapped. Permuter 15 min: only outputs that break the semantics (reusing id/n as temporaries). */
+/* STATUS: near miss, 34 rows (pass 11; 36 under the new cmp.py before). ovl_14 func_800A741C (0x15C, look up the current area/field ids in the two directories at D_80067944 + 0x14C700 and store their sector ranges). Control flow matches: loop 1 is entered with 'goto test' into a do/while, loop 2 is a for(;;) with the found block inside (gcc then duplicates its first load the way the original does); mode and id must be s32 (no andi). Left: register assignment only (original t0 id, t1 base, t2 gs, t3 area, t4 mode, a1 ctx, a2 f; ours shifted by one) and the blk/n loads in the if/else come out in v0/v1 swapped. Permuter 15 min: only outputs that break the semantics (reusing id/n as temporaries).  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): the second directory lookup reads gs->unk14 directly instead of reassigning f (the original loads it into v1, a temp), 36 -> 34. Left: the original allocation order is ctx a1 > f a2 > id t0 > base t1 > gs t2 > area t3 > mode t4 (ours f a1, ctx a2, base t0, gs t1, id t2). Permuter 25 min: best outputs set id = f->unk48 in the mode 1 arm (breaks the not-found case) -- id wants more refs or a longer life. dup.py/sink.py/declaration shuffles: nothing. */
 #include "ovl_14.h"
 void func_800A741C(void) {
     GameState *gs = D_8006794C;
@@ -42,9 +42,8 @@ void func_800A741C(void) {
         ctx->unk7FC[1] = e->unk4;
         ctx->unk804[1] = e[1].unk4 - e->unk4;
     skip1:
-        f = gs->unk14;
-        start = area + ((f->unk28 - base) << 11);
-        e = (Ovl14Dir *)start + f->unk24 - 1;
+        start = area + ((gs->unk14->unk28 - base) << 11);
+        e = (Ovl14Dir *)start + gs->unk14->unk24 - 1;
         for (;;) {
             if (e->unk0 == id) {
                 ctx->unk7FC[0] = e->unk4;

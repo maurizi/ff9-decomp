@@ -1,20 +1,18 @@
-/* STATUS: near miss, 17 rows (was 35). ovl_65 func_801F1848 (0x1BC, level-up popup windows). w = D_801F7A78.unk1D8 first, then i = 0, m = &D_801F7A78 (the original derives m as w - 0x1D8), increments ordered w++, i++, r++ (fixes the duplicated i++), and the popup RECT through rr = &D_801F81F8 with .x stored directly. Left: the original hoists %hi(D_801F8200) into s6 and stores .x through a fresh lui (ours hoists %hi(D_801F81F8)), r is built as m + 0xD0 (ours w - 0x108), and m->unk18[i] adds i + m. Statement permutations of the store block and the permuter (15 min) did not fix it. Pass 5: storing D_801F8200 before .x, rr->x, all-direct D_801F81F8 and a late rr all score worse; permuter 20 min (only semantics-breaking outputs). */
+/* STATUS: near miss, 20 rows under the new cmp.py (4 of them are its func_ %hi/%lo false positives; 23 before). ovl_65 func_801F1848 (0x1BC, level-up popup windows). w = D_801F7A78.unk1D8 first, then i = 0, m = &D_801F7A78 (the original derives m as w - 0x1D8), increments ordered w++, i++, r++ (fixes the duplicated i++), and the popup RECT through rr = &D_801F81F8 with .x stored directly. Left: the original hoists %hi(D_801F8200) into s6 and stores .x through a fresh lui (ours hoists %hi(D_801F81F8)), r is built as m + 0xD0 (ours w - 0x108), and m->unk18[i] adds i + m. Statement permutations of the store block and the permuter (15 min) did not fix it. Pass 5: storing D_801F8200 before .x, rr->x, all-direct D_801F81F8 and a late rr all score worse; permuter 20 min (only semantics-breaking outputs).  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): r = &D_801F7A78.unkAC[2].unk4 and the loop test D_801F7A78.unk18[i] (no m variable): CSE now derives the base as w - 0x1D8 in s5 and the test adds i + s5 like the original, and .x is stored through a fresh lui. Left: the original hoists %hi(D_801F8200) into s6 (loop.c movable) and builds r as base + 0xD0; ours keeps the D_801F8200 lui in the loop and r = w - 0x108. */
 #include "ovl_65.h"
 
 void func_801F1848(void) {
     WinSlot *w;
     RECT *r;
     s32 i;
-    Unk801F7A78 *m;
     RECT *rr;
 
     w = D_801F7A78.unk1D8;
     i = 0;
-    m = &D_801F7A78;
-    r = &m->unkAC[2].unk4;
+    r = &D_801F7A78.unkAC[2].unk4;
     rr = &D_801F81F8;
     for (; i < 4; w++, i++, r = (RECT *)((u8 *)r + sizeof(WinDef))) {
-        if (m->unk18[i] != 0) {
+        if (D_801F7A78.unk18[i] != 0) {
             if (w->unk8 == 0) {
                 if (w->unk0 == NULL) {
                     if (w->unk4 != 0) {
