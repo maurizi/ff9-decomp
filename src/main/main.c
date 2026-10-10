@@ -9448,8 +9448,6 @@ Unk8004AB64 *func_80038150(void) {
     return func_8004B4C4_inline(func_8004AEDC_inline2());
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038278);
-
 /* Find the entry point for `key` in script `idx`. */
 static inline u8 *func_800384D0_find(s32 idx, s32 key) {
     u8 *h = D_8007ADF8 + *(u16 *)(D_8007ADF8 + idx * 8);
@@ -9464,6 +9462,68 @@ static inline u8 *func_800384D0_find(s32 idx, s32 key) {
         p++;
     }
     return n != 0 ? h + (*p + 2) : NULL;
+}
+
+void func_80038278(Unk8004AB64 *o) {
+    s32 v;
+    Unk16D8 *n;
+    Unk16D8 *m;
+    Unk8004AB64 *t;
+    Unk8004AB64 *q;
+    u32 *base;
+    u32 *p;
+
+    if (o->unkA >= 2) {
+        p = (u32 *)o + o->unk9 + o->unkA;
+        p--;
+        v = p[0];
+        if (!(*(u32 *)&o->unk4 & 0xFF0000FF)) {
+            for (m = D_8007AECC->unk16D8; m != NULL; m = m->unk0) {
+                t = m->unk4;
+                if (t->unk7 != 0) {
+                    t->unkE = t->unk12;
+                }
+            }
+        }
+        o->unk0 = D_8007AECC->unk16F0 + p[-1];
+        o->unkD = v;
+        o->unkA -= 2;
+        o->unk4 = v >> 8;
+        if (((v >> 16) & 0xFF) != 0xFF) {
+            for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+                if (n->unk4->unk7 == (u32)v >> 24) {
+                    break;
+                }
+            }
+            q = NULL;
+            if (n != NULL) {
+                q = n->unk4;
+            }
+            if (q != NULL) {
+                if (q->unkD == 0xFF) {
+                    q->unkD = 0;
+                    return;
+                }
+                base = (u32 *)q + q->unk9;
+                p = base + (q->unkA - 1);
+                while (base < p) {
+                    if (*(u8 *)p == 0xFF) {
+                        break;
+                    }
+                    p -= 2;
+                }
+                if (base < p) {
+                    *p &= ~0xFF;
+                }
+            }
+        }
+    } else if (o->unkE == 2) {
+        o->unkE = 1;
+        o->unk0 = func_800384D0_find(o->unk6, 1);
+        o->unk4 = 7;
+    } else {
+        o->unk0 = NULL;
+    }
 }
 
 s32 func_800384D0(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
