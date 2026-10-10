@@ -469,6 +469,18 @@ typedef struct {
     u8 pad11;
 } Unk80069018; /* item table, 0x12-byte entries */
 extern Unk80069018 D_80069018[];
+extern u8 D_8006CA9C[4]; /* max hp/mp support abilities */
+extern u8 D_8006CAA0[4]; /* stat caps */
+extern u8 D_8006D1C8[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
+/* weapon table entry (0xC bytes) */
+typedef struct {
+    u8 pad0[5];
+    u8 unk5; /* attack */
+    u8 pad6[0xC - 6];
+} WeaponEntry;
+#if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
+extern WeaponEntry D_8006E0E8[];
+#endif
 extern u8 D_8006BB84[];
 extern u8 D_8006BB74[];
 
@@ -2870,21 +2882,14 @@ typedef struct {
 } Unk80032E84In;
 /* stat calculation output (func_80032E84) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
-    u16 unk6;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA;
-    u8 unkB;
-    u16 unkC;
-    u16 unkE;
-    u16 unk10;
-    u16 unk12;
-    u16 unk14;
+    u16 unk0; /* hp */
+    u16 unk2; /* mp */
+    u16 unk4; /* max hp */
+    u16 unk6; /* max mp */
+    u8 unk8[4]; /* stats */
+    u16 unkC[5]; /* attack, defences */
 } Unk80032E84Out;
-void func_80032E84(Unk80032E84In *, Unk80032E84Out *);
+Unk80032E84Out *func_80032E84(Unk80032E84In *, Unk80032E84Out *);
 
 /* Inlined copy of func_8003384C (recompute a character's stats). */
 static inline void func_8003384C_inline(Character *c) {
@@ -2897,14 +2902,14 @@ static inline void func_8003384C_inline(Character *c) {
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->unk39;
     func_80032E84(&in, &out);
-    c->unk24 = out.unk8;
-    c->unk25 = out.unk9;
-    c->unk26 = out.unkA;
-    c->unk27 = out.unkB;
-    c->unk28 = out.unkE;
-    c->unk29 = out.unk10;
-    c->unk2A = out.unk12;
-    c->unk2B = out.unk14;
+    c->unk24 = out.unk8[0];
+    c->unk25 = out.unk8[1];
+    c->unk26 = out.unk8[2];
+    c->unk27 = out.unk8[3];
+    c->unk28 = out.unkC[1];
+    c->unk29 = out.unkC[2];
+    c->unk2A = out.unkC[3];
+    c->unk2B = out.unkC[4];
     c->unk10 = out.unk0;
     c->unk12 = out.unk2;
     c->unk18 = out.unk4;

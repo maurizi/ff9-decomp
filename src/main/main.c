@@ -6132,7 +6132,89 @@ void func_80032C4C(s32 ch, s32 lv, u32 *heal, u8 f) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80032E84);
+Unk80032E84Out *func_80032E84(Unk80032E84In *in, Unk80032E84Out *out) {
+    s32 i;
+    u8 *a;
+    u8 *e;
+    s32 id;
+
+    func_8001D898(out, 0, sizeof(Unk80032E84Out));
+    out->unk0 = in->unk10;
+    out->unk2 = in->unk12;
+    out->unk4 = *(u16 *)&in->unk0.unk0[0];
+    out->unk6 = *(u16 *)&in->unk0.unk0[2];
+    out->unk8[0] = in->unk0.unk0[4];
+    out->unk8[1] = in->unk0.unk0[5];
+    out->unk8[2] = in->unk0.unk0[6];
+    out->unk8[3] = in->unk0.unk0[7];
+    id = in->unk14.unk0[0];
+    if (id != 0xFF) {
+        out->unkC[0] = D_8006E0E8[id].unk5;
+    }
+    for (i = 0; i < 4; i++) {
+        id = (&in->unk14.unk0[1])[i];
+        if (id != 0xFF) {
+            if ((u32)(id - 0x58) < 0x88) {
+                a = D_8006D1C8[id];
+                out->unkC[1] += a[0];
+                out->unkC[2] += a[1];
+                out->unkC[3] += a[2];
+                out->unkC[4] += a[3];
+            }
+        }
+    }
+    for (i = 0; i < 5; i++) {
+        id = in->unk14.unk0[i];
+        if (id != 0xFF) {
+            e = D_8006D548[D_80069018[id].unkB].unk0;
+            out->unk8[0] += e[0];
+            out->unk8[1] += e[1];
+            out->unk8[2] += e[2];
+            out->unk8[3] += e[3];
+        }
+    }
+    for (i = 0; i < 4; i++) {
+        if (func_80034A04(in->unk8.unk0, D_8006CA9C[i])) {
+            switch (D_8006CA9C[i]) {
+            case 0xC5:
+                out->unk4 += out->unk4 / 10;
+                break;
+            case 0xC6:
+                out->unk4 += out->unk4 / 5;
+                break;
+            case 0xC7:
+                out->unk6 += out->unk6 / 10;
+                break;
+            case 0xC8:
+                out->unk6 += out->unk6 / 5;
+                break;
+            }
+        }
+    }
+    for (i = 0; i < 4; i++) {
+        if (out->unk8[i] > D_8006CAA0[i]) {
+            out->unk8[i] = D_8006CAA0[i];
+        }
+    }
+    for (i = 0; i < 5; i++) {
+        if (out->unkC[i] >= 1000) {
+            out->unkC[i] = 999;
+        }
+    }
+    if (out->unk4 >= 10000) {
+        out->unk4 = 9999;
+    }
+    if (out->unk6 >= 1000) {
+        out->unk6 = 999;
+    }
+    if (out->unk4 < out->unk0) {
+        out->unk0 = out->unk4;
+    }
+    if (out->unk6 < out->unk2) {
+        out->unk2 = out->unk6;
+    }
+    return out;
+}
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010BD0);
 
@@ -6301,14 +6383,14 @@ void func_8003384C(Character *c) {
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->unk39;
     func_80032E84(&in, &out);
-    c->unk24 = out.unk8;
-    c->unk25 = out.unk9;
-    c->unk26 = out.unkA;
-    c->unk27 = out.unkB;
-    c->unk28 = out.unkE;
-    c->unk29 = out.unk10;
-    c->unk2A = out.unk12;
-    c->unk2B = out.unk14;
+    c->unk24 = out.unk8[0];
+    c->unk25 = out.unk8[1];
+    c->unk26 = out.unk8[2];
+    c->unk27 = out.unk8[3];
+    c->unk28 = out.unkC[1];
+    c->unk29 = out.unkC[2];
+    c->unk2A = out.unkC[3];
+    c->unk2B = out.unkC[4];
     c->unk10 = out.unk0;
     c->unk12 = out.unk2;
     c->unk18 = out.unk4;
