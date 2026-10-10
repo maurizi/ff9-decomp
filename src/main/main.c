@@ -18758,7 +18758,50 @@ void func_80061624(void) {
     SpuSetIRQ(1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800616F8);
+void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
+    AkaoStream *h = (AkaoStream *)arg0;
+    Unk80083168 *d;
+    s32 v;
+    u32 n;
+    u32 m;
+
+    v = func_80060A08();
+    if (v != -1) {
+        SpuSetIRQ(0);
+        SpuSetIRQCallback(NULL);
+        d = &D_80083168;
+        d->unk4C = b;
+        D_80083168.unk0 = h->unk40;
+        d->unk14 = h->unk10;
+        d->unk18 = h->unk20;
+        m = (1 << v) | (1 << (v + 1));
+        n = d->unkC;
+        d->unk10 = v;
+        d->unkC = m;
+        func_800575D0(m | n);
+        d->unk8 = h->unk18;
+        d->unk58 = h->unk1C;
+        d->unk2C = addr;
+        SpuSetTransferMode(0);
+        SpuSetTransferStartAddr(addr);
+        D_800809E0 = 1;
+        SpuSetTransferCallback(func_80061624);
+        n = d->unk14;
+        if (n > 0x2000) {
+            n = 0x2000;
+        }
+        func_8005709C(D_80083168.unk0, n);
+        D_80083168.unk0 += n;
+        if (loop) {
+            D_80080A70.unk20 |= d->unkC;
+        } else {
+            D_80080A70.unk20 &= ~d->unkC;
+        }
+        D_80080A70.unk24 &= ~D_80083174;
+        D_80080A70.unk1C &= ~D_80083174;
+        D_80083158.unk8 |= 0x100;
+    }
+}
 
 void func_800618C0(s32 unused, s32 flag) {
     s32 *h = D_8007F720;
