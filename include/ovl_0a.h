@@ -830,9 +830,9 @@ typedef struct Unk800C95C8 {
     struct Unk800C95C8 *unk60; /* mirrored model (func_800BC33C) */
     SVECTOR4 unk64; /* mirror plane normal */
     SVECTOR4 unk6C; /* point on the mirror plane */
-    u16 unk74;
-    u16 unk76;
-    u16 unk78;
+    s16 unk74; /* offset from the parent bone */
+    s16 unk76;
+    s16 unk78;
 } Unk800C95C8;
 
 /* walkmesh swap tables (func_800C6C04) */
@@ -1363,7 +1363,7 @@ void func_800BB090(BgAnimHdr *);
 void func_800B2D10(FieldEvtCtx **, s32);
 void func_800B1E8C(FieldEvtCtx **, s32);
 void func_800AC02C(FieldEvtCtx **, s32);
-void func_800BA560(Unk800C95C8 *, u8);
+void func_800BA560(Unk800C95C8 *, s32);
 void func_800AC6C0(struct FieldObjPlace *, s32);
 s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
 
