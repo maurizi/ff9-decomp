@@ -125,7 +125,7 @@ void func_801F0ED4(void);
 void func_801F0890(void);
 void func_80027110(s32, s32, s32, s32, s32, u8, u8); /* main exe */
 s32 func_80034584(s32, s32); /* main exe */
-u8 func_800347D8(s32, s32); /* main exe */
+s32 func_800347D8(s32, s32); /* main exe */
 extern u8 D_8007AFD3;
 u8 func_801F0C10(s32, Character *);
 void func_801F1048(void);
