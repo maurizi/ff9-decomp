@@ -5257,7 +5257,26 @@ void func_800E3B34(Heap *arg0, s32 arg1) {
     arg0->unk8 = size;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E3B70);
+s32 func_800E3B70(Heap *h, s32 size) {
+    s32 sz;
+    u8 *p;
+    s32 *q;
+
+    sz = func_800CFC0C(size);
+    if (h->unk4 < sz) {
+        q = (s32 *)h->unkC;
+        h->unk0 = (u8 *)q;
+        h->unk4 = h->unk8;
+    }
+    p = h->unk0;
+    h->unk4 -= sz;
+    h->unk0 = p + sz;
+    q = (s32 *)p;
+    for (size = 0; size < sz >> 2; size++) {
+        *q++ = 0;
+    }
+    return (s32)p;
+}
 
 s32 func_800E3BF8(Heap *arg0, s32 arg1) {
     s32 size = func_800CFC0C(arg1);
