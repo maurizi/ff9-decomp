@@ -1,4 +1,4 @@
-/* STATUS: draft, 36 rows. ovl_33 func_801EF644 (0x2BC, equipment menu cursor; sibling of ovl_37 func_801F13F8 and ovl_3a func_801F459C). Control flow, constants and the party loop are right (ours is 3 instructions longer). Wrapping each 'h = &D_80077DE8;' in do { } while (0) gets the original's 'sh v0,%lo(D_80077DE8)(a0); addiu a0,a0,%lo' pairing in the later blocks (47 -> 38 rows). Left: block 1 reads r->x through %lo(D_801FBFAC) and D_801FBF84.unk0 as -0x28(r) and schedules the table load first; block 3 load order. */
+/* STATUS: draft, 33 rows. ovl_33 func_801EF644 (0x2BC, equipment menu cursor; sibling of ovl_37 func_801F13F8 and ovl_3a func_801F459C). Control flow, constants and the party loop are right (ours is 3 instructions longer). Wrapping each 'h = &D_80077DE8;' in do { } while (0) gets the original's 'sh v0,%lo(D_80077DE8)(a0); addiu a0,a0,%lo' pairing in the later blocks (47 -> 38 rows). Left: block 1 reads r->x through %lo(D_801FBFAC) and D_801FBF84.unk0 as -0x28(r) and schedules the table load first; block 3 load order. The permuter's 'ry = r->y;' temp before the last block's stores took it from 36 to 33. */
 #include "ovl_33.h"
 extern u16 D_801F33C8[][2];
 
@@ -11,6 +11,7 @@ void func_801EF644(void) {
     u16 k;
     u8 blink;
     u8 done;
+    s16 ry;
 
     done = 0;
     blink = (D_80077E54 & 3) != 0;
@@ -63,9 +64,10 @@ void func_801EF644(void) {
             do {
                 h = &D_80077DE8;
             } while (0);
+            ry = r->y;
             h->unk4 = 0x12;
             k = D_801FBF84.unk3 * 0x2B + 0x12;
-            h->unk2 = r->y + k;
+            h->unk2 = ry + k;
             func_800355E4();
         }
     }
