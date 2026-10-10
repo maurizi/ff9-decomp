@@ -147,7 +147,46 @@ void func_801F49C4(RECT *r, s32 otz, s32 slot) {
     func_8002CD4C(r, 0x2D, 0, v);
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F4B18);
+void func_801F4B18(RECT *r, s32 z, s32 i) {
+    u8 buf[16];
+    RECT rr;
+    SaveSlot *s;
+    s32 j;
+    s32 n;
+
+    s = &D_801FB1A8.unk34[i];
+    n = 0;
+    for (j = n; j < 4; j++) {
+        if ((s->unk1C >> j) & 1) {
+            buf[n++] = j + 0x31;
+        }
+    }
+    buf[n] = 0;
+    func_8002B56C(r->x + 0x30, r->y + 3, z, "/DISC", 0);
+    func_8002B56C(r->x + 0x56, r->y + 3, z, buf, 0);
+    for (j = 0; j < 4; j++) {
+        if (s->unk58[j].unk1 != 0xFF) {
+            func_80028204(r->x + 6 + j * 0x21, r->y + 0xD, z, s->unk58[j].unk1, 0x2C, 0);
+        }
+    }
+    func_8002BAE4(s->unk1D, buf, 2, 1);
+    func_8002B5FC(r->x + 0x90, r->y + 6, z, s->unk1E.v, 0);
+    func_800275DC(r->x + 0x90, r->y + 0x17, z, 0xB4, 0);
+    func_8002B5B4(r->x + 0xA2, r->y + 0x15, z, buf, 0);
+    func_800275DC(r->x + 0xD8, r->y + 9, z, 0xB1, 0);
+    func_800275DC(r->x + 0xD8, r->y + 0x16, z, 0xB2, 0);
+    func_8002B56C(r->x + 0xE4, r->y + 0xA, z, buf, func_8002AA04(s->unk50, buf, 0));
+    func_8002BAE4(s->unk54, buf, 7, 1);
+    buf[7] = 0xA4;
+    buf[8] = 0;
+    func_8002B56C(r->x + 0xE4, r->y + 0x17, z, buf, 0);
+    rr.x = r->x + 0x8E;
+    rr.y = r->y + 0x25;
+    rr.w = 0x9C;
+    rr.h = 0x15;
+    func_8002B5FC(rr.x + 8, rr.y + 3, z, (u8 *)&s->unk28, 0);
+    func_8002CD4C(&rr, z, 0, s->unk48);
+}
 
 void func_801F4E00(void) {
     u8 blink = (D_80077DB0.unk10 & 3) != 0;
