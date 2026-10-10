@@ -6263,7 +6263,52 @@ void func_8002FEB4(void) {
     func_8002F5A0(0);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002FED4);
+void func_8002FED4(Unk80077C78 *p) {
+    s32 half;
+    s32 n;
+    Unk80077D00 *d;
+
+    if (p->unk8 == 0) {
+        p->unk8 = 0x10;
+    }
+    D_80077D00.unk0 = p->unk28.unk0[0];
+    D_80077D00.unk3C.unk0 = D_80077D00.unk0;
+    D_80077D00.unk30.unk0 = D_80077D00.unk0;
+    D_80077D00.unk4 = p->unk28.unk0[1];
+    D_80077D00.unk3C.unk4 = D_80077D00.unk4;
+    D_80077D00.unk30.unk4 = D_80077D00.unk4;
+    D_80077D00.unk8 = p->unk28.unk0[2];
+    D_80077D00.unk3C.unk8 = D_80077D00.unk8;
+    D_80077D00.unk30.unk8 = D_80077D00.unk8;
+    D_80077D00.unkC = p->unk24;
+    D_80077D00.unk10 = p->unk25;
+    D_80077D00.unk14 = p->unk26;
+    D_80077D00.unk54 = D_80077D00.unkC - D_80077D00.unk0;
+    D_80077D00.unk58 = D_80077D00.unk10 - D_80077D00.unk4;
+    D_80077D00.unk5C = D_80077D00.unk14 - D_80077D00.unk8;
+    half = p->unk8 >> 1;
+    n = 1;
+    if (half > 0) {
+        n = half;
+    }
+    D_80077D00.unk60 = n;
+    d = &D_80077D00;
+    d->unk64 = p->unk8 - n;
+    d->unk18 = func_8002FD98(d->unk54, d->unk60);
+    d->unk1C = func_8002FD98(d->unk58, d->unk60);
+    d->unk20 = func_8002FD98(d->unk5C, d->unk60);
+    if (d->unk64 != 0) {
+        d->unk24 = func_8002FD98(d->unk54, d->unk64);
+        d->unk28 = func_8002FD98(d->unk58, d->unk64);
+        d->unk2C = func_8002FD98(d->unk5C, d->unk64);
+    } else {
+        do {
+        } while (0); /* empty macro in the original; needed for the s0/s1 split */
+        d->unk2C = 0;
+        d->unk28 = 0;
+        d->unk24 = 0;
+    }
+}
 
 void func_80030030(Unk80077C78 *p) {
     if ((u32)p->unkC < D_80077D00.unk60) {
