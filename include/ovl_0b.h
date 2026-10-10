@@ -1371,6 +1371,12 @@ typedef struct {
         (a) *= (n);         \
         (a) = wt - (a);     \
     }
+/* colour gradient header (func_800E651C), followed by 8-byte keys
+   {CVECTOR color (cd = key length); u16 len; u16 start} terminated by cd == 0 */
+typedef struct {
+    s32 total; /* 0 until the keys' start/len are filled in */
+    s32 count;
+} Grad;
 void func_800E651C(u8 *, CVECTOR *, s32);
 void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
 
@@ -2406,7 +2412,37 @@ void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800D1D74(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800D1FFC(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
-void func_800D2938(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+/* effect frame table (func_800D2938) */
+typedef struct {
+    u16 unk0; /* frame count */
+    s16 unk2;
+    u16 unk4; /* gouraud flag */
+    u16 unk6;
+} Unk800D2938;
+
+typedef struct {
+    s32 unk0; /* primitive code */
+    s32 unk4; /* ot base z */
+    s32 unk8;
+    s32 unkC;
+    u16 *unk10;
+    s32 unk14;
+    s32 unk18; /* tpage */
+    u8 pad1C[0x28 - 0x1C];
+} Unk800D57D0Ctx;
+
+typedef struct {
+    s32 unk0; /* primitive code */
+    s32 unk4; /* ot base z */
+    s32 unk8;
+    s32 unkC; /* tpage */
+    s32 unk10;
+    s32 unk14;
+} Unk800D59D0Ctx;
+
+void func_800D57D0(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
+void func_800D59D0(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
+void func_800D2938(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
 /* main exe: candidates for ff9.h */
@@ -2423,7 +2459,7 @@ s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
 s32 func_800CFC0C(s32);
-void func_800D07B4(); /* (s32 code, u32 *ot, void *prim, s32 tpage) */
+void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage); func_800D08C4 passes only 2 */
 u8 *func_800D6360(s32);
 void func_800D64C8(s32);
 void func_800D85AC(s32, s32);
@@ -3567,6 +3603,23 @@ void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
     "or\t$15, $15, %0;" \
     "sw\t$15, 0(%2)" \
     : "=r"(len) : "r"(p), "r"(ot), "0"(len) : "$14", "$15", "memory")
+
+/* the same, but len is a plain input that the asm overwrites (only safe when len is dead afterwards);
+   lets a constant len get its own register (func_800D07B4) */
+#define addPrimLenIn(ot, p, len) __asm__ volatile( \
+    "lw\t$14, 0(%2);" \
+    "nop;" \
+    "sll\t$15, $14, 8;" \
+    "srl\t$15, $15, 8;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%1);" \
+    "sll\t%0, %1, 8;" \
+    "srl\t%0, %0, 8;" \
+    "srl\t$15, $14, 24;" \
+    "sll\t$15, $15, 24;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%2)" \
+    : : "r"(len), "r"(p), "r"(ot) : "$14", "$15", "memory")
 
 typedef struct {
     DR_STP unk0;
