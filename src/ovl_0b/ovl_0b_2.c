@@ -3410,7 +3410,206 @@ void func_800E1810(Pool30 *arg0, Pool6CEntry *arg1) {
     arg1->unk30 = -1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E1874);
+s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
+    union {
+        s16 h[4];
+        s32 w;
+    } a;
+    s16 b[4];
+    s32 i;
+    s32 last;
+    Pool6CEntry *e;
+    EffTail *def;
+    EffTail *d2;
+    EffAnim *an;
+    EffElemHdr *hdr;
+    EffSub *sub;
+    EffFileHdr *f;
+    s16 *tbl;
+    s32 frame;
+    s32 t;
+    s32 v;
+    s32 y;
+    s32 x;
+    Pool6C *p = arg1;
+
+    last = 0;
+    e = p->unkC;
+    v = 0;
+    i = 0;
+    p->unk4 = 0;
+    for (; i <= p->unk8; i++, e++) {
+        if (e->unk30 == 0) {
+            continue;
+        }
+        if (e->unk30 == -1) {
+            e->unk30 = 0;
+            continue;
+        }
+        p->unk4++;
+        def = e->unk24;
+        frame = e->unk38;
+        an = &def->unk4;
+        last = i;
+        y = an->unk2;
+        t = (frame << 12) / y;
+        e->unk32 = 0;
+        if (frame >= y) {
+            if (e->unk34 == 0) {
+                e->unk30 = -1;
+            }
+            continue;
+        }
+        switch (def->unk4.unk0) {
+        case 0:
+            v = func_800CF9B0(an->unk4, an->unk6, t);
+            break;
+        case 1:
+            v = (func_8004BB80(t >> 1) * an->unk4) >> 12;
+            break;
+        case 2:
+            def = e->unk24;
+            if (def->unk0 != -1) {
+                tbl = def->unk50;
+            } else {
+                tbl = def->unk40;
+            }
+            v = tbl[(frame << 4) / y];
+            break;
+        case 3:
+            v = 0x100;
+            break;
+        }
+        x = v >> 8;
+        y = e->unk3A;
+        y += v & 0xFF;
+        if (y >= 0x100) {
+            y -= 0x100;
+            x++;
+        }
+        e->unk3A = y;
+        e->unk32 = x;
+        if (frame == 0) {
+            ((s32 *)&e->unk5C)[0] = ((s32 *)&an->unk28)[0];
+            ((s32 *)&e->unk5C)[1] = ((s32 *)&an->unk28)[1];
+        } else {
+            e->unk5C.vx += an->unk30.vx;
+            e->unk5C.vy += an->unk30.vy;
+            e->unk5C.vz += an->unk30.vz;
+        }
+        hdr = (EffElemHdr *)e->unk18 - 1;
+        if (hdr->unkE == 1) {
+            hdr->unk10.w = 0;
+            x = func_800CF9B0(0, hdr->unk0 * 4, t);
+            y = (x & 3) << 5;
+            v = x >> 2;
+            if (y != 0) {
+                x = v + 1;
+                if (x >= hdr->unk0) {
+                    x = v;
+                }
+                hdr->unk10.b[v] = -0x80 - y;
+                hdr->unk10.b[x] += y;
+            } else {
+                hdr->unk10.b[v] = 0x80;
+            }
+        }
+        a.h[0] = hdr->unk6;
+        a.h[1] = hdr->unkA;
+        a.h[2] = an->unk12;
+        b[0] = hdr->unk8;
+        b[1] = hdr->unkC;
+        b[2] = an->unk1A;
+        func_800CFA00(a.h, b, t, a.h);
+        gte_lddp(0x1000 - t);
+        gte_ldsv(an->unkC);
+        gte_gpf12();
+        e->unk1C = a.h[0];
+        e->unk20 = a.h[1];
+        e->unk4A = a.h[2];
+        gte_lddp(t);
+        gte_ldsv(an->unk14);
+        gte_gpl12();
+        gte_stsv(e->unk44);
+        if (an->unk1C != 0) {
+            func_800CFA00(an->unk20, an->unk24, t, a.h);
+            e->unk4C = a.w;
+        }
+        if (e->unk4 != NULL) {
+            sub = e->unk4 - 1;
+            func_800CFA00(sub->unk14, sub->unk1C, t, e->unk50);
+            e->unk56 = func_800CF9B0(sub->unk1A, sub->unk22, t);
+            if (sub->unk24 != 0) {
+                func_800CFA00(sub->unk28, sub->unk2C, t, a.h);
+                e->unk58 = a.w;
+            }
+        }
+        d2 = e->unk24;
+        switch (d2->unk0) {
+        case 0:
+            a.h[0] = d2->unk3C;
+            a.h[1] = d2->unk40[0];
+            b[0] = d2->unk3E;
+            b[1] = d2->unk40[1];
+            func_800CFA00(a.h, b, t, a.h);
+            e->unk3C = a.h[0];
+            e->unk3E = a.h[1];
+            break;
+        case 1:
+        case 2:
+        case 3:
+            a.h[0] = d2->unk3C;
+            a.h[1] = d2->unk3E;
+            b[0] = d2->unk40[0];
+            b[1] = d2->unk40[1];
+            func_800CFA00(a.h, b, t, a.h);
+            e->unk3C = a.h[0];
+            e->unk3E = a.h[1];
+            a.h[0] = d2->unk40[2];
+            a.h[1] = d2->unk40[3];
+            b[0] = d2->unk40[4];
+            b[1] = d2->unk40[5];
+            func_800CFA00(a.h, b, t, a.h);
+            e->unk40 = a.h[0];
+            e->unk42 = a.h[1];
+            break;
+        case 4:
+            a.h[0] = d2->unk3C;
+            a.h[1] = d2->unk40[0];
+            a.h[2] = d2->unk40[2];
+            b[0] = d2->unk3E;
+            b[1] = d2->unk40[1];
+            b[2] = d2->unk40[3];
+            func_800CFA00(a.h, b, t, a.h);
+            e->unk3C = a.h[0];
+            e->unk3E = a.h[1];
+            e->unk40 = a.h[2];
+            break;
+        }
+        switch (e->unk0->unk0) {
+        case 0:
+        case 5:
+            e->unk8 = func_800CF9B0(e->unk0->unk8, e->unk0->unkA, t);
+            break;
+        case 1:
+            f = e->unk0;
+            e->unk8 = func_800CF9B0(f->unk18, f->unk1A, t);
+            e->unkA = func_800CF9B0(f->unk20, f->unk22, t);
+            break;
+        case 2:
+        case 4:
+            e->unk8 = func_800CF9B0(e->unk0->unk8, e->unk0->unkA, t);
+            break;
+        case 3:
+            e->unk8 = func_800CF9B0(e->unk0->unk18, e->unk0->unk1A, t);
+            break;
+        }
+        frame++;
+        e->unk38 = frame;
+    }
+    p->unk8 = last;
+    return p->unk4;
+}
 
 Pool30Entry *func_800E1F90(Pool30 *arg0) {
     s32 i;
@@ -3725,9 +3924,9 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
         }
         for (i = 0; i < 4; i++) {
             if (c->unk30[i] != NULL) {
-                c->unk30[i]->unk5C = c->unk28[0];
-                c->unk30[i]->unk5E = c->unk28[1];
-                c->unk30[i]->unk60 = c->unk28[2];
+                c->unk30[i]->unk5C.vx = c->unk28[0];
+                c->unk30[i]->unk5C.vy = c->unk28[1];
+                c->unk30[i]->unk5C.vz = c->unk28[2];
                 if (c->unk30[i]->unk30 == -1) {
                     c->unk30[i] = NULL;
                 }
