@@ -822,7 +822,7 @@ extern VECTOR D_800CDF50;
 extern SVECTOR D_800D4870[10];
 extern s16 D_800D4830[10];
 extern s16 D_800D48F8[10];
-extern u8 D_800D48E8[10];
+extern s8 D_800D48E8[10];
 extern SVECTOR D_800D4910[10];
 extern VECTOR D_800D4960[9];
 extern SVECTOR D_800D49F0[9];
@@ -1097,6 +1097,7 @@ extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
+MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
 void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
 void func_80064CDC(s32, s32);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
@@ -1144,6 +1145,26 @@ extern Unk800A7FB8 D_800A8020; /* radar arrow */
 extern Unk800A7FB8 D_800A8000; /* big-map arrow */
 extern WmScrRect D_800CD09C[]; /* on-screen test rects */
 extern char D_800A8178[]; /* "Illegal Weather Mode" */
+extern VECTOR D_800CDF38;
+extern VECTOR D_800CDF60;
+extern SVECTOR D_800CDF98;
+extern s32 D_800CDFB8;
+extern s32 D_800CDFBC;
+extern MATRIX D_800CD774;
+extern VECTOR D_800A8588;
+extern VECTOR D_800A8598;
+
+/* first entry of data pack `id` */
+#define WM_PACK0(id) ((s32)((WmPack *)func_800B8388(D_800CF428, id))->unk8[0])
+
+/* inline CompMatrix: c = a * b, c->t = a * b->t + a->t */
+#define gte_CompMatrix(a, b, c)    \
+    gte_MulMatrix0(a, b, c);    \
+    gte_SetTransMatrix(a);      \
+    gte_ldlv0((b)->t);          \
+    gte_rtv0tr();               \
+    gte_stir((c)->t);
+
 extern WmNearCell D_800D3C10[];
 s32 func_800AE7F0();
 void func_800C23CC(void);

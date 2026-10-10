@@ -7282,7 +7282,179 @@ __asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C53DC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C5A48);
+void func_800C5A48(u8 arg0) {
+    VECTOR v;
+    MATRIX m;
+    s32 i;
+    s32 j;
+
+    SetLightMatrix(&D_800CF4C0);
+    SetColorMatrix(&D_800CF560);
+    SetBackColor((u8)((u16)D_800D3FA0.unk5E0[0].unk54[0] >> 5), (u8)((u16)D_800D3FA0.unk5E0[0].unk54[1] >> 5),
+                 (u8)((u16)D_800D3FA0.unk5E0[0].unk54[2] >> 5));
+    switch (arg0) {
+    case 4:
+        if (D_800D30CD == 0 && D_800CF444 == 1) {
+            VECTOR scale;
+
+            func_80030AF4(&D_800CDF80, &m);
+            if ((u8)func_800BBE24(&D_800CDF50, (VECTOR *)m.t, &v, 0)) {
+                scale = D_800A8588;
+                ScaleMatrix(&m, &scale);
+                CompMatrix(D_800CF448, &m, &m);
+                SetRotMatrix(&m);
+                SetTransMatrix(&m);
+                func_800BA458(WM_PACK0(0x3A), 0x50, 1);
+                func_800BA458(WM_PACK0(0x35), 0x3C, 0);
+                for (j = 0; j < 3; j++) {
+                    func_80030AF4(&D_800CDFA0[j], &m);
+                    func_800BBE24(&D_800CDF50, (VECTOR *)m.t, &v, 0);
+                    CompMatrix(D_800CF448, &m, &m);
+                    SetRotMatrix(&m);
+                    SetTransMatrix(&m);
+                    func_800BA458(WM_PACK0(j + 0x36), 0, 0);
+                }
+            }
+        }
+        break;
+    case 7:
+        func_80030AF4(&D_800CDF48, &m);
+        func_800BBE24(&D_800CDF38, (VECTOR *)m.t, &v, 0);
+        CompMatrix(D_800CF448, &m, &m);
+        SetRotMatrix(&m);
+        SetTransMatrix(&m);
+        func_800BA458(WM_PACK0(0x39), 0, 1);
+        break;
+    case 6:
+        if (D_800CF444 == 4) {
+            SVECTOR pos;
+            u32 *ot;
+            WmSprHdr *spr;
+            s32 n;
+
+            ot = (u32 *)D_800CF460[*D_800CF45C];
+            func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
+            D_800CF442 = 0;
+            pos.vx = m.t[0];
+            pos.vy = m.t[1];
+            pos.vz = m.t[2];
+            spr = func_800B8388(D_800CF428, 0x25);
+            n = func_800CAE00((u16 *)spr) - 1;
+            if (n != 0) {
+                D_800CF404 = func_800CAE0C(D_800CF404, spr, &pos, NULL, D_800CDFBC, D_800CF4B0 / 2 % n, 1, -1,
+                                           (s32)ot, 0, 0);
+            }
+            func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
+            CompMatrix(D_800CF448, &m, &m);
+            func_80030AF4(&D_800CDF98, &m);
+            SetRotMatrix(&m);
+            SetTransMatrix(&m);
+            func_800BA458(WM_PACK0(0x3F), D_800CDFB8, 2);
+            func_80030AF4(&D_800CDF88, &m);
+            func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
+            CompMatrix(D_800CF448, &m, &m);
+            SetRotMatrix(&m);
+            SetTransMatrix(&m);
+            func_800BA458(WM_PACK0(0x3C), 0, 2);
+            func_80030AF4(&D_800CDF90, &m);
+            func_800BBE24(&D_800CDF60, (VECTOR *)m.t, &v, 0);
+            CompMatrix(D_800CF448, &m, &m);
+            SetRotMatrix(&m);
+            SetTransMatrix(&m);
+            func_800BA458(WM_PACK0(0x3D), 0, 2);
+            for (i = 0; i < 10; i++) {
+                MATRIX m1;
+                MATRIX m2;
+                VECTOR d;
+                VECTOR scale;
+                VECTOR s;
+                u8 c;
+
+                m1 = D_800CD774;
+                m2 = D_800CD774;
+                if (D_800D48E8[i] == 0) {
+                    if (func_80062B3C() % 5 == 0) {
+                        D_800D4910[i].vx = func_80062B3C() % 4096;
+                        D_800D4910[i].vy = func_80062B3C() % 4096;
+                        D_800D4910[i].vz = func_80062B3C() % 4096;
+                        D_800D48F8[i] = func_80062B3C() % 1024 + 0x400;
+                        D_800D48E8[i] = 1;
+                    }
+                } else {
+                    D_800D48F8[i] += func_80062B3C() % 86 - 10;
+                    if (++D_800D48E8[i] == 33) {
+                        D_800D48E8[i] = 0;
+                    }
+                }
+                if (D_800D48E8[i] != 0) {
+                    c = ~(D_800D48E8[i] * 7);
+                    SetBackColor(c >> 1, c >> 2, c);
+                    m2.t[1] = -700;
+                    func_80030AF4(&D_800D4910[i], &m1);
+                    gte_CompMatrix(&m1, &m2, &m);
+                    func_8001D898(&s, 0, sizeof(VECTOR));
+                    s.vx = 0x2FA0;
+                    s.vy = D_800D48F8[i];
+                    s.vz = 0x1830;
+                    scale = s;
+                    ScaleMatrix(&m, &scale);
+                    func_800BBE24(&D_800CDF60, &d, &v, 0);
+                    m.t[0] += d.vx;
+                    m.t[1] += d.vy;
+                    m.t[2] += d.vz;
+                    gte_CompMatrix(D_800CF448, &m, &m);
+                    SetRotMatrix(&m);
+                    SetTransMatrix(&m);
+                    switch (func_80062B3C() % 3) {
+                    case 0:
+                        func_800BA458(WM_PACK0(0x40), 0, 2);
+                        break;
+                    case 1:
+                        func_800BA458(WM_PACK0(0x41), 0, 2);
+                        break;
+                    }
+                }
+            }
+            for (i = 0; i < 10; i++) {
+                MATRIX m1;
+                MATRIX m2;
+                VECTOR d;
+                VECTOR scale;
+                s32 c;
+
+                m1 = D_800CD774;
+                m2 = D_800CD774;
+                c = (func_8004BB80(D_800CF4B0 * 16 + i * 400) >> 5) + 0x80;
+                if (c >= 0x100) {
+                    c = 0xFF;
+                }
+                SetBackColor((u8)c >> 1, (u8)c >> 2, (u8)c);
+                if (c == 0) {
+                    D_800D4830[i] = 0x400;
+                } else {
+                    D_800D4830[i] += 3;
+                }
+                m2.t[2] = -D_800D4830[i];
+                func_80030EA4(&D_800D4870[i], &m1);
+                gte_CompMatrix(&m1, &m2, &m);
+                scale = D_800A8598;
+                ScaleMatrix(&m, &scale);
+                func_800BBE24(&D_800CDF60, &d, &v, 0);
+                m.t[0] += d.vx;
+                m.t[1] += d.vy;
+                m.t[2] += d.vz;
+                gte_CompMatrix(D_800CF448, &m, &m);
+                SetRotMatrix(&m);
+                SetTransMatrix(&m);
+                func_800BA458(WM_PACK0(0x3E), 0, 2);
+            }
+        }
+        break;
+    }
+    SetLightMatrix(&D_800CF540);
+    SetColorMatrix(&D_800CF500);
+    SetBackColor(D_800D3FA0.unk5E0[0].unk20.c[0], D_800D3FA0.unk5E0[0].unk20.c[2], D_800D3FA0.unk5E0[0].unk20.c[4]);
+}
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8588);
 
