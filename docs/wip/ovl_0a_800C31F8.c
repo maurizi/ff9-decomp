@@ -1,12 +1,14 @@
 /*
  * ovl_0a func_800C31F8 (0x410 bytes): averages the queued collision pushes (D_800CA9D8) and
  * re-runs func_800C2AF0.
- * WIP: 258 of 260 instructions, ~19 aligned diff rows:
- *  - else branch: the original copies `i = any` from the register (t2 = t6) where CSE folds it
- *    to 0 here (any = 0 sits in the delay slot of `if (D_800C9DDC == 1)`); moving `any = 0`
- *    anywhere else is worse;
- *  - tail: the original stores arg0->unk24->unk14.vx/vz right after their loads (two load-delay
- *    nops, hence 260), we interleave them; arg0 is t7 there, t8 here.
+ * WIP (pass 10): 258 of 260 instructions, 10 aligned diff rows (was 19).
+ * Fixed: the tail stores go through `*(s32 *)((u8 *)arg0->unk24 + 0x14)` (not a struct field), so
+ * gcc 2.8's MEM_IN_STRUCT_P heuristic no longer lets the D_800C9DDC = 0 store move above them;
+ * the two loads/stores now come out in source order with the original's load-delay nops.
+ * Left: (1) sched2 fills those two nops with the call's `move a0, arg0` / `addiu a2, sp, 0x30`
+ * (the original puts them after `lui v0, %hi(D_800C9DDC)`); (2) else branch: the original copies
+ * `i = any` from t6 where CSE folds it to 0 here (any = 0 sits in the delay slot of
+ * `if (D_800C9DDC == 1)`); (3) arg0 is t7 there, t8 here (D_800CAA38 base swaps with it).
  */
 #include "ovl_0a.h"
 
@@ -78,8 +80,8 @@ s32 func_800C31F8(Unk800C9DF4 *arg0, SVECTOR *arg1, Unk800C9E00 **arg2, s16 *arg
         arg1->vx += sum.vx;
         arg1->vz += sum.vz;
     }
-    arg0->unk24->unk14.vx = arg1->vx;
-    arg0->unk24->unk14.vz = arg1->vz;
+    *(s32 *)((u8 *)arg0->unk24 + 0x14) = arg1->vx;
+    *(s32 *)((u8 *)arg0->unk24 + 0x1C) = arg1->vz;
     D_800C9DDC = 0;
     return func_800C2AF0(arg0, arg2, &prev, arg1, 0, 0, 0, 0) == 0;
 }
