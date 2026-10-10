@@ -4337,7 +4337,46 @@ void func_8002C210(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002C308);
+void func_8002C308(s32 port) {
+    u32 res = 0;
+    Unk80077188 *e = D_80077188[port];
+    u32 now = VSync(-1);
+    s32 i;
+    u32 m;
+    u32 out;
+    u32 d;
+
+    D_80077524 = D_800739A0[port];
+    D_80077520 = (&D_80073990)[port];
+    for (i = 0; i < 23; e++, i++) {
+        if (e->unk0 != 0) {
+            m = D_80077524 & e->unkC & e->unk4;
+            e->unk4 = D_80077524;
+            out = 0;
+            if (m != 0) {
+                if (e->unk2 != 0) {
+                    d = now - e->unk8;
+                    if (e->unk1 == 0) {
+                        if (d >= e->unk10) {
+                            out = m;
+                            e->unk1 = 1;
+                            e->unk8 = now;
+                        }
+                    } else if (d >= e->unk12) {
+                        out = m;
+                        e->unk8 = now;
+                    }
+                }
+            } else {
+                e->unk1 = 0;
+                e->unk2 = 1;
+                e->unk8 = now;
+            }
+            res |= out;
+        }
+    }
+    D_80077528 = res | D_80077520;
+}
 
 s32 func_8002C47C(s32 i) {
     return ((D_80073940[i].unk0 >> 12) & 0xF) == 7;
