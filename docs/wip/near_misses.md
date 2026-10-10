@@ -4,7 +4,7 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Pass 7 matched 5 (8004B85C, 800378C4, 80035214, 80038618 and 800378C4's shared search). What worked:
+- Pass 7 matched 4 (8004B85C, 800378C4, 80035214, 80038618). What worked:
   - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
     parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
     `s = q->unkF; if (best) f = s; else f = q->unkF;`, then dup: identical-branch `if (a)` around
