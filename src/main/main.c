@@ -522,7 +522,98 @@ void func_80019160(u16 a, s32 b) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80019194);
+void func_80019194(void) {
+    s32 i, j;
+    s32 state;
+    s32 b;
+    u32 buttons;
+
+    for (i = 0; i < 2; i++) {
+        state = PadGetState(i << 4);
+        D_800739A8[i] = state;
+        if (state == 0) {
+            D_80073720 |= 1 << (i * 4);
+        } else if (state == 1) {
+            D_80073720 |= 4 << (i * 4);
+        }
+        if (PADBUF(i)->unk0 == 0 && (((D_80073940[i].unk0 >> 12) & 0xF) == 7 || ((D_80073940[i].unk0 >> 12) & 0xF) == 4)) {
+            if ((D_80073720 >> (i * 4)) & 1) {
+                if (D_800739A8[i] == 2) {
+                    D_80073720 &= ~(1 << (i * 4));
+                } else if (D_800739A8[i] == 6) {
+                    if (PadInfoMode(i << 4, 2, 0)) {
+                        b = 2 << (i * 4);
+                        if (!(D_80073720 & b)) {
+                            PadSetMainMode(i << 4, 1, 0);
+                            D_80073720 |= b;
+                        } else {
+                            PadSetAct(i << 4, &D_800739B0[i].unk0, 2);
+                            PadSetActAlign(i << 4, D_8006815C);
+                            D_80073720 = D_80073720 & ~((1 << (i * 4)) | b) & ~(4 << (i * 4));
+                        }
+                    }
+                }
+            }
+            b = 4 << (i * 4);
+            if ((D_80073720 & b) && D_800739A8[i] == 6) {
+                PadSetAct(i << 4, &D_800739B0[i].unk0, 2);
+                PadSetActAlign(i << 4, D_8006815C);
+                D_800739A8[i] = 4;
+                D_80073720 &= ~b;
+            }
+            j = 0;
+            buttons = ~PADBUF(i)->unk2;
+            buttons &= 0xFFFF;
+            D_80073938[i].unk0[0] = PADBUF(i)->unk4[0];
+            D_80073938[i].unk0[1] = PADBUF(i)->unk4[1];
+            D_80073938[i].unk0[2] = PADBUF(i)->unk4[2];
+            D_80073938[i].unk0[3] = PADBUF(i)->unk4[3];
+            D_80073930[i] = D_800739A0[i];
+            D_800739A0[i] = 0;
+            for (; j < 32; j++) {
+                if (buttons & D_80073730[i][j]) {
+                    D_800739A0[i] |= 1 << j;
+                    D_80073830[i][j]++;
+                } else {
+                    D_80073830[i][j] = 0;
+                }
+            }
+            if ((D_80073720 & 0x8000) && ((D_80073940[i].unk0 >> 12) & 0xF) == 7) {
+                if (D_80073938[i].unk0[2] < D_80068158.unk0[2]) {
+                    D_800739A0[i] |= 0x80;
+                }
+                if (D_80073938[i].unk0[2] > D_80068158.unk0[3]) {
+                    D_800739A0[i] |= 0x20;
+                }
+                if (D_80073938[i].unk0[3] < D_80068158.unk0[0]) {
+                    D_800739A0[i] |= 0x10;
+                }
+                if (D_80073938[i].unk0[3] > D_80068158.unk0[1]) {
+                    D_800739A0[i] |= 0x40;
+                }
+            }
+            D_800739A0[i] &= ~D_80073998[i];
+            if ((D_80073998[i] & 0x10) && (s8)D_80073938[i].unk0[3] >= 0) {
+                D_80073938[i].unk0[3] = 0x80;
+            }
+            if ((D_80073998[i] & 0x40) && D_80073938[i].unk0[3] > 0x80) {
+                D_80073938[i].unk0[3] = 0x80;
+            }
+            if ((D_80073998[i] & 0x80) && (s8)D_80073938[i].unk0[2] >= 0) {
+                D_80073938[i].unk0[2] = 0x80;
+            }
+            if ((D_80073998[i] & 0x20) && D_80073938[i].unk0[2] > 0x80) {
+                D_80073938[i].unk0[2] = 0x80;
+            }
+            D_80073990[i] = (D_800739A0[i] ^ D_80073930[i]) & D_800739A0[i];
+            D_80073988[i] = (D_800739A0[i] ^ D_80073930[i]) & D_80073930[i];
+        } else {
+            D_80073988[i] = 0;
+            D_80073990[i] = 0;
+            D_800739A0[i] = 0;
+        }
+    }
+}
 
 void func_80019708(s32 a, u32 b, s32 c) {
     s32 n = 31;
@@ -9489,8 +9580,8 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0x67:
-        *(s16 *)&D_8007AECC->unk16E4[4] = func_8004AEDC_inline() << 4;
-        *(s16 *)&D_8007AECC->unk16E4[6] = func_8004AEDC_inline() << 4;
+        D_8007AECC->unk16E8 = func_8004AEDC_inline() << 4;
+        D_8007AECC->unk16EA = func_8004AEDC_inline() << 4;
         return 0;
     case 0x6B:
         a = func_8004AEDC_inline();

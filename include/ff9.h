@@ -1007,7 +1007,7 @@ extern s32 D_8006F31C;
 extern u16 D_8006F320; /* tick counter */
 extern s32 D_8006F324[4]; /* recent tick timings */
 void func_80058F94(void);
-void func_800589F0(u32);
+void func_800589F0(void);
 void func_8005D628(Unk80080A10 *, AkaoChannel *);
 extern AkaoChannel *D_800809EC;
 extern s32 D_8007F8D8[2];
@@ -1137,7 +1137,8 @@ typedef struct Unk8004AB64 {
     u8 unk93;
     s16 unk94;
     s16 unk96;
-    u8 pad98[0xA0 - 0x98];
+    struct Unk8004AB64 *unk98; /* object collided with (func_800475D8) */
+    s32 unk9C;
     struct Unk8004AB64 *unkA0;
     u16 unkA4;
     u16 unkA6;
@@ -1175,7 +1176,9 @@ typedef struct {
     Unk16D8 *unk16D8;
     Unk16D8 *unk16DC; /* tail */
     Unk16D8 *unk16E0; /* free list */
-    u8 unk16E4[8];
+    u8 unk16E4[4]; /* party member object ids */
+    s16 unk16E8; /* analog / d-pad camera direction offsets */
+    s16 unk16EA;
     u8 unk16EC;
     u8 unk16ED;
     u8 pad16EE;
@@ -2477,7 +2480,24 @@ void func_80033AF4(s32, s32);
 
 /* ---- hoisted for the world map (ovl_0c) ---- */
 s32 func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
+#if defined(OVL_0A_H) || defined(OVL_0C_H) /* the field code only reads port 1 */
 extern s32 D_80073990;
+#else
+extern s32 D_80073990[2]; /* buttons pressed this frame, per port */
+#endif
+extern s32 D_80073988[2]; /* buttons released this frame */
+extern s32 D_80073930[2]; /* previous D_800739A0 */
+extern s32 D_80073830[2][32]; /* frames each button has been held */
+extern Unk4 D_80073938[2]; /* analog stick bytes */
+extern u8 D_8006815C[]; /* actuator alignment */
+/* byte view of a D_80073940 pad buffer */
+typedef struct {
+    u8 unk0; /* status, 0 = ok */
+    u8 unk1;
+    u16 unk2; /* buttons, active low */
+    u8 unk4[4]; /* analog sticks */
+} PadBuf;
+#define PADBUF(i) ((PadBuf *)&D_80073940[i])
 void func_80019194(void);
 void func_80032098(void);
 void func_80023A4C(void);
