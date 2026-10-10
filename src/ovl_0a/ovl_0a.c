@@ -2282,7 +2282,142 @@ void func_800B238C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B2528);
+/* assign sound slots to the field's sound files and load the missing ones (smallest first) */
+s32 func_800B2528(void) {
+    u32 id[5];
+    s32 sz[5];
+    u8 used[5];
+    s8 slot[5];
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 cnt;
+    s32 found;
+    s32 s;
+    s32 k;
+    s32 done;
+    s32 t;
+    s32 u;
+    s32 m;
+    s32 min;
+    s32 best;
+    u32 x;
+    u32 y;
+    u32 z;
+    FileEntry *e;
+
+    n = 0;
+    e = D_8006794C->unk1C->unk7E4->unk4;
+    for (i = 4; i >= 0; i--) {
+        id[i] = -1;
+        sz[i] = -1;
+        used[i] = 0;
+        slot[i] = -1;
+    }
+    for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+        x = e[i].unk0;
+        if (((x >> 16) & 0xFF) == 9) {
+            found = 0;
+            if (((e[i].unkC >> 16) & 0xFF) == 8) {
+                s = -1;
+                for (j = 4; j >= 0; j--) {
+                    if (D_800C9FF8[j] == x) {
+                        found = 1;
+                        s = D_800C9FF0[j];
+                        break;
+                    }
+                }
+                id[n] = x;
+                sz[n] = e[i].unk4;
+                used[n] = found;
+                slot[n] = s;
+                n++;
+            }
+        }
+    }
+    for (i = n - 1; i >= 0; i--) {
+        if ((id[i] >> 24) == 4 && slot[i] == -1) {
+            k = 0;
+            do {
+                done = 1;
+                for (j = n - 1; j >= 0; j--) {
+                    if (slot[j] == k) {
+                        k++;
+                        done = 0;
+                        break;
+                    }
+                }
+            } while (done == 0);
+            slot[i] = k;
+        }
+    }
+    cnt = 0;
+    for (i = n - 1; i >= 0; i--) {
+        if ((id[i] >> 24) == 4) {
+            cnt++;
+        }
+    }
+    if (cnt < 2) {
+        for (m = 4; m >= 0; m--) {
+            y = D_800C9FF8[m];
+            if (y != -1 && (y >> 24) == 4) {
+                t = -1;
+                for (j = n - 1; j >= 0; j--) {
+                    if (id[j] == y) {
+                        t = m;
+                        break;
+                    }
+                }
+                if (t == -1) {
+                    u = -1;
+                    j = n - 1;
+                    t = D_800C9FF0[m];
+                    for (; j >= 0; j--) {
+                        if (slot[j] == t) {
+                            u = j;
+                            break;
+                        }
+                    }
+                    if (u == -1) {
+                        id[n] = y;
+                        sz[n] = 0;
+                        used[n] = 1;
+                        slot[n] = t;
+                        n++;
+                        cnt++;
+                        if (cnt >= 2) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    for (i = 4; i >= 0; i--) {
+        D_800C9FF8[i] = id[i];
+        D_800C9FF0[i] = slot[i];
+    }
+    for (;;) {
+        min = 0x7FFFFFFF;
+        best = -1;
+        for (i = n - 1; i >= 0; i--) {
+            if (id[i] != -1 && used[i] == 0 && sz[i] < min) {
+                min = sz[i];
+                best = i;
+            }
+        }
+        if (best == -1) {
+            break;
+        }
+        z = id[best];
+        func_800B0124(0x7700, z, z >> 24, slot[best], 0);
+        while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
+        }
+        id[best] = -1;
+        sz[best] = -1;
+    }
+    return 0;
+}
 
 s32 func_800B29A0(s32 arg0, s32 *arg1) {
     FileEntry *e = func_80063088(D_8006794C->unk1C->unk7E4, arg0);
