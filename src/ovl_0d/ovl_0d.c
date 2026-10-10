@@ -306,7 +306,74 @@ void func_800A986C(TmTim *tim, s32 x, s32 y, s32 cx, s32 cy) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A993C);
+void *func_800A993C(u32 *ot, SPRT *p, TmState *s) {
+    s32 i;
+    s32 n;
+    s16 x;
+    s16 y;
+    u8 u;
+    u8 v;
+    s16 w;
+    u8 c;
+
+    c = s->unk2EC;
+    for (i = 0; i < 2; i++) {
+        if (i == 0) {
+            n = func_800AE94C(s, 0);
+            x = 0x28;
+            y = 0xB9;
+            v = 0;
+        } else {
+            n = func_800AE94C(s, 1);
+            x = 0x1A;
+            y = 0x93;
+            v = 0x20;
+        }
+        u = (n - 1) * 16;
+        if (n == 0) {
+            u = 0x90;
+        }
+        if (n == 10) {
+            u = 0xA0;
+            x -= 8;
+            w = 0x20;
+        } else {
+            w = 0x10;
+        }
+        setlen(p, 4);
+        p->code = 0x64;
+        p->x0 = x;
+        p->y0 = y;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+        p->u0 = u;
+        p->v0 = v;
+        p->clut = 0x3A80;
+        p->w = w;
+        p->h = 0x20;
+        AddPrim(ot + 0xFF0, p);
+        p++;
+    }
+    setlen(p, 4);
+    p->code = 0x64;
+    p->x0 = 0x10;
+    p->y0 = 0xAA;
+    p->r0 = c;
+    p->g0 = c;
+    p->b0 = c;
+    p->u0 = 0xC0;
+    p->v0 = 0;
+    p->clut = 0x3A80;
+    p->w = 0x30;
+    p->h = 0x20;
+    AddPrim(ot + 0xFF0, p);
+    p++;
+    setlen((DR_TPAGE *)p, 1);
+    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+    AddPrim(ot + 0xFF0, p);
+    return (DR_TPAGE *)p + 1;
+}
 
 void func_800A9B0C(void) {
     func_8002C308(0);
@@ -1243,7 +1310,20 @@ void *func_800AE398(u32 *ot, SPRT *p, TmState *s) {
     return p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AE494);
+void func_800AE494(Window *w) {
+    u8 buf[64];
+    Window *v;
+
+    v = w;
+    if (D_800B3CE0 == 0) {
+        func_8002BD54(buf, func_80035774(3));
+    } else {
+        func_8002BD54(buf, func_80035774(4));
+    }
+    func_8002AD38(buf, (u8 *)func_8006276C(D_800B3CD8));
+    func_8002AD38(buf, func_80035774(7));
+    func_8002B5FC(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
+}
 
 void func_800AE54C(TmState *arg0) {
     TmCard *c = arg0->unk470;

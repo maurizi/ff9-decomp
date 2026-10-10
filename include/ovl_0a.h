@@ -9,7 +9,11 @@
 /* field context, GameData.unk8E4.field */
 typedef struct {
     u8 unk0; /* flags */
-    u8 pad1[0x14 - 1];
+    u8 pad1[7];
+    s32 unk8;
+    u8 padC[2];
+    s16 unkE;
+    u8 pad10[4];
 } Unk800AB0B0Entry; /* 0x14 */
 
 typedef struct Unk800AB0B0 {
@@ -82,7 +86,7 @@ typedef struct {
     u32 unk0; /* flags */
     s32 unk4; /* end of the load area */
     u8 unk8;
-    u8 unk9;
+    s8 unk9;
     s16 unkA;
     void *unkC;  /* file 0x5xxxx */
     struct Unk800AFCBC *unk10;
@@ -101,12 +105,12 @@ typedef struct {
     u16 unk3C;
     u16 unk3E;
     u8 unk40;
-    u8 unk41;
+    s8 unk41;
     s8 unk42;
-    s8 unk43;
+    u8 unk43;
     s32 unk44;
-    s8 unk48;
-    s8 unk49;
+    u8 unk48;
+    u8 unk49;
     u8 unk4A;
     u8 unk4B; /* unk58 entry count */
     void *unk4C; /* file 0x1Exxxx */
@@ -988,8 +992,14 @@ typedef struct {
 /* object placement entries (FieldScene.unk2C) */
 typedef struct FieldObjPlace {
     FieldObjEnt unk0;
-    u8 pad8[0x28 - 8];
+    void *unk8[2][4]; /* shadow primitives, per draw buffer */
 } FieldObjPlace; /* 0x28 */
+
+/* Unk800B3294 seen bytewise: the top byte of the colour is a depth bias (func_800AC6C0) */
+typedef struct {
+    u8 pad0[7];
+    s8 unk7;
+} Unk800B3294Bias;
 
 /* texture set tables (func_800AA4E8) */
 typedef struct {
@@ -1337,5 +1347,87 @@ static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
 
 s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
 s32 func_800C0F08(void);
+
+
+/* field object drawing (func_800AB3CC) */
+s32 func_800C768C(s32, s16 *, u16 *);
+void func_800B7CEC(Unk800C95C8 *);
+void func_800B7F14(Unk800C95C8 *, u16);
+s32 func_800AB0B0(Unk800C95C8 *);
+void func_800BB090(BgAnimHdr *);
+void func_800B2D10(FieldEvtCtx **, s32);
+void func_800B1E8C(FieldEvtCtx **, s32);
+void func_800AC02C(FieldEvtCtx **, s32);
+void func_800BA560(Unk800C95C8 *, u8);
+void func_800AC6C0(struct FieldObjPlace *, s32);
+s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
+
+#define gte_stir(r0) __asm__ volatile( \
+    "swc2\t$9, 0(%0);" \
+    "swc2\t$10, 4(%0);" \
+    "swc2\t$11, 8(%0)" \
+    : : "r"(r0) : "memory")
+
+/* func_800AC6C0: project one corner of the 3x3 shadow grid */
+#define FIELD_SHADOW_PT(x, z) \
+    v.vx = (x); \
+    v.vy = 0; \
+    v.vz = (z); \
+    gte_ldv0(&v); \
+    gte_rtps()
+
+/* func_800AC6C0: link shadow quad q at its deepest corner */
+#define FIELD_SHADOW_ADD(k, q) \
+    k = (k >> 2) + bias; \
+    if (-D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30 < k \
+        && k < 0x1000 - D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30) { \
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][k], e->unk8[D_8006794C->unk1C->unk8][q]); \
+    }
+
+void func_800AD488(FieldObjEnt *, FieldObjSlot *, MATRIX *);
+
+
+/* field movie playback (func_800ADB74) */
+typedef struct {
+    u32 tag;
+    u32 code[5];
+} Unk800C9F6C; /* 0x18: mask-bit draw mode packet, per draw buffer */
+typedef struct {
+    char *unk0; /* movie file name */
+    s32 pad4[4];
+} Unk8019DC5CEnt; /* 0x14 */
+typedef struct {
+    s32 unk0;
+    Unk8019DC5CEnt *unk4;
+} Unk8019DC5C;
+extern Unk8019DC5C D_8019DC5C[]; /* overlay loaded at 0x80198000 */
+extern u16 D_800C9D46;
+extern Unk800C9F6C D_800C9F6C[2];
+void func_800AE4F8(void);
+void func_800AE5D4(void);
+void func_801999B4(s32, void *); /* overlay loaded at 0x80198000 */
+void func_8019AC3C(void (*)());
+void func_8019AB98(s32, s32, s32);
+void func_80199B28(s32, s32);
+s32 func_8019AD4C(void *, u16 *);
+s32 func_80199F30(s32);
+s32 func_8019AD0C(void);
+/* main exe: candidates for ff9.h */
+s32 func_80022AC4(char *);
+u8 func_80022ED4(s32);
+void func_80056248(s32);
+
+/* field setup (func_800AED6C) */
+void func_800AC5F0(void);
+void func_800B238C(void);
+void func_800B1C4C(void);
+/* main exe: candidates for ff9.h */
+extern s32 D_8007BD28;
+extern u8 *D_8007BD30;
+void func_800559FC(s32, s32, s32);
+void func_800557A8(void *, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800219D8(Unk80021938 *, s16, s16, s16, s16);
+u8 func_80053A10(s32, s32);
 
 #endif

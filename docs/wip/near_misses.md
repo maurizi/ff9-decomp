@@ -4,11 +4,19 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Register allocation / scheduling / branch order (>=90%): 80018F50 (126/128), 8002C308, 80029058,
-  8004F2B4, 80054E88, 80057534, 8001C7FC, 80021B34, 800221C0, 800554D4, 80055230, 800343C0, 8005F718,
+- Register allocation / scheduling / branch order (>=90%):
+  8005F718,
   800616F8, 8002FED4, 8002ECA0, 8002E718, 80062118, 800621D4, 8005B1B8, 8005AEC8, 8002B644.
-- Order dependency: 800577EC / 80057898 match alone but break 800584C8; need 800579B4, 80057D80,
-  80058118 matched first (work in address order).
+- gcc 2.8.1 cross-function leak (explains the old "order dependency" of 800584C8): combine.c
+  only resets its static `mem_last_set` *after* the initial nonzero-bits scan, so during that scan
+  the cuid of the previous function's last store/call is still there. A `(reg) = (mem)` whose insn
+  cuid is <= that stale value is treated as clobbered, `nonzero_bits` gives the full mask, and a
+  later `zero_extend` of that u16/u8 register is not removed (extra `andi`). Any predecessor
+  that ends with a store leaks; an empty function in between resets it. The original build was
+  multi-file, so some functions were compiled in a fresh state. Fix in C: write such functions so
+  the extension is not needed (800584C8 now hoists `m = (u16)e->unk4` and keeps `s32 min`).
+  80057D80 (97/226 draft build/hc/d80b.c) and 80058118 still open: product temps are `mflo a2` in
+  the original (global.c prefers the register with the fewest local refs) but `a1` for us.
 - Loop shapes (search loop without gcc's empty-list shortcut; bit scans): 8004B040, 8004AE00,
   8004B098, 8004B4C4, 80038150, 80038278, 8004B85C, 8004AB7C, 80037738, 80049B48, 8002AE7C.
 - Large-function pass (drafts in the agent worktree's build/nm_*.c, scores matched/total insns):
@@ -17,8 +25,6 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   hoisting of D_80080A10 load), 80035214 120/135 (compare scheduling), 80039444 (reassociation),
   8004DAD0 (cross-jumped SE calls), 80038618 137/221 (inline-param copy), 8004F9A0 (extra prim ptr
   copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
-- 800579B4 matches alone (243/243) but breaks 800584C8 unless 80057D80 (215/230) and 80058118
-  (229/236) are also C; both differ only in LFO temp regs (a0 vs v1). Drafts build/b36.c, b37.c.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling (left as INCLUDE_ASM): C9A28 (2 insns), AB07C, F5064, CBA58, C9794,
@@ -48,3 +54,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   E57B0 ~117 (constant 1 kept in s0 and used by sllv), AF800 ~135 (case 0 branch order, 56F not reloaded),
   ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement), DE11C ~690 (model
   renderer: all 8 primitive loops written, register allocation/spills differ).
+- Large-function pass 3 (drafts in the agent worktree's build/nm_<addr>.c): 80054294 159/238
+  (needs a pointer to ys set inside the 3rd loop; py/x/y s-register priority), 800475D8 (dir/collision
+  block: the o=NULL init must stay live while &dist is CSE'd into s0; run-flag `!run` vs xori),
+  8004E248 (choice loops count down to -1; p accessed through s1 only in some reads), 800589F0
+  (unk8 reloaded between `m &= ~unk8` and `unk10 &= ~unk8`; s-register order), 80025ED4 (x/y s1/s2
+  swap, `x + (w + 2)` reassociated), 8005E3FC (~20 regs/scheduling in the note-on path),
+  8002920C (%hi(D_800770AC) not hoisted into fp; font stays in a register).
+
+## ovl_0b (battle)
+- Large-function pass 3 (drafts in the agent worktree's build/nm_0a_*.c / nm_0c_*.c): 0a AB3CC (prologue order of
+  two s-reg inits only), 0a B3F8C (s0/s1 swap between loop index and temp), 0a AA4E8 (lh/lhu load order), 0a BF0C4
+  (parallax loop cross-jump + regs), 0c B0378 (~90 diff rows: else-branch temps, sqrt block hi-part reg), 0c AD738
+  (~78 rows: local regs a0/a3, prologue loads of the second block).

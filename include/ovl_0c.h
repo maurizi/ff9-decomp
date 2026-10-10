@@ -24,7 +24,7 @@ typedef struct {
     unsigned unk4 : 12; /* angle */
     signed unk4_12 : 10; /* offset x */
     signed unk4_22 : 10; /* offset z */
-    u8 pad8[0x28 - 8];
+    POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
 } WmObjEnt;
 
 /* object embedded in WorldMap (0x4C bytes) */
@@ -127,13 +127,16 @@ typedef struct {
     u8 unk1;
     s16 unk2; /* speed */
     u8 unk4; /* turn speed */
-    u8 pad5[3];
+    u8 unk5;
+    s8 unk6;
+    u8 pad7;
     u8 unk8;
     u8 unk9;
     u8 unkA;
     u8 unkB;
     u8 unkC;
-    u8 padD[3];
+    u8 unkD;
+    s16 unkE;
     u8 unk10;
     u8 unk11;
     u8 pad12[2];
@@ -367,7 +370,8 @@ typedef struct {
 } WmCell;
 
 typedef struct {
-    s32 unk0;
+    s16 unk0; /* width */
+    s16 unk2; /* height */
     WmCell unk4[1];
 } WmCellTable;
 
@@ -478,7 +482,8 @@ typedef struct {
 typedef struct {
     s16 unk0;
     s16 unk2;
-    u8 pad4[0xC - 4];
+    s32 unk4; /* x */
+    s32 unk8; /* z */
 } Unk800CD10C; /* 0xC */
 
 /* file 0x12xxxx lookup table (func_800AA39C) */
@@ -796,6 +801,7 @@ extern WmNode D_800D53E8; /* list tail */
 extern WmNode D_800D48C0; /* list tail */
 extern s32 D_800D4A38;
 extern s32 D_800D53CC;
+extern s32 D_800D53E0;
 extern s32 D_800D53C8;
 extern VECTOR D_800CDF50;
 extern SVECTOR D_800D4870[10];
@@ -832,6 +838,7 @@ extern s32 D_800D3730[];
 extern s32 D_800CE27C;
 extern s32 D_800CF408;
 extern u8 D_800D30C4;
+extern s32 D_800D32FC;
 extern u8 D_800D30C5;
 extern u8 D_800D30C6;
 extern u8 D_800D3338;
@@ -865,7 +872,7 @@ extern Unk800CE3C8 D_800CCB70[];
 extern s16 D_800CE276;
 extern s16 D_800CE3BC;
 extern s32 D_800CFDB0[];
-extern s8 D_800CE1F2;
+extern u8 D_800CE1F2;
 extern s32 D_800D3E60; /* navi mode */
 extern u8 D_800D3E64;
 extern s32 D_800D3E6C;
@@ -974,7 +981,8 @@ typedef struct {
     u16 unk10[6];
 } Unk800CE288; /* 0x1C */
 s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
-s32 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
+u8 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
+u8 func_800B105C(ActorPos *);
 extern Unk800CE288 D_800CE288[11];
 extern Unk8004AB64 D_800CE210;
 extern u8 D_800CE209;
@@ -982,9 +990,9 @@ extern u8 D_800CE25D;
 extern u8 D_800CE25E;
 extern s32 D_800CE260;
 extern Unk8004AB64 *D_800CE268;
-extern s8 D_800CE26D;
+extern u8 D_800CE26D;
 extern Unk8004AB64 *D_800CE270;
-extern s8 D_800CE274;
+extern u8 D_800CE274;
 extern s32 D_800CE278;
 extern s32 D_800CE280;
 extern s32 D_800CE284;
@@ -1116,6 +1124,13 @@ extern s32 D_800CD108;
 typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
 extern Unk800A7FB8 D_800A8020; /* radar arrow */
+extern Unk800A7FB8 D_800A8000; /* big-map arrow */
+extern u8 D_800CD728; /* big-map cone colour */
+extern u8 D_800CD72C;
+extern u8 D_800CD730;
+extern u8 D_800CD734; /* big-map tile colour */
+extern u8 D_800CD738;
+extern u8 D_800CD73C;
 extern RECT D_800A71D8;
 extern char D_800A7F48[]; /* encounter fallback message */ /* palette area (func_800B69B4) */
 extern CVECTOR D_800A7FF0; /* marker colours */
@@ -1181,5 +1196,89 @@ static inline u8 func_800B3340_inline(u32 *a, u32 k) {
     }
     return 0;
 }
+
+typedef struct {
+    u16 unk0; /* frame count (low 15 bits) */
+    u16 unk2;
+    u16 unk4;
+    u8 unk6;
+    u8 unk7;
+    u16 unk8[1]; /* per-frame data offsets, then a counted u16 table */
+} WmSprHdr; /* sprite animation header (func_800CAE0C) */
+
+typedef struct {
+    u16 *unk0;
+    u16 *unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+} WmSprCtx; /* draw context passed to func_800CB1EC */
+
+s32 func_800CB1EC(u8 *, WmSprCtx *, s32, s32);
+s32 func_800CAE0C(s32, WmSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32, s32);
+
+typedef struct {
+    s32 unk0; /* size */
+    void *unk4; /* destination */
+} WmLoadReq; /* CD read request (func_800BCBDC, func_80022CC4) */
+
+extern WmLoadReq D_800D3410[];
+extern WmLoadReq D_800D3370[];
+extern s32 D_800D3490[];
+extern s32 D_800D3728;
+extern s32 D_800CF5A4;
+extern s32 D_800CF5A8;
+extern char D_800A7F94[];
+extern SVECTOR D_800A849C; /* rotation used by func_800C4DD8 */
+s32 func_800C2050(s32, s32);
+u8 func_800BD150(Unk800D335C **, s32 *, s32 *);
+void func_800BC450(s32, s32, WmCell *);
+void func_800BC490(s32, s32, WmCell *);
+void func_800BD3F8(void);
+
+typedef struct {
+    u8 b[0x1E0];
+} WmCellMap; /* D_800D30F8 as one block */
+typedef struct {
+    Unk800CFEA0 e[30];
+} Unk800CFEA0Tbl; /* D_800CFEA0 and the entries after it */
+extern u8 D_800CCFF4[];
+extern s32 D_800D32F4;
+void func_800BB508(void);
+void func_800BC540(void);
+void func_800BE674(void);
+void func_800CB09C(Unk800CB09C *);
+
+#define gte_stir(r0) __asm__ volatile( \
+    "swc2\t$9, 0(%0);" \
+    "swc2\t$10, 4(%0);" \
+    "swc2\t$11, 8(%0)" \
+    : : "r"(r0) : "memory")
+
+void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
+
+/* func_800AA418: project one corner of the 3x3 shadow grid */
+#define SHADOW_PT(x, z) \
+    v.vx = (x); \
+    v.vy = 0; \
+    v.vz = (z); \
+    gte_ldv0(&v); \
+    gte_rtps()
+
+/* func_800AA418: link shadow quad q at its deepest corner */
+#define SHADOW_ADD(k, q) \
+    k >>= 3; \
+    if (-D_800CF442 < k && k < 0x1000 - D_800CF442) { \
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][k], e->unk8[D_8006794C->unk1C->unk8][q]); \
+    }
+
+/* main exe: candidates for ff9.h */
+void func_80022CC4(s32, void *, s32, s32);
 
 #endif
