@@ -1339,5 +1339,18 @@ void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 
 /* main exe: candidates for ff9.h */
 void func_80022CC4(s32, void *, s32, s32);
+s32 func_8004B1EC(void);
+s32 func_8004B1FC(void);
+void func_8002FA10(void);
+
+/* func_800AD738 (camera follow) */
+extern u8 D_800CE1E0;
+extern Unk800CE288 D_800CE118[4];
+extern s32 D_800CCAFC;
+extern s32 D_800CCB04;
+extern s32 D_800CCB08;
+extern s32 D_800CCB0C;
+extern s32 D_800CCB10;
+extern s32 D_800CCB14;
 
 #endif
