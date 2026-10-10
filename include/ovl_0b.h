@@ -2348,6 +2348,8 @@ void func_800BDB20(BtlUnit *, s32, u8);
 void func_800BDC04(BtlUnit *, s32);
 void func_800BDC64(BtlUnit *, s32);
 void func_800BDCBC(BtlUnit *, s32);
+void func_800C7CC8(BtlUnit9C *);
+u8 *func_800AC37C(Battle11C028 *, s32, s32, s32, u8 *);
 void func_800C1704(); /* defined as (void); callers pass the unit */
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
