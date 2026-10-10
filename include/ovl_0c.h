@@ -399,12 +399,20 @@ typedef struct Unk800D375C {
 } Unk800D375C; /* 0x14 */
 
 /* list: D_800D3358 (head) -> D_800D34A8[32] -> D_800D3340 (tail) */
+typedef struct {
+    u8 unk0; /* vertex indices */
+    u8 unk1;
+    u8 unk2;
+    u8 pad3[0xE - 3];
+    u16 unkE; /* attribute */
+} WmPoly; /* 0x10 */
+
 typedef struct WmTexEnt {
     u8 unk0;
     u8 unk1;
-    u8 pad2[2];
+    u16 unk2; /* polygon count */
     SVECTOR *unk4; /* vertices */
-    u8 pad8[4];
+    WmPoly *unk8;
     u8 unkC[0x14]; /* vertex indices */
     u8 unk20; /* vertex count */
     u8 unk21; /* sound id */
@@ -990,11 +998,11 @@ extern u8 D_800CE090[];
 
 /* func_800AEADC init state */
 typedef struct {
-    s8 unk0;
+    u8 unk0; /* last written slot */
     u8 pad1[3];
-    s16 unk4[6];
-    u16 unk10[6];
-} Unk800CE288; /* 0x1C */
+    u16 unk4[6]; /* polygon */
+    u16 unk10[6]; /* cell */
+} Unk800CE288; /* 0x1C: recently hit walkmesh polygons */
 s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
 u8 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
 u8 func_800B105C(ActorPos *);
@@ -1049,7 +1057,7 @@ void func_800BAEC0(void);
 void func_800BE984(void);
 void func_800C4DD8(void);
 s32 func_800BE4A8(s16, u8 *);
-s32 func_800B9808(s32, s32, VECTOR *, u32 *, s32 *, s32);
+s32 func_800B9808(s32, WmTexEnt *, VECTOR *, u32 *, s32 *, Unk800CE288 *);
 void func_800BC0A8(s32 *, s32 *);
 void func_800BC130(s32, s32, s32 *);
 void func_800BC2C8(s32, s32 *, s32 *);

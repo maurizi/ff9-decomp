@@ -5538,7 +5538,7 @@ s32 func_800BE748(VECTOR *arg0, u32 *arg1, s32 *arg2, Unk800CE288 *arg3, u16 *ar
         rel.vy = pos.vy;
         rel.vz = pos.vz - o.vz;
         /* callers pass a 16-bit variable but a word is stored */
-        *(s32 *)arg4 = func_800B9808(cell, r, &rel, arg1, arg2, arg3);
+        *(s32 *)arg4 = func_800B9808(cell, (WmTexEnt *)r, &rel, arg1, arg2, arg3);
         if ((u8)D_800CE3C4 - 2U < 2) {
             if (*arg1 - 0x38 < 2) {
                 *arg1 = 0x36;
