@@ -211,4 +211,14 @@ void *func_800AE028(s32, s32, u32 *, u32, s32 *, SprtWords *);
 s32 func_800A9228(Ovl15Hand *, Ovl15Hand *);
 s32 func_800A945C(Ovl15Hand *);
 
+/* func_800A9488's format strings and UI labels (INCLUDE_RODATA, never C literals) */
+extern const char D_800A7018[]; /* "%2d" */
+extern const char D_800A701C[]; /* "Bankroll" */
+extern const char D_800A7028[]; /* "%ld" */
+extern const char D_800A702C[]; /* "Wager" */
+extern const char D_800A7034[]; /* "Stand" */
+extern const char D_800A703C[]; /* "Hit" */
+extern const char D_800A7040[]; /* "Double" */
+extern const char D_800A7048[]; /* "Split" */
+
 #endif
