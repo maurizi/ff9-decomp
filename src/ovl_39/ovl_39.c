@@ -1387,7 +1387,36 @@ void func_801F7CD0(Window *w) {
     func_8002B5FC(r->x + 0x32, r->y + 0x20, w->unk18, func_80035774(0x12), 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7E68);
+u8 func_801F7E68(void) {
+    SaveSlot *sl;
+    s32 port;
+    s32 fd;
+
+    port = D_80077DB2 << 4;
+    sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
+    if ((u32)(sl->unk1A - 3) >= 2) {
+        func_80065238((char *)D_801FC388.unk6.unk0.v, func_801F83B8());
+        func_80063108(D_801FC388.unk6.unk0.v, "00000-");
+        D_801FC388.unk6.unk0.v[0x12] = D_801FB1A8.unk3 / 10 + '0';
+        D_801FC388.unk6.unk0.v[0x13] = D_801FB1A8.unk3 % 10 + '0';
+        /* called before its definition without a prototype: int result */
+        if (!((s32 (*)(s32, char *))func_801FA6AC)(port, (char *)D_801FC388.unk6.unk0.v)) {
+            func_801F889C(0x33);
+            return 0;
+        }
+    } else {
+        func_80065238((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
+    }
+    fd = func_801FA3D8(port, (char *)D_801FC388.unk6.unk0.v);
+    D_801FC388.unk20 = fd;
+    if (fd < 0) {
+        func_801F889C(0x33);
+        return 0;
+    }
+    func_801FA4B8(fd, 0x801FCB00, 0x1400, func_801F8588);
+    func_801F5E54(1);
+    return 1;
+}
 
 INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F7FD4);
 
