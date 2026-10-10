@@ -1479,7 +1479,8 @@ typedef struct {
     s16 unk2; /* duration */
     s16 unk4;
     s16 unk6;
-    u8 pad8[0xC - 8];
+    s16 unk8; /* particle limit */
+    s16 unkA;
     s16 unkC[3];
     s16 unk12;
     s16 unk14[3];
@@ -1500,6 +1501,21 @@ typedef struct {
     s16 unk40[8];
     s16 unk50[8];
 } EffTail;
+
+/* EffTail as seen by the particle spawner (func_800E2000), by EffTail.unk0 kind */
+typedef struct {
+    s32 unk0; /* kind */
+    EffAnim unk4;
+    s32 (*unk3C)(SVECTOR *, SVECTOR *, s32, s32); /* kind -1 */
+    u8 pad40[4];
+    CVECTOR unk44; /* kind 0: colour fade */
+    union {
+        CVECTOR c;
+        s16 h; /* kind 4: rotation mode */
+    } unk48;
+    s16 unk4C; /* kinds 1-3: rotation mode */
+} EffTailSpawn;
+void LoadAverageCol(u8 *, u8 *, s32, s32, u8 *);
 
 /* 0x38-byte block in front of Pool6CEntry.unk4 */
 typedef struct {
