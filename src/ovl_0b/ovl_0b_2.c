@@ -3343,7 +3343,7 @@ void func_800E00DC(s32 arg0, Pool30Entry *arg1, Pool30 *arg2) {
     }
 }
 
-s32 func_800E0134(Unk800E0134 *arg0, Unk800E0134_1 *arg1) {
+s32 func_800E0134(Pool30Entry *arg0, Pool6CEntry *arg1) {
     s32 p = arg1->unk14;
     s32 t;
     if (p == 0) {
@@ -3356,7 +3356,455 @@ s32 func_800E0134(Unk800E0134 *arg0, Unk800E0134_1 *arg1) {
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A825C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E0168);
+s32 func_800E0168(Pool30 *pool) {
+    SVECTOR rel;
+    SVECTOR pos;
+    SVECTOR v;
+    VECTOR d;
+    s32 alpha;
+    s32 cnt;
+    s32 scale;
+    Pool30Entry *e;
+    Pool6CEntry *owner;
+    EffMotion *m;
+    EffElem *el;
+    EffSub *sub;
+    SVECTOR *vp;
+    s16 *rp;
+    s32 i;
+    s32 frame;
+    s32 frames;
+    s32 last;
+    s32 lvl;
+    s32 t;
+    s32 range;
+    s32 ofs;
+    s32 curve;
+    s32 mode;
+    s32 rs;
+    s32 amp;
+    s32 k;
+    u32 fl;
+
+    lvl = 0;
+    range = 0;
+    curve = 0;
+    last = 0;
+    e = pool->unkC;
+    amp = 0;
+    i = 0;
+    D_801014B0 = D_800F78A4->unk28;
+    pool->unk4 = 0;
+    for (; i <= pool->unk8; i++, e++) {
+        if (e->unk1F == 0) {
+            continue;
+        }
+        frame = e->unk1A;
+        frames = e->unk1B;
+        owner = e->unk2C;
+        if (frame >= frames) {
+            e->unk1F = 0;
+            if (e->unk12 & 0x80) {
+                owner->unk34.s.y--;
+            } else {
+                owner->unk34.s.x--;
+            }
+            continue;
+        }
+        last = i;
+        pool->unk4++;
+        t = (frame << 12) / frames;
+        if (e->unk12 & 0x80) {
+            m = (EffMotion *)owner->unk4;
+            sub = owner->unk4 - 1;
+            mode = sub->unk24;
+            rs = owner->unk56;
+            rp = owner->unk50;
+            if (mode != 0) {
+                curve = sub->unk26;
+                range = owner->unk58.s.x;
+                if (mode < 7) {
+                    amp = owner->unk58.s.y;
+                } else {
+                    amp = sub->unk28[1];
+                }
+            }
+        } else {
+            m = (EffMotion *)owner->unk0;
+            mode = owner->unk24->unk4.unk1C;
+            rs = owner->unk4A;
+            rp = owner->unk44;
+            if (mode != 0) {
+                curve = owner->unk24->unk4.unk1E;
+                range = owner->unk4C.s.x;
+                if (mode < 7) {
+                    amp = owner->unk4C.s.y;
+                } else {
+                    amp = owner->unk24->unk4.unk20[1];
+                }
+            }
+            if (owner->unk4 != NULL) {
+                lvl = (owner->unk4 - 1)->unkC;
+                if (lvl >= 4) {
+                    rel.vx = e->unk0.vx >> 12;
+                    rel.vy = e->unk0.vy >> 12;
+                    rel.vz = e->unk0.vz >> 12;
+                }
+            }
+        }
+        switch (m->unk0) {
+        case 0:
+            func_800DFE4C(e, rs, rp, &pos);
+            if (m->unk18 != 0) {
+                e->unkC += func_800CF748(m->unk1A);
+                e->unkE += func_800CF748(m->unk1C);
+                e->unk10 += func_800CF748(m->unk1E);
+            }
+            if (m->unk12 != 0) {
+                if (m->unk12 == 1) {
+                    if (owner->unk5C.pad - m->unk14 < pos.vy && e->unkE > 0) {
+                        e->unkE = -e->unkE;
+                        e->unkE = (e->unkE * m->unk16) >> 8;
+                    }
+                } else if (owner->unk5C.pad - m->unk14 < pos.vy) {
+                    if (e->unkE > 0) {
+                        s32 x = e->unkE * (owner->unk5C.pad - pos.vy);
+                        if (m->unk14 != 0) {
+                            x /= m->unk14;
+                        }
+                        e->unkE = x;
+                    }
+                    if (owner->unk5C.pad - (m->unk14 >> 1) < pos.vy) {
+                        e->unkE = (s16)(e->unkE - 0x40) - ((owner->unk4A * e->unk1E) >> 6);
+                    }
+                    if (pos.vy > owner->unk5C.pad) {
+                        e->unkE = 0;
+                    }
+                }
+            }
+            break;
+        case 1:
+            func_800DFE54(e, rs, rp, &pos);
+            e->unk24.s.x += e->unk20;
+            e->unk24.s.y += e->unk22;
+            v.vx = e->unk24.s.x;
+            v.vy = e->unk24.s.y;
+            switch (m->unk14) {
+            case 0:
+                rs = (func_8004BB80(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk28.s.x) >> 12;
+                break;
+            case 1:
+                rs = (e->unk28.s.x * t) >> 12;
+                break;
+            case 2:
+                rs = e->unk28.s.x - ((e->unk28.s.x * t) >> 12);
+                break;
+            }
+            func_800CFD78((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
+            break;
+        case 2:
+            func_800DFF5C(e, rs, rp, &pos);
+            e->unkC += e->unkE;
+            e->unk20 += e->unk22;
+            e->unk24.s.x += e->unk24.s.y;
+            func_800D044C(&pos, (s32)&pos, e->unk20 >> 2, &e->unk28, e->unk24.s.x >> 2, e->unkC);
+            break;
+        case 3:
+            func_800DFF64(e, rs, rp, &pos);
+            e->unkC += e->unk20;
+            e->unkE += e->unk22;
+            v.vx = e->unk24.s.y + func_8004BB80(e->unkC);
+            v.vy = e->unk28.s.x + func_8004BB80(e->unkE);
+            switch (m->unk14) {
+            case 0:
+                rs = (func_8004BB80(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk10) >> 12;
+                break;
+            case 1:
+                rs = (e->unk10 * t) >> 12;
+                break;
+            case 2:
+                rs = e->unk10 - ((e->unk10 * t) >> 12);
+                break;
+            }
+            func_800CFD78((s16 *)&pos, (s16 *)&v, rs, (s16 *)&pos);
+            break;
+        case 4:
+            func_800DFF5C(e, rs, rp, &pos);
+            e->unk24.w += e->unk22;
+            e->unkC += e->unkE;
+            switch (m->unkE) {
+            case 0:
+                rs = (func_8004BB80(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk20) >> 12;
+                break;
+            case 1:
+                rs = (e->unk20 * t) >> 12;
+                break;
+            case 2:
+                rs = e->unk20 - ((e->unk20 * t) >> 12);
+                break;
+            }
+            func_800D044C(&pos, (s32)&pos, e->unk24.w >> 6, &e->unk28, rs, e->unkC);
+            break;
+        case 5:
+            func_800DFE4C(e, rs, rp, &pos);
+            if (m->unk18 != 0) {
+                e->unkC += func_800CF748(m->unk1A);
+                e->unkE += func_800CF748(m->unk1C);
+                e->unk10 += func_800CF748(m->unk1E);
+            }
+            rs = func_800CF9B0(m->unk12, m->unk14, t);
+            func_800CF808((s16 *)&pos, (s16 *)owner->unk2C, (s16 *)&v);
+            v.vx += m->unk20;
+            v.vy += m->unk22;
+            func_800CFD78(&e->unkC, (s16 *)&v, rs, &e->unkC);
+            break;
+        case 0xFF:
+            if (m->unk8(e, owner, &pos, func_800E0134(e, owner), frame, frames) != 0) {
+                e->unk1F = 0;
+                if (e->unk12 & 0x80) {
+                    owner->unk34.s.y--;
+                } else {
+                    owner->unk34.s.x--;
+                }
+            }
+            break;
+        }
+        ofs = 0xFFFF;
+        if (mode != 0) {
+            switch (mode) {
+            case 1:
+                /* padded: a zero word follows the first jump table */
+                __asm__(".section .rodata\n\t.word 0\n\t.section .text");
+                cnt = func_800CF5F8(&pos, owner->unk64);
+                if (cnt <= range) {
+                    d.vx = pos.vx - owner->unk64->vx;
+                    d.vy = pos.vy - owner->unk64->vy;
+                    d.vz = pos.vz - owner->unk64->vz;
+                    VectorNormalS(&d, &v);
+                }
+                break;
+            case 2:
+                cnt = func_800CF5F8(&pos, owner->unk64);
+                if (cnt <= range) {
+                    d.vx = owner->unk64->vx - pos.vx;
+                    d.vy = owner->unk64->vy - pos.vy;
+                    d.vz = owner->unk64->vz - pos.vz;
+                    VectorNormalS(&d, &v);
+                }
+                break;
+            case 3:
+            case 4:
+                *(s32 *)&v.vx = *(s32 *)&pos.vx;
+                v.vy = owner->unk64->vy;
+                *(s32 *)&v.vz = *(s32 *)&pos.vz;
+                cnt = func_800CF5F8(&v, owner->unk64);
+                ((s32 *)&v)[0] = 0;
+                v.vy = -0x1000;
+                break;
+            case 5:
+                func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                if (cnt <= range) {
+                    func_800CFCA8(owner->unk68, 0x1000, (s32)&v);
+                }
+                break;
+            case 6:
+                func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                if (cnt <= range) {
+                    ((s32 *)&v)[1] = 0;
+                    ((s32 *)&v)[0] = 0;
+                    func_800D044C(&v, (s32)&v, 0, (XY32 *)owner->unk68, 0x1000, scale);
+                }
+                break;
+            case 7:
+                cnt = func_800CF5F8(&pos, owner->unk64);
+                break;
+            case 8:
+                *(s32 *)&v.vx = *(s32 *)&pos.vx;
+                v.vy = owner->unk64->vy;
+                *(s32 *)&v.vz = *(s32 *)&pos.vz;
+                cnt = func_800CF5F8(&v, owner->unk64);
+                break;
+            case 9:
+                func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
+                break;
+            }
+            if (cnt <= range) {
+                scale = (cnt << 10) / range;
+                d.vx = v.vx;
+                d.vy = v.vy;
+                d.vz = v.vz;
+                switch (curve) {
+                case 0:
+                    break;
+                case 1:
+                    amp = (func_8004BB7C(scale) * amp) >> 12;
+                    break;
+                case 2:
+                    amp = (func_8004BB80(scale) * amp) >> 12;
+                    break;
+                case 3:
+                    amp = ((0x1000 - func_8004BB80(scale)) * amp) >> 12;
+                    break;
+                case 4:
+                    amp = ((0x1000 - func_8004BB7C(scale)) * amp) >> 12;
+                    break;
+                case 5:
+                    amp = (func_8004BB80(scale * 2) * amp) >> 12;
+                    break;
+                }
+                if (mode < 7) {
+                    gte_lddp(amp);
+                    gte_ldir(&d);
+                    gte_gpf12();
+                    gte_stir(&d);
+                    e->unk0.vx += d.vx << 6;
+                    e->unk0.vy += d.vy << 6;
+                    e->unk0.vz += d.vz << 6;
+                } else {
+                    ofs = amp;
+                }
+            } else if (mode >= 7) {
+                ofs = 0;
+            }
+        }
+        D_800F78A4->unk28 = owner->unk22;
+        if (e->unk1C != 0xFF) {
+            el = &owner->unk18[e->unk1C];
+            fl = el->unk3;
+            vp = NULL;
+            if (!(fl & 1)) {
+                vp = &v;
+                *(s32 *)&vp->vx = e->unk14.w;
+                vp->vz = e->unk18;
+                vp->vx += el->unkA;
+                vp->vy += el->unkC;
+                vp->vz += el->unkE;
+                v.pad = ((fl >> 2) ^ 1) & 1;
+                rs = e->unk13 * 4;
+                if (fl & 0x10) {
+                    vp->vx += rs;
+                }
+                if (fl & 0x20) {
+                    vp->vy += rs;
+                }
+                if (fl & 0x40) {
+                    vp->vz += rs;
+                }
+                e->unk14.w = *(s32 *)&vp->vx;
+                e->unk18 = vp->vz;
+            }
+            if (fl & 8) {
+                alpha = owner->unk20;
+            } else {
+                rs = owner->unk20;
+                switch (el->unk6) {
+                case 1:
+                    alpha = (rs * func_8004BB7C(t >> 2)) >> 12;
+                    break;
+                case 2:
+                    alpha = (rs * func_8004BB80(t >> 2)) >> 12;
+                    break;
+                case 3:
+                    alpha = (rs * func_8004BB80(t >> 1)) >> 12;
+                    break;
+                }
+            }
+            if (ofs != 0xFFFF) {
+                alpha += ofs;
+                if (alpha < 0) {
+                    alpha = 0;
+                }
+                if (alpha > 0x1000) {
+                    alpha = 0x1000;
+                }
+            }
+            if (alpha == 0x1000) {
+                alpha = -1;
+            }
+            if (fl & 2) {
+                scale = owner->unk1C;
+            } else {
+                rs = owner->unk1C;
+                scale = (func_800CF9B0(el->unk1A << 7, el->unk1B << 7, t) * rs) >> 12;
+            }
+            rs = el->unk2;
+            if ((rs == 0xFF || rs == 0) && (u32)alpha < 0x801) {
+                rs = 1;
+            }
+            cnt = rs;
+            for (k = 0; k < 2; k++) {
+                if (k == 0) {
+                    rs = el->unk0;
+                    mode = el->unk1C;
+                } else {
+                    rs = el->unk1;
+                    mode = el->unk20;
+                }
+                switch (rs) {
+                case 9:
+                    if (vp == NULL) {
+                        vp = &v;
+                        ((s32 *)&v)[0] = 0;
+                        ((s32 *)&v)[1] = 0;
+                    }
+                    el->unk24(e, owner, &pos, vp, &scale, &alpha, &cnt, frame, frames);
+                    break;
+                case 0:
+                    func_800D1680((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha, 0, 0);
+                    break;
+                case 1:
+                    func_800D198C((u8 *)mode, &pos, e->unk1D, cnt, alpha);
+                    break;
+                case 2:
+                    func_800D1D74((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    break;
+                case 3:
+                    func_800D1FFC((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    break;
+                case 4:
+                    func_800D1494((u8 *)mode, (s32)&pos, (s32 *)owner->unk28, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 1);
+                    break;
+                case 5:
+                    func_800D1494((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 2);
+                    break;
+                case 6:
+                    func_800D23D8((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    break;
+                case 7:
+                    func_800D2938((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    break;
+                case 8:
+                    func_800D1494((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 0);
+                    break;
+                }
+                if (el->unk1 == 0xFF) {
+                    break;
+                }
+            }
+            if (el->unk4 == 1) {
+                e->unk1D++;
+            } else if (el->unk4 == 2) {
+                rs = e->unk1D;
+                rs++;
+                if (rs >= el->unk8) {
+                    rs = 0;
+                }
+                e->unk1D = rs;
+            }
+        }
+        if (owner->unk4 != NULL && (e->unk12 & 0x7F)) {
+            if (lvl >= 4) {
+                func_800CF808((s16 *)&rel, (s16 *)&pos, (s16 *)&v);
+            }
+            func_800E2F84(pool, e, &pos, &v);
+        }
+        frame++;
+        e->unk1A = frame;
+    }
+    pool->unk8 = last;
+    D_800F78A4->unk28 = D_801014B0;
+    return pool->unk4;
+}
 
 void func_800E14D8(u32 arg0, Pool6C *arg1) {
     s32 i;
@@ -3455,7 +3903,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         t = (frame << 12) / y;
         e->unk32 = 0;
         if (frame >= y) {
-            if (e->unk34 == 0) {
+            if (e->unk34.w == 0) {
                 e->unk30 = -1;
             }
             continue;
@@ -3533,7 +3981,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         gte_stsv(e->unk44);
         if (an->unk1C != 0) {
             func_800CFA00(an->unk20, an->unk24, t, a.h);
-            e->unk4C = a.w;
+            e->unk4C.w = a.w;
         }
         if (e->unk4 != NULL) {
             sub = e->unk4 - 1;
@@ -3541,7 +3989,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
             e->unk56 = func_800CF9B0(sub->unk1A, sub->unk22, t);
             if (sub->unk24 != 0) {
                 func_800CFA00(sub->unk28, sub->unk2C, t, a.h);
-                e->unk58 = a.w;
+                e->unk58.w = a.w;
             }
         }
         d2 = e->unk24;

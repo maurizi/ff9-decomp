@@ -1247,17 +1247,6 @@ typedef struct {
 } Unk8010141C; /* 0x54 */
 extern Unk8010141C D_8010141C[1];
 
-typedef struct {
-    u8 pad0[0x1F];
-    u8 unk1F;
-} Unk800E0134;
-
-typedef struct {
-    u8 pad0[0xC];
-    s16 unkC;
-    u8 padE[0x14 - 0xE];
-    s32 unk14;
-} Unk800E0134_1;
 
 extern u8 D_800FE415;
 extern u8 D_800FEC65;
@@ -1268,15 +1257,24 @@ extern char D_800A7F60[];
 extern char D_800A7F78[];
 extern char D_800A81A8[];
 /* effect element (0x28) in an effect file, after the header */
-typedef struct {
+typedef struct EffElem {
     u8 unk0; /* kind, 9 = no texture */
     u8 unk1; /* 0xFF = no second texture */
-    u8 pad2[8 - 2];
+    u8 unk2;
+    u8 unk3; /* flags */
+    s16 unk4;
+    u8 unk6;
+    u8 pad7;
     s16 unk8;
-    u8 padA[0x1C - 0xA];
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    u8 pad10[0x1A - 0x10];
+    u8 unk1A;
+    u8 unk1B;
     s32 unk1C; /* offset, relocated on load */
     s32 unk20; /* offset, relocated on load */
-    u8 pad24[0x28 - 0x24];
+    void (*unk24)();
 } EffElem; /* 0x28 */
 
 typedef struct {
@@ -1319,7 +1317,7 @@ typedef struct {
     s16 unk14[3];
     s16 unk1A;
     s16 unk1C;
-    u8 pad1E[0x20 - 0x1E];
+    s16 unk1E;
     s16 unk20[2];
     s16 unk24[2];
     SVECTOR unk28;
@@ -1337,24 +1335,34 @@ typedef struct {
 
 /* 0x38-byte block in front of Pool6CEntry.unk4 */
 typedef struct {
-    u8 pad0[0x14];
+    u8 pad0[0xC];
+    u8 unkC;
+    u8 padD[0x14 - 0xD];
     s16 unk14[3];
     s16 unk1A;
     s16 unk1C[3];
     s16 unk22;
     s16 unk24;
-    u8 pad26[0x28 - 0x26];
+    s16 unk26;
     s16 unk28[2];
     s16 unk2C[2];
     u8 pad30[0x38 - 0x30];
 } EffSub; /* 0x38 */
+
+typedef union {
+    s32 w;
+    struct {
+        s16 x;
+        s16 y;
+    } s;
+} XY32;
 
 typedef struct Pool6CEntry {
     EffFileHdr *unk0; /* effect file */
     EffSub *unk4;
     s16 unk8;
     s16 unkA;
-    u8 padC[0xE - 0xC];
+    s16 unkC;
     s16 unkE;
     s16 unk10;
     u8 pad12[0x14 - 0x12];
@@ -1368,7 +1376,7 @@ typedef struct Pool6CEntry {
     s32 unk2C;
     s16 unk30; /* in use, -1 = release */
     s16 unk32;
-    s32 unk34;
+    XY32 unk34; /* live particle counts (s.x, s.y) */
     s16 unk38; /* frame */
     s16 unk3A;
     s16 unk3C;
@@ -1377,12 +1385,13 @@ typedef struct Pool6CEntry {
     s16 unk42;
     s16 unk44[3];
     s16 unk4A;
-    s32 unk4C;
+    XY32 unk4C;
     s16 unk50[3];
     s16 unk56;
-    s32 unk58;
+    XY32 unk58;
     SVECTOR unk5C;
-    u8 pad64[0x6C - 0x64];
+    SVECTOR *unk64;
+    SVECTOR *unk68;
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
@@ -1394,15 +1403,48 @@ typedef struct {
 } Pool6C;
 
 typedef struct {
-    VECTOR unk0;
-    u8 pad10[0x1A - 0x10];
-    u8 unk1A;
-    u8 unk1B;
-    u8 pad1C[0x1F - 0x1C];
+    struct {
+        s32 vx, vy, vz;
+    } unk0; /* position, 20.12 */
+    s16 unkC; /* rotation */
+    s16 unkE;
+    s16 unk10;
+    u8 unk12; /* flags */
+    s8 unk13;
+    XY32 unk14;
+    s16 unk18;
+    u8 unk1A; /* frame */
+    u8 unk1B; /* frame count */
+    u8 unk1C; /* element index, 0xFF = none */
+    u8 unk1D; /* element frame */
+    s8 unk1E;
     u8 unk1F; /* in use */
-    u8 pad20[0x2C - 0x20];
+    s16 unk20;
+    s16 unk22;
+    XY32 unk24;
+    XY32 unk28;
     Pool6CEntry *unk2C;
 } Pool30Entry; /* 0x30 */
+
+/* particle motion parameters: the effect file (Pool6CEntry.unk0) or the
+ * block at Pool6CEntry.unk4 */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 pad1[8 - 1];
+    s32 (*unk8)();
+    u8 padC[0xE - 0xC];
+    s16 unkE;
+    u8 pad10[0x12 - 0x10];
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A;
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+} EffMotion;
 
 typedef struct {
     s32 unk0; /* count */
@@ -2137,7 +2179,21 @@ typedef struct {
 
 void func_800E1708(Pool30 *, s32, s32);
 void func_800E1810(Pool30 *, Pool6CEntry *);
-void func_800E0168(Pool30 *);
+s32 func_800E0168(Pool30 *);
+/* particle helpers used by func_800E0168 */
+s32 func_800CF5F8(SVECTOR *, SVECTOR *);
+s32 func_800CF748(s32);
+void func_800DFE4C(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800DFE54(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800D1D74(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void func_800D1FFC(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void func_800D2938(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
+extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
+/* main exe: candidates for ff9.h */
+int VectorNormalS(VECTOR *, SVECTOR *);
 s32 func_800E1874(Pool30 *, Pool6C *);
 void func_800E2000(Pool30 *, Pool6C *);
 void func_800E3B34(Heap *, s32);
@@ -2296,13 +2352,6 @@ typedef struct {
 } RotMatrix33;
 
 /* packed screen coordinate */
-typedef union {
-    s32 w;
-    struct {
-        s16 x;
-        s16 y;
-    } s;
-} XY32;
 
 typedef struct {
     u32 *unk0; /* next free primitive */
