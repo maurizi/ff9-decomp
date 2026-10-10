@@ -3233,7 +3233,12 @@ typedef struct {
     s8 unk8;  /* y */
     u8 unk9;  /* h */
     u8 unkA;  /* anchor */
+    u8 unkB;  /* bit 0: don't make it the current window */
 } WinLayout;
+extern s32 D_8007BB90;
+s32 func_8004DAD0(Unk8007B9C0 *, s32);
+void func_8004F5D4(Unk8004F5D4 *);
+void func_8004F660(Window *);
 
 WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
 void func_80038FD8(s32, WinLayout *, s32, s32);
