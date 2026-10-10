@@ -1,13 +1,13 @@
 /*
  * ovl_0c func_800B0378 (0x9F4 bytes): player walkmesh movement / slide along walls, plus
  * "no-encounter" region checks (D_800D30C6).
- * WIP: same length (637 insns), ~46 aligned diff rows (build/ad.py), all register allocation:
+ * WIP: same length (637 insns), ~36 aligned diff rows (build/ad.py). Found so far: the
+ * else branch reuses the loop's dx/dy/dz locals (s/a/yy -> dz/dx/dy) and the sqrt test
+ * is `dz = dy - r1; abs; dz = dz < iabs(dy + r2); if (dz)`. Left:
  *  - `m = (D_800CE278 << 1) * D_800CE260`: our product stays tied to LO and is reloaded
  *    through t2 (mflo t2), which shifts the later `cc` reload from t2 to t3;
- *  - else branch (0x4FC..): the constants/ex/ez get a0/a1 swapped, yy/a get s1/s2 swapped,
- *    and the original computes yy in the first branch's delay slot;
- *  - `iabs(yy - r1)` lands in v1 instead of reusing r1's s0.
- * Everything else (loop shape, struct copies, sqrt block, region table) matches.
+ *  - else branch (0x4FC..): the constants/ex/ez get a0/a1 swapped and the original computes
+ *    dy in the first ABS branch's delay slot.
  */
 #include "ovl_0c.h"
 
@@ -125,21 +125,26 @@ void func_800B0378(Unk800CCCC0 *cc) {
         ex = D_800CE3DC->unk14.vx - 0x2FF77;
         y = D_800CE3DC->unk14.vy;
         ez = D_800CE3DC->unk14.vz + 0x14031;
-        yy = y + off;
+        dy = y + off;
         if (ABS(ex) < 0x9C4 && ABS(ez) < 0x9C4) {
-            a = 0x5F5E10 - ex * ex;
+            dx = 0x5F5E10 - ex * ex;
             zz = ez * ez;
-            s = a - yy * yy - zz;
+            dz = dx - dy * dy - zz;
             if (-lim < y) {
                 D_800D30C6 = 0;
             }
-            if (s > 0) {
-                r1 = SquareRoot0(s);
-                r2 = SquareRoot0(s);
-                if (iabs(yy - r1) < iabs(yy + r2)) {
-                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = SquareRoot0(a - zz) - off;
+            if (dz > 0) {
+                r1 = SquareRoot0(dz);
+                r2 = SquareRoot0(dz);
+                dz = dy - r1;
+                if (dz < 0) {
+                    dz = -dz;
+                }
+                dz = dz < iabs(dy + r2);
+                if (dz) {
+                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = SquareRoot0(dx - zz) - off;
                 } else {
-                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = -SquareRoot0(a - zz) - off;
+                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = -SquareRoot0(dx - zz) - off;
                 }
             }
         }

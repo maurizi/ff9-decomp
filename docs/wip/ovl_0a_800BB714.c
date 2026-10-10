@@ -7,6 +7,9 @@
  *    CSE it (one instruction per loop, x4);
  *  - register allocation: the original uses all of s0-s7 (count n in s0, mfhi in s7) where we
  *    put n in t9 and leave s7 free, so most t/s registers are shifted by one.
+ *  Giving every loop its own count variable (n0..n7) puts the count in s0 like the original
+ *  (build/b3n.c variant in this session); the index computations then still come out in a
+ *  different order (i2 is computed after the xy0/xy1 loads in the original).
  *  `otz &= 0xFFFFF; otz >>= 4;` as two statements is needed to keep and+sra (one statement
  *  folds into srl+andi).
  */
