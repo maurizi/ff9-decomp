@@ -128,6 +128,14 @@ extern Ovl14Unk320 D_800AB320;
 
 extern void *D_800AB230;
 extern u32 D_800AB300; /* main state */
+extern u16 D_800AB2DC[];
+extern SPRT D_800AB3D0[2][2];
+extern DR_TPAGE D_800AB420[2][2];
+extern u8 D_800AB2EC;
+s32 func_800AA848(s32);
+s32 func_800AA960(s32);
+void func_800AA994(void);
+void func_800AA9D8(void);
 extern SPRT D_800AB448[2];
 extern DR_TPAGE D_800AB470[2];
 void func_800AAF40(void);

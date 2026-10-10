@@ -113,5 +113,21 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 - Not attempted: 36 F08F4 (rodata blob lives in the function file), 64 libpress-internal functions
   (8019AE44-8019B3D4 hand-written DecDCTvlc, 8019D020-8019D36C MDEC_* internals) which look like
   library code that config/library_funcs.us.txt does not list yet.
+- Large-function pass (0d/14/15), drafts in docs/wip/: 0d B1A84 (~98%, else-branch CSE of the
+  0x3A40 clut / ot + 0xFFA), 0d AC708 (t * 42 partly hoisted out of the loop; stack layout and flow
+  right), 15 A7ABC (~95%, reload scheduling of the spilled y/c args). Not attempted: 15 A9488
+  (6300 B blackjack main loop, heavily cross-jumped).
+  Tricks that matched things in this pass: a `u8` brightness local assigned from the unclamped
+  expression (`c = t * 8; if (t * 8 >= 0x100) c = 0xFF;`) gives the original's copy-then-compare
+  (0d AFCE4); `(arr[buf] + 1)->field` instead of `arr[buf][1].field` keeps `&arr[0][1]` as its own
+  hoisted base (14 A9E14, 15 AB490), and tpages there are `setDrawTPage(p, 1, 1, tpage)`, whose
+  `((u32 *)p)[1]` store schedules differently from a `->code[0]` store; a global that loads are not
+  moved above OT stores is a struct member in the original (14 D_800AB2D0); a nested `if (a) if (b) ...` chain stops gcc folding
+  `x != 0x7C && ... != 0x7F` into a range check (0d AA790); `c = cond ? 1 : 2` used as an index folds
+  into byte offsets 4/2 (14 A9220); computing a call argument in its own statement first changes
+  the order of hoisted constants (15 AD7DC).
+- 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
+  with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
+  let that go.
 - 38 EF258 matches (build/ready_38_EF258.c) but links against D_8006D128, which ovl_38's
   undefined_syms_auto lacks; add `D_8006D128 = 0x8006D128;` there (config change) to land it.
