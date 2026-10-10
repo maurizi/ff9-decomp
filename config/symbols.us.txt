@@ -2,3 +2,5 @@ D_8006D548 = 0x8006D548; // needed by ovl_0b func_800BC0D0
 D_8006D128 = 0x8006D128; // needed by ovl_38 func_801EF258
 func_80015E68 = 0x80015E68; // type:func size:0x8 (data words between func_80015DD0 and puts, pinned so every split emits them)
 D_80010DC4 = 0x80010DC4; // force_not_migration:True
+D_80011EFC = 0x80011EFC; // force_not_migration:True
+D_80011F10 = 0x80011F10; // force_not_migration:True

@@ -13083,6 +13083,11 @@ static inline Unk8007B9C0 *func_8004DCEC_init(s32 id, WinLayout *l) {
     return w;
 }
 
+/* window titles */
+INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011EFC);
+
+INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011F10);
+
 void func_8004DCEC(s32 msg, s32 id, WinLayout *l, s32 flags) {
     Unk8007B9C0 *w;
     RECT r;
@@ -13137,9 +13142,9 @@ void func_8004DCEC(s32 msg, s32 id, WinLayout *l, s32 flags) {
             func_8002CF20(w->unk14, 3);
         }
         if (flags & 0x40) {
-            func_8002E304(w->unk14, (s32)"ACTIVE TIME EVENT");
+            func_8002E304(w->unk14, (s32)D_80011EFC);
         } else if (flags & 8) {
-            func_8002E304(w->unk14, (s32)"MOGNET");
+            func_8002E304(w->unk14, (s32)D_80011F10);
         }
     }
     if (!(l->unkB & 1)) {
@@ -13152,9 +13157,6 @@ void func_8004DCEC(s32 msg, s32 id, WinLayout *l, s32 flags) {
     D_8007BBC8++;
     func_8004FF98(0);
 }
-
-/* padding before the next jump table in the original rodata */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 void func_8004E16C(void) {
     s32 i;

@@ -3945,5 +3945,7 @@ static inline void func_8004883C_idle(Unk8004AB64 *q) {
 }
 
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */
+extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
+extern const u8 D_80011F10[]; /* "MOGNET" window title */
 
 #endif
