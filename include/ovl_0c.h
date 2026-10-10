@@ -476,10 +476,7 @@ typedef struct {
 } WmSky; /* 0x5E */
 
 typedef struct {
-    u8 pad0[0x14A];
-    s16 unk14A;
-    s16 unk14C;
-    u8 pad14E[0x5E0 - 0x14E];
+    WmSky unk0[16]; /* presets: [mode * 4 + flag * 2 + 0/1] */
     WmSky unk5E0[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
 } Unk800D3FA0;
 void func_800C3954(WmSky *, WmSky *, WmSky *, s32, s32);
@@ -1146,6 +1143,7 @@ extern Unk800A7FB8 D_800A7FB8;
 extern Unk800A7FB8 D_800A8020; /* radar arrow */
 extern Unk800A7FB8 D_800A8000; /* big-map arrow */
 extern WmScrRect D_800CD09C[]; /* on-screen test rects */
+extern char D_800A8178[]; /* "Illegal Weather Mode" */
 extern WmNearCell D_800D3C10[];
 s32 func_800AE7F0();
 void func_800C23CC(void);

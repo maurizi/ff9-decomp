@@ -6504,8 +6504,8 @@ void func_800C2830(void) {
         case 9:
         case 12:
         case 13:
-            D_800D3FA0.unk14A = 0x7F58;
-            D_800D3FA0.unk14C = 0x7F58;
+            D_800D3FA0.unk0[3].unk30[0].unk0 = 0x7F58;
+            D_800D3FA0.unk0[3].unk30[0].unk2 = 0x7F58;
             func_800C2A80(id, func_800C3E88() & 0xFF, 0x80);
             D_800CF46D = 0;
             break;
@@ -6544,7 +6544,60 @@ s32 func_800C291C(void) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C2A80);
+void func_800C2A80(s32 mode, s32 flag, s32 arg2) {
+    if (mode == 5) {
+        mode = D_800D3F98;
+    }
+    if (flag == 2) {
+        flag = D_800CCE4B;
+    }
+    D_800D3F98 = mode;
+    D_800CCE4B = flag;
+    D_800D3F90 = arg2;
+    D_800D3F94 = 0;
+    D_800D3FA0.unk5E0[3] = D_800D3FA0.unk5E0[1];
+    D_800D3FA0.unk5E0[5] = D_800D3FA0.unk5E0[2];
+    if (D_800CCE4B != 0) {
+        switch (mode) {
+        case 0:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[3];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[2];
+            return;
+        case 1:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[7];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[6];
+            return;
+        case 2:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[11];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[10];
+            return;
+        case 3:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[15];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[14];
+            return;
+        }
+    } else {
+        switch (mode) {
+        case 0:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[1];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[0];
+            return;
+        case 1:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[5];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[4];
+            return;
+        case 2:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[9];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[8];
+            return;
+        case 3:
+            D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[13];
+            D_800D3FA0.unk5E0[6] = D_800D3FA0.unk0[12];
+            return;
+        }
+    }
+    func_80015C38(D_800A8178, mode);
+}
 
 /* blend the sky parameter blocks arg1 -> arg2 by arg3 (0..0x1000) into arg0 */
 void func_800C3954(WmSky *arg0, WmSky *arg1, WmSky *arg2, s32 arg3, s32 arg4) {
