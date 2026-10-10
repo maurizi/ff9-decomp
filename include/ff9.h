@@ -1230,6 +1230,15 @@ typedef struct {
     u16 unk8;
     u8 padA[0x14 - 0xA];
     s32 unk14;
+    u8 pad18[0x20 - 0x18];
+    u32 unk20; /* channel mask */
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x30 - 0x2C];
+    s32 unk30; /* offset from &unk30 */
+    s32 unk34; /* offset from &unk34 */
+    u8 pad38[0x40 - 0x38];
+    u16 unk40[1]; /* per-channel offsets from the entry itself */
 } AkaoSeqHeader;
 void func_8005A320(s32, s32);
 void func_8005963C(s32, s32);

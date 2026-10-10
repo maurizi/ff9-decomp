@@ -7923,7 +7923,119 @@ s32 func_800384D0(Unk8004AB64 *o, s32 lv, s32 key, s32 save) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038618);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80038990);
+s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
+    Unk8004AB64 *p;
+    s32 dz;
+    s32 dx;
+    s32 dy;
+    s32 speed;
+    s16 v[4];
+    s32 dist;
+    s32 ry;
+    s32 rx;
+    s32 cur;
+    s32 d;
+    s32 step;
+    s32 hit;
+    s32 r;
+
+    p = D_8007B704;
+    speed = p->unk5C;
+    dx = x - p->unk14.vx;
+    dz = z - p->unk14.vz;
+    if (p->unk50 & 0x20) {
+        ry = p->unk14.unk22 & 0xFFF;
+    } else {
+        ry = func_80052F24(dx, dz);
+        if (!(flags & 1)) {
+            cur = p->unk14.unk22 & 0xFFF;
+            d = ry - cur;
+            if (d < -0x800) {
+                d += 0x1000;
+            } else if (d >= 0x800) {
+                d -= 0x1000;
+            }
+            if (d == 0) {
+                p->unk50 |= 0x20;
+            }
+            step = p->unk5F * 8;
+            if (d > 0) {
+                if (step < d) {
+                    ry = cur + step;
+                }
+            } else {
+                if (d < -step) {
+                    ry = cur - step;
+                }
+            }
+            ry &= 0xFFF;
+            p->unk14.unk22 = ry;
+        }
+    }
+    if (flags & 2) {
+        dy = y - p->unk14.vy;
+        rx = func_80052F24(-dy, -func_80052EC0(dx, 0, dz)) & 0xFFF;
+        cur = p->unk30 & 0xFFF;
+        d = rx - cur;
+        if (d < -0x800) {
+            d += 0x1000;
+        } else if (d >= 0x800) {
+            d -= 0x1000;
+        }
+        step = p->unk5F * 8;
+        if (d > 0) {
+            if (step < d) {
+                rx = cur + step;
+            }
+        } else {
+            if (d < -step) {
+                rx = cur - step;
+            }
+        }
+        rx &= 0xFFF;
+        p->unk30 = rx;
+    } else {
+        rx = 0;
+        dy = 0;
+    }
+    func_8005309C(v, rx, ry, speed);
+    p->unk14.vx += v[0];
+    p->unk14.vy += v[1];
+    p->unk14.vz += v[2];
+    hit = func_80038618(p, 0, &dist);
+    if (hit != 0 && dist <= 0) {
+        p->unk14.vx -= v[0];
+        p->unk14.vy -= v[1];
+        p->unk14.vz -= v[2];
+    }
+    if (p->unk63 != 0 && p->unk63 != 0xFF) {
+        p->unk63--;
+    }
+    r = p->unk63 != 0;
+    if (flags < 0) {
+        r = 0;
+        if (hit != flags || dist > 0) {
+            r = 1;
+        }
+    }
+    dist = func_80052E48(dx, dy, dz);
+    if (dist < speed * speed || ((p->unk50 & 0x10) && p->unk78 < dist)) {
+        r = 0;
+    }
+    if (p->unk78 < 0x7FFFFFFF && dist < p->unk78) {
+        p->unk50 |= 0x10;
+    }
+    p->unk78 = dist;
+    if (r == 0) {
+        p->unk78 = 0x7FFFFFFF;
+        p->unk30 = 0;
+        p->unk50 &= ~0x30;
+    }
+    if (p->unk7 == D_8007AECC->unk16ED) {
+        D_8007B710++;
+    }
+    return r;
+}
 
 s32 func_80038D3C(void) {
     s32 id = 0;
