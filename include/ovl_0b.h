@@ -2575,6 +2575,31 @@ typedef struct {
     BtlUnit9C *unk8;
     s32 unkC;
 } BtlObj;
+/* placement data passed to func_800AD4E4 */
+typedef struct {
+    u32 pad0_0 : 8;
+    u32 unk0_8 : 12;  /* x scale */
+    u32 unk0_20 : 12; /* z scale */
+    s32 pad4_0 : 12;
+    s32 unk4_12 : 10; /* x offset */
+    s32 unk4_22 : 10; /* z offset */
+} Unk800AD4E4;
+
+/* copies a MATRIX as eight words (the original doesn't use a struct assignment) */
+#define COPY_MATRIX(d, s)                    \
+    {                                        \
+        s32 *_d = (s32 *)(d);                \
+        s32 *_s = (s32 *)(s);                \
+        _d[0] = _s[0];                       \
+        _d[1] = _s[1];                       \
+        _d[2] = _s[2];                       \
+        _d[3] = _s[3];                       \
+        _d[4] = _s[4];                       \
+        _d[5] = _s[5];                       \
+        _d[6] = _s[6];                       \
+        _d[7] = _s[7];                       \
+    }
+
 void func_800A8E24(void);
 void func_800A8E6C(void);
 s32 func_800A8F10(void);

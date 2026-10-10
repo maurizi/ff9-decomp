@@ -1143,7 +1143,71 @@ s32 func_800AD4AC(s32 arg0, s32 arg1) {
     return func_80062E3C(arg0, 0x100, 0xFF, 0x200, 0xE0, arg1, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AD4E4);
+void func_800AD4E4(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg3, s32 arg4, s32 arg5) {
+    VECTOR r;
+    VECTOR up;
+    VECTOR n;
+    VECTOR d;
+    MATRIX m;
+    SVECTOR v;
+    s32 *p0;
+    s32 *p1;
+
+    if (arg4 == arg5) {
+        COPY_MATRIX(&m, &((MATRIX *)arg1->unk8->unk20)[arg4]);
+        m.t[2] = 0;
+        m.t[1] = 0;
+        m.t[0] = 0;
+        v.vx = 0;
+        v.vy = -0x1000;
+        v.vz = 0;
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(&v);
+        gte_rtv0tr();
+        gte_stlvnl(&d);
+        d.vy = 0;
+        VectorNormal(&d, &n);
+        n.vx = -n.vx;
+        n.vy = -n.vy;
+        n.vz = -n.vz;
+    } else {
+        p0 = ((MATRIX *)arg1->unk8->unk20)[arg4].t;
+        p1 = ((MATRIX *)arg1->unk8->unk20)[arg5].t;
+        d.vx = p1[0] - p0[0];
+        d.vy = p1[1] - p0[1];
+        d.vz = p1[2] - p0[2];
+        if (d.vx == 0 && d.vy == 0 && d.vz == 0) {
+            n.vx = 0;
+            n.vy = 0;
+            n.vz = 0x1000;
+        } else {
+            d.vy = 0;
+            VectorNormal(&d, &n);
+        }
+    }
+    up.vy = 0x1000;
+    up.vx = 0;
+    up.vz = 0;
+    gte_ldopv1(&up);
+    gte_ldopv2(&n);
+    gte_op12();
+    gte_stlvnl(&r);
+    arg2->m[0][0] = (r.vx * arg0->unk0_8) >> 12;
+    arg2->m[1][0] = (r.vy * arg0->unk0_8) >> 12;
+    arg2->m[2][0] = (r.vz * arg0->unk0_8) >> 12;
+    arg2->m[0][1] = up.vx;
+    arg2->m[1][1] = up.vy;
+    arg2->m[2][1] = up.vz;
+    arg2->m[0][2] = (n.vx * arg0->unk0_20) >> 12;
+    arg2->m[1][2] = (n.vy * arg0->unk0_20) >> 12;
+    arg2->m[2][2] = (n.vz * arg0->unk0_20) >> 12;
+    arg2->t[0] = (((r.vx << 1) * arg0->unk4_12 + (n.vx << 1) * arg0->unk4_22) >> 12) +
+                 ((MATRIX *)arg1->unk8->unk20)[arg4].t[0];
+    arg2->t[1] = (((r.vy << 1) * arg0->unk4_12 + (n.vy << 1) * arg0->unk4_22) >> 12) + arg3;
+    arg2->t[2] = (((r.vz << 1) * arg0->unk4_12 + (n.vz << 1) * arg0->unk4_22) >> 12) +
+                 ((MATRIX *)arg1->unk8->unk20)[arg4].t[2];
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AD90C);
 
