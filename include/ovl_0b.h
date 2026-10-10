@@ -700,7 +700,36 @@ extern s32 D_800FE51C;
 extern s32 D_800FE4F0;
 extern struct BtlUnit9C50 *D_800FE4F4;
 extern s32 D_800FE4F8;
-extern u8 *D_800FE504;
+/* battle background: texture scroll entry (D_800FE504) */
+typedef struct {
+    s16 unk0; /* offset of the uv pair in the group data */
+    u8 unk2;  /* 0 = wrap, 1 = bounce */
+    u8 unk3;  /* du */
+    u8 unk4;  /* dv */
+    u8 unk5;  /* step */
+    u8 unk6;  /* steps per cycle */
+    u8 pad7;
+} BtlBgScroll;
+
+/* battle background: group header, followed by 0x10-byte records */
+typedef struct {
+    u16 unk0; /* size */
+    u16 pad2;
+    u16 unk4; /* record count */
+    u16 unk6; /* record offset */
+} BtlBgGroup;
+
+typedef struct {
+    u16 unk0; /* kind */
+    u8 pad2[0x10 - 2];
+} BtlBgRec;
+
+extern BtlBgScroll *D_800FE504;
+extern s32 D_800FE520; /* frame counter */
+extern s32 D_800FE4FC;
+extern s32 D_800FE500;
+u8 *func_800CEBC8(u8 *, u32 *, MATRIX *);
+u8 *func_800CEED4(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
 extern s32 D_800FE508;
 extern s32 D_800FE518;
 extern s16 D_80100DCC;
@@ -1583,7 +1612,7 @@ typedef struct Unk800CEE74 {
     s16 unk2; /* count of D_800FE4F4 entries */
     s16 unk4;
     s16 unk6;
-    u8 pad8[0xA - 8];
+    s16 unk8; /* last group index */
     s16 unkA;
     u8 unkC;
     u8 unkD;
@@ -2268,6 +2297,7 @@ void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
 /* main exe: candidates for ff9.h */
 int VectorNormalS(VECTOR *, SVECTOR *);
+MATRIX *MulMatrix2(MATRIX *, MATRIX *);
 s32 func_800E1874(Pool30 *, Pool6C *);
 void func_800E2000(Pool30 *, Pool6C *);
 void func_800E3B34(Heap *, s32);

@@ -1558,7 +1558,7 @@ void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     s32 unused[4];
     s32 i;
     D_800FE514 = arg0;
-    D_800FE504 = arg0->unk10;
+    D_800FE504 = (BtlBgScroll *)arg0->unk10;
     D_800FE50C = arg0->unk0;
     func_800CF58C(0);
     D_800FE4F8 = 0;
@@ -1589,7 +1589,231 @@ void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CE1B4);
+u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
+    MATRIX m;
+    SVECTOR rot;
+    VECTOR v;
+    VECTOR t;
+    MATRIX m2;
+    SVECTOR rot2;
+    SVECTOR sv;
+    s32 done;
+    u8 *out;
+    BtlBgGroup *grp;
+    BtlBgRec *rec;
+    s32 a;
+    s32 d;
+    s32 i;
+    s32 k;
+    s32 flag;
+
+    out = (u8 *)arg2;
+    func_8001D898(&rot, 0, 8);
+    func_8001D898(&rot2, 0, 8);
+    func_8001D898(&sv, 0, 8);
+    done = 0;
+    D_800FE520++;
+    if (!(u8)func_800CF574()) {
+        return out;
+    }
+    t.vx = arg0->t[0];
+    t.vy = arg0->t[1];
+    t.vz = arg0->t[2];
+    d = arg0->m[2][1];
+    if (d < 0) {
+        d = -d;
+    }
+    t.vz = ((0x1000 - d) * 12500 + arg0->t[2] * d) / 0x1000;
+    t.vx = 0;
+    TransMatrix(&m2, &t);
+    if (D_800F7270 == 0) {
+        for (i = 0; i < D_800FE518; i++) {
+            a = arg1 + D_800FE504[i].unk0;
+            ((u8 *)a)[0] += D_800FE504[i].unk3;
+            ((u8 *)a)[1] += D_800FE504[i].unk4;
+            D_800FE504[i].unk5++;
+            if (D_800FE504[i].unk5 >= D_800FE504[i].unk6) {
+                switch (D_800FE504[i].unk2) {
+                case 0:
+                    ((u8 *)a)[0] -= D_800FE504[i].unk6 * D_800FE504[i].unk3;
+                    ((u8 *)a)[1] -= D_800FE504[i].unk6 * D_800FE504[i].unk4;
+                    break;
+                case 1:
+                    D_800FE504[i].unk3 = -D_800FE504[i].unk3;
+                    D_800FE504[i].unk4 = -D_800FE504[i].unk4;
+                    break;
+                }
+                D_800FE504[i].unk5 = 0;
+            }
+        }
+    }
+    if (D_800FE508 != 0) {
+        func_800C9040((TexAnimSet *)D_800FE4F4);
+    }
+    SetRotMatrix(arg0);
+    SetTransMatrix(arg0);
+    if (D_800F7274 != 0) {
+        out = func_800CEBC8(out, arg3, arg0);
+    }
+    grp = (BtlBgGroup *)arg1;
+    k = 0;
+    for (;;) {
+        rec = (BtlBgRec *)((u8 *)grp + grp->unk6);
+        for (i = 0; i < grp->unk4; rec++, i++) {
+            switch (rec->unk0) {
+            case 8:
+                if (!done) {
+                    D_800FE4F0 += D_800FE510;
+                    rot.vy = D_800FE4F0 >> 3;
+                    func_80030AF4(&rot, &m);
+                    done = 1;
+                    MulMatrix2(arg0, &m);
+                    SetRotMatrix(&m);
+                }
+                if (D_800FE51C & 8) {
+                    if (D_800FE4F8 != 0) {
+                        SetTransMatrix(&m2);
+                        func_800639D4(0x200);
+                        out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                        func_800639D4(D_8006794C->unk1C->unkA);
+                    } else {
+                        out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                    }
+                }
+                break;
+            case 4:
+                if (D_800FE51C & 4) {
+                    out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                }
+                break;
+            case 2:
+                if (D_800FE51C & 2) {
+                    out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                }
+                break;
+            case 0:
+                if (D_800FE51C & 1) {
+                    out = func_800CEED4(rec, out, arg3, grp);
+                }
+                break;
+            }
+        }
+        if (k == D_800FE514->unk8) {
+            return out;
+        }
+        k++;
+        grp = (BtlBgGroup *)((u8 *)grp + grp->unk0);
+        flag = 0;
+        switch (D_800FE514->unk0) {
+        case 0x44:
+            a = func_8004BB80((VSync(-1) * 26) & 0xFFE);
+            sv.vx = 0x429;
+            sv.vy = -0x541;
+            sv.vz = 0xEA6;
+            a /= 5;
+            rot2.vz = a;
+            break;
+        case 0x70:
+            switch (k) {
+            case 1:
+                a = (VSync(-1) * 5) & 0xFFF;
+                rot2.vz = 0xFFF - a;
+                a = (VSync(-1) * 3) & 0xFFF;
+                rot2.vy = 0xFFF - a;
+                a = func_8004BB80(((VSync(-1) + 8) * 22) & 0xFFE);
+                sv.vx = -0x834;
+                sv.vz = -0x352;
+                sv.vy = a / 45 - 250;
+                break;
+            case 2:
+                rot2.vy = 0;
+                rot2.vz = 0;
+                a = func_8004BB80((VSync(-1) * 20) & 0xFFC);
+                sv.vx = 0x6BD;
+                sv.vy = a / 64 - 0x5DC;
+                sv.vz = -0x4B;
+                break;
+            case 3:
+                a = (VSync(-1) * 4) & 0xFFF;
+                rot2.vz = a;
+                a = (VSync(-1) * 3) & 0xFFF;
+                rot2.vy = a;
+                a = func_8004BB80(((VSync(-1) + 16) * 21) & 0xFFF);
+                sv.vx = 0x6D6;
+                sv.vz = 0x401;
+                sv.vy = a / 50 - 0x307;
+                break;
+            }
+            break;
+        case 0x6E:
+            a = func_8004BB80((VSync(-1) * 12) & 0xFFC);
+            a /= 64;
+            rot2.vy = 0x200;
+            sv.vx = 0x5DC;
+            sv.vy = -0x1B58;
+            rot2.vz = a;
+            sv.vz = 0xEA6;
+            break;
+        case 0xA8:
+            rot2.vx = 0;
+            rot2.vz = 0;
+            if (k == 1) {
+                rot2.vy = (VSync(-1) / 16) & 0xFFF;
+            } else {
+                rot2.vy = (VSync(-1) / 8) & 0xFFF;
+            }
+            break;
+        case 0xAB:
+            if (k == 1) {
+                a = -(VSync(-1) * 12) & 0xFFF;
+                sv.vy = -0x947;
+                rot2.vz = a;
+                sv.vx = 0;
+                sv.vz = 0xEA6;
+            } else {
+                a = -(VSync(-1) * 22) & 0xFFF;
+                flag = 1;
+                rot2.vz = 0xE00;
+                sv.vy = -0x8CA;
+                rot2.vy = a;
+                sv.vx = 0;
+                sv.vz = 0x1DC9;
+            }
+            break;
+        case 7:
+            if (k == 1) {
+                if (!((D_800FE520 + 0x1F) & 0x3F)) {
+                    D_800FE4FC = func_80062B3C() & 0x1FF;
+                }
+                rot2.vy = D_800FE4FC + (func_80062B3C() & 0x3F);
+            } else {
+                if (!(D_800FE520 & 0x3F)) {
+                    D_800FE500 = func_80062B3C() & 0x3FF;
+                }
+                rot2.vy = D_800FE500 + (func_80062B3C() & 0x7F);
+            }
+            break;
+        default:
+            sv.vx = 0;
+            sv.vy = -10;
+            sv.vz = 0;
+            rot2.vy += 3;
+            break;
+        }
+        ApplyMatrix(arg0, &sv, &v);
+        m.t[0] = arg0->t[0] + v.vx;
+        m.t[1] = arg0->t[1] + v.vy;
+        m.t[2] = arg0->t[2] + v.vz;
+        if (flag == 0) {
+            func_80030AF4(&rot2, &m);
+        } else {
+            func_80031244(&rot2, &m);
+        }
+        MulMatrix2(arg0, &m);
+        SetRotMatrix(&m);
+        SetTransMatrix(&m);
+    }
+}
 
 void func_800CEBAC(void) {
     D_800F7274 = 0x1F;
