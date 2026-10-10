@@ -1,15 +1,16 @@
-/* STATUS: near miss, ~38 rows. ovl_65 func_801F2E58 (0x190, add reward items; "inventory full" window). Left: the original keeps full in s4 and does the u8 andi into s0 eagerly (ours elides it or does it at the test); the centring math is (w - 0x10) - ts.w in the original, gcc reassociates ours to w - (ts.w + 0x10); D_801F7A78.unk368 is loaded through its own %hi/%lo (D_801F7DE0). rw/ws pointer locals give the s3/s5 bases. */
+/* STATUS: near miss, 5 rows. ovl_65 func_801F2E58 (0x190, add reward items; "inventory full" window). k = 0x10 keeps the centring math as (w - 0x10) - ts.w. Left: the original keeps full in s4 and copies it into a separate u8 f in s0 with an eager andi (f tested and returned as f ^ 1); a u8 full coalesces f into s4, an s32 full gives a move plus a late andi. */
 #include "ovl_65.h"
 
 u8 func_801F2E58(void) {
     TextSize ts;
     RECT rr;
     u32 i;
-    s32 full;
+    u8 full;
     u8 f;
     Rewards *rw;
     WinSlot *ws;
     s32 n;
+    s32 k;
 
     full = 0;
     rw = &D_801F7A78.unk24;
@@ -25,9 +26,10 @@ u8 func_801F2E58(void) {
         func_8006238C(rw->unk8);
     }
     if (f) {
+        k = 0x10;
         ts = func_8002AF70(func_80035774(0xA));
-        rr.x = D_801F7A78.unk368->unk0 + ((D_801F7A78.unk368->unk4 - 0x10 - ts.w) >> 1);
-        rr.y = D_801F7A78.unk368->unk2 + ((D_801F7A78.unk368->unk6 - 0x10 - ts.h) >> 1);
+        rr.x = D_801F7A78.unk368->unk0 + ((D_801F7A78.unk368->unk4 - k - ts.w) >> 1);
+        rr.y = D_801F7A78.unk368->unk2 + ((D_801F7A78.unk368->unk6 - k - ts.h) >> 1);
         rr.w = ts.w + 0x10;
         rr.h = ts.h + 0xF;
         ws->unk0 = func_8002DC54(&rr, 6, 2);
