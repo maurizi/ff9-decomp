@@ -493,7 +493,7 @@ typedef struct {
     u8 unk2;
     s8 unk3;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u8 unk6;
     u8 pad7;
     u8 unk8;
@@ -762,7 +762,7 @@ typedef struct BtlCmd8 {
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u8 unk6;
     u8 pad7;
     u8 unk8;
@@ -1492,7 +1492,7 @@ typedef struct Unk800F412C {
     s16 unk0; /* text id */
     s16 unk2;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u16 unk6; /* frame */
     u16 unk8; /* x */
     u16 unkA; /* y */
@@ -1567,7 +1567,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u8 unk6;
     u8 unk7;
     u8 unk8;
@@ -2558,6 +2558,11 @@ void func_800C0840(void);
 void func_800C0C7C(u32 *);
 void func_800C0CD0(u32 *);
 void func_800C1A8C(struct BtlUnit *, u32);
+void func_800B95BC(struct BtlCmd *);
+s32 func_800B96AC(struct BtlUnit *, s16);
+void func_800B989C(struct BtlCmd *);
+void func_800C0A70(struct BtlUnit *, s32);
+void func_800C15DC(struct BtlUnit *);
 void func_800BAFEC(struct Battle *);
 u32 *func_800BB974(struct Battle *, u32 *);
 void func_800BD8F0(Unk800BD8F0 *);
