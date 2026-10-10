@@ -16798,7 +16798,88 @@ void func_800579B4(AkaoChannel *c, u32 mask, s32 kind) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057D80);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80058118);
+void func_80058118(AkaoChannel *c, u32 bit) {
+    u32 f;
+    s32 vol;
+    s32 t;
+    s32 x;
+    s32 pan;
+    s32 pitch;
+    s32 k;
+
+    f = c->unk34;
+    vol = ((c->unk78 >> 16) * (c->unkB2 >> 8)) >> 7;
+    if (f & 1) {
+        c->unk44 += c->unk48;
+        t = c->unk1C((u32)c->unk44 >> 16);
+        pan = (s16)((u32)(c->unkD4 * t) >> 16);
+        x = pan;
+        if (pan < 0) {
+            x = pan >> 1;
+        }
+        c->unk110 = x;
+        c->unk11C |= 0x10;
+    }
+    if (f & 2) {
+        c->unk54 += c->unk58;
+        t = c->unk20((u32)c->unk54 >> 16);
+        pan = (vol * (c->unkE2 >> 8)) << 9 >> 16;
+        c->unk11C |= 3;
+        c->unk112 = (pan * t) >> 16;
+    }
+    if (f & 4) {
+        c->unk64 += c->unk68;
+        t = c->unk24((u32)c->unk64 >> 16);
+        c->unk11C |= 3;
+        c->unk114 = ((c->unkEA >> 8) * t) >> 16;
+    }
+    if (f & 0x20) {
+        c->unk11C |= 3;
+        vol = ((s16)(c[-1].unk128 << 1) * (c->unkB2 >> 8)) >> 7;
+    }
+    if (c->unk11C & 3) {
+        vol += c->unk112;
+        if (!(c->unk28 & 0x2000000)) {
+            vol = (vol * ((s16)c->unk100 >> 8)) >> 7;
+            pan = ((c->unkBE + c->unk9C) >> 8) + c->unk114 + 0x80;
+            pan &= 0xFF;
+        } else {
+            pan = 0x80;
+        }
+        if (D_8008315C & 2) {
+            c->unk130 = c->unk132 = (vol * D_8006F640) >> 15;
+        } else {
+            c->unk130 = (vol * D_8006F540[pan]) >> 15;
+            c->unk132 = (vol * D_8006F540[pan ^ 0xFF]) >> 15;
+        }
+    }
+    if (f & 0x10) {
+        pitch = c[-1].unk128 + c->unk110 + (c->unk30 >> 16);
+        k = c->unk70 & 0xFF00;
+        if (!(c->unk28 & 0x2000000) && k != 0) {
+            k >>= 8;
+            if (k < 0x80) {
+                pitch += (pitch * k) >> 7;
+            } else {
+                pitch = (pitch * k) >> 8;
+            }
+        }
+        c->unk128 = ((u16)c->unk84 + pitch) & 0x3FFF;
+        c->unk11C |= 0x10;
+    } else if (c->unk11C & 0x10) {
+        pitch = c->unk2C + c->unk110 + (c->unk30 >> 16);
+        k = c->unk70 & 0xFF00;
+        if (!(c->unk28 & 0x2000000) && k != 0) {
+            k >>= 8;
+            if (k < 0x80) {
+                pitch += (pitch * k) >> 7;
+            } else {
+                pitch = (pitch * k) >> 8;
+            }
+        }
+        c->unk128 = ((u16)c->unk84 + pitch) & 0x3FFF;
+    }
+}
 
 s32 func_800584C8(s32 arg0) {
     s32 i;
