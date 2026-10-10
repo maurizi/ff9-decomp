@@ -1,4 +1,4 @@
-/* 51 rows: SPU init. The original reads *cnt (0x1F801DAA) early into s0, the u16 counter i (i = *cnt; ...; *cnt = (i & ~5) | 1), worth 9 rows. Remaining: scheduling/registers of the early global stores (&D_8007F858 in v1, D_8007BD48 materialised in a3 at the D_800809EC store and a3 += 0x88 just before the first loop, here hoisted to the top), and the block of D_8007F858 field stores before the 0x7F00 store. */
+/* 14 rows: SPU init. The original reads *cnt (0x1F801DAA) early into s0, the u16 counter i (i = *cnt; ...; *cnt = (i & ~5) | 1); `D_80080A10 = &D_8007F858` after the D_8007F8D8 stores (51 -> 14, found by build/mvall.py). Remaining: the original materialises &D_8007BD48 in a3 at the D_800809EC store and does a3 += 0x88 (the first loop's giv) just before the SPU register stores, with &D_8007F858 in v1 from the first instruction; here &D_8007BD48 and its +0x88 giv are hoisted to the top. In the second loop the original increments i right after reading it for unk118. Tried: moving the D_800809EC/D_80080A10/D_8007F790/i = *cnt lines anywhere, c = D_8007BD48 forms, i++ placement, dup sweep. */
 #include "ff9.h"
 
 void func_8005681C(void) {
@@ -7,11 +7,11 @@ void func_8005681C(void) {
     AkaoChannel *c;
 
     cnt = (u16 *)0x1F801DAA;
-    D_80080A10 = &D_8007F858;
     D_8007F790 = NULL;
     D_800809EC = D_8007BD48;
     D_8007F71C = NULL;
     D_8007F8D8[1] = 0;
+    D_80080A10 = &D_8007F858;
     D_8007F8D8[0] = 0;
     D_800809C0[5] = 0;
     D_800809C0[4] = 0;

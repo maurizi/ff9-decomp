@@ -4,7 +4,8 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Pass 8 matched 6 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294). What worked:
+- Pass 8 matched 7 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8).
+  What worked:
   - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
     permuter found it; mflo a2 everywhere then follows). 80058118: pan reused for the LFO depth
     temp in the first block (`pan = (s16)...; x = pan; if (pan < 0) x = pan >> 1;`). 8005E3FC: one
@@ -26,8 +27,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     operands) stops loop.c hoisting the D_80080A10 load; `c->unkCC = (u16)c->unkCC & ~5` gives
     andi 0xFFFA instead of a hoisted -6; `n--; n &= 3;`; `op = p[0] + (p[1] << 8); p += (s16)op;`.
   - `while (--i != -1)` gives gcc's precheck + compare-to--1 count-down loop (8004E248 draft).
+  - 80024BD8: `p->rgbc0` first, then `p->xy2 = 0x800000; p->xy3 = w | 0x800000;` and
+    `->wh = w | 0x800000` (no `w |=`), found by moving single statements (build/mvall.py moves
+    every single-line statement within its straight-line run; it also took 8005681C 51 -> 14).
   - Drafts updated: 8004E248 (38, ~11 of them symbol-only), 8001DE50 (19), 80062E3C (63),
-    8005681C (51, new), 8005A320 (5), 80059414 (9). Headers have the details.
+    8005681C (14, new), 8005A320 (5), 80059414 (9). Headers have the details.
 - Pass 7 matched 4 (8004B85C, 800378C4, 80035214, 80038618). What worked:
   - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
     parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
