@@ -6147,7 +6147,52 @@ s32 func_80033280(s32 kind, s32 flag, u8 *item) {
     return -1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800333B0);
+void func_800333B0(s32 ch, u8 avg, s32 eq) {
+    Character *c = &D_8006794C->unk1C->unk3C[ch];
+    u8 *p;
+    s32 i;
+    s32 n;
+    s32 sum;
+    s32 lv;
+
+    if (eq != 0xFF) {
+        p = c->unk39;
+        for (i = 0; i < 5; i++) {
+            p[i] = D_8006CAD8[eq][i];
+        }
+    }
+    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->unk39);
+    if (avg == 0) {
+        if (eq == 0xFF) {
+            return;
+        }
+        goto calc;
+    }
+    n = 0;
+    sum = 0;
+    for (i = 0; i < 9; i++) {
+        if (ch != i) {
+            if (D_8006794C->unk1C->unk3C[i].unk34.b.unkB) {
+                n++;
+                sum += D_8006794C->unk1C->unk3C[i].unkB;
+            }
+        }
+    }
+    if (n != 0) {
+        lv = sum / n;
+    } else {
+        lv = 1;
+    }
+    if ((u32)(c->unk34.b.unk4 - 10) >= 2) {
+        if (lv < c->unkB) {
+            lv = c->unkB;
+        }
+    }
+    func_80032C4C(ch, lv, NULL, 0);
+    return;
+calc:
+    func_8003384C_inline(c);
+}
 
 void func_80033690(void) {
     Character **party = D_8006794C->unk1C->unk54C;
