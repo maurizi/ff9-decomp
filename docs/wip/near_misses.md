@@ -164,9 +164,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   undefined_syms_auto lacks; add `D_8006D128 = 0x8006D128;` there (config change) to land it.
 - Menus/FMV pass 2 (drafts in docs/wip/ovl_XX_<addr>.c, each with a status line): 64 A5B0 (3 rows,
   constant 1 vs lui in a delay slot), 64 99B4 (MBG_init; the original rematerialises each big
-  constant in a3 right before use, not reproduced), 64 B7C4 / 3a 4238 / 3c 6714 (the original
-  hoists fewer loop invariants than ours), 64 C434 (CD ready callback, CSE reach), 36 1A48 (5),
-  36 2664 (7), 33 EF900 (13), 3c 51B8 (13), 3c 5BCC (7).
+  constant in a3 right before use, not reproduced), 64 B7C4 / 3a 4238 (the original hoists fewer
+  loop invariants than ours), 64 C434 (CD ready callback, CSE reach), 36 1A48 (5),
+  36 2664 (7), 33 EF900 (13), 3c 5BCC (7).
   65 F2560 is probably right in C: gcc leaves the first branch delay slot empty in `.set reorder`
   mode with `li 0x98967E` split into lui/ori after it, and the original has the lui in the delay
   slot. ASPSX seems to fill such slots and maspsx emits a nop; a maspsx fix may unlock others.
@@ -176,7 +176,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   register had, so assigning it the value that register held (`info = (void *)&D_8019DE10;`)
   reproduces it (64 BCE8); a call result that the original uses without `andi` means the callee
   was declared returning int there (3c 42A8 now returns s32, 3c 51B8 declares func_80028954 s32);
-  store order inside a run of struct stores matters even though the scheduler moves loads past
+  a loop-invariant constant
+  assigned inside the loop body after the first call (`y = 0x9E;`) is hoisted in the original's
+  order, which also fixed the biv/giv register order (3c 51B8, 3c 6714); store order inside a run
+  of struct stores matters even though the scheduler moves loads past
   them (64 C1B0, found with a bounded statement permutation).
 - ovl_64 library code (not in config yet, evidence for the coordinator):
   - 8019D020-8019D36C are libpress's static MDEC helpers, right after DecDCToutCallback in the
