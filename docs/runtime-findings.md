@@ -1,8 +1,7 @@
 # Runtime findings
 
 Evidence from the running game (`tools/emu.py`, see `docs/emulator.md`) about what symbols do.
-Append entries; the decomp agent / coordinator turns confirmed ones into names in
-`config/symbols*.txt` and marks them **applied**.
+Append entries; confirmed ones become names in `config/symbols*.txt` and are marked **applied**.
 
 Format:
 

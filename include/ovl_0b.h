@@ -1371,6 +1371,12 @@ typedef struct {
         (a) *= (n);         \
         (a) = wt - (a);     \
     }
+/* colour gradient header (func_800E651C), followed by 8-byte keys
+   {CVECTOR color (cd = key length); u16 len; u16 start} terminated by cd == 0 */
+typedef struct {
+    s32 total; /* 0 until the keys' start/len are filled in */
+    s32 count;
+} Grad;
 void func_800E651C(u8 *, CVECTOR *, s32);
 void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
 
@@ -2406,7 +2412,37 @@ void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800D1D74(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800D1FFC(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
-void func_800D2938(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+/* effect frame table (func_800D2938) */
+typedef struct {
+    u16 unk0; /* frame count */
+    s16 unk2;
+    u16 unk4; /* gouraud flag */
+    u16 unk6;
+} Unk800D2938;
+
+typedef struct {
+    s32 unk0; /* primitive code */
+    s32 unk4; /* ot base z */
+    s32 unk8;
+    s32 unkC;
+    u16 *unk10;
+    s32 unk14;
+    s32 unk18; /* tpage */
+    u8 pad1C[0x28 - 0x1C];
+} Unk800D57D0Ctx;
+
+typedef struct {
+    s32 unk0; /* primitive code */
+    s32 unk4; /* ot base z */
+    s32 unk8;
+    s32 unkC; /* tpage */
+    s32 unk10;
+    s32 unk14;
+} Unk800D59D0Ctx;
+
+void func_800D57D0(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
+void func_800D59D0(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
+void func_800D2938(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
 /* main exe: candidates for ff9.h */
@@ -2423,7 +2459,7 @@ s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
 s32 func_800CFC0C(s32);
-void func_800D07B4(); /* (s32 code, u32 *ot, void *prim, s32 tpage) */
+void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage); func_800D08C4 passes only 2 */
 u8 *func_800D6360(s32);
 void func_800D64C8(s32);
 void func_800D85AC(s32, s32);
@@ -2523,6 +2559,30 @@ typedef struct {
 extern s16 D_800F51EC;
 s32 func_8001CA70(s32);
 void func_80056048(s32, s32, s32);
+
+/* func_800AD90C: sound/streamed music command handler */
+s32 func_800AE570(s32, s32 *);
+s32 func_800AE764(s32);
+s32 func_800AE7C8(s32);
+void func_800AE844(Unk800AE844 *);
+extern s32 D_800F51F0;
+extern u8 D_800F51F2; /* byte 2 of D_800F51F0 */
+extern s32 D_800F51F4;
+extern s8 D_800F51F8;
+/* main exe: candidates for ff9.h */
+void func_800552B8(s32);
+s32 func_80055290(void *);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
+void func_80055604(s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_800557F0(s32);
+void func_80055730(s32, s32);
+void func_8005581C(s32, s32);
 
 s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s32, s32);
 s32 func_800ABA10(s32, s32);
@@ -3544,6 +3604,23 @@ void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
     "sw\t$15, 0(%2)" \
     : "=r"(len) : "r"(p), "r"(ot), "0"(len) : "$14", "$15", "memory")
 
+/* the same, but len is a plain input that the asm overwrites (only safe when len is dead afterwards);
+   lets a constant len get its own register (func_800D07B4) */
+#define addPrimLenIn(ot, p, len) __asm__ volatile( \
+    "lw\t$14, 0(%2);" \
+    "nop;" \
+    "sll\t$15, $14, 8;" \
+    "srl\t$15, $15, 8;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%1);" \
+    "sll\t%0, %1, 8;" \
+    "srl\t%0, %0, 8;" \
+    "srl\t$15, $14, 24;" \
+    "sll\t$15, $15, 24;" \
+    "or\t$15, $15, %0;" \
+    "sw\t$15, 0(%2)" \
+    : : "r"(len), "r"(p), "r"(ot) : "$14", "$15", "memory")
+
 typedef struct {
     DR_STP unk0;
     DR_STP unkC;
@@ -3760,5 +3837,66 @@ void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
     : : "r"(r0) : "$12", "$13", "$14")
 #define gte_gpl12() __asm__ volatile(GTE_NOPS ".word\t0x4BA8003E")
 #define gte_gpl0() __asm__ volatile(GTE_NOPS ".word\t0x4BA0003E")
+
+/* work area of the effect step func_800E4C88 */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 unk1; /* phase */
+    u8 unk2; /* unit id */
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u16 unk6; /* frame */
+    s32 unk8;
+    s16 unkC[4];
+    s16 unk14[4];
+    s16 unk1C[4];
+    Pool6CEntry *unk24;
+} Unk800E4C88; /* 0x28 */
+
+void func_800E750C(s32, s16 *);
+void func_800E769C(s32, s32, s16 *);
+void func_800E60A4(s32, s32);
+Pool6CEntry *func_800E4A3C(s32, s32, s16 *, s16 *);
+void func_800E8C84(s32);
+void func_800E8D14(void);
+extern u8 D_800FEC53; /* D_800FEC40.unk10.b[3] */
+extern s32 D_800FEC5C; /* D_800FEC40.unk1C */
+
+
+/* func_800D650C: battle event script */
+s32 func_800AB3E4(s32, s32);
+s32 func_800AB410(s32);
+void func_800C2E4C(void);
+void func_800C30F4(void);
+void func_800D63B0(s32, u32 *, s32);
+s32 func_800DA3A4(s32);
+s32 func_800DA4F4(s32);
+s32 func_800DA5C4(void);
+s32 func_800DA634(s32);
+s32 func_800DA6B4(s32, s32);
+void func_800E4984(s32);
+u32 func_800E7D18(s32);
+void func_800E89D0(void);
+void func_800E8A80(s32);
+s32 func_800E8CE4(void);
+void func_800E9168(void);
+void func_800E9290(s32);
+void func_800E970C(void);
+void func_800D6340(void);
+extern s32 D_800FE530[];
+extern u8 D_800FF068[];
+/* main exe: candidates for ff9.h */
+void func_80054A28(void *);
+
+
+/* GTE loads used by func_800E6764 */
+#define gte_ldvz012_0() __asm__ volatile("mtc2\t$0, $1;" "mtc2\t$0, $3;" "mtc2\t$0, $5")
+#define gte_ldxy3(r0, r1, r2) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$2, 0(%1);" \
+    "lwc2\t$4, 0(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldxy0(r0) __asm__ volatile("lwc2\t$0, 0(%0)" : : "r"(r0))
 
 #endif

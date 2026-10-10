@@ -164,6 +164,8 @@ typedef struct {
     s32 unk5B0;
     s32 unk5B4;
     s32 unk5B8;
+    s32 unk5BC;
+    s32 unk5C0;
 } TmState;
 
 typedef struct {
@@ -185,6 +187,18 @@ typedef struct {
     TmArrow v[8];
 } TmArrowTbl; /* arrow sprite for each direction */
 extern TmArrowTbl D_800A73C4;
+
+typedef struct {
+    s32 unk0; /* x */
+    s32 unk4; /* u */
+    s32 unk8; /* v */
+    s32 unkC; /* w */
+} TmCoinFrame;
+
+typedef struct {
+    TmCoinFrame v[8];
+} TmCoinFrames; /* coin toss animation frames */
+extern TmCoinFrames D_800A74AC;
 
 typedef struct {
     u32 unk0; /* id */
@@ -255,6 +269,12 @@ TmCard *func_800B12F0(TmState *, TmPos *, s32, s32);
 void func_800AEBB4(TmState *);
 void func_800B13C0(TmPos *, s32);
 s32 func_800AE830(TmState *, s32);
+s32 func_800AE878(TmState *, s32);
+s32 func_800AE8D0(TmState *);
+TmCard *func_800AE908(TmState *, s32);
+void func_800ACFC8(TmState *);
+s32 func_800AE998(TmState *, s32);
+s32 func_800ADE14(TmState *, s32);
 s32 func_800AE94C(TmState *, s32);
 TmCard *func_800AE9D0(TmState *, s32, s32);
 void func_800AEA24(TmState *);

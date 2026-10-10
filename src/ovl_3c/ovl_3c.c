@@ -394,7 +394,42 @@ void func_801F56E4(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F57C8);
+void func_801F57C8(void) {
+    MenuList *l;
+    ShopBuy *m;
+    ShopBuy *m2;
+    Unk80069018 *it;
+    s32 have;
+    u32 n;
+    s32 q;
+    u8 id;
+
+    l = &D_801FC2F8.unk28;
+    m = &D_801FC2F8;
+    id = m->unk3C[l->unk5 + l->unk6];
+    it = &D_80069018[id];
+    have = func_80027F34(id);
+    if (have < 99 && D_8006794C->unk1C->unk560 >= it->unk4) {
+        m->unk2 = 1;
+        q = it->unk4 != 0 ? D_8006794C->unk1C->unk560 / it->unk4 : 99;
+        n = q;
+        m2 = &D_801FC2F8;
+        if ((s32)n > 99 - have) {
+            n = 99 - have;
+        }
+        m2->unk3 = n;
+        D_801FC2F8.unk0 = 0;
+        m2->unk38 = func_8002DC54(&m2->unk20, 0xA, 2);
+        func_8002E2EC(D_801FC2F8.unk38, func_801F551C);
+        func_8002E2E4(D_801FC2F8.unk38, func_801F5D40);
+        func_8002E2FC(D_801FC2F8.unk38, func_801F5D6C);
+        func_8002E31C(D_801FC2F8.unk38, 1);
+        func_8002E304(D_801FC2F8.unk38, D_800704A4);
+        func_8002F488(0x67);
+    } else {
+        func_8002F488(0x66);
+    }
+}
 
 void func_801F5940(void) {
     if (D_80077528 & 8) {

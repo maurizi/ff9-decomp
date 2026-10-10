@@ -371,7 +371,40 @@ void func_801EFB38(void) {
 
 INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801EFC20);
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801EFF58);
+ScrollPos *func_801EFF58(MenuList *l, ScrollPos *p) {
+    s32 q;
+    s32 f;
+    s32 d;
+
+    f = l->unk8;
+    if (f & 4) {
+        if (f & 2) {
+            d = l->unkD - l->unk9;
+            q = (d + 19) / 20;
+            p->unk0 = q;
+            p->unk1 = l->unk5 + (l->unk3 - q);
+            p->unk2 = (l->unk3 - p->unk0) * 20;
+        } else {
+            d = l->unkD - l->unk9;
+            p->unk0 = (d + 19) / 20;
+            p->unk1 = l->unk5;
+            p->unk2 = 0;
+        }
+    } else if (f & 2) {
+        p->unk0 = l->unk3 + 1;
+        p->unk1 = l->unk5 - 1;
+        p->unk2 = l->unk9 - 20;
+    } else if (f & 1) {
+        p->unk1 = l->unk5;
+        p->unk0 = l->unk3 + 1;
+        p->unk2 = -l->unk9;
+    } else {
+        p->unk1 = l->unk5;
+        p->unk0 = l->unk3;
+        p->unk2 = 0;
+    }
+    return p;
+}
 
 void func_801F00A8(void) {
     func_801F00F8();

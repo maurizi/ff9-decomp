@@ -36,12 +36,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
 
 ## ovl_0b (battle)
-- Register allocation / scheduling (left as INCLUDE_ASM): C9A28 (2 insns), AB07C, F5064, CBA58, C9794,
-  BFF20, ED3F8, CCDB8, DA4C4, C1594 (strength-reduced loop), C0C00, DA138, E3B70, D07B4 (39/41), F28F0,
-  DA1F4, E9000, EE24C, EE154, D9D58, E651C, D7094 (unfilled delay slot after jalr), C3F78 (one branch
-  inverted), E8B28, EE7F8, EE938, D0E14, AB810, EFD1C, C9374, AE4FC, ED02C, ED7C0, E1534.
-- Operand order seems to need byte-offset pointer arithmetic: DCCE4, BE1E0.
-- Odd argument-slot stack use: E4A3C.
+- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794, BFF20,
+  ED3F8, CCDB8, D9D58, D0E14, AB810, ED02C, ED7C0, E1534, BE1E0 (big switch), E4A3C (odd
+  argument-slot stack use).
 - Large-function pass 2 (drafts in the agent worktree's build/nm_<addr>.c; "~N" = differing insns):
   80047B90 ~35 (needs &v held in s0 with m[1][1] stored via s0+0x10), 80024BD8 ~12 (POLY_G4 store
   scheduling), 8005A320 ~17 (D_80080A70.unkC mask association, relocation scheduling), 8005C8BC ~15
@@ -50,7 +47,37 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   helper shape unknown), 8001DE50 (draft only), 80030EE4 (dead copy of arg2; maybe libgte RotMatrix*).
   Also 8005CF04 ~75 (v/old vs %hi(D_80080A10) s-register priority), 8004DCEC (window-init inline
   boundary; caller stores get rescheduled), 8005D6BC ~76 (&D_80083158 hoisted to fp, tick count spilled).
-- Pass 4 (drafts in the agent worktree's build/nm_*.c): E4C88 4 rows (copy of the E788C result scheduled early), AD90C ~44 (unk851 test inverted to bnez, kind-7 delay slot, gx/m regs), DA92C ~80 (temp regs t0/v0, loop copies), D650C ~70 (op/a copied into a0 for the switches, cross-jump of cont=0 tails).
+- Pass 5 (matched: AD90C, E4C88, D650C, E2000, D0B18, E6764).
+  Tricks that fixed the matched ones: reuse a variable or add a fresh one to change live ranges (AD90C k2,
+  E4C88), msg/ok assignments placed where reorg wants them, duplicated case bodies instead of fallthrough to
+  raise a pointer's priority (E2000), r * arg10 instead of a running sum and biv increment order via the for
+  clause (D0B18), and a struct-typed store ((XY32 *)&v[0])->w to create the original's alias dependency (E6764).
+- Pass 6 (matched: D2938, AF800, DA4C4, C1594, E3B70, F28F0, D07B4, EE154, EE24C, EE7F8, EE938, E651C, DCCE4,
+  F5064).
+  What fixed them:
+  - Variable reuse again, mostly: k reused for arg4*4 (D2938); the size parameter reused as the loop counter
+    and the loop pointer as the wrap temp (E3B70); the counter reused as the running start (E651C); a
+    2-step `off = i * 4; off = (off + i) * 4` per branch so the join can reuse it (DCCE4).
+  - Statement order the scheduler can't undo: `unk56F |= 0x40` before `unk56E = 1` (AF800: the scheduler
+    swaps the stores back, but CSE then no longer forwards unk56F to the later |= 8); `r = 1` after the call
+    (EE7F8); `(n = p->unk1) - f(p->unk0)` so the load follows the call (EE7F8/EE938).
+  - Shared done = 0 via one combined condition instead of nested ifs, so only the tail cross-jumps (AF800).
+  - A goto loop (no loop notes, so no rotation or strength reduction) plus one byte pointer for both walks (E651C);
+    a constant held in a variable set first (C1594) and an explicit pointer for the loop (C1594).
+  - Return the old pointer: DA4C4 is a bump allocator (`p = unk58; unk5C -= n; unk58 = p + n; return p`).
+  - addPrimLenIn (ovl_0b.h): addPrim asm with len as a plain input, so a constant len gets its own register
+    (D07B4). func_800D08C4 calls D07B4 with 2 args, so its call goes through an unprototyped cast.
+  - F5064: the else-branch rect goes through a temp (`t = &D_800FDE58; t->h = ...; r = t;`) to get the
+    v0 -> s0 copy, and if/else instead of assign-then-override.
+  - EE154/EE24C needed nothing special (if/else-if on D_80104FC0 fields); F28F0 wants a RECT * to w->unk8 and
+    `else if (st == 1)` nested rather than one || chain.
+  WIP drafts in docs/wip/ovl_0b_<addr>.c (first line = status), rows = aligned differing insns:
+  DA92C 2 (case 0 header loads: hdr[1] is always scheduled second; cases 4/5/9 fixed by reusing dst/base/m),
+  E9000 2 (i++ placement in the copy loop), B1B48 3 (which return-0 block the later returns cross-jump to;
+  turning the goto-fail sites into direct call+return doesn't change it), C3F78 3 (-O1: case-5 test sense,
+  table base before index scale), C0C00 5, AE4FC 5, DA138 6, DA1F4 14, AA504 18 (main checkout
+  build/drafts/ovl_0b; the collect loop is not the AA24C inline), E8B28 17, EFD1C 18, D7094 30, C9374 32, AB07C 51, CBA58 60,
+  AC37C ~150, C67BC ~300.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -69,12 +96,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Two matched in this pass by brute-forcing statement order / variable splits with small scripts
   (build/multiperm.py, merge.py, partvar.py, roles.py, declperm.py, variants.py): store order (0c BA1E4) and the
   tpage/clut/semitrans order (0c BF544) fixed register allocation that the permuter never found.
-- Large/GTE pass (drafts in the main checkout's build/drafts/ovl_0b/, diff = differing insns): D2938 7 (base
-  pointer temp regs), C7730 ~18 (relocation prologue regs/delay slot), AA504 23 (collect loop regs a0/v1),
+- Large/GTE pass (drafts in the main checkout's build/drafts/ovl_0b/, diff = differing insns): C7730 ~18 (relocation prologue regs/delay slot), AA504 23 (collect loop regs a0/v1),
   D1D74 ~30 (frame index n/k regs), D2DBC ~65 (header load scheduling), CD210 ~36 (bone index needs sext,
-  q copied to a 2nd reg), E6764 9 (first inner-loop stores scheduled), D1FFC ~60 (like D1D74),
-  E57B0 ~117 (constant 1 kept in s0 and used by sllv), AF800 ~135 (case 0 branch order, 56F not reloaded),
-  ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement), DE11C ~690 (model
+  q copied to a 2nd reg), D1FFC ~60 (like D1D74),
+  E57B0 ~117 (constant 1 kept in s0 and used by sllv),
+  ABBC4 ~220 (regs in case 5 texture loop; frame 8 bytes too big), DE11C ~690 (model
   renderer: all 8 primitive loops written, register allocation/spills differ).
 - Large-function pass 3 (drafts in the agent worktree's build/nm_<addr>.c): 80054294 159/238
   (needs a pointer to ys set inside the 3rd loop; py/x/y s-register priority), 800475D8 (dir/collision
@@ -101,3 +127,22 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * goto loops instead of do/while (no loop.c givs/hoisting, and refs are no longer weighted by loop depth);
   * an address-taken pair as one aggregate (`VECTOR q; f(&q.vx); g(&q.vy)`) explains unused frame space;
   * `x >= 0 ? x : -x` vs `if (x < 0) x = -x` vs ABS() give three different abs sequences.
+
+## menus / minigames
+- Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
+  scheduled first), 0d B3198 (y temp in a3 instead of v1), 0d B030C (0x40 constant not hoisted into fp),
+  0d B16A4 (s-register priorities), 0d AC060 (s-register priorities: card ptr should be s0), 0d ACFFC
+  (constant 0x10 not hoisted into fp; y/dx/dy one reg off), 0d A93A0 (needs two un-CSE'd 0x80104A00
+  constants), 36 1A48 (u8 reload of unk3 needs andi), 36 2664 (cur/c s0/s1 swap), 39 973C (CRC: andi
+  placement), 38 EE740 (pool address hoisted instead of table base), 33 F2AB4 (a0/a1 swap), 33 F1150
+  (lv=0 / address scheduling), 33 EF644 (store scheduling of D_80077DE8), 65 F2560 (constant lui not in
+  delay slot), 65 F1848 (loop givs), 15 ADE30 (s-register swaps), 3c F5BCC (`y + 0x26 + row*15` folded),
+  14 A741C (search-loop layout), 0d AD400 (FT4 store scheduling), 36 F12B8 (dx=0x2E init hoisted above
+  calls), 36 F1778 (one extra s-reg), 3c F6D34 (like F5BCC), 34 EFC20 / 39 F7FD4 (same gauge function
+  in both overlays; prim-packet pointer regs), 65 F2E58 (TextSize fields not reloaded), 65 F2FE8
+  (loop givs), 3a F459C (folding of row/column sums), 39 F9120 (title digit stores order).
+- Not attempted: 36 F08F4 (rodata blob lives in the function file), 64 libpress-internal functions
+  (8019AE44-8019B3D4 hand-written DecDCTvlc, 8019D020-8019D36C MDEC_* internals) which look like
+  library code that config/library_funcs.us.txt does not list yet.
+- 38 EF258 matches (build/ready_38_EF258.c) but links against D_8006D128, which ovl_38's
+  undefined_syms_auto lacks; add `D_8006D128 = 0x8006D128;` there (config change) to land it.

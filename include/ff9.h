@@ -3925,4 +3925,6 @@ static inline void func_8004883C_idle(Unk8004AB64 *q) {
     func_80039C38_anim(q, q->unk74);
 }
 
+extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */
+
 #endif
