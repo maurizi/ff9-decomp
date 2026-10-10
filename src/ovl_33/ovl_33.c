@@ -862,7 +862,38 @@ void func_801F1048(void) {
 void func_801F1148(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F1150);
+void func_801F1150(void) {
+    s32 i;
+    u8 lv;
+    Character *c;
+    AbilityMenu *d;
+
+    D_801FC840.unk3 = 0xFF;
+    D_801FC840.unk0 = 0;
+    D_801FC840.unk1 = 1;
+    D_801FC840.unk2 = 0;
+    D_801FC840.unk260 = 0;
+    func_8003575C(D_801EE648);
+    func_8003556C(D_800355DC);
+    func_80035674(1);
+    setRECT(&D_801FC840.unk14, 8, 8, 0xE4, 0x1A);
+    setRECT(&D_801FC840.unk1C, 8, 0x26, 0x8C, 0xB6);
+    setRECT(&D_801FC840.unk24, 0x94, 0x26, 0xA0, 0x62);
+    setRECT(&D_801FC840.unk2C, 0x94, 0x8A, 0xA0, 0x52);
+    setRECT(&D_801FC840.unk34, 0x94, 0x26, 0xA0, 0x62);
+    for (i = 0; i < 4; i++) {
+        lv = 0;
+        c = D_8006794C->unk1C->unk54C[i];
+        d = (AbilityMenu *)((u8 *)&D_801FC840 + i);
+        if (c != NULL) {
+            lv = c->unk17;
+        }
+        d->unk25C[0] = lv;
+    }
+    func_80063118(&D_801FC840.unk23C, 0, 1);
+    func_801F3278(D_80077E50.unk3, 0);
+    func_80028CF8(&D_801FC840.unk24C, D_80077E50.unk3, func_801F3264);
+}
 
 void func_801F12C8(void) {
     u8 slot;
