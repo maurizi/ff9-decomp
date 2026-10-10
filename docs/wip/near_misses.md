@@ -192,6 +192,38 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * tools/permute.py strips `static inline` bodies (also those from headers), so the permuter scores the
     wrong code for any function using an inline helper; build/fixinl.py in this worktree restores them before
     running decomp-permuter directly. Earlier permuter runs on such functions may have been meaningless.
+- Pass 9: matched 0a BF0C4, BFEE0, AB3CC. New drafts in docs/wip/: C519C (147 rows, was not attempted;
+  control flow and frame match, register allocation left), BE158 (194 rows, first draft; n must not
+  need a callee-saved register). B0124 17 -> 12 rows (`d = g->unk850; g->unk826[0] = d;`). Not
+  improved: C4EC8 (1), B4A5C (13), C31F8 (19), BF660 (39), BB714/CA1D8, AA4E8. Not attempted: 15 A9488.
+  What worked:
+  * sched1 ranks a `birthing` insn (sets a pseudo with REG_N_SETS == 1, live at block end) at
+    0x7f000001, so a set-once local is scheduled after multi-set ones regardless of statement order
+    (`cc1 -dS` prints the ready lists). AB3CC: `lim = 100` came after `j = 0` until lim was also the
+    later part count (s4 holds both in the original), i.e. set twice;
+  * a loop counter compared/used through the index (`&o[j]`, `D_800C9DA4.unk1C + j * 3`) instead of
+    walking pointers: loop.c's giv inits then appear as the original's copies after the loop guard
+    (`addu s2,s3` = k init 0 rewritten by reload_cse, `addu s0,a0` = o init) (BFEE0);
+  * a dead `switch` whose results are overwritten later keeps only its loads and the hoisted case
+    constants; it must assign a variable that is live afterwards (BFEE0 assigns j, reset to 0 later);
+  * `do { } while (0)` around a whole loop (not one statement) raised the loop depth weighting of
+    its pseudos and fixed the counter/limit registers (BFEE0, found by the permuter; build/dwblk.py in
+    the pass 9 worktree wraps every statement or block in turn and scores them in parallel);
+  * an extra copy of a loop bound before the second loop (`cnt = lim; for (j1 = 0; j1 < cnt; ...)`)
+    fixed AB3CC's last s4/s5 swap (permuter);
+  * reusing a result variable for an operand (`d = q[x]; d = ... * (p[x] - d);`) made the original's
+    spills (edge to 0x68, &q[x] to 0x70) appear in C519C (237 -> 147 rows);
+  * an `ABS(d) < ae` the original compiles as two compare-and-branch arms (`bltz d`, then
+    `slt; beqz cont; j next` and `negu; slt; bnez next`) only came out of explicit gotos
+    (`if (d >= 0) { if (d >= ae) goto c; goto next; } if (-d < ae) goto next; c:`); every expression
+    form is cross-jumped into one bnez (C519C);
+  * `s = (s32)h - -s;` keeps `addu a1, s4, a1` operand order where `(s32)h + s` gets swapped by
+    expand_binop (BF0C4; ugly but the only form found);
+  * a block-scope prototype (`void f(T *, u8);` inside the function) gives one function the u8
+    argument conversion without changing an earlier-matched caller that relies on the implicit
+    int declaration (AB3CC / AC02C and func_800B61A4);
+  * fake permuter outputs are hints: B3198's `if (y) y = t + 0x12; else y = t + 0x12;` meant the
+    assignment belongs in both branches (`y = a->unk10 + 0x12;` / `y = b->unk10 + 0x12;`).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -232,6 +264,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   find `y = b->unkC; x = y + 8;`), B030C (20 rows: 0x40 kept in fp), AC708 (unchanged; a goto loop loses the
   original's giv). 0d A93A0 (40 B): every spelling of `tbl[i*2] * 0x800 + 0x80104A00` CSEs the two
   0x80104A00 constants. 0d AC060 compiles with `void *vp` (91 rows, a should outrank s for s0).
+- Pass 9 (0d/14/15): matched 0d B3198 (y assigned in both branches, see the ovl_0a pass 9 notes) and
+  0d A93A0 (`s32 *p = (s32 *)0x80104A00; p += i * 2; return (u8 *)0x80104A00 + *p * 0x800;`: the
+  pointer variable is modified, so CSE no longer knows the first constant and rematerialises the
+  second). Still open: 0d ACFFC (2 rows; with -dS the preheader block has all-equal priorities, so
+  sched keeps source order and `y = 0x1A` always precedes loop.c's hoisted `li fp, 0x10` / giv init;
+  in the original it comes after them, so it is probably not a plain preheader assignment), 0d B030C
+  (20), 14 A741C (the original enters both search loops with `j cmp` into a `while (e->unk0 != key)
+  { e--; if (e < start) goto skip; }` shape; jump.c duplicates the exit test here instead, 59 rows
+  with that form vs 49 for the goto draft), 15 ADE30 (28: x/f/s/p s-register order and the
+  `x += w` delay slot).
 - 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
   with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
   let that go.

@@ -4,6 +4,10 @@
  * emits `li s5, 0x1A` (y = 0x1A) after the loop.c insns `li fp, 0x10; addu s0, s1, fp` (hoisted
  * 0x10 and the &cards[i] giv); ours puts it before them. Tried: every position of `y = 0x1A`
  * before the loop, for-init orders, x/cards/y permutations, 20 min of the permuter.
+ * Pass 9: `cc1 -dS` shows all five preheader insns at equal priority, so sched1 keeps the RTL
+ * order, and loop.c always inserts its movables after the source statements. In the original
+ * y = 0x1A therefore comes from somewhere that ends up after the movables (not a plain
+ * statement before the loop). 50 more permuter minutes found nothing.
  */
 #include "ovl_0d.h"
 void func_800ACFFC(TmState *s) {
