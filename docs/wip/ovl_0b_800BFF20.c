@@ -1,4 +1,4 @@
-/* WIP func_800BFF20: 7 differing rows (build/cmp.py-style aligned diff), one instruction short. New in pass 9 (status tint / float bob of a battle unit). The 24-byte colour table is the local initialiser (replaces INCLUDE_RODATA D_800A7948 when integrated). Fixed: n (the D7C counter) reused as the float flag, m = n then m %= 24, t dropped (permuter), c tested as u8. Left: two "copy before test" spots: the original computes the 0x800000 test into v0 and copies it to c (v1), and the float flag a0 is copied to v0 before beqz; v = w = ... gets the first copy but in the wrong direction. */
+/* WIP func_800BFF20: 6 differing rows (new build/cmp.py prints 8: two are the .rodata vs D_800A7948 symbol of the table, which go away when integrated), same length. Pass 10: `if ((u8)n)` on the end flag gives the copy-before-beqz shape (the original's copy is what is left of a zero-extend that combine dropped), but ours keeps andi 0xff; a separate flag variable shifts all registers (60+ rows). New in pass 9 (status tint / float bob of a battle unit). The 24-byte colour table is the local initialiser (replaces INCLUDE_RODATA D_800A7948 when integrated). Fixed: n (the D7C counter) reused as the float flag, m = n then m %= 24, t dropped (permuter), c tested as u8. Left: two "copy before test" spots: the original computes the 0x800000 test into v0 and copies it to c (v1), and the float flag a0 is copied to v0 before beqz; v = w = ... gets the first copy but in the wrong direction. */
 #include "ovl_0b.h"
 
 void func_800BFF20(BtlUnit *arg0) {
@@ -77,7 +77,7 @@ end:
     if ((arg0->unk38 & 0x200000) || (arg0->unk3C & 0x200000)) {
         n = 1;
     }
-    if (n) {
+    if ((u8)n) {
         arg0->unk8C[1] = t = 0xFF380000 - func_8004BB80((D_8006794C->unk1C->unk8E4.battle->unkD7C & 0xF) << 8) * 480;
         arg0->unk98->unk0[1] = t;
     }
