@@ -1354,6 +1354,13 @@ s32 func_8004B1EC(void);
 s32 func_8004B1FC(void);
 void func_8002FA10(void);
 
+/* func_800B0378 (walkmesh movement) */
+void func_800B3760(void);
+extern u8 D_800CCE4A;
+extern u8 D_800CCE55;
+extern u8 D_800CCF6C;
+extern u8 D_800CE208;
+
 /* func_800AD738 (camera follow) */
 extern u8 D_800CE1E0;
 extern Unk800CE288 D_800CE118[4];
