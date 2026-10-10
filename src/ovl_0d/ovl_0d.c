@@ -657,7 +657,11 @@ void func_800A9334(void) {
     func_80022DF0(D_8006794C->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x80104A00);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A93A0);
+u8 *func_800A93A0(s32 i) {
+    s32 *p = (s32 *)0x80104A00;
+    p += i * 2;
+    return (u8 *)0x80104A00 + *p * 0x800;
+}
 
 void func_800A93C8(u8 *arg0, s32 arg1, s32 arg2) {
     s32 i;
