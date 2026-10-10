@@ -275,7 +275,49 @@ void func_800D0A0C(u32 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0B18);
+/* Draws a grid of gouraud quads whose rows ripple with a sine wave. */
+void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, CVECTOR *arg6, s32 arg7, s32 arg8,
+                   s32 arg9, s32 arg10) {
+    POLY_G4 *p;
+    CVECTOR *ca;
+    s32 r;
+    s32 c;
+    s32 y;
+    s32 ph;
+
+    ca = arg6;
+    r = 0;
+    p = (POLY_G4 *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(p + arg2 * arg3);
+    y = arg1;
+    if (arg3 > 0) {
+        do {
+            ph = arg8 + r * arg10;
+            ca[1].cd = (arg5 == 0xFF) ? 0x38 : 0x3A;
+            ca[0].cd = ca[1].cd;
+            for (c = 0; c < arg2; c++, p++, ph += arg9) {
+                p->x0 = p->x2 = (c * 0x140) / arg2;
+                p->x1 = p->x3 = ((c + 1) * 0x140) / arg2;
+                if (r == 0) {
+                    p->y0 = p->y1 = y;
+                } else {
+                    p->y0 = y + ((func_8004BB80(ph) * arg7) >> 12);
+                    p->y1 = y + ((func_8004BB80(ph + arg9) * arg7) >> 12);
+                }
+                ph += arg10;
+                p->y2 = (y + arg4) + ((func_8004BB80(ph) * arg7) >> 12);
+                p->y3 = (y + arg4) + ((func_8004BB80(ph + arg9) * arg7) >> 12);
+                ph -= arg10;
+                *(s32 *)&p->r0 = *(s32 *)&p->r1 = *(s32 *)ca;
+                *(s32 *)&p->r2 = *(s32 *)&p->r3 = *(s32 *)&ca[1];
+                func_800D07B4(0x08000000, arg0, p, arg5);
+            }
+            r++;
+            y += arg4;
+            ca++;
+        } while (r < arg3);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0E14);
 
