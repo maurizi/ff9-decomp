@@ -905,12 +905,12 @@ extern s8 D_800D3E75;
 extern s32 D_800CCE40;
 extern u8 D_800D3E76;
 extern u8 D_800D3E77;
-extern s8 D_800D3E78;
-extern s8 D_800D3E79;
+extern u8 D_800D3E78;
+extern u8 D_800D3E79;
 extern u8 D_800D3E80;
 extern s32 D_800D3E84;
 extern s8 D_800D3E88;
-extern s8 D_800D3E89;
+extern u8 D_800D3E89;
 extern s32 D_800D3F20;
 extern WmLNode D_800D3F28;
 extern WmLNode D_800D3F38;
@@ -1199,6 +1199,8 @@ extern u8 D_800CD714;
 extern u8 D_800CD718;
 void func_800BF544(s32, s32, s32, s32, CVECTOR, CVECTOR, s32, s32, s32, s32);
 void func_800C1B00(s32, s32, s32 *, s32 *, u8);
+void func_800BEECC(void);
+s32 func_800C1604(u32);
 
 static inline CVECTOR func_800C1428_color(void) {
     CVECTOR c;
@@ -1236,6 +1238,17 @@ static inline u32 func_800B7DAC_trg(void) {
         return 0;
     }
     return D_80073990;
+}
+
+void func_800C7050(WmNode *);
+s32 func_800CAE00(u16 *);
+
+/* random byte from the main exe's table (func_8004BF20 refills it) */
+static inline s32 wm_rand8(void) {
+    if (D_8007B720 >= D_8007B92D) {
+        func_8004BF20();
+    }
+    return *D_8007B720++;
 }
 
 /* Inlined copy of func_800B3340 (cell type bit test). */
@@ -1337,5 +1350,31 @@ void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 
 /* main exe: candidates for ff9.h */
 void func_80022CC4(s32, void *, s32, s32);
+s32 func_8004B1EC(void);
+s32 func_8004B1FC(void);
+void func_8002FA10(void);
+void OuterProduct0(VECTOR *v0, VECTOR *v1, VECTOR *v2);
+
+/* func_800B9808 (walkmesh height lookup) */
+extern s16 D_800D27F8[];
+extern u16 D_800D2DF8[];
+extern char D_800A7D20[];
+
+/* func_800B0378 (walkmesh movement) */
+void func_800B3760(void);
+extern u8 D_800CCE4A;
+extern u8 D_800CCE55;
+extern u8 D_800CCF6C;
+extern u8 D_800CE208;
+
+/* func_800AD738 (camera follow) */
+extern u8 D_800CE1E0;
+extern Unk800CE288 D_800CE118[4];
+extern s32 D_800CCAFC;
+extern s32 D_800CCB04;
+extern s32 D_800CCB08;
+extern s32 D_800CCB0C;
+extern s32 D_800CCB10;
+extern s32 D_800CCB14;
 
 #endif

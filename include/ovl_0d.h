@@ -105,7 +105,7 @@ typedef struct {
     s32 unk448;
     s32 unk44C;
     s32 unk450;
-    u8 pad454[0x458 - 0x454];
+    s32 unk454;
     Window *unk458;
     s32 unk45C;
     s32 unk460;
@@ -148,7 +148,7 @@ typedef struct {
     s32 unk54C;
     s32 unk550;
     s32 unk554;
-    u8 pad558[0x564 - 0x558];
+    u8 unk558[12];
     s32 unk564;
     s32 unk568;
     s32 unk56C;
@@ -166,6 +166,8 @@ typedef struct {
     s32 unk5B8;
     s32 unk5BC;
     s32 unk5C0;
+    s32 unk5C4;
+    RECT unk5C8;
 } TmState;
 
 typedef struct {
@@ -218,6 +220,8 @@ typedef struct {
 } TmTimImage; /* TIM pixel block */
 
 extern s32 D_800B365C;
+extern s8 D_800B3664; /* sound request kind, -1 = none */
+extern u8 D_800B3668[];
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;
@@ -258,7 +262,7 @@ s32 func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
 void func_800A755C(void);
 void func_800A75E0(void);
-void func_800A78EC(s32, s32, s32, s32, s32);
+s32 func_800A78EC(s32, s32, s32, s32, s32);
 void func_800A7E10(void);
 void func_800AB8C8(void);
 void func_800AB8E8(s32);
@@ -285,5 +289,100 @@ void func_800AB89C(Window *);
 void func_800B355C(Window *);
 SPRT *func_800AFB60(void *, SPRT *, s32, s32, s32, s32, s32);
 void func_800AE494(Window *);
+
+/* Main loop (func_800A7E10) and its per-state handlers. */
+void func_800A8B80(void);
+void func_800A8BC4(TmState *);
+void func_800A8D74(TmState *);
+void func_800A932C(TmState *, char *); /* debug print, stubbed */
+void func_800A9B0C(TmState *);
+void func_800A9298(TmState *);
+void func_800A9334(void);
+void func_800A93C8(u8 *, s32, s32);
+void func_800A986C(TmTim *, s32, s32, s32, s32);
+void *func_800A993C(u32 *, SPRT *, TmState *);
+void *func_800A9424(u32 *, SPRT_16 *, TmState *);
+void *func_800A96B0(u32 *, SPRT_16 *, TmState *);
+void *func_800A9B2C(u32 *, void *, TmState *);
+void *func_800A9F10(u32 *, void *, TmState *);
+void *func_800AB574(u32 *, void *, TmState *);
+void *func_800AB928(u32 *, void *, TmState *);
+void *func_800ABEBC(u32 *, void *, TmState *);
+void *func_800AC060(u32 *, void *, TmState *);
+void *func_800AC708(u32 *, TILE *, TmState *);
+void *func_800ACDA0(u32 *, TILE *, TmState *);
+void *func_800AD400(u32 *, void *, TmState *);
+void *func_800AD9F8(u32 *, void *, TmState *);
+void *func_800AE084(u32 *, void *, TmState *);
+void *func_800AE398(u32 *, SPRT *, TmState *);
+void *func_800AE5A0(u32 *, void *, TmState *);
+void *func_800AFCE4(u32 *, SPRT *, TmState *);
+void *func_800B030C(u32 *, void *, TmState *);
+void *func_800B07DC(u32 *, void *, TmState *);
+void *func_800B1A84(u32 *, SPRT *, TmState *);
+void *func_800B2C5C(u32 *, SPRT *, TmState *);
+void *func_800B2F60(u32 *, SPRT *, TmState *);
+void *func_800B3198(u32 *, void *, TmState *);
+void *func_800B3480(u32 *, void *, TmState *);
+void func_800AA1FC(TmState *);
+void func_800AA368(TmState *);
+void func_800AA408(TmState *);
+void func_800AA504(TmState *);
+void func_800AA548(TmState *);
+void func_800AA790(TmState *);
+void func_800AAEB4(TmState *);
+void func_800AB0F0(TmState *);
+void func_800AB2E0(TmState *);
+void func_800AB338(TmState *);
+void func_800AB854(TmState *);
+void func_800ABC74(TmState *);
+void func_800AC5AC(TmState *);
+void func_800AC624(TmState *);
+void func_800AC6A4(TmState *);
+void func_800ACF8C(TmState *);
+void func_800ACFFC(TmState *);
+void func_800AEE2C(TmState *);
+void func_800AF760(TmState *);
+void func_800AF890(TmState *);
+void func_800AFBE4(TmState *);
+void func_800B026C(TmState *);
+void func_800B08CC(TmState *);
+void func_800B35A4(TmState *);
+
+void func_800AC4C8(s32, TmPos *, TmCard *, TmCard *);
+TmCard *func_800B1010(TmState *, s32, s32, TmCard *);
+void func_800AB060(Window *);
+void func_800AB52C(Window *);
+void func_800ABE74(Window *);
+s32 func_800AF268(TmState *);
+void func_800AB8F4(s16);
+extern u8 D_800A74A8[];
+
+/* main exe: candidates for ff9.h */
+void func_80023A0C(void);
+void SetSprt16(SPRT_16 *);
+s32 func_80062794(s32); /* width of a number string? */
+s32 func_80062498(void);
+s32 func_800624D8(void);
+s32 func_8006251C(void);
+u8 func_8002C700(s32, s32);
+void D_800355DC(void);
+void func_80062724();
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+s32 func_80055290(void *);
+void func_800552B8(s32);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
+
 
 #endif

@@ -115,13 +115,62 @@ typedef struct {
     u8 pad8[0x20 - 8];
 } Ovl64RingHdr; /* 0x20 */
 
+/* sector header at the end of each ring slot */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u8 pad4[4];
+    s32 unk8;
+    u8 padC[0x1C - 0xC];
+    union {
+        u32 w;
+        struct {
+            u16 lo;
+            u16 hi;
+        } h;
+    } unk1C;
+} Ovl64SectHdr;
+
+/* per-frame info copied out of the stream (D_8019F510) */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+    u16 unk8;
+    u16 unkA;
+    u16 unkC;
+    u16 unkE;
+    u16 unk10;
+    u16 unk12;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    u16 unk20;
+    u16 unk22;
+} Ovl64FrameInfo; /* 0x24 */
+
+/* 2 KB stream sector */
+typedef struct {
+    u8 pad0[0x12];
+    u16 unk12;
+    Ovl64FrameInfo unk14[2];
+    s32 unk5C;
+    u32 unk60;
+} Ovl64StreamSect;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+} Ovl64Flag;
+
 typedef struct {
     u8 unk0;
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    u8 pad4[4];
-    s32 unk8;
+    void (*unk4)(u8 *, u8 *, Ovl64FrameInfo *);
+    void (*unk8)(void); /* sector callback */
     s32 unkC;
     s32 unk10;
     s32 unk14;
@@ -130,14 +179,14 @@ typedef struct {
     CdlLOC unk20;
     u8 pad24[0x38 - 0x24];
     s32 unk38;
-    s32 unk3C;
+    u32 unk3C;
     s32 unk40;
     s32 unk44;
-    s32 unk48;
-    s32 unk4C;
-    s32 unk50;
-    s32 unk54;
-    s32 unk58;
+    u32 unk48;
+    u32 unk4C;
+    u32 unk50;
+    u32 unk54;
+    u32 unk58;
     u32 unk5C; /* sectors per slot */
     u32 unk60;
     s32 unk64;
@@ -146,12 +195,12 @@ typedef struct {
     u32 unk70; /* current slot */
     Ovl64RingHdr *unk74;
     u8 *unk78; /* slot data, 0x8F4 bytes per sector */
-    s32 unk7C;
-    s32 unk80;
-    s32 unk84;
+    u32 unk7C;
+    u32 unk80;
+    u32 unk84;
     u32 unk88;
-    s32 unk8C;
-    s32 unk90;
+    u32 unk8C;
+    u8 *unk90;
 } Ovl64Stream;
 extern s32 D_8019DE0C;
 extern Ovl64Stream D_8019DE10;
@@ -161,11 +210,13 @@ typedef struct {
     s32 unk0;
     s32 unk4;
 } Ovl64Pair;
-extern u8 D_8019F510[][0x24];
+extern Ovl64FrameInfo D_8019F510[];
 extern Ovl64Pair D_8019F750[16];
-extern u16 D_8019F7D0[];
+extern Ovl64Flag D_8019F7D0[];
 
-void func_8019C434();
+void func_8019C434(u8);
+void func_8019BA70(void);
+void func_8019BCE8(void);
 void func_8019A7A8(s32, s32);
 s32 func_8019C864(void);
 s32 func_8019C99C(s32 *);

@@ -144,6 +144,34 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   (~78 rows: local regs a0/a3, prologue loads of the second block).
   Also 0c B20B8 (2 spots: %hi(D_800CE3C0) kept in s0 across the call vs v1; srlv operand regs in the inlined
   bit test), 0c B9808 (2 spots: fy=0 spill store scheduled early; `&polys[p]` addu operand order).
+- Large-function pass 6 (drafts committed as docs/wip/ovl_0a_*.c / ovl_0c_*.c with notes): 0c AD738 1 insn (one
+  reorg delay slot after `if (D_800CE0EC == 1)`: original fills it from the target), 0c C53DC 3 insns (dead
+  `s7 = 0` + its save, frame 0x38), 0c B0378 ~36 rows (product tied to LO -> mflo t2; else-branch constant regs),
+  0a AA4E8 ~93 rows (lh/lhu order of the FieldVramPos loads; s-reg swaps), 0a BB714 = 0c CA1D8 (twins, 772/778:
+  3-vertex loops recompute `i2 * 4`; register shifts). Matched 0a BA560 and 0c BEECC.
+  What made the difference (worth trying on other register-allocation misses):
+  * locals reused for unrelated values (BA560: key2/key/arg1/rot reused as bone/column pointers in the second pass;
+    BEECC: one loop index for both loops, best/ang reused as |dx|/|dz|; B0378: dx/dy/dz reused in the else branch);
+  * goto loops instead of do/while (no loop.c givs/hoisting, and refs are no longer weighted by loop depth);
+  * an address-taken pair as one aggregate (`VECTOR q; f(&q.vx); g(&q.vy)`) explains unused frame space;
+  * `x >= 0 ? x : -x` vs `if (x < 0) x = -x` vs ABS() give three different abs sequences.
+- Pass 7 (close-out): matched 0c AD738, C53DC, B0378, B9808 (and 0d B1A84, A9B2C, B1110, 15 A7ABC, see below).
+  Drafts left in docs/wip/ with headers: 0a AB3CC (4 rows), C4EC8 (1), B4A5C (13), C31F8 (19), BB714 (~260,
+  was ~930), AA4E8 (unchanged). What worked:
+  * `abs()` (the builtin) emits the abssi2 insn: same `bgez; nop; negu` as `if (v < 0) v = -v`, but it is one
+    insn, not a jump, so reorg's register-liveness scan (find_dead_or_set_registers, max ~2 conditional
+    jumps) sees further. That fixed AD738's last delay slot (filled from the branch target);
+  * a dead `u8 flag = 0` whose only use is `if (flag) {...}` explains a saved s-register set to 0 and never
+    read (C53DC): combine folds the test through nonzero_bits, but the pseudo keeps flow's stale life info
+    across the loop and gets a callee-saved register; the body is dropped by jump2;
+  * a product that ends up as `mflo tN` + reload instead of a plain register: `m = a * b; m >>= 12; x += m;`
+    (B0378). Variable reuse found by build/rename.py-style search: B0378's else branch keeps the x offset in
+    `ez` and z in a fresh local;
+  * `(WmPoly *)((p << 4) + (s32)polys)` for an `addu` with the index register first (B9808);
+  * early spill stores move with the statement (B9808 `fy = 0` after the other inits).
+  New scripts in the agent worktree's build/: cmp.py-based vt.py (score files), try.py/tryv.py (apply
+  replacements), perm.py/perm2.py (greedy permutations of contiguous lines), movel.py (move one line through
+  a range), combo.py (2^k on/off sites), rename.py (rename locals inside a range).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -161,5 +189,76 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 - Not attempted: 36 F08F4 (rodata blob lives in the function file), 64 libpress-internal functions
   (8019AE44-8019B3D4 hand-written DecDCTvlc, 8019D020-8019D36C MDEC_* internals) which look like
   library code that config/library_funcs.us.txt does not list yet.
+- Large-function pass (0d/14/15), drafts in docs/wip/: 0d B1A84 (~98%, else-branch CSE of the
+  0x3A40 clut / ot + 0xFFA), 0d AC708 (t * 42 partly hoisted out of the loop; stack layout and flow
+  right), 15 A7ABC (~95%, reload scheduling of the spilled y/c args). Not attempted: 15 A9488
+  (6300 B blackjack main loop, heavily cross-jumped).
+  Tricks that matched things in this pass: a `u8` brightness local assigned from the unclamped
+  expression (`c = t * 8; if (t * 8 >= 0x100) c = 0xFF;`) gives the original's copy-then-compare
+  (0d AFCE4); `(arr[buf] + 1)->field` instead of `arr[buf][1].field` keeps `&arr[0][1]` as its own
+  hoisted base (14 A9E14, 15 AB490), and tpages there are `setDrawTPage(p, 1, 1, tpage)`, whose
+  `((u32 *)p)[1]` store schedules differently from a `->code[0]` store; a global that loads are not
+  moved above OT stores is a struct member in the original (14 D_800AB2D0); a nested `if (a) if (b) ...` chain stops gcc folding
+  `x != 0x7C && ... != 0x7F` into a range check (0d AA790); `c = cond ? 1 : 2` used as an index folds
+  into byte offsets 4/2 (14 A9220); computing a call argument in its own statement first changes
+  the order of hoisted constants (15 AD7DC).
+- Pass 7 (0d/15 close-out): matched 0d B1A84 (the else branch's third sprite uses the same two-armed
+  if/else colour block as the second, which cross-jumps to the original's shape and stops CSE across it),
+  15 A7ABC (spilled-arg reloads can't move above earlier stores, so the statements that use y/c go first:
+  greedy permutation of each sprite's stores, build/perm2.py), 0d A9B2C (new; a per-arm `if (s->unk4 == 3)`
+  that cross-jumps into one compare, `k = s->unk564 * 12 - 0x78; r.x -= k;`, `code` stored right after
+  setlen) and 0d B1110 (the draft only lacked the `s` argument of func_800ACFC8).
+  Drafts in docs/wip/ with headers: 0d ACFFC (2 rows: preheader order of `y = 0x1A`), B3198 (2 rows, permuter
+  find `y = b->unkC; x = y + 8;`), B030C (20 rows: 0x40 kept in fp), AC708 (unchanged; a goto loop loses the
+  original's giv). 0d A93A0 (40 B): every spelling of `tbl[i*2] * 0x800 + 0x80104A00` CSEs the two
+  0x80104A00 constants. 0d AC060 compiles with `void *vp` (91 rows, a should outrank s for s0).
+- 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
+  with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
+  let that go.
 - 38 EF258 matches (build/ready_38_EF258.c) but links against D_8006D128, which ovl_38's
   undefined_syms_auto lacks; add `D_8006D128 = 0x8006D128;` there (config change) to land it.
+- Menus/FMV pass 2 (drafts in docs/wip/ovl_XX_<addr>.c, each with a status line): 64 A5B0 (3 rows,
+  constant 1 vs lui in a delay slot), 64 99B4 (MBG_init; the original rematerialises each big
+  constant in a3 right before use, not reproduced), 64 B7C4 / 3a 4238 (the original hoists fewer
+  loop invariants than ours), 64 C434 (CD ready callback, CSE reach), 36 1A48 (5), 36 2664 (7),
+  33 EF900 (13), 3c 6D34 (25, goto loop), 38 EE740 (6, was 17), 39 F973C (3, CRC type).
+  65 F2560 (1 row): the original has the lui of 0x98967E in the first branch's delay slot, we
+  get a nop. Not an assembler issue: 17 matched functions have the same reorder-mode branch +
+  lui-only `li` and their originals have the nop. gcc's delay-slot filler placed it, so the C
+  still differs (see the WIP header).
+  Tricks that matched things in this pass:
+  - A pointer that the original computes into a temp and then copies to an s-register
+    (`a1` -> `addu s3,a1`) comes from `m2 = &X; m2->f = n; m = m2;` (3c F6F00).
+  - Constants the original keeps in registers come from locals: `x = 0x18; y = 0x26;
+    y = row * 15 + (v->unk2 + y);` then `x + 0x72` (3c F5BCC).
+  - A loop offset that the original initialises in the loop guard's delay slot is a giv of the
+    counter (`dx = i * 4 + 0x2E;`, `y = i * 15 + 6;`), and `dy = i + 9; y = r->y + dy;` keeps
+    the add unfolded (36 F12B8, 38 EE740).
+  - A loop-invariant constant assigned inside the loop body after the first call (`y = 0x9E;`)
+    is hoisted in the original's order, which also fixed the biv/giv register order (3c 51B8,
+    3c 6714).
+  - A small loop whose address arithmetic is not strength-reduced and whose constants are not
+    hoisted was not optimised by loop.c: write it as a goto loop (3c 6D34).
+  - An uninitialised local that the original passes on one path holds whatever its register
+    had, so assigning it that value (`info = (void *)&D_8019DE10;`) reproduces it (64 BCE8).
+  - A call result used without `andi` means the callee was declared returning int there
+    (3c 42A8 now returns s32; 3c 51B8 declares func_80028954 s32).
+  - Store order inside a run of struct stores matters even though the scheduler moves loads
+    past them (64 C1B0, found with a bounded statement permutation).
+- ovl_64 library code (not in config yet, evidence for the coordinator):
+  - 8019D020-8019D36C are libpress's static MDEC helpers, right after DecDCToutCallback in the
+    same object: D020 = MDEC_reset (rodata "MDEC_rest:bad option(%d)\n", writes the MDEC
+    control registers through D_8019E008/D_8019DFDC/D_8019DFE8), D110 = MDEC_in (DMA0
+    setup, calls D22C), D1A0 = MDEC_out (DMA1 setup, calls D2C0), D22C = MDEC_in_sync
+    (string "MDEC_in_sync", 0x100000 spin with timeout), D2C0 = MDEC_out_sync ("MDEC_out_sync"),
+    D36C = timeout handler ("%s timeout:\n", printf then the same reset sequence as D020).
+    The unscheduled `lw; nop` code and the strings match Sony's libpress, not Square's
+    compiler output. D354 (already in C) is next to them and is likely libpress too.
+  - 8019AE44-8019B3D4 are hand-written assembly: no frames (`sw $ra,0($sp)` without moving
+    $sp), `bgez $zero` jumps between functions, scratchpad (0x1F800000) tables. AE44 builds the
+    VLC table into the scratchpad (DecDCTvlcBuild), AE98 swaps the max-size word D_8019DDD4 and
+    returns the old one (DecDCTvlcSize), AEC0/B00C/B188 are DecDCTvlc's decoder with shared tails,
+    B3D4 is another frameless routine (sw $ra,0($sp), $t4 used before set, fills 0xE0 runs of
+    words with a mask), most likely the libpress run-level/VLC helper or Square's own asm.
+    None of them can come from gcc; they should be named as library/asm in config and dropped
+    from progress.

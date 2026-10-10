@@ -123,6 +123,19 @@ extern u8 D_801EDF3C[];
 
 extern u8 D_801F3E98[];
 /* main exe: candidates for ff9.h */
+s32 func_80028014(s32); /* equip slot of an item, -1 = not equipment */
+s32 func_80028954(s32); /* main.c defines it returning u8; used unmasked */
+typedef struct {
+    u8 v[5];
+} Equip5; /* Character.unk39 copied as a whole */
+extern s32 D_801FC070[2]; /* buy: text ids, weapon / armor */
+extern u8 D_801FC078[5];  /* buy: icon per equip slot */
+extern u16 D_801FC080[];  /* buy: equip mask per character kind */
+extern s32 D_801F3FF8;    /* buy: "--" shown for accessories */
+extern s32 D_801FC0D0[2]; /* synth: as D_801FC070 */
+extern u8 D_801FC0D8[5];
+extern u16 D_801FC0E0[];
+extern s32 D_801F3FFC;
 s32 func_80027F34(s32); /* main.c defines it returning u8 */
 s32 func_80027F94(s32);
 extern s32 D_801FC050[3]; /* row y offsets */
@@ -144,7 +157,7 @@ void func_801F7250(void);
 void func_801F5EEC(void);
 void func_801F76C8(void);
 void func_801F8728(void);
-u8 func_801F42A8(s32, u8 *);
+s32 func_801F42A8(s32, u8 *);
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -194,6 +207,10 @@ void func_801F6714(void);
 void func_801F6C50(void);
 void func_801F6D34(s32, s32, s32, MenuView *);
 void func_801F6F00(void);
+void func_801F6A7C(Window *);
+void func_801F75BC(void);
+void func_801F75E8(void);
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 void func_801F73E0(void);
 void func_801F7438(void);
 void func_801F7470(void);

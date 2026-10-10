@@ -45,7 +45,7 @@ void func_801F4198(void) {
     }
 }
 
-u8 func_801F42A8(s32 stat, u8 *equip) {
+s32 func_801F42A8(s32 stat, u8 *equip) {
     u32 r = 0;
     u8 sum[4];
     s32 i;
@@ -352,7 +352,66 @@ void func_801F506C(void) {
     func_8002D9B4(r, 0x1E, 1);
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F51B8);
+void func_801F51B8(void) {
+    u8 buf[8];
+    Equip5 eq;
+    RECT *r;
+    MenuList *l;
+    Character *c;
+    u8 id;
+    s32 kind;
+    u8 armor;
+    u8 ok;
+    s32 cur;
+    s32 new;
+    s32 i;
+    s32 x;
+    s32 y;
+
+    r = &D_801FC2F8.unk18;
+    l = &D_801FC2F8.unk28;
+    id = D_801FC2F8.unk3C[l->unk5 + l->unk6];
+    if (D_801FC2F8.unk4 == 0) {
+        return;
+    }
+    func_8002DEE4(r, 0x23, 1);
+    kind = func_80028014(id);
+    if (kind < 0) {
+        return;
+    }
+    armor = kind > 0;
+    func_8002B524(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[D_801FC070[armor]], 0);
+    for (i = 0; i < D_801FC2D0.unk14; i++) {
+        x = 0xF + i * 0x24;
+        c = &D_8006794C->unk1C->unk3C[(u8)D_801FC2D0.unk18[i]];
+        ok = (D_80069018[id].unk6 & D_801FC080[func_80033A1C(c)]) != 0;
+        y = 0x9E;
+        if (ok) {
+            if (!armor) {
+                new = D_8006E0E8[id].unk5;
+                cur = D_8006E0E8[c->unk39[0]].unk5;
+            } else {
+                eq = *(Equip5 *)c->unk39;
+                eq.v[kind] = id;
+                cur = func_801F42A8(kind, c->unk39);
+                new = func_801F42A8(kind, eq.v);
+            }
+            if (kind == 4) {
+                *(s32 *)buf = D_801F3FF8;
+            } else {
+                func_8002BAE4(new, buf, 3, 1);
+            }
+            func_801F44F4(x - 1, y + 0x2E, 0x1E, D_801FC078[kind], 0);
+            func_8002B56C(x + 0xC, y + 0x2F, 0x1E, buf, 0);
+            if (cur < new) {
+                func_801F44F4(x - 1, y + 0x27, 0x1E, 5, 0);
+            } else if (new < cur) {
+                func_801F44F4(x - 1, y + 0x28, 0x1E, 6, 0);
+            }
+        }
+        func_80028204(x, y, 0x1E, func_80028954((u8)D_801FC2D0.unk18[i]), 0x2D, !ok);
+    }
+}
 
 void func_801F551C(Window *w) {
     u8 buf[16];
@@ -511,7 +570,28 @@ void func_801F5B64(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F5BCC);
+void func_801F5BCC(s32 unused, s32 row, s32 idx, MenuView *v) {
+    u8 buf[16];
+    Unk80069018 *it;
+    s32 y;
+    s32 x;
+    u8 id;
+    u8 ok;
+
+    ok = 0;
+    id = D_801FC2F8.unk3C[idx];
+    it = &D_80069018[id];
+    if (func_80027F34(id) < 99) {
+        ok = D_8006794C->unk1C->unk560 >= it->unk4;
+    }
+    x = 0x18;
+    y = 0x26;
+    y = row * 15 + (v->unk2 + y);
+    func_8002BAE4(it->unk4, buf, 5, 1);
+    func_80026C34(x, y, 0x1E, id, ok);
+    func_8002B5FC(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, ok ? 0 : 2);
+    func_8002B56C(x + 0x72, y + 4, 0x1E, buf, ok ? 0 : 2);
+}
 
 void func_801F5D14(void) {
     D_801FC2F8.unk0 = 0;
@@ -636,7 +716,48 @@ void func_801F60A8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F625C);
+void func_801F625C(void) {
+    u8 buf[16];
+    RECT *r;
+    MenuList *l;
+    SynthRecipe *s;
+    u8 equip;
+    u8 ok;
+    s32 i;
+    s32 have;
+
+    r = &D_801FC338.unk8;
+    l = &D_801FC338.unk28;
+    s = &D_801FC338.unk3C[l->unk5 + l->unk6];
+    equip = (D_80069018[s->unk4].unkF & 0xF8) != 0;
+    func_800269F4(r->x + 2, r->y + 0x36, 0x23, r->w - 5);
+    func_8002DEE4(r, 0x23, 1);
+    func_8002B524(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
+    for (i = 0; i < 4; i++) {
+        func_8002B5FC(r->x + 8, r->y + D_801FC0A8[i] - 4, 0x1E, func_800357C0(D_801F3C9C, D_801FC0C0[i]),
+                      (D_801FC0B8[i] | equip) ? 0 : 2);
+    }
+    func_8002BAE4(D_8006794C->unk1C->unk560, buf, 7, 1);
+    func_80063108(buf, D_801FC0BC);
+    func_8002B56C(r->x + 0x39, r->y + D_801FC0A8[0], 0x1E, buf, 0);
+    func_8002BAE4(func_80027F34(s->unk4), buf, 2, 1);
+    func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[1], 0x1E, buf, 0);
+    func_8002BAE4(func_80027F94(s->unk4), buf, 2, 1);
+    func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[2], 0x1E, buf, equip ? 0 : 2);
+    for (i = 0; i < 2; i++) {
+        if (s->unk2[i] != 0xFF) {
+            have = func_80027F34(s->unk2[i]);
+            if (s->unk2[0] == s->unk2[1]) {
+                ok = i < have;
+            } else {
+                ok = have != 0;
+            }
+            func_80026C34(r->x + 0xC, r->y + 0x4C + i * 17, 0x1E, s->unk2[i], ok);
+            func_8002B5FC(r->x + 0x1C, r->y + 0x4D + i * 17, 0x1E, D_8006A218 + D_80069018[s->unk2[i]].unk0,
+                          ok ? 0 : 2);
+        }
+    }
+}
 
 void func_801F65C8(void) {
     RECT sub;
@@ -664,7 +785,66 @@ void func_801F65C8(void) {
     func_8002D9B4(r, 0x1E, 1);
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6714);
+void func_801F6714(void) {
+    u8 buf[8];
+    Equip5 eq;
+    RECT *r;
+    MenuList *l;
+    Character *c;
+    SynthRecipe *s;
+    s32 kind;
+    u8 armor;
+    u8 ok;
+    s32 cur;
+    s32 new;
+    s32 i;
+    s32 x;
+    s32 y;
+
+    r = &D_801FC338.unk18;
+    l = &D_801FC338.unk28;
+    s = &D_801FC338.unk3C[l->unk5 + l->unk6];
+    if (D_801FC338.unk4 == 0) {
+        return;
+    }
+    func_8002DEE4(r, 0x23, 1);
+    kind = func_80028014(s->unk4);
+    if (kind < 0) {
+        return;
+    }
+    armor = kind > 0;
+    func_8002B524(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[D_801FC0D0[armor]], 0);
+    for (i = 0; i < D_801FC2D0.unk14; i++) {
+        x = 0xF + i * 0x24;
+        c = &D_8006794C->unk1C->unk3C[(u8)D_801FC2D0.unk18[i]];
+        ok = (D_80069018[s->unk4].unk6 & D_801FC0E0[func_80033A1C(c)]) != 0;
+        y = 0x9E;
+        if (ok) {
+            if (!armor) {
+                new = D_8006E0E8[s->unk4].unk5;
+                cur = D_8006E0E8[c->unk39[0]].unk5;
+            } else {
+                eq = *(Equip5 *)c->unk39;
+                eq.v[kind] = s->unk4;
+                cur = func_801F42A8(kind, c->unk39);
+                new = func_801F42A8(kind, eq.v);
+            }
+            if (kind == 4) {
+                *(s32 *)buf = D_801F3FFC;
+            } else {
+                func_8002BAE4(new, buf, 3, 1);
+            }
+            func_801F44F4(x - 1, y + 0x2E, 0x1E, D_801FC0D8[kind], 0);
+            func_8002B56C(x + 0xC, y + 0x2F, 0x1E, buf, 0);
+            if (cur < new) {
+                func_801F44F4(x - 1, y + 0x27, 0x1E, 5, 0);
+            } else if (new < cur) {
+                func_801F44F4(x - 1, y + 0x28, 0x1E, 6, 0);
+            }
+        }
+        func_80028204(x, y, 0x1E, func_80028954((u8)D_801FC2D0.unk18[i]), 0x2D, !ok);
+    }
+}
 
 void func_801F6A7C(Window *w) {
     u8 buf[16];
@@ -710,7 +890,53 @@ void func_801F6C50(void) {
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6D34);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6F00);
+void func_801F6F00(void) {
+    MenuList *l;
+    SynthRecipe *r;
+    ShopSynth *m;
+    ShopSynth *m2;
+    ShopSynth *m3;
+    s32 need;
+    s32 have;
+    u32 n;
+
+    l = &D_801FC338.unk28;
+    r = &D_801FC338.unk3C[l->unk5 + l->unk6];
+    need = 1;
+    if (r->unk2[0] == r->unk2[1]) {
+        need = 2;
+    }
+    have = func_80027F34(r->unk4);
+    if (have < 99 && D_8006794C->unk1C->unk560 >= r->unk0 &&
+        (r->unk2[0] == 0xFF || func_80027F34(r->unk2[0]) >= need) &&
+        (r->unk2[1] == 0xFF || func_80027F34(r->unk2[1]) >= need)) {
+        D_801FC338.unk2 = 1;
+        n = r->unk0 != 0 ? D_8006794C->unk1C->unk560 / r->unk0 : 99;
+        m2 = &D_801FC338;
+        if ((s32)n > 99 - have) {
+            n = 99 - have;
+        }
+        m2->unk3 = n;
+        m = m2;
+        if (r->unk2[0] != 0xFF) {
+            m->unk3 = MIN(m->unk3, func_80027F34(r->unk2[0]) / need);
+        }
+        if (r->unk2[1] != 0xFF) {
+            D_801FC338.unk3 = MIN(D_801FC338.unk3, func_80027F34(r->unk2[1]) / need);
+        }
+        m3 = &D_801FC338;
+        D_801FC338.unk0 = 0;
+        m3->unk38 = func_8002DC54(&m3->unk20, 0xA, 2);
+        func_8002E2EC(m3->unk38, func_801F6A7C);
+        func_8002E2E4(m3->unk38, func_801F75BC);
+        func_8002E2FC(m3->unk38, func_801F75E8);
+        func_8002E31C(m3->unk38, 1);
+        func_8002E304(m3->unk38, D_800704A4);
+        func_8002F488(0x67);
+    } else {
+        func_8002F488(0x66);
+    }
+}
 
 void func_801F7250(void) {
     s32 mask;
