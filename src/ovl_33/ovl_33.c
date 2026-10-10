@@ -942,7 +942,51 @@ void func_801F1454(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F15E0);
+void func_801F15E0(void) {
+    Unk80032E84In in;
+    Unk80032E84Out cur;
+    Unk80032E84Out out;
+    RECT *r;
+    Character *c;
+
+    r = &D_801FC840.unk1C;
+    c = D_8006794C->unk1C->unk54C[D_801FC840.unk3];
+    func_800269F4(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
+    func_8002B524(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
+    func_8002DEE4(r, 0x1E, 1);
+    func_80024428(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&D_801FC840.unk24C);
+    cur.unk8[0] = c->unk24;
+    cur.unk8[1] = c->unk25;
+    cur.unk8[2] = c->unk26;
+    cur.unk8[3] = c->unk27;
+    cur.unkC[0] = D_8006E0E8[c->unk39[0]].unk5;
+    cur.unkC[1] = c->unk28;
+    cur.unkC[2] = c->unk29;
+    cur.unkC[3] = c->unk2A;
+    cur.unkC[4] = c->unk2B;
+    if (D_801FC840.unk1 == 3 && D_801FC840.unk4.unk2 != 0) {
+        in.unk0 = *(Bytes8 *)&c->unk2C;
+        in.unk10 = c->unk10;
+        in.unk12 = c->unk12;
+        in.unk14 = *(Bytes5 *)c->unk39;
+        in.unk8 = *(Words2 *)c->unk88;
+        in.unk14.unk0[D_801FC840.unk2] = (D_801FC840.unk3C + (D_801FC840.unk4.unk6 + D_801FC840.unk4.unk5))->unk0;
+        func_80032E84(&in, &out);
+        func_801F20A0(&cur, &out);
+        return;
+    } else if (*(u16 *)&D_801FC840 == 0x202 && D_801FC840.unk2 != 0) {
+        in.unk0 = *(Bytes8 *)&c->unk2C;
+        in.unk10 = c->unk10;
+        in.unk12 = c->unk12;
+        in.unk14 = *(Bytes5 *)c->unk39;
+        in.unk8 = *(Words2 *)c->unk88;
+        in.unk14.unk0[D_801FC840.unk2] = 0xFF;
+        func_80032E84(&in, &out);
+        func_801F20A0(&cur, &out);
+        return;
+    }
+    func_801F20A0(&cur, NULL);
+}
 
 void func_801F189C(void) {
     Character *c;
