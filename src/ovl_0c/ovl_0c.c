@@ -6500,7 +6500,103 @@ void func_800C4A5C(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A849C);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C4DD8);
+void func_800C4DD8(void) {
+    WmNode *o;
+    VECTOR a;
+    VECTOR b;
+    SVECTOR pos;
+    s32 tex;
+    s32 k;
+
+    o = D_800D53A0.unk8;
+    SetRotMatrix(D_800CF448);
+    SetTransMatrix(D_800CF448);
+    while (o->unk8 != NULL) {
+        if ((u8)func_800BBE24((VECTOR *)&o->unk10, &a, &b, 0)) {
+            pos.vx = a.vx;
+            pos.vy = a.vy;
+            pos.vz = a.vz;
+            if (b.vz > 1000) {
+                tex = D_800CF460[*D_800CF45C];
+                switch ((u8)o->unkD) {
+                case 2:
+                    D_800CF442 = 0;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE = o->unk1C * 400 + 6000,
+                                               (s16)((s16)(o->unk1C / 4) % 26), (u8)o->unkC, -1, tex, 0, 2);
+                    break;
+                case 3:
+                    D_800CF442 = 0;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE = o->unk1C * 400 + 6000,
+                                               (s16)((s16)(o->unk1C / 2) % 23), (u8)o->unkC, -1, tex, 0, 2);
+                    break;
+                case 8: {
+                    SVECTOR r = D_800A849C;
+                    D_800CF442 = 20;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, o->unk1C, (u8)o->unkC,
+                                               -1, tex, 0, 0);
+                    break;
+                }
+                case 15:
+                case 22: {
+                    SVECTOR r = D_800A849C;
+                    D_800CF442 = 20;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, o->unk1C, (u8)o->unkC,
+                                               D_800D4A38, tex, 0, 0);
+                    break;
+                }
+                case 16: {
+                    SVECTOR r = D_800A849C;
+                    pos.vy -= 400;
+                    o->unkE = (8 - o->unk1C) * 4000;
+                    r.vy = o->unk1C * 128;
+                    D_800CF442 = 0;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, 0, 1, -1, tex, 0, 0);
+                    r.vy = o->unk1C * 200;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, 0, 2, -1, tex, 0, 0);
+                    break;
+                }
+                case 14:
+                case 18:
+                case 19:
+                    if (D_800D53E0 >= 0x1000) {
+                        D_800D53E0 = 0xFFF;
+                    }
+                    if (D_800D53E0 < 0) {
+                        D_800D53E0 = 0;
+                    }
+                    D_800D53CC += (D_800D53E0 - D_800D53CC) / 32;
+                    D_800CF442 = 50;
+                    k = D_800D4A38 * D_800D53CC >> 12;
+                    if (k >= 25) {
+                        D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE, o->unk1C,
+                                                   (u8)o->unkC, k, tex, 0, 0);
+                    }
+                    break;
+                case 25:
+                case 26: {
+                    SVECTOR r;
+                    func_8001D898(&r, 0, 8);
+                    r.pad = 1;
+                    r.vy = ratan2(0x30031 - o->unk10, -0x13F6E - o->unk18);
+                    D_800CF442 = 0;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, o->unk1C, (u8)o->unkC,
+                                               -1, tex, 0, 0);
+                    break;
+                }
+                default:
+                    D_800CF442 = 40;
+                    D_800CF404 = func_800CAE0C(D_800CF404, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE, o->unk1C, (u8)o->unkC,
+                                               -1, tex, 0, 0);
+                    break;
+                }
+            }
+        }
+        o = o->unk8;
+    }
+}
+
+/* jump table padding emitted by the original toolchain */
+__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C53DC);
 
@@ -7693,7 +7789,7 @@ s32 func_800CAE00(u16 *arg0) {
     return *arg0 & 0x7FFF;
 }
 
-void func_800CAE0C(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 arg7,
+s32 func_800CAE0C(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 arg7,
                    s32 arg8, s32 arg9, s32 argA) {
     VECTOR s;
     SVECTOR zero;
@@ -7751,7 +7847,7 @@ void func_800CAE0C(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale,
     c.unk28 = -D_800CF442;
     c.unk18 = arg7;
     c.unk24 = argA;
-    func_800CB1EC((u8 *)h, &c, arg0, arg8);
+    return func_800CB1EC((u8 *)h, &c, arg0, arg8);
 }
 
 /* upload every image and clut of an image pack (c walks the clut RECTs in the second loop) */

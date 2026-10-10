@@ -797,6 +797,7 @@ extern WmNode D_800D53E8; /* list tail */
 extern WmNode D_800D48C0; /* list tail */
 extern s32 D_800D4A38;
 extern s32 D_800D53CC;
+extern s32 D_800D53E0;
 extern s32 D_800D53C8;
 extern VECTOR D_800CDF50;
 extern SVECTOR D_800D4870[10];
@@ -1208,7 +1209,8 @@ typedef struct {
     s32 unk28;
 } WmSprCtx; /* draw context passed to func_800CB1EC */
 
-void func_800CB1EC(u8 *, WmSprCtx *, s32, s32);
+s32 func_800CB1EC(u8 *, WmSprCtx *, s32, s32);
+s32 func_800CAE0C(s32, WmSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32, s32);
 
 typedef struct {
     s32 unk0; /* size */
@@ -1222,6 +1224,7 @@ extern s32 D_800D3728;
 extern s32 D_800CF5A4;
 extern s32 D_800CF5A8;
 extern char D_800A7F94[];
+extern SVECTOR D_800A849C; /* rotation used by func_800C4DD8 */
 s32 func_800C2050(s32, s32);
 u8 func_800BD150(Unk800D335C **, s32 *, s32 *);
 void func_800BC450(s32, s32, WmCell *);
