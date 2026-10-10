@@ -893,7 +893,160 @@ void func_800AA548(TmState *s) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AA790);
+void func_800AA790(TmState *s) {
+    RECT r;
+    u32 pad;
+    s32 n;
+    s32 x;
+    s32 y;
+    TmCard *c;
+    Unk6 *d;
+
+    func_800270EC(s->unk474 * 15 + 3, s->unk478 * 15 + 0x30, 3);
+    if (s->unk0 == 0x12 || s->unk0 == 0x17) {
+        D_80077DE8.unk0 = s->unk474 * 15 + 3;
+        D_80077DE8.unk2 = s->unk478 * 15 + 0x30;
+        if (s->unk0 == 0x12) {
+            D_80077DE8.unk8 = func_80035774((u32)(s->unk450 - 0x7C) >= 4 ? 0x24 : 0x32);
+        } else {
+            D_80077DE8.unk8 = func_80035774(0x27);
+        }
+        r.x = 0xD;
+        r.w = 0x9E;
+        r.y = 0;
+        r.h = 0xDE;
+        func_80035580(&r);
+    }
+    pad = D_80077528;
+    n = func_80062560(func_800AF268(s));
+    if (s->unk568 != 0) {
+        pad = 0;
+        if (--s->unk568 == 0 && s->unk418 == 0) {
+            if (n == ++s->unk4B4) {
+                s->unk4B4 = 0;
+            }
+        }
+    }
+    if (n >= 2) {
+        if (pad & 0x200000) {
+            func_800B01E8(5);
+            pad = 0;
+            s->unk418 = 0;
+            s->unk568 = 4;
+        } else if (pad & 0x100000) {
+            pad = 0;
+            s->unk418 = 1;
+            s->unk568 = 4;
+            s->unk4B4--;
+            func_800B01E8(5);
+            if (s->unk4B4 == -1) {
+                s->unk4B4 = n - 1;
+            }
+        }
+    }
+    x = s->unk474;
+    y = s->unk478;
+    if ((pad & 0x20) && x != 9) {
+        s->unk474 = x + 1;
+        s->unk4B4 = 0;
+    }
+    if ((pad & 0x80) && s->unk474 != 0) {
+        s->unk474--;
+        s->unk4B4 = 0;
+    }
+    if ((pad & 0x40) && s->unk478 != 9) {
+        s->unk478++;
+        s->unk4B4 = 0;
+    }
+    if ((pad & 0x10) && s->unk478 != 0) {
+        s->unk478--;
+        s->unk4B4 = 0;
+    }
+    if (x != s->unk474 || y != s->unk478) {
+        func_800B01E8(1);
+        return;
+    }
+    if (s->unk0 == 0x12) {
+        if (((pad & 0x10000) && s->unk47C == 0) || (pad & 0x80000)) {
+            if (s->unk450 != 0x7C) if (s->unk450 != 0x7D) if (s->unk450 != 0x7E) if (s->unk450 != 0x7F) {
+                r.w = func_8002BA68(func_80035774(0x2D)) + 0x12;
+                r.x = 0xA0 - r.w / 2;
+                r.y = 0x54;
+                r.h = 0x38;
+                s->unk5B4 = 1;
+                s->unk484 = func_8002DC54(&r, 5, 2);
+                func_8002E2EC(s->unk484, func_800ABE74);
+                func_8002E31C(s->unk484, 1);
+                func_800AB89C(s->unk484);
+                s->unk0 = 0x23;
+                return;
+            }
+        }
+        if (pad & 0x10000) {
+            if (s->unk47C != 0) {
+                s->unk47C--;
+                c = &s->unk10[s->unk47C];
+                func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
+                func_800B01E8(3);
+            }
+        } else if (pad & 0x20000) {
+            if (s->unk438 != 0) {
+                func_80062724();
+                s->unk474 = func_80062B3C() % 10;
+                s->unk478 = func_80062B3C() % 10;
+                s->unk4B4 = 0;
+                if (func_80062560(func_800AF268(s)) == 0) {
+                    func_800AF1F4(s, func_800AF268(s));
+                    func_800AF1F4(s, func_800AF268(s));
+                    func_800AF1F4(s, func_800AF268(s));
+                    func_800AF1F4(s, func_800AF268(s));
+                    func_800AF1F4(s, func_800AF268(s));
+                    func_800AF1F4(s, func_800AF268(s));
+                    func_800AF1F4(s, func_800AF268(s));
+                }
+            }
+            d = func_800625A0(func_800AF268(s), s->unk4B4);
+            if (d != (Unk6 *)-1) {
+                c = &s->unk10[s->unk47C];
+                c->unk0 = d->unk0;
+                c->unk2 = d->unk2;
+                c->unk3 = d->unk3;
+                c->unk4 = d->unk4;
+                c->unk5 = d->unk5;
+                c->unk1 = d->unk1;
+                func_800626D0(func_800AF268(s), s->unk4B4);
+                s->unk4B4 = 0;
+                func_800B01E8(5);
+                if (++s->unk47C == 5) {
+                    D_80077DF0 = 0;
+                    r.w = func_8002BA68(func_80035774(6)) + 0x12;
+                    r.x = 0xA0 - r.w / 2;
+                    r.y = 0x53;
+                    r.h = 0x3A;
+                    s->unk458 = func_8002DC54(&r, 6, 2);
+                    func_8002E2EC(s->unk458, func_800AB060);
+                    func_8002E31C(s->unk458, 1);
+                    func_800AB89C(s->unk458);
+                    s->unk4 = 0;
+                    s->unk0 = 0x13;
+                }
+            }
+        }
+    } else if ((pad & 0x20000) && func_80062560(func_800AF268(s)) != 0) {
+        D_80077DF0 = 0;
+        r.w = func_8002BA68(func_80035774(0x18)) + 0x12;
+        r.x = 0xB9;
+        r.h = 0x38;
+        r.y = 0x35;
+        s->unk4 = 1;
+        s->unk4B8 = func_8002DC54(&r, 5, 2);
+        func_8002E2EC(s->unk4B8, func_800AB52C);
+        func_8002E31C(s->unk4B8, 1);
+        func_800AB89C(s->unk4B8);
+        func_800B01E8(1);
+        s->unk0 = 0x18;
+    }
+}
 
 void func_800AAEB4(TmState *s) {
     s32 pad;

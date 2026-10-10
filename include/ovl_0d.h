@@ -344,7 +344,13 @@ void func_800B026C(TmState *);
 void func_800B08CC(TmState *);
 void func_800B35A4(TmState *);
 
+void func_800AB060(Window *);
+void func_800AB52C(Window *);
+void func_800ABE74(Window *);
+
 /* main exe: candidates for ff9.h */
 void func_80023A0C(void);
+void func_80062724();
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
 
 #endif
