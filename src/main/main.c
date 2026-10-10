@@ -10722,7 +10722,138 @@ u8 *func_80049ED8(u8 *p) {
     return dst;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004A06C);
+void func_8004A06C(u8 *data) {
+    Unk4 t;
+    s32 k;
+    u8 mode;
+    Unk8007AECCNode *n;
+    Unk16D8 *m;
+    Unk16D8 *q;
+    Unk16D8 *l;
+    s32 i;
+    s32 r;
+    s32 d;
+    Unk8004AB64 *o;
+    Unk8007AECC *p;
+    GameState *gs;
+
+    t = D_80011A44;
+    func_80019774(&t);
+    k = data[3];
+    D_8007ADF8 = data + 0x80;
+    gs = D_8006794C;
+    D_8007AE8C = data + 0x2C;
+    gs->unk1C->unk810 = data + 4;
+    D_8007ADFC = k;
+    gs->unk1C->unk80C = data + 0x2C;
+    mode = D_8006794C->unk8;
+    switch (mode) {
+    case 1:
+        D_8007B708 = mode;
+        break;
+    case 2:
+        D_8007B708 = mode;
+        break;
+    case 3:
+        D_8007B708 = mode;
+        break;
+    case 8:
+        D_8007B708 = 4;
+        break;
+    }
+    if ((D_80077E60.unk16EE == 1 || D_80077E60.unk16EE == 3) && D_8007B708 == 2) {
+        D_80079630 = D_80077E60;
+    }
+    D_8007AECC = &D_80077E60;
+    for (n = D_8007AECC->unk1450; n < &D_8007AECC->unk1450[31]; n++) {
+        n->unk8 = n + 1;
+    }
+    n->unk8 = NULL;
+    D_8007AECC->unk15D4 = D_8007AECC->unk1450;
+    D_8007AECC->unk15D0 = NULL;
+    for (m = D_8007AECC->unk15D8; m < &D_8007AECC->unk15D8[31]; m++) {
+        m->unk0 = m + 1;
+    }
+    m->unk0 = NULL;
+    D_8007AECC->unk16E0 = D_8007AECC->unk15D8;
+    D_8007AECC->unk16DC = NULL;
+    D_8007AECC->unk16D8 = NULL;
+    func_80050044();
+    func_80050080(0);
+    for (i = 0; i < 0x50; i++) {
+        D_8007AECC->unk0[i] = 0;
+    }
+    D_8007AECC->unk16EC = 0;
+    D_8007AECC->unk16ED = 0;
+    D_8007AECC->unk1700 = 0;
+    func_8004FF98(0);
+    D_8007B6FC = 0;
+    D_8007AECC->unk16F8 = 0;
+    D_8007AE68 = NULL;
+    D_8007B710 = 10;
+    D_8007BBC8 = 10;
+    D_8007BBD4 = 0;
+    D_8007B718 = 0;
+    D_8007AEC8 = 0;
+    D_8007AEC0 = 0;
+    D_8007AE4C = -0x5A0;
+    p = D_8007AECC;
+    p->unk16EF = 0;
+    D_8007AE50 = 0;
+    D_8007AE58 = 0;
+    p->unk16E8 = 0;
+    p->unk16EA = 0;
+    D_8007BD2C = 0;
+    func_8004B3A8_inline(0, 0);
+    D_8007AECC->unk16D8->unk4->unkE = 2;
+    func_80039C38_party();
+    for (i = 7; i >= 0; i--) {
+        D_8007AED0[i] = NULL;
+    }
+    D_8007AE04 = 0;
+    if (D_8007B708 == 2) {
+        for (i = 0; i < 4; i++) {
+            r = func_8004E7A4(i);
+            if (r >= 0) {
+                func_80039C38_newactor(r + D_8007ADFC - 9, 0);
+            }
+        }
+        D_8007AECC->unk16FC = (s32)D_8007AECC->unk16DC;
+    } else {
+        D_8006794C->unk1C->unk570 = 0;
+    }
+    D_8007AE04 = 4;
+    if ((D_8007B708 == 1 && D_80079630.unk16EE == D_8007B708 && D_80079630.unk16F4 == (s16)D_8006794C->unk1C->unkC) ||
+        (D_8007B708 == 3 && D_80079630.unk16EE == D_8007B708 && D_80079630.unk16F4 == D_8006794C->unk1C->unk7DC) ||
+        (D_8006794C->unkA == 9 && D_8007AD1E != 0)) {
+        d = data - D_80079630.unk16F0;
+        D_80077E60 = D_80079630;
+        for (q = D_8007AECC->unk16D8; q != NULL; q = q->unk0) {
+            o = q->unk4;
+            if (o->unk0 != NULL) {
+                o->unk0 += d;
+            }
+            if (o->unk5 == 4 && D_8007B708 == 1) {
+                func_800AA3F4(o->unk6);
+            }
+        }
+        func_800384D0(func_8004B040_inline(0), 0, 10, 0);
+        for (l = D_8007AECC->unk16D8; l != NULL; l = l->unk0) {
+            o = l->unk4;
+            if (o->unk7 != 0) {
+                o->unk12 = o->unkE;
+                o->unkE = 3;
+            }
+        }
+    } else {
+        func_80048F54();
+    }
+    D_8007AECC->unk16F0 = data;
+    D_8007AECC->unk16EE = D_8007B708;
+    D_8007AECC->unk16F4 = D_8007B708 == 1   ? D_8006794C->unk1C->unkC
+                          : D_8007B708 == 3 ? D_8006794C->unk1C->unk7DC
+                                            : 0;
+}
 
 void func_8004A8A4(void) {
     Unk16D8 *n;

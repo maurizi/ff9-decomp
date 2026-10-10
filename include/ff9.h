@@ -1168,7 +1168,8 @@ typedef struct Unk16D8 {
 } Unk16D8;
 
 typedef struct {
-    u8 pad0[0x1450];
+    u8 unk0[0x50]; /* cleared by func_8004A06C */
+    u8 pad50[0x1450 - 0x50];
     Unk8007AECCNode unk1450[32];
     Unk8007AECCNode *unk15D0; /* active list */
     Unk8007AECCNode *unk15D4; /* free list */
@@ -1181,16 +1182,25 @@ typedef struct {
     s16 unk16EA;
     u8 unk16EC;
     u8 unk16ED;
-    u8 pad16EE;
+    u8 unk16EE; /* field mode the state was saved in */
     u8 unk16EF;
     u8 *unk16F0; /* script data base */
-    u8 pad16F4[0x16F8 - 0x16F4];
+    u16 unk16F4; /* field / world id the state was saved for */
+    u8 pad16F6[0x16F8 - 0x16F6];
     u8 unk16F8;
     u8 pad16F9[0x16FC - 0x16F9];
     s32 unk16FC;
     s16 unk1700;
-} Unk8007AECC;
+    u8 pad1702[0x17C8 - 0x1702];
+} Unk8007AECC; /* 0x17C8 */
 extern Unk8007AECC *D_8007AECC;
+extern Unk8007AECC D_80077E60; /* the script system state D_8007AECC points at */
+extern Unk8007AECC D_80079630; /* saved copy, restored when returning to the same field */
+extern Unk4 D_80011A44; /* rodata */
+extern s32 D_8007B6FC;
+extern s32 D_8007AEC0;
+extern s32 D_8007AE58;
+void func_80050044(void);
 
 /* Inlined copy of func_8004B040 (find object by id). */
 static inline Unk8004AB64 *func_8004B040_inline(s32 id) {
@@ -2027,7 +2037,11 @@ void func_800355E4(); /* unprototyped: the argument is unused and most callers p
 void func_80035674(u8);
 void func_8003575C(const u8 *);
 u8 *func_80035774(s32); /* text lookup */
-void func_8004A06C(s32);
+#if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
+void func_8004A06C(s32); /* the overlays pass the script data as an integer */
+#else
+void func_8004A06C(u8 *); /* start the field script system on a script data block */
+#endif
 void func_8004BBF0(void);
 void func_8004BFB0(void);
 void func_80050A84(void);
