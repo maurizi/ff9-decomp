@@ -9234,7 +9234,31 @@ s32 func_80037738(void) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800378C4);
+s32 func_800378C4(s32 slot) {
+    s32 i;
+    s32 r;
+
+    if (func_8004B85C_find(func_8004B85C_key(slot), slot)) {
+        r = 1;
+    } else {
+        slot = func_8004B85C_key(slot);
+        if (slot >= 0 && slot < 9) {
+            for (i = 0; i < 4; i++) {
+                if (D_8006794C->unk1C->unk54C[i] == NULL) {
+                    break;
+                }
+            }
+            r = i >= 4;
+            if (r == 0) {
+                func_80033AF4(i, slot);
+                func_80039C38_party();
+            }
+        } else {
+            r = 1;
+        }
+    }
+    return r;
+}
 
 s32 func_80037ACC(s32 op) {
     s32 r = 0;
