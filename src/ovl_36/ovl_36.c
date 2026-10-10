@@ -557,7 +557,25 @@ void func_801F2578(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F2664);
+void func_801F2664(void) {
+    RECT *r = &D_801F347C.unk18E0;
+    CardCache *c = &D_801F347C.unk1900;
+    s32 cur;
+
+    cur = D_801F347C.unk2 * 10 + D_801F347C.unk1;
+    func_8002B524(r->x + 8, r->y - 3, 0x1E, D_80070418, 0);
+    if (c->unk7 != 0xFF) {
+        if (c->unk7 != cur && c->unk9 != 0) {
+            func_801F12B8(c->unk6);
+        } else {
+            do {
+                func_801F12B8(cur);
+            } while (0);
+        }
+    }
+    func_8002DEE4(r, 0x1E, 2);
+    func_8002705C(r, 0x1F, 2);
+}
 
 void func_801F2730(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
     Unk6 *card;
