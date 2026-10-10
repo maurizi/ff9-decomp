@@ -1842,7 +1842,50 @@ void func_801F9024(u8 *dst) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801F9120);
+void func_801F9120(u8 *buf, s32 t) {
+    u8 *title;
+    IconTmpl *icon;
+    s32 sec;
+    s32 min;
+    s32 hour;
+    s32 n;
+
+    *(u16 *)buf = 0x4353;
+    buf[2] = 0x11;
+    buf[3] = 1;
+    title = buf + 4;
+    func_8001D898(buf + 0x44, 0, 0x1C);
+    sec = (u32)t / 60;
+    min = sec / 60;
+    hour = min / 60;
+    min = min % 60;
+    sec = sec % 60;
+    if (hour >= 100) {
+        hour %= 100;
+    }
+    func_8001D898(title, 0, 0x40);
+    *(TitleTmpl *)title = D_801F43B8;
+    title[0x11] += (D_801FB1A8.unk3 + 1) / 10;
+    n = D_801FB1A8.unk3 + 1;
+    title[0x17] += hour / 10;
+    title[0x20] = 0;
+    title[0x19] += hour % 10;
+    title[0x1D] += min / 10;
+    title[0x1F] += min % 10;
+    title[0x13] += n % 10;
+    if (sec == 0) {
+        if (min == 0) {
+            icon = &D_801F42E4;
+        } else {
+            icon = &D_801F4244;
+        }
+    } else if (t & 1) {
+        icon = &D_801F41A4;
+    } else {
+        icon = &D_801F4104;
+    }
+    *(IconTmpl *)(buf + 0x60) = *icon;
+}
 
 void func_801F94D0(s32 slot, s32 unused) {
     D_801FB1A8.unk3 = slot;

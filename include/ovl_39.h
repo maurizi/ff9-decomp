@@ -531,4 +531,16 @@ s32 func_801F6D24(Unk801F6D24 *);
 s32 func_801F6C74(void);
 s32 func_801F6F7C(void);
 
+typedef struct {
+    u8 v[0x23];
+} TitleTmpl; /* memory card title template (SJIS) */
+typedef struct {
+    u8 v[0xA0];
+} IconTmpl; /* memory card icon CLUT + bitmap */
+extern TitleTmpl D_801F43B8;
+extern IconTmpl D_801F4104;
+extern IconTmpl D_801F41A4;
+extern IconTmpl D_801F4244;
+extern IconTmpl D_801F42E4;
+
 #endif
