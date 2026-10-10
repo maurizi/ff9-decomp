@@ -1,0 +1,1 @@
+D_800A857C = 0x800A857C; // force_not_migration:True

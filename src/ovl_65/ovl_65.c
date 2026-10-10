@@ -136,7 +136,53 @@ void func_801EFB98(void) {
                                       func_80035774(D_801F3BB8[D_801F7A78.unkA]), 0, D_801F7A78.unk374);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EFC68);
+void func_801EFC68(void) {
+    u8 buf[16];
+    RECT *r;
+    Character *c;
+    u32 i;
+    u8 dim;
+    s32 col;
+    u8 alive;
+    u32 n;
+    u8 *p;
+
+    for (i = 0; i < 4; i++) {
+        if (D_801F7A78.unk14C[i + 2] != 0) {
+            r = &D_801F7A78.unkAC[i + 2].unk4;
+            c = D_8006794C->unk1C->unk54C[i];
+            if (c != NULL) {
+                alive = func_801F171C(c, i);
+                dim = !alive;
+                col = dim * 2;
+                if (!alive) {
+                    func_801F0394(r);
+                }
+                func_80028AF0(r->x + 4, r->y + 4, 0xB, i, dim);
+                func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
+                D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, D_8007716C + 0xB, c->unk0, col, D_801F7A78.unk374);
+                func_8002BAE4(c->unkB, buf, 2, 1);
+                func_800275DC(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
+                p = buf;
+                D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, D_8007716C + 0xB, p, col, D_801F7A78.unk374);
+                func_80026FC4(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
+                func_8002B5FC(r->x + 0x29, r->y + 0x1C, 0xB, func_80035774(0), col);
+                func_8002BAE4(c->unkC, p, 7, 1);
+                func_8002B56C(r->x + 0x62, r->y + 0x20, 0xB, p, col);
+                if (c->unkB < 99) {
+                    n = D_8006DF5C[c->unkB];
+                } else {
+                    n = c->unkC;
+                }
+                func_8002BAE4(n - c->unkC, buf, 6, 1);
+                func_8002B56C(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
+                func_8002B5FC(r->x + 0x29, r->y + 0x26, 0xB, func_80035774(0xC), col);
+            }
+            func_8002DEE4(r, 0xB, 0);
+            func_8002705C(r, 0xC, 0);
+        }
+    }
+}
 
 void func_801EFF50(void) {
     RECT *r = &D_801F7A78.unkAC[6].unk4;
@@ -1161,7 +1207,45 @@ void func_801F2E24(void) {
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2E58);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2FE8);
+void func_801F2FE8(Window *w) {
+    Window *r;
+    Unk80069018 *it;
+    u8 *s;
+    u32 i;
+    s32 off;
+    s32 y;
+    s32 y2;
+    s32 k;
+    s32 k1;
+    s32 k3;
+    Rewards *rw;
+
+    r = w;
+    i = 0;
+    rw = &D_801F7A78.unk24;
+    off = r->unk6 - r->unk8.h;
+    for (; i < rw->unkC; i++) {
+        it = &D_80069018[rw->unk10[i][0]];
+        y = i * 15 + 7;
+        y2 = i * 15 + 10;
+        func_8002BAE4(rw->unk10[i][1], D_801F8238, 2, 1);
+        func_80026C34(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->unk10[i][0], 1);
+        func_8002B5FC(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
+        func_8002B56C(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, D_801F8238, 0);
+    }
+    if (rw->unkC == 0) {
+        s = func_80035774(9);
+        func_8002B5FC(r->unk0 + ((r->unk4 - (func_8003579C(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
+    }
+    if (rw->unk8 != 0xFF) {
+        k = off - 0x66;
+        func_80027710(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
+        func_8002BD54(D_801F8238, (u8 *)func_8006276C(rw->unk8));
+        func_8002AD38(D_801F8238, func_80035774(0xB));
+        func_8002B5FC(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
+    }
+    func_800269F4(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
+}
 
 void func_801F3250(void) {
     D_801F8278 = 0;
@@ -1227,7 +1311,71 @@ INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EE19C);
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EF260);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F3488);
+void func_801F3488(s32 arg0) {
+    s16 c = 0xFF;
+    u8 state = 0;
+    DispBuf b[2];
+    RECT rect = D_801EF260;
+    DispBuf *cur;
+
+    func_801F3818(b);
+    cur = b;
+    DrawSync(0);
+    func_801F3A20(arg0);
+    while (1) {
+        cur = (cur == &b[0]) ? &b[1] : &b[0];
+        ClearOTag(cur->unk70, 2);
+        switch (state) {
+        case 0:
+            state++;
+            break;
+        case 1:
+            setRGB0(&cur->unkB8, c, c, c);
+            c -= 4;
+            addPrim(&cur->unk70[0], &cur->unk78);
+            addPrim(&cur->unk70[0], &cur->unk94);
+            addPrim(&cur->unk70[1], &cur->unkB0);
+            if (c < 0) {
+                c = 0;
+                state++;
+            }
+            break;
+        case 2:
+            setRGB0(&cur->unkB8, 0, 0, 0);
+            addPrim(&cur->unk70[0], &cur->unk78);
+            addPrim(&cur->unk70[0], &cur->unk94);
+            addPrim(&cur->unk70[1], &cur->unkB0);
+            if (D_80073990[0] & 0x20000) {
+                state++;
+            }
+            break;
+        case 3:
+            c += 4;
+            if (c >= 0x100) {
+                ClearImage(&rect, 0, 0, 0);
+                DrawSync(0);
+                if (c > 0x100) {
+                    state++;
+                }
+            } else {
+                setRGB0(&cur->unkB8, c, c, c);
+                addPrim(&cur->unk70[0], &cur->unk78);
+                addPrim(&cur->unk70[0], &cur->unk94);
+                addPrim(&cur->unk70[1], &cur->unkB0);
+            }
+            break;
+        case 4:
+            ClearImage(&rect, 0, 0, 0);
+            DrawSync(0);
+            return;
+        }
+        func_80019194();
+        DrawSync(0);
+        VSync(0);
+        PutDispEnv(&cur->disp);
+        DrawOTagEnv(cur->unk70, &cur->draw);
+    }
+}
 
 void func_801F3818(DispBuf *b) {
     RECT rect = D_801EF27C;

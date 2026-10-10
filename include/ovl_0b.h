@@ -3886,6 +3886,7 @@ void func_800E970C(void);
 void func_800D6340(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
+extern const u8 D_800A857C[]; /* "TRANCE" label */
 /* main exe: candidates for ff9.h */
 void func_80054A28(void *);
 

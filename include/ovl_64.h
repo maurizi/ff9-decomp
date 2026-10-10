@@ -7,6 +7,7 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
+void func_80063864(void *, void *, s32);
 extern s8 D_80071E31;
 extern s32 D_80071E34;
 extern s8 D_80071E38;
@@ -28,12 +29,20 @@ extern volatile u32 *D_8019E008; /* MDEC1 register pointer */
 
 /* ---- this overlay ---- */
 
+/* movie table entry (0x14 bytes) */
+typedef struct {
+    s32 unk0; /* file */
+    u8 unk4;
+    u8 unk5;
+    s16 unk6;
+    s16 unk8; /* last frame */
+    s16 unkA; /* x offset */
+    u8 padC[0x14 - 0xC];
+} Ovl64MovieInfo;
+
 typedef struct {
     s16 unk0; /* count */
-    struct {
-        s32 unk0;
-        u8 pad4[0x14 - 4];
-    } *unk4;
+    Ovl64MovieInfo *unk4;
 } Ovl64Movie; /* 8-byte entries */
 extern Ovl64Movie D_8019DC5C[6];
 
@@ -50,10 +59,16 @@ typedef struct {
     u8 pad2;
     u8 unk3;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     s8 unk6;
     u8 pad7;
-    s32 unk8[12];
+    s32 unk8; /* current buffer */
+    u8 padC[0x24 - 0xC];
+    CdlLOC unk24; /* stream position */
+    u8 pad28[0x2C - 0x28];
+    s32 unk2C; /* frame width */
+    s32 unk30; /* frame height */
+    s32 unk34;
     s32 unk38;
     s32 unk3C;
     s32 unk40;
@@ -90,11 +105,14 @@ extern u16 D_8019F278;
 
 /* decode / display state (D_8019F4D8) */
 typedef struct {
-    u8 pad0[0x18];
-    s16 unk18; /* width */
-    u8 pad1A[0x2C - 0x1A];
-    s16 unk2C;
-    u8 pad2E[0x38 - 0x2E];
+    u32 *unk0[2]; /* MDEC input buffers */
+    s32 unk8;     /* current input buffer */
+    u32 *unkC[2]; /* MDEC output buffers */
+    s32 unk14;    /* current buffer */
+    RECT unk18[2]; /* frame area per draw buffer */
+    RECT unk28;    /* slice being decoded */
+    s32 unk30;     /* frame done */
+    u8 pad34[0x38 - 0x34];
 } Ovl64Dec;
 extern Ovl64Dec D_8019F4D8;
 extern u8 D_8019F288[];
@@ -112,7 +130,10 @@ typedef struct {
     u8 pad2[2];
     u16 unk4;
     u8 pad6[2];
-    u8 pad8[0x20 - 8];
+    u8 pad8[0x10 - 8];
+    u16 unk10; /* frame width */
+    u16 unk12; /* frame height */
+    u8 pad14[0x20 - 0x14];
 } Ovl64RingHdr; /* 0x20 */
 
 /* sector header at the end of each ring slot */
@@ -214,7 +235,7 @@ extern Ovl64FrameInfo D_8019F510[];
 extern Ovl64Pair D_8019F750[16];
 extern Ovl64Flag D_8019F7D0[];
 
-void func_8019C434(u8);
+void func_8019C434(u8, u8 *); /* CdReadyCallback */
 void func_8019BA70(void);
 void func_8019BCE8(void);
 void func_8019A7A8(s32, s32);
@@ -225,5 +246,76 @@ s32 func_8019CBF4(s32 *);
 s32 func_8019CC3C(s32);
 s32 func_8019CC7C(void);
 s32 func_80199F30(s32);
+
+typedef struct {
+    u8 pad0[0x1C];
+    s16 unk1C;
+    s16 unk1E;
+    u8 pad20[4];
+    s16 unk24;
+    s16 unk26;
+    u8 pad28[6];
+    s16 unk2E;
+} Ovl64Out; /* func_801990A0 output: frame size in RECTs at 0x18.. */
+extern Ovl64MovieInfo *D_8019DCF8;
+extern s32 D_8019E018[2];
+typedef struct {
+    u8 v[0x914];
+} Ovl64Sub;
+extern Ovl64Sub D_8019E028[2];
+typedef struct {
+    u32 b0 : 7;
+    u32 b7 : 1;
+    u32 pad : 24;
+} Ovl64Cfg; /* view of GameState.unk24 */
+
+/* PsyQ inline_c.h; candidate for psyq.h */
+#define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
+    "sll\t$12, %0, 16;"                              \
+    "sll\t$13, %1, 16;"                              \
+    "ctc2\t$12, $24;"                                \
+    "ctc2\t$13, $25"                                 \
+    :                                                \
+    : "r"(r0), "r"(r1)                               \
+    : "$12", "$13")
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+} Ovl64Vlc4C8; /* argument block of func_8019B3D4 */
+extern Ovl64Vlc4C8 D_8019F4C8;
+extern u16 D_8019DC84;
+extern u8 D_8019DC90;
+extern RECT D_8019F488[4];
+extern u8 D_8019DC97; /* = D_8019DC94.unk3, referenced by its own name */
+void func_8019B3D4(void *, u32 *, u16);
+/* PsyQ libpress */
+int DecDCTinSync(int);
+int DecDCTout(u32 *, int);
+int DecDCTReset(int);
+typedef struct {
+    u8 pad0[8];
+    u16 unk8;
+    u8 padA[0x18 - 0xA];
+    u16 unk18;
+} Ovl64Field; /* field overlay object touched when the movie switches modes */
+extern Ovl64Field D_800C9EF0;
+
+/* GameData.unk8E4 in field mode, as far as the movie player reads it */
+typedef struct {
+    u8 pad0[0x44];
+    s32 unk44;
+} Ovl64FieldC14;
+typedef struct {
+    u8 pad0[0x14];
+    Ovl64FieldC14 *unk14;
+} Ovl64FieldC;
+typedef struct {
+    u8 pad0[0xC];
+    Ovl64FieldC *unkC;
+} Ovl64Field8E4;
 
 #endif

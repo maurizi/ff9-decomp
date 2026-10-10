@@ -83,4 +83,32 @@ void func_801F9668(s32, RECT *, RECT *);
 
 extern const u8 D_801EDF84[]; /* text bank for this menu */
 
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    s16 x0, y0;
+    u8 u0, v0;
+    u16 clut;
+    s16 x1, y1;
+    u8 u1, v1;
+    u16 tpage;
+    s16 x2, y2;
+    u8 u2, v2;
+    u16 pad1;
+    s16 x3, y3;
+    u8 u3, v3;
+    u16 pad2;
+} Ft4W; /* POLY_FT4 with the colour/code written as one word */
+
+typedef struct {
+    s16 x;
+    s16 y;
+    u8 u;
+    u8 v;
+    u8 w;
+    u8 h;
+} FrameRect; /* window frame piece: position, uv, size */
+extern FrameRect D_801F972C[4]; /* frame pieces drawn by func_801F8AB0 */
+extern u8 D_801F974C[2]; /* pieces that get a shadow */
+
 #endif

@@ -4,9 +4,37 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Register allocation / scheduling / branch order (>=90%):
-  8005F718,
-  800616F8, 8002FED4, 8002ECA0, 8002E718, 80062118, 800621D4, 8005B1B8, 8005AEC8, 8002B644.
+- Tricks that matched 12 main functions (8001D32C, 80036650, 8004D2C0, 8004DCEC, 80035108,
+  8004F74C, 800227C8, 80062118, 800621D4, 8005F718, 800616F8, 8002FED4). Search scripts are in
+  the agent worktree's build/: hc.py (greedy statement moves), hcm.py (permute independent blocks),
+  dw.py/dw2.py (insert one or two `do { } while (0);`), dd.py (aligned diff, `--bin main`).
+  - An empty `do { } while (0);` (a disabled debug macro) changes register allocation and the CSE
+    of address pseudos. It matched 80035108 and 8002FED4 and got 8005B1B8 and 8002B644 within
+    2 rows; try every position.
+  - Loop-invariant hoisting depends on loop size: giving a fall-through switch case its own copy
+    of the body (8004D2C0) stopped the outer jump-table address from being hoisted into an s-reg.
+  - Copies like `move a1,s0` come from re-reading a global the compiler already holds
+    (`nn->unk8 = D_8007AECC->unk15D0`, `D->unk1C = x; gd = D->unk1C;`), or from block-scoped locals.
+  - `addu v1,v1,v0` vs `addu v1,v0,v1`: assign the result to a separate variable inside the if/else
+    (8004F74C: `x = p->x0; if (k) y = x + w; else y = x - w;`).
+  - Duplicating a compare in both branches (`if (prev == 0) { if (n != a) err = 1; } else { if (n != prev + 1) err = 1; }`)
+    beat any merged form (800227C8).
+  - `func_80061BC8` takes one argument. Passing a second kept reorg from filling the beqz delay slot
+    (80062118/800621D4).
+  - The scheduler reverses pairs of independent stores, so write field stores in the opposite
+    order from the asm (8005A320, 8004DCEC).
+  - Rodata: a jump table after a string or a second jump table needs
+    `__asm__(".section .rodata\n\t.word 0\n\t.section .text");` padding (8004D2C0, after 8004DCEC).
+- Drafts in docs/wip/main_*.c (each first line gives the differing rows): 8002B644 (1),
+  8005B1B8 (2), 800585E0 (4), 8005AEC8 (8), 80024BD8 (9), 8005A320 (9), 80029D60 (10),
+  80048E80 (10), 80047B90 (11), 80059414 (13), 8002ECA0 (13), 80028DB0 (15), 8005C8BC (15),
+  8002E718 (23).
+  8005A320 and 8005963C share the `~active & (~(D_80083174 | D_80080A70.unk0) & 0xFFFFFF)` problem:
+  the original ANDs the mask into the nor first. A static inline returning the masked value gets
+  the association right but moves `~active`.
+- 80030B34, 80030EE4, 80031284, 80031718: one template (rsin/rcos table D_8006C1C4, then a C or GTE
+  matrix path picked by the third argument). They sit next to libgte and are large; no draft beyond
+  the old nm_80030EE4 (185/216 rows differ).
 - gcc 2.8.1 cross-function leak (explains the old "order dependency" of 800584C8): combine.c
   only resets its static `mem_last_set` *after* the initial nonzero-bits scan, so during that scan
   the cuid of the previous function's last store/call is still there. A `(reg) = (mem)` whose insn
@@ -217,6 +245,34 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (3c 42A8 now returns s32; 3c 51B8 declares func_80028954 s32).
   - Store order inside a run of struct stores matters even though the scheduler moves loads
     past them (64 C1B0, found with a bounded statement permutation).
+- Menus/FMV pass 3: matched 32 F8AB0, 33 F0024/F15E0/F1A94/F20A0, 36 F0F9C, 39 F4B18/F6694/F9120/FA794,
+  65 F3488/EFC68/F2FE8, 64 990A0/99554/9A5B0. New drafts in docs/wip/: 34 EFC20 (= 39 F7FD4, 62,
+  register pressure), 37 F13F8 (41), 36 F1778 (30, s-regs only; second half is func_801F2D88_inline),
+  65 F1848 (35), 65 F2E58 (38), 64 99B28 (63, shares its first-frame loop with 99F30), 3a F459C (89).
+  Not attempted: 64 99F30 (0x680; do 99B28 first, the decode loop is the same code), 36 F08F4 (its
+  .rodata blob D_801EDF18 holds "-" plus a 0x298-byte table/text block; it needs a config symbol at
+  0x801EDF1C with force_not_migration so the blob stays INCLUDE_RODATA before the string can move to C).
+  Tricks that matched things in this pass:
+  - Rematerialised constants: `k = 1; A = k; B = k;` (64 9A5B0) and `r->y + (y3 + (k = 0x26))` /
+    `k = 0x26; ... (y3 + k)` (33 F1A94) keep a constant out of a fold or force it into a register
+    first; `r->unk2 - (k1 = off - 0x28)` keeps `y - (off - c)` from becoming `(y + c) - off` (65 F2FE8).
+  - A copy of a call result that the original makes in the next call's delay slot (instead of right
+    after the call) comes from an inline wrapper returning it (`static inline s32 w(u8 *s) { return
+    func_8002BA68(s); }`, 36 F0F9C); the copy from v0 stays grouped with the call otherwise.
+  - `x = func(); ...; if (cond) x = ...` CSE: a pointer local that the original rebuilds from a
+    fresh %hi/%lo in a later block means that block has two predecessors in the original
+    (`if (a && b) {...} else if (c && d)` instead of nested ifs, 33 F15E0).
+  - A store whose %hi is in a branch delay slot: compute the destination first
+    (`u8 **d = &D_80077DF0; *d = ...;`, 33 F0024); a base that the original materialises before an
+    index (`lui; addiu; addiu -0xC0; sll; addu`) comes from an inline helper doing `i -= 0xC0;`
+    on its parameter after loading the base (33 F0024).
+  - Loop-carried y offsets: `y = i * 15 + 7;` givs placed after the first statement of the body
+    (65 F2FE8), `r->x + 6 + j * 0x21` instead of a separate counter (39 F4B18).
+  - A struct copy whose destination the original addresses from a separate symbol base
+    (`D_801FB1E0 + k*0x98`, with byte stores from `D_801FB1A8 + k*0x98`) needs the copy through a
+    pointer: `p = &D_801FB1A8.unk34[k].unk4.unk0; *p = d->unk0;` (39 F6694).
+  - Dead stores to a local RECT / pair that the original keeps (64 990A0, 99B28) stay if the local
+    is a struct; scalar copies of the same value are CSEd away.
 - ovl_64 library code (not in config yet, evidence for the coordinator):
   - 8019D020-8019D36C are libpress's static MDEC helpers, right after DecDCToutCallback in the
     same object: D020 = MDEC_reset (rodata "MDEC_rest:bad option(%d)\n", writes the MDEC
