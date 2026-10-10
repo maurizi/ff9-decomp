@@ -156,6 +156,28 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (s16) extension on the index; in BFF20 the D7C counter n doubles as the float flag.
   New drafts: BFF20 7, CD210 25, D1FFC 27, E57B0 34. AB07C 51 -> 24 (separate loop pointers pa/pb/pr set from
   b, r, r + n; getTPage/getClut; permuter: 14 with a do/while(0) around the tail).
+- Pass 10 (matched: EFD1C, E57B0). What fixed them:
+  - A separate variable for each list walk (EFD1C): the two `for (u = ...6F8; ...)` loops in the original use
+    different pseudos (a1, then a0); one shared u forces one register for both.
+  - Assignment inside the test: `if (arg0 == (k = cur->unk68 & 1)) return 0; side = !k;` with s32 k (EFD1C).
+    k as u8/s16 narrows the load to lbu/lhu; `side = !k` before the test keeps k live and moves the temp.
+  - Store order inside switch cases (E57B0, found by build/sweep.py's single-statement moves): `unk8` before
+    `unkC = a`, `unkA` before `unk8 = a`, `unkE` before `unk4 = b`, the unk1C.vz word copy before `vy -= 0xC0`,
+    `unk14 = 0` after `unk2`. 38 -> 0 rows.
+  - cmp.py masks branch offsets: E57B0 scored 0 rows but failed verify because the original stores
+    `e->unk18->unk8 = *p & 0x7FFF` outside the `if (e != NULL)` (its beqz jumps into the middle of the block).
+  - flow.c weights REG_N_REFS by loop depth, so a do { } while (0) around code (it emits loop notes) doubles every
+    ref inside it; that is why the AB07C permuter wrap helped. The goto loop itself has no loop notes.
+  - A by-value struct parameter (E4A3C): a 12-byte struct in a2/a3/stack gives the stack homes without the entry
+    `sw a3` (flow deletes the dead store); read fields as scalars (`*(s32 *)&arg2.b`) so the load can be scheduled
+    above struct stores. 8 -> 7 rows (one copy missing). Callers pass two pointers, so integrating needs the prototype
+    changed or an asm-label declaration.
+  - build/sweep.py: single-edit sweeps (declaration moves, statement moves, do/while(0) wraps, identical-arm if/else
+    on every variable) scored in parallel inside Docker; it doesn't check semantics, so read each hit.
+  Status now: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, C0C00 5, DA138 6, BFF20 6 (+2 symbol-name rows), E4A3C 7,
+  AB810 8, AB07C 24 (10 with the do/while(0) wrap plus `yy = y;`, 1 with an extra identical-arm if; both hacks),
+  C9794 14 (was 26), DA1F4 14 (now same length), D1D74 22, CD210 25, D1FFC 27, CBA58 45, D2DBC 63, AC37C ~175,
+  C67BC ~300. DE11C and ABBC4 have no drafts.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
