@@ -36,6 +36,9 @@ typedef struct {
 s32 func_80022AC4(char *);
 extern s32 D_80071E34;
 u8 func_80022ED4(s32);
+void func_80032100(void);
+void func_80023018(void);
+void func_8019AAF8(void);
 s32 func_80055290(void *);
 void func_800552B8(s32);
 void func_800553EC(s32, s32, s32, s32);
@@ -57,6 +60,12 @@ void func_80055A34(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player) */
 void func_8019C98C(s32);
+void func_801999B4(s32, u8 **);
+void func_80199B28(s32, s32);
+s32 func_80199F30(s32);
+void func_8019A5B0(s32);
+void func_8019AC3C(void (*)(void));
+s32 func_8019AD0C(void);
 extern char **D_8019DC68;
 
 /* other overlay (0x801F....) */
@@ -119,6 +128,14 @@ extern Ovl14Unk320 D_800AB320;
 
 extern void *D_800AB230;
 extern u32 D_800AB300; /* main state */
+extern u8 D_800AB2CC; /* 1: FMV skipped */
+extern u16 D_800AB2CE; /* FMV frame seen last loop; no splat symbol, see ovl_14.c */
+void func_800A9DD4(void);
+s32 func_800A82B0(void);
+void func_800A808C(void);
+s32 func_800A9968(void);
+void func_800A9B14(void);
+void func_800A9B58(void);
 extern s8 D_800AB234; /* sound request kind, -1 = none */
 void func_800A7F70(s32, s32);
 s32 func_800A9220(void);

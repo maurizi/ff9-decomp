@@ -881,7 +881,149 @@ void func_800A9180(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A9220);
+/* D_800AB2CE is the second half of the D_800AB2CC data block, which splat
+ * gives no symbol of its own. The original addressed it separately (its own
+ * %hi register), so it needs a name; drop this once the symbol is added to
+ * config/symbols.ovl_14.us.txt. */
+__asm__(".globl D_800AB2CE\n\t.set D_800AB2CE, D_800AB2CC + 2");
+
+s32 func_800A9220(void) {
+    u8 *buf;
+    s32 timer;
+    s32 i;
+    s32 r;
+    s32 end;
+
+    buf = D_80067944 + 0x106700;
+    timer = -1;
+    func_800A9968();
+    do {
+        func_800A9B14();
+        func_80019194();
+        switch (D_800AB3C8) {
+        case 0:
+            if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+                D_800AB2CC = 0;
+                D_800AB2C4 = 1;
+                D_800AB3C8 = 1;
+                func_8002F884();
+            } else {
+                if (!(D_8006794C->unk1C->unk0 & 0x20000000)) {
+                    func_800A799C(0, 0x7003A, 0, 0, 0);
+                    func_800A799C(0xC401, 0x7003A, 0x5A, 0, 0x7F);
+                }
+                D_800AB2CC = 1;
+                D_800AB3C8 = 3;
+                D_800AB2C4 |= 0x80;
+                func_8002FAAC(1);
+            }
+            break;
+        case 1:
+            i = 1;
+            if (D_8006794C->unk1C->unk8 != 0) {
+                i = 2;
+            }
+            D_800AB3B8[0][i - 1] = 7;
+            D_800AB3B8[0][i] = 0x10;
+            D_8006794C->unk9 = 4;
+            DrawSync(0);
+            func_801999B4(1, &buf);
+            func_8019A5B0(1);
+            func_8019AC3C(func_800A9DD4);
+            D_800AB2CE = D_80071E34;
+            func_80199B28(1, 0);
+            D_800AB3C8 = 2;
+            break;
+        case 2:
+            if ((D_800AB2C4 & 0x10) && (func_80012AD4() & 2)) {
+                r = func_80199F30(0);
+                end = func_8019AD0C();
+                if (r != 0) {
+                    DrawOTag(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8 ^ 1] + 0xFFF);
+                } else if (timer == -1 && D_8006794C->unk1C->unk8 == 0 && !(D_800AB2C4 & 0x20)) {
+                    D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+                }
+                if ((D_80071E34 >= end || D_800AB2CE >= D_80071E34 || timer == 0) && !(D_800AB2C4 & 0x40)) {
+                    if (timer == 0) {
+                        func_8019AAF8();
+                        func_80023018();
+                        if (!(D_8006794C->unk1C->unk0 & 0x20000000)) {
+                            func_800A799C(0, 0x7003A, 0, 0, 0);
+                            func_800A799C(0xC401, 0x7003A, 0x5A, 0, 0x7F);
+                        }
+                    }
+                    if (D_800AB2CE >= D_80071E34) {
+                        D_800AB2C4 &= ~7;
+                        if (D_8006794C->unk1C->unk8 == 0) {
+                            D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+                        }
+                        func_80015C38("Fr: %d\n", D_800AB2CE);
+                    } else {
+                        D_800AB3B8[1][0] = 7;
+                    }
+                    D_800AB2C4 |= 0x40;
+                }
+                if (!(D_800AB2C4 & 0x100) && D_80071E34 > 0) {
+                    func_800A799C(0, 0x7003A, 0, 0, 0);
+                    D_800AB2C4 |= 0x100;
+                }
+                if (!(D_800AB2C4 & 0x20) && (D_80073990[0] & 0x4008) && D_80071E34 < end) {
+                    D_800AB2CC = 1;
+                    func_8019A5B0(0);
+                    D_800AB3B8[1][D_8006794C->unk1C->unk8 != 0 ? 1 : 2] = 2;
+                    timer = 6;
+                    func_800320B8(1, 1, 0, 0);
+                    func_800320B8(1, 1, timer, 0xFFFFFF);
+                    D_80073998[0] = -1;
+                    D_800AB2C4 |= 0x20;
+                }
+                D_800AB2CE = D_80071E34;
+                if (!(D_800AB2C4 & 2) && timer != -1) {
+                    timer--;
+                }
+            }
+            break;
+        case 3:
+            if ((D_800AB2C4 & 0x80) && func_80022B18() == 0) {
+                D_8006794C->unk9 = 0;
+                D_8006794C->unkC[0].disp.x = 0x140;
+                timer = 0x4EC;
+                D_8006794C->unkC[1].disp.x = 0;
+                D_80073998[0] = 0;
+                func_800A82F4(D_800AB2CC);
+                func_800A812C(1);
+                D_800AB3C8 = 4;
+            }
+            break;
+        case 4:
+            if (!(D_800AB2C4 & 0x1000) && (u8)func_800A82B0() && timer < 0x5B) {
+                func_800320B8(1, 1, 0, 0);
+                func_800320B8(1, 1, 0x5A, 0xFFFFFF);
+                D_800AB2C4 |= 0x1000;
+            }
+            if (timer == 0 && D_800AB3C8 != 6) {
+                D_800AB3C8 = 5;
+            }
+            if ((D_800AB2C4 & 0x1000) || (u8)func_800A82B0()) {
+                timer--;
+            }
+            break;
+        }
+        if (!(D_800AB2C4 & 1)) {
+            func_800A808C();
+            if (func_800A811C() == 5) {
+                D_800AB3C8 = 6;
+            }
+            func_80032100();
+            func_80023A0C();
+        }
+        if (!(D_800AB2C4 & 2)) {
+            func_80032098();
+        }
+        func_800A9B58();
+    } while ((u32)D_800AB3C8 < 5);
+    return D_800AB3C8 == 6;
+}
 
 s32 func_800A9968(void) {
     FileEntry *f;
