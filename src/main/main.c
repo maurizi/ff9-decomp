@@ -3664,7 +3664,127 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029D60);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029FE4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002A730);
+s32 func_8002A730(s32 c) {
+    s32 r = 0;
+
+    switch (c & 0xFF) {
+    case 0x30:
+        r = D_800686D0[5].unk4;
+        break;
+    case 0x31:
+        r = D_800686D0[4].unk4;
+        break;
+    case 0x32:
+        r = D_800686D0[7].unk4;
+        break;
+    case 0x33:
+        r = D_800686D0[6].unk4;
+        break;
+    case 0x34:
+        r = D_800686D0[8].unk4;
+        break;
+    case 0x35:
+        r = D_800686D0[10].unk4;
+        break;
+    case 0x36:
+        r = D_800686D0[9].unk4;
+        break;
+    case 0x37:
+        r = D_800686D0[11].unk4;
+        break;
+    case 0x60:
+        r = D_800686D0[func_8002BE10(0)].unk4;
+        break;
+    case 0x61:
+        r = D_800686D0[func_8002BE10(1)].unk4;
+        break;
+    case 0x62:
+        r = D_800686D0[func_8002BE10(2)].unk4;
+        break;
+    case 0x63:
+        r = D_800686D0[func_8002BE10(3)].unk4;
+        break;
+    case 0x64:
+        r = D_800686D0[func_8002BE10(4)].unk4;
+        break;
+    case 0x65:
+        r = D_800686D0[func_8002BE10(5)].unk4;
+        break;
+    case 0x66:
+        r = D_800686D0[func_8002BE10(6)].unk4;
+        break;
+    case 0x67:
+        r = D_800686D0[func_8002BE10(7)].unk4;
+        break;
+    case 0x38:
+        r = D_800686D0[17].unk4;
+        break;
+    case 0x39:
+        r = D_800686D0[18].unk4;
+        break;
+    case 0x3A:
+    case 0x3B:
+    case 0x3C:
+    case 0x3D:
+    case 0x3E:
+    case 0x3F:
+        r = D_800686D0[12].unk4;
+        break;
+    case 0x10:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[0]);
+        break;
+    case 0x11:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[1]);
+        break;
+    case 0x12:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[2]);
+        break;
+    case 0x13:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[3]);
+        break;
+    case 0x14:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[4]);
+        break;
+    case 0x15:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[5]);
+        break;
+    case 0x16:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[6]);
+        break;
+    case 0x17:
+        r = func_8002BA68((s32)&D_8006794C->unk1C->unk3C[7]);
+        break;
+    case 0x18:
+        if (D_8006794C->unk1C->unk54C[0] != NULL) {
+            r = func_8002BA68((s32)D_8006794C->unk1C->unk54C[0]);
+        } else {
+            r = 0;
+        }
+        break;
+    case 0x19:
+        if (D_8006794C->unk1C->unk54C[1] != NULL) {
+            r = func_8002BA68((s32)D_8006794C->unk1C->unk54C[1]);
+        } else {
+            r = 0;
+        }
+        break;
+    case 0x1A:
+        if (D_8006794C->unk1C->unk54C[2] != NULL) {
+            r = func_8002BA68((s32)D_8006794C->unk1C->unk54C[2]);
+        } else {
+            r = 0;
+        }
+        break;
+    case 0x1B:
+        if (D_8006794C->unk1C->unk54C[3] != NULL) {
+            r = func_8002BA68((s32)D_8006794C->unk1C->unk54C[3]);
+        } else {
+            r = 0;
+        }
+        break;
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AA04);
 
