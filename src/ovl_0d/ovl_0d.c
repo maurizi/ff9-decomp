@@ -3280,7 +3280,94 @@ void func_800B026C(TmState *arg0) {
     arg0->unk5A8++;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B030C);
+void *func_800B030C(u32 *ot, void *p, TmState *s) {
+    TmUnk2F0 *e;
+    s32 i;
+    s32 n;
+    s32 dx;
+    s32 dy;
+    s32 dw;
+    s32 dh;
+    u8 c;
+    u8 u;
+
+    c = s->unk2EC;
+    if (s->unk0 == 0x15) {
+        c = s->unk2E8 * 8;
+    }
+    e = s->unk2F0;
+    for (i = 0; i < 6; i++) {
+        if (e[i].unk0 != 0) {
+            continue;
+        }
+        if (s->unk0 == 0x21 && s->unk5AC == 0 && i == s->unk56C) {
+            n = 10 - s->unk5A8;
+            if (n < 0) {
+                n = 0;
+            }
+            dx = n * 4 / 3;
+            dy = n * 5 / 3;
+            dw = dx + 0x2A;
+            dh = dy + 0x33;
+            SetPolyFT4((POLY_FT4 *)p);
+            ((POLY_FT4 *)p)->x0 = e[i].unk4 - dx;
+            ((POLY_FT4 *)p)->y0 = e[i].unk8 - dy;
+            ((POLY_FT4 *)p)->x1 = e[i].unk4 + dw;
+            ((POLY_FT4 *)p)->y1 = e[i].unk8 - dy;
+            ((POLY_FT4 *)p)->x2 = e[i].unk4 - dx;
+            ((POLY_FT4 *)p)->y2 = e[i].unk8 + dh;
+            ((POLY_FT4 *)p)->x3 = e[i].unk4 + dw;
+            ((POLY_FT4 *)p)->y3 = e[i].unk8 + dh;
+            u = 0x98;
+            if (e[i].unkC == 0) {
+                u = 0x68;
+            }
+            ((POLY_FT4 *)p)->u0 = u;
+            ((POLY_FT4 *)p)->v0 = 0x40;
+            ((POLY_FT4 *)p)->u1 = u + 0x2A;
+            ((POLY_FT4 *)p)->v1 = 0x40;
+            ((POLY_FT4 *)p)->u2 = u;
+            ((POLY_FT4 *)p)->v2 = 0x73;
+            ((POLY_FT4 *)p)->u3 = u + 0x2A;
+            ((POLY_FT4 *)p)->v3 = 0x73;
+            ((POLY_FT4 *)p)->r0 = c;
+            ((POLY_FT4 *)p)->g0 = c;
+            ((POLY_FT4 *)p)->b0 = c;
+            ((POLY_FT4 *)p)->tpage = 0x9C;
+            ((POLY_FT4 *)p)->clut = 0x3A80;
+            AddPrim(ot + 99, p);
+            p = (POLY_FT4 *)p + 1;
+        } else {
+            setlen((SPRT *)p, 4);
+            ((SPRT *)p)->code = 0x64;
+            if (s->unk0 == 0x15) {
+                ((SPRT *)p)->code = 0x66;
+            }
+            ((SPRT *)p)->x0 = e[i].unk4;
+            ((SPRT *)p)->y0 = e[i].unk8;
+            ((SPRT *)p)->r0 = c;
+            ((SPRT *)p)->g0 = c;
+            ((SPRT *)p)->b0 = c;
+            if (e[i].unkC == 0) {
+                ((SPRT *)p)->u0 = 0x68;
+                ((SPRT *)p)->v0 = 0x40;
+            } else {
+                ((SPRT *)p)->u0 = 0x98;
+                ((SPRT *)p)->v0 = 0x40;
+            }
+            ((SPRT *)p)->clut = 0x3A80;
+            ((SPRT *)p)->w = 0x2A;
+            ((SPRT *)p)->h = 0x33;
+            AddPrim(ot + 100, p);
+            p = (SPRT *)p + 1;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+            AddPrim(ot + 100, p);
+            p = (DR_TPAGE *)p + 1;
+        }
+    }
+    return p;
+}
 
 void func_800B0618(TmState *s) {
     s32 i;

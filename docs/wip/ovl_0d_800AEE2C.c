@@ -1,13 +1,20 @@
 /*
  * ovl_0d func_800AEE2C (0x2D4 bytes): marks which hand cards are shown and lays out the enemy's
  * card stack ("NO" + count, up to five stacked cards from the deck via func_800625A0).
- * WIP (pass 7, first draft): 182 vs 181 instructions, ~77 aligned diff rows.
- *  - loop 1: the original's giv is the card pointer (v1 = s + 0x10, stores at 0x34(v1)); with
- *    `c = &s->unk10[i]` we get an index giv plus an addu each iteration, with a pointer biv
- *    (`c++`) loop.c folds 0x34 into the giv (s + 0x44);
- *  - `5` for `s->unk47C != 5` lives in s1 (i's register) in the original, hence `i = 5`;
- *  - n should stay in fp (we spill it), one s-register too many (frame 0x68 vs 0x60);
- *  - the dx block: the original threads the `i == 0` test into the unk418 == 0 arm.
+ * WIP (pass 10): 181 of 181 instructions, 25 aligned diff rows, all one s-register rotation:
+ * the original has s in s5, c0 in s4, m in s6 (ours s4 / s6 / s5). Everything else matches.
+ * Fixed this pass:
+ *  - loop 1 `q = s->unk10; p = &q[i]; p->unk34 = ...` keeps the card base (s + 0x10) as the
+ *    giv with the 0x34 offset in the stores; loop 2 is a pointer biv `q = &s->unk10[9]; q--`;
+ *    both in temps p/q (v1/v0 in the original);
+ *  - card loop `c = &c0[i]` (giv starting at c0, s0) instead of a biv, which puts n in fp;
+ *  - `i = func_8002BA10(buf) + 0xE; w = i / 2;` and `i = func_80062794(...)` (the original
+ *    keeps both in s1, i's register);
+ *  - the dx block: the unk418 == 0 arm has its own `if (i == 0) dx = 0;` (jump threading);
+ *  - `c->unk5 = d->unk5` before `k++`.
+ * Left: global-alloc priorities are s 0.305, m 0.185, c0 0.127, so c0 can never win s4 over
+ * s unless its refs/live length differ in the original (it is only used for the giv init and
+ * the i == 0 unk1 store there too).
  */
 #include "ovl_0d.h"
 
@@ -17,6 +24,8 @@ void func_800AEE2C(TmState *s) {
     u8 buf[0x20];
     TmCard *c;
     TmCard *c0;
+    TmCard *p;
+    TmCard *q;
     Unk6 *d;
     s32 i;
     s32 n;
@@ -25,24 +34,25 @@ void func_800AEE2C(TmState *s) {
     s32 dx;
     s32 w;
 
+    q = s->unk10;
     for (i = 0; i < 5; i++) {
-        c = &s->unk10[i];
+        p = &q[i];
         if (i < s->unk47C) {
-            c->unk34 = 1;
+            p->unk34 = 1;
         } else {
-            c->unk34 = 0;
+            p->unk34 = 0;
         }
     }
-    for (i = 4; i >= 0; i--) {
-        c = &s->unk10[i + 5];
-        c->unk34 = 0;
+    for (i = 4, q = &s->unk10[9]; i >= 0; i--, q--) {
+        q->unk34 = 0;
     }
     i = 5;
     if (s->unk47C != i && s->unk0 != 0x1B) {
         n = func_80062560(func_800AF268(s));
         if (n != 0) {
             func_8002BAE4(func_800AF268(s) + 1, buf, -1, 3);
-            w = (func_8002BA10(buf) + 0xE) / 2;
+            i = func_8002BA10(buf) + 0xE;
+            w = i / 2;
             func_8002B56C(0xD8 - w, 0x78, 0xFFA, "NO", 0);
             func_8002B5B4(0xE6 - w, 0x76, 0xFFA, buf, 0);
             m = n;
@@ -51,11 +61,15 @@ void func_800AEE2C(TmState *s) {
             if (m >= 6) {
                 m = 5;
             }
-            for (i = 0, c = c0; i < m; i++, c++) {
+            for (i = 0; i < m; i++) {
+                c = &c0[i];
                 dx = 0;
                 if (s->unk568 != 0) {
                     if (s->unk418 == 0) {
                         dx = s->unk568 - 4;
+                        if (i == 0) {
+                            dx = 0;
+                        }
                     } else {
                         dx = -s->unk568 + 1;
                     }
@@ -80,15 +94,15 @@ void func_800AEE2C(TmState *s) {
                 c->unk2 = d->unk2;
                 c->unk3 = d->unk3;
                 c->unk4 = d->unk4;
+                c->unk5 = d->unk5;
                 k++;
                 c->unk34 = 1;
-                c->unk5 = d->unk5;
                 if (k == n) {
                     k = 0;
                 }
             }
-            w = func_80062794(func_800AF268(s));
-            func_8002B5FC(0xD9 - w / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(func_800AF268(s)), 0);
+            i = func_80062794(func_800AF268(s));
+            func_8002B5FC(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(func_800AF268(s)), 0);
         }
     } else {
         s->unk10[5].unk34 = 0;

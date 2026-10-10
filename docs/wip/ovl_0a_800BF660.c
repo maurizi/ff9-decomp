@@ -4,14 +4,16 @@
  * matrix, averages the screen position into D_800CA068.unk2C/2E, clamps the scroll into the
  * camera's unk28..unk2E limits, updates D_800CA068.unkC/unkE/unk4 and scrolls the layers by the
  * delta (same layer loop as func_800BF0C4, here with the deltas in stack shorts dx/dy).
- * WIP: 418 of 418 instructions, 39 aligned diff rows (build/s/cmp.py). The layer loop, the
- * entry, the projection and the stack frame match. Left:
- *   - register choice in the clamp block: the original has x in a0, y in a2 and the
- *     D_800CA068 base in a1; ours has x a1 / base a0 (global-alloc order);
- *   - `wx - (lim - 160)` is reassociated by fold into (wx + 160) - lim; the original subtracts
- *     a (lim - 160) temp (filled into both branch delay slots by reorg). The y half wants
- *     A - (lim - 112) computed after A. Temps in fresh variables did not help;
- *   - the y offset is reached through `lim = A - 112; y += lim` (45 -> 39 rows), probably wrong.
+ * WIP (pass 10): 419 vs 418 instructions, 9 aligned diff rows (build/cmp.py). Fixed this pass:
+ *   - the clamps are `if (cx < c->unk28) ... else if (c->unk2A < cx) ...` with the limit
+ *     re-read in each arm (jump2 cross-jumps the identical tails, reorg fills both delay
+ *     slots); that fixed the D_800CA068 base register (a1);
+ *   - the x arm needs a block-local `t = c->unk28 - 160; sx = wx - t;` (no fold reassociation);
+ *   - `lim = wx - 160; cx = lim + x; lim = A - 112; y += lim;` (same variable for both temps)
+ *     gives cx/sx/sy their t1/t0/a3.
+ * Left: A - 112 lands in v1 (lim's register) instead of in place in v0, so the unk28 load
+ * goes to a0 and the x clamp gets an extra `j`; the y arm still reassociates
+ * `A - (lim - 112)` into (A + 112) - lim (a block temp there fixes the order but costs 34 rows).
  * Frame layout notes: sxy must be a 4-byte non-BLKmode object (union {s32; DVECTOR}) so it
  * lands right after ofx/ofy; dx/dy are separate addressable shorts (an s16[2] or DVECTOR is
  * BLKmode and gets 8-byte slots). `y = sxy.w >> 16` gives the lh 0x22(sp); sxy.v.vy gives
@@ -95,15 +97,25 @@ s32 func_800BF660(void) {
     D_800CA068.unk2C = x;
     D_800CA068.unk2E = y;
     wx = (c->unk24 >> 1) + (s16)c->unk20;
-    cx = wx - 160;
-    cx += x;
+    lim = wx - 160;
+    cx = lim + x;
     lim = (c->unk26 >> 1) + (s16)c->unk22 - 112;
     y += lim;
-    if (cx < (lim = c->unk28) || (lim = c->unk2A) < cx) {
-        sx = wx - (lim - 160);
+    if (cx < c->unk28) {
+        {
+            s32 t = c->unk28 - 160;
+            sx = wx - t;
+        }
+    } else if (c->unk2A < cx) {
+        {
+            s32 t = c->unk2A - 160;
+            sx = wx - t;
+        }
     }
-    if (y < (lim = c->unk2C) || (lim = c->unk2E) < y) {
-        sy = (c->unk26 >> 1) + (s16)c->unk22 - (lim - 112);
+    if (y < c->unk2C) {
+        sy = ((c->unk26 >> 1) + (s16)c->unk22) - (c->unk2C - 112);
+    } else if (c->unk2E < y) {
+        sy = ((c->unk26 >> 1) + (s16)c->unk22) - (c->unk2E - 112);
     }
     D_800CA068.unkC = sx - c->unk20;
     D_800CA068.unkE = sy - c->unk22;
