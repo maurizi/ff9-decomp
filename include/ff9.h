@@ -2301,6 +2301,9 @@ extern u32 D_8007B9B0[];
 extern u8 **D_8007BCA8;
 void func_80051004(s32);
 extern u8 D_8007B930[8]; /* name text being converted */
+u32 func_80050F68(s32); /* glyph info of a text code, width in the top 4 bits */
+s32 func_8004B120(s32);
+void func_8004C2C0(u8 **, s32 *); /* add the width of a text control code */
 
 typedef struct {
     u8 *unk0; /* stream read pointer */

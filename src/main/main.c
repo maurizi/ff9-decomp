@@ -11176,7 +11176,141 @@ void func_8004C204(void) {
     D_8007BCA4 = g->unk10[g->unk8];
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C2C0);
+/* width of an embedded string, up to 0xF7 / 0xFF */
+static inline s32 func_8004C2C0_width(u8 *s) {
+    s32 w = 0;
+    s32 multi = 0;
+    s32 c;
+    u32 g;
+
+    D_8007BB98.unk0 = 0;
+    c = *s++;
+    while (c != 0xF7 && c != 0xFF) {
+        do {
+            g = func_80050F68(c);
+            if (g != 0) {
+                w += 1 + (g >> 28);
+            }
+            multi = multi ? 0 : (c >= 0xFA ? c < 0xFE : 0);
+            c = *s++;
+        } while (multi);
+    }
+    return w;
+}
+
+/* copy character ch's name into D_8007B930, converting the case */
+static inline void func_8004C2C0_name(s32 ch) {
+    u8 *name = D_8006794C->unk1C->unk3C[ch].unk0;
+    s32 k;
+    u32 c;
+
+    for (k = 0; k < 8; k++) {
+        c = name[k];
+        if (c - 0x30 < 0x1A) {
+            c -= 0x20;
+        } else if (c - 0x64 < 0x14) {
+            c -= 0x14;
+        } else if (c - 0x7A < 2) {
+            c -= 2;
+        }
+        D_8007B930[k] = c;
+    }
+}
+
+void func_8004C2C0(u8 **pp, s32 *pw) {
+    u8 *s;
+    u8 *t;
+    u8 *tbl;
+    u8 *str;
+    u8 *p;
+    s32 w;
+    s32 c;
+    s32 n, k;
+    u32 g, i;
+
+    if (pp != NULL && pw != NULL) {
+        s = *pp;
+        w = *pw;
+        c = *s++;
+        while (c != 0xFF) {
+            switch (c) {
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+            case 0x17:
+                w += func_8004C2C0_width(D_8006794C->unk1C->unk3C[c - 0x10].unk0);
+                break;
+            case 0x18:
+            case 0x19:
+            case 0x1A:
+            case 0x1B:
+                w += func_8004C2C0_width(D_8006794C->unk1C->unk3C[func_8004B120(c - 0x18)].unk0);
+                break;
+            case 0x80:
+            case 0x81:
+            case 0x82:
+            case 0x83:
+            case 0x84:
+            case 0x85:
+            case 0x86:
+            case 0x87:
+                func_8004C2C0_name(c - 0x80);
+                w += func_8004C2C0_width(D_8007B930);
+                break;
+            case 0xE:
+                n = D_8007BBA8[*s++];
+                if (n < 0x100) {
+                    str = D_8006A218 + D_80069018[n].unk0;
+                } else if (n < 0x200) {
+                    str = D_8006ADAC + D_8006B374[n - 0x100].unk0;
+                } else {
+                    str = (u8 *)func_8006276C(n - 0x200);
+                }
+                w += func_8004C2C0_width(str);
+                break;
+            case 0x40:
+                n = D_8007BBA8[*s++];
+                if (n < 0) {
+                    n = -n;
+                    w += 9;
+                }
+                do {
+                    n /= 10;
+                    w += 9;
+                } while (n != 0);
+                break;
+            case 0x6:
+                c = *s++;
+                g = (c >> 4) & 3;
+                i = c & 7;
+                t = NULL;
+                if (g < 4 && i < 8 && (tbl = D_8007BB80[g]) != NULL) {
+                    k = D_8007BBA8[i];
+                    if (k < *tbl) {
+                        tbl++;
+                        k <<= 1;
+                        p = tbl + k;
+                        t = tbl + (p[0] | (p[1] << 8));
+                    }
+                }
+                w += func_8004C2C0_width(t);
+                break;
+            case 0x70:
+                if ((u32)D_8007BBA8[0] & (1 << *s++)) {
+                    w += 0x19;
+                }
+                break;
+            }
+            c = *s++;
+        }
+        *pp = s;
+        *pw = w + 9;
+    }
+}
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011A6C);
 
