@@ -2733,7 +2733,74 @@ void func_80023A4C(void) {
     func_80023F00();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80023A6C);
+void func_80023A6C(void) {
+    UnkTimer *t;
+    u8 blink;
+    u8 *pkt;
+    u32 *ot;
+    u8 shown;
+    u8 colon;
+    s32 w;
+    s32 d;
+    s32 v;
+    s32 dg;
+    s32 hr;
+    s32 min;
+
+    t = &D_80076B60.unk408;
+    d = D_80076B60.unk0 - t->unk4;
+    blink = 0;
+    min = t->unkC / 60;
+    hr = min / 60;
+    ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 1;
+    D_800686C8.x = 4;
+    pkt = D_80076B60.unk404;
+    min %= 60;
+    if (d < 8) {
+        D_800686C8.x = d * 8 - 0x3C;
+        blink = 1;
+    }
+    if (t->unk1 == 0) {
+        v = VSync(-1) % 60;
+        colon = 0;
+        if (blink || v >= 30) {
+            colon = 1;
+        }
+        shown = colon;
+    } else if (hr != 0 || min != 0) {
+        v = t->unkC % 60;
+        shown = 1;
+        colon = v >= 30;
+    } else {
+        v = VSync(-1) % 60;
+        colon = v >= 30;
+        shown = colon;
+    }
+    if (shown) {
+        dg = hr / 10;
+        if (dg != 0) {
+            pkt = func_80027834(D_800686C8.x + 5, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        }
+        dg = hr - dg * 10;
+        pkt = func_80027834(D_800686C8.x + 0xF, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        dg = min / 10;
+        pkt = func_80027834(D_800686C8.x + 0x23, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        dg = min - dg * 10;
+        pkt = func_80027834(D_800686C8.x + 0x2D, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+    }
+    if (colon) {
+        pkt = func_80027834(D_800686C8.x + 0x19, 8, ot, 0xEA, t->unk1 == 0, &w, pkt);
+    }
+    pkt = func_800253D4(&D_800686C8, ot, 1, 1, 1, (D_8006794C->unk24 >> 18) & 1, pkt);
+    setlen(pkt, 3);
+    ((TileWords *)pkt)->rgbc = 0x62000000;
+    ((TileWords *)pkt)->xy = ((D_800686C8.x + 2) & 0xFFFF) | ((D_800686C8.y + 2) << 16);
+    ((TileWords *)pkt)->wh = (D_800686C8.w - 4) | ((D_800686C8.h - 4) << 16);
+    addPrim(ot, pkt);
+    pkt += sizeof(TileWords);
+    SetDrawTPage(pkt, 1, 1, 0);
+    addPrim(ot, pkt);
+}
 
 void func_80023EB8(void) {
     func_80024070();
