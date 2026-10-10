@@ -2,11 +2,13 @@
  * ovl_0a func_800B0124 (0x18FC bytes): field music/sound request handler (GameData.unk83C),
  * the field version of ovl_0c func_800AB0C0 (matched) with the two sound-effect bank slots
  * (unk828/unk830/unk8B4/unk8B8/unk8BA), the 0x18xxxx ambient sounds and the 9 (resume) case.
- * WIP: 1598 of 1599 instructions, 18 aligned diff rows (build/s/cmp.py), all in the kind-9
- * block of case 0: the original keeps a copy of D_8006794C->unk1C (`addu v1,a0,zero`, one extra
- * instruction) and so `ok` lands in t0, the D_8006794C reload in a2 and 0x70000 in a1; our CSE
- * folds the copy. Everything else matches, including the jump tables (one `.word 0` pad before
- * the second table).
+ * WIP: 1599 of 1599 instructions, 17 aligned diff rows (build/s/cmp.py), all in the kind-9
+ * block of case 0: the first D_8006794C load is in v0 (original a1), so its %hi lands in a1
+ * (a2), `ok` in a2 (t0) and the reload/0x70000 temps shift with them. Everything else matches,
+ * including the jump tables (one `.word 0` pad before the second table).
+ *  - the `addu v1,a0,zero` copy of D_8006794C->unk1C into `g` only survives CSE when `g` is also
+ *    used after the block (cse.c make_regs_eqv makes it the canonical register only if it lives
+ *    beyond the extended basic block), hence `g` in state 2.
  * How the rest was found (dump with `cc1 -dl -dg`, then priority = floor_log2(refs) * refs /
  * live_length from the .lreg "Register N used X times across Y insns" lines):
  *  - arg0 must lose its register (the original reloads it from its home slot 0x58 everywhere);
@@ -513,7 +515,8 @@ state:
                 D_8006794C->unk1C->unk84A = sz >> 11;
             }
         }
-        if (!(SCENE->unk0 & 0x10) && D_8006794C->unk1C->unk852 != 0x84) {
+        g = D_8006794C->unk1C;
+        if (!(g->unk8E4.field->unkC->unk14->unk0 & 0x10) && g->unk852 != 0x84) {
             func_80055DF4();
         }
         D_8006794C->unk1C->unk8C0 = SCENE->unk20 ? SCENE->unk20 : D_80067948;
