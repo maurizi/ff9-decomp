@@ -4,9 +4,37 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
-- Register allocation / scheduling / branch order (>=90%):
-  8005F718,
-  800616F8, 8002FED4, 8002ECA0, 8002E718, 80062118, 800621D4, 8005B1B8, 8005AEC8, 8002B644.
+- Tricks that matched 12 main functions (8001D32C, 80036650, 8004D2C0, 8004DCEC, 80035108,
+  8004F74C, 800227C8, 80062118, 800621D4, 8005F718, 800616F8, 8002FED4). Search scripts are in
+  the agent worktree's build/: hc.py (greedy statement moves), hcm.py (permute independent blocks),
+  dw.py/dw2.py (insert one or two `do { } while (0);`), dd.py (aligned diff, `--bin main`).
+  - An empty `do { } while (0);` (a disabled debug macro) changes register allocation and the CSE
+    of address pseudos. It matched 80035108 and 8002FED4 and got 8005B1B8 and 8002B644 within
+    2 rows; try every position.
+  - Loop-invariant hoisting depends on loop size: giving a fall-through switch case its own copy
+    of the body (8004D2C0) stopped the outer jump-table address from being hoisted into an s-reg.
+  - Copies like `move a1,s0` come from re-reading a global the compiler already holds
+    (`nn->unk8 = D_8007AECC->unk15D0`, `D->unk1C = x; gd = D->unk1C;`), or from block-scoped locals.
+  - `addu v1,v1,v0` vs `addu v1,v0,v1`: assign the result to a separate variable inside the if/else
+    (8004F74C: `x = p->x0; if (k) y = x + w; else y = x - w;`).
+  - Duplicating a compare in both branches (`if (prev == 0) { if (n != a) err = 1; } else { if (n != prev + 1) err = 1; }`)
+    beat any merged form (800227C8).
+  - `func_80061BC8` takes one argument. Passing a second kept reorg from filling the beqz delay slot
+    (80062118/800621D4).
+  - The scheduler reverses pairs of independent stores, so write field stores in the opposite
+    order from the asm (8005A320, 8004DCEC).
+  - Rodata: a jump table after a string or a second jump table needs
+    `__asm__(".section .rodata\n\t.word 0\n\t.section .text");` padding (8004D2C0, after 8004DCEC).
+- Drafts in docs/wip/main_*.c (each first line gives the differing rows): 8002B644 (1),
+  8005B1B8 (2), 800585E0 (4), 8005AEC8 (8), 80024BD8 (9), 8005A320 (9), 80029D60 (10),
+  80048E80 (10), 80047B90 (11), 80059414 (13), 8002ECA0 (13), 80028DB0 (15), 8005C8BC (15),
+  8002E718 (23).
+  8005A320 and 8005963C share the `~active & (~(D_80083174 | D_80080A70.unk0) & 0xFFFFFF)` problem:
+  the original ANDs the mask into the nor first. A static inline returning the masked value gets
+  the association right but moves `~active`.
+- 80030B34, 80030EE4, 80031284, 80031718: one template (rsin/rcos table D_8006C1C4, then a C or GTE
+  matrix path picked by the third argument). They sit next to libgte and are large; no draft beyond
+  the old nm_80030EE4 (185/216 rows differ).
 - gcc 2.8.1 cross-function leak (explains the old "order dependency" of 800584C8): combine.c
   only resets its static `mem_last_set` *after* the initial nonzero-bits scan, so during that scan
   the cuid of the previous function's last store/call is still there. A `(reg) = (mem)` whose insn
