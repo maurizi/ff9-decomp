@@ -1261,42 +1261,109 @@ typedef struct {
 } EffElem; /* 0x28 */
 
 typedef struct {
-    u8 pad0[4];
+    s32 unk0; /* count of unk10 weights */
     s16 unk4; /* count of EffElem following */
-    u8 pad6[0x14 - 6];
+    u16 unk6;
+    u16 unk8;
+    u16 unkA;
+    u16 unkC;
+    s16 unkE; /* 1 = blend weights animated */
+    union {
+        s32 w;
+        u8 b[4];
+    } unk10;
 } EffElemHdr; /* 0x14 */
+
+/* effect file header */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 pad1[8 - 1];
+    s16 unk8;
+    s16 unkA;
+    u8 padC[0x18 - 0xC];
+    s16 unk18;
+    s16 unk1A;
+    u8 pad1C[0x20 - 0x1C];
+    s16 unk20;
+    s16 unk22;
+} EffFileHdr;
+
+/* emitter animation parameters */
+typedef struct {
+    s16 unk0; /* speed curve: 0 linear, 1 sine, 2 table, 3 constant */
+    s16 unk2; /* duration */
+    s16 unk4;
+    s16 unk6;
+    u8 pad8[0xC - 8];
+    s16 unkC[3];
+    s16 unk12;
+    s16 unk14[3];
+    s16 unk1A;
+    s16 unk1C;
+    u8 pad1E[0x20 - 0x1E];
+    s16 unk20[2];
+    s16 unk24[2];
+    SVECTOR unk28;
+    SVECTOR unk30;
+} EffAnim; /* 0x38 */
 
 typedef struct {
     s32 unk0;
-    u8 pad4[0x3C - 4];
-    s32 unk3C;
+    EffAnim unk4;
+    s16 unk3C;
+    s16 unk3E;
+    s16 unk40[8];
+    s16 unk50[8];
 } EffTail;
 
+/* 0x38-byte block in front of Pool6CEntry.unk4 */
+typedef struct {
+    u8 pad0[0x14];
+    s16 unk14[3];
+    s16 unk1A;
+    s16 unk1C[3];
+    s16 unk22;
+    s16 unk24;
+    u8 pad26[0x28 - 0x26];
+    s16 unk28[2];
+    s16 unk2C[2];
+    u8 pad30[0x38 - 0x30];
+} EffSub; /* 0x38 */
+
 typedef struct Pool6CEntry {
-    u8 *unk0; /* effect file */
-    u8 *unk4;
-    u8 pad8[0xE - 8];
+    EffFileHdr *unk0; /* effect file */
+    EffSub *unk4;
+    s16 unk8;
+    s16 unkA;
+    u8 padC[0xE - 0xC];
     s16 unkE;
     s16 unk10;
     u8 pad12[0x14 - 0x12];
     s32 unk14;
     EffElem *unk18;
-    u8 pad1C[0x22 - 0x1C];
+    s32 unk1C;
+    s16 unk20;
     s16 unk22;
     EffTail *unk24;
     SVECTOR *unk28;
     s32 unk2C;
-    s16 unk30; /* in use */
+    s16 unk30; /* in use, -1 = release */
     s16 unk32;
-    s16 unk34;
-    s16 unk36;
-    u8 pad38[0x3A - 0x38];
+    s32 unk34;
+    s16 unk38; /* frame */
     s16 unk3A;
-    u8 pad3C[0x5C - 0x3C];
-    s16 unk5C;
-    s16 unk5E;
-    s16 unk60;
-    u8 pad62[0x6C - 0x62];
+    s16 unk3C;
+    s16 unk3E;
+    s16 unk40;
+    s16 unk42;
+    s16 unk44[3];
+    s16 unk4A;
+    s32 unk4C;
+    s16 unk50[3];
+    s16 unk56;
+    s32 unk58;
+    SVECTOR unk5C;
+    u8 pad64[0x6C - 0x64];
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
@@ -2042,7 +2109,7 @@ typedef struct {
 void func_800E1708(Pool30 *, s32, s32);
 void func_800E1810(Pool30 *, Pool6CEntry *);
 void func_800E0168(Pool30 *);
-void func_800E1874(Pool30 *, Pool6C *);
+s32 func_800E1874(Pool30 *, Pool6C *);
 void func_800E2000(Pool30 *, Pool6C *);
 void func_800E3B34(Heap *, s32);
 void func_800E3DA8(void);
@@ -2846,7 +2913,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 /* -O1 unit (ovl_0b_o1.c) */
 s32 func_800CA2B0(s32);
 void func_800C416C(s32, Unk800C412C *, s16 *);
-s16 func_800CF9B0(s32, s32, s32);
+s32 func_800CF9B0(s32, s32, s32);
 
 typedef struct {
     u8 unk0;
@@ -3258,5 +3325,70 @@ static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
 void func_8001DA78(void *, s32);
 extern s32 D_800711A8[]; /* projected screen xy per model vertex */
 extern s32 D_80070520[]; /* projected z per model vertex */
+
+/* func_800D23D8: multi-frame sprite sheets */
+#define gte_zero_vz012() __asm__ volatile( \
+    "mtc2\t$0, $1;" \
+    "mtc2\t$0, $3;" \
+    "mtc2\t$0, $5" : : )
+
+typedef struct {
+    u16 unk0;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
+} Unk800D23D8Hdr;
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Unk800D23D8Scale;
+
+typedef struct {
+    u32 unk0;
+    s32 unk4;
+    u16 *unk8;
+    u16 *unkC;
+    u16 *unk10;
+    u16 *unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x40 - 0x2C];
+} Unk800D4768Ctx;
+
+typedef struct {
+    u32 unk0;
+    s32 unk4;
+    u32 *unk8;
+    u32 *unkC;
+    u16 *unk10;
+    u32 *unk14;
+    s32 unk18;
+    s32 unk1C;
+    u32 *unk20;
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x40 - 0x2C];
+} Unk800D4A30Ctx;
+
+void func_800D4768(s32, Unk800D4768Ctx *, u8 *, s32 *);
+void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
+
+/* GTE: load 3 halfwords into IR1-3; general purpose interpolation with base */
+#define gte_ldsv(r0) __asm__ volatile( \
+    "lhu\t$12, 0(%0);" \
+    "lhu\t$13, 2(%0);" \
+    "lhu\t$14, 4(%0);" \
+    "mtc2\t$12, $9;" \
+    "mtc2\t$13, $10;" \
+    "mtc2\t$14, $11" \
+    : : "r"(r0) : "$12", "$13", "$14")
+#define gte_gpl12() __asm__ volatile(GTE_NOPS ".word\t0x4BA8003E")
 
 #endif
