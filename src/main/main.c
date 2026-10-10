@@ -5839,7 +5839,36 @@ void func_8002EB74(MenuList *p) {
     p->unk9 = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002ECA0);
+MenuView *func_8002ECA0(MenuList *m, MenuView *v) {
+    s32 d;
+
+    if (m->unk8 & 4) {
+        if (m->unk8 & 2) {
+            d = m->unkD - m->unk9;
+            v->unk0 = (d + 8) / 15;
+            v->unk1 = m->unk5 + (m->unk3 - v->unk0);
+            v->unk2 = (m->unk3 - v->unk0) * 15 + 6;
+        } else {
+            d = m->unkD - m->unk9;
+            v->unk0 = (d + 8) / 15;
+            v->unk1 = m->unk5;
+            v->unk2 = 6;
+        }
+    } else if (m->unk8 & 2) {
+        v->unk0 = m->unk3 + 1;
+        v->unk1 = m->unk5 - 1;
+        v->unk2 = m->unk9 - 9;
+    } else if (m->unk8 & 1) {
+        v->unk1 = m->unk5;
+        v->unk0 = m->unk3 + 1;
+        v->unk2 = -m->unk9 + 6;
+    } else {
+        v->unk1 = m->unk5;
+        v->unk0 = m->unk3;
+        v->unk2 = 6;
+    }
+    return v;
+}
 
 void func_8002EDFC(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
     m->unk0 = count;
