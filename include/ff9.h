@@ -3139,6 +3139,15 @@ typedef struct {
 typedef struct {
     u32 tag;
     u32 rgbc;
+    s16 x;
+    s16 y;
+    u8 u;
+    u8 v;
+    u16 clut;
+} Sprt8Fields; /* SPRT_8 with rgb+code as one word */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
     u32 xy0;
     u32 uv0clut;
     u32 xy1;
