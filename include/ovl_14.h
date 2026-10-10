@@ -128,6 +128,12 @@ extern Ovl14Unk320 D_800AB320;
 
 extern void *D_800AB230;
 extern u32 D_800AB300; /* main state */
+extern SPRT D_800AB448[2];
+extern DR_TPAGE D_800AB470[2];
+void func_800AAF40(void);
+void func_800AB06C(void);
+void func_800AB09C(void);
+void func_800AB0E0(void);
 extern u8 D_800AB2CC; /* 1: FMV skipped */
 extern u16 D_800AB2CE; /* FMV frame seen last loop; no splat symbol, see ovl_14.c */
 void func_800A9DD4(void);

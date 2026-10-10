@@ -1158,7 +1158,43 @@ void func_800AA9D8(void) {
     func_8002C0DC(D_8006794C->unk1C->unk8);
 }
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800AAADC);
+void func_800AAADC(void) {
+    RECT *r;
+    s32 t;
+
+    t = 0xD2;
+    func_800AAF40();
+    func_8001D910((void *)D_800AB2F4, NULL, &r);
+    r->w *= 4;
+    do {
+        func_800AB09C();
+        func_80019194();
+        if (t == 0xD2) {
+            func_800320B8(1, 1, 0x3C, 0);
+        } else if (t == 0x3C) {
+            func_800320B8(1, 1, 0x3C, 0xFFFFFF);
+        }
+        setlen(&D_800AB448[D_8006794C->unk1C->unk8], 4);
+        D_800AB448[D_8006794C->unk1C->unk8].code = 0x64;
+        D_800AB448[D_8006794C->unk1C->unk8].r0 = 0x80;
+        D_800AB448[D_8006794C->unk1C->unk8].g0 = 0x80;
+        D_800AB448[D_8006794C->unk1C->unk8].b0 = 0x80;
+        D_800AB448[D_8006794C->unk1C->unk8].x0 = (0x140 - r->w) / 2;
+        D_800AB448[D_8006794C->unk1C->unk8].y0 = (0xE0 - r->h) / 2;
+        D_800AB448[D_8006794C->unk1C->unk8].u0 = 0;
+        D_800AB448[D_8006794C->unk1C->unk8].v0 = 0;
+        D_800AB448[D_8006794C->unk1C->unk8].w = r->w;
+        D_800AB448[D_8006794C->unk1C->unk8].h = r->h;
+        D_800AB448[D_8006794C->unk1C->unk8].clut = 0x3800;
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800AB448[D_8006794C->unk1C->unk8]);
+        setDrawTPage(&D_800AB470[D_8006794C->unk1C->unk8], 1, 1, 0xA);
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800AB470[D_8006794C->unk1C->unk8]);
+        t--;
+        func_80032098();
+        func_800AB0E0();
+    } while (t > 0);
+    func_800AB06C();
+}
 
 void func_800AAF40(void) {
     u8 *buf;
