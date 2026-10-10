@@ -36,8 +36,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
 
 ## ovl_0b (battle)
-- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), F5064, C9794, BFF20,
-  ED3F8, CCDB8, D9D58, E8B28, D0E14, AB810, EFD1C, ED02C, ED7C0, E1534, BE1E0 (big switch), E4A3C (odd
+- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794, BFF20,
+  ED3F8, CCDB8, D9D58, D0E14, AB810, ED02C, ED7C0, E1534, BE1E0 (big switch), E4A3C (odd
   argument-slot stack use).
 - Large-function pass 2 (drafts in the agent worktree's build/nm_<addr>.c; "~N" = differing insns):
   80047B90 ~35 (needs &v held in s0 with m[1][1] stored via s0+0x10), 80024BD8 ~12 (POLY_G4 store
@@ -52,7 +52,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   E4C88), msg/ok assignments placed where reorg wants them, duplicated case bodies instead of fallthrough to
   raise a pointer's priority (E2000), r * arg10 instead of a running sum and biv increment order via the for
   clause (D0B18), and a struct-typed store ((XY32 *)&v[0])->w to create the original's alias dependency (E6764).
-- Pass 6 (matched: D2938, AF800, DA4C4, C1594, E3B70, F28F0, D07B4, EE154, EE24C, EE7F8, EE938, E651C, DCCE4).
+- Pass 6 (matched: D2938, AF800, DA4C4, C1594, E3B70, F28F0, D07B4, EE154, EE24C, EE7F8, EE938, E651C, DCCE4,
+  F5064).
   What fixed them:
   - Variable reuse again, mostly: k reused for arg4*4 (D2938); the size parameter reused as the loop counter
     and the loop pointer as the wrap temp (E3B70); the counter reused as the running start (E651C); a
@@ -66,6 +67,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - Return the old pointer: DA4C4 is a bump allocator (`p = unk58; unk5C -= n; unk58 = p + n; return p`).
   - addPrimLenIn (ovl_0b.h): addPrim asm with len as a plain input, so a constant len gets its own register
     (D07B4). func_800D08C4 calls D07B4 with 2 args, so its call goes through an unprototyped cast.
+  - F5064: the else-branch rect goes through a temp (`t = &D_800FDE58; t->h = ...; r = t;`) to get the
+    v0 -> s0 copy, and if/else instead of assign-then-override.
   - EE154/EE24C needed nothing special (if/else-if on D_80104FC0 fields); F28F0 wants a RECT * to w->unk8 and
     `else if (st == 1)` nested rather than one || chain.
   WIP drafts in docs/wip/ovl_0b_<addr>.c (first line = status), rows = aligned differing insns:
@@ -73,7 +76,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   E9000 2 (i++ placement in the copy loop), B1B48 3 (which return-0 block the later returns cross-jump to;
   turning the goto-fail sites into direct call+return doesn't change it), C3F78 3 (-O1: case-5 test sense,
   table base before index scale), C0C00 5, AE4FC 5, DA138 6, DA1F4 14, AA504 18 (main checkout
-  build/drafts/ovl_0b; the collect loop is not the AA24C inline), D7094 30, C9374 32, AB07C 51, CBA58 60,
+  build/drafts/ovl_0b; the collect loop is not the AA24C inline), E8B28 17, EFD1C 18, D7094 30, C9374 32, AB07C 51, CBA58 60,
   AC37C ~150, C67BC ~300.
 
 ## ovl_0a / ovl_0c (field / world map)
