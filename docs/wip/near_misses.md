@@ -226,6 +226,30 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   AB810 8, AB07C 24 (10 with the do/while(0) wrap plus `yy = y;`, 1 with an extra identical-arm if; both hacks),
   C9794 14 (was 26), DA1F4 14 (now same length), D1D74 22, CD210 25, D1FFC 27, CBA58 45, D2DBC 63, AC37C ~175,
   C67BC ~300. DE11C and ABBC4 have no drafts.
+- Pass 11 (big functions; matched ABBC4, 0x680). What fixed it:
+  - Index form inside the texture loop (`a[j]`, `b[j]`, `r[j]` instead of pointer increments): loop.c then makes
+    the reduced givs with `move s3,a0`-style copies from the bases, and `r[j].unk2` stops getting its own +2 giv
+    (that giv was the extra spill that made the frame 8 bytes too big).
+  - The search pointer is reused for the hit: `e = t->unk4; for (...) if (e[i].unk0 == id) { e = &e[i]; ...}`.
+    Since e is set inside the loop it is not invariant, so only i*12 is reduced (`addu a2,a1,zero` init) and the
+    address is rebuilt each iteration (`addu a0,a2,t0`).
+  - Invariant hoisting depends on movable order: `arg0 * 3` is hoisted only if it comes before x/c in the inner
+    loop; spill slots follow pseudo numbers, so c must be an expression hoisted after k3, and
+    `(s16)(((x & 0x3FF) >> 6) | 0x80)` keeps fold from pulling the `| 0x80` back into the loop.
+  - `s = r[j].unk2 + 0xE5; y = arg0 * 3 + s;` gives `addu s0,t2,s0` (a separate target keeps expand_binop from
+    swapping the operands); a separate variable per switch case for the file id and the anim pointer (one shared
+    variable crossed calls and took an s-register); read f->unk4/unkC and D_8006794C->unk20 into locals before the
+    request stores.
+  - Colour copies in the model renderers (DE11C, C67BC): the original copies each colour through one reused
+    pointer (`cp = (u32 *)col[i]; p->rN = *cp;`). A multi-set pseudo is not "birthing", so sched1 pipelines the
+    address/load/store chain exactly like the original; setlen/setcode go after the last colour copy (the prim giv
+    base follows the last field referenced, +7 = code).
+  - DE11C 3-vertex loops index the Z table with `i2 & 0xFFFF` (CSE keeps two `sll`, combine then drops the and);
+    C67BC's GT3/G3 recompute `andi`+`sll` for i0 and do `andi a0,a0` in place: both point at u16 index variables
+    (`u16 i0..i3` gives C67BC exactly 989 insns but needs the index statements reworked).
+  Status: DE11C 430 rows (18 with registers masked, global allocation right; WIP docs/wip/ovl_0b_800DE11C.c),
+  C67BC 234 (was ~300; 16 masked), AC37C 175 (notes on the tu/tv registers and the D_8006794C lo_sum CSE in the WIP
+  header), CBA58 45 (notes added). D2DBC not attempted.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
