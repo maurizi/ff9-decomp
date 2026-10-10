@@ -4,6 +4,31 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 9 (the seven large undrafted functions) matched 2: 800283E0 (832 B), 80023A6C (1100 B).
+  80023A6C is game code, not unsigned PsyQ: it draws the countdown timer from D_80076B60.unk408
+  (D_80076F68) through func_80027834/func_800253D4 and reads D_8006794C, and nothing about it looks
+  like a library function. What worked:
+  - 800283E0: one SPRT pointer variable per half (p, q). With one shared `p` it is a global pseudo,
+    global-alloc puts it after the block-local temps (t2 instead of t0) and u/v/p rotate through
+    t0-t2 (39 rows -> 0). u and v are locals set before the `flag == 0 ? :` join, so `v = 0xE0`
+    stays an `addiu t1` + `andi` (an inline helper substitutes the constant).
+  - 80023A6C: `d = unk0 - t->unk4` first (mvall), one `v` for all three `% 60` results, a separate
+    digit variable `dg = hr / 10; ...; dg = hr - dg * 10;` (the original reuses the quotient).
+    `t = &D_80076B60.unk408` links to the original's D_80076F68 reference.
+  - Hoisted constant addresses compete with long-lived variables for the 9 s-regs (8005D6BC,
+    8002920C): the original keeps the hoisted &D_80083158 / %hi(D_800770AC) in fp and spills a
+    long-lived local to 0x10(sp)/0x30(sp). Global-alloc priority is floor_log2(refs) * refs / live
+    length, and refs inside a loop count loop_depth times, so a `do { ... } while (0)` around the
+    in-loop uses raises the hoisted pseudo (8005D6BC).
+  - `x->unk10 &= ~x->unk8; m &= ~x->unk8;` (store first) reloads unk8 the way the original does
+    (800589F0, same as 80058F94). gcc 2.8 CSE keeps struct fields across a store to a scalar global
+    only in the fixed-struct/varying-scalar case, so `D_80080A10 = t` between two `t->unkC` reads
+    forces a reload.
+  - Drafts (first line has the status): 800589F0 (3 real rows; the else-branch keep mask is s1 instead
+    of s2; needs K&R definitions of func_80058990/func_800589E0, which it calls with two args),
+    8005D6BC (24; the tail value and the GetRCnt start should be one spilled pseudo), 800475D8 (52),
+    8002920C (108; three missing cross-jumps), 80025ED4 (146; register naming throughout).
+  - 8005A320: 7 more tail orders around the 0xFFFFFF mask, none better than 5.
 - Pass 8 matched 9 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8,
   80048E80, 80062E3C). What worked:
   - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
