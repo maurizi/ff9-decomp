@@ -121,6 +121,11 @@ void func_801F2A04(s32, s32, s32, Unk6 *);
 void func_801F2AB8(s32, s32, s32, Unk6 *);
 void func_801F1AE8(s32, s32, s32, s32);
 void func_801F0CC8(void);
+void func_801F1C88(void);
+void func_801F2CD4(void);
+void func_801F2E60(void);
+void func_801F2FCC(void);
+extern s32 D_801F30D4[4];
 void func_801F0DB0(void);
 void func_801F0F9C(void);
 void func_801F12B8(s32);
@@ -155,6 +160,9 @@ extern u8 D_801EDF04[];
 s32 func_80062498(void); /* collector points */
 s32 func_800624D8(void);
 s32 func_8006251C(void);
+/* defined as returning u16 in main.c, but called here without masking */
+s32 func_8002C7F0(s32, s32);
+s32 func_8002C830(s32, s32);
 /* text width; the call result passes through an inline return value */
 static inline s32 func_801F0F9C_width(u8 *s) {
     return func_8002BA68((s32)s);
