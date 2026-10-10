@@ -67,7 +67,8 @@ typedef struct {
     u8 pad38[2];
     u8 unk3A;
     u8 unk3B; /* uid */
-} FieldEvtObj;
+    u8 pad3C[0x4C - 0x3C];
+} FieldEvtObj; /* 0x4C */
 
 typedef struct {
     u32 unk0; /* flags */
@@ -775,6 +776,17 @@ typedef struct {
     u32 unk4;
 } WmAnimKey;
 
+/* SVECTOR copied as two words */
+typedef union {
+    struct {
+        s16 vx;
+        s16 vy;
+        s16 vz;
+        s16 pad;
+    } v;
+    s32 w[2];
+} SVECTOR4;
+
 /* animation file (Unk800C95C8.unkC) */
 typedef struct {
     u8 pad0[4];
@@ -807,10 +819,8 @@ typedef struct Unk800C95C8 {
     s16 unk5A; /* screen y limit (func_800BB508) */
     s32 unk5C;
     struct Unk800C95C8 *unk60; /* mirrored model (func_800BC33C) */
-    s16 unk64[3]; /* mirror plane normal */
-    u8 pad6A[2];
-    s16 unk6C[3]; /* point on the mirror plane */
-    u8 pad72[2];
+    SVECTOR4 unk64; /* mirror plane normal */
+    SVECTOR4 unk6C; /* point on the mirror plane */
     u16 unk74;
     u16 unk76;
     u16 unk78;
@@ -833,26 +843,28 @@ typedef struct {
     u16 unk6; /* offset of the id list */
 } Unk800C6C04E;
 
-/* per-actor extension (FieldActorInfo.unk10) */
-typedef struct FieldActorExt {
-    u32 unk0; /* flags */
-    u8 pad4[4];
-    Unk800C95C8 *unk8;
-    u8 padC[0xF8 - 0xC];
-    FieldEvtCtx *unkF8;
-    u8 padFC[0x10C - 0xFC];
-    u8 unk10C; /* rgb */
-    u8 unk10D;
-    u8 unk10E;
-    u8 unk10F; /* frames left */
-} FieldActorExt;
-
-/* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
-/* rgb + flag byte (bit 24 of the word: pending) */
 typedef union {
     u32 w;
     u8 c[4];
 } FieldColor;
+
+/* per-actor extension (FieldActorInfo.unk10) */
+typedef struct FieldActorExt {
+    u32 unk0; /* flags */
+    s32 unk4; /* model file id */
+    Unk800C95C8 *unk8; /* = unk14 */
+    FieldEvtObj *unkC; /* = unkAC */
+    s32 unk10;
+    u8 unk14[0xAC - 0x14]; /* mirrored model */
+    u8 unkAC[0xF8 - 0xAC]; /* copy of the object */
+    FieldEvtCtx *unkF8;
+    SVECTOR4 unkFC; /* mirror plane point */
+    SVECTOR4 unk104; /* mirror plane normal */
+    FieldColor unk10C; /* rgb, [3]: frames left */
+} FieldActorExt; /* 0x110 */
+
+/* 0x14-byte per-actor record at FieldScene.unk54, indexed by uid */
+/* rgb + flag byte (bit 24 of the word: pending) */
 
 typedef struct FieldActorInfo {
     u32 unk0; /* flags */

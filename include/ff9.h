@@ -3097,7 +3097,7 @@ s32 func_800C7570(s32, u16);
 void func_800B1520(s32, s32, s32, s32);
 void func_800CA694(s32, s32, u16);
 void func_800BE99C(s32, s32);
-void func_800ABA98(s32, s32, s32, s32, s32);
+s32 func_800ABA98(s32, s32, s32, s32, s32);
 void func_800AD944(s32, s32, s32);
 VECTOR *func_800AE750(void);
 VECTOR *func_800AE744(void);

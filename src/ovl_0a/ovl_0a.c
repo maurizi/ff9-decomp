@@ -1182,7 +1182,152 @@ s32 func_800AB110(FieldObjSlot **arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AB3CC);
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800ABA98);
+/* object command arg1 for object arg0 (palette, mirror, triggers) */
+s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    FieldActorInfo *info;
+    FieldEvtCtx *c;
+    FieldActorExt *x;
+    FieldActorExt *y;
+    s32 *tex;
+    s32 *uv;
+    s32 *spr;
+    u32 k;
+    u32 sum;
+    WmModel *m;
+    WmModelGroup *g;
+    s32 id;
+    FieldTrig *t;
+
+    info = &D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk54[arg0];
+    c = (FieldEvtCtx *)func_8001E350(arg0);
+    switch (arg1) {
+    case 0:
+        if ((u8)arg2 == 0xFF) {
+            c->unk0 &= ~0x10000;
+        } else {
+            if (arg2 != (s8)info->unk5) {
+                c->unk0 |= 0x40000;
+            }
+            c->unk0 |= 0x10000;
+        }
+        info->unk5 = arg2;
+        break;
+    case 4:
+        if (arg2 != 0) {
+            ((Unk800C95C8 *)c->unk8)->unk5A = arg3;
+            c->unk0 |= 0x100000;
+        } else {
+            c->unk0 &= ~0x100000;
+        }
+        break;
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+        x = info->unk10;
+        if (x == NULL) {
+            x = info->unk10 = (FieldActorExt *)D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20;
+            x->unk0 = 0;
+            x->unk4 = c->unk4;
+            x->unk8 = (Unk800C95C8 *)x->unk14;
+            x->unkC = (FieldEvtObj *)x->unkAC;
+            x->unk10 = 0;
+            x->unkF8 = c;
+            x->unkFC.v.vx = 0;
+            x->unkFC.v.vy = 0;
+            x->unkFC.v.vz = 0;
+            x->unk104.v.vx = 0;
+            x->unk104.v.vy = 0x1000;
+            x->unk104.v.vz = 0;
+            x->unk10C.w = 0;
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20 += sizeof(FieldActorExt);
+        }
+        y = x;
+        if (!(x->unk0 & 1)) {
+            *y->unkC = *c->unkC;
+            y->unk8->unk8 = ((Unk800C95C8 *)c->unk8)->unk8;
+            y->unk8->unkC = ((Unk800C95C8 *)c->unk8)->unkC;
+            func_800AAFD4(y->unk4, &tex, &uv, &spr);
+            m = y->unk8->unk8;
+            g = m->unk10;
+            sum = 0;
+            if ((s32)g >= 0) {
+                g = (WmModelGroup *)((u8 *)m + (s32)g);
+            }
+            for (k = 0; k < m->unk3; k++) {
+                sum += g->unk0;
+                g++;
+            }
+            sum *= 2;
+            sum += y->unk8->unk8->unk2 * 32 + y->unk8->unk8->unk3 * 12;
+            func_800B6438(y->unk8, (u8 *)D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20);
+            func_800B6584(y->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
+            D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20 += sum;
+            id = (s32)func_8001C7FC(9, y->unk4, 0x190000);
+            if (id != -1) {
+                y->unk8->unk50 = func_8001C7FC(4, id, 0);
+                func_800BB3C4((BgSprHdr *)y->unk8->unk50, (BgSprOfs *)spr);
+            }
+            func_800AC620();
+            x->unk0 |= 0x02000001;
+        }
+        switch (arg1) {
+        case 8:
+            if (arg2 != 0) {
+                y->unk8->unk60 = (Unk800C95C8 *)c->unk8;
+                y->unk8->unk64.w[0] = x->unk104.w[0];
+                y->unk8->unk64.w[1] = x->unk104.w[1];
+                y->unk8->unk6C.w[0] = x->unkFC.w[0];
+                y->unk8->unk6C.w[1] = x->unkFC.w[1];
+                x->unk0 |= 0x01000000;
+            } else {
+                x->unk0 &= ~0x01000000;
+            }
+            break;
+        case 9:
+            x->unkFC.v.vx = arg2;
+            x->unkFC.v.vy = arg3;
+            x->unkFC.v.vz = arg4;
+            break;
+        case 10:
+            x->unk104.v.vx = arg2;
+            x->unk104.v.vy = arg3;
+            x->unk104.v.vz = arg4;
+            break;
+        case 11:
+            x->unk10C.c[0] = arg2;
+            x->unk10C.c[1] = arg3;
+            x->unk10C.c[2] = arg4;
+            x->unk10C.c[3] = 2;
+            break;
+        }
+        break;
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+        t = func_800B2100(c, arg2, arg3);
+        if (t == NULL && arg1 != 19) {
+            t = func_800B21A0(c, arg2, arg3);
+        }
+        switch (arg1) {
+        case 16:
+            t->unk8[0] = arg4;
+            break;
+        case 17:
+            t->unk8[1] = arg4;
+            break;
+        case 18:
+            t->unk1 = arg4 != 0;
+            break;
+        case 19:
+            func_800B2218(c, arg2, arg3);
+            break;
+        }
+        break;
+    }
+    return 0;
+}
 
 void func_800AC02C(FieldEvtCtx **arg0, s32 arg1) {
     s32 i;
@@ -1247,11 +1392,11 @@ void func_800AC02C(FieldEvtCtx **arg0, s32 arg1) {
                 func_800B61A4(y->unk8, j & 0xFF);
                 func_800BC600(y->unk8, j & 0xFF);
             }
-            if (x->unk10F != 0) {
+            if (x->unk10C.c[3] != 0) {
                 for (j = n - 1; j >= 0; j--) {
-                    func_800B9E4C(y->unk8, j & 0xFF, x->unk10C, x->unk10D, x->unk10E);
+                    func_800B9E4C(y->unk8, j & 0xFF, x->unk10C.c[0], x->unk10C.c[1], x->unk10C.c[2]);
                 }
-                x->unk10F--;
+                x->unk10C.c[3]--;
             }
         }
     }
@@ -4627,10 +4772,10 @@ void func_800BC33C(Unk800C95C8 *arg0) {
     s32 d;
 
     if (arg0->unk60 != NULL) {
-        nx = arg0->unk64[0];
-        ny = arg0->unk64[1];
-        nz = arg0->unk64[2];
-        d = (arg0->unk6C[0] * nx + arg0->unk6C[1] * ny + arg0->unk6C[2] * nz) >> 11;
+        nx = arg0->unk64.v.vx;
+        ny = arg0->unk64.v.vy;
+        nz = arg0->unk64.v.vz;
+        d = (arg0->unk6C.v.vx * nx + arg0->unk6C.v.vy * ny + arg0->unk6C.v.vz * nz) >> 11;
         m = (MATRIX *)0x1F800000;
         m->m[0][0] = 0x1000 - ((nx * nx) >> 11);
         m->m[1][1] = 0x1000 - ((ny * ny) >> 11);
