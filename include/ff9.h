@@ -133,11 +133,26 @@ typedef struct {
     u8 *unk1C; /* load address */
     u8 pad20[4];
     s16 unk24; /* set by func_8001E2AC */
+    u8 pad26[2];
+    struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
 } Unk11C0;
+
+/* Unk11C0.unk28 entry (0x28 bytes), written by script opcodes in func_80050410 */
+typedef struct Unk11C0Slot {
+    u32 unk0_0 : 8;
+    u32 unk0_8 : 12;
+    u32 unk0_20 : 12;
+    u32 unk4_0 : 12;
+    u32 unk4_12 : 10;
+    u32 unk4_22 : 10;
+    u8 pad8[0x28 - 0x8];
+} Unk11C0Slot;
 
 typedef struct {
     u8 pad0[0xA];
     s16 unkA; /* set by func_8001E2AC */
+    u8 padC[0x2C - 0xC];
+    struct Unk11C0Slot *unk2C; /* per-object model slots, indexed by unk3B */
 } Unk8E4C14;
 
 typedef struct {
@@ -393,6 +408,7 @@ typedef struct {
     s32 unkC;
 } Unk80076F68;
 extern Unk80076F68 D_80076F68;
+extern RECT D_800686C8; /* countdown timer window */
 
 /* ---- CD / streaming state near libcd ---- */
 
@@ -454,6 +470,18 @@ typedef struct {
     u8 pad11;
 } Unk80069018; /* item table, 0x12-byte entries */
 extern Unk80069018 D_80069018[];
+extern u8 D_8006CA9C[4]; /* max hp/mp support abilities */
+extern u8 D_8006CAA0[4]; /* stat caps */
+extern u8 D_8006D1C8[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
+/* weapon table entry (0xC bytes) */
+typedef struct {
+    u8 pad0[5];
+    u8 unk5; /* attack */
+    u8 pad6[0xC - 6];
+} WeaponEntry;
+#if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
+extern WeaponEntry D_8006E0E8[];
+#endif
 extern u8 D_8006BB84[];
 extern u8 D_8006BB74[];
 
@@ -552,12 +580,15 @@ typedef struct {
     s32 unk8;
     u8 *unkC[2];   /* packet buffers */
     u32 *unk14[2]; /* ordering tables */
-    s16 unk1C; /* display x/y per buffer */
-    s16 unk1E;
-    s16 unk20;
-    s16 unk22;
+    DVECTOR unk1C[2]; /* display x/y per buffer */
 } Unk80077148;
 extern Unk80077148 D_80077148;
+
+/* window frame insets per style (rodata, func_8002D9B4) */
+typedef struct {
+    s8 unk0[5][4];
+} Unk80010CE0;
+extern Unk80010CE0 D_80010CE0;
 
 /* ---- functions (main exe) ---- */
 
@@ -916,9 +947,13 @@ typedef struct {
     s32 unk14;
     s32 unk18;
     s32 unk1C;
-    s32 unk20;
+    union {
+        s32 w;
+        u16 h[2];
+    } unk20; /* tempo, 16.16 */
     s32 unk24;
-    u8 pad28[0x30 - 0x28];
+    s32 unk28; /* tempo accumulator */
+    u8 *unk2C; /* sequence data */
     u16 *unk30;
     s32 unk34;
     s32 unk38;
@@ -946,6 +981,21 @@ typedef struct {
     u16 unk78;
 } Unk80080A10;
 extern Unk80080A10 *D_80080A10;
+extern Unk80080A10 D_8007F858; /* main sequencer state */
+extern s32 D_8006F31C;
+extern u16 D_8006F320; /* tick counter */
+extern s32 D_8006F324[4]; /* recent tick timings */
+void func_80058F94(void);
+void func_800589F0(u32);
+void func_8005D628(Unk80080A10 *, AkaoChannel *);
+extern AkaoChannel *D_800809EC;
+extern s32 D_8007F8D8[2];
+extern s32 D_8008314C;
+extern s32 D_8007F8E0;
+extern s32 D_80083238[3];
+extern s32 D_80080A20;
+extern s32 D_8007E3C8[2];
+extern s32 D_8007E3D0;
 
 typedef Character Unk800539FC;
 
@@ -1014,20 +1064,20 @@ typedef struct Unk8004AB64 {
     u16 unk34;
     u16 unk36; /* animation file */
     u8 unk38;
-    u8 pad39;
+    u8 unk39;
     u8 unk3A;
     u8 unk3B;
     u8 unk3C;
     u8 unk3D;
     u8 unk3E;
     u8 pad3F;
-    ActorPos unk40; /* previous position */
+    ActorPos unk40; /* previous position; unk20/unk22: turn left/right anims */
     u16 unk50; /* flags */
-    u8 pad52[0x54 - 0x52];
+    s16 unk52; /* target direction */
     s16 unk54;
     s16 unk56;
     s16 unk58;
-    u8 pad5A[0x5C - 0x5A];
+    u16 unk5A; /* animation to restore after turning */
     u8 unk5C;
     u8 unk5D;
     u8 unk5E;
@@ -1042,7 +1092,7 @@ typedef struct Unk8004AB64 {
     u8 unk69;
     u8 unk6A;
     u8 unk6B;
-    u8 pad6C[0x6E - 0x6C];
+    u16 unk6C; /* rotation y speed */
     s16 unk6E; /* also used as a tiny script buffer */
     u8 unk70;
     u8 unk71;
@@ -1052,7 +1102,12 @@ typedef struct Unk8004AB64 {
     u16 unk76;
     s32 unk78;
     union { u32 w; u8 b[4]; } unk7C; /* colour */
-    u8 pad80[0x90 - 0x80];
+    u16 unk80;
+    u16 unk82;
+    s16 unk84; /* smoothed look-at point (func_80047B90) */
+    s16 unk86;
+    s16 unk88;
+    u8 pad8A[0x90 - 0x8A];
     u8 unk90;
     u8 unk91;
     u8 unk92;
@@ -1066,6 +1121,16 @@ typedef struct Unk8004AB64 {
     u16 unkA8;
     s16 unkAA;
 } Unk8004AB64;
+
+/* model header as seen by func_80047B90 (BtlUnit9C in ovl_0b) */
+typedef struct {
+    u16 unk0; /* flags */
+    u8 pad2[0x48 - 0x2];
+    s16 unk48; /* look-at point */
+    s16 unk4A;
+    s16 unk4C;
+} Unk80047B90;
+void func_80049B48(Unk8004AB64 *);
 
 typedef struct Unk8007AECCNode {
     Unk8004AB64 *unk0; /* key */
@@ -1176,9 +1241,28 @@ extern Unk4 D_80068158;
 extern u8 D_800739B8[];
 extern Unk80080A10 *D_8007F790;
 extern Unk80080A10 D_8007F8F0;
+/* AKAO sequence file header (func_8005A320) */
+typedef struct {
+    u8 pad0[4];
+    u16 unk4; /* sequence id */
+    u8 pad6[2];
+    u16 unk8;
+    u8 padA[0x14 - 0xA];
+    s32 unk14;
+    u8 pad18[0x20 - 0x18];
+    u32 unk20; /* channel mask */
+    s32 unk24;
+    s32 unk28;
+    u8 pad2C[0x30 - 0x2C];
+    s32 unk30; /* offset from &unk30 */
+    s32 unk34; /* offset from &unk34 */
+    u8 pad38[0x40 - 0x38];
+    u16 unk40[1]; /* per-channel offsets from the entry itself */
+} AkaoSeqHeader;
 void func_8005A320(s32, s32);
 void func_8005963C(s32, s32);
 extern s16 D_8007F95A;
+extern s32 D_8007F8DC;
 extern s32 D_8008322C;
 typedef struct {
     s32 unk0;
@@ -1231,7 +1315,7 @@ void func_80032658(void);
 void func_80032140(s32, s32);
 void func_80056B18(void);
 void func_80056C08(void);
-s32 func_8005C8BC(s32);
+s32 func_8005C8BC(u32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
@@ -1253,6 +1337,7 @@ typedef struct {
     Unk8007BD44 *unkC;
 } Unk8007BD38;
 extern Unk8007BD38 D_8007BD38;
+u8 func_800EA27C(void); /* ovl_0b */
 
 typedef struct {
     u8 pad0[0x1C];
@@ -1293,6 +1378,8 @@ typedef struct {
 } Unk80080AA0;
 void func_8005A014(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
 extern Unk80080AA0 D_80080AA0;
+extern Unk80080AA0 D_80080970; /* command block passed to the handlers */
+extern void (*D_8006F740[])(Unk80080AA0 *); /* sound command handlers */
 
 typedef struct {
     u8 unk0; /* card id, 0xFF = none */
@@ -1330,7 +1417,7 @@ typedef struct Unk8007B9C0 {
     u8 unk26;
     u8 unk27; /* h */
     u8 unk28;
-    u8 pad29;
+    u8 unk29; /* text speed */
     u8 unk2A;
     u8 unk2B;
 } Unk8007B9C0;
@@ -1400,6 +1487,19 @@ typedef struct {
 } Unk8005EBB4;
 extern u32 D_8006F410[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
+u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
+
+/* drum kit key entry (func_8005E170) */
+typedef struct {
+    u8 unk0; /* sample */
+    u8 unk1; /* note */
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7; /* pan, bit 7: flag */
+} AkaoDrumKey;
 void func_8005EBB4(AkaoChannel *, Unk8005EBB4 *, s32);
 
 typedef struct {
@@ -1500,6 +1600,9 @@ u8 func_80022D3C(void (*)(u8 *));
 
 extern u8 D_8006CAD8[][5];
 extern s32 D_800809B8;
+extern u8 D_80083156; /* tempo scale */
+void func_8005E3FC(AkaoChannel *, u32);
+void func_800579B4(AkaoChannel *, u32, s32);
 
 void func_8005A658(Unk80080AA0 *);
 
@@ -1981,7 +2084,11 @@ typedef struct {
     u32 unk8;
     u32 unkC;
     s32 unk10;
-    u8 pad14[0x1C - 0x14];
+    union {
+        u32 w;
+        u16 h[2];
+    } unk14; /* tempo, 16.16 */
+    u32 unk18; /* tempo accumulator */
     u32 unk1C;
     u32 unk20;
     u32 unk24;
@@ -2298,7 +2405,10 @@ s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked 
 Unk6 *func_800625A0(s32, s32);
 s32 func_800626D0(s32, s32);
 typedef struct {
-    u8 pad0[4];
+    u8 unk0; /* power (x2) */
+    u8 unk1; /* type */
+    u8 unk2; /* physical defence (x2) */
+    u8 unk3; /* magic defence (x2) */
     u8 unk4; /* collector points */
 } CardInfo; /* 5 bytes */
 extern CardInfo D_800121C8[]; /* card table */
@@ -2441,7 +2551,7 @@ typedef struct {
     u8 pad6A[0x7C - 0x6A];
     u8 unk7C[4];
 } Unk8004B9B8;
-u16 func_800216D8();
+s32 func_800216D8();
 s32 func_8001E350(s32);
 
 /* Inlined copy of func_8004B9B8. */
@@ -2765,6 +2875,7 @@ extern u8 D_8006BCFC[]; /* window style -> colour */
 typedef struct {
     u8 unk0[8];
 } Bytes8;
+extern Bytes8 D_800121C0; /* card arrow bits (func_80062830) */
 typedef struct {
     u8 unk0[5];
 } Bytes5;
@@ -2781,21 +2892,39 @@ typedef struct {
 } Unk80032E84In;
 /* stat calculation output (func_80032E84) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
-    u16 unk6;
-    u8 unk8;
-    u8 unk9;
-    u8 unkA;
-    u8 unkB;
-    u16 unkC;
-    u16 unkE;
-    u16 unk10;
-    u16 unk12;
-    u16 unk14;
+    u16 unk0; /* hp */
+    u16 unk2; /* mp */
+    u16 unk4; /* max hp */
+    u16 unk6; /* max mp */
+    u8 unk8[4]; /* stats */
+    u16 unkC[5]; /* attack, defences */
 } Unk80032E84Out;
-void func_80032E84(Unk80032E84In *, Unk80032E84Out *);
+Unk80032E84Out *func_80032E84(Unk80032E84In *, Unk80032E84Out *);
+
+/* Inlined copy of func_8003384C (recompute a character's stats). */
+static inline void func_8003384C_inline(Character *c) {
+    Unk80032E84In in;
+    Unk80032E84Out out;
+
+    in.unk0 = *(Bytes8 *)&c->unk2C;
+    in.unk10 = c->unk10;
+    in.unk12 = c->unk12;
+    in.unk8 = *(Words2 *)c->unk88;
+    in.unk14 = *(Bytes5 *)c->unk39;
+    func_80032E84(&in, &out);
+    c->unk24 = out.unk8[0];
+    c->unk25 = out.unk8[1];
+    c->unk26 = out.unk8[2];
+    c->unk27 = out.unk8[3];
+    c->unk28 = out.unkC[1];
+    c->unk29 = out.unkC[2];
+    c->unk2A = out.unkC[3];
+    c->unk2B = out.unkC[4];
+    c->unk10 = out.unk0;
+    c->unk12 = out.unk2;
+    c->unk18 = out.unk4;
+    c->unk1A = out.unk6;
+}
 extern void (*D_8006BD28[])(Unk80077C78 *, s32);
 extern s32 D_8007BBD4;
 extern u32 *D_8007BBCC;
@@ -2853,6 +2982,7 @@ extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
 extern u8 D_80068FB4[][4]; /* corner sprites (D_800686D0 index) per style */
 extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
 extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
+extern u8 D_80068FD0[][3]; /* title bar sprites (left, right, middle) per style */
 typedef struct {
     u32 tag;
     u32 rgbc;
@@ -3044,6 +3174,45 @@ extern s32 D_8007BCB0;
 
 void func_8002BBE8(s32, u8 *, s32);
 
+/* Inlined copy of func_8002BAE4 (number to fixed-width text). */
+static inline void func_8002BAE4_inline(s32 n, u8 *buf, s32 width, u8 ascii) {
+    s32 base = 0;
+    s32 fill;
+    s32 i;
+    s32 q;
+    s32 d;
+    u8 *end;
+
+    if (ascii) {
+        base = '0';
+    }
+    fill = ' ';
+    if (!ascii) {
+        fill = 0xF;
+    }
+    if (width < 0) {
+        func_8002BBE8(n, buf, ascii);
+        return;
+    }
+    func_8001D898(buf, fill, width);
+    for (i = 0; i < width; i++) {
+        d = n % 10;
+        q = n / 10;
+        buf[width - i - 1] = d + base;
+        if (q == 0) {
+            break;
+        }
+        n = q;
+    }
+    end = buf + width;
+    if (!ascii) {
+        *end = 0xFF;
+    } else {
+        *end = 0;
+    }
+}
+extern s32 D_8006BBD4[];
+
 extern u8 D_80077878[2][0x200]; /* fade packet buffers, one per draw buffer */
 
 typedef void (*FadeFn)(Unk80077C78 *);
@@ -3073,7 +3242,12 @@ typedef struct {
     s8 unk8;  /* y */
     u8 unk9;  /* h */
     u8 unkA;  /* anchor */
+    u8 unkB;  /* bit 0: don't make it the current window */
 } WinLayout;
+extern s32 D_8007BB90;
+s32 func_8004DAD0(Unk8007B9C0 *, s32);
+void func_8004F5D4(Unk8004F5D4 *);
+void func_8004F660(Window *);
 
 WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
 void func_80038FD8(s32, WinLayout *, s32, s32);
@@ -3179,6 +3353,8 @@ extern s32 D_8007AEA4;
 extern Unk8004AB64 *D_8007AE68;
 extern s32 D_8007AE6C;
 extern s32 D_8007BBD8;
+extern s32 D_8007BB7C; /* message counter */
+extern u8 D_8006E688[]; /* text speed per config setting */
 void func_800398D0(Unk8004AB64 *, s32, s32, s32);
 s32 func_80052F24(s32, s32);
 void func_8004EC74(u32, s32);
@@ -3540,6 +3716,7 @@ static inline s32 func_80037ACC_chr(s32 i) {
 
 /* func_80037D6C (script system variables) */
 extern s32 D_8007AE20;
+void *func_80038618(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
 extern s32 D_8007AEC4;
 s32 func_800C1B5C(u8 *);
 s32 func_800CA774(void);
