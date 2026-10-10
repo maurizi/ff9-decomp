@@ -106,6 +106,21 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   table base before index scale), C0C00 5, AE4FC 5, DA138 6, DA1F4 14, AA504 18 (main checkout
   build/drafts/ovl_0b; the collect loop is not the AA24C inline), E8B28 17, EFD1C 18, D7094 30, C9374 32, AB07C 51, CBA58 60,
   AC37C ~150, C67BC ~300.
+- Pass 7 (matched: DA92C, E9000, E8B28, AE4FC, D7094, C9A28, ED7C0, ED3F8). What fixed them:
+  - sched1 "birthing" priority: an insn that sets a pseudo with a single set (REG_N_SETS == 1) and no deaths
+    gets max priority, so splitting a reused variable into a fresh one reorders loads (DA92C: fresh cnt2 for
+    hdr[2]); moving constant-holding locals (ED3F8 tp/stp) or the xy/wh computations changes the order too.
+  - ARRAY_REF vs pointer arithmetic: `base[c ? 1 : 0]` through a pointer gets folded into `c ? base+20 : base`;
+    indexing an array member of a struct (BtlUnit9C50Arr) keeps the 0/0x14 value materialised (E8B28).
+  - Per-branch copies that cross-jump: `u = t = &c[k]` in both branches leaves a `move t0,t2` at the join (ED7C0).
+  - Two nested empty `do { } while (0)` around `return -1` (permuter find) fixed the table-base register (AE4FC).
+  - Loop pointer + separate n = 0 after it (D7094); `for (...; i++, s++) *dst = *s` (E9000);
+    in-place `m = x & ~0x300; m |= ...; u->unk68 = m` (C9A28); `if (f()) v = K; else v = 0` so v isn't live
+    across the call (C9A28); a reloaded pointer read after the first store (D9D58 draft).
+  - Loop giv base follows the last e->field referenced in the loop (E1534 draft).
+  - jump.c cross-jumping (B1B48 notes): the processed jump is replaced; a conditional jump around the block counts
+    as a match, so a lone `v0 = 0; j epi` merges into the first chain candidate.
+  New drafts with headers: AB810 8, C9794 26, D0E14 3, D9D58 5, E1534 4, ED02C 4, AA504 3, C9374 2, EFD1C 16.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
