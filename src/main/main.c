@@ -6678,7 +6678,76 @@ void func_800316F8(void *a, void *b) {
     func_80031718(a, b, 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80031718);
+MATRIX *func_80031718(SVECTOR *r, MATRIX *m, s32 mode) {
+    s16 sx, cx, sy, cy, sz, cz;
+    s32 x, y, z;
+    s32 t;
+    s32 tx, ty, tz;
+    s16 t1, t2;
+    s32 a, b, c, d, e, f;
+
+    x = r->vx & 0xFFF;
+    y = r->vy & 0xFFF;
+    z = r->vz & 0xFFF;
+    ISIN(sx, r->vx, x);
+    tx = 0x400 - x;
+    x = tx & 0xFFF;
+    ISIN(cx, tx, x);
+    ISIN(sy, y, y);
+    ty = 0x400 - y;
+    y = ty & 0xFFF;
+    ISIN(cy, ty, y);
+    ISIN(sz, z, z);
+    tz = 0x400 - z;
+    z = tz & 0xFFF;
+    ISIN(cz, tz, z);
+    if (mode == 0) {
+        t1 = (sx * sy) >> 12;
+        t2 = (sx * cy) >> 12;
+        m->m[0][0] = (cy * cz + t1 * sz) >> 12;
+        m->m[0][1] = (-cy * sz + t1 * cz) >> 12;
+        m->m[0][2] = (cx * sy) >> 12;
+        m->m[1][0] = (cx * sz) >> 12;
+        m->m[1][1] = (cx * cz) >> 12;
+        m->m[1][2] = -sx;
+        m->m[2][0] = (-sy * cz + t2 * sz) >> 12;
+        m->m[2][1] = (sy * sz + t2 * cz) >> 12;
+        m->m[2][2] = (cx * cy) >> 12;
+    } else {
+        gte_ldir0123(cx, sy, cy, cz);
+        m->m[1][2] = -sx;
+        gte_gpf12_n1();
+        a = cy * cz;
+        gte_stmac123(d, e, f);
+        gte_ldir0123(sz, cx, cy, sy);
+        do {
+            b = sy * cz;
+            m->m[0][2] = d;
+            gte_gpf12_b();
+            a >>= 12;
+            b >>= 12;
+            m->m[2][2] = e;
+            m->m[1][1] = f;
+        } while (0);
+        gte_stmac123(d, c, t);
+        gte_ldir0123(sx, b, a, t);
+        m->m[1][0] = d;
+        gte_gpf12_n1();
+        gte_stmac123(d, e, f);
+        gte_ldir12(t, c);
+        d -= c;
+        m->m[0][1] = d;
+        gte_gpf12_b();
+        e += t;
+        m->m[2][1] = e;
+        gte_stmac12(d, e);
+        d += a;
+        e -= b;
+        m->m[0][0] = d;
+        m->m[2][0] = e;
+    }
+    return m;
+}
 
 void func_80031B6C(Unk80077C78 *p) {
     s32 n;
