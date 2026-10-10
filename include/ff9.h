@@ -2809,7 +2809,16 @@ typedef struct {
 } Unk8007BB98;
 extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
-void func_8004C8C4(Unk8007B9C0 *, u8 *);
+void func_8004C8C4(Unk8007B9C0 *, u8 *); /* draw a window's text */
+extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
+extern u8 D_8006E67C[];
+void func_800512B4(s32);
+void func_80051444(void);
+s32 func_8004F0C8(s32, s32);
+s32 func_8004F1F0(u8 *, s32);
+s32 func_8004F2B4(s32, s32);
+s32 func_8004F3E8(s32, s32);
+s32 func_8004F4A4(s32, s32);
 void func_8004D2C0(Unk8007B9C0 *, u8 *);
 void func_8004D69C(Unk8007B9C0 *, u8 *);
 void func_80051300(void);

@@ -19,16 +19,6 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
 - 800579B4 matches alone (243/243) but breaks 800584C8 unless 80057D80 (215/230) and 80058118
   (229/236) are also C; both differ only in LFO temp regs (a0 vs v1). Drafts build/b36.c, b37.c.
-<<<<<<< HEAD
-
-## ovl_0b (battle)
-- Register allocation / scheduling (left as INCLUDE_ASM): C9A28 (2 insns), AB07C, F5064, CBA58, C9794,
-  BFF20, ED3F8, CCDB8, DA4C4, C1594 (strength-reduced loop), C0C00, DA138, E3B70, D07B4 (39/41), F28F0,
-  DA1F4, E9000, EE24C, EE154, D9D58, E651C, D7094 (unfilled delay slot after jalr), C3F78 (one branch
-  inverted), E8B28, EE7F8, EE938, D0E14, AB810, EFD1C, C9374, AE4FC, ED02C, ED7C0, E1534.
-- Operand order seems to need byte-offset pointer arithmetic: DCCE4, BE1E0.
-- Odd argument-slot stack use: E4A3C.
-=======
 - Large-function pass 2 (drafts in the agent worktree's build/nm_<addr>.c; "~N" = differing insns):
   80047B90 ~35 (needs &v held in s0 with m[1][1] stored via s0+0x10), 80024BD8 ~12 (POLY_G4 store
   scheduling), 8005A320 ~17 (D_80080A70.unkC mask association, relocation scheduling), 8005C8BC ~15
@@ -37,4 +27,18 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   helper shape unknown), 8001DE50 (draft only), 80030EE4 (dead copy of arg2; maybe libgte RotMatrix*).
   Also 8005CF04 ~75 (v/old vs %hi(D_80080A10) s-register priority), 8004DCEC (window-init inline
   boundary; caller stores get rescheduled), 8005D6BC ~76 (&D_80083158 hoisted to fp, tick count spilled).
->>>>>>> worktree-agent-a1c7498744c363cc2
+- Large-function pass 3 (drafts in the agent worktree's build/nm_<addr>.c): 80054294 159/238
+  (needs a pointer to ys set inside the 3rd loop; py/x/y s-register priority), 800475D8 (dir/collision
+  block: the o=NULL init must stay live while &dist is CSE'd into s0; run-flag `!run` vs xori),
+  8004E248 (choice loops count down to -1; p accessed through s1 only in some reads), 800589F0
+  (unk8 reloaded between `m &= ~unk8` and `unk10 &= ~unk8`; s-register order), 80025ED4 (x/y s1/s2
+  swap, `x + (w + 2)` reassociated), 8005E3FC (~20 regs/scheduling in the note-on path),
+  8002920C (%hi(D_800770AC) not hoisted into fp; font stays in a register).
+
+## ovl_0b (battle)
+- Register allocation / scheduling (left as INCLUDE_ASM): C9A28 (2 insns), AB07C, F5064, CBA58, C9794,
+  BFF20, ED3F8, CCDB8, DA4C4, C1594 (strength-reduced loop), C0C00, DA138, E3B70, D07B4 (39/41), F28F0,
+  DA1F4, E9000, EE24C, EE154, D9D58, E651C, D7094 (unfilled delay slot after jalr), C3F78 (one branch
+  inverted), E8B28, EE7F8, EE938, D0E14, AB810, EFD1C, C9374, AE4FC, ED02C, ED7C0, E1534.
+- Operand order seems to need byte-offset pointer arithmetic: DCCE4, BE1E0.
+- Odd argument-slot stack use: E4A3C.

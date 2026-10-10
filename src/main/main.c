@@ -12045,7 +12045,283 @@ void func_8004C2C0(u8 **pp, s32 *pw) {
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011A6C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C8C4);
+/* skip the choices hidden by D_8007B964 once the window reaches the choice line */
+static inline void func_8004C8C4_skip(s32 id, u8 **pp) {
+    s32 c;
+
+    if (D_8007B968 >= 0 && D_8007B970 == id && D_8007BB7C >= D_8007B968) {
+        if (!(D_8007B964 & 1)) {
+            do {
+                while ((c = *(*pp)++) != 0xF7 && c != 0xFF) {
+                    if (c < 0xFE) {
+                        if (c >= 0xF9) {
+                            (*pp)++;
+                        }
+                    }
+                }
+                if (c == 0xFF) {
+                    (*pp)--;
+                    break;
+                }
+                D_8007B964 >>= 1;
+            } while (!(D_8007B964 & 1));
+        }
+        D_8007B964 >>= 1;
+    }
+}
+
+/* typewriter: advance the shown character count of an embedded value of n characters */
+static inline void func_8004C8C4_type(Unk8007B9C0 *w, s32 n) {
+    w->unk24 += w->unk29;
+    w->unk2A += w->unk24 >> 3;
+    w->unk24 &= 7;
+    if (w->unk2A >= n) {
+        w->unk2A = 0;
+    }
+}
+
+/* text b of message bank a (D_8007BB80) */
+static inline u8 *func_8004C8C4_text(u32 a, u32 b) {
+    u8 *t = NULL;
+    u8 *tbl;
+    u8 *q;
+    s32 k;
+
+    if (a < 4 && b < 8 && (tbl = D_8007BB80[a]) != NULL) {
+        k = D_8007BBA8[b];
+        if (k < *tbl) {
+            tbl++;
+            k <<= 1;
+            q = tbl + k;
+            t = tbl + (q[0] | (q[1] << 8));
+        }
+    }
+    return t;
+}
+
+/* print an embedded value, typewriter-style when it ends the text */
+static inline void func_8004C8C4_value(Unk8007B9C0 *w, s32 arg, s32 (*fn)(), s32 last) {
+    if (last && w->unk2A != 0) {
+        func_8004C8C4_type(w, fn(arg, w->unk2A));
+    } else {
+        fn(arg, 0xFF);
+    }
+}
+
+void func_8004C8C4(Unk8007B9C0 *w, u8 *s) {
+    u8 *p;
+    u8 *end;
+    s32 c;
+    s32 last;
+    s32 v;
+    u8 *t;
+    u8 *tbl;
+    u32 b;
+    s32 k;
+    u8 *q;
+
+    D_8007BB7C = 0;
+    end = s + w->unk20;
+    p = s + w->unk22;
+    func_8004C8C4_skip(w->unkA, &p);
+    while (p < end) {
+        c = *p++;
+        switch (c) {
+        case 0xF8:
+            func_800512C8(1, 0);
+            break;
+        case 0xF7:
+            func_80051380();
+            func_800512C8(0, 14);
+            func_80051300();
+            D_8007BB7C++;
+            func_8004C8C4_skip(w->unkA, &p);
+            if (p >= end) {
+                w->unk20 = p - s;
+            }
+            break;
+        case 0xF9:
+            /* padding between the two jump tables in the original rodata */
+            __asm__(".section .rodata\n\t.word 0\n\t.section .text");
+            c = *p++;
+            switch (c) {
+            case 0x71:
+                func_800512C8(0x12, 0);
+                break;
+            case 0x44:
+                func_800512B4(D_8007BC98[-1].vx);
+            case 0x43:
+                func_800512C8(*p++, 0);
+                break;
+            case 0x49:
+                func_800512C8(0, *p++);
+                break;
+            case 0x4A:
+                func_800512C8(0, -*p++);
+                break;
+            case 0x48:
+                c = *p++;
+                c |= *p++ << 8;
+                func_8004C2C0(&p, &c);
+                func_800512C8((w->unk18 - c) >> 1, 0);
+                break;
+            case 0x20:
+            case 0x21:
+            case 0x22:
+            case 0x23:
+            case 0x24:
+            case 0x25:
+            case 0x26:
+            case 0x27:
+            case 0x28:
+                func_80050F4C(c - 0x20);
+                break;
+            case 0x40:
+                last = end - p == 1;
+                v = D_8007BBA8[*p++];
+                func_8004C8C4_value(w, v, func_8004F0C8, last);
+                break;
+            case 0x6:
+                c = *p++;
+                last = end - p == 1;
+                t = func_8004C8C4_text(c, *p++);
+                func_8004C8C4_value(w, (s32)t, func_8004F1F0, last);
+                break;
+            case 0xE:
+                last = end - p == 1;
+                func_80050F4C(4);
+                func_8004C8C4_value(w, D_8007BBA8[*p++], func_8004F2B4, last);
+                func_80050F4C(0);
+                break;
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+            case 0x17:
+                func_8004C8C4_value(w, c - 0x10, func_8004F3E8, end == p);
+                break;
+            case 0x18:
+            case 0x19:
+            case 0x1A:
+            case 0x1B:
+                last = end - p == 0;
+                func_8004C8C4_value(w, func_8004B120(c - 0x18), func_8004F3E8, last);
+                break;
+            case 0x80:
+            case 0x81:
+            case 0x82:
+            case 0x83:
+            case 0x84:
+            case 0x85:
+            case 0x86:
+            case 0x87:
+                func_8004C8C4_value(w, c - 0x80, func_8004F4A4, end == p);
+                break;
+            case 0x30:
+            case 0x31:
+            case 0x32:
+            case 0x33:
+            case 0x34:
+            case 0x35:
+            case 0x36:
+            case 0x37:
+            case 0x38:
+            case 0x39:
+                func_800512C8(0, 1);
+                func_800513CC(D_8006E67C[c - 0x30]);
+                func_800512C8(1, -1);
+                break;
+            case 0x60:
+            case 0x61:
+            case 0x62:
+            case 0x63:
+            case 0x64:
+            case 0x65:
+            case 0x66:
+            case 0x67:
+                func_800512C8(0, 1);
+                if (c < 0x62) {
+                    c ^= 1;
+                }
+                c = (D_8006794C->unk24 >> 1) & 1 ? (D_8006794C->unk28 >> (c * 4)) & 0xF : c & 0xF;
+                if (c < 2) {
+                    c ^= 1;
+                }
+                func_800513CC(D_8006E67C[c]);
+                func_800512C8(1, -1);
+                break;
+            case 0x3A:
+                func_800512C8(4, 2);
+                func_800513CC(13);
+                func_800512C8(-8, -1);
+                func_800513CC(12);
+                func_800512C8(1, -1);
+                break;
+            case 0x3B:
+                func_800512C8(4, 7);
+                func_800513CC(14);
+                func_800512C8(-8, -6);
+                func_800513CC(12);
+                func_800512C8(1, -1);
+                break;
+            case 0x3C:
+                func_800512C8(1, 5);
+                func_800513CC(15);
+                func_800512C8(-5, -4);
+                func_800513CC(12);
+                func_800512C8(1, -1);
+                break;
+            case 0x3D:
+                func_800512C8(6, 5);
+                func_800513CC(16);
+                func_800512C8(-10, -4);
+                func_800513CC(12);
+                func_800512C8(1, -1);
+                break;
+            case 0x2F:
+                func_800512C8(0, 1);
+                func_800513CC(12);
+                func_800512C8(1, -1);
+                break;
+            case 0x4B:
+                func_800513CC(*p++);
+                break;
+            case 0x70:
+                if ((u32)D_8007BBA8[0] & (1 << *p++)) {
+                    func_800512C8(6, 3);
+                    func_800513CC(0xB6);
+                    if (VSync(-1) % 48 >= 16) {
+                        func_80051444();
+                    }
+                    func_800512C8(-24, -3);
+                    func_800513CC(0xB5);
+                }
+                break;
+            case 0x2:
+            case 0xF:
+            case 0x41:
+                p++;
+                break;
+            }
+            break;
+        case 0xFE:
+        case 0xFF:
+            break;
+        case 0xFA:
+        case 0xFB:
+        case 0xFC:
+        case 0xFD:
+            func_80051004(c);
+            c = *p++;
+        default:
+            func_80051004(c);
+            break;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004D2C0);
 
