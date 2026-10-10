@@ -507,6 +507,7 @@ typedef struct {
 } DrTpageWords;
 
 extern u16 D_8006BBA0[];
+extern u32 D_8006BBB4[]; /* per-style clut row offset for func_8002B644 */
 
 /* sprite descriptor: uv/clut word, size, tpage (D_800686E8) */
 typedef struct {

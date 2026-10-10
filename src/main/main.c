@@ -4569,7 +4569,42 @@ void func_8002B5FC(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
     D_80077170 = func_8002920C(arg0, arg1, &D_8007716C[otz], arg3, arg4, D_80077170);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002B644);
+u8 *func_8002B644(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
+    SprtWords *p = pkt;
+    DrTpageWords *t;
+    u32 rgbc = 0x64808080;
+    s32 c;
+    s32 u;
+
+    if (style == 2) {
+        rgbc = 0x66606060;
+    }
+    while ((c = *s) != 0) {
+        if ((u8)c != ' ') {
+            do { } while (0);
+            if ((u8)c != '/') {
+                u = 0x1E8;
+                u = c * 8 - u;
+            } else {
+                u = 0xE8;
+            }
+            setlen(p, 4);
+            p->rgbc = rgbc;
+            p->xy = (x & 0xFFFF) | (y << 16);
+            p->wh = 0xA0008;
+            p->uvclut = ((u & 0xFF) | 0x4000) | ((D_8006BBB4[style] + 0x3EE4) << 16);
+            addPrim(ot, p);
+            p++;
+        }
+        s++;
+        x += 7;
+    }
+    t = (DrTpageWords *)p;
+    setlen(t, 1);
+    t->code = 0xE100061F;
+    addPrim(ot, t);
+    return (u8 *)(t + 1);
+}
 
 u8 *func_8002B7B0(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p) {
     u32 rgbc = 0x66000000;
