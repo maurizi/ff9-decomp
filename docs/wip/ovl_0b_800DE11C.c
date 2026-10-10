@@ -1,9 +1,10 @@
-/* WIP func_800DE11C (0x1040, battle model renderer; twin of func_800C67BC with a Z-sum far clip): 430 aligned diff rows (build/cmp.py), 18 rows with registers masked; 1040 of 1040 insns. Global allocation matches (fp=g, s0=uv, s1=n, s2=col, s6=ot, t7=prim, t8=i, t9=src, tex spilled to sp+8, s7 = reload reg). What fixed the shape: one u8 *src for all 8 loops (typed pointer re-derived each iteration); r0 copy before setlen; colours copied through one reused pointer cp (multi-set, so sched1 does not treat the address insns as birthing and pipelines the loads like the original); setlen/setcode after the last colour copy (prim giv base = +7); F3 setcode before the xy stores (giv base +0x10); 3-vertex loops index Z with `i2 & 0xFFFF` (CSE keeps two sll, combine then drops the and; u16 i0..i3 is probably the real source, see u16 note); 4-vertex loops use `b & 0xFFFF` inline for xy2/z2; G4 `addPrim(&ot[otz >> 6], ...)`. Left: loop-local register assignment (xy0/xy1/xy2 are t5/t4/a3 in the original, a/i1/i0*4 block-local); a u16 i0..i3 declaration gives 414 rows but a worse shape (78). Making a/b/i0/i1 per-loop or inline shifts every global register down by one (one global pseudo too few). */
+/* WIP func_800DE11C (0x1040, battle model renderer; twin of func_800C67BC, which matched in pass 12): 79 aligned diff rows (was 430), 8 with registers masked, 1040 of 1040 insns. Pass 12: the 3-vertex loops keep their third index in b (`b = s->unk0[2]; xy2 = D_800711A8[b]; ... D_80070520[b & 0xFFFF]`), i0 is inline (`a & 0xFFFF`), which fixes xy0/xy1/xy2 (t5/t4/a3), a (a3), b (t1), i1 (a0) and the constant (t0). The first four loops (FT4..GT3) then match except the FT3/GT3 tail (`sra a0,t3,4` vs our in-place otz >>= 4). Two invented variables are still in here: zg (otz for the G4/G3/F4/F3 loops; one shared otz has priority 6*124/455 = 1.64 and takes t2 before the prim givs, while the original keeps otz in t3 = i3's register in every loop) and i2 as the second colour/uv word of GT4/G4 (the original loads it into a0, not b's t1). Left: the second half (G4..F3): zg (60 refs / 152 insns = 1.97) is allocated before the prim giv and i3*4, so it gets a2 instead of t3. Tails: 4-vertex `addPrim(&ot[otz >> 6], p)`, 3-vertex `otz /= 3; ... otz >>= 4; addPrim(&ot[otz], p)` scored best here, but the original's non-in-place sra suggests `ot[otz >> 4]` once the allocation is right. Searched and rejected: per-loop/inline scoping of a/b/i0..i3/xy/otz/t/cp (build/dsp3-dsp11), types of i0..i3/xy/otz/a/b, per-loop otz partitions (best 66 rows, needs 3 otz variables). */
 #include "ovl_0b.h"
 
 u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     s32 opz;
     s32 otz;
+    s32 zg;
     BtlMesh *g;
     u8 (*uv)[2];
     u8 (*col)[4];
@@ -15,7 +16,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     u32 a, b;
     u32 *cp;
 
-    u32 i0, i1, i2, i3;
+    u32 i1, i2, i3;
     u32 t;
     u32 hi;
     u8 *src;
@@ -57,11 +58,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sFT4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
         xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        otz = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -95,8 +95,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             setSemiTrans(pFT4, 1);
         }
         otz &= 0xFFFFF;
-        otz >>= 6;
-        addPrim(&ot[otz], pFT4);
+        addPrim(&ot[otz >> 6], pFT4);
         prim += sizeof(POLY_FT4);
     }
 
@@ -105,13 +104,12 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         sFT3 = (WmSrcFT3 *)src;
         pFT3 = (POLY_FT3 *)prim;
         a = *(u32 *)&sFT3->unk0[0];
-        i2 = sFT3->unk0[2];
+        b = sFT3->unk0[2];
         i1 = a >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2 & 0xFFFF];
+        xy2 = D_800711A8[b];
+        otz = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;
@@ -156,11 +154,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sGT4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
         xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        otz = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -178,33 +175,32 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT4->x2 = xy2;
         *(s32 *)&pGT4->x3 = D_800711A8[i3];
         a = *(u32 *)&sGT4->unk10[0];
-        b = *(u32 *)&sGT4->unk10[2];
+        i2 = *(u32 *)&sGT4->unk10[2];
         t = tex[sGT4->unk1D];
         cp = (u32 *)((u8 *)col + ((a & 0xFFFF) << 2));
         *(u32 *)&pGT4->r0 = *cp;
         cp = (u32 *)((u8 *)col + ((a >> 16) << 2));
         *(u32 *)&pGT4->r1 = *cp;
-        cp = (u32 *)((u8 *)col + ((b & 0xFFFF) << 2));
+        cp = (u32 *)((u8 *)col + ((i2 & 0xFFFF) << 2));
         *(u32 *)&pGT4->r2 = *cp;
-        cp = (u32 *)((u8 *)col + ((b >> 16) << 2));
+        cp = (u32 *)((u8 *)col + ((i2 >> 16) << 2));
         *(u32 *)&pGT4->r3 = *cp;
         setlen(pGT4, 12);
         setcode(pGT4, 0x3C);
         a = *(u32 *)&sGT4->unk8[0];
-        b = *(u32 *)&sGT4->unk8[2];
+        i2 = *(u32 *)&sGT4->unk8[2];
         hi = t & 0xFFFF0000;
         t <<= 16;
         *(u32 *)&pGT4->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
         *(u32 *)&pGT4->u1 = *(u16 *)uv[a >> 16] | t;
-        *(u16 *)&pGT4->u2 = *(u16 *)uv[b & 0xFFFF];
-        *(u16 *)&pGT4->u3 = *(u16 *)uv[b >> 16];
+        *(u16 *)&pGT4->u2 = *(u16 *)uv[i2 & 0xFFFF];
+        *(u16 *)&pGT4->u3 = *(u16 *)uv[i2 >> 16];
         if (sGT4->unk1C & 1) {
             pGT4->tpage |= sGT4->unk1C & 0xE0;
             setSemiTrans(pGT4, 1);
         }
         otz &= 0xFFFFF;
-        otz >>= 6;
-        addPrim(&ot[otz], pGT4);
+        addPrim(&ot[otz >> 6], pGT4);
         prim += sizeof(POLY_GT4);
     }
 
@@ -213,13 +209,12 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         sGT3 = (WmSrcGT3 *)src;
         pGT3 = (POLY_GT3 *)prim;
         a = *(u32 *)&sGT3->unk0[0];
-        i2 = sGT3->unk0[2];
+        b = sGT3->unk0[2];
         i1 = a >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2 & 0xFFFF];
+        xy2 = D_800711A8[b];
+        otz = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;
@@ -270,13 +265,12 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sG4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
         xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        zg = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
         i++;
-        if (otz > 0x3FFFFFFF) {
+        if (zg > 0x3FFFFFFF) {
             continue;
         }
         if (!(sG4->unk14 & 2)) {
@@ -291,20 +285,20 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG4->x1 = xy1;
         *(s32 *)&pG4->x2 = xy2;
         *(s32 *)&pG4->x3 = D_800711A8[i3];
-        otz &= 0xFFFFF;
+        zg &= 0xFFFFF;
         a = *(u32 *)&sG4->unk8[0];
-        b = *(u32 *)&sG4->unk8[2];
+        i2 = *(u32 *)&sG4->unk8[2];
         cp = (u32 *)((u8 *)col + ((a & 0xFFFF) << 2));
         *(u32 *)&pG4->r0 = *cp;
         cp = (u32 *)((u8 *)col + ((a >> 16) << 2));
         *(u32 *)&pG4->r1 = *cp;
-        cp = (u32 *)((u8 *)col + ((b & 0xFFFF) << 2));
+        cp = (u32 *)((u8 *)col + ((i2 & 0xFFFF) << 2));
         *(u32 *)&pG4->r2 = *cp;
-        cp = (u32 *)((u8 *)col + ((b >> 16) << 2));
+        cp = (u32 *)((u8 *)col + ((i2 >> 16) << 2));
         *(u32 *)&pG4->r3 = *cp;
         setlen(pG4, 8);
         setcode(pG4, 0x38);
-        addPrim(&ot[otz >> 6], pG4);
+        addPrim(&ot[zg >> 6], pG4);
         prim += sizeof(POLY_G4);
     }
 
@@ -313,15 +307,14 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         sG3 = (WmSrcG3 *)src;
         pG3 = (POLY_G3 *)prim;
         a = *(u32 *)&sG3->unk0[0];
-        i2 = sG3->unk0[2];
+        b = sG3->unk0[2];
         i1 = a >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2 & 0xFFFF];
+        xy2 = D_800711A8[b];
+        zg = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF];
         i++;
-        if (otz > 0x2FFFFFFF) {
+        if (zg > 0x2FFFFFFF) {
             continue;
         }
         if (!(sG3->unk13 & 2)) {
@@ -332,7 +325,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        otz &= 0xFFFFF;
+        zg &= 0xFFFFF;
         *(s32 *)&pG3->x0 = xy0;
         *(s32 *)&pG3->x1 = xy1;
         *(s32 *)&pG3->x2 = xy2;
@@ -345,8 +338,9 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(u32 *)&pG3->r2 = *cp;
         setlen(pG3, 6);
         setcode(pG3, 0x30);
-        otz = otz / 3 >> 4;
-        addPrim(&ot[otz], pG3);
+        zg /= 3;
+        zg >>= 4;
+        addPrim(&ot[zg], pG3);
         prim += sizeof(POLY_G3);
     }
 
@@ -358,13 +352,12 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sF4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
         xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        zg = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
         i++;
-        if (otz > 0x3FFFFFFF) {
+        if (zg > 0x3FFFFFFF) {
             continue;
         }
         if (!(sF4->unkD & 2)) {
@@ -381,10 +374,9 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pF4->x1 = xy1;
         *(s32 *)&pF4->x2 = xy2;
         setcode(pF4, 0x28);
-        otz &= 0xFFFFF;
-        otz >>= 6;
+        zg &= 0xFFFFF;
         *(s32 *)&pF4->x3 = D_800711A8[i3];
-        addPrim(&ot[otz], pF4);
+        addPrim(&ot[zg >> 6], pF4);
         prim += sizeof(POLY_F4);
     }
 
@@ -393,15 +385,14 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         sF3 = (WmSrcF3 *)src;
         pF3 = (POLY_F3 *)prim;
         a = *(u32 *)&sF3->unk0[0];
-        i2 = sF3->unk0[2];
+        b = sF3->unk0[2];
         i1 = a >> 16;
-        i0 = a & 0xFFFF;
-        xy0 = D_800711A8[i0];
+        xy0 = D_800711A8[(a & 0xFFFF)];
         xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2 & 0xFFFF];
+        xy2 = D_800711A8[b];
+        zg = D_80070520[(a & 0xFFFF)] + D_80070520[i1] + D_80070520[b & 0xFFFF];
         i++;
-        if (otz > 0x2FFFFFFF) {
+        if (zg > 0x2FFFFFFF) {
             continue;
         }
         if (!(sF3->unkB & 2)) {
@@ -412,15 +403,16 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        otz &= 0xFFFFF;
+        zg &= 0xFFFFF;
         *(u32 *)&pF3->r0 = *(u32 *)sF3->unk8;
         setlen(pF3, 4);
         setcode(pF3, 0x20);
         *(s32 *)&pF3->x0 = xy0;
         *(s32 *)&pF3->x1 = xy1;
         *(s32 *)&pF3->x2 = xy2;
-        otz = otz / 3 >> 4;
-        addPrim(&ot[otz], pF3);
+        zg /= 3;
+        zg >>= 4;
+        addPrim(&ot[zg], pF3);
         prim += sizeof(POLY_F3);
     }
     setcode((P_TAG *)prim, 0xFF);

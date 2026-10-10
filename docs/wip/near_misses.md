@@ -309,6 +309,25 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Status: DE11C 430 rows (18 with registers masked, global allocation right; WIP docs/wip/ovl_0b_800DE11C.c),
   C67BC 234 (was ~300; 16 masked), AC37C 175 (notes on the tu/tv registers and the D_8006794C lo_sum CSE in the WIP
   header), CBA58 45 (notes added). D2DBC not attempted.
+- Pass 12: matched C67BC (0xF74) and CBA58 (0x158). What fixed them:
+  - C67BC: the index words are loaded into the index variables and masked in place
+    (`i0 = W0; i2 = W1; i1 = i0 >> 16; i3 = i2 >> 16; i0 &= 0xFFFF; i2 &= 0xFFFF;`), and the 3-vertex loops use the
+    same form for their third index (`i2 = *(u32 *)&s->unk0[2]; ... i2 &= 0xFFFF;`, which combine turns back into a
+    lhu). The GT3/G3 Z loads use `D_80070520[(u16)i0]`: i0 has full-word sets, so after the cull label the and is kept
+    and CSE does not reuse i0*4. Last step was i1 (t1) vs i2 (t0): global priorities 3.387 vs 3.360, and the
+    word-plus-mask form gives i2 four more refs. Before that, a refs/length check showed that single-line moves never
+    change these priorities without also changing the code: sched1 normalizes the order, so look for a different RTL
+    (types, forms), not a different statement order.
+  - CBA58: `u16 b` (the second operand word) instead of s32 changes sched1's order of the header loads. `u16 ang`
+    gives the a2 -> a1 copy. `s16 x, z` for the differences with `if (x == 0 && z == 0) ang = unk86; else
+    ang = ratan2(d[0], d[1]);`, so the test uses the registers and the ratan2 arguments are reloaded with lh. `s16 w`
+    for the unk86[1] copy (lhu). The tail is `ang = (ang + b) & 0xFFF;`.
+  - Tools for this (in the agent worktree's build/): vp.py/vtp.py (variant specs with refs/len/priority of chosen
+    pseudos, parallel), psweep.py (single-line moves with the priorities of two pseudos), prefs.py (greg conflicts
+    and preferences: which hard regs other allocnos prefer).
+  Status: DE11C 79 rows (was 430; 8 masked). The first four loops match apart from the FT3/GT3 tail sra. The draft still
+  has two invented variables (zg = otz of the G/F loops, i2 = the second colour word of GT4/G4); see the WIP header.
+  D2DBC 63 (pure allocation; the frame/cnt register t2 also holds `(b & 0xF) * 2`), AC37C unchanged (175).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -665,3 +684,40 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     increments at the loop end (BD130);
   * a struct field read through the global (`D_801F7A78.unk18[i]`) instead of a pointer local lets CSE
     derive the base from a related register (`addiu s5, s1, -0x1D8`), as the original does (F1848).
+- Pass 12 (overlays except 0b; gcc 2.8.1 source read alongside the `cc1 -dS -dl -dg` dumps:
+  build/search/dumpf.sh dumps every pass, build/search/galloc.py prints global-alloc's allocation order
+  `floor_log2(refs) * refs / live_length` with the hard reg each pseudo got). Matched 36 F1A48, 0a BF660,
+  0d AC060, 36 F1778. Improved: 0a C0038 19 -> 11, 33 EF644 33 -> 31. Mechanisms that decided them:
+  * sched1 (sched.c) is a *backward* list scheduler. When an insn is scheduled, each predecessor that
+    becomes ready gets LAUNCH priority (0x7f000001) only if it is a "birthing" insn: it sets a pseudo
+    with REG_N_SETS == 1 that is live there. Launched insns are placed right next to their consumer;
+    everything else (multi-set user variables, hard-reg argument loads of a function with two calls
+    setting the same arg register, stores) keeps its plain priority (longest chain of >1-latency ops
+    from the block start) and floats to the block top or into load-delay slots, ties by later LUID.
+    Register allocation then sees those positions, so a constant argument load that floats up makes a
+    local temp conflict with a1..a3 (F1A48: two copies of the func_80022C60 call in an if/else, cross-
+    jumped by jump2, give REG_N_SETS(a1) == 2 and put x in t0).
+  * local-alloc allocates qtys by `floor_log2(refs) * refs / length`, ties to the earlier-born qty, and
+    takes the lowest free hard reg; a qty born in the insn where another dies shares its register. So
+    `cy = t + y` with a block-local `t = (h >> 1) + y0 - 112` lands t in place in v0 and the add is
+    `addu a2, v0, a2` (temp first); a reused global `x` for the same value takes a0 (BF660, C0038).
+    expand_binop puts the operand that equals the target first, so `y = x + y` becomes `y + x`.
+  * global-alloc: pass 0 only considers registers already used (regs_used_so_far) and not preferred by
+    a lower-priority conflicting allocno; pass 1 takes the first non-conflicting register. A separate
+    loser-card variable `l` (`l = a` in one arm coalesces into a deleted no-op move, `l = b` in the
+    other) has the highest priority, takes s0, and its conflict with `e` pushes e to s3 (AC060).
+  * Two stores through the same base with the stored values in registers vs. computed: a RECT whose
+    w/h constants live in s-registers and whose `&a` is an argument gets its w/h stores addressed from
+    the argument register (a0 + 0xC), so they get output dependences on the sp-relative x/y stores and
+    schedule after them: write the fields in x, y, w, h order (F1778's inlined func_801F2D88 copy).
+  * jump.c duplicate_loop_exit_test only runs when NOTE_INSN_LOOP_BEG is directly followed by a jump
+    (a rotated for/while); a `goto test` into a do/while keeps a single copy of the loop test (A741C).
+  Left with notes in their headers: B4A5C (filler slots), C07D8 (lbu placement), A741C (n/blk and
+  id/base/gs order), B16A4 (ot s1 vs s3), B0124 (kind-9 block, condition spellings score 14-20).
+  * loop.c moves an invariant only if `threshold * savings * lifetime >= insn_count` (threshold =
+    (1 + non-fixed regs) with calls in the loop, minus 3 per insn already moved; lifetime = LUID
+    distance between the pseudo's set and last use, deleted-insn notes count). A `%hi` for a global
+    store is emitted before the stored expression, so `D_801F8200 = r = &D_801F7A78.unkAC[i + 2].unk4;`
+    (chained) gives it a lifetime of several insns and it is hoisted into s6, while `D_801F8200 = r;`
+    (lifetime 1) stays in the loop. `rr = &D_801F81F8;` written inside the block (hoisted too) keeps
+    its preheader order after that lui (65 F1848, matched this pass).
