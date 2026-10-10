@@ -90,3 +90,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   (~78 rows: local regs a0/a3, prologue loads of the second block).
   Also 0c B20B8 (2 spots: %hi(D_800CE3C0) kept in s0 across the call vs v1; srlv operand regs in the inlined
   bit test), 0c B9808 (2 spots: fy=0 spill store scheduled early; `&polys[p]` addu operand order).
+- Large-function pass 6 (drafts committed as docs/wip/ovl_0a_*.c / ovl_0c_*.c with notes): 0c AD738 1 insn (one
+  reorg delay slot after `if (D_800CE0EC == 1)`: original fills it from the target), 0c C53DC 3 insns (dead
+  `s7 = 0` + its save, frame 0x38), 0c B0378 ~36 rows (product tied to LO -> mflo t2; else-branch constant regs),
+  0a AA4E8 ~93 rows (lh/lhu order of the FieldVramPos loads; s-reg swaps), 0a BB714 = 0c CA1D8 (twins, 772/778:
+  3-vertex loops recompute `i2 * 4`; register shifts). Matched 0a BA560 and 0c BEECC.
+  What made the difference (worth trying on other register-allocation misses):
+  * locals reused for unrelated values (BA560: key2/key/arg1/rot reused as bone/column pointers in the second pass;
+    BEECC: one loop index for both loops, best/ang reused as |dx|/|dz|; B0378: dx/dy/dz reused in the else branch);
+  * goto loops instead of do/while (no loop.c givs/hoisting, and refs are no longer weighted by loop depth);
+  * an address-taken pair as one aggregate (`VECTOR q; f(&q.vx); g(&q.vy)`) explains unused frame space;
+  * `x >= 0 ? x : -x` vs `if (x < 0) x = -x` vs ABS() give three different abs sequences.
