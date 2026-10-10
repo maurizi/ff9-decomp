@@ -1546,6 +1546,9 @@ typedef struct {
 extern u32 D_8006F410[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
 u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
+extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
+extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
+s32 func_8005DB40(AkaoChannel *c);
 
 /* drum kit key entry (func_8005E170) */
 typedef struct {

@@ -18841,7 +18841,121 @@ void func_8005D628(Unk80080A10 *arg0, AkaoChannel *arg1) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005D6BC);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005DB40);
+/* Looks ahead in the channel's sequence for the next note opcode (0xA0: rest or end). */
+s32 func_8005DB40(AkaoChannel *c) {
+    u8 *p;
+    u32 n;
+    u32 op;
+    s32 len;
+
+    p = c->unk0;
+    n = c->unkF4;
+    for (;;) {
+        if (*p < 0x9A) {
+            if (*p >= 0x8F) {
+                c->unkCC = (u16)c->unkCC & ~5;
+            }
+            return *p;
+        }
+        if (*p < 0xA0) {
+            return 0xA0;
+        }
+        op = *p;
+        len = D_8006F374[op - 0xA0];
+        if (len != 0) {
+            p += len;
+            continue;
+        }
+        switch (op) {
+        case 0xF0:
+        case 0xF1:
+        case 0xF2:
+        case 0xF3:
+        case 0xF4:
+        case 0xF5:
+        case 0xF6:
+        case 0xF7:
+        case 0xF8:
+        case 0xF9:
+        case 0xFA:
+        case 0xFB:
+            return 0x83;
+        case 0xFC:
+            return 0x84;
+        case 0xFD:
+            return 0x8F;
+        case 0xFE:
+            p++;
+            op = *p;
+            len = D_8006F3D4[op];
+            if (len != 0) {
+                p += len;
+                continue;
+            }
+            switch (op) {
+            case 0x8:
+            case 0x9:
+                p++;
+                if (*p == c->unkA2[n] + 1) {
+                    p++;
+                    n--;
+                    n &= 3;
+                    op = p[0] + (p[1] << 8);
+                    p += (s16)op;
+                    continue;
+                }
+                p += 3;
+                continue;
+            case 0x6:
+            case 0xE:
+                p++;
+                op = p[0] + (p[1] << 8);
+                p += (s16)op;
+                continue;
+            case 0x7:
+                p++;
+                if (*p++ <= D_80080A10->unk6C) {
+                    op = p[0] + (p[1] << 8);
+                    p += (s16)op;
+                    continue;
+                }
+                p += 2;
+                continue;
+            case 0xF:
+                p = c->unk14;
+                continue;
+            }
+            continue;
+        case 0xC9:
+            p++;
+            if (*p == c->unkA2[n] + 1) {
+                p++;
+                n--;
+                n &= 3;
+                continue;
+            }
+            p = c->unk4[n];
+            continue;
+        case 0xCB:
+        case 0xCD:
+        case 0xD1:
+        case 0xDB:
+            c->unkCC = (u16)c->unkCC & ~5;
+            p++;
+            continue;
+        case 0xCA:
+            if (c->unk34 & 0x200000) {
+                goto end;
+            }
+            p = c->unk4[n];
+            continue;
+        default:
+        end:
+            c->unkCC = (u16)c->unkCC & ~5;
+            return 0xA0;
+        }
+    }
+}
 
 s32 func_8005DD54(s32 a, s32 b) {
     if ((a & 0x20) && (u32)(b - 0x20) < 0x60) {
@@ -21022,8 +21136,6 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", MulMatrix2);
 INCLUDE_ASM("asm/us/main/nonmatchings/main", ApplyMatrix);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", TransMatrix);
-
-INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80012198);
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_800121C0);
 
