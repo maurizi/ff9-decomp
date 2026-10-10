@@ -32,13 +32,87 @@ typedef struct {
     u16 unkC;
     u16 unkE;
     u16 unk10;
-    u8 pad12[0x14 - 0x12];
+    u8 pad12;
+    s8 unk13; /* ordering table bias */
     u16 *unk14;
     SVECTOR *unk18;
     u32 *unk1C; /* primitives */
     u8 (*unk20)[2]; /* uv */
-    void *unk24;
+    u8 (*unk24)[4]; /* colours */
 } BtlMesh; /* 0x28 */
+
+/* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4]; /* uv */
+    u8 unk10[3]; /* rgb */
+    u8 unk13;    /* texture */
+    u8 unk14;
+    u8 unk15; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 pad16[2];
+} WmSrcFT4; /* 0x18 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 unk6; /* texture */
+    u8 pad7;
+    u8 unk8[3]; /* rgb */
+    u8 padB;
+    u16 unkC[3]; /* uv */
+    u8 unk12;    /* flags */
+    u8 pad13;
+} WmSrcFT3; /* 0x14 */
+
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4];  /* uv */
+    u16 unk10[4]; /* colours */
+    u8 pad18[4];
+    u8 unk1C; /* flags */
+    u8 unk1D; /* texture */
+    u8 pad1E[2];
+} WmSrcGT4; /* 0x20 */
+
+typedef struct {
+    u16 unk0[3];
+    u16 unk6[3]; /* uv */
+    u8 padC[3];
+    u8 unkF;      /* flags */
+    u16 unk10[3]; /* colours */
+    u8 unk16;     /* texture */
+    u8 pad17;
+} WmSrcGT3; /* 0x18 */
+
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4]; /* colours */
+    u8 pad10[4];
+    u8 unk14; /* flags */
+    u8 pad15[3];
+} WmSrcG4; /* 0x18 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 pad6[2];
+    u16 unk8[3]; /* colours */
+    u8 padE[5];
+    u8 unk13; /* flags */
+} WmSrcG3; /* 0x14 */
+
+typedef struct {
+    u16 unk0[4];
+    u8 unk8[3]; /* rgb */
+    u8 padB[2];
+    u8 unkD; /* flags */
+    u8 padE[2];
+} WmSrcF4; /* 0x10 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 pad6[2];
+    u8 unk8[3]; /* rgb */
+    u8 unkB; /* flags */
+} WmSrcF3; /* 0xC */
 
 typedef struct BtlUnit9C8 {
     u16 unk0; /* flags: 1 = relocated */
@@ -317,7 +391,7 @@ typedef struct BtlCalc {
     BtlUnit *unk0; /* caster */
     BtlUnit *unk4; /* target */
     BtlCalc8 *unk8;
-    u8 padC[0xE - 0xC];
+    s16 unkC;
     s16 unkE;
     s16 unk10;
     s16 unk12;
@@ -626,7 +700,36 @@ extern s32 D_800FE51C;
 extern s32 D_800FE4F0;
 extern struct BtlUnit9C50 *D_800FE4F4;
 extern s32 D_800FE4F8;
-extern u8 *D_800FE504;
+/* battle background: texture scroll entry (D_800FE504) */
+typedef struct {
+    s16 unk0; /* offset of the uv pair in the group data */
+    u8 unk2;  /* 0 = wrap, 1 = bounce */
+    u8 unk3;  /* du */
+    u8 unk4;  /* dv */
+    u8 unk5;  /* step */
+    u8 unk6;  /* steps per cycle */
+    u8 pad7;
+} BtlBgScroll;
+
+/* battle background: group header, followed by 0x10-byte records */
+typedef struct {
+    u16 unk0; /* size */
+    u16 pad2;
+    u16 unk4; /* record count */
+    u16 unk6; /* record offset */
+} BtlBgGroup;
+
+typedef struct {
+    u16 unk0; /* kind */
+    u8 pad2[0x10 - 2];
+} BtlBgRec;
+
+extern BtlBgScroll *D_800FE504;
+extern s32 D_800FE520; /* frame counter */
+extern s32 D_800FE4FC;
+extern s32 D_800FE500;
+u8 *func_800CEBC8(u8 *, u32 *, MATRIX *);
+u8 *func_800CEED4(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
 extern s32 D_800FE508;
 extern s32 D_800FE518;
 extern s16 D_80100DCC;
@@ -783,9 +886,9 @@ typedef struct BtlCmd8 {
     u8 unk4;
     u8 unk5;
     u8 unk6;
-    u8 pad7;
+    u8 unk7;
     u8 unk8;
-    u8 pad9;
+    u8 unk9;
     u8 unkA; /* mp cost */
     u8 unkB;
     u16 unkC;
@@ -822,7 +925,7 @@ typedef struct Battle11C028 {
     u32 unk4_0 : 12;
     u32 unk4_12 : 10;
     u32 unk4_22 : 10;
-    u8 pad8[0x28 - 8];
+    POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
 } Battle11C028; /* 0x28 */
 
 typedef struct Battle11C0 {
@@ -1209,6 +1312,68 @@ typedef struct {
 
 void func_800D0858(u32, s32, void *);
 
+/* scrolling/waving 2D background layer (func_800D3030) */
+typedef struct {
+    u16 unk0; /* kind: 0 scroll, 1 horizontal wave, 2 fade, 3 vertical wave */
+    u16 unk2; /* tpage */
+    u16 unk4; /* clut */
+    u8 unk6;  /* u */
+    u8 unk7;  /* v */
+    u16 unk8; /* abr */
+    u16 unkA; /* palette frames */
+    s32 unkC; /* palette animation offset */
+    union {
+        struct BtlBgScrollP {
+            u8 unk0; /* x: sine motion */
+            u8 unk1; /* y: sine motion */
+            u8 pad2[2];
+            s16 unk4; /* x speed */
+            s16 unk6; /* y speed */
+            u16 unk8; /* x amplitude */
+            u16 unkA; /* y amplitude */
+        } scroll;
+        struct BtlBgWaveP {
+            u16 unk0; /* strip size */
+            u16 unk2; /* strip count */
+            u16 unk4; /* phase step */
+            u16 unk6; /* phase speed */
+            u16 unk8; /* amplitude */
+            s16 unkA; /* scroll speed */
+        } wave;
+        struct BtlBgFadeP {
+            s32 unk0; /* data offset */
+            u8 pad4;
+            u8 unk5;  /* delay */
+            u16 unk6; /* duration */
+            s16 unk8;
+            s16 unkA;
+        } fade;
+    } unk10;
+} BtlBgLayer;
+
+typedef struct {
+    u16 unk0; /* layer count */
+    u8 unk2;  /* width */
+    u8 unk3;  /* height */
+    u16 unk4; /* x */
+    u16 unk6; /* y */
+    s32 unk8[1]; /* layer offsets */
+} BtlBgLayers;
+
+
+/* positive modulo: wt holds the dividend */
+#define BG_WRAP(a, n)          \
+    {                       \
+        (a) = (a) / (n);    \
+        if (wt < 0) {       \
+            (a)--;          \
+        }                   \
+        (a) *= (n);         \
+        (a) = wt - (a);     \
+    }
+void func_800E651C(u8 *, CVECTOR *, s32);
+void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
+
 
 typedef struct {
     s32 unk0;
@@ -1247,17 +1412,6 @@ typedef struct {
 } Unk8010141C; /* 0x54 */
 extern Unk8010141C D_8010141C[1];
 
-typedef struct {
-    u8 pad0[0x1F];
-    u8 unk1F;
-} Unk800E0134;
-
-typedef struct {
-    u8 pad0[0xC];
-    s16 unkC;
-    u8 padE[0x14 - 0xE];
-    s32 unk14;
-} Unk800E0134_1;
 
 extern u8 D_800FE415;
 extern u8 D_800FEC65;
@@ -1268,15 +1422,27 @@ extern char D_800A7F60[];
 extern char D_800A7F78[];
 extern char D_800A81A8[];
 /* effect element (0x28) in an effect file, after the header */
-typedef struct {
+typedef struct EffElem {
     u8 unk0; /* kind, 9 = no texture */
     u8 unk1; /* 0xFF = no second texture */
-    u8 pad2[8 - 2];
+    u8 unk2;
+    u8 unk3; /* flags */
+    s16 unk4;
+    u8 unk6;
+    u8 unk7;
     s16 unk8;
-    u8 padA[0x1C - 0xA];
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    u8 unk10;
+    s8 unk11[3]; /* base rotation */
+    s8 unk14[3]; /* offset */
+    u8 unk17[3]; /* rotation spread */
+    u8 unk1A;
+    u8 unk1B;
     s32 unk1C; /* offset, relocated on load */
     s32 unk20; /* offset, relocated on load */
-    u8 pad24[0x28 - 0x24];
+    void (*unk24)();
 } EffElem; /* 0x28 */
 
 typedef struct {
@@ -1313,13 +1479,14 @@ typedef struct {
     s16 unk2; /* duration */
     s16 unk4;
     s16 unk6;
-    u8 pad8[0xC - 8];
+    s16 unk8; /* particle limit */
+    s16 unkA;
     s16 unkC[3];
     s16 unk12;
     s16 unk14[3];
     s16 unk1A;
     s16 unk1C;
-    u8 pad1E[0x20 - 0x1E];
+    s16 unk1E;
     s16 unk20[2];
     s16 unk24[2];
     SVECTOR unk28;
@@ -1335,29 +1502,86 @@ typedef struct {
     s16 unk50[8];
 } EffTail;
 
+/* EffTail as seen by the particle spawner (func_800E2000), by EffTail.unk0 kind */
+typedef struct {
+    s32 unk0; /* kind */
+    EffAnim unk4;
+    s32 (*unk3C)(SVECTOR *, SVECTOR *, s32, s32); /* kind -1 */
+    u8 pad40[4];
+    CVECTOR unk44; /* kind 0: colour fade */
+    union {
+        CVECTOR c;
+        s16 h; /* kind 4: rotation mode */
+    } unk48;
+    s16 unk4C; /* kinds 1-3: rotation mode */
+} EffTailSpawn;
+void LoadAverageCol(u8 *, u8 *, s32, s32, u8 *);
+
 /* 0x38-byte block in front of Pool6CEntry.unk4 */
 typedef struct {
-    u8 pad0[0x14];
+    s16 unk0;
+    s16 unk2;
+    u8 unk4[4]; /* element indices */
+    u8 unk8[4]; /* element weights */
+    u8 unkC;    /* spawn rotation mode */
+    u8 unkD;    /* element count */
+    s16 unkE;
+    u8 unk10;   /* particle limit */
+    u8 unk11;   /* first spawn frame + 1 */
+    s16 unk12;
     s16 unk14[3];
     s16 unk1A;
     s16 unk1C[3];
     s16 unk22;
     s16 unk24;
-    u8 pad26[0x28 - 0x26];
+    s16 unk26;
     s16 unk28[2];
     s16 unk2C[2];
-    u8 pad30[0x38 - 0x30];
+    s16 unk30[2];
+    s16 unk34[2];
 } EffSub; /* 0x38 */
+
+/* particle emitter parameters at Pool6CEntry.unk4 (kinds 0-5) */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 unk1;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A;
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+    s16 unk24;
+} EffEmit;
+
+typedef union {
+    s32 w;
+    struct {
+        s16 x;
+        s16 y;
+    } s;
+} XY32;
 
 typedef struct Pool6CEntry {
     EffFileHdr *unk0; /* effect file */
     EffSub *unk4;
     s16 unk8;
     s16 unkA;
-    u8 padC[0xE - 0xC];
+    s16 unkC;
     s16 unkE;
     s16 unk10;
-    u8 pad12[0x14 - 0x12];
+    s16 unk12;
     s32 unk14;
     EffElem *unk18;
     s32 unk1C;
@@ -1368,7 +1592,7 @@ typedef struct Pool6CEntry {
     s32 unk2C;
     s16 unk30; /* in use, -1 = release */
     s16 unk32;
-    s32 unk34;
+    XY32 unk34; /* live particle counts (s.x, s.y) */
     s16 unk38; /* frame */
     s16 unk3A;
     s16 unk3C;
@@ -1377,12 +1601,13 @@ typedef struct Pool6CEntry {
     s16 unk42;
     s16 unk44[3];
     s16 unk4A;
-    s32 unk4C;
+    XY32 unk4C;
     s16 unk50[3];
     s16 unk56;
-    s32 unk58;
+    XY32 unk58;
     SVECTOR unk5C;
-    u8 pad64[0x6C - 0x64];
+    SVECTOR *unk64;
+    SVECTOR *unk68;
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
@@ -1394,15 +1619,48 @@ typedef struct {
 } Pool6C;
 
 typedef struct {
-    VECTOR unk0;
-    u8 pad10[0x1A - 0x10];
-    u8 unk1A;
-    u8 unk1B;
-    u8 pad1C[0x1F - 0x1C];
+    struct {
+        s32 vx, vy, vz;
+    } unk0; /* position, 20.12 */
+    s16 unkC; /* rotation */
+    s16 unkE;
+    s16 unk10;
+    u8 unk12; /* flags */
+    s8 unk13;
+    XY32 unk14;
+    s16 unk18;
+    u8 unk1A; /* frame */
+    u8 unk1B; /* frame count */
+    u8 unk1C; /* element index, 0xFF = none */
+    u8 unk1D; /* element frame */
+    s8 unk1E;
     u8 unk1F; /* in use */
-    u8 pad20[0x2C - 0x20];
+    s16 unk20;
+    s16 unk22;
+    XY32 unk24;
+    XY32 unk28;
     Pool6CEntry *unk2C;
 } Pool30Entry; /* 0x30 */
+
+/* particle motion parameters: the effect file (Pool6CEntry.unk0) or the
+ * block at Pool6CEntry.unk4 */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 pad1[8 - 1];
+    s32 (*unk8)();
+    u8 padC[0xE - 0xC];
+    s16 unkE;
+    u8 pad10[0x12 - 0x10];
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A;
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+} EffMotion;
 
 typedef struct {
     s32 unk0; /* count */
@@ -1467,7 +1725,7 @@ typedef struct Unk800CEE74 {
     s16 unk2; /* count of D_800FE4F4 entries */
     s16 unk4;
     s16 unk6;
-    u8 pad8[0xA - 8];
+    s16 unk8; /* last group index */
     s16 unkA;
     u8 unkC;
     u8 unkD;
@@ -1810,7 +2068,9 @@ typedef struct {
     u8 unk0;
     u8 pad1;
     u16 unk2;
-    u8 pad4[0xC - 4];
+    u8 pad4;
+    u8 unk5; /* attack */
+    u8 pad6[0xC - 6];
 } Unk8006E0E8; /* 0xC */
 extern Unk8006E0E8 D_8006E0E8[];
 void VSyncCallback(void (*)(void));
@@ -1821,7 +2081,10 @@ typedef struct {
     u32 unk0_0 : 8;
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
-    u8 pad4[4];
+    u8 unk4;
+    u8 unk5;
+    u8 unk6;
+    u8 unk7;
     s32 unk8;
 } Unk8006B1F4; /* 0xC */
 extern Unk8006B1F4 D_8006B1F4[];
@@ -2132,7 +2395,23 @@ typedef struct {
 
 void func_800E1708(Pool30 *, s32, s32);
 void func_800E1810(Pool30 *, Pool6CEntry *);
-void func_800E0168(Pool30 *);
+s32 func_800E0168(Pool30 *);
+/* particle helpers used by func_800E0168 */
+s32 func_800CF5F8(SVECTOR *, SVECTOR *);
+s32 func_800CF748(s32);
+void func_800CF788(SVECTOR *);
+void func_800DFE4C(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800DFE54(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
+void func_800D1D74(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void func_800D1FFC(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void func_800D2938(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
+extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
+/* main exe: candidates for ff9.h */
+int VectorNormalS(VECTOR *, SVECTOR *);
+MATRIX *MulMatrix2(MATRIX *, MATRIX *);
 s32 func_800E1874(Pool30 *, Pool6C *);
 void func_800E2000(Pool30 *, Pool6C *);
 void func_800E3B34(Heap *, s32);
@@ -2291,13 +2570,6 @@ typedef struct {
 } RotMatrix33;
 
 /* packed screen coordinate */
-typedef union {
-    s32 w;
-    struct {
-        s16 x;
-        s16 y;
-    } s;
-} XY32;
 
 typedef struct {
     u32 *unk0; /* next free primitive */
@@ -2493,6 +2765,79 @@ s32 func_800C1EDC(BtlUnit *);
 void func_800C0544(BtlUnit *);
 void func_800B81C4(BtlCalc *, u8);
 s32 func_800B9994(BtlCalc *);
+/* ability effect helpers called by func_800B44C0 */
+void func_800B7954(BtlCalc *);
+void func_800B7F20(BtlCalc *, Unk800B7F20 *, s32);
+u8 func_800B8390(BtlCalc *);
+u8 func_800B8664(BtlCalc *);
+void func_800B87D0(BtlCalc *, u8);
+void func_800B8A24(BtlCalc *);
+void func_800B8BE8(BtlCalc *);
+u8 func_800B8D58(BtlCalc *);
+void func_800B8E9C(BtlCalc *);
+void func_800B8FF8(BtlCalc *);
+void func_800B918C(BtlCalc *);
+u8 func_800B9418(BtlCalc *);
+void func_800B9A5C(BtlCalc *);
+void func_800B9AE4(BtlCalc *);
+void func_800B9AFC(BtlCalc *);
+u8 func_800B9B64(BtlCalc *);
+u32 func_800B9C14(BtlCalc *);
+void func_800B9C30(BtlCalc *);
+void func_800B9C74(BtlCalc *);
+u8 func_800B9CDC(BtlCalc *);
+u8 func_800B9D34(BtlCalc *);
+u8 func_800B9D6C(BtlCalc *);
+u8 func_800B9DA4(BtlCalc *);
+u8 func_800B9DDC(BtlCalc *);
+u8 func_800B9E20(BtlCalc *);
+u8 func_800B9E50(BtlCalc *);
+void func_800B9E88(BtlCalc *);
+void func_800B9F80(BtlCalc *);
+void func_800BA078(BtlCalc *);
+void func_800BA094(BtlCalc *);
+void func_800BA1B4(BtlCalc *);
+void func_800BA2AC(BtlCalc *);
+void func_800BA308(BtlCalc *);
+void func_800BA3FC(BtlCalc *);
+void func_800BA468(BtlCalc *);
+void func_800BA4AC(BtlCalc *);
+void func_800BA4F0(BtlCalc *);
+void func_800BA534(BtlCalc *);
+void func_800BA660(BtlCalc *);
+u8 func_800BA6A4(BtlCalc *);
+u8 func_800BA7D0(BtlCalc *);
+void func_800BA858(BtlCalc *);
+void func_800BA8F0(BtlCalc *);
+void func_800BA994(BtlCalc *);
+void func_800BAA28(BtlCalc *);
+void func_800BAAE4(BtlCalc *);
+void func_800BABAC(BtlCalc *);
+void func_800BACB4(BtlCalc *);
+void func_800BAD64(BtlCalc *);
+void func_800BADD4(BtlCalc *);
+void func_800BAE44(BtlCalc *);
+u8 func_800BAEA8(BtlCalc *);
+void func_800BAF3C(BtlCalc *);
+void func_800BAF70(BtlCalc *);
+void func_800BDA60(BtlUnit *);
+s32 func_800CD70C(u8);
+void func_800CD808(s32);
+void func_800CDC68(BtlUnit *);
+u8 *func_800EA0B4(s32);
+
+/* random table: two refill checks, then one byte read as (b << 8 | b) */
+#define RAND_REFILL2()                         \
+    if (D_8007B720 >= D_8007B92D) {            \
+        func_8004BF20();                       \
+        if (D_8007B720 >= D_8007B92D) {        \
+            func_8004BF20();                   \
+        }                                      \
+    }
+#define RAND16() ((*D_8007B720 << 8) | *D_8007B720++)
+
+/* main exe: candidates for ff9.h */
+u8 func_80034070(s32, s32);
 void func_800BDB20(BtlUnit *, s32, u8);
 void func_800BDC04(BtlUnit *, s32);
 void func_800BDC64(BtlUnit *, s32);
@@ -3414,5 +3759,6 @@ void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
     "mtc2\t$14, $11" \
     : : "r"(r0) : "$12", "$13", "$14")
 #define gte_gpl12() __asm__ volatile(GTE_NOPS ".word\t0x4BA8003E")
+#define gte_gpl0() __asm__ volatile(GTE_NOPS ".word\t0x4BA0003E")
 
 #endif
