@@ -1,4 +1,4 @@
-/* STATUS: near miss, 5 rows. ovl_36 func_801F1A48 (0xA0, start the CD read of a card picture). The u32 x = c->unk3 temp gives the original's andi; left: the original sets a1 = 0x800 and a2 early and keeps x in t0, ours puts x in a1 and loads 0x800 last. Statement permutations and permuter (2 x 10 min) did not find it. */
+/* STATUS: near miss, 5 rows. ovl_36 func_801F1A48 (0xA0, start the CD read of a card picture). The u32 x = c->unk3 temp gives the original's andi; left: the original sets a1 = 0x800 and a2 early and keeps x in t0, ours puts x in a1 and loads 0x800 last. Statement permutations and permuter (2 x 10 min, plus 20 min in pass 4) did not find it; pass 4 also tried a size local (at the top, before/after each store; constant propagation removes it), argument spellings, do { } while (0) around every statement, and static inline wrappers for the read. */
 #include "ovl_36.h"
 
 void func_801F1A48(void) {
