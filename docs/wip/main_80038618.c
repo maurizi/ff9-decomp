@@ -1,4 +1,4 @@
-/* 27 rows differ: the original keeps best in fp and spills r (sp+0x1C) and initialises bestd with a copy of best (addu s7,fp,zero); we keep r in s8 and spill best. Also a gets a1 (a3 here). Needed: the block-scoped copy p = q after the unk5 test (the original's addu s1,a0 in that branch's delay slot), q->unkF/o->unkF loaded once, the ?: form for a (else gcc turns if (g & 2) a = 1 into sltu), and func_800384D0_find for the script lookup. */
+/* 3 rows differ: the find key (back ? 3 : 2) is built in a1 and copied to t0 (the inline's key param) here; the original builds it in t0 directly (so its spill reloads use t1). Needed: the block-scoped p = q copy after the unk5 test, q->unkF/o->unkF loaded once, the ?: form for a, func_800384D0_find, and an identical-branch if (best) around f = q->unkF (keeps best in fp and spills r like the original). A plain key variable gets a1 and turns the spill register into t0 (35 rows). */
 #include "ff9.h"
 
 s32 func_80052EEC(s32);
@@ -56,7 +56,11 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
                 a = 1;
             }
         }
-        f = q->unkF;
+        if (best) {
+            f = q->unkF;
+        } else {
+            f = q->unkF;
+        }
         if (back) {
             b = f & 8;
         } else if (o->unk7 == D_8007AECC->unk16ED) {
