@@ -5276,7 +5276,114 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BF544);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BF978);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C0888);
+void func_800C0888(void) {
+    Unk800A7FB8 arrow;
+    VECTOR v[4];
+    SVECTOR rot;
+    SVECTOR rot0;
+    MATRIX m;
+    s32 x;
+    s32 y;
+    s32 *px;
+    s32 *py;
+    u32 *ot;
+    s32 i;
+    s32 c;
+    POLY_FT4 *p;
+    s32 a;
+    s32 b;
+    s32 ax;
+    s32 ay;
+    s32 bx;
+    s32 by;
+    s32 x1;
+    s32 y1;
+    s32 x2;
+    s32 y2;
+
+    ot = (u32 *)D_800CF460[*D_800CF45C];
+    arrow = D_800A8020;
+    func_8001D898(&rot0, 0, 8);
+    rot0.vz = D_800CE3DC->unk14.unk22 - 0x400;
+    rot = rot0;
+    c = (func_8004BB80(D_800CF4B0 << 6) >> 7) + 0x80;
+    func_80030AF4(&rot, &m);
+    for (i = 0; i < 4; i++) {
+        ApplyMatrix(&m, &arrow.v[i], &v[i]);
+    }
+    px = &x;
+    py = &y;
+    func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, px, py, D_800D3E74 * 2);
+    p = (POLY_FT4 *)D_800CF404;
+    setRGB0(p, c, c, c);
+    p->x0 = x + v[0].vx + 200;
+    p->y0 = y + v[0].vy + 130;
+    p->x1 = x + v[1].vx + 200;
+    p->y1 = y + v[1].vy + 130;
+    p->x2 = x + v[2].vx + 200;
+    p->y2 = y + v[2].vy + 130;
+    p->x3 = x + v[3].vx + 200;
+    p->y3 = y + v[3].vy + 130;
+    setUV4(p, 0, 0xD0, 0x20, 0xD0, 0, 0xD7, 0x20, 0xD7);
+    p->tpage = GetTPage(0, 0, 0x300, 0xD0);
+    p->clut = GetClut(0x280, 0xF5);
+    setPolyFT4(p);
+    addPrim(&ot[10], p);
+    p++;
+    D_800CF404 = (s32)p;
+    a = 0xF00 - D_800CE0F0->unkC;
+    b = 0x1100 - D_800CE0F0->unkC;
+    if (a < 0) {
+        a += 0x1000;
+    }
+    if (b < 0) {
+        b += 0x1000;
+    }
+    a %= 0x1000;
+    b %= 0x1000;
+    ax = func_8004BB80(a) * 12 >> 12;
+    ay = func_8004BB7C(a) * 12 >> 12;
+    bx = func_8004BB80(b) * 12 >> 12;
+    by = func_8004BB7C(b) * 12 >> 12;
+    func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, px, py, D_800D3E74 * 2);
+    D_800D3E7C = (POLY_G3 *)D_800CF404;
+    x1 = x + ax + 200;
+    y1 = y + ay + 130;
+    x2 = x + bx + 200;
+    y2 = y + by + 130;
+    D_800D3E7C->r0 = 0x8E;
+    D_800D3E7C->g0 = 0xC8;
+    D_800D3E7C->b0 = 0;
+    D_800D3E7C->r1 = 0;
+    D_800D3E7C->g1 = 0;
+    D_800D3E7C->b1 = 0;
+    D_800D3E7C->r2 = 0;
+    D_800D3E7C->g2 = 0;
+    D_800D3E7C->b2 = 0;
+    D_800D3E7C->x0 = x + 200;
+    D_800D3E7C->y0 = y + 130;
+    D_800D3E7C->x1 = x1;
+    D_800D3E7C->y1 = y1;
+    D_800D3E7C->x2 = x2;
+    D_800D3E7C->y2 = y2;
+    setPolyG3(D_800D3E7C);
+    setSemiTrans(D_800D3E7C, 1);
+    addPrim(&ot[10], D_800D3E7C);
+    D_800D3E7C++;
+    D_800CF404 = (s32)D_800D3E7C;
+    setDrawTPage((DR_TPAGE *)D_800CF404, 0, 1, GetTPage(0, 1, 0, 0));
+    addPrim(&ot[10], (DR_TPAGE *)D_800CF404);
+    D_800CF404 += sizeof(DR_TPAGE);
+    setXY4((POLY_FT4 *)D_800CF404, 200, 130, 296, 130, 200, 210, 296, 210);
+    setUV4((POLY_FT4 *)D_800CF404, 0, 0x80, 0x5F, 0x80, 0, 0xCF, 0x5F, 0xCF);
+    setRGB0((POLY_FT4 *)D_800CF404, 0x80, 0x80, 0x80);
+    ((POLY_FT4 *)D_800CF404)->tpage = 0xC;
+    ((POLY_FT4 *)D_800CF404)->clut = 0x3C69;
+    setPolyFT4((POLY_FT4 *)D_800CF404);
+    setSemiTrans((POLY_FT4 *)D_800CF404, 1);
+    addPrim(&ot[10], (POLY_FT4 *)D_800CF404);
+    D_800CF404 += sizeof(POLY_FT4);
+}
 
 void func_800C0F34(void) {
     u32 *ot;
