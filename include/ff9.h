@@ -562,7 +562,13 @@ extern Unk80077DB0 D_80077DB0;
 extern s32 D_80077140;
 extern s32 D_80077144;
 extern void (*D_80068F80[])(RECT *, s32);
-extern void (*D_8006BBEC[])(s32);
+extern s32 (*D_8006BBEC[])(u8 *); /* text width of a value, per format */
+extern u8 D_8006A20E;
+s32 func_8002A730(s32);
+s32 func_8002BEA4(s32, s32);
+#if !defined(OVL_0A_H) && !defined(OVL_0C_H)
+s32 func_8002B980(u8 *, s32);
+#endif
 extern s32 D_8006BBFC[];
 extern s32 D_8006BC18[];
 extern s32 D_800770AC;
@@ -630,7 +636,15 @@ u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
 u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
 void func_8002B5B4(s32, s32, s32, u8 *, s32);
 u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
-void func_8002AF70(s16 *, s32);
+typedef struct {
+    s16 w;
+    s16 h;
+} TextSize;
+#if defined(OVL_0B_H) /* ovl_0b passes its own buffer types */
+void func_8002AF70(void *, s32);
+#else
+TextSize func_8002AF70(u8 *); /* measure a text string */
+#endif
 s32 func_80023938(); /* takes an index; func_8002BE10 calls it without one */
 void func_8002C9B0(void);
 void func_8002E180(void);
@@ -784,15 +798,15 @@ typedef struct {
     u16 unkB4;
     s16 unkB6;
     s16 unkB8;
-    s16 unkBA;
+    u16 unkBA;
     s16 unkBC;
     u16 unkBE;
     u16 unkC0;
     s16 unkC2;
     u16 unkC4;
     u16 unkC6;
-    s16 unkC8;
-    s16 unkCA;
+    u16 unkC8;
+    u16 unkCA;
     s16 unkCC;
     u16 unkCE;
     u16 unkD0;
@@ -814,7 +828,7 @@ typedef struct {
     u16 unkF0;
     u16 unkF2;
     u16 unkF4; /* loop depth */
-    s16 unkF6;
+    u16 unkF6;
     u16 unkF8;
     s16 unkFA;
     s16 unkFC;
@@ -917,6 +931,13 @@ typedef struct {
     Unk4 unk28;
 } Unk80077C78;
 extern Unk80077C78 D_80077C78;
+u32 *func_8002FBC0(s32);
+#if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */
+void func_80030AF4(void *, void *); /* rotation -> matrix */
+#endif
+s32 func_8004BB7C(s32); /* cos */
+extern SVECTOR D_80077CB0;
+extern SVECTOR D_80077CC0[2][4]; /* two screen-filling quads */
 
 /* menu cursor / help window (layout merged from main + ovl_14 + ovl_32) */
 typedef struct {
@@ -986,7 +1007,7 @@ extern s32 D_8006F31C;
 extern u16 D_8006F320; /* tick counter */
 extern s32 D_8006F324[4]; /* recent tick timings */
 void func_80058F94(void);
-void func_800589F0(u32);
+void func_800589F0(void);
 void func_8005D628(Unk80080A10 *, AkaoChannel *);
 extern AkaoChannel *D_800809EC;
 extern s32 D_8007F8D8[2];
@@ -1006,8 +1027,8 @@ typedef struct {
 
 extern s32 D_80077DCC;
 extern u8 D_80077E52;
-extern s32 D_8007AEB8;
-extern s32 D_8007AEBC;
+extern struct Unk8004AB64 *D_8007AEB8; /* object at the world map's mark 0x40 */
+extern struct Unk8004AB64 *D_8007AEBC; /* object at the world map's mark 0x80 */
 extern s32 D_8007B950;
 extern s32 D_80080A24;
 extern s32 *D_80066764;
@@ -1107,14 +1128,17 @@ typedef struct Unk8004AB64 {
     s16 unk84; /* smoothed look-at point (func_80047B90) */
     s16 unk86;
     s16 unk88;
-    u8 pad8A[0x90 - 0x8A];
+    s16 unk8A; /* speech bubble anchor offset (copied from D_8007AE5C..64) */
+    s16 unk8C;
+    s16 unk8E;
     u8 unk90;
     u8 unk91;
     u8 unk92;
     u8 unk93;
     s16 unk94;
     s16 unk96;
-    u8 pad98[0xA0 - 0x98];
+    struct Unk8004AB64 *unk98; /* object collided with (func_800475D8) */
+    s32 unk9C;
     struct Unk8004AB64 *unkA0;
     u16 unkA4;
     u16 unkA6;
@@ -1131,6 +1155,10 @@ typedef struct {
     s16 unk4C;
 } Unk80047B90;
 void func_80049B48(Unk8004AB64 *);
+s32 func_80047AB8(Unk8004AB64 *, s32);
+void func_80047B90(Unk8004AB64 *, Unk80047B90 *);
+s32 func_80052DEC(s32, s32, s32); /* distance */
+s32 func_80052E48(s32, s32, s32);
 
 typedef struct Unk8007AECCNode {
     Unk8004AB64 *unk0; /* key */
@@ -1144,7 +1172,8 @@ typedef struct Unk16D8 {
 } Unk16D8;
 
 typedef struct {
-    u8 pad0[0x1450];
+    u8 unk0[0x50]; /* cleared by func_8004A06C */
+    u8 pad50[0x1450 - 0x50];
     Unk8007AECCNode unk1450[32];
     Unk8007AECCNode *unk15D0; /* active list */
     Unk8007AECCNode *unk15D4; /* free list */
@@ -1152,19 +1181,30 @@ typedef struct {
     Unk16D8 *unk16D8;
     Unk16D8 *unk16DC; /* tail */
     Unk16D8 *unk16E0; /* free list */
-    u8 unk16E4[8];
+    u8 unk16E4[4]; /* party member object ids */
+    s16 unk16E8; /* analog / d-pad camera direction offsets */
+    s16 unk16EA;
     u8 unk16EC;
     u8 unk16ED;
-    u8 pad16EE;
+    u8 unk16EE; /* field mode the state was saved in */
     u8 unk16EF;
     u8 *unk16F0; /* script data base */
-    u8 pad16F4[0x16F8 - 0x16F4];
+    u16 unk16F4; /* field / world id the state was saved for */
+    u8 pad16F6[0x16F8 - 0x16F6];
     u8 unk16F8;
     u8 pad16F9[0x16FC - 0x16F9];
     s32 unk16FC;
     s16 unk1700;
-} Unk8007AECC;
+    u8 pad1702[0x17C8 - 0x1702];
+} Unk8007AECC; /* 0x17C8 */
 extern Unk8007AECC *D_8007AECC;
+extern Unk8007AECC D_80077E60; /* the script system state D_8007AECC points at */
+extern Unk8007AECC D_80079630; /* saved copy, restored when returning to the same field */
+extern Unk4 D_80011A44; /* rodata */
+extern s32 D_8007B6FC;
+extern s32 D_8007AEC0;
+extern s32 D_8007AE58;
+void func_80050044(void);
 
 /* Inlined copy of func_8004B040 (find object by id). */
 static inline Unk8004AB64 *func_8004B040_inline(s32 id) {
@@ -1810,6 +1850,7 @@ typedef struct {
     u8 unk8; /* y */
     u8 unk9; /* h */
 } Unk8004EBC0;
+s32 func_8004EBC0(Unk8004EBC0 *r);
 extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void func_800329FC(u8 *);
@@ -2000,7 +2041,11 @@ void func_800355E4(); /* unprototyped: the argument is unused and most callers p
 void func_80035674(u8);
 void func_8003575C(const u8 *);
 u8 *func_80035774(s32); /* text lookup */
-void func_8004A06C(s32);
+#if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
+void func_8004A06C(s32); /* the overlays pass the script data as an integer */
+#else
+void func_8004A06C(u8 *); /* start the field script system on a script data block */
+#endif
 void func_8004BBF0(void);
 void func_8004BFB0(void);
 void func_80050A84(void);
@@ -2119,7 +2164,39 @@ void func_80052D70(s32);
 extern s32 D_8007B718;
 void func_8004E7FC(void);
 void func_8004883C(void);
-s32 func_80048F54(void);
+s32 func_80048F54(void); /* per-frame field object update */
+extern s32 D_8007AEA8;
+extern s32 D_8007AEAC; /* the player moved this frame */
+extern s32 D_8007AEB0;
+extern u8 D_800CCE54; /* world map (ovl_0c) data */
+void func_800475D8(Unk8004AB64 *);
+void func_80047E1C(Unk8004AB64 *);
+void func_80048A5C(Unk8004AB64 *);
+void func_80048E80(void);
+void func_80049C14(Unk8004AB64 *);
+void func_8004F74C(Unk8004AB64 *);
+s32 func_80052870(Unk16D8 *);
+s32 func_80052EC0(s32, s32, s32);
+s32 func_8002170C(Unk8004AB64 *);
+s32 func_80038D3C(Unk8004AB64 *);
+#if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
+s32 func_800B3444(s32, s32, s32);
+/* world-map model state (func_800C748C) */
+typedef struct {
+    s16 unk0;
+    u8 pad2[6];
+    u8 unk8;
+    u8 pad9;
+    u16 unkA;
+} Unk800C748C;
+void *func_800C748C(s32);
+s32 func_800C75B4(s32, s32 *);
+s32 func_800C7720(s32);
+#endif
+Window *func_8004ED94(s32);
+s32 func_80039444(Unk8004AB64 *, Window *);
+s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
+void func_800530A8(SVECTOR *, s32, s32);
 void func_8004FBD8(void);
 void func_8004FE0C(void);
 
@@ -2274,6 +2351,9 @@ extern u32 D_8007B9B0[];
 extern u8 **D_8007BCA8;
 void func_80051004(s32);
 extern u8 D_8007B930[8]; /* name text being converted */
+u32 func_80050F68(s32); /* glyph info of a text code, width in the top 4 bits */
+s32 func_8004B120(s32);
+void func_8004C2C0(u8 **, s32 *); /* add the width of a text control code */
 
 typedef struct {
     u8 *unk0; /* stream read pointer */
@@ -2421,6 +2501,12 @@ s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 D_800739A8[];
 u8 *func_80027834(s32, s32, u32 *, s32, u8, s32 *, void *);
+u8 *func_8002995C(s32, s32, u32 *, Character *, s32 *, u8 *);
+u8 *func_8002B890(s32, s32, u32 *, u32, u8, s32 *, u8 *);
+u8 *func_80029FE4(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
+#if !defined(OVL_3A_H)
+u8 *func_8002BA90(u32 *, DrTpageWords *);
+#endif
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -2453,7 +2539,24 @@ void func_80033AF4(s32, s32);
 
 /* ---- hoisted for the world map (ovl_0c) ---- */
 s32 func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
+#if defined(OVL_0A_H) || defined(OVL_0C_H) /* the field code only reads port 1 */
 extern s32 D_80073990;
+#else
+extern s32 D_80073990[2]; /* buttons pressed this frame, per port */
+#endif
+extern s32 D_80073988[2]; /* buttons released this frame */
+extern s32 D_80073930[2]; /* previous D_800739A0 */
+extern s32 D_80073830[2][32]; /* frames each button has been held */
+extern Unk4 D_80073938[2]; /* analog stick bytes */
+extern u8 D_8006815C[]; /* actuator alignment */
+/* byte view of a D_80073940 pad buffer */
+typedef struct {
+    u8 unk0; /* status, 0 = ok */
+    u8 unk1;
+    u16 unk2; /* buttons, active low */
+    u8 unk4[4]; /* analog sticks */
+} PadBuf;
+#define PADBUF(i) ((PadBuf *)&D_80073940[i])
 void func_80019194(void);
 void func_80032098(void);
 void func_80023A4C(void);
@@ -2706,7 +2809,16 @@ typedef struct {
 } Unk8007BB98;
 extern Unk8007BB98 D_8007BB98;
 extern s32 D_8007B964;
-void func_8004C8C4(Unk8007B9C0 *, u8 *);
+void func_8004C8C4(Unk8007B9C0 *, u8 *); /* draw a window's text */
+extern DVECTOR *D_8007BC98; /* pen position stack (func_80051300) */
+extern u8 D_8006E67C[];
+void func_800512B4(s32);
+void func_80051444(void);
+s32 func_8004F0C8(s32, s32);
+s32 func_8004F1F0(u8 *, s32);
+s32 func_8004F2B4(s32, s32);
+s32 func_8004F3E8(s32, s32);
+s32 func_8004F4A4(s32, s32);
 void func_8004D2C0(Unk8007B9C0 *, u8 *);
 void func_8004D69C(Unk8007B9C0 *, u8 *);
 void func_80051300(void);
@@ -3250,7 +3362,7 @@ void func_8004F5D4(Unk8004F5D4 *);
 void func_8004F660(Window *);
 
 WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
-void func_80038FD8(s32, WinLayout *, s32, s32);
+void func_80038FD8(Unk8004AB64 *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
 extern s32 D_8007AE64;
@@ -3360,7 +3472,7 @@ s32 func_80052F24(s32, s32);
 void func_8004EC74(u32, s32);
 void func_8004ED00(s32, s32);
 void func_8004EFA0(void);
-WinLayout *func_80039660(s32, s32, s32);
+WinLayout *func_80039660(Unk8004AB64 *, s32, s32);
 void func_8004DCEC(s32, s32, WinLayout *, s32);
 
 static inline s32 func_8004AF58_inline(void) {
@@ -3672,6 +3784,37 @@ static inline void func_80054A28_max(u32 *m, u32 v) {
 extern u32 *D_8007BD0C;
 extern u32 *D_8007BD10;
 extern u16 D_8007BD1E;
+/* battle-entry swirl (func_80053A10) */
+typedef struct {
+    s16 unk0; /* rotation */
+    s16 unk2; /* rotation speed */
+    s16 unk4; /* scale */
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+} SwirlDef; /* 0x14 */
+extern SwirlDef D_8006F2E0[2];
+extern SwirlDef *D_8007BD08;
+extern u16 D_8007BD1C;
+extern s16 D_8007BD20;
+extern s16 D_8007BD22 __asm__("D_8007BD20+2"); /* no symbol of its own */
+extern s16 D_8007BD24;
+extern s32 D_8007BD28; /* frame */
+#if !defined(OVL_0C_H) /* ovl_0c declares it as s32 */
+extern u32 *D_8007BD30;
+#endif
+void func_8002F884(void);
+s32 func_8004BB80(s32); /* sin */
+void func_800540E8(s32, s32);
+u32 *func_80054294(u32 *, s32, s32);
+void func_80054650(void);
+#if !defined(OVL_0B_H) /* ovl_0b declares it with its DR_MOVE */
+void SetDrawMove(void *p, RECT *rect, int x, int y);
+#endif
 extern u8 D_8006F308[];
 extern u8 D_8006F310[];
 

@@ -48,3 +48,12 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   E57B0 ~117 (constant 1 kept in s0 and used by sllv), AF800 ~135 (case 0 branch order, 56F not reloaded),
   ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement), DE11C ~690 (model
   renderer: all 8 primitive loops written, register allocation/spills differ).
+- Large-function pass 3 (drafts in the agent worktree's build/nm_<addr>.c): 80054294 159/238
+  (needs a pointer to ys set inside the 3rd loop; py/x/y s-register priority), 800475D8 (dir/collision
+  block: the o=NULL init must stay live while &dist is CSE'd into s0; run-flag `!run` vs xori),
+  8004E248 (choice loops count down to -1; p accessed through s1 only in some reads), 800589F0
+  (unk8 reloaded between `m &= ~unk8` and `unk10 &= ~unk8`; s-register order), 80025ED4 (x/y s1/s2
+  swap, `x + (w + 2)` reassociated), 8005E3FC (~20 regs/scheduling in the note-on path),
+  8002920C (%hi(D_800770AC) not hoisted into fp; font stays in a register).
+
+## ovl_0b (battle)

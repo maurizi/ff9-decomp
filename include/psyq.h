@@ -266,6 +266,8 @@ long VSync(long mode);
 void *memcpy(void *, const void *, u32);
 
 int DrawSync(int mode);
+void DrawPrim(void *p);
+void SetDrawEnv(DR_ENV *dr_env, DRAWENV *env);
 int LoadImage(RECT *rect, u32 *p);
 int StoreImage(RECT *rect, u32 *p);
 int MoveImage(RECT *rect, int x, int y);
@@ -305,6 +307,11 @@ long SpuSetReverbModeType(long mode);
 void SpuSetIRQAddr(u32 addr);
 int SpuSetIRQ(int on_off);
 void SpuGetVoiceEnvelope(int vNum, short *envx);
+int PadGetState(int port);
+int PadInfoMode(int port, int term, int offs);
+int PadSetMainMode(int port, int offs, int lock);
+void PadSetAct(int port, unsigned char *data, int len);
+int PadSetActAlign(int port, unsigned char *data);
 void *SpuSetIRQCallback(void (*func)(void));
 int CdControlB(u8 com, u8 *param, u8 *result);
 int CdReset(int mode);
@@ -431,6 +438,8 @@ long NormalClip(long sxy0, long sxy1, long sxy2);
     "ctc2\t$0, $5;" \
     "ctc2\t$0, $6;" \
     "ctc2\t$0, $7")
+/* read the projection distance H straight into a register */
+#define gte_ReadGeomScreen_r(r) __asm__ volatile("cfc2\t%0, $26" : "=r"(r))
 #define gte_SetGeomScreen(r0) __asm__ volatile( \
     "ctc2\t%0, $26" \
     : : "r"(r0))
