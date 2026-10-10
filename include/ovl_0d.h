@@ -187,6 +187,18 @@ typedef struct {
 extern TmArrowTbl D_800A73C4;
 
 typedef struct {
+    s32 unk0; /* x */
+    s32 unk4; /* u */
+    s32 unk8; /* v */
+    s32 unkC; /* w */
+} TmCoinFrame;
+
+typedef struct {
+    TmCoinFrame v[8];
+} TmCoinFrames; /* coin toss animation frames */
+extern TmCoinFrames D_800A74AC;
+
+typedef struct {
     u32 unk0; /* id */
     s32 unk4; /* flags: bpp in low bits */
     u32 unk8; /* clut block length */

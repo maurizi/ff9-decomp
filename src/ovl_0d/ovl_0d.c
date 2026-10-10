@@ -2394,7 +2394,87 @@ void *func_800B29F0(u32 *ot, void *prim, TmState *s, TmCard *card, u8 c, s32 fli
     return prim;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B2C5C);
+void *func_800B2C5C(u32 *ot, SPRT *p, TmState *s) {
+    TmCoinFrames f = D_800A74AC;
+    s32 dx;
+    s32 dy;
+    s32 flip;
+    s32 t;
+    s32 frame;
+    s32 n;
+    u8 c;
+    s32 k;
+    TmCoinFrame *fr;
+
+    dx = 0;
+    dy = 0;
+    t = s->unk2E8;
+    flip = 0;
+    if (s->unk418 == 0) {
+        frame = t & 7;
+        if (t >= 0x29 && ((s->unk434 == 0 && frame == 7) || (s->unk434 == 1 && frame == 3))) {
+            s->unk418 = 1;
+            s->unk2E8 = 0;
+            func_800B022C(6);
+        }
+    } else {
+        frame = 3;
+        if (s->unk434 == 0) {
+            frame = 7;
+        }
+        if (t >= 0x1F) {
+            n = t - 0x1E;
+            flip = 1;
+            dy = -(n * 82) / 12;
+            dx = (n * 124) / 12;
+            if (s->unk434 == 1) {
+                dy = -(n * 66) / 12;
+                dx = (n * -119) / 12;
+            }
+        }
+        if (t >= 0x2A) {
+            if (s->unk434 == 0) {
+                s->unk564 = 0;
+                s->unk0 = 0;
+            } else {
+                s->unk2E8 = 0;
+                s->unk418 = 0;
+                s->unk5A4 = (func_80062B3C() & 0xF) + 0xF;
+                s->unk0 = 0x1E;
+            }
+        }
+    }
+    SetSprt(p);
+    if (flip != 0) {
+        p->code |= 2;
+    }
+    fr = &f.v[frame];
+    p->w = fr->unkC;
+    p->h = 0x28;
+    p->u0 = fr->unk4;
+    p->v0 = fr->unk8;
+    k = dx + 0x9D;
+    p->x0 = fr->unk0 + k;
+    p->y0 = dy + 0x5C;
+    if (flip == 0) {
+        c = 0x80;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+    } else {
+        c = (0x2A - t) * 10;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+    }
+    p->clut = 0x3AC0;
+    AddPrim(ot + 10, p);
+    p++;
+    setlen((DR_TPAGE *)p, 1);
+    ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+    AddPrim(ot + 10, p);
+    return (DR_TPAGE *)p + 1;
+}
 
 void *func_800B2F60(u32 *ot, SPRT *p, TmState *s) {
     u8 c;
