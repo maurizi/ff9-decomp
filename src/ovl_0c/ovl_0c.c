@@ -5819,7 +5819,151 @@ void func_800C3EAC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800C3FE4);
+/* sound effect ids of world-map sound arg0 */
+s32 func_800C3FE4(s32 arg0, Unk800C3FE4 *arg1) {
+    Unk800C3FE4 s;
+
+    s.unk8[0] = -1;
+    switch (arg0) {
+    case 0:
+        s.unk8[0] = 0x68;
+        break;
+    case 1:
+        s.unk8[0] = 0x66;
+        break;
+    case 2:
+        s.unk8[0] = 0x6C;
+        break;
+    case 3:
+        s.unk8[0] = 0x27D;
+        break;
+    case 4:
+        s.unk8[0] = 0x27E;
+        break;
+    case 5:
+        s.unk8[0] = 0x2AA;
+        break;
+    case 39:
+        s.unk8[0] = 0x67;
+        break;
+    }
+    if (s.unk8[0] != -1) {
+        s.unk0 = 0x800000;
+        s.unk4 = 1;
+        *arg1 = s;
+        return 1;
+    } else {
+        switch (arg0) {
+        case 30:
+            s.unk8[0] = 0x44B;
+            break;
+        case 31:
+            s.unk8[0] = 0x4CF;
+            break;
+        case 32:
+            s.unk8[0] = 0x596;
+            break;
+        case 34:
+            s.unk8[0] = 0x44C;
+            break;
+        case 35:
+            s.unk8[0] = 0x37C;
+            break;
+        case 36:
+            s.unk8[0] = 0x44A;
+            break;
+        case 37:
+            s.unk8[0] = 0x37A;
+            break;
+        case 38:
+            s.unk8[0] = 0x5DB;
+            break;
+        case 40:
+            s.unk8[0] = 0x37B;
+            break;
+        case 41:
+            s.unk8[0] = 0xA47;
+            break;
+        case 42:
+            s.unk8[0] = 0xC26;
+            break;
+        }
+        if (s.unk8[0] != -1) {
+            s.unk0 = 0;
+            s.unk4 = 1;
+            *arg1 = s;
+            return 1;
+        } else {
+            switch (arg0) {
+            case 6:
+                s.unk8[0] = 0x552;
+                break;
+            case 7:
+                s.unk8[0] = 0x553;
+                break;
+            }
+            if (s.unk8[0] != -1) {
+                s.unk0 = 0x8000;
+                s.unk4 = 1;
+                *arg1 = s;
+                return 1;
+            } else {
+                /* the original third jump table is 8-aligned */
+                __asm__(".rdata\n\t.word 0\n\t.text");
+                switch (arg0) {
+                case 33:
+                    s.unk8[0] = 0x37A;
+                    s.unk0 = 0;
+                    s.unk8[1] = 0x37B;
+                    break;
+                case 20:
+                    s.unk0 = 0x8000;
+                    s.unk8[0] = 0x374;
+                    s.unk8[1] = 0x375;
+                    break;
+                case 21:
+                    s.unk0 = 0x8000;
+                    s.unk8[0] = 0x376;
+                    s.unk8[1] = 0x377;
+                    break;
+                case 22:
+                    s.unk0 = 0x8000;
+                    s.unk8[0] = 0x378;
+                    s.unk8[1] = 0x379;
+                    break;
+                case 23:
+                    s.unk0 = 0x8000;
+                    s.unk8[0] = 0x554;
+                    s.unk8[1] = 0x555;
+                    break;
+                case 24:
+                    s.unk0 = 0x8000;
+                    s.unk8[0] = 0x5D9;
+                    s.unk8[1] = 0x5DA;
+                    break;
+                case 25:
+                    s.unk0 = 0x800;
+                    s.unk8[0] = 0x37D;
+                    s.unk8[1] = 0x37E;
+                    break;
+                case 26:
+                    s.unk0 = 0x800;
+                    s.unk8[0] = 0x37F;
+                    s.unk8[1] = 0x380;
+                    break;
+                }
+                if (s.unk8[0] != -1) {
+                    s.unk4 = 2;
+                    *arg1 = s;
+                    return 1;
+                }
+                func_80015C38("w_musicGetID : Illigal SE Number #%d\n", arg0);
+                return 0;
+                func_80015C38(""); /* unreachable; its empty string is in .rodata */
+            }
+        }
+    }
+}
 
 const char D_800A832C[] = "w_musicRequestSend : Normal Song";
 const char D_800A8350[] = "w_musicRequestSend : Air Ship Song";
