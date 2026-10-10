@@ -84,7 +84,288 @@ INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/ovl_0d", D_800A7000);
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A78EC);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A7E10);
+void func_800A7E10(void) {
+    TmState s;
+    GameData *ctx;
+    void *p;
+
+    s.unk5C8.x = 0x32;
+    s.unk5C8.y = 0x1E;
+    s.unk5C8.w = 0xC8;
+    s.unk5C8.h = 0x64;
+    func_800A8D74(&s);
+    SetDispMask(1);
+    SetDispMask(1);
+    while (s.unk0 != 0xC) {
+        func_800A8B80();
+        func_80019194();
+        func_800A9B0C(&s);
+        ctx = D_8006794C->unk1C;
+        p = (void *)(ctx->unk8 * 0x4B000 + 0x80104A00);
+        if (s.unk464 != 0) {
+            p = func_800A993C(ctx->unk10[ctx->unk8], p, &s);
+        }
+        if (s.unk46C != 0) {
+            p = func_800B030C(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+        }
+        p = func_800A9424(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+        if (s.unk468 != 0 || s.unk0 == 0x15) {
+            p = func_800A96B0(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+        }
+        p = func_800AD400(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+        p = func_800B2F60(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+        p = func_800B3198(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+        switch (s.unk0) {
+        case 2:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "ENEMY CARD SELECT\n");
+            func_800AFBE4(&s);
+            func_800B08CC(&s);
+            func_800ACFFC(&s);
+            break;
+        case 0:
+            func_80035674(0);
+            func_800AFBE4(&s);
+            if (s.unk438 == 0) {
+                func_800A932C(&s, "PLAYER CARD SELECT\n");
+                func_800A9B2C(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            } else {
+                func_800A932C(&s, "PLAYER AUTO SELECT\n");
+                func_800AA408(&s);
+            }
+            func_800ACFFC(&s);
+            break;
+        case 1:
+            func_800A932C(&s, "PLAYER CARD SET\n");
+            func_80035674(0);
+            func_800A9F10(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800ACFFC(&s);
+            break;
+        case 3:
+            D_80077DE8.unk8 = 0;
+            func_800AFCE4(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800A932C(&s, "RESULT\n");
+            func_800AA1FC(&s);
+            break;
+        case 4:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "INIT\n");
+            func_800A9298(&s);
+            break;
+        case 5:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "FLASH\n");
+            func_800ACFFC(&s);
+            func_800AC708(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 6:
+            func_800A932C(&s, "BATTLE SELECT\n");
+            func_80035674(0);
+            p = func_800AB574(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800ACFFC(&s);
+            func_800ABEBC(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 7:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "BATTLE\n");
+            func_800ACFFC(&s);
+            func_800AC060(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 8:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "TURN\n");
+            func_800ACFFC(&s);
+            func_800AC6A4(&s);
+            break;
+        case 9:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "BATTLE WIN\n");
+            func_800ACFFC(&s);
+            func_800AC5AC(&s);
+            break;
+        case 10:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "BATTLE LOSE\n");
+            func_800ACFFC(&s);
+            func_800AC624(&s);
+            break;
+        case 11:
+            func_800A932C(&s, "TRY AGAIN\n");
+            func_80035674(1);
+            func_800AA548(&s);
+            func_800B3480(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 13:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "CARD_CHANGE\n");
+            func_800AE084(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 14:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "CARD_MOVE\n");
+            func_800AD9F8(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 15:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "FLASH2\n");
+            func_800ACDA0(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 16:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "TRADE\n");
+            func_800AA504(&s);
+            func_800AE398(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 17:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "CHANGE2\n");
+            func_80035674(1);
+            func_800AE5A0(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 18:
+            func_800A932C(&s, "CHOICE\n");
+            func_80035674(1);
+            func_800AA790(&s);
+            func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800AEE2C(&s);
+            func_800ACFFC(&s);
+            break;
+        case 35:
+            func_800A932C(&s, "GAME QUIT\n");
+            func_800ABC74(&s);
+            func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800AEE2C(&s);
+            func_800ACFFC(&s);
+            break;
+        case 19:
+            func_800A932C(&s, "CHOICE2\n");
+            func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800AEE2C(&s);
+            func_800AAEB4(&s);
+            func_800ACFFC(&s);
+            break;
+        case 20:
+            func_800A932C(&s, "STAGE SELECT\n");
+            func_800AB0F0(&s);
+            break;
+        case 21:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "FIELD FADE\n");
+            func_800ACFFC(&s);
+            break;
+        case 22:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "AWAY INFO\n");
+            func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800AB2E0(&s);
+            break;
+        case 23:
+            func_800A932C(&s, "CARD AWAY\n");
+            func_80035674(1);
+            func_800AA790(&s);
+            func_800AEE2C(&s);
+            func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            break;
+        case 24:
+            func_800A932C(&s, "CARD AWAY2\n");
+            func_80035674(1);
+            func_800AEE2C(&s);
+            func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800AB338(&s);
+            break;
+        case 25:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "CARD LESS5\n");
+            func_800AB854(&s);
+            break;
+        case 26:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "EXTENSION\n");
+            func_800AA368(&s);
+            break;
+        case 27:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "END FADE\n");
+            if (s.unk5B8 != 0) {
+                func_800B1A84(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+                func_800AEE2C(&s);
+            }
+            func_800B35A4(&s);
+            break;
+        case 28:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "COIN\n");
+            func_800B2C5C(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800ACFFC(&s);
+            break;
+        case 29:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "FLASH ARROW\n");
+            func_800ACF8C(&s);
+            break;
+        case 30:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "ENEMY THINK\n");
+            func_800B07DC(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800AF890(&s);
+            break;
+        case 33:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "ENEMY APEAR\n");
+            func_800AF760(&s);
+            func_800B026C(&s);
+            break;
+        case 34:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "GET SELECT\n");
+            func_80035674(0);
+            func_800AB928(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], p, &s);
+            func_800ACFFC(&s);
+            break;
+        default:
+            D_80077DE8.unk8 = 0;
+            func_800A932C(&s, "NO TASK\n");
+            break;
+        }
+        if (s.unk434 == 0) {
+            func_800A932C(&s, "TURN PLAYER\n");
+        }
+        if (s.unk434 == 1) {
+            func_800A932C(&s, "TURN ENEMY\n");
+        }
+        func_80023A0C();
+        func_80032098();
+        if (s.unk0 == 0x12 || s.unk0 == 0x23 || s.unk0 == 0x13 || s.unk0 == 0 || s.unk0 == 1 ||
+            s.unk0 == 6 || s.unk0 == 0xB || s.unk0 == 0x22 || s.unk0 == 0x17 || s.unk0 == 0x18) {
+            func_8003563C(0);
+        } else {
+            func_8003563C(1);
+        }
+        func_80035490();
+        s.unk2E8++;
+        s.unk480++;
+        func_80062B3C();
+        func_800A8BC4(&s);
+    }
+    func_8002C740(0, 0, s.unk558[0]);
+    func_8002C740(0, 1, s.unk558[1]);
+    func_8002C740(0, 2, s.unk558[2]);
+    func_8002C740(0, 3, s.unk558[3]);
+    func_8002C740(0, 8, s.unk558[4]);
+    func_8002C740(0, 0xA, s.unk558[6]);
+    func_8002C740(0, 9, s.unk558[5]);
+    func_8002C740(0, 0xB, s.unk558[7]);
+    func_8002C740(0, 4, s.unk558[8]);
+    func_8002C740(0, 5, s.unk558[9]);
+    func_8002C740(0, 6, s.unk558[10]);
+    func_8002C740(0, 7, s.unk558[11]);
+    DrawSync(0);
+    VSync(D_8006794C->unk9);
+    SetDispMask(0);
+    func_80035674(1);
+    func_8003556C(0);
+    func_8003563C(0);
+}
 
 void func_800A8B80(void) {
     ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
@@ -140,7 +421,7 @@ void func_800A9298(TmState *arg0) {
     func_800B295C(arg0);
 }
 
-void func_800A932C(void) {
+void func_800A932C(TmState *s, char *msg) {
 }
 
 void func_800A9334(void) {
@@ -375,7 +656,7 @@ void *func_800A993C(u32 *ot, SPRT *p, TmState *s) {
     return (DR_TPAGE *)p + 1;
 }
 
-void func_800A9B0C(void) {
+void func_800A9B0C(TmState *s) {
     func_8002C308(0);
 }
 
@@ -1037,8 +1318,8 @@ void func_800ABE74(Window *arg0) {
     func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, func_80035774(0x2D), 0);
 }
 
-s32 func_800ABEBC(s32 arg0, s32 arg1) {
-    return arg1;
+void *func_800ABEBC(u32 *ot, void *p, TmState *s) {
+    return p;
 }
 
 void func_800ABEC4(TmState *s) {
@@ -2288,7 +2569,7 @@ void func_800B0618(TmState *s) {
     }
 }
 
-s32 func_800B07DC(s32 arg0, s32 arg1, TmState *s) {
+void *func_800B07DC(u32 *ot, void *p, TmState *s) {
     if (func_800AE830(s, 1) == 0) {
         s->unk0 = 2;
     } else if (s->unk418 == 0) {
@@ -2300,7 +2581,7 @@ s32 func_800B07DC(s32 arg0, s32 arg1, TmState *s) {
     } else if (s->unk2E8 > s->unk5A4) {
         s->unk0 = 2;
     }
-    return arg1;
+    return p;
 }
 
 INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B08CC);
@@ -2760,8 +3041,8 @@ void *func_800B33CC(u32 *ot, SPRT *p, s32 x, s32 y, s32 n) {
     return p + 1;
 }
 
-s32 func_800B3480(s32 arg0, s32 arg1) {
-    return arg1;
+void *func_800B3480(u32 *ot, void *p, TmState *s) {
+    return p;
 }
 
 void func_800B3488(TmState *arg0) {
