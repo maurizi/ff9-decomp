@@ -4,7 +4,7 @@
  * intersects the segment arg4 -> arg3 with each edge except `edge` (arg7), stores the hits and
  * their edge numbers, then: 1 hit -> that one; 2 hits -> func_800C1E14 picks between them;
  * 3 hits -> the one closest to the origin; otherwise *arg6 = -1 and 0.
- * WIP (pass 9, first draft): 571 vs 568 instructions, 147 aligned diff rows (build/s/cmp.py).
+ * WIP (pass 9, first draft): 570 vs 568 instructions, 140 aligned diff rows (build/s/cmp.py).
  * Control flow and the stack layout match; left is register allocation (the original uses
  * s0 = hit base, s1 = arg5, s3 = z, s4 = x, s5 = arg4, s6 = arg6, s7 = arg3, fp = v base,
  * edge spilled to 0x68 and &q[x] spilled to 0x70; ours still differs in x/z/p/q and the
@@ -21,7 +21,8 @@
  *    3-case switch), and the 1-hit result block sits inside case 2 after the
  *    func_800C1E14 call (`goto one`);
  *  - `d = q[x]; d = ... * (p[x] - d);` (permuter) spills edge and &q[x] like the original
- *    (237 -> 147 rows).
+ *    (237 -> 147 rows); vtx computed before o[] and a `tri = n` copy for the vertex loop
+ *    (permuter) took it to 140.
  * func_800C1E14 is defined earlier in ovl_0a.c (no prototype in the header).
  */
 #include "ovl_0a.h"
@@ -36,6 +37,7 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     s16 *q;
     Unk800C9DFCv *vtx;
     Unk800C9E04 *pl;
+    Unk800C9E00 *tri;
     s16 i;
     s16 cnt;
     s16 edge;
@@ -75,14 +77,15 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
             }
         }
     }
+    vtx = (Unk800C9DFCv *)((u8 *)b + b->unk3A);
     o[0] = b->unk8[0] + t->unkA[0];
     o[1] = b->unk8[1] + t->unkA[1];
+    tri = n;
     o[2] = b->unk8[2] + t->unkA[2];
-    vtx = (Unk800C9DFCv *)((u8 *)b + b->unk3A);
     for (i = 0; i < 3; i++) {
-        v[i][0] = o[0] + vtx[n->unkC[i]].unk0[0];
-        v[i][1] = o[1] + vtx[n->unkC[i]].unk0[1];
-        v[i][2] = o[2] + vtx[n->unkC[i]].unk0[2];
+        v[i][0] = o[0] + vtx[tri->unkC[i]].unk0[0];
+        v[i][1] = o[1] + vtx[tri->unkC[i]].unk0[1];
+        v[i][2] = o[2] + vtx[tri->unkC[i]].unk0[2];
     }
     cnt = 0;
     pv[0] = v[2];

@@ -207,7 +207,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * tools/permute.py strips `static inline` bodies (also those from headers), so the permuter scores the
     wrong code for any function using an inline helper; build/fixinl.py in this worktree restores them before
     running decomp-permuter directly. Earlier permuter runs on such functions may have been meaningless.
-- Pass 9: matched 0a BF0C4, BFEE0, AB3CC. New drafts in docs/wip/: C519C (147 rows, was not attempted;
+- Pass 9: matched 0a BF0C4, BFEE0, AB3CC. New drafts in docs/wip/: C519C (140 rows, was not attempted;
   control flow and frame match, register allocation left), BE158 (194 rows, first draft; n must not
   need a callee-saved register). B0124 17 -> 12 rows (`d = g->unk850; g->unk826[0] = d;`). Not
   improved: C4EC8 (1), B4A5C (13), C31F8 (19), BF660 (39), BB714/CA1D8, AA4E8. Not attempted: 15 A9488.
