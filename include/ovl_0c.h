@@ -399,12 +399,38 @@ typedef struct Unk800D375C {
 } Unk800D375C; /* 0x14 */
 
 /* list: D_800D3358 (head) -> D_800D34A8[32] -> D_800D3340 (tail) */
+typedef struct {
+    u8 unk0; /* vertex indices */
+    u8 unk1;
+    u8 unk2;
+    u8 pad3[0xE - 3];
+    u16 unkE; /* attribute */
+} WmPoly; /* 0x10 */
+
 typedef struct WmTexEnt {
     u8 unk0;
     u8 unk1;
-    u8 pad2[0x21 - 2];
+    u16 unk2; /* polygon count */
+    SVECTOR *unk4; /* vertices */
+    WmPoly *unk8;
+    u8 unkC[0x14]; /* vertex indices */
+    u8 unk20; /* vertex count */
     u8 unk21; /* sound id */
 } WmTexEnt;
+
+/* visible cells sorted by distance (func_800BDAB0) */
+typedef struct {
+    s32 unk0; /* cell */
+    WmTexEnt *unk4;
+    s32 unk8; /* distance */
+} WmNearCell;
+
+typedef struct {
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} WmScrRect;
 
 typedef struct WmTexPack {
     u8 unk0;
@@ -458,10 +484,7 @@ typedef struct {
 } WmSky; /* 0x5E */
 
 typedef struct {
-    u8 pad0[0x14A];
-    s16 unk14A;
-    s16 unk14C;
-    u8 pad14E[0x5E0 - 0x14E];
+    WmSky unk0[16]; /* presets: [mode * 4 + flag * 2 + 0/1] */
     WmSky unk5E0[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
 } Unk800D3FA0;
 void func_800C3954(WmSky *, WmSky *, WmSky *, s32, s32);
@@ -807,7 +830,7 @@ extern VECTOR D_800CDF50;
 extern SVECTOR D_800D4870[10];
 extern s16 D_800D4830[10];
 extern s16 D_800D48F8[10];
-extern u8 D_800D48E8[10];
+extern s8 D_800D48E8[10];
 extern SVECTOR D_800D4910[10];
 extern VECTOR D_800D4960[9];
 extern SVECTOR D_800D49F0[9];
@@ -975,11 +998,11 @@ extern u8 D_800CE090[];
 
 /* func_800AEADC init state */
 typedef struct {
-    s8 unk0;
+    u8 unk0; /* last written slot */
     u8 pad1[3];
-    s16 unk4[6];
-    u16 unk10[6];
-} Unk800CE288; /* 0x1C */
+    u16 unk4[6]; /* polygon */
+    u16 unk10[6]; /* cell */
+} Unk800CE288; /* 0x1C: recently hit walkmesh polygons */
 s32 func_800BE748(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
 u8 func_800B0D6C(VECTOR *, s32, s32, s32, u32 *, s32 *);
 u8 func_800B105C(ActorPos *);
@@ -1034,7 +1057,7 @@ void func_800BAEC0(void);
 void func_800BE984(void);
 void func_800C4DD8(void);
 s32 func_800BE4A8(s16, u8 *);
-s32 func_800B9808(s32, s32, VECTOR *, u32 *, s32 *, s32);
+s32 func_800B9808(s32, WmTexEnt *, VECTOR *, u32 *, s32 *, Unk800CE288 *);
 void func_800BC0A8(s32 *, s32 *);
 void func_800BC130(s32, s32, s32 *);
 void func_800BC2C8(s32, s32 *, s32 *);
@@ -1082,6 +1105,9 @@ extern u8 D_800CE1E1;
 extern u8 D_800CE1F3;
 
 /* main exe: candidates for ff9.h */
+MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
+void RotTrans(SVECTOR *v0, VECTOR *v1, long *flag);
+void func_80064CDC(s32, s32);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
 void func_80030AF4(SVECTOR *, MATRIX *);
@@ -1125,6 +1151,37 @@ typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
 extern Unk800A7FB8 D_800A8020; /* radar arrow */
 extern Unk800A7FB8 D_800A8000; /* big-map arrow */
+extern WmScrRect D_800CD09C[]; /* on-screen test rects */
+extern char D_800A8178[]; /* "Illegal Weather Mode" */
+extern VECTOR D_800CDF38;
+extern VECTOR D_800CDF60;
+extern SVECTOR D_800CDF98;
+extern s32 D_800CDFB8;
+extern s32 D_800CDFBC;
+extern MATRIX D_800CD774;
+extern VECTOR D_800A8588;
+extern VECTOR D_800A8598;
+
+/* first entry of data pack `id` */
+#define WM_PACK0(id) ((s32)((WmPack *)func_800B8388(D_800CF428, id))->unk8[0])
+
+/* inline CompMatrix: c = a * b, c->t = a * b->t + a->t */
+#define gte_CompMatrix(a, b, c)    \
+    gte_MulMatrix0(a, b, c);    \
+    gte_SetTransMatrix(a);      \
+    gte_ldlv0((b)->t);          \
+    gte_rtv0tr();               \
+    gte_stir((c)->t);
+
+extern WmNearCell D_800D3C10[];
+s32 func_800AE7F0();
+void func_800C23CC(void);
+void func_800C24D8(void);
+void func_800BE6B4(void);
+void func_800BE238(void);
+s32 func_800BE138(s16);
+s32 func_800C2230(s16);
+void func_800C69F4(s32);
 extern u8 D_800CD728; /* big-map cone colour */
 extern u8 D_800CD72C;
 extern u8 D_800CD730;

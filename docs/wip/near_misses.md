@@ -63,8 +63,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   swap, `x + (w + 2)` reassociated), 8005E3FC (~20 regs/scheduling in the note-on path),
   8002920C (%hi(D_800770AC) not hoisted into fp; font stays in a register).
 
-## ovl_0b (battle)
 - Large-function pass 3 (drafts in the agent worktree's build/nm_0a_*.c / nm_0c_*.c): 0a AB3CC (prologue order of
   two s-reg inits only), 0a B3F8C (s0/s1 swap between loop index and temp), 0a AA4E8 (lh/lhu load order), 0a BF0C4
   (parallax loop cross-jump + regs), 0c B0378 (~90 diff rows: else-branch temps, sqrt block hi-part reg), 0c AD738
   (~78 rows: local regs a0/a3, prologue loads of the second block).
+  Also 0c B20B8 (2 spots: %hi(D_800CE3C0) kept in s0 across the call vs v1; srlv operand regs in the inlined
+  bit test), 0c B9808 (2 spots: fy=0 spill store scheduled early; `&polys[p]` addu operand order).
