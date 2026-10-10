@@ -615,7 +615,110 @@ s32 func_800AA39C(s32 arg0) {
     return -1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800AA418);
+void func_800AA418(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    MATRIX m;
+    POLY_FT4 *p[4];
+    SVECTOR v;
+    s32 z[9];
+    WmObjEnt *e;
+    WmObjSlot *s;
+    s32 i;
+    s32 k;
+
+    e = &arg0[arg1];
+    s = (WmObjSlot *)func_8001E350(arg1);
+    if (s->unk0 & 0x10) {
+        return;
+    }
+    func_800AAD48(e, s, &m, arg2, arg3);
+    for (i = 0; i < 4; i++) {
+        p[i] = e->unk8[D_8006794C->unk1C->unk8][i];
+        setRGB0(p[i], e->unk0, e->unk0, e->unk0);
+    }
+    gte_MulMatrix0(&D_8006794C->unk1C->unk18, &m, &m);
+    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    gte_ldlv0(m.t);
+    gte_rtv0tr();
+    gte_stir(m.t);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    SHADOW_PT(-0x1000, 0x1000);
+    gte_stsxy(&p[0]->x0);
+    gte_stsz(&z[0]);
+    SHADOW_PT(0, 0x1000);
+    gte_stsxy(&p[0]->x1);
+    gte_stsxy(&p[1]->x0);
+    gte_stsz(&z[1]);
+    SHADOW_PT(0x1000, 0x1000);
+    gte_stsxy(&p[1]->x1);
+    gte_stsz(&z[2]);
+    SHADOW_PT(-0x1000, 0);
+    gte_stsxy(&p[0]->x2);
+    gte_stsxy(&p[2]->x0);
+    gte_stsz(&z[3]);
+    SHADOW_PT(0, 0);
+    gte_stsxy(&p[0]->x3);
+    gte_stsxy(&p[1]->x2);
+    gte_stsxy(&p[2]->x1);
+    gte_stsxy(&p[3]->x0);
+    gte_stsz(&z[4]);
+    SHADOW_PT(0x1000, 0);
+    gte_stsxy(&p[1]->x3);
+    gte_stsxy(&p[3]->x1);
+    gte_stsz(&z[5]);
+    SHADOW_PT(-0x1000, -0x1000);
+    gte_stsxy(&p[2]->x2);
+    gte_stsz(&z[6]);
+    SHADOW_PT(0, -0x1000);
+    gte_stsxy(&p[2]->x3);
+    gte_stsxy(&p[3]->x2);
+    gte_stsz(&z[7]);
+    SHADOW_PT(0x1000, -0x1000);
+    gte_stsxy(&p[3]->x3);
+    gte_stsz(&z[8]);
+
+    k = z[0];
+    if (k < z[1]) {
+        k = z[1];
+    }
+    if (k < z[3]) {
+        k = z[3];
+    }
+    if (k < z[4]) {
+        k = z[4];
+    }
+    SHADOW_ADD(k, 0);
+    k = z[1];
+    if (k < z[2]) {
+        k = z[2];
+    }
+    if (k < z[4]) {
+        k = z[4];
+    }
+    if (k < z[5]) {
+        k = z[5];
+    }
+    SHADOW_ADD(k, 1);
+    k = z[3];
+    if (k < z[6]) {
+        k = z[6];
+    }
+    if (k < z[7]) {
+        k = z[7];
+    }
+    SHADOW_ADD(k, 2);
+    k = z[4];
+    if (k < z[5]) {
+        k = z[5];
+    }
+    if (k < z[7]) {
+        k = z[7];
+    }
+    if (k < z[8]) {
+        k = z[8];
+    }
+    SHADOW_ADD(k, 3);
+}
 
 void func_800AAD0C(s32 arg0, s32 arg1) {
     func_80062E3C(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);

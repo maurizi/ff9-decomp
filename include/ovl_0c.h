@@ -24,7 +24,7 @@ typedef struct {
     unsigned unk4 : 12; /* angle */
     signed unk4_12 : 10; /* offset x */
     signed unk4_22 : 10; /* offset z */
-    u8 pad8[0x28 - 8];
+    POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
 } WmObjEnt;
 
 /* object embedded in WorldMap (0x4C bytes) */
@@ -1244,6 +1244,29 @@ void func_800BB508(void);
 void func_800BC540(void);
 void func_800BE674(void);
 void func_800CB09C(Unk800CB09C *);
+
+#define gte_stir(r0) __asm__ volatile( \
+    "swc2\t$9, 0(%0);" \
+    "swc2\t$10, 4(%0);" \
+    "swc2\t$11, 8(%0)" \
+    : : "r"(r0) : "memory")
+
+void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
+
+/* func_800AA418: project one corner of the 3x3 shadow grid */
+#define SHADOW_PT(x, z) \
+    v.vx = (x); \
+    v.vy = 0; \
+    v.vz = (z); \
+    gte_ldv0(&v); \
+    gte_rtps()
+
+/* func_800AA418: link shadow quad q at its deepest corner */
+#define SHADOW_ADD(k, q) \
+    k >>= 3; \
+    if (-D_800CF442 < k && k < 0x1000 - D_800CF442) { \
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][k], e->unk8[D_8006794C->unk1C->unk8][q]); \
+    }
 
 /* main exe: candidates for ff9.h */
 void func_80022CC4(s32, void *, s32, s32);
