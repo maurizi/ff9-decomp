@@ -527,7 +527,99 @@ void func_800A8BC4(TmState *s) {
     func_8002C0DC(D_8006794C->unk1C->unk8);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800A8D74);
+void func_800A8D74(TmState *s) {
+    s32 i;
+    u8 *p;
+    s32 x;
+    s32 y;
+    s32 v;
+
+    func_800A9334();
+    p = func_800A93A0(0);
+    for (i = 0; i < 100; i++) {
+        x = i / 30;
+        y = i % 30;
+        v = y / 6;
+        func_800A986C((TmTim *)(p + i * 0xA80), x * 128 + (y % 6) * 21, v * 51 + 0x100, 0x180, i + 0x19C);
+    }
+    func_800A986C((TmTim *)func_800A93A0(0xB), 0x300, 0, 0, 0xEE);
+    func_800A986C((TmTim *)func_800A93A0(4), 0x280, 0, 0, 0xE0);
+    func_800A986C((TmTim *)func_800A93A0(5), 0x340, 0, 0, 0xE7);
+    func_800A986C((TmTim *)func_800A93A0(7), 0x300, 0x100, 0, 0xEA);
+    func_800A986C((TmTim *)func_800A93A0(8), 0x300, 0x180, 0, 0xEB);
+    func_800A986C((TmTim *)func_800A93A0(9), 0x200, 0x100, 0, 0xEC);
+    func_800A986C((TmTim *)func_800A93A0(0xA), 0x340, 0x1E0, 0, 0xED);
+    func_800A986C((TmTim *)func_800A93A0(6), 0x280, 0x100, 0, 0xE9);
+    func_800A93C8((u8 *)0x80104000, 3, 0x200);
+    func_800A93C8((u8 *)0x80103800, 1, 0x1F4);
+    func_800A93C8((u8 *)0x80103C00, 2, 0x400);
+    D_8007B708 = 1;
+    D_8006794C->unk9 = 0;
+    func_800239D0();
+    func_8003575C(D_800B3668);
+    func_80035430();
+    func_8003556C(D_800355DC);
+    D_80077DE8.unk8 = 0;
+    D_80077DE8.unk0 = 0x50;
+    D_80077DE8.unk2 = 0x50;
+    D_80077DE8.unk4 = 4;
+    func_8002FA50(0xC);
+    s->unk43C = 0;
+    s->unk440 = 0;
+    s->unk444 = 0;
+    s->unk438 = 0;
+    s->unk54C = 0;
+    s->unk5B8 = 0;
+    s->unk450 = (u16)D_8006794C->unk1C->unk8B2;
+    s->unk448 = ((TmLevel *)0x80104000)[s->unk450].unk0;
+    s->unk44C = ((TmLevel *)0x80104000)[s->unk450].unk1;
+    s->unk454 = 1;
+    func_800A9298(s);
+    s->unk558[0] = func_8002C700(0, 0);
+    s->unk558[1] = func_8002C700(0, 1);
+    s->unk558[2] = func_8002C700(0, 2);
+    s->unk558[3] = func_8002C700(0, 3);
+    s->unk558[4] = func_8002C700(0, 8);
+    s->unk558[6] = func_8002C700(0, 0xA);
+    s->unk558[5] = func_8002C700(0, 9);
+    s->unk558[7] = func_8002C700(0, 0xB);
+    s->unk558[8] = func_8002C700(0, 4);
+    s->unk558[9] = func_8002C700(0, 5);
+    s->unk558[10] = func_8002C700(0, 6);
+    s->unk558[11] = func_8002C700(0, 7);
+    func_8002C740(0, 0, 1);
+    func_8002C740(0, 1, 1);
+    func_8002C740(0, 2, 1);
+    func_8002C740(0, 3, 1);
+    func_8002C740(0, 0x12, 1);
+    func_8002C740(0, 0x13, 1);
+    func_8002C740(0, 0xE, 0);
+    func_8002C740(0, 0xF, 0);
+    s->unk4C8[0] = 1;
+    s->unk4C8[1] = 4;
+    s->unk4C8[2] = 0x10;
+    s->unk4C8[3] = 0x1F;
+    s->unk4C8[4] = 0x1B;
+    s->unk4C8[5] = 0xA;
+    s->unk4C8[6] = 6;
+    s->unk4C8[7] = 3;
+    s->unk4C8[8] = 2;
+    s->unk4C8[0] = 1;
+    s->unk4C8[1] = 8;
+    s->unk4C8[2] = 0x19;
+    s->unk4C8[3] = 0x1F;
+    s->unk4C8[4] = 0x12;
+    s->unk4C8[5] = 9;
+    s->unk4C8[6] = 5;
+    s->unk4C8[7] = 2;
+    s->unk4C8[8] = 1;
+    s->unk4EC = 0;
+    if (func_800625F8() < 5) {
+        for (i = 0; i < 8; i++) {
+            func_800AF1F4(s, func_80062B3C() % 100);
+        }
+    }
+}
 
 void func_800A9298(TmState *arg0) {
     arg0->unk4 = 0;

@@ -105,7 +105,7 @@ typedef struct {
     s32 unk448;
     s32 unk44C;
     s32 unk450;
-    u8 pad454[0x458 - 0x454];
+    s32 unk454;
     Window *unk458;
     s32 unk45C;
     s32 unk460;
@@ -221,6 +221,7 @@ typedef struct {
 
 extern s32 D_800B365C;
 extern s8 D_800B3664; /* sound request kind, -1 = none */
+extern u8 D_800B3668[];
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;
@@ -296,6 +297,9 @@ void func_800A8D74(TmState *);
 void func_800A932C(TmState *, char *); /* debug print, stubbed */
 void func_800A9B0C(TmState *);
 void func_800A9298(TmState *);
+void func_800A9334(void);
+void func_800A93C8(u8 *, s32, s32);
+void func_800A986C(TmTim *, s32, s32, s32, s32);
 void *func_800A993C(u32 *, SPRT *, TmState *);
 void *func_800A9424(u32 *, SPRT_16 *, TmState *);
 void *func_800A96B0(u32 *, SPRT_16 *, TmState *);
@@ -353,6 +357,8 @@ void func_800ABE74(Window *);
 
 /* main exe: candidates for ff9.h */
 void func_80023A0C(void);
+u8 func_8002C700(s32, s32);
+void D_800355DC(void);
 void func_80062724();
 extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
 s32 func_80055290(void *);
