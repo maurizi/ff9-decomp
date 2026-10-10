@@ -1,0 +1,1 @@
+D_800AB2CE = 0x800AB2CE; // needed by func_800A9220 (second half of D_800AB2CC)

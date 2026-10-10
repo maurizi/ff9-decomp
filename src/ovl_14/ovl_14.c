@@ -881,12 +881,6 @@ void func_800A9180(void) {
     }
 }
 
-/* D_800AB2CE is the second half of the D_800AB2CC data block, which splat
- * gives no symbol of its own. The original addressed it separately (its own
- * %hi register), so it needs a name; drop this once the symbol is added to
- * config/symbols.ovl_14.us.txt. */
-__asm__(".globl D_800AB2CE\n\t.set D_800AB2CE, D_800AB2CC + 2");
-
 s32 func_800A9220(void) {
     u8 *buf;
     s32 timer;
