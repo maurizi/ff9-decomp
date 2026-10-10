@@ -5675,7 +5675,41 @@ void func_800BE984(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BEECC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BF544);
+void func_800BF544(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVECTOR arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9) {
+    CVECTOR c;
+    u32 *ot;
+
+    ot = (u32 *)D_800CF460[*D_800CF45C];
+    c.r = func_800B81C0(arg4.r, arg5.r, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    c.g = func_800B81C0(arg4.g, arg5.g, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    c.b = func_800B81C0(arg4.b, arg5.b, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    if (arg9 == 0) {
+        setXYWH((POLY_F4 *)D_800CF404, arg0 - arg2 + arg7, arg1 - arg3 + arg8, arg2 * 2 + 1, arg3 * 2 + 1);
+        setRGB0((POLY_F4 *)D_800CF404, c.r, c.g, c.b);
+        setPolyF4((POLY_F4 *)D_800CF404);
+        addPrim(&ot[10], (POLY_F4 *)D_800CF404);
+        D_800CF404 += sizeof(POLY_F4);
+    } else {
+        setXYWH((POLY_FT4 *)D_800CF404, arg0 + arg7 - 1, arg1 + arg8 - 1, 4, 4);
+        setUV4((POLY_FT4 *)D_800CF404, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
+        setRGB0((POLY_FT4 *)D_800CF404, c.r, c.g, c.b);
+        setPolyFT4((POLY_FT4 *)D_800CF404);
+        ((POLY_FT4 *)D_800CF404)->tpage = 0x2B;
+        ((POLY_FT4 *)D_800CF404)->clut = 0x3FEC;
+        setSemiTrans((POLY_FT4 *)D_800CF404, 1);
+        addPrim(&ot[10], (POLY_FT4 *)D_800CF404);
+        D_800CF404 += sizeof(POLY_FT4);
+        setXYWH((POLY_FT4 *)D_800CF404, arg0 + arg7 - 1, arg1 + arg8 - 1, 4, 4);
+        setUV4((POLY_FT4 *)D_800CF404, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
+        setRGB0((POLY_FT4 *)D_800CF404, 0x60, 0x60, 0x60);
+        setPolyFT4((POLY_FT4 *)D_800CF404);
+        ((POLY_FT4 *)D_800CF404)->tpage = 0x4B;
+        ((POLY_FT4 *)D_800CF404)->clut = 0x3FEC;
+        setSemiTrans((POLY_FT4 *)D_800CF404, 1);
+        addPrim(&ot[10], (POLY_FT4 *)D_800CF404);
+        D_800CF404 += sizeof(POLY_FT4);
+    }
+}
 
 #define TILE(x0_, y0_, x1_, y1_, u0_, v0_, u1_, v1_, cl)                                   \
     setXY4((POLY_FT4 *)D_800CF404, x0_, y0_, x1_, y0_, x0_, y1_, x1_, y1_);              \
