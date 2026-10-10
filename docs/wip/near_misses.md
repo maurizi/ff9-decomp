@@ -190,6 +190,34 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (3c 42A8 now returns s32; 3c 51B8 declares func_80028954 s32).
   - Store order inside a run of struct stores matters even though the scheduler moves loads
     past them (64 C1B0, found with a bounded statement permutation).
+- Menus/FMV pass 3: matched 32 F8AB0, 33 F0024/F15E0/F1A94/F20A0, 36 F0F9C, 39 F4B18/F6694/F9120/FA794,
+  65 F3488/EFC68/F2FE8, 64 990A0/99554/9A5B0. New drafts in docs/wip/: 34 EFC20 (= 39 F7FD4, 62,
+  register pressure), 37 F13F8 (41), 36 F1778 (30, s-regs only; second half is func_801F2D88_inline),
+  65 F1848 (35), 65 F2E58 (38), 64 99B28 (63, shares its first-frame loop with 99F30), 3a F459C (89).
+  Not attempted: 64 99F30 (0x680; do 99B28 first, the decode loop is the same code), 36 F08F4 (its
+  .rodata blob D_801EDF18 holds "-" plus a 0x298-byte table/text block; it needs a config symbol at
+  0x801EDF1C with force_not_migration so the blob stays INCLUDE_RODATA before the string can move to C).
+  Tricks that matched things in this pass:
+  - Rematerialised constants: `k = 1; A = k; B = k;` (64 9A5B0) and `r->y + (y3 + (k = 0x26))` /
+    `k = 0x26; ... (y3 + k)` (33 F1A94) keep a constant out of a fold or force it into a register
+    first; `r->unk2 - (k1 = off - 0x28)` keeps `y - (off - c)` from becoming `(y + c) - off` (65 F2FE8).
+  - A copy of a call result that the original makes in the next call's delay slot (instead of right
+    after the call) comes from an inline wrapper returning it (`static inline s32 w(u8 *s) { return
+    func_8002BA68(s); }`, 36 F0F9C); the copy from v0 stays grouped with the call otherwise.
+  - `x = func(); ...; if (cond) x = ...` CSE: a pointer local that the original rebuilds from a
+    fresh %hi/%lo in a later block means that block has two predecessors in the original
+    (`if (a && b) {...} else if (c && d)` instead of nested ifs, 33 F15E0).
+  - A store whose %hi is in a branch delay slot: compute the destination first
+    (`u8 **d = &D_80077DF0; *d = ...;`, 33 F0024); a base that the original materialises before an
+    index (`lui; addiu; addiu -0xC0; sll; addu`) comes from an inline helper doing `i -= 0xC0;`
+    on its parameter after loading the base (33 F0024).
+  - Loop-carried y offsets: `y = i * 15 + 7;` givs placed after the first statement of the body
+    (65 F2FE8), `r->x + 6 + j * 0x21` instead of a separate counter (39 F4B18).
+  - A struct copy whose destination the original addresses from a separate symbol base
+    (`D_801FB1E0 + k*0x98`, with byte stores from `D_801FB1A8 + k*0x98`) needs the copy through a
+    pointer: `p = &D_801FB1A8.unk34[k].unk4.unk0; *p = d->unk0;` (39 F6694).
+  - Dead stores to a local RECT / pair that the original keeps (64 990A0, 99B28) stay if the local
+    is a struct; scalar copies of the same value are CSEd away.
 - ovl_64 library code (not in config yet, evidence for the coordinator):
   - 8019D020-8019D36C are libpress's static MDEC helpers, right after DecDCToutCallback in the
     same object: D020 = MDEC_reset (rodata "MDEC_rest:bad option(%d)\n", writes the MDEC
