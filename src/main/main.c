@@ -16126,7 +16126,122 @@ u32 func_800595F0(AkaoChannel *c, u32 mask) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005963C);
+void func_8005963C(s32 addr, s32 mask) {
+    AkaoSeqHeader *seq;
+    u32 active;
+    AkaoChannel *c;
+    u16 *ofs;
+    u32 bit;
+    u32 i;
+    u32 x;
+    u8 *p;
+
+    D_80080A10->unk2C = (u8 *)addr;
+    active = ((AkaoSeqHeader *)addr)->unk20;
+    seq = (AkaoSeqHeader *)addr;
+    if (D_8007F790 != NULL) {
+        bit = func_800595F0(D_8007F71C, D_8007F790->unk4);
+    } else {
+        bit = 0;
+    }
+    x = 0xFFFFFF;
+    D_80080A70.unkC |= ~bit & (~(D_80080A70.unk0 | D_80083174) & x);
+    D_80080A10->unk18 = 0;
+    if (D_800831C4 & 1) {
+        D_80080A10->unk4 = 0;
+        D_80080A10->unk1C |= active & mask;
+    } else {
+        D_80080A10->unk1C = 0;
+        D_80080A10->unk4 |= active & mask;
+    }
+    D_80080A10->unk8 = seq->unk24;
+    D_80080A10->unkC = seq->unk28;
+    D_80080A10->unk0 &= ~0x33;
+    D_80080A10->unk0 = seq->unk14 == D_8007F8DC ? D_80080A10->unk0 | 0x20 : D_80080A10->unk0 | 0x10;
+    p = (u8 *)seq + (seq->unk30 + 0x30);
+    D_80080A10->unk30 = seq->unk30 != 0 ? (u16 *)p : NULL;
+    p = (u8 *)seq + (seq->unk34 + 0x34);
+    D_80080A10->unk34 = seq->unk34 != 0 ? (s32)p : 0;
+    D_80080A10->unk38 = 0;
+    bit = 1;
+    i = 0;
+    c = D_8007BD48;
+    ofs = (u16 *)(addr + 0x40);
+    for (; i < 32; i++) {
+        if (active & bit & mask) {
+            c->unk0 = (u8 *)ofs + *ofs;
+            c->unk96 = 4;
+            c->unk98 = 2;
+            c->unkB2 = 0x7F00;
+            c->unk78 = 0x3FFF0000;
+            c->unk100 = 0x4000;
+            c->unk108 = 0;
+            c->unk106 = 0;
+            c->unkCA = 0;
+            c->unk30 = 0;
+            c->unk10C = 0;
+            c->unkC2 = 0;
+            c->unkFA = 0;
+            c->unkF8 = 0;
+            c->unkBE = 0x8000;
+            c->unkC0 = 0;
+            c->unkCA = 0;
+            c->unkBC = 0;
+            c->unkB8 = 0;
+            c->unk84 = 0;
+            c->unkBA = 0;
+            c->unkF6 = 0;
+            c->unkCC = 0;
+            c->unk114 = 0;
+            c->unkF4 = 0;
+            c->unk34 = !(D_80080A10->unkC & bit) << 6;
+            ofs++;
+            c->unkEA = 0;
+            c->unkE2 = 0;
+            c->unkD6 = 0;
+            c->unkEC = 0;
+            c->unkE4 = 0;
+            c->unkD8 = 0;
+            c->unkE8 = 0;
+            c->unkE0 = 0;
+            c->unkD2 = 0;
+            c->unkF2 = 0;
+            c->unkF0 = 0;
+            func_8005EBE8(c, 0);
+        } else {
+            if ((active & bit) && !(bit & mask)) {
+                ofs++;
+            }
+            c->unk96 = 3;
+            c->unk98 = 1;
+            c->unk0 = D_8006F40C;
+            c->unk11C |= 0x4400;
+            c->unk12C = (c->unk12C & 0xFFE0) | 5;
+        }
+        c->unk118 = 0x18;
+        active &= ~bit;
+        c++;
+        bit <<= 1;
+    }
+    D_80080A10->unk20.w = 0xFFFF0000;
+    D_80080A10->unk28 = 1;
+    D_80080A10->unk68 = 0;
+    D_80080A10->unk48 = 0;
+    D_80080A10->unk66 = 0;
+    D_80080A10->unk4C = 0;
+    D_80083158.unk8 = 0;
+    D_80080A10->unk76 = 0;
+    D_80080A10->unk74 = 0;
+    D_80080A10->unk72 = 0;
+    D_80080A10->unk78 = 0;
+    D_80080A10->unk3C = 0;
+    D_80080A10->unk40 = 0;
+    D_80080A10->unk44 = 0;
+    D_80080A10->unk6C = 0;
+    D_80080A10->unk14 = 0;
+    D_80080A10->unk10 = 0;
+    D_80083158.unk8 |= 0x100;
+}
 
 void func_800599D4(Unk80080A10 *a, AkaoChannel *c, s32 id) {
     u32 i;
