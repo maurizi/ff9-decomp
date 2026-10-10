@@ -1,4 +1,4 @@
-/* 6 rows differ (cmp with symbol names; rows 0x23C-0x25C): only the order of lui %hi(D_80080A10)/ori 0xFFFFFF and of lui %hi(D_80083174) vs sw zero,0x18(a3) after the loop. Needed: the x = 0xFFFFFF temp (mask association, as in func_8005963C), ~(D_80080A70.unk0 | D_80083174) operand order (the old D_80083174 | ... order swapped the two loads' registers, which the old relocation-masking cmp hid), and the empty do { } while (0) after x = 0xFFFFFF. Statement-order permutations, do-while wraps and the permuter (25 min) did not help. */
+/* 5 rows (cmp with symbol names): only the scheduling of lui %hi(D_80083174) (the original hoists it above sw zero,0x18(a3)) and ori 0xFFFFFF. Pass 8: `D_80080A10->unk18 = 0; x = 0xFFFFFF; do { } while (0); D_8007F95A = 0;` (6 -> 5); expression orders, dup sweep no change. */
 #include "ff9.h"
 
 void func_8005A320(s32 addr, s32 restore) {
@@ -62,9 +62,9 @@ void func_8005A320(s32 addr, s32 restore) {
         active = 0;
     }
     D_80080A10->unk18 = 0;
-    D_8007F95A = 0;
     x = 0xFFFFFF;
     do { } while (0);
+    D_8007F95A = 0;
     D_80080A70.unkC |= ~active & (~(D_80080A70.unk0 | D_80083174) & x);
     D_80083158.unk8 |= 0x100;
     if (D_800831C4 & 1) {
