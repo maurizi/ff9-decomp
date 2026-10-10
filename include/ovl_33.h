@@ -195,4 +195,27 @@ void func_801F2D18(void);
 void func_801F2E34(void);
 void func_801F2F3C(s32, s32, s32, MenuView *);
 
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} HelpOfs; /* item help text offsets into D_801F4734 */
+extern HelpOfs D_801F6240[];
+extern u8 D_801F4734[];
+extern u8 D_801F67D4[];
+extern u8 D_801F3478[];
+extern u8 D_801FBD84[];
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+typedef struct {
+    u8 pad0[4];
+    u16 unk4;
+    u8 pad6[2];
+} SupportHelp; /* D_8006D128 entry: +4 = help text offset into D_801F67D4 */
+
+/* support ability help text */
+static inline u8 *func_801F0024_suphelp(s32 i) {
+    SupportHelp *b = (SupportHelp *)D_8006D128;
+    i -= 0xC0;
+    return D_801F67D4 + b[i].unk4;
+}
+
 #endif

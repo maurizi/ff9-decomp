@@ -446,7 +446,83 @@ void func_801EFE2C(void) {
     func_8002F488(0x66);
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F0024);
+void func_801F0024(void) {
+    Character *c;
+    MenuList *l;
+    RECT r;
+    s32 i;
+    s32 id;
+    s32 t;
+    u8 *buf;
+
+    l = &D_801FBF84.unk8[D_801FBF84.unk0];
+    c = D_8006794C->unk1C->unk54C[D_801FBF84.unk2];
+    D_80077DE8.unk8 = NULL;
+    func_80035580(NULL);
+    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5) {
+        buf = D_801FBD84;
+        D_80077DE8.unk8 = buf;
+        func_8002BE44(0, D_801F3478);
+        func_8002BD54(buf, func_80035774(D_801FBF84.unk0 + 2));
+        if (D_801FBF84.unk0 == 0) {
+            if (D_8007AFD3) {
+                t = 6;
+            } else if (!D_801FBF84.unk769) {
+                t = 5;
+            } else {
+                t = 4;
+            }
+        } else {
+            if (func_80034A30(c)) {
+                goto end;
+            }
+            if (c->unkA & 0x10) {
+                t = 8;
+            } else {
+                t = 7;
+            }
+        }
+        func_8002AD38(buf, func_80035774(t));
+    end:
+        func_8002AD38(D_801FBD84, func_80035774(0xF));
+    } else if (D_801FBF84.unk1 == 2) {
+        if (l->unk0 == 0) {
+            return;
+        }
+        r.x = 0;
+        r.y = 0x5E;
+        r.w = D_8006794C->unkC->disp.w;
+        r.h = D_8006794C->unkC->disp.h - 0x5E;
+        func_80035580(&r);
+        i = func_801F0FA4(l);
+        if (D_801FBF84.unk0 == 0) {
+            id = D_801FBF84.unk668[i].unk0;
+            if (func_801EFB8C(id, c)) {
+                D_80077DE8.unk8 = D_801F4734 + D_801F6240[id].unk0;
+            }
+        } else {
+            id = D_801FBF84.unk728[i];
+            if (func_801F0CC4_inline(id, c)) {
+                u8 **d = &D_80077DF0;
+                *d = func_801F0024_suphelp(id);
+            }
+        }
+    } else if (D_801FBF84.unk1 == 3) {
+        if (func_801F0FA4(l) & 1) {
+            r.x = 0xC;
+            r.y = 0;
+            r.w = D_8006794C->unkC->disp.w;
+            r.h = D_8006794C->unkC->disp.h;
+        } else {
+            r.x = 0;
+            r.y = 0;
+            r.w = D_8006794C->unkC->disp.w >> 1;
+            r.h = D_8006794C->unkC->disp.h;
+        }
+        func_80035580(&r);
+        D_80077DF0 = func_80035774(D_801FBF84.unk76F == 0 ? 9 : 0xA);
+    }
+}
 
 void func_801F0410(void) {
     s32 i;
