@@ -3891,6 +3891,16 @@ extern const u8 D_800A857C[]; /* "TRANCE" label */
 typedef struct {
     BtlUnit9C50 e[3];
 } BtlUnit9C50Arr;
+/* func_800C9A28: per-character battle setup row (5 bytes, indexed by Character.unk34.b.unk4) */
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    u8 unk4;
+} Unk800F57F0;
+extern Unk800F57F0 D_800F57F0[];
+void func_800C23C8(BtlUnit *, s32, u32);
 /* func_800DA92C */
 extern u16 D_800FEC68[];
 extern s32 D_80100D90[][2];
