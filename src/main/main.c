@@ -6552,7 +6552,55 @@ void func_80030B14(void *a, void *b) {
     func_80030B34(a, b, 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80030B34);
+MATRIX *func_80030B34(SVECTOR *r, MATRIX *m, s32 mode) {
+    s16 sx, cx, sy, cy, sz, cz;
+    s32 x, y, z;
+    s32 tx, ty, tz;
+    s16 t1, t2;
+
+    x = r->vx & 0xFFF;
+    y = r->vy & 0xFFF;
+    z = r->vz & 0xFFF;
+    ISIN(sx, r->vx, x);
+    tx = 0x400 - x;
+    x = tx & 0xFFF;
+    ISIN(cx, tx, x);
+    ISIN(sy, y, y);
+    ty = 0x400 - y;
+    y = ty & 0xFFF;
+    ISIN(cy, ty, y);
+    ISIN(sz, z, z);
+    tz = 0x400 - z;
+    z = tz & 0xFFF;
+    ISIN(cz, tz, z);
+    /* Both branches are identical; jump2 merges them, leaving only the dead copy of mode. */
+    if (mode) {
+        t1 = (sx * sy) >> 12;
+        t2 = (cx * sy) >> 12;
+        m->m[0][0] = (cy * cz) >> 12;
+        m->m[0][1] = (-cy * sz) >> 12;
+        m->m[0][2] = sy;
+        m->m[1][0] = (t1 * cz + cx * sz) >> 12;
+        m->m[1][1] = (-t1 * sz + cx * cz) >> 12;
+        m->m[1][2] = (-sx * cy) >> 12;
+        m->m[2][0] = (-t2 * cz + sx * sz) >> 12;
+        m->m[2][1] = (t2 * sz + sx * cz) >> 12;
+        m->m[2][2] = (cx * cy) >> 12;
+    } else {
+        t1 = (sx * sy) >> 12;
+        t2 = (cx * sy) >> 12;
+        m->m[0][0] = (cy * cz) >> 12;
+        m->m[0][1] = (-cy * sz) >> 12;
+        m->m[0][2] = sy;
+        m->m[1][0] = (t1 * cz + cx * sz) >> 12;
+        m->m[1][1] = (-t1 * sz + cx * cz) >> 12;
+        m->m[1][2] = (-sx * cy) >> 12;
+        m->m[2][0] = (-t2 * cz + sx * sz) >> 12;
+        m->m[2][1] = (t2 * sz + sx * cz) >> 12;
+        m->m[2][2] = (cx * cy) >> 12;
+    }
+    return m;
+}
 
 void func_80030EA4(void *a, void *b) {
     func_80030EE4(a, b, 0);
@@ -6565,24 +6613,24 @@ void func_80030EC4(void *a, void *b) {
 MATRIX *func_80030EE4(SVECTOR *r, MATRIX *m, s32 mode) {
     s16 sx, cx, sy, cy, sz, cz;
     s32 x, y, z;
-    s32 t;
+    s32 tx, ty, tz;
     s16 t1, t2;
 
     x = r->vx & 0xFFF;
     y = r->vy & 0xFFF;
     z = r->vz & 0xFFF;
     ISIN(sx, r->vx, x);
-    t = 0x400 - x;
-    x = t & 0xFFF;
-    ISIN(cx, t, x);
+    tx = 0x400 - x;
+    x = tx & 0xFFF;
+    ISIN(cx, tx, x);
     ISIN(sy, y, y);
-    t = 0x400 - y;
-    y = t & 0xFFF;
-    ISIN(cy, t, y);
+    ty = 0x400 - y;
+    y = ty & 0xFFF;
+    ISIN(cy, ty, y);
     ISIN(sz, z, z);
-    t = 0x400 - z;
-    z = t & 0xFFF;
-    ISIN(cz, t, z);
+    tz = 0x400 - z;
+    z = tz & 0xFFF;
+    ISIN(cz, tz, z);
     /* Both branches are identical; jump2 merges them, leaving only the dead copy of mode. */
     if (mode) {
         t1 = (sx * sz) >> 12;
