@@ -2110,7 +2110,7 @@ u16 func_800B4478(u16 *);
 void func_800EB358(BtlUnit *);
 void func_800ECCA8(s32);
 s32 func_800EFB3C(s32);
-s32 func_800EFD1C(s32);
+s32 func_800EFD1C(u8);
 void func_800EFA10(s32);
 void func_800EF7D4(Window *);
 void func_800F07F0(void);
