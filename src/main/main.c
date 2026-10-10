@@ -11204,7 +11204,44 @@ void func_800499D8(Unk8004B9B8 *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80049B48);
+static inline void func_80049B48_bounce(Unk8004AB64 *o, u8 f) {
+    u8 t;
+    u8 pos;
+
+    if (f & 0x20) {
+        pos = o->unk3A;
+        if (!(f & 0x40)) {
+            o->unk3A = pos - 2;
+        } else {
+            o->unk3A = pos + 2;
+        }
+        o->unk62 ^= 0x40;
+        t = o->unk60;
+        o->unk60 = o->unk61;
+        o->unk61 = t;
+    } else if (f & 0x10) {
+        o->unk3A = o->unk60;
+    }
+}
+
+void func_80049B48(Unk8004AB64 *o) {
+    u8 f = o->unk62;
+
+    if (f & 0x30) {
+        if (o->unk63 != 0) {
+            o->unk63--;
+            if (o->unk63 != 0) {
+                func_80049B48_bounce(o, f);
+            } else {
+                func_800499D8(o);
+            }
+        } else {
+            func_80049B48_bounce(o, f);
+        }
+    } else {
+        func_800499D8(o);
+    }
+}
 
 void func_80049C14(Unk8004AB64 *p) {
     Unk8004AB64 *q;
