@@ -4318,7 +4318,38 @@ u8 *func_8002AD38(u8 *dst, u8 *src) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002AE7C);
+s32 func_8002AE7C(u8 *s) {
+    s32 w;
+    Glyph8 *g;
+    u8 c;
+    s32 adv;
+
+    w = 0;
+    g = NULL;
+    while ((c = *s) != 0) {
+        if (c >= 'A' && c <= 'Z') {
+            g = &D_80068690[*s];
+        } else if (c >= 'a' && c <= 'z') {
+            g = &D_80068690[*s - 32];
+        } else if (c >= '0' && c <= '9') {
+            g = &D_80068690[*s + 6];
+        } else if (c == '&') {
+            g = &D_80068890;
+        } else if (c == '.') {
+            g = &D_80068CE0;
+        } else if (c == '_') {
+            g = &D_80068DC8;
+        }
+        if (*s == ' ') {
+            adv = 5;
+        } else {
+            adv = g->unk4;
+        }
+        s++;
+        w += adv - 1;
+    }
+    return w;
+}
 
 TextSize func_8002AF70(u8 *s) {
     TextSize r;
