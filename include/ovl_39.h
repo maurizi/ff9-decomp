@@ -525,4 +525,10 @@ static inline void func_801FA794_retry(s32 chan, s32 r) {
     }
 }
 
+s32 func_801F6FE8(void);
+u8 *func_801F83B8(void);
+s32 func_801F6D24(Unk801F6D24 *);
+s32 func_801F6C74(void);
+s32 func_801F6F7C(void);
+
 #endif
