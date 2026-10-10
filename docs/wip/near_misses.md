@@ -17,9 +17,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   the extension is not needed (800584C8 now hoists `m = (u16)e->unk4` and keeps `s32 min`).
   80057D80 (97/226 draft build/hc/d80b.c) and 80058118 still open: product temps are `mflo a2` in
   the original (global.c prefers the register with the fewest local refs) but `a1` for us.
-- Loop shapes (search loop without gcc's empty-list shortcut; bit scans): 80038278, 8004B85C,
-  8004AB7C, 80037738. (8004B040, 8004AE00, 8004B098, 8004B4C4, 80038150, 80049B48, 8002AE7C
-  are matched.)
+- Loop shapes (search loop without gcc's empty-list shortcut; bit scans): 80038278, 8004B85C.
+  (8004B040, 8004AE00, 8004B098, 8004B4C4, 80038150, 80049B48, 8002AE7C, 80037738, 8004AB7C
+  are matched.) The script bit-scan idiom (one peeled iteration, `srav`/`and` by the register
+  holding 1) is `i = 0; if (!(mask & 1)) { i = 1; mask >>= 1; while (i < 8 && !(mask & 1)) {
+  mask >>= 1; i++; } }` (statement order of `i = 1`/`mask >>= 1` decides `sra` vs `srav`).
   8004B85C is at 42/46 (build/hc/k/d1.c): the loop lives in an inline helper
   `find(key, slot)` called as `find(key_inline(slot), slot)` so the key temp is copied into a
   fresh pseudo (`addu a3,v1,zero`), and the kind test is `ge = kind >= 14; if (slot >= 8) { if
