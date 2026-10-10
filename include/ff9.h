@@ -982,6 +982,12 @@ typedef struct {
 } Unk80080A10;
 extern Unk80080A10 *D_80080A10;
 extern Unk80080A10 D_8007F858; /* main sequencer state */
+extern s32 D_8006F31C;
+extern u16 D_8006F320; /* tick counter */
+extern s32 D_8006F324[4]; /* recent tick timings */
+void func_80058F94(void);
+void func_800589F0(u32);
+void func_8005D628(Unk80080A10 *, AkaoChannel *);
 extern AkaoChannel *D_800809EC;
 extern s32 D_8007F8D8[2];
 extern s32 D_8008314C;
@@ -2078,8 +2084,11 @@ typedef struct {
     u32 unk8;
     u32 unkC;
     s32 unk10;
-    u32 unk14;
-    u32 unk18;
+    union {
+        u32 w;
+        u16 h[2];
+    } unk14; /* tempo, 16.16 */
+    u32 unk18; /* tempo accumulator */
     u32 unk1C;
     u32 unk20;
     u32 unk24;
