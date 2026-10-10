@@ -2686,7 +2686,130 @@ void func_800B44A0(Unk800B44A0 *arg0) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B44C0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B7954);
+void func_800B7954(BtlCalc *c) {
+    BtlUnit *t = c->unk4;
+    BtlUnit *s = c->unk0;
+    s32 back = 0;
+    u16 i;
+    u16 n;
+    s16 v;
+    u32 a;
+    u16 who;
+    s32 id;
+    BtlUnit *w;
+    s32 k;
+
+    if ((t->unk68 & 1) && !(s->unk68 & 1)) {
+        back = func_800B065C(t, s, (BtlCmd *)c->unk8);
+    }
+    if (c->unk18 & 0x40) {
+        t->unk7E |= 0x80;
+    } else if (c->unk18 & 1) {
+        t->unk7E |= 0x20;
+        if (c->unk18 & 2) {
+            if (t->unk68 & 1) {
+                t->unk9C->unkC = (BtlUnit9CC *)t->unkA4[16];
+                t->unkA0->unk3A = 0;
+                t->unk86[1] = t->unkA0->unk22 = (t->unk68 & 1) * 0x800;
+            } else if (!((t->unk68 >> 23) & 1)) {
+                t->unk8C[2] += 0x1900000;
+            } else {
+                w = func_800C1DEC();
+                w->unk8C[2] += 0x1900000;
+            }
+            t->unk68 |= 0x4000000;
+            c->unk8->unk10 |= 0x40;
+        }
+    } else {
+        if (c->unk8->unk8[8] & 8) {
+            func_800BF558(t, 0x400);
+            func_800BF558(t, 0x20000);
+        }
+        if (c->unk8->unk8[8] & 0x10) {
+            func_800BF558(t, 0x4000000);
+        }
+        if (c->unk1B != 0) {
+            t->unk7E |= c->unk1B;
+            if (c->unk1B & 1) {
+                n = 0;
+                if (((c->unk8->unk10 >> 7) & 3) == 1) {
+                    for (i = 0; i < 4; i++) {
+                        if (s->unk1C[i] & t->unkB0) {
+                            n++;
+                        }
+                    }
+                    if (c->unk1E * n >= 10000) {
+                        c->unk1E = 9999;
+                    } else {
+                        c->unk1E = c->unk1E * n;
+                    }
+                    if ((s32)*s->unkC4 < 0) {
+                        c->unk1E *= 2;
+                        if (c->unk1E >= 10000) {
+                            c->unk1E = 9999;
+                        }
+                    }
+                }
+                if (c->unk1B & 2) {
+                    func_800BDC04(t, c->unk1E);
+                } else {
+                    func_800BDB20(t, c->unk1E, func_800B9994(c));
+                    func_800B81C4(c, back);
+                }
+            }
+            if (c->unk1B & 8) {
+                if (c->unk1B & 0x10) {
+                    func_800BDCBC(t, c->unk22);
+                } else {
+                    func_800BDC64(t, c->unk22);
+                }
+            }
+        } else if (c->unk18 & 0x80) {
+            if ((u8)func_800B9994(c)) {
+                func_800BCAA4(t);
+            }
+            func_800B81C4(c, back);
+        }
+        if (c->unk1A != 0) {
+            s->unk7E |= c->unk1A;
+            if (c->unk1A & 1) {
+                if (c->unk1A & 2) {
+                    func_800BDC04(s, c->unk1C);
+                } else {
+                    func_800BDB20(s, c->unk1C, 0);
+                }
+            }
+            if (c->unk1A & 8) {
+                if (c->unk1A & 0x10) {
+                    func_800BDCBC(s, c->unk20);
+                } else {
+                    func_800BDC64(s, c->unk20);
+                }
+            }
+        }
+        if ((c->unk18 & 0x100) && t->unk28 != 0) {
+            a = D_8006794C->unk1C->unk8E4.battle->unk22CC[s->unk74[1]];
+            if (!(a & 0x100) || !(t->unk3C & 0x80)) {
+                func_800C0ACC(t, a);
+            }
+        }
+    }
+    if (!(t->unk68 & 1)) {
+        who = 0x10;
+        if (!((t->unk68 >> 23) & 1)) {
+            who = t->unkB0;
+        }
+        id = c->unk8->unkF | (c->unk8->unkE << 8);
+        if ((s->unk68 & 1) && !(t->unk3C & 0x2001003)) {
+            if ((((D_8006794C->unk1C->unk8E4.battle->unk488 + ((t->unk68 >> 1) & 0xF))->unk4 >> 6) & 1) && t->unk28 == 0) {
+                func_8004AB7C(0x36, who, s->unkB0, id);
+            } else if (t->unk28 != 0 && c->unk8->unkE < 0x30) {
+                func_8004AB7C(0x35, who, s->unkB0, id);
+            }
+        }
+        func_8004AB7C(0x37, who, s->unkB0, id);
+    }
+}
 
 void func_800B7F20(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
     u8 id = arg1->unk8[arg2];

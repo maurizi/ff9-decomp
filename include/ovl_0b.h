@@ -319,8 +319,10 @@ typedef struct BtlCalc {
     u16 unk18; /* result flags */
     u8 unk1A;
     u8 unk1B;
-    u8 pad1C[0x1E - 0x1C];
-    s16 unk1E;
+    s16 unk1C; /* caster hp change */
+    s16 unk1E; /* target hp change */
+    s16 unk20; /* caster mp change */
+    s16 unk22; /* target mp change */
 } BtlCalc;
 
 /* battle script interpreter context */
@@ -2340,6 +2342,12 @@ void func_800C12CC(Battle4880 *);
 void func_800C1938(BtlUnit *);
 s32 func_800C1EDC(BtlUnit *);
 void func_800C0544(BtlUnit *);
+void func_800B81C4(BtlCalc *, u8);
+s32 func_800B9994(BtlCalc *);
+void func_800BDB20(BtlUnit *, s32, u8);
+void func_800BDC04(BtlUnit *, s32);
+void func_800BDC64(BtlUnit *, s32);
+void func_800BDCBC(BtlUnit *, s32);
 void func_800C1704(); /* defined as (void); callers pass the unit */
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
