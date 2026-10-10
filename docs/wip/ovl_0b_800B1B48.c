@@ -1,5 +1,12 @@
 /* WIP func_800B1B48: 3 differing rows. Left: the inline's return-0 block; the original keeps it
-   (bnez over j) and the later return-0 paths (case 0x38/0x3C) jump to it, ours sends them to the fail block's. */
+   (bnez over j) and the later return-0 paths (case 0x38/0x3C) jump to it, ours sends them to the fail block's.
+   Why (jump.c cross-jumping in jump2): jumps are processed forward and the *processed* jump is the one replaced.
+   The inline's `v0 = 0; j epi` is preceded by a conditional jump around it, and find_cross_jump counts that as a
+   match, so with just `v0 = 0` in common it reaches minimum 2 and merges into the first chain candidate (chain
+   head = the last jump to the epilogue: case 0x3E's tail, or the fail block). In the original the inline's block
+   found no partner, so it must have looked different at jump2 time. Tried: `fail: ...; goto ret0` with a ret0
+   label on the inline's return (6 rows), case 0x3C as one if/else ending in `return 0` (3 rows, inline then merges
+   into case 0x3E's tail), explicit `goto ret0` from 0x38/0x3C (11 rows). */
 #include "ovl_0b.h"
 
 extern u8 D_8007AF01;

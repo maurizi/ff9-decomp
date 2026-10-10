@@ -3887,6 +3887,10 @@ void func_800D6340(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
 extern const u8 D_800A857C[]; /* "TRANCE" label */
+/* BtlUnit9C.unk50 seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (func_800E8B28) */
+typedef struct {
+    BtlUnit9C50 e[3];
+} BtlUnit9C50Arr;
 /* func_800DA92C */
 extern u16 D_800FEC68[];
 extern s32 D_80100D90[][2];

@@ -7360,7 +7360,26 @@ s32 func_800E8AD0(void) {
     return n;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E8B28);
+/* weapon texture animation: arg1 0 = start anim (arg2 ? 1 : 0), 1 = stop anim 2, 2 = start anim 2 */
+void func_800E8B28(s32 arg0, s32 arg1, s32 arg2) {
+    BtlUnit *u = func_800E716C(arg0);
+
+    switch (arg1) {
+    case 0:
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[arg2 ? 1 : 0].unk4 |= 3;
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[arg2 ? 1 : 0].unkC = 0;
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[arg2 ? 1 : 0].unk12 = 0x1000;
+        break;
+    case 1:
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[2].unk4 &= ~3;
+        break;
+    case 2:
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[2].unk4 |= 1;
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[2].unkC = 0;
+        ((BtlUnit9C50Arr *)u->unk9C->unk50)->e[2].unk12 = 0x1000;
+        break;
+    }
+}
 
 void func_800E8C84(s32 arg0) {
     if (arg0 != 0) {
