@@ -786,7 +786,94 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2938);
+void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    VECTOR s;
+    union {
+        SVECTOR v;
+        s32 w[2];
+    } zero;
+    MATRIX m;
+    Unk800D57D0Ctx c1;
+    Unk800D59D0Ctx c2;
+    s32 k;
+    s32 n;
+    s32 t;
+    s32 z;
+    s32 z2;
+    u16 *base;
+    u16 *e;
+    u8 *prim;
+
+    if (arg2 == NULL) {
+        arg2 = &zero.v;
+        zero.w[0] = 0;
+        zero.w[1] = 0;
+    }
+    n = arg0->unk0 - 1;
+    if (n < arg4) {
+        arg4 = n;
+    }
+    k = arg0->unk6;
+    if (n == 0) {
+        t = 0;
+    } else {
+        t = arg4 * (k - 1) / n;
+    }
+    n++;
+    z = arg0->unk2 * 4;
+    if (arg0->unk4 == 0) {
+        k *= 4;
+    } else {
+        k *= 8;
+    }
+    base = (u16 *)((u8 *)arg0 + (k + 0x14));
+    k = arg4 * 4;
+    e = (u16 *)((u8 *)base + k);
+    s.vy = 0x1000;
+    s.vz = e[0];
+    s.vx = e[1];
+    if (arg3 >= 0) {
+        gte_lddp(arg3);
+        gte_ldir(&s);
+        gte_gpf12();
+        gte_stir(&s);
+    }
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    gte_rtv0tr();
+    func_800316D8(arg2, &m);
+    ScaleMatrix(&m, &s);
+    gte_stlvnl(m.t);
+    if (arg2->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    arg0++;
+    if (arg0[-1].unk4 == 0) {
+        c1.unk10 = base + n * 2 + arg4;
+        c1.unk18 = (arg5 & 3) << 5;
+        c1.unk14 = t;
+        c1.unkC = z;
+        c1.unk0 = (arg5 != 0xFF) ? 0x2E000000 : 0x2C000000;
+        c1.unk8 = arg6;
+        c1.unk4 = D_800F78A4->unk28;
+        prim = D_800F78A4->unk24;
+        D_800F78A4->unk24 = prim + 0x28;
+        func_800D57D0((u8 *)arg0, &c1, prim, D_800F78A4->unk20);
+    } else {
+        c2.unkC = (arg5 & 3) << 5;
+        c2.unk14 = t;
+        c2.unk10 = z;
+        c2.unk0 = (arg5 != 0xFF) ? 0x32000000 : 0x30000000;
+        c2.unk8 = arg6;
+        c2.unk4 = D_800F78A4->unk28;
+        prim = D_800F78A4->unk24;
+        D_800F78A4->unk24 = prim + 0x5C;
+        func_800D59D0((u8 *)arg0, &c2, prim, D_800F78A4->unk20);
+    }
+}
 
 /* old-style definition: callers pass the coordinates unpromoted (no prototype) */
 void func_800D2C78(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
@@ -4264,7 +4351,7 @@ s32 func_800E0168(Pool30 *pool) {
                     func_800D23D8((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 7:
-                    func_800D2938((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    func_800D2938((Unk800D2938 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 8:
                     func_800D1494((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 0);

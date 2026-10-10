@@ -2406,7 +2406,37 @@ void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800D1D74(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800D1FFC(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
-void func_800D2938(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+/* effect frame table (func_800D2938) */
+typedef struct {
+    u16 unk0; /* frame count */
+    s16 unk2;
+    u16 unk4; /* gouraud flag */
+    u16 unk6;
+} Unk800D2938;
+
+typedef struct {
+    s32 unk0; /* primitive code */
+    s32 unk4; /* ot base z */
+    s32 unk8;
+    s32 unkC;
+    u16 *unk10;
+    s32 unk14;
+    s32 unk18; /* tpage */
+    u8 pad1C[0x28 - 0x1C];
+} Unk800D57D0Ctx;
+
+typedef struct {
+    s32 unk0; /* primitive code */
+    s32 unk4; /* ot base z */
+    s32 unk8;
+    s32 unkC; /* tpage */
+    s32 unk10;
+    s32 unk14;
+} Unk800D59D0Ctx;
+
+void func_800D57D0(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
+void func_800D59D0(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
+void func_800D2938(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
 /* main exe: candidates for ff9.h */
