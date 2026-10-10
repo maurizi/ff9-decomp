@@ -1544,7 +1544,167 @@ void func_800AC67C(s32 arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AC6C0);
+void func_800AC6C0(FieldObjPlace *arg0, s32 arg1) {
+    MATRIX m;
+    POLY_FT4 *p[4];
+    SVECTOR v;
+    s32 z[9];
+    s32 bias;
+    FieldObjPlace *e;
+    FieldObjSlot *s;
+    void *lt;
+    Unk800B3294Bias *t;
+    u32 *mask;
+    u32 *mk;
+    s32 i;
+    s32 k;
+    s32 u0;
+    s32 u1;
+    s32 v0;
+    s32 v1;
+
+    e = &arg0[arg1];
+    s = (FieldObjSlot *)func_8001E350(arg1);
+    bias = 0;
+    if (s->unk0 & 0x10) {
+        return;
+    }
+    lt = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk1C;
+    if (lt != NULL) {
+        t = (Unk800B3294Bias *)func_800B3294(lt, s->unk4);
+        if (t == NULL) {
+            t = (Unk800B3294Bias *)func_800B3294(lt, -1);
+        }
+        bias = t->unk7;
+    }
+    func_800AD488(&e->unk0, s, &m);
+    u0 = (s16)(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk50 % 64) * 2;
+    v0 = (s16)(D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk52 % 256);
+    for (i = 0; i < 4; i++) {
+        mask = NULL;
+        if (D_8006794C->unk1C->unk8E4.field->unk0 & 0x200) {
+            mask = e->unk8[D_8006794C->unk1C->unk8][i];
+            setlen(mask, 2);
+            mask[1] = 0xE6000002;
+            mask[2] = 0;
+            p[i] = (POLY_FT4 *)(mask + 3);
+        } else {
+            p[i] = e->unk8[D_8006794C->unk1C->unk8][i];
+        }
+        setlen(p[i], 9);
+        setcode(p[i], 0x2C);
+        setSemiTrans(p[i], 1);
+        setRGB0(p[i], e->unk0.unk0, e->unk0.unk0, e->unk0.unk0);
+        p[i]->tpage = getTPage(1, 2, D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk50,
+                               D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk52);
+        p[i]->clut = 0x3FD0;
+        switch (i) {
+        case 0:
+            setUV4(p[0], u0, v0, u0 + 31, v0, u0, v0 + 31, u0 + 31, v0 + 31);
+            break;
+        case 1:
+            setUV4(p[1], u0 + 31, v0, u0, v0, u0 + 31, v0 + 31, u0, v0 + 31);
+            break;
+        case 2:
+            setUV4(p[2], u0, v0 + 31, u0 + 31, v0 + 31, u0, v0, u0 + 31, v0);
+            break;
+        case 3:
+            setUV4(p[3], u0 + 31, v0 + 31, u0, v0 + 31, u0 + 31, v0, u0, v0);
+            break;
+        }
+        if (D_8006794C->unk1C->unk8E4.field->unk0 & 0x200) {
+            mk = (u32 *)(p[i] + 1);
+            setlen(mk, 2);
+            mk[1] = 0xE6000002;
+            mk[2] = 0;
+            MargePrim(p[i], mk);
+            MargePrim(mask, p[i]);
+        }
+    }
+    gte_MulMatrix0(&D_8006794C->unk1C->unk18, &m, &m);
+    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    gte_ldlv0(m.t);
+    gte_rtv0tr();
+    gte_stir(m.t);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    FIELD_SHADOW_PT(-0x1000, 0x1000);
+    gte_stsxy(&p[0]->x0);
+    gte_stsz(&z[0]);
+    FIELD_SHADOW_PT(0, 0x1000);
+    gte_stsxy(&p[0]->x1);
+    gte_stsxy(&p[1]->x0);
+    gte_stsz(&z[1]);
+    FIELD_SHADOW_PT(0x1000, 0x1000);
+    gte_stsxy(&p[1]->x1);
+    gte_stsz(&z[2]);
+    FIELD_SHADOW_PT(-0x1000, 0);
+    gte_stsxy(&p[0]->x2);
+    gte_stsxy(&p[2]->x0);
+    gte_stsz(&z[3]);
+    FIELD_SHADOW_PT(0, 0);
+    gte_stsxy(&p[0]->x3);
+    gte_stsxy(&p[1]->x2);
+    gte_stsxy(&p[2]->x1);
+    gte_stsxy(&p[3]->x0);
+    gte_stsz(&z[4]);
+    FIELD_SHADOW_PT(0x1000, 0);
+    gte_stsxy(&p[1]->x3);
+    gte_stsxy(&p[3]->x1);
+    gte_stsz(&z[5]);
+    FIELD_SHADOW_PT(-0x1000, -0x1000);
+    gte_stsxy(&p[2]->x2);
+    gte_stsz(&z[6]);
+    FIELD_SHADOW_PT(0, -0x1000);
+    gte_stsxy(&p[2]->x3);
+    gte_stsxy(&p[3]->x2);
+    gte_stsz(&z[7]);
+    FIELD_SHADOW_PT(0x1000, -0x1000);
+    gte_stsxy(&p[3]->x3);
+    gte_stsz(&z[8]);
+
+    k = z[0];
+    if (k < z[1]) {
+        k = z[1];
+    }
+    if (k < z[3]) {
+        k = z[3];
+    }
+    if (k < z[4]) {
+        k = z[4];
+    }
+    FIELD_SHADOW_ADD(k, 0);
+    k = z[1];
+    if (k < z[2]) {
+        k = z[2];
+    }
+    if (k < z[4]) {
+        k = z[4];
+    }
+    if (k < z[5]) {
+        k = z[5];
+    }
+    FIELD_SHADOW_ADD(k, 1);
+    k = z[3];
+    if (k < z[6]) {
+        k = z[6];
+    }
+    if (k < z[7]) {
+        k = z[7];
+    }
+    FIELD_SHADOW_ADD(k, 2);
+    k = z[4];
+    if (k < z[5]) {
+        k = z[5];
+    }
+    if (k < z[7]) {
+        k = z[7];
+    }
+    if (k < z[8]) {
+        k = z[8];
+    }
+    FIELD_SHADOW_ADD(k, 3);
+}
 
 void func_800AD44C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);

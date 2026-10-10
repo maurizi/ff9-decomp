@@ -992,8 +992,14 @@ typedef struct {
 /* object placement entries (FieldScene.unk2C) */
 typedef struct FieldObjPlace {
     FieldObjEnt unk0;
-    u8 pad8[0x28 - 8];
+    void *unk8[2][4]; /* shadow primitives, per draw buffer */
 } FieldObjPlace; /* 0x28 */
+
+/* Unk800B3294 seen bytewise: the top byte of the colour is a depth bias (func_800AC6C0) */
+typedef struct {
+    u8 pad0[7];
+    s8 unk7;
+} Unk800B3294Bias;
 
 /* texture set tables (func_800AA4E8) */
 typedef struct {
@@ -1353,7 +1359,31 @@ void func_800B2D10(FieldEvtCtx **, s32);
 void func_800B1E8C(FieldEvtCtx **, s32);
 void func_800AC02C(FieldEvtCtx **, s32);
 void func_800BA560(Unk800C95C8 *, u8);
-void func_800AC6C0(struct FieldObjPlace *, u8);
+void func_800AC6C0(struct FieldObjPlace *, s32);
 s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
+
+#define gte_stir(r0) __asm__ volatile( \
+    "swc2\t$9, 0(%0);" \
+    "swc2\t$10, 4(%0);" \
+    "swc2\t$11, 8(%0)" \
+    : : "r"(r0) : "memory")
+
+/* func_800AC6C0: project one corner of the 3x3 shadow grid */
+#define FIELD_SHADOW_PT(x, z) \
+    v.vx = (x); \
+    v.vy = 0; \
+    v.vz = (z); \
+    gte_ldv0(&v); \
+    gte_rtps()
+
+/* func_800AC6C0: link shadow quad q at its deepest corner */
+#define FIELD_SHADOW_ADD(k, q) \
+    k = (k >> 2) + bias; \
+    if (-D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30 < k \
+        && k < 0x1000 - D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30) { \
+        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][k], e->unk8[D_8006794C->unk1C->unk8][q]); \
+    }
+
+void func_800AD488(FieldObjEnt *, FieldObjSlot *, MATRIX *);
 
 #endif
