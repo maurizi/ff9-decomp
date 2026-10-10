@@ -953,6 +953,15 @@ typedef struct {
     u16 unk78;
 } Unk80080A10;
 extern Unk80080A10 *D_80080A10;
+extern Unk80080A10 D_8007F858; /* main sequencer state */
+extern AkaoChannel *D_800809EC;
+extern s32 D_8007F8D8[2];
+extern s32 D_8008314C;
+extern s32 D_8007F8E0;
+extern s32 D_80083238[3];
+extern s32 D_80080A20;
+extern s32 D_8007E3C8[2];
+extern s32 D_8007E3D0;
 
 typedef Character Unk800539FC;
 
@@ -2025,7 +2034,8 @@ typedef struct {
     u32 unk8;
     u32 unkC;
     s32 unk10;
-    u8 pad14[0x1C - 0x14];
+    u32 unk14;
+    u32 unk18;
     u32 unk1C;
     u32 unk20;
     u32 unk24;
@@ -2342,7 +2352,10 @@ s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked 
 Unk6 *func_800625A0(s32, s32);
 s32 func_800626D0(s32, s32);
 typedef struct {
-    u8 pad0[4];
+    u8 unk0; /* power (x2) */
+    u8 unk1; /* type */
+    u8 unk2; /* physical defence (x2) */
+    u8 unk3; /* magic defence (x2) */
     u8 unk4; /* collector points */
 } CardInfo; /* 5 bytes */
 extern CardInfo D_800121C8[]; /* card table */
@@ -2809,6 +2822,7 @@ extern u8 D_8006BCFC[]; /* window style -> colour */
 typedef struct {
     u8 unk0[8];
 } Bytes8;
+extern Bytes8 D_800121C0; /* card arrow bits (func_80062830) */
 typedef struct {
     u8 unk0[5];
 } Bytes5;

@@ -15714,7 +15714,73 @@ void *func_80062824(void) {
     return &D_80083248;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80062830);
+void func_80062830(Unk6 *card, u8 id) {
+    Bytes8 bits;
+    u8 v;
+    s32 r;
+    s32 n;
+    s32 i;
+    s32 done;
+    u8 *b;
+    CardInfo *tbl;
+
+    bits = D_800121C0;
+    tbl = D_800121C8;
+    card->unk0 = id;
+    v = tbl[id].unk0 >> 1;
+    if (v != 0) {
+        card->unk2 = v + func_80062B3C() % v;
+    } else {
+        card->unk2 = 0;
+    }
+    v = tbl[id].unk2 >> 1;
+    if (v != 0) {
+        card->unk4 = v + func_80062B3C() % v;
+    } else {
+        card->unk4 = 0;
+    }
+    v = tbl[id].unk3 >> 1;
+    if (v != 0) {
+        card->unk5 = v + func_80062B3C() % v;
+    } else {
+        card->unk5 = 0;
+    }
+    r = func_80062B3C() % 100;
+    if (r <= 0) {
+        n = 0;
+    } else if (r < 9) {
+        n = 1;
+    } else if (r < 0x22) {
+        n = 2;
+    } else if (r < 0x41) {
+        n = 3;
+    } else if (r < 0x53) {
+        n = 4;
+    } else if (r < 0x5C) {
+        n = 5;
+    } else if (r < 0x61) {
+        n = 6;
+    } else if (r < 0x63) {
+        n = 7;
+    } else {
+        n = 8;
+    }
+    card->unk1 = 0;
+    for (i = 0; i < n; i++) {
+        done = 0;
+        do {
+            b = &bits.unk0[func_80062B3C() & 7];
+            if (!(card->unk1 & *b)) {
+                card->unk1 |= *b;
+                done = 1;
+            }
+        } while (!done);
+    }
+    card->unk3 = tbl[id].unk1;
+    if (!(func_80062B3C() & 0x7F)) {
+        card->unk3 = 2;
+    }
+}
 
 CardInfo *func_80062B30(void) {
     return D_800121C8;
