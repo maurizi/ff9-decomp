@@ -9781,7 +9781,68 @@ void func_8004883C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80048A5C);
+/* Nearest kind-3 object whose script has entry `key` and that func_80053124
+ * accepts for p's position. */
+static inline Unk8004AB64 *func_80048A5C_find(Unk8004AB64 *p, s32 key) {
+    Unk8004AB64 *found = NULL;
+    s32 x = p->unk14.vx;
+    Unk16D8 *n = D_8007AECC->unk16D8;
+    s32 z = p->unk14.vz;
+    Unk8004AB64 *o;
+
+    for (; n != NULL; n = n->unk0) {
+        o = n->unk4;
+        if (o->unk5 == 3 && func_800384D0_find(o->unk6, key) != NULL && func_80053124(o, x, z)) {
+            found = o;
+            break;
+        }
+    }
+    return found;
+}
+
+void func_80048A5C(Unk8004AB64 *p) {
+    s32 btn;
+    s32 t;
+    Unk8004AB64 *o;
+
+    t = func_8004E8EC();
+    btn = t & (D_8007B708 == 1 ? 0xA0000 : 0x20000);
+    if (btn && (o = func_80038618(p, 4, NULL)) != NULL) {
+        D_8007AE20 = func_800531D0(p, o, p->unk14.unk22);
+        if ((u32)(D_8007AE20 + 0x3FF) < 0x7FF) {
+            p->unk93 = o->unk7;
+            if (btn == 0x80000 && func_800384D0(o, 1, 8, 0)) {
+                return;
+            }
+            if (func_800384D0(o, 1, 3, 0)) {
+                return;
+            }
+        }
+        o = NULL;
+    } else {
+        o = func_80038618(p, 2, NULL);
+    }
+    if (o != NULL) {
+        func_800384D0(o, 1, 2, 0);
+    }
+    if (btn) {
+        o = func_80048A5C_find(p, 3);
+        if (o != NULL) {
+            if (btn == 0x80000 && func_800384D0(o, 1, 8, 0)) {
+                return;
+            }
+            func_800384D0(o, 1, 3, 0);
+            o = NULL;
+        } else {
+            o = func_80048A5C_find(p, 2);
+        }
+    } else {
+        o = func_80048A5C_find(p, 2);
+    }
+    if (o != NULL) {
+        func_800384D0(o, 1, 2, 0);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80048E80);
 

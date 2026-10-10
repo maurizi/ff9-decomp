@@ -3695,6 +3695,7 @@ static inline s32 func_80037ACC_chr(s32 i) {
 
 /* func_80037D6C (script system variables) */
 extern s32 D_8007AE20;
+void *func_80038618(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
 extern s32 D_8007AEC4;
 s32 func_800C1B5C(u8 *);
 s32 func_800CA774(void);
