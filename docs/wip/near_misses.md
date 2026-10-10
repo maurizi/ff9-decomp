@@ -19,7 +19,6 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   copy), 80054650 74/142 (a3 vs t2), 80062E3C (separate giv for node+4), 8003595C.
 - 800579B4 matches alone (243/243) but breaks 800584C8 unless 80057D80 (215/230) and 80058118
   (229/236) are also C; both differ only in LFO temp regs (a0 vs v1). Drafts build/b36.c, b37.c.
-<<<<<<< HEAD
 
 ## ovl_0b (battle)
 - Register allocation / scheduling (left as INCLUDE_ASM): C9A28 (2 insns), AB07C, F5064, CBA58, C9794,
@@ -28,7 +27,6 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   inverted), E8B28, EE7F8, EE938, D0E14, AB810, EFD1C, C9374, AE4FC, ED02C, ED7C0, E1534.
 - Operand order seems to need byte-offset pointer arithmetic: DCCE4, BE1E0.
 - Odd argument-slot stack use: E4A3C.
-=======
 - Large-function pass 2 (drafts in the agent worktree's build/nm_<addr>.c; "~N" = differing insns):
   80047B90 ~35 (needs &v held in s0 with m[1][1] stored via s0+0x10), 80024BD8 ~12 (POLY_G4 store
   scheduling), 8005A320 ~17 (D_80080A70.unkC mask association, relocation scheduling), 8005C8BC ~15
@@ -37,4 +35,3 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   helper shape unknown), 8001DE50 (draft only), 80030EE4 (dead copy of arg2; maybe libgte RotMatrix*).
   Also 8005CF04 ~75 (v/old vs %hi(D_80080A10) s-register priority), 8004DCEC (window-init inline
   boundary; caller stores get rescheduled), 8005D6BC ~76 (&D_80083158 hoisted to fp, tick count spilled).
->>>>>>> worktree-agent-a1c7498744c363cc2
