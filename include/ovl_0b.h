@@ -3785,4 +3785,30 @@ void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
 #define gte_gpl12() __asm__ volatile(GTE_NOPS ".word\t0x4BA8003E")
 #define gte_gpl0() __asm__ volatile(GTE_NOPS ".word\t0x4BA0003E")
 
+/* work area of the effect step func_800E4C88 */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 unk1; /* phase */
+    u8 unk2; /* unit id */
+    u8 unk3;
+    u8 unk4;
+    u8 unk5;
+    u16 unk6; /* frame */
+    s32 unk8;
+    s16 unkC[4];
+    s16 unk14[4];
+    s16 unk1C[4];
+    Pool6CEntry *unk24;
+} Unk800E4C88; /* 0x28 */
+
+void func_800E750C(s32, s16 *);
+void func_800E769C(s32, s32, s16 *);
+void func_800E60A4(s32, s32);
+Pool6CEntry *func_800E4A3C(s32, s32, s16 *, s16 *);
+void func_800E8C84(s32);
+void func_800E8D14(void);
+extern u8 D_800FEC53; /* D_800FEC40.unk10.b[3] */
+extern s32 D_800FEC5C; /* D_800FEC40.unk1C */
+
+
 #endif

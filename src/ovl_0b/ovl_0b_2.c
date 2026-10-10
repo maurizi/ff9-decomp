@@ -4856,7 +4856,229 @@ void func_800E4C54(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4C88);
+s32 func_800E4C88(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 *arg4) {
+    s16 v[4];
+    s32 t;
+    s32 a;
+    s32 b;
+    s32 *q;
+    s32 k;
+    s32 c;
+
+    if (arg0 == 0) {
+        *arg4 = 0x28;
+    } else if (arg0 == 1) {
+        q = arg4;
+        arg1->unk1 = 0;
+        arg1->unk6 = 0;
+        arg1->unk2 = (q[1] & 0xF) + 0x10;
+        arg1->unk3 = q[0];
+        arg1->unk24 = NULL;
+        if (arg2->unk0->unk1C & 8) {
+            func_800E8C84(0);
+        }
+        if (arg2->unkC->unk27 != 0 && arg1->unk3 != 0xFF) {
+            if (arg2->unkC->unk27 == 1) {
+                arg1->unk3 += 8;
+            } else {
+                arg1->unk3 = 0xFF;
+            }
+        }
+        if (arg2->unkC->unk40 & 4) {
+            arg1->unk2 = 0x11;
+            arg1->unk3 = 0x10;
+        }
+        arg1->unk0 = (u8)q[1] >> 4;
+        arg1->unk4 = ((u32)D_800FEC40.unk1C & 0x3000) >> 12;
+        D_800FEC40.unk10.b[2] = 0;
+        D_800FEC40.unk10.b[3] = 0;
+        a = arg2->unkC->unk40 & 1;
+        c = func_800E788C(arg1->unk2);
+        arg1->unk8 = 100;
+        func_800E4C04(arg1->unk2, 1, 0);
+        if ((a != 0 || arg1->unk0 == 0xF) && c == 0) {
+            arg1->unk5 = 2;
+            arg1->unk1 = 2;
+        } else if (c != 0) {
+            arg1->unk5 = 1;
+            arg1->unk1 = 2;
+            if (a == 0 && arg1->unk0 != 0xF) {
+                func_800E769C(arg1->unk2, 0, arg1->unkC);
+                arg1->unk24 = func_800E4A3C(arg1->unk2, 4, arg1->unkC, arg1->unk14);
+            } else {
+                arg1->unk24 = NULL;
+            }
+        } else if (arg2->unkC->unk40 & 2) {
+            arg1->unk5 = 3;
+            arg1->unk1 = 2;
+        } else {
+            arg1->unk5 = 0;
+        }
+    } else {
+    t = *arg3;
+    switch (arg1->unk1) {
+    case 0:
+        if (func_800E4218(arg1->unk2, arg1->unk3, t) != 0) {
+            b = arg1->unk5;
+            if (b != 3) {
+                func_800D85AC(arg1->unk2, 0x1A);
+                arg1->unk1 = 1;
+                goto set_t;
+            }
+            func_800D85AC(arg1->unk2, 0x1F);
+            arg1->unk1 = b;
+            func_800E8D14();
+            goto set_t;
+        }
+        break;
+    case 1:
+        if (arg1->unk3 != 0xFF && (s16)D_800FEC42 != 0xED) {
+            func_800E750C(arg1->unk3, v);
+            func_800E436C(arg1->unk2, v, (s32)arg1->unk1C, t, 0);
+        }
+        if (t >= func_800D87D0(arg1->unk2) - 1) {
+            func_800D85AC(arg1->unk2, 0x1B);
+            t = -1;
+            arg1->unk1 = 2;
+            func_800E750C(arg1->unk2, arg1->unkC);
+            arg1->unk24 = func_800E4A3C(arg1->unk2, arg1->unk0, arg1->unkC, arg1->unk14);
+            func_800E4C04(arg1->unk2, 0, 0);
+            func_800E8D14();
+        }
+        break;
+    case 2:
+        if (arg1->unk24 != NULL && arg1->unk24->unk30 == -1) {
+            arg1->unk24 = NULL;
+        }
+        if (t == 0) {
+            k = ((u32)D_800FEC5C & 0x300) >> 8;
+            if (k != 3) {
+                func_800E60A4(k, arg1->unk0 == 1 ? 0xC : 0x14);
+            }
+        }
+        b = t - 9;
+        if (arg1->unk0 == 1) {
+            if (b >= 0) {
+                if (b < 16) {
+                    a = (b * 255) >> 4;
+                } else {
+                    a = 255;
+                }
+                if (b == 0) {
+                    arg1->unk8 = func_800D87D0(arg1->unk2);
+                    if (arg2->unkC->unk40 & 1) {
+                        func_800E8D14();
+                    }
+                }
+                switch (arg1->unk4) {
+                case 0:
+                    func_800D0A0C((u32 *)(arg2->unk20 + 1), 1, a, a, a);
+                    if (b == 16) {
+                        func_800E813C(2, 0);
+                    }
+                    break;
+                case 1:
+                    func_800D0A0C((u32 *)(arg2->unk20 + 1), 2, a, a, a);
+                    if (b == 16) {
+                        func_800E813C(2, 0);
+                    }
+                    break;
+                case 2:
+                    func_800E813C(2, 0x80 - (a >> 1));
+                    break;
+                case 3:
+                    func_800E813C(0, 0x80 - (a >> 1));
+                    break;
+                }
+            }
+            if (t % arg1->unk8 == 0 && t >= 25 && arg1->unk6 >= 27 && D_800FEC40.unk10.b[2] != 0) {
+                func_800E3D54(arg1->unk24);
+                D_800FEC40.unk10.b[3] = 1;
+                D_800FEC40.unk25 = 1;
+                arg2->unk2C->unk52 = 0;
+                func_800E4C04(arg1->unk2, 2, 0);
+                return 1;
+            }
+        } else if (arg1->unk5 == 0) {
+            if (t % func_800D87D0(arg1->unk2) == 0 && t > 0 && arg1->unk6 >= 27 && D_800FEC52 != 0) {
+                func_800D85AC(arg1->unk2, 0x1C);
+                t = -1;
+                arg1->unk1 = 3;
+            }
+        } else if (arg1->unk5 == 1) {
+            if (D_800FEC52 != 0 && arg1->unk6 >= 27) {
+                arg1->unk1 = 3;
+            set_t:
+                t = -1;
+            }
+        } else if (arg1->unk5 == 3) {
+            if (D_800FEC52 != 0) {
+                arg1->unk1 = 0;
+                goto set_t;
+            }
+        } else if (D_800FEC40.unk10.b[2] != 0) {
+            D_800FEC40.unk10.b[3] = 1;
+            func_800E4C54();
+            arg2->unk2C->unk52 = 0;
+            func_800E4C04(arg1->unk2, 2, 0);
+            func_800E8D14();
+            return 1;
+        }
+        break;
+    case 3:
+        if (t == 0 && arg1->unk5 != 1) {
+            arg2->unk2C->unk52 = 0;
+            func_800E4C04(arg1->unk2, 0, 1);
+        }
+        if (arg1->unk5 != 3) {
+            if (arg1->unk24 != NULL) {
+                if (arg1->unk24->unk30 == -1) {
+                    arg1->unk24 = NULL;
+                }
+                if (arg1->unk24 != NULL && t < 5) {
+                    k = (t << 12) >> 2;
+                    arg1->unk24->unk20 = 0x1000 - k;
+                    if (arg1->unk24 != NULL) {
+                        arg1->unk24->unk1C = k * 2 + 0x1000;
+                    }
+                    if (t != 4) {
+                        goto skip;
+                    }
+                    func_800E3D54(arg1->unk24);
+                }
+            }
+            D_800FEC53 = 1;
+            func_800E4C54();
+        } else {
+            D_800FEC53 = 1;
+            if (arg1->unk3 != 0xFF) {
+                func_800E750C(arg1->unk3, v);
+                func_800E436C(arg1->unk2, v, (s32)arg1->unk1C, t, 0);
+            }
+        }
+    skip:
+        if (arg1->unk5 == 1) {
+            if (t >= 5) {
+                return 1;
+            }
+            break;
+        }
+        if (t >= func_800D87D0(arg1->unk2) - 1) {
+            if (arg1->unk5 == 0 || arg1->unk5 == 3) {
+                func_800D85AC(arg1->unk2, 9);
+            }
+            func_800E4C04(arg1->unk2, 2, 0);
+            D_800FEC53 = 1;
+            func_800E4C54();
+            return 1;
+        }
+        break;
+    }
+    *arg3 = t;
+    arg1->unk6++;
+    }
+    return 0;
+}
 
 s32 func_800E5538(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 *arg4) {
     s32 t;
