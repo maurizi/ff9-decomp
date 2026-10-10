@@ -1,4 +1,4 @@
-/* 5 rows differ: only the x += adv tail. The original loads adv into v1 right after the jal and puts the add in the bne delay slot; we load it into v0 after the pkt copy. Needed: three separate func_8002B7B0 calls (jump2 cross-jumps them at the lw a3,0xC(v0)), a code temp read from s[1] before s++, *(tbl->unkC + c) instead of tbl->unkC[c] (operand order of the addu), and do { } while (0) around x += adv (fixes the x/font s1/s2 swap). */
+/* 4 rows differ: only the x += adv tail. The original loads adv into v1 right after the jal and puts the add in the bne delay slot; we load it into v0 after the pkt copy. Needed: three separate func_8002B7B0 calls (jump2 cross-jumps them at the lw a3,0xC(v0)), a code temp read from s[1] before s++, *(tbl->unkC + c) instead of tbl->unkC[c] (operand order of the addu), and an identical-branch if (x) around the trailing s++ (replaces the old do { } while (0) around x += adv, 5 rows). Pass 7: second-level dup/wrap sweeps, x += adv before s++, for-loop increments and the permuter (best 6) did not move the adv load. */
 #include "ff9.h"
 
 u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
@@ -35,8 +35,12 @@ u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
         } else {
             pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
         }
-        s++;
-        do { x += adv; } while (0);
+        if (x) {
+            s++;
+        } else {
+            s++;
+        }
+        x += adv;
     }
     setlen(pkt, 1);
     ((DrTpageWords *)pkt)->code = 0xE100061E;

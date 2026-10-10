@@ -4,6 +4,29 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 7 matched 5 (8004B85C, 800378C4, 80035214, 80038618 and 800378C4's shared search). What worked:
+  - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
+    parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
+    `s = q->unkF; if (best) f = s; else f = q->unkF;`, then dup: identical-branch `if (a)` around
+    `rr = p->unk3C * 4`).
+  - 8004B85C: `lt = kind < 14;` then an identical-branch `if (kind) ge = lt ^ 1; else ge = lt ^ 1;`
+    and the `slot >= 8` test written first. The search is now `func_8004B85C_find`/`_key` in ff9.h.
+  - 80035214: one temp `v` for the loaded coordinate in both compare blocks (`v = m->unk2; t = c->y
+    + 16; d2 = v - t; ...`), and in the second block `x = D_80077DE8.unk0 - 19` (reloaded after the
+    `|= 1` store) but `x = v + 18`. `&D_80077DE8.unk10` links to the original's D_80077DF8
+    reference, so verify passes; cmp.py still flags those two rows.
+  - Draft updates: 8002995C 5 -> 4 (identical-branch `if (x)` around `s++`), 8005A320 9 -> 6 with
+    the symbol-aware cmp (`~(D_80080A70.unk0 | D_80083174)` order and a do-while), 80059414 12 -> 11
+    (loop counter v reused for `D_80080A10->unk8`), 8004DAD0 30 -> 28 (an if/else-if chain with one
+    shared `return 1` keeps the first SE call's own jalr). Headers have the details.
+  - No progress: 80024BD8 (dup/wrap sweeps, rgbc0/xy3 orders), 8003595C (dup sweep makes it worse,
+    720 orders of the six setup statements give 12 at best), 8002E718 (unk5 local, operand orders,
+    flag variable; the permuter only reaches 7 with `new_var2 = 6`), 80047B90 (moving `pv = &v` does
+    nothing: pv is rematerialised as a frame address, and the original keeps `&v` in s0 while
+    `&mat` is rematerialised per call), 80048E80.
+  - 80062E3C: reusing the u/v params for u0/v0 matches the original's a3/t1. The original also
+    copies arg0 to t2 first (`prim = arg0`, then `s = prim`, `prim += n * 40`), but that form
+    scores worse (134). The header's word 1 still gets a separate s+4 giv.
 - Pass 6 matched 10 (8002ECA0, 80029D60, 80029B4C, 8001C8B0, 80039444, 80031284, 800585E0,
   8005CF04, 8004F9A0, 80038278). What worked:
   - The identical-branch if is a general register-allocation lever, not just an rsin quirk:
@@ -48,10 +71,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   `gte_gpf12_b/_n1` in psyq.h. Sin for x uses the raw `r->vx` (`ISIN(sx, r->vx, x)`), y/z use the
   masked value. 80031718 needed a `do { } while (0)` around the second gpf block, 80031284 an
   identical-branch `if (mode)` around the y quadrant negation.
-- Drafts in docs/wip/main_*.c (first line gives the status): 8004B85C (3), 80038618 (3),
-  8002995C (5), 8005A320 (6), 80024BD8 (9), 80048E80 (10), 80047B90 (11), 8003595C (12),
-  80059414 (12), 80035214 (13), 8002E718 (16), 8004DAD0 (30), 80062E3C and 80054650 (first
-  drafts, ~100 rows).
+- Drafts in docs/wip/main_*.c (first line gives the status; updated in pass 7): 8002995C (4),
+  8005A320 (6), 80024BD8 (9), 80048E80 (10), 80047B90 (11), 80059414 (11), 8003595C (12),
+  8002E718 (16), 8004DAD0 (28), 80062E3C and 80054650 (first drafts, ~100 rows). 8004B85C,
+  80038618 and 80035214 are matched.
   - 8004B85C: the same kind < 14 search is inlined in 800378C4, so fixing the lt/ge register pair
     fixes both. Tried ~25 formulations (bool temps, ^ 1, ?:, ==/!= of two compares, slot >= 8
     branch order) and dup/wrap sweeps; best is 3-4 rows.
