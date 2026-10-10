@@ -1161,6 +1161,7 @@ void func_80049B48(Unk8004AB64 *);
 s32 func_80047AB8(Unk8004AB64 *, s32);
 void func_80047B90(Unk8004AB64 *, Unk80047B90 *);
 s32 func_80052DEC(s32, s32, s32); /* distance */
+s32 func_80052EEC(s32);
 s32 func_80052E48(s32, s32, s32);
 
 typedef struct Unk8007AECCNode {
