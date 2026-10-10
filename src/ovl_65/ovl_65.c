@@ -995,7 +995,27 @@ void func_801F2538(void) {
     func_801F28F0();
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2560);
+void func_801F2560(s32 i, u32 exp) {
+    u32 need;
+    Character *c = D_8006794C->unk1C->unk54C[i];
+
+    if (exp != 0) {
+        if (c->unkC > 9999998) {
+            c->unkC = 9999999;
+            return;
+        }
+        D_801F7A78.unk24.unk1C[i].unk8 += exp;
+        c->unkC += exp;
+        if (c->unkC > 9999998) {
+            c->unkC = 9999999;
+        }
+        if (c->unkB < 99 && (need = D_8006DF5C[c->unkB]) <= c->unkC) {
+            do {
+                func_801F29BC(i);
+            } while (c->unkB < 99 && (need = D_8006DF5C[c->unkB]) <= c->unkC);
+        }
+    }
+}
 
 void func_801F269C(s32 arg0) {
     Popup *p = &D_801F7A78.unk258[arg0];
@@ -1205,7 +1225,46 @@ void func_801F2E24(void) {
     DrawSync(0);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2E58);
+u8 func_801F2E58(void) {
+    TextSize ts;
+    RECT rr;
+    u32 i;
+    u8 full;
+    u8 f;
+    Rewards *rw;
+    WinSlot *ws;
+    s32 n;
+    s32 k;
+
+    full = 0;
+    rw = &D_801F7A78.unk24;
+    ws = &D_801F7A78.unk348;
+    for (i = 0; i < rw->unkC; i++) {
+        n = rw->unk10[i][1];
+        if (n != func_80027D84(rw->unk10[i][0], n)) {
+            full = 1;
+        }
+    }
+    f = full;
+    if (rw->unk8 != 0xFF) {
+        func_8006238C(rw->unk8);
+    }
+    if (f) {
+        k = 0x10;
+        ts = func_8002AF70(func_80035774(0xA));
+        rr.x = D_801F7A78.unk368->unk0 + ((D_801F7A78.unk368->unk4 - k - ts.w) >> 1);
+        rr.y = D_801F7A78.unk368->unk2 + ((D_801F7A78.unk368->unk6 - k - ts.h) >> 1);
+        rr.w = ts.w + 0x10;
+        rr.h = ts.h + 0xF;
+        ws->unk0 = func_8002DC54(&rr, 6, 2);
+        func_8002E2EC(ws->unk0, func_801F3434);
+        func_8002E2FC(ws->unk0, (void (*)(Window *))func_801F347C);
+        func_8002CF20(ws->unk0, 0);
+        func_8002E31C(ws->unk0, 1);
+        func_8002E304(ws->unk0, D_800704C8);
+    }
+    return !f;
+}
 
 void func_801F2FE8(Window *w) {
     Window *r;

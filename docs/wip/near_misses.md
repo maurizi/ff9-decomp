@@ -310,3 +310,32 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     words with a mask), most likely the libpress run-level/VLC helper or Square's own asm.
     None of them can come from gcc; they should be named as library/asm in config and dropped
     from progress.
+- Menus/FMV pass 4: matched 36 F08F4 (new, after the D_801EDF1C split), 36 F2664, 65 F2560, 65 F2E58,
+  38 EE740, 33 EF900, 33 F2AB4 (new), 33 F1150 (new), 3c F6D34. New drafts in docs/wip/: 33 EF644 (33),
+  65 EF890 (72, s-register naming). Improved: 65 F1848 (35 -> 17), 34 EFC20 (62 -> 46), 3a F459C (89 -> 57). Unchanged: 36 F1A48 (5), 39 F973C (3).
+  Tricks that matched things in this pass:
+  - A function called with a u16-returning prototype in main.c but used without `andi` here is
+    declared s32 in the overlay header (36 F08F4: func_8002C7F0/func_8002C830).
+  - A loop that gcc reverses (dbra, counter 99 -> bgez) with a strength-reduced pointer is an
+    ascending `for (i = 0; i < 100; i++) a[i] = 0;` (36 F08F4).
+  - Register swaps around a table load: hold the loaded value in its own local inside the condition,
+    `(need = D_8006DF5C[c->unkB]) <= c->unkC` (65 F2560).
+  - A u8 flag returned as `!f` instead of `f ^ 1` (65 F2E58); that alone fixed the eager andi copy.
+  - A loop-invariant base that the original keeps in an s-register while a second one is rebuilt each
+    iteration: assign the pointer inside the loop (`tp = t.v;`) and compute the byte offset in its own
+    local (`off = idx * sizeof(StatusEntry); k = ((StatusEntry *)((u8 *)tp + off))->unk0;`), which also
+    gives the original's `addu base, off` operand order (38 EE740).
+  - `do { f(x); } while (0);` around one call in an if/else (36 F2664) and around `ok = 0;` (3c F6D34)
+    fixes s-register assignment; found by the permuter. build/dwsweep.py and build/dwgreedy.py
+    (agent worktree scratch) wrap each statement in turn and score it.
+  - A parameter reused as a loop counter (`for (slot = 0; ...)` in 33 EF900) plus the loop preheader
+    order `m2 = m; slot = 0; a = ...; for (; ...)` (found with a bounded line permutation,
+    build/permlines.py).
+  - A local holding a call's constant argument (`k = 1; ... func_8002BAE4(r->unk0, buf, 5, k);`) and
+    a copy of a flag into a reused local before the final calls (`id = ok;`) fixed 3c F6D34's
+    s1/s2/s3 order (permuter).
+  - A store whose address the original computes before the `if` that sets the value goes through a
+    byte-offset struct pointer: `d = (AbilityMenu *)((u8 *)&D_801FC840 + i); ... d->unk25C[0] = lv;`
+    (33 F1150).
+  - `(l = &D_801FC840.unk4)->unk2` inside the condition gives the original's `addiu v1, a0, 4` without
+    disturbing the a0/a1 assignment that a separate `l = ...;` statement changes (33 F2AB4).

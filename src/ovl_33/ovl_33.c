@@ -344,7 +344,66 @@ void func_801EF560(void) {
 
 INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF644);
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF900);
+void func_801EF900(s32 slot, s32 arg1) {
+    EquipMenu *m;
+    EquipMenu *m2;
+    UnkBlink *b;
+    Character *c;
+    AbilityEntry *a;
+    Unk80069018 *it;
+    s32 j;
+    s32 nItems;
+    s32 nAbils;
+    s32 id;
+
+    b = &D_801FBF84.unk770;
+    c = D_8006794C->unk1C->unk54C[slot];
+    m = &D_801FBF84;
+    nItems = 0;
+    nAbils = 0;
+    func_80028D08(b, m->unk2, slot, arg1);
+    if (arg1 != 0) {
+        m->unk1 = 5;
+    }
+    m->unk2 = slot;
+    if (c->unk34.b.row < 16) {
+        m2 = m;
+        slot = 0;
+        a = D_8006CB28[c->unk34.b.row];
+        for (; slot < 0x30; slot++) {
+            if (a->unk0 != 0) {
+                if (a->unk0 < 0xC0) {
+                    D_801FBF84.unk668[nItems].unk0 = a->unk0;
+                    D_801FBF84.unk668[nItems].unk1 = func_801F0C10(a->unk0, c);
+                    nItems++;
+                } else {
+                    *(nAbils + m2->unk728) = a->unk0;
+                    nAbils++;
+                }
+            }
+            a++;
+        }
+    }
+    func_8002EDFC(&D_801FBF84.unk8[0], nItems, 8, 2, 0x80);
+    func_8002EDFC(&D_801FBF84.unk8[1], nAbils, 8, 2, 0x80);
+    D_801FBF84.unk769 = nItems;
+    D_801FBF84.unk76A = nAbils;
+    func_8001D898(D_801FBF84.unk68, 0, 0x100);
+    for (slot = 0; slot < 5; slot++) {
+        id = c->unk39[slot];
+        if (id != 0xFF) {
+            it = &D_80069018[id];
+            for (j = 0; j < 3; j++) {
+                D_801FBF84.unk68[it->unkC[j]] |= 1 << slot;
+                D_801FBF84.unk168[it->unkC[j]][slot] = id;
+            }
+        }
+    }
+    D_801FBF84.unk4[0] = c->unk10 != 0 && !(c->unk38 & 9) && nItems != 0 && D_8007AFD3 == 0;
+    D_801FBF84.unk4[1] = func_80034A30(c);
+    func_801F1048();
+    func_801F0410();
+}
 
 s32 func_801EFB8C(s32 id, Character *c) {
     Unk801F34EC *info;
@@ -862,7 +921,38 @@ void func_801F1048(void) {
 void func_801F1148(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F1150);
+void func_801F1150(void) {
+    s32 i;
+    u8 lv;
+    Character *c;
+    AbilityMenu *d;
+
+    D_801FC840.unk3 = 0xFF;
+    D_801FC840.unk0 = 0;
+    D_801FC840.unk1 = 1;
+    D_801FC840.unk2 = 0;
+    D_801FC840.unk260 = 0;
+    func_8003575C(D_801EE648);
+    func_8003556C(D_800355DC);
+    func_80035674(1);
+    setRECT(&D_801FC840.unk14, 8, 8, 0xE4, 0x1A);
+    setRECT(&D_801FC840.unk1C, 8, 0x26, 0x8C, 0xB6);
+    setRECT(&D_801FC840.unk24, 0x94, 0x26, 0xA0, 0x62);
+    setRECT(&D_801FC840.unk2C, 0x94, 0x8A, 0xA0, 0x52);
+    setRECT(&D_801FC840.unk34, 0x94, 0x26, 0xA0, 0x62);
+    for (i = 0; i < 4; i++) {
+        lv = 0;
+        c = D_8006794C->unk1C->unk54C[i];
+        d = (AbilityMenu *)((u8 *)&D_801FC840 + i);
+        if (c != NULL) {
+            lv = c->unk17;
+        }
+        d->unk25C[0] = lv;
+    }
+    func_80063118(&D_801FC840.unk23C, 0, 1);
+    func_801F3278(D_80077E50.unk3, 0);
+    func_80028CF8(&D_801FC840.unk24C, D_80077E50.unk3, func_801F3264);
+}
 
 void func_801F12C8(void) {
     u8 slot;
@@ -1354,7 +1444,35 @@ void func_801F2894(void) {
     func_8002EDFC(&D_801FC840.unk4, n, 6, 1, 0x62);
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F2AB4);
+void func_801F2AB4(void) {
+    Character *c;
+    u8 *buf;
+    s32 id;
+    UnkPair *e;
+    MenuList *l;
+
+    c = D_8006794C->unk1C->unk54C[D_801FC840.unk3];
+    D_80077DE8.unk8 = NULL;
+    if (D_801FC840.unk1 == 1) {
+        buf = D_801FC740;
+        D_80077DE8.unk8 = buf;
+        func_8002BE44(0, D_801F8988);
+        func_8002BD54(D_80077DE8.unk8, func_80035774(D_801FC840.unk0 + 3));
+        func_8002AD38(D_80077DE8.unk8, func_80035774(7));
+    } else if (D_801FC840.unk1 == 2) {
+        id = c->unk39[D_801FC840.unk2];
+        if (id == 0xFF) {
+            D_80077DE8.unk8 = func_80035774(6);
+        } else {
+            D_80077DE8.unk8 = D_801F8990 + D_80069018[id].unk2;
+        }
+    } else if (D_801FC840.unk1 == 3 && (l = &D_801FC840.unk4)->unk2 != 0) {
+        e = D_801FC840.unk3C + (l->unk5 + l->unk6);
+        if (e->unk1 != 0) {
+            D_80077DE8.unk8 = D_801F8990 + D_80069018[e->unk0].unk2;
+        }
+    }
+}
 
 void func_801F2C0C(void) {
     func_801F2C78();

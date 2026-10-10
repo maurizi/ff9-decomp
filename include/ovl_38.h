@@ -71,6 +71,14 @@ typedef struct {
     s32 unk4;
     s32 unk8;
 } StatusEntry;
+typedef struct {
+    StatusEntry v[48];
+} StatusTable;
+typedef struct {
+    u8 s[0x11E];
+} StatusPool; /* label strings */
+extern StatusTable D_801EDF04;
+extern StatusPool D_801EE144;
 
 /* main exe: candidates for ff9.h */
 extern s32 D_8007042C;
