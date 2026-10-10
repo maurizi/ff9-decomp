@@ -105,4 +105,6 @@ void func_801EF9D4(void);
 void func_801EFAF8(void);
 void func_801EFB08(void);
 
+extern const u8 D_801EE264[]; /* name strings */
+
 #endif

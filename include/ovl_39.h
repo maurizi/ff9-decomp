@@ -30,12 +30,16 @@ typedef struct {
 } __attribute__((aligned(2))) SaveName; /* 10 bytes, copied as a halfword-aligned block */
 
 typedef struct {
+    u8 v[10];
+} Name10; /* character name, byte-aligned copy */
+
+typedef struct {
     s32 v[7];
 } SaveBlk1C;
 
 typedef struct {
     u8 unk0; /* present */
-    u8 pad1;
+    u8 unk1;
     u8 unk2[0xA]; /* name */
     u8 unkC; /* level */
     u8 padD[3];
@@ -288,6 +292,10 @@ typedef struct {
 } Unk801F6D24;
 
 /* main exe: candidates for ff9.h */
+Unk8004AB64 *func_8004AE00(void);
+u8 func_800B5074(void); /* other overlay */
+void func_801F9120(u8 *, s32);
+s32 func_801F9688(void);
 void func_8002397C(void);
 extern RECT D_801EDF14;
 extern s32 D_801FB050[]; /* text index per mode */

@@ -107,6 +107,14 @@ typedef struct {
 } Unk801F7A78;
 
 extern Unk801F7A78 D_801F7A78;
+
+typedef struct {
+    u8 pad0[0xE];
+    u16 unkE; /* name offset into D_801F494C */
+} Ovl65Ability; /* active ability table */
+extern Ovl65Ability D_801F3D4C[];
+extern u8 D_801F494C[]; /* ability names */
+extern u8 D_801F4F94[]; /* support ability names */
 extern RECT D_801F81F8;  /* level-up window rect */
 extern RECT *D_801F8200; /* window it is placed under */
 extern u8 D_801F5228[];  /* level-up text */

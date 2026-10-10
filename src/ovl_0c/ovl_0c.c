@@ -4057,7 +4057,32 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7CCC);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B9808);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BA1E4);
+void func_800BA1E4(void) {
+    s32 i;
+    s32 x;
+    s32 y;
+    s32 v;
+    s32 u;
+
+    i = 0;
+    D_800D2FF8[0].unk0 = 0;
+    D_800D2FF8[0].unk2 = 0;
+    D_800D2FF8[0].unk4 = 0;
+    D_800D2FF8[0].unk5 = 0;
+    D_800D2FF8[0].unk8 = 0;
+    do {
+        v = i / 8;
+        x = (i % 8) * 16 + 0x300;
+        y = i + 0xF0;
+        u = (i % 4) << 6;
+        D_800D2FF8[i + 1].unk0 = getTPage(0, 1, x, 0x100);
+        D_800D2FF8[i + 1].unk2 = getClut(0x300, y);
+        D_800D2FF8[i + 1].unk4 = u;
+        D_800D2FF8[i + 1].unk5 = v << 7;
+        D_800D2FF8[i + 1].unk8 = 0;
+        i++;
+    } while (i < 16);
+}
 
 void func_800BA29C(void) {
     func_800BA1E4();
@@ -5650,7 +5675,41 @@ void func_800BE984(void) {
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BEECC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BF544);
+void func_800BF544(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVECTOR arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9) {
+    CVECTOR c;
+    u32 *ot;
+
+    ot = (u32 *)D_800CF460[*D_800CF45C];
+    c.r = func_800B81C0(arg4.r, arg5.r, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    c.g = func_800B81C0(arg4.g, arg5.g, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    c.b = func_800B81C0(arg4.b, arg5.b, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    if (arg9 == 0) {
+        setXYWH((POLY_F4 *)D_800CF404, arg0 - arg2 + arg7, arg1 - arg3 + arg8, arg2 * 2 + 1, arg3 * 2 + 1);
+        setRGB0((POLY_F4 *)D_800CF404, c.r, c.g, c.b);
+        setPolyF4((POLY_F4 *)D_800CF404);
+        addPrim(&ot[10], (POLY_F4 *)D_800CF404);
+        D_800CF404 += sizeof(POLY_F4);
+    } else {
+        setXYWH((POLY_FT4 *)D_800CF404, arg0 + arg7 - 1, arg1 + arg8 - 1, 4, 4);
+        setUV4((POLY_FT4 *)D_800CF404, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
+        setRGB0((POLY_FT4 *)D_800CF404, c.r, c.g, c.b);
+        setPolyFT4((POLY_FT4 *)D_800CF404);
+        ((POLY_FT4 *)D_800CF404)->tpage = 0x2B;
+        ((POLY_FT4 *)D_800CF404)->clut = 0x3FEC;
+        setSemiTrans((POLY_FT4 *)D_800CF404, 1);
+        addPrim(&ot[10], (POLY_FT4 *)D_800CF404);
+        D_800CF404 += sizeof(POLY_FT4);
+        setXYWH((POLY_FT4 *)D_800CF404, arg0 + arg7 - 1, arg1 + arg8 - 1, 4, 4);
+        setUV4((POLY_FT4 *)D_800CF404, 0, 0xFA, 4, 0xFA, 0, 0xFE, 4, 0xFE);
+        setRGB0((POLY_FT4 *)D_800CF404, 0x60, 0x60, 0x60);
+        setPolyFT4((POLY_FT4 *)D_800CF404);
+        ((POLY_FT4 *)D_800CF404)->tpage = 0x4B;
+        ((POLY_FT4 *)D_800CF404)->clut = 0x3FEC;
+        setSemiTrans((POLY_FT4 *)D_800CF404, 1);
+        addPrim(&ot[10], (POLY_FT4 *)D_800CF404);
+        D_800CF404 += sizeof(POLY_FT4);
+    }
+}
 
 #define TILE(x0_, y0_, x1_, y1_, u0_, v0_, u1_, v1_, cl)                                   \
     setXY4((POLY_FT4 *)D_800CF404, x0_, y0_, x1_, y0_, x0_, y1_, x1_, y1_);              \

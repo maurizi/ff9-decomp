@@ -207,7 +207,54 @@ void func_801EF0A0(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EF258);
+void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
+    Character *c;
+    u8 *name;
+    u8 ok;
+    s32 id;
+    s32 max;
+    s32 cur;
+    s32 icon;
+    u8 flag;
+    ActiveAbility *a;
+    Unk8006D128 *sup;
+
+    c = D_8006794C->unk1C->unk54C[D_801F120C.unk2];
+    ok = func_80034A30(c);
+    if (ok && c->unk58[i] == 0) {
+        return;
+    }
+    id = D_8006CB28[c->unk34.b.row][i].unk0;
+    max = D_8006CB28[c->unk34.b.row][i].unk1;
+    if (id == 0) {
+        return;
+    }
+    cur = c->unk58[i];
+    icon = 0xBC;
+    if (id < 0xC0) {
+        a = &D_801EFC08[id];
+        name = D_801F0808 + a->unkE;
+        flag = !(a->unkB & 2);
+    } else {
+        sup = &D_8006D128[id - 0xC0];
+        name = D_801F0E50 + sup->unk2;
+        if (func_80034A04(c->unk88, id)) {
+            icon = 0xBD;
+        } else {
+            icon = 0xF4;
+        }
+        flag = 1;
+    }
+    if (draw) {
+        func_800275DC(x, y, z, icon, 0);
+        D_801F120C.unk7C = func_8002920C(x + 0x10, y, D_8007716C + z, name, 0, D_801F120C.unk7C);
+    }
+    if (ok) {
+        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, D_8007716C + z, cur, max, flag, 0, D_801F120C.unk7C);
+    } else {
+        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, D_8007716C + z, 1, 1, 0, 0, D_801F120C.unk7C);
+    }
+}
 
 void func_801EF494(void) {
     WinDef *w;

@@ -799,7 +799,43 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F1D94);
+void func_801F1D94(Window *w) {
+    Window *v;
+    WinSlot *s;
+    TileWords *t;
+    u8 *name;
+    s32 slot;
+    s32 icon;
+    s32 id;
+
+    v = w;
+    slot = w->unk50;
+    s = &D_801F7A78.unk1D8[slot];
+    id = s->unkA[s->unk6];
+    if (id < 0xC0) {
+        name = D_801F494C + D_801F3D4C[id].unkE;
+        func_800275DC(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
+    } else {
+        name = D_801F4F94 + D_8006D128[id - 0xC0].unk2;
+        if (func_80034A04(D_8006794C->unk1C->unk54C[slot]->unk88, id)) {
+            icon = 0xBD;
+        } else {
+            icon = 0xF4;
+        }
+        func_800275DC(w->unk0 + 6, w->unk2 + 7, w->unk18, icon, 0);
+    }
+    func_8002B5FC(v->unk0 + 0x16, v->unk2 + 6, w->unk18, name, 0);
+    setlen(D_80077170, 3);
+    t = (TileWords *)D_80077170;
+    t->rgbc = 0x62101010;
+    t->xy = (v->unk0 + 4) | ((v->unk2 + 4) << 16);
+    t->wh = (v->unk4 - 4) | ((v->unk6 - 4) << 16);
+    addPrim(&D_8007716C[w->unk18], t);
+    D_80077170 += sizeof(TileWords);
+    SetDrawTPage(D_80077170, 1, 1, 0x20);
+    addPrim(&D_8007716C[w->unk18], D_80077170);
+    D_80077170 += sizeof(DrTpageWords);
+}
 
 void func_801F1FEC(void) {
     s32 i;
