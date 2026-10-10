@@ -1290,6 +1290,7 @@ typedef struct {
     Unk8007BD44 *unkC;
 } Unk8007BD38;
 extern Unk8007BD38 D_8007BD38;
+u8 func_800EA27C(void); /* ovl_0b */
 
 typedef struct {
     u8 pad0[0x1C];
