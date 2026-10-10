@@ -75,7 +75,39 @@ void func_801EE650(void) {
     func_8002DEE4(&r, 0x1D, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_38/nonmatchings/ovl_38", func_801EE740);
+void func_801EE740(void) {
+    RECT r;
+    StatusTable t;
+    StatusPool pool;
+    RECT *w;
+    Character *c;
+    s32 i;
+    s32 y;
+    s32 k;
+    s32 off;
+    StatusEntry *tp;
+
+    w = &D_801F120C.unk8;
+    c = D_8006794C->unk1C->unk54C[D_801F120C.unk2];
+    t = D_801EDF04;
+    pool = D_801EE144;
+    r.w = 0x42;
+    r.h = 0x48;
+    r.x = w->x + 0xE4;
+    r.y = w->y + 8;
+    D_801EFBB4[1] = D_801EFBB8[c->unk34.b.row][0];
+    D_801EFBB4[2] = D_801EFBB8[c->unk34.b.row][1];
+    for (i = 0; i < 4; i++) {
+        tp = t.v;
+        y = i * 15 + 6;
+        off = D_801EFBB4[i] * sizeof(StatusEntry);
+        k = ((StatusEntry *)((u8 *)tp + off))->unk0;
+        D_801F120C.unk7C = func_8002920C(r.x + 0xC, r.y + y, D_8007716C + 25, pool.s + k, 0, D_801F120C.unk7C);
+    }
+    func_8002B524(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
+    func_8002DEE4(&r, 0x19, 2);
+    func_8002705C(&r, 0x19, 2);
+}
 
 void func_801EE9E8(void) {
     u8 buf[16];
