@@ -1,9 +1,8 @@
-/* WIP func_800C9794: 26 differing rows (build/cmp.py-style aligned diff). New in pass 7. Structure right (second loop walks a copy of src, func_800CA0A0 gets i as an extra third argument). Left: i is set to 0 before the func_800C1184 call (s4) instead of after the n loads (s3), so i/ofs swap s3/s4; flags/src stack slots swapped (0x14/0x10); recs computed as unk1*56+8 then +hdr instead of (hdr+8)+unk1*56. Moving i = 0, separate counters per loop: no change. */
+/* WIP func_800C9794: 14 differing rows (build/cmp.py). Pass 10: flags declared after src fixes the flags/src stack slots (0x14/0x10), and recs computed through a Battle1330 pointer (grp2 = hdr->unk8; recs = grp2 + hdr->unk1) gives (hdr+8)+unk1*56. Left: i (s16, both loops) and ofs swap s3/s4: ofs priority 13 refs/59 insns beats i's 12/73; an extra ofs reference in the third loop (dup-if hack) gets 5 rows, so ofs needs a longer life or i a shorter one; a separate counter for the second loop shifts everything (26). Earlier notes: New in pass 7. Structure right (second loop walks a copy of src, func_800CA0A0 gets i as an extra third argument). Left: i is set to 0 before the func_800C1184 call (s4) instead of after the n loads (s3), so i/ofs swap s3/s4; flags/src stack slots swapped (0x14/0x10); recs computed as unk1*56+8 then +hdr instead of (hdr+8)+unk1*56. Moving i = 0, separate counters per loop: no change. */
 #include "ovl_0b.h"
 
 void func_800C9794(void) {
     Battle *b;
-    u32 *flags;
     Battle1330 *grp;
     Battle11C020 *hdr;
     s16 i;
@@ -15,9 +14,11 @@ void func_800C9794(void) {
     Battle4880 *en;
     U16Pair *ofs;
     BtlCmd8 *src;
+    u32 *flags;
     BtlCmd8 *dst;
     BtlCmd8 *cmd;
     BtlUnit *u;
+    Battle1330 *grp2;
 
     b = D_8006794C->unk1C->unk8E4.battle;
     flags = &b->unk132C.unk0;
@@ -26,7 +27,8 @@ void func_800C9794(void) {
     b->unk132C.unk0 = (b->unk132C.unk0 & ~3) | (func_800C1184(flags) & 3);
     i = 0;
     n = hdr->unk2 + hdr->unk3;
-    recs = (Unk800C9D1C *)(hdr->unk8 + hdr->unk1);
+    grp2 = hdr->unk8;
+    recs = (Unk800C9D1C *)(grp2 + hdr->unk1);
     rec = recs;
     en = D_8006794C->unk1C->unk8E4.battle->unk4E8;
     ofs = (U16Pair *)(D_8006794C->unk1C->unk8E4.battle->unk11C0->unk14 + 4);
