@@ -63,3 +63,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   8002920C (%hi(D_800770AC) not hoisted into fp; font stays in a register).
 
 ## ovl_0b (battle)
+- Large-function pass 3 (drafts in the agent worktree's build/nm_0a_*.c / nm_0c_*.c): 0a AB3CC (prologue order of
+  two s-reg inits only), 0a B3F8C (s0/s1 swap between loop index and temp), 0a AA4E8 (lh/lhu load order), 0a BF0C4
+  (parallax loop cross-jump + regs), 0c B0378 (~90 diff rows: else-branch temps, sqrt block hi-part reg), 0c AD738
+  (~78 rows: local regs a0/a3, prologue loads of the second block).
