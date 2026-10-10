@@ -187,4 +187,23 @@ static inline void func_801F2D88_inline(CardSlot *s) {
     D_801F347C.unk1900.unk7 = s->unk1;
 }
 
+/* Start the CD read of the next requested card picture (D_801F347C.unk1900.unk4).
+   func_801F1A48 expands this in both arms of its if/else; the original's two copies of
+   the call are what make gcc give the argument loads no launch priority (REG_N_SETS == 2),
+   after which jump2 cross-jumps the tails. */
+static inline void func_801F1A48_read(CardCache *c) {
+    s32 id;
+    u32 x;
+
+    id = c->unk4;
+    if (id != 0xFF) {
+        c->unk4 = 0xFF;
+        c->unk3 = id;
+        D_801F347C.unk1900.unkA = 1;
+        x = c->unk3;
+        D_801F347C.unk4 = x;
+        func_80022C60(D_8006794C->unk20 + D_801F347C.unk18EC->unk4 + x, 0x800, D_801F347C.unk10D0, NULL);
+    }
+}
+
 #endif

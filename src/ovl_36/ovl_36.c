@@ -316,7 +316,20 @@ void func_801F166C(void) {
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1778);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F1A48);
+void func_801F1A48(void) {
+    CardCache *c = &D_801F347C.unk1900;
+
+    if (c->unkA != 0) {
+        if (func_80022B18() != 0) {
+            return;
+        }
+        c->unkA = 0;
+        func_801F1778();
+        func_801F1A48_read(c);
+    } else {
+        func_801F1A48_read(c);
+    }
+}
 
 void func_801F1AE8(s32 x, s32 y, s32 z, s32 dim) {
     SprtWords *p;
