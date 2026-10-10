@@ -91,11 +91,13 @@ extern u16 D_8019F278;
 
 /* decode / display state (D_8019F4D8) */
 typedef struct {
-    u8 pad0[0x18];
-    s16 unk18; /* width */
-    u8 pad1A[0x2C - 0x1A];
-    s16 unk2C;
-    u8 pad2E[0x38 - 0x2E];
+    u8 pad0[0xC];
+    u32 *unkC[2]; /* MDEC output buffers */
+    s32 unk14;    /* current buffer */
+    RECT unk18[2]; /* frame area per draw buffer */
+    RECT unk28;    /* slice being decoded */
+    s32 unk30;     /* frame done */
+    u8 pad34[0x38 - 0x34];
 } Ovl64Dec;
 extern Ovl64Dec D_8019F4D8;
 extern u8 D_8019F288[];
@@ -218,7 +220,7 @@ extern Ovl64FrameInfo D_8019F510[];
 extern Ovl64Pair D_8019F750[16];
 extern Ovl64Flag D_8019F7D0[];
 
-void func_8019C434(u8);
+void func_8019C434(u8, u8 *); /* CdReadyCallback */
 void func_8019BA70(void);
 void func_8019BCE8(void);
 void func_8019A7A8(s32, s32);
@@ -265,5 +267,27 @@ typedef struct {
     :                                                \
     : "r"(r0), "r"(r1)                               \
     : "$12", "$13")
+
+typedef struct {
+    u8 pad0[4];
+    s32 unk4;
+} Ovl64Vlc4C8; /* argument block of func_8019B3D4 */
+extern Ovl64Vlc4C8 D_8019F4C8;
+extern u16 D_8019DC84;
+extern u8 D_8019DC90;
+extern RECT D_8019F488[4];
+extern u8 D_8019DC97; /* = D_8019DC94.unk3, referenced by its own name */
+void func_8019B3D4(void *, u32 *, u16);
+/* PsyQ libpress */
+int DecDCTinSync(int);
+int DecDCTout(u32 *, int);
+int DecDCTReset(int);
+typedef struct {
+    u8 pad0[8];
+    u16 unk8;
+    u8 padA[0x18 - 0xA];
+    u16 unk18;
+} Ovl64Field; /* field overlay object touched when the movie switches modes */
+extern Ovl64Field D_800C9EF0;
 
 #endif
