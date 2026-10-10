@@ -2916,7 +2916,29 @@ void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DCB20);
+/* scales the model matrix by arg1 (MulMatrix0 with a diagonal matrix built word by word) */
+void func_800DCB20(BtlUnit9C *arg0, VECTOR *arg1) {
+    MATRIX m;
+    s32 *d;
+    s16 x, y, z;
+
+    d = (s32 *)&m;
+    x = arg1->vx;
+    d[0] = 0x1000;
+    m.m[0][0] = x;
+    y = arg1->vy;
+    d[2] = 0x1000;
+    m.m[1][1] = y;
+    z = arg1->vz;
+    d[1] = 0;
+    d[3] = 0;
+    d[4] = 0x1000;
+    d[5] = 0;
+    d[6] = 0;
+    d[7] = 0;
+    m.m[2][2] = z;
+    gte_MulMatrix0(&arg0->unk24, &m, &arg0->unk24);
+}
 
 void func_800DCC58(s32 arg0, s32 arg1) {
     func_800DD02C(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 &= ~(1 << arg1);
