@@ -133,7 +133,20 @@ typedef struct {
     u8 *unk1C; /* load address */
     u8 pad20[4];
     s16 unk24; /* set by func_8001E2AC */
+    u8 pad26[2];
+    struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
 } Unk11C0;
+
+/* Unk11C0.unk28 entry (0x28 bytes), written by script opcodes in func_80050410 */
+typedef struct Unk11C0Slot {
+    u32 unk0_0 : 8;
+    u32 unk0_8 : 12;
+    u32 unk0_20 : 12;
+    u32 unk4_0 : 12;
+    u32 unk4_12 : 10;
+    u32 unk4_22 : 10;
+    u8 pad8[0x28 - 0x8];
+} Unk11C0Slot;
 
 typedef struct {
     u8 pad0[0xA];
