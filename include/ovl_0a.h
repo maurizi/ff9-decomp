@@ -1266,6 +1266,24 @@ void func_80023A0C(void);
 void func_800223CC(void);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 
+/* field state for func_800AD944 command 3: 0x11, 1 or 0x10/0 */
+static inline s32 func_800AD944_state(void) {
+    s8 v;
+
+    if (D_8006794C->unkB != 0xFF) {
+        v = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42;
+        if (v != 0x11) {
+            goto other;
+        }
+    }
+    return 0x11;
+other:
+    if (v == 8) {
+        return 1;
+    }
+    return (v < 5) << 4;
+}
+
 /* Inlined copy of func_800C8108. */
 static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
     return &D_800CAE98[i];

@@ -1484,7 +1484,28 @@ void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
 }
 
 /* field request dispatcher */
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800AD944);
+s32 func_800AD944(s32 arg0, s32 arg1, s32 arg2) {
+    switch (arg0 & 0xF) {
+    case 0:
+        func_800ADA7C((arg1 >> 8) & 0xFF, arg1 & 0xFF, arg2);
+        return 0;
+    case 1:
+        func_800AE4F8();
+        return 0;
+    case 2:
+        D_800C9D44 |= 1;
+        break;
+    case 3:
+        return func_800AD944_state();
+    case 4:
+        return func_8019AB70();
+    case 5:
+        D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk43 = arg1;
+        func_8019A5B0(arg1);
+        break;
+    }
+    return 0;
+}
 
 void func_800ADA7C(s8 arg0, s8 arg1, s8 arg2) {
     D_800C9D44 = 0;
