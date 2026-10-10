@@ -888,7 +888,53 @@ void func_801F6C50(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6D34);
+void func_801F6D34(s32 unused, s32 row, s32 idx, MenuView *v) {
+    u8 buf[16];
+    SynthRecipe *r;
+    Unk80069018 *it;
+    s32 i;
+    s32 t;
+    s32 x;
+    s32 y;
+    u8 ok;
+    u8 id;
+    s32 k;
+
+    r = &D_801FC338.unk3C[idx];
+    ok = 0;
+    id = r->unk4;
+    it = &D_80069018[id];
+    k = 1;
+    if (func_80027F34(id) < 99) {
+        ok = D_8006794C->unk1C->unk560 >= r->unk0;
+    }
+    x = 0x18;
+    y = 0x26;
+    y = row * 15 + (v->unk2 + y);
+    i = 0;
+loop:
+    if (r->unk2[i] != 0xFF) {
+        if (r->unk2[0] == r->unk2[1]) {
+            t = i < func_80027F34(r->unk2[i]);
+        } else {
+            t = func_80027F34(r->unk2[i]);
+        }
+        if (!t) {
+            do {
+                ok = 0;
+            } while (0);
+        }
+    }
+    i++;
+    if (i < 2) {
+        goto loop;
+    }
+    func_8002BAE4(r->unk0, buf, 5, k);
+    id = ok;
+    func_80026C34(x, y, 0x1E, r->unk4, id);
+    func_8002B5FC(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, id ? 0 : 2);
+    func_8002B56C(x + 0x72, y + 4, 0x1E, buf, id ? 0 : 2);
+}
 
 void func_801F6F00(void) {
     MenuList *l;
