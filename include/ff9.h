@@ -145,7 +145,7 @@ typedef struct Unk11C0Slot {
     u32 unk4_0 : 12;
     u32 unk4_12 : 10;
     u32 unk4_22 : 10;
-    u8 pad8[0x28 - 0x8];
+    POLY_FT4 *unk8[2][4]; /* prims, filled by func_80062E3C */
 } Unk11C0Slot;
 
 typedef struct {
@@ -2211,7 +2211,7 @@ s32 func_800C75B4(s32, s32 *);
 s32 func_800C7720(s32);
 #endif
 Window *func_8004ED94(s32);
-s32 func_80039444(Unk8004AB64 *, Window *);
+void func_80039444(Unk8004AB64 *, Window *);
 s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
 void func_8004FBD8(void);

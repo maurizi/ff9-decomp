@@ -9678,7 +9678,77 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
     w->unk6 = (below << 1) | right;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80039444);
+/* bubble x/y targets for func_80039444 (func_80038FD8_x/_y without the flip logic) */
+static inline s32 func_80039444_x(s32 width, s32 sx, s32 right, s32 *ptx) {
+    s32 tx, l, r;
+
+    if (right) {
+        tx = sx - 6;
+        if (tx < 32) {
+            tx = 32;
+        }
+        if (tx > 304) {
+            tx = 304;
+        }
+        l = tx + 8 - width;
+        r = tx - 24;
+    } else {
+        tx = sx + 6;
+        if (tx > 288) {
+            tx = 288;
+        }
+        if (tx < 16) {
+            tx = 16;
+        }
+        l = tx + 24 - width;
+        r = tx - 8;
+    }
+    *ptx = tx;
+    if (l < 8) {
+        l = 8;
+    }
+    if (r > 312 - width) {
+        r = 312 - width;
+    }
+    return (l + r) >> 1;
+}
+
+static inline s32 func_80039444_y(s32 h, s32 *sy, s32 below) {
+    s32 ty;
+
+    if (below) {
+        ty = *sy - h - 16;
+    } else {
+        ty = *sy + 32;
+    }
+    if (ty < 8) {
+        ty = 8;
+    } else if (ty > 212 - h) {
+        ty = 212 - h;
+    }
+    return ty;
+}
+
+void func_80039444(Unk8004AB64 *obj, Window *w) {
+    s32 sx, sy;
+    s32 tx;
+    s32 ox, oy;
+    s32 right, below;
+    s32 x, y;
+
+    ox = w->unk0;
+    oy = w->unk2;
+    func_80038FD8_pos(obj, &sx, &sy);
+    below = (w->unk29 >> 1) & 1;
+    right = w->unk29 & 1;
+    x = func_80039444_x(w->unk4 - 3, sx, right, &tx);
+    y = func_80039444_y(w->unk6 - 3, &sy, below);
+    w->unk0 = (ox + x) >> 1;
+    w->unk2 = (oy + y) >> 1;
+    w->unk2A = tx - w->unk0 - right * 16;
+    w->unk8.x += w->unk0 - ox;
+    w->unk8.y += w->unk2 - oy;
+}
 
 WinLayout *func_80039660(Unk8004AB64 *obj, s32 id, s32 flags) {
     WinLayout *w = func_8004E248(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
