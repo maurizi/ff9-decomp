@@ -1,4 +1,4 @@
-/* WIP func_800CBA58: 60 differing rows (build/cmp.py-style aligned diff). semantic draft only: arg0/arg1 s-regs swapped, pc reloaded per byte, dx/dz reloaded from the stack. */
+/* WIP func_800CBA58: 45 differing rows (build/cmp.py-style aligned diff). Pass 8 (permuter): b reused for pc[2] << 8 and unk86[1] read into v before the unk20 store took it from 60 to 45 rows. Left: arg0/arg1 s-regs swapped (s0/s1), dx/dz reloads, one instruction short. */
 #include "ovl_0b.h"
 
 s32 func_800CBA58(BtlScript *arg0, BtlUnit *arg1) {
@@ -9,12 +9,14 @@ s32 func_800CBA58(BtlScript *arg0, BtlUnit *arg1) {
     s16 d[2];
     s32 v;
 
-    a = pc[1] | (pc[2] << 8);
+    b = pc[2] << 8;
+    a = pc[1] | b;
     ang = a;
     b = pc[3] | (pc[4] << 8);
     arg0->unk21 = pc[5];
+    v = arg1->unk86[1];
     arg0->unk20 = 1;
-    arg0->unk1C = arg1->unk86[1];
+    arg0->unk1C = v;
     if (a & 0x8000) {
         switch (a & 0x7FFF) {
         case 0:

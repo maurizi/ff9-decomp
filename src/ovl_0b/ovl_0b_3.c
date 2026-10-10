@@ -183,7 +183,50 @@ void func_800C9040(TexAnimSet *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C9374);
+void func_800C9374(TexAnimSet *set, u16 (*ofs)[4]) {
+    u32 i;
+    u32 j;
+    u32 k;
+    TexAnimRect *r;
+    u16 *f;
+    u16 *g;
+    u8 idx;
+
+    if (set == NULL) {
+        return;
+    }
+    for (i = 0; i < set->unk0; i++) {
+        set->unk4[i].unkE = 1;
+        f = (u16 *)set->unk4[i].unk10;
+        if ((u32)f > 0x80000000) {
+            return;
+        }
+        if (f == NULL) {
+            continue;
+        }
+        idx = set->unk4[i].unkD;
+        f = (u16 *)((u8 *)f + (s32)set);
+        set->unk4[i].unk10 = (TexAnimRect *)f;
+        if (ofs != NULL) {
+            f[0] += ofs[idx][2];
+            f[1] += ofs[idx][3];
+        }
+        r = (TexAnimRect *)f;
+        for (j = 0; j < set->unk4[i].unkC; j++) {
+            f = (u16 *)r[j].unk8;
+            f = (u16 *)((u8 *)f + (s32)set);
+            r[j].unk8 = (void *)f;
+            if (ofs != NULL) {
+                for (k = 0; k < set->unk4[i].unk1; k++) {
+                    g = f + 1;
+                    *f += ofs[idx][0];
+                    *g += ofs[idx][1];
+                    f += 2;
+                }
+            }
+        }
+    }
+}
 
 Battle11C020 *func_800C94B8(void) {
     Battle *b;
@@ -1400,7 +1443,93 @@ void func_800CCD00(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
     arg0->unk0 += 5;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CCDB8);
+void func_800CCDB8(Unk800CCD00 *arg0) {
+    Battle1358Ring *r;
+    BtlUnit *u;
+    BtlUnit9C *mdl;
+    BtlBone *b;
+    Unk800F6A88 *e;
+    SVECTOR pos;
+    SVECTOR rot;
+    u32 st;
+    s16 sn;
+    s16 cs;
+    s16 y;
+    s32 y0;
+    s32 z0;
+    s16 z;
+    s32 k;
+    s32 f;
+    s16 i;
+    u8 *bone;
+    u8 *ty;
+    u8 *tz;
+
+    r = &D_8006794C->unk1C->unk8E4.battle->unk1358;
+    func_800E70D0((u8 *)arg0->unk0, D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8]);
+    D_800F78A4->unk28 = 0;
+    rot.vx = 0;
+    rot.vz = 0;
+    rot.pad = 1;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if (((u->unk68 >> 22) & 1) || (u->unk9C->unk0 & 0x10)) {
+            continue;
+        }
+        if (r->unk1D4 & u->unkB0) {
+            continue;
+        }
+        st = u->unk3C | u->unk38;
+        if ((st & 0x100) || !(st & 0x231B083A)) {
+            continue;
+        }
+        if ((u->unk68 & 1) && u->unk9C->unkC == (BtlUnit9CC *)u->unkA4[0x11]) {
+            continue;
+        }
+        sn = func_8004BB80(u->unk86[1]);
+        cs = func_8004BB7C(u->unk86[1]);
+        if (u->unk68 & 1) {
+            bone = D_800F6B48[D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+            ty = D_800F6BBC[D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+            tz = D_800F6C30[D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+        } else {
+            Battle4880 *m = D_8006794C->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0;
+            bone = m->unk32;
+            ty = m->unk38;
+            tz = m->unk3E;
+        }
+        for (e = D_800F6A88, i = 11; i != -1; e++, i--) {
+            if (!(st & e->unk0) || (st & e->unk4)) {
+                continue;
+            }
+            k = e->unkC;
+            mdl = u->unk9C;
+            y0 = (ty[k] << 24) >> 20;
+            z0 = (tz[k] << 24) >> 20;
+            y = y0;
+            z = z0;
+            if (mdl->unk0 & 2) {
+                y = (u32)(y0 * mdl->unk56) >> 12;
+                z = (u32)(z0 * mdl->unk58) >> 12;
+            }
+            b = &mdl->unk20[bone[k]];
+            pos.vx = b->unk14 + (((s16)z * sn) >> 12);
+            pos.vz = b->unk1C + (((s16)z * cs) >> 12);
+            pos.vy = b->unk18 + y;
+            if (e->unkE != 0) {
+                f = (u16)r->unk1C2;
+                func_800D198C(e->unk8, &pos, f % (*(u16 *)e->unk8 & 0x7FFF), e->unkD, -1);
+            } else {
+                if ((rot.pad = e->unkF) != 0) {
+                    rot.vy = (u->unk86[1] + 0xC00) & 0xFFF;
+                } else {
+                    rot.vy = 0;
+                }
+                func_800D1FFC(e->unk8, &pos, &rot, -1, (u16)r->unk1C2, e->unkD, -1);
+            }
+        }
+    }
+    arg0->unk0 = (u32 *)func_800E7154();
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CD210);
 
@@ -1640,7 +1769,7 @@ void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     D_800FE4F4 = arg1;
     D_800FE508 = D_800FE514->unk2;
     if (D_800FE508 != 0) {
-        func_800C9374(arg1, 0);
+        func_800C9374((TexAnimSet *)arg1, NULL);
         for (i = 0; i < D_800FE508; i++) {
             BtlUnit9C50 *a;
             BtlUnit9C50 *e;

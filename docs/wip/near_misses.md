@@ -95,8 +95,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   (two jump tables, AKAO look-ahead), 80054650 and 80062E3C (first drafts in docs/wip).
 
 ## ovl_0b (battle)
-- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794, BFF20,
-  ED3F8, CCDB8, D9D58, D0E14, AB810, ED02C, ED7C0, E1534, BE1E0 (big switch), E4A3C (odd
+- Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
+  ED3F8, D0E14, AB810, ED02C, ED7C0, E1534, E4A3C (odd
   argument-slot stack use).
 - Large-function pass 2 (drafts in the agent worktree's build/nm_<addr>.c; "~N" = differing insns):
   80047B90 ~35 (needs &v held in s0 with m[1][1] stored via s0+0x10), 80024BD8 ~12 (POLY_G4 store
@@ -152,6 +152,35 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - jump.c cross-jumping (B1B48 notes): the processed jump is replaced; a conditional jump around the block counts
     as a match, so a lone `v0 = 0; j epi` merges into the first chain candidate.
   New drafts with headers: AB810 8, C9794 26, D0E14 3, D9D58 5, E1534 4, ED02C 4, AA504 3, C9374 2, EFD1C 16.
+- Pass 8 (matched: C9374, D0E14, ED02C). What fixed them:
+  - One variable for two roles: C9374's f holds the relocated rect pointer and then each frame-table pointer
+    (r = (TexAnimRect *)f is the loop base), which puts the frame-table load straight into f's register.
+  - Load early into a temp, store late: D0E14 needed `inv = arg1[1]` read right after c.unk28 and `c.unk2C = inv`
+    as the last store (found by brute-forcing 600 orders with build/mv.py-style specs).
+  - Build a value in place: ED02C's uvclut is `w = unk0; w |= unk1 << 8; p->uvclut = w | clut`.
+  - An unmodified stack-passed parameter is rematerialised from its slot where it is used; `x %= n` on the parameter
+    itself makes it load at entry (D1D74: copy to a local first).
+  - Locals whose address reaches GTE asm live in memory; in D2DBC the colour plus the mode/ctab/clut values the loop
+    reloads from sp+0x18..0x20 are one struct.
+  - Parameters kept in their stack homes (E4A3C) come from taking their addresses; an inline that copies through the
+    pointers gets everything but the entry `sw a3` and a dead load of the 5th slot.
+  New drafts: E4A3C 8, D1D74 22, D2DBC 63. Updated headers: AA504, C0C00, C3F78, D9D58, DA138, E1534.
+- Pass 9 (matched: CCDB8, BE1E0, C7730, D9D58). What fixed them:
+  - A separate local per switch case for the same `arg2 * 20` offset (BE1E0 cases 0x3D/0x3E/0x3F): one shared
+    variable is global-allocated and splits its multiply temps off; per-case locals stay local and keep the whole
+    chain in one register with the (base + off) operand order. Its jump table needs the 8-byte padding word
+    before and after (`__asm__(".section .rodata\n\t.word 0...")`).
+  - shorten_binary_op: `(u16)a % (u16 & 0x7FFF)` becomes divu; put the dividend in an s32 local first (CCDB8).
+  - Types decide copies: `s16 y, z` holding `(ty[k] << 24) >> 20` gives the original's y0 -> y copies (CCDB8); the
+    row index used inline (no k variable) and `(rot.pad = e->unkF) != 0`; `for (e = tbl, i = 11; ...; e++, i--)`.
+  - C7730 (-O2 despite sitting in the old -O1 range): `arg0->unk0 |= 2` must come before the other stores
+    (else flow deletes it as dead before `unk0 = 0`), relocation stores in field order, the scratch pointer
+    `mark = (u8 *)D_80070520` set inside the outer loop, and k reused for the clear loop.
+  - D9D58: `*(volatile s16 *)&u->unk86[2] = a->unk24` keeps that store ahead of the D_800FEC56 store.
+  - One variable for two roles again (CD210 draft): the bone index variable reused as the level keeps the
+    (s16) extension on the index; in BFF20 the D7C counter n doubles as the float flag.
+  New drafts: BFF20 7, CD210 25, D1FFC 27, E57B0 34. AB07C 51 -> 24 (separate loop pointers pa/pb/pr set from
+  b, r, r + n; getTPage/getClut; permuter: 14 with a do/while(0) around the tail).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -270,6 +299,31 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     int declaration (AB3CC / AC02C and func_800B61A4);
   * fake permuter outputs are hints: B3198's `if (y) y = t + 0x12; else y = t + 0x12;` meant the
     assignment belongs in both branches (`y = a->unk10 + 0x12;` / `y = b->unk10 + 0x12;`).
+- Pass 10: matched 0a C4EC8, C31F8, B3F8C. Improved drafts (docs/wip/): BF660 4 rows, B4A5C 5,
+  C07D8 11, BD130 12, C0038 19 (was 39/13/35/48/44). Unchanged: B0124 (12), BB714/CA1D8, C519C,
+  BE158, AA4E8, C970C (26), C65CC (104). What worked:
+  * reload_cse only reuses a register holding the same constant in the same or a wider mode.
+    C4EC8's `t2 = t7` copy with `li t6, 0` next to it meant r was a narrow type: `u8 r` with
+    `r = !r` (a `^= 1` keeps the return andi, `!r` doesn't);
+  * C31F8's `addu t2, t6` (i = 0 copied from any) came from `any = 0; i = 0;` at the top of the
+    else arm: reload_cse sees both in one block, then reorg moves `any = 0` into the branch's
+    delay slot;
+  * sched2 runs before jump2's cross-jumping. Statements written at the end of both if/else arms
+    are cross-jumped into one tail afterwards but were scheduled as separate blocks, so the call
+    setup after the join can't fill their load delays (C31F8's two nops);
+  * gcc 2.8's MEM_IN_STRUCT_P heuristic lets a store to a scalar global pass a struct-field store
+    through a pointer; `*(s32 *)((u8 *)p + off)` (not in-struct) keeps them in order;
+  * refs of a variable that combine later deletes still count for global-alloc priority:
+    `key = func_800B3B64(); if (key == 0)` (B3F8C, three calls) or a temp of the same variable
+    (`key = x & 0xFFFF; if (key < 9000 && ... grp(key))`, permuter) moved key above e;
+  * a dead `p = (u8 *)&pad;` right after the call that takes &clut/&img puts pad's stack slot after
+    theirs (B4A5C's 8-byte hole); `(void)&pad` is never expanded and does nothing;
+  * clamps `if (v < c->lo) ... else if (c->hi < v) ...` re-reading the limit in each arm (jump2
+    cross-jumps the tails, reorg fills both delay slots) instead of `(t = c->lo) ... (t = c->hi)`
+    (BF660, C0038);
+  * reusing a variable that an earlier statement reads (WAR) pins sched1's order of two
+    independent computations (BF660 `x = A - 112; y += x;` after `cx = lim + x`);
+  * `GetTPage(tile->tp ? 1 : 0, ...)` came out as a branch only with the call in both arms (BD130).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -320,6 +374,22 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   { e--; if (e < start) goto skip; }` shape; jump.c duplicates the exit test here instead, 59 rows
   with that form vs 49 for the goto draft), 15 ADE30 (28: x/f/s/p s-register order and the
   `x += w` delay slot).
+- Pass 10 (0d): matched 0d ACFFC, B030C, AD400; AEE2C matches but is not integrated (its "NO" label
+  D_800A7398 is rodata migrated into func_800AEE2C.s; needs `// force_not_migration:True` and a
+  resplit, see docs/wip/ovl_0d_800AEE2C.c). Improved drafts: AC060 19 rows (compiles now), B16A4 37.
+  What worked:
+  * a value set after loop.c's movables is a strength-reduced giv init: ACFFC's `li s5, 0x1A` is
+    `c->unk10 = n * 14 + 0x1A; n++;` (no y variable);
+  * update_equiv_regs doubles the live length of a pseudo with a REG_EQUIV constant, which lost
+    B030C's hoisted 0x40 its fp. The original stores v0 = 0x40 in both arms of the SPRT u0 if/else
+    (more refs; jump2 cross-jumps the stores) - the permuter's fake `if (p) x = 0x40; else x = 0x40;`
+    pointed at it;
+  * `do { } while (0)` around a use raises its pseudo's refs (loop-depth weighting) - also a hint
+    that the real fix is a second use;
+  * AEE2C: c0 also holds the func_800AF268(s) results passed straight to the next call (combine
+    deletes the copies, the refs stay), which lifts it above s and m;
+  * AD400: `cards[i].field` in most places instead of `c->` lowers c's priority; the FT4 uv stores
+    are u0, u1, v0, v1, u2, v2, u3, v3 (brute force over orders).
 - 14 A9220 needs a symbol at 0x800AB2CE (second half of the D_800AB2CC block). ovl_14.c defines it
   with a top-level `.set`; adding `D_800AB2CE = 0x800AB2CE;` to config/symbols.ovl_14.us.txt would
   let that go.

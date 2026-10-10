@@ -330,7 +330,42 @@ void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, C
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D0E14);
+void func_800D0E14(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 p,
+                   u32 *c1, u32 *c2, s32 tp) {
+    Unk800D50A0Ctx c;
+    u8 *prim;
+    s32 inv;
+
+    if (p < 0) {
+        p = 0x1000;
+    }
+    gte_DpqColorFar_nst(c1, p);
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + n * 0x34;
+    gte_strgb(&c.unkC);
+    gte_DpqColorFar_nst(c2, p);
+    c.unk26 = (arg4 + arg6) << 8;
+    c.unk24 = arg4 << 8;
+    gte_strgb(&c.unk10);
+    c.unk18 = (((tp & 3) << 5) | arg7) << 16;
+    c.unk1C = arg8 << 16;
+    c.unkC.b[3] = (tp == 0xFF) ? 0x3C : 0x3E;
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    if (n != 0) {
+        inv = 0x1000 / n;
+        c.unk20 = inv;
+        c.unk8 = inv;
+        c.unk28 = arg1[0];
+        inv = arg1[1];
+        c.unk4 = arg0;
+        c.unk14 = arg3;
+        c.unk16 = arg5;
+        c.unk0 = D_800F78A4->unk28;
+        c.unk2C = inv;
+        func_800D50A0(n, &c, prim, D_800F78A4->unk20);
+    }
+}
 
 void func_800D0FFC(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 p, u32 *c1,
                    u32 *c2, s32 tp) {
@@ -2860,7 +2895,38 @@ end:
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D9D58);
+s32 func_800D9D58(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
+    s16 rot[4];
+    BtlUnit *u;
+    s32 v = *arg2;
+    BtlUnitA0 *a;
+
+    u = func_800E716C(arg0->unk0);
+    if (arg0->unk2 == 0 || func_800D8A64(arg0->unk1) == 0) {
+        if (v == 0) {
+            arg0->unk8[0] = u->unkA0->unk20 - u->unk86[0];
+            arg0->unk8[1] = u->unkA0->unk22 - u->unk86[1];
+            arg0->unk8[2] = u->unkA0->unk24 - u->unk86[2];
+        }
+        func_800E77D8(arg0->unk0, rot);
+        rot[0] += arg0->unk8[0] / arg0->unk4;
+        rot[1] += arg0->unk8[1] / arg0->unk4;
+        rot[2] += arg0->unk8[2] / arg0->unk4;
+        func_800E7824(arg0->unk0, rot);
+        if (v != arg0->unk4 - 1) {
+            goto end;
+        }
+        D_800FEC56 = 1;
+        return 1;
+    }
+    u->unk86[0] = u->unkA0->unk20;
+    a = u->unkA0;
+    u->unk86[1] = a->unk22;
+    *(volatile s16 *)&u->unk86[2] = a->unk24;
+    return D_800FEC56 = 1;
+end:
+    return 0;
+}
 
 s32 func_800D9F5C(u8 *arg0, s32 arg1, s32 arg2) {
     func_800D8820(arg0[0], arg0[2]);
@@ -3624,7 +3690,7 @@ s32 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
     }
     func_800C7730(p->unk0, p->unk4[0], t[0]);
     p->unk0->unk50 = arg0->unk40;
-    func_800C9374(p->unk0->unk50, (s32)p->unk1C);
+    func_800C9374((TexAnimSet *)p->unk0->unk50, (u16 (*)[4])p->unk1C);
     return (u16)p->unk4E;
 }
 
@@ -9114,7 +9180,65 @@ void func_800ECF0C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED02C);
+void func_800ED02C(RECT *r, s32 otz) {
+    u32 *ot;
+    u32 clut;
+    Unk800689B0 *d2;
+    Unk800689B0 *d1;
+    RECT tw;
+    RECT r2;
+    u32 w;
+
+    ot = &D_8007716C[otz];
+    clut = func_80027480(D_80068E78[0].unk2) << 16;
+    d2 = &D_80068E78[2];
+    setlen(D_80077170, 4);
+    d1 = &D_80068E78[1];
+    ((SprtWords *)D_80077170)->rgbc = 0x64808080;
+    ((SprtWords *)D_80077170)->xy = r->x | (r->y << 16);
+    w = D_80068E78[0].unk0;
+    w |= D_80068E78[0].unk1 << 8;
+    ((SprtWords *)D_80077170)->uvclut = w | clut;
+    ((SprtWords *)D_80077170)->wh = D_80068E78[0].unk4 | (D_80068E78[0].unk5 << 16);
+    addPrim(ot, D_80077170);
+    D_80077170 += sizeof(SprtWords);
+
+    setlen(D_80077170, 4);
+    ((SprtWords *)D_80077170)->rgbc = 0x64808080;
+    ((SprtWords *)D_80077170)->xy = (r->x + r->w - d2->unk4) | (r->y << 16);
+    ((SprtWords *)D_80077170)->uvclut = D_80068E78[2].unk0 | (d2->unk1 << 8) | clut;
+    ((SprtWords *)D_80077170)->wh = d2->unk4 | (d2->unk5 << 16);
+    addPrim(ot, D_80077170);
+    D_80077170 += sizeof(SprtWords);
+
+    tw.y = 0;
+    tw.h = 0xFF;
+    tw.x = D_80068E78[1].unk0;
+    tw.w = d1->unk4;
+    SetTexWindow(D_80077170, &D_800F8E10);
+    addPrim(ot, D_80077170);
+    D_80077170 += 0xC;
+
+    setlen(D_80077170, 4);
+    ((SprtWords *)D_80077170)->rgbc = 0x64808080;
+    ((SprtWords *)D_80077170)->xy = (r->x + D_80068E78[0].unk4) | (r->y << 16);
+    ((SprtWords *)D_80077170)->uvclut = (d1->unk1 << 8) | clut;
+    ((SprtWords *)D_80077170)->wh = (r->w - (D_80068E78[0].unk4 + d2->unk4)) | (d1->unk5 << 16);
+    addPrim(ot, D_80077170);
+    D_80077170 += sizeof(SprtWords);
+
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = get_mode(1, 1, d1->unk6);
+    ((DrMode2Words *)D_80077170)->code[1] = get_tw(&tw);
+    addPrim(ot, D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+
+    r2.x = r->x + 1;
+    r2.y = r->y + 1;
+    r2.w = r->w - 3;
+    r2.h = r->h - 3;
+    func_8002709C(&r2, otz, 0, 0, (D_8006794C->unk24 >> 18) & 1);
+}
 
 void func_800ED3F8(s32 x, s32 y, s32 otz, char *str) {
     s32 w;
