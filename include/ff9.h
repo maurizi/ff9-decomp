@@ -1027,8 +1027,8 @@ typedef struct {
 
 extern s32 D_80077DCC;
 extern u8 D_80077E52;
-extern s32 D_8007AEB8;
-extern s32 D_8007AEBC;
+extern struct Unk8004AB64 *D_8007AEB8; /* object at the world map's mark 0x40 */
+extern struct Unk8004AB64 *D_8007AEBC; /* object at the world map's mark 0x80 */
 extern s32 D_8007B950;
 extern s32 D_80080A24;
 extern s32 *D_80066764;
@@ -2160,7 +2160,39 @@ void func_80052D70(s32);
 extern s32 D_8007B718;
 void func_8004E7FC(void);
 void func_8004883C(void);
-s32 func_80048F54(void);
+s32 func_80048F54(void); /* per-frame field object update */
+extern s32 D_8007AEA8;
+extern s32 D_8007AEAC; /* the player moved this frame */
+extern s32 D_8007AEB0;
+extern u8 D_800CCE54; /* world map (ovl_0c) data */
+void func_800475D8(Unk8004AB64 *);
+void func_80047E1C(Unk8004AB64 *);
+void func_80048A5C(Unk8004AB64 *);
+void func_80048E80(void);
+void func_80049C14(Unk8004AB64 *);
+void func_8004F74C(Unk8004AB64 *);
+s32 func_80052870(Unk16D8 *);
+s32 func_80052EC0(s32, s32, s32);
+s32 func_8002170C(Unk8004AB64 *);
+s32 func_80038D3C(Unk8004AB64 *);
+#if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
+s32 func_800B3444(s32, s32, s32);
+/* world-map model state (func_800C748C) */
+typedef struct {
+    s16 unk0;
+    u8 pad2[6];
+    u8 unk8;
+    u8 pad9;
+    u16 unkA;
+} Unk800C748C;
+void *func_800C748C(s32);
+s32 func_800C75B4(s32, s32 *);
+s32 func_800C7720(s32);
+#endif
+Window *func_8004ED94(s32);
+s32 func_80039444(Unk8004AB64 *, Window *);
+s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
+void func_800530A8(SVECTOR *, s32, s32);
 void func_8004FBD8(void);
 void func_8004FE0C(void);
 
