@@ -858,6 +858,7 @@ typedef struct {
     s16 unk130; /* volume left */
     s16 unk132; /* volume right */
 } AkaoChannel; /* 0x134 */
+void func_80057D80(AkaoChannel *, u32); /* channel LFO / pitch update (func_800585E0 passes the channel bit) */
 
 /* 8-byte key-split region of an AKAO instrument (AkaoChannel.unk18) */
 typedef struct {
