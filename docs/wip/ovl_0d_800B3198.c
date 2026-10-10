@@ -3,6 +3,9 @@
  * WIP: 141 of 141 instructions, 2 aligned diff rows. The permuter found `y = b->unkC; x = y + 8;`
  * in the second card's branch, which fixes most registers; left: that unkC load goes to v0 in
  * the original but straight into y's s-register (s4) here.
+ * The permuter also reached a byte match (from the version without the y reuse) with a fake
+ * `if (n < 10) { if (t) x += 9; else x += 9; }`, i.e. something must use t inside the n < 10
+ * branch; not integrated. Moving `y = t + 0x12` below the x adjustment is worse (9 rows).
  */
 #include "ovl_0d.h"
 void *func_800B3198(u32 *ot, void *vp, TmState *s) {
