@@ -167,9 +167,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   constant in a3 right before use, not reproduced), 64 B7C4 / 3a 4238 (the original hoists fewer
   loop invariants than ours), 64 C434 (CD ready callback, CSE reach), 36 1A48 (5), 36 2664 (7),
   33 EF900 (13), 3c 6D34 (25, goto loop), 38 EE740 (6, was 17), 39 F973C (3, CRC type).
-  65 F2560 is probably right in C: gcc leaves the first branch delay slot empty in `.set reorder`
-  mode with `li 0x98967E` split into lui/ori after it, and the original has the lui in the delay
-  slot. ASPSX seems to fill such slots and maspsx emits a nop; a maspsx fix may unlock others.
+  65 F2560 (1 row): the original has the lui of 0x98967E in the first branch's delay slot, we
+  get a nop. Not an assembler issue: 17 matched functions have the same reorder-mode branch +
+  lui-only `li` and their originals have the nop. gcc's delay-slot filler placed it, so the C
+  still differs (see the WIP header).
   Tricks that matched things in this pass:
   - A pointer that the original computes into a temp and then copies to an s-register
     (`a1` -> `addu s3,a1`) comes from `m2 = &X; m2->f = n; m = m2;` (3c F6F00).
