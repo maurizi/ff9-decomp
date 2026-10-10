@@ -706,7 +706,125 @@ void func_800AB45C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_15/nonmatchings/ovl_15", func_800AB490);
+s32 func_800AB490(void) {
+    s32 timer;
+    s32 wait;
+    s32 n;
+
+    timer = -1;
+    wait = 0;
+    func_800AC374();
+    D_800AE3EC = 0;
+    do {
+        func_800AC450();
+        func_80019194();
+        switch (D_800B0FD0) {
+        case 0:
+            timer = -1;
+            D_800B0FD0 = 1;
+            break;
+        case 1:
+            if (timer == -1) {
+                func_800320B8(1, 1, 0, 0xFFFFFF);
+                timer = 0x21C;
+                func_800320B8(1, 1, 0xB4, 0);
+            } else if (timer != 0) {
+                setlen(&D_800B0F60[D_8006794C->unk1C->unk8][0], 4);
+                D_800B0F60[D_8006794C->unk1C->unk8][0].code = 0x64;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].r0 = 0x80;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].g0 = 0x80;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].b0 = 0x80;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].x0 = 0;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].y0 = 0;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].u0 = 0;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].v0 = 0;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].w = 0xC0;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].h = 0xE0;
+                D_800B0F60[D_8006794C->unk1C->unk8][0].clut = 0x3800;
+                addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800B0F60[D_8006794C->unk1C->unk8][0]);
+                setDrawTPage(&D_800B0FB0[D_8006794C->unk1C->unk8][0], 1, 1, 0x10A);
+                addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800B0FB0[D_8006794C->unk1C->unk8][0]);
+                setlen((D_800B0F60[D_8006794C->unk1C->unk8] + 1), 4);
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->code = 0x64;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->r0 = 0x80;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->g0 = 0x80;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->b0 = 0x80;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->x0 = 0xC0;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->y0 = 0;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->u0 = 0;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->v0 = 0;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->w = 0x80;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->h = 0xE0;
+                (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->clut = 0x3800;
+                addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], (D_800B0F60[D_8006794C->unk1C->unk8] + 1));
+                setDrawTPage(D_800B0FB0[D_8006794C->unk1C->unk8] + 1, 1, 1, 0x10D);
+                addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], (D_800B0FB0[D_8006794C->unk1C->unk8] + 1));
+            }
+            break;
+        case 2:
+            setlen(&D_800B0F60[D_8006794C->unk1C->unk8][0], 4);
+            D_800B0F60[D_8006794C->unk1C->unk8][0].code = 0x64;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].r0 = 0x80;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].g0 = 0x80;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].b0 = 0x80;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].x0 = 0;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].y0 = 0;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].u0 = 0;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].v0 = 0;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].w = 0xC0;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].h = 0xE0;
+            D_800B0F60[D_8006794C->unk1C->unk8][0].clut = 0x3800;
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800B0F60[D_8006794C->unk1C->unk8][0]);
+            setDrawTPage(&D_800B0FB0[D_8006794C->unk1C->unk8][0], 1, 1, 0x10A);
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800B0FB0[D_8006794C->unk1C->unk8][0]);
+            setlen((D_800B0F60[D_8006794C->unk1C->unk8] + 1), 4);
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->code = 0x64;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->r0 = 0x80;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->g0 = 0x80;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->b0 = 0x80;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->x0 = 0xC0;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->y0 = 0;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->u0 = 0;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->v0 = 0;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->w = 0x80;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->h = 0xE0;
+            (D_800B0F60[D_8006794C->unk1C->unk8] + 1)->clut = 0x3800;
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], (D_800B0F60[D_8006794C->unk1C->unk8] + 1));
+            setDrawTPage(D_800B0FB0[D_8006794C->unk1C->unk8] + 1, 1, 1, 0x10D);
+            addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], (D_800B0FB0[D_8006794C->unk1C->unk8] + 1));
+            if (timer == -1) {
+                timer = 0x5A;
+                func_800320B8(1, 1, timer, 0xFFFFFF);
+            } else if (--timer == 0) {
+                D_800B0FD0 = 4;
+            }
+            break;
+        }
+        if (D_800AE3EC == 0x10) {
+            if (D_800739A0[0] & 8) {
+                timer = -1;
+                D_800B0FD0 = 2;
+                func_8002F488(0xC18);
+                D_80073998[0] = -1;
+            }
+        } else if (D_80073990[0] & D_800AE3F0[D_800AE3EC]) {
+            if (++D_800AE3EC == 0x10) {
+                func_8002F488(0x67);
+            }
+        } else if (D_80073990[0] != 0) {
+            wait = 5;
+            D_800AE3EC = 0;
+        }
+        D_800739B0[0].unk0 = 0;
+        if (wait > 0) {
+            wait--;
+        }
+        func_80032098();
+        func_800AC494();
+    } while ((u32)D_800B0FD0 < 3);
+    func_800AC448();
+    return D_800B0FD0 != 3;
+}
 
 s32 func_800AC374(void) {
     s32 p = (s32)func_8001C7FC(4, D_800AE432 | 0x40000, 0);

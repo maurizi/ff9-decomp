@@ -120,6 +120,14 @@ extern u8 D_800B0F44; /* double allowed */
 extern s32 D_800B0F48; /* bet */
 extern u8 D_800B0F4C; /* split allowed */
 extern u32 D_800B0FD0;
+extern SPRT D_800B0F60[2][2];
+extern DR_TPAGE D_800B0FB0[2][2];
+extern s32 D_800AE3EC;
+extern u32 D_800AE3F0[16];
+s32 func_800AC374(void);
+s32 func_800AC448(void);
+void func_800AC450(void);
+void func_800AC494(void);
 extern s16 D_800AE4A8;
 extern s32 D_800AE4AC;
 extern u8 *D_800AE4B0; /* next free primitive */
