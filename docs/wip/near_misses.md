@@ -173,7 +173,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Tricks that matched things in this pass: a pointer that the original computes into a temp and
   then copies to an s-register (`a1` -> `addu s3,a1`) comes from `m2 = &X; m2->f = n; m = m2;`
   (3c F6F00); constants the original keeps in a register come from locals (`x = 0x18; y = 0x26;
-  y = row * 15 + (v->unk2 + y);` then `x + 0x72`, 3c F5BCC); an uninitialised local that the original passes on one path holds whatever its
+  y = row * 15 + (v->unk2 + y);` then `x + 0x72`, 3c F5BCC); a loop offset that the original
+  initialises in the loop guard delay slot is a giv of the counter (`dx = i * 4 + 0x2E;`), and
+  `dy = i + 9; y = r->y + dy;` keeps the add unfolded (36 F12B8); an uninitialised local that the original passes on one path holds whatever its
   register had, so assigning it the value that register held (`info = (void *)&D_8019DE10;`)
   reproduces it (64 BCE8); a call result that the original uses without `andi` means the callee
   was declared returning int there (3c 42A8 now returns s32, 3c 51B8 declares func_80028954 s32);
