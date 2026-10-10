@@ -9118,7 +9118,49 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED02C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED3F8);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED7C0);
+void func_800ED7C0(s32 x, s32 y, s32 ot, s32 w, s32 h, CVECTOR *c) {
+    CVECTOR c0;
+    CVECTOR c1;
+    CVECTOR *a;
+    CVECTOR *b;
+    CVECTOR *t;
+    CVECTOR *u;
+    s32 k;
+    POLY_G4 *p;
+
+    k = D_80077150 & 0x1F;
+    if (k < 16) {
+        if (k >= 8) {
+            k = 15 - k;
+        }
+        a = &c[2];
+        b = &c[3];
+        u = t = &c[0];
+    } else {
+        k -= 16;
+        if (k >= 8) {
+            k = 15 - k;
+        }
+        a = &c[2];
+        b = &c[3];
+        u = t = &c[1];
+    }
+    c0.r = a->r + ((u->r - a->r) * k) / 7;
+    c0.g = a->g + ((u->g - a->g) * k) / 7;
+    c0.b = a->b + ((u->b - a->b) * k) / 7;
+    c1.r = b->r + ((t->r - b->r) * k) / 7;
+    c1.g = b->g + ((t->g - b->g) * k) / 7;
+    c1.b = b->b + ((t->b - b->b) * k) / 7;
+    p = (POLY_G4 *)D_80077170;
+    setPolyG4(p);
+    setRGB0(p, c0.r, c0.g, c0.b);
+    setRGB2(p, c0.r, c0.g, c0.b);
+    setRGB1(p, c1.r, c1.g, c1.b);
+    setRGB3(p, c1.r, c1.g, c1.b);
+    setXYWH(p, x, y, w, h);
+    addPrim(&D_8007716C[ot], p);
+    D_80077170 += sizeof(POLY_G4);
+}
 
 void func_800EDAD4(void) {
     if (D_80077528 & 0x01000000) {
