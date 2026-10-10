@@ -2973,6 +2973,7 @@ extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
 extern u8 D_80068FB4[][4]; /* corner sprites (D_800686D0 index) per style */
 extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
 extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
+extern u8 D_80068FD0[][3]; /* title bar sprites (left, right, middle) per style */
 typedef struct {
     u32 tag;
     u32 rgbc;

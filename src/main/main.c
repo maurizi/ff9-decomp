@@ -2847,7 +2847,62 @@ u8 *func_800253D4(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *pkt
     return pkt + sizeof(DrTpageWords);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025A28);
+void func_80025A28(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
+    Unk800689B0 *d;
+    u16 clut;
+    s32 i;
+    RECT tw;
+    Unk800689B0 *tbl;
+    Unk800689B0 *tbl2;
+    s32 yy;
+
+    if (style == 1) {
+        tbl = (Unk800689B0 *)D_800686D0;
+        clut = tbl[D_80068FD0[1][0]].unk2;
+    } else {
+        tbl2 = (Unk800689B0 *)D_800686D0;
+        clut = func_800274B4(tbl2[D_80068FD0[style][0]].unk2, abr);
+    }
+    for (i = 0; i < 2; i++) {
+        d = &((Unk800689B0 *)D_800686D0)[D_80068FD0[style][i]];
+        setlen(D_80077170, 4);
+        yy = y << 16;
+        ((SprtWords *)D_80077170)->rgbc = 0x64808080;
+        if (i != 0) {
+            ((SprtWords *)D_80077170)->xy = ((x - (8 - w)) & 0xFFFF) | yy;
+        } else {
+            ((SprtWords *)D_80077170)->xy = (x & 0xFFFF) | yy;
+        }
+        ((SprtWords *)D_80077170)->uvclut = d->unk0 | (d->unk1 << 8) | (clut << 16);
+        ((SprtWords *)D_80077170)->wh = d->unk4 | (d->unk5 << 16);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(SprtWords);
+    }
+    if (w > 0x10) {
+        setlen(D_80077170, 2);
+        ((DrMode2Words *)D_80077170)->code[0] = get_tw(&D_80068F40);
+        ((DrMode2Words *)D_80077170)->code[1] = 0;
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DrMode2Words);
+        d = &((Unk800689B0 *)D_800686D0)[D_80068FD0[style][2]];
+        tw.x = d->unk0;
+        tw.y = d->unk1;
+        tw.w = d->unk4;
+        tw.h = d->unk5;
+        setlen(D_80077170, 4);
+        ((SprtWords *)D_80077170)->rgbc = 0x64808080;
+        ((SprtWords *)D_80077170)->xy = ((x + 8) & 0xFFFF) | (y << 16);
+        ((SprtWords *)D_80077170)->uvclut = (style << 10) | (clut << 16);
+        ((SprtWords *)D_80077170)->wh = (w - 0x10) | (d->unk5 << 16);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(SprtWords);
+    }
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = get_mode(1, 1, d->unk6);
+    ((DrMode2Words *)D_80077170)->code[1] = get_tw(w > 0x10 ? &tw : &D_80068F40);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025ED4);
 
