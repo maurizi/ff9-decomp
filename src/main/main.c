@@ -10043,7 +10043,35 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004C8C4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004D2C0);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004D69C);
+void func_8004D69C(Unk8007B9C0 *w, u8 *e) {
+    u8 *p = e + w->unk20;
+    s32 c;
+
+    c = *p++;
+    switch (c) {
+    case 0xF9:
+        c = *p++;
+        switch (c) {
+        case 0x41:
+            w->unk20 = p + 1 - e;
+            break;
+        case 1:
+            func_8004EEA0_inline(w);
+            break;
+        case 0:
+            w->unk22 = p + 1 - e;
+            w->unk28 &= ~8;
+            break;
+        }
+        break;
+    case 0xFF:
+        func_8004EEA0_inline(w);
+        break;
+    case 0xFE:
+        w->unk22 = p - e;
+        break;
+    }
+}
 
 void func_8004D940(Unk8007B9C0 *w) {
     u8 *e = NULL;
