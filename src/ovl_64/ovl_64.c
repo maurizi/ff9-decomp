@@ -249,7 +249,39 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019BA70);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019BCE8);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019C1B0);
+s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    CdlLOC *loc;
+    s32 i;
+    Ovl64Pair *p;
+
+    CdIntToPos(D_8019DE10.unk1C, &D_8019DE10.unk20);
+    D_8019DE10.unk40 = CdPosToInt(&D_8019DE10.unk20);
+    if (arg1 >= 2) {
+        D_8019DE10.unk40 += (arg1 - 1) * D_8019DE10.unk54;
+    }
+    D_8019DE0C = 0;
+    D_8019DE10.unk18 = -1;
+    D_8019DE10.unk38 = arg1;
+    D_8019DE10.unk3C = arg2;
+    D_8019DE10.unk8 = arg3;
+    D_8019DE10.unkC = arg4;
+    D_8019DE10.unk48 = 0;
+    D_8019DE10.unk4C = 0;
+    D_8019DE10.unk10 = 0;
+    D_8019DE10.unk58 = 1;
+    D_8019DE10.unk44 = D_8019DE10.unk40;
+    D_8019DE10.unk14 = VSync(-1);
+    D_8019DEA8 = 0;
+    for (i = 0; i < 16; i++) {
+        D_8019F750[i].unk0 = 0;
+        D_8019F750[i].unk4 = 0;
+    }
+    D_8019DEA4 = 0;
+    func_800236A4(0);
+    func_80022F1C(D_8019DE10.unk44, func_8019C434);
+    func_80056448(D_8019DE10.unk90, D_8019DE10.unk7C << 11);
+    return 0;
+}
 
 s32 func_8019C2F4(u8 **data, Ovl64RingHdr **hdr, u8 **arg2, Ovl64Pair **arg3, u16 **arg4) {
     Ovl64RingHdr *h = &D_8019DE10.unk74[D_8019DE10.unk70];
@@ -297,7 +329,34 @@ s32 func_8019C864(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019C884);
+s32 func_8019C884(Ovl64RingHdr *ring, u32 per, u32 size) {
+    u32 n;
+    u32 i;
+
+    if (size / per * per != size) {
+        size = size / per * per;
+    }
+    if (per == 0 || size < per) {
+        return 2;
+    }
+    n = size / per;
+    if (n > 16) {
+        return 2;
+    }
+    D_8019DE10.unk78 = (u8 *)ring + (n + 1) * sizeof(Ovl64RingHdr);
+    D_8019DE10.unk74 = ring;
+    D_8019DE10.unk5C = per;
+    D_8019DE10.unk60 = size;
+    D_8019DE10.unk64 = 0;
+    D_8019DE10.unk68 = n - 1;
+    D_8019DE10.unk6C = n;
+    D_8019DE10.unk70 = n - 1;
+    for (i = 0; i < n; i++) {
+        ring->unk0 = (ring->unk0 & 0xFFF) | 0x1000;
+        ring++;
+    }
+    return 0;
+}
 
 s32 func_8019C954(s32 arg0, s32 arg1, s32 arg2) {
     if (arg1 != 2) {
