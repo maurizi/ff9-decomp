@@ -9116,7 +9116,62 @@ void func_800ECF0C(void) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED02C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800ED3F8);
+void func_800ED3F8(s32 x, s32 y, s32 otz, char *str) {
+    s32 w;
+    u32 wh;
+    u32 xy;
+    u32 tp;
+    u32 stp;
+
+    w = func_8002AE7C(D_800F8E18);
+    wh = w | 0x70000;
+    setlen(D_80077170, 3);
+    ((TileWords *)D_80077170)->rgbc = 0x62000000;
+    xy = x | (y << 16);
+    ((TileWords *)D_80077170)->xy = xy;
+    ((TileWords *)D_80077170)->wh = wh;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(TileWords);
+    setlen(D_80077170, 1);
+    tp = 0xE1000620;
+    stp = 0xE6000001;
+    ((DrTpageWords *)D_80077170)->code = tp;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrTpageWords);
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = stp;
+    ((DrMode2Words *)D_80077170)->code[1] = 0;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+    func_800ED7C0(x, y, otz, w, 7, D_800F8E20);
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = 0xE6000002;
+    ((DrMode2Words *)D_80077170)->code[1] = 0;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+    func_8002B524(x, y, otz, (s32)str, 1);
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = 0xE6000000;
+    ((DrMode2Words *)D_80077170)->code[1] = 0;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+    setlen(D_80077170, 3);
+    ((TileWords *)D_80077170)->rgbc = 0x62000000;
+    ((TileWords *)D_80077170)->xy = xy;
+    ((TileWords *)D_80077170)->wh = wh;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(TileWords);
+    setlen(D_80077170, 1);
+    ((DrTpageWords *)D_80077170)->code = tp;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrTpageWords);
+    setlen(D_80077170, 2);
+    ((DrMode2Words *)D_80077170)->code[0] = stp;
+    ((DrMode2Words *)D_80077170)->code[1] = 0;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrMode2Words);
+    func_8002B524(x, y, otz, (s32)str, 0);
+}
 
 void func_800ED7C0(s32 x, s32 y, s32 ot, s32 w, s32 h, CVECTOR *c) {
     CVECTOR c0;

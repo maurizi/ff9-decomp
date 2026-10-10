@@ -3901,6 +3901,10 @@ typedef struct {
 } Unk800F57F0;
 extern Unk800F57F0 D_800F57F0[];
 void func_800C23C8(BtlUnit *, s32, u32);
+/* func_800ED3F8 */
+extern u8 D_800F8E18[]; /* text measured for the highlight bar width */
+extern CVECTOR D_800F8E20[4]; /* highlight bar gradient colours */
+void func_800ED7C0(s32, s32, s32, s32, s32, CVECTOR *);
 /* func_800DA92C */
 extern u16 D_800FEC68[];
 extern s32 D_80100D90[][2];
