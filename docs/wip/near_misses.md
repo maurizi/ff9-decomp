@@ -41,3 +41,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 - 0a B4A5C: identical except the stack frame is 8 bytes too small.
 - 0a C0038 (11 diff rows), C07D8 (24), C970C, BA560, BD130, C65CC, BFEE0 (36-64).
 - 0c BA1E4 (31 diff rows), C53DC and BEECC (~110-120), BF544; twin pair 0a BB714 / 0c CA1D8 (large diffs).
+- Large-function pass 3 (drafts in the agent worktree's build/nm_0a_*.c / nm_0c_*.c): 0a AB3CC (prologue order of
+  two s-reg inits only), 0a B3F8C (s0/s1 swap between loop index and temp), 0a AA4E8 (lh/lhu load order), 0a BF0C4
+  (parallax loop cross-jump + regs), 0c B0378 (~90 diff rows: else-branch temps, sqrt block hi-part reg), 0c AD738
+  (~78 rows: local regs a0/a3, prologue loads of the second block).

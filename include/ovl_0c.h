@@ -133,7 +133,7 @@ typedef struct {
     u8 unkA;
     u8 unkB;
     u8 unkC;
-    u8 padD;
+    u8 unkD;
     s16 unkE;
     u8 unk10;
     u8 unk11;
@@ -869,7 +869,7 @@ extern Unk800CE3C8 D_800CCB70[];
 extern s16 D_800CE276;
 extern s16 D_800CE3BC;
 extern s32 D_800CFDB0[];
-extern s8 D_800CE1F2;
+extern u8 D_800CE1F2;
 extern s32 D_800D3E60; /* navi mode */
 extern u8 D_800D3E64;
 extern s32 D_800D3E6C;
@@ -987,7 +987,7 @@ extern u8 D_800CE25D;
 extern u8 D_800CE25E;
 extern s32 D_800CE260;
 extern Unk8004AB64 *D_800CE268;
-extern s8 D_800CE26D;
+extern u8 D_800CE26D;
 extern Unk8004AB64 *D_800CE270;
 extern s8 D_800CE274;
 extern s32 D_800CE278;
