@@ -7627,7 +7627,30 @@ s32 func_8003502C(u8 *eq, s32 k) {
     return sum;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035108);
+void func_80035108(void) {
+    s32 otz;
+    Unk80035214 r;
+
+    otz = 1;
+    if (D_80077DE8.unk1D == 0) {
+        otz = D_80077DE8.unk4;
+    }
+    do {
+    } while (0); /* empty debug macro in the original; changes the register allocation */
+    if (D_80077DE8.unk1C != 0) {
+        if (D_80077DE8.unk1D != 0) {
+            func_800270EC(D_80077DE8.unk0, D_80077DE8.unk2, otz);
+        }
+        func_80035C2C(D_80077DE8.unk0 + 5, D_80077DE8.unk2 + 2, otz, &D_80077DE8.unk20);
+    }
+    func_8003573C();
+    if (D_80077DE8.unk1A != 0) {
+        func_80035214(&r);
+        func_800275DC(r.unk0.x + 8, r.unk0.y, otz, 0xB7, 0);
+        func_8002B5FC(r.unk0.x + 6, r.unk0.y + 8, otz, D_80077DE8.unk8, 8);
+        func_8002DF18(&r.unk0, otz, r.unk8, r.unkA);
+    }
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035214);
 
