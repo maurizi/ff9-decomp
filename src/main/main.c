@@ -808,7 +808,60 @@ void func_8001CCB4(s32 r, s32 g, s32 b) {
     env[0].b0 = b;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001CD04);
+void func_8001CD04(s32 h) {
+    Unk4 func_8002F9A8(void);
+    Unk4 col;
+    RECT r;
+    s32 fade;
+    s32 busy;
+    DRAWENV *draw;
+
+    fade = 0;
+    if (func_8002F800() || func_8002F810()) {
+        fade = 1;
+    }
+    busy = func_8002F864();
+    col = func_8002F9A8();
+    if (busy == 1) {
+        col.unk0[0] = 0xFF - col.unk0[0];
+        col.unk0[1] = 0xFF - col.unk0[1];
+        col.unk0[2] = 0xFF - col.unk0[2];
+    }
+    if (!fade) {
+        col.unk0[0] = D_8006794C->unk10->r0;
+        col.unk0[1] = D_8006794C->unk10->g0;
+        col.unk0[2] = D_8006794C->unk10->b0;
+    }
+    if (D_8006794C->unkC->disp.h < h) {
+        r.x = 0;
+        r.y = D_8006794C->unkC->disp.h;
+        r.w = 0x280;
+        r.h = h - D_8006794C->unkC->disp.h;
+        ClearImage(&r, col.unk0[0], col.unk0[1], col.unk0[2]);
+        DrawSync(0);
+    }
+    SetDefDispEnv(&D_8006794C->unkC[0], 0x140, 0, 0x140, h);
+    SetDefDispEnv(&D_8006794C->unkC[1], 0, 0, 0x140, h);
+    D_8006794C->unkC[0].isinter = D_8006794C->unkC[1].isinter = 0;
+    D_8006794C->unkC[0].screen.x = D_8006794C->unkC[1].screen.x = 0;
+    D_8006794C->unkC[0].screen.y = D_8006794C->unkC[1].screen.y = (0xF0 - h) / 2;
+    D_8006794C->unkC[0].screen.h = D_8006794C->unkC[1].screen.h = h;
+    SetDefDrawEnv(&D_8006794C->unk10[0], 0, 0, 0x140, h);
+    SetDefDrawEnv(&D_8006794C->unk10[1], 0x140, 0, 0x140, h);
+    draw = D_8006794C->unk10;
+    draw[1].dfe = 1;
+    draw[0].dfe = 1;
+    draw = D_8006794C->unk10;
+    draw[1].dtd = 1;
+    draw[0].dtd = 1;
+    draw = D_8006794C->unk10;
+    draw[1].isbg = 1;
+    draw[0].isbg = 1;
+    VSync(0);
+    if (D_8006794C->unk1C != NULL) {
+        PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    }
+}
 
 void func_8001CFB4(void) {
     Unk4 func_8002F9A8(void); /* ovl_0a declares it with an out-pointer */
