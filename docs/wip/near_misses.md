@@ -32,4 +32,5 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   D1D74 ~30 (frame index n/k regs), D2DBC ~65 (header load scheduling), CD210 ~36 (bone index needs sext,
   q copied to a 2nd reg), E6764 9 (first inner-loop stores scheduled), D1FFC ~60 (like D1D74),
   E57B0 ~117 (constant 1 kept in s0 and used by sllv), AF800 ~135 (case 0 branch order, 56F not reloaded),
-  ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement).
+  ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement), DE11C ~690 (model
+  renderer: all 8 primitive loops written, register allocation/spills differ).
