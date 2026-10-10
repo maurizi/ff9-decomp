@@ -15307,7 +15307,46 @@ void func_800540E8(s32 x, s32 y) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054294);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80054650);
+void func_80054650(void) {
+    u32 *p;
+    WarpVert *v;
+    s32 i;
+    s32 j;
+    s32 c;
+    u32 rgbc;
+    s32 u0;
+    s32 u1;
+    u32 tp;
+
+    p = D_8007BD10;
+    c = (D_8007BD1C >> 4) & 0xFF;
+    rgbc = (c << 16) | (c << 8) | c | 0x2E000000;
+    p += 10;
+    for (i = 0; i < 8; i++) {
+        v = &D_8007BD18[i * 9];
+        tp = ((((D_8007BD14[i].vx + D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
+        u0 = D_8007BD14[i].vx & 0x3F;
+        u1 = u0 + (D_8007BD14[i + 1].vx - D_8007BD14[i].vx) - 1;
+        for (j = 0; j < 8; j++) {
+            p[0] = 0x09000000;
+            p[1] = rgbc;
+            p[2] = (v->y << 16) | (u16)v->x;
+            p[3] = (D_8007BD14[j].vy << 8) | (u8)u0;
+            p[4] = (v[9].y << 16) | (u16)v[9].x;
+            p[5] = (D_8007BD14[j].vy << 8) | (u8)u1 | tp;
+            p[6] = (v[1].y << 16) | (u16)v[1].x;
+            p[7] = ((D_8007BD14[j + 1].vy - 1) << 8) | (u8)u0;
+            p[8] = (v[10].y << 16) | (u16)v[10].x;
+            p[9] = ((D_8007BD14[j + 1].vy - 1) << 8) | (u8)u1;
+            setaddr(p - 10, p);
+            p += 10;
+            v++;
+        }
+    }
+    setaddr(p - 10, getaddr(&D_8007BD0C[1]));
+    setaddr(&D_8007BD0C[1], D_8007BD10 + 10);
+    D_8007BD10 = p;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetDrawMove);
 

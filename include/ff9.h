@@ -3840,6 +3840,13 @@ static inline void func_80054A28_max(u32 *m, u32 v) {
 extern u32 *D_8007BD0C;
 extern u32 *D_8007BD10;
 extern u16 D_8007BD1E;
+/* battle-entry warp grid (func_80054294 fills it, func_80054650 draws it) */
+typedef struct {
+    s16 x, y;
+    s16 pad[2];
+} WarpVert; /* 9x9 screen vertices */
+extern DVECTOR *D_8007BD14; /* 9 texture columns/rows */
+extern WarpVert *D_8007BD18;
 /* battle-entry swirl (func_80053A10) */
 typedef struct {
     s16 unk0; /* rotation */
