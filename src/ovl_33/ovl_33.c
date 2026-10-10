@@ -1025,7 +1025,90 @@ void func_801F189C(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F1A94);
+void func_801F1A94(void) {
+    RECT *r;
+    Character *c;
+    u8 *name;
+    s32 id;
+    s32 ab;
+    s32 i;
+    s32 y1;
+    s32 y2;
+    s32 y3;
+    s32 k;
+    s32 icon;
+    s32 ap;
+    u8 ok;
+    u8 flag;
+
+    r = &D_801FC840.unk2C;
+    c = D_8006794C->unk1C->unk54C[D_801FC840.unk3];
+    func_8002B524(r->x + 6, r->y - 3, 0x13, D_80070400, 0);
+    func_800269F4(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
+    func_8002DEE4(r, 0x1E, 1);
+    if (D_801FC840.unk1 < 2) {
+        return;
+    }
+    func_800275DC(r->x + 0xA, r->y + 9, 0x1D, D_801FC840.unk2 + 0xF9, 0);
+    func_8002B56C(r->x + 0x19, r->y + 0xB, 0x1D, D_801EE644, 0);
+    if (D_801FC840.unk1 == 2) {
+        id = c->unk39[D_801FC840.unk2];
+    } else {
+        id = D_801FC840.unk3C[D_801FC840.unk4.unk5 + D_801FC840.unk4.unk6].unk0;
+    }
+    if (id == 0xFF) {
+        return;
+    }
+    func_80026C34(r->x + 0x21, r->y + 7, 0x1D, id, 1);
+    func_8002B5FC(r->x + 0x31, r->y + 7, 0x1D, D_8006A218 + D_80069018[id].unk0, 0);
+    for (i = 0; i < 3; i++) {
+        y3 = i * 15;
+        y2 = i * 15 + 0x21;
+        y1 = i * 15 + 0x22;
+        ab = D_80069018[id].unkC[i];
+        if (ab == 0) {
+            continue;
+        }
+        if (ab < 0xC0) {
+            name = D_801F803C + D_801F743C[ab].unkE;
+        } else {
+            name = D_801F8684 + D_8006D128[ab - 0xC0].unk2;
+        }
+        if (func_80034A30(c)) {
+            ok = func_80034430(c->unk34.b.id, ab) >= 0;
+            ap = func_800347D8(c->unk34.b.id, ab);
+            if (ok) {
+                if (ab < 0xC0) {
+                    icon = 0xBC;
+                } else if (func_80034A04(c->unk88, ab)) {
+                    icon = 0xBD;
+                } else {
+                    icon = 0xF4;
+                }
+            } else {
+                if (ab < 0xC0) {
+                    icon = 0xBE;
+                } else {
+                    icon = 0xBF;
+                }
+            }
+            if (ok) {
+                if (ab < 0xC0) {
+                    flag = !(D_801F743C[ab].unkB & 2);
+                } else {
+                    flag = 1;
+                }
+                k = 0x26;
+                func_80027110(r->x + 0x72, r->y + (y3 + k), 0x1D, func_80034584(c->unk34.b.id, ab), ap, flag, 0);
+            }
+            func_8002B5FC(r->x + 0x18, r->y + y2, 0x1D, name, ok ? 0 : 2);
+            func_800275DC(r->x + 8, r->y + y1, 0x1D, icon, ok ^ 1);
+        } else {
+            func_8002B5FC(r->x + 0x18, r->y + y2, 0x1D, name, 2);
+            func_800275DC(r->x + 8, r->y + y1, 0x1D, ab < 0xC0 ? 0xBE : 0xBF, 1);
+        }
+    }
+}
 
 void func_801F1F08(void) {
     RECT sub;

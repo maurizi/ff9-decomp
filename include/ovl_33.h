@@ -164,6 +164,7 @@ extern s32 D_801F740C[]; /* colour by state */
 extern u8 D_801F40EC[];  /* item names */
 extern u8 D_801F6540[];  /* ability names */
 /* main exe: candidates for ff9.h */
+extern s32 D_80070400;
 extern s32 D_800704B8;
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 extern s32 D_80070498;
@@ -223,5 +224,9 @@ extern u8 D_801F892C[]; /* arrow */
 extern u8 D_801F8930[4]; /* stat names */
 extern u8 D_801F8934[5]; /* attack/defence names */
 void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new);
+
+extern Unk801F34EC D_801F743C[]; /* action abilities (ability menu), same layout as D_801F34EC */
+extern u8 D_801F803C[]; /* action ability names (ability menu) */
+extern u8 D_801F8684[]; /* support ability names (ability menu) */
 
 #endif
