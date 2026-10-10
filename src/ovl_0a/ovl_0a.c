@@ -3565,7 +3565,171 @@ s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return (s32)p;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B3F8C);
+static inline s32 func_800B3F8C_grp(s32 id) {
+    return id / 50;
+}
+
+void func_800B3F8C(void) {
+    FileEntry *tbl;
+    FileEntry *e;
+    FileEntry *f;
+    FileEntry *g;
+    s32 i;
+    s32 cnt;
+    s32 best;
+    s32 sel;
+    s32 cur;
+    s32 key;
+    s32 x;
+
+    tbl = D_8006794C->unk1C->unk7E4->unk4;
+    key = func_800B3B64();
+    if (key == 0) {
+        cnt = 0;
+        key = func_800B3B40();
+        if (key != 0) {
+            cnt = 1;
+        } else {
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                if (((tbl[i].unk0 >> 16) & 0xFF) == 0x11) {
+                    cnt = 1;
+                    break;
+                }
+            }
+        }
+        if (cnt != 0) {
+            g = func_8001E218(0, 0x1000B);
+            func_800B3E48(0x1000B, 0, g->unk4, (g->unkC - g->unk4) << 11);
+            key = func_800B3B40();
+            if (key != 0) {
+                func_800B3C24(0x1000B);
+            }
+        }
+    }
+    if (func_800B3B88() != 0) {
+        for (i = 0; i < D_800CA050; i++) {
+            key = D_800CA010[i];
+            if (((D_800CA010[i] >> 16) & 0xFF) == 5) {
+                e = func_80063088(D_8006794C->unk1C->unk7E4, key);
+                if (e != NULL) {
+                    if ((e->unkC & 0xFFFF) != (s16)D_8006794C->unk1C->unk3A) {
+                        f = func_80063088(D_8006794C->unk1C->unk7E4, e->unkC);
+                        if (f != NULL) {
+                            func_800B3E48(e->unkC & 0xFFFFFF, 0, f->unk4, f->unk8 << 11);
+                        }
+                    }
+                    func_800B3E48(key, 0, e->unk4, e->unk8 << 11);
+                    func_800B3C24(key);
+                }
+            }
+        }
+    } else {
+        best = 0;
+        sel = -1;
+        cur = -1;
+        for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+            x = tbl[i].unk0;
+            if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && func_800B3D10(x) == NULL &&
+                    func_800B3F8C_grp(x & 0xFFFF) == func_800B3F8C_grp(D_8006794C->unk1C->unkC) && best < tbl[i].unk8) {
+                    best = tbl[i].unk8;
+                    sel = i;
+                }
+            }
+        }
+        if (sel == -1) {
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                x = tbl[i].unk0;
+                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if ((x & 0xFFFF) < 9000 && func_800B3D10(x) == NULL && (x & 0xFFFF) == D_8006794C->unk1C->unk8E4.field->unkA) {
+                        best = tbl[i].unk8;
+                        sel = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if (sel == -1) {
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                x = tbl[i].unk0;
+                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && func_800B3D10(x) == NULL &&
+                        best < tbl[i].unk8) {
+                        sel = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if (sel != -1) {
+            if ((tbl[sel].unkC & 0xFFFF) != (s16)D_8006794C->unk1C->unk3A) {
+                for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                    if (tbl[i].unk0 == tbl[sel].unkC) {
+                        func_800B3E48(tbl[i].unk0 & 0xFFFFFF, 0, tbl[i].unk4, tbl[i].unk8 << 11);
+                        break;
+                    }
+                }
+            }
+            cnt = tbl[sel].unk0 & 0xFFFFFF;
+            func_800B3E48(cnt, 0, tbl[sel].unk4, tbl[sel].unk8 << 11);
+            cur = cnt;
+        }
+        if (cur != -1) {
+            best = 0;
+            sel = -1;
+            for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                x = tbl[i].unk0;
+                if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                    key = x & 0xFFFF;
+                    if (key < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                        func_800B3D10(x) == NULL && func_800B3F8C_grp(key) == func_800B3F8C_grp(D_8006794C->unk1C->unkC) &&
+                        best < tbl[i].unk8) {
+                        best = tbl[i].unk8;
+                        sel = i;
+                        break;
+                    }
+                }
+            }
+            if (sel == -1) {
+                for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                    x = tbl[i].unk0;
+                    if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != (cur & 0xFFFF) && func_800B3D10(x) == NULL &&
+                            (x & 0xFFFF) == D_8006794C->unk1C->unk8E4.field->unkA) {
+                            best = tbl[i].unk8;
+                            sel = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (sel == -1) {
+                for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                    x = tbl[i].unk0;
+                    if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
+                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != D_8006794C->unk1C->unk8E4.field->unkA && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                            func_800B3D10(x) == NULL && best < tbl[i].unk8) {
+                            sel = i;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (sel != -1) {
+                if ((tbl[sel].unkC & 0xFFFF) != (s16)D_8006794C->unk1C->unk3A) {
+                    for (i = D_8006794C->unk1C->unk7E4->unk2 - 1; i >= 0; i--) {
+                        if (tbl[i].unk0 == tbl[sel].unkC) {
+                            func_800B3E48(tbl[i].unk0 & 0xFFFFFF, 1, tbl[i].unk4, -1);
+                            return;
+                        }
+                    }
+                } else {
+                    func_800B3E48(tbl[sel].unk0 & 0xFFFFFF, 1, tbl[sel].unk4, -1);
+                }
+            }
+        }
+    }
+}
 
 s32 func_800B4894(void) {
     FieldScene *s;
@@ -7763,7 +7927,81 @@ s32 func_800C2AF0(Unk800C9DF4 *arg0, Unk800C9E00 **arg1, s16 *arg2, SVECTOR *arg
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C31F8);
+s32 func_800C31F8(Unk800C9DF4 *arg0, SVECTOR *arg1, Unk800C9E00 **arg2, s16 *arg3) {
+    VECTOR sum;
+    SVECTOR prev;
+    u8 i;
+    u8 j;
+    u8 dup;
+    u8 any;
+    s32 n;
+
+    if (D_800C9DDC == 0) {
+        return 1;
+    }
+    prev.vx = arg1->vx;
+    prev.vy = arg1->vy;
+    prev.vz = arg1->vz;
+    if (D_800C9DDC == 1) {
+        arg1->vx += D_800CA9D8[0][0];
+        arg1->vz += D_800CA9D8[0][2];
+        arg0->unk24->unk14.vx = arg1->vx;
+        arg0->unk24->unk14.vz = arg1->vz;
+    } else {
+        any = 0;
+        i = 0;
+        n = 0;
+        sum.vx = 0;
+        sum.vz = 0;
+        for (; i < D_800C9DDC; i++) {
+            if (D_800CAA38[i] != 0) {
+                dup = 0;
+                for (j = 0; j < i; j++) {
+                    if (D_800CA9D8[j][0] == D_800CA9D8[i][0] && D_800CA9D8[j][2] == D_800CA9D8[i][2]) {
+                        dup = 1;
+                    }
+                }
+                if (!dup) {
+                    any = 1;
+                    sum.vx += D_800CA9D8[i][0];
+                    n++;
+                    sum.vz += D_800CA9D8[i][2];
+                }
+            }
+        }
+        if (any) {
+            if (n >= 2) {
+                sum.vx /= n;
+                sum.vz /= n;
+            }
+        } else {
+            n = 0;
+            for (i = 0; i < D_800C9DDC; i++) {
+                dup = 0;
+                for (j = 0; j < i; j++) {
+                    if (D_800CA9D8[j][0] == D_800CA9D8[i][0] && D_800CA9D8[j][2] == D_800CA9D8[i][2]) {
+                        dup = 1;
+                    }
+                }
+                if (!dup) {
+                    sum.vx += D_800CA9D8[i][0];
+                    n++;
+                    sum.vz += D_800CA9D8[i][2];
+                }
+            }
+            if (n > 0) {
+                sum.vx /= n;
+                sum.vy /= n;
+            }
+        }
+        arg1->vx += sum.vx;
+        arg1->vz += sum.vz;
+        arg0->unk24->unk14.vx = arg1->vx;
+        arg0->unk24->unk14.vz = arg1->vz;
+    }
+    D_800C9DDC = 0;
+    return func_800C2AF0(arg0, arg2, &prev, arg1, 0, 0, 0, 0) == 0;
+}
 
 /* clears the visited flag of every walkmesh triangle first */
 static inline s32 func_800C2524_inline(Unk800C9DF4 *e, SVECTOR *pos, Unk800C9E00 *nd, s16 *edge) {
@@ -8327,7 +8565,70 @@ s32 func_800C4B30(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C4EC8);
+s32 func_800C4EC8(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *sv) {
+    s16 *p = (s16 *)sv;
+    s8 c[2];
+    s32 d[2];
+    Unk800C9DFCv *pv[2];
+    s16 o[3];
+    Unk800C9DFCv v[3];
+    u8 i;
+    u8 r;
+    u8 x;
+    u8 z;
+    Unk800C9DFCv *vtx;
+
+    x = 0;
+    z = 2;
+    r = 0;
+    i = 0;
+    vtx = (Unk800C9DFCv *)D_800C9DF0.unkC;
+    o[x] = b->unk8[x] + t->unkA[x];
+    o[z] = b->unk8[z] + t->unkA[z];
+    c[0] = 0;
+    c[1] = 0;
+    for (; i < 3; i++) {
+        v[i].unk0[x] = o[x] + vtx[n->unkC[i]].unk0[x];
+        v[i].unk0[z] = o[z] + vtx[n->unkC[i]].unk0[z];
+        if (v[i].unk0[x] == p[x]) {
+            c[0]++;
+            if (v[i].unk0[z] <= p[z]) {
+                c[0] = -c[0];
+            }
+        }
+        if (v[i].unk0[z] == p[z]) {
+            c[1]++;
+            if (v[i].unk0[x] <= p[x]) {
+                c[1] = -c[1];
+            }
+        }
+    }
+    if (c[0] == -2) {
+        return 1;
+    }
+    if (c[1] == -2) {
+        return 1;
+    }
+    pv[0] = &v[2];
+    c[0] = p[z] >= pv[0]->unk0[z];
+    for (i = 0; i < 3; i++) {
+        pv[1] = &v[i];
+        c[1] = p[z] >= pv[1]->unk0[z];
+        if (c[0] != c[1]) {
+            d[0] = (pv[1]->unk0[z] - p[z]) * (pv[0]->unk0[x] - pv[1]->unk0[x]);
+            d[1] = (pv[1]->unk0[x] - p[x]) * (pv[0]->unk0[z] - pv[1]->unk0[z]);
+            if (d[0] == d[1]) {
+                return 1;
+            }
+            if ((d[1] < d[0]) == c[1]) {
+                r = !r;
+            }
+        }
+        pv[0] = pv[1];
+        c[0] = c[1];
+    }
+    return r;
+}
 
 INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C519C);
 

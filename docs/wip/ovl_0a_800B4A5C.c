@@ -1,18 +1,14 @@
 /*
  * ovl_0a func_800B4A5C (0x540 bytes): shows a full-screen TIM (fade in, hold, fade out) with
  * its own draw loop.
- * WIP: 336 of 336 instructions, 13 aligned diff rows. The frame is 0x58 in the original:
- * spr[2]/tp[2] at 0x10/0x18, clut/img at 0x20/0x24 and 8 unused bytes at 0x28. Without the
- * `unused` RECT the frame is 0x50 (25 rows). With it the size is right, but since aggregates get
- * their slot at the declaration while clut/img only get theirs at the `&clut, &img` call, it
- * lands below clut/img (clut/img at 0x28/0x2C). A block-scoped one in either loop does the
- * same; a scalar whose address is taken in dead code is dropped. The hole must be something
- * allocated after the call that leaves no code. Also: setRECT self-assignments explain the dead
- * lhu loads.
- * Pass 9: a `{ RECT u; }` block placed after the func_8001D910 call still lands at 0x20, below
- * clut/img, so clut/img get their slots later than any declaration; an address-taken scalar in
- * a block there is dropped. Since the locals end at 0x28 and the saves start at 0x30, the hole
- * may be a single 4-byte slot (a reload spill whose code was later deleted?).
+ * WIP (pass 10): 336 of 336 instructions, 5 aligned diff rows, frame and stack slots now right.
+ * The hole: a dead `p = (u8 *)&pad;` right after the func_8001D910 call. Taking the address in
+ * an expression that is expanded (then deleted by flow because p is reassigned) puts pad on the
+ * stack after clut/img (0x28, frame 0x58); `(void)&pad` is never expanded and does nothing.
+ * Left: sprite-loop scheduling only. The original bumps p (`addiu t1, t1, 0x14`) and builds
+ * the 0xE1000600 tpage constant a few slots earlier, and `addiu s2, sp, 0x18` (&tp[0]) sits
+ * two slots earlier. Permuter hint: `spr[i]->u0 = (spr[i]->v0 = 0);` fixes exactly those rows
+ * but drops the spr[i] reload between the two byte stores (4 rows, 334 vs 336 instructions).
  */
 #include "ovl_0a.h"
 
@@ -23,7 +19,7 @@ void func_800B4A5C(void) {
     DR_TPAGE *tp[2];
     RECT *clut;
     RECT *img;
-    RECT unused; /* frame size only, see header */
+    s32 pad;
     u8 *p;
     s32 tim;
     s32 i;
@@ -32,6 +28,7 @@ void func_800B4A5C(void) {
 
     tim = (s32)func_8001C7FC(4, 0x44E20, 0);
     func_8001D910(tim, &clut, &img);
+    p = (u8 *)&pad;
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
     func_8001D8A8(tim);

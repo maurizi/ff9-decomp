@@ -1,0 +1,92 @@
+/*
+ * ovl_0a func_800C0038 (0x298 bytes): starts a field camera scroll towards the player actor
+ * (projects it, clamps to the camera limits, stores the target in D_800CA068.unk14/16).
+ * WIP (pass 10): 166 of 166 instructions, 19 aligned diff rows (was 44).
+ * Fixed: the clamps are if / else if with the limit re-read in each arm (as in BF660);
+ * `x = (c->unk24 >> 1) - 0xA0; x += xy[0];` (same for y); the ~0xF mask of the flag block
+ * goes in its own statement (`f = ~0xF; f &= D_800CA068.unk0;`) so it is built in the delay slot.
+ * Left: (1) the a->unk14 / st->unk4 loads swap v0/v1 at 0xA8; (2) x/y: xy[0] should load into
+ * a0 and x into a1; (3) the flag block: in the original f is in a1 and f | 3 in v1, so the
+ * arg1 == -1 store is not cross-jumped with the f | 0xB store; here f lands in v1, f | 3 in v0,
+ * and jump2 merges the two `sw v0` stores. Storing f | 3 in both arms of an if/else stops
+ * the cross-jump but loses the unconditional store. Has GTE asm, so the permuter can't parse it.
+ */
+#include "ovl_0a.h"
+
+s32 func_800C0038(s32 arg0, s32 arg1) {
+    SVECTOR v;
+    s16 xy[2];
+    Unk800C9DB4Cam *c;
+    Unk8004AB64 *a;
+    u8 mode;
+    s32 x;
+    s32 y;
+    s32 t;
+    s32 f;
+    s32 ox;
+    s32 oy;
+    Unk800C9DB4 *bg;
+    Unk800CA068 *st;
+
+    if (!(D_800CA068.unk0 & 0x40)) {
+        return 0;
+    }
+    mode = D_8006794C->unk8;
+    if (mode == 5) {
+        a = (Unk8004AB64 *)D_8006794C->unk1C->unk8E0[D_8006794C->unk1C->unk8E4.field->unk8].unkC;
+    } else {
+        a = NULL;
+        if (mode == 1) {
+            a = func_8004AE00();
+        }
+    }
+    bg = D_800C9DB4;
+    st = &D_800CA068;
+    c = (Unk800C9DB4Cam *)((u8 *)bg + bg->unk18);
+    *(s32 *)&st->unk10 = *(s32 *)&st->unk4;
+    v.vx = a->unk14.vx;
+    v.vy = a->unk14.vy - st->unk76;
+    c = &c[st->unk75];
+    v.vz = a->unk14.vz;
+    ox = (s16)c->unk20;
+    oy = (s16)c->unk22;
+    gte_SetGeomOffset(ox + 0xA0, oy + 0x70);
+    gte_SetRotMatrix(st->unk1C);
+    gte_SetTransMatrix(st->unk1C);
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(xy);
+    x = (c->unk24 >> 1) - 0xA0;
+    x += xy[0];
+    y = (c->unk26 >> 1) - 0x70;
+    y += xy[1];
+    if (x < c->unk28) {
+        x = c->unk28;
+    } else if (c->unk2A < x) {
+        x = c->unk2A;
+    }
+    if (y < c->unk2C) {
+        y = c->unk2C;
+    } else if (c->unk2E < y) {
+        y = c->unk2E;
+    }
+    D_800CA068.unk14 = x;
+    D_800CA068.unk16 = y;
+    if (arg0 == -1) {
+        D_800CA068.unk1A = 0x1E;
+    } else {
+        D_800CA068.unk1A = arg0;
+    }
+    D_800CA068.unk18 = 1;
+    if (arg1 == -1) {
+        D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 3;
+    } else {
+        f = ~0xF;
+        f &= D_800CA068.unk0;
+        D_800CA068.unk0 = f | 3;
+        if (arg1 == 8) {
+            D_800CA068.unk0 = f | 0xB;
+        }
+    }
+    return 1;
+}

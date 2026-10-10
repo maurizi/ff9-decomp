@@ -2021,9 +2021,247 @@ void func_800ACFC8(TmState *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800ACFFC);
+void func_800ACFFC(TmState *s) {
+    TmCard *a;
+    TmCard *b;
+    TmCard *c;
+    TmCard *cards;
+    s32 dx;
+    s32 dy;
+    s32 k;
+    s32 x;
+    s32 n;
+    s32 i;
+    s32 m;
+    s32 t;
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AD400);
+    dx = 0;
+    dy = 0;
+    a = NULL;
+    b = NULL;
+    k = 0;
+    if (s->unk0 == 7) {
+        a = func_800B19D4(s, s->unk424, s->unk428)->unk4;
+        b = func_800B19D4(s, s->unk42C, s->unk430)->unk4;
+        if ((u32)(s->unk2E8 - 0x23) < 0xF) {
+            k = s->unk2E8 - 0x23;
+            if (s->unk2E8 >= 0x2A) {
+                k = 0x32 - s->unk2E8;
+            }
+        } else {
+            k = 0;
+        }
+        dx = (s->unk424 - s->unk42C) * 0x2A00 / 270;
+        dy = (s->unk428 - s->unk430) * 0x3300 / 270;
+        k = k * k;
+    }
+    x = 8;
+    cards = s->unk10;
+    for (i = 0, n = 0; i < 10; i++) {
+        c = &cards[i];
+        if (s->unk0 == 0x12 || s->unk0 == 0x23 || s->unk5B8 != 0) {
+            c->unk30 = i + 0x28;
+        } else {
+            c->unk30 = 0x3C - i;
+        }
+        if (c->unk14 == 0) {
+            if (c->unk18 == 0) {
+                c->unk1C = 0;
+                c->unk10 = x;
+                if (func_800AE878(s, 0) == 5 || s->unk0 == 0x12 || s->unk0 == 0x23 || s->unk5B8 != 0) {
+                    x += 0x2A;
+                    c->unkC = 0x108;
+                    c->unk1C = 1;
+                } else {
+                    x += 0x34;
+                    c->unk1C = 0;
+                    c->unkC = 0x104;
+                }
+            }
+            if (s->unk0 == 0x22 && i >= 5) {
+                if (func_800AE908(s, s->unk5B0) == c) {
+                    c->unkC = 0x16;
+                } else {
+                    c->unkC = 0x10;
+                }
+            }
+            if (s->unk0 == 0xF && i >= 5) {
+                c->unkC = 0x10;
+            }
+        }
+        if (c->unk14 == 1 && c->unk18 == 0) {
+            c->unk10 = n * 14 + 0x1A;
+            n++;
+            c->unkC = 0x10;
+        }
+        if (s->unk0 == 7) {
+            if (a == c) {
+                t = s->unk424 * 43;
+                m = dx * k / 256 - 0x48;
+                c->unkC = t - m;
+                t = s->unk428 * 52;
+                m = dy * k / 256 - 8;
+                c->unk10 = t - m;
+                c->unk30 = 0x26;
+            }
+            if (b == c) {
+                t = s->unk42C * 43;
+                m = dx * k / 256 + 0x48;
+                c->unkC = t + m;
+                t = s->unk430 * 52;
+                m = dy * k / 256 + 8;
+                c->unk10 = t + m;
+                c->unk30 = 0x27;
+            }
+        }
+    }
+}
+
+void *func_800AD400(u32 *ot, void *p, TmState *s) {
+    TmCard *c;
+    TmCard *cards;
+    s32 i;
+    s32 k;
+    s32 m;
+    s32 z;
+    s32 sel;
+    u8 a;
+    u8 b;
+    u32 *o;
+    u32 *o2;
+
+    cards = s->unk10;
+    for (i = 0; i < 10; i++) {
+        c = &cards[i];
+        if (cards[i].unk34 == 0) {
+            continue;
+        }
+        a = s->unk2EC;
+        m = s->unk0;
+        b = a;
+        if (m == 6 && cards[i].unk18 == 1) {
+            a = 0x40;
+            b = a;
+            for (k = 0; k < s->unk4AC; k++) {
+                if (&cards[i] == s->unk48C[k]) {
+                    a = s->unk2EC - ((s->unk2E8 & 0x10) >> 4) * 24;
+                    b = s->unk2EC;
+                }
+            }
+            if (c == s->unk4B0) {
+                a = s->unk2EC;
+                b = a;
+            }
+        }
+        if (m == 0x12 || m == 0x17 || m == 0x18 || m == 0x23 || s->unk5B8 != 0) {
+            if (i >= 5) {
+                a -= (i - 5) * 22;
+                b -= (i - 5) * 22;
+            }
+        }
+        if (m == 1 && c->unk14 == 0 && c->unk18 == 0) {
+            b = 0x40;
+            a = b;
+            if (c == func_800AE9D0(s, 0, s->unk4)) {
+                b = 0x80;
+                a = b;
+            }
+        }
+        z = c->unk30;
+        if (s->unk0 == 6 && a != b) {
+            o = ot + z;
+            setlen((SPRT *)p, 4);
+            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->x0 = c->unkC + 5;
+            ((SPRT *)p)->y0 = c->unk10 + 0x15;
+            ((SPRT *)p)->v0 = 0xF0;
+            ((SPRT *)p)->w = 0x20;
+            ((SPRT *)p)->h = 0x10;
+            ((SPRT *)p)->u0 = 0x80;
+            ((SPRT *)p)->clut = 0x3B40;
+            ((SPRT *)p)->r0 = 0x80;
+            ((SPRT *)p)->g0 = 0x80;
+            ((SPRT *)p)->b0 = 0x80;
+            AddPrim(o, p);
+            p = (SPRT *)p + 1;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(0, 0, 0x340, 0x1E0) & 0x9FF) | 0xE1000000;
+            AddPrim(o, p);
+            p = (DR_TPAGE *)p + 1;
+        }
+        if (s->unk0 == 0x22 && func_800AE908(s, s->unk5B0) == c) {
+            z = 0x28;
+        }
+        if (c->unk8 == 0) {
+            sel = 0;
+            if (s->unk0 == 0x1D) {
+                sel = s->unk508 == c;
+            }
+            o2 = ot + z;
+            p = func_800B14AC(o2, p, s, c->unkC, c->unk10, c->unk1, c->unk1C, b, sel);
+            if (c->unk8 == 0) {
+                p = func_800AF95C(o2, p, s, c, b);
+                if (c->unk8 == 0) {
+                    p = func_800B29F0(o2, p, s, c, a, c->unk1C);
+                }
+            }
+        }
+        if (c->unk1C == 0) {
+            setlen((SPRT *)p, 4);
+            ((SPRT *)p)->code = 0x64;
+            ((SPRT *)p)->x0 = c->unkC;
+            ((SPRT *)p)->y0 = cards[i].unk10;
+            ((SPRT *)p)->w = 0x2A;
+            ((SPRT *)p)->h = 0x33;
+            ((SPRT *)p)->r0 = a;
+            ((SPRT *)p)->g0 = a;
+            ((SPRT *)p)->b0 = a;
+            if (cards[i].unk14 == 0) {
+                ((SPRT *)p)->u0 = 8;
+            } else {
+                ((SPRT *)p)->u0 = 0x38;
+            }
+            ((SPRT *)p)->v0 = 0x40;
+            if (cards[i].unk8 == 1) {
+                ((SPRT *)p)->u0 = 0xC8;
+                ((SPRT *)p)->v0 = 0x40;
+            }
+            ((SPRT *)p)->clut = 0x3A80;
+            AddPrim(ot + z, p);
+            p = (SPRT *)p + 1;
+        } else {
+            SetPolyFT4((POLY_FT4 *)p);
+            ((POLY_FT4 *)p)->x0 = cards[i].unkC;
+            ((POLY_FT4 *)p)->y0 = cards[i].unk10;
+            ((POLY_FT4 *)p)->x1 = cards[i].unkC + 0x22;
+            ((POLY_FT4 *)p)->y1 = cards[i].unk10;
+            ((POLY_FT4 *)p)->x2 = cards[i].unkC;
+            ((POLY_FT4 *)p)->y2 = cards[i].unk10 + 0x29;
+            ((POLY_FT4 *)p)->x3 = cards[i].unkC + 0x22;
+            ((POLY_FT4 *)p)->y3 = cards[i].unk10 + 0x29;
+            ((POLY_FT4 *)p)->u0 = 8;
+            ((POLY_FT4 *)p)->u1 = 0x32;
+            ((POLY_FT4 *)p)->v0 = 0x40;
+            ((POLY_FT4 *)p)->v1 = 0x40;
+            ((POLY_FT4 *)p)->u2 = 8;
+            ((POLY_FT4 *)p)->v2 = 0x73;
+            ((POLY_FT4 *)p)->u3 = 0x32;
+            ((POLY_FT4 *)p)->v3 = 0x73;
+            ((POLY_FT4 *)p)->tpage = 0x9C;
+            ((POLY_FT4 *)p)->r0 = a;
+            ((POLY_FT4 *)p)->g0 = a;
+            ((POLY_FT4 *)p)->b0 = a;
+            ((POLY_FT4 *)p)->clut = 0x3A80;
+            AddPrim(ot + z, p);
+            p = (POLY_FT4 *)p + 1;
+        }
+        setlen((DR_TPAGE *)p, 1);
+        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+        AddPrim(ot + z, p);
+        p = (DR_TPAGE *)p + 1;
+    }
+    return p;
+}
 
 void func_800AD974(TmState *arg0) {
     s32 i;
@@ -2683,7 +2921,99 @@ TmCard *func_800AEE08(TmState *arg0, s32 arg1, s32 arg2) {
 
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/ovl_0d", D_800A72B8);
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AEE2C);
+/* "NO" label */
+INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/ovl_0d", D_800A7398);
+
+void func_800AEE2C(TmState *s) {
+    u8 buf[0x20];
+    TmCard *c;
+    TmCard *c0;
+    TmCard *p;
+    TmCard *q;
+    Unk6 *d;
+    s32 i;
+    s32 n;
+    s32 m;
+    s32 k;
+    s32 dx;
+    s32 w;
+
+    q = s->unk10;
+    for (i = 0; i < 5; i++) {
+        p = &q[i];
+        if (i < s->unk47C) {
+            p->unk34 = 1;
+        } else {
+            p->unk34 = 0;
+        }
+    }
+    for (i = 4, q = &s->unk10[9]; i >= 0; i--, q--) {
+        q->unk34 = 0;
+    }
+    i = 5;
+    if (s->unk47C != i && s->unk0 != 0x1B) {
+        c0 = (TmCard *)func_800AF268(s);
+        n = func_80062560((s32)c0);
+        if (n != 0) {
+            c0 = (TmCard *)func_800AF268(s);
+            func_8002BAE4((s32)c0 + 1, buf, -1, 3);
+            i = func_8002BA10(buf) + 0xE;
+            w = i / 2;
+            func_8002B56C(0xD8 - w, 0x78, 0xFFA, D_800A7398, 0);
+            func_8002B5B4(0xE6 - w, 0x76, 0xFFA, buf, 0);
+            m = n;
+            k = s->unk4B4;
+            c0 = &s->unk10[5];
+            if (m >= 6) {
+                m = 5;
+            }
+            for (i = 0; i < m; i++) {
+                c = &c0[i];
+                dx = 0;
+                if (s->unk568 != 0) {
+                    if (s->unk418 == 0) {
+                        dx = s->unk568 - 4;
+                        if (i == 0) {
+                            dx = 0;
+                        }
+                    } else {
+                        dx = -s->unk568 + 1;
+                    }
+                    if (i == 0) {
+                        dx = 0;
+                    }
+                }
+                d = func_800625A0(func_800AF268(s), k);
+                c->unkC = 0xC2 + i * 4 + dx;
+                c->unk10 = i + 0x81;
+                c->unk30 = i + 0x28;
+                c->unk34 = 1;
+                c->unk1C = 0;
+                c->unk18 = 1;
+                c->unk14 = 0;
+                c->unk0 = d->unk0;
+                if (i == 0) {
+                    c0->unk1 = d->unk1;
+                } else {
+                    c->unk1 = 0;
+                }
+                c->unk2 = d->unk2;
+                c->unk3 = d->unk3;
+                c->unk4 = d->unk4;
+                c->unk5 = d->unk5;
+                k++;
+                c->unk34 = 1;
+                if (k == n) {
+                    k = 0;
+                }
+            }
+            i = func_80062794(func_800AF268(s));
+            func_8002B5FC(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(func_800AF268(s)), 0);
+        }
+    } else {
+        s->unk10[5].unk34 = 0;
+    }
+}
 
 void func_800AF100(TmState *arg0) {
     s32 i;
@@ -3186,7 +3516,94 @@ void func_800B026C(TmState *arg0) {
     arg0->unk5A8++;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B030C);
+void *func_800B030C(u32 *ot, void *p, TmState *s) {
+    TmUnk2F0 *e;
+    s32 i;
+    s32 n;
+    s32 dx;
+    s32 dy;
+    s32 dw;
+    s32 dh;
+    u8 c;
+    u8 u;
+
+    c = s->unk2EC;
+    if (s->unk0 == 0x15) {
+        c = s->unk2E8 * 8;
+    }
+    e = s->unk2F0;
+    for (i = 0; i < 6; i++) {
+        if (e[i].unk0 != 0) {
+            continue;
+        }
+        if (s->unk0 == 0x21 && s->unk5AC == 0 && i == s->unk56C) {
+            n = 10 - s->unk5A8;
+            if (n < 0) {
+                n = 0;
+            }
+            dx = n * 4 / 3;
+            dy = n * 5 / 3;
+            dw = dx + 0x2A;
+            dh = dy + 0x33;
+            SetPolyFT4((POLY_FT4 *)p);
+            ((POLY_FT4 *)p)->x0 = e[i].unk4 - dx;
+            ((POLY_FT4 *)p)->y0 = e[i].unk8 - dy;
+            ((POLY_FT4 *)p)->x1 = e[i].unk4 + dw;
+            ((POLY_FT4 *)p)->y1 = e[i].unk8 - dy;
+            ((POLY_FT4 *)p)->x2 = e[i].unk4 - dx;
+            ((POLY_FT4 *)p)->y2 = e[i].unk8 + dh;
+            ((POLY_FT4 *)p)->x3 = e[i].unk4 + dw;
+            ((POLY_FT4 *)p)->y3 = e[i].unk8 + dh;
+            u = 0x98;
+            if (e[i].unkC == 0) {
+                u = 0x68;
+            }
+            ((POLY_FT4 *)p)->u0 = u;
+            ((POLY_FT4 *)p)->v0 = 0x40;
+            ((POLY_FT4 *)p)->u1 = u + 0x2A;
+            ((POLY_FT4 *)p)->v1 = 0x40;
+            ((POLY_FT4 *)p)->u2 = u;
+            ((POLY_FT4 *)p)->v2 = 0x73;
+            ((POLY_FT4 *)p)->u3 = u + 0x2A;
+            ((POLY_FT4 *)p)->v3 = 0x73;
+            ((POLY_FT4 *)p)->r0 = c;
+            ((POLY_FT4 *)p)->g0 = c;
+            ((POLY_FT4 *)p)->b0 = c;
+            ((POLY_FT4 *)p)->tpage = 0x9C;
+            ((POLY_FT4 *)p)->clut = 0x3A80;
+            AddPrim(ot + 99, p);
+            p = (POLY_FT4 *)p + 1;
+        } else {
+            setlen((SPRT *)p, 4);
+            ((SPRT *)p)->code = 0x64;
+            if (s->unk0 == 0x15) {
+                ((SPRT *)p)->code = 0x66;
+            }
+            ((SPRT *)p)->x0 = e[i].unk4;
+            ((SPRT *)p)->y0 = e[i].unk8;
+            ((SPRT *)p)->r0 = c;
+            ((SPRT *)p)->g0 = c;
+            ((SPRT *)p)->b0 = c;
+            if (e[i].unkC == 0) {
+                ((SPRT *)p)->u0 = 0x68;
+                ((SPRT *)p)->v0 = 0x40;
+            } else {
+                ((SPRT *)p)->u0 = 0x98;
+                ((SPRT *)p)->v0 = 0x40;
+            }
+            ((SPRT *)p)->clut = 0x3A80;
+            ((SPRT *)p)->w = 0x2A;
+            ((SPRT *)p)->h = 0x33;
+            AddPrim(ot + 100, p);
+            p = (SPRT *)p + 1;
+            setlen((DR_TPAGE *)p, 1);
+            ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x300, 0x100) & 0x9FF) | 0xE1000000;
+            AddPrim(ot + 100, p);
+            p = (DR_TPAGE *)p + 1;
+        }
+    }
+    return p;
+}
 
 void func_800B0618(TmState *s) {
     s32 i;

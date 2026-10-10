@@ -320,6 +320,9 @@ void *func_800AFCE4(u32 *, SPRT *, TmState *);
 void *func_800B030C(u32 *, void *, TmState *);
 void *func_800B07DC(u32 *, void *, TmState *);
 void *func_800B1A84(u32 *, SPRT *, TmState *);
+void *func_800AF95C(u32 *, SPRT *, TmState *, TmCard *, u8);
+void *func_800B14AC(u32 *, SPRT_16 *, TmState *, s32, s32, u8, s32, u8, s32);
+void *func_800B29F0(u32 *, void *, TmState *, TmCard *, u8, s32);
 void *func_800B2C5C(u32 *, SPRT *, TmState *);
 void *func_800B2F60(u32 *, SPRT *, TmState *);
 void *func_800B3198(u32 *, void *, TmState *);
@@ -359,6 +362,7 @@ void func_800AB8F4(s16);
 extern u8 D_800A74A8[];
 
 /* main exe: candidates for ff9.h */
+s32 func_8002BA10(u8 *);
 void func_80023A0C(void);
 void SetSprt16(SPRT_16 *);
 s32 func_80062794(s32); /* width of a number string? */
@@ -384,5 +388,7 @@ void func_800559C8(s32, s32);
 void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
 
+
+extern char D_800A7398[]; /* "NO" label (INCLUDE_RODATA) */
 
 #endif
