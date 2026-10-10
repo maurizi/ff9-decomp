@@ -7,7 +7,8 @@
  * stack after clut/img (0x28, frame 0x58); `(void)&pad` is never expanded and does nothing.
  * Left: sprite-loop scheduling only. The original bumps p (`addiu t1, t1, 0x14`) and builds
  * the 0xE1000600 tpage constant a few slots earlier, and `addiu s2, sp, 0x18` (&tp[0]) sits
- * two slots earlier.
+ * two slots earlier. Permuter hint: `spr[i]->u0 = (spr[i]->v0 = 0);` fixes exactly those rows
+ * but drops the spr[i] reload between the two byte stores (4 rows, 334 vs 336 instructions).
  */
 #include "ovl_0a.h"
 
