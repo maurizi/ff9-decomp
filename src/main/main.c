@@ -13150,7 +13150,30 @@ s32 func_80057518(s32 x) {
     return func_80057518_inline(x);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80057534);
+s32 func_80057534(u32 code) {
+    s32 v;
+    u32 sel;
+
+    v = code & 0xFF;
+    v = D_8006F440[v] << 8;
+
+    sel = code >> 9;
+    if (sel < 3) {
+        switch (sel) {
+        case 1:
+            v /= 2;
+            break;
+        case 2:
+            v = v * 3 / 4;
+            break;
+        default:
+            v /= 4;
+            break;
+        }
+    }
+
+    return v;
+}
 
 void func_800575B4(u32 x) {
     SPU_REG16(0x1F801D88) = x;
