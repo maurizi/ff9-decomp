@@ -218,4 +218,10 @@ static inline u8 *func_801F0024_suphelp(s32 i) {
     return D_801F67D4 + b[i].unk4;
 }
 
+void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color);
+extern u8 D_801F892C[]; /* arrow */
+extern u8 D_801F8930[4]; /* stat names */
+extern u8 D_801F8934[5]; /* attack/defence names */
+void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new);
+
 #endif

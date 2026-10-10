@@ -1015,7 +1015,58 @@ void func_801F1F08(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801F20A0);
+void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
+    u8 buf[16];
+    RECT *r;
+    s32 i;
+    s32 y;
+    s32 col;
+    u8 diff;
+    u8 blink;
+
+    r = &D_801FC840.unk1C;
+    blink = ((u32)D_80077DC0 >> 4) & 1;
+    for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
+        func_801F3344(r->x + 8, y, 0x1D, D_801F8930[i], 0);
+        func_8002BAE4(cur->unk8[i], buf, 2, 1);
+        func_8002B56C(r->x + 0x4A, y, 0x1D, buf, 0);
+        if (new != NULL) {
+            diff = cur->unk8[i] != new->unk8[i];
+            if (new->unk8[i] >= cur->unk8[i]) {
+                if (diff) {
+                    col = 7;
+                } else {
+                    col = 0;
+                }
+            } else {
+                col = 3;
+            }
+            func_8002BAE4(new->unk8[i], buf, 2, 1);
+            func_8002B56C(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
+            func_8002B56C(r->x + 0x6D, y, 0x1D, buf, col);
+        }
+    }
+    for (i = 0, y = r->y + 0x78; i < 5; y += 0xC, i++) {
+        func_801F3344(r->x + 8, y, 0x1D, D_801F8934[i], 0);
+        func_8002BAE4(cur->unkC[i], buf, 3, 1);
+        func_8002B56C(r->x + 0x43, y, 0x1D, buf, 0);
+        if (new != NULL) {
+            diff = cur->unkC[i] != new->unkC[i];
+            if (new->unkC[i] >= cur->unkC[i]) {
+                if (diff) {
+                    col = 7;
+                } else {
+                    col = 0;
+                }
+            } else {
+                col = 3;
+            }
+            func_8002BAE4(new->unkC[i], buf, 3, 1);
+            func_8002B56C(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
+            func_8002B56C(r->x + 0x66, y, 0x1D, buf, col);
+        }
+    }
+}
 
 void func_801F239C(void) {
     AbilityMenu *m = &D_801FC840;
