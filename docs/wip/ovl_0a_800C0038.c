@@ -1,7 +1,14 @@
 /*
  * ovl_0a func_800C0038 (0x298 bytes): starts a field camera scroll towards the player actor
  * (projects it, clamps to the camera limits, stores the target in D_800CA068.unk14/16).
- * WIP (pass 10): 166 of 166 instructions, 19 aligned diff rows (was 44).
+ * WIP (pass 12): 166 of 166 instructions, 11 aligned diff rows (was 19 in pass 10, 44 before).
+ * Pass 12: x/y are built as { s32 t = (c->unk24 >> 1) - 0xA0; x = t + xy[0]; } with a block-local t
+ * (as in BF660, now matched): t dies into the add, x gets a fresh register and xy[0] loads early.
+ * Still left: (1) the st->unk4 / a->unk14 loads swap v0/v1 at 0xA8; (3) the flag block (f in a1,
+ * f | 3 in v1 stored in the bne delay slot, no cross-jump of the two stores). Tried this pass: the
+ * if-arm as |= 8 (cse folds it to the same f | 0xB), a t = f | 3 temp, early return 1 after the
+ * f | 3 store: all 11. The flag block needs v0 busy while f | 3 is born (local-alloc gives the
+ * earlier-born qty v0 on ties), i.e. the li v0, 8 compare constant allocated before f | 3.
  * Fixed: the clamps are if / else if with the limit re-read in each arm (as in BF660);
  * `x = (c->unk24 >> 1) - 0xA0; x += xy[0];` (same for y); the ~0xF mask of the flag block
  * goes in its own statement (`f = ~0xF; f &= D_800CA068.unk0;`) so it is built in the delay slot.
@@ -56,10 +63,14 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     gte_ldv0(&v);
     gte_rtps();
     gte_stsxy(xy);
-    x = (c->unk24 >> 1) - 0xA0;
-    x += xy[0];
-    y = (c->unk26 >> 1) - 0x70;
-    y += xy[1];
+    {
+        s32 t = (c->unk24 >> 1) - 0xA0;
+        x = t + xy[0];
+    }
+    {
+        s32 t = (c->unk26 >> 1) - 0x70;
+        y = t + xy[1];
+    }
     if (x < c->unk28) {
         x = c->unk28;
     } else if (c->unk2A < x) {
