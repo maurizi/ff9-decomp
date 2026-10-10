@@ -4057,7 +4057,32 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7CCC);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B9808);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800BA1E4);
+void func_800BA1E4(void) {
+    s32 i;
+    s32 x;
+    s32 y;
+    s32 v;
+    s32 u;
+
+    i = 0;
+    D_800D2FF8[0].unk0 = 0;
+    D_800D2FF8[0].unk2 = 0;
+    D_800D2FF8[0].unk4 = 0;
+    D_800D2FF8[0].unk5 = 0;
+    D_800D2FF8[0].unk8 = 0;
+    do {
+        v = i / 8;
+        x = (i % 8) * 16 + 0x300;
+        y = i + 0xF0;
+        u = (i % 4) << 6;
+        D_800D2FF8[i + 1].unk0 = getTPage(0, 1, x, 0x100);
+        D_800D2FF8[i + 1].unk2 = getClut(0x300, y);
+        D_800D2FF8[i + 1].unk4 = u;
+        D_800D2FF8[i + 1].unk5 = v << 7;
+        D_800D2FF8[i + 1].unk8 = 0;
+        i++;
+    } while (i < 16);
+}
 
 void func_800BA29C(void) {
     func_800BA1E4();

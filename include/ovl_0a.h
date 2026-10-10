@@ -64,8 +64,13 @@ typedef struct FieldTrig {
 /* script object (func_800B2218) */
 typedef struct {
     u8 pad0[0x14];
-    VECTOR unk14; /* position */
-    u8 pad24[0x34 - 0x24];
+    struct {
+        s32 vx, vy, vz;
+    } unk14; /* position */
+    s16 unk20; /* rotation */
+    s16 unk22;
+    s16 unk24;
+    u8 pad26[0x34 - 0x26];
     u16 unk34;
     u16 unk36;
     u8 pad38[2];
