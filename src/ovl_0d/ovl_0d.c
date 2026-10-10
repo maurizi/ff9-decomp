@@ -1853,7 +1853,109 @@ void func_800ABEC4(TmState *s) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC060);
+void *func_800AC060(u32 *ot, void *vp, TmState *s) {
+    SPRT *p = vp;
+    TmPos pos;
+    TmCard *a;
+    TmCard *b;
+    TmCard *l;
+    TmUnk350 *e;
+    s32 t;
+    s16 x;
+    s16 y;
+    s32 h;
+    u8 c;
+    u32 *o;
+
+    a = func_800AEE08(s, s->unk424, s->unk428);
+    b = func_800AEE08(s, s->unk42C, s->unk430);
+    func_800AC4C8((s32)s, &pos, a, b);
+    s->unk57C = 0x3C;
+    if (s->unk2E8 == 0x23) {
+        func_800B01E8(0xB);
+    }
+    if (s->unk2E8 < 0x23) {
+        s->unk574 = pos.unk0;
+        s->unk578 = pos.unk4;
+    } else if (s->unk2E8 < 0x43) {
+        x = (s->unk424 + s->unk42C) * 43 / 2 + 0x48;
+        y = (s->unk428 + s->unk430) * 26 + 9;
+        c = s->unk2EC;
+        h = 0x30;
+        if (s->unk2E8 - 0x23 < 0xF) {
+            h = 0x28;
+        }
+        setlen(p, 4);
+        p->code = 0x66;
+        p->x0 = x;
+        p->y0 = y;
+        p->r0 = c;
+        p->g0 = c;
+        p->b0 = c;
+        p->w = 0x28;
+        p->h = h;
+        p->u0 = (((s->unk2E8 - 0x23) & 0xF) >> 2) * 40;
+        p->v0 = ((s->unk2E8 - 0x23) / 16) * 40;
+        o = ot + 30;
+        p->clut = 0x3B00;
+        AddPrim(o, p);
+        p++;
+        setlen((DR_TPAGE *)p, 1);
+        ((DR_TPAGE *)p)->code[0] = (GetTPage(1, 1, 0x200, 0x100) & 0x9FF) | 0xE1000000;
+        AddPrim(o, p);
+        s->unk574 = pos.unk0;
+        p = (SPRT *)((DR_TPAGE *)p + 1);
+        s->unk578 = pos.unk4;
+    } else {
+        if (s->unk2E8 == 0x43) {
+            s->unk5BC = func_80062B3C() % pos.unk0;
+            s->unk5C0 = func_80062B3C() % pos.unk4;
+        }
+        s->unk574 = pos.unk0 - (pos.unk0 - s->unk5BC) * (s->unk2E8 - 0x43) / 23;
+        s->unk578 = pos.unk4 - (pos.unk4 - s->unk5C0) * (s->unk2E8 - 0x43) / 23;
+        if (s->unk2E8 >= 0x5A) {
+            e = s->unk350;
+            func_800ACFC8(s);
+            e->unk0 = 3;
+            s->unk504 = 3;
+            s->unk0 = 5;
+            func_800B01E8(9);
+            if (s->unk5BC > s->unk5C0) {
+                l = a;
+                e->unk4 = s->unk42C;
+                e->unk8 = s->unk430;
+                s->unk420 = 9;
+                s->unk41C = s->unk434;
+            } else {
+                if (s->unk434 == 0) {
+                    s->unk41C = 1;
+                } else {
+                    s->unk41C = 0;
+                }
+                e->unk4 = s->unk424;
+                e->unk8 = s->unk428;
+                l = b;
+                s->unk420 = 0xA;
+            }
+            switch (l->unk3) {
+            case 0:
+            case 1:
+                if ((func_80062B3C() & 0x3F) == 0) {
+                    l->unk3 = 2;
+                }
+                break;
+            case 2:
+                if ((func_80062B3C() & 0x7F) == 0) {
+                    l->unk3 = 3;
+                }
+                break;
+            }
+            s->unk574 = s->unk5BC;
+            s->unk578 = s->unk5C0;
+        }
+    }
+    return p;
+}
 
 void func_800AC4C8(s32 unused, TmPos *out, TmCard *a, TmCard *b) {
     s32 atk;

@@ -4,6 +4,40 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 8 matched 9 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8,
+  80048E80, 80062E3C). What worked:
+  - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
+    permuter found it; mflo a2 everywhere then follows). 80058118: pan reused for the LFO depth
+    temp in the first block (`pan = (s16)...; x = pan; if (pan < 0) x = pan >> 1;`). 8005E3FC: one
+    `op` for opcode/key/note/flags, one `vel` for the 0xFE index, velocity and both pitches.
+    80054294: the second grid loop uses ex/ey as counters (not i/j), plus a per-row `q = py`.
+    build/reuse.py (this worktree) generates merges and live-range renames of every variable pair;
+    many outputs change semantics, so check each hit by hand.
+  - Statement-order sweeps over small blocks (build/cv.py: combinations of text substitutions;
+    gen*.py in build/a): 8005E3FC's `c->unk10A = ...` before `note = ...`, 80058118's
+    `pan = ... + 0x80; pan &= 0xFF;` in an if/else with `pan = 0x80` in the else.
+  - Pointer vs array access: 80054650 writes the prims through `u32 *p` (p[0]..p[9], setaddr(p - 10,
+    p)) so the stores alias D_8007BD14 and it is reloaded in the inner loop; the vertex pointer
+    `v++` per prim; tp computed before u0/u1; `p = D_8007BD10; ... p += 10;`; the trailer via
+    setaddr/getaddr. 80054294's loop 3 needs `ys[i]` (not py[i]) with `py = ys` still assigned
+    inside the loop (it feeds loop 4).
+  - 8005DB40: two jump tables. The C emits both tables in its own .rodata, so the
+    INCLUDE_RODATA of D_80012198 (second table) was removed from main.c. A future resplit may put
+    it back; delete it again if so. `if (*p++ <= D_80080A10->unk6C)` (not `>=` with swapped
+    operands) stops loop.c hoisting the D_80080A10 load; `c->unkCC = (u16)c->unkCC & ~5` gives
+    andi 0xFFFA instead of a hoisted -6; `n--; n &= 3;`; `op = p[0] + (p[1] << 8); p += (s16)op;`.
+  - `while (--i != -1)` gives gcc's precheck + compare-to--1 count-down loop (8004E248 draft).
+  - 80024BD8: `p->rgbc0` first, then `p->xy2 = 0x800000; p->xy3 = w | 0x800000;` and
+    `->wh = w | 0x800000` (no `w |=`), found by moving single statements (build/mvall.py moves
+    every single-line statement within its straight-line run; it also took 8005681C 51 -> 14).
+  - 80048E80: `i = 3; D_8007AE10[i] = func_800BEC64(1); m = (u16)D_8007AE10[i];` (the loop
+    counter as the index) keeps the `la` base for `sh v0,6(v1)`; no inline needed.
+  - 80062E3C: `q->unk4_0 = 0` first among the slot header stores (mvall), then the permuter split
+    getClut into `clut = cy << 6; clut |= (cx >> 4) & 0x3F;`. cx is reused for the tpage value.
+  - build/splitx.py splits `x = a OP b` into `x = a; x OP= b;` at every top-level operator; no hits
+    on the remaining drafts.
+  - Drafts updated: 8004E248 (38, ~11 of them symbol-only), 8001DE50 (19), 8005681C (14, new),
+    8005A320 (5), 80059414 (9). Headers have the details.
 - Pass 7 matched 4 (8004B85C, 800378C4, 80035214, 80038618). What worked:
   - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
     parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
@@ -625,3 +659,40 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     increments at the loop end (BD130);
   * a struct field read through the global (`D_801F7A78.unk18[i]`) instead of a pointer local lets CSE
     derive the base from a related register (`addiu s5, s1, -0x1D8`), as the original does (F1848).
+- Pass 12 (overlays except 0b; gcc 2.8.1 source read alongside the `cc1 -dS -dl -dg` dumps:
+  build/search/dumpf.sh dumps every pass, build/search/galloc.py prints global-alloc's allocation order
+  `floor_log2(refs) * refs / live_length` with the hard reg each pseudo got). Matched 36 F1A48, 0a BF660,
+  0d AC060, 36 F1778. Improved: 0a C0038 19 -> 11, 33 EF644 33 -> 31. Mechanisms that decided them:
+  * sched1 (sched.c) is a *backward* list scheduler. When an insn is scheduled, each predecessor that
+    becomes ready gets LAUNCH priority (0x7f000001) only if it is a "birthing" insn: it sets a pseudo
+    with REG_N_SETS == 1 that is live there. Launched insns are placed right next to their consumer;
+    everything else (multi-set user variables, hard-reg argument loads of a function with two calls
+    setting the same arg register, stores) keeps its plain priority (longest chain of >1-latency ops
+    from the block start) and floats to the block top or into load-delay slots, ties by later LUID.
+    Register allocation then sees those positions, so a constant argument load that floats up makes a
+    local temp conflict with a1..a3 (F1A48: two copies of the func_80022C60 call in an if/else, cross-
+    jumped by jump2, give REG_N_SETS(a1) == 2 and put x in t0).
+  * local-alloc allocates qtys by `floor_log2(refs) * refs / length`, ties to the earlier-born qty, and
+    takes the lowest free hard reg; a qty born in the insn where another dies shares its register. So
+    `cy = t + y` with a block-local `t = (h >> 1) + y0 - 112` lands t in place in v0 and the add is
+    `addu a2, v0, a2` (temp first); a reused global `x` for the same value takes a0 (BF660, C0038).
+    expand_binop puts the operand that equals the target first, so `y = x + y` becomes `y + x`.
+  * global-alloc: pass 0 only considers registers already used (regs_used_so_far) and not preferred by
+    a lower-priority conflicting allocno; pass 1 takes the first non-conflicting register. A separate
+    loser-card variable `l` (`l = a` in one arm coalesces into a deleted no-op move, `l = b` in the
+    other) has the highest priority, takes s0, and its conflict with `e` pushes e to s3 (AC060).
+  * Two stores through the same base with the stored values in registers vs. computed: a RECT whose
+    w/h constants live in s-registers and whose `&a` is an argument gets its w/h stores addressed from
+    the argument register (a0 + 0xC), so they get output dependences on the sp-relative x/y stores and
+    schedule after them: write the fields in x, y, w, h order (F1778's inlined func_801F2D88 copy).
+  * jump.c duplicate_loop_exit_test only runs when NOTE_INSN_LOOP_BEG is directly followed by a jump
+    (a rotated for/while); a `goto test` into a do/while keeps a single copy of the loop test (A741C).
+  Left with notes in their headers: B4A5C (filler slots), C07D8 (lbu placement), A741C (n/blk and
+  id/base/gs order), B16A4 (ot s1 vs s3), B0124 (kind-9 block, condition spellings score 14-20).
+  * loop.c moves an invariant only if `threshold * savings * lifetime >= insn_count` (threshold =
+    (1 + non-fixed regs) with calls in the loop, minus 3 per insn already moved; lifetime = LUID
+    distance between the pseudo's set and last use, deleted-insn notes count). A `%hi` for a global
+    store is emitted before the stored expression, so `D_801F8200 = r = &D_801F7A78.unkAC[i + 2].unk4;`
+    (chained) gives it a lifetime of several insns and it is hoisted into s6, while `D_801F8200 = r;`
+    (lifetime 1) stays in the loop. `rr = &D_801F81F8;` written inside the block (hoisted too) keeps
+    its preheader order after that lui (65 F1848, matched this pass).
