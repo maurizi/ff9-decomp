@@ -925,7 +925,7 @@ typedef struct {
     } unk20; /* tempo, 16.16 */
     s32 unk24;
     s32 unk28; /* tempo accumulator */
-    u8 pad2C[0x30 - 0x2C];
+    u8 *unk2C; /* sequence data */
     u16 *unk30;
     s32 unk34;
     s32 unk38;
@@ -1198,9 +1198,15 @@ extern Unk4 D_80068158;
 extern u8 D_800739B8[];
 extern Unk80080A10 *D_8007F790;
 extern Unk80080A10 D_8007F8F0;
+/* AKAO sequence file header (func_8005A320) */
+typedef struct {
+    u8 pad0[0x14];
+    s32 unk14;
+} AkaoSeqHeader;
 void func_8005A320(s32, s32);
 void func_8005963C(s32, s32);
 extern s16 D_8007F95A;
+extern s32 D_8007F8DC;
 extern s32 D_8008322C;
 typedef struct {
     s32 unk0;
