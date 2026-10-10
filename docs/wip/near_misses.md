@@ -189,3 +189,48 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   let that go.
 - 38 EF258 matches (build/ready_38_EF258.c) but links against D_8006D128, which ovl_38's
   undefined_syms_auto lacks; add `D_8006D128 = 0x8006D128;` there (config change) to land it.
+- Menus/FMV pass 2 (drafts in docs/wip/ovl_XX_<addr>.c, each with a status line): 64 A5B0 (3 rows,
+  constant 1 vs lui in a delay slot), 64 99B4 (MBG_init; the original rematerialises each big
+  constant in a3 right before use, not reproduced), 64 B7C4 / 3a 4238 (the original hoists fewer
+  loop invariants than ours), 64 C434 (CD ready callback, CSE reach), 36 1A48 (5), 36 2664 (7),
+  33 EF900 (13), 3c 6D34 (25, goto loop), 38 EE740 (6, was 17), 39 F973C (3, CRC type).
+  65 F2560 (1 row): the original has the lui of 0x98967E in the first branch's delay slot, we
+  get a nop. Not an assembler issue: 17 matched functions have the same reorder-mode branch +
+  lui-only `li` and their originals have the nop. gcc's delay-slot filler placed it, so the C
+  still differs (see the WIP header).
+  Tricks that matched things in this pass:
+  - A pointer that the original computes into a temp and then copies to an s-register
+    (`a1` -> `addu s3,a1`) comes from `m2 = &X; m2->f = n; m = m2;` (3c F6F00).
+  - Constants the original keeps in registers come from locals: `x = 0x18; y = 0x26;
+    y = row * 15 + (v->unk2 + y);` then `x + 0x72` (3c F5BCC).
+  - A loop offset that the original initialises in the loop guard's delay slot is a giv of the
+    counter (`dx = i * 4 + 0x2E;`, `y = i * 15 + 6;`), and `dy = i + 9; y = r->y + dy;` keeps
+    the add unfolded (36 F12B8, 38 EE740).
+  - A loop-invariant constant assigned inside the loop body after the first call (`y = 0x9E;`)
+    is hoisted in the original's order, which also fixed the biv/giv register order (3c 51B8,
+    3c 6714).
+  - A small loop whose address arithmetic is not strength-reduced and whose constants are not
+    hoisted was not optimised by loop.c: write it as a goto loop (3c 6D34).
+  - An uninitialised local that the original passes on one path holds whatever its register
+    had, so assigning it that value (`info = (void *)&D_8019DE10;`) reproduces it (64 BCE8).
+  - A call result used without `andi` means the callee was declared returning int there
+    (3c 42A8 now returns s32; 3c 51B8 declares func_80028954 s32).
+  - Store order inside a run of struct stores matters even though the scheduler moves loads
+    past them (64 C1B0, found with a bounded statement permutation).
+- ovl_64 library code (not in config yet, evidence for the coordinator):
+  - 8019D020-8019D36C are libpress's static MDEC helpers, right after DecDCToutCallback in the
+    same object: D020 = MDEC_reset (rodata "MDEC_rest:bad option(%d)\n", writes the MDEC
+    control registers through D_8019E008/D_8019DFDC/D_8019DFE8), D110 = MDEC_in (DMA0
+    setup, calls D22C), D1A0 = MDEC_out (DMA1 setup, calls D2C0), D22C = MDEC_in_sync
+    (string "MDEC_in_sync", 0x100000 spin with timeout), D2C0 = MDEC_out_sync ("MDEC_out_sync"),
+    D36C = timeout handler ("%s timeout:\n", printf then the same reset sequence as D020).
+    The unscheduled `lw; nop` code and the strings match Sony's libpress, not Square's
+    compiler output. D354 (already in C) is next to them and is likely libpress too.
+  - 8019AE44-8019B3D4 are hand-written assembly: no frames (`sw $ra,0($sp)` without moving
+    $sp), `bgez $zero` jumps between functions, scratchpad (0x1F800000) tables. AE44 builds the
+    VLC table into the scratchpad (DecDCTvlcBuild), AE98 swaps the max-size word D_8019DDD4 and
+    returns the old one (DecDCTvlcSize), AEC0/B00C/B188 are DecDCTvlc's decoder with shared tails,
+    B3D4 is another frameless routine (sw $ra,0($sp), $t4 used before set, fills 0xE0 runs of
+    words with a mask), most likely the libpress run-level/VLC helper or Square's own asm.
+    None of them can come from gcc; they should be named as library/asm in config and dropped
+    from progress.

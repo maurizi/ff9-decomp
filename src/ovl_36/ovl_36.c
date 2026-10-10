@@ -115,7 +115,68 @@ void func_801F0DB0(void) {
 
 INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F0F9C);
 
-INCLUDE_ASM("asm/us/ovl_36/nonmatchings/ovl_36", func_801F12B8);
+void func_801F12B8(s32 id) {
+    u8 buf[8];
+    RECT *r;
+    CardTurn *turn;
+    CardCache *cache;
+    u8 *name;
+    u8 same;
+    s32 i;
+    s32 dx;
+    s32 x;
+    s32 y;
+    s32 dy;
+    s32 a;
+    s32 b;
+    s32 n;
+    s32 cnt;
+
+    r = &D_801F347C.unk18E0;
+    n = D_801F347C.unk8[id];
+    cnt = n;
+    if (n >= 6) {
+        n = 5;
+    }
+    turn = &D_801F347C.unk1941;
+    cache = &D_801F347C.unk1900;
+    if (cnt != 0) {
+        same = id == cache->unk7;
+        name = (u8 *)func_8006276C(id);
+        if (cnt >= 2) {
+            func_8002BAE4(D_801F347C.unk6C[id] + 1, buf, 3, 1);
+            func_8002BAE4(cnt, buf + 4, -1, 1);
+            buf[3] = '/';
+            func_8002B56C(r->x + 0x2B, r->y + 0x43, 0x14, buf, 0);
+            a = func_8002BE10(4);
+            b = func_8002BE10(5);
+            func_800275DC(r->x + 0x1E, r->y + 0x41, 0x14, a, 0);
+            func_800275DC(r->x + 0x5E, r->y + 0x41, 0x14, b, 0);
+        }
+        i = 0;
+        func_801F1D6C(r->x + 0x10, r->y + 0x50, 0x14, 0x37, 0x64808080);
+        func_8002B5FC(r->x + 0x20, r->y + 0x50, 0x14, name, 0);
+
+        while (i < n) {
+            dx = i * 4 + 0x2E;
+            x = r->x + dx;
+            dy = i + 9;
+            y = r->y + dy;
+            if (i != 0 && turn->unk0 != 0) {
+                if (turn->unk1 == 0) {
+                    x += turn->unk2 - 4;
+                } else {
+                    x -= turn->unk2;
+                }
+            }
+            func_801F2730(x, y, 0x14, id, i, same);
+            i++;
+
+        }
+    }
+    func_8002DEE4(r, 0x1E, 2);
+    func_8002705C(r, 0x1F, 2);
+}
 
 void func_801F1508(void) {
     RECT *r = &D_801F347C.unk18D0;
