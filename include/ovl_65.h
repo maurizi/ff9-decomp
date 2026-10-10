@@ -309,4 +309,9 @@ void func_801F33A0(Window *);
 void func_801F3434(Window *);
 void func_801F347C(void);
 
+extern u8 D_801F8238[]; /* text buffer */
+extern Icon D_801F526C; /* card icon */
+/* main exe: candidates for ff9.h */
+s32 func_8003579C(s32); /* text size of a menu string */
+
 #endif

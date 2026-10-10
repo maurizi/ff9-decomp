@@ -1207,7 +1207,45 @@ void func_801F2E24(void) {
 
 INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2E58);
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801F2FE8);
+void func_801F2FE8(Window *w) {
+    Window *r;
+    Unk80069018 *it;
+    u8 *s;
+    u32 i;
+    s32 off;
+    s32 y;
+    s32 y2;
+    s32 k;
+    s32 k1;
+    s32 k3;
+    Rewards *rw;
+
+    r = w;
+    i = 0;
+    rw = &D_801F7A78.unk24;
+    off = r->unk6 - r->unk8.h;
+    for (; i < rw->unkC; i++) {
+        it = &D_80069018[rw->unk10[i][0]];
+        y = i * 15 + 7;
+        y2 = i * 15 + 10;
+        func_8002BAE4(rw->unk10[i][1], D_801F8238, 2, 1);
+        func_80026C34(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->unk10[i][0], 1);
+        func_8002B5FC(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
+        func_8002B56C(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, D_801F8238, 0);
+    }
+    if (rw->unkC == 0) {
+        s = func_80035774(9);
+        func_8002B5FC(r->unk0 + ((r->unk4 - (func_8003579C(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
+    }
+    if (rw->unk8 != 0xFF) {
+        k = off - 0x66;
+        func_80027710(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
+        func_8002BD54(D_801F8238, (u8 *)func_8006276C(rw->unk8));
+        func_8002AD38(D_801F8238, func_80035774(0xB));
+        func_8002B5FC(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
+    }
+    func_800269F4(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
+}
 
 void func_801F3250(void) {
     D_801F8278 = 0;
