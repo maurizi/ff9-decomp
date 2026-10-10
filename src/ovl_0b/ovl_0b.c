@@ -7696,7 +7696,24 @@ void func_800C1524(void) {
     func_800C1594();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C1594);
+void func_800C1594(void) {
+    s32 i;
+    u8 *p;
+    s32 c;
+
+    c = 0xFF;
+    i = 15;
+    p = (u8 *)&D_800FDF30 + i;
+    D_800FDF30.unk0 = 0;
+    D_800FDF30.unk4 = 0;
+    D_800FDF30.unk8 = 0;
+    for (; i >= 0; i--) {
+        p[12] = c; /* unkC[i] */
+        p--;
+    }
+    D_800FDF30.unk1C = 0xFF;
+    D_800FDF30.unk1D = 0;
+}
 
 void func_800C15DC(BtlUnit *arg0) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
