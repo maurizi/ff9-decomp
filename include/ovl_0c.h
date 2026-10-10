@@ -127,7 +127,9 @@ typedef struct {
     u8 unk1;
     s16 unk2; /* speed */
     u8 unk4; /* turn speed */
-    u8 pad5[3];
+    u8 unk5;
+    s8 unk6;
+    u8 pad7;
     u8 unk8;
     u8 unk9;
     u8 unkA;
@@ -480,7 +482,8 @@ typedef struct {
 typedef struct {
     s16 unk0;
     s16 unk2;
-    u8 pad4[0xC - 4];
+    s32 unk4; /* x */
+    s32 unk8; /* z */
 } Unk800CD10C; /* 0xC */
 
 /* file 0x12xxxx lookup table (func_800AA39C) */
@@ -989,7 +992,7 @@ extern s32 D_800CE260;
 extern Unk8004AB64 *D_800CE268;
 extern u8 D_800CE26D;
 extern Unk8004AB64 *D_800CE270;
-extern s8 D_800CE274;
+extern u8 D_800CE274;
 extern s32 D_800CE278;
 extern s32 D_800CE280;
 extern s32 D_800CE284;
@@ -1121,6 +1124,13 @@ extern s32 D_800CD108;
 typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
 extern Unk800A7FB8 D_800A7FB8;
 extern Unk800A7FB8 D_800A8020; /* radar arrow */
+extern Unk800A7FB8 D_800A8000; /* big-map arrow */
+extern u8 D_800CD728; /* big-map cone colour */
+extern u8 D_800CD72C;
+extern u8 D_800CD730;
+extern u8 D_800CD734; /* big-map tile colour */
+extern u8 D_800CD738;
+extern u8 D_800CD73C;
 extern RECT D_800A71D8;
 extern char D_800A7F48[]; /* encounter fallback message */ /* palette area (func_800B69B4) */
 extern CVECTOR D_800A7FF0; /* marker colours */
