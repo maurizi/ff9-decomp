@@ -292,7 +292,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     from progress.
 - Menus/FMV pass 4: matched 36 F08F4 (new, after the D_801EDF1C split), 36 F2664, 65 F2560, 65 F2E58,
   38 EE740, 33 EF900, 33 F2AB4 (new), 33 F1150 (new), 3c F6D34. New drafts in docs/wip/: 33 EF644 (33),
-  65 EF890 (102, s-register naming). Improved: 65 F1848 (35 -> 17), 65 EF890 (72), 34 EFC20 (62 -> 46), 3a F459C (89 -> 57). Unchanged: 36 F1A48 (5), 39 F973C (3).
+  65 EF890 (72, s-register naming). Improved: 65 F1848 (35 -> 17), 34 EFC20 (62 -> 46), 3a F459C (89 -> 57). Unchanged: 36 F1A48 (5), 39 F973C (3).
   Tricks that matched things in this pass:
   - A function called with a u16-returning prototype in main.c but used without `andi` here is
     declared s32 in the overlay header (36 F08F4: func_8002C7F0/func_8002C830).
