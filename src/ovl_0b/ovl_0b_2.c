@@ -6150,7 +6150,43 @@ s32 func_800E6410(s32 arg0, Unk800E6410 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E651C);
+void func_800E651C(u8 *p, CVECTOR *out, s32 x) {
+    Grad *g = (Grad *)p;
+    s32 n = g->count;
+    s32 i;
+    s32 c;
+
+    p += 8;
+    if (g->total == 0) {
+        i = n = 0; /* i: running start */
+        p += 4;
+    loop:
+        c = p[-1];
+        if (c != 0) {
+            ((u16 *)p)[1] = i;
+            i += c;
+            n++;
+            ((u16 *)p)[0] = c;
+            p += 8;
+            goto loop;
+        }
+        p = (u8 *)g + 8;
+        g->total = i;
+        g->count = n;
+    }
+    if (g->total < x) {
+        x = g->total;
+    }
+    p += n * 8 - 8;
+    for (i = 0; i < n; i++, p -= 8) {
+        if (x >= ((u16 *)p)[3]) {
+            break;
+        }
+    }
+    c = x - ((u16 *)p)[3];
+    c = (c << 12) / ((u16 *)p)[2];
+    LoadAverageCol(p, p + 8, 0x1000 - c, c, (u8 *)out);
+}
 
 void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     RECT b;

@@ -1371,6 +1371,12 @@ typedef struct {
         (a) *= (n);         \
         (a) = wt - (a);     \
     }
+/* colour gradient header (func_800E651C), followed by 8-byte keys
+   {CVECTOR color (cd = key length); u16 len; u16 start} terminated by cd == 0 */
+typedef struct {
+    s32 total; /* 0 until the keys' start/len are filled in */
+    s32 count;
+} Grad;
 void func_800E651C(u8 *, CVECTOR *, s32);
 void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
 
