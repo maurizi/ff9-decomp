@@ -172,6 +172,26 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   New scripts in the agent worktree's build/: cmp.py-based vt.py (score files), try.py/tryv.py (apply
   replacements), perm.py/perm2.py (greedy permutations of contiguous lines), movel.py (move one line through
   a range), combo.py (2^k on/off sites), rename.py (rename locals inside a range).
+- Pass 8 (big skipped functions): matched 0c func_800AB0C0 (0xF60) and 0a func_800C2AF0 (0x708). WIPs:
+  docs/wip/ovl_0a_800BF0C4.c (1 row, `addu` operand order), ovl_0a_800BF660.c (39 rows, x/base register swap
+  plus fold reassociation of `wx - (lim - 160)`), ovl_0a_800B0124.c (17 rows, first `D_8006794C` load of the
+  kind-9 block lands in v0 instead of a1). Not attempted: C519C, BE158, 15 A9488 (Blackjack), BB714.
+  What worked:
+  * global-alloc priority is floor_log2(refs) * refs / live_length; `cc1 -dl -dg` gives refs/length in .lreg
+    and dispositions in .greg (build/prio.py). That shows which statement order changes a pseudo's s-reg;
+  * a param that is spilled and reloaded but never used afterwards points to a dead test that the original
+    kept (B0124: `if ((arg0 & 0x3F) == 1)` in the kind switch);
+  * CSE keeps a copy into a user variable only when the variable lives beyond the extended basic block, so
+    `g = D_8006794C->unk1C` must also be used later (B0124 state 2);
+  * GNU case ranges (`case 1 ... 3:`) give a decision tree around a small inner switch (fewer than 5 cases);
+  * `s16 *arg2` instead of a struct pointer changed alias classes (MEM_IN_STRUCT) and fixed C2AF0's
+    scheduling; mixed `pp = &p` / `p.vx` access also mattered;
+  * jump tables at 8-byte offsets in the original object need `__asm__(".rdata\n\t.word 0\n\t.text");` pads
+    at the start of the switching case, not on a label next to delay slots (AB0C0, B0124);
+  * a `return -1` vs `break` choice decides which duplicate tail jump2 cross-jumps (AB0C0).
+  * tools/permute.py strips `static inline` bodies (also those from headers), so the permuter scores the
+    wrong code for any function using an inline helper; build/fixinl.py in this worktree restores them before
+    running decomp-permuter directly. Earlier permuter runs on such functions may have been meaningless.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -245,6 +265,34 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (3c 42A8 now returns s32; 3c 51B8 declares func_80028954 s32).
   - Store order inside a run of struct stores matters even though the scheduler moves loads
     past them (64 C1B0, found with a bounded statement permutation).
+- Menus/FMV pass 3: matched 32 F8AB0, 33 F0024/F15E0/F1A94/F20A0, 36 F0F9C, 39 F4B18/F6694/F9120/FA794,
+  65 F3488/EFC68/F2FE8, 64 990A0/99554/9A5B0. New drafts in docs/wip/: 34 EFC20 (= 39 F7FD4, 62,
+  register pressure), 37 F13F8 (41), 36 F1778 (30, s-regs only; second half is func_801F2D88_inline),
+  65 F1848 (35), 65 F2E58 (38), 64 99B28 (63, shares its first-frame loop with 99F30), 3a F459C (89).
+  Not attempted: 64 99F30 (0x680; do 99B28 first, the decode loop is the same code), 36 F08F4 (its
+  .rodata blob D_801EDF18 holds "-" plus a 0x298-byte table/text block; it needs a config symbol at
+  0x801EDF1C with force_not_migration so the blob stays INCLUDE_RODATA before the string can move to C).
+  Tricks that matched things in this pass:
+  - Rematerialised constants: `k = 1; A = k; B = k;` (64 9A5B0) and `r->y + (y3 + (k = 0x26))` /
+    `k = 0x26; ... (y3 + k)` (33 F1A94) keep a constant out of a fold or force it into a register
+    first; `r->unk2 - (k1 = off - 0x28)` keeps `y - (off - c)` from becoming `(y + c) - off` (65 F2FE8).
+  - A copy of a call result that the original makes in the next call's delay slot (instead of right
+    after the call) comes from an inline wrapper returning it (`static inline s32 w(u8 *s) { return
+    func_8002BA68(s); }`, 36 F0F9C); the copy from v0 stays grouped with the call otherwise.
+  - `x = func(); ...; if (cond) x = ...` CSE: a pointer local that the original rebuilds from a
+    fresh %hi/%lo in a later block means that block has two predecessors in the original
+    (`if (a && b) {...} else if (c && d)` instead of nested ifs, 33 F15E0).
+  - A store whose %hi is in a branch delay slot: compute the destination first
+    (`u8 **d = &D_80077DF0; *d = ...;`, 33 F0024); a base that the original materialises before an
+    index (`lui; addiu; addiu -0xC0; sll; addu`) comes from an inline helper doing `i -= 0xC0;`
+    on its parameter after loading the base (33 F0024).
+  - Loop-carried y offsets: `y = i * 15 + 7;` givs placed after the first statement of the body
+    (65 F2FE8), `r->x + 6 + j * 0x21` instead of a separate counter (39 F4B18).
+  - A struct copy whose destination the original addresses from a separate symbol base
+    (`D_801FB1E0 + k*0x98`, with byte stores from `D_801FB1A8 + k*0x98`) needs the copy through a
+    pointer: `p = &D_801FB1A8.unk34[k].unk4.unk0; *p = d->unk0;` (39 F6694).
+  - Dead stores to a local RECT / pair that the original keeps (64 990A0, 99B28) stay if the local
+    is a struct; scalar copies of the same value are CSEd away.
 - ovl_64 library code (not in config yet, evidence for the coordinator):
   - 8019D020-8019D36C are libpress's static MDEC helpers, right after DecDCToutCallback in the
     same object: D020 = MDEC_reset (rodata "MDEC_rest:bad option(%d)\n", writes the MDEC
@@ -262,3 +310,32 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     words with a mask), most likely the libpress run-level/VLC helper or Square's own asm.
     None of them can come from gcc; they should be named as library/asm in config and dropped
     from progress.
+- Menus/FMV pass 4: matched 36 F08F4 (new, after the D_801EDF1C split), 36 F2664, 65 F2560, 65 F2E58,
+  38 EE740, 33 EF900, 33 F2AB4 (new), 33 F1150 (new), 3c F6D34. New drafts in docs/wip/: 33 EF644 (33),
+  65 EF890 (72, s-register naming). Improved: 65 F1848 (35 -> 17), 34 EFC20 (62 -> 46), 3a F459C (89 -> 57). Unchanged: 36 F1A48 (5), 39 F973C (3).
+  Tricks that matched things in this pass:
+  - A function called with a u16-returning prototype in main.c but used without `andi` here is
+    declared s32 in the overlay header (36 F08F4: func_8002C7F0/func_8002C830).
+  - A loop that gcc reverses (dbra, counter 99 -> bgez) with a strength-reduced pointer is an
+    ascending `for (i = 0; i < 100; i++) a[i] = 0;` (36 F08F4).
+  - Register swaps around a table load: hold the loaded value in its own local inside the condition,
+    `(need = D_8006DF5C[c->unkB]) <= c->unkC` (65 F2560).
+  - A u8 flag returned as `!f` instead of `f ^ 1` (65 F2E58); that alone fixed the eager andi copy.
+  - A loop-invariant base that the original keeps in an s-register while a second one is rebuilt each
+    iteration: assign the pointer inside the loop (`tp = t.v;`) and compute the byte offset in its own
+    local (`off = idx * sizeof(StatusEntry); k = ((StatusEntry *)((u8 *)tp + off))->unk0;`), which also
+    gives the original's `addu base, off` operand order (38 EE740).
+  - `do { f(x); } while (0);` around one call in an if/else (36 F2664) and around `ok = 0;` (3c F6D34)
+    fixes s-register assignment; found by the permuter. build/dwsweep.py and build/dwgreedy.py
+    (agent worktree scratch) wrap each statement in turn and score it.
+  - A parameter reused as a loop counter (`for (slot = 0; ...)` in 33 EF900) plus the loop preheader
+    order `m2 = m; slot = 0; a = ...; for (; ...)` (found with a bounded line permutation,
+    build/permlines.py).
+  - A local holding a call's constant argument (`k = 1; ... func_8002BAE4(r->unk0, buf, 5, k);`) and
+    a copy of a flag into a reused local before the final calls (`id = ok;`) fixed 3c F6D34's
+    s1/s2/s3 order (permuter).
+  - A store whose address the original computes before the `if` that sets the value goes through a
+    byte-offset struct pointer: `d = (AbilityMenu *)((u8 *)&D_801FC840 + i); ... d->unk25C[0] = lv;`
+    (33 F1150).
+  - `(l = &D_801FC840.unk4)->unk2` inside the condition gives the original's `addiu v1, a0, 4` without
+    disturbing the a0/a1 assignment that a separate `l = ...;` statement changes (33 F2AB4).

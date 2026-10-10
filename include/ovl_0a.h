@@ -1259,7 +1259,7 @@ void func_800A8724(void);
 /* func_800A879C: called before its definition without a prototype */
 s32 func_800C3EC0(s32, s16, s16, s16);
 s32 func_800C3608(Unk800C9DF4 *);
-s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 func_800C31F8(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
 extern Unk800C9E00 *D_800C9E00; /* = D_800C9DF0.unk10, referenced by its own name */
@@ -1434,5 +1434,49 @@ void func_800557A8(void *, s32, s32, s32);
 void func_800559C8(s32, s32);
 void func_800219D8(Unk80021938 *, s16, s16, s16, s16);
 u8 func_80053A10(s32, s32);
+
+/* func_800C2AF0 (walkmesh slide along the triangle edges) */
+extern VECTOR D_800C9DE4; /* normal used when a triangle has none */
+extern const u8 D_800A7170[]; /* "DISC CHANGE" label */
+s32 func_800C519C(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *, SVECTOR *, SVECTOR *, s16 *, s32);
+
+/* clears the visited flag (0x80) of every walkmesh triangle */
+static inline void func_800C2AF0_clear(void) {
+    u16 k;
+    Unk800C9E00 *n;
+    s32 cnt;
+    u16 m = ~0x80;
+
+    n = D_800C9DF0.unk10;
+    cnt = D_800C9DF0.unk8->unk24;
+    for (k = 0; k < cnt; k++) {
+        n->unk0 &= m;
+        n++;
+    }
+}
+
+/* scales the x/z offset of pos from org (16.16, fractions in *fx/*fz) by 1.05, 1.10, ...
+ * until its integer part changes */
+static inline void func_800C2AF0_push(SVECTOR *pos, s16 *org, s32 *fx, s32 *fz) {
+    s32 x, z, k, i, tx, tz;
+
+    x = ((pos->vx - org[0]) << 16) | (u16)*fx;
+    z = ((pos->vz - org[2]) << 16) | (u16)*fz;
+    k = 0x10000;
+    i = 0;
+    do {
+        k += 0xCCC;
+        tx = (x >> 8) * (k >> 8);
+        tz = (z >> 8) * (k >> 8);
+        i++;
+        if ((tx >> 16) != (x >> 16) || (tz >> 16) != (z >> 16)) {
+            break;
+        }
+    } while (i < 50);
+    pos->vx = org[0] + (tx >> 16);
+    pos->vz = org[2] + (tz >> 16);
+    *fx = tx & 0xFFFF;
+    *fz = tz & 0xFFFF;
+}
 
 #endif

@@ -164,6 +164,7 @@ extern s32 D_801F740C[]; /* colour by state */
 extern u8 D_801F40EC[];  /* item names */
 extern u8 D_801F6540[];  /* ability names */
 /* main exe: candidates for ff9.h */
+extern s32 D_80070400;
 extern s32 D_800704B8;
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 extern s32 D_80070498;
@@ -194,5 +195,38 @@ void func_801F2CD0(void);
 void func_801F2D18(void);
 void func_801F2E34(void);
 void func_801F2F3C(s32, s32, s32, MenuView *);
+
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} HelpOfs; /* item help text offsets into D_801F4734 */
+extern HelpOfs D_801F6240[];
+extern u8 D_801F4734[];
+extern u8 D_801F67D4[];
+extern u8 D_801F3478[];
+extern u8 D_801FBD84[];
+extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+typedef struct {
+    u8 pad0[4];
+    u16 unk4;
+    u8 pad6[2];
+} SupportHelp; /* D_8006D128 entry: +4 = help text offset into D_801F67D4 */
+
+/* support ability help text */
+static inline u8 *func_801F0024_suphelp(s32 i) {
+    SupportHelp *b = (SupportHelp *)D_8006D128;
+    i -= 0xC0;
+    return D_801F67D4 + b[i].unk4;
+}
+
+void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color);
+extern u8 D_801F892C[]; /* arrow */
+extern u8 D_801F8930[4]; /* stat names */
+extern u8 D_801F8934[5]; /* attack/defence names */
+void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new);
+
+extern Unk801F34EC D_801F743C[]; /* action abilities (ability menu), same layout as D_801F34EC */
+extern u8 D_801F803C[]; /* action ability names (ability menu) */
+extern u8 D_801F8684[]; /* support ability names (ability menu) */
 
 #endif

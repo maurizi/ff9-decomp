@@ -147,7 +147,7 @@ extern RECT D_801EF27C; /* const {0, 0, 640, 224} */
 typedef struct {
     DRAWENV draw;
     DISPENV disp;
-    u8 pad70[8];
+    u32 unk70[2]; /* ordering table */
     DR_TPAGE unk78;
     SPRT unk80;
     DR_TPAGE unk94;
@@ -308,5 +308,10 @@ void func_801F332C(void);
 void func_801F33A0(Window *);
 void func_801F3434(Window *);
 void func_801F347C(void);
+
+extern u8 D_801F8238[]; /* text buffer */
+extern Icon D_801F526C; /* card icon */
+/* main exe: candidates for ff9.h */
+s32 func_8003579C(s32); /* text size of a menu string */
 
 #endif

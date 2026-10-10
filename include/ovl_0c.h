@@ -1377,4 +1377,39 @@ extern s32 D_800CCB0C;
 extern s32 D_800CCB10;
 extern s32 D_800CCB14;
 
+/* func_800AB0C0 (sound/music request handler) */
+extern s32 D_800CCA10; /* requested music id */
+extern u8 D_800CCA12;  /* byte 2 of D_800CCA10: id kind */
+extern s8 D_800CCA14;  /* request kind, -1 = none */
+extern s32 D_800CCA18; /* CD sector of the music file */
+s32 func_800AC25C(void);
+s32 func_800AC29C(); /* old-style: one caller passes a third argument */
+s32 func_800AC344(s32 arg0);
+s32 func_800AC3A8(s32 arg0);
+void func_800AC424(Unk800AC424 *arg0);
+s32 func_800B8108(void);
+
+/* main exe: candidates for ff9.h (sound) */
+s32 func_80055290(void *);
+void func_800552B8(s32);
+void func_80055310(void);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055604(s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800558DC(s32);
+void func_80055908(s32, s32);
+void func_8005593C(s32, s32, s32);
+void func_80055980(s32, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
+s32 func_80055DCC(void);
+
 #endif
