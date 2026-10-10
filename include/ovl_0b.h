@@ -950,8 +950,11 @@ typedef struct Battle {
     u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
     Battle1358Ring unk1358;
-    s32 unk151C;
-    s32 unk1520;
+    s32 unk151C; /* unit being scanned (BtlUnit *) */
+    union {
+        s32 w; /* cleared as a word */
+        u8 b[4]; /* b[0]: delay, b[1]: item index, b[2]: state */
+    } unk1520;
     Battle488 *unk1524;
     u8 unk1528;
     u8 unk1529;

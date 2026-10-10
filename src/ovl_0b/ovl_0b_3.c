@@ -1340,10 +1340,73 @@ void *func_800CD78C(BtlUnit *arg0) {
 
 void func_800CD808(s32 arg0) {
     D_8006794C->unk1C->unk8E4.battle->unk151C = arg0;
-    D_8006794C->unk1C->unk8E4.battle->unk1520 = 0;
+    D_8006794C->unk1C->unk8E4.battle->unk1520.w = 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CD83C);
+void func_800CD83C(void) {
+    Battle *b = D_8006794C->unk1C->unk8E4.battle;
+    BtlUnit *s = (BtlUnit *)b->unk151C;
+    u8 buf[64];
+    u32 k;
+    u32 j;
+    u16 mask;
+    Battle *c;
+
+    if (s == NULL) {
+        return;
+    }
+    if (--b->unk1520.b[0] != 0xFF) {
+        return;
+    }
+    c = D_8006794C->unk1C->unk8E4.battle;
+    switch (c->unk1520.b[2]) {
+    case 0:
+        func_8002BD54(buf, func_800CD78C(s));
+        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 10));
+        func_8002BBE8(s->unk7A, buf + func_8002BCC0(buf), 0);
+        D_8006794C->unk1C->unk8E4.battle->unk1520.b[2] = 1;
+        break;
+    case 1:
+        func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, 11));
+        func_8002BBE8(s->unk28, buf + func_8002BCC0(buf), 0);
+        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 13));
+        func_8002BBE8(s->unk24->unk0, buf + func_8002BCC0(buf), 0);
+        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 12));
+        func_8002BBE8(s->unk2A, buf + func_8002BCC0(buf), 0);
+        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 13));
+        func_8002BBE8(s->unk24->unk2, buf + func_8002BCC0(buf), 0);
+        D_8006794C->unk1C->unk8E4.battle->unk1520.b[1] = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1520.b[2] = 2;
+        break;
+    case 2:
+        if (!(s->unk68 & 1)) {
+            mask = c->unk488[(s->unk68 >> 1) & 0xF].unk0->unk2;
+            while ((j = D_8006794C->unk1C->unk8E4.battle->unk1520.b[1]++) < 8) {
+                if ((mask >> j) & 1) {
+                    func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, j));
+                    goto show;
+                }
+            }
+        }
+        D_8006794C->unk1C->unk8E4.battle->unk1520.b[1] = 0;
+        D_8006794C->unk1C->unk8E4.battle->unk1520.b[2] = 3;
+    case 3:
+        mask = s->unk73 & ~s->unk70;
+        while ((k = D_8006794C->unk1C->unk8E4.battle->unk1520.b[1]++) < 8) {
+            if ((mask >> k) & 1) {
+                func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, k + 14));
+                goto show;
+            }
+        }
+    default:
+        D_8006794C->unk1C->unk8E4.battle->unk151C = 0;
+        func_800F4F04(0, 2);
+        return;
+    }
+show:
+    D_8006794C->unk1C->unk8E4.battle->unk1520.b[0] = func_800F4FC8() - 1;
+    func_800F4F04((s32)buf, 2);
+}
 
 void func_800CDC68(BtlUnit *arg0) {
     if (!(arg0->unk68 & 1)) {
