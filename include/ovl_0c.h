@@ -1182,4 +1182,29 @@ static inline u8 func_800B3340_inline(u32 *a, u32 k) {
     return 0;
 }
 
+typedef struct {
+    u16 unk0; /* frame count (low 15 bits) */
+    u16 unk2;
+    u16 unk4;
+    u8 unk6;
+    u8 unk7;
+    u16 unk8[1]; /* per-frame data offsets, then a counted u16 table */
+} WmSprHdr; /* sprite animation header (func_800CAE0C) */
+
+typedef struct {
+    u16 *unk0;
+    u16 *unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20;
+    s32 unk24;
+    s32 unk28;
+} WmSprCtx; /* draw context passed to func_800CB1EC */
+
+void func_800CB1EC(u8 *, WmSprCtx *, s32, s32);
+
 #endif
