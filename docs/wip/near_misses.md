@@ -250,6 +250,25 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Status: DE11C 430 rows (18 with registers masked, global allocation right; WIP docs/wip/ovl_0b_800DE11C.c),
   C67BC 234 (was ~300; 16 masked), AC37C 175 (notes on the tu/tv registers and the D_8006794C lo_sum CSE in the WIP
   header), CBA58 45 (notes added). D2DBC not attempted.
+- Pass 12: matched C67BC (0xF74) and CBA58 (0x158). What fixed them:
+  - C67BC: the index words are loaded into the index variables and masked in place
+    (`i0 = W0; i2 = W1; i1 = i0 >> 16; i3 = i2 >> 16; i0 &= 0xFFFF; i2 &= 0xFFFF;`), and the 3-vertex loops use the
+    same form for their third index (`i2 = *(u32 *)&s->unk0[2]; ... i2 &= 0xFFFF;`, which combine turns back into a
+    lhu). The GT3/G3 Z loads use `D_80070520[(u16)i0]`: i0 has full-word sets, so after the cull label the and is kept
+    and CSE does not reuse i0*4. Last step was i1 (t1) vs i2 (t0): global priorities 3.387 vs 3.360, and the
+    word-plus-mask form gives i2 four more refs. Before that, a refs/length check showed that single-line moves never
+    change these priorities without also changing the code: sched1 normalizes the order, so look for a different RTL
+    (types, forms), not a different statement order.
+  - CBA58: `u16 b` (the second operand word) instead of s32 changes sched1's order of the header loads. `u16 ang`
+    gives the a2 -> a1 copy. `s16 x, z` for the differences with `if (x == 0 && z == 0) ang = unk86; else
+    ang = ratan2(d[0], d[1]);`, so the test uses the registers and the ratan2 arguments are reloaded with lh. `s16 w`
+    for the unk86[1] copy (lhu). The tail is `ang = (ang + b) & 0xFFF;`.
+  - Tools for this (in the agent worktree's build/): vp.py/vtp.py (variant specs with refs/len/priority of chosen
+    pseudos, parallel), psweep.py (single-line moves with the priorities of two pseudos), prefs.py (greg conflicts
+    and preferences: which hard regs other allocnos prefer).
+  Status: DE11C 79 rows (was 430; 8 masked). The first four loops match apart from the FT3/GT3 tail sra. The draft still
+  has two invented variables (zg = otz of the G/F loops, i2 = the second colour word of GT4/G4); see the WIP header.
+  D2DBC 63 (pure allocation; the frame/cnt register t2 also holds `(b & 0xF) * 2`), AC37C unchanged (175).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
