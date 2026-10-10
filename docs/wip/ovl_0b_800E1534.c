@@ -1,4 +1,4 @@
-/* WIP func_800E1534: 4 differing rows (build/cmp.py-style aligned diff). New in pass 7. The loop giv base (t0 = e + 0x24 in the original) follows the last e-> field written in the loop, so e->unk24 is written last here; the original stores it before the tail check (sw a1,0(t0) before lw 0(a1)) and copies the tail pointer to v1 for the unk3C store. */
+/* WIP func_800E1534: 4 differing rows (build/cmp.py-style aligned diff). New in pass 7. The loop giv base (t0 = e + 0x24 in the original) follows the last e-> field written in the loop, so e->unk24 is written last here; the original stores it before the tail check (sw a1,0(t0) before lw 0(a1)) and copies the tail pointer to v1 for the unk3C store. Pass 8: storing unk28/unk2C first, then unk24, then the tail check gives the right giv base (6 rows); a second e->unk24 = t after the check gets 3 rows but adds a store; t = e->unk24 reloads, 9 min of permuter: no better. */
 #include "ovl_0b.h"
 
 Pool6CEntry *func_800E1534(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {

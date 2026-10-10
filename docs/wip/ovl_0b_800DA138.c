@@ -1,4 +1,4 @@
-/* WIP func_800DA138: 6 differing rows (build/cmp.py-style aligned diff). only regs: stride v1 / counter a1 in the original, swapped here (permuter found nothing in 6 min). Pass 7: decl order, i/sz types, arg2/arg4 reused for sz or the counter, loop forms and do-while insertion: no better. */
+/* WIP func_800DA138: 6 differing rows (build/cmp.py-style aligned diff). only regs: stride v1 / counter a1 in the original, swapped here (permuter found nothing in 6 min). Pass 7: decl order, i/sz types, arg2/arg4 reused for sz or the counter, loop forms and do-while insertion: no better. Pass 8: sz split into two statements, i * sz indexing, unk2/unk0 reloads, 9 min of permuter: no better. */
 #include "ovl_0b.h"
 
 void func_800DA138(Unk800DA1B8 *arg0, Unk80100C78Entry *arg1, s32 arg2, s32 arg3, s32 arg4) {

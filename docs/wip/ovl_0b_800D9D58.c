@@ -1,4 +1,4 @@
-/* WIP func_800D9D58: 5 differing rows (build/cmp.py-style aligned diff). New in pass 7, modelled on func_800D9AB0. The else path reads u->unkA0 twice (statement 1 reloads it, a = u->unkA0 is taken after the first store and hoisted by sched) and ends in return D_800FEC56 = 1 (v1 copy of the 1). Left: the last unkA0 field load goes to a1 instead of reusing a's v1. */
+/* WIP func_800D9D58: 5 differing rows (build/cmp.py-style aligned diff). New in pass 7, modelled on func_800D9AB0. The else path reads u->unkA0 twice (statement 1 reloads it, a = u->unkA0 is taken after the first store and hoisted by sched) and ends in return D_800FEC56 = 1 (v1 copy of the 1). Left: the last unkA0 field load goes to a1 instead of reusing a's v1. Pass 8: the permuter found that storing and returning a multi-set variable (new_var = 2 at the top, also set in the if path) fixes the sh/sb scheduling (1 row, but it stores 2); holding the 1 in a variable puts it in s3 (13 rows). */
 #include "ovl_0b.h"
 
 s32 func_800D9D58(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
