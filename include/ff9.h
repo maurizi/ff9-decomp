@@ -408,6 +408,7 @@ typedef struct {
     s32 unkC;
 } Unk80076F68;
 extern Unk80076F68 D_80076F68;
+extern RECT D_800686C8; /* countdown timer window */
 
 /* ---- CD / streaming state near libcd ---- */
 
