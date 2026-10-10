@@ -36,17 +36,18 @@ typedef struct {
     u16 *unk14;
     SVECTOR *unk18;
     u32 *unk1C; /* primitives */
-    u8 pad20[0x28 - 0x20];
+    u8 (*unk20)[2]; /* uv */
+    void *unk24;
 } BtlMesh; /* 0x28 */
 
 typedef struct BtlUnit9C8 {
-    u8 pad0[2];
+    u16 unk0; /* flags: 1 = relocated */
     u8 unk2;
     u8 unk3; /* count of unk10 */
     u8 pad4[8 - 4];
     u16 unk8;
     u16 unkA;
-    u8 padC[0x10 - 0xC];
+    s32 unkC; /* offset, relocated on load */
     BtlMesh *unk10;
 } BtlUnit9C8;
 
@@ -194,13 +195,19 @@ typedef struct BtlUnit9C {
     struct BtlUnit9C *unk1C;
     BtlBone *unk20;
     MATRIX unk24;
-    u8 pad44[0x50 - 0x44];
+    s32 unk44;
+    u8 pad48[0x50 - 0x48];
     BtlUnit9C50 *unk50;
     s16 unk54;
     s16 unk56;
     s16 unk58;
     s16 unk5A;
     BtlUnit9C8 *unk5C; /* morph target */
+    void *unk60;
+    u8 pad64[0x74 - 0x64];
+    s16 unk74;
+    s16 unk76;
+    s16 unk78;
 } BtlUnit9C;
 
 typedef struct BtlUnit98 {
@@ -246,7 +253,7 @@ typedef struct BtlUnit {
     u32 unk3C; /* status */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
-    u8 pad66[0x68 - 0x66];
+    s16 unk66;
     u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
     u8 unk6C;
     u8 unk6D;
@@ -486,7 +493,7 @@ typedef struct {
     u8 unk2;
     s8 unk3;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u8 unk6;
     u8 pad7;
     u8 unk8;
@@ -755,7 +762,7 @@ typedef struct BtlCmd8 {
     u32 unk0_8 : 9;
     u32 unk0_17 : 15;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u8 unk6;
     u8 pad7;
     u8 unk8;
@@ -854,7 +861,7 @@ typedef struct Battle1358 {
     union {
         s32 w; /* cleared as a word */
         struct {
-            s8 unk0;
+            u8 unk0; /* delay */
             s8 unk1; /* y offset */
             u8 unk2;
             u8 unk3;
@@ -908,6 +915,11 @@ typedef struct Battle108C {
     POLY_F3 unk8;
 } Battle108C; /* 0x1C */
 
+/* target cursor: four faces per draw buffer */
+typedef struct Battle108CSet {
+    Battle108C unk0[4];
+} Battle108CSet;
+
 /* battle scene data (Battle.unk132C) */
 typedef struct {
     u32 unk0; /* flags */
@@ -919,7 +931,7 @@ typedef struct {
 
 typedef struct {
     BtlUnit9C unk0;
-    u8 pad60[0x98 - 0x60];
+    u8 pad7C[0x98 - sizeof(BtlUnit9C)];
 } BtlModel; /* 0x98 */
 
 /* GameData.unk8E4 while in battle */
@@ -948,7 +960,7 @@ typedef struct Battle {
     BtlCmd unk1060;
     BtlCmd unk1074;  /* list head (only unk0 used) */
     BtlCmd *unk1088; /* current command */
-    struct Battle108C unk108C[2][4];
+    struct Battle108CSet unk108C[2]; /* per draw buffer */
     BtlUnitList unk116C;
     u16 unk11B8;
     u8 unk11BA;
@@ -1240,7 +1252,9 @@ extern char D_800A81A8[];
 typedef struct {
     u8 unk0; /* kind, 9 = no texture */
     u8 unk1; /* 0xFF = no second texture */
-    u8 pad2[0x1C - 2];
+    u8 pad2[8 - 2];
+    s16 unk8;
+    u8 padA[0x1C - 0xA];
     s32 unk1C; /* offset, relocated on load */
     s32 unk20; /* offset, relocated on load */
     u8 pad24[0x28 - 0x24];
@@ -1478,7 +1492,7 @@ typedef struct Unk800F412C {
     s16 unk0; /* text id */
     s16 unk2;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u16 unk6; /* frame */
     u16 unk8; /* x */
     u16 unkA; /* y */
@@ -1553,7 +1567,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
     u8 unk4;
-    u8 pad5;
+    u8 unk5;
     u8 unk6;
     u8 unk7;
     u8 unk8;
@@ -2051,7 +2065,7 @@ s32 func_800D8B70(s32);
 s32 func_800DA0B8(s32);
 void func_800EA124(s32);
 s16 func_800A9BE4(s32);
-void func_800ABBC4(s32, s32);
+s16 func_800ABBC4(s32, s32);
 u32 func_800D8C70(s32, u32);
 void func_800D8658(s32, u8);
 void func_800D8914(s32);
@@ -2107,14 +2121,17 @@ typedef struct {
 typedef struct {
     s16 unk0; /* state */
     u16 unk2; /* next state */
-    u8 pad4[0xA - 0x4];
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
     s16 unkA;
-    u8 padC[0x10 - 0xC];
+    u8 padC[0xE - 0xC];
+    s16 unkE;
     union {
         s32 w[4];
         u16 h[8];
     } unk10;
-    u8 pad20[0x24 - 0x20];
+    s32 unk20;
     s32 unk24;
 } Unk800AA958; /* party model load state */
 
@@ -2203,6 +2220,11 @@ typedef struct {
 void func_800CCD00(Unk800CCD00 *, Unk800686E8 *);
 void func_800CCBC0(Unk800CCD00 *, u32);
 void func_800CCAF0(struct Battle1358 *, Unk800CCD00 *, s32, s32);
+extern void (*D_800F6A7C[])(struct Battle1358 *, Unk800CCD00 *);
+void func_800CD210(Unk800CCD00 *);
+void func_800CCDB8(Unk800CCD00 *);
+void func_800CD83C(void);
+void func_800CDD68(void);
 extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
@@ -2536,6 +2558,11 @@ void func_800C0840(void);
 void func_800C0C7C(u32 *);
 void func_800C0CD0(u32 *);
 void func_800C1A8C(struct BtlUnit *, u32);
+void func_800B95BC(struct BtlCmd *);
+s32 func_800B96AC(struct BtlUnit *, s16);
+void func_800B989C(struct BtlCmd *);
+void func_800C0A70(struct BtlUnit *, s32);
+void func_800C15DC(struct BtlUnit *);
 void func_800BAFEC(struct Battle *);
 u32 *func_800BB974(struct Battle *, u32 *);
 void func_800BD8F0(Unk800BD8F0 *);
@@ -2570,6 +2597,31 @@ typedef struct {
     BtlUnit9C *unk8;
     s32 unkC;
 } BtlObj;
+/* placement data passed to func_800AD4E4 */
+typedef struct {
+    u32 pad0_0 : 8;
+    u32 unk0_8 : 12;  /* x scale */
+    u32 unk0_20 : 12; /* z scale */
+    s32 pad4_0 : 12;
+    s32 unk4_12 : 10; /* x offset */
+    s32 unk4_22 : 10; /* z offset */
+} Unk800AD4E4;
+
+/* copies a MATRIX as eight words (the original doesn't use a struct assignment) */
+#define COPY_MATRIX(d, s)                    \
+    {                                        \
+        s32 *_d = (s32 *)(d);                \
+        s32 *_s = (s32 *)(s);                \
+        _d[0] = _s[0];                       \
+        _d[1] = _s[1];                       \
+        _d[2] = _s[2];                       \
+        _d[3] = _s[3];                       \
+        _d[4] = _s[4];                       \
+        _d[5] = _s[5];                       \
+        _d[6] = _s[6];                       \
+        _d[7] = _s[7];                       \
+    }
+
 void func_800A8E24(void);
 void func_800A8E6C(void);
 s32 func_800A8F10(void);
@@ -2871,6 +2923,30 @@ void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
     : : "r"(rgb), "r"(p) : "$14")
 #define gte_strgb(r0) __asm__ volatile("swc2\t$22, 0(%0)" : : "r"(r0) : "memory")
 
+/* func_800D3B6C: sprites placed along a path */
+typedef struct {
+    s32 unk0; /* offset of the sprite data */
+    s16 unk4;
+    s16 unk6;
+    u16 unk8; /* start time */
+    u16 unkA; /* fade-in time */
+} Unk800D3B6CEntry;
+
+typedef struct {
+    u16 unk0; /* duration */
+    u16 unk2; /* count */
+    u16 unk4; /* mode */
+    u8 unk6;
+    u8 unk7;
+    s16 unk8[2];
+    s16 unkC[2];
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    Unk800D3B6CEntry unk18[1];
+} Unk800D3B6C;
+
 /* sprite-strip context passed to func_800D5C30 / func_800D50A0 */
 typedef struct {
     s32 unk0; /* ot base z */
@@ -3112,7 +3188,43 @@ typedef struct {
 } FileEntryX;
 
 s32 func_800AA24C(s16, s32, Unk800AA24C *);
-s32 func_800AA504(s32, s32, Unk800AA24C *);
+/* battle scene model load state (func_800AA504) */
+typedef struct {
+    s16 unk0; /* state */
+    u16 unk2; /* next state */
+    u8 pad4[8 - 4];
+    s16 unk8; /* file id being loaded */
+    s16 unkA; /* files loaded */
+    s32 unkC; /* load address */
+    union {
+        s32 w[2];
+        s16 h[4];
+    } unk10; /* file ids still to load, -1 = done */
+} Unk800AA504;
+
+typedef struct {
+    u16 unk0; /* id */
+    u8 pad2[4 - 2];
+    union {
+        s32 w; /* low 24 bits: offset of the texture lists from this entry */
+        u8 b[4]; /* b[3]: texture count */
+    } unk4;
+    u8 pad8[0xC - 8];
+} Unk800AA504Ent; /* 0xC */
+
+typedef struct {
+    u8 pad0;
+    u8 unk1; /* entry count */
+    u8 pad2[4 - 2];
+    Unk800AA504Ent unk4[1];
+} Unk800AA504Tbl;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+} Unk800AA504Pos;
+
+s32 func_800AA504(s32, s32, Unk800AA504 *);
 
 /* inlined into func_800AA24C: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */
@@ -3144,5 +3256,7 @@ static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
 
 /* main exe: candidates for ff9.h */
 void func_8001DA78(void *, s32);
+extern s32 D_800711A8[]; /* projected screen xy per model vertex */
+extern s32 D_80070520[]; /* projected z per model vertex */
 
 #endif

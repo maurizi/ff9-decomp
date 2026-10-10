@@ -681,7 +681,60 @@ s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D3B6C);
+void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
+    s16 p[2];
+    s16 q[2];
+    s16 sxy[2];
+    s32 t;
+    s32 i;
+    s32 d;
+    s32 v;
+    s32 r;
+    s32 a;
+    Unk800D3B6CEntry *e;
+    Unk800D3B6C *h;
+
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    h = (Unk800D3B6C *)arg0;
+    e = h->unk18;
+    gte_rtps_b();
+    t = (arg2 << 12) / h->unk0;
+    gte_stsxy(sxy);
+    if (h->unk4 == 0) {
+        func_800CFA00(h->unk8, h->unkC, t, p);
+        for (i = 0; i < h->unk2; i++, e++) {
+            func_800CFA00(sxy, p, e->unk6 * 2, q);
+            if (arg2 >= e->unk8) {
+                d = arg2 - e->unk8;
+                if (d < e->unkA) {
+                    v = d * arg3 / e->unkA;
+                } else {
+                    v = arg3;
+                }
+                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+            }
+        }
+    } else {
+        r = h->unk10 + (((h->unk12 - h->unk10) * func_800D3A6C(arg2, h->unk0, h->unk6)) >> 12);
+        a = h->unk14 + (((h->unk16 - h->unk14) * func_800D3A6C(arg2, h->unk0, h->unk7)) >> 12);
+        p[0] = sxy[0] + ((func_8004BB7C(r) * a) >> 12);
+        p[1] = sxy[1] + ((func_8004BB80(r) * a) >> 12);
+        for (i = 0; i < h->unk2; i++, e++) {
+            func_800CFA00(sxy, p, e->unk6 * 2, q);
+            if (arg2 >= e->unk8) {
+                d = arg2 - e->unk8;
+                if (d < e->unkA) {
+                    v = d * arg3 / e->unkA;
+                } else {
+                    v = arg3;
+                }
+                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D3ED4);
 
@@ -2863,7 +2916,29 @@ void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DCB20);
+/* scales the model matrix by arg1 (MulMatrix0 with a diagonal matrix built word by word) */
+void func_800DCB20(BtlUnit9C *arg0, VECTOR *arg1) {
+    MATRIX m;
+    s32 *d;
+    s16 x, y, z;
+
+    d = (s32 *)&m;
+    x = arg1->vx;
+    d[0] = 0x1000;
+    m.m[0][0] = x;
+    y = arg1->vy;
+    d[2] = 0x1000;
+    m.m[1][1] = y;
+    z = arg1->vz;
+    d[1] = 0;
+    d[3] = 0;
+    d[4] = 0x1000;
+    d[5] = 0;
+    d[6] = 0;
+    d[7] = 0;
+    m.m[2][2] = z;
+    gte_MulMatrix0(&arg0->unk24, &m, &arg0->unk24);
+}
 
 void func_800DCC58(s32 arg0, s32 arg1) {
     func_800DD02C(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 &= ~(1 << arg1);
@@ -2940,7 +3015,23 @@ u8 func_800DD10C(BtlUnit9C *arg0) {
     return arg0->unk8->unk3;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DD120);
+void func_800DD120(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
+    s32 k;
+    BtlTexInfo *a;
+    BtlTexInfo *b;
+    u16 i;
+    Unk8E0 *e;
+
+    i = (func_800E716C(0x10)->unk68 >> 1) & 0xF;
+    e = &D_8006794C->unk1C->unk8E0[i];
+    k = arg2 & 0xFFFF;
+    k |= 0x20000;
+    k |= e->unkC->unk3B << 24;
+    a = (BtlTexInfo *)func_800634A8(k);
+    b = (BtlTexInfo *)func_800634D8(k);
+    *arg0 = *a;
+    *arg1 = *b;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DD27C);
 
@@ -3062,7 +3153,43 @@ s32 func_800DF930(void) {
 void func_800DF938(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF940);
+/* gives every vertex reference of nv-vertex primitives its own copy in arg2 */
+#define SPLIT_PRIMS(cnt, stride, nv)                                \
+    for (j = 0; j < (cnt); j++) {                                   \
+        for (k = 0; k < (nv); k++) {                                \
+            ((SVECTOR *)arg2)[n].vx = src[((u16 *)p)[k]].vx;        \
+            ((SVECTOR *)arg2)[n].vy = src[((u16 *)p)[k]].vy;        \
+            ((SVECTOR *)arg2)[n].vz = src[((u16 *)p)[k]].vz;        \
+            ((u16 *)p)[k] = n;                                      \
+            n++;                                                    \
+        }                                                           \
+        p += (stride);                                              \
+    }
+
+u32 func_800DF940(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
+    u16 n;
+    BtlMesh *g;
+    u8 *p;
+    SVECTOR *src;
+    u32 j;
+    u32 k;
+
+    n = 0;
+    g = &arg0->unk8->unk10[arg1];
+    p = (u8 *)g->unk1C;
+    src = g->unk18;
+    g->unk18 = (SVECTOR *)arg2;
+    SPLIT_PRIMS(g->unk2, 0x18, 4);
+    SPLIT_PRIMS(g->unk4, 0x14, 3);
+    SPLIT_PRIMS(g->unk6, 0x20, 4);
+    SPLIT_PRIMS(g->unk8, 0x18, 3);
+    SPLIT_PRIMS(g->unkA, 0x18, 4);
+    SPLIT_PRIMS(g->unkC, 0x14, 3);
+    SPLIT_PRIMS(g->unkE, 0x10, 4);
+    SPLIT_PRIMS(g->unk10, 0xC, 3);
+    g->unk14[arg1] = n;
+    return arg2 + n * 2;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFE4C);
 

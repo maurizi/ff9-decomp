@@ -1038,11 +1038,11 @@ s16 func_800AB580(s32 arg0) {
     s = *state;
     if (s == 1) {
         if (func_800AA24C(id, 0x100, (Unk800AA24C *)ld) == 0) {
-            func_800AA504(id, 0x8000, (Unk800AA24C *)ld);
+            func_800AA504(id, 0x8000, (Unk800AA504 *)ld);
             (*st)++;
         }
     } else if (s == 2) {
-        if (func_800AA504(id, 0, (Unk800AA24C *)ld) == 0) {
+        if (func_800AA504(id, 0, (Unk800AA504 *)ld) == 0) {
             func_800AA958(0x8000, ld);
             (*st)++;
         }
@@ -1143,7 +1143,71 @@ s32 func_800AD4AC(s32 arg0, s32 arg1) {
     return func_80062E3C(arg0, 0x100, 0xFF, 0x200, 0xE0, arg1, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AD4E4);
+void func_800AD4E4(Unk800AD4E4 *arg0, BtlObj *arg1, MATRIX *arg2, s32 arg3, s32 arg4, s32 arg5) {
+    VECTOR r;
+    VECTOR up;
+    VECTOR n;
+    VECTOR d;
+    MATRIX m;
+    SVECTOR v;
+    s32 *p0;
+    s32 *p1;
+
+    if (arg4 == arg5) {
+        COPY_MATRIX(&m, &((MATRIX *)arg1->unk8->unk20)[arg4]);
+        m.t[2] = 0;
+        m.t[1] = 0;
+        m.t[0] = 0;
+        v.vx = 0;
+        v.vy = -0x1000;
+        v.vz = 0;
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(&v);
+        gte_rtv0tr();
+        gte_stlvnl(&d);
+        d.vy = 0;
+        VectorNormal(&d, &n);
+        n.vx = -n.vx;
+        n.vy = -n.vy;
+        n.vz = -n.vz;
+    } else {
+        p0 = ((MATRIX *)arg1->unk8->unk20)[arg4].t;
+        p1 = ((MATRIX *)arg1->unk8->unk20)[arg5].t;
+        d.vx = p1[0] - p0[0];
+        d.vy = p1[1] - p0[1];
+        d.vz = p1[2] - p0[2];
+        if (d.vx == 0 && d.vy == 0 && d.vz == 0) {
+            n.vx = 0;
+            n.vy = 0;
+            n.vz = 0x1000;
+        } else {
+            d.vy = 0;
+            VectorNormal(&d, &n);
+        }
+    }
+    up.vy = 0x1000;
+    up.vx = 0;
+    up.vz = 0;
+    gte_ldopv1(&up);
+    gte_ldopv2(&n);
+    gte_op12();
+    gte_stlvnl(&r);
+    arg2->m[0][0] = (r.vx * arg0->unk0_8) >> 12;
+    arg2->m[1][0] = (r.vy * arg0->unk0_8) >> 12;
+    arg2->m[2][0] = (r.vz * arg0->unk0_8) >> 12;
+    arg2->m[0][1] = up.vx;
+    arg2->m[1][1] = up.vy;
+    arg2->m[2][1] = up.vz;
+    arg2->m[0][2] = (n.vx * arg0->unk0_20) >> 12;
+    arg2->m[1][2] = (n.vy * arg0->unk0_20) >> 12;
+    arg2->m[2][2] = (n.vz * arg0->unk0_20) >> 12;
+    arg2->t[0] = (((r.vx << 1) * arg0->unk4_12 + (n.vx << 1) * arg0->unk4_22) >> 12) +
+                 ((MATRIX *)arg1->unk8->unk20)[arg4].t[0];
+    arg2->t[1] = (((r.vy << 1) * arg0->unk4_12 + (n.vy << 1) * arg0->unk4_22) >> 12) + arg3;
+    arg2->t[2] = (((r.vz << 1) * arg0->unk4_12 + (n.vz << 1) * arg0->unk4_22) >> 12) +
+                 ((MATRIX *)arg1->unk8->unk20)[arg4].t[2];
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AD90C);
 
@@ -1794,14 +1858,14 @@ void func_800B0FC0(Battle *arg0) {
     s32 c;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 4; j++) {
-            func_80063640(&arg0->unk108C[i][j].unk0, GetTPage(0, 1, 0, 0));
+            func_80063640(&arg0->unk108C[i].unk0[j].unk0, GetTPage(0, 1, 0, 0));
             if (j < 3) {
                 c = 0xBC - j * 0x3C;
             } else {
                 c = 0xA0;
             }
-            setRGB0(&arg0->unk108C[i][j].unk8, c, c, 0);
-            SetSemiTrans(&arg0->unk108C[i][j].unk8, 1);
+            setRGB0(&arg0->unk108C[i].unk0[j].unk8, c, c, 0);
+            SetSemiTrans(&arg0->unk108C[i].unk0[j].unk8, 1);
         }
     }
 }
@@ -2445,7 +2509,68 @@ s32 func_800B3188(BtlCmd *arg0) {
     return (u16)mask;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800B3460);
+void func_800B3460(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
+    SVECTOR v;
+    SVECTOR tri[3];
+    long sxy[4];
+    s32 ang;
+    s32 i;
+
+    ang = (arg1->unkD7C & 0xF) << 8;
+    gte_SetRotMatrix(&arg0->unk18);
+    gte_SetTransMatrix(&arg0->unk18);
+    v.vx = arg2->unk8C[0] >> 16;
+    v.vy = (arg2->unk8C[1] >> 16) - arg2->unk9C->unk8->unk8;
+    v.vz = arg2->unk8C[2] >> 16;
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(&sxy[0]);
+    for (i = 0; i < 3; i++) {
+        tri[i].vx = v.vx - ((func_8004BB7C(ang) * 68) >> 12);
+        tri[i].vy = v.vy - 0x85;
+        tri[i].vz = v.vz - ((func_8004BB80(ang) * 68) >> 12);
+        ang = (ang + 0x4F1) & 0xFFF;
+    }
+    gte_ldv3c(tri);
+    gte_rtpt();
+    gte_stsxy3(&sxy[1], &sxy[2], &sxy[3]);
+    if (NormalClip(sxy[0], sxy[1], sxy[2]) > 0) {
+        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.x0 = sxy[0];
+        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.y0 = sxy[0] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.x1 = sxy[1];
+        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.y1 = sxy[1] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.x2 = sxy[2];
+        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.y2 = sxy[2] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[0]);
+    }
+    if (NormalClip(sxy[0], sxy[2], sxy[3]) > 0) {
+        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.x0 = sxy[0];
+        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.y0 = sxy[0] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.x1 = sxy[2];
+        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.y1 = sxy[2] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.x2 = sxy[3];
+        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.y2 = sxy[3] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[1]);
+    }
+    if (NormalClip(sxy[0], sxy[3], sxy[1]) > 0) {
+        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.x0 = sxy[0];
+        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.y0 = sxy[0] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.x1 = sxy[3];
+        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.y1 = sxy[3] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.x2 = sxy[1];
+        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.y2 = sxy[1] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[2]);
+    }
+    if (NormalClip(sxy[1], sxy[3], sxy[2]) > 0) {
+        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.x0 = sxy[1];
+        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.y0 = sxy[1] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.x1 = sxy[3];
+        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.y1 = sxy[3] >> 16;
+        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.x2 = sxy[2];
+        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.y2 = sxy[2] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[3]);
+    }
+}
 
 void func_800B3B5C(BtlUnit *arg0) {
     s32 x;

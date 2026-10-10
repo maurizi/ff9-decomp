@@ -41,3 +41,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 - 0a B4A5C: identical except the stack frame is 8 bytes too small.
 - 0a C0038 (11 diff rows), C07D8 (24), C970C, BA560, BD130, C65CC, BFEE0 (36-64).
 - 0c BA1E4 (31 diff rows), C53DC and BEECC (~110-120), BF544; twin pair 0a BB714 / 0c CA1D8 (large diffs).
+- Large/GTE pass (drafts in the main checkout's build/drafts/ovl_0b/, diff = differing insns): D2938 7 (base
+  pointer temp regs), C7730 ~18 (relocation prologue regs/delay slot), AA504 23 (collect loop regs a0/v1),
+  D1D74 ~30 (frame index n/k regs), D2DBC ~65 (header load scheduling), CD210 ~36 (bone index needs sext,
+  q copied to a 2nd reg), E6764 9 (first inner-loop stores scheduled), D1FFC ~60 (like D1D74),
+  E57B0 ~117 (constant 1 kept in s0 and used by sllv), AF800 ~135 (case 0 branch order, 56F not reloaded),
+  ABBC4 ~220 (regs in case 5 texture loop), B1B48 ~215 (return-0 block placement), DE11C ~690 (model
+  renderer: all 8 primitive loops written, register allocation/spills differ).

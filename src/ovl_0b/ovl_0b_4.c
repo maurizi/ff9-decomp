@@ -2,7 +2,71 @@
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C58E4);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C6528);
+void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
+    MATRIX m;
+    BtlMesh *g;
+    MATRIX *bone;
+    SVECTOR *vtx;
+    s32 *sxy;
+    s32 *sz;
+    s32 k;
+    u32 i;
+    s32 n;
+    u32 cnt;
+    MATRIX *b;
+    SVECTOR *v;
+    s16 *c1;
+    s16 *c2;
+
+    g = &arg0->unk8->unk10[arg1];
+    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    sxy = D_800711A8;
+    sz = D_80070520;
+    k = 0;
+    cnt = arg0->unk8->unk2;
+    bone = (MATRIX *)arg0->unk20;
+    for (i = 0; i < cnt; bone++) {
+        n = g->unk14[i++];
+        if (n != 0) {
+            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            b = bone;
+            gte_ldclmv(b);
+            c1 = &b->m[0][1];
+            c2 = &b->m[0][2];
+            gte_rtir_b();
+            sxy = &D_800711A8[k];
+            gte_stclmv(&m);
+            gte_ldclmv(c1);
+            gte_rtir();
+            sz = &D_80070520[k];
+            gte_stclmv(&m.m[0][1]);
+            gte_ldclmv(c2);
+            c1 = (s16 *)b->t;
+            gte_rtir_n1();
+            vtx = &g->unk18[k];
+            gte_stclmv(&m.m[0][2]);
+            gte_ldlv0(c1);
+            k += n;
+            gte_rtv0tr_n1();
+            gte_ldv3c(vtx);
+            gte_stlvnl(m.t);
+            gte_SetRotMatrix(&m);
+            gte_SetTransMatrix(&m);
+            v = vtx;
+            do {
+                v += 3;
+                n -= 3;
+                gte_rtpt_b();
+                gte_ldv3c(v);
+                gte_stsxy3c(sxy);
+                gte_stsz3c(sz);
+                sxy += 3;
+                sz += 3;
+            } while (n > 0);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C67BC);
 
