@@ -32,13 +32,87 @@ typedef struct {
     u16 unkC;
     u16 unkE;
     u16 unk10;
-    u8 pad12[0x14 - 0x12];
+    u8 pad12;
+    s8 unk13; /* ordering table bias */
     u16 *unk14;
     SVECTOR *unk18;
     u32 *unk1C; /* primitives */
     u8 (*unk20)[2]; /* uv */
-    void *unk24;
+    u8 (*unk24)[4]; /* colours */
 } BtlMesh; /* 0x28 */
+
+/* primitive sources of a model mesh (same layout as WorldMap's in ovl_0a/0c) */
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4]; /* uv */
+    u8 unk10[3]; /* rgb */
+    u8 unk13;    /* texture */
+    u8 unk14;
+    u8 unk15; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 pad16[2];
+} WmSrcFT4; /* 0x18 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 unk6; /* texture */
+    u8 pad7;
+    u8 unk8[3]; /* rgb */
+    u8 padB;
+    u16 unkC[3]; /* uv */
+    u8 unk12;    /* flags */
+    u8 pad13;
+} WmSrcFT3; /* 0x14 */
+
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4];  /* uv */
+    u16 unk10[4]; /* colours */
+    u8 pad18[4];
+    u8 unk1C; /* flags */
+    u8 unk1D; /* texture */
+    u8 pad1E[2];
+} WmSrcGT4; /* 0x20 */
+
+typedef struct {
+    u16 unk0[3];
+    u16 unk6[3]; /* uv */
+    u8 padC[3];
+    u8 unkF;      /* flags */
+    u16 unk10[3]; /* colours */
+    u8 unk16;     /* texture */
+    u8 pad17;
+} WmSrcGT3; /* 0x18 */
+
+typedef struct {
+    u16 unk0[4];
+    u16 unk8[4]; /* colours */
+    u8 pad10[4];
+    u8 unk14; /* flags */
+    u8 pad15[3];
+} WmSrcG4; /* 0x18 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 pad6[2];
+    u16 unk8[3]; /* colours */
+    u8 padE[5];
+    u8 unk13; /* flags */
+} WmSrcG3; /* 0x14 */
+
+typedef struct {
+    u16 unk0[4];
+    u8 unk8[3]; /* rgb */
+    u8 padB[2];
+    u8 unkD; /* flags */
+    u8 padE[2];
+} WmSrcF4; /* 0x10 */
+
+typedef struct {
+    u16 unk0[3];
+    u8 pad6[2];
+    u8 unk8[3]; /* rgb */
+    u8 unkB; /* flags */
+} WmSrcF3; /* 0xC */
 
 typedef struct BtlUnit9C8 {
     u16 unk0; /* flags: 1 = relocated */
