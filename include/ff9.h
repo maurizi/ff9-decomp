@@ -1222,7 +1222,11 @@ extern Unk80080A10 *D_8007F790;
 extern Unk80080A10 D_8007F8F0;
 /* AKAO sequence file header (func_8005A320) */
 typedef struct {
-    u8 pad0[0x14];
+    u8 pad0[4];
+    u16 unk4; /* sequence id */
+    u8 pad6[2];
+    u16 unk8;
+    u8 padA[0x14 - 0xA];
     s32 unk14;
 } AkaoSeqHeader;
 void func_8005A320(s32, s32);
@@ -1281,7 +1285,7 @@ void func_80032658(void);
 void func_80032140(s32, s32);
 void func_80056B18(void);
 void func_80056C08(void);
-s32 func_8005C8BC(s32);
+s32 func_8005C8BC(u32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
@@ -1344,6 +1348,8 @@ typedef struct {
 } Unk80080AA0;
 void func_8005A014(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
 extern Unk80080AA0 D_80080AA0;
+extern Unk80080AA0 D_80080970; /* command block passed to the handlers */
+extern void (*D_8006F740[])(Unk80080AA0 *); /* sound command handlers */
 
 typedef struct {
     u8 unk0; /* card id, 0xFF = none */
