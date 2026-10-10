@@ -1,4 +1,4 @@
-/* 30 rows differ: the first SE call (unk26 == 0xFF path) is cross-jumped into the shared jalr of the three list-cursor SE calls here, but keeps its own jalr in the original; and the D_8007B958 stores of the 0x10/0x10000 paths are scheduled after the call setup. The || condition at the top fixed the 0xA0000/0x20000 test layout. */
+/* 28 rows differ: the first SE call (unk26 == 0xFF path) now keeps its own jalr like the original, because the three list-cursor branches are an if/else-if chain that falls into one shared return 1 (separate returns let jump2 cross-jump all four calls). Remaining: jump2 now merges the whole argument setup of the 0x10/0x40/0x10000 calls, while the original shares only the jalr (each branch keeps its own setup and jumps to the jalr), and in the 0x10000 path the original stores D_8007B958 = D_8007B96C after the setup, right before the jalr. That suggests the store sits between the setup and the call in RTL, which no C order we tried gives. The 0x10 path is written as if (D_8007B958 > 0) D_8007B958--; else D_8007B958 = D_8007B95C - 1; (bgtz with the decrement in the delay slot). */
 #include "ff9.h"
 
 extern s32 D_8007B95C;
@@ -33,28 +33,26 @@ s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
             return 0;
         }
         if (pad & 0x10) {
-            v = D_8007B958 - 1;
-            if (D_8007B958 <= 0) {
-                v = D_8007B95C - 1;
+            if (D_8007B958 > 0) {
+                D_8007B958--;
+            } else {
+                D_8007B958 = D_8007B95C - 1;
             }
-            D_8007B958 = v;
             D_8006794C->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
-            return 1;
-        }
-        if (pad & 0x40) {
+        } else if (pad & 0x40) {
             if (D_8007B958 < D_8007B95C - 1) {
                 D_8007B958++;
             } else {
                 D_8007B958 = 0;
             }
             D_8006794C->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
-            return 1;
-        }
-        if ((pad & 0x10000) && D_8007B96C >= 0) {
+        } else if ((pad & 0x10000) && D_8007B96C >= 0) {
             D_8007B958 = D_8007B96C;
             D_8006794C->unk1C->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
-            return 1;
+        } else {
+            return 0;
         }
+        return 1;
     }
     return 0;
 }

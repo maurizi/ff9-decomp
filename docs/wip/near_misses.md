@@ -4,6 +4,52 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 7 matched 4 (8004B85C, 800378C4, 80035214, 80038618). What worked:
+  - Permuter first, then a dup sweep on its best output: 800378C4 (the permuter found the slot
+    parameter reused as the key, `slot = func_8004B85C_key(slot)`), 80038618 (permuter:
+    `s = q->unkF; if (best) f = s; else f = q->unkF;`, then dup: identical-branch `if (a)` around
+    `rr = p->unk3C * 4`).
+  - 8004B85C: `lt = kind < 14;` then an identical-branch `if (kind) ge = lt ^ 1; else ge = lt ^ 1;`
+    and the `slot >= 8` test written first. The search is now `func_8004B85C_find`/`_key` in ff9.h.
+  - 80035214: one temp `v` for the loaded coordinate in both compare blocks (`v = m->unk2; t = c->y
+    + 16; d2 = v - t; ...`), and in the second block `x = D_80077DE8.unk0 - 19` (reloaded after the
+    `|= 1` store) but `x = v + 18`. `&D_80077DE8.unk10` links to the original's D_80077DF8
+    reference, so verify passes; cmp.py still flags those two rows.
+  - Draft updates: 8002995C 5 -> 4 (identical-branch `if (x)` around `s++`), 8005A320 9 -> 6 with
+    the symbol-aware cmp (`~(D_80080A70.unk0 | D_80083174)` order and a do-while), 80059414 12 -> 11
+    (loop counter v reused for `D_80080A10->unk8`), 8004DAD0 30 -> 28 (an if/else-if chain with one
+    shared `return 1` keeps the first SE call's own jalr). Headers have the details.
+  - No progress: 80024BD8 (dup/wrap sweeps, rgbc0/xy3 orders), 8003595C (dup sweep makes it worse,
+    720 orders of the six setup statements give 12 at best), 8002E718 (unk5 local, operand orders,
+    flag variable; the permuter only reaches 7 with `new_var2 = 6`), 80047B90 (moving `pv = &v` does
+    nothing: pv is rematerialised as a frame address, and the original keeps `&v` in s0 while
+    `&mat` is rematerialised per call), 80048E80.
+  - 80062E3C: reusing the u/v params for u0/v0 matches the original's a3/t1. The original also
+    copies arg0 to t2 first (`prim = arg0`, then `s = prim`, `prim += n * 40`), but that form
+    scores worse (134). The header's word 1 still gets a separate s+4 giv.
+- Pass 6 matched 10 (8002ECA0, 80029D60, 80029B4C, 8001C8B0, 80039444, 80031284, 800585E0,
+  8005CF04, 8004F9A0, 80038278). What worked:
+  - The identical-branch if is a general register-allocation lever, not just an rsin quirk:
+    `if (var) { stmt } else { stmt }` (jump2 merges the arms) adds a reference to var and splits the
+    block, which changes global-alloc priorities and makes block-local pseudos global. 80031284
+    (`if (mode)` around `sy = -sy`), 800585E0 (around the func_80057898 call; with bit = 1 written
+    before i = 0), 8005CF04 (`if (v)` around `mask ^= k`), 8004F9A0 (q, the second prim, has to be
+    a global pseudo to land in a2). build/dup.py in this worktree generates every
+    statement x variable variant (`AUTO` picks params and locals); a sweep is ~100-300 compiles.
+  - Reusing one variable for two jobs raises its priority the same way: 80029D60 (`hi =
+    getaddr(ot)` in the final addPrim), 8005CF04 (one counter for the 32-voice loop and the bit
+    loop), 80038278 (one pointer for the slot and the search, found by the permuter).
+  - Separate calls per branch, cross-jumped at the jal: 8002995C's three func_8002B7B0 calls,
+    8005CF04's second func_80057640 call (one per branch, not shared l/r variables).
+  - Tail recursion: `return f(...)` of the function itself becomes a `j`; the original keeps the
+    jal, so write `r = f(...); return r;` (8001C8B0). Its switch also needed the cases in layout
+    order (9 before 8) and an empty do-while in case 4 so loop.c hoists the jump-table shift.
+  - fold reassociates `a - (b + 16)` and `(a - 10) - b`; temps (`t = c->y + 16; d = a - t;`) or an
+    (s16) cast keep the original operand order (80035214).
+  - `tbl = D_800686D0;` right before `tbl[46].clut` gives `lhu 0x172(base)` with the base kept for
+    the later `&D_800686D0[c - 8]` (80029B4C).
+  - build/cmp.py in the main checkout masks relocations, so a swapped symbol (e.g. D_80083174 vs
+    D_80080A70 in 8005A320) still scores as a match; the worktree copy compares the symbol names too.
 - Pass 5 matched 9 (8002B644, 8005B1B8, 8005AEC8, 8005963C, 80028DB0, 8005C8BC, 80030EE4,
   80030B34, 80031718). What worked:
   - Cross-jumping: the original sometimes has one call per branch whose identical tails jump2
@@ -23,11 +69,15 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 - rsin/GTE template (80030B34, 80030EE4, 80031284, 80031718): `ISIN(out, a, mk)` macro and
   `D_8006C1C4` in ff9.h; `gte_ldir0123`, `gte_ldir12`, `gte_stmac123`, `gte_stmac12`,
   `gte_gpf12_b/_n1` in psyq.h. Sin for x uses the raw `r->vx` (`ISIN(sx, r->vx, x)`), y/z use the
-  masked value. 80031718 needed a `do { } while (0)` around the second gpf block.
-  80031284 (docs/wip/main_80031284.c) is at 27 rows, registers only (m and sy swapped).
-- Drafts in docs/wip/main_*.c (first line gives the status): 8004B85C (3), 800585E0 (4),
-  8005A320 (6), 80024BD8 (9), 80029D60 (10), 80048E80 (10), 80047B90 (11), 8002ECA0 (11),
-  8003595C (12), 80059414 (12), 8002E718 (16), 80031284 (27), 8004DAD0 (30).
+  masked value. 80031718 needed a `do { } while (0)` around the second gpf block, 80031284 an
+  identical-branch `if (mode)` around the y quadrant negation.
+- Drafts in docs/wip/main_*.c (first line gives the status; updated in pass 7): 8002995C (4),
+  8005A320 (6), 80024BD8 (9), 80048E80 (10), 80047B90 (11), 80059414 (11), 8003595C (12),
+  8002E718 (16), 8004DAD0 (28), 80062E3C and 80054650 (first drafts, ~100 rows). 8004B85C,
+  80038618 and 80035214 are matched.
+  - 8004B85C: the same kind < 14 search is inlined in 800378C4, so fixing the lt/ge register pair
+    fixes both. Tried ~25 formulations (bool temps, ^ 1, ?:, ==/!= of two compares, slot >= 8
+    branch order) and dup/wrap sweeps; best is 3-4 rows.
   - 80047B90: the original addresses `mat.m[1][1]` as `16(s0)` with s0 = &v. Writing the store as
     `*(s16 *)((u8 *)pv + 16) = 0x1000` after `pv = &v` reproduces that, but we then keep &mat in
     an extra s-reg (12 rows); the original rematerialises `addiu a0,sp,40` per call.
@@ -62,12 +112,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   80057D80 and 80058118 still open: product temps are `mflo a2` in the original (global.c prefers
   the register with the fewest local refs) but `a1` for us.
 - Old large-function drafts (main checkout build/drafts/main/nm_*.c, rows differing): 8005E3FC (67),
-  8005CF04 (75), 8001DE50 (89), 800283E0 (97), 8004E248 (98), 800589F0 (122), 80023A6C (156),
-  80025ED4 (178), 8002920C (231). Notes from earlier passes: 8001C8B0 (prologue arg moves),
-  8002995C (s1/s2 swap), 800378C4 (f<14 branch shape), 80029B4C (needs a u16 clut view of
-  D_800686D0), 8005DB40 (loop hoisting of D_80080A10), 80035214 (compare scheduling), 80039444
-  (reassociation), 80038618 (inline-param copy), 8004F9A0 (extra prim ptr copy), 80054650 (a3 vs
-  t2), 80062E3C (separate giv for node+4), 80038278 (search loop shape).
+  8001DE50 (89), 800283E0 (97), 8004E248 (98), 800589F0 (122), 80023A6C (156), 80025ED4 (178),
+  8002920C (231). (8005CF04 matched in pass 6: its draft had an uninitialised `old`.) Notes from
+  earlier passes, still open: 800378C4 (f<14 branch shape, same search as 8004B85C), 8005DB40
+  (two jump tables, AKAO look-ahead), 80054650 and 80062E3C (first drafts in docs/wip).
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
@@ -156,6 +204,28 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (s16) extension on the index; in BFF20 the D7C counter n doubles as the float flag.
   New drafts: BFF20 7, CD210 25, D1FFC 27, E57B0 34. AB07C 51 -> 24 (separate loop pointers pa/pb/pr set from
   b, r, r + n; getTPage/getClut; permuter: 14 with a do/while(0) around the tail).
+- Pass 10 (matched: EFD1C, E57B0). What fixed them:
+  - A separate variable for each list walk (EFD1C): the two `for (u = ...6F8; ...)` loops in the original use
+    different pseudos (a1, then a0); one shared u forces one register for both.
+  - Assignment inside the test: `if (arg0 == (k = cur->unk68 & 1)) return 0; side = !k;` with s32 k (EFD1C).
+    k as u8/s16 narrows the load to lbu/lhu; `side = !k` before the test keeps k live and moves the temp.
+  - Store order inside switch cases (E57B0, found by build/sweep.py's single-statement moves): `unk8` before
+    `unkC = a`, `unkA` before `unk8 = a`, `unkE` before `unk4 = b`, the unk1C.vz word copy before `vy -= 0xC0`,
+    `unk14 = 0` after `unk2`. 38 -> 0 rows.
+  - cmp.py masks branch offsets: E57B0 scored 0 rows but failed verify because the original stores
+    `e->unk18->unk8 = *p & 0x7FFF` outside the `if (e != NULL)` (its beqz jumps into the middle of the block).
+  - flow.c weights REG_N_REFS by loop depth, so a do { } while (0) around code (it emits loop notes) doubles every
+    ref inside it; that is why the AB07C permuter wrap helped. The goto loop itself has no loop notes.
+  - A by-value struct parameter (E4A3C): a 12-byte struct in a2/a3/stack gives the stack homes without the entry
+    `sw a3` (flow deletes the dead store); read fields as scalars (`*(s32 *)&arg2.b`) so the load can be scheduled
+    above struct stores. 8 -> 7 rows (one copy missing). Callers pass two pointers, so integrating needs the prototype
+    changed or an asm-label declaration.
+  - build/sweep.py: single-edit sweeps (declaration moves, statement moves, do/while(0) wraps, identical-arm if/else
+    on every variable) scored in parallel inside Docker; it doesn't check semantics, so read each hit.
+  Status now: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, C0C00 5, DA138 6, BFF20 6 (+2 symbol-name rows), E4A3C 7,
+  AB810 8, AB07C 24 (10 with the do/while(0) wrap plus `yy = y;`, 1 with an extra identical-arm if; both hacks),
+  C9794 14 (was 26), DA1F4 14 (now same length), D1D74 22, CD210 25, D1FFC 27, CBA58 45, D2DBC 63, AC37C ~175,
+  C67BC ~300. DE11C and ABBC4 have no drafts.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).

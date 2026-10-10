@@ -145,7 +145,7 @@ typedef struct Unk11C0Slot {
     u32 unk4_0 : 12;
     u32 unk4_12 : 10;
     u32 unk4_22 : 10;
-    u8 pad8[0x28 - 0x8];
+    POLY_FT4 *unk8[2][4]; /* prims, filled by func_80062E3C */
 } Unk11C0Slot;
 
 typedef struct {
@@ -858,6 +858,7 @@ typedef struct {
     s16 unk130; /* volume left */
     s16 unk132; /* volume right */
 } AkaoChannel; /* 0x134 */
+void func_80057D80(AkaoChannel *, u32); /* channel LFO / pitch update (func_800585E0 passes the channel bit) */
 
 /* 8-byte key-split region of an AKAO instrument (AkaoChannel.unk18) */
 typedef struct {
@@ -1160,6 +1161,7 @@ void func_80049B48(Unk8004AB64 *);
 s32 func_80047AB8(Unk8004AB64 *, s32);
 void func_80047B90(Unk8004AB64 *, Unk80047B90 *);
 s32 func_80052DEC(s32, s32, s32); /* distance */
+s32 func_80052EEC(s32);
 s32 func_80052E48(s32, s32, s32);
 
 typedef struct Unk8007AECCNode {
@@ -2211,7 +2213,7 @@ s32 func_800C75B4(s32, s32 *);
 s32 func_800C7720(s32);
 #endif
 Window *func_8004ED94(s32);
-s32 func_80039444(Unk8004AB64 *, Window *);
+void func_80039444(Unk8004AB64 *, Window *);
 s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
 void func_8004FBD8(void);
@@ -3139,6 +3141,22 @@ typedef struct {
 typedef struct {
     u32 tag;
     u32 rgbc;
+    s16 x;
+    s16 y;
+    u8 u;
+    u8 v;
+    u16 clut;
+} Sprt8Fields; /* SPRT_8 with rgb+code as one word */
+typedef struct {
+    u16 uv;
+    u16 clut;
+    u8 w;
+    u8 h;
+    u16 tpage;
+} SpriteDesc16; /* Unk800686E8 with uv and clut as halves */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
     u32 xy0;
     u32 uv0clut;
     u32 xy1;
@@ -3958,6 +3976,52 @@ static inline void func_8004883C_idle(Unk8004AB64 *q) {
     q->unk60 = 0;
     q->unk61 = 0xFF;
     func_80039C38_anim(q, q->unk74);
+}
+
+/* party slot key for func_8004B85C: slots 9+ map down by 4 */
+static inline s32 func_8004B85C_key(s32 slot) {
+    s32 key = slot;
+    if (slot >= 9) {
+        key = slot - 4;
+    }
+    return key;
+}
+
+/* is the party member with this key present, kind < 14 for slot < 8, kind >= 14 otherwise */
+static inline s32 func_8004B85C_find(s32 key, s32 slot) {
+    Character **p;
+    Character *c;
+    s32 kind;
+    s32 ge;
+    s32 lt;
+
+    for (p = D_8006794C->unk1C->unk54C; p < &D_8006794C->unk1C->unk54C[4]; p++) {
+        c = *p;
+        if (c == NULL) {
+            continue;
+        }
+        if (c->unk34.b.id != key) {
+            continue;
+        }
+        kind = c->unk34.b.unk4;
+        lt = kind < 14;
+        if (kind) {
+            ge = lt ^ 1;
+        } else {
+            ge = lt ^ 1;
+        }
+        if (slot >= 8) {
+            if (lt) {
+                continue;
+            }
+        } else {
+            if (ge) {
+                continue;
+            }
+        }
+        break;
+    }
+    return p < &D_8006794C->unk1C->unk54C[4];
 }
 
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */
