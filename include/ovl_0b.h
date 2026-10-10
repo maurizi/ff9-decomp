@@ -2110,7 +2110,7 @@ u16 func_800B4478(u16 *);
 void func_800EB358(BtlUnit *);
 void func_800ECCA8(s32);
 s32 func_800EFB3C(s32);
-s32 func_800EFD1C(s32);
+s32 func_800EFD1C(u8);
 void func_800EFA10(s32);
 void func_800EF7D4(Window *);
 void func_800F07F0(void);
@@ -2551,6 +2551,36 @@ typedef struct {
     s32 unk8;
     s32 unkC;
 } Unk800AA958Req; /* CD read request */
+
+/* func_800ABBC4: model texture table (func_8001C8B0 section 2, tag 0x12) */
+typedef struct {
+    u16 unk0; /* model id */
+    u8 pad2[4 - 2];
+    union {
+        s32 w; /* low 24 bits: offset of the texture lists from this entry */
+        u8 b[4]; /* b[3]: texture count */
+    } unk4;
+    u8 pad8[0xC - 8];
+} Unk800ABBC4Ent; /* 0xC */
+
+typedef struct {
+    u8 pad0;
+    u8 unk1; /* entry count */
+    u8 pad2[4 - 2];
+    Unk800ABBC4Ent unk4[1];
+} Unk800ABBC4Tbl;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+} Unk800ABBC4Tex;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+} Unk800ABBC4Rect;
 
 void func_80022CC4(s32, void *, s32, s32);
 typedef struct {
@@ -3878,6 +3908,30 @@ typedef struct {
     s16 unk1C[4];
     Pool6CEntry *unk24;
 } Unk800E4C88; /* 0x28 */
+
+/* func_800E57B0 effect state (sprite sheet on a unit) */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 unk1; /* unit id, 0xFF = none */
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE; /* frame count */
+    void *unk10;
+    s32 unk14; /* frame */
+    s16 unk18;
+    s16 unk1A;
+    SVECTOR unk1C;
+    s16 unk24[3];
+} Unk800E57B0; /* 0x2C */
+
+extern u16 D_800F8D04[];
+s32 func_800E7C54(s32, s32);
+s32 func_800E7CC4(s32, s32);
+void func_800E7D3C(s32, s32, s16 *);
 
 void func_800E750C(s32, s16 *);
 void func_800E769C(s32, s32, s16 *);

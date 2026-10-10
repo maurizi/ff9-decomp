@@ -1108,7 +1108,155 @@ s32 func_800ABB60(s32 arg0) {
     return func_8001C8B0(func_8001C8B0(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800ABBC4);
+s32 func_800ABBC4(s32 arg0, s32 arg1) {
+    Unk800AA958 *st;
+    s16 *state;
+    Unk800AA958Req *req;
+    s32 k;
+    void *v;
+    FileEntry16 *f;
+    s32 id;
+    s32 id2;
+    s32 model;
+    s32 img;
+    Unk800ABBC4Tbl *t;
+    Unk800ABBC4Ent *e;
+    Unk800ABBC4Tex *a;
+    Unk800ABBC4Tex *b;
+    Unk800ABBC4Rect *r;
+    s32 i;
+    s32 j;
+    s32 n;
+    s32 x;
+    s32 y;
+    s32 h;
+    s32 s;
+    s32 cid;
+    Unk8E0 *ent;
+    BtlUnit *u;
+    u8 *pa;
+    u8 *pb;
+    u8 *pc;
+    s32 p;
+    s32 w;
+    u8 *src;
+    s32 sz;
+    s32 anim;
+
+    st = (Unk800AA958 *)&D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC[0x9FD8 / 4];
+    state = &st->unk0;
+    req = (Unk800AA958Req *)&D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC[0x9FA0 / 4];
+    if (arg1 & 0x8000) {
+        st->unk0 = 1;
+    }
+    switch (*state) {
+    case 1:
+        k = arg0;
+        v = (void *)D_8006794C->unk1C->unk8E4.battle->unk153C[k];
+        st->unk2 = 0;
+        st->unk4 = 0;
+        st->unk6 = 0;
+        st->unk8 = -1;
+        st->unkE = 0;
+        st->unk24 = (s32)v;
+        st->unk20 = (s32)v;
+        if (*(D_8006794C->unk1C->unk8E4.battle->unk1354->unk30 + k) != NULL) {
+            func_8001C784(*(D_8006794C->unk1C->unk8E4.battle->unk1354->unk30 + k));
+            *(D_8006794C->unk1C->unk8E4.battle->unk1354->unk30 + k) = NULL;
+        }
+        *state = 3;
+        break;
+    case 2:
+        if (func_80022B18() == 0) {
+            *state = st->unk2;
+        }
+        break;
+    case 3:
+        f = (FileEntry16 *)func_8001E218(0xA, func_800ABA10(arg0, arg1 & ~0x10));
+        src = D_8006794C->unk20 + f->unk4;
+        sz = f->unkC - f->unk4;
+        req->unk0 = f->unk2 << 11;
+        req->unk4 = st->unk24;
+        req->unk8 = (sz - f->unk2) << 11;
+        req->unkC = (s32)D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC;
+        func_80022CC4((s32)src, req, 2, 0);
+        st->unk2 = 5;
+        *state = 2;
+        break;
+    case 5:
+        id = func_800ABA10(arg0, arg1 & ~0x10);
+        model = func_8001C8B0(st->unk24, 2, 0x1B0000, 0);
+        img = (s32)D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC;
+        t = (Unk800ABBC4Tbl *)func_8001C8B0(model, 2, 0x120000, 0);
+        e = t->unk4;
+        for (i = 0; i < t->unk1; i++) {
+            if (e[i].unk0 == (u16)id) {
+                e = &e[i];
+                n = e->unk4.b[3];
+                a = (Unk800ABBC4Tex *)((u8 *)e + (e->unk4.w & 0xFFFFFF));
+                b = a + n;
+                r = (Unk800ABBC4Rect *)(b + n);
+                for (j = 0; j < n; j++) {
+                    w = func_8001C8B0(img, 2, (j & 0xFFFF) | 0x40000, 0);
+                    s = r[j].unk2 + 0xE5;
+                    y = arg0 * 3 + s;
+                    h = (r[j].unk2 << 7) + 0x80;
+                    x = (arg0 << 6) + 0xC0;
+                    func_8001D9CC(w, 0x100, y, x, h);
+                    func_8001D8A8(w);
+                    a[j].unk0 = ((h & 0x100) >> 4) | (s16)(((x & 0x3FF) >> 6) | 0x80) | ((h & 0x200) << 2);
+                    a[j].unk2 = (y << 6) | 0x10;
+                    b[j].unk0 = 0;
+                    b[j].unk2 = h % 256 - h % 128;
+                    r[j].unk4 = x;
+                    r[j].unk0 = x;
+                    r[j].unk6 = h;
+                    r[j].unk2 = h;
+                }
+                break;
+            }
+        }
+        *(D_8006794C->unk1C->unk8E4.battle->unk1354->unk30 + arg0) = (void *)model;
+        func_8001C750(model, 0);
+        *state = 6;
+        break;
+    case 6:
+        cid = D_8006794C->unk1C->unk54C[arg0]->unk34.b.id;
+        ent = &D_8006794C->unk1C->unk8D8[cid];
+        u = func_800C1D8C(arg0);
+        if (u != NULL) {
+            id2 = func_800ABA10(arg0, arg1 & ~0x10);
+            ent->unk8->unk8 = func_8001C7FC(4, id2, 0);
+            k = (id2 & 0xFFFFFF) | (cid << 24);
+            pa = func_800634A8(k);
+            pb = func_800634D8(k);
+            pc = func_80063514(k);
+            func_800C7730(ent->unk8, (s16 *)pa, (s16 *)pb);
+            p = (s32)func_8001C7FC(9, id2, 0x190000);
+            if (p != -1) {
+                anim = (s32)func_8001C7FC(4, p, 0);
+            } else {
+                anim = 0;
+            }
+            ent->unk8->unk50 = (BtlUnit9C50 *)anim;
+            if (anim != 0) {
+                func_800C9374((TexAnimSet *)ent->unk8->unk50, (u16 (*)[4])pc);
+            }
+            func_800BD698(u, D_8006794C->unk1C->unk54C[arg0]->unk34.b.unk4,
+                          u - D_8006794C->unk1C->unk8E4.battle->unk6FC);
+            if (u->unk3C & 0x100) {
+                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
+            } else {
+                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+            }
+            ent->unkC->unk3A = 0;
+            u->unkA8->unk1C = ent->unk8;
+        }
+        *state = 0;
+        break;
+    }
+    return *state;
+}
 
 s32 func_800AC244(s32 arg0) {
     u16 *p = func_800633E4(arg0);

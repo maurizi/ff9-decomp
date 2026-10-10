@@ -228,6 +228,52 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (s16) extension on the index; in BFF20 the D7C counter n doubles as the float flag.
   New drafts: BFF20 7, CD210 25, D1FFC 27, E57B0 34. AB07C 51 -> 24 (separate loop pointers pa/pb/pr set from
   b, r, r + n; getTPage/getClut; permuter: 14 with a do/while(0) around the tail).
+- Pass 10 (matched: EFD1C, E57B0). What fixed them:
+  - A separate variable for each list walk (EFD1C): the two `for (u = ...6F8; ...)` loops in the original use
+    different pseudos (a1, then a0); one shared u forces one register for both.
+  - Assignment inside the test: `if (arg0 == (k = cur->unk68 & 1)) return 0; side = !k;` with s32 k (EFD1C).
+    k as u8/s16 narrows the load to lbu/lhu; `side = !k` before the test keeps k live and moves the temp.
+  - Store order inside switch cases (E57B0, found by build/sweep.py's single-statement moves): `unk8` before
+    `unkC = a`, `unkA` before `unk8 = a`, `unkE` before `unk4 = b`, the unk1C.vz word copy before `vy -= 0xC0`,
+    `unk14 = 0` after `unk2`. 38 -> 0 rows.
+  - cmp.py masks branch offsets: E57B0 scored 0 rows but failed verify because the original stores
+    `e->unk18->unk8 = *p & 0x7FFF` outside the `if (e != NULL)` (its beqz jumps into the middle of the block).
+  - flow.c weights REG_N_REFS by loop depth, so a do { } while (0) around code (it emits loop notes) doubles every
+    ref inside it; that is why the AB07C permuter wrap helped. The goto loop itself has no loop notes.
+  - A by-value struct parameter (E4A3C): a 12-byte struct in a2/a3/stack gives the stack homes without the entry
+    `sw a3` (flow deletes the dead store); read fields as scalars (`*(s32 *)&arg2.b`) so the load can be scheduled
+    above struct stores. 8 -> 7 rows (one copy missing). Callers pass two pointers, so integrating needs the prototype
+    changed or an asm-label declaration.
+  - build/sweep.py: single-edit sweeps (declaration moves, statement moves, do/while(0) wraps, identical-arm if/else
+    on every variable) scored in parallel inside Docker; it doesn't check semantics, so read each hit.
+  Status now: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, C0C00 5, DA138 6, BFF20 6 (+2 symbol-name rows), E4A3C 7,
+  AB810 8, AB07C 24 (10 with the do/while(0) wrap plus `yy = y;`, 1 with an extra identical-arm if; both hacks),
+  C9794 14 (was 26), DA1F4 14 (now same length), D1D74 22, CD210 25, D1FFC 27, CBA58 45, D2DBC 63, AC37C ~175,
+  C67BC ~300. DE11C and ABBC4 have no drafts.
+- Pass 11 (big functions; matched ABBC4, 0x680). What fixed it:
+  - Index form inside the texture loop (`a[j]`, `b[j]`, `r[j]` instead of pointer increments): loop.c then makes
+    the reduced givs with `move s3,a0`-style copies from the bases, and `r[j].unk2` stops getting its own +2 giv
+    (that giv was the extra spill that made the frame 8 bytes too big).
+  - The search pointer is reused for the hit: `e = t->unk4; for (...) if (e[i].unk0 == id) { e = &e[i]; ...}`.
+    Since e is set inside the loop it is not invariant, so only i*12 is reduced (`addu a2,a1,zero` init) and the
+    address is rebuilt each iteration (`addu a0,a2,t0`).
+  - Invariant hoisting depends on movable order: `arg0 * 3` is hoisted only if it comes before x/c in the inner
+    loop; spill slots follow pseudo numbers, so c must be an expression hoisted after k3, and
+    `(s16)(((x & 0x3FF) >> 6) | 0x80)` keeps fold from pulling the `| 0x80` back into the loop.
+  - `s = r[j].unk2 + 0xE5; y = arg0 * 3 + s;` gives `addu s0,t2,s0` (a separate target keeps expand_binop from
+    swapping the operands); a separate variable per switch case for the file id and the anim pointer (one shared
+    variable crossed calls and took an s-register); read f->unk4/unkC and D_8006794C->unk20 into locals before the
+    request stores.
+  - Colour copies in the model renderers (DE11C, C67BC): the original copies each colour through one reused
+    pointer (`cp = (u32 *)col[i]; p->rN = *cp;`). A multi-set pseudo is not "birthing", so sched1 pipelines the
+    address/load/store chain exactly like the original; setlen/setcode go after the last colour copy (the prim giv
+    base follows the last field referenced, +7 = code).
+  - DE11C 3-vertex loops index the Z table with `i2 & 0xFFFF` (CSE keeps two `sll`, combine then drops the and);
+    C67BC's GT3/G3 recompute `andi`+`sll` for i0 and do `andi a0,a0` in place: both point at u16 index variables
+    (`u16 i0..i3` gives C67BC exactly 989 insns but needs the index statements reworked).
+  Status: DE11C 430 rows (18 with registers masked, global allocation right; WIP docs/wip/ovl_0b_800DE11C.c),
+  C67BC 234 (was ~300; 16 masked), AC37C 175 (notes on the tu/tv registers and the D_8006794C lo_sum CSE in the WIP
+  header), CBA58 45 (notes added). D2DBC not attempted.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -568,3 +614,19 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - Calls without `andi 0xFF` on the result of a u8 function defined later in the same file: the
     original had no prototype (implicit int), so leave them undeclared (15 A9488: func_800AB1B8,
     func_800ACF48).
+- Pass 11 (overlays except 0b; row counts from the new build/search/cmp.py, which also compares symbol
+  names: its rows for `%hi/%lo(func_X)` are false positives because ours drop func_ names outside jal,
+  and offset-named symbols like D_800CA06E vs D_800CA068+6 count as rows but link identically).
+  Matched 15 ADE30. Improved drafts: 14 A741C 34, 37 F13F8 40, 65 F1848 20, 0a BD130 12 (see their
+  headers). No change on the rest; dup.py (identical-arm `if (var)`), build/sink.py (move the statement
+  after / before an if chain into every arm), declaration shuffles and 25-minute permuter runs were tried
+  on every draft in docs/wip/ for these overlays. What worked:
+  * a statement after an if/else written at the end of both arms (`x += w;` in both glyph branches of
+    ADE30) - jump2 merges the copies, but the arms were allocated with the extra references; the dup.py
+    hit `if (p) { x += w; } else { x += w; }` pointed at it;
+  * `*(f->unkC + c)` instead of `f->unkC[c]` gives the `addu v0, v0, s3` (index first) operand order
+    (ADE30; main.c's func_80029058 has the same form);
+  * a per-iteration element pointer (`BgSprt *sp = &arg1[i];`) changes the order of loop.c's giv
+    increments at the loop end (BD130);
+  * a struct field read through the global (`D_801F7A78.unk18[i]`) instead of a pointer local lets CSE
+    derive the base from a related register (`addiu s5, s1, -0x1D8`), as the original does (F1848).

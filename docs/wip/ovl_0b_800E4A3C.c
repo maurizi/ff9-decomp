@@ -1,23 +1,21 @@
-/* WIP func_800E4A3C: 8 differing rows (build/cmp.py-style aligned diff). Body matches; only the prologue differs. The original keeps arg2/arg3/arg4 (a 5th param that callers never pass) in their stack homes: sw a2 to 0x28/0x2C and a copy to 0x30, with no store of a3 and no load of 0x30. Taking the addresses through an inline (cp3 below) forces them into memory but leaves the entry sw a3,0x2C and a dead lw 0x30 (the params were pseudos at assign_parms time). volatile params: 16-17 rows; (&arg2)[1] indexing: 23+ rows. */
+/* WIP func_800E4A3C: 7 differing rows (build/cmp.py), one instruction short; everything after the prologue matches. Pass 10: the third param is a 12-byte struct passed by value (a2, a3, stack 0x30). That gives the stack homes without the entry `sw a3,0x2C` (flow deletes the dead store of a3 because 0x2C is written again) and without the dead `lw 0x30`. e->unk2C must read the field as a scalar (*(s32 *)&arg2.b): a struct-field read can't be scheduled above the struct store to e->unk18[2] (MEM_IN_STRUCT alias rule), a scalar read can. Left: the original stores c from a copy (sw a2,0x2C; addu v0,a2; sw v0,0x30); ours stores a2 twice (one pseudo). Tried: c = b / c = a / chained / temp k / pointer-indexed / inline copy helper, 2-field struct + 5th param (dead store deleted), scalar arg2 + struct {b, c} (arg2 then gets an s-reg instead of its stack home). Integration also needs the header prototype changed or an asm-label declaration, since callers pass two pointers. */
 #define func_800E4A3C func_800E4A3C_hdr
 #include "ovl_0b.h"
 #undef func_800E4A3C
 
-static inline void cp3(s16 **a, s16 **b, s16 **c) {
-    *b = *a;
-    *c = *b;
-}
+typedef struct { s16 *a; s16 *b; s16 *c; } E4Arg;
 
-Pool6CEntry *func_800E4A3C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3, s16 *arg4) {
+Pool6CEntry *func_800E4A3C(s32 arg0, s32 arg1, E4Arg arg2) {
     Pool6CEntry *e;
     s32 k;
 
     e = NULL;
-    cp3(&arg2, &arg3, &arg4);
+    arg2.b = arg2.a;
+    arg2.c = arg2.b;
     switch (arg1) {
     case 0:
     case 2:
-        e = func_800E3CEC(func_800E454C(5), *(s32 *)&arg2);
+        e = func_800E3CEC(func_800E454C(5), (s32)arg2.a);
         if (arg1 == 0) {
             if (e != NULL) {
                 e->unk18[0].unk1C = func_800E454C(7);
@@ -41,19 +39,19 @@ Pool6CEntry *func_800E4A3C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3, s16 *arg4) 
         break;
     case 1:
     case 7:
-        (&arg3)[0][1] -= 0x40;
-        e = func_800E3CEC(func_800E454C(1), *(s32 *)&arg2);
+        arg2.b[1] -= 0x40;
+        e = func_800E3CEC(func_800E454C(1), (s32)arg2.a);
         if (e != NULL) {
             e->unk18[0].unk1C = func_800E454C(0x14);
             e->unk18[1].unk1C = func_800E454C(6);
             e->unk18[2].unk1C = func_800E454C(2);
-            e->unk2C = *(s32 *)&arg3;
+            e->unk2C = *(s32 *)&arg2.b;
             e->unk22 = 0x20;
         }
         func_800E49D0(2, arg0);
         break;
     case 4:
-        e = func_800E3CEC(func_800E454C(4), *(s32 *)&arg2);
+        e = func_800E3CEC(func_800E454C(4), (s32)arg2.a);
         if (e != NULL) {
             e->unk18[0].unk1C = func_800E454C(7);
             e->unk18[1].unk1C = func_800E454C(6);

@@ -11,6 +11,12 @@
  * preference for s0 from `o = ot + 30` (o is s0, ot dies there), so global-alloc keeps a off s0
  * (regs_someone_prefers) and a lands in s3. In the original that preference evidently doesn't
  * exist. Tried: o as a copy/&ot[30]/byte-offset form, AddPrim(ot + 30) without o, h/new temps.
+ * Pass 11 (new build/search/cmp.py, same 19 rows): one `a = b;` is enough (the second copy did nothing).
+ * Allocation dump (cc1 -dg): e (5 refs / 28 insns) outranks a (6 / 107), takes s0 first, and a ends up
+ * in s3. In the original e shares s3 with ot (e is born after ot dies) and a gets s0, so a must outrank
+ * e there. Assigning e right before the if (with `s->unk350[0].unk0 = 3` direct) gives a s0 but e no
+ * longer crosses func_800ACFC8 and ot/b swap s3/s4 (18 rows). dup.py: `if (e)` around the effect
+ * branch's `s->unk574 = pos.unk0` gets 13 rows (fake). Permuter 25 min: nothing.
  */
 #include "ovl_0d.h"
 
@@ -92,7 +98,6 @@ void *func_800AC060(u32 *ot, void *vp, TmState *s) {
                     s->unk41C = 0;
                 }
                 e->unk4 = s->unk424;
-                a = b;
                 e->unk8 = s->unk428;
                 a = b;
                 s->unk420 = 0xA;

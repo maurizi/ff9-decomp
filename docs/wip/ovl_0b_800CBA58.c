@@ -1,4 +1,4 @@
-/* WIP func_800CBA58: 45 differing rows (build/cmp.py-style aligned diff). Pass 8 (permuter): b reused for pc[2] << 8 and unk86[1] read into v before the unk20 store took it from 60 to 45 rows. Left: arg0/arg1 s-regs swapped (s0/s1), dx/dz reloads, one instruction short. */
+/* WIP func_800CBA58: 45 differing rows (build/cmp.py-style aligned diff). Pass 8 (permuter): b reused for pc[2] << 8 and unk86[1] read into v before the unk20 store took it from 60 to 45 rows. Left: arg0/arg1 s-regs swapped (s0/s1), dx/dz reloads, one instruction short.  Pass 11: the original reads d[] with lhu (u16 d[2]), loads both lh 0x8E/0x96 before the d[0] store, tests with sll-only (s16 compare whose sign extension is not reused) and reloads the ratan2 args with lh from the stack; computing both differences into a/v before the stores gets the load order (shape 13) but still 46 rows because CSE reuses the sign-extended test value for the ratan2 args. */
 #include "ovl_0b.h"
 
 s32 func_800CBA58(BtlScript *arg0, BtlUnit *arg1) {

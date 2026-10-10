@@ -1,3 +1,4 @@
+/* WIP func_800AC37C: 175 aligned diff rows, 41 with registers masked, 1103 of 1100 insns. Pass 11 notes: the original keeps tv (0xE0) in t7 and tu (0) in s1 from the top; quads 0/1 load 0x1F/0xFF into t5/t3 at first use, quad 2 re-loads them into a1/a0, and quad 3 reuses t5/t3 but uses s1 (not $zero) for tu, so CSE paths differ per quad (quad 2 sits on a path without quads 0/1). Ours puts the full address of D_8006794C in t7 (lo_sum CSEd into a register) where the original only keeps %hi in t0, which pushes tv to s1 and tu to s2. tu/tv as u8/u32/s16 change nothing. */
 #include "ovl_0b.h"
 
 #define SHADOW_PT(x, z) \
