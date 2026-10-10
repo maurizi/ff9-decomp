@@ -1346,10 +1346,24 @@ void func_8002FB08(s32);
 void func_8002FB64(s32);
 void func_80030770(u8 *);
 s32 func_8002F5A0(void (*)(void));
-void *func_80030B34(void *, void *, s32);
-void *func_80030EE4(void *, void *, s32);
-void *func_80031284(void *, void *, s32);
-void *func_80031718(void *, void *, s32);
+MATRIX *func_80030B34(SVECTOR *, MATRIX *, s32);
+MATRIX *func_80030EE4(SVECTOR *, MATRIX *, s32);
+MATRIX *func_80031284(SVECTOR *, MATRIX *, s32);
+MATRIX *func_80031718(SVECTOR *, MATRIX *, s32);
+
+/* sine table, 0x400 entries for a quarter wave (4096 = 360 degrees) */
+extern s16 D_8006C1C4[];
+
+/* out = sin(a) from D_8006C1C4. a is the angle (bits above 0xFFF ignored), mk the same angle & 0xFFF. */
+#define ISIN(out, a, mk)                              \
+    if ((a) & 0x400) {                                \
+        out = D_8006C1C4[0x400 - ((a) & 0x3FF)];      \
+    } else {                                          \
+        out = D_8006C1C4[(a) & 0x3FF];                \
+    }                                                 \
+    if ((mk) & 0x800) {                               \
+        out = -out;                                   \
+    }
 void func_8002FC38(void);
 void func_8002F6C8(void);
 void func_8002FC8C(s32, s32, s32, s32);

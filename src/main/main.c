@@ -6562,7 +6562,55 @@ void func_80030EC4(void *a, void *b) {
     func_80030EE4(a, b, 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80030EE4);
+MATRIX *func_80030EE4(SVECTOR *r, MATRIX *m, s32 mode) {
+    s16 sx, cx, sy, cy, sz, cz;
+    s32 x, y, z;
+    s32 t;
+    s16 t1, t2;
+
+    x = r->vx & 0xFFF;
+    y = r->vy & 0xFFF;
+    z = r->vz & 0xFFF;
+    ISIN(sx, r->vx, x);
+    t = 0x400 - x;
+    x = t & 0xFFF;
+    ISIN(cx, t, x);
+    ISIN(sy, y, y);
+    t = 0x400 - y;
+    y = t & 0xFFF;
+    ISIN(cy, t, y);
+    ISIN(sz, z, z);
+    t = 0x400 - z;
+    z = t & 0xFFF;
+    ISIN(cz, t, z);
+    /* Both branches are identical; jump2 merges them, leaving only the dead copy of mode. */
+    if (mode) {
+        t1 = (sx * sz) >> 12;
+        t2 = (sx * cz) >> 12;
+        m->m[0][0] = (cz * cy - t1 * sy) >> 12;
+        m->m[0][1] = (-cx * sz) >> 12;
+        m->m[0][2] = (cz * sy + t1 * cy) >> 12;
+        m->m[1][0] = (sz * cy + t2 * sy) >> 12;
+        m->m[1][1] = (cx * cz) >> 12;
+        m->m[1][2] = (sz * sy - t2 * cy) >> 12;
+        m->m[2][0] = (-cx * sy) >> 12;
+        m->m[2][1] = sx;
+        m->m[2][2] = (cx * cy) >> 12;
+    } else {
+        t1 = (sx * sz) >> 12;
+        t2 = (sx * cz) >> 12;
+        m->m[0][0] = (cz * cy - t1 * sy) >> 12;
+        m->m[0][1] = (-cx * sz) >> 12;
+        m->m[0][2] = (cz * sy + t1 * cy) >> 12;
+        m->m[1][0] = (sz * cy + t2 * sy) >> 12;
+        m->m[1][1] = (cx * cz) >> 12;
+        m->m[1][2] = (sz * sy - t2 * cy) >> 12;
+        m->m[2][0] = (-cx * sy) >> 12;
+        m->m[2][1] = sx;
+        m->m[2][2] = (cx * cy) >> 12;
+    }
+    return m;
+}
 
 void func_80031244(void *a, void *b) {
     func_80031284(a, b, 0);
