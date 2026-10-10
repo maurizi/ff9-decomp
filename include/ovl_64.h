@@ -7,6 +7,7 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
+void func_80063864(void *, void *, s32);
 extern s8 D_80071E31;
 extern s32 D_80071E34;
 extern s8 D_80071E38;
@@ -112,7 +113,10 @@ typedef struct {
     u8 pad2[2];
     u16 unk4;
     u8 pad6[2];
-    u8 pad8[0x20 - 8];
+    u8 pad8[0x10 - 8];
+    u16 unk10; /* frame width */
+    u16 unk12; /* frame height */
+    u8 pad14[0x20 - 0x14];
 } Ovl64RingHdr; /* 0x20 */
 
 /* sector header at the end of each ring slot */
@@ -225,5 +229,41 @@ s32 func_8019CBF4(s32 *);
 s32 func_8019CC3C(s32);
 s32 func_8019CC7C(void);
 s32 func_80199F30(s32);
+
+typedef struct {
+    u8 pad0[0x1C];
+    s16 unk1C;
+    s16 unk1E;
+    u8 pad20[4];
+    s16 unk24;
+    s16 unk26;
+    u8 pad28[6];
+    s16 unk2E;
+} Ovl64Out; /* func_801990A0 output: frame size in RECTs at 0x18.. */
+typedef struct {
+    u8 pad0[8];
+    s16 unk8; /* last frame */
+} Ovl64MovieInfo;
+extern Ovl64MovieInfo *D_8019DCF8;
+extern s32 D_8019E018[2];
+typedef struct {
+    u8 v[0x914];
+} Ovl64Sub;
+extern Ovl64Sub D_8019E028[2];
+typedef struct {
+    u32 b0 : 7;
+    u32 b7 : 1;
+    u32 pad : 24;
+} Ovl64Cfg; /* view of GameState.unk24 */
+
+/* PsyQ inline_c.h; candidate for psyq.h */
+#define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
+    "sll\t$12, %0, 16;"                              \
+    "sll\t$13, %1, 16;"                              \
+    "ctc2\t$12, $24;"                                \
+    "ctc2\t$13, $25"                                 \
+    :                                                \
+    : "r"(r0), "r"(r1)                               \
+    : "$12", "$13")
 
 #endif

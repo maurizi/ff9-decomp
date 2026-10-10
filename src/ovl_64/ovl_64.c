@@ -1,6 +1,102 @@
 #include "ovl_64.h"
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_801990A0);
+u8 *func_801990A0(Ovl64Out *out) {
+    RECT r;
+    u8 *data;
+    Ovl64RingHdr *hdr;
+    Ovl64FrameInfo *info;
+    Ovl64Pair *pair;
+    Ovl64Flag *flag;
+    s32 tries;
+    s32 ret;
+    s8 hi;
+
+    tries = 1000;
+    info = NULL;
+    pair = NULL;
+    flag = NULL;
+    ret = func_8019C2F4(&data, &hdr, &info, &pair, &flag);
+    while (ret != 0) {
+        if (ret == 5) {
+            D_8019DC94.unk0 = 1;
+            return NULL;
+        }
+        if (--tries == 0) {
+            return NULL;
+        }
+        ret = func_8019C2F4(&data, &hdr, &info, &pair, &flag);
+    }
+    if (info != NULL) {
+        gte_SetGeomOffset((s16)info->unk20 + 0xA0, (s16)info->unk22 + 0x70);
+        if (D_8019DC94.unk6 != 0) {
+            D_8019DC88.unk0 = (s16)info->unk20 + 0xA0;
+            D_8019DC88.unk4 = (s16)info->unk22 + 0x70;
+            D_8019F258.unk0 = info->unk2;
+            D_8019F258.unk2 = info->unk4;
+            D_8019F258.unk4 = info->unk6;
+            D_8019F258.unk6 = info->unk8;
+            D_8019F258.unk8 = info->unkA;
+            D_8019F258.unkA = info->unkC;
+            D_8019F258.unkC = info->unkE;
+            D_8019F258.unkE = info->unk10;
+            D_8019F258.unk10 = info->unk12;
+            D_8019F258.unk14 = info->unk14;
+            D_8019F258.unk18 = info->unk18;
+            D_8019F258.unk1C = info->unk1C;
+            D_8019F278 = info->unk0;
+            D_8019DC94.unk6 = 0;
+        } else {
+            D_8006794C->unk1C->unk18.m[0][0] = info->unk2;
+            D_8006794C->unk1C->unk18.m[0][1] = info->unk4;
+            D_8006794C->unk1C->unk18.m[0][2] = info->unk6;
+            D_8006794C->unk1C->unk18.m[1][0] = info->unk8;
+            D_8006794C->unk1C->unk18.m[1][1] = info->unkA;
+            D_8006794C->unk1C->unk18.m[1][2] = info->unkC;
+            D_8006794C->unk1C->unk18.m[2][0] = info->unkE;
+            D_8006794C->unk1C->unk18.m[2][1] = info->unk10;
+            D_8006794C->unk1C->unk18.m[2][2] = info->unk12;
+            D_8006794C->unk1C->unk18.t[0] = info->unk14;
+            D_8006794C->unk1C->unk18.t[1] = info->unk18;
+            D_8006794C->unk1C->unk18.t[2] = info->unk1C;
+            D_8006794C->unk1C->unkA = info->unk0;
+        }
+    }
+    if (flag != NULL && (!((Ovl64Cfg *)&D_8006794C->unk24)->b7 || D_8006794C->unk8 == 5)) {
+        D_800739B0[0].unk0 = flag->unk0;
+        D_800739B0[0].unk1 = flag->unk1;
+    }
+    if (pair != NULL && pair->unk0 != 0) {
+        func_80063864((void *)pair->unk4, &D_8019E028[D_8006794C->unk1C->unk8 ^ 1], pair->unk0);
+        D_8019E018[D_8006794C->unk1C->unk8 ^ 1] = pair->unk0;
+    } else {
+        D_8019E018[D_8006794C->unk1C->unk8 ^ 1] = 0;
+    }
+    if (D_80071E34 >= D_8019DCF8->unk8) {
+        D_8019DC94.unk0 = 1;
+    }
+    if (D_8019DC94.unk8[9] != hdr->unk10 || D_8019DC94.unk8[10] != hdr->unk12) {
+        hi = D_80071E31;
+        if (hi) {
+            r.x = 0;
+            r.y = 0;
+            r.w = 0x3C0;
+            r.h = 0xE0;
+        }
+        D_8019DC94.unk8[9] = hdr->unk10;
+        D_8019DC94.unk8[10] = hdr->unk12;
+        if (hi) {
+            out->unk1C = D_8019DC94.unk8[9] * 3 / 2;
+            out->unk24 = D_8019DC94.unk8[9] * 3 / 2;
+        } else {
+            out->unk1C = D_8019DC94.unk8[9];
+            out->unk24 = D_8019DC94.unk8[9];
+        }
+        out->unk1E = D_8019DC94.unk8[10];
+        out->unk26 = D_8019DC94.unk8[10];
+        out->unk2E = D_8019DC94.unk8[10];
+    }
+    return data;
+}
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_80199554);
 
