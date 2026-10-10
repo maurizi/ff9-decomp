@@ -663,8 +663,10 @@ typedef struct {
 typedef struct {
     u8 pad0;
     u8 unk1;
-    u8 pad2[0xC - 2];
-} Battle154C; /* 0xC */
+    u16 unk2; /* timer scale */
+    s32 unk4;
+    u32 unk8; /* statuses blocking this one */
+} Battle154C; /* 0xC, one per status bit */
 
 typedef struct Battle1538 {
     u8 pad0[0x20];
@@ -958,11 +960,7 @@ typedef struct Battle {
     s32 unk1534; /* battle data file sector */
     struct Battle1538 **unk1538;
     s32 unk153C[4];
-    Battle154C unk154C[19];
-    u8 pad1630[0x1638 - 0x1630];
-    u8 pad1638[0x1692 - 0x1638];
-    u16 unk1692;
-    u8 pad1694[0x16CC - 0x1694];
+    Battle154C unk154C[32];
     Battle16CC unk16CC[0xC0];
     s32 unk22CC[64];
 } Battle; /* 0x23CC */
@@ -2341,6 +2339,8 @@ void func_800C0EC8(BtlUnit *);
 void func_800C12CC(Battle4880 *);
 void func_800C1938(BtlUnit *);
 s32 func_800C1EDC(BtlUnit *);
+void func_800C0544(BtlUnit *);
+void func_800C1704(); /* defined as (void); callers pass the unit */
 void func_800CA530(BtlCmd *);
 void func_800CF58C(s32);
 void func_80063640(DR_TPAGE *, u16);

@@ -4872,7 +4872,161 @@ BtlUnit *func_800BED6C(u16 arg0) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800BEDBC);
+u32 func_800BEDBC(BtlUnit *u, u32 f) {
+    u32 n = 0;
+    Battle154C *tbl = D_8006794C->unk1C->unk8E4.battle->unk154C;
+    BtlUnit34 *s = (BtlUnit34 *)&u->unk34;
+    u32 i;
+    u32 blk;
+    s16 k;
+
+    if (u->unk34 & f) {
+        return 0;
+    }
+    if (s->unk4 & f) {
+        return 1;
+    }
+    if ((s->unk8 & f) && (f & 0x8800FF7F)) {
+        return 1;
+    }
+    i = 0;
+    blk = 0;
+    for (; i < 32; i++) {
+        if (f & (1 << i)) {
+            n = i;
+        }
+        if (s->unk8 & (1 << i)) {
+            blk |= tbl[i].unk8;
+        }
+    }
+    if (func_800B3EF8(u, 0x3E)) {
+        blk |= tbl[0].unk8;
+    }
+    if (blk & f) {
+        return 1;
+    }
+    if (!(f & 0x10180001)) {
+        if ((f & 0x20D03) && (u8)func_800B4040(u)) {
+            u->unk2C = 0;
+            u->unk68 &= ~0x10000;
+            if (!(f & 0x100)) {
+                u->unkB3 = 0;
+            }
+        }
+        s->unk8 |= f;
+    }
+    switch (n) {
+    case 0:
+        if (!func_800B3E7C(u->unkC)) {
+            if (D_8006794C->unk1C->unk8E4.battle->unkD80 >= 3) {
+                func_800B1250(u->unkC, 0x3E, 0, u->unkB0, 0);
+            } else {
+                if (u->unk68 & 1) {
+                    func_800C0544(u);
+                }
+                s->unk8 |= f;
+                u->unk68 &= ~0x10000;
+                func_800C0430(u, 1);
+            }
+        }
+        break;
+    case 1:
+        if (D_8006794C->unk1C->unk8E4.battle->unkD80 >= 3) {
+            func_800C0EC8(u);
+        }
+    case 17:
+        if ((u->unk68 & 1) && (s32)u->unk9C->unkC != u->unkA4[1] &&
+            D_8006794C->unk1C->unk8E4.battle->unk1088->unk4 != u) {
+            u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[1];
+            u->unkA0->unk3A = 0;
+        }
+        break;
+    case 6:
+        if ((u->unk68 & 1) && !(u->unk3C & 0x4000)) {
+            u->unk78 = 0;
+        }
+    case 11:
+    case 24:
+    case 25:
+        func_800C02D4(u);
+        break;
+    case 8:
+        if (u->unk28 != 0) {
+            u->unk7E |= 0x40;
+            func_800B97A0(u);
+        } else {
+            u->unk28 = 0;
+        }
+        u->unk2C = 0;
+        if (!func_800B3E7C(u->unkC)) {
+            func_800B1250(u->unkC, 0x3C, 0, u->unkB0, 0);
+            if (!(u->unk68 & 1)) {
+                func_800C1704(u);
+            }
+        }
+        break;
+    case 12:
+        func_800C0EC8(u);
+        break;
+    case 14:
+        func_800B1250(u->unk14, 0x3B, 0, u->unkB0, 0);
+        break;
+    case 19:
+        if (u->unk3C & 0x100000) {
+            func_800BF558(u, 0x100000);
+            return 2;
+        }
+        func_800BD8F0((Unk800BD8F0 *)u);
+        u->unk2E = u->unk2E * 3 / 2;
+        s->unk8 |= f;
+        break;
+    case 20:
+        if (u->unk3C & 0x80000) {
+            func_800BF558(u, 0x80000);
+            return 2;
+        }
+        func_800BD8F0((Unk800BD8F0 *)u);
+        u->unk2E = u->unk2E * 2 / 3;
+        s->unk8 |= f;
+        break;
+    case 26:
+        func_800BD414(u, u->unkAE);
+        break;
+    case 28:
+        s->unk8 ^= f;
+        if (u->unk3C & 0x10000000) {
+            u->unk9C->unk0 |= 2;
+            u->unk9C->unk54 = 0x800;
+            u->unk9C->unk56 = 0x800;
+            u->unk9C->unk58 = 0x800;
+            D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[func_800C1EDC(u)].unk0_8 = (u->unkBF >> 1) * 14;
+            D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[func_800C1EDC(u)].unk0_20 = (u->unkC0 >> 1) * 12;
+        } else {
+            u->unk9C->unk0 &= ~2;
+            D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[func_800C1EDC(u)].unk0_8 = u->unkBF * 14;
+            D_8006794C->unk1C->unk8E4.battle->unk11C0->unk28[func_800C1EDC(u)].unk0_20 = u->unkC0 * 12;
+        }
+        break;
+    }
+    func_800C0B6C(u, tbl[n].unk4);
+    if (u->unk3C & 0x40001101) {
+        u->unk68 &= ~0x10000;
+    }
+    if (f & 0xEFFF0000) {
+        if (f & 0x9B130000) {
+            k = (0x3C - u->unk33) * 8;
+        } else if (f & 0x24EC0000) {
+            k = u->unk33 * 8;
+        } else {
+            k = (0x3C - u->unk33) * 4;
+        }
+        u->unk46[n - 16] = tbl[n].unk2 * k;
+    }
+    if (f & 0x50002) {
+        func_800C0C00(u, n);
+    }
+    return 2;
+}
 
 s32 func_800BF558(BtlUnit *u, u32 f) {
     BtlUnit34 *s = (BtlUnit34 *)&u->unk34;
@@ -5249,7 +5403,7 @@ void func_800C09EC(BtlUnit *arg0) {
 
 void func_800C0A3C(Unk800C09D8 *arg0) {
     s32 t = (0x3C - arg0->unk33) * 8;
-    arg0->unk66 = t * D_8006794C->unk1C->unk8E4.battle->unk1692;
+    arg0->unk66 = t * D_8006794C->unk1C->unk8E4.battle->unk154C[27].unk2;
 }
 
 void func_800C0A70(BtlUnit *arg0, s32 arg1) {
