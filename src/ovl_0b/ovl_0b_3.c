@@ -1151,7 +1151,65 @@ s32 func_800CC444(u32 n) {
     return r | (i << 16);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CC4F0);
+u8 *func_800CC4F0(u8 *arg0) {
+    Unk800CCD00 c;
+    Battle1358Ring *r;
+    Battle1358 *p;
+    s16 i;
+    s16 j;
+    BtlUnit *u;
+    u8 mask;
+    Unk800F78A40 *e;
+
+    r = &D_8006794C->unk1C->unk8E4.battle->unk1358;
+    c.unk0 = (u32 *)arg0;
+    c.unk4 = &D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][4];
+    gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    j = r->unk1C0;
+    for (i = 0; i < 16; i++) {
+        p = &r->unk0[j];
+        if (p->unk0 != NULL) {
+            if (p->unk10.b.unk2 >= 3) {
+                p->unk0 = NULL;
+            } else if (p->unk10.b.unk0 != 0) {
+                p->unk10.b.unk0--;
+            } else {
+                gte_ldv0(&p->unk8);
+                gte_rtps();
+                gte_stsxy(&c.unk10);
+                if (p->unk10.b.unk1 != 0 && (u16)(c.unk10.s.y - 21) < 180) {
+                    p->unk10.b.unk1 = 0;
+                }
+                D_800F6A7C[p->unk10.b.unk2](p, &c);
+            }
+        }
+        j++;
+        if (j >= 16) {
+            j = 0;
+        }
+    }
+    func_800CD210(&c);
+    ((u8 *)c.unk0)[3] = 1;
+    c.unk0[1] = (D_80068BF0[0].unk6 & 0x9FF) | 0xE1000000;
+    addPrim(c.unk4, c.unk0);
+    c.unk0 += 2;
+    e = D_800F78A4->unk0;
+    if (((e->unk1C ^ 1) & 1) | ((e->unk0 == -1) | ((e->unk1C >> 15) & 1))) {
+        func_800CCDB8(&c);
+    }
+    r->unk1C2++;
+    func_800CD83C();
+    func_800CDD68();
+    mask = 0xFF;
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if (!((u->unk68 >> 22) & 1)) {
+            mask &= ~u->unkB0;
+        }
+    }
+    r->unk1D4 = mask;
+    return (u8 *)c.unk0;
+}
 
 void func_800CC818(Battle1358 *arg0, Unk800CCD00 *arg1) {
     u8 *anim;

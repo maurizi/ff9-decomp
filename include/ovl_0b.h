@@ -854,7 +854,7 @@ typedef struct Battle1358 {
     union {
         s32 w; /* cleared as a word */
         struct {
-            s8 unk0;
+            u8 unk0; /* delay */
             s8 unk1; /* y offset */
             u8 unk2;
             u8 unk3;
@@ -2203,6 +2203,11 @@ typedef struct {
 void func_800CCD00(Unk800CCD00 *, Unk800686E8 *);
 void func_800CCBC0(Unk800CCD00 *, u32);
 void func_800CCAF0(struct Battle1358 *, Unk800CCD00 *, s32, s32);
+extern void (*D_800F6A7C[])(struct Battle1358 *, Unk800CCD00 *);
+void func_800CD210(Unk800CCD00 *);
+void func_800CCDB8(Unk800CCD00 *);
+void func_800CD83C(void);
+void func_800CDD68(void);
 extern u8 D_800F6A28[];
 extern u8 D_800F6A38[];
 /* main exe: candidates for ff9.h */
