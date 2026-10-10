@@ -1252,7 +1252,9 @@ extern char D_800A81A8[];
 typedef struct {
     u8 unk0; /* kind, 9 = no texture */
     u8 unk1; /* 0xFF = no second texture */
-    u8 pad2[0x1C - 2];
+    u8 pad2[8 - 2];
+    s16 unk8;
+    u8 padA[0x1C - 0xA];
     s32 unk1C; /* offset, relocated on load */
     s32 unk20; /* offset, relocated on load */
     u8 pad24[0x28 - 0x24];
@@ -3181,7 +3183,43 @@ typedef struct {
 } FileEntryX;
 
 s32 func_800AA24C(s16, s32, Unk800AA24C *);
-s32 func_800AA504(s32, s32, Unk800AA24C *);
+/* battle scene model load state (func_800AA504) */
+typedef struct {
+    s16 unk0; /* state */
+    u16 unk2; /* next state */
+    u8 pad4[8 - 4];
+    s16 unk8; /* file id being loaded */
+    s16 unkA; /* files loaded */
+    s32 unkC; /* load address */
+    union {
+        s32 w[2];
+        s16 h[4];
+    } unk10; /* file ids still to load, -1 = done */
+} Unk800AA504;
+
+typedef struct {
+    u16 unk0; /* id */
+    u8 pad2[4 - 2];
+    union {
+        s32 w; /* low 24 bits: offset of the texture lists from this entry */
+        u8 b[4]; /* b[3]: texture count */
+    } unk4;
+    u8 pad8[0xC - 8];
+} Unk800AA504Ent; /* 0xC */
+
+typedef struct {
+    u8 pad0;
+    u8 unk1; /* entry count */
+    u8 pad2[4 - 2];
+    Unk800AA504Ent unk4[1];
+} Unk800AA504Tbl;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+} Unk800AA504Pos;
+
+s32 func_800AA504(s32, s32, Unk800AA504 *);
 
 /* inlined into func_800AA24C: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */

@@ -3153,7 +3153,43 @@ s32 func_800DF930(void) {
 void func_800DF938(void) {
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF940);
+/* gives every vertex reference of nv-vertex primitives its own copy in arg2 */
+#define SPLIT_PRIMS(cnt, stride, nv)                                \
+    for (j = 0; j < (cnt); j++) {                                   \
+        for (k = 0; k < (nv); k++) {                                \
+            ((SVECTOR *)arg2)[n].vx = src[((u16 *)p)[k]].vx;        \
+            ((SVECTOR *)arg2)[n].vy = src[((u16 *)p)[k]].vy;        \
+            ((SVECTOR *)arg2)[n].vz = src[((u16 *)p)[k]].vz;        \
+            ((u16 *)p)[k] = n;                                      \
+            n++;                                                    \
+        }                                                           \
+        p += (stride);                                              \
+    }
+
+u32 func_800DF940(BtlUnit9C *arg0, u16 arg1, s32 arg2) {
+    u16 n;
+    BtlMesh *g;
+    u8 *p;
+    SVECTOR *src;
+    u32 j;
+    u32 k;
+
+    n = 0;
+    g = &arg0->unk8->unk10[arg1];
+    p = (u8 *)g->unk1C;
+    src = g->unk18;
+    g->unk18 = (SVECTOR *)arg2;
+    SPLIT_PRIMS(g->unk2, 0x18, 4);
+    SPLIT_PRIMS(g->unk4, 0x14, 3);
+    SPLIT_PRIMS(g->unk6, 0x20, 4);
+    SPLIT_PRIMS(g->unk8, 0x18, 3);
+    SPLIT_PRIMS(g->unkA, 0x18, 4);
+    SPLIT_PRIMS(g->unkC, 0x14, 3);
+    SPLIT_PRIMS(g->unkE, 0x10, 4);
+    SPLIT_PRIMS(g->unk10, 0xC, 3);
+    g->unk14[arg1] = n;
+    return arg2 + n * 2;
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DFE4C);
 

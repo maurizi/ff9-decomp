@@ -1038,11 +1038,11 @@ s16 func_800AB580(s32 arg0) {
     s = *state;
     if (s == 1) {
         if (func_800AA24C(id, 0x100, (Unk800AA24C *)ld) == 0) {
-            func_800AA504(id, 0x8000, (Unk800AA24C *)ld);
+            func_800AA504(id, 0x8000, (Unk800AA504 *)ld);
             (*st)++;
         }
     } else if (s == 2) {
-        if (func_800AA504(id, 0, (Unk800AA24C *)ld) == 0) {
+        if (func_800AA504(id, 0, (Unk800AA504 *)ld) == 0) {
             func_800AA958(0x8000, ld);
             (*st)++;
         }
