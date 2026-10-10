@@ -710,7 +710,53 @@ void func_801F6C50(void) {
 
 INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6D34);
 
-INCLUDE_ASM("asm/us/ovl_3c/nonmatchings/ovl_3c", func_801F6F00);
+void func_801F6F00(void) {
+    MenuList *l;
+    SynthRecipe *r;
+    ShopSynth *m;
+    ShopSynth *m2;
+    ShopSynth *m3;
+    s32 need;
+    s32 have;
+    u32 n;
+
+    l = &D_801FC338.unk28;
+    r = &D_801FC338.unk3C[l->unk5 + l->unk6];
+    need = 1;
+    if (r->unk2[0] == r->unk2[1]) {
+        need = 2;
+    }
+    have = func_80027F34(r->unk4);
+    if (have < 99 && D_8006794C->unk1C->unk560 >= r->unk0 &&
+        (r->unk2[0] == 0xFF || func_80027F34(r->unk2[0]) >= need) &&
+        (r->unk2[1] == 0xFF || func_80027F34(r->unk2[1]) >= need)) {
+        D_801FC338.unk2 = 1;
+        n = r->unk0 != 0 ? D_8006794C->unk1C->unk560 / r->unk0 : 99;
+        m2 = &D_801FC338;
+        if ((s32)n > 99 - have) {
+            n = 99 - have;
+        }
+        m2->unk3 = n;
+        m = m2;
+        if (r->unk2[0] != 0xFF) {
+            m->unk3 = MIN(m->unk3, func_80027F34(r->unk2[0]) / need);
+        }
+        if (r->unk2[1] != 0xFF) {
+            D_801FC338.unk3 = MIN(D_801FC338.unk3, func_80027F34(r->unk2[1]) / need);
+        }
+        m3 = &D_801FC338;
+        D_801FC338.unk0 = 0;
+        m3->unk38 = func_8002DC54(&m3->unk20, 0xA, 2);
+        func_8002E2EC(m3->unk38, func_801F6A7C);
+        func_8002E2E4(m3->unk38, func_801F75BC);
+        func_8002E2FC(m3->unk38, func_801F75E8);
+        func_8002E31C(m3->unk38, 1);
+        func_8002E304(m3->unk38, D_800704A4);
+        func_8002F488(0x67);
+    } else {
+        func_8002F488(0x66);
+    }
+}
 
 void func_801F7250(void) {
     s32 mask;

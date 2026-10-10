@@ -214,7 +214,9 @@ extern Ovl64FrameInfo D_8019F510[];
 extern Ovl64Pair D_8019F750[16];
 extern Ovl64Flag D_8019F7D0[];
 
-void func_8019C434();
+void func_8019C434(u8);
+void func_8019BA70(void);
+void func_8019BCE8(void);
 void func_8019A7A8(s32, s32);
 s32 func_8019C864(void);
 s32 func_8019C99C(s32 *);

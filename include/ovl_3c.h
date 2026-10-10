@@ -194,6 +194,10 @@ void func_801F6714(void);
 void func_801F6C50(void);
 void func_801F6D34(s32, s32, s32, MenuView *);
 void func_801F6F00(void);
+void func_801F6A7C(Window *);
+void func_801F75BC(void);
+void func_801F75E8(void);
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 void func_801F73E0(void);
 void func_801F7438(void);
 void func_801F7470(void);
