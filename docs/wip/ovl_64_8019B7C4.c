@@ -1,4 +1,4 @@
-/* STATUS: logic right, 75 rows. ovl_64 func_8019B7C4 (0x2AC, debug view of the CD ring: one POLY_F4 per sector). The original does not hoist buf * 0x780 out of the loop (recomputes sll/subu/sll in the loop) and keeps the colour pointer as one register with offsets 0/1/2; gcc 2.8.1 hoists the invariant and spills it. Tried 1-D/2-D indexing, an RGB struct, permuter (15 min, nothing useful). */
+/* STATUS: logic right, 75 rows. ovl_64 func_8019B7C4 (0x2AC, debug view of the CD ring: one POLY_F4 per sector). The original does not hoist buf * 0x780 out of the loop (recomputes sll/subu/sll in the loop) and keeps the colour pointer as one register with offsets 0/1/2; gcc 2.8.1 hoists the invariant and spills it. Tried 1-D/2-D indexing, an RGB struct, permuter (15 min, nothing useful). Pass 5: &D_8019F7F0[0][n] then p += buf * 80 (p assigned twice) stops the hoisting of buf * 0x780 like the original, but the frame still has one spill slot too many (79 rows aligned, cmp.py). */
 #include "ovl_64.h"
 typedef struct {
     u8 r;

@@ -396,3 +396,27 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (33 F1150).
   - `(l = &D_801FC840.unk4)->unk2` inside the condition gives the original's `addiu v1, a0, 4` without
     disturbing the a0/a1 assignment that a separate `l = ...;` statement changes (33 F2AB4).
+- Menus/FMV pass 5: matched 39 F973C (CRC-16) and 64 999B4 (MBG_init). New drafts: 15 A9488 (Blackjack
+  main loop, 413 of 1575 rows; integrating it needs a rodata split for its UI strings, see its header),
+  15 ADE30 (28), 14 A741C (36). Improved: 64 99B28 (63 -> 46). Unchanged: 36 F1A48 (5), 36 F1778 (30),
+  64 B7C4, 65 F1848 (permuter 20 min found nothing valid).
+  Tricks that matched things in this pass:
+  - An accumulator whose upper bits gcc must not know (the original keeps `andi 0xFFFF` before the
+    shift and at the return): a union with an initializer, `union { s32 w; u16 h; } c = { 0xFFFF };`,
+    then `c.w = tbl[(c.w ^ *p++) & 0xFF] ^ (c.h >> 8); return c.w;` (39 F973C). The initializer emits a
+    clobber, so combine's nonzero-bits tracking gives up; `c.h = 0xFFFF` alone gives `ori v1, v1`.
+  - Large constants reloaded right before each use into the same register: one local assigned before
+    each use (`off = 0x43E20; p->unk5C = b + off;`) (64 999B4).
+  - A `v0` that holds 1 from a mid-function store to the end with no return statement in the draft: the
+    function returns that constant (`return 1;`, 64 999B4).
+  - Loop layout where the "found" block sits after the loop: `do { d = f(); if (d != NULL) goto found;
+    if (flag == 1) { res = -1; goto check; } } while (--tries != 0); goto check; found: ...` (64 99B28).
+  - A random byte whose `&a[i]` address the original computes before the refill check: use a statement
+    expression with an s32 temp, `(({ s32 r; if (D_8007B720 >= D_8007B92D) func_8004BF20(); r =
+    *D_8007B720++; r; }) % 3)`. The ff9.h inline function evaluates the rhs first, and a plain u8
+    statement expression gives multu (15 A9488).
+  - `x -= (h.unk0 & 4) ? bet * 2 : bet;` on a global makes gcc keep the global's address in a0 and store
+    through it after the branch (`addiu a0, t1, %lo(X)` ... `sw v1, 0(a0)`) (15 A9488).
+  - Calls without `andi 0xFF` on the result of a u8 function defined later in the same file: the
+    original had no prototype (implicit int), so leave them undeclared (15 A9488: func_800AB1B8,
+    func_800ACF48).
