@@ -13068,7 +13068,96 @@ void func_800599D4(Unk80080A10 *a, AkaoChannel *c, s32 id) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80059AA8);
+void func_80059AA8(s32 id, s32 mask) {
+    AkaoChannel *c;
+    u32 bit;
+    u32 active;
+    u32 i;
+    s32 max;
+
+    bit = 0x100;
+    c = D_8007E3D8;
+    active = D_80080A70.unk0 | D_80080A70.unk10;
+    if (mask & 0x0FFFFFFF) {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((active & bit) && (c->unk28 & mask)) {
+                if (c->unk34 & 0x100000) {
+                    c->unk34 |= 0x200000;
+                } else {
+                    D_80080A70.unkC |= bit;
+                    func_8005EC20(c, bit);
+                    c->unk34 = 0;
+                }
+            }
+        }
+    } else if (mask < 0) {
+        c = &D_8007E3D8[id];
+        bit = 0x100 << id;
+        if (active & bit) {
+            func_80059AA8(c->unk6C, 0);
+        }
+        bit <<= 1;
+        c++;
+        if (active & bit) {
+            func_80059AA8(c->unk6C, 0);
+        }
+        return;
+    } else if (mask & 0x40000000) {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if (c->unk28 != 0) {
+                active &= ~bit;
+            }
+        }
+        c = D_8007E3D8;
+        bit = 0x100;
+        max = 0;
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if (active & bit) {
+                if (max < c->unk88) {
+                    max = c->unk88;
+                }
+            }
+        }
+        c = D_8007E3D8;
+        bit = 0x100;
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if ((active & bit) && max == c->unk88) {
+                if (c->unk34 & 0x100000) {
+                    c->unk34 |= 0x200000;
+                } else {
+                    D_80080A70.unkC |= bit;
+                    func_8005EC20(c, bit);
+                    c->unk34 = 0;
+                }
+            }
+        }
+    } else {
+        for (i = 0; i < 16; i++, c++, bit <<= 1) {
+            if (active & bit) {
+                if (id == -1) {
+                    if (c->unk6C < 0) {
+                        if (c->unk34 & 0x100000) {
+                            c->unk34 |= 0x200000;
+                        } else {
+                            D_80080A70.unkC |= bit;
+                            func_8005EC20(c, bit);
+                            c->unk34 = 0;
+                        }
+                    }
+                } else if (c->unk6C == id) {
+                    if (c->unk34 & 0x100000) {
+                        c->unk34 |= 0x200000;
+                    } else {
+                        D_80080A70.unkC |= bit;
+                        func_8005EC20(c, bit);
+                        c->unk34 = 0;
+                    }
+                }
+            }
+        }
+    }
+    D_80083158.unk8 |= 0x110;
+}
 
 void func_80059E10(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
     AkaoChannel *ch;
