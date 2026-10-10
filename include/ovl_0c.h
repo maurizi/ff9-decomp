@@ -1210,4 +1210,25 @@ typedef struct {
 
 void func_800CB1EC(u8 *, WmSprCtx *, s32, s32);
 
+typedef struct {
+    s32 unk0; /* size */
+    void *unk4; /* destination */
+} WmLoadReq; /* CD read request (func_800BCBDC, func_80022CC4) */
+
+extern WmLoadReq D_800D3410[];
+extern WmLoadReq D_800D3370[];
+extern s32 D_800D3490[];
+extern s32 D_800D3728;
+extern s32 D_800CF5A4;
+extern s32 D_800CF5A8;
+extern char D_800A7F94[];
+s32 func_800C2050(s32, s32);
+u8 func_800BD150(Unk800D335C **, s32 *, s32 *);
+void func_800BC450(s32, s32, WmCell *);
+void func_800BC490(s32, s32, WmCell *);
+void func_800BD3F8(void);
+
+/* main exe: candidates for ff9.h */
+void func_80022CC4(s32, void *, s32, s32);
+
 #endif
