@@ -526,7 +526,10 @@ typedef struct {
     } unkA;
     u8 unkE;
     u8 unkF;
-    s32 unk10;
+    union {
+        s32 w; /* cleared as a word */
+        u8 b[4]; /* b[2]: done (also D_800FEC52) */
+    } unk10;
     u8 pad14[0x18 - 0x14];
     s32 unk18;
     s32 unk1C;
@@ -1275,7 +1278,11 @@ typedef struct Pool6CEntry {
     s16 unk36;
     u8 pad38[0x3A - 0x38];
     s16 unk3A;
-    u8 pad3C[0x6C - 0x3C];
+    u8 pad3C[0x5C - 0x3C];
+    s16 unk5C;
+    s16 unk5E;
+    s16 unk60;
+    u8 pad62[0x6C - 0x62];
 } Pool6CEntry; /* 0x6C */
 
 typedef struct {
@@ -1992,6 +1999,32 @@ u8 func_800DD10C(BtlUnit9C *);
 void func_800E00DC(s32, Pool30Entry *, Pool30 *);
 void func_800E14D8(u32, Pool6C *);
 Pool6CEntry *func_800E1534(Pool30 *, Pool6C *, u8 *, s32);
+Pool6CEntry *func_800E3CEC(s32, s32);
+void func_800E94C4(void);
+void func_800E49D0(s32, s32);
+s32 func_800E774C(s32, s16 *, s16 *);
+extern u8 D_800FEC52; /* D_800FEC40.unk10.b[2] */
+
+/* func_800E4634 work area */
+typedef struct {
+    s32 unk0; /* next point, -1 = done */
+    s32 unk4; /* timer, 0xFFFF = skipped */
+    SVECTOR unk8[4];
+    s16 unk28[3];
+    u8 pad2E[2];
+    Pool6CEntry *unk30[4];
+} Unk800E4634;
+
+typedef struct {
+    u8 pad0[0x27];
+    u8 unk27;
+} Unk800E4634Arg2C;
+
+typedef struct {
+    u8 pad0[0xC];
+    Unk800E4634Arg2C *unkC;
+} Unk800E4634Arg2;
+
 void func_800E1708(Pool30 *, s32, s32);
 void func_800E1810(Pool30 *, Pool6CEntry *);
 void func_800E0168(Pool30 *);
