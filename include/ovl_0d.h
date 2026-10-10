@@ -220,6 +220,7 @@ typedef struct {
 } TmTimImage; /* TIM pixel block */
 
 extern s32 D_800B365C;
+extern s8 D_800B3664; /* sound request kind, -1 = none */
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;
@@ -260,7 +261,7 @@ s32 func_800B1110(TmState *, s32, s32, s32, s32, s32);
 void func_800B35F8(TmState *);
 void func_800A755C(void);
 void func_800A75E0(void);
-void func_800A78EC(s32, s32, s32, s32, s32);
+s32 func_800A78EC(s32, s32, s32, s32, s32);
 void func_800A7E10(void);
 void func_800AB8C8(void);
 void func_800AB8E8(s32);
@@ -354,5 +355,20 @@ void func_800ABE74(Window *);
 void func_80023A0C(void);
 void func_80062724();
 extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
+s32 func_80055290(void *);
+void func_800552B8(s32);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
+
 
 #endif
