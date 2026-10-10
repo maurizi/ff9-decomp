@@ -964,7 +964,7 @@ void func_800D6340(void) {
     D_800FEC40.unk18 -= 3;
 }
 
-s32 func_800D6360(s32 arg0) {
+u8 *func_800D6360(s32 arg0) {
     s32 i;
     u8 *p;
     s32 n;
@@ -978,7 +978,7 @@ s32 func_800D6360(s32 arg0) {
         }
         p += (p[1] & 0x7F) * 3 + 2;
     }
-    return (s32)(p + 2);
+    return p + 2;
 }
 
 void func_800D63B0(s32 arg0, u32 *arg1, s32 arg2) {
@@ -2350,7 +2350,7 @@ s32 func_800DA3D8(s32 arg0, s32 arg1) {
         arg1 -= 0x40;
     } else if (arg1 < 0xC0) {
         arg1 -= 0x80;
-        base = D_80100E14->unk50;
+        base = D_80100E14->unk50[0];
         arg1 &= 0x7F;
     } else {
         base = D_8006794C->unk1C->unk8E4.battle->unk11C0->unkC;
@@ -2622,7 +2622,7 @@ s32 func_800DB8D8(void) {
     return 0;
 }
 
-u16 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
+s32 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
     s16 t[6][2];
     Unk8010141C *p = func_800DC4CC();
     s32 i;
@@ -2659,7 +2659,7 @@ u16 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
     func_800C7730(p->unk0, p->unk4[0], t[0]);
     p->unk0->unk50 = arg0->unk40;
     func_800C9374(p->unk0->unk50, (s32)p->unk1C);
-    return p->unk4E;
+    return (u16)p->unk4E;
 }
 
 void func_800DBA80(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
@@ -4938,8 +4938,8 @@ s32 *func_800E871C(s32 arg0, s32 *arg1) {
 
 void func_800E87C4(s32 arg0) {
     func_800AB4FC();
-    func_800E86E0(D_8006794C->unk1C->unk8E4.battle->unk11C0->unk44, D_80100DC0.unk54->unk50, arg0 << 10);
-    D_80100DC0.unk54->unk50 = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk44;
+    func_800E86E0(D_8006794C->unk1C->unk8E4.battle->unk11C0->unk44, D_80100DC0.unk54->unk50[0], arg0 << 10);
+    D_80100DC0.unk54->unk50[0] = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk44;
 }
 
 void func_800E8854(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {

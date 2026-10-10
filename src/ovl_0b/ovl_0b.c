@@ -437,7 +437,7 @@ s32 func_800A9A7C(Battle11C0 *arg0, s32 arg1) {
     return 0;
 }
 
-s16 func_800A9BE4(s32 arg0) {
+s32 func_800A9BE4(s32 arg0) {
     Battle *b = D_8006794C->unk1C->unk8E4.battle;
     s16 *state = (s16 *)&b->unk11C0->unkC[0x9FD8 / 4];
     Unk800AA958 *ld = (Unk800AA958 *)state - 1;
@@ -988,20 +988,20 @@ void func_800AB38C(s32 arg0, s32 *arg1, s32 *arg2) {
     func_800AB324(func_80063088(D_8006794C->unk1C->unk7E4, arg0)->unkC, arg1, arg2);
 }
 
-void func_800AB3E4(s32 arg0, s32 arg1) {
+s32 func_800AB3E4(s32 arg0, s32 arg1) {
     s32 v = 0x17;
     if (arg1 != 0) {
         v = 0x8017;
     }
-    func_800ABBC4(arg0, v);
+    return func_800ABBC4(arg0, v);
 }
 
-void func_800AB410(s32 arg1) {
+s32 func_800AB410(s32 arg1) {
     s32 v = 0x207;
     if (arg1 != 0) {
         v = 0x8207;
     }
-    func_800A9BE4(v);
+    return func_800A9BE4(v);
 }
 
 void func_800AB43C(void) {
