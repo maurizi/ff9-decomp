@@ -880,7 +880,96 @@ void func_800AB8F4(s16 arg0) {
     func_80035580(&r);
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AB928);
+void *func_800AB928(u32 *ot, void *p, TmState *s) {
+    RECT r;
+    RECT r2;
+    u8 buf[64];
+    u8 num[16];
+    s32 pad;
+    TmCard *sel;
+    TmCard *c;
+    TmUnk350 *e;
+    s32 x;
+    s32 y;
+    s32 i;
+    s32 j;
+    s32 n;
+    TmCard *cards;
+    s32 k;
+
+    pad = D_80077528;
+    if ((pad & 0x10) && s->unk5B0 != 0) {
+        s->unk5B0--;
+        func_800B01E8(1);
+    }
+    if ((pad & 0x40) && s->unk5B0 != func_800AE8D0(s) - 1) {
+        s->unk5B0++;
+        func_800B01E8(1);
+    }
+    sel = func_800AE908(s, s->unk5B0);
+    x = sel->unkC;
+    y = sel->unk10;
+    p = func_800B16A4(ot, p, s, x + 0x22, y + 5, 2);
+    D_80077DE8.unk0 = x + 0x25;
+    D_80077DE8.unk2 = y + 6;
+    D_80077DE8.unk8 = func_80035774(0x2C);
+    r.x = x + 0x2A;
+    r.w = 0x12C;
+    r.y = 0;
+    r.h = 0xF0;
+    func_80035580(&r);
+    if (pad & 0x20000) {
+        if (s->unk54C != 0 && sel == &s->unk10[s->unk550 + 5]) {
+            s->unk54C = 0;
+        }
+        func_800ACFC8(s);
+        func_800ACFC8(s);
+        k = 0;
+        e = s->unk350;
+        cards = s->unk10;
+        for (i = 0; i < 10; i++) {
+            c = &cards[i];
+            if (i < 5) {
+                if (c->unk14 == 1) {
+                    e[k].unk10 = c;
+                    e[k].unk0 = 1;
+                    e[k].unkC = 0;
+                    k++;
+                }
+            } else if (c->unk14 == 0 && sel != c) {
+                e[k].unk10 = c;
+                e[k].unk0 = 1;
+                e[k].unkC = 1;
+                k++;
+            }
+        }
+        s->unk504 = 1;
+        s->unk0 = 0xF;
+    }
+    n = 0;
+    cards = s->unk10;
+    for (i = 0; i < 10; i++) {
+        if (i >= 5 && func_800AE908(s, s->unk5B0) == &cards[i]) {
+            n = func_80062560(cards[i].unk0);
+            for (j = 0; j < 5; j++) {
+                if (cards[i].unk0 == cards[j].unk0) {
+                    n++;
+                }
+            }
+        }
+    }
+    func_8002BAE4(n, num, -1, 0);
+    func_8002BD54(buf, func_80035774(0x33));
+    func_8002AD38(buf, num);
+    func_8002AD38(buf, func_80035774(0x34));
+    r2.w = func_8002BA68((s32)buf) + 0x10;
+    r2.x = 0x52;
+    r2.y = sel->unk10 - 9;
+    r2.h = 0x19;
+    func_8002B5FC(0x5A, r2.y + 6, 3, buf, 0);
+    func_8002DEE4(&r2, 3, 2);
+    return p;
+}
 
 void func_800ABC74(TmState *s) {
     s32 pad;
