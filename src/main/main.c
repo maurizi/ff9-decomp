@@ -3739,7 +3739,43 @@ s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     return g >> 28;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80029058);
+void func_80029058(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
+    Unk7D4 *f = D_8006794C->unk1C->unk7D4;
+    s32 th = f->unk4 >> 8;
+    SprtWords *p = (SprtWords *)D_80077170;
+    u32 *ot = &D_8007716C[otz];
+    s32 spacing;
+    s32 c;
+    u32 g;
+    u32 w;
+    s32 gx;
+    s32 k;
+
+    while ((c = *s) != 0xFF) {
+        if (c >= th) {
+            c = (c << 8) + s[1] - f->unk4 + f->unk6;
+            s++;
+        }
+        g = *(f->unkC + c);
+        setlen(p, 4);
+        k = (g >> 20) & 3;
+        p->rgbc = 0x64808080;
+        w = g >> 28;
+        spacing = 1;
+        gx = x + k;
+        x = x + spacing + w;
+        p->xy = (gx & 0xFFFF) | (y << 16);
+        p->uvclut = (g & 0x40FFFF) + (D_8006BBA0[pal] << 16);
+        p->wh = ((g >> 16) & 0xF) | 0xD0000;
+        addPrim(ot, p);
+        p++;
+        s++;
+    }
+    setlen(p, 1);
+    ((DrTpageWords *)p)->code = 0xE100061E;
+    addPrim(ot, p);
+    D_80077170 = (u8 *)p + 8;
+}
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002920C);
 
