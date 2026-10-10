@@ -36,6 +36,24 @@ typedef struct {
 s32 func_80022AC4(char *);
 extern s32 D_80071E34;
 u8 func_80022ED4(s32);
+s32 func_80055290(void *);
+void func_800552B8(s32);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557A8(s32, s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800558DC(s32);
+void func_80055908(s32, s32);
+void func_8005593C(s32, s32, s32);
+void func_80055980(s32, s32, s32, s32);
+void func_800559C8(s32, s32);
+void func_800559FC(s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player) */
 void func_8019C98C(s32);
@@ -101,6 +119,8 @@ extern Ovl14Unk320 D_800AB320;
 
 extern void *D_800AB230;
 extern u32 D_800AB300; /* main state */
+extern s8 D_800AB234; /* sound request kind, -1 = none */
+void func_800A7F70(s32, s32);
 s32 func_800A9220(void);
 s32 func_800A9E14(s32);
 void func_800AAADC(void);
@@ -121,7 +141,7 @@ void func_800A7768(void);
 void func_800A780C(void);
 void func_800A78C0(void);
 void func_800A796C(void);
-void func_800A799C(void);
+s32 func_800A799C(s32, s32, s32, s32, s32);
 s32 func_800A811C(void);
 void func_800A812C(s32);
 s32 func_800A81B8(void);
