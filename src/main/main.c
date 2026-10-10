@@ -853,7 +853,82 @@ void *func_8001C7FC(s32 mode, s32 a1, s32 a2) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001C8B0);
+s32 func_8001C8B0(s32 arg0, s32 mode, s32 key, s32 arg3) {
+    u8 *base = (u8 *)arg0;
+    u32 *ent;
+    s32 i;
+    s32 n;
+    s32 j;
+    s32 cnt;
+    s32 type;
+    u8 *blk;
+    u16 *ids;
+    u32 *ofs;
+    u32 *p;
+    s32 hi;
+    s32 lo;
+    s32 r;
+
+    if (base == NULL) {
+        return 0;
+    }
+    ent = (u32 *)(base + 4);
+    hi = (key >> 16) & 0xFF;
+    n = base[1];
+    lo = key & 0xFFFF;
+    for (i = 0; i < n; i++, ent++) {
+        blk = (u8 *)*ent;
+        type = ((u32)blk >> 24) & 0x7F;
+        if (type == hi) {
+            blk = (u8 *)ent + ((u32)blk & 0xFFFFFF);
+            cnt = blk[1];
+            if (mode == 0) {
+                return (s32)blk;
+            }
+            ids = (u16 *)(blk + 4);
+            if (mode == 1) {
+                return cnt;
+            }
+            ofs = (u32 *)((u8 *)ids + cnt * 2);
+            if ((s32)ofs & 3) {
+                ofs = (u32 *)((u8 *)ofs - (((s32)ofs & 3) - 4));
+            }
+            if (mode == 3) {
+                return (type << 16) | ids[lo];
+            }
+            if (mode == 2) {
+                p = &ofs[lo];
+                return (s32)p + (*p & 0xFFFFFF);
+            }
+            for (j = 0; j < cnt; j++) {
+                if (*ids == lo) {
+                    switch (mode) {
+                    case 4:
+                        do {
+                        } while (0);
+                        return (s32)ofs + (*ofs & 0xFFFFFF);
+                    case 5:
+                        return (ofs[1] & 0xFFFFFF) - (ofs[0] & 0xFFFFFF) + 4;
+                    case 9:
+                        r = func_8001C8B0(arg0, 3, arg3, 0);
+                        return r;
+                    case 8:
+                        r = func_8001C8B0(arg0, 2, arg3, 0);
+                        return r;
+                    case 11:
+                        r = func_8001C8B0(arg0, 1, arg3, 0);
+                        return r;
+                    default:
+                        return -1;
+                    }
+                }
+                ids++;
+                ofs++;
+            }
+        }
+    }
+    return -1;
+}
 
 s32 func_8001CA70(s32 a) {
     u8 *p = (u8 *)a;
