@@ -41,6 +41,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   helper shape unknown), 8001DE50 (draft only), 80030EE4 (dead copy of arg2; maybe libgte RotMatrix*).
   Also 8005CF04 ~75 (v/old vs %hi(D_80080A10) s-register priority), 8004DCEC (window-init inline
   boundary; caller stores get rescheduled), 8005D6BC ~76 (&D_80083158 hoisted to fp, tick count spilled).
+- Pass 4 (drafts in the agent worktree's build/nm_*.c): E4C88 4 rows (copy of the E788C result scheduled early), AD90C ~44 (unk851 test inverted to bnez, kind-7 delay slot, gx/m regs), DA92C ~80 (temp regs t0/v0, loop copies), D650C ~70 (op/a copied into a0 for the switches, cross-jump of cont=0 tails).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
