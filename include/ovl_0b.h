@@ -3837,4 +3837,13 @@ extern u8 D_800FF068[];
 void func_80054A28(void *);
 
 
+/* GTE loads used by func_800E6764 */
+#define gte_ldvz012_0() __asm__ volatile("mtc2\t$0, $1;" "mtc2\t$0, $3;" "mtc2\t$0, $5")
+#define gte_ldxy3(r0, r1, r2) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$2, 0(%1);" \
+    "lwc2\t$4, 0(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldxy0(r0) __asm__ volatile("lwc2\t$0, 0(%0)" : : "r"(r0))
+
 #endif

@@ -6055,7 +6055,115 @@ void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E6764);
+void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+                   SVECTOR *arg9, VECTOR *arg10, CVECTOR *arg11, s32 arg12, void (*arg13)(SVECTOR *)) {
+    XY32 buf[2][18];
+    SVECTOR v[4];
+    SVECTOR uv[4];
+    MATRIX m;
+    long ox;
+    long oy;
+    s32 cx;
+    s32 cy;
+    s32 tp0;
+    s32 tp1;
+    POLY_FT4 *p;
+    s32 x;
+    s32 y;
+    s32 r;
+    s32 c;
+    s32 tp;
+    s32 fl;
+    s32 t;
+    s32 sx;
+    s32 sy;
+    s32 ty;
+    u32 len;
+
+    ReadGeomOffset(&ox, &oy);
+    p = (POLY_FT4 *)D_800F78A4->unk24;
+    D_800F78A4->unk24 = (u8 *)(p + arg5 * arg6);
+    if (arg12 != 0xFF) {
+        arg11->cd = 0x2E;
+    } else {
+        arg11->cd = 0x2C;
+    }
+    if (arg12 == 0xFF) {
+        arg12 = 0;
+    }
+    tp0 = GetTPage(2, arg12, D_800F78A4->unk18->disp.x, D_800F78A4->unk18->disp.y);
+    tp1 = GetTPage(2, arg12, D_800F78A4->unk18->disp.x + 0x80, D_800F78A4->unk18->disp.y) << 16;
+    arg7 *= arg3;
+    tp0 <<= 16;
+    arg8 *= arg4;
+    cx = arg1;
+    cy = arg2;
+    SetGeomOffset(arg1, arg2);
+    func_800316D8(arg9, &m);
+    arg10->vz = 0x1000;
+    ScaleMatrix(&m, arg10);
+    m.t[1] = 0;
+    m.t[0] = 0;
+    m.t[2] = func_800645C4();
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    gte_ldvz012_0();
+    for (y = 0, r = 0; r <= arg6; r++, y += arg4) {
+        for (x = 0, c = 0; c <= arg5; c++, x += arg3) {
+            ((XY32 *)&v[0])->w = (*buf)[c].w;
+            sx = x - arg7;
+            t = buf[1][c].w;
+            uv[1].vx = (v[1].vx = sx) + cx;
+            uv[1].vy = (v[1].vy = y - arg8) + cy;
+            *(s32 *)&uv[0] = t;
+            buf[1][c].w = *(s32 *)&uv[1];
+            if (arg13 != NULL) {
+                arg13(&v[1]);
+            }
+            buf[0][c].w = *(s32 *)&v[1];
+            if (c != 0 && r != 0) {
+                gte_ldxy3(&v[1], &v[0], &v[3]);
+                *(u32 *)&p->r0 = *(u32 *)arg11;
+                gte_rtpt_b();
+                if (uv[0].vx < 0x100 && uv[1].vx < 0x100 && uv[2].vx < 0x100 && uv[3].vx < 0x100) {
+                    fl = 0;
+                    tp = tp0;
+                } else {
+                    fl = 1;
+                    tp = tp1;
+                    uv[0].vx -= 0x80;
+                    uv[1].vx -= 0x80;
+                    uv[2].vx -= 0x80;
+                    uv[3].vx -= 0x80;
+                }
+                gte_stsxy3(&p->x0, &p->x1, &p->x2);
+                gte_ldxy0(&v[2]);
+                if (arg0 < 0x1000) {
+                    len = 0x09000000;
+                    addPrimLen(&D_800F78A4->unk20[arg0], p, len);
+                }
+                gte_rtps_b();
+                *(u32 *)&p->u0 = uv[1].vx | (uv[1].vy << 8);
+                *(u32 *)&p->u1 = uv[0].vx | (uv[0].vy << 8) | tp;
+                *(u32 *)&p->u2 = uv[3].vx | (uv[3].vy << 8);
+                *(u32 *)&p->u3 = uv[2].vx | (uv[2].vy << 8);
+                gte_stsxy(&p->x3);
+                if (fl) {
+                    uv[0].vx += 0x80;
+                    uv[1].vx += 0x80;
+                    uv[2].vx += 0x80;
+                    uv[3].vx += 0x80;
+                }
+                p++;
+            }
+            *(s32 *)&v[2] = *(s32 *)&v[0];
+            *(s32 *)&v[3] = *(s32 *)&v[1];
+            *(s32 *)&uv[2] = *(s32 *)&uv[0];
+            *(s32 *)&uv[3] = *(s32 *)&uv[1];
+        }
+    }
+    SetGeomOffset(ox, oy);
+}
 
 void func_800E6C58(SVECTOR *arg0) {
     MATRIX m;
