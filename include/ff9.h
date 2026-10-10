@@ -1398,7 +1398,7 @@ typedef struct Unk8007B9C0 {
     u8 unk26;
     u8 unk27; /* h */
     u8 unk28;
-    u8 pad29;
+    u8 unk29; /* text speed */
     u8 unk2A;
     u8 unk2B;
 } Unk8007B9C0;
@@ -3332,6 +3332,8 @@ extern s32 D_8007AEA4;
 extern Unk8004AB64 *D_8007AE68;
 extern s32 D_8007AE6C;
 extern s32 D_8007BBD8;
+extern s32 D_8007BB7C; /* message counter */
+extern u8 D_8006E688[]; /* text speed per config setting */
 void func_800398D0(Unk8004AB64 *, s32, s32, s32);
 s32 func_80052F24(s32, s32);
 void func_8004EC74(u32, s32);
