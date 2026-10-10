@@ -266,6 +266,8 @@ long VSync(long mode);
 void *memcpy(void *, const void *, u32);
 
 int DrawSync(int mode);
+void DrawPrim(void *p);
+void SetDrawEnv(DR_ENV *dr_env, DRAWENV *env);
 int LoadImage(RECT *rect, u32 *p);
 int StoreImage(RECT *rect, u32 *p);
 int MoveImage(RECT *rect, int x, int y);

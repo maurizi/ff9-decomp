@@ -3719,6 +3719,37 @@ static inline void func_80054A28_max(u32 *m, u32 v) {
 extern u32 *D_8007BD0C;
 extern u32 *D_8007BD10;
 extern u16 D_8007BD1E;
+/* battle-entry swirl (func_80053A10) */
+typedef struct {
+    s16 unk0; /* rotation */
+    s16 unk2; /* rotation speed */
+    s16 unk4; /* scale */
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+} SwirlDef; /* 0x14 */
+extern SwirlDef D_8006F2E0[2];
+extern SwirlDef *D_8007BD08;
+extern u16 D_8007BD1C;
+extern s16 D_8007BD20;
+extern s16 D_8007BD22 __asm__("D_8007BD20+2"); /* no symbol of its own */
+extern s16 D_8007BD24;
+extern s32 D_8007BD28; /* frame */
+#if !defined(OVL_0C_H) /* ovl_0c declares it as s32 */
+extern u32 *D_8007BD30;
+#endif
+void func_8002F884(void);
+s32 func_8004BB80(s32); /* sin */
+void func_800540E8(s32, s32);
+u32 *func_80054294(u32 *, s32, s32);
+void func_80054650(void);
+#if !defined(OVL_0B_H) /* ovl_0b declares it with its DR_MOVE */
+void SetDrawMove(void *p, RECT *rect, int x, int y);
+#endif
 extern u8 D_8006F308[];
 extern u8 D_8006F310[];
 

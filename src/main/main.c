@@ -12376,7 +12376,111 @@ u8 func_800539FC(Character *a, s32 b) {
     return (a->unk38 & b) != 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80053A10);
+s32 func_80053A10(s16 arg0, s16 arg1) {
+    s16 y;
+    s16 x;
+    s32 c;
+    u8 i;
+    s16 a, b;
+    GameState *gs;
+
+    x = arg0;
+    y = arg1;
+    D_8007BD08 = D_8007BD2C ? &D_8006F2E0[1] : &D_8006F2E0[0];
+    D_8007BD0C = D_8007BD10 = D_8007BD30 + (D_8006794C->unk1C->unk8 << 10);
+    ClearOTag(D_8007BD0C, 5);
+    D_8007BD10 += 5;
+    if (D_8007BD28 < 0x79) {
+        if (D_8007BD28 == 0) {
+            gs = D_8006794C;
+            gs->unk1C->unk0 &= ~0x20;
+            *(u32 *)&gs->unk10[0].isbg = *(u32 *)&gs->unk10[1].isbg = 1;
+            D_8007BD1E = 0;
+            D_8007BD1C = D_8007BD08->unkA;
+            D_8007BD20 = a = D_8007BD08->unk0;
+            D_8007BD24 = D_8007BD08->unk6;
+            D_8007BD22 = b = D_8007BD08->unk2;
+            if ((arg0 ^ arg1) & 1) {
+                D_8007BD20 = -a;
+                D_8007BD22 = -b;
+            }
+            func_8002F884();
+        }
+        if (D_8007BD28 & 1) {
+            x += x < 160 ? 1 : -1;
+        }
+        if (D_8007BD28 & 2) {
+            y += y < D_8006794C->unk10->clip.h / 2 ? 1 : -1;
+        }
+        if (D_8007BD2C) {
+            c = func_8004BB80(D_8007BD28 * 8);
+            x += c * (160 - x) / 4096;
+            y += c * (D_8006794C->unk10->clip.h / 2 - y) / 4096;
+        }
+        D_8007BD10 = func_80054294(D_8007BD10, x, y);
+        i = D_8006794C->unk1C->unk8;
+        SetDrawMove(D_8007BD10, &D_8006794C->unkC[i].disp, D_8006794C->unk10[i].clip.x, D_8006794C->unk10[i].clip.y);
+        addPrim(D_8007BD0C, D_8007BD10);
+        D_8007BD10 += 8;
+        func_80054650();
+        if (D_8007BD28 >= D_8007BD08->unkC) {
+            D_8007BD1C -= D_8007BD08->unkE;
+            if ((s16)D_8007BD1C < 0) {
+                D_8007BD1C = 0;
+            }
+        }
+        if (D_8007BD28 >= D_8007BD08->unk10) {
+            func_800540E8(x, y);
+            D_8007BD1E += D_8007BD08->unk12;
+            if ((s16)D_8007BD1E >= 0x1000) {
+                D_8007BD1E = 0xFFF;
+            }
+        }
+        D_8007BD20 += D_8007BD22;
+        D_8007BD24 += D_8007BD08->unk8;
+        if (D_8007BD24 > 0x1400) {
+            D_8007BD24 = 0x1400;
+        }
+        setlen(D_8007BD10, 2);
+        D_8007BD10[1] = 0xE6000001;
+        D_8007BD10[2] = 0;
+        addPrim(D_8007BD0C, D_8007BD10);
+        D_8007BD10 += 4;
+    }
+    SetDrawEnv((DR_ENV *)D_8007BD10, &D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+    addPrim(D_8007BD0C, D_8007BD10);
+    D_8007BD10 += 16;
+    setlen(D_8007BD10, 2);
+    D_8007BD10[1] = 0xE6000000;
+    D_8007BD10[2] = 0;
+    addPrim(&D_8007BD0C[3], D_8007BD10);
+    D_8007BD10 += 4;
+    setaddr(&D_8007BD0C[4], getaddr(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8]));
+    setaddr(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], D_8007BD0C);
+    if (D_8007BD28 == 0) {
+        DrawSync(0);
+        setlen(D_8007BD10, 2);
+        D_8007BD10[1] = 0xE6000001;
+        D_8007BD10[2] = 0;
+        DrawPrim(D_8007BD10);
+        D_8007BD10 += 3;
+        setlen(D_8007BD10, 1);
+        D_8007BD10[1] = 0xE1000120;
+        DrawPrim(D_8007BD10);
+        D_8007BD10 += 2;
+        D_8007BD10[0] = 0x03000000;
+        D_8007BD10[1] = 0x62000000;
+        D_8007BD10[2] = 0;
+        D_8007BD10[3] = (D_8006794C->unk10->clip.h << 16) | 0x140;
+        DrawPrim(D_8007BD10);
+        D_8007BD10 += 4;
+        setlen(D_8007BD10, 2);
+        D_8007BD10[1] = 0xE6000000;
+        D_8007BD10[2] = 0;
+        DrawPrim(D_8007BD10);
+    }
+    return D_8007BD28++ > 0x78;
+}
 
 void func_800540E8(s32 x, s32 y) {
     u32 *p;
