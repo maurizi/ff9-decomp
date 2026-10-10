@@ -136,7 +136,53 @@ void func_801EFB98(void) {
                                       func_80035774(D_801F3BB8[D_801F7A78.unkA]), 0, D_801F7A78.unk374);
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EFC68);
+void func_801EFC68(void) {
+    u8 buf[16];
+    RECT *r;
+    Character *c;
+    u32 i;
+    u8 dim;
+    s32 col;
+    u8 alive;
+    u32 n;
+    u8 *p;
+
+    for (i = 0; i < 4; i++) {
+        if (D_801F7A78.unk14C[i + 2] != 0) {
+            r = &D_801F7A78.unkAC[i + 2].unk4;
+            c = D_8006794C->unk1C->unk54C[i];
+            if (c != NULL) {
+                alive = func_801F171C(c, i);
+                dim = !alive;
+                col = dim * 2;
+                if (!alive) {
+                    func_801F0394(r);
+                }
+                func_80028AF0(r->x + 4, r->y + 4, 0xB, i, dim);
+                func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
+                D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, D_8007716C + 0xB, c->unk0, col, D_801F7A78.unk374);
+                func_8002BAE4(c->unkB, buf, 2, 1);
+                func_800275DC(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
+                p = buf;
+                D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, D_8007716C + 0xB, p, col, D_801F7A78.unk374);
+                func_80026FC4(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
+                func_8002B5FC(r->x + 0x29, r->y + 0x1C, 0xB, func_80035774(0), col);
+                func_8002BAE4(c->unkC, p, 7, 1);
+                func_8002B56C(r->x + 0x62, r->y + 0x20, 0xB, p, col);
+                if (c->unkB < 99) {
+                    n = D_8006DF5C[c->unkB];
+                } else {
+                    n = c->unkC;
+                }
+                func_8002BAE4(n - c->unkC, buf, 6, 1);
+                func_8002B56C(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
+                func_8002B5FC(r->x + 0x29, r->y + 0x26, 0xB, func_80035774(0xC), col);
+            }
+            func_8002DEE4(r, 0xB, 0);
+            func_8002705C(r, 0xC, 0);
+        }
+    }
+}
 
 void func_801EFF50(void) {
     RECT *r = &D_801F7A78.unkAC[6].unk4;
