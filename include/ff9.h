@@ -3977,6 +3977,52 @@ static inline void func_8004883C_idle(Unk8004AB64 *q) {
     func_80039C38_anim(q, q->unk74);
 }
 
+/* party slot key for func_8004B85C: slots 9+ map down by 4 */
+static inline s32 func_8004B85C_key(s32 slot) {
+    s32 key = slot;
+    if (slot >= 9) {
+        key = slot - 4;
+    }
+    return key;
+}
+
+/* is the party member with this key present, kind < 14 for slot < 8, kind >= 14 otherwise */
+static inline s32 func_8004B85C_find(s32 key, s32 slot) {
+    Character **p;
+    Character *c;
+    s32 kind;
+    s32 ge;
+    s32 lt;
+
+    for (p = D_8006794C->unk1C->unk54C; p < &D_8006794C->unk1C->unk54C[4]; p++) {
+        c = *p;
+        if (c == NULL) {
+            continue;
+        }
+        if (c->unk34.b.id != key) {
+            continue;
+        }
+        kind = c->unk34.b.unk4;
+        lt = kind < 14;
+        if (kind) {
+            ge = lt ^ 1;
+        } else {
+            ge = lt ^ 1;
+        }
+        if (slot >= 8) {
+            if (lt) {
+                continue;
+            }
+        } else {
+            if (ge) {
+                continue;
+            }
+        }
+        break;
+    }
+    return p < &D_8006794C->unk1C->unk54C[4];
+}
+
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */
 extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
 extern const u8 D_80011F10[]; /* "MOGNET" window title */

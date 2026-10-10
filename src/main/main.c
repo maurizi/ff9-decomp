@@ -12904,7 +12904,9 @@ void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004B85C);
+s32 func_8004B85C(s32 slot) {
+    return func_8004B85C_find(func_8004B85C_key(slot), slot);
+}
 
 s32 func_8004B914(void) {
     s32 v;
