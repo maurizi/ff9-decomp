@@ -12101,7 +12101,35 @@ void func_80048A5C(Unk8004AB64 *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80048E80);
+void func_80048E80(void) {
+    s32 i;
+    s32 m;
+    Unk8007AED0 *o;
+
+    if (D_8006794C->unk1C->unk8E4.ovl65->unkD80 != 0) {
+        i = 3;
+        D_8007AE10[i] = func_800BEC64(1);
+        m = (u16)D_8007AE10[i];
+        for (i = 4; i < 8; i++) {
+            o = D_8007AED0[i];
+            if (o != NULL) {
+                switch (o->unkE) {
+                case 1:
+                    if (!(m & 0x10)) {
+                        o->unkE = 3;
+                    }
+                    break;
+                case 3:
+                    if (m & 0x10) {
+                        o->unkE = 1;
+                    }
+                    break;
+                }
+            }
+            m >>= 1;
+        }
+    }
+}
 
 /* turn towards unk52 by unk82 per frame (unk6C 0x7FFE / 0x7FFF: direction) */
 static inline void func_80048F54_turn(Unk8004AB64 *p) {
