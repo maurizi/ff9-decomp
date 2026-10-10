@@ -3447,7 +3447,61 @@ TmCard *func_800B1010(TmState *s, s32 x, s32 y, TmCard *c) {
     return (TmCard *)-1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800B1110);
+s32 func_800B1110(TmState *s, s32 owner, s32 x, s32 y, s32 arg4, s32 mode) {
+    TmPos p;
+    TmCell *cell;
+    TmCard *c;
+    TmUnk350 *e;
+    s32 i;
+    u8 bits;
+    u8 bit;
+
+    func_800ACFC8(s);
+    cell = func_800B19D4(s, x, y);
+    bit = 1;
+    i = 0;
+
+    c = cell->unk4;
+    s->unk500 = 1;
+    s->unk508 = c;
+    bits = c->unk1;
+    e = s->unk350;
+    s->unk50C = 0;
+    do {
+        if (bits & 1) {
+            p.unk0 = x;
+            p.unk4 = y;
+            func_800B13C0(&p, i);
+            cell = func_800B19D4(s, p.unk0, p.unk4);
+            if (cell->unk0 == 0 && (c = cell->unk4)->unk14 != owner) {
+                s->unk50C |= bit;
+                if (mode == 2) {
+                    e[i].unkC = i;
+                    s->unk4F4 = x * 43 + 0x39;
+                    s->unk4F8 = y * 52 + 0x19;
+                    s->unk500++;
+                }
+                e[i].unk0 = mode;
+                e[i].unk4 = p.unk0;
+                e[i].unk8 = p.unk4;
+            }
+        }
+        bits >>= 1;
+        bit <<= 1;
+        i++;
+    } while (i < 8);
+    s->unk41C = owner;
+    s->unk420 = arg4;
+    s->unk504 = mode;
+    if (mode != 2) {
+        s->unk0 = 5;
+        func_800B01E8(9);
+    } else {
+        s->unk2E8 = 0;
+        s->unk0 = 0x1D;
+    }
+    return 0;
+}
 
 TmCard *func_800B12F0(TmState *s, TmPos *p, s32 dir, s32 owner) {
     TmDirMask m = D_800A73BC;
