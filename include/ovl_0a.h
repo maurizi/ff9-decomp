@@ -371,7 +371,9 @@ typedef struct {
     s32 unk10; /* -> track table, 0x38-byte stride */
     u8 pad14[4];
     s32 unk18; /* -> Unk800C9DB4Cam[] */
-    u8 pad1C[0x24 - 0x1C];
+    u8 pad1C[2];
+    u16 unk1E; /* base depth */
+    u8 pad20[0x24 - 0x20];
     u16 unk24;
     u16 unk26;
     u8 pad28[0x30 - 0x28];

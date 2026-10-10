@@ -5,6 +5,14 @@
  * (insn 12) ahead of lim = 100 (insn 9) before register allocation, and swapping or moving the
  * two statements doesn't change that (moving them after the if/else costs 5-11 rows).
  * Needs c = list[i], lim/cnt/j/j1 as separate locals and two s16 locals ax/az for the frame.
+ * Pass 9 (cause found with -dS): sched1 ranks `birthing` insns (dest set once, REG_N_SETS == 1)
+ * at 0x7f000001, so lim = 100 (set once) is placed after j = 0 (j is also the first f-loop
+ * counter, so it is set several times). In the original lim must be set more than once: it is
+ * the same variable as cnt (s4 holds 100 and later `lbu s4, 3(a0)`). With lim used as cnt and
+ * `f = 1 << j;` in the first f-loop (permuter) the prologue is right and only lim/n swap
+ * s4/s5 (31 rows): n (refs 28, len 285, priority 0.393) outranks lim (16, 222, 0.288).
+ * To get that variant: replace cnt by lim, and in the first f-loop
+ * `f = 1 << j; if (!(m->unk14 & (u32)f))`. Making j set once instead folds `o->unk22 + j`.
  */
 #include "ovl_0a.h"
 

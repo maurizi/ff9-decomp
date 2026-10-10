@@ -2,9 +2,12 @@
  * ovl_0a func_800B0124 (0x18FC bytes): field music/sound request handler (GameData.unk83C),
  * the field version of ovl_0c func_800AB0C0 (matched) with the two sound-effect bank slots
  * (unk828/unk830/unk8B4/unk8B8/unk8BA), the 0x18xxxx ambient sounds and the 9 (resume) case.
- * WIP: 1599 of 1599 instructions, 17 aligned diff rows (build/s/cmp.py), all in the kind-9
+ * WIP: 1599 of 1599 instructions, 12 aligned diff rows (build/s/cmp.py), all in the kind-9
  * block of case 0: the first D_8006794C load is in v0 (original a1), so its %hi lands in a1
- * (a2), `ok` in a2 (t0) and the reload/0x70000 temps shift with them. Everything else matches,
+ * (a2) and the reload/0x70000 temps shift with it. Pass 9: `d = g->unk850; g->unk826[0] = d;`
+ * (permuter) fixed `ok` (t0) and took it from 17 to 12 rows; moving any single line of the
+ * kind-9 block anywhere inside it (build/mvall.py) and 60 more permuter minutes found nothing.
+ * Everything else matches,
  * including the jump tables (one `.word 0` pad before the second table).
  *  - the `addu v1,a0,zero` copy of D_8006794C->unk1C into `g` only survives CSE when `g` is also
  *    used after the block (cse.c make_regs_eqv makes it the canonical register only if it lives
@@ -103,7 +106,8 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g = D_8006794C->unk1C;
                 ok = 1;
                 D_800C9D4C = kind;
-                g->unk826[0] = g->unk850;
+                d = g->unk850;
+                g->unk826[0] = d;
                 arg1 = g->unk7E8;
                 t = g->unk840;
                 id = arg1 | 0x70000;
