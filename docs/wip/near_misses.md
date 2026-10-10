@@ -582,3 +582,33 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     increments at the loop end (BD130);
   * a struct field read through the global (`D_801F7A78.unk18[i]`) instead of a pointer local lets CSE
     derive the base from a related register (`addiu s5, s1, -0x1D8`), as the original does (F1848).
+- Pass 12 (overlays except 0b; gcc 2.8.1 source read alongside the `cc1 -dS -dl -dg` dumps:
+  build/search/dumpf.sh dumps every pass, build/search/galloc.py prints global-alloc's allocation order
+  `floor_log2(refs) * refs / live_length` with the hard reg each pseudo got). Matched 36 F1A48, 0a BF660,
+  0d AC060, 36 F1778. Improved: 0a C0038 19 -> 11, 33 EF644 33 -> 31. Mechanisms that decided them:
+  * sched1 (sched.c) is a *backward* list scheduler. When an insn is scheduled, each predecessor that
+    becomes ready gets LAUNCH priority (0x7f000001) only if it is a "birthing" insn: it sets a pseudo
+    with REG_N_SETS == 1 that is live there. Launched insns are placed right next to their consumer;
+    everything else (multi-set user variables, hard-reg argument loads of a function with two calls
+    setting the same arg register, stores) keeps its plain priority (longest chain of >1-latency ops
+    from the block start) and floats to the block top or into load-delay slots, ties by later LUID.
+    Register allocation then sees those positions, so a constant argument load that floats up makes a
+    local temp conflict with a1..a3 (F1A48: two copies of the func_80022C60 call in an if/else, cross-
+    jumped by jump2, give REG_N_SETS(a1) == 2 and put x in t0).
+  * local-alloc allocates qtys by `floor_log2(refs) * refs / length`, ties to the earlier-born qty, and
+    takes the lowest free hard reg; a qty born in the insn where another dies shares its register. So
+    `cy = t + y` with a block-local `t = (h >> 1) + y0 - 112` lands t in place in v0 and the add is
+    `addu a2, v0, a2` (temp first); a reused global `x` for the same value takes a0 (BF660, C0038).
+    expand_binop puts the operand that equals the target first, so `y = x + y` becomes `y + x`.
+  * global-alloc: pass 0 only considers registers already used (regs_used_so_far) and not preferred by
+    a lower-priority conflicting allocno; pass 1 takes the first non-conflicting register. A separate
+    loser-card variable `l` (`l = a` in one arm coalesces into a deleted no-op move, `l = b` in the
+    other) has the highest priority, takes s0, and its conflict with `e` pushes e to s3 (AC060).
+  * Two stores through the same base with the stored values in registers vs. computed: a RECT whose
+    w/h constants live in s-registers and whose `&a` is an argument gets its w/h stores addressed from
+    the argument register (a0 + 0xC), so they get output dependences on the sp-relative x/y stores and
+    schedule after them: write the fields in x, y, w, h order (F1778's inlined func_801F2D88 copy).
+  * jump.c duplicate_loop_exit_test only runs when NOTE_INSN_LOOP_BEG is directly followed by a jump
+    (a rotated for/while); a `goto test` into a do/while keeps a single copy of the loop test (A741C).
+  Left with notes in their headers: B4A5C (filler slots), C07D8 (lbu placement), A741C (n/blk and
+  id/base/gs order), B16A4 (ot s1 vs s3), B0124 (kind-9 block, condition spellings score 14-20).
