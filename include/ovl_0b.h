@@ -246,7 +246,7 @@ typedef struct BtlUnit {
     u32 unk3C; /* status */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
-    u8 pad66[0x68 - 0x66];
+    s16 unk66;
     u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
     u8 unk6C;
     u8 unk6D;
@@ -2875,6 +2875,30 @@ void LoadAverageShort12(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *);
     GTE_NOPS ".word\t0x4A780010" \
     : : "r"(rgb), "r"(p) : "$14")
 #define gte_strgb(r0) __asm__ volatile("swc2\t$22, 0(%0)" : : "r"(r0) : "memory")
+
+/* func_800D3B6C: sprites placed along a path */
+typedef struct {
+    s32 unk0; /* offset of the sprite data */
+    s16 unk4;
+    s16 unk6;
+    u16 unk8; /* start time */
+    u16 unkA; /* fade-in time */
+} Unk800D3B6CEntry;
+
+typedef struct {
+    u16 unk0; /* duration */
+    u16 unk2; /* count */
+    u16 unk4; /* mode */
+    u8 unk6;
+    u8 unk7;
+    s16 unk8[2];
+    s16 unkC[2];
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    Unk800D3B6CEntry unk18[1];
+} Unk800D3B6C;
 
 /* sprite-strip context passed to func_800D5C30 / func_800D50A0 */
 typedef struct {

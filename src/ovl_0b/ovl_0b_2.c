@@ -681,7 +681,60 @@ s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D3B6C);
+void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
+    s16 p[2];
+    s16 q[2];
+    s16 sxy[2];
+    s32 t;
+    s32 i;
+    s32 d;
+    s32 v;
+    s32 r;
+    s32 a;
+    Unk800D3B6CEntry *e;
+    Unk800D3B6C *h;
+
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    h = (Unk800D3B6C *)arg0;
+    e = h->unk18;
+    gte_rtps_b();
+    t = (arg2 << 12) / h->unk0;
+    gte_stsxy(sxy);
+    if (h->unk4 == 0) {
+        func_800CFA00(h->unk8, h->unkC, t, p);
+        for (i = 0; i < h->unk2; i++, e++) {
+            func_800CFA00(sxy, p, e->unk6 * 2, q);
+            if (arg2 >= e->unk8) {
+                d = arg2 - e->unk8;
+                if (d < e->unkA) {
+                    v = d * arg3 / e->unkA;
+                } else {
+                    v = arg3;
+                }
+                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+            }
+        }
+    } else {
+        r = h->unk10 + (((h->unk12 - h->unk10) * func_800D3A6C(arg2, h->unk0, h->unk6)) >> 12);
+        a = h->unk14 + (((h->unk16 - h->unk14) * func_800D3A6C(arg2, h->unk0, h->unk7)) >> 12);
+        p[0] = sxy[0] + ((func_8004BB7C(r) * a) >> 12);
+        p[1] = sxy[1] + ((func_8004BB80(r) * a) >> 12);
+        for (i = 0; i < h->unk2; i++, e++) {
+            func_800CFA00(sxy, p, e->unk6 * 2, q);
+            if (arg2 >= e->unk8) {
+                d = arg2 - e->unk8;
+                if (d < e->unkA) {
+                    v = d * arg3 / e->unkA;
+                } else {
+                    v = arg3;
+                }
+                func_800D1BC4(8, (u8 *)h + e->unk0, q[0], q[1], arg2, 1, v);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D3ED4);
 
