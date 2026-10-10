@@ -1429,12 +1429,15 @@ typedef struct EffElem {
     u8 unk3; /* flags */
     s16 unk4;
     u8 unk6;
-    u8 pad7;
+    u8 unk7;
     s16 unk8;
     s16 unkA;
     s16 unkC;
     s16 unkE;
-    u8 pad10[0x1A - 0x10];
+    u8 unk10;
+    s8 unk11[3]; /* base rotation */
+    s8 unk14[3]; /* offset */
+    u8 unk17[3]; /* rotation spread */
     u8 unk1A;
     u8 unk1B;
     s32 unk1C; /* offset, relocated on load */
@@ -1500,9 +1503,16 @@ typedef struct {
 
 /* 0x38-byte block in front of Pool6CEntry.unk4 */
 typedef struct {
-    u8 pad0[0xC];
-    u8 unkC;
-    u8 padD[0x14 - 0xD];
+    s16 unk0;
+    s16 unk2;
+    u8 unk4[4]; /* element indices */
+    u8 unk8[4]; /* element weights */
+    u8 unkC;    /* spawn rotation mode */
+    u8 unkD;    /* element count */
+    s16 unkE;
+    u8 unk10;   /* particle limit */
+    u8 unk11;   /* first spawn frame + 1 */
+    s16 unk12;
     s16 unk14[3];
     s16 unk1A;
     s16 unk1C[3];
@@ -1511,8 +1521,33 @@ typedef struct {
     s16 unk26;
     s16 unk28[2];
     s16 unk2C[2];
-    u8 pad30[0x38 - 0x30];
+    s16 unk30[2];
+    s16 unk34[2];
 } EffSub; /* 0x38 */
+
+/* particle emitter parameters at Pool6CEntry.unk4 (kinds 0-5) */
+typedef struct {
+    u8 unk0; /* kind */
+    u8 unk1;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+    s16 unk1A;
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+    s16 unk24;
+} EffEmit;
 
 typedef union {
     s32 w;
@@ -1530,7 +1565,7 @@ typedef struct Pool6CEntry {
     s16 unkC;
     s16 unkE;
     s16 unk10;
-    u8 pad12[0x14 - 0x12];
+    s16 unk12;
     s32 unk14;
     EffElem *unk18;
     s32 unk1C;
@@ -2348,6 +2383,7 @@ s32 func_800E0168(Pool30 *);
 /* particle helpers used by func_800E0168 */
 s32 func_800CF5F8(SVECTOR *, SVECTOR *);
 s32 func_800CF748(s32);
+void func_800CF788(SVECTOR *);
 void func_800DFE4C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFE54(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
@@ -3707,5 +3743,6 @@ void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
     "mtc2\t$14, $11" \
     : : "r"(r0) : "$12", "$13", "$14")
 #define gte_gpl12() __asm__ volatile(GTE_NOPS ".word\t0x4BA8003E")
+#define gte_gpl0() __asm__ volatile(GTE_NOPS ".word\t0x4BA0003E")
 
 #endif
