@@ -144,7 +144,7 @@ void func_801F7250(void);
 void func_801F5EEC(void);
 void func_801F76C8(void);
 void func_801F8728(void);
-u8 func_801F42A8(s32, u8 *);
+s32 func_801F42A8(s32, u8 *);
 typedef struct {
     u8 unk0;
     u8 unk1;

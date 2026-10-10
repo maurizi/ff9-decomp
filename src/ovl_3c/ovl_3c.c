@@ -45,7 +45,7 @@ void func_801F4198(void) {
     }
 }
 
-u8 func_801F42A8(s32 stat, u8 *equip) {
+s32 func_801F42A8(s32 stat, u8 *equip) {
     u32 r = 0;
     u8 sum[4];
     s32 i;
