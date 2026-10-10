@@ -2299,7 +2299,98 @@ s32 func_801FA754(s32 chan) {
     return _card_format(chan);
 }
 
-INCLUDE_ASM("asm/us/ovl_39/nonmatchings/ovl_39", func_801FA794);
+void func_801FA794(void) {
+    s32 r;
+
+    switch (D_801FB074) {
+    case 0:
+        if (D_801FB078 == 0) {
+            func_801FAE1C();
+            D_801FC5EC = D_801FB07C = (D_801FB07C + 0x10) & 0x10;
+            func_80065228(0);
+            func_80065228(1);
+            func_80065218(D_801FC5EC);
+            D_801FB078 = 1;
+        }
+        r = func_801FAB08();
+        switch (r) {
+        case 0:
+            func_801FA794_set(D_801FC5EC, 0);
+            break;
+        case 1:
+        case 3:
+            func_801FA794_set(D_801FC5EC, r);
+            break;
+        case 2:
+            func_801FA794_retry(D_801FC5EC, r);
+            break;
+        }
+        if (r != -1) {
+            if (D_801FC5EC == 0) {
+                if (D_801FB09C) {
+                    ((void (*)(void))D_801FB09C)();
+                }
+                D_801FB09C = 0;
+            } else {
+                if (D_801FB0A0) {
+                    ((void (*)(void))D_801FB0A0)();
+                }
+                D_801FB0A0 = 0;
+            }
+        }
+        break;
+    case 2:
+        func_801FABB8();
+        break;
+    case 1:
+        r = func_801FAB08();
+        D_801FC604 = r;
+        if (r == -1) {
+            break;
+        }
+        goto callback;
+    case 4:
+        r = func_801FAB08();
+        D_801FC604 = r;
+        if (r == -1) {
+            break;
+        }
+        if (r != 0) {
+            goto callback;
+        }
+        D_801FC604 = 0;
+        func_80065E70(D_801FC5E4, 0x80, 1);
+        D_801FB084++;
+        if (D_801FC5E0 != 0) {
+            D_801FC5E0--;
+            D_801FC5E8 += 0x80;
+            func_801FA644();
+            break;
+        }
+        goto callback;
+    case 5:
+        r = func_801FAB08();
+        D_801FC604 = r;
+        if (r == -1) {
+            break;
+        }
+        if (r != 0) {
+            goto callback;
+        }
+        D_801FB084++;
+        if (D_801FC5E0 != 0) {
+            D_801FC5E0--;
+            D_801FC5E8 += 0x80;
+            func_801FA53C();
+            break;
+        }
+    callback:
+        if (D_801FB098 != NULL) {
+            D_801FB098();
+        }
+        break;
+    }
+}
 
 s32 func_801FAAE4(s32 chan) {
     return D_801FC604;

@@ -506,4 +506,23 @@ static inline u8 func_801F5340_inline(s32 slot, u8 any) {
     return st == 0;
 }
 
+extern s32 D_801FB090[2]; /* per card port: retries; D_801FB088 holds the status */
+/* main exe: candidates for ff9.h */
+void func_80065E70(s32, s32, s32);
+/* card status helpers inlined into func_801FA794 */
+static inline void func_801FA794_set(s32 chan, s32 r) {
+    s32 *p = &D_801FB088;
+    p[chan / 16] = r;
+    D_801FB090[chan / 16] = 0;
+}
+
+static inline void func_801FA794_retry(s32 chan, s32 r) {
+    s32 *p = D_801FB090;
+    if (p[chan / 16] > 0) {
+        (&D_801FB088)[chan / 16] = r;
+    } else {
+        p[chan / 16]++;
+    }
+}
+
 #endif
