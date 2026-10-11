@@ -92,3 +92,6 @@ msg_open = 0x8004DCEC; // type:func [runtime] talking to the Dali inn Moogle cal
 evt_execInstr = 0x80039C38; // type:func [runtime] the Moogle's script reaches msg_open through it (opcodes 0x1F/0x20/0x95), one instruction per call
 item_remove = 0x80027E5C; // type:func [runtime] using a Tent at the Dali Moogle calls (0xFD, 1) and the Tent count goes 69 -> 68
 item_getCount = 0x80027F34; // type:func [runtime] called (0xFD) as the Moogle's "Tent(s) Remaining=69" prompt opens
+cd_onSectorReady = 0x8002291C; // type:func [runtime] copies each 0x800-byte sector of ovl_39 to 0x801EDF00, 0x801EE700, ... via CdGetSector
+CdGetSector = 0x800213C0; // type:func [runtime] PsyQ libcd's wrapper body (CD_getsector(madr, size) == 0), called (0x801EDF00, 0x200) for ovl_39
+g_cdLoad = 0x800761D0; // [runtime] CD load state - sectorsLeft 29 -> 0, bytesRead/chunkOfs +0x800 per sector while ovl_39 loads

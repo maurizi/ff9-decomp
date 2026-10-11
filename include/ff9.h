@@ -445,17 +445,17 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-    s32 unk4; /* sectors left */
+    s32 sectorsLeft; /* runtime: 29 -> 0 while ovl_39 loads */
     CdlLOC unk8; /* current position */
-    s32 unkC;
-    u32 unk10; /* offset in current chunk */
-    s32 unk14; /* current chunk */
+    s32 bytesRead;   /* runtime: +0x800 per sector */
+    u32 chunkOfs;    /* offset in the current chunk */
+    s32 chunkIndex;
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
     CdRequest unk944; /* current request */
     CdRequest unk968; /* passed to func_8002267C */
 } Unk800761D0;
-extern Unk800761D0 D_800761D0;
+extern Unk800761D0 g_cdLoad;
 
 /* ---- drawing ---- */
 
@@ -3312,9 +3312,9 @@ void func_8001E3A4(); /* (Unk8001E3A4 *); ovl_0b declares it with void * */
 s32 func_8001D67C(void);
 s32 func_8001D768(void);
 
-s32 func_800213C0(void *, s32);
+s32 CdGetSector(void *, s32);
 s32 func_80021A8C(Unk80021938 *);
-void func_8002291C(void);
+void cd_onSectorReady(void);
 
 extern SpuReverbAttr D_80073690;
 extern s32 D_800736A4; /* reverb mode */

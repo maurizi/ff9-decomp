@@ -249,3 +249,11 @@ Format:
   MP -> 113. The writes come from evt_execInstr+0xB38C and +0xB4C8, the interpreter's only HP and MP stores, in
   cases 0xF1 and 0xF2 (character from getv, value from a 2-byte arg, capped at maxHp/maxMp).
 - names: EVT_OP_SET_HP, EVT_OP_SET_MP.
+
+## CD sector loading  (status: applied)
+- Redux disc 1, `field_dali_inn_moogle`: Moogle -> Save -> Save loads ovl_39 (resident ~180 frames later).
+  The first write to 0x801EDF00 is CD_getsector+0xB0 (a0 0x801EDF00, a1 0x200) from func_800213C0. Logging
+  func_800213C0: 29 calls into 0x801EDF00.. (0x801EDF00, 0x801EE700, ... size 0x200 words), all from
+  func_8002291C+0x64. Sampling 0x800761D0 per frame: +4 29 -> 28 -> 25 -> ... (sectors left), +0xC and +0x10 grow by
+  0x800 per sector, +0x14 = 0. func_800213C0's body is libcd's CdGetSector.
+- names: cd_onSectorReady, CdGetSector, g_cdLoad (sectorsLeft, bytesRead, chunkOfs, chunkIndex).

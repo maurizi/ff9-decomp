@@ -1040,7 +1040,7 @@ void func_8019C434(u8 status, u8 *result) {
             return;
         }
     }
-    func_800213C0(hdr, 3);
+    CdGetSector(hdr, 3);
     if (CdPosToInt((CdlLOC *)hdr) != D_8019DE10.unk44) {
         func_8019C434_retry();
         return;
@@ -1056,8 +1056,8 @@ void func_8019C434(u8 status, u8 *result) {
     D_8019DEA4 = 1;
     D_8019DE0C = 0;
     if (D_8019DE10.unk4C < 2) {
-        func_800213C0(D_8019DE10.unk90 + (D_8019DE10.unk80 << 11), 0x200);
-        D_800761D0.unkC += 0x800;
+        CdGetSector(D_8019DE10.unk90 + (D_8019DE10.unk80 << 11), 0x200);
+        g_cdLoad.bytesRead += 0x800;
         func_8019BCE8();
     } else {
         if (D_8019DE10.unk64 == 0) {
@@ -1079,8 +1079,8 @@ void func_8019C434(u8 status, u8 *result) {
                 D_801A07F0[D_8019DE0C] = D_8019DE10.unk58;
                 D_801A06F0[D_8019DE0C] = prev;
                 D_8019DE0C++;
-                func_800213C0(addr, 0x245);
-                D_800761D0.unkC += 0x800;
+                CdGetSector(addr, 0x245);
+                g_cdLoad.bytesRead += 0x800;
                 func_80023018();
                 func_8019BA70();
                 D_8019DE10.unk1 = 1;
@@ -1094,8 +1094,8 @@ void func_8019C434(u8 status, u8 *result) {
         }
         addr = D_8019DE10.unk78 + sect * 0x8F4;
         addr -= 0x20;
-        func_800213C0(addr, 0x245);
-        D_800761D0.unkC += 0x800;
+        CdGetSector(addr, 0x245);
+        g_cdLoad.bytesRead += 0x800;
         func_8019BA70();
     }
     D_8019DE10.unk14 = VSync(-1);
