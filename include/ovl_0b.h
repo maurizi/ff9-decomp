@@ -313,7 +313,8 @@ typedef struct {
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
 /* BtlUnit.status bits (runtime-checked ones only) */
-#define STATUS_REGEN 0x40000
+#define STATUS_REGEN 0x40000   /* timer at +0x44 (unk40[2]) */
+#define STATUS2_SLEEP 0x20000  /* timer at +0x48 (unk46[1]) */
 
 typedef struct BtlUnit {
     struct BtlUnit *unk0; /* next */
@@ -336,7 +337,7 @@ typedef struct BtlUnit {
     u8 unk33;
     s32 unk34;
     u32 status; /* STATUS_* bits; runtime: Regen sets 0x40000 */
-    u32 unk3C; /* status */
+    u32 status2; /* STATUS2_* bits; runtime: Sleep sets 0x20000 */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
     s16 unk66;
@@ -3767,7 +3768,7 @@ typedef struct {
 
 /* status bits set in either status word */
 static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
-    return (u->status & m) || (u->unk3C & m);
+    return (u->status & m) || (u->status2 & m);
 }
 
 /* disc cover open screen (func_800A882C) */
@@ -4078,7 +4079,7 @@ extern u8 D_8007AF01;
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 func_800B1B48_can(BtlCmd *arg1) {
-    if ((arg1->unk4->unk3C & 8) && (arg1->ability->unk8 & 2)) {
+    if ((arg1->unk4->status2 & 8) && (arg1->ability->unk8 & 2)) {
         func_800CD5C8(0x15);
         return 0;
     }

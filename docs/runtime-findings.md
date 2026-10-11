@@ -189,3 +189,9 @@ Format:
 - Afterwards Eiko's unit (units[2]) has +0x38 = 0x00040000, the other three 0; her +0x44 jumped 0x3C -> 0x4AA
   and then fell by 0xD2 per 60 frames (the Regen countdown).
 - names: MenuList.cursor, BtlUnit.status, STATUS_REGEN (0x40000).
+
+## Sleep status  (status: applied)
+- Redux disc 2, `battle_iifa_command`: Vivi, Blk Mag, row 3 (Sleep, MenuList.cursor 3) on the monster.
+  btl_setCmd(slot, 22, 0x1C, 0x10); the cast animation takes ~400 frames; btl_calcCmd(Vivi, monster, ..., 0xB) at
+  frame 3542; then the monster (units[4]) has +0x3C = 0x00020000 and +0x48 = 8046 (a timer; Regen's was +0x44).
+- names: BtlUnit.status2, STATUS2_SLEEP (0x20000).

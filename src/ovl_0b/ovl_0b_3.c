@@ -493,7 +493,7 @@ void func_800CA0A0(Unk800C9D1C *arg0, BtlUnit *arg1) {
 
     arg1->unk34 = arg0->unk0;
     arg1->status = arg0->unk4;
-    arg1->unk3C = arg0->unk8;
+    arg1->status2 = arg0->unk8;
     arg1->hp = arg0->unkC;
     arg1->mp = arg0->unkE;
     arg1->unk6C = arg0->unk43[0];
@@ -727,7 +727,7 @@ s32 func_800CAAD0(BtlScript *arg0, BtlUnit *arg1) {
         arg1->unkA0->unk3A = 0;
         arg0->unk0 |= 4;
     }
-    if ((arg1->unk3C & 0x02001002) || ((arg0->unk0 >> 2) & 1)) {
+    if ((arg1->status2 & 0x02001002) || ((arg0->unk0 >> 2) & 1)) {
         if (D_800F78A4->unk0->unk0 != -1) {
             return 0;
         }
@@ -947,7 +947,7 @@ s32 func_800CB3EC(BtlScript *arg0) {
 s32 func_800CB4E8(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->unk9C;
     BtlUnitA0 *a = arg1->unkA0;
-    if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->unk3C & 0x02001002))) {
+    if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->status2 & 0x02001002))) {
         D_800F78A4->unk2C->unk52 = 0;
         arg0->unk8 += 1;
         return 1;
@@ -1041,10 +1041,10 @@ s32 func_800CB884(BtlScript *arg0, BtlUnit *arg1) {
         if (((g_gameState->unk24 >> 4) & (one = 1)) == one) {
             goto end;
         }
-        f = arg1->unk3C;
+        f = arg1->status2;
         for (u = b->unk6F8; u != NULL; u = u->unk0) {
             if (u->unkB0 & arg0->unk4->unkC) {
-                f |= u->unk3C;
+                f |= u->status2;
             }
         }
         if (f & 0x14000000) {
@@ -1583,7 +1583,7 @@ void func_800CCDB8(Unk800CCD00 *arg0) {
         if (r->unk1D4 & u->unkB0) {
             continue;
         }
-        st = u->unk3C | u->status;
+        st = u->status2 | u->status;
         if ((st & 0x100) || !(st & 0x231B083A)) {
             continue;
         }
@@ -1661,7 +1661,7 @@ void func_800CD210(Unk800CCD00 *arg0) {
         if (g_gameState->unk1C->unk8E4.battle->unk1358.unk1D4 & u->unkB0) {
             continue;
         }
-        st = u->unk3C;
+        st = u->status2;
         if ((st & 0x100) || !(st & 0x88000000)) {
             continue;
         }
