@@ -216,6 +216,22 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - No progress: 8005A320 (multiple do-while barriers), 80059414 (288 first-block variants, best 13),
     8002E718 (an inline arrow helper computes x/y before the ternary like the original, 23 rows),
     8003595C and 8005681C (20-min permuter runs found nothing).
+- Pass 15: matched 8005A320 (0x2DC) and 8005D6BC (0x484). Both were semantic, not allocation tricks:
+  - 8005A320: D_8007F95A and D_80083174 are struct fields (D_8007F8F0.unk6A, the 0x7C channel-state
+    copy; D_80083168.unkC, the stream struct). gcc 2.8 alias analysis (MEM_IN_STRUCT_P) lets a load of a
+    plain scalar global move above a store through a struct pointer (`sw zero,0x18(a3)`), but not a load of
+    a struct field. The original kept the D_80083174 lw after the stores, so it had to be a field. Written
+    as fields, the plain tail order matches with no do-while barrier. When a scalar global's load or store
+    is scheduled across a pointer store differently from the original, check whether it lies inside a
+    known struct and write it as a field. Run a quick test with
+    `extern u32 X_a[1] __asm__("D_X"); #define D_X (X_a[0])`.
+  - 8005D6BC: the root-counter callback returns the elapsed ticks (`return t0;`, now `s32` in ff9.h, cast at
+    the func_80016EC0 call). The return copy to v0 gives the tail value a hard-reg preference, so
+    local-alloc puts it in v0 first and the address/sum registers follow. The copy `d` and the dead
+    initialiser are no longer needed. When a function's last block leaves a value in v0 that "nobody uses",
+    or local-alloc of the final block seems to start at the wrong pseudo, try returning that value.
+  - No progress: 80059414 (25-min permuter), 80047B90, 8002E718, 8001DE50, 8004DAD0, 8003595C. The
+    headers have details.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
