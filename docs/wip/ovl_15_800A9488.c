@@ -1,4 +1,10 @@
-/* STATUS: first draft, 413 of 1575 rows differ (aligned, cmp.py). ovl_15 func_800A9488 (0x189C, Blackjack main loop: 14-state machine in D_800B0DF8 plus the bankroll/wager/button text). Control flow, frame (0x1C8: buf[16] at sp18, ofsX[3] sp28, ofsY[3] sp38, hands sp48/spB0/sp118, spilled pseudos at sp180-sp19C) and most blocks line up. Findings: case 7 comes before case 6 in the source; the bankroll updates are 'D_800AE0E8 -= (h.unk0 & 4) ? bet * 2 : bet' (the ternary makes gcc keep &D_800AE0E8 in a0); the random byte must be a statement-expression macro with an s32 temp (the ff9.h inline function evaluates the rhs before the &ofsX[i] address and misses an s-reg in case 7); func_800AB1B8/func_800ACF48 must be undeclared (implicit int: no andi 0xFF), they are defined after this function in ovl_15.c. Left: (1) global alloc puts nsplit in s8 and the hoisted 0x88888889 (/30) in s7; the original has nsplit in s7 and the constant in fp. Two extra nsplit references flip it (381 rows), so nsplit's ref count is slightly low or the constant's slightly high; (2) cases 6/8-11 (0xC00-0xFFF, ~230 rows): the original keeps more separate copies of the win/lose/bankroll blocks (cross-jumping only merged tails because reload picked different t1/t2 spill regs), ours merges them; (3) the hoisted constants (-1, 1, 4, 0xF00000, %hi(D_800B0DF8), ...) are spilled and rematerialised in t1/t2, and which of t1/t2 each reload gets differs in places. INTEGRATION NEEDS A CONFIG CHANGE: the function's .rodata holds UI strings ("%2d", "Bankroll", "%ld", "Wager", "Stand", "Hit", "Double", "Split" at D_800A7018-D_800A7048) before its jump table; they need their own rodata split / INCLUDE_RODATA file so the C can reference them as extern symbols (no UI literals in C). The header change s32 func_800A9488(void) is already in ovl_15.h. */
+/* STATUS: first draft, 400 of 1575 rows differ (aligned, cmp.py; was 413). ovl_15 func_800A9488 (0x189C, Blackjack main loop: 14-state machine in D_800B0DF8 plus the bankroll/wager/button text). Control flow, frame (0x1C8: buf[16] at sp18, ofsX[3] sp28, ofsY[3] sp38, hands sp48/spB0/sp118, spilled pseudos at sp180-sp19C) and most blocks line up. Findings: case 7 comes before case 6 in the source; the bankroll updates are 'D_800AE0E8 -= (h.unk0 & 4) ? bet * 2 : bet' (the ternary makes gcc keep &D_800AE0E8 in a0); the random byte must be a statement-expression macro with an s32 temp (the ff9.h inline function evaluates the rhs before the &ofsX[i] address and misses an s-reg in case 7); func_800AB1B8/func_800ACF48 must be undeclared (implicit int: no andi 0xFF), they are defined after this function in ovl_15.c. Left: (1) global alloc puts nsplit in s8 and the hoisted 0x88888889 (/30) in s7; the original has nsplit in s7 and the constant in fp. Two extra nsplit references flip it (381 rows), so nsplit's ref count is slightly low or the constant's slightly high; (2) cases 6/8-11 (0xC00-0xFFF, ~230 rows): the original keeps more separate copies of the win/lose/bankroll blocks (cross-jumping only merged tails because reload picked different t1/t2 spill regs), ours merges them; (3) the hoisted constants (-1, 1, 4, 0xF00000, %hi(D_800B0DF8), ...) are spilled and rematerialised in t1/t2, and which of t1/t2 each reload gets differs in places. INTEGRATION NEEDS A CONFIG CHANGE: the function's .rodata holds UI strings ("%2d", "Bankroll", "%ld", "Wager", "Stand", "Hit", "Double", "Split" at D_800A7018-D_800A7048) before its jump table; they need their own rodata split / INCLUDE_RODATA file so the C can reference them as extern symbols (no UI literals in C). The header change s32 func_800A9488(void) is already in ovl_15.h.
+ Pass 16: the local externs of the UI strings conflicted with ovl_15.h (const char); removed, 400 rows. The
+ five copies of the fade ramp (`t < 0x10 ? t * 16 : t < 0x85 ? 0xFF : (0x94 - t) * 16`) as an inline or a
+ macro score 378 rows but only 1541 instructions (more merging), so the original has them written out.
+ In case 6 the original stores res (spilled, 0x188(sp)) in the jal delay slot of func_8002F488, i.e. before
+ the call, and every win/lose arm has its own `lui/lw/lw; j` pair into the shared D_800AE0E8 store; ours
+ jumps from the first arm into code shared with a later block. */
 #include "ovl_15.h"
 extern Ovl15Shoe D_800B0E08;
 
@@ -14,14 +20,6 @@ void func_800AAFFC(void);
 s32 func_800AAFA4(void);
 s32 func_800AAD24(void);
 s32 func_800A8F00(s32, s32);
-extern char D_800A7018[]; /* "%2d" */
-extern char D_800A701C[];
-extern char D_800A7028[]; /* "%ld" */
-extern char D_800A702C[];
-extern char D_800A7034[];
-extern char D_800A703C[];
-extern char D_800A7040[];
-extern char D_800A7048[];
 
 #define RND3() (({ s32 r_; if (D_8007B720 >= D_8007B92D) { func_8004BF20(); } r_ = *D_8007B720++; r_; }) % 3)
 
