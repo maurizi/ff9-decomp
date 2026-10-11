@@ -434,6 +434,22 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     the local d (s0) gives p an s0 preference; AB810's fold needs i = 0 in another basic block; AB07C needs a loop
     that loop.c marks invalid (setjmp, address-taken label or a jump into it).
   Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
+- Pass 16: matched AC37C (0x1130) and CD210 (0x3B8).
+  - AC37C: quad 2's max chain has a duplicated test, `k = z[3]; if (k < z[3]) k = z[3]; if (k < z[6]) ...`
+    (z[4] was meant; z[6]/z[7] duplicated also match). CSE folds the test away, but cse_end_of_basic_block
+    builds the path before processing it, so the dead branch still uses one of the PATHLENGTH (10) slots. That moves
+    every cse path boundary: quad 2 is then never on a path with quad 0's 0x1F/0xFF/mask registers (fresh constants
+    and a hi copy), and quad 3 is (it reuses them but doesn't see tu = 0). The lo_sum address register is gone too.
+    So when per-block cse knowledge looks inconsistent, count the branches each path has to take, including ones
+    that disappear later.
+  - CD210: the level variable is `s16 bone` (the bone index from the table, then `bone = q` with an s32 q). An s32 to
+    s16 assignment is a (subreg:HI) set, not a register copy, so make_regs_eqv never runs and the else arm keeps
+    comparing q (a2) while bone holds the copy (t0). Also `y` is one s16 variable for the attach height, scaled in
+    place, and the height add is `b->unk18 + (y << 4)`: convert.c narrows a left shift to the 16-bit store but not a
+    multiply, so `y * 16` keeps the sign extension. The xor operand order needs `(s16)q != (s16)(...)`.
+  - DA1F4: the order after the loop decides the CSE class head for the in-loop *p load (e = p copy); see the header.
+  - The gcc 2.8.1 sources are in build/gcc of the agent worktree (fetched from ftp.gnu.org).
+  Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
