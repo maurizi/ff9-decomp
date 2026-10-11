@@ -1,4 +1,4 @@
-/* 5 rows (cmp with symbol names): only the scheduling of lui %hi(D_80083174) (the original hoists it above sw zero,0x18(a3)) and ori 0xFFFFFF. Pass 8: `D_80080A10->unk18 = 0; x = 0xFFFFFF; do { } while (0); D_8007F95A = 0;` (6 -> 5); expression orders, dup sweep no change. */
+/* 5 rows (cmp with symbol names): only the scheduling of lui %hi(D_80083174) (the original hoists it above sw zero,0x18(a3)) and ori 0xFFFFFF. Pass 8: `D_80080A10->unk18 = 0; x = 0xFFFFFF; do { } while (0); D_8007F95A = 0;` (6 -> 5); expression orders, dup sweep no change. Pass 14: the do { } while (0) is a sched2 region barrier (loop notes); without it every order of the three tail statements gives 9 rows. The original has lui %hi(D_8007F95A) and lui %hi(D_80083174) both before the sw zero,0x18(a3), i.e. in the same region as that store, while the D_80083174 lw stays after the stores. All 120 placements of the four tail statements around the D_8007F790 if (with and without the barrier) and 10 spellings of the mask expression: best 5. */
 #include "ff9.h"
 
 void func_8005A320(s32 addr, s32 restore) {

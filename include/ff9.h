@@ -573,6 +573,8 @@ s32 func_8002B980(u8 *, s32);
 #endif
 extern s32 D_8006BBFC[];
 extern s32 D_8006BC18[];
+extern u8 D_80077080[];
+extern u8 *D_800770A8;
 extern s32 D_800770AC;
 extern u8 *D_800770B0[]; /* menu strings (func_8002BE44) */
 extern s32 D_800770F0[];
@@ -1988,6 +1990,8 @@ void func_8002705C(RECT *, s32, s32);
 s32 func_80027710(s32, s32, s32, void *, u8);
 u8 *func_8002AD38(u8 *, u8 *);
 s32 func_8002AE7C(u8 *);
+s32 func_8002B9B8(u8 *s);
+s32 func_8002BA10(u8 *s);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* advance width */

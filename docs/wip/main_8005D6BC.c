@@ -1,4 +1,4 @@
-/* STATUS: 24 rows (cmp.py). The whole loop matches once the GetRCnt start value t0 is spilled. Here the tail uses a separate d (t0's refs drop, so t0 loses its s-reg to the hoisted &D_80083158 (fp), as in the original), but the original also keeps the tail value in the 0x10(sp) slot (reloads into t0/v0), i.e. d and t0 look like one spilled pseudo. Reusing t0 for the tail raises its priority above the hoisted address (t0 8 refs/207 insns vs 9/314). Wrapping the D_80083158 unk8 test and the unk4 &= ~0x100 block in do { } while (0) (loop depth weights refs) gets t0 reused and spilled (45 rows): then only the spill register is a3 instead of t0 and the tail registers are shifted by one (the original reloads into v0). Pass 13 (galloc numbers): with t0 reused for the tail (`t0 = GetRCnt(0xF2000002) - t0; if (t0 <= 0) t0 += 0x44E8;`) t0 is pseudo 80 with 8 refs / 207 insns (pri 0.116) against the hoisted &D_80083158 (182) at 9 / 314 (0.086). 182 has to win the last s-register (fp) so that t0 is spilled. That needs t0 at 7 refs or fewer (2*7/207 = 0.068) or a live length of 280+. Every tail spelling tried keeps 8 refs: if ((t0 = ...) <= 0), a ternary, the sum via D_8006F324[3], a d = t0 copy, and rotating the array through memory. */
+/* STATUS: 11 rows (cmp.py), all in the tail block (local-alloc of the D_8006F324 rotation). Pass 14: the start value t0 is reused for the tail (`t0 = GetRCnt(0xF2000002) - t0; if (t0 <= 0) t0 += 0x44E8;`) and then copied into d (`d = t0;`), which the tail uses. The copy survives CSE only if d is mentioned before the tail's CSE block (cse make_regs_eqv makes d the canonical reg only when it lives outside the block); the dead `s32 d = 0` initialiser does that and flow deletes it, so d is block-local. With the copy t0 has 7 refs / 200 insns (0.070) and loses to the hoisted &D_80083158 (182, 0.086), which now gets fp; t0 is spilled to 0x10(sp) and reloaded through t0 exactly like the original, so the whole loop and the GetRCnt/bgtz/sw sequence match without any do-while (reusing acc or now for the copy also spills t0: 19 rows). Remaining: the original's tail has d in v0, a in v1, &D_8006F324 in a0, its hi in a1, b in a2, e in a3 (and hi(D_8006F31C) a0); here d and the address swap (a0/v0) with `d + (a + b + e)`, 13-15 rows with the other sums. Tried: all 4! load orders with the copy first/last x 6 sums, and all 120 sum trees with two copy positions (best 11). The original allocates the address after d and a, which a block-local address pseudo (7 refs, highest local priority) never is. */
 #include "ff9.h"
 
 void func_8005D6BC(void) {
@@ -13,7 +13,7 @@ void func_8005D6BC(void) {
     s32 a;
     s32 b;
     s32 e;
-    s32 d;
+    s32 d = 0;
 
     t0 = GetRCnt(0xF2000002);
     D_8007E3C8[1] = D_8007E3C8[0];
@@ -101,10 +101,11 @@ void func_8005D6BC(void) {
             func_8005CF04();
         }
     } while (n != 0);
-    d = GetRCnt(0xF2000002) - t0;
-    if (d <= 0) {
-        d += 0x44E8;
+    t0 = GetRCnt(0xF2000002) - t0;
+    if (t0 <= 0) {
+        t0 += 0x44E8;
     }
+    d = t0;
     a = D_8006F324[1];
     b = D_8006F324[2];
     e = D_8006F324[3];
@@ -112,5 +113,5 @@ void func_8005D6BC(void) {
     D_8006F324[0] = a;
     D_8006F324[1] = b;
     D_8006F324[2] = e;
-    D_8006F31C = a + b + e + d;
+    D_8006F31C = d + (a + b + e);
 }
