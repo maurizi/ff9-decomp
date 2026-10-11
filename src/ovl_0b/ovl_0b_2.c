@@ -5498,7 +5498,83 @@ void func_800E14D8(u32 arg0, Pool6C *arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E1534);
+Pool6CEntry *func_800E1534(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {
+    Pool6CEntry *e;
+    s32 i;
+    u32 k;
+    u8 *p;
+    EffElemHdr *h;
+    EffElem *el;
+    s32 *q;
+    s32 v;
+
+    e = arg1->unkC;
+    for (i = 0; i < arg1->unk0; i++, e++) {
+        if (e->unk30 == 0) {
+            if (arg1->unk8 < i) {
+                arg1->unk8 = i;
+            }
+            p = arg2;
+            for (k = 0; k < 0x6C; k += 4) {
+                *(s32 *)((u8 *)e + k) = 0;
+            }
+            e->unk30 = 1;
+            e->unkE = 0;
+            e->unk10 = 0;
+            e->unk32 = 0;
+            e->unk34.s.x = 0;
+            e->unk34.s.y = 0;
+            e->unk14 = 0;
+            e->unk3A = 0xFF;
+            e->unk22 = 0;
+            e->unk0 = (EffFileHdr *)p;
+            if (*p != 0xFF) {
+                p += 0x28;
+            } else {
+                p += 0x10;
+            }
+            if (((u8 *)e->unk0)[1] != 0) {
+                p += 0x38;
+                e->unk4 = (EffSub *)p;
+                p += 0x28;
+            } else {
+                e->unk4 = NULL;
+            }
+            h = (EffElemHdr *)p;
+            p += 0x14;
+            el = (EffElem *)p;
+            e->unk18 = el;
+            i = 0;
+            p += h->unk4 * 0x28;
+            for (; i < h->unk4; i++, el++) {
+                if (el->unk0 != 9) {
+                    if (el->unk1C != -1 && !(el->unk1C & 0x80000000)) {
+                        el->unk1C = (s32)arg2 + el->unk1C;
+                    }
+                }
+                if (el->unk1 != 0xFF) {
+                    if (el->unk20 != -1 && !(el->unk20 & 0x80000000)) {
+                        el->unk20 = (s32)arg2 + el->unk20;
+                    }
+                }
+            }
+            /* unk24 (tail), unk28, unk2C written through one pointer */
+            q = (s32 *)&e->unk24;
+            q[0] = (s32)p;
+            v = *(s32 *)p;
+            k = (u32)p;
+            if (v == -1) {
+                *(s32 *)&((EffTail *)k)->unk3C = 0;
+            }
+            q[1] = arg3;
+            q[2] = arg3;
+            do {
+            } while (0);
+            return e;
+        }
+    }
+    return NULL;
+}
 
 void func_800E1708(Pool30 *arg0, s32 arg1, s32 arg2) {
     Pool6CEntry *m = (Pool6CEntry *)arg1;
