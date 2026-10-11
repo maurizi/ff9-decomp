@@ -163,6 +163,7 @@ void func_801F0F38(s32, s32, s32, s32);
 extern s32 D_801F740C[]; /* colour by state */
 extern u8 D_801F40EC[];  /* item names */
 extern u8 D_801F6540[];  /* ability names */
+extern u16 D_801F33C8[][2]; /* cursor x per slot */
 /* main exe: candidates for ff9.h */
 extern s32 D_80070400;
 extern s32 D_800704B8;

@@ -342,7 +342,75 @@ void func_801EF560(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_33/nonmatchings/ovl_33", func_801EF644);
+void func_801EF644(void) {
+    RECT *r;
+    MenuList *l;
+    Unk80077DE8 *h3;
+    s32 i;
+    s32 y;
+    u16 k;
+    u8 blink;
+    u8 done;
+    s16 ry;
+
+    done = 0;
+    blink = (D_80077E54 & 3) != 0;
+    func_80035674(D_801FBF84.unk1 != 1);
+    if (func_8002F810()) {
+        return;
+    }
+    if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || blink) {
+        Unk80077DE8 *h1;
+        r = &D_801FBF84.unk28;
+        h1 = &D_80077DE8;
+        k = D_801F33C8[D_801FBF84.unk0][0] - 0x18;
+        D_80077DE8.unk0 = r->x + k;
+        ry = r->y + 8;
+        h1->unk4 = 0x17;
+        h1->unk2 = ry;
+        func_800355E4();
+    }
+    if (D_801FBF84.unk1 == 2 || (D_801FBF84.unk1 == 3 && blink)) {
+        Unk80077DE8 *h2;
+        l = &D_801FBF84.unk8[D_801FBF84.unk0];
+        h2 = &D_80077DE8;
+        k = l->unk7;
+        k ^= (l->unk8 >> 3) & 1;
+        k = k * 150 - 10;
+        D_80077DE8.unk0 = D_801FBF84.unk48.x + k;
+        k = l->unk6 * 15 + 10;
+        h2->unk4 = 0x17;
+        h2->unk2 = D_801FBF84.unk48.y + k;
+        func_800355E4();
+    }
+    if (D_801FBF84.unk1 == 3) {
+        r = &D_801FBF84.unk58.unk4;
+        if (D_801FBF84.unk3 & 0x80) {
+            D_80077DE8.unk4 = 0x12;
+            if (blink) {
+                for (i = 0; i < 4; i++) {
+                    y = i * 0x2B + 0x12;
+                    if (D_8006794C->unk1C->unk54C[i] != NULL) {
+                        func_800270EC(r->x - 10, r->y + y, D_80077DE8.unk4);
+                        if (!done) {
+                            D_80077DE8.unk0 = r->x - 10;
+                            done = 1;
+                            D_80077DE8.unk2 = r->y + y;
+                        }
+                    }
+                }
+            }
+        } else {
+            D_80077DE8.unk0 = D_801FBF84.unk58.unk4.x - 10;
+            h3 = &D_80077DE8;
+            k = D_801FBF84.unk3 * 0x2B + 0x12;
+            ry = r->y;
+            h3->unk4 = 0x12;
+            h3->unk2 = ry + k;
+            func_800355E4();
+        }
+    }
+}
 
 void func_801EF900(s32 slot, s32 arg1) {
     EquipMenu *m;
