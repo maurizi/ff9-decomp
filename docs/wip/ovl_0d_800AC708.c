@@ -17,7 +17,16 @@
  * case-2 copy matches it) moved to the preheader; the original keeps it in both cases. 64 spellings of the two
  * w computations (t * 42 / 28, `w = t; w = w * 42 / 28`, t * 21 * 2, ...) and a user-variable start (`w = t;
  * w *= 42;`, lever: loop.c does not hoist through a user variable) never get below 373 rows / 426 insns
- * (341 rows at 429 insns with `w = t; w = w * 42 / 28;` in both cases). */
+ * (341 rows at 429 insns with `w = t; w = w * 42 / 28;` in both cases).
+ * Pass 20 (loop.c arithmetic, `dumpf.sh f.c -dL`): move_movables moves a movable when
+ * threshold * savings * lifetime >= insn_count, threshold = (call ? 1 : 2) * (1 + n_non_fixed_regs) - 3 per insn
+ * already moved. Our loop has 225 insns; moves: 197 (savings 1, life 92), 228 (3, 3), 233 (4, 4), then the 21t chain
+ * 420 (4, 4). From 228 being moved here and "not desirable" in the len-in-loop variant (233 insns), the initial
+ * threshold is 28-31, so 420 stays in the loop only if 5-6 movables are moved before it (or its savings*life
+ * drops to 12 with 4 moves before). The original's preheader is the /28 magic (lui/ori) *before* the t * 51 chain,
+ * then mult/mfhi/sra for len: so the magic's first occurrence in the loop body precedes len's t * 51, i.e. len is
+ * probably computed in the loop after a `/ 28` that appears earlier in the body (case 1's w), not as its first
+ * statement. Not tried yet. */
 #include "ovl_0d.h"
 
 typedef struct {

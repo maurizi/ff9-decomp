@@ -14,6 +14,9 @@
  *    so the real shape is probably a different statement order of the v/p loads or difference temps.
  * Left: `t` (n0's triangle) is in s0 here, t7 in the original; area's final subu and the r.vx store come
  * after the second triangle's v[*].vx loads in the original; one extra insn.
+ * Pass 20: without the permuter's new_var (a fake temp) the draft is 93 rows, shape 23 (397 vs 398 insns): the
+ * original's extra callee-saved register (s6 saved, never used) and the first cross product's mflo in s3 are the
+ * shape difference. nv (0x38) and r (0x48) live on the stack. Not changed this pass.
  */
 #include "ovl_0a.h"
 

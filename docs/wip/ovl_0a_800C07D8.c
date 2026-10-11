@@ -24,6 +24,12 @@
  * `const` on the parameters gives that (RTX_UNCHANGING_P stack slots) but reload then rematerialises
  * the loads at their uses (REG_EQUIV mem) and sinks them (85 rows). Not found: a form that keeps the
  * pseudos and still frees the loads of the store dependences.
+ Pass 20: shape diff 8 rows (the three lbu and the e->unk8 store), registers otherwise right except the read-back
+ loop. Our sched1 order is `sw e->unk8`, the three stack-arg lbu, `lbu e->unk1`, `sb e->unk0`; the original's has
+ the lbu at the top and `sb unk0` before `sw unk8`. Making arg5-7 multi-set (a later reassignment, so they are
+ not "birthing" in adjust_priority) does not move them, nor does a K&R definition. With `e->unk0 = 0x80;` first the
+ lbu land right before the sb but the n/size computation sinks to the sw (29 rows); reusing size/t/y for p->unk20
+ (to make n/size multi-set) is 17-74.
  */
 #include "ovl_0a.h"
 

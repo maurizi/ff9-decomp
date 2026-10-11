@@ -10,7 +10,14 @@
  original's off + 0x32 first (27 -> 25). Pass 19: a pointer local for the
  state >= 2 test (`p = &D_801FAB78; if (p->unk1 >= 2 && ...)`, three spellings) compiles identically (cse folds the
  constant address back into %lo addressing), and giving any multiply-assigned local its own copy per
- assignment (build/splitvar.py) changes nothing. */
+ assignment (build/splitvar.py) changes nothing.
+ Pass 20 (shape first): the register-masked diff (cmp_shape.py --shape) is 2 real rows, all in the state>=2 test:
+ the original materialises &D_801FAB78 (`lui a1; addiu v0,a1,%lo; lbu v1,1(v0)`, hi and full address in different
+ registers) where ours loads through %lo(D_801FAB78+1); the 3 other shape rows are %hi(D_801FAB7E) name false
+ positives. The split hi/full registers look like a hi pseudo that reload rematerialised (constant-equivalent,
+ no hard reg) rather than a local copy. Not found: a function-level `ItemMenu *p = &D_801FAB78` used in blocks
+ 3, 4 and 5 or only in the test (25 rows), a switch on unk1 (case 2 body / default blink body, 37-38 rows).
+ */
 #include "ovl_37.h"
 
 extern s32 D_80077E54;

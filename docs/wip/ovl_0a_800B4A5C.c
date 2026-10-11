@@ -31,6 +31,12 @@
  * Pass 14: a goto-built sprite loop (no loop notes) is 48 rows, so loop.c does run on it; a `tpp = tp`
  * copy in the loop with tp or tpp in the draw loop (6/58 rows), a reused `void **q` for both arrays
  * (18-22) and setDrawTPage() instead of setlen + code[0] (5) don't help.
+ Pass 20: shape diff (cmp_shape.py --shape) = the same 5 rows (pure scheduling). Note on the hole: the frame needs
+ only 4 more bytes (var_size 24 -> 28 rounds to 32), and since purge_addressof runs after cse1 and puts an
+ ADDRESSOF into the stack when it is used as a value, any variable whose address escapes as a value later than the
+ func_8001D910 call (and is never otherwise accessed) gives the slot at 0x28. A sprite-setup inline taking
+ (SPRT **, DR_TPAGE **, ...) to explain the deleted `move` (the copy of &tp[0]) is much worse (75-127 rows,
+ 331-333 insns: the spr[i] reloads go away).
  */
 #include "ovl_0a.h"
 

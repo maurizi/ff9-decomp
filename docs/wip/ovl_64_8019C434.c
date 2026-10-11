@@ -1,4 +1,4 @@
-/* STATUS: logic right, 36 rows (pass 15; was 54, 89; 2 of the 36 are cmp.py symbol-name false positives). ovl_64 func_8019C434 (0x3B0, CdReadyCallback of the FMV stream:
+/* STATUS: byte-identical but needs a dead block-local `last` assignment, not integrated (pass 20; was 36, 54, 89). ovl_64 func_8019C434 (0x3B0, CdReadyCallback of the FMV stream:
  header check, ring bookkeeping, next sector read). The two timeout blocks are cross-jumped in the original (keep both
  copies in C).
  Pass 6 fixes: the signature is (u8 status, u8 *result) as in ovl_64.h (callers pass two args); `prev` is an
@@ -28,7 +28,20 @@
  source order) and indexes both arrays with the old value: `r = D_8019DE0C++; D_801A07F0[r] = ...; D_801A06F0[r]
  = prev;` (before or after the addr statement, or with the address in the call) is 51-52 rows, because sched1 then
  issues the store before the unk68/unk5C loads. Block-local last/addr in either block (16 combinations) and
- per-assignment variable splits: 36-39. */
+ per-assignment variable splits: 36-39.
+
+ Pass 20: BYTE-IDENTICAL (make verify 20/20 with it integrated), but NOT integrated because it needs a dead
+ assignment: each address block computes `unk5C - 1` into its own block-local `last` inside the expression,
+ `sect = unk68 * unk5C - (unk64 - (last = unk5C - 1));`, and `last` is never read. That assignment does two
+ things: fold cannot reassociate `unk64 - (unk5C - 1)` into `(unk64 + 1) - unk5C`, and the block-local pseudo is
+ tied in place to the dying unk5C register (addiu a3,a3,-1). Without it: casts ((s32), (u32), (u16)) do not stop
+ fold (8 shape rows), a separate `last = unk5C - 1;` statement before or after the mult is 10-26 rows, an inline
+ `last_sect()` is 10 (preexpand_calls moves the call first), and inlining the whole address is 24+.
+ The other two pieces are clean: a separate `sect` statement (shape 22 -> 14) and `addr = unk78 + sect * 0x8F4;
+ addr -= 0x20;` (unk78 then loads late, right before the add, as in the original). The 4 rows cmp_shape still
+ prints are symbol-name false positives (%hi(D_8019DE68), %hi(D_8019DE24) = D_8019DE10 + 0x58 / + 0x14).
+ To integrate (if the dead `last` is acceptable): move func_8019C434_retry, D_801A07F0/D_801A06F0 and the
+ func_80022F64 / DecDCToutSync prototypes below into include/ovl_64.h, then tools/integrate.py this file. */
 #include "ovl_64.h"
 void func_80022F64(s32);
 s32 DecDCToutSync(s32);
@@ -56,7 +69,6 @@ void func_8019C434(u8 status, u8 *result) {
     s32 r;
     s32 prev;
     s32 sect;
-    s32 last;
     u8 *addr;
     Ovl64RingHdr *h;
 
@@ -102,7 +114,12 @@ void func_8019C434(u8 status, u8 *result) {
             }
             h = &D_8019DE10.unk74[prev];
             if (!(h->unk0 & 0x1000)) {
-                addr = D_8019DE10.unk78 + (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1))) * 0x8F4 - 0x20;
+                {
+                    u32 last;
+                    sect = D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1));
+                }
+                addr = D_8019DE10.unk78 + sect * 0x8F4;
+                addr -= 0x20;
                 D_801A07F0[D_8019DE0C] = D_8019DE10.unk58;
                 D_801A06F0[D_8019DE0C] = prev;
                 D_8019DE0C++;
@@ -115,7 +132,12 @@ void func_8019C434(u8 status, u8 *result) {
             }
             h->unk0 = (h->unk0 & 0xFFF) | 0x6000;
         }
-        addr = D_8019DE10.unk78 + (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1))) * 0x8F4 - 0x20;
+        {
+            u32 last;
+            sect = D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1));
+        }
+        addr = D_8019DE10.unk78 + sect * 0x8F4;
+        addr -= 0x20;
         func_800213C0(addr, 0x245);
         D_800761D0.unkC += 0x800;
         func_8019BA70();
