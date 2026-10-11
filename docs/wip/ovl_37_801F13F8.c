@@ -7,7 +7,10 @@
  where the original materialises &D_801FAB78 in v0 (hi in a1) and keeps the constant 2 in t0, i.e. both
  live longer there (probably another D_801FAB78 read or == 2 test in one of the copies); the xor result
  (k) is in a1 in both xor blocks; 223 vs 224 insns. `(s16)(off + 0x32)` (like block 3's cast) gives the
- original's off + 0x32 first (27 -> 25). */
+ original's off + 0x32 first (27 -> 25). Pass 19: a pointer local for the
+ state >= 2 test (`p = &D_801FAB78; if (p->unk1 >= 2 && ...)`, three spellings) compiles identically (cse folds the
+ constant address back into %lo addressing), and giving any multiply-assigned local its own copy per
+ assignment (build/splitvar.py) changes nothing. */
 #include "ovl_37.h"
 
 extern s32 D_80077E54;

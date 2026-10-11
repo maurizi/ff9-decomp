@@ -14,7 +14,11 @@
  col in place and the sub/grp shape (build/w/f45b.c in the pass-17 worktree) but swap unk3/q in both blocks
  (75 rows); all 140 orders of block 2's statements (build/w/topo.py) give 50+ with that form. Permuter 14 min
  on f45b: only `if (h) A else A` duplicates (45 rows).
- */
+
+ Pass 19: the original's row/col and grp/sub pairs multiply the unmasked quotient (srl; sll/subu; subu; andi)
+ and mask the u8 row later (`andi a3, v1, 0xff`); `col = unk3 % 15` before/after row, `col = unk3 - unk3 / 15 * 15`,
+ `sub = col % 5` / `col - col / 5 * 5` in either order (30 combinations): 37-77 rows, the 37-42 ones 1-2 insns
+ too long. Per-assignment variable splits (build/splitvar.py): no change. */
 #include "ovl_3a.h"
 
 extern s32 D_80077DEC;

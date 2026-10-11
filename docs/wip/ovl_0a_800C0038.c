@@ -31,6 +31,22 @@
  * Left: the st->unk4 copy / a->unk14.vx loads swap v0/v1 at 0xA8. The struct copy `st->unk10 = st->unk4`
  * (C0DF4's spelling) gets the registers right, but its lw then lands after the lhu (with vx first: 4 rows).
  * hill.py over the setup block, declmove, and every st-vs-D_800CA068 spelling: no gain.
+ * Pass 19 (local-alloc + sched trace, build/lasim.py in the pass-19 worktree simulates the block's
+ * local-alloc from an insn order and reproduces the observed dispositions). Insns: HB = lui %hi(D_800C9DB4),
+ * HS/ST = &D_800CA068, BL = bg load, CL/CS = copy load/store, VL/VS = vx load/store, UL = bg->unk18 load,
+ * ADD = c. All six locals are 2-ref qtys except bg (3), so qty_compare is pure live length with ties to
+ * the earlier birth. Our sched1 order is HB HS ST BL CL UL VL CS VS ADD (copy v1, vx v0). The order
+ * `c = ...; v.vx = ...; st->unk10 copy;` (C X P) gives HB HS ST BL VL UL CL VS CS ADD: every register is
+ * the original's (copy v0, vx v1, bg a0, unk18 a2), 4 rows, but sched2 keeps VL before CL and VS before CS
+ * (after reload the sp store and the st store are output-dependent, so their sched1 order is final; CL
+ * then ranks below VL because CS was the last insn scheduled). The original needs a sched1 order with
+ * CS before VS and the right registers; of the 70 such orders lasim finds, the plausible one is
+ * HB HS ST BL UL CL VL CS VS ADD, i.e. the unk18 load issued before both loads. In the backward list
+ * scheduler UL only becomes ready after ADD is scheduled, and the ready list is re-sorted only when new
+ * insns arrive (SCHED_SORT), so the class/LUID ranking at T-46 decides it; no statement order gets there
+ * (all 7! orders of the setup lines, plus 168 block/bg/temp variants: best 4). A block-local
+ * `{ s16 vx = a->unk14.vx; c = ...; v.vx = vx; }` after the copy gets the final load order right but
+ * gives bg a2 / unk18 a0 and changes the y clamp (9-10 rows). The body below is the C X P order.
  */
 #include "ovl_0a.h"
 
@@ -64,8 +80,8 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     bg = D_800C9DB4;
     st = &D_800CA068;
     c = (Unk800C9DB4Cam *)((u8 *)bg + bg->unk18);
-    *(s32 *)&st->unk10 = *(s32 *)&st->unk4;
     v.vx = a->unk14.vx;
+    *(s32 *)&st->unk10 = *(s32 *)&st->unk4;
     v.vy = a->unk14.vy - st->unk76;
     c = &c[st->unk75];
     v.vz = a->unk14.vz;

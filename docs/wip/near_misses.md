@@ -758,6 +758,33 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * The reverse also happens: in B0124 the kind-9 `d` must stay the variable shared with state 4 (17 rows split).
     Per-region locals did nothing or hurt in C65CC, C519C, BB714 (+650), B4A5C, A741C, C07D8.
 
+- Pass 19 (overlay agent): matched 0a AA4E8 (was 57 rows). Improved: 0a BD130 12 -> 9. C0038 stays at 4 but
+  now has the original's registers (only two load/store pairs in the wrong order).
+  * AA4E8: `n = func_8001DAA4(...)` shared its variable with the later `n = D_80067948`. Two sets in two
+    blocks make n a global allocno, so local-alloc gave the call-crossing %hi(D_80067948) (local) s0 first
+    and n got s1. With a block-local `s32 m = func_8001DAA4(...)` the result is a local that outranks the
+    %hi: m s0, %hi s1, and global-alloc then also swaps f/c and vp/ent into the original's registers
+    (57 -> 5). The last 5 rows: loop 2 reads `x2 = vp->unk10` before `y2 = vp->unk12`. Lesson: a
+    "register swap" across a whole function can come from one variable that is reused in two places; check
+    the .greg conflicts for a hard callee-saved register (`;; N conflicts: ... 16`), which means local-alloc
+    gave that register to something in the pseudo's range.
+  * C0038: build/lasim.py (pass-19 worktree) simulates local-alloc for one block from an insn order
+    (qty_compare = floor_log2(refs) * refs / (2 * insns), ties to the earlier birth; find_free_reg's
+    [birth, death) ranges) and reproduced the observed dispositions. Enumerating the topological orders
+    of the 10 insns shows which sched1 orders give the original's registers, which turns a register
+    question into a scheduling one.
+  * sched.c's ready list is only re-sorted when new insns arrive (SCHED_SORT: swap_sort for one, qsort for
+    more), so the class rank (data-dependent on last_scheduled_insn) is computed once per arrival, not per
+    pick. After reload, sp stores are output-dependent on other stores, so their sched1 order is final.
+  * BD130: `Unk800C9DB4 *bg = D_800C9DB4;` as a local made the original's load order (12 -> 9).
+  * build/splitvar.py (pass-19 worktree) gives each assignment of a multiply-assigned local its own copy and
+    scores every split: nothing in C65CC, C07D8, C434, F459C, BD130, B4A5C, C0038, EF644, F13F8.
+- Matched 0a BB714 / 0c CA1D8 (not byte-identical twins: 0c shifts the Z sum one more, `>> 5` and `/ 3 >> 3`).
+  What closed it (from ~260 rows): a/b words with `a & 0xFFFF` / `b & 0xFFFF` expressions in the 4-vertex
+  loops; in the 3-vertex loops `b = s->unk0[2]` (u16 field) with `D_80070520[(u16)b]` in the Z sum (duplicated
+  sll, lhu); `otz = (otz & 0xFFFFF) / 3; ... ot[otz >> 2]` (the mask goes to a new pseudo); and copying the
+  source pointer before the prim pointer between loops. A register-masked diff (cmp.py --shape) first, then regs.
+
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
   scheduled first), 0d B3198 (y temp in a3 instead of v1), 0d B030C (0x40 constant not hoisted into fp),

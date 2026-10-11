@@ -21,6 +21,14 @@
  * which after reload depend on any sp-relative store), i.e. sched1 did not float tile's computation
  * down as a free filler. Making pos/tile memory variables (struct, array, address-taken, volatile)
  * adds loop reloads (83-104 rows). Same filler-LUID class as B4A5C.
+ * Pass 19: 12 -> 9 rows with `Unk800C9DB4 *bg = D_800C9DB4;` as a local (D_800C9DB4 now loads before
+ * D_800CA108, into a0, like the original), then the 7! orders of the prologue lines (build/pp.py) with tile
+ * before pos. Left: the original loads D_800CA108 (lbu a1) at the top but adds 0xDF only after the pos/tile
+ * addu pair, and both addu's (and their spill stores) precede the unkC/unk30 loads. The lbu is QImode, so
+ * it cannot pass the `arg0->unk30 = arg1` store (true_dependence's in-struct exception excludes QImode):
+ * the w statement must precede that store in sched1, but every such order (and `w = D_800CA108; ... w += 0xDF`,
+ * a u8 temp) puts tile's addu after the unk18 block again (9-21 rows). Permuter (15 min on this base) best:
+ * the unk18/unk1A stores before w, n right after (permuter score 515, 15 cmp rows), not kept.
  */
 #include "ovl_0a.h"
 
@@ -34,12 +42,13 @@ s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     s32 x;
     u16 t;
 
+    Unk800C9DB4 *bg = D_800C9DB4;
     arg0->unk30 = arg1;
     w = D_800CA108 + 0xDF;
-    pos = (BgPos *)((u8 *)D_800C9DB4 + arg0->unk28);
-    tile = (BgTile *)((u8 *)D_800C9DB4 + arg0->unk2C);
-    arg0->unk18 = arg0->unkC + D_800C9DB4->unk30;
-    arg0->unk1A = arg0->unkE + D_800C9DB4->unk32;
+    tile = (BgTile *)((u8 *)bg + arg0->unk2C);
+    pos = (BgPos *)((u8 *)bg + arg0->unk28);
+    arg0->unk18 = arg0->unkC + bg->unk30;
+    arg0->unk1A = arg0->unkE + bg->unk32;
     n = arg0->unk26;
     arg0->unk25 = 0;
     arg0->unk25_1 = 0;
