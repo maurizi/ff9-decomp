@@ -427,6 +427,28 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * reusing a variable that an earlier statement reads (WAR) pins sched1's order of two
     independent computations (BF660 `x = A - 112; y += x;` after `cx = lim + x`);
   * `GetTPage(tile->tp ? 1 : 0, ...)` came out as a branch only with the call in both arms (BD130).
+- Pass 13 (overlays except 0b; gcc 2.8.1 sched.c, local-alloc.c, global.c, cse.c read against the dumps; build/search/
+  gsim.py for allocation questions). No new matches. Improved: 14 A741C 34 -> 16, 34 EFC20 (= 39 F7FD4) 48 -> 39.
+  Mechanisms established (details in the WIP headers):
+  * 0a B4A5C: the original's empty load-delay slot at 0x164 held an insn that sched2 scheduled and jump2 deleted
+    (a no-op `move r,r`), placed between `addiu s2,sp,0x18` and `addu a3,s2,a3` in dependence order; it is what
+    shifts every loop filler one gap. An empty `__asm__("" : "=r"(i) : "0"(i))` reproduces the slot mechanism
+    (2 rows left, only the LUID order), but no C copy survives: combine coalesces pointer copies, cse keeps a
+    copy `(set B A)` only when B lives beyond the block or is first mentioned before it (make_regs_eqv), and
+    loop.c then hoists it unless lifetime * savings is below the threshold.
+  * 0a C07D8: after reload every sp-relative address is 'varying' (rtx_varies_p exempts only fp/ap), so in sched2
+    the stack-arg lbu loads conflict with every store through a pointer and inherit priority 3 from the e->unk0
+    store; in sched1 (ap-based, non-varying) only the QImode store conflicts, because true_dependence's
+    in-struct exception excludes QImode. The original's order needs those loads as priority-1 insns right after
+    the arg4 lw with no dependents; `const` parameters give that (RTX_UNCHANGING_P) but reload then
+    rematerialises them at their uses.
+  * 0a C0038: the flag block wants `f | 3` (v1) to overlap the compare constant 8 (v0); every spelling leaves
+    the constant single-set, so sched1 launches it right before the bne (update_equiv_regs would move it there
+    anyway) and both locals take v0. `g = f | 3; ... g | 8` is folded by combine; back-to-back stores are
+    deleted by flow.
+  * 0a BD130: pos/tile are reload spills; the original's chain keeps both computations adjacent before the
+    unk18 loads (same filler-LUID class as B4A5C). Memory variables (struct/array/address-taken) add loop
+    reloads.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -677,3 +699,23 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (chained) gives it a lifetime of several insns and it is hoisted into s6, while `D_801F8200 = r;`
     (lifetime 1) stays in the loop. `rr = &D_801F81F8;` written inside the block (hoisted too) keeps
     its preheader order after that lui (65 F1848, matched this pass).
+- Pass 13 (menus/minigames; see the WIP headers): 14 A741C 34 -> 16 rows with loop 1 as `goto test1; do { e--;
+  if (e < start) goto skip1; test1: if (e->unk0 == key) { found; goto skip1; } } while (1);` (found block inside
+  the loop notes: id/ctx refs double, so id takes t0 and ctx a1; no jump after LOOP_BEG, so no exit-test copy),
+  loop 2 wrapped in `do { } while (0)` (ctx 17 refs > f) and the arms as `blk = f->unk48; key; n; blk -= base;`.
+  Left: area (3 refs, floor_log2 = 1) must outrank mode (5 refs / 74) yet stay below gs, and the arm temps must
+  land in v1/v0 (global.c set_preference takes the first operand of any expression, so `blk << 11` born first
+  in v0 gives blk a v0 preference); self-contained arms fix the latter but move key/id and gs/area by one insn
+  of live length each.
+  34 EFC20 / 39 F7FD4 48 -> 39: `ec = &D_80068998;` at the top makes that address a global pseudo (4 refs / 206,
+  spilled and rematerialised like the original) instead of a block-local that crosses the calls and takes s4 in
+  local-alloc; the remaining block-local %hi(D_8007716C) still takes s4 (the original rematerialises it at each
+  use, so it was a spilled global there). With it gone the global order otz > w > x > y > ic > mid (needing the
+  do { } while (0) refs around the first call) would give the original's s3..fp assignment.
+  37 F13F8: ours shares one &D_801FAB78 pseudo (209) across the state-5 block's inner call (s0); the original
+  recomputes the address per extended basic block (a1/v0) and keeps 2 in t0; the s2/s3 swap of blink and the
+  top address needs the address (3 refs / 38) above blink (5 refs / 112), gsim confirms `88=0.1` gives the
+  original's s2/s3.
+  0d B16A4: ours' dispositions already match the original except ot (s3 vs s1); the local `ot + 3` (166) takes
+  s3 and ot follows it through set_preference; in the original `o2 = ot + 12` is in s5 and the FT4 block's
+  constants in s0-s4, so the local-alloc order of that block differs.
