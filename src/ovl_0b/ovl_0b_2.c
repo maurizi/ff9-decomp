@@ -10704,7 +10704,7 @@ void func_800EF0D8(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
         y = r->y + arg1 * 15 + arg3->unk2 - dy;
         c = (res != 2) * 2;
         func_80029058(x + 6, y, 7, D_800F909C + a->unkE, c);
-        if (a->unkA != 0) {
+        if (a->mpCost != 0) {
             text_formatNumber(func_800EF598((BtlCmd8 *)a), buf, 3, 1);
             func_8002B56C(x + 0x60, y + 4, 7, buf, c);
         }
@@ -10792,7 +10792,7 @@ s32 func_800EF4D8(s32 arg0) {
 }
 
 s32 func_800EF598(BtlCmd8 *arg0) {
-    s32 cost = arg0->unkA;
+    s32 cost = arg0->mpCost;
     if (arg0->unkB & 4) {
         if (D_8007AF02 != 0) {
             cost *= 4;
@@ -11052,7 +11052,7 @@ s32 func_800F0118(void) {
     }
     if (e->unk6 == 1) {
         b = &g_gameState->unk1C->unk8E4.battle->abilities[D_80104FF0.unk1A];
-        cost = b->unkA;
+        cost = b->mpCost;
         if (D_80104FF0.unkD != 0) {
             cost >>= 1;
         }

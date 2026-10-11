@@ -898,7 +898,7 @@ typedef struct BtlCmd8 {
     u8 unk7;
     u8 unk8;
     u8 unk9;
-    u8 unkA; /* mp cost */
+    u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 unkB;
     u16 unkC;
     u16 unkE; /* name text offset */
@@ -970,7 +970,7 @@ typedef struct {
     u8 pad4[8 - 4];
     u8 unk8;
     u8 pad9;
-    u8 unkA; /* mp cost */
+    u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 padB[0xE - 0xB];
     u16 unkE;
 } Battle16CC; /* 0x10 */
@@ -2270,7 +2270,7 @@ void func_800B4434(BtlCmd *);
 void btl_calcCmd(BtlUnit *, BtlUnit *, BtlCmd *, s32);
 u16 func_800C1CA0(u32, s32);
 void func_800EA0F8(s32);
-s32 func_800B9550(BtlUnit *, s16);
+s32 btl_consumeMp(BtlUnit *, s16);
 void func_800B97A0(BtlUnit *);
 s32 func_800BF558(BtlUnit *, u32);
 s32 func_800C1E88(BtlUnit *, s32);
@@ -3045,7 +3045,7 @@ void func_800B3460(GameData *, Battle *, BtlUnit *);
 void func_800B1764(Battle *);
 s32 func_800B1B48(Battle *, BtlCmd *);
 s32 func_800B23B4(Battle *, BtlCmd *);
-s32 func_800B4390(BtlCmd *);
+s32 btl_payMpCost(BtlCmd *);
 void btl_removeCmd(BtlCmd *);
 s32 func_800BD31C(BtlCmd *);
 void func_800B253C(BtlCmd *);

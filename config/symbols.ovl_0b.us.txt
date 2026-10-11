@@ -37,3 +37,5 @@ btl_unlinkCmd = 0x800B4320; // type:func [runtime] unlinks the head of a queue a
 btl_damageHp = 0x800BDB20; // type:func [runtime] called (monster, 126, 1) when Vivi's Attack hits, monster HP 1473 -> 1347
 btl_execCmd = 0x800B2804; // type:func [runtime] runs Battle.curCmd on a target (called with the monster as Vivi's Attack plays)
 btl_calcCmd = 0x800B44C0; // type:func [runtime] called (Vivi, monster, Vivi's command, 1) for the attack, applies it via func_800B7954
+btl_payMpCost = 0x800B4390; // type:func [runtime] casting Fire - takes ability->mpCost (x4 under a flag) and calls btl_consumeMp
+btl_consumeMp = 0x800B9550; // type:func [runtime] the only non-clamp write to Vivi's mp when Fire is cast (163 -> 157), halves the cost under a support flag

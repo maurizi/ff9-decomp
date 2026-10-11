@@ -2083,7 +2083,7 @@ ovl_0b func_800B4114 0x90 0x800b4114
 ovl_0b func_800B41A4 0x90 0x800b41a4
 ovl_0b func_800B4234 0xec 0x800b4234
 ovl_0b btl_unlinkCmd 0x70 0x800b4320
-ovl_0b func_800B4390 0x7c 0x800b4390
+ovl_0b btl_payMpCost 0x7c 0x800b4390
 ovl_0b btl_linkCmd 0x28 0x800b440c
 ovl_0b func_800B4434 0x44 0x800b4434
 ovl_0b func_800B4478 0x28 0x800b4478
@@ -2100,7 +2100,7 @@ ovl_0b func_800B8E9C 0x15c 0x800b8e9c
 ovl_0b func_800B8FF8 0x194 0x800b8ff8
 ovl_0b func_800B918C 0x28c 0x800b918c
 ovl_0b func_800B9418 0x138 0x800b9418
-ovl_0b func_800B9550 0x6c 0x800b9550
+ovl_0b btl_consumeMp 0x6c 0x800b9550
 ovl_0b func_800B95BC 0xf0 0x800b95bc
 ovl_0b func_800B96AC 0xf4 0x800b96ac
 ovl_0b func_800B97A0 0xfc 0x800b97a0

@@ -165,3 +165,10 @@ Format:
   func_800B7954, under func_800B44C0(Vivi 0x80108FCC, monster, Vivi's cmd 0x80109608, 1) from func_800B2804(monster).
   Battle+0x1088 = 0x80109608 (Vivi's command) at that point.
 - names: btl_damageHp, btl_execCmd, btl_calcCmd, Battle.curCmd.
+
+## MP cost  (status: applied)
+- binary: ovl_0b. Redux disc 2, `battle_iifa_command`: Blk Mag -> Fire (list shows Fire 6, Fira 12, Sleep 10) on the
+  monster. btl_setCmd(slot, 22, 25, 0x10). Vivi's mp 163 -> 157 in one step; among 51 writes to it (the rest are the
+  every-4-frames rewrite in func_800BD93C) the only other one is func_800B9550+0x58, called from func_800B4390.
+  The ability entries (Battle.abilities, 0x10 each) have +0xA = 6 (25 Fire), 12 (26 Fira), 24 (27), 10 (28 Sleep).
+- names: btl_payMpCost, btl_consumeMp, ability mpCost.

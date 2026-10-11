@@ -3062,7 +3062,7 @@ void func_800B1764(Battle *b) {
     u = cmd->unk4;
     switch (b->unk11BA) {
     case 0:
-        if (!(u8)func_800B1B48(b, cmd) || !(u8)func_800B23B4(b, cmd) || !(u8)func_800B4390(cmd)) {
+        if (!(u8)func_800B1B48(b, cmd) || !(u8)func_800B23B4(b, cmd) || !(u8)btl_payMpCost(cmd)) {
             func_800B4434(cmd);
             if (u != NULL && (u->unk68 & 1) && (s32)u->unk9C->unkC == u->unkA4[9]) {
                 u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[32];
@@ -3205,7 +3205,7 @@ s32 func_800B1B48(Battle *arg0, BtlCmd *arg1) {
         }
         break;
     case 0x1F:
-        return (u8)func_800B96AC(u, arg1->ability->unkA);
+        return (u8)func_800B96AC(u, arg1->ability->mpCost);
     case 0x31:
         t = func_800BED10(arg1->targets);
         if (t == NULL || !((t->unk68 >> 28) & 1) || (t->unk3C & 0x100)) {
@@ -3947,15 +3947,15 @@ void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
     }
 }
 
-s32 func_800B4390(BtlCmd *arg0) {
-    s32 mp = arg0->ability->unkA;
+s32 btl_payMpCost(BtlCmd *arg0) {
+    s32 mp = arg0->ability->mpCost;
     if (D_8007AF02 != 0 && (arg0->ability->unkB & 4)) {
         mp <<= 2;
     }
     if (arg0->cmdNo == 0x32) {
         return 1;
     }
-    if (func_800B9550(arg0->unk4, mp) & 0xFF) {
+    if (btl_consumeMp(arg0->unk4, mp) & 0xFF) {
         return 1;
     }
     func_800CD5C8(0x16);
@@ -5748,7 +5748,7 @@ u8 func_800B9418(BtlCalc *arg0) {
     return 0;
 }
 
-s32 func_800B9550(BtlUnit *arg0, s16 arg1) {
+s32 btl_consumeMp(BtlUnit *arg0, s16 arg1) {
     if (arg0 != NULL) {
         if (arg0->unkC4[1] & 4) {
             arg1 /= 2;
@@ -5809,7 +5809,7 @@ void func_800B97A0(BtlUnit *arg0) {
 void func_800B989C(BtlCmd *arg0) {
     s32 r;
     if (!(arg0->unk4->unkC4[1] & 0x08000000)) {
-        if (arg0->ability->unkA * 2 < arg0->unk4->mp) {
+        if (arg0->ability->mpCost * 2 < arg0->unk4->mp) {
             if (g_randPtr >= g_randTableEnd) {
                 rand_refill();
             }
