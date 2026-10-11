@@ -1,4 +1,4 @@
-/* STATUS: 108 rows (cmp.py), 471 vs 468 words. Glyph path split into two func_8002B7B0 calls with a code temp read from s[1] (as in 8002995C); pkt = func_8002BA90(...) as its own statement in cases 0x6B and 0x4B (the other three stay nested) puts x in s3. Open: (1) the original cross-jumps the x += func_8002B9B8/8002AE7C/8002BA10(...) tails of 0x6A/0x6B, 0x6E/0x6F, 0x6C/0x6D (the first of each pair jumps into the second's jal); ours keeps both calls (the 3 extra words). (2) pkt is s1 and s is s2 in the original (swapped here). (3) the original keeps %hi(D_800770AC) in fp and spills font to 0x30(sp) (same pattern as 8005D6BC); ours keeps font in s8. */
+/* STATUS: 81 rows (cmp.py), same length (468 words); the code is identical apart from s and pkt swapping s1/s2 (s is s2 and pkt s1 in the original). Pass 13: the glyph path does `x += w` inside each arm (as in the matched func_8002995C: the w load then gets its consumer in the call block, so sched2 puts it before the pkt copy and the three x += tails cross-jump like the original), and the glyph code is computed straight into c (`c = (c << 8) + s[1] - font->unk4 + font->unk6; s++;`) instead of through k (k is a global pseudo in s0). Open: global-alloc order. s (pseudo 83) has 126 refs / 421 insns (pri 1.796), pkt (85) 79 / 308 (1.539); s is allocated first and takes s1. pkt needs a higher priority than s (or s fewer refs: under ~108). Loop forms (for, do-while, ++s) do not change either count. */
 #include "ff9.h"
 
 extern u8 D_80077080[];
@@ -108,14 +108,14 @@ u8 *func_8002920C(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
             y += 15;
         } else {
             if (c >= th) {
-                k = (c << 8) + s[1];
+                c = (c << 8) + s[1] - font->unk4 + font->unk6;
                 s++;
-                c = k - font->unk4 + font->unk6;
                 pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &w, (SprtWords *)pkt);
+                x += w;
             } else {
                 pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &w, (SprtWords *)pkt);
+                x += w;
             }
-            x += w;
         }
         s++;
     }

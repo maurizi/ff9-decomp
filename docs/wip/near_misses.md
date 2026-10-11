@@ -175,6 +175,25 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   8002920C (231). (8005CF04 matched in pass 6: its draft had an uninitialised `old`.) Notes from
   earlier passes, still open: 800378C4 (f<14 branch shape, same search as 8004B85C), 8005DB40
   (two jump tables, AKAO look-ahead), 80054650 and 80062E3C (first drafts in docs/wip).
+- Pass 13: matched 800589F0 (0x544) and 8002995C (0x1F0). 8002920C went from 108 to 81 rows, and its
+  code is now identical apart from s/pkt. What decided them:
+  - 800589F0: in the original, each "keep" mask lands in the register of the value that dies where it
+    is born (ex in s2, then b2 in s2, and the else-branch mask in s2). The fix was global-alloc
+    priorities, worked out from build/s/myvp.py (refs/len/hard reg per pseudo for each variant). The
+    else mask reuses the loop variable `bit`. `b1 &= ~b2;` before the m1 call gives b1 enough refs to
+    beat b2 (0.222 vs 0.222, tie to the lower regno), and the old if (b1) identical branch is gone.
+    `bit` must beat m2 (0.875 vs 0.882). `ch = D_8007E3D8, bit = 0x100` in that order (bit 2 insns
+    shorter) fixes the s2/s3 choice but leaves li s2 after addiu s1. The identical branch was moved
+    to `if (m2)` around func_800589E0 (m2 29/136 = 0.853 < bit), which gives both: the right
+    allocation and li s2 first. The two-argument calls to func_80058990/func_800589E0 and the
+    three-argument call to func_80057898 use casts of the callee, like func_800585E0 does.
+  - 8002995C: `x += adv` goes inside each of the three call arms, not after the if/else.
+    sched1 keeps the pkt = v0 copy glued to the call. With the add in the same block, the adv load
+    has an in-block consumer, so it is scheduled right after the jal (before the copy, while v0
+    is still live), and local-alloc gives it v1. Cross-jumping then merges the three arms, and reorg
+    moves the add into the loop's bne delay slot. The identical if (x) around s++ is no longer
+    needed. In general, a value loaded from a stack variable that an earlier call wrote lands
+    in v1 rather than v0 when it is read in the same block as the call's return value.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
