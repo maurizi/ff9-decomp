@@ -188,10 +188,21 @@ Format:
   Cross + Cross casts Regen on Eiko (banner "Regen", MP 119 -> 105).
 - Afterwards Eiko's unit (units[2]) has +0x38 = 0x00040000, the other three 0; her +0x44 jumped 0x3C -> 0x4AA
   and then fell by 0xD2 per 60 frames (the Regen countdown).
-- names: MenuList.cursor, BtlUnit.status, STATUS_REGEN (0x40000).
+- names: MenuList.cursor; the Regen bit is UNK38_REGEN in BtlUnit.unk38 (that word's role is still open, see below).
 
 ## Sleep status  (status: applied)
 - Redux disc 2, `battle_iifa_command`: Vivi, Blk Mag, row 3 (Sleep, MenuList.cursor 3) on the monster.
   btl_setCmd(slot, 22, 0x1C, 0x10); the cast animation takes ~400 frames; btl_calcCmd(Vivi, monster, ..., 0xB) at
   frame 3542; then the monster (units[4]) has +0x3C = 0x00020000 and +0x48 = 8046 (a timer; Regen's was +0x44).
-- names: BtlUnit.status2, STATUS2_SLEEP (0x20000).
+- names: BtlUnit.status, STATUS_SLEEP (0x20000).
+
+## Which status word is which: KO test  (status: applied)
+- Redux disc 2, `battle_iifa_command`: monster (units[4]) hp written to 1, then Vivi's Attack kills it. Logged
+  func_800BEDBC(monster, 0x200) right after the write (hp 1: low HP; not kept), then (monster, 0x100) every 4 frames
+  once hp is 0. +0x34/+0x38/+0x3C went 4400E004/0/0 -> 4400E004/0/00000100.
+- func_800BEDBC returns early if +0x34 has the bit, and otherwise ORs it into +0x3C. So +0x3C is the current status
+  word (Sleep and KO observed there) and +0x34 the immunity mask (the monster's is non-zero). +0x38 holds the
+  Regen spell's 0x40000 and the support-ability bits set at battle start; what separates it from +0x3C is open, so
+  it stays unk38.
+- names: BtlUnit.status (was briefly "status2"), statusImmune, STATUS_KO, STATUS_LOW_HP (code: hp*6 < maxHp),
+  STATUS_SLEEP, UNK38_REGEN, btl_addStatus.

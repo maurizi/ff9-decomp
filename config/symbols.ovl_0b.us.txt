@@ -39,3 +39,4 @@ btl_execCmd = 0x800B2804; // type:func [runtime] runs Battle.curCmd on a target 
 btl_calcCmd = 0x800B44C0; // type:func [runtime] called (Vivi, monster, Vivi's command, 1) for the attack, applies it via func_800B7954
 btl_payMpCost = 0x800B4390; // type:func [runtime] casting Fire - takes ability->mpCost (x4 under a flag) and calls btl_consumeMp
 btl_consumeMp = 0x800B9550; // type:func [runtime] the only non-clamp write to Vivi's mp when Fire is cast (163 -> 157), halves the cost under a support flag
+btl_addStatus = 0x800BEDBC; // type:func [runtime] called (monster, 0x100) as it died - its status word gains 0x100, refused for statusImmune bits

@@ -1948,7 +1948,7 @@ ovl_0b func_800BDED4 0x30c 0x800a7710
 ovl_0b func_800BE1E0 0x5a4 0x800a77c0
 ovl_0b func_800BE784 0x218 0x800a7880
 ovl_0b func_800BE99C 0x2c8 0x800a78b0
-ovl_0b func_800BEDBC 0x79c 0x800a78d4
+ovl_0b btl_addStatus 0x79c 0x800a78d4
 ovl_0b func_800C28F4 0x500 0x800a7960
 ovl_0b func_800C86C8 0x374 0x800a7ac0
 ovl_0b func_800C8A3C 0x1a4 0x800a7b38
