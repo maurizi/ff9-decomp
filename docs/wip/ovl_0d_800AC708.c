@@ -33,6 +33,19 @@
  * reused for the p + 6 giv), ours spills e to 0xF0 where the original spills i; the original's frame is 8 bytes
  * smaller (0x138) and it zeroes only three of x/y/w/h on the stack. Single-line moves (456 compiles): the
  * unk504 == 1 and unk504 == 3 blocks' `p->y0` store right after `p->x0` gives 373 -> 355 (in the body below).
+ * Pass 23 notes from the original's registers: (1) all three colour computations (t * 30, 0xFF - (t - 10) * 15,
+ * 0xFF - t * 9) are built in a2 and copied into c (s5) (`sll a2,..; slti v0,a2,0x100; bnez; addu s5,a2,zero`), and
+ * the clamp test reads a2, i.e. one non-call-crossing variable (global pseudo, hence a2) holds the raw value and c
+ * gets a copy. cse only keeps the compare on the source if the source's last use is later than c's
+ * (make_regs_eqv), so a plain `k = ..; c = k; if (k ..)` collapses k into c. Tried: new local k / x / y / w / h /
+ * len / i as the source, copy before the test or in an else arm (reorg would then steal it into the delay slot),
+ * for the two pre-loop blocks and/or case 2: 341-362 rows (y as source for the t * 30 block: 341). (2) Case 3's
+ * colour (0x80 / 0x76) is in v0, not s5, so case 3 does not assign c. (3) The original spills the /28 magic
+ * (sw 0x104, reloaded in the loop) instead of rematerialising it, so its pseudo has no REG_EQUIV constant: it is
+ * set more than once (e.g. a pre-loop and a moved in-loop magic merged by cse2). Ours moves the constants 1
+ * (life 92), 3 and 0x62 first (dump: `dumpf.sh f.c -dL`), then the 21t chain, and finds the magic "not desirable".
+ * (4) case 2's `addu s6,s6,v1; sw s6,0xF4` is just `x = bx + w * dx` with x spilled: reload reuses the dying bx
+ * register as the output reload.
  */
 #include "ovl_0d.h"
 

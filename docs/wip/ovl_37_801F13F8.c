@@ -21,6 +21,10 @@
  kind of split, `k = l->unk7; k ^= ...`, matched the sibling ovl_33 func_801EF644: it moves the unk7 load ahead of
  the unk8 chain in sched1 and so changes local-alloc's priorities). The xor result is still v0 here, a1 in the
  original; 98 split forms per block (temps a/u, both operand orders, k as s32/u8) and single-line moves give 22-40.
+ Pass 23: the original's xor is `xor a1, a0, v1` (unk7 in a0, the bit in v1, the result in a third register), so the
+ result is not the bit's variable. An inline helper taking `ItemMenu *` (called with &D_801FAB78) for the state >= 2
+ block, with or without the test inside, gives 25-38 rows (integrate.c substitutes the constant address and cse folds
+ it into %lo). The xor result in a / off / u instead of k, with split, one-line and temp forms: 25-71.
  */
 #include "ovl_37.h"
 

@@ -32,6 +32,10 @@
  * Pass 21: no change (9 rows). Splitting the D_800CA108 read from the + 0xDF (`x = D_800CA108; ... w = x + 0xDF;`,
  * also through w, a u8 or an s32 temp) at every pair of prologue positions (180 variants) and single-line moves
  * within each straight-line run give 9 at best.
+ * Pass 23: the param lever does not apply: the three arg copies are pinned at the top (sched1 skips SETs from hard
+ * regs up to NOTE_INSN_FUNCTION_BEG), arg2 is spilled to its home slot as in the original, and combine deletes no
+ * arg copy. Note that w (`w = D_800CA108 + 0xDF`) is multi-set (the max update), so its addiu is not "birthing" in
+ * sched1 and sorts by priority/LUID against the pos/tile adds.
  */
 #include "ovl_0a.h"
 

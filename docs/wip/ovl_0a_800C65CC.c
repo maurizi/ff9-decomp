@@ -41,6 +41,9 @@
  * (live length 52 -> 54..66 half-insns with 5 refs) and v1vx must beat dz1 and p.vz, which no statement order
  * gives (1500 random topological orders of the dx/dz/p.vz/nv/area lines: all 49). Area probably is not a local
  * qty in the original. Also tried: dropping `t` (154 rows), a second pointer t2 for n1 (51), area reused as k (73).
+ * Pass 23: area in c (70), dx0 (75), dz2 (47), dx2 (92), dz1 (115) or dx1 (74). The original never stores the area
+ * to nv/r.pad. The param lever does not apply: the params are already used directly, and the caller's u8 * for b
+ * changes no RTL.
  */
 #include "ovl_0a.h"
 

@@ -53,6 +53,9 @@
  * Pass 21: no change (4 rows). All 280 topological orders of the setup lines with the bg->unk18 load as its own
  * statement (`off = bg->unk18; c = (Cam *)((u8 *)bg + off);`), and single-line moves within every straight-line
  * run (build/w/mvrun.py), stay at 4.
+ * Pass 23: the param lever does not apply (arg0/arg1 are only used at the end, their entry copies already match).
+ * The inline `func_800C9DB4_cam(0)` + `c += st->unk75` (as in C0F08) compiles identically (4); the inline with
+ * the index (`func_800C9DB4_cam(st->unk75)`) re-reads D_800C9DB4 (169 insns, 40-45 rows).
  */
 #include "ovl_0a.h"
 
