@@ -1,8 +1,19 @@
-/* STATUS: near miss, 34 rows (pass 12: the arms as `blk = f->unk48; key; n; blk -= base;` give the original's load order
- unk48/key/n but n/blk still swap v0/v1; a for(;;) loop 1 with the found block inside gives id t0,
- base t1, gs t2 like the original but gcc then duplicates the loop test (jump.c
- duplicate_loop_exit_test runs when NOTE_INSN_LOOP_BEG is followed by a jump); n needs 4+ refs
- or blk 2 refs for n to be allocated first) (pass 11; 36 under the new cmp.py before). ovl_14 func_800A741C (0x15C, look up the current area/field ids in the two directories at D_80067944 + 0x14C700 and store their sector ranges). Control flow matches: loop 1 is entered with 'goto test' into a do/while, loop 2 is a for(;;) with the found block inside (gcc then duplicates its first load the way the original does); mode and id must be s32 (no andi). Left: register assignment only (original t0 id, t1 base, t2 gs, t3 area, t4 mode, a1 ctx, a2 f; ours shifted by one) and the blk/n loads in the if/else come out in v0/v1 swapped. Permuter 15 min: only outputs that break the semantics (reusing id/n as temporaries).  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): the second directory lookup reads gs->unk14 directly instead of reassigning f (the original loads it into v1, a temp), 36 -> 34. Left: the original allocation order is ctx a1 > f a2 > id t0 > base t1 > gs t2 > area t3 > mode t4 (ours f a1, ctx a2, base t0, gs t1, id t2). Permuter 25 min: best outputs set id = f->unk48 in the mode 1 arm (breaks the not-found case) -- id wants more refs or a longer life. dup.py/sink.py/declaration shuffles: nothing. */
+/* STATUS: near miss, 16 rows (pass 13; was 34). ovl_14 func_800A741C (0x15C, look up the current area/field ids
+ in the two directories at D_80067944 + 0x14C700 and store their sector ranges).
+ Pass 13: loop 1 is `goto test1; do { e--; if (e < start) goto skip1; test1: if (e->unk0 == key) { found; goto skip1; } } while (1);`:
+ the found block sits inside the loop notes (its refs count double for id/ctx, which lifts id to t0 and ctx to a1
+ like the original) and NOTE_INSN_LOOP_BEG is not followed by a jump, so jump.c does not duplicate the exit test.
+ Loop 2 (`for (;;)` with the found block inside) is additionally wrapped in `do { } while (0)` (ctx 17 refs > f).
+ The arms are `blk = f->unk48; key; n; blk -= base;` (load order unk48/key/n).
+ Left (register allocation only, build/search/galloc.py + gsim.py): (1) area must be allocated before mode
+ (original area t3, mode t4): area has 3 refs / len 35 (floor_log2(3) = 1 -> 0.086) vs mode 5 refs / len 74
+ (0.135). A 4th area ref (each arm computing `start = area + ((A - base) << 11)` itself, build/v14/f1.c)
+ gives 4 refs / len 40 = 0.2, but then area passes gs (5 / 51 = 0.196) and key's life grows to 23 so id
+ (9 / 76 = 0.355) passes key (8 / 23 = 0.348): both margins are one insn of live length. (2) blk/n must land in
+ v1/v0: n (92) conflicts with v0 because the local `blk << 11` (born first in the join block) takes v0 and
+ blk prefers it (global.c set_preference takes the first operand of any expression); the f1 arms fix this
+ (each arm's sub/shift temps share the loaded values' registers) but cost (1). do{}while(0) around the
+ second lookup's start/e breaks the loop-2 layout (54+ rows). */
 #include "ovl_14.h"
 void func_800A741C(void) {
     GameState *gs = D_8006794C;
@@ -24,13 +35,15 @@ void func_800A741C(void) {
         base = f->unk8;
         area = D_80067944 + ((base << 11) + 0x14C700);
         if (mode == 1) {
-            blk = f->unk48 - base;
+            blk = f->unk48;
             key = (s16)ctx->unkC;
             n = f->unk44;
+            blk -= base;
         } else {
-            blk = f->unk38 - base;
+            blk = f->unk38;
             key = ctx->unk7DC;
             n = f->unk34;
+            blk -= base;
         }
         start = area + (blk << 11);
         e = (Ovl14Dir *)start + n - 1;
@@ -40,25 +53,30 @@ void func_800A741C(void) {
             if ((u8 *)e < start) {
                 goto skip1;
             }
-        test1:;
-        } while (e->unk0 != key);
-        id = e->unk2;
-        ctx->unk7FC[1] = e->unk4;
-        ctx->unk804[1] = e[1].unk4 - e->unk4;
+        test1:
+            if (e->unk0 == key) {
+                id = e->unk2;
+                ctx->unk7FC[1] = e->unk4;
+                ctx->unk804[1] = e[1].unk4 - e->unk4;
+                goto skip1;
+            }
+        } while (1);
     skip1:
         start = area + ((gs->unk14->unk28 - base) << 11);
         e = (Ovl14Dir *)start + gs->unk14->unk24 - 1;
-        for (;;) {
-            if (e->unk0 == id) {
-                ctx->unk7FC[0] = e->unk4;
-                ctx->unk804[0] = e[1].unk4 - e->unk4;
-                break;
+        do {
+            for (;;) {
+                if (e->unk0 == id) {
+                    ctx->unk7FC[0] = e->unk4;
+                    ctx->unk804[0] = e[1].unk4 - e->unk4;
+                    break;
+                }
+                e--;
+                if ((u8 *)e < start) {
+                    break;
+                }
             }
-            e--;
-            if ((u8 *)e < start) {
-                break;
-            }
-        }
+        } while (0);
         if (mode == 1) {
             ctx->unk3A = id;
         } else {

@@ -16,6 +16,11 @@
  * original loads D_800C9DB4 before D_800CA108 and computes pos and tile back to back); all 5040 orders
  * of the seven prologue statements, variable reuse for the unk28/unk2C/D_800CA108 loads and declaration
  * shuffles keep 12.
+ * Pass 13: pos/tile are reload spills (the stack stores follow their defs); the original's chain has
+ * both computations adjacent and before the unk18 loads (so the spill stores precede the lhu loads,
+ * which after reload depend on any sp-relative store), i.e. sched1 did not float tile's computation
+ * down as a free filler. Making pos/tile memory variables (struct, array, address-taken, volatile)
+ * adds loop reloads (83-104 rows). Same filler-LUID class as B4A5C.
  */
 #include "ovl_0a.h"
 

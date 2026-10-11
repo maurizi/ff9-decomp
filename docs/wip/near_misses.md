@@ -369,6 +369,56 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Status: DE11C 79 rows (was 430; 8 masked). The first four loops match apart from the FT3/GT3 tail sra. The draft still
   has two invented variables (zg = otz of the G/F loops, i2 = the second colour word of GT4/G4); see the WIP header.
   D2DBC 63 (pure allocation; the frame/cnt register t2 also holds `(b & 0xF) * 2`), AC37C unchanged (175).
+- Pass 13: matched DE11C (0x1040), D2DBC (0x274), D1D74 (0x288), D1FFC (0x3DC), C9794 (0x294), C0C00 (0x7C).
+  What fixed them:
+  - DE11C: one `otz` for all eight loops, with `addPrim(&ot[otz >> 4], p)` in the 3-vertex loops (no in-place
+    `otz >>= 4`). That drops the shared pseudo from 120 refs (1.59, took t2) to 104 refs / 450 insns = 1.39, and
+    the first-half conflicts (otz vs b in t1) keep it off t1 in the second half, so it lands in t3 everywhere (a split
+    zg had no conflict with b and 1.97, so it took a2, or t1 when its priority was lowered). The second colour/uv word of GT4/G4 goes into i1 (dead by then; the original's a0), and `col[a & 0xFFFF]`
+    works as well as the byte-offset form. Found with build/gsim.py (below), not by search.
+  - build/gsim.py (agent worktree agent-aa3230c8e7e5ba3f3): replays global-alloc from a `-dg -dl` dump (conflicts, hard conflicts, printed preferences,
+    regs_used_so_far for pass 0) with overrides: `REG=pri`, `conf:A,B` (extra conflict), `pref:A,HARD` (extra full
+    preference), `merge:A,B` (one allocno). gsweep2.sh sweeps one pseudo's priority. It reproduces the real dispositions
+    of DE11C exactly (apart from HI/LO and spilled pseudos), so it answers "which priority/conflict would give the
+    original registers" before writing any C. For DE11C, `merge:85,86` at priority 1.0-1.2 gave the original assignment.
+  - One variable for several roles, again: D2DBC's n (count, n*2+8, frame offset, n++) and f (frame, %, count,
+    `(b & 0xF) * 2`); D1D74/D1FFC's i (frame, then the palette count `i = *p++`); C9794's i for all three loops.
+  - D2DBC: mode/ctab/clut are plain locals that lose global allocation (refs <= 4 * calls, so no caller-save) and
+    are reloaded through reload's t4: `clut = h->unk4 << 16` as one statement (5 refs made it caller-saved in t2).
+    `mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5)` gives the original OR association; `num = arg0[n++]; arg0 += n;`;
+    `for (i = 0; ...; i++, prim += 20)` orders the giv increments.
+  - sched1 ties (D2DBC, D1D74, D1FFC): when two launched insns tie, the one later in the RTL is placed lower. The frame
+    offset must be computed before the palette pointer and added after it: `off = f * 2; q = (u16 *)(arg0 + n);
+    n = *(u16 *)((u8 *)h->unk8 + off);`. D1D74/D1FFC also need `pal = arg0 + n; p = (u16 *)pal;` (permuter find; the
+    copy changes the order) and D1FFC `mode = h->unk2` before `c.unk14 = h->unk4`.
+  - C0C00: `v = ... * 4` in each branch with `u8 k`: with an s32 k, reload_cse turns the k == 2 branch's `sll 2` into
+    `sllv a3` (k holds 2) and the branches no longer cross-jump.
+  - C9794: `for (i = 0, cmd = src; ...; i++, cmd++)` puts the i increment before cmd's.
+  Status of the rest: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, DA138 6 (gsim: needs sz > p > i, or sz preferring v1
+  and p a0), BFF20 6, AB810 6 (was 8: pass e->unk4 to the first func_8001C7FC; the loop entry test still folds),
+  E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175. 15-20 min permuter runs on AA504, E1534, DA1F4 found nothing.
+- Pass 14: matched E1534 (0x1D4) and AA504 (0x454). What fixed them:
+  - AA504: index the collected-id array with a count (`s = &ids[cnt] - 1; ... ids[cnt++] = w;`, `ids = arg2->unk10.h`)
+    instead of a walking pointer. loop.c then reduces `ids + cnt*2` to a giv whose init copies the hoisted base
+    (`move a3,t0` after `addiu t0,s5,16`), and the hoisted `li t1,2` lands first. A separate pointer q = &ids[cnt]
+    keeps an extra copy; the index form must be used for both the search start and the store. Its jump table needs
+    the trailing zero padding word.
+  - E1534: the tail goes through one pointer, `q = (s32 *)&e->unk24; q[0] = p; ...; q[1] = arg3; q[2] = arg3;`, so
+    the last e-relative address loop.c sees is unk24 and the giv base is e+0x24. For the clear's register copy
+    (`addu v1,a1` in the delay slot), the test value is loaded first (`v = *(s32 *)p;`) and then the copy goes into
+    the dead clear-loop counter k (`k = (u32)p;`), which conflicts with p so it can't share a1, and sits in another
+    block from its use so combine can't fold it. Last, an empty `do { } while (0);` before `return e` splits the
+    return-value copy into its own block, so sched1 can't hoist `v0 = e` above the stores and reorg puts it in the
+    jr delay slot.
+  - Copies that survive: CSE makes the longer-lived (or earlier-set) register the class head, combine folds a copy
+    into its only use in the same block, and global alloc ties a copy to a dying source with no conflict. A copy
+    survives only when its destination conflicts with the source and the use is in another block.
+  Findings without a match (details in the WIP headers): AB810's entry test is folded by combine, not CSE (i = 0
+  substituted through LOG_LINKS in the same block). C3F78's `bne other; j case5` is reorg's relax_delay_slots swap,
+  which needs the case-5 beq predicted very unlikely. BFF20's tail copy needs nonzero_bits(flag) <= 0xFF over all of
+  the flag's sets. E4A3C with five scalar params is the right length, but arg2/arg3 get s-registers. AC37C's t7 full
+  address is used by quad 3's D_8006794C loads.
+  Status: B1B48 3, C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -512,6 +562,28 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * reusing a variable that an earlier statement reads (WAR) pins sched1's order of two
     independent computations (BF660 `x = A - 112; y += x;` after `cx = lim + x`);
   * `GetTPage(tile->tp ? 1 : 0, ...)` came out as a branch only with the call in both arms (BD130).
+- Pass 13 (overlays except 0b; gcc 2.8.1 sched.c, local-alloc.c, global.c, cse.c read against the dumps; build/search/
+  gsim.py for allocation questions). No new matches. Improved: 14 A741C 34 -> 16, 34 EFC20 (= 39 F7FD4) 48 -> 39.
+  Mechanisms established (details in the WIP headers):
+  * 0a B4A5C: the original's empty load-delay slot at 0x164 held an insn that sched2 scheduled and jump2 deleted
+    (a no-op `move r,r`), placed between `addiu s2,sp,0x18` and `addu a3,s2,a3` in dependence order; it is what
+    shifts every loop filler one gap. An empty `__asm__("" : "=r"(i) : "0"(i))` reproduces the slot mechanism
+    (2 rows left, only the LUID order), but no C copy survives: combine coalesces pointer copies, cse keeps a
+    copy `(set B A)` only when B lives beyond the block or is first mentioned before it (make_regs_eqv), and
+    loop.c then hoists it unless lifetime * savings is below the threshold.
+  * 0a C07D8: after reload every sp-relative address is 'varying' (rtx_varies_p exempts only fp/ap), so in sched2
+    the stack-arg lbu loads conflict with every store through a pointer and inherit priority 3 from the e->unk0
+    store; in sched1 (ap-based, non-varying) only the QImode store conflicts, because true_dependence's
+    in-struct exception excludes QImode. The original's order needs those loads as priority-1 insns right after
+    the arg4 lw with no dependents; `const` parameters give that (RTX_UNCHANGING_P) but reload then
+    rematerialises them at their uses.
+  * 0a C0038: the flag block wants `f | 3` (v1) to overlap the compare constant 8 (v0); every spelling leaves
+    the constant single-set, so sched1 launches it right before the bne (update_equiv_regs would move it there
+    anyway) and both locals take v0. `g = f | 3; ... g | 8` is folded by combine; back-to-back stores are
+    deleted by flow.
+  * 0a BD130: pos/tile are reload spills; the original's chain keeps both computations adjacent before the
+    unk18 loads (same filler-LUID class as B4A5C). Memory variables (struct/array/address-taken) add loop
+    reloads.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -762,3 +834,23 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (chained) gives it a lifetime of several insns and it is hoisted into s6, while `D_801F8200 = r;`
     (lifetime 1) stays in the loop. `rr = &D_801F81F8;` written inside the block (hoisted too) keeps
     its preheader order after that lui (65 F1848, matched this pass).
+- Pass 13 (menus/minigames; see the WIP headers): 14 A741C 34 -> 16 rows with loop 1 as `goto test1; do { e--;
+  if (e < start) goto skip1; test1: if (e->unk0 == key) { found; goto skip1; } } while (1);` (found block inside
+  the loop notes: id/ctx refs double, so id takes t0 and ctx a1; no jump after LOOP_BEG, so no exit-test copy),
+  loop 2 wrapped in `do { } while (0)` (ctx 17 refs > f) and the arms as `blk = f->unk48; key; n; blk -= base;`.
+  Left: area (3 refs, floor_log2 = 1) must outrank mode (5 refs / 74) yet stay below gs, and the arm temps must
+  land in v1/v0 (global.c set_preference takes the first operand of any expression, so `blk << 11` born first
+  in v0 gives blk a v0 preference); self-contained arms fix the latter but move key/id and gs/area by one insn
+  of live length each.
+  34 EFC20 / 39 F7FD4 48 -> 39: `ec = &D_80068998;` at the top makes that address a global pseudo (4 refs / 206,
+  spilled and rematerialised like the original) instead of a block-local that crosses the calls and takes s4 in
+  local-alloc; the remaining block-local %hi(D_8007716C) still takes s4 (the original rematerialises it at each
+  use, so it was a spilled global there). With it gone the global order otz > w > x > y > ic > mid (needing the
+  do { } while (0) refs around the first call) would give the original's s3..fp assignment.
+  37 F13F8: ours shares one &D_801FAB78 pseudo (209) across the state-5 block's inner call (s0); the original
+  recomputes the address per extended basic block (a1/v0) and keeps 2 in t0; the s2/s3 swap of blink and the
+  top address needs the address (3 refs / 38) above blink (5 refs / 112), gsim confirms `88=0.1` gives the
+  original's s2/s3.
+  0d B16A4: ours' dispositions already match the original except ot (s3 vs s1); the local `ot + 3` (166) takes
+  s3 and ot follows it through set_preference; in the original `o2 = ot + 12` is in s5 and the FT4 block's
+  constants in s0-s4, so the local-alloc order of that block differs.

@@ -1,4 +1,4 @@
-/* WIP func_800AB810: 8 differing rows (build/cmp.py-style aligned diff). New in pass 7. Left: the empty count loop over unk8->unk8->unk3: the original's entry test is sltu v0,v1(=0),a0 (i = 0 not folded), ours folds it to beqz n; also arg0 is stored from s3 (ours from the a1 argument copy). Uses a local Unk8E0Ld because ff9.h's Unk8E0 has pad4 at 4. */
+/* WIP func_800AB810: 6 differing rows (build/cmp.py-style aligned diff). Pass 13: passing e->unk4 (not arg0) to the first func_8001C7FC fixes the arg0 store (now from s3, before the a1 copy). Still left: the loop entry test (tried while, explicit if + do-while, reversed compare, i as u32/s32/u8/s16: all fold the entry test). New in pass 7. Left: the empty count loop over unk8->unk8->unk3: the original's entry test is sltu v0,v1(=0),a0 (i = 0 not folded), ours folds it to beqz n; also arg0 is stored from s3 (ours from the a1 argument copy). Uses a local Unk8E0Ld because ff9.h's Unk8E0 has pad4 at 4. Pass 14: the fold is not CSE: the .cse/.cse2 dumps still have `sltu (reg i) (reg n)`; combine substitutes i = 0 into the entry test (LOG_LINKS, same basic block) and makes it beqz. So in the original something kept combine from linking i = 0 to the test (a block boundary between them at combine time, or i not a plain constant set). Tried: do { for } while (0), for inside for (;;) { ...; break; }, i = 0 outside a do-while(0), goto loop (15 rows), while (i++ < n) (8), if + do-while, an inline count() in the condition (stops loop rotation: no duplicated test, 9 rows). */
 #include "ovl_0b.h"
 
 /* GameData.unk8E0 entry as func_800AB810 fills it (ff9.h's Unk8E0 has pad4) */
@@ -31,7 +31,7 @@ u32 func_800AB810(s32 arg0, s32 arg1) {
     }
     e->unk4 = arg0;
     e->unkC = arg1;
-    e->unk8->unk8 = (BtlUnit9C8 *)func_8001C7FC(4, arg0, 0);
+    e->unk8->unk8 = (BtlUnit9C8 *)func_8001C7FC(4, e->unk4, 0);
     e->unk8->unkC = (BtlUnit9CC *)func_8001C7FC(4, func_800AC244(e->unk4), 0);
     c = e->unk8->unkC;
     if (c->unkC >= 0) {

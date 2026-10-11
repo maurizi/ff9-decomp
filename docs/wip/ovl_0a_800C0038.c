@@ -17,6 +17,15 @@
  * arg1 == -1 store is not cross-jumped with the f | 0xB store; here f lands in v1, f | 3 in v0,
  * and jump2 merges the two `sw v0` stores. Storing f | 3 in both arms of an if/else stops
  * the cross-jump but loses the unconditional store. Has GTE asm, so the permuter can't parse it.
+ * Pass 13: the flag block's allocation needs `f | 3` (v1) to overlap the compare constant 8 (v0), so f
+ * is pushed to a1. In every spelling tried the constant's set is single-set/single-use, so sched1
+ * launches it right before the bne (after the `f | 3` store; update_equiv_regs would move it there
+ * anyway), the two locals never overlap and both take v0. Tried: `k = arg1 == 8` before the store
+ * (becomes xori/bnez), the constant in a reused variable (`r = 8; ... r = 1; return r;`: cse folds r),
+ * `g = f | 3; unk0 = g; if (arg1 == 8) unk0 = g | 8;` (combine rewrites g | 8 to f | 0xB and g dies at
+ * the store), a stored `g` in both arms (flow deletes the back-to-back store). What would work: a
+ * compare whose constant has 2 uses or 2 sets, or a store of `f | 3` that sits after the bne in RTL
+ * yet in the same block (none found).
  */
 #include "ovl_0a.h"
 
