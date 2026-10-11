@@ -1,4 +1,4 @@
-/* ovl_0d func_800AC708 (1688 B): WIP, not matching (pass 21: 363 cmp rows).
+/* ovl_0d func_800AC708 (1688 B): WIP, not matching (pass 21: 355 cmp rows).
  * Control flow and stack layout are right; 426 vs 422 insns, ~370 diff rows, mostly register allocation.
  * Main problem: gcc hoists the loop-invariant part of t * 42 (21t) out of the
  * loop into a stack slot, which the original never does. Splitting it as
@@ -32,7 +32,7 @@
  * insns, all worse than 373. The original's e is s2 (`addu s2,s0,zero` from &s->unk350 in s0, which is then
  * reused for the p + 6 giv), ours spills e to 0xF0 where the original spills i; the original's frame is 8 bytes
  * smaller (0x138) and it zeroes only three of x/y/w/h on the stack. Single-line moves (456 compiles): the
- * unk504 == 1 block's `p->y0` store right after `p->x0` gives 373 -> 363 (in the body below).
+ * unk504 == 1 and unk504 == 3 blocks' `p->y0` store right after `p->x0` gives 373 -> 355 (in the body below).
  */
 #include "ovl_0d.h"
 
@@ -197,9 +197,9 @@ void *func_800AC708(u32 *ot, TILE *p, TmState *s) {
                 setlen(p, 3);
                 p->code = 0x62;
                 p->x0 = e->unk4 * 43 + 0x48;
+                p->y0 = e->unk8 * 52 + 8;
                 p->w = 0x2A;
                 p->h = 0x33;
-                p->y0 = e->unk8 * 52 + 8;
                 c = 0x80;
                 if (!(s->unk2E8 & 4)) {
                     c = 0x76;

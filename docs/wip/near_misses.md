@@ -1214,4 +1214,4 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   as in the original. Lesson: when a block's registers are a permutation and the shape is exact, try splitting an
   expression so a leaf load becomes its own assignment. 37 F13F8 25 -> 22 with the same idea
   (`k = (l->unk8 >> 3) & 1; k ^= l->unk7;`); its xor result is still v0 (a1 in the original). 0d AC708: `len`
-  moved into the loop (the pass-20 idea) is worse everywhere (353-477 rows); one store move gives 373 -> 363.
+  moved into the loop (the pass-20 idea) is worse everywhere (353-477 rows); two store moves give 373 -> 355.
