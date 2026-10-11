@@ -6,7 +6,13 @@
  * Original keeps t in fp, e in s2, the prim pointer in s4 (giv p+6 in s0)
  * and spills i/x/w/h/len/magic/ex/ey at sp+0xF0..0x10C. Needs TmFlashTbl in ovl_0d.h.
  * Pass 7: a goto loop (no loop.c) drops to 397 insns and ~500 rows, so the original does use
- * loop.c (the p+6 giv); the hoisting difference has to come from elsewhere. */
+ * loop.c (the p+6 giv); the hoisting difference has to come from elsewhere.
+ * Pass 15: the original's pre-loop code materialises the /28 magic (0x92492493) first, spills it (0x104) and only
+ * then computes len = t * 51 / 28 with that register (0x100): that is loop.c's preheader, i.e. len (and the
+ * divisions' magic) are loop invariants written inside the loop and hoisted by loop.c, not a pre-loop statement.
+ * `len = t * 51 / 28;` as the first statement of the loop body reproduces that preheader shape (magic, i = 0
+ * spill, len spill), but t then gets spilled and 21t is still hoisted; the rows (373 -> 409-443) are all
+ * register allocation, so it is not in the body below yet. Also missing: this file has no #include "ovl_0d.h". */
 
 typedef struct {
     s32 unk0; /* 0: horizontal bar, 1: corner, 2: vertical bar */

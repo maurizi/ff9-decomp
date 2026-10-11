@@ -16,6 +16,12 @@
  *  Giving every loop its own count variable (n0..n7) puts the count in s0 like the original.
  *  `otz &= 0xFFFFF; otz >>= 4;` as two statements is needed to keep and+sra (one statement
  *  folds into srl+andi).
+ * Pass 15: the duplicated `i2 * 4` in the 3-vertex loops comes from a narrowing cast that
+ *  cse can't see through but combine later drops: `D_80070520[(u16)i2]` in the Z sum (and
+ *  `D_80070520[(u16)sFT3->unk0[2]]` in FT3) gives the original's second `sll v0,t1,2`
+ *  (777 of 778 insns), but the register soup moves (264 -> 301 rows), so it is not in the
+ *  body below yet. A `do { xy2 = ...; } while (0)` cse barrier also splits it but
+ *  reloads the lhu. Which loop still lacks 1 insn is unchecked. Same fix applies to 0c CA1D8.
  */
 #include "ovl_0a.h"
 

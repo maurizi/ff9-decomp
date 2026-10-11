@@ -1017,3 +1017,18 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * fold-const.c `associate` (split_tree) rewrites `a - (b - 1)` as `(a + 1) - b`; to keep the original's
     `addiu b,-1; subu a,b` the `- 1` has to be hidden from fold (a variable or an assignment inside the
     expression). C434 also needed `prev` as an if/else so cse's extended block ends at the join.
+- Pass 15 (overlay agent):
+  * 64 99F30 matched (was 1 row): the found block's base-first `addu v0,s3,v0` needs a base pseudo that cse does
+    not know is constant (fold_rtx swaps a const-equivalent first operand second), so the decode loop uses
+    `d = &D_8019F4D8;` assigned at the top of `while (1)` (call arg, xor and found via d). Assigned inside the
+    outer loop, loop.c hoists it together with wait #1's %hi(D_8019F4D8) (fp); assigned before the loop it doesn't.
+  * 3a F4238 matched (was 63 rows): the grid offsets are plain `i * 16 + 0x3E` / `0x3F + i * 16` /
+    `0x3E + j * 14` / `0x22 + i * 21` expressions, not induction variables: loop.c strength-reduces them
+    itself, which gives the original's giv copy (s5 = s6) before the inner underline loop and the giv
+    inits after the copied exit test; `k++` is a separate statement after the call.
+  * 3a F459C 57 -> 51, 0a BB714 notes (see their headers).
+  * 65 EF890 matched (was 72 rows): the free-space computation is two statements on one variable
+    (`at = D_80067944 - (dst + k); at = at / 0x800 * 0x800;`, the original's subu into s0 + copy), the
+    later blocks read D_8006794C->unk1C->... directly (no g local) in sector/id/size order, and the id choice
+    is an else-if chain (`== 1` / `>= 0x2B52` / else): with a nested if in the else arm jump.c turns the
+    0x2714 arm into a speculative set and reorg fills the bne delay slot differently. No do-while wraps.
