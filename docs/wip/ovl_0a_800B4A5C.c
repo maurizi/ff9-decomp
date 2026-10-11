@@ -68,7 +68,7 @@ void func_800B4A5C(void) {
     n = 0;
     state = 0;
     i = 1;
-    p = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk20;
+    p = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
     do {
         spr[i] = (SPRT *)p;
         p += sizeof(SPRT);
@@ -92,7 +92,7 @@ void func_800B4A5C(void) {
     func_800223CC();
     func_8001CCB4(0, 0, 0);
     do {
-        ClearOTagR(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8], 0x1000);
+        ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
         switch (state) {
         case 0:
             n = 0x3C;
@@ -128,15 +128,15 @@ void func_800B4A5C(void) {
             }
             break;
         }
-        addPrim((u32 *)D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], spr[D_8006794C->unk1C->unk8]);
-        addPrim((u32 *)D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], tp[D_8006794C->unk1C->unk8]);
+        addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], spr[g_gameState->unk1C->unk8]);
+        addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], tp[g_gameState->unk1C->unk8]);
         func_80032098();
         DrawSync(0);
-        D_8006794C->unk9 = 2;
-        VSync(D_8006794C->unk9);
+        g_gameState->unk9 = 2;
+        VSync(g_gameState->unk9);
         ResetGraph(1);
-        PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
-        DrawOTagEnv(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 0xFFF, &D_8006794C->unk10[D_8006794C->unk1C->unk8]);
-        D_8006794C->unk1C->unk8 ^= 1;
+        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        g_gameState->unk1C->unk8 ^= 1;
     } while (state < 4);
 }

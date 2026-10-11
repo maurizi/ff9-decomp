@@ -7,7 +7,7 @@ void func_800C3F78(Unk800C412C *arg0, Unk800C3F78 *arg1) {
     s32 idx;
     Unk800F5758 *tb;
 
-    func_80063864(&arg0->unk0[1], &arg0->unk0[0], 0xC);
+    bcopy(&arg0->unk0[1], &arg0->unk0[0], 0xC);
     arg0->unk0[1].unk8 = arg1->unk0;
     arg0->unk0[1].unk9 = arg1->unk1;
     if (arg1->unk2_14 != 0) {
@@ -22,7 +22,7 @@ void func_800C3F78(Unk800C412C *arg0, Unk800C3F78 *arg1) {
             goto other;
         }
         if (u->unk68 & 1) {
-            idx = ((D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
+            idx = ((g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
                   (arg1->unk2_14 - 1) * 19;
             tb = D_800F5758;
             t = &tb[idx];

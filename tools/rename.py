@@ -7,7 +7,8 @@
 
 For each pair it records the name in the binary's symbols file (config/symbols.us.txt or
 config/symbols.ovl_XX.us.txt), renames every use in the C sources and headers that can see the
-symbol (main: all of src/ and include/; an overlay: src/ovl_XX/ and include/ovl_XX.h), and updates
+symbol (main: all of src/ and include/; an overlay: src/ovl_XX/ and include/ovl_XX.h; plus the matching
+docs/wip/ drafts and src_equiv/ files), and updates
 config/functions.us.txt. File-local helpers named after a function (func_80047E1C_approach) follow it.
 A trailing comment in --from lines (`OLD NEW  # why`) goes into the symbols file.
 
@@ -32,9 +33,12 @@ LIB_LIST = "config/library_funcs.us.txt"
 
 
 def scope_files(binary):
+    # docs/wip drafts and src_equiv (both compiled by the DS port) are renamed along with src/.
     if binary == "main":
-        return glob.glob("src/**/*.c", recursive=True) + glob.glob("include/*.h")
-    return glob.glob(f"src/{binary}/*.c") + glob.glob(f"include/{binary}.h")
+        return (glob.glob("src/**/*.c", recursive=True) + glob.glob("include/*.h") + glob.glob("docs/wip/*.c")
+                + glob.glob("src_equiv/**/*.[ch]", recursive=True))
+    return (glob.glob(f"src/{binary}/*.c") + glob.glob(f"include/{binary}.h") + glob.glob(f"docs/wip/{binary}_*.c")
+            + glob.glob(f"src_equiv/{binary}/*.c"))
 
 
 def symbols_file(binary):

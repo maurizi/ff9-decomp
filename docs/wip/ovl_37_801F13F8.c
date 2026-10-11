@@ -63,14 +63,14 @@ void func_801F13F8(void) {
             k ^= l->unk7;
             D_80077DE8.unk0 = k * 0x96;
             D_80077DE8.unk4 = 0x19;
-            D_80077DE8.unk2 = l->unk6 * 15 + 0x34;
+            D_80077DE8.unk2 = l->cursor * 15 + 0x34;
             func_800355E4();
         } else if (blink) {
             k = (l->unk8 >> 3) & 1;
             k ^= l->unk7;
             D_80077DE8.unk0 = k * 0x96;
             D_80077DE8.unk4 = 0x19;
-            D_80077DE8.unk2 = l->unk6 * 15 + 0x34;
+            D_80077DE8.unk2 = l->cursor * 15 + 0x34;
             func_800355E4();
         }
     }
@@ -100,7 +100,7 @@ void func_801F13F8(void) {
         k = (l->unk8 >> 3) & 1;
         k ^= l->unk7;
         D_80077DE8.unk0 = k * 0x96;
-        D_80077DE8.unk2 = l->unk6 * 15 + 0x34;
+        D_80077DE8.unk2 = l->cursor * 15 + 0x34;
         D_80077DE8.unk4 = 0x12;
         func_800355E4();
     }

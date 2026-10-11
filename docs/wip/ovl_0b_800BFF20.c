@@ -13,22 +13,22 @@ void func_800BFF20(BtlUnit *arg0) {
     s16 r, g, b;
     s32 rr, gg, bb;
 
-    if (!((arg0->unk68 >> 22) & 1) && !(arg0->unk3C & 1)) {
+    if (!((arg0->unk68 >> 22) & 1) && !(arg0->status & 1)) {
         e = func_800CEE74();
-        if (arg0->unk3C & 0x3000840) {
+        if (arg0->status & 0x3000840) {
             func_800C8A3C(arg0->unk9C, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
             if (arg0->unkA8 != NULL) {
                 func_800C8A3C(arg0->unkA8, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
             }
         } else {
-            if (arg0->unk3C & 0xC00000) {
-                n = D_8006794C->unk1C->unk8E4.battle->unkD7C;
+            if (arg0->status & 0xC00000) {
+                n = g_gameState->unk1C->unk8E4.battle->unkD7C;
                 m = n;
                 m = m % 24;
-                if ((arg0->unk3C & 0xC00000) == 0xC00000) {
+                if ((arg0->status & 0xC00000) == 0xC00000) {
                     c = (n % 48) >= 24;
                 } else {
-                    v = w = (arg0->unk3C & 0x800000) < 0x800000;
+                    v = w = (arg0->status & 0x800000) < 0x800000;
                     c = v;
                 }
                 if (c) {
@@ -47,7 +47,7 @@ void func_800BFF20(BtlUnit *arg0) {
                 } else {
                     v = 24 - m;
                 }
-            } else if ((arg0->unk3C & 0x4100) == 0x4000) {
+            } else if ((arg0->status & 0x4100) == 0x4000) {
             u8 tbl[8][3] = {
                 { 0xFF, 0x60, 0x60 }, { 0x68, 0x78, 0xFF }, { 0xFF, 0xB8, 0x78 }, { 0x80, 0xC0, 0xD0 },
                 { 0xC0, 0x68, 0x90 }, { 0xD0, 0x70, 0x78 }, { 0xC8, 0xD8, 0x68 }, { 0xD0, 0xB8, 0x68 },
@@ -56,7 +56,7 @@ void func_800BFF20(BtlUnit *arg0) {
                 r = e->unkC + (p[0] - 0x80);
                 g = e->unkD + (p[1] - 0x80);
                 b = e->unkE + (p[2] - 0x80);
-                v = D_8006794C->unk1C->unk8E4.battle->unkD7C & 0xF;
+                v = g_gameState->unk1C->unk8E4.battle->unkD7C & 0xF;
                 if (v >= 8) {
                     v = 16 - v;
                 }
@@ -75,7 +75,7 @@ void func_800BFF20(BtlUnit *arg0) {
 end:
     n = BtlUnitHasStatus(arg0, 0x200000);
     if ((u8)n) {
-        arg0->unk8C[1] = t = 0xFF380000 - func_8004BB80((D_8006794C->unk1C->unk8E4.battle->unkD7C & 0xF) << 8) * 480;
+        arg0->unk8C[1] = t = 0xFF380000 - math_sin((g_gameState->unk1C->unk8E4.battle->unkD7C & 0xF) << 8) * 480;
         arg0->unk98->unk0[1] = t;
     }
 }

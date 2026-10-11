@@ -77,9 +77,9 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     if (!(D_800CA068.unk0 & 0x40)) {
         return 0;
     }
-    mode = D_8006794C->unk8;
+    mode = g_gameState->mode;
     if (mode == 5) {
-        a = (Unk8004AB64 *)D_8006794C->unk1C->unk8E0[D_8006794C->unk1C->unk8E4.field->unk8].unkC;
+        a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->unk8].unkC;
     } else {
         a = NULL;
         if (mode == 1) {
@@ -89,11 +89,11 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     bg = D_800C9DB4;
     st = &D_800CA068;
     c = (Unk800C9DB4Cam *)((u8 *)bg + bg->unk18);
-    v.vx = a->unk14.vx;
+    v.vx = a->pos.vx;
     *(s32 *)&st->unk10 = *(s32 *)&st->unk4;
-    v.vy = a->unk14.vy - st->unk76;
+    v.vy = a->pos.vy - st->unk76;
     c = &c[st->unk75];
-    v.vz = a->unk14.vz;
+    v.vz = a->pos.vz;
     ox = (s16)c->unk20;
     oy = (s16)c->unk22;
     gte_SetGeomOffset(ox + 0xA0, oy + 0x70);

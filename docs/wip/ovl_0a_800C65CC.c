@@ -69,18 +69,18 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     v[0].vx = vtx[n0->unkC[0]].unk0;
     v[1].vx = vtx[n0->unkC[1]].unk0;
     v[2].vx = vtx[n0->unkC[2]].unk0;
-    p.vx = a->unk24->unk14.vx - o.vx;
+    p.vx = a->unk24->pos.vx - o.vx;
     v[0].vy = vtx[n0->unkC[0]].unk2;
     v[1].vy = vtx[n0->unkC[1]].unk2;
     v[2].vy = vtx[n0->unkC[2]].unk2;
-    p.vy = a->unk24->unk14.vy - o.vy;
+    p.vy = a->unk24->pos.vy - o.vy;
     v[0].vz = vtx[n0->unkC[0]].unk4;
     v[1].vz = vtx[n0->unkC[1]].unk4;
     v[2].vz = vtx[n0->unkC[2]].unk4;
     dx0 = v[0].vx - p.vx;
     dx1 = v[1].vx - p.vx;
     dx2 = v[2].vx - p.vx;
-    p.vz = a->unk24->unk14.vz - o.vz;
+    p.vz = a->unk24->pos.vz - o.vz;
     d = v[0].vz - p.vz;
     dz1 = v[1].vz - p.vz;
     dz2 = v[2].vz - p.vz;
@@ -103,20 +103,20 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     v[2].vz = vtx[n1->unkC[2]].unk4;
     r.vx = (nv.vx * v[0].vx + nv.vy * v[1].vx + nv.vz * v[2].vx) / d;
     r.vz = (nv.vx * v[0].vz + nv.vy * v[1].vz + nv.vz * v[2].vz) / d;
-    a->unk24->unk14.vx = r.vx + o.vx;
-    a->unk24->unk14.vz = r.vz + o.vz;
+    a->unk24->pos.vx = r.vx + o.vx;
+    a->unk24->pos.vz = r.vz + o.vz;
     k = n1->unk6;
     if (k >= 0) {
         pl = &D_800C9DF0.unk14[k];
-        c = func_800C1DC4(pl->unk0, a->unk24->unk14.vx << 16);
-        a->unk24->unk14.vy = func_800C1DC4(n1->unk24 - c - func_800C1DC4(pl->unk8, a->unk24->unk14.vz << 16), pl->unkC) >> 16;
-        a->unk24->unk14.vy += (s16)D_800C9DF0.unk1C[n1->unk4].unkA[1] - D_800C9DF0.unk1C[n1->unk4].unk4[1];
+        c = func_800C1DC4(pl->unk0, a->unk24->pos.vx << 16);
+        a->unk24->pos.vy = func_800C1DC4(n1->unk24 - c - func_800C1DC4(pl->unk8, a->unk24->pos.vz << 16), pl->unkC) >> 16;
+        a->unk24->pos.vy += (s16)D_800C9DF0.unk1C[n1->unk4].unkA[1] - D_800C9DF0.unk1C[n1->unk4].unk4[1];
     } else {
         Unk800C9DF8Tri *t3;
         Unk800C9DFC *vt;
         t3 = D_800C9DF0.unk1C + n1->unk4;
         vt = D_800C9DF0.unkC + n1->unkC[0];
-        a->unk24->unk14.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t3->unkA[1]));
+        a->unk24->pos.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t3->unkA[1]));
     }
     return 1;
 }

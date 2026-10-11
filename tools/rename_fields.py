@@ -9,15 +9,20 @@ Builds (in Docker), and on every line gcc rejects with "structure has no member 
 that use is on the renamed struct. Lines using it more than once are listed for a hand fix
 (`a->unkB = b->unkB` where only one side is the renamed struct); fix them and run again.
 Repeats until the build has no member errors. Then `make verify`.
+The docs/wip/ drafts and src_equiv/ files (not part of the build) go through the same cc1 and get the same fixes.
 
 Member names that other structs also use are safe: their uses compile and are never touched.
 Before step 1, check that no other struct already has a member with one of the NEW names,
 or a wrong base could compile silently.
 """
+import glob
 import re
 import subprocess
 import sys
 
+# Same preprocessor and cc1 as the Makefile; output goes nowhere, only the errors matter.
+EXTRA_CC = ("for f; do cpp -nostdinc -Iinclude -undef -D__GNUC__=2 -Dmips -D__mips__ -D_LANGUAGE_C -DLANGUAGE_C \"$f\""
+            " | /opt/cc/gcc-2.8.1-psx/cc1 -quiet -O2 -G0 -o /dev/null; done")
 ERR = re.compile(r"^([\w/.]+):(\d+): structure has no member named `(\w+)'", re.M)
 
 
@@ -28,6 +33,9 @@ def main():
     for _ in range(20):
         out = subprocess.run(["tools/docker.sh", "make", "-j8", "build"], capture_output=True, text=True)
         text = out.stdout + out.stderr
+        extra = sorted(glob.glob("docs/wip/*.c") + glob.glob("src_equiv/**/*.c", recursive=True))
+        out = subprocess.run(["tools/docker.sh", "sh", "-c", EXTRA_CC, "sh"] + extra, capture_output=True, text=True)
+        text += out.stdout + out.stderr
         errs = {}
         for f, ln, m in set(ERR.findall(text)):
             errs.setdefault(f, {}).setdefault(int(ln), set()).add(m)
