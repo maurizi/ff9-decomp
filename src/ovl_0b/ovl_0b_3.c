@@ -583,7 +583,7 @@ void func_800CA3CC(void) {
 }
 
 void func_800CA530(BtlCmd *arg0) {
-    if (g_gameState->unk1C->unk8E4.battle->unk11C4.unk8[arg0->unkF] != 0 && func_800CA5AC(arg0) != NULL) {
+    if (g_gameState->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo] != 0 && func_800CA5AC(arg0) != NULL) {
         BtlUnit *u = arg0->unk4;
         if (!(u->unk68 & 1)) {
             u->unk86[1] = 0;
@@ -606,12 +606,12 @@ Battle122C *func_800CA5AC(BtlCmd *arg0) {
     g = g_gameState;
     e->unk0 = 0;
     e->unk4 = arg0;
-    e->unk8 = g->unk1C->unk8E4.battle->unk11C4.unk8[arg0->unkF];
+    e->unk8 = g->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo];
     e->unkC = 0;
     e->unk10 = 0;
     e->unk12 = 0;
     e->unk14 = 0;
-    e->unk16 = g->unk1C->unk8E4.battle->unk11C4.unk4[arg0->unkF];
+    e->unk16 = g->unk1C->unk8E4.battle->unk11C4.unk4[arg0->subNo];
     e->unk17 = 0;
     e->unk21 = 0;
     e->unk25 = 0;
@@ -637,11 +637,11 @@ void func_800CA694(u16 mask, s16 arg1, u16 id) {
     }
     if (u != NULL) {
         c = u->unk4;
-        c->unkE = 0;
-        c->unkF = id;
-        c->unkC = arg1;
+        c->cmdNo = 0;
+        c->subNo = id;
+        c->targets = arg1;
         c->unk4 = u;
-        c->unk8 = &g_gameState->unk1C->unk8E4.battle->unk5D8[id];
+        c->ability = &g_gameState->unk1C->unk8E4.battle->unk5D8[id];
         c->unk10.w = 0;
         e = func_800CA5AC(c);
         if (e != NULL) {
@@ -1902,26 +1902,26 @@ void func_800CDEF0(BtlCmd *arg0) {
     u8 *s = NULL;
     u8 buf[32];
     u16 t;
-    switch (arg0->unkE) {
+    switch (arg0->cmdNo) {
     case 0xE:
     case 0xF:
-        s = func_800CD75C(arg0->unkF);
+        s = func_800CD75C(arg0->subNo);
         break;
     case 0x32:
-        s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->unk8->unkE;
+        s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->ability->unkE;
         break;
     default:
-        if (arg0->unkF < 0xC0) {
-            t = D_800F7124[arg0->unkF];
+        if (arg0->subNo < 0xC0) {
+            t = D_800F7124[arg0->subNo];
             switch (t) {
             case 0:
                 break;
             case 0xFF:
-                s = func_800EA0B4(arg0->unkF);
+                s = func_800EA0B4(arg0->subNo);
                 break;
             case 0xFE:
                 s = buf;
-                func_8002BD54(s, func_800EA0B4(arg0->unkF));
+                func_8002BD54(s, func_800EA0B4(arg0->subNo));
                 func_8002AD38(s, (u8 *)text_getFrom(D_800F71E4, 0));
                 break;
             default:

@@ -5,7 +5,7 @@
     2. python3 tools/rename_fields.py unk10=cur.hp,unk12=cur.mp,unkB=level
 
 Builds (in Docker), and on every line gcc rejects with "structure has no member named
-`unkB'" rewrites that member, but only when the line uses it exactly once: the error proves
+`unkB'" rewrites that member, but only when the line uses it once, or only through one plain variable: the error proves
 that use is on the renamed struct. Lines using it more than once are listed for a hand fix
 (`a->unkB = b->unkB` where only one side is the renamed struct); fix them and run again.
 Repeats until the build has no member errors. Then `make verify`.
@@ -42,9 +42,13 @@ def main():
                 s = src[ln - 1]
                 for m in sorted(members):
                     occ = list(re.finditer(rf"(\.|->){m}\b", s))
-                    if m in pairs and len(occ) == 1:
-                        o = occ[0]
-                        s = s[:o.start()] + o.group(1) + pairs[m] + s[o.end():]
+                    # Several uses through the same plain variable (`a->unkE ... a->unkE`) are one struct too.
+                    bases = {re.search(r"(\w+)\s*$", s[:o.start()]).group(1) if re.search(r"(\w+)\s*$", s[:o.start()]) else None
+                             for o in occ}
+                    same = len(bases) == 1 and None not in bases and re.match(r"[a-z]\w*$", next(iter(bases)))
+                    if m in pairs and (len(occ) == 1 or same):
+                        for o in reversed(occ):
+                            s = s[:o.start()] + o.group(1) + pairs[m] + s[o.end():]
                         fixed += 1
                     else:
                         manual.append(f"{f}:{ln}: {m}: {s.strip()}")

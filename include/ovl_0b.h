@@ -907,10 +907,10 @@ typedef struct BtlCmd8 {
 typedef struct BtlCmd {
     struct BtlCmd *unk0; /* next */
     BtlUnit *unk4;
-    BtlCmd8 *unk8;
-    s16 unkC;
-    u8 unkE;
-    u8 unkF;
+    BtlCmd8 *ability;
+    s16 targets; /* unit bitmask: party bits 0-3, enemies from bit 4 */
+    u8 cmdNo;    /* menu command: Attack 1, Focus 13, ... */
+    u8 subNo;    /* ability id (Attack 176, Focus 188), or item id for item commands */
     union {
         struct {
             u32 unk0_0 : 2;
@@ -1026,10 +1026,10 @@ typedef struct {
 /* Inlined copy of func_800B3CEC (clear a command); the original source inlines it. */
 static inline void func_800B3CEC_inline(BtlCmd *arg0) {
     arg0->unk0 = 0;
-    arg0->unk8 = 0;
-    arg0->unkC = 0;
-    arg0->unkE = 0;
-    arg0->unkF = 0;
+    arg0->ability = 0;
+    arg0->targets = 0;
+    arg0->cmdNo = 0;
+    arg0->subNo = 0;
     arg0->unk10.b.unk0_0 = 0;
     arg0->unk10.b.unk0_2 = 0;
     arg0->unk10.b.unk0_4 = 0;
@@ -1076,7 +1076,7 @@ typedef struct Battle {
     Battle4880 unk4E8[3];
     struct BtlCmd8 unk5D8[18]; /* commands/abilities */
     BtlUnit *unk6F8; /* list of active units */
-    BtlUnit unk6FC[8];
+    BtlUnit units[8]; /* runtime: party at [0..3] (Zidane 0x80108EFC, Vivi +0xD0, ...) */
     s32 unkD7C;
     u8 unkD80;
     u8 unkD81;
@@ -1112,7 +1112,7 @@ typedef struct Battle {
     struct Battle1538 **unk1538;
     s32 unk153C[4];
     Battle154C unk154C[32];
-    Battle16CC unk16CC[0xC0];
+    Battle16CC abilities[0xC0]; /* runtime: BtlCmd.ability = &abilities[subNo] (Attack 176, Focus 188) */
     s32 unk22CC[64];
 } Battle; /* 0x23CC */
 
@@ -4075,7 +4075,7 @@ extern u8 D_8007AF01;
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 func_800B1B48_can(BtlCmd *arg1) {
-    if ((arg1->unk4->unk3C & 8) && (arg1->unk8->unk8 & 2)) {
+    if ((arg1->unk4->unk3C & 8) && (arg1->ability->unk8 & 2)) {
         func_800CD5C8(0x15);
         return 0;
     }

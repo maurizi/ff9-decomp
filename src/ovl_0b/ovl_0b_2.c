@@ -8206,7 +8206,7 @@ s32 func_800E8498(s32 arg0) {
 
 s32 func_800E84F0(s32 arg0) {
     s32 ret = 0;
-    if (g_gameState->unk1C->unk8E4.battle->unk1088->unkE == 0x33) {
+    if (g_gameState->unk1C->unk8E4.battle->unk1088->cmdNo == 0x33) {
         ret = func_800B3E7C(func_800E716C(arg0)->unk4) != 0;
     }
     return ret;
@@ -8884,7 +8884,7 @@ u8 *func_800EA0B4(s32 arg0) {
     if (arg0 >= 0xC0) {
         return NULL;
     }
-    return g_gameState->unk1C->unk8E4.battle->unk16CC[arg0].unkE + D_800F909C;
+    return g_gameState->unk1C->unk8E4.battle->abilities[arg0].unkE + D_800F909C;
 }
 
 void func_800EA0F8(s32 arg0) {
@@ -10290,7 +10290,7 @@ void func_800EDE6C(Unk800EDE6C *arg0) {
     Unk800EF80C s;
     Battle16CC *e;
     u8 b = g_btlCmdMenu.cmdIds[g_btlCmdMenu.cursor];
-    e = &g_gameState->unk1C->unk8E4.battle->unk16CC[arg0->unk8];
+    e = &g_gameState->unk1C->unk8E4.battle->abilities[arg0->unk8];
     s.unk6 = arg0->unk8;
     s.unk0 = 1;
     s.unk1 = b;
@@ -10496,11 +10496,11 @@ s32 func_800EE680(void) {
         s.unk0 = r;
         s.unk1 = D_80104FD0.unk0;
         s.unk6 = func_800EF4D8(k);
-        s.unk2 = g_gameState->unk1C->unk8E4.battle->unk16CC[k].unk0_0;
-        s.unk3 = g_gameState->unk1C->unk8E4.battle->unk16CC[k].unk0_4;
-        s.unk4 = g_gameState->unk1C->unk8E4.battle->unk16CC[k].unk0_31;
-        s.unk7 = g_gameState->unk1C->unk8E4.battle->unk16CC[k].unk0_5;
-        s.unk5 = g_gameState->unk1C->unk8E4.battle->unk16CC[k].unk0_29;
+        s.unk2 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_0;
+        s.unk3 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_4;
+        s.unk4 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_31;
+        s.unk7 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_5;
+        s.unk5 = g_gameState->unk1C->unk8E4.battle->abilities[k].unk0_29;
         s.unk8 = D_80104FD0.unk10;
         s.unk9 = D_80104FD0.unk19;
         func_800EF80C(&s);
@@ -10541,7 +10541,7 @@ s32 func_800EE938(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     u8 r = 0;
     UnkPair *p = func_800EC130(l->unk6 + l->unk5);
-    Battle16CC *e = &g_gameState->unk1C->unk8E4.battle->unk16CC[D_80104FD0.unk4->unk8];
+    Battle16CC *e = &g_gameState->unk1C->unk8E4.battle->abilities[D_80104FD0.unk4->unk8];
     s32 n;
 
     if (p == NULL) {
@@ -10566,7 +10566,7 @@ s32 func_800EE938(void) {
 
 s32 func_800EEA98(s32 arg0) {
     Unk80104F88Entry *e = D_80104FE4->unkB4;
-    Battle16CC *a = &g_gameState->unk1C->unk8E4.battle->unk16CC[arg0];
+    Battle16CC *a = &g_gameState->unk1C->unk8E4.battle->abilities[arg0];
 
     if (e->unk19 != 0 && e->unk3DC[arg0] == 0 && (s16)*e->unk1C[arg0] < (s16)e->unk31C[arg0]) {
         return 0;
@@ -10700,7 +10700,7 @@ void func_800EF0D8(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
 
     if (res != 0) {
         x = r->x;
-        a = &g_gameState->unk1C->unk8E4.battle->unk16CC[k];
+        a = &g_gameState->unk1C->unk8E4.battle->abilities[k];
         y = r->y + arg1 * 15 + arg3->unk2 - dy;
         c = (res != 2) * 2;
         func_80029058(x + 6, y, 7, D_800F909C + a->unkE, c);
@@ -11051,7 +11051,7 @@ s32 func_800F0118(void) {
         return 0;
     }
     if (e->unk6 == 1) {
-        b = &g_gameState->unk1C->unk8E4.battle->unk16CC[D_80104FF0.unk1A];
+        b = &g_gameState->unk1C->unk8E4.battle->abilities[D_80104FF0.unk1A];
         cost = b->unkA;
         if (D_80104FF0.unkD != 0) {
             cost >>= 1;

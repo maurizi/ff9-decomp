@@ -134,3 +134,15 @@ Format:
   +0x12B5 = 4 = party size.
 - names: g_btlCmdMenu.cursor/charIndex/cmdIds/unit, g_btlUi.cmdUnit/menuState/partyCount.
 - confidence: high for the observed values; the menuState value meanings beyond these four are open.
+
+## Battle commands (BtlCmd) and the battle struct  (status: applied)
+- binary: ovl_0b. Redux disc 2, `battle_iifa_command`; Vivi's first command slot BtlUnit.unk4 = 0x80109608.
+- Attack on the monster: the slot goes from 00000000 cc8f1080 00000000 0000 00 00 ... to
+  ... cca91080 1000 01 b0 04 ...: +0x8 = 0x8010A9CC, +0xC = 0x10, +0xE = 1, +0xF = 176 (0xB0).
+- Focus (row 2) instead: +0x8 = 0x8010AA8C, +0xC = 0x2 (Vivi's own unit bit), +0xE = 13, +0xF = 188.
+  +0xE matches g_btlCmdMenu.cmdIds of the chosen row (Attack 1, Focus 13). +0x8 moves by (188-176)*0x10, i.e.
+  &table[+0xF]; GameData.unk8E4 = 0x80108800 (the battle struct) and 0x80108800+0x16CC = 0x80109ECC is that
+  table's base, as the code's `cmd->unk8 = &battle->unk16CC[cmd->unkF]` says. Battle+0x6FC = 0x80108EFC is
+  Zidane's unit (Vivi's is the next, +0xD0).
+- names: BtlCmd.ability/targets/cmdNo/subNo, Battle.units/abilities.
+- confidence: high. targets = unit bitmask (party from bit 0, enemies from bit 4) rests on two values (0x10 enemy, 0x2 Vivi).
