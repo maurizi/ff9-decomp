@@ -823,7 +823,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   arithmetic in the overlay (C1E14, C4B30) and copy its spelling, statement by statement. What is left there
   is reload's spill-register choice (&q[x] priority 450 vs arg5 449.3). B4A5C, C07D8, C65CC unchanged (notes in
   their headers).
-- Pass 21 (overlay agent): C519C 74 -> 39 rows, C65CC 93 (58 with a fake temp) -> 49 with no fake temp and an exact
+- Pass 21 (overlay agent): C519C 74 -> 39 rows, C65CC 93 (58 with a fake temp) -> 38 with no fake temp and an exact
   shape. C0038 (4), BD130 (9), C07D8 (11), B4A5C (5, dead `&pad`) unchanged; notes in their headers.
   * C519C: `tri = n;` as the first statement settled the arg5 / &q[x] near-tie (an unrelated set moved ahead of
     the stack-arg loads changes the sched1 live lengths), found by moving single lines (build/w/mvrun.py in the
@@ -831,6 +831,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * C65CC: the permuter's `new_var = v[1].vx - p.vx` was standing in for named differences: dx0..dx2 =
     v[i].vx - p.vx right after the v[*].vz loads (before p.vz), dz0..dz2 after p.vz, `nv.vx = dx1 * dz2 - dx2 *
     dz1;` etc. Then `r.vx = ... / area;` after the second triangle's vz loads gives the late r.vx stack store.
+    One variable reused for dz0 and the area (`d`, the permuter's hint) takes it from 49 to 38.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`

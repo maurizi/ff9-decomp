@@ -3,7 +3,7 @@
  * relative to triangle n0 by barycentric-like cross products (nv) and re-project it onto triangle n1;
  * the height then comes from n1's plane (func_800C1DC4 fixed-point, pl = D_800C9DF0.unk14[n1->unk6]) or,
  * without a plane, from n1's first vertex.
- * WIP (pass 21): 49 aligned diff rows, 398 of 398 instructions, shape exact (cmp_shape.py --shape: 0 rows), no fake
+ * WIP (pass 21): 38 aligned diff rows, 398 of 398 instructions, shape exact (cmp_shape.py --shape: 0 rows), no fake
  * temps. (Pass 15: 58 rows with the permuter's new_var, 93 without.)
  * Found:
  *  - the else arm is written like func_800C3608's (`t3 = D_800C9DF0.unk1C + n1->unk4; vt = D_800C9DF0.unkC
@@ -26,6 +26,10 @@
  * Left: register naming only, in the big straight-line block (local-alloc): t is s0 here, t7 in the original
  * (splitting t into t/t2 per triangle: 51); o.vz / v[1].vx swap t2/t4, and the dz/dx temps and mflo results are
  * a permutation of a2/t2/t3/t4/t7. Single-line moves (700 compiles, build/w/mvrun.py) find nothing better.
+ * Then 49 -> 38 by reusing one variable `d` for dz0 (v[0].vz - p.vz) and for the area (the permuter's hint was
+ * `area = v[0].vz - p.vz`; the reuse makes it a multi-set pseudo, which also puts t back in t7). Left: o.vz /
+ * v[1].vx swap t2/t4, and the dz/dx temps, d and the mflo results are a permutation of a2/t2/t3/t4/t8. dx/dz
+ * statement orders (36), reusing k/c for a second difference (30) and 1700 single-line moves: no better.
  */
 #include "ovl_0a.h"
 
@@ -38,8 +42,8 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     Unk800C9DF8Tri *t;
     Unk800C9DFC *vtx;
     Unk800C9E04 *pl;
-    s32 dx0, dx1, dx2, dz0, dz1, dz2;
-    s32 area;
+    s32 dx0, dx1, dx2, dz1, dz2;
+    s32 d;
     s32 k;
     s32 c;
 
@@ -63,13 +67,13 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     dx1 = v[1].vx - p.vx;
     dx2 = v[2].vx - p.vx;
     p.vz = a->unk24->unk14.vz - o.vz;
-    dz0 = v[0].vz - p.vz;
+    d = v[0].vz - p.vz;
     dz1 = v[1].vz - p.vz;
     dz2 = v[2].vz - p.vz;
     nv.vx = dx1 * dz2 - dx2 * dz1;
-    nv.vy = dx2 * dz0 - dx0 * dz2;
-    nv.vz = dx0 * dz1 - dx1 * dz0;
-    area = (v[1].vx - v[0].vx) * (v[2].vz - v[0].vz) - (v[2].vx - v[0].vx) * (v[1].vz - v[0].vz);
+    nv.vy = dx2 * d - dx0 * dz2;
+    nv.vz = dx0 * dz1 - dx1 * d;
+    d = (v[1].vx - v[0].vx) * (v[2].vz - v[0].vz) - (v[2].vx - v[0].vx) * (v[1].vz - v[0].vz);
     t = &D_800C9DF0.unk1C[n1->unk4];
     o.vx = b->unk8[0] + t->unkA[0];
     o.vy = b->unk8[1] + t->unkA[1];
@@ -83,8 +87,8 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     v[0].vz = vtx[n1->unkC[0]].unk4;
     v[1].vz = vtx[n1->unkC[1]].unk4;
     v[2].vz = vtx[n1->unkC[2]].unk4;
-    r.vx = (nv.vx * v[0].vx + nv.vy * v[1].vx + nv.vz * v[2].vx) / area;
-    r.vz = (nv.vx * v[0].vz + nv.vy * v[1].vz + nv.vz * v[2].vz) / area;
+    r.vx = (nv.vx * v[0].vx + nv.vy * v[1].vx + nv.vz * v[2].vx) / d;
+    r.vz = (nv.vx * v[0].vz + nv.vy * v[1].vz + nv.vz * v[2].vz) / d;
     a->unk24->unk14.vx = r.vx + o.vx;
     a->unk24->unk14.vz = r.vz + o.vz;
     k = n1->unk6;
