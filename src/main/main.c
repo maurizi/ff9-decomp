@@ -9941,10 +9941,10 @@ s32 func_80037D6C(s32 op) {
 
     switch ((u32)op) {
     case 0:
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        r = *D_8007B720++;
+        r = *g_randPtr++;
         break;
     case 1:
         func_800C1B5C(buf);
@@ -11340,10 +11340,10 @@ s32 func_80039C38(void) {
         func_8004FF98(1);
         e = D_8007AECC;
         if (e->unk1700 >= 0) {
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            e->unk1700 = (*D_8007B720++ + 0xC8) * 4;
+            e->unk1700 = (*g_randPtr++ + 0xC8) * 4;
         }
         return 0;
     }
@@ -12523,10 +12523,10 @@ void func_8004883C(void) {
     }
     e2 = D_8007AECC;
     if (e2->unk1700 >= 0) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        e2->unk1700 = (*D_8007B720++ + 0xC8) * 2;
+        e2->unk1700 = (*g_randPtr++ + 0xC8) * 2;
     }
     if (p->unk74 != 0 && !(p->unk62 & 0x84)) {
         func_8004883C_idle(p);
@@ -12903,10 +12903,10 @@ void func_800499D8(Unk8004B9B8 *p) {
             p->unk5D = p->unk69;
         }
         p->unk3A = 0;
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        p->unk5D = p->unk7C[*D_8007B720++ & 3];
+        p->unk5D = p->unk7C[*g_randPtr++ & 3];
         p->unk62 &= 0x39;
         if (p->unkF & 0x80) {
             func_8004B9B8_inline(p);
@@ -13048,10 +13048,10 @@ void func_80049C14(Unk8004AB64 *p) {
         if (t3 >= p->unk38) {
             p->unk3A = 0;
             if (p->unk36 == (u16)p->unk54) {
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
                 }
-                p->unk5D = p->unk7C.b[*D_8007B720++ & 3];
+                p->unk5D = p->unk7C.b[*g_randPtr++ & 3];
             }
         }
     }
@@ -13520,10 +13520,10 @@ void func_8004B20C(s32 a) {
     Unk8007AECC *p = D_8007AECC;
     s32 v;
     if (p->unk1700 >= 0) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        v = *D_8007B720++ + 200;
+        v = *g_randPtr++ + 200;
         if (a == 0) {
             p->unk1700 = v * 4;
         } else {
@@ -13598,10 +13598,10 @@ s32 func_8004B5CC(void) {
         bits >>= 1;
     }
     if (n != 0) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        return 1 << buf[(n * *D_8007B720++) >> 8];
+        return 1 << buf[(n * *g_randPtr++) >> 8];
     }
     return 0;
 }
@@ -13751,7 +13751,7 @@ void func_8004BBF0(void) {
     func_80051568();
     func_8004E924();
     func_8004E7E0();
-    func_8004BE00(GetRCnt(2));
+    rand_init(GetRCnt(2));
     func_8004AC80();
 }
 
@@ -13779,7 +13779,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", StopRCnt);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", ResetRCnt);
 
-void func_8004BE00(s32 seed) {
+void rand_init(s32 seed) {
     u32 tbl[0x209];
     u32 v = 0;
     s32 i;
@@ -13796,12 +13796,12 @@ void func_8004BE00(s32 seed) {
         tbl[i] = (tbl[i - 17] << 23) ^ (tbl[i - 16] >> 9) ^ tbl[i - 1];
     }
     for (i = 0; i < 0x209; i++) {
-        D_8007B724[i] = tbl[i];
+        g_randTable[i] = tbl[i];
     }
-    func_8004BF20();
+    rand_refill();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BF20);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", rand_refill);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BF74);
 
@@ -22832,16 +22832,16 @@ void func_800658DC(MainCalc *c) {
     Character *a;
     s32 lv;
 
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
     a = c->unk0;
     lv = a->unk26;
-    c->unk16 = lv + ((*D_8007B720 << 8) | *D_8007B720) % (((a->unkB + lv) >> 3) + 1);
-    D_8007B720++;
+    c->unk16 = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->unkB + lv) >> 3) + 1);
+    g_randPtr++;
     c->unk12 = c->unk8->unk5;
     c->unk14 = c->unk4->unk2A;
 }
@@ -22910,10 +22910,10 @@ void func_80065BFC(MainCalc *c) {
     Character *t = c->unk4;
     s32 r;
 
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    r = *D_8007B720++;
+    r = *g_randPtr++;
     t->unk10 = r % 10 + 1;
 }
 

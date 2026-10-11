@@ -239,14 +239,14 @@ typedef struct {
 
 /* same as a GNU statement expression: the operand order around it differs
  * from the inline function (func_800B3188) */
-#define RAND8() ({ if (D_8007B720 >= D_8007B92D) { func_8004BF20(); } (s32)*D_8007B720++; })
+#define RAND8() ({ if (g_randPtr >= g_randTableEnd) { rand_refill(); } (s32)*g_randPtr++; })
 
 /* next byte of the random table, refilling it when exhausted (inlined) */
 static inline s32 rand8_inline(void) {
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    return *D_8007B720++;
+    return *g_randPtr++;
 }
 
 /* one primitive in a model's packed GPU packet buffer (BtlUnit9C.unk10) */
@@ -2989,13 +2989,13 @@ u8 *func_800EA0B4(s32);
 
 /* random table: two refill checks, then one byte read as (b << 8 | b) */
 #define RAND_REFILL2()                         \
-    if (D_8007B720 >= D_8007B92D) {            \
-        func_8004BF20();                       \
-        if (D_8007B720 >= D_8007B92D) {        \
-            func_8004BF20();                   \
+    if (g_randPtr >= g_randTableEnd) {            \
+        rand_refill();                       \
+        if (g_randPtr >= g_randTableEnd) {        \
+            rand_refill();                   \
         }                                      \
     }
-#define RAND16() ((*D_8007B720 << 8) | *D_8007B720++)
+#define RAND16() ((*g_randPtr << 8) | *g_randPtr++)
 
 /* main exe: candidates for ff9.h */
 u8 func_80034070(s32, s32);

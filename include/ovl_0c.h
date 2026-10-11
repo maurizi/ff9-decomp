@@ -1243,12 +1243,12 @@ static inline u32 func_800B7DAC_trg(void) {
 void func_800C7050(WmNode *);
 s32 func_800CAE00(u16 *);
 
-/* random byte from the main exe's table (func_8004BF20 refills it) */
+/* random byte from the main exe's table (rand_refill refills it) */
 static inline s32 wm_rand8(void) {
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    return *D_8007B720++;
+    return *g_randPtr++;
 }
 
 /* Inlined copy of func_800B3340 (cell type bit test). */

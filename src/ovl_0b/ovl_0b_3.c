@@ -154,13 +154,13 @@ void func_800C9040(TexAnimSet *arg0) {
             if ((pos >> 12) < e->unk1) {
                 e->unk8 = pos;
             } else if (e->unk6 != 0) {
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
                     }
                 }
-                e->unk8 = -((e->unk4 + (e->unk6 + 1) * ((*D_8007B720 << 8) | *D_8007B720++) / 0x10000) << 12);
+                e->unk8 = -((e->unk4 + (e->unk6 + 1) * ((*g_randPtr << 8) | *g_randPtr++) / 0x10000) << 12);
             } else if (e->unk0 & 2) {
                 e->unk0 &= 0xFC;
             } else {
@@ -244,10 +244,10 @@ Battle11C020 *func_800C94B8(void) {
     n = sc->unk4->unk2;
     b = g_gameState->unk1C->unk8E4.battle;
     if (n >= 3) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        r = *D_8007B720++;
+        r = *g_randPtr++;
         m = r % 3;
     } else {
         m = n;
@@ -262,10 +262,10 @@ Battle1330 *func_800C9600(Battle11C020 *arg0) {
     u16 sum;
     u16 i;
     s8 v;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    r = (*D_8007B720++ * 100) / 256;
+    r = (*g_randPtr++ * 100) / 256;
     e = arg0->unk8;
     sum = e->unk0;
     i = 0;
@@ -1050,10 +1050,10 @@ s32 func_800CB884(BtlScript *arg0, BtlUnit *arg1) {
         if (f & 0x14000000) {
             goto end;
         }
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        r = *D_8007B720++;
+        r = *g_randPtr++;
         if (r >= 0x80) {
             goto end;
         }

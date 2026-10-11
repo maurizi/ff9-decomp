@@ -1993,7 +1993,7 @@ s32 func_80056700(s32, s32);
 void func_80051568(void);
 void func_8004E924(void);
 void func_8004E7E0(void);
-void func_8004BE00(s32);
+void rand_init(s32);
 void func_8004AC80(void);
 extern u16 D_8007AE12;
 void func_80032384(void);
@@ -2455,11 +2455,11 @@ Unk80021938 *func_80021E20(void);
 void func_80028B20(u8 *);
 u8 func_80033D28(void);
 void FlushCache(void);
-extern u8 *D_8007B720;
-extern u8 D_8007B724[]; /* random byte table */
+extern u8 *g_randPtr;
+extern u8 g_randTable[]; /* random byte table */
 
-extern u8 D_8007B92D[];
-void func_8004BF20(void);
+extern u8 g_randTableEnd[];
+void rand_refill(void);
 
 /* ---- hoisted for menu overlays ---- */
 void func_80028CF8(UnkBlink *, s32, void (*)(void));
@@ -4006,10 +4006,10 @@ extern u8 D_8006E648[][4];
 Unk8007AE40 *func_800BBBA8();
 
 static inline s32 func_80038D3C_rand(void) {
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    return *D_8007B720++;
+    return *g_randPtr++;
 }
 
 static inline u16 func_80038D3C_pick(void) {

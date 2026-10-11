@@ -67,3 +67,8 @@ g_padPressed = 0x80077520; // [runtime] set only on the frame a button goes down
 g_padPortPressed = 0x80073990; // [runtime] per port, set only on the press frame (raw bits)
 g_padPortHeld = 0x800739A0; // [runtime] per port, set while held (raw bits)
 snd_playSe = 0x8002F488; // type:func [runtime] [code] sound command 0xD000 with the id - menu cursor 0x67, confirm 0x65
+rand_init = 0x8004BE00; // type:func [code] seeds the 521-entry table (seed*0x5D588B65+1, as Okumura's init_rnd)
+rand_refill = 0x8004BF20; // type:func [code] regenerates the table (x[i] ^= x[i+489], as Okumura's rnd521) and rewinds g_randPtr
+g_randPtr = 0x8007B720; // [code] next random byte, rand_refill when it reaches g_randTableEnd
+g_randTable = 0x8007B724; // [code] 521 random bytes
+g_randTableEnd = 0x8007B92D; // [code] end of g_randTable

@@ -239,6 +239,6 @@ s32 func_800A8F00(s32, s32);
  * func_800A9488: it calls them as implicit int (no andi 0xFF on the result). */
 
 /* Random 0..2 from the main exe's random byte stream. */
-#define RND3() (({ s32 r_; if (D_8007B720 >= D_8007B92D) { func_8004BF20(); } r_ = *D_8007B720++; r_; }) % 3)
+#define RND3() (({ s32 r_; if (g_randPtr >= g_randTableEnd) { rand_refill(); } r_ = *g_randPtr++; r_; }) % 3)
 
 #endif

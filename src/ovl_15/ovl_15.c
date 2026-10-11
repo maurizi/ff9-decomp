@@ -522,10 +522,10 @@ s32 func_800A8FA4(Ovl15Shoe *shoe) {
 
     for (pass = 0; pass < 5; pass++) {
         for (i = 0, n = 312; n > 0; n--, i++) {
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            j = (*D_8007B720++ * 2) % n;
+            j = (*g_randPtr++ * 2) % n;
             t = shoe->unk4[i];
             shoe->unk4[i] = shoe->unk4[i + j];
             shoe->unk4[i + j] = t;

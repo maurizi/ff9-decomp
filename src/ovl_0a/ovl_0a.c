@@ -3354,10 +3354,10 @@ void func_800B1E8C(FieldEvtCtx **arg0, s32 arg1) {
                 ch = (0x10000 << ch) & 0xF0000;
                 snd = t->unk8[(c >> 4) & 1] | 0x80000;
                 if (t->unk1 != 0) {
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
                     }
-                    v = *D_8007B720++;
+                    v = *g_randPtr++;
                     r = (v >> 4) - 8;
                 }
                 func_800B1A20(ctx->unkC->unk14.vx, ctx->unkC->unk14.vy, ctx->unkC->unk14.vz, &vol, &pan);
@@ -6377,13 +6377,13 @@ void func_800BB090(BgAnimHdr *arg0) {
             if ((pos >> 12) < a->unk1) {
                 a->unk8 = pos;
             } else if (a->unk6 != 0) {
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
                     }
                 }
-                r8 = *D_8007B720++;
+                r8 = *g_randPtr++;
                 v = (a->unk6 + 1) * ((r8 << 8) | r8);
                 a->unk8 = -((a->unk4 + v / 0x10000) << 12);
             } else if (a->unk0 & 2) {

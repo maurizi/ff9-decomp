@@ -2668,13 +2668,13 @@ s32 func_800B065C(BtlUnit *arg0, BtlUnit *arg1, BtlCmd *arg2) {
         if (arg0->unkC4[1] & 0x80) {
             r *= 2;
         }
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
         }
-        if (((*D_8007B720 << 8) | *D_8007B720++) % 100 < r) {
+        if (((*g_randPtr << 8) | *g_randPtr++) % 100 < r) {
             func_800B3D54(arg0, 0x31, 0xB0, arg1->unkB0);
             return 1;
         }
@@ -3758,10 +3758,10 @@ void func_800B3460(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
 void func_800B3B5C(BtlUnit *arg0) {
     s32 x;
     if (arg0->unk3C & 0x400) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        x = *D_8007B720++;
+        x = *g_randPtr++;
         x &= 1;
     } else if (arg0->unk3C & 0x800) {
         x = 0;
@@ -4751,8 +4751,8 @@ void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 c.unk12 = target->unk7A;
                 RAND_REFILL2();
                 RAND_REFILL2();
-                v = ((*D_8007B720 << 8) | *D_8007B720) % c.unk16 < ((*D_8007B720 << 8) | *D_8007B720) % c.unk12;
-                D_8007B720++;
+                v = ((*g_randPtr << 8) | *g_randPtr) % c.unk16 < ((*g_randPtr << 8) | *g_randPtr) % c.unk12;
+                g_randPtr++;
                 if (v) {
                     func_800CD5C8(0xA);
                     break;
@@ -5380,24 +5380,24 @@ void func_800B7F20(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
         func_800CD5C8(0xC, func_800CD75C(id));
         if (arg0->unk0->unkC4[1] & 0x20000000) {
             arg0->unk1B |= 1;
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
                 }
             }
-            arg0->unk1E = ((*D_8007B720 << 8) | *D_8007B720++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) >> 1);
+            arg0->unk1E = ((*g_randPtr << 8) | *g_randPtr++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) >> 1);
         }
         if (arg0->unk0->unkC4[0] & 0x800000) {
             gd = g_gameState->unk1C;
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
                 }
             }
             gd->unk560 = g_gameState->unk1C->unk560 +
-                         ((*D_8007B720 << 8) | *D_8007B720++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) / 4 + 1);
+                         ((*g_randPtr << 8) | *g_randPtr++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) / 4 + 1);
             if (g_gameState->unk1C->unk560 > 9999999) {
                 g_gameState->unk1C->unk560 = 9999999;
             }
@@ -5420,13 +5420,13 @@ void func_800B81C4(BtlCalc *arg0, u8 arg1) {
             if (u->unkC4[1] & 8) {
                 v = u->unk33;
             } else {
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
                     }
                 }
-                v = ((*D_8007B720 << 8) | *D_8007B720++) % arg0->unk4->unk33;
+                v = ((*g_randPtr << 8) | *g_randPtr++) % arg0->unk4->unk33;
             }
             u = arg0->unk4;
             if (v + u->unk78 < 0xFF) {
@@ -5458,23 +5458,23 @@ u8 func_800B8390(BtlCalc *arg0) {
     if (arg0->unk4->unk3C & 0x04000000) {
         arg0->unk16 = 0;
     }
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    if (((*D_8007B720 << 8) | *D_8007B720++) % 100 >= arg0->unk16) {
+    if (((*g_randPtr << 8) | *g_randPtr++) % 100 >= arg0->unk16) {
         arg0->unk18 |= 1;
         return 0;
     }
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    if (((*D_8007B720 << 8) | *D_8007B720++) % 100 < arg0->unk12) {
+    if (((*g_randPtr << 8) | *g_randPtr++) % 100 < arg0->unk12) {
         if (arg0->unk4 != arg0->unk0) {
             arg0->unk18 |= 1;
             if (!((arg0->unk4->unk68 >> 25) & 1)) {
@@ -5487,20 +5487,20 @@ u8 func_800B8390(BtlCalc *arg0) {
 }
 
 u8 func_800B8664(BtlCalc *arg0) {
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    if (((*D_8007B720 << 8) | *D_8007B720++) % 100 < arg0->unk16) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+    if (((*g_randPtr << 8) | *g_randPtr++) % 100 < arg0->unk16) {
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
         }
-        if (((*D_8007B720 << 8) | *D_8007B720++) % 100 >= arg0->unk12) {
+        if (((*g_randPtr << 8) | *g_randPtr++) % 100 >= arg0->unk12) {
             return 1;
         }
     }
@@ -5511,13 +5511,13 @@ u8 func_800B8664(BtlCalc *arg0) {
 void func_800B87D0(BtlCalc *arg0, u8 arg1) {
     s32 r;
 
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    r = ((*D_8007B720 << 8) | *D_8007B720++) % (((arg0->unk0->unk7A + arg0->unk0->unk31) >> 3) + 1);
+    r = ((*g_randPtr << 8) | *g_randPtr++) % (((arg0->unk0->unk7A + arg0->unk0->unk31) >> 3) + 1);
     arg0->unkE = arg0->unk0->unk74[5];
     arg0->unk10 = arg0->unk4->unk6C;
     switch (arg1) {
@@ -5536,13 +5536,13 @@ void func_800B87D0(BtlCalc *arg0, u8 arg1) {
         arg0->unk14 = ((arg0->unk0->unk31 + arg0->unk0->unk32) >> 1) + r;
         break;
     case 5:
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
         }
-        arg0->unk14 = ((*D_8007B720 << 8) | *D_8007B720++) % arg0->unk0->unk31 + r;
+        arg0->unk14 = ((*g_randPtr << 8) | *g_randPtr++) % arg0->unk0->unk31 + r;
         break;
     }
 }
@@ -5570,19 +5570,19 @@ void func_800B8BE8(BtlCalc *arg0) {
     u8 s = arg0->unk0->unk33 >> 2;
     s32 r;
     if (s != 0) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
                     }
                 }
             }
         }
-        r = (*D_8007B720 << 8) | *D_8007B720++;
+        r = (*g_randPtr << 8) | *g_randPtr++;
         if (r % 100 < r % s) {
             arg0->unk14 *= 2;
             arg0->unk1B |= 4;
@@ -5715,13 +5715,13 @@ void func_800B918C(BtlCalc *arg0) {
         lp = 1;
     }
     r = (200 / (le / ne)) * (lp / np) / 16;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    if (r > ((*D_8007B720 << 8) | *D_8007B720++) % 100 && (c == NULL || (c->unk4->unk68 & 1))) {
+    if (r > ((*g_randPtr << 8) | *g_randPtr++) % 100 && (c == NULL || (c->unk4->unk68 & 1))) {
         func_800B1250((s32)&g_gameState->unk1C->unk8E4.battle->unk1060, 0x38, 1, 0xF, 1);
     }
 }
@@ -5763,13 +5763,13 @@ s32 func_800B9550(BtlUnit *arg0, s16 arg1) {
 }
 
 void func_800B95BC(BtlCmd *arg0) {
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    if ((arg0->unk4->unk7A >> 1) + arg0->unk4->unk33 < ((*D_8007B720 << 8) | *D_8007B720++) % 100) {
+    if ((arg0->unk4->unk7A >> 1) + arg0->unk4->unk33 < ((*g_randPtr << 8) | *g_randPtr++) % 100) {
         arg0->unk10.b.unk0_9 = 1;
     }
 }
@@ -5810,18 +5810,18 @@ void func_800B989C(BtlCmd *arg0) {
     s32 r;
     if (!(arg0->unk4->unkC4[1] & 0x08000000)) {
         if (arg0->unk8->unkA * 2 < arg0->unk4->unk2A) {
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            r = *D_8007B720;
-            D_8007B720++;
+            r = *g_randPtr;
+            g_randPtr++;
             r = r < 0xE6;
         } else {
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            r = *D_8007B720;
-            D_8007B720++;
+            r = *g_randPtr;
+            g_randPtr++;
             r = r < 0xAA;
         }
         if (r) {
@@ -5959,17 +5959,17 @@ void func_800B9E88(BtlCalc *arg0) {
     u8 r;
     s32 a;
     BtlUnit *c;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    r = *D_8007B720;
+    r = *g_randPtr;
     c = arg0->unk0;
     a = c->unk31;
     arg0->unk14 = a + ((r << 8) | r) % (((c->unk7A + a) >> 2) + 1);
-    D_8007B720++;
+    g_randPtr++;
     arg0->unkE = arg0->unk8->unk8[5];
     arg0->unk10 = arg0->unk4->unk6C;
 }
@@ -5978,17 +5978,17 @@ void func_800B9F80(BtlCalc *arg0) {
     u8 r;
     s32 a;
     BtlUnit *c;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    r = *D_8007B720;
+    r = *g_randPtr;
     c = arg0->unk0;
     a = c->unk32;
     arg0->unk14 = a + ((r << 8) | r) % (((c->unk7A + a) >> 3) + 1);
-    D_8007B720++;
+    g_randPtr++;
     arg0->unkE = arg0->unk8->unk8[5];
     arg0->unk10 = arg0->unk4->unk6E;
 }
@@ -5999,14 +5999,14 @@ void func_800BA078(BtlCalc *arg0) {
 
 void func_800BA094(BtlCalc *arg0) {
     s32 lo;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
     lo = arg0->unk0->unk31;
-    arg0->unk14 = lo + ((*D_8007B720 << 8) | *D_8007B720++) % (((arg0->unk0->unk7A + lo) >> 3) + 1);
+    arg0->unk14 = lo + ((*g_randPtr << 8) | *g_randPtr++) % (((arg0->unk0->unk7A + lo) >> 3) + 1);
     arg0->unkE = arg0->unk0->unk74[5] * arg0->unk8->unk8[5] / 10;
     arg0->unk10 = arg0->unk4->unk6C;
 }
@@ -6015,17 +6015,17 @@ void func_800BA1B4(BtlCalc *arg0) {
     u8 r;
     s32 a;
     BtlUnit *c;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    r = *D_8007B720;
+    r = *g_randPtr;
     c = arg0->unk0;
     a = c->unk31;
     arg0->unk14 = a + ((r << 8) | r) % (((c->unk7A + a) >> 2) + 1);
-    D_8007B720++;
+    g_randPtr++;
     arg0->unkE = arg0->unk8->unk8[5];
     arg0->unk10 = arg0->unk4->unk6C;
 }
@@ -6042,14 +6042,14 @@ void func_800BA2AC(BtlCalc *arg0) {
 void func_800BA308(BtlCalc *arg0) {
     s32 r;
     if ((arg0->unk4->unkC4[0] & 0x04000000) && arg0->unk10 != 0) {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
         }
-        r = *D_8007B720;
-        D_8007B720++;
+        r = *g_randPtr;
+        g_randPtr++;
         arg0->unk10 = ((r << 8) | r) % (arg0->unk10 * 2);
     }
 }
@@ -6225,15 +6225,15 @@ void func_800BAAE4(BtlCalc *arg0) {
 void func_800BABAC(BtlCalc *arg0) {
     s32 r;
     s32 v;
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
     }
-    r = *D_8007B720;
+    r = *g_randPtr;
     v = arg0->unk8->unk8[7];
-    D_8007B720++;
+    g_randPtr++;
     if (((r << 8) | r) % 100 < v) {
         func_800C0ACC(arg0->unk4, g_gameState->unk1C->unk8E4.battle->unk22CC[arg0->unk8->unk8[9]]);
     }
@@ -6441,13 +6441,13 @@ void func_800BB4A0(Character *c, BtlUnit *u, u16 slot, u16 n) {
     } else if (k == 1) {
         u->unk2C = u->unk24->unk4 - 1;
     } else {
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
         }
-        u->unk2C = ((*D_8007B720 << 8) | *D_8007B720++) % u->unk24->unk4;
+        u->unk2C = ((*g_randPtr << 8) | *g_randPtr++) % u->unk24->unk4;
     }
     u->unkA8 = &g_gameState->unk1C->unk8E4.battle->unk228[n].unk0;
     func_800BD698(u, (c->unk34.w >> 4) & 0x1F, n);
@@ -6496,13 +6496,13 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
             u->unk7A = p->unk3;
             u->unk24->unk4 = (0x3C - u->unk30) * 160;
             func_800BD8F0((Unk800BD8F0 *)u);
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
                 }
             }
-            u->unk2C = ((*D_8007B720 << 8) | *D_8007B720++) % u->unk24->unk4;
+            u->unk2C = ((*g_randPtr << 8) | *g_randPtr++) % u->unk24->unk4;
             u->unk74 = NULL;
             func_800C0A3C((Unk800C09D8 *)u);
             func_800BD414(u, u->unkAC);
@@ -6535,10 +6535,10 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
                 u->unk98->unk0[1] = u->unkA0->unk18;
                 u->unk98->unk0[2] = u->unkA0->unk1C;
                 a0 = u->unkA0;
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
                 }
-                a0->unk3A = *D_8007B720++ % u->unk9C->unkC->unk2;
+                a0->unk3A = *g_randPtr++ % u->unk9C->unkC->unk2;
             }
         }
     }
@@ -8488,11 +8488,11 @@ void func_800C0EC8(BtlUnit *arg0) {
                 if (func_800B3EF8(u, 0x3A)) {
                     return;
                 }
-                if (D_8007B720 >= D_8007B92D) {
-                    func_8004BF20();
+                if (g_randPtr >= g_randTableEnd) {
+                    rand_refill();
                 }
                 k = func_80027F34(0xF9);
-                if (*D_8007B720++ < k) {
+                if (*g_randPtr++ < k) {
                     func_800E9F68(1);
                     func_800B1250(u->unk4, 0x3A, 0x49, func_800BEC64(0) & 0xFFFF, 1);
                     return;
@@ -8519,20 +8519,20 @@ s32 func_800C1184(u32 *arg0) {
         } else if ((*arg0 >> 3) & 1) {
             th = 0xFF;
         }
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        if (*D_8007B720++ < th) {
+        if (*g_randPtr++ < th) {
             r = 0;
         } else {
             th = 0x10;
             if ((u8)func_800B0CF8(1, 0x400)) {
                 th = 0x55;
             }
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            if (*D_8007B720++ < th) {
+            if (*g_randPtr++ < th) {
                 r = 1;
             }
         }
@@ -8852,10 +8852,10 @@ s32 func_800C1F7C(s32 arg0) {
     if (n == 0) {
         return 0;
     }
-    if (D_8007B720 >= D_8007B92D) {
-        func_8004BF20();
+    if (g_randPtr >= g_randTableEnd) {
+        rand_refill();
     }
-    return ids[*D_8007B720++ % n];
+    return ids[*g_randPtr++ % n];
 }
 
 s32 func_800C20B8(GameData *arg0, u32 arg1, s32 arg2) {

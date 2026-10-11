@@ -3106,23 +3106,23 @@ void func_800B17B4(void) {
             }
         }
         if (!(D_800CF4B0 & 1) && (u32)(((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2) - 0x24) < 3) {
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            rx = D_800CE3DC->unk40.vx + *D_8007B720++ - 0x80;
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            rx = D_800CE3DC->unk40.vx + *g_randPtr++ - 0x80;
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            lo = *D_8007B720++;
+            lo = *g_randPtr++;
             func_800C6F00(rx, D_800CE3DC->unk40.vy, D_800CE3DC->unk40.vz + lo - 0x80, 16, 0x6D80);
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            rx = D_800CE3DC->unk40.vx + *D_8007B720++ - 0x80;
-            if (D_8007B720 >= D_8007B92D) {
-                func_8004BF20();
+            rx = D_800CE3DC->unk40.vx + *g_randPtr++ - 0x80;
+            if (g_randPtr >= g_randTableEnd) {
+                rand_refill();
             }
-            lo = *D_8007B720++;
+            lo = *g_randPtr++;
             func_800C6F00(rx, D_800CE3DC->unk40.vy, D_800CE3DC->unk40.vz + lo - 0x80, 16, 0x6D80);
         }
     }
@@ -4319,14 +4319,14 @@ s32 w_frameGetParameter(s32 arg0) {
     case 0xCC:
         return D_800D3F88;
     case 0xCD:
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        hi = *D_8007B720++;
-        if (D_8007B720 >= D_8007B92D) {
-            func_8004BF20();
+        hi = *g_randPtr++;
+        if (g_randPtr >= g_randTableEnd) {
+            rand_refill();
         }
-        lo = *D_8007B720++;
+        lo = *g_randPtr++;
         r = ((hi << 8) | lo) % (D_800CF474 + 1);
         ret = 0;
         if (D_800CCE54 != 0 && D_800CE25E != 0) {
@@ -8978,33 +8978,33 @@ void func_800C69F4(s32 arg0) {
                 y = e->unk4 - e->unk10 / 2;
                 z = e->unk8 - e->unk14 / 2;
                 if (e->unkC != 0) {
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
-                        if (D_8007B720 >= D_8007B92D) {
-                            func_8004BF20();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
+                        if (g_randPtr >= g_randTableEnd) {
+                            rand_refill();
                         }
                     }
-                    b = *D_8007B720++;
+                    b = *g_randPtr++;
                     x += ((b << 8) | b) % e->unkC;
                 }
                 if (e->unk10 != 0) {
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
-                        if (D_8007B720 >= D_8007B92D) {
-                            func_8004BF20();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
+                        if (g_randPtr >= g_randTableEnd) {
+                            rand_refill();
                         }
                     }
-                    b = *D_8007B720++;
+                    b = *g_randPtr++;
                     y += ((b << 8) | b) % e->unk10;
                 }
                 if (e->unk14 != 0) {
-                    if (D_8007B720 >= D_8007B92D) {
-                        func_8004BF20();
-                        if (D_8007B720 >= D_8007B92D) {
-                            func_8004BF20();
+                    if (g_randPtr >= g_randTableEnd) {
+                        rand_refill();
+                        if (g_randPtr >= g_randTableEnd) {
+                            rand_refill();
                         }
                     }
-                    b = *D_8007B720++;
+                    b = *g_randPtr++;
                     z += ((b << 8) | b) % e->unk14;
                 }
                 func_800C6F00(x, y, z, e->unk24, e->unk26);
