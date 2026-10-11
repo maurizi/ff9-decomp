@@ -2245,7 +2245,7 @@ void func_8005EBE8(AkaoChannel *, s32);
 void func_80056644(void *, s32);
 void func_800566D0(void);
 void func_8005681C(void);
-void func_8005D6BC(void);
+s32 func_8005D6BC(void); /* root counter 2 callback; returns the ticks this tick took */
 extern u8 D_80080990[];
 void func_80056CCC(s32, s32);
 void func_800575D0(s32);

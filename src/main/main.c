@@ -16731,7 +16731,7 @@ void func_80056B18(void) {
     }
     while (StartRCnt(0xF2000002) == 0) {
     }
-    while ((D_8006F318 = func_80016EC0(0xF2000002, 2, 0x1000, func_8005D6BC)) == -1) {
+    while ((D_8006F318 = func_80016EC0(0xF2000002, 2, 0x1000, (void (*)(void))func_8005D6BC)) == -1) {
     }
     while (func_80016ED0(D_8006F318) == 0) {
     }
@@ -19599,7 +19599,119 @@ void func_8005D628(Unk80080A10 *arg0, AkaoChannel *arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005D6BC);
+s32 func_8005D6BC(void) {
+    s32 t0;
+    s32 n;
+    u32 now;
+    Unk80080A10 *tmp;
+    AkaoChannel *c;
+    u32 mask;
+    u32 bit;
+    u32 acc;
+    s32 a;
+    s32 b;
+    s32 e;
+
+    t0 = GetRCnt(0xF2000002);
+    D_8007E3C8[1] = D_8007E3C8[0];
+    now = VSync(-1);
+    n = 1;
+    mask = now - D_8007E3C8[1];
+    D_8007E3C8[0] = now;
+    if (mask != 0) {
+        if (mask < 9) {
+            bit = mask * 4;
+            if (D_8007E3D0 < bit) {
+                n = bit - D_8007E3D0 + 1;
+            }
+            D_8007E3D0 %= bit;
+        }
+    }
+    do {
+        n--;
+        D_8007E3D0++;
+        D_8006F320++;
+        if ((D_80080A10->unk18 | D_80080A70.unkC) != 0 || (D_8007F790 != NULL && D_8007F790->unk18 != 0)) {
+            func_80058F94();
+        }
+        if (D_8007F790 != NULL) {
+            if (D_8007F790->unk4 == 0) {
+                D_8007F790 = NULL;
+            } else if ((D_80080A10->unk4 | D_80080A10->unk1C) == 0) {
+                func_8005CE04(D_8007F790, D_80080A10, 0x7C);
+                func_8005CE04(D_8007F71C, D_8007BD48, 0x2680);
+                tmp = D_8007F790;
+                D_8007F790 = NULL;
+                tmp->unk6A = 0;
+                tmp->unk4 = 0;
+            }
+        }
+        if ((D_80083158.unk8 | D_80080A10->unk14 | D_80080A70.unk8) != 0 || (D_8007F790 != NULL && D_8007F790->unk14 != 0)) {
+            func_800589F0();
+        }
+        if (D_80080A10->unk4 != 0) {
+            func_8005D384(D_8007BD48, 0);
+        }
+        if (D_8007F790 != NULL) {
+            if (D_8007F790->unk4 != 0) {
+                D_80080A10 = D_8007F790;
+                func_8005D384(D_8007F71C, 1);
+                D_80080A10 = &D_8007F858;
+            }
+            if ((D_80083158.unk4 & 0x100) && !(D_8006F320 & 3)) {
+                func_8005D628(D_8007F790, D_8007F71C);
+                if (D_8007F790->unk4 == 0) {
+                    D_80083158.unk4 &= ~0x100;
+                }
+            }
+        }
+        if (D_80080A70.unk0 != 0) {
+            mask = D_80080A70.unk0;
+            acc = D_80080A70.unk18 + D_80080A70.unk14.h[1];
+            D_80080A70.unk18 = acc;
+            if ((acc & 0xFFFF0000) || (D_800831C4 & 4)) {
+                D_80080A70.unk18 = acc & 0xFFFF;
+                bit = 0x100;
+                c = D_8007E3D8;
+                do {
+                    if (mask & bit) {
+                        if (!(D_800831C4 & 2) || (c->unk28 & 0x2000000)) {
+                            c->unk88++;
+                            c->unk96--;
+                            c->unk98--;
+                            if (c->unk96 == 0) {
+                                func_8005E3FC(c, bit);
+                            } else if (c->unk98 == 0) {
+                                D_80080A70.unkC |= bit;
+                                D_80080A70.unk8 &= ~bit;
+                            }
+                            func_800579B4(c, bit, 1);
+                        }
+                        mask ^= bit;
+                    }
+                    c++;
+                    bit <<= 1;
+                } while (mask != 0);
+            }
+        }
+        if (!(D_8006F320 & 3)) {
+            func_8005CF04();
+        }
+    } while (n != 0);
+    t0 = GetRCnt(0xF2000002) - t0;
+    if (t0 <= 0) {
+        t0 += 0x44E8;
+    }
+    a = D_8006F324[1];
+    b = D_8006F324[2];
+    e = D_8006F324[3];
+    D_8006F324[3] = t0;
+    D_8006F324[0] = a;
+    D_8006F324[1] = b;
+    D_8006F324[2] = e;
+    D_8006F31C = a + b + e + t0;
+    return t0;
+}
 
 /* Looks ahead in the channel's sequence for the next note opcode (0xA0: rest or end). */
 s32 func_8005DB40(AkaoChannel *c) {
