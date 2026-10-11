@@ -259,6 +259,36 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - No progress: 80059414, 80047B90, 8003595C, 8005681C, 8002E718, 8001DE50, 8004E248. Struct-field
     tests of every scalar global these drafts touch changed nothing (or made it worse). The headers have
     details.
+- Pass 17: matched 80047B90 (0x28C) and 8004E248 (0x524). 8005681C 14 -> 12 rows. What fixed them:
+  - 80047B90 is `func_80047E1C_ahead(o, o->unk14.unk22, &out)`, the static inline that func_80047E1C
+    already used (moved above 80047B90 in main.c), followed by the approach code. Inlining does two things
+    no hand-written body did. The inline's `MATRIX m` and `SVECTOR v` get the original's frame slots and
+    s0-relative stores. The `out` parameter is evaluated before the body, so `addiu v0,sp,0x10` lands
+    before the lwc2s. Before writing a draft, grep the matched neighbours for the same code: a sibling
+    may already have it as an inline.
+  - Inline parameters that are not `const` are copied through a fresh pseudo (integrate.c,
+    `! TREE_READONLY (formal)`), but a FIXED_BASE_PLUS argument such as `&mat` becomes a constant
+    equivalence and is rematerialised at each use. So `SetRotMatrix(m); SetTransMatrix(m);` inside an
+    inline gives two `addiu a0,sp,N` where the open-coded calls CSE `&mat` into one s-reg.
+  - 8004E248: three source-shape fixes. (1) The 0xD skip loop is written in place (`while (*p++ != 0xFF)
+    {}`) in a `for (;;) { v = *p++; v |= *p++ << 8; if (v == 0xFFFF) break; ... }`, which fixes the
+    16(sp)/s1 split. (2) Without the `if (done)` identical-branch hack, `sel = -1` after the unk9 line
+    puts sel, the precheck (`addu v1,v1,sel; beq v1,sel`) and the hoisted -1 copy in one extended block.
+    (3) Variable reuse: n is reused as sel and the first loop's mask for the second loop. That gives n/sel
+    a1 and mask a2 as in the original. The permuter found the mask-for-sel reuse (550 -> 180), which
+    pointed to the full reuse.
+  - sched.c (2.8.1) `schedule_block`: at function start the leading run of `(set pseudo (hard reg))` param
+    copies is excluded from sched1. So a param copy that sits mid-block in the original was moved by
+    sched2 (anti-dependence on a later write of that hard reg), not by sched1 (8002E718's otz copy).
+    Every insn without in-block dependents is made a dependent of the block's final jump. When it becomes
+    ready, `adjust_priority` raises a "birthing" insn (dest live at the end of the block, REG_N_SETS == 1)
+    to max priority. Insns that set a register twice, such as a loop giv init, get no boost.
+  - cse.c `make_regs_eqv`: a new copy becomes the canonical register of its class only if it lives past
+    the current block and longer than the old one. `data = buf` with data's last use before buf's is
+    always folded away (8001DE50).
+  - No match: 80059414 (9), 8003595C (12), 8005681C (12), 8002E718 (16), 8001DE50 (19), 8004DAD0 (28),
+    800475D8 (89). See the headers for the allocation analysis. 25-min permuter runs on 8003595C and on
+    the earlier 8004E248 draft; the 8003595C run found nothing.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
