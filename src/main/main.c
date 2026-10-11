@@ -7986,12 +7986,12 @@ void func_80032C4C(s32 ch, s32 lv, u32 *heal, u8 f) {
     memset(&c->hp, 0, 8);
     memset(&c->maxHp, 0, 8);
     c->unk16 = 10;
-    c->unk30 = func_80034A64(ch, c->level, f);
-    c->unk31 = func_80034B50(ch, c->level, f);
-    c->unk32 = func_80034C64(ch, c->level, f);
-    c->unk33 = func_80034D78(ch, c->level, f);
-    c->maxHp = c->unk2C = func_80034F7C(c->level, c->unk31);
-    c->maxMp = c->unk2E = func_80034FD4(c->level, c->unk32);
+    c->baseSpeed = func_80034A64(ch, c->level, f);
+    c->baseStrength = func_80034B50(ch, c->level, f);
+    c->baseMagic = func_80034C64(ch, c->level, f);
+    c->baseSpirit = func_80034D78(ch, c->level, f);
+    c->maxHp = c->unk2C = func_80034F7C(c->level, c->baseStrength);
+    c->maxMp = c->unk2E = func_80034FD4(c->level, c->baseMagic);
     c->maxStones = func_80034E80(ch, c->level, f);
     c->hp = (hp < c->maxHp) ? hp : c->maxHp;
     c->mp = (mp < c->maxMp) ? mp : c->maxMp;
@@ -8262,14 +8262,14 @@ void func_8003384C(Character *c) {
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->unk39;
     func_80032E84(&in, &out);
-    c->unk24 = out.unk8[0];
-    c->unk25 = out.unk8[1];
-    c->unk26 = out.unk8[2];
-    c->unk27 = out.unk8[3];
-    c->unk28 = out.unkC[1];
-    c->unk29 = out.unkC[2];
-    c->unk2A = out.unkC[3];
-    c->unk2B = out.unkC[4];
+    c->speed = out.unk8[0];
+    c->strength = out.unk8[1];
+    c->magic = out.unk8[2];
+    c->spirit = out.unk8[3];
+    c->defense = out.unkC[1];
+    c->evade = out.unkC[2];
+    c->magicDef = out.unkC[3];
+    c->magicEva = out.unkC[4];
     c->hp = out.unk0;
     c->mp = out.unk2;
     c->maxHp = out.unk4;
@@ -22839,11 +22839,11 @@ void func_800658DC(MainCalc *c) {
         rand_refill();
     }
     a = c->unk0;
-    lv = a->unk26;
+    lv = a->magic;
     c->unk16 = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->level + lv) >> 3) + 1);
     g_randPtr++;
     c->unk12 = c->unk8->unk5;
-    c->unk14 = c->unk4->unk2A;
+    c->unk14 = c->unk4->magicDef;
 }
 
 void func_800659D0(MainCalc *c) {
@@ -22880,7 +22880,7 @@ void func_80065ADC(Unk80065ADC *a) {
 
 void func_80065B14(MainCalc *c) {
     Character *t = c->unk4;
-    s32 v = t->maxHp * (t->unk27 + c->unk8->unk5);
+    s32 v = t->maxHp * (t->spirit + c->unk8->unk5);
 
     if (c->unk0->unk88[1] & 2) {
         v /= 50;

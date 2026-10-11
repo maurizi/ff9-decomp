@@ -6419,14 +6419,14 @@ void func_800BB4A0(Character *c, BtlUnit *u, u16 slot, u16 n) {
         u->unk68 &= ~0x40000000;
     } else {
         u->unk68 |= 0x40000000;
-        u->unk78 = c->unk20;
+        u->unk78 = c->trance;
     }
     u->unk7C = 0;
     u->unkC4 = c->unk88;
-    u->unk30 = c->unk24;
-    u->unk31 = c->unk25;
-    u->unk32 = c->unk26;
-    u->unk33 = c->unk27;
+    u->unk30 = c->speed;
+    u->unk31 = c->strength;
+    u->unk32 = c->magic;
+    u->unk33 = c->spirit;
     u->unk7A = c->level;
     u->max = (BtlUnit24 *)&c->maxHp;
     func_800BD8C0((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
@@ -6452,10 +6452,10 @@ void func_800BB4A0(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->unkA8 = &g_gameState->unk1C->unk8E4.battle->unk228[n].unk0;
     func_800BD698(u, (c->unk34.w >> 4) & 0x1F, n);
     func_800BBF5C(c, u);
-    u->unk6C = c->unk28;
-    u->unk6D = c->unk29;
-    u->unk6E = c->unk2A;
-    u->unk6F = c->unk2B;
+    u->unk6C = c->defense;
+    u->unk6D = c->evade;
+    u->unk6E = c->magicDef;
+    u->unk6F = c->magicEva;
     func_800BC0D0(c, u);
     for (i = 0; i < u->unkA8->unk8->unk3; i++) {
         func_800C8D18(u->unkA8, i, 0, 0, 0);
@@ -8676,9 +8676,9 @@ s32 func_800C1794(Battle *arg0) {
 void func_800C1854(BtlUnit *arg0, s32 arg1) {
     Character *c = &g_gameState->unk1C->characters[(arg0->unk68 >> 1) & 0xF];
     if (arg0->status & 0x4000) {
-        c->unk20 = 0;
+        c->trance = 0;
     } else {
-        c->unk20 = arg0->unk78;
+        c->trance = arg0->unk78;
     }
     func_800BD8C0((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->hp);
     if ((arg0->unkC4[1] & 0x8000) && arg1 == 0) {

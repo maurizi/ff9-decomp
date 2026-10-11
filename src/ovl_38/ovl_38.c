@@ -128,23 +128,23 @@ void func_801EE9E8(void) {
     for (i = 0; i < 5; i++) {
         D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(D_801EFBF0[i]), 0, D_801F120C.unk7C);
     }
-    text_formatNumber(c->unk24, buf, 2, 1);
+    text_formatNumber(c->speed, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
-    text_formatNumber(c->unk25, buf, 2, 1);
+    text_formatNumber(c->strength, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
-    text_formatNumber(c->unk26, buf, 2, 1);
+    text_formatNumber(c->magic, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
-    text_formatNumber(c->unk27, buf, 2, 1);
+    text_formatNumber(c->spirit, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
     text_formatNumber(D_8006E0E8[c->unk39[0]].unk5, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
-    text_formatNumber(c->unk28, buf, 3, 1);
+    text_formatNumber(c->defense, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
-    text_formatNumber(c->unk29, buf, 3, 1);
+    text_formatNumber(c->evade, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
-    text_formatNumber(c->unk2A, buf, 3, 1);
+    text_formatNumber(c->magicDef, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
-    text_formatNumber(c->unk2B, buf, 3, 1);
+    text_formatNumber(c->magicEva, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
 }
 
@@ -167,7 +167,7 @@ void func_801EED18(void) {
     }
     if (show) {
         st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], text_get(0xB), 0, st->unk7C);
-        func_80025ED4(r->x + 0xB4, r->y + 0x3E, 0x1D, c->unk20, 0xFF, 1, 1);
+        func_80025ED4(r->x + 0xB4, r->y + 0x3E, 0x1D, c->trance, 0xFF, 1, 1);
     }
     func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, text_get(0xC), 0);
     func_8002B5FC(r->x + 0x74, r->y + 0x53, 0x1D, text_get(0xD), 0);

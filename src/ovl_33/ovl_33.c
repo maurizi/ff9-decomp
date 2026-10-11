@@ -1113,15 +1113,15 @@ void func_801F15E0(void) {
     func_8002B524(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     func_8002DEE4(r, 0x1E, 1);
     func_80024428(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&D_801FC840.unk24C);
-    cur.unk8[0] = c->unk24;
-    cur.unk8[1] = c->unk25;
-    cur.unk8[2] = c->unk26;
-    cur.unk8[3] = c->unk27;
+    cur.unk8[0] = c->speed;
+    cur.unk8[1] = c->strength;
+    cur.unk8[2] = c->magic;
+    cur.unk8[3] = c->spirit;
     cur.unkC[0] = D_8006E0E8[c->unk39[0]].unk5;
-    cur.unkC[1] = c->unk28;
-    cur.unkC[2] = c->unk29;
-    cur.unkC[3] = c->unk2A;
-    cur.unkC[4] = c->unk2B;
+    cur.unkC[1] = c->defense;
+    cur.unkC[2] = c->evade;
+    cur.unkC[3] = c->magicDef;
+    cur.unkC[4] = c->magicEva;
     if (D_801FC840.unk1 == 3 && D_801FC840.unk4.unk2 != 0) {
         in.unk0 = *(Bytes8 *)&c->unk2C;
         in.unk10 = c->hp;

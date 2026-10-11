@@ -221,3 +221,11 @@ Format:
 - Same state, Triangle: func_80032120(0, 0) from func_800A7B10+0x110 and the main menu appears (location
   "Dali/Inn"); func_80032120 just calls func_80032140, which fills D_80077DB0 for screen 0.
 - names: fld_load, fld_main (ovl_0a), evt_init, menu_open, menu_doOpen, g_menu (main).
+
+## Character stats  (status: applied)
+- Redux disc 1, `field_burmecia_vault_lv12`, Triangle -> Status -> Zidane. Screen: Speed 24, Strength 26, Magic 22,
+  Spirit 25, Attack 18, Defense 9, Evade 10, Magic Def 10, Magic Eva 7, Trance bar about half, EXP 3076, Next 512.
+  Record 0x8008B28C: +0x20 = 121, +0x24..+0x27 = 24 26 22 25, +0x28..+0x2B = 9 10 10 7, +0x30..+0x33 = 24 25 22 24
+  (Strength and Spirit 1 below the shown values: equipment). Attack isn't in the record (weapon).
+- names: Character.trance, speed/strength/magic/spirit, defense/evade/magicDef/magicEva, baseSpeed/baseStrength/
+  baseMagic/baseSpirit.

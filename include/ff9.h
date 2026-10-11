@@ -83,23 +83,25 @@ typedef struct {
     s16 maxAtb;   /* runtime: where the battle ATB gauge stops */
     u8 pad1E;
     u8 maxStones;
-    u8 unk20;
+    u8 trance;    /* gauge 0-255; runtime: 121 with the status bar about half full */
     u8 unk21;
     u8 pad22[0x24 - 0x22];
-    u8 unk24; /* base stats, shown by the status menu (ovl_38) */
-    u8 unk25;
-    u8 unk26;
-    u8 unk27;
-    u8 unk28;
-    u8 unk29;
-    u8 unk2A;
-    u8 unk2B;
+    /* as the Status screen shows them (runtime, Zidane Lv12: 24 26 22 25 / 9 10 10 7) */
+    u8 speed;
+    u8 strength;
+    u8 magic;
+    u8 spirit;
+    u8 defense;
+    u8 evade;
+    u8 magicDef;
+    u8 magicEva;
     u16 unk2C;
     u16 unk2E;
-    u8 unk30;
-    u8 unk31;
-    u8 unk32;
-    u8 unk33;
+    /* before equipment bonuses (runtime: 24 25 22 24 vs 24 26 22 25 shown) */
+    u8 baseSpeed;
+    u8 baseStrength;
+    u8 baseMagic;
+    u8 baseSpirit;
     CharBits unk34;
     u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
     u8 unk39[5]; /* equipment item ids (0xFF = none) */
@@ -3115,14 +3117,14 @@ static inline void func_8003384C_inline(Character *c) {
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->unk39;
     func_80032E84(&in, &out);
-    c->unk24 = out.unk8[0];
-    c->unk25 = out.unk8[1];
-    c->unk26 = out.unk8[2];
-    c->unk27 = out.unk8[3];
-    c->unk28 = out.unkC[1];
-    c->unk29 = out.unkC[2];
-    c->unk2A = out.unkC[3];
-    c->unk2B = out.unkC[4];
+    c->speed = out.unk8[0];
+    c->strength = out.unk8[1];
+    c->magic = out.unk8[2];
+    c->spirit = out.unk8[3];
+    c->defense = out.unkC[1];
+    c->evade = out.unkC[2];
+    c->magicDef = out.unkC[3];
+    c->magicEva = out.unkC[4];
     c->hp = out.unk0;
     c->mp = out.unk2;
     c->maxHp = out.unk4;
