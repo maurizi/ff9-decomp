@@ -902,8 +902,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     what comes first); `tries = 1000` sits at the top of `while (1)`; success is `break` + `return 1` after the loop
     (the early `return 0`s then share the !ok block instead of a tail at the end); and func_8019D3F0 returns u32,
     not u16 (the callee's own `return *p` compiles the same, the caller must not mask).
-  * The original's s7 = 1 used by stores before the loop (`addu v0,s7,zero`, `addu v1,v1,s7`, srav in 99F30) is
-    reload_cse/after-sched register reuse of the hoisted loop constant, not source.
+  * The original's s7 = 1 used by stores before the loop (`addu v0,s7,zero`, `addu v1,v1,s7`, srav in 99F30) comes
+    from the compiler reusing the hoisted loop constant (the matched C has no variable for it).
   * fold-const.c `associate` (split_tree) rewrites `a - (b - 1)` as `(a + 1) - b`; to keep the original's
     `addiu b,-1; subu a,b` the `- 1` has to be hidden from fold (a variable or an assignment inside the
     expression). C434 also needed `prev` as an if/else so cse's extended block ends at the join.
