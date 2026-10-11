@@ -15,7 +15,7 @@ void func_801F0C18(void) {
     D_801FAB78.unk55 = 0;
     func_801F3038();
     func_801F2CEC();
-    func_8003575C(D_801EDF04);
+    text_setBank(D_801EDF04);
     func_8003556C(D_800355DC);
     func_80035674(1);
     func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);
@@ -292,7 +292,7 @@ void func_801F1B78(void) {
     h->unk4 = z;
     func_80035580(NULL);
     if (D_801FAB78.unk1 == 1) {
-        h->unk8 = func_80035774(D_801FAB78.unk0 + 5);
+        h->unk8 = text_get(D_801FAB78.unk0 + 5);
     }
     if (D_801FAB78.unk1 == 2) {
         if (D_801FAB78.unk0 != 0) {
@@ -316,11 +316,11 @@ void func_801F1B78(void) {
             r.h = g_gameState->unkC->disp.h;
         }
         func_80035580(&r);
-        D_80077DE8.unk8 = func_80035774(8);
+        D_80077DE8.unk8 = text_get(8);
         return;
     } else if (D_801FAB78.unk1 == 4) {
         func_80035580(&D_801F3150);
-        h->unk8 = func_80035774(D_801FAB78.unk5 + 9);
+        h->unk8 = text_get(D_801FAB78.unk5 + 9);
         return;
     } else if (D_801FAB78.unk1 == 5) {
         l = D_801F3040[1].unk8;
@@ -538,7 +538,7 @@ void func_801F262C(void) {
 
     r = &D_801FAB78.unk2C;
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(r->x + D_801F309C[i], r->y + 6, 0x1C, func_80035774(D_801F3098[i]), 0);
+        func_8002B5FC(r->x + D_801F309C[i], r->y + 6, 0x1C, text_get(D_801F3098[i]), 0);
     }
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1D, 2);
@@ -590,7 +590,7 @@ void func_801F2870(s32 col, s32 row, s32 i, MenuView *v) {
         ok = it->unkF & 1;
         x = col * 0x96;
         y = row * 0xF + (v->unk2 + k);
-        func_8002BAE4(p->unk1, buf, 2, 1);
+        text_formatNumber(p->unk1, buf, 2, 1);
         x2 = x + 0x18;
         func_8002B5FC(x + 0x28, y, 0x1C, D_8006A218 + it->unk0, ok ? 0 : 2);
         func_80026C34(x2, y, 0x1C, p->unk0, ok);
@@ -633,7 +633,7 @@ void func_801F2B20(Window *w) {
 void func_801F2B58(Window *w) {
     u8 *s;
 
-    s = func_80035774(0xB);
+    s = text_get(0xB);
     func_8002B5FC(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 6, w->unk18, s, 0);
 }
 
@@ -716,7 +716,7 @@ void func_801F2E40(Window *w) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        func_8002B5FC(p->unk0 + 10, p->unk2 + 6 + i * 15, w->unk18, func_80035774(i + 3), 0);
+        func_8002B5FC(p->unk0 + 10, p->unk2 + 6 + i * 15, w->unk18, text_get(i + 3), 0);
     }
 }
 

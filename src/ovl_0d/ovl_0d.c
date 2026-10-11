@@ -556,7 +556,7 @@ void func_800A8D74(TmState *s) {
     D_8007B708 = 1;
     g_gameState->unk9 = 0;
     func_800239D0();
-    func_8003575C(D_800B3668);
+    text_setBank(D_800B3668);
     func_80035430();
     func_8003556C(D_800355DC);
     D_80077DE8.unk8 = 0;
@@ -928,8 +928,8 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
             sp = func_800B16A4(ot, p, s, x, y, 0);
             D_80077DE8.unk0 = x + 2;
             D_80077DE8.unk2 = y + 1;
-            D_80077DE8.unk8 = func_80035774(0x21);
-            func_8002B5FC(0x12, 9, 0xFFA, func_80035774(0x1C), 0);
+            D_80077DE8.unk8 = text_get(0x21);
+            func_8002B5FC(0x12, 9, 0xFFA, text_get(0x1C), 0);
             setlen(sp, 4);
             sp->code = 0x64;
             sp->x0 = 0x1F;
@@ -1025,9 +1025,9 @@ void *func_800A9F10(u32 *ot, void *p, TmState *s) {
     D_80077DE8.unk0 = cx - 0xD;
     D_80077DE8.unk2 = cy + 7;
     if (cell->unk0 == 1) {
-        D_80077DE8.unk8 = func_80035774(0x22);
+        D_80077DE8.unk8 = text_get(0x22);
     } else {
-        D_80077DE8.unk8 = func_80035774(0x30);
+        D_80077DE8.unk8 = text_get(0x30);
     }
     func_80035580(NULL);
     if (pad & 0x10000) {
@@ -1095,7 +1095,7 @@ void func_800AA1FC(TmState *s) {
             if ((u32)(s->unk450 - 0x7C) < 4) {
                 r.x = 0x59;
                 r.w = 0x8F;
-                r.w = func_8002BA68(func_80035774(0x19)) + 0x12;
+                r.w = func_8002BA68(text_get(0x19)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x59;
                 r.h = 0x2B;
@@ -1120,7 +1120,7 @@ void func_800AA368(TmState *arg0) {
 }
 
 void func_800AA3C0(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, func_80035774(0x19), 0);
+    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x19), 0);
 }
 
 void func_800AA408(TmState *arg0) {
@@ -1168,7 +1168,7 @@ void func_800AA548(TmState *s) {
             func_8002DD00(s->unk458);
             if (s->unk4 == 0) {
                 if (func_800625F8() < 5) {
-                    r.w = func_8002BA68(func_80035774(0x1A)) + 0x12;
+                    r.w = func_8002BA68(text_get(0x1A)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
                     r.h = 0x2B;
@@ -1211,12 +1211,12 @@ void func_800AA548(TmState *s) {
         if (s->unk4 == 0) {
             D_80077DE8.unk0 = 0x7D;
             D_80077DE8.unk2 = 0x6B;
-            D_80077DE8.unk8 = func_80035774(0x29);
+            D_80077DE8.unk8 = text_get(0x29);
             func_800270EC(0x7D, 0x6B, 3);
         } else {
             D_80077DE8.unk0 = 0x7D;
             D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = func_80035774(0x28);
+            D_80077DE8.unk8 = text_get(0x28);
             func_800270EC(0x7D, 0x7B, 3);
         }
         func_800AB8F4(0x89);
@@ -1237,9 +1237,9 @@ void func_800AA790(TmState *s) {
         D_80077DE8.unk0 = s->unk474 * 15 + 3;
         D_80077DE8.unk2 = s->unk478 * 15 + 0x30;
         if (s->unk0 == 0x12) {
-            D_80077DE8.unk8 = func_80035774((u32)(s->unk450 - 0x7C) >= 4 ? 0x24 : 0x32);
+            D_80077DE8.unk8 = text_get((u32)(s->unk450 - 0x7C) >= 4 ? 0x24 : 0x32);
         } else {
-            D_80077DE8.unk8 = func_80035774(0x27);
+            D_80077DE8.unk8 = text_get(0x27);
         }
         r.x = 0xD;
         r.w = 0x9E;
@@ -1299,7 +1299,7 @@ void func_800AA790(TmState *s) {
     if (s->unk0 == 0x12) {
         if (((pad & 0x10000) && s->unk47C == 0) || (pad & 0x80000)) {
             if (s->unk450 != 0x7C) if (s->unk450 != 0x7D) if (s->unk450 != 0x7E) if (s->unk450 != 0x7F) {
-                r.w = func_8002BA68(func_80035774(0x2D)) + 0x12;
+                r.w = func_8002BA68(text_get(0x2D)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x54;
                 r.h = 0x38;
@@ -1349,7 +1349,7 @@ void func_800AA790(TmState *s) {
                 func_800B01E8(5);
                 if (++s->unk47C == 5) {
                     D_80077DF0 = 0;
-                    r.w = func_8002BA68(func_80035774(6)) + 0x12;
+                    r.w = func_8002BA68(text_get(6)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
                     r.h = 0x3A;
@@ -1364,7 +1364,7 @@ void func_800AA790(TmState *s) {
         }
     } else if ((pad & 0x20000) && func_80062560(func_800AF268(s)) != 0) {
         D_80077DF0 = 0;
-        r.w = func_8002BA68(func_80035774(0x18)) + 0x12;
+        r.w = func_8002BA68(text_get(0x18)) + 0x12;
         r.x = 0xB9;
         r.h = 0x38;
         r.y = 0x35;
@@ -1420,12 +1420,12 @@ void func_800AAEB4(TmState *s) {
         if (s->unk4 == 0) {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x6C;
-            D_80077DE8.unk8 = func_80035774(0x25);
+            D_80077DE8.unk8 = text_get(0x25);
             func_800270EC(0x7B, 0x6C, 3);
         } else {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = func_80035774(0x26);
+            D_80077DE8.unk8 = text_get(0x26);
             func_800270EC(0x7B, 0x7B, 3);
         }
         func_800AB8F4(0x8D);
@@ -1433,11 +1433,11 @@ void func_800AAEB4(TmState *s) {
 }
 
 void func_800AB060(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, func_80035774(6), 0);
+    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(6), 0);
 }
 
 void func_800AB0A8(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, func_80035774(0x1A), 0);
+    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x1A), 0);
 }
 
 void func_800AB0F0(TmState *s) {
@@ -1532,12 +1532,12 @@ void func_800AB338(TmState *s) {
         if (s->unk4 == 0) {
             D_80077DE8.unk0 = 0xBC;
             D_80077DE8.unk2 = 0x4D;
-            D_80077DE8.unk8 = func_80035774(0x2A);
+            D_80077DE8.unk8 = text_get(0x2A);
             func_800270EC(0xBC, 0x4D, 3);
         } else {
             D_80077DE8.unk0 = 0xBC;
             D_80077DE8.unk2 = 0x5C;
-            D_80077DE8.unk8 = func_80035774(0x2B);
+            D_80077DE8.unk8 = text_get(0x2B);
             func_800270EC(0xBC, 0x5C, 3);
         }
         func_800AB8F4(0xCE);
@@ -1548,7 +1548,7 @@ void func_800AB338(TmState *s) {
 }
 
 void func_800AB52C(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 0xA, arg0->unk2 + 6, arg0->unk18, func_80035774(0x18), 0);
+    func_8002B5FC(arg0->unk0 + 0xA, arg0->unk2 + 6, arg0->unk18, text_get(0x18), 0);
 }
 
 void *func_800AB574(u32 *ot, void *p, TmState *s) {
@@ -1601,13 +1601,13 @@ void *func_800AB574(u32 *ot, void *p, TmState *s) {
     p = func_800B16A4(ot, p, s, x + 0x39, y + 0xE, 0);
     D_80077DE8.unk0 = x + 0x3B;
     D_80077DE8.unk2 = y + 0xF;
-    D_80077DE8.unk8 = func_80035774(0x31);
+    D_80077DE8.unk8 = text_get(0x31);
     cell = func_800B19D4(s, s->unk8, s->unkC);
     if (cell->unk0 == 0) {
         c = cell->unk4;
         for (i = 0; i < s->unk4AC; i++) {
             if (c == s->unk48C[i]) {
-                D_80077DE8.unk8 = func_80035774(0x23);
+                D_80077DE8.unk8 = text_get(0x23);
             }
         }
     }
@@ -1676,7 +1676,7 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     p = func_800B16A4(ot, p, s, x + 0x22, y + 5, 2);
     D_80077DE8.unk0 = x + 0x25;
     D_80077DE8.unk2 = y + 6;
-    D_80077DE8.unk8 = func_80035774(0x2C);
+    D_80077DE8.unk8 = text_get(0x2C);
     r.x = x + 0x2A;
     r.w = 0x12C;
     r.y = 0;
@@ -1722,10 +1722,10 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
             }
         }
     }
-    func_8002BAE4(n, num, -1, 0);
-    func_8002BD54(buf, func_80035774(0x33));
+    text_formatNumber(n, num, -1, 0);
+    func_8002BD54(buf, text_get(0x33));
     func_8002AD38(buf, num);
-    func_8002AD38(buf, func_80035774(0x34));
+    func_8002AD38(buf, text_get(0x34));
     r2.w = func_8002BA68((s32)buf) + 0x10;
     r2.x = 0x52;
     r2.y = sel->unk10 - 9;
@@ -1783,12 +1783,12 @@ void func_800ABC74(TmState *s) {
         if (s->unk5B4 == 0) {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x6C;
-            D_80077DE8.unk8 = func_80035774(0x2E);
+            D_80077DE8.unk8 = text_get(0x2E);
             func_800270EC(0x7B, 0x6C, 3);
         } else {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = func_80035774(0x2F);
+            D_80077DE8.unk8 = text_get(0x2F);
             func_800270EC(0x7B, 0x7B, 3);
         }
         func_800AB8F4(0x8D);
@@ -1798,7 +1798,7 @@ void func_800ABC74(TmState *s) {
 }
 
 void func_800ABE74(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, func_80035774(0x2D), 0);
+    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(0x2D), 0);
 }
 
 void *func_800ABEBC(u32 *ot, void *p, TmState *s) {
@@ -2554,7 +2554,7 @@ void func_800ADE5C(TmState *s) {
     }
     if (found == 0) {
         if (func_800625F8() > 100) {
-            r.w = func_8002BA68(func_80035774(0x16)) + 0x12;
+            r.w = func_8002BA68(text_get(0x16)) + 0x12;
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
             r.h = 0x2A;
@@ -2576,11 +2576,11 @@ void func_800ADE5C(TmState *s) {
 }
 
 void func_800ADFFC(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, func_80035774(0x16), 0);
+    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x16), 0);
 }
 
 void func_800AE044(Window *arg0) {
-    func_8002B5FC(0x82, 0x10, arg0->unk18, func_80035774(0x17), 0);
+    func_8002B5FC(0x82, 0x10, arg0->unk18, text_get(0x17), 0);
 }
 
 void *func_800AE084(u32 *ot, void *p, TmState *s) {
@@ -2636,11 +2636,11 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
     D_800B3CD8 = id = c->unk0;
     func_8002BD54(buf, (u8 *)func_8006276C(id));
     if (D_800B3CE0 == 0) {
-        func_8002AD38(buf, func_80035774(3));
+        func_8002AD38(buf, text_get(3));
     } else {
-        func_8002AD38(buf, func_80035774(4));
+        func_8002AD38(buf, text_get(4));
     }
-    func_8002AD38(buf, func_80035774(7));
+    func_8002AD38(buf, text_get(7));
     w = func_8002BA68(buf) + 0x10;
     r.x = 0xA0 - w / 2;
     r.y = 0x96;
@@ -2695,12 +2695,12 @@ void func_800AE494(Window *w) {
 
     v = w;
     if (D_800B3CE0 == 0) {
-        func_8002BD54(buf, func_80035774(3));
+        func_8002BD54(buf, text_get(3));
     } else {
-        func_8002BD54(buf, func_80035774(4));
+        func_8002BD54(buf, text_get(4));
     }
     func_8002AD38(buf, (u8 *)func_8006276C(D_800B3CD8));
-    func_8002AD38(buf, func_80035774(7));
+    func_8002AD38(buf, text_get(7));
     func_8002B5FC(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
 }
 
@@ -3058,7 +3058,7 @@ void func_800AEE2C(TmState *s) {
         n = func_80062560((s32)c0);
         if (n != 0) {
             c0 = (TmCard *)func_800AF268(s);
-            func_8002BAE4((s32)c0 + 1, buf, -1, 3);
+            text_formatNumber((s32)c0 + 1, buf, -1, 3);
             i = func_8002BA10(buf) + 0xE;
             w = i / 2;
             func_8002B56C(0xD8 - w, 0x78, 0xFFA, D_800A7398, 0);
@@ -4471,22 +4471,22 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
     func_8002B56C(0x19, 0xCB, 0xFFA, "Stock:", 7);
-    func_8002BAE4(D_800B3CF0, buf, 3, 3);
+    text_formatNumber(D_800B3CF0, buf, 3, 3);
     func_8002B5B4(0x43, 0xC9, 0xFFA, buf, 0);
     func_8002B56C(0x65, 0xCB, 0xFFA, "Type:", 7);
-    func_8002BAE4(D_800B3CF4, buf, 3, 3);
+    text_formatNumber(D_800B3CF4, buf, 3, 3);
     func_8002B5B4(0x89, 0xC9, 0xFFA, buf, 0);
 
     if ((u32)(s->unk0 - 0x12) < 2 || s->unk0 == 0x23 || s->unk0 == 0x1B) {
 
         func_8002B56C(0xBC, 0x42, 0xFFA, "WIN", 7);
-        func_8002BAE4(func_80062498(), buf, 4, 1);
+        text_formatNumber(func_80062498(), buf, 4, 1);
         func_8002B56C(0xDC, 0x42, 0xFFA, buf, 0);
         func_8002B56C(0xBC, 0x4C, 0xFFA, "LOSE", 7);
-        func_8002BAE4(func_800624D8(), buf, 4, 1);
+        text_formatNumber(func_800624D8(), buf, 4, 1);
         func_8002B56C(0xDC, 0x4C, 0xFFA, buf, 0);
         func_8002B56C(0xBC, 0x56, 0xFFA, "DRAW", 7);
-        func_8002BAE4(func_8006251C(), buf, 4, 1);
+        text_formatNumber(func_8006251C(), buf, 4, 1);
         func_8002B56C(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
@@ -4606,13 +4606,13 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
     if (s->unk47C != 5 && s->unk0 != 0x16 && func_80062560(func_800AF268(s)) >= 2) {
-        func_8002BAE4(s->unk4B4 + 1, buf, 3, 1);
+        text_formatNumber(s->unk4B4 + 1, buf, 3, 1);
         func_8002B56C(0xBF, 0xBA, 0xFFA, buf, 0);
         func_8002B56C(0xD4, 0xBA, 0xFFA, D_800A74A8, 0);
-        func_8002BAE4(func_80062560(func_800AF268(s)), buf, -1, 1);
+        text_formatNumber(func_80062560(func_800AF268(s)), buf, -1, 1);
         func_8002B56C(0xDB, 0xBA, 0xFFA, buf, 0);
-        func_8002B5FC(0xB5, 0xB6, 0xFFA, func_80035774(0x1E), 0);
-        func_8002B5FC(0xF1, 0xB6, 0xFFA, func_80035774(0x1C), 0);
+        func_8002B5FC(0xB5, 0xB6, 0xFFA, text_get(0x1E), 0);
+        func_8002B5FC(0xF1, 0xB6, 0xFFA, text_get(0x1C), 0);
     }
     if (s->unk47C == 0) {
         D_800B3CF4 = func_80062638();
@@ -4628,7 +4628,7 @@ void func_800B295C(TmState *arg0) {
 }
 
 void func_800B299C(Window *arg0) {
-    func_8002B5FC(0x8A, 0x10, arg0->unk18, func_80035774(0x13), 0);
+    func_8002B5FC(0x8A, 0x10, arg0->unk18, text_get(0x13), 0);
 }
 
 void func_800B29DC(TmState *arg0) {
@@ -4926,7 +4926,7 @@ void func_800B3488(TmState *arg0) {
     RECT r;
 
     if ((u32)(arg0->unk450 - 0x7C) >= 4) {
-        r.w = func_8002BA68((s32)func_80035774(2)) + 0x12;
+        r.w = func_8002BA68((s32)text_get(2)) + 0x12;
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;
@@ -4942,7 +4942,7 @@ void func_800B3488(TmState *arg0) {
 }
 
 void func_800B355C(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, func_80035774(2), 0);
+    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(2), 0);
 }
 
 void func_800B35A4(TmState *arg0) {

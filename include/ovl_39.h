@@ -119,7 +119,7 @@ typedef struct Unk801FBEE0 {
     u16 unk12;
 } Unk801FBEE0;
 extern Unk801FBEE0 D_801FBEE0;
-s32 func_8003579C(s32); /* main exe */
+s32 text_getInfo(s32); /* main exe */
 
 typedef struct {
     u8 unk0;

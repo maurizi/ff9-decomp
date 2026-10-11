@@ -11,7 +11,7 @@ void func_801EE440(void) {
         D_801F120C.unk16[i] = 0;
         D_801F120C.unk10[i] = 0;
     }
-    func_8003575C(D_801EE2A0);
+    text_setBank(D_801EE2A0);
     func_80028CF8(&D_801F120C.unk8C, D_80077E50.unk3, func_801EFAF8);
     func_801EF568(D_80077E50.unk3, 0);
     r = &D_801F120C.unk8;
@@ -122,29 +122,29 @@ void func_801EE9E8(void) {
     c = g_gameState->unk1C->unk54C[m->unk2];
     y = 0x3D;
     for (i = 0; i < 4; i++) {
-        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, func_80035774(D_801EFBE0[i]), 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(D_801EFBE0[i]), 0, D_801F120C.unk7C);
     }
     y = 0x72;
     for (i = 0; i < 5; i++) {
-        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, func_80035774(D_801EFBF0[i]), 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(D_801EFBF0[i]), 0, D_801F120C.unk7C);
     }
-    func_8002BAE4(c->unk24, buf, 2, 1);
+    text_formatNumber(c->unk24, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
-    func_8002BAE4(c->unk25, buf, 2, 1);
+    text_formatNumber(c->unk25, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
-    func_8002BAE4(c->unk26, buf, 2, 1);
+    text_formatNumber(c->unk26, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
-    func_8002BAE4(c->unk27, buf, 2, 1);
+    text_formatNumber(c->unk27, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
-    func_8002BAE4(D_8006E0E8[c->unk39[0]].unk5, buf, 3, 1);
+    text_formatNumber(D_8006E0E8[c->unk39[0]].unk5, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
-    func_8002BAE4(c->unk28, buf, 3, 1);
+    text_formatNumber(c->unk28, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
-    func_8002BAE4(c->unk29, buf, 3, 1);
+    text_formatNumber(c->unk29, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
-    func_8002BAE4(c->unk2A, buf, 3, 1);
+    text_formatNumber(c->unk2A, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
-    func_8002BAE4(c->unk2B, buf, 3, 1);
+    text_formatNumber(c->unk2B, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
 }
 
@@ -166,19 +166,19 @@ void func_801EED18(void) {
         show = bit == 0;
     }
     if (show) {
-        st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], func_80035774(0xB), 0, st->unk7C);
+        st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], text_get(0xB), 0, st->unk7C);
         func_80025ED4(r->x + 0xB4, r->y + 0x3E, 0x1D, c->unk20, 0xFF, 1, 1);
     }
-    func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, func_80035774(0xC), 0);
-    func_8002B5FC(r->x + 0x74, r->y + 0x53, 0x1D, func_80035774(0xD), 0);
-    func_8002BAE4(c->unkC, buf, 7, 1);
+    func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, text_get(0xC), 0);
+    func_8002B5FC(r->x + 0x74, r->y + 0x53, 0x1D, text_get(0xD), 0);
+    text_formatNumber(c->unkC, buf, 7, 1);
     func_8002B56C(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
     if (c->unkB >= 99) {
         next = c->unkC;
     } else {
         next = D_8006DF5C[c->unkB];
     }
-    func_8002BAE4(next - c->unkC, buf, 6, 1);
+    text_formatNumber(next - c->unkC, buf, 6, 1);
     func_8002B56C(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
 }
 
@@ -445,7 +445,7 @@ void func_801EFB08(void) {
     D_80077DE8.unk0 = 0xD8;
     D_80077DE8.unk2 = 0x52;
     D_80077DE8.unk4 = 0xA;
-    D_80077DE8.unk8 = func_80035774(0);
+    D_80077DE8.unk8 = text_get(0);
     for (i = 0; i < 7; i++) {
         func_8002BE44(i, D_801F11CC[i].unk0);
         func_8002BE74(i, D_801F11CC[i].unk4);

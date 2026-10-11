@@ -625,7 +625,7 @@ u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
 s32 func_800275DC(s32, s32, s32, s32, u8);
 void func_80028AF0(s32, s32, s32, s32, u8);
 
-void func_8002BAE4(s32, u8 *, s32, u8);
+void text_formatNumber(s32, u8 *, s32, u8);
 void func_80027D18(void);
 void func_80027D4C(void);
 s32 func_80027D84(s32, s32);
@@ -1254,7 +1254,7 @@ extern Unk8007B988 D_8007B988;
 extern s32 D_8007B994;
 extern s32 D_8007B998;
 
-extern s32 D_80077E20;
+extern s32 g_textBank;
 extern s32 D_8007ADFC;
 extern s32 D_8007AE00; /* party mask, set by func_80049ED8 */
 extern u32 g_padPortHeld[];
@@ -1420,7 +1420,7 @@ void func_800239A4(void);
 void func_80023784(void);
 void func_800325A4(void);
 void func_8003264C(void);
-s32 func_800357C0(u8 *, s32);
+s32 text_getFrom(u8 *, s32);
 s32 func_8002BA68(s32);
 void func_800555A8(s32);
 void func_800343C0(s32);
@@ -2095,8 +2095,8 @@ u8 func_80034A04(u32 *, s32);
 void func_80035580(RECT *);
 void func_800355E4(); /* unprototyped: the argument is unused and most callers pass none */
 void func_80035674(u8);
-void func_8003575C(const u8 *);
-u8 *func_80035774(s32); /* text lookup */
+void text_setBank(const u8 *);
+u8 *text_get(s32); /* text lookup */
 #if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
 void func_8004A06C(s32); /* the overlays pass the script data as an integer */
 #else
@@ -3404,8 +3404,8 @@ extern s32 D_8007BCB0;
 
 void func_8002BBE8(s32, u8 *, s32);
 
-/* Inlined copy of func_8002BAE4 (number to fixed-width text). */
-static inline void func_8002BAE4_inline(s32 n, u8 *buf, s32 width, u8 ascii) {
+/* Inlined copy of text_formatNumber (number to fixed-width text). */
+static inline void text_formatNumber_inline(s32 n, u8 *buf, s32 width, u8 ascii) {
     s32 base = 0;
     s32 fill;
     s32 i;

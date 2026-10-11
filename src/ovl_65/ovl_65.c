@@ -195,7 +195,7 @@ void func_801EFB98(void) {
     x = r->x;
     y = r->y;
     D_801F7A78.unk374 = func_8002920C(x + 0x13, y + 6, g_ot + 10,
-                                      func_80035774(D_801F3BB8[D_801F7A78.unkA]), 0, D_801F7A78.unk374);
+                                      text_get(D_801F3BB8[D_801F7A78.unkA]), 0, D_801F7A78.unk374);
 }
 
 void func_801EFC68(void) {
@@ -223,22 +223,22 @@ void func_801EFC68(void) {
                 func_80028AF0(r->x + 4, r->y + 4, 0xB, i, dim);
                 func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
                 D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, D_801F7A78.unk374);
-                func_8002BAE4(c->unkB, buf, 2, 1);
+                text_formatNumber(c->unkB, buf, 2, 1);
                 func_800275DC(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
                 D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
                 func_80026FC4(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
-                func_8002B5FC(r->x + 0x29, r->y + 0x1C, 0xB, func_80035774(0), col);
-                func_8002BAE4(c->unkC, p, 7, 1);
+                func_8002B5FC(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
+                text_formatNumber(c->unkC, p, 7, 1);
                 func_8002B56C(r->x + 0x62, r->y + 0x20, 0xB, p, col);
                 if (c->unkB < 99) {
                     n = D_8006DF5C[c->unkB];
                 } else {
                     n = c->unkC;
                 }
-                func_8002BAE4(n - c->unkC, buf, 6, 1);
+                text_formatNumber(n - c->unkC, buf, 6, 1);
                 func_8002B56C(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
-                func_8002B5FC(r->x + 0x29, r->y + 0x26, 0xB, func_80035774(0xC), col);
+                func_8002B5FC(r->x + 0x29, r->y + 0x26, 0xB, text_get(0xC), col);
             }
             func_8002DEE4(r, 0xB, 0);
             func_8002705C(r, 0xC, 0);
@@ -254,11 +254,11 @@ void func_801EFF50(void) {
     if (D_801F7A78.unk14C[6] != 0) {
         func_8002DEE4(r, 0xB, 2);
         func_8002705C(r, 0xC, 2);
-        func_8002BAE4(D_801F7A78.unk24.unk0, buf, 6, 1);
+        text_formatNumber(D_801F7A78.unk24.unk0, buf, 6, 1);
         x = r->x;
         y = r->y;
         D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 10,
-                                          func_80035774(0), 0, D_801F7A78.unk374);
+                                          text_get(0), 0, D_801F7A78.unk374);
         D_801F7A78.unk374 = func_80029D60(r->x + 0x5A, r->y + 9, g_ot + 10,
                                           buf, 0, D_801F7A78.unk374);
     }
@@ -272,11 +272,11 @@ void func_801F0044(void) {
     if (D_801F7A78.unk14C[7] != 0) {
         func_8002DEE4(r, 0xB, 2);
         func_8002705C(r, 0xC, 2);
-        func_8002BAE4(D_801F7A78.unk24.unk4, buf, 3, 1);
+        text_formatNumber(D_801F7A78.unk24.unk4, buf, 3, 1);
         x = r->x;
         y = r->y;
         D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 10,
-                                          func_80035774(1), 0, D_801F7A78.unk374);
+                                          text_get(1), 0, D_801F7A78.unk374);
         D_801F7A78.unk374 = func_80029D60(r->x + 0x6F, r->y + 9, g_ot + 10,
                                           buf, 0, D_801F7A78.unk374);
     }
@@ -294,12 +294,12 @@ void func_801F0138(void) {
     if (D_801F7A78.unk14C[8] != 0) {
         func_8002DEE4(r, 0xE, 2);
         func_8002705C(r, 0xF, 2);
-        func_8002BAE4(gil, buf, 6, 1);
+        text_formatNumber(gil, buf, 6, 1);
         func_80063108(buf, D_801F3BC0);
         x = r->x;
         y = r->y;
         D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
-                                          func_80035774(0xD), 0, D_801F7A78.unk374);
+                                          text_get(0xD), 0, D_801F7A78.unk374);
         D_801F7A78.unk374 = func_80029D60(r->x + 0x54, r->y + 9, g_ot + 13,
                                           buf, 0, D_801F7A78.unk374);
     }
@@ -317,12 +317,12 @@ void func_801F0264(void) {
     if (D_801F7A78.unk14C[9] != 0) {
         func_8002DEE4(r, 0xE, 2);
         func_8002705C(r, 0xF, 2);
-        func_8002BAE4(gil, buf, 7, 1);
+        text_formatNumber(gil, buf, 7, 1);
         func_80063108(buf, D_801F3BC4);
         x = r->x;
         y = r->y;
         D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
-                                          func_80035774(0xE), 0, D_801F7A78.unk374);
+                                          text_get(0xE), 0, D_801F7A78.unk374);
         D_801F7A78.unk374 = func_80029D60(r->x + 0x4D, r->y + 9, g_ot + 13,
                                           buf, 0, D_801F7A78.unk374);
     }
@@ -635,7 +635,7 @@ void func_801F107C(void) {
         func_801F1300(&D_801F7A78.unk158[i]);
         func_801F1300(&D_801F7A78.unk1D8[i]);
     }
-    func_8003575C(D_801EDF04);
+    text_setBank(D_801EDF04);
     func_801F12E0();
     func_801F2490();
     func_801F1FEC();
@@ -683,7 +683,7 @@ void func_801F1228(void) {
     x = r->x;
     y = r->y;
     D_801F7A78.unk374 = func_8002920C(x + 0x13, y + 6, g_ot + 10,
-                                      func_80035774(7), 0, D_801F7A78.unk374);
+                                      text_get(7), 0, D_801F7A78.unk374);
 }
 
 void func_801F12E0(void) {
@@ -1352,7 +1352,7 @@ u8 func_801F2E58(void) {
     }
     if (f) {
         k = 0x10;
-        ts = func_8002AF70(func_80035774(0xA));
+        ts = func_8002AF70(text_get(0xA));
         rr.x = D_801F7A78.unk368->unk0 + ((D_801F7A78.unk368->unk4 - k - ts.w) >> 1);
         rr.y = D_801F7A78.unk368->unk2 + ((D_801F7A78.unk368->unk6 - k - ts.h) >> 1);
         rr.w = ts.w + 0x10;
@@ -1388,20 +1388,20 @@ void func_801F2FE8(Window *w) {
         it = &D_80069018[rw->unk10[i][0]];
         y = i * 15 + 7;
         y2 = i * 15 + 10;
-        func_8002BAE4(rw->unk10[i][1], D_801F8238, 2, 1);
+        text_formatNumber(rw->unk10[i][1], D_801F8238, 2, 1);
         func_80026C34(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->unk10[i][0], 1);
         func_8002B5FC(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
         func_8002B56C(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, D_801F8238, 0);
     }
     if (rw->unkC == 0) {
-        s = func_80035774(9);
-        func_8002B5FC(r->unk0 + ((r->unk4 - (func_8003579C(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
+        s = text_get(9);
+        func_8002B5FC(r->unk0 + ((r->unk4 - (text_getInfo(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
     }
     if (rw->unk8 != 0xFF) {
         k = off - 0x66;
         func_80027710(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
         func_8002BD54(D_801F8238, (u8 *)func_8006276C(rw->unk8));
-        func_8002AD38(D_801F8238, func_80035774(0xB));
+        func_8002AD38(D_801F8238, text_get(0xB));
         func_8002B5FC(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
     }
     func_800269F4(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
@@ -1454,7 +1454,7 @@ void func_801F33A0(Window *w) {
 }
 
 void func_801F3434(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, func_80035774(0xA), 0);
+    func_8002B5FC(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, text_get(0xA), 0);
 }
 
 void func_801F347C(void) {

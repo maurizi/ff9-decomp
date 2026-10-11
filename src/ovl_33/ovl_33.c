@@ -46,7 +46,7 @@ void func_801EE7C0(void) {
     func_801EF900(D_80077E50.unk3, 0);
     D_801FBF84.unk76C = 0;
     D_801FBF84.unk76B = 0;
-    func_8003575C(D_801EDF04);
+    text_setBank(D_801EDF04);
     func_801F1148();
     func_8003556C(D_800355DC);
     func_80035674(1);
@@ -239,8 +239,8 @@ void func_801EEFDC(void) {
     n = (l->unk5 + l->unk6) * 2 + l->unk7;
     func_8002B524(r->x + 6, r->y - 3, 0x1D, D_80070460, 0);
     func_8002DEE4(r, 0x1D, 2);
-    func_8002B5FC(r->x + 8, r->y + 8, 0x1C, func_80035774(0x10), 0);
-    func_8002B5FC(r->x + 8, r->y + 0x16, 0x1C, func_80035774(0x11), 0);
+    func_8002B5FC(r->x + 8, r->y + 8, 0x1C, text_get(0x10), 0);
+    func_8002B5FC(r->x + 8, r->y + 0x16, 0x1C, text_get(0x11), 0);
     if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || D_801FBF84.unk1 == 0 || l->unk0 == 0) {
         return;
     }
@@ -590,7 +590,7 @@ void func_801F0024(void) {
         buf = D_801FBD84;
         D_80077DE8.unk8 = buf;
         func_8002BE44(0, D_801F3478);
-        func_8002BD54(buf, func_80035774(D_801FBF84.unk0 + 2));
+        func_8002BD54(buf, text_get(D_801FBF84.unk0 + 2));
         if (D_801FBF84.unk0 == 0) {
             if (D_8007AFD3) {
                 t = 6;
@@ -609,9 +609,9 @@ void func_801F0024(void) {
                 t = 7;
             }
         }
-        func_8002AD38(buf, func_80035774(t));
+        func_8002AD38(buf, text_get(t));
     end:
-        func_8002AD38(D_801FBD84, func_80035774(0xF));
+        func_8002AD38(D_801FBD84, text_get(0xF));
     } else if (D_801FBF84.unk1 == 2) {
         if (l->unk0 == 0) {
             return;
@@ -647,7 +647,7 @@ void func_801F0024(void) {
             r.h = g_gameState->unkC->disp.h;
         }
         func_80035580(&r);
-        D_80077DF0 = func_80035774(D_801FBF84.unk76F == 0 ? 9 : 0xA);
+        D_80077DF0 = text_get(D_801FBF84.unk76F == 0 ? 9 : 0xA);
     }
 }
 
@@ -742,7 +742,7 @@ void func_801F07DC(void) {
     r = &D_801FBF84.unk28;
     func_8002DEE4(r, 0x1D, 2);
     for (i = 0; i < 2; i++) {
-        func_8002B5FC(r->x + D_801F33C0[i], r->y + 6, 0x1C, func_80035774(i), D_801FBF84.unk4[i] == 0 ? 2 : 0);
+        func_8002B5FC(r->x + D_801F33C0[i], r->y + 6, 0x1C, text_get(i), D_801FBF84.unk4[i] == 0 ? 2 : 0);
     }
 }
 
@@ -791,7 +791,7 @@ void func_801F09CC(s32 x, s32 y, s32 idx, Character *c) {
         col = D_801F740C[st];
         func_8002B5FC(x + 8, y, 0x1C, D_801F40EC + info->unkE, col);
         if (info->unkA != 0) {
-            func_8002BAE4(func_801F1018(info), buf, 3, 1);
+            text_formatNumber(func_801F1018(info), buf, 3, 1);
             func_8002B56C(x + 0x6C, y + 4, 0x1C, buf, col);
         }
     }
@@ -818,7 +818,7 @@ void func_801F0AB8(s32 x, s32 y, s32 i, Character *c) {
             func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 7 : 8);
         }
         func_8002B5FC(x + 0x18, y, 0x1C, D_801F6540 + sup->unk2, col);
-        func_8002BAE4(sup->unk1, buf, 3, 1);
+        text_formatNumber(sup->unk1, buf, 3, 1);
         func_8002B56C(x + 0x6C, y + 4, 0x1C, buf, col);
     }
 }
@@ -1000,7 +1000,7 @@ void func_801F1150(void) {
     D_801FC840.unk1 = 1;
     D_801FC840.unk2 = 0;
     D_801FC840.unk260 = 0;
-    func_8003575C(D_801EE648);
+    text_setBank(D_801EE648);
     func_8003556C(D_800355DC);
     func_80035674(1);
     setRECT(&D_801FC840.unk14, 8, 8, 0xE4, 0x1A);
@@ -1313,7 +1313,7 @@ void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
     blink = ((u32)D_80077DC0 >> 4) & 1;
     for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
         func_801F3344(r->x + 8, y, 0x1D, D_801F8930[i], 0);
-        func_8002BAE4(cur->unk8[i], buf, 2, 1);
+        text_formatNumber(cur->unk8[i], buf, 2, 1);
         func_8002B56C(r->x + 0x4A, y, 0x1D, buf, 0);
         if (new != NULL) {
             diff = cur->unk8[i] != new->unk8[i];
@@ -1326,14 +1326,14 @@ void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
             } else {
                 col = 3;
             }
-            func_8002BAE4(new->unk8[i], buf, 2, 1);
+            text_formatNumber(new->unk8[i], buf, 2, 1);
             func_8002B56C(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
             func_8002B56C(r->x + 0x6D, y, 0x1D, buf, col);
         }
     }
     for (i = 0, y = r->y + 0x78; i < 5; y += 0xC, i++) {
         func_801F3344(r->x + 8, y, 0x1D, D_801F8934[i], 0);
-        func_8002BAE4(cur->unkC[i], buf, 3, 1);
+        text_formatNumber(cur->unkC[i], buf, 3, 1);
         func_8002B56C(r->x + 0x43, y, 0x1D, buf, 0);
         if (new != NULL) {
             diff = cur->unkC[i] != new->unkC[i];
@@ -1346,7 +1346,7 @@ void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
             } else {
                 col = 3;
             }
-            func_8002BAE4(new->unkC[i], buf, 3, 1);
+            text_formatNumber(new->unkC[i], buf, 3, 1);
             func_8002B56C(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
             func_8002B56C(r->x + 0x66, y, 0x1D, buf, col);
         }
@@ -1525,12 +1525,12 @@ void func_801F2AB4(void) {
         buf = D_801FC740;
         D_80077DE8.unk8 = buf;
         func_8002BE44(0, D_801F8988);
-        func_8002BD54(D_80077DE8.unk8, func_80035774(D_801FC840.unk0 + 3));
-        func_8002AD38(D_80077DE8.unk8, func_80035774(7));
+        func_8002BD54(D_80077DE8.unk8, text_get(D_801FC840.unk0 + 3));
+        func_8002AD38(D_80077DE8.unk8, text_get(7));
     } else if (D_801FC840.unk1 == 2) {
         id = c->unk39[D_801FC840.unk2];
         if (id == 0xFF) {
-            D_80077DE8.unk8 = func_80035774(6);
+            D_80077DE8.unk8 = text_get(6);
         } else {
             D_80077DE8.unk8 = D_801F8990 + D_80069018[id].unk2;
         }
@@ -1613,7 +1613,7 @@ void func_801F2E34(void) {
     func_8002DEE4(r, 0x1E, 2);
     func_8002705C(r, 0x1E, 2);
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(r->x + D_801F7430[i], r->y + 6, 0x1D, func_80035774(i), 0);
+        func_8002B5FC(r->x + D_801F7430[i], r->y + 6, 0x1D, text_get(i), 0);
     }
 }
 
@@ -1640,7 +1640,7 @@ void func_801F2F3C(s32 col, s32 row, s32 i, MenuView *v) {
     y = w->unk4.y + row * 0xF + v->unk2;
     func_80026C34(x + 0xB, y, 0x13, p->unk0, 1);
     func_8002B5FC(x + 0x1B, y, 0x13, D_8006A218 + D_80069018[p->unk0].unk0, 0);
-    func_8002BAE4(p->unk1, buf, 2, 1);
+    text_formatNumber(p->unk1, buf, 2, 1);
     func_8002B56C(x + 0x8A, y + 4, 0x13, buf, 0);
 }
 
@@ -1745,7 +1745,7 @@ void func_801F32E0(Character *c) {
 }
 
 void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color) {
-    func_8002B5FC(x, y - 4, z, func_80035774(id), color);
+    func_8002B5FC(x, y - 4, z, text_get(id), color);
 }
 
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/ovl_33", D_801EDF00);

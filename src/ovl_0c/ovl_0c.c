@@ -10507,7 +10507,7 @@ void func_800CB434(void) {
     if (p != NULL && *p != 0xFF) {
         s = p;
     } else {
-        s = func_80035774(1);
+        s = text_get(1);
     }
     w = func_8002B980(s, 0) + 0x10;
     if (w < 0x44) {
@@ -10680,25 +10680,25 @@ void func_800CBB4C(s32 arg0) {
     func_800283E0(x, r->y + 1, 0x14, arg0, 0x2D, c->unk10 == 0);
     func_8002B5FC(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
     func_80026FC4(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
-    func_8002BAE4(c->unkB, buf, 2, 1);
+    text_formatNumber(c->unkB, buf, 2, 1);
     func_800275DC(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
     func_8002B56C(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
     func_800275DC(r->x + 0x3C, r->y + 0x1B, 0x14, 0xAF, 0);
-    func_8002BAE4(c->unk10, buf, 4, 1);
+    text_formatNumber(c->unk10, buf, 4, 1);
     buf[4] = 0x2F;
     if (c->unk10 != 0) {
         color = ((u16)(c->unk18 / 6) >= c->unk10) * 4;
     } else {
         color = 3;
     }
-    func_8002BAE4(c->unk18, &buf[5], -1, 1);
+    text_formatNumber(c->unk18, &buf[5], -1, 1);
     func_8002B56C(r->x + 0x52, r->y + 0x1B, 0x14, buf, color);
     func_800275DC(r->x + 0x3C, r->y + 0x24, 0x14, 0xB0, 0);
-    func_8002BAE4(c->unk12, buf, 3, 1);
+    text_formatNumber(c->unk12, buf, 3, 1);
     buf[3] = 0x2F;
     maxmp = c->unk1A;
     color = ((s16)(maxmp / 6) >= c->unk12) * 4;
-    func_8002BAE4(maxmp, &buf[4], -1, 1);
+    text_formatNumber(maxmp, &buf[4], -1, 1);
     func_8002B56C(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
     func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->unk17, c->unk1F);
 }
@@ -10726,7 +10726,7 @@ void func_800CBF18(void) {
     func_800275DC(D_800CE04C->x + 6, D_800CE04C->y + 8, 0x13, 0xB1, 0);
     func_800275DC(D_800CE04C->x + 6, D_800CE04C->y + 0x15, 0x13, 0xB2, 0);
     func_8002B56C(D_800CE04C->x + 0x13, D_800CE04C->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
-    func_8002BAE4(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
     func_80063108(buf, D_800CE050);
     func_8002B56C(D_800CE04C->x + 0x13, D_800CE04C->y + 0x16, 0x13, buf, 0);
     func_8002B524(D_800CE04C->x + 6, D_800CE04C->y - 3, 0x13, D_800704C0, 0);
@@ -10743,7 +10743,7 @@ void func_800CC050(void) {
     if (gd->unk80C != NULL && *gd->unk80C != 0xFF) {
         func_8002B5FC(D_800CE054->x + 8, D_800CE054->y + 7, 0x13, gd->unk80C, 0);
     } else {
-        func_8002B5FC(D_800CE054->x + 8, D_800CE054->y + 7, 0x13, func_80035774(1), 0);
+        func_8002B5FC(D_800CE054->x + 8, D_800CE054->y + 7, 0x13, text_get(1), 0);
     }
 }
 
@@ -10796,11 +10796,11 @@ void func_800CC324(void) {
             if (D_800D5438.unk0 + 1 == 4) {
                 func_800CC3E0(a);
             } else {
-                D_80077DE8.unk8 = func_80035774(a);
+                D_80077DE8.unk8 = text_get(a);
             }
         }
     } else if (D_800D5438.unk1 == 2) {
-        D_80077DE8.unk8 = func_80035774(D_800D5438.unk4 + 0xB);
+        D_80077DE8.unk8 = text_get(D_800D5438.unk4 + 0xB);
     }
 }
 
@@ -10816,8 +10816,8 @@ void func_800CC3E0(s32 arg0) {
             next = D_8006DF5C[c->unkB];
         }
         func_8002BE44(0, c->unk0);
-        func_8002BAE4(c->unkC, D_800D5418, 7, 1);
-        func_8002BAE4(next - c->unkC, D_800D5428, 7, 1);
+        text_formatNumber(c->unkC, D_800D5418, 7, 1);
+        text_formatNumber(next - c->unkC, D_800D5428, 7, 1);
         func_8002BE44(1, D_800CE06C);
         func_8002BE44(2, D_800D5418);
         func_8002BE44(3, D_800CE070);
@@ -10825,7 +10825,7 @@ void func_800CC3E0(s32 arg0) {
         func_8002BE44(5, D_800D5428);
         func_8002BE44(6, D_800CE080);
         func_8002BE44(7, c->unk38 != 0 ? D_800CE090 : D_800CE088);
-        D_80077DF0 = func_80035774(5);
+        D_80077DF0 = text_get(5);
     }
 }
 
@@ -10862,13 +10862,13 @@ void func_800CC5D8(u8 arg0) {
         if (id != 0xFF) {
             func_8002BE44(j, D_8006A218 + D_80069018[id].unk0);
         } else {
-            func_8002BE44(j, func_80035774(0xD));
+            func_8002BE44(j, text_get(0xD));
         }
         j++;
         func_8002BE74(i, id);
         i++;
     } while (i < 5);
-    D_80077DE8.unk8 = func_80035774(4);
+    D_80077DE8.unk8 = text_get(4);
 }
 
 void func_800CC6E4(void) {
@@ -10879,7 +10879,7 @@ void func_800CC6E4(void) {
         D_800D5438.unk2 = 0;
     }
     D_800D5438.unk1 = 0;
-    func_8003575C(D_800A8678);
+    text_setBank(D_800A8678);
     func_800CB434();
     r.x = 8;
     r.y = 8;

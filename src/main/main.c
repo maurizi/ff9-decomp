@@ -3029,7 +3029,7 @@ void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
     if (c == NULL) {
         return;
     }
-    func_8002BAE4(c->unkB, buf, 2, 1);
+    text_formatNumber(c->unkB, buf, 2, 1);
     func_8002B5FC(x, y, otz, c->unk0, 0);
     func_8002B56C(x + 0x24, y + 0xE, otz, buf, 0);
     func_800275DC(x, y + 0xE, otz, 0xB4, 0);
@@ -3040,14 +3040,14 @@ void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
     } else {
         col = 3;
     }
-    func_8002BAE4(c->unk10, buf, 4, 1);
+    text_formatNumber(c->unk10, buf, 4, 1);
     buf[4] = '/';
-    func_8002BAE4(c->unk18, buf + 5, -1, 1);
+    text_formatNumber(c->unk18, buf + 5, -1, 1);
     func_8002B56C(x + 0x16, y + 0x17, otz, buf, col);
     col = ((s16)((s16)c->unk1A / 6) >= (s16)c->unk12) << 2;
-    func_8002BAE4((s16)c->unk12, buf, 3, 1);
+    text_formatNumber((s16)c->unk12, buf, 3, 1);
     buf[3] = '/';
-    func_8002BAE4((s16)c->unk1A, buf + 4, -1, 1);
+    text_formatNumber((s16)c->unk1A, buf + 4, -1, 1);
     func_8002B56C(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
@@ -3741,8 +3741,8 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
     if (cur != 0 && cur >= max) {
         pkt = func_80027834(x + 4, y, ot, 0xC0, flag, tmp, pkt);
     } else if (show) {
-        func_8002BAE4(cur, buf, 3, 1);
-        func_8002BAE4(max, buf + 4, -1, 1);
+        text_formatNumber(cur, buf, 3, 1);
+        text_formatNumber(max, buf + 4, -1, 1);
         buf[3] = 0x2F;
         pkt = func_80027B5C(x + 3, y + 2, ot, buf, flag ? 0x66606060 : 0x64808080, (SprtWords *)pkt);
     }
@@ -3773,8 +3773,8 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
 void func_800273C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 buf[8];
 
-    func_8002BAE4(arg3, &buf[0], 2, 1);
-    func_8002BAE4(arg4, &buf[3], -1, 1);
+    text_formatNumber(arg3, &buf[0], 2, 1);
+    text_formatNumber(arg4, &buf[3], -1, 1);
     buf[2] = '/';
     func_800275DC(arg0, arg1, arg2, 0xC1, 0);
     func_8002B5B4(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? 4 : 0);
@@ -3890,7 +3890,7 @@ void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
     if (c == NULL) {
         return;
     }
-    func_8002BAE4(c->unkB, buf, 2, 1);
+    text_formatNumber(c->unkB, buf, 2, 1);
     func_8002B5FC(x, y, otz, c->unk0, 0);
     func_8002B56C(x + 0x26, y + 0xE, otz, buf, 0);
     func_800275DC(x, y + 0xE, otz, 0xB4, 0);
@@ -5078,12 +5078,12 @@ s32 func_8002AA04(s32 frames, u8 *buf, s32 blink) {
     } else {
         sub = 0;
     }
-    func_8002BAE4_inline(hr, buf, 2, 1);
-    func_8002BAE4_inline(min, buf + 3, 2, 1);
+    text_formatNumber_inline(hr, buf, 2, 1);
+    text_formatNumber_inline(min, buf + 3, 2, 1);
     if (buf[3] == ' ') {
         buf[3] = '0';
     }
-    func_8002BAE4_inline(sec, buf + 6, 2, 1);
+    text_formatNumber_inline(sec, buf + 6, 2, 1);
     if (buf[6] == ' ') {
         buf[6] = '0';
     }
@@ -5435,7 +5435,7 @@ u8 *func_8002BA90(u32 *ot, DrTpageWords *p) {
     return (u8 *)(p + 1);
 }
 
-void func_8002BAE4(s32 n, u8 *buf, s32 width, u8 ascii) {
+void text_formatNumber(s32 n, u8 *buf, s32 width, u8 ascii) {
     s32 base = 0;
     s32 fill;
     s32 i;
@@ -8437,7 +8437,7 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010DC4);
 
 void func_80033D38(u8 *dst, s32 id) {
     memset(dst, 0xFF, 10);
-    func_8002BD54(dst, (u8 *)func_800357C0((u8 *)D_80010DC4, id));
+    func_8002BD54(dst, (u8 *)text_getFrom((u8 *)D_80010DC4, id));
 }
 
 void func_80033D8C(u8 *dst, s32 b) {
@@ -8977,13 +8977,13 @@ void func_80035744(void) {
     D_80077DE8.unk19 = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003575C);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", text_setBank);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80035774);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", text_get);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003579C);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", text_getInfo);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800357C0);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", text_getFrom);
 
 void func_800357E0(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
     u32 t = d->unk4;
@@ -9136,7 +9136,7 @@ void func_80035E40(void) {
         y = i * 15 + 6;
         if (all || i == sel) {
             func_8002B5FC(r->x + 10, r->y + y + D_80077E28.unk8, 2,
-                          (u8 *)func_800357C0(D_800110A0, i), 0);
+                          (u8 *)text_getFrom(D_800110A0, i), 0);
         }
     }
     func_8002D9B4(r, 2, 2);
@@ -9248,7 +9248,7 @@ u8 func_80036300(s32 i) {
 }
 
 s32 func_8003631C(s32 a) {
-    return func_800357C0(D_800110A0, a + 9);
+    return text_getFrom(D_800110A0, a + 9);
 }
 
 void func_80036344(void) {
@@ -22202,7 +22202,7 @@ s32 func_8006275C(void) {
 }
 
 s32 func_8006276C(s32 a) {
-    return func_800357C0(D_8006FD60, a);
+    return text_getFrom(D_8006FD60, a);
 }
 
 void func_80062794(s32 a) {

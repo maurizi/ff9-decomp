@@ -18,7 +18,7 @@ void func_801F08F4(void) {
     D_801F347C.unk4 = 0;
     D_801F347C.unk3 = func_80062638();
     D_801F347C.unk6 = 0xFF;
-    func_8003575C("-");
+    text_setBank("-");
     func_801F2E60();
     func_801F2CD4();
     func_8003556C(D_801F347C.unk3 ? func_801F22DC : 0);
@@ -134,14 +134,14 @@ void func_801F0DB0(void) {
     func_8002B524(r->x + 8, r->y - 3, 0x1E, D_8007041C, 0);
     func_8002DEE4(r, 0x1E, 1);
     func_8002705C(r, 0x1E, 1);
-    s = func_80035774(0x27);
+    s = text_get(0x27);
     w = func_8002BA68(s);
-    func_8002BAE4(a, buf, 3, 1);
+    text_formatNumber(a, buf, 3, 1);
     func_8002B5FC(r->x + 8, r->y + 0xA2, 0x14, s, 0);
     func_8002B5B4(r->x + (w + k), r->y + 0xA4, 0x14, buf, 0);
-    s = func_80035774(0x28);
+    s = text_get(0x28);
     w = func_8002BA68(s);
-    func_8002BAE4(b, buf, 3, 1);
+    text_formatNumber(b, buf, 3, 1);
     func_8002B5B4(r->x + 0x80, r->y + 0xA4, 0x14, buf, 0);
     func_8002B5FC(r->x - (w - k2), r->y + 0xA2, 0x14, s, 0);
     for (n = 0, i = 0, x = 4; i < 10; i++, x += 15) {
@@ -182,21 +182,21 @@ void func_801F0F9C(void) {
     func_8002DEE4(r, 0x1E, 2);
     func_8002705C(r, 0x1F, 2);
     func_800269F4(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
-    func_8002BAE4(D_801F347C.unk18F0[3], buf, 4, 1);
-    func_8002B5FC(r->x + 0xA, r->y + 5, 0x14, func_80035774(0x29), 0);
-    func_8002B5FC(r->x + 0xA, r->y + 0x14, 0x14, func_80035774(rank), 0);
-    func_8002B5FC(r->x + 0xA, r->y + 0x26, 0x14, func_80035774(0x2A), 0);
-    func_8002B5FC(r->x + 0xA, r->y + 0x30, 0x14, func_80035774(0x2B), 0);
-    func_8002B5FC(r->x + 0xA, r->y + 0x3A, 0x14, func_80035774(0x2C), 0);
+    text_formatNumber(D_801F347C.unk18F0[3], buf, 4, 1);
+    func_8002B5FC(r->x + 0xA, r->y + 5, 0x14, text_get(0x29), 0);
+    func_8002B5FC(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), 0);
+    func_8002B5FC(r->x + 0xA, r->y + 0x26, 0x14, text_get(0x2A), 0);
+    func_8002B5FC(r->x + 0xA, r->y + 0x30, 0x14, text_get(0x2B), 0);
+    func_8002B5FC(r->x + 0xA, r->y + 0x3A, 0x14, text_get(0x2C), 0);
     func_8002B56C(r->x + 0x5A, r->y + 9, 0x14, buf, 0);
     func_8002B56C(r->x + 0x78, r->y + 0xB, 0x14, D_801EDF04, 0);
-    w = func_801F0F9C_width(func_80035774(0x2C));
-    func_8002BAE4(a, buf, 5, 1);
+    w = func_801F0F9C_width(text_get(0x2C));
+    text_formatNumber(a, buf, 5, 1);
     w += 0xB;
     func_8002B56C(r->x + w, r->y + 0x2A, 0x14, buf, 0);
-    func_8002BAE4(b, buf, 5, 1);
+    text_formatNumber(b, buf, 5, 1);
     func_8002B56C(r->x + w, r->y + 0x34, 0x14, buf, 0);
-    func_8002BAE4(c, buf, 5, 1);
+    text_formatNumber(c, buf, 5, 1);
     func_8002B56C(r->x + w, r->y + 0x3E, 0x14, buf, 0);
 }
 
@@ -229,8 +229,8 @@ void func_801F12B8(s32 id) {
         same = id == cache->unk7;
         name = (u8 *)func_8006276C(id);
         if (cnt >= 2) {
-            func_8002BAE4(D_801F347C.unk6C[id] + 1, buf, 3, 1);
-            func_8002BAE4(cnt, buf + 4, -1, 1);
+            text_formatNumber(D_801F347C.unk6C[id] + 1, buf, 3, 1);
+            text_formatNumber(cnt, buf + 4, -1, 1);
             buf[3] = '/';
             func_8002B56C(r->x + 0x2B, r->y + 0x43, 0x14, buf, 0);
             a = func_8002BE10(4);
@@ -532,7 +532,7 @@ void func_801F22DC(void) {
     if (D_801F347C.unk0 == 1) {
         n = D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1];
         if (n != 0) {
-            D_80077DE8.unk8 = func_80035774(n >= 2 ? 0x24 : 0x23);
+            D_80077DE8.unk8 = text_get(n >= 2 ? 0x24 : 0x23);
         }
     } else if (D_801F347C.unk0 == 2) {
         if (D_801F347C.unk5 == 1) {
@@ -542,7 +542,7 @@ void func_801F22DC(void) {
             r.h = g_gameState->unkC->disp.h - 0x8C;
             func_80035580(&r);
         }
-        D_80077DE8.unk8 = func_80035774(D_801F347C.unk5 + 0x25);
+        D_80077DE8.unk8 = text_get(D_801F347C.unk5 + 0x25);
     }
 }
 
@@ -831,9 +831,9 @@ void func_801F2F24(Window *w) {
 }
 
 void func_801F2F34(Window *w) {
-    func_8002B5FC(w->unk0 + 0xE, w->unk2 + 0xA, w->unk18, func_80035774(0x20), 0);
-    func_8002B5FC(w->unk0 + 0x30, w->unk2 + 0x2E, w->unk18, func_80035774(0x21), 0);
-    func_8002B5FC(w->unk0 + 0x30, w->unk2 + 0x3D, w->unk18, func_80035774(0x22), 0);
+    func_8002B5FC(w->unk0 + 0xE, w->unk2 + 0xA, w->unk18, text_get(0x20), 0);
+    func_8002B5FC(w->unk0 + 0x30, w->unk2 + 0x2E, w->unk18, text_get(0x21), 0);
+    func_8002B5FC(w->unk0 + 0x30, w->unk2 + 0x3D, w->unk18, text_get(0x22), 0);
 }
 
 void func_801F2FCC(void) {

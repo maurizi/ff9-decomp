@@ -4,7 +4,7 @@ void func_801F3874(void) {
     u32 id;
     s32 i;
 
-    func_8003575C(D_801EDF18);
+    text_setBank(D_801EDF18);
     func_80035580(&D_801F4B48);
     func_8003556C(func_801F4A9C);
     D_801F4BBC.unk0 = 1;
@@ -26,7 +26,7 @@ void func_801F3874(void) {
     }
     D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk7);
     for (i = 0; i < 2; i++) {
-        D_801F4BBC.unk1C[i] = func_80035774(i + 0xD);
+        D_801F4BBC.unk1C[i] = text_get(i + 0xD);
     }
     setRECT(&D_801F4BBC.unk134[0], 0xF0, 8, 0x44, 0x1A);
     setRECT(&D_801F4BBC.unk134[1], 0x16, 0x1A, 0x24, 0x32);
@@ -173,11 +173,11 @@ void func_801F4110(void) {
     func_8002DEE4(D_801F4B5C, 5, 2);
     func_8002705C(D_801F4B5C, 5, 2);
     for (i = 0; i < 2; i++) {
-        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 9 + i * 0x10, 4, func_80035774(i + 2),
+        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 9 + i * 0x10, 4, text_get(i + 2),
                       D_801F4BBC.unk2 == i ? 4 : 0);
     }
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 0x31 + i * 0x10, 4, func_80035774(i + 4), 0);
+        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 0x31 + i * 0x10, 4, text_get(i + 4), 0);
     }
 }
 
@@ -305,13 +305,13 @@ void func_801F47E8(void) {
 void func_801F48A0(void) {
     func_8002DEE4(D_801F4B54, 6, 2);
     func_8002705C(D_801F4B54, 6, 2);
-    func_8002B5FC(D_801F4B54->x + 0xA, D_801F4B54->y + 6, 5, func_80035774(0), 0);
+    func_8002B5FC(D_801F4B54->x + 0xA, D_801F4B54->y + 6, 5, text_get(0), 0);
 }
 
 void func_801F490C(void) {
     func_8002DEE4(D_801F4B60, 7, 1);
     func_8002705C(D_801F4B60, 7, 1);
-    func_8002B5FC(D_801F4B60->x + 0x3E, D_801F4B60->y + 6, 6, func_80035774(1), 0);
+    func_8002B5FC(D_801F4B60->x + 0x3E, D_801F4B60->y + 6, 6, text_get(1), 0);
     func_8002B524(D_801F4B60->x + 0x23, D_801F4B60->y - 4, 6, D_80070450, 0);
 }
 
@@ -341,7 +341,7 @@ s32 func_801F4A84(s32 i) {
 }
 
 void func_801F4A9C(void) {
-    D_80077DE8.unk8 = func_80035774(D_801F4BBC.unk0 == 0 ? D_801F4BBC.unk1 + 7 : 0xC);
+    D_80077DE8.unk8 = text_get(D_801F4BBC.unk0 == 0 ? D_801F4BBC.unk1 + 7 : 0xC);
 }
 
 void func_801F4AE0(void) {

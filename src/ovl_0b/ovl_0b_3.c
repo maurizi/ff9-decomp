@@ -1765,7 +1765,7 @@ s32 func_800CD70C(u8 arg0) {
     while (arg0 >>= 1) {
         n++;
     }
-    return func_800357C0(D_800F6CB4, n + 1);
+    return text_getFrom(D_800F6CB4, n + 1);
 }
 
 u8 *func_800CD75C(u8 arg0) {
@@ -1806,18 +1806,18 @@ void func_800CD83C(void) {
     switch (c->unk1358.unk1C8.b[2]) {
     case 0:
         func_8002BD54(buf, func_800CD78C(s));
-        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 10));
+        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
         func_8002BBE8(s->unk7A, buf + func_8002BCC0(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 1;
         break;
     case 1:
-        func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, 11));
+        func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
         func_8002BBE8(s->unk28, buf + func_8002BCC0(buf), 0);
-        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 13));
+        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
         func_8002BBE8(s->unk24->unk0, buf + func_8002BCC0(buf), 0);
-        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 12));
+        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 12));
         func_8002BBE8(s->unk2A, buf + func_8002BCC0(buf), 0);
-        func_8002AD38(buf, (u8 *)func_800357C0(D_800F6FB8, 13));
+        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
         func_8002BBE8(s->unk24->unk2, buf + func_8002BCC0(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1] = 0;
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 2;
@@ -1827,7 +1827,7 @@ void func_800CD83C(void) {
             mask = c->unk488[(s->unk68 >> 1) & 0xF].unk0->unk2;
             while ((j = g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1]++) < 8) {
                 if ((mask >> j) & 1) {
-                    func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, j));
+                    func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, j));
                     goto show;
                 }
             }
@@ -1838,7 +1838,7 @@ void func_800CD83C(void) {
         mask = s->unk73 & ~s->unk70;
         while ((k = g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1]++) < 8) {
             if ((mask >> k) & 1) {
-                func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, k + 14));
+                func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, k + 14));
                 goto show;
             }
         }
@@ -1856,7 +1856,7 @@ void func_800CDC68(BtlUnit *arg0) {
     if (!(arg0->unk68 & 1)) {
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC = &g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF];
         if (g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC->unk8.w == -1) {
-            func_800F4F04(func_800357C0(D_800F6FB8, 9), 2);
+            func_800F4F04(text_getFrom(D_800F6FB8, 9), 2);
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D1 = 4;
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
             return;
@@ -1883,7 +1883,7 @@ void func_800CDD68(void) {
         id = g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC->unk8.b[3 - i];
         if (id != 0xFF) {
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
-            func_8002BD54(buf, (u8 *)func_800357C0(D_800F6FB8, 8));
+            func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
             func_8002AD38(buf, func_800CD75C(id));
             func_8002AD38(buf, D_800A7C20);
             s = buf;
@@ -1922,13 +1922,13 @@ void func_800CDEF0(BtlCmd *arg0) {
             case 0xFE:
                 s = buf;
                 func_8002BD54(s, func_800EA0B4(arg0->unkF));
-                func_8002AD38(s, (u8 *)func_800357C0(D_800F71E4, 0));
+                func_8002AD38(s, (u8 *)text_getFrom(D_800F71E4, 0));
                 break;
             default:
                 if (t < 0xC0) {
                     s = func_800EA0B4(t);
                 } else {
-                    s = (u8 *)func_800357C0(D_800F71E4, (t & 0x3F) + 1);
+                    s = (u8 *)text_getFrom(D_800F71E4, (t & 0x3F) + 1);
                 }
                 break;
             }

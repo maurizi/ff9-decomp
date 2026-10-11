@@ -16,7 +16,7 @@ void func_801F7AC0(void) {
     st = &D_801F9850;
     st->unk1 = 1;
     D_801F9850.unk0 = 0;
-    func_8003575C(D_801EDF84);
+    text_setBank(D_801EDF84);
     func_8003556C(func_801F84F0);
     func_80035674(1);
     setRECT(&D_801F9850.unk20, 0xE4, 8, 0x50, 0x1A);
@@ -116,7 +116,7 @@ void func_801F7EB4(void) {
     sel = g_gameState->unk1C->unk844;
     if (sel != 0) {
         func_801F9518(r->x + 0x10, r->y + 0x2C, 0x1C, (D_801F9850.unkC & (1 << (sel - 1))) ? 0xD : 0xC, 0);
-        func_8002B5FC(r->x + 0x21, r->y + 0x2E, 0x1C, func_80035774(g_gameState->unk1C->unk844 + 9), 0);
+        func_8002B5FC(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->unk1C->unk844 + 9), 0);
         func_801F88F4(r->x + 0x4C, r->y + 0xB, 0x1C, g_gameState->unk1C->unk844 - 1, 0);
         func_801F8AB0(r->x + 0x48, r->y + 7, 0x1C, 0);
     }
@@ -153,12 +153,12 @@ void func_801F8130(void) {
 
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1E, 2);
-    func_8002B5FC(r->x + 9, r->y + 3, 0x1C, func_80035774(7), 0);
-    func_8002B5FC(r->x + 9, r->y + 0xF, 0x1C, func_80035774(8), 0);
+    func_8002B5FC(r->x + 9, r->y + 3, 0x1C, text_get(7), 0);
+    func_8002B5FC(r->x + 9, r->y + 0xF, 0x1C, text_get(8), 0);
     st = &D_801F9850;
-    func_8002BAE4(st->unk2, buf, 2, 1);
+    text_formatNumber(st->unk2, buf, 2, 1);
     func_8002B56C(r->x + 0x5E, r->y + 7, 0x1C, buf, 0);
-    func_8002BAE4(st->unk3, buf, 2, 1);
+    text_formatNumber(st->unk3, buf, 2, 1);
     func_8002B56C(r->x + 0x5E, r->y + 0x13, 0x1C, buf, 0);
 }
 
@@ -177,8 +177,8 @@ void func_801F8240(void) {
         func_801F95E8(id);
         func_801F88F4(r->x + 0xC, r->y + 0xC, 0x1C, id, 0);
         func_801F8AB0(r->x + 8, r->y + 8, 0x1C, 0);
-        st->unk2058 = func_8002920C(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], func_80035774(id + 0x3A), 0, st->unk2058);
-        func_8002B5FC(r->x + 0x42, r->y + 6, 0x1C, func_80035774(9), 0);
+        st->unk2058 = func_8002920C(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], text_get(id + 0x3A), 0, st->unk2058);
+        func_8002B5FC(r->x + 0x42, r->y + 6, 0x1C, text_get(9), 0);
         n = func_801F95E8(id);
         for (i = 0; i <= n; i++) {
             func_801F9518(r->x + 0x42 + i * 0x13, r->y + 0x16, 0x1C, i < st->unk4 ? i : 0xB, i >= st->unk4);
@@ -210,13 +210,13 @@ void func_801F84F0(void) {
     D_80077DE8.unk8 = NULL;
     func_80035580(0);
     if (D_801F9850.unk1 == 1) {
-        D_80077DE8.unk8 = func_80035774(D_801F9850.unk0 + 3);
+        D_80077DE8.unk8 = text_get(D_801F9850.unk0 + 3);
     } else if (D_801F9850.unk1 == 2) {
         idx = D_801F9850.unk10.unk5 + D_801F9850.unk10.unk6;
         if (D_801F9850.unk8 & (1 << idx)) {
-            func_8002BD54(D_801F9750, func_80035774(idx + 0x22));
+            func_8002BD54(D_801F9750, text_get(idx + 0x22));
             if (D_801F9850.unk4 <= func_801F95E8_inline(idx)) {
-                func_8002AD38(D_801F9750, func_80035774(5));
+                func_8002AD38(D_801F9750, text_get(5));
             }
             D_80077DE8.unk8 = D_801F9750;
         }
@@ -451,7 +451,7 @@ void func_801F9164(void) {
 
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1D, 2);
-    func_8002B5FC(r->x + 7, r->y + 6, 0x1C, func_80035774(0), 0);
+    func_8002B5FC(r->x + 7, r->y + 6, 0x1C, text_get(0), 0);
 }
 
 void func_801F91D8(void) {
@@ -463,7 +463,7 @@ void func_801F91D8(void) {
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1D, 2);
     for (i = 0, x = 0x2C; i < 2; i++, x += 0x60) {
-        func_8002B5FC(r->x + x, r->y + 6, 0x1C, func_80035774(i + 1), (D_801F96F0[i] != 0 && none) ? 2 : 0);
+        func_8002B5FC(r->x + x, r->y + 6, 0x1C, text_get(i + 1), (D_801F96F0[i] != 0 && none) ? 2 : 0);
     }
 }
 
@@ -509,7 +509,7 @@ void func_801F93FC(s32 col, s32 row, s32 id, MenuView *v) {
             icon = near ? 0xC : 0xE;
         }
         func_801F9518(x, y, 0x1C, icon, near == 0);
-        func_8002B5FC(x + 0x11, y, 0x1C, func_80035774(id + 0xA), near ? 0 : 2);
+        func_8002B5FC(x + 0x11, y, 0x1C, text_get(id + 0xA), near ? 0 : 2);
     }
 }
 

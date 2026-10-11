@@ -8800,7 +8800,7 @@ void func_800E9E10(void) {
     func_800F4630();
     func_800EBB34();
     func_800EC008();
-    func_8003575C(D_800A83AC);
+    text_setBank(D_800A83AC);
     VSyncCallback(NULL);
 }
 
@@ -9648,7 +9648,7 @@ void func_800EBD88(void) {
     s32 (*fn)(void);
     D_80104F90.unk4 = 0;
     if (g_gameState->unk1C->unk8E4.battle->unkD83 != 0) {
-        D_80104F90.unk4 = (s32)func_80035774(4);
+        D_80104F90.unk4 = (s32)text_get(4);
     } else {
         fn = D_800F8DC4[D_80104F88->unk12B4];
         if (fn != NULL) {
@@ -9930,7 +9930,7 @@ void func_800EC928(Window *arg0) {
     r.w = 0x3E;
     r.h = 0x11;
     r.y = y + 4;
-    func_80029058(r.x + dx, r.y + 2, arg0->unk18, func_80035774(D_800F8DE4[D_80104FC0.unk1]), 0);
+    func_80029058(r.x + dx, r.y + 2, arg0->unk18, text_get(D_800F8DE4[D_80104FC0.unk1]), 0);
     func_800ED02C(&r, arg0->unk18);
 }
 
@@ -10237,7 +10237,7 @@ void *func_800EDB88(void) {
     }
     e = &D_800FD56C[i];
     func_8002BD54(D_80104FA0, e->unk2 + D_800FD8CC);
-    func_8002AD38(D_80104FA0, func_80035774(0x19));
+    func_8002AD38(D_80104FA0, text_get(0x19));
     return D_80104FA0;
 }
 
@@ -10705,7 +10705,7 @@ void func_800EF0D8(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
         c = (res != 2) * 2;
         func_80029058(x + 6, y, 7, D_800F909C + a->unkE, c);
         if (a->unkA != 0) {
-            func_8002BAE4(func_800EF598((BtlCmd8 *)a), buf, 3, 1);
+            text_formatNumber(func_800EF598((BtlCmd8 *)a), buf, 3, 1);
             func_8002B56C(x + 0x60, y + 4, 7, buf, c);
         }
     }
@@ -10737,7 +10737,7 @@ void func_800EF228(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             y = r->y + arg1 * 15 + arg3->unk2 - dy;
             func_80026C34(x5, y, 7, id, 1);
             func_80029058(x + 0x14, y, 7, D_8006A218 + it->unk0, 0);
-            func_8002BAE4(n, buf, 2, 1);
+            text_formatNumber(n, buf, 2, 1);
             func_8002B56C(x + 0x67, y + 4, 7, buf, 0);
         }
     }
@@ -10763,7 +10763,7 @@ void func_800EF390(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
             x = r->x;
             it = &D_80069018[e->unk0];
             y = r->y + arg1 * 15 + arg3->unk2 - dy;
-            func_8002BAE4(n, buf, 2, 1);
+            text_formatNumber(n, buf, 2, 1);
             func_80029058(x + 5, y, 7, D_8006A218 + it->unk0, 0);
             func_8002B56C(x + 0x67, y + 4, 7, buf, 0);
         }
@@ -11342,7 +11342,7 @@ void *func_800F0F60(void) {
         if (t == NULL) {
             return NULL;
         }
-        func_8002BD54(D_80104FA0, func_80035774(D_80104FF2 + 5));
+        func_8002BD54(D_80104FA0, text_get(D_80104FF2 + 5));
         func_8002AD38(D_80104FA0, func_800CD78C(t));
     } else if ((u8)(D_80104FF0.unk2 - 3) < 3) {
         n = 0;
@@ -11357,15 +11357,15 @@ void *func_800F0F60(void) {
             if (t == NULL) {
                 return NULL;
             }
-            func_8002BD54(D_80104FA0, func_80035774(k + 0x13));
+            func_8002BD54(D_80104FA0, text_get(k + 0x13));
             func_8002AD38(D_80104FA0, func_800CD78C(t));
         } else {
-            func_8002BD54(D_80104FA0, func_80035774(k + 0x16));
+            func_8002BD54(D_80104FA0, text_get(k + 0x16));
         }
     } else {
-        func_8002BD54(D_80104FA0, func_80035774(D_80104FF0.unk2 + 5));
+        func_8002BD54(D_80104FA0, text_get(D_80104FF0.unk2 + 5));
     }
-    func_8002AD38(D_80104FA0, func_80035774(0x1A));
+    func_8002AD38(D_80104FA0, text_get(0x1A));
     return D_80104FA0;
 }
 
@@ -11716,8 +11716,8 @@ void func_800F1E84(Window *arg0) {
             c = ((u->unk3C & 0x200) != 0) * 4;
         }
         b[0] = 0x2F;
-        func_8002BAE4(u->unk28, a, 4, 1);
-        func_8002BAE4(u->unk24->unk0, b + 1, -1, 1);
+        text_formatNumber(u->unk28, a, 4, 1);
+        text_formatNumber(u->unk24->unk0, b + 1, -1, 1);
         func_8002B5B4(w->unk0 + 4, y, arg0->unk18, a, c);
         func_8002B5B4(w->unk0 + 0x20, y - dy, arg0->unk18, b, c);
         y += 12;
@@ -11738,9 +11738,9 @@ void func_800F1FBC(Window *arg0) {
             yy = y - dy;
             c = (u->unk2A < (s16)(u->unk24->unk2 / 6)) * 4;
             max[0] = 0x2F;
-            func_8002BAE4(u->unk2A, hp, 3, 1);
+            text_formatNumber(u->unk2A, hp, 3, 1);
             y += 0xC;
-            func_8002BAE4((s16)u->unk24->unk2, &max[1], -1, 1);
+            text_formatNumber((s16)u->unk24->unk2, &max[1], -1, 1);
             func_8002B5B4(w->unk0 + 4, yy, arg0->unk18, hp, c);
             func_8002B5B4(w->unk0 + 0x19, yy, arg0->unk18, max, c);
         }
@@ -12361,7 +12361,7 @@ void func_800F4180(void) {
 void func_800F41B8(BtlUnit *arg0, s32 arg1) {
     u8 buf[8];
     s32 dy = 6;
-    func_8002BAE4(arg0->unkB4->unk0[0].unk2, buf, 4, 1);
+    text_formatNumber(arg0->unkB4->unk0[0].unk2, buf, 4, 1);
     func_8002B5B4(0xD0, D_80105078->unk60 + (arg1 * 12 + dy), 0xE, buf, (u8)D_80105078->unk78[arg1]);
 }
 
@@ -12372,7 +12372,7 @@ void func_800F422C(BtlUnit *arg0, s32 arg1) {
     s32 dy = 6;
     mp = arg0->unkB4->unk0[1].unk2 < 0 ? 0 : arg0->unkB4->unk0[1].unk2;
     c = ((s16)(arg0->unk24->unk2 / 6) >= mp) << 2;
-    func_8002BAE4(mp, buf, 3, 1);
+    text_formatNumber(mp, buf, 3, 1);
     func_8002B5B4(0xEF, D_80105078->unk60 + (arg1 * 12 + dy), 0xE, buf, c);
 }
 

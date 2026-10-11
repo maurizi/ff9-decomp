@@ -41,7 +41,7 @@ void func_801F4198(void) {
     func_8002DEE4(&D_801FBC1C, 0x23, 2);
     func_8002705C(&D_801FBC1C, 0x23, 2);
     for (i = 0; i < D_801FC2D0.unk2; i++) {
-        func_8002B5FC(D_801FBC1C.x + 0xA, D_801FBC1C.y + 6 + i * 0xF, 0x1E, func_80035774(D_801FBC24[D_801FC2D0.unk0] + i), 0);
+        func_8002B5FC(D_801FBC1C.x + 0xA, D_801FBC1C.y + 6 + i * 0xF, 0x1E, text_get(D_801FBC24[D_801FC2D0.unk0] + i), 0);
     }
 }
 
@@ -89,7 +89,7 @@ void func_801F43F8(void) {
 }
 
 void func_801F442C(s32 i) {
-    D_801FC2D0.unk10 = (u8 *)func_800357C0(D_801F3C9C, i);
+    D_801FC2D0.unk10 = (u8 *)text_getFrom(D_801F3C9C, i);
 }
 
 s32 func_801F4458(void) {
@@ -126,7 +126,7 @@ void func_801F45E4(void) {
     D_801FC2D0.unk20 = 5;
     D_801FC2D0.unk4 = 0;
     func_801F442C(0xD);
-    func_8003575C(D_801F3C9C);
+    text_setBank(D_801F3C9C);
     func_8003556C(func_801F49C4);
     func_80028720(D_801EDF3C, 0xD);
     func_801F4A44();
@@ -152,7 +152,7 @@ void func_801F4720(void) {
 void func_801F4748(void) {
     func_8002DEE4(&D_801FBC0C, 5, 2);
     func_8002705C(&D_801FBC0C, 0x28, 2);
-    func_8002B5FC(D_801FBC0C.x + 0xA, D_801FBC0C.y + 6, 4, (u8 *)func_800357C0(D_801F3C9C, D_801FC2D0.unk0), 0);
+    func_8002B5FC(D_801FBC0C.x + 0xA, D_801FBC0C.y + 6, 4, (u8 *)text_getFrom(D_801F3C9C, D_801FC2D0.unk0), 0);
 }
 
 void func_801F47C8(void) {
@@ -177,7 +177,7 @@ void func_801F4854(void) {
     D_801FBBA0[D_801FC2D0.unk0][D_801FC2D0.unk1][2]();
     func_8002F9D0();
     func_8003556C(func_801F49C4);
-    func_8003575C(D_801F3C9C);
+    text_setBank(D_801F3C9C);
     func_801F442C(D_801FC2D0.unk4 != 0 ? 0xE : 0xD);
 }
 
@@ -206,7 +206,7 @@ void func_801F4960(void) {
 
 void func_801F49C4(void) {
     func_80035580(&D_801FBC28);
-    D_80077DE8.unk8 = func_80035774(D_801FBC30[D_801FC2D0.unk0] + D_801FC2D0.unk1);
+    D_80077DE8.unk8 = text_get(D_801FBC30[D_801FC2D0.unk0] + D_801FC2D0.unk1);
 }
 
 void func_801F4A14(void) {
@@ -249,7 +249,7 @@ void func_801F4B48(void) {
     setRECT(&D_801FC2F8.unk10, 8, 0x26, 0xB4, D_801FC2F8.unk4 ? 0x71 : 0xAD);
     setRECT(&D_801FC2F8.unk18, 8, 0x97, 0x12C, 0x45);
     setRECT(&D_801FC2F8.unk20, 0x62, 0x60, 0x7C, 0x45);
-    func_8003575C(D_801F3E98);
+    text_setBank(D_801F3E98);
     func_801F442C(0xF);
     func_8002EDFC(&D_801FC2F8.unk28, D_801FC2F8.unk1, D_801FC2F8.unk4 ? 7 : 0xB, 1, D_801FC2F8.unk10.h);
     func_801F4468();
@@ -314,15 +314,15 @@ void func_801F4E1C(void) {
     func_8002B524(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     func_8002DEE4(r, 0x23, 1);
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(r->x + 8, r->y + D_801FC050[i] - 4, 0x1E, func_800357C0(D_801F3C9C, D_801FC064[i]),
+        func_8002B5FC(r->x + 8, r->y + D_801FC050[i] - 4, 0x1E, text_getFrom(D_801F3C9C, D_801FC064[i]),
                       (D_801FC05C[i] | equip) ? 0 : 2);
     }
-    func_8002BAE4(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
     func_80063108(buf, D_801FC060);
     func_8002B56C(r->x + 0x39, r->y + D_801FC050[0], 0x1E, buf, 0);
-    func_8002BAE4(func_80027F34(id), buf, 2, 1);
+    text_formatNumber(func_80027F34(id), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC050[1], 0x1E, buf, 0);
-    func_8002BAE4(func_80027F94(id), buf, 2, 1);
+    text_formatNumber(func_80027F94(id), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC050[2], 0x1E, buf, equip ? 0 : 2);
 }
 
@@ -399,7 +399,7 @@ void func_801F51B8(void) {
             if (kind == 4) {
                 *(s32 *)buf = D_801F3FF8;
             } else {
-                func_8002BAE4(new, buf, 3, 1);
+                text_formatNumber(new, buf, 3, 1);
             }
             func_801F44F4(x - 1, y + 0x2E, 0x1E, D_801FC078[kind], 0);
             func_8002B56C(x + 0xC, y + 0x2F, 0x1E, buf, 0);
@@ -427,11 +427,11 @@ void func_801F551C(Window *w) {
     func_80026C34(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     func_8002B5FC(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
     func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, func_800357C0(D_801F3C9C, 0x19), 0);
-    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, func_800357C0(D_801F3C9C, 0x1A), 0);
-    func_8002BAE4(b->unk2, buf, 2, 1);
+    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(D_801F3C9C, 0x19), 0);
+    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(D_801F3C9C, 0x1A), 0);
+    text_formatNumber(b->unk2, buf, 2, 1);
     func_8002B56C(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
-    func_8002BAE4(b->unk2 * it->unk4, buf, 7, 1);
+    text_formatNumber(b->unk2 * it->unk4, buf, 7, 1);
     func_80063108(buf, D_801FC098);
     func_8002B56C(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
 }
@@ -587,7 +587,7 @@ void func_801F5BCC(s32 unused, s32 row, s32 idx, MenuView *v) {
     x = 0x18;
     y = 0x26;
     y = row * 15 + (v->unk2 + y);
-    func_8002BAE4(it->unk4, buf, 5, 1);
+    text_formatNumber(it->unk4, buf, 5, 1);
     func_80026C34(x, y, 0x1E, id, ok);
     func_8002B5FC(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, ok ? 0 : 2);
     func_8002B56C(x + 0x72, y + 4, 0x1E, buf, ok ? 0 : 2);
@@ -653,7 +653,7 @@ void func_801F5EEC(void) {
         id = D_801FC2F8.unk3C[l->unk5 + l->unk6];
         D_80077DE8.unk8 = D_801F87EC + D_80069018[id].unk2;
     } else if (D_801FC2F8.unk0 == 2) {
-        D_80077DE8.unk8 = func_80035774(3);
+        D_80077DE8.unk8 = text_get(3);
     }
 }
 
@@ -666,7 +666,7 @@ void func_801F5F88(void) {
     setRECT(&D_801FC338.unk10, 8, 0x26, 0xB4, D_801FC338.unk4 ? 0x71 : 0xAD);
     setRECT(&D_801FC338.unk18, 8, 0x97, 0x12C, 0x45);
     setRECT(&D_801FC338.unk20, 0x62, 0x60, 0x7C, 0x45);
-    func_8003575C(D_801F3F08);
+    text_setBank(D_801F3F08);
     func_801F442C(0x11);
     func_8002EDFC(&D_801FC338.unk28, D_801FC338.unk1, D_801FC338.unk4 ? 7 : 0xB, 1, D_801FC338.unk10.h);
     func_801F4468();
@@ -734,15 +734,15 @@ void func_801F625C(void) {
     func_8002DEE4(r, 0x23, 1);
     func_8002B524(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     for (i = 0; i < 4; i++) {
-        func_8002B5FC(r->x + 8, r->y + D_801FC0A8[i] - 4, 0x1E, func_800357C0(D_801F3C9C, D_801FC0C0[i]),
+        func_8002B5FC(r->x + 8, r->y + D_801FC0A8[i] - 4, 0x1E, text_getFrom(D_801F3C9C, D_801FC0C0[i]),
                       (D_801FC0B8[i] | equip) ? 0 : 2);
     }
-    func_8002BAE4(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
     func_80063108(buf, D_801FC0BC);
     func_8002B56C(r->x + 0x39, r->y + D_801FC0A8[0], 0x1E, buf, 0);
-    func_8002BAE4(func_80027F34(s->unk4), buf, 2, 1);
+    text_formatNumber(func_80027F34(s->unk4), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[1], 0x1E, buf, 0);
-    func_8002BAE4(func_80027F94(s->unk4), buf, 2, 1);
+    text_formatNumber(func_80027F94(s->unk4), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[2], 0x1E, buf, equip ? 0 : 2);
     for (i = 0; i < 2; i++) {
         if (s->unk2[i] != 0xFF) {
@@ -832,7 +832,7 @@ void func_801F6714(void) {
             if (kind == 4) {
                 *(s32 *)buf = D_801F3FFC;
             } else {
-                func_8002BAE4(new, buf, 3, 1);
+                text_formatNumber(new, buf, 3, 1);
             }
             func_801F44F4(x - 1, y + 0x2E, 0x1E, D_801FC0D8[kind], 0);
             func_8002B56C(x + 0xC, y + 0x2F, 0x1E, buf, 0);
@@ -861,12 +861,12 @@ void func_801F6A7C(Window *w) {
     func_80026C34(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     func_8002B5FC(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
     func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, func_800357C0(D_801F3C9C, 0x19), 0);
-    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, func_800357C0(D_801F3C9C, 0x1A), 0);
+    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(D_801F3C9C, 0x19), 0);
+    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(D_801F3C9C, 0x1A), 0);
     s = &D_801FC338;
-    func_8002BAE4(s->unk2, buf, 2, 1);
+    text_formatNumber(s->unk2, buf, 2, 1);
     func_8002B56C(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
-    func_8002BAE4(s->unk2 * r->unk0, buf, 7, 1);
+    text_formatNumber(s->unk2 * r->unk0, buf, 7, 1);
     func_80063108(buf, D_801FC0F8);
     func_8002B56C(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
 }
@@ -929,7 +929,7 @@ loop:
     if (i < 2) {
         goto loop;
     }
-    func_8002BAE4(r->unk0, buf, 5, k);
+    text_formatNumber(r->unk0, buf, 5, k);
     id = ok;
     func_80026C34(x, y, 0x1E, r->unk4, id);
     func_8002B5FC(x + 0x10, y, 0x1E, D_8006A218 + it->unk0, id ? 0 : 2);
@@ -1108,13 +1108,13 @@ void func_801F76C8(void) {
         id = D_801FC338.unk3C[l->unk5 + l->unk6].unk4;
         D_80077DE8.unk8 = D_801F87EC + D_80069018[id].unk2;
     } else if (D_801FC338.unk0 == 2) {
-        D_80077DE8.unk8 = func_80035774(4);
+        D_80077DE8.unk8 = text_get(4);
     }
 }
 
 void func_801F7770(void) {
     D_801FC438.unk0 = 1;
-    func_8003575C(D_801F3F88);
+    text_setBank(D_801F3F88);
     func_801F442C(0x10);
     func_80035580(NULL);
     func_8003556C(func_801F8728);
@@ -1214,12 +1214,12 @@ void func_801F7BC4(Window *w) {
     func_80026C34(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     func_8002B5FC(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
     func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, func_800357C0(D_801F3C9C, 0x19), 0);
-    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, func_800357C0(D_801F3C9C, 0x1A), 0);
+    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(D_801F3C9C, 0x19), 0);
+    func_8002B5FC(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(D_801F3C9C, 0x1A), 0);
     m = &D_801FC438;
-    func_8002BAE4(m->unk1, buf, 2, 1);
+    text_formatNumber(m->unk1, buf, 2, 1);
     func_8002B56C(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
-    func_8002BAE4(m->unk1 * price, buf, 7, 1);
+    text_formatNumber(m->unk1 * price, buf, 7, 1);
     func_80063108(buf, D_801FC28C);
     func_8002B56C(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
 }
@@ -1237,16 +1237,16 @@ void func_801F7DA8(Window *w) {
     e = &g_gameState->unk1C->unk574.unk0[(l->unk5 + l->unk6) * 2 + l->unk7];
     equip = (D_80069018[e->unk0].unkF & 0xF8) != 0;
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(r->x + 0xC, r->y + D_801FC290[i] - 4, w->unk18, func_800357C0(D_801F3C9C, D_801FC2A4[i]),
+        func_8002B5FC(r->x + 0xC, r->y + D_801FC290[i] - 4, w->unk18, text_getFrom(D_801F3C9C, D_801FC2A4[i]),
                       (D_801FC29C[i] | equip) ? 0 : 2);
     }
-    func_8002BAE4(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
     func_80063108(buf, D_801FC2A0);
     func_8002B56C(r->x + 0x39, r->y + D_801FC290[0], w->unk18, buf, 0);
-    func_8002BAE4(func_80027F34(e->unk0), buf, 2, 1);
+    text_formatNumber(func_80027F34(e->unk0), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC290[1], w->unk18, buf, 0);
     if (equip) {
-        func_8002BAE4(func_80027F94(e->unk0), buf, 2, 1);
+        text_formatNumber(func_80027F94(e->unk0), buf, 2, 1);
         func_8002B56C(r->x + 0x5C, r->y + D_801FC290[2], w->unk18, buf, 0);
     }
 }
@@ -1400,7 +1400,7 @@ void func_801F856C(s32 col, s32 row, s32 i, MenuView *v) {
         it = &D_80069018[p->unk0];
         x = col * 0x96;
         y = v->unk2 + (row * 0xF + k);
-        func_8002BAE4(p->unk1, buf, 2, 1);
+        text_formatNumber(p->unk1, buf, 2, 1);
         func_8002B5FC(x + 0x28, y, 0x1E, D_8006A218 + it->unk0, 0);
         func_80026C34(x + 0x18, y, 0x1E, p->unk0, 1);
         func_8002B56C(x + 0x84, y + 4, 0x1E, buf, 0);
@@ -1444,7 +1444,7 @@ void func_801F8728(void) {
         }
         text = D_801F87EC + D_80069018[p->unk0].unk2;
     } else if (D_801FC438.unk0 == 2) {
-        text = func_80035774(3);
+        text = text_get(3);
     } else {
         return;
     }
