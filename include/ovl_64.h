@@ -359,4 +359,24 @@ s32 func_8019CCBC(u8 *data);
 u32 func_8019D3F0(u16 *p);
 void func_80199554(void);
 
+/* func_8019C434: the two cross-jumped timeout blocks (one inline, called twice) */
+void func_80022F64(s32); /* main exe */
+s32 DecDCToutSync(s32);
+extern s32 D_801A07F0[];
+extern s32 D_801A06F0[];
+static inline void func_8019C434_retry(void) {
+    s32 limit;
+
+    limit = 0xB4;
+    if (D_8019DE10.unk58 == 1) {
+        limit = 0x438;
+    }
+    if (VSync(-1) - D_8019DE10.unk14 < limit) {
+        func_80022F64(D_8019DE10.unk44);
+    } else {
+        D_8019DE10.unk2 = 2;
+        func_80023018();
+    }
+}
+
 #endif
