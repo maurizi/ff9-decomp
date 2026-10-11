@@ -284,6 +284,14 @@ typedef struct BtlUnit9C {
     s16 unk78;
 } BtlUnit9C;
 
+/* GameData.unk8E0 entry as func_800AB810 fills it (ff9.h's Unk8E0 has pad4) */
+typedef struct {
+    s32 unk0; /* flags */
+    s32 unk4; /* model id */
+    BtlUnit9C *unk8;
+    s32 unkC;
+} Unk8E0Ld;
+
 typedef struct BtlUnit98 {
     s32 unk0[3];
 } BtlUnit98;
