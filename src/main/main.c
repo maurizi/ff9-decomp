@@ -1465,7 +1465,120 @@ void func_8001DCB8(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001DE50);
+void func_8001DE50(void) {
+    GameState *gs;
+    u8 *buf;
+    DirInfo *dir;
+    s32 base;
+    s32 size;
+    s32 cnt;
+    s32 t;
+    u8 *top;
+    u8 *data;
+    u8 *list8;
+    u8 *list11;
+    Unk8001DE50 *s;
+    Unk8001DE50 *e;
+    Unk8001DE50b *dst;
+    u16 key;
+    s32 key2; /* s32, unlike key: no zero_extend in the second inner loop, so loop.c can still hoist the constant 2 */
+
+    gs = D_8006794C;
+    if (!(gs->unk0 & 0x100000)) {
+        return;
+    }
+    cnt = 0;
+    buf = D_80067944 + 0x14C700;
+    size = (((DirInfo *)gs->unk14)[13].unk8 << 11) + ((DirInfo *)gs->unk14)[13].unk4 * 2;
+    base = ((DirInfo *)gs->unk14)[0].unk8;
+    t = size & 0x800;
+    if (t != 0) {
+        size += 0x800 - t;
+    }
+
+    func_80022C60(gs->unk20, size, buf, NULL);
+    while (func_80022B18() != 0) {
+    }
+    dir = (DirInfo *)(buf + 0x10);
+    buf += base << 11;
+    do { } while (0); /* empty macro residue: ends cse1's block so the data copy below is kept */
+
+    size = (dir[0].unk4 + 1) * 8;
+    /* data == buf; the redundant +/- keeps CSE from folding the copy (the
+       original passes a copy of buf in s0 to the first two memmoves) */
+    data = buf + (base << 11) - (base << 11);
+    top = (u8 *)D_8006794C - size;
+    gs->unk18[0] = top;
+    memmove(gs->unk18[0], data, size);
+
+    size = (dir[1].unk4 + 1) * 8;
+    top -= size;
+    gs->unk18[1] = top;
+    memmove(gs->unk18[1], data + ((dir[1].unk8 - base) << 11), size);
+
+    size = (dir[10].unk4 + 1) * 8;
+    top -= size;
+    gs->unk18[10] = top;
+    memmove(gs->unk18[10], buf + ((dir[10].unk8 - base) << 11), size);
+
+    size = (dir[8].unk4 + 1) * 8;
+    top -= size;
+    gs->unk18[8] = top;
+    memmove(gs->unk18[8], buf + ((((DirInfo *)gs->unk14)[8].unk8 - base) << 11), size);
+
+    list8 = buf + ((dir[8].unk8 - base) << 11);
+    s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
+    list11 = buf + ((dir[11].unk8 - base) << 11);
+    do {
+        key = s->unk2;
+        e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
+        do {
+            if (e->unk0 == key) {
+                if (e->unk2 == 0) {
+                    e->unk2 = 1;
+                    cnt++;
+                }
+                break;
+            }
+            e--;
+        } while ((u8 *)e >= list11);
+        s--;
+    } while ((u8 *)s >= list8);
+    size = cnt * 0x10;
+    top -= size;
+    gs->unk18[11] = top;
+    s = (Unk8001DE50 *)(list8 + dir[8].unk4 * 8) - 1;
+    dst = gs->unk18[11];
+    do {
+        key2 = s->unk2;
+        e = (Unk8001DE50 *)(list11 + dir[11].unk4 * 8) - 1;
+        do {
+            if (e->unk0 == key2) {
+                if (e->unk2 == 1) {
+                    memmove(dst, e, 0x10);
+                    dst->unk8 = 0xFFFF;
+                    dst++;
+                    e->unk2 = 2;
+                }
+                break;
+            }
+            e--;
+        } while ((u8 *)e >= list11);
+        s--;
+    } while ((u8 *)s >= list8);
+    ((DirInfo *)gs->unk14)[11].unk4 = cnt * 2;
+
+    size = (dir[12].unk4 + 1) * 8;
+    top -= size;
+    gs->unk18[12] = top;
+    memmove(gs->unk18[12], buf + ((dir[12].unk8 - base) << 11), size);
+
+    size = dir[13].unk4 * 2;
+    top -= size;
+    gs->unk18[13] = top;
+    memmove(gs->unk18[13], buf + ((dir[13].unk8 - base) << 11), size);
+    gs->unk0 &= ~0x100000;
+}
 
 FileEntry *func_8001E218(s32 a, s32 id) {
     FileDirEntry *d = (FileDirEntry *)D_8006794C->unk14 + a;

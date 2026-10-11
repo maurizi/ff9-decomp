@@ -3220,6 +3220,21 @@ typedef struct {
     s32 unkC;
 } DirInfo;
 
+/* func_8001DE50: 8-byte entries of directory lists 8 and 11 */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+} Unk8001DE50;
+
+/* func_8001DE50: 16-byte records copied out of directory list 11 */
+typedef struct {
+    u8 pad0[8];
+    u16 unk8;
+    u8 padA[6];
+} Unk8001DE50b;
+
 /* 8-byte file directory entry (GameState.unk18 tables) */
 typedef struct {
     u16 unk0; /* id */
