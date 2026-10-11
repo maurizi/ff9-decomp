@@ -19,4 +19,27 @@
 #define gte_dpcl() __asm__ volatile(GTE_NOPS ".word\t0x4A680029")
 #endif
 
+#ifndef gte_lddp
+#define gte_lddp(v) __asm__ volatile("mtc2\t%0, $8" : : "r"(v))
+#endif
+#ifndef gte_nct
+#define gte_nct() __asm__ volatile(GTE_NOPS ".word\t0x4AD80420")
+#endif
+#ifndef gte_dpcs
+#define gte_dpcs() __asm__ volatile(GTE_NOPS ".word\t0x4A780010")
+#endif
+/* RGB FIFO (RGB0-RGB2) to three words at r0. */
+#ifndef gte_strgb3
+#define gte_strgb3(r0) __asm__ volatile( \
+    "swc2\t$20, 0(%0);" \
+    "swc2\t$21, 4(%0);" \
+    "swc2\t$22, 8(%0)" \
+    : : "r"(r0) : "memory")
+#endif
+
+/* The 1 KB scratchpad RAM. */
+#ifndef SCRATCHPAD
+#define SCRATCHPAD ((u8 *)0x1F800000)
+#endif
+
 #endif
