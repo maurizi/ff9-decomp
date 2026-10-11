@@ -269,3 +269,10 @@ Format:
 - src_equiv/main/math_rand.c's rand_refill, applied to the 0x20C table bytes captured the frame before a refill in
   `field_burmecia_vault`, gives exactly the bytes after it (0 of 0x20C differ, the 3 bytes past the table included).
 - names: math_sin, math_cos, g_sinTable.
+
+## Equivalence checks for src_equiv/main/script_text.c  (status: applied)
+- Redux disc 1, `field_burmecia_vault`, holding a direction: broke at the entry of func_80052F24, func_80052EC0,
+  func_80052DEC and func_80053124 (keeping only stops where pc == entry, then pc == the return address), recorded
+  a0-a3 and v0, and for func_80053124 the polygon bytes. Replaying them through the src_equiv C on the host:
+  85 math samples and 29 polygon samples, 0 differences. (All polygon samples were "outside"; an "inside" case is
+  still to capture.)
