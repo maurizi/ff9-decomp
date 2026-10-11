@@ -1093,7 +1093,56 @@ u32 func_800AAEF0(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
     return best;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800AB07C);
+s32 func_800AB07C(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s32 arg3) {
+    s32 sp18;
+    s32 dst;
+    Unk800AA504Tbl *tbl;
+    Unk800AA504Ent *te;
+    s32 n;
+    Unk800AA504Pos *a;
+    Unk800AA504Pos *b;
+    Unk800AA504Pos8 *r;
+    s32 x;
+    s32 y;
+    s32 yy;
+    s32 h;
+    s32 m;
+
+    sp18 = func_8001C8B0(arg0->unk24, 2, 0x1B0000, 0);
+    dst = arg1->unkC;
+    tbl = (Unk800AA504Tbl *)func_8001C8B0(sp18, 2, 0x120000, 0);
+    te = tbl->unk4;
+    n = te->unk4.b[3];
+    a = (Unk800AA504Pos *)((u8 *)te + (te->unk4.w & 0xFFFFFF));
+    b = a + n;
+    r = (Unk800AA504Pos8 *)(b + n);
+    if (n > 0) {
+        do {
+            n--;
+            x = arg2 * 64 + 0xC0;
+            y = arg2 * 3;
+            m = func_8001C8B0(dst, 2, (n & 0xFFFF) | 0x40000, 0);
+            if (arg3) {
+                yy = y + 0xE5 + r[n].unk2;
+                h = (r[n].unk2 << 7) + 0x80;
+            } else {
+                yy = y + 0xE8;
+                h = 0x1D0;
+            }
+            func_8001D9CC(m, 0x100, yy, x, h);
+            func_8001D8A8(m);
+            a[n].unk0 = getTPage(1, 0, x, h);
+            a[n].unk2 = getClut(0x100, yy);
+            b[n].unk0 = 0;
+            b[n].unk2 = h % 256 - h % 128;
+            r[n].unk4 = x;
+            r[n].unk0 = x;
+            r[n].unk6 = h;
+            r[n].unk2 = h;
+        } while (n > 0);
+    }
+    return sp18;
+}
 
 s32 func_800AB26C(void **arg0, s32 arg1) {
     void **p = &arg0[arg1];
