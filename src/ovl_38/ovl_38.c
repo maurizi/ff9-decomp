@@ -65,11 +65,11 @@ void func_801EE650(void) {
     s16 y;
 
     w = &D_801F120C.unk8;
-    c = g_gameState->unk1C->unk54C[D_801F120C.unk2];
+    c = g_gameState->unk1C->party[D_801F120C.unk2];
     x = w->x + 0x72;
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
-    func_800273C0(x + 0x19, y + 0x14, 0x1E, c->unk17, c->unk1F);
+    func_800273C0(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
     func_80024428(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
     func_80026FC4(r.x + 4, r.y + 4, 0x1D, c->unk38, 0);
     func_8002DEE4(&r, 0x1D, 0);
@@ -88,7 +88,7 @@ void func_801EE740(void) {
     StatusEntry *tp;
 
     w = &D_801F120C.unk8;
-    c = g_gameState->unk1C->unk54C[D_801F120C.unk2];
+    c = g_gameState->unk1C->party[D_801F120C.unk2];
     t = D_801EDF04;
     pool = D_801EE144;
     r.w = 0x42;
@@ -119,7 +119,7 @@ void func_801EE9E8(void) {
 
     m = &D_801F120C;
     r = &m->unk8;
-    c = g_gameState->unk1C->unk54C[m->unk2];
+    c = g_gameState->unk1C->party[m->unk2];
     y = 0x3D;
     for (i = 0; i < 4; i++) {
         D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(D_801EFBE0[i]), 0, D_801F120C.unk7C);
@@ -159,7 +159,7 @@ void func_801EED18(void) {
 
     r = &D_801F120C.unk8;
     st = &D_801F120C;
-    c = g_gameState->unk1C->unk54C[st->unk2];
+    c = g_gameState->unk1C->party[st->unk2];
     show = 0;
     if (D_8007AF00 != 0) {
         bit = c->unkA & 0x10;
@@ -171,14 +171,14 @@ void func_801EED18(void) {
     }
     func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, text_get(0xC), 0);
     func_8002B5FC(r->x + 0x74, r->y + 0x53, 0x1D, text_get(0xD), 0);
-    text_formatNumber(c->unkC, buf, 7, 1);
+    text_formatNumber(c->exp, buf, 7, 1);
     func_8002B56C(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
-    if (c->unkB >= 99) {
-        next = c->unkC;
+    if (c->level >= 99) {
+        next = c->exp;
     } else {
-        next = D_8006DF5C[c->unkB];
+        next = g_levelExp[c->level];
     }
-    text_formatNumber(next - c->unkC, buf, 6, 1);
+    text_formatNumber(next - c->exp, buf, 6, 1);
     func_8002B56C(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
 }
 
@@ -199,7 +199,7 @@ void func_801EEF00(void) {
     u8 buf[8];
 
     st = &D_801F120C;
-    c = g_gameState->unk1C->unk54C[st->unk2];
+    c = g_gameState->unk1C->party[st->unk2];
     for (i = 0; i < 5; i++) {
         D_801F120C.unk7C = func_80027834(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
         D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, D_801F120C.unk7C);
@@ -251,7 +251,7 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     ActiveAbility *a;
     Unk8006D128 *sup;
 
-    c = g_gameState->unk1C->unk54C[D_801F120C.unk2];
+    c = g_gameState->unk1C->party[D_801F120C.unk2];
     ok = func_80034A30(c);
     if (ok && c->unk58[i] == 0) {
         return;
@@ -308,7 +308,7 @@ void func_801EF568(s32 slot, s32 dir) {
     Character *c;
     s32 i;
 
-    c = g_gameState->unk1C->unk54C[slot];
+    c = g_gameState->unk1C->party[slot];
     func_80028D08(&D_801F120C.unk8C, D_801F120C.unk2, slot, dir);
     if (dir != 0) {
         D_801F120C.unk0 = 3;

@@ -10614,16 +10614,16 @@ void func_800CB8C8(s32 arg0, s32 arg1) {
     Character *t;
 
     if (arg0 == arg1) {
-        c = g_gameState->unk1C->unk54C[arg1];
+        c = g_gameState->unk1C->party[arg1];
         if (c != NULL) {
             c->unk34.b.unk9 ^= 1;
         }
     } else {
-        t = g_gameState->unk1C->unk54C[D_800D5438.unk2];
-        g_gameState->unk1C->unk54C[D_800D5438.unk2] = g_gameState->unk1C->unk54C[D_800D5438.unk3];
-        g_gameState->unk1C->unk54C[D_800D5438.unk3] = t;
+        t = g_gameState->unk1C->party[D_800D5438.unk2];
+        g_gameState->unk1C->party[D_800D5438.unk2] = g_gameState->unk1C->party[D_800D5438.unk3];
+        g_gameState->unk1C->party[D_800D5438.unk3] = t;
         func_800CB9D8(arg0, arg1);
-        if (g_gameState->unk1C->unk54C[D_80077E50.unk3] == NULL) {
+        if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
             D_80077E50.unk3 = func_8003378C();
         }
     }
@@ -10671,36 +10671,36 @@ void func_800CBB4C(s32 arg0) {
     s32 color;
     s16 maxmp;
 
-    c = g_gameState->unk1C->unk54C[arg0];
+    c = g_gameState->unk1C->party[arg0];
     r = &D_800D5438.unk8[arg0].unk4;
     x = r->x + 8;
     if (!c->unk34.b.unk9) {
         x = r->x + 0x16;
     }
-    func_800283E0(x, r->y + 1, 0x14, arg0, 0x2D, c->unk10 == 0);
+    func_800283E0(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
     func_8002B5FC(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
     func_80026FC4(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
-    text_formatNumber(c->unkB, buf, 2, 1);
+    text_formatNumber(c->level, buf, 2, 1);
     func_800275DC(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
     func_8002B56C(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
     func_800275DC(r->x + 0x3C, r->y + 0x1B, 0x14, 0xAF, 0);
-    text_formatNumber(c->unk10, buf, 4, 1);
+    text_formatNumber(c->hp, buf, 4, 1);
     buf[4] = 0x2F;
-    if (c->unk10 != 0) {
-        color = ((u16)(c->unk18 / 6) >= c->unk10) * 4;
+    if (c->hp != 0) {
+        color = ((u16)(c->maxHp / 6) >= c->hp) * 4;
     } else {
         color = 3;
     }
-    text_formatNumber(c->unk18, &buf[5], -1, 1);
+    text_formatNumber(c->maxHp, &buf[5], -1, 1);
     func_8002B56C(r->x + 0x52, r->y + 0x1B, 0x14, buf, color);
     func_800275DC(r->x + 0x3C, r->y + 0x24, 0x14, 0xB0, 0);
-    text_formatNumber(c->unk12, buf, 3, 1);
+    text_formatNumber(c->mp, buf, 3, 1);
     buf[3] = 0x2F;
-    maxmp = c->unk1A;
-    color = ((s16)(maxmp / 6) >= c->unk12) * 4;
+    maxmp = c->maxMp;
+    color = ((s16)(maxmp / 6) >= c->mp) * 4;
     text_formatNumber(maxmp, &buf[4], -1, 1);
     func_8002B56C(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
-    func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->unk17, c->unk1F);
+    func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
 }
 
 void func_800CBDF8(RECT *r, s32 otz) {
@@ -10808,16 +10808,16 @@ void func_800CC3E0(s32 arg0) {
     Character *c;
     u32 next;
 
-    c = g_gameState->unk1C->unk54C[D_80077E53];
+    c = g_gameState->unk1C->party[D_80077E53];
     if (c != NULL) {
-        if (c->unkB >= 99) {
-            next = c->unkC;
+        if (c->level >= 99) {
+            next = c->exp;
         } else {
-            next = D_8006DF5C[c->unkB];
+            next = g_levelExp[c->level];
         }
         func_8002BE44(0, c->unk0);
-        text_formatNumber(c->unkC, D_800D5418, 7, 1);
-        text_formatNumber(next - c->unkC, D_800D5428, 7, 1);
+        text_formatNumber(c->exp, D_800D5418, 7, 1);
+        text_formatNumber(next - c->exp, D_800D5428, 7, 1);
         func_8002BE44(1, D_800CE06C);
         func_8002BE44(2, D_800D5418);
         func_8002BE44(3, D_800CE070);
@@ -10855,7 +10855,7 @@ void func_800CC5D8(u8 arg0) {
 
     i = 0;
     j = 5;
-    c = g_gameState->unk1C->unk54C[D_80077E53];
+    c = g_gameState->unk1C->party[D_80077E53];
     do {
         func_8002BE44(i, D_800CE058[i]);
         id = c->unk39[i];
@@ -10888,7 +10888,7 @@ void func_800CC6E4(void) {
     func_80035580(&r);
     func_8003556C(func_800CC324);
     func_80035674(1);
-    if (g_gameState->unk1C->unk54C[D_80077E50.unk3] == NULL) {
+    if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
         D_80077E50.unk3 = func_8003378C();
     }
 }
@@ -10950,7 +10950,7 @@ void func_800CC940(void) {
         r.w = 0x72;
         r.h = 0x12;
         r.y = y;
-        if (g_gameState->unk1C->unk54C[i] != NULL) {
+        if (g_gameState->unk1C->party[i] != NULL) {
             func_800CBB4C(i);
         }
         func_800CBDF8(p, 0x14);

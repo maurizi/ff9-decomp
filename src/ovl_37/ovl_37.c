@@ -204,7 +204,7 @@ void func_801F1778(void) {
     m = &D_801FAB78;
     m->unk2 = 0;
 loop:
-    if (gs->unk1C->unk54C[m->unk2] == NULL) {
+    if (gs->unk1C->party[m->unk2] == NULL) {
         if (++m->unk2 < 4) {
             goto loop;
         }
@@ -523,7 +523,7 @@ void func_801F2590(s32 id) {
 
     i = id - 0xE0;
     e = &D_8006B1F4[i];
-    c = g_gameState->unk1C->unk54C[D_801FAB78.unk2];
+    c = g_gameState->unk1C->party[D_801FAB78.unk2];
     if (func_800654F8(c, c, e, e->unk4, 0)) {
         snd_playSe(0x6A);
         func_80027E5C(id, 1);
@@ -568,7 +568,7 @@ void func_801F27A0(void) {
 
     if (D_801FAB78.unk8 != 0) {
         for (i = 0; i < 4; i++) {
-            if (g_gameState->unk1C->unk54C[i] != NULL) {
+            if (g_gameState->unk1C->party[i] != NULL) {
                 func_80026EA0(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, D_801FAB78.unk4);
             }
         }

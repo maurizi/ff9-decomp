@@ -373,7 +373,7 @@ void func_800C9A28(void) {
     b = g_gameState->unk1C->unk8E4.battle;
     flags = &b->unk132C.unk0;
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->unk54C[i] != NULL) {
+        if (g_gameState->unk1C->party[i] != NULL) {
             n++;
         }
     }
@@ -386,7 +386,7 @@ void func_800C9A28(void) {
             return;
         }
         m = u->unk68 & ~0x300;
-        m |= (g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.w >> 1) & 0x100;
+        m |= (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 1) & 0x100;
         u->unk68 = m;
         if (!(*flags & 3)) {
             u->unk68 = (u->unk68 & ~0x300) | ((((u->unk68 >> 8) & 3) ^ 1) << 8);
@@ -414,7 +414,7 @@ void func_800C9A28(void) {
         u->unkA0->unk24 = 0;
         u->unk86[2] = 0;
         tbl = D_800F57F0;
-        e = &tbl[g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+        e = &tbl[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
         u->unkBD = e->unk0;
         u->unkBE = e->unk1;
         func_800C23C8(u, e->unk2, e->unk3);
@@ -1593,9 +1593,9 @@ void func_800CCDB8(Unk800CCD00 *arg0) {
         sn = func_8004BB80(u->unk86[1]);
         cs = func_8004BB7C(u->unk86[1]);
         if (u->unk68 & 1) {
-            bone = D_800F6B48[g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
-            ty = D_800F6BBC[g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
-            tz = D_800F6C30[g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+            bone = D_800F6B48[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+            ty = D_800F6BBC[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
+            tz = D_800F6C30[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
         } else {
             Battle4880 *m = g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0;
             bone = m->unk32;
@@ -1666,8 +1666,8 @@ void func_800CD210(Unk800CCD00 *arg0) {
             continue;
         }
         if (u->unk68 & 1) {
-            bone = D_800F6B48[g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4][5];
-            y = (s8)D_800F6BBC[g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4][5];
+            bone = D_800F6B48[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4][5];
+            y = (s8)D_800F6BBC[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4][5];
         } else {
             m = g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0;
             bone = m->unk32[5];
@@ -1779,7 +1779,7 @@ void *func_800CD78C(BtlUnit *arg0) {
         b = g_gameState->unk1C->unk8E4.battle;
         return b->unk11C0->unk14 + b->unk488[(f >> 1) & 0xF].unk0->unk0;
     }
-    return &g_gameState->unk1C->unk3C[(f >> 1) & 0xF];
+    return &g_gameState->unk1C->characters[(f >> 1) & 0xF];
 }
 
 void func_800CD808(s32 arg0) {

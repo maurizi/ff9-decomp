@@ -66,22 +66,22 @@ typedef union {
     } b;
 } CharBits;
 
-/* Character record: 9 of them at GameData+0x3C; GameData.unk54C[] points at
- * the party members. */
+/* Character record: GameData.characters[9]; GameData.party[] points at the party members. Field names checked
+ * against the main menu at runtime (docs/runtime-findings.md). */
 typedef struct {
     u8 unk0[0xA]; /* name: 0xFF-terminated text, read up to 7 chars */
     u8 unkA;      /* bit 4 tested */
-    u8 unkB;      /* level (exp table has 99 entries) */
-    u32 unkC;     /* exp, capped at 9999999 */
-    u16 unk10;    /* hp */
-    s16 unk12;    /* mp */
+    u8 level;
+    u32 exp;      /* capped at 9999999 */
+    u16 hp;
+    s16 mp;
     u8 pad14[0x16 - 0x14];
     u8 unk16;
-    u8 unk17;
-    u16 unk18;    /* max hp */
-    s16 unk1A;    /* max mp */
+    u8 stones;    /* magic stones left */
+    u16 maxHp;
+    s16 maxMp;
     u8 pad1C[0x1F - 0x1C];
-    u8 unk1F;
+    u8 maxStones;
     u8 unk20;
     u8 unk21;
     u8 pad22[0x24 - 0x22];
@@ -238,8 +238,8 @@ typedef struct {
     u8 unk38;
     u8 unk39;
     u16 unk3A;
-    Character unk3C[9];
-    Character *unk54C[4]; /* party */
+    Character characters[9];
+    Character *party[4];
     u16 unk55C;
     u16 unk55E;
     u32 gil; /* capped at 9999999 (runtime: menu shows this value) */
@@ -1752,7 +1752,7 @@ extern Unk800703FC D_800703FC;
 
 extern u8 *D_80067944; /* end of load area */
 extern s32 D_80067948;
-extern u32 D_8006DF5C[]; /* exp needed for next level, by level */
+extern u32 g_levelExp[]; /* exp needed for next level, by level */
 extern s32 D_80070424;
 extern s32 D_80070428;
 extern s32 D_80070450;
@@ -2486,7 +2486,7 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
     if (ch >= 9) {
         return -1;
     }
-    row = ((g_gameState->unk1C->unk3C + ch)->unk34.w >> 12) & 0x1F;
+    row = ((g_gameState->unk1C->characters + ch)->unk34.w >> 12) & 0x1F;
     if (row >= 16) {
         return -1;
     }
@@ -2927,13 +2927,13 @@ static inline s32 func_80034430_ap_inline(s32 ch, s32 id) {
     if (i < 0) {
         return -1;
     }
-    return g_gameState->unk1C->unk3C[ch].unk58[i];
+    return g_gameState->unk1C->characters[ch].unk58[i];
 }
 
 /* AP needed to master ability id (inlined form of func_800347D8). */
 static inline s32 func_800347D8_inline(s32 ch, s32 id) {
     s32 i = func_80034430_inline(ch, id);
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     if (i < 0) {
         return 0;
     }
@@ -3103,8 +3103,8 @@ static inline void func_8003384C_inline(Character *c) {
     Unk80032E84Out out;
 
     in.unk0 = *(Bytes8 *)&c->unk2C;
-    in.unk10 = c->unk10;
-    in.unk12 = c->unk12;
+    in.unk10 = c->hp;
+    in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->unk39;
     func_80032E84(&in, &out);
@@ -3116,10 +3116,10 @@ static inline void func_8003384C_inline(Character *c) {
     c->unk29 = out.unkC[2];
     c->unk2A = out.unkC[3];
     c->unk2B = out.unkC[4];
-    c->unk10 = out.unk0;
-    c->unk12 = out.unk2;
-    c->unk18 = out.unk4;
-    c->unk1A = out.unk6;
+    c->hp = out.unk0;
+    c->mp = out.unk2;
+    c->maxHp = out.unk4;
+    c->maxMp = out.unk6;
 }
 extern void (*D_8006BD28[])(Unk80077C78 *, s32);
 extern s32 D_8007BBD4;
@@ -4065,7 +4065,7 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
     s32 ge;
     s32 lt;
 
-    for (p = g_gameState->unk1C->unk54C; p < &g_gameState->unk1C->unk54C[4]; p++) {
+    for (p = g_gameState->unk1C->party; p < &g_gameState->unk1C->party[4]; p++) {
         c = *p;
         if (c == NULL) {
             continue;
@@ -4091,7 +4091,7 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
         }
         break;
     }
-    return p < &g_gameState->unk1C->unk54C[4];
+    return p < &g_gameState->unk1C->party[4];
 }
 
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */

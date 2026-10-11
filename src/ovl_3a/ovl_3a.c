@@ -22,7 +22,7 @@ void func_801F3874(void) {
     if (D_801F4BBC.unk24) {
         func_80033D38(D_801F4BBC.unk7, D_801F4BBC.unk12C);
     } else {
-        func_8002BD54(D_801F4BBC.unk7, g_gameState->unk1C->unk3C[D_801F4BBC.unk130].unk0);
+        func_8002BD54(D_801F4BBC.unk7, g_gameState->unk1C->characters[D_801F4BBC.unk130].unk0);
     }
     D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk7);
     for (i = 0; i < 2; i++) {
@@ -125,7 +125,7 @@ void func_801F3D9C(void) {
         case 3:
             if (D_801F4BBC.unk4 != 0) {
                 snd_playSe(0x67);
-                memcpy(g_gameState->unk1C->unk3C[D_801F4BBC.unk130].unk0, D_801F4BBC.unk7, 8);
+                memcpy(g_gameState->unk1C->characters[D_801F4BBC.unk130].unk0, D_801F4BBC.unk7, 8);
                 func_800325E0();
             } else {
                 snd_playSe(0x66);

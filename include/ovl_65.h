@@ -164,7 +164,7 @@ static inline u8 func_801F_alive(Character *c) {
     if (c == NULL) {
         return 0;
     }
-    if (c->unk10 == 0) {
+    if (c->hp == 0) {
         return 0;
     }
     if (c->unk38 & 0x45) {
@@ -178,7 +178,7 @@ static inline u8 func_801F_canExp(Character *c) {
     if (!func_801F_alive(c)) {
         return 0;
     }
-    if (c->unkC > 9999998) {
+    if (c->exp > 9999998) {
         return 0;
     }
     return 1;

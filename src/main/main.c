@@ -3029,31 +3029,31 @@ void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
     if (c == NULL) {
         return;
     }
-    text_formatNumber(c->unkB, buf, 2, 1);
+    text_formatNumber(c->level, buf, 2, 1);
     func_8002B5FC(x, y, otz, c->unk0, 0);
     func_8002B56C(x + 0x24, y + 0xE, otz, buf, 0);
     func_800275DC(x, y + 0xE, otz, 0xB4, 0);
     func_800275DC(x, y + 0x17, otz, 0xAF, 0);
     func_800275DC(x, y + 0x20, otz, 0xB0, 0);
-    if (c->unk10 != 0) {
-        col = ((u16)(c->unk18 / 6) >= c->unk10) << 2;
+    if (c->hp != 0) {
+        col = ((u16)(c->maxHp / 6) >= c->hp) << 2;
     } else {
         col = 3;
     }
-    text_formatNumber(c->unk10, buf, 4, 1);
+    text_formatNumber(c->hp, buf, 4, 1);
     buf[4] = '/';
-    text_formatNumber(c->unk18, buf + 5, -1, 1);
+    text_formatNumber(c->maxHp, buf + 5, -1, 1);
     func_8002B56C(x + 0x16, y + 0x17, otz, buf, col);
-    col = ((s16)((s16)c->unk1A / 6) >= (s16)c->unk12) << 2;
-    text_formatNumber((s16)c->unk12, buf, 3, 1);
+    col = ((s16)((s16)c->maxMp / 6) >= (s16)c->mp) << 2;
+    text_formatNumber((s16)c->mp, buf, 3, 1);
     buf[3] = '/';
-    text_formatNumber((s16)c->unk1A, buf + 4, -1, 1);
+    text_formatNumber((s16)c->maxMp, buf + 4, -1, 1);
     func_8002B56C(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
 void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
-    Character *a = g_gameState->unk1C->unk54C[s->unk2];
-    Character *b = g_gameState->unk1C->unk54C[s->unk3];
+    Character *a = g_gameState->unk1C->party[s->unk2];
+    Character *b = g_gameState->unk1C->party[s->unk3];
     RECT r1;
     RECT r2;
     s32 d;
@@ -3078,13 +3078,13 @@ void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r2.w = 0x24;
         r2.h = 0x32;
         func_80025108(&r2, otz, 0, (g_gameState->unk24 >> 18) & 1);
-        func_80028AF0(px, y, otz, s->unk3, b->unk10 == 0);
+        func_80028AF0(px, y, otz, s->unk3, b->hp == 0);
         func_8002D9B4(&r1, otz, 4);
-        func_8002423C(x + 0x26, y + 3, otz, g_gameState->unk1C->unk54C[s->unk3]);
+        func_8002423C(x + 0x26, y + 3, otz, g_gameState->unk1C->party[s->unk3]);
     } else {
         func_8002423C(x + 0x26, y + 3, otz, a);
     }
-    func_80028AF0(x, y, otz, s->unk2, a->unk10 == 0);
+    func_80028AF0(x, y, otz, s->unk2, a->hp == 0);
 }
 
 void func_800245F0(RECT *r, s32 otz) {
@@ -3671,29 +3671,29 @@ void func_80026DCC(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
 }
 
 void func_80026E14(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    Character *p = g_gameState->unk1C->unk54C[arg3];
+    Character *p = g_gameState->unk1C->party[arg3];
 
     if (p != NULL) {
-        func_80028AF0(arg0, arg1, arg2, arg3, p->unk10 == 0);
+        func_80028AF0(arg0, arg1, arg2, arg3, p->hp == 0);
         func_80026F8C(arg0 + 0x26, arg1 + 3, arg2, arg3);
     }
 }
 
 void func_80026EA0(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
-    Character *p = g_gameState->unk1C->unk54C[slot];
+    Character *p = g_gameState->unk1C->party[slot];
     if (p != NULL && mode >= 0) {
         if (mode < 3) {
-            func_800283E0(x, y, otz, slot, 0x29, p->unk10 == 0);
+            func_800283E0(x, y, otz, slot, 0x29, p->hp == 0);
             func_80026F8C(x + 0x26, y, otz, slot);
         } else if (mode < 5) {
-            func_800283E0(x, y, otz, slot, 0x29, p->unk10 == 0);
+            func_800283E0(x, y, otz, slot, 0x29, p->hp == 0);
             func_80027A4C(x + 0x26, y, otz, slot);
         }
     }
 }
 
 void func_80026F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    func_8002423C(arg0, arg1, arg2, g_gameState->unk1C->unk54C[arg3]);
+    func_8002423C(arg0, arg1, arg2, g_gameState->unk1C->party[arg3]);
 }
 
 void func_80026FC4(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
@@ -3883,14 +3883,14 @@ u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, Sprt
 }
 
 void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
-    Character *c = g_gameState->unk1C->unk54C[slot];
+    Character *c = g_gameState->unk1C->party[slot];
     u8 buf[16];
     RECT r;
 
     if (c == NULL) {
         return;
     }
-    text_formatNumber(c->unkB, buf, 2, 1);
+    text_formatNumber(c->level, buf, 2, 1);
     func_8002B5FC(x, y, otz, c->unk0, 0);
     func_8002B56C(x + 0x26, y + 0xE, otz, buf, 0);
     func_800275DC(x, y + 0xE, otz, 0xB4, 0);
@@ -4035,9 +4035,9 @@ s32 func_80027F94(s32 id) {
     s32 n = 0;
 
     for (i = 0; i < 9; i++) {
-        if (g_gameState->unk1C->unk3C[i].unk34.b.unkB) {
+        if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
             for (j = 0; j < 5; j++) {
-                if (id == g_gameState->unk1C->unk3C[i].unk39[j]) {
+                if (id == g_gameState->unk1C->characters[i].unk39[j]) {
                     n++;
                 }
             }
@@ -4230,7 +4230,7 @@ void func_8002886C(void) {
 }
 
 u8 func_80028954(s32 arg0) {
-    return D_8006BB8C[g_gameState->unk1C->unk3C[arg0].unk34.b.unk4];
+    return D_8006BB8C[g_gameState->unk1C->characters[arg0].unk34.b.unk4];
 }
 
 void func_80028994(s32 arg0, RECT *clut, RECT *img) {
@@ -4288,10 +4288,10 @@ void func_80028B20(u8 *buf) {
 
     for (i = 0; i < 4; i++) {
         GameData *d = g_gameState->unk1C;
-        Character *p = d->unk54C[i];
+        Character *p = d->party[i];
 
         if (p != NULL) {
-            func_80028BE8(buf + D_8006BB8C[d->unk3C[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
+            func_80028BE8(buf + D_8006BB8C[d->characters[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
         }
     }
 }
@@ -4883,47 +4883,47 @@ u8 *func_80029FE4(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
         pkt = func_8002B890(x, y + 2, ot, 12, 0, w, pkt);
         break;
     case 0x10:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[0], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[0], w, pkt);
         break;
     case 0x11:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[1], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[1], w, pkt);
         break;
     case 0x12:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[2], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[2], w, pkt);
         break;
     case 0x13:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[3], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[3], w, pkt);
         break;
     case 0x14:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[4], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[4], w, pkt);
         break;
     case 0x15:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[5], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[5], w, pkt);
         break;
     case 0x16:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[6], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[6], w, pkt);
         break;
     case 0x17:
-        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->unk3C[7], w, pkt);
+        pkt = func_8002995C(x, y, ot, &g_gameState->unk1C->characters[7], w, pkt);
         break;
     case 0x18:
-        if (g_gameState->unk1C->unk54C[0] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->unk54C[0], w, pkt);
+        if (g_gameState->unk1C->party[0] != NULL) {
+            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[0], w, pkt);
         }
         break;
     case 0x19:
-        if (g_gameState->unk1C->unk54C[1] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->unk54C[1], w, pkt);
+        if (g_gameState->unk1C->party[1] != NULL) {
+            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[1], w, pkt);
         }
         break;
     case 0x1A:
-        if (g_gameState->unk1C->unk54C[2] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->unk54C[2], w, pkt);
+        if (g_gameState->unk1C->party[2] != NULL) {
+            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[2], w, pkt);
         }
         break;
     case 0x1B:
-        if (g_gameState->unk1C->unk54C[3] != NULL) {
-            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->unk54C[3], w, pkt);
+        if (g_gameState->unk1C->party[3] != NULL) {
+            pkt = func_8002995C(x, y, ot, g_gameState->unk1C->party[3], w, pkt);
         }
         break;
     }
@@ -4997,53 +4997,53 @@ s32 func_8002A730(s32 c) {
         r = D_800686D0[12].unk4;
         break;
     case 0x10:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[0]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[0]);
         break;
     case 0x11:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[1]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[1]);
         break;
     case 0x12:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[2]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[2]);
         break;
     case 0x13:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[3]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[3]);
         break;
     case 0x14:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[4]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[4]);
         break;
     case 0x15:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[5]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[5]);
         break;
     case 0x16:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[6]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[6]);
         break;
     case 0x17:
-        r = func_8002BA68((s32)&g_gameState->unk1C->unk3C[7]);
+        r = func_8002BA68((s32)&g_gameState->unk1C->characters[7]);
         break;
     case 0x18:
-        if (g_gameState->unk1C->unk54C[0] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->unk54C[0]);
+        if (g_gameState->unk1C->party[0] != NULL) {
+            r = func_8002BA68((s32)g_gameState->unk1C->party[0]);
         } else {
             r = 0;
         }
         break;
     case 0x19:
-        if (g_gameState->unk1C->unk54C[1] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->unk54C[1]);
+        if (g_gameState->unk1C->party[1] != NULL) {
+            r = func_8002BA68((s32)g_gameState->unk1C->party[1]);
         } else {
             r = 0;
         }
         break;
     case 0x1A:
-        if (g_gameState->unk1C->unk54C[2] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->unk54C[2]);
+        if (g_gameState->unk1C->party[2] != NULL) {
+            r = func_8002BA68((s32)g_gameState->unk1C->party[2]);
         } else {
             r = 0;
         }
         break;
     case 0x1B:
-        if (g_gameState->unk1C->unk54C[3] != NULL) {
-            r = func_8002BA68((s32)g_gameState->unk1C->unk54C[3]);
+        if (g_gameState->unk1C->party[3] != NULL) {
+            r = func_8002BA68((s32)g_gameState->unk1C->party[3]);
         } else {
             r = 0;
         }
@@ -5300,7 +5300,7 @@ void func_8002B47C(s32 arg0) {
     s32 x = (arg0 & 1) * 0x54;
     s32 y = arg0 >> 1;
     s32 i;
-    u8 *name = g_gameState->unk1C->unk54C[arg0]->unk0;
+    u8 *name = g_gameState->unk1C->party[arg0]->unk0;
 
     for (i = 0; i < 7; i++) {
         if (*name == 0xFF) {
@@ -5655,7 +5655,7 @@ void func_8002C158(s32 a) {
     s32 buf = func_8002B43C(a);
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->unk54C[i] != NULL) {
+        if (g_gameState->unk1C->party[i] != NULL) {
             func_8002B47C(i);
         }
     }
@@ -7947,7 +7947,7 @@ void func_80032A44(void) {
 }
 
 void func_80032B08(s32 ch) {
-    Character *c = &g_gameState->unk1C->unk3C[ch];
+    Character *c = &g_gameState->unk1C->characters[ch];
     u32 *init;
     u32 *tbl;
     s32 r;
@@ -7965,48 +7965,48 @@ void func_80032B08(s32 ch) {
     func_80033D8C(c->unk39, r);
     c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->unk39);
     func_80032C4C(ch, 1, init, 0);
-    c->unk10 = c->unk18;
-    c->unk12 = c->unk1A;
-    c->unk17 = c->unk1F;
+    c->hp = c->maxHp;
+    c->mp = c->maxMp;
+    c->stones = c->maxStones;
 }
 
 void func_80032C4C(s32 ch, s32 lv, u32 *heal, u8 f) {
-    Character *c = &g_gameState->unk1C->unk3C[ch];
+    Character *c = &g_gameState->unk1C->characters[ch];
     s32 hp;
     s32 mp;
     s32 d;
 
-    if (!f && c->unkB != lv) {
-        c->unkC = D_8006DF5C[lv - 1];
+    if (!f && c->level != lv) {
+        c->exp = g_levelExp[lv - 1];
     }
-    hp = c->unk10;
-    mp = c->unk12;
-    d = c->unk1F - c->unk17;
-    c->unkB = lv;
-    memset(&c->unk10, 0, 8);
-    memset(&c->unk18, 0, 8);
+    hp = c->hp;
+    mp = c->mp;
+    d = c->maxStones - c->stones;
+    c->level = lv;
+    memset(&c->hp, 0, 8);
+    memset(&c->maxHp, 0, 8);
     c->unk16 = 10;
-    c->unk30 = func_80034A64(ch, c->unkB, f);
-    c->unk31 = func_80034B50(ch, c->unkB, f);
-    c->unk32 = func_80034C64(ch, c->unkB, f);
-    c->unk33 = func_80034D78(ch, c->unkB, f);
-    c->unk18 = c->unk2C = func_80034F7C(c->unkB, c->unk31);
-    c->unk1A = c->unk2E = func_80034FD4(c->unkB, c->unk32);
-    c->unk1F = func_80034E80(ch, c->unkB, f);
-    c->unk10 = (hp < c->unk18) ? hp : c->unk18;
-    c->unk12 = (mp < c->unk1A) ? mp : c->unk1A;
-    c->unk17 = c->unk1F - d;
+    c->unk30 = func_80034A64(ch, c->level, f);
+    c->unk31 = func_80034B50(ch, c->level, f);
+    c->unk32 = func_80034C64(ch, c->level, f);
+    c->unk33 = func_80034D78(ch, c->level, f);
+    c->maxHp = c->unk2C = func_80034F7C(c->level, c->unk31);
+    c->maxMp = c->unk2E = func_80034FD4(c->level, c->unk32);
+    c->maxStones = func_80034E80(ch, c->level, f);
+    c->hp = (hp < c->maxHp) ? hp : c->maxHp;
+    c->mp = (mp < c->maxMp) ? mp : c->maxMp;
+    c->stones = c->maxStones - d;
     if (heal) {
-        c->unk10 = c->unk18;
-        c->unk12 = c->unk1A;
-        c->unk17 = c->unk1F;
+        c->hp = c->maxHp;
+        c->mp = c->maxMp;
+        c->stones = c->maxStones;
     }
     func_8003384C(c);
     if (f) {
-        c->unk10 = (hp < c->unk18) ? hp : c->unk18;
-        c->unk12 = (mp < c->unk1A) ? mp : c->unk1A;
+        c->hp = (hp < c->maxHp) ? hp : c->maxHp;
+        c->mp = (mp < c->maxMp) ? mp : c->maxMp;
     }
-    if (c->unk1F < d) {
+    if (c->maxStones < d) {
         func_80033DCC(c);
     }
 }
@@ -8155,7 +8155,7 @@ s32 func_80033280(s32 kind, s32 flag, u8 *item) {
 }
 
 void func_800333B0(s32 ch, u8 avg, s32 eq) {
-    Character *c = &g_gameState->unk1C->unk3C[ch];
+    Character *c = &g_gameState->unk1C->characters[ch];
     u8 *p;
     s32 i;
     s32 n;
@@ -8179,9 +8179,9 @@ void func_800333B0(s32 ch, u8 avg, s32 eq) {
     sum = 0;
     for (i = 0; i < 9; i++) {
         if (ch != i) {
-            if (g_gameState->unk1C->unk3C[i].unk34.b.unkB) {
+            if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
                 n++;
-                sum += g_gameState->unk1C->unk3C[i].unkB;
+                sum += g_gameState->unk1C->characters[i].level;
             }
         }
     }
@@ -8191,8 +8191,8 @@ void func_800333B0(s32 ch, u8 avg, s32 eq) {
         lv = 1;
     }
     if ((u32)(c->unk34.b.unk4 - 10) >= 2) {
-        if (lv < c->unkB) {
-            lv = c->unkB;
+        if (lv < c->level) {
+            lv = c->level;
         }
     }
     func_80032C4C(ch, lv, NULL, 0);
@@ -8202,7 +8202,7 @@ calc:
 }
 
 void func_80033690(void) {
-    Character **party = g_gameState->unk1C->unk54C;
+    Character **party = g_gameState->unk1C->party;
     s32 i;
     func_80033D1C(0);
     memset(party, 0, 0x1C);
@@ -8230,7 +8230,7 @@ s32 func_8003378C(void) {
     s32 i = 0;
     do {
     loop:
-        if (gd->unk54C[i] == NULL) {
+        if (gd->party[i] == NULL) {
             i = i < 3 ? i + 1 : 0;
             goto loop;
         }
@@ -8241,14 +8241,14 @@ s32 func_8003378C(void) {
 s32 func_800337D0(s32 i) {
     do {
         i = i == 0 ? 3 : i - 1;
-    } while (g_gameState->unk1C->unk54C[i] == NULL);
+    } while (g_gameState->unk1C->party[i] == NULL);
     return i;
 }
 
 s32 func_8003380C(s32 i) {
     do {
         i = i < 3 ? i + 1 : 0;
-    } while (g_gameState->unk1C->unk54C[i] == NULL);
+    } while (g_gameState->unk1C->party[i] == NULL);
     return i;
 }
 
@@ -8257,8 +8257,8 @@ void func_8003384C(Character *c) {
     Unk80032E84Out out;
 
     in.unk0 = *(Bytes8 *)&c->unk2C;
-    in.unk10 = c->unk10;
-    in.unk12 = c->unk12;
+    in.unk10 = c->hp;
+    in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->unk88;
     in.unk14 = *(Bytes5 *)c->unk39;
     func_80032E84(&in, &out);
@@ -8270,10 +8270,10 @@ void func_8003384C(Character *c) {
     c->unk29 = out.unkC[2];
     c->unk2A = out.unkC[3];
     c->unk2B = out.unkC[4];
-    c->unk10 = out.unk0;
-    c->unk12 = out.unk2;
-    c->unk18 = out.unk4;
-    c->unk1A = out.unk6;
+    c->hp = out.unk0;
+    c->mp = out.unk2;
+    c->maxHp = out.unk4;
+    c->maxMp = out.unk6;
 }
 
 s32 func_80033964(u32 x) {
@@ -8378,48 +8378,48 @@ u8 func_80033A50(u32 x) {
 }
 
 void func_80033AF4(s32 slot, s32 ch) {
-    Character *old = g_gameState->unk1C->unk54C[slot];
+    Character *old = g_gameState->unk1C->party[slot];
     if (ch >= 9) {
         ch = -1;
     }
     if (ch < 0) {
-        g_gameState->unk1C->unk54C[slot] = NULL;
+        g_gameState->unk1C->party[slot] = NULL;
     } else {
         func_80033BD0(ch);
-        g_gameState->unk1C->unk54C[slot] = &g_gameState->unk1C->unk3C[ch];
+        g_gameState->unk1C->party[slot] = &g_gameState->unk1C->characters[ch];
     }
-    if (old != g_gameState->unk1C->unk54C[slot]) {
+    if (old != g_gameState->unk1C->party[slot]) {
         func_80033D1C(1);
     }
 }
 
 void func_80033BD0(u32 i) {
     if (i < 9) {
-        g_gameState->unk1C->unk3C[i].unk34.b.unkB = 1;
+        g_gameState->unk1C->characters[i].unk34.b.unkB = 1;
     }
 }
 
 void func_80033C0C(u32 i) {
     if (i < 9) {
-        g_gameState->unk1C->unk3C[i].unk34.b.unkB = 0;
+        g_gameState->unk1C->characters[i].unk34.b.unkB = 0;
     }
 }
 
 s32 func_80033C48(s32 ch, s32 b, u8 flag) {
-    Character *c = &g_gameState->unk1C->unk3C[ch];
-    s32 lv = c->unkB;
-    c->unkB = 0;
+    Character *c = &g_gameState->unk1C->characters[ch];
+    s32 lv = c->level;
+    c->level = 0;
     func_80032C4C(ch, b, 0, 0);
     if (flag) {
-        c->unk10 = c->unk18;
-        c->unk12 = c->unk1A;
+        c->hp = c->maxHp;
+        c->mp = c->maxMp;
     }
     return lv;
 }
 
 s32 func_80033CCC(s32 ch, s32 b) {
-    Character *c = &g_gameState->unk1C->unk3C[ch];
-    s32 r = c->unkB;
+    Character *c = &g_gameState->unk1C->characters[ch];
+    s32 r = c->level;
     func_80032C4C(ch, b, 0, 1);
     return r;
 }
@@ -8455,11 +8455,11 @@ void func_80033DCC(Character *c) {
     i = 0;
     e = D_8006D128;
     id = c->unk34.b.id;
-    c->unk17 = c->unk1F;
+    c->stones = c->maxStones;
     do {
         if (func_800349BC(id, i + 0xC0)) {
-            if (c->unk17 >= e->unk1) {
-                c->unk17 -= e->unk1;
+            if (c->stones >= e->unk1) {
+                c->stones -= e->unk1;
             } else {
                 func_8003493C(id, i + 0xC0, 0);
             }
@@ -8477,14 +8477,14 @@ s32 func_80033E84(s32 ch, s32 id, s32 add) {
     if (i < 0) {
         return 0;
     }
-    old = g_gameState->unk1C->unk3C[ch].unk58[i];
+    old = g_gameState->unk1C->characters[ch].unk58[i];
     need = func_800347D8_inline(ch, id);
-    if (need - g_gameState->unk1C->unk3C[ch].unk58[i] < add) {
-        g_gameState->unk1C->unk3C[ch].unk58[i] = need;
+    if (need - g_gameState->unk1C->characters[ch].unk58[i] < add) {
+        g_gameState->unk1C->characters[ch].unk58[i] = need;
     } else {
-        g_gameState->unk1C->unk3C[ch].unk58[i] += add;
+        g_gameState->unk1C->characters[ch].unk58[i] += add;
     }
-    return g_gameState->unk1C->unk3C[ch].unk58[i] - old;
+    return g_gameState->unk1C->characters[ch].unk58[i] - old;
 }
 
 s32 func_80034070(s32 ch, s32 id) {
@@ -8499,7 +8499,7 @@ s32 func_80034070(s32 ch, s32 id) {
 
 s32 func_80034220(s32 ch, s32 id) {
     s32 i = func_80034430_inline(ch, id);
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     if (i < 0) {
         return 0;
     }
@@ -8534,7 +8534,7 @@ void func_800343C0(s32 ch) {
     Character *c;
 
     if (ch < 8) {
-        c = &g_gameState->unk1C->unk3C[ch];
+        c = &g_gameState->unk1C->characters[ch];
         for (i = 0; i < 0x30; i++) {
             c->unk58[i] = 0;
         }
@@ -8542,7 +8542,7 @@ void func_800343C0(s32 ch) {
 }
 
 void func_80034404(s32 i) {
-    Character *c = &g_gameState->unk1C->unk3C[i];
+    Character *c = &g_gameState->unk1C->characters[i];
     c->unk88[1] = 0;
     c->unk88[0] = 0;
 }
@@ -8556,7 +8556,7 @@ u8 *func_800344C0(s32 ch, s32 id) {
     if (i < 0) {
         return NULL;
     }
-    return &g_gameState->unk1C->unk3C[ch].unk58[i];
+    return &g_gameState->unk1C->characters[ch].unk58[i];
 }
 
 s32 func_80034584(s32 ch, s32 id) {
@@ -8564,7 +8564,7 @@ s32 func_80034584(s32 ch, s32 id) {
     if (i < 0) {
         return -1;
     }
-    return g_gameState->unk1C->unk3C[ch].unk58[i];
+    return g_gameState->unk1C->characters[ch].unk58[i];
 }
 
 s32 func_80034648(s32 ch, s32 id, u8 v) {
@@ -8573,8 +8573,8 @@ s32 func_80034648(s32 ch, s32 id, u8 v) {
     if (i < 0) {
         return -1;
     }
-    old = g_gameState->unk1C->unk3C[ch].unk58[i];
-    g_gameState->unk1C->unk3C[ch].unk58[i] = v;
+    old = g_gameState->unk1C->characters[ch].unk58[i];
+    g_gameState->unk1C->characters[ch].unk58[i] = v;
     return old;
 }
 
@@ -8584,8 +8584,8 @@ static inline s32 func_80034648_inline(s32 ch, s32 id, s32 v) {
     if (i < 0) {
         return -1;
     }
-    old = g_gameState->unk1C->unk3C[ch].unk58[i];
-    g_gameState->unk1C->unk3C[ch].unk58[i] = v;
+    old = g_gameState->unk1C->characters[ch].unk58[i];
+    g_gameState->unk1C->characters[ch].unk58[i] = v;
     return old;
 }
 
@@ -8596,7 +8596,7 @@ s32 func_8003470C(s32 ch, s32 id) {
 
 u8 func_800347D8(s32 ch, s32 id) {
     s32 i = func_80034430_inline(ch, id);
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     if (i < 0) {
         return 0;
     }
@@ -8606,7 +8606,7 @@ u8 func_800347D8(s32 ch, s32 id) {
 s32 func_800348C0(s32 ch) {
     s32 sum = 0;
     s32 i;
-    u32 *bits = g_gameState->unk1C->unk3C[ch].unk88;
+    u32 *bits = g_gameState->unk1C->characters[ch].unk88;
     for (i = 0; i < 0x40; i++) {
         if (bits[i >> 5] & (1 << (i & 0x1F))) {
             sum += D_8006D128[i].unk1;
@@ -8616,7 +8616,7 @@ s32 func_800348C0(s32 ch) {
 }
 
 void func_8003493C(s32 ch, s32 id, u8 on) {
-    u32 *bits = g_gameState->unk1C->unk3C[ch].unk88;
+    u32 *bits = g_gameState->unk1C->characters[ch].unk88;
     id -= 0xC0;
     if (on) {
         bits[id >> 5] |= 1 << (id & 0x1F);
@@ -8626,7 +8626,7 @@ void func_8003493C(s32 ch, s32 id, u8 on) {
 }
 
 u8 func_800349BC(s32 ch, s32 id) {
-    return func_80034A04_inline(g_gameState->unk1C->unk3C[ch].unk88, id);
+    return func_80034A04_inline(g_gameState->unk1C->characters[ch].unk88, id);
 }
 
 u8 func_80034A04(u32 *bits, s32 b) {
@@ -8642,7 +8642,7 @@ u8 func_80034A30(Character *a) {
 }
 
 s32 func_80034A64(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     Unk8006DD88 *e = &D_8006DD88[func_80033964(c->unk34.b.row)];
     s32 r;
     if (add) {
@@ -8656,7 +8656,7 @@ s32 func_80034A64(s32 ch, s32 lv, u8 add) {
 }
 
 s32 func_80034B50(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     s32 k = func_80033964(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &D_8006DD88[k];
@@ -8664,7 +8664,7 @@ s32 func_80034B50(s32 ch, s32 lv, u8 add) {
     s32 n;
     if (add) {
         n = 0;
-        if (c->unk17 == 0) {
+        if (c->stones == 0) {
             n = 3;
         }
         bonus[1] += n + func_8003502C(c->unk39, 1);
@@ -8677,7 +8677,7 @@ s32 func_80034B50(s32 ch, s32 lv, u8 add) {
 }
 
 s32 func_80034C64(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     s32 k = func_80033964(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &D_8006DD88[k];
@@ -8685,7 +8685,7 @@ s32 func_80034C64(s32 ch, s32 lv, u8 add) {
     s32 n;
     if (add) {
         n = 0;
-        if (c->unk17 == 0) {
+        if (c->stones == 0) {
             n = 3;
         }
         bonus[2] += n + func_8003502C(c->unk39, 2);
@@ -8698,14 +8698,14 @@ s32 func_80034C64(s32 ch, s32 lv, u8 add) {
 }
 
 s32 func_80034D78(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     s32 k = func_80033964(c->unk34.b.row);
     u16 *bonus = c->unk3E;
     Unk8006DD88 *e = &D_8006DD88[k];
     s32 r;
     s32 n;
     if (add) {
-        n = c->unk17 == 0;
+        n = c->stones == 0;
         bonus[3] += n + func_8003502C(c->unk39, 3);
     }
     r = e->unk3 + lv * 3 / 20 + (bonus[3] >> 5);
@@ -8716,7 +8716,7 @@ s32 func_80034D78(s32 ch, s32 lv, u8 add) {
 }
 
 s32 func_80034E80(s32 ch, s32 lv, u8 add) {
-    Character *c = g_gameState->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->characters + ch;
     u16 *bonus = c->unk3E;
     s32 k = func_80033964(c->unk34.b.row);
     Unk8006DD88 *e = &D_8006DD88[k];
@@ -8725,7 +8725,7 @@ s32 func_80034E80(s32 ch, s32 lv, u8 add) {
 
     if (add) {
         n = 0;
-        if (c->unk17 == 0) {
+        if (c->stones == 0) {
             n = 5;
         }
         bonus[4] += n;
@@ -9835,7 +9835,7 @@ s32 func_800378C4(s32 slot) {
         slot = func_8004B85C_key(slot);
         if (slot >= 0 && slot < 9) {
             for (i = 0; i < 4; i++) {
-                if (g_gameState->unk1C->unk54C[i] == NULL) {
+                if (g_gameState->unk1C->party[i] == NULL) {
                     break;
                 }
             }
@@ -9892,19 +9892,19 @@ s32 func_80037ACC(s32 op) {
         break;
     case 0x52:
         gd = g_gameState->unk1C;
-        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk10;
+        r = gd->characters[func_80037ACC_chr(func_80052D40())].hp;
         break;
     case 0x53:
         gd = g_gameState->unk1C;
-        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk18;
+        r = gd->characters[func_80037ACC_chr(func_80052D40())].maxHp;
         break;
     case 0x6E:
         gd = g_gameState->unk1C;
-        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk12;
+        r = gd->characters[func_80037ACC_chr(func_80052D40())].mp;
         break;
     case 0x6F:
         gd = g_gameState->unk1C;
-        r = gd->unk3C[func_80037ACC_chr(func_80052D40())].unk1A;
+        r = gd->characters[func_80037ACC_chr(func_80052D40())].maxMp;
         break;
     case 0x70:
         px = -1;
@@ -11584,7 +11584,7 @@ s32 func_80039C38(void) {
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             u8 *src = func_8004F058(func_8004AF58_inline());
-            u8 *dst = g_gameState->unk1C->unk3C[a].unk0;
+            u8 *dst = g_gameState->unk1C->characters[a].unk0;
             u8 *end = dst + 9;
             while (dst < end) {
                 *dst++ = *src++;
@@ -11597,7 +11597,7 @@ s32 func_80039C38(void) {
     case 0xDB:
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
-            g_gameState->unk1C->unk3C[a].unk34.w = (g_gameState->unk1C->unk3C[a].unk34.w & ~0x400) | ((func_8004AEDC_inline() & 1) << 10);
+            g_gameState->unk1C->characters[a].unk34.w = (g_gameState->unk1C->characters[a].unk34.w & ~0x400) | ((func_8004AEDC_inline() & 1) << 10);
         }
         return 0;
     case 0x67:
@@ -11960,7 +11960,7 @@ s32 func_80039C38(void) {
         b = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
         if ((u32)a < 9) {
-            Character *ch = &g_gameState->unk1C->unk3C[a];
+            Character *ch = &g_gameState->unk1C->characters[a];
             d = func_8004AEDC_inline();
             if (d != 0xFF) {
                 ch->unkA = d;
@@ -11978,7 +11978,7 @@ s32 func_80039C38(void) {
     case 0xDD:
         a = func_80039C38_chr(func_8004AEDC_inline());
         for (i = 0; i < 4; i++) {
-            Character *ch = g_gameState->unk1C->unk54C[i];
+            Character *ch = g_gameState->unk1C->party[i];
             if (ch != NULL && (ch->unk34.w & 0xF) == a) {
                 break;
             }
@@ -11993,7 +11993,7 @@ s32 func_80039C38(void) {
         a = 0;
         for (i = 8; i >= 0; i--) {
             a <<= 1;
-            a |= (g_gameState->unk1C->unk3C[i].unk34.w >> 11) & 1;
+            a |= (g_gameState->unk1C->characters[i].unk34.w >> 11) & 1;
         }
         b = func_8004AF58_inline();
         for (i = 0; i < 9; i++) {
@@ -12001,7 +12001,7 @@ s32 func_80039C38(void) {
             b >>= 1;
         }
         for (i = 0; i < 4; i++) {
-            Character *ch = g_gameState->unk1C->unk54C[i];
+            Character *ch = g_gameState->unk1C->party[i];
             if (ch != NULL) {
                 b = ch->unk34.w & 0xF;
                 a &= ~(1 << b);
@@ -12026,23 +12026,23 @@ s32 func_80039C38(void) {
     case 0xF1:
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
-            Character *ch = &g_gameState->unk1C->unk3C[a];
+            Character *ch = &g_gameState->unk1C->characters[a];
             a = func_8004AF58_inline();
-            if (ch->unk18 < a) {
-                a = ch->unk18;
+            if (ch->maxHp < a) {
+                a = ch->maxHp;
             }
-            ch->unk10 = a;
+            ch->hp = a;
         }
         return 0;
     case 0xF2:
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
-            Character *ch = &g_gameState->unk1C->unk3C[a];
+            Character *ch = &g_gameState->unk1C->characters[a];
             a = func_8004AF58_inline();
-            if (ch->unk1A < a) {
-                a = ch->unk1A;
+            if (ch->maxMp < a) {
+                a = ch->maxMp;
             }
-            ch->unk12 = a;
+            ch->mp = a;
         }
         return 0;
     case 0xF3:
@@ -12055,12 +12055,12 @@ s32 func_80039C38(void) {
         return 0;
     case 0xD9:
         a = func_80039C38_chr(func_8004AEDC_inline());
-        func_80053960(&g_gameState->unk1C->unk3C[a], func_8004AEDC_inline() & 0xFF);
+        func_80053960(&g_gameState->unk1C->characters[a], func_8004AEDC_inline() & 0xFF);
         return 0;
     case 0x62:
         a = func_80039C38_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
-            g_gameState->unk1C->unk3C[a].unk34.w = (g_gameState->unk1C->unk3C[a].unk34.w & ~0x200) | ((func_8004AEDC_inline() & 1) << 9);
+            g_gameState->unk1C->characters[a].unk34.w = (g_gameState->unk1C->characters[a].unk34.w & ~0x200) | ((func_8004AEDC_inline() & 1) << 9);
         }
         return 0;
     case 0xE0:
@@ -13920,7 +13920,7 @@ static inline s32 func_8004C2C0_width(u8 *s) {
 
 /* copy character ch's name into D_8007B930, converting the case */
 static inline void func_8004C2C0_name(s32 ch) {
-    u8 *name = g_gameState->unk1C->unk3C[ch].unk0;
+    u8 *name = g_gameState->unk1C->characters[ch].unk0;
     s32 k;
     u32 c;
 
@@ -13962,13 +13962,13 @@ void func_8004C2C0(u8 **pp, s32 *pw) {
             case 0x15:
             case 0x16:
             case 0x17:
-                w += func_8004C2C0_width(g_gameState->unk1C->unk3C[c - 0x10].unk0);
+                w += func_8004C2C0_width(g_gameState->unk1C->characters[c - 0x10].unk0);
                 break;
             case 0x18:
             case 0x19:
             case 0x1A:
             case 0x1B:
-                w += func_8004C2C0_width(g_gameState->unk1C->unk3C[func_8004B120(c - 0x18)].unk0);
+                w += func_8004C2C0_width(g_gameState->unk1C->characters[func_8004B120(c - 0x18)].unk0);
                 break;
             case 0x80:
             case 0x81:
@@ -14777,7 +14777,7 @@ void func_8004E76C(s32 a) {
 }
 
 s32 func_8004E7A4(s32 i) {
-    Character *p = g_gameState->unk1C->unk54C[i];
+    Character *p = g_gameState->unk1C->party[i];
     if (p == NULL) {
         return -1;
     }
@@ -15108,7 +15108,7 @@ s32 func_8004F2B4(s32 id, s32 n) {
 }
 
 s32 func_8004F3E8(s32 arg0, s32 n) {
-    u8 *name = g_gameState->unk1C->unk3C[arg0].unk0;
+    u8 *name = g_gameState->unk1C->characters[arg0].unk0;
     s32 len;
     s32 i;
 
@@ -15130,7 +15130,7 @@ s32 func_8004F4A4(s32 ch, s32 n) {
     s32 i;
     s32 j;
     s32 k;
-    u8 *name = g_gameState->unk1C->unk3C[ch].unk0;
+    u8 *name = g_gameState->unk1C->characters[ch].unk0;
     u32 c;
     u8 *buf;
 
@@ -22722,7 +22722,7 @@ u8 func_800654F8(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
     switch (kind) {
     case 10:
         if (func_800657F0(&c)) {
-            if (t->unk10 == t->unk18) {
+            if (t->hp == t->maxHp) {
                 goto full;
             }
             func_800658DC(&c);
@@ -22742,7 +22742,7 @@ u8 func_800654F8(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
         break;
     case 69:
         if (func_800657F0(&c)) {
-            if (t->unk10 == t->unk18) {
+            if (t->hp == t->maxHp) {
                 goto full;
             }
             func_800659D0(&c);
@@ -22751,7 +22751,7 @@ u8 func_800654F8(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
         break;
     case 70:
         if (func_800657F0(&c)) {
-            if (t->unk12 == t->unk1A) {
+            if (t->mp == t->maxMp) {
                 goto full;
             }
             func_800659D0(&c);
@@ -22760,7 +22760,7 @@ u8 func_800654F8(Character *a, Character *t, MainCalcCmd *cmd, u8 kind, s32 e) {
         break;
     case 71:
         if (func_800657F0(&c)) {
-            if (*(u32 *)&t->unk10 == *(u32 *)&t->unk18) { /* hp and mp both full */
+            if (*(u32 *)&t->hp == *(u32 *)&t->maxHp) { /* hp and mp both full */
             full:
                 c.unk10 |= 1;
                 break;
@@ -22812,7 +22812,7 @@ u8 func_8006576C(MainCalc *c) {
 }
 
 u8 func_800657F0(MainCalc *c) {
-    if (func_800539FC(c->unk4, 0x41) || c->unk4->unk10 == 0) {
+    if (func_800539FC(c->unk4, 0x41) || c->unk4->hp == 0) {
         c->unk10 |= 1;
         return 0;
     }
@@ -22820,8 +22820,8 @@ u8 func_800657F0(MainCalc *c) {
 }
 
 u8 func_80065850(MainCalc *c) {
-    if (func_800539FC(c->unk4, 1) || c->unk4->unk10 != 0 ||
-        (func_800539FC(c->unk4, 0x40) && c->unk4->unk10 == 0)) {
+    if (func_800539FC(c->unk4, 1) || c->unk4->hp != 0 ||
+        (func_800539FC(c->unk4, 0x40) && c->unk4->hp == 0)) {
         c->unk10 |= 1;
         return 0;
     }
@@ -22840,7 +22840,7 @@ void func_800658DC(MainCalc *c) {
     }
     a = c->unk0;
     lv = a->unk26;
-    c->unk16 = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->unkB + lv) >> 3) + 1);
+    c->unk16 = lv + ((*g_randPtr << 8) | *g_randPtr) % (((a->level + lv) >> 3) + 1);
     g_randPtr++;
     c->unk12 = c->unk8->unk5;
     c->unk14 = c->unk4->unk2A;
@@ -22880,7 +22880,7 @@ void func_80065ADC(Unk80065ADC *a) {
 
 void func_80065B14(MainCalc *c) {
     Character *t = c->unk4;
-    s32 v = t->unk18 * (t->unk27 + c->unk8->unk5);
+    s32 v = t->maxHp * (t->unk27 + c->unk8->unk5);
 
     if (c->unk0->unk88[1] & 2) {
         v /= 50;
@@ -22902,8 +22902,8 @@ void func_80065B9C(Unk80065ADC *a) {
 }
 
 void func_80065BD4(MainCalc *c) {
-    c->unk4->unk10 = c->unk4->unk18;
-    c->unk4->unk12 = c->unk4->unk1A;
+    c->unk4->hp = c->unk4->maxHp;
+    c->unk4->mp = c->unk4->maxMp;
 }
 
 void func_80065BFC(MainCalc *c) {
@@ -22914,12 +22914,12 @@ void func_80065BFC(MainCalc *c) {
         rand_refill();
     }
     r = *g_randPtr++;
-    t->unk10 = r % 10 + 1;
+    t->hp = r % 10 + 1;
 }
 
 void func_80065C8C(MainCalc *c) {
-    c->unk18 = c->unk4->unk18 >> 1;
-    c->unk1A = c->unk4->unk1A >> 1;
+    c->unk18 = c->unk4->maxHp >> 1;
+    c->unk1A = c->unk4->maxMp >> 1;
 }
 
 void func_80065CBC(MainCalc *c) {
@@ -22938,18 +22938,18 @@ void func_80065D40(MainCalc *c) {
 
 void func_80065D90(Character *u, s32 n) {
     if (!func_800539FC(u, 1)) {
-        u->unk10 += n;
-        if (u->unk10 > u->unk18) {
-            u->unk10 = u->unk18;
+        u->hp += n;
+        if (u->hp > u->maxHp) {
+            u->hp = u->maxHp;
         }
     }
 }
 
 void func_80065DF4(Character *u, s32 n) {
     if (!func_800539FC(u, 1)) {
-        u->unk12 += n;
-        if (u->unk12 > u->unk1A) {
-            u->unk12 = u->unk1A;
+        u->mp += n;
+        if (u->mp > u->maxMp) {
+            u->mp = u->maxMp;
         }
     }
 }

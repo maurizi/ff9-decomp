@@ -499,7 +499,7 @@ s32 func_800A9BE4(s32 arg0) {
         break;
     case 7:
         for (i = 0; i < 4; i++) {
-            ch = g_gameState->unk1C->unk54C[i];
+            ch = g_gameState->unk1C->party[i];
             if (ch == NULL) {
                 continue;
             }
@@ -526,7 +526,7 @@ s32 func_800A9BE4(s32 arg0) {
             if (v != 0) {
                 func_800C9374((TexAnimSet *)e->unk8->unk50, (u16 (*)[4])pc);
             }
-            func_800BD698(u, g_gameState->unk1C->unk54C[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->unk6FC);
+            func_800BD698(u, g_gameState->unk1C->party[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->unk6FC);
             if (u->unk3C & 0x100) {
                 if (u != g_gameState->unk1C->unk8E4.battle->unk1088->unk4) {
                     u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
@@ -871,8 +871,8 @@ loop:
             arg1->unk10.w[0] = -1;
             arg1->unk10.w[1] = -1;
             gd = g_gameState->unk1C;
-            e = gd->unk54C;
-            c = &gd->unk54C[3];
+            e = gd->party;
+            c = &gd->party[3];
             q = &arg1->unk10.h[3];
             do {
                 if (*c != NULL) {
@@ -1330,16 +1330,16 @@ s32 func_800ABA10(s32 arg0, s32 arg1) {
     s32 idx;
 
     m = 0;
-    if (g_gameState->unk1C->unk54C[arg0] == NULL) {
+    if (g_gameState->unk1C->party[arg0] == NULL) {
         return -1;
     }
     if (!(arg1 & 0x20)) {
         u = func_800C1D8C(arg0);
         if (u != NULL) {
-            m = ((s16)u->unk84 != D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
+            m = ((s16)u->unk84 != D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
         }
     }
-    idx = g_gameState->unk1C->unk54C[arg0]->unk34.w >> 4;
+    idx = g_gameState->unk1C->party[arg0]->unk34.w >> 4;
     idx &= 0x1F;
     if ((arg1 & 0x10) != m) {
         if (!(arg1 & 0x20)) {
@@ -1467,7 +1467,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
         *state = 6;
         break;
     case 6:
-        cid = g_gameState->unk1C->unk54C[arg0]->unk34.b.id;
+        cid = g_gameState->unk1C->party[arg0]->unk34.b.id;
         ent = &g_gameState->unk1C->unk8D8[cid];
         u = func_800C1D8C(arg0);
         if (u != NULL) {
@@ -1488,7 +1488,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
             if (anim != 0) {
                 func_800C9374((TexAnimSet *)ent->unk8->unk50, (u16 (*)[4])pc);
             }
-            func_800BD698(u, g_gameState->unk1C->unk54C[arg0]->unk34.b.unk4,
+            func_800BD698(u, g_gameState->unk1C->party[arg0]->unk34.b.unk4,
                           u - g_gameState->unk1C->unk8E4.battle->unk6FC);
             if (u->unk3C & 0x100) {
                 u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
@@ -2001,7 +2001,7 @@ s32 func_800AE47C(s32 arg0, u16 arg1) {
     void **p;
     GameData *g = g_gameState->unk1C;
     s32 f;
-    if (g->unk54C[arg0] == 0) {
+    if (g->party[arg0] == 0) {
         return -1;
     }
     p = &g->unk8E4.battle->unk1354->unk20[arg0];
@@ -2013,7 +2013,7 @@ s32 func_800AE47C(s32 arg0, u16 arg1) {
 }
 
 s32 func_800AE4FC(s32 arg0) {
-    Character *c = g_gameState->unk1C->unk54C[arg0];
+    Character *c = g_gameState->unk1C->party[arg0];
 
     if (c == NULL) {
         /* two nested do-while(0) wrappers (macros?): they change the block structure enough to load the table base after the NULL check */
@@ -2309,7 +2309,7 @@ s32 func_800AF578(GameData *arg0, Battle *arg1) {
                 }
             } else if (arg1->unkD80 == 6) {
                 f = u->unk68;
-                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C.unk0 >> 6) & 1) && (g_gameState->unk1C->unk3C + ((f >> 1) & 0xF))->unk34.b.unkA) {
+                if ((f & 1) && !(u->unk3C & 0x1103) && ((arg1->unk132C.unk0 >> 6) & 1) && (g_gameState->unk1C->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->unk9C;
                     if (u->unkA0->unk3A >= m->unkC->unk2) {
                         m->unkC = (BtlUnit9CC *)u->unkA4[19];
@@ -2429,7 +2429,7 @@ void func_800AF800(GameData *arg0, Battle *arg1) {
                                 u->unk86[1] = u->unkA0->unk22 = (u->unk68 & 1) * 0x800;
                                 u->unk68 = (u->unk68 & ~0x40000) | ((func_800C09A4(u, 0x30202) & 1) << 18);
                                 u->unk68 &= ~0x80000;
-                                if (((g_gameState->unk1C->unk3C + ((u->unk68 >> 1) & 0xF))->unk34.w >> 10) & 1) {
+                                if (((g_gameState->unk1C->characters + ((u->unk68 >> 1) & 0xF))->unk34.w >> 10) & 1) {
                                     u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[0x12];
                                 } else {
                                     u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
@@ -2585,7 +2585,7 @@ void func_800B031C(void) {
     if (gd->unk571 != 0) {
         v = 8;
     }
-    gd->unk3C[3].unk34.w = (gd->unk3C[3].unk34.w & ~0x1F0) | (v << 4);
+    gd->characters[3].unk34.w = (gd->characters[3].unk34.w & ~0x1F0) | (v << 4);
     g_gameState->unk1C->unk56E = 0;
     func_800C1524();
     func_800E3D80();
@@ -2696,7 +2696,7 @@ u16 func_800B081C(s32 arg0) {
         return 0;
     }
     g = g_gameState->unk1C;
-    if (((g->unk3C + ((t->unk68 >> 1) & 0xF))->unkA & 2) && t->unk28 < (t->unk24->unk0 >> 1)) {
+    if (((g->characters + ((t->unk68 >> 1) & 0xF))->unkA & 2) && t->unk28 < (t->unk24->unk0 >> 1)) {
         for (u = g->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
             if ((u->unkC4[1] & 0x40) && !(u->unk3C & 0x43001103) && u != t && (best == NULL || best->unk28 < u->unk28)) {
                 best = u;
@@ -2773,7 +2773,7 @@ s32 func_800B0CF8(s32 arg0, u32 arg1) {
     s32 i;
     GameData *gd = g_gameState->unk1C;
     for (i = 0; i < 4; i++) {
-        if (gd->unk54C[i]->unk88[arg0] & arg1) {
+        if (gd->party[i]->unk88[arg0] & arg1) {
             return 1;
         }
     }
@@ -3266,9 +3266,9 @@ s32 func_800B1B48(Battle *arg0, BtlCmd *arg1) {
     case 0x3B:
         if (u->unk3C & 0x4000) {
             func_800CD5C8(6);
-            u->unk84 = D_800F5200[(u->unk68 & 1) ? g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x13 : 0x26];
+            u->unk84 = D_800F5200[(u->unk68 & 1) ? g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x13 : 0x26];
         } else {
-            u->unk84 = D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13];
+            u->unk84 = D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13];
         }
         break;
     case 0x3C:
@@ -4568,7 +4568,7 @@ void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             s32 d;
-            if ((u32)(g_gameState->unk1C->unk3C[(caster->unk68 >> 1) & 0xF].unk39[0] - 7) < 9) {
+            if ((u32)(g_gameState->unk1C->characters[(caster->unk68 >> 1) & 0xF].unk39[0] - 7) < 9) {
                 v = g_gameState->unk1C->unk8E4.battle->unk22CC[caster->unk74[1]];
                 if (!(v & 0x100) || func_800B9E50(&c)) {
                     d = func_800C0ACC(target, v);
@@ -4707,7 +4707,7 @@ void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 v = (caster->unk68 & 1) << 11;
                 target->unk86[1] = v;
                 target->unkA0->unk22 = v;
-                if ((target->unk68 & 1) && (&g_gameState->unk1C->unk3C[(target->unk68 >> 1) & 0xF])->unk34.b.unk9 != ((target->unk68 >> 8) & 3)) {
+                if ((target->unk68 & 1) && (&g_gameState->unk1C->characters[(target->unk68 >> 1) & 0xF])->unk34.b.unk9 != ((target->unk68 >> 8) & 3)) {
                     func_800BDA60(target);
                 }
             } else {
@@ -5120,14 +5120,14 @@ void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         func_800BEDBC(target, 0x4000);
         break;
     case 0x61:
-        if ((&g_gameState->unk1C->unk3C[(target->unk68 >> 1) & 0xF])->unkA & 2) {
+        if ((&g_gameState->unk1C->characters[(target->unk68 >> 1) & 0xF])->unkA & 2) {
             c.unk18 |= 1;
         } else {
             func_800BACB4(&c);
         }
         break;
     case 0x62:
-        if ((&g_gameState->unk1C->unk3C[(target->unk68 >> 1) & 0xF])->unkA & 8) {
+        if ((&g_gameState->unk1C->characters[(target->unk68 >> 1) & 0xF])->unkA & 8) {
             c.unk18 |= 1;
         } else {
             func_800B9E88(&c);
@@ -5638,7 +5638,7 @@ void func_800B8E9C(BtlCalc *arg0) {
     }
     if (!(arg0->unk18 & 8)) {
         u = arg0->unk0;
-        if ((u->unk68 & 1) && ((*u->unkC4 & 0x01000000) || g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk39[0] == 0x3C)) {
+        if ((u->unk68 & 1) && ((*u->unkC4 & 0x01000000) || g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk39[0] == 0x3C)) {
             if (!(arg0->unk4->unk3C & 0x40) && func_800C1E88(arg0->unk4, 0x10) == 0) {
                 t = arg0->unk4;
                 t->unk86[1] = t->unkA0->unk22 = (t->unk68 & 1) * 0x800;
@@ -5780,7 +5780,7 @@ s32 func_800B96AC(BtlUnit *arg0, s16 arg1) {
     if (arg0->unk2A >= arg1) {
         for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
             f = u->unk68;
-            if ((f & 1) && g_gameState->unk1C->unk3C[(f >> 1) & 0xF].unk34.b.unk4 == 2) {
+            if ((f & 1) && g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4 == 2) {
                 if (!(u->unk3C & 0x13021D0B) && !(arg0->unk3C & 0x13021D0B)) {
                     return 1;
                 }
@@ -6320,7 +6320,7 @@ void func_800BAFEC(Battle *arg0) {
     i = n = 0;
     p = func_8004AE9C()->unk0;
     for (; i < 4; i++) {
-        c = g_gameState->unk1C->unk54C[i];
+        c = g_gameState->unk1C->party[i];
         if (c != NULL) {
             u = &arg0->unk6FC[n];
             u->unk84 = D_800F5200[(c->unk34.w >> 4) & 0x1F];
@@ -6427,9 +6427,9 @@ void func_800BB4A0(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->unk31 = c->unk25;
     u->unk32 = c->unk26;
     u->unk33 = c->unk27;
-    u->unk7A = c->unkB;
-    u->unk24 = (BtlUnit24 *)&c->unk18;
-    func_800BD8C0((Unk800BD8C0 *)&u->unk28, (Unk800BD8C0 *)&c->unk10);
+    u->unk7A = c->level;
+    u->unk24 = (BtlUnit24 *)&c->maxHp;
+    func_800BD8C0((Unk800BD8C0 *)&u->unk28, (Unk800BD8C0 *)&c->hp);
     func_800BBD3C(u, &g_gameState->unk1C->unk8D8[c->unk34.w & 0xF]);
     u->unkAE = 0xFFFF;
     func_800C0A3C((Unk800C09D8 *)u);
@@ -6808,7 +6808,7 @@ s32 func_800BC78C(BtlUnit *u) {
         return 0;
     }
     if ((u->unk3C & 0x42001003) || ((u->unk68 >> 17) & 1)
-        || ((u->unk68 & 1) && g->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2 && cmd->unkE == 0x1F)) {
+        || ((u->unk68 & 1) && g->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2 && cmd->unkE == 0x1F)) {
         return 0;
     }
     {
@@ -7366,7 +7366,7 @@ u32 func_800BDED4(BtlUnit *arg0, s32 arg1) {
         break;
     case 0x29:
         if (arg0->unk68 & 1) {
-            r = (g_gameState->unk1C->unk3C + ((arg0->unk68 >> 1) & 0xF))->unkB;
+            r = (g_gameState->unk1C->characters + ((arg0->unk68 >> 1) & 0xF))->level;
         } else {
             r = g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk3;
         }
@@ -7424,11 +7424,11 @@ u32 func_800BDED4(BtlUnit *arg0, s32 arg1) {
         r >>= 5;
         break;
     case 0x42:
-        r = (g_gameState->unk1C->unk3C + ((arg0->unk68 >> 1) & 0xF))->unk34.w >> 4;
+        r = (g_gameState->unk1C->characters + ((arg0->unk68 >> 1) & 0xF))->unk34.w >> 4;
         r &= 0x1F;
         break;
     case 0x43:
-        r = (g_gameState->unk1C->unk3C + ((arg0->unk68 >> 1) & 0xF))->unkA;
+        r = (g_gameState->unk1C->characters + ((arg0->unk68 >> 1) & 0xF))->unkA;
         break;
     case 0x44:
         r = g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk2;
@@ -7662,7 +7662,7 @@ s32 func_800BE784(s32 arg0) {
         r = 0;
         for (u = b->unk6F8; u != NULL; u = u->unk0) {
             if (u->unk68 & 1) {
-                k = g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
+                k = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
             } else {
                 k = 0x13;
             }
@@ -8477,7 +8477,7 @@ void func_800C0EC8(BtlUnit *arg0) {
         for (u = b->unk6F8; u != NULL; u = u->unk0) {
             f = u->unk68;
             if (f & 1) {
-                k = g_gameState->unk1C->unk3C[(f >> 1) & 0xF].unk34.b.unk4;
+                k = g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4;
             } else {
                 k = 0x13;
             }
@@ -8674,13 +8674,13 @@ s32 func_800C1794(Battle *arg0) {
 }
 
 void func_800C1854(BtlUnit *arg0, s32 arg1) {
-    Character *c = &g_gameState->unk1C->unk3C[(arg0->unk68 >> 1) & 0xF];
+    Character *c = &g_gameState->unk1C->characters[(arg0->unk68 >> 1) & 0xF];
     if (arg0->unk3C & 0x4000) {
         c->unk20 = 0;
     } else {
         c->unk20 = arg0->unk78;
     }
-    func_800BD8C0((Unk800BD8C0 *)&c->unk10, (Unk800BD8C0 *)&arg0->unk28);
+    func_800BD8C0((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->unk28);
     if ((arg0->unkC4[1] & 0x8000) && arg1 == 0) {
         c->unk38 = 0;
         return;
@@ -8998,7 +8998,7 @@ void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         if (u->unkB0 & mask) {
             l->unk28[l->unk27++] = u;
         }
-        if (arg0->unkE == 0x1F && (u->unk68 & 1) && g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
+        if (arg0->unkE == 0x1F && (u->unk68 & 1) && g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
             l->unk44 = u;
         }
     }
@@ -9023,7 +9023,7 @@ void func_800C28F4(BtlCmd *cmd) {
     case 0x31:
     case 0x34:
         if (u->unk68 & 1) {
-            id = g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x64;
+            id = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 + 0x64;
         } else {
             id = 0x77;
         }
@@ -9031,7 +9031,7 @@ void func_800C28F4(BtlCmd *cmd) {
         break;
     case 0x2:
         if (u->unk68 & 1) {
-            k = g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
+            k = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
         } else {
             k = 0x13;
         }

@@ -20,8 +20,8 @@ void func_801EEA1C(void) {
     m->unk4C = m->unk50[g_gameState->unk1C->unk8 ^ 1];
     m->unk1 = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->unk1C->unk3C[i].unk34.b.unkB) {
-            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(g_gameState->unk1C->unk3C[i].unk34.b.row);
+        if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
+            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(g_gameState->unk1C->characters[i].unk34.b.row);
             D_801F1558.unk11[D_801F1558.unk1] = i;
             D_801F1558.unk1++;
         }
@@ -177,7 +177,7 @@ void func_801EF2B4(void) {
     func_8002B5FC(r2->x + 0x2A, r2->y + 8, 0x11, text_get(1), 0);
     for (i = 0; i < D_801F1558.unk1; i++) {
         on = ((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[i]) & 1;
-        func_8002B5FC(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->unk3C[D_801F1558.unk11[i]].unk0, 0);
+        func_8002B5FC(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[D_801F1558.unk11[i]].unk0, 0);
         func_801F0F94(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         func_801F0F94(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }

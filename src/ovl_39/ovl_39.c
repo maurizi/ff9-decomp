@@ -1847,20 +1847,20 @@ void func_801F8DA4(u8 *buf) {
     }
     h->unk4 = func_801F9688();
     h->unk0 = 0x30005;
-    h->unk5 = g_gameState->unk1C->unk3C[n].unkB;
+    h->unk5 = g_gameState->unk1C->characters[n].level;
     h->unk2C = t;
     h->unk30 = g_gameState->unk1C->gil;
     h->unk74 = (g_gameState->unk24 >> 18) & 1;
     h->unk78 = ++D_801FB1A8.unkC;
     h->unk7C = D_801FB1A8.unk24.unk6;
-    h->unk6 = *(SaveName *)g_gameState->unk1C->unk3C[n].unk0;
+    h->unk6 = *(SaveName *)g_gameState->unk1C->characters[n].unk0;
     func_801F9024((u8 *)&h->unk10);
     for (i = 0; i < 4; i++) {
-        if (g_gameState->unk1C->unk54C[i] != NULL) {
+        if (g_gameState->unk1C->party[i] != NULL) {
             h->unk34[i].unk0 = 1;
-            h->unk34[i].unk1 = func_801F7970(g_gameState->unk1C->unk54C[i]);
-            h->unk34[i].unkC = g_gameState->unk1C->unk54C[i]->unkB;
-            *(Name10 *)h->unk34[i].unk2 = *(Name10 *)g_gameState->unk1C->unk54C[i]->unk0;
+            h->unk34[i].unk1 = func_801F7970(g_gameState->unk1C->party[i]);
+            h->unk34[i].unkC = g_gameState->unk1C->party[i]->level;
+            *(Name10 *)h->unk34[i].unk2 = *(Name10 *)g_gameState->unk1C->party[i]->unk0;
         } else {
             h->unk34[i].unk0 = 0;
             h->unk34[i].unk1 = 0xFF;
@@ -2072,11 +2072,11 @@ void func_801F9904(SaveParty *s) {
 
     gd = g_gameState->unk1C;
     for (i = 0; i < 9; i++) {
-        s->unk0[i] = gd->unk3C[i];
+        s->unk0[i] = gd->characters[i];
     }
     for (i = 0; i < 4; i++) {
-        if (gd->unk54C[i] != NULL) {
-            s->unk510[i] = gd->unk54C[i]->unk34.b.id;
+        if (gd->party[i] != NULL) {
+            s->unk510[i] = gd->party[i]->unk34.b.id;
         } else {
             s->unk510[i] = 9;
         }
@@ -2095,13 +2095,13 @@ void func_801F99FC(SaveParty *s) {
 
     gd = g_gameState->unk1C;
     for (i = 0; i < 9; i++) {
-        gd->unk3C[i] = s->unk0[i];
+        gd->characters[i] = s->unk0[i];
     }
     for (i = 0; i < 4; i++) {
         if (s->unk510[i] < 9) {
-            gd->unk54C[i] = &gd->unk3C[s->unk510[i]];
+            gd->party[i] = &gd->characters[s->unk510[i]];
         } else {
-            gd->unk54C[i] = NULL;
+            gd->party[i] = NULL;
         }
     }
     gd->unk55C = s->unk514;

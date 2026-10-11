@@ -2649,12 +2649,12 @@ s32 func_800D8ACC(s32 arg0, s32 arg1) {
 
 s32 func_800D8B20(s32 arg0) {
     s32 idx = (func_800E716C(arg0)->unk68 >> 1) & 0xF;
-    return g_gameState->unk1C->unk3C[idx].unk34.b.unk4;
+    return g_gameState->unk1C->characters[idx].unk34.b.unk4;
 }
 
 s32 func_800D8B70(s32 arg0) {
     s32 idx = (func_800E716C(arg0)->unk68 >> 1) & 0xF;
-    return g_gameState->unk1C->unk3C[idx].unk39[0];
+    return g_gameState->unk1C->characters[idx].unk39[0];
 }
 
 void func_800D8BB8(s32 arg0, s32 arg1) {
@@ -8018,7 +8018,7 @@ void func_800E7D3C(s32 arg0, s32 arg1, s16 *arg2) {
     SVECTOR v;
 
     u = func_800E716C(arg0);
-    bone = (g_gameState->unk1C->unk3C + ((u->unk68 >> 1) & 0xF))->unk21;
+    bone = (g_gameState->unk1C->characters + ((u->unk68 >> 1) & 0xF))->unk21;
     if (arg1 == 0) {
         func_800DC818(arg0, bone, (u16 *)arg2);
     } else {
@@ -8235,7 +8235,7 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
 s32 func_800E865C(s32 arg0, s32 arg1) {
     u32 f = func_800E716C(arg0)->unk68;
     u8 k = D_800F8D70[arg1];
-    return ((f & 1) ? g_gameState->unk1C->unk3C[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
+    return ((f & 1) ? g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
 }
 
 void func_800E86E0(s32 *arg0, s32 *arg1, u32 arg2) {
@@ -9054,7 +9054,7 @@ void func_800EA650(void) {
         f = (u8)u->unk68 >> 5;
         e->unk10 = u;
         e->unk18 = f;
-        e->unk14 = &g_gameState->unk1C->unk3C[(u->unk68 >> 1) & 0xF];
+        e->unk14 = &g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF];
         e->unk19 = func_80034A30(e->unk14);
         e->unk1A = func_800339F4(e->unk14->unk34.b.id, (e->unk14->unkA >> 4) & 1);
         if ((g_gameState->unk24 >> 5) & 1) {
@@ -9102,7 +9102,7 @@ void func_800EA7B8(Unk80104F88Entry *arg0) {
 /* character 3: also list the abilities of character record 1 and its equipment */
 void func_800EA908(Unk80104F88Entry *arg0) {
     Unk800FD6E0 *m = &D_800FD6E0;
-    Character *c = &g_gameState->unk1C->unk3C[1];
+    Character *c = &g_gameState->unk1C->characters[1];
     Unk8006CB88 *ab = D_8006CB88;
     s32 i;
     s32 j;
@@ -12483,7 +12483,7 @@ u8 func_800F47D8(void) {
         return 0;
     }
     for (i = 0; i < 4; i++) {
-        Character *c = g_gameState->unk1C->unk54C[i];
+        Character *c = g_gameState->unk1C->party[i];
         if (c == 0) {
             continue;
         }

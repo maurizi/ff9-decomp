@@ -101,7 +101,7 @@ void func_801F4468(void) {
 
     D_801FC2D0.unk14 = 0;
     for (i = 0; i < 9; i++) {
-        if (g_gameState->unk1C->unk3C[i].unk34.b.unkB) {
+        if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
             D_801FC2D0.unk18[D_801FC2D0.unk14] = i;
             if (++D_801FC2D0.unk14 >= 8) {
                 break;
@@ -383,7 +383,7 @@ void func_801F51B8(void) {
     func_8002B524(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[D_801FC070[armor]], 0);
     for (i = 0; i < D_801FC2D0.unk14; i++) {
         x = 0xF + i * 0x24;
-        c = &g_gameState->unk1C->unk3C[(u8)D_801FC2D0.unk18[i]];
+        c = &g_gameState->unk1C->characters[(u8)D_801FC2D0.unk18[i]];
         ok = (D_80069018[id].unk6 & D_801FC080[func_80033A1C(c)]) != 0;
         y = 0x9E;
         if (ok) {
@@ -816,7 +816,7 @@ void func_801F6714(void) {
     func_8002B524(r->x + 6, r->y - 3, 0x1D, ((u8 **)&D_800703FC)[D_801FC0D0[armor]], 0);
     for (i = 0; i < D_801FC2D0.unk14; i++) {
         x = 0xF + i * 0x24;
-        c = &g_gameState->unk1C->unk3C[(u8)D_801FC2D0.unk18[i]];
+        c = &g_gameState->unk1C->characters[(u8)D_801FC2D0.unk18[i]];
         ok = (D_80069018[s->unk4].unk6 & D_801FC0E0[func_80033A1C(c)]) != 0;
         y = 0x9E;
         if (ok) {

@@ -254,7 +254,7 @@ void func_801F42A4(void) {
 void func_801F4360(s32 x, s32 y, s32 otz, s32 id) {
     if (id != 0xFF) {
         func_801F43FC(x, y, otz, id, 0x2D, D_801F4748.unk1A[id]);
-        func_8002423C(x + 0x26, y + 3, otz, &g_gameState->unk1C->unk3C[id]);
+        func_8002423C(x + 0x26, y + 3, otz, &g_gameState->unk1C->characters[id]);
     }
 }
 
@@ -267,7 +267,7 @@ void func_801F43FC(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
     base = y + h;
     yy = base - 8;
     if (id != 0xFF) {
-        c = &g_gameState->unk1C->unk3C[id];
+        c = &g_gameState->unk1C->characters[id];
         if (c->unk38 & 2) {
             icon = &D_800687C0;
             func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
@@ -278,7 +278,7 @@ void func_801F43FC(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
             func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy -= 7;
         }
-        if (c->unk10 == 0) {
+        if (c->hp == 0) {
             icon = &D_80068E30;
             func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
         }
@@ -323,7 +323,7 @@ u8 func_801F465C(void) {
         id = D_801F4748.unkA[0][i];
         if (id != 0xFF) {
             n++;
-            if (g_gameState->unk1C->unk3C[id].unk10 != 0 && !(g_gameState->unk1C->unk3C[id].unk38 & 3)) {
+            if (g_gameState->unk1C->characters[id].hp != 0 && !(g_gameState->unk1C->characters[id].unk38 & 3)) {
                 alive++;
             }
         }

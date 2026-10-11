@@ -212,7 +212,7 @@ void func_801EFC68(void) {
     for (i = 0; i < 4; i++) {
         if (D_801F7A78.unk14C[i + 2] != 0) {
             r = &D_801F7A78.unkAC[i + 2].unk4;
-            c = g_gameState->unk1C->unk54C[i];
+            c = g_gameState->unk1C->party[i];
             if (c != NULL) {
                 alive = func_801F171C(c, i);
                 dim = !alive;
@@ -223,20 +223,20 @@ void func_801EFC68(void) {
                 func_80028AF0(r->x + 4, r->y + 4, 0xB, i, dim);
                 func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
                 D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, D_801F7A78.unk374);
-                text_formatNumber(c->unkB, buf, 2, 1);
+                text_formatNumber(c->level, buf, 2, 1);
                 func_800275DC(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
                 D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
                 func_80026FC4(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
                 func_8002B5FC(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
-                text_formatNumber(c->unkC, p, 7, 1);
+                text_formatNumber(c->exp, p, 7, 1);
                 func_8002B56C(r->x + 0x62, r->y + 0x20, 0xB, p, col);
-                if (c->unkB < 99) {
-                    n = D_8006DF5C[c->unkB];
+                if (c->level < 99) {
+                    n = g_levelExp[c->level];
                 } else {
-                    n = c->unkC;
+                    n = c->exp;
                 }
-                text_formatNumber(n - c->unkC, buf, 6, 1);
+                text_formatNumber(n - c->exp, buf, 6, 1);
                 func_8002B56C(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
                 func_8002B5FC(r->x + 0x29, r->y + 0x26, 0xB, text_get(0xC), col);
             }
@@ -484,9 +484,9 @@ void func_801F0A44(void) {
     D_801F7A78.unk9 = 0;
     for (; i < 4; i++) {
         if ((D_800FDF30.unkA >> i) & 1) {
-            if (g_gameState->unk1C->unk54C[i] != NULL) {
-                D_801F7A78.unk14[i] = func_801F_canExp(g_gameState->unk1C->unk54C[i]);
-                D_801F7A78.unk18[i] = func_801F_canAp(g_gameState->unk1C->unk54C[i]);
+            if (g_gameState->unk1C->party[i] != NULL) {
+                D_801F7A78.unk14[i] = func_801F_canExp(g_gameState->unk1C->party[i]);
+                D_801F7A78.unk18[i] = func_801F_canAp(g_gameState->unk1C->party[i]);
                 if (D_801F7A78.unk14[i]) {
                     D_801F7A78.unk9++;
                 }
@@ -876,7 +876,7 @@ void func_801F1A04(s32 arg0, u32 arg1) {
     s32 need;
     s32 have;
 
-    c = g_gameState->unk1C->unk54C[arg0];
+    c = g_gameState->unk1C->party[arg0];
     if (arg1 != 0 && func_80034A30(c)) {
         D_801F7A78.unk24.unk4C[arg0].unk8 += arg1;
         for (i = 0; i < 5; i++) {
@@ -964,7 +964,7 @@ void func_801F1D94(Window *w) {
         func_800275DC(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
         name = D_801F4F94 + D_8006D128[id - 0xC0].unk2;
-        if (func_80034A04(g_gameState->unk1C->unk54C[slot]->unk88, id)) {
+        if (func_80034A04(g_gameState->unk1C->party[slot]->unk88, id)) {
             icon = 0xBD;
         } else {
             icon = 0xF4;
@@ -989,7 +989,7 @@ void func_801F1FEC(void) {
 
     for (i = 0; i < 4; i++) {
         if (D_801F7A78.unk18[i] != 0) {
-            D_801F7A78.unk20[i] = func_801F1BA4(g_gameState->unk1C->unk54C[i], func_801F20A8(i));
+            D_801F7A78.unk20[i] = func_801F1BA4(g_gameState->unk1C->party[i], func_801F20A8(i));
         } else {
             D_801F7A78.unk20[i] = 0;
         }
@@ -1005,7 +1005,7 @@ s32 func_801F20A8(s32 i) {
     u32 ap = D_801F7A78.unk24.unk4;
     Counter *c = &D_801F7A78.unk24.unk4C[i];
 
-    if (func_800349BC(g_gameState->unk1C->unk54C[i]->unk34.b.id, 0xEC)) {
+    if (func_800349BC(g_gameState->unk1C->party[i]->unk34.b.id, 0xEC)) {
         c->unk0 = ap * 2;
     } else {
         c->unk0 = ap;
@@ -1083,7 +1083,7 @@ void func_801F2490(void) {
 
     for (i = 0; i < 4; i++) {
         if (D_801F7A78.unk14[i] != 0) {
-            D_801F7A78.unk1C[i] = func_801F27F0(g_gameState->unk1C->unk54C[i], func_801F26F8(i));
+            D_801F7A78.unk1C[i] = func_801F27F0(g_gameState->unk1C->party[i], func_801F26F8(i));
         } else {
             D_801F7A78.unk1C[i] = 0;
         }
@@ -1098,22 +1098,22 @@ void func_801F2538(void) {
 
 void func_801F2560(s32 i, u32 exp) {
     u32 need;
-    Character *c = g_gameState->unk1C->unk54C[i];
+    Character *c = g_gameState->unk1C->party[i];
 
     if (exp != 0) {
-        if (c->unkC > 9999998) {
-            c->unkC = 9999999;
+        if (c->exp > 9999998) {
+            c->exp = 9999999;
             return;
         }
         D_801F7A78.unk24.unk1C[i].unk8 += exp;
-        c->unkC += exp;
-        if (c->unkC > 9999998) {
-            c->unkC = 9999999;
+        c->exp += exp;
+        if (c->exp > 9999998) {
+            c->exp = 9999999;
         }
-        if (c->unkB < 99 && (need = D_8006DF5C[c->unkB]) <= c->unkC) {
+        if (c->level < 99 && (need = g_levelExp[c->level]) <= c->exp) {
             do {
                 func_801F29BC(i);
-            } while (c->unkB < 99 && (need = D_8006DF5C[c->unkB]) <= c->unkC);
+            } while (c->level < 99 && (need = g_levelExp[c->level]) <= c->exp);
         }
     }
 }
@@ -1132,7 +1132,7 @@ void func_801F269C(s32 arg0) {
 
 u32 func_801F26F8(s32 arg0) {
     u32 exp = D_801F7A78.unk24.unk0;
-    Character *m = g_gameState->unk1C->unk54C[arg0];
+    Character *m = g_gameState->unk1C->party[arg0];
     Counter *c = &D_801F7A78.unk24.unk1C[arg0];
     u32 step;
 
@@ -1156,10 +1156,10 @@ u32 func_801F26F8(s32 arg0) {
 }
 
 s32 func_801F27F0(Character *arg0, s32 arg1) {
-    if (arg0->unkB >= 99) {
+    if (arg0->level >= 99) {
         return 0;
     }
-    return arg0->unkC + arg1 >= D_8006DF5C[arg0->unkB];
+    return arg0->exp + arg1 >= g_levelExp[arg0->level];
 }
 
 void func_801F2834(void) {
@@ -1201,9 +1201,9 @@ void func_801F28F0(void) {
 }
 
 void func_801F29BC(s32 arg0) {
-    Character *m = g_gameState->unk1C->unk54C[arg0];
+    Character *m = g_gameState->unk1C->party[arg0];
 
-    func_80033CCC(m->unk34.b.id, m->unkB + 1);
+    func_80033CCC(m->unk34.b.id, m->level + 1);
     D_801F7A78.unk158[arg0].unk4++;
     D_801F7A78.unk258[arg0].unk14++;
 }
@@ -1269,7 +1269,7 @@ void func_801F2BBC(void) {
     Character *m;
 
     for (i = 0; i < 4; i++) {
-        m = g_gameState->unk1C->unk54C[i];
+        m = g_gameState->unk1C->party[i];
         if (m != NULL && func_800349BC(m->unk34.b.id, 0xED)) {
             found = 1;
         }
