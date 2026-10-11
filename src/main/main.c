@@ -12158,8 +12158,6 @@ s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047B90);
-
 /* point 500 units ahead of o at angle a, at head height */
 static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     SVECTOR v;
@@ -12180,6 +12178,25 @@ static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     gte_ldv0(&v);
     gte_rtv0tr();
     gte_stlvnl(out);
+}
+
+void func_80047B90(Unk8004AB64 *o, Unk80047B90 *m) {
+    VECTOR out;
+    s32 d;
+
+    func_80047E1C_ahead(o, o->unk14.unk22, &out);
+    d = func_80052EC0(out.vx - o->unk84, out.vy - o->unk86, out.vz - o->unk88);
+    if (d < 100) {
+        d = 100;
+        o->unk50 &= 0xF8FF;
+    }
+    o->unk84 += (out.vx - o->unk84) * 100 / d;
+    o->unk86 += (out.vy - o->unk86) * 100 / d;
+    o->unk88 += (out.vz - o->unk88) * 100 / d;
+    m->unk0 |= 1;
+    m->unk48 = o->unk84;
+    m->unk4A = o->unk86;
+    m->unk4C = o->unk88;
 }
 
 /* move the look-at point towards t */
@@ -14487,7 +14504,133 @@ void func_8004E16C(void) {
     D_8007BBC8 = 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004E248);
+/* Inlined copy of func_8004EFB0 (message i, its size into out). */
+static inline u8 *func_8004EFB0_inline(s32 i, WinLayout *out) {
+    u8 *e = NULL;
+    s32 v;
+
+    if (i >= 0 && i < D_8007B954->unk0) {
+        e = (u8 *)D_8007B954->unk4;
+        v = ((u32 *)e)[D_8007B708 == 4 ? i : i * 2];
+        if (out != NULL) {
+            out->unk2 = ((v >> 16) & 0xFFF) + 9;
+            out->unk9 = (D_8007B708 == 4 ? (u32)v >> 28 : ((MsgEntry8 *)e)[i].unk6) * 14 + 6;
+        }
+        e += v & 0xFFFF;
+    }
+    return e;
+}
+
+WinLayout *func_8004E248(s32 id, s32 *x, s32 *y, s32 *z) {
+    u8 *p;
+    s32 v;
+    s32 done;
+    s32 t;
+    s32 n, i;
+    s32 mask;
+    s32 cnt;
+
+    p = func_8004EFB0_inline(id, &D_8007B940);
+    if (p != NULL) {
+        done = 0;
+        D_8007BB90 = 0;
+        D_8007B940.unkA = 0;
+        D_8007B940.unkB = 0;
+        *x = 0;
+        *y = 0;
+        *z = 0;
+        while (!done) {
+            if (*p++ != 0xF9) {
+                break;
+            }
+            switch (*p++) {
+            case 0x7:
+                D_8007B960 = -1;
+                D_8007B95C = *p++;
+                D_8007B96C = *p++ - 1;
+                break;
+            case 0x4F:
+                D_8007B960 = D_8007B974;
+                n = i = *p;
+                mask = D_8007B974;
+                while (--i != -1) {
+                    n -= (mask ^ 1) & 1;
+                    mask >>= 1;
+                }
+                D_8007B95C = n;
+                D_8007B940.unk9 -= (*p++ - n) * 14;
+                n = -1;
+                mask = D_8007B960;
+                cnt = *p++;
+                while (--cnt != -1) {
+                    n += mask & 1;
+                    mask >>= 1;
+                }
+                if (n >= D_8007B95C) {
+                    n = D_8007B95C - 1;
+                }
+                D_8007B96C = n;
+                break;
+            case 0x3:
+                D_8007B940.unk0 = *p++;
+                D_8007B940.unk0 |= *p++ << 8;
+                D_8007B940.unk8 = *p++;
+                D_8007B940.unkA = 0xFF;
+                break;
+            case 0x50:
+            case 0x51:
+            case 0x52:
+            case 0x53:
+            case 0x54:
+            case 0x55:
+            case 0x58:
+            case 0x59:
+            case 0x5A:
+            case 0x5B:
+            case 0x5C:
+                D_8007B940.unkA = p[-1];
+                break;
+            case 0x5F:
+                *x = *p;
+                *x |= *(s8 *)++p << 8;
+                *y = *++p;
+                *y |= *(s8 *)++p << 8;
+                *z = *++p;
+                *z |= *(s8 *)++p << 8;
+                p++;
+                break;
+            case 0xB:
+                D_8007BB90 = 1;
+                break;
+            case 0x45:
+                D_8007B940.unkB = 1;
+                break;
+            case 0xD:
+                for (;;) {
+                    v = *p++;
+                    v |= *p++ << 8;
+                    if (v == 0xFFFF) break;
+                    t = (v >> 12) & 0xF;
+                    v &= 0xFFF;
+                    if (t == 0 || ((D_8007B960 >> (t - 1)) & 1)) {
+                        func_8004C2C0(&p, &v);
+                        if (D_8007B940.unk2 < v) {
+                            D_8007B940.unk2 = v;
+                        }
+                    } else {
+                        while (*p++ != 0xFF) {
+                        }
+                    }
+                }
+                break;
+            default:
+                done = 1;
+                break;
+            }
+        }
+    }
+    return &D_8007B940;
+}
 
 void func_8004E76C(s32 a) {
     GameData *d = D_8006794C->unk1C;

@@ -1653,6 +1653,8 @@ typedef struct {
 
 extern s32 D_8007B960;
 extern s32 D_8007B958;
+extern s32 D_8007B95C;
+extern s32 D_8007B96C;
 extern s32 D_8007B974;
 extern s32 D_8007BB94;
 
@@ -3439,6 +3441,7 @@ void func_8004F5D4(Unk8004F5D4 *);
 void func_8004F660(Window *);
 
 WinLayout *func_8004E248(s32, s32 *, s32 *, s32 *);
+extern WinLayout D_8007B940;
 void func_80038FD8(Unk8004AB64 *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
