@@ -1042,7 +1042,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     is an else-if chain (`== 1` / `>= 0x2B52` / else): with a nested if in the else arm jump.c turns the
     0x2714 arm into a speculative set and reorg fills the bne delay slot differently. No do-while wraps.
 - Pass 16 (overlay agent): matched 64 B7C4 (was 75 rows). Improved: 37 F13F8 40 -> 25, 3a F459C 47 -> 45,
-  33 EF644 31 -> 26, 0d B16A4 37 -> 25, 34 EFC20 (= 39 F7FD4) 39 -> 38.
+  33 EF644 31 -> 26, 0d B16A4 37 -> 9, 34 EFC20 (= 39 F7FD4) 39 -> 38.
   * 64 B7C4: the colour table is indexed (`D_8019DEAC[j].r`, j++ every 8 sectors), not walked with a pointer.
     The indexed table address is a loop invariant that loop.c moves first, and every moved invariant lowers
     move_movables' threshold by 3; after that buf * 0x780 and &D_8019F7F0 (life 2, savings 2) are not worth

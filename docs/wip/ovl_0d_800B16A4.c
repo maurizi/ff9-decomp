@@ -1,7 +1,7 @@
 /*
  * ovl_0d func_800B16A4 (0x330 bytes): draws the hand cursor (SPRT + shadow) or, in mode 2, the
  * zooming FT4 cursor pair.
- * WIP (pass 16): 204 of 204 instructions, 25 aligned diff rows (was 37, 136).
+ * WIP (pass 16): 204 of 204 instructions, 9 aligned diff rows (was 37, 136).
  * Fixed: `s32 u` (with u8 u the FT4 branch's u got CSE'd into a separate local; the original keeps
  * u in s7 in both branches).
  * Left: ot should be s1 (it's s3 here) and the FT4 branch's ot + 3 local s5; the FT4 stores are
@@ -12,8 +12,10 @@
  * Pass 14: `o = ot + 3;` as the first statement of the FT4 branch (shared o) gives 147 rows.
  * Pass 16: the first FT4's y2 store right after x3 (permuter, statement order): 37 -> 28. A block-local
  * `o2 = ot + 3` in the FT4 branch gives 38. The SPRT's y0 store right after x0 (permuter): 28 -> 25, now
- * 204 instructions. Left: ot in s4 and `ot + 3` computed in place (original: ot s1, ot + 3 in s5, 0x3AC0
- * in s4), and the second FT4's x/y temps (v0 here, v1 there).
+ * 204 instructions. Then statement order in the FT4 prims (build/s/hill.py, single-line moves): first FT4's
+ * clut after u2/v2 and tpage last (ot back in s1, 0x3AC0/0x9C in s4/s3: 16), second FT4's x2/y0/x1/x0
+ * order (9). Left: the first FT4's x + 0x18 temp (v0 here, v1 in the original) and the second FT4's
+ * x0/x2 store order; single-line moves no longer help.
  */
 #include "ovl_0d.h"
 void *func_800B16A4(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
@@ -88,19 +90,19 @@ void *func_800B16A4(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
         ((POLY_FT4 *)p)->v2 = 0x90;
         ((POLY_FT4 *)p)->u3 = u;
         ((POLY_FT4 *)p)->v3 = 0x90;
-        ((POLY_FT4 *)p)->clut = 0x3AC0;
         ((POLY_FT4 *)p)->r0 = 0x80;
+        ((POLY_FT4 *)p)->clut = 0x3AC0;
         ((POLY_FT4 *)p)->g0 = 0x80;
         ((POLY_FT4 *)p)->b0 = 0x80;
-        ((POLY_FT4 *)p)->tpage = 0x9C;
         ((POLY_FT4 *)p)->y3 = y + 0x10;
+        ((POLY_FT4 *)p)->tpage = 0x9C;
         AddPrim(ot + 3, p);
         p = (POLY_FT4 *)p + 1;
         SetPolyFT4((POLY_FT4 *)p);
-        ((POLY_FT4 *)p)->x0 = x + 4;
         ((POLY_FT4 *)p)->x2 = x + 4;
-        ((POLY_FT4 *)p)->x1 = x + 0x1C;
         ((POLY_FT4 *)p)->y0 = y + 4;
+        ((POLY_FT4 *)p)->x1 = x + 0x1C;
+        ((POLY_FT4 *)p)->x0 = x + 4;
         ((POLY_FT4 *)p)->y1 = y + 4;
         ((POLY_FT4 *)p)->y2 = y + 0x14;
         ((POLY_FT4 *)p)->x3 = x + 0x1C;
