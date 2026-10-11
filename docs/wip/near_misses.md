@@ -4,6 +4,22 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 24 matched 8001DE50 (968 B). Two fixes:
+  - The `li v0,2` vs `addiu t0,2` row came from loop.c, not from flags. move_movables lowers its
+    threshold by 3 for every movable it hoists, and with a u16 `key` the inner loop's
+    zero_extend of key was hoisted first, so the constant 2 no longer qualified (life 1 *
+    threshold < 21 insns). A separate s32 key for the second loop removes that movable, and 2 is
+    hoisted (spilled, reloaded into t0) as in the original. Check the -dL dump ("not desirable")
+    when a constant is loaded in-loop here but hoisted in the original.
+  - The s0 copy of buf: `do { } while (0);` after `buf += base << 11`, then
+    `data = buf + (base << 11) - (base << 11);` after `size = ...` (CSE keeps the copy, and the
+    position puts it next to the memmove). Every plain copy form is still folded (data-canonical
+    forms with a dead `data = NULL;` at the end: 11-44 rows). Integrated under the relaxed rule
+    (a redundant expression that emits no code), with a comment. It's the only questionable
+    construct.
+  - Remaining 6 drafts: insertion sweeps of no-code statements (dead stores, conditional dead
+    stores, self-copies, empty loops; build/w/ins.py in the pass-24 worktree) gave nothing
+    on 8003595C, 80059414 or 8002E718. Headers have pass 24 notes.
 - Pass 9 (the seven large undrafted functions) matched 2: 800283E0 (832 B), 80023A6C (1100 B).
   80023A6C is game code, not unsigned PsyQ: it draws the countdown timer from D_80076B60.unk408
   (D_80076F68) through func_80027834/func_800253D4 and reads D_8006794C, and nothing about it looks
