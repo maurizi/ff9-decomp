@@ -303,6 +303,34 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Status: DE11C 79 rows (was 430; 8 masked). The first four loops match apart from the FT3/GT3 tail sra. The draft still
   has two invented variables (zg = otz of the G/F loops, i2 = the second colour word of GT4/G4); see the WIP header.
   D2DBC 63 (pure allocation; the frame/cnt register t2 also holds `(b & 0xF) * 2`), AC37C unchanged (175).
+- Pass 13: matched DE11C (0x1040), D2DBC (0x274), D1D74 (0x288), D1FFC (0x3DC), C9794 (0x294), C0C00 (0x7C).
+  What fixed them:
+  - DE11C: one `otz` for all eight loops, with `addPrim(&ot[otz >> 4], p)` in the 3-vertex loops (no in-place
+    `otz >>= 4`). That drops the shared pseudo from 120 refs (1.59, took t2) to 104 refs / 450 insns = 1.39, and
+    the first-half conflicts (otz vs b in t1) keep it off t1 in the second half, so it lands in t3 everywhere (a split
+    zg had no conflict with b and 1.97, so it took a2, or t1 when its priority was lowered). The second colour/uv word of GT4/G4 goes into i1 (dead by then; the original's a0), and `col[a & 0xFFFF]`
+    works as well as the byte-offset form. Found with build/gsim.py (below), not by search.
+  - build/gsim.py (agent worktree agent-aa3230c8e7e5ba3f3): replays global-alloc from a `-dg -dl` dump (conflicts, hard conflicts, printed preferences,
+    regs_used_so_far for pass 0) with overrides: `REG=pri`, `conf:A,B` (extra conflict), `pref:A,HARD` (extra full
+    preference), `merge:A,B` (one allocno). gsweep2.sh sweeps one pseudo's priority. It reproduces the real dispositions
+    of DE11C exactly (apart from HI/LO and spilled pseudos), so it answers "which priority/conflict would give the
+    original registers" before writing any C. For DE11C, `merge:85,86` at priority 1.0-1.2 gave the original assignment.
+  - One variable for several roles, again: D2DBC's n (count, n*2+8, frame offset, n++) and f (frame, %, count,
+    `(b & 0xF) * 2`); D1D74/D1FFC's i (frame, then the palette count `i = *p++`); C9794's i for all three loops.
+  - D2DBC: mode/ctab/clut are plain locals that lose global allocation (refs <= 4 * calls, so no caller-save) and
+    are reloaded through reload's t4: `clut = h->unk4 << 16` as one statement (5 refs made it caller-saved in t2).
+    `mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5)` gives the original OR association; `num = arg0[n++]; arg0 += n;`;
+    `for (i = 0; ...; i++, prim += 20)` orders the giv increments.
+  - sched1 ties (D2DBC, D1D74, D1FFC): when two launched insns tie, the one later in the RTL is placed lower. The frame
+    offset must be computed before the palette pointer and added after it: `off = f * 2; q = (u16 *)(arg0 + n);
+    n = *(u16 *)((u8 *)h->unk8 + off);`. D1D74/D1FFC also need `pal = arg0 + n; p = (u16 *)pal;` (permuter find; the
+    copy changes the order) and D1FFC `mode = h->unk2` before `c.unk14 = h->unk4`.
+  - C0C00: `v = ... * 4` in each branch with `u8 k`: with an s32 k, reload_cse turns the k == 2 branch's `sll 2` into
+    `sllv a3` (k holds 2) and the branches no longer cross-jump.
+  - C9794: `for (i = 0, cmd = src; ...; i++, cmd++)` puts the i increment before cmd's.
+  Status of the rest: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, DA138 6 (gsim: needs sz > p > i, or sz preferring v1
+  and p a0), BFF20 6, AB810 6 (was 8: pass e->unk4 to the first func_8001C7FC; the loop entry test still folds),
+  E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175. 15-20 min permuter runs on AA504, E1534, DA1F4 found nothing.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
