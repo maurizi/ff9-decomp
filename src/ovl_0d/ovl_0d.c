@@ -507,7 +507,7 @@ void func_800A8B80(void) {
 void func_800A8BC4(TmState *s) {
     GameData *ctx;
 
-    if ((D_80077524 & 0xF09) == 0xF09) {
+    if ((g_padHeld & 0xF09) == 0xF09) {
         g_gameState->unk0 |= 1;
         s->unk0 = 0xC;
     }
@@ -901,7 +901,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
     s32 w;
 
     if (func_800AE830(s, 0) != 0) {
-        pad = D_80077528;
+        pad = g_padRepeat;
         c = func_800AE9D0(s, 0, s->unk4);
         if (func_800AE830(s, 0) != 5) {
             ry = c->unk10 + 0x34;
@@ -962,7 +962,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
                     func_800B01E8(1);
                 }
             }
-            if (D_80077524 & 0x200000) {
+            if (g_padHeld & 0x200000) {
                 if (s->unk564 < 0xA) {
                     s->unk564++;
                 }
@@ -1007,7 +1007,7 @@ void *func_800A9F10(u32 *ot, void *p, TmState *s) {
     if (func_800AE830(s, 0) == 0) {
         return p;
     }
-    pad = D_80077528;
+    pad = g_padRepeat;
     func_800AE9D0(s, 0, s->unk4);
     cell = func_800B19D4(s, s->unk8, s->unkC);
     cx = s->unk8 * 43 + 0x48;
@@ -1078,7 +1078,7 @@ void *func_800A9F10(u32 *ot, void *p, TmState *s) {
 void func_800AA1FC(TmState *s) {
     RECT r;
 
-    if ((D_80077528 & 0x30000) && s->unk2E8 >= 0x22) {
+    if ((g_padRepeat & 0x30000) && s->unk2E8 >= 0x22) {
         s->unk468 = 0;
         s->unk464 = 0;
         s->unk46C = 0;
@@ -1113,7 +1113,7 @@ void func_800AA1FC(TmState *s) {
 }
 
 void func_800AA368(TmState *arg0) {
-    if (D_800B3CD0 == 0 && (D_80077528 & 0x30000)) {
+    if (D_800B3CD0 == 0 && (g_padRepeat & 0x30000)) {
         func_8002DD00(arg0->unk4B8);
         arg0->unk0 = 4;
     }
@@ -1153,7 +1153,7 @@ void func_800AA408(TmState *arg0) {
 }
 
 void func_800AA504(TmState *arg0) {
-    if (D_800B3CD0 == 0 && (D_80077528 & 0xA0000)) {
+    if (D_800B3CD0 == 0 && (g_padRepeat & 0xA0000)) {
         func_800AE54C(arg0);
     }
 }
@@ -1163,7 +1163,7 @@ void func_800AA548(TmState *s) {
     s32 pad;
 
     if (D_800B3CD0 == 0) {
-        pad = D_80077528;
+        pad = g_padRepeat;
         if (pad & 0x20000) {
             func_8002DD00(s->unk458);
             if (s->unk4 == 0) {
@@ -1247,7 +1247,7 @@ void func_800AA790(TmState *s) {
         r.h = 0xDE;
         func_80035580(&r);
     }
-    pad = D_80077528;
+    pad = g_padRepeat;
     n = func_80062560(func_800AF268(s));
     if (s->unk568 != 0) {
         pad = 0;
@@ -1383,7 +1383,7 @@ void func_800AAEB4(TmState *s) {
     TmCard *c;
 
     if (D_800B3CD0 == 0) {
-        pad = D_80077528;
+        pad = g_padRepeat;
         if (pad & 0x20000) {
             if (s->unk4 == 0) {
                 s->unk2E8 = 0;
@@ -1446,8 +1446,8 @@ void func_800AB0F0(TmState *s) {
 
     sum = s->unk4C8[0] + s->unk4C8[1] + s->unk4C8[2] + s->unk4C8[3] + s->unk4C8[4] + s->unk4C8[5] +
           s->unk4C8[6] + s->unk4C8[7] + s->unk4C8[8];
-    pad = D_80077528;
-    if (!(D_80077524 & 0x10000)) {
+    pad = g_padRepeat;
+    if (!(g_padHeld & 0x10000)) {
         if (pad & 0x40) {
             s->unk450--;
         }
@@ -1482,7 +1482,7 @@ void func_800AB0F0(TmState *s) {
 }
 
 void func_800AB2E0(TmState *arg0) {
-    if (D_800B3CD0 == 0 && (D_80077528 & 0xA0000)) {
+    if (D_800B3CD0 == 0 && (g_padRepeat & 0xA0000)) {
         func_8002DD00(arg0->unk4B8);
         arg0->unk0 = 0x17;
     }
@@ -1492,7 +1492,7 @@ void func_800AB338(TmState *s) {
     s32 pad;
 
     if (D_800B3CD0 == 0) {
-        pad = D_80077528;
+        pad = g_padRepeat;
         if (pad & 0x20000) {
             if (s->unk4 == 0) {
                 func_800626D0(func_800AF268(s), s->unk4B4);
@@ -1561,7 +1561,7 @@ void *func_800AB574(u32 *ot, void *p, TmState *s) {
     TmCell *cell;
     TmCard *c;
 
-    pad = D_80077528;
+    pad = g_padRepeat;
     ox = s->unk8;
     oy = s->unkC;
     if ((pad & 0x20) && ox != 3 && ox != s->unk424 + 1) {
@@ -1616,7 +1616,7 @@ void *func_800AB574(u32 *ot, void *p, TmState *s) {
 }
 
 void func_800AB854(TmState *arg0) {
-    if (D_80077528 & 0x30000) {
+    if (g_padRepeat & 0x30000) {
         func_8002DD00(arg0->unk4C4);
         func_800B35F8(arg0);
     }
@@ -1661,7 +1661,7 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     TmCard *cards;
     s32 k;
 
-    pad = D_80077528;
+    pad = g_padRepeat;
     if ((pad & 0x10) && s->unk5B0 != 0) {
         s->unk5B0--;
         func_800B01E8(1);
@@ -1741,7 +1741,7 @@ void func_800ABC74(TmState *s) {
     TmCard *c;
 
     if (D_800B3CD0 == 0) {
-        pad = D_80077528;
+        pad = g_padRepeat;
         if (pad & 0x10) {
             if (s->unk5B4 != 0) {
                 s->unk5B4 = 0;

@@ -39,30 +39,30 @@ void func_801F7C8C(void) {
     u8 v;
     Ovl32State *st;
 
-    if (D_80077528 & 0x10000) {
-        func_8002F488(0x65);
+    if (g_padRepeat & 0x10000) {
+        snd_playSe(0x65);
         func_800325E0();
-    } else if (D_80077528 & 0x20000) {
+    } else if (g_padRepeat & 0x20000) {
         if (D_801F9850.unk0 == 0) {
             D_801F9850.unk1 = 2;
-            func_8002F488(0x67);
+            snd_playSe(0x67);
         } else if (g_gameState->unk1C->unk844 == 0) {
-            func_8002F488(0x66);
+            snd_playSe(0x66);
         } else {
             g_gameState->unk1C->unk844 = 0;
-            func_8002F488(0x6B);
+            snd_playSe(0x6B);
         }
     } else {
-        if (D_80077528 & 0x80) {
-            func_8002F488(0x67);
+        if (g_padRepeat & 0x80) {
+            snd_playSe(0x67);
             st = &D_801F9850;
             if (st->unk0 != 0) {
                 v = st->unk0 - 1;
             } else {
                 v = 1;
             }
-        } else if (D_80077528 & 0x20) {
-            func_8002F488(0x67);
+        } else if (g_padRepeat & 0x20) {
+            snd_playSe(0x67);
             st = &D_801F9850;
             if (st->unk0 == 0) {
                 v = st->unk0 + 1;
@@ -83,26 +83,26 @@ void func_801F7DC0(void) {
     s32 n;
 
     if (l->unk8 == 0) {
-        if (D_80077528 & 0x10000) {
-            func_8002F488(0x65);
+        if (g_padRepeat & 0x10000) {
+            snd_playSe(0x65);
             D_801F9850.unk1 = 1;
             return;
         }
-        if (D_80077528 & 0x20000) {
+        if (g_padRepeat & 0x20000) {
             st = &D_801F9850;
             idx = l->unk5 + l->unk6;
             if (st->unk8 & (1 << idx)) {
                 n = st->unk4;
                 if (func_801F95E8(idx) < n) {
-                    func_8002F488(0x6B);
+                    snd_playSe(0x6B);
                     g_gameState->unk1C->unk844 = l->unk5 + l->unk6 + 1;
                     return;
                 }
             }
-            func_8002F488(0x66);
+            snd_playSe(0x66);
             return;
         }
-        func_8002EE8C(l, D_80077528);
+        func_8002EE8C(l, g_padRepeat);
     }
 }
 

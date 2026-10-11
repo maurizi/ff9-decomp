@@ -1257,7 +1257,7 @@ extern s32 D_8007B998;
 extern s32 D_80077E20;
 extern s32 D_8007ADFC;
 extern s32 D_8007AE00; /* party mask, set by func_80049ED8 */
-extern u32 D_800739A0[];
+extern u32 g_padPortHeld[];
 extern u32 D_8007B97C;
 extern u32 D_8007B980;
 extern s32 D_8007BBEC;
@@ -1760,7 +1760,7 @@ extern s32 D_80070454;
 extern s32 D_80070460;
 extern s32 D_800704AC;
 extern s32 D_80073998[];
-extern u32 D_80077528; /* pad buttons pressed this frame */
+extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
 extern u8 D_80077DB5;
 extern s32 D_80077DC0; /* frame counter? */
 
@@ -2048,7 +2048,7 @@ void func_8002F044(MenuList *, s32);
 void func_8002F0EC(MenuList *, s32);
 MenuView *func_8002F344(MenuList *, MenuView *);
 void func_8002F40C(MenuList *, RECT *, RECT *);
-void func_8002F488(s32);
+void snd_playSe(s32);
 void func_8002F514(s32);
 void func_8002F55C(s32);
 u8 func_8002F810(void);
@@ -2499,7 +2499,7 @@ void func_800273C0(s32, s32, s32, s32, s32);
 void func_80033D38(u8 *, s32); /* default name by id */
 s32 func_8002BCC0(u8 *); /* strlen */
 extern u32 D_80077DBC; /* = D_80077DB0.unkC, read on its own by ovl_3a */
-extern u32 D_80077520; /* pad buttons (repeat?) */
+extern u32 g_padPressed; /* buttons that went down this frame */
 void func_8002886C(void);
 void func_80028994(s32, RECT *, RECT *);
 typedef struct {
@@ -2560,7 +2560,7 @@ void func_8002EF58(MenuList *, u32);
 void func_8002F1CC(MenuList *, s32);
 void func_8002F284(MenuList *, s32);
 void func_8002EEF0(MenuList *, u32);
-extern u32 D_80077524; /* pad buttons */
+extern u32 g_padHeld; /* buttons held */
 extern s32 D_80070430;
 extern u8 D_8007AF02;
 void func_8003384C(Character *);
@@ -2581,12 +2581,12 @@ void func_80033AF4(s32, s32);
 /* ---- hoisted for the world map (ovl_0c) ---- */
 s32 func_80062E3C(s32, s32, s32, s32, s32, s32, s32);
 #if defined(OVL_0A_H) || defined(OVL_0C_H) /* the field code only reads port 1 */
-extern s32 D_80073990;
+extern s32 g_padPortPressed;
 #else
-extern s32 D_80073990[2]; /* buttons pressed this frame, per port */
+extern s32 g_padPortPressed[2]; /* went down this frame, per port */
 #endif
 extern s32 D_80073988[2]; /* buttons released this frame */
-extern s32 D_80073930[2]; /* previous D_800739A0 */
+extern s32 D_80073930[2]; /* previous g_padPortHeld */
 extern s32 D_80073830[2][32]; /* frames each button has been held */
 extern Unk4 D_80073938[2]; /* analog stick bytes */
 extern u8 D_8006815C[]; /* actuator alignment */

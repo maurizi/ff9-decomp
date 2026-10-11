@@ -518,7 +518,7 @@ void func_80018F50(void) {
     D_80068158.unk0[2] = 0x5A;
     D_80068158.unk0[3] = 0xA6;
     for (i = 0; i < 2; i++) {
-        D_800739A0[i] = D_80073990[i] = D_80073988[i] = D_80073998[i] = D_800739A8[i] = 0;
+        g_padPortHeld[i] = g_padPortPressed[i] = D_80073988[i] = D_80073998[i] = D_800739A8[i] = 0;
         D_80073930[i] = 0;
         for (j = 0; j < 32; j++) {
             D_80073730[i][j] = 0;
@@ -600,11 +600,11 @@ void func_80019194(void) {
             D_80073938[i].unk0[1] = PADBUF(i)->unk4[1];
             D_80073938[i].unk0[2] = PADBUF(i)->unk4[2];
             D_80073938[i].unk0[3] = PADBUF(i)->unk4[3];
-            D_80073930[i] = D_800739A0[i];
-            D_800739A0[i] = 0;
+            D_80073930[i] = g_padPortHeld[i];
+            g_padPortHeld[i] = 0;
             for (; j < 32; j++) {
                 if (buttons & D_80073730[i][j]) {
-                    D_800739A0[i] |= 1 << j;
+                    g_padPortHeld[i] |= 1 << j;
                     D_80073830[i][j]++;
                 } else {
                     D_80073830[i][j] = 0;
@@ -612,19 +612,19 @@ void func_80019194(void) {
             }
             if ((D_80073720 & 0x8000) && ((D_80073940[i].unk0 >> 12) & 0xF) == 7) {
                 if (D_80073938[i].unk0[2] < D_80068158.unk0[2]) {
-                    D_800739A0[i] |= 0x80;
+                    g_padPortHeld[i] |= 0x80;
                 }
                 if (D_80073938[i].unk0[2] > D_80068158.unk0[3]) {
-                    D_800739A0[i] |= 0x20;
+                    g_padPortHeld[i] |= 0x20;
                 }
                 if (D_80073938[i].unk0[3] < D_80068158.unk0[0]) {
-                    D_800739A0[i] |= 0x10;
+                    g_padPortHeld[i] |= 0x10;
                 }
                 if (D_80073938[i].unk0[3] > D_80068158.unk0[1]) {
-                    D_800739A0[i] |= 0x40;
+                    g_padPortHeld[i] |= 0x40;
                 }
             }
-            D_800739A0[i] &= ~D_80073998[i];
+            g_padPortHeld[i] &= ~D_80073998[i];
             if ((D_80073998[i] & 0x10) && (s8)D_80073938[i].unk0[3] >= 0) {
                 D_80073938[i].unk0[3] = 0x80;
             }
@@ -637,12 +637,12 @@ void func_80019194(void) {
             if ((D_80073998[i] & 0x20) && D_80073938[i].unk0[2] > 0x80) {
                 D_80073938[i].unk0[2] = 0x80;
             }
-            D_80073990[i] = (D_800739A0[i] ^ D_80073930[i]) & D_800739A0[i];
-            D_80073988[i] = (D_800739A0[i] ^ D_80073930[i]) & D_80073930[i];
+            g_padPortPressed[i] = (g_padPortHeld[i] ^ D_80073930[i]) & g_padPortHeld[i];
+            D_80073988[i] = (g_padPortHeld[i] ^ D_80073930[i]) & D_80073930[i];
         } else {
             D_80073988[i] = 0;
-            D_80073990[i] = 0;
-            D_800739A0[i] = 0;
+            g_padPortPressed[i] = 0;
+            g_padPortHeld[i] = 0;
         }
     }
 }
@@ -5675,10 +5675,10 @@ void func_8002C210(void) {
     s32 i;
     u32 v;
     D_80077178 = 1;
-    v = D_800739A0[0];
-    D_80077528 = v;
-    D_80077520 = v;
-    D_80077524 = v;
+    v = g_padPortHeld[0];
+    g_padRepeat = v;
+    g_padPressed = v;
+    g_padHeld = v;
     func_80019750(&D_8007717C);
     for (p = 0; p < 2; p++) {
         func_8002C52C(p);
@@ -5701,12 +5701,12 @@ void func_8002C308(s32 port) {
     u32 out;
     u32 d;
 
-    D_80077524 = D_800739A0[port];
-    D_80077520 = D_80073990[port];
+    g_padHeld = g_padPortHeld[port];
+    g_padPressed = g_padPortPressed[port];
     for (i = 0; i < 23; e++, i++) {
         if (e->unk0 != 0) {
-            m = D_80077524 & e->unkC & e->unk4;
-            e->unk4 = D_80077524;
+            m = g_padHeld & e->unkC & e->unk4;
+            e->unk4 = g_padHeld;
             out = 0;
             if (m != 0) {
                 if (e->unk2 != 0) {
@@ -5730,7 +5730,7 @@ void func_8002C308(s32 port) {
             res |= out;
         }
     }
-    D_80077528 = res | D_80077520;
+    g_padRepeat = res | g_padPressed;
 }
 
 s32 func_8002C47C(s32 i) {
@@ -5766,7 +5766,7 @@ void func_8002C584(s32 a) {
 
 void func_8002C5CC(s32 a, s32 b) {
     Unk80077188 *e = &D_80077188[a][b];
-    e->unk4 = D_800739A0[a];
+    e->unk4 = g_padPortHeld[a];
     e->unk8 = VSync(-1);
     e->unk2 = 0;
     e->unk1 = 0;
@@ -5794,7 +5794,7 @@ u8 func_8002C700(s32 a, s32 b) {
 void func_8002C740(s32 a, s32 b, s32 c) {
     Unk80077188 *e = &D_80077188[a][b];
 
-    e->unk4 = D_800739A0[a];
+    e->unk4 = g_padPortHeld[a];
     e->unk8 = VSync(-1);
     e->unk2 = 0;
     e->unk1 = 0;
@@ -6615,12 +6615,12 @@ void func_8002EEF0(MenuList *m, u32 pad) {
     if (pad & 0x10) {
         if (m->unk6 == 0) {
             if (m->unk5 != 0) {
-                func_8002F488(0x67);
+                snd_playSe(0x67);
                 m->unk8 = 2;
             }
         } else {
             m->unk6--;
-            func_8002F488(0x67);
+            snd_playSe(0x67);
         }
     }
 }
@@ -6631,15 +6631,15 @@ void func_8002EF58(MenuList *m, u32 pad) {
             if (m->unk6 >= m->unk3 - 1) {
                 if (m->unk5 < m->unk2 - m->unk3) {
                     m->unk8 = 1;
-                    func_8002F488(0x67);
+                    snd_playSe(0x67);
                 }
             } else {
-                func_8002F488(0x67);
+                snd_playSe(0x67);
                 m->unk6++;
             }
         } else if (m->unk6 >= m->unk3 - 1 && m->unk5 < m->unk2 - m->unk3) {
             m->unk8 = 9;
-            func_8002F488(0x67);
+            snd_playSe(0x67);
         }
     }
 }
@@ -6651,15 +6651,15 @@ void func_8002F044(MenuList *arg0, s32 arg1) {
             if (arg0->unk6 != 0) {
                 arg0->unk7 = arg0->unk4 - 1;
                 arg0->unk6 = arg0->unk6 - 1;
-                func_8002F488(0x67);
+                snd_playSe(0x67);
                 return;
             }
             if (arg0->unk5 != 0) {
-                func_8002F488(0x67);
+                snd_playSe(0x67);
                 arg0->unk8 = 0xA;
             }
         } else {
-            func_8002F488(0x67);
+            snd_playSe(0x67);
             arg0->unk7--;
         }
     }
@@ -6670,15 +6670,15 @@ void func_8002F0EC(MenuList *m, s32 pad) {
         if ((m->unk5 + m->unk6) * m->unk4 + m->unk7 < m->unk0 - 1) {
             if (m->unk7 >= m->unk4 - 1) {
                 if (m->unk6 < m->unk3 - 1) {
-                    func_8002F488(0x67);
+                    snd_playSe(0x67);
                     m->unk7 = 0;
                     m->unk6++;
                 } else if (m->unk5 < m->unk2 - m->unk3) {
-                    func_8002F488(0x67);
+                    snd_playSe(0x67);
                     m->unk8 = 9;
                 }
             } else {
-                func_8002F488(0x67);
+                snd_playSe(0x67);
                 m->unk7++;
             }
         }
@@ -6689,7 +6689,7 @@ void func_8002F1CC(MenuList *arg0, s32 arg1) {
     s32 t;
     s32 c;
 
-    if (!(D_800739A0[0] & 0x200000) && (arg1 & 0x100000) && arg0->unk5 != 0) {
+    if (!(g_padPortHeld[0] & 0x200000) && (arg1 & 0x100000) && arg0->unk5 != 0) {
         t = arg0->unkD - 6;
         arg0->unk9 = t >> 2;
         t -= arg0->unk9;
@@ -6700,7 +6700,7 @@ void func_8002F1CC(MenuList *arg0, s32 arg1) {
             c = 0;
         }
         arg0->unkC = c;
-        func_8002F488(0x417);
+        snd_playSe(0x417);
     }
 }
 
@@ -6723,7 +6723,7 @@ void func_8002F284(MenuList *arg0, s32 arg1) {
             a = c;
         }
         arg0->unkC = a;
-        func_8002F488(0x417);
+        snd_playSe(0x417);
     }
 }
 
@@ -6755,7 +6755,7 @@ void func_8002F40C(MenuList *m, RECT *src, RECT *dst) {
     }
 }
 
-void func_8002F488(s32 a) {
+void snd_playSe(s32 a) {
     g_gameState->unk1C->unk83C(0xD000, a, 0x800000, 0x80, 0x7F);
 }
 
@@ -8883,7 +8883,7 @@ void func_80035430(void) {
 
 void func_80035490(void) {
     Unk80077DE8 *p;
-    if (D_80077DE8.unk1B == 0 && func_8002F810() == 0 && (D_80077528 & 0x8000000)) {
+    if (D_80077DE8.unk1B == 0 && func_8002F810() == 0 && (g_padRepeat & 0x8000000)) {
         func_80035680();
     }
     p = &D_80077DE8;
@@ -8953,7 +8953,7 @@ void func_80035674(u8 a) {
 void func_80035680(void) {
     if (D_80077DE8.unk19 == 0 && D_80077DE8.unkC != NULL) {
         if (D_80077DE8.unk18 == 0) {
-            func_8002F488(0x2AA);
+            snd_playSe(0x2AA);
             D_80077DE8.unk18 = 1;
             D_80077DE8.unk19 = 1;
             D_80077DE8.unk1A = 0;
@@ -8961,7 +8961,7 @@ void func_80035680(void) {
             func_80035B74(&D_80077DE8.unk20, func_80035744);
             func_80035B64(&D_80077DE8.unk20, 1);
         } else {
-            func_8002F488(0x65);
+            snd_playSe(0x65);
             D_80077DE8.unk18 = 0;
             D_80077DE8.unk1A = 0;
             func_80035B64(&D_80077DE8.unk20, 0);
@@ -13845,7 +13845,7 @@ static inline void func_8004C0E8_set(s32 type, u32 bits) {
 
 void func_8004C0E8(void) {
     s32 f = 0;
-    u32 cur = D_800739A0[0] & 0x3FFFFFF;
+    u32 cur = g_padPortHeld[0] & 0x3FFFFFF;
     u32 x;
 
     x = ~cur & D_8007B978;
@@ -14814,7 +14814,7 @@ void func_8004E7FC(void) {
 }
 
 u32 func_8004E8D4(void) {
-    return D_800739A0[0] & 0x3FFFFFF;
+    return g_padPortHeld[0] & 0x3FFFFFF;
 }
 
 u32 func_8004E8EC(void) {

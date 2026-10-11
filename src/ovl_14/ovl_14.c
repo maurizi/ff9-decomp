@@ -675,13 +675,13 @@ void func_800A8694(void) {
 void func_800A86D8(void) {
     if (func_8002F810() == 0) {
         if (D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
-            if (D_80077528 & 0x10) {
-                func_8002F488(0x67);
+            if (g_padRepeat & 0x10) {
+                snd_playSe(0x67);
                 D_800AB320.unk3 = D_800AB320.unk3 != 0 ? D_800AB320.unk3 - 1 : 1;
-            } else if (D_80077528 & 0x40) {
-                func_8002F488(0x67);
+            } else if (g_padRepeat & 0x40) {
+                snd_playSe(0x67);
                 D_800AB320.unk3 = D_800AB320.unk3 == 0 ? D_800AB320.unk3 + 1 : 0;
-            } else if (D_80077528 & 0x20008) {
+            } else if (g_padRepeat & 0x20008) {
                 func_800A8A0C();
             }
         }
@@ -752,10 +752,10 @@ void func_800A8868(s32 *pack) {
 
 void func_800A8A0C(void) {
     if (D_800AB320.unk3 == 1 && func_800A8EA4() == 0) {
-        func_8002F488(0x66);
+        snd_playSe(0x66);
         return;
     }
-    func_8002F488(D_800AB320.unk3 == 0 ? 0xC18 : 0x67);
+    snd_playSe(D_800AB320.unk3 == 0 ? 0xC18 : 0x67);
     func_8002FAAC(0x10);
     func_8002F8A8(func_800A8FBC);
 }
@@ -1019,7 +1019,7 @@ s32 func_800A9220(void) {
                     func_800A799C(0, 0x7003A, 0, 0, 0);
                     D_800AB2C4 |= 0x100;
                 }
-                if (!(D_800AB2C4 & 0x20) && (D_80073990[0] & 0x4008) && D_80071E34 < end) {
+                if (!(D_800AB2C4 & 0x20) && (g_padPortPressed[0] & 0x4008) && D_80071E34 < end) {
                     D_800AB2CC = 1;
                     func_8019A5B0(0);
                     D_800AB3B8[1][g_gameState->unk1C->unk8 != 0 ? 1 : 2] = 2;
@@ -1194,7 +1194,7 @@ s32 func_800A9E14(s32 arg0) {
                     timer = 0x3A2;
                     func_800320B8(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
-                    pad = D_80073990[0];
+                    pad = g_padPortPressed[0];
                     setlen(&D_800AB3D0[g_gameState->unk1C->unk8][0], 4);
                     D_800AB3D0[g_gameState->unk1C->unk8][0].code = 0x64;
                     D_800AB3D0[g_gameState->unk1C->unk8][0].r0 = 0x80;

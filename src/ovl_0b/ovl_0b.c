@@ -2156,7 +2156,7 @@ void func_800AEA48(void) {
 }
 
 void func_800AEE68(void) {
-    if (!(g_gameState->unk1C->unk0 & 0x100) && ((D_800739A0[0] & 0xF09) == 0xF09 || (D_800739A0[1] & 0xF09) == 0xF09)) {
+    if (!(g_gameState->unk1C->unk0 & 0x100) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
         g_gameState->unk0 |= 1;
     }
     func_800E9EC4();

@@ -27,13 +27,13 @@ void func_801F0C18(void) {
 }
 
 void func_801F0D18(void) {
-    if (D_80077528 & 0x10000) {
-        func_8002F488(0x65);
+    if (g_padRepeat & 0x10000) {
+        snd_playSe(0x65);
         func_800361CC(0);
         return;
     }
-    if (D_80077528 & 0x20000) {
-        func_8002F488(0x67);
+    if (g_padRepeat & 0x20000) {
+        snd_playSe(0x67);
         if (D_801FAB78.unk0 != 1) {
             D_801FAB78.unk1 = 2;
             return;
@@ -41,13 +41,13 @@ void func_801F0D18(void) {
         func_801F2D58();
         return;
     }
-    if (D_80077528 & 0x80) {
-        func_8002F488(0x67);
+    if (g_padRepeat & 0x80) {
+        snd_playSe(0x67);
         D_801FAB78.unk0 = D_801FAB78.unk0 != 0 ? D_801FAB78.unk0 - 1 : 2;
         return;
     }
-    if (D_80077528 & 0x20) {
-        func_8002F488(0x67);
+    if (g_padRepeat & 0x20) {
+        snd_playSe(0x67);
         D_801FAB78.unk0 = D_801FAB78.unk0 >= 2 ? 0 : D_801FAB78.unk0 + 1;
     }
 }
@@ -60,30 +60,30 @@ void func_801F0E10(void) {
     s32 next;
 
     if (D_801FAB78.unk3C.unkC == 0) {
-        if (D_80077528 & 0x10000) {
-            func_8002F488(0x65);
+        if (g_padRepeat & 0x10000) {
+            snd_playSe(0x65);
             func_801F2C58();
             return;
         }
-        if (D_80077528 & 0x20000) {
+        if (g_padRepeat & 0x20000) {
             i = (l->unk5 + l->unk6) * 2 + l->unk7;
             func_801F2590(g_gameState->unk1C->unk574.unk0[i].unk0);
             if (g_gameState->unk1C->unk574.unk0[i].unk1 == 0) {
                 func_801F2C58();
             }
-        } else if (D_80077528 & 0x10) {
+        } else if (g_padRepeat & 0x10) {
             cur = D_801FAB78.unk2;
             next = func_800337D0(cur);
             if (cur != next) {
                 D_801FAB78.unk2 = next;
-                func_8002F488(0x67);
+                snd_playSe(0x67);
             }
-        } else if (D_80077528 & 0x40) {
+        } else if (g_padRepeat & 0x40) {
             cur = D_801FAB78.unk2;
             next = func_8003380C(cur);
             if (cur != next) {
                 D_801FAB78.unk2 = next;
-                func_8002F488(0x67);
+                snd_playSe(0x67);
             }
         }
     }
@@ -96,20 +96,20 @@ void func_801F0F50(void) {
     u8 j;
 
     if (l->unk8 == 0) {
-        if (D_80077528 & 0x10000) {
-            func_8002F488(0x65);
+        if (g_padRepeat & 0x10000) {
+            snd_playSe(0x65);
             D_801FAB78.unk1 = 4;
             return;
         }
-        if (D_80077528 & 0x20000) {
+        if (g_padRepeat & 0x20000) {
             if (D_801FAB78.unk7 == 0) {
-                func_8002F488(0x67);
+                snd_playSe(0x67);
                 j = l->unk7 + (l->unk6 + l->unk5) * 2;
                 D_801FAB78.unk7 = 1;
                 D_801FAB78.unk6 = j;
                 return;
             }
-            func_8002F488(0x67);
+            snd_playSe(0x67);
             i = (l->unk6 + l->unk5) * 2 + l->unk7;
             tmp = g_gameState->unk1C->unk574.unk0[D_801FAB78.unk6];
             g_gameState->unk1C->unk574.unk0[D_801FAB78.unk6] = g_gameState->unk1C->unk574.unk0[i];
@@ -117,9 +117,9 @@ void func_801F0F50(void) {
             D_801FAB78.unk7 = 0;
             return;
         }
-        func_8002EE8C(l, D_80077528);
-        func_8002F044(l, D_80077528);
-        func_8002F0EC(l, D_80077528);
+        func_8002EE8C(l, g_padRepeat);
+        func_8002F044(l, g_padRepeat);
+        func_8002F0EC(l, g_padRepeat);
     }
 }
 
@@ -148,7 +148,7 @@ void func_801F10C4(s32 idx, MenuList *l) {
         }
     }
     if (!ok) {
-        func_8002F488(0x66);
+        snd_playSe(0x66);
     }
 }
 
@@ -211,7 +211,7 @@ loop:
     }
     m->unk1 = 0;
     m->unk8 = 1;
-    func_8002F488(0x67);
+    snd_playSe(0x67);
 }
 
 void func_801F187C(void) {
@@ -442,21 +442,21 @@ void func_801F22C8(void) {
     MenuList *l = it->unk8;
 
     if (l->unk8 == 0) {
-        if (D_80077528 & 0x10000) {
-            func_8002F488(0x65);
+        if (g_padRepeat & 0x10000) {
+            snd_playSe(0x65);
             D_801FAB78.unk1 = 1;
             return;
         }
-        if (D_80077528 & 0x20000) {
+        if (g_padRepeat & 0x20000) {
             func_801F24DC();
             return;
         }
         if (l->unk0 != 0) {
-            func_8002EE8C(l, D_80077528);
+            func_8002EE8C(l, g_padRepeat);
             if (l->unk8 == 0) {
-                func_8002F044(l, D_80077528);
+                func_8002F044(l, g_padRepeat);
                 if (l->unk8 == 0) {
-                    func_8002F0EC(l, D_80077528);
+                    func_8002F0EC(l, g_padRepeat);
                 }
             }
         }
@@ -464,34 +464,34 @@ void func_801F22C8(void) {
 }
 
 void func_801F23C4(void) {
-    if (D_80077528 & 0x10000) {
-        func_8002F488(0x65);
+    if (g_padRepeat & 0x10000) {
+        snd_playSe(0x65);
         func_801F2E18();
         return;
     }
-    if (D_80077528 & 0x50) {
-        func_8002F488(0x67);
+    if (g_padRepeat & 0x50) {
+        snd_playSe(0x67);
         D_801FAB78.unk5 ^= 1;
         return;
     }
-    if (D_80077528 & 0x20000) {
+    if (g_padRepeat & 0x20000) {
         if (D_801FAB78.unk5 == 0) {
-            func_8002F488(0x67);
+            snd_playSe(0x67);
             func_801F187C();
             return;
         }
-        func_8002F488(0x67);
+        snd_playSe(0x67);
         D_801FAB78.unk7 = 0;
         D_801FAB78.unk1 = 5;
     }
 }
 
 void func_801F2488(void) {
-    if (D_80077528 & 0x10000) {
-        func_8002F488(0x65);
+    if (g_padRepeat & 0x10000) {
+        snd_playSe(0x65);
         func_801F2FA0();
-    } else if (D_80077528 & 0x20000) {
-        func_8002F488(0x67);
+    } else if (g_padRepeat & 0x20000) {
+        snd_playSe(0x67);
         func_801F2FA0();
     }
 }
@@ -510,9 +510,9 @@ void func_801F24DC(void) {
 void func_801F253C(s32 i) {
     if (i < D_801FAB78.unkB0) {
         func_801F2F38(D_801FAB78.unk60[i]);
-        func_8002F488(0x67);
+        snd_playSe(0x67);
     } else {
-        func_8002F488(0x66);
+        snd_playSe(0x66);
     }
 }
 
@@ -525,10 +525,10 @@ void func_801F2590(s32 id) {
     e = &D_8006B1F4[i];
     c = g_gameState->unk1C->unk54C[D_801FAB78.unk2];
     if (func_800654F8(c, c, e, e->unk4, 0)) {
-        func_8002F488(0x6A);
+        snd_playSe(0x6A);
         func_80027E5C(id, 1);
     } else {
-        func_8002F488(0x66);
+        snd_playSe(0x66);
     }
 }
 
