@@ -105,3 +105,8 @@ Format:
 - GameState+0xA (3 in Dali, 1 in Burmecia, 0 on the title) didn't change on the field-to-field exit; it may be the
   previous mode but stays unnamed until a mode change is observed.
 - confidence: high for mode (0/1 values) and fieldId.
+
+## gfx_selectBuffer in battle  (status: applied — [runtime])
+- evidence (Redux disc 2, `battle_iifa_start`; disc 2's states live under redux-home/SLUS01295): called once per frame
+  with i = 0,1,0,1,...; afterwards g_ot = g_drawBufs.unk14[i] (0x800941C4 / 0x80094224) and g_primPtr lies inside
+  packet buffer i (0x80094284 / 0x80096284).
