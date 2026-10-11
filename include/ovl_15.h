@@ -221,4 +221,24 @@ extern const char D_800A703C[]; /* "Hit" */
 extern const char D_800A7040[]; /* "Double" */
 extern const char D_800A7048[]; /* "Split" */
 
+/* used by func_800A9488 */
+extern Ovl15Shoe D_800B0E08;
+s32 func_800A8F58(Ovl15Shoe *);
+s32 func_800A8FA4(Ovl15Shoe *);
+s32 func_800A90B8(Ovl15Hand *, Ovl15Shoe *);
+s32 func_800A92FC(Ovl15Hand *);
+s32 func_800A9334(Ovl15Hand *, s32, s32, s32);
+void func_800ACEB8(void);
+s32 func_800A7ABC(s32, s32, s32, s32);
+void func_800AAFAC(void);
+void func_800AAFFC(void);
+s32 func_800AAFA4(void);
+s32 func_800AAD24(void);
+s32 func_800A8F00(s32, s32);
+/* func_800AB1B8 and func_800ACF48 (u8, defined later in ovl_15.c) stay undeclared for
+ * func_800A9488: it calls them as implicit int (no andi 0xFF on the result). */
+
+/* Random 0..2 from the main exe's random byte stream. */
+#define RND3() (({ s32 r_; if (D_8007B720 >= D_8007B92D) { func_8004BF20(); } r_ = *D_8007B720++; r_; }) % 3)
+
 #endif

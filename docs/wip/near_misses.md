@@ -1096,3 +1096,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     the addressof-purged clut/img), C07D8 (K&R definition), B0124 (a local GameState pointer in the kind-9
     block), 3a F459C (block-local u8/s32/u32 copies of unk3), 33 EF644 (macro for the list entry, a
     bitfield for unk8 bit 3, h2 before l).
+- Pass 19 (ovl_15 agent): **15 A9488 MATCHED** (Blackjack main loop, 0x189C). Two fixes:
+  * Case 9's bankroll update is `{ s32 *pb = &D_800AE0E8; *pb = D_800AE0E8 + (tern); }`. A user-variable
+    address pseudo is not a loop.c movable (REG_USERVAR_P spanning blocks), so it does not join the other
+    seven `D_800AE0E8 op= tern` address pseudos in combine_movables; they drop to savings 7 / lifetime 126
+    (2 * 7 * 126 < 1840) and stay per site. `*pb += tern` reads through pb (88 rows).
+  * Prologue: `res = 0; i = 0;` BEFORE `cur = &player; nsplit = 0; x = 0xF0; y = 0xA;`. global.c priority is
+    int(floor_log2(refs) * refs / live * 10000), ties to the lower pseudo: nsplit (49 refs) needs sched1 live
+    length <= 1417 to tie the /30 constant (53 refs, 1532). nsplit = 0 before x costs +2 (x, y); moving two
+    preheader sets (res, i) in front of it gives the 2 back, and sched2 still emits them as stack stores later.
+    General lesson: live length is counted after sched1 (`;; register N life shortened` in the -dS dump), so
+    preheader statement order shifts it 1 insn per set without changing the output.
