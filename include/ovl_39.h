@@ -4,6 +4,7 @@
 /* Declarations local to overlay 0x39 (save / load menu, loaded at
  * 0x801EDF00). Overlay addresses mean different things in different
  * overlays, so they live here, not in ff9.h. */
+#define FF9_BUILTIN_MEMCPY /* see memcpy in psyq.h */
 #include "ff9.h"
 
 typedef struct {

@@ -477,7 +477,7 @@ void func_800A7E10(void) {
         func_80035490();
         s.unk2E8++;
         s.unk480++;
-        func_80062B3C();
+        rand();
         func_800A8BC4(&s);
     }
     func_8002C740(0, 0, s.unk558[0]);
@@ -616,7 +616,7 @@ void func_800A8D74(TmState *s) {
     s->unk4EC = 0;
     if (func_800625F8() < 5) {
         for (i = 0; i < 8; i++) {
-            func_800AF1F4(s, func_80062B3C() % 100);
+            func_800AF1F4(s, rand() % 100);
         }
     }
 }
@@ -652,7 +652,7 @@ void func_800A932C(TmState *s, char *msg) {
 void func_800A9334(void) {
     FileEntry *f = func_8001E218(1, 0x44C);
     if (f == NULL) {
-        func_8002EB64(0x46, 0x3E6);
+        SystemError(0x46, 0x3E6);
     }
     func_80022DF0(D_8006794C->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x80104A00);
 }
@@ -1133,8 +1133,8 @@ void func_800AA408(TmState *arg0) {
 
     if (func_800AE830(arg0, 0) != 0) {
         do {
-            x = func_80062B3C() & 3;
-            y = func_80062B3C() & 3;
+            x = rand() & 3;
+            y = rand() & 3;
             cell = func_800B19D4(arg0, x, y);
         } while (cell->unk0 != 1);
         px = x * 0x2B + 0x48;
@@ -1322,8 +1322,8 @@ void func_800AA790(TmState *s) {
         } else if (pad & 0x20000) {
             if (s->unk438 != 0) {
                 func_80062724();
-                s->unk474 = func_80062B3C() % 10;
-                s->unk478 = func_80062B3C() % 10;
+                s->unk474 = rand() % 10;
+                s->unk478 = rand() % 10;
                 s->unk4B4 = 0;
                 if (func_80062560(func_800AF268(s)) == 0) {
                     func_800AF1F4(s, func_800AF268(s));
@@ -1908,8 +1908,8 @@ void *func_800AC060(u32 *ot, void *vp, TmState *s) {
         s->unk578 = pos.unk4;
     } else {
         if (s->unk2E8 == 0x43) {
-            s->unk5BC = func_80062B3C() % pos.unk0;
-            s->unk5C0 = func_80062B3C() % pos.unk4;
+            s->unk5BC = rand() % pos.unk0;
+            s->unk5C0 = rand() % pos.unk4;
         }
         s->unk574 = pos.unk0 - (pos.unk0 - s->unk5BC) * (s->unk2E8 - 0x43) / 23;
         s->unk578 = pos.unk4 - (pos.unk4 - s->unk5C0) * (s->unk2E8 - 0x43) / 23;
@@ -1940,12 +1940,12 @@ void *func_800AC060(u32 *ot, void *vp, TmState *s) {
             switch (l->unk3) {
             case 0:
             case 1:
-                if ((func_80062B3C() & 0x3F) == 0) {
+                if ((rand() & 0x3F) == 0) {
                     l->unk3 = 2;
                 }
                 break;
             case 2:
-                if ((func_80062B3C() & 0x7F) == 0) {
+                if ((rand() & 0x7F) == 0) {
                     l->unk3 = 3;
                 }
                 break;
@@ -2040,7 +2040,7 @@ void func_800AC6A4(TmState *arg0) {
         arg0->unk434 = 1;
         arg0->unk2E8 = 0;
         arg0->unk418 = 0;
-        arg0->unk5A4 = (func_80062B3C() & 0xF) + 0xF;
+        arg0->unk5A4 = (rand() & 0xF) + 0xF;
         arg0->unk0 = 0x1E;
     } else {
         arg0->unk564 = 0;
@@ -2441,7 +2441,7 @@ void *func_800AD9F8(u32 *ot, void *p, TmState *s) {
             }
         } else {
             n = func_800ADE14(s, 0);
-            skip = (func_80062B3C() & 0xFF) % (5 - n);
+            skip = (rand() & 0xFF) % (5 - n);
         }
         cards = s->unk10;
         e = s->unk350;
@@ -2910,9 +2910,9 @@ void func_800AEA24(TmState *s) {
         c->unk8 = 0;
         c->unk30 = 0x28;
         c->unk0 = 0;
-        c->unk1 = func_80062B3C();
-        c->unk2 = func_80062B3C();
-        r = func_80062B3C() & 3;
+        c->unk1 = rand();
+        c->unk2 = rand();
+        r = rand() & 3;
         switch (r) {
         case 0:
             c->unk3 = 0;
@@ -2927,11 +2927,11 @@ void func_800AEA24(TmState *s) {
             c->unk3 = 2;
             break;
         }
-        c->unk4 = func_80062B3C();
-        c->unk5 = func_80062B3C();
+        c->unk4 = rand();
+        c->unk5 = rand();
         id = i;
         c->unk0 = id;
-        c->unk1 = func_80062B3C();
+        c->unk1 = rand();
         c->unk2 = tbl[id].unk0;
         c->unk3 = tbl[id].unk1;
         c->unk4 = tbl[id].unk2;
@@ -2954,7 +2954,7 @@ void func_800AEBB4(TmState *s) {
     TmDeckOdds *odds;
 
     odds = (TmDeckOdds *)0x80103C00;
-    s->unk550 = func_80062B3C() % 5;
+    s->unk550 = rand() % 5;
     base = &s->unk10[5];
     for (i = 0; i < 5; i++) {
         c = &base[i];
@@ -2965,7 +2965,7 @@ void func_800AEBB4(TmState *s) {
         c->unk8 = 1;
         c->unk1C = 0;
         c->unk30 = 0x28;
-        r = func_80062B3C() & 0xFF;
+        r = rand() & 0xFF;
         if (r < 20) {
             k = 0;
         } else if (r < 40) {
@@ -3001,7 +3001,7 @@ void func_800AEBB4(TmState *s) {
         }
         id = odds[s->unk448].v[k];
         if (s->unk438 != 0) {
-            id = func_80062B3C() % 100;
+            id = rand() % 100;
         }
         if (i == s->unk550 && s->unk54C != 0) {
             c->unk0 = s->unk510;
@@ -3178,11 +3178,11 @@ void func_800AF2CC(TmState *s, TmCard *c, s32 stat) {
     if (stat == 2 && c->unk5 != base.unk5) {
         c->unk5++;
     }
-    func_80015C38("AP=%x : PD=%x : MD=%x \n", c->unk2, c->unk4, c->unk5);
+    printf("AP=%x : PD=%x : MD=%x \n", c->unk2, c->unk4, c->unk5);
 }
 
 void func_800AF388(TmState *s, TmCard *c) {
-    func_800AF2CC(s, c, func_80062B3C() % 3);
+    func_800AF2CC(s, c, rand() % 3);
 }
 
 void func_800AF3E8(TmState *s, TmCard *c, s32 arg2, s32 random) {
@@ -3208,24 +3208,24 @@ void func_800AF3E8(TmState *s, TmCard *c, s32 arg2, s32 random) {
     } else {
         v = tbl[(u8)id].unk0 >> 1;
         if (v != 0) {
-            c->unk2 = v + func_80062B3C() % v;
+            c->unk2 = v + rand() % v;
         } else {
             c->unk2 = 0;
         }
         v = tbl[(u8)id].unk2 >> 1;
         if (v != 0) {
-            c->unk4 = v + func_80062B3C() % v;
+            c->unk4 = v + rand() % v;
         } else {
             c->unk4 = 0;
         }
         v = tbl[(u8)id].unk3 >> 1;
         if (v != 0) {
-            c->unk5 = v + func_80062B3C() % v;
+            c->unk5 = v + rand() % v;
         } else {
             c->unk5 = 0;
         }
     }
-    r = func_80062B3C() % 100;
+    r = rand() % 100;
     p0 = s->unk4C8[0];
     p1 = s->unk4C8[1];
     p2 = s->unk4C8[2];
@@ -3257,7 +3257,7 @@ void func_800AF3E8(TmState *s, TmCard *c, s32 arg2, s32 random) {
     for (i = 0; i < n; i++) {
         done = 0;
         while (done == 0) {
-            bp = &dirs.v[func_80062B3C() & 7];
+            bp = &dirs.v[rand() & 7];
             if (!(c->unk1 & *bp)) {
                 c->unk1 |= *bp;
                 done = 1;
@@ -3265,7 +3265,7 @@ void func_800AF3E8(TmState *s, TmCard *c, s32 arg2, s32 random) {
         }
     }
     c->unk3 = tbl[(u8)id].unk1;
-    if (!(func_80062B3C() & 0x7F)) {
+    if (!(rand() & 0x7F)) {
         c->unk3 = 2;
     }
 }
@@ -3293,7 +3293,7 @@ void func_800AF760(TmState *s) {
     if (s->unk2E8 >= 0x29 && s->unk5AC != 0) {
         s->unk2E8 = 0;
         s->unk418 = 0;
-        if (func_80062B3C() & 1) {
+        if (rand() & 1) {
             s->unk434 = 0;
         } else {
             s->unk434 = 1;
@@ -3721,7 +3721,7 @@ void func_800B0618(TmState *s) {
         base[i].unk0 = 1;
         base[i].unk4 = 0;
     }
-    r = func_80062B3C() % 100;
+    r = rand() % 100;
     if (r < 3) {
         n = 0;
     } else if (r >= 3 && r < 7) {
@@ -3741,15 +3741,15 @@ void func_800B0618(TmState *s) {
     s->unk56C = 0;
     for (i = 0; i < n; i++) {
         do {
-            x = func_80062B3C() & 3;
-            y = func_80062B3C() & 3;
+            x = rand() & 3;
+            y = rand() & 3;
             cell = func_800B19D4(s, x, y);
         } while (cell->unk0 != 1);
         cell->unk0 = 2;
         base[i].unk4 = x * 43 + 0x48;
         base[i].unk0 = 1;
         base[i].unk8 = y * 52 + 8;
-        base[i].unkC = func_80062B3C() & 1;
+        base[i].unkC = rand() & 1;
     }
 }
 
@@ -3760,7 +3760,7 @@ void *func_800B07DC(u32 *ot, void *p, TmState *s) {
         if (s->unk2E8 > s->unk5A4) {
             s->unk2E8 = 0;
             s->unk418 = 1;
-            s->unk5A4 = (func_80062B3C() % (func_800AE830(s, 1) + 1)) * 4 - 2;
+            s->unk5A4 = (rand() % (func_800AE830(s, 1) + 1)) * 4 - 2;
         }
     } else if (s->unk2E8 > s->unk5A4) {
         s->unk0 = 2;
@@ -3802,15 +3802,15 @@ void func_800B08CC(TmState *s) {
         wgt = 1;
         mul = 5;
     }
-    if (s->unk44C == 0 && func_80062B3C() % 100 >= 0x1D) {
+    if (s->unk44C == 0 && rand() % 100 >= 0x1D) {
         wgt = 0;
         mul = 0;
     }
-    if (s->unk44C == 1 && func_80062B3C() % 100 >= 0x3F) {
+    if (s->unk44C == 1 && rand() % 100 >= 0x3F) {
         wgt = 0;
         mul = 0;
     }
-    if (s->unk44C == 2 && func_80062B3C() % 100 >= 0x5D) {
+    if (s->unk44C == 2 && rand() % 100 >= 0x5D) {
         wgt = 0;
         mul = 0;
     }
@@ -3863,7 +3863,7 @@ void func_800B08CC(TmState *s) {
         for (x = 0; x < 4; x++) {
             for (y = 0; y < 4; y++) {
                 f = best < score[k];
-                if (best == score[k] && func_80062B3C() % 1000 < 1000 / cnt) {
+                if (best == score[k] && rand() % 1000 < 1000 / cnt) {
                     f++;
                 }
                 if (f) {
@@ -4743,7 +4743,7 @@ void *func_800B2C5C(u32 *ot, SPRT *p, TmState *s) {
             } else {
                 s->unk2E8 = 0;
                 s->unk418 = 0;
-                s->unk5A4 = (func_80062B3C() & 0xF) + 0xF;
+                s->unk5A4 = (rand() & 0xF) + 0xF;
                 s->unk0 = 0x1E;
             }
         }

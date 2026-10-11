@@ -137,7 +137,7 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
     while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
     }
     func_80012D08();
-    func_80012CF8();
+    FlushCache();
     func_80012D18();
     if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 8)) {
         h = func_80022AC4(D_8019DC5C[arg0].unk4[arg1].unk0);

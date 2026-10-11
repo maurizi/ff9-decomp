@@ -503,7 +503,7 @@ void func_801F0C0C(void) {
     u32 q;
 
     rw = &D_801F7A78.unk24;
-    func_8001D898(rw, 0, 0x88);
+    memset(rw, 0, 0x88);
     func_801F0A44();
     if (D_801F7A78.unk9 != 0) {
         q = D_800FDF30.unk4 / D_801F7A78.unk9;
@@ -917,7 +917,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     ret = 0;
     eq = c->unk39;
     ch = c->unk34.b.id;
-    func_8001D898(D_801F8208, 0, 0x30);
+    memset(D_801F8208, 0, 0x30);
     for (i = 0; i < 5; i++) {
         if (eq[i] != 0xFF) {
             e = &D_80069018[eq[i]];

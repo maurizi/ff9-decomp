@@ -3110,7 +3110,7 @@ typedef struct {
 } Unk800FE368;
 extern Unk800FE368 D_800FE368;
 extern u8 D_80104E76;
-void func_80063864(void *, void *, s32);
+void bcopy(void *, void *, s32);
 struct Battle11C020 *func_800C94B8(void);
 u8 func_8002C700(s32, s32);
 void func_8002C8E8(s32, s32, s32, s32);

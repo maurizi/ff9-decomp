@@ -603,7 +603,7 @@ extern Unk80010CE0 D_80010CE0;
 /* ---- functions (main exe) ---- */
 
 s32 func_8001C784(void *);
-void func_8001D898(void *, s32, s32); /* memset */
+void memset(void *, s32, s32);
 void func_800213A0(void (*)());
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
@@ -1338,7 +1338,7 @@ extern volatile s32 D_800809E0;
 
 void func_8001C720(void);
 s32 func_8001D848(void);
-s32 func_8001ED40(char *, char *, s32); /* BIOS A(18h) strncmp */
+s32 strncmp(char *, char *, s32);
 void func_8001E2AC(u16);
 void func_800236C4(void);
 void func_8002BFD0(void);
@@ -1425,7 +1425,7 @@ s32 func_8002BA68(s32);
 void func_800555A8(s32);
 void func_800343C0(s32);
 void func_80034404(s32);
-void func_8001A878(void *, s32); /* BIOS A(28h) bzero */
+void bzero(void *, s32);
 
 /* argument block for sound command func_8005C8BC */
 typedef struct {
@@ -1767,8 +1767,8 @@ extern s32 D_80077DC0; /* frame counter? */
 s32 func_80012AD4(void);
 void func_80012D08(void);
 void func_80012D18(void);
-s32 func_80016EC0(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
-s32 func_80016ED0(s32); /* BIOS EnableEvent */
+s32 OpenEvent(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
+s32 EnableEvent(s32); /* BIOS EnableEvent */
 s32 func_8001C750(s32, s32);
 s32 func_8001C8B0(s32, s32, s32, s32);
 s32 func_8001CA70(s32); /* file size */
@@ -2037,7 +2037,7 @@ void func_8002E2FC(Window *, void (*)(Window *));
 void func_8002E304(Window *, s32);
 void func_8002E31C(Window *, u8);
 void func_8002E334(Window *, s16);
-void func_8002EB64(s32, s32);
+void SystemError(s32, s32);
 void func_8002EB74(MenuList *);
 void func_8002D550(Window *);
 void func_8002D7E8(Window *);
@@ -2086,15 +2086,15 @@ void func_80055D40(void);
 void func_80055D60(void);
 s32 func_80055DF4(void);
 s32 func_80055E14(s32 *, u32, s32);
-s32 func_80056CAC(s32);
-s32 func_80056CBC(s32);
+s32 CloseEvent(s32);
+s32 DisableEvent(s32);
 void func_80062344(void);
 void func_8006237C(void);
 s32 func_80062420(u8, u8, u8, u8, u8, u8);
 s32 func_8006238C(s32);
 s32 func_800625F8(void);
 s32 func_80062638(void);
-s32 func_80062B3C(void);
+s32 rand(void);
 s32 func_8006276C(s32); /* number to string */
 void func_800624A8(void);
 void func_800624E8(void);
@@ -2249,7 +2249,7 @@ void func_800566D0(void);
 void func_8005681C(void);
 s32 func_8005D6BC(void); /* root counter 2 callback; returns the ticks this tick took */
 extern u8 D_80080990[];
-void func_80056CCC(s32, s32);
+void UnDeliverEvent(s32, s32);
 void func_800575D0(s32);
 s32 StopRCnt(s32);
 void SpuQuit(void);
@@ -2429,7 +2429,7 @@ s32 func_800219FC(Unk80021938 *);
 Unk80021938 *func_80021E20(void);
 void func_80028B20(u8 *);
 u8 func_80033D28(void);
-void func_80012CF8(void);
+void FlushCache(void);
 extern u8 *D_8007B720;
 extern u8 D_8007B724[]; /* random byte table */
 
@@ -2497,7 +2497,6 @@ void func_80024428(s32, s32, s32, Unk80024428 *);
 void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void func_800273C0(s32, s32, s32, s32, s32);
 void func_80033D38(u8 *, s32); /* default name by id */
-void func_80015C28(u8 *, u8 *, s32); /* memcpy */
 s32 func_8002BCC0(u8 *); /* strlen */
 extern u32 D_80077DBC; /* = D_80077DB0.unkC, read on its own by ovl_3a */
 extern u32 D_80077520; /* pad buttons (repeat?) */
@@ -2570,7 +2569,7 @@ void func_80028720(void *, s32);
 void func_8002C1E4(void);
 s32 func_80065EB0(s32);
 s32 func_80065EA0(s32);
-s32 func_80066170(s32);
+s32 _card_load(s32);
 s32 func_80065E90(s32, s32, s32);
 s32 func_80065E80(s32, s32, s32);
 void *func_80062824(void);
@@ -2632,7 +2631,7 @@ s32 func_8003378C(void);
 extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
-void func_80015C38(const char *, ...); /* printf */
+void printf(const char *, ...);
 
 /* Inlined body of func_8004E958 for one entry (close and unlink). */
 static inline void func_8004E958_inline(Unk8007B9C0 *p) {
@@ -3316,7 +3315,7 @@ extern s32 D_80073988[];
 
 void __main(void);
 void func_80012900(s32);
-void func_80012CF8(void); /* BIOS FlushCache */
+void FlushCache(void); /* BIOS FlushCache */
 void func_80012D08(void); /* BIOS EnterCriticalSection */
 void func_80012D18(void); /* BIOS ExitCriticalSection */
 void func_8001D30C(void);
@@ -3361,7 +3360,7 @@ u8 func_8006576C(MainCalc *);
 u8 func_800657F0(MainCalc *);
 u8 func_80065850(MainCalc *);
 s32 func_801F1A7C(void); /* ovl_37 */
-void func_800637C0(s32); /* BIOS B0 call */
+void exit(s32); /* BIOS B0 call */
 
 void func_80065D90(Character *, s32);
 void func_80065DF4(Character *, s32);
@@ -3400,7 +3399,7 @@ static inline void func_8002BAE4_inline(s32 n, u8 *buf, s32 width, u8 ascii) {
         func_8002BBE8(n, buf, ascii);
         return;
     }
-    func_8001D898(buf, fill, width);
+    memset(buf, fill, width);
     for (i = 0; i < width; i++) {
         d = n % 10;
         q = n / 10;

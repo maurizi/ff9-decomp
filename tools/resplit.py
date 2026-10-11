@@ -15,13 +15,16 @@ import sys
 
 DEFAULT_YAMLS = ["config/slus_012.51.yaml"]
 
-# ANSI or K&R definitions (`f(a, b)\n    s32 a;\n    u16 b;\n{`).
+# ANSI or K&R definitions (no `:`, so a `label:` above an `if (...) {` is not one) (`f(a, b)\n    s32 a;\n    u16 b;\n{`).
 FUNC_DEF = re.compile(
-    r"^[A-Za-z_][^;{}()]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:[A-Za-z_][^;{}()]*;\s*)*\{", re.M)
+    r"^[A-Za-z_][^;{}():]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:[A-Za-z_][^;{}()]*;\s*)*\{", re.M)
 ASM_SLOT = re.compile(r'^INCLUDE_ASM\("[^"]+",\s*(\w+)\);', re.M)
 INCLUDE = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*(\w+)\);\n', re.M)
 # Data converted from INCLUDE_RODATA to C, e.g. `const u8 D_801EDF84[0x1260] = {...};`
-DATA_DEF = re.compile(r"^(?:static\s+)?(?:const\s+)?[A-Za-z_][\w \*]*?\b(D_[0-9A-F]{8})\b[^;={(]*=\s*\{", re.M)
+# Any name, so data keeps its body after tools/rename.py gives it a real one.
+DATA_DEF = re.compile(r"^(?:static\s+)?(?:const\s+)?[A-Za-z_][\w \*]*?\b([A-Za-z_]\w*)\s*(?:\[[^\]\n]*\]\s*)*=\s*\{", re.M)
+# Comments and INCLUDE_RODATA lines between a glued helper and the function that uses it.
+SKIP_COMMENTS = re.compile(r"\A(?:\s*(?:/\*.*?\*/|//[^\n]*|INCLUDE_RODATA\([^)]*\);))*\s*", re.S)
 LEADING_COMMENT = re.compile(r"(?:^(?:/\*.*\*/|//.*)\n)+\Z", re.M)
 
 
@@ -38,6 +41,7 @@ def split_c(text):
     first = _with_comment(text, first)
     preamble = text[:first]
     bodies = {}
+    data = set()
     for m in FUNC_DEF.finditer(text):
         end = re.compile(r"^\}\n", re.M).search(text, m.end())
         if not end:
@@ -50,16 +54,17 @@ def split_c(text):
         if not end:
             sys.exit(f"unterminated data definition {m.group(1)}")
         bodies[m.group(1)] = text[_with_comment(text, m.start()):end.end()]
+        data.add(m.group(1))
     # Rodata that splat migrated into a function's asm has no slot of its own; keep it
     # glued to the function that directly follows it.
     # Same for file-local helpers (`static [inline] f(...) {...}`) written next to their user.
-    for name in [n for n in bodies if n.startswith("D_") or bodies[n].lstrip().startswith(("static", "/*"))
+    for name in [n for n in bodies if n in data or bodies[n].lstrip().startswith(("static", "/*"))
                  and re.search(r"^static\b", bodies[n], re.M)]:
-        data = bodies[name]
-        after = text[text.index(data) + len(data):]
-        nxt = FUNC_DEF.match(after.lstrip("\n"))
+        body = bodies[name]
+        after = text[text.index(body) + len(body):]
+        nxt = FUNC_DEF.match(SKIP_COMMENTS.sub("", after, count=1))
         if nxt and nxt.group(1) in bodies:
-            bodies[nxt.group(1)] = data + "\n" + bodies[nxt.group(1)]
+            bodies[nxt.group(1)] = body + "\n" + bodies[nxt.group(1)]
             del bodies[name]
     return preamble, bodies
 

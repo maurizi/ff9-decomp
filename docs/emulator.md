@@ -141,3 +141,26 @@ Append what you learn to `docs/runtime-findings.md`, one entry per symbol, with 
 (the commands and what they showed, at which save state) and a proposed name. An investigation
 only records findings. Names are applied separately through `config/symbols*.txt`, `make resplit`
 and `make verify`, and the entry is then marked **applied**.
+
+## DuckStation + MCP (alternative)
+DuckStation's GDB stub, driven through the `duckstation` MCP server, gives Claude Code direct
+`mcp__duckstation__*` tools: `read_memory`, `write_memory`, `get_registers`, `set_breakpoint`, `step`,
+`pause`/`resume`, `dump_region`, `tail_log_lines`. It's handy for quick memory reads and breakpoints.
+`tools/emu.py` (PCSX-Redux) is still the tool for scripted traces, save states and pad input. Don't run
+both emulators against one investigation at once.
+
+Setup (once per machine):
+1. `tools/bin/duckstation/DuckStation-x64.AppImage` (github.com/stenzek/duckstation releases), with an empty
+   `portable.txt` beside it so its config, BIOS dir and memory cards stay in that folder. `settings.ini` there
+   sets `[Debug] EnableGDBServer = true`, `GDBServerPort = 19000`, `[BIOS] SearchDirectory` (a copy of
+   `SCPH1001.BIN` in `tools/bin/duckstation/bios/`), the Null audio backend and `LogToFile`.
+2. MCP server: `git clone https://github.com/snowyegret23/Duckstation_MCP ~/src/ext/Duckstation_MCP`, apply
+   `tools/duckstation_mcp-linux.patch` (upstream is Windows-only; the patch skips the Win32 window-capture and
+   keyboard modules and adds the XDG / `DUCKSTATION_LOG` log path), then `uv venv .venv && uv pip install -e .`.
+3. `claude mcp add --scope local duckstation -e DUCKSTATION_LOG=$PWD/tools/bin/duckstation/duckstation.log
+   -- ~/src/ext/Duckstation_MCP/.venv/bin/python -m duckstation_mcp`, then restart Claude Code.
+
+Start the game (same X display lookup as `emu.py`):
+`DISPLAY=:1 XAUTHORITY=/run/user/$UID/gdm/Xauthority tools/bin/duckstation/DuckStation-x64.AppImage -- "disks/us/raw/FF9 CD1.cue" &`,
+then call the `connect` tool (127.0.0.1:19000). Window capture and pad input tools don't work on Linux.
+Addresses are the usual KSEG0 ones (`0x8006794C`).

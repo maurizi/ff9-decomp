@@ -262,8 +262,15 @@ typedef struct {
 MATRIX *TransMatrix(MATRIX *m, VECTOR *v);
 
 long VSync(long mode);
-/* C library: gcc 2.8 expands small constant-size memcpy inline (lwl/lwr) */
+/* memcpy is the BIOS A(2Ah) stub. Square's sources disagree on its prototype: ovl_39 and ovl_3a see
+ * one compatible with gcc's builtin, which expands constant-size copies inline (lwl/lwr), while the
+ * other files see a conflicting one, which turns the builtin off so every call stays a call (and
+ * evaluates its arguments differently). Files that want the builtin define FF9_BUILTIN_MEMCPY. */
+#ifdef FF9_BUILTIN_MEMCPY
 void *memcpy(void *, const void *, u32);
+#else
+void memcpy(u8 *, u8 *, s32);
+#endif
 
 int DrawSync(int mode);
 void DrawPrim(void *p);

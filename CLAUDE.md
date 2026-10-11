@@ -28,6 +28,10 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 - Permuter on an overlay function: `tools/permute.py <file> <func> --bin ovl_XX --run -j 8`. `tools/docker.sh` runs containers with `--init`, so `timeout` really stops them; check `docker ps` for strays anyway.
 - Square's code uses PsyQ macros such as `addPrim`/`setlen`, which compile to the bitfield mask sequences. It also inlines helpers: `func_80027F34` only matches by calling `static inline func_80027EDC_inline` (in `ff9.h`).
 
+## Naming
+- `docs/naming.md`: every name needs evidence, tagged in the symbols file (`[string]`, `[bios …]`, `[runtime]`, `[code]`). Header comments from the matching work are leads, not evidence. Rename with `tools/rename.py --from FILE --build` (no resplit needed). `make progress` shows naming progress.
+- DuckStation + its MCP server (`mcp__duckstation__*`: memory, registers, breakpoints) is set up as described in `docs/emulator.md`.
+
 ## Compiler (verified empirically, not documented anywhere)
 - Some original source files were built with **-O1** (e.g. ovl_0b 0x800C2DF4-0x800C8BE0: `$ra` is saved first and the prologue isn't scheduled; 0x800C7730-0x800C8BE0 inside it may use yet other flags). Give such a range its own splat C subsegment named `*_o1` (plus its own `.rodata` subsegment); the Makefile compiles `*_o1.c` with `-O1 -G0`. Probe with `ccprobe --flags "-O1 -G0"`.
 - FF9 game code is **gcc 2.8.1** (`gcc-2.8.1-psx`, the Makefile default) with `-O2 -G0`, plus maspsx `--expand-div` (divides carry the ASPSX `break 7`/`break 6` guards). In `tools/probes/compiler_id_game.c`, 6 of 6 Square functions match only under 2.8.0 and 2.8.1; 2.7.2-cdk (FF8's main compiler) misses 3. 2.8.0 and 2.8.1 give identical output for everything except the event-script interpreter func_80039C38, which only matches under 2.8.1, so use 2.8.1 (`--cc gcc-2.8.1-psx` with ccprobe).

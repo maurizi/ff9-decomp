@@ -1994,9 +1994,9 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     s32 flag;
 
     out = (u8 *)arg2;
-    func_8001D898(&rot, 0, 8);
-    func_8001D898(&rot2, 0, 8);
-    func_8001D898(&sv, 0, 8);
+    memset(&rot, 0, 8);
+    memset(&rot2, 0, 8);
+    memset(&sv, 0, 8);
     done = 0;
     D_800FE520++;
     if (!(u8)func_800CF574()) {
@@ -2169,14 +2169,14 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
         case 7:
             if (k == 1) {
                 if (!((D_800FE520 + 0x1F) & 0x3F)) {
-                    D_800FE4FC = func_80062B3C() & 0x1FF;
+                    D_800FE4FC = rand() & 0x1FF;
                 }
-                rot2.vy = D_800FE4FC + (func_80062B3C() & 0x3F);
+                rot2.vy = D_800FE4FC + (rand() & 0x3F);
             } else {
                 if (!(D_800FE520 & 0x3F)) {
-                    D_800FE500 = func_80062B3C() & 0x3FF;
+                    D_800FE500 = rand() & 0x3FF;
                 }
-                rot2.vy = D_800FE500 + (func_80062B3C() & 0x7F);
+                rot2.vy = D_800FE500 + (rand() & 0x7F);
             }
             break;
         default:
@@ -2230,11 +2230,11 @@ u8 *func_800CEBC8(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     for (; i < D_800F7274; i++) {
         SetLineG2((LINE_G2 *)arg0);
         SetSemiTrans(arg0, 1);
-        v.vx = (((func_80062B3C() & 0x1FF) - 0x100) * 41) / 32;
-        v.vy = ((func_80062B3C() & 0xFF) * 50) / 32 - 0xDC;
-        v.vz = (((func_80062B3C() & 0x1FF) - 0x100) * 41) / 32;
+        v.vx = (((rand() & 0x1FF) - 0x100) * 41) / 32;
+        v.vy = ((rand() & 0xFF) * 50) / 32 - 0xDC;
+        v.vz = (((rand() & 0x1FF) - 0x100) * 41) / 32;
         RotTransPers(&v, (long *)&((LINE_G2 *)arg0)->x0, &p, &flag);
-        v.vy += 0x55 + (func_80062B3C() & 0x1F);
+        v.vy += 0x55 + (rand() & 0x1F);
         RotTransPers(&v, (long *)&((LINE_G2 *)arg0)->x1, &p, &flag);
         setRGB0((LINE_G2 *)arg0, 0x19, 0x19, 0x32);
         setRGB1((LINE_G2 *)arg0, 0x50, 0x50, 0x82);

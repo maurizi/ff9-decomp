@@ -52,7 +52,7 @@ s32 func_801F42A8(s32 stat, u8 *equip) {
     s32 j;
     Unk8006D328 *b;
 
-    func_8001D898(sum, r, 4);
+    memset(sum, r, 4);
     for (i = 1; i < 5; i++) {
         if (equip[i] != 0xFF) {
             if (equip[i] < 0xE0) {

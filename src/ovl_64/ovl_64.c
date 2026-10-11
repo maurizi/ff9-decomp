@@ -66,7 +66,7 @@ u8 *func_801990A0(Ovl64Out *out) {
         D_800739B0[0].unk1 = flag->unk1;
     }
     if (pair != NULL && pair->unk0 != 0) {
-        func_80063864((void *)pair->unk4, &D_8019E028[D_8006794C->unk1C->unk8 ^ 1], pair->unk0);
+        bcopy((void *)pair->unk4, &D_8019E028[D_8006794C->unk1C->unk8 ^ 1], pair->unk0);
         D_8019E018[D_8006794C->unk1C->unk8 ^ 1] = pair->unk0;
     } else {
         D_8019E018[D_8006794C->unk1C->unk8 ^ 1] = 0;
@@ -102,7 +102,7 @@ void func_80199554(void) {
     u8 res[8];
     s32 cur;
 
-    func_8001D898(res, 0, 8);
+    memset(res, 0, 8);
     if (D_8019DEA8 != 0) {
         func_8019C434(2, res);
         D_8019DEA8 = 0;
@@ -175,7 +175,7 @@ s32 func_801999B4(s32 mode, u8 **buf) {
     s32 off;
 
     if (D_80071E32 != 0) {
-        func_80015C38("Warning! MBG_init() called when already initialized\n");
+        printf("Warning! MBG_init() called when already initialized\n");
         D_80071E32 = 0;
     }
     switch (mode) {
@@ -350,7 +350,7 @@ s32 func_80199B28(u32 movie, s32 idx) {
     D_8019F4C8.unk8 = 0;
     D_8019F4C8.unkC = 0;
     if (st->unk44 == NULL) {
-        func_80015C38(D_8019903C);
+        printf(D_8019903C);
     }
     func_8019AE44(st->unk44);
     D_80071E38 = 0;

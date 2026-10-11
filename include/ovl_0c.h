@@ -1205,7 +1205,7 @@ s32 func_800C1604(u32);
 static inline CVECTOR func_800C1428_color(void) {
     CVECTOR c;
 
-    func_8001D898(&c, 0, 4);
+    memset(&c, 0, 4);
     c.r = D_800CD710;
     c.g = D_800CD714;
     c.b = D_800CD718;

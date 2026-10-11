@@ -504,7 +504,7 @@ void func_801F2138(s32 *out) {
             kinds += e[i].unk4;
         }
     }
-    func_8001D898(D_801F337C, 0, 0x100);
+    memset(D_801F337C, 0, 0x100);
     for (i = 0; i < 100; i++) {
         for (j = 0; j < D_801F347C.unk8[i]; j++) {
             c = func_800625A0(i, j);

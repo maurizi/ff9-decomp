@@ -18,7 +18,7 @@ void func_801F3874(void) {
         D_801F4BBC.unk5[i] = D_801F4B50[i];
     }
     func_80033D38(D_801F4BBC.unk11, D_801F4BBC.unk12C);
-    func_8001D898(D_801F4BBC.unk7, 0xFF, 10);
+    memset(D_801F4BBC.unk7, 0xFF, 10);
     if (D_801F4BBC.unk24) {
         func_80033D38(D_801F4BBC.unk7, D_801F4BBC.unk12C);
     } else {
@@ -134,8 +134,8 @@ void func_801F3D9C(void) {
         case 4:
             func_8002F488(0x67);
             D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk11);
-            func_8001D898((s32)D_801F4BBC.unk7, 0xFF, 8);
-            func_80015C28(D_801F4BBC.unk7, D_801F4BBC.unk11, D_801F4BBC.unk4);
+            memset((s32)D_801F4BBC.unk7, 0xFF, 8);
+            memcpy(D_801F4BBC.unk7, D_801F4BBC.unk11, D_801F4BBC.unk4);
             break;
         }
     } else {

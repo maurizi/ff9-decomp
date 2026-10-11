@@ -1,0 +1,39 @@
+diff --git a/src/duckstation_mcp/log_reader.py b/src/duckstation_mcp/log_reader.py
+index d868f48..276e44a 100644
+--- a/src/duckstation_mcp/log_reader.py
++++ b/src/duckstation_mcp/log_reader.py
+@@ -35,7 +35,10 @@ LINE_RE = re.compile(r"^\[\s*[\d.]+\]\s+([EWIVDXT])/([^:]+):")
+ def resolve_log_path(custom: str | None = None) -> Path:
+     if custom:
+         return Path(custom)
+-    for candidate in (LOCALAPPDATA_LOG, DOCUMENTS_LOG):
++    if os.environ.get("DUCKSTATION_LOG"):
++        return Path(os.environ["DUCKSTATION_LOG"])
++    xdg = Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local/share"))) / "duckstation" / "duckstation.log"
++    for candidate in (LOCALAPPDATA_LOG, DOCUMENTS_LOG, xdg):
+         if candidate.exists():
+             return candidate
+     return LOCALAPPDATA_LOG  # return the expected path even if missing
+diff --git a/src/duckstation_mcp/server.py b/src/duckstation_mcp/server.py
+index ebc8118..818170d 100644
+--- a/src/duckstation_mcp/server.py
++++ b/src/duckstation_mcp/server.py
+@@ -15,9 +15,16 @@ from typing import Any
+ from mcp.server import MCPServer
+ 
+ from . import background_input
+-from . import keyboard_input
+ from . import process as ds_process
+-from . import window_capture
++
++try:
++    from . import keyboard_input
++    from . import window_capture
++except (AttributeError, OSError):  # Linux/macOS: no user32/gdi32; window and keyboard tools unavailable
++    class _Unavailable:
++        def __getattr__(self, name):
++            raise RuntimeError("window capture / keyboard input are Windows-only")
++    keyboard_input = window_capture = _Unavailable()
+ from .gdb_client import BP_TYPE_MAP, GDBClient, GDBError, REG_NAMES
+ from .log_reader import filter_log, resolve_log_path, tail_log
+ 

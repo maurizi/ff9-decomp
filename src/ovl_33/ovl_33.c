@@ -456,7 +456,7 @@ void func_801EF900(s32 slot, s32 arg1) {
     func_8002EDFC(&D_801FBF84.unk8[1], nAbils, 8, 2, 0x80);
     D_801FBF84.unk769 = nItems;
     D_801FBF84.unk76A = nAbils;
-    func_8001D898(D_801FBF84.unk68, 0, 0x100);
+    memset(D_801FBF84.unk68, 0, 0x100);
     for (slot = 0; slot < 5; slot++) {
         id = c->unk39[slot];
         if (id != 0xFF) {
@@ -1439,7 +1439,7 @@ void func_801F26C4(Character *c) {
     s32 id;
 
     if (func_80034A30(c)) {
-        func_8001D898(D_801FC700, 0, 0x40);
+        memset(D_801FC700, 0, 0x40);
         for (i = 0; i < 5; i++) {
             if (c->unk39[i] != 0xFF) {
                 it = &D_80069018[c->unk39[i]];

@@ -3435,7 +3435,7 @@ void func_800DA898(void) {
         func_80012D08();
         if (DrawSync(1) == 0) {
             D_800F750C = 1;
-            func_80012CF8();
+            FlushCache();
         }
         func_80012D18();
     }
@@ -4900,7 +4900,7 @@ void func_800DF588(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
         if (arg1 == -1 || arg1 == i) {
             arg2 = func_800DF940(arg0, i, arg2);
             if (m->unk14[i] >= 0x322) {
-                func_80015C38("warning:GeoSplitVertices() overflow vertex buffer!(%d)\n", m->unk14[i]);
+                printf("warning:GeoSplitVertices() overflow vertex buffer!(%d)\n", m->unk14[i]);
                 m->unk14[i] = 0x321;
             }
         }
@@ -7643,7 +7643,7 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
 void func_800E6C58(SVECTOR *arg0) {
     MATRIX m;
     SVECTOR v;
-    func_8001D898((s32)&v, 0, 8);
+    memset((s32)&v, 0, 8);
     if (arg0 == 0) {
         arg0 = &v;
     }
@@ -7746,12 +7746,12 @@ BtlUnit *func_800E716C(s32 arg0) {
     }
     if (arg0 < 8) {
         if (arg0 < 0 || arg0 >= D_800F78A4->unkC->unk24) {
-            func_8002EB64(0x53, 0x136);
+            SystemError(0x53, 0x136);
         }
         return D_800F78A4->unkC->unk4[arg0];
     }
     if (arg0 - 8 < 0 || arg0 - 8 >= D_800F78A4->unkC->unk27) {
-        func_8002EB64(0x53, 0x136);
+        SystemError(0x53, 0x136);
     }
     return D_800F78A4->unkC->unk28[arg0 - 8];
 }
@@ -8415,7 +8415,7 @@ void func_800E8F50(Unk800E8F50 *arg0, s32 arg1) {
     void *p;
     h = arg0;
     if (arg0->unk0 != 0x6F73) {
-        func_8002EB64(0x53, 0x190);
+        SystemError(0x53, 0x190);
     }
     p = (u8 *)arg0 + h->unk4;
     if (h->unk2 != 0) {
@@ -8440,7 +8440,7 @@ void func_800E9000(Unk800E9000 *arg0, s32 *src, s32 n, Unk80100DC054 *e) {
     Unk800E9000Ent *b;
 
     if (h->unk0 != 0x6F73) {
-        func_8002EB64(0x53, 0x190);
+        SystemError(0x53, 0x190);
     }
     k = (h->unk4 - 8) >> 3;
     e->unk2 = n;
@@ -8793,7 +8793,7 @@ void func_800E9DFC(void) {
 }
 
 void func_800E9E10(void) {
-    func_8001D898(&D_80104E68, 0, 0x11C);
+    memset(&D_80104E68, 0, 0x11C);
     func_800F2A0C();
     func_800F48DC();
     func_800F48E4();
@@ -9241,7 +9241,7 @@ void func_800EAE8C(void) {
     Unk80104F88 *q;
     BtlUnit *v;
     Unk80104F88 *r;
-    func_8001D898(seen, 0, 4);
+    memset(seen, 0, 4);
     while (cnt != 0) {
         u = D_80104F88->unk12C8[head];
         if (BtlUnitCanAct(u) && u->unkB3 != 1) {
@@ -9480,7 +9480,7 @@ void func_800EB6FC(Unk80104F88Entry *arg0) {
     Character *c = arg0->unk14;
     s32 i;
     s32 j;
-    func_8001D898((s32)arg0->unk3DC, 0, 0xC0);
+    memset((s32)arg0->unk3DC, 0, 0xC0);
     for (i = 0; i < 5; i++) {
         u8 item = c->unk39[i];
         if (item != 0xFF) {
@@ -9700,7 +9700,7 @@ void func_800EBEFC(s32 arg0) {
 void func_800EC008(void) {
     Unk80104FA8 *p = func_800F2A60(0x2E0);
     D_80104FA8 = p;
-    func_8001D898((s32)p->unk1E0, 0, 0x100);
+    memset((s32)p->unk1E0, 0, 0x100);
     func_800EC048();
 }
 
@@ -10924,7 +10924,7 @@ s32 func_800EFB3C(s32 arg0) {
     if (u == NULL) {
         return 0;
     }
-    func_8001D898((s32)list, 0, 0x10);
+    memset((s32)list, 0, 0x10);
     n = 0;
     for (p = D_8006794C->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->unk0) {
         if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == D_80104FF0.unkA && (!(p->unk3C & 0x100) || D_80104FF0.unkB != 0)) {
@@ -10978,7 +10978,7 @@ found:
         }
         side = !k;
         D_80104FF0.unkA = side;
-        func_8001D898(list, 0, sizeof(list));
+        memset(list, 0, sizeof(list));
         n = 0;
         for (t = D_8006794C->unk1C->unk8E4.battle->unk6F8; t != NULL; t = t->unk0) {
             if (((t->unk68 >> 28) & 1) && (t->unk68 & 1) == side) {

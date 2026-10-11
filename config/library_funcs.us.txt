@@ -1,8 +1,8 @@
 # Functions that are SDK/library or hand-written asm rather than Square game C, found by inspection
 # (no PsyQ signature match). Excluded from the game totals by tools/progress.py, like
 # config/symbols.psyq*.txt. One per line: <binary> <function> <reason>
-main func_80012CE8 BIOS A0 call stub
-main func_80012CF8 BIOS A0 call stub
+main InitHeap BIOS A0 call stub
+main FlushCache BIOS A0 call stub
 main func_80012D08 BIOS syscall (Enter/ExitCriticalSection)
 main func_80012D18 BIOS syscall (Enter/ExitCriticalSection)
 main func_80012AD4 boot: SN startup helper
@@ -30,30 +30,30 @@ main func_800155A8 libgpu internals (GPU queue/DMA, D_80066660 state)
 main func_800155DC libgpu internals (GPU queue/DMA, D_80066660 state)
 main func_80015720 libgpu internals (GPU queue/DMA, D_80066660 state)
 main func_80015C00 libgpu internals (GPU queue/DMA, D_80066660 state)
-main func_80015C28 BIOS A0/B0/C0 call stub
-main func_80015C38 BIOS A0/B0/C0 call stub
-main func_80015C48 BIOS A0/B0/C0 call stub
-main func_80015E88 BIOS A0/B0/C0 call stub
-main func_80015E98 BIOS A0/B0/C0 call stub
-main func_80016598 BIOS A0/B0/C0 call stub
-main func_800165A8 BIOS A0/B0/C0 call stub
-main func_800165B8 BIOS A0/B0/C0 call stub
-main func_80016EC0 BIOS A0/B0/C0 call stub
-main func_80016ED0 BIOS A0/B0/C0 call stub
-main func_80017A20 BIOS A0/B0/C0 call stub
-main func_80018740 BIOS A0/B0/C0 call stub
-main func_80018AF0 BIOS A0/B0/C0 call stub
-main func_80018B00 BIOS A0/B0/C0 call stub
-main func_80018B10 BIOS A0/B0/C0 call stub
-main func_80018B20 BIOS A0/B0/C0 call stub
-main func_80018B30 BIOS A0/B0/C0 call stub
-main func_80018C50 BIOS A0/B0/C0 call stub
-main func_80018C60 BIOS A0/B0/C0 call stub
-main func_80018C70 BIOS A0/B0/C0 call stub
-main func_8001A878 BIOS A0/B0/C0 call stub
-main func_8001D898 BIOS A0/B0/C0 call stub
-main func_8001ED30 BIOS A0/B0/C0 call stub
-main func_8001ED40 BIOS A0/B0/C0 call stub
+main memcpy BIOS A0/B0/C0 call stub
+main printf BIOS A0/B0/C0 call stub
+main GPU_cw BIOS A0/B0/C0 call stub
+main ChangeClearPAD BIOS A0/B0/C0 call stub
+main ChangeClearRCnt BIOS A0/B0/C0 call stub
+main ReturnFromException BIOS A0/B0/C0 call stub
+main ResetEntryInt BIOS A0/B0/C0 call stub
+main HookEntryInt BIOS A0/B0/C0 call stub
+main OpenEvent BIOS A0/B0/C0 call stub
+main EnableEvent BIOS A0/B0/C0 call stub
+main DeliverEvent BIOS A0/B0/C0 call stub
+main WaitEvent BIOS A0/B0/C0 call stub
+main InitPAD2 BIOS A0/B0/C0 call stub
+main StartPAD2 BIOS A0/B0/C0 call stub
+main PAD_init2 BIOS A0/B0/C0 call stub
+main SysEnqIntRP BIOS A0/B0/C0 call stub
+main SysDeqIntRP BIOS A0/B0/C0 call stub
+main InitCARD2 BIOS A0/B0/C0 call stub
+main StartCARD2 BIOS A0/B0/C0 call stub
+main StopCARD2 BIOS A0/B0/C0 call stub
+main bzero BIOS A0/B0/C0 call stub
+main memset BIOS A0/B0/C0 call stub
+main strcmp BIOS A0/B0/C0 call stub
+main strncmp BIOS A0/B0/C0 call stub
 main func_80015DD0 libetc: VSync timeout handler
 main func_8001603C libetc: interrupt manager internals
 main func_80016114 libetc: interrupt manager internals
@@ -118,23 +118,23 @@ main func_80021380 libcd wrapper
 main func_800213A0 libcd wrapper
 main func_80021620 libcd wrapper
 main func_800236A4 libcd wrapper
-main func_8002EB64 BIOS A0/B0/C0 call stub
-main func_80056CAC BIOS A0/B0/C0 call stub
-main func_80056CBC BIOS A0/B0/C0 call stub
-main func_80056CCC BIOS A0/B0/C0 call stub
-main func_80062B3C BIOS A0/B0/C0 call stub
-main func_800637C0 BIOS A0/B0/C0 call stub
-main func_80063864 BIOS A0/B0/C0 call stub
-main func_80064524 BIOS A0/B0/C0 call stub
-main func_80064534 BIOS A0/B0/C0 call stub
+main SystemError BIOS A0/B0/C0 call stub
+main CloseEvent BIOS A0/B0/C0 call stub
+main DisableEvent BIOS A0/B0/C0 call stub
+main UnDeliverEvent BIOS A0/B0/C0 call stub
+main rand BIOS A0/B0/C0 call stub
+main exit BIOS A0/B0/C0 call stub
+main bcopy BIOS A0/B0/C0 call stub
+main strlen BIOS A0/B0/C0 call stub
+main memchr BIOS A0/B0/C0 call stub
 main func_80065208 BIOS A0/B0/C0 call stub
 main func_80065E60 BIOS A0/B0/C0 call stub
-main func_80066160 BIOS A0/B0/C0 call stub
-main func_80066170 BIOS A0/B0/C0 call stub
-main func_800661C0 BIOS A0/B0/C0 call stub
-main func_800661D0 BIOS A0/B0/C0 call stub
-main func_800665A0 BIOS A0/B0/C0 call stub
-main func_800665B0 BIOS A0/B0/C0 call stub
+main firstfile2 BIOS A0/B0/C0 call stub
+main _card_load BIOS A0/B0/C0 call stub
+main _card_write BIOS A0/B0/C0 call stub
+main _new_card BIOS A0/B0/C0 call stub
+main _card_read BIOS A0/B0/C0 call stub
+main _card_status BIOS A0/B0/C0 call stub
 main func_80063108 BIOS stub merged with following library function
 main func_800639D4 libgte: GTE control register access
 main func_800645C4 libgte: GTE control register access

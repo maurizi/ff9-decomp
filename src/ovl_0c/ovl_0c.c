@@ -325,7 +325,7 @@ void func_800A95A0(void) {
         D_8006794C->unkA = 3;
         break;
     default:
-        func_8002EB64(0x39, 0x194);
+        SystemError(0x39, 0x194);
         break;
     }
     D_8006794C->unk1C->unk7E4 = (struct FileTable *)-1;
@@ -1085,7 +1085,7 @@ state:
     case 4:
         n = D_8006794C->unk1C->unk854[0].unkC + D_8006794C->unk1C->unk854[0].unk10 - D_8006794C->unk1C->unk87C;
         if (n > 0) {
-            func_80015C28(D_8006794C->unk1C->unk814, (u8 *)D_8006794C->unk1C->unk8C0 + (D_8006794C->unk1C->unk87C - D_8006794C->unk1C->unk854[0].unkC), n);
+            memcpy(D_8006794C->unk1C->unk814, (u8 *)D_8006794C->unk1C->unk8C0 + (D_8006794C->unk1C->unk87C - D_8006794C->unk1C->unk854[0].unkC), n);
         }
         t = 0x6800 - n;
         D_8006794C->unk1C->unk8C0 = (s32)((u8 *)D_8006794C->unk1C->unk814 + n);
@@ -1214,7 +1214,7 @@ s32 func_800AC344(s32 arg0) {
 s32 func_800AC3A8(s32 arg0) {
     s32 t = func_8001C8B0(arg0, 3, 0x70000, 0);
 
-    func_80015C28((u8 *)arg0, (u8 *)func_8001C8B0(arg0, 4, t, 0), func_8001C8B0(arg0, 5, t, 0));
+    memcpy((u8 *)arg0, (u8 *)func_8001C8B0(arg0, 4, t, 0), func_8001C8B0(arg0, 5, t, 0));
     return 0;
 }
 
@@ -1527,7 +1527,7 @@ void func_800AD39C(void) {
     D_800CE190.vx = D_800CE198[0] - D_800CE108[0];
     D_800CE190.vy = D_800CE198[1] - D_800CE108[1];
     D_800CE190.vz = D_800CE198[2] - D_800CE108[2];
-    func_8001D898(&r, 0, 8);
+    memset(&r, 0, 8);
     r.vz = D_800CE100;
     r.vy = D_800CE0F0->unkC;
     func_80030AF4(&r, &m);
@@ -2324,7 +2324,7 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
     c = &D_800CCCC0[arg0->unk11];
     s = (WmObjSlot *)func_8001E350(arg0->unk3B);
     m = s->unk8;
-    func_8001D898(&r, 0, 8);
+    memset(&r, 0, 8);
     r.vx = s->unkC->unk14.unk20;
     r.vy = s->unkC->unk14.unk22;
     r.vz = s->unkC->unk24;
@@ -2363,7 +2363,7 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
             }
         }
     } else {
-        func_80015C38("Illigal Animation Data\n");
+        printf("Illigal Animation Data\n");
     }
     return 0;
 }
@@ -2864,7 +2864,7 @@ u8 func_800B105C(ActorPos *out) {
     s32 x;
     s32 z;
 
-    func_8001D898(&v, 0, sizeof(v));
+    memset(&v, 0, sizeof(v));
     ok = 0;
     if (D_800D32FC < 0x16 && ((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2) == 0x17) {
         return 0;
@@ -3026,7 +3026,7 @@ void func_800B153C(void) {
     D_800CE1F2 = D_800CE3C8->unk8 == 0;
     func_800AFCE0();
     if (D_800CCE50 & 0x20) {
-        func_80015C38("w_movementChange : %d -> %d\n", old, D_800CE3C4);
+        printf("w_movementChange : %d -> %d\n", old, D_800CE3C4);
     }
 }
 
@@ -3540,7 +3540,7 @@ void func_800B31B8(void) {
     func_800C42B0(p->unkB);
     func_800AE784(p->unk11, 0x40);
     if (D_800CCE50 & 0x20) {
-        func_80015C38("w_movementChange SP1 : %d -> %d\n", old, 0);
+        printf("w_movementChange SP1 : %d -> %d\n", old, 0);
     }
 }
 
@@ -3559,7 +3559,7 @@ void func_800B326C(void) {
     D_800CE1F2 = D_800CE3C8->unk8 == 0;
     func_800AFCE0();
     if (D_800CCE50 & 0x20) {
-        func_80015C38(D_800A7164);
+        printf(D_800A7164);
     }
 }
 
@@ -3928,7 +3928,7 @@ s32 func_800B6BC4(void) {
         }
         break;
     case 4:
-        func_80015C38("MAP JUMP\n");
+        printf("MAP JUMP\n");
         if (D_800D3E75 >= 0) {
             D_80073998[0] &= 0xFDF7FFFF;
         }
@@ -4157,110 +4157,110 @@ void func_800B73F8(u32 arg0, s32 arg1) {
     if (D_800CCE50 & 0x80) {
         switch (arg0) {
         case 0:
-            func_80015C38("*[ Request from script:Weather:%d ]\n", arg1);
+            printf("*[ Request from script:Weather:%d ]\n", arg1);
             break;
         case 2:
-            func_80015C38("*[ Request from script:Navi Active:%d ]\n", arg1);
+            printf("*[ Request from script:Navi Active:%d ]\n", arg1);
             break;
         case 1:
-            func_80015C38("*[ Request from script:Actor:%d ]\n", arg1);
+            printf("*[ Request from script:Actor:%d ]\n", arg1);
             break;
         case 4:
-            func_80015C38("*[ Request from script:Navi mode:%d ]\n", arg1);
+            printf("*[ Request from script:Navi mode:%d ]\n", arg1);
             break;
         case 5:
-            func_80015C38("*[ Request from script:Camera Lookup Fix mode:%d ]\n", arg1);
+            printf("*[ Request from script:Camera Lookup Fix mode:%d ]\n", arg1);
             break;
         case 11:
-            func_80015C38("*[ Request from script:Title Draw Time:%d ]\n", arg1);
+            printf("*[ Request from script:Title Draw Time:%d ]\n", arg1);
             break;
         case 14:
-            func_80015C38("*[ Request from script:Whather Speed:%d ]\n", arg1);
+            printf("*[ Request from script:Whather Speed:%d ]\n", arg1);
             break;
         case 15:
-            func_80015C38("*[ Request from script:Whather Auto:%d ]\n", arg1);
+            printf("*[ Request from script:Whather Auto:%d ]\n", arg1);
             break;
         case 16:
-            func_80015C38("*[ Request from script:SE Param0:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param0:%d ]\n", arg1);
             break;
         case 17:
-            func_80015C38("*[ Request from script:SE Param1:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param1:%d ]\n", arg1);
             break;
         case 18:
-            func_80015C38("*[ Request from script:SE Param2:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param2:%d ]\n", arg1);
             break;
         case 19:
-            func_80015C38("*[ Request from script:SE Param3:%d ]\n", arg1);
+            printf("*[ Request from script:SE Param3:%d ]\n", arg1);
             break;
         case 20:
-            func_80015C38("*[ Request from script:SE Play ]\n");
+            printf("*[ Request from script:SE Play ]\n");
             break;
         case 21:
-            func_80015C38("*[ Request from script:SE Vol ]\n");
+            printf("*[ Request from script:SE Vol ]\n");
             break;
         case 22:
-            func_80015C38("*[ Request from script:SE Vol Intpl ]\n");
+            printf("*[ Request from script:SE Vol Intpl ]\n");
             break;
         case 23:
-            func_80015C38("*[ Request from script:SE Stop ]\n");
+            printf("*[ Request from script:SE Stop ]\n");
             break;
         case 24:
-            func_80015C38("*[ Request from script:Music Vol Intpl:Prm1 %d Prm2 %d]\n", D_800CF488[1],
+            printf("*[ Request from script:Music Vol Intpl:Prm1 %d Prm2 %d]\n", D_800CF488[1],
                           D_800CF488[2]);
             break;
         case 25:
-            func_80015C38("*[ Request from script:Camera Smooth ]\n");
+            printf("*[ Request from script:Camera Smooth ]\n");
             break;
         case 26:
-            func_80015C38("*[ Request from script:EventBattleProbability %d]\n", arg1);
+            printf("*[ Request from script:EventBattleProbability %d]\n", arg1);
             break;
         case 27:
-            func_80015C38("*[ Request from script:Navi Cursol\n");
+            printf("*[ Request from script:Navi Cursol\n");
             break;
         case 28:
-            func_80015C38("*[ Request from script:Get Getoffpos ]\n");
-            func_80015C38("Value X:%d\n", D_800CF488[0]);
-            func_80015C38("Value Y:%d\n", D_800CF488[1]);
-            func_80015C38("Value Z:%d\n", D_800CF488[2]);
+            printf("*[ Request from script:Get Getoffpos ]\n");
+            printf("Value X:%d\n", D_800CF488[0]);
+            printf("Value Y:%d\n", D_800CF488[1]);
+            printf("Value Z:%d\n", D_800CF488[2]);
             break;
         case 29:
-            func_80015C38("*[ Request from script:Call Chocobo ]\n");
+            printf("*[ Request from script:Call Chocobo ]\n");
             break;
         case 30:
-            func_80015C38("*[ Request from script:Get Getoff SP1 ]\n");
+            printf("*[ Request from script:Get Getoff SP1 ]\n");
             break;
         case 31:
-            func_80015C38("*[ Request from script:Get Getoff SP2 ]\n");
+            printf("*[ Request from script:Get Getoff SP2 ]\n");
             break;
         case 32:
-            func_80015C38("*[ Request from script:Music Fade ]\n");
+            printf("*[ Request from script:Music Fade ]\n");
             break;
         case 33:
-            func_80015C38("*[ Request from script:Music Fade Force]\n");
+            printf("*[ Request from script:Music Fade Force]\n");
             break;
         case 34:
-            func_80015C38("*[ Request from script:Auto Pilot ON]\n");
+            printf("*[ Request from script:Auto Pilot ON]\n");
             break;
         case 35:
-            func_80015C38("*[ Request from script:Mog choice %d]\n", arg1);
+            printf("*[ Request from script:Mog choice %d]\n", arg1);
             break;
         case 36:
-            func_80015C38("*[ Request from script:Cursol Draw %d]\n", arg1);
+            printf("*[ Request from script:Cursol Draw %d]\n", arg1);
             break;
         case 37:
-            func_80015C38("*[ Request from script:Alpha 0%d]\n", arg1);
+            printf("*[ Request from script:Alpha 0%d]\n", arg1);
             break;
         case 38:
-            func_80015C38("*[ Request from script:Auto Pilot OFF]\n");
+            printf("*[ Request from script:Auto Pilot OFF]\n");
             break;
         case 39:
-            func_80015C38("*[ Request from script:CD Use ON]\n");
+            printf("*[ Request from script:CD Use ON]\n");
             break;
         case 40:
-            func_80015C38("*[ Request from script:CD Use OFF]\n");
+            printf("*[ Request from script:CD Use OFF]\n");
             break;
         case 41:
-            func_80015C38("*[ Request from script:Map Jump]\n");
+            printf("*[ Request from script:Map Jump]\n");
             break;
         case 3:
         case 6:
@@ -4270,7 +4270,7 @@ void func_800B73F8(u32 arg0, s32 arg1) {
         case 10:
             break;
         default:
-            func_80015C38("w_frameSetParameter: illigal function #%d\n", arg0);
+            printf("w_frameSetParameter: illigal function #%d\n", arg0);
             break;
         }
     }
@@ -4286,7 +4286,7 @@ s32 func_800B7A14(s32 arg0) {
 
     v = D_800CCCC0[D_800CE3DC->unk11].unk8;
     if ((D_800CCE50 & 0x80) && arg0 == 0xC8) {
-        func_80015C38("Event:CDAccessWait\n");
+        printf("Event:CDAccessWait\n");
     }
     switch (arg0) {
     case 0xC0:
@@ -4351,7 +4351,7 @@ s32 func_800B7A14(s32 arg0) {
     case 0xD3:
         return (u8)D_800D3E64;
     default:
-        func_80015C38("w_frameGetParameter: illigal function #%d\n", arg0);
+        printf("w_frameGetParameter: illigal function #%d\n", arg0);
         return -1;
     }
 }
@@ -4422,7 +4422,7 @@ void func_800B7F7C(void) {
 
 void func_800B8024(void) {
     if (D_800CCE50 & 0x40) {
-        func_80015C38(D_800A71F4);
+        printf(D_800A71F4);
     }
     func_800C43F0();
     func_800BC098();
@@ -4434,7 +4434,7 @@ void func_800B8068(void) {
     MoveImage(&r, 0x100, 0xFD);
     DrawSync(0);
     if (D_800CCE50 & 0x40) {
-        func_80015C38(D_800A720C);
+        printf(D_800A720C);
     }
     func_800C6EF8();
     func_800C4654();
@@ -4498,14 +4498,14 @@ s32 func_800B828C(s32 *arg0) {
 
     if (!(*arg0 & 0x80000000)) {
         if (D_800CCE50 & 0x100) {
-            func_80015C38(D_800A79D0, arg0, *arg0 & 0x7FFFFFFF);
+            printf(D_800A79D0, arg0, *arg0 & 0x7FFFFFFF);
         }
         *arg0 |= 0x80000000;
         for (i = 0; i < (*arg0 & 0x7FFFFFFF); i++) {
             arg0[i + 1] += (s32)arg0;
         }
     } else if (D_800CCE50 & 0x100) {
-        func_80015C38(D_800A7A0C, arg0);
+        printf(D_800A7A0C, arg0);
     }
     return *arg0 & 0x7FFFFFFF;
 }
@@ -4514,7 +4514,7 @@ void *func_800B8388(void **arg0, s32 arg1) {
     s32 n = (s32)arg0[0] & 0x7FFFFFFF;
 
     if ((D_800CCE50 & 0x100) && n < arg1) {
-        func_80015C38(D_800A7A40, arg1, n);
+        printf(D_800A7A40, arg1, n);
     }
     return arg0[arg1 + 1];
 }
@@ -4643,7 +4643,7 @@ void func_800B872C(void) {
         for (i = 0; i < 5; i++) {
             D_800CF580[i] = D_800CCF84[i];
         }
-        func_80015C38("Read CD Image [Disc-1]\n");
+        printf("Read CD Image [Disc-1]\n");
         D_800CF598[0] = func_8001E218(0xC, 0x3F3)->unk4 + D_8006794C->unk20;
         D_800CF598[3] = func_8001E218(0xC, 0x3FD)->unk4 + D_8006794C->unk20;
         D_800CF598[4] = func_8001E218(0xC, 0x407)->unk4 + D_8006794C->unk20;
@@ -4651,13 +4651,13 @@ void func_800B872C(void) {
         for (i = 0; i < 5; i++) {
             D_800CF580[i] = D_800CCF98[i];
         }
-        func_80015C38("Read CD Image [Disc-4]\n");
+        printf("Read CD Image [Disc-4]\n");
         D_800CF598[0] = func_8001E218(0xC, 0x3F6)->unk4 + D_8006794C->unk20;
         D_800CF598[3] = func_8001E218(0xC, 0x400)->unk4 + D_8006794C->unk20;
         D_800CF598[4] = func_8001E218(0xC, 0x40A)->unk4 + D_8006794C->unk20;
     }
     if (D_800CCE50 & 0x40) {
-        func_80015C38(D_800A7BB8, D_800CF598[0]);
+        printf(D_800A7BB8, D_800CF598[0]);
     }
 }
 
@@ -4667,16 +4667,16 @@ s32 func_800B88C0(s32 arg0) {
     s32 *p = &D_800CFDB0[D_800CFE14++];
 
     if (D_800CFE14 >= 0x19U) {
-        func_80015C38("w_memorymanHeapAlloc:(Error) Heap stack overflow\n");
+        printf("w_memorymanHeapAlloc:(Error) Heap stack overflow\n");
     } else if (D_800CCE50 & 0x40) {
-        func_80015C38("w_memorymanHeapAlloc: [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
+        printf("w_memorymanHeapAlloc: [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
     }
     *p = D_800CFE18;
     D_800CFE1C = arg0;
     D_800CFE18 += arg0;
     D_800CFE10 += arg0;
     if (D_800CCE50 & 0x40) {
-        func_80015C38("%x (%x/%x)[%x]\n", D_800CFE18, D_800CFE10, 0x24800, arg0);
+        printf("%x (%x/%x)[%x]\n", D_800CFE18, D_800CFE10, 0x24800, arg0);
     }
     return *p;
 }
@@ -4689,11 +4689,11 @@ s32 func_800B89B0(void) {
     s32 size;
 
     if (D_800CFE14 == 0) {
-        func_80015C38("w_memorymanHeapFree:no allocated heap.\n");
+        printf("w_memorymanHeapFree:no allocated heap.\n");
         return 0;
     }
     if (D_800CCE50 & 0x40) {
-        func_80015C38("w_memorymanHeapFree : [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
+        printf("w_memorymanHeapFree : [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
     }
     stack = D_800CFDB0;
     n = D_800CFE14 - 1;
@@ -4704,7 +4704,7 @@ s32 func_800B89B0(void) {
     D_800CFE18 = prev;
     D_800CFE10 -= size;
     if (D_800CCE50 & 0x40) {
-        func_80015C38("%x\n", D_800CFE18);
+        printf("%x\n", D_800CFE18);
     }
     return 1;
 }
@@ -4719,10 +4719,10 @@ void func_800B8A80(void) {
 
 void func_800B8ABC(void) {
     if (D_800CFE14 != 0) {
-        func_80015C38("w_memorymanDestructor:(Error) Memory leak can be found.\n");
+        printf("w_memorymanDestructor:(Error) Memory leak can be found.\n");
     }
     if (D_800CCE50 & 0x40) {
-        func_80015C38(D_800A7CCC);
+        printf(D_800A7CCC);
     }
 }
 
@@ -4739,7 +4739,7 @@ void func_800B8B10(void) {
 
     off = 0;
     src = 0;
-    func_8001D898(&r, 0, 8);
+    memset(&r, 0, 8);
     r.h = 1;
     D_800D1FD0 = 0;
     D_800CFE98[0] = 0;
@@ -4759,7 +4759,7 @@ void func_800B8B10(void) {
         if (i < 18) {
             if (i >= 15) {
                 dst = &D_800CFFD0[0][off];
-                func_80015C28((u8 *)dst, (u8 *)func_800B8388(D_800CF428, 2) + src, (u16)e->unk6 * 2);
+                memcpy((u8 *)dst, (u8 *)func_800B8388(D_800CF428, 2) + src, (u16)e->unk6 * 2);
                 src += (u16)e->unk6 * 2;
             } else {
                 StoreImage(&r, (u32 *)&D_800CFFD0[0][off]);
@@ -5229,11 +5229,11 @@ s32 func_800B9808(s32 cell, WmTexEnt *tex, VECTOR *pos, u32 *attr, s32 *idx, Unk
         *idx = -1;
         *attr = 0;
         y = pos->vy;
-        func_80015C38("Not hit polygon\n");
+        printf("Not hit polygon\n");
         if (D_800D30C5 >= 2) {
             sprintf(D_800CCE6C, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy,
                     D_800CE3DC->unk14.vz, found);
-            func_80015C38(D_800A7D20, D_800CCE6C);
+            printf(D_800A7D20, D_800CCE6C);
             if (D_800CCE69 == 0) {
                 D_800CCE69 = 1;
             }
@@ -5576,9 +5576,9 @@ void func_800BB07C(void) {
     if (D_800D32F8[2] < 0x28) {
         d = 0x78 - D_800D32F8[2] * 3;
         if (d != 0 && D_800D33F4 != 0) {
-            D_800CE108[1] += func_80062B3C() % d - d / 2;
-            D_800CE108[0] += func_80062B3C() % d - d / 2;
-            D_800CE108[2] += func_80062B3C() % d - d / 2;
+            D_800CE108[1] += rand() % d - d / 2;
+            D_800CE108[0] += rand() % d - d / 2;
+            D_800CE108[2] += rand() % d - d / 2;
         }
     }
     if (D_800D32F8[1] < 0x22 && func_8004AE84() != 0 && ((flags & 0xFC) >> 2) == 0x17 && m - 1 < 7U) {
@@ -5626,7 +5626,7 @@ void func_800BB508(void) {
         }
     }
     if (D_800CCE50 & 0x10) {
-        func_80015C38("Scene:%d / Status:%d\n", *D_800CF430, i);
+        printf("Scene:%d / Status:%d\n", *D_800CF430, i);
     }
     if (i >= 0 && D_800CF444 == 1) {
         for (n = 0; n < 7; n++) {
@@ -5678,40 +5678,40 @@ void func_800BB508(void) {
             if (D_800CCE50 & 0x10) {
                 switch (D_800CD010[n][i]) {
                 case 0:
-                    func_80015C38("BGI Form : SGATE\n");
+                    printf("BGI Form : SGATE\n");
                     break;
                 case 5:
-                    func_80015C38("BGI Form : CLAY\n");
+                    printf("BGI Form : CLAY\n");
                     break;
                 case 4:
-                    func_80015C38("BGI Form : LIND\n");
+                    printf("BGI Form : LIND\n");
                     break;
                 case 8:
-                    func_80015C38("BGI Form : KUROMA\n");
+                    printf("BGI Form : KUROMA\n");
                     break;
                 case 2:
-                    func_80015C38("BGI Form : ALEX\n");
+                    printf("BGI Form : ALEX\n");
                     break;
                 case 10:
-                    func_80015C38("BGI Form : HOKORA(MIZU)\n");
+                    printf("BGI Form : HOKORA(MIZU)\n");
                     break;
                 case 3:
-                    func_80015C38("BGI Form : HOKORA(HI)\n");
+                    printf("BGI Form : HOKORA(HI)\n");
                     break;
                 }
             }
         }
     }
-    func_80015C38("General Global Flag = %x\n", D_8007AF55);
+    printf("General Global Flag = %x\n", D_8007AF55);
     if (D_8007AF55 & 0x80) {
-        func_80015C38("- Replace Mog Net -\n");
+        printf("- Replace Mog Net -\n");
         WM_CELL(16, 1) |= 0x80;
         WM_CELL(13, 4) |= 0x80;
         WM_CELL(14, 5) |= 0x80;
         D_800D30C8[12] = 1;
     }
     if (D_8007AF55 & 0x40) {
-        func_80015C38("- Replace Chocobo Heaven -\n");
+        printf("- Replace Chocobo Heaven -\n");
         WM_CELL(0, 0) |= 0x80;
         WM_CELL(16, 14) |= 0x80;
         WM_CELL(9, 17) |= 0x80;
@@ -5735,21 +5735,21 @@ Unk800CF450 *func_800BBBA8(void) {
     lo = D_800D30D8[zone];
     hi = D_800D30D8[zone + 1];
     if (D_800CCE50 & 8) {
-        func_80015C38("- Encount Information -\n");
-        func_80015C38("Now Area :%d\n", (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8);
-        func_80015C38("Now Zone :%d\n", zone);
-        func_80015C38("Now Fog  :%d\n", D_800CCE4B);
-        func_80015C38("Topograph:%d\n", (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2);
+        printf("- Encount Information -\n");
+        printf("Now Area :%d\n", (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8);
+        printf("Now Zone :%d\n", zone);
+        printf("Now Fog  :%d\n", D_800CCE4B);
+        printf("Topograph:%d\n", (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2);
     }
     for (i = lo; i < hi; i++) {
         t = D_800CF450[i].unk8 >> 2;
         f = D_800CF450[i].unk9 & 1;
         if (D_800CCE50 & 8) {
-            func_80015C38("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
+            printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
         }
         if (t == (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 && f == D_800CCE4B) {
             if (D_800CCE50 & 8) {
-                func_80015C38("Hit %d encount data\n", i);
+                printf("Hit %d encount data\n", i);
             }
             add = 0;
             if (D_800CF444 == 4 && i < 100) {
@@ -5758,7 +5758,7 @@ Unk800CF450 *func_800BBBA8(void) {
             return &D_800CF450[i + add];
         }
     }
-    func_80015C38(D_800A7F48);
+    printf(D_800A7F48);
     return &D_800CF450[i + add - 1];
 }
 
@@ -6110,7 +6110,7 @@ void func_800BCBDC(void) {
             }
             if ((*cell & 0x80) && b.unk2 == 0) {
                 if (D_800CCE50 & 0x10) {
-                    func_80015C38(D_800A7F94, id2);
+                    printf(D_800A7F94, id2);
                 }
                 *cell &= 0x7F;
             }
@@ -6789,7 +6789,7 @@ void func_800BE894(void) {
         }
     }
     if (D_800CCE50 & 0x80) {
-        func_80015C38("DEF SET NAVIMODE :%d\n", D_800D3E60);
+        printf("DEF SET NAVIMODE :%d\n", D_800D3E60);
     }
 }
 
@@ -7067,7 +7067,7 @@ void func_800BF978(void) {
 
     ot = (u32 *)D_800CF460[*D_800CF45C];
     arrow = D_800A8000;
-    func_8001D898(&rot0, 0, 8);
+    memset(&rot0, 0, 8);
     rot0.vz = D_800CE3DC->unk14.unk22 - 0x400;
     rot = rot0;
     func_80030AF4(&rot, &m);
@@ -7203,7 +7203,7 @@ void func_800C0888(void) {
 
     ot = (u32 *)D_800CF460[*D_800CF45C];
     arrow = D_800A8020;
-    func_8001D898(&rot0, 0, 8);
+    memset(&rot0, 0, 8);
     rot0.vz = D_800CE3DC->unk14.unk22 - 0x400;
     rot = rot0;
     c = (func_8004BB80(D_800CF4B0 << 6) >> 7) + 0x80;
@@ -7563,7 +7563,7 @@ s32 func_800C1DA4(s16 arg0) {
             D_800D3E90++;
             if (D_800D3E90 >= 4) {
                 sprintf(D_800CCE6C, "w_readtxRequest/reqover[%d/%d]\n", D_800D3E90, 3);
-                func_80015C38("==== ERROR ===== / %s", D_800CCE6C);
+                printf("==== ERROR ===== / %s", D_800CCE6C);
                 D_800CCE69 = 1;
             }
             p->unkC = arg0;
@@ -7583,7 +7583,7 @@ s32 func_800C1DA4(s16 arg0) {
         }
     }
     if (i == 6) {
-        func_80015C38("-- w_readtxRequest Error --\n");
+        printf("-- w_readtxRequest Error --\n");
         return 0;
     }
     return 1;
@@ -7650,7 +7650,7 @@ void func_800C20B0(s32 *arg0) {
     s32 i;
 
     if (D_800CCE50 & 0x200) {
-        func_80015C38(D_800A8098, arg0);
+        printf(D_800A8098, arg0);
     }
     func_800B828C(arg0);
     p = D_800D3EA8.unk4;
@@ -7724,7 +7724,7 @@ s32 func_800C2230(s16 arg0) {
                 D_800D3F20++;
                 if (D_800D3F20 >= 3) {
                     sprintf(D_800CCE6C, D_800A80BC, D_800D3F20, 2);
-                    func_80015C38(D_800A80E0, D_800CCE6C);
+                    printf(D_800A80E0, D_800CCE6C);
                     D_800CCE69 = 1;
                 }
                 p->unk8 = arg0;
@@ -7744,7 +7744,7 @@ s32 func_800C2230(s16 arg0) {
             }
         }
         if (i == 4) {
-            func_80015C38(D_800A80F8);
+            printf(D_800A80F8);
             return 0;
         }
     }
@@ -7818,7 +7818,7 @@ void func_800C24D8(void) {
         id = D_800D3F78[i].unk4;
         k = D_800D3F78[i].unk5 - 1;
         if (D_800CCE50 & 0x200) {
-            func_80015C38(D_800A8118, (u8)(id + 0x60), D_800D3F78[i].unk0, k);
+            printf(D_800A8118, (u8)(id + 0x60), D_800D3F78[i].unk0, k);
         }
         px = &D_800CDF14[k];
         py = &D_800CDF18[k];
@@ -7974,7 +7974,7 @@ void func_800C2A80(s32 mode, s32 flag, s32 arg2) {
             return;
         }
     }
-    func_80015C38(D_800A8178, mode);
+    printf(D_800A8178, mode);
 }
 
 /* blend the sky parameter blocks arg1 -> arg2 by arg3 (0..0x1000) into arg0 */
@@ -8080,7 +8080,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8118);
 void func_800C3E28(void) {
     D_800D3F8C = func_800C291C();
     D_800CCE4B = func_800C3E88();
-    func_80015C38("start weather mode : %d / fog : %d\n", D_800D3F8C, D_800CCE4B);
+    printf("start weather mode : %d / fog : %d\n", D_800D3F8C, D_800CCE4B);
     func_800C2A80(D_800D3F8C, D_800CCE4B, 0x1000);
 }
 
@@ -8097,7 +8097,7 @@ void func_800C3EAC(void) {
     case 1:
         if (D_800CF454 == 0) {
             if (D_800CCE50 & 4) {
-                func_80015C38("w_musicUpdate : Play\n");
+                printf("w_musicUpdate : Play\n");
             }
             D_800CF454 = 2;
             if (D_800D481C != -1) {
@@ -8114,10 +8114,10 @@ void func_800C3EAC(void) {
             D_800CF454 = 0;
             D_800D4818 = 0;
             if (D_800CCE50 & 4) {
-                func_80015C38("w_musicUpdate : Ready\n");
+                printf("w_musicUpdate : Ready\n");
             }
         } else if (D_800CCE50 & 4) {
-            func_80015C38("w_musicUpdate : Waiting [ State : %d ] \n", st);
+            printf("w_musicUpdate : Waiting [ State : %d ] \n", st);
         }
         break;
     }
@@ -8261,9 +8261,9 @@ s32 func_800C3FE4(s32 arg0, Unk800C3FE4 *arg1) {
                     *arg1 = s;
                     return 1;
                 }
-                func_80015C38("w_musicGetID : Illigal SE Number #%d\n", arg0);
+                printf("w_musicGetID : Illigal SE Number #%d\n", arg0);
                 return 0;
-                func_80015C38(""); /* unreachable; its empty string is in .rodata */
+                printf(""); /* unreachable; its empty string is in .rodata */
             }
         }
     }
@@ -8286,25 +8286,25 @@ void func_800C42B0(u32 arg0) {
         if (D_800CCE50 & 4) {
             switch (arg0) {
             case 0:
-                func_80015C38(D_800A832C);
+                printf(D_800A832C);
                 break;
             case 2:
-                func_80015C38(D_800A8350);
+                printf(D_800A8350);
                 break;
             case 1:
-                func_80015C38(D_800A8374);
+                printf(D_800A8374);
                 break;
             case 3:
-                func_80015C38(D_800A8398);
+                printf(D_800A8398);
                 break;
             case 4:
-                func_80015C38(D_800A83B8);
+                printf(D_800A83B8);
                 break;
             case 5:
-                func_80015C38(D_800A83DC);
+                printf(D_800A83DC);
                 break;
             default:
-                func_80015C38(D_800A8400);
+                printf(D_800A8400);
                 break;
             }
         }
@@ -8312,13 +8312,13 @@ void func_800C42B0(u32 arg0) {
             D_800D4818 = 1;
             D_800D4828 = arg0;
             if (D_800CCE50 & 4) {
-                func_80015C38(D_800A8424);
+                printf(D_800A8424);
             }
         } else if (D_800CCE50 & 4) {
-            func_80015C38(D_800A8430);
+            printf(D_800A8430);
         }
     } else if (D_800CCE50 & 4) {
-        func_80015C38(D_800A844C);
+        printf(D_800A844C);
     }
 }
 
@@ -8506,13 +8506,13 @@ void func_800C4A5C(void) {
 
     for (i = 0; i < 10; i++) {
         D_800D4870[i].vx = i << 7;
-        D_800D4870[i].vy = func_80062B3C() % 4096;
+        D_800D4870[i].vy = rand() % 4096;
         D_800D4870[i].vz = 0;
         D_800D4830[i] = i * 0x14 + 0x200;
         D_800D48F8[i] = 0x800;
         D_800D48E8[i] = 0;
-        D_800D4910[i].vx = func_80062B3C() % 4096;
-        D_800D4910[i].vy = func_80062B3C() % 4096;
+        D_800D4910[i].vx = rand() % 4096;
+        D_800D4910[i].vy = rand() % 4096;
         D_800D4910[i].vz = 0;
     }
     for (i = 0; i < 9; i++) {
@@ -8635,7 +8635,7 @@ void func_800C4DD8(void) {
                 case 25:
                 case 26: {
                     SVECTOR r;
-                    func_8001D898(&r, 0, 8);
+                    memset(&r, 0, 8);
                     r.pad = 1;
                     r.vy = ratan2(0x30031 - o->unk10, -0x13F6E - o->unk18);
                     D_800CF442 = 0;
@@ -8826,15 +8826,15 @@ void func_800C5A48(u8 arg0) {
                 m1 = D_800CD774;
                 m2 = D_800CD774;
                 if (D_800D48E8[i] == 0) {
-                    if (func_80062B3C() % 5 == 0) {
-                        D_800D4910[i].vx = func_80062B3C() % 4096;
-                        D_800D4910[i].vy = func_80062B3C() % 4096;
-                        D_800D4910[i].vz = func_80062B3C() % 4096;
-                        D_800D48F8[i] = func_80062B3C() % 1024 + 0x400;
+                    if (rand() % 5 == 0) {
+                        D_800D4910[i].vx = rand() % 4096;
+                        D_800D4910[i].vy = rand() % 4096;
+                        D_800D4910[i].vz = rand() % 4096;
+                        D_800D48F8[i] = rand() % 1024 + 0x400;
                         D_800D48E8[i] = 1;
                     }
                 } else {
-                    D_800D48F8[i] += func_80062B3C() % 86 - 10;
+                    D_800D48F8[i] += rand() % 86 - 10;
                     if (++D_800D48E8[i] == 33) {
                         D_800D48E8[i] = 0;
                     }
@@ -8845,7 +8845,7 @@ void func_800C5A48(u8 arg0) {
                     m2.t[1] = -700;
                     func_80030AF4(&D_800D4910[i], &m1);
                     gte_CompMatrix(&m1, &m2, &m);
-                    func_8001D898(&s, 0, sizeof(VECTOR));
+                    memset(&s, 0, sizeof(VECTOR));
                     s.vx = 0x2FA0;
                     s.vy = D_800D48F8[i];
                     s.vz = 0x1830;
@@ -8858,7 +8858,7 @@ void func_800C5A48(u8 arg0) {
                     gte_CompMatrix(D_800CF448, &m, &m);
                     SetRotMatrix(&m);
                     SetTransMatrix(&m);
-                    switch (func_80062B3C() % 3) {
+                    switch (rand() % 3) {
                     case 0:
                         func_800BA458(WM_PACK0(0x40), 0, 2);
                         break;
@@ -8965,15 +8965,15 @@ void func_800C69F4(s32 arg0) {
             D_800D4870[i].vy = t - i / 4;
         }
         for (i = 0; i < 10; i++) {
-            D_800D4910[i].vx += -6 + func_80062B3C() % 13;
-            D_800D4910[i].vy += -6 + func_80062B3C() % 13;
+            D_800D4910[i].vx += -6 + rand() % 13;
+            D_800D4910[i].vy += -6 + rand() % 13;
         }
         break;
     }
     if (on) {
         e = func_800B8388(D_800CF428, (u8)arg0 + 0x28);
         for (; e->unk24 != -1; e++) {
-            if (func_80062B3C() % 4096 < e->unk28) {
+            if (rand() % 4096 < e->unk28) {
                 x = e->unk0 - e->unkC / 2;
                 y = e->unk4 - e->unk10 / 2;
                 z = e->unk8 - e->unk14 / 2;
@@ -9085,7 +9085,7 @@ void func_800C6F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         p->unk20 = 0;
         p->unk24 = 0;
         if (arg3 == 0x17) {
-            p->unk20 = func_80062B3C() & 0xFFF;
+            p->unk20 = rand() & 0xFFF;
         }
     }
 }

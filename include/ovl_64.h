@@ -7,7 +7,7 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
-void func_80063864(void *, void *, s32);
+void bcopy(void *, void *, s32);
 extern s8 D_80071E31;
 extern s32 D_80071E34;
 extern s8 D_80071E38;

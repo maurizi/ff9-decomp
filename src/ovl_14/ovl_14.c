@@ -813,9 +813,9 @@ void func_800A8D2C(void) {
 
     func_80012D08();
     for (i = 0; i < 4; i++) {
-        h = func_80016EC0(0xF4000001, D_800AB2B4[i], 0x2000, 0);
+        h = OpenEvent(0xF4000001, D_800AB2B4[i], 0x2000, 0);
         D_800AB320.unk14[i] = h;
-        func_80016ED0(h);
+        EnableEvent(h);
     }
     func_80012D18();
 }
@@ -825,8 +825,8 @@ void func_800A8DB0(void) {
 
     func_80012D08();
     for (i = 0; i < 4; i++) {
-        func_80056CBC(D_800AB320.unk14[i]);
-        func_80056CAC(D_800AB320.unk14[i]);
+        DisableEvent(D_800AB320.unk14[i]);
+        CloseEvent(D_800AB320.unk14[i]);
     }
     func_80012D18();
 }
@@ -1009,7 +1009,7 @@ s32 func_800A9220(void) {
                         if (D_8006794C->unk1C->unk8 == 0) {
                             D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
                         }
-                        func_80015C38("Fr: %d\n", D_800AB2CE);
+                        printf("Fr: %d\n", D_800AB2CE);
                     } else {
                         D_800AB3B8[1][0] = 7;
                     }
@@ -1089,7 +1089,7 @@ s32 func_800A9968(void) {
     while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
     }
     func_80012D08();
-    func_80012CF8();
+    FlushCache();
     func_80012D18();
     if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
         h = func_80022AC4(*D_8019DC68);

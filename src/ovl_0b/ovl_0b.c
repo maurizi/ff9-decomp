@@ -340,7 +340,7 @@ void func_800A94F8(void) {
     case 8:
         break;
     default:
-        func_8002EB64(0x39, 0x12E);
+        SystemError(0x39, 0x12E);
         break;
     }
 }
@@ -1524,7 +1524,7 @@ s32 func_800AC280(u32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     if ((s32)(arg0 >> 24) >= 9) {
         n = h->unk7 * 4;
         dst = D_8006794C->unk1C->unk8E4.battle->unk11C0->unk48;
-        func_80015C28(dst, (u8 *)*arg1, n);
+        memcpy(dst, (u8 *)*arg1, n);
         *arg1 = (s32 *)dst;
         D_8006794C->unk1C->unk8E4.battle->unk11C0->unk48 += n;
     }
@@ -1963,7 +1963,7 @@ stream:
     case 4:
         n = gd->unk854[0].unkC + gd->unk854[0].unk10 - gd->unk87C;
         if (n > 0) {
-            func_80015C28(gd->unk814, (u8 *)(gd->unk8C0 + (gd->unk87C - gd->unk854[0].unkC)), n);
+            memcpy(gd->unk814, (u8 *)(gd->unk8C0 + (gd->unk87C - gd->unk854[0].unkC)), n);
         }
         D_8006794C->unk1C->unk8C0 = (s32)((u8 *)D_8006794C->unk1C->unk814 + n);
         m2 = 0x6800 - n;
@@ -2088,7 +2088,7 @@ s32 func_800AE764(s32 arg0) {
 s32 func_800AE7C8(s32 arg0) {
     s32 v = func_8001C8B0(arg0, 3, 0x70000, 0);
     s32 a = func_8001C8B0(arg0, 4, v, 0);
-    func_80015C28((u8 *)arg0, (u8 *)a, func_8001C8B0(arg0, 5, v, 0));
+    memcpy((u8 *)arg0, (u8 *)a, func_8001C8B0(arg0, 5, v, 0));
     return 0;
 }
 
@@ -6509,7 +6509,7 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
             if ((u->unk68 >> 23) & 1) {
                 u->unk2C = 0;
                 u->unk2E = 0;
-                func_8001D898(&r, 0, 8);
+                memset(&r, 0, 8);
                 r.vx = u->unk86[0];
                 r.vy = u->unk86[1];
                 r.vz = u->unk86[2];
@@ -6708,14 +6708,14 @@ void func_800BC21C(BtlUnit *u, s32 *ot) {
         return;
     }
     if ((u->unk68 & 1) && (s32)m->unkC == u->unkA4[17]) {
-        func_8001D898(&rot, 0, 8);
+        memset(&rot, 0, 8);
         rot.vx = u->unk86[0];
         rot.vy = 0x800;
         rot.vz = u->unk86[2];
         tmp = rot;
         func_80031244(&tmp, &m->unk24);
     } else {
-        func_8001D898(&rot, 0, 8);
+        memset(&rot, 0, 8);
         rot.vx = u->unk86[0];
         rot.vy = u->unk86[1];
         rot.vz = u->unk86[2];
@@ -8948,7 +8948,7 @@ void func_800C2598(BtlCmd *arg0, s32 arg1, s16 *arg2) {
     s32 mask;
     u8 e;
 
-    func_8001D898(sum, 0, 0x10);
+    memset(sum, 0, 0x10);
     mask = 0;
     b->unk116C.unk0 = arg0->unk4;
     l = &b->unk116C;

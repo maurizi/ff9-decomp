@@ -6,14 +6,14 @@ u8 func_800C2DF4(void) {
 
 void func_800C2E04(void) {
     D_800F78A4->unk2C = &D_800FE3B8;
-    func_8001A878(&D_800FE3B8, 0xD0);
+    bzero(&D_800FE3B8, 0xD0);
     D_800FE3B8.unk60 = 0x200;
     D_800FE3B8.unk5E = 0x200;
 }
 
 void func_800C2E4C(void) {
-    func_8001A878(&D_800FE488, 0x64);
-    func_80063864(D_800F78A4->unkC, &D_800FE368, 0x4C);
+    bzero(&D_800FE488, 0x64);
+    bcopy(D_800F78A4->unkC, &D_800FE368, 0x4C);
     D_800FE3B8.unk5C = 0;
     D_800FE3B8.unk53 = func_800CF690() & 1;
     if (D_800F78A4->unk0->unk1C & 4) {
@@ -27,8 +27,8 @@ void func_800C2F1C(s32 arg0) {
     D_800FE3B8.unkB9 = 0;
     D_800FE3B8.unk52 = 0;
     D_800FE3B8.unk5C = 0;
-    func_8001A878(&D_800FE488, 0x64);
-    func_8001A878(&D_800FE368, 0x4C);
+    bzero(&D_800FE488, 0x64);
+    bzero(&D_800FE368, 0x4C);
     func_800C316C(arg0);
     if (D_800FE3B8.unkCC != 0) {
         func_800C57A4(D_800FE3B8.unkCC, D_800FE488.unk46);
@@ -47,7 +47,7 @@ void func_800C2F9C(s32 arg0) {
 }
 
 void func_800C2FFC(s32 arg0) {
-    func_8001A878(&D_800FE488, 0x64);
+    bzero(&D_800FE488, 0x64);
     D_800FE3B8.unk53 = func_800CF690() & 1;
     func_800C57A4(D_8006794C->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
     func_800C57A4((BtlUnit *)D_8006794C->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
@@ -102,7 +102,7 @@ void func_800C316C(s32 arg) {
     data = (u8 *)arg0 + *q;
     for (i = 0; i < 4; i++) {
         if (flags & 1) {
-            func_80063864(data, &D_800FE3B8.unk0[i], 6);
+            bcopy(data, &D_800FE3B8.unk0[i], 6);
             data += 6;
         } else {
             D_800FE3B8.unk0[i].vx = 0;
@@ -378,8 +378,8 @@ s32 func_800C37BC(void) {
         func_800C416C(0, &D_800FE3B8.unk68[1], &sv.vx);
         if (D_800FE488.unk44 == 1) {
             D_800FE488.unk44 = 2;
-            func_80063864(&D_800FE3B8.unk54, &D_800FE3B8.unk0[4], 8);
-            func_80063864(&sv, &D_800FE3B8.unk0[5], 8);
+            bcopy(&D_800FE3B8.unk54, &D_800FE3B8.unk0[4], 8);
+            bcopy(&sv, &D_800FE3B8.unk0[5], 8);
         }
         func_800C5530(&D_800FE3B8.unk54, &sv);
         func_800C4A3C(&D_800FE3B8.unk54.vx, &sv.vx);
@@ -850,14 +850,14 @@ void func_800C5530(SVECTOR *arg0, SVECTOR *arg1) {
             D_800FE3B8.unkBA = 1;
             D_800FE3B8.unkB4 = 2;
             D_800FE488.unkC = 0;
-            func_80063864(arg0, &D_800FE3B8.unkBC, 8);
-            func_80063864(arg1, &D_800FE3B8.unkC4, 8);
+            bcopy(arg0, &D_800FE3B8.unkBC, 8);
+            bcopy(arg1, &D_800FE3B8.unkC4, 8);
         }
         if (D_800FE3B8.unkBA == 1 && ((D_800FE3B8.unkB9 == 1 && !(D_800F78A4->unk0->unk1C & 8)) || D_800FE3B8.unkB9 == 2)) {
             if (D_800FE3B8.unkBB != 2) {
                 if (D_800FE3B8.unk65 != 0 || D_800FE3B8.unkB4 == 0) {
-                    func_80063864(&D_800FE3B8.unk0[4], arg0, 8);
-                    func_80063864(&D_800FE3B8.unk0[5], arg1, 8);
+                    bcopy(&D_800FE3B8.unk0[4], arg0, 8);
+                    bcopy(&D_800FE3B8.unk0[5], arg1, 8);
                     D_800FE3B8.unkBB = 2;
                 } else {
                     a = D_800FE3B8.unkB4 * 0x555;

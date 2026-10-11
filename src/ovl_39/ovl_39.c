@@ -840,7 +840,7 @@ u8 func_801F6694(void) {
     }
     for (i = 0; i < D_801FBEF8.unk8; i++) {
         d = &D_801FBEF8.unk20[i];
-        if (func_8001ED40((char *)d, (char *)func_801F83B8(), 0xC) == 0) {
+        if (strncmp((char *)d, (char *)func_801F83B8(), 0xC) == 0) {
             k = func_801F6D24((Unk801F6D24 *)d);
             p = &D_801FB1A8.unk34[k].unk4.unk0;
             *p = d->unk0;
@@ -851,7 +851,7 @@ u8 func_801F6694(void) {
     }
     for (i = 0; i < D_801FBEF8.unk8; i++) {
         d = &D_801FBEF8.unk20[i];
-        if (func_8001ED40((char *)d, (char *)func_801F83B8(), 0xC) != 0) {
+        if (strncmp((char *)d, (char *)func_801F83B8(), 0xC) != 0) {
             n = (D_801FBEF8.unk20[i].unk18 + 0x1FFF) / 0x2000;
             for (j = 0; j < n; j++) {
                 k = func_801F6C74();
@@ -1865,7 +1865,7 @@ void func_801F8DA4(u8 *buf) {
             h->unk34[i].unk0 = 0;
             h->unk34[i].unk1 = 0xFF;
             h->unk34[i].unkC = 0;
-            func_8001D898(h->unk34[i].unk2, 0xFF, 10);
+            memset(h->unk34[i].unk2, 0xFF, 10);
         }
     }
 }
@@ -1881,14 +1881,14 @@ void func_801F9024(u8 *dst) {
     }
     if (name == NULL) {
         s = func_80035774(0x20);
-        func_8001D898(dst, 0xFF, 0x1C);
-        func_80015C28(dst, s, func_8002BCC0(s));
+        memset(dst, 0xFF, 0x1C);
+        memcpy(dst, s, func_8002BCC0(s));
     } else {
-        func_8001D898(D_801FC3B8, 0xFF, 0x26);
-        func_80015C28(D_801FC3B8, name, func_8002BCC0(name));
+        memset(D_801FC3B8, 0xFF, 0x26);
+        memcpy(D_801FC3B8, name, func_8002BCC0(name));
         D_801FC3B8[0x1B] = 0xFF;
-        func_8001D898(dst, 0xFF, 0x1C);
-        func_80015C28(dst, D_801FC3B8, func_8002BCC0(D_801FC3B8));
+        memset(dst, 0xFF, 0x1C);
+        memcpy(dst, D_801FC3B8, func_8002BCC0(D_801FC3B8));
     }
 }
 
@@ -1904,7 +1904,7 @@ void func_801F9120(u8 *buf, s32 t) {
     buf[2] = 0x11;
     buf[3] = 1;
     title = buf + 4;
-    func_8001D898(buf + 0x44, 0, 0x1C);
+    memset(buf + 0x44, 0, 0x1C);
     sec = (u32)t / 60;
     min = sec / 60;
     hour = min / 60;
@@ -1913,7 +1913,7 @@ void func_801F9120(u8 *buf, s32 t) {
     if (hour >= 100) {
         hour %= 100;
     }
-    func_8001D898(title, 0, 0x40);
+    memset(title, 0, 0x40);
     *(TitleTmpl *)title = D_801F43B8;
     title[0x11] += (D_801FB1A8.unk3 + 1) / 10;
     n = D_801FB1A8.unk3 + 1;
@@ -2327,7 +2327,7 @@ s32 func_801FA37C(s32 chan) {
     func_80065228(1);
     func_801FAE1C();
     D_801FB074 = 1;
-    return func_80066170(chan);
+    return _card_load(chan);
 }
 
 s32 func_801FA3D8(s32 port, char *name) {
@@ -2578,22 +2578,22 @@ s32 func_801FABB8(void) {
 
 void func_801FAC68(void) {
     func_80012D08();
-    D_801FC5F4 = func_80016EC0(0xF4000001, 4, 0x2000, NULL);
-    D_801FC5F8 = func_80016EC0(0xF4000001, 0x8000, 0x2000, NULL);
-    D_801FC5FC = func_80016EC0(0xF4000001, 0x100, 0x2000, NULL);
-    D_801FC600 = func_80016EC0(0xF4000001, 0x2000, 0x2000, NULL);
-    D_801FC608 = func_80016EC0(0xF0000011, 4, 0x2000, NULL);
-    D_801FC60C = func_80016EC0(0xF0000011, 0x8000, 0x2000, NULL);
-    D_801FC610 = func_80016EC0(0xF0000011, 0x100, 0x2000, NULL);
-    D_801FC614 = func_80016EC0(0xF0000011, 0x2000, 0x2000, NULL);
-    func_80016ED0(D_801FC5F4);
-    func_80016ED0(D_801FC5F8);
-    func_80016ED0(D_801FC5FC);
-    func_80016ED0(D_801FC600);
-    func_80016ED0(D_801FC608);
-    func_80016ED0(D_801FC60C);
-    func_80016ED0(D_801FC610);
-    func_80016ED0(D_801FC614);
+    D_801FC5F4 = OpenEvent(0xF4000001, 4, 0x2000, NULL);
+    D_801FC5F8 = OpenEvent(0xF4000001, 0x8000, 0x2000, NULL);
+    D_801FC5FC = OpenEvent(0xF4000001, 0x100, 0x2000, NULL);
+    D_801FC600 = OpenEvent(0xF4000001, 0x2000, 0x2000, NULL);
+    D_801FC608 = OpenEvent(0xF0000011, 4, 0x2000, NULL);
+    D_801FC60C = OpenEvent(0xF0000011, 0x8000, 0x2000, NULL);
+    D_801FC610 = OpenEvent(0xF0000011, 0x100, 0x2000, NULL);
+    D_801FC614 = OpenEvent(0xF0000011, 0x2000, 0x2000, NULL);
+    EnableEvent(D_801FC5F4);
+    EnableEvent(D_801FC5F8);
+    EnableEvent(D_801FC5FC);
+    EnableEvent(D_801FC600);
+    EnableEvent(D_801FC608);
+    EnableEvent(D_801FC60C);
+    EnableEvent(D_801FC610);
+    EnableEvent(D_801FC614);
     func_80012D18();
 }
 
@@ -2613,13 +2613,13 @@ void func_801FAE74(void) {
 
 void func_801FAECC(void) {
     func_80012D08();
-    func_80056CAC(D_801FC5F4);
-    func_80056CAC(D_801FC5F8);
-    func_80056CAC(D_801FC5FC);
-    func_80056CAC(D_801FC600);
-    func_80056CAC(D_801FC608);
-    func_80056CAC(D_801FC60C);
-    func_80056CAC(D_801FC610);
-    func_80056CAC(D_801FC614);
+    CloseEvent(D_801FC5F4);
+    CloseEvent(D_801FC5F8);
+    CloseEvent(D_801FC5FC);
+    CloseEvent(D_801FC600);
+    CloseEvent(D_801FC608);
+    CloseEvent(D_801FC60C);
+    CloseEvent(D_801FC610);
+    CloseEvent(D_801FC614);
     func_80012D18();
 }
