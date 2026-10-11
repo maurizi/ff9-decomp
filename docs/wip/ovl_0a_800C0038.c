@@ -26,6 +26,11 @@
  * the store), a stored `g` in both arms (flow deletes the back-to-back store). What would work: a
  * compare whose constant has 2 uses or 2 sets, or a store of `f | 3` that sits after the bne in RTL
  * yet in the same block (none found).
+ * Pass 18: flag block fixed, 4 rows left: `f = unk0 & ~0xF; unk0 = f | 3; if (arg1 == 8) unk0 = f | 8 | 3;
+ * else unk0 = f | 3;` (a redundant else store, like the matched sibling C0DF4).
+ * Left: the st->unk4 copy / a->unk14.vx loads swap v0/v1 at 0xA8. The struct copy `st->unk10 = st->unk4`
+ * (C0DF4's spelling) gets the registers right, but its lw then lands after the lhu (with vx first: 4 rows).
+ * hill.py over the setup block, declmove, and every st-vs-D_800CA068 spelling: no gain.
  */
 #include "ovl_0a.h"
 
@@ -101,11 +106,12 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     if (arg1 == -1) {
         D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 3;
     } else {
-        f = ~0xF;
-        f &= D_800CA068.unk0;
+        f = D_800CA068.unk0 & ~0xF;
         D_800CA068.unk0 = f | 3;
         if (arg1 == 8) {
-            D_800CA068.unk0 = f | 0xB;
+            D_800CA068.unk0 = f | 8 | 3;
+        } else {
+            D_800CA068.unk0 = f | 3;
         }
     }
     return 1;

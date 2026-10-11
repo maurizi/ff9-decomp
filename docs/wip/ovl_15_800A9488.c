@@ -4,7 +4,32 @@
  macro score 378 rows but only 1541 instructions (more merging), so the original has them written out.
  In case 6 the original stores res (spilled, 0x188(sp)) in the jal delay slot of func_8002F488, i.e. before
  the call, and every win/lose arm has its own `lui/lw/lw; j` pair into the shared D_800AE0E8 store; ours
- jumps from the first arm into code shared with a later block. */
+ jumps from the first arm into code shared with a later block.
+ Pass 18: 400 -> 22 rows (build/s/cmp.py) with the source below, which still has ONE STAND-IN: case 9's
+ bankroll update is an if/else (`if (!(player.unk0 & 4)) += bet; else += bet * 2;`, +7 instructions) where
+ the original has the same ternary as cases 6/11. All 22 rows are that block plus the nsplit = 0 slot in
+ the prologue. Fixes this pass:
+  - D_800B0DF8 is u32 (sltiu in every `D_800B0DF8 >= 4/5/14` test; ovl_15.h changed);
+  - a block-local `s32 a;` for the fade ramp in each of cases 6, 8-11 (it goes straight to a1);
+  - case 8: `if (player.unk4 > dealer.unk4) func_800A7ABC(0, ...); else func_800A7ABC(1, ...);` (two calls,
+    cross-jumped; the ternary folds to xori), and `player.unk4 > dealer.unk4` for the load order in both
+    case-8 tests; case 12: `if (D_800B0F48 > D_800AE0E8)`;
+  - case 6's 4th argument as `nsplit == 1 ? player.unkA + 12 : split.unkA + 12`;
+  - case 3's last arms: `t = -1` inside each arm after the dealer call (see the code);
+  - `t = 30` / `t = 0x78` after `x = ...; y = ...;` in cases 3, 4 and 7; case 1's `i += 4; t--;` and
+    cases 9-11's `t--` after the func_800A7ABC call (sched still puts them before the jal);
+  - `nsplit = 0` after `x = 0xF0; y = 0xA;` before the loop: that flips global-alloc priority
+    (floor_log2(refs) * refs / live_length: nsplit 49 refs vs the 0x88888889 constant 53, a hair apart),
+    giving nsplit s7 and the constant fp as in the original; the prologue store is one slot late.
+ THE BLOCKER (case 9 ternary): loop.c (move_movables) hoists the &D_800AE0E8 lo_sum address of the eight
+ bankroll ternaries out of the main loop when `threshold * savings * lifetime >= insn_count`; here
+ threshold = 2 (29 minus 3 per invariant already moved), savings 8, lifetime 144, insn_count 1840 (-dL dump:
+ "Insn 2379: regno 828 (life 144), move-insn savings 8 moved"). Hoisted, reload rematerialises the address
+ at the join (lui/addiu + sw) instead of `addiu a0` before the branch. With case 9 as if/else, savings 7 and
+ life 126 put it under the threshold, which is why the stand-in matches everything else. The original
+ needs one more invariant moved before case 6 (threshold -1), a shorter combined lifetime (< 115), or a
+ bigger loop (> 2304 insns). Not found: a temp for the `& 4` test (k = h.unk0 & 4) drops the a0 form
+ entirely; tern2/3/5 spellings fold to the same tree; extra loop code does not change it (+8 calls). */
 #include "ovl_15.h"
 extern Ovl15Shoe D_800B0E08;
 
@@ -52,9 +77,9 @@ s32 func_800A9488(void) {
     func_800A91F0(&player, 0x1E, 0x78);
     func_800A91F0(&dealer, 0x1E, 0xA);
     cur = &player;
-    nsplit = 0;
     x = 0xF0;
     y = 0xA;
+    nsplit = 0;
     res = 0;
     i = 0;
     dx = 0x10000;
@@ -79,9 +104,9 @@ s32 func_800A9488(void) {
                 i = 0;
             } else if (t != 0) {
                 c = D_800B0E08.unk4[i];
+                func_800A8630(c >> 2, c & 3, 0xF0, 0xA);
                 i += 4;
                 t--;
-                func_800A8630(c >> 2, c & 3, 0xF0, 0xA);
             } else {
                 t = -1;
                 D_800B0DF8 = 2;
@@ -102,13 +127,13 @@ s32 func_800A9488(void) {
                 dealer.unk0 |= 0x10;
                 func_800A90B8(p1, &D_800B0E08);
                 func_800A90B8(&dealer, &D_800B0E08);
-                t = 0x78;
                 func_800A90B8(p1, &D_800B0E08);
                 func_800A90B8(&dealer, &D_800B0E08);
                 cur = p1;
                 i = 0;
                 x = 0xF00000;
                 y = 0xA0000;
+                t = 0x78;
                 dx = (((player.unk8 - 0xF0) << 8) / 30) << 8;
                 dy = (((player.unkA - 0xA) << 8) / 30) << 8;
             } else if (t > 0) {
@@ -145,24 +170,24 @@ s32 func_800A9488(void) {
                 }
                 t--;
             } else if (func_800A945C(p1)) {
-                t = -1;
                 if (func_800A945C(&dealer)) {
+                    t = -1;
+                    D_800B0DF8 = 10;
+                } else {
+                    t = -1;
+                    D_800B0DF8 = 8;
+                }
+            } else if (func_800A945C(&dealer)) {
+                t = -1;
+                if (func_800A945C(p1)) {
                     D_800B0DF8 = 10;
                 } else {
                     D_800B0DF8 = 8;
                 }
             } else {
                 t = -1;
-                if (func_800A945C(&dealer)) {
-                    if (func_800A945C(p1)) {
-                        D_800B0DF8 = 10;
-                    } else {
-                        D_800B0DF8 = 8;
-                    }
-                } else {
-                    D_800B0DF8 = 4;
-                    func_800ACF58(3);
-                }
+                D_800B0DF8 = 4;
+                func_800ACF58(3);
             }
             break;
         case 4:
@@ -182,10 +207,10 @@ s32 func_800A9488(void) {
                         if (nsplit == 1) {
                             cur = &split;
                             D_800B0DF8 = 4;
-                            t = 30;
                             func_800ACF58(3);
                             x = 0xF00000;
                             y = 0xA0000;
+                            t = 30;
                             dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                             dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                             nsplit = 2;
@@ -194,24 +219,24 @@ s32 func_800A9488(void) {
                             dealer.unk0 &= ~0x10;
                         }
                     } else if (func_800AB1B8() == 1) {
-                        t = 30;
                         x = 0xF00000;
                         y = 0xA0000;
+                        t = 30;
                         dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                         dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                     } else if (func_800AB1B8() == 2) {
-                        t = 30;
                         x = 0xF00000;
                         y = 0xA0000;
+                        t = 30;
                         cur->unk0 |= 4;
                         dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                         dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                     } else if (func_800AB1B8() == 3) {
                         if (func_800A92FC(cur) & 1) {
                             func_800A9228(&player, &split);
-                            t = 30;
                             x = 0xF00000;
                             y = 0xA0000;
+                            t = 30;
                             dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                             dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                             nsplit = 1;
@@ -232,10 +257,10 @@ s32 func_800A9488(void) {
                     if (nsplit == 1) {
                         cur = &split;
                         D_800B0DF8 = 4;
-                        t = 30;
                         func_800ACF58(3);
                         x = 0xF00000;
                         y = 0xA0000;
+                        t = 30;
                         dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                         dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
@@ -246,10 +271,10 @@ s32 func_800A9488(void) {
                     if (nsplit == 1) {
                         cur = &split;
                         D_800B0DF8 = 4;
-                        t = 30;
                         func_800ACF58(3);
                         x = 0xF00000;
                         y = 0xA0000;
+                        t = 30;
                         dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                         dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
@@ -260,10 +285,10 @@ s32 func_800A9488(void) {
                     if (nsplit == 1) {
                         cur = &split;
                         D_800B0DF8 = 4;
-                        t = 30;
                         func_800ACF58(3);
                         x = 0xF00000;
                         y = 0xA0000;
+                        t = 30;
                         dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                         dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                         nsplit = 2;
@@ -279,9 +304,9 @@ s32 func_800A9488(void) {
         case 5:
             if (t == -1) {
                 if (dealer.unk4 < 17) {
-                    t = 30;
                     x = 0xF00000;
                     y = 0xA0000;
+                    t = 30;
                     dy = 0;
                     dx = (((dealer.unk2 * 13 - 0xD2) << 8) / 30) << 8;
                 } else if (dealer.unk0 & 2) {
@@ -339,10 +364,10 @@ s32 func_800A9488(void) {
                 if (nsplit == 1) {
                     cur = &split;
                     D_800B0DF8 = 4;
-                    t = 30;
                     func_800ACF58(3);
                     x = 0xF00000;
                     y = 0xA0000;
+                    t = 30;
                     dx = (((cur->unk8 + cur->unk2 * 13 - 0xF0) << 8) / 30) << 8;
                     dy = (((cur->unkA - 0xA) << 8) / 30) << 8;
                     nsplit = 2;
@@ -396,6 +421,8 @@ s32 func_800A9488(void) {
                 t = 0x94;
                 dealer.unk0 &= ~0x10;
             } else if (t > 0) {
+                s32 a;
+
                 if (t < 0x10) {
                     a = t * 16;
                 } else if (t < 0x85) {
@@ -403,7 +430,7 @@ s32 func_800A9488(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                func_800A7ABC(res, a, 0x6C, (nsplit == 1 ? player.unkA : split.unkA) + 12);
+                func_800A7ABC(res, a, 0x6C, nsplit == 1 ? player.unkA + 12 : split.unkA + 12);
                 t--;
             } else {
                 t = -1;
@@ -416,7 +443,7 @@ s32 func_800A9488(void) {
             break;
         case 8:
             if (t == -1) {
-                if (dealer.unk4 < player.unk4) {
+                if (player.unk4 > dealer.unk4) {
                     func_8002F488(0x6C);
                     D_800AE0E8 += D_800B0F48 + (D_800B0F48 >> 1);
                 } else {
@@ -426,6 +453,8 @@ s32 func_800A9488(void) {
                 t = 0x94;
                 dealer.unk0 &= ~0x10;
             } else if (t > 0) {
+                s32 a;
+
                 if (t < 0x10) {
                     a = t * 16;
                 } else if (t < 0x85) {
@@ -433,7 +462,11 @@ s32 func_800A9488(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                func_800A7ABC(dealer.unk4 < player.unk4 ? 0 : 1, a, 0x6C, player.unkA + 12);
+                if (player.unk4 > dealer.unk4) {
+                    func_800A7ABC(0, a, 0x6C, player.unkA + 12);
+                } else {
+                    func_800A7ABC(1, a, 0x6C, player.unkA + 12);
+                }
                 t--;
             } else {
                 t = -1;
@@ -443,10 +476,16 @@ s32 func_800A9488(void) {
         case 9:
             if (t == -1) {
                 func_8002F488(0x6C);
-                D_800AE0E8 += (player.unk0 & 4) ? D_800B0F48 * 2 : D_800B0F48;
+                if (!(player.unk0 & 4)) {
+                    D_800AE0E8 += D_800B0F48;
+                } else {
+                    D_800AE0E8 += D_800B0F48 * 2;
+                }
                 t = 0x94;
                 dealer.unk0 &= ~0x10;
             } else if (t > 0) {
+                s32 a;
+
                 if (t < 0x10) {
                     a = t * 16;
                 } else if (t < 0x85) {
@@ -454,8 +493,8 @@ s32 func_800A9488(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                t--;
                 func_800A7ABC(0, a, 0x6C, player.unkA + 12);
+                t--;
             } else {
                 t = -1;
                 D_800B0DF8 = 12;
@@ -466,6 +505,8 @@ s32 func_800A9488(void) {
                 t = 0x94;
                 dealer.unk0 &= ~0x10;
             } else if (t > 0) {
+                s32 a;
+
                 if (t < 0x10) {
                     a = t * 16;
                 } else if (t < 0x85) {
@@ -473,8 +514,8 @@ s32 func_800A9488(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                t--;
                 func_800A7ABC(2, a, 0x6C, player.unkA + 12);
+                t--;
             } else {
                 t = -1;
                 D_800B0DF8 = 12;
@@ -487,6 +528,8 @@ s32 func_800A9488(void) {
                 t = 0x94;
                 dealer.unk0 &= ~0x10;
             } else if (t > 0) {
+                s32 a;
+
                 if (t < 0x10) {
                     a = t * 16;
                 } else if (t < 0x85) {
@@ -494,8 +537,8 @@ s32 func_800A9488(void) {
                 } else {
                     a = (0x94 - t) * 16;
                 }
-                t--;
                 func_800A7ABC(1, a, 0x6C, player.unkA + 12);
+                t--;
             } else {
                 t = -1;
                 D_800B0DF8 = 12;
@@ -507,7 +550,7 @@ s32 func_800A9488(void) {
                 D_800B0DF8 = 13;
             } else {
                 nsplit = 0;
-                if (D_800AE0E8 < D_800B0F48) {
+                if (D_800B0F48 > D_800AE0E8) {
                     D_800B0F48 = D_800AE0E8 / 10 * 10;
                 }
                 t = -1;
