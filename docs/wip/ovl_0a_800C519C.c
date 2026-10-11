@@ -4,11 +4,11 @@
  * intersects the segment arg4 -> arg3 with each edge except `edge` (arg7), stores the hits and
  * their edge numbers, then: 1 hit -> that one; 2 hits -> func_800C1E14 picks between them;
  * 3 hits -> the one closest to the origin; otherwise *arg6 = -1 and 0.
- * WIP (pass 9, first draft): 570 vs 568 instructions, 140 aligned diff rows (build/s/cmp.py).
+ * WIP (pass 20): 568 of 568 instructions, 108 aligned diff rows (pass 9: 570 instructions, 140 rows).
  * Control flow and the stack layout match; left is register allocation (the original uses
  * s0 = hit base, s1 = arg5, s3 = z, s4 = x, s5 = arg4, s6 = arg6, s7 = arg3, fp = v base,
  * edge spilled to 0x68 and &q[x] spilled to 0x70; ours still differs in x/z/p/q and the
- * caller-saved temps) and 3 extra insns.
+ * caller-saved temps).
  * What the shape needed:
  *  - `ABS(d) < ABS(e)` is distributed by the original into two compare-and-branch arms
  *    (`bltz d` then `slt; beqz cont; j next` / `negu; slt; bnez next`); every expression form
@@ -24,6 +24,24 @@
  *    (237 -> 147 rows); vtx computed before o[] and a `tri = n` copy for the vertex loop
  *    (permuter) took it to 140.
  * func_800C1E14 is defined earlier in ovl_0a.c (no prototype in the header).
+ * Pass 20 (shape first): 140 -> 108 rows, 568 of 568 instructions; the shape diff is down to the prologue's
+ * save/arg-load order (register-driven), one `addiu v0,sp,0x3C` slot after the vertex loop, and two
+ * symbol-name false positives (%hi(D_800C9E04) = D_800C9DF0.unk14). What fixed the shape:
+ *  - the edge test is func_800C1E14's code pasted in (that function is matched and compiles to exactly the
+ *    original's bgez/negu, bltz, slt/beqz/j and negu/slt/bnez sequence): `d = (pv[1][x] - pv[0][x]) *
+ *    (ez = p[z] - q[z]); ex = p[x] - q[x]; e = (pv[0][z] - q[z]) * ex; d -= (pv[1][z] - pv[0][z]) * ex;
+ *    e -= (pv[0][x] - q[x]) * ez;` (the original's mult order is d1, e1, d2, e2), then nested
+ *    `if (ABS(e) <= ABS(d)) { f = ...; f -= ...; if (ABS(f) <= ABS(d)) { if ((e >= 0 && d >= 0) || (e <= 0 &&
+ *    d < 0)) { if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {` -- no gotos (the old goto form compiled
+ *    identically, so it was an equivalent spelling);
+ *  - the result block: `if (cnt == 1) { one } else if (cnt < 2) { *arg6 = -1; return 0; } else switch (cnt)
+ *    { case 2: ... break; case 3: ... break; default: *arg6 = -1; return 0; } return 1;` (every success
+ *    path jumps to one shared `return 1` before the epilogue, as in the original).
+ * Left: register allocation. The original's s-registers are s0 = hit, s1 = arg5, s2 = edge, s3 = z, s4 = x,
+ * s5 = arg4 (q), s6 = arg6, s7 = arg3 (p), fp = v; ours s1 = edge, s2 = q, s3 = arg5, s4 = p, s5 = z, s6 = x,
+ * s7 = arg6. Also every `pv[k][x]` address is `addu base, x2` in the original and `addu x2, base` here
+ * (p[z]/q[z] are index-first in both); index spellings (*(pv + x), x[pv]) and x/y/z/edge/cnt/i types do not
+ * change it (cnt or i as s32 breaks the shape).
  */
 #include "ovl_0a.h"
 
@@ -54,6 +72,8 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     s32 ax;
     s32 m;
     s32 min;
+    s32 ex;
+    s32 ez;
 
     p = (s16 *)arg3;
     q = (s16 *)arg4;
@@ -92,56 +112,17 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     for (i = 0; i < 3; i++) {
         pv[1] = v[i];
         if (i != edge) {
-            d = q[x];
-            d = (pv[1][x] - pv[0][x]) * (p[z] - q[z]) - (pv[1][z] - pv[0][z]) * (p[x] - d);
-            e = (pv[0][z] - q[z]) * (p[x] - q[x]) - (pv[0][x] - q[x]) * (p[z] - q[z]);
-            ae = ABS(e);
-            if (d >= 0) {
-                if (d >= ae) {
-                    goto c1;
-                }
-                goto next;
-            }
-            if (-d < ae) {
-                goto next;
-            }
-        c1:
-            f = (pv[0][z] - q[z]) * (pv[1][x] - pv[0][x]) - (pv[0][x] - q[x]) * (pv[1][z] - pv[0][z]);
-            ae = ABS(f);
-            if (d >= 0) {
-                if (d >= ae) {
-                    goto c2;
-                }
-                goto next;
-            }
-            if (-d < ae) {
-                goto next;
-            }
-        c2:
-            if (e >= 0) {
-                if (d >= 0) {
-                    goto s1;
-                }
-                if (e > 0) {
-                    goto next;
-                }
-            }
-            if (d >= 0) {
-                goto next;
-            }
-        s1:
-            if (f >= 0) {
-                if (d >= 0) {
-                    goto s2;
-                }
-                if (f > 0) {
-                    goto next;
-                }
-            }
-            if (d >= 0) {
-                goto next;
-            }
-        s2:
+            d = (pv[1][x] - pv[0][x]) * (ez = p[z] - q[z]);
+            ex = p[x] - q[x];
+            e = (pv[0][z] - q[z]) * ex;
+            d -= (pv[1][z] - pv[0][z]) * ex;
+            e -= (pv[0][x] - q[x]) * ez;
+            if (ABS(e) <= ABS(d)) {
+                f = (pv[0][z] - q[z]) * (pv[1][x] - pv[0][x]);
+                f -= (pv[0][x] - q[x]) * (pv[1][z] - pv[0][z]);
+                if (ABS(f) <= ABS(d)) {
+                    if ((e >= 0 && d >= 0) || (e <= 0 && d < 0)) {
+                        if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {
             if (d != 0) {
                 while (e > 0x80000) {
                     e >>= 1;
@@ -159,20 +140,24 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
                     hit[cnt][y] = pv[1][y] - (pv[1][z] - hit[cnt][z]) * (pv[0][y] - pv[1][y]) / (pv[0][z] - pv[1][z]);
                 }
             }
-            idx[cnt] = i;
-            cnt++;
+                            idx[cnt] = i;
+                            cnt++;
+                        }
+                    }
+                }
+            }
         }
-    next:
         pv[0] = pv[1];
     }
     if (cnt == 1) {
-        goto one;
-    }
-    if (cnt < 2) {
+        *arg6 = idx[0];
+        arg5->vx = hit[0][0];
+        arg5->vy = hit[0][1];
+        arg5->vz = hit[0][2];
+    } else if (cnt < 2) {
         *arg6 = -1;
         return 0;
-    }
-    switch (cnt) {
+    } else switch (cnt) {
     case 2:
         switch (idx[0] + idx[1]) {
         case 1:
@@ -192,18 +177,17 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
             break;
         }
         if (func_800C1E14(pv[0], p, pv[2], pv[1], x, z)) {
-        one:
             *arg6 = idx[0];
             arg5->vx = hit[0][0];
             arg5->vy = hit[0][1];
             arg5->vz = hit[0][2];
-            return 1;
+        } else {
+            *arg6 = idx[1];
+            arg5->vx = hit[1][0];
+            arg5->vy = hit[1][1];
+            arg5->vz = hit[1][2];
         }
-        *arg6 = idx[1];
-        arg5->vx = hit[1][0];
-        arg5->vy = hit[1][1];
-        arg5->vz = hit[1][2];
-        return 1;
+        break;
     case 3:
         best = 0;
         min = 0x7FFFFFFF;
@@ -218,9 +202,10 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
         arg5->vx = hit[best][0];
         arg5->vy = hit[best][1];
         arg5->vz = hit[best][2];
-        return 1;
+        break;
     default:
         *arg6 = -1;
         return 0;
     }
+    return 1;
 }
