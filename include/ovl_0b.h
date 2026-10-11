@@ -4039,4 +4039,17 @@ void func_80054A28(void *);
     : : "r"(r0), "r"(r1), "r"(r2))
 #define gte_ldxy0(r0) __asm__ volatile("lwc2\t$0, 0(%0)" : : "r"(r0))
 
+/* func_800B1B48 */
+/* main exe: candidates for ff9.h */
+extern u8 D_8007AF01;
+
+/* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
+static inline u8 func_800B1B48_can(BtlCmd *arg1) {
+    if ((arg1->unk4->unk3C & 8) && (arg1->unk8->unk8 & 2)) {
+        func_800CD5C8(0x15);
+        return 0;
+    }
+    return 1;
+}
+
 #endif
