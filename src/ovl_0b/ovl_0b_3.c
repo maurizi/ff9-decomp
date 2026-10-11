@@ -431,8 +431,8 @@ void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
     arg1->unk2 = arg0->unk41;
     arg1->unk3 = arg0->unk40;
     arg1->unk27 = arg0->unk47;
-    arg1->unk4.unk0 = arg0->unkC;
-    arg1->unk4.unk2 = arg0->unkE;
+    arg1->unk4.maxHp = arg0->unkC;
+    arg1->unk4.maxMp = arg0->unkE;
     arg1->unk44 = arg0->unk10;
     arg1->unk46 = arg0->unk12;
     arg1->unk4C = arg0->unk69;
@@ -467,9 +467,9 @@ void func_800C9EE0(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     s->unk0 = &b->unk4E8[arg0->unk0];
     arg1->unk68 = (((arg1->unk68 & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
     e = &g_gameState->unk1C->unk8E4.battle->unk4E8[arg0->unk0];
-    arg1->unk24 = &e->unk4;
-    arg1->unk28 = e->unk4.unk0;
-    arg1->unk2A = arg1->unk24->unk2;
+    arg1->max = &e->unk4;
+    arg1->hp = e->unk4.maxHp;
+    arg1->mp = arg1->max->maxMp;
     s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
     if (!((s->unk4 >> 9) & 1)) {
         arg1->unk8C[0] = arg1->unk98->unk0[0] = arg1->unkA0->unk14 = arg0->unk4 << 16;
@@ -494,8 +494,8 @@ void func_800CA0A0(Unk800C9D1C *arg0, BtlUnit *arg1) {
     arg1->unk34 = arg0->unk0;
     arg1->unk38 = arg0->unk4;
     arg1->unk3C = arg0->unk8;
-    arg1->unk28 = arg0->unkC;
-    arg1->unk2A = arg0->unkE;
+    arg1->hp = arg0->unkC;
+    arg1->mp = arg0->unkE;
     arg1->unk6C = arg0->unk43[0];
     arg1->unk6D = arg0->unk43[1];
     arg1->unk6E = arg0->unk43[2];
@@ -1812,13 +1812,13 @@ void func_800CD83C(void) {
         break;
     case 1:
         func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
-        func_8002BBE8(s->unk28, buf + func_8002BCC0(buf), 0);
+        func_8002BBE8(s->hp, buf + func_8002BCC0(buf), 0);
         func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
-        func_8002BBE8(s->unk24->unk0, buf + func_8002BCC0(buf), 0);
+        func_8002BBE8(s->max->maxHp, buf + func_8002BCC0(buf), 0);
         func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 12));
-        func_8002BBE8(s->unk2A, buf + func_8002BCC0(buf), 0);
+        func_8002BBE8(s->mp, buf + func_8002BCC0(buf), 0);
         func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
-        func_8002BBE8(s->unk24->unk2, buf + func_8002BCC0(buf), 0);
+        func_8002BBE8(s->max->maxMp, buf + func_8002BCC0(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1] = 0;
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 2;
         break;

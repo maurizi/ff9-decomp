@@ -296,10 +296,11 @@ typedef struct BtlUnit98 {
     s32 unk0[3];
 } BtlUnit98;
 
+/* the party member's Character.maxHp/maxMp/maxAtb (runtime: BtlUnit.max == &party[i]->maxHp) */
 typedef struct {
-    u16 unk0; /* max hp */
-    s16 unk2; /* max mp (<< 4) */
-    s16 unk4; /* max atb */
+    u16 maxHp;
+    s16 maxMp;
+    s16 maxAtb;
 } BtlUnit24;
 
 /* current stats at BtlUnit.unk28, parallel to BtlUnit24 */
@@ -320,10 +321,10 @@ typedef struct BtlUnit {
     struct BtlCmd *unk14;
     s32 unk18;
     u16 unk1C[4];
-    BtlUnit24 *unk24;
-    u16 unk28; /* hp */
-    s16 unk2A; /* mp */
-    s16 unk2C;
+    BtlUnit24 *max;
+    u16 hp;
+    s16 mp;
+    s16 atb; /* fills over time, stops when the command menu is ready (runtime) */
     s8 unk2E;
     u8 pad2F;
     u8 unk30;
@@ -3431,7 +3432,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u == NULL) {
         return 0;
     }
-    if (u->unk28 == 0 || (u8)func_800C09A4(u, 0x42021D03) != 0) {
+    if (u->hp == 0 || (u8)func_800C09A4(u, 0x42021D03) != 0) {
         return 0;
     }
     if ((D_800FDF30.unkA >> ((u8)u->unk68 >> 5)) & 1) {

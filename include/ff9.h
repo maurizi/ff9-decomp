@@ -80,7 +80,8 @@ typedef struct {
     u8 stones;    /* magic stones left */
     u16 maxHp;
     s16 maxMp;
-    u8 pad1C[0x1F - 0x1C];
+    s16 maxAtb;   /* runtime: where the battle ATB gauge stops */
+    u8 pad1E;
     u8 maxStones;
     u8 unk20;
     u8 unk21;
