@@ -1,3 +1,25 @@
+diff --git a/src/duckstation_mcp/gdb_client.py b/src/duckstation_mcp/gdb_client.py
+index 16ad231..9b1842b 100644
+--- a/src/duckstation_mcp/gdb_client.py
++++ b/src/duckstation_mcp/gdb_client.py
+@@ -393,7 +393,7 @@ class GDBClient:
+     def set_breakpoint(self, address: int, kind: str = "exec") -> None:
+         t = self._bp_type(kind)
+         with self._lock:
+-            cmd = f"Z{t},{address & 0xFFFFFFFF:x}".encode("ascii")
++            cmd = f"Z{t},{address & 0xFFFFFFFF:x},4".encode("ascii")
+             reply = self._command(cmd, timeout=5.0)
+         if reply != b"OK":
+             raise GDBError(
+@@ -403,7 +403,7 @@ class GDBClient:
+     def remove_breakpoint(self, address: int, kind: str = "exec") -> None:
+         t = self._bp_type(kind)
+         with self._lock:
+-            cmd = f"z{t},{address & 0xFFFFFFFF:x}".encode("ascii")
++            cmd = f"z{t},{address & 0xFFFFFFFF:x},4".encode("ascii")
+             reply = self._command(cmd, timeout=5.0)
+         if reply != b"OK":
+             raise GDBError(
 diff --git a/src/duckstation_mcp/log_reader.py b/src/duckstation_mcp/log_reader.py
 index d868f48..276e44a 100644
 --- a/src/duckstation_mcp/log_reader.py

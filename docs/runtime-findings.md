@@ -61,3 +61,20 @@ Format:
   opens the character selection. It sends sound command 0xD000 with that id.
 - names: g_padRepeat, g_padHeld, g_padPressed, g_padPortPressed, g_padPortHeld, snd_playSe.
 - confidence: high.
+
+## Runtime check of code-derived names  (status: applied — [runtime] added to their symbol entries)
+- binary: main (+ ovl_37)
+- g_gameState / g_allocTop (DuckStation, after boot): 0x8006794C holds 0x8008B000; that block's DISPENV/DRAWENV/
+  file-table pointers are 0x8008B044/0x8008B06C/0x8008B124/0x8008B214 as func_8001CB78 writes them, GameData follows
+  at 0x8008B250, and 0x80067940 has since advanced to 0x800A6528.
+- g_ot / g_primPtr / g_drawBufs (Redux, `field_burmecia_vault`, read each frame): g_ot alternates 0x8008BB58 /
+  0x8008FB98 = g_drawBufs ordering tables; g_primPtr sits just past the matching packet buffer
+  (0x800941C4 / 0x800981C4). gfx_selectBuffer is only called from ovl_0b (battle) and wasn't seen: still code-only.
+- g_randPtr / g_randTable / g_randTableEnd / rand_refill (Redux, field): the pointer advances inside 0x8007B724-
+  0x8007B92D (~4 bytes per 3 frames); on reaching 0x8007B92C rand_refill ran once (from 0x80049E9C), the table
+  bytes changed and the pointer restarted at the table start. rand_init didn't run (boot / new game path).
+- text_setBank / text_get / g_textBank / g_itemMenuText (Redux, `menu_main`, Cross on Item): ovl_37 loads,
+  text_setBank(0x801EDF04) once, then text_get(0), (1), (2) every frame - the three tab labels Use/Arrange/Key.
+- akao_tick / g_akaoTickCount / akao_command / snd_playSe (Redux, `menu_main`, Down): 80 akao_tick calls in 20 frames,
+  g_akaoTickCount +80; the cursor move calls snd_playSe(0x67) and in the same frame akao_command(0x24) from 0x8005544C.
+- confidence: high, except gfx_selectBuffer and rand_init (not observed).
