@@ -531,6 +531,18 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     reduction. But loop.c then hoists the getTPage x bits (force chain: savings 2, lifetime 2) and spills them: 52.
   - DA138: inline helper, chained assignment and while forms: 6.
   Status: C3F78 3 (1 real, -O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
+- Pass 18 (inline / loop.c angles):
+  - AB07C matched. Use the indexed do-while (a[n], b[n], r[n] after `n--`) and compute `x = arg2 * 64 + 0xC0;
+    y = arg2 * 3;` inside the loop. loop.c moves those invariants out first, and every move lowers move_movables'
+    threshold by 3 (`threshold -= 3`, threshold = 1 + n_non_fixed_regs with a call in the loop). So the getTPage
+    x chain (savings 2, lifetime 2, 69 insns) is no longer worth moving. General rule: an invariant computed in the
+    original's loop but not hoisted can mean other invariants were written inside the loop and hoisted first.
+  - BFF20: the tail flag is the existing BtlUnitHasStatus inline (`n = BtlUnitHasStatus(arg0, 0x200000);
+    if ((u8)n)`), which fixes the tail copy. Only the c/temp copy is left (4 real rows).
+  - AB810: a dead-store `if` between `i = 0` and the loop test confirms the block-boundary theory (5 rows, fake,
+    not used). No natural form found.
+  - DA138, DA1F4, E4A3C: inline variants are no better (details in the headers).
+  Status: C3F78 3 (1 real, -O1), BFF20 6 (4 real), DA138 6, AB810 6, E4A3C 7, DA1F4 14.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
