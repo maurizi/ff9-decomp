@@ -424,15 +424,15 @@ extern RECT D_800686C8; /* countdown timer window */
 /* CD request, queued by func_800230B8 (0x24 bytes) */
 /* one contiguous read: byte count and destination */
 typedef struct {
-    u32 unk0; /* size */
-    u8 *unk4; /* destination */
+    u32 size; /* runtime: ovl_39's single chunk {0xE800, 0x801EDF00} */
+    u8 *dest;
 } CdChunk;
 
 typedef struct {
     u8 unk0; /* command; bit 2: run unk18 directly when idle */
     u8 pad1[3];
-    s32 unk4;
-    s32 unk8;
+    s32 sector; /* start sector; runtime: 0x5FA for ovl_39 */
+    s32 size;   /* bytes; runtime: 0xE800 (29 sectors) for ovl_39 */
     CdChunk *unkC; /* chunk list; -1 = use unk1C */
     void (*unk10)(u8, u8 *);
     void (*unk14)(u8, u8 *); /* data-ready handler */
@@ -453,7 +453,7 @@ typedef struct {
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
     CdRequest unk944; /* current request */
-    CdRequest unk968; /* passed to func_8002267C */
+    CdRequest unk968; /* passed to cd_startRequest */
 } Unk800761D0;
 extern Unk800761D0 g_cdLoad;
 
@@ -2271,7 +2271,7 @@ void func_80036444(void);
 void func_80036528(void);
 void func_8002F9F0(void);
 
-void func_8002267C(CdRequest *);
+void cd_startRequest(CdRequest *);
 u8 func_800230B8(CdRequest *);
 void func_800231A0(u8, u8 *);
 void func_800227C8(u8, u8 *);

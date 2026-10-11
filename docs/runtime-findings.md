@@ -257,3 +257,7 @@ Format:
   func_8002291C+0x64. Sampling 0x800761D0 per frame: +4 29 -> 28 -> 25 -> ... (sectors left), +0xC and +0x10 grow by
   0x800 per sector, +0x14 = 0. func_800213C0's body is libcd's CdGetSector.
 - names: cd_onSectorReady, CdGetSector, g_cdLoad (sectorsLeft, bytesRead, chunkOfs, chunkIndex).
+- The first write of g_cdLoad.sectorsLeft (29) is func_8002267C+0xA8; afterwards g_cdLoad.unk944 (the copied request)
+  holds +0 = 3, +4 = 0x5FA (start sector), +8 = 0xE800 (bytes, = 29 sectors), +0xC = -1 (use the inline chunk),
+  +0x14 = func_800227C8, +0x1C = {0xE800, 0x801EDF00}.
+- names: cd_startRequest, CdRequest.sector/size, CdChunk.size/dest.

@@ -2270,7 +2270,7 @@ void func_800225BC(u8 *arg0) {
     }
 }
 
-void func_8002267C(CdRequest *r) {
+void cd_startRequest(CdRequest *r) {
     volatile s32 st = g_cdLoad.unk0;
     u32 n;
 
@@ -2278,7 +2278,7 @@ void func_8002267C(CdRequest *r) {
     g_cdLoad.unk3 = 0;
     g_cdLoad.unk944 = *r;
     g_cdLoad.unk0 = 1;
-    n = (u32)(r->unk8 + 0x7FF) >> 11;
+    n = (u32)(r->size + 0x7FF) >> 11;
     g_cdLoad.chunkIndex = 0;
     g_cdLoad.chunkOfs = 0;
     g_cdLoad.bytesRead = 0;
@@ -2287,7 +2287,7 @@ void func_8002267C(CdRequest *r) {
     func_80021380(r->unk10);
     if (r->unk0 & 1) {
         g_cdLoad.unk0 = 1;
-        CdIntToPos(r->unk4, &g_cdLoad.unk8);
+        CdIntToPos(r->sector, &g_cdLoad.unk8);
         func_80023580(2, (u8 *)&g_cdLoad.unk8);
     } else if (st != 4) {
         g_cdLoad.unk0 = 4;
@@ -2314,7 +2314,7 @@ void func_800227C8(u8 intr, u8 *result) {
         n = CdPosToInt((CdlLOC *)pos);
         prev = g_cdLoad.unk18;
         if (prev == 0) {
-            if (n != g_cdLoad.unk944.unk4) {
+            if (n != g_cdLoad.unk944.sector) {
                 err = 1;
             }
         } else {
@@ -2351,17 +2351,17 @@ void cd_onSectorReady(void) {
     } else {
         c = g_cdLoad.unk944.unkC;
     }
-    if (c[g_cdLoad.chunkIndex].unk4 != NULL) {
-        CdGetSector((u32 *)c[g_cdLoad.chunkIndex].unk4 + g_cdLoad.chunkOfs / 4, 0x200);
+    if (c[g_cdLoad.chunkIndex].dest != NULL) {
+        CdGetSector((u32 *)c[g_cdLoad.chunkIndex].dest + g_cdLoad.chunkOfs / 4, 0x200);
     }
     g_cdLoad.chunkOfs += 0x800;
     g_cdLoad.bytesRead += 0x800;
     g_cdLoad.sectorsLeft--;
-    if (g_cdLoad.chunkOfs >= c[g_cdLoad.chunkIndex].unk0) {
+    if (g_cdLoad.chunkOfs >= c[g_cdLoad.chunkIndex].size) {
         g_cdLoad.chunkOfs = 0;
         g_cdLoad.chunkIndex++;
         if (g_cdLoad.sectorsLeft != 0) {
-            while (c[g_cdLoad.chunkIndex].unk0 == 0) {
+            while (c[g_cdLoad.chunkIndex].size == 0) {
                 g_cdLoad.chunkIndex++;
             }
         }
@@ -2439,8 +2439,8 @@ u8 func_80022C10(s32 a, void (*b)(u8 *)) {
     CdRequest r;
     r.unk0 = 1;
     r.unk10 = func_800231A0;
-    r.unk4 = a;
-    r.unk8 = 0;
+    r.sector = a;
+    r.size = 0;
     r.unkC = NULL;
     r.unk14 = func_800227C8;
     r.unk18 = b;
@@ -2451,10 +2451,10 @@ u8 func_80022C60(s32 a, s32 b, void *c, void (*d)(u8 *)) {
     D_80076148.unk0 = 3;
     D_80076148.unkC = (CdChunk *)-1;
     D_80076148.unk10 = func_800231A0;
-    D_80076148.unk4 = a;
-    D_80076148.unk8 = b;
-    D_80076148.unk1C.unk0 = b;
-    D_80076148.unk1C.unk4 = c;
+    D_80076148.sector = a;
+    D_80076148.size = b;
+    D_80076148.unk1C.size = b;
+    D_80076148.unk1C.dest = c;
     D_80076148.unk14 = func_800227C8;
     D_80076148.unk18 = d;
     return func_800230B8(&D_80076148);
@@ -2466,12 +2466,12 @@ u8 func_80022CC4(s32 sector, CdChunk *chunks, s32 n, void (*cb)(u8 *)) {
     s32 total = 0;
 
     for (i = 0; i < n; i++) {
-        total += chunks[i].unk0;
+        total += chunks[i].size;
     }
     r.unk0 = 3;
     r.unk10 = func_800231A0;
-    r.unk4 = sector;
-    r.unk8 = total;
+    r.sector = sector;
+    r.size = total;
     r.unkC = chunks;
     r.unk14 = func_800227C8;
     r.unk18 = cb;
@@ -2482,8 +2482,8 @@ u8 func_80022D3C(void (*a)(u8 *)) {
     CdRequest r;
     r.unk0 = 4;
     r.unk18 = a;
-    r.unk4 = 0;
-    r.unk8 = 0;
+    r.sector = 0;
+    r.size = 0;
     r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
@@ -2494,8 +2494,8 @@ s32 func_80022D84(s32 a) {
     CdRequest r;
     r.unk0 = 1;
     r.unk10 = func_800231A0;
-    r.unk4 = a;
-    r.unk8 = 0;
+    r.sector = a;
+    r.size = 0;
     r.unkC = NULL;
     r.unk14 = func_800227C8;
     r.unk18 = NULL;
@@ -2511,10 +2511,10 @@ s32 func_80022DF0(s32 a, s32 b, void *c) {
     D_80076148.unk0 = 3;
     D_80076148.unkC = (CdChunk *)-1;
     D_80076148.unk10 = func_800231A0;
-    D_80076148.unk4 = a;
-    D_80076148.unk8 = b;
-    D_80076148.unk1C.unk0 = b;
-    D_80076148.unk1C.unk4 = c;
+    D_80076148.sector = a;
+    D_80076148.size = b;
+    D_80076148.unk1C.size = b;
+    D_80076148.unk1C.dest = c;
     D_80076148.unk14 = func_800227C8;
     D_80076148.unk18 = NULL;
     if (func_800230B8(&D_80076148) == 0) {
@@ -2528,8 +2528,8 @@ s32 func_80022DF0(s32 a, s32 b, void *c) {
 s32 func_80022E70(void) {
     CdRequest r;
     r.unk0 = 4;
-    r.unk4 = 0;
-    r.unk8 = 0;
+    r.sector = 0;
+    r.size = 0;
     r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
@@ -2545,8 +2545,8 @@ s32 func_80022E70(void) {
 u8 func_80022ED4(s32 a) {
     CdRequest r;
     r.unk0 = 9;
-    r.unk4 = a;
-    r.unk8 = 0;
+    r.sector = a;
+    r.size = 0;
     r.unkC = NULL;
     r.unk18 = NULL;
     r.unk10 = func_800231A0;
@@ -2557,8 +2557,8 @@ u8 func_80022ED4(s32 a) {
 u8 func_80022F1C(s32 a, void (*b)()) {
     CdRequest r;
     r.unk0 = 0xB;
-    r.unk4 = a;
-    r.unk8 = 0;
+    r.sector = a;
+    r.size = 0;
     r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = b;
@@ -2569,7 +2569,7 @@ u8 func_80022F1C(s32 a, void (*b)()) {
 s32 func_80022F64(s32 a) {
     if (g_cdLoad.unk0 != 5) {
         func_800213A0(NULL);
-        g_cdLoad.unk944.unk4 = a;
+        g_cdLoad.unk944.sector = a;
         g_cdLoad.unk0 = 5;
         func_80023580(9, NULL);
     }
@@ -2580,8 +2580,8 @@ u8 func_80022FD0(void (*a)(u8 *)) {
     CdRequest r;
     r.unk0 = 4;
     r.unk18 = a;
-    r.unk4 = 0;
-    r.unk8 = 0;
+    r.sector = 0;
+    r.size = 0;
     r.unkC = NULL;
     r.unk10 = func_800231A0;
     r.unk14 = 0;
@@ -2626,7 +2626,7 @@ u8 func_800230B8(CdRequest *r) {
         g_cdLoad.unk2 = 1;
         if (g_cdLoad.unk0 == 0) {
         run:
-            func_8002267C(r);
+            cd_startRequest(r);
         }
         return 1;
     }
@@ -2661,7 +2661,7 @@ void func_8002325C(u8 arg0) {
             if (g_cdLoad.unk944.unk18 != NULL) {
                 g_cdLoad.unk944.unk18(&g_cdLoad);
             }
-            func_8002267C(&g_cdLoad.unk968);
+            cd_startRequest(&g_cdLoad.unk968);
         } else if (!(g_cdLoad.unk944.unk0 & 8)) {
             func_800213A0(NULL);
             g_cdLoad.unk0 = 4;
@@ -2729,13 +2729,13 @@ void func_8002345C(void) {
         }
     } else {
         D_80076178 = g_cdLoad.unk944;
-        func_8002267C(&D_80076178);
+        cd_startRequest(&D_80076178);
     }
 }
 
 void func_8002350C(void) {
     D_800761A8 = g_cdLoad.unk944;
-    func_8002267C(&D_800761A8);
+    cd_startRequest(&D_800761A8);
 }
 
 void func_80023580(u8 com, u8 *param) {

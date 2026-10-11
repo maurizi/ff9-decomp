@@ -95,3 +95,4 @@ item_getCount = 0x80027F34; // type:func [runtime] called (0xFD) as the Moogle's
 cd_onSectorReady = 0x8002291C; // type:func [runtime] copies each 0x800-byte sector of ovl_39 to 0x801EDF00, 0x801EE700, ... via CdGetSector
 CdGetSector = 0x800213C0; // type:func [runtime] PsyQ libcd's wrapper body (CD_getsector(madr, size) == 0), called (0x801EDF00, 0x200) for ovl_39
 g_cdLoad = 0x800761D0; // [runtime] CD load state - sectorsLeft 29 -> 0, bytesRead/chunkOfs +0x800 per sector while ovl_39 loads
+cd_startRequest = 0x8002267C; // type:func [runtime] sets g_cdLoad.sectorsLeft = 29 for ovl_39 from the request (sector 0x5FA, size 0xE800) and seeks
