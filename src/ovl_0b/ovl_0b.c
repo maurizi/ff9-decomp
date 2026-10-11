@@ -35,7 +35,7 @@ void func_800A8600(s16 arg0) {
                 func_8002246C();
             }
         } else {
-            g_gameState->unk8 = 8;
+            g_gameState->mode = 8;
             g_gameState->unk0 |= 0x100;
         }
         func_800AEE68();
@@ -334,7 +334,7 @@ void func_800A94F8(void) {
         if (s->unk6 == 3) {
             g_gameState->unk1C->unk7DC = s->unk4;
         } else {
-            g_gameState->unk1C->unkC = s->unk4;
+            g_gameState->unk1C->fieldId = s->unk4;
         }
         break;
     case 8:
@@ -380,7 +380,7 @@ void func_800A98A0(void) {
     p->unk8 = 0;
     p->unk6 = g_gameState->unkA;
     if (g_gameState->unkA == 1) {
-        p->unk4 = g_gameState->unk1C->unkC;
+        p->unk4 = g_gameState->unk1C->fieldId;
     } else if (g_gameState->unkA == 3) {
         p->unk4 = g_gameState->unk1C->unk7DC;
     } else {

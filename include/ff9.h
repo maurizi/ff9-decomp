@@ -231,7 +231,7 @@ typedef struct {
     u8 unk8; /* draw buffer index (0/1) */
     u8 unk9;
     u16 unkA; /* projection distance (SetFogNearFar) */
-    u16 unkC;
+    u16 fieldId; /* current field (runtime: Dali inn 351 -> street 350) */
     u16 unkE;
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
     MATRIX unk18;
@@ -341,7 +341,7 @@ typedef struct {
 typedef struct {
     u32 unk0; /* flags */
     u32 unk4; /* allocator top after boot (g_allocTop) */
-    u8 unk8;
+    u8 mode; /* runtime: 0 title, 1 field (and its menus) */
     u8 unk9; /* VSync mode */
     u8 unkA;
     u8 unkB;          /* disc / pad connection bits, 0xFF = none */

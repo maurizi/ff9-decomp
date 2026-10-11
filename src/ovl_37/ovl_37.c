@@ -253,7 +253,7 @@ void func_801F187C(void) {
 s32 func_801F1A7C(void) {
     ItemMenu *m = &D_801FAB78;
 
-    if (g_gameState->unk8 == 3 && D_8007AEF0.b[0xBF] != 0 && D_8007AEF0.b[0xB5] == 0) {
+    if (g_gameState->mode == 3 && D_8007AEF0.b[0xBF] != 0 && D_8007AEF0.b[0xB5] == 0) {
         if (func_800B8124()) {
             D_8007AEF0.b[0xB5] = 1;
             func_800B81A0();
@@ -400,7 +400,7 @@ void func_801F2160(void) {
 }
 
 void func_801F2190(void) {
-    if (g_gameState->unk8 == 3) {
+    if (g_gameState->mode == 3) {
         func_8002F55C(0x44A);
     }
     func_8003563C(0);
@@ -625,7 +625,7 @@ void func_801F29D0(s32 col, s32 row, s32 i, MenuView *v) {
 }
 
 void func_801F2B20(Window *w) {
-    if (g_gameState->unk8 == 3) {
+    if (g_gameState->mode == 3) {
         func_8002F514(0x44A);
     }
 }
@@ -646,7 +646,7 @@ void func_801F2BC0(void) {
             D_801FAB78.unk50 = t + 1;
             if (t >= 0x60) {
                 D_801FAB78.unk50 = 0;
-                if (g_gameState->unk8 == 3) {
+                if (g_gameState->mode == 3) {
                     func_8002F55C(0x44A);
                 }
                 func_8003563C(0);

@@ -93,16 +93,16 @@ void func_800A72C0(void) {
 void func_800A73B8(void) {
     GameData *ctx = g_gameState->unk1C;
     func_8001CCB4(0, 0, 0);
-    g_gameState->unk8 = 1;
+    g_gameState->mode = 1;
     g_gameState->unk9 = 2;
-    ctx->unkC = 0;
+    ctx->fieldId = 0;
     ctx->unk3A = 1;
 }
 
 /* looks up the current area/field ids in the two directories at D_80067944 + 0x14C700 and stores their sector ranges */
 void func_800A741C(void) {
     GameState *gs = g_gameState;
-    s32 mode = gs->unk8;
+    s32 mode = gs->mode;
     GameData *ctx = gs->unk1C;
     GameStateUnk14 *f;
     s32 base;
@@ -118,7 +118,7 @@ void func_800A741C(void) {
         base = f->unk8;
         area = D_80067944 + ((base << 11) + 0x14C700);
         if (mode == 1) {
-            key = (s16)ctx->unkC;
+            key = (s16)ctx->fieldId;
             start = area + ((f->unk48 - base) << 11);
             e = (Ovl14Dir *)start + f->unk44 - 1;
         } else {
@@ -573,8 +573,8 @@ void func_800A83AC(void) {
 void func_800A83E8(void) {
     if (func_800A8FCC() == 0) {
         func_800A7578();
-        g_gameState->unk8 = 1;
-        g_gameState->unk1C->unkC = 0x46;
+        g_gameState->mode = 1;
+        g_gameState->unk1C->fieldId = 0x46;
         g_gameState->unk1C->unk3A = 2;
     }
 }

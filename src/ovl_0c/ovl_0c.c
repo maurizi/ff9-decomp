@@ -308,7 +308,7 @@ void func_800A95A0(void) {
         func_800A9EC4(func_800A9E24(obj->unk24, &gd->unk7FC[0], &gd->unk804[0]), &g_gameState->unk1C->unk7FC[1],
                       &g_gameState->unk1C->unk804[1]);
         g_gameState->unk1C->unkE = obj->unk24;
-        g_gameState->unk8 = mode;
+        g_gameState->mode = mode;
         g_gameState->unkA = 3;
         break;
     case 3:
@@ -320,8 +320,8 @@ void func_800A95A0(void) {
     case 1:
         g_gameState->unk1C->unk3A = func_800AA060(func_800A9FC0(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]),
                                                  &g_gameState->unk1C->unk7FC[0], &g_gameState->unk1C->unk804[0]);
-        g_gameState->unk1C->unkC = obj->unk24;
-        g_gameState->unk8 = mode;
+        g_gameState->unk1C->fieldId = obj->unk24;
+        g_gameState->mode = mode;
         g_gameState->unkA = 3;
         break;
     default:

@@ -12,10 +12,10 @@ void func_801EF284(void) {
         func_80019194();
         switch (func_801F3A7C()) {
         case 1:
-            g_gameState->unk8 = s->unk6;
+            g_gameState->mode = s->unk6;
             break;
         case 2:
-            g_gameState->unk8 = 0;
+            g_gameState->mode = 0;
             break;
         }
         func_80023A0C();
@@ -31,7 +31,7 @@ void func_801EF284(void) {
         DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
         g_gameState->unk1C->unk8 ^= 1;
         func_8002C0DC(g_gameState->unk1C->unk8);
-    } while (g_gameState->unk8 == 8);
+    } while (g_gameState->mode == 8);
     func_801EF5C8();
 }
 
@@ -52,7 +52,7 @@ void func_801EF45C(void) {
         }
     }
     if (g_gameState->unk1C->unk56F & 1) {
-        e = func_80063088(g_gameState->unk1C->unk7E4, g_gameState->unk1C->unkC | 0x50000);
+        e = func_80063088(g_gameState->unk1C->unk7E4, g_gameState->unk1C->fieldId | 0x50000);
         if (e != NULL) {
             g_gameState->unk1C->unk3A = e->unkC;
             g_gameState->unk1C->unk7FC[1] = e->unk4;
@@ -75,7 +75,7 @@ void func_801EF5C8(void) {
         g->unk0 |= 0x400000;
     }
     g_gameState->unk1C->unk7E4 = (FileTable *)-1;
-    if (g_gameState->unk8 == 0) {
+    if (g_gameState->mode == 0) {
         func_800AD90C(0x8601, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {
             VSync(0);
@@ -173,13 +173,13 @@ void func_801EF890(void) {
     func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->unk1C->unk7FC[1];
-    id = g_gameState->unk1C->unkC | 0x50000;
+    id = g_gameState->unk1C->fieldId | 0x50000;
     size = g_gameState->unk1C->unk804[1] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
     func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
     g = g_gameState->unk1C;
-    if ((s16)g->unkC == g->unk7EA && g->unk8AC != -1) {
+    if ((s16)g->fieldId == g->unk7EA && g->unk8AC != -1) {
         sector = g->unk8AC;
         id = g->unk7E8 | 0x70000;
         func_80021974(func_80021CFC(), 1, id, 0, 0, 0, sector, -1);

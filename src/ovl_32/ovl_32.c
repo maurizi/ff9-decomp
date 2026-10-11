@@ -285,7 +285,7 @@ void func_801F8800(void) {
     Ovl32Image *img = D_801EF1E4;
     s32 sel;
 
-    if (g_gameState->unk8 == 3) {
+    if (g_gameState->mode == 3) {
         sel = g_gameState->unk1C->unk844;
         if (sel != 0) {
             func_801F9668(sel - 1, &r0, &r1);

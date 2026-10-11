@@ -26,7 +26,7 @@ void func_800A75E0(void) {
     func_800A78B8();
     func_800A78EC(0x100, 0x42, 0, 0, 0);
     g_gameState->unkA = 9;
-    g_gameState->unk8 = 1;
+    g_gameState->mode = 1;
 }
 
 s32 func_800A7634(void) {

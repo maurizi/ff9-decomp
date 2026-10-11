@@ -61,7 +61,7 @@ u8 *func_801990A0(Ovl64Out *out) {
             g_gameState->unk1C->unkA = info->unk0;
         }
     }
-    if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->unk8 == 5)) {
+    if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->mode == 5)) {
         D_800739B0[0].unk0 = flag->unk0;
         D_800739B0[0].unk1 = flag->unk1;
     }
@@ -134,7 +134,7 @@ void func_80199554(void) {
                 D_8019F4D8.unk18[0].w = 0x140;
                 D_8019F4D8.unk18[1].w = 0x140;
                 D_8019F4D8.unk28.w = 0x10;
-                if (g_gameState->unk8 == 1 || g_gameState->unk8 == 5) {
+                if (g_gameState->mode == 1 || g_gameState->mode == 5) {
                     D_800C9EF0.unk18 = 9;
                     D_800C9EF0.unk8 |= 0x14;
                 }
@@ -148,7 +148,7 @@ void func_80199554(void) {
                 D_8019F4D8.unk28.w = 0x18;
                 g_gameState->unk1C->unk0 |= 0x14;
                 D_80071E31 = 1;
-                if (g_gameState->unk8 == 1 || g_gameState->unk8 == 5) {
+                if (g_gameState->mode == 1 || g_gameState->mode == 5) {
                     g_gameState->unk1C->unk8E4.ovl65->unk0 |= 9;
                 }
                 D_8019DC97 = 2;
@@ -335,7 +335,7 @@ s32 func_80199B28(u32 movie, s32 idx) {
     if (func_8019C7E4() != 0) {
         ok = 0;
     } else {
-        if (g_gameState->unk8 == 1 || g_gameState->unk8 == 5) {
+        if (g_gameState->mode == 1 || g_gameState->mode == 5) {
             func_8019C98C(((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk44);
         }
         ok = func_8019C1B0(file, D_8019DCF8->unk6, 99999, NULL, 0) == 0;
@@ -409,7 +409,7 @@ s32 func_80199F30(s32 arg0) {
         st->unk3 = 0;
     }
     st->unk24 = st->unkC;
-    mode = g_gameState->unk8;
+    mode = g_gameState->mode;
     if (mode == 1 || mode == 5) {
         func_800C1B5C(&st->unk2);
         st->unk28 = ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30;
@@ -467,7 +467,7 @@ s32 func_80199F30(s32 arg0) {
         }
         if ((s8)D_8019DC94.unk0 != 0) {
             func_8019_wait_frame(&D_8019F4D8);
-            mode = g_gameState->unk8;
+            mode = g_gameState->mode;
             if (mode == 1 || mode == 5) {
                 ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = D_8019DC94.unk28;
                 func_800C0BCC((s8)D_8019DC94.unk2);

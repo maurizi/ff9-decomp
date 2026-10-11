@@ -2117,7 +2117,7 @@ void func_801F9B00(Unk801F9BEC *h) {
     s32 i;
 
     gd = g_gameState->unk1C;
-    h->unk0 = g_gameState->unk8;
+    h->unk0 = g_gameState->mode;
     h->unk1 = g_gameState->unkA;
     for (i = 0x1D; i >= 0; i--) {
         h->unk2[i] = 0;
@@ -2126,7 +2126,7 @@ void func_801F9B00(Unk801F9BEC *h) {
         h->unk20 = func_800B5084();
         h->unk22 = func_800B5094();
     } else {
-        h->unk20 = gd->unkC;
+        h->unk20 = gd->fieldId;
         h->unk22 = gd->unk3A;
     }
     h->unk24 = gd->unkE;
@@ -2142,10 +2142,10 @@ void func_801F9BEC(Unk801F9BEC *p) {
     GameState *gs = g_gameState;
     GameData *gd;
 
-    gs->unk8 = p->unk0;
+    gs->mode = p->unk0;
     gd = gs->unk1C;
     g_gameState->unkA = p->unk1;
-    gd->unkC = p->unk20;
+    gd->fieldId = p->unk20;
     gd->unk3A = p->unk22;
     gd->unkE = p->unk24;
     gd->unk848 = p->unk26;

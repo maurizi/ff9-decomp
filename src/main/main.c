@@ -12,7 +12,7 @@ void func_800127A0(void) {
         func_8001CB08();
         func_8001D268();
         do {
-            switch (g_gameState->unk8) {
+            switch (g_gameState->mode) {
             case 0:
                 func_80012900(0);
                 func_800A7088();
@@ -992,7 +992,7 @@ void func_8001CBD0(void) {
     gs->unk0 = 0x100000;
     gs->unkB = 0xFF;
     gs->unk4 = 0;
-    gs->unk8 = 0;
+    gs->mode = 0;
     gs->unkA = 0;
     gs->unk20 = -1;
     gs->unk1C = NULL;
@@ -1182,7 +1182,7 @@ void func_8001D3C4(void) {
     gd->unk18.t[0] = gd->unk18.t[1] = gd->unk18.t[2] = 0;
     gd->unk18.m[0][1] = gd->unk18.m[0][2] = gd->unk18.m[1][0] = gd->unk18.m[1][2] = gd->unk18.m[2][0] =
         gd->unk18.m[2][1] = 0;
-    gd->unkC = 0;
+    gd->fieldId = 0;
     gd->unk7D4 = NULL;
     gd->unk84C = NULL;
     gd->unk80C = NULL;
@@ -1603,7 +1603,7 @@ loop:
 }
 
 void func_8001E2AC(u16 arg0) {
-    switch (g_gameState->unk8) {
+    switch (g_gameState->mode) {
     case 1:
         g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unkA = arg0;
         break;
@@ -1779,7 +1779,7 @@ s32 func_800216D8(a, b)
 }
 
 s32 func_8002170C(Unk8004AB64 *p) {
-    if (g_gameState->unk8 == 3) {
+    if (g_gameState->mode == 3) {
         goto ret0;
     }
     if (p->unk5 != 4) {
@@ -4131,7 +4131,7 @@ void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     if (h < 0x20) {
         h0 = h;
     }
-    if (g_gameState->unk8 == 3) {
+    if (g_gameState->mode == 3) {
         cx = 0x280;
         cy = 0xDC;
     } else {
@@ -4258,7 +4258,7 @@ void func_80028A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
 void func_80028A40(s32 arg0, RECT *a, RECT *b, RECT *c) {
     s32 x, y;
 
-    if (g_gameState->unk8 == 3) {
+    if (g_gameState->mode == 3) {
         x = 0x280;
         y = 0xDC;
     } else {
@@ -6979,7 +6979,7 @@ void func_8002FB64(s32 a) {
 }
 
 u32 *func_8002FBC0(s32 i) {
-    if (g_gameState->unk8 != 2) {
+    if (g_gameState->mode != 2) {
         return &g_gameState->unk1C->unk10[i][D_80077C78.unk1C];
     }
     return &D_80077CA4[i];
@@ -7700,7 +7700,7 @@ void func_80032140(s32 a, s32 b) {
         D_80077DB0.unkB = 1;
         D_80077DB0.unk24 = 0;
         D_80077DB0.unk0 = 1;
-        if (st->unk8 == 1) {
+        if (st->mode == 1) {
             st->unk1C->unk8E4.ovl65->unk0 |= 0x1000;
         }
         g_gameState->unk1C->unk0 |= 2;
@@ -7741,7 +7741,7 @@ void func_80032384(void) {
     void (*fn)(u8);
     u8 idx;
 
-    if (g_gameState->unk8 == 1) {
+    if (g_gameState->mode == 1) {
         g_gameState->unk1C->unk8E4.ovl65->unk0 &= ~0x1000;
     }
     g_gameState->unk1C->unk0 &= ~2;
@@ -7855,7 +7855,7 @@ void func_80032798(void) {
     if (D_80077DB0.unk1 == 0) {
         if (func_80033D28() == 0) {
             D_80077DB0.unk0 = 2;
-        } else if (busy == 0 || g_gameState->unk8 != 3) {
+        } else if (busy == 0 || g_gameState->mode != 3) {
             D_80077DB0.unk6 = 1;
             f = func_8001E218(1, 30);
             if (func_80022C60(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x801EDF00,
@@ -7867,7 +7867,7 @@ void func_80032798(void) {
 }
 
 void func_8003286C(void) {
-    if (g_gameState->unk8 != 3 || func_80022B18() == 0) {
+    if (g_gameState->mode != 3 || func_80022B18() == 0) {
         func_800326B0();
     }
 }
@@ -9111,7 +9111,7 @@ void func_80035D3C(void) {
     D_80077E28.unk4 = 0;
     D_80077E28.unk6 = 0;
     D_80077E28.unk5 = 0;
-    D_80077E28.unk1C = g_gameState->unk8 != 3 ? D_8006E530 : D_8006E5B0;
+    D_80077E28.unk1C = g_gameState->mode != 3 ? D_8006E530 : D_8006E5B0;
     t = D_80077E44;
     t[D_80077E52].unk0();
 }
@@ -9322,7 +9322,7 @@ void func_80036560(void) {
     D_80077E28.unk0 = 0;
     D_80077E50.unk2 = D_80077E28.unk7;
     D_80077E28.unk1C[D_80077E50.unk2].unk0();
-    if (g_gameState->unk8 != 3) {
+    if (g_gameState->mode != 3) {
         func_800C9510(D_80077E50.unk2 - 1);
     } else {
         func_800CC820(D_80077E50.unk2 - 1);
@@ -13127,7 +13127,7 @@ void func_8004A06C(u8 *data) {
     gs->unk1C->unk810 = data + 4;
     D_8007ADFC = k;
     gs->unk1C->unk80C = data + 0x2C;
-    mode = g_gameState->unk8;
+    mode = g_gameState->mode;
     switch (mode) {
     case 1:
         D_8007B708 = mode;
@@ -13204,7 +13204,7 @@ void func_8004A06C(u8 *data) {
         g_gameState->unk1C->unk570 = 0;
     }
     D_8007AE04 = 4;
-    if ((D_8007B708 == 1 && D_80079630.unk16EE == D_8007B708 && D_80079630.unk16F4 == (s16)g_gameState->unk1C->unkC) ||
+    if ((D_8007B708 == 1 && D_80079630.unk16EE == D_8007B708 && D_80079630.unk16F4 == (s16)g_gameState->unk1C->fieldId) ||
         (D_8007B708 == 3 && D_80079630.unk16EE == D_8007B708 && D_80079630.unk16F4 == g_gameState->unk1C->unk7DC) ||
         (g_gameState->unkA == 9 && D_8007AD1E != 0)) {
         d = data - D_80079630.unk16F0;
@@ -13231,7 +13231,7 @@ void func_8004A06C(u8 *data) {
     }
     D_8007AECC->unk16F0 = data;
     D_8007AECC->unk16EE = D_8007B708;
-    D_8007AECC->unk16F4 = D_8007B708 == 1   ? g_gameState->unk1C->unkC
+    D_8007AECC->unk16F4 = D_8007B708 == 1   ? g_gameState->unk1C->fieldId
                           : D_8007B708 == 3 ? g_gameState->unk1C->unk7DC
                                             : 0;
 }
@@ -13823,7 +13823,7 @@ void func_8004BFB0(void) {
     D_8007BB98.unk4 = *(s32 *)&f->unk4;
     D_8007B94C = f->unk8;
     D_8007BB98.unk8 = -1;
-    switch (s->unk8) {
+    switch (s->mode) {
     case 1:
         D_8007B954 = s->unk1C->unk8E4.ovl65->unkC->unk8;
         break;
@@ -13880,7 +13880,7 @@ void func_8004C204(void) {
     u32 *tbl;
     u8 *cur;
 
-    if (s->unk8 == 2 || s->unk8 == 6) {
+    if (s->mode == 2 || s->mode == 6) {
         D_8007B9A0 = 1;
         pp = &D_8007B9A8;
         tbl = &D_8007B9B0[s->unk1C->unk8];
@@ -16193,10 +16193,10 @@ s32 func_80054B78(void) {
     if (b >= 0x80) {
         b = 1;
     }
-    if (!((g_gameState->unk24 & 0xFF) >> 7) || g_gameState->unk8 == 5) {
+    if (!((g_gameState->unk24 & 0xFF) >> 7) || g_gameState->mode == 5) {
         D_800739B0[0].unk0 = b;
         D_800739B0[0].unk1 = a;
-        if (g_gameState->unk8 == 2 && func_800EA27C()) {
+        if (g_gameState->mode == 2 && func_800EA27C()) {
             D_800739B0[1].unk0 = b;
             D_800739B0[1].unk1 = a;
         }

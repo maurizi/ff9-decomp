@@ -95,3 +95,13 @@ Format:
   (Zidane 3076 at Lv12, Vivi 3600 at Lv13, Freya 5593 at Lv14, Quina 3312 at Lv12).
 - names: Character.level/exp/hp/mp/stones/maxHp/maxMp/maxStones, GameData.characters/party, g_levelExp.
 - confidence: high.
+
+## GameState.mode (+0x8) and GameData.fieldId (+0xC)  (status: applied)
+- evidence (Redux): GameState+0x8 is 1 in field_burmecia_vault(_lv12), field_dali_inn, menu_main, menu_items and 0 on
+  title_screen. GameData+0xC is 764 in both Burmecia vault saves, 351 in the Dali inn; walking out of the inn's left
+  doorway into the street changed it to 350 (screenshots before/after). The write came from ovl_0a
+  func_800A89C4+0x168 and func_800A8E58+0x4BC; ovl_0a.c:490 copies the old value to field->unkA before storing the
+  new one (candidate "previous field", unchecked).
+- GameState+0xA (3 in Dali, 1 in Burmecia, 0 on the title) didn't change on the field-to-field exit; it may be the
+  previous mode but stays unnamed until a mode change is observed.
+- confidence: high for mode (0/1 values) and fieldId.
