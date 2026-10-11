@@ -375,6 +375,28 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Status of the rest: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, DA138 6 (gsim: needs sz > p > i, or sz preferring v1
   and p a0), BFF20 6, AB810 6 (was 8: pass e->unk4 to the first func_8001C7FC; the loop entry test still folds),
   E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175. 15-20 min permuter runs on AA504, E1534, DA1F4 found nothing.
+- Pass 14: matched E1534 (0x1D4) and AA504 (0x454). What fixed them:
+  - AA504: index the collected-id array with a count (`s = &ids[cnt] - 1; ... ids[cnt++] = w;`, `ids = arg2->unk10.h`)
+    instead of a walking pointer. loop.c then reduces `ids + cnt*2` to a giv whose init copies the hoisted base
+    (`move a3,t0` after `addiu t0,s5,16`), and the hoisted `li t1,2` lands first. A separate pointer q = &ids[cnt]
+    keeps an extra copy; the index form must be used for both the search start and the store. Its jump table needs
+    the trailing zero padding word.
+  - E1534: the tail goes through one pointer, `q = (s32 *)&e->unk24; q[0] = p; ...; q[1] = arg3; q[2] = arg3;`, so
+    the last e-relative address loop.c sees is unk24 and the giv base is e+0x24. For the clear's register copy
+    (`addu v1,a1` in the delay slot), the test value is loaded first (`v = *(s32 *)p;`) and then the copy goes into
+    the dead clear-loop counter k (`k = (u32)p;`), which conflicts with p so it can't share a1, and sits in another
+    block from its use so combine can't fold it. Last, an empty `do { } while (0);` before `return e` splits the
+    return-value copy into its own block, so sched1 can't hoist `v0 = e` above the stores and reorg puts it in the
+    jr delay slot.
+  - Copies that survive: CSE makes the longer-lived (or earlier-set) register the class head, combine folds a copy
+    into its only use in the same block, and global alloc ties a copy to a dying source with no conflict. A copy
+    survives only when its destination conflicts with the source and the use is in another block.
+  Findings without a match (details in the WIP headers): AB810's entry test is folded by combine, not CSE (i = 0
+  substituted through LOG_LINKS in the same block). C3F78's `bne other; j case5` is reorg's relax_delay_slots swap,
+  which needs the case-5 beq predicted very unlikely. BFF20's tail copy needs nonzero_bits(flag) <= 0xFF over all of
+  the flag's sets. E4A3C with five scalar params is the right length, but arg2/arg3 get s-registers. AC37C's t7 full
+  address is used by quad 3's D_8006794C loads.
+  Status: B1B48 3, C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).

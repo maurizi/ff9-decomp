@@ -6,7 +6,7 @@
    head = the last jump to the epilogue: case 0x3E's tail, or the fail block). In the original the inline's block
    found no partner, so it must have looked different at jump2 time. Tried: `fail: ...; goto ret0` with a ret0
    label on the inline's return (6 rows), case 0x3C as one if/else ending in `return 0` (3 rows, inline then merges
-   into case 0x3E's tail), explicit `goto ret0` from 0x38/0x3C (11 rows). */
+   into case 0x3E's tail), explicit `goto ret0` from 0x38/0x3C (11 rows). Pass 14: an empty do { } while (0) before or after each `return 0` (22 placements) and four inline shapes (u8 result variable, inverted test, nested ifs, s32 return): no better than 3. */
 #include "ovl_0b.h"
 
 extern u8 D_8007AF01;
