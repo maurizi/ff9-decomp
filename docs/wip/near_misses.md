@@ -1041,8 +1041,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     later blocks read D_8006794C->unk1C->... directly (no g local) in sector/id/size order, and the id choice
     is an else-if chain (`== 1` / `>= 0x2B52` / else): with a nested if in the else arm jump.c turns the
     0x2714 arm into a speculative set and reorg fills the bne delay slot differently. No do-while wraps.
-- Pass 16 (overlay agent): matched 64 B7C4 (was 75 rows). Improved: 37 F13F8 40 -> 25, 3a F459C 47 -> 45,
-  33 EF644 31 -> 26, 0d B16A4 37 -> 9, 34 EFC20 (= 39 F7FD4) 39 -> 38.
+- Pass 16 (overlay agent): matched 64 B7C4 (was 75 rows) and 0d B16A4 (was 37). Improved: 37 F13F8 40 -> 25, 3a F459C 47 -> 45,
+  33 EF644 31 -> 26, 34 EFC20 (= 39 F7FD4) 39 -> 38.
   * 64 B7C4: the colour table is indexed (`D_8019DEAC[j].r`, j++ every 8 sectors), not walked with a pointer.
     The indexed table address is a loop invariant that loop.c moves first, and every moved invariant lowers
     move_movables' threshold by 3; after that buf * 0x780 and &D_8019F7F0 (life 2, savings 2) are not worth
@@ -1057,3 +1057,6 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     (`yy = i + 2; yy = y + yy` swaps the addu operands: expand_binop puts the target-equal operand first).
   * 64 C434: a block-local `(last2 = unk5C - 1)` gives the second block's in-place addiu (a variable set in
     two blocks is global and cannot be tied).
+  * 0d B16A4: the FT4 prims are PsyQ macros (`setXY4`, `u2 = u + 0x17; setUV4`, clut, `setRGB0`, tpage, in that
+    order); with field-by-field stores the best single-line/swap search (build/s/hill.py, hill2.py) stopped at 6
+    rows. The SPRT branch wanted y0 right after x0. Trying the five macro groups in all 120 orders found it.
