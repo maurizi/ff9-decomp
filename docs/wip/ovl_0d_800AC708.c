@@ -12,7 +12,12 @@
  * divisions' magic) are loop invariants written inside the loop and hoisted by loop.c, not a pre-loop statement.
  * `len = t * 51 / 28;` as the first statement of the loop body reproduces that preheader shape (magic, i = 0
  * spill, len spill), but t then gets spilled and 21t is still hoisted; the rows (373 -> 409-443) are all
- * register allocation, so it is not in the body below yet. Pass 17: added the missing #include "ovl_0d.h". */
+ * register allocation, so it is not in the body below yet. Pass 17: added the missing #include "ovl_0d.h".
+ * Pass 19: loop.c's dump (`dumpf.sh f.c -dL`) shows the case-1 t * 42 chain (4 insns, savings 4 because the
+ * case-2 copy matches it) moved to the preheader; the original keeps it in both cases. 64 spellings of the two
+ * w computations (t * 42 / 28, `w = t; w = w * 42 / 28`, t * 21 * 2, ...) and a user-variable start (`w = t;
+ * w *= 42;`, lever: loop.c does not hoist through a user variable) never get below 373 rows / 426 insns
+ * (341 rows at 429 insns with `w = t; w = w * 42 / 28;` in both cases). */
 #include "ovl_0d.h"
 
 typedef struct {

@@ -23,7 +23,12 @@
  That block then differs only in unk64/unk78 (unk78 loads early into a0 here, late into v1 there), but
  the first block gets worse, 39 rows overall (build/w/c4a.c in the pass-16 worktree). Permuter on that
  base: 34-35 rows only with `(last2 = D_8019DE10.unk68) * unk5C` (unk68 read into the shared variable),
- not used. Per-block `addr` variables, a `cur = unk68` local and `D_801A06F0[D_8019DE0C++]` do not help. */
+ not used. Per-block `addr` variables, a `cur = unk68` local and `D_801A06F0[D_8019DE0C++]` do not help.
+ Pass 19: the original stores D_8019DE0C + 1 before the D_801A07F0 store (both non-struct, so their order is the
+ source order) and indexes both arrays with the old value: `r = D_8019DE0C++; D_801A07F0[r] = ...; D_801A06F0[r]
+ = prev;` (before or after the addr statement, or with the address in the call) is 51-52 rows, because sched1 then
+ issues the store before the unk68/unk5C loads. Block-local last/addr in either block (16 combinations) and
+ per-assignment variable splits: 36-39. */
 #include "ovl_64.h"
 void func_80022F64(s32);
 s32 DecDCToutSync(s32);
