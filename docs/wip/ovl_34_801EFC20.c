@@ -12,7 +12,9 @@
  do { } while (0) around the first func_80027710 call (ic 6 refs > mid 7 / 260; otz 7 refs > w), but with
  the block-local %hi in s4 that version scores 49 rows and the plain call 39. Dead reads of D_8007716C at the
  top, in an else arm or after the loop do not make the post-loop %hi global (cse's extended block ends at the
- post-loop label). */
+ post-loop label).
+ Pass 14: D_8007716C/D_80077170 are real scalars: declaring them as fields of one struct (or either as a
+ 1-element array via __asm__ names) gives 114-194 rows. */
 #include "ovl_34.h"
 
 typedef struct {

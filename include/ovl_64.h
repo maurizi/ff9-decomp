@@ -56,16 +56,17 @@ extern Ovl64Size D_8019DC88;
 typedef struct {
     u8 unk0;
     u8 unk1;
-    u8 pad2;
+    u8 unk2;
     u8 unk3;
     u8 unk4;
     u8 unk5;
     s8 unk6;
     u8 pad7;
     s32 unk8; /* current buffer */
-    u8 padC[0x24 - 0xC];
+    CdlLOC unkC; /* stream start position */
+    u8 pad10[0x24 - 0x10];
     CdlLOC unk24; /* stream position */
-    u8 pad28[0x2C - 0x28];
+    s32 unk28;
     s32 unk2C; /* frame width */
     s32 unk30; /* frame height */
     s32 unk34;
@@ -306,7 +307,9 @@ extern Ovl64Field D_800C9EF0;
 
 /* GameData.unk8E4 in field mode, as far as the movie player reads it */
 typedef struct {
-    u8 pad0[0x44];
+    u8 pad0[0x30];
+    s16 unk30;
+    u8 pad32[0x44 - 0x32];
     s32 unk44;
 } Ovl64FieldC14;
 typedef struct {
@@ -317,5 +320,23 @@ typedef struct {
     u8 pad0[0xC];
     Ovl64FieldC *unkC;
 } Ovl64Field8E4;
+
+
+/* used by func_80199B28 */
+extern char D_8019903C[];
+s32 func_8019A5B0(s32);
+void func_8019AE44(void *);
+void func_8019AEC0(u8 *, u32 *, void *);
+s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4);
+s32 func_8019C7E4(void);
+s32 func_8019C884(Ovl64RingHdr *ring, u32 per, u32 size);
+s32 func_8019C954(u8 *arg0, s32 arg1, u32 arg2);
+s32 func_8019C98C(s32 arg0);
+s32 func_8019CA1C(CdlLOC *loc);
+s32 func_8019CAC0(CdlLOC *loc);
+s32 func_8019CC0C(void);
+s32 func_8019CCBC(u8 *data);
+u32 func_8019D3F0(u16 *p);
+void func_80199554(void);
 
 #endif

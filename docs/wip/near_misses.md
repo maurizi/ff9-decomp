@@ -523,6 +523,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - DA1F4: the order after the loop decides the CSE class head for the in-loop *p load (e = p copy); see the header.
   - The gcc 2.8.1 sources are in build/gcc of the agent worktree (fetched from ftp.gnu.org).
   Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
+- Pass 17 (no new matches; details in the WIP headers):
+  - C3F78: the table-base order is fixed (`idx = ...; tb = D_800F5758; t = &tb[idx];`). Only the case-5 test sense
+    is left; the other 2 rows are D_800FE36C vs D_800FE368+4 relocation names. fill_eager_delay_slots always tries
+    the target thread, so the pass-1 swap needs the case-5 lui to be unfillable there. Loop-note case forms: 3 rows.
+  - AB07C: indexing a[n]/b[n]/r[n] in a do-while reproduces the original's pointer inits through loop.c strength
+    reduction. But loop.c then hoists the getTPage x bits (force chain: savings 2, lifetime 2) and spills them: 52.
+  - DA138: inline helper, chained assignment and while forms: 6.
+  Status: C3F78 3 (1 real, -O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
@@ -688,6 +696,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * 0a BD130: pos/tile are reload spills; the original's chain keeps both computations adjacent before the
     unk18 loads (same filler-LUID class as B4A5C). Memory variables (struct/array/address-taken) add loop
     reloads.
+
+- Pass 14 (overlay agent): matched 0a C970C and 0c B20B8.
+  * 0a C970C was a port of its matched world-map twin 0c func_800CAE0C (`o = &h->unk8[f]` taken early,
+    `n = n * 2 + 8` and `f = *p++` reusing variables). Look for twins in 0c/0a before reworking a draft.
+  * 0c B20B8 (draft in the main checkout's build/drafts/ovl_0c/w0c_j15.c, 7 rows): `D_800CE3C0 = SquareRoot0(...)`
+    emits the %hi of the target before the call, so the pseudo crosses the call and lands in s0; a temp
+    (`r = SquareRoot0(...); D_800CE3C0 = r;`) fixes it. The inlined bit test is func_800B3340's own body minus the
+    `c = (c & 0xFC) >> 2` line (`if (c >= 32) { if ((a[0] >> (c - 32)) & 1) return 1; } else if ...`).
+    The draft also hid a wrong `abs()`: cmp.py/ccprobe mask `j` targets, and only `make verify` caught the
+    jump into the shared tail of the next case. Check `cmp -l` against disks/us/ovl/XX.bin when verify fails.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -958,3 +976,15 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   0d B16A4: ours' dispositions already match the original except ot (s3 vs s1); the local `ot + 3` (166) takes
   s3 and ot follows it through set_preference; in the original `o2 = ot + 12` is in s5 and the FT4 block's
   constants in s0-s4, so the local-alloc order of that block differs.
+- Pass 14 (overlay agent): matched 64 99B28 (0 rows, was 46); new draft 64 99F30 (1 row); 64 C434 89 -> 54.
+  * 99B28: `ok` must be set in both arms (`if (func_8019C7E4() != 0) ok = 0; else {...}`) so it is born after the
+    call and stays in v0; the decode loop's inline uses a local `Ovl64Dec *dec = &D_8019F4D8;` (loop.c's movable
+    order changes: each already-moved invariant doubles insn_count, so which invariants are hoisted depends on
+    what comes first); `tries = 1000` sits at the top of `while (1)`; success is `break` + `return 1` after the loop
+    (the early `return 0`s then share the !ok block instead of a tail at the end); and func_8019D3F0 returns u32,
+    not u16 (the callee's own `return *p` compiles the same, the caller must not mask).
+  * The original's s7 = 1 used by stores before the loop (`addu v0,s7,zero`, `addu v1,v1,s7`, srav in 99F30) comes
+    from the compiler reusing the hoisted loop constant (the matched C has no variable for it).
+  * fold-const.c `associate` (split_tree) rewrites `a - (b - 1)` as `(a + 1) - b`; to keep the original's
+    `addiu b,-1; subu a,b` the `- 1` has to be hidden from fold (a variable or an assignment inside the
+    expression). C434 also needed `prev` as an if/else so cse's extended block ends at the join.

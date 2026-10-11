@@ -28,6 +28,9 @@
  * do{}while(0) wraps, for/while loop forms, statement moves. cse.c make_regs_eqv keeps a copy
  * `(set B A)` only when B lives beyond the block (or is first mentioned before it); loop.c then
  * hoists it unless its lifetime*savings is below the threshold.
+ * Pass 14: a goto-built sprite loop (no loop notes) is 48 rows, so loop.c does run on it; a `tpp = tp`
+ * copy in the loop with tp or tpp in the draw loop (6/58 rows), a reused `void **q` for both arrays
+ * (18-22) and setDrawTPage() instead of setlen + code[0] (5) don't help.
  */
 #include "ovl_0a.h"
 

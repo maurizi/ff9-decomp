@@ -10172,7 +10172,61 @@ s32 func_800C9700(u16 *arg0) {
     return *arg0 & 0x7FFF;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C970C);
+u8 *func_800C970C(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 arg7,
+                  u32 *arg8) {
+    VECTOR s;
+    SVECTOR zero;
+    MATRIX m;
+    FieldSprArgs c;
+    u16 *p;
+    u8 *b;
+    s32 n;
+    s32 f;
+    u16 *o;
+
+    if (rot == NULL) {
+        rot = &zero;
+        ((s32 *)&zero)[0] = 0;
+        ((s32 *)&zero)[1] = 0;
+    }
+    n = h->unk0 & 0x7FFF;
+    f = frame;
+    if (f >= n) {
+        f = frame % n;
+    }
+    o = &h->unk8[f];
+    n = n * 2 + 8;
+    b = (u8 *)h + n;
+    p = (u16 *)b;
+    f = *p++;
+    c.unk0 = p;
+    c.unk4 = (u8 *)(p + f + 1);
+    c.unk10 = h->unk2 | ((abr & 3) << 5);
+    c.unk14 = h->unk4;
+    c.unkC = (h->unk6 - 1) * 2;
+    c.unk8 = (h->unk7 - 1) * 2;
+    n = *o;
+    c.unk1C = ((u8 *)h)[n++];
+    h = (FieldSprHdr *)((u8 *)h + n);
+    gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
+    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    gte_ldv0(pos);
+    gte_rtv0tr();
+    func_800316D8(rot, &m);
+    if (scale >= 0) {
+        s.vx = s.vy = s.vz = scale;
+        ScaleMatrix(&m, &s);
+    }
+    gte_stlvnl(m.t);
+    if (rot->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    c.unk20 = (abr == 0xFF) ? 0x2C : 0x2E;
+    c.unk18 = arg7;
+    return func_800C9AB8((u8 *)h, &c, arg0, arg8);
+}
 
 /* upload the images and palettes of a texture file to VRAM */
 void func_800C9968(s32 *arg0) {

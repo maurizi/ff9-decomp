@@ -9,6 +9,7 @@
  * Pass 12: in the original the FT4 block starts with o2 = ot + 3 (s5) before any constant is
  * born, so ot (s1) does not conflict with the block's constant pseudos (0x80 s0, 0x90 s1,
  * 0x9C s3, 0x3AC0 s4, u + 0x17 s2); ours births the SetPolyFT4 constants first and ot ends in s3.
+ * Pass 14: `o = ot + 3;` as the first statement of the FT4 branch (shared o) gives 147 rows.
  */
 #include "ovl_0d.h"
 void *func_800B16A4(u32 *ot, void *p, TmState *s, s32 x, s32 y, s32 mode) {
