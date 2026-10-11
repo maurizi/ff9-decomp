@@ -4,6 +4,31 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 9 (the seven large undrafted functions) matched 2: 800283E0 (832 B), 80023A6C (1100 B).
+  80023A6C is game code, not unsigned PsyQ: it draws the countdown timer from D_80076B60.unk408
+  (D_80076F68) through func_80027834/func_800253D4 and reads D_8006794C, and nothing about it looks
+  like a library function. What worked:
+  - 800283E0: one SPRT pointer variable per half (p, q). With one shared `p` it is a global pseudo,
+    global-alloc puts it after the block-local temps (t2 instead of t0) and u/v/p rotate through
+    t0-t2 (39 rows -> 0). u and v are locals set before the `flag == 0 ? :` join, so `v = 0xE0`
+    stays an `addiu t1` + `andi` (an inline helper substitutes the constant).
+  - 80023A6C: `d = unk0 - t->unk4` first (mvall), one `v` for all three `% 60` results, a separate
+    digit variable `dg = hr / 10; ...; dg = hr - dg * 10;` (the original reuses the quotient).
+    `t = &D_80076B60.unk408` links to the original's D_80076F68 reference.
+  - Hoisted constant addresses compete with long-lived variables for the 9 s-regs (8005D6BC,
+    8002920C): the original keeps the hoisted &D_80083158 / %hi(D_800770AC) in fp and spills a
+    long-lived local to 0x10(sp)/0x30(sp). Global-alloc priority is floor_log2(refs) * refs / live
+    length, and refs inside a loop count loop_depth times, so a `do { ... } while (0)` around the
+    in-loop uses raises the hoisted pseudo (8005D6BC).
+  - `x->unk10 &= ~x->unk8; m &= ~x->unk8;` (store first) reloads unk8 the way the original does
+    (800589F0, same as 80058F94). gcc 2.8 CSE keeps struct fields across a store to a scalar global
+    only in the fixed-struct/varying-scalar case, so `D_80080A10 = t` between two `t->unkC` reads
+    forces a reload.
+  - Drafts (first line has the status): 800589F0 (3 real rows; the else-branch keep mask is s1 instead
+    of s2; needs K&R definitions of func_80058990/func_800589E0, which it calls with two args),
+    8005D6BC (24; the tail value and the GetRCnt start should be one spilled pseudo), 800475D8 (52),
+    8002920C (108; three missing cross-jumps), 80025ED4 (146; register naming throughout).
+  - 8005A320: 7 more tail orders around the 0xFFFFFF mask, none better than 5.
 - Pass 8 matched 9 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8,
   80048E80, 80062E3C). What worked:
   - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
@@ -150,6 +175,25 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   8002920C (231). (8005CF04 matched in pass 6: its draft had an uninitialised `old`.) Notes from
   earlier passes, still open: 800378C4 (f<14 branch shape, same search as 8004B85C), 8005DB40
   (two jump tables, AKAO look-ahead), 80054650 and 80062E3C (first drafts in docs/wip).
+- Pass 13: matched 800589F0 (0x544) and 8002995C (0x1F0). 8002920C went from 108 to 81 rows, and its
+  code is now identical apart from s/pkt. What decided them:
+  - 800589F0: in the original, each "keep" mask lands in the register of the value that dies where it
+    is born (ex in s2, then b2 in s2, and the else-branch mask in s2). The fix was global-alloc
+    priorities, worked out from build/s/myvp.py (refs/len/hard reg per pseudo for each variant). The
+    else mask reuses the loop variable `bit`. `b1 &= ~b2;` before the m1 call gives b1 enough refs to
+    beat b2 (0.222 vs 0.222, tie to the lower regno), and the old if (b1) identical branch is gone.
+    `bit` must beat m2 (0.875 vs 0.882). `ch = D_8007E3D8, bit = 0x100` in that order (bit 2 insns
+    shorter) fixes the s2/s3 choice but leaves li s2 after addiu s1. The identical branch was moved
+    to `if (m2)` around func_800589E0 (m2 29/136 = 0.853 < bit), which gives both: the right
+    allocation and li s2 first. The two-argument calls to func_80058990/func_800589E0 and the
+    three-argument call to func_80057898 use casts of the callee, like func_800585E0 does.
+  - 8002995C: `x += adv` goes inside each of the three call arms, not after the if/else.
+    sched1 keeps the pkt = v0 copy glued to the call. With the add in the same block, the adv load
+    has an in-block consumer, so it is scheduled right after the jal (before the copy, while v0
+    is still live), and local-alloc gives it v1. Cross-jumping then merges the three arms, and reorg
+    moves the add into the loop's bne delay slot. The identical if (x) around s++ is no longer
+    needed. In general, a value loaded from a stack variable that an earlier call wrote lands
+    in v1 rather than v0 when it is read in the same block as the call's return value.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,

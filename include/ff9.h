@@ -4041,4 +4041,17 @@ extern const u8 D_80010DC4[]; /* default character names: count, then {offset, l
 extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
 extern const u8 D_80011F10[]; /* "MOGNET" window title */
 
+/* sound driver (AKAO) routines used by func_800589F0 */
+void func_800575EC(u32 x);
+void func_80057608(u32 x);
+void func_80057624(u32 x);
+void func_80057898(s32 v, Unk800577EC *p);
+void func_80058118(AkaoChannel *c, u32 bit);
+void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
+void func_800588B0(u32 extra);
+void func_80058990(AkaoChannel *c);
+void func_800589E0(Unk800589E0 *a);
+void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra);
+extern s32 D_80080A74;
+
 #endif
