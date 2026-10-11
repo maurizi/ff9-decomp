@@ -1,4 +1,4 @@
-/* 11 rows differ: the original keeps pv = &v in s0 across the SetRotMatrix/SetTransMatrix calls (and even addresses mat.m[1][1] as 16(s0)); we keep &mat in s0 instead. Moving pv around and do{}while(0) did not help. */
+/* 11 rows differ: the original keeps pv = &v in s0 across the SetRotMatrix/SetTransMatrix calls (and even addresses mat.m[1][1] as 16(s0)); we keep &mat in s0 instead. Moving pv around and do{}while(0) did not help. Pass 14: the original addresses both mat.m[1][1] (0x10(s0)) and v.vz (4(s0)) through s0 = &v, which is set right after the first call (after ry's last use), while v.vx/v.vy and the other mat stores use sp. pv placements (before/after the first call, after the 0x1000 store), pv for all v stores, and no pv: 11-23 rows. */
 #include "ff9.h"
 
 s32 func_8004BB7C(s32);
