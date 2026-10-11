@@ -12158,8 +12158,6 @@ s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80047B90);
-
 /* point 500 units ahead of o at angle a, at head height */
 static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     SVECTOR v;
@@ -12180,6 +12178,25 @@ static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     gte_ldv0(&v);
     gte_rtv0tr();
     gte_stlvnl(out);
+}
+
+void func_80047B90(Unk8004AB64 *o, Unk80047B90 *m) {
+    VECTOR out;
+    s32 d;
+
+    func_80047E1C_ahead(o, o->unk14.unk22, &out);
+    d = func_80052EC0(out.vx - o->unk84, out.vy - o->unk86, out.vz - o->unk88);
+    if (d < 100) {
+        d = 100;
+        o->unk50 &= 0xF8FF;
+    }
+    o->unk84 += (out.vx - o->unk84) * 100 / d;
+    o->unk86 += (out.vy - o->unk86) * 100 / d;
+    o->unk88 += (out.vz - o->unk88) * 100 / d;
+    m->unk0 |= 1;
+    m->unk48 = o->unk84;
+    m->unk4A = o->unk86;
+    m->unk4C = o->unk88;
 }
 
 /* move the look-at point towards t */
