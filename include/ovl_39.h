@@ -546,4 +546,28 @@ extern IconTmpl D_801F41A4;
 extern IconTmpl D_801F4244;
 extern IconTmpl D_801F42E4;
 
+/* main exe: candidates for ff9.h */
+/* slider gauge pieces drawn by func_80027710: left cap, middle (repeated via DR_TWIN), right cap */
+typedef struct {
+    u8 unk0; /* texture window x */
+    u8 unk1; /* texture window y */
+    u16 unk2; /* uv */
+    u8 unk4; /* width */
+    u8 unk5; /* height */
+    u8 pad6[2];
+} GaugeIcon;
+extern GaugeIcon D_80068988[3];
+void SetTexWindow(void *p, RECT *r);
+
+/* LINE_F2 written as whole words */
+typedef struct {
+    u32 tag;
+    u32 rgbc;
+    u32 xy0;
+    u32 xy1;
+} LineWords;
+extern u32 D_801FB068[3]; /* gauge line colours */
+extern RECT D_801FB060; /* gauge texture window */
+
+
 #endif

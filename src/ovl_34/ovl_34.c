@@ -369,7 +369,57 @@ void func_801EFB38(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_34/nonmatchings/ovl_34", func_801EFC20);
+void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
+    GaugeIcon *ic;
+    GaugeIcon *mid;
+    GaugeIcon *ec;
+    s32 width;
+    SprtWords *p;
+    LineWords *l;
+    RECT r;
+    s32 i;
+
+    ic = D_80068988;
+    mid = &ic[1];
+    ec = &ic[2];
+    width = w + 8;
+    if (pos != 0) {
+        for (i = 0; i < 3; i++) {
+            s32 k = i + 2;
+            s32 yy = (y + k) << 16;
+            setlen(D_80077170, 3);
+            l = (LineWords *)D_80077170;
+            l->rgbc = D_801F154C[i];
+            l->xy0 = (x + 4) | yy;
+            l->xy1 = (pos + x + 3) | yy;
+            addPrim(&D_8007716C[otz], l);
+            D_80077170 = (u8 *)(l + 1);
+        }
+    }
+    func_80027710(x, y, otz, ic, 0);
+    func_80027710(x + width - ec->unk4, y, otz, ec, 0);
+    SetTexWindow(D_80077170, &D_801F1544);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += 0xC;
+    setlen(D_80077170, 4);
+    p = (SprtWords *)D_80077170;
+    p->rgbc = 0x64808080;
+    p->xy = ((x + ic->unk4) & 0xFFFF) | (y << 16);
+    p->uvclut = mid->unk2 << 16;
+    p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+    r.x = mid->unk0;
+    r.y = mid->unk1;
+    r.w = mid->unk4;
+    r.h = mid->unk5;
+    SetTexWindow(D_80077170, &r);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += 0xC;
+    SetDrawTPage(D_80077170, 1, 1, 0x1F);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += 8;
+}
 
 ScrollPos *func_801EFF58(MenuList *l, ScrollPos *p) {
     s32 q;

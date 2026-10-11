@@ -1060,3 +1060,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * 0d B16A4: the FT4 prims are PsyQ macros (`setXY4`, `u2 = u + 0x17; setUV4`, clut, `setRGB0`, tpage, in that
     order); with field-by-field stores the best single-line/swap search (build/s/hill.py, hill2.py) stopped at 6
     rows. The SPRT branch wanted y0 right after x0. Trying the five macro groups in all 120 orders found it.
+- Pass 17 (overlay agent):
+  * 34 EFC20 / 39 F7FD4 matched (was 9 rows, with a do-while stand-in): the right cap is `ec = &ic[2]`, not
+    `&D_80068998` (same address, so the bytes are identical). The extra use of ic is what lifts its global-alloc
+    priority above mid's (ic 6 refs / 212 insns vs mid 7 / 262), which the do-while had faked by doubling the
+    first call's refs. `&D_80068988[2]` and `&mid[1]` also match. No wrap.
