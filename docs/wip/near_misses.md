@@ -766,6 +766,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * BD130: `Unk800C9DB4 *bg = D_800C9DB4;` as a local made the original's load order (12 -> 9).
   * build/splitvar.py (pass-19 worktree) gives each assignment of a multiply-assigned local its own copy and
     scores every split: nothing in C65CC, C07D8, C434, F459C, BD130, B4A5C, C0038, EF644, F13F8.
+- Matched 0a BB714 / 0c CA1D8 (not byte-identical twins: 0c shifts the Z sum one more, `>> 5` and `/ 3 >> 3`).
+  What closed it (from ~260 rows): a/b words with `a & 0xFFFF` / `b & 0xFFFF` expressions in the 4-vertex
+  loops; in the 3-vertex loops `b = s->unk0[2]` (u16 field) with `D_80070520[(u16)b]` in the Z sum (duplicated
+  sll, lhu); `otz = (otz & 0xFFFFF) / 3; ... ot[otz >> 2]` (the mask goes to a new pseudo); and copying the
+  source pointer before the prim pointer between loops. A register-masked diff (cmp.py --shape) first, then regs.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
