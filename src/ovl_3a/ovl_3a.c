@@ -4,7 +4,7 @@ void func_801F3874(void) {
     u32 id;
     s32 i;
 
-    text_setBank(D_801EDF18);
+    text_setBank(g_nameMenuText);
     func_80035580(&D_801F4B48);
     func_8003556C(func_801F4A9C);
     D_801F4BBC.unk0 = 1;
@@ -350,6 +350,6 @@ void func_801F4AE0(void) {
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_3a/nonmatchings/ovl_3a", D_801EDF18);
+INCLUDE_RODATA("asm/us/ovl_3a/nonmatchings/ovl_3a", g_nameMenuText);
 
 INCLUDE_RODATA("asm/us/ovl_3a/nonmatchings/ovl_3a", D_801EE0B4);

@@ -44,7 +44,7 @@ typedef struct {
 } Unk801F11CC;
 extern Unk801F11CC D_801F11CC[7];
 extern u8 D_801F1204[];
-extern u8 D_801EE2A0[];
+extern u8 g_statusMenuText[];
 extern void (*D_801EFBA4[])(void);
 
 typedef struct {

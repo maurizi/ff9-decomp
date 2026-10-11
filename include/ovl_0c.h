@@ -707,7 +707,7 @@ extern MATRIX D_800CF4C0;
 extern MATRIX D_800CF520;
 extern MATRIX D_800CF540;
 extern u8 D_800D33F4;
-extern u8 D_800A8678[]; /* text */
+extern u8 g_worldMapText[]; /* text */
 extern Unk800CCCC0 D_800CCCC0[];
 extern Unk8004AB64 *D_800CE3DC; /* player actor */
 extern Unk800CE3C8 *D_800CE3C8;

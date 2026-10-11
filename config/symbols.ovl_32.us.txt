@@ -1,1 +1,1 @@
-D_801EDF84 = 0x801EDF84; // force_not_migration:True
+g_chocographText = 0x801EDF84; // force_not_migration:True

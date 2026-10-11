@@ -362,7 +362,7 @@ s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, s
 s32 func_80028954(s32); /* defined u8 in main; used unmasked */
 
 extern RECT D_801FAF74; /* a RECT in .data (splat starts .data late) */
-extern u8 D_801EDF1C[];
+extern u8 g_saveMenuText[];
 extern u8 D_801FB040[]; /* save icon per character model */
 extern u16 D_801FDEFE;
 void func_801F96CC(void);

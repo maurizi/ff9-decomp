@@ -9,3 +9,4 @@ w_musicUpdate = 0x800C3EAC; // type:func [string] "w_musicUpdate  Play/Ready/Wai
 w_musicGetID = 0x800C3FE4; // type:func [string] "w_musicGetID  Illigal SE Number #%d"
 w_musicRequestSend = 0x800C42B0; // type:func [string] prints the "w_musicRequestSend  ..." strings
 w_readtxRequest = 0x800C1DA4; // type:func [string] "w_readtxRequest/reqover[%d/%d]", "-- w_readtxRequest Error --"
+g_worldMapText = 0x800A8678; // [code] the text bank this overlay passes to text_setBank

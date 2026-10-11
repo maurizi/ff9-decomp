@@ -635,7 +635,7 @@ void func_801F107C(void) {
         func_801F1300(&D_801F7A78.unk158[i]);
         func_801F1300(&D_801F7A78.unk1D8[i]);
     }
-    text_setBank(D_801EDF04);
+    text_setBank(g_rewardsText);
     func_801F12E0();
     func_801F2490();
     func_801F1FEC();
@@ -1463,7 +1463,7 @@ void func_801F347C(void) {
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EDF00);
 
-INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EDF04);
+INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", g_rewardsText);
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EE03C);
 

@@ -1853,7 +1853,7 @@ extern u8 D_800F8D78[5]; /* battle message ids */
 BtlUnit *func_800E9124(void);
 extern u8 D_800F8D80;
 extern u8 D_800F8D81;
-extern char D_800A83AC[];
+extern char g_battleText[];
 
 extern u8 D_800F909C[];
 extern void (*D_800F8DA8[])(void);

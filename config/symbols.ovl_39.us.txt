@@ -1,0 +1,1 @@
+g_saveMenuText = 0x801EDF1C; // [code] the text bank this overlay passes to text_setBank

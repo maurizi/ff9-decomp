@@ -169,10 +169,10 @@ void func_801F3E58(void) {
 INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDF00);
 
 /* text bank for this menu (count + {offset, info} table, then strings) */
-INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", D_801EDF04);
+INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", g_partyMenuText);
 
 void func_801F3FEC(void) {
-    text_setBank(D_801EDF04);
+    text_setBank(g_partyMenuText);
     func_8003556C(func_801F46FC);
     func_80028720(D_801EDFE8, 0xD);
     D_801F4748.unk0 = 0;

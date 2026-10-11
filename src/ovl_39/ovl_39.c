@@ -20,7 +20,7 @@ void func_801F4414(void) {
     func_801F7928();
     func_801F5BE0();
     func_8003556C(func_801F500C);
-    text_setBank(D_801EDF1C);
+    text_setBank(g_saveMenuText);
     D_801FB1A8.unk20 = text_get(0x16);
     D_801FB1A8.unk4[0] = 1;
     D_801FB1A8.unk4[1] = 1;
@@ -360,7 +360,7 @@ void func_801F53B0(void) {
 void func_801F53E0(void) {
     func_8002DEE4(&D_801FAF74, 5, 2);
     func_8002705C(&D_801FAF74, 5, 2);
-    func_8002B5FC(D_801FAF74.x + 0xA, D_801FAF74.y + 6, 4, (u8 *)text_getFrom(D_801EDF1C, D_801FB1A8.unk0), 0);
+    func_8002B5FC(D_801FAF74.x + 0xA, D_801FAF74.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, D_801FB1A8.unk0), 0);
 }
 
 void func_801F5460(void) {
@@ -1351,7 +1351,7 @@ u8 func_801F79F4(s32 mode) {
 
 INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801EDF14);
 
-INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801EDF1C);
+INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", g_saveMenuText);
 
 INCLUDE_RODATA("asm/us/ovl_39/nonmatchings/ovl_39", D_801EE4D4);
 

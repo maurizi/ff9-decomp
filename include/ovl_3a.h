@@ -41,7 +41,7 @@ extern RECT D_801F4B70;
 extern RECT D_801F4B78;
 extern s32 D_801F4B80[12];
 extern u8 D_801F4BB0[12];
-extern u8 D_801EDF18[];
+extern u8 g_nameMenuText[];
 extern u8 D_801EE0B4[][0x6C0];
 
 /* main exe: candidates for ff9.h */

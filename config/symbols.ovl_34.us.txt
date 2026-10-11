@@ -1,1 +1,1 @@
-D_801EDF38 = 0x801EDF38; // force_not_migration:True
+g_configMenuText = 0x801EDF38; // force_not_migration:True

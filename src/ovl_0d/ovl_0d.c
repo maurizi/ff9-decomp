@@ -556,7 +556,7 @@ void func_800A8D74(TmState *s) {
     D_8007B708 = 1;
     g_gameState->unk9 = 0;
     func_800239D0();
-    text_setBank(D_800B3668);
+    text_setBank(g_cardGameText);
     func_80035430();
     func_8003556C(D_800355DC);
     D_80077DE8.unk8 = 0;

@@ -26,3 +26,4 @@ Hi_ModifySummonModelAbr = 0x800DCF08; // type:func [string] error message names 
 Hi_ModifySummonModelRGB = 0x800DCF4C; // type:func [string] error message names it
 Hi_SplitMdlVertex = 0x800DF508; // type:func [string] error message names it
 Hi_GetSplitMdlVertex = 0x800DF550; // type:func [string] error message names it
+g_battleText = 0x800A83AC; // [code] the text bank this overlay passes to text_setBank

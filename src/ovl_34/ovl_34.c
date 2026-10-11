@@ -6,7 +6,7 @@ void func_801EEA1C(void) {
     ConfigMenu *m;
     s32 i;
 
-    text_setBank(D_801EDF38);
+    text_setBank(g_configMenuText);
     func_8002EDFC(&D_801F1558.unk3C, 0xD, 9, 1, 0xB4);
     m = &D_801F1558;
     m->unk0 = 0;
@@ -858,4 +858,4 @@ ScrollPos *func_801F1334(MenuList *l, ScrollPos *p) {
 
 /* Defined last: its .rodata follows func_801EF50C's jump table. */
 /* menu text block */
-INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", D_801EDF38);
+INCLUDE_RODATA("asm/us/ovl_34/nonmatchings/ovl_34", g_configMenuText);

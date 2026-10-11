@@ -11,7 +11,7 @@ void func_801EE440(void) {
         D_801F120C.unk16[i] = 0;
         D_801F120C.unk10[i] = 0;
     }
-    text_setBank(D_801EE2A0);
+    text_setBank(g_statusMenuText);
     func_80028CF8(&D_801F120C.unk8C, D_80077E50.unk3, func_801EFAF8);
     func_801EF568(D_80077E50.unk3, 0);
     r = &D_801F120C.unk8;
@@ -453,4 +453,4 @@ void func_801EFB08(void) {
     func_8002BE44(i, D_801F1204);
 }
 
-INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EE2A0);
+INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", g_statusMenuText);

@@ -8800,7 +8800,7 @@ void func_800E9E10(void) {
     func_800F4630();
     func_800EBB34();
     func_800EC008();
-    text_setBank(D_800A83AC);
+    text_setBank(g_battleText);
     VSyncCallback(NULL);
 }
 
@@ -9868,7 +9868,7 @@ void func_800EC628(Window *arg0) {
     }
 }
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A83AC);
+INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", g_battleText);
 
 /* TRANCE label */
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A857C);

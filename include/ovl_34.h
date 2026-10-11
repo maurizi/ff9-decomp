@@ -33,7 +33,7 @@ typedef struct {
     s16 unk2; /* y offset */
 } ScrollPos;
 extern ConfigMenu D_801F1558;
-extern const u8 D_801EDF38[]; /* menu text block */
+extern const u8 g_configMenuText[]; /* menu text block */
 
 /* GameState.unk24 config bits, written through bitfields by func_801EF50C */
 typedef struct {

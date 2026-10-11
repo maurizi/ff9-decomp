@@ -2,7 +2,7 @@
 
 INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", D_801EDF00);
 
-INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", D_801EDF04);
+INCLUDE_RODATA("asm/us/ovl_37/nonmatchings/ovl_37", g_itemMenuText);
 
 void func_801F0C18(void) {
     D_801FAB78.unk1 = 2;
@@ -15,7 +15,7 @@ void func_801F0C18(void) {
     D_801FAB78.unk55 = 0;
     func_801F3038();
     func_801F2CEC();
-    text_setBank(D_801EDF04);
+    text_setBank(g_itemMenuText);
     func_8003556C(D_800355DC);
     func_80035674(1);
     func_8002EDFC(&D_801FAB78.unkC, 0xFF, 0xB, 2, 0xAD);

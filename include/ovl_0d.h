@@ -221,7 +221,7 @@ typedef struct {
 
 extern s32 D_800B365C;
 extern s8 D_800B3664; /* sound request kind, -1 = none */
-extern u8 D_800B3668[];
+extern u8 g_cardGameText[];
 extern s32 D_800B3660;
 extern s32 D_800B3C8C[];
 extern s32 D_800B3CD0;

@@ -81,7 +81,7 @@ void func_801F9600(s32);
 void func_801F9660(void);
 void func_801F9668(s32, RECT *, RECT *);
 
-extern const u8 D_801EDF84[]; /* text bank for this menu */
+extern const u8 g_chocographText[]; /* text bank for this menu */
 
 typedef struct {
     u32 tag;

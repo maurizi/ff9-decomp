@@ -10879,7 +10879,7 @@ void func_800CC6E4(void) {
         D_800D5438.unk2 = 0;
     }
     D_800D5438.unk1 = 0;
-    text_setBank(D_800A8678);
+    text_setBank(g_worldMapText);
     func_800CB434();
     r.x = 8;
     r.y = 8;
@@ -10963,4 +10963,4 @@ void func_800CC940(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8644);
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8678);
+INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", g_worldMapText);

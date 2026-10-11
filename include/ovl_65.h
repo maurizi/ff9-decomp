@@ -118,7 +118,7 @@ extern u8 D_801F4F94[]; /* support ability names */
 extern RECT D_801F81F8;  /* level-up window rect */
 extern RECT *D_801F8200; /* window it is placed under */
 extern u8 D_801F5228[];  /* level-up text */
-extern u8 D_801EDF04[];
+extern u8 g_rewardsText[];
 extern void (*D_801F3B88[])(void);
 extern s32 D_801F3BA0[]; /* sound effect per state */
 extern s32 D_801F3BB8[]; /* text id */

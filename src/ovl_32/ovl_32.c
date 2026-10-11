@@ -5,7 +5,7 @@ INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EDF00);
 INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EDF04);
 
 /* text bank for this menu (count + {offset, info} table, then strings) */
-INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", D_801EDF84);
+INCLUDE_RODATA("asm/us/ovl_32/nonmatchings/ovl_32", g_chocographText);
 
 void func_801F7AC0(void) {
     Ovl32State *st;
@@ -16,7 +16,7 @@ void func_801F7AC0(void) {
     st = &D_801F9850;
     st->unk1 = 1;
     D_801F9850.unk0 = 0;
-    text_setBank(D_801EDF84);
+    text_setBank(g_chocographText);
     func_8003556C(func_801F84F0);
     func_80035674(1);
     setRECT(&D_801F9850.unk20, 0xE4, 8, 0x50, 0x1A);

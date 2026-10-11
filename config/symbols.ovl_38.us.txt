@@ -1,1 +1,2 @@
 D_801EE264 = 0x801EE264; // force_not_migration:True
+g_statusMenuText = 0x801EE2A0; // [code] the text bank this overlay passes to text_setBank

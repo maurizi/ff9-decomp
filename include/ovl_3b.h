@@ -63,6 +63,6 @@ void func_801F457C(PartyRequest *);
 void func_801F46FC(void);
 extern u8 D_801EDFE8[]; /* image data for func_80028720 */
 
-extern const u8 D_801EDF04[]; /* text bank for this menu */
+extern const u8 g_partyMenuText[]; /* text bank for this menu */
 
 #endif
