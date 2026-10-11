@@ -1,4 +1,4 @@
-/* STATUS: near miss, 10 rows (pass 16; was 38, 39, 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
+/* STATUS: near miss, 9 rows (pass 16; was 38, 39, 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
  ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle
  sprite and a DR_TPAGE). Logic and stores right; instruction count now matches (206).
  Pass 13 (build/search/galloc.py + the greg conflict lists): the original keeps otz*4 s3, w+8 s4, x s5, y s6, ic s7,
@@ -28,7 +28,8 @@
  hint `new_var = w`): the %hi(D_8007716C) is now spilled and rematerialised in t6 like the original.
  18 -> 10 with the first func_80027710 call in `do { } while (0)` again (ic s7, mid fp). Left: the prologue
  loads w into v0 (original v1, %hi(D_80068988) in v0), the second call's x + width is computed right after
- the first call into v0 (original: last, into a0), and `x + ic->unk4` operand order in the sprite xy. */
+ the first call into v0 (original: last, into a0). `(x + ic->unk4) & 0xFFFF` instead of the (u16) cast fixes the
+ addu operand order (10 -> 9). The do-while is still a stand-in. */
 #include "ovl_34.h"
 
 typedef struct {
@@ -89,7 +90,7 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     setlen(D_80077170, 4);
     p = (SprtWords *)D_80077170;
     p->rgbc = 0x64808080;
-    p->xy = ((u16)(x + ic->unk4)) | (y << 16);
+    p->xy = ((x + ic->unk4) & 0xFFFF) | (y << 16);
     p->uvclut = mid->unk2 << 16;
     p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
     addPrim(&D_8007716C[otz], p);
