@@ -1267,6 +1267,18 @@ static inline u8 func_800B3340_inline(u32 *a, u32 k) {
     return 0;
 }
 
+/* Inlined copy of func_800B3340 with the index already shifted (func_800B20B8). */
+static inline u8 func_800B3340_inline2(u32 *a, u32 c) {
+    if (c >= 32) {
+        if ((a[0] >> (c - 32)) & 1) {
+            return 1;
+        }
+    } else if ((a[1] >> c) & 1) {
+        return 1;
+    }
+    return 0;
+}
+
 typedef struct {
     u16 unk0; /* frame count (low 15 bits) */
     u16 unk2;
