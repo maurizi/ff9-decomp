@@ -336,6 +336,8 @@ typedef struct {
 
 long SpuSetReverbModeParam(SpuReverbAttr *attr);
 void SpuSetReverbDepth(SpuReverbAttr *attr);
+long SpuSetNoiseClock(long n_clock);
+void SpuSetReverbModeDepth(short depth_left, short depth_right);
 long SpuClearReverbWorkArea(long mode);
 void VSyncCallback(void (*f)(void));
 void ResetCallback(void);
