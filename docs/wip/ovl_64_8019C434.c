@@ -88,7 +88,7 @@ void func_8019C434(u8 status, u8 *result) {
             }
             h = &D_8019DE10.unk74[prev];
             if (!(h->unk0 & 0x1000)) {
-                                addr = D_8019DE10.unk78 + (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1))) * 0x8F4 - 0x20;
+                addr = D_8019DE10.unk78 + (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1))) * 0x8F4 - 0x20;
                 D_801A07F0[D_8019DE0C] = D_8019DE10.unk58;
                 D_801A06F0[D_8019DE0C] = prev;
                 D_8019DE0C++;
@@ -101,7 +101,7 @@ void func_8019C434(u8 status, u8 *result) {
             }
             h->unk0 = (h->unk0 & 0xFFF) | 0x6000;
         }
-                addr = D_8019DE10.unk78 + (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1))) * 0x8F4 - 0x20;
+        addr = D_8019DE10.unk78 + (D_8019DE10.unk68 * D_8019DE10.unk5C - (D_8019DE10.unk64 - (last = D_8019DE10.unk5C - 1))) * 0x8F4 - 0x20;
         func_800213C0(addr, 0x245);
         D_800761D0.unkC += 0x800;
         func_8019BA70();
