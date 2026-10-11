@@ -1636,7 +1636,88 @@ void func_800CCDB8(Unk800CCD00 *arg0) {
     arg0->unk0 = (u32 *)func_800E7154();
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CD210);
+void func_800CD210(Unk800CCD00 *arg0) {
+    BtlUnit *u;
+    Battle4880 *m;
+    BtlUnit9C *mdl;
+    BtlBone *b;
+    Unk800F6CA4 *e;
+    SVECTOR v;
+    u32 st;
+    s16 bone;
+    s16 y;
+    s16 i;
+    s16 t;
+    s32 q;
+    s16 d;
+    u8 c;
+    s32 blink;
+    u32 n;
+
+    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+        if (((u->unk68 >> 22) & 1) || (u->unk9C->unk0 & 0x10)) {
+            continue;
+        }
+        if (D_8006794C->unk1C->unk8E4.battle->unk1358.unk1D4 & u->unkB0) {
+            continue;
+        }
+        st = u->unk3C;
+        if ((st & 0x100) || !(st & 0x88000000)) {
+            continue;
+        }
+        if (u->unk68 & 1) {
+            bone = D_800F6B48[D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4][5];
+            y = (s8)D_800F6BBC[D_8006794C->unk1C->unk3C[(u->unk68 >> 1) & 0xF].unk34.b.unk4][5];
+        } else {
+            m = D_8006794C->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0;
+            bone = m->unk32[5];
+            y = (s8)m->unk38[5];
+        }
+        mdl = u->unk9C;
+        if (mdl->unk0 & 2) {
+            y = (u32)(y * mdl->unk56) >> 12;
+        }
+        b = &mdl->unk20[bone];
+        v.vx = b->unk14;
+        v.vy = b->unk18 + (y << 4);
+        v.vz = b->unk1C;
+        gte_ldv0(&v);
+        gte_rtps();
+        gte_stsxy(&arg0->unk10);
+        arg0->unk10.s.y -= 12;
+        for (e = D_800F6CA4, i = 1; i != -1; e++, i--) {
+            if (st & e->unk0) {
+                if (u->unk66 > 0 && (t = u->unk46[e->unk4]) >= 0) {
+                    q = t * 10 / u->unk66;
+                    d = u->unk2E;
+                    bone = q;
+                    if (t <= 0) {
+                        blink = 2;
+                    } else {
+                        blink = ((s16)q != (s16)((t - d) * 10 / u->unk66)) * 2;
+                    }
+                    if (e->unk6 != 0) {
+                        c = (bone << 4) + 0x20;
+                        arg0->unk8 = (c << 16) | (c << 8) | c;
+                    } else {
+                        arg0->unk8 = 0x1000000;
+                    }
+                    arg0->unk14 = 0;
+                    arg0->unk8 |= blink << 24;
+                    t = bone + 1;
+                    if (t < 10) {
+                        n = t | 0x10000;
+                    } else {
+                        n = 0x20010;
+                    }
+                    arg0->unk10.s.x -= (n >> 16) * 4;
+                    func_800CCBC0(arg0, n);
+                }
+                break;
+            }
+        }
+    }
+}
 
 void func_800CD5C8(u32 arg0, ...) {
     u8 buf[0x50];

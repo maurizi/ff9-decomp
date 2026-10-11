@@ -232,6 +232,33 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     or local-alloc of the final block seems to start at the wrong pseudo, try returning that value.
   - No progress: 80059414 (25-min permuter), 80047B90, 8002E718, 8001DE50, 8004DAD0, 8003595C. The
     headers have details.
+- Pass 16: matched 80025ED4 (0x558; it was 146 rows). Three fixes, all about what the source looked like rather
+  than allocation:
+  - The colour lerp is a macro on a CVECTOR lvalue (`CVECTOR_LERP(c1, f1, t1, k, 7)`, now in ff9.h), not a
+    static inline taking `CVECTOR *out`. The inline's `out` parameter stays a pseudo (`addiu a2,sp,24`,
+    `sb a0,1(a2)`), while the original stores straight to `0x18(sp)`. That one change took 147 rows to 75.
+    When the original writes a local struct sp-relative but our inline helper goes through a register,
+    try a macro.
+  - Reference counts decide global-alloc order. `x + (w + 2)` is folded to `(x + 2) + w`, reusing the
+    x + 2 pseudo, so x had one ref fewer than y and the two params swapped s1/s2. A `right = w + 2` temp
+    keeps the original `addiu v0,s4,2; addu v0,s1,v0`. The else branch needs the target colour in a pointer
+    (`t1 = &e->c[3]`, so the first byte is read through s0 and the rest through t0, as in the original).
+    The POLY_G4 stores then needed a new order (240 orders swept, xy0, xy2, xy1, xy3 is the only one at 19).
+  - The TILE's addPrim and advance go through the global: `addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(TileWords);`. The ternary for `wh` starts a new extended block, so the original
+    reloads D_80077170 there instead of reusing `t`.
+  - 800475D8 (structure only, no match): `x *= x` (reusing x) instead of a separate xx. A mult of a
+    pseudo that already crosses a call is free to move past the next call in sched1; writing the product
+    back to x keeps it before the call, like the original. A pointer variable assigned inside one branch and
+    used after the join is live at function entry when the use is reachable without the assignment, so it
+    conflicts with everything (pd took s8). The headers have the rest.
+  - 8004DAD0: jump2 cross-jumps on hard-reg RTL. The original's 0x10/0x40 calls share the 0x10000 path's
+    `jalr v0` only because that call's function pointer is in v0; ours is in v1, so jump2 picks the
+    early 0x67 call instead. The 0x10000 block's local-alloc (fn pointer vs %hi(D_8007B958)) is now the
+    whole problem.
+  - No progress: 80059414, 80047B90, 8003595C, 8005681C, 8002E718, 8001DE50, 8004E248. Struct-field
+    tests of every scalar global these drafts touch changed nothing (or made it worse). The headers have
+    details.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
@@ -450,6 +477,30 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     the local d (s0) gives p an s0 preference; AB810's fold needs i = 0 in another basic block; AB07C needs a loop
     that loop.c marks invalid (setjmp, address-taken label or a jump into it).
   Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
+- Pass 16: matched AC37C (0x1130) and CD210 (0x3B8).
+  - AC37C: quad 2's max chain has a duplicated test, `k = z[3]; if (k < z[3]) k = z[3]; if (k < z[6]) ...`
+    (z[4] was meant; z[6]/z[7] duplicated also match). CSE folds the test away, but cse_end_of_basic_block
+    builds the path before processing it, so the dead branch still uses one of the PATHLENGTH (10) slots. That moves
+    every cse path boundary: quad 2 is then never on a path with quad 0's 0x1F/0xFF/mask registers (fresh constants
+    and a hi copy), and quad 3 is (it reuses them but doesn't see tu = 0). The lo_sum address register is gone too.
+    So when per-block cse knowledge looks inconsistent, count the branches each path has to take, including ones
+    that disappear later.
+  - CD210: the level variable is `s16 bone` (the bone index from the table, then `bone = q` with an s32 q). An s32 to
+    s16 assignment is a (subreg:HI) set, not a register copy, so make_regs_eqv never runs and the else arm keeps
+    comparing q (a2) while bone holds the copy (t0). Also `y` is one s16 variable for the attach height, scaled in
+    place, and the height add is `b->unk18 + (y << 4)`: convert.c narrows a left shift to the 16-bit store but not a
+    multiply, so `y * 16` keeps the sign extension. The xor operand order needs `(s16)q != (s16)(...)`.
+  - DA1F4: the order after the loop decides the CSE class head for the in-loop *p load (e = p copy); see the header.
+  - The gcc 2.8.1 sources are in build/gcc of the agent worktree (fetched from ftp.gnu.org).
+  Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
+- Pass 17 (no new matches; details in the WIP headers):
+  - C3F78: the table-base order is fixed (`idx = ...; tb = D_800F5758; t = &tb[idx];`). Only the case-5 test sense
+    is left; the other 2 rows are D_800FE36C vs D_800FE368+4 relocation names. fill_eager_delay_slots always tries
+    the target thread, so the pass-1 swap needs the case-5 lui to be unfillable there. Loop-note case forms: 3 rows.
+  - AB07C: indexing a[n]/b[n]/r[n] in a do-while reproduces the original's pointer inits through loop.c strength
+    reduction. But loop.c then hoists the getTPage x bits (force chain: savings 2, lifetime 2) and spills them: 52.
+  - DA138: inline helper, chained assignment and while forms: 6.
+  Status: C3F78 3 (1 real, -O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
