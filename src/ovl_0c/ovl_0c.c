@@ -10858,7 +10858,7 @@ void func_800CC5D8(u8 arg0) {
     c = g_gameState->unk1C->party[D_80077E53];
     do {
         func_8002BE44(i, D_800CE058[i]);
-        id = c->unk39[i];
+        id = c->equip[i];
         if (id != 0xFF) {
             func_8002BE44(j, D_8006A218 + D_80069018[id].unk0);
         } else {

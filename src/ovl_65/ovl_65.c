@@ -880,8 +880,8 @@ void func_801F1A04(s32 arg0, u32 arg1) {
     if (arg1 != 0 && func_80034A30(c)) {
         D_801F7A78.unk24.unk4C[arg0].unk8 += arg1;
         for (i = 0; i < 5; i++) {
-            if (c->unk39[i] != 0xFF) {
-                e = &D_80069018[c->unk39[i]];
+            if (c->equip[i] != 0xFF) {
+                e = &D_80069018[c->equip[i]];
                 for (j = 0; j < 3; j++) {
                     if (e->unkC[j] != 0) {
                         k = func_80034430(c->unk34.b.id, e->unkC[j]);
@@ -915,7 +915,7 @@ u8 func_801F1BA4(Character *c, s32 arg1) {
     s32 have;
 
     ret = 0;
-    eq = c->unk39;
+    eq = c->equip;
     ch = c->unk34.b.id;
     memset(D_801F8208, 0, 0x30);
     for (i = 0; i < 5; i++) {

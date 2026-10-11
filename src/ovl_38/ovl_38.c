@@ -136,7 +136,7 @@ void func_801EE9E8(void) {
     func_8002B56C(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
     text_formatNumber(c->spirit, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
-    text_formatNumber(D_8006E0E8[c->unk39[0]].unk5, buf, 3, 1);
+    text_formatNumber(D_8006E0E8[c->equip[0]].unk5, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
     text_formatNumber(c->defense, buf, 3, 1);
     func_8002B56C(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
@@ -203,7 +203,7 @@ void func_801EEF00(void) {
     for (i = 0; i < 5; i++) {
         D_801F120C.unk7C = func_80027834(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
         D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, D_801F120C.unk7C);
-        id = c->unk39[i];
+        id = c->equip[i];
         if (id != 0xFF) {
             func_80026C34(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
             D_801F120C.unk7C = func_8002920C(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], D_8006A218 + D_80069018[id].unk0, 0, D_801F120C.unk7C);

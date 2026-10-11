@@ -4037,7 +4037,7 @@ s32 func_80027F94(s32 id) {
     for (i = 0; i < 9; i++) {
         if (g_gameState->unk1C->characters[i].unk34.b.unkB) {
             for (j = 0; j < 5; j++) {
-                if (id == g_gameState->unk1C->characters[i].unk39[j]) {
+                if (id == g_gameState->unk1C->characters[i].equip[j]) {
                     n++;
                 }
             }
@@ -7962,8 +7962,8 @@ void func_80032B08(s32 ch) {
     func_80034394(ch);
     r = func_80033A1C(c);
     func_80033D38(c->unk0, r);
-    func_80033D8C(c->unk39, r);
-    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->unk39);
+    func_80033D8C(c->equip, r);
+    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
     func_80032C4C(ch, 1, init, 0);
     c->hp = c->maxHp;
     c->mp = c->maxMp;
@@ -8163,12 +8163,12 @@ void func_800333B0(s32 ch, u8 avg, s32 eq) {
     s32 lv;
 
     if (eq != 0xFF) {
-        p = c->unk39;
+        p = c->equip;
         for (i = 0; i < 5; i++) {
             p[i] = D_8006CAD8[eq][i];
         }
     }
-    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->unk39);
+    c->unk34.b.unk4 = func_80033280(c->unk34.b.id, (c->unkA >> 4) & 1, c->equip);
     if (avg == 0) {
         if (eq == 0xFF) {
             return;
@@ -8260,7 +8260,7 @@ void func_8003384C(Character *c) {
     in.unk10 = c->hp;
     in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->unk88;
-    in.unk14 = *(Bytes5 *)c->unk39;
+    in.unk14 = *(Bytes5 *)c->equip;
     func_80032E84(&in, &out);
     c->speed = out.unk8[0];
     c->strength = out.unk8[1];
@@ -8646,7 +8646,7 @@ s32 func_80034A64(s32 ch, s32 lv, u8 add) {
     Unk8006DD88 *e = &D_8006DD88[func_80033964(c->unk34.b.row)];
     s32 r;
     if (add) {
-        c->unk3E[0] += func_8003502C(c->unk39, 0);
+        c->unk3E[0] += func_8003502C(c->equip, 0);
     }
     r = e->unk0 + lv / 10 + (c->unk3E[0] >> 5);
     if (r >= 51) {
@@ -8667,7 +8667,7 @@ s32 func_80034B50(s32 ch, s32 lv, u8 add) {
         if (c->stones == 0) {
             n = 3;
         }
-        bonus[1] += n + func_8003502C(c->unk39, 1);
+        bonus[1] += n + func_8003502C(c->equip, 1);
     }
     r = e->unk1 + lv * 3 / 10 + (bonus[1] >> 5);
     if (r >= 100) {
@@ -8688,7 +8688,7 @@ s32 func_80034C64(s32 ch, s32 lv, u8 add) {
         if (c->stones == 0) {
             n = 3;
         }
-        bonus[2] += n + func_8003502C(c->unk39, 2);
+        bonus[2] += n + func_8003502C(c->equip, 2);
     }
     r = e->unk2 + lv * 3 / 10 + (bonus[2] >> 5);
     if (r >= 100) {
@@ -8706,7 +8706,7 @@ s32 func_80034D78(s32 ch, s32 lv, u8 add) {
     s32 n;
     if (add) {
         n = c->stones == 0;
-        bonus[3] += n + func_8003502C(c->unk39, 3);
+        bonus[3] += n + func_8003502C(c->equip, 3);
     }
     r = e->unk3 + lv * 3 / 20 + (bonus[3] >> 5);
     if (r >= 51) {

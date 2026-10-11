@@ -2654,7 +2654,7 @@ s32 func_800D8B20(s32 arg0) {
 
 s32 func_800D8B70(s32 arg0) {
     s32 idx = (func_800E716C(arg0)->unk68 >> 1) & 0xF;
-    return g_gameState->unk1C->characters[idx].unk39[0];
+    return g_gameState->unk1C->characters[idx].equip[0];
 }
 
 void func_800D8BB8(s32 arg0, s32 arg1) {
@@ -9123,7 +9123,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
             }
         }
         for (i = 0; i < 5; i++) {
-            e = c->unk39[i];
+            e = c->equip[i];
             if (e != 0xFF) {
                 it = &D_80069018[e];
                 for (j = 0; j < 3; j++) {
@@ -9482,7 +9482,7 @@ void func_800EB6FC(Unk80104F88Entry *arg0) {
     s32 j;
     memset((s32)arg0->unk3DC, 0, 0xC0);
     for (i = 0; i < 5; i++) {
-        u8 item = c->unk39[i];
+        u8 item = c->equip[i];
         if (item != 0xFF) {
             Unk80069018 *e = &D_80069018[item];
             for (j = 0; j < 3; j++) {
@@ -10773,7 +10773,7 @@ void func_800EF390(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
 s32 func_800EF4D8(s32 arg0) {
     s32 t;
     if (arg0 == 0x44) {
-        switch (D_80104FE4->unkB4->unk14->unk39[4]) {
+        switch (D_80104FE4->unkB4->unk14->equip[4]) {
         case 0xE4:
             arg0 = 0x45;
             break;
@@ -10785,7 +10785,7 @@ s32 func_800EF4D8(s32 arg0) {
             break;
         }
     } else if (arg0 == 0x42) {
-        t = D_80104FE4->unkB4->unk14->unk39[4] == 0xDE;
+        t = D_80104FE4->unkB4->unk14->equip[4] == 0xDE;
         arg0 = t + 0x42;
     }
     return arg0;

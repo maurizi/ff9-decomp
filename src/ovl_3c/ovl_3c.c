@@ -389,11 +389,11 @@ void func_801F51B8(void) {
         if (ok) {
             if (!armor) {
                 new = D_8006E0E8[id].unk5;
-                cur = D_8006E0E8[c->unk39[0]].unk5;
+                cur = D_8006E0E8[c->equip[0]].unk5;
             } else {
-                eq = *(Equip5 *)c->unk39;
+                eq = *(Equip5 *)c->equip;
                 eq.v[kind] = id;
-                cur = func_801F42A8(kind, c->unk39);
+                cur = func_801F42A8(kind, c->equip);
                 new = func_801F42A8(kind, eq.v);
             }
             if (kind == 4) {
@@ -822,11 +822,11 @@ void func_801F6714(void) {
         if (ok) {
             if (!armor) {
                 new = D_8006E0E8[s->unk4].unk5;
-                cur = D_8006E0E8[c->unk39[0]].unk5;
+                cur = D_8006E0E8[c->equip[0]].unk5;
             } else {
-                eq = *(Equip5 *)c->unk39;
+                eq = *(Equip5 *)c->equip;
                 eq.v[kind] = s->unk4;
-                cur = func_801F42A8(kind, c->unk39);
+                cur = func_801F42A8(kind, c->equip);
                 new = func_801F42A8(kind, eq.v);
             }
             if (kind == 4) {

@@ -104,7 +104,7 @@ typedef struct {
     u8 baseSpirit;
     CharBits unk34;
     u8 unk38;    /* status; 0x45 = dead/stone/... (can't gain exp) */
-    u8 unk39[5]; /* equipment item ids (0xFF = none) */
+    u8 equip[5]; /* item ids: weapon, head, arm, body, accessory (0xFF = none); runtime: Zidane 3 115 90 152 255 with no accessory */
     u16 unk3E[5]; /* stat bonuses from equipment */
     u8 pad48[0x58 - 0x48];
     u8 unk58[0x30]; /* learned AP per ability slot; cleared by func_800343C0 */
@@ -3115,7 +3115,7 @@ static inline void func_8003384C_inline(Character *c) {
     in.unk10 = c->hp;
     in.unk12 = c->mp;
     in.unk8 = *(Words2 *)c->unk88;
-    in.unk14 = *(Bytes5 *)c->unk39;
+    in.unk14 = *(Bytes5 *)c->equip;
     func_80032E84(&in, &out);
     c->speed = out.unk8[0];
     c->strength = out.unk8[1];

@@ -227,5 +227,6 @@ Format:
   Spirit 25, Attack 18, Defense 9, Evade 10, Magic Def 10, Magic Eva 7, Trance bar about half, EXP 3076, Next 512.
   Record 0x8008B28C: +0x20 = 121, +0x24..+0x27 = 24 26 22 25, +0x28..+0x2B = 9 10 10 7, +0x30..+0x33 = 24 25 22 24
   (Strength and Spirit 1 below the shown values: equipment). Attack isn't in the record (weapon).
-- names: Character.trance, speed/strength/magic/spirit, defense/evade/magicDef/magicEva, baseSpeed/baseStrength/
+- equipment: +0x39..+0x3D = 3 115 90 152 255; screen rows Mythril Dagger, Steepled Hat, Glass Armlet, Bronze Vest, (empty).
+- names: Character.trance, speed/strength/magic/spirit, defense/evade/magicDef/magicEva, equip[5], baseSpeed/baseStrength/
   baseMagic/baseSpirit.

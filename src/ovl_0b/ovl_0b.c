@@ -876,7 +876,7 @@ loop:
             q = &arg1->unk10.h[3];
             do {
                 if (*c != NULL) {
-                    *q = D_8006E0E8[(*c)->unk39[0]].unk2;
+                    *q = D_8006E0E8[(*c)->equip[0]].unk2;
                 }
                 c--;
                 q--;
@@ -2023,7 +2023,7 @@ s32 func_800AE4FC(s32 arg0) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)func_8001E218(8, D_8006E0E8[c->unk39[0]].unk2))->unk2 | 0x90000;
+    return ((FileEntry16 *)func_8001E218(8, D_8006E0E8[c->equip[0]].unk2))->unk2 | 0x90000;
 }
 
 s32 func_800AE570(s32 arg0, s32 *arg1) {
@@ -4568,7 +4568,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             s32 d;
-            if ((u32)(g_gameState->unk1C->characters[(caster->unk68 >> 1) & 0xF].unk39[0] - 7) < 9) {
+            if ((u32)(g_gameState->unk1C->characters[(caster->unk68 >> 1) & 0xF].equip[0] - 7) < 9) {
                 v = g_gameState->unk1C->unk8E4.battle->unk22CC[caster->unk74[1]];
                 if (!(v & 0x100) || func_800B9E50(&c)) {
                     d = func_800C0ACC(target, v);
@@ -5638,7 +5638,7 @@ void func_800B8E9C(BtlCalc *arg0) {
     }
     if (!(arg0->unk18 & 8)) {
         u = arg0->unk0;
-        if ((u->unk68 & 1) && ((*u->unkC4 & 0x01000000) || g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk39[0] == 0x3C)) {
+        if ((u->unk68 & 1) && ((*u->unkC4 & 0x01000000) || g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].equip[0] == 0x3C)) {
             if (!(arg0->unk4->status & 0x40) && func_800C1E88(arg0->unk4, 0x10) == 0) {
                 t = arg0->unk4;
                 t->unk86[1] = t->unkA0->unk22 = (t->unk68 & 1) * 0x800;
@@ -6600,7 +6600,7 @@ void func_800BBF5C(Character *arg0, BtlUnit *arg1) {
     s32 *b;
     s32 *c;
     s32 id;
-    arg1->unk74 = (u8 *)&D_8006E0E8[arg0->unk39[0]];
+    arg1->unk74 = (u8 *)&D_8006E0E8[arg0->equip[0]];
     id = ((Unk8006E0E8 *)arg1->unk74)->unk2 | 0x20000;
     arg1->unkA8->unk8 = (BtlUnit9C8 *)func_800AB6F0(id, (u8)arg1->unk68 >> 5);
     func_800AB758(id, (u8)arg1->unk68 >> 5, &a, &b, &c);
@@ -6663,9 +6663,9 @@ void func_800BC0D0(Character *c, BtlUnit *u) {
     u->unk71 = 0;
     u->unk70 = 0;
     for (i = 0; i < 5; i++) {
-        if (c->unk39[i] != 0xFF) {
-            func_800BDACC(&u->unk70, D_8006D548[D_80069018[c->unk39[i]].unkB].unk4);
-            u->unk79 |= D_8006D548[D_80069018[c->unk39[i]].unkB].unk8;
+        if (c->equip[i] != 0xFF) {
+            func_800BDACC(&u->unk70, D_8006D548[D_80069018[c->equip[i]].unkB].unk4);
+            u->unk79 |= D_8006D548[D_80069018[c->equip[i]].unkB].unk8;
         }
     }
 }
