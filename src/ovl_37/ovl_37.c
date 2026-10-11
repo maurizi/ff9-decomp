@@ -67,8 +67,8 @@ void func_801F0E10(void) {
         }
         if (g_padRepeat & BTN_CROSS) {
             i = (l->unk5 + l->cursor) * 2 + l->unk7;
-            func_801F2590(g_gameState->unk1C->unk574.unk0[i].unk0);
-            if (g_gameState->unk1C->unk574.unk0[i].unk1 == 0) {
+            func_801F2590(g_gameState->unk1C->items.slots[i].id);
+            if (g_gameState->unk1C->items.slots[i].count == 0) {
                 func_801F2C58();
             }
         } else if (g_padRepeat & PAD_UP) {
@@ -91,7 +91,7 @@ void func_801F0E10(void) {
 
 void func_801F0F50(void) {
     MenuList *l = D_801F3040[1].unk8;
-    UnkPair tmp;
+    ItemSlot tmp;
     s32 i;
     u8 j;
 
@@ -111,9 +111,9 @@ void func_801F0F50(void) {
             }
             snd_playSe(0x67);
             i = (l->cursor + l->unk5) * 2 + l->unk7;
-            tmp = g_gameState->unk1C->unk574.unk0[D_801FAB78.unk6];
-            g_gameState->unk1C->unk574.unk0[D_801FAB78.unk6] = g_gameState->unk1C->unk574.unk0[i];
-            g_gameState->unk1C->unk574.unk0[i] = tmp;
+            tmp = g_gameState->unk1C->items.slots[D_801FAB78.unk6];
+            g_gameState->unk1C->items.slots[D_801FAB78.unk6] = g_gameState->unk1C->items.slots[i];
+            g_gameState->unk1C->items.slots[i] = tmp;
             D_801FAB78.unk7 = 0;
             return;
         }
@@ -130,7 +130,7 @@ void func_801F10C4(s32 idx, MenuList *l) {
     u8 ok;
     s32 id;
 
-    p = &g_gameState->unk1C->unk574.unk0[idx];
+    p = &g_gameState->unk1C->items.slots[idx];
     ok = 0;
     if (p->unk1 != 0 && p->unk0 != 0xFF && p->unk0 >= 0xE0) {
         id = p->unk0;
@@ -221,18 +221,18 @@ void func_801F187C(void) {
 
     n = 0;
     for (i = 0; i < 0x100; i++) {
-        if (g_gameState->unk1C->unk574.unk0[i].unk1 != 0 && g_gameState->unk1C->unk574.unk0[i].unk0 != 0xFF) {
-            D_801FA968[n++] = g_gameState->unk1C->unk574.unk0[i];
+        if (g_gameState->unk1C->items.slots[i].count != 0 && g_gameState->unk1C->items.slots[i].id != 0xFF) {
+            D_801FA968[n++] = g_gameState->unk1C->items.slots[i];
         }
     }
     for (i = 0; i < n - 1; i++) {
         for (j = i + 1; j < n; j++) {
-            if (D_80069018[D_801FA968[i].unk0].unk10 > D_80069018[D_801FA968[j].unk0].unk10) {
+            if (D_80069018[D_801FA968[i].id].unk10 > D_80069018[D_801FA968[j].id].unk10) {
                 D_801FAB68 = D_801FA968[i];
                 D_801FA968[i] = D_801FA968[j];
                 D_801FA968[j] = D_801FAB68;
-            } else if (D_80069018[D_801FA968[i].unk0].unk10 == D_80069018[D_801FA968[j].unk0].unk10 &&
-                       D_801FA968[j].unk0 < D_801FA968[i].unk0) {
+            } else if (D_80069018[D_801FA968[i].id].unk10 == D_80069018[D_801FA968[j].id].unk10 &&
+                       D_801FA968[j].id < D_801FA968[i].id) {
                 D_801FAB68 = D_801FA968[i];
                 D_801FA968[i] = D_801FA968[j];
                 D_801FA968[j] = D_801FAB68;
@@ -240,10 +240,10 @@ void func_801F187C(void) {
         }
     }
     for (i = 0; i < n; i++) {
-        g_gameState->unk1C->unk574.unk0[i] = D_801FA968[i];
+        g_gameState->unk1C->items.slots[i] = D_801FA968[i];
     }
     for (i = n; i < 0x100; i++) {
-        g_gameState->unk1C->unk574.unk0[i].unk1 = 0;
+        g_gameState->unk1C->items.slots[i].count = 0;
     }
     D_801FAB78.unkC.unk7 = 0;
     D_801FAB78.unkC.cursor = 0;
@@ -327,7 +327,7 @@ void func_801F1B78(void) {
     } else {
         return;
     }
-    p = &g_gameState->unk1C->unk574.unk0[func_801F2FC4(l)];
+    p = &g_gameState->unk1C->items.slots[func_801F2FC4(l)];
     if (p->unk1 != 0) {
         h->unk8 = &D_801F3168[D_80069018[p->unk0].unk2];
     }
@@ -578,7 +578,7 @@ void func_801F27A0(void) {
 }
 
 void func_801F2870(s32 col, s32 row, s32 i, MenuView *v) {
-    UnkPair *p = &g_gameState->unk1C->unk574.unk0[i];
+    UnkPair *p = &g_gameState->unk1C->items.slots[i];
     Unk80069018 *it;
     u8 ok;
     s32 x, y, x2;

@@ -89,8 +89,8 @@ s32 func_801F2FC4(MenuList *);
 s8 func_800B8124(void);
 void func_800B81A0(void);
 
-extern UnkPair D_801FA968[0x100]; /* inventory sort buffer */
-extern UnkPair D_801FAB68;
+extern ItemSlot D_801FA968[0x100]; /* inventory sort buffer */
+extern ItemSlot D_801FAB68; /* swap temp for the inventory sort */
 
 void func_801F0D18(void);
 void func_801F1778(void);

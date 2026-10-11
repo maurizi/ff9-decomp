@@ -68,7 +68,7 @@ typedef struct {
     RECT unk24;
     RECT unk2C;
     RECT unk34;
-    UnkPair unk3C[0x100]; /* {item id, count} */
+    ItemSlot unk3C[0x100]; /* copy of the item inventory */
     WinDef unk23C;
     UnkBlink unk24C;
     u8 pad258[0x25C - 0x258];

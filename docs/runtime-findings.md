@@ -206,3 +206,10 @@ Format:
   it stays unk38.
 - names: BtlUnit.status (was briefly "status2"), statusImmune, STATUS_KO, STATUS_LOW_HP (code: hp*6 < maxHp),
   STATUS_SLEEP, UNK38_REGEN, btl_addStatus.
+
+## Item inventory  (status: applied)
+- Redux disc 1, `menu_items` (screen: Potion 46, Ether 12, Remedy 3, Tent 9, Hi-Potion 10, Phoenix Down 14, ...,
+  Gysahl Greens 99). GameData+0x574 starts {236,46} {237,10} {238,12} {240,14} {247,3} {249,2} {253,9} ...
+  {251,99}: {item id, count} byte pairs, 0x100 of them (0x574..0x774).
+- names: GameData.items (ItemInventory.slots[], ItemSlot.id/count). ovl_37's sort buffer and swap temp and
+  ovl_33's inventory copy hold the same pairs and are now ItemSlot too.

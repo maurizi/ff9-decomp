@@ -3957,7 +3957,7 @@ void func_80027D18(void) {
     s32 i;
 
     for (i = 0; i < 0x100; i++) {
-        g_gameState->unk1C->unk574.unk0[i].unk1 = 0;
+        g_gameState->unk1C->items.slots[i].count = 0;
     }
 }
 
@@ -3975,7 +3975,7 @@ s32 func_80027D84(s32 id, s32 n) {
     if (id == 0xFF) {
         return 0;
     }
-    e = g_gameState->unk1C->unk574.unk0;
+    e = g_gameState->unk1C->items.slots;
     for (i = 0; i < 0x100; e++, i++) {
         if (e->unk1 != 0 && e->unk0 == id) {
             if (e->unk1 + n >= 100) {
@@ -3985,7 +3985,7 @@ s32 func_80027D84(s32 id, s32 n) {
             return n;
         }
     }
-    e = g_gameState->unk1C->unk574.unk0;
+    e = g_gameState->unk1C->items.slots;
     for (i = 0; i < 0x100; i++, e++) {
         if (e->unk1 == 0) {
             e->unk0 = id;
@@ -3998,7 +3998,7 @@ s32 func_80027D84(s32 id, s32 n) {
 
 s32 func_80027E5C(s32 id, s32 count) {
     s32 i;
-    UnkPair *e = g_gameState->unk1C->unk574.unk0;
+    UnkPair *e = g_gameState->unk1C->items.slots;
 
     for (i = 0; i < 0x100; e++, i++) {
         if (e->unk1 != 0 && e->unk0 == id) {
@@ -4014,7 +4014,7 @@ s32 func_80027E5C(s32 id, s32 count) {
 
 UnkPair *func_80027EDC(s32 id) {
     s32 i;
-    UnkPair *e = g_gameState->unk1C->unk574.unk0;
+    UnkPair *e = g_gameState->unk1C->items.slots;
 
     for (i = 0; i < 0x100; i++, e++) {
         if (e->unk1 != 0 && e->unk0 == id) {
