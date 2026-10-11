@@ -2727,6 +2727,15 @@ extern u8 D_800F6B48[][6];
 extern u8 D_800F6BBC[][6];
 extern u8 D_800F6C30[][6];
 
+/* status countdowns drawn as digits over battle units (func_800CD210) */
+typedef struct {
+    s32 unk0; /* status mask */
+    s16 unk4; /* status timer index (BtlUnit.unk46) */
+    u16 unk6; /* nonzero: colour by level */
+} Unk800F6CA4;
+
+extern Unk800F6CA4 D_800F6CA4[];
+
 void func_800E70D0(u8 *, s32 *);
 u8 *func_800E7154(void);
 void func_800D198C(u8 *, SVECTOR *, s32, s32, s32);
