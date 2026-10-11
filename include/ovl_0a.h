@@ -1493,4 +1493,50 @@ static inline void func_800C2AF0_push(SVECTOR *pos, s16 *org, s32 *fx, s32 *fz) 
     *fz = tz & 0xFFFF;
 }
 
+/* music/sound request handler (func_800B0124) */
+extern s8 D_800C9D4C;
+extern s32 D_800C9D50;
+extern u8 D_800C9D52;
+extern s32 D_800C9D54;
+s32 func_800B29F8(Unk800B29F8 *arg0);
+/* main exe: candidates for ff9.h */
+s32 func_80055290(void *);
+void func_800552B8(s32);
+void func_80055310(void);
+s32 func_800553BC(void *, s32);
+void func_800553EC(s32, s32, s32, s32);
+void func_80055604(s32);
+void func_80055704(s32);
+void func_80055730(s32, s32);
+void func_80055764(s32, s32, s32);
+void func_800557F0(s32);
+void func_8005581C(s32, s32);
+void func_80055850(s32, s32, s32);
+void func_80055894(s32, s32, s32, s32);
+void func_800558DC(s32);
+void func_80055908(s32, s32);
+void func_8005593C(s32, s32, s32);
+void func_80055980(s32, s32, s32, s32);
+void func_80055A34(s32, s32, s32, s32);
+void func_80055B6C(s32);
+void func_80055B98(s32, s32);
+void func_80055BCC(s32, s32, s32);
+void func_80055C08(s32);
+void func_80055C34(s32, s32);
+void func_80055C68(s32, s32, s32);
+void func_80055CA4(s32);
+void func_80055CD0(s32, s32);
+void func_80055D04(s32, s32, s32);
+s32 func_80055DCC(void);
+void func_800561C4(s32, s32, s32);
+void func_800562B0(s32);
+
+/* GameData.unk828/unk82C as an array (the slot index needs `base + slot*4`) until ff9.h has it */
+typedef struct {
+    u8 pad[0x828];
+    s32 unk828[2];
+} GameDataSfx;
+#define SFXH(i) (((GameDataSfx *)D_8006794C->unk1C)->unk828[i])
+#define SCENE (D_8006794C->unk1C->unk8E4.field->unkC->unk14)
+
 #endif
