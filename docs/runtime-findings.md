@@ -158,3 +158,10 @@ Format:
 - names: btl_setCmd, btl_enqueueCmd, btl_linkCmd, btl_removeCmd, btl_unlinkCmd, Battle.cmdQueue.
 - note: config/functions.us.txt records some functions at their migrated rodata's address (e.g. func_800B1250 at
   0x800A7184); tools/rename.py now checks function names, not addresses.
+
+## Damage path of an Attack  (status: applied)
+- binary: ovl_0b. Redux disc 2, `battle_iifa_command`, Vivi attacks the monster (units[4] at 0x8010923C).
+- monster HP (unit+0x28) 1473 -> 1347. The only write: func_800BDB20+0x98, called (0x8010923C, 126, 1) from
+  func_800B7954, under func_800B44C0(Vivi 0x80108FCC, monster, Vivi's cmd 0x80109608, 1) from func_800B2804(monster).
+  Battle+0x1088 = 0x80109608 (Vivi's command) at that point.
+- names: btl_damageHp, btl_execCmd, btl_calcCmd, Battle.curCmd.

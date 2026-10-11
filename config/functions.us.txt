@@ -1939,8 +1939,8 @@ ovl_0b func_800AF2E0 0x298 0x800a7150
 ovl_0b func_800AF800 0x860 0x800a7170
 ovl_0b btl_setCmd 0x2d0 0x800a7184
 ovl_0b func_800B1B48 0x86c 0x800a727c
-ovl_0b func_800B2804 0x184 0x800a7374
-ovl_0b func_800B44C0 0x3494 0x800a745c
+ovl_0b btl_execCmd 0x184 0x800a7374
+ovl_0b btl_calcCmd 0x3494 0x800a745c
 ovl_0b func_800B87D0 0x254 0x800a767c
 ovl_0b func_800BBF5C 0x174 0x800a7698
 ovl_0b func_800BCEF0 0x42c 0x800a76e4
@@ -2175,7 +2175,7 @@ ovl_0b func_800BD8F0 0x4c 0x800bd8f0
 ovl_0b func_800BD93C 0x124 0x800bd93c
 ovl_0b func_800BDA60 0x6c 0x800bda60
 ovl_0b func_800BDACC 0x54 0x800bdacc
-ovl_0b func_800BDB20 0xe4 0x800bdb20
+ovl_0b btl_damageHp 0xe4 0x800bdb20
 ovl_0b func_800BDC04 0x60 0x800bdc04
 ovl_0b func_800BDC64 0x58 0x800bdc64
 ovl_0b func_800BDCBC 0x68 0x800bdcbc

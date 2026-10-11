@@ -775,7 +775,7 @@ s32 func_800CACD8(BtlScript *arg0) {
     u16 mask = arg0->unk4->unkC;
     while (u != NULL) {
         if (u->unkB0 & mask) {
-            func_800B2804(u);
+            btl_execCmd(u);
         }
         u = u->unk0;
     }

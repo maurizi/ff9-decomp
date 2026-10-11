@@ -8206,7 +8206,7 @@ s32 func_800E8498(s32 arg0) {
 
 s32 func_800E84F0(s32 arg0) {
     s32 ret = 0;
-    if (g_gameState->unk1C->unk8E4.battle->unk1088->cmdNo == 0x33) {
+    if (g_gameState->unk1C->unk8E4.battle->curCmd->cmdNo == 0x33) {
         ret = func_800B3E7C(func_800E716C(arg0)->unk4) != 0;
     }
     return ret;
@@ -8362,7 +8362,7 @@ s32 func_800E8CE4(void) {
 
 void func_800E8D14(void) {
     if (func_800E788C(0x10) == 0) {
-        func_800CDEF0(g_gameState->unk1C->unk8E4.battle->unk1088);
+        func_800CDEF0(g_gameState->unk1C->unk8E4.battle->curCmd);
     }
 }
 
@@ -8382,10 +8382,10 @@ void func_800E8DC8(s32 arg0) {
     if (func_800E8D60() == 0) {
         if (arg0 == -1) {
             for (i = 0; i < D_800F78A4->unkC->unk24; i++) {
-                func_800B2804(D_800F78A4->unkC->unk4[i]);
+                btl_execCmd(D_800F78A4->unkC->unk4[i]);
             }
         } else {
-            func_800B2804(func_800E716C(arg0));
+            btl_execCmd(func_800E716C(arg0));
         }
     }
 }

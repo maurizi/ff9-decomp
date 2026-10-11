@@ -1090,7 +1090,7 @@ typedef struct Battle {
     BtlCmd unkD90[36]; /* per unit: 6 (players) or 3 (enemies) */
     BtlCmd unk1060;
     BtlCmd cmdQueue; /* list head (only unk0 used); runtime: commands are queued here when issued */
-    BtlCmd *unk1088; /* current command */
+    BtlCmd *curCmd; /* runtime: Vivi's command while her Attack executes */
     struct Battle108CSet unk108C[2]; /* per draw buffer */
     BtlUnitList unk116C;
     u16 unk11B8;
@@ -2263,11 +2263,11 @@ void func_800F4884(void);
 void func_800F48DC(void);
 void func_800F48E4(void);
 void func_800F4D20(void);
-void func_800B2804(BtlUnit *);
+void btl_execCmd(BtlUnit *);
 void func_800B2DD4(Battle *);
 void btl_unlinkCmd(BtlCmd **, u8);
 void func_800B4434(BtlCmd *);
-void func_800B44C0(BtlUnit *, BtlUnit *, BtlCmd *, s32);
+void btl_calcCmd(BtlUnit *, BtlUnit *, BtlCmd *, s32);
 u16 func_800C1CA0(u32, s32);
 void func_800EA0F8(s32);
 s32 func_800B9550(BtlUnit *, s16);
@@ -2928,7 +2928,7 @@ s32 func_800C1EDC(BtlUnit *);
 void func_800C0544(BtlUnit *);
 void func_800B81C4(BtlCalc *, u8);
 s32 func_800B9994(BtlCalc *);
-/* ability effect helpers called by func_800B44C0 */
+/* ability effect helpers called by btl_calcCmd */
 void func_800B7954(BtlCalc *);
 void func_800B7F20(BtlCalc *, Unk800B7F20 *, s32);
 u8 func_800B8390(BtlCalc *);
@@ -3001,7 +3001,7 @@ u8 *func_800EA0B4(s32);
 
 /* main exe: candidates for ff9.h */
 u8 func_80034070(s32, s32);
-void func_800BDB20(BtlUnit *, s32, u8);
+void btl_damageHp(BtlUnit *, s32, u8);
 void func_800BDC04(BtlUnit *, s32);
 void func_800BDC64(BtlUnit *, s32);
 void func_800BDCBC(BtlUnit *, s32);
@@ -3150,7 +3150,7 @@ s32 func_800AD4AC(s32, s32);
 s32 func_8004AAF0(s32);
 void func_8001E3A4(void *);
 void func_800C072C(void);
-void func_800B2804(struct BtlUnit *);
+void btl_execCmd(struct BtlUnit *);
 void func_800B3C00(void);
 void btl_enqueueCmd(struct BtlCmd *);
 void func_800C0840(void);
