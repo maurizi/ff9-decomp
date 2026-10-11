@@ -289,6 +289,23 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - No match: 80059414 (9), 8003595C (12), 8005681C (12), 8002E718 (16), 8001DE50 (19), 8004DAD0 (28),
     800475D8 (89). See the headers for the allocation analysis. 25-min permuter runs on 8003595C and on
     the earlier 8004E248 draft; the 8003595C run found nothing.
+- Pass 18: no matches. 800475D8 went from 89 to 84 rows. General findings:
+  - Zero-register copies such as `addu s7,s3,zero` for a `= 0` can come from reload_cse_regs (post-reload CSE),
+    not CSE: the .greg dump still has the constant. The original then has a live zero in that register at that
+    point (800475D8: o = NULL is live, so the o block is not inside the dir block).
+  - Flag tests: a bitfield read (`((GameStateUnk24 *)&D_8006794C->unk24)->unk0_6`) gives srl/andi in one register.
+    `c ? (run ^ 1) != 0 : run != 0` keeps `xori; bnez`, whereas `run ^ 1` alone is folded to `run != 1` (800475D8).
+  - sched.c only excludes the *leading* run of (set pseudo (hard reg)) param copies. Copying a param into a local
+    (`z = otz`) lets combine merge the copy into the local's assignment, mid-block, where sched1 and local-alloc
+    see it. This keeps a hard arg reg busy but shortens the local's life, so global-alloc ranks it higher
+    (8002E718: 16 -> 14 rows, 11 with permuter junk).
+  - `do { } while (0)` splits cse1 blocks (it stops at NOTE_INSN_LOOP_END), but cse2 ignores loop notes, so a
+    copy kept that way is folded in cse2 anyway (8001DE50).
+  - Local-alloc with nested intervals and equal refs: the inner (shorter) qty always wins, so for the outer one to
+    get the lower register it needs at least 3 refs, or the inner value has to be a global pseudo (8004DAD0 P/H).
+  - Inline-boundary attempts (whole mask/v inline in 80059414, scale() in 8003595C, the whole 8002E718 body) gave no
+    gains. The coordinator's loop-invariant tip does not apply to 8005681C: its early giv init comes from strength
+    reduction (biv REG_EQUAL initial value) plus sched1, not from move_movables.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
