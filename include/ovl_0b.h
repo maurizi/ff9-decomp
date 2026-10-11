@@ -2727,6 +2727,15 @@ extern u8 D_800F6B48[][6];
 extern u8 D_800F6BBC[][6];
 extern u8 D_800F6C30[][6];
 
+/* status countdowns drawn as digits over battle units (func_800CD210) */
+typedef struct {
+    s32 unk0; /* status mask */
+    s16 unk4; /* status timer index (BtlUnit.unk46) */
+    u16 unk6; /* nonzero: colour by level */
+} Unk800F6CA4;
+
+extern Unk800F6CA4 D_800F6CA4[];
+
 void func_800E70D0(u8 *, s32 *);
 u8 *func_800E7154(void);
 void func_800D198C(u8 *, SVECTOR *, s32, s32, s32);
@@ -3659,6 +3668,17 @@ extern RECT D_800FDE34;
     "swc2\t$11, 8(%0)" \
     : : "r"(r0) : "memory")
 #define gte_rtv0tr_nn() __asm__ volatile(".word\t0x4A480012")
+
+/* func_800AC37C: project one corner of the 3x3 shadow grid */
+#define SHADOW_PT(x, z) \
+    v.vx = (x); \
+    v.vy = 0; \
+    v.vz = (z); \
+    gte_ldv0(&v); \
+    gte_rtps()
+
+/* func_800AC37C: shadow quad q of entry e in the current buffer */
+#define SHADOW_QUAD(q) e->unk8[D_8006794C->unk1C->unk8][q]
 
 typedef struct {
     u32 unk0;
