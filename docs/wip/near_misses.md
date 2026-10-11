@@ -435,6 +435,21 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   the flag's sets. E4A3C with five scalar params is the right length, but arg2/arg3 get s-registers. AC37C's t7 full
   address is used by quad 3's D_8006794C loads.
   Status: B1B48 3, C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
+- Pass 15: matched B1B48 (0x86C). Read from the gcc 2.8.1 sources (jump.c, reorg.c, cse.c, global.c) this time.
+  - B1B48: find_cross_jump compares the processed jump's preceding insns with each candidate's; an insn-code mismatch
+    (cond jump vs call or plain insn) stops it, but a cond jump whose target is right after the processed jump
+    lowers the minimum when the candidate's insn is also a JUMP_INSN with a different pattern. So the inline's
+    `return 0` (after `if (!can) ...`) merged into any `v0 = 0; j epi` block that was preceded by a conditional jump
+    (|| chains of cases 0x31/0x32, case 0x3C's `if (unk7D != 0) return 0`). Writing those so their `return 0` follows
+    a barrier (0x32: `if (t != NULL && ...) { msg 8; return 1; } ret0: return 0;`, 0x31: `goto ret0`, 0x3C: one
+    `if (u->unk7D == 0) { ... } return 0;`) leaves the inline's block alone and the later sites merge into it.
+    sched2 runs before jump2, so the dumps to look at are .sched2 (input) and .jump2.
+  - Mechanisms found without a match (details in the WIP headers): C3F78's swap needs the case-5 beq predicted
+    *likely* (only loop notes can do that for an EQ test) and still unfilled at relax time, but eager filling takes
+    it first; DA1F4's blez to `return NULL` is thread_jumps and works when d = p + 2 comes after the check, but then
+    the local d (s0) gives p an s0 preference; AB810's fold needs i = 0 in another basic block; AB07C needs a loop
+    that loop.c marks invalid (setjmp, address-taken label or a jump into it).
+  Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
