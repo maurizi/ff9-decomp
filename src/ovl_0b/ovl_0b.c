@@ -7792,7 +7792,22 @@ s32 func_800C0B6C(BtlUnit *arg0, u32 arg1) {
     return ret;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b", func_800C0C00);
+void func_800C0C00(BtlUnit *u, s32 n) {
+    u8 k;
+    s32 v;
+
+    if (n == 1) {
+        v = u->unk33 * 4;
+        k = 0;
+    } else if (n == 0x10) {
+        v = u->unk33 * 4;
+        k = 1;
+    } else {
+        v = (0x3C - u->unk33) * 4;
+        k = 2;
+    }
+    u->unk40[k] = D_8006794C->unk1C->unk8E4.battle->unk154C[n].unk1 * v;
+}
 
 void func_800C0C7C(u32 *arg0) {
     D_800FDF50.x = 0x100;
