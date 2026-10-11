@@ -38,3 +38,9 @@ A name that gcc treats as a builtin (`memcpy`, `memset`, `strlen`) can change co
 `make progress` prints naming progress per binary (functions named, globals named, unkXX struct fields left).
 `python3 tools/progress.py --unnamed [--bin B]` lists placeholders by how often C refers to them.
 `make progress CSV=1` appends to `docs/naming.csv` along with `docs/progress.csv`.
+
+## Struct fields
+Rename the members in the header by hand, then `python3 tools/rename_fields.py unk10=cur.hp,unkB=level` fixes the
+uses: it builds, and rewrites a member on each line gcc rejects, but only when that line uses the member once
+(the error proves that use is on the renamed struct). Lines using it more than once are listed for a hand fix.
+Don't fix uses by variable name: `c` is a `Character *` in one function and a battle unit in the next.
