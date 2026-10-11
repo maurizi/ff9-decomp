@@ -1081,3 +1081,18 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     state/cursor pointers, switch forms, all body statement orders: 25 at best), 64 C434 (the slot address as a
     static inline: both blocks get the in-place `unk5C - 1` but 39 rows), 0a BB714 (per-loop locals: much worse).
   * 0d AC708's draft now includes ovl_0d.h (373 rows, compiles).
+- Pass 18 (overlay agent):
+  * 15 A9488 400 -> 22 rows (header has the list). Keys: D_800B0DF8 is u32 (sltiu); a block-local `s32 a`
+    for each fade ramp; case 8's func_800A7ABC(0/1, ...) as two calls in an if/else (a `c ? 0 : 1` argument
+    folds to xori); operand order `player.unk4 > dealer.unk4` / `D_800B0F48 > D_800AE0E8` for the load
+    order; `t = 30` after the x/y stores; `t--` after the call (sched still puts it before the jal); the
+    position of `nsplit = 0` in the prologue flips global alloc between nsplit and the hoisted /30 constant
+    (floor_log2(refs) * refs / live_length, 49/1419 vs 53/1532). Left: case 9 is an if/else STAND-IN for the
+    ternary. With all eight bankroll ternaries, loop.c hoists &D_800AE0E8 (threshold 2 * savings 8 *
+    lifetime 144 >= 1840 insns) and reload rematerialises it at the join; the original keeps it per site.
+  * 0a C0038 11 -> 4 rows: the flag block is `unk0 = f | 3; if (arg1 == 8) unk0 = f | 8 | 3; else unk0 = f | 3;`
+    (redundant else store, like the matched sibling C0DF4). Left: v0/v1 swap of two loads at 0xA8.
+  * Tried without gain: 0a B4A5C (unused RECT/array locals, also block-scoped: BLKmode slots come before
+    the addressof-purged clut/img), C07D8 (K&R definition), B0124 (a local GameState pointer in the kind-9
+    block), 3a F459C (block-local u8/s32/u32 copies of unk3), 33 EF644 (macro for the list entry, a
+    bitfield for unk8 bit 3, h2 before l).

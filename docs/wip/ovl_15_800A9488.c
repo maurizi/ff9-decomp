@@ -29,7 +29,12 @@
  life 126 put it under the threshold, which is why the stand-in matches everything else. The original
  needs one more invariant moved before case 6 (threshold -1), a shorter combined lifetime (< 115), or a
  bigger loop (> 2304 insns). Not found: a temp for the `& 4` test (k = h.unk0 & 4) drops the a0 form
- entirely; tern2/3/5 spellings fold to the same tree; extra loop code does not change it (+8 calls). */
+ entirely; tern2/3/5 spellings fold to the same tree; extra loop code does not change it (+8 calls).
+ Also tried: a `pb = &D_800AE0E8; *pb -= ...` pointer (103 rows, 1529 insns); case 6's settle block as a
+ static inline returning res (113 rows; sllv shifts appear) or writing *res (225), a bank(h, win) inline
+ (no change); RAND8-style RND3 without the temp (no change). A real inner loop would double insn_count
+ for later decisions (loop.c `moved_once`), but the original has no other backward branch, and a
+ do { } while (0) is a phony loop that loop.c skips. */
 #include "ovl_15.h"
 extern Ovl15Shoe D_800B0E08;
 
