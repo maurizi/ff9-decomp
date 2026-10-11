@@ -180,3 +180,12 @@ Format:
   uid 19 is 0x8007805C (Zidane). Walking right then down: +0x14 (pos.vx) -262 -> 211 -> 271, +0x1C (pos.vz)
   1419 -> 1312 -> 891, +0x18 (vy) unchanged, +0x22 (rotation) 0 -> 3072 -> 4095.
 - names: Unk8004AB64.pos, ActorPos.rotY, Unk8007AECC.playerUid (the event context struct).
+
+## Regen status, its timer, and the menu list cursor  (status: applied)
+- Redux disc 2, `battle_iifa_command`: Vivi attacks, then Eiko: Wht Mag -> list (Cure 6, Cura 10, [empty row], Regen 14).
+  Up presses move 0x8007760E (window 2 at 0x800775D8 +0x36 = MenuList+6) 2 -> 1 -> 0; the on-screen hand had misled
+  me: my earlier "Sleep" attempts sat on the empty row 2, which is why Cross did nothing. With it at 3 (Regen),
+  Cross + Cross casts Regen on Eiko (banner "Regen", MP 119 -> 105).
+- Afterwards Eiko's unit (units[2]) has +0x38 = 0x00040000, the other three 0; her +0x44 jumped 0x3C -> 0x4AA
+  and then fell by 0xD2 per 60 frames (the Regen countdown).
+- names: MenuList.cursor, BtlUnit.status, STATUS_REGEN (0x40000).

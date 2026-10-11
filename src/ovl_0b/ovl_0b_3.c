@@ -492,7 +492,7 @@ void func_800CA0A0(Unk800C9D1C *arg0, BtlUnit *arg1) {
     Battle11C028 *t;
 
     arg1->unk34 = arg0->unk0;
-    arg1->unk38 = arg0->unk4;
+    arg1->status = arg0->unk4;
     arg1->unk3C = arg0->unk8;
     arg1->hp = arg0->unkC;
     arg1->mp = arg0->unkE;
@@ -1583,7 +1583,7 @@ void func_800CCDB8(Unk800CCD00 *arg0) {
         if (r->unk1D4 & u->unkB0) {
             continue;
         }
-        st = u->unk3C | u->unk38;
+        st = u->unk3C | u->status;
         if ((st & 0x100) || !(st & 0x231B083A)) {
             continue;
         }

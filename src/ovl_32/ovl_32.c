@@ -90,12 +90,12 @@ void func_801F7DC0(void) {
         }
         if (g_padRepeat & BTN_CROSS) {
             st = &D_801F9850;
-            idx = l->unk5 + l->unk6;
+            idx = l->unk5 + l->cursor;
             if (st->unk8 & (1 << idx)) {
                 n = st->unk4;
                 if (func_801F95E8(idx) < n) {
                     snd_playSe(0x6B);
-                    g_gameState->unk1C->unk844 = l->unk5 + l->unk6 + 1;
+                    g_gameState->unk1C->unk844 = l->unk5 + l->cursor + 1;
                     return;
                 }
             }
@@ -169,7 +169,7 @@ void func_801F8240(void) {
     s32 n;
     s32 i;
 
-    id = st->unk10.unk5 + st->unk10.unk6;
+    id = st->unk10.unk5 + st->unk10.cursor;
     func_8002B524(r->x + 8, r->y - 3, 0x1C, D_80070454, 0);
     func_8002DEE4(r, 0x1D, 1);
     func_8002705C(r, 0x1E, 1);
@@ -198,7 +198,7 @@ void func_801F8404(void) {
         if (D_801F9850.unk1 == 2) {
             D_80077DE8.unk0 = 0;
             D_80077DE8.unk4 = 0x1B;
-            D_80077DE8.unk2 = D_801F9850.unk10.unk6 * 0xF + 0x74;
+            D_80077DE8.unk2 = D_801F9850.unk10.cursor * 0xF + 0x74;
             func_800355E4();
         }
     }
@@ -212,7 +212,7 @@ void func_801F84F0(void) {
     if (D_801F9850.unk1 == 1) {
         D_80077DE8.unk8 = text_get(D_801F9850.unk0 + 3);
     } else if (D_801F9850.unk1 == 2) {
-        idx = D_801F9850.unk10.unk5 + D_801F9850.unk10.unk6;
+        idx = D_801F9850.unk10.unk5 + D_801F9850.unk10.cursor;
         if (D_801F9850.unk8 & (1 << idx)) {
             func_8002BD54(D_801F9750, text_get(idx + 0x22));
             if (D_801F9850.unk4 <= func_801F95E8_inline(idx)) {
@@ -528,10 +528,10 @@ void func_801F9600(s32 idx) {
 
     if (idx > 0x10) {
         l->unk5 = 0x11;
-        l->unk6 = idx - 0x11;
+        l->cursor = idx - 0x11;
     } else {
-        l->unk6 = idx % 7;
-        l->unk5 = idx - l->unk6;
+        l->cursor = idx % 7;
+        l->unk5 = idx - l->cursor;
     }
 }
 

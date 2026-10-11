@@ -312,6 +312,9 @@ typedef struct {
 } BtlUnit28;
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
+/* BtlUnit.status bits (runtime-checked ones only) */
+#define STATUS_REGEN 0x40000
+
 typedef struct BtlUnit {
     struct BtlUnit *unk0; /* next */
     struct BtlCmd *unk4;
@@ -332,7 +335,7 @@ typedef struct BtlUnit {
     u8 unk32;
     u8 unk33;
     s32 unk34;
-    u32 unk38; /* status */
+    u32 status; /* STATUS_* bits; runtime: Regen sets 0x40000 */
     u32 unk3C; /* status */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
@@ -3764,7 +3767,7 @@ typedef struct {
 
 /* status bits set in either status word */
 static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
-    return (u->unk38 & m) || (u->unk3C & m);
+    return (u->status & m) || (u->unk3C & m);
 }
 
 /* disc cover open screen (func_800A882C) */

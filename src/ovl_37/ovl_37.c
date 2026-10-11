@@ -66,7 +66,7 @@ void func_801F0E10(void) {
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            i = (l->unk5 + l->unk6) * 2 + l->unk7;
+            i = (l->unk5 + l->cursor) * 2 + l->unk7;
             func_801F2590(g_gameState->unk1C->unk574.unk0[i].unk0);
             if (g_gameState->unk1C->unk574.unk0[i].unk1 == 0) {
                 func_801F2C58();
@@ -104,13 +104,13 @@ void func_801F0F50(void) {
         if (g_padRepeat & BTN_CROSS) {
             if (D_801FAB78.unk7 == 0) {
                 snd_playSe(0x67);
-                j = l->unk7 + (l->unk6 + l->unk5) * 2;
+                j = l->unk7 + (l->cursor + l->unk5) * 2;
                 D_801FAB78.unk7 = 1;
                 D_801FAB78.unk6 = j;
                 return;
             }
             snd_playSe(0x67);
-            i = (l->unk6 + l->unk5) * 2 + l->unk7;
+            i = (l->cursor + l->unk5) * 2 + l->unk7;
             tmp = g_gameState->unk1C->unk574.unk0[D_801FAB78.unk6];
             g_gameState->unk1C->unk574.unk0[D_801FAB78.unk6] = g_gameState->unk1C->unk574.unk0[i];
             g_gameState->unk1C->unk574.unk0[i] = tmp;
@@ -246,7 +246,7 @@ void func_801F187C(void) {
         g_gameState->unk1C->unk574.unk0[i].unk1 = 0;
     }
     D_801FAB78.unkC.unk7 = 0;
-    D_801FAB78.unkC.unk6 = 0;
+    D_801FAB78.unkC.cursor = 0;
     D_801FAB78.unkC.unk5 = 0;
 }
 
@@ -500,7 +500,7 @@ void func_801F24DC(void) {
     ItemList *it = &D_801F3040[D_801FAB78.unk0];
     MenuList *l = it->unk8;
     void (*f)(s32, MenuList *) = it->unk0;
-    s32 idx = (l->unk5 + l->unk6) * 2 + l->unk7;
+    s32 idx = (l->unk5 + l->cursor) * 2 + l->unk7;
 
     do {
         f(idx, l);
@@ -703,7 +703,7 @@ void func_801F2D58(void) {
     func_8002E31C(D_801FAB78.unk4C, 1);
     func_8002E304(D_801FAB78.unk4C, D_80070408);
     D_801FAB78.unk5 = 0;
-    D_801FAB78.unk6 = l->unk7 + (l->unk5 + l->unk6) * 2;
+    D_801FAB78.unk6 = l->unk7 + (l->unk5 + l->cursor) * 2;
     D_801FAB78.unk1 = 0;
 }
 
@@ -765,13 +765,13 @@ s32 func_801F2FC4(MenuList *l) {
     if (l->unk8 & 8) {
         t = l->unk7 ^ 1;
         step = 1;
-        r = l->unk6;
+        r = l->cursor;
         if (l->unk8 & 2) {
             return (l->unk5 + (r - step)) * 2 + t;
         }
         return (l->unk5 + (r + step)) * 2 + t;
     }
-    return (l->unk5 + l->unk6) * 2 + l->unk7;
+    return (l->unk5 + l->cursor) * 2 + l->unk7;
 }
 
 void func_801F3038(void) {

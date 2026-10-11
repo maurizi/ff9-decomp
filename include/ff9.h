@@ -662,7 +662,7 @@ typedef struct {
     u8 unk3;
     u8 unk4;
     u8 unk5; /* scroll top */
-    u8 unk6; /* cursor row */
+    u8 cursor; /* row; runtime: battle spell list 0..3 */
     u8 unk7;
     u8 unk8;
     u8 unk9;

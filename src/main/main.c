@@ -6511,12 +6511,12 @@ void func_8002EB74(MenuList *p) {
     if (p->unk8 & 4) {
         p->unk9 += p->unkE;
         if (p->unk9 >= p->unkD - 6) {
-            s32 t = (p->unkC + p->unk6) * p->unk4;
+            s32 t = (p->unkC + p->cursor) * p->unk4;
             p->unk8 = 0;
             p->unk9 = 0;
             p->unk5 = p->unkC;
             if (t + p->unk7 >= p->unk0) {
-                p->unk6--;
+                p->cursor--;
             }
         }
         return;
@@ -6597,7 +6597,7 @@ void func_8002EDFC(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
     m->unkA = 0;
     m->unk9 = 0;
     m->unk7 = 0;
-    m->unk6 = 0;
+    m->cursor = 0;
     m->unk5 = 0;
     m->unkD = e;
 }
@@ -6613,13 +6613,13 @@ void func_8002EE8C(MenuList *m, s32 b) {
 
 void func_8002EEF0(MenuList *m, u32 pad) {
     if (pad & 0x10) {
-        if (m->unk6 == 0) {
+        if (m->cursor == 0) {
             if (m->unk5 != 0) {
                 snd_playSe(0x67);
                 m->unk8 = 2;
             }
         } else {
-            m->unk6--;
+            m->cursor--;
             snd_playSe(0x67);
         }
     }
@@ -6627,17 +6627,17 @@ void func_8002EEF0(MenuList *m, u32 pad) {
 
 void func_8002EF58(MenuList *m, u32 pad) {
     if (pad & 0x40) {
-        if ((m->unk5 + m->unk6) * m->unk4 + m->unk7 + m->unk4 < m->unk0) {
-            if (m->unk6 >= m->unk3 - 1) {
+        if ((m->unk5 + m->cursor) * m->unk4 + m->unk7 + m->unk4 < m->unk0) {
+            if (m->cursor >= m->unk3 - 1) {
                 if (m->unk5 < m->unk2 - m->unk3) {
                     m->unk8 = 1;
                     snd_playSe(0x67);
                 }
             } else {
                 snd_playSe(0x67);
-                m->unk6++;
+                m->cursor++;
             }
-        } else if (m->unk6 >= m->unk3 - 1 && m->unk5 < m->unk2 - m->unk3) {
+        } else if (m->cursor >= m->unk3 - 1 && m->unk5 < m->unk2 - m->unk3) {
             m->unk8 = 9;
             snd_playSe(0x67);
         }
@@ -6648,9 +6648,9 @@ void func_8002F044(MenuList *arg0, s32 arg1) {
     arg1 &= 0x80;
     if (arg1 != 0) {
         if (arg0->unk7 == 0) {
-            if (arg0->unk6 != 0) {
+            if (arg0->cursor != 0) {
                 arg0->unk7 = arg0->unk4 - 1;
-                arg0->unk6 = arg0->unk6 - 1;
+                arg0->cursor = arg0->cursor - 1;
                 snd_playSe(0x67);
                 return;
             }
@@ -6667,12 +6667,12 @@ void func_8002F044(MenuList *arg0, s32 arg1) {
 
 void func_8002F0EC(MenuList *m, s32 pad) {
     if (pad & 0x20) {
-        if ((m->unk5 + m->unk6) * m->unk4 + m->unk7 < m->unk0 - 1) {
+        if ((m->unk5 + m->cursor) * m->unk4 + m->unk7 < m->unk0 - 1) {
             if (m->unk7 >= m->unk4 - 1) {
-                if (m->unk6 < m->unk3 - 1) {
+                if (m->cursor < m->unk3 - 1) {
                     snd_playSe(0x67);
                     m->unk7 = 0;
-                    m->unk6++;
+                    m->cursor++;
                 } else if (m->unk5 < m->unk2 - m->unk3) {
                     snd_playSe(0x67);
                     m->unk8 = 9;

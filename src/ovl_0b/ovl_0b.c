@@ -2726,18 +2726,18 @@ u16 func_800B081C(s32 arg0) {
 
 void func_800B0A6C(BtlUnit *arg0) {
     if (arg0->unkC4[0] & 1) {
-        arg0->unk38 |= 0x20000000;
+        arg0->status |= 0x20000000;
     }
     if (arg0->unkC4[0] & 2) {
-        arg0->unk38 |= 0x200000;
+        arg0->status |= 0x200000;
     }
     if (arg0->unkC4[0] & 4) {
-        arg0->unk38 |= 0x80000;
+        arg0->status |= 0x80000;
         arg0->unk34 |= 0x100000;
         arg0->unk2E = arg0->unk2E * 3 / 2;
     }
     if (arg0->unkC4[0] & 8) {
-        arg0->unk38 |= 0x40000;
+        arg0->status |= STATUS_REGEN;
         func_800C0C00(arg0, 0x12);
     }
     if (arg0->unkC4[0] & 0x10) {
@@ -7378,10 +7378,10 @@ u32 func_800BDED4(BtlUnit *arg0, s32 arg1) {
         r = arg0->unk34 & 0xFFFFFF;
         break;
     case 0x2C:
-        r = ((u8 *)&arg0->unk38)[3];
+        r = ((u8 *)&arg0->status)[3];
         break;
     case 0x2D:
-        r = arg0->unk38 & 0xFFFFFF;
+        r = arg0->status & 0xFFFFFF;
         break;
     case 0x2E:
         r = ((u8 *)&arg0->unk3C)[3];
@@ -8011,7 +8011,7 @@ s32 func_800BF558(BtlUnit *u, u32 f) {
             u->unkB3 = 0;
         }
         func_800B41A4(u, 0x3C);
-        if (u->unk38 & 0x40000) {
+        if (u->status & STATUS_REGEN) {
             func_800C0C00(u, 0x12);
         }
         break;
@@ -8305,7 +8305,7 @@ void func_800C0840(void) {
 
 s32 func_800C09A4(BtlUnit *arg0, u32 arg1) {
     s32 ret = 0;
-    if ((arg0->unk38 & arg1) || (arg0->unk3C & arg1)) {
+    if ((arg0->status & arg1) || (arg0->unk3C & arg1)) {
         ret = 1;
     }
     return ret;
@@ -8319,7 +8319,7 @@ void func_800C09EC(BtlUnit *arg0) {
     u32 i;
     s16 *p;
     arg0->unk3C = 0;
-    arg0->unk38 = 0;
+    arg0->status = 0;
     arg0->unk34 = 0;
     p = arg0->unk40;
     for (i = 0; i < 3; i++) {

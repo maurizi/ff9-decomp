@@ -200,10 +200,10 @@ void func_801F4E00(void) {
         } else if (D_801FB1A8.unk1 == 4 || (D_801FB1A8.unk1 == 5 && blink)) {
             D_80077DE8.unk0 = 0;
             D_80077DE8.unk4 = 0x2A;
-            D_80077DE8.unk2 = D_801FB1A8.unk24.unk6 * 0x3C + 0x42;
+            D_80077DE8.unk2 = D_801FB1A8.unk24.cursor * 0x3C + 0x42;
             func_800355E4();
         } else if (D_801FB1A8.unk1 == 3 && blink) {
-            func_800270EC(0, D_801FB1A8.unk24.unk6 * 0x3C + 0x42, 0x2A);
+            func_800270EC(0, D_801FB1A8.unk24.cursor * 0x3C + 0x42, 0x2A);
         }
     }
 }
@@ -276,7 +276,7 @@ void func_801F5114(void) {
     s32 st;
 
     l = &D_801FB1A8.unk24;
-    idx = l->unk5 + l->unk6;
+    idx = l->unk5 + l->cursor;
     st = D_801FB1A8.unk34[idx].unk1A;
     switch (st) {
     case 1:
@@ -470,7 +470,7 @@ void func_801F58E0(void) {
 }
 
 void func_801F5960(void) {
-    s32 i = D_801FB1A8.unk24.unk5 + D_801FB1A8.unk24.unk6;
+    s32 i = D_801FB1A8.unk24.unk5 + D_801FB1A8.unk24.cursor;
 
     if (D_801FB1A8.unk0 == 1) {
         func_801F9788(i, i);
@@ -909,8 +909,8 @@ void func_801F6A84(void) {
     func_8002DE10(D_801FBEF8.unk1C);
     func_8002EDFC(&D_801FB1A8.unk24, 0xF, 3, 1, 0xB4);
     if (D_801FB1A8.unk34[D_801FB1A8.unk10].unk1A == 4) {
-        D_801FB1A8.unk24.unk6 = D_801FB1A8.unk34[D_801FB1A8.unk10].unk44;
-        D_801FB1A8.unk24.unk5 = D_801FB1A8.unk10 - D_801FB1A8.unk24.unk6;
+        D_801FB1A8.unk24.cursor = D_801FB1A8.unk34[D_801FB1A8.unk10].unk44;
+        D_801FB1A8.unk24.unk5 = D_801FB1A8.unk10 - D_801FB1A8.unk24.cursor;
     }
     func_8002F9D0();
     func_8002F8A8(func_801F70E4);
@@ -1158,7 +1158,7 @@ void func_801F7364(SaveMenu *m) {
     if (D_801FC348.unk0 == 0) {
         D_801FB1A8.unk2 = 0;
         D_801FC348.unk4 = 0;
-        D_801FB030.y = D_801FB1A8.unk24.unk6 * 0x3C + 0x3F;
+        D_801FB030.y = D_801FB1A8.unk24.cursor * 0x3C + 0x3F;
         D_801FC348.unk8 = func_8002DC54(&D_801FB030, 0x14, 2);
         func_8002E2EC(D_801FC348.unk8, func_801F7560);
         func_8002E2E4(D_801FC348.unk8, func_801F74F4);
@@ -1852,7 +1852,7 @@ void func_801F8DA4(u8 *buf) {
     h->unk30 = g_gameState->unk1C->gil;
     h->unk74 = (g_gameState->unk24 >> 18) & 1;
     h->unk78 = ++D_801FB1A8.unkC;
-    h->unk7C = D_801FB1A8.unk24.unk6;
+    h->unk7C = D_801FB1A8.unk24.cursor;
     h->unk6 = *(SaveName *)g_gameState->unk1C->characters[n].unk0;
     func_801F9024((u8 *)&h->unk10);
     for (i = 0; i < 4; i++) {

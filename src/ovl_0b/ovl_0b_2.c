@@ -10448,7 +10448,7 @@ void func_800EE37C(Unk800EE37C *arg0) {
         e = D_80104FD0.unk14->unkB4;
         c = &e->unk49C;
         l.unk5 = c->unk8[e->unk49C.unk0];
-        l.unk6 = c->unk4[e->unk49C.unk0];
+        l.cursor = c->unk4[e->unk49C.unk0];
     }
     g_btlUi->unk12A4[2] = func_8002DCAC(&D_800F8E30, 8, 1, 2);
     func_8002E3A8(g_btlUi->unk12A4[2], &l);
@@ -10464,7 +10464,7 @@ void func_800EE54C(void) {
         if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             w = g_btlUi->unk12A4[2];
-            func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.unk6);
+            func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
             if (D_80104FD0.unk10 == 0) {
                 func_800EF044();
             } else {
@@ -10486,7 +10486,7 @@ void func_800EE54C(void) {
 s32 func_800EE680(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
-    s32 n = l->unk6 + l->unk5;
+    s32 n = l->cursor + l->unk5;
     u8 k = D_800FDD10[D_80104FD0.unk4->unk8 + n];
     s32 r = func_800EEA98(k);
     if (r != 2) {
@@ -10511,7 +10511,7 @@ s32 func_800EE680(void) {
 s32 func_800EE7F8(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
-    UnkPair *p = func_800EC114(l->unk6 + l->unk5);
+    UnkPair *p = func_800EC114(l->cursor + l->unk5);
     u8 r = 0;
     Unk8006A774 *e = &D_8006A774[p->unk0];
     s32 n;
@@ -10540,7 +10540,7 @@ s32 func_800EE938(void) {
     Unk800EF80C s;
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
     u8 r = 0;
-    UnkPair *p = func_800EC130(l->unk6 + l->unk5);
+    UnkPair *p = func_800EC130(l->cursor + l->unk5);
     Battle16CC *e = &g_gameState->unk1C->unk8E4.battle->abilities[D_80104FD0.unk4->unk8];
     s32 n;
 
@@ -10599,7 +10599,7 @@ void func_800EEBB8(Window *arg0) {
     }
     if (func_800EB2A4() == 2 || (func_800EB2A4() == 3 && func_800F13BC() == 2 && !(func_800F1360() & 0xFF) && (D_80104E80 & 1))) {
         x = arg0->unk8.x - 0x12;
-        y = r->y + (arg0->unk30.unk6 * 15 + dy);
+        y = r->y + (arg0->unk30.cursor * 15 + dy);
         if (D_80104FD0.unk0 == 0x17 || D_80104FD0.unk0 == 0x15) {
             func_800275DC(x + 7, y + 2, arg0->unk18, D_80104FD0.unk10 + 0x5A, 0);
         }
@@ -10638,7 +10638,7 @@ void func_800EEE3C(void) {
     if ((u8)D_800F8E38[D_80104FD0.unk4->unk6]()) {
         snd_playSe(0x67);
         w = g_btlUi->unk12A4[2];
-        func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.unk6);
+        func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.cursor);
     } else {
         snd_playSe(0x66);
     }
@@ -10806,7 +10806,7 @@ s32 func_800EF598(BtlCmd8 *arg0) {
 
 char *func_800EF5E0(void) {
     MenuList *l = &g_btlUi->unk12A4[2]->unk30;
-    s32 n = l->unk6 + l->unk5;
+    s32 n = l->cursor + l->unk5;
     u8 k = D_800FDD10[D_80104FD4->unk8 + n];
     if (func_800EEA98(k) == 0) {
         return NULL;
@@ -10816,7 +10816,7 @@ char *func_800EF5E0(void) {
 
 u8 *func_800EF674(void) {
     Unk16 *w = &g_btlUi->unk12A4[2]->unk30;
-    UnkPair *e = func_800EC114(w->unk6 + w->unk5);
+    UnkPair *e = func_800EC114(w->cursor + w->unk5);
     if (e != NULL) {
         if (e->unk1 - func_800EC194(e->unk0) >= 0) {
             if (e->unk1 != func_800EC194(e->unk0)) {
@@ -10830,7 +10830,7 @@ u8 *func_800EF674(void) {
 
 u8 *func_800EF724(void) {
     Unk16 *w = &g_btlUi->unk12A4[2]->unk30;
-    UnkPair *e = func_800EC130(w->unk6 + w->unk5);
+    UnkPair *e = func_800EC130(w->cursor + w->unk5);
     if (e != NULL) {
         if (e->unk1 - func_800EC194(e->unk0) >= 0) {
             if (e->unk1 != func_800EC194(e->unk0)) {
@@ -11762,7 +11762,7 @@ void func_800F2118(Window *arg0) {
     for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
         if (u->unk68 & 1) {
             n = 0;
-            st = u->unk3C | u->unk38;
+            st = u->unk3C | u->status;
             x = w->unk0 + 4;
             for (i = 0; i < 16; i++) {
                 if (st & D_800F8F18[i].unk0) {
@@ -11790,7 +11790,7 @@ void func_800F224C(Window *arg0) {
     y = arg0->unk2 - d;
     for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
         if (u->unk68 & 1) {
-            st = u->unk3C | u->unk38;
+            st = u->unk3C | u->status;
             x = w->unk0 + 4;
             for (i = 0; i < 8; i++) {
                 if (st & D_800F8F98[i].unk0) {
