@@ -1,1 +1,1 @@
-g_itemMenuText = 0x801EDF04; // force_not_migration:True
+g_itemMenuText = 0x801EDF04; // force_not_migration:True [runtime] passed to text_setBank when Item opens
