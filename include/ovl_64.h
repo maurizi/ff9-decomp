@@ -293,7 +293,18 @@ extern u8 D_8019DC90;
 extern RECT D_8019F488[4];
 extern u8 D_8019DC97; /* = D_8019DC94.unk3, referenced by its own name */
 void func_8019B3D4(void *, u32 *, u16);
+typedef struct {
+    u8 pad0[3];
+    u8 unk3;
+    u32 unk4;
+    u32 unk8;
+} Ovl64Stp;
+extern Ovl64Stp D_8019F4A8[2];
+extern s32 D_8019DC9C;
+s32 func_8019AAF8(void);
+s32 func_8019C9D4(void);
 /* PsyQ libpress */
+int DecDCTin(u32 *, int);
 int DecDCTinSync(int);
 int DecDCTout(u32 *, int);
 int DecDCTReset(int);

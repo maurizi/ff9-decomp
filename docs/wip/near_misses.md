@@ -958,3 +958,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   * fold-const.c `associate` (split_tree) rewrites `a - (b - 1)` as `(a + 1) - b`; to keep the original's
     `addiu b,-1; subu a,b` the `- 1` has to be hidden from fold (a variable or an assignment inside the
     expression). C434 also needed `prev` as an if/else so cse's extended block ends at the join.
+- Pass 15 (overlay agent):
+  * 64 99F30 matched (was 1 row): the found block's base-first `addu v0,s3,v0` needs a base pseudo that cse does
+    not know is constant (fold_rtx swaps a const-equivalent first operand second), so the decode loop uses
+    `d = &D_8019F4D8;` assigned at the top of `while (1)` (call arg, xor and found via d). Assigned inside the
+    outer loop, loop.c hoists it together with wait #1's %hi(D_8019F4D8) (fp); assigned before the loop it doesn't.
