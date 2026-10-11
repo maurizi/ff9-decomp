@@ -803,8 +803,8 @@ void func_800CAD6C(BtlScript *arg0, BtlUnit *arg1) {
             p[5] -= spd;
         } else {
             a = ratan2(p[3] - p[0], p[5] - p[2]) & 0xFFF;
-            p[3] += (func_8004BB80(a) * spd) >> 12;
-            p[5] += (func_8004BB7C(a) * spd) >> 12;
+            p[3] += (math_sin(a) * spd) >> 12;
+            p[5] += (math_cos(a) * spd) >> 12;
         }
     }
 }
@@ -1590,8 +1590,8 @@ void func_800CCDB8(Unk800CCD00 *arg0) {
         if ((u->unk68 & 1) && u->unk9C->unkC == (BtlUnit9CC *)u->unkA4[0x11]) {
             continue;
         }
-        sn = func_8004BB80(u->unk86[1]);
-        cs = func_8004BB7C(u->unk86[1]);
+        sn = math_sin(u->unk86[1]);
+        cs = math_cos(u->unk86[1]);
         if (u->unk68 & 1) {
             bone = D_800F6B48[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
             ty = D_800F6BBC[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
@@ -2092,7 +2092,7 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
         flag = 0;
         switch (D_800FE514->unk0) {
         case 0x44:
-            a = func_8004BB80((VSync(-1) * 26) & 0xFFE);
+            a = math_sin((VSync(-1) * 26) & 0xFFE);
             sv.vx = 0x429;
             sv.vy = -0x541;
             sv.vz = 0xEA6;
@@ -2106,7 +2106,7 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                 rot2.vz = 0xFFF - a;
                 a = (VSync(-1) * 3) & 0xFFF;
                 rot2.vy = 0xFFF - a;
-                a = func_8004BB80(((VSync(-1) + 8) * 22) & 0xFFE);
+                a = math_sin(((VSync(-1) + 8) * 22) & 0xFFE);
                 sv.vx = -0x834;
                 sv.vz = -0x352;
                 sv.vy = a / 45 - 250;
@@ -2114,7 +2114,7 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
             case 2:
                 rot2.vy = 0;
                 rot2.vz = 0;
-                a = func_8004BB80((VSync(-1) * 20) & 0xFFC);
+                a = math_sin((VSync(-1) * 20) & 0xFFC);
                 sv.vx = 0x6BD;
                 sv.vy = a / 64 - 0x5DC;
                 sv.vz = -0x4B;
@@ -2124,7 +2124,7 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                 rot2.vz = a;
                 a = (VSync(-1) * 3) & 0xFFF;
                 rot2.vy = a;
-                a = func_8004BB80(((VSync(-1) + 16) * 21) & 0xFFF);
+                a = math_sin(((VSync(-1) + 16) * 21) & 0xFFF);
                 sv.vx = 0x6D6;
                 sv.vz = 0x401;
                 sv.vy = a / 50 - 0x307;
@@ -2132,7 +2132,7 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
             }
             break;
         case 0x6E:
-            a = func_8004BB80((VSync(-1) * 12) & 0xFFC);
+            a = math_sin((VSync(-1) * 12) & 0xFFC);
             a /= 64;
             rot2.vy = 0x200;
             sv.vx = 0x5DC;

@@ -3709,9 +3709,9 @@ void func_800B3460(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
     gte_rtps();
     gte_stsxy(&sxy[0]);
     for (i = 0; i < 3; i++) {
-        tri[i].vx = v.vx - ((func_8004BB7C(ang) * 68) >> 12);
+        tri[i].vx = v.vx - ((math_cos(ang) * 68) >> 12);
         tri[i].vy = v.vy - 0x85;
-        tri[i].vz = v.vz - ((func_8004BB80(ang) * 68) >> 12);
+        tri[i].vz = v.vz - ((math_sin(ang) * 68) >> 12);
         ang = (ang + 0x4F1) & 0xFFF;
     }
     gte_ldv3c(tri);

@@ -1111,8 +1111,8 @@ void func_80064CDC(s32, s32);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 void func_800316D8(SVECTOR *, MATRIX *); /* RotMatrix */
 void func_80030AF4(SVECTOR *, MATRIX *);
-s32 func_8004BB7C(s32); /* cos */
-s32 func_8004BB80(s32); /* sin */
+s32 math_cos(s32); /* cos */
+s32 math_sin(s32); /* sin */
 void func_800639D4(u16);
 s32 func_80050D38(s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */

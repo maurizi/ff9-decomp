@@ -312,12 +312,12 @@ void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, C
                 if (r == 0) {
                     p->y0 = p->y1 = y;
                 } else {
-                    p->y0 = y + ((func_8004BB80(ph) * arg7) >> 12);
-                    p->y1 = y + ((func_8004BB80(ph + arg9) * arg7) >> 12);
+                    p->y0 = y + ((math_sin(ph) * arg7) >> 12);
+                    p->y1 = y + ((math_sin(ph + arg9) * arg7) >> 12);
                 }
                 ph += arg10;
-                p->y2 = (y + arg4) + ((func_8004BB80(ph) * arg7) >> 12);
-                p->y3 = (y + arg4) + ((func_8004BB80(ph + arg9) * arg7) >> 12);
+                p->y2 = (y + arg4) + ((math_sin(ph) * arg7) >> 12);
+                p->y3 = (y + arg4) + ((math_sin(ph + arg9) * arg7) >> 12);
                 ph -= arg10;
                 *(s32 *)&p->r0 = *(s32 *)&p->r1 = *(s32 *)ca;
                 *(s32 *)&p->r2 = *(s32 *)&p->r3 = *(s32 *)&ca[1];
@@ -385,8 +385,8 @@ void func_800D0FFC(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 
         D_800F78A4->unk24 = prim + n * 0x34;
         c.unk26 = (arg3 + arg5) << 8;
         c.unk24 = arg3 << 8;
-        s = func_8004BB80(-D_800F78A4->unk2C->unk50 + 0x400);
-        c.unk28 = (s & 0xFFFF) | (func_8004BB7C(-D_800F78A4->unk2C->unk50 + 0x400) << 16);
+        s = math_sin(-D_800F78A4->unk2C->unk50 + 0x400);
+        c.unk28 = (s & 0xFFFF) | (math_cos(-D_800F78A4->unk2C->unk50 + 0x400) << 16);
         c.unkC.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
         c.unk18 = (((tp & 3) << 5) | arg6) << 16;
         c.unk1C = arg7 << 16;
@@ -1266,13 +1266,13 @@ void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
             if (sc->unk0 == 0) {
                 wt = u = arg1 * sc->unk4;
             } else {
-                wt = u = (func_8004BB80(sc->unk4 * arg1) * sc->unk8) >> 12;
+                wt = u = (math_sin(sc->unk4 * arg1) * sc->unk8) >> 12;
             }
             BG_WRAP(u, w);
             if (sc->unk1 == 0) {
                 wt = v = arg1 * sc->unk6;
             } else {
-                wt = v = (func_8004BB80(sc->unk6 * arg1) * sc->unkA) >> 12;
+                wt = v = (math_sin(sc->unk6 * arg1) * sc->unkA) >> 12;
             }
             BG_WRAP(v, h);
             func_800D2C78((SprInfo *)L, u, u, v, v, L->unk6, L->unk7, w, h, &col, 1, 1);
@@ -1300,9 +1300,9 @@ void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
             do {
                 k = 0;
                 for (j = 0; j < wv->unk2; j++) {
-                    u = ((func_8004BB80(a) * wv->unk8) >> 12) - (w >> 1);
+                    u = ((math_sin(a) * wv->unk8) >> 12) - (w >> 1);
                     a += step;
-                    func_800D2C78((SprInfo *)L, u, ((func_8004BB80(a) * wv->unk8) >> 12) - (w >> 1), v, v, L->unk6, L->unk7 + k, w * 2, tw, &col, 0, 0);
+                    func_800D2C78((SprInfo *)L, u, ((math_sin(a) * wv->unk8) >> 12) - (w >> 1), v, v, L->unk6, L->unk7 + k, w * 2, tw, &col, 0, 0);
                     v += tw;
                     k += tw;
                 }
@@ -1340,9 +1340,9 @@ void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
             do {
                 k = 0;
                 for (j = 0; j < wv3->unk2; j++) {
-                    u = ((func_8004BB80(a) * wv3->unk8) >> 12) - (h >> 1);
+                    u = ((math_sin(a) * wv3->unk8) >> 12) - (h >> 1);
                     a += step;
-                    func_800D2C78((SprInfo *)L, v, v, u, ((func_8004BB80(a) * wv3->unk8) >> 12) - (h >> 1), L->unk6 + k, L->unk7, tw, h * 2, &col, 0, 0);
+                    func_800D2C78((SprInfo *)L, v, v, u, ((math_sin(a) * wv3->unk8) >> 12) - (h >> 1), L->unk6 + k, L->unk7, tw, h * 2, &col, 0, 0);
                     v += tw;
                     k += tw;
                 }
@@ -1374,10 +1374,10 @@ s32 func_800D3A6C(s32 arg0, s32 arg1, s32 arg2) {
         r = (arg0 << 12) / arg1;
         break;
     case 1:
-        r = 0x1000 - func_8004BB7C((arg0 << 11) / arg1);
+        r = 0x1000 - math_cos((arg0 << 11) / arg1);
         break;
     case 2:
-        r = func_8004BB80((arg0 << 11) / arg1);
+        r = math_sin((arg0 << 11) / arg1);
         break;
     }
     return r;
@@ -1421,8 +1421,8 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     } else {
         r = h->unk10 + (((h->unk12 - h->unk10) * func_800D3A6C(arg2, h->unk0, h->unk6)) >> 12);
         a = h->unk14 + (((h->unk16 - h->unk14) * func_800D3A6C(arg2, h->unk0, h->unk7)) >> 12);
-        p[0] = sxy[0] + ((func_8004BB7C(r) * a) >> 12);
-        p[1] = sxy[1] + ((func_8004BB80(r) * a) >> 12);
+        p[0] = sxy[0] + ((math_cos(r) * a) >> 12);
+        p[1] = sxy[1] + ((math_sin(r) * a) >> 12);
         for (i = 0; i < h->unk2; i++, e++) {
             func_800CFA00(sxy, p, e->unk6 * 2, q);
             if (arg2 >= e->unk8) {
@@ -2008,7 +2008,7 @@ s32 func_800D71C8(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s32 arg4, s16 *arg5) 
     t = (arg2 << 12) / arg3;
     func_800CFA00(arg5, arg1, t, sp10);
     if (arg4 != 0) {
-        sp10[1] -= (func_8004BB80(t >> 1) * arg4) >> 12;
+        sp10[1] -= (math_sin(t >> 1) * arg4) >> 12;
     }
     func_800E76DC(arg0, sp10);
     return arg2 >= arg3;
@@ -5200,7 +5200,7 @@ s32 func_800E0168(Pool30 *pool) {
             v.vy = e->unk24.s.y;
             switch (m->unk14) {
             case 0:
-                rs = (func_8004BB80(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk28.s.x) >> 12;
+                rs = (math_sin(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk28.s.x) >> 12;
                 break;
             case 1:
                 rs = (e->unk28.s.x * t) >> 12;
@@ -5222,11 +5222,11 @@ s32 func_800E0168(Pool30 *pool) {
             func_800DFF64(e, rs, rp, &pos);
             e->unkC += e->unk20;
             e->unkE += e->unk22;
-            v.vx = e->unk24.s.y + func_8004BB80(e->unkC);
-            v.vy = e->unk28.s.x + func_8004BB80(e->unkE);
+            v.vx = e->unk24.s.y + math_sin(e->unkC);
+            v.vy = e->unk28.s.x + math_sin(e->unkE);
             switch (m->unk14) {
             case 0:
-                rs = (func_8004BB80(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk10) >> 12;
+                rs = (math_sin(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk10) >> 12;
                 break;
             case 1:
                 rs = (e->unk10 * t) >> 12;
@@ -5243,7 +5243,7 @@ s32 func_800E0168(Pool30 *pool) {
             e->unkC += e->unkE;
             switch (m->unkE) {
             case 0:
-                rs = (func_8004BB80(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk20) >> 12;
+                rs = (math_sin(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk20) >> 12;
                 break;
             case 1:
                 rs = (e->unk20 * t) >> 12;
@@ -5346,19 +5346,19 @@ s32 func_800E0168(Pool30 *pool) {
                 case 0:
                     break;
                 case 1:
-                    amp = (func_8004BB7C(scale) * amp) >> 12;
+                    amp = (math_cos(scale) * amp) >> 12;
                     break;
                 case 2:
-                    amp = (func_8004BB80(scale) * amp) >> 12;
+                    amp = (math_sin(scale) * amp) >> 12;
                     break;
                 case 3:
-                    amp = ((0x1000 - func_8004BB80(scale)) * amp) >> 12;
+                    amp = ((0x1000 - math_sin(scale)) * amp) >> 12;
                     break;
                 case 4:
-                    amp = ((0x1000 - func_8004BB7C(scale)) * amp) >> 12;
+                    amp = ((0x1000 - math_cos(scale)) * amp) >> 12;
                     break;
                 case 5:
-                    amp = (func_8004BB80(scale * 2) * amp) >> 12;
+                    amp = (math_sin(scale * 2) * amp) >> 12;
                     break;
                 }
                 if (mode < 7) {
@@ -5408,13 +5408,13 @@ s32 func_800E0168(Pool30 *pool) {
                 rs = owner->unk20;
                 switch (el->unk6) {
                 case 1:
-                    alpha = (rs * func_8004BB7C(t >> 2)) >> 12;
+                    alpha = (rs * math_cos(t >> 2)) >> 12;
                     break;
                 case 2:
-                    alpha = (rs * func_8004BB80(t >> 2)) >> 12;
+                    alpha = (rs * math_sin(t >> 2)) >> 12;
                     break;
                 case 3:
-                    alpha = (rs * func_8004BB80(t >> 1)) >> 12;
+                    alpha = (rs * math_sin(t >> 1)) >> 12;
                     break;
                 }
             }
@@ -5698,7 +5698,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
             v = func_800CF9B0(an->unk4, an->unk6, t);
             break;
         case 1:
-            v = (func_8004BB80(t >> 1) * an->unk4) >> 12;
+            v = (math_sin(t >> 1) * an->unk4) >> 12;
             break;
         case 2:
             def = e->unk24;
@@ -7232,7 +7232,7 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
             }
             goto next;
         case 3:
-            func_800D23D8(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, func_8004BB7C((arg1->unk14 << 10) / arg1->unkE));
+            func_800D23D8(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, math_cos((arg1->unk14 << 10) / arg1->unkE));
             break;
         default:
             arg2->unk28 = 0;

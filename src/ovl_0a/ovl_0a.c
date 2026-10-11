@@ -1996,8 +1996,8 @@ void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
     s32 sn;
 
     if (arg1->unk0 & 0x20) {
-        c = func_8004BB7C(arg0->unk4);
-        sn = func_8004BB80(arg0->unk4);
+        c = math_cos(arg0->unk4);
+        sn = math_sin(arg0->unk4);
         arg2->m[0][0] = c * arg0->unk1 >> 12;
         arg2->m[1][0] = 0;
         arg2->m[2][0] = -sn * arg0->unk1 >> 12;
@@ -7767,7 +7767,7 @@ s32 func_800BF0C4(void) {
             D_800CA068.unk4.unk0 = D_800CA068.unk10.unk0 + wx * cnt / dur;
             D_800CA068.unk4.unk2 = D_800CA068.unk10.unk2 + wy * cnt / dur;
         } else {
-            y = func_8004BB7C(((cnt << 16) >> 5) / dur + 0x800) + 0x1000;
+            y = math_cos(((cnt << 16) >> 5) / dur + 0x800) + 0x1000;
             ax = wx * y / 0x2000;
             ay = wy * y / 0x2000;
             D_800CA068.unk4.unk0 = D_800CA068.unk10.unk0 + ax;
@@ -10478,7 +10478,7 @@ s32 arg0;
             v = e->unk8 + step;
             break;
         case 1:
-            v = e->unk8 + range * ((s16)func_8004BB7C((s16)((step << 12) / range) + 0x800) + 0x1000) / 0x2000;
+            v = e->unk8 + range * ((s16)math_cos((s16)((step << 12) / range) + 0x800) + 0x1000) / 0x2000;
             break;
         default:
             v = e->unk8 + step;

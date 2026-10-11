@@ -3294,7 +3294,7 @@ s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s16 *);
 
 s32 func_800D9350(Unk800D7C9C *, s32, s32 *);
-s32 func_8004BB80(s32);
+s32 math_sin(s32);
 
 typedef struct {
     u8 unk0;
@@ -3330,7 +3330,7 @@ s32 func_800D9F88(u8 *, s32, s32 *);
 
 extern u16 D_800FEC42;
 extern Unk800F412C D_800F8FD8[5];
-s32 func_8004BB7C(s32);
+s32 math_cos(s32);
 void func_800E8DC8(s32);
 void func_800E8E84(s32);
 void func_800F0444(void);

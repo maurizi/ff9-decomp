@@ -7422,9 +7422,9 @@ MATRIX *func_80031284(SVECTOR *r, MATRIX *m, s32 mode) {
     x = tx & 0xFFF;
     ISIN(cx, tx, x);
     if (y & 0x400) {
-        sy = D_8006C1C4[0x400 - (y & 0x3FF)];
+        sy = g_sinTable[0x400 - (y & 0x3FF)];
     } else {
-        sy = D_8006C1C4[y & 0x3FF];
+        sy = g_sinTable[y & 0x3FF];
     }
     if (y & 0x800) {
         /* identical branches (jump2 merges them), as in func_80030EE4 */
@@ -10259,7 +10259,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
             }
         }
         if (p->unk2D != 0) {
-            s = func_8004BB7C(func_800531D0(p, o, p->pos.rotY));
+            s = math_cos(func_800531D0(p, o, p->pos.rotY));
             rr = (rr * func_80052EEC(((s * s) >> 4) * p->unk2D + 0x1000000)) >> 12;
         }
         rr += r;
@@ -12302,9 +12302,9 @@ static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     SVECTOR v;
     MATRIX m;
 
-    m.m[0][2] = func_8004BB80(a);
+    m.m[0][2] = math_sin(a);
     m.m[1][1] = 0x1000;
-    m.m[2][2] = func_8004BB7C(a);
+    m.m[2][2] = math_cos(a);
     m.m[0][0] = m.m[0][1] = m.m[1][0] = m.m[1][2] = m.m[2][0] = m.m[2][1] = 0;
     m.t[0] = o->pos.vx;
     m.t[1] = o->pos.vy;
@@ -13737,9 +13737,9 @@ void func_8004BB30(void *p) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BB7C);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", math_cos);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BB80);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", math_sin);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004BBBC);
 
@@ -15905,7 +15905,7 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
             y += y < g_gameState->unk10->clip.h / 2 ? 1 : -1;
         }
         if (D_8007BD2C) {
-            c = func_8004BB80(D_8007BD28 * 8);
+            c = math_sin(D_8007BD28 * 8);
             x += c * (160 - x) / 4096;
             y += c * (g_gameState->unk10->clip.h / 2 - y) / 4096;
         }
@@ -16033,7 +16033,7 @@ u32 *func_80054294(u32 *buf, s32 x, s32 y) {
         ys[4 + i] = y + (dy * i) / 4;
     }
     for (i = 0; i < 5; i++) {
-        t = func_8004BB7C(i << 8);
+        t = math_cos(i << 8);
         pts = D_8007BD14;
         pts[i].vx = x - (x * t) / 4096;
         pts[8 - i].vx = x + (dx * t) / 4096;

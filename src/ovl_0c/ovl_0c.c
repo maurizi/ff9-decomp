@@ -1518,9 +1518,9 @@ void func_800AD39C(void) {
         t = D_800CE3DC->pos.vy + 0x1518;
         D_800CE1C4 = D_800CE1E8.unk0[4] - (t > 0 ? t >> 3 : t / 6);
     }
-    D_800CE1C8.vx = func_8004BB80(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
+    D_800CE1C8.vx = math_sin(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
     D_800CE1C8.vy = D_800CE1E8.unk0[2];
-    D_800CE1C8.vz = func_8004BB7C(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
+    D_800CE1C8.vz = math_cos(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
     if (D_800CE202 == 0) {
         func_800AD738();
     }
@@ -1552,8 +1552,8 @@ void func_800AD39C(void) {
         D_800CE1D0[2] += 0x50000;
     }
     a = ratan2(D_800CE1D0[2], D_800CE1D0[0]);
-    D_800CE1D0[0] = func_8004BB7C(a);
-    D_800CE1D0[2] = func_8004BB80(a);
+    D_800CE1D0[0] = math_cos(a);
+    D_800CE1D0[2] = math_sin(a);
     VectorNormal((VECTOR *)D_800CE1D0, (VECTOR *)D_800CE1D0);
     if (*D_800CF430 < 0x137E && ((D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8) == 0xC) {
         D_800CE0F0->unk8 = 1;
@@ -1864,7 +1864,7 @@ void func_800AE280(void) {
             D_800CE188 = 0;
         }
     } else {
-        func_800AE4C8(-D_800CE3DC->pos.vy, m, k, func_8004BB80(D_800CE0F0->unk2 / 4), &D_800CE1E8);
+        func_800AE4C8(-D_800CE3DC->pos.vy, m, k, math_sin(D_800CE0F0->unk2 / 4), &D_800CE1E8);
     }
 }
 
@@ -2810,8 +2810,8 @@ u8 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg
     mode = &D_800CCB70[arg2];
     v = *arg0;
     c = &D_800CE288[k];
-    v.vx += func_8004BB80(D_800CE3CC + (ang = arg1 + 0x800)) * arg3 >> 12;
-    v.vz += func_8004BB7C(D_800CE3CC + ang) * arg3 >> 12;
+    v.vx += math_sin(D_800CE3CC + (ang = arg1 + 0x800)) * arg3 >> 12;
+    v.vz += math_cos(D_800CE3CC + ang) * arg3 >> 12;
     if ((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 == 0x34 && D_800CE3C8->unk0 != 1) {
         func_800BE748(&v, &cell, &h, NULL, (u16 *)&v.vy);
     } else {
@@ -3068,7 +3068,7 @@ void func_800B17B4(void) {
     }
     D_800CE0F0->unkC &= 0xFFF;
     if (mv != 0 || D_800CE25D != 0) {
-        D_800CE0F0->unk0 = func_8004BB80(ang);
+        D_800CE0F0->unk0 = math_sin(ang);
         if (mv != 0) {
             D_800CE3BE = 0;
             if ((u32)(ang - 0x600) <= 0x400) {
@@ -3179,15 +3179,15 @@ void func_800B1CD0(void) {
     D_800CE3CC = D_800CE3DC->pos.rotY = (D_800CE3DC->pos.rotY + D_800CE3E0) & 0xFFF;
     if (ABS(D_800CE3C0) > 80 && D_800CE25E != 0) {
         ang = (D_800CE3C0 <= 0) << 11;
-        dx = func_8004BB80(ang + D_800CE3DC->pos.rotY) >> 2;
-        dz = func_8004BB7C(ang + D_800CE3DC->pos.rotY) >> 2;
+        dx = math_sin(ang + D_800CE3DC->pos.rotY) >> 2;
+        dz = math_cos(ang + D_800CE3DC->pos.rotY) >> 2;
         func_800C6F00(D_800CE3DC->pos.vx + dx, -100, D_800CE3DC->pos.vz + dz, 15, 15000);
         if (D_800CF4B0 & 1) {
-            dx = func_8004BB80(ang + D_800CE3DC->pos.rotY + 0x80) >> 3;
-            dz = func_8004BB7C(ang + D_800CE3DC->pos.rotY + 0x80) >> 3;
+            dx = math_sin(ang + D_800CE3DC->pos.rotY + 0x80) >> 3;
+            dz = math_cos(ang + D_800CE3DC->pos.rotY + 0x80) >> 3;
             func_800C6F00(D_800CE3DC->pos.vx + dx, -100, D_800CE3DC->pos.vz + dz, 10, 15000);
-            dx = func_8004BB80(ang + D_800CE3DC->pos.rotY - 0x80) >> 3;
-            dz = func_8004BB7C(ang + D_800CE3DC->pos.rotY - 0x80) >> 3;
+            dx = math_sin(ang + D_800CE3DC->pos.rotY - 0x80) >> 3;
+            dz = math_cos(ang + D_800CE3DC->pos.rotY - 0x80) >> 3;
             func_800C6F00(D_800CE3DC->pos.vx + dx, -100, D_800CE3DC->pos.vz + dz, 10, 15000);
         }
     }
@@ -6904,8 +6904,8 @@ void func_800BEECC(void) {
                 d = 0;
             }
             if (d != 0) {
-                D_800CD104 += func_8004BB80(ang) * d >> 12;
-                D_800CD108 -= func_8004BB7C(ang) * d >> 12;
+                D_800CD104 += math_sin(ang) * d >> 12;
+                D_800CD108 -= math_cos(ang) * d >> 12;
                 if (D_800CD104 < 0) {
                     D_800CD104 += 0xF0000;
                 }
@@ -6999,9 +6999,9 @@ void func_800BF544(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVECTOR
     u32 *ot;
 
     ot = (u32 *)D_800CF460[*D_800CF45C];
-    c.r = func_800B81C0(arg4.r, arg5.r, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
-    c.g = func_800B81C0(arg4.g, arg5.g, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
-    c.b = func_800B81C0(arg4.b, arg5.b, func_8004BB7C((D_800CF4B0 * arg6) & 0xFFF));
+    c.r = func_800B81C0(arg4.r, arg5.r, math_cos((D_800CF4B0 * arg6) & 0xFFF));
+    c.g = func_800B81C0(arg4.g, arg5.g, math_cos((D_800CF4B0 * arg6) & 0xFFF));
+    c.b = func_800B81C0(arg4.b, arg5.b, math_cos((D_800CF4B0 * arg6) & 0xFFF));
     if (arg9 == 0) {
         setXYWH((POLY_F4 *)D_800CF404, arg0 - arg2 + arg7, arg1 - arg3 + arg8, arg2 * 2 + 1, arg3 * 2 + 1);
         setRGB0((POLY_F4 *)D_800CF404, c.r, c.g, c.b);
@@ -7077,7 +7077,7 @@ void func_800BF978(void) {
     px = &x;
     py = &y;
     func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2 + 1);
-    c = (func_8004BB80(D_800CF4B0 << 6) >> 7) + 0x80;
+    c = (math_sin(D_800CF4B0 << 6) >> 7) + 0x80;
     p = (POLY_FT4 *)D_800CF404;
     setRGB0(p, c, c, c);
     p->x0 = x + v[0].vx + 0x28;
@@ -7124,10 +7124,10 @@ void func_800BF978(void) {
     }
     a %= 0x1000;
     b %= 0x1000;
-    ax = func_8004BB80(a) * 0x18 >> 12;
-    ay = func_8004BB7C(a) * 0x18 >> 12;
-    bx = func_8004BB80(b) * 0x18 >> 12;
-    by = func_8004BB7C(b) * 0x18 >> 12;
+    ax = math_sin(a) * 0x18 >> 12;
+    ay = math_cos(a) * 0x18 >> 12;
+    bx = math_sin(b) * 0x18 >> 12;
+    by = math_cos(b) * 0x18 >> 12;
     func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2 + 1);
     x1 = x + ax + 0x28;
     y1 = y + ay + 9;
@@ -7206,7 +7206,7 @@ void func_800C0888(void) {
     memset(&rot0, 0, 8);
     rot0.vz = D_800CE3DC->pos.rotY - 0x400;
     rot = rot0;
-    c = (func_8004BB80(D_800CF4B0 << 6) >> 7) + 0x80;
+    c = (math_sin(D_800CF4B0 << 6) >> 7) + 0x80;
     func_80030AF4(&rot, &m);
     for (i = 0; i < 4; i++) {
         ApplyMatrix(&m, &arrow.v[i], &v[i]);
@@ -7241,10 +7241,10 @@ void func_800C0888(void) {
     }
     a %= 0x1000;
     b %= 0x1000;
-    ax = func_8004BB80(a) * 12 >> 12;
-    ay = func_8004BB7C(a) * 12 >> 12;
-    bx = func_8004BB80(b) * 12 >> 12;
-    by = func_8004BB7C(b) * 12 >> 12;
+    ax = math_sin(a) * 12 >> 12;
+    ay = math_cos(a) * 12 >> 12;
+    bx = math_sin(b) * 12 >> 12;
+    by = math_cos(b) * 12 >> 12;
     func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2);
     D_800D3E7C = (POLY_G3 *)D_800CF404;
     x1 = x + ax + 200;
@@ -8691,9 +8691,9 @@ void func_800C53DC(void) {
             o->unk18 -= 30 - wm_rand8() % 60;
             break;
         case 23:
-            o->unk10 = func_8004BB80((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vx;
+            o->unk10 = math_sin((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vx;
             o->unk14 -= 80;
-            o->unk18 = func_8004BB7C((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vz;
+            o->unk18 = math_cos((o->unk1C << 6) + o->unk20) / 2 + D_800CDF50.vz;
             /* fallthrough */
         case 24:
             o->unk10 -= 40 + wm_rand8() % 130;
@@ -8877,7 +8877,7 @@ void func_800C5A48(u8 arg0) {
 
                 m1 = D_800CD774;
                 m2 = D_800CD774;
-                c = (func_8004BB80(D_800CF4B0 * 16 + i * 400) >> 5) + 0x80;
+                c = (math_sin(D_800CF4B0 * 16 + i * 400) >> 5) + 0x80;
                 if (c >= 0x100) {
                     c = 0xFF;
                 }

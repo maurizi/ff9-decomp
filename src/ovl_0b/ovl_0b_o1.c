@@ -606,10 +606,10 @@ void func_800C4A3C(s16 *arg0, s16 *arg1) {
     s32 d = func_800CF6B8(dx * dx + dz * dz, 0xF);
     u32 v = 0;
     if (D_800FE488.unk10 != 0) {
-        v = ((func_8004BB80(D_800FE488.unk14 << 6) * d) >> 13) * (D_800FE488.unk10 & 0xF0) >> 11;
+        v = ((math_sin(D_800FE488.unk14 << 6) * d) >> 13) * (D_800FE488.unk10 & 0xF0) >> 11;
         D_800FE488.unk14 += D_800FE488.unk10 & 0xF;
     } else if (D_800FE3B8.unkAC != 0) {
-        v = ((func_8004BB80(D_800FE3B8.unkB0 << 6) * d) >> 13) * (D_800FE3B8.unkAC & 0xF0) >> 11;
+        v = ((math_sin(D_800FE3B8.unkB0 << 6) * d) >> 13) * (D_800FE3B8.unkAC & 0xF0) >> 11;
         D_800FE3B8.unkB0 += D_800FE3B8.unkAC & 0xF;
     }
     arg0[1] += v;
@@ -631,20 +631,20 @@ void func_800C4B9C(s32 arg0, s32 arg1, s16 *arg2, s16 *arg3) {
         c += arg2[3];
     }
     if (arg1 & 0x40) {
-        t = (func_8004BB7C(arg2[0]) * c) >> 12;
-        arg3[0] = (-func_8004BB80(arg2[1]) * t) >> 12;
-        arg3[2] = (-func_8004BB7C(arg2[1]) * t) >> 12;
-        arg3[1] = (func_8004BB80(arg2[0]) * c) >> 12;
+        t = (math_cos(arg2[0]) * c) >> 12;
+        arg3[0] = (-math_sin(arg2[1]) * t) >> 12;
+        arg3[2] = (-math_cos(arg2[1]) * t) >> 12;
+        arg3[1] = (math_sin(arg2[0]) * c) >> 12;
     } else {
-        t = (func_8004BB7C(arg2[0] + b[0]) * c) >> 12;
+        t = (math_cos(arg2[0] + b[0]) * c) >> 12;
         ang = arg2[1] + b[1];
         u = (BtlUnit *)func_800C5890(arg0 & 0x1F);
         if (u != NULL && (u->unk68 & 1)) {
             ang ^= 0xFFF;
         }
-        arg3[0] = (-func_8004BB80(ang) * t) >> 12;
-        arg3[2] = (-func_8004BB7C(ang) * t) >> 12;
-        arg3[1] = (func_8004BB80(arg2[0] + b[0]) * c) >> 12;
+        arg3[0] = (-math_sin(ang) * t) >> 12;
+        arg3[2] = (-math_cos(ang) * t) >> 12;
+        arg3[1] = (math_sin(arg2[0] + b[0]) * c) >> 12;
         arg2[2] += b[2];
     }
     arg3[0] += a[0];

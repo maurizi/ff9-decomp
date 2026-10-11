@@ -96,3 +96,6 @@ cd_onSectorReady = 0x8002291C; // type:func [runtime] copies each 0x800-byte sec
 CdGetSector = 0x800213C0; // type:func [runtime] PsyQ libcd's wrapper body (CD_getsector(madr, size) == 0), called (0x801EDF00, 0x200) for ovl_39
 g_cdLoad = 0x800761D0; // [runtime] CD load state - sectorsLeft 29 -> 0, bytesRead/chunkOfs +0x800 per sector while ovl_39 loads
 cd_startRequest = 0x8002267C; // type:func [runtime] sets g_cdLoad.sectorsLeft = 29 for ovl_39 from the request (sector 0x5FA, size 0xE800) and seeks
+math_sin = 0x8004BB80; // type:func [runtime] called every frame (battle camera, text module), quarter-wave table D_8006C1C4, 4096 = full turn and 1.0
+math_cos = 0x8004BB7C; // type:func [runtime] cos(0) is followed by math_sin(0x400) from the same call site - adds a quarter turn and falls into math_sin
+g_sinTable = 0x8006C1C4; // [code] 0x401 s16, 0 .. 4096 over a quarter turn (sin 45 deg = 2896)

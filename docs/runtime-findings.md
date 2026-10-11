@@ -261,3 +261,11 @@ Format:
   holds +0 = 3, +4 = 0x5FA (start sector), +8 = 0xE800 (bytes, = 29 sectors), +0xC = -1 (use the inline chunk),
   +0x14 = func_800227C8, +0x1C = {0xE800, 0x801EDF00}.
 - names: cd_startRequest, CdRequest.sector/size, CdChunk.size/dest.
+
+## math_sin / math_cos, rand_refill equivalence  (status: applied)
+- Redux: in `field_dali_inn` walking calls func_8004BB80 ~once a frame (a0 0x1040, 0x820, ...); in
+  `battle_iifa_command` an attack makes 438 calls to func_8004BB7C, each with a0 = 0 followed by func_8004BB80 with
+  a0 = 0x400 from the same call site (the fall-through). Table D_8006C1C4: [0] 0, [0x200] 2896, [0x400] 4096.
+- src_equiv/main/math_rand.c's rand_refill, applied to the 0x20C table bytes captured the frame before a refill in
+  `field_burmecia_vault`, gives exactly the bytes after it (0 of 0x20C differ, the 3 bytes past the table included).
+- names: math_sin, math_cos, g_sinTable.

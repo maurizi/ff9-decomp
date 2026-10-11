@@ -949,7 +949,7 @@ u32 *func_8002FBC0(s32);
 #if !defined(OVL_0C_H) /* ovl_0c declares its own typed view */
 void func_80030AF4(void *, void *); /* rotation -> matrix */
 #endif
-s32 func_8004BB7C(s32); /* cos */
+s32 math_cos(s32); /* cos */
 extern SVECTOR D_80077CB0;
 extern SVECTOR D_80077CC0[2][4]; /* two screen-filling quads */
 
@@ -1365,14 +1365,14 @@ MATRIX *func_80031284(SVECTOR *, MATRIX *, s32);
 MATRIX *func_80031718(SVECTOR *, MATRIX *, s32);
 
 /* sine table, 0x400 entries for a quarter wave (4096 = 360 degrees) */
-extern s16 D_8006C1C4[];
+extern s16 g_sinTable[];
 
-/* out = sin(a) from D_8006C1C4. a is the angle (bits above 0xFFF ignored), mk the same angle & 0xFFF. */
+/* out = sin(a) from g_sinTable. a is the angle (bits above 0xFFF ignored), mk the same angle & 0xFFF. */
 #define ISIN(out, a, mk)                              \
     if ((a) & 0x400) {                                \
-        out = D_8006C1C4[0x400 - ((a) & 0x3FF)];      \
+        out = g_sinTable[0x400 - ((a) & 0x3FF)];      \
     } else {                                          \
-        out = D_8006C1C4[(a) & 0x3FF];                \
+        out = g_sinTable[(a) & 0x3FF];                \
     }                                                 \
     if ((mk) & 0x800) {                               \
         out = -out;                                   \
@@ -3948,7 +3948,7 @@ extern u32 *D_8007BD30;
 #endif
 #endif
 void func_8002F884(void);
-s32 func_8004BB80(s32); /* sin */
+s32 math_sin(s32); /* sin */
 void func_800540E8(s32, s32);
 u32 *func_80054294(u32 *, s32, s32);
 void func_80054650(void);
