@@ -1,4 +1,4 @@
-/* STATUS: near miss, 39 rows (pass 13; was 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
+/* STATUS: near miss, 38 rows (pass 16; was 39, 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
  ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle
  sprite and a DR_TPAGE). Logic and stores right; instruction count now matches (206).
  Pass 13 (build/search/galloc.py + the greg conflict lists): the original keeps otz*4 s3, w+8 s4, x s5, y s6, ic s7,
@@ -14,7 +14,16 @@
  top, in an else arm or after the loop do not make the post-loop %hi global (cse's extended block ends at the
  post-loop label).
  Pass 14: D_8007716C/D_80077170 are real scalars: declaring them as fields of one struct (or either as a
- 1-element array via __asm__ names) gives 114-194 rows. */
+ 1-element array via __asm__ names) gives 114-194 rows.
+ Pass 16: 39 -> 38. The line loop now matches the original exactly: `k = i + 2; yy = (y + k) << 16;` (a
+ separate variable keeps i + 2 in the loop and y first in the addu; `yy = i + 2; yy = y + yy` swaps the
+ addu operands because expand_binop puts the target-equal operand first, and `y + i + 2` / `i + 2 + y` get
+ reassociated so y + 2 is hoisted) and `pos + x + 3` (x + 4 and pos + x + 3 hoisted into t4/t3). What is
+ left is only the global allocation after the loop (ic spilled/rematerialised in t6 and the block-local
+ %hi(D_8007716C) in s4, where the original keeps ic in s7 and rematerialises the %hi). The permuter
+ results for ovl_37 func_801F13F8 and ovl_33 func_801EF644 point at duplicated statement bodies that
+ jump2 cross-jumps after allocation (a pseudo used in two copies is global until then); the same might
+ explain the spilled %hi here (untested). */
 #include "ovl_34.h"
 
 typedef struct {
@@ -53,12 +62,13 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     ec = &D_80068998;
     if (pos != 0) {
         for (i = 0; i < 3; i++) {
-            s32 yy = (y + i + 2) << 16;
+            s32 k = i + 2;
+            s32 yy = (y + k) << 16;
             setlen(D_80077170, 3);
             l = (LineWords *)D_80077170;
             l->rgbc = D_801F154C[i];
             l->xy0 = (x + 4) | yy;
-            l->xy1 = (x + pos + 3) | yy;
+            l->xy1 = (pos + x + 3) | yy;
             addPrim(&D_8007716C[otz], l);
             D_80077170 = (u8 *)(l + 1);
         }

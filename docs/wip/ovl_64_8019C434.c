@@ -16,7 +16,14 @@
  (3) (54 -> 36). Left: only the two address blocks' scheduling: the original loads unk68, D_8019DE0C, unk5C, unk64,
  unk78, decrements the unk5C register in place after the mult, and stores D_8019DE0C++ before the D_801A07F0 store.
  An in-place `last = unk5C; ... (last -= 1)` / `sect = unk68 * last; last -= 1;` (8 spellings) gets the in-place
- addiu but costs scheduling (44-63 rows). */
+ addiu but costs scheduling (44-63 rows).
+ Pass 16: the second address block's in-place `unk5C - 1` (addiu a3,a3,-1 after the mult) comes from a
+ block-local variable: `(last2 = D_8019DE10.unk5C - 1)` with its own last2 instead of the shared `last`
+ (a variable set in both blocks is global, so local-alloc cannot tie it to the dying unk5C register).
+ That block then differs only in unk64/unk78 (unk78 loads early into a0 here, late into v1 there), but
+ the first block gets worse, 39 rows overall (build/w/c4a.c in the pass-16 worktree). Permuter on that
+ base: 34-35 rows only with `(last2 = D_8019DE10.unk68) * unk5C` (unk68 read into the shared variable),
+ not used. Per-block `addr` variables, a `cur = unk68` local and `D_801A06F0[D_8019DE0C++]` do not help. */
 #include "ovl_64.h"
 void func_80022F64(s32);
 s32 DecDCToutSync(s32);

@@ -7,6 +7,10 @@
  *    folding the comparison does not change it;
  *  - s-registers of f/c and vp/ent are swapped (s1/s2, s0/s1);
  *  - clut computation scheduled later than in the original.
+ * Pass 16: 93 -> 57 rows with separate locals for the second loop (x2, y2, cx2, cy2; the permuter hinted at it
+ * with a `new_var = cx` copy). Left: the s-register assignment of f/c (original f s1, c s2), of the
+ * func_8001DAA4 result / %hi(D_80067948) / vp / pack base (original n s0, vp s1) and loop 2's vp loads
+ * (original lh y, lhu x, lh x, lhu y).
  */
 #include "ovl_0a.h"
 
@@ -34,6 +38,10 @@ s32 func_800AA4E8(s32 arg0) {
     s32 img;
     s32 x, y, cx, cy, e;
     s32 e1;
+    s32 cx2;
+    s32 cy2;
+    s32 x2;
+    s32 y2;
 
     f = func_8001E218(10, arg0);
     size = (f->unkC - f->unk4) << 11;
@@ -89,23 +97,23 @@ s32 func_800AA4E8(s32 arg0) {
         img = func_8001C8B0(pack2, 2, (i & 0xFFFF) | 0x40000, 0);
         e = ent[i].unk0;
         if (!(e & 1)) {
-            y = vp->unk12;
-            x = vp->unk10;
+            y2 = vp->unk12;
+            x2 = vp->unk10;
             if (vp->unk12 >= 0x1E0) {
                 vp->unk10 -= 0x40;
                 vp->unk12 = 0x100;
             } else {
                 vp->unk12 += 0x20;
             }
-            cy = vp->unk1A;
-            cx = vp->unk18;
+            cy2 = vp->unk1A;
+            cx2 = vp->unk18;
             vp->unk1A += 2;
-            tp[i * 2] = getTPage(1, 0, x, y);
-            tp[i * 2 + 1] = getClut(cx, cy);
+            tp[i * 2] = getTPage(1, 0, x2, y2);
+            tp[i * 2 + 1] = getClut(cx2, cy2);
             uv[i * 2] = 0;
-            uv[i * 2 + 1] = y % 256 - ((e - 2) % 8 * 32 + 0x100) % 128;
-            ent[i].unk0 = x;
-            ent[i].unk2 = y;
+            uv[i * 2 + 1] = y2 % 256 - ((e - 2) % 8 * 32 + 0x100) % 128;
+            ent[i].unk0 = x2;
+            ent[i].unk2 = y2;
             for (j = hdr[7] - 1; j >= 0; j--) {
                 if (ent[j].unk0 == e - 1) {
                     ent[i].unk4 = ent[j].unk4;
@@ -113,7 +121,7 @@ s32 func_800AA4E8(s32 arg0) {
                     break;
                 }
             }
-            func_8001D9CC(img, cx, cy, x, y);
+            func_8001D9CC(img, cx2, cy2, x2, y2);
             func_8001D8A8(img);
         }
     }

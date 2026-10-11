@@ -1,4 +1,9 @@
-/* STATUS: far, 47 rows (was 51, 57, 89) (mostly register naming). ovl_3a func_801F459C (0x1AC, name-entry cursor). Shape and constants right; the original keeps unk3 in a0 and the quotient in v1 (col computed in place), ours swaps them; the side-menu block uses v0/v1 the other way round. Permuter (20 min) did not improve it. Pass 4: five do { } while (0) wraps from build/dwgreedy.py take it to 57 rows; they probably stand in for a different statement shape (e.g. a helper inline or temporaries), so treat them as hints, not as the answer. Pass 15: 57 -> 51 with the group x offset as an inline (`grp_x(grp)` = grp * 72 + 0x3E; written flat, fold reassociates 0x3E onto r->x and the lhu moves up). The original masks col (andi) right after the % 15 and issues the / 5 multu before the y store; statement order alone (40 orders, no wraps) never gets below 80, so the wraps still stand in for something. Pass 15b: 51 -> 47 with the remainders spelled out (`col = unk3 - row * 15`, `sub = col - grp * 5`, no wraps in that block). The original's order in that block is col, the /5 multu, then row's andi and the y store, i.e. RTL order col, grp, row, y, sub, x; but every no-wrap statement order of those six (120 variants with the other blocks' wraps on/off) scores 78+. */
+/* STATUS: far, 45 rows (pass 16; was 47, 51, 57, 89) (mostly register naming). ovl_3a func_801F459C (0x1AC, name-entry cursor). Shape and constants right; the original keeps unk3 in a0 and the quotient in v1 (col computed in place), ours swaps them; the side-menu block uses v0/v1 the other way round. Permuter (20 min) did not improve it. Pass 4: five do { } while (0) wraps from build/dwgreedy.py take it to 57 rows; they probably stand in for a different statement shape (e.g. a helper inline or temporaries), so treat them as hints, not as the answer. Pass 15: 57 -> 51 with the group x offset as an inline (`grp_x(grp)` = grp * 72 + 0x3E; written flat, fold reassociates 0x3E onto r->x and the lhu moves up). The original masks col (andi) right after the % 15 and issues the / 5 multu before the y store; statement order alone (40 orders, no wraps) never gets below 80, so the wraps still stand in for something. Pass 15b: 51 -> 47 with the remainders spelled out (`col = unk3 - row * 15`, `sub = col - grp * 5`, no wraps in that block). The original's order in that block is col, the /5 multu, then row's andi and the y store, i.e. RTL order col, grp, row, y, sub, x; but every no-wrap statement order of those six (120 variants with the other blocks' wraps on/off) scores 78+.
+ Pass 16: 47 -> 45 with the first block's unk2 store as `if (unk1 >= 2) unk2 = y + 0x15; else unk2 = y + 0xD;`
+ (no do-while): the block's registers now match (hi of D_80077DE8 in v1, &D_80077DE8 in a1, unk1 in v0), but
+ the two stores are not cross-jumped as in the original (there the 0x15 arm jumps to the 0xD arm's store, which
+ reorg puts in the `j` delay slot); the ternary keeps one store but allocates like before (51). Sibling
+ functions ovl_37 F13F8 / ovl_33 EF644 point at duplicated statement bodies merged by jump2. */
 #include "ovl_3a.h"
 
 extern s32 D_80077DEC;
@@ -17,9 +22,11 @@ void func_801F459C(void) {
     if (D_801F4BBC.unk0 == 0) {
         D_80077DE8.unk0 = D_801F4BBC.unk134[2].x - 0xE;
         y = D_801F4BBC.unk134[2].y + D_801F4BBC.unk1 * 16;
-        do {
-            D_80077DE8.unk2 = D_801F4BBC.unk1 >= 2 ? y + 0x15 : y + 0xD;
-        } while (0);
+        if (D_801F4BBC.unk1 >= 2) {
+            D_80077DE8.unk2 = y + 0x15;
+        } else {
+            D_80077DE8.unk2 = y + 0xD;
+        }
     } else {
         r = &D_801F4BBC.unk134[4];
         if (D_801F4BBC.unk2 != 0) {

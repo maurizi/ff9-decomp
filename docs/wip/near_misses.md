@@ -736,6 +736,15 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     The draft also hid a wrong `abs()`: cmp.py/ccprobe mask `j` targets, and only `make verify` caught the
     jump into the shared tail of the next case. Check `cmp -l` against disks/us/ovl/XX.bin when verify fails.
 
+- Pass 16 (overlay agent): matched 0a BE158 (was 194 rows). Improved: 0a AA4E8 93 -> 57.
+  * BE158: the three layer paths (scrolling / parallax / static) each need their own block-local tile locals
+    (tx, ty, d, k). One set shared across the paths is one pseudo per variable with refs and live length
+    summed over all three, which reorders global allocation (the tile count lost its t9 and spilled). With
+    per-path locals the only difference left was `h = D_800C9DA4.unk10;` before the `if (buf) spr += n;`.
+  * AA4E8: the second upload loop has its own x/y/cx/cy (the permuter's `new_var = cx` copy pointed at it).
+  * The reverse also happens: in B0124 the kind-9 `d` must stay the variable shared with state 4 (17 rows split).
+    Per-region locals did nothing or hurt in C65CC, C519C, BB714 (+650), B4A5C, A741C, C07D8.
+
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
   scheduled first), 0d B3198 (y temp in a3 instead of v1), 0d B030C (0x40 constant not hoisted into fp),
@@ -1032,3 +1041,19 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     later blocks read D_8006794C->unk1C->... directly (no g local) in sector/id/size order, and the id choice
     is an else-if chain (`== 1` / `>= 0x2B52` / else): with a nested if in the else arm jump.c turns the
     0x2714 arm into a speculative set and reorg fills the bne delay slot differently. No do-while wraps.
+- Pass 16 (overlay agent): matched 64 B7C4 (was 75 rows). Improved: 37 F13F8 40 -> 27, 3a F459C 47 -> 45,
+  33 EF644 31 -> 28, 34 EFC20 (= 39 F7FD4) 39 -> 38.
+  * 64 B7C4: the colour table is indexed (`D_8019DEAC[j].r`, j++ every 8 sectors), not walked with a pointer.
+    The indexed table address is a loop invariant that loop.c moves first, and every moved invariant lowers
+    move_movables' threshold by 3; after that buf * 0x780 and &D_8019F7F0 (life 2, savings 2) are not worth
+    moving, which is the original's in-loop sll/subu/sll and lui/addiu (insn_count 99, threshold 28 or 29).
+    The pointer version also split the table pointer into two givs. Reading the loop dump (`dumpf.py f.c -dL`,
+    the "Insn N: ... moved / not desirable" lines) shows this directly.
+  * 37 F13F8: the state >= 2 cursor block is two copies of the same body (`if (unk1 == 2) BODY else if (blink)
+    BODY` inside `if (unk1 >= 2 && unk1 != 4)`), which jump2 cross-jumps after allocation.
+  * 33 EF644: a block-local pointer to D_80077DE8 (h3) can be tied to the %hi register by local-alloc
+    (`sh ..%lo(D)(a0); addiu a0,a0,%lo(D)`); a pointer shared by several blocks is global and cannot.
+  * 34 EFC20: `k = i + 2; yy = (y + k) << 16;` and `pos + x + 3` give the original's line loop exactly
+    (`yy = i + 2; yy = y + yy` swaps the addu operands: expand_binop puts the target-equal operand first).
+  * 64 C434: a block-local `(last2 = unk5C - 1)` gives the second block's in-place addiu (a variable set in
+    two blocks is global and cannot be tied).
