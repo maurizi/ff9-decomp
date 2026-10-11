@@ -784,6 +784,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   loops; in the 3-vertex loops `b = s->unk0[2]` (u16 field) with `D_80070520[(u16)b]` in the Z sum (duplicated
   sll, lhu); `otz = (otz & 0xFFFFF) / 3; ... ot[otz >> 2]` (the mask goes to a new pseudo); and copying the
   source pointer before the prim pointer between loops. A register-masked diff (cmp.py --shape) first, then regs.
+- Matched 0a B0124 (was 12 rows). The kind-9 copy `move v1,a0` is reload_cse turning a reload of
+  `D_8006794C->unk1C` into a move, not a CSE'd user copy: read the pointer into a block-local `GameData *p`
+  *after* the `D_800C9D4C = kind` store (the QI store invalidates `->unk1C` but not `D_8006794C`, so the first
+  D_8006794C load stays live into the block and gets a1, pushing %hi to a2). Then
+  `arg1 = p->unk7E8; id = p->unk7E8 | 0x70000; t = p->unk840 | 0x90000;` puts the 0x70000 constant early in
+  sched1 so local-alloc gives it a1 and the reload a2 (simulated with a block-14 local-alloc model over
+  toposorts: the original's registers need the constant born before the 826 store). The `ok` flag stays.
+  The rodata pad goes at the start of `case 1:`; in front of its switch it blocks a delay-slot fill.
 
 - Pass 20 (overlay agent, shape-first with build/search/cmp_shape.py --shape): C519C 140 -> 74 rows (shape exact
   apart from register-driven prologue order). Its edge test is func_800C1E14's code pasted in (same mult order

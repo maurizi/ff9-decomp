@@ -47,6 +47,9 @@
  * (all 7! orders of the setup lines, plus 168 block/bg/temp variants: best 4). A block-local
  * `{ s16 vx = a->unk14.vx; c = ...; v.vx = vx; }` after the copy gets the final load order right but
  * gives bg a2 / unk18 a0 and changes the y clamp (9-10 rows). The body below is the C X P order.
+ * Pass 20: copy spellings `st->unk10 = st->unk4` (6), `D_800CA068.unk10 = D_800CA068.unk4` (4),
+ * `s32 *cp = &st->unk4; cp[3] = cp[0]` (4), an early `s32 off = bg->unk18` with the copy before c (4), and
+ * a block-local s32 / Pair temp for the copy load (13, two extra insns): no gain.
  */
 #include "ovl_0a.h"
 
