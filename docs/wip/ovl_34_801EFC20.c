@@ -1,4 +1,18 @@
-/* STATUS: near miss, 46 rows (was 62) (same function as ovl_39 func_801F7FD4: one solution gives both). ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle sprite and a DR_TPAGE). Logic and stores right; left: register pressure. The original keeps x/y/otz*4/w+8/&D_80068988/&D_80068990 and the two OT masks in s0-s7/fp and spills the CSEd &D_8007716C and &D_80068998 pseudos (rematerialised through t6 at each use); ours spills ic/mid or w+8 instead. Permuter (25 min) found nothing better. Pass 4: do { } while (0) around the func_80027710 call (build/dwgreedy.py) gives 46 rows; a further 20-min permuter run found nothing that cmp.py scores better. */
+/* STATUS: near miss, 39 rows (pass 13; was 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
+ ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle
+ sprite and a DR_TPAGE). Logic and stores right; instruction count now matches (206).
+ Pass 13 (build/search/galloc.py + the greg conflict lists): the original keeps otz*4 s3, w+8 s4, x s5, y s6, ic s7,
+ mid fp and rematerialises &D_80068998 and %hi(D_8007716C) through t6. Ours had block-local pseudos that cross
+ the calls (the &D_80068998 address, the %hi(D_8007716C) part) taking s4/s1 in local-alloc, which gives every
+ global a hard conflict with s0-s5 and shifts the whole s-register assignment. `ec = &D_80068998;` at the top
+ makes that address a global pseudo (4 refs / 206 insns, lowest priority, spilled and rematerialised like the
+ original). Left: the post-loop %hi(D_8007716C) pseudo (4 uses after the calls) is still a block-local qty that
+ wins s4; in the original it is a spilled global (lui t6 at each use, also inside the loop). The global
+ allocation order is otherwise the original's: otz > w > x > y > ic > mid needs the ic/otz refs of the
+ do { } while (0) around the first func_80027710 call (ic 6 refs > mid 7 / 260; otz 7 refs > w), but with
+ the block-local %hi in s4 that version scores 49 rows and the plain call 39. Dead reads of D_8007716C at the
+ top, in an else arm or after the loop do not make the post-loop %hi global (cse's extended block ends at the
+ post-loop label). */
 #include "ovl_34.h"
 
 typedef struct {
@@ -25,6 +39,7 @@ typedef struct {
 void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     IconT *ic;
     IconT *mid;
+    IconT *ec;
     SprtWords *p;
     LineWords *l;
     RECT r;
@@ -33,6 +48,7 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     ic = D_80068988;
     mid = &ic[1];
     w += 8;
+    ec = &D_80068998;
     if (pos != 0) {
         for (i = 0; i < 3; i++) {
             s32 yy = (y + i + 2) << 16;
@@ -45,10 +61,8 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             D_80077170 = (u8 *)(l + 1);
         }
     }
-    do {
-        func_80027710(x, y, otz, ic, 0);
-    } while (0);
-    func_80027710(x + w - D_80068998.unk4, y, otz, &D_80068998, 0);
+    func_80027710(x, y, otz, ic, 0);
+    func_80027710(x + w - ec->unk4, y, otz, ec, 0);
     SetTexWindow(D_80077170, &D_801F1544);
     addPrim(&D_8007716C[otz], D_80077170);
     D_80077170 += 0xC;
@@ -57,7 +71,7 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     p->rgbc = 0x64808080;
     p->xy = ((u16)(x + ic->unk4)) | (y << 16);
     p->uvclut = mid->unk2 << 16;
-    p->wh = (w - (ic->unk4 + D_80068998.unk4)) | (mid->unk5 << 16);
+    p->wh = (w - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
     addPrim(&D_8007716C[otz], p);
     D_80077170 = (u8 *)(p + 1);
     r.x = mid->unk0;
