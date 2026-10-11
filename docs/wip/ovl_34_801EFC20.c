@@ -1,4 +1,4 @@
-/* STATUS: near miss, 38 rows (pass 16; was 39, 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
+/* STATUS: near miss, 10 rows (pass 16; was 38, 39, 46-48) (same function as ovl_39 func_801F7FD4: one solution gives both).
  ovl_34 func_801EFC20 (0x338, slider gauge: three LINE_F2 rows, two end-cap sprites, a DR_TWIN-repeated middle
  sprite and a DR_TPAGE). Logic and stores right; instruction count now matches (206).
  Pass 13 (build/search/galloc.py + the greg conflict lists): the original keeps otz*4 s3, w+8 s4, x s5, y s6, ic s7,
@@ -23,7 +23,12 @@
  %hi(D_8007716C) in s4, where the original keeps ic in s7 and rematerialises the %hi). The permuter
  results for ovl_37 func_801F13F8 and ovl_33 func_801EF644 point at duplicated statement bodies that
  jump2 cross-jumps after allocation (a pseudo used in two copies is global until then); the same might
- explain the spilled %hi here (untested). */
+ explain the spilled %hi here (untested).
+ Pass 16b: 38 -> 18 with `width = w + 8;` in its own local after `ec = ...` (instead of `w += 8`; permuter
+ hint `new_var = w`): the %hi(D_8007716C) is now spilled and rematerialised in t6 like the original.
+ 18 -> 10 with the first func_80027710 call in `do { } while (0)` again (ic s7, mid fp). Left: the prologue
+ loads w into v0 (original v1, %hi(D_80068988) in v0), the second call's x + width is computed right after
+ the first call into v0 (original: last, into a0), and `x + ic->unk4` operand order in the sprite xy. */
 #include "ovl_34.h"
 
 typedef struct {
@@ -51,6 +56,7 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     IconT *ic;
     IconT *mid;
     IconT *ec;
+    s32 width;
     SprtWords *p;
     LineWords *l;
     RECT r;
@@ -58,8 +64,8 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
 
     ic = D_80068988;
     mid = &ic[1];
-    w += 8;
     ec = &D_80068998;
+    width = w + 8;
     if (pos != 0) {
         for (i = 0; i < 3; i++) {
             s32 k = i + 2;
@@ -73,8 +79,10 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             D_80077170 = (u8 *)(l + 1);
         }
     }
-    func_80027710(x, y, otz, ic, 0);
-    func_80027710(x + w - ec->unk4, y, otz, ec, 0);
+    do {
+        func_80027710(x, y, otz, ic, 0);
+    } while (0);
+    func_80027710(x + width - ec->unk4, y, otz, ec, 0);
     SetTexWindow(D_80077170, &D_801F1544);
     addPrim(&D_8007716C[otz], D_80077170);
     D_80077170 += 0xC;
@@ -83,7 +91,7 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
     p->rgbc = 0x64808080;
     p->xy = ((u16)(x + ic->unk4)) | (y << 16);
     p->uvclut = mid->unk2 << 16;
-    p->wh = (w - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
+    p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
     addPrim(&D_8007716C[otz], p);
     D_80077170 = (u8 *)(p + 1);
     r.x = mid->unk0;
