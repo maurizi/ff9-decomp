@@ -226,6 +226,15 @@ typedef struct {
 } Ovl64Stream;
 extern s32 D_8019DE0C;
 extern Ovl64Stream D_8019DE10;
+
+/* func_8019B7C4: CD ring debug view, one colour per 8 sectors and a POLY_F4 per sector */
+typedef struct {
+    u8 r;
+    u8 g;
+    u8 b;
+} Ovl64Rgb;
+extern Ovl64Rgb D_8019DEAC[];
+extern POLY_F4 D_8019F7F0[2][80];
 extern s32 D_8019DEA4;
 extern s32 D_8019DEA8;
 typedef struct {

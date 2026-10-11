@@ -754,7 +754,60 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019B188);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019B3D4);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019B7C4);
+void func_8019B7C4(u32 *ot, s32 buf) {
+    POLY_F4 *p;
+    Ovl64RingHdr *h;
+    s32 j;
+    u8 i;
+    s32 n;
+    u8 r;
+    u8 g;
+    u8 b;
+
+    h = D_8019DE10.unk74;
+    n = 0;
+    j = 0;
+    for (i = 0; i < D_8019DE10.unk60; i++) {
+        r = D_8019DEAC[j].r;
+        g = D_8019DEAC[j].g;
+        b = D_8019DEAC[j].b;
+        if (h->unk0 & 0x8000) {
+            if (r != 0) {
+                r += 0x60;
+            }
+            if (g != 0) {
+                g += 0x60;
+            }
+            if (b != 0) {
+                b += 0x60;
+            }
+        } else if (h->unk0 & 0x4000) {
+            if (r != 0) {
+                r -= 0x20;
+            }
+            if (g != 0) {
+                g -= 0x20;
+            }
+            if (b != 0) {
+                b -= 0x20;
+            }
+        }
+        p = &D_8019F7F0[buf][n++];
+        SetPolyF4(p);
+        setRGB0(p, r, g, b);
+        setXY4(p, i * 6 + 0x11, 0xBC, i * 6 + 0x16, 0xBC, i * 6 + 0x11, 0xC4, i * 6 + 0x16, 0xC4);
+        addPrim(ot, p);
+        if (((i + 1) & 7) == 0) {
+            j++;
+            h++;
+        }
+    }
+    p = &D_8019F7F0[buf][n];
+    SetPolyF4(p);
+    setRGB0(p, 0x10, 0x10, 0x10);
+    setXY4(p, 0x10, 0xBB, 0x132, 0xBB, 0x10, 0xC5, 0x132, 0xC5);
+    addPrim(ot, p);
+}
 
 void func_8019BA70(void) {
     Ovl64SectHdr *s;
