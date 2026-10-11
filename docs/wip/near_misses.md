@@ -1072,3 +1072,12 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     mode, and the arm loads become block-local temps, which gives the original's v1/v0 for blk/n.
   * 3a F459C 45 -> 44 without wraps: block 1 matches with a block-local `h = &D_80077DE8` after the unk0
     store and a ternary for unk2 (see its header).
+  * 33 EF644 26 -> 22 without wraps: per-block cursor pointers (h1/h2) and statement orders from
+    build/w/topo.py; block 1 matches, block 2 differs only in register naming (see its header).
+  * Tried without gain: 0a C0038 (if/else stores with a precomputed `f | 3`, explicit returns per arm,
+    duplicated stores: flow deletes the dead first store and jump2 still cross-jumps), 0a C07D8 (block-local
+    volatile read-back pointer: same 11 rows), 0a B4A5C (an unused `RECT` local in place of the dead `&pad`
+    lands before clut/img: BLKmode locals get their slot at declaration, 13 rows), 37 F13F8 (block-local
+    state/cursor pointers, switch forms, all body statement orders: 25 at best), 64 C434 (the slot address as a
+    static inline: both blocks get the in-place `unk5C - 1` but 39 rows), 0a BB714 (per-loop locals: much worse).
+  * 0d AC708's draft now includes ovl_0d.h (373 rows, compiles).
