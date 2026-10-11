@@ -832,6 +832,19 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     v[i].vx - p.vx right after the v[*].vz loads (before p.vz), dz0..dz2 after p.vz, `nv.vx = dx1 * dz2 - dx2 *
     dz1;` etc. Then `r.vx = ... / area;` after the second triangle's vz loads gives the late r.vx stack store.
     One variable reused for dz0 and the area (`d`, the permuter's hint) takes it from 49 to 38.
+- Pass 22 (overlay agent): **C519C MATCHED**. C65CC (38), C0038 (4), B4A5C (5), BD130 (9), C07D8 (11) unchanged.
+  * C519C: arg3/arg4 are `s16 *` parameters used directly instead of the `p`/`q` copies (the caller already
+    cast an `s16 *` to SVECTOR * for arg4). As parm pseudos they load/copy at entry, which gave the original's
+    global order (z, x > arg4 > arg6 > arg3 = s3..s7): 39 -> 11. The last prologue rows came from `tri = n;`:
+    sched.c (schedule_block, b == 0, before reload) keeps the leading run of insns that copy hard argument
+    registers into pseudos out of scheduling, but the run stops at the first non-INSN. `tri = n` let combine
+    delete n's parm copy (a NOTE_INSN_DELETED between the a1 and a3 copies), so the a3 copy became a
+    schedulable "birthing" insn (boosted, sunk to the branch). Without `tri` all four copies stay in place and
+    `edge = arg7; x = 0; z = 2; y = 1;` gives the exact prologue. Lesson: when parm copies or the setup of
+    multi-set locals are out of place in the first block, check for deleted parm copies breaking that run.
+  * C65CC: build/search/lsim.py simulates local-alloc for one block from the .lreg dump (reproduces all 100
+    qtys); notes on the order the original needs are in the C65CC header (dz0 and the area must be different
+    variables: they are in v0 and t2 in the original).
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
