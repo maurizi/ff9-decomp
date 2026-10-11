@@ -1830,7 +1830,7 @@ void func_800AE280(void) {
     s32 m;
     Unk800CE1E8 tmp;
 
-    k = D_800CCA28[func_800B7A14(0xC0)];
+    k = D_800CCA28[w_frameGetParameter(0xC0)];
     m = D_800CE3C8->unk11;
     if (D_800CCA20 != -1) {
         k = D_800CCA20;
@@ -2632,7 +2632,7 @@ void func_800B0378(Unk800CCCC0 *cc) {
     s32 m;
     s32 off, lim, y, zz, wz, r1, r2;
 
-    if (D_800CE3C8->unkD != 0 && D_800CE25E != 0 && func_800B7A14(0xC1) != 0x34 && D_800D3E75 == -1) {
+    if (D_800CE3C8->unkD != 0 && D_800CE25E != 0 && w_frameGetParameter(0xC1) != 0x34 && D_800D3E75 == -1) {
         D_800CCE54 = D_800CCE55;
     }
     if (D_800CCE4A == 0 && D_800D3E60 != 2 && D_800D4818 == 0 && D_800D33F4 != 0 && D_800CE1E0 == 0) {
@@ -2935,7 +2935,7 @@ u8 func_800B105C(ActorPos *out) {
                     break;
                 case 8:
                 case 9:
-                    if (abs(v.vy - func_800B7A14(0xC2)) >= 0x15F) {
+                    if (abs(v.vy - w_frameGetParameter(0xC2)) >= 0x15F) {
                         ok = 0;
                     }
                     break;
@@ -2983,7 +2983,7 @@ u8 func_800B105C(ActorPos *out) {
     return 0;
 }
 
-void func_800B153C(void) {
+void w_movementChange(void) {
     s8 old;
     Unk800CE3C8 *p;
     Unk800CE3C8 *prev;
@@ -3010,7 +3010,7 @@ void func_800B153C(void) {
         D_800CE0F0->unk8 = 1;
     }
     if (prev == NULL || prev->unkB != p->unkB) {
-        func_800C42B0(p->unkB);
+        w_musicRequestSend(p->unkB);
     }
     if (D_800CE3C4 == 0 && (u8)(old - 1) < 6) {
         D_800CE3CC = (D_800CE268->unk14.unk22 + 0x400) & 0xFFF;
@@ -3537,7 +3537,7 @@ void func_800B31B8(void) {
     p = &D_800CCB70[0];
     func_800C4850(D_800CE3C8->unkC, 0x7F, 0);
     func_800C4850(0x26, 0x7F, 0);
-    func_800C42B0(p->unkB);
+    w_musicRequestSend(p->unkB);
     func_800AE784(p->unk11, 0x40);
     if (D_800CCE50 & 0x20) {
         printf("w_movementChange SP1 : %d -> %d\n", old, 0);
@@ -3991,7 +3991,7 @@ void func_800B7098(void) {
         D_800CE25E = 0;
     }
     D_800CCF70 = 10;
-    func_800C3EAC();
+    w_musicUpdate();
     if ((u8)(D_800D30C5 - 1) < 199) {
         D_800D30C5++;
     }
@@ -4033,10 +4033,10 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A71F4);
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A720C);
 
 /* script request (w_frameSetParameter) */
-void func_800B73F8(u32 arg0, s32 arg1) {
+void w_frameSetParameter(u32 arg0, s32 arg1) {
     switch (arg0) {
     case 1:
-        func_800B153C();
+        w_movementChange();
         break;
     case 0:
         if (arg1 == 4) {
@@ -4276,7 +4276,7 @@ void func_800B73F8(u32 arg0, s32 arg1) {
     }
 }
 
-s32 func_800B7A14(s32 arg0) {
+s32 w_frameGetParameter(s32 arg0) {
     u32 v;
     s32 hi;
     s32 lo;
@@ -4414,8 +4414,8 @@ void func_800B7F7C(void) {
     D_8006794C->unk1C->unk0 &= ~0x400000;
     LoadImage(&r, (u32 *)D_800CFFD0);
     DrawSync(0);
-    func_800B153C();
-    func_800C3EAC();
+    w_movementChange();
+    w_musicUpdate();
     while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
     }
 }
@@ -4440,7 +4440,7 @@ void func_800B8068(void) {
     func_800C4654();
     func_800BC0A0();
     func_800B69AC();
-    func_800B8ABC();
+    w_memorymanDestructor();
 }
 
 s32 func_800B8108(void) {
@@ -4663,7 +4663,7 @@ void func_800B872C(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7BB8);
 
-s32 func_800B88C0(s32 arg0) {
+s32 w_memorymanHeapAlloc(s32 arg0) {
     s32 *p = &D_800CFDB0[D_800CFE14++];
 
     if (D_800CFE14 >= 0x19U) {
@@ -4682,7 +4682,7 @@ s32 func_800B88C0(s32 arg0) {
 }
 
 /* pop the heap stack */
-s32 func_800B89B0(void) {
+s32 w_memorymanHeapFree(void) {
     s32 *stack;
     s32 n;
     s32 prev;
@@ -4717,7 +4717,7 @@ void func_800B8A80(void) {
     D_80067948 += 0x24800;
 }
 
-void func_800B8ABC(void) {
+void w_memorymanDestructor(void) {
     if (D_800CFE14 != 0) {
         printf("w_memorymanDestructor:(Error) Memory leak can be found.\n");
     }
@@ -5987,7 +5987,7 @@ void func_800BC84C(s32 arg0) {
                 if (p->unkC == id) {
                     c = D_800D30F8[p->unkC];
                     if (c & 0x3F) {
-                        func_800C1DA4(c);
+                        w_readtxRequest(c);
                     }
                     p->unk0->unk4 = p->unk4;
                     p->unk4->unk0 = p->unk0;
@@ -6011,7 +6011,7 @@ void func_800BC84C(s32 arg0) {
         func_800BCA6C(missing[k]);
         c = D_800D30F8[missing[k]];
         if (c & 0x3F) {
-            func_800C1DA4(c);
+            w_readtxRequest(c);
         }
     }
     func_800BD5D0();
@@ -6549,7 +6549,7 @@ void func_800BDAB0(void) {
         func_800BE138(D_800D3C10[i].unk0);
         if (id != 0) {
             if (cnt2 < 2) {
-                func_800C2230(id);
+                w_frmbufRequest(id);
             }
             if (id != last) {
                 cnt2++;
@@ -7543,7 +7543,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8000);
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8020);
 
-s32 func_800C1DA4(s16 arg0) {
+s32 w_readtxRequest(s16 arg0) {
     Unk800D3EAC *p;
     u32 i;
 
@@ -7703,7 +7703,7 @@ const char D_800A80BC[] = "w_frmbufRequest:reqover [%d/%d]\n";
 const char D_800A80E0[] = "==== ERROR ===== / %s";
 const char D_800A80F8[] = "-- w_framebufRequest Error --\n";
 
-s32 func_800C2230(s16 arg0) {
+s32 w_frmbufRequest(s16 arg0) {
     WmLNode *p;
     u32 i;
 
@@ -8090,7 +8090,7 @@ s32 func_800C3E88(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8178);
 
-void func_800C3EAC(void) {
+void w_musicUpdate(void) {
     s32 st;
 
     switch (D_800D4818) {
@@ -8124,7 +8124,7 @@ void func_800C3EAC(void) {
 }
 
 /* sound effect ids of world-map sound arg0 */
-s32 func_800C3FE4(s32 arg0, Unk800C3FE4 *arg1) {
+s32 w_musicGetID(s32 arg0, Unk800C3FE4 *arg1) {
     Unk800C3FE4 s;
 
     s.unk8[0] = -1;
@@ -8281,7 +8281,7 @@ const char D_800A8430[] = "(Denied / same request)\n";
 /* padded: the jump table that follows is 8-aligned in its object */
 const char D_800A844C[0x38] = "w_musicRequestSend : music status is not ready now\n";
 
-void func_800C42B0(u32 arg0) {
+void w_musicRequestSend(u32 arg0) {
     if (D_800D4818 == 0) {
         if (D_800CCE50 & 4) {
             switch (arg0) {
@@ -8333,7 +8333,7 @@ void func_800C43F0(void) {
     s32 m2;
 
     for (i = 0; i < 7; i++) {
-        if (func_800C3FE4(i, &s) & 0xFF) {
+        if (w_musicGetID(i, &s) & 0xFF) {
             m0 = s.unk0;
             for (j0 = 0; j0 < s.unk4; j0++) {
                 func_800AB0C0(0x5100, s.unk8[j0], m0, 0, 0);
@@ -8342,7 +8342,7 @@ void func_800C43F0(void) {
         }
     }
     for (i = 20; i < 26; i++) {
-        if (func_800C3FE4(i, &s) & 0xFF) {
+        if (w_musicGetID(i, &s) & 0xFF) {
             m1 = s.unk0;
             for (j1 = 0; j1 < s.unk4; j1++) {
                 func_800AB0C0(0x5100, s.unk8[j1], m1, 0, 0);
@@ -8351,7 +8351,7 @@ void func_800C43F0(void) {
         }
     }
     for (i = 30; i < 42; i++) {
-        if (func_800C3FE4(i, &s) & 0xFF) {
+        if (w_musicGetID(i, &s) & 0xFF) {
             m2 = s.unk0;
             for (j2 = 0; j2 < s.unk4; j2++) {
                 func_800AB0C0(0x5100, s.unk8[j2], m2, 0, 0);
@@ -8415,7 +8415,7 @@ void func_800C4718(s32 arg0, u8 arg1) {
     s32 i;
     s32 v;
 
-    if (func_800C3FE4(arg0, &s) & 0xFF) {
+    if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
             func_800AB0C0(0xD000, s.unk8[i], v, 0x7F, arg1);
@@ -8429,7 +8429,7 @@ void func_800C47B0(s32 arg0, u8 arg1) {
     s32 i;
     s32 v;
 
-    if (D_800D4818 == 0 && (func_800C3FE4(arg0, &s) & 0xFF)) {
+    if (D_800D4818 == 0 && (w_musicGetID(arg0, &s) & 0xFF)) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
             func_800AB0C0(0x9201, s.unk8[i], v, arg1, 0);
@@ -8443,7 +8443,7 @@ void func_800C4850(s32 arg0, u16 arg1, u8 arg2) {
     s32 i;
     s32 v;
 
-    if (func_800C3FE4(arg0, &s) & 0xFF) {
+    if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
             func_800AB0C0(0xD301, s.unk8[i], v, arg1, arg2);
@@ -8457,7 +8457,7 @@ void func_800C48F4(s32 arg0) {
     s32 i;
     s32 v;
 
-    if (func_800C3FE4(arg0, &s) & 0xFF) {
+    if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
             func_800AB0C0(0x5100, s.unk8[i], v, 0, 0);

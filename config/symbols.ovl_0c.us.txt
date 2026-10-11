@@ -1,0 +1,11 @@
+w_movementChange = 0x800B153C; // type:func [string] "w_movementChange  %d -> %d"
+w_frameSetParameter = 0x800B73F8; // type:func [string] "w_frameSetParameter illigal function #%d"
+w_frameGetParameter = 0x800B7A14; // type:func [string] "w_frameGetParameter illigal function #%d"
+w_memorymanHeapAlloc = 0x800B88C0; // type:func [string] "w_memorymanHeapAlloc ..."
+w_memorymanHeapFree = 0x800B89B0; // type:func [string] "w_memorymanHeapFree ..."
+w_memorymanDestructor = 0x800B8ABC; // type:func [string] "w_memorymanDestructor (Error) Memory leak ..."
+w_frmbufRequest = 0x800C2230; // type:func [string] prints D_800A80BC "w_frmbufRequest reqover [%d/%d]"
+w_musicUpdate = 0x800C3EAC; // type:func [string] "w_musicUpdate  Play/Ready/Waiting"
+w_musicGetID = 0x800C3FE4; // type:func [string] "w_musicGetID  Illigal SE Number #%d"
+w_musicRequestSend = 0x800C42B0; // type:func [string] prints the "w_musicRequestSend  ..." strings
+w_readtxRequest = 0x800C1DA4; // type:func [string] "w_readtxRequest/reqover[%d/%d]", "-- w_readtxRequest Error --"

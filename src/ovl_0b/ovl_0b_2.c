@@ -3704,7 +3704,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     e->unk48 = 0x50000 - e->unk10;
                     d->unk5C = e->unk48;
                     func_800DC748(&e->unk90, 1);
-                    d->unk60 = func_800DB8E0(e, e->unk180[0] != (s32)e->unk40 ? (s16 *)D_80100D90 : NULL);
+                    d->unk60 = Hi_RegisterSummonModel(e, e->unk180[0] != (s32)e->unk40 ? (s16 *)D_80100D90 : NULL);
                     d->unk50 = 2;
                     break;
                 case 6:
@@ -3790,7 +3790,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
     }
 }
 
-u16 func_800DB424(BtlUnit9C8 *arg0) {
+u16 Hi_RegisterSolidEffModel(BtlUnit9C8 *arg0) {
     BtlObjSlot *p = func_800DC494();
     if (p == NULL) {
         sprintf(D_80101470, "Hi_RegisterSolidEffModel()\nmemory not enough!");
@@ -3811,7 +3811,7 @@ u16 func_800DB424(BtlUnit9C8 *arg0) {
     return p->unk1E;
 }
 
-u16 func_800DB4EC(BtlUnit9C8 *arg0) {
+u16 Hi_RegisterGouEffModel(BtlUnit9C8 *arg0) {
     BtlObjSlot *p = func_800DC494();
     if (p == NULL) {
         sprintf(D_80101470, "Hi_RegisterGouEffModel()\nmemory not enough!");
@@ -3832,7 +3832,7 @@ u16 func_800DB4EC(BtlUnit9C8 *arg0) {
     return p->unk1E;
 }
 
-u16 func_800DB5B4(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4) {
+u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4) {
     s16 v[2];
     BtlObjSlot *p = func_800DC494();
     if (p == NULL) {
@@ -3858,7 +3858,7 @@ u16 func_800DB5B4(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4) {
     return p->unk1E;
 }
 
-u16 func_800DB6B8(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
+u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
     BtlObjSlot *p = func_800DC494();
     if (p == NULL) {
         sprintf(D_80101470, "Hi_RegisterTexListModel()\nmemory not enough!");
@@ -3880,7 +3880,7 @@ u16 func_800DB6B8(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
     return p->unk1E;
 }
 
-u16 func_800DB7F8(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
+u16 Hi_RegisterTexPtrModel(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
     BtlObjSlot *p = func_800DC494();
     if (p == NULL) {
         sprintf(D_80101470, "Hi_RegisterTexPtrModel()\nmemory not enough!");
@@ -3905,7 +3905,7 @@ s32 func_800DB8D8(void) {
     return 0;
 }
 
-s32 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
+s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
     s16 t[6][2];
     Unk8010141C *p = func_800DC4CC();
     s32 i;
@@ -3945,7 +3945,7 @@ s32 func_800DB8E0(Unk80100DC054 *arg0, s16 *arg1) {
     return (u16)p->unk4E;
 }
 
-void func_800DBA80(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
+void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawEffModel()\nid:%d cannot use!");
     s32 n;
     s32 i;
@@ -3972,7 +3972,7 @@ void func_800DBA80(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     }
 }
 
-void func_800DBBFC(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
+void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawSliceEffModel()\nid:%d cannot use!");
     s32 n;
     s32 i;
@@ -3987,13 +3987,13 @@ void func_800DBBFC(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
     }
 }
 
-void func_800DBD10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     BtlObjSlot *s = func_800DCFB0(arg1, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
     s32 n;
     s32 i;
     s32 v;
     D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
-    func_800DC988(arg2, arg3, (BtlBone *)&s->unk0->unk24);
+    Hi_GetSummonBoneMatrix(arg2, arg3, (BtlBone *)&s->unk0->unk24);
     if (arg0 != 0) {
         func_800DCB20(s->unk0, (VECTOR *)arg0);
     }
@@ -4017,7 +4017,7 @@ void func_800DBD10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
-void func_800DBE98(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     char *str = "Hi_DrawMorphEffModel()\nid:%d cannot use!";
     BtlObjSlot *s = func_800DCFB0(arg3, str);
     s32 n;
@@ -4045,14 +4045,14 @@ void func_800DBE98(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4, s3
     }
 }
 
-void func_800DC048(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     char *str = "Hi_DrawMorphModelByBone()\nid:%d cannot use!";
     BtlObjSlot *s = func_800DCFB0(arg1, str);
     s32 n;
     s32 i;
     s->unk0->unk5C = func_800DCFB0(arg2, str)->unk0->unk8;
     D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
-    func_800DC988(arg4, arg5, (BtlBone *)&s->unk0->unk24);
+    Hi_GetSummonBoneMatrix(arg4, arg5, (BtlBone *)&s->unk0->unk24);
     if (arg0 != 0) {
         func_800DCB20(s->unk0, (VECTOR *)arg0);
     }
@@ -4076,7 +4076,7 @@ void func_800DC048(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     }
 }
 
-s32 func_800DC208(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     Unk8010141C *s = func_800DD02C(arg3, "Hi_DrawSummonModel()\nid:%d cannot use!");
     BtlUnit9CC *a;
     s32 n;
@@ -4116,7 +4116,7 @@ s32 func_800DC208(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     return f;
 }
 
-void func_800DC3F8(BtlUnit9CC *arg0, s32 arg1) {
+void Hi_SetSummonMotion(BtlUnit9CC *arg0, s32 arg1) {
     Unk8010141C *p = func_800DD02C(arg1, "Hi_SetSummonMotion()\nid:%d cannot use!");
     p->unk50 = 0;
     p->unk0->unkC = arg0;
@@ -4281,11 +4281,11 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A7F60);
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A7F78);
 
-void func_800DC940(s32 arg0, s32 arg1, u16 *arg2) {
+void Hi_GetSummonBonePos(s32 arg0, s32 arg1, u16 *arg2) {
     func_800DC9D0(func_800DD02C(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
-void func_800DC988(s32 arg0, s32 arg1, BtlBone *arg2) {
+void Hi_GetSummonBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
     func_800DCA18(func_800DD02C(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
@@ -4352,16 +4352,16 @@ void func_800DCB20(BtlUnit9C *arg0, VECTOR *arg1) {
     gte_MulMatrix0(&arg0->unk24, &m, &arg0->unk24);
 }
 
-void func_800DCC58(s32 arg0, s32 arg1) {
+void Hi_ShowSummonModelMesh(s32 arg0, s32 arg1) {
     func_800DD02C(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 &= ~(1 << arg1);
 }
 
-void func_800DCCA0(s32 arg0, s32 arg1) {
+void Hi_HideSummonModelMesh(s32 arg0, s32 arg1) {
     func_800DD02C(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 |= 1 << arg1;
 }
 
 /* starts texture animation arg1 of summon model arg0 (arg2: also set flag 2) */
-void func_800DCCE4(s32 arg0, s32 arg1, u8 arg2) {
+void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
     Unk8010141C *p = func_800DD02C(arg0, "Hi_StartSummonTexAnim()\nid:%d cannot use!");
     s32 off;
 
@@ -4378,38 +4378,38 @@ void func_800DCCE4(s32 arg0, s32 arg1, u8 arg2) {
     ((BtlUnit9C50 *)((u8 *)p->unk0->unk50 + off))->unk12 = 0x1000;
 }
 
-void func_800DCDA4(s32 arg0, s32 arg1) {
+void Hi_StopSummonTexAnim(s32 arg0, s32 arg1) {
     BtlUnit9C50 *e = &func_800DD02C(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->unk50[arg1];
     e->unk4 &= ~3;
 }
 
-void func_800DCDF8(s32 arg0, s32 arg1) {
+void Hi_ModifyEffModelAbr(s32 arg0, s32 arg1) {
     if (arg1 != 0xFF) {
         func_800C8E80(func_800DCFB0(arg0, "Hi_ModifyEffModelAbr()\nid:%d cannot use!")->unk0, (u16)(arg1 << 5));
     }
 }
 
-void func_800DCE3C(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+void Hi_ModifyEffModelRGB(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     func_800C86C8(func_800DCFB0(arg0, "Hi_ModifyEffModelRGB()\nid:%d cannot use!")->unk0, arg1, arg2, arg3);
 }
 
-void func_800DCEA0(s32 arg0, s16 arg1) {
+void Hi_SetEffModelOffset(s32 arg0, s16 arg1) {
     func_800DCFB0(arg0, "Hi_SetEffModelOffset()\nid:%d cannot use!")->unk22 = arg1;
 }
 
-void func_800DCED0(s32 arg0, s16 arg1) {
+void Hi_SetEffModelSlice(s32 arg0, s16 arg1) {
     BtlObjSlot *p = func_800DCFB0(arg0, "Hi_SetEffModelSlice()\nid:%d cannot use!");
     p->unk1D = 1;
     p->unk24 = arg1;
 }
 
-void func_800DCF08(s32 arg0, s32 arg1) {
+void Hi_ModifySummonModelAbr(s32 arg0, s32 arg1) {
     if (arg1 != 0xFF) {
         func_800C8E80(func_800DD02C(arg0, "Hi_ModifySummonModelAbr()\nid:%d cannot use!")->unk0, (u16)(arg1 << 5));
     }
 }
 
-void func_800DCF4C(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+void Hi_ModifySummonModelRGB(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     func_800C86C8(func_800DD02C(arg0, "Hi_ModifySummonModelRGB()\nid:%d cannot use!")->unk0, arg1, arg2, arg3);
 }
 
@@ -4881,11 +4881,11 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF15C);
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A81A8);
 
-void func_800DF508(s32 arg0, s32 arg1, s32 arg2) {
+void Hi_SplitMdlVertex(s32 arg0, s32 arg1, s32 arg2) {
     func_800DF588(func_800DCFB0(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
-s32 func_800DF550(s32 arg0, s32 arg1) {
+s32 Hi_GetSplitMdlVertex(s32 arg0, s32 arg1) {
     return func_800DF670(func_800DCFB0(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
 }
 
@@ -8424,9 +8424,9 @@ void func_800E8F50(Unk800E8F50 *arg0, s32 arg1) {
         for (i = 0; i < n; i++) {
             e[i].unk0 |= (arg1 & 3) << 5;
         }
-        func_800DB6B8(p, (BtlTexInfo *)e, (s16 *)((u8 *)h + h->unk6), n);
+        Hi_RegisterTexListModel(p, (BtlTexInfo *)e, (s16 *)((u8 *)h + h->unk6), n);
     } else {
-        func_800DB4EC(p);
+        Hi_RegisterGouEffModel(p);
     }
 }
 
@@ -8460,7 +8460,7 @@ void func_800E9000(Unk800E9000 *arg0, s32 *src, s32 n, Unk80100DC054 *e) {
     }
     func_800DC748(&e->unk90, 1);
     D_80100DC0.unk54 = e;
-    D_80100DC0.unk60 = func_800DB8E0(e, NULL);
+    D_80100DC0.unk60 = Hi_RegisterSummonModel(e, NULL);
 }
 
 BtlUnit *func_800E9124(void) {

@@ -375,7 +375,7 @@ typedef struct {
     WmCell unk4[1];
 } WmCellTable;
 
-/* filled by func_800C3FE4 */
+/* filled by w_musicGetID */
 typedef struct {
     s32 unk0; /* volume mask */
     s32 unk4; /* count */
@@ -560,7 +560,7 @@ void func_800B6338(void *);
 s32 func_800B6598(void *, s32, s32);
 s32 func_800C291C(void);
 s32 func_800C3E88(void);
-void func_800C42B0(u32);
+void w_musicRequestSend(u32);
 void func_800C4850(s32, u16, u8);
 void func_800AE784(s16, s16);
 void func_800B3638(void);
@@ -569,7 +569,7 @@ void func_800C48F4(s32);
 void func_800C4718(s32, u8);
 void func_800C47B0(s32, u8);
 void func_800AFCE0(void);
-s32 func_800B88C0(s32);
+s32 w_memorymanHeapAlloc(s32);
 void func_800C2A80(s32, s32, s32);
 s32 func_800B36B4(s32, u32, u8 *);
 void func_800B01F0(Unk8004AB64 *);
@@ -585,12 +585,12 @@ void func_800B20B8(void);
 void func_800CB434(void);
 void func_800CC324(void);
 void func_800B69AC(void);
-void func_800B8ABC(void);
+void w_memorymanDestructor(void);
 void func_800BC0A0(void);
 void func_800C4654(void);
 void func_800C6EF8(void);
-void func_800B153C(void);
-void func_800C3EAC(void);
+void w_movementChange(void);
+void w_musicUpdate(void);
 /* TIM image blocks */
 typedef struct {
     u32 unk0; /* length */
@@ -609,7 +609,7 @@ void func_800CC3E0(s32);
 void func_800CC5D8(u8);
 s32 func_800B8498(void);
 s32 func_800B84C0(void);
-s32 func_800C3FE4(s32, Unk800C3FE4 *);
+s32 w_musicGetID(s32, Unk800C3FE4 *);
 s32 func_800B828C(s32 *);
 void func_800B3A80(s32);
 s32 func_800B3FEC(s32, s32, s32);
@@ -1180,7 +1180,7 @@ void func_800C24D8(void);
 void func_800BE6B4(void);
 void func_800BE238(void);
 s32 func_800BE138(s16);
-s32 func_800C2230(s16);
+s32 w_frmbufRequest(s16);
 void func_800C69F4(s32);
 extern u8 D_800CD728; /* big-map cone colour */
 extern u8 D_800CD72C;

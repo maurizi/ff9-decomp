@@ -2662,8 +2662,8 @@ s32 func_800ABA10(s32, s32);
 s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
 s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
 void func_800CFA00(s16 *, s16 *, s32, s16 *);
-u16 func_800DB6B8(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32);
-u16 func_800DB4EC(BtlUnit9C8 *);
+u16 Hi_RegisterTexListModel(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32);
+u16 Hi_RegisterGouEffModel(BtlUnit9C8 *);
 void func_800CF808(s16 *, s16 *, s16 *);
 void func_800CFD78(s16 *, s16 *, s32, s16 *);
 
@@ -2845,7 +2845,7 @@ s32 func_800CF574(void);
 UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
 u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);
-s32 func_800DB8E0(struct Unk80100DC054 *, s16 *);
+s32 Hi_RegisterSummonModel(struct Unk80100DC054 *, s16 *);
 typedef struct {
     u32 unk0; /* uv/clut */
     u8 unk4;  /* w */
@@ -2886,7 +2886,7 @@ u8 *func_800C7DAC(BtlUnit9C *, s32, u8 *);
 void func_800C6528(BtlUnit9C *, u8);
 u8 *func_800C58E4(BtlUnit9C *, u8, u8 *);
 void func_800DCA68(BtlUnit9C *, SVECTOR *, VECTOR *, VECTOR *);
-void func_800DC988(s32, s32, BtlBone *);
+void Hi_GetSummonBoneMatrix(s32, s32, BtlBone *);
 /* texture (VRAM) animations */
 typedef struct {
     s16 unk0; /* dest x */

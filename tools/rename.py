@@ -24,6 +24,8 @@ import sys
 
 MAIN_END = 0x800A7000
 PLACEHOLDER = re.compile(r"^(func|D)_([0-9A-F]{8})$")
+STRING = re.compile(r'"(?:[^"\\\n]|\\.)*"')
+COMMENT = re.compile(r"/\*.*?\*/|//[^\n]*", re.S)
 IDENT = re.compile(r"^[A-Za-z_]\w*$")
 INDEX = "config/functions.us.txt"
 LIB_LIST = "config/library_funcs.us.txt"
@@ -56,7 +58,9 @@ def taken(name, binary):
                                    "config/symbols.psyq.us.txt"]
     if binary == "main":  # a main name must not shadow anything an overlay declares
         files += glob.glob("config/symbols.*.us.txt")
-    return any(os.path.exists(f) and word.search(open(f).read()) for f in set(files))
+    # Strings and comments don't count: a function's own error message often spells its name.
+    return any(os.path.exists(f) and word.search(COMMENT.sub(" ", STRING.sub('""', open(f).read())))
+               for f in set(files))
 
 
 def main():
@@ -113,7 +117,8 @@ def main():
                 lines[i] = entry.sub(f"{new} =", line)
                 break
         else:
-            tags = [t for t in ("type:func" if is_func else "", comment) if t]
+            # splat reads `key:value` pairs from these comments, so a free-text comment loses its colons.
+            tags = [t for t in ("type:func" if is_func else "", comment.replace(":", "")) if t]
             lines.append(f"{new} = 0x{addr:08X};" + (" // " + " ".join(tags) if tags else ""))
         open(path, "w").write("\n".join(lines) + "\n")
 
