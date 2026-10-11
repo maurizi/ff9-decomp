@@ -968,3 +968,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     itself, which gives the original's giv copy (s5 = s6) before the inner underline loop and the giv
     inits after the copied exit test; `k++` is a separate statement after the call.
   * 3a F459C 57 -> 51, 0a BB714 notes (see their headers).
+  * 65 EF890 matched (was 72 rows): the free-space computation is two statements on one variable
+    (`at = D_80067944 - (dst + k); at = at / 0x800 * 0x800;`, the original's subu into s0 + copy), the
+    later blocks read D_8006794C->unk1C->... directly (no g local) in sector/id/size order, and the id choice
+    is an else-if chain (`== 1` / `>= 0x2B52` / else): with a nested if in the else arm jump.c turns the
+    0x2714 arm into a speculative set and reorg fills the bne delay slot differently. No do-while wraps.

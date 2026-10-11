@@ -122,7 +122,69 @@ s32 func_801EF814(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_65/nonmatchings/ovl_65", func_801EF890);
+void func_801EF890(void) {
+    Unk11C0 *b;
+    FileEntry *f;
+    GameData *g;
+    s32 id;
+    s32 size;
+    s32 at;
+    u8 *dst;
+    s32 sector;
+    s32 k;
+
+    b = D_8006794C->unk1C->unk8E4.ovl65->unk11C0;
+    func_80021C60();
+    D_8006794C->unk1C->unk8BC = NULL;
+    if (D_8006794C->unk1C->unk56E == 6) {
+        return;
+    }
+    id = 0x1000C;
+    if (b->unk6 == 1) {
+        id = 0x1000A;
+    }
+    f = func_8001E218(0, id);
+    dst = b->unk1C;
+    size = (f->unkC - f->unk4) << 11;
+    func_80021974(func_80021CFC(), 0, id, (s32)dst, size, size, f->unk4, size);
+    dst += size;
+    if (b->unk6 == 1) {
+        id = 0x2714;
+    } else if (D_8007AEF0.h[0] >= 0x2B52) {
+        id = 0x2716;
+    } else {
+        id = 0x2712;
+    }
+    f = func_8001E218(1, id);
+    k = -0x146F00;
+    size = (f->unkC - f->unk4) << 11;
+    at = D_80067944 - (dst + k);
+    at = at / 0x800 * 0x800;
+    func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, f->unk4, size);
+    dst += size;
+    if (b->unk6 != 1) {
+        return;
+    }
+    sector = D_8006794C->unk1C->unk7FC[0];
+    id = D_8006794C->unk1C->unk3A | 0x60000;
+    size = D_8006794C->unk1C->unk804[0] << 11;
+    at = D_80067944 - (dst + k);
+    at = at / 0x800 * 0x800;
+    func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
+    dst += size;
+    sector = D_8006794C->unk1C->unk7FC[1];
+    id = D_8006794C->unk1C->unkC | 0x50000;
+    size = D_8006794C->unk1C->unk804[1] << 11;
+    at = D_80067944 - (dst + k);
+    at = at / 0x800 * 0x800;
+    func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
+    g = D_8006794C->unk1C;
+    if ((s16)g->unkC == g->unk7EA && g->unk8AC != -1) {
+        sector = g->unk8AC;
+        id = g->unk7E8 | 0x70000;
+        func_80021974(func_80021CFC(), 1, id, 0, 0, 0, sector, -1);
+    }
+}
 
 void func_801EFB98(void) {
     RECT *r = &D_801F7A78.unkAC[0].unk4;
