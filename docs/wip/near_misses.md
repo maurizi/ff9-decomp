@@ -316,6 +316,18 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - REG_USERVAR_P is only read by loop.c, combine (small-register-class checks), regclass and jump, not cse.c. A
     user pointer `pb = &D_8007B958` is folded to the constant by CSE (8004DAD0: 28), and user-variable copies in
     E4A3C become the CSE class head over the hard param reg (7). It doesn't help 8001DE50's copy either.
+- Pass 20 (main; levers: structural variants, per-file flags, sched1/global-alloc internals): no matches.
+  - Per-file flags ruled out: every draft was scored under 22 single -f flags. -fno-force-mem fixes 8001DE50's
+    `li t0,2` (19 -> 17) and -fno-expensive-optimizations takes 800475D8 from 84 to 62, but both break matched
+    neighbours (7 of 51 in 8001C000-80020000, 4 of 8 in 80046000-80049000; 172 in all of main for -fno-force-mem).
+  - 8005681C: the giv init loses every sched1 step to the remaining stores through schedule_select's
+    potential-hazard test (memory unit), not through priority, so it ends up just below 88's definition.
+  - 8002E718: the param-copy exclusion in sched.c can't be broken for three plain params, and x/y are global
+    pseudos (precomputed by expand_call before the stack ternary). So m->unk5 in a3 means it was a global pseudo
+    in the original.
+  - 8004DAD0: the D_8007B958 store never aliases the MEM_IN_STRUCT fn-pointer loads (2.8 alias.c), so its source
+    position is free. The P/H allocation is the whole problem.
+  - 80059414: one variable for the pointer, v and the loop counter: 30-45. 50-min permuter run: nothing.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
@@ -573,6 +585,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
 - Pass 19 (ovl_0b): DA138 analysed against global.c find_reg/prune_preferences (preferences only point at hard
   regs or local-alloc'd pseudos, so p/sz get none that help, and i (2.0) can't be outranked by live-length
   shifts). E4A3C user-variable copies: 7. The others weren't re-tested.
+- Pass 20 (ovl_0b): no matches. DA1F4: an index loop with a base local (`e = (s16 *)(base + i * stride)`) gives
+  the original's loop shape (address giv advanced by stride, e an in-loop copy), but the load reads e: 16 rows,
+  shape 5. In the original all three `addu v0,a0` / `addu a3,a0` / `addiu a0,a0,12` read the arg0 pseudo in a0,
+  which dies at the p computation. That keeps p in a0 and out of d's s0, and it needs two copies (header reads,
+  long-lived pool) that CSE, cse2 and optimize_reg_copy_1 don't fold. 376 statement-order variants with
+  arg0/h/pool, `do { } while (0)` separators and a header pointer derived from p all fold them (20-23).
+  E4A3C: the copy pattern is what reload + reload_cse produce for params living in their stack homes (theory in
+  the header). BFF20: a 50-min permuter run found identical-arm junk on c that gives the arm-2 copy the right
+  direction, but c then lands in a1, not v1 (details in the header). DA138: 50-min permuter run, nothing.
+  Status unchanged: C3F78 3 (1 real), BFF20 6 (4 real), DA138 6, AB810 6, E4A3C 7, DA1F4 14.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
