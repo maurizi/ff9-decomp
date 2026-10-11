@@ -9002,7 +9002,33 @@ void func_800357E0(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
     D_80077170 += 8;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8003595C);
+void func_8003595C(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
+    u32 t;
+    s32 sw;
+    u32 tp;
+    s32 sh;
+    PolyFT4Words *p;
+
+    t = c->unk0.unk4;
+    sw = (c->unk0.unk8 * c->unk10) >> 12;
+    tp = ((t >> 16) & 0x1F) | (((t >> 21) & 3) << 5) | (((t >> 23) & 3) << 7);
+    sh = (c->unk0.unkA * c->unk12) >> 12;
+    x = x + c->unk0.unk2 - 0x80 + ((c->unk0.unk8 - sw) >> 1);
+    y = y + c->unk0.unk3 - 0x80 + ((c->unk0.unkA - sh) >> 1);
+    setlen(D_80077170, 9);
+    p = (PolyFT4Words *)D_80077170;
+    p->rgbc = 0x2C808080;
+    p->xy0 = (x & 0xFFFF) | (y << 16);
+    p->xy1 = ((x + sw) & 0xFFFF) | (y << 16);
+    p->xy2 = (x & 0xFFFF) | ((y + sh) << 16);
+    p->xy3 = ((x + sw) & 0xFFFF) | ((y + sh) << 16);
+    p->uv0clut = c->unk0.unk0 | (c->unk0.unk1 << 8) | ((u16)c->unk0.unk4 << 16);
+    p->uv1tpage = (c->unk0.unk0 + c->unk0.unk8 - 1) | (c->unk0.unk1 << 8) | (tp << 16);
+    p->uv2 = c->unk0.unk0 | ((c->unk0.unk1 + c->unk0.unkA - 1) << 8);
+    p->uv3 = (c->unk0.unk0 + c->unk0.unk8 - 1) | ((c->unk0.unk1 + c->unk0.unkA - 1) << 8);
+    addPrim(&D_8007716C[otz], p);
+    D_80077170 = (u8 *)(p + 1);
+}
 
 void func_80035B24(Unk80035B90 *a, Unk80035B90Data *d) {
     a->unk4 = d;
