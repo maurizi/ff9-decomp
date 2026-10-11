@@ -318,4 +318,22 @@ typedef struct {
     Ovl64FieldC *unkC;
 } Ovl64Field8E4;
 
+
+/* used by func_80199B28 */
+extern char D_8019903C[];
+s32 func_8019A5B0(s32);
+void func_8019AE44(void *);
+void func_8019AEC0(u8 *, u32 *, void *);
+s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4);
+s32 func_8019C7E4(void);
+s32 func_8019C884(Ovl64RingHdr *ring, u32 per, u32 size);
+s32 func_8019C954(u8 *arg0, s32 arg1, u32 arg2);
+s32 func_8019C98C(s32 arg0);
+s32 func_8019CA1C(CdlLOC *loc);
+s32 func_8019CAC0(CdlLOC *loc);
+s32 func_8019CC0C(void);
+s32 func_8019CCBC(u8 *data);
+u32 func_8019D3F0(u16 *p);
+void func_80199554(void);
+
 #endif
