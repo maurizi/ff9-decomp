@@ -1,8 +1,11 @@
-/* STATUS: far, 57 rows (was 89) (mostly register naming). ovl_3a func_801F459C (0x1AC, name-entry cursor). Shape and constants right; the original keeps unk3 in a0 and the quotient in v1 (col computed in place), ours swaps them; the side-menu block uses v0/v1 the other way round. Permuter (20 min) did not improve it. Pass 4: five do { } while (0) wraps from build/dwgreedy.py take it to 57 rows; they probably stand in for a different statement shape (e.g. a helper inline or temporaries), so treat them as hints, not as the answer. */
+/* STATUS: far, 51 rows (was 57, 89) (mostly register naming). ovl_3a func_801F459C (0x1AC, name-entry cursor). Shape and constants right; the original keeps unk3 in a0 and the quotient in v1 (col computed in place), ours swaps them; the side-menu block uses v0/v1 the other way round. Permuter (20 min) did not improve it. Pass 4: five do { } while (0) wraps from build/dwgreedy.py take it to 57 rows; they probably stand in for a different statement shape (e.g. a helper inline or temporaries), so treat them as hints, not as the answer. Pass 15: 57 -> 51 with the group x offset as an inline (`grp_x(grp)` = grp * 72 + 0x3E; written flat, fold reassociates 0x3E onto r->x and the lhu moves up). The original masks col (andi) right after the % 15 and issues the / 5 multu before the y store; statement order alone (40 orders, no wraps) never gets below 80, so the wraps still stand in for something. */
 #include "ovl_3a.h"
 
 extern s32 D_80077DEC;
 
+static inline s32 grp_x(u8 c) {
+    return c * 72 + 0x3E;
+}
 void func_801F459C(void) {
     RECT *r;
     s32 y;
@@ -31,7 +34,7 @@ void func_801F459C(void) {
             do {
                 sub = col % 5;
             } while (0);
-            D_80077DE8.unk0 = r->x + (grp * 72 + 0x3E) + sub * 13 - 0x17;
+            D_80077DE8.unk0 = r->x + grp_x(grp) + sub * 13 - 0x17;
         } else {
             row = D_801F4BBC.unk3 / 15;
             col = D_801F4BBC.unk3 % 15;

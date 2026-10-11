@@ -963,3 +963,8 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     not know is constant (fold_rtx swaps a const-equivalent first operand second), so the decode loop uses
     `d = &D_8019F4D8;` assigned at the top of `while (1)` (call arg, xor and found via d). Assigned inside the
     outer loop, loop.c hoists it together with wait #1's %hi(D_8019F4D8) (fp); assigned before the loop it doesn't.
+  * 3a F4238 matched (was 63 rows): the grid offsets are plain `i * 16 + 0x3E` / `0x3F + i * 16` /
+    `0x3E + j * 14` / `0x22 + i * 21` expressions, not induction variables: loop.c strength-reduces them
+    itself, which gives the original's giv copy (s5 = s6) before the inner underline loop and the giv
+    inits after the copied exit test; `k++` is a separate statement after the call.
+  * 3a F459C 57 -> 51, 0a BB714 notes (see their headers).
