@@ -3669,6 +3669,17 @@ extern RECT D_800FDE34;
     : : "r"(r0) : "memory")
 #define gte_rtv0tr_nn() __asm__ volatile(".word\t0x4A480012")
 
+/* func_800AC37C: project one corner of the 3x3 shadow grid */
+#define SHADOW_PT(x, z) \
+    v.vx = (x); \
+    v.vy = 0; \
+    v.vz = (z); \
+    gte_ldv0(&v); \
+    gte_rtps()
+
+/* func_800AC37C: shadow quad q of entry e in the current buffer */
+#define SHADOW_QUAD(q) e->unk8[D_8006794C->unk1C->unk8][q]
+
 typedef struct {
     u32 unk0;
     s32 unk4;
