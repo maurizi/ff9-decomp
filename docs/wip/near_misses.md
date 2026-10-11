@@ -785,6 +785,15 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   sll, lhu); `otz = (otz & 0xFFFFF) / 3; ... ot[otz >> 2]` (the mask goes to a new pseudo); and copying the
   source pointer before the prim pointer between loops. A register-masked diff (cmp.py --shape) first, then regs.
 
+- Pass 20 (overlay agent, shape-first with build/search/cmp_shape.py --shape): C519C 140 -> 74 rows (shape exact
+  apart from register-driven prologue order). Its edge test is func_800C1E14's code pasted in (same mult order
+  d1, e1, d2, e2 via `d = (..) * (ez = ..); ex = ..; e = .. * ex; d -= ..; e -= ..;`, nested ABS/sign ifs,
+  no gotos), vertices as in func_800C4B30 (`Unk800C9DFCv v[3], *pv[3]; pv[1]->unk0[x]`, which made the address
+  adds base-first), and a shared `return 1` after a switch. Lesson: look for a matched function with the same
+  arithmetic in the overlay (C1E14, C4B30) and copy its spelling, statement by statement. What is left there
+  is reload's spill-register choice (&q[x] priority 450 vs arg5 449.3). B4A5C, C07D8, C65CC unchanged (notes in
+  their headers).
+
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
   scheduled first), 0d B3198 (y temp in a3 instead of v1), 0d B030C (0x40 constant not hoisted into fp),
@@ -1147,3 +1156,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     preheader sets (res, i) in front of it gives the 2 back, and sched2 still emits them as stack stores later.
     General lesson: live length is counted after sched1 (`;; register N life shortened` in the -dS dump), so
     preheader statement order shifts it 1 insn per set without changing the output.
+- Pass 20 (overlay agent, shape-first): matched 3a F459C. 64 C434 is byte-identical (verify 20/20) but only with a
+  dead block-local `last` assigned inside the expression (`unk64 - (last = unk5C - 1)`), so it is not integrated
+  (source in its WIP file). 33 EF644 is shape-exact (24 rows, all block-2 registers). 37 F13F8 shape has 2 real rows.
+  * F459C: the masks come from where the u8 truncation happens. u8 locals are QImode pseudos that combine folds
+    into the use (`andi` late); a truncation at assignment into an int local (`col = (u8)(idx / 5)`) puts the andi
+    right after the srl like the original. The other half was variable reuse (a 4-variable role enumeration):
+    block 3's column reuses block 2's group variable. `grp_x(s32)` instead of `grp_x(u8)` (the inline's u8
+    parameter re-masked the value).
+  * C434: `sect = ...;` as its own statement and `addr = unk78 + sect * 0x8F4; addr -= 0x20;` (unk78 then loads
+    late, like the original). fold reassociates `a - (b - 1)` into `(a + 1) - b`; casts do not stop it, an inline
+    does but preexpand_calls then evaluates it first.
+  * EF644: all orders of block 3's statements (60) and block 2's (pass 17's) give an exact shape; registers in
+    block 2 point at the unk48.x lhu sitting early in sched1's order (v1 busy over unk8/l), not reproduced.
