@@ -9974,7 +9974,163 @@ s32 func_800C4EC8(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *sv
     return r;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C519C);
+s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, s16 *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
+    s16 o[3];
+    Unk800C9DFCv *pv[3];
+    Unk800C9DFCv v[3];
+    s16 hit[3][3];
+    s16 idx[3];
+    Unk800C9DFCv *vtx;
+    Unk800C9E04 *pl;
+    s16 i;
+    s16 cnt;
+    s16 edge;
+    u8 x;
+    u8 y;
+    u8 z;
+    u8 best;
+    s32 a;
+    s32 c;
+    s32 d;
+    s32 e;
+    s32 f;
+    s32 ax;
+    s32 m;
+    s32 min;
+    s32 ex;
+    s32 ez;
+
+    edge = arg7;
+    x = 0;
+    z = 2;
+    y = 1;
+    if (n->unk6 >= 0) {
+        pl = &D_800C9DF0.unk14[n->unk6];
+        if ((u32)(pl->unk4 + 0x50F4) <= 0xA1E8) {
+            a = pl->unk0;
+            c = pl->unk8;
+            if (ABS(a) > ABS(c)) {
+                x = 1;
+                z = 2;
+                y = 0;
+            } else {
+                x = 0;
+                z = 1;
+                y = 2;
+            }
+        }
+    }
+    vtx = (Unk800C9DFCv *)((u8 *)b + b->unk3A);
+    o[0] = b->unk8[0] + t->unkA[0];
+    o[1] = b->unk8[1] + t->unkA[1];
+    o[2] = b->unk8[2] + t->unkA[2];
+    for (i = 0; i < 3; i++) {
+        v[i].unk0[0] = o[0] + vtx[n->unkC[i]].unk0[0];
+        v[i].unk0[1] = o[1] + vtx[n->unkC[i]].unk0[1];
+        v[i].unk0[2] = o[2] + vtx[n->unkC[i]].unk0[2];
+    }
+    pv[0] = &v[2];
+    cnt = 0;
+    for (i = 0; i < 3; i++) {
+        pv[1] = &v[i];
+        if (i != edge) {
+            d = (pv[1]->unk0[x] - pv[0]->unk0[x]) * (ez = arg3[z] - arg4[z]);
+            ex = arg3[x] - arg4[x];
+            e = (pv[0]->unk0[z] - arg4[z]) * ex;
+            d -= (pv[1]->unk0[z] - pv[0]->unk0[z]) * ex;
+            e -= (pv[0]->unk0[x] - arg4[x]) * ez;
+            if (ABS(e) <= ABS(d)) {
+                f = (pv[0]->unk0[z] - arg4[z]) * (pv[1]->unk0[x] - pv[0]->unk0[x]);
+                f -= (pv[0]->unk0[x] - arg4[x]) * (pv[1]->unk0[z] - pv[0]->unk0[z]);
+                if (ABS(f) <= ABS(d)) {
+                    if ((e >= 0 && d >= 0) || (e <= 0 && d < 0)) {
+                        if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {
+                            if (d != 0) {
+                                while (e > 0x80000) {
+                                    e >>= 1;
+                                    d >>= 1;
+                                }
+                                hit[cnt][x] = pv[0]->unk0[x] + e * (pv[1]->unk0[x] - pv[0]->unk0[x]) / d;
+                                hit[cnt][z] = pv[0]->unk0[z] + e * (pv[1]->unk0[z] - pv[0]->unk0[z]) / d;
+                                ax = pv[1]->unk0[x] - pv[0]->unk0[x];
+                                if (ax < 0) {
+                                    ax = pv[0]->unk0[x] - pv[1]->unk0[x];
+                                }
+                                if ((pv[1]->unk0[z] - pv[0]->unk0[z] >= 0 ? pv[1]->unk0[z] - pv[0]->unk0[z] : pv[0]->unk0[z] - pv[1]->unk0[z]) < ax) {
+                                    hit[cnt][y] = pv[1]->unk0[y] - (pv[1]->unk0[x] - hit[cnt][x]) * (pv[0]->unk0[y] - pv[1]->unk0[y]) / (pv[0]->unk0[x] - pv[1]->unk0[x]);
+                                } else {
+                                    hit[cnt][y] = pv[1]->unk0[y] - (pv[1]->unk0[z] - hit[cnt][z]) * (pv[0]->unk0[y] - pv[1]->unk0[y]) / (pv[0]->unk0[z] - pv[1]->unk0[z]);
+                                }
+                            }
+                            idx[cnt] = i;
+                            cnt++;
+                        }
+                    }
+                }
+            }
+        }
+        pv[0] = pv[1];
+    }
+    if (cnt == 1) {
+        *arg6 = idx[0];
+        arg5->vx = hit[0][0];
+        arg5->vy = hit[0][1];
+        arg5->vz = hit[0][2];
+    } else if (cnt < 2) {
+        *arg6 = -1;
+        return 0;
+    } else switch (cnt) {
+    case 2:
+        switch (idx[0] + idx[1]) {
+        case 1:
+            pv[0] = &v[1];
+            pv[1] = &v[2];
+            pv[2] = &v[0];
+            break;
+        case 2:
+            pv[0] = &v[1];
+            pv[1] = &v[0];
+            pv[2] = &v[2];
+            break;
+        case 3:
+            pv[0] = &v[2];
+            pv[1] = &v[0];
+            pv[2] = &v[1];
+            break;
+        }
+        if (func_800C1E14(pv[0]->unk0, arg3, pv[2]->unk0, pv[1]->unk0, x, z)) {
+            *arg6 = idx[0];
+            arg5->vx = hit[0][0];
+            arg5->vy = hit[0][1];
+            arg5->vz = hit[0][2];
+        } else {
+            *arg6 = idx[1];
+            arg5->vx = hit[1][0];
+            arg5->vy = hit[1][1];
+            arg5->vz = hit[1][2];
+        }
+        break;
+    case 3:
+        best = 0;
+        min = 0x7FFFFFFF;
+        for (i = 0; i < 3; i++) {
+            m = hit[i][0] * hit[i][0] + hit[i][1] * hit[i][1] + hit[i][2] * hit[i][2];
+            if (m < min) {
+                best = i;
+                min = m;
+            }
+        }
+        *arg6 = best;
+        arg5->vx = hit[best][0];
+        arg5->vy = hit[best][1];
+        arg5->vz = hit[best][2];
+        break;
+    default:
+        *arg6 = -1;
+        return 0;
+    }
+    return 1;
+}
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/ovl_0a", D_800A717C);
 
