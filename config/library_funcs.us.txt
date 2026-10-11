@@ -141,8 +141,6 @@ main func_800645C4 libgte: GTE control register access
 main func_80064EA8 libgte: GTE control register access
 main func_80064EB8 libgte: GTE control register access
 main func_80062C8C libgte: hand-written GTE asm
-main func_8005658C libspu
-main func_80056700 libspu
 main func_8005703C libspu
 main func_8005709C libspu
 main func_80059504 libspu

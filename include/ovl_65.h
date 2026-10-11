@@ -221,7 +221,7 @@ void func_801EF28C(void);
 void func_801F3818(DispBuf *);
 void func_801F3A20(s32);
 s32 func_801F3A7C(void);
-void func_801F3488(s32);
+void gameover_main(s32);
 void func_801EF45C(void);
 void func_801EF5C8(void);
 s32 func_801EF6D8(void);

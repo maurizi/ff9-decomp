@@ -1579,7 +1579,7 @@ ovl_0a func_800B5660 0x134 0x800a7170
 ovl_0a func_800C5A7C 0x674 0x800a71f4
 ovl_0a func_800A7A48 0x64 0x800a7a48
 ovl_0a func_800A7AAC 0x64 0x800a7aac
-ovl_0a func_800A80A4 0xf4 0x800a80a4
+ovl_0a fld_gameOver 0xf4 0x800a80a4
 ovl_0a func_800A8198 0x160 0x800a8198
 ovl_0a func_800A82F8 0x4c 0x800a82f8
 ovl_0a func_800A8344 0x3c 0x800a8344
@@ -4287,8 +4287,8 @@ ovl_64 func_8019D110 0x90 0x8019d110
 ovl_64 func_8019D1A0 0x8c 0x8019d1a0
 ovl_64 func_8019D354 0x18 0x8019d354
 ovl_64 func_8019D3F0 0xc 0x8019d3f0
-ovl_65 func_801F3488 0x390 0x801ef268
-ovl_65 func_801EF284 0x1d8 0x801ef284
+ovl_65 gameover_main 0x390 0x801ef268
+ovl_65 battleEnd_main 0x1d8 0x801ef284
 ovl_65 func_801EF45C 0x16c 0x801ef45c
 ovl_65 func_801EF5C8 0x110 0x801ef5c8
 ovl_65 func_801EF6D8 0x20 0x801ef6d8

@@ -1,1 +1,3 @@
 g_rewardsText = 0x801EDF04; // [code] the text bank this overlay passes to text_setBank
+gameover_main = 0x801F3488; // type:func [runtime] after a party wipe in battle (mode 8) this runs and the GAME OVER screen shows
+battleEnd_main = 0x801EF284; // type:func [runtime] the mode loop's mode 8 entry after a battle, leads to the rewards screen or gameover_main

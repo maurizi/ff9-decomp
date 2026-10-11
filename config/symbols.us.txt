@@ -99,3 +99,13 @@ cd_startRequest = 0x8002267C; // type:func [runtime] sets g_cdLoad.sectorsLeft =
 math_sin = 0x8004BB80; // type:func [runtime] called every frame (battle camera, text module), quarter-wave table D_8006C1C4, 4096 = full turn and 1.0
 math_cos = 0x8004BB7C; // type:func [runtime] cos(0) is followed by math_sin(0x400) from the same call site - adds a quarter turn and falls into math_sin
 g_sinTable = 0x8006C1C4; // [code] 0x401 s16, 0 .. 4096 over a quarter turn (sin 45 deg = 2896)
+D_8007BBD0 = 0x8007BBD0; // second glyph table pointer, read by func_80050F68
+D_8007BCB4 = 0x8007BCB4; // glyph sprite CLUT/texture word (func_80050F4C)
+D_8007BCA0 = 0x8007BCA0; // pen colour (func_800512E4)
+D_8007BCAC = 0x8007BCAC; // debug print packet pointer (func_80051638)
+D_8007BC78 = 0x8007BC78; // pen stack storage (func_80051568)
+D_8007BD00 = 0x8007BD00; // glyph sink chosen by func_8005179C
+D_8007BCB8 = 0x8007BCB8; // expression stack storage (func_80051F54)
+D_8007BCF8 = 0x8007BCF8; // current object's local variables (func_80052870)
+D_8006E700 = 0x8006E700; // message printed on division by zero in func_80051F54
+D_8006EAD0 = 0x8006EAD0; // atan table read by func_80052F24 and ratan2

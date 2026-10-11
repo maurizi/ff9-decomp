@@ -23,13 +23,13 @@
  * 85 argument/result pairs captured in the emulator (field, walking): no differences. func_80053124 matched
  * 29 captured calls (all "outside"). Everything else is checked by reading against the asm only.
  *
- * func_80051358 (unreachable: no callers, and it expects the return address in $t1), func_80051274 and
- * func_80053384 (both `jr ra; nop`, used as "print nothing" glyph sinks) are given trivial bodies.
+ * func_80051358 (unreachable: no callers, and it expects the return address in $t1) is given a normal body.
  * Labels that are not functions (D_8005115C and func_8005116C + 0x68, glyph sinks reached only through
  * func_8005179C) are static functions here.
  */
 #include <stdarg.h>
 #include "ff9.h"
+#include "../src_equiv.h"
 
 /* ---- globals the headers don't declare yet (types from their use in this module) ---- */
 extern u32 D_8007BCB4;           /* CLUT/texture word added to glyph sprites (func_80050F4C) */
@@ -233,11 +233,9 @@ static void glyph_sink_world(s32 c) {
     glyph_debug6(c);
 }
 
-void func_80051274(s32 c) {
-}
-
-void func_80053384(s32 c) {
-}
+/* func_80051274 and func_80053384 (`jr ra; nop`, the "print nothing" sinks) are matched C in src/main/main.c. */
+void func_80051274(s32 c);
+void func_80053384(s32 c);
 
 /* Pen to text cell (col, row): 6 pixels per cell, origin (10, 20); also sets the line start. */
 void func_8005127C(s32 col, s32 row) {
@@ -1004,10 +1002,9 @@ void func_80051F54(void) {
             }
             break;
         case 0x60: /* angle / distance from the current object to the object at address v */
-            /* PORT: v comes from opcode 0x5F (an object pointer pushed as a 26-bit immediate) and the
-             * original restores KSEG0 with | 0x80000000. A DS port must map it back to its own pointer. */
+            /* v comes from opcode 0x5F (an object pointer pushed as a 26-bit immediate); see src_equiv.h. */
         case 0x61:
-            q = (Unk8004AB64 *)((u32)func_80051D4C() | 0x80000000);
+            q = (Unk8004AB64 *)SCRIPT_PTR_RESTORE(func_80051D4C());
             o = D_8007B704;
             if (op == 0x60) {
                 v = (s32)((u32)func_80052F24(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;

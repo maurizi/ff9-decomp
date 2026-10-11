@@ -17000,7 +17000,18 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", CdMix);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetTransferStartAddr);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005658C);
+void func_8005658C(s32 *src, Unk8005EBB4 *dst, u32 base, s32 n) {
+    s32 *d = (s32 *)dst;
+
+    do {
+        d[0] = src[0] + base;
+        d[1] = src[1] + base;
+        d[2] = src[2];
+        d[3] = src[3];
+        src += 4;
+        d += 4;
+    } while (--n != 0);
+}
 
 s32 func_800565DC(s32 *a) {
     return *a - 0x4F414B41; /* "AKAO" */
@@ -17037,7 +17048,13 @@ void func_800566D0(void) {
     } while (a[0] == 1);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80056700);
+s32 func_80056700(s32 bank, s32 wait) {
+    if (func_800565DC((s32 *)bank) != 0) {
+        return -1;
+    }
+    func_80056750((s32 *)bank, wait, ((s32 *)bank)[6], ((s32 *)bank)[4]);
+    return 0;
+}
 
 s32 func_80056750(s32 *buf, s32 wait, s32 slot, u32 addr) {
     s32 *h;

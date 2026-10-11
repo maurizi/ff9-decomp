@@ -1,6 +1,6 @@
 #include "ovl_65.h"
 
-void func_801EF284(void) {
+void battleEnd_main(void) {
     Unk11C0 *s;
     GameData *ctx;
     u8 i;
@@ -1471,7 +1471,7 @@ INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EE19C);
 
 INCLUDE_RODATA("asm/us/ovl_65/nonmatchings/ovl_65", D_801EF260);
 
-void func_801F3488(s32 arg0) {
+void gameover_main(s32 arg0) {
     s16 c = 0xFF;
     u8 state = 0;
     DispBuf b[2];
@@ -1603,7 +1603,7 @@ s32 func_801F3A7C(void) {
             func_800240B0(0);
         }
         func_800F4E68();
-        func_801F3488((s32)g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk1C);
+        gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk1C);
         return 2;
     }
     return 0;

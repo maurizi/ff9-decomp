@@ -118,7 +118,7 @@ void fld_main(s32 arg0) {
     func_800A8E58();
 }
 
-void func_800A80A4(void) {
+void fld_gameOver(void) {
     s32 i;
 
     func_801F3488(g_gameState->unk1C->unk8E4.field->unkC->unk14->unkC);

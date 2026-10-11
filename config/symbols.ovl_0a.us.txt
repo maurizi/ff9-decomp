@@ -1,3 +1,4 @@
 D_800A7170 = 0x800A7170; // force_not_migration:True
 fld_load = 0x800A89C4; // type:func [runtime] called (350) when Zidane walks out of the Dali inn, sets GameData.fieldId and loads that field
 fld_main = 0x800A7B10; // type:func [runtime] per-field loop - re-entered with the new field id after an exit, its Triangle check opens the menu
+fld_gameOver = 0x800A80A4; // type:func [code] mode 7 entry (field exit reason 7 sets mode 7 and loads ovl_65), calls gameover_main then mode 0
