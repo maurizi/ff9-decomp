@@ -30,6 +30,17 @@
  * `area = v[0].vz - p.vz`; the reuse makes it a multi-set pseudo, which also puts t back in t7). Left: o.vz /
  * v[1].vx swap t2/t4, and the dz/dx temps, d and the mflo results are a permutation of a2/t2/t3/t4/t8. dx/dz
  * statement orders (36), reusing k/c for a second difference (30) and 1700 single-line moves: no better.
+ * Pass 22 (local-alloc simulation, build/search/lsim.py: reproduces all 100 local qtys of this block exactly from
+ * the .lreg dump): the original cannot have one variable for dz0 and the area, since they are in different hard
+ * registers there (dz0 v0: `subu v0,t1,v0` / `mult a2,v0` / `mult s0,v0`; area t2: `subu t2,t2,t1`, the div
+ * divisor). With separate `dz0`/`area` locals (49 rows) the products and nv.vy already match; the rest is a
+ * local-alloc order problem. Target (c65b numbering): o.vz {110,112} t4, v[1].vx chain {131,211,209,258} t2,
+ * p.vz {222,224} t3, dx2 89 a2, dz1 90 t4, nv.vx 245 a2, nv.vz 251 t4, area 93 t2. The simulator shows that the
+ * priority order dx2 > v1vx > p.vz > dz1 and nv.vx > area gives all of them except area (which then gets a3):
+ * today p.vz 1923 > dx2 1875 > dz1 1500 > v1vx 1428 and area 909 > nv.vx 444, i.e. p.vz must lose ~20%
+ * (live length 52 -> 54..66 half-insns with 5 refs) and v1vx must beat dz1 and p.vz, which no statement order
+ * gives (1500 random topological orders of the dx/dz/p.vz/nv/area lines: all 49). Area probably is not a local
+ * qty in the original. Also tried: dropping `t` (154 rows), a second pointer t2 for n1 (51), area reused as k (73).
  */
 #include "ovl_0a.h"
 
