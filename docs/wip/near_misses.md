@@ -306,6 +306,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - Inline-boundary attempts (whole mask/v inline in 80059414, scale() in 8003595C, the whole 8002E718 body) gave no
     gains. The coordinator's loop-invariant tip does not apply to 8005681C: its early giv init comes from strength
     reduction (biv REG_EQUAL initial value) plus sched1, not from move_movables.
+- Pass 19 (main; the levers were REG_USERVAR_P and exact global.c/local-alloc priority arithmetic): no matches.
+  - 8003595C 12 -> 6: the statement order t; sw; tp; dx; sh; x; dy; y += unk3 + dy lets P2 win LO. What's left is a
+    local-alloc tie, the 0x2C808080 constant vs unk2 (both 2 refs/13 = 1538), plus unk2 needing span <= 10 to
+    outrank sw/sh (1875). Random statement-order sweeps (10k variants) and two permuter runs found no fix.
+  - The priority arithmetic rules out live-length shifts for 800475D8 x/y (needs +5 x-only insns or y >= 10 refs),
+    8002E718 blink/more/z (z needs > 42 insns or 2 refs) and 80059414 (b8 chain vs aC chain needs a 0.44 length
+    ratio).
+  - REG_USERVAR_P is only read by loop.c, combine (small-register-class checks), regclass and jump, not cse.c. A
+    user pointer `pb = &D_8007B958` is folded to the constant by CSE (8004DAD0: 28), and user-variable copies in
+    E4A3C become the CSE class head over the hard param reg (7). It doesn't help 8001DE50's copy either.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
@@ -560,6 +570,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     not used). No natural form found.
   - DA138, DA1F4, E4A3C: inline variants are no better (details in the headers).
   Status: C3F78 3 (1 real, -O1), BFF20 6 (4 real), DA138 6, AB810 6, E4A3C 7, DA1F4 14.
+- Pass 19 (ovl_0b): DA138 analysed against global.c find_reg/prune_preferences (preferences only point at hard
+  regs or local-alloc'd pseudos, so p/sz get none that help, and i (2.0) can't be outranked by live-length
+  shifts). E4A3C user-variable copies: 7. The others weren't re-tested.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
