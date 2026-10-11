@@ -18,7 +18,14 @@ tools/docker.sh make split
 tools/docker.sh make verify
 ```
 
-`make progress` shows how much is decompiled. `CLAUDE.md` describes the workflow in more detail.
+`CLAUDE.md` describes the workflow in more detail.
+
+## Progress
+
+3821 of 3837 game functions (98.8% of game code bytes) are decompiled to matching C, and 15 of the 20 binaries
+are fully decompiled. PsyQ SDK library code is identified by signature and left as assembly.
+
+`make progress` prints the current per-binary numbers, and `docs/progress.csv` records them over time.
 
 ## License
 
