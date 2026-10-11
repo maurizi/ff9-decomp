@@ -12,7 +12,7 @@ Format:
 - confidence: high / medium / low, and what would confirm it
 ```
 
-## D_800678EC → g_vsyncCounter?  (status: proposed)
+## D_800678EC → vsync counter  (status: confirmed, left unnamed: libetc-internal, no game code uses it)
 - binary: main; type: u32
 - evidence: increases by 1 per frame (`snap`/`diff` one frame apart, intro FMV). `watch D_800678EC --frames 10`:
   exactly 10 writes, all at `func_80016620+0x2C` (`sw $v0`), called from `func_80016114+0xDC`. Read ~5000×/frame
@@ -41,3 +41,11 @@ Format:
   run reached Vivi's command menu ~490 frames after ovl_0b showed up (`battle_iifa_command`).
   The `field_iifa_tree` screen itself never produced an encounter; walking down leaves it for the outer root screen.
 - confidence: high (ovl output and screenshots).
+
+## D_800678EC / D_8006F320 tick rates  (status: applied — D_8006F320 is g_akaoTickCount)
+- binary: main
+- evidence (DuckStation, intro, GDB reads 2 s apart via the duckstation MCP client): D_800678EC +121
+  (~60/s, one per vblank, as above); D_8006F320 +485 (~240/s; the window included the pauses for reads).
+  akao_init programs root counter 2 with target 0x44E8 = 33.8688 MHz / 8 / 17640 = 240 Hz, and
+  akao_tick increments D_8006F320 once per tick. D_80077DC0 ("frame counter?") stayed 0 here, so it's unconfirmed.
+- confidence: high for both rates.

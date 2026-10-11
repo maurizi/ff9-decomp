@@ -1008,9 +1008,9 @@ typedef struct {
 } Unk80080A10;
 extern Unk80080A10 *D_80080A10;
 extern Unk80080A10 D_8007F858; /* main sequencer state */
-extern s32 D_8006F31C;
-extern u16 D_8006F320; /* tick counter */
-extern s32 D_8006F324[4]; /* recent tick timings */
+extern s32 g_akaoTickTimeSum;
+extern u16 g_akaoTickCount; /* tick counter */
+extern s32 g_akaoTickTimes[4]; /* recent tick timings */
 void func_80058F94(void);
 void func_800589F0(void);
 void func_8005D628(Unk80080A10 *, AkaoChannel *);
@@ -1373,9 +1373,9 @@ void func_8002F6C8(void);
 void func_8002FC8C(s32, s32, s32, s32);
 void func_80032658(void);
 void func_80032140(s32, s32);
-void func_80056B18(void);
-void func_80056C08(void);
-s32 func_8005C8BC(u32);
+void akao_init(void);
+void akao_quit(void);
+s32 akao_command(u32);
 void func_80055D80(s32, s32);
 void func_8005ECCC(AkaoChannel *, s32);
 void func_80060938(void);
@@ -1427,7 +1427,7 @@ void func_800343C0(s32);
 void func_80034404(s32);
 void bzero(void *, s32);
 
-/* argument block for sound command func_8005C8BC */
+/* argument block for sound command akao_command */
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -1438,8 +1438,8 @@ typedef struct {
 } Unk80080AA0;
 void func_8005A014(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
 extern Unk80080AA0 D_80080AA0;
-extern Unk80080AA0 D_80080970; /* command block passed to the handlers */
-extern void (*D_8006F740[])(Unk80080AA0 *); /* sound command handlers */
+extern Unk80080AA0 g_akaoCommandBlock; /* command block passed to the handlers */
+extern void (*g_akaoCommandHandlers[])(Unk80080AA0 *); /* sound command handlers */
 
 typedef struct {
     u8 unk0; /* card id, 0xFF = none */
@@ -2247,13 +2247,13 @@ void func_8005EBE8(AkaoChannel *, s32);
 void func_80056644(void *, s32);
 void func_800566D0(void);
 void func_8005681C(void);
-s32 func_8005D6BC(void); /* root counter 2 callback; returns the ticks this tick took */
+s32 akao_tick(void); /* root counter 2 callback; returns the ticks this tick took */
 extern u8 D_80080990[];
 void UnDeliverEvent(s32, s32);
 void func_800575D0(s32);
 s32 StopRCnt(s32);
 void SpuQuit(void);
-extern s32 D_8006F318;
+extern s32 g_akaoTickEvent;
 extern u8 D_8006F334[];
 extern s32 D_8007B708;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */

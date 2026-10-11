@@ -45,3 +45,13 @@ DisableEvent = 0x80056CBC; // type:func [bios B(0Dh)]
 SysEnqIntRP = 0x80018B20; // type:func [bios C(02h)]
 SysDeqIntRP = 0x80018B30; // type:func [bios C(03h)]
 ChangeClearRCnt = 0x80015E98; // type:func [bios C(0Ah)]
+akao_init = 0x80056B18; // type:func [code] SpuStart, SpuInitMalloc, root counter 2 at 0x44E8 = 240 Hz with akao_tick as its event
+akao_quit = 0x80056C08; // type:func [code] stops root counter 2, closes its event, SpuQuit
+akao_tick = 0x8005D6BC; // type:func [code] root counter 2 event handler, catches up to 4 ticks per vblank
+akao_command = 0x8005C8BC; // type:func [code] runs sound command cmd via g_akaoCommandHandlers with the tick event disabled
+g_akaoTickEvent = 0x8006F318; // [code] OpenEvent handle for akao_tick
+g_akaoTickCount = 0x8006F320; // [code] [runtime] +1 per akao_tick, measured ~240/s in DuckStation
+g_akaoTickTimes = 0x8006F324; // [code] last four akao_tick durations in root counter 2 units
+g_akaoTickTimeSum = 0x8006F31C; // [code] sum of g_akaoTickTimes
+g_akaoCommandHandlers = 0x8006F740; // [code] akao_command's handler table, indexed by command
+g_akaoCommandBlock = 0x80080970; // [code] argument block akao_command passes to the handler
