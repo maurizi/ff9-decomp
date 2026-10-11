@@ -33,6 +33,14 @@
  * Pass 21: no change (11 rows). The read-back loop's registers (w in a0, the loaded value in v1 in the original)
  * do not move with the loaded value assigned to a local (t, y, size, arg0, arg4, a new u16/s32), `(void)`, a
  * pointer-free or while form of the loop. Single-line moves within each straight-line run: 11 at best.
+ * Pass 23 (param lever): the lbu loads are combine's merge of the entry `lw tempreg` (PROMOTE_PROTOTYPES: u8 args
+ * arrive as int) into the conversion insn, so they sit after the notes of the deleted lw's and are not in the
+ * unmovable head run (sched.c only pins SETs from hard regs; arg4's mem load already ends that run). Correction to
+ * pass 20: a real second set does move them. `if (arg2 == 99) { arg5 = 3; arg6 = 3; arg7 = 3; }` before the
+ * `arg2 >= 2` test (REG_N_SETS 2, so not birthing) puts all three lbu at the top exactly like the original (the
+ * extra code itself costs 29 rows). A dead set does not count (flow deletes it before REG_N_SETS is recounted):
+ * `arg5 = w[i];` etc. in the read-back loop change nothing. So the original probably assigns arg5-7 somewhere live;
+ * no natural spelling found (they are u8, so `arg5 = -arg5` for the fade-out case would change the stored value).
  */
 #include "ovl_0a.h"
 
