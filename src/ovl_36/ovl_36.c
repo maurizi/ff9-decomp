@@ -55,26 +55,26 @@ void func_801F0AE8(void) {
     s32 dir;
 
     cur = D_801F347C.unk2 * 10 + D_801F347C.unk1;
-    if (g_padRepeat & 0x10000) {
+    if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
         func_800361CC(0);
         return;
     }
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         func_801F0CC8();
         return;
     }
-    if (g_padRepeat & 0xF0) {
-        if ((g_padRepeat & 0x10) && D_801F347C.unk1 != 0) {
+    if (g_padRepeat & (PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT)) {
+        if ((g_padRepeat & PAD_UP) && D_801F347C.unk1 != 0) {
             D_801F347C.unk1--;
         }
-        if ((g_padRepeat & 0x40) && D_801F347C.unk1 < 9) {
+        if ((g_padRepeat & PAD_DOWN) && D_801F347C.unk1 < 9) {
             D_801F347C.unk1++;
         }
-        if ((g_padRepeat & 0x80) && D_801F347C.unk2 != 0) {
+        if ((g_padRepeat & PAD_LEFT) && D_801F347C.unk2 != 0) {
             D_801F347C.unk2--;
         }
-        if ((g_padRepeat & 0x20) && D_801F347C.unk2 < 9) {
+        if ((g_padRepeat & PAD_RIGHT) && D_801F347C.unk2 < 9) {
             D_801F347C.unk2++;
         }
         next = D_801F347C.unk2 * 10 + D_801F347C.unk1;
@@ -82,13 +82,13 @@ void func_801F0AE8(void) {
             snd_playSe(0x67);
             func_801F2C5C(next);
         }
-    } else if (g_padRepeat & 0x100000) {
+    } else if (g_padRepeat & BTN_L1) {
         dir = 0;
         if (D_801F347C.unk8[cur] >= 2) {
             func_801F2FE0(cur, dir);
             snd_playSe(0x417);
         }
-    } else if (g_padRepeat & 0x200000) {
+    } else if (g_padRepeat & BTN_R1) {
         dir = 1;
         if (D_801F347C.unk8[cur] >= 2) {
             func_801F2FE0(cur, dir);
@@ -594,8 +594,8 @@ void func_801F2578(void) {
     s32 cur;
 
     cur = D_801F347C.unk2 * 10 + D_801F347C.unk1;
-    if (g_padRepeat & 0x30000) {
-        if ((g_padRepeat & 0x20000) && D_801F347C.unk5 == 0) {
+    if (g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) {
+        if ((g_padRepeat & BTN_CROSS) && D_801F347C.unk5 == 0) {
             snd_playSe(0x67);
             func_800626D0(cur, D_801F347C.unk6C[cur]);
             func_801F1C88();
@@ -606,7 +606,7 @@ void func_801F2578(void) {
         func_8002DD00(D_801F347C.unk18E8);
         return;
     }
-    if (g_padRepeat & 0x50) {
+    if (g_padRepeat & (PAD_UP | PAD_DOWN)) {
         snd_playSe(0x67);
         D_801F347C.unk5 ^= 1;
     }

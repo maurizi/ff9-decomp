@@ -31,23 +31,23 @@ void func_801EE568(void) {
     u8 cur;
     s32 next;
 
-    if (g_padRepeat & 0x10000) {
+    if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
         func_800361CC(0);
         return;
     }
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         func_801EF494();
         return;
     }
-    if (g_padRepeat & 0x200000) {
+    if (g_padRepeat & BTN_R1) {
         cur = D_801F120C.unk2;
         next = func_8003380C(cur);
         if (cur != next) {
             func_801EF568(next, 2);
             snd_playSe(0x417);
         }
-    } else if (g_padRepeat & 0x100000) {
+    } else if (g_padRepeat & BTN_L1) {
         cur = D_801F120C.unk2;
         next = func_800337D0(cur);
         if (cur != next) {
@@ -376,12 +376,12 @@ void func_801EF80C(void) {
 }
 
 void func_801EF8A0(void) {
-    if (g_padRepeat & 0x10000) {
+    if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
         func_801EF9D4();
         return;
     }
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
         func_801EF494();
     }

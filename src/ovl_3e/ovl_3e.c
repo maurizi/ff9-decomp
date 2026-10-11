@@ -216,21 +216,21 @@ void func_801F682C(u32 *p, s32 i) {
 }
 
 void func_801F689C(void) {
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
         func_801F6A3C();
     }
 }
 
 void func_801F68D8(void) {
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
         func_801F6A3C();
     }
 }
 
 void func_801F6914(void) {
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         snd_playSe(0x67);
         D_801F6BBC.unk1 = 4;
         func_8002FAAC(0x18);

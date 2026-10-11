@@ -6689,7 +6689,7 @@ void func_8002F1CC(MenuList *arg0, s32 arg1) {
     s32 t;
     s32 c;
 
-    if (!(g_padPortHeld[0] & 0x200000) && (arg1 & 0x100000) && arg0->unk5 != 0) {
+    if (!(g_padPortHeld[0] & BTN_R1) && (arg1 & 0x100000) && arg0->unk5 != 0) {
         t = arg0->unkD - 6;
         arg0->unk9 = t >> 2;
         t -= arg0->unk9;

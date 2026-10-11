@@ -45,19 +45,19 @@ void func_801F3A98(void) {
             func_80035580(NULL);
             return;
         }
-        if (g_padRepeat & 0x100000) {
+        if (g_padRepeat & BTN_L1) {
             snd_playSe(0x67);
             D_801F4BBC.unk2 = D_801F4BBC.unk2 == 0 ? 1 : D_801F4BBC.unk2 - 1;
             func_801F4AE0();
             return;
         }
-        if (g_padRepeat & 0x200000) {
+        if (g_padRepeat & BTN_R1) {
             snd_playSe(0x67);
             D_801F4BBC.unk2 = D_801F4BBC.unk2 != 0 ? 0 : D_801F4BBC.unk2 + 1;
             func_801F4AE0();
             return;
         }
-        if (g_padRepeat & 0x20000) {
+        if (g_padRepeat & BTN_CROSS) {
             func_801F3D9C();
             return;
         }
@@ -70,22 +70,22 @@ void func_801F3A98(void) {
 }
 
 void func_801F3BBC(void) {
-    if ((g_padRepeat & 0x10) && D_801F4BBC.unk3 >= 15) {
+    if ((g_padRepeat & PAD_UP) && D_801F4BBC.unk3 >= 15) {
         snd_playSe(0x67);
         D_801F4BBC.unk3 -= 15;
         return;
     }
-    if ((g_padRepeat & 0x40) && D_801F4BBC.unk3 < D_801F4BBC.unk5[D_801F4BBC.unk2] - 15) {
+    if ((g_padRepeat & PAD_DOWN) && D_801F4BBC.unk3 < D_801F4BBC.unk5[D_801F4BBC.unk2] - 15) {
         snd_playSe(0x67);
         D_801F4BBC.unk3 += 15;
         return;
     }
-    if ((g_padRepeat & 0x20) && (u8)(D_801F4BBC.unk3 % 15) != 14) {
+    if ((g_padRepeat & PAD_RIGHT) && (u8)(D_801F4BBC.unk3 % 15) != 14) {
         snd_playSe(0x67);
         D_801F4BBC.unk3++;
         return;
     }
-    if (g_padRepeat & 0x80) {
+    if (g_padRepeat & PAD_LEFT) {
         snd_playSe(0x67);
         if ((u8)(D_801F4BBC.unk3 % 15) != 0) {
             D_801F4BBC.unk3--;
@@ -95,7 +95,7 @@ void func_801F3BBC(void) {
         func_80035580(NULL);
         return;
     }
-    if (g_padRepeat & 0x10000) {
+    if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
         if (D_801F4BBC.unk4 != 0) {
             D_801F4BBC.unk4--;
@@ -285,17 +285,17 @@ void func_801F47A0(void) {
 }
 
 void func_801F47E8(void) {
-    if (g_padRepeat & 0x10) {
+    if (g_padRepeat & PAD_UP) {
         snd_playSe(0x67);
         D_801F4BBC.unk1 = D_801F4BBC.unk1 == 0 ? 4 : D_801F4BBC.unk1 - 1;
         return;
     }
-    if (g_padRepeat & 0x40) {
+    if (g_padRepeat & PAD_DOWN) {
         snd_playSe(0x67);
         D_801F4BBC.unk1 = D_801F4BBC.unk1 >= 4 ? 0 : D_801F4BBC.unk1 + 1;
         return;
     }
-    if (g_padRepeat & 0x20) {
+    if (g_padRepeat & PAD_RIGHT) {
         snd_playSe(0x67);
         D_801F4BBC.unk0 = 1;
         func_80035580(&D_801F4B48);

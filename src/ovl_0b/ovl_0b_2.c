@@ -9533,7 +9533,7 @@ void func_800EB81C(void) {
 void func_800EB924(void) {
     Unk80104E68 *p = (Unk80104E68 *)&D_80104E68;
     if (p->unk2 != 0) {
-        if ((g_padHeld & 0x300000) == 0x300000) {
+        if ((g_padHeld & (BTN_L1 | BTN_R1)) == 0x300000) {
             g_gameState->unk1C->unk8E4.battle->unkD83 = 1;
             if (p->unk13++ >= 0x3D) {
                 p->unk13 = 0;
@@ -10209,11 +10209,11 @@ void func_800ED7C0(s32 x, s32 y, s32 ot, s32 w, s32 h, CVECTOR *c) {
 void func_800EDAD4(void) {
     if (g_padRepeat & 0x01000000) {
         func_800EDDF8();
-    } else if (g_padRepeat & 0x20000) {
+    } else if (g_padRepeat & BTN_CROSS) {
         func_800ECA50();
-    } else if (g_padRepeat & 0x40) {
+    } else if (g_padRepeat & PAD_DOWN) {
         func_800EDD1C();
-    } else if (g_padRepeat & 0x10) {
+    } else if (g_padRepeat & PAD_UP) {
         func_800EDCA0();
     } else {
         func_800EDD9C();
@@ -10269,9 +10269,9 @@ void func_800EDD1C(void) {
 }
 
 void func_800EDD9C(void) {
-    if (g_padHeld & 0x80) {
+    if (g_padHeld & PAD_LEFT) {
         func_800EE154();
-    } else if (g_padHeld & 0x20) {
+    } else if (g_padHeld & PAD_RIGHT) {
         func_800EE24C();
     } else {
         func_800EE31C();
@@ -10363,7 +10363,7 @@ void func_800EE154(void) {
                 D_80104FC0.unk0 = 1;
                 D_80104FC0.unk2 = 0;
             }
-        } else if (D_80104FC0.unk2 == 2 && (g_padRepeat & 0x80)) {
+        } else if (D_80104FC0.unk2 == 2 && (g_padRepeat & PAD_LEFT)) {
             snd_playSe(0x417);
             D_80104FC0.unk2 = 1;
             D_80104FC0.unk1 = 2;
@@ -10371,7 +10371,7 @@ void func_800EE154(void) {
             D_80104FC0.unk3 = 0;
         }
     } else if (D_80104FC0.unk1 == 0) {
-        if (g_padRepeat & 0x80) {
+        if (g_padRepeat & PAD_LEFT) {
             snd_playSe(0x417);
             D_80104FC0.unk2 = 1;
             D_80104FC0.unk1 = 2;
@@ -10390,7 +10390,7 @@ void func_800EE24C(void) {
                 D_80104FC0.unk0 = 1;
                 D_80104FC0.unk2 = 0;
             }
-        } else if (D_80104FC0.unk2 == 2 && (g_padRepeat & 0x20)) {
+        } else if (D_80104FC0.unk2 == 2 && (g_padRepeat & PAD_RIGHT)) {
             snd_playSe(0x417);
             D_80104FC0.unk2 = 1;
             D_80104FC0.unk1 = 1;
@@ -10398,7 +10398,7 @@ void func_800EE24C(void) {
             D_80104FC0.unk3 = 0;
         }
     } else if (D_80104FC0.unk1 == 0) {
-        if (g_padRepeat & 0x20) {
+        if (g_padRepeat & PAD_RIGHT) {
             snd_playSe(0x417);
             D_80104FC0.unk2 = 1;
             D_80104FC0.unk1 = 1;
@@ -10461,7 +10461,7 @@ void func_800EE54C(void) {
     MenuList *l = (MenuList *)&D_80104F88->unk12A4[2]->unk30;
     Window *w;
     if (l->unk8 == 0) {
-        if (g_padRepeat & 0x10000) {
+        if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             w = D_80104F88->unk12A4[2];
             func_800EB518(&D_80104FD0.unk14->unkB4->unk49C, 1, w->unk30.unk5, w->unk30.unk6);
@@ -10470,7 +10470,7 @@ void func_800EE54C(void) {
             } else {
                 D_80104FD0.unk10--;
             }
-        } else if (g_padRepeat & 0x20000) {
+        } else if (g_padRepeat & BTN_CROSS) {
             func_800EEE3C();
         } else {
             func_8002EEF0(l, g_padRepeat);
@@ -11386,20 +11386,20 @@ void func_800F11A4(BtlUnit *arg0) {
 
 void func_800F11FC(void) {
     u32 v;
-    if (g_padRepeat & 0x10000) {
+    if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
         func_800F07F0();
         return;
     }
-    if (g_padRepeat & 0x20000) {
+    if (g_padRepeat & BTN_CROSS) {
         func_800F0444();
         return;
     }
-    if (g_gameState->unk1C->unk8E4.battle->unkD83 == 0 && (g_padRepeat & 0x300000)) {
+    if (g_gameState->unk1C->unk8E4.battle->unkD83 == 0 && (g_padRepeat & (BTN_L1 | BTN_R1))) {
         func_800EFF14();
         return;
     }
-    if (g_padRepeat & 0x400000) {
+    if (g_padRepeat & BTN_L2) {
         snd_playSe(0x67);
         v = g_gameState->unk24;
         g_gameState->unk24 = (v & ~0x80000) | ((((v >> 19) & 1) ^ 1) << 19);

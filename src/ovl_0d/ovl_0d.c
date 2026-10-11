@@ -962,7 +962,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
                     func_800B01E8(1);
                 }
             }
-            if (g_padHeld & 0x200000) {
+            if (g_padHeld & BTN_R1) {
                 if (s->unk564 < 0xA) {
                     s->unk564++;
                 }
@@ -1078,7 +1078,7 @@ void *func_800A9F10(u32 *ot, void *p, TmState *s) {
 void func_800AA1FC(TmState *s) {
     RECT r;
 
-    if ((g_padRepeat & 0x30000) && s->unk2E8 >= 0x22) {
+    if ((g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) && s->unk2E8 >= 0x22) {
         s->unk468 = 0;
         s->unk464 = 0;
         s->unk46C = 0;
@@ -1113,7 +1113,7 @@ void func_800AA1FC(TmState *s) {
 }
 
 void func_800AA368(TmState *arg0) {
-    if (D_800B3CD0 == 0 && (g_padRepeat & 0x30000)) {
+    if (D_800B3CD0 == 0 && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         func_8002DD00(arg0->unk4B8);
         arg0->unk0 = 4;
     }
@@ -1153,7 +1153,7 @@ void func_800AA408(TmState *arg0) {
 }
 
 void func_800AA504(TmState *arg0) {
-    if (D_800B3CD0 == 0 && (g_padRepeat & 0xA0000)) {
+    if (D_800B3CD0 == 0 && (g_padRepeat & (BTN_CROSS | BTN_SQUARE))) {
         func_800AE54C(arg0);
     }
 }
@@ -1447,7 +1447,7 @@ void func_800AB0F0(TmState *s) {
     sum = s->unk4C8[0] + s->unk4C8[1] + s->unk4C8[2] + s->unk4C8[3] + s->unk4C8[4] + s->unk4C8[5] +
           s->unk4C8[6] + s->unk4C8[7] + s->unk4C8[8];
     pad = g_padRepeat;
-    if (!(g_padHeld & 0x10000)) {
+    if (!(g_padHeld & BTN_CIRCLE)) {
         if (pad & 0x40) {
             s->unk450--;
         }
@@ -1482,7 +1482,7 @@ void func_800AB0F0(TmState *s) {
 }
 
 void func_800AB2E0(TmState *arg0) {
-    if (D_800B3CD0 == 0 && (g_padRepeat & 0xA0000)) {
+    if (D_800B3CD0 == 0 && (g_padRepeat & (BTN_CROSS | BTN_SQUARE))) {
         func_8002DD00(arg0->unk4B8);
         arg0->unk0 = 0x17;
     }
@@ -1616,7 +1616,7 @@ void *func_800AB574(u32 *ot, void *p, TmState *s) {
 }
 
 void func_800AB854(TmState *arg0) {
-    if (g_padRepeat & 0x30000) {
+    if (g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) {
         func_8002DD00(arg0->unk4C4);
         func_800B35F8(arg0);
     }

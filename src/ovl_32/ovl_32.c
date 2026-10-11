@@ -39,10 +39,10 @@ void func_801F7C8C(void) {
     u8 v;
     Ovl32State *st;
 
-    if (g_padRepeat & 0x10000) {
+    if (g_padRepeat & BTN_CIRCLE) {
         snd_playSe(0x65);
         func_800325E0();
-    } else if (g_padRepeat & 0x20000) {
+    } else if (g_padRepeat & BTN_CROSS) {
         if (D_801F9850.unk0 == 0) {
             D_801F9850.unk1 = 2;
             snd_playSe(0x67);
@@ -53,7 +53,7 @@ void func_801F7C8C(void) {
             snd_playSe(0x6B);
         }
     } else {
-        if (g_padRepeat & 0x80) {
+        if (g_padRepeat & PAD_LEFT) {
             snd_playSe(0x67);
             st = &D_801F9850;
             if (st->unk0 != 0) {
@@ -61,7 +61,7 @@ void func_801F7C8C(void) {
             } else {
                 v = 1;
             }
-        } else if (g_padRepeat & 0x20) {
+        } else if (g_padRepeat & PAD_RIGHT) {
             snd_playSe(0x67);
             st = &D_801F9850;
             if (st->unk0 == 0) {
@@ -83,12 +83,12 @@ void func_801F7DC0(void) {
     s32 n;
 
     if (l->unk8 == 0) {
-        if (g_padRepeat & 0x10000) {
+        if (g_padRepeat & BTN_CIRCLE) {
             snd_playSe(0x65);
             D_801F9850.unk1 = 1;
             return;
         }
-        if (g_padRepeat & 0x20000) {
+        if (g_padRepeat & BTN_CROSS) {
             st = &D_801F9850;
             idx = l->unk5 + l->unk6;
             if (st->unk8 & (1 << idx)) {
