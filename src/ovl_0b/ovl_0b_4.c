@@ -20,8 +20,8 @@ void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
 
     g = &arg0->unk8->unk10[arg1];
     gte_SetGeomScreen(g_gameState->unk1C->unkA);
-    sxy = D_800711A8;
-    sz = D_80070520;
+    sxy = g_vtxScreenXY;
+    sz = g_vtxScreenZ;
     k = 0;
     cnt = arg0->unk8->unk2;
     bone = (MATRIX *)arg0->unk20;
@@ -35,11 +35,11 @@ void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
             c1 = &b->m[0][1];
             c2 = &b->m[0][2];
             gte_rtir_b();
-            sxy = &D_800711A8[k];
+            sxy = &g_vtxScreenXY[k];
             gte_stclmv(&m);
             gte_ldclmv(c1);
             gte_rtir();
-            sz = &D_80070520[k];
+            sz = &g_vtxScreenZ[k];
             gte_stclmv(&m.m[0][1]);
             gte_ldclmv(c2);
             c1 = (s16 *)b->t;
@@ -123,9 +123,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sFT4->unk15 & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -141,8 +141,8 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pFT4->x1 = xy1;
         *(s32 *)&pFT4->x2 = xy2;
         setcode(pFT4, 0x2C);
-        *(s32 *)&pFT4->x3 = D_800711A8[i3];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2] + D_80070520[i3];
+        *(s32 *)&pFT4->x3 = g_vtxScreenXY[i3];
+        otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
         i0 = *(u32 *)&sFT4->unk8[0];
         i2 = *(u32 *)&sFT4->unk8[2];
         t = tex[sFT4->unk13];
@@ -174,9 +174,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sFT3->unk12 & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -192,7 +192,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pFT3->x1 = xy1;
         *(s32 *)&pFT3->x2 = xy2;
         setcode(pFT3, 0x24);
-        gte_ldsz3(D_80070520[i0], D_80070520[i1], D_80070520[i2]);
+        gte_ldsz3(g_vtxScreenZ[i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
         t = tex[sFT3->unk6];
         hi = t & 0xFFFF0000;
         t <<= 16;
@@ -225,9 +225,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sGT4->unk1C & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -240,8 +240,8 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT4->x0 = xy0;
         *(s32 *)&pGT4->x1 = xy1;
         *(s32 *)&pGT4->x2 = xy2;
-        *(s32 *)&pGT4->x3 = D_800711A8[i3];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2] + D_80070520[i3];
+        *(s32 *)&pGT4->x3 = g_vtxScreenXY[i3];
+        otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
         i0 = *(u32 *)&sGT4->unk10[0];
         i2 = *(u32 *)&sGT4->unk10[2];
         i1 = i0 >> 16;
@@ -289,9 +289,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sGT3->unkF & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -302,7 +302,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
             }
         }
         *(s32 *)&pGT3->x0 = xy0;
-        gte_ldsz3(D_80070520[(u16)i0], D_80070520[i1], D_80070520[i2]);
+        gte_ldsz3(g_vtxScreenZ[(u16)i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
         *(s32 *)&pGT3->x1 = xy1;
         *(s32 *)&pGT3->x2 = xy2;
         gte_avsz3_b();
@@ -349,9 +349,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sG4->unk14 & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -364,8 +364,8 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG4->x0 = xy0;
         *(s32 *)&pG4->x1 = xy1;
         *(s32 *)&pG4->x2 = xy2;
-        *(s32 *)&pG4->x3 = D_800711A8[i3];
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2] + D_80070520[i3];
+        *(s32 *)&pG4->x3 = g_vtxScreenXY[i3];
+        otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
         i0 = *(u32 *)&sG4->unk8[0];
         i2 = *(u32 *)&sG4->unk8[2];
         i1 = i0 >> 16;
@@ -396,9 +396,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sG3->unk13 & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -408,7 +408,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        gte_ldsz3(D_80070520[(u16)i0], D_80070520[i1], D_80070520[i2]);
+        gte_ldsz3(g_vtxScreenZ[(u16)i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
         *(s32 *)&pG3->x0 = xy0;
         *(s32 *)&pG3->x1 = xy1;
         *(s32 *)&pG3->x2 = xy2;
@@ -442,9 +442,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i3 = i2 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sF4->unkD & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -454,14 +454,14 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        otz = D_80070520[i0] + D_80070520[i1] + D_80070520[i2] + D_80070520[i3];
+        otz = g_vtxScreenZ[i0] + g_vtxScreenZ[i1] + g_vtxScreenZ[i2] + g_vtxScreenZ[i3];
         *(u32 *)&pF4->r0 = *(u32 *)sF4->unk8;
         setlen(pF4, 5);
         *(s32 *)&pF4->x0 = xy0;
         *(s32 *)&pF4->x1 = xy1;
         *(s32 *)&pF4->x2 = xy2;
         setcode(pF4, 0x28);
-        *(s32 *)&pF4->x3 = D_800711A8[i3];
+        *(s32 *)&pF4->x3 = g_vtxScreenXY[i3];
         otz >>= 6;
         addPrim(&ot[otz], pF4);
         prim += sizeof(POLY_F4);
@@ -476,9 +476,9 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         i1 = i0 >> 16;
         i0 &= 0xFFFF;
         i2 &= 0xFFFF;
-        xy0 = D_800711A8[i0];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[i2];
+        xy0 = g_vtxScreenXY[i0];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[i2];
         i++;
         if (!(sF3->unkB & 2)) {
             gte_ldsxy3(xy0, xy1, xy2);
@@ -488,7 +488,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
                 continue;
             }
         }
-        gte_ldsz3(D_80070520[i0], D_80070520[i1], D_80070520[i2]);
+        gte_ldsz3(g_vtxScreenZ[i0], g_vtxScreenZ[i1], g_vtxScreenZ[i2]);
         *(u32 *)&pF3->r0 = *(u32 *)sF3->unk8;
         gte_avsz3_b();
         *(s32 *)&pF3->x0 = xy0;
@@ -551,7 +551,7 @@ void func_800C7730(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
         }
         if (arg2 != NULL) {
             for (i = 0; i < h->unk3; i++) {
-                mark = (u8 *)D_80070520;
+                mark = (u8 *)g_vtxScreenZ;
                 for (k = 0; k < 0x1908; k++) {
                     mark[k] = 0;
                 }

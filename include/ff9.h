@@ -963,7 +963,7 @@ typedef struct {
 } Unk80077DE8;
 extern Unk80077DE8 D_80077DE8;
 
-/* sound sequencer state (AKAO), D_80080A10 */
+/* sound sequencer state (AKAO), g_akaoSeq */
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -1006,8 +1006,8 @@ typedef struct {
     u16 unk76;
     u16 unk78;
 } Unk80080A10;
-extern Unk80080A10 *D_80080A10;
-extern Unk80080A10 D_8007F858; /* main sequencer state */
+extern Unk80080A10 *g_akaoSeq;
+extern Unk80080A10 g_akaoMainSeq; /* main sequencer state */
 extern s32 g_akaoTickTimeSum;
 extern u16 g_akaoTickCount; /* tick counter */
 extern s32 g_akaoTickTimes[4]; /* recent tick timings */
@@ -2174,7 +2174,7 @@ typedef struct {
 extern Unk80080A18 D_80080A18;
 
 
-extern AkaoChannel D_8007BD48[];
+extern AkaoChannel g_akaoChannels[];
 extern s32 D_80080AC4;
 extern AkaoChannel D_8007E3D8[];
 extern s32 D_800831C4;

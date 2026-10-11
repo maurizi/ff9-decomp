@@ -688,8 +688,8 @@ extern s8 D_800CCA20;
 extern s32 D_800CCE20;
 extern s32 D_800CCE24;
 extern s32 D_800CCE28;
-extern s32 D_800711A8[]; /* projected screen xy per model vertex */
-extern s32 D_80070520[]; /* projected z per model vertex */
+extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
+extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 extern s32 D_800CCE2C;
 extern s32 D_800CCE30;
 extern s32 D_800CCE34;

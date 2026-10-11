@@ -4520,10 +4520,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sFT4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b & 0xFFFF];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF] + g_vtxScreenZ[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -4542,7 +4542,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pFT4->x1 = xy1;
         *(s32 *)&pFT4->x2 = xy2;
         setcode(pFT4, 0x2C);
-        *(s32 *)&pFT4->x3 = D_800711A8[i3];
+        *(s32 *)&pFT4->x3 = g_vtxScreenXY[i3];
         a = *(u32 *)&sFT4->unk8[0];
         b = *(u32 *)&sFT4->unk8[2];
         t = tex[sFT4->unk13];
@@ -4568,10 +4568,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         a = *(u32 *)&sFT3->unk0[0];
         b = sFT3->unk0[2];
         i1 = a >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;
@@ -4615,10 +4615,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sGT4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b & 0xFFFF];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF] + g_vtxScreenZ[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -4634,7 +4634,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pGT4->x0 = xy0;
         *(s32 *)&pGT4->x1 = xy1;
         *(s32 *)&pGT4->x2 = xy2;
-        *(s32 *)&pGT4->x3 = D_800711A8[i3];
+        *(s32 *)&pGT4->x3 = g_vtxScreenXY[i3];
         a = *(u32 *)&sGT4->unk10[0];
         i1 = *(u32 *)&sGT4->unk10[2];
         t = tex[sGT4->unk1D];
@@ -4672,10 +4672,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         a = *(u32 *)&sGT3->unk0[0];
         b = sGT3->unk0[2];
         i1 = a >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;
@@ -4725,10 +4725,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sG4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b & 0xFFFF];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF] + g_vtxScreenZ[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -4744,7 +4744,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pG4->x0 = xy0;
         *(s32 *)&pG4->x1 = xy1;
         *(s32 *)&pG4->x2 = xy2;
-        *(s32 *)&pG4->x3 = D_800711A8[i3];
+        *(s32 *)&pG4->x3 = g_vtxScreenXY[i3];
         otz &= 0xFFFFF;
         a = *(u32 *)&sG4->unk8[0];
         i1 = *(u32 *)&sG4->unk8[2];
@@ -4769,10 +4769,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         a = *(u32 *)&sG3->unk0[0];
         b = sG3->unk0[2];
         i1 = a >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;
@@ -4811,10 +4811,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         b = *(u32 *)&sF4->unk0[2];
         i1 = a >> 16;
         i3 = b >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b & 0xFFFF];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b & 0xFFFF];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF] + g_vtxScreenZ[i3];
         i++;
         if (otz > 0x3FFFFFFF) {
             continue;
@@ -4834,7 +4834,7 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         *(s32 *)&pF4->x2 = xy2;
         setcode(pF4, 0x28);
         otz &= 0xFFFFF;
-        *(s32 *)&pF4->x3 = D_800711A8[i3];
+        *(s32 *)&pF4->x3 = g_vtxScreenXY[i3];
         addPrim(&ot[otz >> 6], pF4);
         prim += sizeof(POLY_F4);
     }
@@ -4846,10 +4846,10 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         a = *(u32 *)&sF3->unk0[0];
         b = sF3->unk0[2];
         i1 = a >> 16;
-        xy0 = D_800711A8[a & 0xFFFF];
-        xy1 = D_800711A8[i1];
-        xy2 = D_800711A8[b];
-        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        xy0 = g_vtxScreenXY[a & 0xFFFF];
+        xy1 = g_vtxScreenXY[i1];
+        xy2 = g_vtxScreenXY[b];
+        otz = g_vtxScreenZ[a & 0xFFFF] + g_vtxScreenZ[i1] + g_vtxScreenZ[b & 0xFFFF];
         i++;
         if (otz > 0x2FFFFFFF) {
             continue;

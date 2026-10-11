@@ -72,3 +72,8 @@ rand_refill = 0x8004BF20; // type:func [code] regenerates the table (x[i] ^= x[i
 g_randPtr = 0x8007B720; // [code] next random byte, rand_refill when it reaches g_randTableEnd
 g_randTable = 0x8007B724; // [code] 521 random bytes
 g_randTableEnd = 0x8007B92D; // [code] end of g_randTable
+g_vtxScreenXY = 0x800711A8; // [code] projected screen xy per model vertex, filled bone by bone with the GTE
+g_vtxScreenZ = 0x80070520; // [code] projected z per model vertex, summed for the ordering-table depth
+g_akaoSeq = 0x80080A10; // [code] sequencer state being processed, normally g_akaoMainSeq (akao_tick switches it)
+g_akaoMainSeq = 0x8007F858; // [code] main sequencer state
+g_akaoChannels = 0x8007BD48; // [code] g_akaoMainSeq's channels (akao_tick passes it to func_8005D384 with 0)

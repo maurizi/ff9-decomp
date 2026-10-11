@@ -1282,8 +1282,8 @@ void func_800BB714(Unk800C95C8 *, u8);
 /* main exe: candidates for ff9.h */
 void func_80031244(SVECTOR *, MATRIX *);
 MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
-extern s32 D_800711A8[]; /* projected screen xy per model vertex */
-extern s32 D_80070520[]; /* projected z per model vertex */
+extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
+extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
 extern u32 D_80076F80[]; /* VRAM save buffer */
 extern u8 D_80077E51;

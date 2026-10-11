@@ -3888,8 +3888,8 @@ static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
 
 /* main exe: candidates for ff9.h */
 void func_8001DA78(void *, s32);
-extern s32 D_800711A8[]; /* projected screen xy per model vertex */
-extern s32 D_80070520[]; /* projected z per model vertex */
+extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
+extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 
 /* func_800D23D8: multi-frame sprite sheets */
 #define gte_zero_vz012() __asm__ volatile( \
