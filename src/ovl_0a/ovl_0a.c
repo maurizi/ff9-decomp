@@ -9186,7 +9186,7 @@ s32 func_800C2AF0(Unk800C9DF4 *arg0, Unk800C9E00 **arg1, s16 *arg2, SVECTOR *arg
         arg3->vz = pp->vz + d.vz;
         if ((u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[cur->unk4], cur, (s16 *)arg3)) {
             done = 1;
-        } else if ((r = func_800C519C(D_800C9DF0.unk8, &D_800C9DF0.unk1C[cur->unk4], cur, arg3, (SVECTOR *)arg2, pp, &edge, edge))) {
+        } else if ((r = func_800C519C(D_800C9DF0.unk8, &D_800C9DF0.unk1C[cur->unk4], cur, (s16 *)arg3, arg2, pp, &edge, edge))) {
             if (func_800C1F98(arg0, cur, edge) != NULL) {
                 if (cur->unk6 >= 0) {
                     e.vx = arg3->vx - p.vx;

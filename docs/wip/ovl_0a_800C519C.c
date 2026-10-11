@@ -4,7 +4,7 @@
  * intersects the segment arg4 -> arg3 with each edge except `edge` (arg7), stores the hits and
  * their edge numbers, then: 1 hit -> that one; 2 hits -> func_800C1E14 picks between them;
  * 3 hits -> the one closest to the origin; otherwise *arg6 = -1 and 0.
- * WIP (pass 21): 568 of 568 instructions, 39 aligned diff rows (pass 20: 74) (pass 9: 570 instructions, 140 rows).
+ * WIP (pass 22): 568 of 568 instructions, 8 aligned diff rows (pass 21: 39) (pass 20: 74) (pass 9: 570 instructions, 140 rows).
  * Control flow and the stack layout match; left is register allocation (the original uses
  * s0 = hit base, s1 = arg5, s3 = z, s4 = x, s5 = arg4, s6 = arg6, s7 = arg3, fp = v base,
  * edge spilled to 0x68 and &q[x] spilled to 0x70; ours still differs in x/z/p/q and the
@@ -64,17 +64,24 @@
  * (25 combos), p/q assignment placement (35 variants) and single-line moves (build/w/mvrun.py, 178 moves) give
  * nothing better. A 20-min permuter run (score 885 -> 445) only moved `p = arg3` into the vertex loop or a switch
  * case (fake) or reused p as a hit-row pointer in case 3 (`p = hit[i]`), which is 88 cmp rows.
+ * Pass 22: 39 -> 8 rows. arg3/arg4 are `s16 *` parameters used directly (no p/q copies; the caller already passed
+ * `(SVECTOR *)arg2` from an s16 *, so the prototype is now s16 * for both and the caller casts arg3). That makes them
+ * parm pseudos (loaded/copied at entry, arg4 first as in the original): global order now z, x > arg4 > arg6 > arg3,
+ * the original's s3..s7 exactly (galloc: z 285, x 284, arg4 189, arg6 172, arg3 164). Then `y = 1;` before `x = 0;`
+ * (11 -> 8). Left (8 rows, all prologue scheduling): the original has `lw s6, arg6` and `move s7, a3` right after
+ * the arg5 load / b copy and `li t1, 1` (y) as the last filler before `bltz`; ours puts x/z before the arg6 load and
+ * the a3 copy in that last slot. Our sched1 order is a0, a1 copies, y, x, z, a3 copy, a2 copy, arg loads; the
+ * original's must have had the a3 copy ahead of the constants and y last. No change from: all 120 orders of the 5
+ * setup lines, x/y/z types (27 combos), initialisers, edge/tri placement, dropping tri, mvrun (156 moves).
  */
 #include "ovl_0a.h"
 
-s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *arg3, SVECTOR *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
+s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, s16 *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
     s16 o[3];
     Unk800C9DFCv *pv[3];
     Unk800C9DFCv v[3];
     s16 hit[3][3];
     s16 idx[3];
-    s16 *p;
-    s16 *q;
     Unk800C9DFCv *vtx;
     Unk800C9E04 *pl;
     Unk800C9E00 *tri;
@@ -98,12 +105,10 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     s32 ez;
 
     tri = n;
-    p = (s16 *)arg3;
-    q = (s16 *)arg4;
     edge = arg7;
+    y = 1;
     x = 0;
     z = 2;
-    y = 1;
     if (n->unk6 >= 0) {
         pl = &D_800C9DF0.unk14[n->unk6];
         if ((u32)(pl->unk4 + 0x50F4) <= 0xA1E8) {
@@ -134,14 +139,14 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     for (i = 0; i < 3; i++) {
         pv[1] = &v[i];
         if (i != edge) {
-            d = (pv[1]->unk0[x] - pv[0]->unk0[x]) * (ez = p[z] - q[z]);
-            ex = p[x] - q[x];
-            e = (pv[0]->unk0[z] - q[z]) * ex;
+            d = (pv[1]->unk0[x] - pv[0]->unk0[x]) * (ez = arg3[z] - arg4[z]);
+            ex = arg3[x] - arg4[x];
+            e = (pv[0]->unk0[z] - arg4[z]) * ex;
             d -= (pv[1]->unk0[z] - pv[0]->unk0[z]) * ex;
-            e -= (pv[0]->unk0[x] - q[x]) * ez;
+            e -= (pv[0]->unk0[x] - arg4[x]) * ez;
             if (ABS(e) <= ABS(d)) {
-                f = (pv[0]->unk0[z] - q[z]) * (pv[1]->unk0[x] - pv[0]->unk0[x]);
-                f -= (pv[0]->unk0[x] - q[x]) * (pv[1]->unk0[z] - pv[0]->unk0[z]);
+                f = (pv[0]->unk0[z] - arg4[z]) * (pv[1]->unk0[x] - pv[0]->unk0[x]);
+                f -= (pv[0]->unk0[x] - arg4[x]) * (pv[1]->unk0[z] - pv[0]->unk0[z]);
                 if (ABS(f) <= ABS(d)) {
                     if ((e >= 0 && d >= 0) || (e <= 0 && d < 0)) {
                         if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {
@@ -198,7 +203,7 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
             pv[2] = &v[1];
             break;
         }
-        if (func_800C1E14(pv[0]->unk0, p, pv[2]->unk0, pv[1]->unk0, x, z)) {
+        if (func_800C1E14(pv[0]->unk0, arg3, pv[2]->unk0, pv[1]->unk0, x, z)) {
             *arg6 = idx[0];
             arg5->vx = hit[0][0];
             arg5->vy = hit[0][1];
