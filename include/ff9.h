@@ -2472,6 +2472,17 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
 }
 
 void func_80025ED4(s32, s32, s32, s32, s32, s32, u8);
+/* gauge colour set per style (func_80025ED4): c[2]/c[3] are the bar's left/right
+   colours, c[0]/c[1] the blink targets; c[0] is also the frame colour */
+typedef struct {
+    CVECTOR c[4];
+} GaugeColors;
+extern GaugeColors D_80068FD8[];
+/* o = f + (t - f) * n / d per channel (o is a CVECTOR, f/t point to CVECTORs) */
+#define CVECTOR_LERP(o, f, t, n, d)                         \
+    (o).r = (f)->r + ((t)->r - (f)->r) * (n) / (d);         \
+    (o).g = (f)->g + ((t)->g - (f)->g) * (n) / (d);         \
+    (o).b = (f)->b + ((t)->b - (f)->b) * (n) / (d)
 extern u8 D_8007AF00;
 typedef struct {
     u8 unk0; /* show second character */

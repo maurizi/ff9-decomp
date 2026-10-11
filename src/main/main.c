@@ -3351,7 +3351,68 @@ void func_80025A28(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     D_80077170 += sizeof(DrMode2Words);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80025ED4);
+void func_80025ED4(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) {
+    CVECTOR c1;
+    CVECTOR c2;
+    GaugeColors *e;
+    CVECTOR *f1, *f2, *t1, *t2;
+    s32 w;
+    s32 k;
+    s32 right;
+    PolyG4Words *p;
+    TileWords *t;
+
+    w = cur * 36 / max;
+    e = &D_80068FD8[style];
+    if (cur != 0) {
+        if (blink && cur >= max) {
+            k = D_80077150 & 0x1F;
+            if (k < 16) {
+                f1 = &e->c[2];
+                if (k >= 8) {
+                    k = 15 - k;
+                }
+                f2 = &e->c[3];
+                t1 = &e->c[0];
+                t2 = &e->c[0];
+            } else {
+                k -= 16;
+                f1 = &e->c[2];
+                if (k >= 8) {
+                    k = 15 - k;
+                }
+                f2 = &e->c[3];
+                t1 = &e->c[1];
+                t2 = t1;
+            }
+            CVECTOR_LERP(c1, f1, t1, k, 7);
+            CVECTOR_LERP(c2, f2, t2, k, 7);
+        } else {
+            t1 = &e->c[3];
+            c1 = e->c[2];
+            CVECTOR_LERP(c2, &c1, t1, cur, max);
+        }
+        setlen(D_80077170, 8);
+        p = (PolyG4Words *)D_80077170;
+        p->rgbc0 = p->rgb2 = c1.r | (c1.g << 8) | (c1.b << 16) | 0x38000000;
+        p->rgb1 = p->rgb3 = c2.r | (c2.g << 8) | (c2.b << 16);
+        right = w + 2;
+        p->xy0 = (x + 2) | ((y + 2) << 16);
+        p->xy2 = (x + 2) | ((y + 4) << 16);
+        p->xy1 = (x + right) | ((y + 2) << 16);
+        p->xy3 = (x + right) | ((y + 4) << 16);
+        addPrim(&D_8007716C[otz], p);
+        D_80077170 = (u8 *)(p + 1);
+    }
+    func_800275DC(x, y, otz, 2, 0);
+    setlen(D_80077170, 3);
+    t = (TileWords *)D_80077170;
+    t->rgbc = *(u32 *)&e->c[0];
+    t->xy = (x + 1) | ((y + 1) << 16);
+    t->wh = (w < 36 ? 0x30000 : 0x10000) | 0x26;
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(TileWords);
+}
 
 void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     Unk800689B0 *g = &D_80068D70[idx];
