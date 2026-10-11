@@ -1,4 +1,4 @@
-/* STATUS: near miss, 27 rows (pass 16; was 40, 44). ovl_37 func_801F13F8 (0x380, items menu cursor). Left: blink lives in s2 and &D_801FAB78 in s3 (original: the reverse); the state>=2 block loads unk1 through a fresh &D_801FAB78 pointer and compares against 2 in t0; xor/cursor blocks differ only in v0/v1 naming. Store order inside each D_80077DE8 block found with build/perm.py; (s16) cast on the unk3C.y offset keeps the add unfolded. The permuter (~8k iterations) found nothing.  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): both xor blocks go through k (`k = l->unk7 ^ ...; unk0 = k * 0x96;`), 44 -> 40. The original computes &D_801FAB78 into a register (hi part in a1, lui in the bne delay slot) at the top of the state>=2 block and compares against 2 kept in t0; a permuter run (25 min, 505 -> 365) got there only with an extra D_801FAB78 field test around duplicated arms, i.e. the block reads D_801FAB78 more than once in the original. dup.py `if (blink)` around the last inner call: 27 rows (fake). Nested ifs, a block-local pointer, a k temp for unk1: no help.
+/* STATUS: near miss, 25 rows (pass 16; was 40, 44). ovl_37 func_801F13F8 (0x380, items menu cursor). Left: blink lives in s2 and &D_801FAB78 in s3 (original: the reverse); the state>=2 block loads unk1 through a fresh &D_801FAB78 pointer and compares against 2 in t0; xor/cursor blocks differ only in v0/v1 naming. Store order inside each D_80077DE8 block found with build/perm.py; (s16) cast on the unk3C.y offset keeps the add unfolded. The permuter (~8k iterations) found nothing.  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): both xor blocks go through k (`k = l->unk7 ^ ...; unk0 = k * 0x96;`), 44 -> 40. The original computes &D_801FAB78 into a register (hi part in a1, lui in the bne delay slot) at the top of the state>=2 block and compares against 2 kept in t0; a permuter run (25 min, 505 -> 365) got there only with an extra D_801FAB78 field test around duplicated arms, i.e. the block reads D_801FAB78 more than once in the original. dup.py `if (blink)` around the last inner call: 27 rows (fake). Nested ifs, a block-local pointer, a k temp for unk1: no help.
  Pass 14: a pointer local for the state>=2 test, a duplicated (typo-style) unk1 test in the condition, and
  nested ifs give 40-44 rows.
  Pass 16: 40 -> 27 with the cursor body written twice (`if (unk1 >= 2 && unk1 != 4) { if (unk1 == 2) BODY
@@ -6,7 +6,8 @@
  fake `if (&D_801FAB78) A else A` stood in for. Left: the test block still loads unk1 via %lo(D_801FAB78+1)
  where the original materialises &D_801FAB78 in v0 (hi in a1) and keeps the constant 2 in t0, i.e. both
  live longer there (probably another D_801FAB78 read or == 2 test in one of the copies); the xor result
- (k) is in a1 in both xor blocks; 223 vs 224 insns. */
+ (k) is in a1 in both xor blocks; 223 vs 224 insns. `(s16)(off + 0x32)` (like block 3's cast) gives the
+ original's off + 0x32 first (27 -> 25). */
 #include "ovl_37.h"
 
 extern s32 D_80077E54;
@@ -71,7 +72,7 @@ void func_801F13F8(void) {
                 }
                 u = D_801FAB78.unk6;
                 D_80077DE8.unk0 = (u & 1) * 0x96 + 2;
-                D_80077DE8.unk2 = ((u >> 1) - l->unk5) * 15 + (off + 0x32);
+                D_80077DE8.unk2 = ((u >> 1) - l->unk5) * 15 + (s16)(off + 0x32);
                 D_80077DE8.unk4 = 0x12;
                 func_800355E4();
             }

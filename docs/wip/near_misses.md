@@ -1041,7 +1041,7 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     later blocks read D_8006794C->unk1C->... directly (no g local) in sector/id/size order, and the id choice
     is an else-if chain (`== 1` / `>= 0x2B52` / else): with a nested if in the else arm jump.c turns the
     0x2714 arm into a speculative set and reorg fills the bne delay slot differently. No do-while wraps.
-- Pass 16 (overlay agent): matched 64 B7C4 (was 75 rows). Improved: 37 F13F8 40 -> 27, 3a F459C 47 -> 45,
+- Pass 16 (overlay agent): matched 64 B7C4 (was 75 rows). Improved: 37 F13F8 40 -> 25, 3a F459C 47 -> 45,
   33 EF644 31 -> 28, 34 EFC20 (= 39 F7FD4) 39 -> 38.
   * 64 B7C4: the colour table is indexed (`D_8019DEAC[j].r`, j++ every 8 sectors), not walked with a pointer.
     The indexed table address is a loop invariant that loop.c moves first, and every moved invariant lowers
