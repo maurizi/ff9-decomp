@@ -50,6 +50,11 @@
  * s2; both edge (95) and &q[x] (275) are spilled (MEM) in both, so it is reload's spill-register choice
  * (reload1.c order_regs_for_reload / hard_reg_n_uses) that differs: ours spills s1, the original s2. The rest
  * follows: z/x/q/arg6/p are s3/s4/s5/s6/s7 in the original, ours p s3?/q s4/z s5/x s6/arg6 s7.
+ * Root cause (galloc.py): &q[x] (loop-invariant, pseudo 275, refs 5, length 222, priority 450) is allocated just
+ * before arg5 (pseudo 85, refs 13, length 868, priority 449.3), takes s1 and is then spilled by reload, which
+ * makes s1 the spill register. The original must have arg5 ahead (it loads the stack args in the order arg4,
+ * arg5, arg6, ours arg5, arg6, arg4, so arg5's live range starts earlier here). Declaration order (80 random
+ * scalar orders) and `goto one` for cnt == 1 (79) do not help.
  */
 #include "ovl_0a.h"
 
