@@ -3,8 +3,8 @@
 A matching decompilation of Final Fantasy IX (PS1, NTSC-U, SLUS-01251): C source that compiles back to
 byte-identical copies of the boot executable and the code overlays.
 
-This repository contains no game data. To build it you need your own copy of the game. Final Fantasy IX is
-© Square Enix; this project is not affiliated with or endorsed by Square Enix.
+This repository contains no game data. To build it you need your own copy of the game. Final Fantasy IX © is
+owned by Square Enix; this project is not affiliated with or endorsed by Square Enix.
 
 ## Building
 
