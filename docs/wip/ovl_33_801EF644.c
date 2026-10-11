@@ -1,4 +1,4 @@
-/* STATUS: draft, 22 rows (pass 17; was 26, 31), no wraps (pass 12: block 1 as D_80077DE8.unk0 = r->x + k; h = &D_80077DE8; h->unk4 = 0x17; h->unk2 = r->y + 8; the x-first add gives the original's addu v1,v1,v0 and the plain h assignment after the store scores 31; the same for h->unk0 = r->x + k through h. Still left in block 1: the original keeps h's lo_sum addiu right after the unk0 store (an anti-dependence, as if lui/addiu were in place in one register) while ours hoists it to the block top; block-local h declarations in each block score 43). Pass 11: 33 rows. ovl_33 func_801EF644 (0x2BC, equipment menu cursor; sibling of ovl_37 func_801F13F8 and ovl_3a func_801F459C). Control flow, constants and the party loop are right (ours is 3 instructions longer). Wrapping each 'h = &D_80077DE8;' in do { } while (0) gets the original's 'sh v0,%lo(D_80077DE8)(a0); addiu a0,a0,%lo' pairing in the later blocks (47 -> 38 rows). Left: block 1 reads r->x through %lo(D_801FBFAC) and D_801FBF84.unk0 as -0x28(r) and schedules the table load first; block 3 load order. The permuter's 'ry = r->y;' temp before the last block's stores took it from 36 to 33.
+/* STATUS: shape exact, 24 rows, all block-2 registers (pass 20; was 22 with a wrong shape, 26, 31), no wraps (pass 12: block 1 as D_80077DE8.unk0 = r->x + k; h = &D_80077DE8; h->unk4 = 0x17; h->unk2 = r->y + 8; the x-first add gives the original's addu v1,v1,v0 and the plain h assignment after the store scores 31; the same for h->unk0 = r->x + k through h. Still left in block 1: the original keeps h's lo_sum addiu right after the unk0 store (an anti-dependence, as if lui/addiu were in place in one register) while ours hoists it to the block top; block-local h declarations in each block score 43). Pass 11: 33 rows. ovl_33 func_801EF644 (0x2BC, equipment menu cursor; sibling of ovl_37 func_801F13F8 and ovl_3a func_801F459C). Control flow, constants and the party loop are right (ours is 3 instructions longer). Wrapping each 'h = &D_80077DE8;' in do { } while (0) gets the original's 'sh v0,%lo(D_80077DE8)(a0); addiu a0,a0,%lo' pairing in the later blocks (47 -> 38 rows). Left: block 1 reads r->x through %lo(D_801FBFAC) and D_801FBF84.unk0 as -0x28(r) and schedules the table load first; block 3 load order. The permuter's 'ry = r->y;' temp before the last block's stores took it from 36 to 33.
  Pass 14: func_800355E4 is unprototyped and ovl_32 passes &D_80077DE8; passing nothing/h/&D_80077DE8 in
  each of the three calls (27 combinations) gives 30-31 rows, so the argument is not the missing piece.
  Pass 16: 31 -> 28 with the last block's pointer as its own local (h3, no do-while): a block-local pointer
@@ -19,6 +19,17 @@
  the original has l in a1 and the unk7 byte in a0 (so local-alloc saw a0 busy there), ours l in a0. Permuter
  (12k iterations on that base) found nothing; `r = &D_801FBF84.unk48`, a block-local state pointer, condition
  spellings and duplicated bodies do not change it.
+ Pass 20 (shape-first, build/search/cmp_shape.py --shape): the instruction sequence is now exact (the 3 shape
+ rows left are the cmp.py symbol-name false positives in block 1). Block 2 in the order l, h2 = &D_80077DE8, k,
+ unk0 store, k2, unk4, unk2 (pass 17's "L H K X J F Z"); block 3 reads unk3 before r->y (`k = unk3 * 0x2B + 0x12;`
+ before `ry = r->y;`, all 60 orders of that block enumerated, every order with K before R is exact). Block 3's
+ registers then match too. Left (21 real rows): block 2's registers only. The original has &D_801FBF84 in a3,
+ l in a1, unk7/k in a0, h2 in a2; ours a2/a0/v0/a1. In local-alloc terms a0 and v1 are busy over l's and unk8's
+ lives in the original, which would fit the unk48.x lhu (v1) sitting early in sched1's order and being moved down
+ by sched2. Not found: unk48.x loaded into a multi-set local (y, i, ry, k) first, the r pointer
+ (`r = &D_801FBF84.unk48`, compiles identically), no l / l via `l = unk8; l += unk0`, expression forms of the
+ xor (n1-n8, x0-x5/z0-z2 in build/e6/ of the pass-20 worktree). A 15-min permuter run on this base only found
+ a semantics-changing drop of `& 1`.
  */
 #include "ovl_33.h"
 extern u16 D_801F33C8[][2];
@@ -55,9 +66,9 @@ void func_801EF644(void) {
     if (D_801FBF84.unk1 == 2 || (D_801FBF84.unk1 == 3 && blink)) {
         Unk80077DE8 *h2;
         l = &D_801FBF84.unk8[D_801FBF84.unk0];
+        h2 = &D_80077DE8;
         k = (l->unk7 ^ ((l->unk8 >> 3) & 1)) * 150 - 10;
         D_80077DE8.unk0 = D_801FBF84.unk48.x + k;
-        h2 = &D_80077DE8;
         k = l->unk6 * 15 + 10;
         h2->unk4 = 0x17;
         h2->unk2 = D_801FBF84.unk48.y + k;
@@ -83,9 +94,9 @@ void func_801EF644(void) {
         } else {
             D_80077DE8.unk0 = D_801FBF84.unk58.unk4.x - 10;
             h3 = &D_80077DE8;
+            k = D_801FBF84.unk3 * 0x2B + 0x12;
             ry = r->y;
             h3->unk4 = 0x12;
-            k = D_801FBF84.unk3 * 0x2B + 0x12;
             h3->unk2 = ry + k;
             func_800355E4();
         }
