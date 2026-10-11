@@ -194,6 +194,28 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     moves the add into the loop's bne delay slot. The identical if (x) around s++ is no longer
     needed. In general, a value loaded from a stack variable that an earlier call wrote lands
     in v1 rather than v0 when it is read in the same block as the call's return value.
+- Pass 14: matched 8002920C (0x750). 8005D6BC 24 -> 11 rows. What decided them:
+  - 8002920C: pkt (85) needed more refs than s. Each nested `f(..., func_8002BA90(ot, pkt))` written as
+    `pkt = func_8002BA90(ot, pkt); pkt = f(..., pkt);` adds 4 refs (in-loop refs count twice); the
+    0x6B, 0x4B and 0x4E arms take pkt from 79 to 91 refs, and the tail
+    `pkt += sizeof(DrTpageWords); return pkt;` adds 2 more (93/308 = 1.812 > s's 1.796).
+    The 0x4C/0x4D arms must stay as they are (any change to them costs 26 rows).
+  - CSE copy rule (cse.c make_regs_eqv): after `d = t0`, d becomes the canonical register, so the copy
+    survives, only if d is mentioned outside the current CSE block (first mention before it, or last
+    use after it) and d's last use comes after t0's. Otherwise every use of d is rewritten to t0 and
+    the copy dies. 8005D6BC: a dead initialiser `s32 d = 0;` keeps the tail copy, flow then deletes the
+    dead store so d is block-local, and the copy drops t0 to 7 refs. That spills t0 and gives fp to the
+    hoisted &D_80083158, as in the original. Reusing an earlier variable (acc, now) for the copy works
+    too, but makes it global. This is a general way to get a register copy the original has.
+  - global.c set_preference uses only the first operand of an arithmetic source, so which operand of
+    an `|`/`+` is local-allocated to which register decides the result's preference (80059414).
+  - Param copies (insns at function entry) are never moved by sched1; a late `move sN,aK` in the
+    original comes from sched2, after allocation (8002E718).
+  - 80047B90: a local struct { SVECTOR v; MATRIX m; } addressed through a pointer reproduces the
+    original's s0-relative stores, but CSE then keeps &s.m in an extra s-reg (50 rows, draft still 11).
+  - No progress: 8005A320 (multiple do-while barriers), 80059414 (288 first-block variants, best 13),
+    8002E718 (an inline arrow helper computes x/y before the ternary like the original, 23 rows),
+    8003595C and 8005681C (20-min permuter runs found nothing).
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
