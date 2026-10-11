@@ -11297,7 +11297,7 @@ s32 evt_execInstr(void) {
     case 0xAE:
         func_80021680(func_8004AF58_inline() & 0xFFFF);
         return 7;
-    case 0xF5:
+    case EVT_OP_GAME_OVER:
         return 8;
     case 0x2A:
         D_8007BD2C = func_8004AEDC_inline();

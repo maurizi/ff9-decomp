@@ -276,3 +276,13 @@ Format:
   a0-a3 and v0, and for func_80053124 the polygon bytes. Replaying them through the src_equiv C on the host:
   85 math samples and 29 polygon samples, 0 differences. (All polygon samples were "outside"; an "inside" case is
   still to capture.)
+
+## Game over: modes 7 and 8  (status: applied)
+- Redux disc 2, `battle_iifa_start`, all four party units' hp written to 0: mode 2 -> 8, ovl_65 loads; the mode loop
+  calls func_801EF284 (frame 6722), which reaches func_801F3488 via func_801F3A7C, and the GAME OVER screen shows.
+- Redux disc 1, `field_dali_inn_moogle`: Cross on the Moogle, break at the first evt_execInstr, write 0xF5 over the
+  opcode at gExec's ip (0x8010E2DE, was 0x59): mode 1 -> 7, ovl_65 loads at 0x801EDF00 while ovl_0a stays, and the
+  same GAME OVER screen shows. Path: evt_execInstr case 0xF5 returns 8 -> func_8004BC38 returns 8 -> fld_main sets
+  the field exit reason (FieldScene+0x4A) to 7 -> mode 7 -> fld_gameOver (ovl_0a func_800A80A4) -> gameover_main,
+  then mode 0.
+- names: battleEnd_main, gameover_main (ovl_65), fld_gameOver (ovl_0a), EVT_OP_GAME_OVER.
