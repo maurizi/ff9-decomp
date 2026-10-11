@@ -600,8 +600,9 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   the header). BFF20: a 50-min permuter run found identical-arm junk on c that gives the arm-2 copy the right
   direction, but c then lands in a1, not v1 (details in the header). DA138: 50-min permuter run, nothing.
   Status unchanged: C3F78 3 (1 real), BFF20 6 (4 real), DA138 6, AB810 6, E4A3C 7, DA1F4 14.
-- Pass 23 (ovl_0b; lever: params used directly / retyped): **DA1F4 byte-matches, but only with a fake dead store
-  after the call**, so it is not integrated. The param is the walking pointer (`s16 *p`), with `x = p; pool = p;
+- Pass 23 (ovl_0b; lever: params used directly / retyped): **DA1F4 and AB810 MATCHED** (both integrated with
+  a dead store commented as probable macro residue, per the coordinator's residue rule). DA1F4: a dead store
+  after the call. The param is the walking pointer (`s16 *p`), with `x = p; pool = p;
   p = &header->unkC;` (header reads through x, loop bound `pool->unk2`). This needs p to stay the CSE class head:
   cse.c make_regs_eqv makes a copy the head only if its REGNO_LAST_UID (last textual mention, from the reg_scan
   before each cse pass) is later than the head's. If pool is head, cse2 rewrites `p = p + 12` and the header
@@ -610,6 +611,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   This head rule (last textual mention, re-scanned before cse2) is worth checking in other copy-folding puzzles.
   No change: E4A3C (volatile params 10), BFF20 (store-flag spellings of c, 5), C3F78 (extra switch cases),
   DA138 (param types).
+  AB810: `c` (the BtlUnit9CC pointer) is reused for e->unk8->unk8, so its second set makes it a global pseudo in
+  v1. A dead conditional store `if (cnt) { p = 5; }` between `i = 0` and the loop leaves a block boundary until
+  flow, so combine can't fold i = 0 into the entry test. Residue-style extra sets/dead stores were also tried on
+  8002E718 (32 variants, 15 at best), BFF20 (dead c initialisers, `c &= 1`: 6) and DA138 (dead i/sz/p
+  initialisers: 6-20), with no gain.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
