@@ -328,6 +328,11 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - 8004DAD0: the D_8007B958 store never aliases the MEM_IN_STRUCT fn-pointer loads (2.8 alias.c), so its source
     position is free. The P/H allocation is the whole problem.
   - 80059414: one variable for the pointer, v and the loop counter: 30-45. 50-min permuter run: nothing.
+- Pass 23 (main; lever: params used directly / retyped): no matches. 8002E718: sched.c skips leading notes
+  before the param-copy run, so a deleted copy only frees later copies when a kept copy comes first; with r used
+  directly, nothing can precede the otz copy. 1300 variants of q = r / z = otz copies give 11 rows at best (y in
+  a1, but m->unk5 then takes a0). 8003595C: x/y as locals from renamed params give identical code. The others
+  (80059414, 8005681C, 8001DE50, 8004DAD0, 800475D8) don't involve parameter copies and were not re-tested.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
@@ -595,6 +600,16 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   the header). BFF20: a 50-min permuter run found identical-arm junk on c that gives the arm-2 copy the right
   direction, but c then lands in a1, not v1 (details in the header). DA138: 50-min permuter run, nothing.
   Status unchanged: C3F78 3 (1 real), BFF20 6 (4 real), DA138 6, AB810 6, E4A3C 7, DA1F4 14.
+- Pass 23 (ovl_0b; lever: params used directly / retyped): **DA1F4 byte-matches, but only with a fake dead store
+  after the call**, so it is not integrated. The param is the walking pointer (`s16 *p`), with `x = p; pool = p;
+  p = &header->unkC;` (header reads through x, loop bound `pool->unk2`). This needs p to stay the CSE class head:
+  cse.c make_regs_eqv makes a copy the head only if its REGNO_LAST_UID (last textual mention, from the reg_scan
+  before each cse pass) is later than the head's. If pool is head, cse2 rewrites `p = p + 12` and the header
+  reads to pool. So p must be mentioned after the call in a way that survives cse1 and is deleted by flow (any
+  dead store: `p = NULL;`, `p++;`, `e = p;`). `return p + 2` is folded by cse1. Without it the best is 9 rows.
+  This head rule (last textual mention, re-scanned before cse2) is worth checking in other copy-folding puzzles.
+  No change: E4A3C (volatile params 10), BFF20 (store-flag spellings of c, 5), C3F78 (extra switch cases),
+  DA138 (param types).
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
