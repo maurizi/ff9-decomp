@@ -117,8 +117,8 @@ def main():
                 lines[i] = entry.sub(f"{new} =", line)
                 break
         else:
-            # splat reads `key:value` pairs from these comments, so a free-text comment loses its colons.
-            tags = [t for t in ("type:func" if is_func else "", comment.replace(":", "")) if t]
+            # splat reads `key:value` pairs from these comments, so a free-text comment loses its colons (and semicolons).
+            tags = [t for t in ("type:func" if is_func else "", comment.replace(":", "").replace(";", ",")) if t]
             lines.append(f"{new} = 0x{addr:08X};" + (" // " + " ".join(tags) if tags else ""))
         open(path, "w").write("\n".join(lines) + "\n")
 

@@ -98,7 +98,7 @@ void func_801F4840(void) {
 
     func_801F573C();
     func_8002B524(0xE, 0x23, 0x2C, D_80070444, 0);
-    func_80025A28(8, 0x26, 0x2C, 1, 0x12C, (D_8006794C->unk24 >> 18) & 1);
+    func_80025A28(8, 0x26, 0x2C, 1, 0x12C, (g_gameState->unk24 >> 18) & 1);
     r.x = 8;
     r.y = 0;
     r.w = 0x12C;
@@ -141,7 +141,7 @@ void func_801F49C4(RECT *r, s32 otz, s32 slot) {
     if (D_801FB1A8.unk34[slot].unk1A == 4) {
         v = D_801FB1A8.unk34[slot].unk48;
     } else {
-        v = D_8006794C->unk24 >> 18;
+        v = g_gameState->unk24 >> 18;
         v &= 1;
     }
     func_8002CD4C(r, 0x2D, 0, v);
@@ -506,18 +506,18 @@ void func_801F5A68(s32 x, s32 y, s32 z, s32 idx) {
     Ovl39Sprite *e;
 
     clut = GetClut(0, 0xE0);
-    setlen(D_80077170, 4);
+    setlen(g_primPtr, 4);
     e = &D_801FAFFC[idx];
-    ((SprtWords *)D_80077170)->rgbc = 0x64808080;
-    ((SprtWords *)D_80077170)->xy = x | (y << 16);
-    ((SprtWords *)D_80077170)->uvclut = e->unk0 | (e->unk1 << 8) | (clut << 16);
-    ((SprtWords *)D_80077170)->wh = e->unk2 | (e->unk3 << 16);
-    addPrim(&D_8007716C[z], D_80077170);
-    D_80077170 += sizeof(SprtWords);
-    setlen(D_80077170, 2);
-    SetDrawTPage(D_80077170, 0, 1, 0x91);
-    addPrim(&D_8007716C[z], D_80077170);
-    D_80077170 += sizeof(DR_TPAGE);
+    ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+    ((SprtWords *)g_primPtr)->xy = x | (y << 16);
+    ((SprtWords *)g_primPtr)->uvclut = e->unk0 | (e->unk1 << 8) | (clut << 16);
+    ((SprtWords *)g_primPtr)->wh = e->unk2 | (e->unk3 << 16);
+    addPrim(&g_ot[z], g_primPtr);
+    g_primPtr += sizeof(SprtWords);
+    setlen(g_primPtr, 2);
+    SetDrawTPage(g_primPtr, 0, 1, 0x91);
+    addPrim(&g_ot[z], g_primPtr);
+    g_primPtr += sizeof(DR_TPAGE);
 }
 
 void func_801F5BE0(void) {
@@ -632,8 +632,8 @@ void func_801F5E90(s32 id, s32 yes, s32 no) {
     D_801FBEE0.unk12 = no;
     r.w = w;
     r.h = h;
-    r.x = (D_8006794C->unkC->disp.w - w) >> 1;
-    r.y = (D_8006794C->unkC->disp.h - h) >> 1;
+    r.x = (g_gameState->unkC->disp.w - w) >> 1;
+    r.y = (g_gameState->unkC->disp.h - h) >> 1;
     D_801FBEE0.unk8 = func_8002DC54(&r, 0x19, 2);
     func_8002E2E4(D_801FBEE0.unk8, func_801F6368);
     func_8002E2FC(D_801FBEE0.unk8, func_801F6378);
@@ -1227,8 +1227,8 @@ void func_801F75C8(s32 id, s32 title) {
         h = (sz >> 12) * 15 + 0x10;
         r.w = w;
         r.h = h;
-        r.x = (D_8006794C->unkC->disp.w - w) >> 1;
-        r.y = (D_8006794C->unkC->disp.h - h) >> 1;
+        r.x = (g_gameState->unkC->disp.w - w) >> 1;
+        r.y = (g_gameState->unkC->disp.h - h) >> 1;
         m->unk4 = func_8002DC54(&r, 0xF, 2);
         func_8002E2EC(m->unk4, func_801F77F4);
         func_8002E2E4(m->unk4, func_801F7830);
@@ -1514,38 +1514,38 @@ void func_801F7FD4(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
         for (i = 0; i < 3; i++) {
             s32 k = i + 2;
             s32 yy = (y + k) << 16;
-            setlen(D_80077170, 3);
-            l = (LineWords *)D_80077170;
+            setlen(g_primPtr, 3);
+            l = (LineWords *)g_primPtr;
             l->rgbc = D_801FB068[i];
             l->xy0 = (x + 4) | yy;
             l->xy1 = (pos + x + 3) | yy;
-            addPrim(&D_8007716C[otz], l);
-            D_80077170 = (u8 *)(l + 1);
+            addPrim(&g_ot[otz], l);
+            g_primPtr = (u8 *)(l + 1);
         }
     }
     func_80027710(x, y, otz, ic, 0);
     func_80027710(x + width - ec->unk4, y, otz, ec, 0);
-    SetTexWindow(D_80077170, &D_801FB060);
-    addPrim(&D_8007716C[otz], D_80077170);
-    D_80077170 += 0xC;
-    setlen(D_80077170, 4);
-    p = (SprtWords *)D_80077170;
+    SetTexWindow(g_primPtr, &D_801FB060);
+    addPrim(&g_ot[otz], g_primPtr);
+    g_primPtr += 0xC;
+    setlen(g_primPtr, 4);
+    p = (SprtWords *)g_primPtr;
     p->rgbc = 0x64808080;
     p->xy = ((x + ic->unk4) & 0xFFFF) | (y << 16);
     p->uvclut = mid->unk2 << 16;
     p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
-    addPrim(&D_8007716C[otz], p);
-    D_80077170 = (u8 *)(p + 1);
+    addPrim(&g_ot[otz], p);
+    g_primPtr = (u8 *)(p + 1);
     r.x = mid->unk0;
     r.y = mid->unk1;
     r.w = mid->unk4;
     r.h = mid->unk5;
-    SetTexWindow(D_80077170, &r);
-    addPrim(&D_8007716C[otz], D_80077170);
-    D_80077170 += 0xC;
-    SetDrawTPage(D_80077170, 1, 1, 0x1F);
-    addPrim(&D_8007716C[otz], D_80077170);
-    D_80077170 += 8;
+    SetTexWindow(g_primPtr, &r);
+    addPrim(&g_ot[otz], g_primPtr);
+    g_primPtr += 0xC;
+    SetDrawTPage(g_primPtr, 1, 1, 0x1F);
+    addPrim(&g_ot[otz], g_primPtr);
+    g_primPtr += 8;
 }
 
 void func_801F830C(void) {
@@ -1843,24 +1843,24 @@ void func_801F8DA4(u8 *buf) {
     if (D_801FB1A8.unk0 == 2) {
         h->unk4 = func_800B5074();
     } else {
-        h->unk4 = D_8006794C->unkB;
+        h->unk4 = g_gameState->unkB;
     }
     h->unk4 = func_801F9688();
     h->unk0 = 0x30005;
-    h->unk5 = D_8006794C->unk1C->unk3C[n].unkB;
+    h->unk5 = g_gameState->unk1C->unk3C[n].unkB;
     h->unk2C = t;
-    h->unk30 = D_8006794C->unk1C->unk560;
-    h->unk74 = (D_8006794C->unk24 >> 18) & 1;
+    h->unk30 = g_gameState->unk1C->unk560;
+    h->unk74 = (g_gameState->unk24 >> 18) & 1;
     h->unk78 = ++D_801FB1A8.unkC;
     h->unk7C = D_801FB1A8.unk24.unk6;
-    h->unk6 = *(SaveName *)D_8006794C->unk1C->unk3C[n].unk0;
+    h->unk6 = *(SaveName *)g_gameState->unk1C->unk3C[n].unk0;
     func_801F9024((u8 *)&h->unk10);
     for (i = 0; i < 4; i++) {
-        if (D_8006794C->unk1C->unk54C[i] != NULL) {
+        if (g_gameState->unk1C->unk54C[i] != NULL) {
             h->unk34[i].unk0 = 1;
-            h->unk34[i].unk1 = func_801F7970(D_8006794C->unk1C->unk54C[i]);
-            h->unk34[i].unkC = D_8006794C->unk1C->unk54C[i]->unkB;
-            *(Name10 *)h->unk34[i].unk2 = *(Name10 *)D_8006794C->unk1C->unk54C[i]->unk0;
+            h->unk34[i].unk1 = func_801F7970(g_gameState->unk1C->unk54C[i]);
+            h->unk34[i].unkC = g_gameState->unk1C->unk54C[i]->unkB;
+            *(Name10 *)h->unk34[i].unk2 = *(Name10 *)g_gameState->unk1C->unk54C[i]->unk0;
         } else {
             h->unk34[i].unk0 = 0;
             h->unk34[i].unk1 = 0xFF;
@@ -1877,7 +1877,7 @@ void func_801F9024(u8 *dst) {
     if (D_801FB1A8.unk0 == 2) {
         name = func_80035774(func_800B5064() + 0x36);
     } else {
-        name = D_8006794C->unk1C->unk80C;
+        name = g_gameState->unk1C->unk80C;
     }
     if (name == NULL) {
         s = func_80035774(0x20);
@@ -2045,7 +2045,7 @@ u8 func_801F9804(void) {
     func_801F96CC();
     if (D_801FDEFE == func_801F973C(((SaveBuf *)0x801FCB00)->unk0, 0x13FE)) {
         h = &((SaveBuf *)0x801FCB00)->unk100;
-        D_8006794C->unkB = h->unk4;
+        g_gameState->unkB = h->unk4;
         func_80024000(h->unk2C);
         func_801F9BEC(&((SaveBuf *)0x801FCB00)->unk180.unk0);
         func_801F9DF8(&((SaveBuf *)0x801FCB00)->unk180.unk40);
@@ -2070,7 +2070,7 @@ void func_801F9904(SaveParty *s) {
     GameData *gd;
     s32 i;
 
-    gd = D_8006794C->unk1C;
+    gd = g_gameState->unk1C;
     for (i = 0; i < 9; i++) {
         s->unk0[i] = gd->unk3C[i];
     }
@@ -2093,7 +2093,7 @@ void func_801F99FC(SaveParty *s) {
     GameData *gd;
     s32 i;
 
-    gd = D_8006794C->unk1C;
+    gd = g_gameState->unk1C;
     for (i = 0; i < 9; i++) {
         gd->unk3C[i] = s->unk0[i];
     }
@@ -2116,9 +2116,9 @@ void func_801F9B00(Unk801F9BEC *h) {
     GameData *gd;
     s32 i;
 
-    gd = D_8006794C->unk1C;
-    h->unk0 = D_8006794C->unk8;
-    h->unk1 = D_8006794C->unkA;
+    gd = g_gameState->unk1C;
+    h->unk0 = g_gameState->unk8;
+    h->unk1 = g_gameState->unkA;
     for (i = 0x1D; i >= 0; i--) {
         h->unk2[i] = 0;
     }
@@ -2139,12 +2139,12 @@ void func_801F9B00(Unk801F9BEC *h) {
 }
 
 void func_801F9BEC(Unk801F9BEC *p) {
-    GameState *gs = D_8006794C;
+    GameState *gs = g_gameState;
     GameData *gd;
 
     gs->unk8 = p->unk0;
     gd = gs->unk1C;
-    D_8006794C->unkA = p->unk1;
+    g_gameState->unkA = p->unk1;
     gd->unkC = p->unk20;
     gd->unk3A = p->unk22;
     gd->unkE = p->unk24;
@@ -2190,28 +2190,28 @@ void func_801F9DF8(SaveEvents *s) {
 }
 
 void func_801F9EA8(SaveItems *s) {
-    s->unk0 = D_8006794C->unk1C->unk574;
-    s->unk200 = D_8006794C->unk1C->unk774;
-    s->unk240 = *(GameStateUnk24 *)&D_8006794C->unk24;
+    s->unk0 = g_gameState->unk1C->unk574;
+    s->unk200 = g_gameState->unk1C->unk774;
+    s->unk240 = *(GameStateUnk24 *)&g_gameState->unk24;
 }
 
 void func_801F9F5C(SaveItems *s) {
-    D_8006794C->unk1C->unk574 = s->unk0;
-    D_8006794C->unk1C->unk774 = s->unk200;
-    *(GameStateUnk24 *)&D_8006794C->unk24 = s->unk240;
+    g_gameState->unk1C->unk574 = s->unk0;
+    g_gameState->unk1C->unk774 = s->unk200;
+    *(GameStateUnk24 *)&g_gameState->unk24 = s->unk240;
     func_8002397C();
 }
 
 void func_801FA01C(Unk801FA078 *p) {
-    p->unk0 = D_8006794C->unk1C->unk844;
-    p->unk4 = D_8006794C->unk1C->unk880;
-    p->unk14 = D_8006794C->unk1C->unk892;
+    p->unk0 = g_gameState->unk1C->unk844;
+    p->unk4 = g_gameState->unk1C->unk880;
+    p->unk14 = g_gameState->unk1C->unk892;
 }
 
 void func_801FA078(Unk801FA078 *p) {
-    D_8006794C->unk1C->unk844 = p->unk0;
-    D_8006794C->unk1C->unk880 = p->unk4;
-    D_8006794C->unk1C->unk892 = p->unk14;
+    g_gameState->unk1C->unk844 = p->unk0;
+    g_gameState->unk1C->unk880 = p->unk4;
+    g_gameState->unk1C->unk892 = p->unk14;
 }
 
 void func_801FA0C8(void) {

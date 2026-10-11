@@ -53,7 +53,7 @@ typedef struct {
     u32 b19 : 1;
     u32 b20 : 12;
 } ConfigBits;
-#define CFG (*(ConfigBits *)&D_8006794C->unk24)
+#define CFG (*(ConfigBits *)&g_gameState->unk24)
 extern RECT D_801F1534[2]; /* option window rects */
 extern u8 D_801F1524[];
 extern u8 D_801F1464[];

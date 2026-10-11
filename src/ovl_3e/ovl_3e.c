@@ -35,17 +35,17 @@ void func_801F6124(void) {
     RECT unused[2];
 
     for (i = 0; i < 2; i++) {
-        setlen(D_80077170, 4);
-        p = (SprtWords *)D_80077170;
+        setlen(g_primPtr, 4);
+        p = (SprtWords *)g_primPtr;
         p->rgbc = 0x64808080;
         p->xy = i * 160;
         p->uvclut = (i * 160) & 0x3F;
         p->wh = 0xE000A0;
-        D_80077170 = (u8 *)(p + 1);
-        addPrim(&D_8007716C[6], p);
-        SetDrawTPage(D_80077170, 1, 1, (((i * 160) >> 6) + 0x10) | 0x100);
-        addPrim(&D_8007716C[6], D_80077170);
-        D_80077170 += 8;
+        g_primPtr = (u8 *)(p + 1);
+        addPrim(&g_ot[6], p);
+        SetDrawTPage(g_primPtr, 1, 1, (((i * 160) >> 6) + 0x10) | 0x100);
+        addPrim(&g_ot[6], g_primPtr);
+        g_primPtr += 8;
     }
 }
 
@@ -53,17 +53,17 @@ void func_801F6254(void) {
     SprtWords *p;
     u32 clut = GetClut(0, 0x1FF) << 16;
 
-    setlen(D_80077170, 4);
-    p = (SprtWords *)D_80077170;
+    setlen(g_primPtr, 4);
+    p = (SprtWords *)g_primPtr;
     p->rgbc = 0x64808080;
     p->xy = 0x1C004E;
     p->uvclut = clut;
     p->wh = 0xA800C2;
-    D_80077170 = (u8 *)(p + 1);
-    addPrim(&D_8007716C[6], p);
-    SetDrawTPage(D_80077170, 1, 1, 0x95);
-    addPrim(&D_8007716C[6], D_80077170);
-    D_80077170 += 8;
+    g_primPtr = (u8 *)(p + 1);
+    addPrim(&g_ot[6], p);
+    SetDrawTPage(g_primPtr, 1, 1, 0x95);
+    addPrim(&g_ot[6], g_primPtr);
+    g_primPtr += 8;
 }
 
 u8 func_801F6368(void) {
@@ -126,11 +126,11 @@ u8 func_801F6368(void) {
     VSync(3);
     for (i = 0; i < 10; i++) {
         func_8001DCB8();
-        if (D_8006794C->unkB != 0xFF) {
+        if (g_gameState->unkB != 0xFF) {
             break;
         }
     }
-    if (D_8006794C->unkB == 0xFF || !(D_8006794C->unkB & mask)) {
+    if (g_gameState->unkB == 0xFF || !(g_gameState->unkB & mask)) {
         func_80022BD0();
         return 6;
     }
@@ -154,7 +154,7 @@ void func_801F65D4(void) {
     }
     dst = D_80073998;
     st = &D_801F6BBC;
-    D_8006794C->unk0 |= 0x100000;
+    g_gameState->unk0 |= 0x100000;
     for (i = 0; i < 2; i++) {
         dst[i] = st->unk8[i];
     }
@@ -194,7 +194,7 @@ void func_801F673C(void) {
     s32 i;
     s32 sector;
 
-    sector = D_8006794C->unk20 + func_8001E218(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
+    sector = g_gameState->unk20 + func_8001E218(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
     size = 0x11800;
     for (i = 0; i < 2; i++) {
         func_80022DF0(sector, size, buf);

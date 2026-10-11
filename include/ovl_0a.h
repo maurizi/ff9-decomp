@@ -1311,8 +1311,8 @@ void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 static inline s32 func_800AD944_state(void) {
     s8 v;
 
-    if (D_8006794C->unkB != 0xFF) {
-        v = D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk42;
+    if (g_gameState->unkB != 0xFF) {
+        v = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42;
         if (v != 0x11) {
             goto other;
         }
@@ -1398,9 +1398,9 @@ s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
 /* func_800AC6C0: link shadow quad q at its deepest corner */
 #define FIELD_SHADOW_ADD(k, q) \
     k = (k >> 2) + bias; \
-    if (-D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30 < k \
-        && k < 0x1000 - D_8006794C->unk1C->unk8E4.field->unkC->unk14->unk30) { \
-        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][k], e->unk8[D_8006794C->unk1C->unk8][q]); \
+    if (-g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30 < k \
+        && k < 0x1000 - g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30) { \
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][k], e->unk8[g_gameState->unk1C->unk8][q]); \
     }
 
 void func_800AD488(FieldObjEnt *, FieldObjSlot *, MATRIX *);
@@ -1536,7 +1536,7 @@ typedef struct {
     u8 pad[0x828];
     s32 unk828[2];
 } GameDataSfx;
-#define SFXH(i) (((GameDataSfx *)D_8006794C->unk1C)->unk828[i])
-#define SCENE (D_8006794C->unk1C->unk8E4.field->unkC->unk14)
+#define SFXH(i) (((GameDataSfx *)g_gameState->unk1C)->unk828[i])
+#define SCENE (g_gameState->unk1C->unk8E4.field->unkC->unk14)
 
 #endif

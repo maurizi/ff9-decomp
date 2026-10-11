@@ -275,23 +275,23 @@ void func_801F1508(void) {
     }
     x = r->x + (s16)(D_801F347C.unk2 * 15 + 4);
     y = r->y + (s16)(D_801F347C.unk1 * 15 + 10);
-    setlen(D_80077170, 5);
+    setlen(g_primPtr, 5);
     rgbc = (a * 8) | 0x48000000;
-    ((PolyF4Words *)D_80077170)->rgbc = rgbc;
-    ((PolyF4Words *)D_80077170)->xy0 = x | (y << 16);
-    ((PolyF4Words *)D_80077170)->xy1 = (x + 13) | (y << 16);
-    ((PolyF4Words *)D_80077170)->xy2 = (x + 13) | ((y + 13) << 16);
-    ((PolyF4Words *)D_80077170)->xy3 = 0x55555555;
-    addPrim(&D_8007716C[18], D_80077170);
-    D_80077170 += 0x18;
-    setlen(D_80077170, 5);
-    ((PolyF4Words *)D_80077170)->rgbc = rgbc;
-    ((PolyF4Words *)D_80077170)->xy0 = x | (y << 16);
-    ((PolyF4Words *)D_80077170)->xy1 = x | ((y + 13) << 16);
-    ((PolyF4Words *)D_80077170)->xy2 = (x + 13) | ((y + 13) << 16);
-    ((PolyF4Words *)D_80077170)->xy3 = 0x55555555;
-    addPrim(&D_8007716C[18], D_80077170);
-    D_80077170 += 0x18;
+    ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
+    ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
+    ((PolyF4Words *)g_primPtr)->xy1 = (x + 13) | (y << 16);
+    ((PolyF4Words *)g_primPtr)->xy2 = (x + 13) | ((y + 13) << 16);
+    ((PolyF4Words *)g_primPtr)->xy3 = 0x55555555;
+    addPrim(&g_ot[18], g_primPtr);
+    g_primPtr += 0x18;
+    setlen(g_primPtr, 5);
+    ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
+    ((PolyF4Words *)g_primPtr)->xy0 = x | (y << 16);
+    ((PolyF4Words *)g_primPtr)->xy1 = x | ((y + 13) << 16);
+    ((PolyF4Words *)g_primPtr)->xy2 = (x + 13) | ((y + 13) << 16);
+    ((PolyF4Words *)g_primPtr)->xy3 = 0x55555555;
+    addPrim(&g_ot[18], g_primPtr);
+    g_primPtr += 0x18;
 }
 
 void func_801F166C(void) {
@@ -379,19 +379,19 @@ void func_801F1AE8(s32 x, s32 y, s32 z, s32 dim) {
     s32 c;
     u32 rgbc;
 
-    setlen(D_80077170, 4);
+    setlen(g_primPtr, 4);
     c = 0x80 - dim * 0x16;
     rgbc = c | (c << 8) | (c << 16) | 0x64000000;
-    p = (SprtWords *)D_80077170;
+    p = (SprtWords *)g_primPtr;
     p->rgbc = rgbc;
     p->wh = 0x2F0026;
     p->xy = (x + 2) | ((y + 2) << 16);
     p->uvclut = clut;
-    D_80077170 = (u8 *)(p + 1);
-    addPrim(&D_8007716C[z], p);
-    SetDrawTPage(D_80077170, 1, 1, 0xBF);
-    addPrim(&D_8007716C[z], D_80077170);
-    D_80077170 += 8;
+    g_primPtr = (u8 *)(p + 1);
+    addPrim(&g_ot[z], p);
+    SetDrawTPage(g_primPtr, 1, 1, 0xBF);
+    addPrim(&g_ot[z], g_primPtr);
+    g_primPtr += 8;
     func_801F1D6C(x, y, 0x14, 0, rgbc);
 }
 
@@ -423,18 +423,18 @@ void func_801F1D6C(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
     SprtWords *p;
     Ovl36Sprite *t;
 
-    setlen(D_80077170, 4);
-    p = (SprtWords *)D_80077170;
+    setlen(g_primPtr, 4);
+    p = (SprtWords *)g_primPtr;
     t = &D_801F3188[idx];
     p->rgbc = rgbc;
     p->xy = x | (y << 16);
     p->uvclut = t->unk0;
     p->wh = t->unk4 | (t->unk5 << 16);
-    D_80077170 = (u8 *)(p + 1);
-    addPrim(&D_8007716C[z], p);
-    SetDrawTPage(D_80077170, 1, 1, t->unk6 | 0x20);
-    addPrim(&D_8007716C[z], D_80077170);
-    D_80077170 += 8;
+    g_primPtr = (u8 *)(p + 1);
+    addPrim(&g_ot[z], p);
+    SetDrawTPage(g_primPtr, 1, 1, t->unk6 | 0x20);
+    addPrim(&g_ot[z], g_primPtr);
+    g_primPtr += 8;
 }
 
 void func_801F1EA0(u8 *buf) {
@@ -538,8 +538,8 @@ void func_801F22DC(void) {
         if (D_801F347C.unk5 == 1) {
             r.x = 0;
             r.y = 0x8C;
-            r.w = D_8006794C->unkC->disp.w;
-            r.h = D_8006794C->unkC->disp.h - 0x8C;
+            r.w = g_gameState->unkC->disp.w;
+            r.h = g_gameState->unkC->disp.h - 0x8C;
             func_80035580(&r);
         }
         D_80077DE8.unk8 = func_80035774(D_801F347C.unk5 + 0x25);

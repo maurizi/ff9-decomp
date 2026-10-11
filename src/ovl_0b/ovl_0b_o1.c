@@ -49,8 +49,8 @@ void func_800C2F9C(s32 arg0) {
 void func_800C2FFC(s32 arg0) {
     bzero(&D_800FE488, 0x64);
     D_800FE3B8.unk53 = func_800CF690() & 1;
-    func_800C57A4(D_8006794C->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
-    func_800C57A4((BtlUnit *)D_8006794C->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
+    func_800C57A4(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
+    func_800C57A4((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
     func_800C2F9C(arg0);
     D_800FE3B8.unkB9 = 2;
     D_800FE3B8.unk5C = 0;
@@ -142,7 +142,7 @@ void func_800C316C(s32 arg) {
         case 2:
             switch ((*t >> 12) & 3) {
             case 0:
-                n = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+                n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                 if (n == 2) {
                     D_800FE3B8.unkA8 = n;
                 } else {
@@ -151,7 +151,7 @@ void func_800C316C(s32 arg) {
                 D_800FE488.unk18 = D_800FE3B8.unkA8;
                 break;
             case 1:
-                D_800FE3B8.unkA8 = D_8006794C->unk1C->unk8E4.battle->unk131C;
+                D_800FE3B8.unkA8 = g_gameState->unk1C->unk8E4.battle->unk131C;
                 break;
             case 2:
                 w = D_800FE368.unk4;
@@ -182,12 +182,12 @@ void func_800C316C(s32 arg) {
                 } else if ((D_800FE3B8.unkCC->unk3C & 0x40001103) || !((D_800FDF30.unkA >> ((u8)D_800FE3B8.unkCC->unk68 >> 5)) & 1)) {
                     D_800FE3B8.unkA8 = 0;
                 } else {
-                    n = D_8006794C->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+                    n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                     if (n == 2) {
                         D_800FE3B8.unkA8 = n;
                     } else {
                         r = 0;
-                        for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+                        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
                             if ((u->unk68 & 1) && !(u->unk3C & 0x40000100)) {
                                 r++;
                             }
@@ -338,7 +338,7 @@ s32 func_800C37BC(void) {
                     if (c == 1) {
                         D_800FE3B8.unk67 = c;
                     } else {
-                        D_8006794C->unk1C->unk8E4.battle->unkD81++;
+                        g_gameState->unk1C->unk8E4.battle->unkD81++;
                     }
                     D_800FE488.unk0 += 2;
                 }
@@ -384,7 +384,7 @@ s32 func_800C37BC(void) {
         func_800C5530(&D_800FE3B8.unk54, &sv);
         func_800C4A3C(&D_800FE3B8.unk54.vx, &sv.vx);
         func_800C493C(&sv.vx);
-        func_800C52B4(&D_8006794C->unk1C->unk18, &D_800FE3B8.unk54, &sv);
+        func_800C52B4(&g_gameState->unk1C->unk18, &D_800FE3B8.unk54, &sv);
         D_800FE3B8.unk50 = -ratan2(D_800FE3B8.unk54.vx - sv.vx, D_800FE3B8.unk54.vz - sv.vz) - 0x800;
     }
     if (D_800FE488.unk34 != 0) {
@@ -398,17 +398,17 @@ s32 func_800C37BC(void) {
         }
     }
     if (D_800FE3B8.unk66 == 0) {
-        D_8006794C->unk1C->unkA = D_800FE3B8.unk5E;
+        g_gameState->unk1C->unkA = D_800FE3B8.unk5E;
     }
-    func_800639D4(D_8006794C->unk1C->unkA);
+    func_800639D4(g_gameState->unk1C->unkA);
     e = D_800FE3B8.unk67;
     if (e == 1) {
-        b = D_8006794C->unk1C->unk8E4.battle;
+        b = g_gameState->unk1C->unk8E4.battle;
         if ((b->unkD85 & 7) == 7) {
             if ((b->unk132C.unk0 >> 2) & 1) {
                 b->unkD80 = e;
             } else {
-                D_8006794C->unk1C->unk8E4.battle->unkD80 = 3;
+                g_gameState->unk1C->unk8E4.battle->unkD80 = 3;
             }
             D_800FE3B8.unk67 = 0;
         }
@@ -695,7 +695,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         return;
     }
     if (n == 0xB) {
-        gs = D_8006794C;
+        gs = g_gameState;
         arg1[0] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk4;
         arg1[2] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk8;
         return;
@@ -712,7 +712,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         u = D_800FE3B8.unkCC;
     }
     if (n == 0xC) {
-        u = D_8006794C->unk1C->unk8E4.battle->unk11C4.unk148;
+        u = g_gameState->unk1C->unk8E4.battle->unk11C4.unk148;
     }
     if (n == 0xF) {
         u = D_800FE368.unk44;
@@ -732,7 +732,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         s = D_800FE488.unk5A;
         u = (BtlUnit *)func_800C5890(n);
         if (u == NULL) {
-            u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+            u = g_gameState->unk1C->unk8E4.battle->unk6F8;
         }
         arg2[0] = u->unkA0->unk20;
         arg2[2] = u->unkA0->unk24;
@@ -759,7 +759,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         arg1[2] = D_800FE368.unk3C;
     }
     if (n == 0xE) {
-        gs = D_8006794C;
+        gs = g_gameState;
         arg1[0] = gs->unk1C->unk8E4.battle->unk11C4.unk150;
         arg1[2] = gs->unk1C->unk8E4.battle->unk11C4.unk154;
     }
@@ -866,7 +866,7 @@ void func_800C5530(SVECTOR *arg0, SVECTOR *arg1) {
                     LoadAverageShort12(&D_800FE3B8.unkC4, &D_800FE3B8.unk0[5], a, b, arg1);
                 }
             }
-            D_8006794C->unk1C->unkA = D_800FE3B8.unk60;
+            g_gameState->unk1C->unkA = D_800FE3B8.unk60;
             D_800FE3B8.unk66 = 1;
         }
     } else {
@@ -885,7 +885,7 @@ void func_800C57A4(BtlUnit *arg0, s16 *arg1) {
         arg1[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            arg1[i] = arg0->unk9C->unk20[D_8006794C->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
+            arg1[i] = arg0->unk9C->unk20[g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
         }
     }
     arg1[3] = arg0->unk8C[0] >> 16;
@@ -898,7 +898,7 @@ s32 func_800C5890(s32 arg0) {
         ret = D_800FE36C;
     }
     if ((u32)(arg0 - 0xD) < 2) {
-        ret = D_8006794C->unk1C->unk8E4.battle->unk11C4.unk14C;
+        ret = g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C;
     }
     return ret;
 }

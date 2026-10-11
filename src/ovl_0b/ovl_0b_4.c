@@ -19,7 +19,7 @@ void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
     s16 *c2;
 
     g = &arg0->unk8->unk10[arg1];
-    gte_SetGeomScreen(D_8006794C->unk1C->unkA);
+    gte_SetGeomScreen(g_gameState->unk1C->unkA);
     sxy = D_800711A8;
     sz = D_80070520;
     k = 0;
@@ -28,8 +28,8 @@ void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
     for (i = 0; i < cnt; bone++) {
         n = g->unk14[i++];
         if (n != 0) {
-            gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
-            gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+            gte_SetRotMatrix(&g_gameState->unk1C->unk18);
+            gte_SetTransMatrix(&g_gameState->unk1C->unk18);
             b = bone;
             gte_ldclmv(b);
             c1 = &b->m[0][1];
@@ -111,7 +111,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
         arg0->unk10 = (s32)prim;
     }
     tex = (u32 *)arg0->unk18;
-    ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8];
+    ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
     ot -= g->unk13;
 
     n = g->unk2;
@@ -656,8 +656,8 @@ void func_800C7CC8(BtlUnit9C *arg0) {
     v.vx = arg0->unk24.t[0];
     v.vy = arg0->unk24.t[1];
     v.vz = arg0->unk24.t[2];
-    gte_SetRotMatrix(&D_8006794C->unk1C->unk18);
-    gte_SetTransMatrix(&D_8006794C->unk1C->unk18);
+    gte_SetRotMatrix(&g_gameState->unk1C->unk18);
+    gte_SetTransMatrix(&g_gameState->unk1C->unk18);
     gte_ldv0(&v);
     gte_rtps();
     gte_stsz(&z);

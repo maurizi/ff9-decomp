@@ -2102,7 +2102,7 @@ u8 func_800339F4(s32, u8);
 void func_80026C34(s32, s32, s32, s32, u8);
 extern u32 D_800686D8;
 void func_800316D8(void *, void *);
-void func_8002C084(s32);
+void gfx_selectBuffer(s32);
 void func_8002C740(s32, s32, s32);
 void func_8002E32C(Window *, s32);
 void func_8002E380(Window *, s32);
@@ -3268,7 +3268,7 @@ extern u8 D_80104FF2;
 /* first unit flagged as the current target (bits 28 and 29 of unk68) */
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
-    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             return u;
         }
@@ -3402,7 +3402,7 @@ s32 func_80033A1C(Character *);
 /* battle menu: unit under the target cursor (inlined by its callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
-    for (p = D_8006794C->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->unk0) {
+    for (p = g_gameState->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->unk0) {
         if ((p->unk68 & 0x30000000) == 0x30000000) {
             return p;
         }
@@ -3418,7 +3418,7 @@ static inline s32 func_800F1B78_inline(void) {
         return 2;
     }
     n = 0;
-    for (u = D_8006794C->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             n++;
         }
@@ -3686,7 +3686,7 @@ extern RECT D_800FDE34;
     gte_rtps()
 
 /* func_800AC37C: shadow quad q of entry e in the current buffer */
-#define SHADOW_QUAD(q) e->unk8[D_8006794C->unk1C->unk8][q]
+#define SHADOW_QUAD(q) e->unk8[g_gameState->unk1C->unk8][q]
 
 typedef struct {
     u32 unk0;
@@ -3861,7 +3861,7 @@ s32 func_800AA504(s32, s32, Unk800AA504 *);
 /* inlined into func_800AA24C: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */
 static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
-    FileTable *t = D_8006794C->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->unk7E4;
     FileEntryX *first = (FileEntryX *)t->unk4;
     FileEntryX *e = &first[t->unk2] - 1;
     s16 *q = dst;

@@ -1357,7 +1357,7 @@ void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 #define SHADOW_ADD(k, q) \
     k >>= 3; \
     if (-D_800CF442 < k && k < 0x1000 - D_800CF442) { \
-        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][k], e->unk8[D_8006794C->unk1C->unk8][q]); \
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][k], e->unk8[g_gameState->unk1C->unk8][q]); \
     }
 
 /* main exe: candidates for ff9.h */

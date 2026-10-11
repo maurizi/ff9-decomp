@@ -24,7 +24,7 @@ void func_801EE440(void) {
     func_8003556C(func_801EFB08);
     D_801F120C.unk80[0] = (u8 *)0x801F5F00;
     D_801F120C.unk80[1] = (u8 *)0x801F9F00;
-    D_801F120C.unk7C = D_801F120C.unk80[D_8006794C->unk1C->unk8];
+    D_801F120C.unk7C = D_801F120C.unk80[g_gameState->unk1C->unk8];
 }
 
 void func_801EE568(void) {
@@ -65,7 +65,7 @@ void func_801EE650(void) {
     s16 y;
 
     w = &D_801F120C.unk8;
-    c = D_8006794C->unk1C->unk54C[D_801F120C.unk2];
+    c = g_gameState->unk1C->unk54C[D_801F120C.unk2];
     x = w->x + 0x72;
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
@@ -88,7 +88,7 @@ void func_801EE740(void) {
     StatusEntry *tp;
 
     w = &D_801F120C.unk8;
-    c = D_8006794C->unk1C->unk54C[D_801F120C.unk2];
+    c = g_gameState->unk1C->unk54C[D_801F120C.unk2];
     t = D_801EDF04;
     pool = D_801EE144;
     r.w = 0x42;
@@ -102,7 +102,7 @@ void func_801EE740(void) {
         y = i * 15 + 6;
         off = D_801EFBB4[i] * sizeof(StatusEntry);
         k = ((StatusEntry *)((u8 *)tp + off))->unk0;
-        D_801F120C.unk7C = func_8002920C(r.x + 0xC, r.y + y, D_8007716C + 25, pool.s + k, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_8002920C(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, D_801F120C.unk7C);
     }
     func_8002B524(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
     func_8002DEE4(&r, 0x19, 2);
@@ -119,14 +119,14 @@ void func_801EE9E8(void) {
 
     m = &D_801F120C;
     r = &m->unk8;
-    c = D_8006794C->unk1C->unk54C[m->unk2];
+    c = g_gameState->unk1C->unk54C[m->unk2];
     y = 0x3D;
     for (i = 0; i < 4; i++) {
-        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, D_8007716C + 0x1D, func_80035774(D_801EFBE0[i]), 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, func_80035774(D_801EFBE0[i]), 0, D_801F120C.unk7C);
     }
     y = 0x72;
     for (i = 0; i < 5; i++) {
-        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, D_8007716C + 0x1D, func_80035774(D_801EFBF0[i]), 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, func_80035774(D_801EFBF0[i]), 0, D_801F120C.unk7C);
     }
     func_8002BAE4(c->unk24, buf, 2, 1);
     func_8002B56C(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
@@ -159,14 +159,14 @@ void func_801EED18(void) {
 
     r = &D_801F120C.unk8;
     st = &D_801F120C;
-    c = D_8006794C->unk1C->unk54C[st->unk2];
+    c = g_gameState->unk1C->unk54C[st->unk2];
     show = 0;
     if (D_8007AF00 != 0) {
         bit = c->unkA & 0x10;
         show = bit == 0;
     }
     if (show) {
-        st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &D_8007716C[0x1D], func_80035774(0xB), 0, st->unk7C);
+        st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], func_80035774(0xB), 0, st->unk7C);
         func_80025ED4(r->x + 0xB4, r->y + 0x3E, 0x1D, c->unk20, 0xFF, 1, 1);
     }
     func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, func_80035774(0xC), 0);
@@ -199,14 +199,14 @@ void func_801EEF00(void) {
     u8 buf[8];
 
     st = &D_801F120C;
-    c = D_8006794C->unk1C->unk54C[st->unk2];
+    c = g_gameState->unk1C->unk54C[st->unk2];
     for (i = 0; i < 5; i++) {
-        D_801F120C.unk7C = func_80027834(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &D_8007716C[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
-        D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &D_8007716C[0x1D], D_801EE264, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_80027834(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, D_801F120C.unk7C);
         id = c->unk39[i];
         if (id != 0xFF) {
             func_80026C34(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
-            D_801F120C.unk7C = func_8002920C(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &D_8007716C[0x1D], D_8006A218 + D_80069018[id].unk0, 0, D_801F120C.unk7C);
+            D_801F120C.unk7C = func_8002920C(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], D_8006A218 + D_80069018[id].unk0, 0, D_801F120C.unk7C);
         }
     }
 }
@@ -251,7 +251,7 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     ActiveAbility *a;
     Unk8006D128 *sup;
 
-    c = D_8006794C->unk1C->unk54C[D_801F120C.unk2];
+    c = g_gameState->unk1C->unk54C[D_801F120C.unk2];
     ok = func_80034A30(c);
     if (ok && c->unk58[i] == 0) {
         return;
@@ -279,12 +279,12 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     }
     if (draw) {
         func_800275DC(x, y, z, icon, 0);
-        D_801F120C.unk7C = func_8002920C(x + 0x10, y, D_8007716C + z, name, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_8002920C(x + 0x10, y, g_ot + z, name, 0, D_801F120C.unk7C);
     }
     if (ok) {
-        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, D_8007716C + z, cur, max, flag, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, D_801F120C.unk7C);
     } else {
-        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, D_8007716C + z, 1, 1, 0, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, g_ot + z, 1, 1, 0, 0, D_801F120C.unk7C);
     }
 }
 
@@ -308,7 +308,7 @@ void func_801EF568(s32 slot, s32 dir) {
     Character *c;
     s32 i;
 
-    c = D_8006794C->unk1C->unk54C[slot];
+    c = g_gameState->unk1C->unk54C[slot];
     func_80028D08(&D_801F120C.unk8C, D_801F120C.unk2, slot, dir);
     if (dir != 0) {
         D_801F120C.unk0 = 3;
@@ -352,8 +352,8 @@ void func_801EF708(void) {
 void func_801EF760(void) {
     u8 *p = D_801F120C.unk7C - 0x4000;
 
-    D_801F120C.unk88 = D_801F120C.unk80[D_8006794C->unk1C->unk8 ^ 1] - p;
-    D_801F120C.unk7C = D_801F120C.unk80[D_8006794C->unk1C->unk8];
+    D_801F120C.unk88 = D_801F120C.unk80[g_gameState->unk1C->unk8 ^ 1] - p;
+    D_801F120C.unk7C = D_801F120C.unk80[g_gameState->unk1C->unk8];
     func_801EF904();
     func_801EE650();
     func_801EE740();

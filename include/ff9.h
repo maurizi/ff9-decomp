@@ -8,7 +8,7 @@
  * Names are placeholders (unkXX = offset) until their purpose is known.
  * Split into per-subsystem headers once subsystems are identified. */
 
-/* ---- game state (D_8006794C) ---- */
+/* ---- game state (g_gameState) ---- */
 
 typedef struct {
     u16 unk0; /* flags */
@@ -224,10 +224,10 @@ typedef struct {
     u8 unk0[0x40];
 } __attribute__((aligned(4))) ItemFlags;
 
-/* D_8006794C->unk1C: looks like the save-data block */
+/* g_gameState->unk1C: looks like the save-data block */
 typedef struct {
     u32 unk0; /* flags */
-    u32 unk4; /* allocator top (D_80067940) after setup */
+    u32 unk4; /* allocator top (g_allocTop) after setup */
     u8 unk8; /* draw buffer index (0/1) */
     u8 unk9;
     u16 unkA; /* projection distance (SetFogNearFar) */
@@ -340,7 +340,7 @@ typedef struct {
 
 typedef struct {
     u32 unk0; /* flags */
-    u32 unk4; /* allocator top after boot (D_80067940) */
+    u32 unk4; /* allocator top after boot (g_allocTop) */
     u8 unk8;
     u8 unk9; /* VSync mode */
     u8 unkA;
@@ -358,7 +358,7 @@ typedef struct {
     u8 unk34[15];
 } GameState;
 
-extern GameState *D_8006794C;
+extern GameState *g_gameState;
 void func_8001DE50(); /* func_8001CB08 calls it without arguments */
 
 /* Inlined copy of func_80034A04 (support ability bit test). */
@@ -370,7 +370,7 @@ static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
 /* Inlined copy of func_80027EDC (item search); the original source inlines it. */
 static inline UnkPair *func_80027EDC_inline(s32 id) {
     s32 i;
-    UnkPair *e = D_8006794C->unk1C->unk574.unk0;
+    UnkPair *e = g_gameState->unk1C->unk574.unk0;
 
     for (i = 0; i < 0x100; i++, e++) {
         if (e->unk1 != 0 && e->unk0 == id) {
@@ -450,8 +450,8 @@ extern Unk800761D0 D_800761D0;
 
 /* ---- drawing ---- */
 
-extern u32 *D_8007716C; /* ordering table */
-extern u8 *D_80077170;  /* next free primitive in the packet buffer */
+extern u32 *g_ot; /* ordering table */
+extern u8 *g_primPtr;  /* next free primitive in the packet buffer */
 extern s16 D_80068F70[];
 extern u8 D_8006BB8C[];
 
@@ -592,7 +592,7 @@ typedef struct {
     u32 *unk14[2]; /* ordering tables */
     DVECTOR unk1C[2]; /* display x/y per buffer */
 } Unk80077148;
-extern Unk80077148 D_80077148;
+extern Unk80077148 g_drawBufs;
 
 /* window frame insets per style (rodata, func_8002D9B4) */
 typedef struct {
@@ -1684,7 +1684,7 @@ typedef struct {
     s32 unkC; /* end sector / next id */
 } FileEntry;
 
-/* D_8006794C->unk14[i]: per-directory header (func_8001E218) */
+/* g_gameState->unk14[i]: per-directory header (func_8001E218) */
 typedef struct {
     s32 unk0; /* 3 = flat u16 table at unk18[13] */
     s32 unk4; /* entry count */
@@ -1692,7 +1692,7 @@ typedef struct {
     s32 unkC;
 } FileDirEntry;
 
-/* D_8006794C->unk18[i]: 8-byte {id, sector} entries searched by func_8001E218 */
+/* g_gameState->unk18[i]: 8-byte {id, sector} entries searched by func_8001E218 */
 typedef struct {
     u16 unk0; /* id */
     u16 unk2;
@@ -2019,7 +2019,7 @@ Window *func_8002EA7C(RECT *, s32, s32, Window *);
 static inline void func_8002DD00_inline(Window *w) {
     if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
         w->unk1C = 2;
-        if (D_80077148.unk1 != 2) {
+        if (g_drawBufs.unk1 != 2) {
             func_8002D1AC(w, w->unk28);
         }
     }
@@ -2461,7 +2461,7 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
     if (ch >= 9) {
         return -1;
     }
-    row = ((D_8006794C->unk1C->unk3C + ch)->unk34.w >> 12) & 0x1F;
+    row = ((g_gameState->unk1C->unk3C + ch)->unk34.w >> 12) & 0x1F;
     if (row >= 16) {
         return -1;
     }
@@ -2902,13 +2902,13 @@ static inline s32 func_80034430_ap_inline(s32 ch, s32 id) {
     if (i < 0) {
         return -1;
     }
-    return D_8006794C->unk1C->unk3C[ch].unk58[i];
+    return g_gameState->unk1C->unk3C[ch].unk58[i];
 }
 
 /* AP needed to master ability id (inlined form of func_800347D8). */
 static inline s32 func_800347D8_inline(s32 ch, s32 id) {
     s32 i = func_80034430_inline(ch, id);
-    Character *c = D_8006794C->unk1C->unk3C + ch;
+    Character *c = g_gameState->unk1C->unk3C + ch;
     if (i < 0) {
         return 0;
     }
@@ -3263,7 +3263,7 @@ typedef struct {
     TimBlock clut;
 } TimHeader;
 
-extern u32 D_80067940; /* bump allocator for the boot-time state block */
+extern u32 g_allocTop; /* bump allocator for the boot-time state block */
 void func_8001CB78(void);
 void func_8001CBD0(void);
 s32 func_80022A28(void);
@@ -3859,7 +3859,7 @@ static inline s32 func_80023784_custom(u32 *c) {
     return (c[0] >> 1) & 1;
 }
 static inline s32 func_80023784_remap(s32 k) {
-    u32 *c = &D_8006794C->unk24;
+    u32 *c = &g_gameState->unk24;
     if (func_80023784_custom(c) == 1) {
         return (c[1] >> (k * 4)) & 0xF;
     }
@@ -4040,7 +4040,7 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
     s32 ge;
     s32 lt;
 
-    for (p = D_8006794C->unk1C->unk54C; p < &D_8006794C->unk1C->unk54C[4]; p++) {
+    for (p = g_gameState->unk1C->unk54C; p < &g_gameState->unk1C->unk54C[4]; p++) {
         c = *p;
         if (c == NULL) {
             continue;
@@ -4066,7 +4066,7 @@ static inline s32 func_8004B85C_find(s32 key, s32 slot) {
         }
         break;
     }
-    return p < &D_8006794C->unk1C->unk54C[4];
+    return p < &g_gameState->unk1C->unk54C[4];
 }
 
 extern const u8 D_80010DC4[]; /* default character names: count, then {offset, length} entries */

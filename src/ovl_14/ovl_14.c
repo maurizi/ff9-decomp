@@ -21,7 +21,7 @@ void func_800A7088(void) {
         case 1:
             if (func_800A9E14(0) != 0) {
                 D_800AB300 = 7;
-            } else if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+            } else if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                 n = 180;
                 D_800AB300 = 2;
             } else {
@@ -44,7 +44,7 @@ void func_800A7088(void) {
         case 4:
             if (func_800A9E14(1) != 0) {
                 D_800AB300 = 7;
-            } else if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+            } else if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                 n = 180;
                 D_800AB300 = 5;
             } else {
@@ -63,15 +63,15 @@ void func_800A7088(void) {
             break;
         }
     }
-    D_8006794C->unk0 |= 0x100000;
-    func_8001DE50(D_8006794C);
+    g_gameState->unk0 |= 0x100000;
+    func_8001DE50(g_gameState);
     func_800A741C();
     func_800A80D4();
     func_800A77BC();
 }
 
 void func_800A727C(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
@@ -80,28 +80,28 @@ void func_800A72C0(void) {
     u8 i;
 
     DrawSync(0);
-    VSync(D_8006794C->unk9);
+    VSync(g_gameState->unk9);
     ResetGraph(1);
-    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
-    ctx = D_8006794C->unk1C;
+    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
-    D_8006794C->unk1C->unk8 ^= 1;
-    func_8002C0DC(D_8006794C->unk1C->unk8);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    g_gameState->unk1C->unk8 ^= 1;
+    func_8002C0DC(g_gameState->unk1C->unk8);
 }
 
 void func_800A73B8(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     func_8001CCB4(0, 0, 0);
-    D_8006794C->unk8 = 1;
-    D_8006794C->unk9 = 2;
+    g_gameState->unk8 = 1;
+    g_gameState->unk9 = 2;
     ctx->unkC = 0;
     ctx->unk3A = 1;
 }
 
 /* looks up the current area/field ids in the two directories at D_80067944 + 0x14C700 and stores their sector ranges */
 void func_800A741C(void) {
-    GameState *gs = D_8006794C;
+    GameState *gs = g_gameState;
     s32 mode = gs->unk8;
     GameData *ctx = gs->unk1C;
     GameStateUnk14 *f;
@@ -178,7 +178,7 @@ void func_800A75C8(void) {
 
 void func_800A7600(void) {
     s32 i;
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
 
     ctx->unk9 = 0;
     ctx->unk39 = 0;
@@ -207,14 +207,14 @@ void func_800A767C(void) {
     }
     func_80055D40();
     func_80055D60();
-    if (D_8006794C->unk1C->unk0 & 0x100000) {
+    if (g_gameState->unk1C->unk0 & 0x100000) {
         func_800551F0();
         func_800A7768();
-        D_8006794C->unk1C->unk0 &= ~0x100000;
+        g_gameState->unk1C->unk0 &= ~0x100000;
     }
     func_8002306C();
-    D_8006794C->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A799C;
-    D_8006794C->unk1C->unk84C = 0;
+    g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A799C;
+    g_gameState->unk1C->unk84C = 0;
     func_800A78C0();
     func_800A780C();
     func_800A796C();
@@ -224,7 +224,7 @@ void func_800A767C(void) {
 
 void func_800A7768(void) {
     s32 i;
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
 
     for (i = 1; i >= 0; i--) {
         ctx->unk81C[i] = 0xFFFF;
@@ -239,7 +239,7 @@ void func_800A77BC(void) {
     GameData *ctx;
 
     SetDispMask(0);
-    ctx = D_8006794C->unk1C;
+    ctx = g_gameState->unk1C;
     if (ctx->unk0 & 0x20000000) {
         ctx->unk0 |= 0x400000;
     }
@@ -250,7 +250,7 @@ void func_800A780C(void) {
     s32 b;
 
     a = (s32)func_8001C7FC(4, 0x7003A, 0);
-    memmove(D_8006794C->unk1C->unk814, (void *)a, (s32)func_8001C7FC(5, 0x7003A, 0));
+    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)func_8001C7FC(5, 0x7003A, 0));
     a = (s32)func_8001C7FC(4, 0x90122, 0);
     b = (s32)func_8001C7FC(5, 0x90122, 0);
     func_80055DF4();
@@ -263,8 +263,8 @@ void func_800A78C0(void) {
 
     buf = D_80067944 + 0x10000;
     e = func_8001E218(1, 0x2717);
-    func_8002177C(D_8006794C->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     D_800AB230 = buf;
     func_8001C750((s32)buf, 0);
@@ -287,55 +287,55 @@ s32 func_800A799C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x70000;
         switch (kind) {
         case 0:
-            if (D_8006794C->unk1C->unk851 != 0) {
+            if (g_gameState->unk1C->unk851 != 0) {
                 return -1;
             }
             if (D_800AB234 == -1) {
                 D_800AB234 = kind;
             }
-            if (D_8006794C->unk1C->unk81C[0] != arg1) {
-                if (D_8006794C->unk1C->unk0 & 0x20000000) {
-                    func_800552B8(D_8006794C->unk1C->unk824[0]);
+            if (g_gameState->unk1C->unk81C[0] != arg1) {
+                if (g_gameState->unk1C->unk0 & 0x20000000) {
+                    func_800552B8(g_gameState->unk1C->unk824[0]);
                 }
-                D_8006794C->unk1C->unk0 &= 0xCFFFFFFF;
-                D_8006794C->unk1C->unk820[0] = 0x122;
-                D_8006794C->unk1C->unk81C[0] = arg1;
-                D_8006794C->unk1C->unk826[0] = 0x7F;
+                g_gameState->unk1C->unk0 &= 0xCFFFFFFF;
+                g_gameState->unk1C->unk820[0] = 0x122;
+                g_gameState->unk1C->unk81C[0] = arg1;
+                g_gameState->unk1C->unk826[0] = 0x7F;
             }
-            D_8006794C->unk1C->unk824[0] = func_80055290(D_8006794C->unk1C->unk814);
-            g = D_8006794C->unk1C;
+            g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+            g = g_gameState->unk1C;
             if (!(g->unk0 & 0x20000000)) {
                 func_80055A34(g->unk824[0], 0xA, 0, g->unk826[0]);
             }
             D_800AB234 = -1;
-            D_8006794C->unk1C->unk0 |= 0x30000000;
+            g_gameState->unk1C->unk0 |= 0x30000000;
             return 0;
         case 1:
-            if (D_8006794C->unk1C->unk81C[0] == (u16)id) {
-                func_800552B8(D_8006794C->unk1C->unk824[0]);
-                D_8006794C->unk1C->unk826[0] = 0x7F;
-                D_8006794C->unk1C->unk0 &= 0xDFFFFFFF;
+            if (g_gameState->unk1C->unk81C[0] == (u16)id) {
+                func_800552B8(g_gameState->unk1C->unk824[0]);
+                g_gameState->unk1C->unk826[0] = 0x7F;
+                g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
             }
             return 0;
         case 2:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559C8(D_8006794C->unk1C->unk824[0], arg2);
-            D_8006794C->unk1C->unk826[0] = arg2;
+            func_800559C8(g_gameState->unk1C->unk824[0], arg2);
+            g_gameState->unk1C->unk826[0] = arg2;
             return 0;
         case 3:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_800559FC(D_8006794C->unk1C->unk824[0], arg2, arg3);
+            func_800559FC(g_gameState->unk1C->unk824[0], arg2, arg3);
             func_800A7F70(arg3, arg2);
             return 0;
         case 4:
             if ((arg0 & 0x3F) != 1) {
                 break;
             }
-            func_80055A34(D_8006794C->unk1C->unk824[0], arg2, arg3, arg4);
+            func_80055A34(g_gameState->unk1C->unk824[0], arg2, arg3, arg4);
             func_800A7F70(arg4, arg2);
             return 0;
         case 6:
@@ -426,7 +426,7 @@ s32 func_800A799C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 void func_800A7F70(s32 arg0, s32 arg1) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
 
     ctx->unk826[0] = arg0;
     if (arg0 == 0) {
@@ -436,7 +436,7 @@ void func_800A7F70(s32 arg0, s32 arg1) {
 }
 
 s32 func_800A7FB0(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     return (u32)(VSync(-1) - ctx->unk8C4) < ctx->unk842;
 }
 
@@ -492,12 +492,12 @@ s32 func_800A81B8(void) {
     s32 prev;
 
     i = 0;
-    prev = D_8006794C->unkB;
+    prev = g_gameState->unkB;
     do {
         func_8001DCB8();
-    } while (D_8006794C->unkB == 0xFF && ++i < 10);
+    } while (g_gameState->unkB == 0xFF && ++i < 10);
     func_80033D1C(1);
-    if (func_800A8298(prev, D_8006794C->unkB)) {
+    if (func_800A8298(prev, g_gameState->unkB)) {
         return func_800A8260(prev);
     }
     return 0xFF;
@@ -573,9 +573,9 @@ void func_800A83AC(void) {
 void func_800A83E8(void) {
     if (func_800A8FCC() == 0) {
         func_800A7578();
-        D_8006794C->unk8 = 1;
-        D_8006794C->unk1C->unkC = 0x46;
-        D_8006794C->unk1C->unk3A = 2;
+        g_gameState->unk8 = 1;
+        g_gameState->unk1C->unkC = 0x46;
+        g_gameState->unk1C->unk3A = 2;
     }
 }
 
@@ -704,7 +704,7 @@ void func_800A880C(void) {
     FileEntry *e;
 
     e = func_8001E218(1, 0x3C);
-    func_80022DF0(D_8006794C->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
+    func_80022DF0(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
     func_800A8868((s32 *)0x801CDF00);
 }
 
@@ -905,17 +905,17 @@ void func_800A903C(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
     SprtWords *p;
     s32 c = D_800AB320.unkC;
 
-    setlen(D_80077170, 4);
-    p = (SprtWords *)D_80077170;
+    setlen(g_primPtr, 4);
+    p = (SprtWords *)g_primPtr;
     p->rgbc = (c << 1) | (c << 9) | (c << 17) | 0x66000000;
     p->xy = x | (y << 16);
     p->uvclut = t->unk0.w;
     p->wh = t->unk4 | (t->unk5 << 16);
-    D_80077170 = (u8 *)(p + 1);
-    addPrim(&D_8007716C[z], p);
-    SetDrawTPage(D_80077170, 1, 1, t->unk6 | 0x20);
-    addPrim(&D_8007716C[z], D_80077170);
-    D_80077170 += sizeof(SprtWords); /* sic: the DR_TPAGE is only 8 bytes */
+    g_primPtr = (u8 *)(p + 1);
+    addPrim(&g_ot[z], p);
+    SetDrawTPage(g_primPtr, 1, 1, t->unk6 | 0x20);
+    addPrim(&g_ot[z], g_primPtr);
+    g_primPtr += sizeof(SprtWords); /* sic: the DR_TPAGE is only 8 bytes */
 }
 
 void func_800A9180(void) {
@@ -923,7 +923,7 @@ void func_800A9180(void) {
 
     switch (D_800AB320.unk3) {
     case 0:
-        D_8006794C->unkB = 1;
+        g_gameState->unkB = 1;
         r = func_800A81B8();
         if (r != 0xFF) {
             func_80032120(8, ((r & 3) << 14) | 0x3A98);
@@ -954,13 +954,13 @@ s32 func_800A9220(void) {
         func_80019194();
         switch (D_800AB3C8) {
         case 0:
-            if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+            if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                 D_800AB2CC = 0;
                 D_800AB2C4 = 1;
                 D_800AB3C8 = 1;
                 func_8002F884();
             } else {
-                if (!(D_8006794C->unk1C->unk0 & 0x20000000)) {
+                if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
                     func_800A799C(0, 0x7003A, 0, 0, 0);
                     func_800A799C(0xC401, 0x7003A, 0x5A, 0, 0x7F);
                 }
@@ -972,12 +972,12 @@ s32 func_800A9220(void) {
             break;
         case 1:
             i = 1;
-            if (D_8006794C->unk1C->unk8 != 0) {
+            if (g_gameState->unk1C->unk8 != 0) {
                 i = 2;
             }
             D_800AB3B8[0][i - 1] = 7;
             D_800AB3B8[0][i] = 0x10;
-            D_8006794C->unk9 = 4;
+            g_gameState->unk9 = 4;
             DrawSync(0);
             func_801999B4(1, &buf);
             func_8019A5B0(1);
@@ -991,23 +991,23 @@ s32 func_800A9220(void) {
                 r = func_80199F30(0);
                 end = func_8019AD0C();
                 if (r != 0) {
-                    DrawOTag(D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8 ^ 1] + 0xFFF);
-                } else if (timer == -1 && D_8006794C->unk1C->unk8 == 0 && !(D_800AB2C4 & 0x20)) {
-                    D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+                    DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1] + 0xFFF);
+                } else if (timer == -1 && g_gameState->unk1C->unk8 == 0 && !(D_800AB2C4 & 0x20)) {
+                    g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                 }
                 if ((D_80071E34 >= end || D_800AB2CE >= D_80071E34 || timer == 0) && !(D_800AB2C4 & 0x40)) {
                     if (timer == 0) {
                         func_8019AAF8();
                         func_80023018();
-                        if (!(D_8006794C->unk1C->unk0 & 0x20000000)) {
+                        if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
                             func_800A799C(0, 0x7003A, 0, 0, 0);
                             func_800A799C(0xC401, 0x7003A, 0x5A, 0, 0x7F);
                         }
                     }
                     if (D_800AB2CE >= D_80071E34) {
                         D_800AB2C4 &= ~7;
-                        if (D_8006794C->unk1C->unk8 == 0) {
-                            D_8006794C->unkC[D_8006794C->unk1C->unk8].disp.x = 0x1E0;
+                        if (g_gameState->unk1C->unk8 == 0) {
+                            g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                         }
                         printf("Fr: %d\n", D_800AB2CE);
                     } else {
@@ -1022,7 +1022,7 @@ s32 func_800A9220(void) {
                 if (!(D_800AB2C4 & 0x20) && (D_80073990[0] & 0x4008) && D_80071E34 < end) {
                     D_800AB2CC = 1;
                     func_8019A5B0(0);
-                    D_800AB3B8[1][D_8006794C->unk1C->unk8 != 0 ? 1 : 2] = 2;
+                    D_800AB3B8[1][g_gameState->unk1C->unk8 != 0 ? 1 : 2] = 2;
                     timer = 6;
                     func_800320B8(1, 1, 0, 0);
                     func_800320B8(1, 1, timer, 0xFFFFFF);
@@ -1037,10 +1037,10 @@ s32 func_800A9220(void) {
             break;
         case 3:
             if ((D_800AB2C4 & 0x80) && func_80022B18() == 0) {
-                D_8006794C->unk9 = 0;
-                D_8006794C->unkC[0].disp.x = 0x140;
+                g_gameState->unk9 = 0;
+                g_gameState->unkC[0].disp.x = 0x140;
                 timer = 0x4EC;
-                D_8006794C->unkC[1].disp.x = 0;
+                g_gameState->unkC[1].disp.x = 0;
                 D_80073998[0] = 0;
                 func_800A82F4(D_800AB2CC);
                 func_800A812C(1);
@@ -1082,16 +1082,16 @@ s32 func_800A9968(void) {
     s32 h;
     s32 i, j;
 
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     f = func_8001E218(0, 0x64);
-    func_8002177C(D_8006794C->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     func_80012D08();
     FlushCache();
     func_80012D18();
-    if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+    if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
         h = func_80022AC4(*D_8019DC68);
         func_80022ED4(h);
         while (func_80022B18() != 0) {
@@ -1114,7 +1114,7 @@ s32 func_800A9968(void) {
 }
 
 void func_800A9B14(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
@@ -1125,24 +1125,24 @@ void func_800A9B58(void) {
     DrawSync(0);
     if (func_80012AD4() & 2) {
         if (D_80071E34 != 0 && D_80071E34 == D_80071E34 / 50 * 50) {
-            D_8006794C->unk9 = 3;
+            g_gameState->unk9 = 3;
         } else {
-            D_8006794C->unk9 = 4;
+            g_gameState->unk9 = 4;
         }
     } else {
-        D_8006794C->unk9 = 0;
+        g_gameState->unk9 = 0;
     }
-    VSync(D_8006794C->unk9);
+    VSync(g_gameState->unk9);
     ResetGraph(1);
-    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
+    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     if (D_800AB2C4 & 4) {
-        PutDrawEnv(&D_8006794C->unk10[D_8006794C->unk1C->unk8]);
+        PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
     } else {
-        g = D_8006794C->unk1C;
-        DrawOTagEnv(g->unk10[g->unk8] + 0xFFF, &D_8006794C->unk10[g->unk8]);
+        g = g_gameState->unk1C;
+        DrawOTagEnv(g->unk10[g->unk8] + 0xFFF, &g_gameState->unk10[g->unk8]);
     }
-    D_8006794C->unk1C->unk8 ^= 1;
-    func_8002C0DC(D_8006794C->unk1C->unk8);
+    g_gameState->unk1C->unk8 ^= 1;
+    func_8002C0DC(g_gameState->unk1C->unk8);
     D_800AB2C4 |= D_800AB3B8[0][0];
     D_800AB2C4 &= ~D_800AB3B8[1][0];
     for (i = 0; i < 2; i++) {
@@ -1195,36 +1195,36 @@ s32 func_800A9E14(s32 arg0) {
                     func_800320B8(1, 1, 0xF0, 0);
                 } else if (timer != 0) {
                     pad = D_80073990[0];
-                    setlen(&D_800AB3D0[D_8006794C->unk1C->unk8][0], 4);
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].code = 0x64;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].r0 = 0x80;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].g0 = 0x80;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].b0 = 0x80;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].x0 = 0;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].y0 = 0;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].u0 = 0;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].v0 = 0;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].w = 0xC0;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].h = 0xE0;
-                    D_800AB3D0[D_8006794C->unk1C->unk8][0].clut = 0x3800;
-                    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800AB3D0[D_8006794C->unk1C->unk8][0]);
-                    setDrawTPage(&D_800AB420[D_8006794C->unk1C->unk8][0], 1, 1, 0x10A);
-                    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800AB420[D_8006794C->unk1C->unk8][0]);
-                    setlen((D_800AB3D0[D_8006794C->unk1C->unk8] + 1), 4);
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->code = 0x64;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->r0 = 0x80;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->g0 = 0x80;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->b0 = 0x80;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->x0 = 0xC0;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->y0 = 0;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->u0 = 0;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->v0 = 0;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->w = 0x80;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->h = 0xE0;
-                    (D_800AB3D0[D_8006794C->unk1C->unk8] + 1)->clut = 0x3800;
-                    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], (D_800AB3D0[D_8006794C->unk1C->unk8] + 1));
-                    setDrawTPage(D_800AB420[D_8006794C->unk1C->unk8] + 1, 1, 1, 0x10D);
-                    addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], (D_800AB420[D_8006794C->unk1C->unk8] + 1));
+                    setlen(&D_800AB3D0[g_gameState->unk1C->unk8][0], 4);
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].code = 0x64;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].r0 = 0x80;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].g0 = 0x80;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].b0 = 0x80;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].x0 = 0;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].y0 = 0;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].u0 = 0;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].v0 = 0;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].w = 0xC0;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].h = 0xE0;
+                    D_800AB3D0[g_gameState->unk1C->unk8][0].clut = 0x3800;
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB3D0[g_gameState->unk1C->unk8][0]);
+                    setDrawTPage(&D_800AB420[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB420[g_gameState->unk1C->unk8][0]);
+                    setlen((D_800AB3D0[g_gameState->unk1C->unk8] + 1), 4);
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->code = 0x64;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->g0 = 0x80;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->b0 = 0x80;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->x0 = 0xC0;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->y0 = 0;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->u0 = 0;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->v0 = 0;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->w = 0x80;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
+                    (D_800AB3D0[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800AB3D0[g_gameState->unk1C->unk8] + 1));
+                    setDrawTPage(D_800AB420[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800AB420[g_gameState->unk1C->unk8] + 1));
                     pad &= 0x4008;
                     btn = pad;
                     if (!(D_800AB2D0.unk0 & 1) || btn) {
@@ -1268,7 +1268,7 @@ s32 func_800A9E14(s32 arg0) {
             func_80023A0C();
             if (!(D_800AB2D0.unk0 & 0x10) && (u8)func_800A82B0() && timer < 0x5B) {
                 func_800320B8(1, 1, 0x5A, 0xFFFFFF);
-                if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+                if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                     func_800A799C(0x8301, 0x7003A, 0x5A, 0, 0);
                 }
                 D_800AB2D0.unk0 |= 0x10;
@@ -1277,7 +1277,7 @@ s32 func_800A9E14(s32 arg0) {
                 if (D_800AB440 != 4) {
                     D_800AB440 = 3;
                 }
-                if (D_8006794C->unkB != 0xFF && (D_8006794C->unkB & 1)) {
+                if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
                     func_800A799C(0x100, 0x7003A, 0, 0, 0);
                 }
             }
@@ -1297,11 +1297,11 @@ s32 func_800AA848(s32 idx) {
     u8 *buf;
     FileEntry *e;
 
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     e = func_8001E218(1, D_800AB2D8[idx]);
-    func_8002177C(D_8006794C->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     buf = D_80067944 + 0x10000;
     D_800AB2D4 = buf;
@@ -1320,7 +1320,7 @@ s32 func_800AA960(s32 arg0) {
 }
 
 void func_800AA994(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
@@ -1329,15 +1329,15 @@ void func_800AA9D8(void) {
     u8 i;
 
     DrawSync(0);
-    D_8006794C->unk9 = 0;
-    VSync(D_8006794C->unk9);
+    g_gameState->unk9 = 0;
+    VSync(g_gameState->unk9);
     ResetGraph(1);
-    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
-    ctx = D_8006794C->unk1C;
+    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
-    D_8006794C->unk1C->unk8 ^= 1;
-    func_8002C0DC(D_8006794C->unk1C->unk8);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    g_gameState->unk1C->unk8 ^= 1;
+    func_8002C0DC(g_gameState->unk1C->unk8);
 }
 
 void func_800AAADC(void) {
@@ -1356,21 +1356,21 @@ void func_800AAADC(void) {
         } else if (t == 0x3C) {
             func_800320B8(1, 1, 0x3C, 0xFFFFFF);
         }
-        setlen(&D_800AB448[D_8006794C->unk1C->unk8], 4);
-        D_800AB448[D_8006794C->unk1C->unk8].code = 0x64;
-        D_800AB448[D_8006794C->unk1C->unk8].r0 = 0x80;
-        D_800AB448[D_8006794C->unk1C->unk8].g0 = 0x80;
-        D_800AB448[D_8006794C->unk1C->unk8].b0 = 0x80;
-        D_800AB448[D_8006794C->unk1C->unk8].x0 = (0x140 - r->w) / 2;
-        D_800AB448[D_8006794C->unk1C->unk8].y0 = (0xE0 - r->h) / 2;
-        D_800AB448[D_8006794C->unk1C->unk8].u0 = 0;
-        D_800AB448[D_8006794C->unk1C->unk8].v0 = 0;
-        D_800AB448[D_8006794C->unk1C->unk8].w = r->w;
-        D_800AB448[D_8006794C->unk1C->unk8].h = r->h;
-        D_800AB448[D_8006794C->unk1C->unk8].clut = 0x3800;
-        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800AB448[D_8006794C->unk1C->unk8]);
-        setDrawTPage(&D_800AB470[D_8006794C->unk1C->unk8], 1, 1, 0xA);
-        addPrim(&D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8][8], &D_800AB470[D_8006794C->unk1C->unk8]);
+        setlen(&D_800AB448[g_gameState->unk1C->unk8], 4);
+        D_800AB448[g_gameState->unk1C->unk8].code = 0x64;
+        D_800AB448[g_gameState->unk1C->unk8].r0 = 0x80;
+        D_800AB448[g_gameState->unk1C->unk8].g0 = 0x80;
+        D_800AB448[g_gameState->unk1C->unk8].b0 = 0x80;
+        D_800AB448[g_gameState->unk1C->unk8].x0 = (0x140 - r->w) / 2;
+        D_800AB448[g_gameState->unk1C->unk8].y0 = (0xE0 - r->h) / 2;
+        D_800AB448[g_gameState->unk1C->unk8].u0 = 0;
+        D_800AB448[g_gameState->unk1C->unk8].v0 = 0;
+        D_800AB448[g_gameState->unk1C->unk8].w = r->w;
+        D_800AB448[g_gameState->unk1C->unk8].h = r->h;
+        D_800AB448[g_gameState->unk1C->unk8].clut = 0x3800;
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB448[g_gameState->unk1C->unk8]);
+        setDrawTPage(&D_800AB470[g_gameState->unk1C->unk8], 1, 1, 0xA);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB470[g_gameState->unk1C->unk8]);
         t--;
         func_80032098();
         func_800AB0E0();
@@ -1382,11 +1382,11 @@ void func_800AAF40(void) {
     u8 *buf;
     FileEntry *e;
 
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     e = func_8001E218(1, 0x2718);
-    func_8002177C(D_8006794C->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
-    while (func_800217C4(D_8006794C->unk1C->unk854) != 0) {
+    func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
+    while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     buf = D_80067944 + 0x10000;
     D_800AB2F0 = buf;
@@ -1404,7 +1404,7 @@ void func_800AB06C(void) {
 }
 
 void func_800AB09C(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
@@ -1413,23 +1413,23 @@ void func_800AB0E0(void) {
     u8 i;
 
     DrawSync(0);
-    D_8006794C->unk9 = 0;
-    VSync(D_8006794C->unk9);
+    g_gameState->unk9 = 0;
+    VSync(g_gameState->unk9);
     ResetGraph(1);
-    PutDispEnv(&D_8006794C->unkC[D_8006794C->unk1C->unk8]);
-    ctx = D_8006794C->unk1C;
+    PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+    ctx = g_gameState->unk1C;
     i = ctx->unk8;
-    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &D_8006794C->unk10[i]);
-    D_8006794C->unk1C->unk8 ^= 1;
-    func_8002C0DC(D_8006794C->unk1C->unk8);
+    DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
+    g_gameState->unk1C->unk8 ^= 1;
+    func_8002C0DC(g_gameState->unk1C->unk8);
 }
 
 void func_800AB1E4(void) {
-    D_8006794C->unk1C->unk890 = 1;
+    g_gameState->unk1C->unk890 = 1;
 }
 
 void func_800AB200(void) {
-    GameData *ctx = D_8006794C->unk1C;
+    GameData *ctx = g_gameState->unk1C;
     if (ctx->unk890 == 0) {
         ctx->unk890 = 2;
     }

@@ -17,11 +17,11 @@ void func_801EEA1C(void) {
     m->unk6 = 0;
     m->unk50[0] = (u8 *)0x801F9F00;
     m->unk50[1] = (u8 *)0x801FBF00;
-    m->unk4C = m->unk50[D_8006794C->unk1C->unk8 ^ 1];
+    m->unk4C = m->unk50[g_gameState->unk1C->unk8 ^ 1];
     m->unk1 = 0;
     for (i = 0; i < 9; i++) {
-        if (D_8006794C->unk1C->unk3C[i].unk34.b.unkB) {
-            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(D_8006794C->unk1C->unk3C[i].unk34.b.row);
+        if (g_gameState->unk1C->unk3C[i].unk34.b.unkB) {
+            D_801F1558.unk8[D_801F1558.unk1] = func_80033964(g_gameState->unk1C->unk3C[i].unk34.b.row);
             D_801F1558.unk11[D_801F1558.unk1] = i;
             D_801F1558.unk1++;
         }
@@ -130,14 +130,14 @@ void func_801EEEF8(void) {
             }
             return;
         }
-        if ((D_80077528 & 0x80) && (((s32)(D_8006794C->unk24 >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
+        if ((D_80077528 & 0x80) && (((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
             func_8002F488(0x67);
-            D_8006794C->unk24 = (D_8006794C->unk24 & 0xFFFFF) | (((D_8006794C->unk24 >> 20) & ~(1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
+            g_gameState->unk24 = (g_gameState->unk24 & 0xFFFFF) | (((g_gameState->unk24 >> 20) & ~(1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
             return;
         }
-        if ((D_80077528 & 0x20) && !(((s32)(D_8006794C->unk24 >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
+        if ((D_80077528 & 0x20) && !(((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[D_801F1558.unk0]) & 1)) {
             func_8002F488(0x67);
-            D_8006794C->unk24 = (D_8006794C->unk24 & 0xFFFFF) | (((D_8006794C->unk24 >> 20) | (1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
+            g_gameState->unk24 = (g_gameState->unk24 & 0xFFFFF) | (((g_gameState->unk24 >> 20) | (1 << D_801F1558.unk8[D_801F1558.unk0])) << 20);
             return;
         }
         if (D_80077528 & 0x10) {
@@ -160,7 +160,7 @@ void func_801EF110(void) {
     r2 = &D_801F1558.unk1C[1].unk4;
     func_8002B5FC(r2->x + 0x2A, r2->y + 8, 0x11, func_80035774(0), 0);
     for (; i < 8; i++) {
-        func_800275DC(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[(D_8006794C->unk28 >> (i * 4)) & 7].unk1, 0);
+        func_800275DC(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[(g_gameState->unk28 >> (i * 4)) & 7].unk1, 0);
         func_801F0F48(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, D_801F14F8, 0);
         func_800275DC(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[i].unk1, 0);
         func_801F0FE8(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, D_801F14FC[i].unk0, 0);
@@ -176,8 +176,8 @@ void func_801EF2B4(void) {
     r2 = &D_801F1558.unk1C[1].unk4;
     func_8002B5FC(r2->x + 0x2A, r2->y + 8, 0x11, func_80035774(1), 0);
     for (i = 0; i < D_801F1558.unk1; i++) {
-        on = ((s32)(D_8006794C->unk24 >> 20) >> D_801F1558.unk8[i]) & 1;
-        func_8002B5FC(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, D_8006794C->unk1C->unk3C[D_801F1558.unk11[i]].unk0, 0);
+        on = ((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[i]) & 1;
+        func_8002B5FC(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->unk3C[D_801F1558.unk11[i]].unk0, 0);
         func_801F0F94(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         func_801F0F94(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }
@@ -313,7 +313,7 @@ void func_801EF938(void) {
 
     i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.unk6;
     on = 1;
-    if ((i == on && ((D_8006794C->unk24 >> i) & on) == on) || (i == 5 && ((D_8006794C->unk24 >> 5) & 1) == on)) {
+    if ((i == on && ((g_gameState->unk24 >> i) & on) == on) || (i == 5 && ((g_gameState->unk24 >> 5) & 1) == on)) {
         D_801F1558.unk0 = 0;
         D_801F1558.unk2 = 1;
         for (j = 0; j < 2; j++) {
@@ -338,10 +338,10 @@ void func_801EFA54(void) {
         D_801F1558.unk4 = 0;
         switch (i) {
         case 7:
-            D_8006794C->unk24 = (D_8006794C->unk24 & ~0x700) | (((d + ((D_8006794C->unk24 >> 8) & 7)) & 7) << 8);
+            g_gameState->unk24 = (g_gameState->unk24 & ~0x700) | (((d + ((g_gameState->unk24 >> 8) & 7)) & 7) << 8);
             break;
         case 8:
-            D_8006794C->unk24 = (D_8006794C->unk24 & ~0x1C000) | (((d + ((D_8006794C->unk24 >> 14) & 7)) & 7) << 14);
+            g_gameState->unk24 = (g_gameState->unk24 & ~0x1C000) | (((d + ((g_gameState->unk24 >> 14) & 7)) & 7) << 14);
             break;
         }
     }
@@ -387,38 +387,38 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
         for (i = 0; i < 3; i++) {
             s32 k = i + 2;
             s32 yy = (y + k) << 16;
-            setlen(D_80077170, 3);
-            l = (LineWords *)D_80077170;
+            setlen(g_primPtr, 3);
+            l = (LineWords *)g_primPtr;
             l->rgbc = D_801F154C[i];
             l->xy0 = (x + 4) | yy;
             l->xy1 = (pos + x + 3) | yy;
-            addPrim(&D_8007716C[otz], l);
-            D_80077170 = (u8 *)(l + 1);
+            addPrim(&g_ot[otz], l);
+            g_primPtr = (u8 *)(l + 1);
         }
     }
     func_80027710(x, y, otz, ic, 0);
     func_80027710(x + width - ec->unk4, y, otz, ec, 0);
-    SetTexWindow(D_80077170, &D_801F1544);
-    addPrim(&D_8007716C[otz], D_80077170);
-    D_80077170 += 0xC;
-    setlen(D_80077170, 4);
-    p = (SprtWords *)D_80077170;
+    SetTexWindow(g_primPtr, &D_801F1544);
+    addPrim(&g_ot[otz], g_primPtr);
+    g_primPtr += 0xC;
+    setlen(g_primPtr, 4);
+    p = (SprtWords *)g_primPtr;
     p->rgbc = 0x64808080;
     p->xy = ((x + ic->unk4) & 0xFFFF) | (y << 16);
     p->uvclut = mid->unk2 << 16;
     p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
-    addPrim(&D_8007716C[otz], p);
-    D_80077170 = (u8 *)(p + 1);
+    addPrim(&g_ot[otz], p);
+    g_primPtr = (u8 *)(p + 1);
     r.x = mid->unk0;
     r.y = mid->unk1;
     r.w = mid->unk4;
     r.h = mid->unk5;
-    SetTexWindow(D_80077170, &r);
-    addPrim(&D_8007716C[otz], D_80077170);
-    D_80077170 += 0xC;
-    SetDrawTPage(D_80077170, 1, 1, 0x1F);
-    addPrim(&D_8007716C[otz], D_80077170);
-    D_80077170 += 8;
+    SetTexWindow(g_primPtr, &r);
+    addPrim(&g_ot[otz], g_primPtr);
+    g_primPtr += 0xC;
+    SetDrawTPage(g_primPtr, 1, 1, 0x1F);
+    addPrim(&g_ot[otz], g_primPtr);
+    g_primPtr += 8;
 }
 
 ScrollPos *func_801EFF58(MenuList *l, ScrollPos *p) {
@@ -486,10 +486,10 @@ void func_801F00F8(void) {
 void func_801F0184(void) {
     s32 k = 0x2000;
 
-    D_801F1558.unk58 = D_801F1558.unk50[D_8006794C->unk1C->unk8 ^ 1] - (D_801F1558.unk4C - k);
-    D_801F1558.unk4C = D_801F1558.unk50[D_8006794C->unk1C->unk8];
+    D_801F1558.unk58 = D_801F1558.unk50[g_gameState->unk1C->unk8 ^ 1] - (D_801F1558.unk4C - k);
+    D_801F1558.unk4C = D_801F1558.unk50[g_gameState->unk1C->unk8];
     func_8002B524(0x10, 0x23, 0x16, D_80070430, 0);
-    func_80025A28(8, 0x26, 0x16, 0, 0x12C, (D_8006794C->unk24 >> 18) & 1);
+    func_80025A28(8, 0x26, 0x16, 0, 0x12C, (g_gameState->unk24 >> 18) & 1);
     func_801EEB68();
     func_801F0BE8();
     func_801F0C78();
@@ -586,62 +586,62 @@ void func_801F0550(RECT *r, s32 otz, s32 i) {
 
 void func_801F05D0(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[0].unk0, 0);
-    func_801F0D20(r, otz, D_8006794C->unk24 & 1, 0);
+    func_801F0D20(r, otz, g_gameState->unk24 & 1, 0);
 }
 
 void func_801F0640(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[1].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 1) & 1, 1);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 1) & 1, 1);
 }
 
 void func_801F06B4(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[2].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 2) & 1, 2);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 2) & 1, 2);
 }
 
 void func_801F0728(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[3].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 3) & 1, 3);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 3) & 1, 3);
 }
 
 void func_801F079C(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[4].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 4) & 1, 4);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 4) & 1, 4);
 }
 
 void func_801F0810(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[5].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 5) & 1, 5);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 5) & 1, 5);
 }
 
 void func_801F0884(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[6].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 6) & 1, 6);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 6) & 1, 6);
 }
 
 void func_801F08F8(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[7].unk0, 0);
-    func_801F0DD8(r, otz, (D_8006794C->unk24 >> 8) & 7, 2, 7);
+    func_801F0DD8(r, otz, (g_gameState->unk24 >> 8) & 7, 2, 7);
 }
 
 void func_801F0974(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[8].unk0, 0);
-    func_801F0DD8(r, otz, (D_8006794C->unk24 >> 14) & 7, 6, 8);
+    func_801F0DD8(r, otz, (g_gameState->unk24 >> 14) & 7, 6, 8);
 }
 
 void func_801F09F0(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[9].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 17) & 1, 9);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 17) & 1, 9);
 }
 
 void func_801F0A64(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[10].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 18) & 1, 10);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 18) & 1, 10);
 }
 
 void func_801F0AD8(RECT *r, s32 otz) {
     func_801F0FE8(r->x + 0xF, r->y + 6, otz, D_801F13F0[11].unk0, 0);
-    func_801F0D20(r, otz, (D_8006794C->unk24 >> 19) & 1, 11);
+    func_801F0D20(r, otz, (g_gameState->unk24 >> 19) & 1, 11);
 }
 
 void func_801F0B4C(RECT *r, s32 otz) {
@@ -650,7 +650,7 @@ void func_801F0B4C(RECT *r, s32 otz) {
 
     if (func_801F126C()) {
         c = 0;
-        sel = (u8)D_8006794C->unk24;
+        sel = (u8)g_gameState->unk24;
         sel >>= 7;
     } else {
         sel = c = 2;
@@ -720,17 +720,17 @@ void func_801F0DD8(RECT *r, s32 otz, s32 v, s32 n, s32 item) {
 }
 
 void func_801F0F48(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
-    D_801F1558.unk4C = func_80029D60(x, y, &D_8007716C[otz], s, arg4, D_801F1558.unk4C);
+    D_801F1558.unk4C = func_80029D60(x, y, &g_ot[otz], s, arg4, D_801F1558.unk4C);
 }
 
 void func_801F0F94(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
     s32 buf[2];
 
-    D_801F1558.unk4C = func_80027834(x, y, &D_8007716C[otz], n, arg4, buf, D_801F1558.unk4C);
+    D_801F1558.unk4C = func_80027834(x, y, &g_ot[otz], n, arg4, buf, D_801F1558.unk4C);
 }
 
 void func_801F0FE8(s32 x, s32 y, s32 otz, s32 text, s32 color) {
-    D_801F1558.unk4C = func_8002920C(x, y - 4, &D_8007716C[otz], func_80035774(text & 0xFF), color, D_801F1558.unk4C);
+    D_801F1558.unk4C = func_8002920C(x, y - 4, &g_ot[otz], func_80035774(text & 0xFF), color, D_801F1558.unk4C);
 }
 
 void func_801F1074(void) {
@@ -790,16 +790,16 @@ void func_801F11C4(s32 slot, s32 v) {
     u32 old;
 
     for (i = 0; i < 8; i++) {
-        if (v == ((D_8006794C->unk28 >> (i * 4)) & 7)) {
+        if (v == ((g_gameState->unk28 >> (i * 4)) & 7)) {
             j = i;
             goto found;
         }
     }
     j = 0;
 found:
-    w = D_8006794C->unk28;
+    w = g_gameState->unk28;
     old = (w >> (slot * 4)) & 7;
-    D_8006794C->unk28 = (((w & ~(7 << (slot * 4))) | (v << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
+    g_gameState->unk28 = (((w & ~(7 << (slot * 4))) | (v << (slot * 4))) & ~(7 << (j * 4))) | (old << (j * 4));
 }
 
 void func_801F1250(void) {

@@ -46,30 +46,30 @@ u8 *func_801990A0(Ovl64Out *out) {
             D_8019F278 = info->unk0;
             D_8019DC94.unk6 = 0;
         } else {
-            D_8006794C->unk1C->unk18.m[0][0] = info->unk2;
-            D_8006794C->unk1C->unk18.m[0][1] = info->unk4;
-            D_8006794C->unk1C->unk18.m[0][2] = info->unk6;
-            D_8006794C->unk1C->unk18.m[1][0] = info->unk8;
-            D_8006794C->unk1C->unk18.m[1][1] = info->unkA;
-            D_8006794C->unk1C->unk18.m[1][2] = info->unkC;
-            D_8006794C->unk1C->unk18.m[2][0] = info->unkE;
-            D_8006794C->unk1C->unk18.m[2][1] = info->unk10;
-            D_8006794C->unk1C->unk18.m[2][2] = info->unk12;
-            D_8006794C->unk1C->unk18.t[0] = info->unk14;
-            D_8006794C->unk1C->unk18.t[1] = info->unk18;
-            D_8006794C->unk1C->unk18.t[2] = info->unk1C;
-            D_8006794C->unk1C->unkA = info->unk0;
+            g_gameState->unk1C->unk18.m[0][0] = info->unk2;
+            g_gameState->unk1C->unk18.m[0][1] = info->unk4;
+            g_gameState->unk1C->unk18.m[0][2] = info->unk6;
+            g_gameState->unk1C->unk18.m[1][0] = info->unk8;
+            g_gameState->unk1C->unk18.m[1][1] = info->unkA;
+            g_gameState->unk1C->unk18.m[1][2] = info->unkC;
+            g_gameState->unk1C->unk18.m[2][0] = info->unkE;
+            g_gameState->unk1C->unk18.m[2][1] = info->unk10;
+            g_gameState->unk1C->unk18.m[2][2] = info->unk12;
+            g_gameState->unk1C->unk18.t[0] = info->unk14;
+            g_gameState->unk1C->unk18.t[1] = info->unk18;
+            g_gameState->unk1C->unk18.t[2] = info->unk1C;
+            g_gameState->unk1C->unkA = info->unk0;
         }
     }
-    if (flag != NULL && (!((Ovl64Cfg *)&D_8006794C->unk24)->b7 || D_8006794C->unk8 == 5)) {
+    if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->unk8 == 5)) {
         D_800739B0[0].unk0 = flag->unk0;
         D_800739B0[0].unk1 = flag->unk1;
     }
     if (pair != NULL && pair->unk0 != 0) {
-        bcopy((void *)pair->unk4, &D_8019E028[D_8006794C->unk1C->unk8 ^ 1], pair->unk0);
-        D_8019E018[D_8006794C->unk1C->unk8 ^ 1] = pair->unk0;
+        bcopy((void *)pair->unk4, &D_8019E028[g_gameState->unk1C->unk8 ^ 1], pair->unk0);
+        D_8019E018[g_gameState->unk1C->unk8 ^ 1] = pair->unk0;
     } else {
-        D_8019E018[D_8006794C->unk1C->unk8 ^ 1] = 0;
+        D_8019E018[g_gameState->unk1C->unk8 ^ 1] = 0;
     }
     if (D_80071E34 >= D_8019DCF8->unk8) {
         D_8019DC94.unk0 = 1;
@@ -114,11 +114,11 @@ void func_80199554(void) {
     D_8019F488[D_8019DC90] = D_8019F4D8.unk28;
     D_8019F4D8.unk14 ^= 1;
     D_8019F4D8.unk28.x += D_8019F4D8.unk28.w;
-    if (D_8019F4D8.unk28.x < D_8019F4D8.unk18[D_8006794C->unk1C->unk8].x + D_8019F4D8.unk18[D_8006794C->unk1C->unk8].w) {
+    if (D_8019F4D8.unk28.x < D_8019F4D8.unk18[g_gameState->unk1C->unk8].x + D_8019F4D8.unk18[g_gameState->unk1C->unk8].w) {
         if (DecDCTinSync(1) == 0) {
             D_8019F4D8.unk30 = 1;
-            D_8019F4D8.unk28.x = D_8019F4D8.unk18[D_8006794C->unk1C->unk8 ^ 1].x;
-            D_8019F4D8.unk28.y = D_8019F4D8.unk18[D_8006794C->unk1C->unk8 ^ 1].y;
+            D_8019F4D8.unk28.x = D_8019F4D8.unk18[g_gameState->unk1C->unk8 ^ 1].x;
+            D_8019F4D8.unk28.y = D_8019F4D8.unk18[g_gameState->unk1C->unk8 ^ 1].y;
         }
         DecDCTout(D_8019F4D8.unkC[D_8019F4D8.unk14], (D_8019F4D8.unk28.w * D_8019F4D8.unk28.h) >> 1);
     } else {
@@ -127,29 +127,29 @@ void func_80199554(void) {
         }
         D_8019F4D8.unk30 = 1;
         if ((s8)D_8019DC94.unk3 == 1) {
-            if (D_80071E31 == 1 && D_8006794C->unk1C->unk8 == 0) {
+            if (D_80071E31 == 1 && g_gameState->unk1C->unk8 == 0) {
                 D_80071E31 = 0;
                 D_8019DC94.unk1 = 0;
                 D_8019F4D8.unk18[0].x = 0x140;
                 D_8019F4D8.unk18[0].w = 0x140;
                 D_8019F4D8.unk18[1].w = 0x140;
                 D_8019F4D8.unk28.w = 0x10;
-                if (D_8006794C->unk8 == 1 || D_8006794C->unk8 == 5) {
+                if (g_gameState->unk8 == 1 || g_gameState->unk8 == 5) {
                     D_800C9EF0.unk18 = 9;
                     D_800C9EF0.unk8 |= 0x14;
                 }
                 D_8019DC97 = 2;
             }
-            if (D_80071E31 == 0 && D_8006794C->unk1C->unk8 == 1) {
+            if (D_80071E31 == 0 && g_gameState->unk1C->unk8 == 1) {
                 D_8019DC94.unk1 = 1;
                 D_8019F4D8.unk18[0].x = 0x1E0;
                 D_8019F4D8.unk18[0].w = 0x1E0;
                 D_8019F4D8.unk18[1].w = 0x1E0;
                 D_8019F4D8.unk28.w = 0x18;
-                D_8006794C->unk1C->unk0 |= 0x14;
+                g_gameState->unk1C->unk0 |= 0x14;
                 D_80071E31 = 1;
-                if (D_8006794C->unk8 == 1 || D_8006794C->unk8 == 5) {
-                    D_8006794C->unk1C->unk8E4.ovl65->unk0 |= 9;
+                if (g_gameState->unk8 == 1 || g_gameState->unk8 == 5) {
+                    g_gameState->unk1C->unk8E4.ovl65->unk0 |= 9;
                 }
                 D_8019DC97 = 2;
             }
@@ -161,8 +161,8 @@ void func_80199554(void) {
             D_800739B0[0].unk0 = 0;
             D_800739B0[0].unk1 = 0;
         }
-        D_8019F4D8.unk28.x = D_8019F4D8.unk18[D_8006794C->unk1C->unk8 ^ 1].x;
-        D_8019F4D8.unk28.y = D_8019F4D8.unk18[D_8006794C->unk1C->unk8 ^ 1].y;
+        D_8019F4D8.unk28.x = D_8019F4D8.unk18[g_gameState->unk1C->unk8 ^ 1].x;
+        D_8019F4D8.unk28.y = D_8019F4D8.unk18[g_gameState->unk1C->unk8 ^ 1].y;
     }
     LoadImage(&D_8019F488[D_8019DC90], D_8019F4D8.unkC[cur]);
     D_8019DC90 = (D_8019DC90 + 1) % 4;
@@ -335,8 +335,8 @@ s32 func_80199B28(u32 movie, s32 idx) {
     if (func_8019C7E4() != 0) {
         ok = 0;
     } else {
-        if (D_8006794C->unk8 == 1 || D_8006794C->unk8 == 5) {
-            func_8019C98C(((Ovl64Field8E4 *)D_8006794C->unk1C->unk8E4.ovl65)->unkC->unk14->unk44);
+        if (g_gameState->unk8 == 1 || g_gameState->unk8 == 5) {
+            func_8019C98C(((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk44);
         }
         ok = func_8019C1B0(file, D_8019DCF8->unk6, 99999, NULL, 0) == 0;
     }
@@ -372,8 +372,8 @@ static inline void func_8019_wait_frame(Ovl64Dec *dec) {
     while (dec->unk30 == 0) {
         if (--n == 0) {
             dec->unk30 = 1;
-            dec->unk28.x = dec->unk18[D_8006794C->unk1C->unk8].x;
-            dec->unk28.y = dec->unk18[D_8006794C->unk1C->unk8].y;
+            dec->unk28.x = dec->unk18[g_gameState->unk1C->unk8].x;
+            dec->unk28.y = dec->unk18[g_gameState->unk1C->unk8].y;
             DecDCTReset(1);
         }
     }
@@ -409,25 +409,25 @@ s32 func_80199F30(s32 arg0) {
         st->unk3 = 0;
     }
     st->unk24 = st->unkC;
-    mode = D_8006794C->unk8;
+    mode = g_gameState->unk8;
     if (mode == 1 || mode == 5) {
         func_800C1B5C(&st->unk2);
-        st->unk28 = ((Ovl64Field8E4 *)D_8006794C->unk1C->unk8E4.ovl65)->unkC->unk14->unk30;
-        ((Ovl64Field8E4 *)D_8006794C->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = 0;
+        st->unk28 = ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30;
+        ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = 0;
     }
     D_8019F4C8.unk0 = 0;
     D_8019F4C8.unk2 = 0;
-    D_8019F4C8.unk4 = D_8019E018[D_8006794C->unk1C->unk8];
-    D_8019F4C8.unkC = D_8019F4C8.unk8 = (s32)&D_8019E028[D_8006794C->unk1C->unk8];
+    D_8019F4C8.unk4 = D_8019E018[g_gameState->unk1C->unk8];
+    D_8019F4C8.unkC = D_8019F4C8.unk8 = (s32)&D_8019E028[g_gameState->unk1C->unk8];
     if (D_80071E31 == 0 && D_8019F4C8.unk4 != 0) {
-        Ovl64Stp *p = &D_8019F4A8[D_8006794C->unk1C->unk8];
+        Ovl64Stp *p = &D_8019F4A8[g_gameState->unk1C->unk8];
         p->unk3 = 2;
         p->unk4 = 0xE6000002;
         p->unk8 = 0;
     }
     dec = &D_8019F4D8;
-    dec->unk28.x = dec->unk18[D_8006794C->unk1C->unk8].x;
-    dec->unk28.y = dec->unk18[D_8006794C->unk1C->unk8].y;
+    dec->unk28.x = dec->unk18[g_gameState->unk1C->unk8].x;
+    dec->unk28.y = dec->unk18[g_gameState->unk1C->unk8].y;
     DecDCTin(dec->unk0[dec->unk8], (s8)D_8019DC94.unk1);
     DecDCTout(dec->unkC[dec->unk14], (dec->unk28.w * dec->unk28.h) >> 1);
     while (1) {
@@ -467,9 +467,9 @@ s32 func_80199F30(s32 arg0) {
         }
         if ((s8)D_8019DC94.unk0 != 0) {
             func_8019_wait_frame(&D_8019F4D8);
-            mode = D_8006794C->unk8;
+            mode = g_gameState->unk8;
             if (mode == 1 || mode == 5) {
-                ((Ovl64Field8E4 *)D_8006794C->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = D_8019DC94.unk28;
+                ((Ovl64Field8E4 *)g_gameState->unk1C->unk8E4.ovl65)->unkC->unk14->unk30 = D_8019DC94.unk28;
                 func_800C0BCC((s8)D_8019DC94.unk2);
             }
             return 1;
@@ -478,16 +478,16 @@ s32 func_80199F30(s32 arg0) {
         func_8019CA1C(&D_8019DC94.unk24);
     }
     func_8019_wait_frame(&D_8019F4D8);
-    D_8006794C->unk9 = 4;
+    g_gameState->unk9 = 4;
     if (D_80071E34 != 0 && D_80071E34 % 50 == 0) {
         D_8019DC9C = 1;
     }
-    if (D_8019DC94.unk8 != 0 && D_8006794C->unk9 >= 4) {
-        D_8006794C->unk9--;
+    if (D_8019DC94.unk8 != 0 && g_gameState->unk9 >= 4) {
+        g_gameState->unk9--;
         D_8019DC94.unk8 = 0;
     }
     if (arg0 != 0) {
-        env = (DISPENV *)(D_8006794C->unk1C->unk8 * 20 + (s32)D_8006794C->unkC);
+        env = (DISPENV *)(g_gameState->unk1C->unk8 * 20 + (s32)g_gameState->unkC);
         VSync(0);
         PutDispEnv(env);
         SetDispMask(1);
@@ -531,15 +531,15 @@ void func_8019A688(s32 h, s32 hires, s32 i) {
     if (hires != 0) {
         w = 0x1E0;
     }
-    SetDefDispEnv(&D_8006794C->unkC[i], w, 0, w, h);
+    SetDefDispEnv(&g_gameState->unkC[i], w, 0, w, h);
     if (hires != 0) {
-        D_8006794C->unkC[i].isrgb24 = 1;
-        D_8006794C->unkC[i].disp.w = D_8006794C->unkC->disp.w * 2 / 3;
+        g_gameState->unkC[i].isrgb24 = 1;
+        g_gameState->unkC[i].disp.w = g_gameState->unkC->disp.w * 2 / 3;
     }
-    D_8006794C->unkC[i].isinter = 0;
-    D_8006794C->unkC[i].screen.x = 0;
-    D_8006794C->unkC[i].screen.y = (0xF0 - h) >> 1;
-    D_8006794C->unkC[i].screen.h = h;
+    g_gameState->unkC[i].isinter = 0;
+    g_gameState->unkC[i].screen.x = 0;
+    g_gameState->unkC[i].screen.y = (0xF0 - h) >> 1;
+    g_gameState->unkC[i].screen.h = h;
 }
 
 void func_8019A7A8(s32 h, s32 hires) {
@@ -548,30 +548,30 @@ void func_8019A7A8(s32 h, s32 hires) {
     if (hires != 0) {
         w = 0x1E0;
     }
-    SetDefDispEnv(&D_8006794C->unkC[0], w, 0, w, h);
-    SetDefDispEnv(&D_8006794C->unkC[1], 0, 0, w, h);
+    SetDefDispEnv(&g_gameState->unkC[0], w, 0, w, h);
+    SetDefDispEnv(&g_gameState->unkC[1], 0, 0, w, h);
     if (hires != 0) {
-        D_8006794C->unkC[0].isrgb24 = 1;
-        D_8006794C->unkC[0].disp.w = D_8006794C->unkC[0].disp.w * 2 / 3;
-        D_8006794C->unkC[1].isrgb24 = 1;
-        D_8006794C->unkC[1].disp.w = D_8006794C->unkC[1].disp.w * 2 / 3;
+        g_gameState->unkC[0].isrgb24 = 1;
+        g_gameState->unkC[0].disp.w = g_gameState->unkC[0].disp.w * 2 / 3;
+        g_gameState->unkC[1].isrgb24 = 1;
+        g_gameState->unkC[1].disp.w = g_gameState->unkC[1].disp.w * 2 / 3;
     }
-    D_8006794C->unkC[0].isinter = 0;
-    D_8006794C->unkC[0].screen.x = 0;
-    D_8006794C->unkC[0].screen.y = (0xF0 - h) >> 1;
-    D_8006794C->unkC[0].screen.h = h;
-    D_8006794C->unkC[1].isinter = 0;
-    D_8006794C->unkC[1].screen.x = 0;
-    D_8006794C->unkC[1].screen.y = (0xF0 - h) >> 1;
-    D_8006794C->unkC[1].screen.h = h;
-    SetDefDrawEnv(&D_8006794C->unk10[0], 0, 0, w, h);
-    SetDefDrawEnv(&D_8006794C->unk10[1], w, 0, w, h);
-    D_8006794C->unk10[0].dfe = 0;
-    D_8006794C->unk10[0].dtd = 1;
-    D_8006794C->unk10[0].isbg = 1;
-    D_8006794C->unk10[1].dfe = 0;
-    D_8006794C->unk10[1].dtd = 1;
-    D_8006794C->unk10[1].isbg = 1;
+    g_gameState->unkC[0].isinter = 0;
+    g_gameState->unkC[0].screen.x = 0;
+    g_gameState->unkC[0].screen.y = (0xF0 - h) >> 1;
+    g_gameState->unkC[0].screen.h = h;
+    g_gameState->unkC[1].isinter = 0;
+    g_gameState->unkC[1].screen.x = 0;
+    g_gameState->unkC[1].screen.y = (0xF0 - h) >> 1;
+    g_gameState->unkC[1].screen.h = h;
+    SetDefDrawEnv(&g_gameState->unk10[0], 0, 0, w, h);
+    SetDefDrawEnv(&g_gameState->unk10[1], w, 0, w, h);
+    g_gameState->unk10[0].dfe = 0;
+    g_gameState->unk10[0].dtd = 1;
+    g_gameState->unk10[0].isbg = 1;
+    g_gameState->unk10[1].dfe = 0;
+    g_gameState->unk10[1].dtd = 1;
+    g_gameState->unk10[1].isbg = 1;
 }
 
 s32 func_8019A9D8(void) {

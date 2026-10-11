@@ -22,7 +22,7 @@ void func_801F3874(void) {
     if (D_801F4BBC.unk24) {
         func_80033D38(D_801F4BBC.unk7, D_801F4BBC.unk12C);
     } else {
-        func_8002BD54(D_801F4BBC.unk7, D_8006794C->unk1C->unk3C[D_801F4BBC.unk130].unk0);
+        func_8002BD54(D_801F4BBC.unk7, g_gameState->unk1C->unk3C[D_801F4BBC.unk130].unk0);
     }
     D_801F4BBC.unk4 = func_8002BCC0(D_801F4BBC.unk7);
     for (i = 0; i < 2; i++) {
@@ -125,7 +125,7 @@ void func_801F3D9C(void) {
         case 3:
             if (D_801F4BBC.unk4 != 0) {
                 func_8002F488(0x67);
-                memcpy(D_8006794C->unk1C->unk3C[D_801F4BBC.unk130].unk0, D_801F4BBC.unk7, 8);
+                memcpy(g_gameState->unk1C->unk3C[D_801F4BBC.unk130].unk0, D_801F4BBC.unk7, 8);
                 func_800325E0();
             } else {
                 func_8002F488(0x66);
@@ -150,18 +150,18 @@ void func_801F3FAC(void) {
     SprtWords *p;
     u32 clut = (GetClut(0, 0x100) << 16) | 0xB000;
 
-    setlen(D_80077170, 4);
-    p = (SprtWords *)D_80077170;
+    setlen(g_primPtr, 4);
+    p = (SprtWords *)g_primPtr;
     p->rgbc = 0x64808080;
     p->xy = (D_801F4B58->x + 2) | ((D_801F4B58->y + 2) << 16);
     p->uvclut = clut;
     p->wh = 0x2E0020;
-    addPrim(&D_8007716C[4], p);
-    D_80077170 = (u8 *)(p + 1);
-    setlen(D_80077170, 2);
-    SetDrawTPage(D_80077170, 0, 1, 0x9F);
-    addPrim(&D_8007716C[4], D_80077170);
-    D_80077170 += 8;
+    addPrim(&g_ot[4], p);
+    g_primPtr = (u8 *)(p + 1);
+    setlen(g_primPtr, 2);
+    SetDrawTPage(g_primPtr, 0, 1, 0x9F);
+    addPrim(&g_ot[4], g_primPtr);
+    g_primPtr += 8;
     func_8002DEE4(D_801F4B58, 6, 0);
     func_8002705C(D_801F4B58, 6, 0);
 }
@@ -201,7 +201,7 @@ void func_801F4238(void) {
     for (i = 0; i < 7; i++) {
         if (cursor != i || (D_80077DB0.unk10 & 4)) {
             for (j = 0; j < 2; j++) {
-                p = (LINE_F2 *)D_80077170;
+                p = (LINE_F2 *)g_primPtr;
                 SetLineF2(p);
                 if (j == 0) {
                     setRGB0(p, 0xB0, 0xB0, 0xB0);
@@ -212,8 +212,8 @@ void func_801F4238(void) {
                 p->x0 = D_801F4B64->x + (i * 16 + 0x3E) + j;
                 p->y0 = p->y1 = D_801F4B64->y + y;
                 p->x1 = p->x0 + 0xB;
-                D_80077170 += sizeof(LINE_F2);
-                addPrim(&D_8007716C[5], p);
+                g_primPtr += sizeof(LINE_F2);
+                addPrim(&g_ot[5], p);
             }
         }
     }
@@ -227,7 +227,7 @@ void func_801F4238(void) {
             k++;
         }
     }
-    D_80077170 = func_8002BA90(&D_8007716C[5], D_80077170);
+    g_primPtr = func_8002BA90(&g_ot[5], g_primPtr);
 }
 
 void func_801F459C(void) {
