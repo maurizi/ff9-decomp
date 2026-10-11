@@ -1515,7 +1515,7 @@ void func_800AD39C(void) {
     D_800CE0F0->unkC &= 0xFFF;
     D_800CE1C4 = D_800CE1E8.unk0[4];
     if ((u8)D_800CE3C4 == 8 || (u8)D_800CE3C4 == 9) {
-        t = D_800CE3DC->unk14.vy + 0x1518;
+        t = D_800CE3DC->pos.vy + 0x1518;
         D_800CE1C4 = D_800CE1E8.unk0[4] - (t > 0 ? t >> 3 : t / 6);
     }
     D_800CE1C8.vx = func_8004BB80(D_800CE0F0->unkC) * (D_800CE1E8.unk0[1] * D_800CCA24 / 4096) >> 12;
@@ -1588,29 +1588,29 @@ void func_800AD738(void) {
 
     res = 0;
     if (func_8004B1FC() == 0) {
-        y = D_800CE3DC->unk14.vy + D_800CE1C4;
-        x = D_800CE3DC->unk14.vx;
-        z = D_800CE3DC->unk14.vz;
+        y = D_800CE3DC->pos.vy + D_800CE1C4;
+        x = D_800CE3DC->pos.vx;
+        z = D_800CE3DC->pos.vz;
         if ((D_800CE1E0 = D_800CE0EC | D_800CE0ED | D_800CE0EE) != 0) {
             if (D_800CE0EC == 1) {
                 if (abs(D_800CE108[0] - x) < 16) {
                     D_800CE0EC = 0;
                 } else {
-                    D_800CE108[0] += (func_8004AE00()->unk14.vx - D_800CE108[0]) / 8;
+                    D_800CE108[0] += (func_8004AE00()->pos.vx - D_800CE108[0]) / 8;
                 }
             }
             if (D_800CE0ED == 1) {
                 if (abs(D_800CE108[1] - y) < 16) {
                     D_800CE0ED = 0;
                 } else {
-                    D_800CE108[1] += (func_8004AE00()->unk14.vy - D_800CE108[1] + D_800CE1C4) / 8;
+                    D_800CE108[1] += (func_8004AE00()->pos.vy - D_800CE108[1] + D_800CE1C4) / 8;
                 }
             }
             if (D_800CE0EE == 1) {
                 if (abs(D_800CE108[2] - z) < 16) {
                     D_800CE0EE = 0;
                 } else {
-                    D_800CE108[2] += (func_8004AE00()->unk14.vz - D_800CE108[2]) / 8;
+                    D_800CE108[2] += (func_8004AE00()->pos.vz - D_800CE108[2]) / 8;
                 }
             }
             if (D_800CE0EC == 0) {
@@ -1669,15 +1669,15 @@ void func_800AD738(void) {
             }
         }
     } else {
-        D_800CE3DC->unk14.vx = D_800CE108[0];
-        D_800CE3DC->unk14.vy = D_800CE108[1];
-        D_800CE3DC->unk14.vz = D_800CE108[2];
+        D_800CE3DC->pos.vx = D_800CE108[0];
+        D_800CE3DC->pos.vy = D_800CE108[1];
+        D_800CE3DC->pos.vz = D_800CE108[2];
     }
     if (func_8004B1EC() == 0) {
         k = 0;
-        y2 = D_800CE3DC->unk14.vy + D_800CE1C8.vy;
-        x2 = D_800CE3DC->unk14.vx + D_800CE1C8.vx;
-        z2 = D_800CE3DC->unk14.vz + D_800CE1C8.vz;
+        y2 = D_800CE3DC->pos.vy + D_800CE1C8.vy;
+        x2 = D_800CE3DC->pos.vx + D_800CE1C8.vx;
+        z2 = D_800CE3DC->pos.vz + D_800CE1C8.vz;
         v.vx = x2 + (D_800CE1D0[0] >> 2);
         v.vy = y2;
         v.vz = z2 + (D_800CE1D0[2] >> 2);
@@ -1804,7 +1804,7 @@ void func_800AD738(void) {
         if (D_800D33F4 != 0) {
             D_800CE1F3 = 1;
             D_800CE198[1] = res;
-            D_800CE108[1] = D_800CE3DC->unk14.vy + D_800CE1C4;
+            D_800CE108[1] = D_800CE3DC->pos.vy + D_800CE1C4;
         }
         break;
     case 1:
@@ -1854,7 +1854,7 @@ void func_800AE280(void) {
         if (D_800CE1A8 > 0x1000) {
             D_800CE1A8 = 0x1000;
         }
-        func_800AE4C8(-D_800CE3DC->unk14.vy, D_800CE1C0, k, D_800CE0F0->unk2, &tmp);
+        func_800AE4C8(-D_800CE3DC->pos.vy, D_800CE1C0, k, D_800CE0F0->unk2, &tmp);
         D_800CE1E8.unk0[0] = func_800B822C(D_800CE1F8.unk0[0], tmp.unk0[0], D_800CE1A8, 9);
         D_800CE1E8.unk0[1] = func_800B822C(D_800CE1F8.unk0[1], tmp.unk0[1], D_800CE1A8, 0xF);
         D_800CE1E8.unk0[2] = func_800B822C(D_800CE1F8.unk0[2], tmp.unk0[2], D_800CE1A8, 0xE);
@@ -1864,7 +1864,7 @@ void func_800AE280(void) {
             D_800CE188 = 0;
         }
     } else {
-        func_800AE4C8(-D_800CE3DC->unk14.vy, m, k, func_8004BB80(D_800CE0F0->unk2 / 4), &D_800CE1E8);
+        func_800AE4C8(-D_800CE3DC->pos.vy, m, k, func_8004BB80(D_800CE0F0->unk2 / 4), &D_800CE1E8);
     }
 }
 
@@ -2177,9 +2177,9 @@ void func_800AEF10(void) {
                     } else {
                         D_800CE0F0->unkE = 0;
                     }
-                    D_800CE0F0->unkC = a->unk14.unk22 + D_800CE0F0->unkE;
+                    D_800CE0F0->unkC = a->pos.rotY + D_800CE0F0->unkE;
                 }
-                D_800CE3CC = a->unk14.unk22;
+                D_800CE3CC = a->pos.rotY;
             }
         }
     }
@@ -2206,10 +2206,10 @@ void func_800AF08C(void) {
     func_80064CDC(10, 100);
     for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
         act = e->unk4;
-        if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1) && (u8)func_800BBE24((VECTOR *)&act->unk14, &a, &b, &z)) {
+        if (act->unk5 == 4 && act->unkE == 1 && (act->unkF & 1) && (u8)func_800BBE24((VECTOR *)&act->pos, &a, &b, &z)) {
             f = 1;
-            dv.vx = act->unk14.vx - (D_800CE198[0] - n.vx);
-            dv.vz = act->unk14.vz - (D_800CE198[2] - n.vz);
+            dv.vx = act->pos.vx - (D_800CE198[0] - n.vx);
+            dv.vz = act->pos.vz - (D_800CE198[2] - n.vz);
             if (dv.vx > D_800D32D8 - 0x8000) {
                 dv.vx -= D_800D32D8;
             }
@@ -2268,7 +2268,7 @@ void func_800AF414(Unk8004AB64 *arg0, s32 arg1) {
 
     id = arg0->unk34;
     e = g_gameState->unk1C->unk8E4.world->unk8->unk28;
-    t = -arg0->unk14.vy;
+    t = -arg0->pos.vy;
     t -= 0xC1F;
     t <<= 12;
     t /= 2176;
@@ -2325,8 +2325,8 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
     s = (WmObjSlot *)func_8001E350(arg0->unk3B);
     m = s->unk8;
     memset(&r, 0, 8);
-    r.vx = s->unkC->unk14.unk20;
-    r.vy = s->unkC->unk14.unk22;
+    r.vx = s->unkC->pos.unk20;
+    r.vy = s->unkC->pos.rotY;
     r.vz = s->unkC->unk24;
     r2 = r;
     func_800316D8(&r2, &m->unk24);
@@ -2384,7 +2384,7 @@ void func_800AF8C0(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
     k = arg0->unk3B;
     sx = 0x1000;
     if (arg0->unk11 != 0xE) {
-        d = c->unkE - arg0->unk14.vy;
+        d = c->unkE - arg0->pos.vy;
         arg1->vy += d;
         arg1->vy -= d / 8;
         sz = sx - d / 2;
@@ -2467,9 +2467,9 @@ void func_800AFCE0(void) {
     D_800CE3E0 = 0;
     if (func_8004AE00() != NULL) {
         D_800CE3DC = func_8004AE00();
-        D_800CE3DC->unk40.vx = D_800CE3DC->unk14.vx;
-        D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy;
-        D_800CE3DC->unk40.vz = D_800CE3DC->unk14.vz;
+        D_800CE3DC->unk40.vx = D_800CE3DC->pos.vx;
+        D_800CE3DC->unk40.vy = D_800CE3DC->pos.vy;
+        D_800CE3DC->unk40.vz = D_800CE3DC->pos.vz;
     }
     for (e = func_8004AE9C(); e != NULL; e = e->unk0) {
         act = e->unk4;
@@ -2487,7 +2487,7 @@ void func_800AFCE0(void) {
                 func_800B0378(cc);
             } else {
                 cc = &D_800CCCC0[act->unk11];
-                func_800BE748((VECTOR *)&act->unk14, &cc->unk8, &tmp, &D_800CE288[cc->unk5], (u16 *)&h);
+                func_800BE748((VECTOR *)&act->pos, &cc->unk8, &tmp, &D_800CE288[cc->unk5], (u16 *)&h);
                 if (act->unk11 == 8) {
                     h = 0;
                 }
@@ -2563,7 +2563,7 @@ void func_800AFCE0(void) {
         }
         cc = &D_800CCCC0[D_800CE3DC->unk11];
         if ((cc->unk8 & 0xC000) && D_800CCE4D != 0) {
-            func_800BC130(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, &cell);
+            func_800BC130(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, &cell);
             func_8004B158(cell % D_800D32F0, cell / D_800D32F0, (cc->unk8 & 0xC000) >> 14);
         }
     }
@@ -2595,16 +2595,16 @@ void func_800B01F0(Unk8004AB64 *arg0) {
                         }
                     }
                 }
-                arg0->unk14.vy = c->unkE + c->unkC;
+                arg0->pos.vy = c->unkE + c->unkC;
             } else {
                 y = c->unkE + h;
-                if (y < arg0->unk14.vy) {
-                    arg0->unk14.vy = y;
+                if (y < arg0->pos.vy) {
+                    arg0->pos.vy = y;
                 }
-                if (D_800CE202 == 0 && D_800CE3DC->unk14.vy < -0x2A30 && D_800CE0EF == 0) {
-                    D_800CE3DC->unk14.vy = -0x2A30;
+                if (D_800CE202 == 0 && D_800CE3DC->pos.vy < -0x2A30 && D_800CE0EF == 0) {
+                    D_800CE3DC->pos.vy = -0x2A30;
                 }
-                d = arg0->unk14.vy - c->unkE;
+                d = arg0->pos.vy - c->unkE;
                 c->unkC = d;
                 if (d < 0) {
                     c->unkC = 0;
@@ -2654,7 +2654,7 @@ void func_800B0378(Unk800CCCC0 *cc) {
             j = i;
             cell = -1;
             h = -1;
-            p = D_800CE3DC->unk14;
+            p = D_800CE3DC->pos;
             if (func_800B0D6C((VECTOR *)&p, i, D_800CE3C4, spd, &cell, &h) ||
                 func_800B0D6C((VECTOR *)&p, j = -i, D_800CE3C4, spd, &cell, &h)) {
                 dx = p.vx - D_800CE3DC->unk40.vx;
@@ -2673,9 +2673,9 @@ void func_800B0378(Unk800CCCC0 *cc) {
                 } else {
                     k = 0;
                 }
-                q = D_800CE3DC->unk14;
+                q = D_800CE3DC->pos;
                 if (func_800B0D6C((VECTOR *)&q, j, D_800CE3C4, k, &cell, &h)) {
-                    D_800CE3DC->unk14 = q;
+                    D_800CE3DC->pos = q;
                     cc->unk8 = cell;
                     cc->unkE = q.vy;
                     D_800CE208 = h;
@@ -2688,17 +2688,17 @@ void func_800B0378(Unk800CCCC0 *cc) {
             D_800CE3C4 = saved;
         }
     } else {
-        q = D_800CE3DC->unk14;
+        q = D_800CE3DC->pos;
         if (func_800B0D6C((VECTOR *)&q, 0, D_800CE3C4, spd, &cell2, &h2)) {
-            D_800CE3DC->unk14.vx = q.vx;
-            D_800CE3DC->unk14.vz = q.vz;
-            D_800CE260 = D_800CE3DC->unk14.vy + 0x2A30;
+            D_800CE3DC->pos.vx = q.vx;
+            D_800CE3DC->pos.vz = q.vz;
+            D_800CE260 = D_800CE3DC->pos.vy + 0x2A30;
             if (D_800CE260 < 0x7E8 && D_800CE202 == 0 && D_800CE0EF == 0 && D_800CE278 < 0) {
                 m = (D_800CE278 << 1) * D_800CE260;
                 m >>= 12;
-                D_800CE3DC->unk14.vy += m;
+                D_800CE3DC->pos.vy += m;
             } else {
-                D_800CE3DC->unk14.vy += D_800CE278;
+                D_800CE3DC->pos.vy += D_800CE278;
             }
             cc->unk8 = cell2;
             cc->unkE = q.vy;
@@ -2712,9 +2712,9 @@ void func_800B0378(Unk800CCCC0 *cc) {
             lim = 0x2134;
         }
         /* ez holds the x offset here; the names follow the original register use */
-        ez = D_800CE3DC->unk14.vx - 0x2FF77;
-        y = D_800CE3DC->unk14.vy;
-        wz = D_800CE3DC->unk14.vz + 0x14031;
+        ez = D_800CE3DC->pos.vx - 0x2FF77;
+        y = D_800CE3DC->pos.vy;
+        wz = D_800CE3DC->pos.vz + 0x14031;
         dy = y + off;
         if (ABS(ez) < 0x9C4 && ABS(wz) < 0x9C4) {
             dx = 0x5F5E10 - ez * ez;
@@ -2732,64 +2732,64 @@ void func_800B0378(Unk800CCCC0 *cc) {
                 }
                 dz = dz < abs(dy + r2);
                 if (dz) {
-                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = SquareRoot0(dx - zz) - off;
+                    D_800CE3DC->unk40.vy = D_800CE3DC->pos.vy = SquareRoot0(dx - zz) - off;
                 } else {
-                    D_800CE3DC->unk40.vy = D_800CE3DC->unk14.vy = -SquareRoot0(dx - zz) - off;
+                    D_800CE3DC->unk40.vy = D_800CE3DC->pos.vy = -SquareRoot0(dx - zz) - off;
                 }
             }
         }
     }
-    ex = D_800CE3DC->unk14.vx - 0x407F7;
-    ez = D_800CE3DC->unk14.vz + 0x3BDC3;
+    ex = D_800CE3DC->pos.vx - 0x407F7;
+    ez = D_800CE3DC->pos.vz + 0x3BDC3;
     if (ABS(ex) < 0x800 && ABS(ez) < 0x800) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x37FA8;
-    ez = D_800CE3DC->unk14.vz + 0x1606D;
+    ex = D_800CE3DC->pos.vx - 0x37FA8;
+    ez = D_800CE3DC->pos.vz + 0x1606D;
     if (ABS(ex) < 0xC00 && ABS(ez) < 0xC00) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x4AD96;
-    ez = D_800CE3DC->unk14.vz + 0x32133;
+    ex = D_800CE3DC->pos.vx - 0x4AD96;
+    ez = D_800CE3DC->pos.vz + 0x32133;
     if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x489E4;
-    ez = D_800CE3DC->unk14.vz + 0x34BBF;
+    ex = D_800CE3DC->pos.vx - 0x489E4;
+    ez = D_800CE3DC->pos.vz + 0x34BBF;
     if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x250D4;
-    ez = D_800CE3DC->unk14.vz + 0x46B95;
+    ex = D_800CE3DC->pos.vx - 0x250D4;
+    ez = D_800CE3DC->pos.vz + 0x46B95;
     if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x36F54;
-    ez = D_800CE3DC->unk14.vz + 0xF131;
+    ex = D_800CE3DC->pos.vx - 0x36F54;
+    ez = D_800CE3DC->pos.vz + 0xF131;
     if (ABS(ex) < 0x60C && ABS(ez) < 0x800) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x3D3D2;
-    ez = D_800CE3DC->unk14.vz + 0x36C0F;
+    ex = D_800CE3DC->pos.vx - 0x3D3D2;
+    ez = D_800CE3DC->pos.vz + 0x36C0F;
     if (ABS(ex) < 0x500 && ABS(ez) < 0x500) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x4A02F;
-    ez = D_800CE3DC->unk14.vz + 0x11DD8;
+    ex = D_800CE3DC->pos.vx - 0x4A02F;
+    ez = D_800CE3DC->pos.vz + 0x11DD8;
     if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0xC02F;
-    ez = D_800CE3DC->unk14.vz + 0x1D9EC;
+    ex = D_800CE3DC->pos.vx - 0xC02F;
+    ez = D_800CE3DC->pos.vz + 0x1D9EC;
     if (ABS(ex) < 0x500 && ABS(ez) < 0x500) {
         D_800D30C6 = 0;
     }
-    ex = D_800CE3DC->unk14.vx - 0x17A3B;
-    ez = D_800CE3DC->unk14.vz + 0x4014A;
+    ex = D_800CE3DC->pos.vx - 0x17A3B;
+    ez = D_800CE3DC->pos.vz + 0x4014A;
     if (ABS(ex) < 0x400 && ABS(ez) < 0x400) {
         D_800D30C6 = 0;
     }
-    func_800BC0A8(&D_800CE3DC->unk14.vx, &D_800CE3DC->unk14.vz);
+    func_800BC0A8(&D_800CE3DC->pos.vx, &D_800CE3DC->pos.vz);
 }
 
 u8 func_800B0D6C(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
@@ -2872,12 +2872,12 @@ u8 func_800B105C(ActorPos *out) {
     D_800CE209 = 0;
     act = D_800CE3DC;
     D_800D30C4 = 1;
-    v = act->unk14;
+    v = act->pos;
     switch (D_800CE3C4) {
     case 8:
     case 9:
-        x = (D_800CE3DC->unk14.vx >> 3) - 0x17FC;
-        z = (D_800CE3DC->unk14.vz >> 3) + 0x3B48;
+        x = (D_800CE3DC->pos.vx >> 3) - 0x17FC;
+        z = (D_800CE3DC->pos.vz >> 3) + 0x3B48;
         if (SquareRoot0(x * x + z * z) < 0xB4) {
             return 0;
         }
@@ -2917,14 +2917,14 @@ u8 func_800B105C(ActorPos *out) {
             }
             for (j = 1; j < 9; j++) {
                 t = D_800CE3C8->unkE * j / 8;
-                v = D_800CE3DC->unk14;
+                v = D_800CE3DC->pos;
                 r &= func_800B0D6C((VECTOR *)&v, d[i], 0, t, &cell, 0);
             }
             ok = r;
             if (ok) {
                 switch (D_800CE3C4) {
                 case 0:
-                    if (abs(v.vy - D_800CE3DC->unk14.vy) >= 0x1F5) {
+                    if (abs(v.vy - D_800CE3DC->pos.vy) >= 0x1F5) {
                         ok = 0;
                     }
                     break;
@@ -3013,10 +3013,10 @@ void w_movementChange(void) {
         w_musicRequestSend(p->unkB);
     }
     if (D_800CE3C4 == 0 && (u8)(old - 1) < 6) {
-        D_800CE3CC = (D_800CE268->unk14.unk22 + 0x400) & 0xFFF;
+        D_800CE3CC = (D_800CE268->pos.rotY + 0x400) & 0xFFF;
     }
     if ((u8)(D_800CE3C4 - 1) < 6 && old == 0) {
-        D_800CE3CC = D_800CE268->unk14.unk22 & 0xFFF;
+        D_800CE3CC = D_800CE268->pos.rotY & 0xFFF;
     }
     if (D_800CCB70[old].unk8 == D_800CCB70[D_800CE3C4].unk8) {
         func_800AE784(p->unk11, 0x200);
@@ -3081,7 +3081,7 @@ void func_800B17B4(void) {
         }
     }
     a = D_800CE3CC;
-    cur = D_800CE3DC->unk14.unk22;
+    cur = D_800CE3DC->pos.rotY;
     if (a - cur > 0x800) {
         a -= 0x1000;
     }
@@ -3090,19 +3090,19 @@ void func_800B17B4(void) {
     }
     a -= cur;
     if ((x | z) != 0) {
-        D_800CE3DC->unk14.unk22 = (D_800CE3DC->unk14.unk22 + a / 3) & 0xFFF;
+        D_800CE3DC->pos.rotY = (D_800CE3DC->pos.rotY + a / 3) & 0xFFF;
     }
     if (D_800CE25E != 0 && mv != 0) {
         if (func_800B3340_inline(D_800CCB20, (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2)) {
-            func_800C6F00(D_800CE3DC->unk14.vx, -100, D_800CE3DC->unk14.vz, 22, 24000);
+            func_800C6F00(D_800CE3DC->pos.vx, -100, D_800CE3DC->pos.vz, 22, 24000);
         }
         if (!(D_800CF4B0 & 3)) {
             k = (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2;
             if (k == 0x1E || k == 0x22 || k == 0x23) {
-                func_800C6F00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy, D_800CE3DC->unk14.vz, 7, 0x900);
+                func_800C6F00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vy, D_800CE3DC->pos.vz, 7, 0x900);
             }
             if (((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2) == 0x29) {
-                func_800C6F00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy, D_800CE3DC->unk14.vz, 27, 0x2000);
+                func_800C6F00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vy, D_800CE3DC->pos.vz, 27, 0x2000);
             }
         }
         if (!(D_800CF4B0 & 1) && (u32)(((u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2) - 0x24) < 3) {
@@ -3176,19 +3176,19 @@ void func_800B1CD0(void) {
         vol = 0x7F;
     }
     func_800C4850(m->unkC, 0x3C, vol);
-    D_800CE3CC = D_800CE3DC->unk14.unk22 = (D_800CE3DC->unk14.unk22 + D_800CE3E0) & 0xFFF;
+    D_800CE3CC = D_800CE3DC->pos.rotY = (D_800CE3DC->pos.rotY + D_800CE3E0) & 0xFFF;
     if (ABS(D_800CE3C0) > 80 && D_800CE25E != 0) {
         ang = (D_800CE3C0 <= 0) << 11;
-        dx = func_8004BB80(ang + D_800CE3DC->unk14.unk22) >> 2;
-        dz = func_8004BB7C(ang + D_800CE3DC->unk14.unk22) >> 2;
-        func_800C6F00(D_800CE3DC->unk14.vx + dx, -100, D_800CE3DC->unk14.vz + dz, 15, 15000);
+        dx = func_8004BB80(ang + D_800CE3DC->pos.rotY) >> 2;
+        dz = func_8004BB7C(ang + D_800CE3DC->pos.rotY) >> 2;
+        func_800C6F00(D_800CE3DC->pos.vx + dx, -100, D_800CE3DC->pos.vz + dz, 15, 15000);
         if (D_800CF4B0 & 1) {
-            dx = func_8004BB80(ang + D_800CE3DC->unk14.unk22 + 0x80) >> 3;
-            dz = func_8004BB7C(ang + D_800CE3DC->unk14.unk22 + 0x80) >> 3;
-            func_800C6F00(D_800CE3DC->unk14.vx + dx, -100, D_800CE3DC->unk14.vz + dz, 10, 15000);
-            dx = func_8004BB80(ang + D_800CE3DC->unk14.unk22 - 0x80) >> 3;
-            dz = func_8004BB7C(ang + D_800CE3DC->unk14.unk22 - 0x80) >> 3;
-            func_800C6F00(D_800CE3DC->unk14.vx + dx, -100, D_800CE3DC->unk14.vz + dz, 10, 15000);
+            dx = func_8004BB80(ang + D_800CE3DC->pos.rotY + 0x80) >> 3;
+            dz = func_8004BB7C(ang + D_800CE3DC->pos.rotY + 0x80) >> 3;
+            func_800C6F00(D_800CE3DC->pos.vx + dx, -100, D_800CE3DC->pos.vz + dz, 10, 15000);
+            dx = func_8004BB80(ang + D_800CE3DC->pos.rotY - 0x80) >> 3;
+            dz = func_8004BB7C(ang + D_800CE3DC->pos.rotY - 0x80) >> 3;
+            func_800C6F00(D_800CE3DC->pos.vx + dx, -100, D_800CE3DC->pos.vz + dz, 10, 15000);
         }
     }
 }
@@ -3281,8 +3281,8 @@ void func_800B20B8(void) {
     }
     switch (D_800CE25C) {
     case 1:
-        ex = (D_800CD10C[D_800D3E74][D_800CF480].unk4 - D_800CE3DC->unk14.vx) >> 5;
-        ez = (D_800CD10C[D_800D3E74][D_800CF480].unk8 - D_800CE3DC->unk14.vz) >> 5;
+        ex = (D_800CD10C[D_800D3E74][D_800CF480].unk4 - D_800CE3DC->pos.vx) >> 5;
+        ez = (D_800CD10C[D_800D3E74][D_800CF480].unk8 - D_800CE3DC->pos.vz) >> 5;
         r = SquareRoot0(ex * ex + ez * ez);
         D_800CE3C0 = r;
         if (D_800CE3C0 > 400) {
@@ -3293,8 +3293,8 @@ void func_800B20B8(void) {
         }
         D_800CE3E4 = D_800CE3C0;
     case 2:
-        dx = D_800CE3DC->unk14.vx - D_800CD10C[D_800D3E74][D_800CF480].unk4;
-        dz = D_800CE3DC->unk14.vz - D_800CD10C[D_800D3E74][D_800CF480].unk8;
+        dx = D_800CE3DC->pos.vx - D_800CD10C[D_800D3E74][D_800CF480].unk4;
+        dz = D_800CE3DC->pos.vz - D_800CD10C[D_800D3E74][D_800CF480].unk8;
         if (dx > 0x30000) {
             dx -= 0x60000;
         }
@@ -3308,7 +3308,7 @@ void func_800B20B8(void) {
             dz += 0x50000;
         }
         dz = (-ratan2(dz, dx) + 0x400) & 0xFFF;
-        dz -= D_800CE3DC->unk14.unk22;
+        dz -= D_800CE3DC->pos.rotY;
         if (dz < -0x800) {
             dz += 0x1000;
         }
@@ -3326,7 +3326,7 @@ void func_800B20B8(void) {
         }
         break;
     }
-    D_800CE3CC = D_800CE3DC->unk14.unk22 = (D_800CE3DC->unk14.unk22 + D_800CE3E0) & 0xFFF;
+    D_800CE3CC = D_800CE3DC->pos.rotY = (D_800CE3DC->pos.rotY + D_800CE3E0) & 0xFFF;
     if (D_800CE3E0 > 0 && -ox < D_800CE100) {
         D_800CE100 -= ox / 8;
     }
@@ -3361,15 +3361,15 @@ void func_800B20B8(void) {
         case 9:
         case 10:
             if (f && abs(D_800CE3C0) > 60) {
-                h = D_800CE3DC->unk14.vy;
+                h = D_800CE3DC->pos.vy;
                 if (h >= -0x800) {
                     D_800D53E0 = 0x1000 - abs(h + 400) * 2;
-                    func_800C6F00(D_800CE3DC->unk14.vx, -200, D_800CE3DC->unk14.vz, 18, 32000);
+                    func_800C6F00(D_800CE3DC->pos.vx, -200, D_800CE3DC->pos.vz, 18, 32000);
                     h = abs(D_800CE3C0);
                     if (h >= 0x200) {
                         h = 0x1FF;
                     }
-                    dx = abs(D_800CE3DC->unk14.vy) >> 6;
+                    dx = abs(D_800CE3DC->pos.vy) >> 6;
                     if (dx > 48) {
                         dx = 48;
                     }
@@ -3382,19 +3382,19 @@ void func_800B20B8(void) {
             } else {
                 func_800C4850(0x26, 30, 0);
             }
-            if (t == 0x29 && D_800CE3C0 != 0 && D_800CE3DC->unk14.vy >= -0x708) {
-                D_800D53E0 = 0x1000 - (D_800CE3DC->unk14.vy - 0x514) * 2;
-                func_800C6F00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy + 100, D_800CE3DC->unk14.vz, 19, 32000);
+            if (t == 0x29 && D_800CE3C0 != 0 && D_800CE3DC->pos.vy >= -0x708) {
+                D_800D53E0 = 0x1000 - (D_800CE3DC->pos.vy - 0x514) * 2;
+                func_800C6F00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vy + 100, D_800CE3DC->pos.vz, 19, 32000);
             }
             break;
         case 7:
-            if (f && abs(D_800CE3C0) > 30 && D_800CE3DC->unk14.vy >= -100) {
-                D_800D53E0 = 0x1000 - abs(D_800CE3DC->unk14.vy + 100) * 2;
-                func_800C6F00(D_800CE3DC->unk14.vx, -200, D_800CE3DC->unk14.vz, 6, 19200);
+            if (f && abs(D_800CE3C0) > 30 && D_800CE3DC->pos.vy >= -100) {
+                D_800D53E0 = 0x1000 - abs(D_800CE3DC->pos.vy + 100) * 2;
+                func_800C6F00(D_800CE3DC->pos.vx, -200, D_800CE3DC->pos.vz, 6, 19200);
             }
-            if (t == 0x29 && D_800CE3C0 != 0 && D_800CE3DC->unk14.vy >= -0x708) {
-                D_800D53E0 = 0x1000 - abs(D_800CE3DC->unk14.vy + 0x708) * 2;
-                func_800C6F00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy + 100, D_800CE3DC->unk14.vz, 14, 25600);
+            if (t == 0x29 && D_800CE3C0 != 0 && D_800CE3DC->pos.vy >= -0x708) {
+                D_800D53E0 = 0x1000 - abs(D_800CE3DC->pos.vy + 0x708) * 2;
+                func_800C6F00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vy + 100, D_800CE3DC->pos.vz, 14, 25600);
             }
             break;
         }
@@ -3451,17 +3451,17 @@ void func_800B2E54(void) {
     s32 cur;
 
     a = D_800CE0F0->unkC;
-    if (a - D_800CE3DC->unk14.unk22 > 0x800) {
+    if (a - D_800CE3DC->pos.rotY > 0x800) {
         D_800CE0F0->unkC = a - 0x1000;
     }
-    if (D_800CE0F0->unkC - D_800CE3DC->unk14.unk22 < -0x800) {
+    if (D_800CE0F0->unkC - D_800CE3DC->pos.rotY < -0x800) {
         D_800CE0F0->unkC += 0x1000;
     }
     if (a < 0) {
         a += 0x1000;
     }
     a %= 4096;
-    cur = D_800CE3DC->unk14.unk22;
+    cur = D_800CE3DC->pos.rotY;
     if (a - cur > 0x800) {
         a -= 0x1000;
     }
@@ -3491,7 +3491,7 @@ void func_800B2E54(void) {
             } while (q == 0);
             D_800CE0F0->unkC += q;
         } else {
-            D_800CE0F0->unkC = D_800CE3DC->unk14.unk22;
+            D_800CE0F0->unkC = D_800CE3DC->pos.rotY;
         }
         D_800CE0F0->unkC &= 0xFFF;
         if (ABS(a) < 100) {
@@ -3513,13 +3513,13 @@ void func_800B30C0(void) {
         do {
             o = n->unk4;
             if (o->unk5 == 4) {
-                pos = o->unk14;
+                pos = o->pos;
                 c = &D_800CCCC0[o->unk11];
                 func_800BE748((VECTOR *)&pos, &c->unk8, &tmp, NULL, &h);
                 c->unkE = h;
                 c->unkC = func_800B36B4(c->unk0, c->unk8, 0);
                 func_800B01F0(o);
-                o->unk40 = o->unk14;
+                o->unk40 = o->pos;
             }
             n = n->unk0;
         } while (n != NULL);
@@ -3984,8 +3984,8 @@ void func_800B7098(void) {
         }
         break;
     }
-    if (D_800CE3DC->unk14.vx != D_800CE3DC->unk40.vx || D_800CE3DC->unk14.vy != D_800CE3DC->unk40.vy ||
-        D_800CE3DC->unk14.vz != D_800CE3DC->unk40.vz) {
+    if (D_800CE3DC->pos.vx != D_800CE3DC->unk40.vx || D_800CE3DC->pos.vy != D_800CE3DC->unk40.vy ||
+        D_800CE3DC->pos.vz != D_800CE3DC->unk40.vz) {
         D_800CE25E = 1;
     } else {
         D_800CE25E = 0;
@@ -4311,11 +4311,11 @@ s32 w_frameGetParameter(s32 arg0) {
     case 0xC8:
         return D_800CF454 | (D_800D4818 != 0);
     case 0xC9:
-        return D_800CE3DC->unk14.vx;
+        return D_800CE3DC->pos.vx;
     case 0xCA:
-        return D_800CE3DC->unk14.vy;
+        return D_800CE3DC->pos.vy;
     case 0xCB:
-        return D_800CE3DC->unk14.vz;
+        return D_800CE3DC->pos.vz;
     case 0xCC:
         return D_800D3F88;
     case 0xCD:
@@ -4339,7 +4339,7 @@ s32 w_frameGetParameter(s32 arg0) {
         }
         return ret;
     case 0xCE:
-        return ((u16)D_800CE3DC->unk14.unk22 & 0xFFF) >> 4;
+        return ((u16)D_800CE3DC->pos.rotY & 0xFFF) >> 4;
     case 0xCF:
         return func_800BC528((v & 0x3F00) >> 8);
     case 0xD0:
@@ -5231,8 +5231,8 @@ s32 func_800B9808(s32 cell, WmTexEnt *tex, VECTOR *pos, u32 *attr, s32 *idx, Unk
         y = pos->vy;
         printf("Not hit polygon\n");
         if (D_800D30C5 >= 2) {
-            sprintf(D_800CCE6C, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vy,
-                    D_800CE3DC->unk14.vz, found);
+            sprintf(D_800CCE6C, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->pos.vx, D_800CE3DC->pos.vy,
+                    D_800CE3DC->pos.vz, found);
             printf(D_800A7D20, D_800CCE6C);
             if (D_800CCE69 == 0) {
                 D_800CCE69 = 1;
@@ -5546,8 +5546,8 @@ void func_800BB07C(void) {
         func_800BDAB0();
     }
     for (i = 0; i < 3; i++) {
-        dx = (D_800CE3DC->unk14.vx >> 8) - (D_800CD078[i] >> 8);
-        dz = (D_800CE3DC->unk14.vz >> 8) - (D_800CD084[i] >> 8);
+        dx = (D_800CE3DC->pos.vx >> 8) - (D_800CD078[i] >> 8);
+        dz = (D_800CE3DC->pos.vz >> 8) - (D_800CD084[i] >> 8);
         D_800D32F8[i] = SquareRoot0(dx * dx + dz * dz);
         if (D_800D30C8[5] != 0 && i == 0) {
             D_800D32F8[0] = 100;
@@ -5582,15 +5582,15 @@ void func_800BB07C(void) {
         }
     }
     if (D_800D32F8[1] < 0x22 && func_8004AE84() != 0 && ((flags & 0xFC) >> 2) == 0x17 && m - 1 < 7U) {
-        D_800CE3DC->unk14.vz += (0x22 - D_800D32F8[1]) * 8;
-        if (D_800CE3DC->unk14.vx == D_800CE3DC->unk40.vx && D_800CE3DC->unk14.vz == D_800CE3DC->unk40.vz) {
+        D_800CE3DC->pos.vz += (0x22 - D_800D32F8[1]) * 8;
+        if (D_800CE3DC->pos.vx == D_800CE3DC->unk40.vx && D_800CE3DC->pos.vz == D_800CE3DC->unk40.vz) {
             D_800CE3DC->unk40.vx++;
         }
     }
     if (D_8007AEF0.b[0x66] == 8 || D_8007AEF0.b[0x66] == 0) {
-        dx = (D_800CE3DC->unk14.vx >> 3) - 0x790A;
-        dz = (D_800CE3DC->unk14.vz >> 3) + 0x5ACB;
-        v = SquareRoot0(dx * dx + ((D_800CE3DC->unk14.vy >> 3) + 0x66) * ((D_800CE3DC->unk14.vy >> 3) + 0x66) * 8 + dz * dz);
+        dx = (D_800CE3DC->pos.vx >> 3) - 0x790A;
+        dz = (D_800CE3DC->pos.vz >> 3) + 0x5ACB;
+        v = SquareRoot0(dx * dx + ((D_800CE3DC->pos.vy >> 3) + 0x66) * ((D_800CE3DC->pos.vy >> 3) + 0x66) * 8 + dz * dz);
         if (v < 0x47C) {
             h = 0x47C - v;
             if (h > 0x400) {
@@ -6386,7 +6386,7 @@ void func_800BD78C(void) {
         if (n->unk12 == 2) {
             func_800BA2DC((u8 *)n->unk8, (n->unk10 % D_800D32F0 + n->unk10 / D_800D32F0) % 2, far);
             if (RotTransPers4(&quad.v[0], &quad.v[1], &quad.v[2], &quad.v[3], &sxy[0], &sxy[1], &sxy[2], &sxy[3], &p, &flag) < 7000
-                && D_800CE3DC->unk14.vy > -7000) {
+                && D_800CE3DC->pos.vy > -7000) {
                 f4 = (POLY_F4 *)D_800CF404;
                 ot = (u32 *)D_800CF460[*D_800CF45C];
                 *(s32 *)&f4->x0 = sxy[0];
@@ -6449,7 +6449,7 @@ void func_800BDAB0(void) {
     func_80064CDC(10, 10);
     n = 0;
     if (D_800CE3C4 < 6) {
-        if (D_800CE3DC->unk14.vy >= -0x9C3) {
+        if (D_800CE3DC->pos.vy >= -0x9C3) {
             D_800CD09C[1].y0 = D_800CD09C[0].y0 = -0x3C;
         } else {
             D_800CD09C[1].y0 = D_800CD09C[0].y0 = -0x1E;
@@ -6812,14 +6812,14 @@ void func_800BE984(void) {
             !((u8)D_800CE3C4 >= 7 && (u8)D_800CE3C4 < 10)) {
             CVECTOR c0 = D_800A7FF0;
             CVECTOR c1 = D_800A7FF4;
-            func_800C1B00(D_800CE3D0->unk14.vx, D_800CE3D0->unk14.vz, &x, &z, page * 2);
+            func_800C1B00(D_800CE3D0->pos.vx, D_800CE3D0->pos.vz, &x, &z, page * 2);
             func_800BF544(x, z, 1, 1, c0, c1, 0x40, 0xC8, 0x82, 1);
         }
         if (D_800CE268 != NULL && D_800CE268->unkE == 1 && (D_800CE268->unkF & 1) &&
             !((u8)D_800CE3C4 >= 1 && (u8)D_800CE3C4 < 7)) {
             CVECTOR c0 = D_800A7FF8;
             CVECTOR c2 = D_800A7FFC;
-            func_800C1B00(D_800CE268->unk14.vx, D_800CE268->unk14.vz, &x, &z, page * 2);
+            func_800C1B00(D_800CE268->pos.vx, D_800CE268->pos.vz, &x, &z, page * 2);
             func_800BF544(x, z, 1, 1, c0, c2, 0x40, 0xC8, 0x82, 1);
         }
         func_800C0888();
@@ -6833,14 +6833,14 @@ void func_800BE984(void) {
                 !((u8)D_800CE3C4 >= 7 && (u8)D_800CE3C4 < 10)) {
                 CVECTOR c0 = D_800A7FF0;
                 CVECTOR c3 = D_800A7FF4;
-                func_800C1B00(D_800CE3D0->unk14.vx, D_800CE3D0->unk14.vz, &x, &z, page * 2 + 1);
+                func_800C1B00(D_800CE3D0->pos.vx, D_800CE3D0->pos.vz, &x, &z, page * 2 + 1);
                 func_800BF544(x, z, 1, 1, c0, c3, 0x40, 0x28, 9, 1);
             }
             if (D_800CE268 != NULL && D_800CE268->unkE == 1 && (D_800CE268->unkF & 1) &&
                 !((u8)D_800CE3C4 >= 1 && (u8)D_800CE3C4 < 7)) {
                 CVECTOR c0 = D_800A7FF8;
                 CVECTOR c1 = D_800A7FFC;
-                func_800C1B00(D_800CE268->unk14.vx, D_800CE268->unk14.vz, &x, &z, page * 2 + 1);
+                func_800C1B00(D_800CE268->pos.vx, D_800CE268->pos.vz, &x, &z, page * 2 + 1);
                 func_800BF544(x, z, 1, 1, c0, c1, 0x40, 0x28, 9, 1);
             }
             if (D_800D3E77 != 0) {
@@ -6881,7 +6881,7 @@ void func_800BEECC(void) {
             stick.vx = 0;
             stick.vy = 0;
             if (D_800D3E84 == 1) {
-                func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, &D_800CD104, &D_800CD108, D_800D3E74 * 2 + 1);
+                func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, &D_800CD104, &D_800CD108, D_800D3E74 * 2 + 1);
                 D_800CD104 <<= 12;
                 D_800CD108 <<= 12;
             }
@@ -7068,7 +7068,7 @@ void func_800BF978(void) {
     ot = (u32 *)D_800CF460[*D_800CF45C];
     arrow = D_800A8000;
     memset(&rot0, 0, 8);
-    rot0.vz = D_800CE3DC->unk14.unk22 - 0x400;
+    rot0.vz = D_800CE3DC->pos.rotY - 0x400;
     rot = rot0;
     func_80030AF4(&rot, &m);
     for (i = 0; i < 4; i++) {
@@ -7076,7 +7076,7 @@ void func_800BF978(void) {
     }
     px = &x;
     py = &y;
-    func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, px, py, D_800D3E74 * 2 + 1);
+    func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2 + 1);
     c = (func_8004BB80(D_800CF4B0 << 6) >> 7) + 0x80;
     p = (POLY_FT4 *)D_800CF404;
     setRGB0(p, c, c, c);
@@ -7128,7 +7128,7 @@ void func_800BF978(void) {
     ay = func_8004BB7C(a) * 0x18 >> 12;
     bx = func_8004BB80(b) * 0x18 >> 12;
     by = func_8004BB7C(b) * 0x18 >> 12;
-    func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, px, py, D_800D3E74 * 2 + 1);
+    func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2 + 1);
     x1 = x + ax + 0x28;
     y1 = y + ay + 9;
     x2 = x + bx + 0x28;
@@ -7204,7 +7204,7 @@ void func_800C0888(void) {
     ot = (u32 *)D_800CF460[*D_800CF45C];
     arrow = D_800A8020;
     memset(&rot0, 0, 8);
-    rot0.vz = D_800CE3DC->unk14.unk22 - 0x400;
+    rot0.vz = D_800CE3DC->pos.rotY - 0x400;
     rot = rot0;
     c = (func_8004BB80(D_800CF4B0 << 6) >> 7) + 0x80;
     func_80030AF4(&rot, &m);
@@ -7213,7 +7213,7 @@ void func_800C0888(void) {
     }
     px = &x;
     py = &y;
-    func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, px, py, D_800D3E74 * 2);
+    func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2);
     p = (POLY_FT4 *)D_800CF404;
     setRGB0(p, c, c, c);
     p->x0 = x + v[0].vx + 200;
@@ -7245,7 +7245,7 @@ void func_800C0888(void) {
     ay = func_8004BB7C(a) * 12 >> 12;
     bx = func_8004BB80(b) * 12 >> 12;
     by = func_8004BB7C(b) * 12 >> 12;
-    func_800C1B00(D_800CE3DC->unk14.vx, D_800CE3DC->unk14.vz, px, py, D_800D3E74 * 2);
+    func_800C1B00(D_800CE3DC->pos.vx, D_800CE3DC->pos.vz, px, py, D_800D3E74 * 2);
     D_800D3E7C = (POLY_G3 *)D_800CF404;
     x1 = x + ax + 200;
     y1 = y + ay + 130;
@@ -7897,22 +7897,22 @@ s32 func_800C291C(void) {
     s32 r;
     s32 d;
 
-    dx = (D_800CE3DC->unk14.vx >> 8) - 0x508;
-    dz = (D_800CE3DC->unk14.vz >> 8) + 0x3AD;
+    dx = (D_800CE3DC->pos.vx >> 8) - 0x508;
+    dz = (D_800CE3DC->pos.vz >> 8) + 0x3AD;
     r = SquareRoot0(dx * dx + dz * dz) < 0x56;
-    dx = (D_800CE3DC->unk14.vx >> 8) - 0x50B;
-    dz = (D_800CE3DC->unk14.vz >> 8) + 0x3A0;
+    dx = (D_800CE3DC->pos.vx >> 8) - 0x50B;
+    dz = (D_800CE3DC->pos.vz >> 8) + 0x3A0;
     if (SquareRoot0(dx * dx + dz * dz) < 0x3B) {
         r = 2;
     }
-    dx = (D_800CE3DC->unk14.vx >> 8) - 0x1F4;
-    dz = (D_800CE3DC->unk14.vz >> 8) + 0x316;
+    dx = (D_800CE3DC->pos.vx >> 8) - 0x1F4;
+    dz = (D_800CE3DC->pos.vz >> 8) + 0x316;
     if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
         r = 1;
     }
     if (D_800CF444 == 4) {
-        dx = (D_800CE3DC->unk14.vx >> 8) - 0x2FE;
-        dz = (D_800CE3DC->unk14.vz >> 8) + 0x140;
+        dx = (D_800CE3DC->pos.vx >> 8) - 0x2FE;
+        dz = (D_800CE3DC->pos.vz >> 8) + 0x140;
         d = SquareRoot0(dx * dx + dz * dz);
         D_800D3F88 = d;
         if (d < 0x65) {
@@ -8722,7 +8722,7 @@ void func_800C53DC(void) {
             }
             break;
         case 32:
-            if (abs(cur->unk10 - D_800CE3DC->unk14.vx) > 32000 || abs(cur->unk18 - D_800CE3DC->unk14.vz) > 32000) {
+            if (abs(cur->unk10 - D_800CE3DC->pos.vx) > 32000 || abs(cur->unk18 - D_800CE3DC->pos.vz) > 32000) {
                 func_800C7050(cur);
             }
             break;

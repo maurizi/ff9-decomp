@@ -174,3 +174,9 @@ Format:
 - names: btl_payMpCost, btl_consumeMp, ability mpCost.
 - ability +0xE (same entries): 0xA1, 0xA6, 0xAB, 0xB2, 0xB8 for Fire, Fira, Firaga, Sleep, ...: each step is the
   previous name's length + 1, so it's the name's text offset. Named nameOfs.
+
+## Field player object: pos, facing, playerUid  (status: applied)
+- evidence (Redux, `field_dali_inn`): event context (0x80077E60) +0x16ED = 19; the active-object list's object with
+  uid 19 is 0x8007805C (Zidane). Walking right then down: +0x14 (pos.vx) -262 -> 211 -> 271, +0x1C (pos.vz)
+  1419 -> 1312 -> 891, +0x18 (vy) unchanged, +0x22 (rotation) 0 -> 3072 -> 4095.
+- names: Unk8004AB64.pos, ActorPos.rotY, EventContext.playerUid.

@@ -9488,8 +9488,8 @@ Unk16D8 *func_80036978(Unk8004AB64 *obj) {
         n->unk0 = D_8007AECC->unk16E0;
         D_8007AECC->unk16E0 = n;
         func_8004B2F4_inline(obj);
-        if (D_8007AECC->unk16ED == n->unk4->unk7) {
-            D_8007AECC->unk16ED = 0;
+        if (D_8007AECC->playerUid == n->unk4->unk7) {
+            D_8007AECC->playerUid = 0;
         }
     }
     return next;
@@ -10194,10 +10194,10 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
     u8 g;
     s32 key;
 
-    x = o->unk14.vx;
-    y = o->unk14.vy;
+    x = o->pos.vx;
+    y = o->pos.vy;
     back = flags & 4;
-    z = o->unk14.vz;
+    z = o->pos.vz;
     if (back) {
         r = o->unk3D * 4;
     } else {
@@ -10210,7 +10210,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
             a = 1;
         } else {
             g = o->unkF;
-            if (q->unk7 == D_8007AECC->unk16ED ? (g & 2) : (g & 4)) {
+            if (q->unk7 == D_8007AECC->playerUid ? (g & 2) : (g & 4)) {
                 a = 1;
             }
         }
@@ -10222,7 +10222,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
         }
         if (back) {
             b = f & 8;
-        } else if (o->unk7 == D_8007AECC->unk16ED) {
+        } else if (o->unk7 == D_8007AECC->playerUid) {
             b = f & 2;
         } else {
             b = f & 4;
@@ -10238,11 +10238,11 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
         }
         {
             Unk8004AB64 *p = q;
-        if ((u32)(p->unk14.vy - y + 399) >= 799) {
+        if ((u32)(p->pos.vy - y + 399) >= 799) {
             continue;
         }
-        dx = p->unk14.vx - x;
-        dz = p->unk14.vz - z;
+        dx = p->pos.vx - x;
+        dz = p->pos.vz - z;
         if ((dx < 0 ? -dx : dx) >= 0x800) {
             continue;
         }
@@ -10259,7 +10259,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
             }
         }
         if (p->unk2D != 0) {
-            s = func_8004BB7C(func_800531D0(p, o, p->unk14.unk22));
+            s = func_8004BB7C(func_800531D0(p, o, p->pos.rotY));
             rr = (rr * func_80052EEC(((s * s) >> 4) * p->unk2D + 0x1000000)) >> 12;
         }
         rr += r;
@@ -10268,7 +10268,7 @@ void *func_80038618(Unk8004AB64 *o, s32 flags, s32 *dist) {
         }
         d = func_80052DEC(dx, dz, rr);
         if (back) {
-            s = func_800531D0(o, p, o->unk14.unk22);
+            s = func_800531D0(o, p, o->pos.rotY);
             if (s < 0) {
                 s = -s;
             }
@@ -10308,14 +10308,14 @@ s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
 
     p = D_8007B704;
     speed = p->unk5C;
-    dx = x - p->unk14.vx;
-    dz = z - p->unk14.vz;
+    dx = x - p->pos.vx;
+    dz = z - p->pos.vz;
     if (p->unk50 & 0x20) {
-        ry = p->unk14.unk22 & 0xFFF;
+        ry = p->pos.rotY & 0xFFF;
     } else {
         ry = func_80052F24(dx, dz);
         if (!(flags & 1)) {
-            cur = p->unk14.unk22 & 0xFFF;
+            cur = p->pos.rotY & 0xFFF;
             d = ry - cur;
             if (d < -0x800) {
                 d += 0x1000;
@@ -10336,11 +10336,11 @@ s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
                 }
             }
             ry &= 0xFFF;
-            p->unk14.unk22 = ry;
+            p->pos.rotY = ry;
         }
     }
     if (flags & 2) {
-        dy = y - p->unk14.vy;
+        dy = y - p->pos.vy;
         rx = func_80052F24(-dy, -func_80052EC0(dx, 0, dz)) & 0xFFF;
         cur = p->unk30 & 0xFFF;
         d = rx - cur;
@@ -10366,14 +10366,14 @@ s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
         dy = 0;
     }
     func_8005309C(v, rx, ry, speed);
-    p->unk14.vx += v[0];
-    p->unk14.vy += v[1];
-    p->unk14.vz += v[2];
+    p->pos.vx += v[0];
+    p->pos.vy += v[1];
+    p->pos.vz += v[2];
     hit = func_80038618(p, 0, &dist);
     if (hit != 0 && dist <= 0) {
-        p->unk14.vx -= v[0];
-        p->unk14.vy -= v[1];
-        p->unk14.vz -= v[2];
+        p->pos.vx -= v[0];
+        p->pos.vy -= v[1];
+        p->pos.vz -= v[2];
     }
     if (p->unk63 != 0 && p->unk63 != 0xFF) {
         p->unk63--;
@@ -10398,7 +10398,7 @@ s32 func_80038990(s32 x, s32 y, s32 z, s32 flags) {
         p->unk30 = 0;
         p->unk50 &= ~0x30;
     }
-    if (p->unk7 == D_8007AECC->unk16ED) {
+    if (p->unk7 == D_8007AECC->playerUid) {
         D_8007B710++;
     }
     return r;
@@ -10428,9 +10428,9 @@ s32 func_80038D3C(Unk8004AB64 *p) {
 static inline void func_80038FD8_pos(Unk8004AB64 *obj, s32 *x, s32 *y) {
     SVECTOR sv;
 
-    sv.vx = obj->unk14.vx;
-    sv.vy = obj->unk14.vy + ((obj->unk32 * (s8)obj->unk2F) >> 6) - 50;
-    sv.vz = obj->unk14.vz;
+    sv.vx = obj->pos.vx;
+    sv.vy = obj->pos.vy + ((obj->unk32 * (s8)obj->unk2F) >> 6) - 50;
+    sv.vz = obj->pos.vz;
     if (obj->unk5 == 4) {
         sv.vx += obj->unk8A;
         sv.vy += obj->unk8C;
@@ -10515,10 +10515,10 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
     }
     func_80038FD8_pos(obj, &sx, &sy);
     if (dir < 0) {
-        if (obj->unk7 == D_8007AECC->unk16ED) {
+        if (obj->unk7 == D_8007AECC->playerUid) {
             id = obj->unk93;
         } else {
-            id = D_8007AECC->unk16ED;
+            id = D_8007AECC->playerUid;
         }
         other = func_8004B040_inline(id);
         if (other != NULL) {
@@ -10701,7 +10701,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
     s16 a;
 
     p->unk52 = d & 0xFFF;
-    cur = p->unk14.unk22 & 0xFFF;
+    cur = p->pos.rotY & 0xFFF;
     d -= cur;
     if (wrap) {
         if (d > 0x800) {
@@ -10731,7 +10731,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
             p->unk6C = (d + 0x400) / rate;
             p->unk62 = 0;
             func_80039C38_anim(p, (u16)p->unk40.unk20);
-            if (p->unk7 == D_8007AECC->unk16ED) {
+            if (p->unk7 == D_8007AECC->playerUid) {
                 D_8007B710++;
             }
             p->unk5D = frames * 16 / rate;
@@ -10741,10 +10741,10 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
             if (p->unk52 >= cur) {
                 a = cur | 0x1000;
             }
-            p->unk14.unk22 = a;
+            p->pos.rotY = a;
         }
     } else {
-        frames = func_800216D8(p->unk34, (u16)p->unk40.unk22);
+        frames = func_800216D8(p->unk34, (u16)p->unk40.rotY);
         rate = frames * 16 / speed;
         if (d < 0x400) {
             rate = rate * d >> 10;
@@ -10752,8 +10752,8 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
         if (rate >= 6) {
             p->unk6C = (d - 0x400) / rate;
             p->unk62 = 0;
-            func_80039C38_anim(p, (u16)p->unk40.unk22);
-            if (p->unk7 == D_8007AECC->unk16ED) {
+            func_80039C38_anim(p, (u16)p->unk40.rotY);
+            if (p->unk7 == D_8007AECC->playerUid) {
                 D_8007B710++;
             }
             p->unk5D = frames * 16 / rate;
@@ -10763,7 +10763,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
             if (cur >= p->unk52) {
                 a = cur | 0xF000;
             }
-            p->unk14.unk22 = a;
+            p->pos.rotY = a;
         }
     }
     if (rate <= 0) {
@@ -10934,9 +10934,9 @@ s32 func_80039C38(void) {
         if (c) {
             func_800C3E18(po->unk3B, 0);
         }
-        po->unk14.vx = po->unk40.vx = a;
-        po->unk14.vy = po->unk40.vy = -0x8000;
-        po->unk14.vz = po->unk40.vz = b;
+        po->pos.vx = po->unk40.vx = a;
+        po->pos.vy = po->unk40.vy = -0x8000;
+        po->pos.vz = po->unk40.vz = b;
         if (c) {
             func_800C3E18(po->unk3B, 1);
         }
@@ -10957,9 +10957,9 @@ s32 func_80039C38(void) {
         if (d) {
             func_800C3E18(po->unk3B, 0);
         }
-        po->unk14.vx = po->unk40.vx = a;
-        po->unk14.vy = po->unk40.vy = b;
-        po->unk14.vz = po->unk40.vz = c;
+        po->pos.vx = po->unk40.vx = a;
+        po->pos.vy = po->unk40.vy = b;
+        po->pos.vz = po->unk40.vz = c;
         if (po->unk5 == 4) {
             po->unk78 = 0x7FFFFFFF;
             po->unk30 = 0;
@@ -10969,10 +10969,10 @@ s32 func_80039C38(void) {
     case 0x87:
         po = func_80038150();
     case 0x36:
-        po->unk14.unk22 = func_8004AEDC_inline() << 4;
+        po->pos.rotY = func_8004AEDC_inline() << 4;
         return 0;
     case 0x37:
-        po->unk14.unk20 = func_8004AEDC_inline() << 4;
+        po->pos.unk20 = func_8004AEDC_inline() << 4;
         po->unk24 = func_8004AEDC_inline() << 4;
         return 0;
     case 0x8B:
@@ -11003,8 +11003,8 @@ s32 func_80039C38(void) {
         func_800398D0(actor, func_8004AEDC_inline() << 4, 1, actor->unk73);
         return 0;
     case 0x9B:
-        a = func_8004AF58_inline() - actor->unk14.vx;
-        b = func_8004AF58_inline() - actor->unk14.vz;
+        a = func_8004AF58_inline() - actor->pos.vx;
+        b = func_8004AF58_inline() - actor->pos.vz;
         if (a | b) {
             func_800398D0(actor, func_80052F24(a, b), 1, actor->unk73);
         }
@@ -11013,7 +11013,7 @@ s32 func_80039C38(void) {
         obj = func_80038150();
         a = func_8004AEDC_inline();
         if (obj != NULL) {
-            func_800398D0(actor, func_80052F24(obj->unk14.vx - actor->unk14.vx, obj->unk14.vz - actor->unk14.vz), 1, a);
+            func_800398D0(actor, func_80052F24(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
         }
         return 0;
     case 0xBC:
@@ -11113,7 +11113,7 @@ s32 func_80039C38(void) {
         return 1;
     case 0x24:
         po = func_80038150();
-        if (func_80038990(po->unk14.vx, po->unk14.vy, po->unk14.vz, (s32)po)) {
+        if (func_80038990(po->pos.vx, po->pos.vy, po->pos.vz, (s32)po)) {
             D_8007B70C->unk0 = D_8007AEA0;
             D_8007B6F8 = 1;
         }
@@ -11161,7 +11161,7 @@ s32 func_80039C38(void) {
         actor->unk60 = 0;
         actor->unk61 = actor->unk90 - 1;
         func_80039C38_anim(actor, actor->unk76);
-        if (actor->unk7 == D_8007AECC->unk16ED) {
+        if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
         return 0;
@@ -11171,7 +11171,7 @@ s32 func_80039C38(void) {
         actor->unk62 = 0;
         actor->unk60 = actor->unk91 + 1;
         func_80039C38_anim(actor, actor->unk76);
-        if (actor->unk7 == D_8007AECC->unk16ED) {
+        if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
         return 0;
@@ -11188,14 +11188,14 @@ s32 func_80039C38(void) {
         actor->unk60 = actor->unk90;
         actor->unk61 = actor->unk91;
         func_80039C38_anim(actor, actor->unk76);
-        if (actor->unk7 == D_8007AECC->unk16ED) {
+        if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
         actor->unk68 = 0;
         actor->unk92 = a;
-        actor->unkA4 = actor->unk14.vx;
-        actor->unkA6 = actor->unk14.vy;
-        actor->unkA8 = actor->unk14.vz;
+        actor->unkA4 = actor->pos.vx;
+        actor->unkA6 = actor->pos.vy;
+        actor->unkA8 = actor->pos.vz;
         actor->unk5D = ((actor->unk61 - actor->unk60) << 4) / a;
         if (D_8007B708 == 1 && po->unk34 != 0xFFFF) {
             func_800C3E18(po->unk3B, 0);
@@ -11204,9 +11204,9 @@ s32 func_80039C38(void) {
     case 0xDC:
         b = actor->unk92;
         a = ++actor->unk68;
-        actor->unk14.vx = ((s16)actor->unkA4 * (b - a) + actor->unk94 * a) / b;
-        actor->unk14.vy = (s16)actor->unkA6 + a * a * 8 + a * (actor->unkAA - (s16)actor->unkA6) / b - a * (b << 3);
-        actor->unk14.vz = ((s16)actor->unkA8 * (b - a) + actor->unk96 * a) / b;
+        actor->pos.vx = ((s16)actor->unkA4 * (b - a) + actor->unk94 * a) / b;
+        actor->pos.vy = (s16)actor->unkA6 + a * a * 8 + a * (actor->unkAA - (s16)actor->unkA6) / b - a * (b << 3);
+        actor->pos.vz = ((s16)actor->unkA8 * (b - a) + actor->unk96 * a) / b;
         if (a >= b) {
             return 0;
         }
@@ -11225,14 +11225,14 @@ s32 func_80039C38(void) {
         return 0;
     }
     case 0xA4:
-        po = func_8004B040_inline(D_8007AECC->unk16ED);
+        po = func_8004B040_inline(D_8007AECC->playerUid);
         if (po != NULL) {
             Unk80039C38Pt *p = ((Unk80039C38Quad *)D_8007B704)->unk18;
             s32 dx = p[1].unk0 - p[0].unk0;
             s32 dz = p[1].unk2 - p[0].unk2;
             s32 t = (dx * dx + dz * dz) >> 8;
             if (t != 0) {
-                t = (dx * (po->unk14.vx - p[0].unk0) + dz * (po->unk14.vz - p[0].unk2)) / t;
+                t = (dx * (po->pos.vx - p[0].unk0) + dz * (po->pos.vz - p[0].unk2)) / t;
                 if (t < 0) {
                     t = 0;
                 } else if (t > 0x100) {
@@ -11247,7 +11247,7 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0x9E:
-        po = func_8004B040_inline(D_8007AECC->unk16ED);
+        po = func_8004B040_inline(D_8007AECC->playerUid);
         if (po != NULL) {
             s32 *sp = (s32 *)po + po->unk9 + po->unkA;
             Unk16D8 *nn;
@@ -11326,7 +11326,7 @@ s32 func_80039C38(void) {
         D_8007AE40.unk6 = func_8004AF58_inline();
         return 0;
     case 0x2C:
-        D_8007AECC->unk16ED = D_8007B70C->unk7;
+        D_8007AECC->playerUid = D_8007B70C->unk7;
         return 0;
     case 0x2D:
         D_8007AECC->unk16EC = 0;
@@ -11457,7 +11457,7 @@ s32 func_80039C38(void) {
         actor->unk40.unk20 = func_8004AF58_inline();
         return 0;
     case 0x7B:
-        actor->unk40.unk22 = func_8004AF58_inline();
+        actor->unk40.rotY = func_8004AF58_inline();
         return 0;
     case 0x52:
         actor->unk74 = func_8004AF58_inline();
@@ -11488,7 +11488,7 @@ s32 func_80039C38(void) {
         actor = func_80038150();
     case 0x40:
         func_80039C38_anim(actor, func_8004AF58_inline());
-        if (actor->unk7 == D_8007AECC->unk16ED) {
+        if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
         return 0;
@@ -11873,7 +11873,7 @@ s32 func_80039C38(void) {
     case 0x8A: {
         u8 vol, pan;
         po = func_80038150();
-        func_800B1A20(po->unk14.vx, po->unk14.vy, po->unk14.vz, &vol, &pan);
+        func_800B1A20(po->pos.vx, po->pos.vy, po->pos.vz, &vol, &pan);
         D_8007AE38 = vol;
         D_8007AE3C = (pan * func_8004AEDC_inline()) >> 7;
         if (D_8007AE3C >= 0x80) {
@@ -12104,9 +12104,9 @@ s32 func_80039C38(void) {
     case 0xA9:
         obj = func_80038150();
         if (obj != NULL) {
-            sv.vx = obj->unk14.vx;
-            sv.vy = obj->unk14.vy;
-            sv.vz = obj->unk14.vz;
+            sv.vx = obj->pos.vx;
+            sv.vy = obj->pos.vy;
+            sv.vz = obj->pos.vz;
             func_8004BA20(&sv, &D_8007AE2C, &D_8007AE30);
         }
         return 0;
@@ -12118,18 +12118,18 @@ s32 func_80039C38(void) {
     case 0xB7:
         if (D_8007B708 == 3) {
             VECTOR *v = func_800AE750();
-            actor->unk14.vx = v->vx;
-            actor->unk14.vy = v->vy;
-            actor->unk14.vz = v->vz;
+            actor->pos.vx = v->vx;
+            actor->pos.vy = v->vy;
+            actor->pos.vz = v->vz;
             actor->unk50 |= 0x40;
         }
         return 0;
     case 0xB8:
         if (D_8007B708 == 3) {
             VECTOR *v = func_800AE744();
-            actor->unk14.vx = v->vx;
-            actor->unk14.vy = v->vy;
-            actor->unk14.vz = v->vz;
+            actor->pos.vx = v->vx;
+            actor->pos.vy = v->vy;
+            actor->pos.vz = v->vz;
             actor->unk50 |= 0x80;
         }
         return 0;
@@ -12306,9 +12306,9 @@ static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     m.m[1][1] = 0x1000;
     m.m[2][2] = func_8004BB7C(a);
     m.m[0][0] = m.m[0][1] = m.m[1][0] = m.m[1][2] = m.m[2][0] = m.m[2][1] = 0;
-    m.t[0] = o->unk14.vx;
-    m.t[1] = o->unk14.vy;
-    m.t[2] = o->unk14.vz;
+    m.t[0] = o->pos.vx;
+    m.t[1] = o->pos.vy;
+    m.t[2] = o->pos.vz;
     SetRotMatrix(&m);
     SetTransMatrix(&m);
     v.vx = 0;
@@ -12323,7 +12323,7 @@ void func_80047B90(Unk8004AB64 *o, Unk80047B90 *m) {
     VECTOR out;
     s32 d;
 
-    func_80047E1C_ahead(o, o->unk14.unk22, &out);
+    func_80047E1C_ahead(o, o->pos.rotY, &out);
     d = func_80052EC0(out.vx - o->unk84, out.vy - o->unk86, out.vz - o->unk88);
     if (d < 100) {
         d = 100;
@@ -12361,7 +12361,7 @@ static inline s32 func_80047E1C_infront(Unk8004AB64 *o) {
     s32 d;
 
     if (!(o->unk50 & 0x400)) {
-        d = (func_80052F24(o->unk84 - o->unk14.vx, o->unk88 - o->unk14.vz) - o->unk14.unk22) & 0xFFF;
+        d = (func_80052F24(o->unk84 - o->pos.vx, o->unk88 - o->pos.vz) - o->pos.rotY) & 0xFFF;
         if (d > 0x800) {
             d -= 0x1000;
         }
@@ -12379,8 +12379,8 @@ static inline s32 func_80047E1C_infront2(Unk8004AB64 *o, s32 *pa) {
     s32 d;
 
     if (!(o->unk50 & 0x400)) {
-        a = func_80052F24(o->unk84 - o->unk14.vx, o->unk88 - o->unk14.vz);
-        d = (a - o->unk14.unk22) & 0xFFF;
+        a = func_80052F24(o->unk84 - o->pos.vx, o->unk88 - o->pos.vz);
+        d = (a - o->pos.rotY) & 0xFFF;
         if (d > 0x800) {
             d -= 0x1000;
         }
@@ -12413,29 +12413,29 @@ void func_80047E1C(Unk8004AB64 *o) {
     mdl = (Unk80047B90 *)((Unk8E0 *)func_8001E350(o->unk3B))->unk8;
     tgt = NULL;
     if ((o->unk50 & 4) && D_8007AE68 != NULL && D_8007AE68 != o &&
-        func_80052E48(o->unk14.vx - D_8007AE68->unk14.vx, o->unk14.vz - D_8007AE68->unk14.vz, 0) >= 1000) {
+        func_80052E48(o->pos.vx - D_8007AE68->pos.vx, o->pos.vz - D_8007AE68->pos.vz, 0) >= 1000) {
         tgt = D_8007AE68;
         o->unk50 |= 0x200;
     }
     if (tgt != NULL || ((o->unk50 & 1) && !(o->unk62 & 2))) {
         if (o->unkF & 0x80) {
-            save = o->unk14.unk22;
-            o->unk14.unk22 = o->unk80;
+            save = o->pos.rotY;
+            o->pos.rotY = o->unk80;
         }
         if (tgt == NULL) {
             best = NULL;
-            x = o->unk14.vx;
-            y = o->unk14.vy;
-            z = o->unk14.vz;
+            x = o->pos.vx;
+            y = o->pos.vy;
+            z = o->pos.vz;
             mask = o->unk6B;
             bestd = 0;
             for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
                 q = n->unk4;
-                if (q != o && q->unk5 == 4 && (u32)(q->unk14.vy - y + 399) < 799 && (q->unk50 & 2) &&
+                if (q != o && q->unk5 == 4 && (u32)(q->pos.vy - y + 399) < 799 && (q->unk50 & 2) &&
                     (mask & q->unk6A)) {
-                    d = func_80052DEC(q->unk14.vx - x, q->unk14.vz - z, 0);
+                    d = func_80052DEC(q->pos.vx - x, q->pos.vz - z, 0);
                     if (d >= 1000) {
-                        a = func_800531D0(o, q, o->unk14.unk22);
+                        a = func_800531D0(o, q, o->pos.rotY);
                         d -= 4000000;
                         if (a < 0) {
                             a = -a;
@@ -12457,7 +12457,7 @@ void func_80047E1C(Unk8004AB64 *o) {
             if (!(o->unk50 & 0x100)) {
                 if (!(o->unkF & 0x80)) {
                     o->unk50 |= 0x100;
-                    func_80047E1C_ahead(o, o->unk14.unk22, &t);
+                    func_80047E1C_ahead(o, o->pos.rotY, &t);
                     o->unk84 = t.vx;
                     o->unk86 = t.vy;
                     o->unk88 = t.vz;
@@ -12465,21 +12465,21 @@ void func_80047E1C(Unk8004AB64 *o) {
             }
             if ((o->unk50 & 0x100) && func_80047E1C_infront(o)) {
                 {
-                    t.vx = tgt->unk14.vx;
-                    t.vy = tgt->unk14.vy;
-                    t.vz = tgt->unk14.vz;
-                    ang = func_80052F24(t.vx - o->unk14.vx, t.vz - o->unk14.vz);
-                    d = (ang - o->unk14.unk22) & 0xFFF;
+                    t.vx = tgt->pos.vx;
+                    t.vy = tgt->pos.vy;
+                    t.vz = tgt->pos.vz;
+                    ang = func_80052F24(t.vx - o->pos.vx, t.vz - o->pos.vz);
+                    d = (ang - o->pos.rotY) & 0xFFF;
                     if (d > 0x800) {
                         d -= 0x1000;
                     }
                     if ((u32)(d + 0x27F) < 0x4FF) {
-                        t.vy = (((o->unk14.vy << 6) + o->unk32 * (s8)o->unk2F) * 3 + (t.vy << 6) +
+                        t.vy = (((o->pos.vy << 6) + o->unk32 * (s8)o->unk2F) * 3 + (t.vy << 6) +
                                 tgt->unk32 * (s8)tgt->unk2F) >> 8;
                         func_80047E1C_approach(o, mdl, &t);
                     } else if (func_80047AB8(o, ang)) {
                         a = d > 0x280 ? 0x280 : -0x280;
-                        func_80047E1C_ahead(o, a + o->unk14.unk22, &t);
+                        func_80047E1C_ahead(o, a + o->pos.rotY, &t);
                         func_80047E1C_approach(o, mdl, &t);
                     }
                 }
@@ -12490,7 +12490,7 @@ void func_80047E1C(Unk8004AB64 *o) {
             }
         }
         if (o->unkF & 0x80) {
-            o->unk14.unk22 = save;
+            o->pos.rotY = save;
         }
     } else if ((o->unk50 & 0x100) && func_80047E1C_infront(o)) {
         func_80047B90(o, mdl);
@@ -12513,7 +12513,7 @@ void func_8004883C(void) {
     if (e->unk1700 != 0) {
         return;
     }
-    o = func_8004B040_inline(e->unk16ED);
+    o = func_8004B040_inline(e->playerUid);
     if (o == NULL || o->unk5 != 4) {
         return;
     }
@@ -12530,7 +12530,7 @@ void func_8004883C(void) {
     }
     if (p->unk74 != 0 && !(p->unk62 & 0x84)) {
         func_8004883C_idle(p);
-        if (p->unk7 == D_8007AECC->unk16ED) {
+        if (p->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
         p->unk62 |= 2;
@@ -12541,9 +12541,9 @@ void func_8004883C(void) {
  * accepts for p's position. */
 static inline Unk8004AB64 *func_80048A5C_find(Unk8004AB64 *p, s32 key) {
     Unk8004AB64 *found = NULL;
-    s32 x = p->unk14.vx;
+    s32 x = p->pos.vx;
     Unk16D8 *n = D_8007AECC->unk16D8;
-    s32 z = p->unk14.vz;
+    s32 z = p->pos.vz;
     Unk8004AB64 *o;
 
     for (; n != NULL; n = n->unk0) {
@@ -12564,7 +12564,7 @@ void func_80048A5C(Unk8004AB64 *p) {
     t = func_8004E8EC();
     btn = t & (D_8007B708 == 1 ? 0xA0000 : 0x20000);
     if (btn && (o = func_80038618(p, 4, NULL)) != NULL) {
-        D_8007AE20 = func_800531D0(p, o, p->unk14.unk22);
+        D_8007AE20 = func_800531D0(p, o, p->pos.rotY);
         if ((u32)(D_8007AE20 + 0x3FF) < 0x7FF) {
             p->unk93 = o->unk7;
             if (btn == 0x80000 && func_800384D0(o, 1, 8, 0)) {
@@ -12635,29 +12635,29 @@ static inline void func_80048F54_turn(Unk8004AB64 *p) {
     s32 a;
 
     if ((s16)p->unk6C == 0x7FFE) {
-        a = p->unk14.unk22 + (s16)p->unk82;
+        a = p->pos.rotY + (s16)p->unk82;
         if (p->unk52 < a) {
-            p->unk14.unk22 = a;
+            p->pos.rotY = a;
         } else {
-            p->unk14.unk22 = p->unk52;
+            p->pos.rotY = p->unk52;
             p->unkF &= 0x7F;
         }
     } else if ((s16)p->unk6C == 0x7FFF) {
-        a = p->unk14.unk22 + (s16)p->unk82;
+        a = p->pos.rotY + (s16)p->unk82;
         if (a >= p->unk52) {
-            p->unk14.unk22 = p->unk52;
+            p->pos.rotY = p->unk52;
             p->unkF &= 0x7F;
         } else {
-            p->unk14.unk22 = a;
+            p->pos.rotY = a;
         }
     }
 }
 
 /* remember the position at the start of the frame */
 static inline void func_80048F54_save(Unk8004AB64 *p) {
-    p->unk40.vx = p->unk14.vx;
-    p->unk40.vy = p->unk14.vy;
-    p->unk40.vz = p->unk14.vz;
+    p->unk40.vx = p->pos.vx;
+    p->unk40.vy = p->pos.vy;
+    p->unk40.vz = p->pos.vz;
 }
 
 s32 func_80048F54(void) {
@@ -12690,22 +12690,22 @@ s32 func_80048F54(void) {
         o = n->unk4;
         if (o->unk5 == 4) {
             z = o;
-            if (o->unk7 == D_8007AECC->unk16ED && o->unkE == 1) {
+            if (o->unk7 == D_8007AECC->playerUid && o->unkE == 1) {
                 if (D_8007AECC->unk16EC != 0) {
                     if (D_8007B708 == 1) {
-                        o->unk40.vx = o->unk14.vx;
-                        o->unk40.vy = o->unk14.vy;
-                        o->unk40.vz = o->unk14.vz;
+                        o->unk40.vx = o->pos.vx;
+                        o->unk40.vy = o->pos.vy;
+                        o->unk40.vz = o->pos.vz;
                         func_800475D8(o);
                     } else if (D_8007B708 == 3) {
                         D_8007AEAC = D_800CCE54;
                         func_80048A5C(o);
                         t1 = func_80038618(o, 0, &dist);
                         if (t1 != NULL && dist <= 0 &&
-                            (u32)(func_800531D0(o, t1, func_80052F24(o->unk14.vx - o->unk40.vx, o->unk14.vz - o->unk40.vz)) + 0x400) <= 0x800) {
-                            o->unk14.vx = o->unk40.vx;
-                            o->unk14.vy = o->unk40.vy;
-                            o->unk14.vz = o->unk40.vz;
+                            (u32)(func_800531D0(o, t1, func_80052F24(o->pos.vx - o->unk40.vx, o->pos.vz - o->unk40.vz)) + 0x400) <= 0x800) {
+                            o->pos.vx = o->unk40.vx;
+                            o->pos.vy = o->unk40.vy;
+                            o->pos.vz = o->unk40.vz;
                         }
                     }
                     if (D_8007AEAC != 0) {
@@ -12760,17 +12760,17 @@ s32 func_80048F54(void) {
                 p = o;
                 if (D_8007B708 == 1) {
                     f = func_8002170C(p);
-                    if ((p->unk7 != D_8007AECC->unk16ED || D_8007AEB0 >= 0) && (f & 1) &&
+                    if ((p->unk7 != D_8007AECC->playerUid || D_8007AEB0 >= 0) && (f & 1) &&
                         (t = func_80038618(p, 0, NULL)) != NULL) {
                         func_800C7720(p->unk3B);
                         if (t->unkF & 0x10) {
                             D_8007AEB0 = 0;
                         }
-                        if (o->unk7 == D_8007AECC->unk16ED) {
+                        if (o->unk7 == D_8007AECC->playerUid) {
                             D_8007AEA8 = 2;
                         }
                     }
-                    if (o->unk7 == D_8007AECC->unk16ED) {
+                    if (o->unk7 == D_8007AECC->playerUid) {
                         func_8004F74C(p);
                         if (D_8007AECC->unk16EC != 0) {
                             func_80048A5C(p);
@@ -12779,16 +12779,16 @@ s32 func_80048F54(void) {
                 } else if (D_8007B708 == 3) {
                     if (p->unk50 & 0x40) {
                         VECTOR *v = func_800AE750();
-                        v->vx = p->unk14.vx;
-                        v->vy = p->unk14.vy;
+                        v->vx = p->pos.vx;
+                        v->vy = p->pos.vy;
                         D_8007AEB8 = p;
-                        v->vz = p->unk14.vz;
+                        v->vz = p->pos.vz;
                     } else if (p->unk50 & 0x80) {
                         VECTOR *v = func_800AE744();
-                        v->vx = p->unk14.vx;
-                        v->vy = p->unk14.vy;
+                        v->vx = p->pos.vx;
+                        v->vy = p->pos.vy;
                         D_8007AEBC = p;
-                        v->vz = p->unk14.vz;
+                        v->vz = p->pos.vz;
                     }
                 }
                 if (p->unk3E != 0xFF) {
@@ -12803,9 +12803,9 @@ s32 func_80048F54(void) {
                     }
                 }
                 moved = 0;
-                dx = p->unk14.vx - p->unk40.vx;
-                dy = p->unk14.vy - p->unk40.vy;
-                dz = p->unk14.vz - p->unk40.vz;
+                dx = p->pos.vx - p->unk40.vx;
+                dy = p->pos.vy - p->unk40.vy;
+                dz = p->pos.vz - p->unk40.vz;
                 if (dx != 0 || dz != 0) {
                     moved = 1;
                 }
@@ -12826,7 +12826,7 @@ s32 func_80048F54(void) {
                         anim = p->unk5C >= p->unk5E ? (u16)p->unk58 : (u16)p->unk56;
                         goto set_anim;
                     }
-                } else if (!(p->unk62 & 0x84) && (D_8007AEA8 == 0 || o->unk7 != D_8007AECC->unk16ED)) {
+                } else if (!(p->unk62 & 0x84) && (D_8007AEA8 == 0 || o->unk7 != D_8007AECC->playerUid)) {
                     anim = (u16)p->unk54;
                 set_anim:
                     if (anim != p->unk36) {
@@ -12837,7 +12837,7 @@ s32 func_80048F54(void) {
                         p->unk5D = p->unk69;
                     }
                 }
-                if (moved && o->unk7 == D_8007AECC->unk16ED && D_8007AEAC != 0) {
+                if (moved && o->unk7 == D_8007AECC->playerUid && D_8007AEAC != 0) {
                     D_8007AE4C += func_80052EC0(dx, dy, dz);
                     if (func_80038D3C(p)) {
                         D_8007AE58 = 1;
@@ -12871,9 +12871,9 @@ s32 func_80048F54(void) {
                     func_800C75B4(p->unk3B, &h);
                     p->unk26 = h / 4;
                     if (q != NULL) {
-                        p->unk14.vx = p->unk40.vx;
-                        p->unk14.vy = p->unk40.vy;
-                        p->unk14.vz = p->unk40.vz;
+                        p->pos.vx = p->unk40.vx;
+                        p->pos.vy = p->unk40.vy;
+                        p->pos.vz = p->unk40.vz;
                         p->unk2E = q->unk8;
                         p->unk28 = q->unkA;
                         p->unk2A = q->unk0;
@@ -13007,7 +13007,7 @@ void func_80049C14(Unk8004AB64 *p) {
                 func_80049B48(p);
             }
             if (p->unkF & 0x80) {
-                p->unk14.unk22 = (p->unk14.unk22 + p->unk6C) & 0xFFF;
+                p->pos.rotY = (p->pos.rotY + p->unk6C) & 0xFFF;
                 p->unk80 = (p->unk80 + p->unk82) & 0xFFF;
             }
         } else {
@@ -13165,7 +13165,7 @@ void func_8004A06C(u8 *data) {
         D_8007AECC->unk0[i] = 0;
     }
     D_8007AECC->unk16EC = 0;
-    D_8007AECC->unk16ED = 0;
+    D_8007AECC->playerUid = 0;
     D_8007AECC->unk1700 = 0;
     func_8004FF98(0);
     D_8007B6FC = 0;
@@ -13371,9 +13371,9 @@ void func_8004ACA4(Unk8004AB64 *o, s32 dx, s32 dy) {
     volatile s32 sxy;
     GameData *gd;
 
-    v.vx = o->unk14.vx;
-    v.vy = o->unk14.vy + ((o->unk32 * (s8)o->unk2F) >> 6) - 50;
-    v.vz = o->unk14.vz;
+    v.vx = o->pos.vx;
+    v.vy = o->pos.vy + ((o->unk32 * (s8)o->unk2F) >> 6) - 50;
+    v.vz = o->pos.vz;
     if (D_8007B708 == 1) {
         func_800C0F08();
     }
@@ -13398,7 +13398,7 @@ Unk8004AB64 *func_8004AE00(void) {
     Unk8004AB64 *r;
 
     if (D_8007AECC != NULL) {
-        p = func_8004B040_inline(D_8007AECC->unk16ED);
+        p = func_8004B040_inline(D_8007AECC->playerUid);
     }
     if (p != NULL && p->unk5 == 4) {
         r = p;
@@ -13615,13 +13615,13 @@ s32 func_8004B68C(Unk8004AB64 *o, s32 prop) {
 
     switch (prop) {
     case 0:
-        return o->unk14.vx;
+        return o->pos.vx;
     case 1:
-        return o->unk14.vy;
+        return o->pos.vy;
     case 2:
-        return o->unk14.vz;
+        return o->pos.vz;
     case 3:
-        return (u8)((u16)o->unk14.unk22 >> 4);
+        return (u8)((u16)o->pos.rotY >> 4);
     case 4:
         return o->unkF;
     case 5:
@@ -15332,7 +15332,7 @@ void func_8004FBD8(void) {
     }
     draw:
     if (!(g_gameState->unk1C->unk0 & 0x1C)) {
-        o = func_8004B040(D_8007AECC->unk16ED);
+        o = func_8004B040(D_8007AECC->playerUid);
         if (o != NULL && o->unk5 == 4) {
             func_800515B8();
             func_8004ACA4(o, -2, 0);

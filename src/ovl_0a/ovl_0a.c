@@ -1380,9 +1380,9 @@ void func_800AB3CC(void) {
         c = list[i];
         if (c != NULL) {
             m = c->unk8;
-            rot.vx = ((Unk8004AB64 *)m->unk20)->unk14.vx;
-            rot.vy = ((Unk8004AB64 *)m->unk20)->unk14.vy;
-            rot.vz = ((Unk8004AB64 *)m->unk20)->unk14.vz;
+            rot.vx = ((Unk8004AB64 *)m->unk20)->pos.vx;
+            rot.vy = ((Unk8004AB64 *)m->unk20)->pos.vy;
+            rot.vz = ((Unk8004AB64 *)m->unk20)->pos.vz;
             gte_ldv0(&rot);
             gte_rtps();
             gte_stsxy(&sxy);
@@ -2007,9 +2007,9 @@ void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
         arg2->m[0][2] = sn * arg0->unk2 >> 12;
         arg2->m[1][2] = 0;
         arg2->m[2][2] = c * arg0->unk2 >> 12;
-        arg2->t[0] = ((c * arg0->unk4_12 + sn * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->unk14.vx;
-        arg2->t[1] = ((Unk8004AB64 *)arg1->unkC)->unk14.vy;
-        arg2->t[2] = ((-sn * arg0->unk4_12 + c * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->unk14.vz;
+        arg2->t[0] = ((c * arg0->unk4_12 + sn * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->pos.vx;
+        arg2->t[1] = ((Unk8004AB64 *)arg1->unkC)->pos.vy;
+        arg2->t[2] = ((-sn * arg0->unk4_12 + c * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->pos.vz;
     } else {
         /* word-wise copy of the joint matrix */
         d = (s32 *)&m;
@@ -2055,7 +2055,7 @@ void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
         arg2->m[1][2] = fwd.vy * arg0->unk2 >> 12;
         arg2->m[2][2] = fwd.vz * arg0->unk2 >> 12;
         arg2->t[0] = ((side.vx * arg0->unk4_12 + fwd.vx * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[1].t[0];
-        arg2->t[1] = ((side.vy * arg0->unk4_12 + fwd.vy * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->unk14.vy;
+        arg2->t[1] = ((side.vy * arg0->unk4_12 + fwd.vy * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->pos.vy;
         arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[1].t[2];
     }
 }
@@ -2365,9 +2365,9 @@ void func_800AED6C(void) {
         a = func_8004AE00();
         if (a != NULL) {
             func_800C0F08();
-            v.vx = a->unk14.vx;
-            v.vy = a->unk14.vy;
-            v.vz = a->unk14.vz;
+            v.vx = a->pos.vx;
+            v.vy = a->pos.vy;
+            v.vz = a->pos.vz;
             gte_SetRotMatrix(&g_gameState->unk1C->unk18);
             gte_SetTransMatrix(&g_gameState->unk1C->unk18);
             gte_ldv0(&v);
@@ -7344,9 +7344,9 @@ s32 func_800BDC44(void) {
             a = NULL;
         }
         if (a != NULL) {
-            v.vx = a->unk14.vx;
-            v.vy = a->unk14.vy - D_800CA068.unk76;
-            v.vz = a->unk14.vz;
+            v.vx = a->pos.vx;
+            v.vy = a->pos.vy - D_800CA068.unk76;
+            v.vz = a->pos.vz;
         } else {
             v.vx = 0;
             v.vy = 0;
@@ -7909,9 +7909,9 @@ s32 func_800BF660(void) {
     c = (Unk800C9DB4Cam *)((u8 *)h + h->unk18);
     c += D_800CA068.unk75;
     if (a != NULL) {
-        sv.vx = a->unk14.vx;
-        sv.vy = a->unk14.vy - D_800CA068.unk76;
-        sv.vz = a->unk14.vz;
+        sv.vx = a->pos.vx;
+        sv.vy = a->pos.vy - D_800CA068.unk76;
+        sv.vz = a->pos.vz;
     } else {
         sv.vx = 0;
         sv.vy = 0;
@@ -9249,9 +9249,9 @@ s32 func_800C2AF0(Unk800C9DF4 *arg0, Unk800C9E00 **arg1, s16 *arg2, SVECTOR *arg
                     arg3->vy = save.vy;
                     arg3->vz = save.vz;
                     func_800C2AF0_push(arg3, arg2, &arg6, &arg7);
-                    arg0->unk24->unk14.vx = arg3->vx;
-                    arg0->unk24->unk14.vy = arg3->vy;
-                    arg0->unk24->unk14.vz = arg3->vz;
+                    arg0->unk24->pos.vx = arg3->vx;
+                    arg0->unk24->pos.vy = arg3->vy;
+                    arg0->unk24->pos.vz = arg3->vz;
                     arg0->unk6 = saved;
                     cur = (Unk800C9E00 *)((u8 *)D_800C9DF0.unk10 + off);
                     arg0->unk4 = cur->unk4;
@@ -9289,8 +9289,8 @@ s32 func_800C31F8(Unk800C9DF4 *arg0, SVECTOR *arg1, Unk800C9E00 **arg2, s16 *arg
     if (D_800C9DDC == 1) {
         arg1->vx += D_800CA9D8[0][0];
         arg1->vz += D_800CA9D8[0][2];
-        arg0->unk24->unk14.vx = arg1->vx;
-        arg0->unk24->unk14.vz = arg1->vz;
+        arg0->unk24->pos.vx = arg1->vx;
+        arg0->unk24->pos.vz = arg1->vz;
     } else {
         any = 0;
         i = 0;
@@ -9340,8 +9340,8 @@ s32 func_800C31F8(Unk800C9DF4 *arg0, SVECTOR *arg1, Unk800C9E00 **arg2, s16 *arg
         }
         arg1->vx += sum.vx;
         arg1->vz += sum.vz;
-        arg0->unk24->unk14.vx = arg1->vx;
-        arg0->unk24->unk14.vz = arg1->vz;
+        arg0->unk24->pos.vx = arg1->vx;
+        arg0->unk24->pos.vz = arg1->vz;
     }
     D_800C9DDC = 0;
     return func_800C2AF0(arg0, arg2, &prev, arg1, 0, 0, 0, 0) == 0;
@@ -9387,9 +9387,9 @@ s32 func_800C3608(Unk800C9DF4 *arg0) {
     for (k = 0; k < 10; k++) {
         D_800CAAB8[k] = -1;
     }
-    cur.vx = arg0->unk24->unk14.vx;
-    cur.vy = arg0->unk24->unk14.vy;
-    cur.vz = arg0->unk24->unk14.vz;
+    cur.vx = arg0->unk24->pos.vx;
+    cur.vy = arg0->unk24->pos.vy;
+    cur.vz = arg0->unk24->pos.vz;
     prev.vx = arg0->unk24->unk40.vx;
     prev.vy = arg0->unk24->unk40.vy;
     prev.vz = arg0->unk24->unk40.vz;
@@ -9408,9 +9408,9 @@ s32 func_800C3608(Unk800C9DF4 *arg0) {
         } else {
             arg0->unk4 = -1;
         }
-        arg0->unk24->unk14.vx = arg0->unk24->unk40.vx;
-        arg0->unk24->unk14.vy = arg0->unk24->unk40.vy;
-        arg0->unk24->unk14.vz = arg0->unk24->unk40.vz;
+        arg0->unk24->pos.vx = arg0->unk24->unk40.vx;
+        arg0->unk24->pos.vy = arg0->unk24->unk40.vy;
+        arg0->unk24->pos.vz = arg0->unk24->unk40.vz;
         ret |= 1;
         if (arg0->unkA >= 0) {
             if (!(u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[arg0->unk8], &D_800C9DF0.unk10[arg0->unkA], &prev.vx)) {
@@ -9430,9 +9430,9 @@ s32 func_800C3608(Unk800C9DF4 *arg0) {
             } else {
                 arg0->unk4 = -1;
             }
-            arg0->unk24->unk14.vx = arg0->unk24->unk40.vx;
-            arg0->unk24->unk14.vy = arg0->unk24->unk40.vy;
-            arg0->unk24->unk14.vz = arg0->unk24->unk40.vz;
+            arg0->unk24->pos.vx = arg0->unk24->unk40.vx;
+            arg0->unk24->pos.vy = arg0->unk24->unk40.vy;
+            arg0->unk24->pos.vz = arg0->unk24->unk40.vz;
             ret |= 1;
             if (arg0->unkA >= 0 && arg0->unk8 >= 0) {
             if (!(u8)func_800C4B30(D_800C9DF0.unk8, &D_800C9DF0.unk1C[arg0->unk8], &D_800C9DF0.unk10[arg0->unkA], &prev.vx)) {
@@ -9443,24 +9443,24 @@ s32 func_800C3608(Unk800C9DF4 *arg0) {
             return ret;
         }
     }
-    if (cur.vx != arg0->unk24->unk14.vx || cur.vz != arg0->unk24->unk14.vz) {
-        arg0->unk24->unk14.vx = cur.vx;
+    if (cur.vx != arg0->unk24->pos.vx || cur.vz != arg0->unk24->pos.vz) {
+        arg0->unk24->pos.vx = cur.vx;
         ret |= 0x10;
-        arg0->unk24->unk14.vz = cur.vz;
+        arg0->unk24->pos.vz = cur.vz;
     }
     if (node->unk6 >= 0) {
         pl = &D_800C9DF0.unk14[node->unk6];
         if ((u32)(pl->unk4 + 0x50F4) > 0xA1E8) {
-            a = func_800C1DC4(pl->unk0, arg0->unk24->unk14.vx << 16);
-            arg0->unk24->unk14.vy = func_800C1DC4(node->unk24 - a - func_800C1DC4(pl->unk8, arg0->unk24->unk14.vz << 16), pl->unkC) >> 16;
-            arg0->unk24->unk14.vy += (s16)D_800C9DF0.unk1C[node->unk4].unkA[1] - D_800C9DF0.unk1C[node->unk4].unk4[1];
+            a = func_800C1DC4(pl->unk0, arg0->unk24->pos.vx << 16);
+            arg0->unk24->pos.vy = func_800C1DC4(node->unk24 - a - func_800C1DC4(pl->unk8, arg0->unk24->pos.vz << 16), pl->unkC) >> 16;
+            arg0->unk24->pos.vy += (s16)D_800C9DF0.unk1C[node->unk4].unkA[1] - D_800C9DF0.unk1C[node->unk4].unk4[1];
         } else {
-            arg0->unk24->unk14.vy = cur.vy;
+            arg0->unk24->pos.vy = cur.vy;
         }
     } else {
         t = D_800C9DF0.unk1C + node->unk4;
         vt = D_800C9DF0.unkC + node->unkC[0];
-        arg0->unk24->unk14.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t->unkA[1]));
+        arg0->unk24->pos.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t->unkA[1]));
     }
     arg0->unkA = save;
     if (save >= 0) {
@@ -9620,9 +9620,9 @@ s32 func_800C3EC0(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     if (found) {
         a->unk4 = bt;
         a->unk6 = bi;
-        a->unk24->unk14.vx = arg1;
-        a->unk24->unk14.vy = ymin;
-        a->unk24->unk14.vz = arg3;
+        a->unk24->pos.vx = arg1;
+        a->unk24->pos.vy = ymin;
+        a->unk24->pos.vz = arg3;
         return 1;
     }
     return 0;
@@ -9640,9 +9640,9 @@ s32 func_800C420C(s32 arg0, s16 arg1) {
     v.vz = D_800C9DF0.unk8->unk8[2] + t->unkA[2];
     D_800C9DF0.unk4[arg0].unk4 = n->unk4;
     D_800C9DF0.unk4[arg0].unk6 = arg1;
-    D_800C9DF0.unk4[arg0].unk24->unk14.vx = v.vx + n->unk1E;
-    D_800C9DF0.unk4[arg0].unk24->unk14.vy = v.vy + n->unk20;
-    D_800C9DF0.unk4[arg0].unk24->unk14.vz = v.vz + n->unk22;
+    D_800C9DF0.unk4[arg0].unk24->pos.vx = v.vx + n->unk1E;
+    D_800C9DF0.unk4[arg0].unk24->pos.vy = v.vy + n->unk20;
+    D_800C9DF0.unk4[arg0].unk24->pos.vz = v.vz + n->unk22;
     D_800C9DF0.unk4[arg0].unk24->unk40.vx = v.vx + n->unk1E;
     D_800C9DF0.unk4[arg0].unk24->unk40.vy = v.vy + n->unk20;
     D_800C9DF0.unk4[arg0].unk24->unk40.vz = v.vz + n->unk22;
@@ -9665,9 +9665,9 @@ s32 func_800C4378(s32 arg0, u16 arg1, u16 arg2) {
     n = &D_800C9DF0.unk10[id];
     D_800C9DF0.unk4[arg0].unk4 = arg1;
     D_800C9DF0.unk4[arg0].unk6 = ids[arg2];
-    D_800C9DF0.unk4[arg0].unk24->unk14.vx = v.vx + n->unk1E;
-    D_800C9DF0.unk4[arg0].unk24->unk14.vy = v.vy + n->unk20;
-    D_800C9DF0.unk4[arg0].unk24->unk14.vz = v.vz + n->unk22;
+    D_800C9DF0.unk4[arg0].unk24->pos.vx = v.vx + n->unk1E;
+    D_800C9DF0.unk4[arg0].unk24->pos.vy = v.vy + n->unk20;
+    D_800C9DF0.unk4[arg0].unk24->pos.vz = v.vz + n->unk22;
     D_800C9DF0.unk4[arg0].unk24->unk40.vx = v.vx + n->unk1E;
     D_800C9DF0.unk4[arg0].unk24->unk40.vy = v.vy + n->unk20;
     D_800C9DF0.unk4[arg0].unk24->unk40.vz = v.vz + n->unk22;
@@ -9686,7 +9686,7 @@ s32 func_800C44F4(u32 arg0) {
     e = &D_800C9DF0.unk4[arg0];
     if (e->unk0 & 1) {
         if (e->unk4 == -1 || e->unk6 == -1) {
-            return (func_800C3EC0(arg0, e->unk24->unk14.vx, e->unk24->unk14.vy, e->unk24->unk14.vz) != 0) * 2;
+            return (func_800C3EC0(arg0, e->unk24->pos.vx, e->unk24->pos.vy, e->unk24->pos.vz) != 0) * 2;
         }
         return func_800C3608(e);
     }
@@ -9788,10 +9788,10 @@ s16 func_800C48DC(s16 arg0, s16 arg1) {
     if (D_800C9DF0.unk8 == NULL) {
         if (g_gameState->mode == 5) {
             g = g_gameState->unk1C;
-            return ((Unk8004AB64 *)g->unk8E0[g->unk8E4.field->unk8].unkC)->unk14.vy;
+            return ((Unk8004AB64 *)g->unk8E0[g->unk8E4.field->unk8].unkC)->pos.vy;
         }
         if (g_gameState->mode == 1) {
-            return func_8004AE00()->unk14.vy;
+            return func_8004AE00()->pos.vy;
         }
         return 0;
     }
@@ -10535,13 +10535,13 @@ s32 func_800C7100(void) {
                 ((ActorPosView *)p)->unk14[e->unk4] += e->unkC - e->unkE;
                 switch (e->unk4) {
                 case 0:
-                    a->unk24->unk40.vx = a->unk24->unk14.vx;
+                    a->unk24->unk40.vx = a->unk24->pos.vx;
                     break;
                 case 1:
-                    a->unk24->unk40.vy = a->unk24->unk14.vy;
+                    a->unk24->unk40.vy = a->unk24->pos.vy;
                     break;
                 case 2:
-                    a->unk24->unk40.vz = a->unk24->unk14.vz;
+                    a->unk24->unk40.vz = a->unk24->pos.vz;
                     break;
                 }
             }
@@ -10679,9 +10679,9 @@ s32 func_800C76E8(s32 arg0, u16 *arg1, u16 *arg2) {
 s32 func_800C7720(s32 arg0) {
     Unk800C9DF4 *e = &D_800C9DF0.unk4[arg0];
 
-    e->unk24->unk14.vx = e->unk24->unk40.vx;
-    e->unk24->unk14.vy = e->unk24->unk40.vy;
-    e->unk24->unk14.vz = e->unk24->unk40.vz;
+    e->unk24->pos.vx = e->unk24->unk40.vx;
+    e->unk24->pos.vy = e->unk24->unk40.vy;
+    e->unk24->pos.vz = e->unk24->unk40.vz;
     e->unk4 = e->unk8;
     e->unk6 = e->unkA;
     return 1;

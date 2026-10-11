@@ -45,7 +45,7 @@ def main():
                     # Several uses through the same plain variable (`a->unkE ... a->unkE`) are one struct too.
                     bases = {re.search(r"(\w+)\s*$", s[:o.start()]).group(1) if re.search(r"(\w+)\s*$", s[:o.start()]) else None
                              for o in occ}
-                    same = len(bases) == 1 and None not in bases and re.match(r"[a-z]\w*$", next(iter(bases)))
+                    same = len(bases) == 1 and None not in bases
                     if m in pairs and (len(occ) == 1 or same):
                         for o in reversed(occ):
                             s = s[:o.start()] + o.group(1) + pairs[m] + s[o.end():]

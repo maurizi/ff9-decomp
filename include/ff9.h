@@ -1054,7 +1054,7 @@ typedef struct {
     s32 vy;
     s32 vz;
     s16 unk20; /* rotation x */
-    s16 unk22; /* rotation y */
+    s16 rotY; /* facing; runtime: 0 toward the camera, 3072 walking right */
 } ActorPos;
 
 /* field / world object (actor) */
@@ -1076,7 +1076,7 @@ typedef struct Unk8004AB64 {
     u8 unk11;
     u8 unk12;
     u8 pad13;
-    ActorPos unk14; /* position, rotation x/y */
+    ActorPos pos; /* runtime: x rises walking right, z falls walking toward the camera */
     s16 unk24; /* rotation z */
     u8 unk26;
     u8 pad27;
@@ -1192,7 +1192,7 @@ typedef struct {
     s16 unk16E8; /* analog / d-pad camera direction offsets */
     s16 unk16EA;
     u8 unk16EC;
-    u8 unk16ED;
+    u8 playerUid; /* runtime: uid of the object the pad moves (Zidane, 19, in the Dali inn) */
     u8 unk16EE; /* field mode the state was saved in */
     u8 unk16EF;
     u8 *unk16F0; /* script data base */
@@ -2322,7 +2322,7 @@ static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
         return D_8007B704;
     }
     if (id == 0xFA) {
-        id = D_8007AECC->unk16ED;
+        id = D_8007AECC->playerUid;
     } else if ((u32)(id - 0xFB) < 4) {
         id = D_8007AECC->unk16E4[id - 0xFB];
     }
