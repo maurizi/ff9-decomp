@@ -1,4 +1,4 @@
-/* 12 rows differ, registers only: the raw products and the D_80077170 hi land in t9/t5/t6 here instead of t5/t9/t7. Needed: all AnimCell loads before setlen (the sb blocks them otherwise), dx/dy temps so -0x80 is not reassociated, and the tpage bits in a temp. */
+/* 12 rows differ, registers only: the raw products and the D_80077170 hi land in t9/t5/t6 here instead of t5/t9/t7. Needed: all AnimCell loads before setlen (the sb blocks them otherwise), dx/dy temps so -0x80 is not reassociated, and the tpage bits in a temp. Pass 15: D_8007716C/D_80077170 as one struct { ot; prim; } makes it much worse (the base address is materialised). */
 #include "ff9.h"
 
 void func_8003595C(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
