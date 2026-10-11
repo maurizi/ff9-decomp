@@ -466,6 +466,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   - DA1F4: the order after the loop decides the CSE class head for the in-loop *p load (e = p copy); see the header.
   - The gcc 2.8.1 sources are in build/gcc of the agent worktree (fetched from ftp.gnu.org).
   Status: C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
+- Pass 17 (no new matches; details in the WIP headers):
+  - C3F78: the table-base order is fixed (`idx = ...; tb = D_800F5758; t = &tb[idx];`). Only the case-5 test sense
+    is left; the other 2 rows are D_800FE36C vs D_800FE368+4 relocation names. fill_eager_delay_slots always tries
+    the target thread, so the pass-1 swap needs the case-5 lui to be unfillable there. Loop-note case forms: 3 rows.
+  - AB07C: indexing a[n]/b[n]/r[n] in a do-while reproduces the original's pointer inits through loop.c strength
+    reduction. But loop.c then hoists the getTPage x bits (force chain: savings 2, lifetime 2) and spills them: 52.
+  - DA138: inline helper, chained assignment and while forms: 6.
+  Status: C3F78 3 (1 real, -O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).
