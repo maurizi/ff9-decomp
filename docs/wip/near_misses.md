@@ -1065,3 +1065,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     `&D_80068998` (same address, so the bytes are identical). The extra use of ic is what lifts its global-alloc
     priority above mid's (ic 6 refs / 212 insns vs mid 7 / 262), which the do-while had faked by doubling the
     first call's refs. `&D_80068988[2]` and `&mid[1]` also match. No wrap.
+  * 14 A741C matched (was 16 rows; goto loop plus a do-while wrap): both lookups are the plain
+    `for (;;) { if (e->unk0 == key) { found; break; } e--; if (e < start) break; }`, and each arm of the mode
+    test computes `key`, `start = area + ((f->unk48 - base) << 11)` and `e = start + f->unk44 - 1` itself, with
+    no blk/n variables (jump2 cross-jumps the identical tails). The extra area refs put area between gs and
+    mode, and the arm loads become block-local temps, which gives the original's v1/v0 for blk/n.
+  * 3a F459C 45 -> 44 without wraps: block 1 matches with a block-local `h = &D_80077DE8` after the unk0
+    store and a ternary for unk2 (see its header).

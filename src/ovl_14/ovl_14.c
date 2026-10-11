@@ -99,7 +99,65 @@ void func_800A73B8(void) {
     ctx->unk3A = 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_14/nonmatchings/ovl_14", func_800A741C);
+/* looks up the current area/field ids in the two directories at D_80067944 + 0x14C700 and stores their sector ranges */
+void func_800A741C(void) {
+    GameState *gs = D_8006794C;
+    s32 mode = gs->unk8;
+    GameData *ctx = gs->unk1C;
+    GameStateUnk14 *f;
+    s32 base;
+    u8 *area;
+    u8 *start;
+    Ovl14Dir *e;
+    s32 key;
+    s32 id;
+
+    if (mode == 1 || mode == 3) {
+        id = -1;
+        f = gs->unk14;
+        base = f->unk8;
+        area = D_80067944 + ((base << 11) + 0x14C700);
+        if (mode == 1) {
+            key = (s16)ctx->unkC;
+            start = area + ((f->unk48 - base) << 11);
+            e = (Ovl14Dir *)start + f->unk44 - 1;
+        } else {
+            key = ctx->unk7DC;
+            start = area + ((f->unk38 - base) << 11);
+            e = (Ovl14Dir *)start + f->unk34 - 1;
+        }
+        for (;;) {
+            if (e->unk0 == key) {
+                id = e->unk2;
+                ctx->unk7FC[1] = e->unk4;
+                ctx->unk804[1] = e[1].unk4 - e->unk4;
+                break;
+            }
+            e--;
+            if ((u8 *)e < start) {
+                break;
+            }
+        }
+        start = area + ((gs->unk14->unk28 - base) << 11);
+        e = (Ovl14Dir *)start + gs->unk14->unk24 - 1;
+        for (;;) {
+            if (e->unk0 == id) {
+                ctx->unk7FC[0] = e->unk4;
+                ctx->unk804[0] = e[1].unk4 - e->unk4;
+                break;
+            }
+            e--;
+            if ((u8 *)e < start) {
+                break;
+            }
+        }
+        if (mode == 1) {
+            ctx->unk3A = id;
+        } else {
+            ctx->unk7DE = id;
+        }
+    }
+}
 
 void func_800A7578(void) {
     func_800651D8();
