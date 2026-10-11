@@ -2336,7 +2336,7 @@ void func_800AF800(GameData *arg0, Battle *arg1) {
 
     sp18 = arg1->unk11C0->unk34[arg0->unk8];
     done = 1;
-    if (D_800F78A4->unk0->unk0 != -1 || arg1->unk1074.unk0 != NULL || arg1->unk1088 != NULL) {
+    if (D_800F78A4->unk0->unk0 != -1 || arg1->cmdQueue.unk0 != NULL || arg1->unk1088 != NULL) {
         done = 0;
     }
     for (u = arg1->unk6F8; u != NULL; u = u->unk0) {
@@ -2364,7 +2364,7 @@ void func_800AF800(GameData *arg0, Battle *arg1) {
                 }
                 if (u->unk3C & 0x100) {
                     if (u->unk7D == 0 && func_800B3E7C(u->unkC) == 0) {
-                        func_800B1250(u->unkC, 0x3C, 0, u->unkB0, 0);
+                        btl_setCmd(u->unkC, 0x3C, 0, u->unkB0, 0);
                     }
                     if (u->unk7D != 6) {
                         done = 0;
@@ -2823,8 +2823,8 @@ void func_800B0EF8(Battle *arg0) {
     arg0->unk11BA = 0;
     arg0->unk11B8 = 2;
     arg0->unk1060.unk4 = NULL;
-    arg0->unk1074.unk4 = NULL;
-    func_800B3CEC_inline(&arg0->unk1074);
+    arg0->cmdQueue.unk4 = NULL;
+    func_800B3CEC_inline(&arg0->cmdQueue);
     func_800B3CEC_inline(&arg0->unk1060);
 }
 
@@ -2879,7 +2879,7 @@ void func_800B10F8(BtlUnit *arg0) {
     }
 }
 
-void func_800B1250(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     BtlUnit *u = arg0->unk4;
     BtlUnit9C *m;
     s32 *a;
@@ -2950,7 +2950,7 @@ void func_800B1250(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         u->unk68 |= 0x80000;
     }
-    func_800B3090(arg0);
+    btl_enqueueCmd(arg0);
 }
 
 /* padded: the next jump table is 8-aligned in its object */
@@ -3006,7 +3006,7 @@ fail:
     c->unk10.b.unk0_6 = 0;
     c->unk10.b.unk0_7 = 0;
     u->unk68 |= 0x80000;
-    func_800B3090(c);
+    btl_enqueueCmd(c);
 }
 
 void func_800B1764(Battle *b) {
@@ -3017,7 +3017,7 @@ void func_800B1764(Battle *b) {
     u8 k;
 
     if (b->unk1088 == NULL) {
-        if ((p = b->unk1074.unk0) == NULL) {
+        if ((p = b->cmdQueue.unk0) == NULL) {
             return;
         }
         for (cmd = p; cmd != NULL; cmd = cmd->unk0) {
@@ -3053,7 +3053,7 @@ void func_800B1764(Battle *b) {
             }
         }
         b->unk1088 = cmd;
-        func_800B3F98(cmd);
+        btl_removeCmd(cmd);
     }
     cmd = b->unk1088;
     if (cmd == NULL) {
@@ -3549,7 +3549,7 @@ void func_800B2988(Battle *b) {
 }
 
 void func_800B2DD4(Battle *arg0) {
-    BtlCmd *p = &arg0->unk1074;
+    BtlCmd *p = &arg0->cmdQueue;
     BtlCmd *c;
     BtlUnit *u;
     BtlUnit9C *m;
@@ -3570,7 +3570,7 @@ void func_800B2DD4(Battle *arg0) {
                 }
             }
             func_800B4434(c);
-            func_800B4320(&p->unk0, 1);
+            btl_unlinkCmd(&p->unk0, 1);
         } else {
             p = c;
         }
@@ -3578,7 +3578,7 @@ void func_800B2DD4(Battle *arg0) {
 }
 
 void func_800B2F24(Battle *arg0) {
-    BtlCmd *p = &arg0->unk1074;
+    BtlCmd *p = &arg0->cmdQueue;
     BtlCmd *c;
     BtlUnit *u;
     BtlUnit9C *m;
@@ -3599,7 +3599,7 @@ void func_800B2F24(Battle *arg0) {
                 }
             }
             func_800B4434(c);
-            func_800B4320(&p->unk0, 1);
+            btl_unlinkCmd(&p->unk0, 1);
         } else {
             p = c;
         }
@@ -3609,8 +3609,8 @@ void func_800B2F24(Battle *arg0) {
     arg0->unk11B8 &= ~0xC;
 }
 
-void func_800B3090(BtlCmd *arg0) {
-    BtlCmd *p = &g_gameState->unk1C->unk8E4.battle->unk1074;
+void btl_enqueueCmd(BtlCmd *arg0) {
+    BtlCmd *p = &g_gameState->unk1C->unk8E4.battle->cmdQueue;
     BtlCmd *n;
     s32 c;
     u32 e;
@@ -3634,7 +3634,7 @@ void func_800B3090(BtlCmd *arg0) {
                     continue;
                 }
             insert:
-                func_800B440C((LinkNode *)arg0, (LinkNode **)&p->unk0);
+                btl_linkCmd((LinkNode *)arg0, (LinkNode **)&p->unk0);
                 return;
             }
             c = n->unk10.b.unk0_4;
@@ -3768,7 +3768,7 @@ void func_800B3B5C(BtlUnit *arg0) {
     } else {
         return;
     }
-    func_800B1250((s32)arg0->unk4, 1, 0xB0, func_800C1F7C(x) & 0xFFFF, 0);
+    btl_setCmd((s32)arg0->unk4, 1, 0xB0, func_800C1F7C(x) & 0xFFFF, 0);
 }
 
 void func_800B3C00(void) {
@@ -3807,7 +3807,7 @@ void func_800B3CEC(BtlCmd *arg0) {
 
 void func_800B3D54(BtlUnit *arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (!(arg0->unk3C & 0x02021003) && g_gameState->unk1C->unk8E4.battle->unkD80 == 4) {
-        func_800B1250(arg0->unk8, arg1, arg2, arg3 & 0xFFFF, 0);
+        btl_setCmd(arg0->unk8, arg1, arg2, arg3 & 0xFFFF, 0);
     }
 }
 
@@ -3815,10 +3815,10 @@ void func_800B3DBC(BtlUnit *arg0) {
     if ((arg0->unk68 & 0x1F) == 5) {
         Battle *b = g_gameState->unk1C->unk8E4.battle;
         BtlCmd *p;
-        for (p = &b->unk1074; p != NULL; p = p->unk0) {
+        for (p = &b->cmdQueue; p != NULL; p = p->unk0) {
             BtlCmd *n = p->unk0;
             if (n != NULL && n->unk4 == arg0 && n->cmdNo == 0x39) {
-                func_800B4320(&p->unk0, 1);
+                btl_unlinkCmd(&p->unk0, 1);
                 break;
             }
         }
@@ -3830,7 +3830,7 @@ void func_800B3DBC(BtlUnit *arg0) {
 
 u8 func_800B3E7C(BtlCmd *arg0) {
     BtlCmd *p;
-    for (p = &g_gameState->unk1C->unk8E4.battle->unk1074; p != NULL; p = p->unk0) {
+    for (p = &g_gameState->unk1C->unk8E4.battle->cmdQueue; p != NULL; p = p->unk0) {
         if (arg0 == p) {
             return 1;
         }
@@ -3844,7 +3844,7 @@ u8 func_800B3E7C(BtlCmd *arg0) {
 
 u8 func_800B3EF8(BtlUnit *arg0, u8 arg1) {
     BtlCmd *p;
-    for (p = &g_gameState->unk1C->unk8E4.battle->unk1074; p != NULL; p = p->unk0) {
+    for (p = &g_gameState->unk1C->unk8E4.battle->cmdQueue; p != NULL; p = p->unk0) {
         if (p->unk4 == arg0 && p->cmdNo == arg1) {
             return 1;
         }
@@ -3856,15 +3856,15 @@ u8 func_800B3EF8(BtlUnit *arg0, u8 arg1) {
     return 0;
 }
 
-void func_800B3F98(BtlCmd *arg0) {
+void btl_removeCmd(BtlCmd *arg0) {
     BtlUnit *u = arg0->unk4;
     BtlCmd *p;
-    for (p = &g_gameState->unk1C->unk8E4.battle->unk1074; p != NULL; p = p->unk0) {
+    for (p = &g_gameState->unk1C->unk8E4.battle->cmdQueue; p != NULL; p = p->unk0) {
         if (p->unk0 == arg0) {
             if (u != NULL && arg0 != u->unk10 && arg0 != u->unk14) {
                 u->unk68 &= ~0x80000;
             }
-            func_800B4320(&p->unk0, 0);
+            btl_unlinkCmd(&p->unk0, 0);
             return;
         }
     }
@@ -3875,7 +3875,7 @@ s32 func_800B4040(BtlUnit *arg0) {
     BtlCmd *p;
     s32 r;
     arg0->unk68 &= ~0x80000;
-    p = &g_gameState->unk1C->unk8E4.battle->unk1074;
+    p = &g_gameState->unk1C->unk8E4.battle->cmdQueue;
     r = 0;
     while (p != NULL) {
         c = p->unk0;
@@ -3884,7 +3884,7 @@ s32 func_800B4040(BtlUnit *arg0) {
                 r = 1;
             }
             func_800B4434(c);
-            func_800B4320(&p->unk0, 1);
+            btl_unlinkCmd(&p->unk0, 1);
         } else {
             p = c;
         }
@@ -3893,12 +3893,12 @@ s32 func_800B4040(BtlUnit *arg0) {
 }
 
 void func_800B4114(BtlUnit *arg0) {
-    BtlCmd *p = &g_gameState->unk1C->unk8E4.battle->unk1074;
+    BtlCmd *p = &g_gameState->unk1C->unk8E4.battle->cmdQueue;
     while (p != NULL) {
         BtlCmd *n = p->unk0;
         if (n != NULL && n->unk4 == arg0) {
             func_800B4434(n);
-            func_800B4320(&p->unk0, 1);
+            btl_unlinkCmd(&p->unk0, 1);
         } else {
             p = n;
         }
@@ -3907,10 +3907,10 @@ void func_800B4114(BtlUnit *arg0) {
 
 void func_800B41A4(BtlUnit *arg0, u8 arg1) {
     BtlCmd *p;
-    for (p = &g_gameState->unk1C->unk8E4.battle->unk1074; p != NULL; p = p->unk0) {
+    for (p = &g_gameState->unk1C->unk8E4.battle->cmdQueue; p != NULL; p = p->unk0) {
         BtlCmd *n = p->unk0;
         if (n != NULL && n->unk4 == arg0 && n->cmdNo == arg1) {
-            func_800B4320(&p->unk0, 1);
+            btl_unlinkCmd(&p->unk0, 1);
             return;
         }
     }
@@ -3937,7 +3937,7 @@ void func_800B4234(BtlUnit *arg0) {
     arg0->unkBC = 1;
 }
 
-void func_800B4320(BtlCmd **arg0, u8 arg1) {
+void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
     BtlCmd *p = *arg0;
     *arg0 = p->unk0;
     p->unk10.b.unk0_2 = 0;
@@ -3962,7 +3962,7 @@ s32 func_800B4390(BtlCmd *arg0) {
     return 0;
 }
 
-void func_800B440C(LinkNode *arg0, LinkNode **arg1) {
+void btl_linkCmd(LinkNode *arg0, LinkNode **arg1) {
     arg0->unk0 = *arg1;
     *arg1 = arg0;
     arg0->unk10 = (arg0->unk10 & ~0xC) | 4;
@@ -4726,7 +4726,7 @@ void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x39:
         func_800C19F8(0);
         if (func_800BAEA8(&c)) {
-            func_800B1250(&g_gameState->unk1C->unk8E4.battle->unk1060, 0x38, 0, 0xF, 1);
+            btl_setCmd(&g_gameState->unk1C->unk8E4.battle->unk1060, 0x38, 0, 0xF, 1);
         }
         break;
     case 0x3A:
@@ -5722,7 +5722,7 @@ void func_800B918C(BtlCalc *arg0) {
         }
     }
     if (r > ((*g_randPtr << 8) | *g_randPtr++) % 100 && (c == NULL || (c->unk4->unk68 & 1))) {
-        func_800B1250((s32)&g_gameState->unk1C->unk8E4.battle->unk1060, 0x38, 1, 0xF, 1);
+        btl_setCmd((s32)&g_gameState->unk1C->unk8E4.battle->unk1060, 0x38, 1, 0xF, 1);
     }
 }
 
@@ -7106,7 +7106,7 @@ s32 func_800BD5A0(BtlUnit *arg0) {
     arg0->unkA0->unk3A = 0;
     if (arg0->unk3C & 0x2000) {
         arg0->unk7D = 7;
-        func_800B1250(arg0->unk18, 0x3D, 0, arg0->unkB0, 0);
+        btl_setCmd(arg0->unk18, 0x3D, 0, arg0->unkB0, 0);
         func_800BF558(arg0, 0x2000);
         return 0;
     }
@@ -7601,7 +7601,7 @@ void func_800BE1E0(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case 0x4E:
         arg0->atb = arg0->max->maxAtb;
         arg0->unkB3 = 1;
-        func_800B1250(arg0->unk4, 0x14, 0xBB, (u16)arg2, 8);
+        btl_setCmd(arg0->unk4, 0x14, 0xBB, (u16)arg2, 8);
         func_800E9F3C(1);
         func_800E9F68(1);
         break;
@@ -7848,7 +7848,7 @@ u32 func_800BEDBC(BtlUnit *u, u32 f) {
     case 0:
         if (!func_800B3E7C(u->unkC)) {
             if (g_gameState->unk1C->unk8E4.battle->unkD80 >= 3) {
-                func_800B1250(u->unkC, 0x3E, 0, u->unkB0, 0);
+                btl_setCmd(u->unkC, 0x3E, 0, u->unkB0, 0);
             } else {
                 if (u->unk68 & 1) {
                     func_800C0544(u);
@@ -7888,7 +7888,7 @@ u32 func_800BEDBC(BtlUnit *u, u32 f) {
         }
         u->atb = 0;
         if (!func_800B3E7C(u->unkC)) {
-            func_800B1250(u->unkC, 0x3C, 0, u->unkB0, 0);
+            btl_setCmd(u->unkC, 0x3C, 0, u->unkB0, 0);
             if (!(u->unk68 & 1)) {
                 func_800C1704(u);
             }
@@ -7898,7 +7898,7 @@ u32 func_800BEDBC(BtlUnit *u, u32 f) {
         func_800C0EC8(u);
         break;
     case 14:
-        func_800B1250(u->unk14, 0x3B, 0, u->unkB0, 0);
+        btl_setCmd(u->unk14, 0x3B, 0, u->unkB0, 0);
         break;
     case 19:
         if (u->unk3C & 0x100000) {
@@ -8035,7 +8035,7 @@ s32 func_800BF558(BtlUnit *u, u32 f) {
             u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
             u->unkA0->unk3A = 0;
         }
-        func_800B1250(u->unk14, 0x3B, 0, u->unkB0, 0);
+        btl_setCmd(u->unk14, 0x3B, 0, u->unkB0, 0);
         break;
     case 0x80000:
     case 0x100000:
@@ -8117,7 +8117,7 @@ void func_800BFAF4(BtlUnit *arg0) {
                     if (fl & 4) {
                         if (!(fl & 8)) {
                             if (b->unk11BC <= 0) {
-                                func_800B1250(arg0->unk10, 0x39, g_gameState->unk1C->unk8E4.battle->unk11BB, func_800C1CA0(1, 0), 8);
+                                btl_setCmd(arg0->unk10, 0x39, g_gameState->unk1C->unk8E4.battle->unk11BB, func_800C1CA0(1, 0), 8);
                                 g_gameState->unk1C->unk8E4.battle->unk11B8 |= 8;
                             } else {
                                 b->unk11BC -= arg0->unk2E;
@@ -8494,7 +8494,7 @@ void func_800C0EC8(BtlUnit *arg0) {
                 k = func_80027F34(0xF9);
                 if (*g_randPtr++ < k) {
                     func_800E9F68(1);
-                    func_800B1250(u->unk4, 0x3A, 0x49, func_800BEC64(0) & 0xFFFF, 1);
+                    btl_setCmd(u->unk4, 0x3A, 0x49, func_800BEC64(0) & 0xFFFF, 1);
                     return;
                 }
             }

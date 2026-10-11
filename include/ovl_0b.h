@@ -1089,7 +1089,7 @@ typedef struct Battle {
     u8 padD88[0xD90 - 0xD88];
     BtlCmd unkD90[36]; /* per unit: 6 (players) or 3 (enemies) */
     BtlCmd unk1060;
-    BtlCmd unk1074;  /* list head (only unk0 used) */
+    BtlCmd cmdQueue; /* list head (only unk0 used); runtime: commands are queued here when issued */
     BtlCmd *unk1088; /* current command */
     struct Battle108CSet unk108C[2]; /* per draw buffer */
     BtlUnitList unk116C;
@@ -1234,7 +1234,7 @@ typedef struct LinkNode {
     u8 pad4[0x10 - 4];
     u32 unk10;
 } LinkNode;
-void func_800B440C(LinkNode *, LinkNode **);
+void btl_linkCmd(LinkNode *, LinkNode **);
 Unk16D8 *func_8004AEBC(void);
 s16 func_800CA2E4(s16);
 void func_800BBD3C(struct BtlUnit *, struct Unk8E0 *);
@@ -2265,7 +2265,7 @@ void func_800F48E4(void);
 void func_800F4D20(void);
 void func_800B2804(BtlUnit *);
 void func_800B2DD4(Battle *);
-void func_800B4320(BtlCmd **, u8);
+void btl_unlinkCmd(BtlCmd **, u8);
 void func_800B4434(BtlCmd *);
 void func_800B44C0(BtlUnit *, BtlUnit *, BtlCmd *, s32);
 u16 func_800C1CA0(u32, s32);
@@ -2340,7 +2340,7 @@ s32 func_800D9260(Unk800D9260 *, s32, s32 *);
 s32 func_800D960C(struct Unk800D7E14 *, s32, s32);
 s32 func_800AD90C(s32, s32, s32, s32, s32);
 void func_800B3C00(void);
-void func_800B3090(struct BtlCmd *);
+void btl_enqueueCmd(struct BtlCmd *);
 void func_800C0D24(BtlUnit *);
 void func_800C1594(void);
 void func_800C86C8(BtlUnit9C *, s32, s32, s32);
@@ -2351,7 +2351,7 @@ s32 func_800D905C(u8 *, s32, struct Unk800F78A40 *);
 void func_800E8408(BtlUnit *);
 void func_800E8460(BtlUnit *);
 s32 func_800E976C(s32); /* unit id, or an SVECTOR pointer */
-void func_800B1250(); /* (BtlCmd *, u32, s32, s32, s32); callers pass the command as s32 */
+void btl_setCmd(); /* (BtlCmd *, u32, s32, s32, s32); callers pass the command as s32 */
 u8 func_800B3E7C(BtlCmd *);
 void func_800BD414(BtlUnit *, u16);
 void func_800BD464(BtlUnit *, u16);
@@ -3046,7 +3046,7 @@ void func_800B1764(Battle *);
 s32 func_800B1B48(Battle *, BtlCmd *);
 s32 func_800B23B4(Battle *, BtlCmd *);
 s32 func_800B4390(BtlCmd *);
-void func_800B3F98(BtlCmd *);
+void btl_removeCmd(BtlCmd *);
 s32 func_800BD31C(BtlCmd *);
 void func_800B253C(BtlCmd *);
 void func_800C28F4(BtlCmd *);
@@ -3152,7 +3152,7 @@ void func_8001E3A4(void *);
 void func_800C072C(void);
 void func_800B2804(struct BtlUnit *);
 void func_800B3C00(void);
-void func_800B3090(struct BtlCmd *);
+void btl_enqueueCmd(struct BtlCmd *);
 void func_800C0840(void);
 void func_800C0C7C(u32 *);
 void func_800C0CD0(u32 *);

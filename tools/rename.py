@@ -97,7 +97,7 @@ def main():
     for line in open(INDEX):
         f = line.split()
         if len(f) == 4:
-            starts[f[0]] = starts.get(f[0], "") + f" {f[3]}"
+            starts[f[0]] = starts.get(f[0], "") + f" {f[1]} "
     for old, new, comment in jobs:
         m = PLACEHOLDER.match(old)
         if not m:
@@ -110,7 +110,9 @@ def main():
             sys.exit(f"{old} is a main-exe address; drop --bin for it")
         if not a.force and taken(new, binary):
             sys.exit(f"{new}: already used in {binary}'s scope")
-        if m.group(1) == "func" and f" {addr:#010x}" not in starts.get(binary, ""):
+        # By name: the index's address column is the first address in the asm file, which is the
+        # rodata (jump table) for functions whose rodata migrated in.
+        if m.group(1) == "func" and f" {old} " not in starts.get(binary, ""):
             sys.exit(f"{old}: no function starts there in {INDEX} (an _inline helper named after a wrong address?)")
         plan.append((old, new, comment, m.group(1) == "func", addr, binary))
 

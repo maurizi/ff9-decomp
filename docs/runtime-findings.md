@@ -146,3 +146,15 @@ Format:
   Zidane's unit (Vivi's is the next, +0xD0).
 - names: BtlCmd.ability/targets/cmdNo/subNo, Battle.units/abilities.
 - confidence: high. targets = unit bitmask (party from bit 0, enemies from bit 4) rests on two values (0x10 enemy, 0x2 Vivi).
+
+## Battle command queue  (status: applied)
+- binary: ovl_0b. Redux disc 2, `battle_iifa_command`, Attack on the monster (logging breakpoints + write watches on
+  Vivi's slot 0x80109608).
+- frame 1365: func_800B1250(0x80109608, 1, 0xB0, 0x10) from func_800F0444 writes cmdNo; then
+  func_800B3090 -> func_800B440C(0x80109608, 0x80109874) links it into the list at Battle+0x1074 and sets the
+  slot's +0x10 to 0x04. frame 1392 (the attack plays): func_800B3F98 -> func_800B4320(0x80109874, ...) unlinks it
+  and the state byte goes back to 0. frame 1488: another command (0x80109770, presumably the monster's) is queued
+  the same way.
+- names: btl_setCmd, btl_enqueueCmd, btl_linkCmd, btl_removeCmd, btl_unlinkCmd, Battle.cmdQueue.
+- note: config/functions.us.txt records some functions at their migrated rodata's address (e.g. func_800B1250 at
+  0x800A7184); tools/rename.py now checks function names, not addresses.

@@ -29,3 +29,8 @@ Hi_GetSplitMdlVertex = 0x800DF550; // type:func [string] error message names it
 g_battleText = 0x800A83AC; // [code] the text bank this overlay passes to text_setBank
 g_btlCmdMenu = 0x80104FB0; // [runtime] battle command menu - cursor counts 0-3 with Down, rows and unit switch Vivi to Eiko
 g_btlUi = 0x80104F88; // [runtime] battle UI block (0x12D8, allocated at battle start) - cmdUnit, menuState, partyCount
+btl_setCmd = 0x800B1250; // type:func [runtime] called (Vivi's slot, 1, 0xB0, 0x10) when Attack on the monster is confirmed, fills cmdNo/subNo/targets/ability
+btl_enqueueCmd = 0x800B3090; // type:func [runtime] then inserts the command into Battle.cmdQueue by cmdNo priority
+btl_linkCmd = 0x800B440C; // type:func [runtime] links a command into a queue and marks it queued (state bits 2-3 = 1)
+btl_removeCmd = 0x800B3F98; // type:func [runtime] finds the command in Battle.cmdQueue and unlinks it, ran when Vivi's attack executed
+btl_unlinkCmd = 0x800B4320; // type:func [runtime] unlinks the head of a queue and clears the queued bits

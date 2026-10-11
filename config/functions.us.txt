@@ -1937,7 +1937,7 @@ ovl_0b func_800ABBC4 0x680 0x800a70e4
 ovl_0b func_800AD90C 0xb70 0x800a70fc
 ovl_0b func_800AF2E0 0x298 0x800a7150
 ovl_0b func_800AF800 0x860 0x800a7170
-ovl_0b func_800B1250 0x2d0 0x800a7184
+ovl_0b btl_setCmd 0x2d0 0x800a7184
 ovl_0b func_800B1B48 0x86c 0x800a727c
 ovl_0b func_800B2804 0x184 0x800a7374
 ovl_0b func_800B44C0 0x3494 0x800a745c
@@ -2067,7 +2067,7 @@ ovl_0b func_800B253C 0x2c8 0x800b253c
 ovl_0b func_800B2988 0x44c 0x800b2988
 ovl_0b func_800B2DD4 0x150 0x800b2dd4
 ovl_0b func_800B2F24 0x16c 0x800b2f24
-ovl_0b func_800B3090 0xf8 0x800b3090
+ovl_0b btl_enqueueCmd 0xf8 0x800b3090
 ovl_0b func_800B3188 0x2d8 0x800b3188
 ovl_0b func_800B3460 0x6fc 0x800b3460
 ovl_0b func_800B3B5C 0xa4 0x800b3b5c
@@ -2077,14 +2077,14 @@ ovl_0b func_800B3D54 0x68 0x800b3d54
 ovl_0b func_800B3DBC 0xc0 0x800b3dbc
 ovl_0b func_800B3E7C 0x7c 0x800b3e7c
 ovl_0b func_800B3EF8 0xa0 0x800b3ef8
-ovl_0b func_800B3F98 0xa8 0x800b3f98
+ovl_0b btl_removeCmd 0xa8 0x800b3f98
 ovl_0b func_800B4040 0xd4 0x800b4040
 ovl_0b func_800B4114 0x90 0x800b4114
 ovl_0b func_800B41A4 0x90 0x800b41a4
 ovl_0b func_800B4234 0xec 0x800b4234
-ovl_0b func_800B4320 0x70 0x800b4320
+ovl_0b btl_unlinkCmd 0x70 0x800b4320
 ovl_0b func_800B4390 0x7c 0x800b4390
-ovl_0b func_800B440C 0x28 0x800b440c
+ovl_0b btl_linkCmd 0x28 0x800b440c
 ovl_0b func_800B4434 0x44 0x800b4434
 ovl_0b func_800B4478 0x28 0x800b4478
 ovl_0b func_800B44A0 0x20 0x800b44a0
