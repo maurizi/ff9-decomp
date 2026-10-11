@@ -90,3 +90,5 @@ menu_doOpen = 0x80032140; // type:func [runtime] menu_open's body - queues menu 
 g_menu = 0x80077DB0; // [runtime] menu request/state block written by menu_doOpen when the main menu opens
 msg_open = 0x8004DCEC; // type:func [runtime] talking to the Dali inn Moogle calls (3, 2, layout, 8) and the MOGNET window "Can I help you, kupo?" opens
 evt_execInstr = 0x80039C38; // type:func [runtime] the Moogle's script reaches msg_open through it (opcodes 0x1F/0x20/0x95), one instruction per call
+item_remove = 0x80027E5C; // type:func [runtime] using a Tent at the Dali Moogle calls (0xFD, 1) and the Tent count goes 69 -> 68
+item_getCount = 0x80027F34; // type:func [runtime] called (0xFD) as the Moogle's "Tent(s) Remaining=69" prompt opens

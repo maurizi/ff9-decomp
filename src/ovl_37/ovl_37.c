@@ -526,7 +526,7 @@ void func_801F2590(s32 id) {
     c = g_gameState->unk1C->party[D_801FAB78.unk2];
     if (func_800654F8(c, c, e, e->unk4, 0)) {
         snd_playSe(0x6A);
-        func_80027E5C(id, 1);
+        item_remove(id, 1);
     } else {
         snd_playSe(0x66);
     }

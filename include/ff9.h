@@ -377,12 +377,12 @@ static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
 }
 
 /* Inlined copy of func_80027EDC (item search); the original source inlines it. */
-static inline UnkPair *func_80027EDC_inline(s32 id) {
+static inline ItemSlot *func_80027EDC_inline(s32 id) {
     s32 i;
-    UnkPair *e = g_gameState->unk1C->items.slots;
+    ItemSlot *e = g_gameState->unk1C->items.slots;
 
     for (i = 0; i < 0x100; i++, e++) {
-        if (e->unk1 != 0 && e->unk0 == id) {
+        if (e->count != 0 && e->id == id) {
             return e;
         }
     }
@@ -2542,7 +2542,7 @@ typedef struct {
 } Unk80076F78;
 extern Unk80076F78 D_80076F78;
 extern u32 D_80076F80[]; /* first CLUT, right after D_80076F78 */
-s32 func_80027E5C(s32, s32);
+s32 item_remove(s32, s32);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* width */

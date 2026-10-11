@@ -8902,7 +8902,7 @@ void func_800EA144(s32 arg0) {
 
 void func_800EA164(s32 arg0) {
     func_800EBEFC(arg0);
-    if (func_800EC194(arg0) != 0 && func_80027F34(arg0) == 0) {
+    if (func_800EC194(arg0) != 0 && item_getCount(arg0) == 0) {
         func_800EC170(arg0);
     }
 }
@@ -9679,7 +9679,7 @@ void func_800EBE1C(RECT *arg0, RECT *arg1) {
 
 void func_800EBEFC(s32 arg0) {
     s32 i;
-    if (func_80027E5C(arg0, 1) != 0) {
+    if (item_remove(arg0, 1) != 0) {
         if (arg0 >= 0xE0) {
             i = func_800EC44C(arg0);
             if (i != 0xFF && D_80104FA8->unk4[i]->unk1 == 0) {
@@ -11063,7 +11063,7 @@ s32 func_800F0118(void) {
             return 0;
         }
     }
-    if ((u32)(e->unk6 - 2) < 2 && func_80027F34(D_80104FF0.unk1A) - func_800EC194(D_80104FF0.unk1A) <= 0) {
+    if ((u32)(e->unk6 - 2) < 2 && item_getCount(D_80104FF0.unk1A) - func_800EC194(D_80104FF0.unk1A) <= 0) {
         return 0;
     }
     return 1;

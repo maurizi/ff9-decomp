@@ -2118,7 +2118,7 @@ void func_8002E380(Window *, s32);
 void func_8002C584(s32);
 void func_8002DD00(Window *);
 Window *func_8002E43C(s32);
-UnkPair *func_80027EDC(s32);
+ItemSlot *func_80027EDC(s32);
 typedef struct {
     u8 unk0;
     u8 pad1;
@@ -2131,7 +2131,7 @@ extern Unk8006E0E8 D_8006E0E8[];
 void VSyncCallback(void (*)(void));
 void func_8002C158(void *);
 void func_800553EC(s32, s32, s32, s32);
-s32 func_80027F34(s32); /* main.c defines it returning u8 */
+s32 item_getCount(s32); /* main.c defines it returning u8 */
 typedef struct {
     u32 unk0_0 : 8;
     u32 unk0_8 : 9;

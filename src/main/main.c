@@ -3970,64 +3970,64 @@ void func_80027D4C(void) {
 }
 
 s32 func_80027D84(s32 id, s32 n) {
-    UnkPair *e;
+    ItemSlot *e;
     s32 i;
     if (id == 0xFF) {
         return 0;
     }
     e = g_gameState->unk1C->items.slots;
     for (i = 0; i < 0x100; e++, i++) {
-        if (e->unk1 != 0 && e->unk0 == id) {
-            if (e->unk1 + n >= 100) {
-                n = 99 - e->unk1;
+        if (e->count != 0 && e->id == id) {
+            if (e->count + n >= 100) {
+                n = 99 - e->count;
             }
-            e->unk1 += n;
+            e->count += n;
             return n;
         }
     }
     e = g_gameState->unk1C->items.slots;
     for (i = 0; i < 0x100; i++, e++) {
-        if (e->unk1 == 0) {
-            e->unk0 = id;
-            e->unk1 = n;
+        if (e->count == 0) {
+            e->id = id;
+            e->count = n;
             return n;
         }
     }
     return 0;
 }
 
-s32 func_80027E5C(s32 id, s32 count) {
+s32 item_remove(s32 id, s32 count) {
     s32 i;
-    UnkPair *e = g_gameState->unk1C->items.slots;
+    ItemSlot *e = g_gameState->unk1C->items.slots;
 
     for (i = 0; i < 0x100; e++, i++) {
-        if (e->unk1 != 0 && e->unk0 == id) {
-            if (e->unk1 < count) {
-                count = e->unk1;
+        if (e->count != 0 && e->id == id) {
+            if (e->count < count) {
+                count = e->count;
             }
-            e->unk1 -= count;
+            e->count -= count;
             return count;
         }
     }
     return 0;
 }
 
-UnkPair *func_80027EDC(s32 id) {
+ItemSlot *func_80027EDC(s32 id) {
     s32 i;
-    UnkPair *e = g_gameState->unk1C->items.slots;
+    ItemSlot *e = g_gameState->unk1C->items.slots;
 
     for (i = 0; i < 0x100; i++, e++) {
-        if (e->unk1 != 0 && e->unk0 == id) {
+        if (e->count != 0 && e->id == id) {
             return e;
         }
     }
     return NULL;
 }
 
-s32 func_80027F34(s32 id) {
-    UnkPair *e = func_80027EDC_inline(id);
+s32 item_getCount(s32 id) {
+    ItemSlot *e = func_80027EDC_inline(id);
 
-    return e != NULL ? e->unk1 : 0;
+    return e != NULL ? e->count : 0;
 }
 
 s32 func_80027F94(s32 id) {
@@ -9880,7 +9880,7 @@ s32 func_80037ACC(s32 op) {
     case 0x64:
         x = func_80052D40();
         if (x < 0x100) {
-            r = func_80027F34(x);
+            r = item_getCount(x);
         } else if (x < 0x200) {
             r = (u8)func_800281A4(x - 0x100);
         } else {
@@ -11927,7 +11927,7 @@ s32 evt_execInstr(void) {
         a = func_8004AF58_inline();
         b = func_8004AEDC_inline();
         if (a < 0x100) {
-            func_80027E5C(a, b);
+            item_remove(a, b);
         } else if (a < 0x200) {
             func_800280CC(a - 0x100);
         }

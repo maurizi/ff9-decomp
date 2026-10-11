@@ -1422,7 +1422,7 @@ void func_801F24EC(void) {
             if (c->equip[i] != 0xFF) {
                 func_80027D84(c->equip[i], 1);
             }
-            if (func_80027E5C(best, 1) != 0) {
+            if (item_remove(best, 1) != 0) {
                 c->equip[i] = best;
             }
         }
@@ -1690,7 +1690,7 @@ void func_801F30D8(void) {
     if (old != 0xFF) {
         func_80027D84(old, 1);
     }
-    if (func_80027E5C(item, 1) != 0) {
+    if (item_remove(item, 1) != 0) {
         c->equip[m->unk2] = item;
         func_801F32E0(c);
         func_801F307C();

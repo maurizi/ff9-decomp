@@ -136,7 +136,7 @@ extern s32 D_801FC0D0[2]; /* synth: as D_801FC070 */
 extern u8 D_801FC0D8[5];
 extern u16 D_801FC0E0[];
 extern s32 D_801F3FFC;
-s32 func_80027F34(s32); /* main.c defines it returning u8 */
+s32 item_getCount(s32); /* main.c defines it returning u8 */
 s32 func_80027F94(s32);
 extern s32 D_801FC050[3]; /* row y offsets */
 extern u8 D_801FC05C[4];

@@ -237,3 +237,9 @@ Format:
   kupo? / Save / Tent / Mognet / Cancel"). func_80039C38's cases 0x1F, 0x20 and 0x95 make that call with a window
   id, flags and a 2-byte message number from the script.
 - names: msg_open, evt_execInstr.
+
+## Item remove / count  (status: applied)
+- Redux disc 1, `field_dali_inn_moogle`: Cross (Moogle menu) -> Tent: prompt "Rest inside a tent, kupo? (Tent(s)
+  Remaining=69)"; func_80027F34(0xFD) runs on that frame (from func_80037ACC). Rest: ~240 frames later the Tent slot
+  (GameData.items.slots[10], id 253) goes 69 -> 68, written by func_80027E5C(0xFD, 1) called from evt_execInstr.
+- names: item_remove, item_getCount. The inventory helpers now use ItemSlot (code unchanged).

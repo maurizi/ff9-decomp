@@ -320,7 +320,7 @@ void func_801F4E1C(void) {
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_801FC060);
     func_8002B56C(r->x + 0x39, r->y + D_801FC050[0], 0x1E, buf, 0);
-    text_formatNumber(func_80027F34(id), buf, 2, 1);
+    text_formatNumber(item_getCount(id), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC050[1], 0x1E, buf, 0);
     text_formatNumber(func_80027F94(id), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC050[2], 0x1E, buf, equip ? 0 : 2);
@@ -467,7 +467,7 @@ void func_801F57C8(void) {
     m = &D_801FC2F8;
     id = m->unk3C[l->unk5 + l->cursor];
     it = &D_80069018[id];
-    have = func_80027F34(id);
+    have = item_getCount(id);
     if (have < 99 && g_gameState->unk1C->gil >= it->unk4) {
         m->unk2 = 1;
         q = it->unk4 != 0 ? g_gameState->unk1C->gil / it->unk4 : 99;
@@ -581,7 +581,7 @@ void func_801F5BCC(s32 unused, s32 row, s32 idx, MenuView *v) {
     ok = 0;
     id = D_801FC2F8.unk3C[idx];
     it = &D_80069018[id];
-    if (func_80027F34(id) < 99) {
+    if (item_getCount(id) < 99) {
         ok = g_gameState->unk1C->gil >= it->unk4;
     }
     x = 0x18;
@@ -740,13 +740,13 @@ void func_801F625C(void) {
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_801FC0BC);
     func_8002B56C(r->x + 0x39, r->y + D_801FC0A8[0], 0x1E, buf, 0);
-    text_formatNumber(func_80027F34(s->unk4), buf, 2, 1);
+    text_formatNumber(item_getCount(s->unk4), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[1], 0x1E, buf, 0);
     text_formatNumber(func_80027F94(s->unk4), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[2], 0x1E, buf, equip ? 0 : 2);
     for (i = 0; i < 2; i++) {
         if (s->unk2[i] != 0xFF) {
-            have = func_80027F34(s->unk2[i]);
+            have = item_getCount(s->unk2[i]);
             if (s->unk2[0] == s->unk2[1]) {
                 ok = i < have;
             } else {
@@ -905,7 +905,7 @@ void func_801F6D34(s32 unused, s32 row, s32 idx, MenuView *v) {
     id = r->unk4;
     it = &D_80069018[id];
     k = 1;
-    if (func_80027F34(id) < 99) {
+    if (item_getCount(id) < 99) {
         ok = g_gameState->unk1C->gil >= r->unk0;
     }
     x = 0x18;
@@ -915,9 +915,9 @@ void func_801F6D34(s32 unused, s32 row, s32 idx, MenuView *v) {
 loop:
     if (r->unk2[i] != 0xFF) {
         if (r->unk2[0] == r->unk2[1]) {
-            t = i < func_80027F34(r->unk2[i]);
+            t = i < item_getCount(r->unk2[i]);
         } else {
-            t = func_80027F34(r->unk2[i]);
+            t = item_getCount(r->unk2[i]);
         }
         if (!t) {
             do {
@@ -952,10 +952,10 @@ void func_801F6F00(void) {
     if (r->unk2[0] == r->unk2[1]) {
         need = 2;
     }
-    have = func_80027F34(r->unk4);
+    have = item_getCount(r->unk4);
     if (have < 99 && g_gameState->unk1C->gil >= r->unk0 &&
-        (r->unk2[0] == 0xFF || func_80027F34(r->unk2[0]) >= need) &&
-        (r->unk2[1] == 0xFF || func_80027F34(r->unk2[1]) >= need)) {
+        (r->unk2[0] == 0xFF || item_getCount(r->unk2[0]) >= need) &&
+        (r->unk2[1] == 0xFF || item_getCount(r->unk2[1]) >= need)) {
         D_801FC338.unk2 = 1;
         n = r->unk0 != 0 ? g_gameState->unk1C->gil / r->unk0 : 99;
         m2 = &D_801FC338;
@@ -965,10 +965,10 @@ void func_801F6F00(void) {
         m2->unk3 = n;
         m = m2;
         if (r->unk2[0] != 0xFF) {
-            m->unk3 = MIN(m->unk3, func_80027F34(r->unk2[0]) / need);
+            m->unk3 = MIN(m->unk3, item_getCount(r->unk2[0]) / need);
         }
         if (r->unk2[1] != 0xFF) {
-            D_801FC338.unk3 = MIN(D_801FC338.unk3, func_80027F34(r->unk2[1]) / need);
+            D_801FC338.unk3 = MIN(D_801FC338.unk3, item_getCount(r->unk2[1]) / need);
         }
         m3 = &D_801FC338;
         D_801FC338.unk0 = 0;
@@ -1091,8 +1091,8 @@ void func_801F7614(void) {
     r = &D_801FC338.unk3C[m->unk5 + m->cursor];
     n = func_80027D84(r->unk4, D_801FC338.unk2);
     if (n != 0) {
-        func_80027E5C(r->unk2[0], n);
-        func_80027E5C(r->unk2[1], n);
+        item_remove(r->unk2[0], n);
+        item_remove(r->unk2[1], n);
         g_gameState->unk1C->gil -= r->unk0 * n;
         func_801F7590();
     }
@@ -1243,7 +1243,7 @@ void func_801F7DA8(Window *w) {
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_801FC2A0);
     func_8002B56C(r->x + 0x39, r->y + D_801FC290[0], w->unk18, buf, 0);
-    text_formatNumber(func_80027F34(e->unk0), buf, 2, 1);
+    text_formatNumber(item_getCount(e->unk0), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC290[1], w->unk18, buf, 0);
     if (equip) {
         text_formatNumber(func_80027F94(e->unk0), buf, 2, 1);
@@ -1310,7 +1310,7 @@ void func_801F8224(void) {
     id = (g_gameState->unk1C->items.slots + ((l->unk5 + l->cursor) * 2 + l->unk7))->id;
     it = &D_80069018[id];
     price = it->unk4 >> 1;
-    n = func_80027E5C(id, D_801FC438.unk1);
+    n = item_remove(id, D_801FC438.unk1);
     if (n != 0) {
         g_gameState->unk1C->gil += price * n;
         if (g_gameState->unk1C->gil > 9999999) {

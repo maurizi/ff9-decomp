@@ -2784,7 +2784,7 @@ void func_800B0D4C(BtlUnit *arg0, u8 arg1) {
     s32 i;
     if (!(arg0->status & 0x42001103) && arg1 < 0x30 && (arg0->unkC4[1] & 0x01000000)) {
         for (i = 0xEC; (u8)i < 0xEE; i++) {
-            if (func_80027F34((u8)i) != 0) {
+            if (item_getCount((u8)i) != 0) {
                 func_800EA144((u8)i);
                 func_800B3D54(arg0, 0x33, (u8)i, arg0->unkB0);
                 return;
@@ -3153,7 +3153,7 @@ s32 func_800B1B48(Battle *arg0, BtlCmd *arg1) {
     case 0xE:
     case 0xF:
     case 0x33:
-        if (func_80027F34(arg1->subNo) == 0) {
+        if (item_getCount(arg1->subNo) == 0) {
             msg = 0x18;
             goto fail;
         }
@@ -3176,7 +3176,7 @@ s32 func_800B1B48(Battle *arg0, BtlCmd *arg1) {
         if (arg1->subNo == 0x52) {
             arg1->targets = func_800C1F7C(func_80038D3C_rand() & 1);
         } else if (arg1->subNo == 0x5D) {
-            a = func_80027F34(arg1->ability->unk5);
+            a = item_getCount(arg1->ability->unk5);
             g = func_800C1F00(1);
             msg = 0x18;
             if (a >= g) {
@@ -4664,7 +4664,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         func_800CD5C8(0xE, func_800CD70C(cmd->ability->unk6));
         break;
     case 0x34:
-        if (func_80027F34(cmd->ability->unk5) != 0) {
+        if (item_getCount(cmd->ability->unk5) != 0) {
             func_800B3CEC(&sub2);
             sub2.cmdNo = 0xE;
             sub2.subNo = cmd->ability->unk5;
@@ -4955,11 +4955,11 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         break;
     case 0x4A:
         c.unk1B |= 3;
-        c.unk1E = D_8006B1F4[cmd->subNo - 0xE0].unk5 * (func_80027F34(cmd->subNo) + 1);
+        c.unk1E = D_8006B1F4[cmd->subNo - 0xE0].unk5 * (item_getCount(cmd->subNo) + 1);
         break;
     case 0x4B:
         c.unk1B |= 1;
-        c.unk1E = D_8006B1F4[cmd->subNo - 0xE0].unk5 * (func_80027F34(cmd->subNo) + 1);
+        c.unk1E = D_8006B1F4[cmd->subNo - 0xE0].unk5 * (item_getCount(cmd->subNo) + 1);
         break;
     case 0x4C:
         c.unk1B |= 0x1B;
@@ -4994,26 +4994,26 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             __asm__(".section .rodata\n\t.word 0\n\t.section .text");
             switch (cmd->subNo) {
             case 0x31:
-                c.unkE += func_80027F34(0xE9);
+                c.unkE += item_getCount(0xE9);
                 break;
             case 0x33:
-                c.unkE += func_80027F34(0xEA);
+                c.unkE += item_getCount(0xEA);
                 break;
             case 0x35:
-                c.unkE += func_80027F34(0xE7);
+                c.unkE += item_getCount(0xE7);
                 break;
             case 0x3C:
-                c.unkE += func_80027F34(0xE2);
+                c.unkE += item_getCount(0xE2);
                 break;
             case 0x3E:
-                c.unkE += func_80027F34(0xE0);
+                c.unkE += item_getCount(0xE0);
                 break;
             case 0x40:
-                c.unkE += func_80027F34(0xEB);
+                c.unkE += item_getCount(0xEB);
                 break;
             case 0x42:
             case 0x43:
-                c.unkE += func_80027F34(0xE8);
+                c.unkE += item_getCount(0xE8);
                 break;
             case 0x4A:
                 c.unkE += caster->unk7A;
@@ -5028,7 +5028,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             func_800BA078(&c);
             func_800BA8F0(&c);
             if (func_800B8D58(&c) && func_800BA7D0(&c)) {
-                c.unk14 += func_80027F34(0xE1);
+                c.unk14 += item_getCount(0xE1);
                 func_800BAAE4(&c);
             }
         }
@@ -5038,7 +5038,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             s32 i;
             if (func_800B9E50(&c)) {
                 func_800B9AFC(&c);
-                c.unk16 += func_80027F34(0xFE) >> 1;
+                c.unk16 += item_getCount(0xFE) >> 1;
                 if (func_800B8664(&c)) {
                     func_800BACB4(&c);
                 }
@@ -5048,7 +5048,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 RAND_REFILL2();
                 i = caster->unk32;
                 c.unk14 = i + RAND16() % (((caster->unk7A + i) >> 3) + 1);
-                c.unkE = cmd->ability->unk5 + 100 - func_80027F34(0xFE);
+                c.unkE = cmd->ability->unk5 + 100 - item_getCount(0xFE);
                 c.unk10 = target->unk6E;
                 func_800BAA28(&c);
             }
@@ -6301,7 +6301,7 @@ void func_800BAF3C(BtlCalc *arg0) {
 
 void func_800BAF70(BtlCalc *arg0) {
     s16 id = arg0->unk8->unk8[7];
-    if (func_80027F34(id) == 0) {
+    if (item_getCount(id) == 0) {
         func_800CD5C8(10);
     } else {
         func_800EA164(id);
@@ -8491,7 +8491,7 @@ void func_800C0EC8(BtlUnit *arg0) {
                 if (g_randPtr >= g_randTableEnd) {
                     rand_refill();
                 }
-                k = func_80027F34(0xF9);
+                k = item_getCount(0xF9);
                 if (*g_randPtr++ < k) {
                     func_800E9F68(1);
                     btl_setCmd(u->unk4, 0x3A, 0x49, func_800BEC64(0) & 0xFFFF, 1);
