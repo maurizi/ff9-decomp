@@ -16,15 +16,6 @@ typedef struct {
 
 void func_800D3ED4(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 
-typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
-    u8 unk6;
-    u8 unk7;
-    u16 unk8[1];
-} Unk800D1D74Hdr;
-
 void func_800D1D74(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
     VECTOR s;

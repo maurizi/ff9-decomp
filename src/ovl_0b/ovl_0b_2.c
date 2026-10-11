@@ -973,7 +973,72 @@ s32 arg10, arg11;
     func_800D0858(0x09000000, 0xFFE, p);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2DBC);
+void func_800D2DBC(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
+    struct {
+        u16 rg;
+        u8 b;
+        u8 code;
+        s32 pad4;
+    } col;
+    u32 *mode;
+    u8 *ctab;
+    Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
+    s32 n;
+    u16 *q;
+    u16 *pal;
+    s32 off;
+    s32 wv;
+    s32 hv;
+    s32 num;
+    u8 *prim;
+    s32 i;
+    u8 *c;
+    s32 b;
+    s32 tpage;
+    s32 f;
+    s32 clut;
+
+    n = h->unk0 & 0x7FFF;
+    f = frame;
+    if (f >= n) {
+        f %= n;
+    }
+    n = n * 2 + 8;
+    off = f * 2;
+    q = (u16 *)(arg0 + n);
+    n = *(u16 *)((u8 *)h->unk8 + off);
+    pal = q + 1;
+    f = *q;
+    tpage = h->unk2;
+    clut = h->unk4 << 16;
+    hv = h->unk6 - 1;
+    wv = h->unk7 - 1;
+    num = arg0[n++];
+    arg0 += n;
+    prim = D_800F78A4->unk24;
+    mode = (u32 *)(prim + num * 20);
+    D_800F78A4->unk24 = (u8 *)(mode + 2);
+    mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5);
+    ctab = (u8 *)(pal + f + 1);
+    col.code = (tp != 0xFF) ? 0x66 : 0x64;
+    for (i = 0; i < num; i++, prim += 20) {
+        ((SPRT *)prim)->x0 = (s8)arg0[0] + x - (wv >> 1);
+        ((SPRT *)prim)->y0 = (s8)arg0[1] + y - (hv >> 1);
+        b = arg0[2];
+        f = (b & 0xF) * 2;
+        *(u32 *)&((SPRT *)prim)->u0 = *(u16 *)((u8 *)pal + f) | clut;
+        c = ctab + ((b >> 2) & 0x3C);
+        arg0 += 3;
+        col.rg = *(u16 *)c;
+        col.b = c[2];
+        gte_DpqColorFar_nst(&col, p);
+        ((SPRT *)prim)->w = wv;
+        ((SPRT *)prim)->h = hv;
+        gte_strgb(&((SPRT *)prim)->r0);
+        func_800D0858(0x04000000, 0xFFE, prim);
+    }
+    func_800D0858(0x01000000, 0xFFE, mode);
+}
 
 void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
     RECT r;

@@ -1378,6 +1378,17 @@ typedef struct {
     s32 count;
 } Grad;
 void func_800E651C(u8 *, CVECTOR *, s32);
+/* sprite set header (func_800D1D74, func_800D2DBC): u16 frame offsets, then at
+   unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
+   3-byte sprites */
+typedef struct {
+    u16 unk0; /* frame count (& 0x7FFF) */
+    u16 unk2; /* tpage */
+    u16 unk4; /* clut */
+    u8 unk6;  /* height */
+    u8 unk7;  /* width */
+    u16 unk8[1];
+} Unk800D1D74Hdr;
 void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
 
 
