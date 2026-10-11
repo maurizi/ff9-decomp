@@ -3509,7 +3509,7 @@ typedef struct {
 
 
 
-/* ---- event script interpreter (func_80039C38) ---- */
+/* ---- event script interpreter (evt_execInstr) ---- */
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
 void func_800AFAC0(s32, s32, s32, s32, s32);
@@ -3601,7 +3601,7 @@ void func_8004EC74(u32, s32);
 void func_8004ED00(s32, s32);
 void func_8004EFA0(void);
 WinLayout *func_80039660(Unk8004AB64 *, s32, s32);
-void func_8004DCEC(s32, s32, WinLayout *, s32);
+void msg_open(s32, s32, WinLayout *, s32);
 
 static inline s32 func_8004AF58_inline(void) {
     s32 r;
@@ -3647,7 +3647,7 @@ s32 func_80038990(s32, s32, s32, s32);
 void func_8004B9B8(Unk8004B9B8 *);
 
 /* Inlined helper: start the animation set up in unk60/unk61/unk62. */
-static inline void func_80039C38_anim(Unk8004AB64 *p, s32 anim) {
+static inline void evt_execInstr_anim(Unk8004AB64 *p, s32 anim) {
     if ((p->unk62 & 0x80) && (p->unkF & 0x80)) {
         func_8004B9B8((Unk8004B9B8 *)p);
     }
@@ -3795,7 +3795,7 @@ typedef struct {
 extern Unk8007AE70 D_8007AE70;
 
 /* Inlined helper: rebuild D_8007AECC->unk16E4 from the current party. */
-static inline void func_80039C38_party(void) {
+static inline void evt_execInstr_party(void) {
     s32 mask = 0;
     s32 i = 0;
     u8 *p = D_8007AECC->unk16E4;
@@ -3826,7 +3826,7 @@ static inline void func_8004B3D0_inline(s32 a, s32 b) {
     p->unkF = 1;
 }
 
-static inline void func_80039C38_newactor(s32 uid, s32 b) {
+static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     Unk8004AB64 *p;
 
     p = (Unk8004AB64 *)func_800367D0(uid, b, 0xAC, 0x10);
@@ -3860,7 +3860,7 @@ static inline void func_80039C38_newactor(s32 uid, s32 b) {
 }
 
 /* Inlined helper: give the window opened by obj the focus (b = window flags). */
-static inline void func_80039C38_window(Unk8004AB64 *obj, s32 b, s32 c) {
+static inline void evt_execInstr_window(Unk8004AB64 *obj, s32 b, s32 c) {
     Unk16D8 *n;
     Unk8004AB64 *o;
 
@@ -3878,7 +3878,7 @@ static inline void func_80039C38_window(Unk8004AB64 *obj, s32 b, s32 c) {
 }
 
 /* Inlined helper: script character id -> GameData.unk3C index. */
-static inline s32 func_80039C38_chr(s32 id) {
+static inline s32 evt_execInstr_chr(s32 id) {
     if (id >= 9) {
         id -= 4;
     }
@@ -4054,7 +4054,7 @@ static inline u16 func_80038D3C_pick(void) {
 static inline void func_8004883C_idle(Unk8004AB64 *q) {
     q->unk60 = 0;
     q->unk61 = 0xFF;
-    func_80039C38_anim(q, q->unk74);
+    evt_execInstr_anim(q, q->unk74);
 }
 
 /* party slot key for func_8004B85C: slots 9+ map down by 4 */

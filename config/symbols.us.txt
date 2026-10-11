@@ -88,3 +88,5 @@ evt_init = 0x8004A06C; // type:func [runtime] called by fld_load with the new fi
 menu_open = 0x80032120; // type:func [runtime] Triangle in the field calls (0, 0) and the main menu opens
 menu_doOpen = 0x80032140; // type:func [runtime] menu_open's body - queues menu screen a (0..8) in g_menu
 g_menu = 0x80077DB0; // [runtime] menu request/state block written by menu_doOpen when the main menu opens
+msg_open = 0x8004DCEC; // type:func [runtime] talking to the Dali inn Moogle calls (3, 2, layout, 8) and the MOGNET window "Can I help you, kupo?" opens
+evt_execInstr = 0x80039C38; // type:func [runtime] the Moogle's script reaches msg_open through it (opcodes 0x1F/0x20/0x95), one instruction per call

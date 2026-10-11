@@ -9842,7 +9842,7 @@ s32 func_800378C4(s32 slot) {
             r = i >= 4;
             if (r == 0) {
                 func_80033AF4(i, slot);
-                func_80039C38_party();
+                evt_execInstr_party();
             }
         } else {
             r = 1;
@@ -10730,7 +10730,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
         if (rate >= 6) {
             p->unk6C = (d + 0x400) / rate;
             p->unk62 = 0;
-            func_80039C38_anim(p, (u16)p->unk40.unk20);
+            evt_execInstr_anim(p, (u16)p->unk40.unk20);
             if (p->unk7 == D_8007AECC->playerUid) {
                 D_8007B710++;
             }
@@ -10752,7 +10752,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
         if (rate >= 6) {
             p->unk6C = (d - 0x400) / rate;
             p->unk62 = 0;
-            func_80039C38_anim(p, (u16)p->unk40.rotY);
+            evt_execInstr_anim(p, (u16)p->unk40.rotY);
             if (p->unk7 == D_8007AECC->playerUid) {
                 D_8007B710++;
             }
@@ -10772,7 +10772,7 @@ void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
     p->unk82 = d / rate;
 }
 
-s32 func_80039C38(void) {
+s32 evt_execInstr(void) {
     Unk8004AB64 *po = D_8007B704;
     Unk8004AB64 *actor = po;
     Unk8004AB64 *obj;
@@ -10805,7 +10805,7 @@ s32 func_80039C38(void) {
         if ((u32)(a - 0xFB) < 4) {
             a = D_8007AECC->unk16E4[a - 0xFB];
         }
-        func_80039C38_newactor(a, b);
+        evt_execInstr_newactor(a, b);
         D_8007B6F8 = 1;
         return 0;
     case 0x46:
@@ -11041,34 +11041,34 @@ s32 func_80039C38(void) {
     case 0x1F:
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
+        evt_execInstr_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
+        msg_open(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x20:
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(D_8007B704, c, D_8007B704->unk10);
+        evt_execInstr_window(D_8007B704, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
+        msg_open(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
         return 0;
     case 0x95:
         po = func_80038150();
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(po, c, D_8007B704->unk10);
+        evt_execInstr_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
+        msg_open(b, D_8007B704->unk10, func_80039660(po, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x96:
         po = func_80038150();
         D_8007B704->unk10 = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
-        func_80039C38_window(po, c, D_8007B704->unk10);
+        evt_execInstr_window(po, c, D_8007B704->unk10);
         b = func_8004AF58_inline();
-        func_8004DCEC(b, D_8007B704->unk10, func_80039660(po, b, c), c);
+        msg_open(b, D_8007B704->unk10, func_80039660(po, b, c), c);
         return 0;
     case 0x21:
         a = func_8004AEDC_inline();
@@ -11160,7 +11160,7 @@ s32 func_80039C38(void) {
         actor->unk62 = 8;
         actor->unk60 = 0;
         actor->unk61 = actor->unk90 - 1;
-        func_80039C38_anim(actor, actor->unk76);
+        evt_execInstr_anim(actor, actor->unk76);
         if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
@@ -11170,7 +11170,7 @@ s32 func_80039C38(void) {
         actor->unk61 = 0xFF;
         actor->unk62 = 0;
         actor->unk60 = actor->unk91 + 1;
-        func_80039C38_anim(actor, actor->unk76);
+        evt_execInstr_anim(actor, actor->unk76);
         if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
@@ -11187,7 +11187,7 @@ s32 func_80039C38(void) {
         ((Unk8E0 *)func_8001E350(actor->unk3B))->unk0 |= 0x10;
         actor->unk60 = actor->unk90;
         actor->unk61 = actor->unk91;
-        func_80039C38_anim(actor, actor->unk76);
+        evt_execInstr_anim(actor, actor->unk76);
         if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
@@ -11487,7 +11487,7 @@ s32 func_80039C38(void) {
     case 0xBD:
         actor = func_80038150();
     case 0x40:
-        func_80039C38_anim(actor, func_8004AF58_inline());
+        evt_execInstr_anim(actor, func_8004AF58_inline());
         if (actor->unk7 == D_8007AECC->playerUid) {
             D_8007B710++;
         }
@@ -11581,7 +11581,7 @@ s32 func_80039C38(void) {
         D_8007B718 = 1;
         return 0;
     case 0xDE:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             u8 *src = func_8004F058(func_8004AF58_inline());
             u8 *dst = g_gameState->unk1C->characters[a].unk0;
@@ -11595,7 +11595,7 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xDB:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             g_gameState->unk1C->characters[a].unk34.w = (g_gameState->unk1C->characters[a].unk34.w & ~0x400) | ((func_8004AEDC_inline() & 1) << 10);
         }
@@ -11956,7 +11956,7 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xFE:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         b = func_8004AEDC_inline();
         c = func_8004AEDC_inline();
         if ((u32)a < 9) {
@@ -11976,7 +11976,7 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xDD:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         for (i = 0; i < 4; i++) {
             Character *ch = g_gameState->unk1C->party[i];
             if (ch != NULL && (ch->unk34.w & 0xF) == a) {
@@ -11985,7 +11985,7 @@ s32 func_80039C38(void) {
         }
         if (i < 4) {
             func_80033AF4(i, -1);
-            func_80039C38_party();
+            evt_execInstr_party();
         }
         return 0;
     case 0xB2:
@@ -12021,10 +12021,10 @@ s32 func_80039C38(void) {
         menu_open(3, (s32)&D_8007AE70);
         return 1;
     case 0xE9:
-        func_80039C38_party();
+        evt_execInstr_party();
         return 0;
     case 0xF1:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             Character *ch = &g_gameState->unk1C->characters[a];
             a = func_8004AF58_inline();
@@ -12035,7 +12035,7 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xF2:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             Character *ch = &g_gameState->unk1C->characters[a];
             a = func_8004AF58_inline();
@@ -12046,19 +12046,19 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xF3:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         func_8003470C(a, func_8004AEDC_inline());
         return 0;
     case 0xF4:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         func_80034220(a, func_8004AEDC_inline());
         return 0;
     case 0xD9:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         func_80053960(&g_gameState->unk1C->characters[a], func_8004AEDC_inline() & 0xFF);
         return 0;
     case 0x62:
-        a = func_80039C38_chr(func_8004AEDC_inline());
+        a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             g_gameState->unk1C->characters[a].unk34.w = (g_gameState->unk1C->characters[a].unk34.w & ~0x200) | ((func_8004AEDC_inline() & 1) << 9);
         }
@@ -13187,7 +13187,7 @@ void evt_init(u8 *data) {
     D_8007BD2C = 0;
     func_8004B3A8_inline(0, 0);
     D_8007AECC->unk16D8->unk4->unkE = 2;
-    func_80039C38_party();
+    evt_execInstr_party();
     for (i = 7; i >= 0; i--) {
         D_8007AED0[i] = NULL;
     }
@@ -13196,7 +13196,7 @@ void evt_init(u8 *data) {
         for (i = 0; i < 4; i++) {
             r = func_8004E7A4(i);
             if (r >= 0) {
-                func_80039C38_newactor(r + D_8007ADFC - 9, 0);
+                evt_execInstr_newactor(r + D_8007ADFC - 9, 0);
             }
         }
         D_8007AECC->unk16FC = (s32)D_8007AECC->unk16DC;
@@ -14518,7 +14518,7 @@ void func_8004D940(Unk8007B9C0 *w) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004DAD0);
 
-static inline Unk8007B9C0 *func_8004DCEC_init(s32 id, WinLayout *l) {
+static inline Unk8007B9C0 *msg_open_init(s32 id, WinLayout *l) {
     Unk8007B9C0 *w;
     Unk8007B9C0 *parent;
 
@@ -14555,7 +14555,7 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011EFC);
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80011F10);
 
-void func_8004DCEC(s32 msg, s32 id, WinLayout *l, s32 flags) {
+void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     Unk8007B9C0 *w;
     RECT r;
     s32 style;
@@ -14570,7 +14570,7 @@ void func_8004DCEC(s32 msg, s32 id, WinLayout *l, s32 flags) {
     if (e == NULL) {
         return;
     }
-    w = func_8004DCEC_init(id, l);
+    w = msg_open_init(id, l);
     w->unkC = func_8004DAD0;
     w->unk26 = 0;
     w->unkA = id;
