@@ -565,7 +565,7 @@ typedef struct {
     u8 pad23;
     s32 unk24;
 } Unk80077DB0;
-extern Unk80077DB0 D_80077DB0;
+extern Unk80077DB0 g_menu;
 
 extern s32 D_80077140;
 extern s32 D_80077144;
@@ -1185,7 +1185,7 @@ typedef struct Unk16D8 {
 } Unk16D8;
 
 typedef struct {
-    u8 unk0[0x50]; /* cleared by func_8004A06C */
+    u8 unk0[0x50]; /* cleared by evt_init */
     u32 unk50[0x500]; /* object pool (func_80036650) */
     Unk8007AECCNode unk1450[32];
     Unk8007AECCNode *unk15D0; /* active list */
@@ -1379,7 +1379,7 @@ void func_8002FC38(void);
 void func_8002F6C8(void);
 void func_8002FC8C(s32, s32, s32, s32);
 void func_80032658(void);
-void func_80032140(s32, s32);
+void menu_doOpen(s32, s32);
 void akao_init(void);
 void akao_quit(void);
 s32 akao_command(u32);
@@ -2088,7 +2088,7 @@ s32 func_8002F8A8(void (*)(void));
 u16 func_8002F93C(u16);
 void func_8002F9D0(void);
 void func_800320B8(s32, s32, s32, s32);
-void func_80032120(s32, s32);
+void menu_open(s32, s32);
 void func_8003253C(void);
 void func_80032574(void);
 void func_80032628(void (*)(void));
@@ -2105,9 +2105,9 @@ void func_80035674(u8);
 void text_setBank(const u8 *);
 u8 *text_get(s32); /* text lookup */
 #if defined(OVL_0A_H) || defined(OVL_0B_H) || defined(OVL_0C_H) || defined(OVL_65_H)
-void func_8004A06C(s32); /* the overlays pass the script data as an integer */
+void evt_init(s32); /* the overlays pass the script data as an integer */
 #else
-void func_8004A06C(u8 *); /* start the field script system on a script data block */
+void evt_init(u8 *); /* start the field script system on a script data block */
 #endif
 void func_8004BBF0(void);
 void func_8004BFB0(void);
@@ -2530,7 +2530,7 @@ void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void func_800273C0(s32, s32, s32, s32, s32);
 void func_80033D38(u8 *, s32); /* default name by id */
 s32 func_8002BCC0(u8 *); /* strlen */
-extern u32 D_80077DBC; /* = D_80077DB0.unkC, read on its own by ovl_3a */
+extern u32 D_80077DBC; /* = g_menu.unkC, read on its own by ovl_3a */
 extern u32 g_padPressed; /* buttons that went down this frame */
 void func_8002886C(void);
 void func_80028994(s32, RECT *, RECT *);

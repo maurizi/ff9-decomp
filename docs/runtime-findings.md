@@ -213,3 +213,11 @@ Format:
   {251,99}: {item id, count} byte pairs, 0x100 of them (0x574..0x774).
 - names: GameData.items (ItemInventory.slots[], ItemSlot.id/count). ovl_37's sort buffer and swap temp and
   ovl_33's inventory copy hold the same pairs and are now ItemSlot too.
+
+## Field load / loop, event init, menu open  (status: applied)
+- Redux disc 1, `field_dali_inn`, walking out of the inn (down, then left): func_800A89C4(0x15E = 350) from
+  func_800A7B10+0x14 (ovl_0a); afterwards GameData.fieldId = 350 and the street is on screen. func_800A89C4 then calls
+  func_8004A06C(0x80107234) (main) at frame 499.
+- Same state, Triangle: func_80032120(0, 0) from func_800A7B10+0x110 and the main menu appears (location
+  "Dali/Inn"); func_80032120 just calls func_80032140, which fills D_80077DB0 for screen 0.
+- names: fld_load, fld_main (ovl_0a), evt_init, menu_open, menu_doOpen, g_menu (main).

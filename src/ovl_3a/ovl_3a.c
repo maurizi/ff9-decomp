@@ -199,7 +199,7 @@ void func_801F4238(void) {
     func_8002DEE4(D_801F4B64, 6, 1);
     func_8002705C(D_801F4B64, 6, 1);
     for (i = 0; i < 7; i++) {
-        if (cursor != i || (D_80077DB0.unk10 & 4)) {
+        if (cursor != i || (g_menu.unk10 & 4)) {
             for (j = 0; j < 2; j++) {
                 p = (LINE_F2 *)g_primPtr;
                 SetLineF2(p);

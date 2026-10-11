@@ -11,9 +11,9 @@ void func_801F605C(void) {
     st = &D_801F6BBC;
     st->unk2 = 0;
     st->unk10 = 0;
-    D_80077DB0.unk9 = 0;
-    st->unk4 = (D_80077DB0.unkC >> 14) & 3;
-    st->unk6 = (u16)D_80077DB0.unkC & 0x3FFF;
+    g_menu.unk9 = 0;
+    st->unk4 = (g_menu.unkC >> 14) & 3;
+    st->unk6 = (u16)g_menu.unkC & 0x3FFF;
     for (i = 0; i < 2; i++) {
         st->unk8[i] = src[i];
         src[i] |= 0x300;

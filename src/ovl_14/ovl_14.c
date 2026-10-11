@@ -611,7 +611,7 @@ void func_800A84EC(void) {
         func_800A75C8();
         r = func_800A81B8();
         if (r != 0xFF) {
-            func_80032120(8, ((r & 3) << 14) | 0x3A98);
+            menu_open(8, ((r & 3) << 14) | 0x3A98);
             mode = 3;
         } else {
             func_80032634(0);
@@ -668,7 +668,7 @@ void func_800A8694(void) {
     func_8002C4B0(0);
     func_800A8DB0();
     if (D_800AB320.unk3 == 1) {
-        func_80032120(4, 1);
+        menu_open(4, 1);
     }
 }
 
@@ -926,7 +926,7 @@ void func_800A9180(void) {
         g_gameState->unkB = 1;
         r = func_800A81B8();
         if (r != 0xFF) {
-            func_80032120(8, ((r & 3) << 14) | 0x3A98);
+            menu_open(8, ((r & 3) << 14) | 0x3A98);
             func_800A812C(3);
         } else {
             func_800A812C(4);
@@ -934,7 +934,7 @@ void func_800A9180(void) {
         break;
     case 1:
         func_800A812C(2);
-        func_80032120(4, 1);
+        menu_open(4, 1);
         break;
     }
 }

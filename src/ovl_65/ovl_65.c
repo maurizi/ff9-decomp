@@ -46,7 +46,7 @@ void func_801EF45C(void) {
     func_801EF6D8();
     func_801EF814();
     if (s->unk10 != 0 && D_800FDF30.unkB != 0) {
-        func_8004A06C(s->unk10);
+        evt_init(s->unk10);
         if (s->unk14 != 0) {
             func_8004BFB0();
         }

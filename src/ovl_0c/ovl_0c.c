@@ -246,7 +246,7 @@ void func_800A924C(s32 arg0) {
     func_800A9B54();
     func_800AB0C0(0x900, 0, 0, 0, 0);
     func_80049ED8(obj->unk10);
-    func_8004A06C(obj->unk10);
+    evt_init(obj->unk10);
     while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
     }
     func_8004BFB0();
@@ -3862,7 +3862,7 @@ s32 func_800B6BC4(void) {
         if (D_800CF454 == 0 && D_800D33F4 != 0 && D_800D4818 == 0) {
             D_800CF454 = 3;
             g_gameState->unk1C->unk0 |= 2;
-            func_80032120(0, 0);
+            menu_open(0, 0);
             func_8004A9E8();
         }
     }

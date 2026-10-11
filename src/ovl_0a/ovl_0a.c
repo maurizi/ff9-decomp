@@ -11,7 +11,7 @@ void func_800A7A48(void) {
 void func_800A7AAC(s32 arg0) {
     func_800A85F4(arg0);
     do {
-        func_800A7B10((s16)g_gameState->unk1C->fieldId);
+        fld_main((s16)g_gameState->unk1C->fieldId);
     } while (!(g_gameState->unk0 & 7));
     func_800A8698();
 }
@@ -19,8 +19,8 @@ void func_800A7AAC(s32 arg0) {
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/ovl_0a", D_800A7000);
 
 /* field main loop */
-void func_800A7B10(s32 arg0) {
-    func_800A89C4(arg0);
+void fld_main(s32 arg0) {
+    fld_load(arg0);
     SetDispMask(1);
     do {
         func_800AE788();
@@ -33,7 +33,7 @@ void func_800A7B10(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 1) && (g_padPortPressed & BTN_TRIANGLE) && (g_padPortHeld[0] & 0x400F0) &&
                 !(g_padPortHeld[0] & 0x04FA0009)) {
                 g_gameState->unk1C->unk0 |= 2;
-                func_80032120(0, 0);
+                menu_open(0, 0);
                 func_8004A9E8();
             }
             if (!(g_gameState->unk1C->unk0 & 2)) {
@@ -343,7 +343,7 @@ s32 func_800A8990(FieldMapObj *arg0, s16 arg1) {
 }
 
 /* field start-up: load the map and set up the object slots */
-void func_800A89C4(s32 arg0) {
+void fld_load(s32 arg0) {
     FieldScene *sc;
     s32 i;
     s32 j;
@@ -379,7 +379,7 @@ void func_800A89C4(s32 arg0) {
     func_800A9998();
     func_800B0124(0x900, -1, 0, 0, 0);
     func_80049ED8(sc->unkC);
-    func_8004A06C(sc->unkC);
+    evt_init(sc->unkC);
     func_800AC474();
     func_800A9AAC();
     while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
@@ -4605,7 +4605,7 @@ void func_800B57C8(void) {
 }
 
 void func_800B5870(void) {
-    func_80032120(4, 2);
+    menu_open(4, 2);
     func_80032628(func_800B58B8);
     func_80032634(0);
 }
@@ -4621,7 +4621,7 @@ void func_800B58B8(void) {
 }
 
 void func_800B58D8(void) {
-    func_80032120(8, ((D_800CA058.unk2 & 3) << 14) | D_800CA058.unk4);
+    menu_open(8, ((D_800CA058.unk2 & 3) << 14) | D_800CA058.unk4);
     func_80032628(func_800B5938);
     func_80032634(0);
 }

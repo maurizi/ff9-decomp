@@ -408,7 +408,7 @@ s32 func_800A99AC(Unk800AA08C *arg0, s32 arg1) {
     arg0->unk10 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x50000), 0);
     arg0->unk14 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x60000), 0);
     func_800C94B8();
-    func_8004A06C(arg0->unk10);
+    evt_init(arg0->unk10);
     func_8004BFB0();
     return 0;
 }

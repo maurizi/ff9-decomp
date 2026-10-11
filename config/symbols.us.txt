@@ -84,3 +84,7 @@ text_getFrom = 0x800357C0; // type:func [code] text_get on an explicit bank
 g_textBank = 0x80077E20; // [code] [runtime] current text bank (count + {offset, info} table, then strings)
 text_formatNumber = 0x8002BAE4; // type:func [code] n as width digits, digit or blank fill, ASCII or font codes
 g_levelExp = 0x8006DF5C; // [runtime] total exp for each level - every party member has table[level-1] <= exp < table[level]
+evt_init = 0x8004A06C; // type:func [runtime] called by fld_load with the new field's script data (0x80107234) when entering a field
+menu_open = 0x80032120; // type:func [runtime] Triangle in the field calls (0, 0) and the main menu opens
+menu_doOpen = 0x80032140; // type:func [runtime] menu_open's body - queues menu screen a (0..8) in g_menu
+g_menu = 0x80077DB0; // [runtime] menu request/state block written by menu_doOpen when the main menu opens
