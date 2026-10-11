@@ -1,4 +1,4 @@
-/* STATUS: near miss, 25 rows (pass 16; was 40, 44). ovl_37 func_801F13F8 (0x380, items menu cursor). Left: blink lives in s2 and &D_801FAB78 in s3 (original: the reverse); the state>=2 block loads unk1 through a fresh &D_801FAB78 pointer and compares against 2 in t0; xor/cursor blocks differ only in v0/v1 naming. Store order inside each D_80077DE8 block found with build/perm.py; (s16) cast on the unk3C.y offset keeps the add unfolded. The permuter (~8k iterations) found nothing.  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): both xor blocks go through k (`k = l->unk7 ^ ...; unk0 = k * 0x96;`), 44 -> 40. The original computes &D_801FAB78 into a register (hi part in a1, lui in the bne delay slot) at the top of the state>=2 block and compares against 2 kept in t0; a permuter run (25 min, 505 -> 365) got there only with an extra D_801FAB78 field test around duplicated arms, i.e. the block reads D_801FAB78 more than once in the original. dup.py `if (blink)` around the last inner call: 27 rows (fake). Nested ifs, a block-local pointer, a k temp for unk1: no help.
+/* STATUS: near miss, 22 rows (pass 21; was 25, 40, 44). ovl_37 func_801F13F8 (0x380, items menu cursor). Left: blink lives in s2 and &D_801FAB78 in s3 (original: the reverse); the state>=2 block loads unk1 through a fresh &D_801FAB78 pointer and compares against 2 in t0; xor/cursor blocks differ only in v0/v1 naming. Store order inside each D_80077DE8 block found with build/perm.py; (s16) cast on the unk3C.y offset keeps the add unfolded. The permuter (~8k iterations) found nothing.  Pass 11 (new build/search/cmp.py, which also compares symbol names; its rows for %hi/%lo of func_ symbols are false positives): both xor blocks go through k (`k = l->unk7 ^ ...; unk0 = k * 0x96;`), 44 -> 40. The original computes &D_801FAB78 into a register (hi part in a1, lui in the bne delay slot) at the top of the state>=2 block and compares against 2 kept in t0; a permuter run (25 min, 505 -> 365) got there only with an extra D_801FAB78 field test around duplicated arms, i.e. the block reads D_801FAB78 more than once in the original. dup.py `if (blink)` around the last inner call: 27 rows (fake). Nested ifs, a block-local pointer, a k temp for unk1: no help.
  Pass 14: a pointer local for the state>=2 test, a duplicated (typo-style) unk1 test in the condition, and
  nested ifs give 40-44 rows.
  Pass 16: 40 -> 27 with the cursor body written twice (`if (unk1 >= 2 && unk1 != 4) { if (unk1 == 2) BODY
@@ -17,6 +17,10 @@
  positives. The split hi/full registers look like a hi pseudo that reload rematerialised (constant-equivalent,
  no hard reg) rather than a local copy. Not found: a function-level `ItemMenu *p = &D_801FAB78` used in blocks
  3, 4 and 5 or only in the test (25 rows), a switch on unk1 (case 2 body / default blink body, 37-38 rows).
+ Pass 21: 25 -> 22 with the xor split as `k = (l->unk8 >> 3) & 1; k ^= l->unk7;` in all three blocks (the same
+ kind of split, `k = l->unk7; k ^= ...`, matched the sibling ovl_33 func_801EF644: it moves the unk7 load ahead of
+ the unk8 chain in sched1 and so changes local-alloc's priorities). The xor result is still v0 here, a1 in the
+ original; 98 split forms per block (temps a/u, both operand orders, k as s32/u8) and single-line moves give 22-40.
  */
 #include "ovl_37.h"
 
@@ -51,13 +55,15 @@ void func_801F13F8(void) {
     }
     if (D_801FAB78.unk1 >= 2 && D_801FAB78.unk1 != 4) {
         if (D_801FAB78.unk1 == 2) {
-            k = l->unk7 ^ ((l->unk8 >> 3) & 1);
+            k = (l->unk8 >> 3) & 1;
+            k ^= l->unk7;
             D_80077DE8.unk0 = k * 0x96;
             D_80077DE8.unk4 = 0x19;
             D_80077DE8.unk2 = l->unk6 * 15 + 0x34;
             func_800355E4();
         } else if (blink) {
-            k = l->unk7 ^ ((l->unk8 >> 3) & 1);
+            k = (l->unk8 >> 3) & 1;
+            k ^= l->unk7;
             D_80077DE8.unk0 = k * 0x96;
             D_80077DE8.unk4 = 0x19;
             D_80077DE8.unk2 = l->unk6 * 15 + 0x34;
@@ -87,7 +93,8 @@ void func_801F13F8(void) {
                 func_800355E4();
             }
         }
-        k = l->unk7 ^ ((l->unk8 >> 3) & 1);
+        k = (l->unk8 >> 3) & 1;
+        k ^= l->unk7;
         D_80077DE8.unk0 = k * 0x96;
         D_80077DE8.unk2 = l->unk6 * 15 + 0x34;
         D_80077DE8.unk4 = 0x12;

@@ -4,7 +4,7 @@
  * intersects the segment arg4 -> arg3 with each edge except `edge` (arg7), stores the hits and
  * their edge numbers, then: 1 hit -> that one; 2 hits -> func_800C1E14 picks between them;
  * 3 hits -> the one closest to the origin; otherwise *arg6 = -1 and 0.
- * WIP (pass 20): 568 of 568 instructions, 74 aligned diff rows (pass 9: 570 instructions, 140 rows).
+ * WIP (pass 21): 568 of 568 instructions, 39 aligned diff rows (pass 20: 74) (pass 9: 570 instructions, 140 rows).
  * Control flow and the stack layout match; left is register allocation (the original uses
  * s0 = hit base, s1 = arg5, s3 = z, s4 = x, s5 = arg4, s6 = arg6, s7 = arg3, fp = v base,
  * edge spilled to 0x68 and &q[x] spilled to 0x70; ours still differs in x/z/p/q and the
@@ -55,6 +55,15 @@
  * makes s1 the spill register. The original must have arg5 ahead (it loads the stack args in the order arg4,
  * arg5, arg6, ours arg5, arg6, arg4, so arg5's live range starts earlier here). Declaration order (80 random
  * scalar orders) and `goto one` for cnt == 1 (79) do not help.
+ * Pass 21: 74 -> 39 rows (shape: only the prologue's save/arg-load order and one `addiu v0,sp,0x3C` slot, both
+ * register-driven). `tri = n;` as the first statement (moved from before o[2]) settles the arg5 / &q[x] near-tie:
+ * arg5 now gets s1 and reload spills through s2, as in the original. `pv[0] = &v[2];` before `cnt = 0;` (-2).
+ * Left: the s3..s7 permutation. Ours q s3, p s4, z s5, x s6, arg6 s7 (global order q 380 > p 330 > z 285 >
+ * x 284 > arg6 171); the original needs z, x > q > arg6 > p. Refs match the original's insns (p: copy, two
+ * in-loop adds, call arg; q: load, three adds), so the difference is live length or loop weighting. x/y/z types
+ * (25 combos), p/q assignment placement (35 variants) and single-line moves (build/w/mvrun.py, 178 moves) give
+ * nothing better. A 20-min permuter run (score 885 -> 445) only moved `p = arg3` into the vertex loop or a switch
+ * case (fake) or reused p as a hit-row pointer in case 3 (`p = hit[i]`), which is 88 cmp rows.
  */
 #include "ovl_0a.h"
 
@@ -88,6 +97,7 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     s32 ex;
     s32 ez;
 
+    tri = n;
     p = (s16 *)arg3;
     q = (s16 *)arg4;
     edge = arg7;
@@ -113,15 +123,14 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     vtx = (Unk800C9DFCv *)((u8 *)b + b->unk3A);
     o[0] = b->unk8[0] + t->unkA[0];
     o[1] = b->unk8[1] + t->unkA[1];
-    tri = n;
     o[2] = b->unk8[2] + t->unkA[2];
     for (i = 0; i < 3; i++) {
         v[i].unk0[0] = o[0] + vtx[tri->unkC[i]].unk0[0];
         v[i].unk0[1] = o[1] + vtx[tri->unkC[i]].unk0[1];
         v[i].unk0[2] = o[2] + vtx[tri->unkC[i]].unk0[2];
     }
-    cnt = 0;
     pv[0] = &v[2];
+    cnt = 0;
     for (i = 0; i < 3; i++) {
         pv[1] = &v[i];
         if (i != edge) {

@@ -37,6 +37,10 @@
  func_8001D910 call (and is never otherwise accessed) gives the slot at 0x28. A sprite-setup inline taking
  (SPRT **, DR_TPAGE **, ...) to explain the deleted `move` (the copy of &tp[0]) is much worse (75-127 rows,
  331-333 insns: the spr[i] reloads go away).
+ * Pass 21: not changed. Note on the hole: unused BLKmode locals get their slot at declaration time (before
+ * clut/img, which are placed when purge_addressof runs), so the variable at 0x28 must be an addressable scalar
+ * whose address use is expanded after the func_8001D910 call and later deleted, or a reload spill slot whose
+ * references all went away (which would also fit the deleted move after `addiu s2,sp,0x18`). Not found.
  */
 #include "ovl_0a.h"
 

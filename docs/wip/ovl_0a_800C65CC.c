@@ -3,7 +3,8 @@
  * relative to triangle n0 by barycentric-like cross products (nv) and re-project it onto triangle n1;
  * the height then comes from n1's plane (func_800C1DC4 fixed-point, pl = D_800C9DF0.unk14[n1->unk6]) or,
  * without a plane, from n1's first vertex.
- * WIP (pass 15, draft moved here from build/drafts/ovl_0a/nm_0a_C65CC.c): 58 aligned diff rows, 399 vs 398.
+ * WIP (pass 21): 49 aligned diff rows, 398 of 398 instructions, shape exact (cmp_shape.py --shape: 0 rows), no fake
+ * temps. (Pass 15: 58 rows with the permuter's new_var, 93 without.)
  * Found:
  *  - the else arm is written like func_800C3608's (`t3 = D_800C9DF0.unk1C + n1->unk4; vt = D_800C9DF0.unkC
  *    + n1->unkC[0];`), which fixes its load order (104 -> 93);
@@ -17,6 +18,14 @@
  * Pass 20: without the permuter's new_var (a fake temp) the draft is 93 rows, shape 23 (397 vs 398 insns): the
  * original's extra callee-saved register (s6 saved, never used) and the first cross product's mflo in s3 are the
  * shape difference. nv (0x38) and r (0x48) live on the stack. Not changed this pass.
+ * Pass 21: the cross products are written with six named differences, dx0..dx2 = v[i].vx - p.vx computed right
+ * after the v[*].vz loads and before p.vz (they only need p.vx), dz0..dz2 after p.vz, then `nv.vx = dx1 * dz2 -
+ * dx2 * dz1;` etc. That is what the permuter's new_var stood for (dx1 lives in s0, the first mflo in s3 and s6 is
+ * saved): 93 -> 58 without any fake temp. `r.vx = ... / area;` moved after the second triangle's v[*].vz loads
+ * (right before r.vz) gives the original's late `sw a0,0x48(sp)` and the instruction count: 58 -> 49, shape exact.
+ * Left: register naming only, in the big straight-line block (local-alloc): t is s0 here, t7 in the original
+ * (splitting t into t/t2 per triangle: 51); o.vz / v[1].vx swap t2/t4, and the dz/dx temps and mflo results are
+ * a permutation of a2/t2/t3/t4/t7. Single-line moves (700 compiles, build/w/mvrun.py) find nothing better.
  */
 #include "ovl_0a.h"
 
@@ -29,7 +38,7 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     Unk800C9DF8Tri *t;
     Unk800C9DFC *vtx;
     Unk800C9E04 *pl;
-    s32 new_var;
+    s32 dx0, dx1, dx2, dz0, dz1, dz2;
     s32 area;
     s32 k;
     s32 c;
@@ -48,13 +57,18 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     v[2].vy = vtx[n0->unkC[2]].unk2;
     p.vy = a->unk24->unk14.vy - o.vy;
     v[0].vz = vtx[n0->unkC[0]].unk4;
-    new_var = v[1].vx - p.vx;
     v[1].vz = vtx[n0->unkC[1]].unk4;
     v[2].vz = vtx[n0->unkC[2]].unk4;
+    dx0 = v[0].vx - p.vx;
+    dx1 = v[1].vx - p.vx;
+    dx2 = v[2].vx - p.vx;
     p.vz = a->unk24->unk14.vz - o.vz;
-    nv.vx = new_var * (v[2].vz - p.vz) - (v[2].vx - p.vx) * (v[1].vz - p.vz);
-    nv.vy = (v[2].vx - p.vx) * (v[0].vz - p.vz) - (v[0].vx - p.vx) * (v[2].vz - p.vz);
-    nv.vz = (v[0].vx - p.vx) * (v[1].vz - p.vz) - (v[1].vx - p.vx) * (v[0].vz - p.vz);
+    dz0 = v[0].vz - p.vz;
+    dz1 = v[1].vz - p.vz;
+    dz2 = v[2].vz - p.vz;
+    nv.vx = dx1 * dz2 - dx2 * dz1;
+    nv.vy = dx2 * dz0 - dx0 * dz2;
+    nv.vz = dx0 * dz1 - dx1 * dz0;
     area = (v[1].vx - v[0].vx) * (v[2].vz - v[0].vz) - (v[2].vx - v[0].vx) * (v[1].vz - v[0].vz);
     t = &D_800C9DF0.unk1C[n1->unk4];
     o.vx = b->unk8[0] + t->unkA[0];
@@ -63,13 +77,13 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     v[0].vx = vtx[n1->unkC[0]].unk0;
     v[1].vx = vtx[n1->unkC[1]].unk0;
     v[2].vx = vtx[n1->unkC[2]].unk0;
-    r.vx = (nv.vx * v[0].vx + nv.vy * v[1].vx + nv.vz * v[2].vx) / area;
     v[0].vy = vtx[n1->unkC[0]].unk2;
     v[1].vy = vtx[n1->unkC[1]].unk2;
     v[2].vy = vtx[n1->unkC[2]].unk2;
     v[0].vz = vtx[n1->unkC[0]].unk4;
     v[1].vz = vtx[n1->unkC[1]].unk4;
     v[2].vz = vtx[n1->unkC[2]].unk4;
+    r.vx = (nv.vx * v[0].vx + nv.vy * v[1].vx + nv.vz * v[2].vx) / area;
     r.vz = (nv.vx * v[0].vz + nv.vy * v[1].vz + nv.vz * v[2].vz) / area;
     a->unk24->unk14.vx = r.vx + o.vx;
     a->unk24->unk14.vz = r.vz + o.vz;

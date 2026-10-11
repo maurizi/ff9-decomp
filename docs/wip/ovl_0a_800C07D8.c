@@ -30,6 +30,9 @@
  not "birthing" in adjust_priority) does not move them, nor does a K&R definition. With `e->unk0 = 0x80;` first the
  lbu land right before the sb but the n/size computation sinks to the sw (29 rows); reusing size/t/y for p->unk20
  (to make n/size multi-set) is 17-74.
+ * Pass 21: no change (11 rows). The read-back loop's registers (w in a0, the loaded value in v1 in the original)
+ * do not move with the loaded value assigned to a local (t, y, size, arg0, arg4, a new u16/s32), `(void)`, a
+ * pointer-free or while form of the loop. Single-line moves within each straight-line run: 11 at best.
  */
 #include "ovl_0a.h"
 

@@ -26,7 +26,13 @@
  * drops to 12 with 4 moves before). The original's preheader is the /28 magic (lui/ori) *before* the t * 51 chain,
  * then mult/mfhi/sra for len: so the magic's first occurrence in the loop body precedes len's t * 51, i.e. len is
  * probably computed in the loop after a `/ 28` that appears earlier in the body (case 1's w), not as its first
- * statement. Not tried yet. */
+ * statement. Not tried yet.
+ * Pass 21: `len = t * 51 / 28;` moved into the loop (first in the loop, in the e->unk0 block, at each point of the
+ * unk504 == 2 block before the switch, or per case right before its first use) gives 353-477 rows and 425-441
+ * insns, all worse than 373. The original's e is s2 (`addu s2,s0,zero` from &s->unk350 in s0, which is then
+ * reused for the p + 6 giv), ours spills e to 0xF0 where the original spills i; the original's frame is 8 bytes
+ * smaller (0x138) and it zeroes only three of x/y/w/h on the stack.
+ */
 #include "ovl_0d.h"
 
 typedef struct {

@@ -29,6 +29,9 @@
  * the w statement must precede that store in sched1, but every such order (and `w = D_800CA108; ... w += 0xDF`,
  * a u8 temp) puts tile's addu after the unk18 block again (9-21 rows). Permuter (15 min on this base) best:
  * the unk18/unk1A stores before w, n right after (permuter score 515, 15 cmp rows), not kept.
+ * Pass 21: no change (9 rows). Splitting the D_800CA108 read from the + 0xDF (`x = D_800CA108; ... w = x + 0xDF;`,
+ * also through w, a u8 or an s32 temp) at every pair of prologue positions (180 variants) and single-line moves
+ * within each straight-line run give 9 at best.
  */
 #include "ovl_0a.h"
 

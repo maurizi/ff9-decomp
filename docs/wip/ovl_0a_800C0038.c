@@ -50,6 +50,9 @@
  * Pass 20: copy spellings `st->unk10 = st->unk4` (6), `D_800CA068.unk10 = D_800CA068.unk4` (4),
  * `s32 *cp = &st->unk4; cp[3] = cp[0]` (4), an early `s32 off = bg->unk18` with the copy before c (4), and
  * a block-local s32 / Pair temp for the copy load (13, two extra insns): no gain.
+ * Pass 21: no change (4 rows). All 280 topological orders of the setup lines with the bg->unk18 load as its own
+ * statement (`off = bg->unk18; c = (Cam *)((u8 *)bg + off);`), and single-line moves within every straight-line
+ * run (build/w/mvrun.py), stay at 4.
  */
 #include "ovl_0a.h"
 

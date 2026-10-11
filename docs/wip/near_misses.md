@@ -823,6 +823,14 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   arithmetic in the overlay (C1E14, C4B30) and copy its spelling, statement by statement. What is left there
   is reload's spill-register choice (&q[x] priority 450 vs arg5 449.3). B4A5C, C07D8, C65CC unchanged (notes in
   their headers).
+- Pass 21 (overlay agent): C519C 74 -> 39 rows, C65CC 93 (58 with a fake temp) -> 49 with no fake temp and an exact
+  shape. C0038 (4), BD130 (9), C07D8 (11), B4A5C (5, dead `&pad`) unchanged; notes in their headers.
+  * C519C: `tri = n;` as the first statement settled the arg5 / &q[x] near-tie (an unrelated set moved ahead of
+    the stack-arg loads changes the sched1 live lengths), found by moving single lines (build/w/mvrun.py in the
+    pass-21 worktree moves every one-line statement within its straight-line run). Left: the s3..s7 order.
+  * C65CC: the permuter's `new_var = v[1].vx - p.vx` was standing in for named differences: dx0..dx2 =
+    v[i].vx - p.vx right after the v[*].vz loads (before p.vz), dz0..dz2 after p.vz, `nv.vx = dx1 * dz2 - dx2 *
+    dz1;` etc. Then `r.vx = ... / area;` after the second triangle's vz loads gives the late r.vx stack store.
 
 ## menus / minigames
 - Drafts in the agent worktree's build/nm_<ovl>_<addr>.c. 0d B1110 (prologue: stack-arg load of `mode`
@@ -1199,3 +1207,10 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     does but preexpand_calls then evaluates it first.
   * EF644: all orders of block 3's statements (60) and block 2's (pass 17's) give an exact shape; registers in
     block 2 point at the unk48.x lhu sitting early in sched1's order (v1 busy over unk8/l), not reproduced.
+- Pass 21 (overlay agent): **33 EF644 MATCHED**. Block 2's xor is `k = l->unk7; k ^= (l->unk8 >> 3) & 1;
+  k = k * 150 - 10;` (k is the function's u16). As its own statement the unk7 load comes ahead of the unk8 chain
+  in sched1, which lengthens the unk7/k quantity in local-alloc so the unk8 chain takes v0 first and l falls to a1,
+  as in the original. Lesson: when a block's registers are a permutation and the shape is exact, try splitting an
+  expression so a leaf load becomes its own assignment. 37 F13F8 25 -> 22 with the same idea
+  (`k = (l->unk8 >> 3) & 1; k ^= l->unk7;`); its xor result is still v0 (a1 in the original). 0d AC708: `len`
+  moved into the loop (the pass-20 idea) is worse everywhere (353-477 rows).
