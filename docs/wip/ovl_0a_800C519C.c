@@ -4,7 +4,7 @@
  * intersects the segment arg4 -> arg3 with each edge except `edge` (arg7), stores the hits and
  * their edge numbers, then: 1 hit -> that one; 2 hits -> func_800C1E14 picks between them;
  * 3 hits -> the one closest to the origin; otherwise *arg6 = -1 and 0.
- * WIP (pass 20): 568 of 568 instructions, 108 aligned diff rows (pass 9: 570 instructions, 140 rows).
+ * WIP (pass 20): 568 of 568 instructions, 74 aligned diff rows (pass 9: 570 instructions, 140 rows).
  * Control flow and the stack layout match; left is register allocation (the original uses
  * s0 = hit base, s1 = arg5, s3 = z, s4 = x, s5 = arg4, s6 = arg6, s7 = arg3, fp = v base,
  * edge spilled to 0x68 and &q[x] spilled to 0x70; ours still differs in x/z/p/q and the
@@ -42,13 +42,21 @@
  * s7 = arg6. Also every `pv[k][x]` address is `addu base, x2` in the original and `addu x2, base` here
  * (p[z]/q[z] are index-first in both); index spellings (*(pv + x), x[pv]) and x/y/z/edge/cnt/i types do not
  * change it (cnt or i as s32 breaks the shape).
+ *  - vertices as func_800C4B30 has them: `Unk800C9DFCv v[3]; Unk800C9DFCv *pv[3];`, `pv[1] = &v[i];`,
+ *    `pv[k]->unk0[x]` (108 -> 74: the pv address adds become base-first like the original). hit[] as
+ *    Unk800C9DFCv or s16[3][3] makes no difference.
+ * Now left (74 rows): only the s-register permutation (and a0/a3 for pl in the plane test). galloc.py: arg5 (85)
+ * ends in s2 and the arg7/edge copy goes through s1, the original has arg5 in s1 and the edge/&q[x] reloads in
+ * s2; both edge (95) and &q[x] (275) are spilled (MEM) in both, so it is reload's spill-register choice
+ * (reload1.c order_regs_for_reload / hard_reg_n_uses) that differs: ours spills s1, the original s2. The rest
+ * follows: z/x/q/arg6/p are s3/s4/s5/s6/s7 in the original, ours p s3?/q s4/z s5/x s6/arg6 s7.
  */
 #include "ovl_0a.h"
 
 s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *arg3, SVECTOR *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
     s16 o[3];
-    s16 *pv[3];
-    s16 v[3][3];
+    Unk800C9DFCv *pv[3];
+    Unk800C9DFCv v[3];
     s16 hit[3][3];
     s16 idx[3];
     s16 *p;
@@ -103,23 +111,23 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     tri = n;
     o[2] = b->unk8[2] + t->unkA[2];
     for (i = 0; i < 3; i++) {
-        v[i][0] = o[0] + vtx[tri->unkC[i]].unk0[0];
-        v[i][1] = o[1] + vtx[tri->unkC[i]].unk0[1];
-        v[i][2] = o[2] + vtx[tri->unkC[i]].unk0[2];
+        v[i].unk0[0] = o[0] + vtx[tri->unkC[i]].unk0[0];
+        v[i].unk0[1] = o[1] + vtx[tri->unkC[i]].unk0[1];
+        v[i].unk0[2] = o[2] + vtx[tri->unkC[i]].unk0[2];
     }
     cnt = 0;
-    pv[0] = v[2];
+    pv[0] = &v[2];
     for (i = 0; i < 3; i++) {
-        pv[1] = v[i];
+        pv[1] = &v[i];
         if (i != edge) {
-            d = (pv[1][x] - pv[0][x]) * (ez = p[z] - q[z]);
+            d = (pv[1]->unk0[x] - pv[0]->unk0[x]) * (ez = p[z] - q[z]);
             ex = p[x] - q[x];
-            e = (pv[0][z] - q[z]) * ex;
-            d -= (pv[1][z] - pv[0][z]) * ex;
-            e -= (pv[0][x] - q[x]) * ez;
+            e = (pv[0]->unk0[z] - q[z]) * ex;
+            d -= (pv[1]->unk0[z] - pv[0]->unk0[z]) * ex;
+            e -= (pv[0]->unk0[x] - q[x]) * ez;
             if (ABS(e) <= ABS(d)) {
-                f = (pv[0][z] - q[z]) * (pv[1][x] - pv[0][x]);
-                f -= (pv[0][x] - q[x]) * (pv[1][z] - pv[0][z]);
+                f = (pv[0]->unk0[z] - q[z]) * (pv[1]->unk0[x] - pv[0]->unk0[x]);
+                f -= (pv[0]->unk0[x] - q[x]) * (pv[1]->unk0[z] - pv[0]->unk0[z]);
                 if (ABS(f) <= ABS(d)) {
                     if ((e >= 0 && d >= 0) || (e <= 0 && d < 0)) {
                         if ((f >= 0 && d >= 0) || (f <= 0 && d < 0)) {
@@ -128,16 +136,16 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
                     e >>= 1;
                     d >>= 1;
                 }
-                hit[cnt][x] = pv[0][x] + e * (pv[1][x] - pv[0][x]) / d;
-                hit[cnt][z] = pv[0][z] + e * (pv[1][z] - pv[0][z]) / d;
-                ax = pv[1][x] - pv[0][x];
+                hit[cnt][x] = pv[0]->unk0[x] + e * (pv[1]->unk0[x] - pv[0]->unk0[x]) / d;
+                hit[cnt][z] = pv[0]->unk0[z] + e * (pv[1]->unk0[z] - pv[0]->unk0[z]) / d;
+                ax = pv[1]->unk0[x] - pv[0]->unk0[x];
                 if (ax < 0) {
-                    ax = pv[0][x] - pv[1][x];
+                    ax = pv[0]->unk0[x] - pv[1]->unk0[x];
                 }
-                if ((pv[1][z] - pv[0][z] >= 0 ? pv[1][z] - pv[0][z] : pv[0][z] - pv[1][z]) < ax) {
-                    hit[cnt][y] = pv[1][y] - (pv[1][x] - hit[cnt][x]) * (pv[0][y] - pv[1][y]) / (pv[0][x] - pv[1][x]);
+                if ((pv[1]->unk0[z] - pv[0]->unk0[z] >= 0 ? pv[1]->unk0[z] - pv[0]->unk0[z] : pv[0]->unk0[z] - pv[1]->unk0[z]) < ax) {
+                    hit[cnt][y] = pv[1]->unk0[y] - (pv[1]->unk0[x] - hit[cnt][x]) * (pv[0]->unk0[y] - pv[1]->unk0[y]) / (pv[0]->unk0[x] - pv[1]->unk0[x]);
                 } else {
-                    hit[cnt][y] = pv[1][y] - (pv[1][z] - hit[cnt][z]) * (pv[0][y] - pv[1][y]) / (pv[0][z] - pv[1][z]);
+                    hit[cnt][y] = pv[1]->unk0[y] - (pv[1]->unk0[z] - hit[cnt][z]) * (pv[0]->unk0[y] - pv[1]->unk0[y]) / (pv[0]->unk0[z] - pv[1]->unk0[z]);
                 }
             }
                             idx[cnt] = i;
@@ -161,22 +169,22 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *ar
     case 2:
         switch (idx[0] + idx[1]) {
         case 1:
-            pv[0] = v[1];
-            pv[1] = v[2];
-            pv[2] = v[0];
+            pv[0] = &v[1];
+            pv[1] = &v[2];
+            pv[2] = &v[0];
             break;
         case 2:
-            pv[0] = v[1];
-            pv[1] = v[0];
-            pv[2] = v[2];
+            pv[0] = &v[1];
+            pv[1] = &v[0];
+            pv[2] = &v[2];
             break;
         case 3:
-            pv[0] = v[2];
-            pv[1] = v[0];
-            pv[2] = v[1];
+            pv[0] = &v[2];
+            pv[1] = &v[0];
+            pv[2] = &v[1];
             break;
         }
-        if (func_800C1E14(pv[0], p, pv[2], pv[1], x, z)) {
+        if (func_800C1E14(pv[0]->unk0, p, pv[2]->unk0, pv[1]->unk0, x, z)) {
             *arg6 = idx[0];
             arg5->vx = hit[0][0];
             arg5->vy = hit[0][1];
