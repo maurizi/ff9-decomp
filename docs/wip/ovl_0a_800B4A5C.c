@@ -15,6 +15,19 @@
  * 0xFC..0x158 and leaves 0x164 (between the second spr[i] reload and sb zero,13) empty, i.e.
  * every filler became ready one slot later there. No C spelling found that delays them: setUV0/
  * setWH/setXY0 macros and the chained u0/v0 stores change nothing or lose the reload.
+ * Pass 13 (sched.c read against the trace): the original's slot 0x164 held an insn that sched2
+ * scheduled and a later pass deleted (jump2's no-op move deletion: `move r,r` from a copy whose
+ * source dies and shares the register), which is why the assembler's load-delay nop is there. It
+ * must sit between `addiu s2,sp,0x18` (342) and `addu a3,s2,a3` (344) in dependence order
+ * (342 -> N -> 344): then N is launched before 344 in sched1 (LUID above 342), is ready at T-45
+ * in sched2, 342 only becomes ready after it (T-48), and the other fillers shift one gap each,
+ * exactly the original. An empty `__asm__("" : "=r"(i) : "0"(i))` after the code store proves the
+ * slot mechanism (2 rows left, only the LUID order). Candidates tried without success: pointer
+ * copies of p/t/q (coalesced by combine), a `tpp = tp` draw-loop pointer assigned in the loop
+ * (loop.c hoists it: REG_EQUAL fp+24, life > 1), tpp with a pre-loop init / later tpp[i] uses,
+ * do{}while(0) wraps, for/while loop forms, statement moves. cse.c make_regs_eqv keeps a copy
+ * `(set B A)` only when B lives beyond the block (or is first mentioned before it); loop.c then
+ * hoists it unless its lifetime*savings is below the threshold.
  */
 #include "ovl_0a.h"
 

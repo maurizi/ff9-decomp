@@ -14,6 +14,16 @@
  * QImode store, which aliases the stack); a second assignment to the args does not change it.
  * The e->unk8/e->unk0 store order decides which of the two stores sched1 keeps last (ties go to
  * the later statement); swapping them reorders the whole prologue (39 rows).
+ * Pass 13 (sched.c + trace): after reload every sp-relative address is 'varying' (rtx_varies_p only
+ * exempts fp/ap), so in sched2 the stack-arg lbu loads conflict with every store through a pointer;
+ * they get priority 3 from the e->unk0/unk8 stores and land right above them. In sched1 (ap-based,
+ * non-varying) only the QImode store conflicts (true_dependence's in-struct exception excludes QImode),
+ * so sched1 launches them before `sb e->unk0`. The original's order is what sched2 produces when the
+ * three loads sit right after the arg4 `lw` in the chain with priority 1 and no dependents (the
+ * potential-hazard rule then puts them after the prologue stores and ahead of the arg4 load by LUID).
+ * `const` on the parameters gives that (RTX_UNCHANGING_P stack slots) but reload then rematerialises
+ * the loads at their uses (REG_EQUIV mem) and sinks them (85 rows). Not found: a form that keeps the
+ * pseudos and still frees the loads of the store dependences.
  */
 #include "ovl_0a.h"
 
