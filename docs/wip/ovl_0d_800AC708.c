@@ -12,7 +12,8 @@
  * divisions' magic) are loop invariants written inside the loop and hoisted by loop.c, not a pre-loop statement.
  * `len = t * 51 / 28;` as the first statement of the loop body reproduces that preheader shape (magic, i = 0
  * spill, len spill), but t then gets spilled and 21t is still hoisted; the rows (373 -> 409-443) are all
- * register allocation, so it is not in the body below yet. Also missing: this file has no #include "ovl_0d.h". */
+ * register allocation, so it is not in the body below yet. Pass 17: added the missing #include "ovl_0d.h". */
+#include "ovl_0d.h"
 
 typedef struct {
     s32 unk0; /* 0: horizontal bar, 1: corner, 2: vertical bar */
