@@ -3221,7 +3221,38 @@ void func_800DA1B8(Unk800DA1B8 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA1F4);
+void *func_800DA1F4(s16 *p) {
+    Unk800DA1B8 *pool;
+    Unk800DA1B8 *x;
+    s16 *e;
+    s32 i;
+    s32 stride;
+    u8 *d;
+
+    x = (Unk800DA1B8 *)p;
+    pool = (Unk800DA1B8 *)p;
+    p = (s16 *)((Unk800DA1B8 *)p)->unkC;
+    stride = x->unk0;
+    for (i = 0; i < pool->unk2; i++) {
+        e = p;
+        if (*p == 0) {
+            break;
+        }
+        p = (s16 *)((u8 *)p + stride);
+    }
+    if (i >= pool->unk2) {
+        return NULL;
+    }
+    d = (u8 *)(p + 2);
+    e[0] = 1;
+    e[1] = 0;
+    pool->unk4(1, d, D_800F78A4, pool->unk8, 0, pool, pool->unk8->unkC);
+    /* Probably macro residue: a dead store that flow deletes (no code). Its only effect is that p is
+       mentioned last, which keeps p (not pool) the CSE class head so `p += 12` and the header reads stay
+       on the original registers. */
+    p = NULL;
+    return d;
+}
 
 s32 func_800DA2AC(Unk800DA1B8 *arg0) {
     Unk800DA1B8 *pool = arg0;
