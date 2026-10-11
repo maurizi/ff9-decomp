@@ -3821,6 +3821,13 @@ typedef struct {
     s16 unk2;
 } Unk800AA504Pos;
 
+typedef struct {
+    s16 unk0;
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+} Unk800AA504Pos8;
+
 s32 func_800AA504(s32, s32, Unk800AA504 *);
 
 /* inlined into func_800AA24C: append the ids of file-table entries of the
