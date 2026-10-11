@@ -901,7 +901,7 @@ typedef struct BtlCmd8 {
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 unkB;
     u16 unkC;
-    u16 unkE; /* name text offset */
+    u16 nameOfs; /* name text offset (runtime: Fire 161, Fira 166, Firaga 171, Sleep 178 - steps = name lengths + 1) */
 } BtlCmd8;
 
 typedef struct BtlCmd {
@@ -972,7 +972,7 @@ typedef struct {
     u8 pad9;
     u8 mpCost; /* runtime: Fire 6, Fira 12, Sleep 10 as the spell list shows */
     u8 padB[0xE - 0xB];
-    u16 unkE;
+    u16 nameOfs; /* as BtlCmd8.nameOfs */
 } Battle16CC; /* 0x10 */
 
 /* Battle.unk1358 ring entry (func_800CC278 hands out the next one) */

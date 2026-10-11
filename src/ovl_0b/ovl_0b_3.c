@@ -336,7 +336,7 @@ void func_800C9794(void) {
     dst = g_gameState->unk1C->unk8E4.battle->unk5D8;
     for (i = 0, cmd = src; i < hdr->unk3; i++, cmd++) {
         func_800CA28C(cmd, dst);
-        dst->unkE = ofs->unk0 + 4;
+        dst->nameOfs = ofs->unk0 + 4;
         ofs++;
         dst++;
     }
@@ -1004,7 +1004,7 @@ s32 func_800CB700(BtlScript *arg0, BtlUnit *arg1) {
     b = g_gameState->unk1C->unk8E4.battle;
     txt = b->unk11C0->unk14;
     if (idx & 0x80) {
-        func_800F4F44((s32)(txt + arg0->unk4->unk8->unkE), 1);
+        func_800F4F44((s32)(txt + arg0->unk4->unk8->nameOfs), 1);
     } else {
         idx += b->unk488[(arg1->unk68 >> 1) & 0xF].unk0->unk28;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
@@ -1908,7 +1908,7 @@ void func_800CDEF0(BtlCmd *arg0) {
         s = func_800CD75C(arg0->subNo);
         break;
     case 0x32:
-        s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->ability->unkE;
+        s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->ability->nameOfs;
         break;
     default:
         if (arg0->subNo < 0xC0) {

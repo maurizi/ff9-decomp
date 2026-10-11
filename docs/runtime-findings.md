@@ -172,3 +172,5 @@ Format:
   every-4-frames rewrite in func_800BD93C) the only other one is func_800B9550+0x58, called from func_800B4390.
   The ability entries (Battle.abilities, 0x10 each) have +0xA = 6 (25 Fire), 12 (26 Fira), 24 (27), 10 (28 Sleep).
 - names: btl_payMpCost, btl_consumeMp, ability mpCost.
+- ability +0xE (same entries): 0xA1, 0xA6, 0xAB, 0xB2, 0xB8 for Fire, Fira, Firaga, Sleep, ...: each step is the
+  previous name's length + 1, so it's the name's text offset. Named nameOfs.

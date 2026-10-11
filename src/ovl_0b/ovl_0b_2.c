@@ -8884,7 +8884,7 @@ u8 *func_800EA0B4(s32 arg0) {
     if (arg0 >= 0xC0) {
         return NULL;
     }
-    return g_gameState->unk1C->unk8E4.battle->abilities[arg0].unkE + D_800F909C;
+    return g_gameState->unk1C->unk8E4.battle->abilities[arg0].nameOfs + D_800F909C;
 }
 
 void func_800EA0F8(s32 arg0) {
@@ -10703,7 +10703,7 @@ void func_800EF0D8(s32 arg0, s32 arg1, s32 arg2, MenuView *arg3) {
         a = &g_gameState->unk1C->unk8E4.battle->abilities[k];
         y = r->y + arg1 * 15 + arg3->unk2 - dy;
         c = (res != 2) * 2;
-        func_80029058(x + 6, y, 7, D_800F909C + a->unkE, c);
+        func_80029058(x + 6, y, 7, D_800F909C + a->nameOfs, c);
         if (a->mpCost != 0) {
             text_formatNumber(func_800EF598((BtlCmd8 *)a), buf, 3, 1);
             func_8002B56C(x + 0x60, y + 4, 7, buf, c);
