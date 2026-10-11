@@ -547,10 +547,10 @@ typedef struct Unk80104F88Entry {
 
 typedef struct {
     Unk80104F88Entry unk0[4];
-    struct BtlUnit *unk12A0;
+    struct BtlUnit *cmdUnit; /* unit whose command menu is up (runtime) */
     Window *unk12A4[4];
-    u8 unk12B4;
-    u8 unk12B5; /* party count */
+    u8 menuState; /* runtime: 0 none, 1 command menu, 3 target select, 4 next member */
+    u8 partyCount;
     u8 unk12B6;
     u8 unk12B7;
     union {
@@ -566,7 +566,7 @@ typedef struct {
     u8 pad12C7;
     struct BtlUnit *unk12C8[4];
 } Unk80104F88;
-extern Unk80104F88 *D_80104F88;
+extern Unk80104F88 *g_btlUi;
 
 typedef struct {
     s16 unk0;          /* count of unk4 */
@@ -1923,22 +1923,23 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 unk3;
-} Unk80104FC0; /* D_80104FB0.unk10 */
+} Unk80104FC0; /* g_btlCmdMenu.unk10 */
 
+/* battle command menu (runtime: Vivi's menu -> Eiko's, docs/runtime-findings.md) */
 typedef struct {
-    u8 unk0; /* cursor */
+    u8 cursor;    /* row: 0 Attack, 1, 2, 3 Item */
     u8 unk1;
-    u8 unk2;
+    u8 charIndex; /* GameData.characters index of the commanding member */
     u8 pad3;
-    u8 unk4[4];
+    u8 cmdIds[4]; /* command per row: Attack 1, Blk Mag 22, Focus 13, Wht Mag 19, Summon 20, Item 14 */
     u8 unk8[4];
     u8 unkC[4];
     Unk80104FC0 unk10;
     u8 pad14[0x18 - 0x14];
-    BtlUnit *unk18;
+    BtlUnit *unit; /* the unit choosing a command */
 } Unk80104FB0;
-extern Unk80104FB0 D_80104FB0;
-extern Unk80104FC0 D_80104FC0; /* D_80104FB0.unk10, also addressed by its own label */
+extern Unk80104FB0 g_btlCmdMenu;
+extern Unk80104FC0 D_80104FC0; /* g_btlCmdMenu.unk10, also addressed by its own label */
 extern void (*D_800F8D94[])(void);
 
 

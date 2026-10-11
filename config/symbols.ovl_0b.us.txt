@@ -27,3 +27,5 @@ Hi_ModifySummonModelRGB = 0x800DCF4C; // type:func [string] error message names 
 Hi_SplitMdlVertex = 0x800DF508; // type:func [string] error message names it
 Hi_GetSplitMdlVertex = 0x800DF550; // type:func [string] error message names it
 g_battleText = 0x800A83AC; // [code] the text bank this overlay passes to text_setBank
+g_btlCmdMenu = 0x80104FB0; // [runtime] battle command menu - cursor counts 0-3 with Down, rows and unit switch Vivi to Eiko
+g_btlUi = 0x80104F88; // [runtime] battle UI block (0x12D8, allocated at battle start) - cmdUnit, menuState, partyCount
