@@ -2918,7 +2918,7 @@ void func_80023A6C(void) {
 void func_80023EB8(void) {
     func_80024070();
     D_80076B60.unk404 = D_80076B60.unk4;
-    g_gameState->unk2C = 0;
+    g_gameState->playTime = 0;
     D_80076B60.unk0 = VSync(-1);
 }
 
@@ -2943,23 +2943,23 @@ void func_80023F60(u8 arg0) {
                 t->unkC = 0;
             }
         }
-        g_gameState->unk2C += d;
+        g_gameState->playTime += d;
     } else {
         D_80076B60.unk0 = now;
     }
 }
 
 void func_80024000(s32 arg0) {
-    g_gameState->unk2C = arg0;
+    g_gameState->playTime = arg0;
     D_80076B60.unk0 = VSync(-1);
 }
 
 s32 func_80024030(void) {
-    return g_gameState->unk2C;
+    return g_gameState->playTime;
 }
 
 u32 func_80024048(void) {
-    return g_gameState->unk2C / 60;
+    return g_gameState->playTime / 60;
 }
 
 void func_80024070(void) {
@@ -3016,7 +3016,7 @@ void func_8002417C(void) {
             t->unkC = 0;
         }
     }
-    g_gameState->unk2C += dt;
+    g_gameState->playTime += dt;
     D_80076B60.unk0 = now;
 }
 
@@ -8221,7 +8221,7 @@ void func_80033690(void) {
     func_80033AF4(1, 1);
     func_80033AF4(2, 2);
     func_80033AF4(3, 3);
-    g_gameState->unk1C->unk560 = 500;
+    g_gameState->unk1C->gil = 500;
     g_gameState->unk1C->unk55E = 0;
 }
 
@@ -9968,7 +9968,7 @@ s32 func_80037D6C(s32 op) {
         }
         break;
     case 6:
-        r = g_gameState->unk1C->unk560;
+        r = g_gameState->unk1C->gil;
         break;
     case 7:
         r = D_8007AEC4;
@@ -11933,13 +11933,13 @@ s32 func_80039C38(void) {
         }
         return 0;
     case 0xCE:
-        if ((g_gameState->unk1C->unk560 += func_8004B914_inline()) > 9999999) {
-            g_gameState->unk1C->unk560 = 9999999;
+        if ((g_gameState->unk1C->gil += func_8004B914_inline()) > 9999999) {
+            g_gameState->unk1C->gil = 9999999;
         }
         return 0;
     case 0xCF:
-        if ((g_gameState->unk1C->unk560 -= func_8004B914_inline()) > 9999999) {
-            g_gameState->unk1C->unk560 = 0;
+        if ((g_gameState->unk1C->gil -= func_8004B914_inline()) > 9999999) {
+            g_gameState->unk1C->gil = 0;
         }
         return 0;
     case 0xB4:

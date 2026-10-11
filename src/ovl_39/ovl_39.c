@@ -1849,7 +1849,7 @@ void func_801F8DA4(u8 *buf) {
     h->unk0 = 0x30005;
     h->unk5 = g_gameState->unk1C->unk3C[n].unkB;
     h->unk2C = t;
-    h->unk30 = g_gameState->unk1C->unk560;
+    h->unk30 = g_gameState->unk1C->gil;
     h->unk74 = (g_gameState->unk24 >> 18) & 1;
     h->unk78 = ++D_801FB1A8.unkC;
     h->unk7C = D_801FB1A8.unk24.unk6;
@@ -2083,7 +2083,7 @@ void func_801F9904(SaveParty *s) {
     }
     s->unk514 = gd->unk55C;
     s->unk516 = gd->unk55E;
-    s->unk518 = gd->unk560;
+    s->unk518 = gd->gil;
     s->unk51C = gd->unk568;
     s->unk51E = gd->unk56A;
     s->unk520 = gd->unk56C;
@@ -2106,7 +2106,7 @@ void func_801F99FC(SaveParty *s) {
     }
     gd->unk55C = s->unk514;
     gd->unk55E = s->unk516;
-    gd->unk560 = s->unk518;
+    gd->gil = s->unk518;
     gd->unk568 = s->unk51C;
     gd->unk56A = s->unk51E;
     gd->unk56C = s->unk520;

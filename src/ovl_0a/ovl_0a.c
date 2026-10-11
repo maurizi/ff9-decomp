@@ -11238,7 +11238,7 @@ void func_800C8C08(void) {
     func_800275DC(D_800C9EA0->x + 6, D_800C9EA0->y + 8, 0x13, 0xB1, 0);
     func_800275DC(D_800C9EA0->x + 6, D_800C9EA0->y + 0x15, 0x13, 0xB2, 0);
     func_8002B56C(D_800C9EA0->x + 0x13, D_800C9EA0->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
-    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_800C9EA4);
     func_8002B56C(D_800C9EA0->x + 0x13, D_800C9EA0->y + 0x16, 0x13, buf, 0);
     func_8002B524(D_800C9EA0->x + 6, D_800C9EA0->y - 3, 0x13, D_800704C0, 0);

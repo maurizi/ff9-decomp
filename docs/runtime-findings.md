@@ -78,3 +78,9 @@ Format:
 - akao_tick / g_akaoTickCount / akao_command / snd_playSe (Redux, `menu_main`, Down): 80 akao_tick calls in 20 frames,
   g_akaoTickCount +80; the cursor move calls snd_playSe(0x67) and in the same frame akao_command(0x24) from 0x8005544C.
 - confidence: high, except gfx_selectBuffer and rand_init (not observed).
+
+## GameState.playTime (+0x2C) and GameData.gil (+0x560)  (status: applied)
+- evidence (Redux, `menu_main`, snapshots 120 frames apart): the menu shows TIME 05:08:20 -> 05:08:22 and gil 9999999.
+  0x8008B02C (g_gameState+0x2C) went 1110045 -> 1110165 (+120; 1110165 / 60 = 18502 s = 5:08:22). The only other
+  values in that range didn't change. 0x8008B7B0 (GameData+0x560) holds 9999999.
+- confidence: high.

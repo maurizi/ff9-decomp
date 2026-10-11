@@ -2482,11 +2482,11 @@ void func_800AF800(GameData *arg0, Battle *arg1) {
             func_800C1594();
             if (arg0->unk56F & 4) {
                 exp /= 10;
-                if (exp < arg0->unk560) {
-                    arg0->unk560 -= exp;
+                if (exp < arg0->gil) {
+                    arg0->gil -= exp;
                 } else {
-                    exp = arg0->unk560;
-                    arg0->unk560 = 0;
+                    exp = arg0->gil;
+                    arg0->gil = 0;
                 }
                 func_800CD5C8(0x1E, exp);
             } else if ((u8)func_800B0CF8(1, 0x4000) != 0) {
@@ -3191,11 +3191,11 @@ s32 func_800B1B48(Battle *arg0, BtlCmd *arg1) {
     case 0x1D:
         if (arg1->unkF == 0x7E || arg1->unkF == 0x86) {
             g = arg1->unk8->unk5 * u->unk7A;
-            if (g_gameState->unk1C->unk560 < g) {
+            if (g_gameState->unk1C->gil < g) {
                 msg = 0x14;
                 goto fail;
             }
-            g_gameState->unk1C->unk560 -= g;
+            g_gameState->unk1C->gil -= g;
         } else if (arg1->unkF == 0x81 || arg1->unkF == 0x89) {
             c = arg1->unk8;
             r = func_80038D3C_rand();
@@ -4447,7 +4447,7 @@ void func_800B44C0(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             u32 v;
             u32 d;
             v = cmd->unk8->unk5 * caster->unk7A;
-            d = g_gameState->unk1C->unk560 + v;
+            d = g_gameState->unk1C->gil + v;
             c.unk1B |= 1;
             v = v * v / 10;
             v = v * caster->unk33 / d;
@@ -5396,10 +5396,10 @@ void func_800B7F20(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
                     rand_refill();
                 }
             }
-            gd->unk560 = g_gameState->unk1C->unk560 +
+            gd->gil = g_gameState->unk1C->gil +
                          ((*g_randPtr << 8) | *g_randPtr++) % ((arg0->unk0->unk7A * arg0->unk4->unk7A) / 4 + 1);
-            if (g_gameState->unk1C->unk560 > 9999999) {
-                g_gameState->unk1C->unk560 = 9999999;
+            if (g_gameState->unk1C->gil > 9999999) {
+                g_gameState->unk1C->gil = 9999999;
             }
         }
     } else {
@@ -7621,7 +7621,7 @@ s32 func_800BE784(s32 arg0) {
         r = b->unk132C.unk0 & 3;
         break;
     case 33:
-        r = g_gameState->unk1C->unk560;
+        r = g_gameState->unk1C->gil;
         break;
     case 34:
         r = b->unkD80;
@@ -7738,9 +7738,9 @@ void func_800BE99C(s32 arg0, s32 arg1) {
         func_80021640(arg1);
         break;
     case 38:
-        g_gameState->unk1C->unk560 += arg1;
-        if (g_gameState->unk1C->unk560 > 9999999) {
-            g_gameState->unk1C->unk560 = 9999999;
+        g_gameState->unk1C->gil += arg1;
+        if (g_gameState->unk1C->gil > 9999999) {
+            g_gameState->unk1C->gil = 9999999;
         }
         break;
     case 39:

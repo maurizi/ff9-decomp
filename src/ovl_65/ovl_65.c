@@ -309,7 +309,7 @@ void func_801F0264(void) {
     RECT *r = &D_801F7A78.unkAC[9].unk4;
     u8 buf[16];
     s32 x, y;
-    u32 gil = g_gameState->unk1C->unk560;
+    u32 gil = g_gameState->unk1C->gil;
 
     if (gil > 9999999) {
         gil = 9999999;
@@ -1299,12 +1299,12 @@ void func_801F2D08(s32 arg0) {
 
     if (arg0 != 0) {
         D_801F7A78.unk24.unk7C.unk8 += arg0;
-        gil = g_gameState->unk1C->unk560;
+        gil = g_gameState->unk1C->gil;
         if (gil + arg0 > 9999999) {
             arg0 = 9999999 - gil;
             D_801F7A78.unk24.unk7C.unk8 = D_801F7A78.unk24.unk7C.unk0;
         }
-        g_gameState->unk1C->unk560 += arg0;
+        g_gameState->unk1C->gil += arg0;
     }
 }
 

@@ -317,7 +317,7 @@ void func_801F4E1C(void) {
         func_8002B5FC(r->x + 8, r->y + D_801FC050[i] - 4, 0x1E, text_getFrom(D_801F3C9C, D_801FC064[i]),
                       (D_801FC05C[i] | equip) ? 0 : 2);
     }
-    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_801FC060);
     func_8002B56C(r->x + 0x39, r->y + D_801FC050[0], 0x1E, buf, 0);
     text_formatNumber(func_80027F34(id), buf, 2, 1);
@@ -468,9 +468,9 @@ void func_801F57C8(void) {
     id = m->unk3C[l->unk5 + l->unk6];
     it = &D_80069018[id];
     have = func_80027F34(id);
-    if (have < 99 && g_gameState->unk1C->unk560 >= it->unk4) {
+    if (have < 99 && g_gameState->unk1C->gil >= it->unk4) {
         m->unk2 = 1;
-        q = it->unk4 != 0 ? g_gameState->unk1C->unk560 / it->unk4 : 99;
+        q = it->unk4 != 0 ? g_gameState->unk1C->gil / it->unk4 : 99;
         n = q;
         m2 = &D_801FC2F8;
         if ((s32)n > 99 - have) {
@@ -582,7 +582,7 @@ void func_801F5BCC(s32 unused, s32 row, s32 idx, MenuView *v) {
     id = D_801FC2F8.unk3C[idx];
     it = &D_80069018[id];
     if (func_80027F34(id) < 99) {
-        ok = g_gameState->unk1C->unk560 >= it->unk4;
+        ok = g_gameState->unk1C->gil >= it->unk4;
     }
     x = 0x18;
     y = 0x26;
@@ -638,7 +638,7 @@ void func_801F5E4C(void) {
     it = &D_80069018[id];
     n = func_80027D84(id, b->unk2);
     if (n != 0) {
-        g_gameState->unk1C->unk560 -= it->unk4 * n;
+        g_gameState->unk1C->gil -= it->unk4 * n;
         func_801F5D14();
     }
 }
@@ -737,7 +737,7 @@ void func_801F625C(void) {
         func_8002B5FC(r->x + 8, r->y + D_801FC0A8[i] - 4, 0x1E, text_getFrom(D_801F3C9C, D_801FC0C0[i]),
                       (D_801FC0B8[i] | equip) ? 0 : 2);
     }
-    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_801FC0BC);
     func_8002B56C(r->x + 0x39, r->y + D_801FC0A8[0], 0x1E, buf, 0);
     text_formatNumber(func_80027F34(s->unk4), buf, 2, 1);
@@ -906,7 +906,7 @@ void func_801F6D34(s32 unused, s32 row, s32 idx, MenuView *v) {
     it = &D_80069018[id];
     k = 1;
     if (func_80027F34(id) < 99) {
-        ok = g_gameState->unk1C->unk560 >= r->unk0;
+        ok = g_gameState->unk1C->gil >= r->unk0;
     }
     x = 0x18;
     y = 0x26;
@@ -953,11 +953,11 @@ void func_801F6F00(void) {
         need = 2;
     }
     have = func_80027F34(r->unk4);
-    if (have < 99 && g_gameState->unk1C->unk560 >= r->unk0 &&
+    if (have < 99 && g_gameState->unk1C->gil >= r->unk0 &&
         (r->unk2[0] == 0xFF || func_80027F34(r->unk2[0]) >= need) &&
         (r->unk2[1] == 0xFF || func_80027F34(r->unk2[1]) >= need)) {
         D_801FC338.unk2 = 1;
-        n = r->unk0 != 0 ? g_gameState->unk1C->unk560 / r->unk0 : 99;
+        n = r->unk0 != 0 ? g_gameState->unk1C->gil / r->unk0 : 99;
         m2 = &D_801FC338;
         if ((s32)n > 99 - have) {
             n = 99 - have;
@@ -1093,7 +1093,7 @@ void func_801F7614(void) {
     if (n != 0) {
         func_80027E5C(r->unk2[0], n);
         func_80027E5C(r->unk2[1], n);
-        g_gameState->unk1C->unk560 -= r->unk0 * n;
+        g_gameState->unk1C->gil -= r->unk0 * n;
         func_801F7590();
     }
 }
@@ -1240,7 +1240,7 @@ void func_801F7DA8(Window *w) {
         func_8002B5FC(r->x + 0xC, r->y + D_801FC290[i] - 4, w->unk18, text_getFrom(D_801F3C9C, D_801FC2A4[i]),
                       (D_801FC29C[i] | equip) ? 0 : 2);
     }
-    text_formatNumber(g_gameState->unk1C->unk560, buf, 7, 1);
+    text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
     func_80063108(buf, D_801FC2A0);
     func_8002B56C(r->x + 0x39, r->y + D_801FC290[0], w->unk18, buf, 0);
     text_formatNumber(func_80027F34(e->unk0), buf, 2, 1);
@@ -1312,9 +1312,9 @@ void func_801F8224(void) {
     price = it->unk4 >> 1;
     n = func_80027E5C(id, D_801FC438.unk1);
     if (n != 0) {
-        g_gameState->unk1C->unk560 += price * n;
-        if (g_gameState->unk1C->unk560 > 9999999) {
-            g_gameState->unk1C->unk560 = 9999999;
+        g_gameState->unk1C->gil += price * n;
+        if (g_gameState->unk1C->gil > 9999999) {
+            g_gameState->unk1C->gil = 9999999;
         }
         D_801FC438.unk0 = 0;
         for (i = 0; i < 2; i++) {

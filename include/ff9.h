@@ -242,7 +242,7 @@ typedef struct {
     Character *unk54C[4]; /* party */
     u16 unk55C;
     u16 unk55E;
-    u32 unk560; /* gil, capped at 9999999 */
+    u32 gil; /* capped at 9999999 (runtime: menu shows this value) */
     u8 pad564[0x568 - 0x564];
     s16 unk568;
     s16 unk56A;
@@ -353,7 +353,7 @@ typedef struct {
     s32 unk20; /* base CD sector added to file start sectors */
     u32 unk24;
     u32 unk28; /* 4-bit fields */
-    u32 unk2C; /* frame counter? divided by 60 */
+    u32 playTime; /* frames at 60/s, shown as h:mm:ss in the menu (runtime) */
     s32 unk30;
     u8 unk34[15];
 } GameState;
