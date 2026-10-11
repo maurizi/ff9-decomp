@@ -1389,6 +1389,24 @@ typedef struct {
     u8 unk7;  /* width */
     u16 unk8[1];
 } Unk800D1D74Hdr;
+/* sprite set draw context (func_800D1D74, func_800D1FFC and their per-sprite workers) */
+typedef struct {
+    u16 *unk0; /* palette */
+    u16 *unk4; /* colour table */
+    s32 unk8;  /* from the width byte */
+    s32 unkC;  /* from the height byte */
+    s32 unk10; /* tpage */
+    s32 unk14; /* clut */
+    s32 unk18;
+    s32 unk1C; /* sprite count */
+    s32 unk20;
+    s32 unk24; /* code */
+} Unk800D3ED4Ctx;
+void func_800D3ED4(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void func_800D40CC(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void func_800D4228(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void func_800D437C(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+DR_TPAGE *func_800D090C(s32, s32);
 void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
 
 

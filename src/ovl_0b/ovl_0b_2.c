@@ -697,7 +697,69 @@ void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1D74);
+void func_800D1D74(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
+    VECTOR s;
+    SVECTOR r;
+    MATRIX m;
+    Unk800D3ED4Ctx c;
+    s32 n;
+    u16 *p;
+    u8 *prim;
+    u8 *pal;
+    s32 i;
+    s32 off;
+
+    if (arg2 == NULL) {
+        arg2 = &r;
+        *(s32 *)&r.vx = 0;
+        *(s32 *)&r.vz = 0;
+    }
+    n = h->unk0 & 0x7FFF;
+    i = arg4;
+    if (i >= n) {
+        i %= n;
+    }
+    n = n * 2 + 8;
+    off = i * 2;
+    pal = arg0 + n;
+    p = (u16 *)pal;
+    i = *p++;
+    c.unk0 = p;
+    c.unk4 = p + i + 1;
+    c.unk10 = h->unk2 | ((arg5 & 3) << 5);
+    c.unk14 = h->unk4;
+    c.unkC = (h->unk6 - 1) * 2;
+    c.unk8 = (h->unk7 - 1) * 2;
+    n = *(u16 *)((u8 *)h->unk8 + off);
+    c.unk1C = arg0[n++];
+    arg0 += n;
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + c.unk1C * 40;
+    gte_rtv0tr_nn();
+    func_800316D8(arg2, &m);
+    if (arg3 >= 0) {
+        s.vz = arg3;
+        s.vy = arg3;
+        s.vx = arg3;
+        ScaleMatrix(&m, &s);
+    }
+    gte_stlvnl(m.t);
+    if (arg2->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    c.unk24 = (arg5 == 0xFF) ? 0x2C : 0x2E;
+    c.unk18 = arg6;
+    c.unk20 = D_800F78A4->unk28;
+    if (c.unk1C != 0) {
+        func_800D3ED4(arg0, &c, prim, D_800F78A4->unk20);
+    }
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1FFC);
 
