@@ -243,3 +243,9 @@ Format:
   Remaining=69)"; func_80027F34(0xFD) runs on that frame (from func_80037ACC). Rest: ~240 frames later the Tent slot
   (GameData.items.slots[10], id 253) goes 69 -> 68, written by func_80027E5C(0xFD, 1) called from evt_execInstr.
 - names: item_remove, item_getCount. The inventory helpers now use ItemSlot (code unchanged).
+
+## Script opcodes 0xF1 / 0xF2 (set HP / MP)  (status: applied)
+- Redux disc 1, `field_dali_inn_moogle`, Zidane's HP written to 100 and MP to 5, then Tent -> Rest: HP -> 1806,
+  MP -> 113. The writes come from evt_execInstr+0xB38C and +0xB4C8, the interpreter's only HP and MP stores, in
+  cases 0xF1 and 0xF2 (character from getv, value from a 2-byte arg, capped at maxHp/maxMp).
+- names: EVT_OP_SET_HP, EVT_OP_SET_MP.

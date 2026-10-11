@@ -3510,6 +3510,9 @@ typedef struct {
 
 
 /* ---- event script interpreter (evt_execInstr) ---- */
+/* Event script opcodes (first byte of an instruction run by evt_execInstr), runtime-checked ones only */
+#define EVT_OP_SET_HP 0xF1 /* character, value: set HP (capped at maxHp); runtime: the Moogle's Tent */
+#define EVT_OP_SET_MP 0xF2 /* character, value: set MP (capped at maxMp); runtime: the Moogle's Tent */
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
 void func_800AFAC0(s32, s32, s32, s32, s32);

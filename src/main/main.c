@@ -12023,7 +12023,7 @@ s32 evt_execInstr(void) {
     case 0xE9:
         evt_execInstr_party();
         return 0;
-    case 0xF1:
+    case EVT_OP_SET_HP:
         a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             Character *ch = &g_gameState->unk1C->characters[a];
@@ -12034,7 +12034,7 @@ s32 evt_execInstr(void) {
             ch->hp = a;
         }
         return 0;
-    case 0xF2:
+    case EVT_OP_SET_MP:
         a = evt_execInstr_chr(func_8004AEDC_inline());
         if ((u32)a < 9) {
             Character *ch = &g_gameState->unk1C->characters[a];
