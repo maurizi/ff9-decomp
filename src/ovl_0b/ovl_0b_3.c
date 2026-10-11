@@ -292,7 +292,64 @@ void func_800C972C(void) {
     D_800FDF38 = D_8006794C->unk1C->unk8E4.battle->unk132C.unk4->unk4;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800C9794);
+void func_800C9794(void) {
+    Battle *b;
+    Battle1330 *grp;
+    Battle11C020 *hdr;
+    s16 i;
+    s16 k;
+    u8 n;
+    Unk800C9D1C *recs;
+    Unk800C9D1C *rec;
+    Battle4880 *en;
+    U16Pair *ofs;
+    BtlCmd8 *src;
+    u32 *flags;
+    BtlCmd8 *dst;
+    BtlCmd8 *cmd;
+    BtlUnit *u;
+    Battle1330 *grp2;
+
+    b = D_8006794C->unk1C->unk8E4.battle;
+    flags = &b->unk132C.unk0;
+    grp = b->unk132C.unk4;
+    hdr = b->unk11C0->unk20;
+    b->unk132C.unk0 = (b->unk132C.unk0 & ~3) | (func_800C1184(flags) & 3);
+    i = 0;
+    n = hdr->unk2 + hdr->unk3;
+    grp2 = hdr->unk8;
+    recs = (Unk800C9D1C *)(grp2 + hdr->unk1);
+    rec = recs;
+    en = D_8006794C->unk1C->unk8E4.battle->unk4E8;
+    ofs = (U16Pair *)(D_8006794C->unk1C->unk8E4.battle->unk11C0->unk14 + 4);
+    src = (BtlCmd8 *)&recs[hdr->unk2];
+    for (; i < hdr->unk2; i++) {
+        func_800C9D1C(rec, en);
+        en->unk2C = func_800CA2B0(i + 5);
+        en->unk0 = ofs->unk0 + 4;
+        ofs++;
+        en->unk28 = n;
+        n += rec->unk4F;
+        en++;
+        rec++;
+    }
+    dst = D_8006794C->unk1C->unk8E4.battle->unk5D8;
+    for (i = 0, cmd = src; i < hdr->unk3; i++, cmd++) {
+        func_800CA28C(cmd, dst);
+        dst->unkE = ofs->unk0 + 4;
+        ofs++;
+        dst++;
+    }
+    u = D_8006794C->unk1C->unk8E4.battle->unk6F8;
+    for (i = 0; i < grp->unk1; i++) {
+        if (u == NULL) {
+            break;
+        }
+        func_800C9EE0(&grp->unk8[i], u, (s32 *)flags, i);
+        ((void (*)(Unk800C9D1C *, BtlUnit *, s32))func_800CA0A0)(&recs[grp->unk8[i].unk0], u, i);
+        u = u->unk0;
+    }
+}
 
 void func_800C9A28(void) {
     s16 n;
@@ -1012,7 +1069,55 @@ end:
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CBA58);
+s32 func_800CBA58(BtlScript *arg0, BtlUnit *arg1) {
+    u8 *pc = arg0->unk8;
+    s32 a;
+    s16 x, z;
+    u16 ang;
+    u16 b;
+    s16 d[2];
+    s32 v;
+    s16 w;
+
+    a = pc[1] | (pc[2] << 8);
+    ang = a;
+    b = pc[3] | (pc[4] << 8);
+    arg0->unk21 = pc[5];
+    w = arg1->unk86[1];
+    arg0->unk20 = 1;
+    arg0->unk1C = w;
+    if (a & 0x8000) {
+        switch (a & 0x7FFF) {
+        case 0:
+            ang = arg1->unkA0->unk22;
+            break;
+        case 1:
+            func_800CB1D4(arg0->unk4->unkC, (u16 *)&d[0], (u16 *)&d[1]);
+            x = (arg1->unk8C[0] >> 16) - d[0];
+            z = (arg1->unk8C[2] >> 16) - d[1];
+            d[0] = x;
+            d[1] = z;
+            if (x == 0 && z == 0) {
+                ang = arg1->unk86[1];
+            } else {
+                ang = ratan2(d[0], d[1]);
+            }
+            break;
+        default:
+            ang = arg1->unk86[1];
+            break;
+        }
+    }
+    ang = (ang + b) & 0xFFF;
+    v = ((u16)arg1->unk86[1] - ang) & 0xFFF;
+    if (v > 0x800) {
+        arg0->unk1E = 0x1000 - v;
+    } else {
+        arg0->unk1E = -v;
+    }
+    arg0->unk8 += 6;
+    return 1;
+}
 
 void func_800CBBB0(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;

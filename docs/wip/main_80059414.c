@@ -1,4 +1,4 @@
-/* 9 rows: a (D_8007F790) lands in v1 instead of a3 (the original also has t and the loop counter v in a3), and D_80080A10 is loaded before a->unk8. Pass 8: v reused for t (11 -> 9). new_var2 is a permuter leftover; a fresh draft without the temps scores 39. */
+/* 9 rows: a (D_8007F790) lands in v1 instead of a3 (the original also has t and the loop counter v in a3), and D_80080A10 is loaded before a->unk8. Pass 8: v reused for t (11 -> 9). new_var2 is a permuter leftover; a fresh draft without the temps scores 39. Pass 13: in the original, a (a3) conflicts with the D_80080A10 value (v1, loaded while a is live), which is why a skips v1 and lands in a3 next to t/v (a dies at lw v1,0xC(a3), where t is born). Ours loads D_80080A10 into v0 (it shares the dying %hi qty), so a takes v1. The natural spelling `v = ~(D_80080A10->unk8 & D_80080A10->unkC) | (a->unk8 & a->unkC); mask = ~(a->unkC & v) & D_80080A10->unkC & lim;` gets a into a3 but shifts the loop registers (32 rows). A Unk80080A10 *b local for D_80080A10 does the same. */
 #include "ff9.h"
 
 void func_80059414(void) {

@@ -4,6 +4,31 @@ Functions agents got close on but couldn't finish. Drafts for main are in the ma
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
 ## main
+- Pass 9 (the seven large undrafted functions) matched 2: 800283E0 (832 B), 80023A6C (1100 B).
+  80023A6C is game code, not unsigned PsyQ: it draws the countdown timer from D_80076B60.unk408
+  (D_80076F68) through func_80027834/func_800253D4 and reads D_8006794C, and nothing about it looks
+  like a library function. What worked:
+  - 800283E0: one SPRT pointer variable per half (p, q). With one shared `p` it is a global pseudo,
+    global-alloc puts it after the block-local temps (t2 instead of t0) and u/v/p rotate through
+    t0-t2 (39 rows -> 0). u and v are locals set before the `flag == 0 ? :` join, so `v = 0xE0`
+    stays an `addiu t1` + `andi` (an inline helper substitutes the constant).
+  - 80023A6C: `d = unk0 - t->unk4` first (mvall), one `v` for all three `% 60` results, a separate
+    digit variable `dg = hr / 10; ...; dg = hr - dg * 10;` (the original reuses the quotient).
+    `t = &D_80076B60.unk408` links to the original's D_80076F68 reference.
+  - Hoisted constant addresses compete with long-lived variables for the 9 s-regs (8005D6BC,
+    8002920C): the original keeps the hoisted &D_80083158 / %hi(D_800770AC) in fp and spills a
+    long-lived local to 0x10(sp)/0x30(sp). Global-alloc priority is floor_log2(refs) * refs / live
+    length, and refs inside a loop count loop_depth times, so a `do { ... } while (0)` around the
+    in-loop uses raises the hoisted pseudo (8005D6BC).
+  - `x->unk10 &= ~x->unk8; m &= ~x->unk8;` (store first) reloads unk8 the way the original does
+    (800589F0, same as 80058F94). gcc 2.8 CSE keeps struct fields across a store to a scalar global
+    only in the fixed-struct/varying-scalar case, so `D_80080A10 = t` between two `t->unkC` reads
+    forces a reload.
+  - Drafts (first line has the status): 800589F0 (3 real rows; the else-branch keep mask is s1 instead
+    of s2; needs K&R definitions of func_80058990/func_800589E0, which it calls with two args),
+    8005D6BC (24; the tail value and the GetRCnt start should be one spilled pseudo), 800475D8 (52),
+    8002920C (108; three missing cross-jumps), 80025ED4 (146; register naming throughout).
+  - 8005A320: 7 more tail orders around the 0xFFFFFF mask, none better than 5.
 - Pass 8 matched 9 (80054650, 8005DB40, 8005E3FC, 80058118, 80057D80, 80054294, 80024BD8,
   80048E80, 80062E3C). What worked:
   - Variable reuse is the strongest lever. 80057D80: `pan` reused as the pitch scale factor k (the
@@ -150,6 +175,25 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   8002920C (231). (8005CF04 matched in pass 6: its draft had an uninitialised `old`.) Notes from
   earlier passes, still open: 800378C4 (f<14 branch shape, same search as 8004B85C), 8005DB40
   (two jump tables, AKAO look-ahead), 80054650 and 80062E3C (first drafts in docs/wip).
+- Pass 13: matched 800589F0 (0x544) and 8002995C (0x1F0). 8002920C went from 108 to 81 rows, and its
+  code is now identical apart from s/pkt. What decided them:
+  - 800589F0: in the original, each "keep" mask lands in the register of the value that dies where it
+    is born (ex in s2, then b2 in s2, and the else-branch mask in s2). The fix was global-alloc
+    priorities, worked out from build/s/myvp.py (refs/len/hard reg per pseudo for each variant). The
+    else mask reuses the loop variable `bit`. `b1 &= ~b2;` before the m1 call gives b1 enough refs to
+    beat b2 (0.222 vs 0.222, tie to the lower regno), and the old if (b1) identical branch is gone.
+    `bit` must beat m2 (0.875 vs 0.882). `ch = D_8007E3D8, bit = 0x100` in that order (bit 2 insns
+    shorter) fixes the s2/s3 choice but leaves li s2 after addiu s1. The identical branch was moved
+    to `if (m2)` around func_800589E0 (m2 29/136 = 0.853 < bit), which gives both: the right
+    allocation and li s2 first. The two-argument calls to func_80058990/func_800589E0 and the
+    three-argument call to func_80057898 use casts of the callee, like func_800585E0 does.
+  - 8002995C: `x += adv` goes inside each of the three call arms, not after the if/else.
+    sched1 keeps the pkt = v0 copy glued to the call. With the add in the same block, the adv load
+    has an in-block consumer, so it is scheduled right after the jal (before the copy, while v0
+    is still live), and local-alloc gives it v1. Cross-jumping then merges the three arms, and reorg
+    moves the add into the loop's bne delay slot. The identical if (x) around s++ is no longer
+    needed. In general, a value loaded from a stack variable that an earlier call wrote lands
+    in v1 rather than v0 when it is read in the same block as the call's return value.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,
@@ -284,6 +328,75 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
   Status: DE11C 430 rows (18 with registers masked, global allocation right; WIP docs/wip/ovl_0b_800DE11C.c),
   C67BC 234 (was ~300; 16 masked), AC37C 175 (notes on the tu/tv registers and the D_8006794C lo_sum CSE in the WIP
   header), CBA58 45 (notes added). D2DBC not attempted.
+- Pass 12: matched C67BC (0xF74) and CBA58 (0x158). What fixed them:
+  - C67BC: the index words are loaded into the index variables and masked in place
+    (`i0 = W0; i2 = W1; i1 = i0 >> 16; i3 = i2 >> 16; i0 &= 0xFFFF; i2 &= 0xFFFF;`), and the 3-vertex loops use the
+    same form for their third index (`i2 = *(u32 *)&s->unk0[2]; ... i2 &= 0xFFFF;`, which combine turns back into a
+    lhu). The GT3/G3 Z loads use `D_80070520[(u16)i0]`: i0 has full-word sets, so after the cull label the and is kept
+    and CSE does not reuse i0*4. Last step was i1 (t1) vs i2 (t0): global priorities 3.387 vs 3.360, and the
+    word-plus-mask form gives i2 four more refs. Before that, a refs/length check showed that single-line moves never
+    change these priorities without also changing the code: sched1 normalizes the order, so look for a different RTL
+    (types, forms), not a different statement order.
+  - CBA58: `u16 b` (the second operand word) instead of s32 changes sched1's order of the header loads. `u16 ang`
+    gives the a2 -> a1 copy. `s16 x, z` for the differences with `if (x == 0 && z == 0) ang = unk86; else
+    ang = ratan2(d[0], d[1]);`, so the test uses the registers and the ratan2 arguments are reloaded with lh. `s16 w`
+    for the unk86[1] copy (lhu). The tail is `ang = (ang + b) & 0xFFF;`.
+  - Tools for this (in the agent worktree's build/): vp.py/vtp.py (variant specs with refs/len/priority of chosen
+    pseudos, parallel), psweep.py (single-line moves with the priorities of two pseudos), prefs.py (greg conflicts
+    and preferences: which hard regs other allocnos prefer).
+  Status: DE11C 79 rows (was 430; 8 masked). The first four loops match apart from the FT3/GT3 tail sra. The draft still
+  has two invented variables (zg = otz of the G/F loops, i2 = the second colour word of GT4/G4); see the WIP header.
+  D2DBC 63 (pure allocation; the frame/cnt register t2 also holds `(b & 0xF) * 2`), AC37C unchanged (175).
+- Pass 13: matched DE11C (0x1040), D2DBC (0x274), D1D74 (0x288), D1FFC (0x3DC), C9794 (0x294), C0C00 (0x7C).
+  What fixed them:
+  - DE11C: one `otz` for all eight loops, with `addPrim(&ot[otz >> 4], p)` in the 3-vertex loops (no in-place
+    `otz >>= 4`). That drops the shared pseudo from 120 refs (1.59, took t2) to 104 refs / 450 insns = 1.39, and
+    the first-half conflicts (otz vs b in t1) keep it off t1 in the second half, so it lands in t3 everywhere (a split
+    zg had no conflict with b and 1.97, so it took a2, or t1 when its priority was lowered). The second colour/uv word of GT4/G4 goes into i1 (dead by then; the original's a0), and `col[a & 0xFFFF]`
+    works as well as the byte-offset form. Found with build/gsim.py (below), not by search.
+  - build/gsim.py (agent worktree agent-aa3230c8e7e5ba3f3): replays global-alloc from a `-dg -dl` dump (conflicts, hard conflicts, printed preferences,
+    regs_used_so_far for pass 0) with overrides: `REG=pri`, `conf:A,B` (extra conflict), `pref:A,HARD` (extra full
+    preference), `merge:A,B` (one allocno). gsweep2.sh sweeps one pseudo's priority. It reproduces the real dispositions
+    of DE11C exactly (apart from HI/LO and spilled pseudos), so it answers "which priority/conflict would give the
+    original registers" before writing any C. For DE11C, `merge:85,86` at priority 1.0-1.2 gave the original assignment.
+  - One variable for several roles, again: D2DBC's n (count, n*2+8, frame offset, n++) and f (frame, %, count,
+    `(b & 0xF) * 2`); D1D74/D1FFC's i (frame, then the palette count `i = *p++`); C9794's i for all three loops.
+  - D2DBC: mode/ctab/clut are plain locals that lose global allocation (refs <= 4 * calls, so no caller-save) and
+    are reloaded through reload's t4: `clut = h->unk4 << 16` as one statement (5 refs made it caller-saved in t2).
+    `mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5)` gives the original OR association; `num = arg0[n++]; arg0 += n;`;
+    `for (i = 0; ...; i++, prim += 20)` orders the giv increments.
+  - sched1 ties (D2DBC, D1D74, D1FFC): when two launched insns tie, the one later in the RTL is placed lower. The frame
+    offset must be computed before the palette pointer and added after it: `off = f * 2; q = (u16 *)(arg0 + n);
+    n = *(u16 *)((u8 *)h->unk8 + off);`. D1D74/D1FFC also need `pal = arg0 + n; p = (u16 *)pal;` (permuter find; the
+    copy changes the order) and D1FFC `mode = h->unk2` before `c.unk14 = h->unk4`.
+  - C0C00: `v = ... * 4` in each branch with `u8 k`: with an s32 k, reload_cse turns the k == 2 branch's `sll 2` into
+    `sllv a3` (k holds 2) and the branches no longer cross-jump.
+  - C9794: `for (i = 0, cmd = src; ...; i++, cmd++)` puts the i increment before cmd's.
+  Status of the rest: AA504 3, B1B48 3, C3F78 3 (-O1), E1534 4, DA138 6 (gsim: needs sz > p > i, or sz preferring v1
+  and p a0), BFF20 6, AB810 6 (was 8: pass e->unk4 to the first func_8001C7FC; the loop entry test still folds),
+  E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175. 15-20 min permuter runs on AA504, E1534, DA1F4 found nothing.
+- Pass 14: matched E1534 (0x1D4) and AA504 (0x454). What fixed them:
+  - AA504: index the collected-id array with a count (`s = &ids[cnt] - 1; ... ids[cnt++] = w;`, `ids = arg2->unk10.h`)
+    instead of a walking pointer. loop.c then reduces `ids + cnt*2` to a giv whose init copies the hoisted base
+    (`move a3,t0` after `addiu t0,s5,16`), and the hoisted `li t1,2` lands first. A separate pointer q = &ids[cnt]
+    keeps an extra copy; the index form must be used for both the search start and the store. Its jump table needs
+    the trailing zero padding word.
+  - E1534: the tail goes through one pointer, `q = (s32 *)&e->unk24; q[0] = p; ...; q[1] = arg3; q[2] = arg3;`, so
+    the last e-relative address loop.c sees is unk24 and the giv base is e+0x24. For the clear's register copy
+    (`addu v1,a1` in the delay slot), the test value is loaded first (`v = *(s32 *)p;`) and then the copy goes into
+    the dead clear-loop counter k (`k = (u32)p;`), which conflicts with p so it can't share a1, and sits in another
+    block from its use so combine can't fold it. Last, an empty `do { } while (0);` before `return e` splits the
+    return-value copy into its own block, so sched1 can't hoist `v0 = e` above the stores and reorg puts it in the
+    jr delay slot.
+  - Copies that survive: CSE makes the longer-lived (or earlier-set) register the class head, combine folds a copy
+    into its only use in the same block, and global alloc ties a copy to a dying source with no conflict. A copy
+    survives only when its destination conflicts with the source and the use is in another block.
+  Findings without a match (details in the WIP headers): AB810's entry test is folded by combine, not CSE (i = 0
+  substituted through LOG_LINKS in the same block). C3F78's `bne other; j case5` is reorg's relax_delay_slots swap,
+  which needs the case-5 beq predicted very unlikely. BFF20's tail copy needs nonzero_bits(flag) <= 0xFF over all of
+  the flag's sets. E4A3C with five scalar params is the right length, but arg2/arg3 get s-registers. AC37C's t7 full
+  address is used by quad 3's D_8006794C loads.
+  Status: B1B48 3, C3F78 3 (-O1), DA138 6, BFF20 6, AB810 6, E4A3C 7, DA1F4 14, AB07C 24, CD210 25, AC37C 175.
 
 ## ovl_0a / ovl_0c (field / world map)
 - 0a C4EC8, C31F8: 1 instruction each (constant load vs register copy).

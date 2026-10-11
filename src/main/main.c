@@ -2733,7 +2733,74 @@ void func_80023A4C(void) {
     func_80023F00();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80023A6C);
+void func_80023A6C(void) {
+    UnkTimer *t;
+    u8 blink;
+    u8 *pkt;
+    u32 *ot;
+    u8 shown;
+    u8 colon;
+    s32 w;
+    s32 d;
+    s32 v;
+    s32 dg;
+    s32 hr;
+    s32 min;
+
+    t = &D_80076B60.unk408;
+    d = D_80076B60.unk0 - t->unk4;
+    blink = 0;
+    min = t->unkC / 60;
+    hr = min / 60;
+    ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8] + 1;
+    D_800686C8.x = 4;
+    pkt = D_80076B60.unk404;
+    min %= 60;
+    if (d < 8) {
+        D_800686C8.x = d * 8 - 0x3C;
+        blink = 1;
+    }
+    if (t->unk1 == 0) {
+        v = VSync(-1) % 60;
+        colon = 0;
+        if (blink || v >= 30) {
+            colon = 1;
+        }
+        shown = colon;
+    } else if (hr != 0 || min != 0) {
+        v = t->unkC % 60;
+        shown = 1;
+        colon = v >= 30;
+    } else {
+        v = VSync(-1) % 60;
+        colon = v >= 30;
+        shown = colon;
+    }
+    if (shown) {
+        dg = hr / 10;
+        if (dg != 0) {
+            pkt = func_80027834(D_800686C8.x + 5, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        }
+        dg = hr - dg * 10;
+        pkt = func_80027834(D_800686C8.x + 0xF, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        dg = min / 10;
+        pkt = func_80027834(D_800686C8.x + 0x23, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        dg = min - dg * 10;
+        pkt = func_80027834(D_800686C8.x + 0x2D, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+    }
+    if (colon) {
+        pkt = func_80027834(D_800686C8.x + 0x19, 8, ot, 0xEA, t->unk1 == 0, &w, pkt);
+    }
+    pkt = func_800253D4(&D_800686C8, ot, 1, 1, 1, (D_8006794C->unk24 >> 18) & 1, pkt);
+    setlen(pkt, 3);
+    ((TileWords *)pkt)->rgbc = 0x62000000;
+    ((TileWords *)pkt)->xy = ((D_800686C8.x + 2) & 0xFFFF) | ((D_800686C8.y + 2) << 16);
+    ((TileWords *)pkt)->wh = (D_800686C8.w - 4) | ((D_800686C8.h - 4) << 16);
+    addPrim(ot, pkt);
+    pkt += sizeof(TileWords);
+    SetDrawTPage(pkt, 1, 1, 0);
+    addPrim(ot, pkt);
+}
 
 void func_80023EB8(void) {
     func_80024070();
@@ -3877,7 +3944,57 @@ void func_80028204(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800283E0);
+void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
+    s16 h0;
+    s32 cx;
+    s32 cy;
+    u16 clut;
+    s32 u, v;
+    SprtWords *p;
+    SprtWords *q;
+
+    h0 = 0x20;
+    if (h < 0x20) {
+        h0 = h;
+    }
+    if (D_8006794C->unk8 == 3) {
+        cx = 0x280;
+        cy = 0xDC;
+    } else {
+        cx = 0x100;
+        cy = 0xFD;
+    }
+    clut = GetClut(cx + ((slot & 1) << 7), cy + (slot >> 1));
+    u = slot << 5;
+    v = 0xE0;
+    setlen(D_80077170, 4);
+    ((SprtWords *)D_80077170)->rgbc = flag == 0 ? 0x64808080 : 0x66808080;
+    p = (SprtWords *)D_80077170;
+    D_80077170 += sizeof(SprtWords);
+    p->xy = (x & 0xFFFF) | (y << 16);
+    p->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
+    p->wh = (h0 << 16) | 0x20;
+    addPrim(&D_8007716C[otz], p);
+    SetDrawTPage(D_80077170, 1, 1, 0x88);
+    addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(DrTpageWords);
+    if (h > 0x20) {
+        u = ((slot & 1) << 5) + 0x20;
+        v = (slot >> 1) * 14 - 0x20;
+        h -= h0;
+        setlen(D_80077170, 4);
+        ((SprtWords *)D_80077170)->rgbc = flag == 0 ? 0x64808080 : 0x66808080;
+        q = (SprtWords *)D_80077170;
+        D_80077170 += sizeof(SprtWords);
+        q->xy = (x & 0xFFFF) | ((y + 0x20) << 16);
+        q->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
+        q->wh = (h << 16) | 0x20;
+        addPrim(&D_8007716C[otz], q);
+        SetDrawTPage(D_80077170, 1, 1, 0x89);
+        addPrim(&D_8007716C[otz], D_80077170);
+        D_80077170 += sizeof(DrTpageWords);
+    }
+}
 
 void func_80028720(void *data, s32 n) {
     RECT r0;
@@ -4175,7 +4292,51 @@ void func_80029058(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002920C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002995C);
+u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
+    s32 adv;
+    s32 x0;
+    u8 th;
+    Unk7D4 *font;
+    Unk7D4 *kanji;
+    s32 th2;
+    u8 *s;
+    s32 c;
+    s32 code;
+
+    font = D_8006794C->unk1C->unk7D4;
+    s = ch->unk0;
+    x0 = x;
+    th = font->unk4 >> 8;
+    kanji = D_8006794C->unk1C->unk84C;
+    th2 = 0;
+    if (kanji != NULL) {
+        th2 = kanji->unk0 >> 8;
+    }
+    while ((c = *s) != 0xFF) {
+        if (kanji != NULL && c >= th2) {
+            code = (c << 8) + s[1];
+            s++;
+            c = code - kanji->unk0;
+            pkt = func_8002B7B0(x, y, ot, *(kanji->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
+            x += adv;
+        } else if (c >= th) {
+            code = (c << 8) + s[1];
+            s++;
+            c = code - font->unk4 + font->unk6;
+            pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
+            x += adv;
+        } else {
+            pkt = func_8002B7B0(x, y, ot, *(font->unkC + c), D_800770AC, &adv, (SprtWords *)pkt);
+            x += adv;
+        }
+        s++;
+    }
+    setlen(pkt, 1);
+    ((DrTpageWords *)pkt)->code = 0xE100061E;
+    addPrim(ot, pkt);
+    *w = x - x0;
+    return pkt + 8;
+}
 
 u8 *func_80029B4C(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     u8 *s = (u8 *)str;
@@ -17267,7 +17428,115 @@ void func_800589E0(Unk800589E0 *a) {
     a->unk50 = D_80080A24;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800589F0);
+void func_800589F0(void) {
+    u32 keyon;
+    u32 ex;
+    u32 m1;
+    u32 m2;
+    u32 b1;
+    u32 b2;
+    u32 bit;
+    AkaoChannel *ch;
+    Unk80080A10 *s;
+    Unk80080A10 *t;
+
+    ex = D_80080A70.unk0 | D_80080A70.unk10 | D_80083174;
+    keyon = 0;
+    if ((D_80080A10->unk4 & D_80080A10->unk10) ||
+        (D_8007F790 != NULL && (D_8007F790->unk4 & D_8007F790->unk10))) {
+        func_800588B0(ex);
+    }
+    if (D_8007F790 != NULL) {
+        if (D_80083158.unk4 & 0x100) {
+            ((void (*)(Unk80080A10 *, AkaoChannel *))func_80058990)(D_8007F790, D_8007F71C);
+        }
+        t = D_8007F790;
+        m1 = t->unk4 & t->unk14 & ~(t->unkC & ex);
+        b1 = m1 & t->unkC & ~ex;
+        D_80080A10 = t;
+        if (m1 & D_80080A10->unk8) {
+            func_800585E0(D_8007F71C, m1 & D_80080A10->unk8, b1, &keyon);
+            D_80080A10->unk10 &= ~D_80080A10->unk8;
+            m1 &= ~D_80080A10->unk8;
+        }
+        s = &D_8007F858;
+        D_80080A10 = s;
+        m2 = s->unk4 & s->unk14 & ~(s->unkC & (b1 | ex));
+        b2 = m2 & s->unkC & ~(b1 | ex);
+        if (m2 & D_80080A10->unk8) {
+            func_800585E0(D_8007BD48, m2 & D_80080A10->unk8, b2, &keyon);
+            D_80080A10->unk10 &= ~D_80080A10->unk8;
+            m2 &= ~D_80080A10->unk8;
+        }
+        if (m1) {
+            D_80080A10 = D_8007F790;
+            b1 &= ~b2;
+            func_800585E0(D_8007F71C, m1, b1, &keyon);
+            D_80080A10->unk10 = 0;
+            D_80080A10 = s;
+        }
+        if (m2) {
+            func_800585E0(D_8007BD48, m2, b2, &keyon);
+            D_80080A10->unk10 = 0;
+        }
+        if (D_80083158.unk4 & 0x100) {
+            if (m2) {
+                ((void (*)(Unk80080A10 *, AkaoChannel *))func_800589E0)(D_8007F790, D_8007F71C);
+            } else {
+                ((void (*)(Unk80080A10 *, AkaoChannel *))func_800589E0)(D_8007F790, D_8007F71C);
+            }
+        }
+    } else {
+        m2 = D_80080A10->unk4 & D_80080A10->unk14 & ~(D_80080A10->unkC & ex);
+        bit = m2 & D_80080A10->unkC & ~ex;
+        if (m2 & D_80080A10->unk8) {
+            func_800585E0(D_8007BD48, m2 & D_80080A10->unk8, bit, &keyon);
+            D_80080A10->unk10 &= ~D_80080A10->unk8;
+            m2 &= ~D_80080A10->unk8;
+        }
+        if (m2) {
+            func_800585E0(D_8007BD48, m2, bit, &keyon);
+            D_80080A10->unk10 = 0;
+        }
+    }
+    m2 = D_80080A70.unk0 & D_80080A70.unk8;
+    if (m2) {
+        keyon |= D_80080A70.unk4;
+        bit = 0x100;
+        ch = D_8007E3D8;
+        for (; m2 != 0; bit <<= 1, ch++) {
+            if (m2 & bit) {
+                func_80058118(ch, bit);
+                if (ch->unk11C) {
+                    ((void (*)(s32, Unk800577EC *, u32))func_80057898)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
+                }
+                m2 &= ~bit;
+            }
+        }
+        D_80080A74 = 0;
+    }
+    m2 = D_80083158.unk8;
+    if (m2 & 0x80) {
+        SpuSetReverbModeDepth(D_80080A10->unk48 >> 12, D_80080A10->unk48 >> 12);
+        D_80083158.unk8 &= ~0x80;
+    }
+    if (m2 & 0x10) {
+        SpuSetNoiseClock(D_80080A70.unk0 ? D_80080A70.unk28 : D_80080A10->unk6E);
+        D_80083158.unk8 &= ~0x10;
+    }
+    if (m2 & 0x100) {
+        func_80059140((u32 *)&D_80083238[1], D_8007F790->unk3C, D_80080A10->unk3C, D_80080A70.unk1C);
+        func_80059140((u32 *)&D_80083238[0], D_8007F790->unk40, D_80080A10->unk40, D_80080A70.unk20);
+        func_80059140((u32 *)&D_80083238[2], D_8007F790->unk44, D_80080A10->unk44, D_80080A70.unk24);
+        func_800575EC(D_80083238[0]);
+        func_80057608(D_80083238[1]);
+        func_80057624(D_80083238[2]);
+        D_80083158.unk8 &= ~0x100;
+    }
+    if (keyon) {
+        func_800575B4(keyon);
+    }
+}
 
 void func_80058F34(AkaoChannel *c, u32 *out, u32 mask, u32 keep) {
     u32 bit = 1;

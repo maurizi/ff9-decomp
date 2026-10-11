@@ -697,9 +697,164 @@ void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1D74);
+void func_800D1D74(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
+    VECTOR s;
+    SVECTOR r;
+    MATRIX m;
+    Unk800D3ED4Ctx c;
+    s32 n;
+    u16 *p;
+    u8 *prim;
+    u8 *pal;
+    s32 i;
+    s32 off;
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D1FFC);
+    if (arg2 == NULL) {
+        arg2 = &r;
+        *(s32 *)&r.vx = 0;
+        *(s32 *)&r.vz = 0;
+    }
+    n = h->unk0 & 0x7FFF;
+    i = arg4;
+    if (i >= n) {
+        i %= n;
+    }
+    n = n * 2 + 8;
+    off = i * 2;
+    pal = arg0 + n;
+    p = (u16 *)pal;
+    i = *p++;
+    c.unk0 = p;
+    c.unk4 = p + i + 1;
+    c.unk10 = h->unk2 | ((arg5 & 3) << 5);
+    c.unk14 = h->unk4;
+    c.unkC = (h->unk6 - 1) * 2;
+    c.unk8 = (h->unk7 - 1) * 2;
+    n = *(u16 *)((u8 *)h->unk8 + off);
+    c.unk1C = arg0[n++];
+    arg0 += n;
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + c.unk1C * 40;
+    gte_rtv0tr_nn();
+    func_800316D8(arg2, &m);
+    if (arg3 >= 0) {
+        s.vz = arg3;
+        s.vy = arg3;
+        s.vx = arg3;
+        ScaleMatrix(&m, &s);
+    }
+    gte_stlvnl(m.t);
+    if (arg2->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    c.unk24 = (arg5 == 0xFF) ? 0x2C : 0x2E;
+    c.unk18 = arg6;
+    c.unk20 = D_800F78A4->unk28;
+    if (c.unk1C != 0) {
+        func_800D3ED4(arg0, &c, prim, D_800F78A4->unk20);
+    }
+}
+
+void func_800D1FFC(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
+    VECTOR s;
+    SVECTOR r;
+    MATRIX m;
+    Unk800D3ED4Ctx c;
+    s32 z;
+    s32 n;
+    u16 *p;
+    s32 off;
+    u8 *prim;
+    u8 *pal;
+    s32 i;
+    s32 mode;
+    s32 size;
+    DR_TPAGE *tp;
+
+    if (arg2 == NULL) {
+        arg2 = &r;
+        *(s32 *)&r.vx = 0;
+        *(s32 *)&r.vz = 0;
+    }
+    n = h->unk0 & 0x7FFF;
+    i = arg4;
+    if (i >= n) {
+        i %= n;
+    }
+    n = n * 2 + 8;
+    off = i * 2;
+    pal = arg0 + n;
+    p = (u16 *)pal;
+    i = *p++;
+    c.unk0 = p;
+    c.unk4 = p + i + 1;
+    mode = h->unk2;
+    c.unk14 = h->unk4;
+    c.unkC = h->unk6 - 1;
+    c.unk8 = h->unk7 - 1;
+    z = *(u16 *)&h->unk6;
+    n = *(u16 *)((u8 *)h->unk8 + off);
+    c.unk1C = arg0[n++];
+    arg0 += n;
+    gte_SetRotMatrix(D_800F78A4->unk14);
+    gte_SetTransMatrix(D_800F78A4->unk14);
+    gte_ldv0(arg1);
+    if (mode == 0) {
+        size = 0xC;
+        z = 0x68;
+    } else if (z == 0x808) {
+        size = 0x10;
+        z = 0x74;
+    } else if (z == 0x1010) {
+        size = 0x10;
+        z = 0x7C;
+    } else {
+        size = 0x14;
+        z = 0x64;
+    }
+    prim = D_800F78A4->unk24;
+    D_800F78A4->unk24 = prim + size * c.unk1C;
+    gte_rtv0tr_nn();
+    func_800316D8(arg2, &m);
+    if (arg3 >= 0) {
+        s.vz = arg3;
+        s.vy = arg3;
+        s.vx = arg3;
+        ScaleMatrix(&m, &s);
+    }
+    gte_stlvnl(m.t);
+    if (arg5 != 0xFF) {
+        z |= 2;
+    }
+    gte_rtps_nn();
+    c.unk24 = z;
+    tp = func_800D090C(mode, arg5);
+    gte_stszotz(&z);
+    if (arg2->pad != 0) {
+        MulRotMatrix(&m);
+    }
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    c.unk18 = arg6;
+    z = (z - D_800F78A4->unk28) >> 2;
+    if ((u32)z < 0x1000 && c.unk1C != 0) {
+        if (size == 0x14) {
+            func_800D40CC(arg0, &c, prim, &D_800F78A4->unk20[z]);
+        } else if (size == 0xC) {
+            func_800D437C(arg0, &c, prim, &D_800F78A4->unk20[z]);
+        } else {
+            func_800D4228(arg0, &c, prim, &D_800F78A4->unk20[z]);
+        }
+        addPrimLenIn(&D_800F78A4->unk20[z], tp, 0x1000000);
+    }
+}
 
 void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     VECTOR s;
@@ -973,7 +1128,72 @@ s32 arg10, arg11;
     func_800D0858(0x09000000, 0xFFE, p);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D2DBC);
+void func_800D2DBC(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
+    struct {
+        u16 rg;
+        u8 b;
+        u8 code;
+        s32 pad4;
+    } col;
+    u32 *mode;
+    u8 *ctab;
+    Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
+    s32 n;
+    u16 *q;
+    u16 *pal;
+    s32 off;
+    s32 wv;
+    s32 hv;
+    s32 num;
+    u8 *prim;
+    s32 i;
+    u8 *c;
+    s32 b;
+    s32 tpage;
+    s32 f;
+    s32 clut;
+
+    n = h->unk0 & 0x7FFF;
+    f = frame;
+    if (f >= n) {
+        f %= n;
+    }
+    n = n * 2 + 8;
+    off = f * 2;
+    q = (u16 *)(arg0 + n);
+    n = *(u16 *)((u8 *)h->unk8 + off);
+    pal = q + 1;
+    f = *q;
+    tpage = h->unk2;
+    clut = h->unk4 << 16;
+    hv = h->unk6 - 1;
+    wv = h->unk7 - 1;
+    num = arg0[n++];
+    arg0 += n;
+    prim = D_800F78A4->unk24;
+    mode = (u32 *)(prim + num * 20);
+    D_800F78A4->unk24 = (u8 *)(mode + 2);
+    mode[1] = tpage | 0xE1000000 | ((tp & 3) << 5);
+    ctab = (u8 *)(pal + f + 1);
+    col.code = (tp != 0xFF) ? 0x66 : 0x64;
+    for (i = 0; i < num; i++, prim += 20) {
+        ((SPRT *)prim)->x0 = (s8)arg0[0] + x - (wv >> 1);
+        ((SPRT *)prim)->y0 = (s8)arg0[1] + y - (hv >> 1);
+        b = arg0[2];
+        f = (b & 0xF) * 2;
+        *(u32 *)&((SPRT *)prim)->u0 = *(u16 *)((u8 *)pal + f) | clut;
+        c = ctab + ((b >> 2) & 0x3C);
+        arg0 += 3;
+        col.rg = *(u16 *)c;
+        col.b = c[2];
+        gte_DpqColorFar_nst(&col, p);
+        ((SPRT *)prim)->w = wv;
+        ((SPRT *)prim)->h = hv;
+        gte_strgb(&((SPRT *)prim)->r0);
+        func_800D0858(0x04000000, 0xFFE, prim);
+    }
+    func_800D0858(0x01000000, 0xFFE, mode);
+}
 
 void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
     RECT r;
@@ -4214,7 +4434,417 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DD27C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DDF10);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DE11C);
+u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
+    s32 opz;
+    s32 otz;
+    BtlMesh *g;
+    u8 (*uv)[2];
+    u8 (*col)[4];
+    u32 *ot;
+    u32 *tex;
+    u32 n;
+    u32 i;
+    s32 xy0, xy1, xy2;
+    u32 a, b;
+    u32 *cp;
+    u32 i1, i3;
+    u32 t;
+    u32 hi;
+    u8 *src;
+    WmSrcFT4 *sFT4;
+    POLY_FT4 *pFT4;
+    WmSrcFT3 *sFT3;
+    POLY_FT3 *pFT3;
+    WmSrcGT4 *sGT4;
+    POLY_GT4 *pGT4;
+    WmSrcGT3 *sGT3;
+    POLY_GT3 *pGT3;
+    WmSrcG4 *sG4;
+    POLY_G4 *pG4;
+    WmSrcG3 *sG3;
+    POLY_G3 *pG3;
+    WmSrcF4 *sF4;
+    POLY_F4 *pF4;
+    WmSrcF3 *sF3;
+    POLY_F3 *pF3;
+
+    if (arg0->unk0 & 0x10) {
+        return prim;
+    }
+    g = &arg0->unk8->unk10[arg1];
+    src = (u8 *)g->unk1C;
+    uv = g->unk20;
+    col = g->unk24;
+    if (arg0->unk10 == 0) {
+        arg0->unk10 = (s32)prim;
+    }
+    tex = (u32 *)arg0->unk18;
+    ot = D_8006794C->unk1C->unk10[D_8006794C->unk1C->unk8];
+
+    n = g->unk2;
+    for (i = 0; i < n; src += sizeof(WmSrcFT4)) {
+        sFT4 = (WmSrcFT4 *)src;
+        pFT4 = (POLY_FT4 *)prim;
+        a = *(u32 *)&sFT4->unk0[0];
+        b = *(u32 *)&sFT4->unk0[2];
+        i1 = a >> 16;
+        i3 = b >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b & 0xFFFF];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        i++;
+        if (otz > 0x3FFFFFFF) {
+            continue;
+        }
+        if (!(sFT4->unk15 & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        *(u32 *)&pFT4->r0 = *(u32 *)sFT4->unk10;
+        setlen(pFT4, 9);
+        *(s32 *)&pFT4->x0 = xy0;
+        *(s32 *)&pFT4->x1 = xy1;
+        *(s32 *)&pFT4->x2 = xy2;
+        setcode(pFT4, 0x2C);
+        *(s32 *)&pFT4->x3 = D_800711A8[i3];
+        a = *(u32 *)&sFT4->unk8[0];
+        b = *(u32 *)&sFT4->unk8[2];
+        t = tex[sFT4->unk13];
+        hi = t & 0xFFFF0000;
+        t <<= 16;
+        *(u32 *)&pFT4->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
+        *(u32 *)&pFT4->u1 = *(u16 *)uv[a >> 16] | t;
+        *(u16 *)&pFT4->u2 = *(u16 *)uv[b & 0xFFFF];
+        *(u16 *)&pFT4->u3 = *(u16 *)uv[b >> 16];
+        if (sFT4->unk15 & 1) {
+            pFT4->tpage |= sFT4->unk15 & 0xE0;
+            setSemiTrans(pFT4, 1);
+        }
+        otz &= 0xFFFFF;
+        addPrim(&ot[otz >> 6], pFT4);
+        prim += sizeof(POLY_FT4);
+    }
+
+    n = g->unk4;
+    for (i = 0; i < n; src += sizeof(WmSrcFT3)) {
+        sFT3 = (WmSrcFT3 *)src;
+        pFT3 = (POLY_FT3 *)prim;
+        a = *(u32 *)&sFT3->unk0[0];
+        b = sFT3->unk0[2];
+        i1 = a >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        i++;
+        if (otz > 0x2FFFFFFF) {
+            continue;
+        }
+        if (!(sFT3->unk12 & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        otz &= 0xFFFFF;
+        *(u32 *)&pFT3->r0 = *(u32 *)sFT3->unk8;
+        setlen(pFT3, 7);
+        *(s32 *)&pFT3->x0 = xy0;
+        *(s32 *)&pFT3->x1 = xy1;
+        *(s32 *)&pFT3->x2 = xy2;
+        setcode(pFT3, 0x24);
+        t = tex[sFT3->unk6];
+        a = *(u32 *)&sFT3->unkC[0];
+        hi = t & 0xFFFF0000;
+        t <<= 16;
+        *(u32 *)&pFT3->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
+        *(u32 *)&pFT3->u1 = *(u16 *)uv[a >> 16] | t;
+        *(u16 *)&pFT3->u2 = *(u16 *)uv[sFT3->unkC[2]];
+        otz /= 3;
+        if (sFT3->unk12 & 1) {
+            pFT3->tpage |= sFT3->unk12 & 0xE0;
+            setSemiTrans(pFT3, 1);
+        }
+        addPrim(&ot[otz >> 4], pFT3);
+        prim += sizeof(POLY_FT3);
+    }
+
+    n = g->unk6;
+    for (i = 0; i < n; src += sizeof(WmSrcGT4)) {
+        sGT4 = (WmSrcGT4 *)src;
+        pGT4 = (POLY_GT4 *)prim;
+        a = *(u32 *)&sGT4->unk0[0];
+        b = *(u32 *)&sGT4->unk0[2];
+        i1 = a >> 16;
+        i3 = b >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b & 0xFFFF];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        i++;
+        if (otz > 0x3FFFFFFF) {
+            continue;
+        }
+        if (!(sGT4->unk1C & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        *(s32 *)&pGT4->x0 = xy0;
+        *(s32 *)&pGT4->x1 = xy1;
+        *(s32 *)&pGT4->x2 = xy2;
+        *(s32 *)&pGT4->x3 = D_800711A8[i3];
+        a = *(u32 *)&sGT4->unk10[0];
+        i1 = *(u32 *)&sGT4->unk10[2];
+        t = tex[sGT4->unk1D];
+        cp = (u32 *)col[a & 0xFFFF];
+        *(u32 *)&pGT4->r0 = *cp;
+        cp = (u32 *)col[a >> 16];
+        *(u32 *)&pGT4->r1 = *cp;
+        cp = (u32 *)col[i1 & 0xFFFF];
+        *(u32 *)&pGT4->r2 = *cp;
+        cp = (u32 *)col[i1 >> 16];
+        *(u32 *)&pGT4->r3 = *cp;
+        setlen(pGT4, 12);
+        setcode(pGT4, 0x3C);
+        a = *(u32 *)&sGT4->unk8[0];
+        i1 = *(u32 *)&sGT4->unk8[2];
+        hi = t & 0xFFFF0000;
+        t <<= 16;
+        *(u32 *)&pGT4->u0 = *(u16 *)uv[a & 0xFFFF] | hi;
+        *(u32 *)&pGT4->u1 = *(u16 *)uv[a >> 16] | t;
+        *(u16 *)&pGT4->u2 = *(u16 *)uv[i1 & 0xFFFF];
+        *(u16 *)&pGT4->u3 = *(u16 *)uv[i1 >> 16];
+        if (sGT4->unk1C & 1) {
+            pGT4->tpage |= sGT4->unk1C & 0xE0;
+            setSemiTrans(pGT4, 1);
+        }
+        otz &= 0xFFFFF;
+        addPrim(&ot[otz >> 6], pGT4);
+        prim += sizeof(POLY_GT4);
+    }
+
+    n = g->unk8;
+    for (i = 0; i < n; src += sizeof(WmSrcGT3)) {
+        sGT3 = (WmSrcGT3 *)src;
+        pGT3 = (POLY_GT3 *)prim;
+        a = *(u32 *)&sGT3->unk0[0];
+        b = sGT3->unk0[2];
+        i1 = a >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        i++;
+        if (otz > 0x2FFFFFFF) {
+            continue;
+        }
+        if (!(sGT3->unkF & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        otz &= 0xFFFFF;
+        *(s32 *)&pGT3->x0 = xy0;
+        *(s32 *)&pGT3->x1 = xy1;
+        *(s32 *)&pGT3->x2 = xy2;
+        a = *(u32 *)&sGT3->unk10[0];
+        t = tex[sGT3->unk16];
+        cp = (u32 *)col[a & 0xFFFF];
+        *(u32 *)&pGT3->r0 = *cp;
+        cp = (u32 *)col[a >> 16];
+        *(u32 *)&pGT3->r1 = *cp;
+        cp = (u32 *)col[sGT3->unk10[2]];
+        *(u32 *)&pGT3->r2 = *cp;
+        setlen(pGT3, 9);
+        setcode(pGT3, 0x34);
+        hi = t & 0xFFFF0000;
+        t <<= 16;
+        *(u32 *)&pGT3->u0 = *(u16 *)uv[sGT3->unk6[0]] | hi;
+        a = *(u32 *)&sGT3->unk6[1];
+        *(u32 *)&pGT3->u1 = *(u16 *)uv[a & 0xFFFF] | t;
+        *(u16 *)&pGT3->u2 = *(u16 *)uv[a >> 16];
+        otz /= 3;
+        if (sGT3->unkF & 1) {
+            pGT3->tpage |= sGT3->unkF & 0xE0;
+            setSemiTrans(pGT3, 1);
+        }
+        addPrim(&ot[otz >> 4], pGT3);
+        prim += sizeof(POLY_GT3);
+    }
+
+    n = g->unkA;
+    for (i = 0; i < n; src += sizeof(WmSrcG4)) {
+        sG4 = (WmSrcG4 *)src;
+        pG4 = (POLY_G4 *)prim;
+        a = *(u32 *)&sG4->unk0[0];
+        b = *(u32 *)&sG4->unk0[2];
+        i1 = a >> 16;
+        i3 = b >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b & 0xFFFF];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        i++;
+        if (otz > 0x3FFFFFFF) {
+            continue;
+        }
+        if (!(sG4->unk14 & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        *(s32 *)&pG4->x0 = xy0;
+        *(s32 *)&pG4->x1 = xy1;
+        *(s32 *)&pG4->x2 = xy2;
+        *(s32 *)&pG4->x3 = D_800711A8[i3];
+        otz &= 0xFFFFF;
+        a = *(u32 *)&sG4->unk8[0];
+        i1 = *(u32 *)&sG4->unk8[2];
+        cp = (u32 *)col[a & 0xFFFF];
+        *(u32 *)&pG4->r0 = *cp;
+        cp = (u32 *)col[a >> 16];
+        *(u32 *)&pG4->r1 = *cp;
+        cp = (u32 *)col[i1 & 0xFFFF];
+        *(u32 *)&pG4->r2 = *cp;
+        cp = (u32 *)col[i1 >> 16];
+        *(u32 *)&pG4->r3 = *cp;
+        setlen(pG4, 8);
+        setcode(pG4, 0x38);
+        addPrim(&ot[otz >> 6], pG4);
+        prim += sizeof(POLY_G4);
+    }
+
+    n = g->unkC;
+    for (i = 0; i < n; src += sizeof(WmSrcG3)) {
+        sG3 = (WmSrcG3 *)src;
+        pG3 = (POLY_G3 *)prim;
+        a = *(u32 *)&sG3->unk0[0];
+        b = sG3->unk0[2];
+        i1 = a >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        i++;
+        if (otz > 0x2FFFFFFF) {
+            continue;
+        }
+        if (!(sG3->unk13 & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        otz &= 0xFFFFF;
+        *(s32 *)&pG3->x0 = xy0;
+        *(s32 *)&pG3->x1 = xy1;
+        *(s32 *)&pG3->x2 = xy2;
+        a = *(u32 *)&sG3->unk8[0];
+        cp = (u32 *)col[a & 0xFFFF];
+        *(u32 *)&pG3->r0 = *cp;
+        cp = (u32 *)col[a >> 16];
+        *(u32 *)&pG3->r1 = *cp;
+        cp = (u32 *)col[sG3->unk8[2]];
+        *(u32 *)&pG3->r2 = *cp;
+        setlen(pG3, 6);
+        setcode(pG3, 0x30);
+        otz /= 3;
+        addPrim(&ot[otz >> 4], pG3);
+        prim += sizeof(POLY_G3);
+    }
+
+    n = g->unkE;
+    for (i = 0; i < n; src += sizeof(WmSrcF4)) {
+        sF4 = (WmSrcF4 *)src;
+        pF4 = (POLY_F4 *)prim;
+        a = *(u32 *)&sF4->unk0[0];
+        b = *(u32 *)&sF4->unk0[2];
+        i1 = a >> 16;
+        i3 = b >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b & 0xFFFF];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF] + D_80070520[i3];
+        i++;
+        if (otz > 0x3FFFFFFF) {
+            continue;
+        }
+        if (!(sF4->unkD & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        *(u32 *)&pF4->r0 = *(u32 *)sF4->unk8;
+        setlen(pF4, 5);
+        *(s32 *)&pF4->x0 = xy0;
+        *(s32 *)&pF4->x1 = xy1;
+        *(s32 *)&pF4->x2 = xy2;
+        setcode(pF4, 0x28);
+        otz &= 0xFFFFF;
+        *(s32 *)&pF4->x3 = D_800711A8[i3];
+        addPrim(&ot[otz >> 6], pF4);
+        prim += sizeof(POLY_F4);
+    }
+
+    n = g->unk10;
+    for (i = 0; i < n; src += sizeof(WmSrcF3)) {
+        sF3 = (WmSrcF3 *)src;
+        pF3 = (POLY_F3 *)prim;
+        a = *(u32 *)&sF3->unk0[0];
+        b = sF3->unk0[2];
+        i1 = a >> 16;
+        xy0 = D_800711A8[a & 0xFFFF];
+        xy1 = D_800711A8[i1];
+        xy2 = D_800711A8[b];
+        otz = D_80070520[a & 0xFFFF] + D_80070520[i1] + D_80070520[b & 0xFFFF];
+        i++;
+        if (otz > 0x2FFFFFFF) {
+            continue;
+        }
+        if (!(sF3->unkB & 2)) {
+            gte_ldsxy3(xy0, xy1, xy2);
+            gte_nclip();
+            gte_stopz(&opz);
+            if (opz <= 0) {
+                continue;
+            }
+        }
+        otz &= 0xFFFFF;
+        *(u32 *)&pF3->r0 = *(u32 *)sF3->unk8;
+        setlen(pF3, 4);
+        setcode(pF3, 0x20);
+        *(s32 *)&pF3->x0 = xy0;
+        *(s32 *)&pF3->x1 = xy1;
+        *(s32 *)&pF3->x2 = xy2;
+        otz /= 3;
+        addPrim(&ot[otz >> 4], pF3);
+        prim += sizeof(POLY_F3);
+    }
+    setcode((P_TAG *)prim, 0xFF);
+    return prim + sizeof(P_TAG);
+}
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF15C);
 
@@ -4868,7 +5498,83 @@ void func_800E14D8(u32 arg0, Pool6C *arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E1534);
+Pool6CEntry *func_800E1534(Pool30 *arg0, Pool6C *arg1, u8 *arg2, s32 arg3) {
+    Pool6CEntry *e;
+    s32 i;
+    u32 k;
+    u8 *p;
+    EffElemHdr *h;
+    EffElem *el;
+    s32 *q;
+    s32 v;
+
+    e = arg1->unkC;
+    for (i = 0; i < arg1->unk0; i++, e++) {
+        if (e->unk30 == 0) {
+            if (arg1->unk8 < i) {
+                arg1->unk8 = i;
+            }
+            p = arg2;
+            for (k = 0; k < 0x6C; k += 4) {
+                *(s32 *)((u8 *)e + k) = 0;
+            }
+            e->unk30 = 1;
+            e->unkE = 0;
+            e->unk10 = 0;
+            e->unk32 = 0;
+            e->unk34.s.x = 0;
+            e->unk34.s.y = 0;
+            e->unk14 = 0;
+            e->unk3A = 0xFF;
+            e->unk22 = 0;
+            e->unk0 = (EffFileHdr *)p;
+            if (*p != 0xFF) {
+                p += 0x28;
+            } else {
+                p += 0x10;
+            }
+            if (((u8 *)e->unk0)[1] != 0) {
+                p += 0x38;
+                e->unk4 = (EffSub *)p;
+                p += 0x28;
+            } else {
+                e->unk4 = NULL;
+            }
+            h = (EffElemHdr *)p;
+            p += 0x14;
+            el = (EffElem *)p;
+            e->unk18 = el;
+            i = 0;
+            p += h->unk4 * 0x28;
+            for (; i < h->unk4; i++, el++) {
+                if (el->unk0 != 9) {
+                    if (el->unk1C != -1 && !(el->unk1C & 0x80000000)) {
+                        el->unk1C = (s32)arg2 + el->unk1C;
+                    }
+                }
+                if (el->unk1 != 0xFF) {
+                    if (el->unk20 != -1 && !(el->unk20 & 0x80000000)) {
+                        el->unk20 = (s32)arg2 + el->unk20;
+                    }
+                }
+            }
+            /* unk24 (tail), unk28, unk2C written through one pointer */
+            q = (s32 *)&e->unk24;
+            q[0] = (s32)p;
+            v = *(s32 *)p;
+            k = (u32)p;
+            if (v == -1) {
+                *(s32 *)&((EffTail *)k)->unk3C = 0;
+            }
+            q[1] = arg3;
+            q[2] = arg3;
+            do {
+            } while (0);
+            return e;
+        }
+    }
+    return NULL;
+}
 
 void func_800E1708(Pool30 *arg0, s32 arg1, s32 arg2) {
     Pool6CEntry *m = (Pool6CEntry *)arg1;
