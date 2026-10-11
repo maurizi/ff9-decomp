@@ -232,6 +232,33 @@ build/drafts/main/ (gitignored; v*.c). Append as agents report.
     or local-alloc of the final block seems to start at the wrong pseudo, try returning that value.
   - No progress: 80059414 (25-min permuter), 80047B90, 8002E718, 8001DE50, 8004DAD0, 8003595C. The
     headers have details.
+- Pass 16: matched 80025ED4 (0x558; it was 146 rows). Three fixes, all about what the source looked like rather
+  than allocation:
+  - The colour lerp is a macro on a CVECTOR lvalue (`CVECTOR_LERP(c1, f1, t1, k, 7)`, now in ff9.h), not a
+    static inline taking `CVECTOR *out`. The inline's `out` parameter stays a pseudo (`addiu a2,sp,24`,
+    `sb a0,1(a2)`), while the original stores straight to `0x18(sp)`. That one change took 147 rows to 75.
+    When the original writes a local struct sp-relative but our inline helper goes through a register,
+    try a macro.
+  - Reference counts decide global-alloc order. `x + (w + 2)` is folded to `(x + 2) + w`, reusing the
+    x + 2 pseudo, so x had one ref fewer than y and the two params swapped s1/s2. A `right = w + 2` temp
+    keeps the original `addiu v0,s4,2; addu v0,s1,v0`. The else branch needs the target colour in a pointer
+    (`t1 = &e->c[3]`, so the first byte is read through s0 and the rest through t0, as in the original).
+    The POLY_G4 stores then needed a new order (240 orders swept, xy0, xy2, xy1, xy3 is the only one at 19).
+  - The TILE's addPrim and advance go through the global: `addPrim(&D_8007716C[otz], D_80077170);
+    D_80077170 += sizeof(TileWords);`. The ternary for `wh` starts a new extended block, so the original
+    reloads D_80077170 there instead of reusing `t`.
+  - 800475D8 (structure only, no match): `x *= x` (reusing x) instead of a separate xx. A mult of a
+    pseudo that already crosses a call is free to move past the next call in sched1; writing the product
+    back to x keeps it before the call, like the original. A pointer variable assigned inside one branch and
+    used after the join is live at function entry when the use is reachable without the assignment, so it
+    conflicts with everything (pd took s8). The headers have the rest.
+  - 8004DAD0: jump2 cross-jumps on hard-reg RTL. The original's 0x10/0x40 calls share the 0x10000 path's
+    `jalr v0` only because that call's function pointer is in v0; ours is in v1, so jump2 picks the
+    early 0x67 call instead. The 0x10000 block's local-alloc (fn pointer vs %hi(D_8007B958)) is now the
+    whole problem.
+  - No progress: 80059414, 80047B90, 8003595C, 8005681C, 8002E718, 8001DE50, 8004E248. Struct-field
+    tests of every scalar global these drafts touch changed nothing (or made it worse). The headers have
+    details.
 
 ## ovl_0b (battle)
 - Register allocation / scheduling, no draft yet (left as INCLUDE_ASM): C9A28 (2 insns), C9794,

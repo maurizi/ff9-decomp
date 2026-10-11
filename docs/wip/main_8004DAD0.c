@@ -1,16 +1,10 @@
-/* 28 rows differ: the first SE call (unk26 == 0xFF path) now keeps its own jalr like the original, because the three list-cursor branches are an if/else-if chain that falls into one shared return 1 (separate returns let jump2 cross-jump all four calls). Remaining: jump2 now merges the whole argument setup of the 0x10/0x40/0x10000 calls, while the original shares only the jalr (each branch keeps its own setup and jumps to the jalr), and in the 0x10000 path the original stores D_8007B958 = D_8007B96C after the setup, right before the jalr. That suggests the store sits between the setup and the call in RTL, which no C order we tried gives. The 0x10 path is written as if (D_8007B958 > 0) D_8007B958--; else D_8007B958 = D_8007B95C - 1; (bgtz with the decrement in the delay slot). Pass 15: the list-cursor part as a static inline returning 1/0 (`return list_cursor(w, pad)`), with shared or per-branch `return 1`: 28/32; the early part as `if (D_8007B968 >= 0) { se; return 1; }` or as an if/else with `goto list` for the f & 8 case: 32-41. In our output the 0x10/0x40 calls cross-jump into the early 0x67 call's setup (j 0x80); in the original they jump only to the 0x10000 path's jalr. */
+/* 28 rows differ: the first SE call (unk26 == 0xFF path) now keeps its own jalr like the original, because the three list-cursor branches are an if/else-if chain that falls into one shared return 1 (separate returns let jump2 cross-jump all four calls). Remaining: jump2 now merges the whole argument setup of the 0x10/0x40/0x10000 calls, while the original shares only the jalr (each branch keeps its own setup and jumps to the jalr), and in the 0x10000 path the original stores D_8007B958 = D_8007B96C after the setup, right before the jalr. That suggests the store sits between the setup and the call in RTL, which no C order we tried gives. The 0x10 path is written as if (D_8007B958 > 0) D_8007B958--; else D_8007B958 = D_8007B95C - 1; (bgtz with the decrement in the delay slot). Pass 15: the list-cursor part as a static inline returning 1/0 (`return list_cursor(w, pad)`), with shared or per-branch `return 1`: 28/32; the early part as `if (D_8007B968 >= 0) { se; return 1; }` or as an if/else with `goto list` for the f & 8 case: 32-41. In our output the 0x10/0x40 calls cross-jump into the early 0x67 call's setup (j 0x80); in the original they jump only to the 0x10000 path's jalr. Pass 16: the cross-jump target is decided by jump2 on hard regs. In the original the 0x10000 path falls through into the shared `v0 = 1; j end`, so the 0x10/0x40 calls (identical setup ending in `jalr v0`) are cross-jumped onto its jalr. Ours: that call is `jalr v1` (fn pointer P in v1, %hi(D_8007B958) H in v0), the jalr insns differ, and jump2 instead merges the return-1 tails and sends the 0x10/0x40 paths into the early 0x67 call (j 0x80). The draft below puts `else if (!(pad & 0x10000) || D_8007B96C < 0) return 0; else { store; SE(0x65); }` last so the 0x10000 call falls into `return 1` (same 28 rows, but the layout the original needs); the draft's `else return 0` order gives the same code. What remains is P/H in that block: local-alloc ranks both at 2 refs and H (lui right before the sw, after lw P) has the shorter life, so H takes v0. Making H lose needs H to be a global pseudo or a reload register; no C form found (fn pointer variable, GameData *gd local, ret/tmp for D_8007B96C, &D_8007B958 pointer, func_8002F488 as inline, every D_8007B95x global as a struct field: D_8007B958 as a field pins its store above the loads, 37 rows). A 20-min permuter run found only fake constructs (an identical-branch if around the early call breaks its cross-jump, 17 rows). */
 #include "ff9.h"
-
 extern s32 D_8007B95C;
 extern s32 D_8007B96C;
-
-static inline void se_play(s32 id) {
-    D_8006794C->unk1C->unk83C(0xD000, id, 0x800000, 0x80, 0x7F);
-}
-
+#define SE(id) D_8006794C->unk1C->unk83C(0xD000, id, 0x800000, 0x80, 0x7F)
 s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
     u8 f;
-    s32 v;
 
     if ((D_8007B708 == 1 && (pad & 0xA0000)) || (D_8007B708 != 1 && (pad & 0x20000))) {
         f = w->unk28;
@@ -18,7 +12,7 @@ s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
             if (w->unk26 == 0xFF) {
                 w->unk26 = 1;
                 if (D_8007B968 >= 0) {
-                    se_play(0x67);
+                    SE(0x67);
                 }
                 return 1;
             }
@@ -38,19 +32,19 @@ s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
             } else {
                 D_8007B958 = D_8007B95C - 1;
             }
-            D_8006794C->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            SE(0x67);
         } else if (pad & 0x40) {
             if (D_8007B958 < D_8007B95C - 1) {
                 D_8007B958++;
             } else {
                 D_8007B958 = 0;
             }
-            D_8006794C->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
-        } else if ((pad & 0x10000) && D_8007B96C >= 0) {
-            D_8007B958 = D_8007B96C;
-            D_8006794C->unk1C->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
-        } else {
+            SE(0x67);
+        } else if (!(pad & 0x10000) || D_8007B96C < 0) {
             return 0;
+        } else {
+            D_8007B958 = D_8007B96C;
+            SE(0x65);
         }
         return 1;
     }
