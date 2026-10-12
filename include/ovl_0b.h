@@ -2147,7 +2147,7 @@ void func_800639D4(s32);
 s32 func_800645C4(void);
 s32 func_80055DCC(void);
 void func_80056388(s32, s32);
-s8 func_80021698(void);
+s8 func_80021698(Unk8004AB64 *);
 
 /* ovl_0b functions */
 s32 func_800D71C8(s32, s16 *, s32, s32, s32, s16 *);
@@ -2380,7 +2380,7 @@ void func_800E7A44(s32, VECTOR *);
 void func_800E7FC0(BtlUnit *, s32);
 s32 func_800E9A00(s32, s32);
 BtlUnit *func_800BED10(u16);
-void func_800A8600(s16);
+void func_800A8600(s32);
 void func_800A8CD4(void);
 void func_800A8DE0(void);
 s32 func_800AB324(s32, s32 *, s32 *);
@@ -2508,7 +2508,7 @@ s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
 s32 func_800CFC0C(s32);
-void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage); func_800D08C4 passes only 2 */
+void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage) */
 u8 *func_800D6360(s32);
 void func_800D64C8(s32);
 void func_800D85AC(s32, s32);
@@ -2832,7 +2832,7 @@ void func_800ED3F8(s32, s32, s32, char *);
 s32 func_800EB2A4(void);
 s32 func_800F13BC(void);
 extern u8 D_800FD7AC[];
-void func_800EC928(); /* called without arguments from func_800EC628 */
+void func_800EC928(); /* (Window *); func_800EC628 passes its own */
 s32 func_800E865C(s32, s32);
 void func_800DDF10(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
@@ -3152,7 +3152,7 @@ extern u8 D_80104E77;
 void func_800F11A4(BtlUnit *);
 void func_800F1150(BtlUnit *);
 u32 func_800AB810(s32, s32);
-void func_800A923C(); /* takes the battle id (s32), called without it */
+void func_800A923C(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
 s32 func_800AD4AC(s32, s32);
 s32 func_8004AAF0(s32);
 void func_8001E3A4(void *);

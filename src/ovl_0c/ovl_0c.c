@@ -8,8 +8,8 @@ void func_800A8860(void) {
     func_800A8CA4();
 }
 
-void func_800A88C4(s16 arg0) {
-    func_800A924C();
+void func_800A88C4(s32 arg0) {
+    func_800A924C(arg0);
     SetDispMask(1);
     do {
         func_800AC580();

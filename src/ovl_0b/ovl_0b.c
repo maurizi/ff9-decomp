@@ -8,8 +8,8 @@ void func_800A859C(void) {
     func_800A8DE0();
 }
 
-void func_800A8600(s16 arg0) {
-    func_800A923C();
+void func_800A8600(s32 arg0) {
+    func_800A923C(arg0);
     SetDispMask(1);
     do {
         func_800AEA48();
@@ -6592,7 +6592,7 @@ void func_800BBD3C(BtlUnit *arg0, Unk8E0 *arg1) {
 
 void func_800BBF30(Unk8004AB64 *arg0, s16 arg1) {
     arg0->unk34 = arg1;
-    arg0->unk3B = func_80021698();
+    arg0->unk3B = func_80021698(arg0);
 }
 
 void func_800BBF5C(Character *arg0, BtlUnit *arg1) {

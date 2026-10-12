@@ -623,7 +623,7 @@ void func_800AEC74(void);
 void func_800AEF10(void);
 void func_800C3E28(void);
 void func_800C464C(void);
-void func_800A88C4(s16);
+void func_800A88C4(s32);
 void func_800A8B14(void);
 void func_800A8CA4(void);
 void func_800A8CF0(void);

@@ -233,10 +233,10 @@ void func_800D0858(u32 arg0, s32 arg1, void *arg2) {
     }
 }
 
-void func_800D08C4(s32 arg0, s32 arg1) {
+void func_800D08C4(s32 arg0, s32 arg1, void *arg2, s32 arg3) {
     u32 i = (arg1 - D_800F78A4->unk28) >> 2;
     if (i < 0x1000) {
-        ((void (*)())func_800D07B4)(arg0, &D_800F78A4->unk20[i]); /* prim/tpage left in a2/a3 */
+        ((void (*)())func_800D07B4)(arg0, &D_800F78A4->unk20[i], arg2, arg3);
     }
 }
 
@@ -9853,7 +9853,7 @@ void func_800EC628(Window *arg0) {
     s32 i;
     u8 *t;
     if (g_btlCmdMenu.unk10.unk1 != 0) {
-        func_800EC928();
+        func_800EC928(REG_PASSTHROUGH(arg0));
     }
     for (i = 0; i < 4; i++) {
         t = D_800FD7AC + D_800FD56C[g_btlCmdMenu.cmdIds[i]].unk0;

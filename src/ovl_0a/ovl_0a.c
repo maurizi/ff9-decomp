@@ -937,10 +937,10 @@ s32 func_800AA330(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 func_800AA3F4(void) {
+s32 func_800AA3F4(s32 uid) {
     s32 id;
 
-    id = func_800AAEF8();
+    id = func_800AAEF8(uid);
     if (id == -1) {
         return 0;
     }
@@ -10942,7 +10942,7 @@ s32 func_800C7F34(s32 arg0, s32 arg1) {
 
     e->unk14 = arg1 << 8;
     e->unk0 |= 5;
-    func_800C6EEC();
+    func_800C6EEC(arg0);
     return 1;
 }
 
@@ -10952,7 +10952,7 @@ s32 func_800C7F7C(s32 arg0, s32 arg1) {
     arg1 <<= 8;
     e->unk14 = arg1;
     e->unk0 = 0;
-    func_800C6EEC();
+    func_800C6EEC(arg0);
     return 1;
 }
 
@@ -10966,7 +10966,7 @@ s32 func_800C7FBC(s32 arg0, s32 arg1) {
         v = e->unk0 & ~5;
     }
     e->unk0 = v;
-    func_800C6EEC();
+    func_800C6EEC(arg0);
     return 1;
 }
 

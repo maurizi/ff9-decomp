@@ -4,6 +4,14 @@
 #include "common.h"
 #include "psyq.h"
 
+/* An argument the original code never passed: the callee reads an argument register that still holds this
+ * value (usually the caller's own parameter), which only works on MIPS. Empty here, so the call compiles as
+ * in the original (passing it explicitly changes register allocation); a port defines it as `x`.
+ * tools/arg_check.py finds these. */
+#ifndef REG_PASSTHROUGH
+#define REG_PASSTHROUGH(x)
+#endif
+
 /* Layouts are partial: only offsets seen in decompiled code are named.
  * Names are placeholders (unkXX = offset) until their purpose is known.
  * Split into per-subsystem headers once subsystems are identified. */
@@ -658,7 +666,7 @@ void func_8002AF70(void *, s32);
 #else
 TextSize func_8002AF70(u8 *); /* measure a text string */
 #endif
-s32 func_80023938(); /* takes an index; func_8002BE10 calls it without one */
+s32 func_80023938(); /* (s32 index); unprototyped, as the original's callers pass ints unconverted */
 void func_8002C9B0(void);
 void func_8002E180(void);
 
@@ -3572,7 +3580,7 @@ s32 func_800C80B0(s32, s16, s16);
 s32 func_800C80E4(s32, s32);
 void func_800F4F04(s32, s32);
 void func_801F0FF4(void);
-void func_800AA3F4(s32);
+s32 func_800AA3F4(s32); /* uid; queues the actor's model */
 s32 func_800C3E18(s32, s32);
 s32 func_800C7570(s32, u16);
 void func_800B1520(s32, s32, s32, s32);
