@@ -146,6 +146,10 @@ class Mem:
             self.w[(a + i) & MASK] = (v >> (8 * i)) & 0xFF
 
 
+class AddressError(RuntimeError):
+    pass
+
+
 def sx16(v):
     return (v & 0xFFFF) - 0x10000 if v & 0x8000 else v & 0xFFFF
 
@@ -158,9 +162,10 @@ GTE_OUT = set(range(7, 28)) - {6}
 
 
 class Cpu:
-    def __init__(self, mem, lo, hi, protos, addr_names, seed, args):
+    def __init__(self, mem, lo, hi, protos, addr_names, seed, args, stops=()):
         self.m = mem
         self.lo, self.hi = lo, hi  # code range executed in place (everything else is an external call)
+        self.stops = stops  # entry points inside that range that still count as external calls
         self.protos, self.names = protos, addr_names
         self.r = [0] * 32
         for i in range(1, 32):
@@ -210,7 +215,7 @@ class Cpu:
                 return
             if pc == RA_SENTINEL:
                 return
-            if not (self.lo <= pc < self.hi):
+            if not (self.lo <= pc < self.hi) or pc in self.stops:
                 self.external(pc)
                 pc = r[31]
                 continue
@@ -328,9 +333,11 @@ class Cpu:
                 addr = (r[rs] + simm) & MASK
                 if op == 0x20: v = m.read(addr, 1); v = v - 0x100 if v & 0x80 else v
                 elif op == 0x24: v = m.read(addr, 1)
-                elif op == 0x21: v = sx16(m.read(addr & ~1, 2))
-                elif op == 0x25: v = m.read(addr & ~1, 2)
-                elif op == 0x23: v = m.read(addr & ~3, 4)
+                elif op in (0x21, 0x25, 0x23) and addr & (1 if op != 0x23 else 3):
+                    raise AddressError(f"unaligned load at {pc:08X}")
+                elif op == 0x21: v = sx16(m.read(addr, 2))
+                elif op == 0x25: v = m.read(addr, 2)
+                elif op == 0x23: v = m.read(addr, 4)
                 elif op == 0x22:  # lwl
                     al = addr & ~3; sh = addr & 3; w = m.read(al, 4)
                     v = ((w << (8 * (3 - sh))) | (r[rt] & ((1 << (8 * (3 - sh))) - 1))) & MASK
@@ -341,6 +348,8 @@ class Cpu:
             elif op in (0x28, 0x29, 0x2B, 0x2A, 0x2E):
                 addr = (r[rs] + simm) & MASK
                 v = r[rt]
+                if op in (0x29, 0x2B) and addr & (1 if op == 0x29 else 3):
+                    raise AddressError(f"unaligned store at {pc:08X}")
                 if op == 0x28: m.write(addr, v, 1)
                 elif op == 0x29: m.write(addr & ~1, v, 2)
                 elif op == 0x2B: m.write(addr & ~3, v, 4)
@@ -352,10 +361,14 @@ class Cpu:
                     sh = addr & 3
                     for i in range(4 - sh):
                         m.write(addr + i, v >> (8 * i), 1)
-            elif op == 0x32:  # lwc2
-                self.g[rt] = m.read((r[rs] + simm) & ~3 & MASK, 4)
-            elif op == 0x3A:  # swc2
-                m.write((r[rs] + simm) & ~3 & MASK, self.g[rt], 4)
+            elif op in (0x32, 0x3A):  # lwc2, swc2
+                addr = (r[rs] + simm) & MASK
+                if addr & 3:
+                    raise AddressError(f"unaligned cop2 access at {pc:08X}")
+                if op == 0x32:
+                    self.g[rt] = m.read(addr, 4)
+                else:
+                    m.write(addr, self.g[rt], 4)
             else:
                 raise RuntimeError(f"op {op:#x} ({ins:08X}) at {pc:08X}")
             r[0] = 0
@@ -374,6 +387,9 @@ def main():
     ap.add_argument("--sparse", action="store_true",
                     help="no zero/small words in unwritten memory: rules out differences that need two pointers "
                          "to overlap (loads and stores may be reordered across such pairs)")
+    ap.add_argument("--ignore", action="append", default=[],
+                    help="START-END (hex) memory range whose writes aren't compared (e.g. a hand-written "
+                         "routine's register save area in the scratchpad)")
     ap.add_argument("--uncovered", action="store_true", help="list the original's instructions no trial ran")
     ap.add_argument("-v", action="store_true", help="print the first difference in full")
     a = ap.parse_args()
@@ -393,6 +409,8 @@ def main():
     if func not in index:
         sys.exit(f"{func} not in {belf}")
     oaddr, osize = index[func]
+    # nm sizes can stop short of a function's switch cases; run up to the next function instead
+    osize = max(osize, min((v for v, _ in index.values() if v > oaddr), default=oaddr + osize) - oaddr)
 
     # Only rodata + text are real; .data/.bss read as random like everything else.
     images = []
@@ -423,6 +441,7 @@ def main():
         elf = os.path.join(tmp, "x.elf")
         run(["mipsel-linux-gnu-ld", "-T", ld, "-o", elf, obj])
         dsyms = nm(elf)
+        dglobal_lines = [l for l in run(["mipsel-linux-gnu-nm", elf]).splitlines() if len(l.split()) == 3]
         protos = prototypes(ipath)
         dimg = [(v, d + bytes(ms - len(d))) for v, d, ms in elf_loads(elf)]
     if func not in dsyms:
@@ -430,10 +449,18 @@ def main():
     dlo = min(v for v, _ in dimg)
     dhi = max(v + len(d) for v, d in dimg)
     names = {v: k for k, v in syms.items()}
+    # The draft file's other global functions stand for the originals of the same name: calls to them are
+    # compared as calls, not run (the original calls its own copy).
+    dglobal = {l.split()[2]: int(l.split()[0], 16) for l in dglobal_lines if l.split()[1] == "T"}
+    stops = {v for k, v in dglobal.items() if k != func}
+    for k, v in dglobal.items():
+        if k != func:
+            names[v] = k
     n_args, is_void = protos.get(func, (4, False))
     n_args = 4 if n_args is None else n_args
 
-    paths, bad, covered = set(), 0, set()
+    ignore = [tuple(int(x, 16) for x in r.split("-")) for r in a.ignore]
+    paths, bad, covered, skipped = set(), 0, set(), 0
     for t in range(a.trials):
         res = []
         for which in ("orig", "draft"):
@@ -442,14 +469,21 @@ def main():
             for i in range(n_args, 4):
                 args[i] = 0xA0000000 + i
             lo, hi = (oaddr, oaddr + osize) if which == "orig" else (dlo, dhi)
-            cpu = Cpu(mem, lo, hi, protos, names, t, args)
+            cpu = Cpu(mem, lo, hi, protos, names, t, args, stops if which == "draft" else ())
             try:
                 cpu.run(oaddr if which == "orig" else dsyms[func])
+            except AddressError as e:
+                cpu.events.append("address error")
+                cpu.fault = str(e)
             except RuntimeError as e:
                 cpu.events.append(str(e))
-            written = {k: v for k, v in mem.w.items() if not (STACK_TOP - 0x10000 <= k < STACK_TOP + 16)}
+            written = {k: v for k, v in mem.w.items() if not (STACK_TOP - 0x10000 <= k < STACK_TOP + 16)
+                       and not any(lo_ <= k < hi_ for lo_, hi_ in ignore)}
             res.append((cpu, written))
         (co, wo), (cd, wd) = res
+        if "address error" in co.events:
+            skipped += 1  # the original faults (unaligned random pointer): not a state the game produces
+            continue
         paths.add(tuple(co.path[:4000]))
         covered |= co.seen
         diffs = []
@@ -470,7 +504,9 @@ def main():
             bad += 1
             if bad <= (5 if a.v else 1):
                 print(f"trial {t}: " + "; ".join(diffs))
-    print(f"{func}: {a.trials - bad}/{a.trials} trials agree, {len(paths)} distinct paths, "
+    print(f"{func}: {a.trials - skipped - bad}/{a.trials - skipped} trials agree"
+          + (f" ({skipped} skipped: the original faults on an unaligned address)" if skipped else "")
+          + f", {len(paths)} distinct paths, "
           f"{100 * len(covered) // (osize // 4)}% of the original's instructions ran")
     if a.uncovered:
         print("never ran:", " ".join(f"{x:08X}" for x in range(oaddr, oaddr + osize, 4) if x not in covered))

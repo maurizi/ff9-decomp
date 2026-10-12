@@ -9,6 +9,7 @@ s32 func_800C1DC4(s32 a, s32 b) {
 }
 
 /* 24.8 / 24.8: a / (b >> 8), shifted back up by 8. */
+/* The original (asm) has no divide-by-zero guard: with b >> 8 == 0 the PS1 returns the MIPS junk quotient. */
 s32 func_800C1DE0(s32 a, s32 b) {
     return (a / (b >> 8)) << 8;
 }
