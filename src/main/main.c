@@ -16396,9 +16396,9 @@ s32 func_80055230(u8 *a) {
     return r;
 }
 
-void func_80055290(s32 a) {
+s32 func_80055290(s32 a) {
     D_80080AA0.unk0 = a;
-    akao_command(0x10);
+    return akao_command(0x10);
 }
 
 void func_800552B8(s32 a) {
@@ -16436,10 +16436,10 @@ void func_80055384(s32 a, s32 b, s32 c) {
     akao_command(0x1A);
 }
 
-void func_800553BC(s32 a, s32 b) {
+s32 func_800553BC(s32 a, s32 b) {
     D_80080AA0.unk0 = a;
     D_80080AA0.unk4 = b;
-    akao_command(0x12);
+    return akao_command(0x12);
 }
 
 s32 func_800553EC(s32 a, s32 b, s32 c, s32 d) {
@@ -22222,8 +22222,8 @@ s32 func_8006276C(s32 a) {
     return text_getFrom(D_8006FD60, a);
 }
 
-void func_80062794(s32 a) {
-    func_8002BA68(func_8006276C(a));
+s32 func_80062794(s32 a) {
+    return func_8002BA68(func_8006276C(a));
 }
 
 s32 func_800627BC(s32 x) {

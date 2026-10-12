@@ -720,8 +720,8 @@ void func_800AA418(WmObjEnt *arg0, s32 arg1, s32 arg2, s32 arg3) {
     SHADOW_ADD(k, 3);
 }
 
-void func_800AAD0C(s32 arg0, s32 arg1) {
-    func_80062E3C(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);
+s32 func_800AAD0C(s32 arg0, s32 arg1) {
+    return func_80062E3C(arg0, 0x280, 0xDE, 0x330, 0xB0, arg1, 1);
 }
 
 /* object matrix facing the joint's direction (in the xz plane) */

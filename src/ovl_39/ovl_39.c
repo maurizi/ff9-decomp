@@ -2267,12 +2267,15 @@ s32 func_801FA21C(s32 i) {
 }
 
 s32 func_801FA240(s32 chan) {
+    s32 r;
+
     func_801FAE1C();
     func_80065228(0);
     func_80065228(1);
     func_80065218(chan);
-    while (func_801FAB08() == -1) {
+    while ((r = func_801FAB08()) == -1) {
     }
+    return r;
 }
 
 s32 func_801FA290(void) {

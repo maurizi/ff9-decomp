@@ -613,7 +613,7 @@ extern Unk80010CE0 D_80010CE0;
 
 s32 func_8001C784(void *);
 void memset(void *, s32, s32);
-void func_800213A0(void (*)());
+void (*func_800213A0(void (*)()))(); /* returns the previous callback */
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
 void func_800235A0(u8, u8 *);
@@ -1799,7 +1799,7 @@ extern u8 D_80077DB5;
 extern s32 D_80077DC0; /* frame counter? */
 
 s32 func_80012AD4(void);
-void func_80012D08(void);
+s32 func_80012D08(void);
 void func_80012D18(void);
 s32 OpenEvent(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
 s32 EnableEvent(s32); /* BIOS EnableEvent */
@@ -3350,7 +3350,7 @@ extern s32 D_80073988[];
 void __main(void);
 void func_80012900(s32);
 void FlushCache(void); /* BIOS FlushCache */
-void func_80012D08(void); /* BIOS EnterCriticalSection */
+s32 func_80012D08(void); /* BIOS EnterCriticalSection */
 void func_80012D18(void); /* BIOS ExitCriticalSection */
 void func_8001D30C(void);
 void func_8001CB70(void);

@@ -1539,4 +1539,8 @@ typedef struct {
 #define SFXH(i) (((GameDataSfx *)g_gameState->unk1C)->unk828[i])
 #define SCENE (g_gameState->unk1C->unk8E4.field->unkC->unk14)
 
+s32 func_800AD44C(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
+
+FieldTrig *func_800B21A0(FieldEvtCtx *, s32, s32); /* returns the new entry */
+
 #endif

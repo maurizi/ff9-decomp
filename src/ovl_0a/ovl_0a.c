@@ -1978,8 +1978,8 @@ void func_800AC6C0(FieldObjPlace *arg0, s32 arg1) {
     FIELD_SHADOW_ADD(k, 3);
 }
 
-void func_800AD44C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
+s32 func_800AD44C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    return func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
 }
 
 /* object placement matrix: either a plain y rotation or facing the model's joint */
@@ -3385,7 +3385,7 @@ FieldTrig *func_800B2100(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
     return NULL;
 }
 
-void func_800B21A0(FieldEvtCtx *arg0, s16 arg1, s16 arg2) {
+FieldTrig *func_800B21A0(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     FieldScene *sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
     u8 i = sc->unk4B;
     FieldTrig *e;
@@ -3402,6 +3402,7 @@ void func_800B21A0(FieldEvtCtx *arg0, s16 arg1, s16 arg2) {
         e->unk6 = arg2;
     } while (0);
     e->unk2 = id;
+    return e;
 }
 
 s32 func_800B2218(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {

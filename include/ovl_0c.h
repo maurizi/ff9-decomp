@@ -1424,4 +1424,6 @@ void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
 s32 func_80055DCC(void);
 
+s32 func_800AAD0C(s32, s32); /* returns func_80062E3C's result (the next free address) */
+
 #endif
