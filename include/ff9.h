@@ -12,6 +12,12 @@
 #define REG_PASSTHROUGH(x)
 #endif
 
+/* Is this offset-or-pointer field still a file offset, i.e. not yet relocated in place? Relocated values are
+ * KSEG0 pointers (0x80xxxxxx, negative as s32). A port whose pointers are positive defines its own. */
+#ifndef IS_OFFSET
+#define IS_OFFSET(x) ((s32)(x) >= 0)
+#endif
+
 /* Layouts are partial: only offsets seen in decompiled code are named.
  * Names are placeholders (unkXX = offset) until their purpose is known.
  * Split into per-subsystem headers once subsystems are identified. */

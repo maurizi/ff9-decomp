@@ -574,7 +574,7 @@ u32 func_800AA15C(s32 arg0, Unk8004AB64 *arg1) {
     o->unk8->unk8 = func_8001C7FC(4, arg0, 0);
     if ((o->unk8->unkC = func_8001C7FC(4, func_800AA39C(o->unk4), 0)) != NULL) {
         h = o->unk8->unkC;
-        if (h->unkC >= 0) {
+        if (IS_OFFSET(h->unkC)) {
             t = h->unk10;
             h->unkC = (s32)h + h->unkC;
             if (t != 0) {
@@ -586,7 +586,7 @@ u32 func_800AA15C(s32 arg0, Unk8004AB64 *arg1) {
     m = o->unk8->unk8;
     g = m->unk10;
     n = 0;
-    if ((s32)g >= 0) {
+    if (IS_OFFSET(g)) {
         g = (WmModelGroup *)((s32)g + (s32)m);
     }
     for (i = 0; i < m->unk3; i++) {
@@ -2336,7 +2336,7 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
     func_800C9484(m);
     m->unkC = h = func_8001C7FC(4, s->unkC->unk36 | 0x30000, 0);
     if (h != NULL) {
-        if (h->unkC >= 0) {
+        if (IS_OFFSET(h->unkC)) {
             t = h->unk10;
             h->unkC = (s32)h + h->unkC;
             if (t != 0) {
@@ -9196,7 +9196,7 @@ void func_800C7BA8(Unk800C95C8 *arg0, u8 *arg1) {
     }
     g2 = arg0->unk8->unk10;
     size = 0;
-    if ((s32)g2 >= 0) {
+    if (IS_OFFSET(g2)) {
         g2 = (WmModelGroup *)((u8 *)g2 + (s32)arg0->unk8);
     }
     n = arg0->unk8->unk3;

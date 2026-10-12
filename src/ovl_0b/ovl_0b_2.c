@@ -4085,7 +4085,7 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
     s32 i;
     func_800DCA68(s->unk0, arg0, arg1, arg2);
     a = s->unk0->unkC;
-    if (a->unkC >= 0) {
+    if (IS_OFFSET(a->unkC)) {
         a->unkC = (s32)a + a->unkC;
         if (a->unk10 != 0) {
             a->unk10 = (s32)s->unk0->unkC + a->unk10;

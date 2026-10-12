@@ -1296,7 +1296,7 @@ u32 func_800AB810(s32 arg0, s32 arg1) {
     e->unk8->unk8 = (BtlUnit9C8 *)func_8001C7FC(4, e->unk4, 0);
     e->unk8->unkC = (BtlUnit9CC *)func_8001C7FC(4, func_800AC244(e->unk4), 0);
     c = e->unk8->unkC;
-    if (c->unkC >= 0) {
+    if (IS_OFFSET(c->unkC)) {
         c->unkC = (s32)c + c->unkC;
         if (c->unk10 != 0) {
             c->unk10 = (s32)e->unk8->unkC + c->unk10;
@@ -6519,7 +6519,7 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
                 u->unk9C->unk24.t[1] = u->unkA0->unk18 >> 16;
                 u->unk9C->unk24.t[2] = u->unkA0->unk1C >> 16;
                 cc = u->unk9C->unkC;
-                if (cc->unkC >= 0) {
+                if (IS_OFFSET(cc->unkC)) {
                     t = cc->unk10;
                     cc->unkC = (s32)cc + cc->unkC;
                     if (t != 0) {
@@ -6735,7 +6735,7 @@ void func_800BC21C(BtlUnit *u, s32 *ot) {
     }
     func_800C7B84(m);
     p = m->unkC;
-    if (p->unkC >= 0) {
+    if (IS_OFFSET(p->unkC)) {
         t = p->unk10;
         p->unkC = (s32)p + p->unkC;
         if (t != 0) {

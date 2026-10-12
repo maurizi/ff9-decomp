@@ -1115,7 +1115,7 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
     s->unk8->unk8 = func_8001C7FC(4, arg0, 0);
     if ((s->unk8->unkC = func_8001C7FC(4, func_800AAF5C(arg0), 0)) != NULL) {
         a = s->unk8->unkC;
-        if (a->unkC >= 0) {
+        if (IS_OFFSET(a->unkC)) {
             a->unkC = (s32)a + a->unkC;
             if (a->unk10 != NULL) {
                 a->unk10 = (WmModelGroup *)((u8 *)s->unk8->unkC + (s32)a->unk10);
@@ -1126,7 +1126,7 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
     m = s->unk8->unk8;
     g = m->unk10;
     sum = 0;
-    if ((s32)g >= 0) {
+    if (IS_OFFSET(g)) {
         g = (WmModelGroup *)((u8 *)m + (s32)g);
     }
     for (k = 0; k < m->unk3; k++) {
@@ -1275,7 +1275,7 @@ s32 func_800AB110(FieldObjSlot **arg0) {
             m = o->unk8;
             g = m->unk10;
             sum = 0;
-            if ((s32)g >= 0) {
+            if (IS_OFFSET(g)) {
                 g = (WmModelGroup *)((u8 *)m + (s32)g);
             }
             for (k = 0; k < m->unk3; k++) {
@@ -1354,7 +1354,7 @@ void func_800AB3CC(void) {
             m = c->unk8;
             w = func_8001C7FC(4, o->unk36 | 0x30000, 0);
             m->unkC = w;
-            if (w != NULL && (s32)w->unkC >= 0) {
+            if (w != NULL && IS_OFFSET(w->unkC)) {
                 w->unkC = (void *)((u8 *)w + (s32)w->unkC);
                 if (w->unk10 != NULL) {
                     w->unk10 = (void *)((u8 *)m->unkC + (s32)w->unk10);
@@ -1523,7 +1523,7 @@ s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             m = y->unk8->unk8;
             g = m->unk10;
             sum = 0;
-            if ((s32)g >= 0) {
+            if (IS_OFFSET(g)) {
                 g = (WmModelGroup *)((u8 *)m + (s32)g);
             }
             for (k = 0; k < m->unk3; k++) {
@@ -4734,7 +4734,7 @@ void func_800B6438(Unk800C95C8 *arg0, u8 *arg1) {
     }
     g2 = arg0->unk8->unk10;
     size = 0;
-    if ((s32)g2 >= 0) {
+    if (IS_OFFSET(g2)) {
         g2 = (WmModelGroup *)((u8 *)g2 + (s32)arg0->unk8);
     }
     n = arg0->unk8->unk3;
