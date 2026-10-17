@@ -1,0 +1,337 @@
+# Names applied from the ff9-ds port's evidence (branch worktree-agent-a52060f77a83c91a1), for re-applying
+# after merges. Each "## bin" section is a `python3 tools/rename.py --bin BIN --from FILE` list ("OLD NEW  # why").
+#
+# Before the main section, the BIOS stub chunks were split by adding type:func placeholders to
+# config/symbols.us.txt (func_80063118, func_80065218/28/38, func_80065E70/80/90/A0/B0), INCLUDE_ASM lines for them
+# in src/main/main.c, matching lines in config/library_funcs.us.txt, then progress.py --write-index.
+# func_80065238 -> strcpy needs --force (the builtin name is already used in ovl_39), the second strcpy prototype in
+# ovl_39.h was dropped and ovl_64.h's became `char *strcpy(char *, const char *)` (cast at its one call).
+# func_80016BA0 -> _bu_init is not in the function index: symbol line added and the C use renamed by hand.
+# The ovl_0a/14/15 sections name references to ovl_64 functions inside those overlays (symbol lines added to their
+# own symbols files, src and header renamed), since rename.py only renames inside ovl_64.
+#
+# Struct fields (FIELDS at the end): rename members in the header, then tools/rename_fields.py, one struct per run.
+# Types renamed afterwards: Unk800761D0 -> CdLoadState, Unk8C8 -> PreloadQueue, Unk80021938 -> PreloadEntry,
+# Unk800577EC -> AkaoVoiceRegs.
+
+## main: main (BIOS stubs and library wrappers)
+func_80012D08 EnterCriticalSection  # [bios SYS(01h)] li a0,1 then syscall; ff9-ds port/psx/irq.c
+func_80012D18 ExitCriticalSection  # [bios SYS(02h)] li a0,2 then syscall; ff9-ds port/psx/irq.c
+func_80016BA0 _bu_init  # [bios A(70h)] ff9-ds port/psx/card.c
+func_80063108 strcat  # [bios A(15h)] ff9-ds docs/decomp-requests.md F18 (reached in the battle reward path)
+func_80065208 TestEvent  # [bios B(0Bh)] ff9-ds port/psx/bios.c
+func_80065218 _card_info  # [bios A(ABh)] ff9-ds port/psx/card.c
+func_80065228 _card_wait  # [bios B(5Dh)] ff9-ds port/psx/card.c
+func_80065238 strcpy  # [bios A(19h)] ff9-ds port/psx/bios.c
+func_80065E60 open  # [bios B(32h)] ff9-ds port/psx/card.c
+func_80065E70 lseek  # [bios B(33h)] ff9-ds port/psx/card.c
+func_80065E80 read  # [bios B(34h)] ff9-ds port/psx/card.c
+func_80065E90 write  # [bios B(35h)] ff9-ds port/psx/card.c
+func_80065EA0 close  # [bios B(36h)] ff9-ds port/psx/card.c
+func_80065EB0 nextfile  # [bios B(43h)] (ff9-ds port/psx/card.c lists it with firstfile)
+func_80021310 CdStatus  # [code] returns libcd's status byte 0x8006825C (cleared by CD_initintr); ff9-ds port/psx/cd.c
+func_80021320 CdMode  # [code] returns the byte CD_cw stores for command 0x0E (Setmode); ff9-ds port/psx/cd.c
+func_80021330 CdLastPos  # [code] returns &0x80068268, where CD_cw stores command 2's (Setloc) 4 bytes; ff9-ds port/psx/cd.c
+func_80021340 CdFlush  # [code] calls CD_flush; ff9-ds port/psx/cd.c
+func_80021360 CdReady  # [code] calls CD_ready with its arguments; ff9-ds port/psx/cd.c
+func_80021380 CdSyncCallback  # [code] swaps the callback CD_sync/CD_ready/CD_cw call on interrupt bit 2 (command complete); ff9-ds port/psx/cd.c
+func_800213A0 CdReadyCallback  # [code] swaps the callback called on interrupt bit 4 (data ready), game passes its sector handler func_800235A0; ff9-ds port/psx/cd.c
+func_800236A4 CdSetDebug  # [code] swaps the level at 0x80068258 that gates CdSearchFile's printfs (ff9-ds port/psx/cd.c calls it a read-callback setter, the code says otherwise)
+func_8005703C SpuRead  # [code] clamps size to 0x7EFF0 and calls _spu_Fr; ff9-ds port/psx/spu.c
+func_8005709C SpuWrite  # [code] clamps size to 0x7EFF0 and calls _spu_Fw; ff9-ds port/psx/spu.c
+func_800639D4 SetGeomScreen  # [code] ctc2 a0 to GTE H ($26); ff9-ds port/psx/libgte.c
+func_800645C4 ReadGeomScreen  # [code] cfc2 GTE H ($26); ff9-ds port/psx/libgte.c
+func_80018750 SpuGetReverbModeType  # [code] stores 0x8006798C, the mode SpuSetReverbModeType saves, through its argument
+
+## main: main (AKAO sound driver)
+func_800575B4 akao_keyOn  # [code] writes the voice mask to SPU KON 0x1F801D88; ff9-ds docs/decomp-requests.md R11, port/game/spu_regs.c
+func_800575D0 akao_keyOff  # [code] writes the voice mask to SPU KOFF 0x1F801D8C; ff9-ds docs/decomp-requests.md R11
+func_800575EC akao_setReverbVoices  # [code] writes the voice mask to SPU EON 0x1F801D98; ff9-ds docs/decomp-requests.md R11
+func_80057608 akao_setNoiseVoices  # [code] writes the voice mask to SPU NON 0x1F801D94; ff9-ds docs/decomp-requests.md R11
+func_80057624 akao_setPitchModVoices  # [code] writes the voice mask to SPU PMON 0x1F801D90; ff9-ds docs/decomp-requests.md R11
+func_80057640 akao_setVoiceVolume  # [code] voice regs +0/+2 (volume L/R), scaled by vol/128 when vol != 0; ff9-ds port/game/spu_regs.c
+func_80057688 akao_setVoicePitch  # [code] voice reg +4 (sample rate); ff9-ds port/game/spu_regs.c
+func_800576A0 akao_setVoiceStartAddr  # [code] voice reg +6 = SPU RAM byte address >> 3; ff9-ds port/game/spu_regs.c
+func_800576BC akao_setVoiceLoopAddr  # [code] voice reg +0xE (repeat address) = byte address >> 3; ff9-ds docs/decomp-requests.md R11
+func_800576D8 akao_setVoiceAdsr1  # [code] voice reg +8; ff9-ds port/game/spu_regs.c
+func_800576F0 akao_setVoiceAdsr2  # [code] voice reg +0xA; ff9-ds port/game/spu_regs.c
+func_80057708 akao_setVoiceAttack  # [code] ADSR1 bits 8-15 (attack rate, mode >> 2 as the exponential bit), keeps the low byte
+func_80057738 akao_setVoiceDecay  # [code] ADSR1 bits 4-7 (decay shift)
+func_80057760 akao_setVoiceSustainLevel  # [code] ADSR1 bits 0-3 (sustain level)
+func_80057788 akao_setVoiceSustain  # [code] ADSR2 bits 6-15 (sustain rate, mode >> 1 as direction/exponential), keeps the release bits
+func_800577BC akao_setVoiceRelease  # [code] ADSR2 bits 0-5 (release rate, mode >> 2 as the exponential bit)
+func_800577EC akao_writeVoice  # [code] writes volume, pitch, start, ADSR and loop address from the channel's voice block and clears its dirty flags; ff9-ds docs/decomp-requests.md R11 (bulk voice setup)
+func_80057898 akao_flushVoice  # [code] writes only the registers whose dirty bits are set (0x10 pitch, 3 volume, 0x80 start, 0x10000 loop, ADSR) through the akao_setVoice* writers
+func_8005CDE4 akao_applyCdVolume  # [code] writes the high half of D_80080AC0 to SPU CD volume L/R 0x1F801DB0; ff9-ds port/game/spu_regs.c
+func_8005B2D8 akao_cmdSetCdVolume  # [code] sound command 0x70 (g_akaoCommandHandlers) - sets the CD volume and cancels a fade
+func_8005B30C akao_cmdFadeCdVolume  # [code] sound command 0x71 - CD volume step toward the target over n ticks, applied by func_8005CF04
+func_8005B374 akao_cmdFadeCdVolumeFrom  # [code] sound command 0x72 - as 0x71 but from an explicit start volume
+func_8005C864 akao_cmdNop  # [code] empty handler, fills the unused slots of g_akaoCommandHandlers
+func_8005C86C akao_setReverbMode  # [code] SpuSetReverbModeType(mode | 0x100) between SpuSetReverb(0/1) unless the mode is already set
+func_8005681C akao_initState  # [code] called once by akao_init - resets sequencer/channel state, main volume 0x3FFF, CD volume 0x7FFF, reverb mode 4, every voice's loop address; ff9-ds port/game/spu_regs.c
+func_8005DFE0 akao_calcPitch  # [code] SPU pitch for a note from the instrument's base note and tuning, fine-tune result through out; ff9-ds docs/decomp-requests.md F25 (fine pitch argument)
+D_8006F410 g_akaoSemitonePitch  # [code] 4096 * 2^(n/12) for the 12 semitones (u32), read by akao_calcPitch
+D_80080AC0 g_akaoCdVolume  # [code] CD volume, 16.16 - the high half (D_80080AC2) goes to the SPU in akao_applyCdVolume
+D_80080AC2 g_akaoCdVolumeHi  # [code] high half of g_akaoCdVolume, written to SPU CD volume L/R
+D_80080A28 g_akaoCdVolumeStep  # [code] per-tick CD volume change set by akao_cmdFadeCdVolume*
+D_80080A2C g_akaoCdVolumeFadeTicks  # [code] ticks left of the CD volume fade, counted down by func_8005CF04
+
+## main: main (MBG player state used by several binaries)
+D_80071E32 g_mbgState  # [code] 0 off, 1 after MBG_init, >=2 playing (mbg_play ++, mbg_stop --, mbg_update needs >=2); ff9-ds port/game/movie.c
+D_80071E34 g_mbgFrame  # [code] frames decoded, ++ in mbg_update, compared with mbg_getLastFrame by ovl_0a/ovl_14; ff9-ds port/game/movie.c
+D_80071E31 g_mbgRgb24  # [code] -1 undecided (movie entry decides), 0 16-bit, 1 24-bit display (mbg_setRgb24, mbg_mdecOutCallback)
+D_80071E38 g_mbgPaused  # [code] set at frame end on a pause request, frames then re-delivered by mbg_streamUngetFrame; cleared by mbg_setPause(0)
+
+## main: main (game code)
+func_800127A0 game_main  # [code] C main after __main - boot init, then per-session init and the g_gameState->mode dispatch loop until GameState.unk0 bit 0 (src/main/main.c; ff9-ds port/psx/mem.c calls it as the game's main loop, decomp-requests R3)
+func_80012900 game_loadModeOverlay  # [code] mode -> file id table {20,10,11,12,21,-,-,101,101,13}, restores it from the preload cache (RAM copy or StoreImage from VRAM) else cd_readSync from FF9.IMG, then FlushCache (game_main; ff9-ds decomp-requests F3)
+func_800169B8 game_initLibraries  # [code] once before the loop - ResetCallback, ResetGraph, InitGeom, SpuInit, InitCARD/StartCARD, cd_init (game_main)
+func_80022B18 cd_getState  # [code] returns g_cdLoad.unk0, nonzero while a request runs; every caller spins on it (func_80012900, func_80022D84, func_80022DF0; ff9-ds scenario.c uses it as busy)
+func_80022C60 cd_readAsync  # [code] (sector, size, dest, callback) fills the static g_cdReadRequest (flags 3 = seek+read, inline chunk) and submits it (func_80021ED4; ff9-ds scenario.c, decomp-requests R10)
+func_80022DF0 cd_readSync  # [code] same request as cd_readAsync without callback, then spins on cd_getState (game_loadModeOverlay)
+func_80022CC4 cd_readChunks  # [code] read into a list of n {size, dest} chunks, total size summed (CdChunk, cd_onSectorReady)
+func_80022C10 cd_seekAsync  # [code] request flags 1 only (CdlSetloc, then cd_startRequest's seek with no read), with a done callback
+func_80022D84 cd_seekSync  # [code] same seek-only request, then spins on cd_getState
+func_800230B8 cd_submit  # [code] starts the request with cd_startRequest when idle, else queues one in g_cdLoad.unk968 (unk2 = queued) and returns 0 if already queued (all cd_read*/cd_seek* wrappers)
+func_80022AC4 cd_findFile  # [string] [code] CdSearchFile + CdPosToInt, prints "Cannot find file. (%s)" and returns -1 on failure
+func_80022A28 cd_init  # [code] loops CdInit until it succeeds, then CdControlB(CdlSetmode, CdlModeSpeed) (game_initLibraries)
+func_80022A80 cd_resetState  # [code] CdReset(1), clears both libcd callbacks and memsets g_cdLoad (per-session init func_80016A28)
+func_80022B28 cd_cancel  # [code] if busy, clears callbacks/flags, sets g_cdLoad idle and issues CdlPause (9) until accepted; returns the old state
+func_80022BD0 cd_stopMotor  # [code] CdControlB(CdlSetmode, 0) then CdControlB(CdlStop)
+func_800227C8 cd_onDataReady  # [code] ready callback installed by every read request - checks CdGetSector's header position is the expected next sector, calls cd_onSectorReady, pauses on the last sector or retries on error
+func_800231A0 cd_onSync  # [code] sync callback installed by every request (unk10) - stores the result bytes in g_cdResult, dispatches on command 2/5 through D_80068668[state]
+func_80023580 cd_controlF  # [code] plain CdControlF(com, param) wrapper used for every CD command in the module
+func_8002306C cd_checkShellOpen  # [code] CdControlB(CdlGetstat) into g_cdResult, returns status bit 4 (CdlStatShellOpen)
+D_80076148 g_cdReadRequest  # [code] static CdRequest filled by cd_readAsync and cd_readSync
+D_80076B0C g_cdResult  # [code] last CD result bytes, written by cd_onSync/cd_onDataReady/cd_checkShellOpen
+func_8001E218 file_find  # [code] (dir, id) - scans directory dir of g_gameState->unk14 backwards for the id, direct index for type-3 dirs, NULL if absent (game_loadModeOverlay; ff9-ds decomp-requests R10)
+func_80021E5C preload_find  # [code] finds the preload queue entry (GameData.unk8C8, 7 entries) whose id matches the low 24 bits (game_loadModeOverlay, func_800220E8; ff9-ds decomp-requests F3 cached RAM/VRAM restore)
+func_80021C60 preload_init  # [code] resets the preload queue (state 4, count 0, cursor -1) and clears all 7 entries (func_8001D268)
+func_80021CFC preload_add  # [code] appends a cleared entry while count < 6 and returns it (ovl_0a/ovl_0b callers fill it)
+func_8002246C preload_update  # [code] per-frame state machine - next entry, wait cd_getState, cd_readAsync/cd_seekAsync with preload_onReadDone, wait completion
+func_800225BC preload_onReadDone  # [code] CD done callback of preload_update - marks the current entry done (|2) or failed (|0x80)
+func_80019194 pad_update  # [code] per port - PadGetState, actuator setup, maps buttons into g_padPortHeld, then g_padPortPressed/g_padPortReleased from the previous frame (ff9-ds port/psx/pad.c)
+D_80073930 g_padPortPrevHeld  # [code] g_padPortHeld from the previous pad_update, used for the press/release edges
+D_80073988 g_padPortReleased  # [code] (held ^ prev) & prev per port in pad_update
+D_800739A8 g_padPortState  # [code] PadGetState result per port in pad_update (2 = digital found, 6 = stable)
+func_80027EDC item_findSlot  # [code] first inventory slot with count != 0 and this id, else NULL (item_getCount inlines it; ff9-ds scenario.c)
+func_80033AF4 party_setMember  # [code] party[slot] = &characters[ch] or NULL for ch < 0 / >= 9, marks ch via func_80033BD0, flags a party change (func_80033690; ff9-ds scenario.c)
+func_80033690 party_initNewGame  # [code] chr_init on all 9 records, party = 0,1,2,3, gil = 500 (func_800651D8)
+func_8003378C party_getFirstMember  # [code] index of the first non-NULL party slot
+func_80032B08 chr_init  # [code] zeroes the record, initial CharBits from D_8006CA78[ch], default flags/name/equipment, model, level 1, full hp/mp/stones (func_80033690)
+func_80032C4C chr_setLevel  # [code] sets level (exp = g_levelExp[lv-1] unless keeping), recomputes base stats, max hp/mp/stones and clamps hp/mp (func_80033C48, func_800333B0, chr_init)
+func_80033C48 chr_resetToLevel  # [code] level = 0 then chr_setLevel(ch, lv) so exp is reset, optional full heal, returns the old level (ff9-ds scenario.c)
+func_80034A64 chr_calcBaseSpeed  # [code] result stored in Character.baseSpeed by chr_setLevel, capped 50
+func_80034B50 chr_calcBaseStrength  # [code] stored in baseStrength by chr_setLevel
+func_80034C64 chr_calcBaseMagic  # [code] stored in baseMagic by chr_setLevel, capped 99
+func_80034D78 chr_calcBaseSpirit  # [code] stored in baseSpirit by chr_setLevel, capped 50
+func_80034E80 chr_calcMaxStones  # [code] stored in maxStones by chr_setLevel, capped 99
+func_80034F7C chr_calcMaxHp  # [code] (level, strength) table * str / 50, capped 9999, stored in maxHp by chr_setLevel
+func_80034FD4 chr_calcMaxMp  # [code] (level, magic) table * mag / 100, capped 999, stored in maxMp by chr_setLevel
+func_80033D38 chr_setDefaultName  # [code] fills the 10-byte name with 0xFF, copies default name id from the D_80010DC4 bank (chr_init; ff9-ds scenario.c, decomp-requests F22)
+func_80033D8C chr_setDefaultEquip  # [code] copies the 5 equipment ids of set b from D_8006CAD8 (chr_init, func_800333B0; ff9-ds scenario.c)
+func_80033A1C chr_getDefaultSet  # [code] D_8006CAB8[id][guest flag unkA&0x10] - the index chr_init passes to both chr_setDefaultName and chr_setDefaultEquip (ff9-ds scenario.c)
+func_8004AEDC evt_getArg8  # [code] next instruction argument - evaluated expression if the g_evtArgFlags bit is set, else one literal byte; shifts the flags (evt_execInstr)
+func_8004AF58 evt_getArg16  # [code] same with a 2-byte little-endian s16 literal
+func_80052DA0 evt_evalExpr  # [code] runs the expression evaluator func_80051F54 on g_evtCurObj's ip and stores the advanced ip back (evt_getArg8)
+func_80052D40 evt_popResult  # [code] pops the evaluator's result from the stack at g_evtExprSp via func_80051D4C (evt_getArg8)
+func_80051F54 evt_runExpr  # [code] hand-written postfix expression evaluator - opcode byte at $s6 dispatched through 0x8006E718, pushes tagged words onto g_evtExprStack (src_equiv/main/script_text.c)
+func_80051D4C evt_popValue  # [code] pops a tagged stack word and resolves it - immediate, object property, system var, or variable in g_evtGlobalVars / g_evtState / g_evtObjVars (src_equiv/main/script_text.c)
+func_80051E8C evt_popAssign  # [code] pops a variable reference and stores a value into the same spaces via func_80051DF4 (src_equiv/main/script_text.c)
+func_80051CA8 evt_readVar  # [code] reads base+off as bit, s24, s8/u8 or s16/u16 by the tag width bits
+func_80051DF4 evt_writeVar  # [code] writes base+off with the same width encoding as evt_readVar
+func_80052CD0 evt_getVarBank  # [code] bank 0 -> g_evtGlobalVars, 1 -> *g_evtState, 2 -> g_evtObjVars
+D_8007AEF0 g_evtGlobalVars  # [code] variable space 0 of the script evaluator (evt_popValue, evt_getVarBank), 0x800 bytes cleared by script opcode 0xD1 (func_80050A84); h[0] is the story counter tested by chr_selectModel (ff9-ds scenario.c)
+D_8007AECC g_evtState  # [code] pointer to the script system state (D_80077E60) - variable space 1, object lists, playerUid, party uids at unk16E4 (evt_execInstr, evt_popValue)
+D_8007BCF8 g_evtObjVars  # [code] current object's local variable space, set to obj + obj->unk8*4 by func_80052870 (evt_popValue)
+D_8007BCB8 g_evtExprStack  # [code] expression stack base loaded into $s7 by evt_runExpr
+D_8007B6F0 g_evtExprSp  # [code] published copy of the evaluator's $s7 stack pointer (evt_popResult, evt_runExpr)
+D_8007B6F4 g_evtArgFlags  # [code] the byte after the opcode - one bit per argument, set = expression (evt_execInstr, evt_getArg8)
+D_8007B70C g_evtCurObj  # [code] object whose script is executing - its unk0 is the instruction pointer read by evt_execInstr, set by the scheduler func_80052870
+D_8007AEA0 g_evtInstrStart  # [code] ip at the start of the current instruction, restored by evt_execInstr when an instruction must retry (case 0x12 returns 1)
+D_8007B708 g_evtMode  # [code] evt_init copies g_gameState->mode 1/2/3 into it and 8 -> 4; selects message-table layout and field-only behaviour in evt_execInstr
+
+## ovl_64: ovl_64 (MBG movie player)
+func_801999B4 MBG_init  # [string] "Warning! MBG_init() called when already initialized"; carves MDEC/ring/audio buffers out of caller memory
+func_80199B28 mbg_play  # [code] picks entry idx of movie list from D_8019DC5C, sets up MDEC buffers, ring, CD stream and decodes the first frame; ff9-ds port/game/movie.c
+func_80199F30 mbg_update  # [code] per-frame: starts MDEC on the decoded frame, fetches/VLC-expands the next, returns 0 once stopped (called each frame by ovl_0a/14/15); ff9-ds port/game/movie.c
+func_8019AAF8 mbg_stop  # [code] stops sound and CD stream, decrements the player state, calls the end callback, resets display; ff9-ds port/game/movie.c
+func_8019A9D8 mbg_shutdown  # [code] inverse of MBG_init: clears all buffer pointers and the player state (callers end-callbacks in ovl_0a/14/15)
+func_8019AA5C mbg_playToEnd  # [code] blocking loop calling mbg_update(1) until it returns 0
+func_8019AAB4 mbg_setPause  # [code] nonzero requests a pause at the next frame end (mbg_mdecOutCallback), zero clears g_mbgPaused and restarts CD reading
+func_8019AB70 mbg_getFrame  # [code] returns D_80071E34 (frames decoded) or -1 when not initialized; used by ovl_0a script query
+func_8019AD0C mbg_getLastFrame  # [code] returns the stream's end frame (D_8019DE10.unk3C, from audio sector +0x60) or -1; callers compare D_80071E34 against it; ff9-ds port/game/movie.c
+func_8019AC3C mbg_setEndCallback  # [code] stores D_8019DC94.unk60, called by mbg_stop
+func_8019AC48 mbg_setScratchVlcTable  # [code] nonzero sets the VLC table to NULL = scratchpad (rodata "Using scratchpad"), else D_8019F288
+func_8019AC6C mbg_getEntryCount  # [code] *out = D_8019DC5C[list].unk0 (entries in a movie list)
+func_8019AD4C mbg_getStartCamera  # [code] copies the first frame's camera (D_8019F258/D_8019F278) to the caller; ovl_0a passes GameData.unk18 MATRIX
+func_8019AE0C mbg_getGeomOffset  # [code] returns D_8019DC88, the GTE offset set from the frame camera record in func_801990A0
+func_8019ABF0 mbg_getCameraSelect  # [code] wraps func_8019C99C (D_8019DE10.unk10)
+func_8019AC14 mbg_setCameraSelect  # [code] wraps func_8019C9B4 (0/1 picks which of the two camera records func_8019BCE8 copies); ff9-ds docs/decomp-requests.md F28
+func_8019A5B0 mbg_setRgb24  # [code] switches D_80071E31 / DecDCTin mode between 24-bit (0x1E0 halfword columns) and 16-bit (0x140); movie entry unk4 or ovl_0a/14 callers
+func_8019A688 mbg_setDispEnv  # [code] SetDefDispEnv for one buffer, isrgb24 and 2/3 width in 24-bit mode, vertically centered height h
+func_8019A7A8 mbg_setGraphEnv  # [code] sets both DISPENVs and DRAWENVs for 16/24-bit movie display (called with 0xE0 on mode change and stop)
+func_8019AA20 mbg_putDispEnv  # [code] VSync(0), PutDispEnv(env), SetDispMask(1)
+func_801990A0 mbg_readFrame  # [code] takes the next ready ring frame (func_8019C2F4), applies its camera record to GTE/GameData, copies mask data, flags end, updates frame size
+func_80199554 mbg_mdecOutCallback  # [code] registered via DecDCToutCallback in mbg_play: applies mask, LoadImage of the decoded slice, starts the next DecDCTout
+func_8019AE44 mbg_vlcBuildTable  # [runtime] ff9-ds docs/movie-validation.md original VLC setup run in PCSX-Redux (tools/test_movie_vlc_psx.py); [code] expands the 108 run/level pairs at D_8019DCFC into +/- MDEC halfwords, NULL = scratchpad
+func_8019AE98 mbg_vlcSetSize  # [code] sets D_8019DDD4 output limit (n*2, <=0 means 0xFFFFFF) and returns the old one; func_8019AEC0 suspends at it; ff9-ds docs/decomp-requests.md F29
+func_8019AEC0 mbg_vlcDecode  # [runtime] ff9-ds docs/movie-validation.md original routine compared byte-for-byte on 171 frames in PCSX-Redux; [code] BS v2/v3 to MDEC run-level, NULL input resumes from D_8019DDD8
+func_8019B00C mbg_vlcDecodeBlock  # [code] register-ABI entry inside mbg_vlcDecode: stores the given coefficient, then decodes AC codes until EOB (FE00)
+func_8019B188 mbg_vlcDecodeLumaBlockV3  # [code] register-ABI entry inside mbg_vlcDecode: v3 luma DC predictor (t9), jal'd 4x per macroblock, then mbg_vlcDecodeBlock
+func_8019B3D4 mbg_applyMask  # [code] ORs D_8019DC84 (0x8000 STP) into the decoded 16x224 slice from RLE mask data (D_8019F4C8 cursor); E6000002 mask-check set in mbg_update
+func_8019B7C4 mbg_drawStreamDebug  # [code] debug bar of the CD ring: one POLY_F4 per sector, colour per slot, brighter when ready (0x8000)
+func_8019BA70 mbg_streamOnVideoSector  # [code] after CdGetSector of a 0x914-byte video sector into the ring (func_8019C434); checks frame number, marks slot ready; ff9-ds docs/decomp-requests.md F28
+func_8019BCE8 mbg_streamOnAudioSector  # [code] after CdGetSector of a 2048-byte sector into the audio buffer; copies camera record/flags, end frame from +0x60; ff9-ds docs/decomp-requests.md F28
+func_8019C1B0 mbg_streamStart  # [code] computes the start sector from base sector + (startFrame-1)*sectors per frame, resets counters, starts CD reading with func_8019C434
+func_8019C2F4 mbg_streamGetFrame  # [code] returns the next ready ring slot's data/header/camera/mask; 3 not ready, 5 stream ended or failed
+func_8019C434 mbg_streamReadyCallback  # [code] CD ready callback passed to func_80022F1C: reads the sector header, routes to audio or video sector handler, retries on timeout
+func_8019C7E4 mbg_streamReset  # [code] returns 4 unless ring and audio buffers are set, else clears the stream status bytes and channel
+func_8019C864 mbg_streamStop  # [code] clears the main-exe callback at D_80068254 via func_800213A0(0); only called by mbg_stop
+func_8019C884 mbg_streamSetRing  # [code] ring of size/per slots (max 16): header array then 0x8F4-byte sector data, all slots marked free (0x1000)
+func_8019C954 mbg_streamSetAudioBuffer  # [code] sets the 2048-byte-sector buffer (D_8019DE10.unk90) and its sector count
+func_8019C98C mbg_streamSetBaseSector  # [code] sets D_8019DE10.unk1C, the movie's first sector used by mbg_streamStart
+func_8019C99C mbg_streamGetCameraSelect  # [code] *out = D_8019DE10.unk10
+func_8019C9B4 mbg_streamSetCameraSelect  # [code] D_8019DE10.unk10 = 0/1, selects s->unk14[0/1] in mbg_streamOnAudioSector
+func_8019C9D4 mbg_streamPushAudio  # [code] when >=2 audio sectors are queued, consumes them and passes the stream to func_80056488
+func_8019CA1C mbg_streamSeek  # [code] frees all slots, waits for CD idle, restarts reading at loc with mbg_streamReadyCallback
+func_8019CA80 mbg_streamGetStartPos  # [code] copies the start CdlLOC D_8019DE10.unk20
+func_8019CAC0 mbg_streamGetPos  # [code] CdIntToPos of the next sector D_8019DE10.unk44
+func_8019CAEC mbg_streamPeekFrame  # [code] returns the read slot's data/header and its state (free/ready/0x2000/0x4000) without consuming
+func_8019CBA0 mbg_streamCountFree  # [code] adds the number of free (0x1000) ring slots to *count
+func_8019CBF4 mbg_streamGetLastFrame  # [code] *out = D_8019DE10.unk3C (end frame, 99999 until read from the stream)
+func_8019CC0C mbg_streamUngetFrame  # [code] steps the read slot back so the same frame is returned again (used while g_mbgPaused)
+func_8019CC3C mbg_streamSetPaused  # [code] nonzero pauses CD reading (func_80023018), zero restarts it at the current sector
+func_8019CC7C mbg_streamClearRing  # [code] marks every ring slot free (0x1000)
+func_8019CCBC mbg_streamFreeFrame  # [code] marks the slot holding data free and restarts CD reading if it had stalled on a full ring
+D_8019DC94 g_mbgPlayer  # [code] player state: buffers (MBG_init), end callback, frame size, VLC table pointer
+D_8019DE10 g_mbgStream  # [code] CD ring stream state used by all func_8019C* / mbg_stream functions
+D_8019F4D8 g_mbgDecode  # [code] MDEC in/out double buffers, frame rects and current slice (mbg_play, mbg_update, mbg_mdecOutCallback)
+D_8019DC5C g_mbgMovieLists  # [code] 5 lists of {count, entries}; mbg_play and mbg_getEntryCount index it; ff9-ds port/game/movie.c
+D_8019DCF8 g_mbgMovie  # [code] current movie table entry, set by mbg_play
+D_8019DCFC g_mbgVlcPairs  # [runtime] ff9-ds docs/movie-validation.md 108 run/level pairs used by the original VLC routine; [code] read by mbg_vlcBuildTable
+D_8019DDD4 g_mbgVlcSize  # [code] output limit set by mbg_vlcSetSize, read by mbg_vlcDecode
+D_8019DDD8 g_mbgVlcResume  # [code] 13 saved registers stored when mbg_vlcDecode hits the limit, reloaded when called with NULL input
+D_8019F288 g_mbgVlcTable  # [code] default expanded VLC table (D_8019DC94.unk44), built by mbg_vlcBuildTable
+D_8019DC88 g_mbgGeomOffset  # [code] GTE offset (camera record +0x20/+0x22 + 160/112), returned by mbg_getGeomOffset
+D_8019F258 g_mbgStartCamera  # [code] camera record of the first frame, returned by mbg_getStartCamera
+D_8019DC84 g_mbgMaskBit  # [code] 0x8000, ORed into masked pixels by mbg_applyMask
+D_8019F4C8 g_mbgMaskCursor  # [code] mbg_applyMask argument block: run state and RLE data pointer, reset per frame in mbg_update
+D_8019E018 g_mbgMaskSize  # [code] mask data length per draw buffer, copied by mbg_readFrame
+D_8019E028 g_mbgMaskData  # [code] mask data per draw buffer (0x914 bytes each), copied from the stream by mbg_readFrame
+D_8019F750 g_mbgSlotMasks  # [code] per ring slot {length, pointer} of mask data from the video sector header (mbg_streamOnVideoSector)
+D_8019F510 g_mbgSlotCameras  # [code] per ring slot camera record copied by mbg_streamOnAudioSector, returned by mbg_streamGetFrame
+D_8019F488 g_mbgLoadRects  # [code] 4 RECTs cycling for LoadImage of decoded slices in mbg_mdecOutCallback
+D_8019DC90 g_mbgLoadRectIdx  # [code] index into g_mbgLoadRects, (n+1)%4
+D_8019DEA4 g_mbgStreamBusy  # [code] reentry guard of mbg_streamReadyCallback, also cleared by mbg_streamStart
+D_8019DEA8 g_mbgStreamDeferred  # [code] set when MDEC output is busy in mbg_streamReadyCallback; mbg_mdecOutCallback replays the callback and clears it
+D_8019DEAC g_mbgDebugRingColors  # [code] per-slot colours for mbg_drawStreamDebug
+D_8019F7F0 g_mbgDebugRingPolys  # [code] POLY_F4[2][80] for mbg_drawStreamDebug
+func_8019AC9C mbg_getEntryName  # [code] strcpy of entry idx of movie list n (D_8019DC5C) into the caller buffer
+
+## ovl_0a: ovl_0a references to ovl_64 (by hand: symbol line in the overlay symbols file, rename in its src and header)
+func_801999B4 MBG_init  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_80199B28 mbg_play  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_80199F30 mbg_update  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019A5B0 mbg_setRgb24  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019A9D8 mbg_shutdown  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AB70 mbg_getFrame  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AC3C mbg_setEndCallback  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AD0C mbg_getLastFrame  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AD4C mbg_getStartCamera  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AE0C mbg_getGeomOffset  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+
+## ovl_14: ovl_14 references to ovl_64 (by hand: symbol line in the overlay symbols file, rename in its src and header)
+func_801999B4 MBG_init  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_80199B28 mbg_play  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_80199F30 mbg_update  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019A5B0 mbg_setRgb24  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019A9D8 mbg_shutdown  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AAF8 mbg_stop  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AC3C mbg_setEndCallback  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AD0C mbg_getLastFrame  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019C98C mbg_streamSetBaseSector  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+
+## ovl_15: ovl_15 references to ovl_64 (by hand: symbol line in the overlay symbols file, rename in its src and header)
+func_801999B4 MBG_init  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_80199B28 mbg_play  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_80199F30 mbg_update  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019A5B0 mbg_setRgb24  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019A9D8 mbg_shutdown  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AC3C mbg_setEndCallback  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019AD0C mbg_getLastFrame  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+func_8019C98C mbg_streamSetBaseSector  # [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+
+## ovl_0b: ovl_0b (battle)
+func_800DC6E8 Hi_FreeEffModel  # [string] passes "Hi_FreeEffModel()\nid%d can not free!" (D_800A7F78) to the slot lookup, then clears the slot's in-use flag
+func_800DC434 Hi_SetSummonMotFrame  # [string] passes "Hi_SetSummonMotFrame()\nid%d cannot use!" (D_800A7F34) to the summon lookup, then sets the motion frame (clamped to the motion's frame count)
+func_800DF738 Hi_GetMdlVertexPtr  # [string] passes "Hi_GetMdlVertexPtr()\nid%d cannot use!" (D_800A825C) to the eff-model lookup
+func_800CF690 btlfx_rand  # [code] LCG seed*0x41C64E6D+0x3039 on scratchpad 0x1F8003FC, returns seed>>16; ff9-ds port/game/battle_math.c, tools/test_battle_math.py compares against the original instructions
+func_800CF708 btlfx_randRange  # [code] from + rand % (to-from), from when equal; ff9-ds port/game/battle_math.c, tools/test_battle_math.py compares against the original instructions
+func_800CF748 btlfx_randCentered  # [code] rand % span - span/2, 0 for span 0 (72 callers jitter values with it); ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+func_800CF788 btlfx_randRotation  # [code] fills an SVECTOR with random x/y angles (x quadrant cycled by a phase counter at 0x800FE528), z=0; ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+func_800CF6B8 btlfx_sqrt  # [code] Newton iteration x=(x+v/x)/2 for N rounds; ovl_0b_o1 callers pass dx*dx+dz*dz; ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+func_800CF9DC btlfx_lerpRatio  # [code] from + (to-from)*step/duration (raw div); ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+func_800CF9B0 btlfx_lerp  # [code] GTE INTPL with IR0=factor - from + (to-from)*factor/4096; ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py compares against the original instructions
+func_800CFA00 btlfx_lerpVec  # [code] GTE INTPL on three s16 components, from->to by factor/4096 into out; ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py
+func_800CF5F8 btlfx_distance  # [code] SQR + bitwise isqrt of the delta between two SVECTORs, min 1 (asm quirk - IR2 gets from.x not dz); func_800E0168 compares it to a range before VectorNormalS of the same delta; ff9-ds port/game/battle_angles.c
+func_800CF808 btlfx_aimAngles  # [code] rotation that points from->to - y=0x400-ratan2(dz,dx), x=-ratan2(dy,horizontal dist), z=0; func_800CFF40/func_800D0580 use it on a transformed unit Z axis; ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py
+func_800CF8EC btlfx_transformPoint  # [code] MVMVA rot+trans of (packed xy, z) through the current GTE matrix into an s16[3]; func_800CFD78/func_800CFE88 load the matrix first; ff9-ds port/game/battle_angles.c
+func_800CF91C btlfx_transformPolar  # [code] transforms a vector, stores z and sqrt(x*x+y*y), returns ratan2(x,y); only caller func_800D0674; ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py
+func_800CF5A4 btlfx_pushTrailPoint  # [code] ring buffer - head byte [1] decrements (wraps to capacity), count byte [2] saturates, 8-byte entry gets xy and z|width<<17; func_800D1494 then draws the buffer; ff9-ds port/game/battle_trails.c, tools/test_battle_trails.py
+func_800D001C btlfx_angleDiff  # [code] wraps two 12-bit angles, returns the shorter turn direction (+-1) and stores the distance (<=0x800)
+func_800D006C btlfx_turnToward  # [code] moves angles [0],[1] of arg1 toward arg0 by fraction arg2/4096 along the shorter direction, via btlfx_angleDiff
+func_800CFC0C btlfx_align4  # [code] rounds up to a multiple of 4
+func_800CF560 btlbg_setBrightness  # [code] stores the word at func_800CF588, which func_800CEED4 reads as the background color scale (0x80 = unchanged, else GPF scales RGB); func_800E60EC fades it from a start value to a target; ff9-ds port/game/battle_background.c, tools/test_battle_background.py
+func_800CF574 btlbg_getBrightness  # [code] reads that word back; func_800CE1B4 skips drawing when its low byte is 0; ff9-ds port/game/battle_math.c
+func_800CF58C btlbg_setOtShift  # [code] stores D_800CF5A0, which func_800CEED4 uses as the sllv shift on summed vertex depth before clamping the OT index to 0x3FFC; func_800CE05C sets it to 0; ff9-ds port/game/battle_background.c
+func_800CEED4 btlbg_drawRecord  # [code] projects a record's vertices (func_800CF448), NCLIPs, and emits POLY_FT4/FT3 into the OT with brightness/OT shift; called per record by func_800CE1B4; ff9-ds port/game/battle_background.c, tools/test_battle_background.py
+func_800CF448 btlbg_projectVertices  # [code] RTPT over packed 6-byte vertices, xy to scratchpad +0 and z>>4 to scratchpad +0x200 for func_800CEED4; ff9-ds port/game/battle_background.c, tools/test_battle_background.py
+func_800E976C btl_soundPan  # [code] unit id or SVECTOR pointer (arg & 0x90000000), RTPS with the view matrix, maps screen x 160+-170 to pan 0x80+-63 (-1 gives 0x80); result goes in the pan slot snd_playSe fills with 0x80 (func_800AD90C(0xD000, id, 0, pan, 0x7F)); ff9-ds docs/decomp-requests.md F8, tools/test_battle_pan.py
+func_800E716C btl_getUnit  # [code] battle unit by index - 0x10/0x11 special, 0-7 party list, 8+ enemy list, SystemError on a bad index (72 callers)
+func_800C7DAC btl_calcBoneMatrices  # [code] decodes the model's animation frame and composes each bone's 32-byte MATRIX with its parent (bone table parent byte) into the packet buffer, saved at model+0x20; called before projecting meshes by unit drawing and every Hi_Draw*; ff9-ds port/game/battle_pose.c, tools/test_battle_pose.py
+func_800C6528 btl_projectMesh  # [code] per bone - composes the camera with the bone matrix (model+0x20), RTPT of the mesh's vertices into g_vtxScreenXY/g_vtxScreenZ; Hi_DrawEffModel calls it per mesh before the packet emitter
+func_800DF15C btlfx_projectMorphMesh  # [code] the btl_projectMesh step used by Hi_DrawMorphEffModel and Hi_DrawMorphModelByBone, interpolating vertices by a factor; ff9-ds port/game/battle_morph.c, tools/test_battle_morph.py
+func_800DDF10 btlfx_projectSliceMesh  # [code] the btl_projectMesh step used by Hi_DrawSliceEffModel (after it sets the model's slice y at +0x5A), clamping vertices to that plane; ff9-ds port/game/battle_morph.c
+func_800C58E4 btl_drawMesh  # [code] packs the mesh's eight primitive lists from g_vtxScreenXY/Z into GPU packets with NCLIP and links them into the OT, records the first packet at model+0x10; ff9-ds port/game/battle_packets.c, tools/test_battle_packets.py
+func_800DD27C btl_drawMeshOffset  # [code] btl_drawMesh with an OT offset argument (Hi_Draw* pass the slot field Hi_SetEffModelOffset sets) and draw-mode prefixes; ff9-ds port/game/battle_packets.c, tools/test_battle_packets.py
+func_800C8E80 btl_setModelAbr  # [code] walks the model's built packets, sets semi-transparency and the tpage ABR bits; Hi_ModifyEffModelAbr/Hi_ModifySummonModelAbr call it with abr<<5
+func_800C86C8 btl_setModelRgb  # [code] walks the model's built packets and adds r/g/b offsets to their colours via func_800C8DE0; Hi_ModifyEffModelRGB/Hi_ModifySummonModelRGB call it
+func_800C8DE0 btl_addRgbClamped  # [code] adds r/g/b to a packet colour word's three bytes, clamping each to 0..255, keeping the code byte
+func_800DCA68 btl_setModelTransform  # [code] model matrix from rotation (or zero), TransMatrix, then scale via func_800DCB20 or unit scale; first call of Hi_DrawEffModel
+func_800DCB20 btl_scaleModelMatrix  # [code] MulMatrix0 of the model matrix with diag(vx,vy,vz)
+func_800DCFB0 btlfx_getEffModel  # [code] returns g_btlfxEffModels[id], reporting the caller's "Hi_...()\nid%d cannot use!" message when free; used by every Hi_*EffModel
+func_800DD02C btlfx_getSummonModel  # [code] same for g_btlfxSummonModels; used by every Hi_*Summon*
+func_800DC494 btlfx_allocEffModel  # [code] first free slot of the 32 eff-model slots; Hi_Register*EffModel report "memory not enough!" when NULL
+func_800DC4CC btlfx_allocSummonModel  # [code] free summon slot (one); Hi_RegisterSummonModel reports "memory not enough!" when NULL
+func_800DC668 btlfx_initEffModels  # [code] clears all 32 eff-model slots and binds the first n to the given models
+func_800DC710 btlfx_clearEffModels  # [code] clears all 32 eff-model slots without binding models
+func_800DC748 btlfx_initSummonModels  # [code] clears the summon slot and binds the given models
+func_800DC7E0 btlfx_clearSummonModels  # [code] clears the summon slot without binding models
+func_800DC634 btlfx_error  # [code] formats "HIRAISHI ERROR\n\n%s\n" (D_800A7F60) around the message and halts in func_800DC510; every Hi_ lookup/register failure calls it
+func_800DC510 btlfx_halt  # [code] resets draw/disp envs, clears VSync/DrawSync callbacks and swaps buffers forever (never returns); only caller btlfx_error
+D_80100F1C g_btlfxEffModels  # [code] the 32 effect-model slots (BtlObjSlot) that Hi_Register*EffModel allocate and btlfx_getEffModel indexes
+D_8010141C g_btlfxSummonModels  # [code] the summon-model slot array (1 entry) used by Hi_RegisterSummonModel and btlfx_getSummonModel
+D_80101470 g_btlfxErrorMsg  # [code] sprintf buffer for the Hi_ error messages passed to btlfx_error
+D_800F78A8 g_btlfxRandSeed  # [code] func_800E3EEC copies it into the btlfx_rand seed (scratchpad 0x1F8003FC) before the frame's effect calls and stores the seed back after; initial 0x12375514; ff9-ds port/game/battle_effects.c
+D_800FF468 g_btlfxSavedSp  # [code] func_800E3EEC saves $sp here while it runs func_800DA92C/func_800E3C98 on the scratchpad stack (0x1F8003F8) and restores it after
+
+## ovl_0b: ovl_0b (battle, first-use effects)
+func_800D6188 btlfx_resolveFirstUse  # [code] swaps effect id D_800F72A0[i][0] for its full version [i][1] while GameData.firstUseFxSeen bit i is clear, then sets the bit; ff9-ds docs/decomp-requests.md F19 (first-use summons, PSX Ifrit capture)
+D_800F72A0 g_btlfxFirstUsePairs  # [code] 16 {short, full} effect id pairs read by btlfx_resolveFirstUse; ff9-ds docs/decomp-requests.md F19
+
+# FIELDS
+# include/ovl_64.h Ovl64State: unk0=ended,unk1=rgb24,unk4=pauseReq,unk2C=width,unk30=height,unk44=vlcTable,unk48=mdecIn0,unk4C=mdecIn1,unk50=mdecOut0,unk54=mdecOut1,unk58=ringBuf,unk5C=audioBuf,unk60=endCallback
+# include/ovl_64.h Ovl64Dec: unk0=mdecIn,unk8=inIdx,unkC=mdecOut,unk14=outIdx,unk18=frameRect,unk28=slice,unk30=frameDone
+# include/ovl_64.h Ovl64MovieInfo: unk4=rgb24,unk6=startFrame,unk8=lastFrame,unkA=xOffset
+# include/ovl_64.h Ovl64Movie: unk0=count,unk4=entries
+# include/ovl_64.h Ovl64Stream: unk10=cameraSel,unk14=lastReadTime,unk18=channel,unk1C=baseSector,unk3C=lastFrame,unk44=sector,unk54=frameSectors,unk58=frame,unk6C=slotCount,unk70=readSlot
+# include/ff9.h CdRequest: unk0=flags,unk10=syncCallback,unk14=readyCallback,unk18=doneCallback
+# include/ff9.h Unk800761D0 (now CdLoadState): unk0=state,unk2=hasQueued,unk944=cur,unk968=queued
+# include/ff9.h Unk8C8 (now PreloadQueue): unk1=state,unk2=count,unk3=cur
+# include/ff9.h Unk80021938 (now PreloadEntry): unk4=fileId
+# include/ff9.h SpuVoiceReg: unk0=volL,unk2=volR,unk4=pitch,unk6=startAddr,unk8=adsr1,unkA=adsr2,unkC=adsrVol,unkE=loopAddr
+# include/ff9.h Unk800577EC (now AkaoVoiceRegs): unk4=dirty,unk8=startAddr,unkC=loopAddr,unk10=pitch,unk12=adsr1,unk14=adsr2,unk16=volScale,unk18=volL,unk1A=volR
+# include/ff9.h AkaoChannel: unk118=voice,unk11C=voiceDirty,unk120=voiceStartAddr,unk124=voiceLoopAddr,unk128=voicePitch,unk12A=voiceAdsr1,unk12C=voiceAdsr2,unk12E=voiceVolScale,unk130=voiceVolL,unk132=voiceVolR
+# include/ff9.h GameState: unk9=vsyncMode
+# include/ff9.h GameData: unk55E=firstUseFxSeen
