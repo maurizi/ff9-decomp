@@ -22,7 +22,7 @@ tools/docker.sh make verify
 
 ## Progress
 
-3830 of 3840 game functions (99.2% of game code bytes) are decompiled to matching C, and 17 of the 20 binaries
+All 3840 game functions (100% of game code bytes) are decompiled to matching C, and all 20 binaries
 are fully decompiled. PsyQ SDK library code is identified by signature and left as assembly.
 
 `make progress` prints the current per-binary numbers, and `docs/progress.csv` records them over time.
