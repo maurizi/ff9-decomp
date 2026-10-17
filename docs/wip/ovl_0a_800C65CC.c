@@ -3,6 +3,7 @@
  * relative to triangle n0 by barycentric-like cross products (nv) and re-project it onto triangle n1;
  * the height then comes from n1's plane (func_800C1DC4 fixed-point, pl = D_800C9DF0.unk14[n1->unk6]) or,
  * without a plane, from n1's first vertex.
+ * STATUS (pass 26): 38 rows, unchanged; not integrated.
  * WIP (pass 21): 38 aligned diff rows, 398 of 398 instructions, shape exact (cmp_shape.py --shape: 0 rows), no fake
  * temps. (Pass 15: 58 rows with the permuter's new_var, 93 without.)
  * Found:
@@ -48,6 +49,17 @@
  * 3 paths, 98% of the original's insns ran). Tried: v[] as three SVECTOR locals (identical code), v[1].vx through
  * an s16 variable with a `(v1x << 16) >> 16` self-move to raise its refs (identical: folded), other compilers and
  * flags (2.8.x -O2 best), ~1.5 h of permuter (nothing below the base score).
+ * Pass 26: still 38 rows; analysis only. With separate dz0/area locals (49 rows), build/w/tgt.py (pass-26
+ * worktree: maps each pseudo to the original's register through the -dp uids and the aligned asm, pairing each mflo
+ * with the preceding mult) gives the full target: o.vz {110,112} t4, v[1].vx chain {131,211,209,258} t2, p.vz
+ * {222,224} t3, dx2 89 a2, dz1 90 t4, nv.vx 245 a2, nv.vz 251 t4, area 93 t2, area's product 266 t2, the
+ * products 281 t1, 395 t5, 404 a3, 409 a2, and t (84) t7. In lsim, overriding v1vx to 1850, p.vz to 1700 and
+ * nv.vx to 950 fixes everything but area (a3). The mult results are "pref LO_REG" pseudos that lsim leaves out
+ * (they fall back to GR_REGS), so the area/product registers also depend on them. The priority changes needed are
+ * large (v1vx needs +3 refs at its 210-half-insn length, p.vz 4 more insns of life), more than any no-code lever
+ * gives (`x op= K` merged into a narrow single use, see the 800C07D8 note, has no narrow use on these qtys;
+ * self-moves need a known-bits variable). The v1vx chain is one qty because the HI load dies in the sign
+ * extension; a second use of the raw load (if the original had one) would split it. Not pursued further.
  */
 #include "ovl_0a.h"
 

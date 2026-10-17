@@ -3210,7 +3210,31 @@ s32 func_800DA104(s32 arg0, s32 arg1) {
     return (btlfx_align4(arg0) + 4) * arg1 + 0xC;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA138);
+void func_800DA138(Unk800DA1B8 *arg0, Unk80100C78Entry *arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 sz;
+    s32 i;
+    u8 *p;
+
+    /* sz in two statements and the do-while around p += sz give sz and p the reference counts
+       the original's register allocation needs (sz v1, p a0, i a1). */
+    sz = btlfx_align4(arg2);
+    sz += 4;
+    p = (u8 *)arg0->unkC;
+    i = 0;
+    arg0->unk0 = sz;
+    arg0->unk2 = arg3;
+    arg0->unk8 = (Unk800DA1B88 *)arg1;
+    arg0->unk4 = (void *)arg4;
+    if (arg3 > 0) {
+    loop:
+        *(s32 *)p = 0;
+        i++;
+        do {
+            p += sz;
+        } while (0);
+        if (i < arg3) goto loop;
+    }
+}
 
 void func_800DA1B8(Unk800DA1B8 *arg0) {
     s32 i;
