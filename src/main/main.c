@@ -12266,7 +12266,147 @@ s32 evt_execInstr(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800475D8);
+void func_800475D8(Unk8004AB64 *obj) {
+    SVECTOR v;
+    u8 dz[4];
+    s32 dist;
+    s32 speed;
+    s32 dir;
+    s32 analog;
+    s32 pad;
+    s32 x, y;
+    s32 run;
+    s32 cur, d;
+    s32 c, k;
+    Unk8004AB64 *o;
+    s32 m;
+
+    o = NULL;
+    speed = 30;
+    dir = 0x8000;
+    analog = 0;
+    memset(&v, 0, 8);
+    pad = func_8004E8D4();
+    if (((D_80073940[0].unk0 >> 12) & 0xF) == 7) {
+        x = D_80073938[0].unk0[2];
+        y = D_80073938[0].unk0[3];
+        func_80019750((Unk4 *)dz);
+        /* The do-while(0) (a macro in the original?) doubles y's reference count in flow,
+           which puts y ahead of x in global-alloc order (y s0, x s1). */
+        if (x < dz[2] || dz[3] < x) {
+            analog = 1;
+        } else {
+            do {
+                if (y < dz[0] || dz[1] < y) {
+                    analog = 1;
+                }
+            } while (0);
+        }
+        x -= 0x80;
+        if (analog) {
+            y = 0x80 - y;
+            dir = func_80052F24(x, y);
+            x *= x;
+            m = y * y;
+            if (m < x) {
+                m = x;
+            }
+            speed = (m * 16 - m) * 4 >> 14;
+        }
+    }
+    if (!analog) {
+        run = ((GameStateUnk24 *)&g_gameState->unk24)->unk0_6;
+        if ((pad & 0x10000) ? (run ^ 1) != 0 : run != 0) {
+            speed = 60;
+        }
+        if (pad & 0x80) {
+            dir = 0x400;
+        }
+        if (pad & 0x20) {
+            dir = -0x400;
+        }
+        if (pad & 0x40) {
+            if (dir == 0x8000) {
+                dir = 0;
+            } else {
+                dir -= dir >> 1;
+            }
+        }
+        if (pad & 0x10) {
+            if (dir == 0x8000) {
+                dir = 0x800;
+            } else {
+                dir += dir >> 1;
+            }
+        }
+    }
+    D_8007AEAC = dir != 0x8000;
+    if (dir != 0x8000) {
+        if (analog) {
+            dir += g_evtState->unk16E8;
+        } else {
+            dir += g_evtState->unk16EA;
+        }
+        dir &= 0xFFF;
+        cur = obj->pos.rotY & 0xFFF;
+        d = dir - cur;
+        if (d < -0x7FF) {
+            cur -= 0x1000;
+        } else if (d >= 0x800) {
+            cur += 0x1000;
+        }
+        obj->pos.rotY = ((cur + dir) >> 1) & 0xFFF;
+        if (g_evtState->unk16F8 != 0 && speed > 30) {
+            speed = 30;
+        }
+        if (speed > 30) {
+            D_8007AEC4 += 2;
+        } else {
+            D_8007AEC4 += 1;
+        }
+        obj->unk5C = speed;
+        v.vz = -speed;
+        func_800530A8(&v, 0, dir);
+        obj->pos.vx += v.vx;
+        obj->pos.vz += v.vz;
+        o = func_80038618(obj, 0, &dist);
+        D_8007AEB4 = ((o->unkF >> 4) ^ 1) & 1;
+        if (D_8007AEB4 == 0) {
+            D_8007AEB0 = 0;
+        }
+        if (o != NULL && dist <= 0 && D_8007AEB0 >= 0) {
+            obj->unk98 = o;
+            obj->unk9C = dist;
+            c = func_800531D0(obj, o, dir);
+            if ((u32)(c + 0x400) <= 0x800) {
+                obj->pos.vx -= v.vx;
+                obj->pos.vz -= v.vz;
+                k = math_sin(c);
+                v.vx = (v.vx * k) >> 13;
+                v.vz = (v.vz * k) >> 13;
+                func_800530A8(&v, 0, 0x400);
+                obj->pos.vx += v.vx;
+                obj->pos.vz += v.vz;
+                if (func_80038618(obj, 0, &dist) != NULL && dist <= 0) {
+                    obj->pos.vx -= v.vx;
+                    obj->pos.vz -= v.vz;
+                }
+                D_8007AEA8 = 2;
+            }
+        }
+    } else {
+        /* No code: flow deletes the dead store and jump2 the empty test, but the test keeps
+           o = NULL live up to here (the s3 zero that analog and memset's argument copy), and
+           its loop-weighted references put o ahead of obj in global-alloc order. */
+        do {
+            if (o != NULL && o != obj) {
+                o = NULL;
+            }
+        } while (0);
+    }
+    D_8007AEB0 = D_8007AEA8 != 0 ? (D_8007AEB0 < 25 ? D_8007AEB0 + D_8007AEB4 : -25)
+                                 : (D_8007AEB0 < 0 ? D_8007AEB0 + 1 : 0);
+}
 
 s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
     s32 *sp;

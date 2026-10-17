@@ -2247,6 +2247,7 @@ s32 func_80048F54(void); /* per-frame field object update */
 extern s32 D_8007AEA8;
 extern s32 D_8007AEAC; /* the player moved this frame */
 extern s32 D_8007AEB0;
+extern s32 D_8007AEB4;
 extern u8 D_800CCE54; /* world map (ovl_0c) data */
 void func_800475D8(Unk8004AB64 *);
 void func_80047E1C(Unk8004AB64 *);
