@@ -2082,7 +2082,7 @@ void func_801F9904(SaveParty *s) {
         }
     }
     s->unk514 = gd->unk55C;
-    s->unk516 = gd->unk55E;
+    s->unk516 = gd->firstUseFxSeen;
     s->unk518 = gd->gil;
     s->unk51C = gd->unk568;
     s->unk51E = gd->unk56A;
@@ -2105,7 +2105,7 @@ void func_801F99FC(SaveParty *s) {
         }
     }
     gd->unk55C = s->unk514;
-    gd->unk55E = s->unk516;
+    gd->firstUseFxSeen = s->unk516;
     gd->gil = s->unk518;
     gd->unk568 = s->unk51C;
     gd->unk56A = s->unk51E;

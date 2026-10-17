@@ -1476,7 +1476,7 @@ void func_800D616C(void) {
     D_800FEC40.unk24 = 0;
 }
 
-s32 func_800D6188(s32 arg0) {
+s32 btlfx_resolveFirstUse(s32 arg0) {
     s32 id;
     s32 i;
     u8 *p;
@@ -1495,14 +1495,14 @@ s32 func_800D6188(s32 arg0) {
     bit = 1;
     g = g_gameState;
     for (i = 0; i < 16; i++, bit <<= 1) {
-        if (D_800F72A0[i][0] == id && !(g->unk1C->unk55E & bit)) {
-            id = D_800F72A0[i][1];
-            g->unk1C->unk55E |= bit;
+        if (g_btlfxFirstUsePairs[i][0] == id && !(g->unk1C->firstUseFxSeen & bit)) {
+            id = g_btlfxFirstUsePairs[i][1];
+            g->unk1C->firstUseFxSeen |= bit;
             break;
         }
-        if (D_800F72A0[i][1] == id) {
-            if (!(g->unk1C->unk55E & bit)) {
-                g->unk1C->unk55E |= bit;
+        if (g_btlfxFirstUsePairs[i][1] == id) {
+            if (!(g->unk1C->firstUseFxSeen & bit)) {
+                g->unk1C->firstUseFxSeen |= bit;
             }
             break;
         }
@@ -1515,7 +1515,7 @@ s32 func_800D62A0(s32 arg0) {
         return -1;
     }
     D_800FEC40.unk0 = 0;
-    D_800FEC40.unk2 = func_800D6188(arg0);
+    D_800FEC40.unk2 = btlfx_resolveFirstUse(arg0);
     D_800FEC40.unkF = 0;
     D_800FEC40.unk23 = 0;
     D_800FEC40.unk4 = 0;
@@ -8404,7 +8404,7 @@ void func_800E8E84(s32 arg0) {
 }
 
 void func_800E8F40(s32 arg0) {
-    g_gameState->unk9 = arg0;
+    g_gameState->vsyncMode = arg0;
 }
 
 void func_800E8F50(Unk800E8F50 *arg0, s32 arg1) {
@@ -8815,8 +8815,8 @@ void func_800E9E80(void) {
 void func_800E9EC4(void) {
     DrawSync(0);
     func_800DA898();
-    if (D_80104E68.unk1C < (u32)(g_gameState->unk9 - 1)) {
-        VSync(g_gameState->unk9 - 1);
+    if (D_80104E68.unk1C < (u32)(g_gameState->vsyncMode - 1)) {
+        VSync(g_gameState->vsyncMode - 1);
     }
     func_800F4384();
     D_80104E68.unkF = 1;

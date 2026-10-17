@@ -135,7 +135,7 @@ void func_800A8CD4(void) {
     func_800A8E24();
     b = g->unk8E4.battle;
     func_800A8E6C();
-    g_gameState->unk9 = 4;
+    g_gameState->vsyncMode = 4;
     func_8001CD04(0xDA);
     func_8001CFB4();
     SetDispMask(1);

@@ -998,7 +998,7 @@ void func_8001CBD0(void) {
     gs->unk1C = NULL;
     func_8001CCB4(0, 0, 0);
     func_8001CD04(0xE0);
-    gs->unk9 = 0;
+    gs->vsyncMode = 0;
     for (i = 14; i >= 0; i--) {
         ((DirInfo *)gs->unk14)[i].unk0 = i;
         ((DirInfo *)gs->unk14)[i].unk4 = 0;
@@ -7717,8 +7717,8 @@ void func_80032238(void) {
     g_menu.unk7 = 0;
     g = g_gameState;
     g->unk1C->unk0 |= 0x1C;
-    g_menu.unk14 = g->unk9;
-    g->unk9 = 0;
+    g_menu.unk14 = g->vsyncMode;
+    g->vsyncMode = 0;
     g_menu.unk20 = g_gameState->unk10[0].r0;
     g_menu.unk21 = g_gameState->unk10[0].g0;
     g_menu.unk22 = g_gameState->unk10[0].b0;
@@ -7747,7 +7747,7 @@ void func_80032384(void) {
     g_gameState->unk1C->unk0 &= ~2;
     g_gameState->unk1C->unk0 &= ~0x1C;
     func_8002DE60();
-    g_gameState->unk9 = g_menu.unk14;
+    g_gameState->vsyncMode = g_menu.unk14;
     g_gameState->unk10[0].r0 = g_menu.unk20;
     g_gameState->unk10[0].g0 = g_menu.unk21;
     g_gameState->unk10[0].b0 = g_menu.unk22;
@@ -8222,7 +8222,7 @@ void party_initNewGame(void) {
     party_setMember(2, 2);
     party_setMember(3, 3);
     g_gameState->unk1C->gil = 500;
-    g_gameState->unk1C->unk55E = 0;
+    g_gameState->unk1C->firstUseFxSeen = 0;
 }
 
 s32 party_getFirstMember(void) {
@@ -13857,7 +13857,7 @@ void func_8004C0E8(void) {
     if (D_8007B978 != cur) {
         D_8007B990 = 16;
     }
-    D_8007B990 = g_gameState->unk9 != 0 ? D_8007B990 - 2 : D_8007B990 - 1;
+    D_8007B990 = g_gameState->vsyncMode != 0 ? D_8007B990 - 2 : D_8007B990 - 1;
     if (D_8007B990 < 0 && !(D_8007B990 & 3)) {
         f = 1;
         D_8007B978 &= ~0xF0;

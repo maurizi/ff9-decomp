@@ -478,12 +478,12 @@ s32 mbg_update(s32 arg0) {
         mbg_streamSeek(&g_mbgPlayer.unk24);
     }
     func_8019_wait_frame(&g_mbgDecode);
-    g_gameState->unk9 = 4;
+    g_gameState->vsyncMode = 4;
     if (g_mbgFrame != 0 && g_mbgFrame % 50 == 0) {
         D_8019DC9C = 1;
     }
-    if (g_mbgPlayer.unk8 != 0 && g_gameState->unk9 >= 4) {
-        g_gameState->unk9--;
+    if (g_mbgPlayer.unk8 != 0 && g_gameState->vsyncMode >= 4) {
+        g_gameState->vsyncMode--;
         g_mbgPlayer.unk8 = 0;
     }
     if (arg0 != 0) {

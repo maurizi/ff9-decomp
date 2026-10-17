@@ -23,7 +23,7 @@ void battleEnd_main(void) {
         func_80023A4C();
         preload_update();
         DrawSync(0);
-        VSync(g_gameState->unk9);
+        VSync(g_gameState->vsyncMode);
         ResetGraph(1);
         PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
         ctx = g_gameState->unk1C;
@@ -550,7 +550,7 @@ void func_801F0E30(void) {
     func_800239D0();
     func_8002C064(0);
     func_8003556C(0);
-    g_gameState->unk9 = 2;
+    g_gameState->vsyncMode = 2;
     D_801F7A78.unkA = 0;
     D_801F7A78.unk8 = 0;
     D_801F7A78.unk36C = 0;
@@ -643,7 +643,7 @@ void func_801F107C(void) {
     func_801F2D74();
     func_801F2BBC();
     func_801F04BC();
-    g_gameState->unk9 = 0;
+    g_gameState->vsyncMode = 0;
     func_8002F9D0();
 }
 

@@ -142,7 +142,7 @@ void func_800A8198(void) {
     func_800A8344();
     f = g_gameState->unk1C->unk8E4.field;
     func_800A8380();
-    g_gameState->unk9 = 2;
+    g_gameState->vsyncMode = 2;
     func_8001CD04(0xE0);
     func_8001CFB4();
     SetDispMask(1);
@@ -2154,7 +2154,7 @@ void func_800ADB74(void) {
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x1000;
                 D_80073998[0] |= 0x04000000;
             }
-            g_gameState->unk9 = 4;
+            g_gameState->vsyncMode = 4;
             func_80056248(0);
             func_80056228();
             DrawSync(0);
@@ -2237,7 +2237,7 @@ void func_800AE5D4(void) {
     f = g_gameState->unk1C->unk8E4.field;
     D_800C9D44 &= 0xFE00;
     f->unk0 &= ~0x1E01;
-    g_gameState->unk9 = 2;
+    g_gameState->vsyncMode = 2;
     g_gameState->unkC[0].disp.x = 0x140;
     g_gameState->unkC[1].disp.x = 0;
     func_800B0124(0x6201, -1, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5C, 0, 0);
@@ -2288,12 +2288,12 @@ void func_800AE930(void) {
     DrawSync(0);
     if (!(func_80012AD4() & 2)) {
         if ((g_gameState->unk1C->unk0 & 0x1C) == 0x1C && (g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
-            g_gameState->unk9 = 0;
+            g_gameState->vsyncMode = 0;
         } else {
-            g_gameState->unk9 = 2;
+            g_gameState->vsyncMode = 2;
         }
     }
-    VSync(g_gameState->unk9);
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     if (D_800C9D44 & 8) {
         EnterCriticalSection();

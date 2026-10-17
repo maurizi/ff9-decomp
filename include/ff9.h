@@ -264,7 +264,7 @@ typedef struct {
     Character characters[9];
     Character *party[4];
     u16 unk55C;
-    u16 unk55E;
+    u16 firstUseFxSeen;
     u32 gil; /* capped at 9999999 (runtime: menu shows this value) */
     u8 pad564[0x568 - 0x564];
     s16 unk568;
@@ -365,7 +365,7 @@ typedef struct {
     u32 unk0; /* flags */
     u32 unk4; /* allocator top after boot (g_allocTop) */
     u8 mode; /* runtime: 0 title, 1 field (and its menus) */
-    u8 unk9; /* VSync mode */
+    u8 vsyncMode; /* VSync mode */
     u8 unkA;
     u8 unkB;          /* disc / pad connection bits, 0xFF = none */
     DISPENV *unkC;    /* [2] */

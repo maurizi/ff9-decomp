@@ -47,7 +47,7 @@ void func_800A7280(void) {
     u8 i;
 
     DrawSync(0);
-    VSync(g_gameState->unk9);
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
@@ -86,7 +86,7 @@ s32 func_800A7378(s32 arg0, s32 arg1) {
             }
             D_800AE4C8[0][i - 1] = 7;
             D_800AE4C8[0][i] = 0x10;
-            g_gameState->unk9 = 4;
+            g_gameState->vsyncMode = 4;
             DrawSync(0);
             MBG_init(1, &buf);
             mbg_setRgb24(1);
@@ -107,7 +107,7 @@ s32 func_800A7378(s32 arg0, s32 arg1) {
             break;
         case 3:
             if (D_800AE0E0 & 0x80) {
-                g_gameState->unk9 = 0;
+                g_gameState->vsyncMode = 0;
                 timer = 900;
                 g_gameState->unkC[0].disp.x = 0x140;
                 D_800AE4C0 = 4;
@@ -172,9 +172,9 @@ void func_800A787C(void) {
 
     DrawSync(0);
     if (!(func_80012AD4() & 2)) {
-        g_gameState->unk9 = 0;
+        g_gameState->vsyncMode = 0;
     }
-    VSync(g_gameState->unk9);
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     if (D_800AE0E0 & 4) {
@@ -1340,8 +1340,8 @@ void func_800AAFFC(void) {
     u8 i;
 
     DrawSync(0);
-    g_gameState->unk9 = 0;
-    VSync(g_gameState->unk9);
+    g_gameState->vsyncMode = 0;
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
@@ -1596,8 +1596,8 @@ void func_800AC494(void) {
     u8 i;
 
     DrawSync(0);
-    g_gameState->unk9 = 0;
-    VSync(g_gameState->unk9);
+    g_gameState->vsyncMode = 0;
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;
@@ -2228,7 +2228,7 @@ s32 func_800AD7DC(void) {
 }
 
 s32 func_800ADC3C(void) {
-    g_gameState->unk9 = 0;
+    g_gameState->vsyncMode = 0;
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800B5000 = 0;
     D_800AE4A8 = 0;
@@ -2248,7 +2248,7 @@ void func_800ADD04(void) {
     u8 i;
 
     DrawSync(0);
-    VSync(g_gameState->unk9);
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     ctx = g_gameState->unk1C;

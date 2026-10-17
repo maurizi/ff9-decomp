@@ -132,8 +132,8 @@ void func_800B4A5C(void) {
         addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], tp[g_gameState->unk1C->unk8]);
         func_80032098();
         DrawSync(0);
-        g_gameState->unk9 = 2;
-        VSync(g_gameState->unk9);
+        g_gameState->vsyncMode = 2;
+        VSync(g_gameState->vsyncMode);
         ResetGraph(1);
         PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
         DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->unk10[g_gameState->unk1C->unk8]);

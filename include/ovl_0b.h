@@ -3384,9 +3384,9 @@ extern u16 D_800F8CB4[];
 extern s32 (*D_800F8E38[])(void);
 s32 func_800E4134(s32);
 u16 *func_800E4530(s32);
-s32 func_800D6188(s32);
+s32 btlfx_resolveFirstUse(s32);
 extern u8 D_800F727C[][2];  /* summon id upgrades */
-extern u16 D_800F72A0[16][2];
+extern u16 g_btlfxFirstUsePairs[16][2];
 void func_800C30B8(void);
 u32 func_800DF940(BtlUnit9C *, u16, s32);
 extern Unk800F3F10 D_800F9058;

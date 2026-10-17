@@ -493,7 +493,7 @@ void func_800A7E10(void) {
     func_8002C740(0, 6, s.unk558[10]);
     func_8002C740(0, 7, s.unk558[11]);
     DrawSync(0);
-    VSync(g_gameState->unk9);
+    VSync(g_gameState->vsyncMode);
     SetDispMask(0);
     func_80035674(1);
     func_8003556C(0);
@@ -513,10 +513,10 @@ void func_800A8BC4(TmState *s) {
     }
     if (&g_gameState->unk10[g_gameState->unk1C->unk8].dfe != NULL) {
         DrawSync(0);
-        VSync(g_gameState->unk9);
+        VSync(g_gameState->vsyncMode);
     } else {
         DrawSync(0);
-        VSync(g_gameState->unk9);
+        VSync(g_gameState->vsyncMode);
         ResetGraph(1);
     }
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
@@ -554,7 +554,7 @@ void func_800A8D74(TmState *s) {
     func_800A93C8((u8 *)0x80103800, 1, 0x1F4);
     func_800A93C8((u8 *)0x80103C00, 2, 0x400);
     g_evtMode = 1;
-    g_gameState->unk9 = 0;
+    g_gameState->vsyncMode = 0;
     func_800239D0();
     text_setBank(g_cardGameText);
     func_80035430();

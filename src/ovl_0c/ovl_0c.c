@@ -55,7 +55,7 @@ void func_800A8B14(void) {
     func_800A8CF0();
     wm = g_gameState->unk1C->unk8E4.world;
     func_800A8D28();
-    g_gameState->unk9 = 3;
+    g_gameState->vsyncMode = 3;
     func_8001CD04(0xDA);
     func_8001CFB4();
     SetDispMask(1);
@@ -1264,13 +1264,13 @@ void func_800AC5C8(void) {
     gs = g_gameState;
     f = gs->unk1C->unk8E4.world->unk0;
     if (!(f & 0x400)) {
-        gs->unk9 = 2;
+        gs->vsyncMode = 2;
     } else if ((f & 0x1000) || (gs->unk1C->unk0 & 0x1C) == 0x1C) {
-        gs->unk9 = 0;
+        gs->vsyncMode = 0;
     } else {
-        gs->unk9 = 3;
+        gs->vsyncMode = 3;
     }
-    VSync(g_gameState->unk9);
+    VSync(g_gameState->vsyncMode);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     gd = g_gameState->unk1C;
@@ -1327,7 +1327,7 @@ void func_800AC7D4(void) {
     func_800AB0C0(0xD000, 0x27A, 0, 0x80, 0x7F);
     g_gameState->unk1C->unk0 |= 0x2F;
     g_gameState->unk1C->unk8E4.world->unk0 |= 0x300;
-    g_gameState->unk9 = 0;
+    g_gameState->vsyncMode = 0;
     D_80073998[0] |= 0x04000000;
 }
 
@@ -3952,7 +3952,7 @@ s32 func_800B6BC4(void) {
 void func_800B7098(void) {
     switch (D_800CF46C) {
     case 0:
-        g_gameState->unk9 = 0;
+        g_gameState->vsyncMode = 0;
         func_800B83FC();
         if (func_8004AE00() != NULL) {
             D_800CE3DC = func_8004AE00();
@@ -3961,7 +3961,7 @@ void func_800B7098(void) {
     case 1:
     case 2:
         if (D_800D3E60 != 2) {
-            g_gameState->unk9 = 3;
+            g_gameState->vsyncMode = 3;
             g_gameState->unk1C->unk8E4.world->unk0 &= ~0x1000;
             SetSpadStack(0x1F8003FC);
             func_800AFCE0();
@@ -3976,7 +3976,7 @@ void func_800B7098(void) {
             func_800B969C();
             ResetSpadStack();
         } else {
-            g_gameState->unk9 = 0;
+            g_gameState->vsyncMode = 0;
             g_gameState->unk1C->unk8E4.world->unk0 |= 0x1000;
             func_800C4850(0x26, 0x14, 0);
             func_800B83FC();
