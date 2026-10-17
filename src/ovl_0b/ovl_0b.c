@@ -140,7 +140,7 @@ void func_800A8CD4(void) {
     func_8001CFB4();
     SetDispMask(1);
     g->unk838 = func_800AB810;
-    g->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AD90C;
+    g->unk83C = func_800AD90C;
     g_gameState->unk1C->unk8BC = func_800AF1C8;
     preload_init();
     g->unk39 = 0;

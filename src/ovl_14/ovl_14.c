@@ -213,7 +213,7 @@ void func_800A767C(void) {
         g_gameState->unk1C->unk0 &= ~0x100000;
     }
     cd_checkShellOpen();
-    g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A799C;
+    g_gameState->unk1C->unk83C = func_800A799C;
     g_gameState->unk1C->unk84C = 0;
     func_800A78C0();
     func_800A780C();

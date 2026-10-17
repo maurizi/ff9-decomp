@@ -147,7 +147,7 @@ void func_800A8198(void) {
     func_8001CFB4();
     SetDispMask(1);
     g_gameState->unk1C->unk838 = func_800AAB30;
-    g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800B0124;
+    g_gameState->unk1C->unk83C = func_800B0124;
     g_gameState->unk1C->unk8BC = func_800B36E0;
     func_80021CDC(0);
     g_gameState->unk0 &= ~7;

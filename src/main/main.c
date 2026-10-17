@@ -11854,26 +11854,26 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xC5:
         a = evt_getArg16_inline();
-        ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(a, evt_getArg16_inline(), 0, 0, 0);
+        g_gameState->unk1C->unk83C(a, evt_getArg16_inline(), 0, 0, 0);
         return 0;
     case 0xC6:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = func_8004B914_inline();
-        ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(a, b, c, 0, 0);
+        g_gameState->unk1C->unk83C(a, b, c, 0, 0);
         return 0;
     case 0xC7:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = func_8004B914_inline();
-        ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(a, b, c, evt_getArg8_inline(), 0);
+        g_gameState->unk1C->unk83C(a, b, c, evt_getArg8_inline(), 0);
         return 0;
     case 0xC8:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
         c = func_8004B914_inline();
         d = evt_getArg8_inline();
-        ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(a, b, c, d, evt_getArg8_inline());
+        g_gameState->unk1C->unk83C(a, b, c, d, evt_getArg8_inline());
         return 0;
     case 0x89: {
         u8 vol, pan;
@@ -14673,8 +14673,8 @@ void func_8004D940(Unk8007B9C0 *w) {
     }
 }
 
-/* The sound callback is called as returning s32 (like the event interpreter's 0xC5.. opcodes):
-   a call_value insn gives the function pointer a v0 preference in local-alloc, which the
+/* The sound callback returns s32 (GameData.unk83C), so each call is a call_value insn even with the
+   result ignored. That gives the function pointer a v0 preference in local-alloc, which the
    0x10000 path needs (pointer in v0, %hi(D_8007B958) in v1). The 0x10000 path must come
    last in the chain so its call falls into the shared `return 1` and jump2 cross-jumps the
    0x10/0x40 calls onto its jalr. */
@@ -14687,7 +14687,7 @@ s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
             if (w->unk26 == 0xFF) {
                 w->unk26 = 1;
                 if (D_8007B968 >= 0) {
-                    ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                    g_gameState->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
                 }
                 return 1;
             }
@@ -14707,19 +14707,19 @@ s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
             } else {
                 D_8007B958 = D_8007B95C - 1;
             }
-            ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (pad & 0x40) {
             if (D_8007B958 < D_8007B95C - 1) {
                 D_8007B958++;
             } else {
                 D_8007B958 = 0;
             }
-            ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+            g_gameState->unk1C->unk83C(0xD000, 0x67, 0x800000, 0x80, 0x7F);
         } else if (!(pad & 0x10000) || D_8007B96C < 0) {
             return 0;
         } else {
             D_8007B958 = D_8007B96C;
-            ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+            g_gameState->unk1C->unk83C(0xD000, 0x65, 0x800000, 0x80, 0x7F);
         }
         return 1;
     }

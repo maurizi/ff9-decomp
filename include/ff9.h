@@ -310,7 +310,7 @@ typedef struct {
     u16 unk834;
     u16 unk836;
     s32 (*unk838)(s32, void *);
-    void (*unk83C)(s32, s32, s32, s32, s32);
+    s32 (*unk83C)(s32, s32, s32, s32, s32);
     u16 unk840;
     u16 unk842;
     s32 unk844; /* selected chocograph (1-based, 0 = none) */

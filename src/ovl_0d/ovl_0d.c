@@ -12,7 +12,7 @@ void func_800A752C(void) {
 void func_800A755C(void) {
     D_800B365C = 0;
     D_800B3660 = 0;
-    g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A78EC;
+    g_gameState->unk1C->unk83C = func_800A78EC;
     preload_init();
     func_800A7764();
     func_800A7634();

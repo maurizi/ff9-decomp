@@ -1764,7 +1764,7 @@ void func_800ACB98(void) {
         D_800739B0[i].unk1 = 0;
         D_800739B0[i].unk0 = 0;
     }
-    g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AC598;
+    g_gameState->unk1C->unk83C = func_800AC598;
     func_800ACD70();
     func_800ACCB4();
     func_800239D0();
