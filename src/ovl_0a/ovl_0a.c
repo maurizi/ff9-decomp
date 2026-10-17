@@ -4394,7 +4394,6 @@ void func_800B4A5C(void) {
     DR_TPAGE *tp[2];
     RECT *clut;
     RECT *img;
-    s32 pad;
     u8 *p;
     s32 tim;
     s32 i;
@@ -4403,7 +4402,6 @@ void func_800B4A5C(void) {
 
     tim = (s32)func_8001C7FC(4, 0x44E20, 0);
     func_8001D910((void *)tim, &clut, &img);
-    p = (u8 *)&pad; /* dead: puts pad's stack slot after clut/img (frame 0x58) */
     setRECT(img, 0, 0x100, img->w, img->h);
     setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
     func_8001D8A8(tim);
@@ -4414,9 +4412,9 @@ void func_800B4A5C(void) {
     p = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
     do {
         {
-            /* dead struct initializer: emits only a CLOBBER insn, which sched2 places in one of the
-               loop's load-delay gaps, so p += 20, the tpage constant and &tp[0] land one gap later as
-               in the original */
+            /* dead struct initializer: it emits only a CLOBBER of q, which sched2 places in one of
+               the loop's load-delay gaps (so p += 20, the tpage constant and &tp[0] land one gap
+               later, as in the original), and q's spill slot is the frame's otherwise unused word */
             struct { s32 x; } q = { i };
         }
         spr[i] = (SPRT *)p;
