@@ -81,6 +81,13 @@
  *  - A lone CLOBBER (dead block-local `struct { s32 x; } q = { i };`, the lever that matched B4A5C) is a free
  *    priority-1 filler in both schedulers, but its pseudo has no GR uses (class ST_REGS or none), so reload
  *    gives it a stack slot; this frame has no free word, so it costs 8 bytes of frame here.
+ *  - The top four insns come out exactly right (HB HU BL UL, v0/v1/a0) with dead address-of statements that
+ *    pin the %hi LUIDs: `pb = &D_800C9DB4; pu = &D_800CA108;` first (cse reuses their lui for the later loads,
+ *    flow deletes the dead lo_sums), then `bg = D_800C9DB4; u = D_800CA108 + 0xDF;` (u single-set, so the lbu
+ *    is launched) and `w = u;` right after (10 rows: build/w/vb12.py). sched1 then picks UL, BL, HU, HB as
+ *    needed, but u lives only from the lbu to the w add and gets v0 (original a1: there the add comes after the
+ *    pos/tile adds). Moving `w = u` later makes the launched lbu ready too early (it is picked before BL and
+ *    HU follows it). All 720 orders of N/S30/P/T/Z/W in that setup: 9 rows at best.
  */
 #include "ovl_0a.h"
 
