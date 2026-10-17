@@ -12,6 +12,12 @@
 #define REG_PASSTHROUGH(x)
 #endif
 
+/* Pins a local to a MIPS register (`register T *v REG_ASM("$8") = ...;`) where register allocation alone keeps a
+ * function from matching. No effect on behaviour; a port defines it empty. */
+#ifndef REG_ASM
+#define REG_ASM(r) asm(r)
+#endif
+
 /* Is this offset-or-pointer field still a file offset, i.e. not yet relocated in place? Relocated values are
  * KSEG0 pointers (0x80xxxxxx, negative as s32). A port whose pointers are positive defines its own. */
 #ifndef IS_OFFSET

@@ -8313,7 +8313,7 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     {
         /* the original's "r"(st->unk1C) operand was reloaded into $t0; as a hard-register variable
            it is one less reference to st, which keeps st below the unk76 temporary in local-alloc */
-        register MATRIX *m asm("$8") = st->unk1C;
+        register MATRIX *m REG_ASM("$8") = st->unk1C;
         gte_SetRotMatrix(m);
         gte_SetTransMatrix(m);
     }
