@@ -73,6 +73,14 @@
  * `x op= K` / `&= 0xFF` levers on u (16), dead tests on bg/u (39+, a block end changes the whole sched1
  * order of block 0): nothing below 4. Still BEHAVIOURALLY EQUIVALENT (tools/equiv.py: 27/27 trials agree,
  * 6 paths, 100% of the original's insns ran).
+ *  - A dead test right after `u = D_800CA108;` (`if (bg != NULL) { x = 0; }`, deleted by jump2) cuts block 0
+ *    there and sched1 then gives exactly the original's HB HU BL UL with %hi(D_800CA108) in v1 (18 rows), but
+ *    the 0xFFFF01FF mask K (a single `li` before the unk25_1 `and` that sched1 splits into lui/ori and floats
+ *    to the top of its block) can no longer reach block 0a, and u/bg become globals (u in v0). A K computed
+ *    before the cut would need the unk24..unk26 word masked by hand instead of the bitfield stores.
+ *  - A lone CLOBBER (dead block-local `struct { s32 x; } q = { i };`, the lever that matched B4A5C) is a free
+ *    priority-1 filler in both schedulers, but its pseudo has no GR uses (class ST_REGS or none), so reload
+ *    gives it a stack slot; this frame has no free word, so it costs 8 bytes of frame here.
  */
 #include "ovl_0a.h"
 
