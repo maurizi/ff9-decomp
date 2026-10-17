@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Check that a non-matching draft behaves like the original function (differential testing).
 
-    tools/docker.sh python3 tools/equiv.py docs/wip/ovl_0a_800C65CC.c [--func func_800C65CC] [--trials 200]
+    tools/docker.sh python3 tools/equiv.py docs/wip/<draft>.c [--func func_800C65CC] [--trials 200]
 
 Compiles the draft like ccprobe, links it at 0x80600000 against the built ELFs' symbols, then runs the
 original and the draft in a small MIPS-I interpreter from the same random states and compares what each

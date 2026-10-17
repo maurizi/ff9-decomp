@@ -3,6 +3,35 @@
 Functions agents got close on but couldn't finish. Drafts for main are in the main checkout's
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
+## Passes 26-27: the last 10 matched (main 800475D8, 8002E718, akao_initState, 8004DAD0; ovl_0b 800DA138; ovl_0a 800C0038, 800B4A5C, 800BD130, 800C07D8, 800C65CC)
+All game code now matches. Levers that closed them (each commented in the source):
+- A conditional whose body is only dead stores keeps the tested variable live through flow and adds refs, then
+  disappears in jump2 (no jump pass runs between flow and jump2): 800475D8 (`do { if (o != NULL && o != obj) o =
+  NULL; } while (0);`). Inside an expression, `(c && (x = 0), v)` also cuts the basic block at that point of
+  argument evaluation (8002E718).
+- `x op= K` before a single use that ignores the changed bits keeps x multi-set (combine doesn't decrement
+  REG_N_SETS when i2dest is in i2src) and adds refs with no code; `v &= 0x7FFFFFFF` in a loop becomes a self-move
+  with the same effect (akao_initState). Reusing a variable for an old-value/new-value pair is the natural form of
+  the same thing: it turns off sched1's birthing boost (800C07D8).
+- Nested `do { } while (0)` weights refs by loop depth (five levels raised cnt to 8 refs in akao_initState). Loop
+  notes are barriers in sched1 and sched2; a barrier right after a group of loads isolates them in their own
+  scheduling group (800BD130). Goto loops with explicit givs avoid preheader insns pinned behind a barrier.
+- A call through a value-returning function-pointer type is a call_value insn even when the result is ignored;
+  local-alloc's tying loop then suggests v0 for the address pseudo, and suggested qtys are allocated before the
+  priority pass (8004DAD0; GameData.unk83C really returns s32).
+- Copy-and-tie: `st = p;` kept alive by a dead initializer/store so cse keeps it; local-alloc ties both, reload
+  deletes the copy (800C0038). A dead block-local struct initializer leaves a lone CLOBBER that both schedulers
+  use as a filler and final never emits; it costs a stack word (800B4A5C).
+- A multiply-then-subtract accumulator (`area = a * b; area -= c * d;`) joins the multiplicand's qty through the
+  operand tie (800C65CC). Multiply results (pref LO_REG) get LO first in global-alloc; reload spills HI/LO plus the
+  lowest unused callee-saved reg (why the original saves s6 without using it) and re-allocates evicted products in
+  register-number order.
+- Equal-priority insns are ordered by LUID in sched1 and sched2, so statement order decides store order.
+- `register T v REG_ASM("$N")` (ff9.h) was needed twice (800C0038, 800C07D8) where no C form reproduced the choice.
+- Models of gcc 2.8.1's sched1, local-alloc, global-alloc and sched2 that reproduce the real dumps were written in
+  the pass-27 worktrees (build/w/sim.py, lasim.py, fullsim.py, fsim.py, fsearch.py, fchg.py); they predict which
+  C change is needed before compiling. Worth reviving for any future matching project on this compiler.
+
 ## Pass 25 (all binaries; 7 matched: main 80059414, 80063118; ovl_0b 800C3F78, 800BFF20, 800E4A3C; ovl_0d 800AC708; ovl_37 801F13F8)
 Every remaining draft (main 8002E718, 800475D8, 8004DAD0, 8005681C; ovl_0a all five; ovl_0b 800DA138) is
 behaviourally equivalent per tools/equiv.py; the differences are register allocation / scheduling only. Draft headers
