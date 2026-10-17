@@ -56,6 +56,19 @@
  * Pass 23: the param lever does not apply (arg0/arg1 are only used at the end, their entry copies already match).
  * The inline `func_800C9DB4_cam(0)` + `c += st->unk75` (as in C0F08) compiles identically (4); the inline with
  * the index (`func_800C9DB4_cam(st->unk75)`) re-reads D_800C9DB4 (169 insns, 40-45 rows).
+ * Pass 24: still 4 rows. BEHAVIOURALLY EQUIVALENT to the original (tools/equiv.py: 174/174 trials agree, 6 paths,
+ * 83% of the original's insns ran). Found: putting the cast copy BEFORE `v.vx = ...` (order c, copy, vx, vy, c2,
+ * vz) gives exactly the original's instruction order (CL VL UL CS VS ...); the `*(s32 *)&st->unk10` store is a
+ * non-struct fixed address (canon_rtx resolves st's REG_EQUIV), so true_dependence lets the a->pos.vx load pass it.
+ * Only the registers are swapped then (copy v1 / vx v0): sched1 emits CL UL VL CS VS, so the copy lives 3 insns and
+ * vx 2, and local-alloc (2 refs each) takes vx first. The original needs a sched1 order with equal lives, e.g.
+ * CL VL UL CS VS: at the qsort of the ready list after CS (last_scheduled_insn = CS) the copy load is class 1 and
+ * UL/VL class 3, so VL/UL go by LUID, which wants the c statement after the vx statement - and every order of that
+ * kind lets VS float to the top (22+ rows). Also tried: vx through a reused s16/s32 variable (global pseudo: copy
+ * gets v0, but the vx/vz temp lands in t0/v0 and the schedule changes, 11-61 rows), single-expression c (27),
+ * c split into c0/c (40), `(Unk800C9DB4 *)D_800C9DA4.unk10` for bg (same code), annealing over the ten setup lines
+ * including ox/oy (1600 compiles, build/w/sa.py), the permuter with the GTE asm hidden behind PGTE_* pseudo-calls
+ * that compile.sh re-expands (build/w/perm/, ~2 h, nothing below 4), other flags/compilers (2.8.x -O2 is best).
  */
 #include "ovl_0a.h"
 

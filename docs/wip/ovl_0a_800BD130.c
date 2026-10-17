@@ -36,6 +36,27 @@
  * regs up to NOTE_INSN_FUNCTION_BEG), arg2 is spilled to its home slot as in the original, and combine deletes no
  * arg copy. Note that w (`w = D_800CA108 + 0xDF`) is multi-set (the max update), so its addiu is not "birthing" in
  * sched1 and sorts by priority/LUID against the pos/tile adds.
+ * Pass 24: the draft below (9 rows) is BEHAVIOURALLY EQUIVALENT to the original (tools/equiv.py: 67/67 trials
+ * agree, 15 paths, 100% of the original's insns ran). New structure found, 10 rows but everything from 0x50 on
+ * byte-exact (only the four top loads' order and a0/a1 swapped):
+ *     bg = D_800C9DB4;  u = D_800CA108;  u += 0xDF;  n = arg0->unk26;  arg0->unk30 = arg1;
+ *     pos = ...unk28;  tile = ...unk2C;  w = u;  unk18;  unk1A;  unk25 = 0;  unk25_1 = 0;
+ *   (u a block-local s32). Why each piece:
+ *  - `n = arg0->unk26` early: n's lhu (birthing, low LUID) fills the sched1 stall after the unk18 add, so pos/tile
+ *    (initially-ready insns keep their raw priority 2 - adjust_priority only boosts insns as they become ready)
+ *    are scheduled before the unk18 block, with their spills, as in the original (pos before tile in source);
+ *  - the D_800CA108 value must be a *local* pseudo with two sets: non-birthing, so its lbu stays at the very top
+ *    (above the unk30 store it may alias as a QImode load) and local, so it can take a1 before local-alloc gives
+ *    a1 to the 0xFFFF01FF constant (K, the unk25_1 mask). Through a global (w, or the loop's x) K takes a1 (11 rows,
+ *    then everything else matches too).
+ *  - left: local-alloc ranks u (4 refs, 11 insns: 3636) above bg (5 refs, 15 insns: 3333), so u gets a0 and bg a1.
+ *    build/search/lsim.py confirms bg+1 ref or u-1 ref gives bg a0 / u a1 / K a2; no natural spelling found.
+ *    Making the arg1 copy late (`s32 f(.., BgSprt *sp1, ..) { BgSprt *arg1; ... arg1 = sp1; arg0->unk30 = arg1;`
+ *    after unk25_1; a parm copy that combine merges into a local is no longer pinned at the top) keeps a1 busy at
+ *    K's birth: with the loop's x as the D_800CA108 holder that gives K a2 / x a1 / bg a0 (top exact) but x is
+ *    then a1 in the loop too (orig v1). Copying arg0 instead halves arg0's live length and reorders the s-regs.
+ *  - simulated annealing over these line orders (build/w/sa.py, ~10k compiles), the arg1 copy line, buf = 0
+ *    placements, do-while wraps: 10 at best in that regime.
  */
 #include "ovl_0a.h"
 

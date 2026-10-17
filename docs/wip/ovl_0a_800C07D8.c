@@ -41,6 +41,18 @@
  * extra code itself costs 29 rows). A dead set does not count (flow deletes it before REG_N_SETS is recounted):
  * `arg5 = w[i];` etc. in the read-back loop change nothing. So the original probably assigns arg5-7 somewhere live;
  * no natural spelling found (they are u8, so `arg5 = -arg5` for the fade-out case would change the stored value).
+ * Pass 24: still 11 rows. BEHAVIOURALLY EQUIVALENT to the original (tools/equiv.py: 26/26 trials agree, 23 paths,
+ * 89% of the original's insns ran). A zero-cost second set exists: `arg5 = (arg5 << 8) >> 8;` (also `<< 24 >> 24`)
+ * on the u8 params survives fold, flow counts it (REG_N_SETS 2, not birthing) and combine turns it into a no-op
+ * `(set r r)` that reload_cse deletes - no extra code (`*1`, `/1`, `^1^1` via a temp are folded earlier by fold/cse,
+ * flow also deletes plain self-moves). With it on arg5-7 the lbu land at the very top; plus moving `p->unk1 = n`
+ * before `e->unk4` (hill climb): 18 rows. Left there: `lw arg4` comes after the lbu: sched2's tie-break among the
+ * equal-priority loads is "first with the largest potential hazard" in LUID order, and arg4's lw (birthing in
+ * sched1, placed right before its use) has the higher LUID. The original needs arg4 multi-set too, and an s32 has
+ * no combine-only identity (no known nonzero bits). Making e->unk0 the first store (needed for sb before sw) sinks
+ * n/size in sched1 (size becomes ready right after the sw and is birthing). Annealing over the 18 prologue lines
+ * with def/use-checked moves (build/w/sa.py, ~6k compiles, also with e->unk0 first and with `k = e->unk1` split
+ * out of y), const params (85), and 1 h of permuter: nothing below 11.
  */
 #include "ovl_0a.h"
 

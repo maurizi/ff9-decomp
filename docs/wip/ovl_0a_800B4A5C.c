@@ -41,6 +41,19 @@
  * clut/img, which are placed when purge_addressof runs), so the variable at 0x28 must be an addressable scalar
  * whose address use is expanded after the func_8001D910 call and later deleted, or a reload spill slot whose
  * references all went away (which would also fit the deleted move after `addiu s2,sp,0x18`). Not found.
+ * Pass 24: still 5 rows / 336 insns. BEHAVIOURALLY EQUIVALENT to the original (tools/equiv.py --trials 6000:
+ * 17/17 agree, 99% of the original's insns ran; the rest of the trials fault on unaligned random pointers in the
+ * original too), so the draft is usable as-is by a port. Tried this pass:
+ *  - an empty `__asm__("" : "=r"(v) : "0"(v))` at every position of the sprite loop for i/p/n/state/tim
+ *    (build/w/genb4.py): best 2 rows, only right after the code store (i or state); no position gives 0;
+ *  - `spr[i]->v0 = spr[i]->u0 = 0;` gives every filler slot exactly as the original (2 rows) but drops the
+ *    spr[i] reload before the v0 store (334 insns) - the original schedules as if there was one load less;
+ *  - `u0 = n` / `v0 = n` (n is 0 in a register there), local RECT copies of img/clut: worse;
+ *  - why no C copy can be the phantom: flow deletes `(set r r)` before counting sets (unless it carries a
+ *    REG_EQUAL note), and reload_cse_regs deletes every no-op move before sched2, so the deleted insn must be
+ *    something that survives to sched2 and emits nothing (a USE/CLOBBER insn, e.g. reload's USE for a
+ *    (subreg (pseudo with a memory equivalence)) in eliminate_regs, or a jump2-only deletion);
+ *  - other compilers/flags (2.7.2/2.8.0/2.91/2.95, -fno-*): 2.8.x -O2 is best.
  */
 #include "ovl_0a.h"
 
