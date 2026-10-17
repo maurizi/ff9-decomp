@@ -27,7 +27,7 @@
 typedef struct {
     u16 unk0; /* flags */
     u16 unk2;
-    s32 unk4; /* id, -1 = none */
+    s32 fileId; /* id, -1 = none */
     u32 unk8;
     s32 unkC;
     s32 unk10;
@@ -38,17 +38,17 @@ typedef struct {
     s16 unk22;
     s16 unk24;
     s16 unk26;
-} Unk80021938; /* element passed to func_80021938 */
+} PreloadEntry; /* element passed to func_80021938 */
 
-typedef struct Unk8C8 {
+typedef struct PreloadQueue {
     u8 unk0;
-    u8 unk1; /* state */
-    s8 unk2; /* count */
-    s8 unk3;
-    Unk80021938 unk4[7];
-    s32 (*unk11C)(struct Unk8C8 *); /* hook, nonzero = handled */
-} Unk8C8;
-Unk80021938 *func_80021B34(Unk80021938 *, Unk80021938 *);
+    u8 state; /* state */
+    s8 count; /* count */
+    s8 cur;
+    PreloadEntry unk4[7];
+    s32 (*unk11C)(struct PreloadQueue *); /* hook, nonzero = handled */
+} PreloadQueue;
+PreloadEntry *func_80021B34(PreloadEntry *, PreloadEntry *);
 s32 func_80021ED4(void);
 
 typedef struct {
@@ -333,7 +333,7 @@ typedef struct {
     void *unk8BC; /* callback, signature varies by module */
     s32 unk8C0;
     s32 unk8C4; /* VSync(-1) timestamp */
-    Unk8C8 *unk8C8;
+    PreloadQueue *unk8C8;
     u8 unk8CC[8];
     struct Unk8D4 *unk8D4; /* [9] */
     struct Unk8E0 *unk8D8; /* [9] */
@@ -390,8 +390,8 @@ static inline u8 func_80034A04_inline(u32 *bits, s32 b) {
     return (bits[b >> 5] & (1 << (b & 0x1F))) != 0;
 }
 
-/* Inlined copy of func_80027EDC (item search); the original source inlines it. */
-static inline ItemSlot *func_80027EDC_inline(s32 id) {
+/* Inlined copy of item_findSlot (item search); the original source inlines it. */
+static inline ItemSlot *item_findSlot_inline(s32 id) {
     s32 i;
     ItemSlot *e = g_gameState->unk1C->items.slots;
 
@@ -435,7 +435,7 @@ extern RECT D_800686C8; /* countdown timer window */
 
 /* ---- CD / streaming state near libcd ---- */
 
-/* CD request, queued by func_800230B8 (0x24 bytes) */
+/* CD request, queued by cd_submit (0x24 bytes) */
 /* one contiguous read: byte count and destination */
 typedef struct {
     u32 size; /* runtime: ovl_39's single chunk {0xE800, 0x801EDF00} */
@@ -443,21 +443,21 @@ typedef struct {
 } CdChunk;
 
 typedef struct {
-    u8 unk0; /* command; bit 2: run unk18 directly when idle */
+    u8 flags; /* command; bit 2: run unk18 directly when idle */
     u8 pad1[3];
     s32 sector; /* start sector; runtime: 0x5FA for ovl_39 */
     s32 size;   /* bytes; runtime: 0xE800 (29 sectors) for ovl_39 */
     CdChunk *unkC; /* chunk list; -1 = use unk1C */
-    void (*unk10)(u8, u8 *);
-    void (*unk14)(u8, u8 *); /* data-ready handler */
-    void (*unk18)(); /* callback */
+    void (*syncCallback)(u8, u8 *);
+    void (*readyCallback)(u8, u8 *); /* data-ready handler */
+    void (*doneCallback)(); /* callback */
     CdChunk unk1C; /* single chunk */
 } CdRequest;
 
 typedef struct {
-    u8 unk0;
+    u8 state;
     u8 unk1;
-    u8 unk2;
+    u8 hasQueued;
     u8 unk3;
     s32 sectorsLeft; /* runtime: 29 -> 0 while ovl_39 loads */
     CdlLOC unk8; /* current position */
@@ -466,10 +466,10 @@ typedef struct {
     s32 chunkIndex;
     s32 unk18;
     u8 pad1C[0x944 - 0x1C];
-    CdRequest unk944; /* current request */
-    CdRequest unk968; /* passed to cd_startRequest */
-} Unk800761D0;
-extern Unk800761D0 g_cdLoad;
+    CdRequest cur; /* current request */
+    CdRequest queued; /* passed to cd_startRequest */
+} CdLoadState;
+extern CdLoadState g_cdLoad;
 
 /* ---- drawing ---- */
 
@@ -628,8 +628,8 @@ extern Unk80010CE0 D_80010CE0;
 s32 func_8001C784(void *);
 void memset(void *, s32, s32);
 void (*CdReadyCallback(void (*)()))(); /* returns the previous callback */
-void func_80021938(Unk80021938 *);
-void func_80023580(u8, u8 *);
+void func_80021938(PreloadEntry *);
+void cd_controlF(u8, u8 *);
 void func_800235A0(u8, u8 *);
 void func_8002423C(s32, s32, s32, Character *);
 u8 *func_80024EB4(RECT *, u32 *, u8, u8, s32, u8 *);
@@ -1226,8 +1226,8 @@ typedef struct {
     s16 unk1700;
     u8 pad1702[0x17C8 - 0x1702];
 } Unk8007AECC; /* 0x17C8 */
-extern Unk8007AECC *D_8007AECC;
-extern Unk8007AECC D_80077E60; /* the script system state D_8007AECC points at */
+extern Unk8007AECC *g_evtState;
+extern Unk8007AECC D_80077E60; /* the script system state g_evtState points at */
 extern Unk8007AECC D_80079630; /* saved copy, restored when returning to the same field */
 extern Unk4 D_80011A44; /* rodata */
 extern s32 D_8007B6FC;
@@ -1238,7 +1238,7 @@ void func_80050044(void);
 /* Inlined copy of func_8004B040 (find object by id). */
 static inline Unk8004AB64 *func_8004B040_inline(s32 id) {
     Unk16D8 *n;
-    for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+    for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
         if (n->unk4->unk7 == id) {
             break;
         }
@@ -1437,7 +1437,7 @@ typedef union {
     s16 h[0x400];
     u8 b[0x800];
 } EventVars;
-extern EventVars D_8007AEF0;
+extern EventVars g_evtGlobalVars;
 
 void func_800239A4(void);
 void func_80023784(void);
@@ -1550,7 +1550,7 @@ extern u8 D_8006CAB8[][2];
 u16 *func_800633E4(s32);
 void func_80027CB0(void);
 void func_8003431C(void);
-void func_80033690(void);
+void party_initNewGame(void);
 s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void func_8001C718(void);
 void *func_8001C7FC(s32, s32, s32); /* mode 4: address, 5: size */
@@ -1653,9 +1653,9 @@ typedef struct {
 
 void func_8004C204(void);
 void func_800512E4(s32);
-void func_80021974(Unk80021938 *, s32, s32, s32, s32, s32, s32, s32);
-Unk80021938 *func_80021E5C(s32);
-s32 func_80021C20(Unk80021938 *);
+void func_80021974(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
+PreloadEntry *preload_find(s32);
+s32 func_80021C20(PreloadEntry *);
 void func_8002BEEC(u32 *, u32 *, s32, s32);
 
 typedef struct {
@@ -1699,7 +1699,7 @@ void func_8005A658(Unk80080AA0 *);
 
 /* ---- hoisted from overlay headers ---- */
 
-/* file table entry (func_8001E218 / func_80063088) */
+/* file table entry (file_find / func_80063088) */
 typedef struct {
     s32 unk0;
     s32 unk4; /* start sector */
@@ -1707,7 +1707,7 @@ typedef struct {
     s32 unkC; /* end sector / next id */
 } FileEntry;
 
-/* g_gameState->unk14[i]: per-directory header (func_8001E218) */
+/* g_gameState->unk14[i]: per-directory header (file_find) */
 typedef struct {
     s32 unk0; /* 3 = flat u16 table at unk18[13] */
     s32 unk4; /* entry count */
@@ -1715,7 +1715,7 @@ typedef struct {
     s32 unkC;
 } FileDirEntry;
 
-/* g_gameState->unk18[i]: 8-byte {id, sector} entries searched by func_8001E218 */
+/* g_gameState->unk18[i]: 8-byte {id, sector} entries searched by file_find */
 typedef struct {
     u16 unk0; /* id */
     u16 unk2;
@@ -1828,7 +1828,7 @@ s32 func_8001DAA4(s32, s32, s32, RECT *); /* copy through VRAM, returns bytes do
 extern u8 D_80068234;      /* next slot in D_80073CE8 */
 extern RECT D_80073CE8[6]; /* transfer rects (func_8001DAA4) */
 void func_8001DCB8(void);
-FileEntry *func_8001E218(s32, s32);
+FileEntry *file_find(s32, s32);
 void func_80021640(s32);
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
@@ -1857,7 +1857,7 @@ typedef struct {
 } Unk80077D68; /* screen fade state */
 extern Unk80077D68 D_80077D68;
 s32 func_8002FD98(s32, s32);
-void func_80032B08(s32);
+void chr_init(s32);
 void func_8002C974(s32, s32, s32);
 typedef struct {
     s32 unk0;
@@ -1886,8 +1886,8 @@ typedef struct {
 extern Unk8006DD88 D_8006DD88[];
 void func_8002C210(void);
 void func_8002E490(void);
-void func_800225BC(u8 *);
-u8 func_80022C10(s32, void (*)(u8 *));
+void preload_onReadDone(u8 *);
+u8 cd_seekAsync(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
@@ -1956,7 +1956,7 @@ void func_80060ED8(s32, s32, void (*)(void));
 s32 func_800C44F4(u32); /* field overlay (ovl_0a) */
 s32 func_800C0F08(void); /* field overlay (ovl_0a) */
 s32 func_800C0FB0(void); /* field overlay (ovl_0a) */
-extern CdRequest D_80076148;
+extern CdRequest g_cdReadRequest;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 CdMode(void);
 s32 func_800233CC(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
@@ -1976,7 +1976,7 @@ extern u8 *D_800809E8;
 extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
 void func_800616F8(s32, s32, s32, s32);
-s32 func_80021A1C(Unk80021938 *);
+s32 func_80021A1C(PreloadEntry *);
 u8 func_8002F8BC(); /* called with an argument it ignores */
 extern void (*D_8006CA64[])(void);
 extern s32 D_8006CA40[];
@@ -2009,7 +2009,7 @@ void func_8005338C(s32);  /* hand-written asm module */
 s32 func_80053498(s32, u8, u32 *, s32);
 void func_80053658(s32);
 s32 func_80053764(s32, u8, u32 *, s32);
-void func_80032C4C(s32, s32, u32 *, u8);
+void chr_setLevel(s32, s32, u32 *, u8);
 extern u32 D_8006CA78[];
 extern u32 D_80077CA4[];
 s32 func_80056700(s32, s32);
@@ -2024,16 +2024,16 @@ void func_800326B0(void);
 void func_80036560(void);
 CdReadCtx *func_8002177C(void *, s32, s32, void *, s32, s32, void (*)(CdReadCtx *));
 s32 func_800217C4(void *);
-void func_80021C60(); /* takes no args, but ovl_0b passes one */
+void preload_init(); /* takes no args, but ovl_0b passes one */
 void func_80021CDC(s32);
-Unk80021938 *func_80021CFC(void);
+PreloadEntry *preload_add(void);
 s32 func_800220E8(s32);
 void func_80022390(s32);
-s32 func_80022B28(void);
-void func_80022BD0(void);
-s32 func_80022DF0(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
+s32 cd_cancel(void);
+void cd_stopMotor(void);
+s32 cd_readSync(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
 s32 func_800230A0(void);
-u8 func_8002306C(void);
+u8 cd_checkShellOpen(void);
 void func_800239D0(void);
 void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
@@ -2179,7 +2179,7 @@ void _card_wait(s32);
 typedef struct {
     u8 unk0[8];
 } Unk8; /* 8 bytes, byte-aligned (copied with lwl/lwr) */
-extern Unk8 D_80076B0C; /* last CD status/result bytes */
+extern Unk8 g_cdResult; /* last CD status/result bytes */
 
 s32 func_800384D0(Unk8004AB64 *, s32, s32, s32);
 extern s32 D_8007AE34;
@@ -2234,11 +2234,11 @@ extern Unk8006C9D4 D_8006C9D4[];
 s32 func_8002C1EC(void);
 void func_80035490(void);
 
-extern s32 D_8007B6F4;
+extern s32 g_evtArgFlags;
 extern s32 D_8007B6F8;
-extern struct Unk8004AB64 *D_8007B70C; /* current script object */
-void func_80052DA0(void);
-s32 func_80052D40(void);
+extern struct Unk8004AB64 *g_evtCurObj; /* current script object */
+void evt_evalExpr(void);
+s32 evt_popResult(void);
 void func_80052D70(s32);
 extern s32 D_8007B718;
 void func_8004E7FC(void);
@@ -2286,9 +2286,9 @@ void func_80036528(void);
 void func_8002F9F0(void);
 
 void cd_startRequest(CdRequest *);
-u8 func_800230B8(CdRequest *);
-void func_800231A0(u8, u8 *);
-void func_800227C8(u8, u8 *);
+u8 cd_submit(CdRequest *);
+void cd_onSync(u8, u8 *);
+void cd_onDataReady(u8, u8 *);
 s32 func_8005DD54(s32, s32);
 s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
@@ -2303,7 +2303,7 @@ s32 StopRCnt(s32);
 void SpuQuit(void);
 extern s32 g_akaoTickEvent;
 extern u8 D_8006F334[];
-extern s32 D_8007B708;
+extern s32 g_evtMode;
 /* offset-table blob: count, then per-entry u16 offsets relative to unk4 */
 typedef struct Unk8007B954 {
     s32 unk0; /* count */
@@ -2325,16 +2325,16 @@ extern CdRequest D_80076178;
 extern CdRequest D_800761A8;
 extern Unk8004AB64 *D_8007B704;
 
-/* Same as func_8004AEDC_inline, but written as `>>= (D_8007B6F8 = 1)` (srav). */
-static inline s32 func_8004AEDC_inline2(void) {
+/* Same as evt_getArg8_inline, but written as `>>= (D_8007B6F8 = 1)` (srav). */
+static inline s32 evt_getArg8_inline2(void) {
     s32 r;
-    if (D_8007B6F4 & 1) {
-        func_80052DA0();
-        r = func_80052D40();
+    if (g_evtArgFlags & 1) {
+        evt_evalExpr();
+        r = evt_popResult();
     } else {
-        r = *D_8007B70C->unk0++;
+        r = *g_evtCurObj->unk0++;
     }
-    D_8007B6F4 >>= (D_8007B6F8 = 1);
+    g_evtArgFlags >>= (D_8007B6F8 = 1);
     return r;
 }
 
@@ -2344,9 +2344,9 @@ static inline Unk8004AB64 *func_8004B4C4_inline(s32 id) {
         return D_8007B704;
     }
     if (id == 0xFA) {
-        id = D_8007AECC->playerUid;
+        id = g_evtState->playerUid;
     } else if ((u32)(id - 0xFB) < 4) {
-        id = D_8007AECC->unk16E4[id - 0xFB];
+        id = g_evtState->unk16E4[id - 0xFB];
     }
     return func_8004B040_inline(id);
 }
@@ -2406,7 +2406,7 @@ extern s32 D_8006E510[];
 extern RECT D_8006E508;
 extern Unk80077E28Entry D_8006E530[];
 extern Unk80077E28Entry D_8006E5B0[];
-u8 func_80022C60(s32, s32, void *, void (*)(u8 *));
+u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
 void func_80036634(u8 *);
 extern void *D_8007AED0[8];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
@@ -2473,8 +2473,8 @@ void func_80061E1C(s32, s32, void (*)(void));
 void func_800621D4(void);
 
 /* ---- main batch 5 ---- */
-s32 func_800219FC(Unk80021938 *);
-Unk80021938 *func_80021E20(void);
+s32 func_800219FC(PreloadEntry *);
+PreloadEntry *func_80021E20(void);
 void func_80028B20(u8 *);
 u8 func_80033D28(void);
 void FlushCache(void);
@@ -2544,7 +2544,7 @@ typedef struct {
 void func_80024428(s32, s32, s32, Unk80024428 *);
 void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
 void func_800273C0(s32, s32, s32, s32, s32);
-void func_80033D38(u8 *, s32); /* default name by id */
+void chr_setDefaultName(u8 *, s32); /* default name by id */
 s32 func_8002BCC0(u8 *); /* strlen */
 extern u32 D_80077DBC; /* = g_menu.unkC, read on its own by ovl_3a */
 extern u32 g_padPressed; /* buttons that went down this frame */
@@ -2569,7 +2569,7 @@ extern s32 D_80070494;
 void func_800270EC(s32, s32, s32);
 void func_8002C870(s32, s32, s32);
 void func_8002C8AC(s32, s32, s32);
-s32 func_80022B18(void);
+s32 cd_getState(void);
 s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked */
 Unk6 *func_800625A0(s32, s32);
 s32 func_800626D0(s32, s32);
@@ -2588,7 +2588,7 @@ extern s32 D_80070418;
 void func_8003563C(u8);
 s32 func_800281A4(s32);
 s32 func_800632B4(s32, s8 *);
-extern s32 D_800739A8[];
+extern s32 g_padPortState[];
 u8 *func_80027834(s32, s32, u32 *, s32, u8, s32 *, void *);
 u8 *func_8002995C(s32, s32, u32 *, Character *, s32 *, u8 *);
 u8 *func_8002B890(s32, s32, u32 *, u32, u8, s32 *, u8 *);
@@ -2623,7 +2623,7 @@ s32 read(s32, s32, s32);
 void *func_80062824(void);
 extern s32 D_80070440;
 extern s32 D_8007048C;
-void func_80033AF4(s32, s32);
+void party_setMember(s32, s32);
 
 
 /* ---- hoisted for the world map (ovl_0c) ---- */
@@ -2633,8 +2633,8 @@ extern s32 g_padPortPressed;
 #else
 extern s32 g_padPortPressed[2]; /* went down this frame, per port */
 #endif
-extern s32 D_80073988[2]; /* buttons released this frame */
-extern s32 D_80073930[2]; /* previous g_padPortHeld */
+extern s32 g_padPortReleased[2]; /* buttons released this frame */
+extern s32 g_padPortPrevHeld[2]; /* previous g_padPortHeld */
 extern s32 D_80073830[2][32]; /* frames each button has been held */
 extern Unk4 D_80073938[2]; /* analog stick bytes */
 extern u8 D_8006815C[]; /* actuator alignment */
@@ -2646,7 +2646,7 @@ typedef struct {
     u8 unk4[4]; /* analog sticks */
 } PadBuf;
 #define PADBUF(i) ((PadBuf *)&D_80073940[i])
-void func_80019194(void);
+void pad_update(void);
 void func_80032098(void);
 void func_80023A4C(void);
 void func_8001CD04(s32);
@@ -2675,7 +2675,7 @@ extern s32 D_8007046C;
 void SetBackColor(s32, s32, s32);
 void SetFarColor(s32, s32, s32);
 void SetFogNearFar(s32, s32, s32);
-s32 func_8003378C(void);
+s32 party_getFirstMember(void);
 extern u8 D_80073939;
 extern u8 D_8007393A; /* pad analog stick */
 extern u8 D_8007393B;
@@ -2817,7 +2817,7 @@ static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8
 static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
     Unk8007AECCNode *n;
     Unk8007AECCNode *prev = NULL;
-    for (n = D_8007AECC->unk15D0; n != NULL; n = n->unk8) {
+    for (n = g_evtState->unk15D0; n != NULL; n = n->unk8) {
         if (n->unk0 == key) {
             break;
         }
@@ -2826,10 +2826,10 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
     if (prev != NULL) {
         prev->unk8 = n->unk8;
     } else {
-        D_8007AECC->unk15D0 = n->unk8;
+        g_evtState->unk15D0 = n->unk8;
     }
-    n->unk8 = D_8007AECC->unk15D4;
-    D_8007AECC->unk15D4 = n;
+    n->unk8 = g_evtState->unk15D4;
+    g_evtState->unk15D4 = n;
 }
 void func_8002E718(RECT *, s32, MenuList *);
 void func_8002E7FC(RECT *, s32, MenuList *, s32);
@@ -2871,7 +2871,7 @@ void func_800512B8(s32, s32);
 void func_800512C8(s32, s32);
 void func_800513CC(s32);
 void func_80051610(void);
-extern s32 *D_8007B6F0; /* script value stack pointer */
+extern s32 *g_evtExprSp; /* script value stack pointer */
 extern void *D_8007B700; /* script current object */
 
 /* Inlined copy of func_8004B404 (read script variable, refreshing 2-4). */
@@ -2940,7 +2940,7 @@ static inline u8 *func_8004D940_msg(s32 i) {
     if (i >= 0 && i < D_8007B954->unk0) {
         t = D_8007B954->unk4;
         e = (u8 *)t;
-        e += t[(D_8007B708 == 2 || D_8007B708 == 4) ? i * 2 : i * 4 + 2];
+        e += t[(g_evtMode == 2 || g_evtMode == 4) ? i * 2 : i * 4 + 2];
     }
     return e;
 }
@@ -2985,13 +2985,13 @@ void func_8006100C(void);
 void func_80060A98(void);
 u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
 void func_8002E660(Window *);
-s32 func_80034A64(s32, s32, u8);
-s32 func_80034B50(s32, s32, u8);
-s32 func_80034C64(s32, s32, u8);
-s32 func_80034D78(s32, s32, u8);
-s32 func_80034F7C(s32, s32);
-s32 func_80034FD4(s32, s32);
-s32 func_80034E80(s32, s32, u8);
+s32 chr_calcBaseSpeed(s32, s32, u8);
+s32 chr_calcBaseStrength(s32, s32, u8);
+s32 chr_calcBaseMagic(s32, s32, u8);
+s32 chr_calcBaseSpirit(s32, s32, u8);
+s32 chr_calcMaxHp(s32, s32);
+s32 chr_calcMaxMp(s32, s32);
+s32 chr_calcMaxStones(s32, s32, u8);
 void func_80033DCC(Character *);
 POLY_FT4 *func_80051530(void);
 typedef struct {
@@ -3162,8 +3162,8 @@ typedef struct {
 
 u8 func_80033A50(u32);
 void func_80034394(s32);
-s32 func_80033A1C(Character *);
-void func_80033D8C(u8 *, s32);
+s32 chr_getDefaultSet(Character *);
+void chr_setDefaultEquip(u8 *, s32);
 typedef struct {
     u32 tag;
     u32 rgbc;
@@ -3289,7 +3289,7 @@ typedef struct {
     s32 unk4;
 } DirEntry;
 
-/* Unk80021938.unk4 split into its parts */
+/* PreloadEntry.unk4 split into its parts */
 typedef struct {
     u16 unk0;
     u8 unk2;
@@ -3314,7 +3314,7 @@ typedef struct {
 extern u32 g_allocTop; /* bump allocator for the boot-time state block */
 void func_8001CB78(void);
 void func_8001CBD0(void);
-s32 func_80022A28(void);
+s32 cd_init(void);
 void CdSetDebug(s32);
 void _bu_init(void);
 void func_80018F20(void);
@@ -3327,14 +3327,14 @@ s32 func_8001D67C(void);
 s32 func_8001D768(void);
 
 s32 CdGetSector(void *, s32);
-s32 func_80021A8C(Unk80021938 *);
+s32 func_80021A8C(PreloadEntry *);
 void cd_onSectorReady(void);
 
 extern SpuReverbAttr D_80073690;
 extern s32 D_800736A4; /* reverb mode */
 extern DRAWENV D_80073C88;
 void func_80018F50(void);
-void func_80022A80(void);
+void cd_resetState(void);
 void func_8001C6F8(void);
 void func_80021770(void);
 void func_800320D8(void);
@@ -3358,11 +3358,11 @@ extern s32 D_800686C4[1]; /* their action indices */
 void func_80019708(s32, u32, s32);
 extern s32 D_80073730[2][32]; /* indexed by leading-zero count (func_80019708) */
 extern s32 D_80073830[2][32];
-extern s32 D_80073930[];
-extern s32 D_80073988[];
+extern s32 g_padPortPrevHeld[];
+extern s32 g_padPortReleased[];
 
 void __main(void);
-void func_80012900(s32);
+void game_loadModeOverlay(s32);
 void FlushCache(void); /* BIOS FlushCache */
 s32 EnterCriticalSection(void); /* BIOS EnterCriticalSection */
 void ExitCriticalSection(void); /* BIOS ExitCriticalSection */
@@ -3371,7 +3371,7 @@ void func_8001CB70(void);
 void func_80016B6C(void);
 void func_8001CFB4(void);
 
-/* overlay load addresses by game mode (func_80012900). The rodata block
+/* overlay load addresses by game mode (game_loadModeOverlay). The rodata block
  * D_80010034 also holds the next word and libgpu's version string. */
 typedef struct {
     u32 *unk0[10];
@@ -3599,7 +3599,7 @@ VECTOR *func_800AE744(void);
 void func_800C7D30(s32, s32, s32);
 #endif
 
-extern u8 *D_8007AEA0;
+extern u8 *g_evtInstrStart;
 extern s32 D_8007AE04;
 Unk8004AB64 *func_80038150(void);
 void func_80038278(Unk8004AB64 *);
@@ -3621,34 +3621,34 @@ void func_8004EFA0(void);
 WinLayout *func_80039660(Unk8004AB64 *, s32, s32);
 void msg_open(s32, s32, WinLayout *, s32);
 
-static inline s32 func_8004AF58_inline(void) {
+static inline s32 evt_getArg16_inline(void) {
     s32 r;
-    if (D_8007B6F4 & 1) {
-        func_80052DA0();
-        r = func_80052D40();
+    if (g_evtArgFlags & 1) {
+        evt_evalExpr();
+        r = evt_popResult();
     } else {
-        Unk8004AB64 *pp = D_8007B70C;
+        Unk8004AB64 *pp = g_evtCurObj;
         r = *pp->unk0++;
         r |= *pp->unk0++ << 8;
         r = (s16)r;
     }
-    D_8007B6F4 >>= 1;
+    g_evtArgFlags >>= 1;
     D_8007B6F8 = 1;
     return r;
 }
 
 /* uid of the object the current script runs for */
-#define CUR_UID() (((u8 *)((s32 *)D_8007B70C + D_8007B70C->unk9) + D_8007B70C->unkA * 4)[-1])
+#define CUR_UID() (((u8 *)((s32 *)g_evtCurObj + g_evtCurObj->unk9) + g_evtCurObj->unkA * 4)[-1])
 
-static inline s32 func_8004AEDC_inline(void) {
+static inline s32 evt_getArg8_inline(void) {
     s32 r;
-    if (D_8007B6F4 & 1) {
-        func_80052DA0();
-        r = func_80052D40();
+    if (g_evtArgFlags & 1) {
+        evt_evalExpr();
+        r = evt_popResult();
     } else {
-        r = *D_8007B70C->unk0++;
+        r = *g_evtCurObj->unk0++;
     }
-    D_8007B6F4 >>= 1;
+    g_evtArgFlags >>= 1;
     D_8007B6F8 = 1;
     return r;
 }
@@ -3770,16 +3770,16 @@ static inline s32 func_8004B914_inline(void) {
     s32 v;
     Unk8004AB64 *pp;
 
-    if (D_8007B6F4 & 1) {
-        func_80052DA0();
-        v = func_80052D40();
+    if (g_evtArgFlags & 1) {
+        evt_evalExpr();
+        v = evt_popResult();
     } else {
-        pp = D_8007B70C;
+        pp = g_evtCurObj;
         v = *pp->unk0++;
         v |= *pp->unk0++ << 8;
         v |= *pp->unk0++ << 16;
     }
-    D_8007B6F4 >>= (D_8007B6F8 = 1);
+    g_evtArgFlags >>= (D_8007B6F8 = 1);
     return v;
 }
 
@@ -3812,14 +3812,14 @@ typedef struct {
 } Unk8007AE70;
 extern Unk8007AE70 D_8007AE70;
 
-/* Inlined helper: rebuild D_8007AECC->unk16E4 from the current party. */
+/* Inlined helper: rebuild g_evtState->unk16E4 from the current party. */
 static inline void evt_execInstr_party(void) {
     s32 mask = 0;
     s32 i = 0;
-    u8 *p = D_8007AECC->unk16E4;
+    u8 *p = g_evtState->unk16E4;
     s32 r;
 
-    *(s32 *)D_8007AECC->unk16E4 = -1;
+    *(s32 *)g_evtState->unk16E4 = -1;
     for (; i < 4; i++) {
         r = func_8004E7A4(i);
         if (r >= 0) {
@@ -3867,7 +3867,7 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
     p->unk93 = 0xFF;
     p->unk7C.w = 0x10101010;
     p->unkF |= 4;
-    switch (D_8007B708) {
+    switch (g_evtMode) {
     case 1:
         func_800AA3F4(uid);
         break;
@@ -3883,7 +3883,7 @@ static inline void evt_execInstr_window(Unk8004AB64 *obj, s32 b, s32 c) {
     Unk8004AB64 *o;
 
     if ((b & 0xA0) == 0x80 && obj->unk5 == 4) {
-        for (n = D_8007AECC->unk16D8; n != NULL; n = n->unk0) {
+        for (n = g_evtState->unk16D8; n != NULL; n = n->unk0) {
             o = n->unk4;
             if (o->unk5 == 4 && o->unk3E == c) {
                 o->unk3E = 0xFF;
@@ -4045,7 +4045,7 @@ static inline u16 func_80038D3C_pick(void) {
     s32 i;
     u8 *tbl;
 
-    if (D_8007B708 != 1) {
+    if (g_evtMode != 1) {
         t = func_800BBBA8();
     } else {
         t = &D_8007AE40;

@@ -105,8 +105,8 @@ D_8007BCA0 = 0x8007BCA0; // pen colour (func_800512E4)
 D_8007BCAC = 0x8007BCAC; // debug print packet pointer (func_80051638)
 D_8007BC78 = 0x8007BC78; // pen stack storage (func_80051568)
 D_8007BD00 = 0x8007BD00; // glyph sink chosen by func_8005179C
-D_8007BCB8 = 0x8007BCB8; // expression stack storage (func_80051F54)
-D_8007BCF8 = 0x8007BCF8; // current object's local variables (func_80052870)
+g_evtExprStack = 0x8007BCB8; // expression stack storage (func_80051F54)
+g_evtObjVars = 0x8007BCF8; // current object's local variables (func_80052870)
 D_8006E700 = 0x8006E700; // message printed on division by zero in func_80051F54
 D_8006EAD0 = 0x8006EAD0; // atan table read by func_80052F24 and ratan2
 func_80063118 = 0x80063118; // type:func (split from the strcat stub before it)
@@ -172,3 +172,68 @@ g_mbgState = 0x80071E32; // [code] 0 off, 1 after MBG_init, >=2 playing (mbg_pla
 g_mbgFrame = 0x80071E34; // [code] frames decoded, ++ in mbg_update, compared with mbg_getLastFrame by ovl_0a/ovl_14, ff9-ds port/game/movie.c
 g_mbgRgb24 = 0x80071E31; // [code] -1 undecided (movie entry decides), 0 16-bit, 1 24-bit display (mbg_setRgb24, mbg_mdecOutCallback)
 g_mbgPaused = 0x80071E38; // [code] set at frame end on a pause request, frames then re-delivered by mbg_streamUngetFrame, cleared by mbg_setPause(0)
+game_main = 0x800127A0; // type:func [code] C main after __main - boot init, then per-session init and the g_gameState->mode dispatch loop until GameState.unk0 bit 0 (src/main/main.c, ff9-ds port/psx/mem.c calls it as the game's main loop, decomp-requests R3)
+game_loadModeOverlay = 0x80012900; // type:func [code] mode -> file id table {20,10,11,12,21,-,-,101,101,13}, restores it from the preload cache (RAM copy or StoreImage from VRAM) else cd_readSync from FF9.IMG, then FlushCache (game_main, ff9-ds decomp-requests F3)
+game_initLibraries = 0x800169B8; // type:func [code] once before the loop - ResetCallback, ResetGraph, InitGeom, SpuInit, InitCARD/StartCARD, cd_init (game_main)
+cd_getState = 0x80022B18; // type:func [code] returns g_cdLoad.unk0, nonzero while a request runs, every caller spins on it (func_80012900, func_80022D84, func_80022DF0, ff9-ds scenario.c uses it as busy)
+cd_readAsync = 0x80022C60; // type:func [code] (sector, size, dest, callback) fills the static g_cdReadRequest (flags 3 = seek+read, inline chunk) and submits it (func_80021ED4, ff9-ds scenario.c, decomp-requests R10)
+cd_readSync = 0x80022DF0; // type:func [code] same request as cd_readAsync without callback, then spins on cd_getState (game_loadModeOverlay)
+cd_readChunks = 0x80022CC4; // type:func [code] read into a list of n {size, dest} chunks, total size summed (CdChunk, cd_onSectorReady)
+cd_seekAsync = 0x80022C10; // type:func [code] request flags 1 only (CdlSetloc, then cd_startRequest's seek with no read), with a done callback
+cd_seekSync = 0x80022D84; // type:func [code] same seek-only request, then spins on cd_getState
+cd_submit = 0x800230B8; // type:func [code] starts the request with cd_startRequest when idle, else queues one in g_cdLoad.unk968 (unk2 = queued) and returns 0 if already queued (all cd_read*/cd_seek* wrappers)
+cd_findFile = 0x80022AC4; // type:func [string] [code] CdSearchFile + CdPosToInt, prints "Cannot find file. (%s)" and returns -1 on failure
+cd_init = 0x80022A28; // type:func [code] loops CdInit until it succeeds, then CdControlB(CdlSetmode, CdlModeSpeed) (game_initLibraries)
+cd_resetState = 0x80022A80; // type:func [code] CdReset(1), clears both libcd callbacks and memsets g_cdLoad (per-session init func_80016A28)
+cd_cancel = 0x80022B28; // type:func [code] if busy, clears callbacks/flags, sets g_cdLoad idle and issues CdlPause (9) until accepted, returns the old state
+cd_stopMotor = 0x80022BD0; // type:func [code] CdControlB(CdlSetmode, 0) then CdControlB(CdlStop)
+cd_onDataReady = 0x800227C8; // type:func [code] ready callback installed by every read request - checks CdGetSector's header position is the expected next sector, calls cd_onSectorReady, pauses on the last sector or retries on error
+cd_onSync = 0x800231A0; // type:func [code] sync callback installed by every request (unk10) - stores the result bytes in g_cdResult, dispatches on command 2/5 through D_80068668[state]
+cd_controlF = 0x80023580; // type:func [code] plain CdControlF(com, param) wrapper used for every CD command in the module
+cd_checkShellOpen = 0x8002306C; // type:func [code] CdControlB(CdlGetstat) into g_cdResult, returns status bit 4 (CdlStatShellOpen)
+g_cdReadRequest = 0x80076148; // [code] static CdRequest filled by cd_readAsync and cd_readSync
+g_cdResult = 0x80076B0C; // [code] last CD result bytes, written by cd_onSync/cd_onDataReady/cd_checkShellOpen
+file_find = 0x8001E218; // type:func [code] (dir, id) - scans directory dir of g_gameState->unk14 backwards for the id, direct index for type-3 dirs, NULL if absent (game_loadModeOverlay, ff9-ds decomp-requests R10)
+preload_find = 0x80021E5C; // type:func [code] finds the preload queue entry (GameData.unk8C8, 7 entries) whose id matches the low 24 bits (game_loadModeOverlay, func_800220E8, ff9-ds decomp-requests F3 cached RAM/VRAM restore)
+preload_init = 0x80021C60; // type:func [code] resets the preload queue (state 4, count 0, cursor -1) and clears all 7 entries (func_8001D268)
+preload_add = 0x80021CFC; // type:func [code] appends a cleared entry while count < 6 and returns it (ovl_0a/ovl_0b callers fill it)
+preload_update = 0x8002246C; // type:func [code] per-frame state machine - next entry, wait cd_getState, cd_readAsync/cd_seekAsync with preload_onReadDone, wait completion
+preload_onReadDone = 0x800225BC; // type:func [code] CD done callback of preload_update - marks the current entry done (|2) or failed (|0x80)
+pad_update = 0x80019194; // type:func [code] per port - PadGetState, actuator setup, maps buttons into g_padPortHeld, then g_padPortPressed/g_padPortReleased from the previous frame (ff9-ds port/psx/pad.c)
+g_padPortPrevHeld = 0x80073930; // [code] g_padPortHeld from the previous pad_update, used for the press/release edges
+g_padPortReleased = 0x80073988; // [code] (held ^ prev) & prev per port in pad_update
+g_padPortState = 0x800739A8; // [code] PadGetState result per port in pad_update (2 = digital found, 6 = stable)
+item_findSlot = 0x80027EDC; // type:func [code] first inventory slot with count != 0 and this id, else NULL (item_getCount inlines it, ff9-ds scenario.c)
+party_setMember = 0x80033AF4; // type:func [code] party[slot] = &characters[ch] or NULL for ch < 0 / >= 9, marks ch via func_80033BD0, flags a party change (func_80033690, ff9-ds scenario.c)
+party_initNewGame = 0x80033690; // type:func [code] chr_init on all 9 records, party = 0,1,2,3, gil = 500 (func_800651D8)
+party_getFirstMember = 0x8003378C; // type:func [code] index of the first non-NULL party slot
+chr_init = 0x80032B08; // type:func [code] zeroes the record, initial CharBits from D_8006CA78[ch], default flags/name/equipment, model, level 1, full hp/mp/stones (func_80033690)
+chr_setLevel = 0x80032C4C; // type:func [code] sets level (exp = g_levelExp[lv-1] unless keeping), recomputes base stats, max hp/mp/stones and clamps hp/mp (func_80033C48, func_800333B0, chr_init)
+chr_resetToLevel = 0x80033C48; // type:func [code] level = 0 then chr_setLevel(ch, lv) so exp is reset, optional full heal, returns the old level (ff9-ds scenario.c)
+chr_calcBaseSpeed = 0x80034A64; // type:func [code] result stored in Character.baseSpeed by chr_setLevel, capped 50
+chr_calcBaseStrength = 0x80034B50; // type:func [code] stored in baseStrength by chr_setLevel
+chr_calcBaseMagic = 0x80034C64; // type:func [code] stored in baseMagic by chr_setLevel, capped 99
+chr_calcBaseSpirit = 0x80034D78; // type:func [code] stored in baseSpirit by chr_setLevel, capped 50
+chr_calcMaxStones = 0x80034E80; // type:func [code] stored in maxStones by chr_setLevel, capped 99
+chr_calcMaxHp = 0x80034F7C; // type:func [code] (level, strength) table * str / 50, capped 9999, stored in maxHp by chr_setLevel
+chr_calcMaxMp = 0x80034FD4; // type:func [code] (level, magic) table * mag / 100, capped 999, stored in maxMp by chr_setLevel
+chr_setDefaultName = 0x80033D38; // type:func [code] fills the 10-byte name with 0xFF, copies default name id from the D_80010DC4 bank (chr_init, ff9-ds scenario.c, decomp-requests F22)
+chr_setDefaultEquip = 0x80033D8C; // type:func [code] copies the 5 equipment ids of set b from D_8006CAD8 (chr_init, func_800333B0, ff9-ds scenario.c)
+chr_getDefaultSet = 0x80033A1C; // type:func [code] D_8006CAB8[id][guest flag unkA&0x10] - the index chr_init passes to both chr_setDefaultName and chr_setDefaultEquip (ff9-ds scenario.c)
+evt_getArg8 = 0x8004AEDC; // type:func [code] next instruction argument - evaluated expression if the g_evtArgFlags bit is set, else one literal byte, shifts the flags (evt_execInstr)
+evt_getArg16 = 0x8004AF58; // type:func [code] same with a 2-byte little-endian s16 literal
+evt_evalExpr = 0x80052DA0; // type:func [code] runs the expression evaluator func_80051F54 on g_evtCurObj's ip and stores the advanced ip back (evt_getArg8)
+evt_popResult = 0x80052D40; // type:func [code] pops the evaluator's result from the stack at g_evtExprSp via func_80051D4C (evt_getArg8)
+evt_runExpr = 0x80051F54; // type:func [code] hand-written postfix expression evaluator - opcode byte at $s6 dispatched through 0x8006E718, pushes tagged words onto g_evtExprStack (src_equiv/main/script_text.c)
+evt_popValue = 0x80051D4C; // type:func [code] pops a tagged stack word and resolves it - immediate, object property, system var, or variable in g_evtGlobalVars / g_evtState / g_evtObjVars (src_equiv/main/script_text.c)
+evt_popAssign = 0x80051E8C; // type:func [code] pops a variable reference and stores a value into the same spaces via func_80051DF4 (src_equiv/main/script_text.c)
+evt_readVar = 0x80051CA8; // type:func [code] reads base+off as bit, s24, s8/u8 or s16/u16 by the tag width bits
+evt_writeVar = 0x80051DF4; // type:func [code] writes base+off with the same width encoding as evt_readVar
+evt_getVarBank = 0x80052CD0; // type:func [code] bank 0 -> g_evtGlobalVars, 1 -> *g_evtState, 2 -> g_evtObjVars
+g_evtGlobalVars = 0x8007AEF0; // [code] variable space 0 of the script evaluator (evt_popValue, evt_getVarBank), 0x800 bytes cleared by script opcode 0xD1 (func_80050A84), h[0] is the story counter tested by chr_selectModel (ff9-ds scenario.c)
+g_evtState = 0x8007AECC; // [code] pointer to the script system state (D_80077E60) - variable space 1, object lists, playerUid, party uids at unk16E4 (evt_execInstr, evt_popValue)
+g_evtExprSp = 0x8007B6F0; // [code] published copy of the evaluator's $s7 stack pointer (evt_popResult, evt_runExpr)
+g_evtArgFlags = 0x8007B6F4; // [code] the byte after the opcode - one bit per argument, set = expression (evt_execInstr, evt_getArg8)
+g_evtCurObj = 0x8007B70C; // [code] object whose script is executing - its unk0 is the instruction pointer read by evt_execInstr, set by the scheduler func_80052870
+g_evtInstrStart = 0x8007AEA0; // [code] ip at the start of the current instruction, restored by evt_execInstr when an instruction must retry (case 0x12 returns 1)
+g_evtMode = 0x8007B708; // [code] evt_init copies g_gameState->mode 1/2/3 into it and 8 -> 4, selects message-table layout and field-only behaviour in evt_execInstr

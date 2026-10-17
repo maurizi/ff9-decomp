@@ -253,9 +253,9 @@ void func_801F187C(void) {
 s32 func_801F1A7C(void) {
     ItemMenu *m = &D_801FAB78;
 
-    if (g_gameState->mode == 3 && D_8007AEF0.b[0xBF] != 0 && D_8007AEF0.b[0xB5] == 0) {
+    if (g_gameState->mode == 3 && g_evtGlobalVars.b[0xBF] != 0 && g_evtGlobalVars.b[0xB5] == 0) {
         if (func_800B8124()) {
-            D_8007AEF0.b[0xB5] = 1;
+            g_evtGlobalVars.b[0xB5] = 1;
             func_800B81A0();
             m->unk4C = func_8002DC54(&D_801F3148, 0xF, 2);
             func_8002E2E4(m->unk4C, func_801F2B20);

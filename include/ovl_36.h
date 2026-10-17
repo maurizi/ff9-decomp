@@ -204,7 +204,7 @@ static inline void func_801F1A48_read(CardCache *c) {
         D_801F347C.unk1900.unkA = 1;
         x = c->unk3;
         D_801F347C.unk4 = x;
-        func_80022C60(g_gameState->unk20 + D_801F347C.unk18EC->unk4 + x, 0x800, D_801F347C.unk10D0, NULL);
+        cd_readAsync(g_gameState->unk20 + D_801F347C.unk18EC->unk4 + x, 0x800, D_801F347C.unk10D0, NULL);
     }
 }
 

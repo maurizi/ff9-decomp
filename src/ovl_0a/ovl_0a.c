@@ -24,7 +24,7 @@ void fld_main(s32 arg0) {
     SetDispMask(1);
     do {
         func_800AE788();
-        func_80019194();
+        pad_update();
         if ((g_padPortPressed & 0x04000000) && (g_padPortHeld[0] & 0xF8) && !(g_padPortHeld[0] & 0xFE0001)) {
             func_800AF740();
         }
@@ -104,7 +104,7 @@ void fld_main(s32 arg0) {
                 func_80023A4C();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x1000)) {
-                func_8002246C();
+                preload_update();
             }
         }
         func_800AE930();
@@ -219,16 +219,16 @@ s32 func_800A83E0(void) {
 }
 
 s32 func_800A847C(void) {
-    Unk80021938 *p;
+    PreloadEntry *p;
     FileEntry *f;
 
     if (func_800220E8(0x2714) != 0) {
-        p = func_80021E5C(0x2714);
+        p = preload_find(0x2714);
         func_8001DAA4(D_80067948, p->unk8, p->unkC, NULL);
         func_80022390(0x2714);
         DrawSync(0);
     } else {
-        f = func_8001E218(1, 0x2714);
+        f = file_find(1, 0x2714);
         func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)D_80067948, 0, -1, 0);
         while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
         }
@@ -302,7 +302,7 @@ s32 func_800A879C(FieldMapObj *arg0, u16 arg1) {
 s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
     s32 id;
     GameData *gd;
-    Unk80021938 *e;
+    PreloadEntry *e;
     CdReadCtx *cd;
     GameData *g;
     s32 t;
@@ -311,7 +311,7 @@ s32 func_800A87DC(FieldMapObj *arg0, s32 arg1) {
     id = (u16)arg1 | 0x60000;
     cd = gd->unk854;
     if (func_800220E8(id) != 0) {
-        e = func_80021E5C(id);
+        e = preload_find(id);
         g_gameState->unk1C->unk854->unk20 = (u8 *)(e->unk8 + e->unkC);
         g_gameState->unk1C->unk854->unk10 = e->unkC;
         g_gameState->unk1C->unk854->unk4 = e->unk1C;
@@ -727,7 +727,7 @@ s32 func_800A9AAC(void) {
             min = 0x7FFFFFFF;
             for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; i >= 0; i--) {
                 if (D_800C9F20[i] != -1) {
-                    v = func_8001E218(0xA, D_800C9F20[i])->unk4;
+                    v = file_find(0xA, D_800C9F20[i])->unk4;
                     if (v < min) {
                         best = i;
                         min = v;
@@ -747,7 +747,7 @@ s32 func_800A9AAC(void) {
 s32 func_800A9BDC(FieldScene *sc, s32 arg1) {
     s32 size;
     s32 id;
-    Unk80021938 *e;
+    PreloadEntry *e;
     s32 base;
     s32 i;
     s32 r;
@@ -761,7 +761,7 @@ s32 func_800A9BDC(FieldScene *sc, s32 arg1) {
     }
     id = (u16)arg1 | 0x50000;
     if (func_800220E8(id)) {
-        e = func_80021E5C(id);
+        e = preload_find(id);
         g_gameState->unk1C->unk854[0].unk20 = (u8 *)(e->unk8 + e->unkC);
         g_gameState->unk1C->unk854[0].unk10 = e->unkC;
         g_gameState->unk1C->unk854[0].unk4 = e->unk1C;
@@ -982,7 +982,7 @@ s32 func_800AA4E8(s32 arg0) {
     s32 x2;
     s32 y2;
 
-    f = func_8001E218(10, arg0);
+    f = file_find(10, arg0);
     size = (f->unkC - f->unk4) << 11;
     c = func_800AC344(arg0);
     if (c->unk4 == 0) {
@@ -1164,7 +1164,7 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
 }
 
 s32 func_800AAEC4(s32 arg0) {
-    if ((arg0 & 0xFFFF) == 0xB9 && D_8007AEF0.h[0] >= 0x283C) {
+    if ((arg0 & 0xFFFF) == 0xB9 && g_evtGlobalVars.h[0] >= 0x283C) {
         arg0 = 0x2004C;
     }
     return arg0;
@@ -2103,9 +2103,9 @@ void func_800ADB74(void) {
 
     switch (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42) {
     case 1:
-        if (func_80022B18() == 0) {
+        if (cd_getState() == 0) {
             if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
-                FileEntry *f = func_8001E218(0, 0x64);
+                FileEntry *f = file_find(0, 0x64);
                 func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
                               (void *)(D_80067944 + 0xF1700), 0, 0x15000, NULL);
             }
@@ -2120,17 +2120,17 @@ void func_800ADB74(void) {
         break;
     case 3:
         if (!(D_800C9D44 & 8)) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44 = func_80022AC4(
+            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44 = cd_findFile(
                 D_8019DC5C[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48]
                     .unk4[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49].unk0);
-            if (func_80022B18() == 0) {
+            if (cd_getState() == 0) {
                 func_80022ED4(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44);
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 4;
             }
         }
         break;
     case 4:
-        if (func_80022B18() == 0) {
+        if (cd_getState() == 0) {
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 5;
         }
         break;
@@ -2211,7 +2211,7 @@ void func_800ADB74(void) {
         }
         break;
     case 7:
-        if ((D_800C9D44 & 4) && func_80022B18() == 0) {
+        if ((D_800C9D44 & 4) && cd_getState() == 0) {
             func_800AE5D4();
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 8;
         }
@@ -2225,7 +2225,7 @@ void func_800AE4F8(void) {
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x1000;
     }
     mbg_shutdown();
-    func_80022B28();
+    cd_cancel();
     D_800C9D44 |= 4;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 7;
 }
@@ -2353,7 +2353,7 @@ void func_800AED6C(void) {
     Unk8004AB64 *a;
     SVECTOR v;
     RECT r;
-    Unk80021938 *e;
+    PreloadEntry *e;
     s32 i;
     s16 w;
 
@@ -2402,7 +2402,7 @@ void func_800AED6C(void) {
     } else {
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 2)) {
             if (func_800220E8(0x1000B) != 0) {
-                e = func_80021E5C(0x1000B);
+                e = preload_find(0x1000B);
                 ClearOTag(&D_800C9F98, 1);
                 setlen(&D_800C9F60[g_gameState->unk1C->unk8 ^ 1], 2);
                 D_800C9F60[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
@@ -3942,9 +3942,9 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
     s32 k;
     u8 type;
     s32 x;
-    Unk80021938 *e;
-    Unk80021938 *p;
-    Unk80021938 *q;
+    PreloadEntry *e;
+    PreloadEntry *p;
+    PreloadEntry *q;
     FileEntry *f;
 
     type = arg0;
@@ -3964,7 +3964,7 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
         if (func_800B3BD8(0x1000B)) {
             return -1;
         }
-        if (func_80021E5C(0x1000B)) {
+        if (preload_find(0x1000B)) {
             return -1;
         }
         if (flag) {
@@ -3976,10 +3976,10 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
             goto done;
         }
         p = func_80021E20();
-        if (p != NULL && p->unk4 != k) {
+        if (p != NULL && p->fileId != k) {
             func_80021C20(p);
         }
-        if (flag || func_80021E5C(k) != NULL) {
+        if (flag || preload_find(k) != NULL) {
             goto set;
         }
         goto clear;
@@ -4001,7 +4001,7 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
         if (func_800B3BD8(id)) {
             return -1;
         }
-        e = func_80021E5C(id);
+        e = preload_find(id);
         if (e != NULL && e->unk2 == 0) {
             if (func_80021A1C(e)) {
                 return -1;
@@ -4021,10 +4021,10 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
             goto done;
         }
         e = func_80021E20();
-        if (e != NULL && e->unk4 != id && func_80021A1C(e)) {
+        if (e != NULL && e->fileId != id && func_80021A1C(e)) {
             func_80021C20(e);
         }
-        q = func_80021E5C(id);
+        q = preload_find(id);
         if (!flag && (q == NULL || q->unk2 != 0)) {
         clear:
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x100000;
@@ -4038,7 +4038,7 @@ s32 func_800B36E0(s32 arg0, s32 arg1) {
 }
 
 void func_800B3A80(void) {
-    func_80021C60();
+    preload_init();
     g_gameState->unk1C->unk8BC = func_800B36E0;
     func_80021CDC((s32)func_800B4894);
     func_800B3ACC();
@@ -4167,7 +4167,7 @@ s32 *func_800B3DE4(s32 arg0) {
 s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 top;
     s32 size;
-    Unk80021938 *p;
+    PreloadEntry *p;
 
     if (arg0 == -1 || arg2 == 0) {
         return 0;
@@ -4184,7 +4184,7 @@ s32 func_800B3E48(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (arg1 == 0 && size < 0x8000) {
         return 0;
     }
-    p = func_80021CFC();
+    p = preload_add();
     if (p == NULL) {
         return 0;
     }
@@ -4226,7 +4226,7 @@ void func_800B3F8C(void) {
             }
         }
         if (cnt != 0) {
-            g = func_8001E218(0, 0x1000B);
+            g = file_find(0, 0x1000B);
             func_800B3E48(0x1000B, 0, g->unk4, (g->unkC - g->unk4) << 11);
             key = func_800B3B40();
             if (key != 0) {
@@ -4473,7 +4473,7 @@ void func_800B5290(void) {
     GameData *gd = g_gameState->unk1C;
 
     ClearOTagR(gd->unk10[gd->unk8], 0x1000);
-    func_80019194();
+    pad_update();
 }
 
 void func_800B52DC(void) {
@@ -11137,7 +11137,7 @@ void func_800C85B8(s32 arg0, s32 arg1) {
         g_gameState->unk1C->party[D_800CB188.unk3] = t;
         func_800C86C8(arg0, arg1);
         if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
-            D_80077E50.unk3 = func_8003378C();
+            D_80077E50.unk3 = party_getFirstMember();
         }
     }
 }
@@ -11402,7 +11402,7 @@ void func_800C93D4(void) {
     func_8003556C(func_800C9014);
     func_80035674(1);
     if (g_gameState->unk1C->party[D_80077E50.unk3] == NULL) {
-        D_80077E50.unk3 = func_8003378C();
+        D_80077E50.unk3 = party_getFirstMember();
     }
 }
 

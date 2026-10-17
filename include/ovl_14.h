@@ -33,7 +33,7 @@ typedef struct {
     u32 unk0;
     u32 unk4; /* flags: bpp in low bits */
 } TmTimLike; /* TIM header */
-s32 func_80022AC4(char *);
+s32 cd_findFile(char *);
 extern s32 g_mbgFrame;
 u8 func_80022ED4(s32);
 void func_80032100(void);

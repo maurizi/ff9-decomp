@@ -244,7 +244,7 @@ void func_801F42A4(void) {
         snd_playSe(0x66);
     } else {
         for (i = 0; i < D_801F4748.unk1; i++) {
-            func_80033AF4(i, D_801F4748.unkA[0][i] != 0xFF ? D_801F4748.unkA[0][i] : -1);
+            party_setMember(i, D_801F4748.unkA[0][i] != 0xFF ? D_801F4748.unkA[0][i] : -1);
         }
         func_800325E0();
         snd_playSe(0x67);

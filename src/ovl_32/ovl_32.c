@@ -231,10 +231,10 @@ void func_801F85EC(void) {
     D_801F9850.unk8 = 0;
     D_801F9850.unk3 = 0;
     D_801F9850.unk2 = 0;
-    D_801F9850.unk4 = D_8007AEF0.b[0xBF];
+    D_801F9850.unk4 = g_evtGlobalVars.b[0xBF];
     for (i = 0; i < 3; i++) {
-        D_801F9850.unk8 |= D_8007AEF0.b[i + 0xBB] << (i * 8);
-        D_801F9850.unkC |= D_8007AEF0.b[i + 0xB8] << (i * 8);
+        D_801F9850.unk8 |= g_evtGlobalVars.b[i + 0xBB] << (i * 8);
+        D_801F9850.unkC |= g_evtGlobalVars.b[i + 0xB8] << (i * 8);
     }
     for (i = 0; i < 0x18; i++) {
         bit = 1 << i;

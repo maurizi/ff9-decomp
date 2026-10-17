@@ -72,9 +72,9 @@ void func_800475D8(Unk8004AB64 *obj) {
     D_8007AEAC = dir != 0x8000;
     if (dir != 0x8000) {
         if (analog) {
-            dir += D_8007AECC->unk16E8;
+            dir += g_evtState->unk16E8;
         } else {
-            dir += D_8007AECC->unk16EA;
+            dir += g_evtState->unk16EA;
         }
         dir &= 0xFFF;
         cur = obj->pos.rotY & 0xFFF;
@@ -85,7 +85,7 @@ void func_800475D8(Unk8004AB64 *obj) {
             cur += 0x1000;
         }
         obj->pos.rotY = ((cur + dir) >> 1) & 0xFFF;
-        if (D_8007AECC->unk16F8 != 0 && speed > 30) {
+        if (g_evtState->unk16F8 != 0 && speed > 30) {
             speed = 30;
         }
         if (speed > 30) {

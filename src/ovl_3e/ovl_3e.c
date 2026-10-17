@@ -20,8 +20,8 @@ void func_801F605C(void) {
     }
     func_8003556C(0);
     func_801F673C();
-    func_80022BD0();
-    D_801F6BBC.unk0 = r = func_8002306C();
+    cd_stopMotor();
+    D_801F6BBC.unk0 = r = cd_checkShellOpen();
     state = 1;
     if (r) {
         state = 2;
@@ -131,7 +131,7 @@ u8 func_801F6368(void) {
         }
     }
     if (g_gameState->unkB == 0xFF || !(g_gameState->unkB & mask)) {
-        func_80022BD0();
+        cd_stopMotor();
         return 6;
     }
     snd_playSe(0x4ED);
@@ -194,10 +194,10 @@ void func_801F673C(void) {
     s32 i;
     s32 sector;
 
-    sector = g_gameState->unk20 + func_8001E218(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
+    sector = g_gameState->unk20 + file_find(1, D_801F6BAC[D_801F6BBC.unk4 & 3])->unk4;
     size = 0x11800;
     for (i = 0; i < 2; i++) {
-        func_80022DF0(sector, size, buf);
+        cd_readSync(sector, size, buf);
         func_801F682C(buf, i);
         sector += 0x23;
     }
@@ -241,7 +241,7 @@ void func_801F6914(void) {
 void func_801F6968(void) {
     u8 r;
 
-    D_801F6BBC.unk0 = r = func_8002306C();
+    D_801F6BBC.unk0 = r = cd_checkShellOpen();
     if (r) {
         D_801F6BBC.unk1 = 2;
     }
@@ -250,7 +250,7 @@ void func_801F6968(void) {
 void func_801F69A4(void) {
     u8 r;
 
-    D_801F6BBC.unk0 = r = func_8002306C();
+    D_801F6BBC.unk0 = r = cd_checkShellOpen();
     if (!r) {
         snd_playSe(0x67);
         func_801F6A3C();
@@ -298,7 +298,7 @@ void func_801F6AF0(void) {
 }
 
 void func_801F6B24(void) {
-    D_801F6BBC.unk1 = func_8002306C() ? 2 : 1;
+    D_801F6BBC.unk1 = cd_checkShellOpen() ? 2 : 1;
 }
 
 INCLUDE_RODATA("asm/us/ovl_3e/nonmatchings/ovl_3e", D_801EDF00);

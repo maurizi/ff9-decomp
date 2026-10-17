@@ -1195,9 +1195,9 @@ s32 mbg_streamSeek(CdlLOC *loc) {
 
     mbg_streamClearRing();
     pos = CdPosToInt(loc);
-    if (func_80022B18() != 0) {
+    if (cd_getState() != 0) {
         func_80022FD0(0);
-        while (func_80022B18() != 0) {
+        while (cd_getState() != 0) {
         }
     }
     func_80022F1C(pos, mbg_streamReadyCallback);

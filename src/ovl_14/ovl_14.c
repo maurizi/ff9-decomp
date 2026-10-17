@@ -212,7 +212,7 @@ void func_800A767C(void) {
         func_800A7768();
         g_gameState->unk1C->unk0 &= ~0x100000;
     }
-    func_8002306C();
+    cd_checkShellOpen();
     g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A799C;
     g_gameState->unk1C->unk84C = 0;
     func_800A78C0();
@@ -262,7 +262,7 @@ void func_800A78C0(void) {
     FileEntry *e;
 
     buf = D_80067944 + 0x10000;
-    e = func_8001E218(1, 0x2717);
+    e = file_find(1, 0x2717);
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
@@ -703,8 +703,8 @@ void func_800A87E4(void) {
 void func_800A880C(void) {
     FileEntry *e;
 
-    e = func_8001E218(1, 0x3C);
-    func_80022DF0(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
+    e = file_find(1, 0x3C);
+    cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
     func_800A8868((s32 *)0x801CDF00);
 }
 
@@ -951,7 +951,7 @@ s32 func_800A9220(void) {
     func_800A9968();
     do {
         func_800A9B14();
-        func_80019194();
+        pad_update();
         switch (D_800AB3C8) {
         case 0:
             if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
@@ -1036,7 +1036,7 @@ s32 func_800A9220(void) {
             }
             break;
         case 3:
-            if ((D_800AB2C4 & 0x80) && func_80022B18() == 0) {
+            if ((D_800AB2C4 & 0x80) && cd_getState() == 0) {
                 g_gameState->unk9 = 0;
                 g_gameState->unkC[0].disp.x = 0x140;
                 timer = 0x4EC;
@@ -1084,7 +1084,7 @@ s32 func_800A9968(void) {
 
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    f = func_8001E218(0, 0x64);
+    f = file_find(0, 0x64);
     func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
@@ -1092,9 +1092,9 @@ s32 func_800A9968(void) {
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
-        h = func_80022AC4(*D_8019DC68);
+        h = cd_findFile(*D_8019DC68);
         func_80022ED4(h);
-        while (func_80022B18() != 0) {
+        while (cd_getState() != 0) {
         }
         mbg_streamSetBaseSector(h);
     }
@@ -1156,7 +1156,7 @@ void func_800A9B58(void) {
 
 void func_800A9DD4(void) {
     mbg_shutdown();
-    func_80022B28();
+    cd_cancel();
     D_800AB2C4 |= 0x80;
     D_800AB3C8 = 3;
 }
@@ -1175,7 +1175,7 @@ s32 func_800A9E14(s32 arg0) {
     func_800AA848(arg0);
     do {
         func_800AA994();
-        func_80019194();
+        pad_update();
         switch (D_800AB440) {
         case 0:
             i = 0;
@@ -1299,7 +1299,7 @@ s32 func_800AA848(s32 idx) {
 
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    e = func_8001E218(1, D_800AB2D8[idx]);
+    e = file_find(1, D_800AB2D8[idx]);
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
@@ -1350,7 +1350,7 @@ void func_800AAADC(void) {
     r->w *= 4;
     do {
         func_800AB09C();
-        func_80019194();
+        pad_update();
         if (t == 0xD2) {
             func_800320B8(1, 1, 0x3C, 0);
         } else if (t == 0x3C) {
@@ -1384,7 +1384,7 @@ void func_800AAF40(void) {
 
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    e = func_8001E218(1, 0x2718);
+    e = file_find(1, 0x2718);
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0x10000, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }

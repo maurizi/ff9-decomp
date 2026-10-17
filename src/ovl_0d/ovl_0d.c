@@ -13,7 +13,7 @@ void func_800A755C(void) {
     D_800B365C = 0;
     D_800B3660 = 0;
     g_gameState->unk1C->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800A78EC;
-    func_80021C60();
+    preload_init();
     func_800A7764();
     func_800A7634();
     func_800A76F8();
@@ -51,7 +51,7 @@ s32 func_800A76F8(void) {
 
 s32 func_800A7764(void) {
     s32 dst = (s32)(D_80067944 + 0x57800);
-    FileEntry *f = func_8001E218(1, 0x2715);
+    FileEntry *f = file_find(1, 0x2715);
     func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)dst, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
@@ -231,7 +231,7 @@ void func_800A7E10(void) {
     SetDispMask(1);
     while (s.unk0 != 0xC) {
         func_800A8B80();
-        func_80019194();
+        pad_update();
         func_800A9B0C(&s);
         ctx = g_gameState->unk1C;
         p = (void *)(ctx->unk8 * 0x4B000 + 0x80104A00);
@@ -553,7 +553,7 @@ void func_800A8D74(TmState *s) {
     func_800A93C8((u8 *)0x80104000, 3, 0x200);
     func_800A93C8((u8 *)0x80103800, 1, 0x1F4);
     func_800A93C8((u8 *)0x80103C00, 2, 0x400);
-    D_8007B708 = 1;
+    g_evtMode = 1;
     g_gameState->unk9 = 0;
     func_800239D0();
     text_setBank(g_cardGameText);
@@ -650,11 +650,11 @@ void func_800A932C(TmState *s, char *msg) {
 }
 
 void func_800A9334(void) {
-    FileEntry *f = func_8001E218(1, 0x44C);
+    FileEntry *f = file_find(1, 0x44C);
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    func_80022DF0(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x80104A00);
+    cd_readSync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x80104A00);
 }
 
 u8 *func_800A93A0(s32 i) {

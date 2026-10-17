@@ -9,7 +9,7 @@ void battleEnd_main(void) {
     func_801EF45C();
     do {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
-        func_80019194();
+        pad_update();
         switch (func_801F3A7C()) {
         case 1:
             g_gameState->mode = s->unk6;
@@ -21,7 +21,7 @@ void battleEnd_main(void) {
         func_80023A0C();
         func_80032098();
         func_80023A4C();
-        func_8002246C();
+        preload_update();
         DrawSync(0);
         VSync(g_gameState->unk9);
         ResetGraph(1);
@@ -95,15 +95,15 @@ s32 func_801EF6D8(void) {
 
 s32 func_801EF6F8(void) {
     FileEntry *e;
-    Unk80021938 *f;
+    PreloadEntry *f;
 
     if (func_800220E8(0x2713)) {
-        f = func_80021E5C(0x2713);
+        f = preload_find(0x2713);
         func_8001DAA4(D_80067948, f->unk8, f->unkC, 0);
         func_80022390(0x2713);
         DrawSync(0);
     } else {
-        e = func_8001E218(1, 0x2713);
+        e = file_find(1, 0x2713);
         func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, (void *)D_80067948, 0, -1, 0);
         while (func_800217C4(g_gameState->unk1C->unk854)) {
         }
@@ -134,7 +134,7 @@ void func_801EF890(void) {
     s32 k;
 
     b = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
-    func_80021C60();
+    preload_init();
     g_gameState->unk1C->unk8BC = NULL;
     if (g_gameState->unk1C->unk56E == 6) {
         return;
@@ -143,24 +143,24 @@ void func_801EF890(void) {
     if (b->unk6 == 1) {
         id = 0x1000A;
     }
-    f = func_8001E218(0, id);
+    f = file_find(0, id);
     dst = b->unk1C;
     size = (f->unkC - f->unk4) << 11;
-    func_80021974(func_80021CFC(), 0, id, (s32)dst, size, size, f->unk4, size);
+    func_80021974(preload_add(), 0, id, (s32)dst, size, size, f->unk4, size);
     dst += size;
     if (b->unk6 == 1) {
         id = 0x2714;
-    } else if (D_8007AEF0.h[0] >= 0x2B52) {
+    } else if (g_evtGlobalVars.h[0] >= 0x2B52) {
         id = 0x2716;
     } else {
         id = 0x2712;
     }
-    f = func_8001E218(1, id);
+    f = file_find(1, id);
     k = -0x146F00;
     size = (f->unkC - f->unk4) << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
-    func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, f->unk4, size);
+    func_80021974(preload_add(), 0, id, (s32)dst, at, size, f->unk4, size);
     dst += size;
     if (b->unk6 != 1) {
         return;
@@ -170,19 +170,19 @@ void func_801EF890(void) {
     size = g_gameState->unk1C->unk804[0] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
-    func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
+    func_80021974(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->unk1C->unk7FC[1];
     id = g_gameState->unk1C->fieldId | 0x50000;
     size = g_gameState->unk1C->unk804[1] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
-    func_80021974(func_80021CFC(), 0, id, (s32)dst, at, size, sector, size);
+    func_80021974(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     g = g_gameState->unk1C;
     if ((s16)g->fieldId == g->unk7EA && g->unk8AC != -1) {
         sector = g->unk8AC;
         id = g->unk7E8 | 0x70000;
-        func_80021974(func_80021CFC(), 1, id, 0, 0, 0, sector, -1);
+        func_80021974(preload_add(), 1, id, 0, 0, 0, sector, -1);
     }
 }
 
@@ -1529,7 +1529,7 @@ void gameover_main(s32 arg0) {
             DrawSync(0);
             return;
         }
-        func_80019194();
+        pad_update();
         DrawSync(0);
         VSync(0);
         PutDispEnv(&cur->disp);
@@ -1570,9 +1570,9 @@ void func_801F3818(DispBuf *b) {
 }
 
 void func_801F3A20(s32 arg0) {
-    FileEntry *e = func_8001E218(1, 0xB);
+    FileEntry *e = file_find(1, 0xB);
 
-    func_80022DF0(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
+    cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, arg0);
     func_8001D8A8(arg0);
 }
 

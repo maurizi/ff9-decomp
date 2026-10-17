@@ -29,9 +29,9 @@ void func_801F08F4(void) {
         D_801F347C.unk6C[i] = 0;
     }
     func_801F2FCC();
-    while (func_80022B18()) {
+    while (cd_getState()) {
     }
-    D_801F347C.unk18EC = func_8001E218(1, 0x32);
+    D_801F347C.unk18EC = file_find(1, 0x32);
     for (i = 0; i < 4; i++) {
         id = D_801F30D4[i];
         D_801F347C.unk1948[i].unk0 = func_8002C7F0(0, id);
@@ -362,7 +362,7 @@ void func_801F1A48(void) {
     CardCache *c = &D_801F347C.unk1900;
 
     if (c->unkA != 0) {
-        if (func_80022B18() != 0) {
+        if (cd_getState() != 0) {
             return;
         }
         c->unkA = 0;

@@ -3329,7 +3329,7 @@ s32 func_800DA4F4(s32 arg0) {
     if (D_80100DC0.unkC != 0) {
         return -1;
     }
-    ofs = ((FileEntry16 *)func_8001E218(0xD, arg0))->unk0;
+    ofs = ((FileEntry16 *)file_find(0xD, arg0))->unk0;
     base = g_gameState->unk1C->unk8E4.battle->unk1534;
     D_80100DC0.unk2C.w = -1;
     D_80100DC0.unk4 = arg0;
@@ -3494,12 +3494,12 @@ void func_800DA92C(void) {
             cont = 0;
             switch (st) {
             case 0:
-                func_80022C60(d->unk0, 0x800, D_800FEC68, NULL);
+                cd_readAsync(d->unk0, 0x800, D_800FEC68, NULL);
                 d->unkC = 2;
                 d->unk0++;
                 break;
             case 1:
-                if (func_80022B18() == 0) {
+                if (cd_getState() == 0) {
                     p = D_800FEC68;
                     cont = 1;
                     d->unk1C = p + 1;
@@ -3599,12 +3599,12 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 }
                 d->unk1C = p;
-                func_80022C60(d->unk0, rd, dst, NULL);
+                cd_readAsync(d->unk0, rd, dst, NULL);
                 d->unkC = 5;
                 d->unk0 += rd >> 11;
                 break;
             case 4:
-                if (func_80022B18() != 0) {
+                if (cd_getState() != 0) {
                     break;
                 }
                 if (d->unk16 == 9 && (d->unk17 & 0xF) && D_800FEC65 == 0) {
@@ -6583,9 +6583,9 @@ s32 func_800E4134(s32 arg0) {
     s32 i;
     u32 *p = (u32 *)0x801E7700;
     if (arg0 == 0) {
-        FileEntry *e = func_8001E218(1, 0x2BF);
-        func_80022C60(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
-    } else if (func_80022B18() == 0) {
+        FileEntry *e = file_find(1, 0x2BF);
+        cd_readAsync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801E7700, 0);
+    } else if (cd_getState() == 0) {
         func_800D0940();
         r.w = 0x40;
         r.h = 0x80;
@@ -8180,7 +8180,7 @@ s32 func_800E82CC(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
 }
 
 void func_800E83EC(void) {
-    D_8007AEF0.b[0xC7] |= 0x10;
+    g_evtGlobalVars.b[0xC7] |= 0x10;
 }
 
 void func_800E8408(BtlUnit *arg0) {
@@ -9780,7 +9780,7 @@ void func_800EC334(s32 arg0) {
     s32 i;
     for (i = 0; i < 31; i++) {
         if (D_80104FA8->unk4[i] == NULL) {
-            D_80104FA8->unk4[i] = func_80027EDC(arg0);
+            D_80104FA8->unk4[i] = item_findSlot(arg0);
             break;
         }
     }
@@ -9791,7 +9791,7 @@ void func_800EC3C0(s32 arg0) {
     s32 i;
     for (i = 0; i < 0x58; i++) {
         if (D_80104FA8->unk80[i] == NULL) {
-            D_80104FA8->unk80[i] = func_80027EDC(arg0);
+            D_80104FA8->unk80[i] = item_findSlot(arg0);
             break;
         }
     }
@@ -12469,7 +12469,7 @@ void func_800F4700(void) {
 }
 
 void func_800F4778(void) {
-    func_80019194();
+    pad_update();
     func_8002C308(D_80104E68.unk15);
     if ((g_padRepeat & 8) && D_80104E68.unkB == 0) {
         D_80104E68.unkB = 1;
@@ -12487,7 +12487,7 @@ u8 func_800F47D8(void) {
         if (c == 0) {
             continue;
         }
-        if (((s32)(g_gameState->unk24 >> 20) >> func_80033A1C(c)) & 1) {
+        if (((s32)(g_gameState->unk24 >> 20) >> chr_getDefaultSet(c)) & 1) {
             return 1;
         }
     }

@@ -10,7 +10,7 @@
 void func_800552B8(s32);
 s32 func_8002B9B8(u8 *); /* text width */
 void func_8001D9CC(s32, s32, s32, s32, s32);
-s32 func_80022AC4(s32);
+s32 cd_findFile(s32);
 void func_80022ED4(s32);
 s32 func_80055290(void *);
 void func_800553EC(s32, s32, s32, s32);

@@ -817,7 +817,7 @@ u8 func_801F126C(void) {
         if (((D_80073940[i].unk0 >> 12) & 0xF) == 7) {
             return 1;
         }
-        if (D_800739A8[i] == 6) {
+        if (g_padPortState[i] == 6) {
             return 1;
         }
     }

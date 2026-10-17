@@ -10,7 +10,7 @@
 /* ---- overlay ---- */
 
 typedef struct {
-    u8 unk0;  /* result of func_8002306C */
+    u8 unk0;  /* result of cd_checkShellOpen */
     u8 unk1;  /* state, index into the handler tables */
     u8 unk2;
     u8 unk3;  /* last func_801F6368 result */

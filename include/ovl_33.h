@@ -134,7 +134,7 @@ extern s32 D_8007043C; /* main exe */
 extern u8 D_801EE644[];
 extern u16 D_801F8968[]; /* character masks */
 extern u8 D_801F8980[]; /* slot masks */
-s32 func_80033A1C(Character *); /* main exe (returns u8) */
+s32 chr_getDefaultSet(Character *); /* main exe (returns u8) */
 extern u8 D_801FC700[0x40];
 extern u8 D_801F8948[5]; /* slot masks */
 extern u16 D_801F8950[]; /* character masks */

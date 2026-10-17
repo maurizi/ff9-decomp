@@ -12,7 +12,7 @@
  *                the previous one, so the chain is drawn newest first once linked into the OT
  *   $t8  r_glyph glyph sink used by the number/format printers (selected by func_8005179C)
  *   $s6  r_ip    script instruction pointer
- *   $s7  r_sp    expression stack pointer (grows up; D_8007B6F0 is its published copy)
+ *   $s7  r_sp    expression stack pointer (grows up; g_evtExprSp is its published copy)
  *   $s5  r_args  "argument is an expression" bits for the scheduler's own opcodes
  *
  * Pen sessions: func_800515B8 / func_80051638 load r_pen, r_code, r_pkt and r_link from globals and
@@ -38,8 +38,8 @@ extern u32 D_8007BCA0;           /* pen colour, 0xBBGGRR */
 extern u8 *D_8007BCAC;           /* packet pointer of the func_80051638 sessions */
 extern DVECTOR D_8007BC78[];     /* pen stack storage */
 extern void (*D_8007BD00)(s32);  /* glyph sink chosen by func_8005179C */
-extern s32 D_8007BCB8[];         /* expression stack storage */
-extern u8 *D_8007BCF8;           /* current object's local variables */
+extern s32 g_evtExprStack[];         /* expression stack storage */
+extern u8 *g_evtObjVars;           /* current object's local variables */
 extern u8 D_8006E700[];          /* "divide by zero"-style message printed by the evaluator */
 extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 degrees) */
 
@@ -481,7 +481,7 @@ void func_800516A0(s32 v, s32 width, s32 base, s32 flags) {
     }
 }
 
-/* Choose the glyph sink: none without a packet buffer, nothing if `quiet`, else per gMode (D_8007B708):
+/* Choose the glyph sink: none without a packet buffer, nothing if `quiet`, else per gMode (g_evtMode):
  * battle (2) and world map (3) have their own, everything else uses the field's. */
 void func_8005179C(s32 quiet) {
     void (*f)(s32);
@@ -490,9 +490,9 @@ void func_8005179C(s32 quiet) {
         f = func_80051274;
     } else if (quiet != 0) {
         f = func_80053384;
-    } else if (D_8007B708 == 2) {
+    } else if (g_evtMode == 2) {
         f = glyph_sink_battle;
-    } else if (D_8007B708 == 3) {
+    } else if (g_evtMode == 3) {
         f = glyph_sink_world;
     } else {
         f = func_80051084;
@@ -501,10 +501,10 @@ void func_8005179C(s32 quiet) {
     r_glyph = f;
 }
 
-void func_80051F54(void);
-s32 func_80051D4C(void);
+void evt_runExpr(void);
+s32 evt_popValue(void);
 
-/* func_80051F54 with the pen registers (t4-t9) preserved. */
+/* evt_runExpr with the pen registers (t4-t9) preserved. */
 void func_80051830(void) {
     u8 *pkt = r_pkt;
     u32 pen = r_pen;
@@ -512,7 +512,7 @@ void func_80051830(void) {
     u32 link = r_link;
     void (*glyph)(s32) = r_glyph;
 
-    func_80051F54();
+    evt_runExpr();
     r_pkt = pkt;
     r_pen = pen;
     r_code = code;
@@ -535,7 +535,7 @@ void func_80051878(s32 quiet) {
             }
         } else {
             func_80051830();
-            func_800516A0(func_80051D4C(), 0, 10, 0);
+            func_800516A0(evt_popValue(), 0, 10, 0);
         }
     }
     if (quiet == 0) {
@@ -580,10 +580,10 @@ void func_80051920(s32 quiet) {
             if (c == 'd' || c == 'x' || c == 'b') {
                 base = c == 'd' ? 10 : c == 'x' ? 16 : 2;
                 func_80051830();
-                func_800516A0(func_80051D4C(), fl >> 8, base, fl & 1);
+                func_800516A0(evt_popValue(), fl >> 8, base, fl & 1);
             } else if (c == 'c') {
                 func_80051830();
-                r_glyph(func_80051D4C());
+                r_glyph(evt_popValue());
             } else {
                 r_glyph(c);
             }
@@ -662,8 +662,8 @@ void func_80051B58(const char *fmt, ...) {
  *
  * A stack entry is a 32-bit word with a 6-bit tag in bits 26-31. Bits 0-2 of the tag (bits 26-28) select
  * the space and bits 3-5 (bits 29-31) the width:
- *   space 0: global variables (D_8007AEF0)       space 1: the event context's map variables
- *   space 2/3: the current object's locals (D_8007BCF8)
+ *   space 0: global variables (g_evtGlobalVars)       space 1: the event context's map variables
+ *   space 2/3: the current object's locals (g_evtObjVars)
  *   space 4: (uid << 8) | index on another object (func_8004B4C4 + func_8004B68C), read-only
  *   space 5: system variable `index` (func_8004B404 / func_8004B4A8)
  *   space 6: property `index` of D_8007B700 (func_8004B68C / func_8004B7A4)
@@ -672,7 +672,7 @@ void func_80051B58(const char *fmt, ...) {
  */
 
 /* Read `off` of `base` with the tag's width. */
-s32 func_80051CA8(u8 *base, s32 off, s32 tag) {
+s32 evt_readVar(u8 *base, s32 off, s32 tag) {
     u8 *p;
 
     if (tag & 0x20) {
@@ -696,7 +696,7 @@ s32 func_80051CA8(u8 *base, s32 off, s32 tag) {
 }
 
 /* Pop an entry and return its value. */
-s32 func_80051D4C(void) {
+s32 evt_popValue(void) {
     u32 t = (u32)*--r_sp;
     u32 tag = t >> 26;
 
@@ -713,16 +713,16 @@ s32 func_80051D4C(void) {
         return func_8004B68C(func_8004B4C4((t >> 8) & 0xFF), t & 0xFF);
     }
     if (tag & 2) {
-        return func_80051CA8(D_8007BCF8, t & 0xFFFF, tag);
+        return evt_readVar(g_evtObjVars, t & 0xFFFF, tag);
     }
     if (!(tag & 1)) {
-        return func_80051CA8((u8 *)&D_8007AEF0, t & 0xFFFF, tag);
+        return evt_readVar((u8 *)&g_evtGlobalVars, t & 0xFFFF, tag);
     }
-    return func_80051CA8((u8 *)D_8007AECC, t & 0xFFFF, tag);
+    return evt_readVar((u8 *)g_evtState, t & 0xFFFF, tag);
 }
 
 /* Write `v` to `off` of `base` with the tag's width. */
-void func_80051DF4(u8 *base, s32 off, s32 tag, s32 v) {
+void evt_writeVar(u8 *base, s32 off, s32 tag, s32 v) {
     u8 *p;
     s32 bit;
 
@@ -751,7 +751,7 @@ void func_80051DF4(u8 *base, s32 off, s32 tag, s32 v) {
 }
 
 /* Pop a variable reference and store `v` in it. Space 4 and immediates are ignored. */
-void func_80051E8C(s32 v) {
+void evt_popAssign(s32 v) {
     u32 t = (u32)*--r_sp;
     u32 tag = t >> 26;
 
@@ -764,11 +764,11 @@ void func_80051E8C(s32 v) {
         return;
     }
     if (tag & 2) {
-        func_80051DF4(D_8007BCF8, t & 0xFFFF, tag, v);
+        evt_writeVar(g_evtObjVars, t & 0xFFFF, tag, v);
     } else if (!(tag & 1)) {
-        func_80051DF4((u8 *)&D_8007AEF0, t & 0xFFFF, tag, v);
+        evt_writeVar((u8 *)&g_evtGlobalVars, t & 0xFFFF, tag, v);
     } else {
-        func_80051DF4((u8 *)D_8007AECC, t & 0xFFFF, tag, v);
+        evt_writeVar((u8 *)g_evtState, t & 0xFFFF, tag, v);
     }
 }
 
@@ -793,13 +793,13 @@ static void push(s32 v) {
     *r_sp++ = v;
 }
 
-/* Call a C helper with the stack published in D_8007B6F0 (as the original does). */
-#define SYNCED(call) (D_8007B6F0 = r_sp, v = (call), r_sp = D_8007B6F0)
+/* Call a C helper with the stack published in g_evtExprSp (as the original does). */
+#define SYNCED(call) (g_evtExprSp = r_sp, v = (call), r_sp = g_evtExprSp)
 
-/* Evaluate the postfix expression at r_ip. On return D_8007B6F0 holds the stack pointer and the result is
+/* Evaluate the postfix expression at r_ip. On return g_evtExprSp holds the stack pointer and the result is
  * on top. Division by zero prints D_8006E700 and pushes printf's return value instead. */
-void func_80051F54(void) {
-    s32 *base = D_8007BCB8;
+void evt_runExpr(void) {
+    s32 *base = g_evtExprStack;
     s32 v = 0;
     s32 t;
     s32 op;
@@ -817,48 +817,48 @@ void func_80051F54(void) {
         }
         switch (op) {
         case 0x04: /* x++ */
-            t = func_80051D4C();
+            t = evt_popValue();
             r_sp++;
-            func_80051E8C(t + 1);
+            evt_popAssign(t + 1);
             v = t;
             break;
         case 0x05: /* x-- */
-            t = func_80051D4C();
+            t = evt_popValue();
             r_sp++;
-            func_80051E8C(t - 1);
+            evt_popAssign(t - 1);
             v = t;
             break;
         case 0x06: /* ++x */
-            t = func_80051D4C() + 1;
+            t = evt_popValue() + 1;
             r_sp++;
-            func_80051E8C(t);
+            evt_popAssign(t);
             v = t;
             break;
         case 0x07: /* --x */
-            t = func_80051D4C() - 1;
+            t = evt_popValue() - 1;
             r_sp++;
-            func_80051E8C(t);
+            evt_popAssign(t);
             v = t;
             break;
         case 0x0C: /* push the previous result again */
             break;
         case 0x0D:
-            v = -func_80051D4C();
+            v = -evt_popValue();
             break;
         case 0x0E: /* "not" is !(0 < v), so negative values count as false too */
-            v = !(0 < func_80051D4C());
+            v = !(0 < evt_popValue());
             break;
         case 0x10:
-            v = ~func_80051D4C();
+            v = ~evt_popValue();
             break;
         case 0x11:
-            t = func_80051D4C();
-            v = func_80051D4C() * t;
+            t = evt_popValue();
+            v = evt_popValue() * t;
             break;
         case 0x12:
         case 0x13:
-            t = func_80051D4C();
-            v = func_80051D4C();
+            t = evt_popValue();
+            v = evt_popValue();
             if (t == 0) {
                 printf((char *)D_8006E700);
                 v = 0; /* the original pushes BIOS printf's return value here */
@@ -867,84 +867,84 @@ void func_80051F54(void) {
             v = op == 0x12 ? v / t : v % t;
             break;
         case 0x14:
-            t = func_80051D4C();
-            v = func_80051D4C() + t;
+            t = evt_popValue();
+            v = evt_popValue() + t;
             break;
         case 0x15:
-            t = func_80051D4C();
-            v = func_80051D4C() - t;
+            t = evt_popValue();
+            v = evt_popValue() - t;
             break;
         case 0x16:
-            t = func_80051D4C();
-            v = func_80051D4C() << (t & 31);
+            t = evt_popValue();
+            v = evt_popValue() << (t & 31);
             break;
         case 0x17:
-            t = func_80051D4C();
-            v = func_80051D4C() >> (t & 31);
+            t = evt_popValue();
+            v = evt_popValue() >> (t & 31);
             break;
         case 0x18:
-            t = func_80051D4C();
-            v = func_80051D4C() < t;
+            t = evt_popValue();
+            v = evt_popValue() < t;
             break;
         case 0x19:
-            t = func_80051D4C();
-            v = t < func_80051D4C();
+            t = evt_popValue();
+            v = t < evt_popValue();
             break;
         case 0x1A:
-            t = func_80051D4C();
-            v = !(t < func_80051D4C());
+            t = evt_popValue();
+            v = !(t < evt_popValue());
             break;
         case 0x1B:
-            t = func_80051D4C();
-            v = !(func_80051D4C() < t);
+            t = evt_popValue();
+            v = !(evt_popValue() < t);
             break;
         case 0x20:
-            t = func_80051D4C();
-            v = func_80051D4C() == t;
+            t = evt_popValue();
+            v = evt_popValue() == t;
             break;
         case 0x21:
-            t = func_80051D4C();
-            v = func_80051D4C() != t;
+            t = evt_popValue();
+            v = evt_popValue() != t;
             break;
         case 0x24:
-            t = func_80051D4C();
-            v = func_80051D4C() & t;
+            t = evt_popValue();
+            v = evt_popValue() & t;
             break;
         case 0x25:
-            t = func_80051D4C();
-            v = func_80051D4C() ^ t;
+            t = evt_popValue();
+            v = evt_popValue() ^ t;
             break;
         case 0x26:
-            t = func_80051D4C();
-            v = func_80051D4C() | t;
+            t = evt_popValue();
+            v = evt_popValue() | t;
             break;
         case 0x27: /* && (the other operand is dropped unread when this one is 0) */
-            v = func_80051D4C();
+            v = evt_popValue();
             if (v == 0) {
                 r_sp--;
                 break;
             }
-            v = func_80051D4C() != 0;
+            v = evt_popValue() != 0;
             break;
         case 0x28: /* || */
-            v = func_80051D4C() != 0;
+            v = evt_popValue() != 0;
             if (v != 0) {
                 r_sp--;
                 break;
             }
-            v = func_80051D4C() != 0;
+            v = evt_popValue() != 0;
             break;
         case 0x29: /* property reference (the previous result is left as it was) */
             push(*r_ip++ | 0x18000000);
             continue;
         case 0x2C: /* = */
-            v = func_80051D4C();
-            func_80051E8C(v);
+            v = evt_popValue();
+            evt_popAssign(v);
             break;
         case 0x2F: case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35:
         case 0x3D: case 0x3E: case 0x3F: /* compound assignment: the reference stays below the value */
-            t = func_80051D4C();
-            v = func_80051D4C();
+            t = evt_popValue();
+            v = evt_popValue();
             if ((op == 0x30 || op == 0x31) && t == 0) {
                 r_sp++;
                 printf((char *)D_8006E700);
@@ -964,36 +964,36 @@ void func_80051F54(void) {
             default:   v = v | t; break;
             }
             r_sp++;
-            func_80051E8C(v);
+            evt_popAssign(v);
             break;
         case 0x4F:
             t = func_8004E8EC();
-            v = (func_80051D4C() & t) != 0;
+            v = (evt_popValue() & t) != 0;
             break;
         case 0x58:
             t = func_8004E904();
-            v = (func_80051D4C() & t) != 0;
+            v = (evt_popValue() & t) != 0;
             break;
         case 0x59:
             t = func_8004E8D4();
-            v = (func_80051D4C() & t) != 0;
+            v = (evt_popValue() & t) != 0;
             break;
         case 0x50:
-            v = math_sin(func_80051D4C());
+            v = math_sin(evt_popValue());
             break;
         case 0x51:
-            v = math_cos(func_80051D4C());
+            v = math_cos(evt_popValue());
             break;
         case 0x62:
-            v = math_sin(func_80051D4C() << 4);
+            v = math_sin(evt_popValue() << 4);
             break;
         case 0x63:
-            v = math_cos(func_80051D4C() << 4);
+            v = math_cos(evt_popValue() << 4);
             break;
         case 0x5D: /* angle from the current object to (x, z) */
         case 0x5E: /* distance from the current object to (x, z) */
-            t = func_80051D4C();
-            v = func_80051D4C();
+            t = evt_popValue();
+            v = evt_popValue();
             o = D_8007B704;
             if (op == 0x5D) {
                 v = (s32)((u32)func_80052F24(v - o->pos.vx, t - o->pos.vz) << 20) >> 24;
@@ -1004,7 +1004,7 @@ void func_80051F54(void) {
         case 0x60: /* angle / distance from the current object to the object at address v */
             /* v comes from opcode 0x5F (an object pointer pushed as a 26-bit immediate); see src_equiv.h. */
         case 0x61:
-            q = (Unk8004AB64 *)SCRIPT_PTR_RESTORE(func_80051D4C());
+            q = (Unk8004AB64 *)SCRIPT_PTR_RESTORE(evt_popValue());
             o = D_8007B704;
             if (op == 0x60) {
                 v = (s32)((u32)func_80052F24(q->pos.vx - o->pos.vx, q->pos.vz - o->pos.vz) << 20) >> 24;
@@ -1016,18 +1016,18 @@ void func_80051F54(void) {
             v = (s32)func_8004B4C4(*r_ip++);
             break;
         case 0x66:
-            t = func_80051D4C();
-            v = func_80052F24(func_80051D4C(), t) >> 4;
+            t = evt_popValue();
+            v = func_80052F24(evt_popValue(), t) >> 4;
             break;
         case 0x6A:
-            t = func_80051D4C();
+            t = evt_popValue();
             v = func_800216D8(D_8007B704->unk34, t);
             break;
         case 0x6B:
-            v = func_8004B85C(func_80051D4C());
+            v = func_8004B85C(evt_popValue());
             break;
         case 0x6D:
-            v = func_800378C4(func_80051D4C());
+            v = func_800378C4(evt_popValue());
             break;
         case 0x1C: case 0x1D: case 0x1E: case 0x1F: case 0x22: case 0x23:
         case 0x54: case 0x55: case 0x56: case 0x57:
@@ -1066,7 +1066,7 @@ void func_80051F54(void) {
             r_ip += 4;
             continue;
         case 0x7F: /* end */
-            D_8007B6F0 = r_sp;
+            g_evtExprSp = r_sp;
             return;
         default:
             SYNCED(func_80037ACC(op));
@@ -1087,8 +1087,8 @@ s32 func_80052834(void) {
     if (!e) {
         return *r_ip++;
     }
-    func_80051F54();
-    return func_80051D4C();
+    evt_runExpr();
+    return evt_popValue();
 }
 
 #define U16AT(p) ((p)[0] | ((p)[1] << 8))
@@ -1138,10 +1138,10 @@ s32 func_80052870(Unk16D8 *n) {
             }
             goto next;
         }
-        D_8007B70C = o;
-        D_8007BCF8 = (u8 *)o + o->unk8 * 4;
+        g_evtCurObj = o;
+        g_evtObjVars = (u8 *)o + o->unk8 * 4;
         D_8007B704 = o->unk5 == 1 ? func_8004B040(o->unk7 - 0x40) : o;
-        if (D_8007B708 == 2) {
+        if (g_evtMode == 2) {
             func_8004BB30(o);
         }
         while (st == 0) {
@@ -1156,14 +1156,14 @@ s32 func_80052870(Unk16D8 *n) {
                 r_ip += (s16)U16AT(r_ip - 2);
                 break;
             case 0x02:
-                v = func_80051D4C();
+                v = evt_popValue();
                 r_ip += 2;
                 if (v == 0) {
                     r_ip += (s16)U16AT(r_ip - 2);
                 }
                 break;
             case 0x03:
-                v = func_80051D4C();
+                v = evt_popValue();
                 r_ip += 2;
                 if (v != 0) {
                     r_ip += (s16)U16AT(r_ip - 2);
@@ -1173,11 +1173,11 @@ s32 func_80052870(Unk16D8 *n) {
                 func_80038278(o);
                 goto status; /* the instruction pointer is not stored back */
             case 0x05:
-                func_80051F54();
+                evt_runExpr();
                 break;
             case 0x06: /* count, default, {value, offset} x count; offsets are from r_ip + 3 */
                 k = r_ip[0];
-                v = (u16)func_80051D4C();
+                v = (u16)evt_popValue();
                 for (e = r_ip + 3; k > 0; k--, e += 4) {
                     if (U16AT(e) == v) {
                         r_ip += U16AT(e + 2) + 3;
@@ -1195,7 +1195,7 @@ s32 func_80052870(Unk16D8 *n) {
                 } else {
                     k = r_ip[0];
                 }
-                v = func_80051D4C() - r_ip[1] - ((s8)r_ip[2] << 8);
+                v = evt_popValue() - r_ip[1] - ((s8)r_ip[2] << 8);
                 if (v >= 0 && v - k < 0) {
                     r_ip += U16AT(r_ip + 5 + v * 2);
                 } else {
@@ -1280,14 +1280,14 @@ out:
 /* ============================================================ C entry points into the evaluator */
 
 /* Base of variable space 0 (globals), 1 (event context) or 2 (current object). */
-u8 *func_80052CD0(s32 space) {
+u8 *evt_getVarBank(s32 space) {
     if (space == 0) {
-        return (u8 *)&D_8007AEF0;
+        return (u8 *)&g_evtGlobalVars;
     }
     if (space == 1) {
-        return (u8 *)D_8007AECC;
+        return (u8 *)g_evtState;
     }
-    return D_8007BCF8;
+    return g_evtObjVars;
 }
 
 /* Skip a variable reference at *pp (the original also returns it in v0; the C prototype is void). */
@@ -1301,13 +1301,13 @@ void func_80052D0C(u8 **pp) {
 }
 
 /* Pop a value from the published stack (the evaluator's result). */
-s32 func_80052D40(void) {
+s32 evt_popResult(void) {
     s32 *save = r_sp;
     s32 v;
 
-    r_sp = D_8007B6F0;
-    v = func_80051D4C();
-    D_8007B6F0 = r_sp;
+    r_sp = g_evtExprSp;
+    v = evt_popValue();
+    g_evtExprSp = r_sp;
     r_sp = save;
     return v;
 }
@@ -1316,20 +1316,20 @@ s32 func_80052D40(void) {
 void func_80052D70(s32 v) {
     s32 *save = r_sp;
 
-    r_sp = D_8007B6F0;
-    func_80051E8C(v);
-    D_8007B6F0 = r_sp;
+    r_sp = g_evtExprSp;
+    evt_popAssign(v);
+    g_evtExprSp = r_sp;
     r_sp = save;
 }
 
-/* Evaluate the expression at the executing object's instruction pointer (D_8007B70C) and advance it. */
-void func_80052DA0(void) {
+/* Evaluate the expression at the executing object's instruction pointer (g_evtCurObj) and advance it. */
+void evt_evalExpr(void) {
     u8 *save_ip = r_ip;
     s32 *save_sp = r_sp;
-    Unk8004AB64 *x = D_8007B70C;
+    Unk8004AB64 *x = g_evtCurObj;
 
     r_ip = x->unk0;
-    func_80051F54();
+    evt_runExpr();
     x->unk0 = r_ip;
     r_ip = save_ip;
     r_sp = save_sp;

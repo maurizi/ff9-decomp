@@ -6,7 +6,7 @@ extern s32 D_8007B96C;
 s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
     u8 f;
 
-    if ((D_8007B708 == 1 && (pad & 0xA0000)) || (D_8007B708 != 1 && (pad & 0x20000))) {
+    if ((g_evtMode == 1 && (pad & 0xA0000)) || (g_evtMode != 1 && (pad & 0x20000))) {
         f = w->unk28;
         if (!(f & 0x40)) {
             if (w->unk26 == 0xFF) {

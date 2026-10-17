@@ -154,7 +154,7 @@ typedef struct {
     s16 unk2; /* tpage */
 } BtlUnit9C18;
 
-/* FileEntry viewed with its first word split (func_8001E218 type 0xD) */
+/* FileEntry viewed with its first word split (file_find type 0xD) */
 typedef struct {
     u16 unk0;
     u16 unk2;
@@ -2118,7 +2118,7 @@ void func_8002E380(Window *, s32);
 void func_8002C584(s32);
 void func_8002DD00(Window *);
 Window *func_8002E43C(s32);
-ItemSlot *func_80027EDC(s32);
+ItemSlot *item_findSlot(s32);
 typedef struct {
     u8 unk0;
     u8 pad1;
@@ -2628,7 +2628,7 @@ typedef struct {
     s16 unk6;
 } Unk800ABBC4Rect;
 
-void func_80022CC4(s32, void *, s32, s32);
+void cd_readChunks(s32, void *, s32, s32);
 typedef struct {
     u8 pad0[8];
     s32 unk8; /* file address */
@@ -3188,7 +3188,7 @@ void func_800B0468(GameData *, Battle *);
 void func_800AF800(GameData *, Battle *);
 void func_800E9D30(void);
 void func_800AF1D0(void);
-s32 func_8002246C(void);
+s32 preload_update(void);
 void func_800AEE68(void);
 void func_800E9EC4(void);
 void func_800EA290(void);
@@ -3406,7 +3406,7 @@ void func_800EBA10(Window *);
 void func_800562E0(s32 *, s32);
 void func_80029058(s32, s32, s32, u8 *, s32);
 void func_8002DD54(void);
-s32 func_80033A1C(Character *);
+s32 chr_getDefaultSet(Character *);
 
 /* battle menu: unit under the target cursor (inlined by its callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {

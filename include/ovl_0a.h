@@ -1432,7 +1432,7 @@ s32 mbg_getStartCamera(void *, u16 *);
 s32 mbg_update(s32);
 s32 mbg_getLastFrame(void);
 /* main exe: candidates for ff9.h */
-s32 func_80022AC4(char *);
+s32 cd_findFile(char *);
 u8 func_80022ED4(s32);
 void func_80056248(s32);
 
@@ -1446,7 +1446,7 @@ extern u8 *D_8007BD30;
 void func_800559FC(s32, s32, s32);
 void func_800557A8(void *, s32, s32, s32);
 void func_800559C8(s32, s32);
-void func_800219D8(Unk80021938 *, s16, s16, s16, s16);
+void func_800219D8(PreloadEntry *, s16, s16, s16, s16);
 u8 func_80053A10(s32, s32);
 
 /* func_800C2AF0 (walkmesh slide along the triangle edges) */

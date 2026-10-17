@@ -869,7 +869,7 @@ extern u8 D_800D30F8[]; /* map cells, D_800D3304 per row */
 #define WM_CELL(x, y) D_800D30F8[(y) * D_800D3304 + (x)]
 extern u16 D_800CD060[11]; /* story progress thresholds (func_800BB508) */
 extern u8 D_800CD010[][11];
-extern u8 D_8007AF55; /* = D_8007AEF0.b[0x65], general global flags */
+extern u8 D_8007AF55; /* = g_evtGlobalVars.b[0x65], general global flags */
 extern u32 D_800CCB18[2]; /* cell type masks */
 extern u32 D_800CCB20[2];
 u8 func_800B3340(u32 *, u32);
@@ -1308,7 +1308,7 @@ s32 func_800CAE0C(s32, WmSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32
 typedef struct {
     s32 unk0; /* size */
     void *unk4; /* destination */
-} WmLoadReq; /* CD read request (func_800BCBDC, func_80022CC4) */
+} WmLoadReq; /* CD read request (func_800BCBDC, cd_readChunks) */
 
 extern WmLoadReq D_800D3410[];
 extern WmLoadReq D_800D3370[];
@@ -1361,7 +1361,7 @@ void func_800AAD48(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
     }
 
 /* main exe: candidates for ff9.h */
-void func_80022CC4(s32, void *, s32, s32);
+void cd_readChunks(s32, void *, s32, s32);
 s32 func_8004B1EC(void);
 s32 func_8004B1FC(void);
 void func_8002FA10(void);

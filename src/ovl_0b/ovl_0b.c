@@ -32,7 +32,7 @@ void func_800A8600(s32 arg0) {
                 }
                 func_80023A4C();
                 func_80032098();
-                func_8002246C();
+                preload_update();
             }
         } else {
             g_gameState->mode = 8;
@@ -120,7 +120,7 @@ void func_800A8BF4(void) {
                 g_gameState->unk1C->unk8E4.battle->unk0 |= 0x20;
             }
         } else {
-            b = func_80022B18();
+            b = cd_getState();
             if (b == 0) {
                 func_800EA338(1);
                 g_gameState->unk1C->unk8E4.battle->unk0 &= ~0x20;
@@ -142,7 +142,7 @@ void func_800A8CD4(void) {
     g->unk838 = func_800AB810;
     g->unk83C = (void (*)(s32, s32, s32, s32, s32))func_800AD90C;
     g_gameState->unk1C->unk8BC = func_800AF1C8;
-    func_80021C60();
+    preload_init();
     g->unk39 = 0;
     g->unk38 = 0;
     g->unk84C = 0;
@@ -235,7 +235,7 @@ s32 func_800A9090(void) {
 s32 func_800A90B0(void) {
     s32 p = D_80067948;
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    FileEntry *f = func_8001E218(1, 0x271B);
+    FileEntry *f = file_find(1, 0x271B);
     s32 s = f->unk4;
     void *ctx = g_gameState->unk1C->unk854;
     func_8002177C(ctx, s, (f->unkC - s) << 11, (void *)p, 0, -1, NULL);
@@ -729,7 +729,7 @@ s32 func_800AA504(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
 loop:
     switch (st->unk0) {
     case 1:
-        if (func_80022B18() != 0) {
+        if (cd_getState() != 0) {
             break;
         }
         st->unk0 = arg2->unk2;
@@ -787,7 +787,7 @@ loop:
             req->unk4 = (s32)b->unk11C0->unk48;
             req->unk8 = (bf->unk8 - bf->unkC) << 11;
             req->unkC = arg2->unkC;
-            func_80022CC4(g_gameState->unk20 + best, req, 2, 0);
+            cd_readChunks(g_gameState->unk20 + best, req, 2, 0);
             arg2->unk2 = 6;
             st->unk0 = 1;
         } else {
@@ -862,7 +862,7 @@ s32 func_800AA958(s32 arg0, Unk800AA958 *arg1) {
 loop:
     switch (st->unk0) {
         case 1:
-            if (func_80022B18() != 0) {
+            if (cd_getState() != 0) {
                 goto end;
             }
             st->unk0 = arg1->unk2;
@@ -894,7 +894,7 @@ loop:
                 req->unk4 = arg1->unk24;
                 req->unk8 = (sz << 11) - 0x1000;
                 req->unkC = b->unk153C[i];
-                func_80022CC4(g_gameState->unk20 + n, req, 2, 0);
+                cd_readChunks(g_gameState->unk20 + n, req, 2, 0);
                 arg1->unk2 = 7;
                 st->unk0 = 1;
             } else {
@@ -946,7 +946,7 @@ s32 func_800AABC4(s32 arg0, Unk800AA958 *arg1) {
 loop:
     switch (st->unk0) {
     case 2:
-        if (func_80022B18() != 0) {
+        if (cd_getState() != 0) {
             goto end;
         }
         st->unk0 = arg1->unk2;
@@ -973,7 +973,7 @@ loop:
         n = func_800AAEF0(0xA, (u16 *)h, (u16 *)q, (u16 **)&p, &sz);
         if (n != -1) {
             i = -1;
-            f = (FileEntry16 *)func_8001E218(0xA, *p);
+            f = (FileEntry16 *)file_find(0xA, *p);
             p[0] = i;
             p[4] = i;
             arg1->unkA = p - h;
@@ -1000,7 +1000,7 @@ loop:
             req->unk0 = f->unk2 << 11;
             req->unk4 = arg1->unk24;
             req->unk8 = (sz - f->unk2) << 11;
-            func_80022CC4(g_gameState->unk20 + n, req, 2, 0);
+            cd_readChunks(g_gameState->unk20 + n, req, 2, 0);
             arg1->unk2 = 7;
             st->unk0 = 2;
         } else {
@@ -1037,7 +1037,7 @@ u32 func_800AAEF0(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
         start = -1;
         if (id != 0xFFFF) {
             n = 0;
-            f = func_8001E218(arg0, id);
+            f = file_find(arg0, id);
             if (f != NULL) {
                 start = f->unk4;
                 n = f->unkC - start;
@@ -1413,19 +1413,19 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
         *state = 3;
         break;
     case 2:
-        if (func_80022B18() == 0) {
+        if (cd_getState() == 0) {
             *state = st->unk2;
         }
         break;
     case 3:
-        f = (FileEntry16 *)func_8001E218(0xA, func_800ABA10(arg0, arg1 & ~0x10));
+        f = (FileEntry16 *)file_find(0xA, func_800ABA10(arg0, arg1 & ~0x10));
         src = g_gameState->unk20 + f->unk4;
         sz = f->unkC - f->unk4;
         req->unk0 = f->unk2 << 11;
         req->unk4 = st->unk24;
         req->unk8 = (sz - f->unk2) << 11;
         req->unkC = (s32)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
-        func_80022CC4((s32)src, req, 2, 0);
+        cd_readChunks((s32)src, req, 2, 0);
         st->unk2 = 5;
         *state = 2;
         break;
@@ -2023,7 +2023,7 @@ s32 func_800AE4FC(s32 arg0) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)func_8001E218(8, D_8006E0E8[c->equip[0]].unk2))->unk2 | 0x90000;
+    return ((FileEntry16 *)file_find(8, D_8006E0E8[c->equip[0]].unk2))->unk2 | 0x90000;
 }
 
 s32 func_800AE570(s32 arg0, s32 *arg1) {
@@ -2036,7 +2036,7 @@ s32 func_800AE570(s32 arg0, s32 *arg1) {
         }
         return e->unk4;
     } else {
-        f = func_8001E218(11, arg0);
+        f = file_find(11, arg0);
         if (arg1 != 0) {
             *arg1 = (f->unkC - f->unk4) << 11;
         }
@@ -2189,15 +2189,15 @@ void func_800AF1D0(void) {
     s32 *dst;
 
     b = g_gameState->unk1C->unk8E4.battle->unk11C0;
-    func_80021C60();
+    preload_init();
     g_gameState->unk1C->unk8BC = NULL;
-    f = func_8001E218(0, 0x10065);
+    f = file_find(0, 0x10065);
     size = (f->unkC - f->unk4) << 11;
-    func_80021974(func_80021CFC(), 0, 0x10065, 0x801EDF00, size, size, f->unk4, size);
-    f = func_8001E218(1, 0x2713);
+    func_80021974(preload_add(), 0, 0x10065, 0x801EDF00, size, size, f->unk4, size);
+    f = file_find(1, 0x2713);
     dst = b->unkC;
     size = (f->unkC - f->unk4) << 11;
-    func_80021974(func_80021CFC(), 0, 0x2713, (s32)dst, size, size, f->unk4, size);
+    func_80021974(preload_add(), 0, 0x2713, (s32)dst, size, size, f->unk4, size);
 }
 
 s32 func_800AF2E0(void) {
@@ -5181,10 +5181,10 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         break;
     case 0x68:
         c.unk1B |= 1;
-        if (D_8007AEF0.b[0xC0] >= 14) {
+        if (g_evtGlobalVars.b[0xC0] >= 14) {
             c.unk1E = 9999;
         } else {
-            c.unk1E = 1 << (D_8007AEF0.b[0xC0] - 1);
+            c.unk1E = 1 << (g_evtGlobalVars.b[0xC0] - 1);
         }
         break;
     case 0x69:
@@ -6413,8 +6413,8 @@ void func_800BB4A0(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->unk68 |= 0x10000000;
     u->unk68 = (u->unk68 & ~0xE0) | ((s & 7) << 5);
     u->unk68 &= ~0x800000;
-    if (D_8007AEF0.b[0x10] == 0 || (c->unkA & 0x10) ||
-        (((u->unk68 >> 1) & 0xF) == 2 && D_8007AEF0.b[0x11] != 0)) {
+    if (g_evtGlobalVars.b[0x10] == 0 || (c->unkA & 0x10) ||
+        (((u->unk68 >> 1) & 0xF) == 2 && g_evtGlobalVars.b[0x11] != 0)) {
         u->unk78 = 0;
         u->unk68 &= ~0x40000000;
     } else {

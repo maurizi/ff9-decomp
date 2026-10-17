@@ -68,7 +68,7 @@ s32 func_800A7378(s32 arg0, s32 arg1) {
     func_800A766C(arg0, arg1);
     do {
         func_800A7838();
-        func_80019194();
+        pad_update();
         switch (D_800AE4C0) {
         case 0:
             if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
@@ -132,7 +132,7 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
 
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    e = func_8001E218(0, 0x64);
+    e = file_find(0, 0x64);
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
@@ -140,9 +140,9 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
-        h = func_80022AC4(D_8019DC5C[arg0].unk4[arg1].unk0);
+        h = cd_findFile(D_8019DC5C[arg0].unk4[arg1].unk0);
         func_80022ED4(h);
-        while (func_80022B18() != 0) {
+        while (cd_getState() != 0) {
         }
         mbg_streamSetBaseSector(h);
     }
@@ -726,7 +726,7 @@ s32 func_800A9488(void) {
     ofsY[0] = ofsY[1] = ofsY[2] = 0;
     do {
         func_800AAFAC();
-        func_80019194();
+        pad_update();
         switch (D_800B0DF8) {
         case 0:
             t = -1;
@@ -1458,7 +1458,7 @@ s32 func_800AB490(void) {
     D_800AE3EC = 0;
     do {
         func_800AC450();
-        func_80019194();
+        pad_update();
         switch (D_800B0FD0) {
         case 0:
             timer = -1;
@@ -1804,7 +1804,7 @@ void func_800ACD70(void) {
     FileEntry *e;
 
     buf = D_80067944 + 0x10000;
-    e = func_8001E218(1, 0x2F44);
+    e = file_find(1, 0x2F44);
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
@@ -2120,7 +2120,7 @@ s32 func_800AD7DC(void) {
     func_800ADC3C();
     do {
         func_800ADC98();
-        func_80019194();
+        pad_update();
         switch (D_800B5000) {
         case 0:
             page = 1;

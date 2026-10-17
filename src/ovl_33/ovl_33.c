@@ -532,7 +532,7 @@ void func_801EFCB4(void) {
                     func_80063118(&D_801FBF84.unk58, D_801F3418, 1);
                 }
                 D_801FBF84.unk768 = 1;
-                D_801FBF84.unk3 = func_8003378C();
+                D_801FBF84.unk3 = party_getFirstMember();
                 D_801FBF84.unk1 = 4;
                 snd_playSe(0x67);
             } else {
@@ -1400,7 +1400,7 @@ void func_801F24EC(void) {
     best = 0;
     i = 0;
     c = g_gameState->unk1C->party[D_801FC840.unk3];
-    kind = func_80033A1C(c);
+    kind = chr_getDefaultSet(c);
     for (; i < 5; i++) {
         if (c->equip[i] != 0xFF) {
             cur = D_80069018[c->equip[i]].unkA;
@@ -1483,7 +1483,7 @@ void func_801F2894(void) {
     u8 rb;
 
     n = 0;
-    mask = D_801F8968[func_80033A1C(g_gameState->unk1C->party[D_801FC840.unk3])];
+    mask = D_801F8968[chr_getDefaultSet(g_gameState->unk1C->party[D_801FC840.unk3])];
     slot = D_801F8980[D_801FC840.unk2];
     D_801FC840.unk3C[0].id = 0xFF;
     for (i = 0; i < 0x100; i++) {

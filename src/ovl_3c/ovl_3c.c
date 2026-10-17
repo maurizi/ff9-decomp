@@ -384,7 +384,7 @@ void func_801F51B8(void) {
     for (i = 0; i < D_801FC2D0.unk14; i++) {
         x = 0xF + i * 0x24;
         c = &g_gameState->unk1C->characters[(u8)D_801FC2D0.unk18[i]];
-        ok = (D_80069018[id].unk6 & D_801FC080[func_80033A1C(c)]) != 0;
+        ok = (D_80069018[id].unk6 & D_801FC080[chr_getDefaultSet(c)]) != 0;
         y = 0x9E;
         if (ok) {
             if (!armor) {
@@ -817,7 +817,7 @@ void func_801F6714(void) {
     for (i = 0; i < D_801FC2D0.unk14; i++) {
         x = 0xF + i * 0x24;
         c = &g_gameState->unk1C->characters[(u8)D_801FC2D0.unk18[i]];
-        ok = (D_80069018[s->unk4].unk6 & D_801FC0E0[func_80033A1C(c)]) != 0;
+        ok = (D_80069018[s->unk4].unk6 & D_801FC0E0[chr_getDefaultSet(c)]) != 0;
         y = 0x9E;
         if (ok) {
             if (!armor) {

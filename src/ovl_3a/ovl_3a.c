@@ -17,10 +17,10 @@ void func_801F3874(void) {
     for (i = 0; i < 2; i++) {
         D_801F4BBC.unk5[i] = D_801F4B50[i];
     }
-    func_80033D38(D_801F4BBC.unk11, D_801F4BBC.unk12C);
+    chr_setDefaultName(D_801F4BBC.unk11, D_801F4BBC.unk12C);
     memset(D_801F4BBC.unk7, 0xFF, 10);
     if (D_801F4BBC.unk24) {
-        func_80033D38(D_801F4BBC.unk7, D_801F4BBC.unk12C);
+        chr_setDefaultName(D_801F4BBC.unk7, D_801F4BBC.unk12C);
     } else {
         func_8002BD54(D_801F4BBC.unk7, g_gameState->unk1C->characters[D_801F4BBC.unk130].unk0);
     }

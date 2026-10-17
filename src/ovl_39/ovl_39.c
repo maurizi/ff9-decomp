@@ -1980,13 +1980,13 @@ void func_801F963C(SaveData *d) {
 }
 
 s32 func_801F9688(void) {
-    if ((u16)D_8007AEF0.h[0] < 0xF3C) {
+    if ((u16)g_evtGlobalVars.h[0] < 0xF3C) {
         return 1;
     }
-    if ((u16)D_8007AEF0.h[0] < 0x1B4E) {
+    if ((u16)g_evtGlobalVars.h[0] < 0x1B4E) {
         return 2;
     }
-    if ((u16)D_8007AEF0.h[0] < 0x2AF3) {
+    if ((u16)g_evtGlobalVars.h[0] < 0x2AF3) {
         return 4;
     }
     return 8;
@@ -2180,12 +2180,12 @@ void func_801F9D18(void *p) {
 }
 
 void func_801F9D48(SaveEvents *d) {
-    d->unk0 = D_8007AEF0;
+    d->unk0 = g_evtGlobalVars;
     d->unk800 = D_8007AEC4;
 }
 
 void func_801F9DF8(SaveEvents *s) {
-    D_8007AEF0 = s->unk0;
+    g_evtGlobalVars = s->unk0;
     D_8007AEC4 = s->unk800;
 }
 
