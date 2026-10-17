@@ -1,6 +1,8 @@
 /*
  * ovl_0a func_800C07D8 (0x3F4 bytes): sets up a palette fade entry (FieldPalAnim) for a background
  * object: per-channel steps, StoreImage of the current CLUT row and a volatile read-back loop.
+ * STATUS (pass 26): 7 aligned diff rows with the no-code levers below (the plain draft is 11). Not integrated: the
+ * `>> 16 >> 16` term is a fake.
  * WIP (pass 10): 253 of 253 instructions, 11 aligned diff rows (was 35).
  * Fixed: `t = arg3 - 1; n = (u8)arg4 - t;` with a block-local t (the original keeps arg3 - 1 in v0;
  * y itself is reused later, and `(u8)arg4 - (arg3 - 1)` gets reassociated by fold); statement
@@ -53,6 +55,33 @@
  * n/size in sched1 (size becomes ready right after the sw and is birthing). Annealing over the 18 prologue lines
  * with def/use-checked moves (build/w/sa.py, ~6k compiles, also with e->unk0 first and with `k = e->unk1` split
  * out of y), const params (85), and 1 h of permuter: nothing below 11.
+ * Pass 26: 11 -> 7 rows (body below). What worked:
+ *  - `arg4 &= 0xFF;` right before `p->unk3 = arg4;` (no code: combine merges the and into the sb, since the store
+ *    only needs the low byte). Because the and's source mentions arg4 (i2dest_in_i2src), combine does NOT
+ *    decrement REG_N_SETS, so arg4 stays multi-set, its entry lw is no longer "birthing" in sched1 and the lw t2 /
+ *    lbu t3-t5 order at the top matches (18 -> 16). General lever: `x op= K` where the next single use ignores
+ *    the bits K changes keeps x multi-set and adds refs without code (`(x << 8) >> 8` is decremented: its i2 is a
+ *    separate shift insn).
+ *  - `p->unk1 = n` back in source order (after `p->unk0 = 1`) gives the original's scheduling exactly; what is
+ *    left there is block 0's local-alloc order (build/search/lsim.py, fixed to tie lo_sum with its high part,
+ *    reproduces all 20 qtys). The original needs h {95,125} before e->unk1 {118} before the D_800C9DA4 base
+ *    {108,107} (h a0, e->unk1 a2, unk34 a2, base t0): h must exceed 5000 and the base must drop below 5000 (its
+ *    9 refs over 54 half-insns give exactly 5000, tying e->unk1, and the lower qty number wins).
+ *    h gets a 7th ref from a dead `(((u32)h >> 16) >> 16)` term (combine folds it to 0): 5384. The base gets
+ *    one more insn in its range when `arg5 = (arg5 << 8) >> 8;` is the first statement (combine merges the
+ *    identity into arg5's load, which sched1 then places inside the base's range): 4821. Together: 7 rows.
+ *    Left: arg5's lbu is now below `sw t1,8(s2)` (2 rows) and the read-back loop (3 rows).
+ *  - Read-back loop (w a0 / loaded value v1 in the original): w inherits p's preferences {v1,a0,a1} through
+ *    expand_preferences (p dies where w is set; p prefers v1 from `p = unk2C(v1) + unk34`, a0/a1 from the
+ *    StoreImage arguments), so w only skips v1 if v1 is taken. The loaded value is a REG_UNUSED block-local qty
+ *    born at 2n where the address dies at 2n, so local-alloc always shares v0 with the address; the original's
+ *    v1 means its loaded value is not such a qty. Not found: assigning it to locals of every type, dead-store
+ *    conditionals after the read (v becomes live from function entry and goes to s3) or inside the loop (the
+ *    volatile read disappears), identical-branch ifs, inline helpers, pointer-free forms.
+ *  - Tried without gain: unk34 through a separate variable (32), `size += unk34` forms (16), do-while around the
+ *    h/q/y statements (35-75), identical-branch ifs on h (82-91), `k = e->unk1` with an identity (41), second
+ *    identities of arg5-7 at every prologue position (>= 18 from the 18-row base, >= 7 from the 7-row one),
+ *    SA over the prologue lines from the 16-, 27-, 18- and 7-row forms (best 7), 20 min of permuter (nothing).
  */
 #include "ovl_0a.h"
 
@@ -69,6 +98,7 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     volatile u16 *w;
     s32 t;
 
+    arg5 = (arg5 << 8) >> 8;
     t = arg3 - 1;
     n = (u8)arg4 - t;
     size = n * 4 + 0x2C;
@@ -76,7 +106,7 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     e->unk8 = size;
     e->unk0 = 0x80;
     h = D_800C9DA4.unk10;
-    q = (u8 *)h + h->unk10;
+    q = (u8 *)h + h->unk10 + (((u32)h >> 16) >> 16);
     y = *(u32 *)((u8 *)h + ((Unk800C9DB4Obj *)q)[e->unk1].unk2C) & 0x1FF;
     p = (FieldPalAnim *)(D_800C9DA4.unk2C + D_800C9DA4.unk34);
     D_800C9DA4.unk34 += size;
@@ -84,9 +114,12 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     p->unk0 = 1;
     p->unk1 = n;
     p->unk2 = arg3;
+    arg4 &= 0xFF;
     p->unk3 = arg4;
     p->unk8 = arg2;
     p->unkC = 0;
+    arg6 = (arg6 << 8) >> 8;
+    arg7 = (arg7 << 8) >> 8;
     if (arg2 >= 2) {
         rgb[0] = arg5 << 16;
         rgb[1] = arg6 << 16;
