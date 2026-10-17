@@ -1433,6 +1433,7 @@ s32 mbg_update(s32);
 s32 mbg_getLastFrame(void);
 /* main exe: candidates for ff9.h */
 s32 cd_findFile(char *);
+void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 u8 func_80022ED4(s32);
 void func_80056248(s32);
 

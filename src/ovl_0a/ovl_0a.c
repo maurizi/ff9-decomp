@@ -4389,7 +4389,104 @@ s32 func_800B4894(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B4A5C);
+void func_800B4A5C(void) {
+    SPRT *spr[2];
+    DR_TPAGE *tp[2];
+    RECT *clut;
+    RECT *img;
+    u8 *p;
+    s32 tim;
+    s32 i;
+    s32 n;
+    u32 state;
+
+    tim = (s32)func_8001C7FC(4, 0x44E20, 0);
+    func_8001D910((void *)tim, &clut, &img);
+    setRECT(img, 0, 0x100, img->w, img->h);
+    setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
+    func_8001D8A8(tim);
+    DrawSync(0);
+    n = 0;
+    state = 0;
+    i = 1;
+    p = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
+    do {
+        {
+            /* dead struct initializer: it emits only a CLOBBER of q, which sched2 places in one of
+               the loop's load-delay gaps (so p += 20, the tpage constant and &tp[0] land one gap
+               later, as in the original), and q's spill slot is the frame's otherwise unused word */
+            struct { s32 x; } q = { i };
+        }
+        spr[i] = (SPRT *)p;
+        p += sizeof(SPRT);
+        setlen(spr[i], 4);
+        setcode(spr[i], 0x64);
+        setRGB0(spr[i], 0x80, 0x80, 0x80);
+        spr[i]->x0 = (0x140 - img->w * 4) >> 1;
+        spr[i]->y0 = (0xE0 - img->h) / 2;
+        spr[i]->u0 = 0;
+        spr[i]->v0 = 0;
+        spr[i]->w = img->w * 4 - 1;
+        spr[i]->h = img->h;
+        spr[i]->clut = getClut(clut->x, clut->y);
+        tp[i] = (DR_TPAGE *)p;
+        p += sizeof(DR_TPAGE);
+        setlen(tp[i], 1);
+        tp[i]->code[0] = _get_mode(1, 1, getTPage(0, 0, img->x, img->y));
+        i--;
+    } while (i >= 0);
+    func_800AC67C((s32)p);
+    func_800223CC();
+    func_8001CCB4(0, 0, 0);
+    do {
+        ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
+        switch (state) {
+        case 0:
+            n = 0x3C;
+            i = 0;
+            func_800320B8(1, 1, 0, 0xFFFFFF);
+            func_800320B8(1, 1, n, i);
+            state = 1;
+            break;
+        case 1:
+            if (i < n) {
+                i++;
+            } else {
+                n = 0x78;
+                i = 0;
+                state = 2;
+            }
+            break;
+        case 2:
+            if (i < n) {
+                i++;
+            } else {
+                n = 0x3C;
+                i = 0;
+                func_800320B8(1, 1, n, 0xFFFFFF);
+                state = 3;
+            }
+            break;
+        case 3:
+            if (i < n) {
+                i++;
+            } else {
+                state = 4;
+            }
+            break;
+        }
+        addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], spr[g_gameState->unk1C->unk8]);
+        addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], tp[g_gameState->unk1C->unk8]);
+        func_80032098();
+        DrawSync(0);
+        g_gameState->vsyncMode = 2;
+        VSync(g_gameState->vsyncMode);
+        ResetGraph(1);
+        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        g_gameState->unk1C->unk8 ^= 1;
+    } while (state < 4);
+}
 
 s32 func_800B4F9C(void) {
     GameData *gd = g_gameState->unk1C;
@@ -8169,7 +8266,103 @@ s32 func_800BFEE0(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C0038);
+s32 func_800C0038(s32 arg0, s32 arg1) {
+    SVECTOR v;
+    s16 xy[2];
+    Unk800C9DB4Cam *c;
+    Unk8004AB64 *a;
+    u8 mode;
+    s32 x;
+    s32 y;
+    s32 t;
+    s32 cp;
+    Unk800CA068 *p;
+    s32 f;
+    s32 ox;
+    s32 oy;
+    Unk800C9DB4 *bg;
+    Unk800CA068 *st = NULL; /* dead store: lets cse keep the st = p copy below */
+
+    if (!(D_800CA068.unk0 & 0x40)) {
+        return 0;
+    }
+    mode = g_gameState->mode;
+    if (mode == 5) {
+        a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->unk8].unkC;
+    } else {
+        a = NULL;
+        if (mode == 1) {
+            a = func_8004AE00();
+        }
+    }
+    bg = D_800C9DB4;
+    p = &D_800CA068;
+    c = (Unk800C9DB4Cam *)((u8 *)bg + bg->unk18);
+    cp = *(s32 *)&p->unk4;
+    /* a second pointer to D_800CA068 whose copy disappears after register allocation; it is what
+       makes sched1 order the copy/vx loads and local-alloc give the copy $v0 as in the original */
+    st = p;
+    *(s32 *)&st->unk10 = cp;
+    v.vx = a->pos.vx;
+    v.vy = a->pos.vy - st->unk76;
+    c = &c[st->unk75];
+    v.vz = a->pos.vz;
+    ox = (s16)c->unk20;
+    oy = (s16)c->unk22;
+    gte_SetGeomOffset(ox + 0xA0, oy + 0x70);
+    {
+        /* the original's "r"(st->unk1C) operand was reloaded into $t0; as a hard-register variable
+           it is one less reference to st, which keeps st below the unk76 temporary in local-alloc */
+        register MATRIX *m asm("$8") = st->unk1C;
+        gte_SetRotMatrix(m);
+        gte_SetTransMatrix(m);
+    }
+    gte_ldv0(&v);
+    gte_rtps();
+    gte_stsxy(xy);
+    /* dead test (deleted by jump2): extends st's live range to here */
+    if (st != NULL) {
+        st = NULL;
+    }
+    {
+        s32 t = (c->unk24 >> 1) - 0xA0;
+        x = t + xy[0];
+    }
+    {
+        s32 t = (c->unk26 >> 1) - 0x70;
+        y = t + xy[1];
+    }
+    if (x < c->unk28) {
+        x = c->unk28;
+    } else if (c->unk2A < x) {
+        x = c->unk2A;
+    }
+    if (y < c->unk2C) {
+        y = c->unk2C;
+    } else if (c->unk2E < y) {
+        y = c->unk2E;
+    }
+    D_800CA068.unk14 = x;
+    D_800CA068.unk16 = y;
+    if (arg0 == -1) {
+        D_800CA068.unk1A = 0x1E;
+    } else {
+        D_800CA068.unk1A = arg0;
+    }
+    D_800CA068.unk18 = 1;
+    if (arg1 == -1) {
+        D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 3;
+    } else {
+        f = D_800CA068.unk0 & ~0xF;
+        D_800CA068.unk0 = f | 3;
+        if (arg1 == 8) {
+            D_800CA068.unk0 = f | 8 | 3;
+        } else {
+            D_800CA068.unk0 = f | 3;
+        }
+    }
+    return 1;
+}
 
 /* add a screen fade: rectangle (arg0..arg2), mode arg3, colour arg4..arg6 */
 s32 func_800C02D0(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
