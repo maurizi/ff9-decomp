@@ -54,6 +54,7 @@ extern u8 D_801F3098[3];
 extern RECT D_801F30B8;
 
 /* main exe: candidates for ff9.h */
+extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 typedef struct {
     unsigned int unk0 : 4;   /* target kind */
     unsigned int unk0_4 : 1;

@@ -2049,7 +2049,159 @@ void func_800AC6A4(TmState *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0d/nonmatchings/ovl_0d", func_800AC708);
+void *func_800AC708(u32 *ot, TILE *p, TmState *s) {
+    TmFlashTbl tbl;
+    TmFlash *d;
+    TmUnk350 *e;
+    s32 i;
+    s32 t;
+    s32 c;
+    s32 bx;
+    s32 dx;
+    s32 dy;
+    s32 ex;
+    s32 ey;
+    s32 by;
+    s32 x;
+    s32 y;
+    s32 w;
+    s32 h;
+    s32 k;
+
+    tbl = D_800A72B8;
+    h = 0;
+    w = 0;
+    x = 0;
+    y = 0;
+    e = s->unk350;
+    t = s->unk2E8;
+    if (s->unk418 == 0) {
+        k = t * 30;
+        if (k >= 0x100) {
+            c = 0xFF;
+            if (s->unk504 == 2) {
+                s->unk4F0 = 0x32;
+                s->unk57C = 0;
+                s->unk4FC = s->unk500;
+                func_800B01E8(10);
+            }
+            s->unk418 = 1;
+        } else {
+            c = k;
+        }
+    } else {
+        k = 0xFF - (t - 10) * 15;
+        c = k;
+        if (k < 0) {
+            c = 0;
+            if (s->unk420 == -1) {
+                func_800ABEC4(s);
+            } else {
+                s->unk0 = s->unk420;
+            }
+        }
+    }
+    for (i = 0; i < 10; i++) {
+        if (e[i].unk0 != 0) {
+            if (s->unk418 == 1) {
+                func_800B19D4(s, e[i].unk4, e[i].unk8)->unk4->unk14 = s->unk41C;
+            }
+            if (s->unk504 == 1) {
+                setlen(p, 3);
+                p->code = 0x62;
+                setXY0(p, e[i].unk4 * 43 + 0x48, e[i].unk8 * 52 + 8);
+                setWH(p, 0x2A, 0x33);
+                setRGB0(p, c, c, c);
+                AddPrim(ot + 0x1E, p);
+                p++;
+            }
+            if (s->unk504 == 2) {
+                k = 0xFF - t * 9;
+                c = k;
+                d = &tbl.v[e[i].unkC];
+                dx = d->unk4;
+                dy = d->unk8;
+                ex = d->unkC;
+                ey = d->unk10;
+                bx = e[i].unk4 * 43 + 0x48 + d->unk14;
+                by = e[i].unk8 * 52 + 8 + d->unk18;
+                if (k < 0) {
+                    c = 0;
+                }
+                switch (d->unk0) {
+                case 0:
+                    x = bx;
+                    w = 0x2A;
+                    h = 4;
+                    y = by - (t * 51 / 28) * dy;
+                    break;
+                case 1:
+                    x = bx + t * 42 / 28 * dx;
+                    w = t * 42 / 28;
+                    h = 4;
+                    y = by - (t * 51 / 28) * dy;
+                    if (dy == -1) {
+                        y -= 4;
+                    }
+                    setlen(p, 3);
+                    p->code = 0x62;
+                    setXY0(p, x, y);
+                    setWH(p, w, h);
+                    setRGB0(p, c, c, c);
+                    AddPrim(ot + 0x1E, p);
+                    p++;
+                    x = bx + w * ex;
+                    w = 4;
+                    y = by - (t * 51 / 28) * ey;
+                    h = t * 51 / 28;
+                    if (ex == 1) {
+                        x -= 4;
+                    }
+                    if (ey != 0) {
+                        y += 4;
+                    }
+                    if (h >= 4) {
+                        h -= 4;
+                    }
+                    break;
+                case 2:
+                    y = by;
+                    x = bx + t * 42 / 28 * dx;
+                    w = 4;
+                    h = 0x33;
+                    break;
+                }
+                setlen(p, 3);
+                p->code = 0x62;
+                setXY0(p, x, y);
+                setWH(p, w, h);
+                setRGB0(p, c, c, c);
+                AddPrim(ot + 0x1E, p);
+                p++;
+            }
+            if (s->unk504 == 3) {
+                setlen(p, 3);
+                p->code = 0x62;
+                setXY0(p, e[i].unk4 * 43 + 0x48, e[i].unk8 * 52 + 8);
+                setWH(p, 0x2A, 0x33);
+                if (s->unk2E8 & 4) {
+                    setRGB0(p, 0x80, 0x80, 0x80);
+                } else {
+                    setRGB0(p, 0x76, 0x76, 0x76);
+                }
+                AddPrim(ot + 0x1E, p);
+                p++;
+            }
+        }
+    }
+    /* Dead store, no code: a reference to k after case 2's `if (k < 0)` keeps cse from rewriting that test
+     * to use c (make_regs_eqv picks the register whose last use comes later), so the test stays on k (a2). */
+    k = 0;
+    SetDrawTPage((DR_TPAGE *)p, 0, 0, GetTPage(0, 1, 0, 0));
+    AddPrim(ot + 0x1E, p);
+    p = (TILE *)((DR_TPAGE *)p + 1);
+    return p;
+}
 
 void *func_800ACDA0(u32 *ot, TILE *p, TmState *s) {
     s32 t;
