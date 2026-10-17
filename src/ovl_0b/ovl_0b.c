@@ -6526,7 +6526,7 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
                         cc->unk10 = (s32)u->unk9C->unkC + t;
                     }
                 }
-                arg1 = (u32 *)func_800C7DAC(u->unk9C, 0, (u8 *)arg1);
+                arg1 = (u32 *)btl_calcBoneMatrices(u->unk9C, 0, (u8 *)arg1);
                 u->unk98->unk0[0] = u->unk9C->unk20[u->unk7C].unk14 << 16;
                 u->unk98->unk0[1] = 0;
                 u->unk98->unk0[2] = u->unk9C->unk20[u->unk7C].unk1C << 16;
@@ -6742,7 +6742,7 @@ void func_800BC21C(BtlUnit *u, s32 *ot) {
             p->unk10 = (s32)m->unkC + t;
         }
     }
-    *ot = (s32)func_800C7DAC(m, a->unk3A, (u8 *)*ot);
+    *ot = (s32)btl_calcBoneMatrices(m, a->unk3A, (u8 *)*ot);
     if (!(u->status & 0x2001003) && !((u->unk68 >> 21) & 1)) {
         a->unk3A++;
     }
@@ -6751,8 +6751,8 @@ void func_800BC21C(BtlUnit *u, s32 *ot) {
     u->unk9C->unk0 &= ~0x20;
     for (i = 0; i < n; i++) {
         if (!(m->unk14 & (1 << i))) {
-            func_800C6528(m, i);
-            *ot = (s32)func_800C58E4(m, i, (u8 *)*ot);
+            btl_projectMesh(m, i);
+            *ot = (s32)btl_drawMesh(m, i, (u8 *)*ot);
             u->unk9C->unk0 |= 0x20;
         }
     }
@@ -6761,15 +6761,15 @@ void func_800BC21C(BtlUnit *u, s32 *ot) {
     }
     if (u->unkA8 != NULL) {
         u->unkA8->unk10 = 0;
-        *ot = (s32)func_800C7DAC(u->unkA8, 0, (u8 *)*ot);
+        *ot = (s32)btl_calcBoneMatrices(u->unkA8, 0, (u8 *)*ot);
         w = u->unkA8;
         n = w->unk8->unk3;
         func_800C7CC8(w);
         u->unkA8->unk0 &= ~0x20;
         for (i = 0; i < n; i++) {
             if (!(u->unkA8->unk14 & (1 << i))) {
-                func_800C6528(u->unkA8, i);
-                *ot = (s32)func_800C58E4(u->unkA8, i, (u8 *)*ot);
+                btl_projectMesh(u->unkA8, i);
+                *ot = (s32)btl_drawMesh(u->unkA8, i, (u8 *)*ot);
                 u->unkA8->unk0 |= 0x20;
             }
         }
@@ -8738,12 +8738,12 @@ void func_800C1A8C(BtlUnit *arg0, u32 arg1) {
     if (arg1 < 0x20) {
         i = 0;
         e = func_800CEE74();
-        func_800C8E80(arg0->unk9C, 0x60);
+        btl_setModelAbr(arg0->unk9C, 0x60);
         for (; i < arg0->unk9C->unk8->unk3; i++) {
             func_800C8D18(arg0->unk9C, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
         }
         if (arg0->unkA8 != NULL) {
-            func_800C8E80(arg0->unkA8, 0x60);
+            btl_setModelAbr(arg0->unkA8, 0x60);
             for (i = 0; i < arg0->unkA8->unk8->unk3; i++) {
                 func_800C8D18(arg0->unkA8, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
             }
@@ -8904,7 +8904,7 @@ void func_800C22CC(BtlUnit *arg0, u16 arg1, u8 arg2) {
         v.vx = arg0->unk8C[0] >> 16;
         v.vy = arg0->unk8C[1] >> 16;
         v.vz = arg0->unk8C[2] >> 16;
-        func_800AD90C(0xD000, arg1, 0, func_800E976C((s32)&v), arg2);
+        func_800AD90C(0xD000, arg1, 0, btl_soundPan((s32)&v), arg2);
     }
 }
 
@@ -8932,7 +8932,7 @@ void func_800C23C8(BtlUnit *arg0, s32 arg1, u32 arg2) {
 
 void func_800C24E8(BtlUnit *arg0, s32 arg1) {
     Unk800CEE74 *p = func_800CEE74();
-    func_800C8E80(arg0->unk9C, 0x60);
+    btl_setModelAbr(arg0->unk9C, 0x60);
     func_800C8A3C(arg0->unk9C, (p->unkC * arg1) << 11 >> 16, (p->unkD * arg1) << 11 >> 16, (p->unkE * arg1) << 11 >> 16);
     if (arg1 == 0) {
         arg0->unk68 |= 0x400000;

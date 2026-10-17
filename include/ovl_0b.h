@@ -163,7 +163,7 @@ typedef struct {
     s32 unkC;
 } FileEntry16;
 
-/* double buffer used by the standalone display loop func_800DC510 */
+/* double buffer used by the standalone display loop btlfx_halt */
 typedef struct {
     DRAWENV unk0;
     DISPENV unk5C;
@@ -745,7 +745,7 @@ extern s32 D_800FE520; /* frame counter */
 extern s32 D_800FE4FC;
 extern s32 D_800FE500;
 u8 *func_800CEBC8(u8 *, u32 *, MATRIX *);
-u8 *func_800CEED4(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
+u8 *btlbg_drawRecord(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
 extern s32 D_800FE508;
 extern s32 D_800FE518;
 extern s16 D_80100DCC;
@@ -1448,7 +1448,7 @@ typedef struct {
     s16 unk24;
     u8 pad26[0x28 - 0x26];
 } BtlObjSlot; /* 0x28 */
-extern BtlObjSlot D_80100F1C[32];
+extern BtlObjSlot g_btlfxEffModels[32];
 
 
 typedef struct {
@@ -1461,7 +1461,7 @@ typedef struct {
     u16 unk50; /* frame */
     u8 pad52[0x54 - 0x52];
 } Unk8010141C; /* 0x54 */
-extern Unk8010141C D_8010141C[1];
+extern Unk8010141C g_btlfxSummonModels[1];
 
 
 extern u8 D_800FE415;
@@ -1808,7 +1808,7 @@ void func_800C972C(void);
 s16 func_800AB580(s32);
 extern s8 D_800FEC54;
 
-extern char D_80101470[];
+extern char g_btlfxErrorMsg[];
 
 /* summon model header ('so' magic) */
 typedef struct {
@@ -2195,7 +2195,7 @@ void func_800EE31C(void);
 s32 func_800BC78C(BtlUnit *);
 u32 func_800C0ACC(BtlUnit *, u32);
 void func_800C8A3C(BtlUnit9C *, s32, s32, s32);
-void func_800C8E80(BtlUnit9C *, s32);
+void btl_setModelAbr(BtlUnit9C *, s32);
 void func_800E7EC0(BtlUnit *, s32);
 void func_800EA7B8(Unk80104F88Entry *);
 void func_800EA908(Unk80104F88Entry *);
@@ -2314,7 +2314,7 @@ void func_800EA1B0(s32);
 
 u32 func_800D89E8(s32);
 s32 func_800D9F5C(u8 *, s32, s32);
-void func_800DC634(char *);
+void btlfx_error(char *);
 void func_800E3D80(void);
 u8 func_800EA038(void);
 void func_800EA164(s32);
@@ -2350,14 +2350,14 @@ void func_800B3C00(void);
 void btl_enqueueCmd(struct BtlCmd *);
 void func_800C0D24(BtlUnit *);
 void func_800C1594(void);
-void func_800C86C8(BtlUnit9C *, s32, s32, s32);
+void btl_setModelRgb(BtlUnit9C *, s32, s32, s32);
 void func_800CDEF0(BtlCmd *);
 s32 func_800D8D08(u8 *, s32, s32);
 s32 func_800D8D68(u8 *, s32, s32);
 s32 func_800D905C(u8 *, s32, struct Unk800F78A40 *);
 void func_800E8408(BtlUnit *);
 void func_800E8460(BtlUnit *);
-s32 func_800E976C(s32); /* unit id, or an SVECTOR pointer */
+s32 btl_soundPan(s32); /* unit id, or an SVECTOR pointer */
 void btl_setCmd(); /* (BtlCmd *, u32, s32, s32, s32); callers pass the command as s32 */
 u8 func_800B3E7C(BtlCmd *);
 void func_800BD414(BtlUnit *, u16);
@@ -2388,9 +2388,9 @@ s32 func_800D9038(u8 *, s32, s32);
 s32 func_800D9110(u8 *, s32, s32);
 s32 func_800DA030(u8 *, s32, s32);
 void func_800C2200(BtlUnit *, BtlUnit *);
-Unk8010141C *func_800DD02C(s32, char *);
-void func_800DC710(void);
-void func_800DC7E0(void);
+Unk8010141C *btlfx_getSummonModel(s32, char *);
+void btlfx_clearEffModels(void);
+void btlfx_clearSummonModels(void);
 void func_800D616C(void);
 void func_800D6D3C(void);
 void func_800DA4E8(void);
@@ -2414,10 +2414,10 @@ s32 func_800D8740(s32, s32);
 s32 func_800D8B20(s32);
 s32 func_800DA06C(s32, s32);
 s32 func_800DA3D8(s32, s32);
-void func_800DC510(char *);
+void btlfx_halt(char *);
 void func_800DC9D0(BtlUnit9C *, s32, u16 *);
 void func_800DCA18(BtlUnit9C *, s32, BtlBone *);
-BtlObjSlot *func_800DCFB0(s32, char *);
+BtlObjSlot *btlfx_getEffModel(s32, char *);
 u8 func_800DD10C(BtlUnit9C *);
 void func_800E00DC(s32, Pool30Entry *, Pool30 *);
 void func_800E14D8(u32, Pool6C *);
@@ -2452,9 +2452,9 @@ void func_800E1708(Pool30 *, s32, s32);
 void func_800E1810(Pool30 *, Pool6CEntry *);
 s32 func_800E0168(Pool30 *);
 /* particle helpers used by func_800E0168 */
-s32 func_800CF5F8(SVECTOR *, SVECTOR *);
-s32 func_800CF748(s32);
-void func_800CF788(SVECTOR *);
+s32 btlfx_distance(SVECTOR *, SVECTOR *);
+s32 btlfx_randCentered(s32);
+void btlfx_randRotation(SVECTOR *);
 void func_800DFE4C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFE54(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
@@ -2507,7 +2507,7 @@ void func_800E8B28(s32, s32, s32);
 s32 func_800A91EC(void);
 void func_800BD4DC(BtlUnit *);
 void func_800BD53C(BtlUnit *);
-s32 func_800CFC0C(s32);
+s32 btlfx_align4(s32);
 void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage) */
 u8 *func_800D6360(s32);
 void func_800D64C8(s32);
@@ -2525,7 +2525,7 @@ u32 func_800D8C70(s32, u32);
 void func_800D8658(s32, u8);
 void func_800D8914(s32);
 void func_800D8A20(s32, s32);
-BtlUnit *func_800E716C(s32);
+BtlUnit *btl_getUnit(s32);
 void func_800E9D84(void);
 void func_800EC070(s32);
 void func_800EC14C(s32);
@@ -2670,10 +2670,10 @@ s32 func_800ABA10(s32, s32);
 
 s32 func_800D955C(Unk800D955C *arg0, s32 arg1, s32 *arg2);
 s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5);
-void func_800CFA00(s16 *, s16 *, s32, s16 *);
+void btlfx_lerpVec(s16 *, s16 *, s32, s16 *);
 u16 Hi_RegisterTexListModel(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32);
 u16 Hi_RegisterGouEffModel(BtlUnit9C8 *);
-void func_800CF808(s16 *, s16 *, s16 *);
+void btlfx_aimAngles(s16 *, s16 *, s16 *);
 void func_800CFD78(s16 *, s16 *, s32, s16 *);
 
 typedef struct {
@@ -2764,8 +2764,8 @@ extern u8 D_800F6A38[];
 extern Unk800686E8 D_80068BE8;
 s32 func_8004AB7C(s32, s32, s32, s32);
 void func_80030AF4(void *, void *); /* rotation -> matrix */
-s32 func_800CF91C(SVECTOR *, s32, s32);
-void func_800CF8EC(s32, s32, s32);
+s32 btlfx_transformPolar(SVECTOR *, s32, s32);
+void btlfx_transformPoint(s32, s32, s32);
 extern Unk800686E8 D_80068BF0[]; /* digits */
 
 typedef struct {
@@ -2798,9 +2798,9 @@ extern void (*D_800F8E94[])(void);
 extern RECT D_800FDE58;
 u8 *func_800F511C(u8 *, RECT *);
 void func_800C7B84(BtlUnit9C *);
-void func_800DCB20(BtlUnit9C *, VECTOR *);
+void btl_scaleModelMatrix(BtlUnit9C *, VECTOR *);
 void func_800C57A4(BtlUnit *, s16 *);
-s32 func_800CF690(void);
+s32 btlfx_rand(void);
 s32 func_800D7D64(s32, Unk800D955C *, s32, s32 *, s32 *);
 s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
 
@@ -2834,10 +2834,10 @@ s32 func_800F13BC(void);
 extern u8 D_800FD7AC[];
 void func_800EC928(); /* (Window *); func_800EC628 passes its own */
 s32 func_800E865C(s32, s32);
-void func_800DDF10(BtlUnit9C *, u8);
+void btlfx_projectSliceMesh(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
-void func_800DF15C(BtlUnit9C *, u8, u16);
-u8 *func_800DD27C(BtlUnit9C *, u8, u8 *, s32);
+void btlfx_projectMorphMesh(BtlUnit9C *, u8, u16);
+u8 *btl_drawMeshOffset(BtlUnit9C *, u8, u8 *, s32);
 void *func_800CD78C(BtlUnit *);
 extern u8 D_800F7124[];
 extern u8 D_800F71E4[];
@@ -2849,8 +2849,8 @@ void func_800C9EE0(Unk800C9EE0 *, BtlUnit *, s32 *, s32);
 void func_800CA0A0(Unk800C9D1C *, BtlUnit *);
 void func_800C9D1C(Unk800C9D1C *, Battle4880 *);
 s32 func_800C1184(u32 *);
-void func_800CF560(s32);
-s32 func_800CF574(void);
+void btlbg_setBrightness(s32);
+s32 btlbg_getBrightness(void);
 UnkPair *func_800EC114(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
 u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);
@@ -2874,7 +2874,7 @@ extern DR_TPAGE D_80105080;
 extern DR_STP D_80105090;
 extern u32 D_801050D4;
 s32 func_800AB2C8(void);
-Unk8010141C *func_800DC4CC(void);
+Unk8010141C *btlfx_allocSummonModel(void);
 typedef struct {
     s16 unk0[6][2];
 } Unk800DD120;
@@ -2891,10 +2891,10 @@ typedef struct {
     u8 pad4[0xC - 4];
 } Unk8006A774;
 extern Unk8006A774 D_8006A774[];
-u8 *func_800C7DAC(BtlUnit9C *, s32, u8 *);
-void func_800C6528(BtlUnit9C *, u8);
-u8 *func_800C58E4(BtlUnit9C *, u8, u8 *);
-void func_800DCA68(BtlUnit9C *, SVECTOR *, VECTOR *, VECTOR *);
+u8 *btl_calcBoneMatrices(BtlUnit9C *, s32, u8 *);
+void btl_projectMesh(BtlUnit9C *, u8);
+u8 *btl_drawMesh(BtlUnit9C *, u8, u8 *);
+void btl_setModelTransform(BtlUnit9C *, SVECTOR *, VECTOR *, VECTOR *);
 void Hi_GetSummonBoneMatrix(s32, s32, BtlBone *);
 /* texture (VRAM) animations */
 typedef struct {
@@ -3016,7 +3016,7 @@ void func_800C7CC8(BtlUnit9C *);
 u8 *func_800AC37C(Battle11C028 *, s32, s32, s32, u8 *);
 void func_800C1704(); /* defined as (void); callers pass the unit */
 void func_800CA530(BtlCmd *);
-void func_800CF58C(s32);
+void btlbg_setOtShift(s32);
 void func_80063640(DR_TPAGE *, u16);
 void func_800C9374(TexAnimSet *, u16 (*)[4]);
 void func_800B0E04(BtlUnit *, u8 *);
@@ -3065,7 +3065,7 @@ void func_80055850(s32, s32, s32);
 s32 func_80034430(s32, s32);
 void func_800F3D3C(s32);
 void func_800F1BFC(Window *);
-s32 func_800D001C(s32, s32, s32 *);
+s32 btlfx_angleDiff(s32, s32, s32 *);
 s32 func_800C4E84(s32, s16 *, s16 *, s32 *);
 void func_800C4DC4(s32, s32, s16 *, s16 *, s32 *);
 s32 func_800C5890(s32);
@@ -3264,7 +3264,7 @@ void func_800EA440(void);
 void func_800EA498(void);
 void func_800F4A00(void);
 s32 func_800B0CF8(s32, u32);
-u32 func_800C8DE0(u32, s32, s32, s32);
+u32 btl_addRgbClamped(u32, s32, s32, s32);
 void func_8002F1CC(MenuList *, s32);
 void func_8002F284(MenuList *, s32);
 extern s16 D_800F9048[];
@@ -3338,7 +3338,7 @@ void func_800EFF14(void);
 void func_800F40D0(Unk800F412C *);
 void func_800F4010(s32);
 
-BtlObjSlot *func_800DC494(void);
+BtlObjSlot *btlfx_allocEffModel(void);
 void func_800C7730(BtlUnit9C *, s16 *, s16 *);
 
 void func_800DF588(BtlUnit9C *, s32, s32);
@@ -3452,7 +3452,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 /* -O1 unit (ovl_0b_o1.c) */
 s32 func_800CA2B0(s32);
 void func_800C416C(s32, Unk800C412C *, s16 *);
-s32 func_800CF9B0(s32, s32, s32);
+s32 btlfx_lerp(s32, s32, s32);
 
 typedef struct {
     u8 unk0;
@@ -3476,9 +3476,9 @@ void func_800C52B4(MATRIX *, SVECTOR *, SVECTOR *);
 void func_800C5530(SVECTOR *, SVECTOR *);
 void func_800C4A3C(s16 *, s16 *);
 void func_800C493C(s16 *);
-s32 func_800CF9DC(s32, s32, s32, s32);
-s32 func_800CF708(s32, s32);
-s32 func_800CF6B8(s32, s32);
+s32 btlfx_lerpRatio(s32, s32, s32, s32);
+s32 btlfx_randRange(s32, s32);
+s32 btlfx_sqrt(s32, s32);
 s32 func_800EA004(void);
 s32 func_800EA094(void);
 
@@ -3631,7 +3631,7 @@ typedef struct {
     u16 unkA; /* first frame entry, in 8-byte units */
 } Unk800D1494;
 
-s32 func_800CF5A4(u8 *, s32, s32, s32);
+s32 btlfx_pushTrailPoint(u8 *, s32, s32, s32);
 void func_800D12C4(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
 void func_800D0E14(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
 void func_800D0FFC(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
@@ -4061,7 +4061,7 @@ void func_800ED7C0(s32, s32, s32, s32, s32, CVECTOR *);
 extern u16 D_800FEC68[];
 extern s32 D_80100D90[][2];
 s32 func_800E8AD0(void);
-void func_800DC748(BtlModel *, s32);
+void btlfx_initSummonModels(BtlModel *, s32);
 typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 /* main exe: candidates for ff9.h */
 void func_80054A28(void *);

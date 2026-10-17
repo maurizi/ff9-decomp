@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-s32 func_800CFC0C(s32 arg0) {
+s32 btlfx_align4(s32 arg0) {
     s32 v = arg0 & ~3;
     if (arg0 & 3) {
         v += 4;
@@ -25,7 +25,7 @@ void func_800CFCA8(SVECTOR *arg0, s32 arg1, s32 arg2) {
     func_800316D8(arg0, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
-    func_800CF8EC(arg1, 0, arg2);
+    btlfx_transformPoint(arg1, 0, arg2);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
@@ -39,7 +39,7 @@ void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
     m.t[1] = arg0[1];
     m.t[2] = arg0[2];
     gte_SetTransMatrix(&m);
-    func_800CF8EC(arg2, 0, (s32)arg3);
+    btlfx_transformPoint(arg2, 0, (s32)arg3);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
@@ -47,7 +47,7 @@ void func_800CFD78(s16 *arg0, s16 *arg1, s32 arg2, s16 *arg3) {
 void func_800CFE88(MATRIX *arg0, s32 arg1, s32 arg2) {
     gte_SetRotMatrix(arg0);
     gte_SetTransMatrix(arg0);
-    func_800CF8EC(arg1, 0, arg2);
+    btlfx_transformPoint(arg1, 0, arg2);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
@@ -60,13 +60,13 @@ void func_800CFF40(MATRIX *arg0, s16 *arg1) {
     gte_SetTransMatrix(arg0);
     b[1] = 0;
     b[0] = 0;
-    func_800CF8EC(0x1000, 0, (s32)a);
-    func_800CF808((s16 *)b, a, arg1);
+    btlfx_transformPoint(0x1000, 0, (s32)a);
+    btlfx_aimAngles((s16 *)b, a, arg1);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
 
-s32 func_800D001C(s32 arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_angleDiff(s32 arg0, s32 arg1, s32 *arg2) {
     s32 s;
     s32 d;
     s32 ad;
@@ -93,15 +93,15 @@ s32 func_800D001C(s32 arg0, s32 arg1, s32 *arg2) {
     return s;
 }
 
-void func_800D006C(s16 *arg0, s16 *arg1, s32 arg2) {
+void btlfx_turnToward(s16 *arg0, s16 *arg1, s32 arg2) {
     s32 sp10;
     s32 t;
     s32 v;
-    t = func_800D001C(arg0[0], arg1[0], &sp10);
+    t = btlfx_angleDiff(arg0[0], arg1[0], &sp10);
     v = (sp10 * arg2) >> 12;
     arg1[0] += v * t;
     sp10 = v;
-    t = func_800D001C(arg0[1], arg1[1], &sp10);
+    t = btlfx_angleDiff(arg0[1], arg1[1], &sp10);
     v = (sp10 * arg2) >> 12;
     arg1[1] += v * t;
     sp10 = v;
@@ -165,7 +165,7 @@ void func_800D044C(SVECTOR *arg0, s32 arg1, s32 arg2, XY32 *arg3, s32 arg4, s32 
     m.t[1] = arg0->vy;
     m.t[2] = arg0->vz;
     gte_SetTransMatrix(&m);
-    func_800CF8EC(arg2, arg4, arg1);
+    btlfx_transformPoint(arg2, arg4, arg1);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
@@ -186,8 +186,8 @@ void func_800D0580(s16 *arg0, XY32 *arg1, s32 arg2) {
     gte_ldtr0();
     b[1] = 0;
     b[0] = 0;
-    func_800CF8EC(0, 0x1000, (s32)a);
-    func_800CF808((s16 *)b, a, arg0);
+    btlfx_transformPoint(0, 0x1000, (s32)a);
+    btlfx_aimAngles((s16 *)b, a, arg0);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
@@ -208,7 +208,7 @@ void func_800D0674(SVECTOR *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 ar
     func_80030AF4(&r.xy, &m);
     gte_SetRotMatrix(&m);
     gte_ldtr0();
-    *arg5 = func_800CF91C(&v, arg3, arg4);
+    *arg5 = btlfx_transformPolar(&v, arg3, arg4);
     gte_SetRotMatrix(D_800F78A4->unk14);
     gte_SetTransMatrix(D_800F78A4->unk14);
 }
@@ -491,7 +491,7 @@ void func_800D1494(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5, s
     k = p[3];
     data += k * 2;
     if (arg1 != 0) {
-        n = func_800CF5A4(out, n, v, arg1);
+        n = btlfx_pushTrailPoint(out, n, v, arg1);
     }
     if (mode == 0) {
         func_800D12C4((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
@@ -1405,9 +1405,9 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     t = (arg2 << 12) / h->unk0;
     gte_stsxy(sxy);
     if (h->unk4 == 0) {
-        func_800CFA00(h->unk8, h->unkC, t, p);
+        btlfx_lerpVec(h->unk8, h->unkC, t, p);
         for (i = 0; i < h->unk2; i++, e++) {
-            func_800CFA00(sxy, p, e->unk6 * 2, q);
+            btlfx_lerpVec(sxy, p, e->unk6 * 2, q);
             if (arg2 >= e->unk8) {
                 d = arg2 - e->unk8;
                 if (d < e->unkA) {
@@ -1424,7 +1424,7 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
         p[0] = sxy[0] + ((math_cos(r) * a) >> 12);
         p[1] = sxy[1] + ((math_sin(r) * a) >> 12);
         for (i = 0; i < h->unk2; i++, e++) {
-            func_800CFA00(sxy, p, e->unk6 * 2, q);
+            btlfx_lerpVec(sxy, p, e->unk6 * 2, q);
             if (arg2 >= e->unk8) {
                 d = arg2 - e->unk8;
                 if (d < e->unkA) {
@@ -1944,7 +1944,7 @@ loop:
             func_800DA138(e->unk10, e, init.unk8, init.unk4, init.unk14);
         }
         if (init.unk0 != 0) {
-            e->unkC = (void *)func_800D6D8C(e, func_800CFC0C(init.unk0));
+            e->unkC = (void *)func_800D6D8C(e, btlfx_align4(init.unk0));
         }
     }
     args[0] = arg2;
@@ -2006,7 +2006,7 @@ s32 func_800D71C8(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s32 arg4, s16 *arg5) 
         func_800E750C(arg0, arg5);
     }
     t = (arg2 << 12) / arg3;
-    func_800CFA00(arg5, arg1, t, sp10);
+    btlfx_lerpVec(arg5, arg1, t, sp10);
     if (arg4 != 0) {
         sp10[1] -= (math_sin(t >> 1) * arg4) >> 12;
     }
@@ -2033,7 +2033,7 @@ s32 func_800D72BC(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32 arg5) 
     if (t > 0x1000) {
         t = 0x1000;
     }
-    func_800CFA00(arg4, arg1, t, sp10);
+    btlfx_lerpVec(arg4, arg1, t, sp10);
     func_800E76DC(0x10, sp10);
     return arg2 >= arg3 - 1;
 }
@@ -2535,7 +2535,7 @@ void func_800D85F8(Unk800F78A40 *arg0, s32 arg1, s32 arg2) {
 }
 
 void func_800D8658(s32 arg0, u8 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     func_800D86E0(arg0, u->unkA4[0]);
     if (arg1) {
         u->unk86[0] = u->unkA0->unk20;
@@ -2546,7 +2546,7 @@ void func_800D8658(s32 arg0, u8 arg1) {
 
 void func_800D86E0(s32 arg0, s32 arg1) {
     if (func_800D8A64(arg0) != 0) {
-        BtlUnit *u = func_800E716C(arg0);
+        BtlUnit *u = btl_getUnit(arg0);
         BtlUnit9C *m = u->unk9C;
         if (m != NULL) {
             m->unkC = (BtlUnit9CC *)arg1;
@@ -2556,11 +2556,11 @@ void func_800D86E0(s32 arg0, s32 arg1) {
 }
 
 s32 func_800D8740(s32 arg0, s32 arg1) {
-    return func_800E716C(arg0)->unkA4[arg1];
+    return btl_getUnit(arg0)->unkA4[arg1];
 }
 
 void func_800D8774(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (arg1 >= u->unk9C->unkC->unk2) {
         arg1 = u->unk9C->unkC->unk2;
     }
@@ -2568,15 +2568,15 @@ void func_800D8774(s32 arg0, s32 arg1) {
 }
 
 s32 func_800D87D0(s32 arg0) {
-    return func_800E716C(arg0)->unk9C->unkC->unk2;
+    return btl_getUnit(arg0)->unk9C->unkC->unk2;
 }
 
 u8 func_800D87FC(s32 arg0) {
-    return func_800E716C(arg0)->unkA0->unk3A;
+    return btl_getUnit(arg0)->unkA0->unk3A;
 }
 
 void func_800D8820(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     s16 a[4];
     s16 b[4];
     s16 c[4];
@@ -2589,7 +2589,7 @@ void func_800D8820(s32 arg0, s32 arg1) {
         b[0] = 0;
         b[1] = 0;
         b[2] = 0;
-        func_800CF808(a, b, c);
+        btlfx_aimAngles(a, b, c);
         func_800E7824(arg0, c);
         break;
     case 2:
@@ -2601,29 +2601,29 @@ void func_800D8820(s32 arg0, s32 arg1) {
 }
 
 void func_800D8914(s32 arg0) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (func_800D8A64(arg0) != 0) {
-        func_800AD90C(0xD000, func_800AE47C((u8)u->unk68 >> 5, 0), 0, func_800E976C(arg0), 0x7F);
+        func_800AD90C(0xD000, func_800AE47C((u8)u->unk68 >> 5, 0), 0, btl_soundPan(arg0), 0x7F);
     }
 }
 
 void func_800D8988(s32 arg0, s32 arg1, s32 arg2) {
-    BtlUnit *a = func_800E716C(arg0);
-    BtlUnit *b = func_800E716C(arg1);
+    BtlUnit *a = btl_getUnit(arg0);
+    BtlUnit *b = btl_getUnit(arg1);
     if (func_800D8A64(arg0) != 0) {
         func_800C2200(a, b);
     }
 }
 
 u32 func_800D89E8(s32 arg0) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     u32 f = u->unk68;
     u->unk68 = f | 0x200000;
     return (f >> 21) & 1;
 }
 
 void func_800D8A20(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     u->unk68 = (u->unk68 & ~0x200000) | ((arg1 & 1) << 21);
 }
 
@@ -2631,7 +2631,7 @@ s32 func_800D8A64(s32 arg0) {
     if (arg0 == 0xFF) {
         arg0 = 0;
     }
-    return func_800E716C(arg0)->unk68 & 1;
+    return btl_getUnit(arg0)->unk68 & 1;
 }
 
 s32 func_800D8A94(s32 arg0, s32 arg1) {
@@ -2643,22 +2643,22 @@ s32 func_800D8ACC(s32 arg0, s32 arg1) {
     if (arg0 == 0xFF || arg1 == 0xFF) {
         return 0;
     }
-    a = func_800E716C(arg0);
-    return a == func_800E716C(arg1);
+    a = btl_getUnit(arg0);
+    return a == btl_getUnit(arg1);
 }
 
 s32 func_800D8B20(s32 arg0) {
-    s32 idx = (func_800E716C(arg0)->unk68 >> 1) & 0xF;
+    s32 idx = (btl_getUnit(arg0)->unk68 >> 1) & 0xF;
     return g_gameState->unk1C->characters[idx].unk34.b.unk4;
 }
 
 s32 func_800D8B70(s32 arg0) {
-    s32 idx = (func_800E716C(arg0)->unk68 >> 1) & 0xF;
+    s32 idx = (btl_getUnit(arg0)->unk68 >> 1) & 0xF;
     return g_gameState->unk1C->characters[idx].equip[0];
 }
 
 void func_800D8BB8(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (arg1 != 0) {
         u->unk68 &= ~0x400000;
     } else {
@@ -2667,7 +2667,7 @@ void func_800D8BB8(s32 arg0, s32 arg1) {
 }
 
 void func_800D8C08(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (arg1 != 0) {
         func_800BD53C(u);
     } else {
@@ -2680,7 +2680,7 @@ s32 func_800D8C4C(s32 arg0) {
 }
 
 u32 func_800D8C70(s32 arg0, u32 arg1) {
-    return func_800E716C(arg0)->status & arg1;
+    return btl_getUnit(arg0)->status & arg1;
 }
 
 s32 func_800D8C9C(void) {
@@ -2705,7 +2705,7 @@ s32 func_800D8CD8(u8 *arg0, s32 arg1, s32 arg2) {
 }
 
 s32 func_800D8D08(u8 *arg0, s32 arg1, s32 arg2) {
-    BtlUnit *u = func_800E716C(arg0[0]);
+    BtlUnit *u = btl_getUnit(arg0[0]);
     switch (arg0[1]) {
     case 0:
         func_800C22CC(u, 0x456, 0x7F);
@@ -3005,7 +3005,7 @@ s32 func_800D974C(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
         } else {
             b[1] = a[1];
         }
-        func_800CF808(b, a, c);
+        btlfx_aimAngles(b, a, c);
         func_800CFD78(b, c, arg0->unk4, arg0->unk14);
         arg0->unk14[0] -= a[0];
         arg0->unk14[1] -= a[1];
@@ -3049,7 +3049,7 @@ s32 func_800D9990(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
         } else {
             b[1] = a[1];
         }
-        func_800CF808(b, a, c);
+        btlfx_aimAngles(b, a, c);
         func_800CFD78(b, c, arg0->unk4, arg0->unk14);
         m = arg0->unk8;
         if (m == 1) {
@@ -3072,7 +3072,7 @@ s32 func_800D9AB0(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
 
     if (arg0->unk3 == 0 || func_800D8A64(arg0->unk1) == 0) {
-        func_800E716C(arg0->unk0);
+        btl_getUnit(arg0->unk0);
         if (v == 0) {
             func_800E750C(arg0->unk0, pos);
             if (arg0->unk1 == 0xFF) {
@@ -3082,7 +3082,7 @@ s32 func_800D9AB0(Unk800D805C *arg0, s32 arg1, s32 *arg2) {
             } else {
                 func_800E73EC(arg0->unk1, tgt);
             }
-            func_800CF808(pos, tgt, arg0->unkC);
+            btlfx_aimAngles(pos, tgt, arg0->unkC);
             arg0->unkC[0] = 0;
             if (arg0->unk2 == 1) {
                 arg0->unkC[1] += 0x800;
@@ -3121,7 +3121,7 @@ s32 func_800D9D58(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     BtlUnitA0 *a;
 
-    u = func_800E716C(arg0->unk0);
+    u = btl_getUnit(arg0->unk0);
     if (arg0->unk2 == 0 || func_800D8A64(arg0->unk1) == 0) {
         if (v == 0) {
             arg0->unk8[0] = u->unkA0->unk20 - u->unk86[0];
@@ -3207,7 +3207,7 @@ s32 func_800DA0FC(void) {
 }
 
 s32 func_800DA104(s32 arg0, s32 arg1) {
-    return (func_800CFC0C(arg0) + 4) * arg1 + 0xC;
+    return (btlfx_align4(arg0) + 4) * arg1 + 0xC;
 }
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DA138);
@@ -3703,7 +3703,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     d->unk58 = (s32)e->unk44;
                     e->unk48 = 0x50000 - e->unk10;
                     d->unk5C = e->unk48;
-                    func_800DC748(&e->unk90, 1);
+                    btlfx_initSummonModels(&e->unk90, 1);
                     d->unk60 = Hi_RegisterSummonModel(e, e->unk180[0] != (s32)e->unk40 ? (s16 *)D_80100D90 : NULL);
                     d->unk50 = 2;
                     break;
@@ -3791,14 +3791,14 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
 }
 
 u16 Hi_RegisterSolidEffModel(BtlUnit9C8 *arg0) {
-    BtlObjSlot *p = func_800DC494();
+    BtlObjSlot *p = btlfx_allocEffModel();
     if (p == NULL) {
-        sprintf(D_80101470, "Hi_RegisterSolidEffModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterSolidEffModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     if (p->unk0 == NULL) {
-        sprintf(D_80101470, "Hi_RegisterSolidEffModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterSolidEffModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     p->unk1C = 1;
     p->unk1D = 0;
@@ -3812,14 +3812,14 @@ u16 Hi_RegisterSolidEffModel(BtlUnit9C8 *arg0) {
 }
 
 u16 Hi_RegisterGouEffModel(BtlUnit9C8 *arg0) {
-    BtlObjSlot *p = func_800DC494();
+    BtlObjSlot *p = btlfx_allocEffModel();
     if (p == NULL) {
-        sprintf(D_80101470, "Hi_RegisterGouEffModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterGouEffModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     if (p->unk0 == NULL) {
-        sprintf(D_80101470, "Hi_RegisterGouEffModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterGouEffModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     p->unk1C = 1;
     p->unk1D = 0;
@@ -3834,14 +3834,14 @@ u16 Hi_RegisterGouEffModel(BtlUnit9C8 *arg0) {
 
 u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 arg4) {
     s16 v[2];
-    BtlObjSlot *p = func_800DC494();
+    BtlObjSlot *p = btlfx_allocEffModel();
     if (p == NULL) {
-        sprintf(D_80101470, "Hi_RegisterTexEffModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterTexEffModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     if (p->unk0 == NULL) {
-        sprintf(D_80101470, "Hi_RegisterTexEffModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterTexEffModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     p->unk1C = 1;
     p->unk1D = 0;
@@ -3859,14 +3859,14 @@ u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 a
 }
 
 u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 arg3) {
-    BtlObjSlot *p = func_800DC494();
+    BtlObjSlot *p = btlfx_allocEffModel();
     if (p == NULL) {
-        sprintf(D_80101470, "Hi_RegisterTexListModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterTexListModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     if (p->unk0 == NULL) {
-        sprintf(D_80101470, "Hi_RegisterTexListModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterTexListModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     p->unk1C = 1;
     p->unk1D = 0;
@@ -3881,14 +3881,14 @@ u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 a
 }
 
 u16 Hi_RegisterTexPtrModel(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
-    BtlObjSlot *p = func_800DC494();
+    BtlObjSlot *p = btlfx_allocEffModel();
     if (p == NULL) {
-        sprintf(D_80101470, "Hi_RegisterTexPtrModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterTexPtrModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     if (p->unk0 == NULL) {
-        sprintf(D_80101470, "Hi_RegisterTexPtrModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterTexPtrModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     p->unk1C = 1;
     p->unk1D = 0;
@@ -3907,15 +3907,15 @@ s32 func_800DB8D8(void) {
 
 s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
     s16 t[6][2];
-    Unk8010141C *p = func_800DC4CC();
+    Unk8010141C *p = btlfx_allocSummonModel();
     s32 i;
     if (p == NULL) {
-        sprintf(D_80101470, "Hi_RegisterSummonModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterSummonModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     if (p->unk0 == NULL) {
-        sprintf(D_80101470, "Hi_RegisterSummonModel()\nmemory not enough!");
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, "Hi_RegisterSummonModel()\nmemory not enough!");
+        btlfx_error(g_btlfxErrorMsg);
     }
     p->unk4C = 1;
     p->unk50 = 0;
@@ -3946,26 +3946,26 @@ s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
 }
 
 void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
-    BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawEffModel()\nid:%d cannot use!");
+    BtlObjSlot *s = btlfx_getEffModel(arg3, "Hi_DrawEffModel()\nid:%d cannot use!");
     s32 n;
     s32 i;
     s32 v;
-    func_800DCA68(s->unk0, arg0, arg1, arg2);
-    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    btl_setModelTransform(s->unk0, arg0, arg1, arg2);
+    D_800F78A4->unk24 = btl_calcBoneMatrices(s->unk0, 0, D_800F78A4->unk24);
     s->unk0->unk10 = 0;
     n = s->unk0->unk8->unk3;
     for (i = 0; i < n; i++) {
-        func_800C6528(s->unk0, i);
+        btl_projectMesh(s->unk0, i);
         if (s->unk22 != 0) {
-            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+            D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                D_800F78A4->unk24 = btl_drawMesh(s->unk0, i, D_800F78A4->unk24);
                 break;
             case 1:
-                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, 0);
                 break;
             }
         }
@@ -3973,44 +3973,44 @@ void Hi_DrawEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
 }
 
 void Hi_DrawSliceEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3) {
-    BtlObjSlot *s = func_800DCFB0(arg3, "Hi_DrawSliceEffModel()\nid:%d cannot use!");
+    BtlObjSlot *s = btlfx_getEffModel(arg3, "Hi_DrawSliceEffModel()\nid:%d cannot use!");
     s32 n;
     s32 i;
-    func_800DCA68(s->unk0, arg0, arg1, arg2);
-    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    btl_setModelTransform(s->unk0, arg0, arg1, arg2);
+    D_800F78A4->unk24 = btl_calcBoneMatrices(s->unk0, 0, D_800F78A4->unk24);
     s->unk0->unk10 = 0;
     s->unk0->unk5A = arg1->vy - s->unk24;
     n = s->unk0->unk8->unk3;
     for (i = 0; i < n; i++) {
-        func_800DDF10(s->unk0, i);
+        btlfx_projectSliceMesh(s->unk0, i);
         D_800F78A4->unk24 = func_800DE11C(s->unk0, i, D_800F78A4->unk24);
     }
 }
 
 void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    BtlObjSlot *s = func_800DCFB0(arg1, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
+    BtlObjSlot *s = btlfx_getEffModel(arg1, "Hi_DrawEffModelByBone()\nid:%d cannot use!");
     s32 n;
     s32 i;
     s32 v;
-    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    D_800F78A4->unk24 = btl_calcBoneMatrices(s->unk0, 0, D_800F78A4->unk24);
     Hi_GetSummonBoneMatrix(arg2, arg3, (BtlBone *)&s->unk0->unk24);
     if (arg0 != 0) {
-        func_800DCB20(s->unk0, (VECTOR *)arg0);
+        btl_scaleModelMatrix(s->unk0, (VECTOR *)arg0);
     }
     s->unk0->unk10 = 0;
     n = s->unk0->unk8->unk3;
     for (i = 0; i < n; i++) {
-        func_800C6528(s->unk0, i);
+        btl_projectMesh(s->unk0, i);
         if (s->unk22 != 0) {
-            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+            D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                D_800F78A4->unk24 = btl_drawMesh(s->unk0, i, D_800F78A4->unk24);
                 break;
             case 1:
-                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, 0);
                 break;
             }
         }
@@ -4019,26 +4019,26 @@ void Hi_DrawEffModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     char *str = "Hi_DrawMorphEffModel()\nid:%d cannot use!";
-    BtlObjSlot *s = func_800DCFB0(arg3, str);
+    BtlObjSlot *s = btlfx_getEffModel(arg3, str);
     s32 n;
     s32 i;
-    s->unk0->unk5C = func_800DCFB0(arg4, str)->unk0->unk8;
-    func_800DCA68(s->unk0, arg0, arg1, arg2);
-    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    s->unk0->unk5C = btlfx_getEffModel(arg4, str)->unk0->unk8;
+    btl_setModelTransform(s->unk0, arg0, arg1, arg2);
+    D_800F78A4->unk24 = btl_calcBoneMatrices(s->unk0, 0, D_800F78A4->unk24);
     s->unk0->unk10 = 0;
     n = s->unk0->unk8->unk3;
     for (i = 0; i < n; i++) {
-        func_800DF15C(s->unk0, i, arg5);
+        btlfx_projectMorphMesh(s->unk0, i, arg5);
         if (s->unk22 != 0) {
-            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+            D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                D_800F78A4->unk24 = btl_drawMesh(s->unk0, i, D_800F78A4->unk24);
                 break;
             case 1:
-                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, 0);
                 break;
             }
         }
@@ -4047,29 +4047,29 @@ void Hi_DrawMorphEffModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 a
 
 void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     char *str = "Hi_DrawMorphModelByBone()\nid:%d cannot use!";
-    BtlObjSlot *s = func_800DCFB0(arg1, str);
+    BtlObjSlot *s = btlfx_getEffModel(arg1, str);
     s32 n;
     s32 i;
-    s->unk0->unk5C = func_800DCFB0(arg2, str)->unk0->unk8;
-    D_800F78A4->unk24 = func_800C7DAC(s->unk0, 0, D_800F78A4->unk24);
+    s->unk0->unk5C = btlfx_getEffModel(arg2, str)->unk0->unk8;
+    D_800F78A4->unk24 = btl_calcBoneMatrices(s->unk0, 0, D_800F78A4->unk24);
     Hi_GetSummonBoneMatrix(arg4, arg5, (BtlBone *)&s->unk0->unk24);
     if (arg0 != 0) {
-        func_800DCB20(s->unk0, (VECTOR *)arg0);
+        btl_scaleModelMatrix(s->unk0, (VECTOR *)arg0);
     }
     s->unk0->unk10 = 0;
     n = s->unk0->unk8->unk3;
     for (i = 0; i < n; i++) {
-        func_800DF15C(s->unk0, i, arg3);
+        btlfx_projectMorphMesh(s->unk0, i, arg3);
         if (s->unk22 != 0) {
-            D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, s->unk22);
+            D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, s->unk22);
         } else {
             switch ((u16)s->unk20) {
             case 0:
             case 2:
-                D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+                D_800F78A4->unk24 = btl_drawMesh(s->unk0, i, D_800F78A4->unk24);
                 break;
             case 1:
-                D_800F78A4->unk24 = func_800DD27C(s->unk0, i, D_800F78A4->unk24, 0);
+                D_800F78A4->unk24 = btl_drawMeshOffset(s->unk0, i, D_800F78A4->unk24, 0);
                 break;
             }
         }
@@ -4077,13 +4077,13 @@ void Hi_DrawMorphModelByBone(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
 }
 
 s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
-    Unk8010141C *s = func_800DD02C(arg3, "Hi_DrawSummonModel()\nid:%d cannot use!");
+    Unk8010141C *s = btlfx_getSummonModel(arg3, "Hi_DrawSummonModel()\nid:%d cannot use!");
     BtlUnit9CC *a;
     s32 n;
     s32 f;
     s32 c;
     s32 i;
-    func_800DCA68(s->unk0, arg0, arg1, arg2);
+    btl_setModelTransform(s->unk0, arg0, arg1, arg2);
     a = s->unk0->unkC;
     if (IS_OFFSET(a->unkC)) {
         a->unkC = (s32)a + a->unkC;
@@ -4103,27 +4103,27 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
         func_800C9040((TexAnimSet *)s->unk0->unk50);
     }
     f = s->unk50;
-    D_800F78A4->unk24 = func_800C7DAC(s->unk0, f, D_800F78A4->unk24);
+    D_800F78A4->unk24 = btl_calcBoneMatrices(s->unk0, f, D_800F78A4->unk24);
     s->unk50++;
     s->unk0->unk10 = 0;
     c = s->unk0->unk8->unk3;
     for (i = 0; i < c; i++) {
         if (!(s->unk0->unk14 & (1 << i))) {
-            func_800C6528(s->unk0, i);
-            D_800F78A4->unk24 = func_800C58E4(s->unk0, i, D_800F78A4->unk24);
+            btl_projectMesh(s->unk0, i);
+            D_800F78A4->unk24 = btl_drawMesh(s->unk0, i, D_800F78A4->unk24);
         }
     }
     return f;
 }
 
 void Hi_SetSummonMotion(BtlUnit9CC *arg0, s32 arg1) {
-    Unk8010141C *p = func_800DD02C(arg1, "Hi_SetSummonMotion()\nid:%d cannot use!");
+    Unk8010141C *p = btlfx_getSummonModel(arg1, "Hi_SetSummonMotion()\nid:%d cannot use!");
     p->unk50 = 0;
     p->unk0->unkC = arg0;
 }
 
-void func_800DC434(s32 arg0, s32 arg1) {
-    Unk8010141C *p = func_800DD02C(arg0, D_800A7F34);
+void Hi_SetSummonMotFrame(s32 arg0, s32 arg1) {
+    Unk8010141C *p = btlfx_getSummonModel(arg0, D_800A7F34);
     if (p->unk0->unkC->unk2 < arg1) {
         p->unk50 = 0;
     } else {
@@ -4131,8 +4131,8 @@ void func_800DC434(s32 arg0, s32 arg1) {
     }
 }
 
-BtlObjSlot *func_800DC494(void) {
-    BtlObjSlot *p = D_80100F1C;
+BtlObjSlot *btlfx_allocEffModel(void) {
+    BtlObjSlot *p = g_btlfxEffModels;
     s32 i;
     for (i = 0; i < 32; i++, p++) {
         if (p->unk1C == 0) {
@@ -4142,8 +4142,8 @@ BtlObjSlot *func_800DC494(void) {
     return NULL;
 }
 
-Unk8010141C *func_800DC4CC(void) {
-    Unk8010141C *p = D_8010141C;
+Unk8010141C *btlfx_allocSummonModel(void) {
+    Unk8010141C *p = g_btlfxSummonModels;
     s32 i;
     for (i = 0; i < 1; i++, p++) {
         if (p->unk4C == 0) {
@@ -4159,7 +4159,7 @@ void func_800DC500(void) {
 void func_800DC508(void) {
 }
 
-void func_800DC510(char *arg0) {
+void btlfx_halt(char *arg0) {
     D_80100E30.unkE8 = &D_80100E30.unk0[1];
     D_80100E30.unk0[0].unk70 = 0;
     D_80100E30.unk0[1].unk70 = 1;
@@ -4185,14 +4185,14 @@ void func_800DC510(char *arg0) {
     }
 }
 
-void func_800DC634(char *arg0) {
+void btlfx_error(char *arg0) {
     char buf[0x100];
     sprintf(buf, D_800A7F60, arg0);
-    func_800DC510(buf);
+    btlfx_halt(buf);
 }
 
-void func_800DC668(BtlModel *arg0, s32 arg1) {
-    BtlObjSlot *p = D_80100F1C;
+void btlfx_initEffModels(BtlModel *arg0, s32 arg1) {
+    BtlObjSlot *p = g_btlfxEffModels;
     s32 i;
     s32 j;
     for (i = 0; i < 32; i++, p++) {
@@ -4204,18 +4204,18 @@ void func_800DC668(BtlModel *arg0, s32 arg1) {
             p->unk4.unk0[j][1] = 0;
         }
     }
-    p = D_80100F1C;
+    p = g_btlfxEffModels;
     for (i = 0; i < arg1; i++, p++, arg0++) {
         p->unk0 = &arg0->unk0;
     }
 }
 
-void func_800DC6E8(s32 arg0) {
-    func_800DCFB0(arg0, D_800A7F78)->unk1C = 0;
+void Hi_FreeEffModel(s32 arg0) {
+    btlfx_getEffModel(arg0, D_800A7F78)->unk1C = 0;
 }
 
-void func_800DC710(void) {
-    BtlObjSlot *p = D_80100F1C;
+void btlfx_clearEffModels(void) {
+    BtlObjSlot *p = g_btlfxEffModels;
     s32 i;
     for (i = 0; i < 32; i++, p++) {
         p->unk1C = 0;
@@ -4224,8 +4224,8 @@ void func_800DC710(void) {
     }
 }
 
-void func_800DC748(BtlModel *arg0, s32 arg1) {
-    Unk8010141C *p = D_8010141C;
+void btlfx_initSummonModels(BtlModel *arg0, s32 arg1) {
+    Unk8010141C *p = g_btlfxSummonModels;
     s32 i;
     s32 j;
     for (i = 0; i < 1; i++, p++) {
@@ -4242,14 +4242,14 @@ void func_800DC748(BtlModel *arg0, s32 arg1) {
             p->unk1C[j][3] = 0;
         }
     }
-    p = D_8010141C;
+    p = g_btlfxSummonModels;
     for (i = 0; i < arg1; i++, p++, arg0++) {
         p->unk0 = &arg0->unk0;
     }
 }
 
-void func_800DC7E0(void) {
-    Unk8010141C *p = D_8010141C;
+void btlfx_clearSummonModels(void) {
+    Unk8010141C *p = g_btlfxSummonModels;
     s32 i;
     for (i = 0; i < 1; i++, p++) {
         p->unk4C = 0;
@@ -4260,19 +4260,19 @@ void func_800DC7E0(void) {
 }
 
 void func_800DC818(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(func_800E716C(arg0)->unk9C, arg1, arg2);
+    func_800DC9D0(btl_getUnit(arg0)->unk9C, arg1, arg2);
 }
 
 void func_800DC858(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(func_800E716C(arg0)->unk9C, D_800F78A4->unkC->unk25[arg1], arg2);
+    func_800DC9D0(btl_getUnit(arg0)->unk9C, D_800F78A4->unkC->unk25[arg1], arg2);
 }
 
 void func_800DC8AC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(func_800E716C(arg0)->unk9C, arg1, arg2);
+    func_800DCA18(btl_getUnit(arg0)->unk9C, arg1, arg2);
 }
 
 void func_800DC8EC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(func_800E716C(arg0)->unk9C, D_800F78A4->unkC->unk25[arg1], arg2);
+    func_800DCA18(btl_getUnit(arg0)->unk9C, D_800F78A4->unkC->unk25[arg1], arg2);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A7F34);
@@ -4282,11 +4282,11 @@ INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A7F60);
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A7F78);
 
 void Hi_GetSummonBonePos(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(func_800DD02C(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
+    func_800DC9D0(btlfx_getSummonModel(arg0, "Hi_GetSummonBonePos()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
 void Hi_GetSummonBoneMatrix(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(func_800DD02C(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
+    func_800DCA18(btlfx_getSummonModel(arg0, "Hi_GetSummonBoneMatrix()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
 void func_800DC9D0(BtlUnit9C *arg0, s32 arg1, u16 *arg2) {
@@ -4299,7 +4299,7 @@ void func_800DCA18(BtlUnit9C *arg0, s32 arg1, BtlBone *arg2) {
     *arg2 = arg0->unk20[arg1];
 }
 
-void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
+void btl_setModelTransform(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
     SVECTOR r;
     VECTOR t;
     if (arg1 != NULL) {
@@ -4319,7 +4319,7 @@ void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
         TransMatrix(&arg0->unk24, &t);
     }
     if (arg3 != 0) {
-        func_800DCB20(arg0, arg3);
+        btl_scaleModelMatrix(arg0, arg3);
     } else {
         arg0->unk54 = 0x1000;
         arg0->unk56 = 0x1000;
@@ -4329,7 +4329,7 @@ void func_800DCA68(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR *arg3) {
 }
 
 /* scales the model matrix by arg1 (MulMatrix0 with a diagonal matrix built word by word) */
-void func_800DCB20(BtlUnit9C *arg0, VECTOR *arg1) {
+void btl_scaleModelMatrix(BtlUnit9C *arg0, VECTOR *arg1) {
     MATRIX m;
     s32 *d;
     s16 x, y, z;
@@ -4353,16 +4353,16 @@ void func_800DCB20(BtlUnit9C *arg0, VECTOR *arg1) {
 }
 
 void Hi_ShowSummonModelMesh(s32 arg0, s32 arg1) {
-    func_800DD02C(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 &= ~(1 << arg1);
+    btlfx_getSummonModel(arg0, "Hi_ShowSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 &= ~(1 << arg1);
 }
 
 void Hi_HideSummonModelMesh(s32 arg0, s32 arg1) {
-    func_800DD02C(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 |= 1 << arg1;
+    btlfx_getSummonModel(arg0, "Hi_HideSummonModelMesh()\nid:%d cannot use!")->unk0->unk14 |= 1 << arg1;
 }
 
 /* starts texture animation arg1 of summon model arg0 (arg2: also set flag 2) */
 void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
-    Unk8010141C *p = func_800DD02C(arg0, "Hi_StartSummonTexAnim()\nid:%d cannot use!");
+    Unk8010141C *p = btlfx_getSummonModel(arg0, "Hi_StartSummonTexAnim()\nid:%d cannot use!");
     s32 off;
 
     if (arg2) {
@@ -4379,64 +4379,64 @@ void Hi_StartSummonTexAnim(s32 arg0, s32 arg1, u8 arg2) {
 }
 
 void Hi_StopSummonTexAnim(s32 arg0, s32 arg1) {
-    BtlUnit9C50 *e = &func_800DD02C(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->unk50[arg1];
+    BtlUnit9C50 *e = &btlfx_getSummonModel(arg0, "Hi_StopSummonTexAnim()\nid:%d cannot use!")->unk0->unk50[arg1];
     e->unk4 &= ~3;
 }
 
 void Hi_ModifyEffModelAbr(s32 arg0, s32 arg1) {
     if (arg1 != 0xFF) {
-        func_800C8E80(func_800DCFB0(arg0, "Hi_ModifyEffModelAbr()\nid:%d cannot use!")->unk0, (u16)(arg1 << 5));
+        btl_setModelAbr(btlfx_getEffModel(arg0, "Hi_ModifyEffModelAbr()\nid:%d cannot use!")->unk0, (u16)(arg1 << 5));
     }
 }
 
 void Hi_ModifyEffModelRGB(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
-    func_800C86C8(func_800DCFB0(arg0, "Hi_ModifyEffModelRGB()\nid:%d cannot use!")->unk0, arg1, arg2, arg3);
+    btl_setModelRgb(btlfx_getEffModel(arg0, "Hi_ModifyEffModelRGB()\nid:%d cannot use!")->unk0, arg1, arg2, arg3);
 }
 
 void Hi_SetEffModelOffset(s32 arg0, s16 arg1) {
-    func_800DCFB0(arg0, "Hi_SetEffModelOffset()\nid:%d cannot use!")->unk22 = arg1;
+    btlfx_getEffModel(arg0, "Hi_SetEffModelOffset()\nid:%d cannot use!")->unk22 = arg1;
 }
 
 void Hi_SetEffModelSlice(s32 arg0, s16 arg1) {
-    BtlObjSlot *p = func_800DCFB0(arg0, "Hi_SetEffModelSlice()\nid:%d cannot use!");
+    BtlObjSlot *p = btlfx_getEffModel(arg0, "Hi_SetEffModelSlice()\nid:%d cannot use!");
     p->unk1D = 1;
     p->unk24 = arg1;
 }
 
 void Hi_ModifySummonModelAbr(s32 arg0, s32 arg1) {
     if (arg1 != 0xFF) {
-        func_800C8E80(func_800DD02C(arg0, "Hi_ModifySummonModelAbr()\nid:%d cannot use!")->unk0, (u16)(arg1 << 5));
+        btl_setModelAbr(btlfx_getSummonModel(arg0, "Hi_ModifySummonModelAbr()\nid:%d cannot use!")->unk0, (u16)(arg1 << 5));
     }
 }
 
 void Hi_ModifySummonModelRGB(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
-    func_800C86C8(func_800DD02C(arg0, "Hi_ModifySummonModelRGB()\nid:%d cannot use!")->unk0, arg1, arg2, arg3);
+    btl_setModelRgb(btlfx_getSummonModel(arg0, "Hi_ModifySummonModelRGB()\nid:%d cannot use!")->unk0, arg1, arg2, arg3);
 }
 
-BtlObjSlot *func_800DCFB0(s32 arg0, char *arg1) {
-    BtlObjSlot *p = &D_80100F1C[arg0];
+BtlObjSlot *btlfx_getEffModel(s32 arg0, char *arg1) {
+    BtlObjSlot *p = &g_btlfxEffModels[arg0];
     if (p->unk1C == 0 || p->unk0 == NULL) {
-        sprintf(D_80101470, arg1, arg0);
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, arg1, arg0);
+        btlfx_error(g_btlfxErrorMsg);
     }
     return p;
 }
 
-Unk8010141C *func_800DD02C(s32 arg0, char *arg1) {
-    Unk8010141C *p = &D_8010141C[arg0];
+Unk8010141C *btlfx_getSummonModel(s32 arg0, char *arg1) {
+    Unk8010141C *p = &g_btlfxSummonModels[arg0];
     if (p->unk4C == 0 || p->unk0 == NULL) {
-        sprintf(D_80101470, arg1, arg0);
-        func_800DC634(D_80101470);
+        sprintf(g_btlfxErrorMsg, arg1, arg0);
+        btlfx_error(g_btlfxErrorMsg);
     }
     return p;
 }
 
 void func_800DD0B0(s32 arg0) {
-    func_800DD10C(func_800E716C(arg0)->unk9C);
+    func_800DD10C(btl_getUnit(arg0)->unk9C);
 }
 
 void func_800DD0DC(s32 arg0) {
-    func_800DD10C(func_800DCFB0(arg0, D_800A81A8)->unk0);
+    func_800DD10C(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
 }
 
 u8 func_800DD10C(BtlUnit9C *arg0) {
@@ -4450,7 +4450,7 @@ void func_800DD120(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     u16 i;
     Unk8E0 *e;
 
-    i = (func_800E716C(0x10)->unk68 >> 1) & 0xF;
+    i = (btl_getUnit(0x10)->unk68 >> 1) & 0xF;
     e = &g_gameState->unk1C->unk8E0[i];
     k = arg2 & 0xFFFF;
     k |= 0x20000;
@@ -4461,9 +4461,9 @@ void func_800DD120(BtlTexInfo *arg0, BtlTexInfo *arg1, s32 arg2) {
     *arg1 = *b;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DD27C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btl_drawMeshOffset);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DDF10);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_projectSliceMesh);
 
 u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     s32 opz;
@@ -4877,16 +4877,16 @@ u8 *func_800DE11C(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     return prim + sizeof(P_TAG);
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800DF15C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_projectMorphMesh);
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A81A8);
 
 void Hi_SplitMdlVertex(s32 arg0, s32 arg1, s32 arg2) {
-    func_800DF588(func_800DCFB0(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->unk0, arg1, arg2);
+    func_800DF588(btlfx_getEffModel(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
 s32 Hi_GetSplitMdlVertex(s32 arg0, s32 arg1) {
-    return func_800DF670(func_800DCFB0(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
+    return func_800DF670(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
 }
 
 void func_800DF588(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
@@ -4928,8 +4928,8 @@ s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
     return r * 8;
 }
 
-void func_800DF738(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
-    func_800DF7A0(func_800DCFB0(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
+void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
+    func_800DF7A0(btlfx_getEffModel(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
 }
 
 u16 func_800DF7A0(BtlUnit9C *arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
@@ -5165,9 +5165,9 @@ s32 func_800E0168(Pool30 *pool) {
         case 0:
             func_800DFE4C(e, rs, rp, &pos);
             if (m->unk18 != 0) {
-                e->unkC += func_800CF748(m->unk1A);
-                e->unkE += func_800CF748(m->unk1C);
-                e->unk10 += func_800CF748(m->unk1E);
+                e->unkC += btlfx_randCentered(m->unk1A);
+                e->unkE += btlfx_randCentered(m->unk1C);
+                e->unk10 += btlfx_randCentered(m->unk1E);
             }
             if (m->unk12 != 0) {
                 if (m->unk12 == 1) {
@@ -5200,7 +5200,7 @@ s32 func_800E0168(Pool30 *pool) {
             v.vy = e->unk24.s.y;
             switch (m->unk14) {
             case 0:
-                rs = (math_sin(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk28.s.x) >> 12;
+                rs = (math_sin(btlfx_lerp(m->unk1C, m->unk1E, t)) * e->unk28.s.x) >> 12;
                 break;
             case 1:
                 rs = (e->unk28.s.x * t) >> 12;
@@ -5226,7 +5226,7 @@ s32 func_800E0168(Pool30 *pool) {
             v.vy = e->unk28.s.x + math_sin(e->unkE);
             switch (m->unk14) {
             case 0:
-                rs = (math_sin(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk10) >> 12;
+                rs = (math_sin(btlfx_lerp(m->unk1C, m->unk1E, t)) * e->unk10) >> 12;
                 break;
             case 1:
                 rs = (e->unk10 * t) >> 12;
@@ -5243,7 +5243,7 @@ s32 func_800E0168(Pool30 *pool) {
             e->unkC += e->unkE;
             switch (m->unkE) {
             case 0:
-                rs = (math_sin(func_800CF9B0(m->unk1C, m->unk1E, t)) * e->unk20) >> 12;
+                rs = (math_sin(btlfx_lerp(m->unk1C, m->unk1E, t)) * e->unk20) >> 12;
                 break;
             case 1:
                 rs = (e->unk20 * t) >> 12;
@@ -5257,12 +5257,12 @@ s32 func_800E0168(Pool30 *pool) {
         case 5:
             func_800DFE4C(e, rs, rp, &pos);
             if (m->unk18 != 0) {
-                e->unkC += func_800CF748(m->unk1A);
-                e->unkE += func_800CF748(m->unk1C);
-                e->unk10 += func_800CF748(m->unk1E);
+                e->unkC += btlfx_randCentered(m->unk1A);
+                e->unkE += btlfx_randCentered(m->unk1C);
+                e->unk10 += btlfx_randCentered(m->unk1E);
             }
-            rs = func_800CF9B0(m->unk12, m->unk14, t);
-            func_800CF808((s16 *)&pos, (s16 *)owner->unk2C, (s16 *)&v);
+            rs = btlfx_lerp(m->unk12, m->unk14, t);
+            btlfx_aimAngles((s16 *)&pos, (s16 *)owner->unk2C, (s16 *)&v);
             v.vx += m->unk20;
             v.vy += m->unk22;
             func_800CFD78(&e->unkC, (s16 *)&v, rs, &e->unkC);
@@ -5284,7 +5284,7 @@ s32 func_800E0168(Pool30 *pool) {
             case 1:
                 /* padded: a zero word follows the first jump table */
                 __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-                cnt = func_800CF5F8(&pos, owner->unk64);
+                cnt = btlfx_distance(&pos, owner->unk64);
                 if (cnt <= range) {
                     d.vx = pos.vx - owner->unk64->vx;
                     d.vy = pos.vy - owner->unk64->vy;
@@ -5293,7 +5293,7 @@ s32 func_800E0168(Pool30 *pool) {
                 }
                 break;
             case 2:
-                cnt = func_800CF5F8(&pos, owner->unk64);
+                cnt = btlfx_distance(&pos, owner->unk64);
                 if (cnt <= range) {
                     d.vx = owner->unk64->vx - pos.vx;
                     d.vy = owner->unk64->vy - pos.vy;
@@ -5306,7 +5306,7 @@ s32 func_800E0168(Pool30 *pool) {
                 *(s32 *)&v.vx = *(s32 *)&pos.vx;
                 v.vy = owner->unk64->vy;
                 *(s32 *)&v.vz = *(s32 *)&pos.vz;
-                cnt = func_800CF5F8(&v, owner->unk64);
+                cnt = btlfx_distance(&v, owner->unk64);
                 ((s32 *)&v)[0] = 0;
                 v.vy = -0x1000;
                 break;
@@ -5325,13 +5325,13 @@ s32 func_800E0168(Pool30 *pool) {
                 }
                 break;
             case 7:
-                cnt = func_800CF5F8(&pos, owner->unk64);
+                cnt = btlfx_distance(&pos, owner->unk64);
                 break;
             case 8:
                 *(s32 *)&v.vx = *(s32 *)&pos.vx;
                 v.vy = owner->unk64->vy;
                 *(s32 *)&v.vz = *(s32 *)&pos.vz;
-                cnt = func_800CF5F8(&v, owner->unk64);
+                cnt = btlfx_distance(&v, owner->unk64);
                 break;
             case 9:
                 func_800D0674(&pos, owner->unk64, owner->unk68, (s32)&alpha, (s32)&cnt, &scale);
@@ -5434,7 +5434,7 @@ s32 func_800E0168(Pool30 *pool) {
                 scale = owner->unk1C;
             } else {
                 rs = owner->unk1C;
-                scale = (func_800CF9B0(el->unk1A << 7, el->unk1B << 7, t) * rs) >> 12;
+                scale = (btlfx_lerp(el->unk1A << 7, el->unk1B << 7, t) * rs) >> 12;
             }
             rs = el->unk2;
             if ((rs == 0xFF || rs == 0) && (u32)alpha < 0x801) {
@@ -5503,7 +5503,7 @@ s32 func_800E0168(Pool30 *pool) {
         }
         if (owner->unk4 != NULL && (e->unk12 & 0x7F)) {
             if (lvl >= 4) {
-                func_800CF808((s16 *)&rel, (s16 *)&pos, (s16 *)&v);
+                btlfx_aimAngles((s16 *)&rel, (s16 *)&pos, (s16 *)&v);
             }
             func_800E2F84(pool, e, &pos, &v);
         }
@@ -5695,7 +5695,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         }
         switch (def->unk4.unk0) {
         case 0:
-            v = func_800CF9B0(an->unk4, an->unk6, t);
+            v = btlfx_lerp(an->unk4, an->unk6, t);
             break;
         case 1:
             v = (math_sin(t >> 1) * an->unk4) >> 12;
@@ -5733,7 +5733,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         hdr = (EffElemHdr *)e->unk18 - 1;
         if (hdr->unkE == 1) {
             hdr->unk10.w = 0;
-            x = func_800CF9B0(0, hdr->unk0 * 4, t);
+            x = btlfx_lerp(0, hdr->unk0 * 4, t);
             y = (x & 3) << 5;
             v = x >> 2;
             if (y != 0) {
@@ -5753,7 +5753,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         b[0] = hdr->unk8;
         b[1] = hdr->unkC;
         b[2] = an->unk1A;
-        func_800CFA00(a.h, b, t, a.h);
+        btlfx_lerpVec(a.h, b, t, a.h);
         gte_lddp(0x1000 - t);
         gte_ldsv(an->unkC);
         gte_gpf12();
@@ -5765,15 +5765,15 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         gte_gpl12();
         gte_stsv(e->unk44);
         if (an->unk1C != 0) {
-            func_800CFA00(an->unk20, an->unk24, t, a.h);
+            btlfx_lerpVec(an->unk20, an->unk24, t, a.h);
             e->unk4C.w = a.w;
         }
         if (e->unk4 != NULL) {
             sub = e->unk4 - 1;
-            func_800CFA00(sub->unk14, sub->unk1C, t, e->unk50);
-            e->unk56 = func_800CF9B0(sub->unk1A, sub->unk22, t);
+            btlfx_lerpVec(sub->unk14, sub->unk1C, t, e->unk50);
+            e->unk56 = btlfx_lerp(sub->unk1A, sub->unk22, t);
             if (sub->unk24 != 0) {
-                func_800CFA00(sub->unk28, sub->unk2C, t, a.h);
+                btlfx_lerpVec(sub->unk28, sub->unk2C, t, a.h);
                 e->unk58.w = a.w;
             }
         }
@@ -5784,7 +5784,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
             a.h[1] = d2->unk40[0];
             b[0] = d2->unk3E;
             b[1] = d2->unk40[1];
-            func_800CFA00(a.h, b, t, a.h);
+            btlfx_lerpVec(a.h, b, t, a.h);
             e->unk3C = a.h[0];
             e->unk3E = a.h[1];
             break;
@@ -5795,14 +5795,14 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
             a.h[1] = d2->unk3E;
             b[0] = d2->unk40[0];
             b[1] = d2->unk40[1];
-            func_800CFA00(a.h, b, t, a.h);
+            btlfx_lerpVec(a.h, b, t, a.h);
             e->unk3C = a.h[0];
             e->unk3E = a.h[1];
             a.h[0] = d2->unk40[2];
             a.h[1] = d2->unk40[3];
             b[0] = d2->unk40[4];
             b[1] = d2->unk40[5];
-            func_800CFA00(a.h, b, t, a.h);
+            btlfx_lerpVec(a.h, b, t, a.h);
             e->unk40 = a.h[0];
             e->unk42 = a.h[1];
             break;
@@ -5813,7 +5813,7 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
             b[0] = d2->unk3E;
             b[1] = d2->unk40[1];
             b[2] = d2->unk40[3];
-            func_800CFA00(a.h, b, t, a.h);
+            btlfx_lerpVec(a.h, b, t, a.h);
             e->unk3C = a.h[0];
             e->unk3E = a.h[1];
             e->unk40 = a.h[2];
@@ -5822,19 +5822,19 @@ s32 func_800E1874(Pool30 *arg0, Pool6C *arg1) {
         switch (e->unk0->unk0) {
         case 0:
         case 5:
-            e->unk8 = func_800CF9B0(e->unk0->unk8, e->unk0->unkA, t);
+            e->unk8 = btlfx_lerp(e->unk0->unk8, e->unk0->unkA, t);
             break;
         case 1:
             f = e->unk0;
-            e->unk8 = func_800CF9B0(f->unk18, f->unk1A, t);
-            e->unkA = func_800CF9B0(f->unk20, f->unk22, t);
+            e->unk8 = btlfx_lerp(f->unk18, f->unk1A, t);
+            e->unkA = btlfx_lerp(f->unk20, f->unk22, t);
             break;
         case 2:
         case 4:
-            e->unk8 = func_800CF9B0(e->unk0->unk8, e->unk0->unkA, t);
+            e->unk8 = btlfx_lerp(e->unk0->unk8, e->unk0->unkA, t);
             break;
         case 3:
-            e->unk8 = func_800CF9B0(e->unk0->unk18, e->unk0->unk1A, t);
+            e->unk8 = btlfx_lerp(e->unk0->unk18, e->unk0->unk1A, t);
             break;
         }
         frame++;
@@ -5911,7 +5911,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             t = (frame << 12) / dur;
             hdr = (EffElemHdr *)e->unk18 - 1;
             acc = 0;
-            r = func_800CF690() & 0x7F;
+            r = btlfx_rand() & 0x7F;
             for (k = 0; k < hdr->unk0; k++) {
                 acc += hdr->unk10.b[k];
                 if (r < acc) {
@@ -5924,8 +5924,8 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             p->unk1C = k;
             p->unk1D = 0;
             if (k == 0xFF) {
-                acc = func_800CF9B0(((EffEmit *)e->unk0)->unk2, ((EffEmit *)e->unk0)->unk4, t);
-                acc += func_800CF748(((EffEmit *)e->unk0)->unk6);
+                acc = btlfx_lerp(((EffEmit *)e->unk0)->unk2, ((EffEmit *)e->unk0)->unk4, t);
+                acc += btlfx_randCentered(((EffEmit *)e->unk0)->unk6);
                 if (acc <= 0) {
                     acc = 1;
                 }
@@ -5934,8 +5934,8 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 if (el->unk4 == 1) {
                     acc = el->unk8;
                 } else {
-                    acc = func_800CF9B0(((EffEmit *)e->unk0)->unk2, ((EffEmit *)e->unk0)->unk4, t);
-                    acc += func_800CF748(((EffEmit *)e->unk0)->unk6);
+                    acc = btlfx_lerp(((EffEmit *)e->unk0)->unk2, ((EffEmit *)e->unk0)->unk4, t);
+                    acc += btlfx_randCentered(((EffEmit *)e->unk0)->unk6);
                     if (acc <= 0) {
                         acc = 1;
                     }
@@ -5946,20 +5946,20 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 gte_lddp(frame);
                 gte_ldsv(&off);
                 gte_gpf0();
-                ang.vx = (el->unk11[0] * 16 + func_800CF748(el->unk17[0] * 16)) & 0xFFF;
-                ang.vy = (el->unk11[1] * 16 + func_800CF748(el->unk17[1] * 16)) & 0xFFF;
-                ang.vz = (el->unk11[2] * 16 + func_800CF748(el->unk17[2] * 16)) & 0xFFF;
+                ang.vx = (el->unk11[0] * 16 + btlfx_randCentered(el->unk17[0] * 16)) & 0xFFF;
+                ang.vy = (el->unk11[1] * 16 + btlfx_randCentered(el->unk17[1] * 16)) & 0xFFF;
+                ang.vz = (el->unk11[2] * 16 + btlfx_randCentered(el->unk17[2] * 16)) & 0xFFF;
                 gte_lddp(1);
                 gte_ldsv(&ang);
                 gte_gpl0();
-                p->unk13 = func_800CF748(el->unk10);
+                p->unk13 = btlfx_randCentered(el->unk10);
                 gte_stsv(&p->unk14);
             }
             p->unk1F = e->unkE % 255 + 1;
             p->unk1B = acc;
             p->unk1A = 0;
             p->unk2C = e;
-            p->unk1E = func_800CF748(anim->unkA) + 0x40;
+            p->unk1E = btlfx_randCentered(anim->unkA) + 0x40;
             if (((EffEmit *)e->unk0)->unk1 != 0) {
                 p->unk12 = 0x7F;
             } else {
@@ -5971,8 +5971,8 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             }
             switch (e->unk24->unk0) {
             case 0:
-                func_800CF788(&rot);
-                acc = func_800CF708(e->unk3C, e->unk3E);
+                btlfx_randRotation(&rot);
+                acc = btlfx_randRange(e->unk3C, e->unk3E);
                 if (((EffTailSpawn *)e->unk24)->unk44.cd == 1) {
                     if (rot.vx > 0x800) {
                         rot.vx -= 0x800;
@@ -5991,10 +5991,10 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 break;
             case 1:
                 rot.vx = 0;
-                rot.vy = func_800CF690();
+                rot.vy = btlfx_rand();
                 rot.vz = 0;
-                func_800CFCA8(&rot, func_800CF708(e->unk3C, e->unk3E), (s32)&off);
-                off.vy = func_800CF708(e->unk40, e->unk42);
+                func_800CFCA8(&rot, btlfx_randRange(e->unk3C, e->unk3E), (s32)&off);
+                off.vy = btlfx_randRange(e->unk40, e->unk42);
                 if (((EffTailSpawn *)e->unk24)->unk4C == 1) {
                     rot.vx = 0x400;
                     rot.vy = 0;
@@ -6007,9 +6007,9 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             case 2:
                 ((XY32 *)&ang)[0].w = ((XY32 *)&e->unk5C)[0].w;
                 ((XY32 *)&ang)[1].w = ((XY32 *)&e->unk5C)[1].w;
-                d58 = func_800CF690();
-                acc = func_800CF708(e->unk40, e->unk42);
-                r = func_800CF708(e->unk3C, e->unk3E);
+                d58 = btlfx_rand();
+                acc = btlfx_randRange(e->unk40, e->unk42);
+                r = btlfx_randRange(e->unk3C, e->unk3E);
                 *(s32 *)&off.vx = 0;
                 *(s32 *)&off.vz = 0;
                 func_800D044C(&off, (s32)&off, acc, (XY32 *)&ang, r, d58);
@@ -6024,11 +6024,11 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 base = e->unk28;
                 break;
             case 3:
-                func_800CF808((s16 *)e->unk28, (s16 *)e->unk2C, &ang.vx);
-                d58 = func_800CF690();
-                acc = func_800CF708(e->unk40, e->unk42);
-                r = func_800CF708(e->unk3C, e->unk3E);
-                func_800CFA00((s16 *)e->unk28, (s16 *)e->unk2C, acc, &off.vx);
+                btlfx_aimAngles((s16 *)e->unk28, (s16 *)e->unk2C, &ang.vx);
+                d58 = btlfx_rand();
+                acc = btlfx_randRange(e->unk40, e->unk42);
+                r = btlfx_randRange(e->unk3C, e->unk3E);
+                btlfx_lerpVec((s16 *)e->unk28, (s16 *)e->unk2C, acc, &off.vx);
                 func_800D044C(&off, (s32)&off, 0, (XY32 *)&ang, r, d58);
                 if (((EffTailSpawn *)e->unk24)->unk4C == 1) {
                     ((XY32 *)&rot)[0].w = ((XY32 *)&ang)[0].w;
@@ -6051,12 +6051,12 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 if (e->unk40 != 0) {
                     n = e->unk40;
                 }
-                acc = func_800CF690() % n;
-                r = func_800CF690() & 0xFFF;
+                acc = btlfx_rand() % n;
+                r = btlfx_rand() & 0xFFF;
                 d58 = (e->unk3C * r) >> 12;
                 y4 = (e->unk3E * r) >> 12;
-                r = func_800CF9DC(d58, y4, acc, n);
-                n = func_800CF690();
+                r = btlfx_lerpRatio(d58, y4, acc, n);
+                n = btlfx_rand();
                 *(s32 *)&off.vx = 0;
                 *(s32 *)&off.vz = 0;
                 func_800D044C(&off, (s32)&off, acc, (XY32 *)&ang, r, n);
@@ -6074,7 +6074,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                     func_800D044C(&rot, (s32)&rot, e->unk40, (XY32 *)&ang, y4, n);
                     ((XY32 *)&ang)[0].w = ((XY32 *)&rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)&rot)[1].w;
-                    func_800CF808(&tmp.vx, &ang.vx, &rot.vx);
+                    btlfx_aimAngles(&tmp.vx, &ang.vx, &rot.vx);
                 }
                 base = e->unk28;
                 break;
@@ -6098,22 +6098,22 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             p->unk0.vz = (off.vz + base->vz) << 12;
             switch (anim->unk28.pad) {
             case 1:
-                rot.vx += func_800CF748(anim->unk30.pad);
-                rot.vy += func_800CF748(anim->unk30.pad);
+                rot.vx += btlfx_randCentered(anim->unk30.pad);
+                rot.vy += btlfx_randCentered(anim->unk30.pad);
                 rot.vx = (rot.vx + 0x800) & 0xFFF;
                 break;
             case 2:
-                func_800CF788(&rot);
+                btlfx_randRotation(&rot);
                 break;
             case 3:
                 ((XY32 *)&rot)[0].w = ((XY32 *)&e->unk5C)[0].w;
                 ((XY32 *)&rot)[1].w = ((XY32 *)&e->unk5C)[1].w;
-                rot.vx += func_800CF748(anim->unk30.pad);
-                rot.vy += func_800CF748(anim->unk30.pad);
+                rot.vx += btlfx_randCentered(anim->unk30.pad);
+                rot.vy += btlfx_randCentered(anim->unk30.pad);
                 break;
             case 0:
-                rot.vx += func_800CF748(anim->unk30.pad);
-                rot.vy += func_800CF748(anim->unk30.pad);
+                rot.vx += btlfx_randCentered(anim->unk30.pad);
+                rot.vy += btlfx_randCentered(anim->unk30.pad);
                 break;
             }
             if (el != NULL && el->unk7 != 0) {
@@ -6124,25 +6124,25 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             case 1: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 acc = e->unkA;
-                func_800CFCA8(&rot, acc + func_800CF748(mot->unk24), (s32)&p->unkC);
-                acc = mot->unk10 + func_800CF748(mot->unk12);
+                func_800CFCA8(&rot, acc + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
+                acc = mot->unk10 + btlfx_randCentered(mot->unk12);
                 if (acc < 0) {
                     acc = 0;
                 }
                 p->unk28.s.y = acc;
                 p->unk24.w = *(s32 *)&rot.vx;
-                p->unk20 = mot->unk8 + func_800CF748(mot->unkC);
-                p->unk22 = mot->unkA + func_800CF748(mot->unkE);
-                p->unk28.s.x = e->unk8 + func_800CF748(mot->unk16);
+                p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
+                p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
+                p->unk28.s.x = e->unk8 + btlfx_randCentered(mot->unk16);
                 break;
             }
             case 2: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 p->unk28.w = *(s32 *)&rot.vx;
-                func_800CFA00(&mot->unk10, &mot->unk14, t, &tmp.vx);
-                p->unkE = tmp.vy + func_800CF748(mot->unkE);
-                p->unk24.s.y = tmp.vx + func_800CF748(mot->unk18);
-                p->unk22 = e->unk8 + func_800CF748(mot->unkC);
+                btlfx_lerpVec(&mot->unk10, &mot->unk14, t, &tmp.vx);
+                p->unkE = tmp.vy + btlfx_randCentered(mot->unkE);
+                p->unk24.s.y = tmp.vx + btlfx_randCentered(mot->unk18);
+                p->unk22 = e->unk8 + btlfx_randCentered(mot->unkC);
                 *(s32 *)&tmp.vx = 0;
                 *(s32 *)&tmp.vz = 0;
                 func_800D0674(&off, &tmp, &rot, (s32)&k, (s32)&r, &d58);
@@ -6158,22 +6158,22 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             case 3: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 *(s32 *)&p->unkC = *(s32 *)&rot.vx;
-                p->unk20 = mot->unk8 + func_800CF748(mot->unkC);
-                p->unk22 = mot->unkA + func_800CF748(mot->unkE);
-                p->unk10 = e->unk8 + func_800CF748(mot->unk16);
-                p->unk24.s.y = rot.vx + func_800CF748(mot->unk10);
-                p->unk28.s.x = rot.vy + func_800CF748(mot->unk12);
+                p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
+                p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
+                p->unk10 = e->unk8 + btlfx_randCentered(mot->unk16);
+                p->unk24.s.y = rot.vx + btlfx_randCentered(mot->unk10);
+                p->unk28.s.x = rot.vy + btlfx_randCentered(mot->unk12);
                 p->unk24.s.x = 0;
                 break;
             }
             case 4: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 p->unk28.w = *(s32 *)&rot.vx;
-                func_800CFA00(&mot->unk10, &mot->unk14, t, &tmp.vx);
-                p->unkE = tmp.vy + func_800CF748(mot->unk1A);
-                p->unk20 = tmp.vx + func_800CF748(mot->unk18);
-                p->unk22 = e->unk8 + func_800CF748(mot->unkC);
-                p->unkC = func_800CF690();
+                btlfx_lerpVec(&mot->unk10, &mot->unk14, t, &tmp.vx);
+                p->unkE = tmp.vy + btlfx_randCentered(mot->unk1A);
+                p->unk20 = tmp.vx + btlfx_randCentered(mot->unk18);
+                p->unk22 = e->unk8 + btlfx_randCentered(mot->unkC);
+                p->unkC = btlfx_rand();
                 p->unk24.w = 0;
                 p->unk10 = 0;
                 break;
@@ -6182,8 +6182,8 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
             case 5: {
                 EffEmit *mot = (EffEmit *)e->unk0;
                 acc = e->unk8;
-                func_800CFCA8(&rot, acc + func_800CF748(mot->unkC), (s32)&p->unkC);
-                acc = mot->unkE + func_800CF748(mot->unk10);
+                func_800CFCA8(&rot, acc + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
+                acc = mot->unkE + btlfx_randCentered(mot->unk10);
                 if (acc < 0) {
                     acc = 0;
                 }
@@ -6228,7 +6228,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
         frame = e->unk1A;
         t = (frame << 12) / e->unk1B;
         if ((!(e->unk12 & 0x80) || owner->unk38 < owner->unk24->unk4.unk2) && frame >= sub->unk11 - 1) {
-            r = func_800CF9B0(sub->unk0, sub->unk2, t);
+            r = btlfx_lerp(sub->unk0, sub->unk2, t);
             cnt = r >> 8;
             k = (e->unk12 & 0x7F) + ((r >> 1) & 0x7F);
             if (k >= 0x80) {
@@ -6249,7 +6249,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     return;
                 }
                 owner->unk34.s.y++;
-                cnt = func_800CF690() & 0x7F;
+                cnt = btlfx_rand() & 0x7F;
                 k = 0;
                 r = 0;
                 for (; k < sub->unkD; k++) {
@@ -6266,8 +6266,8 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 p->unk1C = cnt;
                 p->unk1D = 0;
                 if (cnt == 0xFF) {
-                    r = func_800CF9B0(((EffEmit *)owner->unk4)->unk2, ((EffEmit *)owner->unk4)->unk4, t);
-                    r += func_800CF748(((EffEmit *)owner->unk4)->unk6);
+                    r = btlfx_lerp(((EffEmit *)owner->unk4)->unk2, ((EffEmit *)owner->unk4)->unk4, t);
+                    r += btlfx_randCentered(((EffEmit *)owner->unk4)->unk6);
                     if (r <= 0) {
                         r = 1;
                     }
@@ -6276,8 +6276,8 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     if (el->unk4 == 1) {
                         r = el->unk8;
                     } else {
-                        r = func_800CF9B0(((EffEmit *)owner->unk4)->unk2, ((EffEmit *)owner->unk4)->unk4, t);
-                    r += func_800CF748(((EffEmit *)owner->unk4)->unk6);
+                        r = btlfx_lerp(((EffEmit *)owner->unk4)->unk2, ((EffEmit *)owner->unk4)->unk4, t);
+                    r += btlfx_randCentered(((EffEmit *)owner->unk4)->unk6);
                         if (r <= 0) {
                             r = 1;
                         }
@@ -6288,13 +6288,13 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     gte_lddp(frame);
                     gte_ldsv(&off);
                     gte_gpf0();
-                    ang.vx = (el->unk11[0] * 16 + func_800CF748(el->unk17[0] * 16)) & 0xFFF;
-                    ang.vy = (el->unk11[1] * 16 + func_800CF748(el->unk17[1] * 16)) & 0xFFF;
-                    ang.vz = (el->unk11[2] * 16 + func_800CF748(el->unk17[2] * 16)) & 0xFFF;
+                    ang.vx = (el->unk11[0] * 16 + btlfx_randCentered(el->unk17[0] * 16)) & 0xFFF;
+                    ang.vy = (el->unk11[1] * 16 + btlfx_randCentered(el->unk17[1] * 16)) & 0xFFF;
+                    ang.vz = (el->unk11[2] * 16 + btlfx_randCentered(el->unk17[2] * 16)) & 0xFFF;
                     gte_lddp(1);
                     gte_ldsv(&ang);
                     gte_gpl0();
-                    p->unk13 = func_800CF748(el->unk10);
+                    p->unk13 = btlfx_randCentered(el->unk10);
                     gte_stsv(&p->unk14);
                 }
                 if (((EffEmit *)owner->unk4)->unk1 != 0) {
@@ -6306,7 +6306,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 p->unk1B = r;
                 p->unk1A = 0;
                 p->unk2C = owner;
-                p->unk1E = func_800CF748(sub->unk12) + 0x40;
+                p->unk1E = btlfx_randCentered(sub->unk12) + 0x40;
                 owner->unk10++;
                 if (owner->unk14 != 0) {
                     owner->unk10 %= owner->unk12;
@@ -6314,45 +6314,45 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 gte_lddp(0x1000 - t);
                 gte_ldsv(sub->unk30);
                 gte_gpf12();
-                func_800CF788(&ang);
+                btlfx_randRotation(&ang);
                 gte_lddp(t);
                 gte_ldsv(sub->unk34);
                 gte_gpl12();
                 gte_stsv(&dir);
-                func_800CFCA8(&ang, func_800CF708(dir.vx, dir.vy), (s32)&off);
+                func_800CFCA8(&ang, btlfx_randRange(dir.vx, dir.vy), (s32)&off);
                 p->unk0.vx = (off.vx + pos->vx) << 12;
                 p->unk0.vy = (off.vy + pos->vy) << 12;
                 p->unk0.vz = (off.vz + pos->vz) << 12;
                 switch (sub->unkC) {
                 case 2:
-                    func_800CF788(&ang);
+                    btlfx_randRotation(&ang);
                     break;
                 case 3:
                     ((XY32 *)&ang)[0].w = ((XY32 *)&owner->unk5C)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)&owner->unk5C)[1].w;
-                    ang.vx += func_800CF748(sub->unkE);
-                    ang.vy += func_800CF748(sub->unkE);
+                    ang.vx += btlfx_randCentered(sub->unkE);
+                    ang.vy += btlfx_randCentered(sub->unkE);
                     break;
                 case 4:
                     ((XY32 *)&ang)[0].w = ((XY32 *)rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)rot)[1].w;
-                    ang.vx += func_800CF748(sub->unkE);
-                    ang.vy += func_800CF748(sub->unkE);
+                    ang.vx += btlfx_randCentered(sub->unkE);
+                    ang.vy += btlfx_randCentered(sub->unkE);
                     break;
                 case 0:
-                    ang.vx += func_800CF748(sub->unkE);
-                    ang.vy += func_800CF748(sub->unkE);
+                    ang.vx += btlfx_randCentered(sub->unkE);
+                    ang.vy += btlfx_randCentered(sub->unkE);
                     break;
                 case 5:
                     ((XY32 *)&ang)[0].w = ((XY32 *)rot)[0].w;
                     ((XY32 *)&ang)[1].w = ((XY32 *)rot)[1].w;
-                    ang.vx += func_800CF748(sub->unkE);
-                    ang.vy += func_800CF748(sub->unkE);
+                    ang.vx += btlfx_randCentered(sub->unkE);
+                    ang.vy += btlfx_randCentered(sub->unkE);
                     ang.vx = (ang.vx + 0x800) & 0xFFF;
                     break;
                 case 1:
-                    ang.vx += func_800CF748(sub->unkE);
-                    ang.vy += func_800CF748(sub->unkE);
+                    ang.vx += btlfx_randCentered(sub->unkE);
+                    ang.vy += btlfx_randCentered(sub->unkE);
                     ang.vx = (ang.vx + 0x800) & 0xFFF;
                     break;
                 }
@@ -6364,27 +6364,27 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 case 1:
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
-                    r = func_800CF9B0(mot->unk20, mot->unk22, t);
-                    func_800CFCA8(&ang, r + func_800CF748(mot->unk24), (s32)&p->unkC);
-                    r = mot->unk10 + func_800CF748(mot->unk12);
+                    r = btlfx_lerp(mot->unk20, mot->unk22, t);
+                    func_800CFCA8(&ang, r + btlfx_randCentered(mot->unk24), (s32)&p->unkC);
+                    r = mot->unk10 + btlfx_randCentered(mot->unk12);
                     if (r < 0) {
                         r = 0;
                     }
                     p->unk28.s.y = r;
                     p->unk24.w = *(s32 *)&ang.vx;
-                    p->unk20 = mot->unk8 + func_800CF748(mot->unkC);
-                    p->unk22 = mot->unkA + func_800CF748(mot->unkE);
-                    p->unk28.s.x = func_800CF9B0(mot->unk18, mot->unk1A, t) + func_800CF748(mot->unk16);
+                    p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
+                    p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
+                    p->unk28.s.x = btlfx_lerp(mot->unk18, mot->unk1A, t) + btlfx_randCentered(mot->unk16);
                     break;
                     }
                 case 2:
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
                     p->unk28.w = *(s32 *)&ang.vx;
-                    func_800CFA00(&mot->unk10, &mot->unk14, t, (s16 *)&dir);
-                    p->unkE = dir.vy + func_800CF748(mot->unkE);
-                    p->unk24.s.y = dir.vx + func_800CF748(mot->unk18);
-                    p->unk22 = func_800CF9B0(mot->unk8, mot->unkA, t) + func_800CF748(mot->unkC);
+                    btlfx_lerpVec(&mot->unk10, &mot->unk14, t, (s16 *)&dir);
+                    p->unkE = dir.vy + btlfx_randCentered(mot->unkE);
+                    p->unk24.s.y = dir.vx + btlfx_randCentered(mot->unk18);
+                    p->unk22 = btlfx_lerp(mot->unk8, mot->unkA, t) + btlfx_randCentered(mot->unkC);
                     *(s32 *)&dir.vx = 0;
                     *(s32 *)&dir.vz = 0;
                     func_800D0674(&off, &dir, &ang, (s32)&d40, (s32)&cnt, &k);
@@ -6401,11 +6401,11 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
                     *(s32 *)&p->unkC = *(s32 *)&ang.vx;
-                    p->unk20 = mot->unk8 + func_800CF748(mot->unkC);
-                    p->unk22 = mot->unkA + func_800CF748(mot->unkE);
-                    p->unk10 = func_800CF9B0(mot->unk18, mot->unk1A, t) + func_800CF748(mot->unk16);
-                    p->unk24.s.y = ang.vx + func_800CF748(mot->unk10);
-                    p->unk28.s.x = ang.vy + func_800CF748(mot->unk12);
+                    p->unk20 = mot->unk8 + btlfx_randCentered(mot->unkC);
+                    p->unk22 = mot->unkA + btlfx_randCentered(mot->unkE);
+                    p->unk10 = btlfx_lerp(mot->unk18, mot->unk1A, t) + btlfx_randCentered(mot->unk16);
+                    p->unk24.s.y = ang.vx + btlfx_randCentered(mot->unk10);
+                    p->unk28.s.x = ang.vy + btlfx_randCentered(mot->unk12);
                     p->unk24.s.x = 0;
                     break;
                     }
@@ -6413,11 +6413,11 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
                     p->unk28.w = *(s32 *)&ang.vx;
-                    func_800CFA00(&mot->unk10, &mot->unk14, t, (s16 *)&dir);
-                    p->unkE = dir.vy + func_800CF748(mot->unk1A);
-                    p->unk20 = dir.vx + func_800CF748(mot->unk18);
-                    p->unk22 = func_800CF9B0(mot->unk8, mot->unkA, t) + func_800CF748(mot->unkC);
-                    p->unkC = func_800CF690();
+                    btlfx_lerpVec(&mot->unk10, &mot->unk14, t, (s16 *)&dir);
+                    p->unkE = dir.vy + btlfx_randCentered(mot->unk1A);
+                    p->unk20 = dir.vx + btlfx_randCentered(mot->unk18);
+                    p->unk22 = btlfx_lerp(mot->unk8, mot->unkA, t) + btlfx_randCentered(mot->unkC);
+                    p->unkC = btlfx_rand();
                     p->unk24.w = 0;
                     p->unk10 = 0;
                     break;
@@ -6426,9 +6426,9 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                 case 5:
                     {
                     EffEmit *mot = (EffEmit *)owner->unk4;
-                    r = func_800CF9B0(mot->unk8, mot->unkA, t);
-                    func_800CFCA8(&ang, r + func_800CF748(mot->unkC), (s32)&p->unkC);
-                    r = mot->unkE + func_800CF748(mot->unk10);
+                    r = btlfx_lerp(mot->unk8, mot->unkA, t);
+                    func_800CFCA8(&ang, r + btlfx_randCentered(mot->unkC), (s32)&p->unkC);
+                    r = mot->unkE + btlfx_randCentered(mot->unk10);
                     if (r < 0) {
                         r = 0;
                     }
@@ -6448,7 +6448,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
 }
 
 void func_800E3B34(Heap *arg0, s32 arg1) {
-    s32 size = func_800CFC0C(arg1) - 0xC;
+    s32 size = btlfx_align4(arg1) - 0xC;
     arg0->unk0 = arg0->unkC;
     arg0->unk4 = size;
     arg0->unk8 = size;
@@ -6459,7 +6459,7 @@ s32 func_800E3B70(Heap *h, s32 size) {
     u8 *p;
     s32 *q;
 
-    sz = func_800CFC0C(size);
+    sz = btlfx_align4(size);
     if (h->unk4 < sz) {
         q = (s32 *)h->unkC;
         h->unk0 = (u8 *)q;
@@ -6476,7 +6476,7 @@ s32 func_800E3B70(Heap *h, s32 size) {
 }
 
 s32 func_800E3BF8(Heap *arg0, s32 arg1) {
-    s32 size = func_800CFC0C(arg1);
+    s32 size = btlfx_align4(arg1);
     s32 ret = 1;
     if (arg0->unk4 < size) {
         arg0->unk0 = arg0->unkC;
@@ -6529,8 +6529,8 @@ void func_800E3DA8(void) {
     func_800DA4E8();
     func_800E3C58();
     func_800E954C();
-    func_800DC710();
-    func_800DC7E0();
+    btlfx_clearEffModels();
+    btlfx_clearSummonModels();
     func_80054F80();
 }
 
@@ -6628,7 +6628,7 @@ s32 func_800E4218(s32 arg0, s32 arg1, s32 arg2) {
         if (t > 0x1000) {
             t = 0x1000;
         }
-        func_800CFA00((s16 *)a, (s16 *)b, t, (s16 *)c);
+        btlfx_lerpVec((s16 *)a, (s16 *)b, t, (s16 *)c);
         func_800E76DC(arg0, (s16 *)c);
         return arg2 >= n;
     }
@@ -6670,7 +6670,7 @@ s32 func_800E43D8(s32 arg0, s32 arg1, s16 *arg2, s32 arg3) {
     if (t > 0x1000) {
         t = 0x1000;
     }
-    func_800CFA00(arg2, a, t, b);
+    btlfx_lerpVec(arg2, a, t, b);
     func_800E76DC(arg0, b);
     return arg1 >= n;
 }
@@ -7063,7 +7063,7 @@ s32 func_800E5538(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
         if (func_800E788C(arg1->unk2) != 0) {
             return 1;
         }
-        arg1->unk3 = func_800C09A4(func_800E716C(arg1->unk2), 0x1000);
+        arg1->unk3 = func_800C09A4(btl_getUnit(arg1->unk2), 0x1000);
         return 0;
     }
     t = *arg3;
@@ -7199,8 +7199,8 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
                     if (arg1->unk1 == 0x10) {
                         func_800E7D3C(arg1->unk1, 1, &arg1->unk1C.vx);
                         func_800E769C(0, 0, v);
-                        func_800CF808(&arg1->unk1C.vx, v, arg1->unk24);
-                        if (func_800E716C(0) == func_800E716C(arg1->unk1) && arg1->unkA == 0x36) {
+                        btlfx_aimAngles(&arg1->unk1C.vx, v, arg1->unk24);
+                        if (btl_getUnit(0) == btl_getUnit(arg1->unk1) && arg1->unkA == 0x36) {
                             return 1;
                         }
                     } else {
@@ -7267,7 +7267,7 @@ s32 func_800E5DA8(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32 *arg4
         if (id == 0xFF) {
             id = -1;
         } else if (id == 0xFE) {
-            id = func_800CF690() % D_800F78A4->unkC->unk24;
+            id = btlfx_rand() % D_800F78A4->unkC->unk24;
         }
         if (a[1] == 0) {
             func_800E8DC8(id);
@@ -7319,7 +7319,7 @@ s32 func_800E5F24(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
             break;
         case 2:
             if (D_800FEC40.unkA.b.unk3 != 0) {
-                D_800FEC40.unkE = func_800CF690() % D_800FEC40.unkA.b.unk3;
+                D_800FEC40.unkE = btlfx_rand() % D_800FEC40.unkA.b.unk3;
             }
             r = func_800DA3D8(arg3->unk8, D_800FEC40.unkA.b.unk0[D_800FEC40.unkE]);
             break;
@@ -7356,14 +7356,14 @@ s32 func_800E60EC(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         return 0;
     }
     if (arg0 == 1) {
-        arg1->unk4 = func_800CF574() & 0xFF;
+        arg1->unk4 = btlbg_getBrightness() & 0xFF;
         arg1->unk6 = arg4[0];
         if (arg1->unk6 == 0xFF) {
             arg1->unk6 = 0x80;
         }
         arg1->unk6 -= arg1->unk4;
         if ((arg1->unk0 = arg4[1]) == 0 || arg1->unk6 == 0) {
-            func_800CF560(arg1->unk4 + arg1->unk6);
+            btlbg_setBrightness(arg1->unk4 + arg1->unk6);
             return 1;
         }
         return 0;
@@ -7373,7 +7373,7 @@ s32 func_800E60EC(s32 arg0, Unk800E6270 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (v < 0x10) {
         v = 0;
     }
-    func_800CF560(v);
+    btlbg_setBrightness(v);
     if (n < arg1->unk0) {
         *arg3 = n;
         return 0;
@@ -7737,7 +7737,7 @@ u8 *func_800E7154(void) {
     return D_800F78A4->unk24;
 }
 
-BtlUnit *func_800E716C(s32 arg0) {
+BtlUnit *btl_getUnit(s32 arg0) {
     if (arg0 == 0x10) {
         return D_800F78A4->unkC->unk0;
     }
@@ -7774,7 +7774,7 @@ s32 func_800E72C8(s32 arg0) {
     } else {
         flag = 0;
     }
-    u = func_800E716C(arg0);
+    u = btl_getUnit(arg0);
     f = u->unk68;
     if ((f & 1) || flag != 0) {
         return u->unk9C->unk8->unkA;
@@ -7787,7 +7787,7 @@ s32 func_800E7370(BtlUnit *arg0) {
 }
 
 void func_800E738C(s32 arg0) {
-    func_800E7370(func_800E716C(arg0));
+    func_800E7370(btl_getUnit(arg0));
 }
 
 void func_800E73B4(BtlUnit *arg0, u16 *arg1) {
@@ -7798,7 +7798,7 @@ void func_800E73B4(BtlUnit *arg0, u16 *arg1) {
 }
 
 void func_800E73EC(s32 arg0, s16 *arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (func_800E7298(u) != 0) {
         arg1[0] = u->unk8C[0] >> 16;
         arg1[1] = u->unk8C[1] >> 16;
@@ -7822,7 +7822,7 @@ void func_800E748C(BtlUnit *arg0, s16 *arg1) {
 }
 
 void func_800E750C(s32 arg0, s16 *arg1) {
-    func_800E748C(func_800E716C(arg0), arg1);
+    func_800E748C(btl_getUnit(arg0), arg1);
 }
 
 void func_800E753C(BtlUnit *arg0, s32 arg1, s16 *arg2) {
@@ -7850,17 +7850,17 @@ void func_800E753C(BtlUnit *arg0, s32 arg1, s16 *arg2) {
 }
 
 void func_800E7650(s32 arg0, s16 *arg1) {
-    if (func_800C09A4(func_800E716C(arg0), 0x200000) & 0xFF) {
+    if (func_800C09A4(btl_getUnit(arg0), 0x200000) & 0xFF) {
         arg1[1] -= 0x80;
     }
 }
 
 void func_800E769C(s32 arg0, s32 arg1, s16 *arg2) {
-    func_800E753C(func_800E716C(arg0), arg1, arg2);
+    func_800E753C(btl_getUnit(arg0), arg1, arg2);
 }
 
 void func_800E76DC(s32 arg0, s16 *arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (func_800E7298(u) == 0) {
         u->unk8C[0] = arg1[0] << 16;
         u->unk8C[1] = arg1[1] << 16;
@@ -7882,7 +7882,7 @@ s32 func_800E774C(s32 arg0, s16 *arg1, s16 *arg2) {
 }
 
 void func_800E77D8(s32 arg0, s16 *arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     s16 *p = u->unk86;
     arg1[0] = p[0];
     arg1[1] = p[1] + 0x800;
@@ -7890,7 +7890,7 @@ void func_800E77D8(s32 arg0, s16 *arg1) {
 }
 
 void func_800E7824(s32 arg0, s16 *arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (func_800E7298(u) == 0) {
         s16 *p = u->unk86;
         p[0] = arg1[0];
@@ -7900,7 +7900,7 @@ void func_800E7824(s32 arg0, s16 *arg1) {
 }
 
 s32 func_800E788C(s32 arg0) {
-    return (func_800E716C(arg0)->unk68 & 1) ^ 1;
+    return (btl_getUnit(arg0)->unk68 & 1) ^ 1;
 }
 
 void func_800E78B4(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
@@ -7912,7 +7912,7 @@ void func_800E78B4(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s32 arg5,
     if (arg6 < arg5) {
         return;
     }
-    func_800E716C(arg0);
+    btl_getUnit(arg0);
     if (arg6 == 0) {
         arg6 = 1;
     }
@@ -7927,7 +7927,7 @@ void func_800E78B4(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s32 arg5,
     if (arg1 != NULL) {
         func_800E750C(arg0, cur.h);
         if (cur.w[0] != ((SVec4 *)arg1)->w[0] || cur.h[2] != arg1[2]) {
-            func_800CF808(cur.h, arg1, rot.h);
+            btlfx_aimAngles(cur.h, arg1, rot.h);
             if (!(arg3 & 1)) {
                 rot.h[0] = 0;
             }
@@ -7943,12 +7943,12 @@ void func_800E78B4(s32 arg0, s16 *arg1, s16 *arg2, s32 arg3, s32 arg4, s32 arg5,
         rot.h[1] = 0;
     }
     rot.h[2] = arg4;
-    func_800D006C(arg2, rot.h, 0x1000 - t);
+    btlfx_turnToward(arg2, rot.h, 0x1000 - t);
     func_800E7824(arg0, rot.h);
 }
 
 void func_800E7A44(s32 arg0, VECTOR *arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     BtlUnit9C *m = u->unk9C;
     if (!(m->unk0 & 2)) {
         arg1->vz = 0x1000;
@@ -7962,7 +7962,7 @@ void func_800E7A44(s32 arg0, VECTOR *arg1) {
 }
 
 void func_800E7ACC(s32 arg0, s32 *arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (func_800E7298(u) == 0) {
         if (arg1[0] == 0x1000 && arg1[1] == arg1[0] && arg1[2] == arg1[1]) {
             u->unk9C->unk0 &= ~2;
@@ -7979,10 +7979,10 @@ void func_800E7BA0(s32 arg0, s32 arg1, s16 *arg2) {
     s16 sp10[4];
     s16 sp18[4];
     s16 sp20[4];
-    if (func_800E716C(arg1) != func_800E716C(arg0)) {
+    if (btl_getUnit(arg1) != btl_getUnit(arg0)) {
         func_800E750C(arg0, sp10);
         func_800E750C(arg1, sp18);
-        func_800CF808(sp18, sp10, sp20);
+        btlfx_aimAngles(sp18, sp10, sp20);
         func_800CFD78(sp18, sp20, func_800E72C8(arg1), arg2);
     } else {
         func_800E750C(arg0, arg2);
@@ -8003,11 +8003,11 @@ s32 func_800E7C54(s32 arg0, s32 arg1) {
 }
 
 s32 func_800E7CC4(s32 arg0, s32 arg1) {
-    return (u16)(func_800E716C(arg0)->unk9C->unk8->unkA / 6) + arg1;
+    return (u16)(btl_getUnit(arg0)->unk9C->unk8->unkA / 6) + arg1;
 }
 
 u32 func_800E7D18(s32 arg0) {
-    return (u8)func_800E716C(arg0)->unk68 >> 5;
+    return (u8)btl_getUnit(arg0)->unk68 >> 5;
 }
 
 void func_800E7D3C(s32 arg0, s32 arg1, s16 *arg2) {
@@ -8017,7 +8017,7 @@ void func_800E7D3C(s32 arg0, s32 arg1, s16 *arg2) {
 
     SVECTOR v;
 
-    u = func_800E716C(arg0);
+    u = btl_getUnit(arg0);
     bone = (g_gameState->unk1C->characters + ((u->unk68 >> 1) & 0xF))->unk21;
     if (arg1 == 0) {
         func_800DC818(arg0, bone, (u16 *)arg2);
@@ -8048,16 +8048,16 @@ void func_800E7EC0(BtlUnit *arg0, s32 arg1) {
     }
     if ((arg0->unk68 & 1) && arg0->unkA8 != NULL && f && (*(u32 *)arg0->unkA8 & 0x30) == 0x20) {
         v = arg1 - 0x80;
-        func_800C86C8(arg0->unkA8, v, v, v);
+        btl_setModelRgb(arg0->unkA8, v, v, v);
         if (arg1 < 0x46) {
-            func_800C8E80(arg0->unkA8, 0x20);
+            btl_setModelAbr(arg0->unkA8, 0x20);
         }
     }
     if ((*(u32 *)arg0->unk9C & 0x30) == 0x20) {
         v = arg1 - 0x80;
-        func_800C86C8(arg0->unk9C, v, v, v);
+        btl_setModelRgb(arg0->unk9C, v, v, v);
         if (arg1 < 0x46) {
-            func_800C8E80(arg0->unk9C, 0x20);
+            btl_setModelAbr(arg0->unk9C, 0x20);
         }
     }
 }
@@ -8080,7 +8080,7 @@ void func_800E7FC0(BtlUnit *arg0, s32 arg1) {
 }
 
 void func_800E806C(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (arg1 < 0) {
         if (arg1 == -1) {
             func_800BD414(u, 0xFFFF);
@@ -8093,12 +8093,12 @@ void func_800E806C(s32 arg0, s32 arg1) {
 }
 
 void func_800E80CC(s32 arg0, s32 arg1) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (func_800E7298(u) == 0) {
         BtlUnit9C *m = u->unk9C;
         s16 v = arg1 - 0x80;
         if ((*(u32 *)m & 0x30) == 0x20) {
-            func_800C86C8(m, v, v, v);
+            btl_setModelRgb(m, v, v, v);
         }
     }
 }
@@ -8121,7 +8121,7 @@ s32 func_800E813C(u32 type, s32 arg1) {
             }
             break;
         case 9:
-            if (u == func_800E716C(0x10)) {
+            if (u == btl_getUnit(0x10)) {
                 func_800E7FC0(u, arg1);
                 n++;
             }
@@ -8136,7 +8136,7 @@ s32 func_800E813C(u32 type, s32 arg1) {
                     func_800E7FC0(u, arg1);
                     n++;
                 }
-            } else if (u != func_800E716C(0x10) && (u->unk68 & 1)) {
+            } else if (u != btl_getUnit(0x10) && (u->unk68 & 1)) {
                 func_800E7FC0(u, arg1);
                 n++;
             }
@@ -8148,9 +8148,9 @@ s32 func_800E813C(u32 type, s32 arg1) {
 
 void func_800E8274(s32 arg0) {
     if (func_800E788C(arg0) != 0) {
-        func_800C0B6C(func_800E716C(arg0), -0x1381);
+        func_800C0B6C(btl_getUnit(arg0), -0x1381);
     } else {
-        func_800C09EC(func_800E716C(arg0));
+        func_800C09EC(btl_getUnit(arg0));
     }
 }
 
@@ -8167,11 +8167,11 @@ s32 func_800E82CC(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
         u = *iter;
     }
     func_800E753C(u, 0, arg1);
-    if (((u8)func_800C09A4(u, 0x100) && u != func_800E716C(id)) || !((u->unk68 >> 28) & 1)) {
+    if (((u8)func_800C09A4(u, 0x100) && u != btl_getUnit(id)) || !((u->unk68 >> 28) & 1)) {
         *iter = u->unk0;
         return -1;
     }
-    if (u == func_800E716C(id)) {
+    if (u == btl_getUnit(id)) {
         r = 1;
     }
     *out = u->unk68 & 1;
@@ -8201,20 +8201,20 @@ void func_800E8460(BtlUnit *arg0) {
 s32 func_800E8498(s32 arg0) {
     VECTOR v;
     func_800E7A44(arg0, &v);
-    return func_800E716C(arg0)->unk9C->unk8->unkA * v.vx >> 12;
+    return btl_getUnit(arg0)->unk9C->unk8->unkA * v.vx >> 12;
 }
 
 s32 func_800E84F0(s32 arg0) {
     s32 ret = 0;
     if (g_gameState->unk1C->unk8E4.battle->curCmd->cmdNo == 0x33) {
-        ret = func_800B3E7C(func_800E716C(arg0)->unk4) != 0;
+        ret = func_800B3E7C(btl_getUnit(arg0)->unk4) != 0;
     }
     return ret;
 }
 
 s32 func_800E8554(s32 arg0, s32 arg1) {
     s32 r = 0;
-    BtlUnit *u = func_800E716C(arg1);
+    BtlUnit *u = btl_getUnit(arg1);
     if (arg0 == 0) {
         if ((u8)func_800C09A4(u, 0x100)) {
             u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
@@ -8233,7 +8233,7 @@ s32 func_800E8554(s32 arg0, s32 arg1) {
 }
 
 s32 func_800E865C(s32 arg0, s32 arg1) {
-    u32 f = func_800E716C(arg0)->unk68;
+    u32 f = btl_getUnit(arg0)->unk68;
     u8 k = D_800F8D70[arg1];
     return ((f & 1) ? g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
 }
@@ -8304,12 +8304,12 @@ void func_800E89D0(void) {
         u = u->unk0;
     }
     if (D_800F78A4->unk0->unk2 == 0x1BF) {
-        func_800BC78C(func_800E716C(0x10));
+        func_800BC78C(btl_getUnit(0x10));
     }
 }
 
 void func_800E8A80(s32 arg0) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
     if (u->unk68 & 1) {
         func_800C0D24(u);
         func_800E8408(u);
@@ -8329,7 +8329,7 @@ s32 func_800E8AD0(void) {
 
 /* weapon texture animation: arg1 0 = start anim (arg2 ? 1 : 0), 1 = stop anim 2, 2 = start anim 2 */
 void func_800E8B28(s32 arg0, s32 arg1, s32 arg2) {
-    BtlUnit *u = func_800E716C(arg0);
+    BtlUnit *u = btl_getUnit(arg0);
 
     switch (arg1) {
     case 0:
@@ -8385,7 +8385,7 @@ void func_800E8DC8(s32 arg0) {
                 btl_execCmd(D_800F78A4->unkC->unk4[i]);
             }
         } else {
-            btl_execCmd(func_800E716C(arg0));
+            btl_execCmd(btl_getUnit(arg0));
         }
     }
 }
@@ -8398,7 +8398,7 @@ void func_800E8E84(s32 arg0) {
                 func_800CC044(D_800F78A4->unkC->unk4[i]);
             }
         } else {
-            func_800CC044(func_800E716C(arg0));
+            func_800CC044(btl_getUnit(arg0));
         }
     }
 }
@@ -8458,16 +8458,16 @@ void func_800E9000(Unk800E9000 *arg0, s32 *src, s32 n, Unk80100DC054 *e) {
         e->unk24[i] = a[i].unk2;
         e->unk30[i] = b[i].unk2;
     }
-    func_800DC748(&e->unk90, 1);
+    btlfx_initSummonModels(&e->unk90, 1);
     D_80100DC0.unk54 = e;
     D_80100DC0.unk60 = Hi_RegisterSummonModel(e, NULL);
 }
 
 BtlUnit *func_800E9124(void) {
     if (D_800F78A4->unkC->unk27 == 0) {
-        return func_800E716C(0);
+        return btl_getUnit(0);
     }
-    return func_800E716C(8);
+    return btl_getUnit(8);
 }
 
 void func_800E9168(void) {
@@ -8479,8 +8479,8 @@ void func_800E9168(void) {
     if (D_800F78A4->unk0->unk1C & 8) {
         r = 1;
     } else {
-        a = func_800E716C(0x10);
-        b = func_800E716C(0);
+        a = btl_getUnit(0x10);
+        b = btl_getUnit(0);
         f = (g_gameState->unk24 >> 4) & 1;
         if (f == 1 || (u8)func_800C09A4(a, 0x10000000) || (u8)func_800C09A4(a, 0x04000000)) {
             r = 0;
@@ -8510,7 +8510,7 @@ void func_800E9290(s32 arg0) {
     if (D_800F8D74 == 0 || hi == 0xF0 || (D_800F78A4->unkC->unk40 & 2)) {
         return;
     }
-    u = func_800E716C(0x10);
+    u = btl_getUnit(0x10);
     if ((u8)func_800C09A4(u, 0x10000000) != 0 || (u8)func_800C09A4(u, 0x04000000) != 0) {
         return;
     }
@@ -8546,7 +8546,7 @@ void func_800E9290(s32 arg0) {
 void func_800E94C4(void) {
     u8 v;
     if (D_800F8D74 != 0 && D_800F78A4->unkC->unk27 != 0) {
-        if (func_800E716C(8)->unk68 & 1) {
+        if (btl_getUnit(8)->unk68 & 1) {
             v = D_800F8D80;
         } else {
             v = D_800F8D81;
@@ -8574,7 +8574,7 @@ void func_800E9578(void) {
                 e->unk0 = 0;
             } else {
                 n++;
-                func_80055850(0, e->unk0, func_800E976C(e->unk4));
+                func_80055850(0, e->unk0, btl_soundPan(e->unk4));
                 e->unk2++;
             }
         }
@@ -8633,7 +8633,7 @@ Unk80104E34 *func_800E9730(s32 arg0) {
     return NULL;
 }
 
-s32 func_800E976C(s32 arg0) {
+s32 btl_soundPan(s32 arg0) {
     SVECTOR pos;
     SVECTOR *v;
     DVECTOR sxy;
@@ -8691,7 +8691,7 @@ void func_800E98F8(s32 arg0) {
 s32 func_800E9930(s32 arg0, s32 arg1, s32 arg2) {
     s32 v = func_800E9638(arg2);
     if (v != 0) {
-        func_800553EC(func_800DA3D8(arg1, arg0), v, func_800E976C(arg2), 0x7F);
+        func_800553EC(func_800DA3D8(arg1, arg0), v, btl_soundPan(arg2), 0x7F);
     }
     return v;
 }
@@ -8704,7 +8704,7 @@ void func_800E99B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 s32 func_800E9A00(s32 arg0, s32 arg1) {
     s32 v = func_800E9638(arg1);
     if (v != 0) {
-        func_800553EC(func_800E454C(arg0), v, func_800E976C(arg1), 0x7F);
+        func_800553EC(func_800E454C(arg0), v, btl_soundPan(arg1), 0x7F);
     }
     return v;
 }

@@ -40,3 +40,55 @@ btl_calcCmd = 0x800B44C0; // type:func [runtime] called (Vivi, monster, Vivi's c
 btl_payMpCost = 0x800B4390; // type:func [runtime] casting Fire - takes ability->mpCost (x4 under a flag) and calls btl_consumeMp
 btl_consumeMp = 0x800B9550; // type:func [runtime] the only non-clamp write to Vivi's mp when Fire is cast (163 -> 157), halves the cost under a support flag
 btl_addStatus = 0x800BEDBC; // type:func [runtime] called (monster, 0x100) as it died - its status word gains 0x100, refused for statusImmune bits
+Hi_FreeEffModel = 0x800DC6E8; // type:func [string] passes "Hi_FreeEffModel()\nid%d can not free!" (D_800A7F78) to the slot lookup, then clears the slot's in-use flag
+Hi_SetSummonMotFrame = 0x800DC434; // type:func [string] passes "Hi_SetSummonMotFrame()\nid%d cannot use!" (D_800A7F34) to the summon lookup, then sets the motion frame (clamped to the motion's frame count)
+Hi_GetMdlVertexPtr = 0x800DF738; // type:func [string] passes "Hi_GetMdlVertexPtr()\nid%d cannot use!" (D_800A825C) to the eff-model lookup
+btlfx_rand = 0x800CF690; // type:func [code] LCG seed*0x41C64E6D+0x3039 on scratchpad 0x1F8003FC, returns seed>>16, ff9-ds port/game/battle_math.c, tools/test_battle_math.py compares against the original instructions
+btlfx_randRange = 0x800CF708; // type:func [code] from + rand % (to-from), from when equal, ff9-ds port/game/battle_math.c, tools/test_battle_math.py compares against the original instructions
+btlfx_randCentered = 0x800CF748; // type:func [code] rand % span - span/2, 0 for span 0 (72 callers jitter values with it), ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+btlfx_randRotation = 0x800CF788; // type:func [code] fills an SVECTOR with random x/y angles (x quadrant cycled by a phase counter at 0x800FE528), z=0, ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+btlfx_sqrt = 0x800CF6B8; // type:func [code] Newton iteration x=(x+v/x)/2 for N rounds, ovl_0b_o1 callers pass dx*dx+dz*dz, ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+btlfx_lerpRatio = 0x800CF9DC; // type:func [code] from + (to-from)*step/duration (raw div), ff9-ds port/game/battle_math.c, tools/test_battle_math.py
+btlfx_lerp = 0x800CF9B0; // type:func [code] GTE INTPL with IR0=factor - from + (to-from)*factor/4096, ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py compares against the original instructions
+btlfx_lerpVec = 0x800CFA00; // type:func [code] GTE INTPL on three s16 components, from->to by factor/4096 into out, ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py
+btlfx_distance = 0x800CF5F8; // type:func [code] SQR + bitwise isqrt of the delta between two SVECTORs, min 1 (asm quirk - IR2 gets from.x not dz), func_800E0168 compares it to a range before VectorNormalS of the same delta, ff9-ds port/game/battle_angles.c
+btlfx_aimAngles = 0x800CF808; // type:func [code] rotation that points from->to - y=0x400-ratan2(dz,dx), x=-ratan2(dy,horizontal dist), z=0, func_800CFF40/func_800D0580 use it on a transformed unit Z axis, ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py
+btlfx_transformPoint = 0x800CF8EC; // type:func [code] MVMVA rot+trans of (packed xy, z) through the current GTE matrix into an s16[3], func_800CFD78/func_800CFE88 load the matrix first, ff9-ds port/game/battle_angles.c
+btlfx_transformPolar = 0x800CF91C; // type:func [code] transforms a vector, stores z and sqrt(x*x+y*y), returns ratan2(x,y), only caller func_800D0674, ff9-ds port/game/battle_angles.c, tools/test_battle_angles.py
+btlfx_pushTrailPoint = 0x800CF5A4; // type:func [code] ring buffer - head byte [1] decrements (wraps to capacity), count byte [2] saturates, 8-byte entry gets xy and z|width<<17, func_800D1494 then draws the buffer, ff9-ds port/game/battle_trails.c, tools/test_battle_trails.py
+btlfx_angleDiff = 0x800D001C; // type:func [code] wraps two 12-bit angles, returns the shorter turn direction (+-1) and stores the distance (<=0x800)
+btlfx_turnToward = 0x800D006C; // type:func [code] moves angles [0],[1] of arg1 toward arg0 by fraction arg2/4096 along the shorter direction, via btlfx_angleDiff
+btlfx_align4 = 0x800CFC0C; // type:func [code] rounds up to a multiple of 4
+btlbg_setBrightness = 0x800CF560; // type:func [code] stores the word at func_800CF588, which func_800CEED4 reads as the background color scale (0x80 = unchanged, else GPF scales RGB), func_800E60EC fades it from a start value to a target, ff9-ds port/game/battle_background.c, tools/test_battle_background.py
+btlbg_getBrightness = 0x800CF574; // type:func [code] reads that word back, func_800CE1B4 skips drawing when its low byte is 0, ff9-ds port/game/battle_math.c
+btlbg_setOtShift = 0x800CF58C; // type:func [code] stores D_800CF5A0, which func_800CEED4 uses as the sllv shift on summed vertex depth before clamping the OT index to 0x3FFC, func_800CE05C sets it to 0, ff9-ds port/game/battle_background.c
+btlbg_drawRecord = 0x800CEED4; // type:func [code] projects a record's vertices (func_800CF448), NCLIPs, and emits POLY_FT4/FT3 into the OT with brightness/OT shift, called per record by func_800CE1B4, ff9-ds port/game/battle_background.c, tools/test_battle_background.py
+btlbg_projectVertices = 0x800CF448; // type:func [code] RTPT over packed 6-byte vertices, xy to scratchpad +0 and z>>4 to scratchpad +0x200 for func_800CEED4, ff9-ds port/game/battle_background.c, tools/test_battle_background.py
+btl_soundPan = 0x800E976C; // type:func [code] unit id or SVECTOR pointer (arg & 0x90000000), RTPS with the view matrix, maps screen x 160+-170 to pan 0x80+-63 (-1 gives 0x80), result goes in the pan slot snd_playSe fills with 0x80 (func_800AD90C(0xD000, id, 0, pan, 0x7F)), ff9-ds docs/decomp-requests.md F8, tools/test_battle_pan.py
+btl_getUnit = 0x800E716C; // type:func [code] battle unit by index - 0x10/0x11 special, 0-7 party list, 8+ enemy list, SystemError on a bad index (72 callers)
+btl_calcBoneMatrices = 0x800C7DAC; // type:func [code] decodes the model's animation frame and composes each bone's 32-byte MATRIX with its parent (bone table parent byte) into the packet buffer, saved at model+0x20, called before projecting meshes by unit drawing and every Hi_Draw*, ff9-ds port/game/battle_pose.c, tools/test_battle_pose.py
+btl_projectMesh = 0x800C6528; // type:func [code] per bone - composes the camera with the bone matrix (model+0x20), RTPT of the mesh's vertices into g_vtxScreenXY/g_vtxScreenZ, Hi_DrawEffModel calls it per mesh before the packet emitter
+btlfx_projectMorphMesh = 0x800DF15C; // type:func [code] the btl_projectMesh step used by Hi_DrawMorphEffModel and Hi_DrawMorphModelByBone, interpolating vertices by a factor, ff9-ds port/game/battle_morph.c, tools/test_battle_morph.py
+btlfx_projectSliceMesh = 0x800DDF10; // type:func [code] the btl_projectMesh step used by Hi_DrawSliceEffModel (after it sets the model's slice y at +0x5A), clamping vertices to that plane, ff9-ds port/game/battle_morph.c
+btl_drawMesh = 0x800C58E4; // type:func [code] packs the mesh's eight primitive lists from g_vtxScreenXY/Z into GPU packets with NCLIP and links them into the OT, records the first packet at model+0x10, ff9-ds port/game/battle_packets.c, tools/test_battle_packets.py
+btl_drawMeshOffset = 0x800DD27C; // type:func [code] btl_drawMesh with an OT offset argument (Hi_Draw* pass the slot field Hi_SetEffModelOffset sets) and draw-mode prefixes, ff9-ds port/game/battle_packets.c, tools/test_battle_packets.py
+btl_setModelAbr = 0x800C8E80; // type:func [code] walks the model's built packets, sets semi-transparency and the tpage ABR bits, Hi_ModifyEffModelAbr/Hi_ModifySummonModelAbr call it with abr<<5
+btl_setModelRgb = 0x800C86C8; // type:func [code] walks the model's built packets and adds r/g/b offsets to their colours via func_800C8DE0, Hi_ModifyEffModelRGB/Hi_ModifySummonModelRGB call it
+btl_addRgbClamped = 0x800C8DE0; // type:func [code] adds r/g/b to a packet colour word's three bytes, clamping each to 0..255, keeping the code byte
+btl_setModelTransform = 0x800DCA68; // type:func [code] model matrix from rotation (or zero), TransMatrix, then scale via func_800DCB20 or unit scale, first call of Hi_DrawEffModel
+btl_scaleModelMatrix = 0x800DCB20; // type:func [code] MulMatrix0 of the model matrix with diag(vx,vy,vz)
+btlfx_getEffModel = 0x800DCFB0; // type:func [code] returns g_btlfxEffModels[id], reporting the caller's "Hi_...()\nid%d cannot use!" message when free, used by every Hi_*EffModel
+btlfx_getSummonModel = 0x800DD02C; // type:func [code] same for g_btlfxSummonModels, used by every Hi_*Summon*
+btlfx_allocEffModel = 0x800DC494; // type:func [code] first free slot of the 32 eff-model slots, Hi_Register*EffModel report "memory not enough!" when NULL
+btlfx_allocSummonModel = 0x800DC4CC; // type:func [code] free summon slot (one), Hi_RegisterSummonModel reports "memory not enough!" when NULL
+btlfx_initEffModels = 0x800DC668; // type:func [code] clears all 32 eff-model slots and binds the first n to the given models
+btlfx_clearEffModels = 0x800DC710; // type:func [code] clears all 32 eff-model slots without binding models
+btlfx_initSummonModels = 0x800DC748; // type:func [code] clears the summon slot and binds the given models
+btlfx_clearSummonModels = 0x800DC7E0; // type:func [code] clears the summon slot without binding models
+btlfx_error = 0x800DC634; // type:func [code] formats "HIRAISHI ERROR\n\n%s\n" (D_800A7F60) around the message and halts in func_800DC510, every Hi_ lookup/register failure calls it
+btlfx_halt = 0x800DC510; // type:func [code] resets draw/disp envs, clears VSync/DrawSync callbacks and swaps buffers forever (never returns), only caller btlfx_error
+g_btlfxEffModels = 0x80100F1C; // [code] the 32 effect-model slots (BtlObjSlot) that Hi_Register*EffModel allocate and btlfx_getEffModel indexes
+g_btlfxSummonModels = 0x8010141C; // [code] the summon-model slot array (1 entry) used by Hi_RegisterSummonModel and btlfx_getSummonModel
+g_btlfxErrorMsg = 0x80101470; // [code] sprintf buffer for the Hi_ error messages passed to btlfx_error
+g_btlfxRandSeed = 0x800F78A8; // [code] func_800E3EEC copies it into the btlfx_rand seed (scratchpad 0x1F8003FC) before the frame's effect calls and stores the seed back after, initial 0x12375514, ff9-ds port/game/battle_effects.c
+g_btlfxSavedSp = 0x800FF468; // [code] func_800E3EEC saves $sp here while it runs func_800DA92C/func_800E3C98 on the scratchpad stack (0x1F8003F8) and restores it after

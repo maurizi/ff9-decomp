@@ -5,11 +5,11 @@ void func_800C8BE0(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u32 *p = g->unk1C;
     u32 i;
     for (i = 0; i < g->unk2; i++) {
-        p[4] = func_800C8DE0(p[4], arg2, arg3, arg4);
+        p[4] = btl_addRgbClamped(p[4], arg2, arg3, arg4);
         p += 6;
     }
     for (i = 0; i < g->unk4; i++) {
-        p[2] = func_800C8DE0(p[2], arg2, arg3, arg4);
+        p[2] = btl_addRgbClamped(p[2], arg2, arg3, arg4);
         p += 5;
     }
 }
@@ -29,7 +29,7 @@ void func_800C8D18(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-u32 func_800C8DE0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+u32 btl_addRgbClamped(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s16 b = arg3 + ((arg0 >> 16) & 0xFF);
     s16 g = arg2 + ((arg0 >> 8) & 0xFF);
     s16 r = arg1 + (arg0 & 0xFF);
@@ -52,7 +52,7 @@ u32 func_800C8DE0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-void func_800C8E80(BtlUnit9C *arg0, s32 arg1) {
+void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     u8 *p;
     u32 i;
     u8 code;
@@ -1946,7 +1946,7 @@ void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     D_800FE514 = arg0;
     D_800FE504 = (BtlBgScroll *)arg0->unk10;
     D_800FE50C = arg0->unk0;
-    func_800CF58C(0);
+    btlbg_setOtShift(0);
     D_800FE4F8 = 0;
     if (D_800FE514->unk6 != 0) {
         D_800FE4F8 = 1;
@@ -1999,7 +1999,7 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     memset(&sv, 0, 8);
     done = 0;
     D_800FE520++;
-    if (!(u8)func_800CF574()) {
+    if (!(u8)btlbg_getBrightness()) {
         return out;
     }
     t.vx = arg0->t[0];
@@ -2060,26 +2060,26 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                     if (D_800FE4F8 != 0) {
                         SetTransMatrix(&m2);
                         SetGeomScreen(0x200);
-                        out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                        out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                         SetGeomScreen(g_gameState->unk1C->unkA);
                     } else {
-                        out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                        out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                     }
                 }
                 break;
             case 4:
                 if (D_800FE51C & 4) {
-                    out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                    out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                 }
                 break;
             case 2:
                 if (D_800FE51C & 2) {
-                    out = func_800CEED4(rec, out, (u32 *)arg4, grp);
+                    out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                 }
                 break;
             case 0:
                 if (D_800FE51C & 1) {
-                    out = func_800CEED4(rec, out, arg3, grp);
+                    out = btlbg_drawRecord(rec, out, arg3, grp);
                 }
                 break;
             }
@@ -2276,42 +2276,42 @@ void func_800CEEC8(s32 arg0) {
     D_800FE51C = arg0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CEED4);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_drawRecord);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF448);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_projectVertices);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF560);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_setBrightness);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF574);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_getBrightness);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF588);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF58C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlbg_setOtShift);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF5A4);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_pushTrailPoint);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF5F8);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_distance);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF690);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_rand);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF6B8);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_sqrt);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF708);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_randRange);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF748);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_randCentered);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF788);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_randRotation);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF808);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_aimAngles);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF8EC);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_transformPoint);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF91C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_transformPolar);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF9B0);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_lerp);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CF9DC);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_lerpRatio);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", func_800CFA00);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_3", btlfx_lerpVec);
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_3", D_800A7C20);

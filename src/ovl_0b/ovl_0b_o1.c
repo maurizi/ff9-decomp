@@ -15,7 +15,7 @@ void func_800C2E4C(void) {
     bzero(&D_800FE488, 0x64);
     bcopy(D_800F78A4->unkC, &D_800FE368, 0x4C);
     D_800FE3B8.unk5C = 0;
-    D_800FE3B8.unk53 = func_800CF690() & 1;
+    D_800FE3B8.unk53 = btlfx_rand() & 1;
     if (D_800F78A4->unk0->unk1C & 4) {
         func_800C57A4(D_800FE368.unk44, D_800FE488.unk50);
     }
@@ -48,7 +48,7 @@ void func_800C2F9C(s32 arg0) {
 
 void func_800C2FFC(s32 arg0) {
     bzero(&D_800FE488, 0x64);
-    D_800FE3B8.unk53 = func_800CF690() & 1;
+    D_800FE3B8.unk53 = btlfx_rand() & 1;
     func_800C57A4(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
     func_800C57A4((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
     func_800C2F9C(arg0);
@@ -121,7 +121,7 @@ void func_800C316C(s32 arg) {
             D_800FE3B8.unkA8 = (*t >> 12) & 3;
             break;
         case 1:
-            r = func_800CF708(0, 9);
+            r = btlfx_randRange(0, 9);
             if (!(*t & 0x3000)) {
                 if (r < ((*t >> 10) & 3) + 5) {
                     D_800FE3B8.unkA8 = 0;
@@ -146,7 +146,7 @@ void func_800C316C(s32 arg) {
                 if (n == 2) {
                     D_800FE3B8.unkA8 = n;
                 } else {
-                    D_800FE3B8.unkA8 = func_800CF708(0, 1);
+                    D_800FE3B8.unkA8 = btlfx_randRange(0, 1);
                 }
                 D_800FE488.unk18 = D_800FE3B8.unkA8;
                 break;
@@ -193,9 +193,9 @@ void func_800C316C(s32 arg) {
                             }
                         }
                         if (r < 3) {
-                            D_800FE3B8.unkA8 = func_800CF708(0, 1) + 1;
+                            D_800FE3B8.unkA8 = btlfx_randRange(0, 1) + 1;
                         } else {
-                            r = func_800CF708(0, 5);
+                            r = btlfx_randRange(0, 5);
                             D_800FE3B8.unkA8 = 0;
                             if (r == 4) {
                                 D_800FE3B8.unkA8 = 1;
@@ -389,7 +389,7 @@ s32 func_800C37BC(void) {
     }
     if (D_800FE488.unk34 != 0) {
         D_800FE488.unk34--;
-        r = func_800CF9DC(D_800FE488.unk40, D_800FE488.unk3C, D_800FE488.unk34, D_800FE488.unk30);
+        r = btlfx_lerpRatio(D_800FE488.unk40, D_800FE488.unk3C, D_800FE488.unk34, D_800FE488.unk30);
         if (D_800FE488.unk38 & 1) {
             D_800FE3B8.unk60 = r;
         }
@@ -518,7 +518,7 @@ void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
     LoadAverageShort12(&v[0], &v[1], wa[0], wb[0], &out);
     switch (arg1->unk18) {
     case 2:
-        out.pad = func_800CF9B0(v[0].pad, v[1].pad, wb[1]);
+        out.pad = btlfx_lerp(v[0].pad, v[1].pad, wb[1]);
         if (arg0 != 0) {
             arg2[0] = out.vx;
             arg2[1] = out.vy;
@@ -540,9 +540,9 @@ void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
             dz = w[1].vz - w[0].vz;
             h = dx * dx + dz * dz;
             arg2[1] = (ratan2(dx, dz) + 0x1800) & 0xFFF;
-            arg2[0] = (ratan2(dy, func_800CF6B8(h, 0x14)) + 0x1000) & 0xFFF;
+            arg2[0] = (ratan2(dy, btlfx_sqrt(h, 0x14)) + 0x1000) & 0xFFF;
             arg2[2] = out.vz;
-            arg2[3] = func_800CF6B8(h + dy * dy, 0x14);
+            arg2[3] = btlfx_sqrt(h + dy * dy, 0x14);
             arg1->unk0[1].unk9 |= 0xC0;
             return;
         }
@@ -587,14 +587,14 @@ void func_800C493C(s16 *arg0) {
     s32 t;
     if (D_800FE488.unk24 != 0) {
         D_800FE488.unk24--;
-        t = func_800CF9DC(D_800FE488.unk2C, D_800FE488.unk28, D_800FE488.unk24, D_800FE488.unk20) * 2;
+        t = btlfx_lerpRatio(D_800FE488.unk2C, D_800FE488.unk28, D_800FE488.unk24, D_800FE488.unk20) * 2;
         if (t != 0) {
             if (!(D_800FE488.unk1C & 1)) {
-                arg0[1] += func_800CF708(0, t) * 4 - t;
+                arg0[1] += btlfx_randRange(0, t) * 4 - t;
             }
             if (!(D_800FE488.unk1C & 2)) {
-                arg0[0] += func_800CF708(0, t) * 4 - t;
-                arg0[2] += func_800CF708(0, t) * 4 - t;
+                arg0[0] += btlfx_randRange(0, t) * 4 - t;
+                arg0[2] += btlfx_randRange(0, t) * 4 - t;
             }
         }
     }
@@ -603,7 +603,7 @@ void func_800C493C(s16 *arg0) {
 void func_800C4A3C(s16 *arg0, s16 *arg1) {
     s32 dx = arg0[0] - arg1[0];
     s32 dz = arg0[2] - arg1[2];
-    s32 d = func_800CF6B8(dx * dx + dz * dz, 0xF);
+    s32 d = btlfx_sqrt(dx * dx + dz * dz, 0xF);
     u32 v = 0;
     if (D_800FE488.unk10 != 0) {
         v = ((math_sin(D_800FE488.unk14 << 6) * d) >> 13) * (D_800FE488.unk10 & 0xF0) >> 11;

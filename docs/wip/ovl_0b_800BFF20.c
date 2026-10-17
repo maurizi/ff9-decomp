@@ -66,9 +66,9 @@ void func_800BFF20(BtlUnit *arg0) {
             rr = (r * (u8)v) << 13 >> 16;
             gg = (g * (u8)v) << 13 >> 16;
             bb = (b * (u8)v) << 13 >> 16;
-            func_800C86C8(arg0->unk9C, rr, gg, bb);
+            btl_setModelRgb(arg0->unk9C, rr, gg, bb);
             if (arg0->unkA8 != NULL) {
-                func_800C86C8(arg0->unkA8, rr, gg, bb);
+                btl_setModelRgb(arg0->unkA8, rr, gg, bb);
             }
         }
     }

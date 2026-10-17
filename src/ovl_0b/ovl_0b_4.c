@@ -1,8 +1,8 @@
 #include "ovl_0b.h"
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C58E4);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", btl_drawMesh);
 
-void func_800C6528(BtlUnit9C *arg0, u8 arg1) {
+void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     MATRIX m;
     BtlMesh *g;
     MATRIX *bone;
@@ -666,9 +666,9 @@ void func_800C7CC8(BtlUnit9C *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", func_800C7DAC);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_4", btl_calcBoneMatrices);
 
-void func_800C86C8(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
+void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
     u8 code;
@@ -687,52 +687,52 @@ void func_800C86C8(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
             }
             switch (code & 0x3C) {
             case 0x2C:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[10];
                 break;
             case 0x24:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[8];
                 break;
             case 0x3C:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[4] = func_800C8DE0(p->w[4], (s16)r, (s16)g, (s16)b);
-                p->w[7] = func_800C8DE0(p->w[7], (s16)r, (s16)g, (s16)b);
-                p->w[10] = func_800C8DE0(p->w[10], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[4] = btl_addRgbClamped(p->w[4], (s16)r, (s16)g, (s16)b);
+                p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
+                p->w[10] = btl_addRgbClamped(p->w[10], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[13];
                 break;
             case 0x34:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[4] = func_800C8DE0(p->w[4], (s16)r, (s16)g, (s16)b);
-                p->w[7] = func_800C8DE0(p->w[7], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[4] = btl_addRgbClamped(p->w[4], (s16)r, (s16)g, (s16)b);
+                p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[10];
                 break;
             case 0x38:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[3] = func_800C8DE0(p->w[3], (s16)r, (s16)g, (s16)b);
-                p->w[5] = func_800C8DE0(p->w[5], (s16)r, (s16)g, (s16)b);
-                p->w[7] = func_800C8DE0(p->w[7], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[3] = btl_addRgbClamped(p->w[3], (s16)r, (s16)g, (s16)b);
+                p->w[5] = btl_addRgbClamped(p->w[5], (s16)r, (s16)g, (s16)b);
+                p->w[7] = btl_addRgbClamped(p->w[7], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[9];
                 break;
             case 0x30:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
-                p->w[3] = func_800C8DE0(p->w[3], (s16)r, (s16)g, (s16)b);
-                p->w[5] = func_800C8DE0(p->w[5], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[3] = btl_addRgbClamped(p->w[3], (s16)r, (s16)g, (s16)b);
+                p->w[5] = btl_addRgbClamped(p->w[5], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[7];
                 break;
             case 0x28:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[6];
                 break;
             case 0x20:
-                p->w[1] = func_800C8DE0(p->w[1], (s16)r, (s16)g, (s16)b);
+                p->w[1] = btl_addRgbClamped(p->w[1], (s16)r, (s16)g, (s16)b);
                 p->tag.code = code;
                 p = (BtlPrim *)&p->w[5];
                 break;
