@@ -2469,6 +2469,7 @@ extern Unk80083168 D_80083168;
 s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void akao_setVoiceLoopAddr(s32, s32);
+void akao_setReverbMode(s32 mode);
 void func_80062118(void);
 void func_80061E1C(s32, s32, void (*)(void));
 void func_800621D4(void);
