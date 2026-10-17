@@ -22492,7 +22492,21 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SetPolyF4);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", strcat);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063118);
+void func_80063118(void *arg0, void *arg1, s32 jump) {
+    WinDef *w = arg0;
+    TweenDef *t = arg1;
+
+    w->unkC = t;
+    w->unk2 = 0;
+    w->unk0 = 0;
+    if (t != NULL) {
+        w->unk0 = t->unk0;
+        if ((u8)jump) {
+            w->unk4.x -= func_800632B4(t->unk2, t->unk4);
+            w->unk4.y -= func_800632B4(t->unk2, t->unk8);
+        }
+    }
+}
 
 s32 func_800631AC(WinDef *t) {
     if (t->unkC == NULL) {

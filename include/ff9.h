@@ -2152,7 +2152,7 @@ FileEntry *func_80063088(FileTable *, s32);
 void strcat(u8 *, u8 *);
 /* per-frame offset animation of a window (func_80063118 / func_800631AC) */
 typedef struct TweenDef {
-    u8 pad0[2];
+    u16 unk0; /* start delay */
     s16 unk2; /* frame count */
     s8 *unk4; /* x deltas */
     s8 *unk8; /* y deltas */
