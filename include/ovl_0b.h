@@ -2143,8 +2143,8 @@ typedef struct {
     s32 unk8;
 } Unk8006B1F4; /* 0xC */
 extern Unk8006B1F4 D_8006B1F4[];
-void func_800639D4(s32);
-s32 func_800645C4(void);
+void SetGeomScreen(s32);
+s32 ReadGeomScreen(void);
 s32 func_80055DCC(void);
 void func_80056388(s32, s32);
 s8 func_80021698(Unk8004AB64 *);

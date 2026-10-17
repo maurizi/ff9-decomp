@@ -400,7 +400,7 @@ s32 func_800C37BC(void) {
     if (D_800FE3B8.unk66 == 0) {
         g_gameState->unk1C->unkA = D_800FE3B8.unk5E;
     }
-    func_800639D4(g_gameState->unk1C->unkA);
+    SetGeomScreen(g_gameState->unk1C->unkA);
     e = D_800FE3B8.unk67;
     if (e == 1) {
         b = g_gameState->unk1C->unk8E4.battle;

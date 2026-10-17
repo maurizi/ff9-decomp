@@ -4003,7 +4003,7 @@ void func_800B72A4(void) {
     if (mode == 2) {
         if (D_800D3E60 != mode) {
             D_800CCF70 = 0x64;
-            func_800639D4(g_gameState->unk1C->unkA);
+            SetGeomScreen(g_gameState->unk1C->unkA);
             D_800CF468 = VSync(1);
             if (D_800CCE49 < 2 && D_800CE264 != 0) {
                 func_800AF08C();
@@ -10727,7 +10727,7 @@ void func_800CBF18(void) {
     func_800275DC(D_800CE04C->x + 6, D_800CE04C->y + 0x15, 0x13, 0xB2, 0);
     func_8002B56C(D_800CE04C->x + 0x13, D_800CE04C->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
-    func_80063108(buf, D_800CE050);
+    strcat(buf, D_800CE050);
     func_8002B56C(D_800CE04C->x + 0x13, D_800CE04C->y + 0x16, 0x13, buf, 0);
     func_8002B524(D_800CE04C->x + 6, D_800CE04C->y - 3, 0x13, D_800704C0, 0);
     func_8002DEE4(D_800CE04C, 0x14, 2);

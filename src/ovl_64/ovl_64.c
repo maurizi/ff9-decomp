@@ -699,7 +699,7 @@ s32 func_8019AC9C(s32 arg0, u32 arg1, s32 arg2) {
     if (arg1 >= 6 || arg2 < 0 || arg2 >= D_8019DC5C[arg1].unk0) {
         return 0;
     }
-    func_80065238(arg0, D_8019DC5C[arg1].unk4[arg2].unk0);
+    strcpy((char *)arg0, (char *)D_8019DC5C[arg1].unk4[arg2].unk0);
     return 1;
 }
 
@@ -985,7 +985,7 @@ s32 func_8019C1B0(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4) 
         D_8019F750[i].unk4 = 0;
     }
     D_8019DEA4 = 0;
-    func_800236A4(0);
+    CdSetDebug(0);
     func_80022F1C(D_8019DE10.unk44, func_8019C434);
     func_80056448((s32)D_8019DE10.unk90, D_8019DE10.unk7C << 11);
     return 0;
@@ -1117,7 +1117,7 @@ s32 func_8019C7E4(void) {
 }
 
 s32 func_8019C864(void) {
-    func_800213A0(0);
+    CdReadyCallback(0);
     return 0;
 }
 

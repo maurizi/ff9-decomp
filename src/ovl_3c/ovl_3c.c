@@ -318,7 +318,7 @@ void func_801F4E1C(void) {
                       (D_801FC05C[i] | equip) ? 0 : 2);
     }
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
-    func_80063108(buf, D_801FC060);
+    strcat(buf, D_801FC060);
     func_8002B56C(r->x + 0x39, r->y + D_801FC050[0], 0x1E, buf, 0);
     text_formatNumber(item_getCount(id), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC050[1], 0x1E, buf, 0);
@@ -432,7 +432,7 @@ void func_801F551C(Window *w) {
     text_formatNumber(b->unk2, buf, 2, 1);
     func_8002B56C(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
     text_formatNumber(b->unk2 * it->unk4, buf, 7, 1);
-    func_80063108(buf, D_801FC098);
+    strcat(buf, D_801FC098);
     func_8002B56C(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
 }
 
@@ -738,7 +738,7 @@ void func_801F625C(void) {
                       (D_801FC0B8[i] | equip) ? 0 : 2);
     }
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
-    func_80063108(buf, D_801FC0BC);
+    strcat(buf, D_801FC0BC);
     func_8002B56C(r->x + 0x39, r->y + D_801FC0A8[0], 0x1E, buf, 0);
     text_formatNumber(item_getCount(s->unk4), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC0A8[1], 0x1E, buf, 0);
@@ -867,7 +867,7 @@ void func_801F6A7C(Window *w) {
     text_formatNumber(s->unk2, buf, 2, 1);
     func_8002B56C(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
     text_formatNumber(s->unk2 * r->unk0, buf, 7, 1);
-    func_80063108(buf, D_801FC0F8);
+    strcat(buf, D_801FC0F8);
     func_8002B56C(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
 }
 
@@ -1220,7 +1220,7 @@ void func_801F7BC4(Window *w) {
     text_formatNumber(m->unk1, buf, 2, 1);
     func_8002B56C(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
     text_formatNumber(m->unk1 * price, buf, 7, 1);
-    func_80063108(buf, D_801FC28C);
+    strcat(buf, D_801FC28C);
     func_8002B56C(w->unk0 + 0x39, w->unk2 + 0x32, w->unk18, buf, 0);
 }
 
@@ -1241,7 +1241,7 @@ void func_801F7DA8(Window *w) {
                       (D_801FC29C[i] | equip) ? 0 : 2);
     }
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
-    func_80063108(buf, D_801FC2A0);
+    strcat(buf, D_801FC2A0);
     func_8002B56C(r->x + 0x39, r->y + D_801FC290[0], w->unk18, buf, 0);
     text_formatNumber(item_getCount(e->unk0), buf, 2, 1);
     func_8002B56C(r->x + 0x5C, r->y + D_801FC290[1], w->unk18, buf, 0);

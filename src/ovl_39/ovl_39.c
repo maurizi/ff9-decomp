@@ -1473,8 +1473,8 @@ u8 func_801F7E68(void) {
     port = D_80077DB2 << 4;
     sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
     if ((u32)(sl->unk1A - 3) >= 2) {
-        func_80065238((char *)D_801FC388.unk6.unk0.v, func_801F83B8());
-        func_80063108(D_801FC388.unk6.unk0.v, "00000-");
+        strcpy((char *)D_801FC388.unk6.unk0.v, func_801F83B8());
+        strcat(D_801FC388.unk6.unk0.v, "00000-");
         D_801FC388.unk6.unk0.v[0x12] = D_801FB1A8.unk3 / 10 + '0';
         D_801FC388.unk6.unk0.v[0x13] = D_801FB1A8.unk3 % 10 + '0';
         /* called before its definition without a prototype: int result */
@@ -1483,7 +1483,7 @@ u8 func_801F7E68(void) {
             return 0;
         }
     } else {
-        func_80065238((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
+        strcpy((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
     }
     fd = func_801FA3D8(port, (char *)D_801FC388.unk6.unk0.v);
     D_801FC388.unk20 = fd;
@@ -1604,7 +1604,7 @@ u8 func_801F8478(void) {
 
     port = D_80077DB2 << 4;
     sl = &D_801FB1A8.unk34[D_801FB1A8.unk3];
-    func_80065238((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
+    strcpy((char *)D_801FC388.unk6.unk0.v, sl->unk4.unk0.v);
     fd = func_801FA3D8(port, (char *)D_801FC388.unk6.unk0.v);
     D_801FC388.unk20 = fd;
     if (fd < 0) {
@@ -2234,17 +2234,17 @@ s32 func_801FA0F4(s32 mode, s32 chan) {
     } else {
         strcpy(path, "bu10:*");
     }
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAAF4();
     return firstfile(path, chan);
 }
 
 s32 func_801FA184(s32 chan) {
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAAF4();
-    return func_80065EB0(chan);
+    return nextfile(chan);
 }
 
 s32 func_801FA1C4(s32 mode, s32 chan) {
@@ -2270,9 +2270,9 @@ s32 func_801FA240(s32 chan) {
     s32 r;
 
     func_801FAE1C();
-    func_80065228(0);
-    func_80065228(1);
-    func_80065218(chan);
+    _card_wait(0);
+    _card_wait(1);
+    _card_info(chan);
     while ((r = func_801FAB08()) == -1) {
     }
     return r;
@@ -2305,8 +2305,8 @@ s32 func_801FA2D8(void) {
 s32 func_801FA2E8(s32 chan) {
     s32 r;
 
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAE74();
     _card_clear(chan);
     do {
@@ -2326,8 +2326,8 @@ s32 func_801FA350(s32 a, void (*b)(void)) {
 s32 func_801FA37C(s32 chan) {
     D_801FB098 = NULL;
     D_801FC5EC = chan;
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAE1C();
     D_801FB074 = 1;
     return _card_load(chan);
@@ -2336,24 +2336,24 @@ s32 func_801FA37C(s32 chan) {
 s32 func_801FA3D8(s32 port, char *name) {
     char path[32];
 
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     D_801FB080 = port;
     if (port == 0) {
         strcpy(path, "bu00:");
     } else {
         strcpy(path, "bu10:");
     }
-    func_80063108((u8 *)path, (u8 *)name);
+    strcat((u8 *)path, (u8 *)name);
     func_801FAAF4();
-    return func_80065E60(path, 0x8003);
+    return open(path, 0x8003);
 }
 
 s32 func_801FA478(s32 chan) {
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAAF4();
-    return func_80065EA0(chan);
+    return close(chan);
 }
 
 s32 func_801FA4B8(s32 a, s32 b, s32 c, void (*d)(void)) {
@@ -2374,10 +2374,10 @@ s32 func_801FA4E4(s32 a, s32 b, s32 size) {
 }
 
 s32 func_801FA53C(void) {
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAE1C();
-    if (func_80065E90(D_801FC5E4, D_801FC5E8, 0x80) == -1) {
+    if (write(D_801FC5E4, D_801FC5E8, 0x80) == -1) {
         return 0;
     }
     D_801FB074 = 5;
@@ -2397,18 +2397,18 @@ s32 func_801FA5D0(s32 arg0, s32 arg1, s32 size) {
     D_801FB084 = 0;
     D_801FC5E8 = arg1;
     D_801FC5E0 = (size + 0x7F) / 128 - 1;
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAE1C();
     func_801FA644();
     return 1;
 }
 
 s32 func_801FA644(void) {
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAE1C();
-    if (func_80065E80(D_801FC5E4, D_801FC5E8, 0x80) == -1) {
+    if (read(D_801FC5E4, D_801FC5E8, 0x80) == -1) {
         return 0;
     }
     D_801FB074 = 4;
@@ -2420,23 +2420,23 @@ u8 func_801FA6AC(s32 port, char *name) {
     s32 fd;
     s32 ok;
 
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     if (port == 0) {
         strcpy(path, "bu00:");
     } else {
         strcpy(path, "bu10:");
     }
-    func_80063108((u8 *)path, (u8 *)name);
-    fd = func_80065E60(path, 0x10200);
+    strcat((u8 *)path, (u8 *)name);
+    fd = open(path, 0x10200);
     ok = fd != -1;
-    func_80065EA0(fd);
+    close(fd);
     return ok;
 }
 
 s32 func_801FA754(s32 chan) {
-    func_80065228(0);
-    func_80065228(1);
+    _card_wait(0);
+    _card_wait(1);
     func_801FAAF4();
     return _card_format(chan);
 }
@@ -2449,9 +2449,9 @@ void func_801FA794(void) {
         if (D_801FB078 == 0) {
             func_801FAE1C();
             D_801FC5EC = D_801FB07C = (D_801FB07C + 0x10) & 0x10;
-            func_80065228(0);
-            func_80065228(1);
-            func_80065218(D_801FC5EC);
+            _card_wait(0);
+            _card_wait(1);
+            _card_info(D_801FC5EC);
             D_801FB078 = 1;
         }
         r = func_801FAB08();
@@ -2501,7 +2501,7 @@ void func_801FA794(void) {
             goto callback;
         }
         D_801FC604 = 0;
-        func_80065E70(D_801FC5E4, 0x80, 1);
+        lseek(D_801FC5E4, 0x80, 1);
         D_801FB084++;
         if (D_801FC5E0 != 0) {
             D_801FC5E0--;
@@ -2546,13 +2546,13 @@ void func_801FAAF4(void) {
 s32 func_801FAB08(void) {
     s32 r = -1;
 
-    if (func_80065208(D_801FC5F4) == 1) {
+    if (TestEvent(D_801FC5F4) == 1) {
         r = 0;
-    } else if (func_80065208(D_801FC5F8) == 1) {
+    } else if (TestEvent(D_801FC5F8) == 1) {
         r = 1;
-    } else if (func_80065208(D_801FC5FC) == 1) {
+    } else if (TestEvent(D_801FC5FC) == 1) {
         r = 2;
-    } else if (func_80065208(D_801FC600) == 1) {
+    } else if (TestEvent(D_801FC600) == 1) {
         r = 3;
     }
     if (r != -1) {
@@ -2564,13 +2564,13 @@ s32 func_801FAB08(void) {
 s32 func_801FABB8(void) {
     s32 r = -1;
 
-    if (func_80065208(D_801FC608) == 1) {
+    if (TestEvent(D_801FC608) == 1) {
         r = 0;
-    } else if (func_80065208(D_801FC60C) == 1) {
+    } else if (TestEvent(D_801FC60C) == 1) {
         r = 1;
-    } else if (func_80065208(D_801FC610) == 1) {
+    } else if (TestEvent(D_801FC610) == 1) {
         r = 2;
-    } else if (func_80065208(D_801FC614) == 1) {
+    } else if (TestEvent(D_801FC614) == 1) {
         r = 3;
     }
     if (r != -1) {
@@ -2580,7 +2580,7 @@ s32 func_801FABB8(void) {
 }
 
 void func_801FAC68(void) {
-    func_80012D08();
+    EnterCriticalSection();
     D_801FC5F4 = OpenEvent(0xF4000001, 4, 0x2000, NULL);
     D_801FC5F8 = OpenEvent(0xF4000001, 0x8000, 0x2000, NULL);
     D_801FC5FC = OpenEvent(0xF4000001, 0x100, 0x2000, NULL);
@@ -2597,25 +2597,25 @@ void func_801FAC68(void) {
     EnableEvent(D_801FC60C);
     EnableEvent(D_801FC610);
     EnableEvent(D_801FC614);
-    func_80012D18();
+    ExitCriticalSection();
 }
 
 void func_801FAE1C(void) {
-    func_80065208(D_801FC5F4);
-    func_80065208(D_801FC5F8);
-    func_80065208(D_801FC5FC);
-    func_80065208(D_801FC600);
+    TestEvent(D_801FC5F4);
+    TestEvent(D_801FC5F8);
+    TestEvent(D_801FC5FC);
+    TestEvent(D_801FC600);
 }
 
 void func_801FAE74(void) {
-    func_80065208(D_801FC608);
-    func_80065208(D_801FC60C);
-    func_80065208(D_801FC610);
-    func_80065208(D_801FC614);
+    TestEvent(D_801FC608);
+    TestEvent(D_801FC60C);
+    TestEvent(D_801FC610);
+    TestEvent(D_801FC614);
 }
 
 void func_801FAECC(void) {
-    func_80012D08();
+    EnterCriticalSection();
     CloseEvent(D_801FC5F4);
     CloseEvent(D_801FC5F8);
     CloseEvent(D_801FC5FC);
@@ -2624,5 +2624,5 @@ void func_801FAECC(void) {
     CloseEvent(D_801FC60C);
     CloseEvent(D_801FC610);
     CloseEvent(D_801FC614);
-    func_80012D18();
+    ExitCriticalSection();
 }

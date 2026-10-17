@@ -261,9 +261,9 @@ void func_800D0940(void) {
         p->unk8 = 0;
         ClearOTag(ot, n);
         addPrim(ot, p);
-        func_80012D08();
+        EnterCriticalSection();
         DrawOTag(ot);
-        func_80012D18();
+        ExitCriticalSection();
         D_800F7278 = 0;
     }
 }
@@ -3432,12 +3432,12 @@ void func_800DA790(RECT *arg0, u32 *arg1, Unk800DA790 *arg2) {
 
 void func_800DA898(void) {
     if (D_800F750C == 2) {
-        func_80012D08();
+        EnterCriticalSection();
         if (DrawSync(1) == 0) {
             D_800F750C = 1;
             FlushCache();
         }
-        func_80012D18();
+        ExitCriticalSection();
     }
 }
 
@@ -4171,10 +4171,10 @@ void func_800DC510(char *arg0) {
     D_80100E30.unk0[0].unk0.isbg = 1;
     setRGB0(&D_80100E30.unk0[0].unk0, 0, 0, 0);
     setRGB0(&D_80100E30.unk0[1].unk0, 0, 0, 0);
-    func_80012D08();
+    EnterCriticalSection();
     VSyncCallback(NULL);
     DrawSyncCallback(NULL);
-    func_80012D18();
+    ExitCriticalSection();
     SetDispMask(1);
     while (1) {
         D_80100E30.unkE8 = (D_80100E30.unkE8 == &D_80100E30.unk0[0]) ? &D_80100E30.unk0[1] : &D_80100E30.unk0[0];
@@ -7579,7 +7579,7 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     ScaleMatrix(&m, arg10);
     m.t[1] = 0;
     m.t[0] = 0;
-    m.t[2] = func_800645C4();
+    m.t[2] = ReadGeomScreen();
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
     gte_ldvz012_0();
@@ -7650,7 +7650,7 @@ void func_800E6C58(SVECTOR *arg0) {
     func_800316D8(arg0, &m);
     m.t[1] = 0;
     m.t[0] = 0;
-    m.t[2] = func_800645C4();
+    m.t[2] = ReadGeomScreen();
     D_80104E10 = *D_800F78A4->unk14;
     *D_800F78A4->unk14 = m;
 }
@@ -7661,12 +7661,12 @@ void func_800E6D58(void) {
 
 void func_800E6DB8(s32 arg0) {
     s32 *p = &D_80104E00;
-    *p = func_800645C4();
-    func_800639D4(arg0);
+    *p = ReadGeomScreen();
+    SetGeomScreen(arg0);
 }
 
 void func_800E6DF4(void) {
-    func_800639D4(D_80104E00);
+    SetGeomScreen(D_80104E00);
 }
 
 void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 arg7) {
@@ -7689,9 +7689,9 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     e->unk0.b0 = 7;
     e->unk5C = *(DRAWENV *)&D_800F78A4->unk1C;
     ClearOTag(ot, 0x100);
-    mode = func_800645C4();
+    mode = ReadGeomScreen();
     ReadGeomOffset(&ox, &oy);
-    func_800639D4(0x200);
+    SetGeomScreen(0x200);
     SetGeomOffset(w >> 1, h >> 1);
     D_800F8D50.t[0] = -arg5;
     D_800F8D50.t[1] = arg6;
@@ -7699,12 +7699,12 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     func_800CEEC8(2);
     D_800F78A4->unk24 = func_800CE1B4(&D_800F8D50, g_gameState->unk1C->unk8E4.battle->unk11C0->unk1C, (s32)D_800F78A4->unk24, NULL, (s32)ot);
     func_800CEEC8(0xF);
-    func_80012D08();
+    EnterCriticalSection();
     DrawOTagEnv(ot, &e->unk0);
     PutDrawEnv(&e->unk5C);
-    func_80012D18();
+    ExitCriticalSection();
     D_800F7274 = save;
-    func_800639D4(mode);
+    SetGeomScreen(mode);
     SetGeomOffset(ox, oy);
 }
 

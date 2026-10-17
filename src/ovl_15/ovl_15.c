@@ -136,9 +136,9 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    func_80012D08();
+    EnterCriticalSection();
     FlushCache();
-    func_80012D18();
+    ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
         h = func_80022AC4(D_8019DC5C[arg0].unk4[arg1].unk0);
         func_80022ED4(h);

@@ -627,7 +627,7 @@ extern Unk80010CE0 D_80010CE0;
 
 s32 func_8001C784(void *);
 void memset(void *, s32, s32);
-void (*func_800213A0(void (*)()))(); /* returns the previous callback */
+void (*CdReadyCallback(void (*)()))(); /* returns the previous callback */
 void func_80021938(Unk80021938 *);
 void func_80023580(u8, u8 *);
 void func_800235A0(u8, u8 *);
@@ -1557,8 +1557,8 @@ void *func_8001C7FC(s32, s32, s32); /* mode 4: address, 5: size */
 void func_8002CD4C(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
-s32 func_80021380(void (*)(u8, u8 *));
-void func_80021340(void);
+s32 CdSyncCallback(void (*)(u8, u8 *));
+void CdFlush(void);
 
 typedef struct {
     s32 unk0;
@@ -1568,9 +1568,9 @@ typedef struct {
     u16 unkC;
     u16 unkE;
 } Unk8005EBB4;
-extern u32 D_8006F410[12]; /* semitone pitch table */
+extern u32 g_akaoSemitonePitch[12]; /* semitone pitch table */
 extern Unk8005EBB4 D_8007F970[];
-u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
+u16 akao_calcPitch(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
 extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
 extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
 s32 func_8005DB40(AkaoChannel *c);
@@ -1618,12 +1618,12 @@ typedef struct {
 } Unk80077E28;
 extern Unk80077E28 D_80077E28;
 
-extern s16 D_80080A2C;
-extern s32 D_80080AC0;
+extern s16 g_akaoCdVolumeFadeTicks;
+extern s32 g_akaoCdVolume;
 extern s32 D_80077E58;
 extern u32 *D_8007BCA4;
 
-void func_8005CDE4(void);
+void akao_applyCdVolume(void);
 void func_800325E0(void);
 void func_80023A2C(void);
 s32 func_8002F8E4(s32);
@@ -1681,7 +1681,7 @@ extern s32 D_8007B96C;
 extern s32 D_8007B974;
 extern s32 D_8007BB94;
 
-s32 func_8005703C(s32, s32);
+s32 SpuRead(s32, s32);
 void func_80056614(void);
 void func_8006008C(AkaoChannel *, s32);
 void func_800600C0(AkaoChannel *, s32);
@@ -1813,8 +1813,8 @@ extern u8 D_80077DB5;
 extern s32 D_80077DC0; /* frame counter? */
 
 s32 func_80012AD4(void);
-s32 func_80012D08(void);
-void func_80012D18(void);
+s32 EnterCriticalSection(void);
+void ExitCriticalSection(void);
 s32 OpenEvent(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
 s32 EnableEvent(s32); /* BIOS EnableEvent */
 s32 func_8001C750(s32, s32);
@@ -1871,8 +1871,8 @@ typedef struct {
     u8 x0, y0, x1, y1, x2, y2, x3, y3;
 } Unk80068F48;
 extern Unk80068F48 D_80068F48[];
-void func_80057708(s32, s32, s32);
-void func_80057788(s32, s32, s32);
+void akao_setVoiceAttack(s32, s32, s32);
+void akao_setVoiceSustain(s32, s32, s32);
 s32 func_80033964(u32);
 s32 func_8003502C(u8 *, s32);
 typedef struct {
@@ -1908,7 +1908,7 @@ extern Unk4 D_80011A6C; /* rodata constant, used by func_8004D2C0 */
 void func_800615F8(void);
 extern u8 D_8006F40C[];
 extern Unk80080A10 *D_800831C8[24];
-void func_800577BC(s32, s32, s32);
+void akao_setVoiceRelease(s32, s32, s32);
 void func_80035108(void);
 void func_80035680(void);
 void func_80035B90(Unk80035B90 *);
@@ -1938,8 +1938,8 @@ s32 func_8002B43C(s32);
 void func_8002B47C(s32);
 extern RECT D_8006BC38;
 void func_80061C1C(void);
-void func_80057688(s32, s32);
-void func_80057640(s32, u32, u32, s32);
+void akao_setVoicePitch(s32, s32);
+void akao_setVoiceVolume(s32, u32, u32, s32);
 u8 func_8002F800(void);
 void func_80032238(void);
 u16 func_80019150(void);
@@ -1958,7 +1958,7 @@ s32 func_800C0F08(void); /* field overlay (ovl_0a) */
 s32 func_800C0FB0(void); /* field overlay (ovl_0a) */
 extern CdRequest D_80076148;
 s32 func_8005EB40(s32 *, s32, s32, s32);
-s32 func_80021320(void);
+s32 CdMode(void);
 s32 func_800233CC(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
 u8 func_800240E8(void);
 void func_80023A6C(void);
@@ -1971,7 +1971,7 @@ extern u16 *D_800809E4;
 extern u16 *D_80083148;
 s32 func_8005A5FC(s32);
 void func_8005A20C(u8 **, u8 **, s32);
-void func_800575B4(u32);
+void akao_keyOn(u32);
 extern u8 *D_800809E8;
 extern s32 D_800809C0[];
 extern s32 D_800809D8; /* = D_800809C0[6] */
@@ -2149,7 +2149,7 @@ void func_800624E8(void);
 void func_8006252C(void);
 void func_80062750(s32);
 FileEntry *func_80063088(FileTable *, s32);
-void func_80063108(u8 *, u8 *);
+void strcat(u8 *, u8 *);
 /* per-frame offset animation of a window (func_80063118 / func_800631AC) */
 typedef struct TweenDef {
     u8 pad0[2];
@@ -2170,9 +2170,9 @@ void func_80063118(void *, void *, s32);
 void func_80063580(DR_TPAGE *, s32);
 void func_800635E0(DR_TPAGE *, s32);
 void func_800651D8(void);
-s32 func_80065208(s32);
-void func_80065218(s32);
-void func_80065228(s32);
+s32 TestEvent(s32);
+void _card_info(s32);
+void _card_wait(s32);
 
 /* ---- main batch 1 ---- */
 
@@ -2294,11 +2294,11 @@ s32 func_8005EC8C(s32, s32);
 void func_8005EBE8(AkaoChannel *, s32);
 void func_80056644(void *, s32);
 void func_800566D0(void);
-void func_8005681C(void);
+void akao_initState(void);
 s32 akao_tick(void); /* root counter 2 callback; returns the ticks this tick took */
 extern u8 D_80080990[];
 void UnDeliverEvent(s32, s32);
-void func_800575D0(s32);
+void akao_keyOff(s32);
 s32 StopRCnt(s32);
 void SpuQuit(void);
 extern s32 g_akaoTickEvent;
@@ -2458,16 +2458,16 @@ typedef struct {
     u8 pad50[0x58 - 0x50];
     s32 unk58;
 } Unk80083168;
-u32 func_8005709C(u8 *, u32); /* libspu SpuWrite? */
+u32 SpuWrite(u8 *, u32);
 void func_80060FA8(void);
 void func_800599D4(Unk80080A10 *, AkaoChannel *, s32);
-void func_80018750(s32 *); /* libspu SpuGetReverbModeType */
+void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
 extern Unk80083168 D_80083168;
 s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
-void func_800576BC(s32, s32);
+void akao_setVoiceLoopAddr(s32, s32);
 void func_80062118(void);
 void func_80061E1C(s32, s32, void (*)(void));
 void func_800621D4(void);
@@ -2615,11 +2615,11 @@ void func_8003384C(Character *);
 s32 func_80033280(s32, s32, u8 *);
 void func_80028720(void *, s32);
 void func_8002C1E4(void);
-s32 func_80065EB0(s32);
-s32 func_80065EA0(s32);
+s32 nextfile(s32);
+s32 close(s32);
 s32 _card_load(s32);
-s32 func_80065E90(s32, s32, s32);
-s32 func_80065E80(s32, s32, s32);
+s32 write(s32, s32, s32);
+s32 read(s32, s32, s32);
 void *func_80062824(void);
 extern s32 D_80070440;
 extern s32 D_8007048C;
@@ -2962,9 +2962,9 @@ static inline s32 func_800347D8_inline(s32 ch, s32 id) {
     }
     return D_8006CB28[c->unk34.b.row][i].unk1;
 }
-void func_800576A0(s32, s32);
-void func_80057738(s32, s32);
-void func_80057760(s32, s32);
+void akao_setVoiceStartAddr(s32, s32);
+void akao_setVoiceDecay(s32, s32);
+void akao_setVoiceSustainLevel(s32, s32);
 /* streamed AKAO sound header (func_800616F8) */
 typedef struct {
     s32 unk0; /* "AKAO" */
@@ -3055,8 +3055,8 @@ typedef struct {
 #define SPU_VOICE_REG(v, r) (*(u16 *)(0x1F801C00 + (r) + (v) * 16))
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
 #define SPU_REG16(a) (*(u16 *)(a))
-extern s16 D_80080AC2;
-extern s32 D_80080A28;
+extern s16 g_akaoCdVolumeHi;
+extern s32 g_akaoCdVolumeStep;
 s32 func_8005715C(s32);
 extern s32 D_8007F8E8;
 extern s32 D_8007F8E4;
@@ -3066,7 +3066,7 @@ typedef struct {
     u16 unk0[6];
 } Unk8007BD44Row;
 extern u32 D_80083174;
-/* voice parameter block written to the SPU by func_800577EC */
+/* voice parameter block written to the SPU by akao_writeVoice */
 typedef struct {
     u8 pad0[4];
     s32 unk4;
@@ -3315,8 +3315,8 @@ extern u32 g_allocTop; /* bump allocator for the boot-time state block */
 void func_8001CB78(void);
 void func_8001CBD0(void);
 s32 func_80022A28(void);
-void func_800236A4(s32);
-void func_80016BA0(void);
+void CdSetDebug(s32);
+void _bu_init(void);
 void func_80018F20(void);
 
 s32 func_8001D610(void);
@@ -3364,8 +3364,8 @@ extern s32 D_80073988[];
 void __main(void);
 void func_80012900(s32);
 void FlushCache(void); /* BIOS FlushCache */
-s32 func_80012D08(void); /* BIOS EnterCriticalSection */
-void func_80012D18(void); /* BIOS ExitCriticalSection */
+s32 EnterCriticalSection(void); /* BIOS EnterCriticalSection */
+void ExitCriticalSection(void); /* BIOS ExitCriticalSection */
 void func_8001D30C(void);
 void func_8001CB70(void);
 void func_80016B6C(void);
@@ -4126,10 +4126,10 @@ extern const u8 D_80011EFC[]; /* "ACTIVE TIME EVENT" window title */
 extern const u8 D_80011F10[]; /* "MOGNET" window title */
 
 /* sound driver (AKAO) routines used by func_800589F0 */
-void func_800575EC(u32 x);
-void func_80057608(u32 x);
-void func_80057624(u32 x);
-void func_80057898(s32 v, Unk800577EC *p);
+void akao_setReverbVoices(u32 x);
+void akao_setNoiseVoices(u32 x);
+void akao_setPitchModVoices(u32 x);
+void akao_flushVoice(s32 v, Unk800577EC *p);
 void func_80058118(AkaoChannel *c, u32 bit);
 void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
 void func_800588B0(u32 extra);

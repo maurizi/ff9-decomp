@@ -379,7 +379,7 @@ void func_801F6DAC(void);
 void func_801F6E1C(void);
 void func_801F70E4(void);
 char *strcpy(char *, const char *); /* C library (builtin) */
-s32 func_80065E60(char *, s32); /* main exe: open */
+s32 open(char *, s32); /* main exe: open */
 s32 func_801FA3D8(s32, char *);
 u8 func_801FA6AC(s32, char *);
 void func_80024000(s32); /* main exe */
@@ -476,7 +476,6 @@ void func_801F74F4(Window *);
 void func_801F7510(Window *);
 void func_801F7560(Window *);
 u8 func_801F8478(void);
-void func_80065238(char *, u8 *); /* main exe: string copy */
 void func_801F8588(void);
 MenuView *func_801F89B8(MenuList *, MenuView *);
 void func_801F8704(s32, SaveHeader *);
@@ -512,7 +511,7 @@ static inline u8 func_801F5340_inline(s32 slot, u8 any) {
 
 extern s32 D_801FB090[2]; /* per card port: retries; D_801FB088 holds the status */
 /* main exe: candidates for ff9.h */
-void func_80065E70(s32, s32, s32);
+void lseek(s32, s32, s32);
 /* card status helpers inlined into func_801FA794 */
 static inline void func_801FA794_set(s32 chan, s32 r) {
     s32 *p = &D_801FB088;

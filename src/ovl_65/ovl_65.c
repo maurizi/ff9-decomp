@@ -295,7 +295,7 @@ void func_801F0138(void) {
         func_8002DEE4(r, 0xE, 2);
         func_8002705C(r, 0xF, 2);
         text_formatNumber(gil, buf, 6, 1);
-        func_80063108(buf, D_801F3BC0);
+        strcat(buf, D_801F3BC0);
         x = r->x;
         y = r->y;
         D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,
@@ -318,7 +318,7 @@ void func_801F0264(void) {
         func_8002DEE4(r, 0xE, 2);
         func_8002705C(r, 0xF, 2);
         text_formatNumber(gil, buf, 7, 1);
-        func_80063108(buf, D_801F3BC4);
+        strcat(buf, D_801F3BC4);
         x = r->x;
         y = r->y;
         D_801F7A78.unk374 = func_8002920C(x + 0xC, y + 5, g_ot + 13,

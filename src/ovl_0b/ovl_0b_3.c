@@ -2059,9 +2059,9 @@ u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                 if (D_800FE51C & 8) {
                     if (D_800FE4F8 != 0) {
                         SetTransMatrix(&m2);
-                        func_800639D4(0x200);
+                        SetGeomScreen(0x200);
                         out = func_800CEED4(rec, out, (u32 *)arg4, grp);
-                        func_800639D4(g_gameState->unk1C->unkA);
+                        SetGeomScreen(g_gameState->unk1C->unkA);
                     } else {
                         out = func_800CEED4(rec, out, (u32 *)arg4, grp);
                     }
@@ -2216,7 +2216,7 @@ u8 *func_800CEBC8(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     long flag;
     s32 i;
 
-    func_800639D4(0x200);
+    SetGeomScreen(0x200);
     i = 0;
     PushMatrix();
     SetDrawStp((DR_STP *)arg0, 0);
@@ -2248,7 +2248,7 @@ u8 *func_800CEBC8(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     AddPrim(&arg1[2], arg0);
     PopMatrix();
     arg0 += sizeof(DR_TPAGE);
-    func_800639D4(g_gameState->unk1C->unkA);
+    SetGeomScreen(g_gameState->unk1C->unkA);
     return arg0;
 }
 

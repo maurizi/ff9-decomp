@@ -2296,9 +2296,9 @@ void func_800AE930(void) {
     VSync(g_gameState->unk9);
     ResetGraph(1);
     if (D_800C9D44 & 8) {
-        func_80012D08();
+        EnterCriticalSection();
         FlushCache();
-        func_80012D18();
+        ExitCriticalSection();
         D_800C9D44 &= ~8;
     }
     if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x20)) {
@@ -11240,7 +11240,7 @@ void func_800C8C08(void) {
     func_800275DC(D_800C9EA0->x + 6, D_800C9EA0->y + 0x15, 0x13, 0xB2, 0);
     func_8002B56C(D_800C9EA0->x + 0x13, D_800C9EA0->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));
     text_formatNumber(g_gameState->unk1C->gil, buf, 7, 1);
-    func_80063108(buf, D_800C9EA4);
+    strcat(buf, D_800C9EA4);
     func_8002B56C(D_800C9EA0->x + 0x13, D_800C9EA0->y + 0x16, 0x13, buf, 0);
     func_8002B524(D_800C9EA0->x + 6, D_800C9EA0->y - 3, 0x13, D_800704C0, 0);
     func_8002DEE4(D_800C9EA0, 0x14, 2);

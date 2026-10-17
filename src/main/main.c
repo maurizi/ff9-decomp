@@ -81,9 +81,9 @@ void func_80012900(s32 mode) {
         func_80022DF0(g_gameState->unk20 + f->unk4 + loaded, (f->unkC - (f->unk4 + loaded)) << 11,
                       (u8 *)addrs.unk0[mode] + (loaded << 11));
     }
-    func_80012D08();
+    EnterCriticalSection();
     FlushCache();
-    func_80012D18();
+    ExitCriticalSection();
 }
 
 INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
@@ -104,9 +104,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", InitHeap);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", FlushCache);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012D08);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", EnterCriticalSection);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012D18);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", ExitCriticalSection);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", ResetGraph);
 
@@ -318,7 +318,7 @@ void func_800169B8(void) {
     SpuInit();
     InitCARD(0);
     StartCARD();
-    func_80016BA0();
+    _bu_init();
     func_80018F20();
     func_80022A28();
 }
@@ -348,10 +348,10 @@ void func_80016A28(void) {
     D_80073690.feedback = 0;
     SpuSetReverbModeParam(&D_80073690);
     SpuSetReverbDepth(&D_80073690);
-    func_80018750(&D_800736A4);
+    SpuGetReverbModeType(&D_800736A4);
     SpuClearReverbWorkArea(D_800736A4);
     func_800551F0();
-    func_80018750(&D_800736A4);
+    SpuGetReverbModeType(&D_800736A4);
     SpuClearReverbWorkArea(D_800736A4);
     for (i = 0; i < 90; i++) {
         VSync(0);
@@ -369,7 +369,7 @@ void func_80016B6C(void) {
     D_80067950++;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80016BA0);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", _bu_init);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", InitGeom);
 
@@ -437,7 +437,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuClearReverbWorkArea);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", WaitEvent);
 
-void func_80018750(s32 *a) {
+void SpuGetReverbModeType(s32 *a) {
     *a = D_8006798C;
 }
 
@@ -1719,23 +1719,23 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002125C);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", CdPosToInt);
 
-u8 func_80021310(void) {
+u8 CdStatus(void) {
     return D_8006825C;
 }
 
-s32 func_80021320(void) {
+s32 CdMode(void) {
     return D_8006826C;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021330);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CdLastPos);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021340);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CdFlush);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021360);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CdReady);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80021380);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CdSyncCallback);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800213A0);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CdReadyCallback);
 
 s32 CdGetSector(void *a, s32 b) {
     return CD_getsector(a, b) == 0;
@@ -2283,8 +2283,8 @@ void cd_startRequest(CdRequest *r) {
     g_cdLoad.chunkOfs = 0;
     g_cdLoad.bytesRead = 0;
     g_cdLoad.sectorsLeft = n;
-    func_800213A0(NULL);
-    func_80021380(r->unk10);
+    CdReadyCallback(NULL);
+    CdSyncCallback(r->unk10);
     if (r->unk0 & 1) {
         g_cdLoad.unk0 = 1;
         CdIntToPos(r->sector, &g_cdLoad.unk8);
@@ -2326,7 +2326,7 @@ void func_800227C8(u8 intr, u8 *result) {
             g_cdLoad.unk18 = n;
             cd_onSectorReady();
             if (g_cdLoad.sectorsLeft == 0 || g_cdLoad.unk2 != 0) {
-                func_800213A0(0);
+                CdReadyCallback(0);
                 g_cdLoad.unk0 = 4;
                 func_80023580(9, 0);
             }
@@ -2335,7 +2335,7 @@ void func_800227C8(u8 intr, u8 *result) {
         err = 1;
     }
     if (err != 0) {
-        func_800213A0(0);
+        CdReadyCallback(0);
         g_cdLoad.unk0 = 4;
         g_cdLoad.unk3 = 1;
         g_cdLoad.unk1++;
@@ -2376,7 +2376,7 @@ s32 func_80022A28(void) {
     }
     ok = v;
     if (ok) {
-        func_800236A4(0);
+        CdSetDebug(0);
         v = 0x80; /* CdlModeSpeed */
         CdControlB(0xE, (u8 *)v, 0);
         VSync(3);
@@ -2386,8 +2386,8 @@ s32 func_80022A28(void) {
 
 void func_80022A80(void) {
     CdReset(1);
-    func_80021380(0);
-    func_800213A0(NULL);
+    CdSyncCallback(0);
+    CdReadyCallback(NULL);
     memset(&g_cdLoad, 0, 0x98C);
 }
 
@@ -2411,8 +2411,8 @@ s32 func_80022B28(void) {
     u8 buf[8];
     s32 r = g_cdLoad.unk0;
     if (r != 0) {
-        func_800213A0(NULL);
-        func_80021380(0);
+        CdReadyCallback(NULL);
+        CdSyncCallback(0);
         g_cdLoad.unk2 = 0;
         g_cdLoad.unk3 = 0;
         g_cdLoad.unk0 = 0;
@@ -2423,9 +2423,9 @@ s32 func_80022B28(void) {
 }
 
 void func_80022B9C(void) {
-    func_80021340();
-    func_80021380(0);
-    func_800213A0(NULL);
+    CdFlush();
+    CdSyncCallback(0);
+    CdReadyCallback(NULL);
     g_cdLoad.unk0 = 0;
 }
 
@@ -2568,7 +2568,7 @@ u8 func_80022F1C(s32 a, void (*b)()) {
 
 s32 func_80022F64(s32 a) {
     if (g_cdLoad.unk0 != 5) {
-        func_800213A0(NULL);
+        CdReadyCallback(NULL);
         g_cdLoad.unk944.sector = a;
         g_cdLoad.unk0 = 5;
         func_80023580(9, NULL);
@@ -2594,7 +2594,7 @@ s32 func_80023018(void) {
     }
     g_cdLoad.unk2 = 0;
     g_cdLoad.unk3 = 0;
-    func_800213A0(NULL);
+    CdReadyCallback(NULL);
     g_cdLoad.unk0 = 4;
     func_80023580(9, NULL);
     return 1;
@@ -2663,7 +2663,7 @@ void func_8002325C(u8 arg0) {
             }
             cd_startRequest(&g_cdLoad.unk968);
         } else if (!(g_cdLoad.unk944.unk0 & 8)) {
-            func_800213A0(NULL);
+            CdReadyCallback(NULL);
             g_cdLoad.unk0 = 4;
             func_80023580(9, 0);
         }
@@ -2674,7 +2674,7 @@ void func_80023304(s32 unused) {
     if (g_cdLoad.unk0 != 3 || !(g_cdLoad.unk944.unk0 & 8)) {
         g_cdLoad.unk3 = 1;
         g_cdLoad.unk1++;
-        func_800213A0(NULL);
+        CdReadyCallback(NULL);
         func_80023580(9, NULL);
     }
 }
@@ -2685,7 +2685,7 @@ void func_8002336C(u8 a) {
     s32 k;
 
     k = 0xA0;
-    if (func_80021320() != k) {
+    if (CdMode() != k) {
         st = 2;
         buf[0] = k;
         k = 0xE;
@@ -2703,10 +2703,10 @@ s32 func_800233CC() {
         g_cdLoad.unk18 = 0;
         g_cdLoad.unk0 = 3;
         if (g_cdLoad.unk944.unk0 & 8) {
-            func_800213A0((void (*)())func_800235A0);
+            CdReadyCallback((void (*)())func_800235A0);
             arg = 0x1B;
         } else {
-            func_800213A0(g_cdLoad.unk944.unk14);
+            CdReadyCallback(g_cdLoad.unk944.unk14);
             arg = 6;
         }
     } else {
@@ -2720,8 +2720,8 @@ s32 func_800233CC() {
 }
 
 void func_8002345C(void) {
-    func_800213A0(NULL);
-    func_80021380(0);
+    CdReadyCallback(NULL);
+    CdSyncCallback(0);
     if (g_cdLoad.unk3 == 0) {
         g_cdLoad.unk0 = 0;
         if (g_cdLoad.unk944.unk18 != NULL) {
@@ -2747,7 +2747,7 @@ void func_800235A0(u8 com, u8 *param) {
         D_80076B0C = *(Unk8 *)param;
     }
     if (g_cdLoad.unk2 != 0) {
-        func_800213A0(NULL);
+        CdReadyCallback(NULL);
         g_cdLoad.unk0 = 4;
         func_80023580(9, 0);
     } else {
@@ -2757,7 +2757,7 @@ void func_800235A0(u8 com, u8 *param) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", CdReset);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800236A4);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CdSetDebug);
 
 void func_800236C4(void) {
     GameStateUnk24 *p = (GameStateUnk24 *)&g_gameState->unk24;
@@ -7931,9 +7931,9 @@ void func_80032A44(void) {
 
     g_menu.unk10 = 0;
     DrawSync(0);
-    func_80012D08();
+    EnterCriticalSection();
     FlushCache();
-    func_80012D18();
+    ExitCriticalSection();
     g_menu.unk0 = 3;
     if (g_menu.unk1 == 0 && func_80033D28()) {
         func_80028B20((u8 *)0x801EDF00);
@@ -9162,9 +9162,9 @@ void func_80035F94(void) {
             D_80077E50.unk2 = D_80077E28.unk7;
             func_8002F9D0();
             DrawSync(0);
-            func_80012D08();
+            EnterCriticalSection();
             FlushCache();
-            func_80012D18();
+            ExitCriticalSection();
             D_80077E28.unk1C[D_80077E50.unk2].unk0();
         }
     }
@@ -17030,12 +17030,12 @@ void func_80056614(void) {
 void func_80056644(void *a, s32 b) {
     D_800809E0 = 1;
     SpuSetTransferCallback(func_800565F0);
-    func_8005709C(a, b);
+    SpuWrite(a, b);
 }
 
 s32 func_80056694(s32 a, s32 b) {
     func_80056614();
-    return func_8005703C(a, b);
+    return SpuRead(a, b);
 }
 
 void func_800566D0(void) {
@@ -17075,7 +17075,7 @@ s32 func_80056750(s32 *buf, s32 wait, s32 slot, u32 addr) {
     return -1;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005681C);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", akao_initState);
 
 void akao_init(void) {
     SpuStart();
@@ -17084,7 +17084,7 @@ void akao_init(void) {
     SpuSetTransferStartAddr(0x1010);
     func_80056644(D_8006F334, 0x40);
     func_800566D0();
-    func_8005681C();
+    akao_initState();
     SpuSetIRQ(0);
     SpuSetIRQCallback(NULL);
     while (SetRCnt(0xF2000002, 0x44E8, 0x1000) == 0) {
@@ -17109,7 +17109,7 @@ void akao_quit(void) {
     }
     while (CloseEvent(g_akaoTickEvent) == 0) {
     }
-    func_800575D0(0xFFFFFF);
+    akao_keyOff(0xFFFFFF);
     SpuQuit();
 }
 
@@ -17131,9 +17131,9 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetIRQCallback);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", _SpuCallback);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005703C);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuRead);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8005709C);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuWrite);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetTransferMode);
 
@@ -17328,32 +17328,32 @@ s32 func_80057534(u32 code) {
     return v;
 }
 
-void func_800575B4(u32 x) {
+void akao_keyOn(u32 x) {
     SPU_REG16(0x1F801D88) = x;
     SPU_REG16(0x1F801D8A) = x >> 16;
 }
 
-void func_800575D0(s32 x) {
+void akao_keyOff(s32 x) {
     SPU_REG16(0x1F801D8C) = x;
     SPU_REG16(0x1F801D8E) = (u32)x >> 16;
 }
 
-void func_800575EC(u32 x) {
+void akao_setReverbVoices(u32 x) {
     SPU_REG16(0x1F801D98) = x;
     SPU_REG16(0x1F801D9A) = x >> 16;
 }
 
-void func_80057608(u32 x) {
+void akao_setNoiseVoices(u32 x) {
     SPU_REG16(0x1F801D94) = x;
     SPU_REG16(0x1F801D96) = x >> 16;
 }
 
-void func_80057624(u32 x) {
+void akao_setPitchModVoices(u32 x) {
     SPU_REG16(0x1F801D90) = x;
     SPU_REG16(0x1F801D92) = x >> 16;
 }
 
-void func_80057640(s32 v, u32 l, u32 r, s32 vol) {
+void akao_setVoiceVolume(s32 v, u32 l, u32 r, s32 vol) {
     if (vol != 0) {
         l *= vol;
         r *= vol;
@@ -17364,47 +17364,47 @@ void func_80057640(s32 v, u32 l, u32 r, s32 vol) {
     ((SpuVoiceReg *)0x1F801C00)[v].unk2 = r & 0x7FFF;
 }
 
-void func_80057688(s32 v, s32 x) {
+void akao_setVoicePitch(s32 v, s32 x) {
     SPU_VOICE_REG(v, 0x4) = x;
 }
 
-void func_800576A0(s32 v, s32 x) {
+void akao_setVoiceStartAddr(s32 v, s32 x) {
     SPU_VOICE_REG(v, 0x6) = (u32)x >> 3;
 }
 
-void func_800576BC(s32 v, s32 x) {
+void akao_setVoiceLoopAddr(s32 v, s32 x) {
     SPU_VOICE_REG(v, 0xE) = (u32)x >> 3;
 }
 
-void func_800576D8(s32 v, u16 x) {
+void akao_setVoiceAdsr1(s32 v, u16 x) {
     SPU_VOICE_REG(v, 0x8) = x;
 }
 
-void func_800576F0(s32 v, u16 x) {
+void akao_setVoiceAdsr2(s32 v, u16 x) {
     SPU_VOICE_REG(v, 0xA) = x;
 }
 
-void func_80057708(s32 v, s32 a, s32 b) {
+void akao_setVoiceAttack(s32 v, s32 a, s32 b) {
     SPU_VOICE_REG(v, 0x8) = SPU_VOICE_REG8(v, 0x8) | ((((u32)b >> 2) << 15) | (a << 8));
 }
 
-void func_80057738(s32 v, s32 x) {
+void akao_setVoiceDecay(s32 v, s32 x) {
     SPU_VOICE_REG(v, 0x8) = (SPU_VOICE_REG(v, 0x8) & 0xFF0F) | (x << 4);
 }
 
-void func_80057760(s32 v, s32 x) {
+void akao_setVoiceSustainLevel(s32 v, s32 x) {
     SPU_VOICE_REG(v, 0x8) = (SPU_VOICE_REG(v, 0x8) & 0xFFF0) | x;
 }
 
-void func_80057788(s32 v, s32 a, s32 b) {
+void akao_setVoiceSustain(s32 v, s32 a, s32 b) {
     SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0x3F) | ((((u32)b >> 1) << 14) | (a << 6));
 }
 
-void func_800577BC(s32 v, s32 a, s32 b) {
+void akao_setVoiceRelease(s32 v, s32 a, s32 b) {
     SPU_VOICE_REG(v, 0xA) = (SPU_VOICE_REG(v, 0xA) & 0xFFC0) | ((((u32)b >> 2) << 5) | a);
 }
 
-void func_800577EC(s32 v, Unk800577EC *p, s32 vol) {
+void akao_writeVoice(s32 v, Unk800577EC *p, s32 vol) {
     u16 *r;
     s32 a;
     s32 b;
@@ -17429,7 +17429,7 @@ void func_800577EC(s32 v, Unk800577EC *p, s32 vol) {
     r[2] = p->unkC >> 3;
 }
 
-void func_80057898(s32 v, Unk800577EC *p) {
+void akao_flushVoice(s32 v, Unk800577EC *p) {
     s32 f = p->unk4;
 
     if (f == 0) {
@@ -17438,41 +17438,41 @@ void func_80057898(s32 v, Unk800577EC *p) {
     p->unk4 = 0;
     if (f & 0x10) {
         f &= ~0x10;
-        func_80057688(v, p->unk10);
+        akao_setVoicePitch(v, p->unk10);
         if (f == 0) {
             return;
         }
     }
     if (f & 3) {
         f &= ~3;
-        func_80057640(v, p->unk18, p->unk1A, p->unk16);
+        akao_setVoiceVolume(v, p->unk18, p->unk1A, p->unk16);
         if (f == 0) {
             return;
         }
     }
     if (f & 0x80) {
         f &= ~0x80;
-        func_800576A0(v, p->unk8);
+        akao_setVoiceStartAddr(v, p->unk8);
         if (f == 0) {
             return;
         }
     }
     if (f & 0x10000) {
         f &= ~0x10000;
-        func_800576BC(v, p->unkC);
+        akao_setVoiceLoopAddr(v, p->unkC);
         if (f == 0) {
             return;
         }
     }
     if (f & 0x6600) {
         f &= ~0x6600;
-        func_800576F0(v, p->unk14);
+        akao_setVoiceAdsr2(v, p->unk14);
         if (f == 0) {
             return;
         }
     }
     if (f & 0x9900) {
-        func_800576D8(v, p->unk12);
+        akao_setVoiceAdsr1(v, p->unk12);
     }
 }
 
@@ -17832,16 +17832,16 @@ void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                         }
                     }
                     if (ch->unk118 < 24) {
-                        func_800577EC(ch->unk118, (Unk800577EC *)&ch->unk118, (u16)ch->unk12E);
+                        akao_writeVoice(ch->unk118, (Unk800577EC *)&ch->unk118, (u16)ch->unk12E);
                         D_800831C8[ch->unk118] = g_akaoSeq;
                         D_80083158.unk8 |= 0x100;
                     }
                 } else if (ch->unk118 < 24) {
                     /* identical branches (jump2 merges them), as in func_80030EE4 */
                     if (mask) {
-                        ((void (*)(s32, Unk800577EC *, u32))func_80057898)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
+                        ((void (*)(s32, Unk800577EC *, u32))akao_flushVoice)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
                     } else {
-                        ((void (*)(s32, Unk800577EC *, u32))func_80057898)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
+                        ((void (*)(s32, Unk800577EC *, u32))akao_flushVoice)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
                     }
                 }
             }
@@ -17989,7 +17989,7 @@ void func_800589F0(void) {
             if (m2 & bit) {
                 func_80058118(ch, bit);
                 if (ch->unk11C) {
-                    ((void (*)(s32, Unk800577EC *, u32))func_80057898)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
+                    ((void (*)(s32, Unk800577EC *, u32))akao_flushVoice)(ch->unk118, (Unk800577EC *)&ch->unk118, ch->unk34);
                 }
                 m2 &= ~bit;
             }
@@ -18009,13 +18009,13 @@ void func_800589F0(void) {
         func_80059140((u32 *)&D_80083238[1], D_8007F790->unk3C, g_akaoSeq->unk3C, D_80080A70.unk1C);
         func_80059140((u32 *)&D_80083238[0], D_8007F790->unk40, g_akaoSeq->unk40, D_80080A70.unk20);
         func_80059140((u32 *)&D_80083238[2], D_8007F790->unk44, g_akaoSeq->unk44, D_80080A70.unk24);
-        func_800575EC(D_80083238[0]);
-        func_80057608(D_80083238[1]);
-        func_80057624(D_80083238[2]);
+        akao_setReverbVoices(D_80083238[0]);
+        akao_setNoiseVoices(D_80083238[1]);
+        akao_setPitchModVoices(D_80083238[2]);
         D_80083158.unk8 &= ~0x100;
     }
     if (keyon) {
-        func_800575B4(keyon);
+        akao_keyOn(keyon);
     }
 }
 
@@ -18071,7 +18071,7 @@ void func_80058F94(void) {
     out |= D_80080A70.unkC;
     D_80080A70.unkC = 0;
     if (out != 0) {
-        func_800575D0(out);
+        akao_keyOff(out);
     }
 }
 
@@ -18319,7 +18319,7 @@ void func_800599D4(Unk80080A10 *a, AkaoChannel *c, s32 id) {
         for (i = 0; i < 24; i++) {
             if (D_800831C8[i] == a) {
                 D_800831C8[i] = NULL;
-                func_800577BC(i, 5, 3);
+                akao_setVoiceRelease(i, 5, 3);
             }
         }
     }
@@ -18438,7 +18438,7 @@ void func_80059E10(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
     c->unkB6 = 0;
     func_80059548(c, data);
     D_800831C8[c->unk118] = NULL;
-    func_800577BC(c->unk118, 5, 3);
+    akao_setVoiceRelease(c->unk118, 5, 3);
     D_80080A70.unk0 |= mask;
     D_80080A70.unkC |= mask;
     mask = ~mask;
@@ -19011,32 +19011,32 @@ void func_8005B1B8(Unk80080AA0 *p) {
     }
 }
 
-void func_8005B2D8(u16 *a) {
-    D_80080A2C = 0;
-    D_80080AC0 = *a << 16;
-    func_8005CDE4();
+void akao_cmdSetCdVolume(u16 *a) {
+    g_akaoCdVolumeFadeTicks = 0;
+    g_akaoCdVolume = *a << 16;
+    akao_applyCdVolume();
 }
 
-void func_8005B30C(Unk80080AA0 *p) {
+void akao_cmdFadeCdVolume(Unk80080AA0 *p) {
     s32 n = 1;
 
     if (p->unk0 != 0) {
         n = p->unk0;
     }
-    D_80080A28 = (((u16)p->unk4 << 16) - D_80080AC0) / n;
-    D_80080A2C = n;
+    g_akaoCdVolumeStep = (((u16)p->unk4 << 16) - g_akaoCdVolume) / n;
+    g_akaoCdVolumeFadeTicks = n;
 }
 
-void func_8005B374(Unk80080AA0 *p) {
+void akao_cmdFadeCdVolumeFrom(Unk80080AA0 *p) {
     s32 n = 1;
     s32 v;
 
     if (p->unk0 != 0) {
         n = p->unk0;
     }
-    D_80080A28 = (((u16)p->unk8 << 16) - (v = (u16)p->unk4 << 16)) / n;
-    D_80080A2C = n;
-    D_80080AC0 = v;
+    g_akaoCdVolumeStep = (((u16)p->unk8 << 16) - (v = (u16)p->unk4 << 16)) / n;
+    g_akaoCdVolumeFadeTicks = n;
+    g_akaoCdVolume = v;
 }
 
 void func_8005B3E4(Unk80080AA0 *a) {
@@ -19437,10 +19437,10 @@ void func_8005C348(void) {
             i = 0;
             do {
                 if (m & bit) {
-                    func_80057640(i, 0, 0, 0);
-                    func_80057688(i, 0);
-                    func_80057708(i, 0x7F, 1);
-                    func_80057788(i, 0x7F, 3);
+                    akao_setVoiceVolume(i, 0, 0, 0);
+                    akao_setVoicePitch(i, 0);
+                    akao_setVoiceAttack(i, 0x7F, 1);
+                    akao_setVoiceSustain(i, 0x7F, 3);
                     m &= ~bit;
                 }
                 bit <<= 1;
@@ -19503,10 +19503,10 @@ void func_8005C4D4(void) {
         D_80080A70.unk0 &= ~m;
         while (m != 0) {
             if (m & bit) {
-                func_80057640(v, 0, 0, 0);
-                func_80057688(v, 0);
-                func_80057708(v, 0x7F, 1);
-                func_80057788(v, 0x7F, 3);
+                akao_setVoiceVolume(v, 0, 0, 0);
+                akao_setVoicePitch(v, 0);
+                akao_setVoiceAttack(v, 0x7F, 1);
+                akao_setVoiceSustain(v, 0x7F, 3);
                 m &= ~bit;
             }
             bit <<= 1;
@@ -19543,10 +19543,10 @@ void func_8005C5F0(void) {
 
 void func_8005C684(void) {
     if (D_80083168.unkC != 0) {
-        func_80057688(D_80083168.unk10, 0);
-        func_80057688(D_80083168.unk10 + 1, 0);
-        func_80057640(D_80083168.unk10, 0, 0, 0);
-        func_80057640(D_80083168.unk10 + 1, 0, 0, 0);
+        akao_setVoicePitch(D_80083168.unk10, 0);
+        akao_setVoicePitch(D_80083168.unk10 + 1, 0);
+        akao_setVoiceVolume(D_80083168.unk10, 0, 0, 0);
+        akao_setVoiceVolume(D_80083168.unk10 + 1, 0, 0, 0);
     }
 }
 
@@ -19560,33 +19560,33 @@ void func_8005C700(void) {
     if (d->unkC == 0) {
         return;
     }
-    func_80057688(d->unk10, d->unk58);
-    func_80057688(d->unk10 + 1, d->unk58);
+    akao_setVoicePitch(d->unk10, d->unk58);
+    akao_setVoicePitch(d->unk10 + 1, d->unk58);
     if (D_8008315C & 2) {
         v = d->unk40 * D_8006F640 >> 16;
-        func_80057640(d->unk10, v, v, 0);
-        func_80057640(d->unk10 + 1, v, v, 0);
+        akao_setVoiceVolume(d->unk10, v, v, 0);
+        akao_setVoiceVolume(d->unk10 + 1, v, v, 0);
     } else if (d->unk8 & 1) {
         v = d->unk40;
         v <<= 15;
         v >>= 16;
-        func_80057640(d->unk10, v, 0, 0);
-        func_80057640(d->unk10 + 1, 0, v, 0);
+        akao_setVoiceVolume(d->unk10, v, 0, 0);
+        akao_setVoiceVolume(d->unk10 + 1, 0, v, 0);
     } else {
         pan = (u8)(d->unk4C >> 8);
         l = d->unk40 * D_8006F540[pan] >> 16;
         r = d->unk40 * D_8006F540[pan ^ 0xFF] >> 16;
-        func_80057640(d->unk10, l, r, 0);
-        func_80057640(d->unk10 + 1, l, r, 0);
+        akao_setVoiceVolume(d->unk10, l, r, 0);
+        akao_setVoiceVolume(d->unk10 + 1, l, r, 0);
     }
 }
 
-void func_8005C864(void) {
+void akao_cmdNop(void) {
 }
 
-void func_8005C86C(s32 mode) {
+void akao_setReverbMode(s32 mode) {
     s32 t;
-    func_80018750(&t);
+    SpuGetReverbModeType(&t);
     if (t != mode) {
         SpuSetReverb(0);
         SpuSetReverbModeType(mode | 0x100);
@@ -19612,7 +19612,7 @@ s32 akao_command(u32 cmd) {
         seq = (AkaoSeqHeader *)D_80080AA0.unk0;
         if (g_akaoSeq->unk6A != seq->unk4 || (D_8007F790 != NULL && D_8007F790->unk6A != g_akaoSeq->unk6A)) {
             if (cmd != 0x19) {
-                func_8005C86C(seq->unk8);
+                akao_setReverbMode(seq->unk8);
             }
             blk->unk0 = (s32)seq;
             blk->unk8 = seq->unk4;
@@ -19685,8 +19685,8 @@ s32 akao_command(u32 cmd) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SpuSetReverbModeType);
 
-void func_8005CDE4(void) {
-    s32 v = D_80080AC2;
+void akao_applyCdVolume(void) {
+    s32 v = g_akaoCdVolumeHi;
     SPU_REG16(0x1F801DB0) = v;
     SPU_REG16(0x1F801DB2) = v;
 }
@@ -19741,10 +19741,10 @@ void func_8005CF04(void) {
     s32 k;
 
     D_8008314C = (D_8008314C + 1) & 0xFF;
-    if (D_80080A2C != 0) {
-        D_80080A2C--;
-        D_80080AC0 += D_80080A28;
-        func_8005CDE4();
+    if (g_akaoCdVolumeFadeTicks != 0) {
+        g_akaoCdVolumeFadeTicks--;
+        g_akaoCdVolume += g_akaoCdVolumeStep;
+        akao_applyCdVolume();
     }
     s = &D_80083168;
     if (s->unkC != 0 && s->unk48 != 0) {
@@ -19754,13 +19754,13 @@ void func_8005CF04(void) {
         if ((v & 0xFF00) != (old & 0xFF00)) {
             if (D_8008315C & 2) {
                 old = (old * D_8006F640) >> 16;
-                func_80057640(s->unk10, old, old, 0);
-                func_80057640(s->unk10 + 1, old, old, 0);
+                akao_setVoiceVolume(s->unk10, old, old, 0);
+                akao_setVoiceVolume(s->unk10 + 1, old, old, 0);
             } else {
                 old = v << 15;
                 old >>= 16;
-                func_80057640(s->unk10, old, 0, 0);
-                func_80057640(s->unk10 + 1, 0, old, 0);
+                akao_setVoiceVolume(s->unk10, old, 0, 0);
+                akao_setVoiceVolume(s->unk10 + 1, 0, old, 0);
             }
         }
         D_800831A8 = v & 0xFFFF;
@@ -20252,7 +20252,7 @@ void func_8005DD7C(AkaoChannel *c, u32 key) {
     c->unk12E = e->unk7;
 }
 
-u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out) {
+u16 akao_calcPitch(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out) {
     s32 n = note - p->unkA;
     s32 freq;
     u32 f;
@@ -20262,12 +20262,12 @@ u16 func_8005DFE0(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out) {
     }
     n %= 12;
     if (p->unk8 == 0) {
-        freq = D_8006F410[n] << 8;
+        freq = g_akaoSemitonePitch[n] << 8;
     } else if (p->unk8 < 0) {
-        freq = (D_8006F410[n] * (u16)p->unk8) >> 8;
+        freq = (g_akaoSemitonePitch[n] * (u16)p->unk8) >> 8;
     } else {
-        freq = (D_8006F410[n] * p->unk8) >> 7;
-        freq += D_8006F410[n] << 8;
+        freq = (g_akaoSemitonePitch[n] * p->unk8) >> 7;
+        freq += g_akaoSemitonePitch[n] << 8;
     }
     f = fine;
     if (f != 0) {
@@ -20341,7 +20341,7 @@ s32 func_8005E170(AkaoChannel *c, u32 mask, s32 key) {
         c->unk12C |= e->unk5;
     }
     c->unk12C |= p->unkE & 0x20;
-    r = ((s32 (*)())func_8005DFE0)(p, e->unk1, c->unk108, &c->unk84);
+    r = ((s32 (*)())akao_calcPitch)(p, e->unk1, c->unk108, &c->unk84);
     c->unk12E = e->unk6;
     c->unkBE = ((e->unk7 & 0x7F) + 0x40) << 8;
     if (e->unk7 & 0x80) {
@@ -20457,7 +20457,7 @@ void func_8005E3FC(AkaoChannel *c, u32 mask) {
                 c->unk10A = op;
                 op += c->unk106;
             }
-            vel = ((s32 (*)())func_8005DFE0)(&D_8007F970[c->unk9A], op, c->unk108, &c->unk84);
+            vel = ((s32 (*)())akao_calcPitch)(&D_8007F970[c->unk9A], op, c->unk108, &c->unk84);
             if (c->unkF6 != 0) {
                 tmp = (u32)(vel * c->unkF6) >> 8;
                 tmp *= (u8)D_8006F440[D_8008314C];
@@ -20504,7 +20504,7 @@ void func_8005E3FC(AkaoChannel *c, u32 mask) {
     c->unkCC = (c->unkCC & ~2) | ((c->unkCC & 1) << 1);
     if (c->unk10C != 0) {
         c->unk10A += c->unk10C;
-        vel = ((s32 (*)())func_8005DFE0)(&D_8007F970[c->unk9A], c->unk10A + c->unk106, c->unk108, &tmp) << 16;
+        vel = ((s32 (*)())akao_calcPitch)(&D_8007F970[c->unk9A], c->unk10A + c->unk106, c->unk108, &tmp) << 16;
         c->unkC2 = c->unkC6;
         c->unk10C = 0;
         c->unk80 = (s32)(vel - ((c->unk2C << 16) + c->unk30)) / (u16)c->unkC2;
@@ -21443,13 +21443,13 @@ void func_80060938(void) {
     if (D_80083168.unkC != 0) {
         SpuSetIRQ(0);
         SpuSetIRQCallback(NULL);
-        func_800575D0(D_80083168.unkC);
+        akao_keyOff(D_80083168.unkC);
         if (D_80083168.unk8 & 0x400) {
-            func_800576BC(D_80083168.unk10 - 2, 0x1030);
-            func_800576BC(D_80083168.unk10 - 1, 0x1030);
+            akao_setVoiceLoopAddr(D_80083168.unk10 - 2, 0x1030);
+            akao_setVoiceLoopAddr(D_80083168.unk10 - 1, 0x1030);
         }
-        func_800576BC(D_80083168.unk10, 0x1030);
-        func_800576BC(D_80083168.unk10 + 1, 0x1030);
+        akao_setVoiceLoopAddr(D_80083168.unk10, 0x1030);
+        akao_setVoiceLoopAddr(D_80083168.unk10 + 1, 0x1030);
         m = D_80083168.unkC;
         D_80083168.unkC = 0;
         D_80080A70.unk20 &= ~m;
@@ -21482,7 +21482,7 @@ void func_80060A98(void) {
     u8 *p = D_80083168.unk0 + 0x800;
     SpuSetTransferStartAddr(0x2100);
     SpuSetTransferCallback(func_80060FA8);
-    func_8005709C(p, 0x800);
+    SpuWrite(p, 0x800);
 }
 
 void func_80060AE0(s32 addr, s32 vol, s32 flag) {
@@ -21507,12 +21507,12 @@ void func_80060AE0(s32 addr, s32 vol, s32 flag) {
     D_80083168.unk10 = v;
     D_80083168.unkC = mask;
     D_80083168.unk18 = t;
-    func_800575D0(mask);
+    akao_keyOff(mask);
     D_80083168.unk8 = h->unk18;
     D_80083168.unk58 = h->unk1C;
     D_80083168.unk10 = v;
     D_80083168.unkC = mask;
-    func_800575D0(mask);
+    akao_keyOff(mask);
     SpuSetTransferMode(0);
     SpuSetTransferStartAddr(0x1100);
     D_800809E0 = 1;
@@ -21526,7 +21526,7 @@ void func_80060AE0(s32 addr, s32 vol, s32 flag) {
         SpuSetTransferCallback(func_80060A98);
         size = 0x800;
     }
-    func_8005709C(D_80083168.unk0, size);
+    SpuWrite(D_80083168.unk0, size);
     if (flag) {
         D_80080A70.unk20 |= D_80083168.unkC;
     } else {
@@ -21559,15 +21559,15 @@ void func_80060D1C(s32 v, s32 mode, s32 a, s32 b) {
         l = (u32)(D_80083168.unk40 * D_8006F540[pan]) >> 16;
         r = (u32)(D_80083168.unk40 * D_8006F540[pan ^ 0xFF]) >> 16;
     }
-    func_80057640(v, l, r, 0);
-    func_80057688(v, D_800831C0);
-    func_800576A0(v, a);
-    func_800576BC(v, b);
-    func_80057708(v, 0, 1);
-    func_80057738(v, 0xF);
-    func_80057760(v, 0xF);
-    func_80057788(v, 0x7F, 3);
-    func_800577BC(v, 6, 3);
+    akao_setVoiceVolume(v, l, r, 0);
+    akao_setVoicePitch(v, D_800831C0);
+    akao_setVoiceStartAddr(v, a);
+    akao_setVoiceLoopAddr(v, b);
+    akao_setVoiceAttack(v, 0, 1);
+    akao_setVoiceDecay(v, 0xF);
+    akao_setVoiceSustainLevel(v, 0xF);
+    akao_setVoiceSustain(v, 0x7F, 3);
+    akao_setVoiceRelease(v, 6, 3);
 }
 
 void func_80060ED8(s32 a, s32 b, void (*cb)(void)) {
@@ -21584,7 +21584,7 @@ void func_80060ED8(s32 a, s32 b, void (*cb)(void)) {
             D_80083168.unk14 = 0;
         }
         SpuSetIRQAddr(b + 8);
-        func_800575B4(D_80083168.unkC);
+        akao_keyOn(D_80083168.unkC);
         SpuSetIRQ(1);
     }
 }
@@ -21607,7 +21607,7 @@ void func_80061070(s32 a, s32 b, s32 n, void (*cb)(void)) {
     }
     SpuSetTransferStartAddr(a);
     func_80056614();
-    func_8005709C(D_80083168.unk0, n);
+    SpuWrite(D_80083168.unk0, n);
     SpuSetIRQ(0);
     if (D_80083168.unk14 > 0x800) {
         SpuSetIRQCallback(cb);
@@ -21623,8 +21623,8 @@ void func_80061070(s32 a, s32 b, s32 n, void (*cb)(void)) {
         a = b;
         D_80083168.unk14 = 0;
     }
-    func_800576BC(D_80083168.unk10, a);
-    func_800576BC(D_80083168.unk10 + 1, b);
+    akao_setVoiceLoopAddr(D_80083168.unk10, a);
+    akao_setVoiceLoopAddr(D_80083168.unk10 + 1, b);
     SpuSetIRQAddr(a + 8);
     SpuSetIRQ(1);
 }
@@ -21669,19 +21669,19 @@ void func_800612F0(s32 *a) {
     }
     if (D_8008315C & 2) {
         v = v * D_8006F640 >> 16;
-        func_80057640(d->unk10, v, v, 0);
-        func_80057640(d->unk10 + 1, v, v, 0);
+        akao_setVoiceVolume(d->unk10, v, v, 0);
+        akao_setVoiceVolume(d->unk10 + 1, v, v, 0);
     } else if (d->unk8 & 1) {
         v <<= 15;
         v >>= 16;
-        func_80057640(d->unk10, v, 0, 0);
-        func_80057640(d->unk10 + 1, 0, v, 0);
+        akao_setVoiceVolume(d->unk10, v, 0, 0);
+        akao_setVoiceVolume(d->unk10 + 1, 0, v, 0);
     } else {
         pan = (u8)(d->unk4C >> 8);
         l = v * D_8006F540[pan] >> 16;
         r = v * D_8006F540[pan ^ 0xFF] >> 16;
-        func_80057640(d->unk10, l, r, 0);
-        func_80057640(d->unk10 + 1, l, r, 0);
+        akao_setVoiceVolume(d->unk10, l, r, 0);
+        akao_setVoiceVolume(d->unk10 + 1, l, r, 0);
     }
 }
 
@@ -21709,20 +21709,20 @@ void func_800614AC(s32 *a) {
     }
     if (D_8008315C & 2) {
         v = d->unk40 * D_8006F640 >> 16;
-        func_80057640(d->unk10, v, v, 0);
-        func_80057640(d->unk10 + 1, v, v, 0);
+        akao_setVoiceVolume(d->unk10, v, v, 0);
+        akao_setVoiceVolume(d->unk10 + 1, v, v, 0);
     } else if (d->unk8 & 1) {
         v = d->unk40;
         v <<= 15;
         v >>= 16;
-        func_80057640(d->unk10, v, 0, 0);
-        func_80057640(d->unk10 + 1, 0, v, 0);
+        akao_setVoiceVolume(d->unk10, v, 0, 0);
+        akao_setVoiceVolume(d->unk10 + 1, 0, v, 0);
     } else {
         pan = (p >> 8) & 0xFF;
         l = d->unk40 * D_8006F540[pan] >> 16;
         r = d->unk40 * D_8006F540[pan ^ 0xFF] >> 16;
-        func_80057640(d->unk10, l, r, 0);
-        func_80057640(d->unk10 + 1, l, r, 0);
+        akao_setVoiceVolume(d->unk10, l, r, 0);
+        akao_setVoiceVolume(d->unk10 + 1, l, r, 0);
     }
 }
 
@@ -21744,7 +21744,7 @@ void func_80061624(void) {
     func_80060D1C(D_80083168.unk10 + 1, 0, D_80083168.unk2C, 0x1030);
     SpuSetIRQAddr(irq);
     SpuSetIRQCallback(func_800615F8);
-    func_800575B4(D_80083168.unkC);
+    akao_keyOn(D_80083168.unkC);
     SpuSetIRQ(1);
 }
 
@@ -21768,7 +21768,7 @@ void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
         n = d->unkC;
         d->unk10 = v;
         d->unkC = m;
-        func_800575D0(m | n);
+        akao_keyOff(m | n);
         d->unk8 = h->unk18;
         d->unk58 = h->unk1C;
         d->unk2C = addr;
@@ -21780,7 +21780,7 @@ void func_800616F8(s32 arg0, s32 b, s32 addr, s32 loop) {
         if (n > 0x2000) {
             n = 0x2000;
         }
-        func_8005709C(D_80083168.unk0, n);
+        SpuWrite(D_80083168.unk0, n);
         D_80083168.unk0 += n;
         if (loop) {
             D_80080A70.unk20 |= d->unkC;
@@ -21814,7 +21814,7 @@ void func_800618C0(s32 unused, s32 flag) {
     old = D_80083168.unkC;
     D_80083168.unk10 = v;
     D_80083168.unkC = mask;
-    func_800575D0(mask | old);
+    akao_keyOff(mask | old);
     h2 = h;
     D_80083168.unk8 = h2[6];
     D_80083168.unk58 = (u16)h2[7];
@@ -21846,7 +21846,7 @@ void func_800618C0(s32 unused, s32 flag) {
             func_80060D1C(D_80083168.unk10 + 1, 3, h2[8], 0x1030);
         }
     }
-    func_800575B4(D_80083174);
+    akao_keyOn(D_80083174);
     SpuSetIRQ(1);
 }
 
@@ -21901,7 +21901,7 @@ void func_80061C1C(void) {
     d->unk10 = v;
     d->unkC = mask;
     d->unk34 = 0;
-    func_800575D0(mask);
+    akao_keyOff(mask);
     d->unk8 = h->unk18;
     d->unk58 = h->unk1C;
     SpuSetTransferMode(0);
@@ -21909,14 +21909,14 @@ void func_80061C1C(void) {
     D_800809E0 = 1;
     SpuSetTransferCallback(func_80061EE4);
     if (d->unk8 & 0x400) {
-        func_8005709C(D_80083168.unk0 + 0xD0, 0x4000);
+        SpuWrite(D_80083168.unk0 + 0xD0, 0x4000);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
         d->unkC |= (1 << (v - 2)) | (1 << (v - 1));
     } else {
-        func_8005709C(D_80083168.unk0 + 0xD0, 0x2000);
+        SpuWrite(D_80083168.unk0 + 0xD0, 0x2000);
         func_80061BC8(&d->unk34);
         func_80061BC8(&d->unk34);
     }
@@ -21938,7 +21938,7 @@ void func_80061E1C(s32 a, s32 b, void (*cb)(void)) {
             b = 0x1030;
         }
         SpuSetIRQAddr(b + 8);
-        func_800575B4(D_80083168.unkC);
+        akao_keyOn(D_80083168.unkC);
         SpuSetIRQ(1);
     }
 }
@@ -21972,7 +21972,7 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
             SpuSetTransferStartAddr(a);
             func_80056614();
             func_80061BC8(&D_80083168.unk34);
-            func_8005709C(D_80083168.unk0 + 0xD0, n - 0xD0);
+            SpuWrite(D_80083168.unk0 + 0xD0, n - 0xD0);
             D_80083168.unk20 = h->unk4;
             D_80083168.unk18 = h->unk20;
             if (h->unk10 > h->unk20) {
@@ -21986,8 +21986,8 @@ s32 func_80061FBC(s32 a, s32 b, s32 n, void (*cb)(void)) {
                 b = 0x1030;
                 a = b;
             }
-            func_800576BC(D_80083168.unk10, a);
-            func_800576BC(D_80083168.unk10 + 1, b);
+            akao_setVoiceLoopAddr(D_80083168.unk10, a);
+            akao_setVoiceLoopAddr(D_80083168.unk10 + 1, b);
             SpuSetIRQAddr(a + 8);
             SpuSetIRQ(1);
         }
@@ -22007,8 +22007,8 @@ void func_80062118(void) {
         } else {
             a = 0x2100;
         }
-        func_800576BC(D_80083168.unk10 - 2, a);
-        func_800576BC(D_80083168.unk10 - 1, b);
+        akao_setVoiceLoopAddr(D_80083168.unk10 - 2, a);
+        akao_setVoiceLoopAddr(D_80083168.unk10 - 1, b);
     } else {
         func_80061FBC(0x1100, 0x1900, 0x1000, func_800621D4);
     }
@@ -22026,8 +22026,8 @@ void func_800621D4(void) {
         } else {
             a = 0x4100;
         }
-        func_800576BC(D_80083168.unk10 - 2, a);
-        func_800576BC(D_80083168.unk10 - 1, b);
+        akao_setVoiceLoopAddr(D_80083168.unk10 - 2, a);
+        akao_setVoiceLoopAddr(D_80083168.unk10 - 1, b);
     } else {
         func_80061FBC(0x2100, 0x2900, 0x1000, func_80062118);
     }
@@ -22446,7 +22446,9 @@ FileEntry *func_80063088(FileTable *t, s32 id) {
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetPolyF4);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063108);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", strcat);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80063118);
 
 s32 func_800631AC(WinDef *t) {
     if (t->unkC == NULL) {
@@ -22598,7 +22600,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", bcopy);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", CompMatrix);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800639D4);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", SetGeomScreen);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", LoadAverageShort12);
 
@@ -22630,7 +22632,7 @@ INCLUDE_ASM("asm/us/main/nonmatchings/main", memchr);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", LoadAverageCol);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_800645C4);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", ReadGeomScreen);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", SetTexWindow);
 
@@ -22720,7 +22722,13 @@ void func_800651D8(void) {
     func_80033690();
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065208);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", TestEvent);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", _card_info);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", _card_wait);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", strcpy);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", CdDiskReady);
 
@@ -22971,7 +22979,17 @@ void func_80065DF4(Character *u, s32 n) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80065E60);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", open);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", lseek);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", read);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", write);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", close);
+
+INCLUDE_ASM("asm/us/main/nonmatchings/main", nextfile);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", firstfile);
 

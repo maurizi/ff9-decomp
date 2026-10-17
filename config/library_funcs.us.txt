@@ -3,8 +3,8 @@
 # config/symbols.psyq*.txt. One per line: <binary> <function> <reason>
 main InitHeap BIOS A0 call stub
 main FlushCache BIOS A0 call stub
-main func_80012D08 BIOS syscall (Enter/ExitCriticalSection)
-main func_80012D18 BIOS syscall (Enter/ExitCriticalSection)
+main EnterCriticalSection BIOS syscall (Enter/ExitCriticalSection)
+main ExitCriticalSection BIOS syscall (Enter/ExitCriticalSection)
 main func_80012AD4 boot: SN startup helper
 main func_8001310C libgpu: RECT check / GPU debug print
 main func_800140E8 libgpu internals (GPU queue/DMA, D_80066660 state)
@@ -111,13 +111,13 @@ main func_800211D0 libcd wrapper
 main func_8002120C libcd wrapper
 main func_80021234 libcd wrapper
 main func_8002125C libcd wrapper
-main func_80021330 libcd wrapper
-main func_80021340 libcd wrapper
-main func_80021360 libcd wrapper
-main func_80021380 libcd wrapper
-main func_800213A0 libcd wrapper
+main CdLastPos libcd wrapper
+main CdFlush libcd wrapper
+main CdReady libcd wrapper
+main CdSyncCallback libcd wrapper
+main CdReadyCallback libcd wrapper
 main func_80021620 libcd wrapper
-main func_800236A4 libcd wrapper
+main CdSetDebug libcd wrapper
 main SystemError BIOS A0/B0/C0 call stub
 main CloseEvent BIOS A0/B0/C0 call stub
 main DisableEvent BIOS A0/B0/C0 call stub
@@ -127,22 +127,30 @@ main exit BIOS A0/B0/C0 call stub
 main bcopy BIOS A0/B0/C0 call stub
 main strlen BIOS A0/B0/C0 call stub
 main memchr BIOS A0/B0/C0 call stub
-main func_80065208 BIOS A0/B0/C0 call stub
-main func_80065E60 BIOS A0/B0/C0 call stub
+main TestEvent BIOS A0/B0/C0 call stub
+main _card_info BIOS A0/B0/C0 call stub
+main _card_wait BIOS A0/B0/C0 call stub
+main strcpy BIOS A0/B0/C0 call stub
+main open BIOS A0/B0/C0 call stub
+main lseek BIOS A0/B0/C0 call stub
+main read BIOS A0/B0/C0 call stub
+main write BIOS A0/B0/C0 call stub
+main close BIOS A0/B0/C0 call stub
+main nextfile BIOS A0/B0/C0 call stub
 main firstfile2 BIOS A0/B0/C0 call stub
 main _card_load BIOS A0/B0/C0 call stub
 main _card_write BIOS A0/B0/C0 call stub
 main _new_card BIOS A0/B0/C0 call stub
 main _card_read BIOS A0/B0/C0 call stub
 main _card_status BIOS A0/B0/C0 call stub
-main func_80063108 BIOS stub merged with following library function
-main func_800639D4 libgte: GTE control register access
-main func_800645C4 libgte: GTE control register access
+main strcat BIOS A0/B0/C0 call stub
+main SetGeomScreen libgte: GTE control register access
+main ReadGeomScreen libgte: GTE control register access
 main func_80064EA8 libgte: GTE control register access
 main func_80064EB8 libgte: GTE control register access
 main func_80062C8C libgte: hand-written GTE asm
-main func_8005703C libspu
-main func_8005709C libspu
+main SpuRead libspu
+main SpuWrite libspu
 main func_80059504 libspu
 main func_80064C24 out of scope (prior analysis; calls hand-written asm func_800512E4 register ABI)
 main text_setBank hand-written asm (addi, odd scheduling)

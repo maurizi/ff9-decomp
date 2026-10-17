@@ -811,24 +811,24 @@ void func_800A8D2C(void) {
     s32 i;
     s32 h;
 
-    func_80012D08();
+    EnterCriticalSection();
     for (i = 0; i < 4; i++) {
         h = OpenEvent(0xF4000001, D_800AB2B4[i], 0x2000, 0);
         D_800AB320.unk14[i] = h;
         EnableEvent(h);
     }
-    func_80012D18();
+    ExitCriticalSection();
 }
 
 void func_800A8DB0(void) {
     s32 i;
 
-    func_80012D08();
+    EnterCriticalSection();
     for (i = 0; i < 4; i++) {
         DisableEvent(D_800AB320.unk14[i]);
         CloseEvent(D_800AB320.unk14[i]);
     }
-    func_80012D18();
+    ExitCriticalSection();
 }
 
 void func_800A8E10(void) {
@@ -860,11 +860,11 @@ void func_800A8ED8(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        func_80065208(D_800AB320.unk14[i]);
+        TestEvent(D_800AB320.unk14[i]);
     }
-    func_80065228(0);
-    func_80065228(1);
-    func_80065218(D_800AB320.unk6 << 4);
+    _card_wait(0);
+    _card_wait(1);
+    _card_info(D_800AB320.unk6 << 4);
 }
 
 s32 func_800A8F44(void) {
@@ -872,7 +872,7 @@ s32 func_800A8F44(void) {
     s32 r = -1;
 
     for (i = 0; i < 4; i++) {
-        if (func_80065208(D_800AB320.unk14[i]) == 1) {
+        if (TestEvent(D_800AB320.unk14[i]) == 1) {
             r = i;
             break;
         }
@@ -1088,9 +1088,9 @@ s32 func_800A9968(void) {
     func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    func_80012D08();
+    EnterCriticalSection();
     FlushCache();
-    func_80012D18();
+    ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
         h = func_80022AC4(*D_8019DC68);
         func_80022ED4(h);
