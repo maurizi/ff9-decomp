@@ -389,6 +389,22 @@ void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
 
 
+/* Capture flash bar pieces (func_800AC708), one per direction. */
+typedef struct {
+    s32 unk0; /* 0: horizontal bar, 1: corner, 2: vertical bar */
+    s32 unk4;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14; /* x offset */
+    s32 unk18; /* y offset */
+} TmFlash;
+
+typedef struct {
+    TmFlash v[8];
+} TmFlashTbl;
+extern TmFlashTbl D_800A72B8; /* INCLUDE_RODATA */
+
 extern char D_800A7398[]; /* "NO" label (INCLUDE_RODATA) */
 
 #endif
