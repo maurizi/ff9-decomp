@@ -6431,7 +6431,24 @@ void func_8002E660(Window *w) {
     func_800265B0(w->unk0 + w->unk2A, y, w->unk18, w->unk29, (w->unk30.unkA + w->unk2A) & 0x1F, w->unk30.unkB);
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8002E718);
+void func_8002E718(RECT *r, s32 otz, MenuList *m) {
+    s32 blink = ((u32)D_80077150 >> 4) & 1;
+    u8 top = m->unk5;
+    u8 more = top < m->unk2 - m->unk3;
+    s32 z = otz;
+    s32 x;
+    s32 y;
+
+    /* The two `&& (x = 0)` tests store only to x, which is dead (reassigned before use): flow deletes the
+     * stores and jump2 deletes the then-empty branches, so they emit no code. They exist for the register
+     * allocator: the first splits the block between the x and y arguments (as the original's schedule
+     * needs) and keeps top live into a second block, the second adds references to more and blink. */
+    func_800275DC(r->x + r->w - 6, (top != (u32)m && (x = 0), r->y + 5), z, 0xB8,
+                  top != 0 ? (more != blink && (x = 0), blink) : 1);
+    y = r->y + r->h - 14;
+    x = r->x + r->w - 6;
+    func_800275DC(x, y, z, 0xB9, more ? blink : 1);
+}
 
 void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
     RECT t;
