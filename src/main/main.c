@@ -14673,7 +14673,58 @@ void func_8004D940(Unk8007B9C0 *w) {
     }
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8004DAD0);
+/* The sound callback is called as returning s32 (like the event interpreter's 0xC5.. opcodes):
+   a call_value insn gives the function pointer a v0 preference in local-alloc, which the
+   0x10000 path needs (pointer in v0, %hi(D_8007B958) in v1). The 0x10000 path must come
+   last in the chain so its call falls into the shared `return 1` and jump2 cross-jumps the
+   0x10/0x40 calls onto its jalr. */
+s32 func_8004DAD0(Unk8007B9C0 *w, s32 pad) {
+    u8 f;
+
+    if ((g_evtMode == 1 && (pad & 0xA0000)) || (g_evtMode != 1 && (pad & 0x20000))) {
+        f = w->unk28;
+        if (!(f & 0x40)) {
+            if (w->unk26 == 0xFF) {
+                w->unk26 = 1;
+                if (D_8007B968 >= 0) {
+                    ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+                }
+                return 1;
+            }
+            if (!(f & 8)) {
+                w->unk28 = f | 4;
+                return 1;
+            }
+        }
+    }
+    if (D_8007B968 >= 0) {
+        if (D_8007B970 != w->unkA) {
+            return 0;
+        }
+        if (pad & 0x10) {
+            if (D_8007B958 > 0) {
+                D_8007B958--;
+            } else {
+                D_8007B958 = D_8007B95C - 1;
+            }
+            ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+        } else if (pad & 0x40) {
+            if (D_8007B958 < D_8007B95C - 1) {
+                D_8007B958++;
+            } else {
+                D_8007B958 = 0;
+            }
+            ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x67, 0x800000, 0x80, 0x7F);
+        } else if (!(pad & 0x10000) || D_8007B96C < 0) {
+            return 0;
+        } else {
+            D_8007B958 = D_8007B96C;
+            ((s32 (*)(s32, s32, s32, s32, s32))g_gameState->unk1C->unk83C)(0xD000, 0x65, 0x800000, 0x80, 0x7F);
+        }
+        return 1;
+    }
+    return 0;
+}
 
 static inline Unk8007B9C0 *msg_open_init(s32 id, WinLayout *l) {
     Unk8007B9C0 *w;
