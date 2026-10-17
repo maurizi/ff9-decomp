@@ -1316,7 +1316,7 @@ void func_800AB3CC(void) {
     lim = 100;
     j = 0;
     if (D_800C9D44 & 0x40) {
-        func_8019AE0C(&ofs[0], &ofs[1]);
+        mbg_getGeomOffset(&ofs[0], &ofs[1]);
         SetGeomOffset(ofs[0], ofs[1]);
     } else {
         func_800C0F08();
@@ -2075,10 +2075,10 @@ s32 func_800AD944(s32 arg0, s32 arg1, s32 arg2) {
     case 3:
         return func_800AD944_state();
     case 4:
-        return func_8019AB70();
+        return mbg_getFrame();
     case 5:
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 = arg1;
-        func_8019A5B0(arg1);
+        mbg_setRgb24(arg1);
         break;
     }
     return 0;
@@ -2158,25 +2158,25 @@ void func_800ADB74(void) {
             func_80056248(0);
             func_80056228();
             DrawSync(0);
-            func_801999B4(1, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk34);
-            func_8019A5B0(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43);
-            func_8019AC3C(func_800AE4F8);
-            D_800C9D46 = D_80071E34;
+            MBG_init(1, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk34);
+            mbg_setRgb24(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43);
+            mbg_setEndCallback(func_800AE4F8);
+            D_800C9D46 = g_mbgFrame;
             func_8019AB98(2, 4, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5D);
-            func_80199B28(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48,
+            mbg_play(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48,
                           g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49);
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 6;
         }
         break;
     case 6:
         if (D_800C9D44 & 0x40) {
-            func_8019AD4C((void *)&g_gameState->unk1C->unk18, &g_gameState->unk1C->unkA);
+            mbg_getStartCamera((void *)&g_gameState->unk1C->unk18, &g_gameState->unk1C->unkA);
         }
         if ((D_800C9D44 & 2) && (func_80012AD4() & 2)) {
-            done = func_80199F30(0);
-            t = func_8019AD0C();
+            done = mbg_update(0);
+            t = mbg_getLastFrame();
             if (!(D_800C9D44 & 0x20) && (u32)t < 99999) {
-                d = t - D_80071E34;
+                d = t - g_mbgFrame;
                 if (d < 4) {
                     func_80056278(d * 4, 0);
                     D_800C9D44 |= 0x20;
@@ -2192,8 +2192,8 @@ void func_800ADB74(void) {
             } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 != 0 && g_gameState->unk1C->unk8 == 0) {
                 g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
             }
-            if ((D_80071E34 >= t || D_800C9D46 >= D_80071E34) && !(D_800C9D44 & 0x100)) {
-                if (D_800C9D46 >= D_80071E34) {
+            if ((g_mbgFrame >= t || D_800C9D46 >= g_mbgFrame) && !(D_800C9D44 & 0x100)) {
+                if (D_800C9D46 >= g_mbgFrame) {
                     ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
                     g_gameState->unk1C->unk0 &= ~0x1D;
                     g_gameState->unk1C->unk8E4.field->unk0 &= ~0xE01;
@@ -2207,7 +2207,7 @@ void func_800ADB74(void) {
                 }
                 D_800C9D44 |= 0x100;
             }
-            D_800C9D46 = D_80071E34;
+            D_800C9D46 = g_mbgFrame;
         }
         break;
     case 7:
@@ -2224,7 +2224,7 @@ void func_800AE4F8(void) {
         D_80073998[0] &= ~0x04000000;
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x1000;
     }
-    func_8019A9D8();
+    mbg_shutdown();
     func_80022B28();
     D_800C9D44 |= 4;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 7;
@@ -2629,7 +2629,7 @@ void func_800AFDE8(void) {
         return;
     }
     if (D_800C9D44 & 0x40) {
-        func_8019AE0C(&xy[0], &xy[1]);
+        mbg_getGeomOffset(&xy[0], &xy[1]);
         SetGeomOffset(xy[0], xy[1]);
     } else {
         func_800C0F08();
@@ -8370,7 +8370,7 @@ s32 func_800C0F08(void) {
     Unk800C9DB4Cam *c = func_800C9DB4_cam(0);
 
     c += D_800CA068.unk75;
-    if (!(func_80012AD4() & 2) || D_80071E34 < 2) {
+    if (!(func_80012AD4() & 2) || g_mbgFrame < 2) {
         gte_SetGeomOffset((s16)c->unk20 + D_800CA068.unkC, (s16)c->unk22 + D_800CA068.unkE);
     }
     return 1;

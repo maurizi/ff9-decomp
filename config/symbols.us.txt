@@ -168,3 +168,7 @@ g_akaoCdVolumeHi = 0x80080AC2; // [code] high half of g_akaoCdVolume, written to
 g_akaoCdVolumeStep = 0x80080A28; // [code] per-tick CD volume change set by akao_cmdFadeCdVolume*
 g_akaoCdVolumeFadeTicks = 0x80080A2C; // [code] ticks left of the CD volume fade, counted down by func_8005CF04
 _bu_init = 0x80016BA0; // [bios A(70h)] ff9-ds port/psx/card.c
+g_mbgState = 0x80071E32; // [code] 0 off, 1 after MBG_init, >=2 playing (mbg_play ++, mbg_stop --, mbg_update needs >=2), ff9-ds port/game/movie.c
+g_mbgFrame = 0x80071E34; // [code] frames decoded, ++ in mbg_update, compared with mbg_getLastFrame by ovl_0a/ovl_14, ff9-ds port/game/movie.c
+g_mbgRgb24 = 0x80071E31; // [code] -1 undecided (movie entry decides), 0 16-bit, 1 24-bit display (mbg_setRgb24, mbg_mdecOutCallback)
+g_mbgPaused = 0x80071E38; // [code] set at frame end on a pause request, frames then re-delivered by mbg_streamUngetFrame, cleared by mbg_setPause(0)

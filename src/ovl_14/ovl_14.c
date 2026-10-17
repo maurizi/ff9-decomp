@@ -979,32 +979,32 @@ s32 func_800A9220(void) {
             D_800AB3B8[0][i] = 0x10;
             g_gameState->unk9 = 4;
             DrawSync(0);
-            func_801999B4(1, &buf);
-            func_8019A5B0(1);
-            func_8019AC3C(func_800A9DD4);
-            D_800AB2CE = D_80071E34;
-            func_80199B28(1, 0);
+            MBG_init(1, &buf);
+            mbg_setRgb24(1);
+            mbg_setEndCallback(func_800A9DD4);
+            D_800AB2CE = g_mbgFrame;
+            mbg_play(1, 0);
             D_800AB3C8 = 2;
             break;
         case 2:
             if ((D_800AB2C4 & 0x10) && (func_80012AD4() & 2)) {
-                r = func_80199F30(0);
-                end = func_8019AD0C();
+                r = mbg_update(0);
+                end = mbg_getLastFrame();
                 if (r != 0) {
                     DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1] + 0xFFF);
                 } else if (timer == -1 && g_gameState->unk1C->unk8 == 0 && !(D_800AB2C4 & 0x20)) {
                     g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                 }
-                if ((D_80071E34 >= end || D_800AB2CE >= D_80071E34 || timer == 0) && !(D_800AB2C4 & 0x40)) {
+                if ((g_mbgFrame >= end || D_800AB2CE >= g_mbgFrame || timer == 0) && !(D_800AB2C4 & 0x40)) {
                     if (timer == 0) {
-                        func_8019AAF8();
+                        mbg_stop();
                         func_80023018();
                         if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
                             func_800A799C(0, 0x7003A, 0, 0, 0);
                             func_800A799C(0xC401, 0x7003A, 0x5A, 0, 0x7F);
                         }
                     }
-                    if (D_800AB2CE >= D_80071E34) {
+                    if (D_800AB2CE >= g_mbgFrame) {
                         D_800AB2C4 &= ~7;
                         if (g_gameState->unk1C->unk8 == 0) {
                             g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
@@ -1015,13 +1015,13 @@ s32 func_800A9220(void) {
                     }
                     D_800AB2C4 |= 0x40;
                 }
-                if (!(D_800AB2C4 & 0x100) && D_80071E34 > 0) {
+                if (!(D_800AB2C4 & 0x100) && g_mbgFrame > 0) {
                     func_800A799C(0, 0x7003A, 0, 0, 0);
                     D_800AB2C4 |= 0x100;
                 }
-                if (!(D_800AB2C4 & 0x20) && (g_padPortPressed[0] & (PAD_START | PAD_CROSS)) && D_80071E34 < end) {
+                if (!(D_800AB2C4 & 0x20) && (g_padPortPressed[0] & (PAD_START | PAD_CROSS)) && g_mbgFrame < end) {
                     D_800AB2CC = 1;
-                    func_8019A5B0(0);
+                    mbg_setRgb24(0);
                     D_800AB3B8[1][g_gameState->unk1C->unk8 != 0 ? 1 : 2] = 2;
                     timer = 6;
                     func_800320B8(1, 1, 0, 0);
@@ -1029,7 +1029,7 @@ s32 func_800A9220(void) {
                     D_80073998[0] = -1;
                     D_800AB2C4 |= 0x20;
                 }
-                D_800AB2CE = D_80071E34;
+                D_800AB2CE = g_mbgFrame;
                 if (!(D_800AB2C4 & 2) && timer != -1) {
                     timer--;
                 }
@@ -1096,7 +1096,7 @@ s32 func_800A9968(void) {
         func_80022ED4(h);
         while (func_80022B18() != 0) {
         }
-        func_8019C98C(h);
+        mbg_streamSetBaseSector(h);
     }
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800AB3C8 = 0;
@@ -1124,7 +1124,7 @@ void func_800A9B58(void) {
 
     DrawSync(0);
     if (func_80012AD4() & 2) {
-        if (D_80071E34 != 0 && D_80071E34 == D_80071E34 / 50 * 50) {
+        if (g_mbgFrame != 0 && g_mbgFrame == g_mbgFrame / 50 * 50) {
             g_gameState->unk9 = 3;
         } else {
             g_gameState->unk9 = 4;
@@ -1155,7 +1155,7 @@ void func_800A9B58(void) {
 }
 
 void func_800A9DD4(void) {
-    func_8019A9D8();
+    mbg_shutdown();
     func_80022B28();
     D_800AB2C4 |= 0x80;
     D_800AB3C8 = 3;

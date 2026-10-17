@@ -1,0 +1,76 @@
+MBG_init = 0x801999B4; // type:func [string] "Warning! MBG_init() called when already initialized", carves MDEC/ring/audio buffers out of caller memory
+mbg_play = 0x80199B28; // type:func [code] picks entry idx of movie list from D_8019DC5C, sets up MDEC buffers, ring, CD stream and decodes the first frame, ff9-ds port/game/movie.c
+mbg_update = 0x80199F30; // type:func [code] per-frame starts MDEC on the decoded frame, fetches/VLC-expands the next, returns 0 once stopped (called each frame by ovl_0a/14/15), ff9-ds port/game/movie.c
+mbg_stop = 0x8019AAF8; // type:func [code] stops sound and CD stream, decrements the player state, calls the end callback, resets display, ff9-ds port/game/movie.c
+mbg_shutdown = 0x8019A9D8; // type:func [code] inverse of MBG_init clears all buffer pointers and the player state (callers end-callbacks in ovl_0a/14/15)
+mbg_playToEnd = 0x8019AA5C; // type:func [code] blocking loop calling mbg_update(1) until it returns 0
+mbg_setPause = 0x8019AAB4; // type:func [code] nonzero requests a pause at the next frame end (mbg_mdecOutCallback), zero clears g_mbgPaused and restarts CD reading
+mbg_getFrame = 0x8019AB70; // type:func [code] returns D_80071E34 (frames decoded) or -1 when not initialized, used by ovl_0a script query
+mbg_getLastFrame = 0x8019AD0C; // type:func [code] returns the stream's end frame (D_8019DE10.unk3C, from audio sector +0x60) or -1, callers compare D_80071E34 against it, ff9-ds port/game/movie.c
+mbg_setEndCallback = 0x8019AC3C; // type:func [code] stores D_8019DC94.unk60, called by mbg_stop
+mbg_setScratchVlcTable = 0x8019AC48; // type:func [code] nonzero sets the VLC table to NULL = scratchpad (rodata "Using scratchpad"), else D_8019F288
+mbg_getEntryCount = 0x8019AC6C; // type:func [code] *out = D_8019DC5C[list].unk0 (entries in a movie list)
+mbg_getStartCamera = 0x8019AD4C; // type:func [code] copies the first frame's camera (D_8019F258/D_8019F278) to the caller, ovl_0a passes GameData.unk18 MATRIX
+mbg_getGeomOffset = 0x8019AE0C; // type:func [code] returns D_8019DC88, the GTE offset set from the frame camera record in func_801990A0
+mbg_getCameraSelect = 0x8019ABF0; // type:func [code] wraps func_8019C99C (D_8019DE10.unk10)
+mbg_setCameraSelect = 0x8019AC14; // type:func [code] wraps func_8019C9B4 (0/1 picks which of the two camera records func_8019BCE8 copies), ff9-ds docs/decomp-requests.md F28
+mbg_setRgb24 = 0x8019A5B0; // type:func [code] switches D_80071E31 / DecDCTin mode between 24-bit (0x1E0 halfword columns) and 16-bit (0x140), movie entry unk4 or ovl_0a/14 callers
+mbg_setDispEnv = 0x8019A688; // type:func [code] SetDefDispEnv for one buffer, isrgb24 and 2/3 width in 24-bit mode, vertically centered height h
+mbg_setGraphEnv = 0x8019A7A8; // type:func [code] sets both DISPENVs and DRAWENVs for 16/24-bit movie display (called with 0xE0 on mode change and stop)
+mbg_putDispEnv = 0x8019AA20; // type:func [code] VSync(0), PutDispEnv(env), SetDispMask(1)
+mbg_readFrame = 0x801990A0; // type:func [code] takes the next ready ring frame (func_8019C2F4), applies its camera record to GTE/GameData, copies mask data, flags end, updates frame size
+mbg_mdecOutCallback = 0x80199554; // type:func [code] registered via DecDCToutCallback in mbg_play applies mask, LoadImage of the decoded slice, starts the next DecDCTout
+mbg_vlcBuildTable = 0x8019AE44; // type:func [runtime] ff9-ds docs/movie-validation.md original VLC setup run in PCSX-Redux (tools/test_movie_vlc_psx.py), [code] expands the 108 run/level pairs at D_8019DCFC into +/- MDEC halfwords, NULL = scratchpad
+mbg_vlcSetSize = 0x8019AE98; // type:func [code] sets D_8019DDD4 output limit (n*2, <=0 means 0xFFFFFF) and returns the old one, func_8019AEC0 suspends at it, ff9-ds docs/decomp-requests.md F29
+mbg_vlcDecode = 0x8019AEC0; // type:func [runtime] ff9-ds docs/movie-validation.md original routine compared byte-for-byte on 171 frames in PCSX-Redux, [code] BS v2/v3 to MDEC run-level, NULL input resumes from D_8019DDD8
+mbg_vlcDecodeBlock = 0x8019B00C; // type:func [code] register-ABI entry inside mbg_vlcDecode stores the given coefficient, then decodes AC codes until EOB (FE00)
+mbg_vlcDecodeLumaBlockV3 = 0x8019B188; // type:func [code] register-ABI entry inside mbg_vlcDecode v3 luma DC predictor (t9), jal'd 4x per macroblock, then mbg_vlcDecodeBlock
+mbg_applyMask = 0x8019B3D4; // type:func [code] ORs D_8019DC84 (0x8000 STP) into the decoded 16x224 slice from RLE mask data (D_8019F4C8 cursor), E6000002 mask-check set in mbg_update
+mbg_drawStreamDebug = 0x8019B7C4; // type:func [code] debug bar of the CD ring one POLY_F4 per sector, colour per slot, brighter when ready (0x8000)
+mbg_streamOnVideoSector = 0x8019BA70; // type:func [code] after CdGetSector of a 0x914-byte video sector into the ring (func_8019C434), checks frame number, marks slot ready, ff9-ds docs/decomp-requests.md F28
+mbg_streamOnAudioSector = 0x8019BCE8; // type:func [code] after CdGetSector of a 2048-byte sector into the audio buffer, copies camera record/flags, end frame from +0x60, ff9-ds docs/decomp-requests.md F28
+mbg_streamStart = 0x8019C1B0; // type:func [code] computes the start sector from base sector + (startFrame-1)*sectors per frame, resets counters, starts CD reading with func_8019C434
+mbg_streamGetFrame = 0x8019C2F4; // type:func [code] returns the next ready ring slot's data/header/camera/mask, 3 not ready, 5 stream ended or failed
+mbg_streamReadyCallback = 0x8019C434; // type:func [code] CD ready callback passed to func_80022F1C reads the sector header, routes to audio or video sector handler, retries on timeout
+mbg_streamReset = 0x8019C7E4; // type:func [code] returns 4 unless ring and audio buffers are set, else clears the stream status bytes and channel
+mbg_streamStop = 0x8019C864; // type:func [code] clears the main-exe callback at D_80068254 via func_800213A0(0), only called by mbg_stop
+mbg_streamSetRing = 0x8019C884; // type:func [code] ring of size/per slots (max 16) header array then 0x8F4-byte sector data, all slots marked free (0x1000)
+mbg_streamSetAudioBuffer = 0x8019C954; // type:func [code] sets the 2048-byte-sector buffer (D_8019DE10.unk90) and its sector count
+mbg_streamSetBaseSector = 0x8019C98C; // type:func [code] sets D_8019DE10.unk1C, the movie's first sector used by mbg_streamStart
+mbg_streamGetCameraSelect = 0x8019C99C; // type:func [code] *out = D_8019DE10.unk10
+mbg_streamSetCameraSelect = 0x8019C9B4; // type:func [code] D_8019DE10.unk10 = 0/1, selects s->unk14[0/1] in mbg_streamOnAudioSector
+mbg_streamPushAudio = 0x8019C9D4; // type:func [code] when >=2 audio sectors are queued, consumes them and passes the stream to func_80056488
+mbg_streamSeek = 0x8019CA1C; // type:func [code] frees all slots, waits for CD idle, restarts reading at loc with mbg_streamReadyCallback
+mbg_streamGetStartPos = 0x8019CA80; // type:func [code] copies the start CdlLOC D_8019DE10.unk20
+mbg_streamGetPos = 0x8019CAC0; // type:func [code] CdIntToPos of the next sector D_8019DE10.unk44
+mbg_streamPeekFrame = 0x8019CAEC; // type:func [code] returns the read slot's data/header and its state (free/ready/0x2000/0x4000) without consuming
+mbg_streamCountFree = 0x8019CBA0; // type:func [code] adds the number of free (0x1000) ring slots to *count
+mbg_streamGetLastFrame = 0x8019CBF4; // type:func [code] *out = D_8019DE10.unk3C (end frame, 99999 until read from the stream)
+mbg_streamUngetFrame = 0x8019CC0C; // type:func [code] steps the read slot back so the same frame is returned again (used while g_mbgPaused)
+mbg_streamSetPaused = 0x8019CC3C; // type:func [code] nonzero pauses CD reading (func_80023018), zero restarts it at the current sector
+mbg_streamClearRing = 0x8019CC7C; // type:func [code] marks every ring slot free (0x1000)
+mbg_streamFreeFrame = 0x8019CCBC; // type:func [code] marks the slot holding data free and restarts CD reading if it had stalled on a full ring
+g_mbgPlayer = 0x8019DC94; // [code] player state buffers (MBG_init), end callback, frame size, VLC table pointer
+g_mbgStream = 0x8019DE10; // [code] CD ring stream state used by all func_8019C* / mbg_stream functions
+g_mbgDecode = 0x8019F4D8; // [code] MDEC in/out double buffers, frame rects and current slice (mbg_play, mbg_update, mbg_mdecOutCallback)
+g_mbgMovieLists = 0x8019DC5C; // [code] 5 lists of {count, entries}, mbg_play and mbg_getEntryCount index it, ff9-ds port/game/movie.c
+g_mbgMovie = 0x8019DCF8; // [code] current movie table entry, set by mbg_play
+g_mbgVlcPairs = 0x8019DCFC; // [runtime] ff9-ds docs/movie-validation.md 108 run/level pairs used by the original VLC routine, [code] read by mbg_vlcBuildTable
+g_mbgVlcSize = 0x8019DDD4; // [code] output limit set by mbg_vlcSetSize, read by mbg_vlcDecode
+g_mbgVlcResume = 0x8019DDD8; // [code] 13 saved registers stored when mbg_vlcDecode hits the limit, reloaded when called with NULL input
+g_mbgVlcTable = 0x8019F288; // [code] default expanded VLC table (D_8019DC94.unk44), built by mbg_vlcBuildTable
+g_mbgGeomOffset = 0x8019DC88; // [code] GTE offset (camera record +0x20/+0x22 + 160/112), returned by mbg_getGeomOffset
+g_mbgStartCamera = 0x8019F258; // [code] camera record of the first frame, returned by mbg_getStartCamera
+g_mbgMaskBit = 0x8019DC84; // [code] 0x8000, ORed into masked pixels by mbg_applyMask
+g_mbgMaskCursor = 0x8019F4C8; // [code] mbg_applyMask argument block run state and RLE data pointer, reset per frame in mbg_update
+g_mbgMaskSize = 0x8019E018; // [code] mask data length per draw buffer, copied by mbg_readFrame
+g_mbgMaskData = 0x8019E028; // [code] mask data per draw buffer (0x914 bytes each), copied from the stream by mbg_readFrame
+g_mbgSlotMasks = 0x8019F750; // [code] per ring slot {length, pointer} of mask data from the video sector header (mbg_streamOnVideoSector)
+g_mbgSlotCameras = 0x8019F510; // [code] per ring slot camera record copied by mbg_streamOnAudioSector, returned by mbg_streamGetFrame
+g_mbgLoadRects = 0x8019F488; // [code] 4 RECTs cycling for LoadImage of decoded slices in mbg_mdecOutCallback
+g_mbgLoadRectIdx = 0x8019DC90; // [code] index into g_mbgLoadRects, (n+1)%4
+g_mbgStreamBusy = 0x8019DEA4; // [code] reentry guard of mbg_streamReadyCallback, also cleared by mbg_streamStart
+g_mbgStreamDeferred = 0x8019DEA8; // [code] set when MDEC output is busy in mbg_streamReadyCallback, mbg_mdecOutCallback replays the callback and clears it
+g_mbgDebugRingColors = 0x8019DEAC; // [code] per-slot colours for mbg_drawStreamDebug
+g_mbgDebugRingPolys = 0x8019F7F0; // [code] POLY_F4[2][80] for mbg_drawStreamDebug
+mbg_getEntryName = 0x8019AC9C; // type:func [code] strcpy of entry idx of movie list n (D_8019DC5C) into the caller buffer

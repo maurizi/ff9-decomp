@@ -744,7 +744,7 @@ void func_8002D398(Window *, s32, s32);
 /* ---- misc globals (batch 1) ---- */
 
 extern u8 D_80068268[];
-extern s8 D_80071E32;
+extern s8 g_mbgState;
 extern s32 D_80077DD4;
 extern u8 D_80077DBA;
 extern u8 D_80077DBB;

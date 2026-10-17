@@ -4,24 +4,24 @@
 #include "ff9.h"
 
 extern s8 D_80071E30;
-extern s8 D_80071E31;
-extern s32 D_80071E34;
-extern s8 D_80071E38;
+extern s8 g_mbgRgb24;
+extern s32 g_mbgFrame;
+extern s8 g_mbgPaused;
 
 s32 func_80012AD4(void) {
     s32 r;
 
-    if (D_80071E32 == 1) {
+    if (g_mbgState == 1) {
         return 1;
     }
-    if (D_80071E32 < 2) {
+    if (g_mbgState < 2) {
         return 0;
     }
-    r = D_80071E34 > 0 ? 3 : 1;
-    if (D_80071E38 != 0) {
+    r = g_mbgFrame > 0 ? 3 : 1;
+    if (g_mbgPaused != 0) {
         r |= 0x10;
     }
-    if (D_80071E31 != 0) {
+    if (g_mbgRgb24 != 0) {
         r |= 4;
     }
     if (D_80071E30 == 1) {

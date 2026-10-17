@@ -88,16 +88,16 @@ s32 func_800A7378(s32 arg0, s32 arg1) {
             D_800AE4C8[0][i] = 0x10;
             g_gameState->unk9 = 4;
             DrawSync(0);
-            func_801999B4(1, &buf);
-            func_8019A5B0(1);
-            func_8019AC3C(func_800A7A84);
-            func_80199B28(arg0, arg1);
+            MBG_init(1, &buf);
+            mbg_setRgb24(1);
+            mbg_setEndCallback(func_800A7A84);
+            mbg_play(arg0, arg1);
             D_800AE4C0 = 2;
             break;
         case 2:
             if ((D_800AE0E0 & 0x10) && (func_80012AD4() & 2)) {
-                r = func_80199F30(0);
-                func_8019AD0C();
+                r = mbg_update(0);
+                mbg_getLastFrame();
                 if (r != 0) {
                     DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1] + 0xFFF);
                 } else if (timer == -1 && g_gameState->unk1C->unk8 == 0) {
@@ -144,7 +144,7 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
         func_80022ED4(h);
         while (func_80022B18() != 0) {
         }
-        func_8019C98C(h);
+        mbg_streamSetBaseSector(h);
     }
     func_800320B8(1, 1, 0x78, 0xFFFFFF);
     D_800AE4C0 = 0;
@@ -198,7 +198,7 @@ void func_800A787C(void) {
 }
 
 void func_800A7A84(void) {
-    func_8019A9D8();
+    mbg_shutdown();
     D_800AE0E0 |= 0x80;
     D_800AE4C0 = 3;
 }

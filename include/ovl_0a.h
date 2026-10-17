@@ -1296,10 +1296,10 @@ void func_800B5794(void);
 s32 func_800AAB30(s32, void *);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
-extern s32 D_80071E34;
+extern s32 g_mbgFrame;
 void func_801F3488(void *); /* overlay 0x65 (loaded at 0x801F0000) */
-void func_8019A5B0(s32); /* overlay loaded at 0x80198000 */
-s32 func_8019AB70(void);
+void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
+s32 mbg_getFrame(void);
 void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
 u32 func_8004AB64(void *); /* actor -> model slot */
@@ -1379,7 +1379,7 @@ void func_800B1E8C(FieldEvtCtx **, s32);
 void func_800AC02C(FieldEvtCtx **, s32);
 void func_800BA560(Unk800C95C8 *, s32);
 void func_800AC6C0(struct FieldObjPlace *, s32);
-s32 func_8019AE0C(s32 *, s32 *); /* ovl_64 */
+s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 
 #define gte_stir(r0) __asm__ volatile( \
     "swc2\t$9, 0(%0);" \
@@ -1424,13 +1424,13 @@ extern u16 D_800C9D46;
 extern Unk800C9F6C D_800C9F6C[2];
 void func_800AE4F8(void);
 void func_800AE5D4(void);
-void func_801999B4(s32, void *); /* overlay loaded at 0x80198000 */
-void func_8019AC3C(void (*)());
+void MBG_init(s32, void *); /* overlay loaded at 0x80198000 */
+void mbg_setEndCallback(void (*)());
 void func_8019AB98(s32, s32, s32);
-void func_80199B28(s32, s32);
-s32 func_8019AD4C(void *, u16 *);
-s32 func_80199F30(s32);
-s32 func_8019AD0C(void);
+void mbg_play(s32, s32);
+s32 mbg_getStartCamera(void *, u16 *);
+s32 mbg_update(s32);
+s32 mbg_getLastFrame(void);
 /* main exe: candidates for ff9.h */
 s32 func_80022AC4(char *);
 u8 func_80022ED4(s32);

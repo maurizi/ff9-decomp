@@ -91,7 +91,7 @@ INCLUDE_RODATA("asm/us/main/nonmatchings/main", D_80010034);
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_80012AD4);
 
 s8 func_80012B58(void) {
-    return D_80071E32;
+    return g_mbgState;
 }
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", __SN_ENTRY_POINT);
@@ -1793,7 +1793,7 @@ s32 func_8002170C(Unk8004AB64 *p) {
 }
 
 void func_80021770(void) {
-    D_80071E32 = 0;
+    g_mbgState = 0;
 }
 
 CdReadCtx *func_8002177C(void *arg0, s32 a, s32 b, void *c, s32 d, s32 e, void (*f)(CdReadCtx *)) {

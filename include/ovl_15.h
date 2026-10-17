@@ -31,14 +31,14 @@ void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player, 0x80198700) */
-void func_801999B4(s32, u8 **);
-void func_80199B28(s32, s32);
-s32 func_80199F30(s32);
-void func_8019A5B0(s32);
-void func_8019A9D8(void);
-void func_8019AC3C(void (*)(void));
-void func_8019AD0C(void);
-void func_8019C98C(s32);
+void MBG_init(s32, u8 **);
+void mbg_play(s32, s32);
+s32 mbg_update(s32);
+void mbg_setRgb24(s32);
+void mbg_shutdown(void);
+void mbg_setEndCallback(void (*)(void));
+void mbg_getLastFrame(void);
+void mbg_streamSetBaseSector(s32);
 typedef struct {
     s32 unk0;
     u8 pad4[0x14 - 4];

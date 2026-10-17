@@ -34,11 +34,11 @@ typedef struct {
     u32 unk4; /* flags: bpp in low bits */
 } TmTimLike; /* TIM header */
 s32 func_80022AC4(char *);
-extern s32 D_80071E34;
+extern s32 g_mbgFrame;
 u8 func_80022ED4(s32);
 void func_80032100(void);
 void func_80023018(void);
-void func_8019AAF8(void);
+void mbg_stop(void);
 s32 func_80055290(void *);
 void func_800552B8(s32);
 void func_800553EC(s32, s32, s32, s32);
@@ -59,18 +59,18 @@ void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
 
 /* ovl_64 (FMV player) */
-void func_8019C98C(s32);
-void func_801999B4(s32, u8 **);
-void func_80199B28(s32, s32);
-s32 func_80199F30(s32);
-void func_8019A5B0(s32);
-void func_8019AC3C(void (*)(void));
-s32 func_8019AD0C(void);
+void mbg_streamSetBaseSector(s32);
+void MBG_init(s32, u8 **);
+void mbg_play(s32, s32);
+s32 mbg_update(s32);
+void mbg_setRgb24(s32);
+void mbg_setEndCallback(void (*)(void));
+s32 mbg_getLastFrame(void);
 extern char **D_8019DC68;
 
 /* other overlay (0x801F....) */
 u8 func_801F5330(void);
-void func_8019A9D8(void);
+void mbg_shutdown(void);
 
 /* ---- this overlay ---- */
 
