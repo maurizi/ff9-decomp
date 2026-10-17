@@ -8521,7 +8521,7 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     volatile u16 *w;
     s32 t;
     s32 k;
-    register u16 v MIPS_REG("$3");
+    register u16 v REG_ASM("$3");
 
     t = arg3 - 1;
     n = (u8)arg4 - t;
@@ -8602,7 +8602,7 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     p->unk24.h = 1;
     StoreImage(&p->unk24, (u32 *)((u8 *)p + p->unk1C));
     w = (u16 *)((u8 *)p + p->unk20);
-    /* read the CLUT back; the original keeps the value in v1 (see MIPS_REG) */
+    /* read the CLUT back; the original keeps the value in v1 (see REG_ASM) */
     for (i = 0; i < n; i++) {
         v = w[i];
     }
