@@ -44,6 +44,10 @@
  * Pass 23: area in c (70), dx0 (75), dz2 (47), dx2 (92), dz1 (115) or dx1 (74). The original never stores the area
  * to nv/r.pad. The param lever does not apply: the params are already used directly, and the caller's u8 * for b
  * changes no RTL.
+ * Pass 24: still 38 rows (shape exact). BEHAVIOURALLY EQUIVALENT to the original (tools/equiv.py: 37/37 trials agree,
+ * 3 paths, 98% of the original's insns ran). Tried: v[] as three SVECTOR locals (identical code), v[1].vx through
+ * an s16 variable with a `(v1x << 16) >> 16` self-move to raise its refs (identical: folded), other compilers and
+ * flags (2.8.x -O2 best), ~1.5 h of permuter (nothing below the base score).
  */
 #include "ovl_0a.h"
 
