@@ -10741,7 +10741,84 @@ s32 func_800C6408(u32 arg0, u32 arg1) {
     return 1;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800C65CC);
+/* walkmesh triangle transfer: express the actor position relative to triangle n0 by cross products (nv, over
+   the triangle's doubled area) and re-project it onto triangle n1; the height comes from n1's plane or, without
+   one, from n1's first vertex */
+s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *n1) {
+    SVECTOR o;
+    SVECTOR v[3];
+    SVECTOR p;
+    VECTOR nv;
+    VECTOR r;
+    Unk800C9DF8Tri *t;
+    Unk800C9DFC *vtx;
+    Unk800C9E04 *pl;
+    s32 dx0, dx1, dx2, dz1, dz2;
+    s32 d;
+    s32 area;
+    s32 k;
+    s32 c;
+
+    t = &D_800C9DF0.unk1C[n0->unk4];
+    o.vx = b->unk8[0] + t->unkA[0];
+    o.vy = b->unk8[1] + t->unkA[1];
+    o.vz = b->unk8[2] + t->unkA[2];
+    vtx = (Unk800C9DFC *)((u8 *)b + b->unk3A);
+    v[0].vx = vtx[n0->unkC[0]].unk0;
+    v[1].vx = vtx[n0->unkC[1]].unk0;
+    v[2].vx = vtx[n0->unkC[2]].unk0;
+    p.vx = a->unk24->pos.vx - o.vx;
+    v[0].vy = vtx[n0->unkC[0]].unk2;
+    v[1].vy = vtx[n0->unkC[1]].unk2;
+    v[2].vy = vtx[n0->unkC[2]].unk2;
+    p.vy = a->unk24->pos.vy - o.vy;
+    v[0].vz = vtx[n0->unkC[0]].unk4;
+    v[1].vz = vtx[n0->unkC[1]].unk4;
+    v[2].vz = vtx[n0->unkC[2]].unk4;
+    p.vz = a->unk24->pos.vz - o.vz;
+    dx0 = v[0].vx - p.vx;
+    dx1 = v[1].vx - p.vx;
+    area = (v[1].vx - v[0].vx) * (v[2].vz - v[0].vz);
+    area -= (v[2].vx - v[0].vx) * (v[1].vz - v[0].vz);
+    dx2 = v[2].vx - p.vx;
+    d = v[0].vz - p.vz;
+    dz1 = v[1].vz - p.vz;
+    dz2 = v[2].vz - p.vz;
+    nv.vx = dx1 * dz2 - dx2 * dz1;
+    nv.vy = dx2 * d - dx0 * dz2;
+    nv.vz = dx0 * dz1 - dx1 * d;
+    t = &D_800C9DF0.unk1C[n1->unk4];
+    o.vx = b->unk8[0] + t->unkA[0];
+    o.vy = b->unk8[1] + t->unkA[1];
+    o.vz = b->unk8[2] + t->unkA[2];
+    v[0].vx = vtx[n1->unkC[0]].unk0;
+    v[1].vx = vtx[n1->unkC[1]].unk0;
+    v[2].vx = vtx[n1->unkC[2]].unk0;
+    v[0].vy = vtx[n1->unkC[0]].unk2;
+    v[1].vy = vtx[n1->unkC[1]].unk2;
+    v[2].vy = vtx[n1->unkC[2]].unk2;
+    v[0].vz = vtx[n1->unkC[0]].unk4;
+    v[1].vz = vtx[n1->unkC[1]].unk4;
+    v[2].vz = vtx[n1->unkC[2]].unk4;
+    r.vx = (nv.vx * v[0].vx + nv.vy * v[1].vx + nv.vz * v[2].vx) / area;
+    r.vz = (nv.vx * v[0].vz + nv.vy * v[1].vz + nv.vz * v[2].vz) / area;
+    a->unk24->pos.vx = r.vx + o.vx;
+    a->unk24->pos.vz = r.vz + o.vz;
+    k = n1->unk6;
+    if (k >= 0) {
+        pl = &D_800C9DF0.unk14[k];
+        c = func_800C1DC4(pl->unk0, a->unk24->pos.vx << 16);
+        a->unk24->pos.vy = func_800C1DC4(n1->unk24 - c - func_800C1DC4(pl->unk8, a->unk24->pos.vz << 16), pl->unkC) >> 16;
+        a->unk24->pos.vy += (s16)D_800C9DF0.unk1C[n1->unk4].unkA[1] - D_800C9DF0.unk1C[n1->unk4].unk4[1];
+    } else {
+        Unk800C9DF8Tri *t3;
+        Unk800C9DFC *vt;
+        t3 = D_800C9DF0.unk1C + n1->unk4;
+        vt = D_800C9DF0.unkC + n1->unkC[0];
+        a->unk24->pos.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t3->unkA[1]));
+    }
+    return 1;
+}
 
 s32 func_800C6C04(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
     Unk800C6C04E *e;
