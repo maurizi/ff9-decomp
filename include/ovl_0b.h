@@ -4010,6 +4010,17 @@ void func_800E750C(s32, s16 *);
 void func_800E769C(s32, s32, s16 *);
 void func_800E60A4(s32, s32);
 Pool6CEntry *func_800E4A3C(s32, s32, s16 *, s16 *);
+/* The definition takes its 3rd-5th argument slots as one 12-byte struct by value (a2, a3, stack 0x30):
+   it overwrites slots 4 and 5 with the 3rd (b = c = a) and reads them back from their stack homes, and the
+   incoming 4th argument is never used. Callers pass two pointers through the prototype above, so the
+   definition gets its own C name with the same assembler name. Native ports: callers' 4th argument is dead,
+   and only a (slot 3) and the b = a copy are read. */
+typedef struct {
+    s16 *a;
+    s16 *b;
+    s16 *c;
+} Unk800E4A3CArgs;
+Pool6CEntry *func_800E4A3C_def(s32, s32, Unk800E4A3CArgs) __asm__("func_800E4A3C");
 void func_800E8C84(s32);
 void func_800E8D14(void);
 extern u8 D_800FEC53; /* D_800FEC40.unk10.b[3] */

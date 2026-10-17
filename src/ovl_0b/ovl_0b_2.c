@@ -6806,7 +6806,66 @@ void func_800E49D0(s32 arg0, s32 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E4A3C);
+Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
+    Pool6CEntry *e;
+    Unk800E4A3CArgs *p;
+
+    e = NULL;
+    arg2.b = arg2.a;
+    /* Read back through a pointer: CSE then keeps the load, which reload_cse turns into the original's
+       `move v0,a2` for the 0x30 store (a direct `arg2.c = arg2.b` stores a2 twice). */
+    p = &arg2;
+    arg2.c = p->b;
+    switch (arg1) {
+    case 0:
+    case 2:
+        e = func_800E3CEC(func_800E454C(5), (s32)arg2.a);
+        if (arg1 == 0) {
+            if (e != NULL) {
+                e->unk18[0].unk1C = func_800E454C(7);
+                goto common;
+            }
+        } else {
+            if (e != NULL) {
+                e->unk18[0].unk1C = func_800E454C(8);
+            common:
+                if (e != NULL) {
+                    e->unk18[1].unk1C = func_800E454C(6);
+                    e->unk22 = 8;
+                }
+            }
+        }
+        if (func_800E865C(0x10, 0) == 0) {
+            goto zero;
+        }
+        func_800E49D0(1, arg0);
+        break;
+    case 1:
+    case 7:
+        arg2.b[1] -= 0x40;
+        e = func_800E3CEC(func_800E454C(1), (s32)arg2.a);
+        if (e != NULL) {
+            e->unk18[0].unk1C = func_800E454C(0x14);
+            e->unk18[1].unk1C = func_800E454C(6);
+            e->unk18[2].unk1C = func_800E454C(2);
+            e->unk2C = *(s32 *)&arg2.b;
+            e->unk22 = 0x20;
+        }
+        func_800E49D0(2, arg0);
+        break;
+    case 4:
+        e = func_800E3CEC(func_800E454C(4), (s32)arg2.a);
+        if (e != NULL) {
+            e->unk18[0].unk1C = func_800E454C(7);
+            e->unk18[1].unk1C = func_800E454C(6);
+            e->unk22 = 0x80;
+        }
+    zero:
+        func_800E49D0(0, arg0);
+        break;
+    }
+    return e;
+}
 
 void func_800E4C04(s32 arg0, s32 arg1, s32 arg2) {
     if (func_800E788C(arg0) == 0) {
