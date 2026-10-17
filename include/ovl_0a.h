@@ -6,6 +6,12 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
+/* Pins a local to the MIPS register the original code kept it in (`register u16 v MIPS_REG("$3");`), where no
+ * C form reproduces gcc's choice. Only register allocation depends on it; a port defines it empty. */
+#ifndef MIPS_REG
+#define MIPS_REG(r) __asm__(r)
+#endif
+
 /* field context, GameData.unk8E4.field */
 typedef struct {
     u8 unk0; /* flags */
