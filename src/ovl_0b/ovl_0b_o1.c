@@ -419,7 +419,42 @@ s32 func_800C37BC(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_o1", func_800C3F78);
+void func_800C3F78(Unk800C412C *arg0, Unk800C3F78 *arg1) {
+    BtlUnit *u;
+    Unk800F5758 *t;
+    s32 idx;
+    s32 k;
+    Unk800F5758 *tb;
+
+    bcopy(&arg0->unk0[1], &arg0->unk0[0], 0xC);
+    arg0->unk0[1].unk8 = arg1->unk0;
+    arg0->unk0[1].unk9 = arg1->unk1;
+    if (arg1->unk2_14 != 0) {
+        k = arg1->unk0 & 0x1F;
+        /* The ternary after the range test gives the original's beq 1 / bne 5 / j through jump threading
+           (a switch emits beq 1 / beq 5 / j other). */
+        if (k != 1 && k != 5) {
+            goto other;
+        }
+        u = (k == 1) ? D_800FE368.unk0 : D_800FE368.unk4;
+        if (u->unk68 & 1) {
+            idx = ((g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F) +
+                  (arg1->unk2_14 - 1) * 19;
+            tb = D_800F5758;
+            t = &tb[idx];
+            arg0->unk0[1].unk0[3] = t->unk0 << 6;
+            arg0->unk0[1].unk0[0] = t->unk1 << 4;
+            arg0->unk0[1].unk0[1] = t->unk2 << 4;
+            arg0->unk0[1].unk0[2] = t->unk3 << 4;
+            return;
+        }
+    }
+other:
+    arg0->unk0[1].unk0[0] = arg1->unk2_0 << 5;
+    arg0->unk0[1].unk0[1] = arg1->unk2_7 << 5;
+    arg0->unk0[1].unk0[2] = arg1->unk4_0 << 5;
+    arg0->unk0[1].unk0[3] = arg1->unk4_7 << 7;
+}
 
 void func_800C412C(Unk800C412C *arg0, u8 *arg1) {
     if (arg0->unk1B == 0) {
