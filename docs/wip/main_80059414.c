@@ -25,8 +25,8 @@ void func_80059414(void) {
                 bit = 1 << v;
                 ch = D_8007F71C;
                 for (; n != 0; n--) {
-                    if (ch->unk118 == v) {
-                        ch->unk118 = 0x18;
+                    if (ch->voice == v) {
+                        ch->voice = 0x18;
                         found |= bit;
                     }
                     ch++;

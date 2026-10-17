@@ -872,16 +872,16 @@ typedef struct {
     s16 unk112;
     s16 unk114;
     u8 pad116[0x118 - 0x116];
-    u32 unk118; /* voice number */
-    u32 unk11C;
-    s32 unk120;
-    s32 unk124;
-    u16 unk128; /* pitch */
-    u16 unk12A;
-    u16 unk12C;
-    s16 unk12E;
-    s16 unk130; /* volume left */
-    s16 unk132; /* volume right */
+    u32 voice; /* voice number */
+    u32 voiceDirty;
+    s32 voiceStartAddr;
+    s32 voiceLoopAddr;
+    u16 voicePitch; /* pitch */
+    u16 voiceAdsr1;
+    u16 voiceAdsr2;
+    s16 voiceVolScale;
+    s16 voiceVolL; /* volume left */
+    s16 voiceVolR; /* volume right */
 } AkaoChannel; /* 0x134 */
 void func_80057D80(AkaoChannel *, u32); /* channel LFO / pitch update (func_800585E0 passes the channel bit) */
 
@@ -3043,14 +3043,14 @@ typedef struct {
 } MsgInfo;
 /* SPU hardware voice registers (0x1F801C00 + voice * 16) */
 typedef struct {
-    u16 unk0; /* volume left */
-    u16 unk2; /* volume right */
-    u16 unk4; /* pitch */
-    u16 unk6; /* start address */
-    u16 unk8; /* adsr 1 */
-    u16 unkA; /* adsr 2 */
-    u16 unkC;
-    u16 unkE; /* loop address */
+    u16 volL; /* volume left */
+    u16 volR; /* volume right */
+    u16 pitch; /* pitch */
+    u16 startAddr; /* start address */
+    u16 adsr1; /* adsr 1 */
+    u16 adsr2; /* adsr 2 */
+    u16 adsrVol;
+    u16 loopAddr; /* loop address */
 } SpuVoiceReg;
 #define SPU_VOICE_REG(v, r) (*(u16 *)(0x1F801C00 + (r) + (v) * 16))
 #define SPU_VOICE_REG8(v, r) (*(u8 *)(0x1F801C00 + (r) + (v) * 16))
@@ -3069,16 +3069,16 @@ extern u32 D_80083174;
 /* voice parameter block written to the SPU by akao_writeVoice */
 typedef struct {
     u8 pad0[4];
-    s32 unk4;
-    u32 unk8;  /* start address */
-    u32 unkC;  /* loop address */
-    u16 unk10; /* pitch */
-    u16 unk12; /* adsr 1 */
-    u16 unk14; /* adsr 2 */
-    u16 unk16; /* volume scale */
-    s16 unk18; /* volume left */
-    s16 unk1A; /* volume right */
-} Unk800577EC;
+    s32 dirty;
+    u32 startAddr;  /* start address */
+    u32 loopAddr;  /* loop address */
+    u16 pitch; /* pitch */
+    u16 adsr1; /* adsr 1 */
+    u16 adsr2; /* adsr 2 */
+    u16 volScale; /* volume scale */
+    s16 volL; /* volume left */
+    s16 volR; /* volume right */
+} AkaoVoiceRegs;
 /* script object (D_8007AED0[]) */
 typedef struct Unk8007AED0 {
     u8 pad0[0xE];
@@ -4129,7 +4129,7 @@ extern const u8 D_80011F10[]; /* "MOGNET" window title */
 void akao_setReverbVoices(u32 x);
 void akao_setNoiseVoices(u32 x);
 void akao_setPitchModVoices(u32 x);
-void akao_flushVoice(s32 v, Unk800577EC *p);
+void akao_flushVoice(s32 v, AkaoVoiceRegs *p);
 void func_80058118(AkaoChannel *c, u32 bit);
 void func_800585E0(AkaoChannel *ch, u32 mask, u32 keep, u32 *used);
 void func_800588B0(u32 extra);

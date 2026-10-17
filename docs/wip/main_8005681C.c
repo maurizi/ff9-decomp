@@ -68,14 +68,14 @@ void akao_initState(void) {
     *cnt = (i & ~5) | 1;
     for (c = g_akaoChannels, i = 0; i < 32; i++, c++) {
         c->unk34 = 0;
-        c->unk118 = 0x18;
+        c->voice = 0x18;
         c->unk94 = 0;
         c->unk88 = 0;
     }
     c = D_8007E3D8;
     for (i = 8; i < 24;) {
         c->unk34 = 0;
-        c->unk118 = i;
+        c->voice = i;
         i++;
         c->unk94 = 1;
         c->unk88 = 0;
