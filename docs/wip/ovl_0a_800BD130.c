@@ -57,6 +57,22 @@
  *    then a1 in the loop too (orig v1). Copying arg0 instead halves arg0's live length and reorders the s-regs.
  *  - simulated annealing over these line orders (build/w/sa.py, ~10k compiles), the arg1 copy line, buf = 0
  *    placements, do-while wraps: 10 at best in that regime.
+ * Pass 26: 9 -> 4 rows; everything except the first four loads is byte-exact (bg a0, u a1, K a2 now right).
+ * STATUS: 4 rows. The lever is a second bg pointer: `bg2 = bg;` after the tile line, with bg2 used for the
+ * unk30/unk32 reads, and a dead `bg2 = NULL;` at the end so cse keeps the copy (bg2 becomes canonical because
+ * it is mentioned after the cse block; a dead initializer at the top does not work here since block 0 starts
+ * the function). local-alloc ties bg and bg2 (bg dies in the copy), the tied qty has 7 refs, so it ranks
+ * above u (bg 4667 vs u 3636) and gets a0; the copy is then a0 -> a0 and reload deletes it.
+ * Left: %hi(D_800CA108) is v0 instead of v1, so sched2 keeps lui/lbu of D_800CA108 above the D_800C9DB4 pair.
+ * For v1, HB's life (lui v0, %hi(D_800C9DB4) .. lw bg) must overlap HU's (lui %hi(D_800CA108) .. lbu) with HB
+ * allocated first, e.g. sched1 order HU x HB BL UL or HB HU BL UL. In the backward list scheduler HB is launched
+ * (single-set) the moment BL is scheduled and HU the moment UL is scheduled, and UL (non-birthing, priority 1)
+ * is always scheduled after BL and after the unk30 store (it must stay above that store), so sched1 always
+ * gives HU UL .. HB BL (no overlap). SA over the 13 prologue lines with the bg2 copy (3000 orders), do-while
+ * wraps of the bg/u loads, u single-set (birthing; the lbu then sinks below the unk30 store, 8 rows), the
+ * `x op= K` / `&= 0xFF` levers on u (16), dead tests on bg/u (39+, a block end changes the whole sched1
+ * order of block 0): nothing below 4. Still BEHAVIOURALLY EQUIVALENT (tools/equiv.py: 27/27 trials agree,
+ * 6 paths, 100% of the original's insns ran).
  */
 #include "ovl_0a.h"
 
@@ -70,14 +86,21 @@ s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     s32 x;
     u16 t;
 
-    Unk800C9DB4 *bg = D_800C9DB4;
-    arg0->unk30 = arg1;
-    w = D_800CA108 + 0xDF;
-    tile = (BgTile *)((u8 *)bg + arg0->unk2C);
-    pos = (BgPos *)((u8 *)bg + arg0->unk28);
-    arg0->unk18 = arg0->unkC + bg->unk30;
-    arg0->unk1A = arg0->unkE + bg->unk32;
+    Unk800C9DB4 *bg;
+    Unk800C9DB4 *bg2; /* see the pass 26 note */
+    s32 u;
+
+    bg = D_800C9DB4;
+    u = D_800CA108;
+    u += 0xDF;
     n = arg0->unk26;
+    arg0->unk30 = arg1;
+    pos = (BgPos *)((u8 *)bg + arg0->unk28);
+    tile = (BgTile *)((u8 *)bg + arg0->unk2C);
+    bg2 = bg;
+    w = u;
+    arg0->unk18 = arg0->unkC + bg2->unk30;
+    arg0->unk1A = arg0->unkE + bg2->unk32;
     arg0->unk25 = 0;
     arg0->unk25_1 = 0;
     for (buf = 0; buf < 2; buf++) {
@@ -114,5 +137,6 @@ s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     }
     *arg2 = arg1;
     D_800CA108 = w + 0x21;
+    bg2 = NULL;
     return 1;
 }
