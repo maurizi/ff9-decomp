@@ -4389,7 +4389,106 @@ s32 func_800B4894(void) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800B4A5C);
+void func_800B4A5C(void) {
+    SPRT *spr[2];
+    DR_TPAGE *tp[2];
+    RECT *clut;
+    RECT *img;
+    s32 pad;
+    u8 *p;
+    s32 tim;
+    s32 i;
+    s32 n;
+    u32 state;
+
+    tim = (s32)func_8001C7FC(4, 0x44E20, 0);
+    func_8001D910((void *)tim, &clut, &img);
+    p = (u8 *)&pad; /* dead: puts pad's stack slot after clut/img (frame 0x58) */
+    setRECT(img, 0, 0x100, img->w, img->h);
+    setRECT(clut, 0x100, 0xE0, clut->w, clut->h);
+    func_8001D8A8(tim);
+    DrawSync(0);
+    n = 0;
+    state = 0;
+    i = 1;
+    p = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
+    do {
+        {
+            /* dead struct initializer: emits only a CLOBBER insn, which sched2 places in one of the
+               loop's load-delay gaps, so p += 20, the tpage constant and &tp[0] land one gap later as
+               in the original */
+            struct { s32 x; } q = { i };
+        }
+        spr[i] = (SPRT *)p;
+        p += sizeof(SPRT);
+        setlen(spr[i], 4);
+        setcode(spr[i], 0x64);
+        setRGB0(spr[i], 0x80, 0x80, 0x80);
+        spr[i]->x0 = (0x140 - img->w * 4) >> 1;
+        spr[i]->y0 = (0xE0 - img->h) / 2;
+        spr[i]->u0 = 0;
+        spr[i]->v0 = 0;
+        spr[i]->w = img->w * 4 - 1;
+        spr[i]->h = img->h;
+        spr[i]->clut = getClut(clut->x, clut->y);
+        tp[i] = (DR_TPAGE *)p;
+        p += sizeof(DR_TPAGE);
+        setlen(tp[i], 1);
+        tp[i]->code[0] = _get_mode(1, 1, getTPage(0, 0, img->x, img->y));
+        i--;
+    } while (i >= 0);
+    func_800AC67C((s32)p);
+    func_800223CC();
+    func_8001CCB4(0, 0, 0);
+    do {
+        ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
+        switch (state) {
+        case 0:
+            n = 0x3C;
+            i = 0;
+            func_800320B8(1, 1, 0, 0xFFFFFF);
+            func_800320B8(1, 1, n, i);
+            state = 1;
+            break;
+        case 1:
+            if (i < n) {
+                i++;
+            } else {
+                n = 0x78;
+                i = 0;
+                state = 2;
+            }
+            break;
+        case 2:
+            if (i < n) {
+                i++;
+            } else {
+                n = 0x3C;
+                i = 0;
+                func_800320B8(1, 1, n, 0xFFFFFF);
+                state = 3;
+            }
+            break;
+        case 3:
+            if (i < n) {
+                i++;
+            } else {
+                state = 4;
+            }
+            break;
+        }
+        addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], spr[g_gameState->unk1C->unk8]);
+        addPrim((u32 *)g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], tp[g_gameState->unk1C->unk8]);
+        func_80032098();
+        DrawSync(0);
+        g_gameState->vsyncMode = 2;
+        VSync(g_gameState->vsyncMode);
+        ResetGraph(1);
+        PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
+        DrawOTagEnv(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 0xFFF, &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        g_gameState->unk1C->unk8 ^= 1;
+    } while (state < 4);
+}
 
 s32 func_800B4F9C(void) {
     GameData *gd = g_gameState->unk1C;
