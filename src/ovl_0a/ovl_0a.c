@@ -7226,7 +7226,78 @@ void func_800BC600(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0a/nonmatchings/ovl_0a", func_800BD130);
+s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
+    BgPos *pos;
+    BgTile *tile;
+    u32 i;
+    u32 buf;
+    s32 n;
+    s32 w;
+    s32 x;
+    u16 t;
+    Unk800C9DB4 *bg;
+    s32 u;
+    s32 mask;
+    s32 posOfs;
+    s32 tileOfs;
+
+    /* Statement order and the barrier below are for the scheduler: everything above the barrier
+     * forms its own group, where both global loads are ready at once and are scheduled as
+     * lui/lui/lw/lbu, so %hi(D_800CA108) gets v1. The unk25_1 mask is set up here (and applied by
+     * hand below) because its lui/ori must also sit above the barrier, and buf/the two offsets
+     * are read early so their insns land where the original has them. */
+    mask = 0xFFFF01FF;
+    bg = D_800C9DB4;
+    u = D_800CA108;
+    posOfs = arg0->unk28;
+    tileOfs = arg0->unk2C;
+    buf = 0;
+    arg0->unk30 = arg1;
+    do { } while (0);
+    pos = (BgPos *)((u8 *)bg + posOfs);
+    tile = (BgTile *)((u8 *)bg + tileOfs);
+    w = u + 0xDF;
+    n = arg0->unk26;
+    arg0->unk18 = arg0->unkC + bg->unk30;
+    arg0->unk1A = arg0->unkE + bg->unk32;
+    arg0->unk25 = 0;
+    ((Unk800C9DB4ObjFlags *)arg0)->unk24 &= mask; /* arg0->unk25_1 = 0 */
+    for (; buf < 2; buf++) {
+        for (i = 0; i < n; i++) {
+            BgSprt *sp = &arg1[i];
+            setlen(&sp->unk8, 3);
+            sp->unk8.code = 0x7C;
+            sp->unk8.r0 = 0x80;
+            sp->unk8.g0 = 0x80;
+            sp->unk8.b0 = 0x80;
+            sp->unk8.x0 = arg0->unk18 + pos[i].x;
+            sp->unk8.y0 = arg0->unk1A + pos[i].y;
+            sp->unk8.u0 = tile[i].u;
+            sp->unk8.v0 = tile[i].v;
+            if (tile[i].trans) {
+                sp->unk8.code |= 2;
+            } else {
+                sp->unk8.code &= ~2;
+            }
+            sp->unk8.clut = GetClut(tile[i].clutX << 4, tile[i].clutY);
+            if (tile[i].tp == 0) {
+                t = GetTPage(0, tile[i].abr, tile[i].tpX << 6, tile[i].tpY << 8);
+            } else {
+                t = GetTPage(1, tile[i].abr, tile[i].tpX << 6, tile[i].tpY << 8);
+            }
+            setDrawTPage(&sp->unk0, 1, 1, t);
+            MargePrim(&sp->unk0, &sp->unk8);
+            x = tile[i].clutY;
+            if (w < x) {
+                w = x;
+            }
+        }
+        arg1 += n;
+    }
+    *arg2 = arg1;
+    D_800CA108 = w + 0x21;
+    return 1;
+}
 
 s32 func_800BD3A0(void) {
     u32 n;

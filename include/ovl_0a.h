@@ -345,6 +345,12 @@ typedef struct {
     u8 pad34[4];
 } Unk800C9DB4Obj; /* 0x38 */
 
+/* Unk800C9DB4Obj's unk24/unk25/unk25_1 bitfield word as a plain u32 (func_800BD130 masks it by hand) */
+typedef struct {
+    u8 pad0[0x24];
+    u32 unk24;
+} Unk800C9DB4ObjFlags;
+
 typedef struct {
     u16 unk0; /* projection distance */
     s16 unk2[3][3];
