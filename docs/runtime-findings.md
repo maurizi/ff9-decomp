@@ -286,3 +286,32 @@ Format:
   the field exit reason (FieldScene+0x4A) to 7 -> mode 7 -> fld_gameOver (ovl_0a func_800A80A4) -> gameover_main,
   then mode 0.
 - names: battleEnd_main, gameover_main (ovl_65), fld_gameOver (ovl_0a), EVT_OP_GAME_OVER.
+
+## Leads from the ff9-ds port, not yet named  (status: proposed)
+Behaviour the DS port (`../ff9-ds`) documented or checked against the original instructions, which wasn't enough
+for a name on its own. Port names are leads; the decomp code has to confirm each one.
+- main `func_80063118` / `func_800631AC` / `func_800632B4`: per-frame offset animation of a RECT (`WinDef`/`TweenDef`):
+  start (copies the delay, optionally rewinds by the summed deltas), step (returns 1 when done, calls the done
+  hook), sum of n s8 deltas. ff9-ds `tools/test_window_tween.py` matches the original 80063118 in 400 cases. Who
+  owns the RECT (text window or any menu element) is unconfirmed.
+- main `func_8001486C` / `func_80014AA8`: libgpu's CPU-to-VRAM and VRAM-to-CPU transfer helpers behind
+  `LoadImage`/`StoreImage` (entries +0x20/+0x1C of the table at `D_80066614`); the read side transfers
+  `(w*h+1)/2` whole words. ff9-ds `docs/decomp-requests.md` F23/F24. Library code, so no game name; the PsyQ
+  names need a signature match.
+- ovl_0b `func_800E3EEC`: runs the frame's effect calls on the scratchpad stack and saves/restores the effect RNG
+  seed (`g_btlfxRandSeed`). Whether it is the whole battle frame or only the effect step is open.
+- ovl_0b effect emitters `func_800D3ED4` … `func_800D5C30` (sprites, strips, ribbons, Gouraud fans, circular lines)
+  and particle integrators `func_800DFE4C`/`DFE54`/`DFF5C`/`DFF64`/`E0014`: ff9-ds `port/game/battle_quads.c`,
+  `battle_ribbons.c`, `battle_motion.c` with original-instruction tests. Names need each packet format checked.
+- ovl_0b `func_800F4A00`: battle HUD drawn through BreakDraw/ContinueDraw with its own embedded draw area/offset
+  (E3/E4/E5) and a DR_MOVE from the back buffer; `D_80105160` holds the saved draw state (ff9-ds F10/F11).
+- ovl_0b `func_800C9040`: advances texture animations (fixed-point frames; `unk0 & 4` scrolls rows with two
+  MoveImages) (ff9-ds F11).
+- Mode init functions set `GameState.vsyncMode`: ovl_0a `func_800A8198` 2, ovl_0b `func_800A8CD4` 4, ovl_0c
+  `func_800A8B14` 3; ovl_0c `func_800AC5C8` picks 2/0/3 by state and ovl_0b `func_800E8F40` changes it (ff9-ds
+  `docs/porting-notes.md`).
+- Nullable per-model texture-animation table (`unk50` of field and battle models): read without a NULL check by
+  evt_execInstr opcodes 0xC0-0xC2, ovl_0a `func_800AB3CC` and several ovl_0b status/KO routines (ff9-ds F4, F9,
+  F20, F26). `g_evtGlobalVars` byte 0x10 enables trance in ovl_0b `func_800BB4A0` (ff9-ds F22).
+- Correction to the port: main `func_800236A4` (ff9-ds `port/psx/cd.c` treats it as a read-callback setter) swaps
+  the level that gates CdSearchFile's printfs, so it was named `CdSetDebug`.
