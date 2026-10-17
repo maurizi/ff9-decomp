@@ -3,6 +3,34 @@
 Functions agents got close on but couldn't finish. Drafts for main are in the main checkout's
 build/drafts/main/ (gitignored; v*.c). Append as agents report.
 
+## Pass 25 (all binaries; 7 matched: main 80059414, 80063118; ovl_0b 800C3F78, 800BFF20, 800E4A3C; ovl_0d 800AC708; ovl_37 801F13F8)
+Every remaining draft (main 8002E718, 800475D8, 8004DAD0, 8005681C; ovl_0a all five; ovl_0b 800DA138) is
+behaviourally equivalent per tools/equiv.py; the differences are register allocation / scheduling only. Draft headers
+have the details. What worked, and what was learned from gcc 2.8.1's sources:
+- sched1 "birthing" boost: when an insn is scheduled, a predecessor that becomes ready gets LAUNCH priority only if its
+  dest is set exactly once (REG_N_SETS == 1). A fresh single-set temporary is scheduled right before its use; a
+  reused variable isn't. Insns ready from the start keep raw priority. Fresh temps matched 80059414.
+- Within one priority group schedule_select prefers the larger potential hazard, so loads/stores beat ALU insns, and
+  a load is blocked for a cycle right after a store. An unboosted ALU insn (a giv init) only lands in a "gap".
+  The 34th memory reference in a block flushes sched's pending lists and becomes a full memory barrier (8005681C).
+- `do { } while (0);` LOOP notes are full barriers in sched1/sched2, and flow counts refs inside them twice.
+  sched1 rewrites REG_LIVE_LENGTH, so global-alloc priority (floor_log2(refs) * refs / live length) follows sched1's
+  order. A goto loop has no loop notes, so its refs aren't doubled. The `.greg` dump lists global-alloc's order;
+  a script printing refs/live length/priority per pseudo (build/w/gtab.py, pri.py in the pass-25 worktrees) shows
+  exactly which variable has to move.
+- Branch shapes no switch/if-else gives can come from jump threading over a range check plus a ternary: 800C3F78 is
+  `if (k != 1 && k != 5) goto other; u = (k == 1) ? a : b;` (beq 1 / bne 5,other / j case5).
+- A copy the original keeps but ours folds: read back through a pointer (`x.b = x.a; p = &x; x.c = p->b;`) so CSE
+  keeps the load and post-reload CSE turns it into a move (800E4A3C; its 3 trailing params are one 12-byte struct
+  by value, defined as func_800E4A3C_def with __asm__("func_800E4A3C") while callers keep the 4-arg prototype).
+- cse picks between a variable and its copy by which register's last reference comes later. Identical-branch ifs
+  (`if (D_801FAB78.unk0 == 2) {X} else {X}`, 801F13F8) and dead stores (`k = 0;` after the loop, 800AC708) change
+  last references and ref counts without emitting code. 800AC708's hoisted 21t went away with `len` written as
+  `t * 51 / 28` at each use and `e[i]` indexing.
+- `(x << 8) >> 8` on a byte-sized value is a zero-code way to make a variable multiply-assigned (C07D8, not enough).
+- Ruled out again: other compilers (2.7.2, 2.8.0, 2.91, 2.95), -O1, -fno-schedule-insns and ~20 flag variants for
+  ovl_0a/ovl_0b; tens of thousands of generated statement-order variants and multi-hour permuter runs.
+
 ## main
 - Pass 24 matched 8001DE50 (968 B). Two fixes:
   - The `li v0,2` vs `addiu t0,2` row came from loop.c, not from flags. move_movables lowers its
