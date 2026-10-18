@@ -1,6 +1,8 @@
-/* Draft of fx_18a fx_18a_op80. Status: first full draft, ~108 shape rows (sdiff --noreg) / 600 strict. Register
- * allocation differs: the original keeps frame in fp and spills t (0x88) and c (0x8C) from the start, with the
- * constant 1 in s2 (CSE of the mode test) and state in s3; here t gets s7 and frame is spilled. */
+/* Draft of fx_18a fx_18a_op80. Status: 191 aligned mismatches, 43 ignoring registers; equivalent by construction.
+ * Variable roles were brute-forced (build/w/roles2.py). The original spills t (0x88, cases 0-2) and c (0x8C) and keeps
+ * frame in fp; using one t for cases 0-2 reproduces that allocation (work s7, frame fp) but spills case 2's
+ * t + 0x1400 (the original keeps it in s5) and grows the frame by 8 (277 rows), so this version gives case 1 its own
+ * variable. Also open: case 0 stores the particle straight to work->unk8 (no copy to s0). */
 #include "fxmod/fx_18a.h"
 
 typedef struct {
@@ -26,9 +28,11 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR ang;
     VECTOR scale;
     SVECTOR rot2;
-    s32 c;
     s32 t;
+    s32 c;
     s32 state;
+    s32 n1;
+    s32 n2;
     s32 frame;
     s32 a;
     s32 f;
@@ -56,19 +60,19 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (state) {
         case 0:
             t = frame << 8;
-            g = t >> 2;
-            a = (ex->math_sin(g) * 0x1400) >> 12;
+            n2 = t >> 2;
+            n1 = (ex->math_sin(n2) * 0x1400) >> 12;
             env->unk28 = 0x100;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, a, 0, 1, t);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, n1, 0, 1, t);
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk14, NULL, 0x1000, 0, 1, t);
             env->unk28 = 0;
             rot.vx = 0x400;
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, &rot, a, 0, 1, t);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, &rot, n1, 0, 1, t);
             sc.vx = sc.vz = 0x200;
-            sc.vy = ex->math_sin(g) / 5;
+            sc.vy = ex->math_sin(n2) / 5;
             c = t;
             if (frame >= 0x10) {
                 work->unk0 = 1;
@@ -82,8 +86,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 1:
-            t = ((++work->unk1C % 10) << 12) / 10;
-            a = (ex->math_sin(t) >> 4) + 0x1400;
+            x1 = ((++work->unk1C % 10) << 12) / 10;
+            a = (ex->math_sin(x1) >> 4) + 0x1400;
             env->unk28 = 0x100;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, a, 0, 1, 0x1000);
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk14, NULL, 0x1000, 0, 1, 0x1000);
@@ -94,12 +98,12 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.pad = 1;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, &rot, a, 0, 1, 0x1000);
             sc.vx = sc.vz = 0x200;
-            sc.vy = (ex->math_sin(t) >> 7) + 0x333;
+            sc.vy = (ex->math_sin(x1) >> 7) + 0x333;
             c = 0x1000;
             if (work->unk8 != NULL && work->unk8->unk30 == -1) {
                 work->unk8 = NULL;
             }
-            if (frame >= 0xB && t == 0) {
+            if (frame >= 0xB && x1 == 0) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
                 env->unk2C->unk52 = 0;
@@ -156,8 +160,8 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             f = 0x1000 - t;
             env->unk28 = 0x100;
-            a = t + 0x1400;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, a, 0, 1, f);
+            x1 = t + 0x1400;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, x1, 0, 1, f);
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk14, NULL, 0x1000, 0, 1, f);
             if (frame < 6) {
                 g = (frame << 10) / 6;
@@ -177,7 +181,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             rot.vy = 0;
             rot.pad = 1;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, &rot, a, 0, 1, f);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, &rot, x1, 0, 1, f);
             if (frame < 0x16) {
                 g = (frame << 12) / 88 >> 2;
                 c = ex->math_cos(g);
