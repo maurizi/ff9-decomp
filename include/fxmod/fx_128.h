@@ -64,4 +64,44 @@ typedef struct {
 } Fx128Keys;
 s32 func_801E8930(Fx128Keys *keys, s32 i, s32 *out);
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx128Vec3;
+
+typedef struct {
+    Pool6CEntry *unk0[9];
+    SVECTOR unk24; /* model rotation */
+    Fx128Vec3 unk2C; /* model position */
+    s32 pad38;
+    Fx128Vec3 unk3C; /* model scale */
+    s32 pad48;
+    s32 unk4C; /* model colour */
+    SVECTOR unk50; /* caster position */
+    SVECTOR unk58; /* caster rotation */
+    SVECTOR unk60; /* target body position */
+    SVECTOR unk68; /* target position */
+    SVECTOR unk70;
+    SVECTOR unk78;
+    SVECTOR unk80;
+    SVECTOR unk88;
+    SVECTOR unk90;
+    s32 unk98; /* fade-in countdown */
+    s32 unk9C; /* fade-out countdown */
+    u16 unkA0[8]; /* models */
+} Fx128Work81; /* 0xB0 */
+
+extern u16 D_801E8974[];
+extern u16 D_801E8980[];
+extern BtlModel D_801E89E4[];
+extern Fx128Path_0b4 D_801E8F5C;
+extern Fx128Path_0b4 D_801E8F64[];
+extern Fx128Path D_801E8F8C;
+extern Fx128Keys D_801E8F94;
+extern SVECTOR D_801E9004;
+extern SVECTOR D_801E900C;
+extern u8 D_801E9014[];
+extern u8 D_801E92A4[];
+
 #endif

@@ -74,6 +74,8 @@ typedef struct {
     s32 unk10; /* variant */
 } Fx0dfWork83; /* 0x14 */
 s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+                   void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 typedef struct {
     s32 unk0; /* state */

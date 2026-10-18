@@ -1,7 +1,10 @@
-/* Draft of func_801EC704 (module fx_17d_1). Status: 84 aligned mismatches (sdiff --count; registers + shape).
- * Found: the original uses branchless flags uu - (k ^ 1) with k = i++ < 3 computed mid-body, q = p++ at the top,
- * and does NOT strength-reduce xa * 3 / xs * 3 (here loop.c makes givs of them) nor hoist the j < 3 flag out of
- * the inner loop. Its caller-saves (t0-t6, a3 around addPrim) also differ. */
+/* Draft of func_801EC704 (module fx_17d_1). Status: 100 aligned mismatches, 32 ignoring registers and spill offsets
+ * (spnorm 0x10). Permuter find: dw initialized through m (m = w >> 2; dw = m;), which changes the flag's allocation. Fixed since the 146-row draft: xs = dw * i and xa = xs + dw per iteration (the original multiplies
+ * them by 3 each time; accumulating xa/xs made loop.c reduce xa * 3), k = i < 3 then i++, and the r0 word store after
+ * clut (the q giv is then based at the r0 word, as in the original). Open: the original keeps the j < 3 flag
+ * (slti/xori/subu) inside the inner loop where loop.c hoists it here; its q+4 giv starts at q+4 and is incremented at
+ * the bottom of the loop (here at q-36, incremented at the top); prologue scheduling of w >> 1 / h >> 2.
+ * Earlier: branchless flags uu - (k ^ 1), q = p++ at the top. */
 #include "fxmod/fx_17d_1.h"
 
 void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
@@ -27,7 +30,8 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
     POLY_FT4 *q;
 
     x0 = x - (w >> 1) * 3 / 2;
-    dw = w >> 2;
+    m = w >> 2;
+    dw = m;
     dh = h >> 2;
     abrBits = (abr & 3) << 5;
     y0 = y - (h >> 1);
@@ -38,8 +42,6 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
         y1 = y0 + dh;
         v1 = v + dh;
         uu = u;
-        xa = dw;
-        xs = 0;
         for (i = 0; i < 4;) {
             col[0] = col[1] = col[2] = c;
             if (abr != 0xFF) {
@@ -48,11 +50,12 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
                 col[3] = 0x2C;
             }
             q = p++;
+            xs = dw * i;
+            xa = xs + dw;
             ta = xa * 3;
-            xa += dw;
             ts = xs * 3;
-            xs += dw;
-            k = i++ < 3;
+            k = i < 3;
+            i++;
             q->x0 = q->x2 = x0 + ts / 2;
             q->u0 = q->u2 = uu;
             uu += dw;
@@ -65,8 +68,8 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
             q->y2 = q->y3 = y1;
             tpage |= abrBits;
             q->tpage = tpage;
-            *(u32 *)&q->r0 = *(u32 *)col;
             q->clut = clut;
+            *(u32 *)&q->r0 = *(u32 *)col;
             ex->btlfx_addPrim(0x09000000, ot, q);
         }
         v += dh;

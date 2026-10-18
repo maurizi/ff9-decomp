@@ -28,4 +28,28 @@ void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVEC
                    s32 dang, s32 arg8, s32 arg9, s32 pad);
 s32 fx_0e0_op84(s32 mode, Fx0e0Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    s16 unk0; /* state */
+    s16 unk2; /* sub-state */
+    SVECTOR unk4; /* velocity (vx, vy, vz); pad = model scale index */
+    SVECTOR unkC; /* position */
+    SVECTOR unk14; /* rotation */
+    s16 unk1C; /* rotation speed */
+    s16 unk1E;
+    Pool6CEntry *unk20; /* particle */
+} Fx0e0Obj;
+
+typedef struct {
+    u8 pad0[8];
+    SVECTOR unk8; /* target */
+    u8 pad10[0x5C - 0x10];
+    s32 unk5C; /* model */
+    u8 pad60[0x70 - 0x60];
+    s32 unk70; /* model */
+} Fx0e0Inst;
+
+extern s32 D_801EA8B8[];
+extern s32 D_801EB1D8;
+extern s32 D_801EB1DC;
+
 #endif

@@ -46,4 +46,18 @@ void func_801E85B0(Fx18aInst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECT
 
 #define TRAIL(e) ((Fx18aTrail *)((e)->unk18 - 2))
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    Pool6CEntry *unk8;
+    SVECTOR unkC; /* caster position */
+    SVECTOR unk14; /* caster body position */
+    s32 unk1C; /* charge counter */
+    s32 unk20;
+    s32 unk24; /* model */
+} Fx18aWork80; /* 0x28 */
+
+extern s32 D_801E89D8;
+extern BtlModel D_801E8A34[];
+
 #endif

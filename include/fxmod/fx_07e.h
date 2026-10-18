@@ -37,8 +37,10 @@ typedef struct {
     SVECTOR unkC; /* caster body position */
 } Fx07eWork81; /* 0x14 */
 
-void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
-                   void (*fn)(s32, s32, s32, s32, s16 *));
 s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
+/* propagated */
+void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+                   void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 #endif

@@ -88,5 +88,59 @@ extern Fx1fdEdge D_801EB80C[];
 void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY);
 extern Fx1fdOrbit D_801EBADC[];
 s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist);
+void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
+
+s32 func_801E976C(s32 from, s32 to, s32 t, s32 n);
+void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+
+typedef struct {
+    Fx1fdPath unk0;
+    Fx1fdPath unk8;
+    SVECTOR unk10; /* scale */
+    s16 unk18;
+    s16 unk1A; /* length */
+    s16 unk1C; /* brightness */
+    s16 unk1E; /* width */
+    s16 unk20;
+    s16 unk22;
+    u8 pad24[0xC];
+} Fx1fdRibbon; /* 0x30 */
+
+typedef struct {
+    Fx1fdPath unk0;
+    SVECTOR unk8; /* scale */
+    s16 unk10;
+    s16 unk12; /* length */
+    s16 unk14; /* brightness */
+    s16 unk16; /* width */
+    s16 unk18;
+} Fx1fdRibbon1;
+
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    SVECTOR unkC; /* model rotations */
+    SVECTOR unk14;
+    VECTOR unk1C; /* model position */
+    VECTOR unk2C; /* model scale */
+    s32 unk3C; /* model brightness */
+    SVECTOR unk40; /* effect positions */
+    SVECTOR unk48;
+    SVECTOR unk50; /* caster position */
+    s32 unk58; /* fade counters */
+    s32 unk5C;
+    s32 unk60;
+    s16 unk64;
+    s16 unk66;
+    u16 unk68; /* models */
+    u16 unk6A;
+} Fx1fdWork82; /* 0x6C */
+
+extern Fx1fdRibbon D_801EB75C;
+extern Fx1fdRibbon D_801EB78C;
+extern Fx1fdRibbon D_801EB7BC;
+extern Fx1fdRibbon1 D_801EB7EC;
 
 #endif

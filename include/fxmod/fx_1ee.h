@@ -58,6 +58,19 @@ extern Fx1eeTrail D_801EAE74[2];
 
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
+typedef struct {
+    s32 unk0; /* delay */
+    s32 unk4; /* count */
+    u8 *unk8; /* data */
+    s32 unkC; /* angle */
+    s32 unk10; /* radius */
+} Fx1eeSpark; /* 0x14 */
+
+extern s32 D_801EAFCC[]; /* spark timer; array so it may alias entry (store order) */
+extern SVECTOR D_801EAFD4;
+extern SVECTOR D_801EAFE4[];
+extern Fx1eeSpark D_801EB004[12][4];
+
 #define SUMMON(env) ((Fx1eeSummon *)(env)->unk4)
 
 /* copied */

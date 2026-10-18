@@ -29,4 +29,40 @@ typedef struct {
 void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0edSeg *buf, s32 abr);
 void func_801E7B74(s32 model, s32 bone, SVECTOR *in, SVECTOR *out);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* unit position */
+    SVECTOR unk10; /* unit rotation */
+    SVECTOR unk18; /* model position */
+    SVECTOR unk20;
+    s32 unk28; /* model */
+    SVECTOR unk2C; /* model rotation */
+    s32 unk34[3]; /* model scale */
+} Fx0edWork80; /* 0x40 */
+
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180;
+    } *unk54;
+    u8 pad58[0x60 - 0x58];
+    s32 unk60; /* summon model */
+} Fx0edSummon;
+
+extern s32 D_801E8C10[2];
+extern CVECTOR D_801E8C18;
+extern CVECTOR D_801E8C1C;
+extern CVECTOR D_801E8C20;
+extern SVECTOR D_801E8C24;
+extern SVECTOR D_801E8C2C;
+extern SVECTOR D_801E8C34;
+extern u8 D_801E8C84[];
+extern Unk80100DC054 D_801E9234;
+extern u8 D_801E9494[];
+extern Fx0edSeg D_801E9AF4[17];
+extern Fx0edSeg D_801E9C04[17];
+extern BtlModel D_801E93C4[];
+
 #endif

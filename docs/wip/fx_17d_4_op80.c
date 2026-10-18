@@ -1,8 +1,11 @@
-/* Draft of fx_17d_4 fx_17d_4_op80. Status: 726 aligned mismatches (230 ignoring registers); equivalent by
- * construction. Variable roles brute-forced (build/w/roles3.py). Open: in the case 2/3 ring loops the original does
- * not strength-reduce frame * k and c * (i + 2) (it keeps mult in the loop, k += 0x10 in the Draw delay slot) but still
- * hoists t >> 2 (copy to s6); here loop.c reduces both (a u8 k stops it but adds andi). Case 6's flag/n/r spill
- * slots and several statement orders also differ. */
+/* Draft of fx_17d_4 fx_17d_4_op80. Status: 622 aligned mismatches (about 190 ignoring registers); equivalent by
+ * construction. Variable roles brute-forced (build/w/roles3.py); c and o split per block. Fixed later: case 4 computes
+ * q4 = (frame << 12) / 20 at its start (the original keeps the /10 magic in s1 for the later / 10) and uses q4 >> 2;
+ * case 5 t >> 1 / t >> 2; case 6 t = (frame << 12) / 51 (c = 0x1000 - t, t >> 7) and w13 = (... << 12) / 13
+ * (o = (w13 >> 3) + 0x40, i = 0x1000 - w13 * 2 / 3); case 2's loop as a for (n * (i + 2) then stays a mult, as in
+ * the original). Open: in the case 2/3 ring loops the original does not strength-reduce frame * k (k += 0x10 in the
+ * Draw delay slot); here loop.c still reduces it. Case 6's flag/n/r spill slots and several statement orders also
+ * differ. */
 #include "fxmod/fx_17d_4.h"
 
 typedef struct {
@@ -66,16 +69,21 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR b2;
     SVECTOR a2;
     Pool6CEntry *p;
+    s32 q4;
+    s32 w13;
+    s32 c_1;
+    s32 c_3;
+    s32 c_5;
+    s32 c_6;
+    s32 o_3;
     s32 frame;
     s32 t;
     s32 x;
     s32 r;
-    s32 c;
     s32 i;
     s32 k;
     s32 n;
     s32 m;
-    s32 o;
     s32 f;
     s32 q;
     s32 g;
@@ -200,20 +208,16 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             pos.vx = work->unk48.vx;
             pos.vy = work->unk48.vy;
             pos.vz = work->unk48.vz;
-            i = 0;
-            k = 0x20;
-            do {
+            for (i = 0, k = 0x20; i < 4; i++, k += 0x10) {
                 rot.vx = 0;
                 rot.vz = 0;
                 rot.vy = frame * k;
                 sc.vx = sc.vz = (n * (i + 2)) / 6;
-                i++;
-                k += 0x10;
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->unk78);
                 ex->Hi_ModifyEffModelAbr(work->unk78, 1);
                 ex->Hi_ModifyEffModelRGB(work->unk78, (ex->math_sin(t >> 2) >> 5) - 0x80, (ex->math_sin(t >> 2) >> 5) - 0x80,
                                          (ex->math_sin(t >> 2) >> 5) - 0x80);
-            } while (i < 4);
+            }
             ex->func_800E6624(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             if (frame > 0x10) {
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, (frame - 0x10) * 0x3C, (frame - 0x10) * 0x3C,
@@ -270,7 +274,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 sc.vy = t / 3 + 0x1000;
                 pos.vx = work->unk48.vx;
                 pos.vy = work->unk48.vy;
-                c = ((0x1000 - t) >> 5) - 0x80;
+                c_1 = ((0x1000 - t) >> 5) - 0x80;
                 pos.vz = work->unk48.vz;
                 for (i = 0, k = 0x20; i < 3; i++, k += 0x10) {
                     rot.vx = 0;
@@ -280,7 +284,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     sc.vx = sc.vz = ((t + 0x1000) * (i + 2)) / 5;
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->unk78);
                     ex->Hi_ModifyEffModelAbr(work->unk78, 1);
-                    ex->Hi_ModifyEffModelRGB(work->unk78, c, c, c);
+                    ex->Hi_ModifyEffModelRGB(work->unk78, c_1, c_1, c_1);
                 }
             }
             ex->func_800E6624(0x2710 - frame * 3, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
@@ -310,6 +314,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 4:
+            q4 = (frame << 12) / 20;
             work->unk54.vx = work->unk54.vy = work->unk54.vz = 0x1000;
             ex->Hi_DrawSummonModel(&work->unk60, (VECTOR *)&work->unk48, (s32)&work->unk54, SUMMON(env)->unk60, 0);
             work->unk34.vy += 2;
@@ -345,19 +350,19 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             env->unk28 = 0x10;
-            c = 0x1000;
+            c_3 = 0x1000;
             if (frame < 8) {
-                c = frame << 9;
+                c_3 = frame << 9;
             }
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unk10, NULL, 0x1000, 0, 1, c);
-            c = 0;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unk10, NULL, 0x1000, 0, 1, c_3);
+            c_5 = 0;
             if (frame >= 6) {
-                c = ((frame - 6) << 12) / 14;
+                c_5 = ((frame - 6) << 12) / 14;
             }
             BTLFX_COPY_SVEC(&s, &work->unk10);
-            s.vy += ex->math_sin((frame << 12) / 80) >> 3;
+            s.vy += ex->math_sin(q4 >> 2) >> 3;
             s.vz -= 0x400;
-            func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &s, &work->unk10, frame, c, 1, 0x18);
+            func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &s, &work->unk10, frame, c_5, 1, 0x18);
             env->unk28 = 0;
             if (frame >= 0x14) {
                 work->unk0 = 5;
@@ -377,8 +382,8 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 5:
             env->unk28 = 0x10;
             t = (frame << 12) / 24;
-            x = ex->math_cos((frame << 12) / 48) >> 1;
-            r = ex->math_cos((frame << 12) / 96) >> 1;
+            x = ex->math_cos(t >> 1) >> 1;
+            r = ex->math_cos(t >> 2) >> 1;
             a.vx = b.vx = work->unk8.vx + ((ex->math_cos(x) * r) >> 12);
             a.vy = work->unk8.vy;
             a.vz = b.vz = work->unk8.vz + ((ex->math_sin(x) * r) >> 12);
@@ -397,10 +402,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             a2.vz = b2.vz = work->unk8.vz;
             b2.vy = work->unk8.vy - 0x1000;
             env->unk28 = 0x10;
-            c = 0x1000 - (frame << 12) / 51;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a2, NULL, 0xAAA, 0, 1, c);
-            func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &a2, &b2, frame, c, 1,
-                          (frame << 12) / 6528 + 0x20);
+            t = (frame << 12) / 51;
+            c_6 = 0x1000 - t;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &a2, NULL, 0xAAA, 0, 1, c_6);
+            func_801E7720((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &a2, &b2, frame, c_6, 1,
+                          (t >> 7) + 0x20);
             env->unk28 = 0;
             rot2.vx = 0x400;
             rot2.vz = 0;
@@ -420,7 +426,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             flag = 0;
             if (frame < 0x26) {
-                o = 0x20;
+                o_3 = 0x20;
                 if (frame < 0x1E) {
                     i = 0x1000;
                     g = 0;
@@ -431,7 +437,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     flag = 0;
                 } else {
                     x = (frame - 0x1E) << 9;
-                    o = 0x27;
+                    o_3 = 0x27;
                     i = 0x1000;
                     g = 0;
                     q = 0x1000;
@@ -447,13 +453,14 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             } else {
                 g = 1;
                 t = 0x1D;
-                o = (((frame - 0x26) << 12) / 104) + 0x40;
+                w13 = ((frame - 0x26) << 12) / 13;
+                o_3 = (w13 >> 3) + 0x40;
                 flag = 0x15;
-                i = 0x1000 - ((((frame - 0x26) << 12) / 13) * 2) / 3;
+                i = 0x1000 - w13 * 2 / 3;
                 k = i;
                 q = k;
             }
-            func_801E77DC(entry, &D_801E971C, t, o, i, g, flag);
+            func_801E77DC(entry, &D_801E971C, t, o_3, i, g, flag);
             if (q != 0) {
                 func_801E7B8C(entry, &D_801E971C, flag, q);
                 func_801E7EB4(entry, &D_801E971C, k);
