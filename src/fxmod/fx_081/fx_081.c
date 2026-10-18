@@ -12,14 +12,14 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
 
     r = ex->func_800E0134(pt, p);
     if (frame == 0) {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 0);
     }
     if (frame < n - 4) {
         t = 0x1000;
     } else {
         t = 0x1000 - (((frame - (n - 4)) << 12) >> 2);
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), (s32)pos, (s32 *)p->unk28, frame,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), (s32)pos, (s32 *)p->unk28, frame,
                       0x1C00 - (frame << 12) / n, t, 1, (u8 *)r, 1);
     if (pt->unk1F == 1) {
         if (D_801EA738 != 0) {
@@ -213,7 +213,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelAbr(work->unkC, 0xFF);
             ex->Hi_ModifyEffModelRGB(work->unkC, (D_801EA73C >> 5) - 0x80, (D_801EA73C >> 5) - 0x80,
                                      (D_801EA73C >> 5) - 0x80);
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x20), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x20), work->unk4);
             env->unk28 = 0x80;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x16), &work->unk10, NULL, 0x1600, 0, 1,
                               D_801EA73C);
@@ -242,9 +242,9 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unk10, &rot, (c * 16 + c4) >> 1,
                               0, 1,
                               D_801EA73C);
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x22), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x22), work->unk4);
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x10), work->unk4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x10), work->unk4);
         work->unk4++;
     }
     return 0;

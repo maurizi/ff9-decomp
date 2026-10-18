@@ -32,9 +32,9 @@ s32 fx_0a1_op80(s32 mode, Fx0a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->unk18, (s16 *)&work->unk8, 0x1000 - ex->math_cos(t >> 2),
                               (s16 *)&pos);
             if (frame == 0) {
-                ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), 0, NULL, -1, 0x1000, 0, 1, D_801E7C70, 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), 0, NULL, -1, 0x1000, 0, 1, D_801E7C70, 0);
             }
-            ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&pos, NULL, 0, 0x1000, 0x1000, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&pos, NULL, 0, 0x1000, 0x1000, 1,
                               D_801E7C70, 0);
             if (frame >= 0xA) {
                 work->unk0 = 1;

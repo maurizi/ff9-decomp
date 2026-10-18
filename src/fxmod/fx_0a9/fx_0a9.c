@@ -49,10 +49,10 @@ s32 func_801E77EC(s32 mode, Fx0a9Part *part, Unk800F78A4 *env, Unk80100C78Entry 
             ((Fx0a9Bolt *)(part->unk18 - 2))->unk0 = ((Fx0a9Bolt *)(part->unk18 - 2))->unk2 = 0xA;
             ((Fx0a9Bolt *)(part->unk18 - 2))->unk1 = 0;
             if (part->unk17 == 0) {
-                ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 1), 0, NULL, 4, 0x1000, c, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 1), 0, NULL, 4, 0x1000, c, 1,
                                   (u8 *)part->unk18 - 4, 0);
             } else {
-                ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 4), 0, NULL, 4, 0x1000, c, 1,
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 4), 0, NULL, 4, 0x1000, c, 1,
                                   (u8 *)part->unk18 - 4, 2);
             }
         }

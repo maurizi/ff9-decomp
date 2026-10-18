@@ -119,7 +119,7 @@ s32 fx_0c9_op81(s32 mode, Fx0c9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_lerpVec((s16 *)&work->unk14, (s16 *)&work->unkC, t, (s16 *)&work->unk1C);
                 work->unk1C.vy -= (ex->math_sin(t >> 1) * 0x258) >> 12;
             }
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 6), f);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 6), f);
         }
         if (frame >= 0x50) {
             ex->btlfx_clearEffModels();

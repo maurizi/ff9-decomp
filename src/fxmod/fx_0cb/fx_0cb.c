@@ -94,7 +94,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 u = 0x78 - (frame - 1) * 0x14;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, u, u, u >> 1);
             }
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
             ex->func_800E6624(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
             if (frame < 0x20) {
                 if (frame == frame / 3 * 3) {
@@ -128,7 +128,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->unk28 = work->unk8 + 0x46;
             data = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
             ex->func_800D23D8(data, &work->unkC, &v, ex->math_cos(q) / 3 + 0x2AA, 0, 1, c);
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xF), work->unk4);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xF), work->unk4);
             v.vx = 0x200;
             v.vy = 0x590;
             v.vz = 0x80;

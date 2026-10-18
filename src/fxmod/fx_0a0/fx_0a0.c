@@ -44,7 +44,7 @@ void func_801E783C(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg
     v[1].vy = b->vy;
     v[1].vz = b->vz;
     v[1].pad = arg6;
-    ex->func_800D1494(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&D_801E7D84, 0);
+    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&D_801E7D84, 0);
 }
 
 void func_801E78F8(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame) {
@@ -57,9 +57,9 @@ void func_801E78F8(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
 
     r = ex->func_800E0134(pt, p);
     if (frame == 0) {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 2);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 7), (s32)pos, NULL, -1, 0, 0, 0, (u8 *)r, 2);
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 7), (s32)pos, (s32 *)p->unk28, frame, *arg4, D_801E8870, 1,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 7), (s32)pos, (s32 *)p->unk28, frame, *arg4, D_801E8870, 1,
                       (u8 *)r, 2);
     if (frame < 0x28) {
         s = ex->math_cos((frame << 10) / 40);

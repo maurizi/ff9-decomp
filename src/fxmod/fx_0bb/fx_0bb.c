@@ -39,7 +39,7 @@ s32 fx_0bb_op81(s32 mode, Fx0bbWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk4->unk22 = ex->func_800E7CC4(0, 0x80);
             }
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 1), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 1), frame);
         return frame >= 0x32;
     }
     return 0;

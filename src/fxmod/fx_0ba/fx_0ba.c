@@ -29,7 +29,7 @@ void func_801E8778(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVEC
         v->pad = pad;
         s += step + ex->btlfx_randCentered(0x100);
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), 0, NULL, a7, 0x1000, a8, 1, (u8 *)buf, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), 0, NULL, a7, 0x1000, a8, 1, (u8 *)buf, 0);
 }
 
 INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op81);
@@ -110,7 +110,7 @@ void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s
         s += step + *tab++;
     }
     env->unk28 = 0x80;
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, file), 0, NULL, a12, 0x1000, a13, 1, (u8 *)buf, a2);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, file), 0, NULL, a12, 0x1000, a13, 1, (u8 *)buf, a2);
     env->unk28 = 0;
 }
 
@@ -166,7 +166,7 @@ s32 func_801EBFB8(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk80100C78Entry *en
         if (p->unk16 == 0) {
             p->unk18[-0x10] = p->unk18[-0xE] = 0x10;
             p->unk18[-0xF] = 0;
-            ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x32), 0, NULL, frame, 0x1000, c, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x32), 0, NULL, frame, 0x1000, c, 1,
                               p->unk18 - 4, 0);
         }
         if (frame >= 5) {

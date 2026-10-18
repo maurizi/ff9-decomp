@@ -33,7 +33,7 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)mpos, (s32)scale, work->unk10);
             env->unk28 = 0x80;
-            ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &part->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &part->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
             env->unk28 = 0;
             if (frame >= 0x14) {
                 part->unk0 = 1;
@@ -53,12 +53,12 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
             BTLFX_COPY_SVEC(&pos, &part->unk4);
             pos.vy -= frame * 4;
             env->unk28 = 0x10;
-            ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &pos, NULL, 0x3000, frame, 1, -1, 0, 0);
             if (frame < 0x10) {
                 env->unk28 = 0x64;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &pos, NULL, -1, frame, 1, -1);
                 env->unk28 = 0;
-                ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &part->unk4, &rot, 0x1000, frame, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &part->unk4, &rot, 0x1000, frame, 1,
                                   -1, 0, 0);
             }
             env->unk28 = 0;
