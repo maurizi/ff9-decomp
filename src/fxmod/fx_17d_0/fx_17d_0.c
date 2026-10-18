@@ -69,6 +69,55 @@ s32 func_801E7FE0(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *e
 
 INCLUDE_ASM("asm/us/fx_17d_0/nonmatchings/fx_17d_0", fx_17d_0_op80);
 
-INCLUDE_ASM("asm/us/fx_17d_0/nonmatchings/fx_17d_0", fx_17d_0_op82);
+s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    s16 *f;
+    s32 n;
+    s32 frame;
+
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        D_801E9470 = env;
+    } else {
+        frame = entry->unk0;
+        f = (s16 *)ex->btlfx_getFileData(entry->unk8, 0x1A);
+        n = frame;
+        if (n >= f[1]) {
+            n = f[1] - 1;
+        }
+        f += n * 3 + 2;
+        v.vx = f[0];
+        v.vy = f[1];
+        v.vz = f[2];
+        env->unk2C->unk0[0].vx = v.vx;
+        env->unk2C->unk0[0].vy = v.vy;
+        env->unk2C->unk0[0].vz = v.vz;
+        f = (s16 *)ex->btlfx_getFileData(entry->unk8, 0x25);
+        n = frame;
+        if (n >= f[1]) {
+            n = f[1] - 1;
+        }
+        f += n * 3 + 2;
+        env->unk2C->unk30[0].vz = f[2];
+        f = (s16 *)ex->btlfx_getFileData(entry->unk8, 0x19);
+        n = frame;
+        if (n >= f[1]) {
+            n = f[1] - 1;
+        }
+        f += n * 3 + 2;
+        v.vx = f[0];
+        v.vy = f[1];
+        v.vz = f[2];
+        env->unk2C->unk0[1].vx = v.vx;
+        env->unk2C->unk0[1].vy = v.vy;
+        env->unk2C->unk0[1].vz = v.vz;
+        if (frame >= 0xA9) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_17d_0/nonmatchings/fx_17d_0", fx_17d_0_headerPtr);

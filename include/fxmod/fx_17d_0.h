@@ -26,6 +26,7 @@ extern u8 D_801EBC90[][0x24];
 void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b);
 void func_801E7894(s32 n, s32 r, SVECTOR *pts);
 void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s16 *models, s16 *morph, s32 scale);
+s32 fx_17d_0_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 func_801E7FE0(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 #endif
