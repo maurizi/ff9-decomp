@@ -99,7 +99,201 @@ s32 func_801E7A5C(s32 a) {
     return v;
 }
 
-INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", func_801E7AA0);
+void func_801E7AA0(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 col, s32 col2, s32 tpage, s32 clut, s32 u, s32 v,
+                   s32 amp, s32 ph, s32 step, s32 r, s32 ang, s32 d) {
+    Unk800F78A4 *env = D_801E915C;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    CVECTOR c0;
+    CVECTOR c1;
+    CVECTOR c2;
+    CVECTOR c3;
+    CVECTOR c4;
+    CVECTOR c5;
+    MATRIX m;
+    MATRIX m2;
+    SVECTOR vs[4];
+    VECTOR lv;
+    DVECTOR sxy;
+    s32 otz;
+    s32 z;
+    POLY_GT4 *gt;
+    POLY_FT4 *ft;
+    POLY_G4 *g;
+    POLY_F4 *f;
+    s32 abr;
+    s32 xb;
+    s32 yb;
+    s32 xo;
+    s32 w;
+    s32 i;
+    s32 y0;
+    s32 y1;
+    s32 j;
+    s32 x;
+    s32 t;
+    s32 u0;
+    s32 u1;
+    s32 v0;
+    s32 v1;
+    s32 isft;
+
+    abr = 1;
+    gte_SetRotMatrix(env->unk14);
+    gte_SetTransMatrix(env->unk14);
+    gte_ldv0(pos);
+    gt = (POLY_GT4 *)env->unk24;
+    *(s32 *)&c2 = 0;
+    *(s32 *)&c5 = 0;
+    ft = (POLY_FT4 *)(gt + 18);
+    g = (POLY_G4 *)(ft + 324);
+    f = (POLY_F4 *)(g + 18);
+    env->unk24 = (u8 *)(f + 324);
+    c0.r = c0.g = c0.b = col;
+    c1.r = c1.g = c1.b = col;
+    c3.r = c3.g = c3.b = col2;
+    c4.r = c4.g = c4.b = col2;
+    c0.cd = abr != 0xFF ? 0x2E : 0x2C;
+    c2.cd = abr != 0xFF ? 0x3E : 0x3C;
+    c1.cd = c2.cd;
+    c3.cd = abr != 0xFF ? 0x2A : 0x28;
+    c5.cd = abr != 0xFF ? 0x3A : 0x38;
+    tpage |= (abr & 3) << 5;
+    c4.cd = c5.cd;
+    gte_rtv0tr_b();
+    ex->func_800316D8(rot, &m);
+    ex->ScaleMatrix(&m, scale);
+    m2 = m;
+    m2.t[0] = pos->vx;
+    m2.t[1] = pos->vy;
+    m2.t[2] = pos->vz;
+    gte_stlvnl(m.t);
+    ex->MulRotMatrix(&m);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    xb = -0x24EA;
+    yb = -0x17CD;
+    for (w = 0, i = 0; i < 18; i++, w += 0x2A5) {
+        j = 0;
+        ph += step;
+        y0 = yb + w;
+        y1 = y0 + 0x2A5;
+        for (xo = 0; j < 19; j++, xo += 0x41A) {
+            x = xb + xo;
+            vs[0].vx = x + ((ex->math_sin(ph) * amp) >> 12);
+            vs[1].vx = vs[0].vx + 0x41A;
+            t = ex->math_sin(ph + step);
+            vs[0].vy = vs[1].vy = y0;
+            vs[2].vy = vs[3].vy = y1;
+            x += (t * amp) >> 12;
+            vs[2].vx = x;
+            vs[3].vx = x + 0x41A;
+            vs[0].vz = vs[2].vz = (func_801E7A5C(ang + j * d) * r) >> 12;
+            vs[1].vz = vs[3].vz = (func_801E7A5C(ang + (j + 1) * d) * r) >> 12;
+            gte_ldv3c(vs);
+            gte_rtpt();
+            u0 = u + ((j & 3) << 5);
+            u1 = u0 + 0x20;
+            if ((j & 3) == 3) {
+                u1 = u0 + 0x1F;
+            }
+            v0 = v + ((i & 1) << 6);
+            v1 = v0 + 0x40;
+            if (i & 1) {
+                v1 = v0 + 0x3F;
+            }
+            gte_nclip();
+            gte_stopz(&otz);
+            if (otz != 0) {
+                gte_avsz3();
+                gte_stszotz(&z);
+                isft = 1;
+                if (j == 0) {
+                    *(s32 *)&gt->r0 = *(s32 *)&gt->r2 = *(s32 *)&c2;
+                    *(s32 *)&gt->r1 = *(s32 *)&gt->r3 = *(s32 *)&c1;
+                    *(s32 *)&g->r0 = *(s32 *)&g->r2 = *(s32 *)&c5;
+                    *(s32 *)&g->r1 = *(s32 *)&g->r3 = *(s32 *)&c4;
+                    isft = 0;
+                } else {
+                    *(s32 *)&ft->r0 = *(s32 *)&c0;
+                    *(s32 *)&f->r0 = *(s32 *)&c3;
+                }
+                if (otz > 0) {
+                    if (isft) {
+                        ft->r0 >>= 1;
+                        ft->g0 >>= 1;
+                    } else {
+                        gt->r0 >>= 1;
+                        gt->g0 >>= 1;
+                        gt->r1 >>= 1;
+                        gt->g1 >>= 1;
+                        gt->r2 >>= 1;
+                        gt->g2 >>= 1;
+                        gt->r3 >>= 1;
+                        gt->g3 >>= 1;
+                    }
+                }
+                if (isft) {
+                    ft->u0 = ft->u2 = u0;
+                    ft->u1 = ft->u3 = u1;
+                    ft->v0 = ft->v1 = v0;
+                    ft->v2 = ft->v3 = v1;
+                    ft->tpage = tpage;
+                    ft->clut = clut;
+                    gte_stsxy3(&ft->x0, &ft->x1, &ft->x2);
+                    *(s32 *)&f->x0 = *(s32 *)&ft->x0;
+                    *(s32 *)&f->x1 = *(s32 *)&ft->x1;
+                    *(s32 *)&f->x2 = *(s32 *)&ft->x2;
+                } else {
+                    gt->u0 = gt->u2 = u0;
+                    gt->u1 = gt->u3 = u1;
+                    gt->v0 = gt->v1 = v0;
+                    gt->v2 = gt->v3 = v1;
+                    gt->tpage = tpage;
+                    gt->clut = clut;
+                    gte_stsxy3(&gt->x0, &gt->x1, &gt->x2);
+                    *(s32 *)&g->x0 = *(s32 *)&gt->x0;
+                    *(s32 *)&g->x1 = *(s32 *)&gt->x1;
+                    *(s32 *)&g->x2 = *(s32 *)&gt->x2;
+                    gte_SetRotMatrix(&m2);
+                    gte_SetTransMatrix(&m2);
+                    gte_ldv0(vs);
+                    gte_rtv0tr();
+                    gte_stlvnl(&lv);
+                    D_801E916C[i].vx = lv.vx;
+                    D_801E916C[i].vy = lv.vy;
+                    D_801E916C[i].vz = lv.vz;
+                    gte_SetRotMatrix(&m);
+                    gte_SetTransMatrix(&m);
+                    gte_ldv0(vs);
+                    gte_rtps();
+                    gte_stsxy(&sxy);
+                    if ((u16)(sxy.vx + 0x20) > 0x180 || sxy.vy < -0x20 || sxy.vy > 0x110) {
+                        D_801E916C[i].pad = 0;
+                    } else {
+                        D_801E916C[i].pad = 1;
+                    }
+                }
+                gte_ldv0(&vs[3]);
+                gte_rtps();
+                if (isft) {
+                    ex->btlfx_addPrim(0x09000000, z, ft);
+                    ex->btlfx_addPrimAbr(0x05000000, z, f, 2);
+                    gte_stsxy(&ft->x3);
+                    *(s32 *)&f->x3 = *(s32 *)&ft->x3;
+                    ft++;
+                    f++;
+                } else {
+                    ex->btlfx_addPrim(0x0C000000, z, gt);
+                    ex->btlfx_addPrimAbr(0x08000000, z, g, 2);
+                    gte_stsxy(&gt->x3);
+                    *(s32 *)&g->x3 = *(s32 *)&gt->x3;
+                    gt++;
+                    g++;
+                }
+            }
+        }
+    }
+}
 
 s32 func_801E8370(SVECTOR *v) {
     s32 i = D_801E90F8;
