@@ -85,7 +85,60 @@ void func_801E7BF8(Unk80100C78Entry *entry, Fx042Strip *strip, Fx042Strip *out, 
     func_801E796C(entry, out, tbl, p, &v, 0x80, ex->btlfx_rand(), 0x37, 0, arg5, arg6, kind);
 }
 
-INCLUDE_ASM("asm/us/fx_042/nonmatchings/fx_042", func_801E7CEC);
+s32 func_801E7CEC(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    Fx042Strip *strip;
+    Fx042Strip *br;
+    s32 c;
+    s32 t;
+
+    if (mode == 1) {
+        it->unk11 = 0;
+        return 0;
+    }
+    switch (it->unk11) {
+    case 0:
+        t = frame << 10;
+        if (it->unk14 < 2) {
+            c = ex->math_cos(t >> 2);
+            strip = &D_801E857C[it->unk10];
+            br = (Fx042Strip *)&D_801E8BAC[it->unk10];
+            func_801E7704(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame << 7, 0x186, frame, c,
+                          ((0x1000 - t) * 0xF1) >> 12, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
+            if (frame == 0) {
+                it->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&it->unk0);
+                if (it->unk1C != NULL) {
+                    it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
+                }
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 7, 0x20);
+            }
+            if (frame >= 4) {
+                it->unk11 = 1;
+                ((s16 *)it)[-1] = -1;
+            }
+        } else {
+            t = (frame << 12) / 3;
+            c = ex->math_cos(t >> 2);
+            strip = &D_801E857C[it->unk10];
+            br = (Fx042Strip *)&D_801E8BAC[it->unk10];
+            func_801E7704(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame << 7, 0x186, frame, c,
+                          ((0x1000 - t) * 0xAA) >> 12, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
+            if (frame >= 3) {
+                return 1;
+            }
+        }
+        break;
+    case 1:
+        if (frame >= 0x10) {
+            return 1;
+        }
+        break;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_042/nonmatchings/fx_042", fx_042_op83);
 

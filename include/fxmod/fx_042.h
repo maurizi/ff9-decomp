@@ -35,6 +35,13 @@ typedef struct {
     Pool6CEntry *unk1C;
 } Fx042Bolt;
 
+typedef struct {
+    SVECTOR unk0; /* origin */
+    s32 *unk8; /* jitter table */
+    s32 unkC; /* bolts spawned */
+} Fx042Work; /* 0x10 */
+
+extern s32 D_801E8F0C[];
 extern u16 D_801E8514[];
 extern u16 D_801E851C[];
 extern Unk800F78A4 *D_801E856C;
