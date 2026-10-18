@@ -115,6 +115,46 @@ typedef struct {
 extern Fx026Strip32 D_801EC5EC[];
 extern Fx026Strip32 D_801ECC0C[];
 extern Fx026Strip40 D_801ED22C[];
+/* op81: the shattering barrier */
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* frame */
+    SVECTOR unk8; /* position */
+    SVECTOR unk10;
+    s32 unk18[6][3]; /* models of the six pieces */
+    s32 pad60[3];
+    s32 unk6C[7];
+} Fx026Work81; /* 0x88 */
+
+/* pool item of func_801E98BC */
+typedef struct {
+    s16 unk0; /* state */
+    s16 unk2; /* piece */
+    s32 pad4[2];
+    SVECTOR unkC;
+} Fx026Item81;
+
+typedef struct {
+    s32 unk0; /* offsets from env->unk30 */
+    s32 unk4;
+} Fx026ShatterSrc;
+
+extern s32 D_801EA788[6][3];
+extern s32 D_801EA828[];
+extern SVECTOR D_801EA840[];
+extern s32 D_801EA870[];
+extern Fx026ShatterSrc D_801EA7EC[];
+extern s32 D_801EC5DC;
+extern s32 D_801EC5E0;
+extern Fx026Shatter D_801EDA0C[];
+extern Fx026Tri D_801EF00C[];
+extern s32 D_801EA7D0[7];
+extern SVECTOR D_801EA780;
+extern s32 D_801EA8B0[];
+extern s32 D_801EA81C;
+extern s32 D_801EA820;
+extern s32 D_801EA824;
+extern u8 D_801EA93C[];
 extern s16 D_801EA774[];
 extern SVECTOR D_801EC5E4;
 extern Fx026CamPath D_801EA8C4[];
@@ -131,7 +171,10 @@ void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 void func_801E912C(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris);
 s32 func_801E9170(s32 i, s32 model);
 Fx026Shard *func_801E928C(s32 i);
+void func_801E9564(s32 i);
 s32 func_801E92EC(s32 i);
+s32 func_801E98BC(s32 mode, Fx026Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+                  Unk800DA1B8 *pool, Fx026Work81 *work);
 s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
                   Unk800DA1B8 *pool, Fx026Work82 *work);
 
