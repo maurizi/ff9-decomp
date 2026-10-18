@@ -1360,3 +1360,17 @@ Both functions now match (module fully decompiled). What closed them:
 - fx_05e op80 (= fx_0ed op80 body): the 0ed draft ported to 05e reaches 72 register-only rows. gsim
   (build/gsim.py) shows the target needs t0 allocated before p and &work->unk18 after ex/work/frame, or
   equivalently t0 preferring s0 and &work->unk18 preferring s5 (regs_someone_prefers); no C form found yet.
+- fx_195 op80 (matched): `kk = (kk << 12) / 10;` as its own statement (the constant 0x1000 is loaded after the
+  division), the unk20 = unk10 copy order, `w1 = (sin(t >> 2) << 1) + 0x1000` in one statement, `c = 0x1000 - x;
+  c = (c * 0xA0) >> 12;`, `r = cos(...)` into the loop's r before the third trail call, `ang += rand() + 0x333`
+  in the for increment, empty `do { } while (0);` barriers (b2 after the multiply chain, s before frame's
+  reload), and a dead block-local `struct { s32 x; } q = { frame };` whose spill slot is the original's unused
+  word at 0x140 (it shifts case 5's spill slots).
+- fx_081 op81 (2 rows left): case 2's `a = j >> 2` reuses the loop variable (case 0/1's t keeps s4 once it no
+  longer conflicts with j) — 176 -> 42 rows in one change; then `for (j = 0, pp = &pos; ...)`,
+  `for (i = 0; i < 12; i++, a += 0x155)`, the unk1C/unk14 copy order, and `w4 = w << 4;` at the top of the inner
+  body with `(a = ...) + w4` (loop.c hoists it only when its lifetime is long). Open: the outer loop's bottom
+  order (giv increment, frame reload, j++).
+- fx_1f1 op80: the original's mode-2 addresses are (D_801E7F14 + 0x20 + off) + i * 0x60 with &D[i].unk20 as a
+  separately reduced giv (s6), i.e. the vectors at 0x20 are a nested struct; a nested Fx1f1Model at 0x20
+  (build/p0/e1f1/gen2.py) brings the aligned count from 263 to 181 but the mode-2 loop's givs still differ.
