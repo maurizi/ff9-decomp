@@ -37,7 +37,49 @@ void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SV
 
 INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", fx_19f_op81);
 
-INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", fx_19f_op82);
+s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    Fx19fKeys *k;
+    s32 frame;
+    s32 f;
+
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        D_801EAA48 = env;
+    } else {
+        frame = entry->unk0;
+        k = (Fx19fKeys *)ex->btlfx_getFileData(entry->unk8, 0x2B);
+        f = frame;
+        if (f >= k->unk2) {
+            f = k->unk2 - 1;
+        }
+        k = (Fx19fKeys *)((u8 *)k + (f * 6 + 4));
+        v.vx = k->unk0;
+        v.vy = k->unk2 - 100;
+        v.vz = ((s16 *)k)[2];
+        env->unk2C->unk0[0].vx = v.vx;
+        env->unk2C->unk0[0].vy = v.vy;
+        env->unk2C->unk0[0].vz = v.vz;
+        k = (Fx19fKeys *)ex->btlfx_getFileData(entry->unk8, 0x2C);
+        f = frame;
+        if (f >= k->unk2) {
+            f = k->unk2 - 1;
+        }
+        k = (Fx19fKeys *)((u8 *)k + (f * 6 + 4));
+        v.vx = k->unk0;
+        v.vy = k->unk2 - 100;
+        v.vz = ((s16 *)k)[2];
+        env->unk2C->unk0[1].vx = v.vx;
+        env->unk2C->unk0[1].vy = v.vy;
+        env->unk2C->unk0[1].vz = v.vz;
+        if (frame >= 0x5A) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", func_801E9968);
 

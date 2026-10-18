@@ -14,4 +14,14 @@ typedef struct {
 
 extern Unk800F78A4 *D_801EAA48;
 
+typedef struct {
+    s16 x, y, z;
+} Fx19fKey;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* count */
+    Fx19fKey unk4[1];
+} Fx19fKeys;
+
 #endif
