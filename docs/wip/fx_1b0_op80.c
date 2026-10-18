@@ -1,5 +1,6 @@
-/* Draft of fx_1b0 fx_1b0_op80. Status: 74 strict mismatches, mostly register numbering (ex in s3 vs s2) plus an
- * sllv/srav pair the original does with a1 = 1 held in a register. */
+/* Draft of fx_1b0 fx_1b0_op80. Status: 17 aligned mismatches, two tint blocks only: the original loads the
+ * drawScreenTint argument a1 = 1 before computing c, and its x2 / >> 1 then use a1 (sllv/srav); c also lands in a2
+ * directly. Registers elsewhere match (the unk3C-init loop needs its own counter j). */
 #include "fxmod/fx_1b0.h"
 
 s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -15,6 +16,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 b;
     s32 c;
     s32 i;
+    s32 j;
 
     if (mode == 0) {
         *arg4 = 0x5C;
@@ -114,8 +116,8 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->func_800E806C(0x10, 0);
                 ex->func_800E87C4(0x64);
                 ex->btlfx_initEffModels(D_801EBF44, 0xA);
-                for (i = 0; i < 8; i++) {
-                    work->unk3C[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8CEC[i]), 0);
+                for (j = 0; j < 8; j++) {
+                    work->unk3C[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8CEC[j]), 0);
                 }
             }
             if (frame >= 0x3C) {
