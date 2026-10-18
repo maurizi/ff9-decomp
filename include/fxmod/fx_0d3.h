@@ -122,7 +122,6 @@ extern u16 D_801EDF54[];
 s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 /* propagated */
-<<<<<<< HEAD
 /* VZ0 = VZ1 = VZ2 = 0 */
 #define gte_ldVZ012_0() __asm__ volatile( \
     "mtc2\t$0, $1;" \
@@ -140,9 +139,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     : : "r"(r0))
 void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
-=======
 void func_801E7CBC(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
->>>>>>> worktree-agent-a448ebfeedc1aa0e2
 
 #endif
