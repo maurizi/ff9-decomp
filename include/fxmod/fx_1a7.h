@@ -12,6 +12,31 @@ typedef struct {
     SVECTOR unk34;
 } Fx1a7Work80; /* 0x3C */
 
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8[9];
+    Pool6CEntry *unk2C;
+    Pool6CEntry *unk30;
+    SVECTOR unk34; /* caster body position */
+    SVECTOR unk3C; /* target body position */
+    SVECTOR unk44; /* target position */
+    SVECTOR unk4C; /* angles */
+    SVECTOR unk54;
+    SVECTOR unk5C;
+} Fx1a7Work81; /* 0x64 */
+
+extern u16 D_801E8860[9]; /* files */
+extern u16 D_801E8874[9]; /* start frames */
+extern u16 D_801E8888[9];
+extern u16 D_801E889C[9];
+extern s32 D_801E89D0[];
+extern s32 D_801E8FD0[9][0xE];
+extern s32 D_801E91D0[];
+extern s32 D_801E96A0[9][0x2C];
+extern s32 D_801E9CD0[];
+extern SVECTOR D_801EA5E0;
+
 extern s32 (*D_801E88B0[9])();
 extern s32 (*D_801E88D4[9])();
 extern Unk800F78A4 *D_801E8940;
