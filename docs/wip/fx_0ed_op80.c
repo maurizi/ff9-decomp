@@ -154,6 +154,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 2:
             t = frame << 12;
+            /* Dead store: only its sign word survives. */
+            amp = t / 30;
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;

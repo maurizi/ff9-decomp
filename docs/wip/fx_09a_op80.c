@@ -144,6 +144,8 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vz = work->unk24.vz;
             ex->Hi_DrawSummonModel(&work->unk34, &pos, (s32)work->unk3C, ((Fx09aSummon *)env->unk4)->unk60, 1);
             t = frame << 12;
+            /* Dead store: only its sign word survives. */
+            k = t / 30;
             if (frame < 6) {
                 rgb = (t / 6 >> 5) - 0x80;
                 ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->unk4)->unk60, rgb, rgb, rgb);
