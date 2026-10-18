@@ -218,7 +218,7 @@ void func_801EEEA8(void) {
     if (D_801FBF84.unk0 == 1) {
         func_800273C0(box.x + 0x19, box.y + 0x14, 0x1D, c->stones, c->maxStones);
     }
-    func_8002B524(r->x + 6, r->y - 3, 0x1D, D_80070498, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, D_80070498, 0);
     func_8002DEE4(r, 0x1D, 1);
 }
 
@@ -237,10 +237,10 @@ void func_801EEFDC(void) {
     c = g_gameState->unk1C->party[D_801FBF84.unk2];
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
     n = (l->unk5 + l->cursor) * 2 + l->unk7;
-    func_8002B524(r->x + 6, r->y - 3, 0x1D, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1D, D_80070460, 0);
     func_8002DEE4(r, 0x1D, 2);
-    func_8002B5FC(r->x + 8, r->y + 8, 0x1C, text_get(0x10), 0);
-    func_8002B5FC(r->x + 8, r->y + 0x16, 0x1C, text_get(0x11), 0);
+    text_drawBlock(r->x + 8, r->y + 8, 0x1C, text_get(0x10), 0);
+    text_drawBlock(r->x + 8, r->y + 0x16, 0x1C, text_get(0x11), 0);
     if (D_801FBF84.unk1 == 1 || D_801FBF84.unk1 == 5 || D_801FBF84.unk1 == 0 || l->unk0 == 0) {
         return;
     }
@@ -263,7 +263,7 @@ void func_801EEFDC(void) {
         x = r->x;
         for (i = 0; i < 5; i++) {
             if ((D_801FBF84.unk68[id] >> i) & 1) {
-                func_80026C34(x + 8, r->y + 0x24, 0x1C, D_801FBF84.unk168[id][i], 1);
+                ui_drawItemIcon(x + 8, r->y + 0x24, 0x1C, D_801FBF84.unk168[id][i], 1);
                 x += 0x10;
             }
         }
@@ -285,10 +285,10 @@ void func_801EF270(void) {
     if (m->unk0 != 1) {
         if (m->unk1 != 1 && m->unk1 != 5 && m->unk1 != 0) {
             if (func_801EFB8C(m->unk668[idx].unk0, c) != 0) {
-                func_8002B5FC(r->x + 8, r->y + 6, 0x1B, D_801F722C + D_801F6FEC[m->unk668[idx].unk1].unk0, 0);
+                text_drawBlock(r->x + 8, r->y + 6, 0x1B, D_801F722C + D_801F6FEC[m->unk668[idx].unk1].unk0, 0);
             }
         }
-        func_8002B524(r->x + 6, r->y - 3, 0x1B, D_8007042C, 0);
+        ui_drawLabel(r->x + 6, r->y - 3, 0x1B, D_8007042C, 0);
         func_8002DEE4(r, 0x1B, 2);
     }
 }
@@ -303,14 +303,14 @@ void func_801EF3A8(void) {
     RECT *r = &D_801FBF84.unk48;
 
     l = &D_801FBF84.unk8[D_801FBF84.unk0];
-    func_8002B524(r->x + 0xE, r->y - 3, 0x1C, D_800703FC.unk4, 0);
-    func_8002B524(r->x + 0xA4, r->y - 3, 0x1C, D_800703FC.unk4, 0);
-    func_8002B524(r->x + 0x7C, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
-    func_8002B524(r->x + 0x112, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
+    ui_drawLabel(r->x + 0xE, r->y - 3, 0x1C, D_800703FC.unk4, 0);
+    ui_drawLabel(r->x + 0xA4, r->y - 3, 0x1C, D_800703FC.unk4, 0);
+    ui_drawLabel(r->x + 0x7C, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
+    ui_drawLabel(r->x + 0x112, r->y - 3, 0x1C, D_800703FC.unk7C, 0);
     func_8002E040(r, 0x1D, 1, l);
     if (l->unk0 != 0) {
-        func_8002ECA0(l, &view);
-        func_8002D9B4(NULL, 0x1C, 1);
+        menuList_getView(l, &view);
+        win_setClip(NULL, 0x1C, 1);
         idx = view.unk1 * 2;
         for (row = 0; row < view.unk0; row++) {
             for (col = 0; col < 2; col++) {
@@ -319,10 +319,10 @@ void func_801EF3A8(void) {
         }
         if (l->unk8 & 4) {
             func_8002F40C(l, r, &sub);
-            func_8002D9B4(&sub, 0x1C, 1);
+            win_setClip(&sub, 0x1C, 1);
             func_801F0890();
         }
-        func_8002D9B4(r, 0x1C, 1);
+        win_setClip(r, 0x1C, 1);
     }
 }
 
@@ -332,7 +332,7 @@ void func_801EF560(void) {
     s32 i;
 
     if (m->unk768 != 0) {
-        func_8002B524(r->x + 8, r->y - 3, 0x14, D_800704B8, 0);
+        ui_drawLabel(r->x + 8, r->y - 3, 0x14, D_800704B8, 0);
         func_8002DEE4(r, 0x14, 2);
         for (i = 0; i < 4; i++) {
             if (g_gameState->unk1C->party[i] != NULL) {
@@ -391,7 +391,7 @@ void func_801EF644(void) {
                 for (i = 0; i < 4; i++) {
                     y = i * 0x2B + 0x12;
                     if (g_gameState->unk1C->party[i] != NULL) {
-                        func_800270EC(r->x - 10, r->y + y, D_80077DE8.unk4);
+                        ui_drawHand(r->x - 10, r->y + y, D_80077DE8.unk4);
                         if (!done) {
                             D_80077DE8.unk0 = r->x - 10;
                             done = 1;
@@ -609,9 +609,9 @@ void func_801F0024(void) {
                 t = 7;
             }
         }
-        func_8002AD38(buf, text_get(t));
+        text_append(buf, text_get(t));
     end:
-        func_8002AD38(D_801FBD84, text_get(0xF));
+        text_append(D_801FBD84, text_get(0xF));
     } else if (D_801FBF84.unk1 == 2) {
         if (l->unk0 == 0) {
             return;
@@ -742,7 +742,7 @@ void func_801F07DC(void) {
     r = &D_801FBF84.unk28;
     func_8002DEE4(r, 0x1D, 2);
     for (i = 0; i < 2; i++) {
-        func_8002B5FC(r->x + D_801F33C0[i], r->y + 6, 0x1C, text_get(i), D_801FBF84.unk4[i] == 0 ? 2 : 0);
+        text_drawBlock(r->x + D_801F33C0[i], r->y + 6, 0x1C, text_get(i), D_801FBF84.unk4[i] == 0 ? 2 : 0);
     }
 }
 
@@ -789,10 +789,10 @@ void func_801F09CC(s32 x, s32 y, s32 idx, Character *c) {
     st = func_801EFB8C(id, c);
     if (st != 0) {
         col = D_801F740C[st];
-        func_8002B5FC(x + 8, y, 0x1C, D_801F40EC + info->unkE, col);
+        text_drawBlock(x + 8, y, 0x1C, D_801F40EC + info->unkE, col);
         if (info->unkA != 0) {
             text_formatNumber(func_801F1018(info), buf, 3, 1);
-            func_8002B56C(x + 0x6C, y + 4, 0x1C, buf, col);
+            ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
         }
     }
 }
@@ -817,9 +817,9 @@ void func_801F0AB8(s32 x, s32 y, s32 i, Character *c) {
         } else {
             func_801F0F38(x + 8, y, 0x1C, st >= 3 ? 7 : 8);
         }
-        func_8002B5FC(x + 0x18, y, 0x1C, D_801F6540 + sup->unk2, col);
+        text_drawBlock(x + 0x18, y, 0x1C, D_801F6540 + sup->unk2, col);
         text_formatNumber(sup->unk1, buf, 3, 1);
-        func_8002B56C(x + 0x6C, y + 4, 0x1C, buf, col);
+        ui_drawSmallDigits(x + 0x6C, y + 4, 0x1C, buf, col);
     }
 }
 
@@ -1110,7 +1110,7 @@ void func_801F15E0(void) {
     r = &D_801FC840.unk1C;
     c = g_gameState->unk1C->party[D_801FC840.unk3];
     func_800269F4(r->x + 3, r->y + 0x3B, 0x1E, r->w - 6);
-    func_8002B524(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_80070460, 0);
     func_8002DEE4(r, 0x1E, 1);
     func_80024428(r->x + 8, r->y + 9, 0x1D, (Unk80024428 *)&D_801FC840.unk24C);
     cur.unk8[0] = c->speed;
@@ -1162,7 +1162,7 @@ void func_801F189C(void) {
     if (D_801FC840.unk1 == 3) {
         return;
     }
-    func_8002B524(r->x + 6, r->y - 3, 0x1E, D_8007043C, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x1E, D_8007043C, 0);
     func_8002DEE4(r, 0x1E, 2);
     func_8002705C(r, 0x1E, 2);
     for (i = 0, grey = 2, y8 = 8, y12 = 12, y10 = 10; i < 5; i++) {
@@ -1170,12 +1170,12 @@ void func_801F189C(void) {
         if (D_801FC840.unk0 == grey) {
             sel = (i == 0);
         }
-        func_800275DC(r->x + 10, r->y + y10, 0x1D, i + 0xF9, sel);
-        func_8002B56C(r->x + 0x19, r->y + y12, 0x1D, D_801EE644, sel ? grey : 0);
+        ui_drawSprite(r->x + 10, r->y + y10, 0x1D, i + 0xF9, sel);
+        ui_drawSmallDigits(r->x + 0x19, r->y + y12, 0x1D, D_801EE644, sel ? grey : 0);
         if (c->equip[i] != 0xFF) {
             it = &D_80069018[c->equip[i]];
-            func_80026C34(r->x + 0x21, r->y + y8, 0x1D, c->equip[i], !sel);
-            func_8002B5FC(r->x + 0x31, r->y + y8, 0x1D, D_8006A218 + it->unk0, sel ? grey : 0);
+            ui_drawItemIcon(r->x + 0x21, r->y + y8, 0x1D, c->equip[i], !sel);
+            text_drawBlock(r->x + 0x31, r->y + y8, 0x1D, D_8006A218 + it->unk0, sel ? grey : 0);
         }
         y8 += 17;
         y12 += 17;
@@ -1201,14 +1201,14 @@ void func_801F1A94(void) {
 
     r = &D_801FC840.unk2C;
     c = g_gameState->unk1C->party[D_801FC840.unk3];
-    func_8002B524(r->x + 6, r->y - 3, 0x13, D_80070400, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0x13, D_80070400, 0);
     func_800269F4(r->x + 3, r->y + 0x1A, 0x1E, r->w - 6);
     func_8002DEE4(r, 0x1E, 1);
     if (D_801FC840.unk1 < 2) {
         return;
     }
-    func_800275DC(r->x + 0xA, r->y + 9, 0x1D, D_801FC840.unk2 + 0xF9, 0);
-    func_8002B56C(r->x + 0x19, r->y + 0xB, 0x1D, D_801EE644, 0);
+    ui_drawSprite(r->x + 0xA, r->y + 9, 0x1D, D_801FC840.unk2 + 0xF9, 0);
+    ui_drawSmallDigits(r->x + 0x19, r->y + 0xB, 0x1D, D_801EE644, 0);
     if (D_801FC840.unk1 == 2) {
         id = c->equip[D_801FC840.unk2];
     } else {
@@ -1217,8 +1217,8 @@ void func_801F1A94(void) {
     if (id == 0xFF) {
         return;
     }
-    func_80026C34(r->x + 0x21, r->y + 7, 0x1D, id, 1);
-    func_8002B5FC(r->x + 0x31, r->y + 7, 0x1D, D_8006A218 + D_80069018[id].unk0, 0);
+    ui_drawItemIcon(r->x + 0x21, r->y + 7, 0x1D, id, 1);
+    text_drawBlock(r->x + 0x31, r->y + 7, 0x1D, D_8006A218 + D_80069018[id].unk0, 0);
     for (i = 0; i < 3; i++) {
         y3 = i * 15;
         y2 = i * 15 + 0x21;
@@ -1259,11 +1259,11 @@ void func_801F1A94(void) {
                 k = 0x26;
                 func_80027110(r->x + 0x72, r->y + (y3 + k), 0x1D, func_80034584(c->unk34.b.id, ab), ap, flag, 0);
             }
-            func_8002B5FC(r->x + 0x18, r->y + y2, 0x1D, name, ok ? 0 : 2);
-            func_800275DC(r->x + 8, r->y + y1, 0x1D, icon, ok ^ 1);
+            text_drawBlock(r->x + 0x18, r->y + y2, 0x1D, name, ok ? 0 : 2);
+            ui_drawSprite(r->x + 8, r->y + y1, 0x1D, icon, ok ^ 1);
         } else {
-            func_8002B5FC(r->x + 0x18, r->y + y2, 0x1D, name, 2);
-            func_800275DC(r->x + 8, r->y + y1, 0x1D, ab < 0xC0 ? 0xBE : 0xBF, 1);
+            text_drawBlock(r->x + 0x18, r->y + y2, 0x1D, name, 2);
+            ui_drawSprite(r->x + 8, r->y + y1, 0x1D, ab < 0xC0 ? 0xBE : 0xBF, 1);
         }
     }
 }
@@ -1281,21 +1281,21 @@ void func_801F1F08(void) {
 
     if (m->unk260 != 0) {
         w = func_8002AE7C((u8 *)D_800703FC.unk94);
-        func_8002B524(wd->unk4.x + 6, r->y - 3, 0x14, D_800703FC.unk0[D_801F8918[m->unk2]], 0);
-        func_8002B524(wd->unk4.x - (w - k), r->y - 3, 0x14, D_800703FC.unk94, 0);
+        ui_drawLabel(wd->unk4.x + 6, r->y - 3, 0x14, D_800703FC.unk0[D_801F8918[m->unk2]], 0);
+        ui_drawLabel(wd->unk4.x - (w - k), r->y - 3, 0x14, D_800703FC.unk94, 0);
         func_8002E040(r, 0x14, 1, l);
-        func_8002ECA0(l, &view);
-        func_8002D9B4(NULL, 0x13, 1);
+        menuList_getView(l, &view);
+        win_setClip(NULL, 0x13, 1);
         for (i = 0; i < view.unk0; i++) {
             func_801F2F3C(0, i, view.unk1 + i, &view);
         }
         if (l->unk8 & 4) {
             func_8002F40C(l, r, &sub);
-            func_8002D9B4(&sub, 0x13, 1);
+            win_setClip(&sub, 0x13, 1);
             func_801F2ED4();
         }
         if (wd->unkC == 0) {
-            func_8002D9B4(r, 0x13, 1);
+            win_setClip(r, 0x13, 1);
         }
     }
 }
@@ -1314,7 +1314,7 @@ void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
     for (i = 0, y = r->y + 0x44; i < 4; y += 0xC, i++) {
         func_801F3344(r->x + 8, y, 0x1D, D_801F8930[i], 0);
         text_formatNumber(cur->unk8[i], buf, 2, 1);
-        func_8002B56C(r->x + 0x4A, y, 0x1D, buf, 0);
+        ui_drawSmallDigits(r->x + 0x4A, y, 0x1D, buf, 0);
         if (new != NULL) {
             diff = cur->unk8[i] != new->unk8[i];
             if (new->unk8[i] >= cur->unk8[i]) {
@@ -1327,14 +1327,14 @@ void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
                 col = 3;
             }
             text_formatNumber(new->unk8[i], buf, 2, 1);
-            func_8002B56C(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
-            func_8002B56C(r->x + 0x6D, y, 0x1D, buf, col);
+            ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
+            ui_drawSmallDigits(r->x + 0x6D, y, 0x1D, buf, col);
         }
     }
     for (i = 0, y = r->y + 0x78; i < 5; y += 0xC, i++) {
         func_801F3344(r->x + 8, y, 0x1D, D_801F8934[i], 0);
         text_formatNumber(cur->unkC[i], buf, 3, 1);
-        func_8002B56C(r->x + 0x43, y, 0x1D, buf, 0);
+        ui_drawSmallDigits(r->x + 0x43, y, 0x1D, buf, 0);
         if (new != NULL) {
             diff = cur->unkC[i] != new->unkC[i];
             if (new->unkC[i] >= cur->unkC[i]) {
@@ -1347,8 +1347,8 @@ void func_801F20A0(Unk80032E84Out *cur, Unk80032E84Out *new) {
                 col = 3;
             }
             text_formatNumber(new->unkC[i], buf, 3, 1);
-            func_8002B56C(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
-            func_8002B56C(r->x + 0x66, y, 0x1D, buf, col);
+            ui_drawSmallDigits(r->x + 0x5C, y, 0x1D, D_801F892C, (diff && blink) ? 0 : 2);
+            ui_drawSmallDigits(r->x + 0x66, y, 0x1D, buf, col);
         }
     }
 }
@@ -1526,7 +1526,7 @@ void func_801F2AB4(void) {
         D_80077DE8.unk8 = buf;
         func_8002BE44(0, D_801F8988);
         func_8002BD54(D_80077DE8.unk8, text_get(D_801FC840.unk0 + 3));
-        func_8002AD38(D_80077DE8.unk8, text_get(7));
+        text_append(D_80077DE8.unk8, text_get(7));
     } else if (D_801FC840.unk1 == 2) {
         id = c->equip[D_801FC840.unk2];
         if (id == 0xFF) {
@@ -1613,7 +1613,7 @@ void func_801F2E34(void) {
     func_8002DEE4(r, 0x1E, 2);
     func_8002705C(r, 0x1E, 2);
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(r->x + D_801F7430[i], r->y + 6, 0x1D, text_get(i), 0);
+        text_drawBlock(r->x + D_801F7430[i], r->y + 6, 0x1D, text_get(i), 0);
     }
 }
 
@@ -1638,10 +1638,10 @@ void func_801F2F3C(s32 col, s32 row, s32 i, MenuView *v) {
     x = D_801FC840.unk23C.unk4.x;
     w = &D_801FC840.unk23C;
     y = w->unk4.y + row * 0xF + v->unk2;
-    func_80026C34(x + 0xB, y, 0x13, p->unk0, 1);
-    func_8002B5FC(x + 0x1B, y, 0x13, D_8006A218 + D_80069018[p->unk0].unk0, 0);
+    ui_drawItemIcon(x + 0xB, y, 0x13, p->unk0, 1);
+    text_drawBlock(x + 0x1B, y, 0x13, D_8006A218 + D_80069018[p->unk0].unk0, 0);
     text_formatNumber(p->unk1, buf, 2, 1);
-    func_8002B56C(x + 0x8A, y + 4, 0x13, buf, 0);
+    ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, buf, 0);
 }
 
 void func_801F301C(void) {
@@ -1745,7 +1745,7 @@ void func_801F32E0(Character *c) {
 }
 
 void func_801F3344(s32 x, s32 y, s32 z, u8 id, s32 color) {
-    func_8002B5FC(x, y - 4, z, text_get(id), color);
+    text_drawBlock(x, y - 4, z, text_get(id), color);
 }
 
 INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/ovl_33", D_801EDF00);

@@ -189,7 +189,7 @@ void func_801EF890(void) {
 void func_801EFB98(void) {
     RECT *r = &D_801F7A78.unkAC[0].unk4;
     s32 x, y;
-    func_8002B524(r->x + 6, r->y - 3, 0xB, D_80070460, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070460, 0);
     func_8002DEE4(r, 0xB, 1);
     func_8002705C(r, 0xC, 1);
     x = r->x;
@@ -224,21 +224,21 @@ void func_801EFC68(void) {
                 func_801F2264(r->x + 0x24, r->y + 0x12, 0xB, &D_801F7A78.unk258[i]);
                 D_801F7A78.unk374 = func_8002920C(r->x + 0x29, r->y + 4, g_ot + 0xB, c->unk0, col, D_801F7A78.unk374);
                 text_formatNumber(c->level, buf, 2, 1);
-                func_800275DC(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
+                ui_drawSprite(r->x + 0x72, r->y + 7, 0xB, 0xB4, dim);
                 p = buf;
                 D_801F7A78.unk374 = func_8002B644(r->x + 0x84, r->y + 5, g_ot + 0xB, p, col, D_801F7A78.unk374);
                 func_80026FC4(r->x + 0x28, r->y + 0x13, 0xB, c->unk38, dim);
-                func_8002B5FC(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
+                text_drawBlock(r->x + 0x29, r->y + 0x1C, 0xB, text_get(0), col);
                 text_formatNumber(c->exp, p, 7, 1);
-                func_8002B56C(r->x + 0x62, r->y + 0x20, 0xB, p, col);
+                ui_drawSmallDigits(r->x + 0x62, r->y + 0x20, 0xB, p, col);
                 if (c->level < 99) {
                     n = g_levelExp[c->level];
                 } else {
                     n = c->exp;
                 }
                 text_formatNumber(n - c->exp, buf, 6, 1);
-                func_8002B56C(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
-                func_8002B5FC(r->x + 0x29, r->y + 0x26, 0xB, text_get(0xC), col);
+                ui_drawSmallDigits(r->x + 0x69, r->y + 0x2A, 0xB, buf, col);
+                text_drawBlock(r->x + 0x29, r->y + 0x26, 0xB, text_get(0xC), col);
             }
             func_8002DEE4(r, 0xB, 0);
             func_8002705C(r, 0xC, 0);
@@ -677,7 +677,7 @@ void func_801F11B8(void) {
 void func_801F1228(void) {
     s32 x, y;
     RECT *r = &D_801F7A78.unkAC[1].unk4;
-    func_8002B524(r->x + 6, r->y - 3, 0xB, D_80070450, 0);
+    ui_drawLabel(r->x + 6, r->y - 3, 0xB, D_80070450, 0);
     func_8002DEE4(r, 0xB, 1);
     func_8002705C(r, 0xC, 1);
     x = r->x;
@@ -704,10 +704,10 @@ void func_801F1318(void) {
 
     for (i = 0; i < 4; i++) {
         if (D_801F7A78.unk14[i] != 0 && D_801F7A78.unk158[i].unk0 != NULL) {
-            func_8002DD00(D_801F7A78.unk158[i].unk0);
+            win_close(D_801F7A78.unk158[i].unk0);
         }
         if (D_801F7A78.unk18[i] != 0 && D_801F7A78.unk1D8[i].unk0 != NULL) {
-            func_8002DD00(D_801F7A78.unk1D8[i].unk0);
+            win_close(D_801F7A78.unk1D8[i].unk0);
         }
     }
 }
@@ -847,15 +847,15 @@ void func_801F1848(void) {
                         w->unk0 = func_8002DC54(rr, 6, 2);
                         w->unk0->unk50 = i;
                         func_8002E304(w->unk0, (s32)D_801F5228);
-                        func_8002E2EC(w->unk0, func_801F1D94);
-                        func_8002E2FC(w->unk0, func_801F2248);
-                        func_8002CF20(w->unk0, 0);
+                        win_setDrawContent(w->unk0, func_801F1D94);
+                        win_setOnClosed(w->unk0, func_801F2248);
+                        win_setOpenAnim(w->unk0, 0);
                         snd_playSe(0x413);
                         w->unk4--;
                     }
                 } else if (++w->unk1C >= 0x40) {
                     func_8002D1AC(w->unk0, 0);
-                    func_8002DD00(w->unk0);
+                    win_close(w->unk0);
                     w->unk8 = 4;
                     w->unk1C = 0;
                     w->unk6++;
@@ -961,7 +961,7 @@ void func_801F1D94(Window *w) {
     id = s->unkA[s->unk6];
     if (id < 0xC0) {
         name = D_801F494C + D_801F3D4C[id].unkE;
-        func_800275DC(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
+        ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
         name = D_801F4F94 + D_8006D128[id - 0xC0].unk2;
         if (func_80034A04(g_gameState->unk1C->party[slot]->unk88, id)) {
@@ -969,9 +969,9 @@ void func_801F1D94(Window *w) {
         } else {
             icon = 0xF4;
         }
-        func_800275DC(w->unk0 + 6, w->unk2 + 7, w->unk18, icon, 0);
+        ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, icon, 0);
     }
-    func_8002B5FC(v->unk0 + 0x16, v->unk2 + 6, w->unk18, name, 0);
+    text_drawBlock(v->unk0 + 0x16, v->unk2 + 6, w->unk18, name, 0);
     setlen(g_primPtr, 3);
     t = (TileWords *)g_primPtr;
     t->rgbc = 0x62101010;
@@ -1358,9 +1358,9 @@ u8 func_801F2E58(void) {
         rr.w = ts.w + 0x10;
         rr.h = ts.h + 0xF;
         ws->unk0 = func_8002DC54(&rr, 6, 2);
-        func_8002E2EC(ws->unk0, func_801F3434);
-        func_8002E2FC(ws->unk0, (void (*)(Window *))func_801F347C);
-        func_8002CF20(ws->unk0, 0);
+        win_setDrawContent(ws->unk0, func_801F3434);
+        win_setOnClosed(ws->unk0, (void (*)(Window *))func_801F347C);
+        win_setOpenAnim(ws->unk0, 0);
         func_8002E31C(ws->unk0, 1);
         func_8002E304(ws->unk0, D_800704C8);
     }
@@ -1389,20 +1389,20 @@ void func_801F2FE8(Window *w) {
         y = i * 15 + 7;
         y2 = i * 15 + 10;
         text_formatNumber(rw->unk10[i][1], D_801F8238, 2, 1);
-        func_80026C34(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->unk10[i][0], 1);
-        func_8002B5FC(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
-        func_8002B56C(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, D_801F8238, 0);
+        ui_drawItemIcon(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->unk10[i][0], 1);
+        text_drawBlock(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
+        ui_drawSmallDigits(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, D_801F8238, 0);
     }
     if (rw->unkC == 0) {
         s = text_get(9);
-        func_8002B5FC(r->unk0 + ((r->unk4 - (text_getInfo(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
+        text_drawBlock(r->unk0 + ((r->unk4 - (text_getInfo(9) & 0xFFF)) >> 1), r->unk2 - (k1 = off - 0x28), w->unk18, s, 0);
     }
     if (rw->unk8 != 0xFF) {
         k = off - 0x66;
         func_80027710(r->unk0 + 8, r->unk2 - k, w->unk18, &D_801F526C, 0);
         func_8002BD54(D_801F8238, (u8 *)func_8006276C(rw->unk8));
-        func_8002AD38(D_801F8238, text_get(0xB));
-        func_8002B5FC(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
+        text_append(D_801F8238, text_get(0xB));
+        text_drawBlock(r->unk0 + 0x16, r->unk2 - k, w->unk18, D_801F8238, 0);
     }
     func_800269F4(r->unk0 + 2, r->unk2 - (k3 = off - 0x61), w->unk18, r->unk4 - 5);
 }
@@ -1426,7 +1426,7 @@ u8 func_801F3264(void) {
         }
     } else {
         func_8002D1AC(D_801F7A78.unk348.unk0, 0);
-        func_8002DD00(D_801F7A78.unk348.unk0);
+        win_close(D_801F7A78.unk348.unk0);
         ret = 1;
     }
     if (ret) {
@@ -1439,8 +1439,8 @@ u8 func_801F3264(void) {
 
 void func_801F332C(void) {
     D_801F7A78.unk368 = func_8002DC54(&D_801F5264, 0xE, 1);
-    func_8002E2EC(D_801F7A78.unk368, func_801F2FE8);
-    func_8002E2F4(D_801F7A78.unk368, func_801F33A0);
+    win_setDrawContent(D_801F7A78.unk368, func_801F2FE8);
+    win_setDrawOverlay(D_801F7A78.unk368, func_801F33A0);
     func_8002E31C(D_801F7A78.unk368, 1);
     func_8002E334(D_801F7A78.unk368, 0x10);
 }
@@ -1449,12 +1449,12 @@ void func_801F33A0(Window *w) {
     s32 n = func_8002AE7C((u8 *)D_800703FC.unk94);
     s32 k = 0x97;
 
-    func_8002B524(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, D_800703FC.unk68, 0);
-    func_8002B524(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, D_800703FC.unk94, 0);
+    ui_drawLabel(w->unk0 + 8, w->unk2 - 3, w->unk18 - 1, D_800703FC.unk68, 0);
+    ui_drawLabel(w->unk0 - (n - k), w->unk2 - 3, w->unk18 - 1, D_800703FC.unk94, 0);
 }
 
 void func_801F3434(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, text_get(0xA), 0);
+    text_drawBlock(arg0->unk0 + 8, arg0->unk2 + 8, arg0->unk18, text_get(0xA), 0);
 }
 
 void func_801F347C(void) {

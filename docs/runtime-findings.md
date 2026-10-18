@@ -339,160 +339,160 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   words with `jr ra; nop`, runs 8 frames and screenshots. What disappears from the screen is what the function draws.
   Only meaningful for void functions; stubbing a value-returning one (marked below) shows what its result controls.
 
-## func_800E9A74 → btlui_vsync  (status: proposed)
+## func_800E9A74 → btlui_vsync  (status: applied)
 - binary: ovl_0b; `void (void)`. Installed with `VSyncCallback(func_800E9A74)` by func_800E9D30; coverage: called
   1500x in 1500 frames from func_80016620+0x48 (the libetc vsync handler), while the battle logic runs 375x.
   Calls the UI pad read, frame begin, all window/HUD drawing and the UI OT submit (below).
 - confidence: high.
 
-## func_800E9D30 → btlui_init  (status: proposed)
+## func_800E9D30 → btlui_init  (status: applied)
 - ovl_0b `void (void)`: initialises the UI blocks (func_800EB05C, func_800F3C08, func_800F4884), sets
   D_80104E68.unk6 and installs btlui_vsync. Called from btl_main when Battle.unkD85 & 7 == 7. confidence: medium (code).
 
-## func_800F4778 → btlui_readPad  (status: proposed)
+## func_800F4778 → btlui_readPad  (status: applied)
 - ovl_0b `void (void)`: pad_update() then func_8002C308, and Start (g_padRepeat & 8) sets D_80104E68.unkB.
   Runtime: called from btlui_vsync+0x34 every vsync; Start at `disc3_malboro_lv99_calm` shows the PAUSE screen.
   This is where the battle menu reads the pad (R16). confidence: high.
 
-## func_800F4D40 → btlui_beginFrame  (status: proposed)
+## func_800F4D40 → btlui_beginFrame  (status: applied)
 - ovl_0b: flips D_801051E0, gfx_selectBuffer(D_801051E0), clears the UI OT (func_800F4D80(g_ot, 0x18)); every vsync
   from btlui_vsync. confidence: medium (code + call order).
 
-## func_800F4A00 → btlui_submitOt  (status: proposed)
+## func_800F4A00 → btlui_submitOt  (status: applied)
 - ovl_0b: links draw-mode/area/offset packets into g_ot[0x17]/[1] and pushes the UI OT with BreakDraw/ContinueDraw.
   Ablation at `disc3_malboro_lv99_calm`: the whole HUD (command window and party panel) disappears.
   confidence: high.
 
-## func_800EA440 → btlui_drawWindows  (status: proposed)
+## func_800EA440 → btlui_drawWindows  (status: applied)
 - ovl_0b: when D_80104E68.unk8 == 0 calls btlui_drawHelpWindow, btlui_drawPartyPanel, win_drawAll, func_800EA518,
   then btlui_drawTargetCursors. Ablation: command window and party panel both vanish. confidence: high.
 
-## func_800F3060 → btlui_drawPartyPanel  (status: proposed)
+## func_800F3060 → btlui_drawPartyPanel  (status: applied)
 - ovl_0b: draws the NAME/HP/MP/ATB panel: highlight, header, then per row btlui_updatePanelRowColor and the four
   column callbacks D_800F9038[] (name, HP, MP, gauges). Ablation: the whole party panel disappears, nothing else.
   D_80105078 is the panel state (unk5C = row count, unk68[] = units, unk60 = y). confidence: high.
 
-## func_800F3390 → btlui_drawPanelHeader  (status: proposed)
+## func_800F3390 → btlui_drawPanelHeader  (status: applied)
 - ovl_0b: the header rule (func_80025A28) and column titles (ui_drawLabel). Ablation: the "NAME HP MP ATB" bar
   goes, rows stay. confidence: high.
 
-## func_800F34C0 → btlui_drawPanelHighlight  (status: proposed)
+## func_800F34C0 → btlui_drawPanelHighlight  (status: applied)
 - ovl_0b: POLY_G4 bar at row D_80105078->unk2 (the unit whose menu is open). Ablation: the yellow bar behind
   "Zidane" goes. confidence: high.
 
-## func_800F35C8 → btlui_drawPanelName  (status: proposed)
+## func_800F35C8 → btlui_drawPanelName  (status: applied)
 - ovl_0b `(s32, u32 row)`: the name SPRT of a row (clut from the row color). Ablation: the four names go. high.
 
-## func_800F36F8 → btlui_drawPanelGauges  (status: proposed)
+## func_800F36F8 → btlui_drawPanelGauges  (status: applied)
 - ovl_0b `(BtlUnit *, s32 row)`: both gauge bars of a row via ui_drawGauge. Ablation: the ATB (cyan) and trance
   (red) bars go, the numbers stay. confidence: high.
 
-## func_800F41B8 → btlui_drawPanelHp, func_800F422C → btlui_drawPanelMp  (status: proposed)
+## func_800F41B8 → btlui_drawPanelHp, func_800F422C → btlui_drawPanelMp  (status: applied)
 - ovl_0b `(BtlUnit *, s32 row)`: text_formatNumber(hp, buf, 4, 1) + ui_drawDigits at x 0xD0 (HP); F422C the MP
   column. Ablation: only the HP column (41B8) / only the MP column (422C) disappears. confidence: high.
 
-## func_800F4060 → btlui_updatePanelRowColor  (status: proposed)
+## func_800F4060 → btlui_updatePanelRowColor  (status: applied)
 - ovl_0b `(s32 row)`: D_80105078->unk78[row] = 3 when hp is 0, 4 when hp <= maxHp/6, else 0 (color of the row's
   name and numbers). Runtime at `_calm`: Vivi's hp written to 100 and Dagger's to 0: D_80105078->unk78 (0x800999B4) becomes
   00 04 03 00 and the panel shows Vivi's row yellow, Dagger's red. The shown HP rolls down towards the new value
   (8419, 8429 after 12 frames): btlui_drawPanelHp prints the unit's menu entry unkB4->unk0[0].unk2, a display
   counter, not BtlUnit.hp. confidence: high.
 
-## func_800EC628 → btlui_drawCmdList, func_800EC730 → btlui_drawCmdOverlay  (status: proposed)
+## func_800EC628 → btlui_drawCmdList, func_800EC730 → btlui_drawCmdOverlay  (status: applied)
 - ovl_0b `(Window *)`: the command window's content and overlay callbacks (set with win_setDrawContent /
   win_setDrawOverlay by the code at ovl_0b_2.c:9926). Ablation: EC628 removes the four command names (frame stays);
   EC730 removes the hand cursor and the "COMMAND" title. confidence: high.
 
-## func_800EB1CC → btlui_updateMenu, func_800EB114 → btlui_menuInput  (status: proposed)
+## func_800EB1CC → btlui_updateMenu, func_800EB114 → btlui_menuInput  (status: applied)
 - ovl_0b `void (void)`: EB1CC runs the per-menuState update D_800F8DA8[g_btlUi->menuState]; EB114 picks the next
   ready unit when menuState is 0 and otherwise dispatches input through D_800F8D94[menuState]. Coverage: both every
   vsync; during target selection EB114 calls func_800F11FC each frame (trace, `disc3_malboro_lv99_target`).
   confidence: medium.
 
-## func_800EB2BC → btlui_setMenuState  (status: proposed)
+## func_800EB2BC → btlui_setMenuState  (status: applied)
 - ovl_0b `s32 (s32 state)`: stores g_btlUi->menuState unless state is 5, returns the old value. Runtime
   (`disc3_malboro_lv99_calm`, Steal): called with 3 from func_800EF80C (command chosen -> target select), 4 from
   func_800F0444 (target confirmed) and func_800EC4EC, 1 from func_800EDC3C (next unit's menu). confidence: high.
 
-## func_800F11FC → btlui_targetInput  (status: proposed)
+## func_800F11FC → btlui_targetInput  (status: applied)
 - ovl_0b: target-selection input: Circle cancels (func_800F07F0), Cross confirms (func_800F0444), L1/R1 toggles
   single/all (func_800EFF14), L2 toggles GameState.unk24 bit 19, otherwise d-pad (func_800F1554). Runtime at
   `disc3_malboro_lv99_target`: called every vsync from btlui_menuInput; L2 sets 0x80000 in GameState+0x24 and opens
   the ENEMY / PLAYER name window. confidence: high.
 
-## func_800F0444 → btlui_confirmTarget, func_800F07F0 → btlui_cancelTarget  (status: proposed)
+## func_800F0444 → btlui_confirmTarget, func_800F07F0 → btlui_cancelTarget  (status: applied)
 - ovl_0b: F0444 is the caller of btl_setCmd when the Attack target is confirmed (ra func_800F0444+0x78, both
   campaigns) and sets menuState 4. F07F0 is what Circle and an unusable command fall back to. confidence: high / medium.
 
-## func_800F1554 → btlui_targetMove  (status: proposed)
+## func_800F1554 → btlui_targetMove  (status: applied)
 - ovl_0b: d-pad handler table D_800F8E94[] indexed by D_800F8EA4[mode][i] button masks. confidence: medium (code).
 
-## func_800F0904 → btlui_updateTargetWindow  (status: proposed)
+## func_800F0904 → btlui_updateTargetWindow  (status: applied)
 - ovl_0b: opens (win_open(&D_800F8EF4, 5, 2, 0) with callbacks F1A8C/F0A54/F0BE0) or closes the ENEMY/PLAYER target
   name window when the GameState.unk24 bit 19 option differs from its state. Runtime: L2 in target select shows that
   window. confidence: high.
 
-## func_800F0118 → btlui_isCmdUsable  (status: proposed)
+## func_800F0118 → btlui_isCmdUsable  (status: applied)
 - ovl_0b `s32 (void)`: 0 when the selected command can't be used any more (trance ended for a trance command, MP
   below the cost (halved under D_80104FF0.unkD), silenced for a magic ability, item count minus reserved <= 0).
   Runtime: stubbed (returns garbage) at `disc3_malboro_lv99_target`, the target hand disappears because func_800F1300
   then cancels selection. confidence: high.
 
-## func_800F0DF8 → btlui_drawTargetCursors  (status: proposed)
+## func_800F0DF8 → btlui_drawTargetCursors  (status: applied)
 - ovl_0b: one 24x14 hand SPRT per entry of D_80105020 (dimmed when several blink). Ablation at `_target`: the hand
   on the Malboro disappears. D_80105020 = target cursor list. confidence: high.
 
-## D_80104FF0 → g_btlTarget  (status: proposed)
+## D_80104FF0 → g_btlTarget  (status: applied)
 - ovl_0b: target-selection state (126 refs): unk1 command id, unk1A ability/item, unk20 caster, unk6 multi-target,
   unkC target-window open. Read by btlui_isCmdUsable/func_800F028C/btlui_updateTargetWindow while `_target` runs.
   confidence: medium (name only; fields open).
 
-## func_800EEA98 → btlui_getAbilityState  (status: proposed)
+## func_800EEA98 → btlui_getAbilityState  (status: applied)
 - ovl_0b `s32 (s32 ability)`: 0 = not learned (row hidden), 1 = greyed (silenced magic or MP above the caster's),
   2 = usable. Runtime at `disc3_malboro_lv99_ablist` (Vivi shows Fire 6, Fira 12 and two blank rows): stubbed, all
   four rows show, greyed: Fire, Fira, Firaga 24, Sleep 10. Called 4x per vsync (one per visible row). confidence: high.
 
-## func_800EF0D8 → btlui_drawAbilityRow, func_800EF228 → btlui_drawItemRow  (status: proposed)
+## func_800EF0D8 → btlui_drawAbilityRow, func_800EF228 → btlui_drawItemRow  (status: applied)
 - ovl_0b `(s32, s32 row, s32 index, MenuView *)`: row callbacks of the list window (via D_800F8E48[] in
   func_800EF094). Ablation: ability names/costs vanish (`_ablist`); item icons, names and counts vanish (`_itemlist`).
   confidence: high.
 
-## func_800EF598 → btl_getMpCost  (status: proposed)
+## func_800EF598 → btl_getMpCost  (status: applied)
 - ovl_0b `s32 (Ability *)`: mpCost, x4 for abilities with unkB & 4 while D_8007AF02 is set, halved while
   D_80104FE8. Used for the list's cost column and usability. confidence: medium (code; the list shows the plain costs).
 
-## func_800EEED4 → btlui_drawListContent, func_800EEBB8 → btlui_drawListOverlay  (status: proposed)
+## func_800EEED4 → btlui_drawListContent, func_800EEBB8 → btlui_drawListOverlay  (status: applied)
 - ovl_0b `(Window *)`: content/overlay callbacks of the ability/item list window. Ablation at `_ablist`: EEED4
   removes the rows, EEBB8 removes the hand cursor. confidence: high.
 
-## func_800EE54C → btlui_listInput  (status: proposed)
+## func_800EE54C → btlui_listInput  (status: applied)
 - ovl_0b: list input: Circle closes, Cross picks (func_800EEE3C), else menuList_up/down/pageUp/pageDown. Coverage:
   only in the ability and item list states. confidence: high.
 
-## func_800EC194 → btlui_getItemReserved, func_800EC114 → btlui_getItemListEntry  (status: proposed)
+## func_800EC194 → btlui_getItemReserved, func_800EC114 → btlui_getItemListEntry  (status: applied)
 - ovl_0b: D_80104FA8->unk1E0[id] (items already queued by other party members), D_80104FA8->unk4[i]. Runtime at
   `_itemlist`: stubbing EC194 (garbage return) changes every shown count (99 -> 15, 95 -> 09, ...), the count is
   inventory minus this. confidence: high.
 
-## func_800EBA20 → btlui_drawHelpWindow, func_800EBD88 → btlui_updateHelpText, func_800EBE1C → btlui_getHelpRect  (status: proposed)
+## func_800EBA20 → btlui_drawHelpWindow, func_800EBD88 → btlui_updateHelpText, func_800EBE1C → btlui_getHelpRect  (status: applied)
 - ovl_0b: the Select help window (D_80104F90 = its state). Ablation at `disc3_malboro_lv99_help`: EBE1C (rect) makes
   the whole window vanish; EBD88 picks the text through D_800F8DC4[menuState]. confidence: high (EBA20 by call
   structure, EBE1C ablation).
 
-## func_800EDB88 → btlui_getCmdHelpText  (status: proposed)
+## func_800EDB88 → btlui_getCmdHelpText  (status: applied)
 - ovl_0b `u8 *(void)`: copies the selected command's description and appends text 0x19 (the "Change / Defend / Skip"
   key line) into D_80104FA0. Ablation (garbage return): the help window shows garbage glyphs. confidence: high.
 
-## func_800CD5C8 → btl_showMessage  (status: proposed)
+## func_800CD5C8 → btl_showMessage  (status: applied)
 - ovl_0b `void (u32 id, ...)`: formats battle text id+8 from D_800F6CB4, substituting varargs (item names, numbers),
   and passes it to func_800F4F04 (the top message banner). Runtime (`_calm`, Steal): func_800CD5C8(0xC, item name)
   from func_800B7F20+0x78 and the banner shows "Stole Ore!". 31 refs. confidence: high.
 
-## func_800C09A4 → btl_hasStatus  (status: proposed)
+## func_800C09A4 → btl_hasStatus  (status: applied)
 - ovl_0b `s32 (BtlUnit *, u32 mask)`: 1 when unk38 or status has any bit of mask. Called 720x/60 frames by the UI
   (e.g. btlui_drawCmdOverlay tests 0x4000 = trance for the title). 40 refs. confidence: high (code).
 
-## Window system (main exe), seen through the battle HUD  (status: proposed)
+## Window system (main exe), seen through the battle HUD  (status: applied)
 - binary: main. D_80077530 = the 10 `Window` slots (0x54 each). All evidence below is ablation at
   `disc3_malboro_lv99_calm` (or the state named) plus the call structure; these are shared by field and menus.
 - func_8002C9B0 → win_drawAll (`void`): for each live window: overlay callback (unk44), content callback (unk40,
@@ -528,7 +528,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   (func_800274CC → win_drawHelpFill, a semi-transparent TILE 0x78B0A8). Ablation at `_help`: DF18 removes the help
   window's frame and fill; 274CC leaves only the border. high.
 
-## Sprite / text drawing (main exe)  (status: proposed)
+## Sprite / text drawing (main exe)  (status: applied)
 - func_800275DC → ui_drawSprite (`s32 (x, y, otz, id, flag)`, sprite table D_800686D0) and func_800270EC →
   ui_drawHand (`(x, y, otz)`, sprite 1). Ablation: 270EC removes only the command window's hand; 275DC removes the hand
   and the scroll arrows. high.
@@ -545,7 +545,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_8002AD38 → text_append (`u8 *(u8 *dst, u8 *src)`): appends src after dst's 0xFF terminator (skipping
   multi-byte codes). Ablation at `_help`: the "Change Defend Skip" key line is missing. high.
 
-## Battle flow (ovl_0b)  (status: proposed)
+## Battle flow (ovl_0b)  (status: applied)
 - func_800A8600 → btl_main (`void (s32)`): battle mode loop: btl_beginFrame, CD/UI checks, btl_update, btlui_init
   once (Battle.unkD85 & 7 == 7), func_80023A4C / func_80032098 / preload_update, btl_endFrame, until GameState.unk0 &
   0x301; then func_800A94F8 (cleanup, coverage: only at the end of the victory run). Never hit by coverage started
@@ -598,7 +598,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   unkBC. Coverage: 15 calls in 60 frames only while the target hand is shown (and during actions). medium.
 - func_800BCAA4 → btl_startHitMotion: hit-reaction motion, unk68 |= 0x20000; from btl_damageHp. medium (code).
 
-## Damage numbers / popups  (status: proposed)
+## Damage numbers / popups  (status: applied)
 - func_800CC044 → btl_spawnPopups (`(BtlUnit *)`): from the unit's unk7E flags and unk80/unk82 (hp/mp change) starts
   popups: kind 0 HP number (func_800CC31C → btl_popupHp, 0xC0 = heal color), kind 1 MP (func_800CC37C → btl_popupMp),
   kind 2 text (func_800CC3E0 → btl_popupText: Miss/Guard/Critical, D_800F6A54), then clears unk80/unk82.
@@ -609,10 +609,10 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   Malboro): the number disappears. high.
 - func_800CE1B4 → btlbg_draw: ablation at `disc3_malboro_dmgnum`: the whole battle background goes black (units,
   number stay). It is btlbg_drawRecord's caller. high.
-- D_800F78A4 → g_btlfxEnv (proposed): effect environment (unk0 effect header, unkC BtlUnitList, unk14 camera matrix,
+- D_800F78A4 → g_btlfxEnv (applied): effect environment (unk0 effect header, unkC BtlUnitList, unk14 camera matrix,
   unk18/1C disp/draw env, unk20 OT, unk24 next primitive), 285 refs. medium (code, name only).
 
-## ATB, per-unit status ticks, command execution  (status: proposed)
+## ATB, per-unit status ticks, command execution  (status: applied)
 - func_800EAAFC → btl_updateAtb: every vsync (from btlui_updateMenu); for each live unit atb += speed (BtlUnit28.unk6)
   up to maxAtb; a full player opens its menu (func_800EB358) or auto-acts under Berserk/Confuse (func_800B3B5C), a
   full enemy runs its AI script 0x2F (func_8004AB7C). Runtime: write watch on Zidane's atb (0x80108F28) after his
@@ -635,7 +635,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_800B05C0 → btl_drawScene: camera (func_800CA7CC), btlbg_draw, effects (func_800E3EEC), btl_drawPopups,
   func_800F4E70. high (call structure + the ablations of its callees).
 
-## btl_calcCmd formula steps  (status: proposed, code-derived; runtime = which runs execute them)
+## btl_calcCmd formula steps  (status: applied except btl_rollSummonLength? (low); code-derived; runtime = which runs execute them)
 - binary ovl_0b, all `(BtlCalc *)`. btl_calcCmd(caster, target, cmd, formula) switches on the ability's formula:
   runtime formula numbers: Attack 1, Osmose 0xF (Malboro), self-targeted Malboro reaction 0x40 (trace of
   btl_calcCmd's a3). BtlCalc fields as used: unkE base power, unk10 defence, unk12 evade %, unk14 multiplier,
@@ -682,7 +682,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   effects, btl_damageHp / btl_healHp / MP changes); every action run. high (it's the btl_damageHp caller of record).
 - confidence: medium for all of the step names (code); the coverage only places them in the right formula.
 
-## Ability-name banner  (status: proposed)
+## Ability-name banner  (status: applied)
 - State `disc3_malboro_fire_banner` (Vivi casting Fire, "Fire" banner at the top).
 - func_800F4E70 → btl_drawBanner (`u8 *(u8 *prim)`): while D_801051F0.unk8C is set draws the banner and counts
   unk80 up to unk84 (duration), then clears it. Ablation: the banner disappears. Called by btl_drawScene. high.
@@ -692,7 +692,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   one. Runtime: btl_showMessage passes the formatted "Stole Ore!" text to it with priority 1. high.
 - D_801051F0 → g_btlBanner (text at +0, unk80 timer, unk84 duration, unk8C active, unk90 priority). medium.
 
-## Effect-script unit motion helpers  (status: proposed)
+## Effect-script unit motion helpers  (status: applied)
 - ovl_0b, unit index argument (btl_getUnit; 0xFF = 0 in D8A64). Runtime: at `disc3_malboro_fire_banner` (Fire cast
   starting) func_800D85AC runs once from func_800E52B4, calling the other three; func_800D87D0 runs 4x.
 - func_800D8A64 → btlfx_isPartyUnit (`s32 (s32 unit)`): unk68 & 1. 22 refs.

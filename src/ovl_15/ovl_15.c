@@ -1213,36 +1213,36 @@ s32 func_800A9488(void) {
             func_800A9334(&dealer, ofsX[0], ofsY[0], -1);
             if (dealer.unk2 != 0 && D_800B0DF8 >= 5) {
                 sprintf(buf, D_800A7018, dealer.unk4);
-                func_8002B56C(10, dealer.unkA + 0x20, 0x10, buf, 0);
+                ui_drawSmallDigits(10, dealer.unkA + 0x20, 0x10, buf, 0);
             }
             if (nsplit == 2) {
                 func_800A9334(&split, ofsX[2], ofsY[2], -1);
                 if (split.unk2 != 0) {
                     sprintf(buf, D_800A7018, split.unk4);
-                    func_8002B56C(10, split.unkA + 0x20, 0x10, buf, 0);
+                    ui_drawSmallDigits(10, split.unkA + 0x20, 0x10, buf, 0);
                     if (split.unk4 != 21 && (split.unk0 & 1)) {
                         sprintf(buf, D_800A7018, split.unk6);
-                        func_8002B56C(10, split.unkA + 0x2A, 0x10, buf, 5);
+                        ui_drawSmallDigits(10, split.unkA + 0x2A, 0x10, buf, 5);
                     }
                 }
             }
             func_800A9334(&player, ofsX[1], ofsY[1], -1);
             if (player.unk2 != 0) {
                 sprintf(buf, D_800A7018, player.unk4);
-                func_8002B56C(10, player.unkA + 0x20, 0x10, buf, 0);
+                ui_drawSmallDigits(10, player.unkA + 0x20, 0x10, buf, 0);
                 if (player.unk4 != 21 && (player.unk0 & 1)) {
                     sprintf(buf, D_800A7018, player.unk6);
-                    func_8002B56C(10, player.unkA + 0x2A, 0x10, buf, 5);
+                    ui_drawSmallDigits(10, player.unkA + 0x2A, 0x10, buf, 5);
                 }
             }
             if (nsplit == 1) {
                 func_800A9334(&split, ofsX[2], ofsY[2], -1);
                 if (split.unk2 != 0) {
                     sprintf(buf, D_800A7018, split.unk4);
-                    func_8002B56C(10, split.unkA + 0x20, 0x10, buf, 0);
+                    ui_drawSmallDigits(10, split.unkA + 0x20, 0x10, buf, 0);
                     if (split.unk4 != 21 && (split.unk0 & 1)) {
                         sprintf(buf, D_800A7018, split.unk6);
-                        func_8002B56C(10, split.unkA + 0x2A, 0x10, buf, 5);
+                        ui_drawSmallDigits(10, split.unkA + 0x2A, 0x10, buf, 5);
                     }
                 }
             }
@@ -1250,21 +1250,21 @@ s32 func_800A9488(void) {
         func_800A8F00(0xF0, 0xA);
         addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 10, &D_800AE4E8);
         sprintf(buf, D_800A701C);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0x58, 0x10, buf, 4);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x58, 0x10, buf, 4);
         sprintf(buf, D_800A7028, D_800AE0E8);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0x64, 0x10, buf, 5);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x64, 0x10, buf, 5);
         sprintf(buf, D_800A702C);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0x70, 0x10, buf, 4);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x70, 0x10, buf, 4);
         sprintf(buf, D_800A7028, D_800B0F48);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0x7C, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x7C, 0x10, buf, 0);
         sprintf(buf, D_800A7034);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0x90, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x90, 0x10, buf, 0);
         sprintf(buf, D_800A703C);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0xA0, 0x10, buf, 0);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xA0, 0x10, buf, 0);
         sprintf(buf, D_800A7040);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0xB0, 0x10, buf, D_800B0F44 ? 0 : 2);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xB0, 0x10, buf, D_800B0F44 ? 0 : 2);
         sprintf(buf, D_800A7048);
-        func_8002B56C(0x10C - (func_8002B9B8(buf) >> 1), 0xC0, 0x10, buf, D_800B0F4C ? 0 : 2);
+        ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0xC0, 0x10, buf, D_800B0F4C ? 0 : 2);
         D_800739B0[0].unk0 = 0;
         if (cnt > 0) {
             cnt--;

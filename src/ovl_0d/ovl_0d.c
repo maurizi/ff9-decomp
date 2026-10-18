@@ -929,7 +929,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
             D_80077DE8.unk0 = x + 2;
             D_80077DE8.unk2 = y + 1;
             D_80077DE8.unk8 = text_get(0x21);
-            func_8002B5FC(0x12, 9, 0xFFA, text_get(0x1C), 0);
+            text_drawBlock(0x12, 9, 0xFFA, text_get(0x1C), 0);
             setlen(sp, 4);
             sp->code = 0x64;
             sp->x0 = 0x1F;
@@ -979,7 +979,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
                 r.h = 0x19;
                 k = s->unk564 * 0xC - 0x78;
                 r.x -= k;
-                func_8002B5FC(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->unk0), 0);
+                text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->unk0), 0);
                 func_8002DEE4(&r, 5, 2);
             }
             if (pad & 0x20000) {
@@ -1100,7 +1100,7 @@ void func_800AA1FC(TmState *s) {
                 r.y = 0x59;
                 r.h = 0x2B;
                 s->unk4B8 = func_8002DC54(&r, 5, 2);
-                func_8002E2EC(s->unk4B8, func_800AA3C0);
+                win_setDrawContent(s->unk4B8, func_800AA3C0);
                 func_8002E31C(s->unk4B8, 1);
                 func_800AB89C(s->unk4B8);
                 s->unk0 = 0x1A;
@@ -1114,13 +1114,13 @@ void func_800AA1FC(TmState *s) {
 
 void func_800AA368(TmState *arg0) {
     if (D_800B3CD0 == 0 && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
-        func_8002DD00(arg0->unk4B8);
+        win_close(arg0->unk4B8);
         arg0->unk0 = 4;
     }
 }
 
 void func_800AA3C0(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x19), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x19), 0);
 }
 
 void func_800AA408(TmState *arg0) {
@@ -1165,7 +1165,7 @@ void func_800AA548(TmState *s) {
     if (D_800B3CD0 == 0) {
         pad = g_padRepeat;
         if (pad & 0x20000) {
-            func_8002DD00(s->unk458);
+            win_close(s->unk458);
             if (s->unk4 == 0) {
                 if (func_800625F8() < 5) {
                     r.w = func_8002BA68(text_get(0x1A)) + 0x12;
@@ -1173,7 +1173,7 @@ void func_800AA548(TmState *s) {
                     r.y = 0x5B;
                     r.h = 0x2B;
                     s->unk4C4 = func_8002DC54(&r, 6, 2);
-                    func_8002E2EC(s->unk4C4, func_800AB0A8);
+                    win_setDrawContent(s->unk4C4, func_800AB0A8);
                     func_8002E31C(s->unk4C4, 1);
                     func_800AB89C(s->unk4C4);
                     s->unk0 = 0x19;
@@ -1212,12 +1212,12 @@ void func_800AA548(TmState *s) {
             D_80077DE8.unk0 = 0x7D;
             D_80077DE8.unk2 = 0x6B;
             D_80077DE8.unk8 = text_get(0x29);
-            func_800270EC(0x7D, 0x6B, 3);
+            ui_drawHand(0x7D, 0x6B, 3);
         } else {
             D_80077DE8.unk0 = 0x7D;
             D_80077DE8.unk2 = 0x7B;
             D_80077DE8.unk8 = text_get(0x28);
-            func_800270EC(0x7D, 0x7B, 3);
+            ui_drawHand(0x7D, 0x7B, 3);
         }
         func_800AB8F4(0x89);
     }
@@ -1232,7 +1232,7 @@ void func_800AA790(TmState *s) {
     TmCard *c;
     Unk6 *d;
 
-    func_800270EC(s->unk474 * 15 + 3, s->unk478 * 15 + 0x30, 3);
+    ui_drawHand(s->unk474 * 15 + 3, s->unk478 * 15 + 0x30, 3);
     if (s->unk0 == 0x12 || s->unk0 == 0x17) {
         D_80077DE8.unk0 = s->unk474 * 15 + 3;
         D_80077DE8.unk2 = s->unk478 * 15 + 0x30;
@@ -1305,7 +1305,7 @@ void func_800AA790(TmState *s) {
                 r.h = 0x38;
                 s->unk5B4 = 1;
                 s->unk484 = func_8002DC54(&r, 5, 2);
-                func_8002E2EC(s->unk484, func_800ABE74);
+                win_setDrawContent(s->unk484, func_800ABE74);
                 func_8002E31C(s->unk484, 1);
                 func_800AB89C(s->unk484);
                 s->unk0 = 0x23;
@@ -1354,7 +1354,7 @@ void func_800AA790(TmState *s) {
                     r.y = 0x53;
                     r.h = 0x3A;
                     s->unk458 = func_8002DC54(&r, 6, 2);
-                    func_8002E2EC(s->unk458, func_800AB060);
+                    win_setDrawContent(s->unk458, func_800AB060);
                     func_8002E31C(s->unk458, 1);
                     func_800AB89C(s->unk458);
                     s->unk4 = 0;
@@ -1370,7 +1370,7 @@ void func_800AA790(TmState *s) {
         r.y = 0x35;
         s->unk4 = 1;
         s->unk4B8 = func_8002DC54(&r, 5, 2);
-        func_8002E2EC(s->unk4B8, func_800AB52C);
+        win_setDrawContent(s->unk4B8, func_800AB52C);
         func_8002E31C(s->unk4B8, 1);
         func_800AB89C(s->unk4B8);
         func_800B01E8(1);
@@ -1394,7 +1394,7 @@ void func_800AAEB4(TmState *s) {
                 c = &s->unk10[4];
                 func_80062420(c->unk0, c->unk1, c->unk2, c->unk3, c->unk4, c->unk5);
             }
-            func_8002DD00(s->unk458);
+            win_close(s->unk458);
             func_800B01E8(1);
         }
         if ((pad & 0x10000) && s->unk4 != 1) {
@@ -1421,23 +1421,23 @@ void func_800AAEB4(TmState *s) {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x6C;
             D_80077DE8.unk8 = text_get(0x25);
-            func_800270EC(0x7B, 0x6C, 3);
+            ui_drawHand(0x7B, 0x6C, 3);
         } else {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x7B;
             D_80077DE8.unk8 = text_get(0x26);
-            func_800270EC(0x7B, 0x7B, 3);
+            ui_drawHand(0x7B, 0x7B, 3);
         }
         func_800AB8F4(0x8D);
     }
 }
 
 void func_800AB060(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(6), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(6), 0);
 }
 
 void func_800AB0A8(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x1A), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x1A), 0);
 }
 
 void func_800AB0F0(TmState *s) {
@@ -1483,7 +1483,7 @@ void func_800AB0F0(TmState *s) {
 
 void func_800AB2E0(TmState *arg0) {
     if (D_800B3CD0 == 0 && (g_padRepeat & (BTN_CROSS | BTN_SQUARE))) {
-        func_8002DD00(arg0->unk4B8);
+        win_close(arg0->unk4B8);
         arg0->unk0 = 0x17;
     }
 }
@@ -1506,7 +1506,7 @@ void func_800AB338(TmState *s) {
             } else {
                 s->unk0 = 0x17;
             }
-            func_8002DD00(s->unk4B8);
+            win_close(s->unk4B8);
             func_800B01E8(1);
         }
         if ((pad & 0x10000) && s->unk4 != 1) {
@@ -1533,22 +1533,22 @@ void func_800AB338(TmState *s) {
             D_80077DE8.unk0 = 0xBC;
             D_80077DE8.unk2 = 0x4D;
             D_80077DE8.unk8 = text_get(0x2A);
-            func_800270EC(0xBC, 0x4D, 3);
+            ui_drawHand(0xBC, 0x4D, 3);
         } else {
             D_80077DE8.unk0 = 0xBC;
             D_80077DE8.unk2 = 0x5C;
             D_80077DE8.unk8 = text_get(0x2B);
-            func_800270EC(0xBC, 0x5C, 3);
+            ui_drawHand(0xBC, 0x5C, 3);
         }
         func_800AB8F4(0xCE);
     }
     if (s->unk2E8 & 3) {
-        func_800270EC(s->unk474 * 15 + 3, s->unk478 * 15 + 0x30, 6);
+        ui_drawHand(s->unk474 * 15 + 3, s->unk478 * 15 + 0x30, 6);
     }
 }
 
 void func_800AB52C(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 0xA, arg0->unk2 + 6, arg0->unk18, text_get(0x18), 0);
+    text_drawBlock(arg0->unk0 + 0xA, arg0->unk2 + 6, arg0->unk18, text_get(0x18), 0);
 }
 
 void *func_800AB574(u32 *ot, void *p, TmState *s) {
@@ -1617,13 +1617,13 @@ void *func_800AB574(u32 *ot, void *p, TmState *s) {
 
 void func_800AB854(TmState *arg0) {
     if (g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) {
-        func_8002DD00(arg0->unk4C4);
+        win_close(arg0->unk4C4);
         func_800B35F8(arg0);
     }
 }
 
 void func_800AB89C(Window *arg0) {
-    func_8002E2E4(arg0, (void (*)(Window *))func_800AB8C8);
+    win_setOnOpened(arg0, (void (*)(Window *))func_800AB8C8);
     func_800AB8E8(1);
 }
 
@@ -1724,13 +1724,13 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     }
     text_formatNumber(n, num, -1, 0);
     func_8002BD54(buf, text_get(0x33));
-    func_8002AD38(buf, num);
-    func_8002AD38(buf, text_get(0x34));
+    text_append(buf, num);
+    text_append(buf, text_get(0x34));
     r2.w = func_8002BA68((s32)buf) + 0x10;
     r2.x = 0x52;
     r2.y = sel->unk10 - 9;
     r2.h = 0x19;
-    func_8002B5FC(0x5A, r2.y + 6, 3, buf, 0);
+    text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
     func_8002DEE4(&r2, 3, 2);
     return p;
 }
@@ -1777,19 +1777,19 @@ void func_800ABC74(TmState *s) {
             } else {
                 s->unk0 = 0x12;
             }
-            func_8002DD00(s->unk484);
+            win_close(s->unk484);
             func_800B01E8(1);
         }
         if (s->unk5B4 == 0) {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x6C;
             D_80077DE8.unk8 = text_get(0x2E);
-            func_800270EC(0x7B, 0x6C, 3);
+            ui_drawHand(0x7B, 0x6C, 3);
         } else {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x7B;
             D_80077DE8.unk8 = text_get(0x2F);
-            func_800270EC(0x7B, 0x7B, 3);
+            ui_drawHand(0x7B, 0x7B, 3);
         }
         func_800AB8F4(0x8D);
     } else {
@@ -1798,7 +1798,7 @@ void func_800ABC74(TmState *s) {
 }
 
 void func_800ABE74(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(0x2D), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(0x2D), 0);
 }
 
 void *func_800ABEBC(u32 *ot, void *p, TmState *s) {
@@ -2711,7 +2711,7 @@ void func_800ADE5C(TmState *s) {
             r.y = 0x5B;
             r.h = 0x2A;
             s->unk4B8 = func_8002DC54(&r, 5, 2);
-            func_8002E2EC(s->unk4B8, func_800ADFFC);
+            win_setDrawContent(s->unk4B8, func_800ADFFC);
             func_8002E31C(s->unk4B8, 1);
             func_800AB89C(s->unk4B8);
             func_800AF288(s);
@@ -2728,11 +2728,11 @@ void func_800ADE5C(TmState *s) {
 }
 
 void func_800ADFFC(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x16), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x16), 0);
 }
 
 void func_800AE044(Window *arg0) {
-    func_8002B5FC(0x82, 0x10, arg0->unk18, text_get(0x17), 0);
+    text_drawBlock(0x82, 0x10, arg0->unk18, text_get(0x17), 0);
 }
 
 void *func_800AE084(u32 *ot, void *p, TmState *s) {
@@ -2788,18 +2788,18 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
     D_800B3CD8 = id = c->unk0;
     func_8002BD54(buf, (u8 *)func_8006276C(id));
     if (D_800B3CE0 == 0) {
-        func_8002AD38(buf, text_get(3));
+        text_append(buf, text_get(3));
     } else {
-        func_8002AD38(buf, text_get(4));
+        text_append(buf, text_get(4));
     }
-    func_8002AD38(buf, text_get(7));
+    text_append(buf, text_get(7));
     w = func_8002BA68(buf) + 0x10;
     r.x = 0xA0 - w / 2;
     r.y = 0x96;
     r.w = w;
     r.h = 0x1A;
     s->unk458 = func_8002DC54(&r, 5, 2);
-    func_8002E2EC(s->unk458, func_800AE494);
+    win_setDrawContent(s->unk458, func_800AE494);
     func_8002E31C(s->unk458, 1);
     func_800AB89C(s->unk458);
     func_800B01E8(s->unk45C == 0 ? 4 : 0xC);
@@ -2851,9 +2851,9 @@ void func_800AE494(Window *w) {
     } else {
         func_8002BD54(buf, text_get(4));
     }
-    func_8002AD38(buf, (u8 *)func_8006276C(D_800B3CD8));
-    func_8002AD38(buf, text_get(7));
-    func_8002B5FC(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
+    text_append(buf, (u8 *)func_8006276C(D_800B3CD8));
+    text_append(buf, text_get(7));
+    text_drawBlock(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
 }
 
 void func_800AE54C(TmState *arg0) {
@@ -2863,7 +2863,7 @@ void func_800AE54C(TmState *arg0) {
     c->unk24 = c->unk10 << 8;
     arg0->unk2E8 = 0;
     arg0->unk0 = 0x11;
-    func_8002DD00(arg0->unk458);
+    win_close(arg0->unk458);
 }
 
 void *func_800AE5A0(u32 *ot, void *p, TmState *s) {
@@ -3213,8 +3213,8 @@ void func_800AEE2C(TmState *s) {
             text_formatNumber((s32)c0 + 1, buf, -1, 3);
             i = func_8002BA10(buf) + 0xE;
             w = i / 2;
-            func_8002B56C(0xD8 - w, 0x78, 0xFFA, D_800A7398, 0);
-            func_8002B5B4(0xE6 - w, 0x76, 0xFFA, buf, 0);
+            ui_drawSmallDigits(0xD8 - w, 0x78, 0xFFA, D_800A7398, 0);
+            ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, 0);
             m = n;
             k = s->unk4B4;
             c0 = &s->unk10[5];
@@ -3262,7 +3262,7 @@ void func_800AEE2C(TmState *s) {
                 }
             }
             i = func_80062794(func_800AF268(s));
-            func_8002B5FC(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(func_800AF268(s)), 0);
+            text_drawBlock(0xD9 - i / 2, 0xC7, 0xFFA, (u8 *)func_8006276C(func_800AF268(s)), 0);
         }
     } else {
         s->unk10[5].unk34 = 0;
@@ -4622,24 +4622,24 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
     AddPrim(ot + 11, p);
     p = (SPRT *)((DR_TPAGE *)p + 1);
 
-    func_8002B56C(0x19, 0xCB, 0xFFA, "Stock:", 7);
+    ui_drawSmallDigits(0x19, 0xCB, 0xFFA, "Stock:", 7);
     text_formatNumber(D_800B3CF0, buf, 3, 3);
-    func_8002B5B4(0x43, 0xC9, 0xFFA, buf, 0);
-    func_8002B56C(0x65, 0xCB, 0xFFA, "Type:", 7);
+    ui_drawDigits(0x43, 0xC9, 0xFFA, buf, 0);
+    ui_drawSmallDigits(0x65, 0xCB, 0xFFA, "Type:", 7);
     text_formatNumber(D_800B3CF4, buf, 3, 3);
-    func_8002B5B4(0x89, 0xC9, 0xFFA, buf, 0);
+    ui_drawDigits(0x89, 0xC9, 0xFFA, buf, 0);
 
     if ((u32)(s->unk0 - 0x12) < 2 || s->unk0 == 0x23 || s->unk0 == 0x1B) {
 
-        func_8002B56C(0xBC, 0x42, 0xFFA, "WIN", 7);
+        ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", 7);
         text_formatNumber(func_80062498(), buf, 4, 1);
-        func_8002B56C(0xDC, 0x42, 0xFFA, buf, 0);
-        func_8002B56C(0xBC, 0x4C, 0xFFA, "LOSE", 7);
+        ui_drawSmallDigits(0xDC, 0x42, 0xFFA, buf, 0);
+        ui_drawSmallDigits(0xBC, 0x4C, 0xFFA, "LOSE", 7);
         text_formatNumber(func_800624D8(), buf, 4, 1);
-        func_8002B56C(0xDC, 0x4C, 0xFFA, buf, 0);
-        func_8002B56C(0xBC, 0x56, 0xFFA, "DRAW", 7);
+        ui_drawSmallDigits(0xDC, 0x4C, 0xFFA, buf, 0);
+        ui_drawSmallDigits(0xBC, 0x56, 0xFFA, "DRAW", 7);
         text_formatNumber(func_8006251C(), buf, 4, 1);
-        func_8002B56C(0xDC, 0x56, 0xFFA, buf, 0);
+        ui_drawSmallDigits(0xDC, 0x56, 0xFFA, buf, 0);
 
         setlen(p, 3);
         ((SPRT_8 *)p)->code = 0x74;
@@ -4759,12 +4759,12 @@ void *func_800B1A84(u32 *ot, SPRT *p, TmState *s) {
     }
     if (s->unk47C != 5 && s->unk0 != 0x16 && func_80062560(func_800AF268(s)) >= 2) {
         text_formatNumber(s->unk4B4 + 1, buf, 3, 1);
-        func_8002B56C(0xBF, 0xBA, 0xFFA, buf, 0);
-        func_8002B56C(0xD4, 0xBA, 0xFFA, D_800A74A8, 0);
+        ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, 0);
+        ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, D_800A74A8, 0);
         text_formatNumber(func_80062560(func_800AF268(s)), buf, -1, 1);
-        func_8002B56C(0xDB, 0xBA, 0xFFA, buf, 0);
-        func_8002B5FC(0xB5, 0xB6, 0xFFA, text_get(0x1E), 0);
-        func_8002B5FC(0xF1, 0xB6, 0xFFA, text_get(0x1C), 0);
+        ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, 0);
+        text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(0x1E), 0);
+        text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(0x1C), 0);
     }
     if (s->unk47C == 0) {
         D_800B3CF4 = func_80062638();
@@ -4780,7 +4780,7 @@ void func_800B295C(TmState *arg0) {
 }
 
 void func_800B299C(Window *arg0) {
-    func_8002B5FC(0x8A, 0x10, arg0->unk18, text_get(0x13), 0);
+    text_drawBlock(0x8A, 0x10, arg0->unk18, text_get(0x13), 0);
 }
 
 void func_800B29DC(TmState *arg0) {
@@ -5083,7 +5083,7 @@ void func_800B3488(TmState *arg0) {
         r.y = 0x54;
         r.h = 0x39;
         arg0->unk458 = func_8002DC54(&r, 5, 2);
-        func_8002E2EC(arg0->unk458, func_800B355C);
+        win_setDrawContent(arg0->unk458, func_800B355C);
         func_8002E31C(arg0->unk458, 1);
         func_800AB89C(arg0->unk458);
         arg0->unk4 = 0;
@@ -5094,7 +5094,7 @@ void func_800B3488(TmState *arg0) {
 }
 
 void func_800B355C(Window *arg0) {
-    func_8002B5FC(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(2), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(2), 0);
 }
 
 void func_800B35A4(TmState *arg0) {

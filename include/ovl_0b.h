@@ -462,7 +462,7 @@ extern BtlScriptOp D_800F5858[];
 void func_800C24E8(BtlUnit *, s32);
 
 
-/* D_800F78A4->unkC */
+/* g_btlfxEnv->unkC */
 typedef struct {
     BtlUnit *unk0;     /* id 0x10 */
     BtlUnit *unk4[8];  /* ids 0..7 */
@@ -521,7 +521,7 @@ typedef struct {
     struct Unk800FE3B8 *unk2C;
     s32 unk30;
 } Unk800F78A4;
-extern Unk800F78A4 *D_800F78A4;
+extern Unk800F78A4 *g_btlfxEnv;
 
 typedef struct {
     s32 unk0;
@@ -1991,7 +1991,7 @@ typedef struct {
     BtlUnit *unk20;
     BtlUnit *unk24; /* last target */
 } Unk80104FF0;
-extern Unk80104FF0 D_80104FF0;
+extern Unk80104FF0 g_btlTarget;
 extern u8 D_80104FFF;
 extern u8 D_80104FFA;
 extern BtlUnit *D_80104FE4;
@@ -2029,7 +2029,7 @@ typedef struct {
     u8 pad9C[0xA4 - 0x9C];
     RECT unkA4;
 } Unk801051F0;
-extern Unk801051F0 D_801051F0;
+extern Unk801051F0 g_btlBanner;
 extern s32 D_800FDE3C[];
 extern s16 D_800F5850[];
 /* enemy data record (func_800C9D1C) */
@@ -2106,9 +2106,9 @@ s32 func_800E813C(u32, s32);
 extern Unk800689B0 D_80068E78[3];
 s32 func_80027480(s32);
 void SetTexWindow(void *, RECT *); /* PsyQ */
-void func_8002E260(void);
+void win_reapClosed(void);
 u8 func_800339F4(s32, u8);
-void func_80026C34(s32, s32, s32, s32, u8);
+void ui_drawItemIcon(s32, s32, s32, s32, u8);
 extern u32 D_800686D8;
 void func_800316D8(void *, void *);
 void gfx_selectBuffer(s32);
@@ -2116,7 +2116,7 @@ void func_8002C740(s32, s32, s32);
 void func_8002E32C(Window *, s32);
 void func_8002E380(Window *, s32);
 void func_8002C584(s32);
-void func_8002DD00(Window *);
+void win_close(Window *);
 Window *func_8002E43C(s32);
 ItemSlot *item_findSlot(s32);
 typedef struct {
@@ -2159,10 +2159,10 @@ s32 func_800EFB3C(s32);
 s32 func_800EFD1C(u8);
 void func_800EFA10(s32);
 void func_800EF7D4(Window *);
-void func_800F07F0(void);
-s32 func_800F0118(void);
+void btlui_cancelTarget(void);
+s32 btlui_isCmdUsable(void);
 s32 func_800F028C(void);
-void func_800F0904(void);
+void btlui_updateTargetWindow(void);
 void func_800F1AF8(Window *);
 void func_800F2684(s32);
 void func_800F2C74(s32);
@@ -2181,7 +2181,7 @@ void func_800EE120(Window *);
 s32 func_800D8CD8(u8 *, s32, s32);
 void func_800C1854(BtlUnit *, s32);
 void func_800C19F8(u8);
-void func_800CC044(BtlUnit *);
+void btl_spawnPopups(BtlUnit *);
 s32 func_800E8D60(void);
 void func_800EA650(void);
 BtlUnit *func_800EAD94(void);
@@ -2217,10 +2217,10 @@ void *func_800F2A60(s32);
 Unk80105078 *func_800F3EA4(void);
 void func_800F3ECC(u8);
 void func_800DA898(void);
-void func_800EAAFC(void);
+void btl_updateAtb(void);
 void func_800EAC88(void);
-void func_800EB114(void);
-void func_800EB1CC(void);
+void btlui_menuInput(void);
+void btlui_updateMenu(void);
 void func_800EB2E0(void);
 void func_800EB2FC(void);
 void func_800EB410(void);
@@ -2228,23 +2228,23 @@ void func_800EB46C(void);
 void func_800EB81C(void);
 void func_800EB924(void);
 s32 func_800EB9E0(void);
-void func_800EBA20(void);
+void btlui_drawHelpWindow(void);
 void func_800EBB78(void);
 void func_800EBBB4(void);
 void func_800EBD58(void);
 void func_800EBEFC(s32);
 void func_800EC048(void);
-s32 func_800EC194(s32);
+s32 btlui_getItemReserved(s32);
 void func_800ECDB8(void);
 void func_800ECF0C(void);
 void func_800EA518(void);
-void func_800F0DF8(void);
+void btlui_drawTargetCursors(void);
 s32 func_800F13CC(void);
 void func_800F142C(void);
 void func_800F2374(void);
 void func_800F2560(void);
 void func_800F2AAC(void);
-void func_800F3060(void);
+void btlui_drawPartyPanel(void);
 void func_800F386C(void);
 void func_800F3A8C(void);
 void func_800F3D0C(void);
@@ -2257,7 +2257,7 @@ s32 func_800E454C(s32);
 void func_800E73B4(BtlUnit *, u16 *);
 void func_800E86E0(s32 *, s32 *, u32);
 s32 func_800E9638(s32);
-void func_800E9A74(void);
+void btlui_vsync(void);
 void func_800E9F3C(u8);
 void func_800EB05C(void);
 void func_800EBB34(void);
@@ -2278,13 +2278,13 @@ void btl_calcCmd(BtlUnit *, BtlUnit *, BtlCmd *, s32);
 u16 func_800C1CA0(u32, s32);
 void func_800EA0F8(s32);
 s32 btl_consumeMp(BtlUnit *, s16);
-void func_800B97A0(BtlUnit *);
-s32 func_800BF558(BtlUnit *, u32);
+void btl_killUnit(BtlUnit *);
+s32 btl_removeStatus(BtlUnit *, u32);
 s32 func_800C1E88(BtlUnit *, s32);
 void func_800C1524(void);
 void func_800C2E04(void);
 void func_800CBF90(void);
-void func_800CD5C8(u32, ...);
+void btl_showMessage(u32, ...);
 /* psyq-style varargs (stdarg.h) */
 typedef char *va_list;
 #define __va_rounded_size(TYPE) (((sizeof(TYPE) + sizeof(int) - 1) / sizeof(int)) * sizeof(int))
@@ -2316,7 +2316,7 @@ u32 func_800D89E8(s32);
 s32 func_800D9F5C(u8 *, s32, s32);
 void btlfx_error(char *);
 void func_800E3D80(void);
-u8 func_800EA038(void);
+u8 btl_isAtbRunning(void);
 void func_800EA164(s32);
 void func_800E9F68(u8);
 void func_800EF094(s32, s32, s32, MenuView *);
@@ -2362,10 +2362,10 @@ void btl_setCmd(); /* (BtlCmd *, u32, s32, s32, s32); callers pass the command a
 u8 func_800B3E7C(BtlCmd *);
 void func_800BD414(BtlUnit *, u16);
 void func_800BD464(BtlUnit *, u16);
-s32 func_800C09A4(BtlUnit *, u32);
+s32 btl_hasStatus(BtlUnit *, u32);
 void func_800C09EC(BtlUnit *);
 s32 func_800C0B6C(BtlUnit *, u32);
-s32 func_800D87D0(s32);
+s32 btlfx_getMotionLength(s32);
 u16 func_800DF7A0(BtlUnit9C *, u16, s32, s32 *, s32);
 s32 func_800E7298(BtlUnit *);
 s32 func_800E7370(BtlUnit *);
@@ -2379,8 +2379,8 @@ void func_800E78B4(s32, s16 *, s16 *, s32, s32, s32, s32);
 void func_800E7A44(s32, VECTOR *);
 void func_800E7FC0(BtlUnit *, s32);
 s32 func_800E9A00(s32, s32);
-BtlUnit *func_800BED10(u16);
-void func_800A8600(s32);
+BtlUnit *btl_getUnitById(u16);
+void btl_main(s32);
 void func_800A8CD4(void);
 void func_800A8DE0(void);
 s32 func_800AB324(s32, s32 *, s32 *);
@@ -2399,7 +2399,7 @@ void func_800E72B8(void);
 void func_800E8F40(s32);
 void func_800E954C(void);
 s32 func_800E9930(s32, s32, s32);
-s32 func_800B4040(BtlUnit *);
+s32 btl_cancelUnitCmds(BtlUnit *);
 void func_800C316C(s32);
 void func_800C36D0(void);
 s32 func_800CAEC4(BtlScript *, BtlUnit *);
@@ -2409,8 +2409,8 @@ s32 func_800AE47C(s32, u16);
 void func_800C22CC(BtlUnit *, u16, u8);
 s32 func_800C37BC(void);
 void func_800D6E70(s32, s32, s32, s32);
-void func_800D86E0(s32, s32);
-s32 func_800D8740(s32, s32);
+void btlfx_setUnitMotion(s32, s32);
+s32 btlfx_getUnitMotion(s32, s32);
 s32 func_800D8B20(s32);
 s32 func_800DA06C(s32, s32);
 s32 func_800DA3D8(s32, s32);
@@ -2493,7 +2493,7 @@ void func_800D57D0(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
 void func_800D59D0(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
 void func_800D2938(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
-extern s32 D_801014B0; /* saved D_800F78A4->unk28 */
+extern s32 D_801014B0; /* saved g_btlfxEnv->unk28 */
 /* main exe: candidates for ff9.h */
 int VectorNormalS(VECTOR *, SVECTOR *);
 MATRIX *MulMatrix2(MATRIX *, MATRIX *);
@@ -2511,11 +2511,11 @@ s32 btlfx_align4(s32);
 void func_800D07B4(); /* (u32 code, u32 *ot, void *prim, s32 tpage) */
 u8 *func_800D6360(s32);
 void func_800D64C8(s32);
-void func_800D85AC(s32, s32);
+void btlfx_playUnitMotion(s32, s32);
 void func_800D85F8(struct Unk800F78A40 *, s32, s32);
 void func_800D8820(s32, s32);
 void func_800D8988(s32, s32, s32);
-s32 func_800D8A64(s32);
+s32 btlfx_isPartyUnit(s32);
 s32 func_800D8B70(s32);
 s32 func_800DA0B8(s32);
 void func_800EA124(s32);
@@ -2533,10 +2533,10 @@ void func_800EC170(s32);
 void func_800ECB5C(void);
 extern RECT D_800F8DDC; /* command window rect */
 extern RECT D_800F8E10; /* title bar texture window (func_800ED02C) */
-void func_800EC628(Window *);
-void func_800EC730(Window *);
+void btlui_drawCmdList(Window *);
+void btlui_drawCmdOverlay(Window *);
 void func_800EDC3C(); /* used as a Window callback */
-s32 func_800EB2BC(s32);
+s32 btlui_setMenuState(s32);
 u8 func_800F1360(void);
 
 typedef struct {
@@ -2691,7 +2691,7 @@ extern u8 D_800FB4F0[];
 extern s32 D_800F8E04[];
 extern RECT D_800F8EF4;
 extern RECT D_800F8EFC;
-Window *func_8002DCAC(RECT *, s32, s32, s32);
+Window *win_open(RECT *, s32, s32, s32);
 void func_800F1A8C(Window *);
 void func_800F29B4(Window *);
 void func_800F0A54(Window *);
@@ -2796,7 +2796,7 @@ extern Unk800FE488 D_800FE488;
 extern u32 D_800F8EA4[][4];
 extern void (*D_800F8E94[])(void);
 extern RECT D_800FDE58;
-u8 *func_800F511C(u8 *, RECT *);
+u8 *btl_buildBannerFrame(u8 *, RECT *);
 void func_800C7B84(BtlUnit9C *);
 void btl_scaleModelMatrix(BtlUnit9C *, VECTOR *);
 void func_800C57A4(BtlUnit *, s16 *);
@@ -2821,18 +2821,18 @@ void func_800BBF30(Unk8004AB64 *, s16);
 extern s32 D_800FDF34;
 extern RECT D_800A858C;
 extern RECT D_800A8594;
-void func_800BFF20(BtlUnit *);
+void btl_updateUnitTint(BtlUnit *);
 void func_800BCEF0(BtlUnit *);
 s32 func_800C20B8(GameData *, u32, s32);
 void func_800C2F1C(s32);
 void func_800B2F24(Battle *);
 extern s16 D_801051E8[][2];
-void func_800B4234(BtlUnit *);
+void btl_projectUnitPos(BtlUnit *);
 void func_800ED3F8(s32, s32, s32, char *);
 s32 func_800EB2A4(void);
 s32 func_800F13BC(void);
 extern u8 D_800FD7AC[];
-void func_800EC928(); /* (Window *); func_800EC628 passes its own */
+void func_800EC928(); /* (Window *); btlui_drawCmdList passes its own */
 s32 func_800E865C(s32, s32);
 void btlfx_projectSliceMesh(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
@@ -2844,14 +2844,14 @@ extern u8 D_800F71E4[];
 void func_800CB1D4(u16, u16 *, u16 *);
 void func_800C2FFC(s32);
 void func_800CA28C(BtlCmd8 *, BtlCmd8 *);
-s32 func_800EF598(BtlCmd8 *);
+s32 btl_getMpCost(BtlCmd8 *);
 void func_800C9EE0(Unk800C9EE0 *, BtlUnit *, s32 *, s32);
 void func_800CA0A0(Unk800C9D1C *, BtlUnit *);
 void func_800C9D1C(Unk800C9D1C *, Battle4880 *);
 s32 func_800C1184(u32 *);
 void btlbg_setBrightness(s32);
 s32 btlbg_getBrightness(void);
-UnkPair *func_800EC114(s32);
+UnkPair *btlui_getItemListEntry(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
 u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);
 s32 Hi_RegisterSummonModel(struct Unk80100DC054 *, s16 *);
@@ -2928,65 +2928,65 @@ void func_800C9040(TexAnimSet *);
 BtlUnit *func_800C1DEC(void);
 u16 func_800B081C(s32);
 s32 func_800BD5A0(BtlUnit *);
-void func_800C0EC8(BtlUnit *);
+void btl_checkSideDefeated(BtlUnit *);
 void func_800C12CC(Battle4880 *);
 void func_800C1938(BtlUnit *);
 s32 func_800C1EDC(BtlUnit *);
 void func_800C0544(BtlUnit *);
-void func_800B81C4(BtlCalc *, u8);
+void btl_gainTrance(BtlCalc *, u8);
 s32 func_800B9994(BtlCalc *);
 /* ability effect helpers called by btl_calcCmd */
-void func_800B7954(BtlCalc *);
-void func_800B7F20(BtlCalc *, Unk800B7F20 *, s32);
-u8 func_800B8390(BtlCalc *);
+void btl_applyCalcResult(BtlCalc *);
+void btl_calcSteal(BtlCalc *, Unk800B7F20 *, s32);
+u8 btl_rollHit(BtlCalc *);
 u8 func_800B8664(BtlCalc *);
-void func_800B87D0(BtlCalc *, u8);
-void func_800B8A24(BtlCalc *);
-void func_800B8BE8(BtlCalc *);
-u8 func_800B8D58(BtlCalc *);
-void func_800B8E9C(BtlCalc *);
+void btl_setPhysParams(BtlCalc *, u8);
+void btl_applyKillerBonus(BtlCalc *);
+void btl_rollCritical(BtlCalc *);
+u8 btl_applyAbilityElement(BtlCalc *);
+void btl_finishPhysDamage(BtlCalc *);
 void func_800B8FF8(BtlCalc *);
 void func_800B918C(BtlCalc *);
-u8 func_800B9418(BtlCalc *);
+u8 btl_checkFrozenShatter(BtlCalc *);
 void func_800B9A5C(BtlCalc *);
-void func_800B9AE4(BtlCalc *);
+void btl_initHitRates(BtlCalc *);
 void func_800B9AFC(BtlCalc *);
 u8 func_800B9B64(BtlCalc *);
-u32 func_800B9C14(BtlCalc *);
+u32 btl_hasSureHit(BtlCalc *);
 void func_800B9C30(BtlCalc *);
 void func_800B9C74(BtlCalc *);
 u8 func_800B9CDC(BtlCalc *);
 u8 func_800B9D34(BtlCalc *);
 u8 func_800B9D6C(BtlCalc *);
-u8 func_800B9DA4(BtlCalc *);
+u8 btl_checkTargetAlive(BtlCalc *);
 u8 func_800B9DDC(BtlCalc *);
-u8 func_800B9E20(BtlCalc *);
+u8 btl_checkNotSelf(BtlCalc *);
 u8 func_800B9E50(BtlCalc *);
 void func_800B9E88(BtlCalc *);
-void func_800B9F80(BtlCalc *);
+void btl_setMagicParams(BtlCalc *);
 void func_800BA078(BtlCalc *);
 void func_800BA094(BtlCalc *);
 void func_800BA1B4(BtlCalc *);
-void func_800BA2AC(BtlCalc *);
+void btl_applyCasterStatusMod(BtlCalc *);
 void func_800BA308(BtlCalc *);
-void func_800BA3FC(BtlCalc *);
-void func_800BA468(BtlCalc *);
-void func_800BA4AC(BtlCalc *);
-void func_800BA4F0(BtlCalc *);
-void func_800BA534(BtlCalc *);
-void func_800BA660(BtlCalc *);
-u8 func_800BA6A4(BtlCalc *);
+void btl_applyTargetStatusMod(BtlCalc *);
+void btl_applyCasterMiniMagic(BtlCalc *);
+void btl_applyTargetShell(BtlCalc *);
+void btl_applyHealBoost(BtlCalc *);
+void btl_applyRowMod(BtlCalc *);
+void btl_applyWeaponElementBoost(BtlCalc *);
+u8 btl_applyWeaponElement(BtlCalc *);
 u8 func_800BA7D0(BtlCalc *);
 void func_800BA858(BtlCalc *);
-void func_800BA8F0(BtlCalc *);
-void func_800BA994(BtlCalc *);
-void func_800BAA28(BtlCalc *);
+void btl_applyAbilityElementBoost(BtlCalc *);
+void btl_calcHeal(BtlCalc *);
+void btl_finishMagicDamage(BtlCalc *);
 void func_800BAAE4(BtlCalc *);
-void func_800BABAC(BtlCalc *);
+void btl_rollAbilityStatus(BtlCalc *);
 void func_800BACB4(BtlCalc *);
 void func_800BAD64(BtlCalc *);
 void func_800BADD4(BtlCalc *);
-void func_800BAE44(BtlCalc *);
+void btl_payMpAttack(BtlCalc *);
 u8 func_800BAEA8(BtlCalc *);
 void func_800BAF3C(BtlCalc *);
 void func_800BAF70(BtlCalc *);
@@ -3009,9 +3009,9 @@ u8 *func_800EA0B4(s32);
 /* main exe: candidates for ff9.h */
 u8 func_80034070(s32, s32);
 void btl_damageHp(BtlUnit *, s32, u8);
-void func_800BDC04(BtlUnit *, s32);
-void func_800BDC64(BtlUnit *, s32);
-void func_800BDCBC(BtlUnit *, s32);
+void btl_healHp(BtlUnit *, s32);
+void btl_damageMp(BtlUnit *, s32);
+void btl_healMp(BtlUnit *, s32);
 void func_800C7CC8(BtlUnit9C *);
 u8 *func_800AC37C(Battle11C028 *, s32, s32, s32, u8 *);
 void func_800C1704(); /* defined as (void); callers pass the unit */
@@ -3030,26 +3030,26 @@ void func_800F28F0(void);
 void func_800F1484(void);
 s32 func_800AB6F0(s32, s32);
 void func_800AB758(s32, s32, s32 **, s32 **, s32 **);
-BtlUnit *func_800E9FCC(void);
+BtlUnit *btlui_getActiveUnit(void);
 void func_800CA7CC(void);
-u8 *func_800CE1B4(MATRIX *, s32, s32, u32 *, s32);
+u8 *btlbg_draw(MATRIX *, s32, s32, u32 *, s32);
 u8 *func_800E3EEC(u8 *);
-u8 *func_800CC4F0(u8 *);
-void func_800BD93C(BtlUnit *);
-void func_800BFAF4(BtlUnit *);
+u8 *btl_drawPopups(u8 *);
+void btl_updateHpStatus(BtlUnit *);
+void btl_updateUnitStatus(BtlUnit *);
 void func_800ED02C(RECT *, s32);
 extern s32 D_800F8DE4[];
 Window *func_800F1370(void);
-void func_800EBE1C(RECT *, RECT *);
-void func_800EBD88(void);
+void btlui_getHelpRect(RECT *, RECT *);
+void btlui_updateHelpText(void);
 s32 func_8002BE88(void);
 void func_8002BE98(s32);
 void func_8002C138(u8);
-void func_8002DF18(RECT *, s32, s32, s32);
+void win_drawHelpFrame(RECT *, s32, s32, s32);
 extern RECT D_800F8DBC;
 void func_800BC21C(BtlUnit *, s32 *);
-void func_800B3460(GameData *, Battle *, BtlUnit *);
-void func_800B1764(Battle *);
+void btl_drawActiveMarker(GameData *, Battle *, BtlUnit *);
+void btl_processCmdQueue(Battle *);
 s32 func_800B1B48(Battle *, BtlCmd *);
 s32 func_800B23B4(Battle *, BtlCmd *);
 s32 btl_payMpCost(BtlCmd *);
@@ -3058,7 +3058,7 @@ s32 func_800BD31C(BtlCmd *);
 void func_800B253C(BtlCmd *);
 void func_800C28F4(BtlCmd *);
 void func_800B2988(Battle *);
-void func_800B05C0(GameData *, Battle *, s32);
+void btl_drawScene(GameData *, Battle *, s32);
 
 s32 func_8005553C(s32);
 void func_80055850(s32, s32, s32);
@@ -3128,8 +3128,8 @@ u8 func_800F47D8(void);
 void func_800E77D8(s32, s16 *);
 
 extern u16 D_800F524C[][0x22];
-Unk800CC278 *func_800CC31C(s32, s16, s16, u8);
-Unk800CC278 *func_800CC37C(s32, s16, s16, u8);
+Unk800CC278 *btl_popupHp(s32, s16, s16, u8);
+Unk800CC278 *btl_popupMp(s32, s16, s16, u8);
 void func_800EA338(s8);
 s32 func_800D9990(Unk800D7C9C *, s32, s32 *);
 s32 func_800D974C(Unk800D7C9C *, s32, s32 *);
@@ -3145,7 +3145,7 @@ void func_8005562C(s32);
 void func_800D0940(void);
 extern u8 D_800F6FB8[];
 extern u8 D_800A7C20[]; /* "/\xFF" suffix string */
-void func_800F4F04(s32, s32);
+void btl_setBanner(s32, s32);
 void func_800F4F44(s32, s32);
 s32 func_800F4FC8(void);
 extern u8 D_80104E77;
@@ -3177,19 +3177,19 @@ void func_80031244(SVECTOR *, MATRIX *);
 
 s32 func_800A9A7C(Battle11C0 *, s32);
 s32 func_800AA08C(Unk800AA08C *, s32);
-void func_800AEA48(void);
+void btl_beginFrame(void);
 void func_800A8BF4(void);
 u8 func_800EA30C(void);
 void func_800A882C(void);
-s32 func_800AF2E0(void);
+s32 btl_update(void);
 extern u8 D_8007AFB1;
 void func_800B0060(GameData *, Battle *);
-void func_800B0468(GameData *, Battle *);
-void func_800AF800(GameData *, Battle *);
-void func_800E9D30(void);
+void btl_updateCombat(GameData *, Battle *);
+void btl_victory(GameData *, Battle *);
+void btlui_init(void);
 void func_800AF1D0(void);
 s32 preload_update(void);
-void func_800AEE68(void);
+void btl_endFrame(void);
 void func_800E9EC4(void);
 void func_800EA290(void);
 void func_800EA1F8(u32 *, DRAWENV *);
@@ -3240,8 +3240,8 @@ s32 func_800AF1C8(void);
 extern void (*D_800F8DF0[])(Unk800FD56C *);
 extern void (*D_800F8E00)(Unk800FD56C *);
 extern void (*D_800F9038[])(BtlUnit *, s32);
-void func_800F3390(void);
-u8 func_800B3EF8(BtlUnit *, u8);
+void btlui_drawPanelHeader(void);
+u8 btl_isCmdQueued(BtlUnit *, u8);
 void func_800F16DC(u8, u8);
 typedef struct {
     u32 unk0; /* status mask */
@@ -3255,18 +3255,18 @@ void func_800E9BBC(void);
 s32 func_800E9FF4(void);
 void func_800EA5C4(void);
 void func_800EA548(void);
-void func_800F4778(void);
+void btlui_readPad(void);
 void func_800EB578(s32);
-void func_800F4D40(void);
+void btlui_beginFrame(void);
 void func_800EA4D0(void);
 void func_800EA400(void);
-void func_800EA440(void);
+void btlui_drawWindows(void);
 void func_800EA498(void);
-void func_800F4A00(void);
+void btlui_submitOt(void);
 s32 func_800B0CF8(s32, u32);
 u32 btl_addRgbClamped(u32, s32, s32, s32);
-void func_8002F1CC(MenuList *, s32);
-void func_8002F284(MenuList *, s32);
+void menuList_pageUp(MenuList *, s32);
+void menuList_pageDown(MenuList *, s32);
 extern s16 D_800F9048[];
 void func_800E3C50(void *);
 s32 func_800DA2AC(Unk800DA1B8 *);
@@ -3289,7 +3289,7 @@ extern u8 D_800F8E68[][2];
 void func_800F1A20(s32);
 s32 func_8001DA6C(s16);
 s32 func_80063830(s32);
-void func_800BCAA4(BtlUnit *);
+void btl_startHitMotion(BtlUnit *);
 s32 func_800E3B70(Heap *, s32);
 void func_800C2598(BtlCmd *, s32, s16 *);
 
@@ -3333,7 +3333,7 @@ extern Unk800F412C D_800F8FD8[5];
 s32 math_cos(s32);
 void func_800E8DC8(s32);
 void func_800E8E84(s32);
-void func_800F0444(void);
+void btlui_confirmTarget(void);
 void func_800EFF14(void);
 void func_800F40D0(Unk800F412C *);
 void func_800F4010(s32);
@@ -3356,8 +3356,8 @@ typedef struct {
 void func_800EE37C(Unk800EE37C *);
 extern RECT D_800F8E30;
 void func_8002E3A8(Window *, MenuList *);
-void func_800EEED4(Window *);
-void func_800EEBB8(Window *);
+void btlui_drawListContent(Window *);
+void btlui_drawListOverlay(Window *);
 void func_800EF00C(void);
 s32 func_800D8A94(s32, s32);
 s32 func_800DA064(u8 *, s32, s32);
@@ -3365,10 +3365,10 @@ extern u8 D_80104E70;
 extern u8 D_800FDD10[];
 extern U16Pair D_800FB1F0[];
 extern char D_800F96E4[];
-s32 func_800EEA98(s32);
+s32 btlui_getAbilityState(s32);
 s32 *func_800F4FB4(s32);
-u8 *func_800F5064(u8 *);
-u8 *func_800F4E70(u8 *);
+u8 *btl_buildBanner(u8 *);
+u8 *btl_drawBanner(u8 *);
 typedef struct Unk800D9134 {
     u8 unk0;
     u8 unk1;
@@ -3404,8 +3404,8 @@ void func_800EBA10(Window *);
 
 /* main exe: candidates for ff9.h */
 void func_800562E0(s32 *, s32);
-void func_80029058(s32, s32, s32, u8 *, s32);
-void func_8002DD54(void);
+void text_draw(s32, s32, s32, u8 *, s32);
+void win_closeAll(void);
 s32 chr_getDefaultSet(Character *);
 
 /* battle menu: unit under the target cursor (inlined by its callers) */
@@ -3423,7 +3423,7 @@ static inline BtlUnit *BtlFindTargetCursor(void) {
 static inline s32 func_800F1B78_inline(void) {
     BtlUnit *u;
     s32 n;
-    if (D_80104FF0.unk2 >= 9 && D_80104FF0.unk2 <= 11) {
+    if (g_btlTarget.unk2 >= 9 && g_btlTarget.unk2 <= 11) {
         return 2;
     }
     n = 0;
@@ -3440,7 +3440,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u == NULL) {
         return 0;
     }
-    if (u->hp == 0 || (u8)func_800C09A4(u, 0x42021D03) != 0) {
+    if (u->hp == 0 || (u8)btl_hasStatus(u, 0x42021D03) != 0) {
         return 0;
     }
     if ((D_800FDF30.unkA >> ((u8)u->unk68 >> 5)) & 1) {
@@ -3755,7 +3755,7 @@ void func_800E9DFC(void);
 u32 *func_8002FBC0(s32);
 
 void func_800CC1A0(BtlUnit *);
-void func_800C0DAC(BtlUnit *);
+void btl_tickStatusTimers(BtlUnit *);
 
 /* BtlUnit.unk34 viewed as one block (status timers at unkC..) */
 typedef struct {
@@ -4094,7 +4094,7 @@ extern u8 D_8007AF01;
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 func_800B1B48_can(BtlCmd *arg1) {
     if ((arg1->unk4->status & 8) && (arg1->ability->unk8 & 2)) {
-        func_800CD5C8(0x15);
+        btl_showMessage(0x15);
         return 0;
     }
     return 1;

@@ -94,3 +94,122 @@ g_btlfxRandSeed = 0x800F78A8; // [code] func_800E3EEC copies it into the btlfx_r
 g_btlfxSavedSp = 0x800FF468; // [code] func_800E3EEC saves $sp here while it runs func_800DA92C/func_800E3C98 on the scratchpad stack (0x1F8003F8) and restores it after
 btlfx_resolveFirstUse = 0x800D6188; // type:func [code] swaps effect id D_800F72A0[i][0] for its full version [i][1] while GameData.firstUseFxSeen bit i is clear, then sets the bit, ff9-ds docs/decomp-requests.md F19 (first-use summons, PSX Ifrit capture)
 g_btlfxFirstUsePairs = 0x800F72A0; // [code] 16 {short, full} effect id pairs read by btlfx_resolveFirstUse, ff9-ds docs/decomp-requests.md F19
+btlui_vsync = 0x800E9A74; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, VSyncCallback installed by btlui_init, called 1500x in 1500 frames from the libetc vsync handler
+btlui_init = 0x800E9D30; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, initialises the UI blocks and installs btlui_vsync, called from btl_main once Battle.unkD85 & 7 == 7
+btlui_readPad = 0x800F4778; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, pad_update then func_8002C308 every vsync from btlui_vsync, Start sets the PAUSE flag
+btlui_beginFrame = 0x800F4D40; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, flips the UI buffer and clears the UI OT every vsync from btlui_vsync
+btlui_submitOt = 0x800F4A00; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, BreakDraw/ContinueDraw of the UI OT, ablation removes the whole HUD
+btlui_drawWindows = 0x800EA440; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the command window and the party panel
+btlui_drawPartyPanel = 0x800F3060; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the whole NAME/HP/MP/ATB panel
+btlui_drawPanelHeader = 0x800F3390; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the NAME HP MP ATB header bar
+btlui_drawPanelHighlight = 0x800F34C0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the yellow bar behind the active unit's row
+btlui_drawPanelName = 0x800F35C8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the four names
+btlui_drawPanelGauges = 0x800F36F8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the ATB and trance bars, numbers stay
+btlui_drawPanelHp = 0x800F41B8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes only the HP column
+btlui_drawPanelMp = 0x800F422C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes only the MP column
+btlui_updatePanelRowColor = 0x800F4060; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, row color 3 at hp 0 and 4 at hp <= maxHp/6, poking Vivi/Dagger hp turns their rows yellow/red
+btlui_drawCmdList = 0x800EC628; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, command window content callback, ablation removes the four command names
+btlui_drawCmdOverlay = 0x800EC730; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, command window overlay callback, ablation removes the hand cursor and COMMAND title
+btlui_updateMenu = 0x800EB1CC; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, per-menuState update table D_800F8DA8, every vsync (coverage)
+btlui_menuInput = 0x800EB114; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, picks the next ready unit or dispatches input per menuState, calls btlui_targetInput each frame in target select
+btlui_setMenuState = 0x800EB2BC; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, stores g_btlUi->menuState, called with 3 on command chosen, 4 on target confirmed, 1 for the next unit's menu
+btlui_targetInput = 0x800F11FC; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, target select input every vsync, L2 opens the ENEMY/PLAYER name window
+btlui_confirmTarget = 0x800F0444; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, calls btl_setCmd when the Attack target is confirmed (ra +0x78) and sets menuState 4
+btlui_cancelTarget = 0x800F07F0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, what Circle in target select falls back to
+btlui_targetMove = 0x800F1554; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, d-pad handler table D_800F8E94 indexed by button masks, called from btlui_targetInput
+btlui_updateTargetWindow = 0x800F0904; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, opens/closes the ENEMY/PLAYER target name window (win_open) on the L2 option
+btlui_isCmdUsable = 0x800F0118; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, stubbed at _target the hand disappears as selection is cancelled, checks trance/MP/silence/item count
+btlui_drawTargetCursors = 0x800F0DF8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at _target removes the hand on the Malboro
+g_btlTarget = 0x80104FF0; // [code] docs/runtime-findings.md disc-3 battle campaign, target-selection state (command id, ability/item, caster, multi-target, target window) read while _target runs
+btlui_getAbilityState = 0x800EEA98; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, 0 hidden 1 greyed 2 usable, stubbed at _ablist all four rows show greyed
+btlui_drawAbilityRow = 0x800EF0D8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, list row callback, ablation at _ablist removes ability names and costs
+btlui_drawItemRow = 0x800EF228; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, list row callback, ablation at _itemlist removes item icons, names and counts
+btl_getMpCost = 0x800EF598; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, ability mpCost x4 or halved by battle flags, used for the list cost column and usability
+btlui_drawListContent = 0x800EEED4; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at _ablist removes the list rows
+btlui_drawListOverlay = 0x800EEBB8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at _ablist removes the list's hand cursor
+btlui_listInput = 0x800EE54C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, Circle closes, Cross picks, else menuList_up/down/pageUp/pageDown, runs only in the list states
+btlui_getItemReserved = 0x800EC194; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, stubbed at _itemlist every shown item count changes (count = inventory minus this)
+btlui_getItemListEntry = 0x800EC114; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, item list entry D_80104FA8->unk4[i] shown at _itemlist
+btlui_drawHelpWindow = 0x800EBA20; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, draws the Select help window (call structure, its rect callee's ablation removes it)
+btlui_updateHelpText = 0x800EBD88; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, picks the help text per menuState through D_800F8DC4 at _help
+btlui_getHelpRect = 0x800EBE1C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at _help makes the whole help window vanish
+btlui_getCmdHelpText = 0x800EDB88; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, command description plus key line text 0x19, garbage return shows garbage glyphs in the help window
+btl_showMessage = 0x800CD5C8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, formats battle text id+8 with varargs and sets the banner, Steal calls it with 0xC and the banner shows Stole Ore!
+btl_hasStatus = 0x800C09A4; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, 1 when unk38 or status has any bit of mask, called 720x/60 frames by the UI (trance test for the command title)
+btl_main = 0x800A8600; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, battle mode loop (btl_beginFrame, btl_update, btlui_init, btl_endFrame until GameState.unk0 & 0x301), root of every battle-tick ra chain
+btl_beginFrame = 0x800AEA48; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ClearOTagR of the frame OTs, once per battle tick (375x per 1500 frames)
+btl_endFrame = 0x800AEE68; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, soft reset check, DrawOTag and buffer flip, once per battle tick
+btl_update = 0x800AF2E0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, switch on Battle.unkD80 phase, watch shows 4 in combat, 5 at victory, 6 at exit
+btl_updateCombat = 0x800B0468; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, phase 4 per-unit update and scene draw, 375x/1500 frames in every combat run
+btl_victory = 0x800AF800; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, phase 5, hit only in the victory run, writes phase 6
+btl_checkSideDefeated = 0x800C0EC8; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, writes phase 5 when the Malboro died (Battle+0xD80 watch)
+btl_updateHpStatus = 0x800BD93C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, per tick per unit LOW_HP/KO from hp, trace shows btl_removeStatus(unit, 0x200) every tick
+btl_removeStatus = 0x800BF558; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, clears status bits with side effects, called (Malboro, 0x8000) when its command is set and per tick (unit, 0x200)
+btl_setEnemyCmd = 0x800B1520; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, called (Malboro, Zidane, 0x2F, 7) from the event VM and the Malboro casts Osmose on Zidane
+btl_getUnitById = 0x800BED10; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, unit whose unkB0 target bit equals the argument
+btl_getUnitMask = 0x800BEC64; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, OR of unkB0 over party/enemies/all, called every tick by the event VM
+btl_getUnitAttr = 0x800BDED4; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, event-script unit variables (0x23 maxHp, 0x24 hp, ...), read side of btl_setUnitAttr
+btl_setUnitAttr = 0x800BE1E0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, after Osmose the Malboro AI calls it (Malboro, 0x30, 8) and (Malboro, 0x33, 0x20) from the event VM
+btl_tryCounter = 0x800B065C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, called from btl_applyCalcResult when Osmose hit Zidane, queues Counter (0x31) or Return Magic (0x32)
+btl_killUnit = 0x800B97A0; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, hp 0, death flag 0x100000 and death motion, called by btl_damageHp at 0 hp
+btl_isCmdQueued = 0x800B3EF8; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, searches the command queue for a unit's command number
+btl_cancelUnitCmds = 0x800B4040; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, removes a unit's queued commands
+btl_healHp = 0x800BDC04; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, hit only in the Cure and Potion runs, hp += n capped at maxHp
+btl_damageMp = 0x800BDC64; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, hit only in the Osmose run, mp -= n
+btl_healMp = 0x800BDCBC; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, hit only in the Osmose run, mp += n capped at maxMp
+btl_calcSteal = 0x800B7F20; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, hit only in the Steal run, shows Stole Ore! through btl_showMessage(0xC, name)
+btl_projectUnitPos = 0x800B4234; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, RTPS of the unit's bone into screen x/y unkB8/unkBA, runs while the target hand is shown
+btl_startHitMotion = 0x800BCAA4; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, hit-reaction motion and unk68 |= 0x20000, called from btl_damageHp
+btl_spawnPopups = 0x800CC044; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, the only reader of the Malboro's unk80 after a 3233-damage Attack, starts HP/MP/text popups
+btl_popupHp = 0x800CC31C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, popup kind 0 (HP number) started by btl_spawnPopups
+btl_popupMp = 0x800CC37C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, popup kind 1 (MP number) started by btl_spawnPopups
+btl_popupText = 0x800CC3E0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, popup kind 2 (Miss/Guard/Critical) started by btl_spawnPopups
+btl_drawPopups = 0x800CC4F0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at disc3_malboro_dmgnum removes the floating 3233
+btlbg_draw = 0x800CE1B4; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at disc3_malboro_dmgnum turns the battle background black, caller of btlbg_drawRecord
+g_btlfxEnv = 0x800F78A4; // [code] docs/runtime-findings.md disc-3 battle campaign, effect environment (effect header, unit list, camera matrix, disp/draw env, OT, next primitive), 285 refs
+btl_updateAtb = 0x800EAAFC; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, write watch on Zidane's atb shows the fill and clamp at +0xC0/+0xE0 every vsync
+btl_isAtbRunning = 0x800EA038; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, false before the UI is up, with the Wait option only while menuState < 2, gates btl_updateAtb
+btlui_getActiveUnit = 0x800E9FCC; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, g_btlUi->cmdUnit while a menu is open, else NULL
+btl_drawActiveMarker = 0x800B3460; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at _calm removes the spinning yellow marker above the unit whose menu is open
+btl_updateUnitStatus = 0x800BFAF4; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, per tick per unit tint, KO handling, Poison/Regen ticks, trance timers (coverage in every run)
+btl_tickStatusTimers = 0x800C0DAC; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, counts down unk46[16] for timed statuses and removes them on expiry
+btl_updateUnitTint = 0x800BFF20; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, unit color tint per status (flashing, per-character trance color, Stop/Freeze)
+btl_processCmdQueue = 0x800B1764; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, every tick takes the first runnable command into curCmd and steps it through Battle.unk11BA phases
+btl_drawScene = 0x800B05C0; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, calls camera, btlbg_draw, effects, btl_drawPopups and btl_drawBanner (callee ablations)
+btl_checkFrozenShatter = 0x800B9418; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, a hit on a Freeze target kills it (message 0x13)
+btl_initHitRates = 0x800B9AE4; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, hit 100 and evade = target unk6D
+btl_hasSureHit = 0x800B9C14; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, caster support bit 0x200 skips the hit roll
+btl_rollHit = 0x800B8390; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, halves hit for Blind/Defend, rolls hit and evade, 0 = miss
+btl_setPhysParams = 0x800B87D0; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, power from weapon, defence = target unk6C, multiplier from strength by kind
+btl_applyKillerBonus = 0x800B8A24; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, x1.5 when a support bit matches the enemy category, plus the MP-attack bonus
+btl_applyCasterStatusMod = 0x800BA2AC; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, x1.5 under trance/berserk 0x4800, 1 under mini 0x10000000
+btl_applyTargetStatusMod = 0x800BA3FC; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, halves under target Defend/Protect 0x808000, x1.5 under 0x10020000
+btl_applyRowMod = 0x800BA534; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, x1.5 from behind or back attack, halved for row distance >= 2 unless long-range
+btl_applyWeaponElementBoost = 0x800BA660; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, x1.5 when the caster's element-boost bits match the weapon element
+btl_applyAbilityElementBoost = 0x800BA8F0; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh, x1.5 when the caster's element-boost bits match the spell element
+btl_applyWeaponElement = 0x800BA6A4; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, target absorb/immune/half/weak bytes vs the weapon element
+btl_applyAbilityElement = 0x800B8D58; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh, target absorb/immune/half/weak bytes vs the spell element
+btl_rollCritical = 0x800B8BE8; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, chance from spirit/4, x2 and the Critical flag
+btl_finishPhysDamage = 0x800B8E9C; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, (power - defence) * multiplier capped at 9999 into unk1E
+btl_payMpAttack = 0x800BAE44; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Attack, takes maxMp/8 from the caster when the MP-attack flag was set
+btl_gainTrance = 0x800B81C4; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, Ark's attack hits all four, the call for Eiko adds trance 0x4000 at gauge 0xFF and Eiko glows
+btl_setMagicParams = 0x800B9F80; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh/Cure/Potion/Osmose, multiplier = magic + random, power = ability power, defence = target magic defence
+btl_applyCasterMiniMagic = 0x800BA468; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh/Osmose, halved under caster mini 0x10000000
+btl_applyTargetShell = 0x800BA4AC; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh/Osmose, halved under target Shell 0x400000
+btl_finishMagicDamage = 0x800BAA28; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh, (power - defence) * multiplier, x2/3 for spread casts, cap 9999
+btl_rollAbilityStatus = 0x800BABAC; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Fire/Ramuh, adds the ability's status set with its chance
+btl_calcHeal = 0x800BA994; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Cure/Potion, power * multiplier capped at 9999 with heal flags
+btl_applyHealBoost = 0x800BA4F0; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Cure, x1.5 for a caster support bit
+btl_checkTargetAlive = 0x800B9DA4; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Osmose, fails on target status 0x101
+btl_checkNotSelf = 0x800B9E20; // type:func [code] [runtime] docs/runtime-findings.md disc-3 battle campaign, code-derived btl_calcCmd formula step, coverage runs Osmose, fails when the target is the caster
+btl_applyCalcResult = 0x800B7954; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, applies BtlCalc to the target (counter, flags, btl_damageHp/btl_healHp/MP), every action run
+btl_drawBanner = 0x800F4E70; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ability/message banner at the top, ablation at disc3_malboro_fire_banner removes the Fire banner
+btl_buildBanner = 0x800F5064; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, centred text plus frame, ablation removes the banner
+btl_buildBannerFrame = 0x800F511C; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, banner border and fill, ablation leaves only the word Fire
+btl_setBanner = 0x800F4F04; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, replaces the banner text by priority, btl_showMessage passes Stole Ore! with priority 1
+g_btlBanner = 0x801051F0; // [code] docs/runtime-findings.md disc-3 battle campaign, banner state (text, timer unk80, duration unk84, active unk8C, priority unk90) used by btl_drawBanner/btl_setBanner
+btlfx_isPartyUnit = 0x800D8A64; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, unk68 & 1 of btl_getUnit(unit), runs when a spell starts (disc3_malboro_fire_banner)
+btlfx_getUnitMotion = 0x800D8740; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, unkA4[slot] of the unit's motion table, runs when a spell starts
+btlfx_setUnitMotion = 0x800D86E0; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, party units only, sets the motion and restarts its frame counter
+btlfx_playUnitMotion = 0x800D85AC; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, btlfx_getUnitMotion then btlfx_setUnitMotion for party units, run once from func_800E52B4 as Fire starts
+btlfx_getMotionLength = 0x800D87D0; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, frame count of the current motion that func_800BD31C compares against the frame counter

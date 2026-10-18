@@ -78,7 +78,7 @@ void func_801F3B3C(void) {
     s32 t;
     u8 *s;
 
-    func_8002B524(D_801F4738.x + 8, D_801F4738.y - 3, 7, D_80070494, 0);
+    ui_drawLabel(D_801F4738.x + 8, D_801F4738.y - 3, 7, D_80070494, 0);
     for (i = 0; i < 3; i++) {
         func_800269F4(D_801F4738.x + 4, D_801F4738.y + 0x35 + i * 0x33, 7, D_801F4738.w - 9);
     }
@@ -92,7 +92,7 @@ void func_801F3B3C(void) {
                 t = i + 5;
             }
             s = text_get(t);
-            func_8002B5FC(D_801F4738.x + ((0x8D - func_8002BA68((s32)s)) >> 1), D_801F4738.y + 0x15 + i * 0x33, 6, s,
+            text_drawBlock(D_801F4738.x + ((0x8D - func_8002BA68((s32)s)) >> 1), D_801F4738.y + 0x15 + i * 0x33, 6, s,
                           i >= D_801F4748.unk1 ? 2 : 0);
         }
     }
@@ -106,7 +106,7 @@ void func_801F3CF0(void) {
     s32 dx;
     s32 dy;
 
-    func_8002B524(D_801F4740.x + 0xC, D_801F4740.y - 3, 7, D_80070460, 0);
+    ui_drawLabel(D_801F4740.x + 0xC, D_801F4740.y - 3, 7, D_80070460, 0);
     func_800269F4(D_801F4740.x + 4, D_801F4740.y + 0x35, 8, D_801F4740.w - 8);
     func_8002DEE4(&D_801F4740, 8, 1);
     func_8002705C(&D_801F4740, 9, 1);
@@ -161,7 +161,7 @@ void func_801F3E58(void) {
                 x = (pos & 3) * 0x25 + 0x8C;
                 y = (pos >> 2) * 0x30 + 0x86;
             }
-            func_800270EC(x, y, 4);
+            ui_drawHand(x, y, 4);
         }
     }
 }
@@ -224,14 +224,14 @@ void func_801F4150(void) {
 void func_801F4190(void) {
     func_8002DEE4(&D_801F4728, 8, 2);
     func_8002705C(&D_801F4728, 8, 2);
-    func_8002B5FC(D_801F4728.x + 9, D_801F4728.y + 6, 6, text_get(0), 0);
+    text_drawBlock(D_801F4728.x + 9, D_801F4728.y + 6, 6, text_get(0), 0);
 }
 
 void func_801F4204(void) {
-    func_8002B524(D_801F4730.x + 0xC, D_801F4730.y - 3, 8, D_80070450, 0);
+    ui_drawLabel(D_801F4730.x + 0xC, D_801F4730.y - 3, 8, D_80070450, 0);
     func_8002DEE4(&D_801F4730, 8, 1);
     func_8002705C(&D_801F4730, 9, 1);
-    func_8002B5FC(D_801F4730.x + 0x12, D_801F4730.y + 6, 6, text_get(D_801F4748.unk1), 0);
+    text_drawBlock(D_801F4730.x + 0x12, D_801F4730.y + 6, 6, text_get(D_801F4748.unk1), 0);
 }
 
 void func_801F42A4(void) {

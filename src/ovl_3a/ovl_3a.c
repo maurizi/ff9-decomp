@@ -173,11 +173,11 @@ void func_801F4110(void) {
     func_8002DEE4(D_801F4B5C, 5, 2);
     func_8002705C(D_801F4B5C, 5, 2);
     for (i = 0; i < 2; i++) {
-        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 9 + i * 0x10, 4, text_get(i + 2),
+        text_drawBlock(D_801F4B5C->x + 0xA, D_801F4B5C->y + 9 + i * 0x10, 4, text_get(i + 2),
                       D_801F4BBC.unk2 == i ? 4 : 0);
     }
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(D_801F4B5C->x + 0xA, D_801F4B5C->y + 0x31 + i * 0x10, 4, text_get(i + 4), 0);
+        text_drawBlock(D_801F4B5C->x + 0xA, D_801F4B5C->y + 0x31 + i * 0x10, 4, text_get(i + 4), 0);
     }
 }
 
@@ -194,7 +194,7 @@ void func_801F4238(void) {
     if (D_801F4BBC.unk4 < 6) {
         cursor = D_801F4BBC.unk4;
     }
-    func_8002B524(D_801F4B64->x + 0x23, D_801F4B64->y - 4, 5, D_8007047C, 0);
+    ui_drawLabel(D_801F4B64->x + 0x23, D_801F4B64->y - 4, 5, D_8007047C, 0);
     func_800269F4(D_801F4B64->x + 4, D_801F4B64->y + 0x1A, 6, D_801F4B64->w - 8);
     func_8002DEE4(D_801F4B64, 6, 1);
     func_8002705C(D_801F4B64, 6, 1);
@@ -305,14 +305,14 @@ void func_801F47E8(void) {
 void func_801F48A0(void) {
     func_8002DEE4(D_801F4B54, 6, 2);
     func_8002705C(D_801F4B54, 6, 2);
-    func_8002B5FC(D_801F4B54->x + 0xA, D_801F4B54->y + 6, 5, text_get(0), 0);
+    text_drawBlock(D_801F4B54->x + 0xA, D_801F4B54->y + 6, 5, text_get(0), 0);
 }
 
 void func_801F490C(void) {
     func_8002DEE4(D_801F4B60, 7, 1);
     func_8002705C(D_801F4B60, 7, 1);
-    func_8002B5FC(D_801F4B60->x + 0x3E, D_801F4B60->y + 6, 6, text_get(1), 0);
-    func_8002B524(D_801F4B60->x + 0x23, D_801F4B60->y - 4, 6, D_80070450, 0);
+    text_drawBlock(D_801F4B60->x + 0x3E, D_801F4B60->y + 6, 6, text_get(1), 0);
+    ui_drawLabel(D_801F4B60->x + 0x23, D_801F4B60->y - 4, 6, D_80070450, 0);
 }
 
 void func_801F49A0(s32 chr) {

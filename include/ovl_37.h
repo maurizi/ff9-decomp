@@ -98,7 +98,7 @@ void func_801F1778(void);
 void func_801F2590(s32);
 void func_801F2C58(void);
 u8 func_800281D0(s32); /* main exe */
-void func_80026C34(s32, s32, s32, s32, u8); /* main exe */
+void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void func_801F2B20(Window *);
 void func_801F2B58(Window *);
 void func_801F2D58(void);

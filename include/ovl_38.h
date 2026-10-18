@@ -82,7 +82,7 @@ extern StatusPool D_801EE144;
 
 /* main exe: candidates for ff9.h */
 extern s32 D_8007042C;
-void func_80026C34(s32, s32, s32, s32, u8);
+void ui_drawItemIcon(s32, s32, s32, s32, u8);
 typedef struct {
     u8 unk0;
     u8 pad1;

@@ -36,7 +36,7 @@ void func_801EEB68(void) {
     s32 i;
     MenuList *l = &D_801F1558.unk3C;
 
-    func_8002D9B4(NULL, 0x17, 4);
+    win_setClip(NULL, 0x17, 4);
     func_801EFF58(l, &sp);
     i = 0;
     r.x = 8;
@@ -54,12 +54,12 @@ void func_801EEB68(void) {
         a.w = 0x12C;
         a.h = 0xA8C;
         func_801F043C(l, &a, &b);
-        func_8002D9B4(&b, 0x17, 4);
+        win_setClip(&b, 0x17, 4);
         func_801F049C();
     }
     r.y = 0x2A;
     r.h = 0xB4;
-    func_8002D9B4(&r, 0x17, 4);
+    win_setClip(&r, 0x17, 4);
 }
 
 void func_801EECB4(void) {
@@ -76,8 +76,8 @@ void func_801EECB4(void) {
             func_801EF938();
             return;
         }
-        func_8002EF58(&m->unk3C, g_padRepeat);
-        func_8002EEF0(&m->unk3C, g_padRepeat);
+        menuList_down(&m->unk3C, g_padRepeat);
+        menuList_up(&m->unk3C, g_padRepeat);
         func_801F0380(&m->unk3C, g_padRepeat);
         func_801F02CC(&m->unk3C, g_padRepeat);
         dir = 0;
@@ -155,14 +155,14 @@ void func_801EF110(void) {
     RECT *r2;
     s32 i = 0;
 
-    func_8002B524(r->x + 0xB, r->y - 3, 0x11, D_800703FC.unk84, 0);
-    func_8002B524(r->x + 0x2D, r->y - 3, 0x11, D_800703FC.unk8C, 0);
+    ui_drawLabel(r->x + 0xB, r->y - 3, 0x11, D_800703FC.unk84, 0);
+    ui_drawLabel(r->x + 0x2D, r->y - 3, 0x11, D_800703FC.unk8C, 0);
     r2 = &D_801F1558.unk1C[1].unk4;
-    func_8002B5FC(r2->x + 0x2A, r2->y + 8, 0x11, text_get(0), 0);
+    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(0), 0);
     for (; i < 8; i++) {
-        func_800275DC(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[(g_gameState->unk28 >> (i * 4)) & 7].unk1, 0);
+        ui_drawSprite(r->x + 0x10, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[(g_gameState->unk28 >> (i * 4)) & 7].unk1, 0);
         func_801F0F48(r->x + 0x27, r->y + 0xE + i * 0x11, 0x11, D_801F14F8, 0);
-        func_800275DC(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[i].unk1, 0);
+        ui_drawSprite(r->x + 0x3A, r->y + 0xB + i * 0x11, 0x11, D_801F14FC[i].unk1, 0);
         func_801F0FE8(r->x + 0x54, r->y + 0xC + i * 0x11, 0x11, D_801F14FC[i].unk0, 0);
     }
 }
@@ -174,10 +174,10 @@ void func_801EF2B4(void) {
     u8 on;
 
     r2 = &D_801F1558.unk1C[1].unk4;
-    func_8002B5FC(r2->x + 0x2A, r2->y + 8, 0x11, text_get(1), 0);
+    text_drawBlock(r2->x + 0x2A, r2->y + 8, 0x11, text_get(1), 0);
     for (i = 0; i < D_801F1558.unk1; i++) {
         on = ((s32)(g_gameState->unk24 >> 20) >> D_801F1558.unk8[i]) & 1;
-        func_8002B5FC(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[D_801F1558.unk11[i]].unk0, 0);
+        text_drawBlock(r->x + 0xE, r->y + 0xA + i * 0x11, 0x11, g_gameState->unk1C->characters[D_801F1558.unk11[i]].unk0, 0);
         func_801F0F94(r->x + 0x60, r->y + 0xA + i * 0x11, 0x11, 0xF8, on);
         func_801F0F94(r->x + 0x92, r->y + 0xA + i * 0x11, 0x11, 0x100, on == 0);
     }
@@ -488,8 +488,8 @@ void func_801F0184(void) {
 
     D_801F1558.unk58 = D_801F1558.unk50[g_gameState->unk1C->unk8 ^ 1] - (D_801F1558.unk4C - k);
     D_801F1558.unk4C = D_801F1558.unk50[g_gameState->unk1C->unk8];
-    func_8002B524(0x10, 0x23, 0x16, D_80070430, 0);
-    func_80025A28(8, 0x26, 0x16, 0, 0x12C, (g_gameState->unk24 >> 18) & 1);
+    ui_drawLabel(0x10, 0x23, 0x16, D_80070430, 0);
+    ui_drawRule(8, 0x26, 0x16, 0, 0x12C, (g_gameState->unk24 >> 18) & 1);
     func_801EEB68();
     func_801F0BE8();
     func_801F0C78();
@@ -682,8 +682,8 @@ void func_801F0C78(void) {
 
     l = &D_801F1558.unk3C;
     blink = (((u32)D_80077DC0 >> 4) ^ 1) & 1;
-    func_800275DC(0x12E, 0x2C, 0x14, 0xB8, l->unk5 != 0 ? blink : 1);
-    func_800275DC(0x12E, 0xCF, 0x14, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
+    ui_drawSprite(0x12E, 0x2C, 0x14, 0xB8, l->unk5 != 0 ? blink : 1);
+    ui_drawSprite(0x12E, 0xCF, 0x14, 0xB9, l->unk5 < l->unk2 - l->unk3 ? blink : 1);
 }
 
 void func_801F0D20(RECT *r, s32 otz, s32 sel, s32 item) {

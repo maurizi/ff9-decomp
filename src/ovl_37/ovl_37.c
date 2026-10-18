@@ -161,18 +161,18 @@ void func_801F11E4(void) {
     s32 idx;
 
     il = &D_801F3040[D_801FAB78.unk0];
-    func_8002B524(D_801F30A8->x + 0xE, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
-    func_8002B524(D_801F30A8->x + 0xA4, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
+    ui_drawLabel(D_801F30A8->x + 0xE, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
+    ui_drawLabel(D_801F30A8->x + 0xA4, D_801F30A8->y - 3, 0x1D, D_800703FC.unk68, 0);
     if (D_801FAB78.unk0 != 2) {
         w = func_8002AE7C((u8 *)D_800703FC.unk94);
-        func_8002B524((D_801F30A8->x + 0x8A) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
-        func_8002B524((D_801F30A8->x + 0x120) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
+        ui_drawLabel((D_801F30A8->x + 0x8A) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
+        ui_drawLabel((D_801F30A8->x + 0x120) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
     }
-    func_8002ECA0(il->unk8, &view);
+    menuList_getView(il->unk8, &view);
     func_8002E040(D_801F30A8, 0x1D, 1, il->unk8);
     func_8002705C(D_801F30A8, 0x1D, 1);
     idx = view.unk1 * 2;
-    func_8002D9B4(NULL, 0x1C, 1);
+    win_setClip(NULL, 0x1C, 1);
     for (row = 0; row < view.unk0; row++) {
         for (col = 0; col < 2; col++) {
             il->unk4(col, row, idx++, &view);
@@ -180,10 +180,10 @@ void func_801F11E4(void) {
     }
     if (il->unk8->unk8 & 4) {
         func_8002F40C(il->unk8, D_801F30A8, &D_801FA958);
-        func_8002D9B4(&D_801FA958, 0x1C, 1);
+        win_setClip(&D_801FA958, 0x1C, 1);
         func_801F26E0();
     }
-    func_8002D9B4(D_801F30A8, 0x1C, 1);
+    win_setClip(D_801F30A8, 0x1C, 1);
 }
 
 void func_801F13F8(void) {
@@ -329,8 +329,8 @@ s32 func_801F1A7C(void) {
             g_evtGlobalVars.b[0xB5] = 1;
             func_800B81A0();
             m->unk4C = func_8002DC54(&D_801F3148, 0xF, 2);
-            func_8002E2E4(m->unk4C, func_801F2B20);
-            func_8002E2EC(m->unk4C, func_801F2B58);
+            win_setOnOpened(m->unk4C, func_801F2B20);
+            win_setDrawContent(m->unk4C, func_801F2B58);
             func_8002E304(m->unk4C, (s32)D_801F3140);
             func_8002E31C(m->unk4C, 1);
             m->unk50 = 1;
@@ -435,8 +435,8 @@ void func_801F1E88(void) {
     if (m->unk54 != 0) {
         x = m->unk58;
         name = D_8006ADAC + D_8006B374[m->unk56].unk0;
-        func_8002B5FC(x + ((0xB0 - func_8002BA68((s32)name)) >> 1), 0x50, 0x14, name, 8);
-        func_8002B5FC(x + 0xD, 0x66, 0x14, D_801F79F8 + D_8006B374[m->unk56].unk6, 8);
+        text_drawBlock(x + ((0xB0 - func_8002BA68((s32)name)) >> 1), 0x50, 0x14, name, 8);
+        text_drawBlock(x + 0xD, 0x66, 0x14, D_801F79F8 + D_8006B374[m->unk56].unk6, 8);
         setlen(g_primPtr, 4);
         ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
         ((SprtWords *)g_primPtr)->xy = (x & 0xFFFF) | 0x410000;
@@ -609,7 +609,7 @@ void func_801F262C(void) {
 
     r = &D_801FAB78.unk2C;
     for (i = 0; i < 3; i++) {
-        func_8002B5FC(r->x + D_801F309C[i], r->y + 6, 0x1C, text_get(D_801F3098[i]), 0);
+        text_drawBlock(r->x + D_801F309C[i], r->y + 6, 0x1C, text_get(D_801F3098[i]), 0);
     }
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1D, 2);
@@ -663,9 +663,9 @@ void func_801F2870(s32 col, s32 row, s32 i, MenuView *v) {
         y = row * 0xF + (v->unk2 + k);
         text_formatNumber(p->unk1, buf, 2, 1);
         x2 = x + 0x18;
-        func_8002B5FC(x + 0x28, y, 0x1C, D_8006A218 + it->unk0, ok ? 0 : 2);
-        func_80026C34(x2, y, 0x1C, p->unk0, ok);
-        func_8002B56C(x2 + 0x6C, y + 4, 0x1C, buf, ok ? 0 : 2);
+        text_drawBlock(x + 0x28, y, 0x1C, D_8006A218 + it->unk0, ok ? 0 : 2);
+        ui_drawItemIcon(x2, y, 0x1C, p->unk0, ok);
+        ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? 0 : 2);
     }
 }
 
@@ -688,10 +688,10 @@ void func_801F29D0(s32 col, s32 row, s32 i, MenuView *v) {
         name = D_8006ADAC + t->unk0;
         if (!got) {
             w = x + func_8002BA68((s32)name);
-            func_800275DC(w + 5, y + 2, 0x1C, 0xB6, blink);
-            func_800275DC(w - 1, y - 1, 0x1C, 0xB5, 0);
+            ui_drawSprite(w + 5, y + 2, 0x1C, 0xB6, blink);
+            ui_drawSprite(w - 1, y - 1, 0x1C, 0xB5, 0);
         }
-        func_8002B5FC(x, y, 0x1C, name, 0);
+        text_drawBlock(x, y, 0x1C, name, 0);
     }
 }
 
@@ -705,7 +705,7 @@ void func_801F2B58(Window *w) {
     u8 *s;
 
     s = text_get(0xB);
-    func_8002B5FC(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 6, w->unk18, s, 0);
+    text_drawBlock(w->unk0 + ((w->unk4 - func_8002BA68((s32)s)) >> 1), w->unk2 + 6, w->unk18, s, 0);
 }
 
 void func_801F2BC0(void) {
@@ -768,9 +768,9 @@ void func_801F2D58(void) {
 
     l = D_801F3040[1].unk8;
     D_801FAB78.unk4C = func_8002DC54(&D_801F30B8, 0x14, 2);
-    func_8002E2EC(D_801FAB78.unk4C, func_801F2E40);
-    func_8002E2E4(D_801FAB78.unk4C, func_801F2EBC);
-    func_8002E2FC(D_801FAB78.unk4C, func_801F2ECC);
+    win_setDrawContent(D_801FAB78.unk4C, func_801F2E40);
+    win_setOnOpened(D_801FAB78.unk4C, func_801F2EBC);
+    win_setOnClosed(D_801FAB78.unk4C, func_801F2ECC);
     func_8002E31C(D_801FAB78.unk4C, 1);
     func_8002E304(D_801FAB78.unk4C, D_80070408);
     D_801FAB78.unk5 = 0;
@@ -779,7 +779,7 @@ void func_801F2D58(void) {
 }
 
 void func_801F2E18(void) {
-    func_8002DD00(D_801FAB78.unk4C);
+    win_close(D_801FAB78.unk4C);
 }
 
 void func_801F2E40(Window *w) {
@@ -787,7 +787,7 @@ void func_801F2E40(Window *w) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        func_8002B5FC(p->unk0 + 10, p->unk2 + 6 + i * 15, w->unk18, text_get(i + 3), 0);
+        text_drawBlock(p->unk0 + 10, p->unk2 + 6 + i * 15, w->unk18, text_get(i + 3), 0);
     }
 }
 

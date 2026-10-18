@@ -5,7 +5,7 @@ u8 func_800C2DF4(void) {
 }
 
 void func_800C2E04(void) {
-    D_800F78A4->unk2C = &D_800FE3B8;
+    g_btlfxEnv->unk2C = &D_800FE3B8;
     bzero(&D_800FE3B8, 0xD0);
     D_800FE3B8.unk60 = 0x200;
     D_800FE3B8.unk5E = 0x200;
@@ -13,10 +13,10 @@ void func_800C2E04(void) {
 
 void func_800C2E4C(void) {
     bzero(&D_800FE488, 0x64);
-    bcopy(D_800F78A4->unkC, &D_800FE368, 0x4C);
+    bcopy(g_btlfxEnv->unkC, &D_800FE368, 0x4C);
     D_800FE3B8.unk5C = 0;
     D_800FE3B8.unk53 = btlfx_rand() & 1;
-    if (D_800F78A4->unk0->unk1C & 4) {
+    if (g_btlfxEnv->unk0->unk1C & 4) {
         func_800C57A4(D_800FE368.unk44, D_800FE488.unk50);
     }
     func_800C57A4(D_800FE368.unk0, D_800FE488.unk46);
@@ -57,7 +57,7 @@ void func_800C2FFC(s32 arg0) {
 }
 
 void func_800C30B8(void) {
-    BtlUnit *u = D_800F78A4->unkC->unk0;
+    BtlUnit *u = g_btlfxEnv->unkC->unk0;
     if (u->unk68 & 1) {
         D_800FE484 = u;
     }
@@ -812,7 +812,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
             arg1[1] = s[0];
         }
     }
-    if ((u8)func_800C09A4(u, 0x200000)) {
+    if ((u8)btl_hasStatus(u, 0x200000)) {
         return (u16)arg1[1];
     }
 }
@@ -888,7 +888,7 @@ void func_800C5530(SVECTOR *arg0, SVECTOR *arg1) {
             bcopy(arg0, &D_800FE3B8.unkBC, 8);
             bcopy(arg1, &D_800FE3B8.unkC4, 8);
         }
-        if (D_800FE3B8.unkBA == 1 && ((D_800FE3B8.unkB9 == 1 && !(D_800F78A4->unk0->unk1C & 8)) || D_800FE3B8.unkB9 == 2)) {
+        if (D_800FE3B8.unkBA == 1 && ((D_800FE3B8.unkB9 == 1 && !(g_btlfxEnv->unk0->unk1C & 8)) || D_800FE3B8.unkB9 == 2)) {
             if (D_800FE3B8.unkBB != 2) {
                 if (D_800FE3B8.unk65 != 0 || D_800FE3B8.unkB4 == 0) {
                     bcopy(&D_800FE3B8.unk0[4], arg0, 8);

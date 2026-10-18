@@ -2904,7 +2904,7 @@ void func_80023A6C(void) {
     if (colon) {
         pkt = func_80027834(D_800686C8.x + 0x19, 8, ot, 0xEA, t->unk1 == 0, &w, pkt);
     }
-    pkt = func_800253D4(&D_800686C8, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
+    pkt = win_buildBorder(&D_800686C8, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
     setlen(pkt, 3);
     ((TileWords *)pkt)->rgbc = 0x62000000;
     ((TileWords *)pkt)->xy = ((D_800686C8.x + 2) & 0xFFFF) | ((D_800686C8.y + 2) << 16);
@@ -3030,11 +3030,11 @@ void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
         return;
     }
     text_formatNumber(c->level, buf, 2, 1);
-    func_8002B5FC(x, y, otz, c->unk0, 0);
-    func_8002B56C(x + 0x24, y + 0xE, otz, buf, 0);
-    func_800275DC(x, y + 0xE, otz, 0xB4, 0);
-    func_800275DC(x, y + 0x17, otz, 0xAF, 0);
-    func_800275DC(x, y + 0x20, otz, 0xB0, 0);
+    text_drawBlock(x, y, otz, c->unk0, 0);
+    ui_drawSmallDigits(x + 0x24, y + 0xE, otz, buf, 0);
+    ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
+    ui_drawSprite(x, y + 0x17, otz, 0xAF, 0);
+    ui_drawSprite(x, y + 0x20, otz, 0xB0, 0);
     if (c->hp != 0) {
         col = ((u16)(c->maxHp / 6) >= c->hp) << 2;
     } else {
@@ -3043,12 +3043,12 @@ void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
     text_formatNumber(c->hp, buf, 4, 1);
     buf[4] = '/';
     text_formatNumber(c->maxHp, buf + 5, -1, 1);
-    func_8002B56C(x + 0x16, y + 0x17, otz, buf, col);
+    ui_drawSmallDigits(x + 0x16, y + 0x17, otz, buf, col);
     col = ((s16)((s16)c->maxMp / 6) >= (s16)c->mp) << 2;
     text_formatNumber((s16)c->mp, buf, 3, 1);
     buf[3] = '/';
     text_formatNumber((s16)c->maxMp, buf + 4, -1, 1);
-    func_8002B56C(x + 0x1D, y + 0x20, otz, buf, col);
+    ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
 void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
@@ -3065,7 +3065,7 @@ void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r1.x = x;
         r1.y = y;
         r1.h = 0x2E;
-        func_8002D9B4(NULL, otz, 4);
+        win_setClip(NULL, otz, 4);
         d = 11 - s->unk4;
         if (s->unk1 == 1) {
             t = -(d * 3);
@@ -3079,7 +3079,7 @@ void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r2.h = 0x32;
         func_80025108(&r2, otz, 0, (g_gameState->unk24 >> 18) & 1);
         func_80028AF0(px, y, otz, s->unk3, b->hp == 0);
-        func_8002D9B4(&r1, otz, 4);
+        win_setClip(&r1, otz, 4);
         func_8002423C(x + 0x26, y + 3, otz, g_gameState->unk1C->party[s->unk3]);
     } else {
         func_8002423C(x + 0x26, y + 3, otz, a);
@@ -3242,7 +3242,7 @@ void func_80024BD8(void) {
     g_primPtr += sizeof(DrMode2Words);
 }
 
-u8 *func_80024EB4(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
+u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     s32 clut = func_800274B4(D_80068CE8.unk2, pal);
     RECT tw;
 
@@ -3313,7 +3313,7 @@ void func_80025108(RECT *r, s32 otz, u8 skip, s32 abr) {
     }
 }
 
-u8 *func_800253D4(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *pkt) {
+u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *pkt) {
     s32 n = 1;
     s32 semi = (abe != 0) << 25;
     Unk800689B0 *d;
@@ -3407,7 +3407,7 @@ u8 *func_800253D4(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *pkt
     return pkt + sizeof(DrTpageWords);
 }
 
-void func_80025A28(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
+void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     Unk800689B0 *d;
     u16 clut;
     s32 i;
@@ -3464,7 +3464,7 @@ void func_80025A28(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     g_primPtr += sizeof(DrMode2Words);
 }
 
-void func_80025ED4(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) {
+void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) {
     CVECTOR c1;
     CVECTOR c2;
     GaugeColors *e;
@@ -3517,7 +3517,7 @@ void func_80025ED4(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink)
         addPrim(&g_ot[otz], p);
         g_primPtr = (u8 *)(p + 1);
     }
-    func_800275DC(x, y, otz, 2, 0);
+    ui_drawSprite(x, y, otz, 2, 0);
     setlen(g_primPtr, 3);
     t = (TileWords *)g_primPtr;
     t->rgbc = *(u32 *)&e->c[0];
@@ -3631,19 +3631,19 @@ void func_800269F4(s32 x, s32 y, s32 otz, s32 len) {
     }
 }
 
-void func_80026B30(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
-    g_primPtr = func_800253D4(arg0, &g_ot[otz], arg2, arg3, 0, arg4, g_primPtr);
+void win_drawBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+    g_primPtr = win_buildBorder(arg0, &g_ot[otz], arg2, arg3, 0, arg4, g_primPtr);
 }
 
 void func_80026B84(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
-    g_primPtr = func_800253D4(arg0, &g_ot[otz], arg2, arg3, 1, arg4, g_primPtr);
+    g_primPtr = win_buildBorder(arg0, &g_ot[otz], arg2, arg3, 1, arg4, g_primPtr);
 }
 
 void func_80026BDC(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
-    g_primPtr = func_800253D4(arg0, &g_ot[otz], arg2, arg3, 2, arg4, g_primPtr);
+    g_primPtr = win_buildBorder(arg0, &g_ot[otz], arg2, arg3, 2, arg4, g_primPtr);
 }
 
-void func_80026C34(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
+void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
     g_primPtr = func_80026C7C(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
@@ -3701,7 +3701,7 @@ void func_80026FC4(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
 
     for (i = 0; i < 7; i++) {
         if ((arg3 >> i) & 1) {
-            func_800275DC(arg0, arg1, arg2, D_80068F70[i], 0);
+            ui_drawSprite(arg0, arg1, arg2, D_80068F70[i], 0);
             arg0 += 12;
         }
     }
@@ -3715,12 +3715,12 @@ void func_8002705C(RECT *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-void func_8002709C(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
-    g_primPtr = func_80024EB4(arg0, &g_ot[otz], arg2, arg3, arg4, g_primPtr);
+void win_drawFill(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+    g_primPtr = win_buildFill(arg0, &g_ot[otz], arg2, arg3, arg4, g_primPtr);
 }
 
-void func_800270EC(s32 arg0, s32 arg1, s32 arg2) {
-    func_800275DC(arg0, arg1, arg2, 1, 0);
+void ui_drawHand(s32 arg0, s32 arg1, s32 arg2) {
+    ui_drawSprite(arg0, arg1, arg2, 1, 0);
 }
 
 void func_80027110(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4, u8 arg5, u8 arg6) {
@@ -3776,8 +3776,8 @@ void func_800273C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     text_formatNumber(arg3, &buf[0], 2, 1);
     text_formatNumber(arg4, &buf[3], -1, 1);
     buf[2] = '/';
-    func_800275DC(arg0, arg1, arg2, 0xC1, 0);
-    func_8002B5B4(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? 4 : 0);
+    ui_drawSprite(arg0, arg1, arg2, 0xC1, 0);
+    ui_drawDigits(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? 4 : 0);
 }
 
 u16 func_80027480(s32 arg0) {
@@ -3788,7 +3788,7 @@ u16 func_800274B4(s32 arg0, s32 arg1) {
     return arg0 - arg1 * 0xC0;
 }
 
-void func_800274CC(RECT *rect, s32 otz) {
+void win_drawHelpFill(RECT *rect, s32 otz) {
     TileWords *p;
 
     setlen(g_primPtr, 3);
@@ -3822,7 +3822,7 @@ void func_800275A4(arg0, arg1, arg2, arg3, arg4)
     func_8002642C(arg0, arg1, arg2, arg3, arg4, 0);
 }
 
-s32 func_800275DC(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
+s32 ui_drawSprite(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
     s32 w;
     Unk800686E8 *d = &D_800686D0[id];
 
@@ -3891,9 +3891,9 @@ void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
         return;
     }
     text_formatNumber(c->level, buf, 2, 1);
-    func_8002B5FC(x, y, otz, c->unk0, 0);
-    func_8002B56C(x + 0x26, y + 0xE, otz, buf, 0);
-    func_800275DC(x, y + 0xE, otz, 0xB4, 0);
+    text_drawBlock(x, y, otz, c->unk0, 0);
+    ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
+    ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
     func_80026FC4(x, y + 0x1C, otz, c->unk38, 0);
     r.x = x - 4;
     r.y = y + 0x18;
@@ -4426,7 +4426,7 @@ s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     return g >> 28;
 }
 
-void func_80029058(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
+void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
     Unk7D4 *f = g_gameState->unk1C->unk7D4;
     s32 th = f->unk4 >> 8;
     SprtWords *p = (SprtWords *)g_primPtr;
@@ -4519,12 +4519,12 @@ u8 *func_8002920C(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
             } else if (*s == 0x6E) {
                 s++;
                 func_8002BBE8(D_800770F0[*s], D_80077080, 1);
-                pkt = func_80029B4C(x, y, ot, (s32)D_80077080, D_800770AC, pkt);
+                pkt = ui_buildLabel(x, y, ot, (s32)D_80077080, D_800770AC, pkt);
                 x += func_8002AE7C(D_80077080);
             } else if (*s == 0x6F) {
                 s++;
                 D_800770A8 = D_800770B0[*s];
-                pkt = func_80029B4C(x, y, ot, (s32)D_800770A8, D_800770AC, pkt);
+                pkt = ui_buildLabel(x, y, ot, (s32)D_800770A8, D_800770AC, pkt);
                 x += func_8002AE7C(D_800770A8);
             } else if (*s == 0x6C) {
                 s++;
@@ -4633,7 +4633,7 @@ u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
     return pkt + 8;
 }
 
-u8 *func_80029B4C(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
+u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     u8 *s = (u8 *)str;
     SprtWords *p = (SprtWords *)pkt;
     SpriteDesc16 *g = NULL;
@@ -5100,7 +5100,7 @@ s32 func_8002AA04(s32 frames, u8 *buf, s32 blink) {
     return r;
 }
 
-u8 *func_8002AD38(u8 *dst, u8 *src) {
+u8 *text_append(u8 *dst, u8 *src) {
     s32 c;
     u8 th;
     u8 *p;
@@ -5310,19 +5310,19 @@ void func_8002B47C(s32 arg0) {
     }
 }
 
-void func_8002B524(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4) {
-    g_primPtr = func_80029B4C(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+void ui_drawLabel(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4) {
+    g_primPtr = ui_buildLabel(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-void func_8002B56C(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
+void ui_drawSmallDigits(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
     g_primPtr = func_80029D60(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-void func_8002B5B4(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
+void ui_drawDigits(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
     g_primPtr = func_8002B644(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-void func_8002B5FC(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
+void text_drawBlock(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
     g_primPtr = func_8002920C(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
@@ -5612,9 +5612,9 @@ void func_8002BFD0(void) {
         dt = 1;
     }
     for (i = 0; i < dt; i++) {
-        func_8002E180();
+        win_updateAll();
     }
-    func_8002C9B0();
+    win_drawAll();
     D_80077150 = now;
 }
 
@@ -5830,13 +5830,13 @@ void func_8002C974(s32 a, s32 b, s32 v) {
     D_80077188[a][b].unkC = v;
 }
 
-void func_8002C9B0(void) {
+void win_drawAll(void) {
     Window *w;
     s32 i;
 
     w = D_80077530;
     for (i = 0; i < 10; w++, i++) {
-        if (w->unk1C != 0 && func_8002E4BC(w)) {
+        if (w->unk1C != 0 && win_isVisible(w)) {
             if (w->unk24 != 0) {
                 func_8002E588(w);
             }
@@ -5844,15 +5844,15 @@ void func_8002C9B0(void) {
                 w->unk44(w);
             }
             if (w->unk1C == 3 && w->unk30.unk3 < w->unk30.unk2) {
-                func_8002E718(&w->unk8, w->unk18, &w->unk30);
+                win_drawScrollArrows(&w->unk8, w->unk18, &w->unk30);
             }
-            func_8002D9B4(NULL, w->unk18, w->unk1A);
+            win_setClip(NULL, w->unk18, w->unk1A);
             if (w->unk40 != NULL && w->unk1E != 0) {
                 w->unk40(w);
             }
-            func_8002D9B4(&w->unk8, w->unk18, w->unk1A);
+            win_setClip(&w->unk8, w->unk18, w->unk1A);
             if (w->unk1A != 4) {
-                func_8002CB18(w);
+                win_drawFrame(w);
             }
             if (w->unk1F != 0) {
                 func_8002705C(&w->unk8, w->unk18, w->unk1A);
@@ -5861,7 +5861,7 @@ void func_8002C9B0(void) {
     }
 }
 
-void func_8002CB18(Window *w) {
+void win_drawFrame(Window *w) {
     s32 abr;
     RECT t;
 
@@ -5869,7 +5869,7 @@ void func_8002CB18(Window *w) {
     abr &= 1;
 
     if (w->unk1A == 2) {
-        func_80026B30(&w->unk8, w->unk18, w->unk1E, w->unk1D, abr);
+        win_drawBorder(&w->unk8, w->unk18, w->unk1E, w->unk1D, abr);
         if (w->unk1E == 0) {
             return;
         }
@@ -5895,7 +5895,7 @@ void func_8002CB18(Window *w) {
             t.y = w->unk8.y + 4;
             t.w = w->unk8.w;
             t.h = w->unk8.h - 4;
-            func_80025A28(w->unk8.x, w->unk8.y, w->unk18, 0, w->unk8.w, abr);
+            ui_drawRule(w->unk8.x, w->unk8.y, w->unk18, 0, w->unk8.w, abr);
             func_80025108(&t, w->unk18, 1, abr);
         } else {
             t = w->unk8;
@@ -5909,7 +5909,7 @@ void func_8002CB18(Window *w) {
             return;
         }
     }
-    func_8002709C(&t, w->unk18, w->unk30.unkA, w->unk30.unkB, abr);
+    win_drawFill(&t, w->unk18, w->unk30.unkA, w->unk30.unkB, abr);
 }
 
 void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
@@ -5917,25 +5917,25 @@ void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
 
     switch (style) {
     case 2:
-        func_80026B30(r, otz, 1, 0, abr);
+        win_drawBorder(r, otz, 1, 0, abr);
         t.x = r->x + 4;
         t.y = r->y + 4;
         t.w = r->w - 8;
         t.h = r->h - 8;
-        func_8002709C(&t, otz, 0, 0, abr);
+        win_drawFill(&t, otz, 0, 0, abr);
         break;
     case 1:
         t.x = r->x;
         t.y = r->y + 4;
         t.w = r->w;
         t.h = r->h - 4;
-        func_80025A28(r->x, r->y, otz, 0, r->w - 2, abr);
+        ui_drawRule(r->x, r->y, otz, 0, r->w - 2, abr);
         func_80025108(&t, otz, 1, abr);
-        func_8002709C(&t, otz, 0, 0, abr);
+        win_drawFill(&t, otz, 0, 0, abr);
         break;
     case 0:
         func_80025108(r, otz, 0, abr);
-        func_8002709C(r, otz, 0, 0, abr);
+        win_drawFill(r, otz, 0, 0, abr);
         break;
     case 3:
         func_80026B84(r, otz, 1, 0, abr);
@@ -5943,12 +5943,12 @@ void func_8002CD4C(RECT *r, s32 otz, s32 style, s32 abr) {
         t.y = r->y + 2;
         t.w = r->w - 3;
         t.h = r->h - 3;
-        func_8002709C(&t, otz, 0, 0, abr);
+        win_drawFill(&t, otz, 0, 0, abr);
         break;
     }
 }
 
-void func_8002CF20(Window *w, s32 mode) {
+void win_setOpenAnim(Window *w, s32 mode) {
     s16 h;
 
     w->unk28 = mode;
@@ -6023,7 +6023,7 @@ void func_8002D398(Window *w, s32 mode, s32 off) {
     }
 }
 
-void func_8002D550(Window *w) {
+void win_stepOpen(Window *w) {
     if (w->unk28 == 0 || w->unk28 == 4) {
         w->unk8.w += w->unk14;
         w->unk8.h += w->unk16;
@@ -6084,7 +6084,7 @@ void func_8002D550(Window *w) {
     }
 }
 
-void func_8002D7E8(Window *w) {
+void win_stepClose(Window *w) {
     if (w->unk28 == 0 || w->unk28 == 4) {
         w->unk8.w -= w->unk14;
         w->unk8.h -= w->unk16;
@@ -6120,7 +6120,7 @@ void func_8002D7E8(Window *w) {
     }
 }
 
-void func_8002D9B4(RECT *r, s32 otz, s32 style) {
+void win_setClip(RECT *r, s32 otz, s32 style) {
     RECT t;
     Unk80010CE0 offs;
     DR_AREA *p;
@@ -6168,24 +6168,24 @@ Window *func_8002DC54(RECT *r, s32 a, s32 b) {
         }
     }
     if (i < 10) {
-        res = func_8002EA7C(r, a, b, w);
+        res = win_init(r, a, b, w);
     } else {
         res = NULL;
     }
     return res;
 }
 
-Window *func_8002DCAC(RECT *r, s32 a, s32 b, u32 i) {
+Window *win_open(RECT *r, s32 a, s32 b, u32 i) {
     Window *res;
     if (i < 10) {
-        res = func_8002EA7C(r, a, b, &D_80077530[i]);
+        res = win_init(r, a, b, &D_80077530[i]);
     } else {
         res = NULL;
     }
     return res;
 }
 
-void func_8002DD00(Window *w) {
+void win_close(Window *w) {
     if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
         w->unk1C = 2;
         if (g_drawBufs.unk1 != 2) {
@@ -6194,12 +6194,12 @@ void func_8002DD00(Window *w) {
     }
 }
 
-void func_8002DD54(void) {
+void win_closeAll(void) {
     s32 i;
     Window *w = D_80077530;
     for (i = 0; i < 10; w++, i++) {
         if (w->unk1C != 0 && w->unk1C != 2) {
-            func_8002DD00_inline(w);
+            win_close_inline(w);
         }
     }
 }
@@ -6230,7 +6230,7 @@ void func_8002DEE4(RECT *a, s32 b, s32 c) {
     func_8002CD4C(a, b, c, (g_gameState->unk24 >> 18) & 1);
 }
 
-void func_8002DF18(RECT *r, s32 otz, s32 style, s32 xoff) {
+void win_drawHelpFrame(RECT *r, s32 otz, s32 style, s32 xoff) {
     RECT t;
     s32 y;
     if (style != 4) {
@@ -6247,7 +6247,7 @@ void func_8002DF18(RECT *r, s32 otz, s32 style, s32 xoff) {
     t.y = r->y + 2;
     t.w = r->w - 4;
     t.h = r->h - 4;
-    func_800274CC(&t, otz);
+    win_drawHelpFill(&t, otz);
 }
 
 void func_8002E040(RECT *r, s32 otz, s32 mode, MenuList *m) {
@@ -6262,8 +6262,8 @@ void func_8002E040(RECT *r, s32 otz, s32 mode, MenuList *m) {
         t.y = r->y + 4;
         t.w = r->w;
         t.h = r->h - 4;
-        func_8002E718(r, otz, m);
-        func_80025A28(r->x, r->y, otz, 0, r->w - 2, abr);
+        win_drawScrollArrows(r, otz, m);
+        ui_drawRule(r->x, r->y, otz, 0, r->w - 2, abr);
         func_80025108(&t, otz, 1, abr);
     } else {
         t = *r;
@@ -6272,11 +6272,11 @@ void func_8002E040(RECT *r, s32 otz, s32 mode, MenuList *m) {
     if (m->unk8 & 4) {
         func_8002E7FC(&t, otz, m, abr);
     } else {
-        func_8002709C(&t, otz, 0, m->unkB, abr);
+        win_drawFill(&t, otz, 0, m->unkB, abr);
     }
 }
 
-void func_8002E180(void) {
+void win_updateAll(void) {
     s32 i;
     Window *w = D_80077530;
     for (i = 0; i < 10; w++, i++) {
@@ -6286,14 +6286,14 @@ void func_8002E180(void) {
                 func_8002EB74(&w->unk30);
             }
         } else if (st == 1) {
-            func_8002D550(w);
+            win_stepOpen(w);
         } else if (st == 2 && g_drawBufs.unk1 != 2) {
-            func_8002D7E8(w);
+            win_stepClose(w);
         }
     }
 }
 
-void func_8002E260(void) {
+void win_reapClosed(void) {
     s32 i;
     Window *p = D_80077530;
     for (i = 0; i < 10; p++, i++) {
@@ -6306,19 +6306,19 @@ void func_8002E260(void) {
     }
 }
 
-void func_8002E2E4(Window *arg0, void (*arg1)(Window *)) {
+void win_setOnOpened(Window *arg0, void (*arg1)(Window *)) {
     arg0->unk48 = arg1;
 }
 
-void func_8002E2EC(Window *arg0, void (*arg1)(Window *)) {
+void win_setDrawContent(Window *arg0, void (*arg1)(Window *)) {
     arg0->unk40 = arg1;
 }
 
-void func_8002E2F4(Window *arg0, void (*arg1)(Window *)) {
+void win_setDrawOverlay(Window *arg0, void (*arg1)(Window *)) {
     arg0->unk44 = arg1;
 }
 
-void func_8002E2FC(Window *arg0, void (*arg1)(Window *)) {
+void win_setOnClosed(Window *arg0, void (*arg1)(Window *)) {
     arg0->unk4C = arg1;
 }
 
@@ -6343,7 +6343,7 @@ void func_8002E32C(Window *arg0, u8 arg1) {
 void func_8002E334(Window *arg0, s16 arg1) {
     arg0->unk10 = arg1;
     if (arg0->unk1A != 3) {
-        func_8002CF20(arg0, arg0->unk28);
+        win_setOpenAnim(arg0, arg0->unk28);
     } else {
         func_8002D398(arg0, arg0->unk29, arg0->unk2A);
     }
@@ -6365,7 +6365,7 @@ void func_8002E3F0(Window *arg0, s32 arg1, s16 arg2, s8 arg3) {
 }
 
 void func_8002E400(RECT *a, s32 b) {
-    func_8002709C(a, b, 0, 0, (g_gameState->unk24 >> 18) & 1);
+    win_drawFill(a, b, 0, 0, (g_gameState->unk24 >> 18) & 1);
 }
 
 Window *func_8002E43C(s32 i) {
@@ -6383,7 +6383,7 @@ void func_8002E490(void) {
     }
 }
 
-u8 func_8002E4BC(Window *w) {
+u8 win_isVisible(Window *w) {
     Unk80010CD0 min = D_80010CD0;
     u8 r = 0;
 
@@ -6406,16 +6406,16 @@ void func_8002E588(Window *w) {
         return;
     }
     if (w->unk1C != 3) {
-        func_8002D9B4(NULL, w->unk18, 4);
+        win_setClip(NULL, w->unk18, 4);
     }
-    func_8002B524(w->unk0 + w->unk20, w->unk8.y + w->unk22, w->unk18, w->unk24, w->unk1E ? 0 : 2);
+    ui_drawLabel(w->unk0 + w->unk20, w->unk8.y + w->unk22, w->unk18, w->unk24, w->unk1E ? 0 : 2);
     if (w->unk1C != 3) {
         RECT *s = &w->unk8;
         r.x = s->x;
         r.y = s->y - 3;
         r.w = s->w;
         r.h = 8;
-        func_8002D9B4(&r, w->unk18, 4);
+        win_setClip(&r, w->unk18, 4);
     }
 }
 
@@ -6431,7 +6431,7 @@ void func_8002E660(Window *w) {
     func_800265B0(w->unk0 + w->unk2A, y, w->unk18, w->unk29, (w->unk30.unkA + w->unk2A) & 0x1F, w->unk30.unkB);
 }
 
-void func_8002E718(RECT *r, s32 otz, MenuList *m) {
+void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
     s32 blink = ((u32)D_80077150 >> 4) & 1;
     u8 top = m->unk5;
     u8 more = top < m->unk2 - m->unk3;
@@ -6443,11 +6443,11 @@ void func_8002E718(RECT *r, s32 otz, MenuList *m) {
      * stores and jump2 deletes the then-empty branches, so they emit no code. They exist for the register
      * allocator: the first splits the block between the x and y arguments (as the original's schedule
      * needs) and keeps top live into a second block, the second adds references to more and blink. */
-    func_800275DC(r->x + r->w - 6, (top != (u32)m && (x = 0), r->y + 5), z, 0xB8,
+    ui_drawSprite(r->x + r->w - 6, (top != (u32)m && (x = 0), r->y + 5), z, 0xB8,
                   top != 0 ? (more != blink && (x = 0), blink) : 1);
     y = r->y + r->h - 14;
     x = r->x + r->w - 6;
-    func_800275DC(x, y, z, 0xB9, more ? blink : 1);
+    ui_drawSprite(x, y, z, 0xB9, more ? blink : 1);
 }
 
 void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
@@ -6459,17 +6459,17 @@ void func_8002E7FC(RECT *r, s32 otz, MenuList *m, s32 abr) {
     if (m->unk8 & 2) {
         t.y = r->y;
         t.h = m->unk9 + 1;
-        func_8002709C(&t, otz, 0, (m->unkB + (r->h - m->unk9)) & 0x1F, abr);
+        win_drawFill(&t, otz, 0, (m->unkB + (r->h - m->unk9)) & 0x1F, abr);
         t.y = r->y + m->unk9 - 1;
         t.h = r->h - m->unk9;
-        func_8002709C(&t, otz, 0, (m->unkB + (m->unk9 - 1)) & 0x1F, abr);
+        win_drawFill(&t, otz, 0, (m->unkB + (m->unk9 - 1)) & 0x1F, abr);
     } else {
         t.y = r->y;
         t.h = r->h - m->unk9;
-        func_8002709C(&t, otz, 0, m->unkB, abr);
+        win_drawFill(&t, otz, 0, m->unkB, abr);
         t.y = r->y + t.h;
         t.h = m->unk9;
-        func_8002709C(&t, otz, 0, m->unkB, abr);
+        win_drawFill(&t, otz, 0, m->unkB, abr);
     }
 }
 
@@ -6495,7 +6495,7 @@ void func_8002E960(RECT *r, s32 otz, MenuList *m, s32 style) {
     g_primPtr += sizeof(LineF2Words);
 }
 
-Window *func_8002EA7C(RECT *r, s32 otz, s32 style, Window *w) {
+Window *win_init(RECT *r, s32 otz, s32 style, Window *w) {
     w->unk1A = style;
     *(RECT *)w = *r;
     w->unk1C = 1;
@@ -6508,7 +6508,7 @@ Window *func_8002EA7C(RECT *r, s32 otz, s32 style, Window *w) {
     w->unk44 = 0;
     w->unk40 = 0;
     w->unk48 = 0;
-    func_8002CF20(w, D_8006BCFC[style]);
+    win_setOpenAnim(w, D_8006BCFC[style]);
     w->unk1F = w->unk1A == 3;
     func_8002EDFC(&w->unk30, 0, 0, 0, r->h);
     w->unk29 = 4;
@@ -6565,7 +6565,7 @@ void func_8002EB74(MenuList *p) {
     p->unk9 = 0;
 }
 
-MenuView *func_8002ECA0(MenuList *m, MenuView *v) {
+MenuView *menuList_getView(MenuList *m, MenuView *v) {
     s32 d;
 
     if (m->unk8 & 4) {
@@ -6621,14 +6621,14 @@ void func_8002EDFC(MenuList *m, s32 count, s32 rows, s32 cols, s32 e) {
 
 void func_8002EE8C(MenuList *m, s32 b) {
     if (m->unk8 == 0) {
-        func_8002EEF0(m, b);
-        func_8002EF58(m, b);
-        func_8002F1CC(m, b);
-        func_8002F284(m, b);
+        menuList_up(m, b);
+        menuList_down(m, b);
+        menuList_pageUp(m, b);
+        menuList_pageDown(m, b);
     }
 }
 
-void func_8002EEF0(MenuList *m, u32 pad) {
+void menuList_up(MenuList *m, u32 pad) {
     if (pad & 0x10) {
         if (m->cursor == 0) {
             if (m->unk5 != 0) {
@@ -6642,7 +6642,7 @@ void func_8002EEF0(MenuList *m, u32 pad) {
     }
 }
 
-void func_8002EF58(MenuList *m, u32 pad) {
+void menuList_down(MenuList *m, u32 pad) {
     if (pad & 0x40) {
         if ((m->unk5 + m->cursor) * m->unk4 + m->unk7 + m->unk4 < m->unk0) {
             if (m->cursor >= m->unk3 - 1) {
@@ -6702,7 +6702,7 @@ void func_8002F0EC(MenuList *m, s32 pad) {
     }
 }
 
-void func_8002F1CC(MenuList *arg0, s32 arg1) {
+void menuList_pageUp(MenuList *arg0, s32 arg1) {
     s32 t;
     s32 c;
 
@@ -6721,7 +6721,7 @@ void func_8002F1CC(MenuList *arg0, s32 arg1) {
     }
 }
 
-void func_8002F284(MenuList *arg0, s32 arg1) {
+void menuList_pageDown(MenuList *arg0, s32 arg1) {
     s32 t;
     s32 a;
     s32 c;
@@ -8809,16 +8809,16 @@ void func_80035108(void) {
     } while (0); /* empty debug macro in the original; changes the register allocation */
     if (D_80077DE8.unk1C != 0) {
         if (D_80077DE8.unk1D != 0) {
-            func_800270EC(D_80077DE8.unk0, D_80077DE8.unk2, otz);
+            ui_drawHand(D_80077DE8.unk0, D_80077DE8.unk2, otz);
         }
         func_80035C2C(D_80077DE8.unk0 + 5, D_80077DE8.unk2 + 2, otz, &D_80077DE8.unk20);
     }
     func_8003573C();
     if (D_80077DE8.unk1A != 0) {
         func_80035214(&r);
-        func_800275DC(r.unk0.x + 8, r.unk0.y, otz, 0xB7, 0);
-        func_8002B5FC(r.unk0.x + 6, r.unk0.y + 8, otz, D_80077DE8.unk8, 8);
-        func_8002DF18(&r.unk0, otz, r.unk8, r.unkA);
+        ui_drawSprite(r.unk0.x + 8, r.unk0.y, otz, 0xB7, 0);
+        text_drawBlock(r.unk0.x + 6, r.unk0.y + 8, otz, D_80077DE8.unk8, 8);
+        win_drawHelpFrame(&r.unk0, otz, r.unk8, r.unkA);
     }
 }
 
@@ -8936,7 +8936,7 @@ void func_800355DC(void) {
 }
 
 void func_800355E4(Unk80077DE8 *unused) {
-    func_800275DC(D_80077DE8.unk0, D_80077DE8.unk2, D_80077DE8.unk4, 1, 0);
+    ui_drawSprite(D_80077DE8.unk0, D_80077DE8.unk2, D_80077DE8.unk4, 1, 0);
 }
 
 u8 func_8003561C(void) {
@@ -9143,7 +9143,7 @@ void func_80035E40(void) {
     if (D_80077E52 == 0 || (D_80077E28.unk0 != 0 && (*(u32 *)&D_80077E28 & 0xFFFF00))) {
         all = 1;
     }
-    func_8002D9B4(NULL, 2, 2);
+    win_setClip(NULL, 2, 2);
     if (D_80077E28.unk7 != 0) {
         sel = D_80077E28.unk7 - 1;
     } else {
@@ -9152,11 +9152,11 @@ void func_80035E40(void) {
     for (i = 0; i < 7; i++) {
         y = i * 15 + 6;
         if (all || i == sel) {
-            func_8002B5FC(r->x + 10, r->y + y + D_80077E28.unk8, 2,
+            text_drawBlock(r->x + 10, r->y + y + D_80077E28.unk8, 2,
                           (u8 *)text_getFrom(D_800110A0, i), 0);
         }
     }
-    func_8002D9B4(r, 2, 2);
+    win_setClip(r, 2, 2);
     func_8002DEE4(r, 2, 2);
     func_8002705C(r, 2, 2);
 }
@@ -11093,7 +11093,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xEB:
         func_8004E924();
-        func_8002DD54();
+        win_closeAll();
         return 0;
     case 0x54:
         D_8007B704->unk10 = evt_getArg8_inline();
@@ -13970,7 +13970,7 @@ void func_8004BFB0(void) {
         D_8007B950 = 0;
     } else {
         func_8004E924();
-        func_8002DD54();
+        win_closeAll();
     }
     s = g_gameState;
     D_8007BBD4 = 0;
@@ -14805,16 +14805,16 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
             style = 2;
         }
     }
-    w->unk14 = func_8002DCAC(&r, 2, style, id);
+    w->unk14 = win_open(&r, 2, style, id);
     if (w->unk14 != NULL) {
         w->unk14->unk50 = (s32)w;
-        func_8002E2EC(w->unk14, (void (*)(Window *))func_8004F5D4);
-        func_8002E2F4(w->unk14, func_8004F660);
+        win_setDrawContent(w->unk14, (void (*)(Window *))func_8004F5D4);
+        win_setDrawOverlay(w->unk14, func_8004F660);
         if (l->unk4 != 0 && !(flags & 4)) {
             func_8002D398(w->unk14, l->unk6 & 3, l->unk4);
         }
         if (D_8007BB90 != 0) {
-            func_8002CF20(w->unk14, 3);
+            win_setOpenAnim(w->unk14, 3);
         }
         if (flags & 0x40) {
             func_8002E304(w->unk14, (s32)D_80011EFC);

@@ -623,7 +623,7 @@ typedef struct {
 } Unk80077148;
 extern Unk80077148 g_drawBufs;
 
-/* window frame insets per style (rodata, func_8002D9B4) */
+/* window frame insets per style (rodata, win_setClip) */
 typedef struct {
     s8 unk0[5][4];
 } Unk80010CE0;
@@ -638,20 +638,20 @@ void func_80021938(PreloadEntry *);
 void cd_controlF(u8, u8 *);
 void func_800235A0(u8, u8 *);
 void func_8002423C(s32, s32, s32, Character *);
-u8 *func_80024EB4(RECT *, u32 *, u8, u8, s32, u8 *);
-u8 *func_800253D4(RECT *, u32 *, u8, u8, s32, s32, u8 *);
+u8 *win_buildFill(RECT *, u32 *, u8, u8, s32, u8 *);
+u8 *win_buildBorder(RECT *, u32 *, u8, u8, s32, s32, u8 *);
 void func_80026BDC(RECT *, s32, u8, u8, s32);
 void func_80027568(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
 void func_800275A4(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
 void func_800265B0(s32, s32, s32, s32, s32, s32);
-void func_800274CC(RECT *, s32);
+void win_drawHelpFill(RECT *, s32);
 void func_80026900(s32, s32, s32, s32);
 void func_8002642C(s16, s16, s32, s32, u8, u8);
 u8 *func_80026C7C(s32, s32, u32 *, s32, u8, u8 *);
 void func_80026F8C(s32, s32, s32, s32);
 void func_80027A4C(s32, s32, s32, s32);
 u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
-s32 func_800275DC(s32, s32, s32, s32, u8);
+s32 ui_drawSprite(s32, s32, s32, s32, u8);
 void func_80028AF0(s32, s32, s32, s32, u8);
 
 void text_formatNumber(s32, u8 *, s32, u8);
@@ -664,10 +664,10 @@ void func_800283E0(s32, s32, s32, s32, s32, u8);
 void func_80028A40(s32, RECT *, RECT *, RECT *);
 void func_80028BE8(u8 *, s32);
 s32 func_80028DB0(s32, s32, s32);
-u8 *func_80029B4C(s32, s32, u32 *, s32, s32, u8 *);
+u8 *ui_buildLabel(s32, s32, u32 *, s32, s32, u8 *);
 u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
 u8 *func_8002B644(s32, s32, u32 *, u8 *, s32, void *);
-void func_8002B5B4(s32, s32, s32, u8 *, s32);
+void ui_drawDigits(s32, s32, s32, u8 *, s32);
 u8 *func_8002920C(s32, s32, u32 *, u8 *, s32, u8 *);
 typedef struct {
     s16 w;
@@ -679,10 +679,10 @@ void func_8002AF70(void *, s32);
 TextSize func_8002AF70(u8 *); /* measure a text string */
 #endif
 s32 func_80023938(); /* (s32 index); unprototyped, as the original's callers pass ints unconverted */
-void func_8002C9B0(void);
-void func_8002E180(void);
+void win_drawAll(void);
+void win_updateAll(void);
 
-/* ---- 0x54-byte objects, 10 at D_80077530 (func_8002E260..8002E3F0) ---- */
+/* ---- 0x54-byte objects, 10 at D_80077530 (win_reapClosed..8002E3F0) ---- */
 
 typedef struct {
     s16 unk0; /* item count */
@@ -743,7 +743,7 @@ typedef struct Window {
 } Window; /* 0x54 */
 extern Window D_80077530[10];
 
-void func_8002CF20(Window *, s32);
+void win_setOpenAnim(Window *, s32);
 void func_8002D1AC(Window *, s32);
 void func_8002D398(Window *, s32, s32);
 
@@ -2044,7 +2044,7 @@ void func_800239D0(void);
 void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
 s32 func_80027710(s32, s32, s32, void *, u8);
-u8 *func_8002AD38(u8 *, u8 *);
+u8 *text_append(u8 *, u8 *);
 s32 func_8002AE7C(u8 *);
 s32 func_8002B9B8(u8 *s);
 s32 func_8002BA10(u8 *s);
@@ -2057,20 +2057,20 @@ extern Glyph8 D_80068690[]; /* indexed by ASCII code */
 extern Glyph8 D_80068890; /* & */
 extern Glyph8 D_80068CE0; /* . */
 extern Glyph8 D_80068DC8; /* _ */
-void func_8002B524(s32, s32, s32, s32, s32);
-void func_8002B56C(s32, s32, s32, u8 *, s32);
-void func_8002B5FC(s32, s32, s32, u8 *, s32);
+void ui_drawLabel(s32, s32, s32, s32, s32);
+void ui_drawSmallDigits(s32, s32, s32, u8 *, s32);
+void text_drawBlock(s32, s32, s32, u8 *, s32);
 u8 *func_8002BD54(u8 *, u8 *);
 void func_8002C064(s32);
 void func_8002C0DC(s32);
 void func_8002C308(s32);
 void func_8002C4B0(u8);
-void func_8002D9B4(RECT *, s32, s32);
+void win_setClip(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
-Window *func_8002EA7C(RECT *, s32, s32, Window *);
+Window *win_init(RECT *, s32, s32, Window *);
 
-/* Inlined copy of func_8002DD00 (close window). */
-static inline void func_8002DD00_inline(Window *w) {
+/* Inlined copy of win_close (close window). */
+static inline void win_close_inline(Window *w) {
     if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
         w->unk1C = 2;
         if (g_drawBufs.unk1 != 2) {
@@ -2079,23 +2079,23 @@ static inline void func_8002DD00_inline(Window *w) {
     }
 }
 
-void func_8002DD00(Window *);
+void win_close(Window *);
 void func_8002DE10(Window *);
 void func_8002DE60(void);
 void func_8002DEE4(RECT *, s32, s32);
 void func_8002E040(RECT *, s32, s32, MenuList *);
-void func_8002E2E4(Window *, void (*)(Window *));
-void func_8002E2EC(Window *, void (*)(Window *));
-void func_8002E2F4(Window *, void (*)(Window *));
-void func_8002E2FC(Window *, void (*)(Window *));
+void win_setOnOpened(Window *, void (*)(Window *));
+void win_setDrawContent(Window *, void (*)(Window *));
+void win_setDrawOverlay(Window *, void (*)(Window *));
+void win_setOnClosed(Window *, void (*)(Window *));
 void func_8002E304(Window *, s32);
 void func_8002E31C(Window *, u8);
 void func_8002E334(Window *, s16);
 void SystemError(s32, s32);
 void func_8002EB74(MenuList *);
-void func_8002D550(Window *);
-void func_8002D7E8(Window *);
-MenuView *func_8002ECA0(MenuList *, MenuView *);
+void win_stepOpen(Window *);
+void win_stepClose(Window *);
+MenuView *menuList_getView(MenuList *, MenuView *);
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
 void func_8002EE8C(MenuList *, s32);
 void func_8002F044(MenuList *, s32);
@@ -2529,8 +2529,8 @@ static inline s32 func_80034430_inline(s32 ch, s32 id) {
     return -1;
 }
 
-void func_80025ED4(s32, s32, s32, s32, s32, s32, u8);
-/* gauge colour set per style (func_80025ED4): c[2]/c[3] are the bar's left/right
+void ui_drawGauge(s32, s32, s32, s32, s32, s32, u8);
+/* gauge colour set per style (ui_drawGauge): c[2]/c[3] are the bar's left/right
    colours, c[0]/c[1] the blink targets; c[0] is also the frame colour */
 typedef struct {
     CVECTOR c[4];
@@ -2574,7 +2574,7 @@ extern Icon D_800687C0;
 extern Icon D_80068E30;
 extern Icon D_80068E38;
 extern s32 D_80070494;
-void func_800270EC(s32, s32, s32);
+void ui_drawHand(s32, s32, s32);
 void func_8002C870(s32, s32, s32);
 void func_8002C8AC(s32, s32, s32);
 s32 cd_getState(void);
@@ -2611,11 +2611,11 @@ typedef struct {
 } Unk8006BC0C;
 extern Unk8006BC0C D_8006BC0C[4];
 u8 func_8003561C(void);
-void func_80025A28(s32, s32, s32, s32, s32, s32);
-void func_8002EF58(MenuList *, u32);
-void func_8002F1CC(MenuList *, s32);
-void func_8002F284(MenuList *, s32);
-void func_8002EEF0(MenuList *, u32);
+void ui_drawRule(s32, s32, s32, s32, s32, s32);
+void menuList_down(MenuList *, u32);
+void menuList_pageUp(MenuList *, s32);
+void menuList_pageDown(MenuList *, s32);
+void menuList_up(MenuList *, u32);
 extern u32 g_padHeld; /* buttons held */
 extern s32 D_80070430;
 extern u8 D_8007AF02;
@@ -2709,7 +2709,7 @@ static inline void func_8004E958_inline(Unk8007B9C0 *p) {
 static inline void func_8004EEA0_inline(Unk8007B9C0 *p) {
     if (p != NULL && p->unk8 != 0) {
         if (p->unk14 != NULL) {
-            func_8002DD00(p->unk14);
+            win_close(p->unk14);
         }
         if (D_8007B968 >= 0 && D_8007B970 == p->unkA) {
             func_80019774(&D_8007B99C);
@@ -2839,11 +2839,11 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
     n->unk8 = g_evtState->unk15D4;
     g_evtState->unk15D4 = n;
 }
-void func_8002E718(RECT *, s32, MenuList *);
+void win_drawScrollArrows(RECT *, s32, MenuList *);
 void func_8002E7FC(RECT *, s32, MenuList *, s32);
 void func_8002E960(RECT *, s32, MenuList *, s32);
 void func_80025108(RECT *, s32, u8, s32);
-void func_8002709C(RECT *, s32, u8, u8, s32);
+void win_drawFill(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
 extern s32 D_800831A8; /* sound effect volume */
 extern s32 D_800831C0;
@@ -2860,8 +2860,8 @@ typedef struct {
 } Unk800689B0;
 extern Unk800689B0 D_800689B0[];
 extern Unk800689B0 D_80068D70[];
-u8 func_8002E4BC(Window *);
-void func_8002CB18(Window *);
+u8 win_isVisible(Window *);
+void win_drawFrame(Window *);
 void func_8002E588(Window *);
 /* sprite cell of a frame animation (func_800357E0) */
 typedef struct {
@@ -3156,7 +3156,7 @@ extern void (*D_8006BD28[])(Unk80077C78 *, s32);
 extern s32 D_8007BBD4;
 extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
-void func_8002DD54(void);
+void win_closeAll(void);
 void func_8004E16C(void);
 extern u8 *D_8007ADF8; /* script data */
 /* 8-byte entry of the field script directory at D_8007ADF8 */
@@ -3203,7 +3203,7 @@ typedef struct {
 } DrMode2Words; /* DR_MODE / DR_TWIN */
 extern Unk800689B0 D_80068DC0;
 extern Unk800689B0 D_80068CE8;
-/* window frame tables (func_800253D4) */
+/* window frame tables (win_buildBorder) */
 extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
 extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
 extern u8 D_80068FB4[][4]; /* corner sprites (D_800686D0 index) per style */
@@ -3666,7 +3666,7 @@ extern s32 D_8007AE24;
 extern s32 D_8007AE28;
 void func_8004EA4C(s32);
 void func_8004E924(void);
-void func_8002DD54(void);
+void win_closeAll(void);
 void func_8004ED3C(void);
 void *func_8004F058(s32);
 s32 func_80038990(s32, s32, s32, s32);

@@ -172,7 +172,7 @@ extern s32 D_80070498;
 extern s32 D_8007042C;
 void func_80026EA0(s32, s32, s32, s32, s32);
 s32 func_80034430(s32, s32);
-void func_80026C34(s32, s32, s32, s32, u8); /* main exe */
+void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void func_801F32E0(Character *);
 void func_801F30D8(void);
 void func_801EEEA8(void);

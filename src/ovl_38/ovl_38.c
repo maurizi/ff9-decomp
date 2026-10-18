@@ -104,7 +104,7 @@ void func_801EE740(void) {
         k = ((StatusEntry *)((u8 *)tp + off))->unk0;
         D_801F120C.unk7C = func_8002920C(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, D_801F120C.unk7C);
     }
-    func_8002B524(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
+    ui_drawLabel(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
     func_8002DEE4(&r, 0x19, 2);
     func_8002705C(&r, 0x19, 2);
 }
@@ -129,23 +129,23 @@ void func_801EE9E8(void) {
         D_801F120C.unk7C = func_8002920C(r->x + 0xA, r->y + (i * 13 + y) - 4, g_ot + 0x1D, text_get(D_801EFBF0[i]), 0, D_801F120C.unk7C);
     }
     text_formatNumber(c->speed, buf, 2, 1);
-    func_8002B56C(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x3D, 0x1D, buf, 0);
     text_formatNumber(c->strength, buf, 2, 1);
-    func_8002B56C(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x4A, 0x1D, buf, 0);
     text_formatNumber(c->magic, buf, 2, 1);
-    func_8002B56C(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
     text_formatNumber(c->spirit, buf, 2, 1);
-    func_8002B56C(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
     text_formatNumber(D_8006E0E8[c->equip[0]].unk5, buf, 3, 1);
-    func_8002B56C(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
     text_formatNumber(c->defense, buf, 3, 1);
-    func_8002B56C(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
     text_formatNumber(c->evade, buf, 3, 1);
-    func_8002B56C(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x8C, 0x1D, buf, 0);
     text_formatNumber(c->magicDef, buf, 3, 1);
-    func_8002B56C(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0x99, 0x1D, buf, 0);
     text_formatNumber(c->magicEva, buf, 3, 1);
-    func_8002B56C(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0x51, r->y + 0xA6, 0x1D, buf, 0);
 }
 
 void func_801EED18(void) {
@@ -167,19 +167,19 @@ void func_801EED18(void) {
     }
     if (show) {
         st->unk7C = func_8002920C(r->x + 0x74, r->y + 0x39, &g_ot[0x1D], text_get(0xB), 0, st->unk7C);
-        func_80025ED4(r->x + 0xB4, r->y + 0x3E, 0x1D, c->trance, 0xFF, 1, 1);
+        ui_drawGauge(r->x + 0xB4, r->y + 0x3E, 0x1D, c->trance, 0xFF, 1, 1);
     }
-    func_8002B5FC(r->x + 0x74, r->y + 0x46, 0x1D, text_get(0xC), 0);
-    func_8002B5FC(r->x + 0x74, r->y + 0x53, 0x1D, text_get(0xD), 0);
+    text_drawBlock(r->x + 0x74, r->y + 0x46, 0x1D, text_get(0xC), 0);
+    text_drawBlock(r->x + 0x74, r->y + 0x53, 0x1D, text_get(0xD), 0);
     text_formatNumber(c->exp, buf, 7, 1);
-    func_8002B56C(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0xAC, r->y + 0x4A, 0x1D, buf, 0);
     if (c->level >= 99) {
         next = c->exp;
     } else {
         next = g_levelExp[c->level];
     }
     text_formatNumber(next - c->exp, buf, 6, 1);
-    func_8002B56C(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
+    ui_drawSmallDigits(r->x + 0xB3, r->y + 0x57, 0x1D, buf, 0);
 }
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", D_801EDF00);
@@ -205,7 +205,7 @@ void func_801EEF00(void) {
         D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, D_801F120C.unk7C);
         id = c->equip[i];
         if (id != 0xFF) {
-            func_80026C34(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
+            ui_drawItemIcon(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
             D_801F120C.unk7C = func_8002920C(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], D_8006A218 + D_80069018[id].unk0, 0, D_801F120C.unk7C);
         }
     }
@@ -226,11 +226,11 @@ void func_801EF0A0(void) {
                 }
             }
             z = 0x14 - i;
-            func_8002B524(r->x + 6, r->y - 3, z, D_800703FC.unk4, 0);
+            ui_drawLabel(r->x + 6, r->y - 3, z, D_800703FC.unk4, 0);
             if (D_801F120C.unk16[i] != 0) {
                 D_801EFC04[1] = i + 0x31;
-                func_8002B524(r->x + 0x90, r->y - 3, z, D_800703FC.unk88, 0);
-                func_8002B524(r->x + 0x9A, r->y - 3, z, (s32)D_801EFC04, 0);
+                ui_drawLabel(r->x + 0x90, r->y - 3, z, D_800703FC.unk88, 0);
+                ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)D_801EFC04, 0);
             }
             func_8002DEE4(r, z, 2);
             func_8002705C(r, z, 2);
@@ -278,7 +278,7 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
         flag = 1;
     }
     if (draw) {
-        func_800275DC(x, y, z, icon, 0);
+        ui_drawSprite(x, y, z, icon, 0);
         D_801F120C.unk7C = func_8002920C(x + 0x10, y, g_ot + z, name, 0, D_801F120C.unk7C);
     }
     if (ok) {

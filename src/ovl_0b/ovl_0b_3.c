@@ -394,7 +394,7 @@ void func_800C9A28(void) {
         u->unk8C[0] = u->unk98->unk0[0] = u->unkA0->unk14 = x << 16;
         p98 = u->unk98;
         pa0 = u->unkA0;
-        if ((u8)func_800C09A4(u, 0x200000)) {
+        if ((u8)btl_hasStatus(u, 0x200000)) {
             v = 0xFF380000;
         } else {
             v = 0;
@@ -679,7 +679,7 @@ void func_800CA7CC(void) {
                 if (op >= 0x23) {
                     op = 0;
                 }
-                if ((s->unk0 & 1) && D_800F78A4->unk0->unk23 != 0) {
+                if ((s->unk0 & 1) && g_btlfxEnv->unk0->unk23 != 0) {
                     s->unk0 = (s->unk0 | 2) & ~1;
                 }
                 if (s->unk8 != s->unkC && D_800F5858[op].unk0 != NULL) {
@@ -728,7 +728,7 @@ s32 func_800CAAD0(BtlScript *arg0, BtlUnit *arg1) {
         arg0->unk0 |= 4;
     }
     if ((arg1->status & 0x02001002) || ((arg0->unk0 >> 2) & 1)) {
-        if (D_800F78A4->unk0->unk0 != -1) {
+        if (g_btlfxEnv->unk0->unk0 != -1) {
             return 0;
         }
         if (arg0->unk21 != 0) {
@@ -746,7 +746,7 @@ s32 func_800CAAD0(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 func_800CAC24(BtlScript *arg0) {
-    if (D_800F78A4->unk0->unk0 == -1) {
+    if (g_btlfxEnv->unk0->unk0 == -1) {
         if (arg0->unk21 != 0) {
             return 0;
         }
@@ -929,7 +929,7 @@ s32 func_800CB3A4(BtlScript *arg0) {
 s32 func_800CB3EC(BtlScript *arg0) {
     s16 v[4];
     s32 id;
-    Unk800F78A40 *e = D_800F78A4->unk0;
+    Unk800F78A40 *e = g_btlfxEnv->unk0;
     if ((e->unk0 != -1) & !((e->unk1C >> 15) & 1)) {
         return 0;
     }
@@ -948,7 +948,7 @@ s32 func_800CB4E8(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->unk9C;
     BtlUnitA0 *a = arg1->unkA0;
     if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->status & 0x02001002))) {
-        D_800F78A4->unk2C->unk52 = 0;
+        g_btlfxEnv->unk2C->unk52 = 0;
         arg0->unk8 += 1;
         return 1;
     }
@@ -964,13 +964,13 @@ s32 func_800CB560(BtlScript *arg0) {
 }
 
 s32 func_800CB594(BtlScript *arg0) {
-    D_800F78A4->unk0->unkF = 1;
+    g_btlfxEnv->unk0->unkF = 1;
     arg0->unk8 += 1;
     return 1;
 }
 
 s32 func_800CB5C4(BtlScript *arg0) {
-    Unk800F78A40 *p = D_800F78A4->unk0;
+    Unk800F78A40 *p = g_btlfxEnv->unk0;
     if ((p->unk0 == -1) | ((p->unk1C >> 15) & 1)) {
         arg0->unk8 += 1;
         return 1;
@@ -1011,7 +1011,7 @@ s32 func_800CB700(BtlScript *arg0, BtlUnit *arg1) {
         if (pc[0] == 0x21) {
             func_800F4F44((s32)(txt + ofs), 3);
         } else {
-            func_800F4F04((s32)(txt + ofs), 3);
+            btl_setBanner((s32)(txt + ofs), 3);
         }
     }
     arg0->unk8 += 2;
@@ -1139,7 +1139,7 @@ void func_800CBBB0(BtlScript *arg0, BtlUnit *arg1) {
 s32 func_800CBC38(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;
     u16 v = arg0->unk28[0] + p[1] * arg0->unk10 / p[2];
-    func_800BE1E0((s32)arg1, 0x37, v);
+    btl_setUnitAttr((s32)arg1, 0x37, v);
     if (v == 0x1000) {
         arg1->unk9C->unk0 &= ~2;
     }
@@ -1224,7 +1224,7 @@ void func_800CBF90(void) {
     g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC = 0;
 }
 
-void func_800CC044(BtlUnit *arg0) {
+void btl_spawnPopups(BtlUnit *arg0) {
     u16 f = arg0->unk7E;
     u8 n = 0;
     if (!((arg0->unk68 >> 22) & 1)) {
@@ -1232,35 +1232,35 @@ void func_800CC044(BtlUnit *arg0) {
             func_800BD774(arg0);
         }
         if (f & 0x80) {
-            func_800CC3E0((s32)arg0, 2, 0, 0);
+            btl_popupText((s32)arg0, 2, 0, 0);
             arg0->unk7E = 0;
         } else if (f & 0x60) {
             if (f & 0x20) {
-                func_800CC3E0((s32)arg0, 0, 0, 0);
+                btl_popupText((s32)arg0, 0, 0, 0);
                 n = 2;
             }
             if (f & 0x40) {
-                func_800CC3E0((s32)arg0, 1, 0, n);
+                btl_popupText((s32)arg0, 1, 0, n);
             }
             arg0->unk7E = 0;
         } else {
             if (f & 1) {
                 if (f & 4) {
-                    func_800CC3E0((s32)arg0, 3, 0x80, 0);
+                    btl_popupText((s32)arg0, 3, 0x80, 0);
                     n = 2;
                 }
                 if (f & 2) {
-                    func_800CC31C((s32)arg0, arg0->unk80, 0xC0, n);
+                    btl_popupHp((s32)arg0, arg0->unk80, 0xC0, n);
                 } else {
-                    func_800CC31C((s32)arg0, arg0->unk80, 0, n);
+                    btl_popupHp((s32)arg0, arg0->unk80, 0, n);
                 }
                 n += 4;
             }
             if (f & 8) {
                 if (f & 0x10) {
-                    func_800CC37C((s32)arg0, arg0->unk82, 0xC0, n);
+                    btl_popupMp((s32)arg0, arg0->unk82, 0xC0, n);
                 } else {
-                    func_800CC37C((s32)arg0, arg0->unk82, 0, n);
+                    btl_popupMp((s32)arg0, arg0->unk82, 0, n);
                 }
             }
             arg0->unk7E = 0;
@@ -1277,15 +1277,15 @@ void func_800CC1A0(BtlUnit *arg0) {
     u8 n = 0;
     if (!((arg0->unk68 >> 22) & 1)) {
         if (f & 1) {
-            func_800CC31C((s32)arg0, arg0->unkC8, (f & 8) ? 0 : 0xC0, 0)->unk10.b.unk3 = 1;
+            btl_popupHp((s32)arg0, arg0->unkC8, (f & 8) ? 0 : 0xC0, 0)->unk10.b.unk3 = 1;
             n = 4;
         }
         if (f & 2) {
-            func_800CC31C((s32)arg0, arg0->unkCA, 0, n)->unk10.b.unk3 = 1;
+            btl_popupHp((s32)arg0, arg0->unkCA, 0, n)->unk10.b.unk3 = 1;
             n += 4;
         }
         if (f & 4) {
-            func_800CC37C((s32)arg0, arg0->unkCC, 0, n)->unk10.b.unk3 = 1;
+            btl_popupMp((s32)arg0, arg0->unkCC, 0, n)->unk10.b.unk3 = 1;
         }
     }
     arg0->unkCE = 0;
@@ -1317,7 +1317,7 @@ Unk800CC278 *func_800CC278(BtlUnit *u) {
     return p;
 }
 
-Unk800CC278 *func_800CC31C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
+Unk800CC278 *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
     p->unk10.b.unk2 = 0;
     p->unk10.b.unk0 = arg3;
@@ -1326,7 +1326,7 @@ Unk800CC278 *func_800CC31C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     return p;
 }
 
-Unk800CC278 *func_800CC37C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
+Unk800CC278 *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
     p->unk10.b.unk2 = 1;
     p->unk10.b.unk0 = arg3;
@@ -1335,7 +1335,7 @@ Unk800CC278 *func_800CC37C(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
     return p;
 }
 
-Unk800CC278 *func_800CC3E0(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
+Unk800CC278 *btl_popupText(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
     Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
     p->unk10.b.unk2 = 2;
     p->unk10.b.unk0 = arg3;
@@ -1370,7 +1370,7 @@ s32 func_800CC444(u32 n) {
     return r | (i << 16);
 }
 
-u8 *func_800CC4F0(u8 *arg0) {
+u8 *btl_drawPopups(u8 *arg0) {
     Unk800CCD00 c;
     Battle1358Ring *r;
     Battle1358 *p;
@@ -1413,7 +1413,7 @@ u8 *func_800CC4F0(u8 *arg0) {
     c.unk0[1] = (D_80068BF0[0].unk6 & 0x9FF) | 0xE1000000;
     addPrim(c.unk4, c.unk0);
     c.unk0 += 2;
-    e = D_800F78A4->unk0;
+    e = g_btlfxEnv->unk0;
     if (((e->unk1C ^ 1) & 1) | ((e->unk0 == -1) | ((e->unk1C >> 15) & 1))) {
         func_800CCDB8(&c);
     }
@@ -1572,7 +1572,7 @@ void func_800CCDB8(Unk800CCD00 *arg0) {
 
     r = &g_gameState->unk1C->unk8E4.battle->unk1358;
     func_800E70D0((u8 *)arg0->unk0, g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]);
-    D_800F78A4->unk28 = 0;
+    g_btlfxEnv->unk28 = 0;
     rot.vx = 0;
     rot.vz = 0;
     rot.pad = 1;
@@ -1719,7 +1719,7 @@ void func_800CD210(Unk800CCD00 *arg0) {
     }
 }
 
-void func_800CD5C8(u32 arg0, ...) {
+void btl_showMessage(u32 arg0, ...) {
     u8 buf[0x50];
     va_list ap;
     TextTbl *t = (TextTbl *)D_800F6CB4;
@@ -1756,7 +1756,7 @@ void func_800CD5C8(u32 arg0, ...) {
             }
             c = *dst++ = *src++;
         }
-        func_800F4F04((s32)buf, kind);
+        btl_setBanner((s32)buf, kind);
     }
 }
 
@@ -1806,18 +1806,18 @@ void func_800CD83C(void) {
     switch (c->unk1358.unk1C8.b[2]) {
     case 0:
         func_8002BD54(buf, func_800CD78C(s));
-        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
+        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 10));
         func_8002BBE8(s->unk7A, buf + func_8002BCC0(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 1;
         break;
     case 1:
         func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 11));
         func_8002BBE8(s->hp, buf + func_8002BCC0(buf), 0);
-        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
+        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
         func_8002BBE8(s->max->maxHp, buf + func_8002BCC0(buf), 0);
-        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 12));
+        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 12));
         func_8002BBE8(s->mp, buf + func_8002BCC0(buf), 0);
-        func_8002AD38(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
+        text_append(buf, (u8 *)text_getFrom(D_800F6FB8, 13));
         func_8002BBE8(s->max->maxMp, buf + func_8002BCC0(buf), 0);
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[1] = 0;
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[2] = 2;
@@ -1844,19 +1844,19 @@ void func_800CD83C(void) {
         }
     default:
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1C4 = 0;
-        func_800F4F04(0, 2);
+        btl_setBanner(0, 2);
         return;
     }
 show:
     g_gameState->unk1C->unk8E4.battle->unk1358.unk1C8.b[0] = func_800F4FC8() - 1;
-    func_800F4F04((s32)buf, 2);
+    btl_setBanner((s32)buf, 2);
 }
 
 void func_800CDC68(BtlUnit *arg0) {
     if (!(arg0->unk68 & 1)) {
         g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC = &g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF];
         if (g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC->unk8.w == -1) {
-            func_800F4F04(text_getFrom(D_800F6FB8, 9), 2);
+            btl_setBanner(text_getFrom(D_800F6FB8, 9), 2);
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D1 = 4;
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
             return;
@@ -1884,8 +1884,8 @@ void func_800CDD68(void) {
         if (id != 0xFF) {
             g_gameState->unk1C->unk8E4.battle->unk1358.unk1D0 = func_800F4FC8() - 1;
             func_8002BD54(buf, (u8 *)text_getFrom(D_800F6FB8, 8));
-            func_8002AD38(buf, func_800CD75C(id));
-            func_8002AD38(buf, D_800A7C20);
+            text_append(buf, func_800CD75C(id));
+            text_append(buf, D_800A7C20);
             s = buf;
             kind = 2;
             goto show;
@@ -1895,7 +1895,7 @@ void func_800CDD68(void) {
     kind = 1;
     g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC = NULL;
 show:
-    func_800F4F04((s32)s, kind);
+    btl_setBanner((s32)s, kind);
 }
 
 void func_800CDEF0(BtlCmd *arg0) {
@@ -1922,7 +1922,7 @@ void func_800CDEF0(BtlCmd *arg0) {
             case 0xFE:
                 s = buf;
                 func_8002BD54(s, func_800EA0B4(arg0->subNo));
-                func_8002AD38(s, (u8 *)text_getFrom(D_800F71E4, 0));
+                text_append(s, (u8 *)text_getFrom(D_800F71E4, 0));
                 break;
             default:
                 if (t < 0xC0) {
@@ -1975,7 +1975,7 @@ void func_800CE05C(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     }
 }
 
-u8 *func_800CE1B4(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
+u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     MATRIX m;
     SVECTOR rot;
     VECTOR v;

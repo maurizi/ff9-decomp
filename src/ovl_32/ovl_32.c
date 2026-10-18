@@ -112,11 +112,11 @@ void func_801F7EB4(void) {
 
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1E, 2);
-    func_8002B524(r->x + 8, r->y - 3, 0x1C, D_800704AC, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_800704AC, 0);
     sel = g_gameState->unk1C->unk844;
     if (sel != 0) {
         func_801F9518(r->x + 0x10, r->y + 0x2C, 0x1C, (D_801F9850.unkC & (1 << (sel - 1))) ? 0xD : 0xC, 0);
-        func_8002B5FC(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->unk1C->unk844 + 9), 0);
+        text_drawBlock(r->x + 0x21, r->y + 0x2E, 0x1C, text_get(g_gameState->unk1C->unk844 + 9), 0);
         func_801F88F4(r->x + 0x4C, r->y + 0xB, 0x1C, g_gameState->unk1C->unk844 - 1, 0);
         func_801F8AB0(r->x + 0x48, r->y + 7, 0x1C, 0);
     }
@@ -129,21 +129,21 @@ void func_801F8010(void) {
     RECT *r = &D_801F9850.unk48;
     MenuList *list;
 
-    func_8002B524(r->x + 0x10, r->y - 3, 0x1C, D_80070428, 0);
+    ui_drawLabel(r->x + 0x10, r->y - 3, 0x1C, D_80070428, 0);
     list = &D_801F9850.unk10;
     func_8002E040(r, 0x1D, 1, list);
     func_8002705C(r, 0x1D, 1);
-    func_8002ECA0(list, &view);
-    func_8002D9B4(NULL, 0x1C, 1);
+    menuList_getView(list, &view);
+    win_setClip(NULL, 0x1C, 1);
     for (i = 0; i < view.unk0; i++) {
         func_801F93FC(0, i, view.unk1 + i, &view);
     }
     if (list->unk8 & 4) {
         func_8002F40C(list, r, &sub);
-        func_8002D9B4(&sub, 0x1C, 1);
+        win_setClip(&sub, 0x1C, 1);
         func_801F9394();
     }
-    func_8002D9B4(r, 0x1C, 1);
+    win_setClip(r, 0x1C, 1);
 }
 
 void func_801F8130(void) {
@@ -153,13 +153,13 @@ void func_801F8130(void) {
 
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1E, 2);
-    func_8002B5FC(r->x + 9, r->y + 3, 0x1C, text_get(7), 0);
-    func_8002B5FC(r->x + 9, r->y + 0xF, 0x1C, text_get(8), 0);
+    text_drawBlock(r->x + 9, r->y + 3, 0x1C, text_get(7), 0);
+    text_drawBlock(r->x + 9, r->y + 0xF, 0x1C, text_get(8), 0);
     st = &D_801F9850;
     text_formatNumber(st->unk2, buf, 2, 1);
-    func_8002B56C(r->x + 0x5E, r->y + 7, 0x1C, buf, 0);
+    ui_drawSmallDigits(r->x + 0x5E, r->y + 7, 0x1C, buf, 0);
     text_formatNumber(st->unk3, buf, 2, 1);
-    func_8002B56C(r->x + 0x5E, r->y + 0x13, 0x1C, buf, 0);
+    ui_drawSmallDigits(r->x + 0x5E, r->y + 0x13, 0x1C, buf, 0);
 }
 
 void func_801F8240(void) {
@@ -170,7 +170,7 @@ void func_801F8240(void) {
     s32 i;
 
     id = st->unk10.unk5 + st->unk10.cursor;
-    func_8002B524(r->x + 8, r->y - 3, 0x1C, D_80070454, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_80070454, 0);
     func_8002DEE4(r, 0x1D, 1);
     func_8002705C(r, 0x1E, 1);
     if (st->unk1 == 2 && (st->unk8 & (1 << id))) {
@@ -178,7 +178,7 @@ void func_801F8240(void) {
         func_801F88F4(r->x + 0xC, r->y + 0xC, 0x1C, id, 0);
         func_801F8AB0(r->x + 8, r->y + 8, 0x1C, 0);
         st->unk2058 = func_8002920C(r->x + 0xC, r->y + 0x31, &g_ot[0x1C], text_get(id + 0x3A), 0, st->unk2058);
-        func_8002B5FC(r->x + 0x42, r->y + 6, 0x1C, text_get(9), 0);
+        text_drawBlock(r->x + 0x42, r->y + 6, 0x1C, text_get(9), 0);
         n = func_801F95E8(id);
         for (i = 0; i <= n; i++) {
             func_801F9518(r->x + 0x42 + i * 0x13, r->y + 0x16, 0x1C, i < st->unk4 ? i : 0xB, i >= st->unk4);
@@ -216,7 +216,7 @@ void func_801F84F0(void) {
         if (D_801F9850.unk8 & (1 << idx)) {
             func_8002BD54(D_801F9750, text_get(idx + 0x22));
             if (D_801F9850.unk4 <= func_801F95E8_inline(idx)) {
-                func_8002AD38(D_801F9750, text_get(5));
+                text_append(D_801F9750, text_get(5));
             }
             D_80077DE8.unk8 = D_801F9750;
         }
@@ -451,7 +451,7 @@ void func_801F9164(void) {
 
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1D, 2);
-    func_8002B5FC(r->x + 7, r->y + 6, 0x1C, text_get(0), 0);
+    text_drawBlock(r->x + 7, r->y + 6, 0x1C, text_get(0), 0);
 }
 
 void func_801F91D8(void) {
@@ -463,7 +463,7 @@ void func_801F91D8(void) {
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1D, 2);
     for (i = 0, x = 0x2C; i < 2; i++, x += 0x60) {
-        func_8002B5FC(r->x + x, r->y + 6, 0x1C, text_get(i + 1), (D_801F96F0[i] != 0 && none) ? 2 : 0);
+        text_drawBlock(r->x + x, r->y + 6, 0x1C, text_get(i + 1), (D_801F96F0[i] != 0 && none) ? 2 : 0);
     }
 }
 
@@ -472,7 +472,7 @@ void func_801F92C0(void) {
     s32 x;
     RECT *r = &D_801F9850.unk38;
 
-    func_8002B524(r->x + 8, r->y - 3, 0x1C, D_80070424, 0);
+    ui_drawLabel(r->x + 8, r->y - 3, 0x1C, D_80070424, 0);
     func_8002DEE4(r, 0x1D, 2);
     func_8002705C(r, 0x1E, 2);
     for (i = 0; i < D_801F9850.unk4; i++) {
@@ -509,7 +509,7 @@ void func_801F93FC(s32 col, s32 row, s32 id, MenuView *v) {
             icon = near ? 0xC : 0xE;
         }
         func_801F9518(x, y, 0x1C, icon, near == 0);
-        func_8002B5FC(x + 0x11, y, 0x1C, text_get(id + 0xA), near ? 0 : 2);
+        text_drawBlock(x + 0x11, y, 0x1C, text_get(id + 0xA), near ? 0 : 2);
     }
 }
 
