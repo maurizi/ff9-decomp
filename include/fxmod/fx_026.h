@@ -55,6 +55,23 @@ typedef struct {
     u16 unk6;
 } Fx026CamPath;
 
+/* pool item of func_801E7A5C: a model following a keyframe track */
+typedef struct {
+    s16 unk0; /* done */
+    u16 unk2; /* spin */
+    s16 unk4; /* track: D_801EA774 index */
+    s16 pad6;
+    Pool6CEntry *unk8;
+    SVECTOR unkC;
+} Fx026Item;
+
+typedef struct {
+    u8 pad0[0x68];
+    s32 unk68; /* models */
+    s32 unk6C;
+} Fx026Work80;
+
+extern s16 D_801EA774[];
 extern Fx026CamPath D_801EA8C4[];
 extern Unk800F78A4 *D_801EACCC;
 extern Fx026Shatter *D_801ED9CC[8];

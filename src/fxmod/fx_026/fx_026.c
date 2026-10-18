@@ -90,7 +90,63 @@ void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", func_801E7A5C);
+s32 func_801E7A5C(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
+                  Fx026Work80 *work) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR pos;
+    VECTOR scale;
+    SVECTOR rot;
+    SVECTOR p;
+    s32 n;
+    s32 t;
+
+    if (mode == 1) {
+        it->unk0 = 0;
+        it->unk8 = NULL;
+    } else {
+        if (it->unk0 != 0) {
+            return 0;
+        }
+        n = ((Fx026Track *)ex->btlfx_getFileData(entry->unk8, D_801EA774[it->unk4]))->unk2;
+        if (n == 0) {
+            n = 1;
+        }
+        t = (frame << 12) / n;
+        func_801E7704((Fx026Track *)ex->btlfx_getFileData(entry->unk8, D_801EA774[it->unk4]), frame, &p);
+        pos.vx = p.vx;
+        pos.vy = p.vy;
+        pos.vz = p.vz;
+        scale.vx = scale.vy = 0x1400 - ex->math_cos(t >> 2);
+        scale.vz = t;
+        rot.vx = -0xEE;
+        rot.vy = 0;
+        rot.vz = it->unk2;
+        it->unk2 += 0x20;
+        if (frame == 4) {
+            it->unkC.vx = pos.vx;
+            it->unkC.vy = pos.vy;
+            it->unkC.vz = pos.vz;
+            it->unk8 = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x86), (s32)&it->unkC);
+            if (it->unk8 != NULL) {
+                it->unk8->unk22 = 0x80;
+            }
+        }
+        if (it->unk8 != NULL) {
+            if (it->unk8->unk30 == -1) {
+                it->unk8 = NULL;
+            }
+            ex->func_800E3D20((s32)it->unk8, (s32)&p);
+        }
+        if (frame >= 4) {
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk68);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk6C);
+        }
+        if (frame >= n) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", fx_026_op80);
 
