@@ -422,7 +422,173 @@ s32 fx_0b3_op83(s32 mode, Fx0b3Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0b3/nonmatchings/fx_0b3", func_801E8DF4);
+void func_801E8DF4(SVECTOR *pos, SVECTOR *rot, Fx0b3Vec3 *scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 az,
+                   s32 ay, s32 ph, s32 dph, s32 ax, s32 phx, s32 dphx) {
+    Unk800F78A4 *env = D_801ED5E0;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    CVECTOR col0;
+    CVECTOR col1;
+    CVECTOR col2;
+    CVECTOR col3;
+    CVECTOR col4;
+    MATRIX m;
+    MATRIX m2;
+    SVECTOR p[4];
+    VECTOR lv;
+    s32 otz;
+    POLY_FT4 *ft4;
+    POLY_GT4 *gt4;
+    POLY_G4 *g4;
+    s32 i;
+    s32 zz;
+    s32 j;
+    s32 y;
+    s32 k;
+    s32 u0;
+    s32 u1;
+    s32 v0;
+    s32 v1;
+    s32 ft;
+    s32 k2;
+    s32 x0;
+
+    /* x0 is a variable: reload rematerializes the constant into a register for x0 + zz */
+    x0 = -10000;
+    gte_SetRotMatrix(env->unk14);
+    gte_SetTransMatrix(env->unk14);
+    gte_ldv0(pos);
+    ft4 = (POLY_FT4 *)env->unk24;
+    *(s32 *)&col2 = 0;
+    *(s32 *)&col4 = 0;
+    gt4 = (POLY_GT4 *)(ft4 + 100);
+    tpage |= 0x20;
+    g4 = (POLY_G4 *)(gt4 + 20);
+    env->unk24 = (u8 *)(g4 + 20);
+    col0.cd = 0x2C;
+    col2.cd = 0x3E;
+    col1.cd = 0x3E;
+    col3.r = col3.g = col3.b = 0xFF;
+    col0.r = col0.g = col0.b = c;
+    col1.r = col1.g = col1.b = c;
+    col4.cd = 0x3A;
+    col3.cd = 0x3A;
+    gte_rtv0tr_b();
+    ex->func_800316D8(rot, &m);
+    ex->ScaleMatrix(&m, (VECTOR *)scale);
+    m2 = m;
+    m2.t[0] = pos->vx;
+    m2.t[1] = pos->vy;
+    m2.t[2] = pos->vz;
+    gte_stlvnl(m.t);
+    ex->MulRotMatrix(&m);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    zz = 0;
+    for (j = 0; j < 20; j++, zz += 1000) {
+        y = 0;
+        ph += dph;
+        for (i = 0; i < 6; i++, y -= 1000) {
+            p[0].vx = (x0 + zz) + ((ex->math_sin(phx + i * dphx) * ax) >> 12);
+            p[1].vx = p[0].vx + 1000;
+            p[2].vx = (x0 + zz) + ((ex->math_sin(phx + (i + 1) * dphx) * ax) >> 12);
+            p[3].vx = p[2].vx + 1000;
+            if (i != 0) {
+                p[0].vy = y + ((ex->math_sin(ph) * ay) >> 12);
+                p[2].vy = p[0].vy - 1000;
+                p[1].vy = y + ((ex->math_sin(ph + dph) * ay) >> 12);
+                p[3].vy = p[1].vy - 1000;
+            } else {
+                /* d gives (sin * ay >> 12) - 1000 its own register, so it is added last */
+                p[0].vy = y;
+                {
+                    s32 d = ((ex->math_sin(ph) * ay) >> 12) - 1000;
+                    p[2].vy = p[0].vy + d;
+                }
+                p[1].vy = y;
+                {
+                    s32 d = ((ex->math_sin(ph + dph) * ay) >> 12) - 1000;
+                    p[3].vy = p[1].vy + d;
+                }
+            }
+            p[0].vz = p[1].vz = (ex->math_sin((i << 11) / 6) * az) >> 12;
+            p[2].vz = p[3].vz = (ex->math_sin(((i + 1) << 11) / 6) * az) >> 12;
+            gte_ldv3c(p);
+            gte_rtpt();
+            k = j & 1;
+            u0 = u + (k << 6);
+            u1 = u0 + 0x40;
+            if (k != 0) {
+                u1 = u0 + 0x3F;
+            }
+            /* k2 is local to this block (k lives in several), so local-alloc gives it $v0 */
+            k2 = i & 3;
+            v0 = v + (k2 << 5);
+            v1 = v0 + 0x20;
+            if (k2 == 3) {
+                v1 = v0 + 0x1F;
+            }
+            gte_stopz(&otz);
+            if (otz != 0) {
+                gte_avsz3();
+                gte_stszotz(&otz);
+                ft = 1;
+                if (i >= 5) {
+                    *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col1;
+                    *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&col2;
+                    *(s32 *)&g4->r0 = *(s32 *)&g4->r1 = *(s32 *)&col3;
+                    ft = 0;
+                    *(s32 *)&g4->r2 = *(s32 *)&g4->r3 = *(s32 *)&col4;
+                    gte_SetRotMatrix(&m2);
+                    gte_SetTransMatrix(&m2);
+                    gte_ldv0(&p[2]);
+                    gte_rtv0tr();
+                    gte_stlvnl(&lv);
+                    D_801EE2A0[j].vx = lv.vx;
+                    D_801EE2A0[j].vy = lv.vy;
+                    D_801EE2A0[j].vz = lv.vz;
+                    gte_SetRotMatrix(&m);
+                    gte_SetTransMatrix(&m);
+                } else {
+                    *(s32 *)&ft4->r0 = *(s32 *)&col0;
+                }
+                if (ft) {
+                    ft4->u0 = ft4->u2 = u0;
+                    ft4->u1 = ft4->u3 = u1;
+                    ft4->v0 = ft4->v1 = v0;
+                    ft4->v2 = ft4->v3 = v1;
+                    ft4->tpage = tpage;
+                    ft4->clut = clut;
+                    gte_stsxy3(&ft4->x0, &ft4->x1, &ft4->x2);
+                } else {
+                    gt4->u0 = gt4->u2 = u0;
+                    gt4->u1 = gt4->u3 = u1;
+                    gt4->v0 = gt4->v1 = v0;
+                    gt4->v2 = gt4->v3 = v1;
+                    gt4->tpage = tpage;
+                    gt4->clut = clut;
+                    gte_stsxy3(&gt4->x0, &gt4->x1, &gt4->x2);
+                    *(s32 *)&g4->x0 = *(s32 *)&gt4->x0;
+                    *(s32 *)&g4->x1 = *(s32 *)&gt4->x1;
+                    *(s32 *)&g4->x2 = *(s32 *)&gt4->x2;
+                }
+                gte_ldv0(&p[3]);
+                gte_rtps();
+                if (ft) {
+                    ex->btlfx_addPrim(0x09000000, otz, ft4);
+                    gte_stsxy(&ft4->x3);
+                    ft4++;
+                } else {
+                    ex->btlfx_addPrim(0x0C000000, otz, gt4);
+                    ex->btlfx_addPrimAbr(0x08000000, otz, g4, 2);
+                    gte_stsxy(&gt4->x3);
+                    *(s32 *)&g4->x3 = *(s32 *)&gt4->x3;
+                    gt4++;
+                    g4++;
+                }
+            }
+        }
+    }
+}
 
 s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
