@@ -26,7 +26,63 @@ void func_801E7738(s32 start, u32 dst, u32 src, s16 *data) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_1ef/nonmatchings/fx_1ef", func_801E7788);
+void func_801E7788(void) {
+    SVECTOR *ext = D_801E8CEC;
+    s32 i;
+    Unk800F78A4 *env = D_801E8B9C;
+    s32 frame = D_801E8BA0;
+    s32 k;
+    s32 d;
+    s32 s;
+    s32 x, y, z;
+    s32 j;
+
+    for (i = 0; i < 16; i++) {
+        if (D_801E8BAC[i].unk4 == 0 && D_801E8BAC[i].unk0 == frame) {
+            D_801E8BAC[i].unk4 = *D_801E8BAC[i].unk10;
+            D_801E8BAC[i].unk10++;
+        }
+        if (D_801E8BAC[i].unk4 > 0) {
+            D_801E8BAC[i].unk4--;
+            for (k = 0; k < 3; k++) {
+                d = ((D_801E8BAC[i].unk8 >> (k * 4)) & 0xF) - 1;
+                s = ((D_801E8BAC[i].unkC >> (k * 4)) & 0xF) - 1;
+                if (d >= 0) {
+                    x = *D_801E8BAC[i].unk10;
+                    D_801E8BAC[i].unk10++;
+                    y = *D_801E8BAC[i].unk10;
+                    D_801E8BAC[i].unk10++;
+                    z = *D_801E8BAC[i].unk10;
+                    D_801E8BAC[i].unk10++;
+                    if (s >= 0) {
+                        /* each branch adds its own source; jump2's cross-jumping merges the identical tails */
+                        if (s >= 10) {
+                            j = s - 10;
+                            x += ext[j].vx;
+                            y += ext[j].vy;
+                            z += ext[j].vz;
+                        } else {
+                            x += ((SVECTOR *)env->unk2C)[s].vx;
+                            y += ((SVECTOR *)env->unk2C)[s].vy;
+                            z += ((SVECTOR *)env->unk2C)[s].vz;
+                        }
+                    }
+                    if (d >= 10) {
+                        j = d - 10;
+                        ext[j].vx = x;
+                        ext[j].vy = y;
+                        ext[j].vz = z;
+                    } else {
+                        ((SVECTOR *)env->unk2C)[d].vx = x;
+                        ((SVECTOR *)env->unk2C)[d].vy = y;
+                        ((SVECTOR *)env->unk2C)[d].vz = z;
+                    }
+                }
+            }
+        }
+    }
+    D_801E8BA0++;
+}
 
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8B9C);

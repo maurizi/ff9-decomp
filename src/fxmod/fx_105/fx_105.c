@@ -108,7 +108,63 @@ void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_105/nonmatchings/fx_105", func_801E7BF8);
+void func_801E7BF8(void) {
+    SVECTOR *ext = D_801EAC68;
+    s32 i;
+    Unk800F78A4 *env = D_801EAB18;
+    s32 frame = D_801EAB1C;
+    s32 k;
+    s32 d;
+    s32 s;
+    s32 x, y, z;
+    s32 j;
+
+    for (i = 0; i < 16; i++) {
+        if (D_801EAB28[i].unk4 == 0 && D_801EAB28[i].unk0 == frame) {
+            D_801EAB28[i].unk4 = *D_801EAB28[i].unk10;
+            D_801EAB28[i].unk10++;
+        }
+        if (D_801EAB28[i].unk4 > 0) {
+            D_801EAB28[i].unk4--;
+            for (k = 0; k < 3; k++) {
+                d = ((D_801EAB28[i].unk8 >> (k * 4)) & 0xF) - 1;
+                s = ((D_801EAB28[i].unkC >> (k * 4)) & 0xF) - 1;
+                if (d >= 0) {
+                    x = *D_801EAB28[i].unk10;
+                    D_801EAB28[i].unk10++;
+                    y = *D_801EAB28[i].unk10;
+                    D_801EAB28[i].unk10++;
+                    z = *D_801EAB28[i].unk10;
+                    D_801EAB28[i].unk10++;
+                    if (s >= 0) {
+                        /* each branch adds its own source; jump2's cross-jumping merges the identical tails */
+                        if (s >= 10) {
+                            j = s - 10;
+                            x += ext[j].vx;
+                            y += ext[j].vy;
+                            z += ext[j].vz;
+                        } else {
+                            x += ((SVECTOR *)env->unk2C)[s].vx;
+                            y += ((SVECTOR *)env->unk2C)[s].vy;
+                            z += ((SVECTOR *)env->unk2C)[s].vz;
+                        }
+                    }
+                    if (d >= 10) {
+                        j = d - 10;
+                        ext[j].vx = x;
+                        ext[j].vy = y;
+                        ext[j].vz = z;
+                    } else {
+                        ((SVECTOR *)env->unk2C)[d].vx = x;
+                        ((SVECTOR *)env->unk2C)[d].vy = y;
+                        ((SVECTOR *)env->unk2C)[d].vz = z;
+                    }
+                }
+            }
+        }
+    }
+    D_801EAB1C++;
+}
 
 void func_801E7D9C(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb) {
     POLY_G4 *p = (POLY_G4 *)D_801EAB18->unk24;
