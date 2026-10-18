@@ -39,7 +39,121 @@ s32 fx_1bd_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 INCLUDE_RODATA("asm/us/fx_1bd/nonmatchings/fx_1bd", fx_1bd_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", fx_1bd_op82);
+s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR rot;
+    VECTOR scale;
+    CVECTOR col;
+    DrMode2Words *dm;
+    s32 frame;
+    s32 i;
+    s32 t;
+
+    if (mode == 0) {
+        *arg4 = 0x6C;
+    } else if (mode == 1) {
+        work->unk4.vx = 0;
+        work->unk4.vy = 0;
+        work->unk4.vz = 0;
+        work->unkC.vx = 0;
+        work->unkC.vy = 0;
+        work->unkC.vz = 0x320;
+        work->unk1C.vx = 0x1000;
+        work->unk1C.vy = 0x1000;
+        work->unk1C.vz = 0x1000;
+        D_801E9E54 = env;
+        work->unk66 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0x117, 0, 0, 0);
+        ex->Hi_SetEffModelOffset(work->unk66, 0x6E);
+        work->unk2C.vx = 0;
+        work->unk2C.vy = 0;
+        work->unk2C.vz = 0;
+        work->unk34.vx = 0;
+        work->unk34.vy = 0;
+        work->unk34.vz = 0x320;
+        work->unk44.vx = 0x1000;
+        work->unk44.vy = 0x1000;
+        work->unk44.vz = 0x1000;
+        work->unk68 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x2B), 0x17, 0x3D00, 0x80, 0xE0);
+        D_801EB764.unk10 = 0x60;
+        D_801EB764.unk8 = 0;
+        D_801EB764.unkA = 0;
+        D_801EB764.unkC = 0x1000;
+        D_801EB764.unkE = 0x1000;
+        D_801EB764.unk12 = 0x30;
+        work->unk60 = -1;
+        work->unk62 = -1;
+        work->unk64 = 0;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 0:
+            ex->func_800E6E1C(0x1C0, 0x100, 0x80, 0xA0, D_801EB854, 0, 0x168, 0xF6E);
+            break;
+        case 22:
+            work->unk58.vx = -3;
+            work->unk58.vy = 0;
+            work->unk58.vz = 0x320;
+            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x18), (s32)&work->unk58);
+            break;
+        case 21:
+            work->unk60 = 4;
+            break;
+        case 15:
+            work->unk62 = 6;
+            break;
+        case 46:
+            ex->Hi_FreeEffModel(work->unk66);
+            break;
+        case 33:
+            ex->Hi_FreeEffModel(work->unk68);
+            break;
+        }
+        if (frame >= 0 && frame < 0x2E) {
+            ex->Hi_DrawEffModel(&work->unk4, &work->unkC, (s32)&work->unk1C, work->unk66);
+            ex->Hi_ModifyEffModelRGB(work->unk66, 6, 6, 6);
+        }
+        if (frame >= 21 && frame < 31) {
+            D_801EB764.unkA = (frame - 21) * 2;
+            D_801EB764.unkA = D_801EB764.unkA >= 10 ? 9 : D_801EB764.unkA;
+            if (work->unk60 >= 0) {
+                D_801EB764.unkC = func_801E8DA0(0, 0x1000, 4 - work->unk60, 4);
+                work->unk60--;
+            }
+            if (work->unk62 >= 0) {
+                D_801EB764.unkC = func_801E8DA0(0x1000, 0, 6 - work->unk62, 6);
+                work->unk62--;
+            }
+            for (i = 0; i < 13; i++) {
+                func_801E8E78(&D_801EB764.unk0, func_801E901C((u16 *)ex->btlfx_getFileData(entry->unk8, 0x16), i));
+                func_801E77C0(&D_801EB764, D_801EBC54[i], 0x50, D_801EB764.unk8, D_801EB764.unkA, D_801EB764.unk10,
+                              D_801EB764.unk12, 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), 0, NULL, 0, D_801EB764.unkE,
+                                    D_801EB764.unkC, 1, D_801EBC54[i], 0);
+            }
+        }
+        if (frame >= 26 && frame < 30) {
+            t = frame - 26;
+            dm = (DrMode2Words *)env->unk24;
+            env->unk24 += sizeof(DrMode2Words);
+            setlen(dm, 2);
+            dm->code[0] = 0xE6000001;
+            dm->code[1] = 0;
+            addPrim(&env->unk20[1], dm);
+            scale.vx = (t << 7) + 0x1000;
+            scale.vy = (t << 7) + 0x1000;
+            scale.vz = (t << 7) + 0x1000;
+            col.r = col.g = col.b = 0x3C;
+            rot.vx = 0;
+            rot.vy = 0;
+            rot.vz = 0;
+            ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
+            env->unk2C->unk5E = 0x208 - t * t * 4;
+        }
+        work->unk64++;
+        return frame >= 0x32;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", fx_1bd_op83);
 
