@@ -14,7 +14,7 @@ extern Fx105Spark D_801EC168[];
 void func_801E7D9C(s32 z, s32 tpage, s32 y0, s32 y1, CVECTOR *rgb);
 void func_801E9E1C(void);
 void func_801E9F28(s32 c);
-void func_801EA6D4(s16 *data, u8 c, u8 c2, s32 n);
+void func_801EA6D4(s16 *data, s32 c, s32 c2, s32 n);
 void func_801EA298(s16 *data, s32 c, s32 h, s32 n);
 
 typedef struct {
