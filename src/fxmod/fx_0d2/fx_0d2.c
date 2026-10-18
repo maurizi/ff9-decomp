@@ -45,9 +45,66 @@ INCLUDE_RODATA("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_headerPtr);
 
 INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_op83);
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_op84);
+s32 fx_0d2_op84(s32 mode, Fx0d2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 i;
+    s32 j;
+    Pool6CEntry *e;
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_op85);
+    if (mode == 0) {
+        *arg4 = sizeof(Fx0d2Work84);
+    } else if (mode == 1) {
+        D_801ED8E0 = env;
+        for (j = 0; j < env->unkC->unk24; j++) {
+            work->unkA0[j] = 0;
+            ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk20[j]);
+            work->unk20[j].vy = -3000;
+            ex->btlfx_setUnitPos(j, (s16 *)&work->unk20[j]);
+        }
+    } else {
+        frame = entry->unk0;
+        for (i = 0; i < env->unkC->unk24; i++) {
+            if (work->unkA0[i] == 0 && func_801EA108(i, frame, 4, &work->unk20[i]) != 0) {
+                work->unkA0[i] = 1;
+                ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk20[i]);
+                ex->btlfx_setUnitPos(i, (s16 *)&work->unk20[i]);
+                /* PsyQ copyVector() */
+                (&work->unk60[i])->vx = (&work->unk20[i])->vx, (&work->unk60[i])->vy = (&work->unk20[i])->vy,
+                (&work->unk60[i])->vz = (&work->unk20[i])->vz;
+                e = ex->func_800E3CEC((s32)ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk60[i]);
+                work->unk0[i] = e;
+                if (e != NULL) {
+                    e->unk22 = 0x80;
+                }
+            }
+        }
+        return frame >= 0x28;
+    }
+    return 0;
+}
+
+s32 fx_0d2_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    s32 frame;
+
+    if (mode == 0) {
+        *arg4 = 2;
+    } else if (mode == 1) {
+        D_801ED8E0 = env;
+        *work = -1;
+    } else {
+        frame = entry->unk0;
+        if (frame == 0) {
+            *work = 0x10;
+        }
+        if (*work >= 0) {
+            func_801EA070(0xFF, 0, 0x10 - *work, 0x10, 2, 0);
+            (*work)--;
+        }
+        return frame >= 0x10;
+    }
+    return 0;
+}
 
 s32 func_801E9DBC(u8 *base, s32 i) {
     return (s32)base + ((s32 *)base)[(u16)i + 1];

@@ -20,6 +20,13 @@ typedef struct {
     u16 unkE;
 } Fx0d2Track; /* 0x10 */
 
+typedef struct {
+    Pool6CEntry *unk0[8];
+    SVECTOR unk20[8]; /* unit positions */
+    SVECTOR unk60[8];
+    s16 unkA0[8]; /* done */
+} Fx0d2Work84; /* 0xB0 */
+
 extern Unk800F78A4 *D_801ED8E0;
 extern Fx0d2Track D_801F0060[64];
 extern s32 D_801F0460[4];
@@ -35,5 +42,6 @@ s32 func_801EA108(s32 a0, s32 t, s32 n, SVECTOR *b);
 void func_801EA1D4(void);
 void func_801EA220(s16 start, u16 dst, s16 ch, s16 *data);
 void func_801EA27C(s32 ch);
+void func_801EA070(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 i);
 
 #endif
