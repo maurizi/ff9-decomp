@@ -1,8 +1,11 @@
-/* Draft of fx_17d_4 fx_17d_4_op80. Status: 726 aligned mismatches (230 ignoring registers); equivalent by
- * construction. Variable roles brute-forced (build/w/roles3.py). Open: in the case 2/3 ring loops the original does
- * not strength-reduce frame * k and c * (i + 2) (it keeps mult in the loop, k += 0x10 in the Draw delay slot) but still
- * hoists t >> 2 (copy to s6); here loop.c reduces both (a u8 k stops it but adds andi). Case 6's flag/n/r spill
- * slots and several statement orders also differ. */
+/* Draft of fx_17d_4 fx_17d_4_op80. Status: 617 aligned mismatches (about 180 ignoring registers); equivalent by
+ * construction. Variable roles brute-forced (build/w/roles3.py); c and o split per block. Fixed later: case 4 computes
+ * q4 = (frame << 12) / 20 at its start (the original keeps the /10 magic in s1 for the later / 10) and uses q4 >> 2;
+ * case 5 t >> 1 / t >> 2; case 6 t = (frame << 12) / 51 (c = 0x1000 - t, t >> 7) and w13 = (... << 12) / 13
+ * (o = (w13 >> 3) + 0x40, i = 0x1000 - w13 * 2 / 3); case 2's loop as a for (n * (i + 2) then stays a mult, as in
+ * the original). Open: in the case 2/3 ring loops the original does not strength-reduce frame * k (k += 0x10 in the
+ * Draw delay slot); here loop.c still reduces it. Case 6's flag/n/r spill slots and several statement orders also
+ * differ. */
 #include "fxmod/fx_17d_4.h"
 
 typedef struct {
