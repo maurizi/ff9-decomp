@@ -1,6 +1,92 @@
 #include "fxmod/fx_095.h"
 
-INCLUDE_ASM("asm/us/fx_095/nonmatchings/fx_095", func_801E7704);
+s32 func_801E7704(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx095Ctl *ctl) {
+
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 scale;
+    s32 a;
+    s32 glow;
+    s32 bright;
+    s32 glowFrame;
+    s32 abr;
+    s32 t;
+    s32 r;
+    s32 x;
+    s32 y;
+
+    if (mode == 1) {
+        part->unk4 = 0;
+        return 0;
+    }
+    bright = glow = a = scale = 0;
+    glowFrame = 0;
+    abr = scale;
+    switch (part->unk4) {
+    case 0:
+        t = frame << 9;
+        scale = ((ex->math_cos(t >> 2) * 3) >> 1) + 0x1000;
+        a = part->unk0 + ((0x1000 - t) >> 1);
+        abr = 1;
+        bright = 0x1000;
+        if (frame >= 8) {
+            part->unk4 = 1;
+            ((s16 *)part)[-1] = -1;
+        }
+        break;
+    case 1:
+        scale = 0x1000;
+        a = part->unk0;
+        abr = 1;
+        bright = scale;
+        if (frame < 5) {
+            t = frame << 10;
+            glow = ex->math_cos(t >> 2);
+            glowFrame = frame;
+        }
+        if (ctl->unkC != 0) {
+            part->unk4 = 2;
+            ((s16 *)part)[-1] = -1;
+        }
+        break;
+    case 2:
+        t = frame << 8;
+        scale = 0x1000;
+        ex->math_cos(t >> 2);
+        abr = 0xFF;
+        bright = scale;
+        a = part->unk0;
+        if (frame >= 16) {
+            part->unk4 = 3;
+            ((s16 *)part)[-1] = -1;
+        }
+        break;
+    case 3:
+        t = frame << 9;
+        scale = 0x1000;
+        bright = ex->math_cos(t >> 2);
+        abr = 1;
+        a = part->unk0;
+        if (frame >= 8) {
+            return 1;
+        }
+        break;
+    }
+    t = (scale * 62) >> 12;
+    a -= 0x400;
+    x = ctl->unk8 + ((ex->math_cos(a) * t) >> 12);
+    y = ctl->unkA + ((ex->math_sin(a) * t) >> 12);
+    /* One call per table: jump2 cross-jumps the identical tails, leaving only the table address in each arm. */
+    if (part->unk4 < 2) {
+        ex->func_800D1BC4(3, (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E882C[part->unk8]), x, y, 0, abr, bright);
+    } else {
+        ex->func_800D1BC4(3, (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E888C[part->unk8]), x, y, 0, abr, bright);
+    }
+    if (glow != 0) {
+        ex->func_800D1BC4(3, (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E885C[part->unk8]), x, y, 0, 1, glow);
+        ex->func_800D1BC4(2, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x2C), x, y, glowFrame, 1, 0x1000);
+    }
+    return 0;
+}
 
 s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
