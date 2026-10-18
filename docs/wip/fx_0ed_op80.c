@@ -1,9 +1,9 @@
-/* Draft of fx_0ed fx_0ed_op80. Status: 46 aligned mismatches ignoring registers. Open: (1) the end loops: the
- * original walks the first field with a pointer giv but addresses the second as base + giv(8 + 16 * i) (addu each
- * iteration, base in s1/t0 from the func_801E7704 argument); every array/pointer spelling tried here gives two
- * pointer givs; (2) the frame == 0x1F file-id xor block loads entry->unk8 later in the original; (3) global
- * allocation: the original has t s0, state s1, ex s2, frame s4, 1 s5 (here p takes s0). The case-2 frame << 12
- * hoisted above the Hi_DrawSummonModel call (t = frame << 12 before the call) is already reproduced. */
+/* Draft of fx_0ed fx_0ed_op80. Status: ~41 aligned mismatches ignoring registers. The end loops address the second
+ * field as base + k (k = 8, += 16) like the original, but the registers differ: the original keeps the
+ * D_801E9AF4 address in s1 for base + k and walks a copy (a1), here the walker reuses s1 and base is a copy (a2);
+ * the original has t s0, state s1, ex s2, frame s4, 1 s5 (here p takes s0); the frame == 0x1F file-id xor block
+ * loads entry->unk8 later in the original. The case-2 frame << 12 hoisted above Hi_DrawSummonModel is reproduced
+ * by computing t = frame << 12 before the call. */
 #include "fxmod/fx_0ed.h"
 
 typedef struct {
@@ -233,13 +233,13 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801E7704(&a, &b, 0x10, &D_801E8C18, &D_801E8C1C, amp, D_801E9AF4, 1);
                 func_801E7704(&b, &c, 0x10, &D_801E8C1C, &D_801E8C20, amp, D_801E9C04, 1);
                 BTLFX_COPY_SVEC(&work->unk20, &a);
-                for (i = 0; i < 17; i++) {
+                for (i = 0, k = 8; i < 17; i++, k += 16) {
                     ((SVECTOR *)D_801E9AF4)[i * 2].vy -= ((SVECTOR *)D_801E9AF4)[i * 2].vy >> 6;
-                    ((SVECTOR *)D_801E9AF4)[i * 2 + 1].vy -= ((SVECTOR *)D_801E9AF4)[i * 2 + 1].vy >> 4;
+                    ((SVECTOR *)((u8 *)D_801E9AF4 + k))->vy -= ((SVECTOR *)((u8 *)D_801E9AF4 + k))->vy >> 4;
                 }
-                for (i = 0; i < 17; i++) {
+                for (i = 0, k = 8; i < 17; i++, k += 16) {
                     ((SVECTOR *)D_801E9C04)[i * 2].vy -= ((SVECTOR *)D_801E9C04)[i * 2].vy >> 4;
-                    ((SVECTOR *)D_801E9C04)[i * 2 + 1].vy -= ((SVECTOR *)D_801E9C04)[i * 2 + 1].vy >> 3;
+                    ((SVECTOR *)((u8 *)D_801E9C04 + k))->vy -= ((SVECTOR *)((u8 *)D_801E9C04 + k))->vy >> 3;
                 }
             }
         }
