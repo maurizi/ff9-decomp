@@ -11,5 +11,32 @@ typedef struct {
 } Fx0d8Work84;
 
 extern Unk800F78A4 *D_801E8FA0;
+extern Unk80100C78Entry *D_801E9940;
+extern u8 D_801E8FB0[][0x84];
+extern u8 D_801E95E0[][0x48];
+
+typedef struct {
+    SVECTOR unk0;
+    SVECTOR unk8;
+    u8 unk10; /* index */
+    u8 unk11; /* state */
+    u8 unk12;
+    u8 unk13;
+    u8 unk14; /* kind */
+    u8 unk15;
+    s16 unk16;
+    s32 *unk18;
+    Pool6CEntry *unk1C;
+    Pool6CEntry *unk20;
+} Fx0d8Part; /* pool entry data */
+
+/* fx_003 copies (asm) */
+void func_801E7704(Unk80100C78Entry *entry, u8 *buf, s32 *data, void *part, SVECTOR *pos, s32 arg5, s32 arg6, s32 arg7,
+                   s32 arg8, s32 frame, s32 s, s32 r, s32 kind);
+void func_801E7BF8(Unk80100C78Entry *entry, u8 *buf, u8 *buf2, s32 *data, s32 arg4, s32 s, s32 b, s32 kind);
+s32 func_801E7F80(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+
+void func_801E7CEC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *arg5, s32 arg6,
+                   s32 frame, s32 n);
 
 #endif

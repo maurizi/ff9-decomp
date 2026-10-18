@@ -6,7 +6,24 @@ INCLUDE_ASM("asm/us/fx_0d8/nonmatchings/fx_0d8", func_801E796C);
 
 INCLUDE_ASM("asm/us/fx_0d8/nonmatchings/fx_0d8", func_801E7BF8);
 
-INCLUDE_ASM("asm/us/fx_0d8/nonmatchings/fx_0d8", func_801E7CEC);
+void func_801E7CEC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *arg5, s32 arg6,
+                   s32 frame, s32 n) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8FA0);
+    Unk80100C78Entry *entry;
+    SVECTOR r;
+    s32 s;
+    s32 t;
+
+    BTLFX_COPY_SVEC(&r, rot);
+    entry = D_801E9940;
+    s = ex->math_sin((frame << 11) / n);
+    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), pos, &r, *scale * 3 / 2, frame, 1, s, 0, 0);
+    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x19), pos, &r, *scale * 3 / 2, frame, 1, s, 2, 2);
+    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), pos, &r, *scale * 5 / 2, frame, 1, s, 0, 0);
+    t = (frame << 12) / n + 0x1800;
+    ex->func_800D1FFC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), pos, &r, t, frame, 1, *arg5);
+    ex->func_800D1FFC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), pos, &r, t, frame, 1, *arg5);
+}
 
 INCLUDE_ASM("asm/us/fx_0d8/nonmatchings/fx_0d8", func_801E7F80);
 
