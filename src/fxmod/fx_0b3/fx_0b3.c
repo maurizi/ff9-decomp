@@ -90,7 +90,121 @@ void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0b3/nonmatchings/fx_0b3", fx_0b3_op80);
+s32 fx_0b3_op80(s32 mode, Fx0b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    SVECTOR ang;
+    s32 frame;
+    s32 c;
+    s32 i;
+    s32 n;
+    s32 t;
+    s32 u;
+    s32 x;
+
+    if (mode == 0) {
+        *arg4 = sizeof(Fx0b3Work80);
+    } else if (mode == 1) {
+        work->unk0 = 0;
+        work->unk4 = 0;
+        D_801ED5E0 = env;
+        ex->btlfx_initEffModels(D_801ED5F0, 0x10);
+        work->unk6C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 8), 1);
+        work->unk34.vx = 0x1800;
+        work->unk34.vy = 0x1800;
+        work->unk34.vz = 0x1800;
+        work->unk54.vx = 0x2800;
+        work->unk54.vy = 0x2800;
+        work->unk54.vz = 0x2800;
+        work->unk40.vx = 0;
+        work->unk40.vy = 0;
+        work->unk40.vz = 0;
+        work->unk28.vx = 0;
+        work->unk28.vy = 0;
+        work->unk28.vz = 0;
+        work->unk60.vx = 0;
+        work->unk60.vy = 0;
+        work->unk60.vz = 0;
+        work->unk48.vx = 0;
+        work->unk48.vy = -0x100;
+        work->unk48.vz = 0;
+        work->unk68 = NULL;
+    } else {
+        frame = entry->unk0;
+        if (work->unk0 == 0) {
+            t = frame << 12;
+            /* Dead store: only its sign word (t >> 31) survives, shared with t / 20 below. */
+            c = t / 30;
+            if (frame < 20) {
+                c = t / 20;
+            } else {
+                c = 0x1000;
+            }
+            ex->Hi_DrawEffModel(&work->unk60, (VECTOR *)&work->unk48, (s32)&work->unk54, work->unk6C);
+            ex->Hi_ModifyEffModelRGB(work->unk6C, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+            if (frame == 20) {
+                for (i = 0; i < 6; i++) {
+                    D_801EE280[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EB5A0[i]), 0);
+                }
+                work->unk74 = 0x1000;
+                work->unk70 = 0;
+                work->unk68 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+                if (work->unk68 != NULL) {
+                    work->unk68->unk22 = 0x80;
+                }
+            }
+            if (frame >= 20) {
+                func_801E7704((Fx0b3Track *)ex->btlfx_getFileData(entry->unk8, 0xB), frame, &v);
+                work->unk28.vx = v.vx;
+                work->unk28.vy = v.vy;
+                work->unk28.vz = v.vz;
+                BTLFX_COPY_SVEC(&work->unk10, &v);
+                work->unk74 -= 0x800;
+                if (work->unk74 <= 0) {
+                    work->unk74 = 0x1000;
+                    if (++work->unk70 >= 6) {
+                        work->unk70 = 0;
+                    }
+                }
+                ang.vx = 0;
+                ang.vy = 0x800;
+                ang.vz = 0;
+                if (work->unk68 != NULL) {
+                    if (work->unk68->unk30 == -1) {
+                        work->unk68 = NULL;
+                    }
+                    if (work->unk68 != NULL) {
+                        work->unk68->unk5C.vx = ang.vx;
+                        work->unk68->unk5C.vy = ang.vy;
+                        work->unk68->unk5C.vz = ang.vz;
+                    }
+                }
+                n = work->unk70 + 1;
+                if (n >= 6) {
+                    n = 0;
+                }
+                ex->Hi_DrawMorphEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34,
+                                         D_801EE280[work->unk70], D_801EE280[n], work->unk74);
+                if (frame < 8) {
+                    x = ((frame << 12) >> 8) - 0x80;
+                    ex->Hi_ModifyEffModelRGB(D_801EE280[work->unk70], x, x, x);
+                }
+            }
+            if (frame >= 0x33) {
+                u = (frame - 0x33) * 0xFF / 8;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, u, u, u);
+            }
+            if (frame >= 0x3B) {
+                ex->Hi_FreeEffModel(work->unk6C);
+                ex->func_800E3D54(work->unk68);
+                return 1;
+            }
+        }
+        ex->func_800E6624(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+        work->unk4++;
+    }
+    return 0;
+}
 
 s32 fx_0b3_op81(s32 mode, Fx0b3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
