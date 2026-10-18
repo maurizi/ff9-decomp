@@ -12,6 +12,41 @@ typedef struct {
     SVECTOR unk4[1];
 } Fx1bf1Trail;
 
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[17];
+} Fx1bf1Trail17; /* 0x8C */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[5];
+} Fx1bf1Trail5; /* 0x2C */
+
+typedef struct {
+    SVECTOR unk0; /* to */
+    SVECTOR unk8; /* from */
+    u8 unk10; /* trail index */
+    u8 unk11; /* kind */
+    u8 unk12;
+    u8 pad13;
+    u8 unk14; /* angle */
+    u8 unk15;
+    u8 pad16[2];
+    s32 *unk18; /* noise */
+} Fx1bf1Bolt;
+
+extern Fx1bf1Trail17 D_801EFDF8[];
+extern Fx1bf1Trail5 D_801F00B8[];
+
+void func_801EE968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx1bf1Trail *path, Fx1bf1Trail *trail, s32 n, s32 *noise,
+                   s32 i, s32 type, s32 alpha, s32 pad);
+
 /* copied */
 extern Unk800F78A4 *D_801EF2D8;
 extern s32 D_801EFDD8; /* radius */
