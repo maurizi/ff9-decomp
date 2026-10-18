@@ -69,6 +69,62 @@ void func_801E78F8(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0a0/nonmatchings/fx_0a0", fx_0a0_op80);
+s32 fx_0a0_op80(s32 mode, Fx0a0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 t;
+
+    if (mode == 0) {
+        *arg4 = 0x24;
+    } else if (mode == 1) {
+        D_801E7D98 = env;
+        work->unk0 = 0;
+        D_801E8870 = 0x1000;
+        D_801E886C = entry;
+        ex->func_800DC858(0x10, 0, (u16 *)&work->unk4);
+        BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
+        BTLFX_COPY_SVEC(&work->unkC, &work->unk4);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
+        work->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk14);
+        if (work->unk1C != NULL) {
+            work->unk1C->unk22 = ex->func_800E7CC4(0, 0x10);
+        }
+        if (work->unk1C != NULL) {
+            work->unk1C->unk14 = (s32)D_801E7DA4;
+            work->unk1C->unk12 = 0x10;
+            work->unk1C->unkC = 0xAC;
+        }
+        work->unk1C->unk18->unk24 = func_801E78F8;
+        work->unk20 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unkC);
+        if (work->unk20 != NULL) {
+            work->unk20->unk22 = 0x20;
+        }
+    } else {
+        frame = entry->unk0;
+        ex->func_800DC858(0x10, 0, (u16 *)&work->unk4);
+        BTLFX_COPY_SVEC(&D_801E8864, &work->unk4);
+        switch (work->unk0) {
+        case 0:
+            if (work->unk20 != NULL && work->unk20->unk30 == -1) {
+                work->unk20 = NULL;
+            }
+            ex->func_800E3D20((s32)work->unk20, (s32)&work->unk4);
+            if (frame >= 0x29) {
+                work->unk0 = 1;
+                entry->unk0 = -1;
+            }
+            break;
+        case 1:
+            t = frame * 0x200;
+            D_801E8870 = 0x1000 - t;
+            if (frame >= 8) {
+                ex->func_800E3D54(work->unk1C);
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_0a0/nonmatchings/fx_0a0", fx_0a0_headerPtr);
