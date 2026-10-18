@@ -1015,3 +1015,202 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   btl_resetUnit, func_800BBF5C → btl_initWeapon, func_800BC0D0 → btl_initEquipElements, func_800C9EE0 →
   btl_initEnemyUnit, func_800CA0A0 → btl_setEnemyStats, func_800B03B0 → btl_startBattle (phase 2),
   func_800CE05C → btlbg_init, func_800CEE74 → btlbg_getHeader. medium (code).
+
+## Battle campaign 3 (2026-10-18): method, runs, helper scripts  (status: reference)
+- Redux disc 3, Lv 99 party from `disc3_malboro_lv99_calm` unless noted. Every action is Zidane's Attack rewritten at
+  btl_setCmd (0x800B1250) into another command/ability, as in campaign 2. Run outputs: `build/rt3/NAME.json` (traces,
+  start frame) and `build/rt/cov_NAME.json` (coverage, same format as campaigns 1-2), screenshots `build/rt3/NAME_XX.png`.
+- The Malboro is kept passive by two one-time pokes after the state load instead of the per-vsync Freeze listener:
+  BtlUnit.unk2E (ATB speed) = 0 at 0x8010926A and HP = 60000 at 0x80109264. With speed 0 its ATB stayed 0 for 900 frames.
+- Hangs: the "Unknown error in event listener" + modal hang happened twice in this campaign as well (both during long
+  summons, with coverage on). `redux.log` shows a 37-line Lua stack dump ("1: (Table)" ... "37: (Table)") right
+  before the message, and no Lua error text. A Lua breakpoint removed twice is harmless (tested). After switching the
+  LuaJIT compiler off (`jit.off(); jit.flush()` once per session) the remaining ~45 runs (all other summons, Blue magic,
+  Dyne, ablations, ovl_65), about 60k frames with breakpoints, ran without a hang. So the likely cause is JIT-compiled
+  Lua calling into C that re-enters Lua, but it isn't proven. See docs/emulator.md.
+- Coverage blind spot in campaigns 1-2: `tools/rt/cov.py` skips everything in `config/library_funcs.us.txt`, including
+  the 46 ovl_0b functions marked "hand-written asm" (the effect emitters D3ED4-D5C30, the particle integrators
+  DFE4C-E0014, btl_drawMesh, the btlfx_rand/lerp helpers, ...). They always looked unreached. They do run: a direct trace
+  of func_800D3ED4 during Death shows 960 calls from func_800D1D74+0x264. `build/rt3/run3.py` covers them.
+- Scripts (scratch, `build/rt3/`): `r3.lua` (hang-safe breakpoints: two ffi callbacks created once and never freed,
+  pcall in every callback, dispatch by address because Redux passes its own cause string "Lua Breakpoint", no
+  breakpoint changes inside callbacks; coverage pruning happens between run chunks), `run3.py` (state, patch, traces,
+  watches, coverage, opcode logs, `--cov-after ADDR` to start coverage only after an overlay is loaded, `--save-at`),
+  `entry3.py` (enter an encounter from the field and cover from the ovl_0b entry), `ablate3.py` + `abldiff.py` (stub a
+  function mid-action and diff the screenshot against the control; the stub needs at least ~20 frames before the change
+  shows, 4 frames showed nothing), `summ.sh`/`blu.sh`/`fxmap.sh` (batches), `tsum.py`, `newhits.py`, `order.py`,
+  `who.py`, `unreached.py`.
+- Runs: t_regen, t_vanish, t_autolife, t_bio, t_frogdrop, t_frost, t_mustard, t_mustard_vivi, t_badbreath, t_mightyguard,
+  t_defend, t_fire, t_cure, t_attack, t_scan, t_detect, g_defeat, g_trance4 (trance entry), g_reflect, g_flee (L1+R1),
+  e_malboro (battle entry), su_{shiva,ifrit,atomos,odin,leviathan,bahamut,ark,fenrir,carbuncle,phoenix,madeen} (full
+  summons), e_eidolon, u_* (16 Blue magic + 4 Skill), d_freeenergy / d_grandlethal (Dyne), fx_* (15 black/white spells,
+  effect range only), o65_victory / o65_defeat (ovl_65), op_enemy (sequence opcodes), ablations abl_{holy2,fire,death,
+  icon,model}.
+
+## Status bits confirmed at runtime  (status: proposed)
+- binary ovl_0b; btl_addStatus a1 traced from btl_addStatuses+0x48 while the patched spell hit:
+  Regen 0x00040000 (Vivi), Vanish 0x04000000 (Vivi), Auto-Life 0x00002000 (Vivi), Freeze 0x02000000 (Frost on the
+  Malboro). Bad Breath added Blind, Confuse, Poison, Slow and Mini in one call each. Mighty Guard added Shell and Protect
+  to all four. Bio, Frog Drop and Mustard Bomb added nothing (Malboro, and Vivi for Mustard Bomb), so Heat stays
+  code-only.
+- Proposed: `BTL_STATUS_REGEN 0x00040000` (runtime; today only `UNK38_REGEN` exists); mark VANISH and AUTO_LIFE as
+  runtime. In t_regen, btl_initDotTimer(Vivi, 0x12) runs from btl_addStatus+0x774 and btl_tickRegen runs 3 frames later
+  from btl_updateUnitStatus+0x1AC. Regen effect id 0x20, file 0x20.
+- confidence: high.
+
+## Scan, Detect, Reflect, defeat, flee  (status: proposed: upgrades of existing names to [runtime])
+- btl_startScan: once from btl_calcCmd+0x2220 on the Malboro; btl_updateScan: 175 ticks from btl_drawPopups+0x298. The
+  banner showed "Malboro LV: 57", then "HP: 11683/11687 MP: 2316/2334". btl_startDetect: from btl_calcCmd+0x2230;
+  btl_updateDetect: from btl_drawPopups+0x2A0. The banner showed "Carries Vaccine.", then "Carries Ore.". high.
+- btl_applyReflect / btl_orTargets: Fire on a Malboro with Reflect set in its permanent-status word (BtlUnit.unk38, byte
+  0x80109277 |= 0x20). Setting it in `status` doesn't work: btl_tickStatusTimers removes it 3 frames later because the
+  timer is 0. btl_orTargets(Zidane.unk1C) runs from btl_applyReflect+0x278, then btl_calcCmd(Zidane, Vivi), and Vivi took
+  the Fire (9848 HP). high.
+- btl_checkSideDefeated: with all party HP poked to 0 it is called 4x from btl_updateKo+0x414 and shows message 5
+  ("Annihilated..." banner). Then the GAME OVER screen appears with ovl_65 resident. high.
+- func_800EB924 → btlui_pollEscape (`void (void)`): while L1+R1 are held it sets Battle.unkD83 = 1 and calls
+  btl_tryEscape(0) each frame, and btl_tryEscape(1) every 62nd frame (runtime: 122 calls with 0, 2 with 1; the second one
+  ran btl_calcCmd(0,0,0,0x38) → btl_canFlee + btl_rollFlee → btl_setCmd(…, 0x38) and the party escaped). high.
+- Battle.unkD83 → escapeHeld (u8): btl_updateUnitModel compares it with unit.unk7B and calls btl_setIdleMotion when it
+  changes (the run-away stance). medium.
+- func_800C1A8C (btl_setUnitBrightness?, low-medium in campaign 2): runtime from func_800B0060+0x124 during the battle
+  intro, with Battle.unkD86/unkD87 ramping +4 per tick to 0x20 (party/enemy fade-in), and 64x from btl_victory+0x330 while
+  the party ran away. Raises it to medium.
+
+## Matra Magic: func_800B8FF8  (status: proposed)
+- func_800B8FF8 → btl_setTargetHp (`void (BtlCalc *)`): sets the target's HP to the ability parameter (unk8->unk8[5]),
+  or kills it (HP 0, death cry, KO motion) when the parameter is 0; fails on KO targets. Runtime: only in u_matra, from
+  btl_calcCmd+0xE1C. After it the Malboro got LOW_HP (btl_addStatus 0x200 from btl_updateHpStatus+0xAC), i.e. HP 1.
+- confidence: medium-high.
+
+## Summons  (status: proposed)
+- func_800B989C → btl_rollShortSummon (`void (BtlCmd *)`; was "btl_rollSummonLength?"): for command 0x10/0x12/0x14
+  (from btl_checkCmdUsable+0x264) it sets cmd.unk10 bit 0x400 with chance 0xE6/256 (MP > 2x cost) or 0xAA/256. That bit
+  makes btl_startCmdEffect play ability->unkC (short version) instead of ability->unk0_8. Support bit unkC4[1] 0x08000000
+  (Boost?) skips the roll. Runtime: Ifrit without that bit → effect 0x1BD, ~300 frames. With the bit poked into Zidane's
+  support word (0x8008B31B |= 8) → effect 0x114, the full ~1500-frame summon. high.
+- Full summon effect ids (btlfx_start a0 = btlfx_loadFile a0): Shiva 0x26, Ifrit 0x114, Atomos 0xB8, Odin 0x105,
+  Leviathan 0xB3, Bahamut 0xE3, Ark 0x17D, Fenrir 0xD2, Carbuncle (ability 0x44) 0xB1, Phoenix 0xD3, Madeen 0xFB. Short:
+  Shiva 0x197, Ifrit 0x1BD, Atomos 0x1BE. Eidolon command 0x12 (Dagger's trance) with Shiva also plays 0x26.
+- func_800E89D0 → btlfx_restorePartyLooks (`void (void)`): from btlfx_runScript+0x4C once at the end of every summon.
+  For each party unit it calls func_800C0D24 + btlfx_reapplyMini + btlfx_reapplyVanish; after effect 0x1BF it calls
+  btl_setIdleMotion on the caster. medium-high.
+- func_800E8A80 → btlfx_restoreUnitLook (`void (s32 unit)`): the same for one unit; runtime once in the trance run
+  (btlfx_runScript+0x7C). medium.
+- func_800E86E0 → btlfx_copyWords (`(s32 *dst, s32 *src, u32 bytes)`, rounds up to words): once per summon from
+  btlfx_runScript+0x78C. medium.
+- Leads, not named: func_800AB410 → func_800A9BE4(0x207 / 0x8207) runs 48-57x per summon from btlfx_runScript+0x3C/+0x600;
+  func_800DA634 / func_800DA6B4 (start/wait for main func_800562E0 / func_80055DCC + func_80056388, probably the summon's
+  sound bank) in the summons with their own sounds; func_800E8AD0 counts party units with unk68 & 0x400001 == 1, per frame
+  from btlfx_updateLoader during summons; func_800DA5C4 (Ark, Bahamut, Madeen) restarts g_btlfxLoader.
+
+## Trance entry  (status: proposed: existing names now [runtime])
+- With the party's trance gauges poked to 0xFE (+0x78) and the Malboro left to act (`g_trance4`, deterministic):
+  btl_gainTrance is called 2x from btl_applyCalcResult+0x318 when "Virus Tentacles" hit. Eiko's gauge overflowed, so
+  btl_addStatus(Eiko, 0x4000) ran from btl_gainTrance+0x1B4. Effect 0x101 (the trance transformation) followed.
+  btl_gainTrance only runs for enemy → party damage, so a party Attack on Vivi doesn't trigger it.
+- Trance-only functions in that run: func_800AB3E4 (→ func_800ABBC4(unit, 0x17 / 0x8017), 12 calls from
+  btlfx_runScript+0x68 / +0x684, reads CD via cd_readChunks: probably the trance model swap), func_800BD698,
+  func_800C0D24 → func_800C2344 → func_800C8D18. Leads only.
+
+## Battle entry (from the ovl_0b entry point)  (status: proposed)
+- Run e_malboro: `build/rt3/entry3.py e_malboro 899 2714 1200` (enter_battle from `disc3_pandemonium_lv99_field`,
+  break at 0x800A859C, then coverage). Order by first-hit frame is in `build/rt3/order.py e_malboro --all`.
+- func_800A859C → btl_entry: game_main's mode-2 case calls it right after game_loadModeOverlay(2) (the break hit there).
+  It calls func_800A8CD4, loops btl_main until GameState.unk0 & 0x101, then func_800A8DE0. high.
+- func_800A8CD4 → btl_initMode: battle buffers, vsyncMode 4, installs GameData.unk838 = func_800AB810 and unk83C =
+  btl_soundCmd, then func_800A90B0 ... func_800B031C (all at +0..+43). medium-high.
+- func_800A8DE0 → btl_exitMode (code), func_800A94F8 → btl_cleanup (end of btl_main: frees the battle files, copies
+  the saved encounter sectors GameData.unk7EC/unk7F4 back into unk7FC/unk804 and restores fieldId / unk7DC; these are the
+  fields tools/rt/enter_battle.py saves). medium (code).
+- func_800A8E24 → btl_allocBattle (Battle struct at D_80067944 + 0x61800), func_800A8E6C → btl_clearBattle. medium.
+- func_800A90B0 → btl_loadCommonData: file 0x271B of directory 1, from which it copies Battle.unk154C, Battle.abilities
+  (the ability table) and Battle.unk22CC. medium.
+- func_800A8F8C → btl_loadSoundBanks (two banks from D_800F51E8 via func_80055E14). low-medium.
+- func_800A923C → btl_load (`void (s32 encounter)`, first call of btl_main): buffers, encounter file, event script,
+  background, model slots, btlui reset, btl_startBattle. medium-high.
+- func_800A9768 → btl_allocBuffers, func_800A98A0 → btl_initReturnInfo (stores the previous mode GameState.unkA and the
+  field id or world position to return to). medium.
+- func_800AA08C → btl_loadEncounterFile: synchronous CD read of GameData.unk7FC[0]/unk804[0], the encounter sector
+  range enter_battle.py writes. medium-high.
+- func_800A99AC → btl_initEncounter: finds the encounter's 0x11xxxx data blocks, evt_init on the AI script,
+  func_800C94B8. medium.
+- func_800AA140 → btl_loadBackgroundStep (`s16 (Battle11C0 *, s32 enc, state *)`): CD read state machine for
+  unk7FC[1] (the background file enter_battle.py writes); btl_load polls it until 0 (54473 calls). medium-high.
+- func_800A9A7C → btl_setupBackground (texture pages, tex anims; sets Battle.unk0 |= 1, which turns on btlbg_draw).
+  medium.
+- func_800E9E10 → btlui_reset (clears the 0x11C UI block, sets the battle text bank, VSyncCallback(NULL)). medium.
+- func_800B031C → btl_initBattleState (btl_initState, effect common data, btlcam_init, ...). medium.
+- func_800B0060 → btl_updateIntro (`void (GameData *, Battle *)`): 105 ticks from btl_update+0x70 at battle start.
+  It steps the model loader, then btl_initEnemies / btl_initParty, fades enemies then party in (unkD87 / unkD86 += 4
+  up to 0x20), and draws units, background and banner. medium-high.
+- Leads: func_800AB580 (4-step loader over func_800AA24C/AA504/AA958/AABC4; sets Battle.unk0 |= 4, which starts
+  btl_initParty) → btl_loadPartyModelsStep?, func_800AB810 (GameData.unk838 hook, 5 calls: builds a model entry from
+  loaded data) → btl_setupModel?, func_800BB974 (after btl_initEnemies), func_800C0C7C / func_800C0CD0 (before
+  btl_initEnemies / btl_initParty).
+
+## Unit shadows  (status: proposed)
+- func_800AC37C → btl_drawShadow (`u8 *(Battle11C028 *, s32 slot, s32, s32 bones, u8 *prim)`, 4 semi-transparent FT4
+  quads, macro SHADOW_QUAD in the C) and func_800AD4E4 → btl_calcShadowMatrix (orientation from one bone or between
+  two bones). Runtime: both run per unit per tick from btl_updateUnitModel+0x544. Stubbing either removes the dark
+  ellipses under all units (abl_model, 0.51 % of pixels; build/rt3/abld_model.png). Stubbing func_800C7B84,
+  func_800C7CC8, func_800C9040 or func_800C1A8C changed nothing at idle. high / medium-high.
+
+## Effect emitters and wrappers (ovl_0b D0B18-D5C30)  (status: proposed)
+- Hit counts per effect (fx_* runs, effect range only): an emitter runs once per wrapper call that passes the
+  wrapper's depth/count checks, so its count equals the wrapper's or is slightly lower. D1680 = D4478,
+  D1D74 = D3ED4, D198C = D45FC, D1FFC = D40CC + D4228 + D437C, D23D8 ⊃ D4768 + D4A30, D2938 = D57D0 + D59D0,
+  D1494 → D0E14 = D50A0 (Death, Fira, Holy), D0FFC = D4D6C (Firaga) or D5568 (Thundaga), D12C4 = D5C30 (Comet,
+  Demi, Doomsday, Flare, Osmose, Thundaga). The packet codes are from the C of each wrapper.
+- Ablations (stub mid-effect, 24-30 frames, diff vs control; build/rt3/abld_*.png):
+  - func_800D1494 → btlfx_drawTrail (`(u8 *p, s32, s32 *, s32 frame, s32 scale, s32, s32 tp, u8 *out, s32 mode)`,
+    calls btlfx_pushTrailPoint, then one of three ribbon modes): Holy's blue light ribbons vanish (15.9 % of pixels),
+    and so do Death's red streaks. medium-high.
+  - func_800D0E14 → btlfx_drawTrail3D (GT4 0x3C/0x3E, 0x34 bytes per segment; via func_800D50A0 →
+    btlfx_emitTrailRibbon3D), func_800D0FFC → btlfx_drawTrailFlat (GT4 via func_800D4D6C → btlfx_emitTrailRibbonFlat,
+    or LINE_G2 0x50/0x52 via func_800D5568 → btlfx_emitTrailLines), func_800D12C4 → btlfx_drawTrailScreen (GT4 via
+    func_800D5C30 → btlfx_emitTrailRibbonScreen). The ff9-ds notes F13/F14/F16 describe the same split. medium.
+  - func_800D1680 → btlfx_drawParticles (FT4 0x2C/0x2E, 40 bytes each; inner func_800D4478 → btlfx_emitParticles):
+    Fire's flame particles (3.7 %) and Holy's white sparkles (3.0 %) vanish. medium.
+  - func_800D1D74 → btlfx_drawAnimQuads (animated FT4 set, frame = arg4 mod frame count; inner func_800D3ED4 →
+    btlfx_emitAnimQuads): Death's dark smoke cloud vanishes (12.5 %). medium.
+  - func_800D1FFC → btlfx_drawSprites (3D points drawn as TILE 0x68 / SPRT_8 0x74 / SPRT_16 0x7C / SPRT 0x64 + one
+    DR_MODE; inner func_800D437C (dots), func_800D4228 (8x8 / 16x16), func_800D40CC (free size)): with Vivi poisoned,
+    stubbing it or btl_drawStatusIcons removes the same Poison bubbles over Vivi (abl_icon, 0.14 % each). Its caller
+    btl_drawStatusIcons+0x3E4 is the status-animation path. medium-high for the wrapper, medium for the three inner names.
+  - func_800D198C → btlfx_drawSprite (SPRT 0x64/0x66 at a projected point, OT bucket from depth; inner func_800D45FC →
+    btlfx_emitSprite), func_800D1BC4 → btlfx_drawSpriteAtOt (same with an explicit OT index). Called from
+    btl_drawStatusIcons+0x384 and func_800E0168. Stubbing it at idle or with Poison changed nothing visible. medium-low.
+  - func_800D3030 → btlfx_drawBackdrop (`(BtlBgLayers *, s32)`: layered screen backdrop via btlfx_addSpriteQuad and
+    func_800D2DBC): Holy's dark starry sky vanishes and the battle background shows through (64.5 %). medium.
+    func_800D2DBC → btlfx_drawBackdropSprite (SPRT / GT4 at x, y with a frame; Demi, Holy, Carbuncle, Reflect). low-medium.
+  - func_800D2938 → btlfx_drawFan (textured FT4 fan func_800D57D0 / Gouraud G3 fan func_800D59D0 + DR_MODE, as in ff9-ds
+    F13; Death, Flare, Holy, Osmose, Thundaga, Blizzaga). medium-low (no ablation).
+  - func_800D0B18 (POLY_G4 0x38 grid of arg2 x arg3; Doomsday, Leviathan, Phoenix, Madeen) → btlfx_drawGouraudGrid.
+    low-medium. func_800D23D8 (FT4 w x n grid, inner D4768 / D4A30; runs in every action from +124, small glow near the
+    caster in Fire) → btlfx_drawQuadGrid. low. func_800D3B6C (lerps two points, draws via func_800D1BC4; Holy, Cure,
+    Phoenix, Bahamut, Madeen, Potion) and func_800DE11C (Hi_DrawSliceEffModel's inner loop; Death, Doom, Break, Fenrir,
+    Frog Drop): leads.
+
+## Battle sequence opcodes seen (op_enemy)  (status: reference)
+- 4000 frames of the Malboro acting freely: 69 opcodes from 6 btlseq_start calls. Typical stream:
+  `10 00 / 08 39 / 05 03 / 0e 81 / 07 05 / 05 04 / 09 07 / 07 05 / 05 05 / 01 06 / 0a 00 / 00`, i.e. setCamera, effect
+  0x39, anim, showName 0x81, waitAnim, anim, waitEffectHit, waitAnim, anim, wait 6, op 0A, end. Op 0A
+  (btlseq_opReleaseEffect) always followed an effect + wait-hit + wait (3 calls). Op 11 (btlseq_opSetStance) appeared as
+  `11 01 / 02 00 / 00` in one action and `11 00 / 02 00 / 00` in a later one: it is set before op 02 (execCmd) and
+  cleared again in the next sequence. Both names stay low-medium.
+
+## ovl_65: victory rewards vs game over  (status: proposed)
+- Runs o65_victory (Malboro HP 1, Attack, coverage from main's `jal battleEnd_main` at 0x8001285C) and o65_defeat
+  (party HP 0; no button taps, so it stays on GAME OVER). Screens: +100 / +200 "Received EXP and AP!" (counting), +300
+  "Received Item(s) and Gil", +400 Received Gil counted down to 0.
+- func_801F3A7C → battleEnd_update (per frame from battleEnd_main+0x70): calls gameover_main on defeat, func_801F0F04
+  on victory (487 calls). medium. func_801EF45C → battleEnd_init (both runs, once). medium.
+- func_801F0F04 → rewards_update (victory only, every frame). It calls func_801F1160 (every frame: func_801EFB98,
+  EFC68, EFF50, F0044, F0138, F0264, likely the window draws) and func_801F11B8 (every frame; calls a state handler
+  through a pointer at +0x40). medium for rewards_update, low for the rest.
+- State handlers (victory only, first frame after coverage start / calls): func_801F143C +11 x109 (EXP/AP count-up),
+  func_801F14C0 +120 x109 (after the first X), func_801F1518 +229 x141 (Items/Gil screen), func_801F076C +370 x101
+  (gil transfer). The X taps came every 120 frames, so the transitions line up with them. low-medium: rewards_stateExp,
+  rewards_stateExpDone, rewards_stateItems, rewards_stateGil.
+- Defeat only: gameover_main (already named), func_801F3818 and func_801F3A20 (both once from gameover_main). Leads.

@@ -1,4 +1,6 @@
 -- Coverage: exec breakpoints on function entries sharing ONE ffi callback (LuaJIT limits callbacks).
+-- JIT off: with it on, Redux hung in long runs ("Unknown error in event listener"); none in ~60k frames without
+jit.off(); jit.flush()
 local ffi = require 'ffi'
 Cov = Cov or {}
 Cov.C = Cov.C or ffi.load 'PCSX'

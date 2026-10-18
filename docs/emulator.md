@@ -76,7 +76,11 @@ BIOS): `disc3_pandemonium_lv99_field` (= `disc3_scenario_field_ready`: card 1 FI
 `disc3_malboro_fire_banner`, `disc3_malboro_fire_hit`, `disc3_malboro_rewards` (EXP/AP screen), `disc3_ark_lv99_cmd`,
 `disc3_ark_lv99_calm` (Ark: magic is disabled in that fight). The `_calm` and later Malboro states expect the
 Malboro's ATB to be held at 0 (see below), otherwise it acts within ~250 frames. The ff9-ds fixture states
-(`disc3_ark_combat_fixture`, ...) use synthetic parties.
+(`disc3_ark_combat_fixture`, ...) use synthetic parties; `ds_zidane_trance_entry` has Zidane alone, already in
+Trance (Dyne in his menu). Campaign 3 states: `disc3_malboro_gameover` (GAME OVER screen after "Annihilated...", ovl_65
+resident), `disc3_malboro_trance_pre` (despite the name: in the middle of Eiko's trance transformation effect 0x101),
+`disc3_malboro_eiko_trance` (Eiko in Trance, Zidane's command menu up), `disc3_malboro_entry_1100` (1100 frames after
+the ovl_0b entry of a fresh Malboro battle; the Malboro is mid-action). The Malboro states need the calm pokes below.
 
 ### Entering any battle (disc 3)
 
@@ -104,6 +108,22 @@ when other breakpoints were added outside the bridge. A Lua error inside a vsync
 help in that state (the API looks down, so it only deletes `redux.pid`); note the pid first (`pgrep -af AppRun`).
 This also happened during plain `Bridge.addBp` log breakpoints plus `patch.lua` (campaign 2, t_regen run):
 "Lua Breakpoint invoker threw an exception, deleting breakpoint" in `redux.log`, then the hang.
+Campaign 3 hit the same hang twice during long summons (`redux.log`: a Lua stack dump "1: (Table)" ... "37: (Table)",
+then "Unknown error in event listener"). What helped: switch the LuaJIT compiler off once per session
+(`tools/emu.py lua 'jit.off(); jit.flush(); return 1'`); after that, ~45 runs and ~60k frames with breakpoints and
+coverage had no hang. Also: wrap every callback body in pcall and always return true, create breakpoint callbacks once
+and never free them, don't add or remove breakpoints inside callbacks, and keep per-vsync listeners off when not needed.
+Redux passes its own cause string ("Lua Breakpoint") to callbacks, so a shared callback has to dispatch on the address.
+`build/rt3/r3.lua` and `run3.py` (scratch, campaign 3) follow these rules.
+
+Instead of the per-vsync Freeze, the Malboro stays passive with two one-time pokes after loading a state: ATB speed
+(BtlUnit.unk2E) `write 0x8010926A 0 --size 1` and HP 60000 (`write 0x80109264 0xEA60 --size 2`).
+
+Coverage blind spot: `cov.py` skips every function in `config/library_funcs.us.txt`, including the 46 ovl_0b
+"hand-written asm" functions (effect emitters, particle integrators, btl_drawMesh, ...). They do run, so drop that
+exclusion when they matter. Ablation screenshots only change after about 20 frames (4 frames showed nothing).
+To cover an overlay that loads where battle effect modules live (ovl_65 at 0x801EDF00), start coverage after main's
+`jal` into its entry (0x8001285C for battleEnd_main), and stop before the next overlay loads there.
 
 ### Speed and the debugger
 
