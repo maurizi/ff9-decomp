@@ -127,7 +127,6 @@ extern Fx19fTrail D_801EAA58;
 extern BtlModel D_801EAB28[];
 extern Fx19fTrail17 D_801EAF18[6];
 extern Fx19fTrail13 D_801EB268[3];
-void func_801E7704(s32 *ot, s32 n, s32 a, s32 r, s32 g, s32 b);
 void func_801E7894(Unk80100C78Entry *entry, Fx19fTrail *trail, SVECTOR *from, SVECTOR *to, s32 amp, s32 arg5, s32 arg6,
                    s32 arg7, s32 arg8, s32 arg9);
 
