@@ -703,3 +703,314 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_800D87D0 → btlfx_getMotionLength (`s32 (s32 unit)`): unk9C->unkC->unk2, the frame count that
   func_800BD31C compares unkA0->unk3A against to detect the end of a motion. 18 refs.
 - confidence: medium (code; runtime only shows they run when a spell starts).
+
+## Battle campaign 2 (2026-10-17): method, runs, helper scripts  (status: reference)
+- Same setup as campaign 1 (Redux disc 3, `disc3_malboro_lv99_calm`, Malboro ATB/HP frozen by `build/rt/freeze.lua`).
+  Every action is Zidane's Attack rewritten by `tools/rt/patch.lua` into another command/ability (command ids from the
+  ovl_0b command table D_800FD56C: 4 Defend, 5 Flee, 7 Change, 0xD Focus, 0xF Throw, 3 Jump, 8 Eat, 0x11 Wht Mag,
+  0x16 Blk Mag, 0x18 Blu Mag, 0x19 Skill; ability ids from the battle ability table Battle+0x16CC, names decoded from
+  D_800F909C: 0x1C Sleep, 0x20 Slow, 0x24 Stop, 0x25 Poison, 0x0E Silence, 0x0F Mini, 0x11 Confuse, 0x12 Berserk,
+  0x13 Blind, 0x2B Death, 0x2C Break, 0x51 Doom, 0x0D Haste, 0x0C Protect, 0x0B Shell, 0x10 Reflect, 0x14 Float,
+  0x04 Regen, 0x0A Esuna, 0x64 Auto-Life, 0x60 Vanish, 0x03 Curaga, 0x1D Blizzard).
+- Scratch helpers (not tools; `build/rt2/`): `spell.py`/`spell2.py NAME CMD ABIL [--tgt] [--trace f,..] [--nocov]`
+  (patched action + coverage and/or argument traces), `who.py`/`callers.py FUNC..` (hit counts per run and the distinct
+  callers recorded by `cov.lua`; `MODULE` = a return address inside the CD-loaded effect module at 0x801E7700-0x801F1700),
+  `tsum.py` (summary of the trace runs), `abil.py`/`cmds.py` (ability/command table dumps), plus prepared but not yet run:
+  `oplog.lua`/`oplog.py` (log effect-script and battle-sequence opcodes), `ablate2.py` (stub a function mid-action),
+  `entry.py` (coverage from btl_main's first call), `batch3.sh` (defeat, trance, Reflect bounce, L1+R1 flee).
+- Coverage runs added (`build/rt/cov_*.json`, 600-1200 frames from the patched action): c_defend, c_change, c_flee
+  (Flee command 5), c_focus, c_throw, c_jump, c_eat, s_sleep, s_slow, s_stop, s_poison, s_silence, s_mini, s_confuse,
+  s_berserk, s_blind, s_death, s_break, s_doom, p_haste, p_protect, p_shell, p_reflect, p_float, p_regen, p_esuna,
+  p_autolife, p_vanish, p_curaga (party targets: Vivi, Curaga all four), b_blizzard. Together with campaign 1's runs:
+  49 runs. Trace runs (`build/rt2/trace_t_*.json`, no coverage): t_sleep ... t_float, 16 spells (the emulator hung during
+  t_regen, see the end of this section).
+- Emulator note: during t_regen Redux logged "Lua Breakpoint invoker threw an exception, deleting breakpoint" followed
+  by "Unknown error in event listener" and the web server stopped answering (the modal-dialog case in docs/emulator.md).
+  `tools/emu.py stop` cannot stop it in that state; the instance has to be killed before the next session.
+
+## Battle STATUS bits (BtlUnit.status)  (status: proposed — header defines)
+- binary ovl_0b. Runtime: trace of btl_addStatus while the patched spell hits (t_* runs, all from func_800C0ACC+0x48):
+  Break 0x00000001 (petrify), Silence 0x8, Blind 0x10, Confuse 0x400, Berserk 0x800, Stop 0x1000, Poison 0x10000,
+  Sleep 0x20000, Haste 0x80000, Slow 0x100000, Float 0x200000 (on Vivi), Shell 0x400000, Protect 0x800000,
+  Mini 0x10000000, Reflect 0x20000000. Known before: KO 0x100, low HP 0x200, Trance 0x4000, Defend 0x8000 (every action
+  in the t_* runs starts with btl_removeStatus(Zidane, 0x8000) from btl_setCmd+0x1F4), Freeze 0x02000000.
+- From code (consistent with the above): 0x2 = Venom (the per-tick handler drains HP and MP, func_800BDD24 +
+  func_800BDE78), 0x20 = Trouble (func_800BD774 splashes half the damage on allies), 0x40 = Zombie (heals hurt, drain
+  reversed), 0x80 = immune to instant death/gravity (formulas fail on it), 0x2000 = Auto-Life (KO queues revive cmd
+  0x3D), 0x01000000 = Heat (acting while it is set adds KO in btl_processCmdQueue), 0x04000000 = Vanish (hides the
+  meshes, func_800BD414), 0x08000000 = Doom, 0x40000000 = Jump (in the air), 0x80000000 = gradual petrify.
+  Bits 0x8000000|0x80000000 are the two shown with a countdown number (func_800CD210).
+- confidence: high for the traced bits, medium for the code-derived ones (0x4 unidentified).
+
+## Battle sequence (enemy action script) interpreter  (status: proposed)
+- binary ovl_0b. Correction to campaign 1: func_800CA7CC is not camera code. It runs up to four sequence slots
+  (Battle11C4.unk68[4], BtlScript) and dispatches one-byte opcodes through D_800F5858[35] = {onEnter, step} pairs.
+- func_800CA7CC → btlseq_update (`void (void)`): once per battle tick from btl_drawScene+0x3c (375 calls / 1500 frames
+  in `idle`). Runtime: its opcode handlers are only ever called from func_800CA7CC+0x110 (onEnter) / +0x134 (step), and
+  only in runs where an enemy acted (`enemy` = Malboro's Osmose, `attack` = Ark's attack, `c_jump`); player actions
+  never execute a handler. high.
+- D_800F5858 → g_btlseqOps (`BtlScriptOp[35]`). high.
+- func_800CA530 → btl_startEnemySeq (`(BtlCmd *)`): called from btl_startCmdEffect+0x30c (the cmd 0x2F/0x35-0x37 =
+  enemy AI command case) in the enemy runs only; starts a slot when the battle data has a sequence for subNo. high.
+- func_800CA5AC → btlseq_start (`Battle122C *(BtlCmd *)`): allocates one of the 4 slots (pc = sequence table[subNo]);
+  runtime caller func_800CA530+0x44 only. high.
+- func_800CA694 → btlseq_startDirect (`(u16 unitMask, s16 targets, u16 seqId)`): event-script opcode 0xE5 (main
+  evt_execInstr) runs a sequence without a command. medium (code).
+- func_800CA774 → btlseq_isBusy (`s32 (void)`): 1 while any slot is active. medium (code).
+- func_800CA3CC → btlseq_init: resolves the sequence offsets and loads the animation list from the battle data,
+  clears the 4 slots. medium (code; battle load only).
+- Opcode handlers (op: onEnter / step). Runtime column = runs that executed it.
+  - op00 func_800CAAD0 → btlseq_opEnd: waits for the animation/effect/popups, then btl_onCmdEffectDone and frees the
+    slot (enemy 122 calls, attack 26). medium-high. op18 func_800CAC24 → btlseq_opEndNoAnimWait. medium.
+  - op01 func_800CAC98 → btlseq_opWait (sets the counter from pc[1]) / func_800CACAC → btlseq_stepWait. medium-high.
+  - op02 func_800CACD8 → btlseq_opExecCmd: btl_execCmd on every unit in the target mask (enemy: 1 call = Osmose's
+    damage). high.
+  - op03/op1E func_800CAD6C → btlseq_opMoveToTarget, func_800CAEC4 → btlseq_stepMove; op04 func_800CAF90 →
+    btlseq_opMoveHome; op13 func_800CB008 → btlseq_opMoveTo (absolute), func_800CB090 → btlseq_stepMoveSetHome;
+    op1B func_800CB0F0 → btlseq_opMoveBy (relative). medium (code: lerp of BtlUnit.unk8C over pc[1] frames).
+  - func_800CB17C → btlseq_findUnit (first unit in a mask), func_800CB1D4 → btlseq_getTargetCenter (average x/z of the
+    target units; runtime from func_800CBA58). medium.
+  - op05 func_800CB2E0 → btlseq_opPlayAnim (enemy 4, attack 2). medium-high.
+  - op06 func_800CB3A4 → btlseq_opDelayedEffect (effect id, arg, delay; started by btlseq_update when unk25 runs out).
+    medium.
+  - op07 func_800CB4E8 → btlseq_opWaitAnim (enemy 60 calls). medium-high.
+  - op08/op1A func_800CB3EC → btlseq_opEffect: the enemy run's only btl_playCmdEffect call came from
+    func_800CB3EC+0xC8. high.
+  - op09 func_800CB560 → btlseq_opWaitEffectHit (waits for slot flag 2, set when the effect raises its hit flag).
+    medium. op0B func_800CB5C4 → btlseq_opWaitEffect. medium. op0A func_800CB594 → btlseq_opReleaseEffect
+    (g_btlfxState.unkF = 1). low-medium.
+  - op0C func_800CBBB0 → btlseq_opScale / func_800CBC38 → btlseq_stepScale (unit attr 0x37). medium.
+  - op0D func_800CB618 → btlseq_opHideMeshes, op0F func_800CB68C → btlseq_opShowMeshes (both once in the Ark run;
+    they call func_800BD414 / func_800BD464). medium.
+  - op0E/op21 func_800CB700 → btlseq_opShowName (banner: the ability name for 0x80, else enemy text; 1 call in the
+    Osmose run, whose banner showed "Osmose"). medium-high.
+  - op10 func_800CB848 → btlseq_opSetCamera (Battle.unk131C). medium. op12/op20 func_800CB884 →
+    btlseq_opPlayCamera (50 % chance unless the camera option is off, then btlcam_playSeq). medium.
+  - op11 func_800CB808 → btlseq_opSetStance (unk68 bit 18 = which idle animation pair). low-medium.
+  - op14 func_800CBA58 → btlseq_opTurn. medium.
+  - op15 func_800CBD28 → btlseq_opPlayTexAnim, op16 func_800CBDC8 → btlseq_opLoopTexAnim, op17 func_800CBE68 →
+    btlseq_opStopTexAnim. medium.
+  - op19 func_800CBEB4 → btlseq_opDelayedSound (btl_playUnitSound after a delay). medium.
+  - op1D func_800CBF28 → btlseq_opFadeOut (btl_setUnitFade). medium.
+
+## Command execution phases  (status: proposed)
+- binary ovl_0b; btl_processCmdQueue steps Battle.curCmd through unk11BA = 0 check, 1 start effect, 2 wait, 3 finish.
+- func_800C28F4 → btl_startCmdEffect (`(BtlCmd *)`): phase 1, once per action in every action run (caller
+  btl_processCmdQueue+0x328). Picks the effect: Attack 0x64 + weapon type, Steal per character, Item/Throw by item
+  class, enemy commands → btl_startEnemySeq, Eidolon ids; Defend (4) and Change (7) only show the name and set a motion
+  (runtime: c_defend/c_change reach it but never btl_playCmdEffect). high.
+- func_800C2598 → btl_playCmdEffect (`(BtlCmd *, s32 effectId, s16 *params)`): fills the effect target list
+  (Battle.unk116C, reflect retargeting via func_800B3188), resets the effect system and calls btlfx_start(effectId).
+  Runtime: in all 16 traced spells a1 equals the effect id btlfx_start receives (Sleep 0x1A, Slow 0x7E, Stop 0x95,
+  Poison 0x15, Silence 0x2A, Mini 0x19, Confuse 0x60, Berserk 0x0E, Blind 0x9E, Doom 0xEC, Break 0x99, Haste 0x59,
+  Protect 0x7B, Shell 0x3F, Reflect 0x4F, Float 0x1B). high.
+- func_800B1B48 → btl_checkCmdUsable: phase 0 checks with failure messages (0x17, 0x18 no item left, 0x1B Dagger can't
+  concentrate); Jump sets status 0x40000000. medium-high (code + called once per action).
+- func_800B23B4 → btl_validateTargets: drops dead targets, re-targets a random living unit. medium.
+- func_800B253C → btl_updatePartyCmd: phase 2 per tick for party actions; plays the Defend kneel and the Change
+  row-walk (moves unk8C z by 400 over the motion, then btl_execCmd). medium.
+- func_800B3C00 → btl_onCmdEffectDone: phase 3 (also from btlseq_opEnd and btl_updatePartyCmd); a reflected spell
+  (cmd unk10 bits 7-8 = 2) replays the effect on the bounce targets. medium.
+- func_800B2988 → btl_finishCmd: resets the actor's ATB (campaign 1: the write at func_800B2988+0xA8), drains the trance
+  gauge per action, ends Jump. high.
+- func_800BD31C → btl_waitHitMotions (`s32 (BtlCmd *)`): 0 while any unit is still in its hit-reaction motion
+  (unk68 bit 17); finishes them via the two functions below. medium.
+- func_800B3188 → btl_applyReflect (`u16 (BtlCmd *)`): for reflectable abilities, targets with status 0x20000000 bounce
+  the spell to random units of the other side (unk1C[]). medium (code; once per spell from btl_playCmdEffect+0xD8).
+- func_800B4478 → btl_orTargets, func_800B3CEC → btl_clearCmd, func_800B3E7C → btl_isCmdPending (queued or current),
+  func_800B3D54 → btl_queueAutoCmd (slot unk8; runtime: the counter-attack from btl_tryCounter+0x190),
+  func_800B4114 → btl_removeUnitCmds, func_800B41A4 → btl_removeQueuedCmd(unit, cmdNo), func_800B4434 →
+  btl_releaseItem (un-reserves a queued item; runtime c_throw), func_800B2DD4 → btl_flushCmdQueue, func_800B2F24 →
+  btl_clearCmdQueue (runtime: victory and the "all enemies stopped/petrified" runs), func_800B0EF8 →
+  btl_initCmdQueue, func_800B10F8 → btl_initUnitCmds (6 slots per party unit, 3 per enemy). medium.
+- func_800B3B5C → btl_autoAttack (Confuse: random side, Berserk: enemies; Attack 0xB0). medium (code).
+- func_800CDEF0 → btl_showCmdName (ability/item name banner; runtime from btl_startCmdEffect in 37 runs, including
+  Defend and Change). high. func_800EA0B4 → btl_getAbilityName, func_800CD75C → btl_getItemName,
+  func_800CD70C → btl_getElementName (bit index → text), func_800CD78C → btl_getUnitName. medium-high.
+
+## Status application, ticks and looks  (status: proposed)
+- func_800C0ACC → btl_addStatuses (`u32 (BtlUnit *, u32 mask)`): btl_addStatus per bit, keeps the best result. Runtime:
+  every traced status spell adds its bit from func_800C0ACC+0x48; called from btl_rollAbilityStatus and func_800BACB4.
+  high.
+- func_800C0B6C → btl_removeStatuses (`s32 (BtlUnit *, u32 mask)`): runtime Esuna (p_esuna, via func_800BAD64), victory.
+  high.
+- func_800C0C00 → btl_initDotTimer (`(BtlUnit *, s32 bit)`): Venom/Poison/Regen tick timers from spirit; runtime only
+  in s_poison and p_regen. high.
+- func_800BDD24 → btl_tickPoison (maxHp/16 damage): s_poison only. high. func_800BDDA0 → btl_tickRegen (maxHp/16 heal,
+  damage for undead): p_regen only. high. func_800BDE78 → btl_tickVenomMp (maxMp/16). medium.
+- func_800CC1A0 → btl_spawnTickPopups (numbers for the ticks above): s_poison/p_regen only. high.
+- func_800BD8F0 → btl_resetAtbSpeed (unk2E = 8/10/14 by the battle-speed option): runtime from btl_addStatus in
+  p_haste and s_slow only. high.
+- func_800C02D4 → btl_updateStatusColor (Zombie/Berserk/Heat/Freeze tint into unkC1). medium.
+- func_800C0430 → btl_setStoneClut (`(BtlUnit *, s32 on)`): shifts the model CLUT rows (petrify); runtime s_break. medium.
+- func_800C0544 → btl_makeGreyCluts (StoreImage, grey, LoadImage). low-medium.
+- func_800C0A70 → btl_interruptUnit (cancel commands, ATB 0). medium. func_800C09EC → btl_clearUnitStatus. medium.
+- func_800BD414 → btl_hideMeshes (`(BtlUnit *, u16 mask)`), func_800BD464 → btl_showMeshes: runtime p_vanish
+  (btl_addStatus+0x49c → hide) and the Ark sequence. medium-high. func_800BD4DC → btl_hideWeapon, func_800BD53C →
+  btl_showWeapon (c_jump via func_800D8C08). medium.
+- func_800E8408 → btlfx_reapplyMini, func_800E8460 → btlfx_reapplyVanish (after effects restore party models). medium.
+- func_800CCDB8 → btl_drawStatusIcons: per tick from btl_drawPopups+0x284; for each unit and each entry of the 12-entry
+  table D_800F6A88 (status mask, exclusion mask, sprite anim, bone) draws the status animation at a bone. medium
+  (code + call site; ablation planned). D_800F6A88 → g_btlStatusIcons. medium.
+- func_800CD210 → btl_drawStatusCountdown: Doom / gradual-petrify counter digits over units (from btl_drawPopups+0x1c0).
+  medium.
+- func_800BD774 → btl_spreadTroubleDamage. medium (code).
+- func_800C1704 → btl_checkEnemiesKO: runtime s_death (the Malboro died from Death) and victory, from btl_addStatus's KO
+  case; flushes the queue when no enemy is left. medium-high. func_800C15DC → btl_checkPartyDisabled. medium.
+- func_800BCEF0 → btl_updateKo: KO state machine (death motion, sounds 0x79/0x78, fade-out, rewards, unit removed);
+  runtime 364 calls while the Malboro died (victory), also s_death/s_stop/s_break. high.
+- func_800BC78C → btl_setIdleMotion, func_800BCC64 → btl_endPartyHitMotion (attack run), func_800BCDBC →
+  btl_endEnemyHitMotion (8 damage runs). medium.
+- func_800BC21C → btl_updateUnitModel (`(BtlUnit *, s32 *ot)`): per unit per tick from btl_updateCombat, btl_victory
+  and func_800AF578 (rotation/translation matrix, motion end handling). medium.
+
+## Ability formula steps (btl_calcCmd)  (status: proposed)
+- binary ovl_0b, `(BtlCalc *)` unless noted. Runtime = runs whose coverage contains the function.
+- func_800B8664 → btl_rollStatusHit (hit % then evade %, else miss flag): every s_* run. high.
+- func_800B9AFC → btl_initStatusHitRate (level + accuracy + magic/4 - target level; evade = magic evade): every s_* run.
+  high.
+- func_800B9C30 → btl_halveHitForShell (target 0x400000), func_800B9C74 → btl_halveHitForSpread: s_* runs. medium-high.
+- func_800BACB4 → btl_applyAbilityStatus (status set of the ability via btl_addStatuses; 0 → Guard flag, 1 → miss): all
+  s_* and p_* status runs. high.
+- func_800BAD64 → btl_cureAbilityStatus: p_esuna only. high. func_800BADD4 → btl_cureItemStatus. medium.
+- func_800BA858 → btl_halveForSpread (magic multiplier halved for multi-target casts): Fire, Blizzard, Cure, Curaga.
+  medium-high.
+- func_800BA7D0 → btl_missIfAirborne (ground-only abilities miss Float or flying enemies): Fire, Blizzard, Ramuh runs.
+  medium.
+- func_800B918C → btl_rollFlee (escape chance from average levels; success queues cmd 0x38) and func_800BAEA8 →
+  btl_canFlee (battle allows escape and someone can act): c_flee only. high.
+- func_800B9E50 → btl_guardIfDeathImmune (Guard when target status 0x80): s_death. medium. func_800B9D34 →
+  btl_missIfDeathImmune: c_eat. medium.
+- func_800BA1B4 → btl_setEnemyAttackParams (power = ability, defence = target, multiplier = strength + random): Ark's
+  attack (`attack` run, formula 0x64). medium-high. func_800B9E88 → btl_setAbilityPhysParams (same for player physical
+  abilities, formulas 8 / 0x62). medium. func_800BA094 → btl_setWeaponAbilityParams (weapon power * ability / 10).
+  medium.
+- func_800B9994 → btl_canAddHitStatus (weapon status on hit; from btl_applyCalcResult in the Attack runs). medium.
+- func_800BAAE4 → btl_calcPercentDamage (Demi-type: maxHp * rate / 100, 2/3 when spread). medium (code).
+- func_800B9A5C → btl_setDrainFlags, func_800B9CDC → btl_checkLevelMultiple (LV-n spells), func_800B9D6C →
+  btl_checkTargetIsPlayer, func_800BAF3C → btl_markTrouble (target Trouble 0x20 → popup flag 0x100). medium (code).
+
+## Escape, rewards, end of battle, enemy AI hooks  (status: proposed)
+- func_800C12CC → btl_addEnemyRewards (exp, gil, item drops 1/256, 32/256, 96/256, card): runtime victory only, from
+  btl_updateKo+0x22c when the Malboro died. high. D_800FDF30 → g_btlRewards. medium. func_800C1594 →
+  btl_clearRewards, func_800C1524 → btl_initState. medium.
+- func_800C1794 → btl_saveParty (victory, btl_update+0x260) and func_800C1854 → btl_saveCharacter (4 calls in victory =
+  the 4 party members; writes HP/MP/trance back). high.
+- func_800C20B8 → btl_playVictoryMusic (from btl_victory; sound commands 0x8601/0x700). medium.
+- func_800C19F8 → btl_tryEscape (message 4 when the battle forbids it, else flee formula 0x38). medium.
+- func_800C1184 → btl_rollAmbush (0 back attack, 1 first strike, 2 normal; support bits 0x200/0x400 change the odds).
+  medium (code).
+- func_8004AB7C (main) → evt_battleTrigger (`s32 (s32 tag, s32 unitBits, s32 attacker, s32 ability)`): runs an enemy's
+  event-script tag: 0x2F turn (AI), 0x35 hit/counter, 0x36 death, 0x37 any hit. Runtime callers: btl_updateAtb+0x15c
+  (enemy ATB full) and btl_applyCalcResult+0x598/+0x5ac (2 calls after every spell that hit the Malboro, 3 in the
+  enemy run, 0 in Defend/Change). medium-high.
+- func_800BE784 → btl_getBattleVar (event-script battle variables 32-42: scene flags, gil, phase, attacker, targets...;
+  runtime from the event VM func_80037D6C+0x3cc) and func_800BE99C → btl_setBattleVar (32 force victory, 33-35 end
+  modes, 38 add gil, ...; event opcode 0x4A). medium-high / medium.
+- func_800B0A6C → btl_applyAutoAbilities (Auto-Reflect/Float/Haste/Regen/Life and immunity supports). medium (code).
+  func_800B0CF8 → btl_partyHasSupport. medium. func_800B0D4C → btl_tryAutoPotion (runtime from btl_gainTrance+0x6c in
+  the Ark run). medium. func_800B081C → btl_findCover (Cover/Protect-type supports). medium (code).
+- Unit helpers: func_800C1E88 → btl_hasEnemyFlag (enemy category bits: 0x10 undead, 0x80 flying ...), func_800C1EDC →
+  btl_getModelSlot, func_800C1F00 → btl_countActiveUnits, func_800C1F7C → btl_pickRandomUnit, func_800C1CA0 →
+  btl_getUnitsWithStatus, func_800C1D8C → btl_getUnitBySlot, func_800C1938 → btl_unlinkUnit, func_800C1990 →
+  btl_insertUnit, func_800BED6C → btl_findUnitByBit. medium (code).
+- Scan/Detect: func_800CD808 → btl_startScan, func_800CD83C → btl_updateScan (LV, HP/MP, weakness lines),
+  func_800CDC68 → btl_startDetect, func_800CDD68 → btl_updateDetect. medium (code; runs planned).
+
+## Battle sound  (status: proposed)
+- func_800AD90C → btl_soundCmd (`s32 (s32 op, s32 id, s32, s32 pan, s32 vol)`): the battle's GameData.unk83C sound hook
+  (music 0/7, 0xC streams, 0xD000 sound effects); runtime: menu snd_playSe reaches it through the hook (caller
+  snd_playSe+0x38). medium-high.
+- func_800C22CC → btl_playUnitSound (`(BtlUnit *, u16 id, u8 vol)`, panned at the unit): runtime death sounds from
+  btl_updateKo. high. func_800C2200 → btl_playHitSound (weapon hit sound; z_attack via func_800D8988). medium-high.
+  func_800C2250 → btl_playDeathCry (once per unit, from btl_killUnit). medium-high.
+- func_800C24E8 → btl_setUnitFade (`(BtlUnit *, s32 level)`): 17 calls while the Malboro faded out. high.
+- func_800C1A8C → btl_setUnitBrightness. low-medium.
+
+## Effect system (spell/summon effects)  (status: proposed)
+- binary ovl_0b. An effect id starts a 3-byte-opcode script (directory at 0x801E7700) run by an interpreter that spawns
+  "tasks" (up to 11, callbacks (mode 0 size query, 1 start, 2 step)); opcodes < 0x20 are control, 0x20-0x2F resident
+  ops (D_800F8D10), 0x50-0x7F unit/choreography ops (D_800F72E0), >= 0x80 ops exported by the CD-loaded module.
+- func_800D62A0 → btlfx_start (`s32 (s32 effectId)`): trace values above; -1 when busy. high. D_800FEC40 →
+  g_btlfxState (unk0 state, unk2 resolved id, unk18 script pc, unk1C header flags). medium-high.
+- func_800D616C → btlfx_reset. medium. func_800E3DA8 → btlfx_resetAll (once per effect from btl_playCmdEffect). medium.
+- func_800D650C → btlfx_runScript: per frame from func_800E3EEC; states 0-4 (save VRAM, read header, load file,
+  run ops). high (code + runtime: btlfx_spawnTask's only script caller is func_800D650C+0x808).
+- func_800D6360 → btlfx_findScript, func_800D64C8 → btlfx_callScript (weapon sub-script, op 0x7C), func_800D6340 →
+  btlfx_retryOp, func_800D63B0 → btlfx_swapVramPages. medium.
+- func_800D6E70 → btlfx_spawnTask (`(s32 op, s32 file, s32 a, s32 b)`): 14-44 calls per action. high.
+  func_800D7094 → btlfx_updateTasks: per frame. high. func_800D6D3C → btlfx_initTasks, func_800D6D8C →
+  btlfx_allocTaskMem. medium-high. D_80100C78 → g_btlfxTasks. medium. D_800F8D10 → g_btlfxResidentOps, D_800F72E0 →
+  g_btlfxUnitOps. medium-high.
+- func_800DA4F4 → btlfx_loadFile (`s32 (s32 id)`): once per spell from btlfx_runScript+0x1f4; file ids: Sleep 0x4E,
+  Slow 0x7E, Stop 0x95, Poison 0xCA, Silence 0x7F, Mini 0x7C, Confuse 0x61, Berserk 0x0E, Blind 0x9D, Doom 0xEC,
+  Break 0x99, Haste 0x59, Protect 0x7B, Shell 0x3F, Reflect 0x4F, Float 0x1B. high. func_800DA92C → btlfx_updateLoader
+  (per frame). medium. D_80100DC0 → g_btlfxLoader. medium. func_800DA3A4 → btlfx_findFileSlot, func_800DA3D8 →
+  btlfx_getFileData (`s32 (s32 slot, s32 idx)`; also called by module code), func_800DA480 → btlfx_getFileDataSize.
+  medium-high.
+- Particle/element pools exported to modules: func_800DA104 → btlfx_poolSize, func_800DA138 → btlfx_poolInit,
+  func_800DA1B8 → btlfx_poolClear, func_800DA1F4 → btlfx_poolSpawn, func_800DA2AC → btlfx_poolUpdate (MODULE callers in
+  Haste, Slow, Stop, Doom, Reflect, Ramuh). medium.
+- Effect heap: func_800E3B34 → btlfx_heapInit, func_800E3B70 → btlfx_heapAlloc, func_800E3BF8 → btlfx_heapWrapIfFull,
+  func_800E3C50 → btlfx_heapFree (empty). medium.
+- func_800E4134 → btlfx_reloadCommonData (re-reads file 0x2BF into 0x801E7700 and the VRAM pages after a summon; runtime
+  d_summon only). medium.
+- func_800E701C → btlfx_setTargets, func_800E72B8 → btlfx_clearTargets (g_btlfxEnv->unkC). medium-high.
+  func_800E70D0 → btlfx_beginPrims, func_800E7154 → btlfx_endPrims (prim buffer pointer; used by btl_drawStatusIcons).
+  medium.
+- func_800E8DC8 → btlfx_execCmd (btl_execCmd on one target or all) and func_800E8E84 → btlfx_showPopups
+  (btl_spawnPopups); both from func_800E5DA8 → btlfx_opApplyResult (op 0x25), which runs in every action run. high.
+- func_800E4984 → btlfx_startCasterTask (op 0x27 = func_800E4C88 → btlfx_opCast, the caster's cast motion; every
+  spell), func_800E5538 → btlfx_opReturnHome (op 0x28; uses func_800E43D8 → btlfx_moveUnitHome), func_800E60EC →
+  btlfx_opFadeBackground (op 0x2A), func_800E6270 → btlfx_opFadeUnits (op 0x24; d_summon only; func_800E813C →
+  btlfx_fadeUnitGroup, func_800E7FC0 → btlfx_fadeUnit, func_800E7EC0 → btlfx_setUnitBrightness), func_800E5F24 →
+  btlfx_opPlayCamera (op 0x29; calls btlcam_play), func_800E5EAC → btlfx_opAddCameraChoice (op 0x23), func_800E45D0 →
+  btlfx_opSetFrameRate (op 0x2C). medium.
+- func_800E8F40 → btl_setVsyncMode (`g_gameState->vsyncMode = arg`). high (code).
+- Primitive helpers: func_800D0858 → btlfx_addPrim (`(u32 len, s32 z, void *)` into the effect OT by depth),
+  func_800D08C4 → btlfx_addPrimAbr, func_800D07B4 → btlfx_linkPrimAbr, func_800D090C → btlfx_allocDrMode,
+  func_800D2C78 → btlfx_addSpriteQuad, func_800D0A0C → btlfx_drawScreenTint (8 TILEs over the screen; module-called in
+  summon, Death, Doom, Stop). medium.
+- Unit helpers for effects (unit index, 0x10 = caster): func_800E73EC → btlfx_getUnitHomePos, func_800E750C →
+  btlfx_getUnitPos, func_800E769C → btlfx_getUnitBodyPos, func_800E76DC → btlfx_setUnitPos, func_800E77D8 →
+  btlfx_getUnitRot, func_800E7824 → btlfx_setUnitRot, func_800E7A44 → btlfx_getUnitScale, func_800E7BA0 →
+  btlfx_getStrikePos (point in front of the target at its radius; Attack runs), func_800E72C8 → btlfx_getUnitRadius,
+  func_800E788C → btlfx_isEnemyUnit, func_800E7650 → btlfx_applyFloatHeight. medium (code + MODULE callers).
+- func_800D8658 → btlfx_resetUnitMotion, func_800D8774 → btlfx_setMotionFrame, func_800D87FC → btlfx_getMotionFrame,
+  func_800D8820 → btlfx_turnUnit, func_800D8914 → btlfx_playSwingSound, func_800D8988 → btlfx_playHitSound,
+  func_800D8A94 → btlfx_isSameSide, func_800D8ACC → btlfx_isSameUnit, func_800D8B70 → btlfx_getUnitWeapon,
+  func_800D8BB8 → btlfx_setUnitVisible, func_800D8C08 → btlfx_setWeaponVisible (MODULE caller in c_jump),
+  func_800D8C4C → btlfx_isUnitActive, func_800D8C70 → btlfx_getUnitStatus. medium.
+- Choreography ops (onStart / step), runtime in the physical-command runs (z_attack, z_steal, victory, c_eat, c_focus,
+  c_jump): op 0x50 func_800D73AC → btlfx_opSetParamsA, op 0x51 func_800D73E4 → btlfx_opSetParamsB, op 0x55
+  func_800D7414/func_800D8CB4 → btlfx_opSwingSound/btlfx_stepSwingSound, op 0x56 func_800D74B8/func_800D8CD8 →
+  btlfx_opHitSound/btlfx_stepHitSound, op 0x5A func_800D75EC/func_800D8D68 → btlfx_opPlayMotion/btlfx_stepPlayMotion,
+  op 0x5B func_800D7660/func_800D8D94 → btlfx_opPlayMotionWait/btlfx_stepPlayMotionWait, op 0x62 func_800D78EC/
+  func_800D9038 → btlfx_opResetMotion/btlfx_stepResetMotion, op 0x6A func_800D7B2C/func_800D9260 →
+  btlfx_opRunHome/btlfx_stepRunHome, op 0x6C func_800D7C9C/func_800D9488 → btlfx_opJumpForward/btlfx_stepJumpForward,
+  op 0x6D func_800D7D64/func_800D955C → btlfx_opJumpHome/btlfx_stepJumpHome, op 0x70 func_800D7F80/func_800D9990 →
+  btlfx_opRunToTarget/btlfx_stepRunToTarget, op 0x71 func_800D805C/func_800D9AB0 → btlfx_opFaceTarget/
+  btlfx_stepFaceTarget, op 0x72 func_800D8124/func_800D9D58 → btlfx_opFaceHome/btlfx_stepFaceHome, op 0x7C
+  func_800D84C4/func_800DA030 → btlfx_opCallWeaponScript/btlfx_stepCallWeaponScript; func_800D71C8 →
+  btlfx_moveUnitArc, func_800D72BC → btlfx_moveUnitLinear. medium.
+- D_800F7510 → g_btlfxModuleExports: 216 function pointers then data pointers (g_btlfxState, g_btlfxLoader,
+  g_btlfxTasks) that the CD-loaded effect modules call; runtime: functions whose recorded callers are inside the module
+  area (Hi_DrawEffModel, btlfx_poolSpawn, btlfx_getFileData, func_800D3030, ...) are all in this table. medium-high.
+
+## Battle camera  (status: proposed)
+- binary ovl_0b (ovl_0b_o1.c). func_800C3770 → btlcam_update: first call of btl_update every tick; func_800C37BC →
+  btlcam_step builds eye/target, applies func_800C5530 → btlcam_applyTargetView (target-selection view),
+  func_800C4A3C → btlcam_applySway, func_800C493C → btlcam_applyShake and func_800C52B4 → btlcam_lookAt (view matrix
+  into GameData.unk18). All per tick in every run. medium-high (code + call graph).
+- func_800C316C → btlcam_loadScript, func_800C2F9C → btlcam_play (runtime: from btlfx_opPlayCamera and func_800E9290
+  once or twice per spell), func_800C2F1C → btlcam_playScene (battle-start/victory scene camera; runtime btl_victory),
+  func_800C2FFC → btlcam_playSeq (from btlseq_opPlayCamera), func_800C2E04 → btlcam_init, func_800C2E4C →
+  btlcam_beginEffect (runtime: from btlfx_runScript), func_800C30F4 → btlcam_endEffect, func_800C57A4 →
+  btlcam_getUnitAnchors. medium. D_800FE3B8 → g_btlCamera. medium.
+
+## Battle setup (code)  (status: proposed)
+- No battle-entry coverage yet (entry.py prepared). From code: func_800BAFEC → btl_initParty, func_800BB4A0 →
+  btl_initPartyUnit (`(Character *, BtlUnit *, u16 slot, u16 n)`), func_800BB1F4 → btl_initEnemies, func_800BBD3C →
+  btl_resetUnit, func_800BBF5C → btl_initWeapon, func_800BC0D0 → btl_initEquipElements, func_800C9EE0 →
+  btl_initEnemyUnit, func_800CA0A0 → btl_setEnemyStats, func_800B03B0 → btl_startBattle (phase 2),
+  func_800CE05C → btlbg_init, func_800CEE74 → btlbg_getHeader. medium (code).

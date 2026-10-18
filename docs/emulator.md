@@ -100,7 +100,10 @@ every game function with ONE shared LuaJIT callback: a callback per breakpoint r
 `patch.lua` (rewrite the next btl_setCmd Attack into any command/ability, e.g. a summon). Note: removing the last
 bridge breakpoint switches Redux's debugger off, so re-enable it (`PCSX.settings.emulator.Debug.Debug = true`)
 when other breakpoints were added outside the bridge. A Lua error inside a vsync listener opens a modal
-"unknown exception" dialog that freezes the web server; then the emulator has to be killed.
+"unknown exception" dialog that freezes the web server; then the emulator has to be killed. `tools/emu.py stop` does not
+help in that state (the API looks down, so it only deletes `redux.pid`); note the pid first (`pgrep -af AppRun`).
+This also happened during plain `Bridge.addBp` log breakpoints plus `patch.lua` (campaign 2, t_regen run):
+"Lua Breakpoint invoker threw an exception, deleting breakpoint" in `redux.log`, then the hang.
 
 ### Speed and the debugger
 
