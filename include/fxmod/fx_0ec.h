@@ -20,10 +20,24 @@ typedef struct {
 } Fx0ecVertex; /* 0x18 */
 
 typedef struct {
-    u8 pad0[0x18];
-    s16 unk18; /* < 0: free */
-    s16 unk1A;
+    s32 vx, vy, vz;
+} Fx0ecVec3;
+
+typedef struct {
+    Fx0ecVec3 unk0; /* position (.12) */
+    SVECTOR unkC; /* velocity; unkC.pad: scale */
+    s16 unk14; /* spin */
+    s16 unk16;
+    s16 unk18; /* age, < 0: free */
+    s16 unk1A; /* triangle */
 } Fx0ecShard; /* 0x1C */
+
+typedef struct {
+    SVECTOR unk0[3];
+} Fx0ecTri;
+
+extern Fx0ecTri D_801EB3D0[0x70];
+extern Fx0ecShard D_801EBE50[0x70];
 
 typedef struct {
     u8 pad0[0x10];
@@ -40,6 +54,7 @@ extern Fx0ecShard D_801ECAB0[300];
 
 s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 void func_801E77FC(SVECTOR *pos);
+void func_801E798C(s32 model, SVECTOR *center);
 s32 func_801E7F00(u8 *buf);
 s32 func_801E7F40(s32 model);
 Fx0ecShard *func_801E802C(void);

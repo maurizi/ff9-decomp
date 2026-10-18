@@ -66,7 +66,29 @@ s32 func_801E7F00(u8 *buf) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E7F40);
+s32 func_801E7F40(s32 model) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E98A0);
+    Fx0ecSplit *sp = &D_801ECA90;
+    Fx0ecVertex *v = (Fx0ecVertex *)sp->unk10;
+    s32 n;
+    s32 i;
+
+    n = (u32)ex->Hi_GetSplitMdlVertex(model, -1) / sizeof(Fx0ecVertex);
+    ex->Hi_SplitMdlVertex(model, -1, (s32)v);
+    {
+        s32 k = D_801ECA90.unk0;
+        sp->unk14[k] = (u8 *)v;
+        sp->unk4[k] = n;
+    }
+    sp->unk10 = (u8 *)(v + n);
+    sp->unk2 += n;
+    D_801ECA90.unk0++;
+    for (i = 0; i < n; i++) {
+        v->unk6 = 0;
+        v++;
+    }
+    return sp->unk2;
+}
 
 Fx0ecShard *func_801E802C(void) {
     Fx0ecShard *p = D_801ECAB0;
