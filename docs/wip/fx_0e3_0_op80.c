@@ -89,6 +89,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 x;
     s32 y;
     s32 n;
+    s32 e;
     s32 f1;
     s32 f2;
     s32 f3;
@@ -144,8 +145,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
         t = (frame << 12) / 69;
         if (frame < 0xC) {
-            a = (ex->math_cos((frame << 10) / 12) * 0xFF) >> 12;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, a, a, a);
+            s32 v = (ex->math_cos((frame << 10) / 12) * 0xFF) >> 12;
+
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, v, v, v);
         }
         if (frame >= 0x18) {
             if (frame == 0x18) {
@@ -167,10 +169,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             nbolt = 1;
             work->unk10.vy = work->unk8.vy + y;
             work->unk10.vx = work->unk8.vx + ((ex->math_cos(b) * c) >> 12);
-            work->unk28.vx = 0x400;
-            work->unk28.vy = 0xC00 - b * 2;
-            work->unk1C.vx = work->unk1C.vy = work->unk1C.vz = d;
             work->unk10.vz = work->unk8.vz + ((ex->math_sin(b) * c) >> 12);
+            work->unk28.vx = 0x400;
+            work->unk28.vy = -b * 2 + 0xC00;
+            work->unk1C.vx = work->unk1C.vy = work->unk1C.vz = d;
             ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
             ex->Hi_ModifySummonModelRGB(SUMMON(env)->unk60, (ex->math_cos(i >> 2) >> 5) - 0x80,
                                         (ex->math_cos(i >> 2) >> 5) - 0x80, (ex->math_cos(i >> 2) >> 5) - 0x80);
@@ -180,12 +182,13 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 trail = 0x1000;
             }
         }
-        rot.vx = 0;
-        rot.vz = 0;
+        x = frame * 0xF5;
         c = frame << 5;
         pos.vx = work->unk8.vx;
         pos.vz = work->unk8.vz;
-        for (f1 = 0, x = frame * 0x55; f1 < 9; f1++, x += 0x1C7, c += 0x1FF) {
+        rot.vz = 0;
+        rot.vx = 0;
+        for (f1 = 0; f1 < 9; f1++, x += 0x1C7, c += 0x1FF) {
             j = x;
             n = 2;
             while (j >= 0x1000 && n > 0) {
@@ -212,14 +215,15 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
         }
         pos2.vx = work->unk8.vx;
-        pos2.vy = work->unk8.vy + 0x6000;
+        pos2.vy = work->unk8.vy;
         pos2.vz = work->unk8.vz;
+        pos2.vy += 0x6000;
         if (t < 0xC00) {
-            a = t + 0x2000;
+            e = t + 0x2000;
         } else {
-            a = (t - 0xC00) * 5 + 0x2C00;
+            e = (t - 0xC00) * 5 + 0x2C00;
         }
-        sc2.vx = sc2.vy = sc2.vz = a;
+        sc2.vx = sc2.vy = sc2.vz = e;
         rot2.vz = 0;
         rot2.vx = t >> 4;
         rot2.vy = frame * 7;
