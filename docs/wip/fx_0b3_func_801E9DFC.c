@@ -1,10 +1,9 @@
 /* Draft of fx_0b3 func_801E9DFC (wave grid: 18x19 cells of POLY_FT4+POLY_F4, column 0 POLY_GT4+POLY_G4, with
- * edge positions written to D_801EE340). Status: 41 lines (build/w/nd.py). Blocker: the original keeps abr = 1 in
+ * edge positions written to D_801EE340). Status: 17 lines (build/w/nd.py), nearly all the abr ternaries. Blocker: the original keeps abr = 1 in
  * $a2 unfolded through both "abr != 0xFF ? 0x2A : 0x28" / "abr == 0xFF ? 0x38 : 0x3A" ternaries and
  * "tpage |= abr << 5"; here cse2 (following the path past the loop notes) folds the first ternary. With
  * "if (c != 0) abr = 1; else abr = 1;" (jump.c hoists one set) the first survives but cse's path following then
- * folds the second (build/w/gb3*.py). Other open rows: the p[].vy stores are scheduled before the first math_sin
- * call (original: after), the spill slots of the u/v halfwords, the loop tail. Fixed: D_801EE340[j] indexing
+ * folds the second (build/w/gb3*.py). The p[].vy stores go after the second math_sin. Fixed: D_801EE340[j] indexing
  * instead of an out pointer (the original's s5 row pointer at offset 0). */
 #include "fxmod/fx_0b3.h"
 
@@ -94,9 +93,9 @@ void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32
             x = x0 + xx;
             p[0].vx = x + ((ex->math_sin(ph) * ay) >> 12);
             p[1].vx = p[0].vx + 0x41A;
+            x += (ex->math_sin(ph + dph) * ay) >> 12;
             p[0].vy = p[1].vy = y0;
             p[2].vy = p[3].vy = y1;
-            x += (ex->math_sin(ph + dph) * ay) >> 12;
             p[2].vx = x;
             x += 0x41A;
             p[3].vx = x;
