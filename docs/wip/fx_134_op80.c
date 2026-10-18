@@ -1,8 +1,10 @@
 /* Draft of fx_134 fx_134_op80 (first draft from m2c; same family as fx_0e0 op80, whose draft gave the work layout).
- * Status: 2461 aligned mismatches, 853 ignoring registers (of ~3600 instructions); frame 0x150 vs 0x148.
+ * Status: 2398 aligned mismatches, 796 ignoring registers (of ~3600 instructions); frame 0x150 vs 0x148 (one spill
+ * slot too many: case 6 spills &work->unk24, which the original keeps in s6; the original has ex in fp).
  * Stack layout notes from the original: locals 0x38..0x107, spills 0x108 (frame), 0x10C (t), 0x110 (c, tail
  * alpha), 0x114 (s, tail scale), 0x118/0x11C (x/y offsets). Cases 0-2 and the tail reuse 0x38 (wrapped blocks),
- * case 3 uses 0x38..0x8F and case 4 0x90..0xC7 without being freed in between, cases 5, 6 and 10 reuse 0xC8. */
+ * case 3 uses 0x38..0x8F and case 4 0x90..0xC7 without being freed in between, cases 5, 6 and 10 reuse 0xC8.
+ * The camera copies work->unk18 = work->unk8 are word copies (BTLFX_COPY_SVEC). */
 #include "fxmod/fx_134.h"
 
 typedef struct {
@@ -122,9 +124,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                 t = (frame << 12) / 40;
                 if (frame < 0x10) {
-                    work->unk18.vx = D_801EC860.vx;
+                    BTLFX_COPY_SVEC(&work->unk18, &D_801EC860);
                     a = frame << 6;
-                    work->unk18.vz = D_801EC860.vz;
                     work->unk18.vy -= ex->math_sin(a) * 3;
                     env->unk2C->unk0[3].vx = work->unk18.vx;
                     env->unk2C->unk0[3].vy = work->unk18.vy;
@@ -194,9 +195,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 SVECTOR ang;
 
                 t = frame << 6;
-                work->unk18.vx = work->unk8.vx;
+                BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
                 a = 0x1000 - t;
-                work->unk18.vz = work->unk8.vz;
                 work->unk18.vy += 0x400 + (a >> 1);
                 s = a >> 4;
                 env->unk2C->unk0[3].vx = work->unk18.vx;
@@ -275,8 +275,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (frame == 1) {
                     ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x60, 0x60, 0x60);
                 }
-                work->unk18.vx = work->unk8.vx;
-                work->unk18.vz = work->unk8.vz;
+                BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
+
                 env->unk2C->unk0[3].vx = work->unk18.vx;
                 env->unk2C->unk0[3].vy = work->unk18.vy;
                 env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -327,8 +327,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             a = (frame << 12) / 96;
             t = (frame << 12) / 24;
             k = ex->math_cos(a);
-            work->unk18.vx = work->unk8.vx;
-            work->unk18.vz = work->unk8.vz;
+            BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
+
             env->unk2C->unk0[3].vx = work->unk18.vx;
             env->unk2C->unk0[3].vy = work->unk18.vy;
             c = 0x97;
@@ -428,8 +428,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 c = 0x8D;
                 s = 0x10;
             }
-            work->unk18.vx = work->unk8.vx;
-            work->unk18.vz = work->unk8.vz;
+            BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
+
             env->unk2C->unk0[3].vx = work->unk18.vx;
             env->unk2C->unk0[3].vy = work->unk18.vy;
             env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -548,8 +548,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 c = (frame << 12) / 2944 + 0x8D;
                 s = (t >> 4) + 0x20;
                 ex->func_800E6624(frame * 0x14, 0x1C0, 0x180, 0x18, 0x60, 0x320, 0x100);
-                work->unk18.vx = work->unk8.vx;
-                work->unk18.vz = work->unk8.vz;
+                BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
+
                 env->unk2C->unk0[3].vx = work->unk18.vx;
                 env->unk2C->unk0[3].vy = work->unk18.vy;
                 env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -657,8 +657,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 c = ((t << 5) >> 12) + 0x8D;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, (t * 0x58) >> 12, 0, 0);
                 s = 0x80;
-                work->unk18.vx = work->unk8.vx;
-                work->unk18.vz = work->unk8.vz;
+                BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
+
                 a = t >> 2;
                 yo = 0;
                 work->unk18.vy = work->unk18.vy - 0x400 - (ex->math_sin(a) >> 1);
