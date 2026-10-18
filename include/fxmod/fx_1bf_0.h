@@ -26,5 +26,11 @@ void func_801E7704(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg
 extern s16 D_801E86C4[18 * 4]; /* per strand: file, start, stride, width */
 extern Fx1bf0Line *D_801E8754[18];
 void func_801E77C0(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
+extern s16 D_801E87B4[];
+
+typedef struct {
+    s16 x, y, z;
+} Fx1bf0Pt;
+void func_801E7B70(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 
 #endif
