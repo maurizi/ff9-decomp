@@ -1,5 +1,23 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_18f.h"
 
-INCLUDE_ASM("asm/us/fx_18f/nonmatchings/fx_18f", fx_18f_op80);
+s32 fx_18f_op80(s32 mode, Fx18fWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+
+    if (mode == 0) {
+        *arg4 = 0xC;
+    } else if (mode == 1) {
+        work->unk4.vy = -0x1B58;
+        work->unk4.vx = 0;
+        work->unk4.vz = 0x7D0;
+        env->unk2C->unk0[0].vx = work->unk4.vx;
+        env->unk2C->unk0[0].vy = work->unk4.vy;
+        env->unk2C->unk0[0].vz = work->unk4.vz;
+        D_801E7820 = env;
+        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
+    } else {
+        return entry->unk0 >= 0x32;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_18f/nonmatchings/fx_18f", fx_18f_headerPtr);
