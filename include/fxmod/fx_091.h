@@ -5,7 +5,7 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s32 unk0; /* frame for func_800D3030 */
+    s32 unk0; /* frame for btlfx_drawBackdrop */
     Pool6CEntry *unk4;
     SVECTOR unk8; /* func_800DC858(0x10, 0) */
     SVECTOR unk10; /* caster body position */

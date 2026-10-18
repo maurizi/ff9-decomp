@@ -14,7 +14,7 @@ typedef struct {
     s32 unk20; /* index */
 } Fx038Item; /* 0x24 */
 
-/* trail strip for func_800D1494 */
+/* trail strip for btlfx_drawTrail */
 typedef struct {
     u8 pad0[0x8C];
 } Fx038Strip;
