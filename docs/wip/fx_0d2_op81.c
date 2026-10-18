@@ -1,9 +1,10 @@
-/* Draft of fx_0d2 fx_0d2_op81. Status: ~41 aligned diff lines with registers, 3 without. Found: case 0 tests
- * work->unk0 (cross-jumped with case 0x43's unk8 test), both unkA clamps are 'x = (x > K) ? K : x' (copy in a1),
- * the n clamp is a ternary (copy n = unk2), the trail loops index D_801EF700[i] directly, and the loops use
- * separate counters (j: mode 1 + case 0x19 + second trail loop, i: first trail loop, i5: slice loop, i2: 0x2C).
- * Left: case 0x19 counter/pointer registers swapped (s0/s1), n gets v1 instead of a3 (global-alloc priority of n
- * vs the unkA temp, which also costs the bnez delay slot), and li 0x1000 schedules later in mode 1. */
+/* Draft of fx_0d2 fx_0d2_op81. Status: 425/428, 3 aligned diff lines: in mode 1 the original loads 0x1000 (a0)
+ * right after 'li v1,6', ours after 'li v1,0x40' (sched2 tie-break; the constant's set insn would have to come
+ * before the unkA store in RTL). Found: case 0 tests work->unk0 (cross-jumped with case 0x43's unk8 test), both
+ * unkA clamps are 'x = (x > K) ? K : x' (copy in a1), the n clamp is a ternary (copy n = unk2) with m = unkA plus
+ * a dead test on m (global-alloc priority: m before n, so n lands in a3), the trail loops index D_801EF700[i]
+ * directly, and the loops use separate counters (k: mode 1, i2: 0x2C and 0x19, i5: slice, i: first trail,
+ * j: second trail). Tried: constant via a variable, statement orders, an inline init helper. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -236,6 +237,8 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 j;
     s32 i2;
     s32 n;
+    s32 m;
+    s32 k;
     u8 *buf;
     Pool6CEntry *p;
 
@@ -252,10 +255,10 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk24.vx = 0x1C00;
         work->unk24.vy = 0x1C00;
         work->unk24.vz = 0x1C00;
-        for (j = 0; j < 6; j++) {
-            func_801E9EEC((Fx0d2Path *)&D_801EF270[j],
-                          (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x90), j));
-            work->unk44[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[j]), 1);
+        for (k = 0; k < 6; k++) {
+            func_801E9EEC((Fx0d2Path *)&D_801EF270[k],
+                          (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x90), k));
+            work->unk44[k] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[k]), 1);
         }
         D_801EF1F0.unkA = 6;
         D_801EF1F0.unk10 = 0x40;
@@ -304,8 +307,8 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x19:
-            for (j = 0; j < 6; j++) {
-                ex->Hi_FreeEffModel(work->unk44[j]);
+            for (i2 = 0; i2 < 6; i2++) {
+                ex->Hi_FreeEffModel(work->unk44[i2]);
             }
             break;
         }
@@ -326,7 +329,11 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 9; i++) {
                 func_801E9E70((Fx0d2Path *)&D_801EF1F0,
                               (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x80), i));
-                n = (D_801EF1F0.keys.unk2 >= D_801EF1F0.unkA) ? D_801EF1F0.unkA : D_801EF1F0.keys.unk2;
+                m = D_801EF1F0.unkA;
+                n = (D_801EF1F0.keys.unk2 >= m) ? m : D_801EF1F0.keys.unk2;
+                if (m != 7) {
+                    i5 = 0;
+                }
                 func_801E77A4(&D_801EF1F0.keys, D_801EF700[i], 0x90, D_801EF1F0.unk8, n, D_801EF1F0.unk10, D_801EF1F0.unk12, 1);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 0, NULL, 0, D_801EF1F0.unkE,
                                     D_801EF1F0.unkC, 1, D_801EF700[i], 0);
