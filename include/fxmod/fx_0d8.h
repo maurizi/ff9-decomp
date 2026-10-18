@@ -10,7 +10,6 @@ typedef struct {
     SVECTOR unk8; /* func_800E7D3C(0x10, 1) */
 } Fx0d8Work84;
 
-extern Unk800F78A4 *D_801E8FA0;
 extern Unk80100C78Entry *D_801E9940;
 extern u8 D_801E8FB0[][0x84];
 extern u8 D_801E95E0[][0x48];
@@ -31,12 +30,25 @@ typedef struct {
 } Fx0d8Part; /* pool entry data */
 
 /* fx_003 copies (asm) */
-void func_801E7704(Unk80100C78Entry *entry, u8 *buf, s32 *data, void *part, SVECTOR *pos, s32 arg5, s32 arg6, s32 arg7,
-                   s32 arg8, s32 frame, s32 s, s32 r, s32 kind);
-void func_801E7BF8(Unk80100C78Entry *entry, u8 *buf, u8 *buf2, s32 *data, s32 arg4, s32 s, s32 b, s32 kind);
 s32 func_801E7F80(s32 mode, Fx0d8Part *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 void func_801E7CEC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, SVECTOR *rot, s32 *scale, s32 *arg5, s32 arg6,
                    s32 frame, s32 n);
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    SVECTOR unk4[16];
+} Fx0d8Strip; /* 0x84 */
+extern u16 D_801E8F28[];
+void func_801E7704(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 from1, s32 to1,
+                   s32 width, s32 dwidth, s32 frame, s32 arg10, s32 arg11, s32 kind);
+extern u16 D_801E8F30[];
+extern Unk800F78A4 *D_801E8FA0;
+void func_801E796C(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR *from, SVECTOR *to, s32 amp,
+                   s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind);
+void func_801E7BF8(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
+                   s32 kind);
 
 #endif

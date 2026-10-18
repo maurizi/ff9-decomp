@@ -53,7 +53,11 @@ INCLUDE_RODATA("asm/us/fx_0b4/nonmatchings/fx_0b4", fx_0b4_headerPtr);
 
 INCLUDE_ASM("asm/us/fx_0b4/nonmatchings/fx_0b4", fx_0b4_op80);
 
-INCLUDE_ASM("asm/us/fx_0b4/nonmatchings/fx_0b4", func_801E8040);
+void func_801E8040(Fx0b4Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0b4Point *)data;
+}
 
 s32 func_801E8058(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     Fx0b4Key *k;

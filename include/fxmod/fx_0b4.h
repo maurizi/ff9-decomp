@@ -50,7 +50,10 @@ s32 func_801E787C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 s32 func_801E78BC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E78FC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E793C(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *path, s32 frame, s32 n);
-void func_801E8040(Fx0b4Path *path, s32 data);
 s32 func_801E8058(Fx0b4Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+typedef struct {
+    s16 x, y, z;
+} Fx0b4Point;
+void func_801E8040(Fx0b4Path *path, u16 *data);
 
 #endif

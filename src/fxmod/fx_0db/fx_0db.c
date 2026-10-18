@@ -5,7 +5,7 @@ INCLUDE_ASM("asm/us/fx_0db/nonmatchings/fx_0db", func_801E7704);
 s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
-    Fx0dbPart *part;
+    Fx0dbItem *part;
     Pool6CEntry *p;
     s32 frame;
     s32 i;
@@ -58,9 +58,9 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 part->unk0 = work->unk26;
                 work->unk26++;
                 ex->func_800CFD78((s16 *)&work->unk14, (s16 *)&D_801E88B4[part->unk0], -0x10, (s16 *)&v);
-                part->unkC[0] = v.vx;
-                part->unkC[1] = v.vy;
-                part->unkC[2] = v.vz;
+                part->unkC[0].vx = v.vx;
+                part->unkC[0].vy = v.vy;
+                part->unkC[0].vz = v.vz;
                 part->unk3C = D_801E88B4[part->unk0].pad * 3;
             }
             work->unk2C += 0x20;

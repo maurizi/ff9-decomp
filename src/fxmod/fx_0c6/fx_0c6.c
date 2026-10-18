@@ -39,6 +39,8 @@ s32 fx_0c6_op80(s32 mode, Fx0c6Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0c6/nonmatchings/fx_0c6", func_801E78F4);
+void func_801E78F4(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}
 
 INCLUDE_RODATA("asm/us/fx_0c6/nonmatchings/fx_0c6", fx_0c6_headerPtr);

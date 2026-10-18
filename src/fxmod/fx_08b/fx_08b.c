@@ -124,4 +124,6 @@ s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_08b/nonmatchings/fx_08b", func_801E7D18);
+void func_801E7D18(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}

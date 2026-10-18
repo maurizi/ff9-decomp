@@ -215,14 +215,29 @@ s32 func_801E8040(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 rela
     return frame >= n - 1;
 }
 
-INCLUDE_ASM("asm/us/fx_0c2/nonmatchings/fx_0c2", func_801E8298);
+void func_801E8298(s32 unit, s32 motion) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E847C);
+
+    ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
+    ex->btlfx_setMotionFrame(unit, 0);
+}
 
 INCLUDE_ASM("asm/us/fx_0c2/nonmatchings/fx_0c2", func_801E8304);
 
-INCLUDE_ASM("asm/us/fx_0c2/nonmatchings/fx_0c2", func_801E8388);
+void func_801E8388(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E847C)->btlfx_isUnitActive(unit)) {
+        func_801E8298(unit, 2);
+    }
+}
 
-INCLUDE_ASM("asm/us/fx_0c2/nonmatchings/fx_0c2", func_801E83D4);
+void func_801E83D4(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E847C)->btlfx_isUnitActive(unit)) {
+        func_801E8298(unit, 3);
+    }
+}
 
-INCLUDE_ASM("asm/us/fx_0c2/nonmatchings/fx_0c2", func_801E8420);
+void func_801E8420(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}
 
 INCLUDE_RODATA("asm/us/fx_0c2/nonmatchings/fx_0c2", fx_0c2_headerPtr);

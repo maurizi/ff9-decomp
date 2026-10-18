@@ -148,12 +148,36 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_09b/nonmatchings/fx_09b", func_801E7F6C);
+void func_801E7F6C(s32 unit, s32 motion) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8164);
 
-INCLUDE_ASM("asm/us/fx_09b/nonmatchings/fx_09b", func_801E7FD8);
+    ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
+    ex->btlfx_setMotionFrame(unit, 0);
+}
 
-INCLUDE_ASM("asm/us/fx_09b/nonmatchings/fx_09b", func_801E805C);
+s32 func_801E7FD8(s32 unit) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8164);
 
-INCLUDE_ASM("asm/us/fx_09b/nonmatchings/fx_09b", func_801E80A8);
+    s32 r;
+
+    if (ex->btlfx_isUnitActive(unit)) {
+        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+    } else {
+        r = 0;
+    }
+    return r;
+}
+
+void func_801E805C(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E8164)->btlfx_isUnitActive(unit)) {
+        func_801E7F6C(unit, 2);
+    }
+}
+
+void func_801E80A8(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E8164)->btlfx_isUnitActive(unit)) {
+        func_801E7F6C(unit, 3);
+    }
+}
 
 INCLUDE_RODATA("asm/us/fx_09b/nonmatchings/fx_09b", fx_09b_headerPtr);

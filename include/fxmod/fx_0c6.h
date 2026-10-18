@@ -13,6 +13,6 @@ typedef struct {
 
 extern Unk800F78A4 *D_801E7950;
 
-void func_801E78F4(Unk800F78A4 *env, s32 index, s32 value);
+void func_801E78F4(Unk800F78A4 *env, s32 i, s32 v);
 
 #endif

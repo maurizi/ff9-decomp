@@ -4,13 +4,65 @@ INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E7720);
 
 INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E7CBC);
 
-INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E8470);
+void func_801E8470(Fx0d3Track *track, s32 t, SVECTOR *out) {
+    if (t >= track->unk2) {
+        t = track->unk2 - 1;
+    }
+    track = (Fx0d3Track *)&track->unk4[t * 3];
+    out->vx = ((s16 *)track)[0];
+    out->vy = ((s16 *)track)[1];
+    out->vz = ((s16 *)track)[2];
+}
 
-INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E84C0);
+void func_801E84C0(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b) {
+    s16 *k;
 
-INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E8548);
+    if (t >= track->unk2) {
+        t = track->unk2 - 1;
+    }
+    k = &track->unk4[t * 6];
+    if (a != NULL) {
+        a->vx = k[0];
+        a->vy = k[1];
+        a->vz = k[2];
+    }
+    if (b != NULL) {
+        b->vx = k[3];
+        b->vy = k[4];
+        b->vz = k[5];
+    }
+}
 
-INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E85FC);
+void func_801E8548(Fx0d3Track *track, s32 t, SVECTOR *a, SVECTOR *b, SVECTOR *c) {
+    s16 *k;
+
+    if (t >= track->unk2) {
+        t = track->unk2 - 1;
+    }
+    k = &track->unk4[t * 9];
+    if (a != NULL) {
+        a->vx = k[0];
+        a->vy = k[1];
+        a->vz = k[2];
+    }
+    if (b != NULL) {
+        b->vx = k[3];
+        b->vy = k[4];
+        b->vz = k[5];
+    }
+    if (c != NULL) {
+        c->vx = k[6];
+        c->vy = k[7];
+        c->vz = k[8];
+    }
+}
+
+s32 func_801E85FC(Fx0d3Track *track, s32 t) {
+    if (t >= track->unk2) {
+        t = track->unk2 - 1;
+    }
+    return (track->unk4 + t)[0];
+}
 
 INCLUDE_ASM("asm/us/fx_0d3/nonmatchings/fx_0d3", func_801E8628);
 

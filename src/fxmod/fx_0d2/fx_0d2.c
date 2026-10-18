@@ -106,7 +106,7 @@ s32 fx_0d2_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
     return 0;
 }
 
-s32 func_801E9DBC(u8 *base, s32 i) {
+s32 func_801E9DBC(u8 *base, u16 i) {
     return (s32)base + ((s32 *)base)[(u16)i + 1];
 }
 
@@ -118,15 +118,42 @@ s32 func_801E9E18(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801E9E70);
+void func_801E9E70(Fx0d2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0d2Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801E9E88);
+s32 func_801E9E88(Fx0d2Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx0d2Point *p;
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801E9EEC);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
+
+void func_801E9EEC(Fx0d2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0d2Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801E9F04);
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801E9F98);
+void func_801E9F98(Fx0d2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0d2Point *)data;
+}
 
 s32 func_801E9FB0(Fx0d2Keys *keys, s32 i, s32 *out) {
     s32 r = 1;
@@ -140,11 +167,19 @@ s32 func_801E9FB0(Fx0d2Keys *keys, s32 i, s32 *out) {
     return r;
 }
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801E9FF4);
+void func_801E9FF4(Fx0d2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0d2Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801EA00C);
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", func_801EA070);
+void func_801EA070(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+    s32 c = (from * (n - t) + to * t) / n;
+
+    BTLFX_EXPORTS(D_801ED8E0)->btlfx_drawScreenTint((u32 *)(D_801ED8E0->unk20 + ot), arg4, c, c, c);
+}
 
 s32 func_801EA108(s32 a0, s32 t, s32 n, SVECTOR *b) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801ED8E0);
