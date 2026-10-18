@@ -1,6 +1,52 @@
 #include "fxmod/fx_0e2.h"
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801E77C0);
+void func_801E77C0(void *trackA, void *trackB, s32 t, Fx0e2Trail *trail, s32 size, s32 pad) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801ECC0C);
+    SVECTOR rot;
+    SVECTOR pos;
+    SVECTOR rotA;
+    SVECTOR rotB;
+    SVECTOR posA;
+    SVECTOR posB;
+    SVECTOR *pt;
+    s32 n;
+    s32 i;
+    s32 r;
+
+    n = (size - 4) / 8;
+    pt = trail->unk4;
+    trail->unk0 = trail->unk2 = n - 1;
+    trail->unk1 = 0;
+    r = t;
+    for (i = 0; i < n; i++, pt++) {
+        func_801EC520(trackA, i, &rotA, &posA);
+        func_801EC520(trackB, i, &rotB, &posB);
+        ex->btlfx_lerpVec((s16 *)&posA, (s16 *)&posB, r, (s16 *)&pos);
+        ex->btlfx_lerpVec((s16 *)&rotA, (s16 *)&rotB, r, (s16 *)&rot);
+        pos.vx /= 2;
+        pos.vy /= 2;
+        pos.vz /= 2;
+        pos.vx += D_801F0FEC.vx;
+        pos.vy += D_801F0FEC.vy;
+        pos.vz += D_801F0FEC.vz;
+        pos.vx += 0x50;
+        pos.vy -= 0x109;
+        pos.vz += 0xE6;
+        pt->vx = pos.vx;
+        pt->vy = pos.vy;
+        pt->vz = pos.vz;
+        if (i == n - 1) {
+            D_801F0FF4.vx = pos.vx;
+            D_801F0FF4.vy = pos.vy;
+            D_801F0FF4.vz = pos.vz;
+            D_801F0FFC.vx = rot.vx;
+            D_801F0FFC.vy = rot.vy;
+            D_801F0FFC.vz = rot.vz;
+            D_801F0FFC.vy += 0x800;
+        }
+        pt->pad = pad;
+    }
+}
 
 void func_801E7A0C(void *track, Fx0e2Trail *trail, s32 size, s32 base, s32 pad) {
     SVECTOR rot;
@@ -131,7 +177,61 @@ void func_801E7D5C(void *trackA, void *trackB, Fx0e2Trail *trail, s32 size, s32 
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801E7FBC);
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801E83B0);
+void func_801E83B0(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
+    Unk800F78A4 *env = D_801ECC0C;
+    Fx0e2Edge *e = D_801EE62C;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    MATRIX m;
+    VECTOR v;
+    SVECTOR ends[2];
+    SVECTOR rot;
+    SVECTOR p;
+    s32 i;
+
+    ends[0].vx = 0;
+    ends[0].vy = -w / 2;
+    ends[0].vz = 0;
+    ends[1].vx = 0;
+    ends[1].vy = w / 2;
+    ends[1].vz = 0;
+    for (i = 0; i < 60; i++, e++) {
+        func_801EC4A4(track, i, &p);
+        p.vx = p.vx * scale->vx / 4096;
+        p.vy = p.vy * scale->vy / 4096;
+        p.vz = p.vz * scale->vz / 4096;
+        rot.vx = 0;
+        rot.vy = rotY;
+        rot.vz = 0;
+        ex->func_800316D8(&rot, &m);
+        gte_SetRotMatrix(&m);
+        gte_ldtr0();
+        gte_ldv0(&p);
+        gte_rtv0tr();
+        gte_stlvnl(&v);
+        p.vx = v.vx;
+        p.vy = v.vy;
+        p.vz = v.vz + 0x4B0;
+        gte_SetRotMatrix(env->unk14);
+        gte_SetTransMatrix(env->unk14);
+        gte_ldv0(&p);
+        gte_rtv0tr();
+        gte_stlvnl(m.t);
+        rot.vx = 0;
+        rot.vy = 0;
+        rot.vz = 0x400;
+        ex->func_800316D8(&rot, &m);
+        ex->MulRotMatrix(&m);
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(&ends[0]);
+        gte_rtps();
+        gte_stsxy(&e->unk0);
+        gte_ldv0(&ends[1]);
+        gte_rtps();
+        gte_stsxy(&e->unk4);
+        gte_stszotz(&e->unk8);
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801E86D0);
 
