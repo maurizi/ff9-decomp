@@ -1,5 +1,8 @@
-/* Draft of func_801E798C (module fx_0ec). Status: 76/126 aligned instructions with ccprobe; the t++ placement in the loop differs.
- * Declarations it needs that are not yet in include/fxmod/fx_0ec.h are repeated below. */
+/* Draft of func_801E798C (module fx_0ec). Status: 6 aligned mismatches; tools/equiv.py agrees (60/60 trials, full
+ * coverage). Only the position of t's increment differs: the original increments t (s3) in the block before the
+ * last rand() call, next to the s1 (u + 20) giv increment; here sched moves it up to the first block, next to i++.
+ * Tried without success: t++/u++ at every statement position (225 combinations), every increment order in the for
+ * header, a single pointer (t used for all three points), index forms (t[i] / D_801EB3D0[i]), and the permuter. */
 #include "fxmod/fx_0ec.h"
 
 void func_801E798C(s32 model, SVECTOR *center) {
@@ -17,8 +20,8 @@ void func_801E798C(s32 model, SVECTOR *center) {
         p->unk18 = 0;
         p->unk0.vx = ((t->unk0[0].vx + u->unk0[1].vx + u->unk0[2].vx) / 3) << 12;
         p->unk0.vy = ((u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3) << 12;
-        p->unk0.vz = ((u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3) << 12;
         p->unk1A = 0;
+        p->unk0.vz = ((u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3) << 12;
         p->unkC.pad = 0x1000;
         p->unk14 = ex->btlfx_randCentered(0x100);
         p->unk16 = ex->btlfx_randCentered(0x200);
