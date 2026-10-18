@@ -31,7 +31,62 @@ s32 fx_11c_op80(s32 mode, Fx11cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_11c/nonmatchings/fx_11c", fx_11c_op81);
+s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    Fx11cBurst *o;
+    Fx11cBurst *q;
+    s32 frame;
+    s32 i;
+    s32 j;
+
+    if (mode == 0) {
+        *arg4 = 0x28;
+    } else if (mode == 1) {
+        work->unk20.vx = env->unkC->unk38;
+        work->unk20.vy = env->unkC->unk3A;
+        work->unk20.vz = env->unkC->unk3C;
+        D_801E7F9C = env;
+        work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk20);
+        work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk20);
+        work->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk20);
+        o = D_801E7EDC;
+        for (i = 0; i < 5; i++, o++) {
+            o->unk10 = 0;
+            o->unk12 = 0;
+            o->unk14 = i * 2;
+            o->unk0.vx = work->unk20.vx;
+            o->unk0.vy = work->unk20.vy;
+            o->unk0.vz = work->unk20.vz;
+            o->unk8.vx = work->unk20.vx;
+            o->unk8.vy = work->unk20.vy;
+            o->unk8.vz = work->unk20.vz;
+            if (ex->btlfx_rand() & 1) {
+                o->unk8.vx += ex->btlfx_rand() % 800;
+            } else {
+                o->unk8.vx -= ex->btlfx_rand() % 800;
+            }
+            if (ex->btlfx_rand() & 1) {
+                o->unk8.vz += ex->btlfx_rand() % 800;
+            } else {
+                o->unk8.vz -= ex->btlfx_rand() % 800;
+            }
+        }
+    } else {
+        frame = entry->unk0;
+        q = D_801E7EDC;
+        for (j = 0; j < 5; j++, q++) {
+            if (q->unk14 == frame) {
+                work->unk4[j] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, q->unk16),
+                                                  (s32)&q->unk0);
+                q->unk10 = 1;
+            } else if (q->unk10 != 0) {
+                q->unk12++;
+            }
+        }
+        return frame >= 0x32;
+    }
+    return 0;
+}
 
 s32 fx_11c_op82(s32 mode, Fx11cWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
