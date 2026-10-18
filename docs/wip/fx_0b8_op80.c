@@ -1,16 +1,18 @@
 /* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 24 aligned mismatches, 8
- * ignoring registers and spill offsets (spnorm 0x40); untested.
+ * ignoring registers (4 of the 24 are relocation addends: D_801EC8C8/D_801EC8D4 are emitted as D_801EC8C0+8/+0x14 and
+ * link identically); untested.
  * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14);
- * the band loop indexes D_801EA6D8[i]; the bolt point loop stores through one SVECTOR pointer d (for-init j, d, y);
- * the function is one if/else-if/else with a shared return 0 (the frame path returns frame >= 0x134 inside the else);
- * the morph switch lists case 3 first; locals are declared pos, sc, p2, ang, rot, col, ang2, scale (the frame-0 call
- * has its own ang2: the original frame is 8 bytes larger); one c for all colour temporaries (the original keeps the
- * fade value in a callee-saved register); constants used several times are loaded where their first use is in the
- * source (unk0[0] = 1 first, unk5C.vx = -0x400 first, unk13C.vy/vz and unk1A0.vx right after unk124 in case 0x7C);
- * the Hi_DrawEffModel call on unk0[1] is an if/else of two calls; split temporaries that were read uninitialized
- * (c, the |cos| r) are one variable again; k_1 holds both sin and cos in the bolt respawn.
- * Open: the bolt loop's b copy (the original passes a copy of b to drawTrail and keeps b in s0), the respawn loop's
- * spills, local-alloc register choice for -0x246A/0x418 in case 0x7C, later unit-loop givs, and the tail. */
+ * the band loop indexes D_801EA6D8[i]; the bolt point loop stores through one SVECTOR pointer d (for-init d, y, j;
+ * increment d++, j++; vy stored before vz); the function is one if/else-if/else with a shared return 0; the morph
+ * switch lists case 3 first; locals are declared pos, sc, p2, ang, rot, col, ang2, scale (the frame-0 call has its
+ * own ang2); one c for all colour temporaries; constants used several times are loaded where their first use is in
+ * the source; the unk0[1] model draw is an if/else of two calls; abs() for the unit lift radius; the bolt trail is
+ * drawn through a copy tr of b; the respawn loop's random range is lo = -j * 0x20 - 0x20, hi = j * 0x20 + 0x20
+ * (hi computed first) instead of two bivs; dx/dz are declared in the respawn block (their pseudos then come after the
+ * /9 magic constant, which fixes the spill slot order); the tail colour uses a block-local n.
+ * Open (20 rows): case 0x7C loads -0x246A into a0 and 0x418 into v1 (original: v1 and a0; local-alloc priority of the
+ * two CSE'd constants), and the tail's D_801ED8C0 load is scheduled after the scale stores (original: before, with
+ * lui into a3). Random orders of case 0x7C (200), barriers and temporaries did not fix either. */
 #include "fxmod/fx_0b8.h"
 
 typedef struct {
