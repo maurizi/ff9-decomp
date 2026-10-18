@@ -68,4 +68,53 @@ s32 func_801E8ED4(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *e
 void func_801E8B10(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d6Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx17d6Vec3;
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* bolt target */
+    SVECTOR unk10; /* particle position */
+    SVECTOR unk18; /* camera position */
+    SVECTOR unk20; /* camera target */
+    SVECTOR unk28; /* bone positions */
+    SVECTOR unk30;
+    Fx17d6Vec3 unk38; /* model position */
+    SVECTOR unk44; /* model rotation */
+    Fx17d6Vec3 unk4C; /* model scale */
+    Fx17d6Vec3 unk58; /* summon position */
+    Fx17d6Vec3 unk64; /* summon scale */
+    SVECTOR unk70; /* summon rotation */
+    Pool6CEntry *unk78;
+    s32 unk7C; /* models */
+    s32 unk80;
+} Fx17d6Work80; /* 0x84 */
+
+/* the summon slot behind env->unk4 */
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x1A8];
+        BtlUnit9CC *unk1A8;
+        BtlUnit9CC *unk1AC;
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx17d6Summon;
+
+extern SVECTOR D_801E9360;
+extern u8 D_801E9368[];
+extern BtlModel D_801E93C4[];
+extern s32 D_801E9624[];
+extern SVECTOR D_801EB104;
+extern SVECTOR D_801EB10C;
+
+#define SUMMON(env) ((Fx17d6Summon *)(env)->unk4)
+
+s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif
