@@ -1,4 +1,4 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 354 aligned mismatches, 98
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 337 aligned mismatches, 87
  * ignoring registers and spill offsets (spnorm 0x40); untested. c/y/k split per block.
  * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14),
  * the band loop indexes D_801EA6D8[i], the bolt point loop stores through one SVECTOR pointer d, the function is one
@@ -519,7 +519,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0] != 0) {
             ex->Hi_DrawSummonModel(&work->unkBC, &work->unk9C, (s32)&work->unkAC, SUMMON(env)->unk60, 1);
-            ex->Hi_DrawEffModel(&work->unkBC, &work->unk9C, (s32)&work->unkD8, work->unk0[1] == 0 ? work->unkCC : work->unkD0);
+            if (work->unk0[1] == 0) {
+                ex->Hi_DrawEffModel(&work->unkBC, &work->unk9C, (s32)&work->unkD8, work->unkCC);
+            } else {
+                ex->Hi_DrawEffModel(&work->unkBC, &work->unk9C, (s32)&work->unkD8, work->unkD0);
+            }
             ex->Hi_DrawEffModel(&work->unkBC, &work->unk9C, (s32)&work->unkD8, work->unkD4);
         }
         if (work->unk0[9] != 0) {
@@ -561,7 +565,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 b = &D_801EC1C0[i];
                 if (b->unkDC > 0) {
                     b->unkDC--;
-                    b->unk2 = b->unk0 = 8;
+                    b->unk0 = b->unk2 = 8;
                     b->unk1 = 0;
                     dy = ((work->unk13C.vz + 0x1000) << 12) / 9;
                     for (j = 0, y_2 = -0x1000 << 12, d = b->unk4; j < 9; j++, d++) {
