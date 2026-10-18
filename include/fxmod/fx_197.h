@@ -39,6 +39,24 @@ typedef struct {
     s16 unk4[1]; /* keys: 1, 3, 6 or 9 halfwords each */
 } Fx197Track;
 
+typedef struct {
+    s32 unk0; /* camera path */
+    SVECTOR unk4; /* camera target */
+    SVECTOR unkC; /* camera position */
+} Fx197Work87; /* 0x14 */
+
+/* camera paths: position track, target track, length */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+    u16 unk4;
+    u16 unk6;
+} Fx197CamPath;
+
+extern Fx197CamPath D_801E9270[];
+
+void func_801E7704(Fx197Track *track, s32 t, SVECTOR *out);
+
 /* copied */
 extern Unk800F78A4 *D_801E9660;
 extern Fx197Shatter *D_801EAF80[8];

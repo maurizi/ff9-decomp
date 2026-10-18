@@ -259,6 +259,32 @@ INCLUDE_ASM("asm/us/fx_197/nonmatchings/fx_197", func_801E81EC);
 
 INCLUDE_ASM("asm/us/fx_197/nonmatchings/fx_197", fx_197_op81);
 
-INCLUDE_ASM("asm/us/fx_197/nonmatchings/fx_197", fx_197_op87);
+s32 fx_197_op87(s32 mode, Fx197Work87 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+
+    if (mode == 0) {
+        *arg4 = 0x14;
+    } else if (mode == 1) {
+        work->unk0 = *arg4 - 3;
+        D_801E9660 = env;
+    } else {
+        frame = entry->unk0;
+        func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->unk8, D_801E9270[work->unk0].unk2), frame,
+                      &work->unk4);
+        env->unk2C->unk0[1].vx = work->unk4.vx;
+        env->unk2C->unk0[1].vy = work->unk4.vy;
+        env->unk2C->unk0[1].vz = work->unk4.vz;
+        func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->unk8, D_801E9270[work->unk0].unk0), frame,
+                      &work->unkC);
+        env->unk2C->unk0[0].vx = work->unkC.vx;
+        env->unk2C->unk0[0].vy = work->unkC.vy;
+        env->unk2C->unk0[0].vz = work->unkC.vz;
+        if (frame >= D_801E9270[work->unk0].unk4) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_197/nonmatchings/fx_197", fx_197_headerPtr);
