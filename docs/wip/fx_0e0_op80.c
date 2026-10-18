@@ -1,9 +1,12 @@
-/* Draft of fx_0e0 fx_0e0_op80. Status: 436 aligned mismatches (198 ignoring registers and spill offsets);
- * equivalent by construction, untested in the emulator. One temporary per case block (t1.., a1.., c1.., r1.., d1..)
- * fixed most of the global allocation (932 rows before). Open: the original keeps the background x offset (xo,
- * spill slot 0x7C) as a variable whose per-case `xo = 0` stores survive; here CSE deletes them and folds xo to 0,
- * which shifts the spill slots. The 0x248 call's col/rot share stack space with case 6's position (union Fx0e0Tmp).
- * Interleaving the unk24 offset restores keeps the two stores each (adjacent -= are folded). */
+/* Draft of fx_0e0 fx_0e0_op80. Status: 307 aligned mismatches (143 ignoring registers and spill offsets); equivalent
+ * by construction, untested in the emulator. One temporary per case block fixed most of the global allocation (932
+ * rows before); since then: one t for the frame-derived angle of cases 6, 7, 8 and 10 (the original keeps it in s6;
+ * case 10 tints with 0xF5 - ((t * 0xF5) >> 12), t = frame << 8), and several adjacent statement swaps (the order of
+ * two read-modify-writes of work fields is the reverse of what the scheduler output suggests).
+ * Open: the original keeps the background x offset (xo, spill slot 0x7C) as a variable whose per-case `xo = 0` stores
+ * survive; here CSE deletes them and combine folds xo to 0, which shifts the spill slots. The 0x248 call's col/rot
+ * share stack space with case 6's position (union Fx0e0Tmp). The model-position setup in mode 1 keeps two stores per
+ * field in the original (flow deletes the first here). */
 #include "fxmod/fx_0e0.h"
 
 typedef struct {
@@ -75,13 +78,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR to;
     Fx0e0Bolt *bolt;
     Fx0e0Spark *sp;
-    s32 t1;
-    s32 t2;
     s32 a1;
     s32 a2;
     s32 a3;
     s32 a4;
-    s32 a5;
     s32 c1;
     s32 r1;
     s32 r2;
@@ -136,10 +136,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (work->unk0) {
         case 6:
-            t1 = (frame << 12) / 66;
-            col = ((t1 << 5) >> 12) + 0x8D;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, (t1 * 0x58) >> 12, 0, 0);
-            a1 = t1 >> 2;
+            t = (frame << 12) / 66;
+            col = ((t << 5) >> 12) + 0x8D;
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, (t * 0x58) >> 12, 0, 0);
+            a1 = t >> 2;
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
             work->unk18.vy = work->unk18.vy - 0x400 - (ex->math_sin(a1) >> 1);
             scl = 0x80;
@@ -148,15 +148,15 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk2C->unk0[3].vy = work->unk18.vy;
             env->unk2C->unk0[3].vz = work->unk18.vz;
             work->unk3C.vz += 8;
-            work->unk24.vz += 0x46;
             work->unk24.vy += 0x90;
+            work->unk24.vz += 0x46;
             ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk64);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x1C), work->unk4);
             work->unk44.vx = work->unk44.vy = 0x3800;
             work->unk44.vz = 0x2000;
             work->unk24.vy -= 0x5DC;
-            work->unk50.vz += 0x14;
             work->unk24.vz += 0x2EE;
+            work->unk50.vz += 0x14;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
             ex->Hi_ModifyEffModelRGB(work->unk68, (((ex->math_cos(a1) >> 1) + 0x800) >> 5) - 0x80,
                                      (((ex->math_cos(a1) >> 1) + 0x800) >> 5) - 0x80,
@@ -174,7 +174,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk24.vz -= 0x8FC;
             work->unk24.vy -= 0x125C;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk6C);
-            c1 = (((t1 * 2) - 0x1000) >> 5) - 0x80;
+            c1 = (((t * 2) - 0x1000) >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->unk6C, c1, c1, c1);
             work->unk24.vy += 0x125C;
             work->unk24.vz += 0x8FC;
@@ -186,8 +186,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 sc.vz = r1 + 0x1800;
                 rot.vx = -0x400;
                 rot.vy = 0;
-                rot.vz = frame * 0x8D;
                 u.v.vx = D_801EA8B0.vx;
+                rot.vz = frame * 0x8D;
                 u.v.vy = D_801EA8B0.vy;
                 u.v.vz = D_801EA8B0.vz;
                 u.v.vy -= 0x100;
@@ -203,8 +203,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 sc.vx = sc.vz = (ex->math_sin(r1 >> 2) * 5) / 2 + 0x1000;
                 sc.vy = ((r1 * 0x300) >> 12) + 0x800;
                 rot.vx = 0;
-                rot.vz = 0;
                 rot.vy = frame * 0x8D;
+                rot.vz = 0;
                 u.v.vx = D_801EA8B0.vx;
                 u.v.vy = D_801EA8B0.vy;
                 u.v.vz = D_801EA8B0.vz;
@@ -214,9 +214,9 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                          (ex->math_sin(a3) >> 5) - 0x80);
                 i = 0;
             }
-            from.vx = work->unk24.vx;
             from.vy = work->unk24.vy;
             from.vy += 0x1838;
+            from.vx = work->unk24.vx;
             from.vz = work->unk24.vz;
             from.vz += 0xC1C;
             bolt = D_801EA928;
@@ -240,8 +240,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 7:
             xo = 0;
-            t2 = frame << 8;
-            a4 = t2 >> 2;
+            t = frame << 8;
+            a4 = t >> 2;
             col = 0xAD;
             scl = a4 + 0x80;
             D_801EA8C8[1].r = (ex->math_sin(a4) * 0xFF) >> 12;
@@ -253,24 +253,24 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, ((frame - 8) * 0xFF) / 8, ((frame - 8) * 0xFF) / 8,
                                          ((frame - 8) * 0xFF) / 8);
             }
-            work->unk24.vy = work->unk8.vy + (t2 >> 6) + ((((frame & 1) * 2 - 1) * ex->math_cos(t2 >> 2)) >> 6);
+            work->unk24.vy = work->unk8.vy + (t >> 6) + ((((frame & 1) * 2 - 1) * ex->math_cos(t >> 2)) >> 6);
             ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk64);
-            ex->Hi_ModifyEffModelRGB(work->unk64, ((((ex->math_cos(t2 >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
-                                     ((((ex->math_cos(t2 >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
-                                     ((((ex->math_cos(t2 >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->unk64, ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
+                                     ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80,
+                                     ((((ex->math_cos(t >> 2) * 3) >> 2) + 0x400) >> 5) - 0x80);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x1C), work->unk4);
             work->unk44.vx = work->unk44.vy = 0x3800;
             work->unk44.vz = 0x2000;
             work->unk24.vy -= 0x5DC;
-            work->unk50.vz += 8;
             work->unk24.vz += 0x2EE;
+            work->unk50.vz += 8;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
-            ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t2 >> 2) >> 6) - 0x80, (ex->math_cos(t2 >> 2) >> 6) - 0x80,
-                                     (ex->math_cos(t2 >> 2) >> 6) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t >> 2) >> 6) - 0x80, (ex->math_cos(t >> 2) >> 6) - 0x80,
+                                     (ex->math_cos(t >> 2) >> 6) - 0x80);
             work->unk50.vz -= 0x200;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
-            ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t2 >> 2) >> 6) - 0x80, (ex->math_cos(t2 >> 2) >> 6) - 0x80,
-                                     (ex->math_cos(t2 >> 2) >> 6) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t >> 2) >> 6) - 0x80, (ex->math_cos(t >> 2) >> 6) - 0x80,
+                                     (ex->math_cos(t >> 2) >> 6) - 0x80);
             work->unk44.vz = 0x3000;
             work->unk44.vx = work->unk44.vy = 0x2000;
             work->unk50.vz += 0x200;
@@ -279,15 +279,15 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk24.vz -= 0x9C4;
             work->unk24.vy -= 0x1388;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk6C);
-            ex->Hi_ModifyEffModelRGB(work->unk6C, (ex->math_cos(t2 >> 2) >> 5) - 0x80, (ex->math_cos(t2 >> 2) >> 5) - 0x80,
-                                     (ex->math_cos(t2 >> 2) >> 5) - 0x80);
+            ex->Hi_ModifyEffModelRGB(work->unk6C, (ex->math_cos(t >> 2) >> 5) - 0x80, (ex->math_cos(t >> 2) >> 5) - 0x80,
+                                     (ex->math_cos(t >> 2) >> 5) - 0x80);
             work->unk24.vy += 0x1388;
             work->unk24.vz += 0x9C4;
             env->unk28 = 0x898;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), &D_801EA8B0, NULL, frame * 0x300 + 0x1000,
-                              frame, 1, ex->math_sin(t2 >> 2));
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &D_801EA8B0, NULL, t2 * 2 + 0x4000, frame, 1,
-                              ex->math_sin(t2 >> 2));
+                              frame, 1, ex->math_sin(t >> 2));
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &D_801EA8B0, NULL, t * 2 + 0x4000, frame, 1,
+                              ex->math_sin(t >> 2));
             env->unk28 = 0;
             if (frame >= 0x10) {
                 work->unk0 = 8;
@@ -301,7 +301,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 8:
-            a5 = frame << 7;
+            t = frame << 7;
             col = 0xBC;
             scl = 0x200;
             xo = 0;
@@ -315,8 +315,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 3; i++) {
                     sp = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                     if (sp != NULL) {
-                        sp->unkE = 0x6A4 - ((0x1000 - a5) >> 1);
-                        sp->unkC = work->unk18.vx - ((a5 >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
+                        sp->unkE = 0x6A4 - ((0x1000 - t) >> 1);
+                        sp->unkC = work->unk18.vx - ((t >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
                         sp->unk10 = work->unk18.vz + ex->btlfx_randCentered(0x1C00);
                         sp->unk4 = ex->btlfx_randCentered(0x100);
                         sp->unk6 = -0x140 - (ex->btlfx_rand() & 0xFF);
@@ -350,8 +350,9 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 10:
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xF5 - ((frame * 0xF500) >> 12),
-                                     0xF5 - ((frame * 0xF500) >> 12), 0xF5 - ((frame * 0xF500) >> 12));
+            t = frame << 8;
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xF5 - ((t * 0xF5) >> 12),
+                                     0xF5 - ((t * 0xF5) >> 12), 0xF5 - ((t * 0xF5) >> 12));
             u.s.rot.vx = 0;
             u.s.rot.vy = 0;
             u.s.rot.vz = 0x20;
