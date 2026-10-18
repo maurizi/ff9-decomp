@@ -106,7 +106,132 @@ void func_801E7CEC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, SVECTOR *rot, 
 
 INCLUDE_ASM("asm/us/fx_0d8/nonmatchings/fx_0d8", func_801E7F80);
 
-INCLUDE_ASM("asm/us/fx_0d8/nonmatchings/fx_0d8", fx_0d8_op83);
+s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR a;
+    SVECTOR b;
+    Fx0d8Part *it;
+    Pool6CEntry *p;
+    s32 *q;
+    s32 frame;
+    s32 kind;
+    s32 i;
+    s32 r;
+    s32 ang;
+    s32 c;
+    s32 n;
+
+    if (mode == 0) {
+        init->unk0 = sizeof(Fx0d8Work83);
+        init->unk8 = 0x24;
+        init->unk14 = (s32)func_801E7F80;
+        init->unk4 = 0xC;
+    } else if (mode == 1) {
+        D_801E8FA0 = env;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->unk8);
+        work->unk10 = D_801E9950;
+        for (n = 0, q = D_801E9950; n < 0x40; n++) {
+            *q++ = ex->btlfx_randCentered(0x100);
+            *q++ = ex->btlfx_randCentered(0x200);
+            *q++ = ex->btlfx_randCentered(0xF5);
+        }
+        D_801E9940 = entry;
+        work->unk14 = 0;
+    } else {
+        frame = entry->unk0;
+        kind = 0;
+        if (frame < 16) {
+            kind = D_801E8F38[frame];
+        }
+        if (kind > 0) {
+            work->unk14++;
+            BTLFX_COPY_SVEC(&a, &work->unk0);
+            if (kind != 2) {
+                a.vx += ex->btlfx_randCentered(0x200);
+                a.vy += ex->btlfx_randCentered(0x300);
+                a.vz += ex->btlfx_randCentered(0x200);
+            }
+            if (kind != 3) {
+                it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (it != NULL) {
+                    BTLFX_COPY_SVEC(&it->unk0, &a);
+                    BTLFX_COPY_SVEC(&b, &a);
+                    b.vy -= 0xC00;
+                    r = ex->btlfx_randCentered(0x100) + 0x640;
+                    if (kind != 2) {
+                        r = r * 3 / 8;
+                    }
+                    ang = (work->unk14 << 10) - 0x200 + ex->btlfx_randCentered(0x100);
+                    b.vx += (ex->math_cos(ang) * r) >> 12;
+                    b.vz += (ex->math_sin(ang) * r) >> 12;
+                    if (kind != 2) {
+                        it->unk0.vx = b.vx;
+                        it->unk0.vz = b.vz;
+                    }
+                    BTLFX_COPY_SVEC(&it->unk8, &b);
+                    it->unk10 = work->unk14 % 12;
+                    it->unk18 = work->unk10 + (ex->btlfx_rand() & 0x1F);
+                    it->unk12 = ex->btlfx_rand() % 14;
+                    it->unk13 = ex->btlfx_rand() % 14;
+                    it->unk15 = 0;
+                    if (kind == 1) {
+                        it->unk14 = 2;
+                    } else if (kind == 2) {
+                        it->unk14 = ex->btlfx_rand() & 1;
+                    }
+                }
+            } else {
+                for (i = 0; i < 2; i++) {
+                    it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    if (it != NULL) {
+                        BTLFX_COPY_SVEC(&it->unk0, &a);
+                        BTLFX_COPY_SVEC(&b, &a);
+                        b.vy -= 0xC00;
+                        r = ex->btlfx_randCentered(0x80) + 0x80;
+                        ang = ((work->unk14 + i) << 11) - 0x200 + ex->btlfx_randCentered(0x80);
+                        b.vx += (ex->math_cos(ang) * r) >> 12;
+                        b.vz += (ex->math_sin(ang) * r) >> 12;
+                        BTLFX_COPY_SVEC(&it->unk8, &b);
+                        it->unk10 = work->unk14 % 12;
+                        it->unk18 = work->unk10 + (ex->btlfx_rand() & 0x1F);
+                        it->unk12 = ex->btlfx_rand() % 14;
+                        it->unk13 = ex->btlfx_rand() % 14;
+                        it->unk14 = ex->btlfx_rand() & 1;
+                        it->unk15 = 0x80;
+                    }
+                }
+                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk0);
+                if (p != NULL) {
+                    p->unk22 = ex->func_800E7CC4(0, 0x40);
+                }
+                ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk8);
+            }
+        }
+        if (frame == 15) {
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x40, 0x40, 0x40);
+        }
+        if ((u32)(frame - 16) < 3) {
+            c = 0xC8 - ((frame - 16) * 0xC8) / 3;
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 1, c >> 1, c);
+        }
+        if (frame == 20) {
+            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk8);
+            if (p != NULL) {
+                p->unk22 = ex->func_800E7CC4(0, 0x40);
+            }
+            p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&work->unk0);
+            if (p != NULL) {
+                p->unk22 = ex->func_800E7CC4(0, 0x40);
+                p->unk18->unk24 = (void (*)())func_801E7CEC;
+            }
+        }
+        if (frame >= 0x30) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 s32 fx_0d8_op84(s32 mode, Fx0d8Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);

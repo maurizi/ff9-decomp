@@ -50,5 +50,15 @@ void func_801E796C(Unk80100C78Entry *entry, Fx0d8Strip *strip, s32 *tbl, SVECTOR
                    s32 width, s32 dwidth, s32 frame, s32 arg9, s32 arg10, s32 kind);
 void func_801E7BF8(Unk80100C78Entry *entry, Fx0d8Strip *strip, Fx0d8Strip *out, s32 *tbl, s32 i, s32 arg5, s32 arg6,
                    s32 kind);
+typedef struct {
+    SVECTOR unk0; /* caster body position */
+    SVECTOR unk8; /* caster position */
+    s32 *unk10; /* jitter table (D_801E9950) */
+    s32 unk14; /* bolts spawned */
+} Fx0d8Work83; /* 0x18 */
+
+extern s16 D_801E8F38[16]; /* bolt kind per frame */
+extern s32 D_801E9950[];
+s32 fx_0d8_op83(s32 mode, Fx0d8Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
 
 #endif
