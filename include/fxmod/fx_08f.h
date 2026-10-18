@@ -15,8 +15,29 @@
     "nop;" \
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
-void func_801E7F6C(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
 extern Unk800F78A4 *D_801E8A04;
 void func_801E7858(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pts, CVECTOR *col, s32 p, s32 abr);
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    s16 unk8[6];
+    SVECTOR unk14; /* summon position */
+    SVECTOR unk1C;
+    s32 unk24; /* models */
+    s32 unk28;
+    s32 unk2C;
+    s32 unk30;
+    s32 unk34;
+    s32 unk38;
+    s32 unk3C;
+    s32 unk40;
+    Pool6CEntry *unk44;
+} Fx08fWork80; /* 0x48 */
+
+extern BtlModel D_801E8A14[];
+extern SVECTOR D_801E9054[];
+extern u8 D_801EA254[];
+void func_801E7704(s32 n, s32 r, SVECTOR *pts);
+s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif
