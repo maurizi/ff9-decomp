@@ -278,3 +278,10 @@ ui_drawGauge = 0x80025ED4; // type:func [runtime] docs/runtime-findings.md disc-
 ui_drawRule = 0x80025A28; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation removes the party panel's header bar
 ui_drawItemIcon = 0x80026C34; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, ablation at _itemlist removes the potion icons
 text_append = 0x8002AD38; // type:func [runtime] docs/runtime-findings.md disc-3 battle campaign, appends src after dst's 0xFF terminator, ablation at _help drops the Change/Defend/Skip key line
+// ovl_0b functions called from main (ovl_0b is resident in battle); main-side names for the cross-binary calls
+btl_setEnemyCmd = 0x800B1520; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_getUnitAttr = 0x800BDED4; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_setUnitAttr = 0x800BE1E0; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_getUnitMask = 0x800BEC64; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_getUnitById = 0x800BED10; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_setBanner = 0x800F4F04; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt

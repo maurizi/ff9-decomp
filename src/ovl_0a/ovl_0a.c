@@ -2121,7 +2121,7 @@ void func_800ADB74(void) {
     case 3:
         if (!(D_800C9D44 & 8)) {
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44 = cd_findFile(
-                D_8019DC5C[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48]
+                g_mbgMovieLists[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48]
                     .unk4[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49].unk0);
             if (cd_getState() == 0) {
                 func_80022ED4(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44);

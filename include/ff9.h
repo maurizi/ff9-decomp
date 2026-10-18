@@ -2286,7 +2286,7 @@ void func_800530A8(SVECTOR *, s32, s32);
 void func_8004FBD8(void);
 void func_8004FE0C(void);
 
-u16 func_800BEC64(u32); /* overlay code at 0x800BEC64 */
+u16 btl_getUnitMask(u32); /* ovl_0b code */
 void func_800363BC(void);
 void func_80036444(void);
 void func_80036528(void);
@@ -2418,8 +2418,8 @@ void func_80036634(u8 *);
 extern void *D_8007AED0[8];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
 s32 D_800BED6C(s32, s32);
-s32 func_800BED10(s32, s32);
-void func_800BE1E0(s32, s32, s32);
+s32 btl_getUnitById(s32, s32);
+void btl_setUnitAttr(s32, s32, s32);
 #endif
 void func_80023304(s32);
 void func_8002325C(u8);
@@ -2888,13 +2888,13 @@ static inline u16 func_8004B404_inline(s32 arg0) {
 
     switch (i) {
     case 2:
-        D_8007AE10[2] = func_800BEC64(0);
+        D_8007AE10[2] = btl_getUnitMask(0);
         break;
     case 3:
-        D_8007AE10[3] = func_800BEC64(1);
+        D_8007AE10[3] = btl_getUnitMask(1);
         break;
     case 4:
-        D_8007AE10[4] = func_800BEC64(2);
+        D_8007AE10[4] = btl_getUnitMask(2);
         break;
     }
     return D_8007AE10[i];
@@ -3592,12 +3592,12 @@ s32 func_800C8068(s32, s16);
 s32 func_800C808C(s32, s32);
 s32 func_800C80B0(s32, s16, s16);
 s32 func_800C80E4(s32, s32);
-void func_800F4F04(s32, s32);
+void btl_setBanner(s32, s32);
 void func_801F0FF4(void);
 s32 func_800AA3F4(s32); /* uid; queues the actor's model */
 s32 func_800C3E18(s32, s32);
 s32 func_800C7570(s32, u16);
-void func_800B1520(s32, s32, s32, s32);
+void btl_setEnemyCmd(s32, s32, s32, s32);
 void func_800CA694(s32, s32, u16);
 void func_800BE99C(s32, s32);
 s32 func_800ABA98(s32, s32, s32, s32, s32);

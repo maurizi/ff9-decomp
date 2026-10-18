@@ -11103,7 +11103,7 @@ s32 evt_execInstr(void) {
         func_8004ED3C();
         return 0;
     case 0xD0:
-        func_800F4F04((s32)func_8004F058(evt_getArg16_inline()), 3);
+        btl_setBanner((s32)func_8004F058(evt_getArg16_inline()), 3);
         return 0;
     case 0x25:
         actor->unk63 = 0xFF;
@@ -11561,17 +11561,17 @@ s32 evt_execInstr(void) {
         switch (g_evtCurObj->unk4) {
         case 0: {
             s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-            func_800B1520(x, z, 0x36, evt_getArg8_inline());
+            btl_setEnemyCmd(x, z, 0x36, evt_getArg8_inline());
             break;
         }
         case 1: {
             s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-            func_800B1520(x, z, 0x35, evt_getArg8_inline());
+            btl_setEnemyCmd(x, z, 0x35, evt_getArg8_inline());
             break;
         }
         case 3: {
             s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-            func_800B1520(x, z, 0x2F, evt_getArg8_inline());
+            btl_setEnemyCmd(x, z, 0x2F, evt_getArg8_inline());
             g_evtCurObj->unkB = 0;
             break;
         }
@@ -12764,7 +12764,7 @@ void func_80048E80(void) {
 
     if (g_gameState->unk1C->unk8E4.ovl65->unkD80 != 0) {
         i = 3;
-        D_8007AE10[i] = func_800BEC64(1);
+        D_8007AE10[i] = btl_getUnitMask(1);
         m = (u16)D_8007AE10[i];
         for (i = 4; i < 8; i++) {
             o = D_8007AED0[i];
@@ -13795,9 +13795,9 @@ s32 func_8004B68C(Unk8004AB64 *o, s32 prop) {
         }
     }
     if (i < 8) {
-        u = ((void *(*)(u16))func_800BED10)(1 << i);
+        u = ((void *(*)(u16))btl_getUnitById)(1 << i);
         if (u != NULL) {
-            r = func_800BDED4(u, prop);
+            r = btl_getUnitAttr(u, prop);
         }
     }
     return r;
@@ -13823,11 +13823,11 @@ void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
             if (arg1 == 0x20) {
                 fn = D_800BED6C;
             } else {
-                fn = func_800BED10;
+                fn = btl_getUnitById;
             }
             r = fn((1 << i) & 0xFFFF, i);
             if (r != 0) {
-                func_800BE1E0(r, arg1, arg2);
+                btl_setUnitAttr(r, arg1, arg2);
             }
         }
     }

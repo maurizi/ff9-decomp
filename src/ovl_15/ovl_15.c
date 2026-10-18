@@ -140,7 +140,7 @@ s32 func_800A766C(s32 arg0, s32 arg1) {
     FlushCache();
     ExitCriticalSection();
     if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 8)) {
-        h = cd_findFile(D_8019DC5C[arg0].unk4[arg1].unk0);
+        h = cd_findFile(g_mbgMovieLists[arg0].unk4[arg1].unk0);
         func_80022ED4(h);
         while (cd_getState() != 0) {
         }

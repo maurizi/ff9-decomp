@@ -1425,7 +1425,7 @@ typedef struct {
     s32 unk0;
     Unk8019DC5CEnt *unk4;
 } Unk8019DC5C;
-extern Unk8019DC5C D_8019DC5C[]; /* overlay loaded at 0x80198000 */
+extern Unk8019DC5C g_mbgMovieLists[]; /* overlay loaded at 0x80198000 */
 extern u16 D_800C9D46;
 extern Unk800C9F6C D_800C9F6C[2];
 void func_800AE4F8(void);

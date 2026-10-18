@@ -12,3 +12,4 @@ mbg_setEndCallback = 0x8019AC3C; // [code] ovl_64 movie player function at this 
 mbg_getLastFrame = 0x8019AD0C; // [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
 mbg_getStartCamera = 0x8019AD4C; // [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
 mbg_getGeomOffset = 0x8019AE0C; // [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+g_mbgMovieLists = 0x8019DC5C; // [code] ovl_64 movie list table at this address (ovl_64 is loaded alongside this overlay)

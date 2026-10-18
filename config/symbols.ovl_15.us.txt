@@ -14,3 +14,4 @@ mbg_shutdown = 0x8019A9D8; // [code] ovl_64 movie player function at this addres
 mbg_setEndCallback = 0x8019AC3C; // [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
 mbg_getLastFrame = 0x8019AD0C; // [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
 mbg_streamSetBaseSector = 0x8019C98C; // [code] ovl_64 movie player function at this address (ovl_64 is loaded alongside this overlay)
+g_mbgMovieLists = 0x8019DC5C; // [code] ovl_64 movie list table at this address (ovl_64 is loaded alongside this overlay)

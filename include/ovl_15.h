@@ -47,7 +47,7 @@ typedef struct {
     s32 unk0;
     Unk8019DC5CSub *unk4;
 } Unk8019DC5C;
-extern Unk8019DC5C D_8019DC5C[];
+extern Unk8019DC5C g_mbgMovieLists[];
 
 /* ---- this overlay ---- */
 
