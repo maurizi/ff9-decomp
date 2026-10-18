@@ -7,5 +7,10 @@
 extern Unk800F78A4 *D_801E9890;
 extern s16 D_801E97FC[16];
 extern SVECTOR D_801E981C[3];
+extern s16 D_801E9814[3];
+
+typedef struct {
+    s16 x, y, z;
+} Fx17d4Pt;
 
 #endif

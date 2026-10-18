@@ -46,6 +46,62 @@ s32 func_801E8ED4(s32 mode, Fx17d6Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_17d_6/nonmatchings/fx_17d_6", fx_17d_6_op83);
+s32 fx_17d_6_op83(s32 mode, Fx17d6Work83 *work, Unk800F78A4 *env, Fx17d6Inst *inst, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 *p;
+    s32 i;
+    s32 n;
+    s32 frame;
+    Fx17d6Bolt *b;
+
+    if (mode == 0) {
+        init->unk0 = 0xC;
+        init->unk8 = 0x1C;
+        init->unk14 = (s32)func_801E8ED4;
+        init->unk4 = 6;
+    } else if (mode == 1) {
+        n = init->unk0;
+        D_801E93B4 = env;
+        work->unk0 = D_801EB584[0];
+        p = D_801EB584[0];
+        for (i = 0; i < 64; i++) {
+            *p++ = ex->btlfx_randCentered(0xD2);
+            *p++ = ex->btlfx_randCentered(0x1C3);
+            *p++ = ex->btlfx_randCentered(0xDC);
+        }
+        work->unk8 = n;
+        work->unk4 = 0;
+    } else {
+        frame = inst->unk0;
+        if (work->unk8 != 0) {
+            return 0;
+        }
+        if (D_801EB114 == 0) {
+            if (frame < 0x43 && (frame & 3)) {
+                return 0;
+            }
+            work->unk4++;
+            b = ex->btlfx_poolSpawn(inst->unk10);
+            if (b != NULL) {
+                ((s32 *)&b->unk0)[0] = ((s32 *)&D_801EB104)[0];
+                ((s32 *)&b->unk0)[1] = ((s32 *)&D_801EB104)[1];
+                ((s32 *)&b->unk8)[0] = ((s32 *)&D_801EB10C)[0];
+                ((s32 *)&b->unk8)[1] = ((s32 *)&D_801EB10C)[1];
+                b->unk11 = 0;
+                b->unk10 = work->unk4 % 6;
+                b->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                b->unk12 = ex->btlfx_rand() % 15;
+                b->unk13 = ex->btlfx_rand() % 15;
+                b->unk15 = 0xB;
+                b->unk14 = ex->btlfx_rand();
+            }
+        }
+        if (D_801EB114 == 1) {
+            ex->btlfx_poolClear((Unk800DA1B8 *)inst->unk10);
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_17d_6/nonmatchings/fx_17d_6", fx_17d_6_headerPtr);
