@@ -62,6 +62,6 @@ void func_801E7BF8(Unk80100C78Entry *entry, Fx0d7Strip *strip, Fx0d7Strip *out, 
                    s32 kind);
 extern Unk800F78A4 *D_801E88C0;
 extern s32 D_801E9260[];
-s32 func_801E7CEC(s32 mode, Fx0d7Part *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 #endif
