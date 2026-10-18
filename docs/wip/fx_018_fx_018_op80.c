@@ -1,6 +1,10 @@
-/* Status: compiles; 389 aligned mismatches vs original, mostly register allocation (orig keeps ex in s6, constant 1
- * in s4, frame in s7). Logic follows m2c: state switch on work->unk10 (0: effects at frames 0/5/28/29, 1:
- * shockwave, 2: ring of 16 particles with radius D_801E9E80). */
+/* Draft of fx_018 fx_018_op80. Status: 242 aligned mismatches, 10 ignoring registers; equivalent by construction.
+ * Fixed since the 389-row draft (which had wrong divisors and loop order): case 2 starts with a3 = (frame << 12) / 50
+ * (the original keeps frame << 12 and its sign for the later / 10) and uses a3 >> 2; a1/a4 = (frame << 12) / 24 >> 2;
+ * the RGB argument is (cos * 2 / 3 >> 5) - 0x80; the ring loop copies v by words, passes n & 7 before n += 3 and
+ * increments i before n; one variable per temp block (a1-a4, c1-c3). Open: global allocation is shifted by one
+ * callee-saved register (original: ex s6, frame s7, the frame << 12 sign s5, /3 magic s4, ang s3; here ex s5,
+ * frame s6, sign s7, magic s3, ang s7) and the ring block computes ang before frame << 12 / the /3 magic. */
 #include "fxmod/fx_018.h"
 
 s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -12,6 +16,13 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR rot;
     SVECTOR v;
     Pool6CEntry *p;
+    s32 a1;
+    s32 a2;
+    s32 a3;
+    s32 a4;
+    s32 c1;
+    s32 c2;
+    s32 c3;
     s32 frame;
     s32 c;
     s32 a;
@@ -93,14 +104,16 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
+            a3 = (frame << 12) / 50;
             if (frame < 6) {
-                c = ex->math_cos((frame << 10) / 6) * 0xFF;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 14, c >> 13, c >> 12);
+                c1 = ex->math_cos((frame << 10) / 6) * 0xFF;
+                c2 = c1 >> 12;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c1 >> 14, c1 >> 13, c2);
             }
             if (frame < 20) {
-                c = ex->math_cos((frame << 10) / 20);
+                c2 = ex->math_cos((frame << 10) / 20);
                 env->unk28 = 0x200;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unk8, NULL, 0x2800, 0, 1, c, 0, 0);
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unk8, NULL, 0x2800, 0, 1, c2, 0, 0);
                 if (frame < 10) {
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &work->unk8, NULL, 0x2800, 0, 1,
                                       0x1000 - (frame << 12) / 10, 0, 0);
@@ -109,9 +122,9 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 24) {
                 env->unk28 = 0x200;
-                a = (frame << 12) / 96;
+                a1 = (frame << 12) / 24;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), &work->unk8, NULL,
-                                  ex->math_cos(a) * 3 / 2 + 0x1000, 0, 1, ex->math_cos(a));
+                                  ex->math_cos(a1 >> 2) * 3 / 2 + 0x1000, 0, 1, ex->math_cos(a1 >> 2));
                 env->unk28 = 0;
             }
             d.vx = 0x400;
@@ -132,17 +145,16 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 d.vz = 0;
                 d.vy = 0;
                 d.pad = 1;
-                a = frame << 8;
+                a2 = frame << 8;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x15), &work->unk8, &d,
-                                  ex->math_sin(a >> 2) * 4, 0, 1, 0x1000 - a);
+                                  ex->math_sin(a2 >> 2) * 4, 0, 1, 0x1000 - a2);
             }
             d2.vx = 0x400;
             d2.vz = 0;
             d2.vy = 0;
             d2.pad = 1;
-            a = (frame << 12) / 200;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &work->unk8, &d2, ex->math_sin(a) * 4, 0, 1,
-                              ex->math_cos(a));
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &work->unk8, &d2, ex->math_sin(a3 >> 2) * 4, 0, 1,
+                              ex->math_cos(a3 >> 2));
             if (frame == 1) {
                 p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x27), (s32)&work->unk8);
                 if (p != NULL) {
@@ -151,14 +163,14 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 24) {
                 pos.vx = work->unk8.vx;
-                ang = frame * 0x18;
                 pos.vy = work->unk8.vy;
+                pos.vz = work->unk8.vz;
+                a4 = (frame << 12) / 24 >> 2;
+                ang = frame * 0x18;
                 rot.vx = 0;
                 rot.vy = ang;
                 rot.vz = 0;
-                pos.vz = work->unk8.vz;
-                a = (frame << 12) / 96;
-                r = ((ex->math_sin(a) * 0x5DC) >> 12) + 0x140;
+                r = ((ex->math_sin(a4) * 0x5DC) >> 12) + 0x140;
                 scale.vz = r;
                 scale.vy = r;
                 scale.vx = r;
@@ -167,20 +179,19 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelAbr(work->unk14, 1);
                 n = frame;
                 i = 0;
-                ex->Hi_ModifyEffModelRGB(work->unk14, ex->math_cos(a) * 2 / 96 - 0x80, ex->math_cos(a) * 2 / 96 - 0x80,
-                                         ex->math_cos(a) * 2 / 96 - 0x80);
+                ex->Hi_ModifyEffModelRGB(work->unk14, (ex->math_cos(a4) * 2 / 3 >> 5) - 0x80, (ex->math_cos(a4) * 2 / 3 >> 5) - 0x80,
+                                         (ex->math_cos(a4) * 2 / 3 >> 5) - 0x80);
                 env->unk28 = 0x20;
-                c = ex->math_cos(a);
+                c3 = ex->math_cos(a4);
                 do {
-                    v.vz = work->unk8.vz;
-                    v.vx = work->unk8.vx;
+                    BTLFX_COPY_SVEC(&v, &work->unk8);
                     v.vx += (ex->math_cos(ang) * D_801E9E80) >> 12;
                     v.vz += (ex->math_sin(ang) * D_801E9E80) >> 12;
                     ang += 0x100;
-                    n += 3;
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &v, NULL, 0x1800 - ((i & 1) << 12),
-                                      n & 7, 1, c, ex->btlfx_randCentered(5), ex->btlfx_randCentered(5));
+                                      n & 7, 1, c3, ex->btlfx_randCentered(5), ex->btlfx_randCentered(5));
                     i++;
+                    n += 3;
                 } while (i < 16);
                 env->unk28 = 0;
             }
