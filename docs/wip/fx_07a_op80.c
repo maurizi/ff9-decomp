@@ -1,9 +1,9 @@
-/* Draft of fx_07a fx_07a_op80 (types in include/fxmod/fx_07a.h). Status: 3 lines (build/w/nd.py): (1) the
- * point-loop preheader sets a2 = tr before a3 = tr + 10 in the original (giv init order; permuting the loop body
- * statements didn't help); (2) "if (r < 0) r = -r" before the mult: the original leaves a nop in the bgez delay
- * slot, ours copies the target's mult into it (reorg). abs() puts the test above the math_sin call; dead loop notes
- * around the if change nothing. Fixed: q = tr copy before the point loop, passed to btlfx_drawTrail (the
- * original's s0 copy); "j < n - 1" in the jitter loop (permuter). */
+/* Draft of fx_07a fx_07a_op80 (types in include/fxmod/fx_07a.h). Status: 1 line (build/w/nd.py): "if (r < 0) r = -r"
+ * before the mult: the original leaves a nop in the bgez delay slot, ours copies the target's mult into it (reorg
+ * fill_slots_from_thread; in the original mark_target_live_regs presumably can't find the fallthrough's basic block,
+ * so lo/hi count as live). abs(), ternaries, gotos, continue in the else-if chain change nothing. Fixed: "pt++, j++"
+ * increment order (biv order sets the preheader giv order a2 = tr, a3 = tr + 10); q = tr copy before the point
+ * loop, passed to btlfx_drawTrail; "j < n - 1" in the jitter loop (permuter). */
 #include "fxmod/fx_07a.h"
 
 s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -221,7 +221,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     step.vy = ((work->unk94.vy + tr->unk60 - D_801E9B8C.vy) << 12) / n;
                     step.vz = ((work->unk94.vz + tr->unk64 - D_801E9B8C.vz) << 12) / n;
                     q = tr;
-                    for (j = 0, pt = tr->unk4; j < n; j++, pt++) {
+                    for (j = 0, pt = tr->unk4; j < n; pt++, j++) {
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
                         pt->vy = tr->unk6C[j] + (cur.vy >> 12);
