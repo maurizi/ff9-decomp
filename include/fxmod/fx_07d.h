@@ -37,12 +37,24 @@ typedef struct {
 } Fx07dOrb;
 
 typedef struct {
-    u8 pad0[0x20];
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    s32 unk8; /* ordering-table offset */
+    SVECTOR unkC; /* caster body position */
+    s32 unk14; /* caster body position, words */
+    s32 unk18;
+    s32 unk1C;
     s32 unk20; /* glow model */
-    s32 unk24;
+    s32 unk24; /* model */
     s32 unk28; /* model */
     s32 unk2C; /* model */
-} Fx07dWork80;
+    s32 pad30;
+    s32 unk34; /* backdrop scroll */
+    s32 unk38; /* yaw offset */
+    Pool6CEntry *unk3C;
+} Fx07dWork80; /* 0x40 */
+
+extern BtlModel D_801E9FC0[];
 
 typedef struct {
     SVECTOR unk0; /* caster body position */
