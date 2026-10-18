@@ -1,11 +1,11 @@
 /* Draft of fx_05e op80 (summon: model rises out of a slice, then ribbons from three bones). Identical body: fx_0ed
- * op80; fx_09a op80 is 0.74 similar. Status: 264 aligned mismatches, 32 ignoring registers. Pass 2 levers: one
- * if / else if / else with a single return 0 (mode 0 and 1 join the common return), case 2 computes t = frame << 12
- * after the summon draw and k = t / 24 from it, case 3's angle shares t, the ribbon decay loops go through
- * sg = D_801E9744 / D_801E9854 with ((SVECTOR *)sg)[i * 2 + 1] for the second edge point, and the D_801E8860 index
- * is i = (... > 0x800) != (... > 0x800) as its own statement. With these env/one land in s6/s5 as in the original.
- * Open: p (s0 here, s1 in the original), ex (s1 / s2), state (s2 / s1), t (s5 / s0) in global-alloc order; the
- * original addresses the decay loops' second point as base + (8 + 16 * i) with an integer giv. */
+ * op80; fx_09a op80 (matched, partition 3) is the 0.74 twin and gave the facing-test and decay-loop forms.
+ * Status: 209 aligned mismatches, 13 ignoring registers. Levers: one if / else if / else with a single return 0,
+ * case 2's t = frame << 12 after the summon draw with k = t / 24, case 3's angle shares t, the D_801E8860 index
+ * as fx_09a's block-local ang facing test, the ribbon decay loops as fx_09a's (SVECTOR *)(o + (s32)sv) with an
+ * integer offset o, env/one in s6/s5. Open: the original computes frame << 12 and its sign word before the summon
+ * draw call (sll in front of it, sra in its delay slot; a dead `k = t / 30` there pulls them too far up and spills
+ * entry); global allocation p (s0 here, s1 in the original), ex (s1 / s2), state (s2 / s1), t (s5 / s0). */
 #include "fxmod/fx_05e.h"
 
 s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -142,8 +142,12 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 2, 0xFF, 0xFF, 0);
         }
         if (frame == 31) {
-            i = ((work->unk10.vy & 0xFFF) - 0x400U > 0x800) != ((env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800);
-            p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E8860[i]), (s32)&work->unk8);
+            s32 ang;
+
+            p = (Pool6CEntry *)ex->func_800E3CEC(
+                ex->btlfx_getFileData(entry->unk8, *(D_801E8860 + (((ang = work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
+                                                                   ((ang = env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)))),
+                (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x40);
             }
@@ -204,15 +208,24 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             func_801E7704(&a, &b, 0x10, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, k, D_801E9744, 1);
             func_801E7704(&b, &c, 0x10, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, k, D_801E9854, 1);
             BTLFX_COPY_SVEC(&work->unk20, &a);
-            sg = D_801E9744;
-            for (i = 0; i < 17; i++) {
-                sg[i].unk0.vy -= sg[i].unk0.vy >> 6;
-                ((SVECTOR *)sg)[i * 2 + 1].vy -= ((SVECTOR *)sg)[i * 2 + 1].vy >> 4;
-            }
-            sg = D_801E9854;
-            for (i = 0; i < 17; i++) {
-                sg[i].unk0.vy -= sg[i].unk0.vy >> 4;
-                ((SVECTOR *)sg)[i * 2 + 1].vy -= ((SVECTOR *)sg)[i * 2 + 1].vy >> 3;
+            {
+                s32 o;
+                s32 p2;
+                SVECTOR *sv;
+                SVECTOR *sv2;
+
+                sv = (SVECTOR *)D_801E9744;
+                for (i = 0, o = 8; i < 17; o += 16, i++) {
+                    sv[i * 2].vy -= sv[i * 2].vy >> 6;
+                    ((SVECTOR *)(o + (s32)sv))->vy -= ((SVECTOR *)(o + (s32)sv))->vy >> 4;
+                }
+                sv2 = (SVECTOR *)D_801E9854;
+                i = 0;
+                p2 = 8;
+                for (; i < 17; p2 += 16, i++) {
+                    sv2[i * 2].vy -= sv2[i * 2].vy >> 4;
+                    ((SVECTOR *)(p2 + (s32)sv2))->vy -= ((SVECTOR *)(p2 + (s32)sv2))->vy >> 3;
+                }
             }
         }
     }
