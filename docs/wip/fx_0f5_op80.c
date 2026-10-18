@@ -1,8 +1,8 @@
-/* Draft of fx_0f5 fx_0f5_op80. Status: first full draft, ~237 aligned mismatches ignoring registers. Global
- * allocation differs: the original spills ex (0x68) and the case-0 t >> 6 (0x70) but keeps &scale (s3) and the
- * constants 0x2000/0x80/300 of each case in s0/s2/s5 across the two func_801E7704 calls; here ex stays in s3.
- * In the original no shift of t is hoisted above a call by sched1 (t >> 2 is now inline in its two calls, which
- * keeps it below the first call; t >> 5 and t >> 6 still move up). */
+/* Draft of fx_0f5 fx_0f5_op80. Status: 65 aligned mismatches ignoring registers (was ~150). Lever: case 2's body
+ * wrapped in do { } while (0) (loop depth doubles its register reference weights, which moves global allocation
+ * toward the original: &scale/positions/0x2000/0x80 in s-registers across the calls). Open: the original also keeps
+ * 300 (s5) across both func_801E7704 calls of each case and spills ex (reloaded through t0, here t1), and the
+ * case-0 t >> 6 is spilled to 0x70. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -50,11 +50,11 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         a = 0x1000 - ex->math_cos((t << 10) / 72);
         work->unk10.vx = work->unk8.vx + ((ex->math_cos(a) * r) >> 12);
-        work->unk10.vy = work->unk8.vy;
         work->unk10.vz = work->unk8.vz + ((ex->math_sin(a) * r) >> 12);
+        work->unk10.vy = work->unk8.vy;
         rot.vz = 0;
         rot.vx = 0;
-        rot.vy = work->unk4 << 5;
+        rot.vy = work->unk4 * 32;
         switch (work->unk0) {
         case 0:
             t = (frame << 12) / 12;
@@ -107,23 +107,25 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
-            t = frame << 7;
-            scale.vz = scale.vy = scale.vx = (t >> 1) + 0x2000;
-            d = (t >> 5) + 0xC0;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
-                          work->unk4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
-            scale.vz = scale.vy = scale.vx = (t >> 1) + 0x2000;
-            func_801E7704(&work->unk10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
-                          300, 0x80, 1, 1);
-            pos.vx = work->unk10.vx;
-            pos.vy = work->unk10.vy;
-            scale.vz = scale.vx = scale.vy = 0x1000;
-            pos.vz = work->unk10.vz;
-            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk20);
-            if (frame >= 0x20) {
-                work->unk0 = 3;
-                entry->unk0 = -1;
-            }
+            do {
+                t = frame << 7;
+                scale.vz = scale.vy = scale.vx = (t >> 1) + 0x2000;
+                d = (t >> 5) + 0xC0;
+                func_801E7704(&work->unk10, &work->unk18, &scale, 0xC8 - (t >> 6), 0x180, 0x80, 0x97, 0x3D40, 0, 0, d,
+                              work->unk4 * 40, 300, (t >> 5) + 0xA0, 1, 0);
+                scale.vz = scale.vy = scale.vx = (t >> 1) + 0x2000;
+                func_801E7704(&work->unk10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
+                              300, 0x80, 1, 1);
+                pos.vx = work->unk10.vx;
+                pos.vy = work->unk10.vy;
+                scale.vz = scale.vx = scale.vy = 0x1000;
+                pos.vz = work->unk10.vz;
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk20);
+                if (frame >= 0x20) {
+                    work->unk0 = 3;
+                    entry->unk0 = -1;
+                }
+            } while (0);
             break;
         case 3:
             scale.vz = scale.vy = scale.vx = 0x2800;
