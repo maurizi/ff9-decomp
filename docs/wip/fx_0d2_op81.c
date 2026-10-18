@@ -1,6 +1,9 @@
-/* Draft of fx_0d2 fx_0d2_op81. Status: 40 aligned diff lines with registers (separate loop counters and an f = frame
- * copy helped): the clamp of D_801EF1F0.unkA/D_801EF210.unkA goes through a register in the original, plus register
- * allocation of the trail loops. */
+/* Draft of fx_0d2 fx_0d2_op81. Status: ~41 aligned diff lines with registers, 3 without. Found: case 0 tests
+ * work->unk0 (cross-jumped with case 0x43's unk8 test), both unkA clamps are 'x = (x > K) ? K : x' (copy in a1),
+ * the n clamp is a ternary (copy n = unk2), the trail loops index D_801EF700[i] directly, and the loops use
+ * separate counters (j: mode 1 + case 0x19 + second trail loop, i: first trail loop, i5: slice loop, i2: 0x2C).
+ * Left: case 0x19 counter/pointer registers swapped (s0/s1), n gets v1 instead of a3 (global-alloc priority of n
+ * vs the unkA temp, which also costs the bnez delay slot), and li 0x1000 schedules later in mode 1. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -230,6 +233,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 f;
     s32 i;
     s32 i5;
+    s32 j;
     s32 i2;
     s32 n;
     u8 *buf;
@@ -248,10 +252,10 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk24.vx = 0x1C00;
         work->unk24.vy = 0x1C00;
         work->unk24.vz = 0x1C00;
-        for (i = 0; i < 6; i++) {
-            func_801E9EEC((Fx0d2Path *)&D_801EF270[i],
-                          (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x90), i));
-            work->unk44[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[i]), 1);
+        for (j = 0; j < 6; j++) {
+            func_801E9EEC((Fx0d2Path *)&D_801EF270[j],
+                          (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x90), j));
+            work->unk44[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[j]), 1);
         }
         D_801EF1F0.unkA = 6;
         D_801EF1F0.unk10 = 0x40;
@@ -273,6 +277,9 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk34.vy = 0;
             work->unk34.vz = -0x7D4;
             work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA6), (s32)&work->unk34);
+            if (work->unk0 != NULL) {
+                work->unk0->unk22 = 0x100;
+            }
             break;
         case 0x43:
             work->unk3C.vx = 0;
@@ -297,8 +304,8 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x19:
-            for (i = 0; i < 6; i++) {
-                ex->Hi_FreeEffModel(work->unk44[i]);
+            for (j = 0; j < 6; j++) {
+                ex->Hi_FreeEffModel(work->unk44[j]);
             }
             break;
         }
@@ -315,33 +322,26 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if ((u32)(frame - 0x40) < 0x15) {
             D_801EF1F0.unkA = (frame - 0x40) * 4;
-            if (D_801EF1F0.unkA > 0x10) {
-                D_801EF1F0.unkA = 0x10;
-            }
-            for (i = 0, buf = D_801EF700[0]; i < 9; i++, buf += 0x90) {
+            D_801EF1F0.unkA = (D_801EF1F0.unkA > 0x10) ? 0x10 : D_801EF1F0.unkA;
+            for (i = 0; i < 9; i++) {
                 func_801E9E70((Fx0d2Path *)&D_801EF1F0,
                               (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x80), i));
-                n = D_801EF1F0.keys.unk2;
-                if (n >= D_801EF1F0.unkA) {
-                    n = D_801EF1F0.unkA;
-                }
-                func_801E77A4(&D_801EF1F0.keys, buf, 0x90, D_801EF1F0.unk8, n, D_801EF1F0.unk10, D_801EF1F0.unk12, 1);
+                n = (D_801EF1F0.keys.unk2 >= D_801EF1F0.unkA) ? D_801EF1F0.unkA : D_801EF1F0.keys.unk2;
+                func_801E77A4(&D_801EF1F0.keys, D_801EF700[i], 0x90, D_801EF1F0.unk8, n, D_801EF1F0.unk10, D_801EF1F0.unk12, 1);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 0, NULL, 0, D_801EF1F0.unkE,
-                                    D_801EF1F0.unkC, 1, buf, 0);
+                                    D_801EF1F0.unkC, 1, D_801EF700[i], 0);
             }
         }
         if ((u32)(frame - 0x43) < 0xF) {
             D_801EF210.unkA = (frame - 0x43) * 2;
-            if (D_801EF210.unkA > 9) {
-                D_801EF210.unkA = 9;
-            }
-            for (i = 0, buf = D_801EFC10[0]; i < 11; i++, buf += 0x50) {
+            D_801EF210.unkA = (D_801EF210.unkA > 9) ? 9 : D_801EF210.unkA;
+            for (j = 0; j < 11; j++) {
                 func_801E9E70((Fx0d2Path *)&D_801EF210,
-                              (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x81), i));
-                func_801E77A4(&D_801EF210.keys, buf, 0x50, D_801EF210.unk8, D_801EF210.unkA, D_801EF210.unk10,
+                              (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x81), j));
+                func_801E77A4(&D_801EF210.keys, D_801EFC10[j], 0x50, D_801EF210.unk8, D_801EF210.unkA, D_801EF210.unk10,
                               D_801EF210.unk12, 0);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x25), 0, NULL, 0, D_801EF210.unkE,
-                                    D_801EF210.unkC, 1, buf, 0);
+                                    D_801EF210.unkC, 1, D_801EFC10[j], 0);
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 5), frame);
