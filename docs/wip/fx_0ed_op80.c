@@ -112,7 +112,9 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0:
             t0 = (frame << 12) / 24;
             if (frame == 0) {
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk18);
+                do {
+                    p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk18);
+                } while (0);
                 if (p != NULL) {
                     p->unk22 = 0x40;
                 }
