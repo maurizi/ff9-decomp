@@ -130,16 +130,16 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             v.vy = work->unk54.vy;
             v.vz = work->unk54.vz;
             ex->btlfx_aimAngles((s16 *)&work->unkC, (s16 *)&v, (s16 *)&work->unk6C);
+            work->unk6C.vz = -0x100;
+            env->unk2C->unk0[3].vx = work->unk54.vx;
+            env->unk2C->unk0[3].vy = work->unk54.vy;
+            env->unk2C->unk0[3].vz = work->unk54.vz;
+            work->unk3C.vx = work->unk54.vx;
+            D_801F0D30 = 0;
+            D_801F0D38 = 0;
+            work->unk3C.vy = work->unk54.vy;
+            D_801F0D34 = 0x1000;
         }
-        work->unk6C.vz = -0x100;
-        env->unk2C->unk0[3].vx = work->unk54.vx;
-        env->unk2C->unk0[3].vy = work->unk54.vy;
-        env->unk2C->unk0[3].vz = work->unk54.vz;
-        work->unk3C.vx = work->unk54.vx;
-        D_801F0D30 = 0;
-        D_801F0D38 = 0;
-        work->unk3C.vy = work->unk54.vy;
-        D_801F0D34 = 0x1000;
         return 0;
     }
     s = 0;
@@ -147,6 +147,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     glow = 0;
     g = 0;
     frame = entry->unk0;
+    {
     switch (work->unk0) {
     case 0:
         if (frame == 0) {
@@ -660,6 +661,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             return 1;
         }
         break;
+    }
     }
     if (s != 0) {
         if (work->unk0 == 0) {
