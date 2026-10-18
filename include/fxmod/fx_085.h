@@ -70,4 +70,16 @@ extern SVECTOR D_801E9DEC; /* previous bolt end */
 extern Unk80100C78Entry *D_801E9DF8;
 extern s32 D_801EAAEC[];
 
+typedef struct {
+    SVECTOR unk0; /* target position */
+    SVECTOR unk8; /* ground position */
+    s32 unk10; /* state */
+    s32 unk14; /* model */
+    s32 unk18; /* model */
+    Pool6CEntry *unk1C;
+    Pool6CEntry *unk20;
+} Fx085Work80; /* 0x24 */
+
+extern BtlModel D_801E9DFC[];
+extern s32 D_801E9F8C;
 #endif
