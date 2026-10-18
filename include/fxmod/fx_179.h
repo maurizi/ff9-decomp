@@ -22,11 +22,24 @@ typedef struct {
     s16 unk1A; /* first frame */
 } Fx179Shard; /* 0x1C */
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* orb position */
+    SVECTOR unk10; /* caster position */
+    s32 unk18; /* model */
+} Fx179Work;
+
 extern Unk800F78A4 *D_801E8A0C;
+extern BtlModel D_801EAA9C[];
+extern u8 D_801EAB6C[];
 extern Fx179Tri D_801E8A1C[160];
 extern Fx179Shard D_801E991C[160];
 
 void func_801E7704(s32 model, SVECTOR *center);
 void func_801E78E8(void);
+void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 c,
+                   s32 tpage, s32 clut, s32 u, s32 v, s32 ang, s32 dang, s32 arg14, s32 arg15);
+s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif
