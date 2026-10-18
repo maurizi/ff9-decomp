@@ -6,7 +6,60 @@ INCLUDE_ASM("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", func_801E7B90);
 
 INCLUDE_ASM("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", func_801E809C);
 
-INCLUDE_ASM("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", func_801E8540);
+s32 func_801E8540(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR pos;
+    VECTOR sc;
+
+    if (mode == 1) {
+        r->unk0 = 0;
+        r->unk8 = 0;
+        r->unk6 = ex->btlfx_randCentered(0x1800) - 0x3000;
+        r->unk14.vx = 0;
+        r->unk14.vy = 0;
+        r->unk14.vz = 0;
+        r->unk1C = ex->btlfx_rand() % 64 + 0x40;
+        r->unk1E = 0x20 - ex->btlfx_rand() % 32;
+    } else {
+    if (r->unk4 < 0x19) {
+        sc.vx = 0x1000;
+        sc.vy = 0x1000;
+        sc.vz = 0x1000;
+    } else {
+        sc.vx = 0x199;
+        sc.vy = 0x199;
+        sc.vz = 0x200;
+    }
+    pos.vx = r->unkC.vx;
+    pos.vy = r->unkC.vy;
+    pos.vz = r->unkC.vz;
+    r->unk14.vx += r->unk1C;
+    r->unk14.vy += r->unk1E;
+    r->unkC.vx += ex->btlfx_randCentered(0x10);
+    r->unkC.vz += ex->btlfx_randCentered(0x10);
+    switch (r->unk0) {
+    case 0:
+        mode = (r->unk8 << 12) / 40; /* reuses the parameter */
+        pos.vy += (ex->math_sin(mode >> 2) * r->unk6) >> 12;
+        if (++r->unk8 >= 0x28) {
+            r->unk0 = 1;
+            r->unk8 = 0;
+            r->unkC.vy = pos.vy;
+            r->unk6 = ex->btlfx_rand();
+        }
+        break;
+    case 1:
+        pos.vy += ex->math_sin((r->unk8 << 7) + r->unk6) >> 3;
+        r->unk8++;
+        break;
+    }
+    if (D_801EB348 != 0 || (D_801EB344 != 0 && r->unk4 >= 0x19)) {
+        return 1;
+    }
+    ex->Hi_DrawEffModel(&r->unk14, &pos, (s32)&sc, r->unk20);
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", fx_0fb_0_headerPtr);
 
