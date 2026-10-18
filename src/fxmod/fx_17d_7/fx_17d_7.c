@@ -12,7 +12,86 @@ s32 func_801EC704(SVECTOR *v, SVECTOR *rot) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", func_801EC7C8);
+s32 func_801EC7C8(s32 mode, Fx17d7Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx17d7RockInst *inst) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR pos;
+    VECTOR scale;
+    s32 t;
+    s32 s;
+
+    if (mode == 1) {
+        o->unk2 = 0;
+        o->unk1C = ex->btlfx_rand() % 64;
+        o->unk1E = ex->btlfx_rand() % 32;
+    } else {
+        switch (o->unk0) {
+        case 0:
+            switch (o->unk2) {
+            case 0:
+                pos.vx = o->unkC.vx;
+                pos.vy = o->unkC.vy;
+                pos.vz = o->unkC.vz;
+                pos.vx += ex->btlfx_randCentered(frame + 0x4D);
+                pos.vy += ex->btlfx_randCentered(frame * 2 + 0x4D);
+                s = o->unkA;
+                scale.vx = scale.vz = s;
+                scale.vy = s * 3;
+                ex->Hi_DrawEffModel(&o->unk14, &pos, (s32)&scale, inst->unk84[o->unk20]);
+                ex->Hi_ModifyEffModelRGB(inst->unk84[o->unk20], -0x80, -0x80, -0x80);
+                if (D_801EF260 < o->unk22) {
+                    o->unk2 = 1;
+                    ((s16 *)o)[-1] = -1;
+                }
+                break;
+            case 1:
+                t = (frame << 12) / 24;
+                if (o->unkC.vx > 0) {
+                    o->unk1C -= (0xE10 - o->unkC.vz) / 300;
+                } else {
+                    o->unk1C += (o->unkC.vz + 0xE10) / 300;
+                }
+                o->unk14.vx += o->unk1C;
+                o->unk14.vy += o->unk1E;
+                o->unkC.vx += o->unk4;
+                o->unkC.vy += o->unk6;
+                o->unkC.vz += o->unk8;
+                pos.vx = o->unkC.vx;
+                pos.vy = o->unkC.vy;
+                pos.vz = o->unkC.vz;
+                s = ((0x1000 - ex->math_sin(t >> 2)) * o->unkA) >> 12;
+                scale.vx = scale.vz = s;
+                scale.vy = s * 3;
+                ex->Hi_DrawEffModel(&o->unk14, &pos, (s32)&scale, inst->unk84[o->unk20]);
+                ex->Hi_ModifyEffModelRGB(inst->unk84[o->unk20], -0x80, -0x80, -0x80);
+                if (frame >= 0x18) {
+                    return 1;
+                }
+                break;
+            }
+            break;
+        case 1:
+            t = frame << 8;
+            o->unk14.vx += o->unk1C;
+            o->unk14.vy += o->unk1E;
+            o->unkC.vx += o->unk4;
+            o->unkC.vy += o->unk6;
+            o->unkC.vz += o->unk8;
+            pos.vx = o->unkC.vx;
+            pos.vy = o->unkC.vy;
+            pos.vz = o->unkC.vz;
+            s = ((0x1000 - t) * o->unkA) >> 12;
+            scale.vx = scale.vz = s;
+            scale.vy = s * 3;
+            ex->Hi_DrawEffModel(&o->unk14, &pos, (s32)&scale, inst->unk84[o->unk20]);
+            ex->Hi_ModifyEffModelRGB(inst->unk84[o->unk20], -0x80, -0x80, -0x80);
+            if (frame >= 0x10) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", fx_17d_7_op80);
 

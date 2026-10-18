@@ -5,6 +5,26 @@
 #include "btlfx_mod.h"
 
 typedef struct {
+    s16 unk0; /* state */
+    s16 unk2; /* sub-state */
+    s16 unk4; /* velocity */
+    s16 unk6;
+    s16 unk8;
+    s16 unkA; /* scale */
+    SVECTOR unkC; /* position */
+    SVECTOR unk14; /* rotation */
+    s16 unk1C; /* spin */
+    s16 unk1E;
+    s16 unk20; /* model index */
+    s16 unk22;
+} Fx1bf1Rock;
+
+typedef struct {
+    u8 pad0[0x84];
+    s32 unk84[1]; /* models */
+} Fx1bf1RockInst;
+
+typedef struct {
     s32 unk0; /* frame */
     u8 pad4[0xC];
     s16 *unk10; /* pool */
@@ -68,6 +88,7 @@ s32 func_801EEA80(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *e
 extern s32 D_801F0198[64][3]; /* noise */
 extern SVECTOR D_801EFDE0;
 extern SVECTOR D_801EFDE8;
+extern s32 D_801EF25C;
 /* end copied */
 
 #endif

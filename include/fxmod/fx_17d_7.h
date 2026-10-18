@@ -65,6 +65,28 @@ extern s32 D_801F019C[64][3]; /* noise */
 
 s32 func_801EEAA8(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
+typedef struct {
+    s16 unk0; /* state */
+    s16 unk2; /* sub-state */
+    s16 unk4; /* velocity */
+    s16 unk6;
+    s16 unk8;
+    s16 unkA; /* scale */
+    SVECTOR unkC; /* position */
+    SVECTOR unk14; /* rotation */
+    s16 unk1C; /* spin */
+    s16 unk1E;
+    s16 unk20; /* model index */
+    s16 unk22;
+} Fx17d7Rock;
+
+typedef struct {
+    u8 pad0[0x84];
+    s32 unk84[1]; /* models */
+} Fx17d7RockInst;
+
+extern s32 D_801EF260;
+
 void func_801EE6E4(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
 void func_801EE990(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *path, Fx17d7Trail *trail, s32 n, s32 *noise,
