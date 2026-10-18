@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast). Status: draft from m2c + asm,
- * untested: 1122 aligned mismatches, ~432 ignoring registers and spill offsets (spnorm 0x40). One fresh
+ * untested: 1089 aligned mismatches, ~415 ignoring registers and spill offsets (spnorm 0x40). One fresh
  * temporary per block (x1.., y1.., ...) was needed for global allocation to keep ex in fp and work in s7 as the
  * original does (reusing x/y/k across cases spilled work, env, entry and ex). Divisions are checked against the
  * magic-number shifts (several are (x / n) >> k). Open: spill slots, statement orders, register choices.
@@ -401,8 +401,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s1.vx = s1.vy = ex->math_sin(k3) / 2 + 0x800;
             s1.vz = 0x1000;
             r1.vx = work->unkBC.vx;
-            r1.vz = frame << 5;
             r1.vy = work->unkBC.vy;
+            r1.vz = frame << 5;
             ex->Hi_DrawEffModel(&r1, (VECTOR *)&work->unkA4, (s32)&s1, work->unkE0);
             ex->Hi_ModifyEffModelRGB(work->unkE0, ((ex->math_cos(k3) - 0x800) >> 5) - 0x80,
                                      ((ex->math_cos(k3) - 0x800) >> 5) - 0x80, ((ex->math_cos(k3) - 0x800) >> 5) - 0x80);
@@ -428,9 +428,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r2.vz = (frame << 5) + 0x400;
             ex->func_800CFD78(&work->unk30.vx, &work->unkBC.vx, -0x80, &p2.vx);
             x2 = (x2 >> 5) - 0x80;
-            v2.vx = p2.vx;
             v2.vy = p2.vy;
             v2.vz = p2.vz;
+            v2.vx = p2.vx;
             for (i = 0; i < 3; i++) {
                 ex->Hi_DrawEffModel(&r2, &v2, (s32)&s2, work->unkC4);
                 ex->Hi_ModifyEffModelRGB(work->unkC4, x2, x2, x2);
@@ -471,12 +471,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     case 3:
         tint = 0x1000;
         if (frame == 0) {
-            work->unk30.vx = D_801F09B4.vx;
             work->unk30.vy = D_801F09B4.vy;
+            work->unk30.vx = D_801F09B4.vx;
             work->unkBC.vx = -0x400;
             work->unkBC.vy = 0;
-            work->unkBC.vz = 0;
             work->unk30.vy = D_801F09B4.vy - 0x1000;
+            work->unkBC.vz = 0;
             work->unk30.vz = D_801F09B4.vz;
             work->unkA4.vx = D_801F09B4.vx;
             work->unkA4.vy = D_801F09B4.vy;
@@ -538,8 +538,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (frame < 5) {
             work->unk40.vz = work->unk30.vz;
-            work->unk40.vy = work->unk30.vy;
             work->unk40.vx = work->unk30.vx;
+            work->unk40.vy = work->unk30.vy;
             work->unk40.vy = work->unk40.vy - 0x180 - (((0x1000 - ((frame << 12) >> 2)) * 3) >> 1);
             env->unk2C->unk0[3].vx = work->unk40.vx;
             env->unk2C->unk0[3].vy = work->unk40.vy;
@@ -817,8 +817,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->unk28 = 0;
         if (frame == 0x31) {
             work->unk38.vx = work->unk30.vx;
-            work->unk38.vy = work->unk30.vy;
             work->unk38.vz = work->unk30.vz;
+            work->unk38.vy = work->unk30.vy;
             work->unk38.vy -= 0x400;
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x20), (s32)&work->unk38);
             if (p != NULL) {
