@@ -1,8 +1,11 @@
 /* Draft of fx_016 op80 (Ramuh-style summon model: morph through four models, then a second morph pair). Status: 53
  * aligned mismatches, register allocation only. The original keeps m (the morph weight of the first branch) in s2
- * although it does not cross a call; here it lands in v1. Moving m above the sin() call makes it cross the call but
- * then it outranks a in the global-allocation priorities (see build/prio.py) and the two swap. fx_05f op80 is the
- * same function with different files and scales. */
+ * although it does not cross a call (REG_ALLOC_ORDER puts v0-t7 first, so something must block them or m must
+ * cross a call); here it lands in v1. In the else branch the original's q is a block-local pseudo (local-alloc
+ * gives the cos temporaries s0/s1 first, then q s2, &scale s3, &pos s4), so q must stay a separate variable.
+ * Moving m above the sin() call makes it cross the call, but it then gets s0/s1 (it outranks a; with a's refs
+ * raised by do-while(0) nesting a gets s0 and m s1). Merging m and q into one variable gets 67 lines (q/m in s4).
+ * fx_05f op80 is the same function with different files and scales. */
 #include "fxmod/fx_016.h"
 
 s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
