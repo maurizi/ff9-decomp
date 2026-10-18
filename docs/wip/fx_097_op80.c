@@ -1,8 +1,6 @@
-/* Draft of fx_097 fx_097_op80. Status: 97 aligned mismatches, logic complete (fx_098 op80 is the same function with
- * other constants). Open: the original keeps 0x9A in s3 and 0x80 in s0 across the mode-1 registrations, ties sp58
- * (fade) and the pool-spawn results differently, and multiplies by 0xC8 held in s0; the rest is register allocation.
- * Levers used: constants through variables so they aren't folded (c = 0x5C, c = work->unk80 + 11), goto loop for the
- * item spawn loop (the original's loop isn't strength-reduced). */
+/* Draft of fx_097 fx_097_op80. Status: 26 aligned diff lines ignoring registers, rest register allocation. Mode 1
+ * keeps 0x9A in a callee-saved register (c here); the original env is spilled to its argument slot. fx_098 op80 is
+ * the same code with other constants. */
 #include "btlfx_mod.h"
 
 extern s16 D_801E9D50[];
@@ -90,17 +88,18 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->unk4 = 0x20;
     } else if (mode == 1) {
         i = 0;
+        c = 0x9A;
         D_801E9DB4 = env;
         ex->btlfx_initEffModels(D_801E9DC4, 0x19);
-        work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x14), 0x9A, 0x3DC0, 0x80, 0);
-        work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x12), 0x9A, 0x3DC0, 0x80, 0);
-        work->unk10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x13), 0x9A, 0x3DC0, 0x80, 0);
+        work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x14), c, 0x3DC0, 0x80, 0);
+        work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x12), c, 0x3DC0, 0x80, 0);
+        work->unk10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x13), c, 0x3DC0, 0x80, 0);
         work->unk14 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x11), 0xBA, 0x3D40, 0, 0x80);
         work->unk18 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xF), 0xBA, 0x3D40, 0, 0x80);
         work->unk1C = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x10), 0xBA, 0x3D40, 0, 0x80);
         for (; i < 14; i++) {
             work->unk20[i] =
-                (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, D_801E9D18[i]), 0x9A, 0x3DC0, 0x80, 0);
+                (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, D_801E9D18[i]), c, 0x3DC0, 0x80, 0);
         }
         work->unk0 = 0;
         work->unk4 = 0;

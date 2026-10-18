@@ -1,6 +1,5 @@
-/* Draft of fx_0d2 fx_0d2_op82. Status: 132 aligned mismatches, logic complete; with registers ignored only 14 differ.
- * The original keeps work in s3 and ex in s4 (pinning both with REG_ASM gives the right registers but changes the
- * spawn loop's induction variables). */
+/* Draft of fx_0d2 fx_0d2_op82. Status: same instructions as the original apart from register allocation: the original
+ * gives work $s3, ex $s4 and the D_801EA440 giv $s2 (ours $s2/$s3/$s4). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -239,7 +238,6 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx0d2Work82);
     } else if (mode == 1) {
-        k = 0;
         work->unk1C[0].unk0.vx = 0;
         work->unk1C[0].unk0.vy = 0x800;
         work->unk1C[0].unk0.vz = 0;
@@ -274,7 +272,7 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1C[2].unk18.vx = 0x1C00;
         work->unk1C[2].unk18.vy = 0x1C00;
         work->unk1C[2].unk18.vz = 0x1C00;
-        for (; k < 6; k++) {
+        for (k = 0; k < 6; k++) {
             func_801E9EEC(&D_801EF270[k], (u8 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x91), k));
             work->unkF4[k + 3] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[k]), 1);
         }
@@ -329,8 +327,8 @@ s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E9F04(&D_801EF240, frame, rp, &v);
             work->unk1C[0].unk8.vx = v.vx;
             work->unk1C[0].unk8.vy = v.vy;
-            work->unk1C[0].unk0.vz = -work->unk1C[0].unk0.vz;
             work->unk1C[0].unk8.vz = v.vz;
+            work->unk1C[0].unk0.vz = -work->unk1C[0].unk0.vz;
             ex->Hi_SetEffModelSlice(work->unkF4[0], work->unk1C[0].unk8.vy - 0x2D5);
             ex->Hi_DrawSliceEffModel(rp, (VECTOR *)&work->unk1C[0].unk8, (s32)&work->unk1C[0].unk18,
                                      work->unkF4[0]);
