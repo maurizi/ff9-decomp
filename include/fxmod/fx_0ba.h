@@ -155,4 +155,73 @@ typedef struct {
 extern BtlModel D_801EC600[];
 s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[1];
+} Fx0baPTrail;
+
+typedef struct {
+    s16 x, y, z;
+} Fx0baPKey;
+
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* count */
+    Fx0baPKey unk4[1];
+} Fx0baPKeys;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[17];
+} Fx0baPTrail17; /* 0x8C */
+
+typedef struct {
+    s16 x, y, z, rx, ry, rz;
+} Fx0baPKey12; /* 0xC */
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* base position */
+    SVECTOR unk10;
+    SVECTOR unk18;
+    u8 pad20[0x28];
+    s32 unk48[3]; /* model position */
+    s32 unk54[3]; /* model scale */
+    SVECTOR unk60; /* model rotation */
+    Pool6CEntry *unk68;
+    Pool6CEntry *unk6C;
+    s32 unk70; /* models */
+    s32 unk74;
+    s32 unk78;
+    s32 unk7C;
+    s32 unk80;
+} Fx0baPWork81; /* 0x84 */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[13];
+} Fx0baPTrail13; /* 0x6C */
+
+#define FX0BAP_W(v, i) (((s32 *)&(v))[i])
+
+extern s16 D_801EC560[];
+extern s32 D_801EC578[3];
+extern s32 D_801EC584[3];
+extern s32 D_801EC590[3];
+extern s32 D_801EC59C[3];
+extern Fx0baPTrail D_801ECAC0;
+extern BtlModel D_801ECB90[];
+extern Fx0baPTrail17 D_801ECF80[6];
+extern Fx0baPTrail13 D_801ED2D0[3];
+
 #endif

@@ -331,7 +331,179 @@ void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVEC
 
 INCLUDE_RODATA("asm/us/fx_0e0/nonmatchings/fx_0e0", fx_0e0_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_0e0/nonmatchings/fx_0e0", func_801E8628);
+s32 func_801E8628(s32 mode, Fx0e0Obj *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+                  Fx0e0Inst *parent) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR pos;
+    VECTOR scale;
+    SVECTOR ang;
+    SVECTOR d;
+    SVECTOR old;
+    SVECTOR t;
+    SVECTOR pad;
+    Pool6CEntry *e;
+    s32 k;
+    s32 a;
+    s32 c;
+    s32 i;
+    s32 sh;
+
+    if (mode == 1) {
+        it->unk2 = 0;
+        it->unk14.vx = ex->btlfx_rand();
+        it->unk14.vy = ex->btlfx_rand();
+        it->unk14.vz = 0;
+        it->unk1C = ex->btlfx_rand() % 64;
+        it->unk1E = ex->btlfx_rand() % 32;
+        it->unk20 = NULL;
+    } else {
+        switch (it->unk0) {
+        case 0:
+        case 1:
+            k = 0;
+            switch (it->unk2) {
+            case 0:
+                it->unk14.vx += it->unk1C;
+                it->unk14.vy += it->unk1E;
+                old.vx = it->unkC.vx;
+                old.vy = it->unkC.vy;
+                old.vz = it->unkC.vz;
+                it->unkC.vx += it->unk4.vx;
+                it->unkC.vy += it->unk4.vy;
+                it->unkC.vz += it->unk4.vz;
+                pos.vx = it->unkC.vx;
+                pos.vy = it->unkC.vy;
+                pos.vz = it->unkC.vz;
+                scale.vx = scale.vy = scale.vz = D_801EA8B8[it->unk4.pad];
+                ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, parent->unk5C);
+                d.vx = parent->unk8.vx - it->unkC.vx;
+                d.vy = parent->unk8.vy - it->unkC.vy;
+                d.vz = parent->unk8.vz - it->unkC.vz;
+                if (frame < 8) {
+                    k = (frame << 12) >> 3;
+                } else {
+                    k = 0x1000;
+                }
+                if (d.vx * d.vx + d.vy * d.vy + d.vz * d.vz < D_801EB1D8 * D_801EB1D8 * D_801EB1D8) {
+                    it->unk2 = 1;
+                    ((s16 *)it)[-1] = -1;
+                    it->unk20 = e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&it->unkC);
+                    if (e != NULL) {
+                        e->unk22 = 0x20;
+                    }
+                }
+                break;
+            case 1:
+                scale.vx = scale.vy = scale.vz = D_801EA8B8[it->unk4.pad];
+                pos.vx = it->unkC.vx;
+                pos.vy = it->unkC.vy;
+                pos.vz = it->unkC.vz;
+                ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, parent->unk5C);
+                ex->btlfx_aimAngles((s16 *)&parent->unk8, (s16 *)&it->unkC, (s16 *)&ang);
+                ang.pad = 1;
+                if (it->unk20 != NULL) {
+                    it->unk20->unk5C.vx = ang.vx;
+                    it->unk20->unk5C.vy = ang.vy;
+                    it->unk20->unk5C.vz = ang.vz;
+                }
+                if (frame < 4) {
+                    k = 0x1000 - ((frame << 12) >> 2);
+                }
+                it->unk4.vx = it->unk4.vx * 2 / 3;
+                it->unk4.vy = it->unk4.vy * 2 / 3;
+                it->unk4.vz = it->unk4.vz * 2 / 3;
+                env->unk28 = 0x1F4;
+                if (frame < 8) {
+                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), &it->unkC, NULL, 0x3000, frame, 1,
+                                      ex->math_cos(frame << 7));
+                }
+                env->unk28 = 0x20;
+                if (frame < 8) {
+                    ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &it->unkC, &ang, 0x2000, frame, 1,
+                                      ex->math_cos(frame << 7));
+                }
+                env->unk28 = 0;
+                if (D_801EB1DC != 0) {
+                    return 1;
+                }
+                break;
+            }
+            if (k != 0) {
+                env->unk28 = 0x180;
+                BTLFX_COPY_SVEC(&t, &it->unkC);
+                t.vx -= it->unk4.vx;
+                t.vy -= it->unk4.vy;
+                t.vz -= it->unk4.vz;
+                for (i = 0; i < 12; i++) {
+                    t.vx -= it->unk4.vx;
+                    t.vy -= it->unk4.vy;
+                    t.vz -= it->unk4.vz;
+                    func_801E7B08(&t, NULL, 0x600, k, 0x1A, 0x3D06, (i & 3) << 6, (i >> 2) << 6, 0x40, 0x40, 1);
+                }
+                env->unk28 = 0;
+            }
+            break;
+        case 2:
+            a = (frame << 12) / 24;
+            scale.vx = scale.vy = (ex->math_sin(a >> 2) >> 1) + 0x800;
+            scale.vz = it->unk4.pad + 0x200;
+            it->unk14.vz -= 0x40;
+            it->unkC.vy -= 0x4D;
+            pos.vx = it->unkC.vx;
+            pos.vy = it->unkC.vy;
+            pos.vz = it->unkC.vz;
+            ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, parent->unk70);
+            ex->Hi_ModifyEffModelRGB(parent->unk70, (ex->math_sin(a >> 1) >> 5) - 0x80, (ex->math_sin(a >> 1) >> 5) - 0x80,
+                                     (ex->math_sin(a >> 1) >> 5) - 0x80);
+            if (frame >= 24) {
+                return 1;
+            }
+            break;
+        case 3:
+            it->unk14.vx += it->unk1C * 2;
+            it->unk14.vy += it->unk1E * 2;
+            it->unkC.vx += it->unk4.vx;
+            it->unkC.vy += it->unk4.vy;
+            it->unkC.vz += it->unk4.vz;
+            pos.vx = it->unkC.vx;
+            pos.vy = it->unkC.vy;
+            pos.vz = it->unkC.vz;
+            scale.vz = ((it->unk4.pad * ex->math_cos((frame << 8) >> 2)) >> 12) * 2;
+            scale.vx = scale.vy = scale.vz / 3;
+            ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, parent->unk5C);
+            ex->Hi_ModifyEffModelRGB(parent->unk5C, -0x4B, -0x4B, -0x4B);
+            if (frame >= 16) {
+                return 1;
+            }
+            break;
+        case 4:
+            it->unk14.vx += it->unk1C;
+            it->unk14.vy += it->unk1E;
+            it->unkC.vx += it->unk4.vx;
+            it->unkC.vy += it->unk4.vy;
+            it->unkC.vz += it->unk4.vz;
+            it->unk4.vx = (it->unk4.vx * 31) >> 5;
+            it->unk4.vy = (it->unk4.vy * 31) >> 5;
+            it->unk4.vz = (it->unk4.vz * 31) >> 5;
+            pos.vx = it->unkC.vx;
+            pos.vy = it->unkC.vy;
+            sh = frame << 6;
+            /* Scheduling barrier: frame << 6 fills the pos.vy load delay and pos.vz's stays a nop. */
+            do {
+            } while (0);
+            pos.vz = it->unkC.vz;
+            scale.vz = ((it->unk4.pad * ex->math_cos(sh >> 2)) >> 12) * 2;
+            scale.vx = scale.vy = scale.vz >> 1;
+            ex->Hi_DrawEffModel(&it->unk14, &pos, (s32)&scale, parent->unk5C);
+            ex->Hi_ModifyEffModelRGB(parent->unk5C, 0, -0x4B, -0x4B);
+            if (frame >= 0x40) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_0e0/nonmatchings/fx_0e0", fx_0e0_op80);
 

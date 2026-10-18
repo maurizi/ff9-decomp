@@ -1,7 +1,9 @@
-/* Draft of fx_0ba func_801EAC08. Status: 20 aligned mismatches (sdiff --count), all in case 2: the original
- * computes frame*k first and keeps the product in LO (reloaded into t2 by mflo), with a >> 11 in a's register s0.
- * With q (global) the order is right but the product goes to s1; a fresh local (single set) gets the sched1 birthing
- * boost and lands after the a multiply; sharing case 1's k fixes case 2 but moves case 1's k from t0 to t1. */
+/* Draft of fx_0ba func_801EAC08. Status: 22 aligned mismatches, 0 ignoring registers (registers only, all in case
+ * 2's last two calls): the original keeps (frame < 3) * 2 in v0, the product with frame in LO until a late
+ * `mflo t2`, and computes 0x1000 - t2 into a's own register s0 (a *= amp in place, later a >> 11 in place); here q
+ * (shared with case 2's other blocks) takes s1 and 0x1000 - t2 goes through v0. a is assigned inside the first
+ * call's argument list ((a = (0x1000 - t2) * amp) / 1500), which puts its subu after the a0-a2 argument loads as in
+ * the original. A block-local product (single set) gets t2 but is then scheduled after a's multiply. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -195,11 +197,8 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
             }
             q = (frame < 3) * 2;
             q *= frame;
-            a = 0x1000;
-            a -= t2;
-            a *= amp;
             func_801EA850(entry, 2, 0, (Fx0baStrip *)trail2, 0x8C, p->unk18 + q, &p->unk0, &v, 0,
-                          0x227, frame * 0xC0, 0x168, frame, c2, a / 1500, 0);
+                          0x227, frame * 0xC0, 0x168, frame, c2, (a = (0x1000 - t2) * amp) / 1500, 0);
             func_801EAAF0(entry, 3, 0, (Fx0baStrip *)trail2, (Fx0baStrip *)strip2, 0x24, p->unk18, p->unk12, frame, c2,
                           a >> 11);
             if (frame >= 8) {

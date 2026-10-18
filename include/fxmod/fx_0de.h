@@ -25,4 +25,18 @@ typedef struct {
 } Fx0deWork84;
 s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    s32 unk0; /* done */
+    SVECTOR unk4; /* caster body position */
+    SVECTOR unkC; /* caster position */
+    s32 unk14[8]; /* models */
+    s32 unk34; /* scale from the caster's size */
+} Fx0deWork80; /* 0x38 */
+typedef struct {
+    u16 unk0;
+    u16 unk2;
+} Fx0deFlash;
+extern Fx0deFlash D_801E85F0[];
+extern BtlModel D_801E86A8[];
+
 #endif
