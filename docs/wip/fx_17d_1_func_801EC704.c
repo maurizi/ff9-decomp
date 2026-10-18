@@ -1,5 +1,5 @@
-/* Draft of func_801EC704 (module fx_17d_1). Status: 124 aligned mismatches, 44 ignoring registers and spill offsets
- * (spnorm 0x10). Fixed since the 146-row draft: xs = dw * i and xa = xs + dw per iteration (the original multiplies
+/* Draft of func_801EC704 (module fx_17d_1). Status: 100 aligned mismatches, 32 ignoring registers and spill offsets
+ * (spnorm 0x10). Permuter find: dw initialized through m (m = w >> 2; dw = m;), which changes the flag's allocation. Fixed since the 146-row draft: xs = dw * i and xa = xs + dw per iteration (the original multiplies
  * them by 3 each time; accumulating xa/xs made loop.c reduce xa * 3), k = i < 3 then i++, and the r0 word store after
  * clut (the q giv is then based at the r0 word, as in the original). Open: the original keeps the j < 3 flag
  * (slti/xori/subu) inside the inner loop where loop.c hoists it here; its q+4 giv starts at q+4 and is incremented at
@@ -30,7 +30,8 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
     POLY_FT4 *q;
 
     x0 = x - (w >> 1) * 3 / 2;
-    dw = w >> 2;
+    m = w >> 2;
+    dw = m;
     dh = h >> 2;
     abrBits = (abr & 3) << 5;
     y0 = y - (h >> 1);
