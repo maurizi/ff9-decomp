@@ -69,6 +69,38 @@ Existing Redux states. Disc 1: `title_screen`, `field_burmecia_vault` (Lv 99), `
 `field_iifa_outer_root` (random encounters), `battle_iifa_start` (battle HUD up, `ovl_0b` resident),
 `battle_iifa_command` (Vivi's command menu open). Steps to reproduce the battle are in `docs/runtime-findings.md`.
 
+Disc 3 (`start --disc 3`; boot first with `frames 1800`, a state loaded straight after a cold start can hang in the
+BIOS): `disc3_pandemonium_lv99_field` (= `disc3_scenario_field_ready`: card 1 FILE04 loaded, Pandemonium field 2714),
+`disc3_malboro_lv99_start`, `disc3_malboro_lv99_calm` (Zidane's command menu, party Zidane/Vivi/Dagger/Eiko Lv 99),
+`disc3_malboro_lv99_target`, `_ablist`, `_itemlist`, `_help`, `disc3_malboro_dmgnum` ("3233" over the Malboro),
+`disc3_malboro_fire_banner`, `disc3_malboro_fire_hit`, `disc3_malboro_rewards` (EXP/AP screen), `disc3_ark_lv99_cmd`,
+`disc3_ark_lv99_calm` (Ark: magic is disabled in that fight). The `_calm` and later Malboro states expect the
+Malboro's ATB to be held at 0 (see below), otherwise it acts within ~250 frames. The ff9-ds fixture states
+(`disc3_ark_combat_fixture`, ...) use synthetic parties.
+
+### Entering any battle (disc 3)
+
+`build/rt/enter_battle.py ENC [--field F] [--party 0,1,2,6] [--base-state S] [--frames N]` (scratch helper, copy of
+ff9-ds `tools/psx_battle_fixture.py`): from a paused, loaded field it forces the field exit (GameState.mode 2, flag 2),
+breaks at main's dispatcher 0x80012834, writes the encounter's CD sector/length pair (read from `FF9.IMG`'s encounter
+directory) into GameData.unk7FC/unk804, GameData.fieldId/unkE = field/encounter and optionally the party pointers,
+then lets the normal battle loader run. Unlike the ff9-ds tool it keeps the save's own characters (no blob import).
+Example: `enter_battle.py 899 --field 2714 --base-state disc3_pandemonium_lv99_field --party 0,1,2,6 --frames 1200`
+reaches the Malboro's first command menu. Encounter ids: `python3 ../ff9-ds/tools/scenario_catalog.py --disc 3
+disks/us/disc3/FF9.IMG [--find NAME]`. Any encounter whose data is on the inserted disc works; the battle
+returns to `--field` afterwards. Fields can't be entered this way (the helper only swaps the battle data); a field
+jump would need GameData.fieldId plus the field loader, untested.
+
+Battle experiment helpers in `build/rt/` (not tools; scratch, may be rewritten): `freeze.lua` (per-vsync memory
+pokes, e.g. `Freeze.list={{0x80109268,"0000"}}` keeps the Malboro's ATB at 0), `cov.py`/`cov.lua` (exec breakpoints on
+every game function with ONE shared LuaJIT callback: a callback per breakpoint runs out of LuaJIT callback slots at
+~900 and Redux reports "too many callbacks"), `act.py` (load state, play inputs, coverage/trace/watch, screenshots),
+`matrix.py`/`cmp.py` (compare coverage runs), `ablate.py` (stub functions with `jr ra` and screenshot what vanishes),
+`patch.lua` (rewrite the next btl_setCmd Attack into any command/ability, e.g. a summon). Note: removing the last
+bridge breakpoint switches Redux's debugger off, so re-enable it (`PCSX.settings.emulator.Debug.Debug = true`)
+when other breakpoints were added outside the bridge. A Lua error inside a vsync listener opens a modal
+"unknown exception" dialog that freezes the web server; then the emulator has to be killed.
+
 ### Speed and the debugger
 
 Breakpoints need the interpreter with Redux's debugger on, and the debugger halves the speed
