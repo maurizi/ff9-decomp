@@ -46,7 +46,18 @@ typedef struct {
     Pool6CEntry *unk20;
 } Fx018Work80; /* 0x24 */
 
+typedef struct {
+    SVECTOR unk0; /* target body */
+    SVECTOR unk8; /* target */
+    s32 *unk10; /* jitter table */
+    s32 unk14; /* bolts spawned */
+    s32 unk18; /* kind */
+} Fx018Work83; /* 0x1C */
+
 extern BtlModel D_801E9CF0[];
+extern SVECTOR D_801E9CE0; /* previous bolt end */
+extern Unk80100C78Entry *D_801E9CEC;
+extern s32 D_801EA9E0[];
 extern s32 D_801E9E80; /* ring radius */
 extern u16 D_801E9C88[];
 extern u16 D_801E9C90[];
