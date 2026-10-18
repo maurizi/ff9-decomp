@@ -193,6 +193,174 @@ s32 func_801E9FC4(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", fx_19f_op83);
+s32 fx_19f_op83(s32 mode, Fx19fWork83 *work, Unk800F78A4 *env, Fx19fInst *inst, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR base;
+    SVECTOR p;
+    SVECTOR q;
+    SVECTOR c;
+    SVECTOR d;
+    s32 frame;
+    s32 i;
+    s32 n;
+    s32 r;
+    s32 a;
+    s32 col;
+    s32 dist;
+    Fx19fBolt *b;
+    Fx19fBolt *b2;
+    s32 *np;
+    s32 k;
+
+    if (mode == 0) {
+        init->unk0 = 0xC;
+        init->unk8 = 0x1C;
+        init->unk14 = (s32)func_801E9D20;
+        init->unk4 = 0x20;
+    } else if (mode == 1) {
+        i = init->unk0;
+        D_801EAA48 = env;
+        work->unk0 = D_801EC9B8[0];
+        np = D_801EC9B8[0];
+        for (n = 0; n < 64; n++) {
+            *np++ = ex->btlfx_randCentered(0xD2);
+            *np++ = ex->btlfx_randCentered(0x1C3);
+            *np++ = ex->btlfx_randCentered(0xDC);
+        }
+        work->unk8 = i;
+        work->unk4 = 0;
+    } else {
+        frame = inst->unk0;
+        switch (work->unk8) {
+        case 0:
+            FX19F_W(base, 0) = FX19F_W(D_801EA9AC, 0);
+            FX19F_W(base, 1) = FX19F_W(D_801EA9AC, 1);
+            if (frame >= 0x14) {
+                return 1;
+            }
+            work->unk4++;
+            FX19F_W(p, 0) = FX19F_W(base, 0);
+            p.vy = 0;
+            FX19F_W(p, 1) = FX19F_W(base, 1);
+            FX19F_W(q, 0) = FX19F_W(base, 0);
+            FX19F_W(q, 1) = FX19F_W(base, 1);
+            b = ex->btlfx_poolSpawn(inst->unk10);
+            if (b != NULL) {
+                r = ex->btlfx_randCentered(0x200) + 0x7D0;
+                k = ex->btlfx_randCentered(0x200) - 0x200;
+                a = ((work->unk4 / 2) << 10) + k;
+                p.vx += (ex->math_cos(a) * r) >> 12;
+                p.vz += (ex->math_sin(a) * r) >> 12;
+                ((s32 *)&b->unk0)[0] = FX19F_W(p, 0);
+                ((s32 *)&b->unk0)[1] = FX19F_W(p, 1);
+                ((s32 *)&b->unk8)[0] = FX19F_W(q, 0);
+                ((s32 *)&b->unk8)[1] = FX19F_W(q, 1);
+                b->unk11 = 0;
+                b->unk10 = work->unk4 % 32;
+                b->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                b->unk12 = ex->btlfx_rand() % 15;
+                b->unk13 = ex->btlfx_rand() % 15;
+                b->unk15 = 0x3E;
+                b->unk14 = 0;
+            }
+            work->unk4++;
+            FX19F_W(p, 0) = FX19F_W(base, 0);
+            FX19F_W(q, 0) = FX19F_W(base, 0);
+            p.vy = 0;
+            FX19F_W(p, 1) = FX19F_W(base, 1);
+            FX19F_W(q, 1) = FX19F_W(base, 1);
+            if (frame >= 0xB) {
+                b = ex->btlfx_poolSpawn(inst->unk10);
+                if (b != NULL) {
+                    r = ex->btlfx_randCentered(0x100) + 0x3E8;
+                    a = ((work->unk4 / 2) << 10) + ex->btlfx_randCentered(0x200);
+                    p.vx += (ex->math_cos(a) * r) >> 12;
+                    p.vz += (ex->math_sin(a) * r) >> 12;
+                    ((s32 *)&b->unk0)[0] = FX19F_W(p, 0);
+                    ((s32 *)&b->unk0)[1] = FX19F_W(p, 1);
+                    ((s32 *)&b->unk8)[0] = FX19F_W(q, 0);
+                    ((s32 *)&b->unk8)[1] = FX19F_W(q, 1);
+                    b->unk11 = 0;
+                    b->unk10 = work->unk4 % 32;
+                    b->unk18 = work->unk0 + (ex->btlfx_rand() & 0xF) * 3;
+                    b->unk12 = ex->btlfx_rand() % 15;
+                    b->unk13 = ex->btlfx_rand() % 15;
+                    b->unk15 = 0x32;
+                    b->unk14 = 0;
+                }
+            }
+            if (frame >= 0x14) {
+                return 1;
+            }
+            break;
+        case 1:
+            FX19F_W(p, 0) = FX19F_W(D_801EA9AC, 0);
+            FX19F_W(p, 1) = FX19F_W(D_801EA9AC, 1);
+            if (frame < 0x18) {
+                col = D_801EA9B4 * 100 / 2048 + 0x3C;
+                if (col >= 0x100) {
+                    col = 0xFF;
+                }
+                for (i = 0; i < 2; i++) {
+                    work->unk4++;
+                    FX19F_W(c, 0) = FX19F_W(p, 0);
+                    FX19F_W(d, 0) = FX19F_W(p, 0);
+                    FX19F_W(c, 1) = FX19F_W(p, 1);
+                    FX19F_W(d, 1) = FX19F_W(p, 1);
+                    b2 = ex->btlfx_poolSpawn(inst->unk10);
+                    if (b2 != NULL) {
+                        dist = D_801EA9B4;
+                        ex->btlfx_randRotation(&q);
+                        ex->func_800CFD78((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
+                        ex->func_800CFD78((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
+                        ((s32 *)&b2->unk0)[0] = FX19F_W(c, 0);
+                        ((s32 *)&b2->unk0)[1] = FX19F_W(c, 1);
+                        ((s32 *)&b2->unk8)[0] = FX19F_W(d, 0);
+                        ((s32 *)&b2->unk8)[1] = FX19F_W(d, 1);
+                        b2->unk11 = 1;
+                        b2->unk10 = work->unk4 % 32;
+                        b2->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                        b2->unk12 = ex->btlfx_rand() % 15;
+                        b2->unk13 = ex->btlfx_rand() % 15;
+                        b2->unk15 = col;
+                        b2->unk14 = 0;
+                    }
+                }
+                if (frame >= 0xD) {
+                    for (i = 0; i < 2; i++) {
+                        work->unk4++;
+                        FX19F_W(c, 0) = FX19F_W(p, 0);
+                        FX19F_W(d, 0) = FX19F_W(p, 0);
+                        FX19F_W(c, 1) = FX19F_W(p, 1);
+                        FX19F_W(d, 1) = FX19F_W(p, 1);
+                        b2 = ex->btlfx_poolSpawn(inst->unk10);
+                        if (b2 != NULL) {
+                            dist = D_801EA9B4;
+                            ex->btlfx_randRotation(&q);
+                            ex->func_800CFD78((s16 *)&d, (s16 *)&q, 0x180, (s16 *)&c);
+                            ex->func_800CFD78((s16 *)&d, (s16 *)&q, dist + 0x180, (s16 *)&d);
+                            ((s32 *)&b2->unk0)[0] = FX19F_W(c, 0);
+                            ((s32 *)&b2->unk0)[1] = FX19F_W(c, 1);
+                            ((s32 *)&b2->unk8)[0] = FX19F_W(d, 0);
+                            ((s32 *)&b2->unk8)[1] = FX19F_W(d, 1);
+                            b2->unk11 = 1;
+                            b2->unk10 = work->unk4 % 32;
+                            b2->unk18 = work->unk0 + (ex->btlfx_rand() & 0xF) * 3;
+                            b2->unk12 = ex->btlfx_rand() % 15;
+                            b2->unk13 = ex->btlfx_rand() % 15;
+                            b2->unk15 = col - 0x32;
+                            b2->unk14 = 0;
+                        }
+                    }
+                }
+            }
+            if (frame >= 0x18) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_19f/nonmatchings/fx_19f", fx_19f_headerPtr);
