@@ -48,7 +48,45 @@ void func_801E77FC(SVECTOR *pos) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E798C);
+void func_801E798C(s32 model, SVECTOR *center) {
+    Fx0ecTri *t = D_801EB3D0;
+    Fx0ecTri *u = D_801EB3D0;
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E98A0);
+    Fx0ecShard *p;
+    SVECTOR d;
+    s32 i;
+    s32 k;
+    s32 r;
+
+    ex->Hi_SplitMdlVertex(model, -1, (s32)t);
+    p = D_801EBE50;
+    for (i = 0; i < 0x70; p++) {
+        p->unk18 = 0;
+        p->unk0.vx = ((t->unk0[0].vx + u->unk0[1].vx + u->unk0[2].vx) / 3) << 12;
+        p->unk0.vy = ((u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3) << 12;
+        p->unk0.vz = ((u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3) << 12;
+        p->unk1A = 0;
+        i++;
+        p->unkC.pad = 0x1000;
+        p->unk14 = ex->btlfx_randCentered(0x100);
+        p->unk16 = ex->btlfx_randCentered(0x200);
+        d.vx = (p->unk0.vx >> 12) - center->vx;
+        d.vy = (p->unk0.vy >> 12) - center->vy;
+        d.vz = (p->unk0.vz >> 12) - center->vz;
+        p->unkC.vx = d.vx >> 4;
+        t++;
+        p->unkC.vy = d.vy >> 4;
+        r = ex->btlfx_rand();
+        u++;
+        /* Dead store: the branch splits sched1's block here and is gone by final, which keeps the p++ increment
+         * after the rand() call (sched2 then leaves it there and u++ fills the call's delay slot). */
+        if (p == NULL) {
+            k = 0;
+        }
+        k = (r & 0x1F) + 8;
+        p->unkC.vz = (d.vz >> 4) + k;
+    }
+}
 
 void func_801E7B84(void) {
     Fx0ecTri *t = D_801EB3D0;
