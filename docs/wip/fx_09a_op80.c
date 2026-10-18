@@ -1,7 +1,8 @@
-/* Draft of fx_09a fx_09a_op80. Status: 88 aligned mismatches. Same summon framework as fx_05e op80 (one summon per
- * target unit). Open: frame lives in s2 in the original, (frame << 12) and its sign are computed before the frame < 6
- * test and shared with frame/22, and the ribbon-decay loops address the second edge point through an integer
- * induction variable plus base (a3 = 8 + 16*i) rather than a pointer. */
+/* Draft of fx_09a fx_09a_op80. Status: 5 aligned structural mismatches, 21 register-only lines. Same summon
+ * framework as fx_05e op80. Open: (1) the D_801E87E4[side != side] file pick: the original loads entry->unk8 first
+ * and puts both '& 0xFFF' temporaries in a1; (2) the ribbon-decay loops: the counter/offset registers are swapped
+ * (orig i = a2, o = a3) and loop 2 builds the base in t0 and copies it to a1. The byte-offset form (o = 8 + 16*i
+ * added to the base) is what reproduces the original's address arithmetic; a natural form is still wanted. */
 #include "btlfx_mod.h"
 
 /* ribbon history: two edge points per step, unk0.pad = live */
@@ -167,7 +168,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             if (frame == 27) {
                 p = (Pool6CEntry *)ex->func_800E3CEC(
-                    ex->btlfx_getFileData(entry->unk8, D_801E87E4[((work->unk1C.vy & 0xFFF) - 0x400U > 0x800) != ((env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)]),
+                    ex->btlfx_getFileData(entry->unk8, *(D_801E87E4 + (((work->unk1C.vy & 0xFFF) - 0x400U > 0x800) != ((env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)))),
                     (s32)&work->unk14);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(work->unk8, 0x40);
@@ -196,7 +197,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 3:
-            v = (frame << 12) / 24;
+            v = (frame << 12) / 6;
             if (frame == 2) {
                 p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk24);
                 if (p != NULL) {
@@ -207,13 +208,13 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk24);
             }
-            work->unk3C[2] = work->unk3C[0] = ((0x1000 - ex->math_sin(v)) << 12) >> 12;
+            work->unk3C[0] = work->unk3C[2] = ((0x1000 - ex->math_sin(v >> 2)) << 12) >> 12;
             pos.vx = work->unk24.vx;
             pos.vy = work->unk24.vy;
             pos.vz = work->unk24.vz;
             ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->unk4)->unk60, 41 - frame);
             ex->Hi_DrawSummonModel(&work->unk34, &pos, (s32)work->unk3C, ((Fx09aSummon *)env->unk4)->unk60, 1);
-            k = ex->math_cos(v);
+            k = ex->math_cos(v >> 2);
             ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->unk4)->unk60, (k >> 5) - 0x80, (k >> 5) - 0x80,
                                         (k >> 5) - 0x80);
             if (frame >= 6) {
@@ -239,15 +240,20 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 func_801E7704(&a, &b, 0x10, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, k, D_801E9058, 1);
                 func_801E7704(&b, &c, 0x10, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, k, D_801E9168, 1);
                 BTLFX_COPY_SVEC(&work->unk2C, &a);
+                {
+                s32 o;
+                i = 0;
                 sv = (SVECTOR *)D_801E9058;
-                for (i = 0; i < 17; i++) {
+                for (o = 8; i < 17; o += 16, i++) {
                     sv[i * 2].vy -= sv[i * 2].vy >> 6;
-                    sv[i * 2 + 1].vy -= sv[i * 2 + 1].vy >> 4;
+                    ((SVECTOR *)((u8 *)sv + o))->vy -= ((SVECTOR *)((u8 *)sv + o))->vy >> 4;
                 }
-                sv = (SVECTOR *)D_801E9168;
-                for (i = 0; i < 17; i++) {
-                    sv[i * 2].vy -= sv[i * 2].vy >> 4;
-                    sv[i * 2 + 1].vy -= sv[i * 2 + 1].vy >> 3;
+                i = 0;
+                o = 8;
+                for (; i < 17; o += 16, i++) {
+                    ((SVECTOR *)D_801E9168)[i * 2].vy -= ((SVECTOR *)D_801E9168)[i * 2].vy >> 4;
+                    ((SVECTOR *)((u8 *)D_801E9168 + o))->vy -= ((SVECTOR *)((u8 *)D_801E9168 + o))->vy >> 3;
+                }
                 }
             }
         }
