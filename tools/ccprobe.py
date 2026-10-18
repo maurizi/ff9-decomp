@@ -5,8 +5,8 @@ against the original SLUS_012.51, masking relocated fields (jal targets,
 
     tools/docker.sh python3 tools/ccprobe.py probe.c [--flags "-O2 -G0"] [--aspsx 2.67,2.77] [--bin ovl_0a]
 
-Functions in the C file must keep their func_XXXXXXXX names (address is taken
-from the name). Prints a matrix of compiler/aspsx -> matching words per function.
+Functions are found by their func_XXXXXXXX name or, for named ones, through the binary's
+symbols file. --bin fx_XXX probes a battle effect module (disks/us/fxmod/, config/fxmods.us.txt). Prints a matrix of compiler/aspsx -> matching words per function.
 """
 import argparse
 import glob
@@ -69,13 +69,28 @@ def compile_c(src, cc, flags, aspsx, expand_div, tmp):
     return open(text, "rb").read(), symbols(o), reloc_masks(o)
 
 
+NAMED = {}  # name -> address, from the binary's symbols files
+
+
+def load_named(paths):
+    for path in paths:
+        if os.path.exists(path):
+            for line in open(path):
+                m = re.match(r"(\w+) = 0x([0-9A-Fa-f]+);", line)
+                if m:
+                    NAMED[m.group(1)] = int(m.group(2), 16)
+
+
 def score(exe, code, syms, masks):
     res = {}
     for name, (off, size) in syms.items():
         m = re.match(r"func_([0-9A-Fa-f]{8})$", name)
-        if not m:
+        if m:
+            addr = int(m.group(1), 16)
+        elif name in NAMED:
+            addr = NAMED[name]
+        else:
             continue
-        addr = int(m.group(1), 16)
         good = 0
         n = size // 4
         for k in range(n):
@@ -123,7 +138,16 @@ def main():
     global VRAM, FILE_OFF, ASM_DIR
     if a.bin == "main":
         exe = open(EXE, "rb").read()
+        load_named(["config/symbols.us.txt"])
+    elif a.bin.startswith("fx_"):
+        exe = open(f"disks/us/fxmod/{a.bin}.bin", "rb").read()
+        for line in open("config/fxmods.us.txt"):
+            f = line.split()
+            if f and f[0] == a.bin:
+                VRAM, FILE_OFF = int(f[1], 16), 0
+        load_named([f"config/fxmod/{a.bin}.syms.txt"])
     else:
+        load_named([f"config/symbols.{a.bin}.us.txt"])
         ovl = a.bin[4:]
         exe = open(f"disks/us/ovl/{ovl}.bin", "rb").read()
         for line in open("config/overlays.us.txt"):
@@ -143,7 +167,7 @@ def main():
                     show(a.show, os.path.join(tmp, "x.o"))
                     return
                 res = score(exe, code, syms, masks)
-                cells = "  ".join(f"{k[5:]}:{g}/{n}{'*' if g == n else ''}" for k, (g, n) in sorted(res.items()))
+                cells = "  ".join(f"{k[5:] if k.startswith('func_') else k}:{g}/{n}{'*' if g == n else ''}" for k, (g, n) in sorted(res.items()))
                 print(f"{cc:18} aspsx {asv}: {cells}")
 
 
