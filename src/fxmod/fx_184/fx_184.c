@@ -60,7 +60,54 @@ s32 fx_184_op81(s32 mode, Fx184Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_184/nonmatchings/fx_184", fx_184_op82);
+s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+
+    if (mode == 0) {
+        *arg4 = 0x3C;
+    } else if (mode == 1) {
+        D_801E7DC4 = env;
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
+        work->unk8.vx = work->unk0.vx;
+        work->unk8.vy = work->unk0.vy;
+        work->unk8.vz = work->unk0.vz;
+        work->unk0.vy = -2000;
+        work->unk8.vy = 0;
+        ex->btlfx_setUnitPos(0x10, (s16 *)&work->unk0);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->unk10);
+        work->unk20.vx = 0;
+        work->unk20.vy = 0x800;
+        work->unk20.vz = 0;
+        ex->func_800CFD78((s16 *)&work->unk10, (s16 *)&work->unk20, ex->btlfx_getUnitRadius(0) + 0x320, (s16 *)&work->unk18);
+        ex->btlfx_setUnitVisible(0x10, 1);
+        work->unk30 = 0;
+        work->unk34 = 6;
+        work->unk38 = 0;
+    } else {
+        if (entry->unk0 == 6) {
+            ex->btlfx_setWeaponVisible(0x10, 1);
+        }
+        switch (work->unk30) {
+        case 0:
+            if (func_801E7BC4(0x10, &work->unk18, work->unk38, work->unk34, 0, &work->unk28)) {
+                work->unk30 = 1;
+                work->unk34 = 0x10;
+                work->unk38 = 0;
+            } else {
+                work->unk38++;
+            }
+            break;
+        case 1:
+            if (work->unk38 == work->unk34) {
+                return 1;
+            }
+            work->unk38++;
+            break;
+        }
+        return 0;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_184/nonmatchings/fx_184", func_801E7BC4);
 
