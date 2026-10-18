@@ -1,9 +1,9 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast). Status: first draft from m2c
- * + asm, untested: 1682 aligned mismatches, 520 ignoring registers and spill offsets (spnorm 0x40). One fresh
+ * + asm, untested: 1663 aligned mismatches, ~520 ignoring registers and spill offsets (spnorm 0x40). One fresh
  * temporary per block (x1.., y1.., ...) was needed for global allocation to keep ex in fp and work in s7 as the
- * original does (reusing x/y/k across cases spilled work, env, entry and ex). Open: several divisions are probably
- * written as (x / n) >> k in the original (m2c folds them, e.g. case 1's / 192 is / 48 >> 2), spill slots, and
- * statement orders. D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
+ * original does (reusing x/y/k across cases spilled work, env, entry and ex). Divisions are checked against the
+ * magic-number shifts (several are (x / n) >> k). Open: spill slots, statement orders, register choices.
+ * D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
 #include "fxmod/fx_0e3_1.h"
 
 typedef struct {
@@ -318,12 +318,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk64->unk5C.vz = work->unk58.vz;
         }
         env->unk28 = 0x80;
-        t = (frame << 12) / 192;
+        t = ((frame << 12) / 48) >> 2;
         x1 = (ex->math_sin(t) >> 1) + 0x800;
         ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &work->unk30, NULL, x1 >> 1, 0, 1,
                           ex->math_sin(t));
         if (frame >= 0x2B) {
-            t = ((frame - 0x2B) << 12) / 20;
+            t = (((frame - 0x2B) << 12) / 5) >> 2;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), &work->unk30, NULL, ex->math_sin(t) / 3,
                               0, 1, 0x1000);
             ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 7), &work->unk30, 0xB, ex->math_sin(t));
@@ -575,10 +575,11 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             k7 = frame - 4;
             r3.vx = 0;
             r3.vz = 0;
-            x9 = (k7 << 12) / 40;
-            r3.vy = (k7 << 12) / 80;
+            k7 = (k7 << 12) / 10;
+            x9 = k7 >> 2;
+            r3.vy = k7 >> 3;
             s3.vx = s3.vz = x9 + 0x555;
-            s3.vy = ((k7 << 12) / 20) + 0x400;
+            s3.vy = (k7 >> 1) + 0x400;
             y2 = ex->math_cos(x9);
             ex->Hi_DrawEffModel(&r3, (VECTOR *)&work->unkA4, (s32)&s3, work->unkC8);
             ex->Hi_ModifyEffModelRGB(work->unkC8, (y2 >> 5) - 0x80, (y2 >> 5) - 0x80, (y2 >> 5) - 0x80);
@@ -713,7 +714,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             func_801ED708((VECTOR *)&work->unkA4, &work->unkBC);
             work->unkBC.vz += 0x400;
             ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkD8);
-            k9 = ((frame - 0x3B) << 12) / 72;
+            k9 = (((frame - 0x3B) << 12) / 18) >> 2;
             ex->Hi_ModifyEffModelRGB(work->unkD8, (ex->math_cos(k9) >> 5) - 0x80, (ex->math_cos(k9) >> 5) - 0x80,
                                      (ex->math_cos(k9) >> 5) - 0x80);
         }
