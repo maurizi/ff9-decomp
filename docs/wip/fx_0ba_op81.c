@@ -1,4 +1,4 @@
-/* Draft of fx_0ba fx_0ba_op81. Status: 715 strict aligned mismatches (was 1405), 189 with registers and spill-slot
+/* Draft of fx_0ba fx_0ba_op81. Status: 716 strict aligned mismatches (was 1405), 168 with registers and spill-slot
  * offsets masked (sdiff --noreg after spnorm 0xE8); equivalent by construction. Splitting the reused temporaries into
  * one variable per block (t_1.., c_1.., i_1.. for every loop counter, ...) fixed most of the global allocation.
  * The original frame is 0x170 (ours 0x160): it keeps glow/gk/orb in s6/s7/s4, ex in fp, and spills trail..amp
@@ -144,8 +144,8 @@ s32 fx_0ba_op81(s32 mode, Fx0baWork81 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk60.vy = pt->pad[1];
             w->unk54.vx = 0x2000;
             w->unk54.vy = 0x2000;
-            w->unk54.vz = 0x2000;
             w->unk60.vz = pt->pad[2];
+            w->unk54.vz = 0x2000;
             if (frame >= 7) {
                 ex->func_800CFC2C(frame, 7, 8, 0, 0x1000, &tc);
                 env->unk28 = -0x80;
@@ -454,8 +454,8 @@ s32 fx_0ba_op81(s32 mode, Fx0baWork81 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             scale.vx = w->unk54.vx;
             scale.vy = w->unk54.vy;
             scale.vz = w->unk54.vz;
-            scale.vx += gk;
             scale.vy += gk2;
+            scale.vx += gk;
             scale.vz += gk;
             ex->Hi_DrawEffModel(&w->unk60, &pos, (s32)&scale, w->unk7C);
             ex->Hi_ModifyEffModelRGB(w->unk7C, (glow >> 5) - 0x80, (glow >> 5) - 0x80, (glow >> 5) - 0x80);
