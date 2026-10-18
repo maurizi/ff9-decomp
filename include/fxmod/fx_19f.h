@@ -9,8 +9,8 @@ typedef struct {
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    SVECTOR unk4[25];
-} Fx19fTrail; /* 0xCC */
+    SVECTOR unk4[1];
+} Fx19fTrail;
 
 extern Unk800F78A4 *D_801EAA48;
 
