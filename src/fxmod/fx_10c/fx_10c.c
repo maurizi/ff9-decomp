@@ -1,6 +1,69 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_10c.h"
 
-INCLUDE_ASM("asm/us/fx_10c/nonmatchings/fx_10c", fx_10c_op80);
+s32 fx_10c_op80(s32 mode, Fx10cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR pos;
+    s32 frame;
+    s32 t;
+    s32 i;
+    s32 c;
+
+    if (mode == 0) {
+        *arg4 = 0x74;
+    } else if (mode == 1) {
+        D_801E7B50 = env;
+        ex->btlfx_initEffModels(D_801E7B60, 2);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
+        ex->func_800DC818(0x10, 0x17, (u16 *)&work->unk10);
+        ex->btlfx_aimAngles((s16 *)&work->unk10, (s16 *)&work->unk8, (s16 *)&work->unk18);
+        work->unk30.vx = 0x1000;
+        work->unk30.vy = 0x1000;
+        work->unk30.vz = 0x1000;
+        work->unk18.vx += 0x800;
+        work->unk20.vx = work->unk10.vx;
+        work->unk20.vy = work->unk10.vy;
+        work->unk20.vz = work->unk10.vz;
+        work->unk70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 5), 1);
+        work->unk72 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0x97, 0x3D40, 0, 0);
+    } else {
+        frame = entry->unk0;
+        if (frame < 8) {
+            t = (frame << 12) / 6;
+            ex->btlfx_lerpVec((s16 *)&work->unk0, (s16 *)&work->unk8, t, (s16 *)&pos);
+            work->unk20.vx = pos.vx;
+            work->unk20.vy = pos.vy;
+            work->unk20.vz = pos.vz;
+            ex->math_sin(t >> 1);
+        }
+        ex->Hi_DrawEffModel(&work->unk18, &work->unk20, (s32)&work->unk30, work->unk70);
+        for (i = 0; i < 2; i++) {
+            if (frame >= i + 1) {
+                c = -(i * 16);
+                ex->Hi_DrawEffModel(&work->unk40[i], &work->unk50[i], (s32)&work->unk30, work->unk72);
+                ex->Hi_ModifyEffModelAbr(work->unk72, 3);
+                ex->Hi_ModifyEffModelRGB(work->unk72, c, c, c);
+            }
+        }
+        work->unk40[1].vx = work->unk40[0].vx;
+        work->unk40[1].vy = work->unk40[0].vy;
+        work->unk40[1].vz = work->unk40[0].vz;
+        work->unk50[1].vx = work->unk50[0].vx;
+        work->unk50[1].vy = work->unk50[0].vy;
+        work->unk50[1].vz = work->unk50[0].vz;
+        work->unk40[0].vx = work->unk18.vx;
+        work->unk40[0].vy = work->unk18.vy;
+        work->unk40[0].vz = work->unk18.vz;
+        work->unk50[0].vx = work->unk20.vx;
+        work->unk50[0].vy = work->unk20.vy;
+        work->unk50[0].vz = work->unk20.vz;
+        if (frame >= 6) {
+            ex->btlfx_clearEffModels();
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_10c/nonmatchings/fx_10c", fx_10c_op81);
 
