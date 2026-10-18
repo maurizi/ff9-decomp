@@ -69,8 +69,22 @@ typedef struct {
 typedef struct {
     s16 unk0; /* state */
     s16 unk2; /* piece */
+    s32 pad4;
+    s32 unk8;
+    SVECTOR unkC; /* position */
 } Fx197Item81;
 
+typedef struct {
+    s32 unk0; /* shatter buffer, as an offset into env->unk30 */
+    s32 unk4; /* triangle buffer */
+} Fx197Offsets;
+
+extern Fx197Offsets D_801E9194[];
+extern s32 D_801E91D4[]; /* piece path file ids */
+extern SVECTOR D_801E91EC[]; /* piece landing offsets */
+extern s32 D_801E921C[]; /* model frame per animation frame */
+extern Fx197Shatter D_801EAFC0;
+extern Fx197Tri D_801EC5C0[];
 extern BtlModel D_801E9670[];
 extern s32 D_801EAF70;
 extern s32 D_801EAF74;
