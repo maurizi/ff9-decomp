@@ -37,7 +37,7 @@ typedef struct {
     u8 unk10; /* trail index */
     u8 unk11; /* kind */
     u8 unk12;
-    u8 pad13;
+    u8 unk13;
     u8 unk14; /* angle */
     u8 unk15;
     u8 pad16[2];
@@ -46,6 +46,24 @@ typedef struct {
 
 extern Fx17d7Trail17 D_801EFDFC[];
 extern Fx17d7Trail5 D_801F00BC[];
+
+typedef struct {
+    s32 unk0; /* frame */
+    u8 pad4[0xC];
+    s16 *unk10; /* pool */
+} Fx17d7Inst;
+
+typedef struct {
+    s32 *unk0; /* noise */
+    s32 unk4; /* spawn count */
+    s32 unk8; /* kind */
+} Fx17d7Work83;
+
+extern SVECTOR D_801EFDE4;
+extern SVECTOR D_801EFDEC;
+extern s32 D_801F019C[64][3]; /* noise */
+
+s32 func_801EEAA8(s32 mode, Fx17d7Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
 void func_801EE6E4(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail, s32 n, s32 *noise, SVECTOR *from,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);

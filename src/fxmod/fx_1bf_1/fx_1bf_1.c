@@ -81,6 +81,88 @@ s32 func_801EEA80(s32 mode, Fx1bf1Bolt *b, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1bf_1/nonmatchings/fx_1bf_1", fx_1bf_1_op83);
+s32 fx_1bf_1_op83(s32 mode, Fx1bf1Work83 *work, Unk800F78A4 *env, Fx1bf1Inst *inst, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 *p;
+    s32 i;
+    s32 n;
+    s32 k;
+    s32 frame;
+    s32 r;
+    s32 a;
+    Fx1bf1Bolt *b;
+
+    if (mode == 0) {
+        init->unk0 = 0xC;
+        init->unk8 = 0x1C;
+        init->unk14 = (s32)func_801EEA80;
+        init->unk4 = 5;
+    } else if (mode == 1) {
+        n = init->unk0;
+        D_801EF2D8 = env;
+        work->unk0 = D_801F0198[0];
+        p = D_801F0198[0];
+        for (i = 0; i < 64; i++) {
+            *p++ = ex->btlfx_randCentered(0xD2);
+            *p++ = ex->btlfx_randCentered(0x1C3);
+            *p++ = ex->btlfx_randCentered(0xDC);
+        }
+        work->unk8 = n;
+        work->unk4 = 0;
+    } else {
+        k = work->unk8;
+        frame = inst->unk0;
+        switch (k) {
+        case 0:
+            if (frame >= 5) {
+                return 1;
+            }
+            work->unk4++;
+            b = ex->btlfx_poolSpawn(inst->unk10);
+            if (b != NULL) {
+                ((s32 *)&b->unk0)[0] = ((s32 *)&D_801EFDE0)[0];
+                ((s32 *)&b->unk0)[1] = ((s32 *)&D_801EFDE0)[1];
+                ((s32 *)&b->unk8)[0] = ((s32 *)&D_801EFDE8)[0];
+                ((s32 *)&b->unk8)[1] = ((s32 *)&D_801EFDE8)[1];
+                b->unk11 = 0;
+                b->unk10 = work->unk4 % 5;
+                b->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                b->unk12 = ex->btlfx_rand() % 15;
+                b->unk13 = ex->btlfx_rand() % 15;
+                b->unk15 = 0x4E;
+                b->unk14 = work->unk4 * 0x33 + ex->btlfx_randCentered(7);
+            }
+            break;
+        case 1:
+            if (frame < 0x1E) {
+                work->unk4++;
+                r = 0xD48 - frame * 0xD48 / 28;
+                b = ex->btlfx_poolSpawn(inst->unk10);
+                if (b != NULL) {
+                    a = (frame << 11) / 3 + 0x400;
+                    ((s32 *)&b->unk0)[0] = ((s32 *)&D_801EFDE8)[0];
+                    ((s32 *)&b->unk0)[1] = ((s32 *)&D_801EFDE8)[1];
+                    ((s32 *)&b->unk8)[0] = ((s32 *)&D_801EFDE0)[0];
+                    ((s32 *)&b->unk8)[1] = ((s32 *)&D_801EFDE0)[1];
+                    b->unk0.vx += (ex->math_sin(a) * r) >> 12;
+                    b->unk0.vz += (ex->math_cos(a) * r) >> 12;
+                    b->unk11 = k;
+                    b->unk8.vy += 0x400;
+                    b->unk10 = work->unk4 % 5;
+                    b->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                    b->unk12 = ex->btlfx_rand() % 15;
+                    b->unk13 = ex->btlfx_rand() % 15;
+                    b->unk15 = 0x3E - frame;
+                    b->unk14 = work->unk4 * 0x33 + ex->btlfx_randCentered(7);
+                }
+            }
+            if (frame >= 0x1E) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_1bf_1/nonmatchings/fx_1bf_1", fx_1bf_1_headerPtr);
