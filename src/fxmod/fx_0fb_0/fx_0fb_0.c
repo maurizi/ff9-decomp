@@ -84,7 +84,97 @@ void func_801E7720(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
 
 INCLUDE_ASM("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", func_801E7B90);
 
-INCLUDE_ASM("asm/us/fx_0fb_0/nonmatchings/fx_0fb_0", func_801E809C);
+void func_801E809C(SVECTOR *pos, s32 dy, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 ph, s32 step,
+                   s32 abr, s32 ph2) {
+    Unk800F78A4 *env = D_801EB3AC;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR a;
+    SVECTOR b;
+    SVECTOR vs[4];
+    s32 otz;
+    s32 x;
+    s32 t;
+    s32 code;
+    POLY_GT4 *p;
+    s32 i;
+    s32 c0;
+    s32 c1;
+    s32 u0;
+    s32 u1;
+    s32 v1;
+    s32 nph;
+
+    c1 = 0;
+    gte_SetRotMatrix(env->unk14);
+    gte_SetTransMatrix(env->unk14);
+    p = (POLY_GT4 *)env->unk24;
+    code = 0x3C;
+    env->unk24 = (u8 *)(p + 44);
+    if (abr != 0xFF) {
+        code = 0x3E;
+    }
+    tpage |= (abr & 3) << 5;
+    x = -0x6098;
+    c0 = c >> 3;
+    for (i = 0; i < 44; i++) {
+        t = ((i + 1) << 12) / 44;
+        if (i == 0) {
+            BTLFX_COPY_SVEC(&a, pos);
+            a.vx += x;
+            a.vz += ex->math_sin(ph2) * 2;
+            a.vz += (ex->math_sin(ph) * amp) >> 12;
+            a.vx -= (ex->math_sin(ph) * amp) >> 13;
+            c1 = c;
+        }
+        BTLFX_COPY_SVEC(&b, pos);
+        b.vx += 0x464 + x;
+        b.vz += ex->math_sin(t + ph2) * 2;
+        nph = ph + step;
+        b.vz += (ex->math_sin(nph) * amp) >> 12;
+        b.vx -= (ex->math_sin(nph) * amp) >> 13;
+        BTLFX_COPY_SVEC(&vs[0], &a);
+        BTLFX_COPY_SVEC(&vs[2], &a);
+        BTLFX_COPY_SVEC(&vs[1], &b);
+        BTLFX_COPY_SVEC(&vs[3], &b);
+        BTLFX_COPY_SVEC(&a, &b);
+        vs[2].vy += dy;
+        vs[3].vy += dy;
+        gte_ldv3c(vs);
+        gte_rtpt();
+        u0 = u + (((i & 7) * 0x70) >> 3);
+        u1 = u0 + 0xE;
+        if ((i & 7) == 7) {
+            u1 = u0 + 0xD;
+        }
+        v1 = v + 0x6F;
+        gte_nclip();
+        p->r1 = p->g1 = p->b1 = c0;
+        p->r0 = p->g0 = p->b0 = c0;
+        p->r2 = p->g2 = p->b2 = c1;
+        c1 = ex->math_cos(t >> 2) >> 5;
+        p->r3 = p->g3 = p->b3 = c1;
+        p->code = code;
+        gte_stopz(&otz);
+        if (otz != 0) {
+            p->u0 = p->u2 = u0;
+            p->u1 = p->u3 = u1;
+            p->v0 = p->v1 = v;
+            p->v2 = p->v3 = v1;
+            p->tpage = tpage;
+            p->clut = clut;
+            gte_stsxy3(&p->x0, &p->x1, &p->x2);
+            gte_avsz3();
+            gte_stszotz(&otz);
+            gte_ldv0(&vs[3]);
+            gte_rtps();
+            ex->btlfx_addPrim(0x0C000000, otz, p);
+            gte_stsxy(&p->x3);
+            p++;
+        }
+        ph = nph;
+        x += 0x464;
+    }
+}
 
 s32 func_801E8540(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
