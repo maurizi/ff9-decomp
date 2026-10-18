@@ -222,7 +222,18 @@ void func_801E8298(s32 unit, s32 motion) {
     ex->btlfx_setMotionFrame(unit, 0);
 }
 
-INCLUDE_ASM("asm/us/fx_0c2/nonmatchings/fx_0c2", func_801E8304);
+s32 func_801E8304(s32 unit) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E847C);
+
+    s32 r;
+
+    if (ex->btlfx_isUnitActive(unit)) {
+        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+    } else {
+        r = 0;
+    }
+    return r;
+}
 
 void func_801E8388(s32 unit) {
     if (BTLFX_EXPORTS(D_801E847C)->btlfx_isUnitActive(unit)) {

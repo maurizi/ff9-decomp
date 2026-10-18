@@ -67,6 +67,6 @@ typedef struct {
 } Fx0dbWork;
 extern SVECTOR D_801E88B4[];
 s32 func_801E7704(s32 mode, Fx0dbItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
-                  Unk800DA1B8 *pool, Fx0dbWork *work);
+                  Unk800DA1B8 *pool, Fx0dbWork80 *work);
 
 #endif

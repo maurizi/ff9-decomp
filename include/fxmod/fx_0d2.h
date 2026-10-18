@@ -87,6 +87,11 @@ typedef struct {
     s16 unk6[3]; /* rotation */
 } Fx0d2Key; /* 0xC */
 typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx0d2Key *unk4;
+} Fx0d2KeyPath;
+typedef struct {
     s16 x, y, z;
 } Fx0d2Key6;
 typedef struct {
@@ -96,10 +101,10 @@ typedef struct {
 void func_801E9E70(Fx0d2Path *path, u16 *data);
 s32 func_801E9E88(Fx0d2Path *path, s32 t, SVECTOR *out);
 void func_801E9EEC(Fx0d2Path *path, u16 *data);
-s32 func_801E9F04(Fx0d2Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+s32 func_801E9F04(Fx0d2KeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 void func_801E9F98(Fx0d2Path *path, u16 *data);
 void func_801E9FF4(Fx0d2Path *path, u16 *data);
-s32 func_801EA00C(Fx0d2Track6 *track, s32 t, VECTOR *out);
+s32 func_801EA00C(Fx0d2Path *track, s32 t, VECTOR *out);
 extern Unk800F78A4 *D_801ED8E0;
 void func_801EA070(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 

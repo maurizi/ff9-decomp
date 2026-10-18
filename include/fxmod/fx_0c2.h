@@ -43,11 +43,11 @@ s32 func_801E7804(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 s32 func_801E7EC4(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
 s32 func_801E8040(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
 void func_801E7D6C(s32 unit, s32 motion);
-s32 func_801E8304(s32 unit);
 void func_801E8388(s32 unit);
-extern Unk800F78A4 *D_801E847C;
 void func_801E8298(s32 unit, s32 motion);
 void func_801E83D4(s32 unit);
 void func_801E8420(Unk800F78A4 *env, s32 i, s32 v);
+extern Unk800F78A4 *D_801E847C;
+s32 func_801E8304(s32 unit);
 
 #endif
