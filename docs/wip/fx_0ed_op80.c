@@ -1,9 +1,7 @@
-/* Draft of fx_0ed fx_0ed_op80. Status: ~41 aligned mismatches ignoring registers. The end loops address the second
- * field as base + k (k = 8, += 16) like the original, but the registers differ: the original keeps the
- * D_801E9AF4 address in s1 for base + k and walks a copy (a1), here the walker reuses s1 and base is a copy (a2);
- * the original has t s0, state s1, ex s2, frame s4, 1 s5 (here p takes s0); the frame == 0x1F file-id xor block
- * loads entry->unk8 later in the original. The case-2 frame << 12 hoisted above Hi_DrawSummonModel is reproduced
- * by computing t = frame << 12 before the call. */
+/* Draft of fx_0ed fx_0ed_op80. Status: 9 aligned structural mismatches (mostly scheduling caused by register
+ * choice). Twin of fx_09a op80 (same fixes: dead t / 30 for the sign word, *(D + (a != b)) file pick, byte-offset
+ * ribbon loops). Open: global allocation differs (original: t s0, state/p s1, ex s2, frame s4; here state s0,
+ * ex s1, frame s2, t s4), and the xor file-pick block loads entry->unk8 first in the original. */
 #include "fxmod/fx_0ed.h"
 
 typedef struct {
@@ -56,6 +54,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k;
     s32 i;
     Pool6CEntry *p;
+    SVECTOR *sv;
 
     if (mode == 0) {
         *arg4 = 0x40;
@@ -172,8 +171,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame == 0x1F) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8,
-                                                           D_801E8C10[((u32)((work->unk10.vy & 0xFFF) - 0x400) > 0x800) ^
-                                                                      ((u32)((env->unk2C->unk50 & 0xFFF) - 0x400) > 0x800)]),
+                                                           *(D_801E8C10 + (((work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
+                                                                      ((env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
@@ -208,7 +207,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 3:
             t = (frame << 9) >> 2;
-            work->unk34.vz = work->unk34.vx = ((0x1000 - ex->math_sin(t)) * 0x1000) >> 12;
+            work->unk34.vx = work->unk34.vz = ((0x1000 - ex->math_sin(t)) * 0x1000) >> 12;
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
@@ -235,11 +234,15 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801E7704(&a, &b, 0x10, &D_801E8C18, &D_801E8C1C, amp, D_801E9AF4, 1);
                 func_801E7704(&b, &c, 0x10, &D_801E8C1C, &D_801E8C20, amp, D_801E9C04, 1);
                 BTLFX_COPY_SVEC(&work->unk20, &a);
-                for (i = 0, k = 8; i < 17; i++, k += 16) {
-                    ((SVECTOR *)D_801E9AF4)[i * 2].vy -= ((SVECTOR *)D_801E9AF4)[i * 2].vy >> 6;
-                    ((SVECTOR *)((u8 *)D_801E9AF4 + k))->vy -= ((SVECTOR *)((u8 *)D_801E9AF4 + k))->vy >> 4;
+                i = 0;
+                sv = (SVECTOR *)D_801E9AF4;
+                for (k = 8; i < 17; k += 16, i++) {
+                    sv[i * 2].vy -= sv[i * 2].vy >> 6;
+                    ((SVECTOR *)((u8 *)sv + k))->vy -= ((SVECTOR *)((u8 *)sv + k))->vy >> 4;
                 }
-                for (i = 0, k = 8; i < 17; i++, k += 16) {
+                i = 0;
+                k = 8;
+                for (; i < 17; k += 16, i++) {
                     ((SVECTOR *)D_801E9C04)[i * 2].vy -= ((SVECTOR *)D_801E9C04)[i * 2].vy >> 4;
                     ((SVECTOR *)((u8 *)D_801E9C04 + k))->vy -= ((SVECTOR *)((u8 *)D_801E9C04 + k))->vy >> 3;
                 }
