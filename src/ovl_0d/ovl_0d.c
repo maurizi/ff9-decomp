@@ -33,10 +33,10 @@ s32 func_800A7634(void) {
     s32 i;
     s32 h;
     s32 a, b;
-    for (i = func_8001C8B0(D_800B365C, 1, 0x90000, 0) - 1; i >= 0; i--) {
-        h = func_8001C8B0(D_800B365C, 3, (i & 0xFFFF) | 0x90000, 0);
-        a = (s32)func_8001C7FC(4, h, 0);
-        b = (s32)func_8001C7FC(5, h, 0);
+    for (i = db_lookup(D_800B365C, 1, 0x90000, 0) - 1; i >= 0; i--) {
+        h = db_lookup(D_800B365C, 3, (i & 0xFFFF) | 0x90000, 0);
+        a = (s32)db_lookupRegistered(4, h, 0);
+        b = (s32)db_lookupRegistered(5, h, 0);
         func_80055DF4();
         func_80055E14(a, b, 1);
     }
@@ -44,8 +44,8 @@ s32 func_800A7634(void) {
 }
 
 s32 func_800A76F8(void) {
-    s32 p = (s32)func_8001C7FC(4, 0x70042, 0);
-    memmove(g_gameState->unk1C->unk814, (void *)p, (s32)func_8001C7FC(5, 0x70042, 0));
+    s32 p = (s32)db_lookupRegistered(4, 0x70042, 0);
+    memmove(g_gameState->unk1C->unk814, (void *)p, (s32)db_lookupRegistered(5, 0x70042, 0));
     return 0;
 }
 
@@ -56,26 +56,26 @@ s32 func_800A7764(void) {
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     D_800B365C = dst;
-    func_8001C750(dst, 0);
+    db_register(dst, 0);
     return 0;
 }
 
 s32 func_800A7818(void) {
-    s32 end = func_8001C8B0(D_800B365C, 0, 0x70000, 0);
+    s32 end = db_lookup(D_800B365C, 0, 0x70000, 0);
     D_800B3660 = (s32)(D_80067944 + 0x141000);
     memmove((void *)D_800B3660, (void *)D_800B365C, end - D_800B365C);
-    func_8001C750(D_800B3660, 0);
+    db_register(D_800B3660, 0);
     return 0;
 }
 
 s32 func_800A7884(void) {
-    func_8001C784((void *)D_800B365C);
+    db_unregister((void *)D_800B365C);
     D_800B365C = 0;
     return 0;
 }
 
 s32 func_800A78B8(void) {
-    func_8001C784((void *)D_800B3660);
+    db_unregister((void *)D_800B3660);
     D_800B3660 = 0;
     return 0;
 }
@@ -162,7 +162,7 @@ s32 func_800A78EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x80000;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)func_8001C7FC(4, id, 0);
+            h = (s32)db_lookupRegistered(4, id, 0);
         }
         switch (kind) {
         case 0:

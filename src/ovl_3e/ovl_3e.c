@@ -150,7 +150,7 @@ void func_801F65D4(void) {
     s32 i;
 
     if (D_801F6BBC.unk6 != 15000) {
-        func_80021640(D_801F6BBC.unk6);
+        evt_setNextLocation(D_801F6BBC.unk6);
     }
     dst = D_80073998;
     st = &D_801F6BBC;

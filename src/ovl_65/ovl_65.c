@@ -52,12 +52,12 @@ void battleEnd_init(void) {
         }
     }
     if (g_gameState->unk1C->unk56F & 1) {
-        e = func_80063088(g_gameState->unk1C->unk7E4, g_gameState->unk1C->fieldId | 0x50000);
+        e = dep_find(g_gameState->unk1C->unk7E4, g_gameState->unk1C->fieldId | 0x50000);
         if (e != NULL) {
             g_gameState->unk1C->unk3A = e->unkC;
             g_gameState->unk1C->unk7FC[1] = e->unk4;
             g_gameState->unk1C->unk804[1] = e->unk8;
-            e = func_80063088(g_gameState->unk1C->unk7E4, e->unkC);
+            e = dep_find(g_gameState->unk1C->unk7E4, e->unkC);
             if (e != NULL) {
                 g_gameState->unk1C->unk7FC[0] = e->unk4;
                 g_gameState->unk1C->unk804[0] = e->unk8;
@@ -109,14 +109,14 @@ s32 func_801EF6F8(void) {
         }
     }
     g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4 = D_80067948;
-    func_8001C750(g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4, 0);
+    db_register(g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4, 0);
     return 0;
 }
 
 s32 func_801EF814(void) {
     Unk1354 *p = g_gameState->unk1C->unk8E4.ovl65->unk1354;
     if (p->unk4 != 0) {
-        func_8001C784((void *)p->unk4);
+        db_unregister((void *)p->unk4);
         g_gameState->unk1C->unk8E4.ovl65->unk1354->unk4 = 0;
     }
     return 0;

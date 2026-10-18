@@ -912,3 +912,50 @@ func_801F0F04 rewards_update  # [runtime] docs/runtime-findings.md battle campai
 # include/ff9.h GameState: unk9=vsyncMode
 # include/ff9.h GameData: unk55E=firstUseFxSeen
 # include/ovl_0b.h Battle: unkD83=escapeHeld
+
+## R24 encounters
+# Field/world-map encounter starts and battle backgrounds (docs/encounters.md, tools/encounter_catalog.py).
+# The ovl_0c function wm_getEncounterEntry is also called from main: its line is in config/xrefs.us.txt and
+# include/ff9.h was renamed by hand.
+
+## main: main (R24 encounters: DB containers, dependency tables, random encounters, script battle opcodes)
+func_8001C8B0 db_lookup  # [code] looks a key (kind << 16 | id) up in a 0xDB container - kind byte per block, u16 ids, u32 self-relative offsets; modes 0 block, 1 count, 2 address by index, 3 key by index, 4 address, 5 size (docs/encounters.md)
+func_8001C7FC db_lookupRegistered  # [code] db_lookup over every container registered in g_dbList, newest first
+func_8001C750 db_register  # [code] appends a container to g_dbList (fld_loadFile, btl_loadEncounterFile register the files they read)
+func_8001C784 db_unregister  # [code] removes a container from g_dbList by swapping in the last one
+D_80073C40 g_dbList  # [code] {u16, u16 count, containers[16]} searched by db_lookupRegistered (db_register, db_unregister)
+func_80063088 dep_find  # [code] finds the entry with a 24-bit key in a dependency table {u16, u16 n, {key, sector, sectors, link}[n]} (GameData.unk7E4: battleEnd_init, btl_*)
+func_80038D3C evt_rollEncounter  # [code] every 0x3C0 units walked adds the frequency to g_evtEncounterChance and starts a battle when a random byte is below chance >> 3 (field table g_evtEncounterTable, world ovl_0c 0x800BBBA8), evt_setNextBattle
+D_8007AE40 g_evtEncounterTable  # [code] field random-encounter table {u16 battle[4], u8 pattern} written by script opcode 0x3C, read by evt_rollEncounter's pick
+D_8007AE4C g_evtEncounterDist  # [code] distance walked since the last roll (func_80048F54 adds, evt_rollEncounter resets past 0x3C0, evt_init sets -0x5A0)
+D_8007AE50 g_evtEncounterChance  # [code] accumulated encounter chance (evt_rollEncounter adds g_evtState->unk16EF per roll, compares chance >> 3; script opcode 0x57 with 0 clears it)
+D_8007AE54 g_evtLastEncounter  # [code] previous random battle; evt_rollEncounter rerolls once when it picks the same
+D_8007AE58 g_evtEncounterPending  # [code] set when evt_rollEncounter picked a battle, turned into event return value 3 (battle) by func_80048F54
+D_8006E648 g_encounterSlotThresholds  # [code] per pattern (table byte & 3) three cumulative thresholds for one random byte choosing battle[0..3] (evt_rollEncounter's pick)
+func_8001E2AC game_setNextScene  # [code] stores the destination id for the current mode - field scene unkA, battle unk11C0->unk4, world unk8->unk24 - read when the mode exits (fld_exit, btl_cleanup)
+func_80021640 evt_setNextLocation  # [code] game_setNextScene for script opcodes 0x2B (field jump, returns 4) and 0xB6 (world map, returns 5)
+func_80021660 evt_setNextBattle  # [code] game_setNextScene for script opcodes 0x2A/0x8C and evt_rollEncounter (event return value 3 = battle)
+
+## ovl_0a: ovl_0a (R24 encounters: field exit and dependency lookups)
+func_800A8E58 fld_exit  # [code] after the field loop: saves GameData.unk7FC/804 to unk7EC/7F4 and dispatches on the scene's exit reason (2 battle, 3 world map, 1 next field, 4/7/9 other modes)
+func_800A9BDC fld_loadFile  # [code] reads the field file at GameData.unk7FC[1] (or its preload copy), sets GameData.unk7E4 to its dependency table (block 0x14) and registers the rest
+func_800AA0F4 fld_depFindBattle  # [code] dependency-table entry 0x110000|battle -> encounter bundle sector/length, returns the key (fld_exit case 2)
+func_800AA194 fld_depFindBackground  # [code] resolves an entry's link in the dependency table and returns the linked key with its sector/length - the battle background for fld_exit case 2
+func_800AA290 fld_depFindField  # [code] dependency-table entry 0x50000|id -> field/world file sector/length (fld_exit cases 1 and 3)
+func_800AA330 fld_depFindArea  # [code] resolves a field entry's link (its 0x06 area bundle) in the dependency table (fld_exit cases 1 and 3)
+
+## ovl_0c: ovl_0c (R24 encounters: world-map dependency lookups and random-encounter tables)
+func_800A9C1C wm_loadFile  # [code] reads the world file at GameData.unk7FC[1], sets GameData.unk7E4 to its dependency table (block 0x14)
+func_800A9E24 wm_depFindBattle  # [code] dependency-table entry 0x110000|battle -> encounter bundle sector/length (world exit reason 2)
+func_800A9EC4 wm_depFindBackground  # [code] resolves the battle entry's link -> background sector/length (world exit reason 2)
+func_800A9FC0 wm_depFindField  # [code] dependency-table entry 0x50000|id -> field file sector/length (world exit reasons 1 and 3)
+func_800AA060 wm_depFindArea  # [code] resolves a field entry's link (0x06 area bundle) (world exit reasons 1 and 3)
+func_800BBBA8 wm_getEncounterEntry  # [code] [string] "- Encount Information -" debug print; picks the random-encounter entry for the player's area -> zone, topography and fog (main evt_rollEncounter)
+func_800BAD98 wm_applyEncounterEvents  # [code] for each set bit of event vars 0xC2 | 0xC6 << 8, copies battle[2] over battle[3] in the listed g_worldEncounterTable entries
+D_800CF450 g_worldEncounterTable  # [code] 10-byte entries {u16 battle[4], u8 topography << 2 | pattern, u8 zone << 1 | fog}, world data pack entry 3 (func_800BA58C, wm_getEncounterEntry)
+D_800D30D8 g_worldEncounterZoneStart  # [code] first g_worldEncounterTable entry per zone, 2 x running sum of g_worldZoneEncounterCount (func_800BA58C)
+D_800CCFB4 g_worldAreaZone  # [code] [string] area (cell attribute bits 8-13) -> zone, printed as "Now Zone" by wm_getEncounterEntry
+D_800CCFF4 g_worldZoneEncounterCount  # [code] half the number of g_worldEncounterTable entries per zone (func_800BA58C)
+D_800CF444 g_worldDataSet  # [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4); selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
+D_800CCE4B g_worldFog  # [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
+D_800D32E4 g_worldEncounterEventRows  # [code] world data pack entry 4: rows of 12 u16 entry numbers used by wm_applyEncounterEvents

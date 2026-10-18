@@ -438,7 +438,7 @@ void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
     arg1->unk4C = arg0->unk69;
     arg1->unk48.w = arg0->unk14;
     for (i = 0; i < 6; i++) {
-        h = func_8001C7FC(4, arg0->unk20[i] | 0x30000, 0);
+        h = db_lookupRegistered(4, arg0->unk20[i] | 0x30000, 0);
         arg1->unkC[i] = h;
         if (IS_OFFSET(h->unkC)) {
             h->unkC = (s32)h + h->unkC;
@@ -563,7 +563,7 @@ void btlseq_init(void) {
     t->unk0 = (BtlUnit9CC **)q;
     n = h[1];
     for (i = 0; i < n; i++, q++) {
-        m = func_8001C7FC(4, (*q & 0xFFFF) | 0x30000, 0);
+        m = db_lookupRegistered(4, (*q & 0xFFFF) | 0x30000, 0);
         *q = (u32)m;
         if (IS_OFFSET(m->unkC)) {
             m->unkC = (s32)m + m->unkC;

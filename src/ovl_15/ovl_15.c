@@ -1289,24 +1289,24 @@ s32 func_800A9488(void) {
 s32 func_800AAD24(void) {
     s32 p;
 
-    p = (s32)func_8001C7FC(4, 0x44F4C, 0);
+    p = (s32)db_lookupRegistered(4, 0x44F4C, 0);
     func_8001D9CC(p, 0, 0xE4, 0x1C0, 0x180);
     func_8001D8A8(p);
     func_8001D9CC(p, 0, 0xE5, 0x1C0, 0x180);
     func_8001D8A8(p);
-    p = (s32)func_8001C7FC(4, 0x44F4D, 0);
+    p = (s32)db_lookupRegistered(4, 0x44F4D, 0);
     func_8001D9CC(p, 0, 0xE6, 0x1EC, 0x100);
     func_8001D8A8(p);
-    p = (s32)func_8001C7FC(4, 0x44F4E, 0);
+    p = (s32)db_lookupRegistered(4, 0x44F4E, 0);
     func_8001D9CC(p, 0, 0xE0, 0x1C0, 0x100);
     func_8001D8A8(p);
-    p = (s32)func_8001C7FC(4, 0x44F50, 0);
+    p = (s32)db_lookupRegistered(4, 0x44F50, 0);
     func_8001D9CC(p, 0, 0xE1, 0x1D6, 0x100);
     func_8001D8A8(p);
-    p = (s32)func_8001C7FC(4, 0x44F4F, 0);
+    p = (s32)db_lookupRegistered(4, 0x44F4F, 0);
     func_8001D9CC(p, 0, 0xE2, 0x1C0, 0x140);
     func_8001D8A8(p);
-    p = (s32)func_8001C7FC(4, 0x44F51, 0);
+    p = (s32)db_lookupRegistered(4, 0x44F51, 0);
     func_8001D9CC(p, 0, 0xE9, 0x280, 0x100);
     func_8001D8A8(p);
     setRECT(&D_800AE4E0, 0x20, 0xE4, 0x10, 1);
@@ -1568,7 +1568,7 @@ s32 func_800AB490(void) {
 }
 
 s32 func_800AC374(void) {
-    s32 p = (s32)func_8001C7FC(4, D_800AE432 | 0x40000, 0);
+    s32 p = (s32)db_lookupRegistered(4, D_800AE432 | 0x40000, 0);
 
     func_8001D9CC(p, 0, 0xE0, 0x280, 0);
     func_8001D8A8(p);
@@ -1690,7 +1690,7 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x80000;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)func_8001C7FC(4, id, 0);
+            h = (s32)db_lookupRegistered(4, id, 0);
         }
         switch (kind) {
         case 0:
@@ -1782,7 +1782,7 @@ void func_800ACC08(void) {
         }
     }
     func_800AC598(0x100, 0x7009C, 0, 0, 0);
-    func_8001C784(D_800AE440);
+    db_unregister(D_800AE440);
     D_800AE440 = NULL;
 }
 
@@ -1791,10 +1791,10 @@ void func_800ACCB4(void) {
     s32 b;
 
     func_800552B8(0);
-    a = (s32)func_8001C7FC(4, 0x7009C, 0);
-    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)func_8001C7FC(5, 0x7009C, 0));
-    a = (s32)func_8001C7FC(4, 0x901F3, 0);
-    b = (s32)func_8001C7FC(5, 0x901F3, 0);
+    a = (s32)db_lookupRegistered(4, 0x7009C, 0);
+    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, 0x7009C, 0));
+    a = (s32)db_lookupRegistered(4, 0x901F3, 0);
+    b = (s32)db_lookupRegistered(5, 0x901F3, 0);
     func_80055DF4();
     func_80055E14(a, b, 1);
 }
@@ -1809,7 +1809,7 @@ void func_800ACD70(void) {
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     D_800AE440 = buf;
-    func_8001C750((s32)buf, 0);
+    db_register((s32)buf, 0);
 }
 
 void func_800ACE1C(void) {

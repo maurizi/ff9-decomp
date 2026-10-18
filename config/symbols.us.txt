@@ -296,3 +296,19 @@ g_windows = 0x80077530; // [code] the 10 Window slots that win_open, win_closeAl
 win_get = 0x8002E43C; // type:func [code] returns &g_windows[i], SystemError(0x59, 0x53) for i >= 10
 menuList_input = 0x8002EE8C; // type:func [code] calls menuList_up/down/pageUp/pageDown with the pad bits unless the list's unk8 is set, menus ovl_32/33/37/3c pass g_padRepeat
 evt_battleTrigger = 0x8004AB7C; // type:func [runtime] docs/runtime-findings.md battle campaign 2, runs an enemy's event-script tag (0x2F turn, 0x35 hit/counter, 0x36 death, 0x37 any hit), callers btl_updateAtb when the enemy ATB fills and btl_applyCalcResult twice after every spell that hit the Malboro
+db_lookup = 0x8001C8B0; // type:func [code] looks a key (kind << 16 | id) up in a 0xDB container - kind byte per block, u16 ids, u32 self-relative offsets, modes 0 block, 1 count, 2 address by index, 3 key by index, 4 address, 5 size (docs/encounters.md)
+db_lookupRegistered = 0x8001C7FC; // type:func [code] db_lookup over every container registered in g_dbList, newest first
+db_register = 0x8001C750; // type:func [code] appends a container to g_dbList (fld_loadFile, btl_loadEncounterFile register the files they read)
+db_unregister = 0x8001C784; // type:func [code] removes a container from g_dbList by swapping in the last one
+g_dbList = 0x80073C40; // [code] {u16, u16 count, containers[16]} searched by db_lookupRegistered (db_register, db_unregister)
+dep_find = 0x80063088; // type:func [code] finds the entry with a 24-bit key in a dependency table {u16, u16 n, {key, sector, sectors, link}[n]} (GameData.unk7E4 battleEnd_init, btl_*)
+evt_rollEncounter = 0x80038D3C; // type:func [code] every 0x3C0 units walked adds the frequency to g_evtEncounterChance and starts a battle when a random byte is below chance >> 3 (field table g_evtEncounterTable, world ovl_0c 0x800BBBA8), evt_setNextBattle
+g_evtEncounterTable = 0x8007AE40; // [code] field random-encounter table {u16 battle[4], u8 pattern} written by script opcode 0x3C, read by evt_rollEncounter's pick
+g_evtEncounterDist = 0x8007AE4C; // [code] distance walked since the last roll (func_80048F54 adds, evt_rollEncounter resets past 0x3C0, evt_init sets -0x5A0)
+g_evtEncounterChance = 0x8007AE50; // [code] accumulated encounter chance (evt_rollEncounter adds g_evtState->unk16EF per roll, compares chance >> 3, script opcode 0x57 with 0 clears it)
+g_evtLastEncounter = 0x8007AE54; // [code] previous random battle, evt_rollEncounter rerolls once when it picks the same
+g_evtEncounterPending = 0x8007AE58; // [code] set when evt_rollEncounter picked a battle, turned into event return value 3 (battle) by func_80048F54
+g_encounterSlotThresholds = 0x8006E648; // [code] per pattern (table byte & 3) three cumulative thresholds for one random byte choosing battle[0..3] (evt_rollEncounter's pick)
+game_setNextScene = 0x8001E2AC; // type:func [code] stores the destination id for the current mode - field scene unkA, battle unk11C0->unk4, world unk8->unk24 - read when the mode exits (fld_exit, btl_cleanup)
+evt_setNextLocation = 0x80021640; // type:func [code] game_setNextScene for script opcodes 0x2B (field jump, returns 4) and 0xB6 (world map, returns 5)
+evt_setNextBattle = 0x80021660; // type:func [code] game_setNextScene for script opcodes 0x2A/0x8C and evt_rollEncounter (event return value 3 = battle)

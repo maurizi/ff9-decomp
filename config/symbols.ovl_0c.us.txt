@@ -19,3 +19,17 @@ w_framePackGetPtr = 0x800B8388; // type:func [string] prints D_800A7A40 "w_frame
 g_worldMapDebugFlags = 0x800CCE50; // [code] each bit gates a group of the overlay's debug printfs (4 w_music, 8 encounter, 0x20 w_movementChange, 0x40 w_memoryman and destructors, 0x100 w_frameExtruct, 0x200 texture)
 g_worldMapErrorMsg = 0x800CCE6C; // [code] sprintf target printed as "==== ERROR ===== / %s" by w_readtxRequest, w_frmbufRequest and the no-polygon check
 g_worldMapError = 0x800CCE69; // [code] set to 1 beside every "==== ERROR ===== / %s" print
+wm_loadFile = 0x800A9C1C; // type:func [code] reads the world file at GameData.unk7FC[1], sets GameData.unk7E4 to its dependency table (block 0x14)
+wm_depFindBattle = 0x800A9E24; // type:func [code] dependency-table entry 0x110000|battle -> encounter bundle sector/length (world exit reason 2)
+wm_depFindBackground = 0x800A9EC4; // type:func [code] resolves the battle entry's link -> background sector/length (world exit reason 2)
+wm_depFindField = 0x800A9FC0; // type:func [code] dependency-table entry 0x50000|id -> field file sector/length (world exit reasons 1 and 3)
+wm_depFindArea = 0x800AA060; // type:func [code] resolves a field entry's link (0x06 area bundle) (world exit reasons 1 and 3)
+wm_getEncounterEntry = 0x800BBBA8; // type:func [code] [string] "- Encount Information -" debug print, picks the random-encounter entry for the player's area -> zone, topography and fog (main evt_rollEncounter)
+wm_applyEncounterEvents = 0x800BAD98; // type:func [code] for each set bit of event vars 0xC2 | 0xC6 << 8, copies battle[2] over battle[3] in the listed g_worldEncounterTable entries
+g_worldEncounterTable = 0x800CF450; // [code] 10-byte entries {u16 battle[4], u8 topography << 2 | pattern, u8 zone << 1 | fog}, world data pack entry 3 (func_800BA58C, wm_getEncounterEntry)
+g_worldEncounterZoneStart = 0x800D30D8; // [code] first g_worldEncounterTable entry per zone, 2 x running sum of g_worldZoneEncounterCount (func_800BA58C)
+g_worldAreaZone = 0x800CCFB4; // [code] [string] area (cell attribute bits 8-13) -> zone, printed as "Now Zone" by wm_getEncounterEntry
+g_worldZoneEncounterCount = 0x800CCFF4; // [code] half the number of g_worldEncounterTable entries per zone (func_800BA58C)
+g_worldDataSet = 0x800CF444; // [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4), selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
+g_worldFog = 0x800CCE4B; // [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
+g_worldEncounterEventRows = 0x800D32E4; // [code] world data pack entry 4 rows of 12 u16 entry numbers used by wm_applyEncounterEvents

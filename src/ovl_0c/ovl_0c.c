@@ -128,8 +128,8 @@ s32 func_800A8D78(void) {
 
     for (i = 1; i >= 0; i--) {
         id = ids[i] | 0x90000;
-        addr = func_8001C7FC(4, id, 0);
-        size = (u32)func_8001C7FC(5, id, 0);
+        addr = db_lookupRegistered(4, id, 0);
+        size = (u32)db_lookupRegistered(5, id, 0);
         if (ids[i] == 0x17B) {
             r = &D_800CE0B8[D_800CCA1C];
             r->x = g_gameState->unk10[g_gameState->unk1C->unk8].clip.x;
@@ -148,15 +148,15 @@ s32 func_800A8D78(void) {
 }
 
 s32 func_800A8F18(void) {
-    s32 addr = (s32)func_8001C7FC(4, 0x70064, 0);
+    s32 addr = (s32)db_lookupRegistered(4, 0x70064, 0);
 
-    func_800AD114(g_gameState->unk1C->unk818, addr, (s32)func_8001C7FC(5, 0x70064, 0));
+    func_800AD114(g_gameState->unk1C->unk818, addr, (s32)db_lookupRegistered(5, 0x70064, 0));
     DrawSync(0);
     return 0;
 }
 
 s32 func_800A8F8C(void) {
-    s32 addr = (s32)func_8001C7FC(4, 0x42774, 0);
+    s32 addr = (s32)db_lookupRegistered(4, 0x42774, 0);
 
     func_8001D9CC(addr, 0x280, 0xDE, 0x330, 0xB0);
     func_8001D8A8(addr);
@@ -189,7 +189,7 @@ s32 func_800A8FF0(void) {
         }
     }
     g_gameState->unk1C->unk8E4.world->unkC = buf;
-    func_8001C750((s32)g_gameState->unk1C->unk8E4.world->unkC, 0);
+    db_register((s32)g_gameState->unk1C->unk8E4.world->unkC, 0);
     return 0;
 }
 
@@ -209,7 +209,7 @@ s32 func_800A91B4(void) {
     void *p = g_gameState->unk1C->unk8E4.world->unkC;
 
     if (p != NULL) {
-        func_8001C784(p);
+        db_unregister(p);
         g_gameState->unk1C->unk8E4.world->unkC = 0;
     }
     return 0;
@@ -240,7 +240,7 @@ void func_800A924C(s32 arg0) {
     g_gameState->unk1C->unk7DC = arg0;
     obj->unk24 = arg0;
     func_800A9A44();
-    func_800A9C1C(obj, arg0);
+    wm_loadFile(obj, arg0);
     func_800A9A04(obj, arg0);
     func_800A99C4(obj, (s16)g_gameState->unk1C->unk7DE);
     func_800A9B54();
@@ -305,20 +305,20 @@ void func_800A95A0(void) {
     mode = gd->unk8E4.world->unk8->unk1B;
     switch (mode) {
     case 2:
-        func_800A9EC4(func_800A9E24(obj->unk24, &gd->unk7FC[0], &gd->unk804[0]), &g_gameState->unk1C->unk7FC[1],
+        wm_depFindBackground(wm_depFindBattle(obj->unk24, &gd->unk7FC[0], &gd->unk804[0]), &g_gameState->unk1C->unk7FC[1],
                       &g_gameState->unk1C->unk804[1]);
         g_gameState->unk1C->unkE = obj->unk24;
         g_gameState->mode = mode;
         g_gameState->unkA = 3;
         break;
     case 3:
-        i = func_800AA060(func_800A9FC0(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]), &g_gameState->unk1C->unk7FC[0],
+        i = wm_depFindArea(wm_depFindField(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]), &g_gameState->unk1C->unk7FC[0],
                           &g_gameState->unk1C->unk804[0]);
         g_gameState->unk1C->unk7DC = obj->unk24;
         g_gameState->unk1C->unk7DE = i;
         break;
     case 1:
-        g_gameState->unk1C->unk3A = func_800AA060(func_800A9FC0(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]),
+        g_gameState->unk1C->unk3A = wm_depFindArea(wm_depFindField(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]),
                                                  &g_gameState->unk1C->unk7FC[0], &g_gameState->unk1C->unk804[0]);
         g_gameState->unk1C->fieldId = obj->unk24;
         g_gameState->mode = mode;
@@ -372,12 +372,12 @@ void func_800A98F8(void) {
 }
 
 s32 func_800A99C4(WorldMapObj *arg0, u16 arg1) {
-    arg0->unk14 = func_8001C7FC(4, arg1 | 0x60000, 0);
+    arg0->unk14 = db_lookupRegistered(4, arg1 | 0x60000, 0);
     return 0;
 }
 
 s32 func_800A9A04(WorldMapObj *arg0, u16 arg1) {
-    arg0->unk10 = func_8001C7FC(4, arg1 | 0x50000, 0);
+    arg0->unk10 = db_lookupRegistered(4, arg1 | 0x50000, 0);
     return 0;
 }
 
@@ -413,7 +413,7 @@ void func_800A9B54(void) {
     }
 }
 
-s32 func_800A9C1C(WorldMapObj *arg0) {
+s32 wm_loadFile(WorldMapObj *arg0) {
     GameData *gd;
     u8 *buf;
     s32 a;
@@ -428,11 +428,11 @@ s32 func_800A9C1C(WorldMapObj *arg0) {
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     buf = arg0->unk30;
-    a = func_8001C8B0((s32)buf, 4, 0x1B0000, 0);
-    b = func_8001C8B0((s32)buf, 4, 0x1B0001, 0);
-    g_gameState->unk1C->unk7E4 = (struct FileTable *)func_8001C8B0((s32)buf, 4, 0x140000, 0);
-    for (i = func_8001C8B0(a, 1, 0x40000, 0) - 1; i >= 0; i--) {
-        p = func_8001C8B0(a, 2, (i & 0xFFFF) | 0x40000, 0);
+    a = db_lookup((s32)buf, 4, 0x1B0000, 0);
+    b = db_lookup((s32)buf, 4, 0x1B0001, 0);
+    g_gameState->unk1C->unk7E4 = (struct FileTable *)db_lookup((s32)buf, 4, 0x140000, 0);
+    for (i = db_lookup(a, 1, 0x40000, 0) - 1; i >= 0; i--) {
+        p = db_lookup(a, 2, (i & 0xFFFF) | 0x40000, 0);
         if (p != -1) {
             func_8001D8A8(p);
         }
@@ -442,8 +442,8 @@ s32 func_800A9C1C(WorldMapObj *arg0) {
     DrawSync(0);
     b = a;
     arg0->unk34[1] = (void *)b;
-    func_8001C750(b, 0);
-    q = (u8 *)func_8001C8B0(b, 4, 0x1D0000, 0);
+    db_register(b, 0);
+    q = (u8 *)db_lookup(b, 4, 0x1D0000, 0);
     arg0->unk1A = *q;
     q += 4;
     arg0->unk28 = (WmPalAnim *)q;
@@ -453,13 +453,13 @@ s32 func_800A9C1C(WorldMapObj *arg0) {
 
 s32 func_800A9DE4(WorldMapObj *arg0, s16 arg1) {
     if (arg0->unk34[1] != NULL) {
-        func_8001C784(arg0->unk34[1]);
+        db_unregister(arg0->unk34[1]);
         arg0->unk34[1] = NULL;
     }
     return 0;
 }
 
-s32 func_800A9E24(s16 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
     s32 i;
     FileTable *t = g_gameState->unk1C->unk7E4;
     s32 id = (u16)arg0 | 0x110000;
@@ -479,7 +479,7 @@ s32 func_800A9E24(s16 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 func_800A9EC4(s32 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
     FileTable *t = g_gameState->unk1C->unk7E4;
     s32 i;
@@ -505,7 +505,7 @@ s32 func_800A9EC4(s32 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 func_800A9FC0(s16 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
     s32 i;
     FileTable *t = g_gameState->unk1C->unk7E4;
     s32 id = (u16)arg0 | 0x50000;
@@ -525,7 +525,7 @@ s32 func_800A9FC0(s16 arg0, s32 *arg1, s32 *arg2) {
     return id;
 }
 
-s32 func_800AA060(s32 arg0, s32 *arg1, s32 *arg2) {
+s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
     FileTable *t = g_gameState->unk1C->unk7E4;
     s32 i;
@@ -571,8 +571,8 @@ u32 func_800AA15C(s32 arg0, Unk8004AB64 *arg1) {
         g_gameState->unk1C->unk39++;
     }
     o->unk4 = arg0;
-    o->unk8->unk8 = func_8001C7FC(4, arg0, 0);
-    if ((o->unk8->unkC = func_8001C7FC(4, func_800AA39C(o->unk4), 0)) != NULL) {
+    o->unk8->unk8 = db_lookupRegistered(4, arg0, 0);
+    if ((o->unk8->unkC = db_lookupRegistered(4, func_800AA39C(o->unk4), 0)) != NULL) {
         h = o->unk8->unkC;
         if (IS_OFFSET(h->unkC)) {
             t = h->unk10;
@@ -602,7 +602,7 @@ u32 func_800AA15C(s32 arg0, Unk8004AB64 *arg1) {
 }
 
 s32 func_800AA39C(s32 arg0) {
-    Unk800AA39C *t = func_8001C7FC(8, arg0, 0x120000);
+    Unk800AA39C *t = db_lookupRegistered(8, arg0, 0x120000);
     s32 i;
     Unk800AA39CEntry *e;
 
@@ -941,7 +941,7 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x80000;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)func_8001C7FC(4, id, 0);
+            h = (s32)db_lookupRegistered(4, id, 0);
         }
         /* the original jump tables are 8-aligned within their object */
         __asm__(".rdata\n\t.word 0\n\t.text");
@@ -1184,7 +1184,7 @@ s32 *arg1;
     FileEntry *f;
 
     if (((arg0 >> 16) & 0xFF) == 7) {
-        e = func_80063088(g_gameState->unk1C->unk7E4, arg0);
+        e = dep_find(g_gameState->unk1C->unk7E4, arg0);
         if (arg1 != NULL) {
             *arg1 = e->unk8 << 11;
         }
@@ -1212,9 +1212,9 @@ s32 func_800AC344(s32 arg0) {
 }
 
 s32 func_800AC3A8(s32 arg0) {
-    s32 t = func_8001C8B0(arg0, 3, 0x70000, 0);
+    s32 t = db_lookup(arg0, 3, 0x70000, 0);
 
-    memcpy((u8 *)arg0, (u8 *)func_8001C8B0(arg0, 4, t, 0), func_8001C8B0(arg0, 5, t, 0));
+    memcpy((u8 *)arg0, (u8 *)db_lookup(arg0, 4, t, 0), db_lookup(arg0, 5, t, 0));
     return 0;
 }
 
@@ -1229,13 +1229,13 @@ void func_800AC424(Unk800AC424 *arg0) {
     id = g_gameState->unk1C->unk852 | 0x90000;
     if (arg0->unkC == 0) {
         b = a;
-        t = func_8001C8B0(a, 2, 0x1B0000, 0);
+        t = db_lookup(a, 2, 0x1B0000, 0);
         if (t == -1) {
-            a = func_8001C8B0(a, 4, id, 0);
+            a = db_lookup(a, 4, id, 0);
             g_gameState->unk1C->unk87C = func_8001CA70(b);
         } else {
-            a = func_8001C8B0(t, 4, id, 0);
-            g_gameState->unk1C->unk87C = func_8001C8B0(b, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;
+            a = db_lookup(t, 4, id, 0);
+            g_gameState->unk1C->unk87C = db_lookup(b, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;
         }
     }
     n = g_gameState->unk1C->unk87C - arg0->unkC;
@@ -2055,7 +2055,7 @@ void func_800AEADC(void) {
         D_800CCCC0[i].unkC = 0;
         D_800CCCC0[i].unkE = 0;
     }
-    if (D_800CF444 == 4) {
+    if (g_worldDataSet == 4) {
         D_800CCB70[9].unkB = 3;
         D_800CCB70[0].unkB = 3;
     } else {
@@ -2334,7 +2334,7 @@ s32 func_800AF66C(Unk8004AB64 *arg0, SVECTOR *arg1) {
     m->unk24.t[1] = arg1->vy;
     m->unk24.t[2] = arg1->vz;
     func_800C9484(m);
-    m->unkC = h = func_8001C7FC(4, s->unkC->unk36 | 0x30000, 0);
+    m->unkC = h = db_lookupRegistered(4, s->unkC->unk36 | 0x30000, 0);
     if (h != NULL) {
         if (IS_OFFSET(h->unkC)) {
             t = h->unk10;
@@ -2421,7 +2421,7 @@ void func_800AF8C0(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
     } else {
         s = 0x7D0;
-        if (D_800CCE4B != 0) {
+        if (g_worldFog != 0) {
             s = 0xAF0;
         }
         f = (0x7060 - arg2) >> 2;
@@ -2705,7 +2705,7 @@ void func_800B0378(Unk800CCCC0 *cc) {
             D_800CE208 = h2;
         }
         off = 0x1C20;
-        if (D_800CF444 == 1) {
+        if (g_worldDataSet == 1) {
             off = 0x1964;
             lim = 0x1E78;
         } else {
@@ -3802,9 +3802,9 @@ void func_800B69B4(void) {
     }
     D_800CF430 = g_evtGlobalVars.h;
     if ((u16)g_evtGlobalVars.h[0] >= 0x2B52) {
-        D_800CF444 = 4;
+        g_worldDataSet = 4;
     } else {
-        D_800CF444 = 1;
+        g_worldDataSet = 1;
     }
     func_800B8A80();
     D_800CF4B0 = 0;
@@ -3874,7 +3874,7 @@ s32 func_800B6BC4(void) {
             func_800B7098();
         }
         if (D_800CF4B0 == 4 && D_800CF46C == 0) {
-            func_800BAD98();
+            wm_applyEncounterEvents();
             func_800B8724();
             func_800B8B10();
             func_800AEC74();
@@ -4545,7 +4545,7 @@ s32 func_800B84C0(void) {
 }
 
 void func_800B84E8(void) {
-    func_800BAD98();
+    wm_applyEncounterEvents();
     func_800B8724();
     func_800B8B10();
     func_800AEC74();
@@ -4639,7 +4639,7 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A7AE8);
 void func_800B872C(void) {
     s32 i;
 
-    if (D_800CF444 == 1) {
+    if (g_worldDataSet == 1) {
         for (i = 0; i < 5; i++) {
             D_800CF580[i] = D_800CCF84[i];
         }
@@ -5285,14 +5285,14 @@ void func_800BA2DC(u8 *arg0, s32 arg1, s32 arg2) {
 
     t = D_800CF460[*D_800CF45C];
     D_800D27F0 = &D_800D2FF8[arg0[1]];
-    if (D_800CCE4B != 0) {
+    if (g_worldFog != 0) {
         func_800B4270(arg0);
     } else if (arg2 == 0) {
         func_800B6338(arg0);
     } else {
         func_800B53FC(arg0);
     }
-    if (D_800CCE4B != 0) {
+    if (g_worldFog != 0) {
         D_800CF404 = func_800B4FD4(arg0, D_800CF404, t);
     } else if (arg2 == 0) {
         D_800CF404 = func_800B6598(arg0, D_800CF404, t);
@@ -5355,32 +5355,32 @@ void func_800BA58C(void) {
     i = 0;
     func_800BC540();
     do {
-        D_800D30D8[i] = acc;
-        acc += D_800CCFF4[i] * 2;
+        g_worldEncounterZoneStart[i] = acc;
+        acc += g_worldZoneEncounterCount[i] * 2;
         i++;
     } while (i < 26);
     while (cd_getState() != 0) {
     }
-    if (D_800CF444 == 1) {
-        D_800CE3F4 = func_8001C7FC(4, 0x411, 0);
-        D_800CF428 = func_8001C7FC(4, 0x41B, 0);
-        D_800CF40C = func_8001C7FC(4, 0x425, 0);
-        D_800CF410 = func_8001C7FC(4, 0x42F, 0);
-        f[4] = func_8001C7FC(4, 0x439, 0);
-        f[5] = func_8001C7FC(4, 0x443, 0);
+    if (g_worldDataSet == 1) {
+        D_800CE3F4 = db_lookupRegistered(4, 0x411, 0);
+        D_800CF428 = db_lookupRegistered(4, 0x41B, 0);
+        D_800CF40C = db_lookupRegistered(4, 0x425, 0);
+        D_800CF410 = db_lookupRegistered(4, 0x42F, 0);
+        f[4] = db_lookupRegistered(4, 0x439, 0);
+        f[5] = db_lookupRegistered(4, 0x443, 0);
     } else {
-        D_800CE3F4 = func_8001C7FC(4, 0x414, 0);
-        D_800CF428 = func_8001C7FC(4, 0x41E, 0);
-        D_800CF40C = func_8001C7FC(4, 0x428, 0);
-        D_800CF410 = func_8001C7FC(4, 0x432, 0);
-        f[4] = func_8001C7FC(4, 0x43C, 0);
-        f[5] = func_8001C7FC(4, 0x446, 0);
+        D_800CE3F4 = db_lookupRegistered(4, 0x414, 0);
+        D_800CF428 = db_lookupRegistered(4, 0x41E, 0);
+        D_800CF40C = db_lookupRegistered(4, 0x428, 0);
+        D_800CF410 = db_lookupRegistered(4, 0x432, 0);
+        f[4] = db_lookupRegistered(4, 0x43C, 0);
+        f[5] = db_lookupRegistered(4, 0x446, 0);
     }
-    f[0] = func_8001C7FC(4, 0x5DC, 0);
-    f[1] = func_8001C7FC(4, 0x5DD, 0);
-    f[2] = func_8001C7FC(4, 0x5DE, 0);
-    f[3] = func_8001C7FC(4, 0x5DF, 0);
-    f[6] = func_8001C7FC(4, 0x5E0, 0);
+    f[0] = db_lookupRegistered(4, 0x5DC, 0);
+    f[1] = db_lookupRegistered(4, 0x5DD, 0);
+    f[2] = db_lookupRegistered(4, 0x5DE, 0);
+    f[3] = db_lookupRegistered(4, 0x5DF, 0);
+    f[6] = db_lookupRegistered(4, 0x5E0, 0);
     w = D_800CF40C->unk0;
     h = D_800CF40C->unk2;
     D_800D3304 = w;
@@ -5447,14 +5447,14 @@ void func_800BA58C(void) {
     }
     D_800D32EC = w_framePackGetPtr(D_800CF428, 0x42);
     D_800CF478 = w_framePackGetPtr(D_800CF428, 0);
-    D_800CF450 = w_framePackGetPtr(D_800CF428, 3);
+    g_worldEncounterTable = w_framePackGetPtr(D_800CF428, 3);
     D_800D3FA0 = *(Unk800D3FA0 *)w_framePackGetPtr(D_800CF428, 5);
     dst = (Unk800CFEA0Tbl *)D_800CFEA0;
     *dst = *(Unk800CFEA0Tbl *)w_framePackGetPtr(D_800CF428, 6);
-    D_800D32E4 = w_framePackGetPtr(D_800CF428, 4);
+    g_worldEncounterEventRows = w_framePackGetPtr(D_800CF428, 4);
 }
 
-void func_800BAD98(void) {
+void wm_applyEncounterEvents(void) {
     s32 i;
     s32 j;
     u16 (*row)[12];
@@ -5463,8 +5463,8 @@ void func_800BAD98(void) {
     u16 v;
 
     i = 0;
-    tbl = D_800CF450;
-    row = D_800D32E4;
+    tbl = g_worldEncounterTable;
+    row = g_worldEncounterEventRows;
     mask = g_evtGlobalVars.b[0xC2] | (g_evtGlobalVars.b[0xC6] << 8);
     do {
         if ((mask >> i) & 1) {
@@ -5510,7 +5510,7 @@ void func_800BAEC0(void) {
         MATRIX out;
         MATRIX m2 = *D_800CF448;
 
-        if (D_800CCE4B != 0) {
+        if (g_worldFog != 0) {
             m1.t[1] = -D_800CE19C - 0x9C4;
         } else {
             m1.t[1] = -D_800CE19C - 0x258;
@@ -5553,7 +5553,7 @@ void func_800BB07C(void) {
             D_800D32F8[0] = 100;
         }
         v = D_800D32F8[i];
-        if (i == 0 && D_800CF444 == 4) {
+        if (i == 0 && g_worldDataSet == 4) {
             continue;
         }
         if (v < 0x3F) {
@@ -5628,7 +5628,7 @@ void func_800BB508(void) {
     if (g_worldMapDebugFlags & 0x10) {
         printf("Scene:%d / Status:%d\n", *D_800CF430, i);
     }
-    if (i >= 0 && D_800CF444 == 1) {
+    if (i >= 0 && g_worldDataSet == 1) {
         for (n = 0; n < 7; n++) {
             switch (D_800CD010[n][i]) {
             case 1:
@@ -5720,7 +5720,7 @@ void func_800BB508(void) {
 }
 
 /* pick the encounter table entry for the player's area, zone and fog */
-Unk800CF450 *func_800BBBA8(void) {
+Unk800CF450 *wm_getEncounterEntry(void) {
     u8 zone;
     s32 area;
     s32 lo;
@@ -5731,35 +5731,35 @@ Unk800CF450 *func_800BBBA8(void) {
     s32 add;
 
     area = (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8;
-    zone = D_800CCFB4[area];
-    lo = D_800D30D8[zone];
-    hi = D_800D30D8[zone + 1];
+    zone = g_worldAreaZone[area];
+    lo = g_worldEncounterZoneStart[zone];
+    hi = g_worldEncounterZoneStart[zone + 1];
     if (g_worldMapDebugFlags & 8) {
         printf("- Encount Information -\n");
         printf("Now Area :%d\n", (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8);
         printf("Now Zone :%d\n", zone);
-        printf("Now Fog  :%d\n", D_800CCE4B);
+        printf("Now Fog  :%d\n", g_worldFog);
         printf("Topograph:%d\n", (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2);
     }
     for (i = lo; i < hi; i++) {
-        t = D_800CF450[i].unk8 >> 2;
-        f = D_800CF450[i].unk9 & 1;
+        t = g_worldEncounterTable[i].unk8 >> 2;
+        f = g_worldEncounterTable[i].unk9 & 1;
         if (g_worldMapDebugFlags & 8) {
             printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
         }
-        if (t == (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 && f == D_800CCE4B) {
+        if (t == (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 && f == g_worldFog) {
             if (g_worldMapDebugFlags & 8) {
                 printf("Hit %d encount data\n", i);
             }
             add = 0;
-            if (D_800CF444 == 4 && i < 100) {
+            if (g_worldDataSet == 4 && i < 100) {
                 add = 0xFE;
             }
-            return &D_800CF450[i + add];
+            return &g_worldEncounterTable[i + add];
         }
     }
     printf(D_800A7F48);
-    return &D_800CF450[i + add - 1];
+    return &g_worldEncounterTable[i + add - 1];
 }
 
 s32 func_800BBE24(VECTOR *arg0, VECTOR *arg1, VECTOR *arg2, s32 *arg3) {
@@ -5885,7 +5885,7 @@ void func_800BC490(s32 arg0, s32 arg1, WmCell *arg2) {
 }
 
 u8 func_800BC528(s32 arg0) {
-    return D_800CCFB4[arg0];
+    return g_worldAreaZone[arg0];
 }
 
 /* initialise the texture pack list */
@@ -6536,7 +6536,7 @@ void func_800BDAB0(void) {
     if (D_800CE3C4 == 7) {
         lim = 14;
     }
-    if (D_800CCE4B == 0) {
+    if (g_worldFog == 0) {
         lim++;
     }
     if (lim < n) {
@@ -7910,7 +7910,7 @@ s32 func_800C291C(void) {
     if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
         r = 1;
     }
-    if (D_800CF444 == 4) {
+    if (g_worldDataSet == 4) {
         dx = (D_800CE3DC->pos.vx >> 8) - 0x2FE;
         dz = (D_800CE3DC->pos.vz >> 8) + 0x140;
         d = SquareRoot0(dx * dx + dz * dz);
@@ -7927,15 +7927,15 @@ void func_800C2A80(s32 mode, s32 flag, s32 arg2) {
         mode = D_800D3F98;
     }
     if (flag == 2) {
-        flag = D_800CCE4B;
+        flag = g_worldFog;
     }
     D_800D3F98 = mode;
-    D_800CCE4B = flag;
+    g_worldFog = flag;
     D_800D3F90 = arg2;
     D_800D3F94 = 0;
     D_800D3FA0.unk5E0[3] = D_800D3FA0.unk5E0[1];
     D_800D3FA0.unk5E0[5] = D_800D3FA0.unk5E0[2];
-    if (D_800CCE4B != 0) {
+    if (g_worldFog != 0) {
         switch (mode) {
         case 0:
             D_800D3FA0.unk5E0[4] = D_800D3FA0.unk0[3];
@@ -8079,9 +8079,9 @@ INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/ovl_0c", D_800A8118);
 
 void func_800C3E28(void) {
     D_800D3F8C = func_800C291C();
-    D_800CCE4B = func_800C3E88();
-    printf("start weather mode : %d / fog : %d\n", D_800D3F8C, D_800CCE4B);
-    func_800C2A80(D_800D3F8C, D_800CCE4B, 0x1000);
+    g_worldFog = func_800C3E88();
+    printf("start weather mode : %d / fog : %d\n", D_800D3F8C, g_worldFog);
+    func_800C2A80(D_800D3F8C, g_worldFog, 0x1000);
 }
 
 s32 func_800C3E88(void) {
@@ -8477,7 +8477,7 @@ s32 func_800C497C(u16 arg0) {
         if (sc - 0x26A2U < 0x14) {
             arg0 = 5;
         }
-        if (D_800CF444 == 4) {
+        if (g_worldDataSet == 4) {
             arg0 = 3;
         }
     }
@@ -8747,7 +8747,7 @@ void func_800C5A48(u8 arg0) {
                  (u8)((u16)D_800D3FA0.unk5E0[0].unk54[2] >> 5));
     switch (arg0) {
     case 4:
-        if (D_800D30CD == 0 && D_800CF444 == 1) {
+        if (D_800D30CD == 0 && g_worldDataSet == 1) {
             VECTOR scale;
 
             func_80030AF4(&D_800CDF80, &m);
@@ -8779,7 +8779,7 @@ void func_800C5A48(u8 arg0) {
         func_800BA458(WM_PACK0(0x39), 0, 1);
         break;
     case 6:
-        if (D_800CF444 == 4) {
+        if (g_worldDataSet == 4) {
             SVECTOR pos;
             u32 *ot;
             WmSprHdr *spr;

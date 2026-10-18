@@ -177,7 +177,7 @@ typedef struct {
 } Unk80100E30;
 extern Unk80100E30 D_80100E30;
 
-/* model animation event list (func_8001C8B0 section 2, tag 0x14) */
+/* model animation event list (db_lookup section 2, tag 0x14) */
 typedef struct {
     union {
         s32 w; /* sound id */
@@ -2625,7 +2625,7 @@ typedef struct {
     s32 unkC;
 } Unk800AA958Req; /* CD read request */
 
-/* func_800ABBC4: model texture table (func_8001C8B0 section 2, tag 0x12) */
+/* func_800ABBC4: model texture table (db_lookup section 2, tag 0x12) */
 typedef struct {
     u16 unk0; /* model id */
     u8 pad2[4 - 2];

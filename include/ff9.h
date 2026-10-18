@@ -147,7 +147,7 @@ typedef struct {
 
 typedef struct {
     u8 pad0[4];
-    s16 unk4; /* set by func_8001E2AC */
+    s16 unk4; /* set by game_setNextScene */
     u8 unk6;
     u8 pad7[0x10 - 7];
     s32 unk10;
@@ -155,7 +155,7 @@ typedef struct {
     u8 pad18[4];
     u8 *unk1C; /* load address */
     u8 pad20[4];
-    s16 unk24; /* set by func_8001E2AC */
+    s16 unk24; /* set by game_setNextScene */
     u8 pad26[2];
     struct Unk11C0Slot *unk28; /* per-object model slots, indexed by unk3B */
 } Unk11C0;
@@ -173,7 +173,7 @@ typedef struct Unk11C0Slot {
 
 typedef struct {
     u8 pad0[0xA];
-    s16 unkA; /* set by func_8001E2AC */
+    s16 unkA; /* set by game_setNextScene */
     u8 padC[0x2C - 0xC];
     struct Unk11C0Slot *unk2C; /* per-object model slots, indexed by unk3B */
 } Unk8E4C14;
@@ -631,7 +631,7 @@ extern Unk80010CE0 D_80010CE0;
 
 /* ---- functions (main exe) ---- */
 
-s32 func_8001C784(void *);
+s32 db_unregister(void *);
 void memset(void *, s32, s32);
 void (*CdReadyCallback(void (*)()))(); /* returns the previous callback */
 void func_80021938(PreloadEntry *);
@@ -1238,7 +1238,7 @@ extern Unk8007AECC D_80079630; /* saved copy, restored when returning to the sam
 extern Unk4 D_80011A44; /* rodata */
 extern s32 D_8007B6FC;
 extern s32 D_8007AEC0;
-extern s32 D_8007AE58;
+extern s32 g_evtEncounterPending;
 void func_80050044(void);
 
 /* Inlined copy of func_8004B040 (find object by id). */
@@ -1356,7 +1356,7 @@ typedef struct {
 } Unk80077E50;
 extern Unk80077E50 D_80077E50;
 extern u8 D_80077E53;
-extern s32 D_8007AE54;
+extern s32 g_evtLastEncounter;
 extern u8 D_8007954E;
 extern u8 D_8007AD1E;
 extern s32 D_8007BBA8[8];
@@ -1368,7 +1368,7 @@ extern volatile s32 D_800809E0;
 void func_8001C720(void);
 s32 func_8001D848(void);
 s32 strncmp(char *, char *, s32);
-void func_8001E2AC(u16);
+void game_setNextScene(u16);
 void func_800236C4(void);
 void func_8002BFD0(void);
 void func_80023EB8(void);
@@ -1534,7 +1534,7 @@ typedef struct {
     s16 unk2; /* count */
     void *unk4[16];
 } Unk80073C40;
-extern Unk80073C40 D_80073C40;
+extern Unk80073C40 g_dbList;
 
 typedef struct {
     u32 unk0;
@@ -1559,7 +1559,7 @@ void func_8003431C(void);
 void party_initNewGame(void);
 s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void func_8001C718(void);
-void *func_8001C7FC(s32, s32, s32); /* mode 4: address, 5: size */
+void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void func_8002CD4C(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
@@ -1705,7 +1705,7 @@ void func_8005A658(Unk80080AA0 *);
 
 /* ---- hoisted from overlay headers ---- */
 
-/* file table entry (file_find / func_80063088) */
+/* file table entry (file_find / dep_find) */
 typedef struct {
     s32 unk0;
     s32 unk4; /* start sector */
@@ -1823,8 +1823,8 @@ s32 EnterCriticalSection(void);
 void ExitCriticalSection(void);
 s32 OpenEvent(s32, s32, s32, void (*)(void)); /* BIOS OpenEvent */
 s32 EnableEvent(s32); /* BIOS EnableEvent */
-s32 func_8001C750(s32, s32);
-s32 func_8001C8B0(s32, s32, s32, s32);
+s32 db_register(s32, s32);
+s32 db_lookup(s32, s32, s32, s32);
 s32 func_8001CA70(s32); /* file size */
 void func_8001CCB4(s32, s32, s32);
 void func_8001CFB4(void);
@@ -1835,7 +1835,7 @@ extern u8 D_80068234;      /* next slot in D_80073CE8 */
 extern RECT D_80073CE8[6]; /* transfer rects (func_8001DAA4) */
 void func_8001DCB8(void);
 FileEntry *file_find(s32, s32);
-void func_80021640(s32);
+void evt_setNextLocation(s32);
 void func_80024070(void);
 void func_8002C5CC(s32, s32);
 void func_8002C694(s32, s32);
@@ -2154,7 +2154,7 @@ void func_800624A8(void);
 void func_800624E8(void);
 void func_8006252C(void);
 void func_80062750(s32);
-FileEntry *func_80063088(FileTable *, s32);
+FileEntry *dep_find(FileTable *, s32);
 void strcat(u8 *, u8 *);
 /* per-frame offset animation of a window (func_80063118 / func_800631AC) */
 typedef struct TweenDef {
@@ -2264,7 +2264,7 @@ void func_8004F74C(Unk8004AB64 *);
 s32 func_80052870(Unk16D8 *);
 s32 func_80052EC0(s32, s32, s32);
 s32 func_8002170C(Unk8004AB64 *);
-s32 func_80038D3C(Unk8004AB64 *);
+s32 evt_rollEncounter(Unk8004AB64 *);
 #if !defined(OVL_0A_H) /* field overlay functions; ovl_0a has the definitions */
 s32 func_800B3444(s32, s32, s32);
 /* world-map model state (func_800C748C) */
@@ -3746,7 +3746,7 @@ static inline Unk8004AFF0 *func_8004AFF0_inline(Unk8004AB64 *p) {
 }
 
 extern u8 D_8007BD2C;
-extern s32 D_8007AE50;
+extern s32 g_evtEncounterChance;
 typedef struct {
     s16 unk0;
     s16 unk2;
@@ -3754,9 +3754,9 @@ typedef struct {
     s16 unk6;
     u8 unk8;
 } Unk8007AE40;
-extern Unk8007AE40 D_8007AE40;
+extern Unk8007AE40 g_evtEncounterTable;
 extern u8 D_8006E658[];
-void func_80021660(u16);
+void evt_setNextBattle(u16);
 void func_80021680();
 void func_8004FF98(s32);
 void func_80052D0C(u8 **);
@@ -4036,33 +4036,33 @@ s32 func_8002414C(void);
 s32 func_8006275C(void);
 s32 func_8004ECC4(void);
 
-/* random encounter check (func_80038D3C). ovl_0c declares func_800BBBA8 with its own
+/* random encounter check (evt_rollEncounter). ovl_0c declares wm_getEncounterEntry with its own
  * table type, so these are hidden there. */
 #ifndef OVL_0C_H
-extern s32 D_8007AE4C;
-extern u8 D_8006E648[][4];
-Unk8007AE40 *func_800BBBA8();
+extern s32 g_evtEncounterDist;
+extern u8 g_encounterSlotThresholds[][4];
+Unk8007AE40 *wm_getEncounterEntry();
 
-static inline s32 func_80038D3C_rand(void) {
+static inline s32 evt_rollEncounter_rand(void) {
     if (g_randPtr >= g_randTableEnd) {
         rand_refill();
     }
     return *g_randPtr++;
 }
 
-static inline u16 func_80038D3C_pick(void) {
+static inline u16 evt_rollEncounter_pick(void) {
     Unk8007AE40 *t;
     s32 r;
     s32 i;
     u8 *tbl;
 
     if (g_evtMode != 1) {
-        t = func_800BBBA8();
+        t = wm_getEncounterEntry();
     } else {
-        t = &D_8007AE40;
+        t = &g_evtEncounterTable;
     }
-    r = func_80038D3C_rand();
-    tbl = D_8006E648[t->unk8 & 3];
+    r = evt_rollEncounter_rand();
+    tbl = g_encounterSlotThresholds[t->unk8 & 3];
     if (r >= tbl[0]) {
         if (r >= tbl[1]) {
             i = 6;

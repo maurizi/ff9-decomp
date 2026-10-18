@@ -8340,8 +8340,8 @@ void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {
 
 s32 *func_800E871C(s32 arg0, s32 *arg1) {
     s32 id = (arg0 & 0xFFFF) | 0x20000;
-    u32 size = (u32)func_8001C7FC(5, id, 0);
-    s32 *p = func_8001C7FC(4, id, 0);
+    u32 size = (u32)db_lookupRegistered(5, id, 0);
+    s32 *p = db_lookupRegistered(4, id, 0);
     if (*arg1 == 0x1234) {
         btlfx_copyWords(p, arg1 + 1, size);
     } else {
@@ -8864,14 +8864,14 @@ void btlui_init(void) {
 }
 
 void func_800E9D84(void) {
-    void *p = func_8001C7FC(4, 0x14, 0);
+    void *p = db_lookupRegistered(4, 0x14, 0);
     if (p != NULL) {
         func_8002C158(p);
     }
 }
 
 void func_800E9DBC(void) {
-    void *p = func_8001C7FC(4, 0x1E, 0);
+    void *p = db_lookupRegistered(4, 0x1E, 0);
     if (p != NULL) {
         func_80028B20(p);
         func_80033D1C(0);

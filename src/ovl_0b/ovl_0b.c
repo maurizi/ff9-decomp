@@ -201,8 +201,8 @@ s32 func_800A8F10(void) {
 }
 
 s32 func_800A8F18(void) {
-    s32 a = (s32)func_8001C7FC(4, 0x70005, 0);
-    func_8001DAA4(g_gameState->unk1C->unk818, a, (s32)func_8001C7FC(5, 0x70005, 0), NULL);
+    s32 a = (s32)db_lookupRegistered(4, 0x70005, 0);
+    func_8001DAA4(g_gameState->unk1C->unk818, a, (s32)db_lookupRegistered(5, 0x70005, 0), NULL);
     DrawSync(0);
     return 0;
 }
@@ -211,8 +211,8 @@ s32 func_800A8F8C(void) {
     s32 i;
     for (i = 1; i >= 0; i--) {
         s32 id = D_800F51E8[i] | 0x90000;
-        s32 a = (s32)func_8001C7FC(4, id, 0);
-        s32 b = (s32)func_8001C7FC(5, id, 0);
+        s32 a = (s32)db_lookupRegistered(4, id, 0);
+        s32 b = (s32)db_lookupRegistered(5, id, 0);
         func_80055DF4();
         func_80055E14(a, b, 1);
     }
@@ -220,7 +220,7 @@ s32 func_800A8F8C(void) {
 }
 
 s32 func_800A902C(void) {
-    s32 p = (s32)func_8001C7FC(4, 0x42774, 0);
+    s32 p = (s32)db_lookupRegistered(4, 0x42774, 0);
     func_8001D9CC(p, 0x100, 0xFF, 0x200, 0xE0);
     func_8001D8A8(p);
     DrawSync(0);
@@ -242,18 +242,18 @@ s32 btl_loadCommonData(void) {
     while (func_800217C4(ctx) != 0) {
     }
     b->unk1354->unk0[0] = (void *)p;
-    func_8001C750(p, 0);
-    func_8001DAA4((s32)b->unk154C, (s32)func_8001C7FC(4, 0x1F4, 0), 0x180, NULL);
-    func_8001DAA4((s32)b->abilities, (s32)func_8001C7FC(4, 0x1F5, 0), 0xC00, NULL);
-    func_8001DAA4((s32)b->unk22CC, (s32)func_8001C7FC(4, 0x1F6, 0), 0x100, NULL);
+    db_register(p, 0);
+    func_8001DAA4((s32)b->unk154C, (s32)db_lookupRegistered(4, 0x1F4, 0), 0x180, NULL);
+    func_8001DAA4((s32)b->abilities, (s32)db_lookupRegistered(4, 0x1F5, 0), 0xC00, NULL);
+    func_8001DAA4((s32)b->unk22CC, (s32)db_lookupRegistered(4, 0x1F6, 0), 0x100, NULL);
     DrawSync(0);
-    D_80067948 = func_8001C8B0(p, 4, 0x1E, 0);
+    D_80067948 = db_lookup(p, 4, 0x1E, 0);
     return 0;
 }
 
 s32 func_800A91EC(void) {
     Battle1354 *p = g_gameState->unk1C->unk8E4.battle->unk1354;
-    func_8001C784(p->unk0[0]);
+    db_unregister(p->unk0[0]);
     p->unk0[0] = NULL;
     return 0;
 }
@@ -403,10 +403,10 @@ void btl_initReturnInfo(void) {
 
 s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
     s32 id = (arg1 & 0xFFFF) | 0x110000;
-    arg0->unk24 = (s32)func_8001C7FC(4, id, 0);
-    arg0->unk20 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x100000), 0);
-    arg0->unk10 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x50000), 0);
-    arg0->unk14 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x60000), 0);
+    arg0->unk24 = (s32)db_lookupRegistered(4, id, 0);
+    arg0->unk20 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x100000), 0);
+    arg0->unk10 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x50000), 0);
+    arg0->unk14 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x60000), 0);
     func_800C94B8();
     evt_init(arg0->unk10);
     func_8004BFB0();
@@ -417,13 +417,13 @@ s32 btl_setupBackground(Battle11C0 *arg0, s32 arg1) {
     s32 id = func_800AB2C8();
     s32 i;
     RECT r;
-    arg0->unk1C = (s32)func_8001C7FC(4, id, 0);
-    arg0->unk18 = (s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x1A0000), 0);
-    if (func_8001C7FC(0xB, id, 0x190000) != 0) {
-        arg0->unk40 = func_8001C7FC(4, (s32)func_8001C7FC(9, id, 0x190000), 0);
+    arg0->unk1C = (s32)db_lookupRegistered(4, id, 0);
+    arg0->unk18 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x1A0000), 0);
+    if (db_lookupRegistered(0xB, id, 0x190000) != 0) {
+        arg0->unk40 = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x190000), 0);
     }
-    for (i = 0; i < (s32)func_8001C7FC(0xB, id, 0x40000); i++) {
-        func_8001D8A8((s32)func_8001C7FC(4, (s32)func_8001C7FC(9, id, (i & 0xFFFF) | 0x40000), 0));
+    for (i = 0; i < (s32)db_lookupRegistered(0xB, id, 0x40000); i++) {
+        func_8001D8A8((s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, (i & 0xFFFF) | 0x40000), 0));
     }
     if (arg0->unk40 != NULL) {
         r.y = 0;
@@ -510,15 +510,15 @@ s32 func_800A9BE4(s32 arg0) {
                 continue;
             }
             id = func_800ABA10(i, arg0 & ~0x10);
-            e->unk8->unk8 = func_8001C7FC(4, id, 0);
+            e->unk8->unk8 = db_lookupRegistered(4, id, 0);
             k = (id & 0xFFFFFF) | (cid << 24);
             pa = (s32 *)func_800634A8(k);
             pb = (s32 *)func_800634D8(k);
             pc = (s32 *)func_80063514(k);
             func_800C7730(e->unk8, (s16 *)pa, (s16 *)pb);
-            p = (s32)func_8001C7FC(9, id, 0x190000);
+            p = (s32)db_lookupRegistered(9, id, 0x190000);
             if (p != -1) {
-                v = (s32)func_8001C7FC(4, p, 0);
+                v = (s32)db_lookupRegistered(4, p, 0);
             } else {
                 v = 0;
             }
@@ -570,8 +570,8 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     while (func_800217C4(cd) != 0) {
     }
     b->unk1354->unk0[2] = (void *)v;
-    func_8001C750(v, 0);
-    gd->unk7E4 = (FileTable *)func_8001C8B0(v, 2, 0x140000, 0);
+    db_register(v, 0);
+    gd->unk7E4 = (FileTable *)db_lookup(v, 2, 0x140000, 0);
     return 0;
 }
 
@@ -600,7 +600,7 @@ s16 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     } else if (st->unk0 == 4) {
         v = arg0->unk1C;
         b->unk1354->unk0[3] = (void *)v;
-        func_8001C750(v, 0);
+        db_register(v, 0);
         b->unk0 |= 1;
         st->unk0 = 0;
     }
@@ -668,7 +668,7 @@ loop:
         if (func_80055DCC() != 0) {
             break;
         }
-        h = func_8001C8B0((s32)cd->unk8, 2, 0x90000, 0);
+        h = db_lookup((s32)cd->unk8, 2, 0x90000, 0);
         if (arg2->unk4 == -1) {
             func_80055D80(h, 0);
         } else {
@@ -771,7 +771,7 @@ loop:
         do {
             id = *p;
             if (id != 0xFFFF) {
-                f = func_80063088(g_gameState->unk1C->unk7E4, id | 0x20000);
+                f = dep_find(g_gameState->unk1C->unk7E4, id | 0x20000);
                 if ((u32)f->unk4 < best) {
                     best = f->unk4;
                     bf = f;
@@ -795,9 +795,9 @@ loop:
         }
         break;
     case 6:
-        sp1C = func_8001C8B0((s32)b->unk11C0->unk48, 2, 0x1B0000, 0);
+        sp1C = db_lookup((s32)b->unk11C0->unk48, 2, 0x1B0000, 0);
         dst = arg2->unkC;
-        tbl = (Unk800AA504Tbl *)func_8001C8B0((s32)b->unk1354->unk0[2], 2, 0x120000, 0);
+        tbl = (Unk800AA504Tbl *)db_lookup((s32)b->unk1354->unk0[2], 2, 0x120000, 0);
         tf = tbl->unk4;
         te = &tf[tbl->unk1] - 1;
         do {
@@ -808,7 +808,7 @@ loop:
                 r = (Unk800AA504Pos8 *)(bb + n);
                 while (n > 0) {
                     n--;
-                    x = func_8001C8B0(dst, 2, (n & 0xFFFF) | 0x40000, 0);
+                    x = db_lookup(dst, 2, (n & 0xFFFF) | 0x40000, 0);
                     h = func_8001DA60(a[n].unk2);
                     func_8001D9CC(x, h, func_8001DA6C(a[n].unk2), r[n].unk0, r[n].unk2);
                     func_8001D8A8(x);
@@ -821,7 +821,7 @@ loop:
         b->unk11C0->unk48 = (u8 *)D_80067948;
         arg2->unkC += func_8001CA70(dst);
         *(b->unk1354->unk10 + arg2->unkA) = (void *)sp1C;
-        func_8001C750(sp1C, 0);
+        db_register(sp1C, 0);
         arg2->unkA++;
         st->unk0 = 4;
         goto loop;
@@ -906,7 +906,7 @@ loop:
             v = func_800AB07C(arg1, req, j, 0);
             pp = &b->unk1354->unk20[j];
             *pp = (void *)v;
-            func_8001C750(v, 0);
+            db_register(v, 0);
             st->unk0 = 5;
             goto loop;
         case 8:
@@ -1012,7 +1012,7 @@ loop:
         v = func_800AB07C(arg1, req, j, 1);
         pp = &g_gameState->unk1C->unk8E4.battle->unk1354->unk30[j];
         *pp = (void *)v;
-        func_8001C750(v, 0);
+        db_register(v, 0);
         st->unk0 = 5;
         goto loop;
     case 8:
@@ -1075,7 +1075,7 @@ u32 func_800AAEF0(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
                     k = 7;
                     break;
                 }
-                f = func_80063088(g_gameState->unk1C->unk7E4, (k << 16) | id);
+                f = dep_find(g_gameState->unk1C->unk7E4, (k << 16) | id);
                 if (f != NULL) {
                     start = f->unk4;
                     n = f->unk8;
@@ -1108,9 +1108,9 @@ s32 func_800AB07C(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s32 arg3) {
     s32 h;
     s32 m;
 
-    sp18 = func_8001C8B0(arg0->unk24, 2, 0x1B0000, 0);
+    sp18 = db_lookup(arg0->unk24, 2, 0x1B0000, 0);
     dst = arg1->unkC;
-    tbl = (Unk800AA504Tbl *)func_8001C8B0(sp18, 2, 0x120000, 0);
+    tbl = (Unk800AA504Tbl *)db_lookup(sp18, 2, 0x120000, 0);
     te = tbl->unk4;
     n = te->unk4.b[3];
     a = (Unk800AA504Pos *)((u8 *)te + (te->unk4.w & 0xFFFFFF));
@@ -1121,7 +1121,7 @@ s32 func_800AB07C(Unk800AA958 *arg0, Unk800AA958Req *arg1, s32 arg2, s32 arg3) {
             n--;
             x = arg2 * 64 + 0xC0;
             y = arg2 * 3;
-            m = func_8001C8B0(dst, 2, (n & 0xFFFF) | 0x40000, 0);
+            m = db_lookup(dst, 2, (n & 0xFFFF) | 0x40000, 0);
             if (arg3) {
                 yy = y + 0xE5 + r[n].unk2;
                 h = (r[n].unk2 << 7) + 0x80;
@@ -1148,7 +1148,7 @@ s32 func_800AB26C(void **arg0, s32 arg1) {
     void **p = &arg0[arg1];
     do {
         if (*p != NULL) {
-            func_8001C784(*p);
+            db_unregister(*p);
         }
         *p = NULL;
         p--;
@@ -1172,14 +1172,14 @@ s32 func_800AB2C8(void) {
 }
 
 s32 func_800AB324(s32 arg0, s32 *arg1, s32 *arg2) {
-    FileEntry *e = func_80063088(g_gameState->unk1C->unk7E4, arg0);
+    FileEntry *e = dep_find(g_gameState->unk1C->unk7E4, arg0);
     *arg1 = e->unk4;
     *arg2 = e->unk8;
     return arg0;
 }
 
 void func_800AB38C(s32 arg0, s32 *arg1, s32 *arg2) {
-    func_800AB324(func_80063088(g_gameState->unk1C->unk7E4, arg0)->unkC, arg1, arg2);
+    func_800AB324(dep_find(g_gameState->unk1C->unk7E4, arg0)->unkC, arg1, arg2);
 }
 
 s32 func_800AB3E4(s32 arg0, s32 arg1) {
@@ -1256,12 +1256,12 @@ s16 func_800AB580(s32 arg0) {
 
 s32 func_800AB6F0(s32 arg0, s32 arg1) {
     s32 v = g_gameState->unk1C->unk8E4.battle->unk11C0->unk3C[arg1];
-    return func_8001C8B0(func_8001C8B0(v, 2, 0x1B0000, 0), 4, arg0, 0);
+    return db_lookup(db_lookup(v, 2, 0x1B0000, 0), 4, arg0, 0);
 }
 
 void func_800AB758(s32 arg0, s32 arg1, s32 **arg2, s32 **arg3, s32 **arg4) {
     s32 v = g_gameState->unk1C->unk8E4.battle->unk11C0->unk3C[arg1];
-    Unk800AB758 *h = (Unk800AB758 *)(func_8001C8B0(func_8001C8B0(v, 2, 0x1B0000, 0), 2, 0x120000, 0) + 4);
+    Unk800AB758 *h = (Unk800AB758 *)(db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x120000, 0) + 4);
     s32 *p = (s32 *)((u8 *)h + h->unk4);
     s32 n = h->unk7;
     *arg2 = p;
@@ -1293,8 +1293,8 @@ u32 func_800AB810(s32 arg0, s32 arg1) {
     }
     e->unk4 = arg0;
     e->unkC = arg1;
-    e->unk8->unk8 = (BtlUnit9C8 *)func_8001C7FC(4, e->unk4, 0);
-    e->unk8->unkC = (BtlUnit9CC *)func_8001C7FC(4, func_800AC244(e->unk4), 0);
+    e->unk8->unk8 = (BtlUnit9C8 *)db_lookupRegistered(4, e->unk4, 0);
+    e->unk8->unkC = (BtlUnit9CC *)db_lookupRegistered(4, func_800AC244(e->unk4), 0);
     c = e->unk8->unkC;
     if (IS_OFFSET(c->unkC)) {
         c->unkC = (s32)c + c->unkC;
@@ -1315,9 +1315,9 @@ u32 func_800AB810(s32 arg0, s32 arg1) {
     for (; i < cnt; i++) {
     }
     func_800C7730(e->unk8, pa, pb);
-    p = (s32)func_8001C7FC(9, e->unk4, 0x190000);
+    p = (s32)db_lookupRegistered(9, e->unk4, 0x190000);
     if (p != -1) {
-        e->unk8->unk50 = (BtlUnit9C50 *)func_8001C7FC(4, p, 0);
+        e->unk8->unk50 = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
         func_800C9374(e->unk8->unk50, pc);
     }
     e->unk0 |= 1;
@@ -1351,7 +1351,7 @@ s32 func_800ABA10(s32 arg0, s32 arg1) {
 
 s32 func_800ABB60(s32 arg0) {
     s32 v = g_gameState->unk1C->unk8E4.battle->unk11C0->unk3C[arg0];
-    return func_8001C8B0(func_8001C8B0(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
+    return db_lookup(db_lookup(v, 2, 0x1B0000, 0), 2, 0x20000, 0);
 }
 
 s32 func_800ABBC4(s32 arg0, s32 arg1) {
@@ -1407,7 +1407,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
         st->unk24 = (s32)v;
         st->unk20 = (s32)v;
         if (*(g_gameState->unk1C->unk8E4.battle->unk1354->unk30 + k) != NULL) {
-            func_8001C784(*(g_gameState->unk1C->unk8E4.battle->unk1354->unk30 + k));
+            db_unregister(*(g_gameState->unk1C->unk8E4.battle->unk1354->unk30 + k));
             *(g_gameState->unk1C->unk8E4.battle->unk1354->unk30 + k) = NULL;
         }
         *state = 3;
@@ -1431,9 +1431,9 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
         break;
     case 5:
         id = func_800ABA10(arg0, arg1 & ~0x10);
-        model = func_8001C8B0(st->unk24, 2, 0x1B0000, 0);
+        model = db_lookup(st->unk24, 2, 0x1B0000, 0);
         img = (s32)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
-        t = (Unk800ABBC4Tbl *)func_8001C8B0(model, 2, 0x120000, 0);
+        t = (Unk800ABBC4Tbl *)db_lookup(model, 2, 0x120000, 0);
         e = t->unk4;
         for (i = 0; i < t->unk1; i++) {
             if (e[i].unk0 == (u16)id) {
@@ -1443,7 +1443,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
                 b = a + n;
                 r = (Unk800ABBC4Rect *)(b + n);
                 for (j = 0; j < n; j++) {
-                    w = func_8001C8B0(img, 2, (j & 0xFFFF) | 0x40000, 0);
+                    w = db_lookup(img, 2, (j & 0xFFFF) | 0x40000, 0);
                     s = r[j].unk2 + 0xE5;
                     y = arg0 * 3 + s;
                     h = (r[j].unk2 << 7) + 0x80;
@@ -1463,7 +1463,7 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
             }
         }
         *(g_gameState->unk1C->unk8E4.battle->unk1354->unk30 + arg0) = (void *)model;
-        func_8001C750(model, 0);
+        db_register(model, 0);
         *state = 6;
         break;
     case 6:
@@ -1472,15 +1472,15 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
             id2 = func_800ABA10(arg0, arg1 & ~0x10);
-            ent->unk8->unk8 = func_8001C7FC(4, id2, 0);
+            ent->unk8->unk8 = db_lookupRegistered(4, id2, 0);
             k = (id2 & 0xFFFFFF) | (cid << 24);
             pa = func_800634A8(k);
             pb = func_800634D8(k);
             pc = func_80063514(k);
             func_800C7730(ent->unk8, (s16 *)pa, (s16 *)pb);
-            p = (s32)func_8001C7FC(9, id2, 0x190000);
+            p = (s32)db_lookupRegistered(9, id2, 0x190000);
             if (p != -1) {
-                anim = (s32)func_8001C7FC(4, p, 0);
+                anim = (s32)db_lookupRegistered(4, p, 0);
             } else {
                 anim = 0;
             }
@@ -1838,7 +1838,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x80000;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)func_8001C7FC(4, id, 0);
+            h = (s32)db_lookupRegistered(4, id, 0);
         }
         /* padded: a zero word follows the first jump table */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
@@ -2009,7 +2009,7 @@ s32 func_800AE47C(s32 arg0, u16 arg1) {
     if (f == 0) {
         return -1;
     }
-    return func_8001C8B0(f, 3, arg1 | 0x80000, 0);
+    return db_lookup(f, 3, arg1 | 0x80000, 0);
 }
 
 s32 func_800AE4FC(s32 arg0) {
@@ -2030,7 +2030,7 @@ s32 func_800AE570(s32 arg0, s32 *arg1) {
     FileEntry *e;
     FileEntry *f;
     if (((arg0 >> 16) & 0xFF) == 7) {
-        e = func_80063088(g_gameState->unk1C->unk7E4, arg0);
+        e = dep_find(g_gameState->unk1C->unk7E4, arg0);
         if (arg1 != 0) {
             *arg1 = e->unk8 << 11;
         }
@@ -2055,7 +2055,7 @@ s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
         return ++arg1->unk6;
     case 2:
         m = &g_gameState->unk1C->unk8E4.battle->unk1354->unk20[arg0];
-        l = (BtlAnimEvtList *)func_8001C8B0((s32)*m, 2, 0x140000, 0);
+        l = (BtlAnimEvtList *)db_lookup((s32)*m, 2, 0x140000, 0);
         e = l->unk4;
         for (i = l->unk2 - 1; i >= 0; i--) {
             if (e[i].unk0.b.unk2 == 9) {
@@ -2086,9 +2086,9 @@ s32 func_800AE764(s32 arg0) {
 }
 
 s32 func_800AE7C8(s32 arg0) {
-    s32 v = func_8001C8B0(arg0, 3, 0x70000, 0);
-    s32 a = func_8001C8B0(arg0, 4, v, 0);
-    memcpy((u8 *)arg0, (u8 *)a, func_8001C8B0(arg0, 5, v, 0));
+    s32 v = db_lookup(arg0, 3, 0x70000, 0);
+    s32 a = db_lookup(arg0, 4, v, 0);
+    memcpy((u8 *)arg0, (u8 *)a, db_lookup(arg0, 5, v, 0));
     return 0;
 }
 
@@ -2100,14 +2100,14 @@ void func_800AE844(Unk800AE844 *arg0) {
     s32 n;
 
     if (arg0->unkC == 0) {
-        f = func_8001C8B0(p, 2, 0x1B0000, 0);
+        f = db_lookup(p, 2, 0x1B0000, 0);
         base = p;
         if (f == -1) {
-            p = func_8001C8B0(p, 4, id, 0);
+            p = db_lookup(p, 4, id, 0);
             g_gameState->unk1C->unk87C = func_8001CA70(base);
         } else {
-            p = func_8001C8B0(f, 4, id, 0);
-            g_gameState->unk1C->unk87C = func_8001C8B0(base, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;
+            p = db_lookup(f, 4, id, 0);
+            g_gameState->unk1C->unk87C = db_lookup(base, 2, 0x1B0001, 0) - g_gameState->unk1C->unk8C0;
         }
     }
     n = g_gameState->unk1C->unk87C - arg0->unkC;
@@ -3119,7 +3119,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             u->unk86[1] = v;
         }
         if (D_8007AF01 != 0 && (u->unk68 & 0x1F) == 5 && arg1->cmdNo < 0x30) {
-            if (func_80038D3C_rand() < 0x40) {
+            if (evt_rollEncounter_rand() < 0x40) {
                 msg = 0x1B;
                 goto fail;
             }
@@ -3174,7 +3174,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
         return 1;
     case 0x18:
         if (arg1->subNo == 0x52) {
-            arg1->targets = btl_pickRandomUnit(func_80038D3C_rand() & 1);
+            arg1->targets = btl_pickRandomUnit(evt_rollEncounter_rand() & 1);
         } else if (arg1->subNo == 0x5D) {
             a = item_getCount(arg1->ability->unk5);
             g = btl_countActiveUnits(1);
@@ -3198,7 +3198,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             g_gameState->unk1C->gil -= g;
         } else if (arg1->subNo == 0x81 || arg1->subNo == 0x89) {
             c = arg1->ability;
-            r = func_80038D3C_rand();
+            r = evt_rollEncounter_rand();
             c->unk6 = 1 << (r % 8);
         } else {
             return 1;
@@ -7117,7 +7117,7 @@ s32 func_800BD5A0(BtlUnit *arg0) {
 void func_800BD698(BtlUnit *arg0, s32 arg1, s32 arg2) {
     u32 i;
     for (i = 0; i < 0x22; i++) {
-        g_gameState->unk1C->unk8E4.battle->unk8[arg2][i] = (s32)func_8001C7FC(4, D_800F524C[arg1][i] | 0x30000, 0);
+        g_gameState->unk1C->unk8E4.battle->unk8[arg2][i] = (s32)db_lookupRegistered(4, D_800F524C[arg1][i] | 0x30000, 0);
     }
     arg0->unkA4 = g_gameState->unk1C->unk8E4.battle->unk8[arg2];
 }
@@ -7735,7 +7735,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         break;
     case 37:
         g_gameState->unk1C->unk56F |= 1;
-        func_80021640(arg1);
+        evt_setNextLocation(arg1);
         break;
     case 38:
         g_gameState->unk1C->gil += arg1;

@@ -249,10 +249,10 @@ void func_800A780C(void) {
     s32 a;
     s32 b;
 
-    a = (s32)func_8001C7FC(4, 0x7003A, 0);
-    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)func_8001C7FC(5, 0x7003A, 0));
-    a = (s32)func_8001C7FC(4, 0x90122, 0);
-    b = (s32)func_8001C7FC(5, 0x90122, 0);
+    a = (s32)db_lookupRegistered(4, 0x7003A, 0);
+    memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, 0x7003A, 0));
+    a = (s32)db_lookupRegistered(4, 0x90122, 0);
+    b = (s32)db_lookupRegistered(5, 0x90122, 0);
     func_80055DF4();
     func_80055E14(a, b, 1);
 }
@@ -267,11 +267,11 @@ void func_800A78C0(void) {
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     D_800AB230 = buf;
-    func_8001C750((s32)buf, 0);
+    db_register((s32)buf, 0);
 }
 
 void func_800A796C(void) {
-    func_8001C784(D_800AB230);
+    db_unregister(D_800AB230);
     D_800AB230 = NULL;
 }
 
@@ -358,7 +358,7 @@ s32 func_800A799C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x80000;
         h = 0;
         if (kind != 5 && kind != 6) {
-            h = (s32)func_8001C7FC(4, id, 0);
+            h = (s32)db_lookupRegistered(4, id, 0);
         }
         switch (kind) {
         case 0:
@@ -1188,7 +1188,7 @@ s32 func_800A9E14(s32 arg0) {
                 k = arg0 * 4 + i;
                 id = D_800AB2DC[k] | 0x40000;
                 if (timer == -1) {
-                    tim = (s32)func_8001C7FC(4, id, 0);
+                    tim = (s32)db_lookupRegistered(4, id, 0);
                     func_8001D9CC(tim, 0, 0xE0, 0x280, 0);
                     func_8001D8A8(tim);
                     timer = 0x3A2;
@@ -1305,7 +1305,7 @@ s32 func_800AA848(s32 idx) {
     }
     buf = D_80067944 + 0x10000;
     D_800AB2D4 = buf;
-    func_8001C750((s32)buf, 0);
+    db_register((s32)buf, 0);
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_800AB440 = 0;
     D_800AB2D0.unk0 = 0;
@@ -1314,7 +1314,7 @@ s32 func_800AA848(s32 idx) {
 }
 
 s32 func_800AA960(s32 arg0) {
-    func_8001C784(D_800AB2D4);
+    db_unregister(D_800AB2D4);
     D_800AB2D4 = NULL;
     return 0;
 }
@@ -1390,8 +1390,8 @@ void func_800AAF40(void) {
     }
     buf = D_80067944 + 0x10000;
     D_800AB2F0 = buf;
-    func_8001C750((s32)buf, 0);
-    D_800AB2F4 = (s32)func_8001C7FC(4, 0x44FB0, 0);
+    db_register((s32)buf, 0);
+    D_800AB2F4 = (s32)db_lookupRegistered(4, 0x44FB0, 0);
     func_8001D9CC(D_800AB2F4, 0, 0xE0, 0x280, 0);
     func_8001D8A8(D_800AB2F4);
     func_800320B8(1, 1, 0, 0xFFFFFF);
@@ -1399,7 +1399,7 @@ void func_800AAF40(void) {
 }
 
 void func_800AB06C(void) {
-    func_8001C784(D_800AB2F0);
+    db_unregister(D_800AB2F0);
     D_800AB2F0 = NULL;
 }
 
