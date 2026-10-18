@@ -1,12 +1,14 @@
-/* Draft of fx_1f7 fx_1f7_op80. Status: 242 strict mismatches of 491. Mode 1 matches; the trail loop keeps tr+0x10C as
- * a giv where the original keeps tr itself, and the 33-point copy loop (bound n=0x21 held in a register, tr copied to
- * a2) is still scheduled differently. */
+/* Draft of fx_1f7 fx_1f7_op80. Status: 404 aligned mismatches of 491 (build/sdiff.py --aligned). Mode 1 and the
+ * frame layout match (b is the second half of m: one SVECTOR fewer gives the original's 0xA8 frame). tools/equiv.py
+ * disagrees only on stack addresses passed to calls (orig m at sp+0x30 vs ours sp+0x38), not on values. Left: the
+ * trail loop keeps tr+0x10C as a giv where the original keeps tr itself (and reads tr->unk110 through a copy of tr in
+ * the 33-point loop), the original's ex/entry reload register is t2 (t0/t1 hold pseudos), and the 33-point copy loop
+ * holds n=0x21 in t1. */
 #include "fxmod/fx_1f7.h"
 
 s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR a;
-    SVECTOR b;
     MATRIX m;
     Pool6CEntry *p;
     Fx1f7Trail *tr;
@@ -59,20 +61,19 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk8 = 4;
         }
         if (work->unk0 != 0) {
-            for (i = 0; i < 6; i++) {
-                tr = &D_801E8458[i];
+            for (i = 0, tr = D_801E8458; i < 6; i++, tr++) {
                 if (tr->unk10C != 0) {
                     if (--tr->unk114 < 0) {
                         for (k = 0; k < 16; k++) {
-                            if (k == 0) {
+                            if (k != 0) {
+                                ex->func_800DC818(0x10, D_801E7EB0[i][k], (u16 *)&a);
+                            } else {
                                 ex->func_800DC8AC(0x10, D_801E7EB0[i][0], (BtlBone *)&m);
                                 ex->func_800CFE88(&m, 0x400, (s32)&a);
-                            } else {
-                                ex->func_800DC818(0x10, D_801E7EB0[i][k], (u16 *)&a);
                             }
-                            ex->func_800DC818(0x10, D_801E7EB0[i][k + 1], (u16 *)&b);
+                            ex->func_800DC818(0x10, D_801E7EB0[i][k + 1], (u16 *)&m.m[1][1]);
                             for (j = 0; j < 4; j++) {
-                                ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, j << 10, (s16 *)&D_801E80D8[k * 4 + j]);
+                                ex->btlfx_lerpVec((s16 *)&a, (s16 *)&m.m[1][1], j << 10, (s16 *)&D_801E80D8[k * 4 + j]);
                             }
                         }
                         d = tr->unk4;
