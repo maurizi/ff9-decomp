@@ -1,9 +1,11 @@
-/* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast). Status: first draft from m2c
- * + asm, untested: 1629 aligned mismatches, ~480 ignoring registers and spill offsets (spnorm 0x40). One fresh
+/* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast). Status: draft from m2c + asm,
+ * untested: 1122 aligned mismatches, ~432 ignoring registers and spill offsets (spnorm 0x40). One fresh
  * temporary per block (x1.., y1.., ...) was needed for global allocation to keep ex in fp and work in s7 as the
  * original does (reusing x/y/k across cases spilled work, env, entry and ex). Divisions are checked against the
  * magic-number shifts (several are (x / n) >> k). Open: spill slots, statement orders, register choices.
- * D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
+ * D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points).
+ * Stack layout now matches the original: the trailing bolt spawn uses the first matrix's storage as its two
+ * vectors, m/m2/m3 come before from/to, p2 before s2, and the two {0x400, 0, 0, 1} rotation vectors r5/rr are one. */
 #include "fxmod/fx_0e3_1.h"
 
 typedef struct {
@@ -90,9 +92,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     MATRIX m;
     MATRIX m2;
+    MATRIX m3;
     SVECTOR from;
     SVECTOR to;
-    MATRIX m3;
     MATRIX m4;
     MATRIX m5;
     MATRIX m6;
@@ -101,8 +103,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR a1;
     SVECTOR b1;
     SVECTOR r2;
-    VECTOR s2;
     SVECTOR p2;
+    VECTOR s2;
     VECTOR v2;
     SVECTOR a2;
     SVECTOR b2;
@@ -114,7 +116,6 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR a4;
     SVECTOR b4;
     SVECTOR r5;
-    SVECTOR rr;
     VECTOR ss;
     SVECTOR r6;
     VECTOR s6;
@@ -714,13 +715,13 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ss.vy = 0x1000;
         ss.vz = 0x1000;
         g3 = (y5 >> 2) + 0x100;
-        rr.vx = 0x400;
-        rr.vy = 0;
-        rr.vz = 0;
+        r5.vx = 0x400;
+        r5.vy = 0;
+        r5.vz = 0;
         n2 = (((t >> 3) + 0x500) * 4) / 3;
         y6 = ex->math_cos(k10) >> 5;
-        func_801ECFE4(&work->unk30, &rr, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6, 0x1D, 0x3E81, 0, 0xC0, frame * -0x80, n2, 1, 1);
-        func_801ECFE4(&work->unk30, &rr, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6, 0x1D, 0x3E81, 0, 0xC0, frame * 0xA0, n2, 1, -1);
+        func_801ECFE4(&work->unk30, &r5, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6, 0x1D, 0x3E81, 0, 0xC0, frame * -0x80, n2, 1, 1);
+        func_801ECFE4(&work->unk30, &r5, &ss, z1, k10 + 0xA00, g3 >> 1, g3, y6, 0x1D, 0x3E81, 0, 0xC0, frame * 0xA0, n2, 1, -1);
         if (frame < 0x41) {
             k11 = (frame << 6) >> 2;
             y7 = ex->math_cos(k11);
@@ -846,9 +847,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     }
     if (a != 0) {
         k15 = work->unk4 << 8;
-        ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)&from);
-        ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)&to);
-        func_801EC71C(entry, (Fx0e31Bolt *)D_801F0A14, &from, &to, a, a, k15, 0x100, 0,
+        ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)&m);
+        ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, ex->btlfx_rand() % 92, (u16 *)((SVECTOR *)&m + 1));
+        func_801EC71C(entry, (Fx0e31Bolt *)D_801F0A14, (SVECTOR *)&m, (SVECTOR *)&m + 1, a, a, k15, 0x100, 0,
                       ex->btlfx_randCentered(0x400) + 0xC00);
     }
     if (fade != 0) {
