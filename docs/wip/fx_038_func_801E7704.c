@@ -1,8 +1,11 @@
-/* Draft of fx_038 func_801E7704 (falling-rock pool callback). Status: 203 aligned mismatches (build/sdiff.py
- * --aligned), nearly all register allocation: the original keeps frame in s7, &it->unk4 in fp, (frame << 12) / 18 in
- * s4, t >> 2 in s1 and the file pointer in s0 (ours: s6, s7, s0, s4, s1), and spills work (stack argument).
- * tools/equiv.py: 47/47 trials agree, 86% coverage. Helped: `a.vz += 0x1000 - t`, the tint value as a block-local
- * `c = 0x46; c -= frame * 0x46 / 4;` (the original loads 0x46 into the argument register and subtracts). */
+/* Draft of fx_038 func_801E7704 (falling-rock pool callback). Status: 208 aligned mismatches, 22 ignoring registers
+ * (was 203/57). Round 5: case 1's later file pointers use their own variable g (frame now in s7, &it->unk4 in fp,
+ * work spilled, as in the original), and the unkC updates in vx, vy, vz order. Open: global allocation of it /
+ * env / t (s1 / s4 / s3 here, s3 / s1 / s4 in the original): gsim (build/p0/gtry.py on a dump) gets the original
+ * when env (priority 0.066) is allocated between the case-0 file pointer (0.571) and it (0.321), or when env
+ * prefers s1 (regs_someone_prefers); no C form found for either. tools/equiv.py agreed with the earlier draft
+ * (47/47 trials). Earlier levers: `a.vz += 0x1000 - t`, the tint value as a block-local
+ * `c = 0x46; c -= frame * 0x46 / 4;`. */
 #include "fxmod/fx_038.h"
 
 s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
@@ -18,6 +21,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 k;
     s32 q;
     s32 v;
+    u8 *g;
 
     if (mode == 1) {
         it->unk0 = 0;
@@ -42,8 +46,8 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         pos.vy = it->unk4.vy;
         pos.vz = it->unk4.vz;
         it->unkC.vx += 0x46;
-        it->unkC.vz += 8;
         it->unkC.vy += 0x40;
+        it->unkC.vz += 8;
         scale.vz = 0x199;
         scale.vy = 0x199;
         scale.vx = 0x199;
@@ -124,16 +128,16 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         d.vx = 0x400;
         d.vz = 0;
         d.vy = 0;
-        f = (u8 *)ex->btlfx_getFileData(entry->unk8, 0xD);
-        ex->func_800D23D8(f, &it->unk4, &d, ex->math_sin(q) + 0xAAA, 8, 1, k);
+        g = (u8 *)ex->btlfx_getFileData(entry->unk8, 0xD);
+        ex->func_800D23D8(g, &it->unk4, &d, ex->math_sin(q) + 0xAAA, 8, 1, k);
         if (frame < 12) {
             d.pad = 1;
             d.vx = 0x400;
             d.vz = 0;
             d.vy = 0;
             q = ((frame << 12) / 12) >> 2;
-            f = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
-            ex->btlfx_drawParticles(f, &it->unk4, &d, ex->math_cos(q) * 3, 6, 1, ex->math_cos(q), 0, 0);
+            g = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
+            ex->btlfx_drawParticles(g, &it->unk4, &d, ex->math_cos(q) * 3, 6, 1, ex->math_cos(q), 0, 0);
         }
         if (frame >= 18) {
             return 1;
