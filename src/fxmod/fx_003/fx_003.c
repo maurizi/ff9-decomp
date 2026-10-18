@@ -87,6 +87,71 @@ void func_801E7BF8(Unk80100C78Entry *entry, Fx003Strip *strip, Fx003Strip *out, 
 
 INCLUDE_ASM("asm/us/fx_003/nonmatchings/fx_003", func_801E7CEC);
 
-INCLUDE_ASM("asm/us/fx_003/nonmatchings/fx_003", fx_003_op83);
+s32 fx_003_op83(s32 mode, Fx003Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 i;
+    s32 r;
+    s32 ang;
+    Fx003Bolt *it;
+    s32 *q;
+    SVECTOR a;
+    SVECTOR b;
+
+    if (mode == 0) {
+        init->unk0 = 0x10;
+        init->unk8 = 0x24;
+        init->unk14 = (s32)func_801E7CEC;
+        init->unk4 = 0xC;
+    } else if (mode == 1) {
+        D_801E8580 = env;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        work->unk8 = D_801E8F20;
+        q = D_801E8F20;
+        for (i = 0; i < 0x40; i++) {
+            *q++ = ex->btlfx_randCentered(0x100);
+            *q++ = ex->btlfx_randCentered(0x180);
+            *q++ = ex->btlfx_randCentered(0xC0);
+        }
+        work->unkC = 0;
+    } else {
+        frame = entry->unk0;
+        if (frame == 0 || frame == 3 || frame == 5 || frame == 6 || frame == 7) {
+            if (work->unkC < 5) {
+                work->unkC++;
+                BTLFX_COPY_SVEC(&a, &work->unk0);
+                if (work->unkC == 3) {
+                    a.vx += ex->btlfx_randCentered(0x190);
+                    a.vy += ex->btlfx_randCentered(0x190);
+                    a.vz += ex->btlfx_randCentered(0x190);
+                }
+                it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (it != NULL) {
+                    BTLFX_COPY_SVEC(&it->unk0, &a);
+                    BTLFX_COPY_SVEC(&b, &a);
+                    b.vy -= 0xC00;
+                    r = ex->btlfx_randCentered(0x100) + 0x640;
+                    ang = (work->unkC << 10) - 0x200 + ex->btlfx_randCentered(0x100);
+                    b.vx += (ex->math_cos(ang) * r) >> 12;
+                    b.vz += (ex->math_sin(ang) * r) >> 12;
+                    BTLFX_COPY_SVEC(&it->unk8, &b);
+                    it->unk10 = work->unkC;
+                    it->unk18 = work->unk8 + (ex->btlfx_rand() & 0x1F);
+                    it->unk12 = ex->btlfx_rand() % 14;
+                    it->unk13 = ex->btlfx_rand() % 14;
+                    if ((work->unkC - 1) & 1) {
+                        it->unk14 = 2;
+                    } else {
+                        it->unk14 = ex->btlfx_rand() & 1;
+                    }
+                }
+            }
+        }
+        if (frame >= 0xC) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_003/nonmatchings/fx_003", fx_003_headerPtr);
