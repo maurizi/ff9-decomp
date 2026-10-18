@@ -1,64 +1,10 @@
-/* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: 7 aligned diff
- * lines (od.py), all in mode 1's store scheduling (unk10/unk1C/unk28/unk6C stores). Levers: 12-byte vectors in the
- * work block, "((k * col) >> 11) / 3", inline RGB/tint expressions, block-local temporaries (v, d, e) so they stay
- * out of the global c, if/else for glow in case 2, rib/wave declared before c (spill slot order), the ribbon c
- * computed inside the loop argument (hoisted by loop.c), rot fields stored vx, vy, vz. */
+/* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: 1299/1301 -
+ * only the second math_cos call of case 0 (frame < 0x2E) differs: the original loads the function pointer into v1
+ * (v0 still live), here v0. Types live in include/fxmod/fx_0e1_0.h. Levers: 12-byte vectors in the work block,
+ * "((k * col) >> 11) / 3", inline RGB/tint expressions, block-local temporaries (v, d, e), if/else for glow in
+ * case 2, rib/wave declared before c (spill slot order), the ribbon c computed inside the loop argument (hoisted by
+ * loop.c), rot fields stored vx, vy, vz, "a.vy = a.vx = K" for the store order, work->unk44/48 used directly. */
 #include "fxmod/fx_0e1_0.h"
-
-typedef struct {
-    s32 vx;
-    s32 vy;
-    s32 vz;
-} Fx0e10Vec3;
-
-typedef struct {
-    u32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* summon position */
-    Fx0e10Vec3 unk10; /* summon model position */
-    Fx0e10Vec3 unk1C; /* summon model scale */
-    SVECTOR unk28; /* summon model rotation */
-    s32 unk30;
-    SVECTOR unk34; /* bone position */
-    SVECTOR unk3C;
-    Pool6CEntry *unk44;
-    Pool6CEntry *unk48;
-    s32 unk4C; /* ribbons need a reset */
-    s32 unk50;
-    s32 unk54;
-    s32 unk58;
-    s32 unk5C;
-    s32 unk60;
-    SVECTOR unk64;
-    Fx0e10Vec3 unk6C;
-    Fx0e10Vec3 unk78;
-    Fx0e10Vec3 unk84;
-    Fx0e10Vec3 unk90;
-    SVECTOR unk9C;
-} Fx0e10Work80; /* 0xA4 */
-
-typedef struct {
-    u8 pad0[0x54];
-    struct {
-        u8 pad0[0x180];
-        BtlUnit9CC *unk180;
-    } *unk54;
-    u8 pad58[8];
-    s32 unk60; /* summon model */
-} Fx0e10Summon;
-
-typedef struct {
-    s32 unk0;
-    s32 unk4;
-} Fx0e10BonePair;
-
-extern SVECTOR D_801E9D7C;
-extern Fx0e10BonePair D_801E9D98[4];
-extern u8 D_801E9DC0[];
-extern Fx0e10Seg D_801E9E48[4][21];
-extern BtlModel D_801EA388[];
-extern u8 D_801EA778[];
-extern u8 D_801EAE08[];
 
 s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -103,19 +49,19 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk6C.vz = D_801E9D7C.vz;
         work->unk28.vy = -0x400;
         work->unk10.vx = work->unk8.vx;
-        work->unk10.vy = work->unk8.vy;
-        work->unk10.vz = work->unk8.vz;
         work->unk1C.vx = 0xC00;
         work->unk1C.vy = 0xC00;
         work->unk1C.vz = 0xC00;
+        work->unk10.vy = work->unk8.vy;
+        work->unk10.vz = work->unk8.vz;
         work->unk10.vx -= 0x4BB;
-        work->unk10.vy += 0x376;
-        work->unk10.vz += 0x8C9;
         work->unk64.vx = 0;
         work->unk64.vy = 0;
         work->unk64.vz = 0;
         work->unk28.vx = 0;
         work->unk28.vz = 0;
+        work->unk10.vy += 0x376;
+        work->unk10.vz += 0x8C9;
         work->unk3C.vx = work->unk8.vx;
         work->unk3C.vy = work->unk8.vy;
         work->unk3C.vz = work->unk8.vz;
@@ -167,7 +113,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             col.r = col.g = col.b = 0x84;
             rot.vz = -0x18;
-            sc.vx = sc.vy = 0x10F5;
+            sc.vy = sc.vx = 0x10F5;
             sc.vz = 0x1000;
             rot.vx = 0;
             rot.vy = 0;
@@ -188,13 +134,13 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     p->unk22 = 0xC;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xFF, 0x80, 0);
-                p = work->unk44 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
-                if (p != NULL) {
-                    p->unk22 = 0xC;
+                work->unk44 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
+                if (work->unk44 != NULL) {
+                    work->unk44->unk22 = 0xC;
                 }
-                p = work->unk48 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
-                if (p != NULL) {
-                    p->unk14 = (s32)D_801EA778;
+                work->unk48 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
+                if (work->unk48 != NULL) {
+                    work->unk48->unk14 = (s32)D_801EA778;
                     work->unk48->unk12 = 0xC;
                     work->unk48->unkC = 0x8C;
                     if (work->unk48 != NULL) {
@@ -261,9 +207,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (p != NULL) {
                     p->unk22 = 0xC;
                 }
-                p = work->unk48 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
-                if (p != NULL) {
-                    p->unk14 = (s32)D_801EAE08;
+                work->unk48 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk8);
+                if (work->unk48 != NULL) {
+                    work->unk48->unk14 = (s32)D_801EAE08;
                     work->unk48->unk12 = 0xC;
                     work->unk48->unkC = 0x8C;
                     if (work->unk48 != NULL) {
@@ -416,7 +362,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->func_800E6624(10000 - work->unk4 * 4, 0x2F0, 0x100, 0x10, 0x80, 0x2E0, 0x100);
         }
         col2.r = col2.g = col2.b = 0x89;
-        sc3.vx = sc3.vy = 0x1073;
+        sc3.vy = sc3.vx = 0x1073;
         sc3.vz = 0x1000;
         rot2.vx = 0;
         rot2.vy = 0;
