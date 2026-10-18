@@ -1,5 +1,6 @@
-/* Draft of fx_097 func_801E7CBC. Status: 370/371 instructions in the right order apart from two scheduling spots: the
- * hoisted &o (fp = sp+0x60) and the reload of row<<6 (0x74(sp)) come one slot earlier in the original. Same body in
+/* Draft of fx_097 func_801E7CBC. Status: 1 instruction pair out of order: the hoisted &o (fp = sp+0x60) comes one
+ * slot before the spilled y init (li t0,-0x180) in the original; everything else matches. The inner loop's
+ * q[1].vx/q[3].vx = y statement before the vy pair puts the reload of rx (0x74(sp)) ahead of col << 6. Same body in
  * fx_098 and fx_1cc. */
 #include "btlfx_mod.h"
 
@@ -119,9 +120,9 @@ void func_801E7CBC(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 
         for (col = 0; col < 14; col++) {
             q[0].vz = q[1].vz = q[2].vz = q[3].vz = 0;
             q[0].vx = q[2].vx = rx - 0x1C0;
+            q[1].vx = q[3].vx = y;
             q[0].vy = q[1].vy = (col << 6) - 0x1C0;
             q[2].vy = q[3].vy = (col << 6) - 0x180;
-            q[1].vx = q[3].vx = y;
             d0 = ex->btlfx_distance(&q[0], &o);
             d1 = ex->btlfx_distance(&q[1], &o);
             d2 = ex->btlfx_distance(&q[2], &o);
