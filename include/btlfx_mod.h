@@ -20,7 +20,7 @@ typedef struct BtlfxExports {
     int (*LoadImage)(RECT *, u32 *); /* 0x000 */
     int (*StoreImage)(RECT *, u32 *); /* 0x004 */
     s32 (*func_800E0014)(Pool6CEntry *, s32, SVECTOR *, SVECTOR *); /* 0x008 (asm; DS port F12: particle, bias, out) */
-    s32 (*func_800D12C4)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x00C */
+    s32 (*btlfx_drawTrailScreen)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x00C */
     s32 (*btl_setVsyncMode)(s32); /* 0x010 */
     s32 (*func_800316D8)(void *, void *); /* 0x014 */
     s32 (*Hi_RegisterGouEffModel)(BtlUnit9C8 *); /* 0x018 */
@@ -34,7 +34,7 @@ typedef struct BtlfxExports {
     s32 (*math_cos)(s32); /* 0x038 */
     s32 (*math_sin)(s32); /* 0x03C */
     long (*ratan2)(long, long); /* 0x040 */
-    s32 (*func_80030874)(void); /* 0x044 (main exe, no symbol yet) */
+    s32 (*SquareRoot0)(void); /* 0x044 (main exe) */
     s32 (*LoadAverageShort12)(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *); /* 0x048 */
     s32 (*Hi_RegisterTexListModel)(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32); /* 0x04C */
     s32 (*printf)(const char *, ...); /* 0x050 */
@@ -83,18 +83,18 @@ typedef struct BtlfxExports {
     DR_TPAGE * (*btlfx_allocDrMode)(s32, s32); /* 0x0FC */
     s32 (*btlfx_drawScreenTint)(u32 *, s32, s32, s32, s32); /* 0x100 */
     s32 (*Hi_ModifySummonModelRGB)(s32, s32, s32, s32); /* 0x104 */
-    s32 (*func_800D0E14)(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x108 */
-    s32 (*func_800D0FFC)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x10C */
-    s32 (*func_800D1494)(u8 *, s32, s32 *, s32, s32, s32, s32, u8 *, s32); /* 0x110 */
-    s32 (*func_800D1680)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32); /* 0x114 */
+    s32 (*btlfx_drawTrail3D)(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x108 */
+    s32 (*btlfx_drawTrailFlat)(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32); /* 0x10C */
+    s32 (*btlfx_drawTrail)(u8 *, s32, s32 *, s32, s32, s32, s32, u8 *, s32); /* 0x110 */
+    s32 (*btlfx_drawParticles)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32); /* 0x114 */
     s32 (*func_800D198C)(u8 *, SVECTOR *, s32, s32, s32); /* 0x118 */
     s32 (*func_800D1BC4)(u32, u8 *, s32, s32, s32, s32, s32); /* 0x11C */
-    s32 (*func_800D1D74)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x120 */
-    s32 (*func_800D1FFC)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x124 */
+    s32 (*btlfx_drawAnimQuads)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x120 */
+    s32 (*btlfx_drawSprites)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x124 */
     s32 (*func_800D23D8)(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x128 */
     s32 (*func_800D2938)(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32); /* 0x12C */
     s32 (*func_800D2DBC)(u8 *, s32, s32, s32, s32, s32); /* 0x130 */
-    s32 (*func_800D3030)(BtlBgLayers *, s32); /* 0x134 */
+    s32 (*btlfx_drawBackdrop)(BtlBgLayers *, s32); /* 0x134 */
     s32 (*func_800D3B6C)(u8 *, SVECTOR *, s32, s32); /* 0x138 */
     s32 (*func_800E00DC)(s32, Pool30Entry *, Pool30 *); /* 0x13C */
     s32 (*func_800E0134)(Pool30Entry *, Pool6CEntry *); /* 0x140 */
@@ -183,7 +183,7 @@ typedef struct BtlfxExports {
     s32 (*Hi_DrawEffModelByBone)(s32, s32, s32, s32); /* 0x288 */
     s32 (*Hi_DrawMorphEffModel)(SVECTOR *, VECTOR *, s32, s32, s32, s32); /* 0x28C */
     s32 (*Hi_GetSummonBoneMatrix)(s32, s32, BtlBone *); /* 0x290 */
-    s32 (*func_80013228)(void); /* 0x294 (main exe, no symbol yet) */
+    s32 (*ClearImage)(void); /* 0x294 (main exe) */
     int (*MoveImage)(RECT *, int, int); /* 0x298 */
     s32 (*func_800DF938)(void); /* 0x29C */
     s32 (*btlfx_getUnitScale)(s32, VECTOR *); /* 0x2A0 */

@@ -1323,10 +1323,16 @@ have the details. What worked, and what was learned from gcc 2.8.1's sources:
   (`k = (l->unk8 >> 3) & 1; k ^= l->unk7;`); its xor result is still v0 (a1 in the original). 0d AC708: `len`
   moved into the loop (the pass-20 idea) is worse everywhere (353-477 rows); two store moves give 373 -> 355.
 
-## Battle effect modules: fx_0b2 (Ark) op80 and func_801E78FC
-Drafts: `docs/wip/fx_0b2_801E8178.c` (op80, 943 insns) and `docs/wip/fx_0b2_801E78FC.c` (GTE ring drawer, 553 insns).
-Both have the original's statements and argument lists; what is left is register allocation and loop-invariant
-hoisting (op80: work/exports/shift in s5/s7/fp and one more spill; 78FC: the original spills `row` and keeps the
-FT4 pointer in fp, and hoists only `arg11 + arg12`, `rad1` and its sign out of the inner loop). An hour of the
-permuter on each did not converge. Lever found on the way (fx_001): the modules' export table returns values,
-so every call through it is a call_value (local-alloc then ties v0 to the function pointer).
+## Battle effect modules: fx_0b2 (Ark): matched
+Both functions now match (module fully decompiled). What closed them:
+- op80: one `t` for cases 1-3 (it is the fp-allocated global); case 1's `(t >> 5)` as an expression so its
+  pseudo is numbered after `&work->unk18` (spill-slot order); `mode == 1` and case 3's `return 1` share an
+  `s32 one = 1` (the original reloads that constant into the spill reg t1 at the compare); and a dead-store-only
+  if/else between `state = work->unk0` and `switch (state)` ends cse's block, so case 3 computes `0x1000 - t`
+  from the constant instead of reusing alpha (cse knows alpha == 0x1000 otherwise, which merges it with
+  `alpha -= t` and costs t the ref that puts it ahead of the export table in global-alloc).
+- func_801E78FC: POLY_GT4/POLY_FT4 pointers with field stores (loop.c then combines the DEST_ADDR givs into
+  &gt4->x3 / &ft4->x3, the original's s2/s5), the draft's rad0/rad1/rowNext/h0/h1 written as `row * arg10`,
+  `(row + 1) * arg10`, `row + 1` and row-level `h1 = row * 0x90; h0 = (row + 1) * 0x90` (loop.c strength-reduces
+  them into the five late stack slots), `j & 3`/`row & 3` in variables, `u1 = u0 + 0x1C; if (...) u1 = ...`
+  instead of ternaries, and `e = ang + d` as a new variable for the operand order.
