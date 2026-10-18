@@ -1,6 +1,7 @@
-/* Draft of fx_0ed fx_0ed_op80. Status: structurally identical, register allocation only (orig: t s0, p/state s1,
- * ex s2, frame s4, 1 s5, env s6; here p s0, ex s1, state s2, env s5, 1 s6). Twin of fx_09a op80 (matched): dead
- * t / 30 for the sign word, *(D + (a != b)) file pick with the 'ang' temp, byte-offset ribbon loops. */
+/* Draft of fx_0ed fx_0ed_op80. Status: structurally identical (od.py), 72 register-only lines: in case 0 the
+ * original has t0 in s0, the spawn pointer p in s1 and &work->unk18 in s5 (here p s0, &work->unk18 s1, t0 s5),
+ * and in case 2 &work->unk8/&work->unk18 in s0 with p in s1. Twin of fx_09a op80 (matched): dead t / 30 for the
+ * sign word, *(D + (a != b)) file pick with the 'ang' temp, byte-offset ribbon loops, inline RGB expressions. */
 #include "fxmod/fx_0ed.h"
 
 typedef struct {
@@ -127,15 +128,17 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame > 0) {
+                s32 h;
+
                 pos.vx = work->unk18.vx;
                 pos.vy = work->unk18.vy;
                 pos.vz = work->unk18.vz;
-                k = ((0x1000 - ex->math_sin(t0 >> 2)) * 0x514) >> 12;
-                pos.vy += k;
-                ex->Hi_SetEffModelSlice(work->unk28, k);
+                h = ((0x1000 - ex->math_sin(t0 >> 2)) * 0x514) >> 12;
+                pos.vy += h;
+                ex->Hi_SetEffModelSlice(work->unk28, h);
                 ex->Hi_DrawSliceEffModel(&work->unk2C, &pos, (s32)&work->unk34, work->unk28);
-                k = (((t0 >> 1) + 0x800) >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->unk28, k, k, k);
+                ex->Hi_ModifyEffModelRGB(work->unk28, (((t0 >> 1) + 0x800) >> 5) - 0x80, (((t0 >> 1) + 0x800) >> 5) - 0x80,
+                                         (((t0 >> 1) + 0x800) >> 5) - 0x80);
             }
             if (frame >= 0x18) {
                 work->unk0 = 1;
@@ -220,8 +223,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->unk4)->unk60, 0x29 - frame);
             ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)&work->unk34, ((Fx0edSummon *)env->unk4)->unk60, 1);
             amp = ex->math_cos(t3);
-            k = (amp >> 5) - 0x80;
-            ex->Hi_ModifySummonModelRGB(((Fx0edSummon *)env->unk4)->unk60, k, k, k);
+            ex->Hi_ModifySummonModelRGB(((Fx0edSummon *)env->unk4)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
+                                        (amp >> 5) - 0x80);
             if (frame >= 8) {
                 work->unk0 = 3;
                 ex->btlfx_clearEffModels();
