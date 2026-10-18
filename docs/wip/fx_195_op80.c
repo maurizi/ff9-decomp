@@ -1,4 +1,4 @@
-/* Draft of fx_195 fx_195_op80. Status: 231 aligned mismatches (about 120 ignoring registers/stack slots).
+/* Draft of fx_195 fx_195_op80. Status: 104 aligned mismatches (64 ignoring registers).
  * Structure complete; the stack layout matches (case 4's structs at function scope, case 5's first SVECTOR is
  * case 4's r3). What got it here: per-web variables (build/webs.py + greedy), y = x >> 12 in the tint tail (puts a
  * pseudo in t0 so reloads use t1), u = 0x1000 - q in one expression, (a >> 2) inline in the cos calls.
@@ -118,6 +118,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 c;
             s32 a;
             s32 i;
+            s32 i_1;
             s32 ang;
             s32 r;
 
@@ -281,11 +282,14 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             s32 g;
             s32 g_356;
             s32 i;
+            s32 i_1;
             s32 k;
             s32 n;
             s32 ang;
             s32 r;
             s32 r_375;
+            s32 p1;
+            s32 p2;
 
             t = (frame << 12) / 77;
             if (frame == 0) {
@@ -370,20 +374,19 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           1);
             func_801E7C98(&work->unk10, &r3, &sc, b, a_340 + 0xA00, e >> 1, e, f, 0x18, 0x3E81, 0, 0xC0, frame * 0xA0, d, 1,
                           -1);
-            g_356 = frame << 6;
             if (frame < 0x41) {
-                a = g_356 >> 2;
-                c_359 = ex->math_cos(a) - 0x5DC;
+                g_356 = frame << 6;
+                s_421 = g_356 >> 2;
+                c_359 = ex->math_cos(s_421) - 0x5DC;
                 rotA.vx = 0;
                 rotA.vz = 0;
                 rotA.vy = frame << 5;
-                scA.vx = scA.vz = ((ex->math_sin(a) * 3) >> 2) + 0xA00;
-                g_356 += 0x300;
-                scA.vy = g_356 * 2;
+                scA.vx = scA.vz = ((ex->math_sin(s_421) * 3) >> 2) + 0xA00;
+                scA.vy = (g_356 + 0x300) * 2;
                 posA.vx = work->unk10.vx;
                 posA.vy = work->unk10.vy;
                 posA.vz = work->unk10.vz;
-                posA.vy -= (ex->math_sin(a) * 0xFA0) >> 12;
+                posA.vy -= (ex->math_sin(s_421) * 0xFA0) >> 12;
                 ex->Hi_DrawEffModel(&rotA, &posA, (s32)&scA, work->unk84);
                 ex->Hi_ModifyEffModelRGB(work->unk84, (c_359 >> 5) - 0x80, (c_359 >> 5) - 0x80, (c_359 >> 5) - 0x80);
             }
@@ -394,22 +397,22 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             posC.vx = work->unk10.vx;
             posC.vy = work->unk10.vy;
             posC.vz = work->unk10.vz;
-            for (i = 0, n = 7; i < 6; i++, n += 7) {
+            for (i_1 = 0, n = 7; i_1 < 6; i_1++, n += 7) {
                 k = frame - n;
                 if ((u32)k < 0x20) {
-                    c = ex->math_cos((k << 12) >> 7);
+                    p2 = ex->math_cos((k << 12) >> 7);
                     scC.vx = scC.vz = r_375;
                     if (k < 4) {
                         scC.vy = ex->math_sin((k << 10) >> 2) * 6;
                     } else {
                         scC.vy = 0x6000 - ((k - 4) << 8);
                     }
-                    scC.vy = (scC.vy * (8 - i)) >> 3;
-                    if (i < 2) {
+                    scC.vy = (scC.vy * (8 - i_1)) >> 3;
+                    if (i_1 < 2) {
                         scC.vy = (scC.vy * 5) >> 2;
                     }
                     ex->Hi_DrawEffModel(&rotC, &posC, (s32)&scC, work->unk94);
-                    ex->Hi_ModifyEffModelRGB(work->unk94, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+                    ex->Hi_ModifyEffModelRGB(work->unk94, (p2 >> 5) - 0x80, (p2 >> 5) - 0x80, (p2 >> 5) - 0x80);
                 }
                 r_375 = (r_375 * 9) >> 3;
                 rotC.vy = (rotC.vy * 3) >> 2;
@@ -434,7 +437,7 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->func_800E99B0(0x25, entry->unk8, -1, work->unk32);
             }
             BTLFX_COPY_SVEC(&v1, &work->unk10);
-            BTLFX_COPY_SVEC(&v2, &work->unk10);
+            BTLFX_COPY_SVEC(&v2, &v1);
             v2.vy -= 0x1800;
             s_421 = 0x1000 - ((t * 0xDAC) >> 12);
             ang = (work->unk4 << 9) + (ex->btlfx_rand() & 0x1FF);
@@ -481,10 +484,12 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rotG.vz = 0;
             rotG.pad = 1;
             a = t >> 2;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, NULL, ex->math_cos(a) + 0x1800, 0,
-                              1, ((ex->math_cos(a) * 3) >> 2) + 0x400);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk10, &rotG, 0x5000 - (t << 1), 0, 1,
-                              ex->math_cos(a));
+            p1 = ex->math_cos(a) + 0x1800;
+            p2 = ((ex->math_cos(a) * 3) >> 2) + 0x400;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 9), &work->unk10, NULL, p1, 0, 1, p2);
+            p1 = 0x5000 - (t << 1);
+            p2 = ex->math_cos(a);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk10, &rotG, p1, 0, 1, p2);
             env->unk28 = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), frame);
             ex->func_800E6624(work->unk4 * 5, 0x200, 0x100, 0x20, 0xC0, 0x220, 0x100);
