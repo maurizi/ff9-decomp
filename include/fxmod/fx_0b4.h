@@ -40,7 +40,7 @@ extern Unk800F78A4 *D_801E8184;
 extern SVECTOR D_801E818C; /* path origin */
 extern SVECTOR D_801E8194[6];
 extern Fx0b4Path D_801E81C4[6];
-extern s32 D_801E81F4[];
+extern s32 D_801E81F4[6][0x360];
 extern s32 D_801ED2F4[];
 
 s32 func_801E77BC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);

@@ -11,5 +11,17 @@ typedef struct {
 } Fx0daWork84;
 
 extern Unk800F78A4 *D_801E8220;
+extern BtlModel D_801E8230[];
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* models */
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    SVECTOR unk14; /* caster body position */
+    SVECTOR unk1C; /* caster position */
+    s32 unk24; /* frame counter */
+} Fx0daWork80;
 
 #endif

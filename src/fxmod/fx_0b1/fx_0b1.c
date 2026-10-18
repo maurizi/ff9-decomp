@@ -1,6 +1,15 @@
 #include "fxmod/fx_0b1.h"
 
-INCLUDE_ASM("asm/us/fx_0b1/nonmatchings/fx_0b1", func_801E7704);
+void func_801E7704(void) {
+    s32 i;
+    s32 m;
+
+    D_801E8B90 = 0;
+    m = -1;
+    for (i = 15; i >= 0; i--) {
+        D_801E8B9C[i].unk4 = m;
+    }
+}
 
 void func_801E7738(s32 start, u32 dst, u32 src, s16 *data) {
     s32 i;
