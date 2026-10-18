@@ -32,7 +32,68 @@ s32 func_801E78A4(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", fx_1b4_op80);
+s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    Pool6CEntry *p;
+    SVECTOR *v;
+    s32 frame;
+    s32 i;
+
+    if (mode == 0) {
+        *arg4 = 0x94;
+    } else if (mode == 1) {
+        work->unk44.vx = env->unkC->unk38;
+        work->unk44.vy = env->unkC->unk3A;
+        work->unk44.vz = env->unkC->unk3C;
+        D_801EF174.vx = work->unk44.vx;
+        D_801EF174.vy = work->unk44.vy;
+        D_801EF174.vz = work->unk44.vz;
+        D_801E8654 = env;
+        work->unk8C.vx = work->unk44.vx;
+        work->unk8C.vy = work->unk44.vy;
+        work->unk8C.vz = work->unk44.vz;
+        work->unk8C.vy -= 0x258;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 0:
+            for (i = 0; i < 8; i++) {
+                func_801E8540(&D_801E8664[i], (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E85DC[i]));
+                func_801E8558(&D_801E8664[i], 0, &work->unk4C[i]);
+                v = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
+                v->vx += work->unk44.vx;
+                v->vy += work->unk44.vy;
+                v->vz += work->unk44.vz;
+                work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E85BC[i]), (s32)&work->unk4C[i]);
+                if (work->unk0[i] != NULL) {
+                    work->unk0[i]->unk14 = (s32)D_801E86E4[i];
+                    work->unk0[i]->unk12 = 5;
+                    work->unk0[i]->unkC = 0x30;
+                }
+            }
+            break;
+        case 0x17:
+            for (i = 0; i < 8; i++) {
+                func_801E8540(&D_801E86A4[i], (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E85DC[i]));
+                work->unk20[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E85CC[i]), (s32)&D_801EF17C);
+                if (work->unk20[i] != NULL) {
+                    work->unk20[i]->unk14 = (s32)D_801E8E64[i];
+                    work->unk20[i]->unk12 = 8;
+                    work->unk20[i]->unkC = 0x70;
+                    if (work->unk20[i] != NULL) {
+                        ((EffMotion *)work->unk20[i]->unk0)->unk8 = D_801E85EC[i];
+                    }
+                }
+            }
+            break;
+        case 0x25:
+            work->unk40 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x29), (s32)&work->unk8C);
+            break;
+        }
+        return frame >= 0x3C;
+    }
+    return 0;
+}
 
 s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
