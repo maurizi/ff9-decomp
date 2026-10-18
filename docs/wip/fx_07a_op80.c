@@ -1,10 +1,9 @@
-/* Draft of fx_07a fx_07a_op80. Status: 8 aligned diff lines ignoring registers (od.py). Fixed: the jitter-init
- * bound is a separate variable m = n - 1 (spilled like the original), and the jitter ranges go through
- * w = j * 8 + 0x10 (gives the original's four constant-initialised givs). Open: (1) the original copies tr into
- * s0 before the point loop and passes that copy to btlfx_drawTrail, and walks tr->unk6C[j] with a second copy
- * (a2); (2) "if (r < 0) r = -r" leaves a nop in the bgez delay slot in the original (ours fills it with the mult;
- * __builtin_abs gives the nop but moves above the math_sin call); (3) one sll s6,2 scheduling row after the jitter
- * loop. */
+/* Draft of fx_07a fx_07a_op80 (types in include/fxmod/fx_07a.h). Status: 3 lines (build/w/nd.py): (1) the
+ * point-loop preheader sets a2 = tr before a3 = tr + 10 in the original (giv init order; permuting the loop body
+ * statements didn't help); (2) "if (r < 0) r = -r" before the mult: the original leaves a nop in the bgez delay
+ * slot, ours copies the target's mult into it (reorg). abs() puts the test above the math_sin call; dead loop notes
+ * around the if change nothing. Fixed: q = tr copy before the point loop, passed to btlfx_drawTrail (the
+ * original's s0 copy); "j < n - 1" in the jitter loop (permuter). */
 #include "fxmod/fx_07a.h"
 
 s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
