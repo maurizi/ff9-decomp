@@ -1,9 +1,10 @@
-/* Draft of fx_057 op81. Status: 318 aligned mismatches (s split per block), about 130 ignoring registers and spill offsets (spnorm 0x60).
- * Fixed since the ~540-row draft: one t per block (t1-t4), the i loop passes s before s += 0x100 (the old draft
- * passed s + 0x100: a real semantic difference), ang.vx/vy use * 128 / * 32 (keeps the lw), cs computed before r/i.
- * Open: register allocation: the original keeps the constant 1 in fp (CSE of the mode test, reused as the 1 arguments
- * and work->unk0 = 1 in case 0), keeps env in s5 until its last use in case 2 (s5 then holds r) and spills entry
- * (reloads from 0x94), and spills cs/step/n in the first case-2 loop; here env is spilled and entry kept. */
+/* Draft of fx_057 op81. Status: 173 aligned mismatches, 41 ignoring registers and spill offsets (spnorm 0x60).
+ * Fixed since the 318-row draft: the first case-2 loop passes (frame + 7) & 0xF inline (a hoisted n variable made
+ * loop.c's insn count small enough to hoist q * 2 too; the original recomputes it each iteration).
+ * Earlier: one t per block (t1-t4), the i loop passes s before s += 0x100, ang.vx/vy use * 128 / * 32, cs before r/i.
+ * Open: global register allocation: the original keeps the constant 1 in fp (CSE of the mode test, reused as the 1
+ * arguments and work->unk0 = 1 in case 0), keeps env in s5 until its last use in case 2 and spills entry (reloads
+ * from 0x94), and keeps the second cs in fp; here env is spilled, entry kept and that cs spilled. */
 #include "fxmod/fx_057.h"
 
 s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -28,7 +29,6 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 j;
     s32 r;
     s32 step;
-    s32 n;
     s32 cs;
     s32 q;
     s32 one;
@@ -138,12 +138,11 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         i = 0;
         step = ((t3 >> 7) + 4) * 3;
         ang.vx = work->unk4 * 128;
-        n = (frame + 7) & 0xF;
         ang.vy = work->unk4 * 32;
         q = (t3 / 40 + 10) * 2;
         do {
             ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, r, (s16 *)&out);
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &out, NULL, 0x1000, n, 1,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &out, NULL, 0x1000, (frame + 7) & 0xF, 1,
                               (cs * ex->math_sin((i << 11) >> 7)) >> 12, 0, 0);
             i++;
             r += step;
