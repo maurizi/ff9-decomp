@@ -96,7 +96,18 @@ void func_801E9C08(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *path, 
 
 INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", func_801E9D20);
 
-INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", func_801E9FC4);
+s32 func_801E9FC4(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801EAA48);
+    SVECTOR *p = D_801EB3BC[ex->btlfx_rand() % 32].unk0;
+
+    p += ex->btlfx_rand() % 17;
+
+    out->vx = p->vx;
+    out->vy = p->vy;
+    out->vz = p->vz;
+    out->pad = 1;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", fx_19f_op83);
 
