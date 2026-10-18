@@ -78,8 +78,17 @@ def main():
     if stale:
         sys.exit(f"refusing to run: leftover backups {stale}; resolve them first")
 
+    # Only the C files of the binaries being split (src_path of each yaml): e.g. the effect modules'
+    # src/fxmod/ is left alone when their images aren't extracted and their yamls aren't passed.
+    dirs = set()
+    for y in yamls:
+        m = re.search(r"^\s*src_path:\s*(\S+)", open(y).read(), re.M)
+        dirs.add(os.path.normpath(m.group(1)) if m else "src")
+    mine = lambda path: any(os.path.normpath(path).startswith(d + os.sep) for d in dirs)
     old = {}
     for path in glob.glob("src/**/*.c", recursive=True):
+        if not mine(path):
+            continue
         old[path] = open(path).read()
         os.rename(path, path + ".bak")
     try:
@@ -105,6 +114,8 @@ def main():
     # Fresh splat output, with each old file's preamble restored.
     new = {}
     for path in glob.glob("src/**/*.c", recursive=True):
+        if not mine(path):
+            continue
         text = open(path).read()
         if path in old:
             pre, _ = split_c(old[path])
