@@ -42,7 +42,17 @@ OVLS      := $(shell awk '/^[0-9a-f]/ {print $$1}' config/overlays.$(VERSION).tx
 OVL_BINS  := $(foreach o,$(OVLS),$(BUILD_DIR)/ovl_$(o).bin)
 YAMLS     := $(SPLAT_YAML) $(foreach o,$(OVLS),config/ovl_$(o).yaml)
 
-.PHONY: all extract extract-img extract-ovl split resplit build verify progress clean distclean
+# FF9.IMG dir-13 battle effect modules (one binary each; docs/ff9img.md, config/fxmods.us.txt).
+# Built and verified once `make extract-fxmod` has put their images in disks/us/fxmod/.
+FXMOD_DIR := $(DISKS)/fxmod
+ifneq ($(wildcard $(FXMOD_DIR)/fx_000.bin),)
+FXMODS    := $(shell awk '/^fx_/ {print $$1}' config/fxmods.$(VERSION).txt)
+endif
+FX_BINS   := $(foreach m,$(FXMODS),$(BUILD_DIR)/$(m).bin)
+FX_YAMLS  := $(foreach m,$(FXMODS),config/fxmod/$(m).yaml)
+FX_SUMS   := $(if $(FXMODS),config/checksums.fxmod.$(VERSION).sha1)
+
+.PHONY: all extract extract-img extract-ovl extract-fxmod split resplit build verify progress clean distclean
 
 all: verify
 
@@ -62,14 +72,22 @@ extract-img:
 extract-ovl:
 	python3 tools/ff9img.py $(DISKS)/disc1/FF9.IMG extract-dir 0 $(DISKS)/ovl
 
+# Battle effect modules from FF9.IMG dir 13 (needs extract-img; identical on all discs, read from disc 1),
+# then their splat configs (existing yamls are kept).
+extract-fxmod:
+	python3 tools/effect_modules.py extract $(FXMOD_DIR)
+	python3 tools/gen_fxmod_configs.py
+
 # First split only: splat won't touch existing .c files. Use resplit afterwards.
+# The effect modules are many small binaries: split them in parallel.
 split: $(DISKS)/$(MAIN)
 	rm -rf asm/$(VERSION)
 	for y in $(YAMLS); do $(SPLAT) $$y || exit 1; done
+	$(if $(FX_YAMLS),printf '%s\n' $(FX_YAMLS) | xargs -P 8 -n 1 $(SPLAT) >/dev/null)
 
 # Re-split after symbol/config changes, keeping decompiled C.
 resplit: $(DISKS)/$(MAIN)
-	$(PYTHON) tools/resplit.py $(YAMLS)
+	$(PYTHON) tools/resplit.py $(YAMLS) $(FX_YAMLS)
 
 # splat's ld_dependencies rule lists every object the ELF needs.
 -include $(LD_SCRIPT:.ld=.d)
@@ -108,17 +126,30 @@ $(BUILD_DIR)/ovl_$(1).bin: $(BUILD_DIR)/ovl_$(1).elf
 endef
 $(foreach o,$(OVLS),$(eval $(call OVL_RULES,$(o))))
 
-build: $(EXE) $(OVL_BINS)
+define FX_RULES
+-include $(BUILD_DIR)/$(1).d
+$(BUILD_DIR)/$(1).elf: $(BUILD_DIR)/$(1).ld
+	$(LD) -T $$< -T config/fxmod/undefined_funcs_auto.$(1).txt -T config/fxmod/undefined_syms_auto.$(1).txt \
+		--no-check-sections -nostdlib -Map $$(@:.elf=.map) -o $$@ $$(filter %.o,$$^)
+$(BUILD_DIR)/$(1).bin: $(BUILD_DIR)/$(1).elf
+	$(OBJCOPY) -O binary $$< $$@
+endef
+$(foreach m,$(FXMODS),$(eval $(call FX_RULES,$(m))))
 
+build: $(EXE) $(OVL_BINS) $(FX_BINS)
+
+# Effect modules: one OK line each is noise, so only failures are listed, then a count.
 verify: build
 	sha1sum -c config/checksums.$(VERSION).sha1 config/checksums.ovl.$(VERSION).sha1
+	$(if $(FX_SUMS),@sha1sum --quiet -c $(FX_SUMS) && echo "effect modules: $(words $(FXMODS)) OK", \
+		@echo "effect modules: not extracted (make extract-fxmod), skipped")
 
 # Function/byte counts for game code (PsyQ libs excluded). `make progress CSV=1` logs to docs/progress.csv
 progress:
 	python3 tools/progress.py $(if $(CSV),--csv)
 
 clean:
-	rm -rf build asm config/undefined_*_auto*.txt
+	rm -rf build asm config/undefined_*_auto*.txt config/fxmod/undefined_*_auto.*.txt
 
 distclean: clean
 	rm -rf disks

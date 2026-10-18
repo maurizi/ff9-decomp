@@ -12,6 +12,11 @@ cd "$ROOT"
 mkdir -p disks/us/ovl
 cp "$MAIN/disks/us/SLUS_012.51" disks/us/
 cp "$MAIN"/disks/us/ovl/*.bin disks/us/ovl/
+# Battle effect modules (make extract-fxmod in the main checkout), if extracted there.
+if [ -d "$MAIN/disks/us/fxmod" ]; then
+    mkdir -p disks/us/fxmod
+    cp "$MAIN"/disks/us/fxmod/*.bin disks/us/fxmod/
+fi
 
 for sm in tools/maspsx tools/m2c tools/asm-differ tools/decomp-permuter; do
     mkdir -p "$sm"

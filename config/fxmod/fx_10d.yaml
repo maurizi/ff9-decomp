@@ -1,0 +1,48 @@
+name: fx_10d
+sha1: d8693db091273ccfaf8b63a8f6be0f057a659d4a
+options:
+  basename: fx_10d
+  target_path: disks/us/fxmod/fx_10d.bin
+  base_path: ../..
+  platform: psx
+  compiler: GCC
+  generated_c_preamble: '#include "btlfx_mod.h"'
+
+  asm_path: asm/us/fx_10d
+  src_path: src/fxmod/fx_10d
+  build_path: build/us
+  ld_script_path: build/us/fx_10d.ld
+  ld_dependencies: yes
+  elf_path: build/us/fx_10d.elf
+
+  symbol_addrs_path:
+    - config/fxmod/fx_10d.syms.txt
+  undefined_funcs_auto_path: config/fxmod/undefined_funcs_auto.fx_10d.txt
+  undefined_syms_auto_path: config/fxmod/undefined_syms_auto.fx_10d.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: fx_10d
+    type: code
+    start: 0x0
+    vram: 0x801E7700
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, fx_10d]
+      - [0x4, c, fx_10d]
+      - [0x44C, data]
+
+  - [0x634]

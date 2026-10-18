@@ -1,0 +1,5 @@
+fx_0fb_1_headerPtr = 0x801EC700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
+fx_0fb_1_header = 0x801F08CC; // [code] module header (0, init, ops), btlfx_updateLoader
+fx_0fb_1_op80 = 0x801ED684; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)
+fx_0fb_1_op81 = 0x801F0074; // type:func [code] header op entry 1, effect script op 0x81 (btlfx_spawnTask)
+fx_0fb_1_op82 = 0x801F04BC; // type:func [code] header op entry 2, effect script op 0x82 (btlfx_spawnTask)

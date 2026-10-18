@@ -1,0 +1,3 @@
+fx_05e_headerPtr = 0x801E7700; // type:u32 size:0x4 [code] word 0 of a module, read by btlfx_updateLoader
+fx_05e_header = 0x801E888C; // [code] module header (0, init, ops), btlfx_updateLoader
+fx_05e_op80 = 0x801E7C98; // type:func [code] header op entry 0, effect script op 0x80 (btlfx_spawnTask)

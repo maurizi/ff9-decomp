@@ -1,0 +1,48 @@
+name: fx_03c
+sha1: 4da529c63dc4f98c7df4bd481bd95d5265337b25
+options:
+  basename: fx_03c
+  target_path: disks/us/fxmod/fx_03c.bin
+  base_path: ../..
+  platform: psx
+  compiler: GCC
+  generated_c_preamble: '#include "btlfx_mod.h"'
+
+  asm_path: asm/us/fx_03c
+  src_path: src/fxmod/fx_03c
+  build_path: build/us
+  ld_script_path: build/us/fx_03c.ld
+  ld_dependencies: yes
+  elf_path: build/us/fx_03c.elf
+
+  symbol_addrs_path:
+    - config/fxmod/fx_03c.syms.txt
+  undefined_funcs_auto_path: config/fxmod/undefined_funcs_auto.fx_03c.txt
+  undefined_syms_auto_path: config/fxmod/undefined_syms_auto.fx_03c.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: fx_03c
+    type: code
+    start: 0x0
+    vram: 0x801E7700
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, fx_03c]
+      - [0x4, c, fx_03c]
+      - [0x124, data]
+
+  - [0xC3C]

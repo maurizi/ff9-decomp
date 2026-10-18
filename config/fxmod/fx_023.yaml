@@ -1,0 +1,48 @@
+name: fx_023
+sha1: 2e97f12405c2b3e2cac2966c336922c7d28bdc00
+options:
+  basename: fx_023
+  target_path: disks/us/fxmod/fx_023.bin
+  base_path: ../..
+  platform: psx
+  compiler: GCC
+  generated_c_preamble: '#include "btlfx_mod.h"'
+
+  asm_path: asm/us/fx_023
+  src_path: src/fxmod/fx_023
+  build_path: build/us
+  ld_script_path: build/us/fx_023.ld
+  ld_dependencies: yes
+  elf_path: build/us/fx_023.elf
+
+  symbol_addrs_path:
+    - config/fxmod/fx_023.syms.txt
+  undefined_funcs_auto_path: config/fxmod/undefined_funcs_auto.fx_023.txt
+  undefined_syms_auto_path: config/fxmod/undefined_syms_auto.fx_023.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: fx_023
+    type: code
+    start: 0x0
+    vram: 0x801E7700
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, fx_023]
+      - [0x4, c, fx_023]
+      - [0x4E8, data]
+
+  - [0xAE0]

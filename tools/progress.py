@@ -12,6 +12,10 @@ a global once its D_XXXXXXXX is gone from src/ and include/ (see tools/rename.py
 A function is "done" when it has no INCLUDE_ASM line in src/. PsyQ library functions
 (config/symbols.psyq.us.txt) are counted separately and excluded from the game totals.
 Run after a split: sizes come from asm/us/main/nonmatchings/.
+
+The battle effect modules (fx_XXX binaries, FF9.IMG dir 13; docs/effect-modules.md) are reported in a
+block of their own and are not part of the game totals or docs/progress.csv. Their functions are indexed
+in config/functions.fxmod.us.txt.
 """
 import argparse
 import datetime
@@ -31,18 +35,26 @@ MAIN_END = 0x800A7000  # main exe (code, data, bss) lies below the overlay area
 
 
 INDEX = "config/functions.us.txt"
+FX_INDEX = "config/functions.fxmod.us.txt"
+
+
+def is_fx(binary):
+    return binary.startswith("fx_")
 
 
 def functions():
-    """{(binary, name): (size, addr)} for every function. Read from the committed index
+    """{(binary, name): (size, addr)} for every function. Read from the committed indexes
     (written by --write-index after a full split), because a plain split only emits asm
     for functions still INCLUDE_ASM'd."""
     if os.path.exists(INDEX):
         out = {}
-        for line in open(INDEX):
-            f = line.split()
-            if len(f) == 4 and not line.startswith("#"):
-                out[(f[0], f[1])] = (int(f[2], 16), int(f[3], 16))
+        for path in (INDEX, FX_INDEX):
+            if not os.path.exists(path):
+                continue
+            for line in open(path):
+                f = line.split()
+                if len(f) == 4 and not line.startswith("#"):
+                    out[(f[0], f[1])] = (int(f[2], 16), int(f[3], 16))
         return out
     return functions_from_asm()
 
@@ -94,7 +106,7 @@ def placeholder_refs():
     Addresses below MAIN_END belong to main whichever file mentions them."""
     refs = {}
     for path in glob.glob(SRC_GLOB, recursive=True) + glob.glob("include/*.h"):
-        m = re.match(r"(?:src|include)/(ovl_[0-9a-f]{2})", path)
+        m = re.match(r"(?:src|include)/(?:fxmod/)?(ovl_[0-9a-f]{2}|fx_[0-9a-f]{3}(?:_\d)?)", path)
         local = m.group(1) if m else "main"
         for kind, addr in PLACEHOLDER_REF.findall(open(path).read()):
             b = "main" if int(addr, 16) < MAIN_END else local
@@ -135,7 +147,7 @@ def naming(funcs, lib):
                 b = m.group(1) if m else "main"
                 out.setdefault(b, [0, 0, 0, 0])[2] += 1
     for (b, n) in refs:
-        if n.startswith("D_"):
+        if n.startswith("D_") and not is_fx(b):
             out.setdefault(b, [0, 0, 0, 0])[3] += 1
     for r in out.values():
         r[3] += r[2]
@@ -157,11 +169,15 @@ def main():
 
     if a.write_index:
         funcs = functions_from_asm()
-        with open(INDEX, "w") as f:
-            f.write("# binary function size addr -- every function, from a full split; tools/progress.py --write-index\n")
-            for (b, n), (size, addr) in sorted(funcs.items(), key=lambda kv: (kv[0][0], kv[1][1])):
-                f.write(f"{b} {n} {size:#x} {addr:#010x}\n")
-        print(f"wrote {len(funcs)} functions to {INDEX}")
+        for path, keep in ((INDEX, lambda b: not is_fx(b)), (FX_INDEX, is_fx)):
+            sel = {k: v for k, v in funcs.items() if keep(k[0])}
+            if path == FX_INDEX and not sel:
+                continue  # effect modules not extracted: keep the committed index
+            with open(path, "w") as f:
+                f.write("# binary function size addr -- every function, from a full split; tools/progress.py --write-index\n")
+                for (b, n), (size, addr) in sorted(sel.items(), key=lambda kv: (kv[0][0], kv[1][1])):
+                    f.write(f"{b} {n} {size:#x} {addr:#010x}\n")
+            print(f"wrote {len(sel)} functions to {path}")
         return
 
     funcs, todo, lib = functions(), remaining(), library()
@@ -193,6 +209,9 @@ def main():
     pct = lambda d, t: 100.0 * d / t if t else 0.0
     row = lambda label, s: print(f"{label:10}: {s[0]:5d}/{s[1]:5d} funcs ({pct(s[0], s[1]):5.2f}%)  "
                                  f"{s[2]:7d}/{s[3]:7d} bytes ({pct(s[2], s[3]):5.2f}%)")
+    fx = [k for k in funcs if is_fx(k[0])]
+    funcs_all = funcs
+    funcs = {k: v for k, v in funcs.items() if not is_fx(k[0])}
     game = [k for k in funcs if k[1] not in lib]
     libs = [k for k in funcs if k[1] in lib]
     for b in sorted({k[0] for k in game}, key=lambda b: (b != "main", b)):
@@ -201,6 +220,20 @@ def main():
     print("-" * 70)
     row("game total", g)
     print(f"library   : {l[1]:5d} funcs, {l[3]:7d} bytes (PsyQ signatures + config/library_funcs.us.txt; not decompiled)")
+
+    if fx:
+        # Effect modules: separate binaries, not in the totals above (docs/effect-modules.md).
+        funcs = funcs_all
+        mods = sorted({k[0] for k in fx})
+        full = [b for b in mods if all(k not in todo for k in fx if k[0] == b)]
+        print(f"\neffect modules ({len(mods)} binaries, {len(full)} fully decompiled):")
+        for b in mods:
+            s = stats([k for k in fx if k[0] == b])
+            if s[0]:
+                row(b, s)
+        print("-" * 70)
+        row("fx total", stats(fx))
+        funcs = {k: v for k, v in funcs.items() if not is_fx(k[0])}
 
     nm = naming(funcs, lib)
     print("\nnaming    :  funcs named         globals named (D_ still referenced from C counts as unnamed)")

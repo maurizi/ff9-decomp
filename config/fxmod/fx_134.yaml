@@ -1,0 +1,48 @@
+name: fx_134
+sha1: f2480781a2e20b59c8503e520f4f536c63cf16ce
+options:
+  basename: fx_134
+  target_path: disks/us/fxmod/fx_134.bin
+  base_path: ../..
+  platform: psx
+  compiler: GCC
+  generated_c_preamble: '#include "btlfx_mod.h"'
+
+  asm_path: asm/us/fx_134
+  src_path: src/fxmod/fx_134
+  build_path: build/us
+  ld_script_path: build/us/fx_134.ld
+  ld_dependencies: yes
+  elf_path: build/us/fx_134.elf
+
+  symbol_addrs_path:
+    - config/fxmod/fx_134.syms.txt
+  undefined_funcs_auto_path: config/fxmod/undefined_funcs_auto.fx_134.txt
+  undefined_syms_auto_path: config/fxmod/undefined_syms_auto.fx_134.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: fx_134
+    type: code
+    start: 0x0
+    vram: 0x801E7700
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, fx_134]
+      - [0x48, c, fx_134]
+      - [0x5160, data]
+
+  - [0x8284]

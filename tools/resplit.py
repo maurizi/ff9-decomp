@@ -84,8 +84,19 @@ def main():
         os.rename(path, path + ".bak")
     try:
         subprocess.run(["rm", "-rf", "asm/us"], check=True)
-        for y in yamls:
+        # The exe and overlays one by one (their output is worth reading); the many small effect
+        # module configs (config/fxmod/) in parallel, quietly.
+        for y in [y for y in yamls if "/fxmod/" not in y]:
             subprocess.run([sys.executable, "-m", "splat", "split", y], check=True)
+        fx = [y for y in yamls if "/fxmod/" in y]
+        if fx:
+            from concurrent.futures import ThreadPoolExecutor
+            run = lambda y: subprocess.run([sys.executable, "-m", "splat", "split", y], capture_output=True)
+            with ThreadPoolExecutor(8) as ex:
+                for y, r in zip(fx, ex.map(run, fx)):
+                    if r.returncode:
+                        sys.stderr.write(r.stdout.decode() + r.stderr.decode())
+                        raise SystemExit(f"splat failed on {y}")
     except BaseException:
         for path in old:
             os.replace(path + ".bak", path)

@@ -1,0 +1,48 @@
+name: fx_1fd
+sha1: 4e34453b6aded76d831da4e26aebda36c2fdf5b0
+options:
+  basename: fx_1fd
+  target_path: disks/us/fxmod/fx_1fd.bin
+  base_path: ../..
+  platform: psx
+  compiler: GCC
+  generated_c_preamble: '#include "btlfx_mod.h"'
+
+  asm_path: asm/us/fx_1fd
+  src_path: src/fxmod/fx_1fd
+  build_path: build/us
+  ld_script_path: build/us/fx_1fd.ld
+  ld_dependencies: yes
+  elf_path: build/us/fx_1fd.elf
+
+  symbol_addrs_path:
+    - config/fxmod/fx_1fd.syms.txt
+  undefined_funcs_auto_path: config/fxmod/undefined_funcs_auto.fx_1fd.txt
+  undefined_syms_auto_path: config/fxmod/undefined_syms_auto.fx_1fd.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: fx_1fd
+    type: code
+    start: 0x0
+    vram: 0x801E7700
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, fx_1fd]
+      - [0x4, c, fx_1fd]
+      - [0x26F8, data]
+
+  - [0x644C]

@@ -1,0 +1,48 @@
+name: fx_08b
+sha1: 9f5784c504a3bfc043fefc00fb3bd2532654888f
+options:
+  basename: fx_08b
+  target_path: disks/us/fxmod/fx_08b.bin
+  base_path: ../..
+  platform: psx
+  compiler: GCC
+  generated_c_preamble: '#include "btlfx_mod.h"'
+
+  asm_path: asm/us/fx_08b
+  src_path: src/fxmod/fx_08b
+  build_path: build/us
+  ld_script_path: build/us/fx_08b.ld
+  ld_dependencies: yes
+  elf_path: build/us/fx_08b.elf
+
+  symbol_addrs_path:
+    - config/fxmod/fx_08b.syms.txt
+  undefined_funcs_auto_path: config/fxmod/undefined_funcs_auto.fx_08b.txt
+  undefined_syms_auto_path: config/fxmod/undefined_syms_auto.fx_08b.txt
+
+  find_file_boundaries: yes
+  use_legacy_include_asm: no
+  migrate_rodata_to_functions: yes
+  section_order: [".rodata", ".text", ".data", ".bss"]
+  string_encoding: ASCII
+  data_string_encoding: ASCII
+  rodata_string_guesser_level: 2
+  data_string_guesser_level: 2
+  asm_jtbl_label_macro: jlabel
+  ld_bss_is_noload: false
+  subalign: 4
+  ld_align_section_vram_end: false
+  ld_align_segment_vram_end: false
+
+segments:
+  - name: fx_08b
+    type: code
+    start: 0x0
+    vram: 0x801E7700
+    bss_size: 0x0
+    subsegments:
+      - [0x0, .rodata, fx_08b]
+      - [0xC, c, fx_08b]
+      - [0x62C, data]
+
+  - [0x678]
