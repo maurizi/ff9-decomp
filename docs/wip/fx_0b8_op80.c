@@ -1,4 +1,4 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 130 aligned mismatches, 18
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 42 aligned mismatches, 12
  * ignoring registers and spill offsets (spnorm 0x40); untested.
  * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14);
  * the band loop indexes D_801EA6D8[i]; the bolt point loop stores through one SVECTOR pointer d (for-init j, d, y);
@@ -604,9 +604,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     y_3 = b->unk70[0] << 12;
                     dx = ((b->unk4C[8] - b->unk4C[0]) << 12) / 9;
                     dz = ((b->unk70[8] - b->unk70[0]) << 12) / 9;
-                    for (j = 1, lo = -0x40, hi = 0x40; j < 8; j++, lo -= 0x20, hi += 0x20) {
-                        y_3 += dz;
+                    for (j = 1; j < 8; j++) {
                         x += dx;
+                        y_3 += dz;
+                        hi = j * 0x20 + 0x20;
+                        lo = -j * 0x20 - 0x20;
                         b->unk94[j] = ex->btlfx_randRange(lo, hi);
                         b->unkB8[j] = ex->btlfx_randRange(lo, hi);
                         b->unk4C[j] = (x >> 12) + b->unk94[j];
