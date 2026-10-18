@@ -1,8 +1,8 @@
-/* Draft of fx_17d_7_op80. Status: 16 aligned mismatches, same instructions except: case 2 frame<21 tint: c3 = c >> 1 is
- * srav by $a1 (=1) in the original (the call's second argument is loaded before it); y35 = ((frame-35)<<12)/35 lands in
- * s0 in the original (here in a2/s5, because y is shared with case 3's loop); m = frame - 6 is scheduled one slot
- * later. Notes: case 3 braced (else the tail's CVECTOR/SVECTOR/VECTOR don't reuse case 1/2 slots), separate per-use
- * temporaries (c0..c5), loop1 is a goto loop (no strength reduction of (i<<7)+0x400)*5), loop2 a plain i loop. */
+/* Draft of fx_17d_7_op80. Status: 4 aligned mismatches. Only difference: case 2 frame<21 tint, c3 = c2 >> 1 is
+ * "srav t2,a2,a1" in the original (a1 = 1 is the first insn of the block after sched1, so reload_cse turns the 1 into
+ * $a1); here sched1 keeps c3/s9C before the call's a1 load. Notes: case 3 braced (else the tail's locals do not
+ * reuse case 1/2 slots), separate per-use temporaries, loop1 is a for loop over an explicit pointer, loop2 a plain
+ * i loop, yy block-local, m/mm split (birthing-insn priority in sched1 depends on REG_N_SETS == 1). */
 #include "fxmod/fx_17d_7.h"
 
 typedef struct {
@@ -222,6 +222,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             SVECTOR cam2;
             s32 w;
             s32 m;
+            s32 mm;
             s32 z;
             s32 g;
             s32 h;
@@ -306,8 +307,8 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             b = ((0x1000 - t) >> 1) + 1;
             env->unk2C->unk0[3].vz = work->unk18.vz;
             if (frame >= 6) {
-                m = frame - 6;
-                sc.vx = sc.vy = sc.vz = m * 0x60;
+                mm = frame - 6;
+                sc.vx = sc.vy = sc.vz = mm * 0x60;
                 pos.vx = work->unk8.vx;
                 pos.vy = work->unk8.vy;
                 pos.vz = work->unk8.vz;
@@ -318,7 +319,7 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 D_801EFDDC = (sc.vx * 0xA28) >> 12;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk80);
                 ex->func_800E6624(frame * 8, 0x360, 0x100, 0x20, 0x80, 0x360, 0x180);
-                z = m * 0x122B / 64;
+                z = mm * 0x122B / 64;
                 sc.vx = sc.vy = sc.vz = z;
                 pos.vx = work->unk8.vx;
                 pos.vy = work->unk8.vy;
@@ -351,9 +352,11 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->func_800E6624(frame * ((t >> 8) + 8), 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
             }
             if (frame >= 35) {
+                s32 yy;
+
                 env->unk28 = 0x100;
-                y = ((frame - 35) << 12) / 35;
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk8, NULL, y + 0xAAA, 0, 1, y);
+                yy = ((frame - 35) << 12) / 35;
+                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), &work->unk8, NULL, yy + 0xAAA, 0, 1, yy);
                 env->unk28 = 0;
             }
             if (frame >= 58) {
@@ -417,35 +420,27 @@ s32 fx_17d_7_op80(s32 mode, Fx17d7Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame < 42) {
                 if (frame == 0) {
-                    i = 0;
-                    rp = D_801EF264;
-                    y = 0;
-                loop1:
-                    o = ex->btlfx_poolSpawn((s16 *)entry->unk10);
-                    if (o != NULL) {
-                        n = (i << 7) + 0x400;
-                        o->unkC.vx = work->unk8.vx + *rp * 3 / 4;
-                        o->unkC.vz = work->unk8.vz + y;
-                        o->unkC.vy = work->unk8.vy + 0x300;
-                        o->unk14.vx = 0x400;
-                        o->unk14.vy = 0x400;
-                        o->unk14.vz = 0;
-                        o->unk0 = 0;
-                        n5 = n * 5;
-                        o->unkA = n5 >> 2;
-                        o->unk22 = y;
-                        o->unk20 = i % 3;
-                        o->unk4 = ex->btlfx_randCentered(0xAA);
-                        o->unk8 = ex->btlfx_randCentered(0xAA);
-                        o->unk6 = ex->btlfx_randCentered(0x80) - ((n5 << 6) >> 12);
-                        o->unk1C = 0;
-                        o->unk1E = 0;
-                    }
-                    rp++;
-                    i++;
-                    y -= 0x18;
-                    if (i < 24) {
-                        goto loop1;
+                    for (i = 0, rp = D_801EF264, y = 0; i < 24; rp++, i++, y -= 0x18) {
+                        o = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                        if (o != NULL) {
+                            n = (i << 7) + 0x400;
+                            o->unkC.vx = work->unk8.vx + *rp * 3 / 4;
+                            o->unkC.vz = work->unk8.vz + y;
+                            o->unkC.vy = work->unk8.vy + 0x300;
+                            o->unk14.vx = 0x400;
+                            o->unk14.vy = 0x400;
+                            o->unk14.vz = 0;
+                            o->unk0 = 0;
+                            n5 = n * 5;
+                            o->unkA = n5 >> 2;
+                            o->unk22 = y;
+                            o->unk20 = i % 3;
+                            o->unk4 = ex->btlfx_randCentered(0xAA);
+                            o->unk8 = ex->btlfx_randCentered(0xAA);
+                            o->unk6 = ex->btlfx_randCentered(0x80) - ((n5 << 6) >> 12);
+                            o->unk1C = 0;
+                            o->unk1E = 0;
+                        }
                     }
                 }
                 D_801EF260 = -((t * 0x241) >> 12);
