@@ -1,9 +1,4 @@
-/* Draft of fx_1fe fx_1fe_op81. Status: ~43 aligned mismatches ignoring registers. Open: case 2 computes frame * 7
- * (sll/subu) before the first Hi_DrawEffModel call here (after it in the original), keeps &scale in a register
- * where the original keeps &pos, and adds 0x555 as an immediate where the original adds the register that holds
- * the 0x555 just stored to scale.vy; the 0xC00 load of the light value is scheduled differently; case 6's
- * frame == 0x20 block loads D_801E8900.vy into a0 (original v0). Levers found: the divisors are 37 and 87 (with
- * >> 2 at the use), "(s16)(vy - 0x200) - (sin >> 1)" keeps fold from reassociating, block-local tint values. */
+/* Draft of fx_1fe fx_1fe_op81. Status: 44 lines (build/w/nd.py); variable renaming search (build/w/rn.py) took it from 207. */
 #include "fxmod/fx_1fe.h"
 
 typedef struct {
@@ -36,6 +31,8 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
     s32 d;
     s32 k;
+    s32 f1;
+    s32 f2;
     Pool6CEntry *p;
 
     if (mode == 0) {
@@ -62,7 +59,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (work->unk0) {
         case 1:
-            t = (frame << 12) / 37;
+            d = (frame << 12) / 37;
             if (frame == 0) {
                 BTLFX_COPY_SVEC(&work->unk10, &D_801E88F8);
                 work->unk10.vy -= 0x1000;
@@ -78,7 +75,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vx = D_801E88F8.vx;
             work->unk20.vy = D_801E88F8.vy;
             work->unk20.vz = D_801E88F8.vz;
-            work->unk20.vy = (s16)(work->unk20.vy - 0x200) - (ex->math_sin(t >> 2) >> 1);
+            work->unk20.vy = (s16)(work->unk20.vy - 0x200) - (ex->math_sin(d >> 2) >> 1);
             env->unk2C->unk0[3].vx = work->unk20.vx;
             env->unk2C->unk0[3].vy = work->unk20.vy;
             env->unk2C->unk0[3].vz = work->unk20.vz;
@@ -124,50 +121,56 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vx = D_801E88F8.vx;
                 pos.vy = D_801E88F8.vy;
                 pos.vz = D_801E88F8.vz;
-                t = ((frame - 7) << 12) / 25;
-                scale.vz = scale.vx = (t >> 4) + scale.vy;
+                f1 = ((frame - 7) << 12) / 25;
+                scale.vz = scale.vx = (f1 >> 4) + scale.vy;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk34);
-                r = frame * 7;
+                do {
+                    r = frame * 7;
+                } while (0);
                 rot.vy = r;
-                scale.vz = scale.vx = (t >> 4) + 0x400;
+                scale.vz = scale.vx = (f1 >> 4) + 0x400;
                 scale.vy = 0x800;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk34);
                 ex->Hi_ModifyEffModelRGB(work->unk34, -0x20, -0x20, -0x20);
                 rot.vy = r;
                 scale.vz = scale.vx = 0x400;
-                scale.vy = ((ex->math_sin(t >> 2) / 2) + 0x800) >> 2;
+                scale.vy = ((ex->math_sin(f1 >> 2) / 2) + 0x800) >> 2;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk38);
                 ex->func_800E6624(1000 - frame * 9, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
                 ex->func_800E6624(1000 - r, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
-                ex->math_cos(t);
-                ex->math_cos(t * 2);
+                ex->math_cos(f1);
+                ex->math_cos(f1 * 2);
                 ex->func_800D0B18((s32)(env->unk20 + 2), 0x42, 0x10, 3, 0x3C, 1, &D_801E8908, 0x18, frame * 400, 0x186, 0x100);
             }
-            if ((u32)(frame - 7) < 0x14) {
-                s32 u;
-
-                rot.vx = 0x400;
-                pos.vx = D_801E88F8.vx;
-                pos.vy = D_801E88F8.vy;
-                pos.vz = D_801E88F8.vz;
-                u = ((frame - 7) << 12) / 20;
-                r = u >> 2;
-                c = 0xC00;
-                c -= u;
-                rot.vy = ex->math_sin(r) / 3;
-                rot.vz = 0;
-                scale.vy = scale.vx = (ex->math_sin(r) >> 6) + 0x249;
-                scale.vz = 0x555;
-                d = (ex->math_sin(r) / 15) + 2;
-                c = (c >> 5) - 0x80;
-                for (k = 0; k < 7; k++) {
-                    ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk3C);
-                    ex->Hi_ModifyEffModelRGB(work->unk3C, c, c, c);
-                    pos.vy -= d;
-                    rot.vy = ((rot.vy * 5) >> 2) + (k << 10);
-                    scale.vy = scale.vx = (scale.vx * 9) >> 3;
+            do {
+                if ((u32)(frame - 7) < 0x14) {
+                    s32 u;
+    
+                    rot.vx = 0x400;
+                    pos.vx = D_801E88F8.vx;
+                    pos.vy = D_801E88F8.vy;
+                    pos.vz = D_801E88F8.vz;
+                    u = ((frame - 7) << 12) / 20;
+                    do {
+                        r = u >> 2;
+                    } while (0);
+                    c = 0xC00;
+                    c -= u;
+                    rot.vy = ex->math_sin(r) / 3;
+                    rot.vz = 0;
+                    scale.vy = scale.vx = (ex->math_sin(r) >> 6) + 0x249;
+                    scale.vz = 0x555;
+                    d = (ex->math_sin(r) / 15) + 2;
+                    c = (c >> 5) - 0x80;
+                    for (k = 0; k < 7; k++) {
+                        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk3C);
+                        ex->Hi_ModifyEffModelRGB(work->unk3C, c, c, c);
+                        pos.vy -= d;
+                        rot.vy = ((rot.vy * 5) >> 2) + (k << 10);
+                        scale.vy = scale.vx = (scale.vx * 9) >> 3;
+                    }
                 }
-            }
+            } while (0);
             if (frame == 5) {
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0, 0x64);
             }
@@ -219,7 +222,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame == 0x20) {
                 work->unk18.vx = D_801E8900.vx;
-                work->unk18.vy = D_801E8900.vy;
+                do {
+                    work->unk18.vy = D_801E8900.vy;
+                } while (0);
                 work->unk10.vz -= 0x100;
                 work->unk18.vz = D_801E8900.vz;
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk18);
