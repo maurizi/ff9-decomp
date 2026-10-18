@@ -1,5 +1,10 @@
-/* Draft of func_801E86D0 (module fx_0e2). Status: 11/176 aligned instructions with ccprobe; ex and n swap between a callee-saved register and the stack (same body in fx_1fd).
- * Declarations it needs that are not yet in include/fxmod/fx_0e2.h are repeated below. */
+/* Draft of func_801E86D0 (module fx_0e2). Status: 63 aligned mismatches; same instructions and spills as the
+ * original except: loop.c hoists the 0x100 constant of the ua/ub clamps (life 5, threshold 29 with a call in the
+ * loop, 135 insns), which then gets no register and is rematerialised as li t0,256; the original loads it in the loop.
+ * That needs the loop to have >= 146 RTL insns or one more invariant moved before it; with the constant in the loop
+ * (tested with asm("") padding) the rest matches up to sched barriers. Two addPrim calls (one per branch) give ex
+ * a register and spill n like the original; the i >= 0x35 branch names its values the other way round (cb first),
+ * otherwise jump cross-jumps the two clamp tails. Same body in fx_1fd (func_801E7E18). */
 #include "fxmod/fx_0e2.h"
 
 void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
@@ -60,18 +65,18 @@ void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
             setRGB2(p, cb, cb, cb);
             setRGB3(p, cb, cb, cb);
         } else if (i >= 0x35) {
-            ca = 0x80 - (i - 0x34) * 16;
-            cb = 0x80 - (i - 0x33) * 16;
-            if (c < ca) {
-                ca = c;
-            }
+            cb = 0x80 - (i - 0x34) * 16;
+            ca = 0x80 - (i - 0x33) * 16;
             if (c < cb) {
                 cb = c;
             }
-            setRGB0(p, ca, ca, ca);
-            setRGB1(p, ca, ca, ca);
-            setRGB2(p, cb, cb, cb);
-            setRGB3(p, cb, cb, cb);
+            if (c < ca) {
+                ca = c;
+            }
+            setRGB0(p, cb, cb, cb);
+            setRGB1(p, cb, cb, cb);
+            setRGB2(p, ca, ca, ca);
+            setRGB3(p, ca, ca, ca);
         } else {
             setRGB0(p, c, c, c);
             setRGB1(p, c, c, c);
@@ -79,10 +84,9 @@ void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
             setRGB3(p, c, c, c);
         }
         if (e[0].unk0.vx < e[1].unk0.vx) {
-            z = 0;
+            ex->btlfx_addPrim(0x0C000000, 0, p);
         } else {
-            z = (e[0].unk8 + e[1].unk8) >> 1;
+            ex->btlfx_addPrim(0x0C000000, (e[0].unk8 + e[1].unk8) >> 1, p);
         }
-        ex->btlfx_addPrim(0x0C000000, z, p);
     }
 }
