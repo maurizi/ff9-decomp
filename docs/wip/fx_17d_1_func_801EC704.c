@@ -1,5 +1,7 @@
-/* Draft of func_801EC704 (module fx_17d_1). Status: 11/145 aligned instructions with ccprobe; register allocation only.
- * Declarations it needs that are not yet in include/fxmod/fx_17d_1.h are repeated below. */
+/* Draft of func_801EC704 (module fx_17d_1). Status: 84 aligned mismatches (sdiff --count; registers + shape).
+ * Found: the original uses branchless flags uu - (k ^ 1) with k = i++ < 3 computed mid-body, q = p++ at the top,
+ * and does NOT strength-reduce xa * 3 / xs * 3 (here loop.c makes givs of them) nor hoist the j < 3 flag out of
+ * the inner loop. Its caller-saves (t0-t6, a3 around addPrim) also differ. */
 #include "fxmod/fx_17d_1.h"
 
 void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
@@ -18,6 +20,11 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
     s32 xs;
     s32 i;
     s32 j;
+    s32 k;
+    s32 m;
+    s32 ta;
+    s32 ts;
+    POLY_FT4 *q;
 
     x0 = x - (w >> 1) * 3 / 2;
     dw = w >> 2;
@@ -33,30 +40,34 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
         uu = u;
         xa = dw;
         xs = 0;
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 4;) {
             col[0] = col[1] = col[2] = c;
             if (abr != 0xFF) {
                 col[3] = 0x2E;
             } else {
                 col[3] = 0x2C;
             }
-            p->u0 = p->u2 = uu;
-            uu += dw;
-            p->x0 = p->x2 = x0 + xs * 3 / 2;
-            p->v2 = p->v3 = v1 - (j >= 3);
-            p->u1 = p->u3 = uu - (i >= 3);
-            p->v0 = p->v1 = v;
-            p->x1 = p->x3 = x0 + xa * 3 / 2;
-            p->y0 = p->y1 = y0;
-            p->y2 = p->y3 = y1;
-            tpage |= abrBits;
-            p->tpage = tpage;
-            *(u32 *)&p->r0 = *(u32 *)col;
-            p->clut = clut;
-            ex->btlfx_addPrim(0x09000000, ot, p);
-            p++;
+            q = p++;
+            ta = xa * 3;
             xa += dw;
+            ts = xs * 3;
             xs += dw;
+            k = i++ < 3;
+            q->x0 = q->x2 = x0 + ts / 2;
+            q->u0 = q->u2 = uu;
+            uu += dw;
+            q->u1 = q->u3 = uu - (k ^ 1);
+            m = j < 3;
+            q->v2 = q->v3 = v1 - (m ^ 1);
+            q->x1 = q->x3 = x0 + ta / 2;
+            q->v0 = q->v1 = v;
+            q->y0 = q->y1 = y0;
+            q->y2 = q->y3 = y1;
+            tpage |= abrBits;
+            q->tpage = tpage;
+            *(u32 *)&q->r0 = *(u32 *)col;
+            q->clut = clut;
+            ex->btlfx_addPrim(0x09000000, ot, q);
         }
         v += dh;
         y0 += dh;
