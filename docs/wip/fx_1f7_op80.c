@@ -1,4 +1,9 @@
-/* Draft of fx_1f7 fx_1f7_op80. Status: 416 aligned mismatches, 116 ignoring registers (the previous draft: 404/148).
+/* Draft of fx_1f7 fx_1f7_op80. Status: 274 aligned mismatches, 112 ignoring registers (was 416/116).
+ * Round 5: the 33-point copy loop uses its own counter jj (the original's a0; the shared j crossed calls) and a
+ * copy tc = tr for tc->unk110 (the original's a2), which puts pseudos in t0/t1 so reloads use t2 as in the
+ * original; d->pad = 0x80 after d->vz makes loop.c combine the vy/vz/pad givs into the pad address (a1 = d + 0xA).
+ * Still open there: loop.c hoists the 0x80 constant (the original loads it inside the loop) and the copy loop's
+ * registers (jj/tc/base/d/pad giv: v1/a1/a3/a2/a0 here, a0/a2/t0/a3/a1 in the original).
  * Pass 2: the original's stack holds a at 0x28, a separate b at 0x30 (second lerp point of the trail loop) and m at
  * 0x38 (it also passes &m.m[1][1] = sp+0x40 somewhere), so b is its own SVECTOR again; the frame is then 0xB0 vs
  * the original's 0xA8 because this C has one spill slot too many (0x58..0x80 vs 0x58..0x78). The trail loop as
@@ -25,6 +30,8 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 al;
     s32 n;
     SVECTOR *d;
+    s32 jj;
+    Fx1f7Trail *tc;
 
     if (mode == 0) {
         *arg4 = 0x14;
@@ -90,11 +97,12 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (tr->unk110 < 0x10) {
                             al = tr->unk110 << 8;
                         }
-                        for (j = 0; j < n; j++, d++) {
-                            d->vx = D_801E80D8[tr->unk110 + j].vx;
-                            d->vy = D_801E80D8[tr->unk110 + j].vy;
+                        tc = tr;
+                        for (jj = 0; jj < n; jj++, d++) {
+                            d->vx = D_801E80D8[tc->unk110 + jj].vx;
+                            d->vy = D_801E80D8[tc->unk110 + jj].vy;
+                            d->vz = D_801E80D8[tc->unk110 + jj].vz;
                             d->pad = 0x80;
-                            d->vz = D_801E80D8[tr->unk110 + j].vz;
                         }
                         env->unk28 = 0x200;
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 3), 0, NULL, frame, 0x1000, al, 1, (u8 *)tr, 0);
