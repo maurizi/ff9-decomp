@@ -158,4 +158,91 @@ void func_801EAA54(s32 ch);
 void func_801EABB4(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx114Vec3;
+
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    SVECTOR unkC; /* rotation */
+    SVECTOR unk14; /* position */
+    s32 unk1C;
+    SVECTOR unk20; /* body rotation */
+    Fx114Vec3 unk28; /* body position */
+    s32 pad34;
+    Fx114Vec3 unk38; /* body scale */
+    s32 pad44;
+    SVECTOR unk48; /* rock rotation */
+    Fx114Vec3 unk50; /* rock position */
+    s32 pad5C;
+    Fx114Vec3 unk60; /* rock scale */
+    s32 pad6C;
+    SVECTOR unk70;
+    Fx114Vec3 unk78;
+    s32 pad84;
+    Fx114Vec3 unk88;
+    s32 unk94;
+    s32 unk98;
+    SVECTOR unk9C;
+    Fx114Vec3 unkA4;
+    s32 padB0;
+    Fx114Vec3 unkB4;
+    s32 padC0;
+    s32 unkC4;
+    s32 unkC8;
+    SVECTOR unkCC;
+    Fx114Vec3 unkD4;
+    s32 padE0;
+    Fx114Vec3 unkE4;
+    s32 padF0;
+    SVECTOR unkF4;
+    SVECTOR unkFC;
+    SVECTOR unk104;
+    s16 unk10C; /* frame */
+    s16 unk10E;
+    s16 unk110;
+    s16 unk112;
+    s16 unk114;
+    s16 unk116;
+    u16 unk118[24]; /* models */
+    u16 unk148;
+    u16 unk14A;
+    u16 unk14C;
+} Fx114Work83; /* 0x150 */
+
+typedef struct {
+    u8 unk0; /* start frame */
+    u8 unk1; /* spin flags */
+    u8 unk2; /* landed */
+    u8 pad3;
+    s16 unk4; /* speed */
+    s16 unk6; /* lift */
+    SVECTOR unk8; /* direction */
+    SVECTOR unk10; /* rotation */
+    Fx114Vec3 unk18; /* position */
+    s32 pad24;
+} Fx114Rock; /* 0x28 */
+
+extern Fx114Rock D_801EB2F4[];
+extern u8 D_801EB68C[];
+extern u8 D_801EB6D4[];
+extern s16 D_801EB6E0[];
+extern u8 D_801EB6EC[];
+extern u8 D_801EB6F4[];
+extern s16 D_801EB6FC[];
+extern s16 D_801EB704[];
+extern u8 D_801EB70C[];
+extern s16 D_801EB714[];
+extern Fx114Track12 D_801ED0F8[];
+extern Fx114Track12 D_801ED1B0;
+extern Fx114Track6 D_801ED1B8;
+extern Fx114Track6 D_801ED1C0;
+
+/* Hi_RegisterTexListModel called with three arguments (the original leaves a3 unset) */
+#define REG_TEX_LIST(ex) ((u16 (*)(void *, void *, void *))(ex)->Hi_RegisterTexListModel)
+
 #endif
