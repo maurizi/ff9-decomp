@@ -91,4 +91,41 @@ extern SVECTOR D_801EFDE8;
 extern s32 D_801EF25C;
 /* end copied */
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* counter */
+    SVECTOR unk8; /* position */
+    SVECTOR unk10;
+    SVECTOR unk18; /* camera */
+    u8 pad20[8];
+    s32 unk28[3]; /* model position */
+    SVECTOR unk34;
+    SVECTOR unk3C;
+    s32 unk44[3]; /* model scale */
+    s32 unk50[3];
+    SVECTOR unk5C;
+    Pool6CEntry *unk64;
+    Pool6CEntry *unk68;
+    Pool6CEntry *unk6C;
+    s32 unk70; /* models */
+    s32 unk74;
+    s32 unk78;
+    s32 unk7C;
+    s32 unk80;
+    s32 unk84;
+    s32 unk88;
+    s32 unk8C;
+    s32 unk90;
+    s32 unk94;
+    s32 unk98;
+    s32 unk9C;
+    s32 unkA0;
+} Fx1bf1Work80; /* 0xA4 */
+
+extern BtlModel D_801EF2E8[];
+extern SVECTOR D_801EF254;
+extern s16 D_801EF260[];
+s32 func_801EC704(SVECTOR *v, SVECTOR *rot);
+s32 func_801EC7C8(s32 mode, Fx1bf1Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1bf1RockInst *inst);
+
 #endif

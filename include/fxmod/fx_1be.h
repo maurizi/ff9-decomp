@@ -4,6 +4,12 @@
 /* Effect module fx_1be (dir 13 file 0x1be). */
 #include "btlfx_mod.h"
 
+typedef struct {
+    u8 u;
+    u8 v;
+} Fx1beUV;
+
+extern SVECTOR D_801E8F38[9];
 extern SVECTOR D_801E8FE8[64];
 
 s32 func_801E7704(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out);
@@ -48,7 +54,7 @@ extern s32 D_801E95D4;
 extern s32 D_801E95D8;
 extern Fx1beUnit D_801E95E8[];
 s32 func_801E7840(s32 curve, s32 n, s32 t, s32 from, s32 to);
-void func_801E89A8(SVECTOR *pos, void *rot, s32 step, s32 tpage, s32 clut, s32 abr);
+void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 step, s32 tpage, s32 clut, s32 abr);
 s32 func_801E8E10(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 
 #endif

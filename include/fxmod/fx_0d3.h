@@ -78,4 +78,51 @@ void func_801E7CBC(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
                    void (*fn)(s32, s32, s32, s32, DVECTOR *));
 s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    SVECTOR unk8;
+    Fx0d3Vec3 unk10; /* summon position */
+    Fx0d3Vec3 unk1C; /* summon scale */
+    SVECTOR unk28; /* summon rotation */
+    SVECTOR unk30;
+    SVECTOR unk38;
+    SVECTOR unk40; /* camera */
+    u8 pad48[4];
+    Pool6CEntry *unk4C;
+    Pool6CEntry *unk50;
+    s32 unk54; /* models */
+    s32 unk58;
+    s32 unk5C;
+    s32 unk60;
+} Fx0d3Work81; /* 0x64 */
+
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180[4];
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx0d3Summon81;
+
+typedef struct {
+    s32 unk0;
+    s32 unk4;
+} Fx0d3BonePair;
+
+extern SVECTOR D_801EB040;
+extern Fx0d3BonePair D_801EB054[6];
+extern CVECTOR D_801EB09C[];
+extern CVECTOR D_801EB0AC[];
+extern CVECTOR D_801EB0B8[];
+extern u8 D_801EC614[];
+extern u8 D_801ECE34[];
+extern Fx0d3Seg D_801EDAC4[6][12];
+extern u16 D_801EDF54[];
+void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+                   s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
+s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif

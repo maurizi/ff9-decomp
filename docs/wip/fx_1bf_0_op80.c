@@ -1,8 +1,10 @@
-/* Draft of fx_1bf_0 fx_1bf_0_op80. Status: 39 aligned mismatches (21 ignoring registers). tools/equiv.py agrees
- * (low coverage: random modes mostly take the mode 0/1 paths). Left: case 5's reload of entry sits earlier in the
- * original and its p.vz sum is in a0 (ours v0); case 6 schedules `li s0,0x1000` before `li a1,28`; branch 1's
- * `li t0,1`; branch 2 computes x / y = x << 9 first, y in a2 (ours: after the constants, in v1); branch 3's quotient
- * is in a2 (ours a1; a block-local variable there makes it worse). What got it here: q.vx = p.vx copies after the
+/* Draft of fx_1bf_0 fx_1bf_0_op80. Status: 26 aligned mismatches (16 ignoring registers). tools/equiv.py agrees
+ * (low coverage: random modes mostly take the mode 0/1 paths). Left, all scheduling ties: case 6 schedules
+ * `li s0,0x1000` before `li a1,28` (original: after); branch 1's `li t0,1` comes first (original: after fp = 0);
+ * branch 2 computes x / y = x << 9 after the constants, y in v1 (original: first, y in a2). Tried: every position of
+ * the case 6 copies and of c = 0x1000 / c -= t, c = 0x1000 - t, other variables for c, every position of each
+ * branch 2 statement, y without x, s0 = 0 first. What got it here: case 5 in source order (p.vx, p.vy, p.vz, then
+ * q.vx, q.vy, q.vz), q.vx = p.vx copies after the
  * p stores, `c = 0x1000; c -= t;`, n/flag/m set first in branch 1, block-local x/y/z for the sin/cos call and for
  * branch 2, case 6's y as an s16 local loaded after p2.vz, alpha before w in branch 3, and D_801EA1FC as an array
  * (MEM_IN_STRUCT keeps its store after the env->unk2C stores). Levers that worked on fx_1bf_2 op80 (same family):
@@ -81,8 +83,8 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 p.vy = work->unk8.vy;
                 p.vz = work->unk8.vz + d;
                 q.vx = p.vx;
-                q.vz = p.vz;
                 q.vy = work->unk8.vy - 0x1000;
+                q.vz = p.vz;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &p, NULL, 0xAAA, 0, 1, t);
                 func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &p, &q, frame, t, 1, 0x20);
             }
