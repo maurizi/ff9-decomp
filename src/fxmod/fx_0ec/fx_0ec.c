@@ -103,7 +103,47 @@ Fx0ecShard *func_801E802C(void) {
     return NULL;
 }
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E8064);
+s32 func_801E8064(s32 y, SVECTOR *center) {
+    Fx0ecTri *t;
+    Fx0ecTri *u;
+    BtlfxExports *ex;
+    Fx0ecShard *p;
+    SVECTOR d;
+    s32 i;
+    s32 k;
+    s32 n;
+    Fx0ecSplit *sp;
+
+    i = k = 0;
+    sp = &D_801ECA90;
+    t = (Fx0ecTri *)sp->unkC;
+    u = t;
+    ex = BTLFX_EXPORTS(D_801E98A0);
+    for (n = k; i < sp->unk2; i++, u++, t++, k++) {
+        if (y < (u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3 && u->unk0[0].pad == 0) {
+            p = func_801E802C();
+            if (p != NULL) {
+                u->unk0[0].pad = 1;
+                p->unk0.vx = ((t->unk0[0].vx + u->unk0[1].vx + u->unk0[2].vx) / 3) << 12;
+                p->unk0.vy = ((u->unk0[0].vy + u->unk0[1].vy + u->unk0[2].vy) / 3) << 12;
+                p->unk0.vz = ((u->unk0[0].vz + u->unk0[1].vz + u->unk0[2].vz) / 3) << 12;
+                p->unk18 = 0;
+                p->unk1A = k;
+                p->unkC.pad = 0x1000;
+                p->unk14 = ex->btlfx_randCentered(0x100);
+                p->unk16 = ex->btlfx_randCentered(0x200);
+                d.vx = (p->unk0.vx >> 12) - center->vx;
+                d.vy = (p->unk0.vy >> 12) - center->vy;
+                d.vz = (p->unk0.vz >> 12) - center->vz;
+                n++;
+                p->unkC.vx = (d.vx >> 3) + ex->btlfx_randCentered(0x10);
+                p->unkC.vy = ex->btlfx_randCentered(0x10);
+                p->unkC.vz = ex->btlfx_randCentered(0x20) + 0x1E;
+            }
+        }
+    }
+    return n;
+}
 
 void func_801E82D8(void) {
     Fx0ecSplit *sp = &D_801ECA90;
