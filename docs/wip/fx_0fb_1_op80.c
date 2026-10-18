@@ -115,14 +115,19 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unk60.vx = 0x400;
         work->unk60.vy = 0x400;
         work->unk60.vz = 0x400;
-        work->unk74.vy = work->unkC.vy + 0x4000;
-        work->unk74.vx = work->unkC.vx + 0x5000;
-        work->unk74.vz = work->unkC.vz - 0x3000;
+        work->unk74.vx = work->unkC.vx;
+        work->unk74.vy = work->unkC.vy;
+        work->unk74.vz = work->unkC.vz;
+        work->unk74.vx += 0x5000;
+        work->unk74.vy += 0x4000;
+        work->unk74.vz -= 0x3000;
         work->unk54.vx = work->unkC.vx;
-        work->unk54.vy = work->unkC.vy + 0x1000;
+        work->unk54.vy = work->unkC.vy;
+        work->unk54.vz = work->unkC.vz;
         work->unk8C.vz = 0;
         work->unk80.vz = 0x1000;
-        work->unk54.vz = work->unkC.vz - 0x2000;
+        work->unk54.vy += 0x1000;
+        work->unk54.vz -= 0x2000;
         {
             SVECTOR v;
 
@@ -134,10 +139,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             env->unk2C->unk0[3].vx = work->unk54.vx;
             env->unk2C->unk0[3].vy = work->unk54.vy;
             env->unk2C->unk0[3].vz = work->unk54.vz;
-            work->unk3C.vx = work->unk54.vx;
+            BTLFX_COPY_SVEC(&work->unk3C, &work->unk54);
             D_801F0D30 = 0;
             D_801F0D38 = 0;
-            work->unk3C.vy = work->unk54.vy;
             D_801F0D34 = 0x1000;
         }
         return 0;
