@@ -1,7 +1,6 @@
-/* Draft of fx_0ed fx_0ed_op80. Status: 5 aligned structural mismatches. Twin of fx_09a op80 (same fixes: dead
- * t / 30 for the sign word, *(D + (a != b)) file pick, byte-offset ribbon loops; separate t0/t3 per case give the
- * original's s0 for them). Open: ex/env/const-1 registers (orig ex s2, env s6, 1 in s5; here s1, s5, s6), and the
- * frame == 0x1F file-pick block, where the original loads entry->unk8 first and puts both '& 0xFFF' temps in a1. */
+/* Draft of fx_0ed fx_0ed_op80. Status: structurally identical, register allocation only (orig: t s0, p/state s1,
+ * ex s2, frame s4, 1 s5, env s6; here p s0, ex s1, state s2, env s5, 1 s6). Twin of fx_09a op80 (matched): dead
+ * t / 30 for the sign word, *(D + (a != b)) file pick with the 'ang' temp, byte-offset ribbon loops. */
 #include "fxmod/fx_0ed.h"
 
 typedef struct {
@@ -172,9 +171,11 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 2, 0xFF, 0xFF, 0);
             }
             if (frame == 0x1F) {
+                s32 ang;
+
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8,
-                                                           *(D_801E8C10 + (((work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
-                                                                      ((env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)))),
+                                                           *(D_801E8C10 + (((ang = work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
+                                                                      ((ang = env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
@@ -236,17 +237,23 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 func_801E7704(&a, &b, 0x10, &D_801E8C18, &D_801E8C1C, amp, D_801E9AF4, 1);
                 func_801E7704(&b, &c, 0x10, &D_801E8C1C, &D_801E8C20, amp, D_801E9C04, 1);
                 BTLFX_COPY_SVEC(&work->unk20, &a);
-                i = 0;
-                sv = (SVECTOR *)D_801E9AF4;
-                for (k = 8; i < 17; k += 16, i++) {
-                    sv[i * 2].vy -= sv[i * 2].vy >> 6;
-                    ((SVECTOR *)((u8 *)sv + k))->vy -= ((SVECTOR *)((u8 *)sv + k))->vy >> 4;
-                }
-                i = 0;
-                k = 8;
-                for (; i < 17; k += 16, i++) {
-                    ((SVECTOR *)D_801E9C04)[i * 2].vy -= ((SVECTOR *)D_801E9C04)[i * 2].vy >> 4;
-                    ((SVECTOR *)((u8 *)D_801E9C04 + k))->vy -= ((SVECTOR *)((u8 *)D_801E9C04 + k))->vy >> 3;
+                {
+                    s32 o;
+                    s32 p2;
+                    SVECTOR *sv2;
+
+                    sv = (SVECTOR *)D_801E9AF4;
+                    for (i = 0, o = 8; i < 17; o += 16, i++) {
+                        sv[i * 2].vy -= sv[i * 2].vy >> 6;
+                        ((SVECTOR *)(o + (s32)sv))->vy -= ((SVECTOR *)(o + (s32)sv))->vy >> 4;
+                    }
+                    sv2 = (SVECTOR *)D_801E9C04;
+                    i = 0;
+                    p2 = 8;
+                    for (; i < 17; p2 += 16, i++) {
+                        sv2[i * 2].vy -= sv2[i * 2].vy >> 4;
+                        ((SVECTOR *)(p2 + (s32)sv2))->vy -= ((SVECTOR *)(p2 + (s32)sv2))->vy >> 3;
+                    }
                 }
             }
         }
