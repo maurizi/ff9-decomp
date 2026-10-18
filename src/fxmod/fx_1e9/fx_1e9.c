@@ -29,7 +29,9 @@ s32 func_801E7FCC(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1e9/nonmatchings/fx_1e9", func_801E810C);
+void func_801E810C(void) {
+    D_801E88A4 = 0;
+}
 
 void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to) {
     Fx1e9Trail *tr = &D_801E8644[D_801E88A4];

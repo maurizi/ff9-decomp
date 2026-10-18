@@ -1,6 +1,12 @@
 #include "fxmod/fx_1f2.h"
 
-INCLUDE_ASM("asm/us/fx_1f2/nonmatchings/fx_1f2", func_801E7704);
+void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
+    Unk800F78A4 *env = D_801EA260;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 c = ex->btlfx_lerpRatio(from, to, t, n);
+
+    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + ot), arg4, c, c, c);
+}
 
 s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EA260);

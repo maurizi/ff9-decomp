@@ -92,4 +92,30 @@ INCLUDE_RODATA("asm/us/fx_1a2/nonmatchings/fx_1a2", fx_1a2_headerPtr);
 
 INCLUDE_ASM("asm/us/fx_1a2/nonmatchings/fx_1a2", fx_1a2_op80);
 
-INCLUDE_ASM("asm/us/fx_1a2/nonmatchings/fx_1a2", fx_1a2_op81);
+s32 fx_1a2_op81(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 a;
+
+    if (mode == 0) {
+        *arg4 = 8;
+    } else if (mode == 1) {
+        D_801E9844 = env;
+        ex->btlfx_getUnitPos(0x10, (s16 *)work);
+        return 0;
+    } else {
+        frame = entry->unk0;
+        work->vz += 0x60;
+        ex->btlfx_setUnitPos(0x10, (s16 *)work);
+        if (frame < 0x24) {
+            a = 0x80;
+        } else {
+            a = 0x80 - (frame - 0x24) * 0x10;
+        }
+        ex->func_800E806C(0x10, a);
+        if (frame >= 0x2C) {
+            return 1;
+        }
+    }
+    return 0;
+}
