@@ -310,7 +310,211 @@ s32 func_801E8370(SVECTOR *v) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", fx_196_op85);
+s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 t;
+    SVECTOR pos;
+    SVECTOR rot;
+    VECTOR sc;
+    SVECTOR v0; /* also the light colour (as a CVECTOR) */
+    SVECTOR v1;
+    VECTOR sc2;
+
+    if (mode == 0) {
+        *arg4 = 0x4C;
+    } else if (mode == 1) {
+        D_801E915C = env;
+        work->unk0 = 0;
+        work->unk4 = 0;
+    } else {
+        frame = entry->unk0;
+        switch (work->unk0) {
+        case 0: {
+            s32 s;
+            s32 r;
+            s32 m;
+            s32 q;
+            s32 a;
+            s32 b;
+            s32 i;
+            s32 c;
+
+            t = (frame << 12) / 81;
+            if (frame == 0x12) {
+                work->unk48 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk10);
+                if (work->unk48 != NULL) {
+                    work->unk48->unk24->unk0 = -1;
+                    ((EffTailSpawn *)work->unk48->unk24)->unk3C = (s32 (*)(SVECTOR *, SVECTOR *, s32, s32))func_801E8370;
+                }
+                if (work->unk48 != NULL) {
+                    work->unk48->unk22 = 0x200;
+                }
+            }
+            if (frame >= 9) {
+                if (frame < 0x3D) {
+                    s = ((frame - 9) << 12) / 52;
+                } else {
+                    s = 0x1000;
+                }
+                if (frame < 0x14) {
+                    pos.vx = 0;
+                    m = 1;
+                } else {
+                    pos.vx = 0x1000 - (t >> 1);
+                    m = 2;
+                }
+                q = s >> 2;
+                c = ex->math_sin(t >> 2);
+                pos.vy = ((0x1000 - c) >> 2) - (0x400 + ((ex->math_cos(q) * 0x44C) >> 12));
+                pos.vz = ((0x1000 - ex->math_cos(q)) << 2) - 0x4000;
+                rot.vx = 0x400;
+                rot.vy = 0x400;
+                rot.vz = 0;
+                sc.vx = sc.vy = 0x1000;
+                sc.vz = ex->math_cos(q);
+                if (frame < 0x10) {
+                    r = ex->math_sin((frame << 10) >> 4) + 0x800;
+                } else {
+                    r = 0x1800;
+                }
+                a = 0xC8;
+                if ((u32)(frame - 0x28) < 0x20) {
+                    a = 0xC8 - (((frame - 0x28) * 0x96) >> 5);
+                } else if (frame >= 0x48) {
+                    a = 0x32;
+                }
+                if (frame < 0x3D) {
+                    b = 0x80;
+                } else {
+                    b = 0x80 - (((frame - 0x3D) << 5) / 20);
+                }
+                if (frame < 0x29) {
+                    env->unk28 = 0;
+                } else {
+                    env->unk28 = -0x80;
+                }
+                func_801E7AA0(&pos, &rot, &sc, b, a, 0x17, 0x3D04, 0, 0x80, 0x7D0, s * m, -0x140, r,
+                              ex->math_cos(s >> 2) + 0x400, 0x100);
+                env->unk28 = 0x7C;
+                for (i = 0; i < 18; i++) {
+                    if (D_801E916C[i].pad != 0) {
+                        b = (i & 1) << 12;
+                        ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &D_801E916C[i], NULL,
+                                                ((t * 3) >> 3) + 0x3800 + b, frame + i * 2, 1, 0x1000);
+                    }
+                }
+                env->unk28 = 0x37;
+                if (frame >= 0x1D) {
+                    for (i = 0; i < 7; i++) {
+                        if (D_801E916C[i].pad != 0) {
+                            ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->unk8, 6), &D_801E916C[i], NULL,
+                                                    0x2400, frame + i * 2 + 4, 1, 0x1000);
+                        }
+                    }
+                }
+                env->unk28 = 0;
+            }
+            if (frame == 0x32) {
+                Pool6CEntry *e;
+
+                v0.vx = env->unk2C->unk0[0].vx;
+                v0.vy = env->unk2C->unk0[0].vy;
+                v0.vz = env->unk2C->unk0[0].vz;
+                v1.vx = env->unk2C->unk0[1].vx;
+                v1.vy = env->unk2C->unk0[1].vy;
+                v1.vz = env->unk2C->unk0[1].vz;
+                work->unk10.vx = (v0.vx + v1.vx) / 2;
+                work->unk10.vy = (v0.vy + v1.vy) / 2;
+                work->unk10.vz = (v0.vz + v1.vz) / 2;
+                e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk10);
+                if (e != NULL) {
+                    e->unk22 = 0x40;
+                }
+            }
+            if (frame >= 0x2B) {
+                s32 u;
+
+                u = ((frame - 0x2B) << 10) / 38;
+                ex->math_cos(u);
+                ex->math_cos(u);
+                ex->func_800D0B18((s32)&env->unk20[2], -0x20, 0x10, 3, 0x50, 1, D_801E90FC, 0x18, frame << 8, 0x186,
+                                  0x100);
+                if (frame == 0x2B) {
+                    ex->btlfx_drawScreenTint((u32 *)&env->unk20[2], 0, 0x20, 0xAA, 0xFF);
+                }
+                if (frame == 0x2D || frame == 0x32) {
+                    ex->btlfx_drawScreenTint((u32 *)&env->unk20[2], 0, 0, 0x64, 0xFF);
+                }
+                if (frame >= 0x2B) {
+                    s32 d;
+
+                    d = frame - 0x2B;
+                    v1.vx = 0;
+                    v1.vy = 0;
+                    v1.vz = 0;
+                    sc2.vz = 0x1000;
+                    ((CVECTOR *)&v0)->r = ((CVECTOR *)&v0)->g = ((CVECTOR *)&v0)->b = -0x10 - (d * 0x8D / 38);
+                    sc2.vy = sc2.vx = 0x1400 - ((d << 10) / 38);
+                    ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &v1, &sc2, (CVECTOR *)&v0, 0, 0);
+                }
+            }
+            func_801E78BC(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+            if (frame >= 0x51) {
+                SVECTOR bp;
+
+                work->unk0 = 1;
+                work->unk18.vx = 0;
+                work->unk18.vy = -0x64;
+                work->unk18.vz = 0;
+                env->unk2C->unk0[3].vx = work->unk18.vx;
+                env->unk2C->unk0[3].vy = work->unk18.vy;
+                env->unk2C->unk0[3].vz = work->unk18.vz;
+                ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&bp);
+                if (bp.vy < -0x800) {
+                    work->unk18.vz = 0x300;
+                    work->unk18.vy -= 0x1F4;
+                }
+                entry->unk0 = -1;
+            }
+            break;
+        }
+        case 1: {
+            SVECTOR pos1;
+            SVECTOR rot1;
+            VECTOR sc1;
+            s32 s;
+            s32 c;
+
+            t = (frame << 12) / 24;
+            s = t >> 2;
+            work->unk18.vy -= (ex->math_cos(s) * 0x18) >> 12;
+            env->unk2C->unk0[3].vx = work->unk18.vx;
+            env->unk2C->unk0[3].vy = work->unk18.vy;
+            env->unk2C->unk0[3].vz = work->unk18.vz;
+            pos1.vx = 0;
+            pos1.vy = -0x200 - (ex->math_cos(s) >> 3);
+            rot1.vx = 0x400;
+            rot1.vy = 0x400;
+            pos1.vz = 0;
+            rot1.vz = 0;
+            sc1.vx = sc1.vy = 0x1000;
+            sc1.vz = 0;
+            c = ex->math_cos(s) >> 5;
+            func_801E7AA0(&pos1, &rot1, &sc1, c, c, 0x17, 0x3D04, 0, 0x80, (ex->math_cos(s) >> 3) + 0x300, s, 0x100, 0, 0,
+                          0);
+            func_801E78BC(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+            if (frame >= 0x18) {
+                ex->btlfx_clearEffModels();
+                return 1;
+            }
+            break;
+        }
+        }
+        work->unk4++;
+    }
+    return 0;
+}
 
 s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);

@@ -22,6 +22,18 @@ typedef struct {
     s32 unk40; /* unit count */
 } Fx196Work86; /* 0x44 */
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    u8 pad8[0x10 - 0x8];
+    SVECTOR unk10; /* position */
+    SVECTOR unk18; /* camera */
+    u8 pad20[0x48 - 0x20];
+    Pool6CEntry *unk48;
+} Fx196Work85; /* 0x4C */
+
+extern CVECTOR D_801E90FC[];
+
 extern Fx196CamPath D_801E910C[];
 extern Unk800F78A4 *D_801E915C;
 
