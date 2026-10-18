@@ -51,7 +51,127 @@ s32 func_801E793C(Pool30Entry *pt, SVECTOR *pos, Fx0b4Timer *timer, Fx0b4Path *p
 
 INCLUDE_RODATA("asm/us/fx_0b4/nonmatchings/fx_0b4", fx_0b4_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_0b4/nonmatchings/fx_0b4", fx_0b4_op80);
+s32 fx_0b4_op80(s32 mode, Fx0b4Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 i;
+    s32 k;
+    s32 s;
+    Fx0b4Timer *tm;
+    Fx0b4Timer *tq;
+    u16 *cnt;
+    Pool6CEntry **pp;
+    s32 *anim;
+    SVECTOR *pos;
+    u16 *file;
+
+    if (mode == 0) {
+        *arg4 = 0x3C;
+    } else if (mode == 1) {
+        D_801E8184 = env;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk2C);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->unk34);
+        D_801E818C.vx = work->unk34.vx;
+        D_801E818C.vy = work->unk34.vy;
+        D_801E818C.vz = work->unk34.vz;
+        for (k = 0, tq = D_801E80EC; k < 6; k++, tq++) {
+            tq->unk0 = k * 2 + 0x14;
+            func_801E8040(&D_801E81C4[k], ex->btlfx_getFileData(entry->unk8, D_801E8110[k]));
+        }
+        return 0;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 0:
+            work->unk1C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk34);
+            break;
+        case 8:
+            work->unk20 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk34);
+            break;
+        case 20:
+            work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x19), (s32)&work->unk34);
+            if (work->unk18 != NULL) {
+                work->unk18->unk14 = (s32)D_801ED2F4;
+                work->unk18->unk12 = 0x12;
+                work->unk18->unkC = 0x98;
+            }
+            break;
+        case 25:
+            work->unk24 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk2C);
+            break;
+        case 45:
+            work->unk28 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk34);
+            break;
+        }
+        tm = D_801E80EC;
+        for (i = 0, cnt = &tm->unk2; i < 6; i++, cnt += 2, tm++) {
+            if (frame == tm->unk0) {
+                work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E8104[i]), (s32)&D_801E8194[i]);
+                if (work->unk0[i] != NULL) {
+                    work->unk0[i]->unk14 = (s32)D_801E81F4[i];
+                    work->unk0[i]->unk12 = 0x18;
+                    work->unk0[i]->unkC = 0x90;
+                }
+                if (work->unk0[i] != NULL) {
+                    ((EffMotion *)work->unk0[i]->unk0)->unk8 = D_801E8124[i];
+                }
+            }
+            if (frame >= tm->unk0) {
+                (*cnt)++;
+            }
+        }
+        if (frame >= 0) {
+            if (work->unk1C != NULL) {
+                if (work->unk1C->unk30 == -1) {
+                    work->unk1C = NULL;
+                }
+                if (work->unk1C != NULL) {
+                    work->unk1C->unk5C.vx = D_801E811C.vx;
+                    work->unk1C->unk5C.vy = D_801E811C.vy;
+                    work->unk1C->unk5C.vz = D_801E811C.vz;
+                }
+            }
+        }
+        if (frame >= 8) {
+            if (work->unk20 != NULL) {
+                if (work->unk20->unk30 == -1) {
+                    work->unk20 = NULL;
+                }
+                if (work->unk20 != NULL) {
+                    work->unk20->unk5C.vx = D_801E811C.vx;
+                    work->unk20->unk5C.vy = D_801E811C.vy;
+                    work->unk20->unk5C.vz = D_801E811C.vz;
+                }
+            }
+        }
+        if (frame >= 0x14) {
+            if (work->unk18 != NULL) {
+                if (work->unk18->unk30 == -1) {
+                    work->unk18 = NULL;
+                }
+                if (work->unk18 != NULL) {
+                    work->unk18->unk5C.vx = D_801E811C.vx;
+                    work->unk18->unk5C.vy = D_801E811C.vy;
+                    work->unk18->unk5C.vz = D_801E811C.vz;
+                }
+            }
+        }
+        if (frame >= 0x2D) {
+            if (work->unk28 != NULL) {
+                if (work->unk28->unk30 == -1) {
+                    work->unk28 = NULL;
+                }
+                if (work->unk28 != NULL) {
+                    work->unk28->unk5C.vx = D_801E811C.vx;
+                    work->unk28->unk5C.vy = D_801E811C.vy;
+                    work->unk28->unk5C.vz = D_801E811C.vz;
+                }
+            }
+        }
+        return frame >= 0x5A;
+    }
+    return 0;
+}
 
 void func_801E8040(Fx0b4Path *path, u16 *data) {
     data++;
