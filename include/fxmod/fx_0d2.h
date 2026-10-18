@@ -187,5 +187,41 @@ extern Fx0d2Keys D_801EF250;
 extern SVECTOR D_801F0040;
 extern SVECTOR D_801F0050[2];
 s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    SVECTOR unk8; /* slice rotation */
+    Fx0d2Vec3 unk10; /* slice position */
+    s32 pad1C;
+    Fx0d2Vec3 unk20; /* slice scale */
+    s32 pad2C;
+    SVECTOR unk30;
+    Fx0d2Vec3 unk38;
+    s32 pad44;
+    Fx0d2Vec3 unk48;
+    s32 pad54;
+    SVECTOR unk58[8]; /* unit positions */
+    VECTOR unk98[8]; /* unit scales */
+    SVECTOR unk118;
+    SVECTOR unk120;
+    SVECTOR unk128;
+    s16 unk130; /* fade counters */
+    s16 unk132;
+    s16 unk134;
+    u16 unk136[9]; /* models */
+} Fx0d2Work83; /* 0x148 */
+
+extern u16 D_801EA44C[3];
+extern s16 D_801EA454[];
+extern s16 D_801EA464[];
+extern u8 D_801EA47C[];
+extern Unk800E8F50 D_801EB138;
+extern Fx0d2Keys D_801EF238;
+extern Fx0d2Keys D_801EF248;
+extern Fx0d2Keys D_801EF260;
+extern Fx0d2Keys D_801EF2A0[10];
+extern Fx0d2Keys D_801EF2F0;
+extern Fx0d2Keys D_801EF2F8;
+s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif
