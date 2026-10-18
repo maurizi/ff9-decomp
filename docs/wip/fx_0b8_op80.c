@@ -1,11 +1,13 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 395 aligned mismatches, 177
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 594 aligned mismatches, 124
  * ignoring registers and spill offsets (spnorm 0x40); untested. c/y/k split per block.
  * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14),
- * the band loop indexes D_801EA6D8[i], the bolt point loop stores through one SVECTOR pointer d, and the function is
- * one if/else-if/else with a shared return 0 (the frame path returns frame >= 0x134 from inside the else).
- * Open: constant/store scheduling in the setup blocks, the original frame is 8 bytes larger (one more spill), loop givs
- * of later unit loops, and some statement orders. Two switches on frame: the first holds the model setup of frames 0
- * and 0x7C, the second the timers; cases 0x64/0x7C and 0x3F/0xA5 share cross-jumped tails. */
+ * the band loop indexes D_801EA6D8[i], the bolt point loop stores through one SVECTOR pointer d, the function is one
+ * if/else-if/else with a shared return 0 (the frame path returns frame >= 0x134 inside the else), the morph switch
+ * lists case 3 first, and three split temporaries that were read uninitialized (c_2, c_7, the |cos| k_4) are one
+ * variable again (that cost strict rows: the global allocation shifted).
+ * Open: global allocation, constant/store scheduling in the setup blocks, the original frame is 8 bytes larger (one
+ * more spill), loop givs of later unit loops, and some statement orders. Two switches on frame: the first holds the
+ * model setup of frames 0 and 0x7C, the second the timers; cases 0x64/0x7C and 0x3F/0xA5 share cross-jumped tails. */
 #include "fxmod/fx_0b8.h"
 
 typedef struct {
@@ -146,12 +148,9 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0b8Band *bd;
     SVECTOR *d;
     u8 *q;
-    s32 c_1;
     s32 c_2;
     s32 c_3;
     s32 c_4;
-    s32 c_5;
-    s32 c_6;
     s32 c_7;
     s32 y_1;
     s32 y_2;
@@ -160,16 +159,12 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k_2;
     s32 k_3;
     s32 k_4;
-    s32 k_5;
     s32 frame;
     s32 i;
     s32 j;
-    s32 k;
-    s32 c;
     s32 r;
     s32 a;
     s32 x;
-    s32 y;
     s32 dx;
     s32 dy;
     s32 lo;
@@ -539,7 +534,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0[0x11] != 0) {
             work->unk0[0x11]--;
             if (work->unk0[0x11] < 0x10) {
-                c_1 = func_801E7704(2, 0x10, work->unk0[0x11], 0xFF, 0);
+                c_2 = func_801E7704(2, 0x10, work->unk0[0x11], 0xFF, 0);
             } else {
                 c_2 = 0xFF;
             }
@@ -656,20 +651,20 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk164.vy = work->unk13C.vy = func_801E7704(1, 0x10, work->unk0[0xF], -0x2500, -0x1000);
             work->unk14C.vx = work->unk14C.vz = work->unk14C.vy = func_801E7704(1, 0x10, work->unk0[0xF], 0x1800, 0);
             switch (k_3 >> 10) {
-            case 0:
-                ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk134, work->unk138,
-                                         (k_3 & 0x3FF) << 2);
-                break;
-            case 1:
-                ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk130, work->unk134,
+            case 3:
+                ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk128, work->unk12C,
                                          (k_3 & 0x3FF) << 2);
                 break;
             case 2:
                 ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk12C, work->unk130,
                                          (k_3 & 0x3FF) << 2);
                 break;
-            case 3:
-                ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk128, work->unk12C,
+            case 1:
+                ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk130, work->unk134,
+                                         (k_3 & 0x3FF) << 2);
+                break;
+            case 0:
+                ex->Hi_DrawMorphEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk134, work->unk138,
                                          (k_3 & 0x3FF) << 2);
                 break;
             }
@@ -734,10 +729,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 p2.vy = work->unk164.vy + ((ex->math_sin(u->unk1C) * r) >> 12);
                 k_4 = (ex->math_cos(u->unk1C) * r) >> 12;
                 if (k_4 < 0) {
-                    k_5 = -k_5;
+                    k_4 = -k_4;
                 }
-                p2.vx = work->unk164.vx + ((ex->math_sin(u->unk1E) * k_5) >> 12);
-                p2.vz = work->unk164.vz + ((ex->math_cos(u->unk1E) * k_5) >> 12);
+                p2.vx = work->unk164.vx + ((ex->math_sin(u->unk1E) * k_4) >> 12);
+                p2.vz = work->unk164.vz + ((ex->math_cos(u->unk1E) * k_4) >> 12);
                 ex->btlfx_setUnitPos(i, &p2.vx);
                 sc.vx = sc.vy = sc.vz = func_801E7704(0, 0x30, work->unk0[0x1B], u->unk8.vy, 0);
                 ex->func_800E7ACC(i, (s32 *)&sc);
@@ -747,12 +742,12 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitRot(i, &u->unk24.vx);
             }
         }
-        c_5 = 0xFFF;
+        c_7 = 0xFFF;
         if (work->unk0[0x16] != 0) {
             work->unk0[0x16]--;
             if (work->unk0[0x17] != 0) {
                 work->unk0[0x17]--;
-                c_6 = (0x10 - work->unk0[0x17]) << 8;
+                c_7 = (0x10 - work->unk0[0x17]) << 8;
             }
             if (work->unk0[0x18] != 0) {
                 work->unk0[0x18]--;

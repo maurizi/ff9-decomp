@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast). Status: first draft from m2c
- * + asm, untested: 1663 aligned mismatches, ~520 ignoring registers and spill offsets (spnorm 0x40). One fresh
+ * + asm, untested: 1629 aligned mismatches, ~480 ignoring registers and spill offsets (spnorm 0x40). One fresh
  * temporary per block (x1.., y1.., ...) was needed for global allocation to keep ex in fp and work in s7 as the
  * original does (reusing x/y/k across cases spilled work, env, entry and ex). Divisions are checked against the
  * magic-number shifts (several are (x / n) >> k). Open: spill slots, statement orders, register choices.
@@ -130,10 +130,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR r9;
     s32 x1;
     s32 x2;
-    s32 x3;
     s32 x4;
     s32 x5;
-    s32 x6;
     s32 x7;
     s32 x8;
     s32 x9;
@@ -141,10 +139,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 x11;
     s32 x12;
     s32 x13;
-    s32 x14;
     s32 x15;
     s32 x16;
-    s32 x17;
     s32 x18;
     s32 x19;
     s32 x20;
@@ -194,13 +190,6 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 shake;
     s32 i;
     s32 j;
-    s32 k;
-    s32 n;
-    s32 w;
-    s32 x;
-    s32 y;
-    s32 z;
-    s32 g;
     s32 ang;
     Fx0e31Bolt *bl;
     Pool6CEntry *p;
@@ -437,13 +426,13 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r2.vz = work->unkBC.vz;
             r2.vz = (frame << 5) + 0x400;
             ex->func_800CFD78(&work->unk30.vx, &work->unkBC.vx, -0x80, &p2.vx);
-            x3 = (x3 >> 5) - 0x80;
+            x2 = (x2 >> 5) - 0x80;
             v2.vx = p2.vx;
             v2.vy = p2.vy;
             v2.vz = p2.vz;
             for (i = 0; i < 3; i++) {
                 ex->Hi_DrawEffModel(&r2, &v2, (s32)&s2, work->unkC4);
-                ex->Hi_ModifyEffModelRGB(work->unkC4, x3, x3, x3);
+                ex->Hi_ModifyEffModelRGB(work->unkC4, x2, x2, x2);
                 s2.vx = s2.vy = (s2.vx * 3) >> 2;
                 r2.vz += 0x550;
             }
@@ -463,10 +452,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (frame < 0x11) {
             x5 = (ex->math_cos(t >> 2) >> 2) + 0x800;
         } else {
-            x6 = 0x800;
+            x5 = 0x800;
         }
         shake = t;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, (x6 * 3) >> 1, 0, 1,
+        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, (x5 * 3) >> 1, 0, 1,
                           0x1000);
         k5 = t >> 2;
         x7 = ex->math_cos(k5) + 0x1000;
@@ -697,13 +686,13 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 7) {
                 x13 = 0x2000 - ex->math_sin((frame << 10) / 7);
             } else {
-                x14 = 0x7800 - ((frame - 7) * 0x1124) / 65 * 7;
+                x13 = 0x7800 - ((frame - 7) * 0x1124) / 65 * 7;
             }
             if ((u32)(frame - 5) < 7) {
                 y4 = ex->math_sin(((frame - 5) << 11) >> 12) * 0xF5;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 0x400), 1, 0, y4 >> 14, y4 >> 12);
             }
-            work->unkB0.vx = work->unkB0.vy = x14;
+            work->unkB0.vx = work->unkB0.vy = x13;
             func_801ED708((VECTOR *)&work->unkA4, &work->unkBC);
             work->unkBC.vz -= 0x400;
             ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkD0);
@@ -800,8 +789,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             func_801ECAF8(entry, &D_801F0D14[i], &f9, &t9, (x16 * 3) >> 2, x16, ang, 0xC0, 0, 0x1000, y10);
         }
         if (frame < 0x26) {
-            x17 = (x17 * 3) >> 1;
-            func_801ECAF8(entry, &D_801F0D14[2], &f9, &t9, (x17 * 3) >> 2, x17, -ang, 0xC0, 0, 0x1000,
+            x16 = (x16 * 3) >> 1;
+            func_801ECAF8(entry, &D_801F0D14[2], &f9, &t9, (x16 * 3) >> 2, x16, -ang, 0xC0, 0, 0x1000,
                           (ex->math_cos(t >> 1) * 0xF5) >> 12);
         }
         x18 = 0x1000 - t;

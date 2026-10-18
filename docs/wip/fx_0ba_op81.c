@@ -77,22 +77,14 @@ s32 fx_0ba_op81(s32 mode, Fx0baWork81 *w, Unk800F78A4 *env, Unk80100C78Entry *en
     s32 n_2;
     s32 n_3;
     s32 m_1;
-    s32 m_2;
     s32 m_3;
-    s32 m_4;
     s32 i_1;
     s32 i_2;
     s32 frame;
     s32 state;
-    s32 t;
-    s32 t2;
-    s32 c;
     s32 v;
-    s32 i;
     s32 j;
     s32 k;
-    s32 n;
-    s32 m;
     s32 h;
     s16 *src0;
     s16 *src1;
@@ -515,10 +507,10 @@ s32 fx_0ba_op81(s32 mode, Fx0baWork81 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                     }
                     m_1 = len - k;
                     if (m_1 < 0) {
-                        m_2 = 0;
+                        m_1 = 0;
                     }
-                    a = src0 + m_2 * 3;
-                    b = src1 + m_2 * 3;
+                    a = src0 + m_1 * 3;
+                    b = src1 + m_1 * 3;
                     n_2++;
                     sv->vx = w->unk8.vx + ex->btlfx_lerp(a[0], b[0], lerp);
                     k++;
@@ -547,10 +539,10 @@ s32 fx_0ba_op81(s32 mode, Fx0baWork81 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 do {
                     m_3 = a70[i_2] - n_3;
                     if (m_3 < 0) {
-                        m_4 = 0;
+                        m_3 = 0;
                     }
-                    a = src0 + m_4 * 3;
-                    b = src1 + m_4 * 3;
+                    a = src0 + m_3 * 3;
+                    b = src1 + m_3 * 3;
                     n_3++;
                     sv->vx = w->unk8.vx + ex->btlfx_lerp(a[0], b[0], a80[i_2]) * 2;
                     sv++;

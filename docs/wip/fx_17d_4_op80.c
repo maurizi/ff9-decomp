@@ -1,4 +1,4 @@
-/* Draft of fx_17d_4 fx_17d_4_op80. Status: 617 aligned mismatches (about 180 ignoring registers); equivalent by
+/* Draft of fx_17d_4 fx_17d_4_op80. Status: 622 aligned mismatches (about 190 ignoring registers); equivalent by
  * construction. Variable roles brute-forced (build/w/roles3.py); c and o split per block. Fixed later: case 4 computes
  * q4 = (frame << 12) / 20 at its start (the original keeps the /10 magic in s1 for the later / 10) and uses q4 >> 2;
  * case 5 t >> 1 / t >> 2; case 6 t = (frame << 12) / 51 (c = 0x1000 - t, t >> 7) and w13 = (... << 12) / 13
@@ -72,24 +72,18 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 q4;
     s32 w13;
     s32 c_1;
-    s32 c_2;
     s32 c_3;
-    s32 c_4;
     s32 c_5;
     s32 c_6;
-    s32 o_1;
-    s32 o_2;
     s32 o_3;
     s32 frame;
     s32 t;
     s32 x;
     s32 r;
-    s32 c;
     s32 i;
     s32 k;
     s32 n;
     s32 m;
-    s32 o;
     s32 f;
     s32 q;
     s32 g;
@@ -356,12 +350,12 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             env->unk28 = 0x10;
-            c_2 = 0x1000;
+            c_3 = 0x1000;
             if (frame < 8) {
                 c_3 = frame << 9;
             }
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unk10, NULL, 0x1000, 0, 1, c_3);
-            c_4 = 0;
+            c_5 = 0;
             if (frame >= 6) {
                 c_5 = ((frame - 6) << 12) / 14;
             }
@@ -432,7 +426,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             flag = 0;
             if (frame < 0x26) {
-                o_1 = 0x20;
+                o_3 = 0x20;
                 if (frame < 0x1E) {
                     i = 0x1000;
                     g = 0;
@@ -443,7 +437,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     flag = 0;
                 } else {
                     x = (frame - 0x1E) << 9;
-                    o_2 = 0x27;
+                    o_3 = 0x27;
                     i = 0x1000;
                     g = 0;
                     q = 0x1000;
