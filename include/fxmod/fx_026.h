@@ -117,7 +117,7 @@ typedef struct {
     s32 unk8;
 } Fx026Item82;
 
-/* line strip passed to func_800D1494 */
+/* line strip passed to btlfx_drawTrail */
 typedef struct {
     s16 vx;
     s16 vy;

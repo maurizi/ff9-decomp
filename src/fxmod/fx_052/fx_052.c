@@ -73,7 +73,7 @@ s32 fx_052_op80(s32 mode, Fx052Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk56, work->unk3C, work->unk3C, work->unk3C);
             }
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), frame);
         if (frame >= 0xC8) {
             ex->btlfx_clearEffModels();
             return 1;

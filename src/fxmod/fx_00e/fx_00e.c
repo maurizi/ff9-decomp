@@ -54,7 +54,7 @@ s32 fx_00e_op80(s32 mode, Fx00eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 return 1;
             }
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), work->unk4);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), work->unk4);
         work->unk4++;
     }
     return 0;

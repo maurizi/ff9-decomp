@@ -11,14 +11,14 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *e, SVECTOR *pos, s32 arg3, s32 
     SVECTOR v;
 
     if (t == 0) {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 6), (s32)pos, NULL, -1, 0, 0, 0, buf, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), (s32)pos, NULL, -1, 0, 0, 0, buf, 0);
     }
     if (t < n - 4) {
         s = 0x1000;
     } else {
         s = 0x1000 - (((t - (n - 4)) << 12) >> 2);
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 6), (s32)pos, (s32 *)e->unk28, t,
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), (s32)pos, (s32 *)e->unk28, t,
                       0x1C00 - (t << 12) / n, s, 1, buf, 1);
     if (pt->unk1F == 1) {
         if (D_801EA704 != NULL) {

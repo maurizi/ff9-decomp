@@ -133,7 +133,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         q = (t / 40 + 10) * 2;
         do {
             ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, r, (s16 *)&out);
-            ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &out, NULL, 0x1000, n, 1,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &out, NULL, 0x1000, n, 1,
                               (cs * ex->math_sin((i << 11) >> 7)) >> 12, 0, 0);
             i++;
             r += step;
@@ -156,7 +156,7 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < 0x10; i++) {
                 s += 0x100;
                 ex->func_800D044C(&work->unkC, (s32)&out2, 0, (XY32 *)&v, t, s);
-                ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), &out2, NULL, 0x1800, frame & 0xF, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), &out2, NULL, 0x1800, frame & 0xF, 1,
                                   cs, 0, 0);
             }
         }

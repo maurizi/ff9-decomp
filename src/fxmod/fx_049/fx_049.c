@@ -28,10 +28,10 @@ void func_801E7704(Unk80100C78Entry *entry, Fx049Strip *strip, s32 *tbl, SVECTOR
         p++;
     }
     if (kind < 2) {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D10[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D10[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D10[kind]), 0, NULL, frame, 0x1000, arg10, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D10[kind]), 0, NULL, frame, 0x1000, arg10, 1,
                           (u8 *)strip, 2);
     }
 }
@@ -65,10 +65,10 @@ void func_801E796C(Unk80100C78Entry *entry, Fx049Strip *strip, s32 *tbl, SVECTOR
         p++;
     }
     if (kind < 2) {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D18[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D18[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 0);
     } else {
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D18[kind]), 0, NULL, frame, 0x1000, arg9, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8D18[kind]), 0, NULL, frame, 0x1000, arg9, 1,
                           (u8 *)strip, 2);
     }
 }
@@ -95,12 +95,12 @@ void func_801E7CEC(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s
     BTLFX_COPY_SVEC(&r, rot);
     entry = D_801E9728;
     s = ex->math_sin((t << 11) / n);
-    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), pos, &r, *scale, t, 1, s, 0, 0);
-    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x19), pos, &r, *scale, t, 1, s, 2, 2);
-    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), pos, &r, *scale * 5 / 2, t, 1, *col, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1A), pos, &r, *scale, t, 1, s, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x19), pos, &r, *scale, t, 1, s, 2, 2);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), pos, &r, *scale * 5 / 2, t, 1, *col, 0, 0);
     w = (t << 12) / n + 0x1800;
-    ex->func_800D1FFC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), pos, &r, w, t, 1, *col);
-    ex->func_800D1FFC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), pos, &r, w, t, 1, *col);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), pos, &r, w, t, 1, *col);
+    ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), pos, &r, w, t, 1, *col);
 }
 
 s32 func_801E7F5C(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {

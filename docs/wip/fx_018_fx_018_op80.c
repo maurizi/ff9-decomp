@@ -69,7 +69,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame == 1) {
                 env->unk28 = 0x200;
-                ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &work->unk8, NULL, 0x2800, 0, 1, 0x1000,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &work->unk8, NULL, 0x2800, 0, 1, 0x1000,
                                   0, 0);
                 env->unk28 = 0;
             }
@@ -100,9 +100,9 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 20) {
                 c = ex->math_cos((frame << 10) / 20);
                 env->unk28 = 0x200;
-                ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unk8, NULL, 0x2800, 0, 1, c, 0, 0);
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unk8, NULL, 0x2800, 0, 1, c, 0, 0);
                 if (frame < 10) {
-                    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &work->unk8, NULL, 0x2800, 0, 1,
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), &work->unk8, NULL, 0x2800, 0, 1,
                                       0x1000 - (frame << 12) / 10, 0, 0);
                 }
                 env->unk28 = 0;
@@ -178,7 +178,7 @@ s32 fx_018_op80(s32 mode, Fx018Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     v.vz += (ex->math_sin(ang) * D_801E9E80) >> 12;
                     ang += 0x100;
                     n += 3;
-                    ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &v, NULL, 0x1800 - ((i & 1) << 12),
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &v, NULL, 0x1800 - ((i & 1) << 12),
                                       n & 7, 1, c, ex->btlfx_randCentered(5), ex->btlfx_randCentered(5));
                     i++;
                 } while (i < 16);

@@ -203,7 +203,7 @@ s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 16) {
             fade = ex->math_cos(((frame - 16) << 10) >> 4);
         }
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x36), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x36), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
         if (frame >= 32) {
             return 1;
         }
@@ -243,7 +243,7 @@ s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 8) {
             fade = ex->math_cos(((frame - 8) << 10) >> 4);
         }
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x35), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x35), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
         if (frame >= 24) {
             return 1;
         }
@@ -291,7 +291,7 @@ s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 24) {
             fade = ex->math_cos(((frame - 24) << 10) >> 4);
         }
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x34), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x34), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
         if (frame >= 40) {
             return 1;
         }

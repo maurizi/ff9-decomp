@@ -168,7 +168,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk18);
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xB), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xB), frame);
         if (frame >= 41) {
             work->unk0 = 3;
             entry->unk0 = -1;

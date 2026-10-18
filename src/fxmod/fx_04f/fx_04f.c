@@ -162,8 +162,8 @@ s32 fx_04f_op80(s32 mode, Fx04fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_ModifyEffModelAbr(work->unk10, 1);
         ex->Hi_ModifyEffModelRGB(work->unk10, (k * 2 / 3 >> 5) - 0x80, (k * 2 / 3 >> 5) - 0x80, (k * 2 / 3 >> 5) - 0x80);
         work->unk38.vz = 0;
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xA), work->unk48);
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xD), work->unk48);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xA), work->unk48);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xD), work->unk48);
         work->unk48++;
     }
     }

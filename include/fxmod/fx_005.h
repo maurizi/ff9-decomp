@@ -4,7 +4,7 @@
 /* Effect module fx_005 (dir 13 file 0x05). */
 #include "btlfx_mod.h"
 
-/* lightning strip: a header for func_800D1494 and the points (pad = width) */
+/* lightning strip: a header for btlfx_drawTrail and the points (pad = width) */
 typedef struct {
     u8 unk0;
     u8 unk1;

@@ -29,7 +29,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
     case 0:
         t = (frame << 12) / 15;
         if (frame == 0) {
-            ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 4), 0, NULL, -1, 0x1000, 0, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 4), 0, NULL, -1, 0x1000, 0, 1,
                               (u8 *)&D_801E857C[it->unk20], 0);
         }
         BTLFX_COPY_SVEC(&a, &it->unk18);
@@ -51,9 +51,9 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         b.vy += 0x140;
         b.vz -= 0xA0;
         f = (u8 *)ex->btlfx_getFileData(entry->unk8, 4);
-        ex->func_800D1494(f, (s32)&b, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
+        ex->btlfx_drawTrail(f, (s32)&b, NULL, 0, 0x6000, ex->math_cos(t >> 2) * 2 / 3 + 0x555, 1,
                           (u8 *)&D_801E857C[it->unk20], 0);
-        ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &it->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &it->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
         env->unk28 = 0;
         if (it->unk20 == 0) {
             env->unk2C->unk0[0].vx = it->unk4.vx;
@@ -88,11 +88,11 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         f = (u8 *)ex->btlfx_getFileData(entry->unk8, 1);
         k = t >> 2;
-        ex->func_800D1680(f, &it->unk4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(k), 0, 0);
+        ex->btlfx_drawParticles(f, &it->unk4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(k), 0, 0);
         BTLFX_COPY_SVEC(&b, &it->unk4);
         b.vy += 0x140;
         b.vz -= 0xA0;
-        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 4), (s32)&it->unk4, NULL, 0, 0, 0x555, 1,
+        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 4), (s32)&it->unk4, NULL, 0, 0, 0x555, 1,
                           (u8 *)&D_801E857C[it->unk20], 0);
         it->unkC.vy += ex->math_cos(k) >> 7;
         pos.vx = it->unk4.vx;
@@ -130,7 +130,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
             d.vy = 0;
             q = ((frame << 12) / 12) >> 2;
             f = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
-            ex->func_800D1680(f, &it->unk4, &d, ex->math_cos(q) * 3, 6, 1, ex->math_cos(q), 0, 0);
+            ex->btlfx_drawParticles(f, &it->unk4, &d, ex->math_cos(q) * 3, 6, 1, ex->math_cos(q), 0, 0);
         }
         if (frame >= 18) {
             return 1;
