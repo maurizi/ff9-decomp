@@ -124,7 +124,93 @@ s32 fx_096_op80(s32 mode, Fx096Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_096/nonmatchings/fx_096", fx_096_op81);
+s32 fx_096_op81(s32 mode, Fx096Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    u32 i;
+    s32 t;
+    s32 c;
+
+    if (mode == 0) {
+        *arg4 = 0x68;
+    } else if (mode == 1) {
+        D_801E831C = env;
+        ex->btlfx_initEffModels(D_801E832C, 2);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->unk58);
+        work->unk34.vx = 0x221;
+        work->unk34.vy = 0x221;
+        work->unk34.vz = 0x221;
+        work->unk44.vy = 0x200;
+        work->unk4.vx = 0;
+        work->unk4.vy = 0;
+        work->unk4.vz = 0;
+        work->unkC.vx = 0;
+        work->unkC.vy = 0;
+        work->unkC.vz = 0;
+        work->unk44.vx = 0;
+        work->unk44.vz = 0;
+        work->unk14.vx = work->unk58.vx;
+        work->unk14.vy = work->unk58.vy;
+        work->unk14.vz = work->unk58.vz;
+        work->unk24.vx = work->unk58.vx;
+        work->unk24.vy = work->unk58.vy;
+        work->unk24.vz = work->unk58.vz;
+        work->unk14.vy = -0x258;
+        work->unk62 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
+        work->unk64 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
+        work->unk60 = -1;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 7:
+            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 6), (s32)&work->unk58);
+            if (work->unk0 != NULL) {
+                work->unk0->unk22 = ex->func_800E7CC4(0, 0x80);
+            }
+            break;
+        case 0:
+            func_801E7A74(work->unk62, 0, D_801E84BC, D_801EAD5C);
+            for (i = 0; i < 0xA28; i++) {
+                D_801E990C[i] = D_801E84BC[i];
+            }
+            break;
+        case 0x18:
+            work->unk60 = 0x10;
+            break;
+        }
+        if (frame >= 0 && frame < 0x28) {
+            if (frame >= 7) {
+                c = ((frame - 7) << 9) / 3;
+                work->unk44.vx = c;
+                work->unk44.vz = c;
+                work->unk44.vx = (work->unk44.vx > 0x200) ? 0x200 : work->unk44.vx;
+                work->unk44.vz = (work->unk44.vz > 0x200) ? 0x200 : work->unk44.vz;
+            }
+            if (frame >= 0 && frame < 6) {
+                t = frame;
+                for (i = 0; i < 0xA28; i++) {
+                    D_801E84BC[i] = D_801E990C[i];
+                }
+                func_801E7744(work->unk62, 0, 5 - t, D_801E84BC, D_801EAD5C);
+                work->unk4.vy += 0x200;
+            }
+            ex->Hi_DrawEffModel(&work->unk4, &work->unk14, (s32)&work->unk34, work->unk62);
+            ex->Hi_DrawEffModel(&work->unkC, &work->unk24, (s32)&work->unk44, work->unk64);
+            if (work->unk60 >= 0) {
+                work->unk54 = func_801E827C(0, -0x80, 0x10 - work->unk60, 0x10);
+                work->unk60--;
+                ex->Hi_ModifyEffModelRGB(work->unk62, work->unk54, work->unk54, work->unk54);
+                ex->Hi_ModifyEffModelRGB(work->unk64, work->unk54, work->unk54, work->unk54);
+            }
+        }
+        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), frame);
+        if (frame >= 0x5A) {
+            ex->btlfx_clearEffModels();
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void func_801E8238(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E831C)->LoadAverageShort12(a, b, 0x1000 - t, t, out);

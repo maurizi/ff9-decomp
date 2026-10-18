@@ -8,7 +8,49 @@ INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801E8778);
 
 INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op81);
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op82);
+s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s16 *keys;
+    SVECTOR v;
+    s32 frame;
+    s32 i;
+
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        D_801EC5F0 = env;
+    } else {
+        frame = entry->unk0;
+        keys = (s16 *)ex->btlfx_getFileData(entry->unk8, 0x2E);
+        i = frame;
+        if (i >= keys[1]) {
+            i = keys[1] - 1;
+        }
+        keys = (s16 *)((u8 *)keys + (i * 6 + 4));
+        v.vx = keys[0];
+        v.vy = keys[1] - 100;
+        v.vz = keys[2];
+        env->unk2C->unk0[0].vx = v.vx;
+        env->unk2C->unk0[0].vy = v.vy;
+        env->unk2C->unk0[0].vz = v.vz;
+        keys = (s16 *)ex->btlfx_getFileData(entry->unk8, 0x2F);
+        i = frame;
+        if (i >= keys[1]) {
+            i = keys[1] - 1;
+        }
+        keys = (s16 *)((u8 *)keys + (i * 6 + 4));
+        v.vx = keys[0];
+        v.vy = keys[1] - 100;
+        v.vz = keys[2];
+        env->unk2C->unk0[1].vx = v.vx;
+        env->unk2C->unk0[1].vy = v.vy;
+        env->unk2C->unk0[1].vz = v.vz;
+        if (frame >= 0x5A) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s32 size, s32 *tab, SVECTOR *from,
                    SVECTOR *to, s32 r0, s32 r1, s32 s, s32 step, s32 a12, s32 a13, s32 pad, s32 wave) {
@@ -81,8 +123,75 @@ void func_801EC124(void) {
     D_801EEFDC = 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801EC130);
+void func_801EC130(Unk80100C78Entry *entry, SVECTOR *center, s32 r, SVECTOR *from, SVECTOR *to) {
+    Fx0baTrail *trail = &D_801EED20[D_801EEFDC];
+    SVECTOR *p = &trail->unk4[16];
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC5F0);
+    SVECTOR v;
+    Fx0baPart *part;
+    s32 i;
+    s32 t;
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op85);
+    trail->unk0 = trail->unk2 = 16;
+    trail->unk1 = 0;
+    for (i = 0; i < 17; i++, p--) {
+        t = 0x1000 - (i << 8);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);
+        v.vx += 0x20 + ex->btlfx_randCentered(0x10);
+        v.vy += 0x46 + ex->btlfx_randCentered(0x20);
+        ex->func_800CFD78((s16 *)center, (s16 *)&v, r + ex->btlfx_randCentered(0x10) + (ex->math_sin(t >> 1) >> 6),
+                          (s16 *)p);
+        part = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+        if (part != NULL) {
+            part->unk14 = D_801EEFDC;
+            part->unk16 = 0x10 - i;
+            part->unk18 = (u8 *)p;
+            part->unk0 = p->vx << 12;
+            part->unk4 = p->vy << 12;
+            part->unk8 = p->vz << 12;
+            part->unkC = 0;
+            part->unkE = 0;
+            part->unk10 = 0;
+            part->unkC = ((p->vx - center->vx) >> 5) + ex->btlfx_randCentered(0xE);
+            part->unkE = ((p->vy - center->vy) >> 5) + ex->btlfx_randCentered(0x18);
+            part->unk10 = ((p->vz - center->vz) >> 5) + ex->btlfx_randCentered(0xE);
+        }
+    }
+    D_801EEFDC = (D_801EEFDC + 1) % 5;
+}
+
+s32 fx_0ba_op85(s32 mode, Fx0baWork85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR from;
+    SVECTOR c;
+
+    if (mode == 0) {
+        ((EffInit *)arg4)->unk0 = sizeof(Fx0baWork85);
+        ((EffInit *)arg4)->unk8 = sizeof(Fx0baPart);
+        ((EffInit *)arg4)->unk14 = (s32)func_801EBFB8;
+        ((EffInit *)arg4)->unk4 = 0x55;
+    } else if (mode == 1) {
+        D_801EC5F0 = env;
+        func_801EC124();
+        work->unk8.vx = 0;
+        work->unk8.vy = 0;
+        work->unk8.vz = 0;
+    } else {
+        if (D_801EC54C == 0) {
+            BTLFX_COPY_SVEC(&from, &work->unk8);
+            work->unk8.vx += 0x300 + (ex->btlfx_rand() & 0xFF);
+            work->unk8.vy += 0x800 + (ex->btlfx_rand() & 0x1FF);
+            BTLFX_COPY_SVEC(&c, &D_801ECAB0);
+            c.vy -= 0x140;
+            func_801EC130(entry, &c, 0x100, &from, &work->unk8);
+        }
+        work->unk8.vx &= 0xFFF;
+        work->unk8.vy &= 0xFFF;
+        if (D_801EC54C != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_headerPtr);
