@@ -1336,3 +1336,52 @@ Both functions now match (module fully decompiled). What closed them:
   `(row + 1) * arg10`, `row + 1` and row-level `h1 = row * 0x90; h0 = (row + 1) * 0x90` (loop.c strength-reduces
   them into the five late stack slots), `j & 3`/`row & 3` in variables, `u1 = u0 + 0x1C; if (...) u1 = ...`
   instead of ternaries, and `e = ang + d` as a new variable for the operand order.
+
+## Battle effect modules, partition 0 round 5: fx_07d 7718 (+5 copies), fx_1bf_0 op80, fx_05f op80, fx_134 8658
+- fx_07d func_801E7718 (shared by fx_07e/0cb/0d3/0df/18b): DVECTOR copies as `*(s32 *)&a = *(s32 *)&b`
+  (struct copies of the 2-aligned DVECTOR become lwl/lwr); one variable `t` for the abr flag, both lerp results and
+  the chosen tpage (the original keeps all of them in s2); spill slots follow declaration order (move, step, cx, cy,
+  tp0, tp1, flag, ex); `tp0/tp1 = getTPage(..., src->x, src->y)` before `sx = src->x; sy = src->y` (s32 sx/sy are
+  extended in place); the init loop's vy through `p = pts[1]; k = i * 4 + 2; *(s16 *)((u8 *)p + k) = cy` (an
+  integer giv + base); `i = 0; ang = 0;` after the first lerp call; `ang += step` in the for increment.
+- fx_1bf_0 op80: branch 1's statement order n, w, alpha, fade, flag, m (flag's reload `li t0,1` after fade = 0,
+  sw m last for the j delay slot) with `fade` declared before `m` (equal global-alloc priority, lower pseudo wins);
+  case 6's `c = 0x1000 - t` as a fresh block-local variable: local-alloc ties the constant's pseudo to it (s0), and
+  the single-set constant is launched after the a1 argument.
+- fx_05f op80 (twin of fx_016 / fx_0de op80, 0.87): the morph weight m is set in both branches (multi-set, so not
+  launched by sched1), the else branch's cos angle is a separate local `c = m >> 2` (local-alloc gives it s2, and
+  &pos/&scale get s3/s4), a dead `if (m != 0) { v = 0; }` at the end of the if branch keeps m live through it,
+  the `* 4 / 5` scale line at the end of each branch (cross-jumped into one copy, its own block), `sin(a >> 2)`
+  inline in the if branch's RGB call, chained `scale.vx = scale.vz = K` (stores vz first), and an empty
+  `do { } while (0);` after the tail's morph call (barrier: &scale lands in the call's delay slot).
+- fx_134 func_801E8658 (twin of fx_0e0 func_801E8628, 0.98, same open instruction): `sh = frame << 6;` between
+  the pos.vy and pos.vz copies followed by an empty `do { } while (0);` barrier fills the pos.vy load delay and
+  leaves pos.vz's a nop; the module also needs the rodata zero-word pad after the jump table (as fx_0fb_1).
+- fx_05e op80 (= fx_0ed op80 body): the 0ed draft ported to 05e reaches 72 register-only rows. gsim
+  (build/gsim.py) shows the target needs t0 allocated before p and &work->unk18 after ex/work/frame, or
+  equivalently t0 preferring s0 and &work->unk18 preferring s5 (regs_someone_prefers); no C form found yet.
+- fx_195 op80 (matched): `kk = (kk << 12) / 10;` as its own statement (the constant 0x1000 is loaded after the
+  division), the unk20 = unk10 copy order, `w1 = (sin(t >> 2) << 1) + 0x1000` in one statement, `c = 0x1000 - x;
+  c = (c * 0xA0) >> 12;`, `r = cos(...)` into the loop's r before the third trail call, `ang += rand() + 0x333`
+  in the for increment, empty `do { } while (0);` barriers (b2 after the multiply chain, s before frame's
+  reload), and a dead block-local `struct { s32 x; } q = { frame };` whose spill slot is the original's unused
+  word at 0x140 (it shifts case 5's spill slots).
+- fx_081 op81 (matched; twin of fx_057 op81, 0.78): case 2's `a = j >> 2` reuses the loop variable (case 0/1's t keeps s4 once it no
+  longer conflicts with j) — 176 -> 42 rows in one change; then `for (j = 0, pp = &pos; ...)`,
+  `for (i = 0; i < 12; i++, a += 0x155)`, the unk1C/unk14 copy order, and `w4 = w << 4;` at the top of the inner
+  body with `(a = ...) + w4` (loop.c hoists it only when its lifetime is long), and a separate index biv
+  `for (j = 0, n = 0, w = 0; j < 10; n++, w += frame, j++)` with D_801E8E7C[n]: loop.c eliminates n for the
+  reduced giv, whose increment lands where n++ was (before w += frame), unlike a giv on j, which is always inserted
+  right before j++.
+- fx_1f1 op80: the original's mode-2 addresses are (D_801E7F14 + 0x20 + off) + i * 0x60 with &D[i].unk20 as a
+  separately reduced giv (s6), i.e. the vectors at 0x20 are a nested struct; a nested Fx1f1Model at 0x20
+  (build/p0/e1f1/gen2.py) brings the aligned count from 263 to 181 but the mode-2 loop's givs still differ.
+- fx_1f7 op80 (matched; 416 -> 0 rows): a pointer `tr = &D[i]` is reduced into one register (the original's s1,
+  accesses at offsets from it) only if loop.c sees it as a giv: the base symbol must be hoisted, which happens when
+  cse shares the address (pass `&D_801E8458[i]` again somewhere, here drawTrail's last argument); with tr++ or plain
+  D[i].field accesses loop.c instead combines the field DEST_ADDR givs into tr + 0x10C or reduces every partial
+  product of i * 0x118. The spark loop wants the same `sp = &D_801E8AE8[i]` shape. Other levers: second-section loop
+  counter k2 (k's refs/length set the allocation order), the copy loop's own counter jj, `jj = 0; bp = D_801E80D8;
+  tc = tr;` in that order before the loop, `pc = 0x80; d->pad = pc; pc = 0;` (a dead second set keeps loop.c from
+  hoisting the constant), pad stored after vz (giv combination base), and `&((SVECTOR *)&m)[1]` as the second lerp
+  point (the original's sp+0x40).

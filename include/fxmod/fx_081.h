@@ -37,4 +37,17 @@ typedef struct {
 void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 *arg4, s32 arg5, s32 arg6, s32 frame,
                    s32 n);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    s32 unk8; /* priority base */
+    SVECTOR unkC; /* target position */
+    SVECTOR unk14;
+    Fx081Vec3 unk1C;
+    s32 unk28; /* model */
+} Fx081Work81; /* 0x2C */
+
+extern s16 D_801E8E7C[10]; /* ring point counts */
+s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif
