@@ -1,4 +1,6 @@
-/* Draft of fx_1fe fx_1fe_op81. Status: 44 lines (build/w/nd.py); variable renaming search (build/w/rn.py) took it from 207. */
+/* Draft of fx_1fe fx_1fe_op81. Status: 34 lines (build/w/nd.py), all register naming: case 2 keeps r = u >> 2 in s1
+ * and c = 0xC00 - u in s0 shifted in place (here s5 and a v1 temp), and &pos / frame * 7 swap s4/s5. Variable renaming
+ * search (build/w/rn.py) took it from 207. */
 #include "fxmod/fx_1fe.h"
 
 typedef struct {
@@ -158,16 +160,17 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     c -= u;
                     rot.vy = ex->math_sin(r) / 3;
                     rot.vz = 0;
-                    scale.vy = scale.vx = (ex->math_sin(r) >> 6) + 0x249;
+                    scale.vx = scale.vy = (ex->math_sin(r) >> 6) + 0x249;
                     scale.vz = 0x555;
                     d = (ex->math_sin(r) / 15) + 2;
-                    c = (c >> 5) - 0x80;
+                    c >>= 5;
+                    c -= 0x80;
                     for (k = 0; k < 7; k++) {
                         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk3C);
                         ex->Hi_ModifyEffModelRGB(work->unk3C, c, c, c);
                         pos.vy -= d;
                         rot.vy = ((rot.vy * 5) >> 2) + (k << 10);
-                        scale.vy = scale.vx = (scale.vx * 9) >> 3;
+                        scale.vx = scale.vy = (scale.vx * 9) >> 3;
                     }
                 }
             } while (0);
@@ -222,11 +225,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame == 0x20) {
                 work->unk18.vx = D_801E8900.vx;
-                do {
-                    work->unk18.vy = D_801E8900.vy;
-                } while (0);
-                work->unk10.vz -= 0x100;
+                work->unk18.vy = D_801E8900.vy;
                 work->unk18.vz = D_801E8900.vz;
+                work->unk10.vz -= 0x100;
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk18);
                 if (p != NULL) {
                     p->unk22 = 0x10;
