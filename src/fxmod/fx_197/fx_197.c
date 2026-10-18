@@ -257,7 +257,139 @@ void func_801E7E94(s32 i) {
 
 INCLUDE_ASM("asm/us/fx_197/nonmatchings/fx_197", func_801E81EC);
 
-INCLUDE_ASM("asm/us/fx_197/nonmatchings/fx_197", fx_197_op81);
+s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    Fx197Item81 *it;
+    Fx197Item81 *it2;
+    Pool6CEntry *p;
+    s32 frame;
+    s32 state;
+    s32 i;
+    s32 j;
+    s32 c;
+
+    if (mode == 0) {
+        init->unk0 = 0x88;
+        init->unk8 = 0x14;
+        init->unk14 = (s32)func_801E81EC;
+        init->unk4 = 7;
+    } else if (mode == 1) {
+        work->unk0 = 0;
+        work->unk4 = 0;
+        D_801E9660 = env;
+        ex->btlfx_initEffModels(D_801E9670, 0x20);
+        D_801EAF74 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD8), 0);
+        D_801EAF70 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xD9), 1);
+        for (i = 0; i < 6; i++) {
+            for (j = 0; j < 3; j++) {
+                work->unk18[i][j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E9130[i][j]), 0);
+            }
+        }
+        for (i = 0; i < 7; i++) {
+            work->unk6C[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E9178[i]), 1);
+        }
+        work->unk8.vx = D_801E9128.vx;
+        work->unk8.vy = D_801E9128.vy;
+        work->unk8.vz = D_801E9128.vz;
+        work->unk10.vx = D_801E9128.vx;
+        work->unk10.vy = D_801E9128.vy;
+        work->unk10.vz = D_801E9128.vz;
+    } else {
+        state = work->unk0;
+        frame = entry->unk0;
+        switch (state) {
+        case 0:
+            if (frame < 10 && (frame & 1)) {
+                it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (it != NULL) {
+                    it->unk2 = D_801E925C[frame >> 1];
+                }
+            }
+            if (frame == 5) {
+                it2 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (it2 != NULL) {
+                    it2->unk2 = 6;
+                }
+            }
+            if (frame == 4) {
+                it2 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (it2 != NULL) {
+                    it2->unk2 = 5;
+                }
+            }
+            if (frame >= 16) {
+                work->unk0 = 1;
+                entry->unk0 = -1;
+                D_801EAFBC = 0x400;
+            }
+            break;
+        case 1:
+            if (frame == 20) {
+                D_801E91C8 = 1;
+                D_801E91CC = 1;
+            } else {
+                D_801EAFBC = 0x400 - (frame << 7);
+            }
+            if (frame == 24) {
+                D_801E91D0 = 1;
+            }
+            if (frame == 20) {
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk10);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk10);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk10);
+                if (p != NULL) {
+                    p->unk14 = (s32)D_801E92D0;
+                    p->unk12 = 0xC;
+                    p->unkC = 0x4C;
+                    p->unk22 = 0x40;
+                }
+            }
+            if (frame == 18) {
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk10);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+            }
+            if (frame == 32) {
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk10);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+            }
+            if (frame == 44) {
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1A), (s32)&work->unk10);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+            }
+            if (frame == 19) {
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x80, 0x80, 0x80);
+            }
+            if (frame == 20) {
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0x80, 0xFF);
+                D_801E91C4 = 0;
+            }
+            if (frame >= 20 && frame < 36) {
+                c = 0x80 - (((frame - 20) << 7) >> 4);
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, c >> 2, c);
+            }
+            ex->func_800E6624(frame * 2, 0x2C0, 0x180, 0x40, 0x80, 0x2C0, 0x100);
+            if (frame >= 126) {
+                return 1;
+            }
+            break;
+        }
+        ex->func_800E6624(frame, 0x280, 0x100, 0x40, 0x80, 0x280, 0x180);
+        work->unk4++;
+    }
+    return 0;
+}
 
 s32 fx_197_op87(s32 mode, Fx197Work87 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);

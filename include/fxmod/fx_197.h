@@ -56,6 +56,36 @@ typedef struct {
 extern Fx197CamPath D_801E9270[];
 
 void func_801E7704(Fx197Track *track, s32 t, SVECTOR *out);
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    SVECTOR unk8; /* position */
+    SVECTOR unk10;
+    s32 unk18[6][3]; /* models of the six pieces */
+    s32 pad60[3];
+    s32 unk6C[7];
+} Fx197Work81; /* 0x88 */
+
+typedef struct {
+    s16 unk0; /* state */
+    s16 unk2; /* piece */
+} Fx197Item81;
+
+extern BtlModel D_801E9670[];
+extern s32 D_801EAF70;
+extern s32 D_801EAF74;
+extern s32 D_801E9130[6][3];
+extern s32 D_801E9178[7];
+extern SVECTOR D_801E9128;
+extern s32 D_801E925C[];
+extern s32 D_801E91C4;
+extern s32 D_801E91C8;
+extern s32 D_801E91CC;
+extern s32 D_801E91D0;
+extern u8 D_801E92D0[];
+
+s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+                  Unk800DA1B8 *pool, Fx197Work81 *work);
 
 /* copied */
 extern Unk800F78A4 *D_801E9660;
