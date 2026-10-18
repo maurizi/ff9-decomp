@@ -23,7 +23,42 @@ typedef struct {
     s32 unk60; /* summon model */
 } Fx114Summon;
 
+typedef struct {
+    Pool6CEntry *unk0;
+    SVECTOR unk4; /* model rotation */
+    VECTOR unkC; /* model position */
+    VECTOR unk1C; /* model scale */
+    SVECTOR unk2C;
+    VECTOR unk34;
+    VECTOR unk44;
+    u8 pad54[0x58 - 0x54];
+    SVECTOR unk58;
+    s16 unk60; /* fade-in countdown */
+    s16 unk62; /* fade-out countdown */
+    u16 unk64; /* frame */
+    u16 unk66; /* model */
+    u16 unk68; /* model */
+} Fx114Work82; /* 0x6C */
+
+typedef struct {
+    u8 pad0[8];
+    s16 unk8;
+    s16 unkA;
+    s16 unkC; /* brightness */
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+} Fx114Wave;
+
 extern Unk800F78A4 *D_801EB768;
+extern Fx114Wave D_801ED078;
+extern u32 D_801ED1C8[];
+extern u8 D_801EE658[13][0x50];
+
+void func_801E78AC(Fx114Wave *w, u8 *buf, s32 size, s32 a, s32 b, s32 c, s32 d, s32 e);
+void func_801EA6DC(Fx114Wave *w, s32 key);
+s32 func_801EA8FC(s32 data, s32 i);
+s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 extern u8 D_801ED0E8[]; /* scale keys */
 
 s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
