@@ -1,9 +1,11 @@
-/* Draft of fx_079 op80 (three models and five lightning strips). Status: 840/879 in ccprobe. Left: (1) tr gets s3
- * instead of s4: in the original the four strength-reduced randRange bounds of the strip-reset loop are
- * initialised in the order +48, -48, -24, +24 (ours -24, +24, -48, +48), which changes their live lengths and so
- * their allocation order relative to tr; (2) the original leaves the delay slot of the abs() branch empty, ours
- * fills it with the following mult. n = 11 must be set outside the block (it is spilled and rematerialised as
- * li t1,11), strip = tr gives the original's separate s0 copy, and pt keeps vx in its own giv. */
+/* Draft of fx_079 op80 (three models and five lightning strips). Status: one instruction: the original leaves the
+ * delay slot of the abs() branch (bgez r) empty, ours fills it with a copy of the mult at the branch target
+ * (reorg predicts a GE-against-zero branch taken and copies from the target thread). Everything else matches
+ * (the lw of D_801E8974.vy is D_801E8978 in the original's relocation, same address). Levers that got here:
+ * w2 = j * 8 + 16 and w1 = -w2 computed before the 6C call, and the 6C bounds written -(j * 16) - 32, so the
+ * four reduced bounds are initialised +48, -48, -24, +24 as in the original; pt++ before j++ in the
+ * point loop so pt's givs are reduced after j's. n = 11 must be set outside the block (it is spilled and
+ * rematerialised as li t1,11), strip = tr gives the original's separate s0 copy, and pt keeps vx in its own giv. */
 #include "fxmod/fx_079.h"
 
 s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -24,6 +26,8 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 r;
     s32 c;
     u8 *strip;
+    s32 w1;
+    s32 w2;
 
     if (mode == 0) {
         *arg4 = 0xA8;
@@ -201,7 +205,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     d.vz = ((work->unk94.vz + tr->unk64 - D_801E895C.vz) << 12) / n;
                     strip = (u8 *)tr;
                     pt = tr->unk4;
-                    for (j = 0; j < n; j++, pt++) {
+                    for (j = 0; j < n; pt++, j++) {
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
                         pt->vy = tr->unk6C[j] + (cur.vy >> 12);
@@ -236,8 +240,10 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->unkC4[0] = 0;
                     tr->unk6C[0] = 0;
                     for (; j < n - 1; j++) {
-                        tr->unk6C[j] = ex->btlfx_randRange(-(j * 16 + 32), j * 16 + 32);
-                        tr->unkC4[j] = ex->btlfx_randRange(-(j * 8 + 16), j * 8 + 16);
+                        w2 = j * 8 + 16;
+                        w1 = -w2;
+                        tr->unk6C[j] = ex->btlfx_randRange(-(j * 16) - 32, j * 16 + 32);
+                        tr->unkC4[j] = ex->btlfx_randRange(w1, w2);
                     }
                     tr->unkC4[j] = 0;
                     tr->unk6C[j] = 0;
