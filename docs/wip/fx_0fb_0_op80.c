@@ -1,14 +1,18 @@
 /* Draft of fx_0fb_0 op80 (summon sequence: rocks rise, summon model drops in, bone trails, final model burst).
- * Status (pass 2): 120 mismatched instructions by opcode+register alignment, frame now 0x100 like the original.
- * Pass 2 levers, found mostly by automated greedy searches (build/p1/greedy.py with variable split / merge and
- * single-statement move generators in the agent-a7e86f55abb097d1f worktree): one variable per loop counter, then
- * the counters of loops i1/i4/i6 and i3/i7/i8/i10 merged back; every reused temporary (c, u, v, vb, s, y, x)
- * split per assignment segment, a few merged again; &D_801EB358[(i & 1) + 1] for the second colour (loop.c then
- * hoists D_801EB358 like the original); case 4 keeps s = (s16 *)&D_801EB70C[i] for the drawTrail argument and
- * s += 3; c8/bp/d0 are case 4 block locals and d4 a case 5 block local, with two dead struct initializers before
- * them (their never-allocated pseudos take the two unused spill words at 0xC0/0xC4); statement moves in cases
- * 5/6. Still open: case 2's q2 * 4 / q2 - 0x2800 schedule, the i < 4 loops' counter/giv registers (s2/s1
- * swapped), case 6's locals.
+ * Status (pass 3): 16 mismatched instructions by opcode+register alignment (plus the 7 jump-table words and two
+ * li/ori spellings of 0xFFFF that the row count includes), all in case 2's unk64 block after the sin call: the
+ * original computes q2 * 4 (a1), q2 * 5, unkC.vx - q2 * 5 (a0) and q2 - 0x2800 (in place in q2's s0) before the
+ * c_1 chain, and stores env->unk2C->unk0[2].vx through a copy of a0 (move v0,a0) instead of reloading it.
+ * Pass 3 levers: case 3's x/y start at 0 (`y_1 = x_x0 = 0;` after b8); the second 4-loop of case 4 reuses i1;
+ * case 5's tint is one `c = ((frame - 0x11) << 7) / 3` with c >> 2 / c >> 1; `u = t * 3 + 0x1000` before case
+ * 5's first loop; i11 for both case 5 loops; case 6's `v_1 = u_2 >> 2` up front, `w = (u_3 - 8) << 5` after
+ * sc.vy, and the r1/r2 branches only pick rp (one Hi_DrawEffModel call after the join); one block-level pos for
+ * the ac and a8 tails (rot/sc after it), col declared first in the b4 tail and assigned first; pos.vy, vx, vz in
+ * the ac tail; &m2 and t >> 8 written inline in case 4's 10-loop and 0x1000 - t inline in case 5's second loop
+ * (loop.c hoists them like the original, and with fewer hoisted movables D_801EB70C is no longer hoisted); the
+ * drawTrail trail argument as `(u8 *)(pp = &D_801EB70C[i])` with a block-local pp and `s = (s16 *)pp + 3`
+ * afterwards (pp ties the %hi/%lo pseudos into the original's s-register); `i1 = 0;` before c8's store via
+ * `for (i1 = 0; ...)`; the case 4 dead initializer z1 moved to case 3 (keeps the spill slot, frees the schedule).
  * Earlier findings:
  * - Block locals only share stack slots between cases if no expression statement at the block's own level runs
  *   after their address is taken (expand_expr_stmt -> preserve_temp_slots promotes addr_taken slots one level up).
@@ -102,6 +106,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s16 *s;
     s16 *s_0;
     s16 *s_1;
+    SVECTOR *rp;
     s32 frame;
     s32 i;
     s32 i0;
@@ -357,15 +362,15 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             break;
         case 3: {
             SVECTOR pos;
+            struct { s32 x; } z1 = { frame };
 
         {
             ac = 0x1000;
             b0 = 0x1000;
             bc = 0x1000;
             b4 = 0x78;
-            x = 0;
-            y_0 = 0;
             b8 = 0x1000;
+            y_1 = x_x0 = 0;
             if (frame < 4) {
                 x_x0 = 0x400 - (frame << 10) / 3;
             } else if (frame < 0xB) {
@@ -425,10 +430,7 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             BtlBone m;
             BtlBone m2;
             struct { s32 x; } z0 = { frame };
-            struct { s32 x; } z1 = { frame };
             s32 c8;
-            BtlBone *bp;
-            s32 d0;
 
         {
             t = (frame << 12) / 44;
@@ -459,31 +461,31 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                         (u8 *)&D_801EB70C[i2], 2);
                 }
             }
-            for (i3 = 0; i3 < 4; i3++) {
-                ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i3][0], (u16 *)&a);
-                ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i3][1], (u16 *)&b);
-                func_801E7720(&a, &b, 0xB, &D_801EB358[i3 & 1], &D_801EB358[(i3 & 1) + 1], 0x1000, D_801EB40C[i3].seg, 1);
+            for (i1 = 0; i1 < 4; i1++) {
+                ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i1][0], (u16 *)&a);
+                ex->Hi_GetSummonBonePos(SUMMON0FB(env)->unk60, D_801EB250[i1][1], (u16 *)&b);
+                func_801E7720(&a, &b, 0xB, &D_801EB358[i1 & 1], &D_801EB358[(i1 & 1) + 1], 0x1000, D_801EB40C[i1].seg, 1);
             }
             if (frame >= 0x26) {
                 c8 = ((((frame - 0x26) << 12) / 6) * 2) + 0x1000;
             } else {
                 c8 = (t >> 1) + 0x300;
             }
-            bp = &m2;
-            d0 = t >> 8;
             for (i1 = 0; i1 < 10; i1++) {
-                ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i1], bp);
-                ex->func_800CFE88((MATRIX *)bp, 0x46, (s32)&a);
-                s_0 = (s16 *)&D_801EB70C[i1];
+                Fx0fb0Trail16 *pp;
+
+                ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i1], &m2);
+                ex->func_800CFE88((MATRIX *)&m2, 0x46, (s32)&a);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 9), (s32)&a, 0, 0, 0x800, 0x1000, 1,
-                                    (u8 *)s_0, 2);
+                                    (u8 *)(pp = &D_801EB70C[i1]), 2);
                 env->unk28 = 0x18;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), &a, NULL, c8 >> 1, 0, 1,
                                         ex->math_sin(t >> 2), 0, 0);
                 env->unk28 = 0;
-                s_0 += 3;
+                j = 0;
+                s_0 = (s16 *)pp + 3;
                 for (j = 0; j < 16; j++) {
-                    *s_0 -= 8 + d0;
+                    *s_0 -= 8 + (t >> 8);
                     s_0 += 4;
                 }
             }
@@ -499,7 +501,6 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             SVECTOR a;
             BtlBone m;
             BtlBone m2;
-            s32 d4;
 
         {
             b0 = 0x1000;
@@ -509,36 +510,39 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0x11) {
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0, 0x40);
             } else if (frame >= 0x11) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, ((frame - 0x11) << 7) / 12,
-                                         ((frame - 0x11) << 7) / 6, ((frame - 0x11) << 7) / 3);
+                c = ((frame - 0x11) << 7) / 3;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 2, c >> 1, c);
             }
             if (frame >= 5) {
                 ex->Hi_SetSummonMotFrame(SUMMON0FB(env)->unk60, 0x31);
             }
             ex->Hi_DrawSummonModel(&work->unk44, (VECTOR *)&work->unk2C, (s32)&work->unk38, SUMMON0FB(env)->unk60, 1);
-            for (i1 = 0; i1 < 10; i1++) {
-                ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i1], &m);
+            u = t * 3 + 0x1000;
+            for (i11 = 0; i11 < 10; i11++) {
+                ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i11], &m);
                 ex->func_800CFE88((MATRIX *)&m, 0x46, (s32)&a);
                 env->unk28 = 0x18;
-                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), &a, NULL, t * 3 + 0x1000, 0, 1,
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), &a, NULL, u, 0, 1,
                                         0x1000, 0, 0);
                 env->unk28 = 0;
-                if (i1 == 0) {
+                if (i11 == 0) {
                     FX0FB_W(work->unk14, 0) = FX0FB_W(a, 0);
                     FX0FB_W(work->unk14, 1) = FX0FB_W(a, 1);
                 }
-                if (i1 == 5) {
+                if (i11 == 5) {
                     FX0FB_W(work->unk1C, 0) = FX0FB_W(a, 0);
                     FX0FB_W(work->unk1C, 1) = FX0FB_W(a, 1);
                 }
             }
-            d4 = 0x1000 - t;
-            for (i1 = 0; i1 < 10; i1++) {
-                ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i1], &m2);
+            for (i11 = 0; i11 < 10; i11++) {
+                Fx0fb0Trail16 *pp;
+
+                ex->Hi_GetSummonBoneMatrix(SUMMON0FB(env)->unk60, D_801EB260[i11], &m2);
                 ex->func_800CFE88((MATRIX *)&m2, 0x46, (s32)&a);
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 9), (s32)&a, 0, 0, 0x800, d4, 1,
-                                    (u8 *)&D_801EB70C[i1], 2);
-                s_1 = (s16 *)((u8 *)&D_801EB70C[i1] + 6);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 9), (s32)&a, 0, 0, 0x800, 0x1000 - t, 1,
+                                    (u8 *)(pp = &D_801EB70C[i11]), 2);
+                j = 0;
+                s_1 = (s16 *)pp + 3;
                 for (j = 0; j < 16; j++) {
                     *s_1 -= 0x18;
                     s_1 += 4;
@@ -606,9 +610,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 w = 0;
                 if (frame < 5) {
                     u_2 = frame << 12;
+                    v_1 = u_2 >> 2;
                     sc.vx = (0x1000 - ex->math_cos(u_2 >> 4)) / 12;
                     sc.vy = (ex->math_cos(u_2 >> 4) >> 1) + 0xC00;
-                    sc.vz = (u_2 >> 2) / 8;
+                    sc.vz = v_1 / 8;
                     x = 0;
                     if (frame == 4) {
                         ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x80, 0x80, 0x80);
@@ -633,9 +638,9 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                         sc.vy = 0xC00 - v_1;
                         sc.vz = ((u_3 << 12) >> 6) + 0x200;
                     } else {
-                        w = (u_3 - 8) << 5;
                         sc.vx = ((u_3 - 8) << 6) + 0x155;
-                        sc.vy = w + 0x800;
+                        sc.vy = ((u_3 - 8) << 5) + 0x800;
+                        w = (u_3 - 8) << 5;
                         sc.vz = ((u_3 - 8) << 6) + 0x400;
                     }
                 }
@@ -656,12 +661,13 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     if (i3 < 5) {
                         r2.vx += x;
                         sc.vx += w;
-                        ex->Hi_DrawEffModel(&r2, &pos, (s32)&sc, work->unk124);
+                        rp = &r2;
                     } else {
                         r1.vx += x;
                         sc.vx += w;
-                        ex->Hi_DrawEffModel(&r1, &pos, (s32)&sc, work->unk124);
+                        rp = &r1;
                     }
+                    ex->Hi_DrawEffModel(rp, &pos, (s32)&sc, work->unk124);
                     if (i3 == 4) {
                         sc.vx -= w * 5;
                     }
@@ -698,9 +704,10 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         } break;
         }
-        if (ac != 0) {
-            SVECTOR pos;
+        {
+        SVECTOR pos;
 
+        if (ac != 0) {
             pos.vx = D_801EB248.vx;
             u_4 = ac >> 5;
             pos.vy = D_801EB248.vy;
@@ -711,15 +718,14 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             func_801E809C(&pos, 0x4000, u_4, 0x118, 0xFFFF, 0x10, 0x90, 0x7D0, work->unk4 * 0x5C, 0xF0, 1,
                           work->unk4 * 0x37);
             pos.vy += 0x640;
-            pos.vz += 0x2800;
             pos.vx -= 0x1400;
+            pos.vz += 0x2800;
             func_801E809C(&pos, 0x4000, u_4, 0x118, 0xFFFF, 0x10, 0x90, 0x76C, work->unk4 * 0x5C + 0x400, 0xF0, 1,
                           work->unk4 * 0x37 - 0x200);
         }
         if (a8 != 0) {
             SVECTOR rot;
             VECTOR sc;
-            SVECTOR pos;
 
             env->unk28 = -0x300;
             rot.vx = 0x400;
@@ -763,18 +769,19 @@ s32 fx_0fb_0_op80(s32 mode, Fx0fb0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->func_800D1BC4(8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), 0x280 - u_3, 0xA0, 0, 3, b8);
         }
         if (b4 != 0) {
+            CVECTOR col;
             SVECTOR rot;
             VECTOR sc;
-            CVECTOR col;
 
+            col.r = col.g = col.b = b4;
             sc.vx = 0x1060;
             sc.vy = 0x1060;
             sc.vz = 0x1000;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            col.r = col.g = col.b = b4;
             ex->func_800E6764(0x400, 0xA0, 0x70, 0x4D, 0x37, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
+        }
         }
         work->unk4++;
     }
