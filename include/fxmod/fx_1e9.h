@@ -56,4 +56,6 @@ s32 func_801E7FCC(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk80100C78Entry *e
 void func_801E810C(void);
 void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to);
 
+#define TRAIL(e) ((Fx1e9Trail *)((e)->unk18 - 2))
+
 #endif
