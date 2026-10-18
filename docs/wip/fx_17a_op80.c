@@ -1,4 +1,4 @@
-/* Draft of fx_17a fx_17a_op80. Status: 85 lines, 17 ignoring registers (build/w/nd.py). Levers so far: loop increments in the for header in the original order (a and n, i and f4, k and j), copy-then-zero component order, t >> 2 inline as call arguments, a separate tint temp. */
+/* Draft of fx_17a fx_17a_op80. Status: 104 lines, 3 ignoring registers (build/w/nd.py): the particle spawn computes (rand & 0x1FF) + 0x180 before li a0,512 (original: li a0 first, +0x180 in the delay slot), then register allocation. Levers so far: loop increments in the for header in the original order (a and n, i and f4, k and j), copy-then-zero component order, t >> 2 inline as call arguments, a separate tint temp, (s16)(vx - 0x100) against reassociation, function-scope a for the 0x19-frame fade. */
 #include "fxmod/fx_17a.h"
 
 typedef struct {
@@ -320,8 +320,8 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 r = ex->math_cos(f4);
                 dir.vx = 0x200;
                 dir.vy = 0x280;
-                dir.pad = 1;
                 dir.vz = work->unk4 * 32;
+                dir.pad = 1;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unkC, &dir, c, 0, 1, r);
                 dir.vy += 0x800;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unkC, &dir, c, 0, 1, r);
@@ -341,14 +341,12 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           ((ex->math_sin(f6) * 0x58) >> 12) + 0x40, 0xFF);
             ex->func_800E6624(work->unk4 * 7, 0x1C0, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             if (frame < 0x19) {
-                s32 x;
-
                 work->unk4C.vz += 0xC;
-                x = 0x1000 - ((frame << 12) / 25);
+                a = 0x1000 - ((frame << 12) / 25);
                 ex->Hi_DrawEffModel(&work->unk4C, (VECTOR *)&work->unk34, (s32)&work->unk40, work->unk88);
-                ex->Hi_ModifyEffModelRGB(work->unk88, ((ex->math_sin(x >> 2) - 0x800) >> 5) - 0x80,
-                                         ((ex->math_sin(x >> 2) - 0x800) >> 5) - 0x80,
-                                         ((ex->math_sin(x >> 2) - 0x800) >> 5) - 0x80);
+                ex->Hi_ModifyEffModelRGB(work->unk88, ((ex->math_sin(a >> 2) - 0x800) >> 5) - 0x80,
+                                         ((ex->math_sin(a >> 2) - 0x800) >> 5) - 0x80,
+                                         ((ex->math_sin(a >> 2) - 0x800) >> 5) - 0x80);
             }
             rot.vx = 0x980;
             rot.vy = 0x400;
@@ -416,7 +414,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         BTLFX_COPY_SVEC(&q->unkC, &work->unkC);
                         a = ex->btlfx_rand();
                         c = (ex->btlfx_rand() & 0x1FF) + 0x180;
-                        q->unkC.vx = q->unkC.vx - 0x100 + ex->btlfx_randCentered(0x200);
+                        q->unkC.vx = (s16)(q->unkC.vx - 0x100) + ex->btlfx_randCentered(0x200);
                         q->unkC.vy += (ex->math_cos(a) * c) >> 12;
                         q->unkC.vz += (ex->math_sin(a) * c) >> 12;
                         q->unkA = ex->btlfx_rand() % 70;
@@ -462,12 +460,11 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = frame << 8;
             env->unk2C->unk0[3].vz = work->unk24.vz;
             env->unk28 = 0x180;
-            a = t >> 2;
-            f1 = ex->math_cos(a) + 0x400;
-            c = ex->math_cos(a);
+            f1 = ex->math_cos(t >> 2) + 0x400;
+            c = ex->math_cos(t >> 2);
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &D_801E9AC4, NULL, f1, 0, 1, c);
             env->unk28 = 0;
-            c = (ex->math_cos(a) * 0xFF) >> 12;
+            c = (ex->math_cos(t >> 2) * 0xFF) >> 12;
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
             if (frame >= 0x10) {
                 ex->btlfx_clearEffModels();
