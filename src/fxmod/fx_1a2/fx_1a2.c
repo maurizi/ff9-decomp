@@ -82,7 +82,33 @@ void func_801E7718(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
     }
 }
 
-INCLUDE_ASM("asm/us/fx_1a2/nonmatchings/fx_1a2", func_801E7B88);
+void func_801E7B88(s32 model, SVECTOR *center) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9844);
+    SVECTOR v;
+    Fx1a2Tri *t;
+    Fx1a2Piece *p;
+    s32 i;
+
+    ex->Hi_SplitMdlVertex(model, -1, (s32)D_801E9854);
+    t = D_801E9854;
+    p = D_801EA484;
+    for (i = 0; i < 130; i++, t++, p++) {
+        p->unk18 = 0;
+        p->unk0 = ((t->unk0[0].vx + t->unk0[1].vx + t->unk0[2].vx) / 3) << 12;
+        p->unk4 = ((t->unk0[0].vy + t->unk0[1].vy + t->unk0[2].vy) / 3) << 12;
+        p->unk8 = ((t->unk0[0].vz + t->unk0[1].vz + t->unk0[2].vz) / 3) << 12;
+        p->unk1A = 0;
+        p->unk12 = 0x1000;
+        p->unk14 = ex->btlfx_randCentered(0x100);
+        p->unk16 = ex->btlfx_randCentered(0x200);
+        v.vx = (p->unk0 >> 12) - center->vx;
+        v.vy = (p->unk4 >> 12) - center->vy;
+        v.vz = (p->unk8 >> 12) - center->vz;
+        p->unkC = v.vx >> 2;
+        p->unkE = v.vy >> 3;
+        p->unk10 = v.vz >> 2;
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_1a2/nonmatchings/fx_1a2", func_801E7D68);
 
