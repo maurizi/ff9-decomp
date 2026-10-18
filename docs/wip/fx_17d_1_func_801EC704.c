@@ -1,7 +1,7 @@
 /* Draft of func_801EC704 (module fx_17d_1). Status: 84 aligned mismatches (sdiff --count; registers + shape).
  * Found: the original uses branchless flags uu - (k ^ 1) with k = i++ < 3 computed mid-body, q = p++ at the top,
  * and does NOT strength-reduce xa * 3 / xs * 3 (here loop.c makes givs of them) nor hoist the j < 3 flag out of
- * the inner loop. Its caller-saves (t0-t6, a3 around addPrim) also differ. *
+ * the inner loop. Its caller-saves (t0-t6, a3 around addPrim) also differ.
  * Later finding: loop.c's move/reduce heuristic (lifetime * threshold * benefit < insn_count) is what keeps the
  * original from reducing xa * 3 / xs * 3 and hoisting the j < 3 flag: four dead statements in the inner loop
  * (dd = xa * 7 + xs; ...) stop the xa * 3 reduction here (84 -> 75 rows ignoring registers), so the original inner
