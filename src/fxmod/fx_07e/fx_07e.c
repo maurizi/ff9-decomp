@@ -2,7 +2,77 @@
 
 INCLUDE_ASM("asm/us/fx_07e/nonmatchings/fx_07e", func_801E7704);
 
-INCLUDE_ASM("asm/us/fx_07e/nonmatchings/fx_07e", func_801E7EB8);
+s32 func_801E7EB8(s32 mode, Fx07ePart *part, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
+                  Fx07eWork80 *work) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR out;
+    SVECTOR rot;
+    SVECTOR ang;
+    VECTOR pos;
+    VECTOR scale;
+    s32 s;
+    s32 c;
+    s32 n1;
+    s32 n2;
+    s32 w0;
+    s32 w1;
+    s32 (*fn)(SVECTOR *, VECTOR *, s32, s32);
+
+    if (mode == 1) {
+        part->unk4 = 0;
+        return 0;
+    }
+    s = work->unk14.vz;
+    c = part->unk0;
+    w0 = ((s32 *)&work->unk14)[0];
+    w1 = ((s32 *)&work->unk14)[1];
+    ((XY32 *)&ang)[0].w = w0;
+    ((XY32 *)&ang)[1].w = w1;
+    s += c;
+    ex->func_800D044C(&work->unkC, (s32)&out, 0, (XY32 *)&ang, work->unk1C, s);
+    pos.vx = out.vx;
+    pos.vy = out.vy;
+    pos.vz = out.vz;
+    scale.vx = scale.vy = scale.vz = work->unk20;
+    BTLFX_COPY_SVEC(&rot, &ang);
+    s += 0x400;
+    rot.vz = s;
+    switch (part->unk4) {
+    case 0:
+        s = frame << 9;
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
+        ex->Hi_ModifyEffModelAbr(work->unk28, 1);
+        ex->Hi_ModifyEffModelRGB(work->unk28, (s >> 5) - 0x80, (s >> 5) - 0x80, (s >> 5) - 0x80);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &out, NULL, 0x1400, frame, 1, 0x1000, 0, 0);
+        if (frame >= 8) {
+            part->unk4 = 1;
+            ((s16 *)part)[-1] = -1;
+        }
+        break;
+    case 1:
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
+        ex->Hi_ModifyEffModelAbr(work->unk28, 1);
+        ex->Hi_ModifyEffModelRGB(work->unk28, 0, 0, 0);
+        if (work->unk24 != 0) {
+            part->unk4 = 2;
+            ((s16 *)part)[-1] = -1;
+        }
+        break;
+    case 2:
+        s = frame << 8;
+        n1 = ex->math_cos(s >> 2);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
+        ex->Hi_ModifyEffModelAbr(work->unk28, 1);
+        n2 = (n1 >> 5) - 0x80;
+        ex->Hi_ModifyEffModelRGB(work->unk28, n2, n2, n2);
+        if (frame >= 16) {
+            return 1;
+        }
+        break;
+    }
+    return 0;
+}
 
 s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
