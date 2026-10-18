@@ -15,7 +15,58 @@ void func_801E7744(u16 model, s32 idx, s32 t, u16 *verts, Fx096Vec3 *centers) {
 
 INCLUDE_RODATA("asm/us/fx_096/nonmatchings/fx_096", fx_096_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_096/nonmatchings/fx_096", func_801E7840);
+void func_801E7840(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *centers) {
+    Fx096Vec3 d;
+    Fx096Vec3 to;
+    Fx096Vec3 from;
+    s32 nv;
+    s32 k;
+    s32 j;
+    s32 m;
+
+    switch (kind) {
+    case 0:
+    case 2:
+    case 4:
+    case 6:
+        do {
+            nv = 4;
+        } while (0); /* loop notes: changes the register allocation of nv */
+        break;
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    default:
+        nv = 3;
+        break;
+    }
+    for (k = 0; k < count; k++) {
+        to.vx = centers[k].vx;
+        to.vy = centers[k].vy;
+        to.vz = centers[k].vz;
+        from.vx = centers[k].vx;
+        from.vy = centers[k].vy;
+        from.vz = centers[k].vz;
+        m = to.vx * 100;
+        d.vx = t * m / 200;
+        to.vx += d.vx;
+        m = to.vy * 100;
+        d.vy = t * m / 200;
+        to.vy += d.vy;
+        m = to.vz * 100;
+        d.vz = t * m / 200;
+        to.vz += d.vz;
+        for (j = 0; j < nv; j++, verts++) {
+            verts->vx -= from.vx;
+            verts->vy -= from.vy;
+            verts->vz -= from.vz;
+            verts->vx += to.vx;
+            verts->vy += to.vy;
+            verts->vz += to.vz;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_096/nonmatchings/fx_096", func_801E7A74);
 
