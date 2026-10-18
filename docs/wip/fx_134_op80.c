@@ -1,10 +1,15 @@
 /* Draft of fx_134 fx_134_op80 (first draft from m2c; same family as fx_0e0 op80, whose draft gave the work layout).
- * Status: 2398 aligned mismatches, 796 ignoring registers (of ~3600 instructions); frame 0x150 vs 0x148 (one spill
- * slot too many: case 6 spills &work->unk24, which the original keeps in s6; the original has ex in fp).
+ * Status: 2359 aligned mismatches, 747 ignoring registers, 523 ignoring registers and stack offsets (of ~3600
+ * instructions; was 2398/796); frame 0x150 vs 0x148 (one spill slot too many: case 6 spills &work->unk24, which
+ * the original keeps in s6; the original has ex in fp).
  * Stack layout notes from the original: locals 0x38..0x107, spills 0x108 (frame), 0x10C (t), 0x110 (c, tail
  * alpha), 0x114 (s, tail scale), 0x118/0x11C (x/y offsets). Cases 0-2 and the tail reuse 0x38 (wrapped blocks),
  * case 3 uses 0x38..0x8F and case 4 0x90..0xC7 without being freed in between, cases 5, 6 and 10 reuse 0xC8.
- * The camera copies work->unk18 = work->unk8 are word copies (BTLFX_COPY_SVEC). */
+ * The camera copies work->unk18 = work->unk8 are word copies (BTLFX_COPY_SVEC), and so is case 0's
+ * work->unk8 = D_801EC860. The m2c temporaries a/b hurt: the original computes (t >> 7) + 0xA0, (t >> 6) + ...,
+ * (t >> 8) + ... and 0x1000 - t inside the expressions (after the getFileData calls; an assigned multi-use
+ * variable lets sched1 hoist it across calls). Keeping a = D_801EC880[i] + 0x300 in case 1 is better than
+ * inlining it. */
 #include "fxmod/fx_134.h"
 
 extern SVECTOR D_801EC860; /* caster position */
@@ -104,8 +109,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                 }
                 if (k != 0) {
-                    a = (t >> 7) + 0xA0;
-                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a, b, 0, 1, k);
+                    ex->func_800D1BC4(0xFF8, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a = (t >> 7) + 0xA0, b, 0, 1, k);
                     k += ex->btlfx_randCentered(0x18);
                     if (k < 0) {
                         k = 0;
@@ -124,14 +128,13 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     entry->unk0 = -1;
                     ex->func_800E3D54(work->unk7C);
                     ex->func_800E3D54(work->unk80);
-                    work->unk8.vx = D_801EC860.vx;
+                    BTLFX_COPY_SVEC(&work->unk8, &D_801EC860);
                     work->unk30.vx = 0x1800;
                     work->unk30.vy = 0x1800;
                     work->unk30.vz = 0x1800;
                     work->unk3C.vx = 0x3C0;
                     work->unk8.vy -= 0x3000;
                     work->unk3C.vy = 0x100;
-                    work->unk8.vz = D_801EC860.vz;
                     work->unk3C.vz = 0x180;
                     work->unk24.vx = work->unk8.vx;
                     work->unk24.vy = work->unk8.vy;
@@ -149,9 +152,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 
                 t = frame << 6;
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
-                a = 0x1000 - t;
-                work->unk18.vy += 0x400 + (a >> 1);
-                s = a >> 4;
+                work->unk18.vy += 0x400 + ((0x1000 - t) >> 1);
+                s = (0x1000 - t) >> 4;
                 env->unk2C->unk0[3].vx = work->unk18.vx;
                 env->unk2C->unk0[3].vy = work->unk18.vy;
                 env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -161,17 +163,16 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                          (((ex->math_sin(a) >> 1) + 0x800) >> 5) - 0x80,
                                          (((ex->math_sin(a) >> 1) + 0x800) >> 5) - 0x80);
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
-                a = t >> 6;
-                ex->func_800D1BC4(0xFFE, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), a + 0xA0, (t >> 9) + 0x78, 0, 1, -1);
-                b = t >> 8;
-                func_801E7748(0xFFD, (t >> 5) + 0x78, b + 0xA9, 0x100, 0x40, 0x80, 0x98, 0x3DC0, 0, 0xC0, 0xFF);
-                ex->func_800D0B18((s32)(env->unk20 + 8), b + 0x78, 1, 2, 0x78, 1, D_801EC878, 0, 0, 0, 0);
+                ex->func_800D1BC4(0xFFE, (u8 *)ex->btlfx_getFileData(entry->unk8, 3), (t >> 6) + 0xA0, (t >> 9) + 0x78,
+                                  0, 1, -1);
+                func_801E7748(0xFFD, (t >> 5) + 0x78, (t >> 8) + 0xA9, 0x100, 0x40, 0x80, 0x98, 0x3DC0, 0, 0xC0, 0xFF);
+                ex->func_800D0B18((s32)(env->unk20 + 8), (t >> 8) + 0x78, 1, 2, 0x78, 1, D_801EC878, 0, 0, 0, 0);
                 c = 0x93;
                 yo = 0;
                 xo = 0;
                 ex->func_800D1BC4(0xFFE, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x18), (frame << 6) / 40 + 0xBE, 0x73, 0,
                                   0xFF, -1);
-                ex->func_800D1BC4(0xFFE, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), a + 0x20, 0x40, 0, 0xFF, -1);
+                ex->func_800D1BC4(0xFFE, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), (t >> 6) + 0x20, 0x40, 0, 0xFF, -1);
                 n = (frame << 7) + 0x2000;
                 o = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                 if (o != NULL) {
@@ -186,7 +187,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     o->unk4.pad = i;
                     o->unk0 = frame & 1;
                 }
-                D_801EF97C = b + 0x116;
+                D_801EF97C = (t >> 8) + 0x116;
                 if (frame == 0x3E) {
                     ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0x46, 0x46, 0x46);
                 }
