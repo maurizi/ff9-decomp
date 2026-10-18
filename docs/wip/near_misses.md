@@ -1376,3 +1376,12 @@ Both functions now match (module fully decompiled). What closed them:
 - fx_1f1 op80: the original's mode-2 addresses are (D_801E7F14 + 0x20 + off) + i * 0x60 with &D[i].unk20 as a
   separately reduced giv (s6), i.e. the vectors at 0x20 are a nested struct; a nested Fx1f1Model at 0x20
   (build/p0/e1f1/gen2.py) brings the aligned count from 263 to 181 but the mode-2 loop's givs still differ.
+- fx_1f7 op80 (matched; 416 -> 0 rows): a pointer `tr = &D[i]` is reduced into one register (the original's s1,
+  accesses at offsets from it) only if loop.c sees it as a giv: the base symbol must be hoisted, which happens when
+  cse shares the address (pass `&D_801E8458[i]` again somewhere, here drawTrail's last argument); with tr++ or plain
+  D[i].field accesses loop.c instead combines the field DEST_ADDR givs into tr + 0x10C or reduces every partial
+  product of i * 0x118. The spark loop wants the same `sp = &D_801E8AE8[i]` shape. Other levers: second-section loop
+  counter k2 (k's refs/length set the allocation order), the copy loop's own counter jj, `jj = 0; bp = D_801E80D8;
+  tc = tr;` in that order before the loop, `pc = 0x80; d->pad = pc; pc = 0;` (a dead second set keeps loop.c from
+  hoisting the constant), pad stored after vz (giv combination base), and `&((SVECTOR *)&m)[1]` as the second lerp
+  point (the original's sp+0x40).
