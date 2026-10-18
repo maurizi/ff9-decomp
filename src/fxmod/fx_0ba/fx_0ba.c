@@ -4,7 +4,33 @@ INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801E7704);
 
 INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op80);
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801E8778);
+void func_801E8778(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVECTOR *to, s32 amp, s32 s, s32 step,
+                   s32 a7, s32 a8, s32 pad) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC5F0);
+    SVECTOR pos;
+    SVECTOR ang;
+    SVECTOR *v;
+    s32 i;
+    s32 t;
+    s32 h;
+
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&ang);
+    v = buf->unk4;
+    buf->unk0 = buf->unk2 = 24;
+    buf->unk1 = 0;
+    for (i = 0; i < 25; i++, v++) {
+        t = 0x1000 - (i << 12) / 24;
+        t += ex->btlfx_randCentered(0x140);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        h = ex->btlfx_randCentered(0x80);
+        h = (ex->math_sin(t >> 1) * h) >> 12;
+        h += 0x20 + ((ex->math_sin(t >> 1) * amp) >> 12);
+        ex->func_800D044C(&pos, (s32)v, 0, (XY32 *)&ang, h, s);
+        v->pad = pad;
+        s += step + ex->btlfx_randCentered(0x100);
+    }
+    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), 0, NULL, a7, 0x1000, a8, 1, (u8 *)buf, 0);
+}
 
 INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op81);
 

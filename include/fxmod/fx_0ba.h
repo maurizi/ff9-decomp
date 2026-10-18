@@ -52,6 +52,8 @@ extern Fx0baPath D_801ED424[32];
 extern s32 D_801EEFDC;
 
 void func_801E7704(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b);
+void func_801E8778(Unk80100C78Entry *entry, Fx0baStrip *buf, SVECTOR *from, SVECTOR *to, s32 amp, s32 s, s32 step,
+                   s32 a7, s32 a8, s32 pad);
 void func_801EA850(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *buf, s32 size, s32 *tab, SVECTOR *from,
                    SVECTOR *to, s32 r0, s32 r1, s32 s, s32 step, s32 a12, s32 a13, s32 pad, s32 wave);
 void func_801EAAF0(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, Fx0baStrip *buf, s32 size, s32 *tab,
