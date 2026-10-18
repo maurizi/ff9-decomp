@@ -129,13 +129,61 @@ s32 func_801E7CA8(Fx12bParticle *p, SVECTOR *pos, Fx12bShard *s, s32 frame, s32 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E7E40);
+s32 func_801E7E40(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    SVECTOR v;
+    SVECTOR *o = (SVECTOR *)((u8 *)D_801EF7F4 + (p->unk1F - 1) * 8);
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E7EB0);
+    do {
+    } while (0); /* scheduling barrier: a statement boundary in the original */
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E7F20);
+    v.vx = o->vx;
+    v.vy = o->vy;
+    v.vz = o->vz;
+    v.vx += 0xC8;
+    return func_801E8000(p, pos, &v, frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E7F90);
+s32 func_801E7EB0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    SVECTOR v;
+    SVECTOR *o = (SVECTOR *)((u8 *)D_801EF824 + (p->unk1F - 1) * 8);
+
+    do {
+    } while (0); /* scheduling barrier: a statement boundary in the original */
+
+    v.vx = o->vx;
+    v.vy = o->vy;
+    v.vz = o->vz;
+    v.vx -= 0xC8;
+    return func_801E8000(p, pos, &v, frame, n);
+}
+
+s32 func_801E7F20(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    SVECTOR v;
+    SVECTOR *o = (SVECTOR *)((u8 *)D_801EF7F4 + (p->unk1F - 1) * 8);
+
+    do {
+    } while (0); /* scheduling barrier: a statement boundary in the original */
+
+    v.vx = o->vx;
+    v.vy = o->vy;
+    v.vz = o->vz;
+    v.vx += 0xC8;
+    return func_801E8000(p, pos, &v, frame, n);
+}
+
+s32 func_801E7F90(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    SVECTOR v;
+    SVECTOR *o = (SVECTOR *)((u8 *)D_801EF824 + (p->unk1F - 1) * 8);
+
+    do {
+    } while (0); /* scheduling barrier: a statement boundary in the original */
+
+    v.vx = o->vx;
+    v.vy = o->vy;
+    v.vz = o->vz;
+    v.vx -= 0xC8;
+    return func_801E8000(p, pos, &v, frame, n);
+}
 
 INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E8000);
 
