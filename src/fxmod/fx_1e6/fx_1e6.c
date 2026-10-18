@@ -76,7 +76,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unkC -= 0x400;
             }
             func_801E7724(&D_801E91E8, 0x10C, frame * 4);
-            ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), 0, NULL, 0, 0x1000, work->unkC, 1, (u8 *)&D_801E91E8, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), 0, NULL, 0, 0x1000, work->unkC, 1, (u8 *)&D_801E91E8, 0);
         }
         return (s32)frame >= 0x3C;
     }

@@ -84,7 +84,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unk60 >= 0) {
                 ex->Hi_ModifyEffModelRGB(work->unk6C, work->unk38, work->unk38, work->unk38);
             }
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), t);
             for (i = 0; i < env->unkC->unk24; i++) {
                 if (func_801E8388(i) != 0) {
                     func_801E831C(i, 0);

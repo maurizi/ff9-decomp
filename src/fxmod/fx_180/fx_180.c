@@ -142,7 +142,7 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xFF, 0xFF, 0xFF);
             break;
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x19), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x19), frame);
         return frame >= 0x64;
     }
     return 0;
@@ -237,7 +237,7 @@ s32 fx_180_op81(s32 mode, Fx180Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800E3D54(work->unk0[9]);
             break;
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x19), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x19), frame);
         return frame >= 0x64;
     }
     return 0;

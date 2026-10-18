@@ -118,7 +118,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot2.vz = 0;
             ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot2, &scale2, &col2, 1, 0);
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x1C), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x1C), frame);
         return frame >= 0x8C;
     }
     return 0;

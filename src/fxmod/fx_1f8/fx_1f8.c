@@ -66,7 +66,7 @@ s32 fx_1f8_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                     ex->Hi_ModifyEffModelRGB(D_801E7B84[i], c, c, c);
                 }
             }
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xB), frame);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xB), frame);
         }
         return frame >= 0x30;
     }

@@ -98,9 +98,9 @@ s32 fx_1ab_op80(s32 mode, Fx1abWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->unk50.vy = work->unk50.vy > 0x400 ? 0x400 : work->unk50.vy;
         }
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 5), frame);
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), frame);
-        ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 6), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 5), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), frame);
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 6), frame);
         if (frame >= 0x64) {
             ex->btlfx_clearEffModels();
             return 1;
