@@ -1,7 +1,11 @@
-/* Draft of fx_05e op80 (summon: model rises out of a slice, then ribbons from three bones). Status: ~384 aligned
- * mismatches, register allocation: the original has t (case 0 angle) in s0 and p/state in s1, frame in s4, the
- * constant 1 in s5 (also &work->unk18 later) and k in s7. The union for the stack slot at 0x20 (VECTOR pos / two
- * SVECTORs in mode 1) gives the right frame layout. */
+/* Draft of fx_05e op80 (summon: model rises out of a slice, then ribbons from three bones). Identical body: fx_0ed
+ * op80; fx_09a op80 is 0.74 similar. Status: 264 aligned mismatches, 32 ignoring registers. Pass 2 levers: one
+ * if / else if / else with a single return 0 (mode 0 and 1 join the common return), case 2 computes t = frame << 12
+ * after the summon draw and k = t / 24 from it, case 3's angle shares t, the ribbon decay loops go through
+ * sg = D_801E9744 / D_801E9854 with ((SVECTOR *)sg)[i * 2 + 1] for the second edge point, and the D_801E8860 index
+ * is i = (... > 0x800) != (... > 0x800) as its own statement. With these env/one land in s6/s5 as in the original.
+ * Open: p (s0 here, s1 in the original), ex (s1 / s2), state (s2 / s1), t (s5 / s0) in global-alloc order; the
+ * original addresses the decay loops' second point as base + (8 + 16 * i) with an integer giv. */
 #include "fxmod/fx_05e.h"
 
 s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -22,12 +26,11 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 s;
     s32 i;
     s32 v;
+    Fx05eSeg *sg;
 
     if (mode == 0) {
         *arg4 = 0x40;
-        return 0;
-    }
-    if (mode == 1) {
+    } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E8E74 = env;
@@ -74,8 +77,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C.vy = work->unk10.vy;
         ex->btlfx_initEffModels(D_801E9014, 1);
         work->unk28 = (s16)ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0);
-        return 0;
-    }
+    } else {
     state = work->unk0;
     frame = entry->unk0;
     k = 0;
@@ -128,10 +130,11 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         u.pos.vy = work->unk18.vy;
         u.pos.vz = work->unk18.vz;
         ex->Hi_DrawSummonModel(&work->unk2C, &u.pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+        t = frame << 12;
         if (frame == 0) {
             k = -1;
         } else if (frame < 24) {
-            k = (frame << 12) / 24;
+            k = t / 24;
         } else {
             k = 0x1000;
         }
@@ -139,10 +142,8 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 2, 0xFF, 0xFF, 0);
         }
         if (frame == 31) {
-            p = (Pool6CEntry *)ex->func_800E3CEC(
-                ex->btlfx_getFileData(entry->unk8, D_801E8860[(work->unk10.vy & 0xFFF) - 0x400U > 0x800 ^
-                                                              (env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800]),
-                (s32)&work->unk8);
+            i = ((work->unk10.vy & 0xFFF) - 0x400U > 0x800) != ((env->unk2C->unk50 & 0xFFF) - 0x400U > 0x800);
+            p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E8860[i]), (s32)&work->unk8);
             if (p != NULL) {
                 p->unk22 = ex->func_800E7CC4(0, 0x40);
             }
@@ -203,16 +204,19 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             func_801E7704(&a, &b, 0x10, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, k, D_801E9744, 1);
             func_801E7704(&b, &c, 0x10, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, k, D_801E9854, 1);
             BTLFX_COPY_SVEC(&work->unk20, &a);
+            sg = D_801E9744;
             for (i = 0; i < 17; i++) {
-                D_801E9744[i].unk0.vy -= D_801E9744[i].unk0.vy >> 6;
-                D_801E9744[i].unk8.vy -= D_801E9744[i].unk8.vy >> 4;
+                sg[i].unk0.vy -= sg[i].unk0.vy >> 6;
+                ((SVECTOR *)sg)[i * 2 + 1].vy -= ((SVECTOR *)sg)[i * 2 + 1].vy >> 4;
             }
+            sg = D_801E9854;
             for (i = 0; i < 17; i++) {
-                D_801E9854[i].unk0.vy -= D_801E9854[i].unk0.vy >> 4;
-                D_801E9854[i].unk8.vy -= D_801E9854[i].unk8.vy >> 3;
+                sg[i].unk0.vy -= sg[i].unk0.vy >> 4;
+                ((SVECTOR *)sg)[i * 2 + 1].vy -= ((SVECTOR *)sg)[i * 2 + 1].vy >> 3;
             }
         }
     }
     work->unk4++;
+    }
     return 0;
 }
