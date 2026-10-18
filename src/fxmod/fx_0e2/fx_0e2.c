@@ -243,7 +243,53 @@ INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_op81);
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_op82);
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_op83);
+s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR a;
+    SVECTOR d;
+    Fx0e2Orbit *o;
+    s32 i;
+    s32 j;
+    Fx0e2Orbit *q;
+    s32 frame;
+
+    if (mode == 0) {
+        *arg4 = 8;
+    } else if (mode == 1) {
+        o = D_801EE8FC;
+        work->vx = 0;
+        work->vy = 0;
+        work->vz = 0x4B0;
+        D_801ECC0C = env;
+        for (i = 0; i < env->unkC->unk24; i++, o++) {
+            ex->btlfx_getUnitPos(i, (s16 *)&o->unk0);
+            ex->btlfx_getUnitRot(i, (s16 *)&o->unk8);
+            ex->btlfx_aimAngles((s16 *)work, (s16 *)&o->unk0, (s16 *)&a);
+            o->unk12 = a.vy;
+            d.vx = work->vx - o->unk0.vx;
+            d.vy = work->vy - o->unk0.vy;
+            d.vz = work->vz - o->unk0.vz;
+            o->unk10 = ex->btlfx_sqrt(d.vx * d.vx + d.vz * d.vz, 0x14);
+        }
+    } else {
+        frame = entry->unk0;
+        if (frame >= 0 && frame <= 0x40) {
+            for (j = 0, q = D_801EE8FC; j < env->unkC->unk24; j++, q++) {
+                a.vx = work->vx + q->unk10 * ex->math_sin(q->unk12) / 4096;
+                a.vy = q->unk0.vy - frame * 120;
+                a.vz = work->vz + q->unk10 * ex->math_cos(q->unk12) / 4096;
+                ex->btlfx_setUnitPos(j, (s16 *)&a);
+                ex->btlfx_aimAngles((s16 *)work, (s16 *)&a, (s16 *)&d);
+                d.vx = 0;
+                d.vz = 0;
+                ex->btlfx_setUnitRot(j, (s16 *)&d);
+                q->unk12 += 0x100;
+            }
+        }
+        return frame >= 0x46;
+    }
+    return 0;
+}
 
 s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
