@@ -7,49 +7,6 @@
  * loop. */
 #include "fxmod/fx_07a.h"
 
-typedef struct {
-    s16 vx, vy, vz;
-    s16 unk6; /* width */
-} Fx07aPt;
-
-/* lightning strip passed to btlfx_drawTrail */
-typedef struct {
-    u8 unk0; /* count - 1 */
-    u8 unk1;
-    u8 unk2;
-    u8 pad3;
-    Fx07aPt unk4[11];
-    s32 unk5C; /* end offset */
-    s32 unk60;
-    s32 unk64;
-    s32 pad68;
-    s32 unk6C[20]; /* jitter */
-    s32 unkBC[20]; /* jitter speed */
-    s32 unk10C; /* timer */
-} Fx07aStrip; /* 0x110 */
-
-typedef struct {
-    s32 unk0; /* model */
-    SVECTOR unk4; /* rotation */
-    VECTOR unkC; /* scale */
-} Fx07aModel; /* 0x1C */
-
-typedef struct {
-    s32 unk0[16]; /* timers */
-    Fx07aModel unk40[3];
-    VECTOR unk94; /* position */
-    SVECTOR unkA4[8]; /* unit home positions */
-    s32 unkE4[8]; /* unit delays */
-    s32 pad104;
-} Fx07aWork; /* 0x108 */
-
-extern BtlModel D_801E9934[];
-extern SVECTOR D_801E9B8C;
-extern SVECTOR D_801E9B94;
-extern Fx07aStrip D_801E9BA4[5];
-extern s32 D_801E9504;
-extern u32 D_801E9534[];
-
 s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR pos;
@@ -57,12 +14,12 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     VECTOR cur;
     VECTOR step;
     Fx07aStrip *tr;
+    Fx07aStrip *q;
     Fx07aPt *pt;
     s32 frame;
     s32 i;
     s32 j;
     s32 n = 11;
-    s32 m;
     s32 w;
     s32 r;
     s32 a;
@@ -264,6 +221,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     step.vx = ((work->unk94.vx + tr->unk5C - D_801E9B8C.vx) << 12) / n;
                     step.vy = ((work->unk94.vy + tr->unk60 - D_801E9B8C.vy) << 12) / n;
                     step.vz = ((work->unk94.vz + tr->unk64 - D_801E9B8C.vz) << 12) / n;
+                    q = tr;
                     for (j = 0, pt = tr->unk4; j < n; j++, pt++) {
                         pt->vx = cur.vx >> 12;
                         pt->vz = cur.vz >> 12;
@@ -276,10 +234,10 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     }
                     if (tr->unk10C < 4) {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000,
-                                            tr->unk10C << 10, 1, (u8 *)tr, 0);
+                                            tr->unk10C << 10, 1, (u8 *)q, 0);
                     } else {
                         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000,
-                                            0x1000, 1, (u8 *)tr, 0);
+                                            0x1000, 1, (u8 *)q, 0);
                     }
                 } else if (tr->unk10C < 0) {
                     tr->unk10C++;
@@ -298,8 +256,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->unk64 = (ex->math_cos(b) * r) >> 12;
                     tr->unkBC[0] = 0;
                     tr->unk6C[0] = 0;
-                    m = n - 1;
-                    for (; j < m; j++) {
+                    for (; j < n - 1; j++) {
                         w = j * 8 + 0x10;
                         tr->unk6C[j] = ex->btlfx_randRange(-w * 2, w * 2);
                         tr->unkBC[j] = ex->btlfx_randRange(-w, w);

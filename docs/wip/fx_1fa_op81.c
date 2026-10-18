@@ -1,9 +1,12 @@
-/* Draft of fx_1fa fx_1fa_op81. Status: 13 aligned mismatches with registers, 7 ignoring them: (1) mode 1 loads
- * entry->unk8 before the D_801E80EC = 0 store; (2) the init loop's constant 8 is hoisted after a = i (original:
- * before); (3) in the ring loop the original reloads unkC for math_sin and computes unk10 - 2 in v0, then
- * 'move s1,v0' (looks like reload_cse turning a reload of unk10 into a move, i.e. cse1 did not reuse the value).
- * Fixed here: i - (j - 4) via k (keeps j - 4 in the loop), a -= 0x2A9 before i++ and rr/ang before j++ in the
- * increments (biv order). fx_1ee op81 is the same code (one constant differs, 0x60 -> 0x40). */
+/* Draft of fx_1fa fx_1fa_op81. Status: 8 lines (nd.py): (1) the init loop's constant 8 is hoisted after a = i
+ * (original: before); (2) in the ring loop the original computes unk10 - 2 in v0, stores it, then 'move s1,v0' and
+ * shifts s1 in place; here the temp and rad share s1, so reload_cse turns the math_sin argument load into
+ * 'move a0,v0' (the original's v0 is overwritten by the temp, so it reloads unkC). The temp/rad copy survives only
+ * if cse makes rad the canonical register (rad live outside the cse block, e.g. a dead 'rad = 0' earlier) and
+ * combine can't fold the copy into the shift; tried MS/MSS/TS forms with dead inits (build/w/g1fa*.py): the copy
+ * still folds. Fixed: D_801E80EC is an array (in-struct), so the mode-1 store stays before the entry->unk8 load;
+ * i - (j - 4) via k, a -= 0x2A9 before i++ and rr/ang before j++ (biv order). fx_1ee op81 is the same code (one
+ * constant differs, 0x60 -> 0x40). */
 #include "fxmod/fx_1fa.h"
 
 s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -23,7 +26,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     if (mode == 0) {
         *arg4 = 0;
     } else if (mode == 1) {
-        D_801E80EC = 0;
+        D_801E80EC[0] = 0;
         D_801E80DC = env;
         D_801E811C[0][0].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, 3);
         D_801E811C[0][1].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, 0x12);
@@ -89,7 +92,7 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            D_801E80EC = 0x20;
+            D_801E80EC[0] = 0x20;
             break;
         case 8:
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&D_801E80F4);
@@ -115,8 +118,8 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             }
             break;
         }
-        if (D_801E80EC != 0) {
-            D_801E80EC--;
+        if (D_801E80EC[0] != 0) {
+            D_801E80EC[0]--;
             env->unk28 = 0x200;
             for (i = 0; i < 12; i++) {
                 for (j = 0; j < 4; j++) {
