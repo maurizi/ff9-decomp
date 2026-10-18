@@ -1,6 +1,10 @@
-/* Draft of fx_1f2 fx_1f2_op80 (first draft from m2c; summon with many effect models, spark trails and a frame
- * switch). Status: 2422 aligned mismatches, 824 ignoring registers (of ~2640 instructions). Types: Fx1f2Model
- * (0x30 model records), Fx1f2Ring (0x38), Fx1f2Trail (0x150 trail + 16 points + 16 velocities). */
+/* Draft of fx_1f2 fx_1f2_op80 (summon with many effect models, spark trails and a frame switch). Status: 2091 aligned
+ * mismatches, 493 ignoring registers (of ~2640 instructions); frame size matches (0xF8). Types: Fx1f2Model (0x30
+ * model records), Fx1f2Ring (0x38), Fx1f2Trail (0x150 trail + 16 points + 16 velocities). Levers so far: the
+ * model records are initialised with setVector(&rec.unkX, ...) (the original computes &rec.unkX into a register
+ * and stores at 0/2/4), the trail setup writes D_801EA690[i].unk50[j] by index, the ring and spark-trail loops
+ * that end in a signed pointer compare are index loops (rg = &D_801EA300[i]: the eliminated biv leaves slt).
+ * Open: the original keeps ex in s7 and the loop counters in fp (here the mode-1 counter is spilled). */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -165,176 +169,80 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 lo = (ex->math_sin(a) * r) >> 12;
                 hi = ex->math_cos(a) * r;
-                tr->unk50[j].vx = (&work->unk110)[c].vx - lo;
-                tr->unk50[j].vz = (&work->unk110)[c].vz - (hi >> 12);
+                D_801EA690[i].unk50[j].vx = (&work->unk110)[c].vx - lo;
+                D_801EA690[i].unk50[j].vz = (&work->unk110)[c].vz - (hi >> 12);
+                D_801EA690[i].unk50[j].vy = (&work->unk110)[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
+                D_801EA690[i].unk50[j].pad = j + 1;
                 j++;
-                tr->unk50[j - 1].pad = j;
-                tr->unk50[j - 1].vy = (&work->unk110)[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
             }
             tr->unk50[15].pad = 0;
         }
         D_801EA270.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x84), 0xFF);
-        D_801EA270.unk8.vx = 0;
-        D_801EA270.unk8.vy = 0;
-        D_801EA270.unk8.vz = 0;
-        D_801EA270.unk10.vx = 0;
-        D_801EA270.unk10.vy = 0;
-        D_801EA270.unk10.vz = 0;
-        D_801EA270.unk20.vx = 0x1000;
-        D_801EA270.unk20.vy = 0x1000;
-        D_801EA270.unk20.vz = 0x1000;
+        setVector(&D_801EA270.unk8, 0, 0, 0);
+        setVector(&D_801EA270.unk10, 0, 0, 0);
+        setVector(&D_801EA270.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA2A0.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x87), 0xFF);
-        D_801EA2A0.unk8.vx = 0;
-        D_801EA2A0.unk8.vy = 0;
-        D_801EA2A0.unk8.vz = 0;
-        D_801EA2A0.unk10.vx = 0;
-        D_801EA2A0.unk10.vy = 0;
-        D_801EA2A0.unk10.vz = 0;
-        D_801EA2A0.unk20.vx = 0x1000;
-        D_801EA2A0.unk20.vy = 0x1000;
-        D_801EA2A0.unk20.vz = 0x1000;
+        setVector(&D_801EA2A0.unk8, 0, 0, 0);
+        setVector(&D_801EA2A0.unk10, 0, 0, 0);
+        setVector(&D_801EA2A0.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA2D0.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x89), 1);
-        D_801EA2D0.unk8.vx = 0;
-        D_801EA2D0.unk8.vy = 0;
-        D_801EA2D0.unk8.vz = 0;
-        D_801EA2D0.unk10.vx = 0;
-        D_801EA2D0.unk10.vy = 0;
-        D_801EA2D0.unk10.vz = 0;
-        D_801EA2D0.unk20.vx = 0xD00;
-        D_801EA2D0.unk20.vy = 0xD00;
-        D_801EA2D0.unk20.vz = 0xD00;
+        setVector(&D_801EA2D0.unk8, 0, 0, 0);
+        setVector(&D_801EA2D0.unk10, 0, 0, 0);
+        setVector(&D_801EA2D0.unk20, 0xD00, 0xD00, 0xD00);
         D_801EA3E0.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x88), 1);
-        D_801EA3E0.unk8.vx = 0;
-        D_801EA3E0.unk8.vy = 0;
-        D_801EA3E0.unk8.vz = 0;
-        D_801EA3E0.unk10.vx = 0;
-        D_801EA3E0.unk10.vy = 0;
-        D_801EA3E0.unk10.vz = 0;
-        D_801EA3E0.unk20.vx = 0x1000;
-        D_801EA3E0.unk20.vy = 0x1000;
-        D_801EA3E0.unk20.vz = 0x1000;
+        setVector(&D_801EA3E0.unk8, 0, 0, 0);
+        setVector(&D_801EA3E0.unk10, 0, 0, 0);
+        setVector(&D_801EA3E0.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA410[0].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x80), 0xFF);
         D_801EA410[1].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8A), 0xFF);
         D_801EA410[0].unk4 = 0xC00;
         D_801EA410[1].unk4 = 0xC00;
-        D_801EA410[0].unk8.vx = 0;
-        D_801EA410[0].unk8.vy = 0;
-        D_801EA410[0].unk8.vz = 0;
-        D_801EA410[1].unk8.vx = 0;
-        D_801EA410[1].unk8.vy = 0;
-        D_801EA410[1].unk8.vz = 0x800;
-        D_801EA410[0].unk10.vx = 0;
-        D_801EA410[0].unk10.vy = 0;
-        D_801EA410[0].unk10.vz = 0;
-        D_801EA410[1].unk10.vx = 0;
-        D_801EA410[1].unk10.vy = 0;
-        D_801EA410[1].unk10.vz = 0;
-        D_801EA410[0].unk20.vx = 0xC00;
-        D_801EA410[0].unk20.vy = 0xC00;
-        D_801EA410[0].unk20.vz = 0xC00;
-        D_801EA410[1].unk20.vx = 0xC00;
-        D_801EA410[1].unk20.vy = 0xC00;
-        D_801EA410[1].unk20.vz = 0xC00;
+        setVector(&D_801EA410[0].unk8, 0, 0, 0);
+        setVector(&D_801EA410[1].unk8, 0, 0, 0x800);
+        setVector(&D_801EA410[0].unk10, 0, 0, 0);
+        setVector(&D_801EA410[1].unk10, 0, 0, 0);
+        setVector(&D_801EA410[0].unk20, 0xC00, 0xC00, 0xC00);
+        setVector(&D_801EA410[1].unk20, 0xC00, 0xC00, 0xC00);
         D_801EA470.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8C), 1);
-        D_801EA470.unk8.vx = 0;
-        D_801EA470.unk8.vy = 0;
-        D_801EA470.unk8.vz = 0;
-        D_801EA470.unk10.vx = 0;
-        D_801EA470.unk10.vy = 0;
-        D_801EA470.unk10.vz = 0;
-        D_801EA470.unk20.vx = 0x1000;
-        D_801EA470.unk20.vy = 0x1000;
-        D_801EA470.unk20.vz = 0x1000;
+        setVector(&D_801EA470.unk8, 0, 0, 0);
+        setVector(&D_801EA470.unk10, 0, 0, 0);
+        setVector(&D_801EA470.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA4A0[0].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8D), 1);
         D_801EA4A0[1].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8D), 1);
-        D_801EA4A0[0].unk8.vx = 0;
-        D_801EA4A0[0].unk8.vy = 0;
-        D_801EA4A0[0].unk8.vz = 0;
-        D_801EA4A0[1].unk8.vx = 0;
-        D_801EA4A0[1].unk8.vy = 0;
-        D_801EA4A0[1].unk8.vz = 0x800;
-        D_801EA4A0[0].unk10.vx = 0;
-        D_801EA4A0[0].unk10.vy = 0;
-        D_801EA4A0[0].unk10.vz = 0;
-        D_801EA4A0[1].unk10.vx = 0;
-        D_801EA4A0[1].unk10.vy = 0;
-        D_801EA4A0[1].unk10.vz = 0;
-        D_801EA4A0[0].unk20.vx = 0x1000;
-        D_801EA4A0[0].unk20.vy = 0x1000;
-        D_801EA4A0[0].unk20.vz = 0x1000;
-        D_801EA4A0[1].unk20.vx = 0x1000;
-        D_801EA4A0[1].unk20.vy = 0x1000;
-        D_801EA4A0[1].unk20.vz = 0x1000;
+        setVector(&D_801EA4A0[0].unk8, 0, 0, 0);
+        setVector(&D_801EA4A0[1].unk8, 0, 0, 0x800);
+        setVector(&D_801EA4A0[0].unk10, 0, 0, 0);
+        setVector(&D_801EA4A0[1].unk10, 0, 0, 0);
+        setVector(&D_801EA4A0[0].unk20, 0x1000, 0x1000, 0x1000);
+        setVector(&D_801EA4A0[1].unk20, 0x1000, 0x1000, 0x1000);
         D_801EA530[0].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
         D_801EA530[1].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 7), 1);
         D_801EA530[2].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
         D_801EA530[3].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
-        D_801EA530[0].unk8.vx = 0;
-        D_801EA530[0].unk8.vy = 0;
-        D_801EA530[0].unk8.vz = 0;
-        D_801EA530[1].unk8.vx = 0;
-        D_801EA530[1].unk8.vy = 0;
-        D_801EA530[1].unk8.vz = 0x800;
-        D_801EA530[2].unk8.vx = 0;
-        D_801EA530[2].unk8.vy = 0;
-        D_801EA530[2].unk8.vz = 0;
-        D_801EA530[3].unk8.vx = 0;
-        D_801EA530[3].unk8.vy = 0;
-        D_801EA530[3].unk8.vz = 0x800;
-        D_801EA530[0].unk10.vx = 0;
-        D_801EA530[0].unk10.vy = 0;
-        D_801EA530[0].unk10.vz = 0;
-        D_801EA530[1].unk10.vx = 0;
-        D_801EA530[1].unk10.vy = 0;
-        D_801EA530[1].unk10.vz = 0;
-        D_801EA530[2].unk10.vx = 0;
-        D_801EA530[2].unk10.vy = 0;
-        D_801EA530[2].unk10.vz = 0;
-        D_801EA530[3].unk10.vx = 0;
-        D_801EA530[3].unk10.vy = 0;
-        D_801EA530[3].unk10.vz = 0;
-        D_801EA530[0].unk20.vx = 0x1000;
-        D_801EA530[0].unk20.vy = 0x1000;
-        D_801EA530[0].unk20.vz = 0x1000;
-        D_801EA530[1].unk20.vx = 0x1000;
-        D_801EA530[1].unk20.vy = 0x1000;
-        D_801EA530[1].unk20.vz = 0x1000;
-        D_801EA530[2].unk20.vx = 0x1000;
-        D_801EA530[2].unk20.vy = 0x1000;
-        D_801EA530[2].unk20.vz = 0x1000;
-        D_801EA530[3].unk20.vx = 0x1000;
-        D_801EA530[3].unk20.vy = 0x1000;
-        D_801EA530[3].unk20.vz = 0x1000;
+        setVector(&D_801EA530[0].unk8, 0, 0, 0);
+        setVector(&D_801EA530[1].unk8, 0, 0, 0x800);
+        setVector(&D_801EA530[2].unk8, 0, 0, 0);
+        setVector(&D_801EA530[3].unk8, 0, 0, 0x800);
+        setVector(&D_801EA530[0].unk10, 0, 0, 0);
+        setVector(&D_801EA530[1].unk10, 0, 0, 0);
+        setVector(&D_801EA530[2].unk10, 0, 0, 0);
+        setVector(&D_801EA530[3].unk10, 0, 0, 0);
+        setVector(&D_801EA530[0].unk20, 0x1000, 0x1000, 0x1000);
+        setVector(&D_801EA530[1].unk20, 0x1000, 0x1000, 0x1000);
+        setVector(&D_801EA530[2].unk20, 0x1000, 0x1000, 0x1000);
+        setVector(&D_801EA530[3].unk20, 0x1000, 0x1000, 0x1000);
         D_801EA500.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8E), 1);
-        D_801EA500.unk8.vx = 0;
-        D_801EA500.unk8.vy = 0;
-        D_801EA500.unk8.vz = 0;
-        D_801EA500.unk10.vx = 0;
-        D_801EA500.unk10.vy = 0;
-        D_801EA500.unk10.vz = 0;
-        D_801EA500.unk20.vx = 0x1000;
-        D_801EA500.unk20.vy = 0x1000;
-        D_801EA500.unk20.vz = 0x1000;
+        setVector(&D_801EA500.unk8, 0, 0, 0);
+        setVector(&D_801EA500.unk10, 0, 0, 0);
+        setVector(&D_801EA500.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA5F0.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xF), 1);
-        D_801EA5F0.unk8.vx = 0;
-        D_801EA5F0.unk8.vy = 0;
-        D_801EA5F0.unk8.vz = 0;
-        D_801EA5F0.unk10.vx = 0;
-        D_801EA5F0.unk10.vy = 0;
-        D_801EA5F0.unk10.vz = 0;
-        D_801EA5F0.unk20.vx = 0x1000;
-        D_801EA5F0.unk20.vy = 0x1000;
-        D_801EA5F0.unk20.vz = 0x1000;
+        setVector(&D_801EA5F0.unk8, 0, 0, 0);
+        setVector(&D_801EA5F0.unk10, 0, 0, 0);
+        setVector(&D_801EA5F0.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA620.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 2);
-        D_801EA620.unk8.vx = 0;
-        D_801EA620.unk8.vy = 0;
-        D_801EA620.unk8.vz = 0;
-        D_801EA620.unk10.vx = work->unk120.vx;
-        D_801EA620.unk10.vy = work->unk120.vy;
-        D_801EA620.unk10.vz = work->unk120.vz;
-        D_801EA620.unk20.vx = 0x1000;
-        D_801EA620.unk20.vy = 0x1000;
-        D_801EA620.unk20.vz = 0x1000;
+        setVector(&D_801EA620.unk8, 0, 0, 0);
+        setVector(&D_801EA620.unk10, work->unk120.vx, work->unk120.vy, work->unk120.vz);
+        setVector(&D_801EA620.unk20, 0x1000, 0x1000, 0x1000);
         D_801EA300[0].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 0xFF);
         D_801EA300[1].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x81), 0xFF);
         D_801EA300[2].unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8B), 0xFF);
@@ -343,15 +251,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801EA300[i].unk4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x86), 1);
             D_801EA300[i].unk8 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x85), 1);
             D_801EA300[i].unkC = 0xC00;
-            D_801EA300[i].unk10.vx = 0;
-            D_801EA300[i].unk10.vy = a;
-            D_801EA300[i].unk10.vz = 0;
-            D_801EA300[i].unk18.vx = 0;
-            D_801EA300[i].unk18.vy = 0;
-            D_801EA300[i].unk18.vz = 0;
-            D_801EA300[i].unk28.vx = 0x1000;
-            D_801EA300[i].unk28.vy = 0x1000;
-            D_801EA300[i].unk28.vz = 0x1000;
+            setVector(&D_801EA300[i].unk10, 0, a, 0);
+            setVector(&D_801EA300[i].unk18, 0, 0, 0);
+            setVector(&D_801EA300[i].unk28, 0x1000, 0x1000, 0x1000);
         }
     } else {
         frame = entry->unk0;
@@ -481,7 +383,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             FX1F2_DRAW(D_801EA2A0);
             FX1F2_DRAW(D_801EA2D0);
             FX1F2_DRAW(D_801EA3E0);
-            for (rg = D_801EA300; rg < &D_801EA300[4]; rg++) {
+            for (i = 0; i < 4; i++) {
+                rg = &D_801EA300[i];
                 rg->unk18.vx = (ex->math_sin(rg->unk10.vy) * rg->unkC) >> 12;
                 lo = ex->math_cos(rg->unk10.vy) * rg->unkC;
                 rg->unk18.vy = 0;
@@ -686,7 +589,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             env->unk28 = 0x80;
-            for (tr = D_801EA690; tr < &D_801EA690[0x10]; tr++) {
+            for (i = 0; i < 0x10; i++) {
+                tr = &D_801EA690[i];
                 if (tr->unk4C != 0) {
                     if (--tr->unk4C < 8) {
                         tr->unk0 = tr->unk2 = 8;
