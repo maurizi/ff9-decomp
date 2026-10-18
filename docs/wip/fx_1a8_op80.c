@@ -6,7 +6,7 @@
  * subtraction; the permuter (40 min) found nothing. Levers that got it here: case 1 braced with its SVECTOR
  * declared at the case-block top (so the final ring VECTOR reuses offset 0 after the switch), separate temporaries
  * per case-2 block, A - (C + B) to get (A - C) - B past fold, (-x << 8) for negu-then-sll, block-local alpha/size
- * statement order, sin(q2 >> 2)/cos(q2 >> 2) instead of q2 >>= 2. Equivalent: yes (scheduling/regalloc only). */
+ * statement order, sin(q2 >> 2)/cos(q2 >> 2) instead of q2 >>= 2. The remaining rows are scheduling/regalloc only. */
 #include "fxmod/fx_1a8.h"
 
 typedef struct {
