@@ -95,7 +95,44 @@ s32 func_801EC7C8(s32 mode, Fx17d7Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame
 
 INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", fx_17d_7_op80);
 
-INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", func_801EE6E4);
+void func_801EE6E4(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *trail, s32 n, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip) {
+    Unk800F78A4 *env = D_801EF2DC;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR pos;
+    SVECTOR rot;
+    s32 i;
+    s32 cnt;
+    s32 t;
+    s32 h;
+    SVECTOR *pt;
+    s32 a;
+
+    ex->btlfx_aimAngles((s16 *)from, (s16 *)to, (s16 *)&rot);
+    cnt = (n - 4) / 8;
+    a = cnt;
+    trail->unk0 = trail->unk2 = a - 1;
+    trail->unk1 = 0;
+    pt = trail->unk4;
+    for (i = 0; i < a; i++, pt++) {
+        t = 0x1000 - (i << 12) / (a - 1);
+        t += *noise++ / 2;
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&pos);
+        h = *noise++ / 3;
+        h = (ex->math_sin((t >> 1) >> 1) * h) >> 12;
+        t >>= 1;
+        h += ex->btlfx_lerp(h0, h1, ex->math_sin(t));
+        ex->func_800D044C(&pos, (s32)pt, 0, (XY32 *)&rot, h, ang);
+        if (dip != 0) {
+            pt->vy -= (ex->math_sin(t) * dip) >> 12;
+        }
+        pt->pad = pad;
+        ang += dang + *noise++;
+    }
+    env->unk28 = 0x80;
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, file), 0, NULL, type, 0x1000, alpha, 1, (u8 *)trail, ot);
+    env->unk28 = 0;
+}
 
 void func_801EE990(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *path, Fx17d7Trail *trail, s32 n, s32 *noise,
                    s32 i, s32 type, s32 alpha, s32 pad) {
