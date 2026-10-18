@@ -1,9 +1,8 @@
-/* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: first full
- * draft, 19 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
- * entry s2, env spilled; &sc/&b and 0x80/10000 in s-registers in the ribbon loop; c of the ribbon loop spilled to
- * 0xC0) and statement order in several blocks. Levers already applied: 12-byte vectors in the work block,
- * "((k * col) >> 11) / 3", inline RGB expressions, wave2 = (frame << 12) / 49 before the case-4 test, ribbon buffer
- * as offset + base in the second loop. */
+/* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: 7 aligned diff
+ * lines (od.py), all in mode 1's store scheduling (unk10/unk1C/unk28/unk6C stores). Levers: 12-byte vectors in the
+ * work block, "((k * col) >> 11) / 3", inline RGB/tint expressions, block-local temporaries (v, d, e) so they stay
+ * out of the global c, if/else for glow in case 2, rib/wave declared before c (spill slot order), the ribbon c
+ * computed inside the loop argument (hoisted by loop.c), rot fields stored vx, vy, vz. */
 #include "fxmod/fx_0e1_0.h"
 
 typedef struct {
@@ -76,14 +75,13 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 frame;
     s32 k;
     s32 r;
-    s32 c;
     s32 i;
     s32 glow;
-    s32 wave;
     s32 rib;
+    s32 wave;
+    s32 c;
     s32 wave2;
     s32 t;
-    s32 o;
 
     if (mode == 0) {
         *arg4 = 0xA4;
@@ -372,9 +370,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if (glow != 0) {
             pos.vx = work->unk8.vx;
             pos.vy = work->unk8.vy;
+            pos.vz = work->unk8.vz;
             sc2.vx = sc2.vy = 0x1000;
             sc2.vz = 0x555;
-            pos.vz = work->unk8.vz;
             rot.vx = work->unk4 * 0xC;
             rot.vy = work->unk4 * 4;
             rot.vz = frame * 8;
@@ -408,11 +406,10 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     func_801E7CB4((SVECTOR *)&sc, &b, 0x3FC, 0, 0, 0, 0, 0, 0, 0, D_801E9E48[i], 1, 0);
                 }
             }
-            c = ((rib >> 5) * 2) / 3;
-            for (i = 0, o = 0; i < 4; i++, o += 0x150) {
+            for (i = 0; i < 4; i++) {
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
-                func_801E7CB4((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, c, (Fx0e10Seg *)(o + (s32)D_801E9E48), 1,
+                func_801E7CB4((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, D_801E9E48[i], 1,
                               10000 - work->unk4);
             }
             env->unk28 = 0;
