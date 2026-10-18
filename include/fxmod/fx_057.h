@@ -20,7 +20,24 @@ typedef struct {
     s32 unk28; /* model */
 } Fx057Work81; /* 0x2C */
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    s32 unk8; /* model */
+    s32 unkC; /* model */
+    SVECTOR unk10; /* position */
+    Fx057Vec3 unk18; /* model position */
+    SVECTOR unk24;
+    Pool6CEntry *unk2C;
+    Pool6CEntry *unk30;
+    Pool6CEntry *unk34;
+} Fx057Work80; /* 0x38 */
+
 extern SVECTOR D_801EA714;
+extern s32 D_801E8EB4[];
+extern s32 D_801EA708; /* fade */
+extern Pool6CEntry *D_801EA70C;
+extern BtlModel D_801EA724[];
 extern Unk800F78A4 *D_801E8EA4;
 extern SVECTOR D_801EA6F4; /* camera rest position */
 extern SVECTOR D_801EA6FC; /* particle head position */

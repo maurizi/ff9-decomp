@@ -1,6 +1,8 @@
-/* Draft of fx_042 op83 (bolt spawner, like fx_003 op83). Status: ~37 aligned mismatches: the mode-1 setup orders
- * the D_801E8F0C address (copied into s0) differently, and a.vx = a.vx + 0x46 + (rand() % 14) * 0x6E is associated
- * the other way. fx_049 op83 has the same mode-1 issue. */
+/* Draft of fx_042 op83 (bolt spawner, like fx_003 op83). Status: one instruction-order difference left, in the
+ * mode-1 setup: the original computes the D_801E8F0C address (copied into s0 for q) right after the vx store,
+ * interleaved with the vy load; here it comes after the vy store. fx_049 op83 has the same mode-1 block. The
+ * a.vx/a.vz updates match as compound assignments (a.vx += 0x46 + ..., a.vx -= ..., a.vz += ... - 0x44C), whose
+ * shared final store cross-jumps. */
 #include "fxmod/fx_042.h"
 
 s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
@@ -41,11 +43,11 @@ s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 BTLFX_COPY_SVEC(&a, &work->unk0);
                 if (work->unkC != 1) {
                     if ((work->unkC / 2) & 1) {
-                        a.vx = a.vx + 0x46 + (ex->btlfx_rand() % 14) * 0x6E;
+                        a.vx += 0x46 + (ex->btlfx_rand() % 14) * 0x6E;
                     } else {
-                        a.vx = a.vx - 0x46 - (ex->btlfx_rand() % 14) * 0x6E;
+                        a.vx -= 0x46 + (ex->btlfx_rand() % 14) * 0x6E;
                     }
-                    a.vz = a.vz - 0x44C + (ex->btlfx_rand() % 10) * 0xDC;
+                    a.vz += (ex->btlfx_rand() % 10) * 0xDC - 0x44C;
                 }
                 it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                 if (it != NULL) {
