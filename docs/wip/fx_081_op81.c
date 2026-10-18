@@ -1,10 +1,13 @@
-/* Draft of fx_081 fx_081_op81 (twin of fx_057 op81, 0.78). Status: 176 aligned mismatches, 38 ignoring registers;
- * the frame size (0x78), frame's spill slot (0x40) and the second loop's spilled particle pointer (0x4C) match.
- * Pass 2 levers: in case 2 frame << 7 is computed into j before the tint (the original keeps it in s4 across the
- * call), the second loop writes ang.vy = (w << 4) + (a = ...) so loop.c hoists w << 4 (lifetime long enough) and
- * a is the first loop's variable, pp2 = pp for the second loop (spilled), h declared before c (spill slots).
- * Open: global allocation at the top (original env s6, work s5, the constant 1 in s7, t/a in s4/s0; ours s7, s6,
- * s4, s5); case 1's copy block (work->unkC / unk14 / unk1C) store order; loop 1's a += 0x155 / i++ order. */
+/* Draft of fx_081 fx_081_op81 (twin of fx_057 op81, 0.78). Status: 4 aligned mismatches (2 instructions).
+ * Round 5 levers: case 2's `a = j >> 2` reuses the loop variable a (the original's s0; case 0/1's t keeps s4), the
+ * case 1 copy block with work->unk14.vy -= 0xC00 before work->unk1C.vz, `for (j = 0, pp = &pos; ...)`,
+ * `for (i = 0; i < 12; i++, a += 0x155)`, and ang.vx = vx after ang.vy in the second loop.
+ * Open: the second loop's ang.vy add has its operands swapped (original addu v0,s0(a),s6(w << 4)); writing
+ * (a = ...) + (w << 4) or an explicit w4 changes loop.c's hoisting and the global allocation; and at the bottom of
+ * the outer loop the original orders the D_801E8E7C giv increment, frame's reload and j++ as s2, lw t0, j++
+ * (here s2, j++, lw t0; `w += frame, j++` gives lw t0, s2, j++).
+ * Earlier: frame << 7 computed into j before the tint, pp2 = pp for the second loop (spilled), h declared before c
+ * (spill slots). */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *D_801E8ED8;
@@ -137,8 +140,8 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 BTLFX_COPY_SVEC(&work->unk14, &work->unkC);
                 work->unk1C.vx = work->unkC.vx;
                 work->unk1C.vy = work->unkC.vy;
-                work->unk1C.vz = work->unkC.vz;
                 work->unk14.vy -= 0xC00;
+                work->unk1C.vz = work->unkC.vz;
                 e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&work->unkC);
                 if (e != NULL) {
                     e->unk22 = work->unk8 + 0x40;
@@ -169,23 +172,21 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 u = 0xFF - frame * 0xFF / 6;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, u >> 1, u, u);
             }
-            t = j >> 2;
-            c = ex->math_cos(t);
-            h = ((ex->math_sin(t) * 0x60E) >> 12) + 0x100;
+            a = j >> 2;
+            c = ex->math_cos(a);
+            h = ((ex->math_sin(a) * 0x60E) >> 12) + 0x100;
             ang.vx = 0;
             ang.vy = 0;
             ang.vz = 0;
-            pp = &pos;
-            for (j = 0; j < 2; j++) {
+            for (j = 0, pp = &pos; j < 2; j++) {
                 if (j == 0) {
                     ang.vx = work->unk4 * 0x18 + 0x200;
                 } else {
                     ang.vx = -0x200 - work->unk4 * 0x18;
                 }
                 a = work->unk4 * 41 + (j << 7);
-                for (i = 0; i < 12; i++) {
+                for (i = 0; i < 12; i++, a += 0x155) {
                     ex->func_800D044C(&work->unkC, (s32)pp, 0, (XY32 *)&ang, h, a);
-                    a += 0x155;
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), pp, NULL, 0x1000, frame & 0xF, 1,
                                       c, 0, 0);
                 }
@@ -195,8 +196,8 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (j = 0, w = 0; j < 10; j++, w += frame) {
                 vx = 0x400 - (j << 11) / 9;
                 for (i = 0; i < D_801E8E7C[j]; i++) {
-                    ang.vx = vx;
                     ang.vy = (w << 4) + (a = (i << 12) / D_801E8E7C[j] - (work->unk4 << 5));
+                    ang.vx = vx;
                     ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, h, (s16 *)pp2);
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x25), pp2, NULL, c + 0x800, 0, 1, c, 0,
                                       0);
