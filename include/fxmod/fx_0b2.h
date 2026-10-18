@@ -20,6 +20,13 @@ typedef struct {
     SVECTOR unk4[25];
 } Fx0b2Trail; /* 0xCC */
 
+typedef struct {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 code;
+} Fx0b2Rgbc; /* primitive colour word */
+
 extern Unk800F78A4 *D_801E90A0;
 extern Fx0b2Trail D_801E90B0[3];
 

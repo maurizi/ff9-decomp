@@ -31,7 +31,153 @@ void func_801E7704(Unk80100C78Entry *entry, Fx0b2Trail *trail, SVECTOR *from, SV
     ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 4), 0, NULL, arg8, 0x1000, arg9, 1, (u8 *)trail, 0);
 }
 
-INCLUDE_ASM("asm/us/fx_0b2/nonmatchings/fx_0b2", func_801E78FC);
+void func_801E78FC(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+                   s32 arg9, s32 arg10, s32 arg11, s32 arg12, s32 arg13, s32 arg14, s32 arg15) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E90A0);
+    Fx0b2Rgbc c0;
+    Fx0b2Rgbc c1;
+    Fx0b2Rgbc c2;
+    MATRIX m;
+    SVECTOR v[4];
+    s32 z;
+    POLY_GT4 *gt4;
+    POLY_FT4 *ft4;
+    s32 r0;
+    s32 r1;
+    s32 j;
+    s32 row;
+    s32 ang;
+    s32 h0;
+    s32 h1;
+    s32 a;
+    s32 x;
+    s32 y;
+    s32 d;
+    s32 e;
+    s32 ft;
+    s32 u0;
+    s32 v0;
+    s32 u1;
+    s32 v1;
+    s32 ju;
+    s32 rv;
+
+    gte_SetRotMatrix(D_801E90A0->unk14);
+    gte_SetTransMatrix(D_801E90A0->unk14);
+    gte_ldv0(arg0);
+    gt4 = (POLY_GT4 *)D_801E90A0->unk24;
+    *(s32 *)&c2 = 0;
+    ft4 = (POLY_FT4 *)((u8 *)gt4 + arg15 * 0x68);
+    D_801E90A0->unk24 = (u8 *)ft4 + arg15 * 0xC8;
+    c0.r = c0.g = c0.b = arg5;
+    c1.r = c1.g = c1.b = arg5;
+    c0.code = arg14 != 0xFF ? 0x2E : 0x2C;
+    c2.code = arg14 != 0xFF ? 0x3E : 0x3C;
+    arg6 |= (arg14 & 3) << 5;
+    c1.code = c2.code;
+    gte_rtv0tr_b();
+    ex->func_800316D8(arg1, &m);
+    ex->ScaleMatrix(&m, arg2);
+    gte_stlvnl(m.t);
+    ex->MulRotMatrix(&m);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    ang = 0;
+    /* row * arg10, (row + 1) * arg10, row + 1 and the two heights are loop-reduced into five stack temporaries;
+     * h0/h1 are set here (not at their use) so their lifetime makes them worth reducing. */
+    for (row = 0; row < 7; row++) {
+        h1 = row * 0x90;
+        h0 = (row + 1) * 0x90;
+        ang += arg13;
+        arg11 += arg12;
+        r0 = ex->btlfx_lerp(arg3, arg4, (row << 12) / 7);
+        r1 = ex->btlfx_lerp(arg3, arg4, ((row + 1) << 12) / 7);
+        for (j = 0; j < arg15; j++) {
+            ang += arg13;
+            x = (ex->math_cos(arg11 + arg12) * ((row + 1) * arg10 / 7)) >> 12;
+            y = (ex->math_sin(arg11 + arg12) * ((row + 1) * arg10 / 7)) >> 12;
+            v[0].vx = x + ((ex->math_cos(ang) * r1) >> 12);
+            v[0].vy = y + ((ex->math_sin(ang) * r1) >> 12);
+            d = 0x1000 / arg15;
+            a = ang + d;
+            v[1].vx = x + ((ex->math_cos(a) * r1) >> 12);
+            v[1].vy = y + ((ex->math_sin(a) * r1) >> 12);
+            v[0].vz = v[1].vz = h0;
+            ang -= arg13;
+            e = ang + d; /* a new variable keeps (plus ang d) in that operand order */
+            x = (ex->math_cos(arg11) * (row * arg10 / 7)) >> 12;
+            y = (ex->math_sin(arg11) * (row * arg10 / 7)) >> 12;
+            v[2].vx = x + ((ex->math_cos(ang) * r0) >> 12);
+            v[2].vy = y + ((ex->math_sin(ang) * r0) >> 12);
+            v[3].vx = x + ((ex->math_cos(e) * r0) >> 12);
+            v[3].vy = y + ((ex->math_sin(e) * r0) >> 12);
+            v[2].vz = v[3].vz = h1;
+            gte_ldv3c(v);
+            gte_rtpt();
+            /* j & 3 and row & 3 in variables: the original computes each once, across the first ternary's label */
+            ju = j & 3;
+            u0 = arg8 + (ju * 7 * 16 >> 2);
+            rv = row & 3;
+            v0 = arg9 + (rv * 7 * 16 >> 2);
+            /* a default and an override, not a ternary: the order global-alloc sees puts v1 before u1 */
+            u1 = u0 + 0x1C;
+            if (ju == 3) {
+                u1 = u0 + 0x1B;
+            }
+            v1 = v0 + 0x1C;
+            if (rv == 3) {
+                v1 = v0 + 0x1B;
+            }
+            gte_nclip();
+            if (row == 0) {
+                ft = 0;
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&c1;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&c2;
+            } else if (row >= 6) {
+                ft = 0;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = *(s32 *)&c1;
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&c2;
+            } else {
+                ft = 1;
+                *(s32 *)&ft4->r0 = *(s32 *)&c0;
+            }
+            gte_stopz(&z);
+            if (z != 0) {
+                if (ft) {
+                    ft4->u0 = ft4->u2 = u0;
+                    ft4->u1 = ft4->u3 = u1;
+                    ft4->v2 = ft4->v3 = v0;
+                    ft4->v0 = ft4->v1 = v1;
+                    ft4->tpage = arg6;
+                    ft4->clut = arg7;
+                    gte_stsxy3(&ft4->x0, &ft4->x1, &ft4->x2);
+                } else {
+                    gt4->u0 = gt4->u2 = u0;
+                    gt4->u1 = gt4->u3 = u1;
+                    gt4->v2 = gt4->v3 = v0;
+                    gt4->v0 = gt4->v1 = v1;
+                    gt4->tpage = arg6;
+                    gt4->clut = arg7;
+                    gte_stsxy3(&gt4->x0, &gt4->x1, &gt4->x2);
+                }
+                gte_avsz3();
+                gte_stszotz(&z);
+                gte_ldv0(&v[3]);
+                gte_rtps();
+                if (ft) {
+                    ex->btlfx_addPrim(0x09000000, z, ft4);
+                    gte_stsxy(&ft4->x3);
+                    ft4++;
+                } else {
+                    ex->btlfx_addPrim(0x0C000000, z, gt4);
+                    gte_stsxy(&gt4->x3);
+                    gt4++;
+                }
+            }
+            ang += 0x1000 / arg15;
+        }
+    }
+}
 
 s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
