@@ -1637,11 +1637,11 @@ s32 func_8001E698(char *a, char *b) {
     return strncmp(a, b, 12) == 0;
 }
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001E6B8);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CD_newmedia);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001E97C);
 
-INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001EA20);
+INCLUDE_ASM("asm/us/main/nonmatchings/main", CD_cachefile);
 
 INCLUDE_ASM("asm/us/main/nonmatchings/main", func_8001ECBC);
 

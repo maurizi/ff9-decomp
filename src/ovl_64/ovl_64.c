@@ -1311,15 +1311,15 @@ INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", DecDCToutCallback);
 
 INCLUDE_RODATA("asm/us/ovl_64/nonmatchings/ovl_64", D_8019903C);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D020);
+INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_reset);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D110);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D1A0);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D22C);
+INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_in_sync);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D2C0);
+INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_out_sync);
 
 u32 func_8019D354(void) {
     return *D_8019E008;

@@ -550,7 +550,7 @@ s32 func_800A9E24(s16, s32 *, s32 *);
 s32 func_800A9EC4(s32, s32 *, s32 *);
 s32 func_800A9FC0(s16, s32 *, s32 *);
 s32 func_800AA060(s32, s32 *, s32 *);
-void func_800B8024(void);
+void w_frameMapDestructor(void);
 void func_800CB9D8(s32, s32);
 void func_800B4270(void *);
 s32 func_800B4FD4(void *, s32, s32);
@@ -610,7 +610,7 @@ void func_800CC5D8(u8);
 s32 func_800B8498(void);
 s32 func_800B84C0(void);
 s32 w_musicGetID(s32, Unk800C3FE4 *);
-s32 func_800B828C(s32 *);
+s32 w_frameExtruct(s32 *);
 void func_800B3A80(s32);
 s32 func_800B3FEC(s32, s32, s32);
 void func_800AD114(s32, s32, s32);
@@ -648,7 +648,7 @@ void func_800ACEEC(void);
 s32 func_800AD10C(void);
 s32 func_800B6BC4(void);
 void func_800B69B4(void);
-void func_800B8068(void);
+void w_frameSystemDestructor(void);
 s32 func_800C45D8(void);
 s32 func_800AB0C0(s32, s32, s32, s32, s32);
 void func_800AD738(void);
@@ -1163,7 +1163,7 @@ extern VECTOR D_800A8588;
 extern VECTOR D_800A8598;
 
 /* first entry of data pack `id` */
-#define WM_PACK0(id) ((s32)((WmPack *)func_800B8388(D_800CF428, id))->unk8[0])
+#define WM_PACK0(id) ((s32)((WmPack *)w_framePackGetPtr(D_800CF428, id))->unk8[0])
 
 /* inline CompMatrix: c = a * b, c->t = a * b->t + a->t */
 #define gte_CompMatrix(a, b, c)    \

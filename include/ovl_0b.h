@@ -3341,7 +3341,7 @@ void func_800F4010(s32);
 BtlObjSlot *btlfx_allocEffModel(void);
 void func_800C7730(BtlUnit9C *, s16 *, s16 *);
 
-void func_800DF588(BtlUnit9C *, s32, s32);
+void GeoSplitVertices(BtlUnit9C *, s32, s32);
 s32 func_800DF670(BtlUnit9C *, s32);
 
 /* argument block of func_800EE37C */

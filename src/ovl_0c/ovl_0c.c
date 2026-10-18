@@ -93,7 +93,7 @@ void func_800A8CA4(void) {
         D_800739B0[i].unk1 = 0;
         D_800739B0[i].unk0 = 0;
     }
-    func_800B8068();
+    w_frameSystemDestructor();
     func_800A91B4();
 }
 
@@ -300,7 +300,7 @@ void func_800A95A0(void) {
         g_gameState->unk1C->unk7EC[i] = g_gameState->unk1C->unk7FC[i];
         g_gameState->unk1C->unk7F4[i] = g_gameState->unk1C->unk804[i];
     }
-    func_800B8024();
+    w_frameMapDestructor();
     gd = g_gameState->unk1C;
     mode = gd->unk8E4.world->unk8->unk1B;
     switch (mode) {
@@ -2081,7 +2081,7 @@ void func_800AEC74(void) {
     id = 0;
     k = 0;
     e = g_gameState->unk1C->unk8E4.world->unk8->unk28;
-    pal = func_800B8388(D_800CF428, 1);
+    pal = w_framePackGetPtr(D_800CF428, 1);
     func_800B36AC();
     for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
         a = n->unk4;
@@ -3526,7 +3526,7 @@ void func_800B30C0(void) {
     }
 }
 
-void func_800B31B8(void) {
+void w_movementChangeSP1(void) {
     s8 old;
     Unk800CE3C8 *p;
 
@@ -3547,7 +3547,7 @@ void func_800B31B8(void) {
 /* padded: the next jump table is 8-aligned */
 const char D_800A7164[0x1C] = "w_movementChange SP2\n";
 
-void func_800B326C(void) {
+void w_movementChangeSP2(void) {
     func_8004B20C(0);
     func_800C48F4(0x26);
     func_800C48F4(D_800CE3C8->unkC);
@@ -4117,10 +4117,10 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         func_800B81A0();
         break;
     case 30:
-        func_800B31B8();
+        w_movementChangeSP1();
         break;
     case 31:
-        func_800B326C();
+        w_movementChangeSP2();
         break;
     case 32:
         func_800C4710(arg1);
@@ -4420,7 +4420,7 @@ void func_800B7F7C(void) {
     }
 }
 
-void func_800B8024(void) {
+void w_frameMapDestructor(void) {
     if (D_800CCE50 & 0x40) {
         printf(D_800A71F4);
     }
@@ -4428,7 +4428,7 @@ void func_800B8024(void) {
     func_800BC098();
 }
 
-void func_800B8068(void) {
+void w_frameSystemDestructor(void) {
     RECT r = D_800A71E0;
 
     MoveImage(&r, 0x100, 0xFD);
@@ -4493,7 +4493,7 @@ s32 func_800B822C(s32 arg0, s16 arg1, s32 arg2, s32 arg3) {
     return arg0 >> s;
 }
 
-s32 func_800B828C(s32 *arg0) {
+s32 w_frameExtruct(s32 *arg0) {
     u32 i;
 
     if (!(*arg0 & 0x80000000)) {
@@ -4510,7 +4510,7 @@ s32 func_800B828C(s32 *arg0) {
     return *arg0 & 0x7FFFFFFF;
 }
 
-void *func_800B8388(void **arg0, s32 arg1) {
+void *w_framePackGetPtr(void **arg0, s32 arg1) {
     s32 n = (s32)arg0[0] & 0x7FFFFFFF;
 
     if ((D_800CCE50 & 0x100) && n < arg1) {
@@ -4759,7 +4759,7 @@ void func_800B8B10(void) {
         if (i < 18) {
             if (i >= 15) {
                 dst = &D_800CFFD0[0][off];
-                memcpy((u8 *)dst, (u8 *)func_800B8388(D_800CF428, 2) + src, (u16)e->unk6 * 2);
+                memcpy((u8 *)dst, (u8 *)w_framePackGetPtr(D_800CF428, 2) + src, (u16)e->unk6 * 2);
                 src += (u16)e->unk6 * 2;
             } else {
                 StoreImage(&r, (u32 *)&D_800CFFD0[0][off]);
@@ -5391,18 +5391,18 @@ void func_800BA58C(void) {
     D_800D32DC = h << 14;
     *(WmCellMap *)D_800D30F8 = *(WmCellMap *)f[0];
     func_800BB508();
-    func_800B828C(D_800CE3F4);
-    func_800B828C((s32 *)D_800CF428);
-    func_800B828C((s32 *)f[1]);
-    func_800B828C((s32 *)f[2]);
-    func_800B828C((s32 *)f[3]);
-    func_800B828C((s32 *)f[4]);
+    w_frameExtruct(D_800CE3F4);
+    w_frameExtruct((s32 *)D_800CF428);
+    w_frameExtruct((s32 *)f[1]);
+    w_frameExtruct((s32 *)f[2]);
+    w_frameExtruct((s32 *)f[3]);
+    w_frameExtruct((s32 *)f[4]);
     func_800CB09C(f[6]);
     t = f[5];
-    func_800B828C((s32 *)t);
+    w_frameExtruct((s32 *)t);
     for (i = 0; i < 16; i++) {
-        p = func_800B8388(t, i + D_800D30C8[i] * 16);
-        func_800B828C(p);
+        p = w_framePackGetPtr(t, i + D_800D30C8[i] * 16);
+        w_frameExtruct(p);
         func_800B96CC(p, 0, 0, 0, 0);
     }
     func_800B96CC((s32 *)f[4], 0, 0, 0, 0);
@@ -5443,15 +5443,15 @@ void func_800BA58C(void) {
         }
     }
     for (i = 0x35; i < 0x43; i++) {
-        func_800BA528(func_800B8388(D_800CF428, i));
+        func_800BA528(w_framePackGetPtr(D_800CF428, i));
     }
-    D_800D32EC = func_800B8388(D_800CF428, 0x42);
-    D_800CF478 = func_800B8388(D_800CF428, 0);
-    D_800CF450 = func_800B8388(D_800CF428, 3);
-    D_800D3FA0 = *(Unk800D3FA0 *)func_800B8388(D_800CF428, 5);
+    D_800D32EC = w_framePackGetPtr(D_800CF428, 0x42);
+    D_800CF478 = w_framePackGetPtr(D_800CF428, 0);
+    D_800CF450 = w_framePackGetPtr(D_800CF428, 3);
+    D_800D3FA0 = *(Unk800D3FA0 *)w_framePackGetPtr(D_800CF428, 5);
     dst = (Unk800CFEA0Tbl *)D_800CFEA0;
-    *dst = *(Unk800CFEA0Tbl *)func_800B8388(D_800CF428, 6);
-    D_800D32E4 = func_800B8388(D_800CF428, 4);
+    *dst = *(Unk800CFEA0Tbl *)w_framePackGetPtr(D_800CF428, 6);
+    D_800D32E4 = w_framePackGetPtr(D_800CF428, 4);
 }
 
 void func_800BAD98(void) {
@@ -5517,7 +5517,7 @@ void func_800BAEC0(void) {
         }
         SetLightMatrix(&D_800CF520);
         SetColorMatrix(&D_800CF4E0);
-        p = func_800B8388(D_800CF428, 0x3B);
+        p = w_framePackGetPtr(D_800CF428, 0x3B);
         m2.t[0] = 0;
         m2.t[1] = 0;
         m2.t[2] = 0;
@@ -7652,7 +7652,7 @@ void func_800C20B0(s32 *arg0) {
     if (D_800CCE50 & 0x200) {
         printf(D_800A8098, arg0);
     }
-    func_800B828C(arg0);
+    w_frameExtruct(arg0);
     p = D_800D3EA8.unk4;
     for (i = 0; i < 3;) {
         if (p->unk8 == arg0) {
@@ -8791,7 +8791,7 @@ void func_800C5A48(u8 arg0) {
             pos.vx = m.t[0];
             pos.vy = m.t[1];
             pos.vz = m.t[2];
-            spr = func_800B8388(D_800CF428, 0x25);
+            spr = w_framePackGetPtr(D_800CF428, 0x25);
             n = func_800CAE00((u16 *)spr) - 1;
             if (n != 0) {
                 D_800CF404 = func_800CAE0C(D_800CF404, spr, &pos, NULL, D_800CDFBC, D_800CF4B0 / 2 % n, 1, -1,
@@ -8971,7 +8971,7 @@ void func_800C69F4(s32 arg0) {
         break;
     }
     if (on) {
-        e = func_800B8388(D_800CF428, (u8)arg0 + 0x28);
+        e = w_framePackGetPtr(D_800CF428, (u8)arg0 + 0x28);
         for (; e->unk24 != -1; e++) {
             if (rand() % 4096 < e->unk28) {
                 x = e->unk0 - e->unkC / 2;
@@ -9067,7 +9067,7 @@ void func_800C6F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         break;
     }
     if (p->unk8 != 0) {
-        v = (s32)func_800B8388(D_800CF428, arg3 + 7);
+        v = (s32)w_framePackGetPtr(D_800CF428, arg3 + 7);
         p->unk4->unk8 = p->unk8;
         p->unk8->unk4 = p->unk4;
         p->unk4 = h;

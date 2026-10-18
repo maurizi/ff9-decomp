@@ -213,3 +213,4 @@ btlfx_getUnitMotion = 0x800D8740; // type:func [code] docs/runtime-findings.md d
 btlfx_setUnitMotion = 0x800D86E0; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, party units only, sets the motion and restarts its frame counter
 btlfx_playUnitMotion = 0x800D85AC; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, btlfx_getUnitMotion then btlfx_setUnitMotion for party units, run once from func_800E52B4 as Fire starts
 btlfx_getMotionLength = 0x800D87D0; // type:func [code] docs/runtime-findings.md disc-3 battle campaign, frame count of the current motion that func_800BD31C compares against the frame counter
+GeoSplitVertices = 0x800DF588; // type:func [string] "warningGeoSplitVertices() overflow vertex buffer!(%d)", called by Hi_SplitMdlVertex

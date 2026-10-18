@@ -4906,14 +4906,14 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_projectMorphMesh);
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/ovl_0b_2", D_800A81A8);
 
 void Hi_SplitMdlVertex(s32 arg0, s32 arg1, s32 arg2) {
-    func_800DF588(btlfx_getEffModel(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->unk0, arg1, arg2);
+    GeoSplitVertices(btlfx_getEffModel(arg0, "Hi_SplitMdlVertex()\nid:%d cannot use!")->unk0, arg1, arg2);
 }
 
 s32 Hi_GetSplitMdlVertex(s32 arg0, s32 arg1) {
     return func_800DF670(btlfx_getEffModel(arg0, "Hi_GetSplitMdlVertex()\nid:%d cannot use!")->unk0, arg1);
 }
 
-void func_800DF588(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
+void GeoSplitVertices(BtlUnit9C *arg0, s32 arg1, s32 arg2) {
     s32 n;
     BtlMesh *m;
     s32 i;

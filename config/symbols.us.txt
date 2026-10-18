@@ -285,3 +285,5 @@ btl_setUnitAttr = 0x800BE1E0; // type:func [runtime] ovl_0b function, see config
 btl_getUnitMask = 0x800BEC64; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 btl_getUnitById = 0x800BED10; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 btl_setBanner = 0x800F4F04; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+CD_newmedia = 0x8001E6B8; // type:func [string] its own messages "CD_newmedia Read error in cd_read(PVD)", "CD_newmedia %d dir entries found" (PsyQ libcd internal)
+CD_cachefile = 0x8001EA20; // type:func [string] its own messages "CD_cachefile searching...", "CD_cachefile dir not found" (PsyQ libcd internal)

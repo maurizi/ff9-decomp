@@ -97,9 +97,9 @@ main func_8001BE5C libpad internals
 main func_8001BF34 libpad internals
 main func_8001BFE0 libpad internals
 main func_8001C0FC libpad internals
-main func_8001E6B8 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main CD_newmedia libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
 main func_8001E97C libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
-main func_8001EA20 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
+main CD_cachefile libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
 main func_8001ECBC libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
 main func_8001ED50 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
 main func_800201F4 libcd: CD_newmedia/CD_cachefile/cd_read/CdRead internals
@@ -304,9 +304,9 @@ ovl_64 mbg_vlcDecode libpress DecDCTvlc hand-written asm (frameless, scratchpad 
 ovl_64 mbg_vlcDecodeBlock libpress DecDCTvlc hand-written asm (frameless, scratchpad tables)
 ovl_64 mbg_vlcDecodeLumaBlockV3 libpress DecDCTvlc hand-written asm (frameless, scratchpad tables)
 ovl_64 mbg_applyMask libpress DecDCTvlc hand-written asm (frameless, scratchpad tables)
-ovl_64 func_8019D020 libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
+ovl_64 MDEC_reset libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
 ovl_64 func_8019D110 libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
 ovl_64 func_8019D1A0 libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
-ovl_64 func_8019D22C libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
-ovl_64 func_8019D2C0 libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
+ovl_64 MDEC_in_sync libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
+ovl_64 MDEC_out_sync libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)
 ovl_64 func_8019D36C libpress MDEC internals (MDEC_reset/in/out/sync strings, unscheduled code)

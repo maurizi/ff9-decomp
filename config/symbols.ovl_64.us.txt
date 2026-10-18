@@ -74,3 +74,6 @@ g_mbgStreamDeferred = 0x8019DEA8; // [code] set when MDEC output is busy in mbg_
 g_mbgDebugRingColors = 0x8019DEAC; // [code] per-slot colours for mbg_drawStreamDebug
 g_mbgDebugRingPolys = 0x8019F7F0; // [code] POLY_F4[2][80] for mbg_drawStreamDebug
 mbg_getEntryName = 0x8019AC9C; // type:func [code] strcpy of entry idx of movie list n (D_8019DC5C) into the caller buffer
+MDEC_reset = 0x8019D020; // type:func [string] "MDEC_restbad option(%d)", called by DecDCTReset (PsyQ libpress)
+MDEC_in_sync = 0x8019D22C; // type:func [string] passes its name "MDEC_in_sync" to the "%s timeout" report func_8019D36C
+MDEC_out_sync = 0x8019D2C0; // type:func [string] passes its name "MDEC_out_sync" to the "%s timeout" report func_8019D36C

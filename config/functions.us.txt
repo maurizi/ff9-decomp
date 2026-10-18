@@ -278,9 +278,9 @@ main func_8001E350 0x54 0x8001e350
 main func_8001E3A4 0x1c 0x8001e3a4
 main CdSearchFile 0x2d8 0x8001e3c0
 main func_8001E698 0x20 0x8001e698
-main func_8001E6B8 0x2c4 0x8001e6b8
+main CD_newmedia 0x2c4 0x8001e6b8
 main func_8001E97C 0xa4 0x8001e97c
-main func_8001EA20 0x29c 0x8001ea20
+main CD_cachefile 0x29c 0x8001ea20
 main func_8001ECBC 0x68 0x8001ecbc
 main strcmp 0xc 0x8001ed30
 main strncmp 0xc 0x8001ed40
@@ -1852,7 +1852,7 @@ ovl_0a func_800C48DC 0x254 0x800c48dc
 ovl_0a func_800C4B30 0x398 0x800c4b30
 ovl_0a func_800C4EC8 0x2d4 0x800c4ec8
 ovl_0a func_800C519C 0x8e0 0x800c519c
-ovl_0a func_800C5A7C 0x674 0x800c5a7c
+ovl_0a bgi_dumpText 0x674 0x800c5a7c
 ovl_0a func_800C60F0 0x318 0x800c60f0
 ovl_0a func_800C6408 0x1c4 0x800c6408
 ovl_0a func_800C65CC 0x638 0x800c65cc
@@ -2581,7 +2581,7 @@ ovl_0b func_800DE11C 0x1040 0x800de11c
 ovl_0b btlfx_projectMorphMesh 0x3ac 0x800df15c
 ovl_0b Hi_SplitMdlVertex 0x48 0x800df508
 ovl_0b Hi_GetSplitMdlVertex 0x38 0x800df550
-ovl_0b func_800DF588 0xe8 0x800df588
+ovl_0b GeoSplitVertices 0xe8 0x800df588
 ovl_0b func_800DF670 0xc8 0x800df670
 ovl_0b Hi_GetMdlVertexPtr 0x68 0x800df738
 ovl_0b func_800DF7A0 0x180 0x800df7a0
@@ -3090,8 +3090,8 @@ ovl_0c func_800B20B8 0xb6c 0x800b20b8
 ovl_0c func_800B2C24 0x230 0x800b2c24
 ovl_0c func_800B2E54 0x26c 0x800b2e54
 ovl_0c func_800B30C0 0xf8 0x800b30c0
-ovl_0c func_800B31B8 0xb4 0x800b31b8
-ovl_0c func_800B326C 0xd4 0x800b326c
+ovl_0c w_movementChangeSP1 0xb4 0x800b31b8
+ovl_0c w_movementChangeSP2 0xd4 0x800b326c
 ovl_0c func_800B3340 0x58 0x800b3340
 ovl_0c func_800B3398 0xc4 0x800b3398
 ovl_0c func_800B345C 0xc8 0x800b345c
@@ -3126,8 +3126,8 @@ ovl_0c w_frameSetParameter 0x61c 0x800b73f8
 ovl_0c w_frameGetParameter 0x398 0x800b7a14
 ovl_0c func_800B7DAC 0x1d0 0x800b7dac
 ovl_0c func_800B7F7C 0xa8 0x800b7f7c
-ovl_0c func_800B8024 0x44 0x800b8024
-ovl_0c func_800B8068 0xa0 0x800b8068
+ovl_0c w_frameMapDestructor 0x44 0x800b8024
+ovl_0c w_frameSystemDestructor 0xa0 0x800b8068
 ovl_0c func_800B8108 0xc 0x800b8108
 ovl_0c func_800B8114 0x10 0x800b8114
 ovl_0c func_800B8124 0x7c 0x800b8124
@@ -3135,8 +3135,8 @@ ovl_0c func_800B81A0 0x20 0x800b81a0
 ovl_0c func_800B81C0 0x30 0x800b81c0
 ovl_0c func_800B81F0 0x3c 0x800b81f0
 ovl_0c func_800B822C 0x60 0x800b822c
-ovl_0c func_800B828C 0xfc 0x800b828c
-ovl_0c func_800B8388 0x74 0x800b8388
+ovl_0c w_frameExtruct 0xfc 0x800b828c
+ovl_0c w_framePackGetPtr 0x74 0x800b8388
 ovl_0c func_800B83FC 0x9c 0x800b83fc
 ovl_0c func_800B8498 0x28 0x800b8498
 ovl_0c func_800B84C0 0x28 0x800b84c0
@@ -4288,11 +4288,11 @@ ovl_64 DecDCTinSync 0x3c 0x8019cf54
 ovl_64 DecDCToutSync 0x48 0x8019cf90
 ovl_64 DecDCTinCallback 0x24 0x8019cfd8
 ovl_64 DecDCToutCallback 0x24 0x8019cffc
-ovl_64 func_8019D020 0xf0 0x8019d020
+ovl_64 MDEC_reset 0xf0 0x8019d020
 ovl_64 func_8019D110 0x90 0x8019d110
 ovl_64 func_8019D1A0 0x8c 0x8019d1a0
-ovl_64 func_8019D22C 0x94 0x8019d22c
-ovl_64 func_8019D2C0 0x94 0x8019d2c0
+ovl_64 MDEC_in_sync 0x94 0x8019d22c
+ovl_64 MDEC_out_sync 0x94 0x8019d2c0
 ovl_64 func_8019D354 0x18 0x8019d354
 ovl_64 func_8019D36C 0x7c 0x8019d36c
 ovl_64 func_8019D3F0 0xc 0x8019d3f0

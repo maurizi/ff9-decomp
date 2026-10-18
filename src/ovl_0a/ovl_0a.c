@@ -10500,7 +10500,7 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/ovl_0a", D_800A717C);
 
 /* debug: print a walkmesh */
-void func_800C5A7C(Unk800C9DF8 *arg0) {
+void bgi_dumpText(Unk800C9DF8 *arg0) {
     Unk800C9E00 *tri;
     Unk800C9DF8Link *edge;
     Unk800C9E10 *anim;

@@ -488,6 +488,29 @@ func_800D86E0 btlfx_setUnitMotion  # [code] docs/runtime-findings.md disc-3 batt
 func_800D85AC btlfx_playUnitMotion  # [code] docs/runtime-findings.md disc-3 battle campaign, btlfx_getUnitMotion then btlfx_setUnitMotion for party units, run once from func_800E52B4 as Fire starts
 func_800D87D0 btlfx_getMotionLength  # [code] docs/runtime-findings.md disc-3 battle campaign, frame count of the current motion that func_800BD31C compares against the frame counter
 
+## main: string/code sweep (Square's strings)
+func_8001E6B8 CD_newmedia  # [string] its own messages "CD_newmedia: Read error in cd_read(PVD)", "CD_newmedia: %d dir entries found" (PsyQ libcd internal)
+func_8001EA20 CD_cachefile  # [string] its own messages "CD_cachefile: searching...", "CD_cachefile: dir not found" (PsyQ libcd internal)
+
+## ovl_0c: string/code sweep (Square's strings)
+func_800B31B8 w_movementChangeSP1  # [string] "w_movementChange SP1 : %d -> %d"
+func_800B326C w_movementChangeSP2  # [string] prints D_800A7164 "w_movementChange SP2"
+func_800B8024 w_frameMapDestructor  # [string] prints D_800A71F4 "w_frameMapDestructor:"
+func_800B8068 w_frameSystemDestructor  # [string] prints D_800A720C "w_frameSystemDestructor:", ends with w_memorymanDestructor
+func_800B828C w_frameExtruct  # [string] prints D_800A79D0 "w_frameExtruct : extract data [Address:%x /Figure : %d]" and D_800A7A0C "w_frameExtruct : already extracted"
+func_800B8388 w_framePackGetPtr  # [string] prints D_800A7A40 "w_framePackGetPtr : attempt to get %d element with %d max"
+
+## ovl_0b: string/code sweep (Square's strings)
+func_800DF588 GeoSplitVertices  # [string] "warning:GeoSplitVertices() overflow vertex buffer!(%d)", called by Hi_SplitMdlVertex
+
+## ovl_0a: string/code sweep (Square's strings)
+func_800C5A7C bgi_dumpText  # [string] prints "BGI Text Dump" then every field of the BGI walkmesh (floors, triangles, edges, vertices, normals, keyframe animations)
+
+## ovl_64: string/code sweep (Square's strings)
+func_8019D020 MDEC_reset  # [string] "MDEC_rest:bad option(%d)", called by DecDCTReset (PsyQ libpress)
+func_8019D22C MDEC_in_sync  # [string] passes its name "MDEC_in_sync" to the "%s timeout:" report func_8019D36C
+func_8019D2C0 MDEC_out_sync  # [string] passes its name "MDEC_out_sync" to the "%s timeout:" report func_8019D36C
+
 # FIELDS
 # include/ovl_64.h Ovl64State: unk0=ended,unk1=rgb24,unk4=pauseReq,unk2C=width,unk30=height,unk44=vlcTable,unk48=mdecIn0,unk4C=mdecIn1,unk50=mdecOut0,unk54=mdecOut1,unk58=ringBuf,unk5C=audioBuf,unk60=endCallback
 # include/ovl_64.h Ovl64Dec: unk0=mdecIn,unk8=inIdx,unkC=mdecOut,unk14=outIdx,unk18=frameRect,unk28=slice,unk30=frameDone
