@@ -34,7 +34,7 @@ typedef struct BtlfxExports {
     s32 (*math_cos)(s32); /* 0x038 */
     s32 (*math_sin)(s32); /* 0x03C */
     long (*ratan2)(long, long); /* 0x040 */
-    s32 (*func_80030874)(void); /* 0x044 (main exe, no symbol yet) */
+    s32 (*SquareRoot0)(void); /* 0x044 (main exe) */
     s32 (*LoadAverageShort12)(SVECTOR *, SVECTOR *, s32, s32, SVECTOR *); /* 0x048 */
     s32 (*Hi_RegisterTexListModel)(BtlUnit9C8 *, BtlTexInfo *, s16 *, s32); /* 0x04C */
     s32 (*printf)(const char *, ...); /* 0x050 */
@@ -183,7 +183,7 @@ typedef struct BtlfxExports {
     s32 (*Hi_DrawEffModelByBone)(s32, s32, s32, s32); /* 0x288 */
     s32 (*Hi_DrawMorphEffModel)(SVECTOR *, VECTOR *, s32, s32, s32, s32); /* 0x28C */
     s32 (*Hi_GetSummonBoneMatrix)(s32, s32, BtlBone *); /* 0x290 */
-    s32 (*func_80013228)(void); /* 0x294 (main exe, no symbol yet) */
+    s32 (*ClearImage)(void); /* 0x294 (main exe) */
     int (*MoveImage)(RECT *, int, int); /* 0x298 */
     s32 (*func_800DF938)(void); /* 0x29C */
     s32 (*btlfx_getUnitScale)(s32, VECTOR *); /* 0x2A0 */
