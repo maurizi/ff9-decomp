@@ -1322,3 +1322,11 @@ have the details. What worked, and what was learned from gcc 2.8.1's sources:
   expression so a leaf load becomes its own assignment. 37 F13F8 25 -> 22 with the same idea
   (`k = (l->unk8 >> 3) & 1; k ^= l->unk7;`); its xor result is still v0 (a1 in the original). 0d AC708: `len`
   moved into the loop (the pass-20 idea) is worse everywhere (353-477 rows); two store moves give 373 -> 355.
+
+## Battle effect modules: fx_0b2 (Ark) op80 and func_801E78FC
+Drafts: `docs/wip/fx_0b2_801E8178.c` (op80, 943 insns) and `docs/wip/fx_0b2_801E78FC.c` (GTE ring drawer, 553 insns).
+Both have the original's statements and argument lists; what is left is register allocation and loop-invariant
+hoisting (op80: work/exports/shift in s5/s7/fp and one more spill; 78FC: the original spills `row` and keeps the
+FT4 pointer in fp, and hoists only `arg11 + arg12`, `rad1` and its sign out of the inner loop). An hour of the
+permuter on each did not converge. Lever found on the way (fx_001): the modules' export table returns values,
+so every call through it is a call_value (local-alloc then ties v0 to the function pointer).
