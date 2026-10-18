@@ -1,7 +1,10 @@
-/* Draft of fx_07a fx_07a_op80. Status: ~31 aligned diff lines ignoring registers (od.py). Open: our loop.c hoists
- * n - 1 (strip header) out of the strip loop and shares it with the jitter-init loop bound, the original computes
- * it per iteration (and the init bound separately, spilled to 0x60(sp)); j = 1 and the abs() of r schedule earlier
- * in the original. */
+/* Draft of fx_07a fx_07a_op80. Status: 8 aligned diff lines ignoring registers (od.py). Fixed: the jitter-init
+ * bound is a separate variable m = n - 1 (spilled like the original), and the jitter ranges go through
+ * w = j * 8 + 0x10 (gives the original's four constant-initialised givs). Open: (1) the original copies tr into
+ * s0 before the point loop and passes that copy to btlfx_drawTrail, and walks tr->unk6C[j] with a second copy
+ * (a2); (2) "if (r < 0) r = -r" leaves a nop in the bgez delay slot in the original (ours fills it with the mult;
+ * __builtin_abs gives the nop but moves above the math_sin call); (3) one sll s6,2 scheduling row after the jitter
+ * loop. */
 #include "fxmod/fx_07a.h"
 
 typedef struct {
@@ -59,6 +62,8 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 i;
     s32 j;
     s32 n = 11;
+    s32 m;
+    s32 w;
     s32 r;
     s32 a;
     s32 b;
@@ -280,6 +285,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->unk10C++;
                 } else if (work->unk0[0] >= 5) {
                     tr->unk10C = ex->btlfx_randRange(4, 8);
+                    j = 1;
                     a = ex->btlfx_rand() & 0xFFF;
                     b = ex->btlfx_rand() & 0xFFF;
                     r = (ex->math_cos(a) * (work->unk40[0].unkC.vx + 0x80)) >> 12;
@@ -292,9 +298,11 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     tr->unk64 = (ex->math_cos(b) * r) >> 12;
                     tr->unkBC[0] = 0;
                     tr->unk6C[0] = 0;
-                    for (j = 1; j < n - 1; j++) {
-                        tr->unk6C[j] = ex->btlfx_randRange(-0x20 - j * 0x10, 0x20 + j * 0x10);
-                        tr->unkBC[j] = ex->btlfx_randRange(-0x10 - j * 8, 0x10 + j * 8);
+                    m = n - 1;
+                    for (; j < m; j++) {
+                        w = j * 8 + 0x10;
+                        tr->unk6C[j] = ex->btlfx_randRange(-w * 2, w * 2);
+                        tr->unkBC[j] = ex->btlfx_randRange(-w, w);
                     }
                     tr->unkBC[j] = 0;
                     tr->unk6C[j] = 0;
