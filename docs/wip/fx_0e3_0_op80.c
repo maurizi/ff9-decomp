@@ -230,8 +230,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->Hi_DrawEffModel(&rot2, &pos2, (s32)&sc2, work->unk60);
         a = (((t >> 1) + 0x800) >> 5) - 0x80;
         ex->Hi_ModifyEffModelRGB(work->unk60, a, a, a);
-        work->unk30.vx = work->unk8.vx;
-        work->unk30.vz = work->unk8.vz;
+        BTLFX_COPY_SVEC(&work->unk30, &work->unk8);
         a = 0x1000 - t;
         work->unk30.vx += (ex->btlfx_randCentered(0xA0) * a) >> 12;
         work->unk30.vz += (ex->btlfx_randCentered(0xA0) * a) >> 12;
@@ -243,9 +242,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             a = 0x96 - (frame * 0x96) / 46;
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 0x200), 1, a, a, a);
-            v0.vx = work->unk8.vx;
-            v0.vy = work->unk8.vy - 0x800;
-            v0.vz = work->unk8.vz;
+            BTLFX_COPY_SVEC(&v0, &work->unk8);
+            v0.vy -= 0x800;
             env->unk28 = 0x80;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &v0, NULL, 0x1800, 0, 1, ex->math_cos(t >> 2));
             env->unk28 = 0;
@@ -262,8 +260,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->unk2C->unk0[3].vy = work->unk30.vy;
             env->unk2C->unk0[3].vz = work->unk30.vz;
             work->unk30.vx = work->unk8.vx;
-            work->unk30.vy = work->unk8.vy - 0x1FF;
-            work->unk30.vz = work->unk8.vz - 0x800;
+            work->unk30.vy = work->unk8.vy;
+            work->unk30.vz = work->unk8.vz;
+            work->unk30.vy -= 0x1FF;
+            work->unk30.vz -= 0x800;
             env->unk2C->unk0[1].vx = work->unk30.vx;
             env->unk2C->unk0[1].vy = work->unk30.vy;
             env->unk2C->unk0[1].vz = work->unk30.vz;
@@ -285,10 +285,13 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk10.vx = work->unk8.vx;
         work->unk10.vz = work->unk8.vz - (c / 3 - 0x400);
         if (t < 0xC00) {
-            work->unk28.vx = 0x400 - (t >> 3);
+            n = t >> 3;
+            e = 0x400;
         } else {
-            work->unk28.vx = 0x28C - (((t - 0xC00) * 0x1F4) >> 10);
+            n = ((t - 0xC00) * 0x1F4) >> 10;
+            e = 0x28C;
         }
+        work->unk28.vx = e - n;
         work->unk28.vy = 0;
         work->unk1C.vx = work->unk1C.vy = work->unk1C.vz = (c + 0x1800) * 2;
         ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
@@ -310,8 +313,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         env->unk2C->unk0[3].vy = work->unk30.vy;
         env->unk2C->unk0[3].vz = work->unk30.vz;
         work->unk30.vx = work->unk8.vx;
-        work->unk30.vy = work->unk8.vy - 0x1FF;
-        work->unk30.vz = work->unk8.vz - 0x800;
+        work->unk30.vy = work->unk8.vy;
+        work->unk30.vz = work->unk8.vz;
+        work->unk30.vy -= 0x1FF;
+        work->unk30.vz -= 0x800;
         env->unk2C->unk0[1].vx = work->unk30.vx;
         nbolt = 2;
         env->unk2C->unk0[1].vy = work->unk30.vy;
@@ -327,13 +332,17 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk28.vx = 0;
             work->unk1C.vy = 0x3000;
             work->unk1C.vz = 0x3000;
-            work->unk10.vx = D_801EA7E8.vx + 0x800;
-            work->unk10.vy = D_801EA7E8.vy - 0x1000;
+            work->unk10.vx = D_801EA7E8.vx;
+            work->unk10.vy = D_801EA7E8.vy;
+            work->unk10.vz = D_801EA7E8.vz;
+            work->unk10.vx += 0x800;
+            work->unk10.vy -= 0x1000;
             work->unk10.vz = 0x7000;
             work->unk30.vx = D_801EA7E8.vx;
-            trail = 0;
-            work->unk30.vy = D_801EA7E8.vy - 0x400;
+            work->unk30.vy = D_801EA7E8.vy;
             work->unk30.vz = D_801EA7E8.vz;
+            trail = 0;
+            work->unk30.vy -= 0x400;
             env->unk2C->unk0[2].vx = work->unk30.vx;
             env->unk2C->unk0[2].vy = work->unk30.vy;
             env->unk2C->unk0[2].vz = work->unk30.vz;
@@ -430,9 +439,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk88.vz = 0;
             work->unk88.vy = 0;
             work->unk9C.vz = 0x3000;
-            work->unk90.vy = work->unk10.vy - 0x3000;
+            work->unk90.vy = work->unk10.vy;
             work->unk90.vx = work->unk10.vx;
-            work->unk90.vz = work->unk10.vz - 0x1000;
+            work->unk90.vz = work->unk10.vz;
+            work->unk90.vy -= 0x3000;
+            work->unk90.vz -= 0x1000;
         }
         work->unk88.vz += 8;
         work->unk10.vy -= 0x180;
@@ -471,9 +482,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
         nbolt = 3;
         fade = 0x1000;
-        work->unk90.vx = work->unk10.vx + 0x2000;
+        work->unk90.vx = work->unk10.vx;
         work->unk90.vy = work->unk10.vy;
         work->unk90.vz = work->unk10.vz;
+        work->unk90.vx += 0x2000;
         t = (frame << 12) / 30;
         d = (frame << 12) / 120;
         work->unk88.vz = work->unk88.vz - 8 - ((ex->math_cos(d) * 0x3E) >> 12);
