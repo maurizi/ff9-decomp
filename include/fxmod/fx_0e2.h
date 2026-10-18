@@ -198,6 +198,55 @@ extern Fx0e2Path80 D_801EE55C;
 extern Fx0e2Trail98 D_801EEDCC[5];
 extern Fx0e2Tex1E0 D_801EF0CC[5];
 extern u8 D_801EFA2C[];
+
+typedef struct {
+    Fx0e2Path unk0;
+    Fx0e2Path unk8;
+    SVECTOR unk10; /* scale */
+    s16 unk18;
+    s16 unk1A; /* length */
+    s16 unk1C; /* brightness */
+    s16 unk1E; /* width */
+    s16 unk20;
+    s16 unk22;
+    u8 pad24[0xC];
+} Fx0e2Ribbon; /* 0x30 */
+
+typedef struct {
+    Fx0e2Path unk0;
+    SVECTOR unk8; /* scale */
+    s16 unk10;
+    s16 unk12; /* length */
+    s16 unk14; /* brightness */
+    s16 unk16; /* width */
+    s16 unk18;
+} Fx0e2Ribbon1;
+
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    SVECTOR unkC; /* model rotations */
+    SVECTOR unk14;
+    VECTOR unk1C; /* model position */
+    VECTOR unk2C; /* model scale */
+    s32 unk3C; /* model brightness */
+    SVECTOR unk40; /* effect positions */
+    SVECTOR unk48;
+    SVECTOR unk50; /* caster position */
+    s32 unk58; /* fade counters */
+    s32 unk5C;
+    s32 unk60;
+    s16 unk64;
+    s16 unk66;
+    u16 unk68; /* models */
+    u16 unk6A;
+} Fx0e2Work82; /* 0x6C */
+
+extern Fx0e2Ribbon D_801EE57C;
+extern Fx0e2Ribbon D_801EE5AC;
+extern Fx0e2Ribbon D_801EE5DC;
+extern Fx0e2Ribbon1 D_801EE60C;
 extern SVECTOR D_801F100C[5];
 extern SVECTOR D_801F105C;
 extern SVECTOR D_801F1064;
