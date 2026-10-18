@@ -79,7 +79,20 @@ s32 fx_07e_op80(s32 mode, Fx07eWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_07e/nonmatchings/fx_07e", func_801E8498);
+void func_801E8498(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8AB8);
+    s32 x;
+    s32 y;
+    s32 t;
+
+    t = ((0x3C - r) << 12) / 60;
+    t = (t * D_801E8B90) >> 12;
+    a += t;
+    x = (ex->math_cos(a) * r) >> 12;
+    y = (ex->math_sin(a) * r) >> 12;
+    out[0] = x;
+    out[1] = y;
+}
 
 INCLUDE_ASM("asm/us/fx_07e/nonmatchings/fx_07e", fx_07e_op81);
 

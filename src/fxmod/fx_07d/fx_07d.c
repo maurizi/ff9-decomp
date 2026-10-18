@@ -11,7 +11,23 @@ void func_801E7ECC(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 a3, s32 *a
     D_801EA530 = (D_801EA530 + 1) % 24;
 }
 
-INCLUDE_ASM("asm/us/fx_07d/nonmatchings/fx_07d", func_801E7FF4);
+void func_801E7FF4(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
+    BtlfxExports *ex;
+    s32 t;
+    s32 x;
+    s32 y;
+
+    t = ((0x6C - r) << 12) / 108;
+    t = (t * D_801EA538) >> 12;
+    r = (r * 9) >> 3;
+    ex = BTLFX_EXPORTS(D_801E9FB0);
+    a += 0x9B;
+    a += t;
+    x = (ex->math_cos(a) * r) >> 12;
+    y = (ex->math_sin(a) * r) >> 12;
+    out[0] = x;
+    out[1] = y;
+}
 
 void func_801E80C4(s16 *a, s16 *b) {
     BTLFX_EXPORTS(D_801E9FB0)->btlfx_aimAngles((s16 *)&D_801E9FB0->unk2C->unk54, a, b);
