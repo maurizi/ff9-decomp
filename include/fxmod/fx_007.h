@@ -32,4 +32,20 @@ extern Unk800F78A4 *D_801E8EE8;
 void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
 
+typedef struct {
+    SVECTOR unk0; /* target body position */
+    SVECTOR unk8; /* target position */
+    s32 unk10; /* state */
+    s32 unk14[4]; /* models */
+    s32 unk24;
+    s32 unk28;
+    Pool6CEntry *unk2C;
+    Pool6CEntry *unk30;
+    s32 unk34; /* frame */
+} Fx007Work80; /* 0x38 */
+
+extern BtlModel D_801E8EF8[];
+extern u8 D_801E93A8[];
+extern u16 D_801E9638[];
+
 #endif
