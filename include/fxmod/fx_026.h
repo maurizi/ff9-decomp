@@ -55,6 +55,12 @@ typedef struct {
     u16 unk6;
 } Fx026CamPath;
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx026Vec3;
+
 /* pool item of func_801E7A5C: a model following a keyframe track */
 typedef struct {
     s16 unk0; /* done */
@@ -66,10 +72,33 @@ typedef struct {
 } Fx026Item;
 
 typedef struct {
-    u8 pad0[0x68];
+    s32 unk0;
+    s32 unk4; /* frame */
+    u8 pad8[8];
+    SVECTOR unk10;
+    u8 pad18[0x10];
+    SVECTOR unk28; /* summon bone positions */
+    SVECTOR unk30;
+    SVECTOR unk38;
+    Fx026Vec3 unk40; /* summon position */
+    Fx026Vec3 unk4C; /* summon scale */
+    SVECTOR unk58; /* summon rotation */
+    u8 pad60[4];
+    s32 unk64;
     s32 unk68; /* models */
     s32 unk6C;
-} Fx026Work80;
+} Fx026Work80; /* 0x70 */
+
+/* the summon slot behind env->unk4 */
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180;
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx026Summon;
 
 /* op82: the barrier model */
 typedef struct {
@@ -156,6 +185,7 @@ extern s32 D_801EA820;
 extern s32 D_801EA824;
 extern u8 D_801EA93C[];
 extern s16 D_801EA774[];
+extern BtlModel D_801EACDC[];
 extern SVECTOR D_801EC5E4;
 extern Fx026CamPath D_801EA8C4[];
 extern Unk800F78A4 *D_801EACCC;

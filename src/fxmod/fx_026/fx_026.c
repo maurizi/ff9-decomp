@@ -485,7 +485,85 @@ s32 func_801E92EC(s32 i) {
     return n;
 }
 
-INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", func_801E9564);
+/* move the flying shards of shatter i and write their triangles back */
+void func_801E9564(s32 i) {
+    SVECTOR a;
+    SVECTOR rot;
+    SVECTOR c;
+    SVECTOR d0;
+    SVECTOR d1;
+    SVECTOR d2;
+    SVECTOR zero;
+    VECTOR out;
+    VECTOR sv;
+    MATRIX m;
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801EACCC);
+    Fx026Shard *p;
+    Fx026Shatter *h;
+    Fx026Tri *t;
+    s32 k;
+
+    sv.vx = sv.vy = sv.vz = 0xF9C;
+    p = D_801ED9EC[i];
+    h = D_801ED9CC[i];
+    rot.vz = 0;
+    *(s32 *)&zero.vx = 0;
+    *(s32 *)&zero.vz = 0;
+    for (k = 0; k < h->unk2; k++, p++) {
+        if (p->unk18 >= 0) {
+            t = &h->unk8[p->unk1A];
+            c.vx = p->unk0 >> 12;
+            c.vy = p->unk4 >> 12;
+            c.vz = p->unk8 >> 12;
+            d0.vx = t->unk0.vx - c.vx;
+            d0.vy = t->unk0.vy - c.vy;
+            d0.vz = t->unk0.vz - c.vz;
+            d1.vx = t->unk8.vx - c.vx;
+            d1.vy = t->unk8.vy - c.vy;
+            d1.vz = t->unk8.vz - c.vz;
+            d2.vx = t->unk10.vx - c.vx;
+            d2.vy = t->unk10.vy - c.vy;
+            d2.vz = t->unk10.vz - c.vz;
+            ex->func_800E0014((Pool6CEntry *)p, 0, &zero, &a);
+            *(s32 *)&rot = *(s32 *)&p->unk14;
+            ex->func_800316D8(&rot, &m);
+            ex->ScaleMatrix(&m, &sv);
+            m.t[0] = p->unk0 >> 12;
+            m.t[1] = p->unk4 >> 12;
+            m.t[2] = p->unk8 >> 12;
+            ex->SetRotMatrix(&m);
+            ex->SetTransMatrix(&m);
+            gte_ldv0(&d0);
+            gte_rtv0tr();
+            gte_stlvnl(&out);
+            gte_ldv0(&d1);
+            gte_rtv0tr();
+            t->unk0.vx = out.vx;
+            t->unk0.vy = out.vy;
+            t->unk0.vz = out.vz;
+            gte_stlvnl(&out);
+            gte_ldv0(&d2);
+            gte_rtv0tr();
+            t->unk8.vx = out.vx;
+            t->unk8.vy = out.vy;
+            t->unk8.vz = out.vz;
+            gte_stlvnl(&out);
+            t->unk10.vx = out.vx;
+            t->unk10.vy = out.vy;
+            t->unk10.vz = out.vz;
+            p->unk18++;
+            if (p->unk18 >= h->unk0) {
+                p->unk18 = -1;
+                t->unk10.vz = 0;
+                *(s32 *)&t->unk10 = 0;
+                t->unk8.vz = 0;
+                *(s32 *)&t->unk8 = 0;
+                t->unk0.vz = 0;
+                *(s32 *)&t->unk0 = 0;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", func_801E98BC);
 
