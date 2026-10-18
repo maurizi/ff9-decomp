@@ -114,8 +114,8 @@ def main():
             sys.exit(f"{old} is a main-exe address; drop --bin for it")
         if not a.force and taken(new, binary):
             sys.exit(f"{new}: already used in {binary}'s scope")
-        # By name: the index's address column is the first address in the asm file, which is the
-        # rodata (jump table) for functions whose rodata migrated in.
+        # By name, not address: index entries written before progress.py's fix carried the migrated
+        # rodata's address (jump tables, strings) instead of the function's.
         if m.group(1) == "func" and f" {old} " not in starts.get(binary, ""):
             sys.exit(f"{old}: no function starts there in {INDEX} (an _inline helper named after a wrong address?)")
         plan.append((old, new, comment, m.group(1) == "func", addr, binary))

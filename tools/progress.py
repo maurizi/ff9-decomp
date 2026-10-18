@@ -53,7 +53,9 @@ def functions_from_asm():
         text = open(path).read()
         m = re.search(r"^nonmatching (\w+), (0x[0-9A-Fa-f]+)", text, re.M)
         if m:
-            addr = re.search(r"/\* [0-9A-F]+ ([0-9A-F]{8}) ", text)
+            # Search after the text `nonmatching` line: rodata that migrated into the file (jump tables,
+            # strings) comes first and would give the rodata address.
+            addr = re.search(r"/\* [0-9A-F]+ ([0-9A-F]{8}) ", text[m.end():])
             binary = path.split("/")[2]
             out[(binary, m.group(1))] = (int(m.group(2), 16), int(addr.group(1), 16) if addr else 0)
     return out
