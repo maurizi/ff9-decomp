@@ -5,7 +5,7 @@ s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *en
     BtlfxExports *ex = BTLFX_EXPORTS(env);
 
     if (mode != 1) {
-        ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E7D50[work->unkC]), pos, 0, 0x1000, frame, 1,
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E7D50[work->unkC]), pos, 0, 0x1000, frame, 1,
                           0x1000 - (frame << 12) / 12, 0, 0);
         if (frame >= 8) {
             return 1;
@@ -57,7 +57,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ((s32 *)p)[0] = ((s32 *)&pos)[0];
                 ((s32 *)p)[1] = ((s32 *)&pos)[1];
             }
-            ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E7D38[work->unkC]), &pos, 0, 0x1000, 0,
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E7D38[work->unkC]), &pos, 0, 0x1000, 0,
                               1, -1, 0, 0);
             if (frame >= 6) {
                 work->unk0 = 1;

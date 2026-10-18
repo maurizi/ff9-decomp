@@ -1629,7 +1629,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
                 } else {
                     rot.vy = 0;
                 }
-                func_800D1FFC(e->unk8, &pos, &rot, -1, (u16)r->unk1C2, e->unkD, -1);
+                btlfx_drawSprites(e->unk8, &pos, &rot, -1, (u16)r->unk1C2, e->unkD, -1);
             }
         }
     }

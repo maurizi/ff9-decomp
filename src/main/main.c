@@ -23,7 +23,7 @@ void game_main(void) {
                 break;
             case 2:
                 game_loadModeOverlay(2);
-                func_800A859C();
+                func_800A859C(); /* ovl_0b btl_entry (not a global symbol: ovl_0c data and ovl_14 code overlap 0x800A859C) */
                 break;
             case 8:
                 game_loadModeOverlay(8);

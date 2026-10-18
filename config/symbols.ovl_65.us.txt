@@ -4,3 +4,6 @@ battleEnd_main = 0x801EF284; // type:func [runtime] the mode loop's mode 8 entry
 // ovl_0b symbols used by this overlay (ovl_0b is resident in battle)
 btl_soundCmd = 0x800AD90C; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 g_btlRewards = 0x800FDF30; // [code] ovl_0b global, see config/symbols.ovl_0b.us.txt
+battleEnd_update = 0x801F3A7C; // type:func [runtime] docs/runtime-findings.md battle campaign 3, per frame from battleEnd_main+0x70, calls gameover_main on defeat and rewards_update on victory
+battleEnd_init = 0x801EF45C; // type:func [runtime] docs/runtime-findings.md battle campaign 3, once in both the victory and the defeat run
+rewards_update = 0x801F0F04; // type:func [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run only (487 calls), drives the EXP/AP, items and gil screens

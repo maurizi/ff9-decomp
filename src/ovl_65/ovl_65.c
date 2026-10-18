@@ -6,11 +6,11 @@ void battleEnd_main(void) {
     u8 i;
 
     s = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
-    func_801EF45C();
+    battleEnd_init();
     do {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
         pad_update();
-        switch (func_801F3A7C()) {
+        switch (battleEnd_update()) {
         case 1:
             g_gameState->mode = s->unk6;
             break;
@@ -35,7 +35,7 @@ void battleEnd_main(void) {
     func_801EF5C8();
 }
 
-void func_801EF45C(void) {
+void battleEnd_init(void) {
     Unk11C0 *s = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
     FileEntry *e;
 
@@ -572,7 +572,7 @@ void func_801F0E30(void) {
     }
 }
 
-u8 func_801F0F04(void) {
+u8 rewards_update(void) {
     if (D_801F7A78.unk1 != 0) {
         if (D_801F7A78.unk2 != 0) {
             goto count;
@@ -1576,7 +1576,7 @@ void func_801F3A20(s32 arg0) {
     func_8001D8A8(arg0);
 }
 
-s32 func_801F3A7C(void) {
+s32 battleEnd_update(void) {
     GameData *g;
 
     g = g_gameState->unk1C;
@@ -1588,7 +1588,7 @@ s32 func_801F3A7C(void) {
     case 4:
     case 5:
     case 7:
-        if (!func_801F0F04()) {
+        if (!rewards_update()) {
             if (g->unk56E == 2) {
                 g->unk56E = 1;
             }

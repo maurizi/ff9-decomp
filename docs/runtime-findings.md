@@ -918,7 +918,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - Scan/Detect: func_800CD808 → btl_startScan, func_800CD83C → btl_updateScan (LV, HP/MP, weakness lines),
   func_800CDC68 → btl_startDetect, func_800CDD68 → btl_updateDetect. medium (code; runs planned).
 
-## Battle sound  (status: applied except btl_setUnitBrightness (low-medium))
+## Battle sound  (status: applied; btl_setUnitBrightness applied after battle campaign 3 raised it to medium)
 - func_800AD90C → btl_soundCmd (`s32 (s32 op, s32 id, s32, s32 pan, s32 vol)`): the battle's GameData.unk83C sound hook
   (music 0/7, 0xC streams, 0xD000 sound effects); runtime: menu snd_playSe reaches it through the hook (caller
   snd_playSe+0x38). medium-high.
@@ -1047,7 +1047,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   effect range only), o65_victory / o65_defeat (ovl_65), op_enemy (sequence opcodes), ablations abl_{holy2,fire,death,
   icon,model}.
 
-## Status bits confirmed at runtime  (status: proposed)
+## Status bits confirmed at runtime  (status: applied: BTL_STATUS_REGEN replaces UNK38_REGEN, unk38 uses the same bits)
 - binary ovl_0b; btl_addStatus a1 traced from btl_addStatuses+0x48 while the patched spell hit:
   Regen 0x00040000 (Vivi), Vanish 0x04000000 (Vivi), Auto-Life 0x00002000 (Vivi), Freeze 0x02000000 (Frost on the
   Malboro). Bad Breath added Blind, Confuse, Poison, Slow and Mini in one call each. Mighty Guard added Shell and Protect
@@ -1058,7 +1058,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   from btl_updateUnitStatus+0x1AC. Regen effect id 0x20, file 0x20.
 - confidence: high.
 
-## Scan, Detect, Reflect, defeat, flee  (status: proposed: upgrades of existing names to [runtime])
+## Scan, Detect, Reflect, defeat, flee  (status: applied, incl. btlui_pollEscape, Battle.escapeHeld and btl_setUnitBrightness)
 - btl_startScan: once from btl_calcCmd+0x2220 on the Malboro; btl_updateScan: 175 ticks from btl_drawPopups+0x298. The
   banner showed "Malboro LV: 57", then "HP: 11683/11687 MP: 2316/2334". btl_startDetect: from btl_calcCmd+0x2230;
   btl_updateDetect: from btl_drawPopups+0x2A0. The banner showed "Carries Vaccine.", then "Carries Ore.". high.
@@ -1077,13 +1077,13 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   intro, with Battle.unkD86/unkD87 ramping +4 per tick to 0x20 (party/enemy fade-in), and 64x from btl_victory+0x330 while
   the party ran away. Raises it to medium.
 
-## Matra Magic: func_800B8FF8  (status: proposed)
+## Matra Magic: func_800B8FF8  (status: applied)
 - func_800B8FF8 → btl_setTargetHp (`void (BtlCalc *)`): sets the target's HP to the ability parameter (unk8->unk8[5]),
   or kills it (HP 0, death cry, KO motion) when the parameter is 0; fails on KO targets. Runtime: only in u_matra, from
   btl_calcCmd+0xE1C. After it the Malboro got LOW_HP (btl_addStatus 0x200 from btl_updateHpStatus+0xAC), i.e. HP 1.
 - confidence: medium-high.
 
-## Summons  (status: proposed)
+## Summons  (status: applied; the leads stay unnamed)
 - func_800B989C → btl_rollShortSummon (`void (BtlCmd *)`; was "btl_rollSummonLength?"): for command 0x10/0x12/0x14
   (from btl_checkCmdUsable+0x264) it sets cmd.unk10 bit 0x400 with chance 0xE6/256 (MP > 2x cost) or 0xAA/256. That bit
   makes btl_startCmdEffect play ability->unkC (short version) instead of ability->unk0_8. Support bit unkC4[1] 0x08000000
@@ -1104,7 +1104,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   sound bank) in the summons with their own sounds; func_800E8AD0 counts party units with unk68 & 0x400001 == 1, per frame
   from btlfx_updateLoader during summons; func_800DA5C4 (Ark, Bahamut, Madeen) restarts g_btlfxLoader.
 
-## Trance entry  (status: proposed: existing names now [runtime])
+## Trance entry  (status: reference: btl_gainTrance was already [runtime]; the leads stay unnamed)
 - With the party's trance gauges poked to 0xFE (+0x78) and the Malboro left to act (`g_trance4`, deterministic):
   btl_gainTrance is called 2x from btl_applyCalcResult+0x318 when "Virus Tentacles" hit. Eiko's gauge overflowed, so
   btl_addStatus(Eiko, 0x4000) ran from btl_gainTrance+0x1B4. Effect 0x101 (the trance transformation) followed.
@@ -1113,7 +1113,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   btlfx_runScript+0x68 / +0x684, reads CD via cd_readChunks: probably the trance model swap), func_800BD698,
   func_800C0D24 → func_800C2344 → func_800C8D18. Leads only.
 
-## Battle entry (from the ovl_0b entry point)  (status: proposed)
+## Battle entry (from the ovl_0b entry point)  (status: applied except btl_loadSoundBanks (low-medium) and the leads; main's call to btl_entry stays func_800A859C, see names_from_port.txt)
 - Run e_malboro: `build/rt3/entry3.py e_malboro 899 2714 1200` (enter_battle from `disc3_pandemonium_lv99_field`,
   break at 0x800A859C, then coverage). Order by first-hit frame is in `build/rt3/order.py e_malboro --all`.
 - func_800A859C → btl_entry: game_main's mode-2 case calls it right after game_loadModeOverlay(2) (the break hit there).
@@ -1149,14 +1149,14 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   loaded data) → btl_setupModel?, func_800BB974 (after btl_initEnemies), func_800C0C7C / func_800C0CD0 (before
   btl_initEnemies / btl_initParty).
 
-## Unit shadows  (status: proposed)
+## Unit shadows  (status: applied)
 - func_800AC37C → btl_drawShadow (`u8 *(Battle11C028 *, s32 slot, s32, s32 bones, u8 *prim)`, 4 semi-transparent FT4
   quads, macro SHADOW_QUAD in the C) and func_800AD4E4 → btl_calcShadowMatrix (orientation from one bone or between
   two bones). Runtime: both run per unit per tick from btl_updateUnitModel+0x544. Stubbing either removes the dark
   ellipses under all units (abl_model, 0.51 % of pixels; build/rt3/abld_model.png). Stubbing func_800C7B84,
   func_800C7CC8, func_800C9040 or func_800C1A8C changed nothing at idle. high / medium-high.
 
-## Effect emitters and wrappers (ovl_0b D0B18-D5C30)  (status: proposed)
+## Effect emitters and wrappers (ovl_0b D0B18-D5C30)  (status: applied for medium and up, incl. the btlfx_mod.h members; not applied: D437C/D4228/D40CC (no names proposed), D198C/D45FC/D1BC4/D2938 (medium-low), D2DBC/D0B18/D23D8 (low-medium/low), leads)
 - Hit counts per effect (fx_* runs, effect range only): an emitter runs once per wrapper call that passes the
   wrapper's depth/count checks, so its count equals the wrapper's or is slightly lower. D1680 = D4478,
   D1D74 = D3ED4, D198C = D45FC, D1FFC = D40CC + D4228 + D437C, D23D8 ⊃ D4768 + D4A30, D2938 = D57D0 + D59D0,
@@ -1200,7 +1200,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   `11 01 / 02 00 / 00` in one action and `11 00 / 02 00 / 00` in a later one: it is set before op 02 (execCmd) and
   cleared again in the next sequence. Both names stay low-medium.
 
-## ovl_65: victory rewards vs game over  (status: proposed)
+## ovl_65: victory rewards vs game over  (status: applied for battleEnd_update, battleEnd_init, rewards_update; the low-medium state handlers stay unnamed)
 - Runs o65_victory (Malboro HP 1, Attack, coverage from main's `jal battleEnd_main` at 0x8001285C) and o65_defeat
   (party HP 0; no button taps, so it stays on GAME OVER). Screens: +100 / +200 "Received EXP and AP!" (counting), +300
   "Received Item(s) and Gil", +400 Received Gil counted down to 0.
