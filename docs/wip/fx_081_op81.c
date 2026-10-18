@@ -1,11 +1,11 @@
-/* Draft of fx_081 fx_081_op81 (twin of fx_057 op81, 0.78). Status: 4 aligned mismatches (2 instructions).
+/* Draft of fx_081 fx_081_op81 (twin of fx_057 op81, 0.78). Status: 2 aligned mismatches (one instruction pair).
  * Round 5 levers: case 2's `a = j >> 2` reuses the loop variable a (the original's s0; case 0/1's t keeps s4), the
  * case 1 copy block with work->unk14.vy -= 0xC00 before work->unk1C.vz, `for (j = 0, pp = &pos; ...)`,
  * `for (i = 0; i < 12; i++, a += 0x155)`, and ang.vx = vx after ang.vy in the second loop.
- * Open: the second loop's ang.vy add has its operands swapped (original addu v0,s0(a),s6(w << 4)); writing
- * (a = ...) + (w << 4) or an explicit w4 changes loop.c's hoisting and the global allocation; and at the bottom of
- * the outer loop the original orders the D_801E8E7C giv increment, frame's reload and j++ as s2, lw t0, j++
- * (here s2, j++, lw t0; `w += frame, j++` gives lw t0, s2, j++).
+ * `w4 = w << 4;` at the top of the inner body (long enough lifetime for loop.c to hoist it) with
+ * `ang.vy = (a = ...) + w4` gives the original's addu operand order.
+ * Open: at the bottom of the outer loop the original orders the D_801E8E7C giv increment, frame's reload and j++
+ * as s2, lw t0, j++ (here s2, j++, lw t0; `w += frame, j++` gives lw t0, s2, j++).
  * Earlier: frame << 7 computed into j before the tint, pp2 = pp for the second loop (spilled), h declared before c
  * (spill slots). */
 #include "btlfx_mod.h"
@@ -74,6 +74,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 vx;
     SVECTOR *pp;
     SVECTOR *pp2;
+    s32 w4;
 
     if (mode == 0) {
         *arg4 = sizeof(Fx081Work81);
@@ -196,7 +197,8 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (j = 0, w = 0; j < 10; j++, w += frame) {
                 vx = 0x400 - (j << 11) / 9;
                 for (i = 0; i < D_801E8E7C[j]; i++) {
-                    ang.vy = (w << 4) + (a = (i << 12) / D_801E8E7C[j] - (work->unk4 << 5));
+                    w4 = w << 4;
+                    ang.vy = (a = (i << 12) / D_801E8E7C[j] - (work->unk4 << 5)) + w4;
                     ang.vx = vx;
                     ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, h, (s16 *)pp2);
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x25), pp2, NULL, c + 0x800, 0, 1, c, 0,
