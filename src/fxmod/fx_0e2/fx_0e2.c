@@ -245,7 +245,51 @@ INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_op82);
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_op83);
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", fx_0e2_op84);
+s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 i;
+    s32 j;
+    Fx0e2Orbit *o;
+
+    if (mode == 0) {
+        *arg4 = 0xD0;
+    } else if (mode == 1) {
+        o = D_801EE8FC;
+        D_801ECC0C = env;
+        for (i = 0; i < env->unkC->unk24; i++, o++) {
+            work->unkC0[i] = 0;
+            ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk40[i]);
+            work->unk40[i].vy = -0xBB8;
+            ex->btlfx_setUnitPos(i, (s16 *)&work->unk40[i]);
+            ex->btlfx_setUnitRot(i, (s16 *)&o->unk8);
+        }
+    } else {
+        frame = entry->unk0;
+        for (j = 0; j < env->unkC->unk24; j++) {
+            if (work->unkC0[j] == 0 && func_801EC64C(j, frame, 4, &work->unk40[j]) != 0) {
+                work->unkC0[j] = 1;
+                ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk40[j]);
+                ex->btlfx_setUnitPos(j, (s16 *)&work->unk40[j]);
+                work->unk80[j].vx = work->unk40[j].vx;
+                (work->unk80 + j)->vy = (work->unk40 + j)->vy;
+                (work->unk80 + j)->vz = (work->unk40 + j)->vz;
+                work->unk0[j] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk80[j]);
+                work->unk20[j] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk80[j]);
+                if (work->unk0[j] != NULL) {
+                    work->unk0[j]->unk14 = (s32)D_801EFDEC[j];
+                    work->unk0[j]->unk12 = 0xC;
+                    work->unk0[j]->unkC = 0x30;
+                }
+                if (work->unk20[j] != NULL) {
+                    work->unk20[j]->unk22 = ex->func_800E7CC4(j, 0x80);
+                }
+            }
+        }
+        return frame >= 0x28;
+    }
+    return 0;
+}
 
 s32 fx_0e2_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     s32 frame;

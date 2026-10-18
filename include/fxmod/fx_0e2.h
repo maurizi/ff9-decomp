@@ -27,6 +27,15 @@ typedef struct {
 
 extern Unk800F78A4 *D_801ECC0C;
 extern Fx0e2Orbit D_801EE8FC[];
+extern u8 D_801EFDEC[][0x240]; /* per-unit texture animation */
+
+typedef struct {
+    Pool6CEntry *unk0[8];
+    Pool6CEntry *unk20[8];
+    SVECTOR unk40[8]; /* unit positions */
+    SVECTOR unk80[8]; /* effect positions */
+    s16 unkC0[8]; /* unit landed */
+} Fx0e2Work84; /* 0xD0 */
 extern Fx0e2Edge D_801EE62C[60];
 extern SVECTOR D_801F0FEC; /* trail origin */
 extern SVECTOR D_801F0FF4; /* trail head position */
@@ -42,7 +51,9 @@ void func_801E7FBC(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
 void func_801E83B0(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY);
 void func_801E86D0(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
 s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 func_801EC4A4(void *track, s32 i, SVECTOR *pos);
+s32 func_801EC64C(s32 unit, s32 frame, s32 n, SVECTOR *pos);
 s32 func_801EC520(void *track, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 s32 func_801EC5B4(s32 r, s32 g, s32 t, s32 n, s32 arg4, s32 arg5);
