@@ -141,7 +141,199 @@ s32 func_801EB1CC(SVECTOR *v) {
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op83);
+s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR base;
+    SVECTOR a;
+    SVECTOR b;
+    SVECTOR c;
+    SVECTOR d;
+    s32 frame;
+    Fx0baBolt *p;
+    Fx0baPt *pt;
+    s32 *tab;
+    s32 i;
+    s32 r;
+    s32 ang;
+    s32 amp;
+    s32 dist;
+    Fx0baBolt *q;
+    s32 len;
+    s32 j;
+    s32 k;
+    s32 n;
+
+    if (mode == 0) {
+        ((EffInit *)arg4)->unk0 = sizeof(Fx0baWork83);
+        ((EffInit *)arg4)->unk8 = sizeof(Fx0baBolt);
+        ((EffInit *)arg4)->unk14 = (s32)func_801EAC08;
+        ((EffInit *)arg4)->unk4 = 0x20;
+    } else if (mode == 1) {
+        n = *arg4;
+        D_801EC5F0 = env;
+        work->unk0 = D_801EEA20;
+        tab = work->unk0;
+        for (i = 0; i < 64; i++) {
+            *tab++ = ex->btlfx_randCentered(0xD2);
+            *tab++ = ex->btlfx_randCentered(0x1C3);
+            *tab++ = ex->btlfx_randCentered(0xDC);
+        }
+        work->unk8 = n;
+        work->unk4 = 0;
+    } else {
+        frame = entry->unk0;
+        switch (work->unk8) {
+        case 0:
+            BTLFX_COPY_SVEC(&base, &D_801EC554);
+            if (frame < 0x14) {
+                work->unk4++;
+                BTLFX_COPY_SVEC(&a, &base);
+                a.vy = 0;
+                BTLFX_COPY_SVEC(&b, &base);
+                p = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (p != NULL) {
+                    r = ex->btlfx_randCentered(0x200) + 0x7D0;
+                    ang = ((work->unk4 / 2) << 10) - 0x200 + ex->btlfx_randCentered(0x200);
+                    a.vx += (ex->math_cos(ang) * r) >> 12;
+                    a.vz += (ex->math_sin(ang) * r) >> 12;
+                    BTLFX_COPY_SVEC(&p->unk0, &a);
+                    BTLFX_COPY_SVEC(&p->unk8, &b);
+                    p->unk11 = 0;
+                    p->unk10 = work->unk4 % 32;
+                    p->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                    p->unk12 = ex->btlfx_rand() % 15;
+                    p->unk13 = ex->btlfx_rand() % 15;
+                    p->unk15 = 0x3E;
+                    p->unk14 = 0;
+                }
+                work->unk4++;
+                BTLFX_COPY_SVEC(&a, &base);
+                a.vy = 0;
+                BTLFX_COPY_SVEC(&b, &base);
+                if (frame >= 0xB) {
+                    p = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    if (p != NULL) {
+                        r = ex->btlfx_randCentered(0x100) + 0x3E8;
+                        ang = ((work->unk4 / 2) << 10) + ex->btlfx_randCentered(0x200);
+                        a.vx += (ex->math_cos(ang) * r) >> 12;
+                        a.vz += (ex->math_sin(ang) * r) >> 12;
+                        BTLFX_COPY_SVEC(&p->unk0, &a);
+                        BTLFX_COPY_SVEC(&p->unk8, &b);
+                        p->unk11 = 0;
+                        p->unk10 = work->unk4 % 32;
+                        p->unk18 = work->unk0 + (ex->btlfx_rand() & 0xF) * 3;
+                        p->unk12 = ex->btlfx_rand() % 15;
+                        p->unk13 = ex->btlfx_rand() % 15;
+                        p->unk15 = 0x32;
+                        p->unk14 = 0;
+                    }
+                }
+            }
+            if (frame >= 0x14) {
+                return 1;
+            }
+            break;
+        case 1:
+            BTLFX_COPY_SVEC(&a, &D_801EC554);
+            if (frame < 0x1D) {
+                amp = (D_801EC55C * 100) / 2048 + 0x3C;
+                if (amp >= 0x100) {
+                    amp = 0xFF;
+                }
+                for (j = 0; j < 2; j++) {
+                    work->unk4++;
+                    BTLFX_COPY_SVEC(&c, &a);
+                    BTLFX_COPY_SVEC(&d, &a);
+                    q = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    if (q != NULL) {
+                        len = D_801EC55C;
+                        ex->btlfx_randRotation(&b);
+                        ex->func_800CFD78((s16 *)&d, (s16 *)&b, 0x180, (s16 *)&c);
+                        ex->func_800CFD78((s16 *)&d, (s16 *)&b, len + 0x180, (s16 *)&d);
+                        BTLFX_COPY_SVEC(&q->unk0, &c);
+                        BTLFX_COPY_SVEC(&q->unk8, &d);
+                        q->unk11 = 1;
+                        q->unk10 = work->unk4 % 32;
+                        q->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                        q->unk12 = ex->btlfx_rand() % 15;
+                        q->unk13 = ex->btlfx_rand() % 15;
+                        q->unk15 = amp;
+                        q->unk14 = 0;
+                    }
+                }
+                if (frame >= 0xF) {
+                    for (j = 0; j < 2; j++) {
+                        work->unk4++;
+                        BTLFX_COPY_SVEC(&c, &a);
+                        BTLFX_COPY_SVEC(&d, &a);
+                        q = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                        if (q != NULL) {
+                            len = D_801EC55C;
+                            ex->btlfx_randRotation(&b);
+                            ex->func_800CFD78((s16 *)&d, (s16 *)&b, 0x180, (s16 *)&c);
+                            ex->func_800CFD78((s16 *)&d, (s16 *)&b, len + 0x180, (s16 *)&d);
+                            BTLFX_COPY_SVEC(&q->unk0, &c);
+                            BTLFX_COPY_SVEC(&q->unk8, &d);
+                            q->unk11 = 1;
+                            q->unk10 = work->unk4 % 32;
+                            q->unk18 = work->unk0 + (ex->btlfx_rand() & 0xF) * 3;
+                            q->unk12 = ex->btlfx_rand() % 15;
+                            q->unk13 = ex->btlfx_rand() % 15;
+                            q->unk15 = amp - 0x32;
+                            q->unk14 = 0;
+                        }
+                    }
+                }
+            }
+            if (frame >= 0x1D) {
+                return 1;
+            }
+            break;
+        case 2:
+            if ((D_801EC550 != 0 || !(frame & 1)) && D_801EC54C == 0) {
+                do {
+                    k = ex->btlfx_rand() % 10;
+                    pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23) + 4) + k;
+                    b.vx = -pt->vx + D_801ECAB0.vx;
+                    b.vy = pt->vy + D_801ECAB0.vy;
+                    b.vz = -pt->vz + D_801ECAB0.vz;
+                    if ((D_801ECAB8.vx != 0 || D_801ECAB8.vy != 0 || D_801ECAB8.vz != 0) && (frame & 1)) {
+                        BTLFX_COPY_SVEC(&c, &D_801ECAB8);
+                        b.vz >>= 1;
+                        b.vx >>= 1;
+                        b.vy += 0x400;
+                    } else {
+                        k = ex->btlfx_rand() % 10;
+                        pt = (Fx0baPt *)((u8 *)ex->btlfx_getFileData(entry->unk8, 0x24) + 4) + k;
+                        c.vx = -pt->vx + D_801ECAB0.vx;
+                        c.vy = pt->vy + D_801ECAB0.vy;
+                        c.vz = -pt->vz + D_801ECAB0.vz;
+                    }
+                    dist = (b.vx - c.vx) * (b.vx - c.vx) + (b.vy - c.vy) * (b.vy - c.vy) +
+                           (b.vz - c.vz) * (b.vz - c.vz);
+                } while ((u32)(dist - 0x1000000) > 0x4000FFF);
+                work->unk4++;
+                p = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (p != NULL) {
+                    BTLFX_COPY_SVEC(&p->unk0, &b);
+                    BTLFX_COPY_SVEC(&p->unk8, &c);
+                    p->unk11 = 2;
+                    p->unk10 = work->unk4 % 32;
+                    p->unk18 = work->unk0 + (ex->btlfx_rand() & 0x1F);
+                    p->unk12 = ex->btlfx_rand() % 15;
+                    p->unk13 = ex->btlfx_rand() % 15;
+                    p->unk15 = ex->btlfx_rand() % 70 + 0x37;
+                    p->unk14 = 0;
+                }
+            }
+            if (D_801EC54C != 0) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 s32 func_801EBFB8(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
