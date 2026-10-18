@@ -1,6 +1,42 @@
 #include "fxmod/fx_0ba.h"
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801E7704);
+void func_801E7704(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b) {
+    Unk800F78A4 *env = D_801EC5F0;
+    POLY_G4 *prim;
+    BtlfxExports *ex;
+    s32 i;
+
+    w >>= 1;
+    prim = (POLY_G4 *)env->unk24;
+    ex = BTLFX_EXPORTS(env);
+    env->unk24 = (u8 *)(prim + 4);
+    for (i = 0; i < 4; i++, prim++) {
+        setlen(prim, 8);
+        prim->code = 0x3A;
+        if (!(i & 1)) {
+            prim->r0 = prim->r2 = 0;
+            prim->g0 = prim->g2 = 0;
+            prim->b0 = prim->b2 = b;
+            prim->r1 = prim->r3 = r;
+            prim->g1 = prim->g3 = g;
+            prim->b1 = prim->b3 = b;
+            prim->x0 = prim->x2 = 0xA0 - w;
+            prim->x1 = prim->x3 = 0xA0;
+        } else {
+            prim->r1 = prim->r3 = 0;
+            prim->g1 = prim->g3 = 0;
+            prim->b1 = prim->b3 = b;
+            prim->r0 = prim->r2 = r;
+            prim->g0 = prim->g2 = g;
+            prim->b0 = prim->b2 = b;
+            prim->x0 = prim->x2 = 0xA0;
+            prim->x1 = prim->x3 = w + 0xA0;
+        }
+        prim->y0 = prim->y1 = (i >> 1) * 0x78;
+        prim->y2 = prim->y3 = prim->y0 + 0x78;
+        ex->btlfx_linkPrimAbr(0x08000000, ot, prim, tpage);
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op80);
 
