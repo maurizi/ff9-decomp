@@ -1,11 +1,11 @@
-/* Draft of fx_1bf_0 fx_1bf_0_op80. Status: 55 aligned mismatches (build/sdiff.py --aligned). tools/equiv.py: 53/53
- * trials agree, but only 12% coverage (random modes mostly take the mode 0/1 paths). Left: case 5's `mflo t1` (the
- * sin*b product; t0 holds the reloaded entry), case 6's head scheduling (the reload of env and `li s0,0x1000` sit
- * early in the original), branch 2 of the strand block computing y = x << 9 into a2 first, and branch 3 computing
- * alpha into s5 (ours: s0, then copies). What got it here: q.vx = p.vx copies after the p stores, `c = 0x1000; c -=
- * t;`, n/flag/m set first in branch 1 (so they lose the global-alloc race and get spilled like the original's),
- * block-local x/y/z for the sin/cos tint call and for branch 2, and D_801EA1FC as an array (MEM_IN_STRUCT keeps the
- * store after the env->unk2C stores). */
+/* Draft of fx_1bf_0 fx_1bf_0_op80. Status: 41 aligned mismatches (build/sdiff.py --aligned). tools/equiv.py agrees
+ * (low coverage: random modes mostly take the mode 0/1 paths). Left: case 5's reload of entry sits earlier in the
+ * original and its p.vz sum is in a0 (ours v0), case 6 schedules `li s0,0x1000` before the q2 stores, and branch 2 of
+ * the strand block computes x / y = x << 9 first, y in a2 (ours: after the constants, in v1); branch 3's quotient is in
+ * a2 too (ours a1). What got it here: q.vx = p.vx copies after the p stores, `c = 0x1000; c -= t;`, n/flag/m set first
+ * in branch 1 (they lose the global-alloc race and get spilled like the original's), block-local x/y/z for the sin/cos
+ * call and for branch 2, a block-local y for q2.vy, alpha before w in branch 3, and D_801EA1FC as an array
+ * (MEM_IN_STRUCT keeps its store after the env->unk2C stores). */
 #include "fxmod/fx_1bf_0.h"
 
 typedef struct {
@@ -93,9 +93,12 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
             p2.vx = work->unk8.vx;
             p2.vy = work->unk8.vy;
             p2.vz = work->unk8.vz;
-            q2.vx = p2.vx;
-            q2.vz = p2.vz;
-            q2.vy = work->unk8.vy - 0x1000;
+            {
+                s16 y = work->unk8.vy;
+                q2.vx = p2.vx;
+                q2.vz = p2.vz;
+                q2.vy = y - 0x1000;
+            }
             env->unk28 = 0x10;
             t = (frame << 12) / 51;
             c = 0x1000;
@@ -152,8 +155,8 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 fade = 1;
                 n = 0x1D;
                 m = 0x15;
-                w = (d >> 3) + 0x40;
                 alpha = 0x1000 - d * 2 / 3;
+                w = (d >> 3) + 0x40;
                 s0 = alpha;
                 s2 = s0;
             }
