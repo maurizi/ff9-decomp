@@ -1366,11 +1366,13 @@ Both functions now match (module fully decompiled). What closed them:
   in the for increment, empty `do { } while (0);` barriers (b2 after the multiply chain, s before frame's
   reload), and a dead block-local `struct { s32 x; } q = { frame };` whose spill slot is the original's unused
   word at 0x140 (it shifts case 5's spill slots).
-- fx_081 op81 (2 rows left): case 2's `a = j >> 2` reuses the loop variable (case 0/1's t keeps s4 once it no
+- fx_081 op81 (matched; twin of fx_057 op81, 0.78): case 2's `a = j >> 2` reuses the loop variable (case 0/1's t keeps s4 once it no
   longer conflicts with j) — 176 -> 42 rows in one change; then `for (j = 0, pp = &pos; ...)`,
   `for (i = 0; i < 12; i++, a += 0x155)`, the unk1C/unk14 copy order, and `w4 = w << 4;` at the top of the inner
-  body with `(a = ...) + w4` (loop.c hoists it only when its lifetime is long). Open: the outer loop's bottom
-  order (giv increment, frame reload, j++).
+  body with `(a = ...) + w4` (loop.c hoists it only when its lifetime is long), and a separate index biv
+  `for (j = 0, n = 0, w = 0; j < 10; n++, w += frame, j++)` with D_801E8E7C[n]: loop.c eliminates n for the
+  reduced giv, whose increment lands where n++ was (before w += frame), unlike a giv on j, which is always inserted
+  right before j++.
 - fx_1f1 op80: the original's mode-2 addresses are (D_801E7F14 + 0x20 + off) + i * 0x60 with &D[i].unk20 as a
   separately reduced giv (s6), i.e. the vectors at 0x20 are a nested struct; a nested Fx1f1Model at 0x20
   (build/p0/e1f1/gen2.py) brings the aligned count from 263 to 181 but the mode-2 loop's givs still differ.
