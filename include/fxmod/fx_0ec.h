@@ -58,5 +58,6 @@ void func_801E798C(s32 model, SVECTOR *center);
 s32 func_801E7F00(u8 *buf);
 s32 func_801E7F40(s32 model);
 Fx0ecShard *func_801E802C(void);
+void func_801E82D8(void);
 
 #endif

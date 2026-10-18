@@ -105,7 +105,73 @@ Fx0ecShard *func_801E802C(void) {
 
 INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E8064);
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E82D8);
+void func_801E82D8(void) {
+    Fx0ecSplit *sp = &D_801ECA90;
+    Fx0ecShard *s = D_801ECAB0;
+    BtlfxExports *ex;
+    SVECTOR out;
+    SVECTOR rot;
+    SVECTOR c;
+    SVECTOR loc[3];
+    s32 bias[2];
+    VECTOR v;
+    VECTOR sc;
+    MATRIX m;
+    Fx0ecTri *t;
+    s32 i;
+    s32 j;
+
+    bias[0] = 0;
+    bias[1] = 0;
+    ex = BTLFX_EXPORTS(D_801E98A0);
+    sc.vx = sc.vy = sc.vz = 0xEC0;
+    for (i = 0; i < 300; i++, s++) {
+        if (s->unk18 >= 0) {
+            t = (Fx0ecTri *)sp->unkC + s->unk1A;
+            c.vx = s->unk0.vx >> 12;
+            c.vy = s->unk0.vy >> 12;
+            c.vz = s->unk0.vz >> 12;
+            for (j = 0; j < 3; j++) {
+                loc[j].vx = t->unk0[j].vx - c.vx;
+                loc[j].vy = t->unk0[j].vy - c.vy;
+                loc[j].vz = t->unk0[j].vz - c.vz;
+            }
+            ex->func_800E0014((Pool6CEntry *)s, -10, (SVECTOR *)bias, &out);
+            if (s->unkC.vy < 0 && s->unk0.vy < 0) {
+                func_801E77FC(&c);
+                goto kill;
+            }
+            rot.vx = s->unk14;
+            rot.vy = s->unk16;
+            rot.vz = 0;
+            ex->func_800316D8(&rot, &m);
+            ex->ScaleMatrix(&m, &sc);
+            m.t[0] = s->unk0.vx >> 12;
+            m.t[1] = s->unk0.vy >> 12;
+            m.t[2] = s->unk0.vz >> 12;
+            ex->SetRotMatrix(&m);
+            ex->SetTransMatrix(&m);
+            for (j = 0; j < 3; j++) {
+                gte_ldv0(&loc[j]);
+                gte_rtv0tr();
+                gte_stlvnl(&v);
+                t->unk0[j].vx = v.vx;
+                t->unk0[j].vy = v.vy;
+                t->unk0[j].vz = v.vz;
+            }
+            if (++s->unk18 >= 0x20) {
+            kill:
+                s->unk18 = -1;
+                t->unk0[2].vz = 0;
+                *(s32 *)&t->unk0[2] = 0;
+                t->unk0[1].vz = 0;
+                *(s32 *)&t->unk0[1] = 0;
+                t->unk0[0].vz = 0;
+                *(s32 *)&t->unk0[0] = 0;
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", fx_0ec_op80);
 
