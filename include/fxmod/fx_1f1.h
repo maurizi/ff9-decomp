@@ -19,9 +19,18 @@ typedef struct {
     VECTOR unk50; /* model position */
 } Fx1f1Unit; /* 0x60 */
 
+/* the same records seen from their model part at 0x20 */
+typedef struct {
+    SVECTOR unk0[2]; /* model rotations */
+    VECTOR unk10[2]; /* model scales */
+    VECTOR unk30; /* model position */
+    u8 pad40[0x20];
+} Fx1f1Model; /* 0x60 */
+
 extern s32 D_801E7E9C[];
 extern Unk800F78A4 *D_801E7F04;
 extern Fx1f1Unit D_801E7F14[];
+extern Fx1f1Model D_801E7F34[];
 extern BtlModel D_801E8214[];
 
 s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
