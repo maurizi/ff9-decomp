@@ -71,7 +71,52 @@ typedef struct {
     s32 unk6C;
 } Fx026Work80;
 
+/* op82: the barrier model */
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* frame */
+    SVECTOR unk8; /* position */
+    s32 unk10; /* model */
+} Fx026Work82; /* 0x14 */
+
+/* pool item of func_801E8670 */
+typedef struct {
+    s16 unk0;
+    s16 unk2; /* index */
+    s16 unk4; /* type */
+    s16 pad6;
+    s32 unk8;
+} Fx026Item82;
+
+/* line strip passed to func_800D1494 */
+typedef struct {
+    s16 vx;
+    s16 vy;
+    s16 vz;
+    u16 unk6; /* colour, 0 = gap */
+} Fx026Pt;
+
+typedef struct {
+    u8 unk0; /* count - 1 */
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    Fx026Pt unk4[32];
+} Fx026Strip32; /* 0x104 */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    Fx026Pt unk4[40];
+} Fx026Strip40; /* 0x144 */
+
+extern Fx026Strip32 D_801EC5EC[];
+extern Fx026Strip32 D_801ECC0C[];
+extern Fx026Strip40 D_801ED22C[];
 extern s16 D_801EA774[];
+extern SVECTOR D_801EC5E4;
 extern Fx026CamPath D_801EA8C4[];
 extern Unk800F78A4 *D_801EACCC;
 extern Fx026Shatter *D_801ED9CC[8];
@@ -87,5 +132,7 @@ void func_801E912C(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris);
 s32 func_801E9170(s32 i, s32 model);
 Fx026Shard *func_801E928C(s32 i);
 s32 func_801E92EC(s32 i);
+s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+                  Unk800DA1B8 *pool, Fx026Work82 *work);
 
 #endif

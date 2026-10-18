@@ -150,9 +150,254 @@ s32 func_801E7A5C(s32 mode, Fx026Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
 
 INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", fx_026_op80);
 
-INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", func_801E8670);
+s32 func_801E8670(s32 mode, Fx026Item82 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+                  Unk800DA1B8 *pool, Fx026Work82 *work) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    SVECTOR v2;
+    SVECTOR prev;
+    s32 w;
+    s32 k;
+    u8 *data;
+    u8 *track;
+    Fx026Strip32 *strip;
+    Fx026Pt *pt;
+    s32 i;
+    s32 t;
+    s32 fade;
 
-INCLUDE_ASM("asm/us/fx_026/nonmatchings/fx_026", fx_026_op82);
+    if (mode == 1) {
+        it->unk0 = 0;
+        it->unk8 = 0;
+    } else {
+    switch (it->unk4) {
+    case 0:
+        track = (u8 *)ex->btlfx_getFileData(entry->unk8, 2);
+        w = 0x46;
+        strip = &D_801EC5EC[it->unk2];
+        t = frame * 2;
+        track += ((s32 *)track)[it->unk2];
+        strip->unk2 = 0x1F;
+        strip->unk0 = 0x1F;
+        strip->unk1 = 0;
+        pt = strip->unk4;
+        for (i = 0; i < 32; i++, pt++, t--) {
+            if (t >= 0) {
+                func_801E7704((Fx026Track *)track, t, &v);
+                if (i == 0) {
+                    prev.vx = D_801EC5E4.vx + v.vx;
+                    prev.vy = D_801EC5E4.vy + v.vy;
+                    prev.vz = D_801EC5E4.vz + v.vz;
+                }
+                pt->vx = D_801EC5E4.vx + v.vx;
+                pt->vy = D_801EC5E4.vy + v.vy;
+                pt->vz = D_801EC5E4.vz + v.vz;
+                pt->unk6 = w;
+                BTLFX_COPY_SVEC(&prev, pt);
+            } else {
+                BTLFX_COPY_SVEC(pt, &prev);
+                pt->unk6 = 0;
+            }
+        }
+        fade = 0x1000;
+        if (frame >= 16) {
+            fade = ex->math_cos(((frame - 16) << 10) >> 4);
+        }
+        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x36), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        if (frame >= 32) {
+            return 1;
+        }
+        break;
+    case 1:
+        track = (u8 *)ex->btlfx_getFileData(entry->unk8, 0x9D);
+        w = 0x46;
+        strip = &D_801ECC0C[it->unk2];
+        t = frame * 4;
+        track += ((s32 *)track)[it->unk2];
+        strip->unk2 = 0x1F;
+        strip->unk0 = 0x1F;
+        strip->unk1 = 0;
+        pt = strip->unk4;
+        if (t > 32) {
+            t = 32;
+        }
+        for (i = 0; i < 32; i++, pt++, t--) {
+            if (t >= 0) {
+                func_801E7704((Fx026Track *)track, t, &v);
+                if (i == 0) {
+                    prev.vx = D_801EC5E4.vx + v.vx;
+                    prev.vy = D_801EC5E4.vy + v.vy;
+                    prev.vz = D_801EC5E4.vz + v.vz;
+                }
+                pt->vx = D_801EC5E4.vx + v.vx;
+                pt->vy = D_801EC5E4.vy + v.vy;
+                pt->vz = D_801EC5E4.vz + v.vz;
+                pt->unk6 = w;
+                BTLFX_COPY_SVEC(&prev, pt);
+            } else {
+                BTLFX_COPY_SVEC(pt, &prev);
+                pt->unk6 = 0;
+            }
+        }
+        fade = 0x1000;
+        if (frame >= 8) {
+            fade = ex->math_cos(((frame - 8) << 10) >> 4);
+        }
+        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x35), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        if (frame >= 24) {
+            return 1;
+        }
+        break;
+    case 2:
+        data = (u8 *)ex->btlfx_getFileData(entry->unk8, 0x9D);
+        w = 0x58;
+        track = data + ((s32 *)data)[it->unk2 + 6];
+        data += ((s32 *)data)[it->unk2 + 12];
+        if (frame < 10) {
+            k = 0;
+        } else {
+            k = 0x1000 - ex->math_cos(((frame - 10) << 10) / 30);
+        }
+        t = frame * 4;
+        strip = (Fx026Strip32 *)&D_801ED22C[it->unk2];
+        strip->unk2 = 0x27;
+        strip->unk0 = 0x27;
+        strip->unk1 = 0;
+        pt = strip->unk4;
+        if (t > 40) {
+            t = 40;
+        }
+        for (i = 0; i < 40; i++, pt++, t--) {
+            if (t >= 0) {
+                func_801E7704((Fx026Track *)track, t, &v);
+                func_801E7704((Fx026Track *)data, t, &v2);
+                ex->btlfx_lerpVec((s16 *)&v, (s16 *)&v2, k, (s16 *)&v);
+                if (i == 0) {
+                    prev.vx = D_801EC5E4.vx + v.vx;
+                    prev.vy = D_801EC5E4.vy + v.vy;
+                    prev.vz = D_801EC5E4.vz + v.vz;
+                }
+                pt->vx = D_801EC5E4.vx + v.vx;
+                pt->vy = D_801EC5E4.vy + v.vy;
+                pt->vz = D_801EC5E4.vz + v.vz;
+                pt->unk6 = w;
+                BTLFX_COPY_SVEC(&prev, pt);
+            } else {
+                BTLFX_COPY_SVEC(pt, &prev);
+                pt->unk6 = 0;
+            }
+        }
+        fade = 0x1000;
+        if (frame >= 24) {
+            fade = ex->math_cos(((frame - 24) << 10) >> 4);
+        }
+        ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x34), 0, 0, 0, 0x1000, fade, 1, (u8 *)strip, 0);
+        if (frame >= 40) {
+            return 1;
+        }
+        break;
+    }
+    }
+    return 0;
+}
+
+s32 fx_026_op82(s32 mode, Fx026Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR rot;
+    VECTOR pos;
+    VECTOR scale;
+    Fx026Item82 *it;
+    Pool6CEntry *p;
+    s32 frame;
+    s32 i;
+    s32 t;
+    s32 c;
+
+    if (mode == 0) {
+        init->unk0 = 0x14;
+        init->unk8 = 0xC;
+        init->unk14 = (s32)func_801E8670;
+        init->unk4 = 0x18;
+    } else if (mode == 1) {
+        work->unk8.vx = 0;
+        work->unk8.vz = -2500;
+        work->unk0 = 0;
+        work->unk4 = 0;
+        work->unk8.vy = 0;
+        D_801EC5E4.vx = work->unk8.vx;
+        D_801EC5E4.vy = work->unk8.vy;
+        D_801EACCC = env;
+        D_801EC5E4.vz = work->unk8.vz;
+    } else {
+        frame = entry->unk0;
+        if (work->unk0 == 0) {
+            if (frame == 13) {
+                for (i = 0; i < 6; i++) {
+                    it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    if (it != NULL) {
+                        it->unk4 = 0;
+                        it->unk2 = i;
+                    }
+                }
+            }
+            if (frame == 13) {
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk8);
+                if (p != NULL) {
+                    p->unk22 = 0x140;
+                }
+            }
+            if (frame >= 39 && frame < 92) {
+                if (frame == 39) {
+                    work->unk10 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xAB), 1);
+                }
+                rot.vz = 0;
+                rot.vx = 0;
+                rot.vy = frame * 16;
+                t = ((frame - 39) << 12) / 53 >> 2;
+                scale.vx = scale.vz = 0x2000 - ex->math_cos(t);
+                scale.vy = 0x1800;
+                c = ex->math_cos(t);
+                pos.vx = work->unk8.vx;
+                pos.vy = work->unk8.vy;
+                pos.vz = work->unk8.vz;
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk10);
+                ex->Hi_ModifyEffModelRGB(work->unk10, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
+                func_801E78BC(1000 - frame * 2, 0x200, 0x1C0, 0x80, 0x40, 0x200, 0x180);
+            }
+            if (frame == 39) {
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x9F), (s32)&work->unk8);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+                p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x9E), (s32)&work->unk8);
+                if (p != NULL) {
+                    p->unk22 = 0x40;
+                }
+                for (i = 0; i < 6; i++) {
+                    it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    if (it != NULL) {
+                        it->unk4 = 1;
+                        it->unk2 = i;
+                    }
+                }
+            }
+            if (frame == 39) {
+                for (i = 0; i < 6; i++) {
+                    it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                    if (it != NULL) {
+                        it->unk4 = 2;
+                        it->unk2 = i;
+                    }
+                }
+            }
+            if (frame >= 100) {
+                return 1;
+            }
+        }
+        work->unk4++;
+    }
+    return 0;
+}
 
 void func_801E912C(s32 i, s32 n, Fx026Shatter *buf, Fx026Tri *tris) {
     Fx026Shatter *h;
