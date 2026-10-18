@@ -1,4 +1,4 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_114.h"
 
 INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E777C);
 
@@ -22,7 +22,27 @@ INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", fx_114_op82);
 
 INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", fx_114_op83);
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", fx_114_op85);
+s32 fx_114_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    s32 frame;
+
+    if (mode == 0) {
+        *arg4 = 2;
+    } else if (mode == 1) {
+        D_801EB768 = env;
+        *work = -1;
+    } else {
+        frame = entry->unk0;
+        if (frame == 0) {
+            *work = 0x10;
+        }
+        if (*work >= 0) {
+            func_801EA914(0xFF, 0, 0x10 - *work, 0x10, 1, 0);
+            (*work)--;
+        }
+        return frame >= 0x10;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801EA5C0);
 
