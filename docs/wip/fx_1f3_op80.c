@@ -3,7 +3,10 @@
  * then threads past the first post-switch check, as in the original); in the ring loop v.vy = 0 comes after v.vz and
  * c is computed after the unk134 updates (the original reloads unk12C). Open, all in the ring loop: the original's
  * l giv (s5) starts from the D_801EC4F0 register (+0x20) instead of its own lui and gets s5 (here s6, dst gets s5),
- * and its second inner pointer giv is based at the point's pad (offsets -4/-2/0). */
+ * and its second inner pointer giv is based at the point's pad (offsets -4/-2/0).
+ * Tried: a base pointer g = D_801EC4F0 with g[i] accesses makes the l giv start from the base register (as in the
+ * original) but loop.c then folds l into the &g[i] giv (l = s1 + 0x20 each iteration) instead of keeping its own
+ * giv for the exit test (213 rows / 17 ignoring registers); a g++ pointer or an l biv is worse. */
 #include "fxmod/fx_1f3.h"
 
 typedef struct {
