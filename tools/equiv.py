@@ -381,7 +381,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("src")
     ap.add_argument("--func", help="default: the func_XXXXXXXX in the file name")
-    ap.add_argument("--bin", help="default: from the file name (main_8005681C.c, ovl_0a_800C65CC.c)")
+    ap.add_argument("--bin", help="default: from the file name (main_8005681C.c, ovl_0a_800C65CC.c, fx_0b2_801E78FC.c)")
     ap.add_argument("--trials", type=int, default=200)
     ap.add_argument("--flags", default="-O2 -G0")
     ap.add_argument("--sparse", action="store_true",
@@ -394,7 +394,7 @@ def main():
     ap.add_argument("-v", action="store_true", help="print the first difference in full")
     a = ap.parse_args()
     base = os.path.basename(a.src)
-    mm = re.match(r"(main|ovl_[0-9a-f]{2})_([0-9A-F]{8})", base)
+    mm = re.match(r"(main|ovl_[0-9a-f]{2}|fx_[0-9a-f]{3}(?:_\d)?)_([0-9A-F]{8})", base)
     binary = a.bin or (mm and mm.group(1)) or "main"
     func = a.func or (mm and f"func_{mm.group(2)}")
     if not func:
@@ -418,10 +418,12 @@ def main():
     syms = nm("build/us/slus_012.51.elf")
     images.append((0x80010000, exe[0x800:0x800 + syms["main_DATA_START"] - 0x80010000]))
     if binary != "main":
-        ovl = binary[4:]
         osyms = nm(f"build/us/{binary}.elf")
         start = osyms[f"{binary}_RODATA_START"]
-        data = open(f"disks/us/ovl/{ovl}.bin", "rb").read()
+        if binary.startswith("fx_"):  # battle effect module (docs/ff9img.md)
+            data = open(f"disks/us/fxmod/{binary}.bin", "rb").read()
+        else:
+            data = open(f"disks/us/ovl/{binary[4:]}.bin", "rb").read()
         images.insert(0, (start, data[:osyms[f"{binary}_DATA_START"] - start]))
         syms.update(osyms)
 
