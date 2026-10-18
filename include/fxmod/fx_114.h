@@ -130,4 +130,32 @@ void func_801EA9AC(void);
 void func_801EA9F8(s16 start, u16 dst, s16 ch, s16 *data);
 void func_801EAA54(s32 ch);
 
+
+/* PsyQ gte_stszotz: SZ3 / 4 */
+#define gte_stszotz(r0) __asm__ volatile( \
+    "mfc2\t$12, $19;" \
+    "nop;" \
+    "sra\t$12, $12, 2;" \
+    "sw\t$12, 0(%0)" \
+    : : "r"(r0) : "$12", "memory")
+/* VZ0 = VZ1 = VZ2 = 0 */
+#define gte_ldVZ012_0() __asm__ volatile( \
+    "mtc2\t$0, $1;" \
+    "mtc2\t$0, $3;" \
+    "mtc2\t$0, $5")
+/* V0..V2 x and y only (VZ0..VZ2 are loaded once with gte_ldVZ012_0) */
+#define gte_ldv3xy(r0, r1, r2) __asm__ volatile( \
+    "lwc2\t$0, 0(%0);" \
+    "lwc2\t$2, 0(%1);" \
+    "lwc2\t$4, 0(%2)" \
+    : : "r"(r0), "r"(r1), "r"(r2))
+#define gte_ldv0xy(r0) __asm__ volatile( \
+    "lwc2\t$0, 0(%0)" \
+    : : "r"(r0))
+/* gte_rtps_b with a memory clobber: fx_114's copy of the fx_007 colour grid reloads c3 after it */
+#define gte_rtps_bm() __asm__ volatile(".word\t0x4A180001" : : : "memory")
+
+void func_801EABB4(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+                   s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip);
+
 #endif
