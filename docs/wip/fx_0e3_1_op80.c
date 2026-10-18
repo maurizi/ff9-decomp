@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast). Status: draft from m2c + asm,
- * untested: 1050 aligned mismatches, ~400 ignoring registers and spill offsets (spnorm 0x40). One fresh
+ * untested: 1047 aligned mismatches, ~397 ignoring registers and spill offsets (spnorm 0x40). One fresh
  * temporary per block (x1.., y1.., ...) was needed for global allocation to keep ex in fp and work in s7 as the
  * original does (reusing x/y/k across cases spilled work, env, entry and ex). Divisions are checked against the
  * magic-number shifts (several are (x / n) >> k). Open: spill slots, statement orders, register choices.
@@ -242,7 +242,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m);
             ex->func_800CFE88(&m, 0x40, (s32)&work->unk40);
-            work->unk40.vy = work->unk40.vy + 0x1000 - ex->math_sin(t >> 2);
+            work->unk40.vy += 0x1000 - ex->math_sin(t >> 2);
             env->unk2C->unk0[3].vx = work->unk40.vx;
             env->unk2C->unk0[3].vy = work->unk40.vy;
             a = 0x100;
