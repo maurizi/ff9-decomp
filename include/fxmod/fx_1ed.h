@@ -56,7 +56,6 @@ extern Pool6CEntry *D_801EA668;
 extern SVECTOR D_801EA670;
 extern Fx1edTrail D_801EA680[2];
 
-void func_801E7788(void);
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #define SUMMON(env) ((Fx1edSummon *)(env)->unk4)
@@ -80,5 +79,7 @@ extern s32 D_801E8914; /* frame */
 extern Fx1edTrack D_801E8920[];
 void func_801E7704(void);
 void func_801E7738(s32 start, u32 dst, u32 src, s16 *data);
+extern SVECTOR D_801E8A60[];
+void func_801E7788(void);
 
 #endif
