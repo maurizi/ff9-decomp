@@ -143,7 +143,34 @@ INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_op80);
 
 INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_op81);
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_op82);
+s32 fx_12b_op82(s32 mode, Fx12bWork82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+
+    if (mode == 0) {
+        *arg4 = 0x24;
+    } else if (mode == 1) {
+        D_801E9B34 = env;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk14);
+        ex->btlfx_getUnitPos(0, (s16 *)&work->unk1C);
+        work->unk0[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk14);
+        work->unk0[1] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk14);
+        work->unk0[2] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk14);
+        work->unk0[3] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk14);
+        work->unk0[4] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x23), (s32)&work->unk14);
+        if (work->unk0[0] != NULL) {
+            work->unk0[0]->unk22 = ex->func_800E7CC4(0, 0x80);
+        }
+        if (work->unk0[1] != NULL) {
+            work->unk0[1]->unk22 = ex->func_800E7CC4(0, 0x80);
+        }
+        if (work->unk0[2] != NULL) {
+            work->unk0[2]->unk22 = ex->func_800E7CC4(0, 0x80);
+        }
+    } else {
+        return entry->unk0 >= 0x28;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E9690);
 

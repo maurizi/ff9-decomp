@@ -4,6 +4,12 @@
 /* Effect module fx_12b (dir 13 file 0x12B). */
 #include "btlfx_mod.h"
 
+typedef struct {
+    Pool6CEntry *unk0[5];
+    SVECTOR unk14; /* target body position */
+    SVECTOR unk1C; /* target position */
+} Fx12bWork82;
+
 /* particle as the path callbacks see it */
 typedef struct {
     VECTOR unk0; /* position */

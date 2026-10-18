@@ -1,18 +1,85 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_0ec.h"
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E7704);
+s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR rot;
+    s32 t;
+    u8 *d;
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E77FC);
+    if (mode != 1) {
+        t = (frame << 12) / 6;
+        rot.vx = 0x400;
+        rot.vy = 0;
+        rot.vz = 0;
+        rot.pad = 1;
+        d = (u8 *)ex->btlfx_getFileData(entry->unk8, 6);
+        ex->func_800D1680(d, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
+        if (frame >= 6) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void func_801E77FC(SVECTOR *pos) {
+    Unk800F78A4 *env = D_801E98A0;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR *p = ex->btlfx_poolSpawn((s16 *)D_801E98A4->unk10);
+    MATRIX m;
+    VECTOR v;
+
+    if (p != NULL) {
+        gte_SetRotMatrix(env->unk14);
+        gte_SetTransMatrix(env->unk14);
+        ex->func_800316D8(&D_801E98A8, &m);
+        ex->ScaleMatrix(&m, &D_801E98C0);
+        m.t[0] = D_801E98B0.vx;
+        m.t[1] = D_801E98B0.vy;
+        m.t[2] = D_801E98B0.vz;
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(pos);
+        gte_rtv0tr();
+        gte_stlvnl(&v);
+        v.vy = 0;
+        p->vx = v.vx;
+        p->vy = v.vy;
+        p->vz = v.vz;
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E798C);
 
 INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E7B84);
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E7F00);
+s32 func_801E7F00(u8 *buf) {
+    Fx0ecShard *p = D_801ECAB0;
+    s32 i;
+
+    D_801ECA90.unk0 = 0;
+    D_801ECA90.unk2 = 0;
+    D_801ECA90.unk10 = buf;
+    D_801ECA90.unkC = buf;
+    for (i = 0; i < 300; i++) {
+        p->unk18 = -1;
+        p++;
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E7F40);
 
-INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E802C);
+Fx0ecShard *func_801E802C(void) {
+    Fx0ecShard *p = D_801ECAB0;
+    s32 i;
+
+    for (i = 0; i < 300; i++) {
+        if (p->unk18 < 0) {
+            return p;
+        }
+        p++;
+    }
+    return NULL;
+}
 
 INCLUDE_ASM("asm/us/fx_0ec/nonmatchings/fx_0ec", func_801E8064);
 
