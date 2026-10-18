@@ -1,10 +1,9 @@
 /* Draft of fx_0b3 func_801E9DFC (wave grid: 18x19 cells of POLY_FT4+POLY_F4, column 0 POLY_GT4+POLY_G4, with
- * edge positions written to D_801EE340). Status: 17 lines (build/w/nd.py), nearly all the abr ternaries. Blocker: the original keeps abr = 1 in
- * $a2 unfolded through both "abr != 0xFF ? 0x2A : 0x28" / "abr == 0xFF ? 0x38 : 0x3A" ternaries and
- * "tpage |= abr << 5"; here cse2 (following the path past the loop notes) folds the first ternary. With
- * "if (c != 0) abr = 1; else abr = 1;" (jump.c hoists one set) the first survives but cse's path following then
- * folds the second (build/w/gb3*.py). The p[].vy stores go after the second math_sin. Fixed: D_801EE340[j] indexing
- * instead of an out pointer (the original's s5 row pointer at offset 0). */
+ * edge positions written to D_801EE340). Status: 9 lines (build/w/nd.py). The original keeps abr = 1 in $a2
+ * unfolded through both ternaries: a dead "if (c2 != 0 && c != 0) k = 0;" before them gives cse a label with two
+ * uses (cse can't follow it), so neither cse pass knows abr; flow then deletes the store and jump2 the jumps.
+ * Open: col2.cd's 0x3E is li v0 + "move v1,v0" for col1.cd in the original (one register here), and one
+ * "move s7,zero" scheduling row. */
 #include "fxmod/fx_0b3.h"
 
 void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32 tpage, s32 clut, s32 u, s32 v,
@@ -57,15 +56,15 @@ void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32
     g4 = (POLY_G4 *)(ft4 + 324);
     f4 = (POLY_F4 *)(g4 + 18);
     env->unk24 = (u8 *)(f4 + 324);
-    col2.cd = 0x3E;
+    col1.cd = col2.cd = 0x3E;
     col0.cd = 0x2E;
     col0.r = col0.g = col0.b = c;
     col1.r = col1.g = col1.b = c;
     col3.r = col3.g = col3.b = c2;
     col4.r = col4.g = col4.b = c2;
-    col1.cd = 0x3E;
-    do {
-    } while (0);
+    if (c2 != 0 && c != 0) {
+        k = 0;
+    }
     col3.cd = abr != 0xFF ? 0x2A : 0x28;
     col5.cd = abr == 0xFF ? 0x38 : 0x3A;
     tpage |= abr << 5;
