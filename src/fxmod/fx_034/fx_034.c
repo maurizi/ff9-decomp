@@ -4,7 +4,54 @@ INCLUDE_ASM("asm/us/fx_034/nonmatchings/fx_034", func_801E7744);
 
 INCLUDE_RODATA("asm/us/fx_034/nonmatchings/fx_034", fx_034_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_034/nonmatchings/fx_034", func_801E7810);
+void func_801E7810(s32 kind, s32 count, s32 scale, SVECTOR *v) {
+    SVECTOR a;
+    SVECTOR b;
+    SVECTOR c;
+    s32 n;
+    s32 k;
+    s32 m;
+
+    switch (kind) {
+    case 0:
+    case 2:
+    case 4:
+    case 6:
+        n = 4;
+        break;
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+        n = 3;
+        break;
+    default:
+        n = 3;
+        break;
+    }
+    for (k = 0; k < count; k++) {
+        a.vx = D_801E82E0[k].x;
+        a.vy = D_801E82E0[k].y;
+        a.vz = D_801E82E0[k].z;
+        b.vx = D_801E82E0[k].x;
+        b.vy = D_801E82E0[k].y;
+        b.vz = D_801E82E0[k].z;
+        c.vx = scale * a.vx / 200;
+        a.vx += c.vx;
+        c.vy = scale * a.vy / 200;
+        a.vy += c.vy;
+        c.vz = scale * a.vz / 200;
+        a.vz += c.vz;
+        for (m = 0; m < n; m++, v++) {
+            v->vx -= b.vx;
+            v->vy -= b.vy;
+            v->vz -= b.vz;
+            v->vx += a.vx;
+            v->vy += a.vy;
+            v->vz += a.vz;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_034/nonmatchings/fx_034", func_801E7A00);
 
