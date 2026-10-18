@@ -92,4 +92,7 @@ void func_801E9968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail,
                    SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
 /* end copied */
 
+/* propagated */
+void func_801E7704(u32 *ot, s32 tpage, s32 w, s32 r, s32 g, s32 b);
+
 #endif

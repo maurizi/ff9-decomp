@@ -1,6 +1,8 @@
-/* Draft of fx_057 op81. Status: ~518 aligned mismatches, register allocation: the original keeps the constant 1 in
- * fp (CSE of the mode test) and spills entry instead; here entry gets fp and the constant is rematerialised. In
- * case 2 the original does not hoist q * 2 out of the first loop. */
+/* Draft of fx_057 op81. Status: ~540 strict / 156 shape (sdiff --count [--noreg]), register allocation: the
+ * original keeps the constant 1 in fp (CSE of the mode test, reused as the 1 arguments and work->unk0 = 1 in
+ * case 0) and spills entry instead (reloads from 0x94). With an explicit `one` (mode == (one = 1)) the constant
+ * becomes a global as in the original but lands in s6 and env gets spilled instead of entry. In case 2 the
+ * original does not hoist q * 2 out of the first loop. */
 #include "fxmod/fx_057.h"
 
 s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -22,10 +24,11 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 n;
     s32 cs;
     s32 q;
+    s32 one;
 
     if (mode == 0) {
         *arg4 = 0x2C;
-    } else if (mode == 1) {
+    } else if (mode == (one = 1)) {
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E8EA4 = env;
@@ -49,13 +52,13 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         a = t >> 2;
         s = ex->math_sin(a);
         env->unk28 = work->unk8 + 0x40;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unkC, NULL, 0x13000, frame, 1, s);
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x22), &work->unkC, NULL, (t >> 1) + 0x3000, 0, 1,
+        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unkC, NULL, 0x13000, frame, one, s);
+        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x22), &work->unkC, NULL, (t >> 1) + 0x3000, 0, one,
                           s);
         env->unk28 = 0;
         ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unkC, work->unk4, ex->math_sin(a));
         if (frame >= 7) {
-            work->unk0 = 1;
+            work->unk0 = one;
             entry->unk0 = -1;
             work->unk28 =
                 ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x27), 0xB9, 0x3D80, 0x80, 0);

@@ -82,7 +82,49 @@ void func_801E77C0(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, 
     } while (k < 3);
 }
 
-INCLUDE_ASM("asm/us/fx_1bf_0/nonmatchings/fx_1bf_0", func_801E7B70);
+void func_801E7B70(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot) {
+    SVECTOR pos;
+    SVECTOR rot;
+    SVECTOR ang;
+    s32 k = 0;
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8830);
+    Fx1bf0Pt *p;
+    s32 i;
+    s32 a;
+
+    rot.vx = 0x400;
+    rot.vy = 0;
+    rot.pad = 1;
+    for (; k < 3; k++) {
+        p = (Fx1bf0Pt *)ex->btlfx_getFileData(entry->unk8, D_801E87B4[k]);
+        p = (Fx1bf0Pt *)((u8 *)p + 4);
+        for (i = 0; i < 20; i++, p++) {
+            if (i < n) {
+                pos.vx = from->vx + p->x * 2;
+                pos.vy = from->vy + p->y * 2;
+                pos.vz = from->vz + p->z * 2;
+                ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
+                rot.vz = -ang.vy;
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E879C[i & 7]), &pos, &rot, 0x3000,
+                                        0, 1, ot, 0, 0);
+            }
+        }
+    }
+    for (k = 0; k < 3; k++) {
+        for (i = 0; i < 27; i++) {
+            if (i <= n * 27 / 20) {
+                a = ((i + k * 27) << 12) / 81;
+                pos.vx = from->vx + ((ex->math_cos(a) * 1600) >> 12);
+                pos.vy = from->vy;
+                pos.vz = from->vz + ((ex->math_sin(a) * 1600) >> 12);
+                ex->btlfx_aimAngles((s16 *)from, (s16 *)&pos, (s16 *)&ang);
+                rot.vz = -ang.vy;
+                ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, D_801E879C[i & 7]), &pos, &rot, 0x1800,
+                                        0, 1, ot, 0, 0);
+            }
+        }
+    }
+}
 
 void func_801E7E98(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
     SVECTOR pos;

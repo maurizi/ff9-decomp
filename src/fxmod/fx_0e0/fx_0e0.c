@@ -45,7 +45,62 @@ void func_801E7718(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
     ex->btlfx_addPrim(0x09000000, ot, p);
 }
 
-INCLUDE_ASM("asm/us/fx_0e0/nonmatchings/fx_0e0", func_801E7910);
+void func_801E7910(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr, s32 flip) {
+    s32 dx;
+    s32 w2;
+    POLY_FT4 *p;
+    BtlfxExports *ex;
+    u8 col[4];
+    s32 n;
+    s32 i;
+    s32 u1;
+    s32 v1;
+    s32 y1;
+
+    n = 2;
+    ex = BTLFX_EXPORTS(D_801EA918);
+    if (flip != 0) {
+        n = 4;
+    }
+    p = (POLY_FT4 *)D_801EA918->unk24;
+    D_801EA918->unk24 = (u8 *)(p + n);
+    col[0] = col[1] = col[2] = c;
+    if (abr != 0xFF) {
+        col[3] = 0x2E;
+    } else {
+        col[3] = 0x2C;
+    }
+    tpage |= (abr & 3) << 5;
+    dx = -0x140;
+    if (flip != 0) {
+        dx = 0xA0;
+    }
+    w2 = 0x140;
+    if (flip != 0) {
+        w2 = 0xA0;
+    }
+    for (i = 0; i < n; i++) {
+        p->x0 = p->x2 = x;
+        p->x1 = p->x3 = x + w2;
+        p->y0 = p->y1 = y;
+        p->y2 = p->y3 = y + h;
+        if (flip != 0) {
+            p->u0 = p->u2 = u;
+            p->u1 = p->u3 = u + w - 1;
+        } else {
+            p->u0 = p->u2 = u + w - 1;
+            p->u1 = p->u3 = u;
+        }
+        p->v0 = p->v1 = v;
+        p->v2 = p->v3 = v + h - 1;
+        p->clut = clut;
+        p->tpage = tpage;
+        *(u32 *)&p->r0 = *(u32 *)col;
+        ex->btlfx_addPrim(0x09000000, ot, p);
+        p++;
+        x += dx;
+    }
+}
 
 void func_801E7B08(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 abr) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EA918);
@@ -114,7 +169,135 @@ void func_801E7B08(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0e0/nonmatchings/fx_0e0", func_801E7E18);
+void func_801E7E18(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 amp, s32 abr) {
+    MATRIX m;
+    VECTOR sc;
+    SVECTOR vtx[4];
+    SVECTOR center;
+    s32 otz;
+    s32 j;
+    s32 i;
+    s32 code;
+    BtlfxExports *ex;
+    POLY_GT4 *p;
+    s32 d0;
+    s32 d1;
+    s32 d2;
+    s32 d3;
+    s32 r;
+    s32 iv;
+    s32 u0;
+    s32 u1;
+    s32 v0;
+    s32 v1;
+
+    ex = BTLFX_EXPORTS(D_801EA918);
+    ((s32 *)&center)[0] = 0;
+    center.vz = 0;
+    gte_SetRotMatrix(D_801EA918->unk14);
+    gte_SetTransMatrix(D_801EA918->unk14);
+    gte_ldv0(pos);
+    p = (POLY_GT4 *)D_801EA918->unk24;
+    code = 0x3C;
+    D_801EA918->unk24 = (u8 *)(p + 576);
+    if (abr != 0xFF) {
+        code = 0x3E;
+    }
+    tpage |= (abr & 3) << 5;
+    gte_rtv0tr_b();
+    ex->func_800316D8(rot, &m);
+    sc.vx = sc.vy = sc.vz = scale;
+    ex->ScaleMatrix(&m, &sc);
+    gte_stlvnl(m.t);
+    ex->MulRotMatrix(&m);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    for (j = 0; j < 24; j++) {
+        for (i = 0; i < 24; i++) {
+            vtx[0].vx = vtx[2].vx = j * 0x180 - 0x1200;
+            vtx[0].vz = vtx[1].vz = vtx[2].vz = vtx[3].vz = 0;
+            vtx[0].vy = vtx[1].vy = i * 0x180 - 0x1200;
+            vtx[2].vy = vtx[3].vy = i * 0x180 - 0x1080;
+            vtx[1].vx = vtx[3].vx = j * 0x180 - 0x1080;
+            d0 = ex->btlfx_distance(&vtx[0], &center);
+            d1 = ex->btlfx_distance(&vtx[1], &center);
+            d2 = ex->btlfx_distance(&vtx[2], &center);
+            d3 = ex->btlfx_distance(&vtx[3], &center);
+            if (d0 > 0xC00) {
+                vtx[0].vz = 0;
+            } else {
+                vtx[0].vz = ((ex->math_cos((d0 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+            }
+            if (d1 > 0xC00) {
+                vtx[1].vz = 0;
+            } else {
+                vtx[1].vz = ((ex->math_cos((d1 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+            }
+            if (d2 > 0xC00) {
+                vtx[2].vz = 0;
+            } else {
+                vtx[2].vz = ((ex->math_cos((d2 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+            }
+            if (d3 > 0xC00) {
+                vtx[3].vz = 0;
+            } else {
+                vtx[3].vz = ((ex->math_cos((d3 << 11) / 0xC00) + 0x1000) * amp) >> 13;
+            }
+            gte_ldv3c(vtx);
+            gte_rtpt();
+            r = c - (vtx[0].vz >> 4);
+            if (r < 0) {
+                r = 0;
+            }
+            p->code = code;
+            p->r0 = p->g0 = p->b0 = r;
+            r = c - (vtx[1].vz >> 4);
+            if (r < 0) {
+                r = 0;
+            }
+            p->r1 = p->g1 = p->b1 = r;
+            r = c - (vtx[2].vz >> 4);
+            if (r < 0) {
+                r = 0;
+            }
+            p->r2 = p->g2 = p->b2 = r;
+            r = c - (vtx[3].vz >> 4);
+            if (r < 0) {
+                r = 0;
+            }
+            p->r3 = p->g3 = p->b3 = r;
+            gte_nclip();
+            p->tpage = tpage;
+            p->clut = clut;
+            gte_stopz(&otz);
+            if (otz != 0) {
+                gte_stsxy3(&p->x0, &p->x1, &p->x2);
+                gte_avsz3();
+                gte_stszotz(&otz);
+                gte_ldv0(&vtx[3]);
+                gte_rtps();
+                u0 = u + ((j - 1) & 1) * 48;
+                iv = (i - 1) & 1;
+                v0 = v + iv * 48;
+                u1 = u0 + 0x30;
+                if ((j - 1) & 1) {
+                    u1 = u0 + 0x2F;
+                }
+                v1 = v0 + 0x30;
+                if (iv != 0) {
+                    v1 = v0 + 0x2F;
+                }
+                p->u0 = p->u2 = u0;
+                p->u1 = p->u3 = u1;
+                p->v0 = p->v1 = v0;
+                p->v2 = p->v3 = v1;
+                ex->btlfx_addPrim(0x0C000000, 2, p);
+                gte_stsxy(&p->x3);
+                p++;
+            }
+        }
+    }
+}
 
 void func_801E8430(Unk80100C78Entry *entry, Fx0e0Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9, s32 pad) {

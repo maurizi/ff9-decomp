@@ -42,4 +42,30 @@ s32 func_801E82F4(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
 s32 func_801E82DC(s32 mode, Fx098Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx098Work *work);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    s32 unk8; /* models */
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20[14]; /* piece models */
+    SVECTOR unk58; /* position */
+    SVECTOR unk60;
+    SVECTOR unk68;
+    SVECTOR unk70;
+    s16 unk78;
+    s16 unk7A; /* spawned directions */
+    s32 unk7C;
+    s32 unk80;
+    Pool6CEntry *unk84; /* particle */
+} Fx098Work80; /* 0x88 */
+
+extern BtlModel D_801E9D2C[];
+extern s32 D_801E9C80[14];
+void func_801E7CBC(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 t, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9);
+s32 fx_098_op80(s32 mode, Fx098Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
+
 #endif

@@ -66,6 +66,7 @@ typedef struct {
     CVECTOR unk38; /* model colour */
     s32 unk3C[8]; /* split models */
 } Fx1b0Work80; /* 0x5C */
+s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 extern u8 D_801E8CAC[]; /* colour fade table */
 extern s16 D_801E8CEC[8]; /* model files */

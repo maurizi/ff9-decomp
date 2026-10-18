@@ -25,4 +25,20 @@ void func_801ECDEC(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
                    s32 dang, s32 arg8, s32 arg9, s32 col);
 void func_801ED708(VECTOR *pos, SVECTOR *rot);
 
+typedef struct {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 code;
+} Fx0e31Rgbc; /* primitive colour word */
+
+#define gte_stszotz(r0) __asm__ volatile( \
+    "mfc2\t$12, $19;" \
+    "nop;" \
+    "sra\t$12, $12, 2;" \
+    "sw\t$12, 0(%0)" \
+    : : "r"(r0) : "$12", "memory")
+void func_801ECFE4(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s32 w0, s32 w1, s32 c, s32 tpage,
+                   s32 clut, s32 u, s32 v, s32 ang, s32 dy, s32 abr, s32 dang);
+
 #endif

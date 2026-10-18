@@ -16,6 +16,8 @@ void func_801EA424(s32 ot);
 void func_801EA4E0(s32 a, s32 b, s32 t, s32 n, s32 mode, s32 ot);
 s32 func_801EA558(Pool30Entry *pt, s32 a1, SVECTOR *pos, s32 a3, s32 frame, s32 n);
 extern Unk800F78A4 *D_801EA7A0;
+extern SVECTOR D_801EA680[]; /* colour table */
+void func_801E9D80(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 abr);
 s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

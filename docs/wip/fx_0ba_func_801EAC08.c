@@ -1,5 +1,7 @@
-/* Draft of fx_0ba func_801EAC08. Status: 310/369, 26 aligned diff lines ignoring registers in case 2 (k/a/mult
- * scheduling), plus register allocation. */
+/* Draft of fx_0ba func_801EAC08. Status: 20 aligned mismatches (sdiff --count), all in case 2: the original
+ * computes frame*k first and keeps the product in LO (reloaded into t2 by mflo), with a >> 11 in a's register s0.
+ * With q (global) the order is right but the product goes to s1; a fresh local (single set) gets the sched1 birthing
+ * boost and lands after the a multiply; sharing case 1's k fixes case 2 but moves case 1's k from t0 to t1. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -191,11 +193,12 @@ s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *en
                 BTLFX_COPY_SVEC(&v, &p->unk8);
                 amp = p->unk15;
             }
-            k = (frame < 3) * 2;
+            q = (frame < 3) * 2;
+            q *= frame;
             a = 0x1000;
             a -= t2;
             a *= amp;
-            func_801EA850(entry, 2, 0, (Fx0baStrip *)trail2, 0x8C, p->unk18 + frame * k, &p->unk0, &v, 0,
+            func_801EA850(entry, 2, 0, (Fx0baStrip *)trail2, 0x8C, p->unk18 + q, &p->unk0, &v, 0,
                           0x227, frame * 0xC0, 0x168, frame, c2, a / 1500, 0);
             func_801EAAF0(entry, 3, 0, (Fx0baStrip *)trail2, (Fx0baStrip *)strip2, 0x24, p->unk18, p->unk12, frame, c2,
                           a >> 11);
