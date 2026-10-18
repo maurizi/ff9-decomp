@@ -23,8 +23,7 @@ typedef struct {
     SVECTOR unk8; /* summoner position */
     SVECTOR unk10; /* summoner rotation */
     SVECTOR unk18; /* summon position */
-    s32 unk20; /* ribbon head */
-    s32 unk24;
+    SVECTOR unk20; /* ribbon head */
     s32 unk28; /* slice model */
     SVECTOR unk2C; /* summon rotation */
     s32 unk34[3]; /* summon scale */
