@@ -20,12 +20,6 @@ typedef struct {
 } Fx059Work81;
 
 typedef struct {
-    s32 unk0; /* frame */
-    s32 unk4;
-    s16 unk8; /* file slot */
-} Fx059Entry;
-
-typedef struct {
     s32 unk0;
     s16 unk4;
     s16 unk6;
@@ -35,7 +29,7 @@ extern s16 D_801E7D38[];
 extern s16 D_801E7D50[];
 extern Unk800F78A4 *D_801E7DB0;
 
-s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Fx059Entry *entry, s32 frame, Unk800DA1B8 *pool,
+s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx059Work80 *work);
 
 #endif

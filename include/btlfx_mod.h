@@ -234,6 +234,10 @@ typedef struct BtlfxExports {
 
 #define BTLFX_EXPORTS(env) ((BtlfxExports *)(env)->unk10)
 
+/* Modules copy SVECTORs as two words (lw/sw pairs, not a halfword struct copy). */
+#define BTLFX_COPY_SVEC(dst, src) \
+    (((s32 *)(dst))[0] = ((s32 *)(src))[0], ((s32 *)(dst))[1] = ((s32 *)(src))[1])
+
 /* Module header, pointed to by the module's first word (its first .rodata word).
  * btlfx_updateLoader installs &ops[0] as the slot's op table (D_80100C70) and calls init when non-NULL
  * (NULL in every module on the discs); script op 0x80 + i runs ops[i] (btlfx_spawnTask). */
