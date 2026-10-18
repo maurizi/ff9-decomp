@@ -31,7 +31,42 @@ s32 func_801E7FCC(s32 mode, Fx1e9Spark *e, Unk800F78A4 *env, Unk80100C78Entry *e
 
 INCLUDE_ASM("asm/us/fx_1e9/nonmatchings/fx_1e9", func_801E810C);
 
-INCLUDE_ASM("asm/us/fx_1e9/nonmatchings/fx_1e9", func_801E8118);
+void func_801E8118(Fx1e9Inst *inst, SVECTOR *origin, s32 h, SVECTOR *from, SVECTOR *to) {
+    Fx1e9Trail *tr = &D_801E8644[D_801E88A4];
+    SVECTOR *pt = &tr->unk4[8];
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8564);
+    SVECTOR v;
+    Fx1e9Spark *e;
+    s32 i;
+    s32 t;
+
+    tr->unk0 = tr->unk2 = 8;
+    tr->unk1 = 0;
+    for (i = 0; i < 9; i++, pt--) {
+        t = 0x1000 - (i << 9);
+        ex->btlfx_lerpVec((s16 *)from, (s16 *)to, t, (s16 *)&v);
+        v.vx += ex->btlfx_randCentered(0x20);
+        v.vy += ex->btlfx_randCentered(0x20);
+        ex->func_800CFD78((s16 *)origin, (s16 *)&v, h + ex->btlfx_randCentered(0x10) + (ex->math_sin(t >> 1) >> 5), (s16 *)pt);
+        e = ex->btlfx_poolSpawn(inst->unk10);
+        if (e != NULL) {
+            e->unk14 = D_801E88A4;
+            e->unk16 = 8 - i;
+            e->unk18 = pt;
+            e->unk0 = pt->vx << 12;
+            e->unk4 = pt->vy << 12;
+            e->unk8 = pt->vz << 12;
+            e->unkC = 0;
+            e->unkE = 0;
+            e->unk10 = 0;
+            e->unkC = ((pt->vx - origin->vx) >> 4) + ex->btlfx_randCentered(0x20);
+            e->unkE = ((pt->vy - origin->vy) >> 3) + ex->btlfx_randCentered(0x20);
+            e->unk10 = ((pt->vz - origin->vz) >> 4) + ex->btlfx_randCentered(0x20);
+        }
+    }
+    D_801E88A4++;
+    D_801E88A4 %= 8;
+}
 
 s32 fx_1e9_op82(s32 mode, Fx1e9Work82 *work, Unk800F78A4 *env, Fx1e9Inst *inst, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
