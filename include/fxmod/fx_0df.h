@@ -5,6 +5,12 @@
 #include "btlfx_mod.h"
 
 typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* time */
+    SVECTOR unk8; /* caster bone position */
+} Fx0dfWork84;
+
+typedef struct {
     s32 vx, vy, vz;
 } Fx0dfVec3;
 
@@ -44,5 +50,6 @@ s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *en
                   Fx0dfWork *work);
 void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
                    s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad);
+s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif
