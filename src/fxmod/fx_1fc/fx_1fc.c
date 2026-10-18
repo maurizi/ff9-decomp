@@ -52,7 +52,214 @@ s32 fx_1fc_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
 
 INCLUDE_RODATA("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op83);
+s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR sum;
+    SVECTOR a;
+    SVECTOR b;
+    SVECTOR c;
+    SVECTOR d;
+    VECTOR e;
+    s32 t;
+    s32 frame;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 q;
+    s32 k2;
+    s32 f;
+    s32 m0;
+    s32 m1;
+    u16 model;
+
+    if (mode == 0) {
+        *arg4 = sizeof(Fx1fcWork83);
+    } else if (mode == 1) {
+        work->unk8.vx = 0;
+        work->unk8.vy = 0x800;
+        work->unk8.vz = 0;
+        work->unk10.vx = 0;
+        work->unk10.vy = 0;
+        work->unk10.vz = 0;
+        work->unk20.vx = 0x1000;
+        work->unk20.vy = 0x1000;
+        work->unk20.vz = 0x1000;
+        D_801EC14C = env;
+        func_801E87D0((Fx1fcPath *)&D_801EDA5C, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x13));
+        work->unk136[0] = ex->func_800E8F50(&D_801E99A4, 1);
+        work->unk8.vx = 0;
+        work->unk8.vy = 0x800;
+        work->unk8.vz = 0;
+        work->unk10.vx = 0;
+        work->unk10.vy = 0;
+        work->unk10.vz = 0;
+        work->unk20.vx = 0x1000;
+        work->unk20.vy = 0x1000;
+        work->unk20.vz = 0x1000;
+        func_801E87D0((Fx1fcPath *)&D_801EDA64, (u16 *)ex->btlfx_getFileData(entry->unk8, 2));
+        for (i = 0; i < 3; i++) {
+            model = ex->Hi_RegisterTexPtrModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, D_801E8CC0[i]),
+                                               D_801E8CC8, D_801E8CD8);
+            work->unk136[i + 1] = model;
+        }
+        work->unk30.vx = 0;
+        work->unk30.vy = 0;
+        work->unk30.vz = 0;
+        work->unk38.vx = 0;
+        work->unk38.vy = 0;
+        work->unk38.vz = 0;
+        work->unk48.vx = 0x1000;
+        work->unk48.vy = 0x1000;
+        work->unk48.vz = 0x1000;
+        for (i = 0; i < 5; i++) {
+            work->unk136[i + 4] = ex->func_800E8F50((Unk800E8F50 *)func_801E86A0(D_801E8CE8, i), 1);
+        }
+        for (i = 0; i < 10; i++) {
+            func_801E87D0((Fx1fcPath *)&D_801EDA7C[i],
+                          (u16 *)func_801E86A0((u8 *)ex->btlfx_getFileData(entry->unk8, 6), i));
+        }
+        func_801E8754((Fx1fcPath *)&D_801EDACC, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x17));
+        func_801E88D8((Fx1fcPath *)&D_801EDAD4, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x18));
+        work->unk130 = -1;
+        work->unk132 = -1;
+        work->unk134 = 0;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 3:
+            work->unk118.vx = -0x1C;
+            work->unk118.vy = -0x267;
+            work->unk118.vz = 0x342;
+            work->unk128.vx = 0x1CF;
+            work->unk128.vy = -0x7B7;
+            work->unk128.vz = 0x27B;
+            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk118);
+            if (work->unk0 != NULL) {
+                work->unk0->unk22 = 0x118;
+            }
+            break;
+        case 12:
+            sum.vx = 0;
+            sum.vy = 0;
+            sum.vz = 0;
+            for (q = 0; q < env->unkC->unk24; q++) {
+                sum.vx += work->unk58[q].vx;
+                sum.vy += (&work->unk58[q])->vy;
+                sum.vz += (&work->unk58[q])->vz;
+            }
+            work->unk120.vx = sum.vx / env->unkC->unk24;
+            work->unk120.vy = sum.vy / env->unkC->unk24;
+            work->unk120.vz = sum.vz / env->unkC->unk24;
+            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk120);
+            break;
+        case 38:
+            ex->func_800E3D54(work->unk0);
+            break;
+        case 22:
+            work->unk130 = 0x10;
+            break;
+        case 42:
+            work->unk132 = 0x10;
+            work->unk134 = 0;
+            for (q = 0; q < env->unkC->unk24; q++) {
+                ex->func_800E7ACC(q, (s32 *)&D_801EDF1C[q]);
+            }
+            env->unk2C->unk0[0].vx = 0;
+            env->unk2C->unk0[0].vy = 0;
+            env->unk2C->unk0[0].vz = 0x4B0;
+            break;
+        }
+        k = frame - 1;
+        if ((u32)k < 0x18) {
+            func_801E87E8((Fx1fcPath_0b4 *)&D_801EDA5C, k, &work->unk8, &a);
+            work->unk10.vx = a.vx;
+            work->unk10.vy = a.vy;
+            work->unk10.vz = a.vz;
+            work->unk8.vz = -work->unk8.vz;
+            ex->Hi_SetEffModelSlice(work->unk136[0], work->unk10.vy);
+            ex->Hi_DrawSliceEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->unk136[0]);
+        }
+        if ((u32)k < 0x28) {
+            switch (k) {
+            case 0:
+                func_801E887C((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x1A));
+                break;
+            case 4:
+                func_801E887C((Fx1fcPath *)&D_801EDA6C, (u16 *)ex->btlfx_getFileData(entry->unk8, 0x1B));
+                break;
+            }
+            if (k < 4) {
+                m0 = 1;
+                m1 = 2;
+            } else {
+                m0 = 2;
+                m1 = 3;
+            }
+            func_801E87E8((Fx1fcPath_0b4 *)&D_801EDA64, k, &work->unk8, &b);
+            work->unk10.vx = b.vx;
+            work->unk10.vy = b.vy;
+            work->unk10.vz = b.vz;
+            work->unk8.vz = -work->unk8.vz;
+            func_801E8894(&D_801EDA6C, k, &t);
+            ex->Hi_DrawMorphEffModel(&work->unk8, (VECTOR *)&work->unk10, (s32)&work->unk20, work->unk136[m0],
+                                     work->unk136[m1], t);
+        }
+        if ((u32)(frame - 1) < 0x18) {
+            k2 = frame - 1;
+            j = 4;
+            for (i = 0; i < 10; i++) {
+                func_801E87E8((Fx1fcPath_0b4 *)&D_801EDA7C[i], k2, &work->unk30, &c);
+                work->unk38.vx = c.vx;
+                work->unk38.vy = c.vy;
+                work->unk38.vz = c.vz;
+                ex->Hi_DrawEffModel(&work->unk30, (VECTOR *)&work->unk38, (s32)&work->unk48, work->unk136[j]);
+                j++;
+                if (j >= 9) {
+                    j = 4;
+                }
+            }
+        }
+        if ((u32)frame < 0x1C) {
+            func_801E876C((Fx1fcPath *)&D_801EDACC, frame, &d);
+            func_801E88F0((Fx1fcTrack6 *)&D_801EDAD4, frame, &e);
+            for (q = 0; q < env->unkC->unk24; q++) {
+                work->unk58[q].vx = D_801EDEDC[q].vx + d.vx;
+                work->unk58[q].vy = D_801EDEDC[q].vy + d.vy;
+                work->unk58[q].vz = D_801EDEDC[q].vz + d.vz;
+                ex->btlfx_setUnitPos(q, (s16 *)&work->unk58[q]);
+                work->unk98[q].vx = (D_801EDF1C[q].vx * e.vx) / 4096;
+                work->unk98[q].vy = (D_801EDF1C[q].vy * e.vy) / 4096;
+                work->unk98[q].vz = (D_801EDF1C[q].vz * e.vz) / 4096;
+                ex->func_800E7ACC(q, (s32 *)&work->unk98[q]);
+            }
+        }
+        if ((u32)(frame - 3) < 0x23 && work->unk0 != NULL) {
+            if (work->unk0->unk30 == -1) {
+                work->unk0 = NULL;
+            }
+            if (work->unk0 != NULL) {
+                work->unk0->unk5C.vx = work->unk128.vx;
+                work->unk0->unk5C.vy = work->unk128.vy;
+                work->unk0->unk5C.vz = work->unk128.vz;
+            }
+        }
+        if (work->unk130 >= 0) {
+            func_801E8954(0, 0xFF, 0x10 - work->unk130, 0x10, 1, 0);
+            if (--work->unk130 == -1) {
+                work->unk134 = 1;
+            }
+        }
+        if (work->unk132 >= 0) {
+            func_801E8954(0xFF, 0, 0x10 - work->unk132, 0x10, 1, 0);
+            work->unk132--;
+        }
+        if (work->unk134 != 0) {
+            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xFF, 0xFF, 0xFF);
+        }
+        return frame >= 0x3D;
+    }
+    return 0;
+}
 
 s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
