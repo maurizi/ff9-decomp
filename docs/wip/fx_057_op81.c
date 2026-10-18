@@ -1,4 +1,4 @@
-/* Draft of fx_057 op81. Status: 334 aligned mismatches, 132 ignoring registers and spill offsets (spnorm 0x60).
+/* Draft of fx_057 op81. Status: 318 aligned mismatches (s split per block), about 130 ignoring registers and spill offsets (spnorm 0x60).
  * Fixed since the ~540-row draft: one t per block (t1-t4), the i loop passes s before s += 0x100 (the old draft
  * passed s + 0x100: a real semantic difference), ang.vx/vy use * 128 / * 32 (keeps the lw), cs computed before r/i.
  * Open: register allocation: the original keeps the constant 1 in fp (CSE of the mode test, reused as the 1 arguments
@@ -18,6 +18,8 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t2;
     s32 t3;
     s32 t4;
+    s32 s_1;
+    s32 s_2;
     s32 frame;
     s32 t;
     s32 a;
@@ -55,11 +57,11 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         d.pad = 0;
         t1 = (frame << 12) / 7;
         a = t1 >> 2;
-        s = ex->math_sin(a);
+        s_1 = ex->math_sin(a);
         env->unk28 = work->unk8 + 0x40;
-        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unkC, NULL, 0x13000, frame, one, s);
+        ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), &work->unkC, NULL, 0x13000, frame, one, s_1);
         ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x22), &work->unkC, NULL, (t1 >> 1) + 0x3000, 0, one,
-                          s);
+                          s_1);
         env->unk28 = 0;
         ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), &work->unkC, work->unk4, ex->math_sin(a));
         if (frame >= 7) {
@@ -160,10 +162,10 @@ s32 fx_057_op81(s32 mode, Fx057Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 v.vx = -0x200 - work->unk4 * 0x18;
             }
-            s = work->unk4 * 0x29 + (j << 7);
+            s_2 = work->unk4 * 0x29 + (j << 7);
             for (i = 0; i < 0x10; i++) {
-                ex->func_800D044C(&work->unkC, (s32)&out2, 0, (XY32 *)&v, t4, s);
-                s += 0x100;
+                ex->func_800D044C(&work->unkC, (s32)&out2, 0, (XY32 *)&v, t4, s_2);
+                s_2 += 0x100;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), &out2, NULL, 0x1800, frame & 0xF, 1,
                                   cs, 0, 0);
             }
