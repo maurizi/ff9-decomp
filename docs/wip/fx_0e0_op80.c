@@ -1,4 +1,4 @@
-/* Draft of fx_0e0 fx_0e0_op80. Status: 307 aligned mismatches (143 ignoring registers and spill offsets); equivalent
+/* Draft of fx_0e0 fx_0e0_op80. Status: 303 aligned mismatches (143 ignoring registers and spill offsets); equivalent
  * by construction, untested in the emulator. One temporary per case block fixed most of the global allocation (932
  * rows before); since then: one t for the frame-derived angle of cases 6, 7, 8 and 10 (the original keeps it in s6;
  * case 10 tints with 0xF5 - ((t * 0xF5) >> 12), t = frame << 8), and several adjacent statement swaps (the order of
@@ -356,7 +356,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             u.s.rot.vx = 0;
             u.s.rot.vy = 0;
             u.s.rot.vz = 0x20;
-            sc.vx = sc.vy = 0x1100;
+            sc.vy = sc.vx = 0x1100;
             sc.vz = 0x1000;
             u.s.col.r = u.s.col.g = u.s.col.b = 0xA0 - ((frame << 15) >> 12);
             ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, 1, NULL);
@@ -371,7 +371,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             u.s.rot.vx = 0;
             u.s.rot.vy = 0;
             u.s.rot.vz = 0;
-            sc.vx = sc.vy = scl + 0x1000;
+            sc.vy = sc.vx = scl + 0x1000;
             sc.vz = 0x1000;
             ex->func_800E6764(1, xo + 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, 0, NULL);
         }
