@@ -3538,6 +3538,9 @@ typedef struct {
 #define EVT_OP_GAME_OVER 0xF5 /* field game over: returns 8 -> field exit 7 -> mode 7 (runtime: patched into the Dali Moogle script) */
 /* overlay entry points as called from the main exe (the overlays have their own prototypes) */
 #if !defined(OVL_0A_H) && !defined(OVL_0B_H) && !defined(OVL_0C_H) && !defined(OVL_0D_H) && !defined(OVL_14_H) && !defined(OVL_15_H) && !defined(OVL_32_H) && !defined(OVL_33_H) && !defined(OVL_34_H) && !defined(OVL_36_H) && !defined(OVL_37_H) && !defined(OVL_38_H) && !defined(OVL_39_H) && !defined(OVL_3A_H) && !defined(OVL_3B_H) && !defined(OVL_3C_H) && !defined(OVL_3E_H) && !defined(OVL_64_H) && !defined(OVL_65_H)
+/* mode entry points in overlays, linked through config/xrefs.us.txt */
+void btl_entry(void);
+void battleEnd_main(void);
 void func_800AFAC0(s32, s32, s32, s32, s32);
 void func_800B1A20(s16, s16, s16, u8 *arg4, u8 *arg5);
 s32 func_800B2CC0(s32, s32, s32, s32);

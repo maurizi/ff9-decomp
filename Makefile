@@ -34,6 +34,7 @@ ASFLAGS   := -march=r3000 -mabi=32 -EL -no-pad-sections -O0 -Iinclude
 LDFLAGS   := -T $(LD_SCRIPT) \
              -T config/undefined_funcs_auto.$(VERSION).txt \
              -T config/undefined_syms_auto.$(VERSION).txt \
+             -T config/xrefs.$(VERSION).txt \
              --no-check-sections -nostdlib \
              -Map $(ELF:.elf=.map)
 

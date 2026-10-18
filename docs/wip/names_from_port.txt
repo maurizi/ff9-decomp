@@ -841,6 +841,61 @@ func_800BE99C btl_setBattleVar  # [runtime] ovl_0b function, see config/symbols.
 func_800AD90C btl_soundCmd  # [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 D_800FDF30 g_btlRewards  # [code] ovl_0b global, see config/symbols.ovl_0b.us.txt
 
+## battle campaign 3 (runtime)
+# Names from battle campaign 3 (docs/runtime-findings.md, 2026-10-18). Each "## bin" sub-section is rename.py input.
+
+## ovl_0b: ovl_0b (battle campaign 3: battle entry/setup, escape, Matra Magic, summons, shadows, effect trails/particles/sprites/backdrop)
+func_800EB924 btlui_pollEscape  # [runtime] docs/runtime-findings.md battle campaign 3, while L1+R1 are held sets Battle.escapeHeld and calls btl_tryEscape(0) each frame and btl_tryEscape(1) every 62nd frame, the second call ran btl_canFlee + btl_rollFlee and the party escaped
+func_800B8FF8 btl_setTargetHp  # [runtime] docs/runtime-findings.md battle campaign 3, Matra Magic sets the target's HP to the ability parameter (or kills it when 0), only in u_matra from btl_calcCmd+0xE1C, the Malboro was left at HP 1
+func_800B989C btl_rollShortSummon  # [runtime] docs/runtime-findings.md battle campaign 3, sets cmd bit 0x400 with chance 0xE6/0xAA of 256 for summon commands, which plays the short summon effect (Ifrit 0x1BD vs the full 0x114 with the support bit set)
+func_800E89D0 btlfx_restorePartyLooks  # [runtime] docs/runtime-findings.md battle campaign 3, once at the end of every summon from btlfx_runScript+0x4C, re-applies model state, Mini and Vanish to every party unit
+func_800E8A80 btlfx_restoreUnitLook  # [runtime] docs/runtime-findings.md battle campaign 3, the same for one unit, once in the trance run from btlfx_runScript+0x7C
+func_800E86E0 btlfx_copyWords  # [runtime] docs/runtime-findings.md battle campaign 3, word copy of a byte count rounded up to words, once per summon from btlfx_runScript+0x78C
+func_800A859C btl_entry  # [runtime] docs/runtime-findings.md battle campaign 3, game_main's mode-2 case calls it after game_loadModeOverlay(2), btl_initMode, btl_main until GameState.unk0 & 0x101, btl_exitMode
+func_800A8CD4 btl_initMode  # [runtime] docs/runtime-findings.md battle campaign 3, first call of btl_entry battle buffers, vsyncMode 4, GameData.unk838/unk83C hooks, then the common-data and state setup
+func_800A8DE0 btl_exitMode  # [code] docs/runtime-findings.md battle campaign 3, last call of btl_entry
+func_800A94F8 btl_cleanup  # [code] docs/runtime-findings.md battle campaign 3, end of btl_main frees the battle files and restores the saved encounter sectors, fieldId and unk7DC
+func_800A8E24 btl_allocBattle  # [runtime] docs/runtime-findings.md battle campaign 3, places the Battle struct at D_80067944 + 0x61800, first call of btl_initMode
+func_800A8E6C btl_clearBattle  # [runtime] docs/runtime-findings.md battle campaign 3, zeroes the new Battle's flags and slot pointers, from btl_initMode
+func_800A90B0 btl_loadCommonData  # [runtime] docs/runtime-findings.md battle campaign 3, reads file 0x271B of directory 1 and copies Battle.unk154C, the ability table and Battle.unk22CC
+func_800A923C btl_load  # [runtime] docs/runtime-findings.md battle campaign 3, first call of btl_main buffers, encounter file, event script, background, model slots, btlui reset, btl_startBattle
+func_800A9768 btl_allocBuffers  # [runtime] docs/runtime-findings.md battle campaign 3, battle buffer setup from btl_load
+func_800A98A0 btl_initReturnInfo  # [runtime] docs/runtime-findings.md battle campaign 3, stores the previous mode GameState.unkA and the field id or world position to return to
+func_800AA08C btl_loadEncounterFile  # [runtime] docs/runtime-findings.md battle campaign 3, synchronous CD read of GameData.unk7FC[0]/unk804[0], the encounter sector range enter_battle.py writes
+func_800A99AC btl_initEncounter  # [runtime] docs/runtime-findings.md battle campaign 3, finds the encounter's 0x11xxxx data blocks and runs evt_init on the AI script
+func_800AA140 btl_loadBackgroundStep  # [runtime] docs/runtime-findings.md battle campaign 3, CD read state machine for the background file unk7FC[1], btl_load polls it until 0 (54473 calls)
+func_800A9A7C btl_setupBackground  # [runtime] docs/runtime-findings.md battle campaign 3, texture pages and tex anims, sets Battle.unk0 |= 1 which turns on btlbg_draw
+func_800E9E10 btlui_reset  # [runtime] docs/runtime-findings.md battle campaign 3, clears the 0x11C UI block, sets the battle text bank, VSyncCallback(NULL), from btl_load
+func_800B031C btl_initBattleState  # [runtime] docs/runtime-findings.md battle campaign 3, last setup call of btl_initMode btl_initState, effect common data, btlcam_init
+func_800B0060 btl_updateIntro  # [runtime] docs/runtime-findings.md battle campaign 3, 105 ticks from btl_update+0x70 at battle start model loader, btl_initEnemies / btl_initParty, fades enemies then party in
+func_800AC37C btl_drawShadow  # [runtime] docs/runtime-findings.md battle campaign 3, per unit per tick from btl_updateUnitModel+0x544, stubbing it removes the dark ellipses under all units
+func_800AD4E4 btl_calcShadowMatrix  # [runtime] docs/runtime-findings.md battle campaign 3, shadow orientation from one bone or between two, stubbing it removes the shadows too
+func_800D1494 btlfx_drawTrail  # [runtime] docs/runtime-findings.md battle campaign 3, ablation Holy's light ribbons and Death's red streaks vanish, pushes a trail point and draws one of three ribbon modes
+func_800D0E14 btlfx_drawTrail3D  # [runtime] docs/runtime-findings.md battle campaign 3, trail mode via btlfx_emitTrailRibbon3D (GT4, 0x34 bytes per segment), Death, Fira, Holy
+func_800D50A0 btlfx_emitTrailRibbon3D  # [runtime] docs/runtime-findings.md battle campaign 3, hand-written asm, runs once per btlfx_drawTrail3D call, emits GT4 0x3C/0x3E ribbon segments
+func_800D0FFC btlfx_drawTrailFlat  # [runtime] docs/runtime-findings.md battle campaign 3, trail mode via btlfx_emitTrailRibbonFlat (Firaga) or btlfx_emitTrailLines (Thundaga)
+func_800D4D6C btlfx_emitTrailRibbonFlat  # [runtime] docs/runtime-findings.md battle campaign 3, hand-written asm, GT4 ribbon from btlfx_drawTrailFlat (Firaga)
+func_800D5568 btlfx_emitTrailLines  # [runtime] docs/runtime-findings.md battle campaign 3, hand-written asm, LINE_G2 0x50/0x52 trail from btlfx_drawTrailFlat (Thundaga)
+func_800D12C4 btlfx_drawTrailScreen  # [runtime] docs/runtime-findings.md battle campaign 3, trail mode via btlfx_emitTrailRibbonScreen (Comet, Demi, Doomsday, Flare, Osmose, Thundaga)
+func_800D5C30 btlfx_emitTrailRibbonScreen  # [runtime] docs/runtime-findings.md battle campaign 3, hand-written asm, GT4 ribbon, once per btlfx_drawTrailScreen call
+func_800D1680 btlfx_drawParticles  # [runtime] docs/runtime-findings.md battle campaign 3, ablation Fire's flame particles and Holy's white sparkles vanish (FT4 0x2C/0x2E, 40 bytes each)
+func_800D4478 btlfx_emitParticles  # [runtime] docs/runtime-findings.md battle campaign 3, hand-written asm, the inner emitter of btlfx_drawParticles, same call count
+func_800D1D74 btlfx_drawAnimQuads  # [runtime] docs/runtime-findings.md battle campaign 3, ablation Death's dark smoke cloud vanishes, animated FT4 set, frame = arg4 mod frame count
+func_800D3ED4 btlfx_emitAnimQuads  # [runtime] docs/runtime-findings.md battle campaign 3, hand-written asm, 960 calls from btlfx_drawAnimQuads+0x264 during Death
+func_800D1FFC btlfx_drawSprites  # [runtime] docs/runtime-findings.md battle campaign 3, ablation removes the Poison bubbles over Vivi like stubbing btl_drawStatusIcons, 3D points as TILE / SPRT_8 / SPRT_16 / SPRT
+func_800D3030 btlfx_drawBackdrop  # [runtime] docs/runtime-findings.md battle campaign 3, ablation Holy's dark starry sky vanishes and the battle background shows through, layered screen backdrop
+func_800C1A8C btl_setUnitBrightness  # [runtime] docs/runtime-findings.md battle campaign 3, from btl_updateIntro+0x124 with Battle.unkD86/unkD87 ramping to 0x20 (party/enemy fade-in) and 64x from btl_victory+0x330 while the party ran away
+
+## ovl_65: ovl_65 (battle campaign 3: battle end and victory rewards)
+func_801F3A7C battleEnd_update  # [runtime] docs/runtime-findings.md battle campaign 3, per frame from battleEnd_main+0x70, calls gameover_main on defeat and rewards_update on victory
+func_801EF45C battleEnd_init  # [runtime] docs/runtime-findings.md battle campaign 3, once in both the victory and the defeat run
+func_801F0F04 rewards_update  # [runtime] docs/runtime-findings.md battle campaign 3, every frame of the victory run only (487 calls), drives the EXP/AP, items and gil screens
+
+## ovl_0b: include/btlfx_mod.h export members renamed by hand (BtlfxExports, used by src/fxmod)
+# func_800D12C4 btlfx_drawTrailScreen, func_800D0E14 btlfx_drawTrail3D, func_800D0FFC btlfx_drawTrailFlat, func_800D1494 btlfx_drawTrail,
+# func_800D1680 btlfx_drawParticles, func_800D1D74 btlfx_drawAnimQuads, func_800D1FFC btlfx_drawSprites, func_800D3030 btlfx_drawBackdrop
+# main's mode-2 call func_800A859C (btl_entry) stays unnamed: a global symbol at 0x800A859C splits ovl_0c's rodata table D_800A8598 and renames ovl_14's own func_800A859C in its data.
+
 # FIELDS
 # include/ovl_64.h Ovl64State: unk0=ended,unk1=rgb24,unk4=pauseReq,unk2C=width,unk30=height,unk44=vlcTable,unk48=mdecIn0,unk4C=mdecIn1,unk50=mdecOut0,unk54=mdecOut1,unk58=ringBuf,unk5C=audioBuf,unk60=endCallback
 # include/ovl_64.h Ovl64Dec: unk0=mdecIn,unk8=inIdx,unkC=mdecOut,unk14=outIdx,unk18=frameRect,unk28=slice,unk30=frameDone
@@ -856,3 +911,4 @@ D_800FDF30 g_btlRewards  # [code] ovl_0b global, see config/symbols.ovl_0b.us.tx
 # include/ff9.h AkaoChannel: unk118=voice,unk11C=voiceDirty,unk120=voiceStartAddr,unk124=voiceLoopAddr,unk128=voicePitch,unk12A=voiceAdsr1,unk12C=voiceAdsr2,unk12E=voiceVolScale,unk130=voiceVolL,unk132=voiceVolR
 # include/ff9.h GameState: unk9=vsyncMode
 # include/ff9.h GameData: unk55E=firstUseFxSeen
+# include/ovl_0b.h Battle: unkD83=escapeHeld

@@ -20,8 +20,10 @@ if a.cmd=='start':
     emu.lua(open(ROOT+'/tools/rt/cov.lua').read())
     bins=a.bin or ['ovl_0b']
     lib=set()
+    # library_funcs also lists Square's hand-written asm in ovl_0a/0b/0c (effect emitters etc.): cover those,
+    # skip only SDK code (main, ovl_64)
     for l in open(ROOT+'/config/library_funcs.us.txt'):
-        if l.strip() and not l.startswith('#'): lib.add(l.split()[1])
+        if l.strip() and not l.startswith('#') and l.split()[0] in ('main', 'ovl_64'): lib.add(l.split()[1])
     for f in ['symbols.psyq.us.txt','symbols.psyq.ovl_64.us.txt']:
         for l in open(ROOT+'/config/'+f):
             if '=' in l: lib.add(l.split('=')[0].strip())

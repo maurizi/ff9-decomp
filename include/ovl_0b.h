@@ -312,7 +312,8 @@ typedef struct {
 } BtlUnit28;
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
-/* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 and 0x40000 unidentified) */
+/* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 unidentified). BtlUnit.unk38 uses the same
+ * bits (btl_hasStatus tests both words). */
 #define BTL_STATUS_PETRIFY         0x00000001 /* runtime: Break; model CLUT turns to stone (btl_setStoneClut) */
 #define BTL_STATUS_VENOM           0x00000002 /* code: the tick drains HP and MP (btl_tickPoison, btl_tickVenomMp) */
 #define BTL_STATUS_SILENCE         0x00000008 /* runtime: Silence */
@@ -325,11 +326,12 @@ typedef struct {
 #define BTL_STATUS_CONFUSE         0x00000400 /* runtime: Confuse */
 #define BTL_STATUS_BERSERK         0x00000800 /* runtime: Berserk */
 #define BTL_STATUS_STOP            0x00001000 /* runtime: Stop */
-#define BTL_STATUS_AUTO_LIFE       0x00002000 /* code: KO queues the revive command 0x3D */
+#define BTL_STATUS_AUTO_LIFE       0x00002000 /* runtime: Auto-Life; KO queues the revive command 0x3D */
 #define BTL_STATUS_TRANCE          0x00004000 /* runtime */
 #define BTL_STATUS_DEFEND          0x00008000 /* runtime: removed by btl_setCmd at every action */
 #define BTL_STATUS_POISON          0x00010000 /* runtime: Poison */
 #define BTL_STATUS_SLEEP           0x00020000 /* runtime: Sleep; timer at +0x48 (unk46[1]) */
+#define BTL_STATUS_REGEN           0x00040000 /* runtime: the Regen spell adds it (btl_addStatus); timer at +0x44 (unk40[2]) */
 #define BTL_STATUS_HASTE           0x00080000 /* runtime: Haste */
 #define BTL_STATUS_SLOW            0x00100000 /* runtime: Slow */
 #define BTL_STATUS_FLOAT           0x00200000 /* runtime: Float */
@@ -337,14 +339,12 @@ typedef struct {
 #define BTL_STATUS_PROTECT         0x00800000 /* runtime: Protect */
 #define BTL_STATUS_HEAT            0x01000000 /* code: acting while it is set adds KO (btl_processCmdQueue) */
 #define BTL_STATUS_FREEZE          0x02000000 /* runtime */
-#define BTL_STATUS_VANISH          0x04000000 /* code: hides the meshes (btl_hideMeshes) */
+#define BTL_STATUS_VANISH          0x04000000 /* runtime: Vanish; hides the meshes (btl_hideMeshes) */
 #define BTL_STATUS_DOOM            0x08000000 /* code: countdown number (btl_drawStatusCountdown) */
 #define BTL_STATUS_MINI            0x10000000 /* runtime: Mini */
 #define BTL_STATUS_REFLECT         0x20000000 /* runtime: Reflect */
 #define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
 #define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
-/* BtlUnit.unk38 bits */
-#define UNK38_REGEN   0x40000  /* runtime: the Regen spell; timer at +0x44 (unk40[2]) */
 
 typedef struct BtlUnit {
     struct BtlUnit *unk0; /* next */
@@ -366,7 +366,7 @@ typedef struct BtlUnit {
     u8 unk32;
     u8 unk33;
     s32 statusImmune; /* add-status (btl_addStatus) refuses these bits; runtime: Iifa monster 0x4400E004 */
-    u32 unk38; /* runtime: the Regen spell sets 0x40000 here (UNK38_REGEN); support abilities set bits here at battle start; add-status (btl_addStatus) does nothing for a bit already set here */
+    u32 unk38; /* permanent BTL_STATUS_* bits: support abilities set them at battle start (e.g. BTL_STATUS_REGEN); add-status (btl_addStatus) does nothing for a bit already set here */
     u32 status; /* current BTL_STATUS_* bits; runtime: Sleep 0x20000, KO 0x100 (added by btl_addStatus) */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
@@ -1115,7 +1115,7 @@ typedef struct Battle {
     u8 unkD80;
     u8 unkD81;
     u8 unkD82;
-    u8 unkD83;
+    u8 escapeHeld; /* runtime: 1 while L1+R1 are held (btlui_pollEscape), units take the run-away stance */
     u8 unkD84;
     u8 unkD85;
     u8 unkD86;
@@ -1355,7 +1355,7 @@ typedef struct {
 
 void btlfx_addPrim(u32, s32, void *);
 
-/* scrolling/waving 2D background layer (func_800D3030) */
+/* scrolling/waving 2D background layer (btlfx_drawBackdrop) */
 typedef struct {
     u16 unk0; /* kind: 0 scroll, 1 horizontal wave, 2 fade, 3 vertical wave */
     u16 unk2; /* tpage */
@@ -1421,7 +1421,7 @@ typedef struct {
     s32 count;
 } Grad;
 void func_800E651C(u8 *, CVECTOR *, s32);
-/* sprite set header (func_800D1D74, func_800D2DBC): u16 frame offsets, then at
+/* sprite set header (btlfx_drawAnimQuads, func_800D2DBC): u16 frame offsets, then at
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
@@ -1432,7 +1432,7 @@ typedef struct {
     u8 unk7;  /* width */
     u16 unk8[1];
 } Unk800D1D74Hdr;
-/* sprite set draw context (func_800D1D74, func_800D1FFC and their per-sprite workers) */
+/* sprite set draw context (btlfx_drawAnimQuads, btlfx_drawSprites and their per-sprite workers) */
 typedef struct {
     u16 *unk0; /* palette */
     u16 *unk4; /* colour table */
@@ -1445,7 +1445,7 @@ typedef struct {
     s32 unk20;
     s32 unk24; /* code */
 } Unk800D3ED4Ctx;
-void func_800D3ED4(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void btlfx_emitAnimQuads(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void func_800D40CC(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void func_800D4228(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void func_800D437C(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
@@ -2253,7 +2253,7 @@ void func_800EB2FC(void);
 void func_800EB410(void);
 void func_800EB46C(void);
 void func_800EB81C(void);
-void func_800EB924(void);
+void btlui_pollEscape(void);
 s32 func_800EB9E0(void);
 void btlui_drawHelpWindow(void);
 void func_800EBB78(void);
@@ -2282,7 +2282,7 @@ u32 btl_countActiveUnits(u32);
 void btlcam_play(s32);
 s32 func_800E454C(s32);
 void func_800E73B4(BtlUnit *, u16 *);
-void func_800E86E0(s32 *, s32 *, u32);
+void btlfx_copyWords(s32 *, s32 *, u32);
 s32 func_800E9638(s32);
 void btlui_vsync(void);
 void func_800E9F3C(u8);
@@ -2408,8 +2408,8 @@ void btlfx_fadeUnit(BtlUnit *, s32);
 s32 func_800E9A00(s32, s32);
 BtlUnit *btl_getUnitById(u16);
 void btl_main(s32);
-void func_800A8CD4(void);
-void func_800A8DE0(void);
+void btl_initMode(void);
+void btl_exitMode(void);
 s32 func_800AB324(s32, s32 *, s32 *);
 s32 btlfx_stepResetMotion(u8 *, s32, s32);
 s32 func_800D9110(u8 *, s32, s32);
@@ -2486,8 +2486,8 @@ void func_800DFE4C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFE54(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF5C(Pool30Entry *, s32, s16 *, SVECTOR *);
 void func_800DFF64(Pool30Entry *, s32, s16 *, SVECTOR *);
-void func_800D1D74(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
-void func_800D1FFC(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void btlfx_drawAnimQuads(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
+void btlfx_drawSprites(u8 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 /* effect frame table (func_800D2938) */
 typedef struct {
     u16 unk0; /* frame count */
@@ -2972,7 +2972,7 @@ void btl_applyKillerBonus(BtlCalc *);
 void btl_rollCritical(BtlCalc *);
 u8 btl_applyAbilityElement(BtlCalc *);
 void btl_finishPhysDamage(BtlCalc *);
-void func_800B8FF8(BtlCalc *);
+void btl_setTargetHp(BtlCalc *);
 void btl_rollFlee(BtlCalc *);
 u8 btl_checkFrozenShatter(BtlCalc *);
 void btl_setDrainFlags(BtlCalc *);
@@ -3040,7 +3040,7 @@ void btl_healHp(BtlUnit *, s32);
 void btl_damageMp(BtlUnit *, s32);
 void btl_healMp(BtlUnit *, s32);
 void func_800C7CC8(BtlUnit9C *);
-u8 *func_800AC37C(Battle11C028 *, s32, s32, s32, u8 *);
+u8 *btl_drawShadow(Battle11C028 *, s32, s32, s32, u8 *);
 void btl_checkEnemiesKO(); /* defined as (void); callers pass the unit */
 void btl_startEnemySeq(BtlCmd *);
 void btlbg_setOtShift(s32);
@@ -3179,7 +3179,7 @@ extern u8 D_80104E77;
 void func_800F11A4(BtlUnit *);
 void func_800F1150(BtlUnit *);
 u32 func_800AB810(s32, s32);
-void func_800A923C(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
+void btl_load(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
 s32 func_800AD4AC(s32, s32);
 s32 func_8004AAF0(s32);
 void func_8001E3A4(void *);
@@ -3190,10 +3190,10 @@ void btl_enqueueCmd(struct BtlCmd *);
 void func_800C0840(void);
 void func_800C0C7C(u32 *);
 void func_800C0CD0(u32 *);
-void func_800C1A8C(struct BtlUnit *, u32);
+void btl_setUnitBrightness(struct BtlUnit *, u32);
 void func_800B95BC(struct BtlCmd *);
 s32 func_800B96AC(struct BtlUnit *, s16);
-void func_800B989C(struct BtlCmd *);
+void btl_rollShortSummon(struct BtlCmd *);
 void btl_interruptUnit(struct BtlUnit *, s32);
 void btl_checkPartyDisabled(struct BtlUnit *);
 void btl_initParty(struct Battle *);
@@ -3202,15 +3202,15 @@ void btl_resetAtbSpeed(Unk800BD8F0 *);
 void func_800C0A3C(Unk800C09D8 *);
 void func_80031244(SVECTOR *, MATRIX *);
 
-s32 func_800A9A7C(Battle11C0 *, s32);
-s32 func_800AA08C(Unk800AA08C *, s32);
+s32 btl_setupBackground(Battle11C0 *, s32);
+s32 btl_loadEncounterFile(Unk800AA08C *, s32);
 void btl_beginFrame(void);
 void func_800A8BF4(void);
 u8 func_800EA30C(void);
 void func_800A882C(void);
 s32 btl_update(void);
 extern u8 D_8007AFB1;
-void func_800B0060(GameData *, Battle *);
+void btl_updateIntro(GameData *, Battle *);
 void btl_updateCombat(GameData *, Battle *);
 void btl_victory(GameData *, Battle *);
 void btlui_init(void);
@@ -3220,7 +3220,7 @@ void btl_endFrame(void);
 void func_800E9EC4(void);
 void func_800EA290(void);
 void func_800EA1F8(u32 *, DRAWENV *);
-void func_800A94F8(void);
+void btl_cleanup(void);
 s32 func_800AC280(u32, s32 **, s32 **, s32 **);
 u32 func_8004AB64(s32);
 /* object slot returned by func_8001E350 in battle */
@@ -3230,7 +3230,7 @@ typedef struct {
     BtlUnit9C *unk8;
     s32 unkC;
 } BtlObj;
-/* placement data passed to func_800AD4E4 */
+/* placement data passed to btl_calcShadowMatrix */
 typedef struct {
     u32 pad0_0 : 8;
     u32 unk0_8 : 12;  /* x scale */
@@ -3255,14 +3255,14 @@ typedef struct {
         _d[7] = _s[7];                       \
     }
 
-void func_800A8E24(void);
-void func_800A8E6C(void);
+void btl_allocBattle(void);
+void btl_clearBattle(void);
 s32 func_800A8F10(void);
 s32 func_800A8F18(void);
 s32 func_800A8F8C(void);
 s32 func_800A902C(void);
 s32 func_800A9090(void);
-s32 func_800A90B0(void);
+s32 btl_loadCommonData(void);
 s32 func_800AF1C8(void);
 extern void (*D_800F8DF0[])(Unk800FD56C *);
 extern void (*D_800F8E00)(Unk800FD56C *);
@@ -3580,7 +3580,7 @@ typedef struct {
     Unk800D3B6CEntry unk18[1];
 } Unk800D3B6C;
 
-/* sprite-strip context passed to func_800D5C30 / func_800D50A0 */
+/* sprite-strip context passed to btlfx_emitTrailRibbonScreen / btlfx_emitTrailRibbon3D */
 typedef struct {
     s32 unk0; /* ot base z */
     s32 unk4;
@@ -3599,9 +3599,9 @@ typedef struct {
     s16 unk26;
     u8 pad28[0x70 - 0x28];
 } Unk800D5C30Ctx;
-void func_800D5C30(s32, Unk800D5C30Ctx *, u8 *, s32 *);
+void btlfx_emitTrailRibbonScreen(s32, Unk800D5C30Ctx *, u8 *, s32 *);
 
-/* same as Unk800D5C30Ctx plus two words (func_800D50A0) */
+/* same as Unk800D5C30Ctx plus two words (btlfx_emitTrailRibbon3D) */
 typedef struct {
     s32 unk0; /* ot base z */
     s32 unk4;
@@ -3622,9 +3622,9 @@ typedef struct {
     s32 unk2C;
     u8 pad30[0x60 - 0x30];
 } Unk800D50A0Ctx;
-void func_800D50A0(s32, Unk800D50A0Ctx *, u8 *, s32 *);
+void btlfx_emitTrailRibbon3D(s32, Unk800D50A0Ctx *, u8 *, s32 *);
 
-/* same fields as Unk800D50A0Ctx, without the padding (func_800D4D6C / func_800D5568) */
+/* same fields as Unk800D50A0Ctx, without the padding (btlfx_emitTrailRibbonFlat / btlfx_emitTrailLines) */
 typedef struct {
     s32 unk0; /* ot base z */
     s32 unk4;
@@ -3644,10 +3644,10 @@ typedef struct {
     s32 unk28;
     s32 unk2C;
 } Unk800D4D6CCtx;
-void func_800D4D6C(s32, Unk800D4D6CCtx *, u8 *, s32 *);
-void func_800D5568(s32, Unk800D4D6CCtx *, u8 *, s32 *);
+void btlfx_emitTrailRibbonFlat(s32, Unk800D4D6CCtx *, u8 *, s32 *);
+void btlfx_emitTrailLines(s32, Unk800D4D6CCtx *, u8 *, s32 *);
 
-/* sprite animation header (func_800D1494); followed by u32 frame entries and colors */
+/* sprite animation header (btlfx_drawTrail); followed by u32 frame entries and colors */
 typedef struct {
     u16 unk0; /* frame count */
     u16 unk2;
@@ -3659,9 +3659,9 @@ typedef struct {
 } Unk800D1494;
 
 s32 btlfx_pushTrailPoint(u8 *, s32, s32, s32);
-void func_800D12C4(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
-void func_800D0E14(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
-void func_800D0FFC(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
+void btlfx_drawTrailScreen(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
+void btlfx_drawTrail3D(s32, s32 *, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
+void btlfx_drawTrailFlat(s32, s32, s32, s32, s32, s32, s32, s32, s32, u32 *, u32 *, s32);
 
 typedef struct {
     u16 unk0;
@@ -3713,7 +3713,7 @@ extern RECT D_800FDE34;
     : : "r"(r0) : "memory")
 #define gte_rtv0tr_nn() __asm__ volatile(".word\t0x4A480012")
 
-/* func_800AC37C: project one corner of the 3x3 shadow grid */
+/* btl_drawShadow: project one corner of the 3x3 shadow grid */
 #define SHADOW_PT(x, z) \
     v.vx = (x); \
     v.vy = 0; \
@@ -3721,7 +3721,7 @@ extern RECT D_800FDE34;
     gte_ldv0(&v); \
     gte_rtps()
 
-/* func_800AC37C: shadow quad q of entry e in the current buffer */
+/* btl_drawShadow: shadow quad q of entry e in the current buffer */
 #define SHADOW_QUAD(q) e->unk8[g_gameState->unk1C->unk8][q]
 
 typedef struct {
@@ -3734,7 +3734,7 @@ typedef struct {
     s32 unk18;
 } Unk800D1680Ctx;
 
-void func_800D4478(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
+void btlfx_emitParticles(u8 *, Unk800D1680Ctx *, u8 *, s32 *);
 
 /* addPrim written as inline asm (len word in a register it clobbers) */
 #define addPrimLen(ot, p, len) __asm__ volatile( \
@@ -4067,8 +4067,8 @@ s32 func_800DA634(s32);
 s32 func_800DA6B4(s32, s32);
 void btlfx_startCasterTask(s32);
 u32 func_800E7D18(s32);
-void func_800E89D0(void);
-void func_800E8A80(s32);
+void btlfx_restorePartyLooks(void);
+void btlfx_restoreUnitLook(s32);
 s32 func_800E8CE4(void);
 void func_800E9168(void);
 void func_800E9290(s32);
