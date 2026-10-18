@@ -959,7 +959,111 @@ void func_801EAAF0(Unk80100C78Entry *entry, s32 file, s32 a2, Fx0baStrip *path, 
     func_801EA850(entry, file, a2, buf, size, tab, v, &to, 0, 0x20, ex->btlfx_rand(), 0x33, a12, a13, pad, 0);
 }
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801EAC08);
+s32 func_801EAC08(s32 mode, Fx0baBolt *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    SVECTOR ang;
+    Fx0baTrail *trail;
+    Fx0baStrip4 *strip;
+    s32 t;
+    s32 c;
+    s32 k;
+    s32 a;
+    s32 q;
+    s32 amp;
+    s32 t2;
+    Fx0baTrail *trail2;
+    Fx0baStrip4 *strip2;
+    s32 c2;
+    s32 r;
+    s32 m;
+    s32 w; /* block-local, so 0x1000 - t2 and w >> 11 are tied to it */
+
+    if (mode != 1) {
+        switch (p->unk11) {
+        case 0:
+        case 1:
+            t = frame << 9;
+            c = ex->math_cos(t >> 2);
+            trail = &D_801ED420[p->unk10];
+            strip = &D_801EE5A0[p->unk10];
+            if (p->unk11 == 0) {
+                p->unk8.vx = D_801EC554.vx;
+                p->unk8.vy = D_801EC554.vy;
+                p->unk8.vz = D_801EC554.vz;
+                func_801EA850(entry, 0x1C, 0, (Fx0baStrip *)trail, 0x8C, p->unk18, &p->unk0, &p->unk8, 0, 0x180,
+                              frame * 0x97, 0x140, frame, c, ((0x1000 - t) * p->unk15) >> 12,
+                              ((((frame << 10) + t) << 7) >> 12) + 0x80);
+            } else {
+                if (frame == 0) {
+                    k = 2;
+                } else if (frame < 4) {
+                    k = 3;
+                } else {
+                    k = 0;
+                }
+                a = ((0x1000 - t) * p->unk15) >> 12;
+                if (frame == 0) {
+                    a = (a * 3) >> 1;
+                }
+                func_801EA850(entry, 2, 0, (Fx0baStrip *)trail, 0x8C, p->unk18 + frame * k, &p->unk0, &p->unk8, 0,
+                              0x180, frame * 0xC0, 0x168, frame, c, a, 0);
+                func_801EAAF0(entry, 3, 0, (Fx0baStrip *)trail, (Fx0baStrip *)strip, 0x24, p->unk18, p->unk12, frame, c,
+                              a >> 2);
+            }
+            if (frame >= 8) {
+                return 1;
+            }
+            break;
+        case 2:
+            t2 = frame << 9;
+            c2 = ex->math_cos(t2 >> 2);
+            trail2 = &D_801ED420[p->unk10];
+            strip2 = &D_801EE5A0[p->unk10];
+            if (frame < 3 && D_801EC550 != 0) {
+                q = ((frame + 1) << 12) / 3;
+                ang.vy = 0x200;
+                ang.vx = 0;
+                ang.vz = 0;
+                env->unk28 = 0x400;
+                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x29), &p->unk0, NULL, (q >> 2) + 0x2000, 0, 1,
+                                  0x1000 - q * 2 / 3);
+                env->unk28 = 0;
+            }
+            if ((u32)(frame - 3) < 3 && D_801EC550 != 0) {
+                q = ((frame - 2) << 12) / 3;
+                ang.vy = 0x200;
+                ang.vx = 0;
+                ang.vz = 0;
+                env->unk28 = 0x400;
+                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x29), &p->unk8, NULL, (q >> 2) + 0x2000, 0, 1,
+                                  0x1000 - q * 2 / 3);
+                env->unk28 = 0;
+            }
+            if (frame < 2) {
+                ex->btlfx_lerpVec((s16 *)&p->unk0, (s16 *)&p->unk8, (frame + 1) << 11, (s16 *)&v);
+                amp = p->unk15 >> 1;
+            } else {
+                BTLFX_COPY_SVEC(&v, &p->unk8);
+                amp = p->unk15;
+            }
+            r = (frame < 3) * 2;
+            m = frame * r;
+            /* No code (only m * 4 is used), but m is then set twice, so sched1 does not delay the multiply to its
+             * use and the product stays in a caller-saved register. */
+            m &= 0x3FFFFFFF;
+            func_801EA850(entry, 2, 0, (Fx0baStrip *)trail2, 0x8C, p->unk18 + m, &p->unk0, &v, 0,
+                          0x227, frame * 0xC0, 0x168, frame, c2, (w = (0x1000 - t2) * amp) / 1500, 0);
+            func_801EAAF0(entry, 3, 0, (Fx0baStrip *)trail2, (Fx0baStrip *)strip2, 0x24, p->unk18, p->unk12, frame, c2,
+                          w >> 11);
+            if (frame >= 8) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 s32 func_801EB1CC(SVECTOR *v) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EC5F0);
