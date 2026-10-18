@@ -24,4 +24,9 @@ typedef struct {
     Fx19fKey unk4[1];
 } Fx19fKeys;
 
+/* copied */
+void func_801E9968(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *trail, s32 n, s32 *noise, SVECTOR *from,
+                   SVECTOR *to, s32 h0, s32 h1, s32 ang, s32 dang, s32 type, s32 alpha, s32 pad, s32 dip);
+/* end copied */
+
 #endif

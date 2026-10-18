@@ -18,7 +18,16 @@ INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", fx_17d_7_op80);
 
 INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", func_801EE6E4);
 
-INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", func_801EE990);
+void func_801EE990(Unk80100C78Entry *entry, s32 file, s32 ot, Fx17d7Trail *path, Fx17d7Trail *trail, s32 n, s32 *noise,
+                   s32 i, s32 type, s32 alpha, s32 pad) {
+    SVECTOR *pt = path->unk4;
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801EF2DC);
+    SVECTOR mid;
+
+    pt += i;
+    ex->btlfx_lerpVec((s16 *)(pt + 1), (s16 *)pt, 0x4000, (s16 *)&mid);
+    func_801EE6E4(entry, file, ot, trail, n, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
+}
 
 INCLUDE_ASM("asm/us/fx_17d_7/nonmatchings/fx_17d_7", func_801EEAA8);
 
