@@ -33,6 +33,12 @@ typedef struct {
     Fx1bdKey12 *unk4;
 } Fx1bdTrack12;
 
+extern BtlModel D_801E9E64[];
+
+void func_801E90CC(void);
+void func_801E9118(s32 arg0, s32 arg1, s32 arg2, s32 data);
+void func_801E9174(s32 arg0);
+
 /* copied */
 extern Unk800F78A4 *D_801E9E54;
 /* end copied */

@@ -2,7 +2,29 @@
 
 INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E77C0);
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", fx_1bd_op80);
+s32 fx_1bd_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        D_801E9E54 = env;
+        ex->btlfx_initEffModels(D_801E9E64, 0x20);
+        func_801E90CC();
+        func_801E9118(0, 1, 0, ex->btlfx_getFileData(entry->unk8, 0x15));
+        func_801E9118(0, 2, 0, ex->btlfx_getFileData(entry->unk8, 0x14));
+        return 0;
+    } else {
+        frame = entry->unk0;
+        func_801E9174(0);
+        if (frame >= 0x5A) {
+            ex->btlfx_clearEffModels();
+            return 1;
+        }
+    }
+    return 0;
+}
 
 s32 fx_1bd_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     if (mode == 0) {

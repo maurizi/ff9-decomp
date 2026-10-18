@@ -1,6 +1,32 @@
 #include "fxmod/fx_1fc.h"
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op80);
+s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 i;
+
+    if (mode == 0) {
+        *arg4 = 0;
+    } else if (mode == 1) {
+        D_801EC14C = env;
+        ex->btlfx_initEffModels(D_801EC15C, 0x20);
+        for (i = 0; i < env->unkC->unk24; i++) {
+            ex->btlfx_getUnitPos(i, (s16 *)&D_801EDEDC[i]);
+            ex->btlfx_getUnitScale(i, (s32 *)&D_801EDF1C[i]);
+        }
+        ex->func_800E6E1C(0x240, 0x100, 0x80, 0x80, D_801EDADC, 0, 0x200, 0x2BC);
+        func_801E8AB8();
+        func_801E8B04(0, 1, 0, ex->btlfx_getFileData(entry->unk8, 0xE));
+        func_801E8B04(0, 2, 0, ex->btlfx_getFileData(entry->unk8, 0xC));
+        func_801E8B04(0, 3, 0, ex->btlfx_getFileData(entry->unk8, 0xA));
+    } else {
+        frame = entry->unk0;
+        env->unk2C->unk30[1].vz = env->unk2C->unk0[2].vz;
+        func_801E8B60(0);
+        return frame >= 0x78;
+    }
+    return 0;
+}
 
 s32 fx_1fc_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     if (mode == 0) {

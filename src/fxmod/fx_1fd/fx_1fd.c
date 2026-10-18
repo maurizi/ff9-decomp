@@ -6,7 +6,54 @@ INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", func_801E7AF8);
 
 INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", func_801E7E18);
 
-INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op80);
+s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 t;
+    s32 i;
+    Pool6CEntry **q;
+    s32 j;
+
+    if (mode == 0) {
+        *arg4 = 0x3C;
+    } else if (mode == 1) {
+        D_801E9E4C = env;
+        ex->btlfx_initEffModels(D_801E9E5C, 0x20);
+        for (i = 0; i < 5; i++) {
+            func_801E97C4(&D_801EBB7C[i], func_801E9710((u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), i));
+        }
+        func_801E9A50();
+        func_801E9A9C(0, 1, 0, func_801E9710((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), 0));
+        func_801E9A9C(0, 2, 0, func_801E9710((u8 *)ex->btlfx_getFileData(entry->unk8, 0xF), 0));
+    } else {
+        frame = entry->unk0;
+        if (frame == 0) {
+            q = work->unk0;
+            for (j = 0; j < 5; j++) {
+                *q = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E9DF8[j]), (s32)&D_801ED70C[j]);
+                if (*q != NULL) {
+                    (*q)->unk14 = (s32)D_801EBBAC[j];
+                    (*q)->unk12 = 6;
+                    (*q)->unkC = 0x50;
+                }
+                q++;
+            }
+        }
+        if (frame >= 0) {
+            t = frame;
+            for (i = 0; i < 5; i++) {
+                func_801E97DC(&D_801EBB7C[i], t, &work->unk14[i]);
+                if (work->unk0[i] != NULL && work->unk0[i]->unk30 == -1) {
+                    work->unk0[i] = NULL;
+                }
+                ex->func_800E3D20((s32)work->unk0[i], (s32)&work->unk14[i]);
+            }
+        }
+        func_801E9AF8(0);
+        return frame >= 0x78;
+    }
+    return 0;
+}
 
 s32 fx_1fd_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     if (mode == 0) {
