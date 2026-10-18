@@ -37,6 +37,8 @@ extern Unk800F78A4 *D_801F0D2C;
 extern s32 D_801F0D30; /* set when the units are put back */
 extern s32 D_801F0D34; /* unit brightness */
 
+void func_801EC738(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVECTOR *rgb, s32 tpage, s32 clut, s32 u,
+                   s32 v, s32 dang, s32 abr);
 s32 fx_0fb_1_op81(s32 mode, Fx0fb1Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_0fb_1_op82(s32 mode, Fx0fb1Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
