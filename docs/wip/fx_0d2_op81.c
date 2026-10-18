@@ -1,6 +1,6 @@
-/* Draft of fx_0d2 fx_0d2_op81. Status: 61 aligned mismatches, logic complete; switch case bodies are in the
- * original's order (0, 0x43, 0x41, 0x2C, 0x19). Open: the original copies frame into fp for the slice loop and keeps
- * the clamped point count in a1; otherwise register allocation. */
+/* Draft of fx_0d2 fx_0d2_op81. Status: 40 aligned diff lines with registers (separate loop counters and an f = frame
+ * copy helped): the clamp of D_801EF1F0.unkA/D_801EF210.unkA goes through a register in the original, plus register
+ * allocation of the trail loops. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -138,12 +138,99 @@ extern u8 D_801EFC10[11][0x50];
 extern SVECTOR D_801EFF80[8];
 extern VECTOR D_801EFFC0[8];
 s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    Pool6CEntry *unkC;
+    Pool6CEntry *unk10;
+    SVECTOR unk14; /* summon rotation */
+    Fx0d2Vec3 unk1C; /* summon position */
+    s32 pad28;
+    Fx0d2Vec3 unk2C; /* summon scale */
+    s32 pad38;
+    SVECTOR unk3C; /* slice rotation */
+    Fx0d2Vec3 unk44; /* slice position */
+    s32 pad50;
+    Fx0d2Vec3 unk54; /* slice scale */
+    u8 pad60[0x6C - 0x60];
+    SVECTOR unk6C;
+    SVECTOR unk74;
+    SVECTOR unk7C;
+    SVECTOR unk84;
+    SVECTOR unk8C;
+    s32 unk94;
+    s32 unk98;
+    s32 unk9C; /* path step */
+    s32 padA0;
+    u16 unkA4; /* slice model */
+} Fx0d2Work80; /* 0xA8 */
+
+/* the summon slot behind env->unk4 */
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180;
+        BtlUnit9CC *unk184;
+        BtlUnit9CC *unk188;
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx0d2Summon;
+
+extern BtlModel D_801ED8F0[];
+extern Fx0d2Keys D_801EF228;
+extern Fx0d2Keys D_801EF230;
+extern Fx0d2Keys D_801EF250;
+extern SVECTOR D_801F0040;
+extern SVECTOR D_801F0050[2];
+s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    SVECTOR unk8; /* slice rotation */
+    Fx0d2Vec3 unk10; /* slice position */
+    s32 pad1C;
+    Fx0d2Vec3 unk20; /* slice scale */
+    s32 pad2C;
+    SVECTOR unk30;
+    Fx0d2Vec3 unk38;
+    s32 pad44;
+    Fx0d2Vec3 unk48;
+    s32 pad54;
+    SVECTOR unk58[8]; /* unit positions */
+    VECTOR unk98[8]; /* unit scales */
+    SVECTOR unk118;
+    SVECTOR unk120;
+    SVECTOR unk128;
+    s16 unk130; /* fade counters */
+    s16 unk132;
+    s16 unk134;
+    u16 unk136[9]; /* models */
+} Fx0d2Work83; /* 0x148 */
+
+extern u16 D_801EA44C[3];
+extern s16 D_801EA454[];
+extern s16 D_801EA464[];
+extern u8 D_801EA47C[];
+extern Unk800E8F50 D_801EB138;
+extern Fx0d2Keys D_801EF238;
+extern Fx0d2Keys D_801EF248;
+extern Fx0d2Keys D_801EF260;
+extern Fx0d2Keys D_801EF2A0[10];
+extern Fx0d2Keys D_801EF2F0;
+extern Fx0d2Keys D_801EF2F8;
+s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     SVECTOR v;
     s32 frame;
+    s32 f;
     s32 i;
+    s32 i5;
+    s32 i2;
     s32 n;
     u8 *buf;
     Pool6CEntry *p;
@@ -204,9 +291,9 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800E6E1C(0x2C0, 0x100, 0x80, 0x80, D_801EF300, 0, 0x200, 0x2BC);
             break;
         case 0x2C:
-            for (i = 0; i < env->unkC->unk24; i++) {
-                ex->btlfx_getUnitPos(i, (s16 *)&D_801EFF80[i]);
-                ex->btlfx_getUnitScale(i, &D_801EFFC0[i]);
+            for (i2 = 0; i2 < env->unkC->unk24; i2++) {
+                ex->btlfx_getUnitPos(i2, (s16 *)&D_801EFF80[i2]);
+                ex->btlfx_getUnitScale(i2, &D_801EFFC0[i2]);
             }
             break;
         case 0x19:
@@ -216,13 +303,14 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if ((u32)frame < 0x19) {
-            for (i = 0; i < 6; i++) {
-                func_801E9F04((Fx0d2KeyPath *)&D_801EF270[i], frame, &work->unkC, &v);
+            f = frame;
+            for (i5 = 0; i5 < 6; i5++) {
+                func_801E9F04((Fx0d2KeyPath *)&D_801EF270[i5], f, &work->unkC, &v);
                 work->unk14.vx = v.vx;
                 work->unk14.vy = v.vy;
                 work->unk14.vz = v.vz;
-                ex->Hi_SetEffModelSlice(work->unk44[i], work->unk14.vy);
-                ex->Hi_DrawSliceEffModel(&work->unkC, (VECTOR *)&work->unk14, (s32)&work->unk24, work->unk44[i]);
+                ex->Hi_SetEffModelSlice(work->unk44[i5], work->unk14.vy);
+                ex->Hi_DrawSliceEffModel(&work->unkC, (VECTOR *)&work->unk14, (s32)&work->unk24, work->unk44[i5]);
             }
         }
         if ((u32)(frame - 0x40) < 0x15) {
