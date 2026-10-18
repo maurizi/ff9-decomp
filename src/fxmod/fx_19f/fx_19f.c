@@ -94,7 +94,55 @@ void func_801E9C08(Unk80100C78Entry *entry, s32 file, s32 ot, Fx19fTrail *path, 
     func_801E9968(entry, file, ot, trail, n, noise, pt, &mid, 0, 0x20, ex->btlfx_rand(), 0x33, type, alpha, pad, 0);
 }
 
-INCLUDE_ASM("asm/us/fx_19f/nonmatchings/fx_19f", func_801E9D20);
+s32 func_801E9D20(s32 mode, Fx19fBolt *b, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 t;
+    s32 c;
+    s32 k;
+    s32 s;
+    s32 kind;
+    Fx19fTrail *tr;
+    Fx19fTrail *tr2;
+
+    if (mode != 1) {
+        kind = b->unk11;
+        if (kind < 2) {
+            if (kind < 0) {
+                return 0;
+            }
+            t = frame << 9;
+            c = ex->math_cos(t >> 2);
+            tr = (Fx19fTrail *)&D_801EB3B8[b->unk10];
+            tr2 = (Fx19fTrail *)&D_801EC538[b->unk10];
+            if (b->unk11 == 0) {
+                b->unk8.vx = D_801EA9AC.vx;
+                b->unk8.vy = D_801EA9AC.vy;
+                b->unk8.vz = D_801EA9AC.vz;
+                func_801E9968(entry, 0x1E, 0, tr, 0x8C, b->unk18, &b->unk0, &b->unk8, 0, 0x180, frame * 0x97, 0x140, frame,
+                              c, ((0x1000 - t) * b->unk15) >> 12, ((t * 3 * 128) >> 12) + 0x80);
+            } else {
+                if (frame == 0) {
+                    k = 2;
+                } else if (frame < 4) {
+                    k = 3;
+                } else {
+                    k = 0;
+                }
+                s = ((0x1000 - t) * b->unk15) >> 12;
+                if (frame == 0) {
+                    s = (s * 3) >> 1;
+                }
+                func_801E9968(entry, 2, 0, tr, 0x8C, b->unk18 + frame * k, &b->unk0, &b->unk8, 0, 0x180, frame * 0xC0,
+                              0x168, frame, c, s, 0);
+                func_801E9C08(entry, 3, 0, tr, tr2, 0x24, b->unk18, b->unk12, frame, c, s >> 2);
+            }
+            if (frame >= 8) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
 
 s32 func_801E9FC4(SVECTOR *out, SVECTOR *arg1, s32 arg2, s32 arg3) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801EAA48);
