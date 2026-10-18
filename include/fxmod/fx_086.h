@@ -4,6 +4,13 @@
 /* Effect module fx_086 (dir 13 file 0x86). */
 #include "btlfx_mod.h"
 
+typedef struct {
+    u8 r;
+    u8 g;
+    u8 b;
+    u8 code;
+} Fx086Rgbc; /* primitive colour word */
+
 extern Unk800F78A4 *D_801E9D6C;
 
 void func_801E7E18(s32 n, s32 r, SVECTOR *pts);
