@@ -61,6 +61,8 @@ void func_801E7738(s32 arg0, s32 arg1, s32 arg2, s32 data);
 void func_801E7788(void);
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
+#define SUMMON(env) ((Fx1edSummon *)(env)->unk4)
+
 /* copied */
 extern Unk800F78A4 *D_801E8910;
 extern SVECTOR D_801EA7E0[];
