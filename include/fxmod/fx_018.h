@@ -36,6 +36,18 @@ typedef struct {
     s32 *unk18; /* jitter table */
 } Fx018Bolt;
 
+typedef struct {
+    SVECTOR unk0; /* target body */
+    SVECTOR unk8; /* target */
+    s32 unk10; /* state */
+    s32 unk14; /* models */
+    s32 unk18;
+    Pool6CEntry *unk1C;
+    Pool6CEntry *unk20;
+} Fx018Work80; /* 0x24 */
+
+extern BtlModel D_801E9CF0[];
+extern s32 D_801E9E80; /* ring radius */
 extern u16 D_801E9C88[];
 extern u16 D_801E9C90[];
 extern Unk800F78A4 *D_801E9CE8;
