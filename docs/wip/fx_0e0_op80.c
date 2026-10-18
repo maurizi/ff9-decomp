@@ -1,4 +1,4 @@
-/* Draft of fx_0e0 fx_0e0_op80. Status: 276 aligned mismatches (120 ignoring registers and spill offsets); equivalent
+/* Draft of fx_0e0 fx_0e0_op80. Status: 268 aligned mismatches (112 ignoring registers and spill offsets); equivalent
  * by construction, untested in the emulator. One temporary per case block fixed most of the global allocation (932
  * rows before); since then: one t for the frame-derived angle of cases 6, 7, 8 and 10 (the original keeps it in s6;
  * case 10 tints with 0xF5 - ((t * 0xF5) >> 12), t = frame << 8), and several adjacent statement swaps (the order of
@@ -142,7 +142,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, (t * 0x58) >> 12, 0, 0);
             a1 = t >> 2;
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
-            work->unk18.vy = work->unk18.vy - 0x400 - (ex->math_sin(a1) >> 1);
+            work->unk18.vy -= 0x400 + (ex->math_sin(a1) >> 1);
             scl = 0x80;
             xo = 0;
             env->unk2C->unk0[3].vx = work->unk18.vx;
