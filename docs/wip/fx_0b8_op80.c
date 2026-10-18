@@ -1,13 +1,16 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 300 aligned mismatches, 62
- * ignoring registers and spill offsets (spnorm 0x40); untested. c/y/k split per block.
- * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14),
- * the band loop indexes D_801EA6D8[i], the bolt point loop stores through one SVECTOR pointer d, the function is one
- * if/else-if/else with a shared return 0 (the frame path returns frame >= 0x134 inside the else), the morph switch
- * lists case 3 first, and three split temporaries that were read uninitialized (c_2, c_7, the |cos| k_4) are one
- * variable again (that cost strict rows: the global allocation shifted).
- * Open: global allocation, constant/store scheduling in the setup blocks, the original frame is 8 bytes larger (one
- * more spill), loop givs of later unit loops, and some statement orders. Two switches on frame: the first holds the
- * model setup of frames 0 and 0x7C, the second the timers; cases 0x64/0x7C and 0x3F/0xA5 share cross-jumped tails. */
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 260 aligned mismatches, 58
+ * ignoring registers and spill offsets (spnorm 0x40); untested.
+ * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14);
+ * the band loop indexes D_801EA6D8[i]; the bolt point loop stores through one SVECTOR pointer d (for-init j, d, y);
+ * the function is one if/else-if/else with a shared return 0 (the frame path returns frame >= 0x134 inside the else);
+ * the morph switch lists case 3 first; locals are declared pos, sc, p2, ang, rot, col, ang2, scale (the frame-0 call
+ * has its own ang2: the original frame is 8 bytes larger); one c for all colour temporaries (the original keeps the
+ * fade value in a callee-saved register); constants used several times are loaded where their first use is in the
+ * source (unk0[0] = 1 first, unk5C.vx = -0x400 first, unk13C.vy/vz and unk1A0.vx right after unk124 in case 0x7C);
+ * the Hi_DrawEffModel call on unk0[1] is an if/else of two calls; split temporaries that were read uninitialized
+ * (c, the |cos| k_4) are one variable again; k_1 holds both sin and cos in the bolt respawn.
+ * Open: the bolt loop's b copy (the original passes a copy of b to drawTrail and keeps b in s0), the respawn loop's
+ * spills, local-alloc register choice for -0x246A/0x418 in case 0x7C, later unit-loop givs, and the tail. */
 #include "fxmod/fx_0b8.h"
 
 typedef struct {
@@ -149,10 +152,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Fx0b8Band *bd;
     SVECTOR *d;
     u8 *q;
-    s32 c_2;
-    s32 c_3;
-    s32 c_4;
-    s32 c_7;
+    s32 c;
     s32 y_1;
     s32 y_2;
     s32 y_3;
@@ -538,13 +538,13 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0[0x11] != 0) {
             work->unk0[0x11]--;
             if (work->unk0[0x11] < 0x10) {
-                c_2 = func_801E7704(2, 0x10, work->unk0[0x11], 0xFF, 0);
+                c = func_801E7704(2, 0x10, work->unk0[0x11], 0xFF, 0);
             } else {
-                c_2 = 0xFF;
+                c = 0xFF;
             }
             y_1 = func_801E7704(0, 0x4C, work->unk0[0x11], 0, 0x28);
-            func_801EA1E0(0x10, y_1 + 0x8E, 0x62, (frame * 4) & 0xFC, c_2 >> 2, c_2 >> 1, 0x18, 0x3D09, 1);
-            func_801EA1E0(0x20, y_1 + 0x74, 0x80, (frame * 2) & 0xFE, c_2 >> 1, c_2, 0x18, 0x3D09, 1);
+            func_801EA1E0(0x10, y_1 + 0x8E, 0x62, (frame * 4) & 0xFC, c >> 2, c >> 1, 0x18, 0x3D09, 1);
+            func_801EA1E0(0x20, y_1 + 0x74, 0x80, (frame * 2) & 0xFE, c >> 1, c, 0x18, 0x3D09, 1);
         }
         if (work->unk0[0x12] != 0) {
             work->unk0[0x12]--;
@@ -700,8 +700,8 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0x1C]--;
             ex->Hi_DrawEffModel(&work->unk15C, &work->unk13C, (s32)&work->unk14C, work->unk180);
             if (work->unk0[0x1C] < 8) {
-                c_3 = (work->unk0[0x1C] - 8) << 5;
-                ex->Hi_ModifyEffModelRGB(work->unk180, c_3, c_3, c_3);
+                c = (work->unk0[0x1C] - 8) << 5;
+                ex->Hi_ModifyEffModelRGB(work->unk180, c, c, c);
             }
         }
         if (work->unk0[0x1E] != 0) {
@@ -720,10 +720,10 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0x14] != 0) {
             work->unk0[0x14]--;
-            c_4 = -(work->unk0[0x14] * 0x10);
-            ex->Hi_ModifyEffModelRGB(work->unk170, c_4, c_4, c_4);
-            ex->Hi_ModifyEffModelRGB(work->unk16C, c_4, c_4, c_4);
-            ex->Hi_ModifyEffModelRGB(work->unk17C, c_4, c_4, c_4);
+            c = -(work->unk0[0x14] * 0x10);
+            ex->Hi_ModifyEffModelRGB(work->unk170, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->unk16C, c, c, c);
+            ex->Hi_ModifyEffModelRGB(work->unk17C, c, c, c);
         }
         if (work->unk0[0x1B] != 0) {
             work->unk0[0x1B]--;
@@ -746,16 +746,16 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_setUnitRot(i, &u->unk24.vx);
             }
         }
-        c_7 = 0xFFF;
+        c = 0xFFF;
         if (work->unk0[0x16] != 0) {
             work->unk0[0x16]--;
             if (work->unk0[0x17] != 0) {
                 work->unk0[0x17]--;
-                c_7 = (0x10 - work->unk0[0x17]) << 8;
+                c = (0x10 - work->unk0[0x17]) << 8;
             }
             if (work->unk0[0x18] != 0) {
                 work->unk0[0x18]--;
-                c_7 = work->unk0[0x18] << 8;
+                c = work->unk0[0x18] << 8;
             }
             ex->btlfx_aimAngles(&work->unk164.vx, (s16 *)&env->unk2C->unk54, &rot.vx);
             ang.vz = 0xC18;
@@ -763,11 +763,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang.vy = -0x1200;
             rot.vz = 0;
             rot.vx += 0xA0;
-            func_801E9D80(&ang, &rot, c_7, 0x17, 0x3D09, 1);
+            func_801E9D80(&ang, &rot, c, 0x17, 0x3D09, 1);
             ang.vy = 0x200;
             rot.vz = 0x800;
             rot.vx -= 0x140;
-            func_801E9D80(&ang, &rot, c_7, 0x17, 0x3D09, 1);
+            func_801E9D80(&ang, &rot, c, 0x17, 0x3D09, 1);
         }
         if (work->unk0[0x20] != 0) {
             work->unk0[0x20]--;
