@@ -68,7 +68,23 @@ void func_801E7840(u32 kind, s32 count, s32 t, SVECTOR *verts, Fx096Vec3 *center
     }
 }
 
-INCLUDE_ASM("asm/us/fx_096/nonmatchings/fx_096", func_801E7A74);
+void func_801E7A74(u16 model, s32 idx, u16 *verts, Fx096Vec3 *centers) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E831C);
+    s32 c;
+    s32 n;
+    s32 i;
+    s32 j;
+
+    ex->Hi_SplitMdlVertex(model, -1, (s32)verts);
+    n = ex->func_800DD0DC(model);
+    for (j = 0; j < n; j++) {
+        for (i = 0; i < 8; i++) {
+            c = ex->Hi_GetMdlVertexPtr(model, j, (s32)verts, &D_801EB28C[idx][i], i);
+            D_801EB2CC[idx][i] = c;
+            func_801E7BC4(i, D_801EB2CC[idx][i], (SVECTOR *)D_801EB28C[idx][i], centers);
+        }
+    }
+}
 
 void func_801E7BC4(u32 kind, s32 count, SVECTOR *verts, Fx096Vec3 *centers) {
     Fx096Vec3 sum;
