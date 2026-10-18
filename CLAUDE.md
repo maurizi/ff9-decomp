@@ -52,6 +52,7 @@ Matching decompilation of Final Fantasy IX (PS1, NTSC-U, 4 discs). Goal: C sourc
 - `make clean` or deleting `build/` also removes splat's linker scripts (`build/us/*.ld`), so run `make resplit` before building again.
 - `make progress` reads every function from the committed index `config/functions.us.txt`. A plain `make split` only writes asm for functions still `INCLUDE_ASM`'d. After any config change that moves function boundaries, run a full `make resplit` (restore `src/` from git if it mangles anything) and then `python3 tools/progress.py --write-index`.
 - Symbols go in `config/symbols.us.txt` (`name = 0xADDR; // type:func`), then `make resplit`. Renaming a decompiled function also needs its C definition renamed.
+- splat applies `config/symbols.us.txt` to every overlay's split too, so never put an overlay address there: when main calls an overlay function, name it in `config/xrefs.us.txt` (linker-only, main's link) and in the owning overlay's symbols file. An overlay calling another overlay (e.g. ovl_64) gets a line in its own `symbols.ovl_XX.us.txt`. `tools/rename.py` only renames inside the owning binary, so check other binaries for the old name after every rename.
 
 ## Runtime investigation (emulator)
 - `tools/emu.py` (host-side, not Docker) drives PCSX-Redux running FF9: trace calls to a function, watch who writes a global, diff RAM across a button press, take screenshots, and use save states (field, menu and battle states already exist). Setup and workflow: `docs/emulator.md`.
