@@ -63,7 +63,27 @@ void func_801E7810(s32 kind, s32 count, s32 scale, SVECTOR *v) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_034/nonmatchings/fx_034", func_801E7A00);
+void func_801E7A00(s32 model, u8 *buf) {
+    BtlfxExports *ex;
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 m;
+    s32 mdl;
+
+    ex = BTLFX_EXPORTS(D_801E82A0);
+    mdl = model;
+    j = 0;
+    m = mdl & 0xFFFF;
+    ex->Hi_SplitMdlVertex(m, -1, (s32)buf);
+    n = ex->func_800DD0DC(m);
+    for (; j < n; j++) {
+        for (i = 0; i < 8; i++) {
+            D_801E82D0[i] = ex->Hi_GetMdlVertexPtr(mdl & 0xFFFF, j, (s32)buf, (s32 *)&D_801E82B0[i], i);
+            func_801E7B1C(i, D_801E82D0[i], D_801E82B0[i]);
+        }
+    }
+}
 
 void func_801E7B1C(s32 kind, s32 count, SVECTOR *v) {
     SVECTOR sum;
