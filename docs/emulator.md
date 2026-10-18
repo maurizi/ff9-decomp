@@ -80,8 +80,8 @@ Malboro's ATB to be held at 0 (see below), otherwise it acts within ~250 frames.
 
 ### Entering any battle (disc 3)
 
-`build/rt/enter_battle.py ENC [--field F] [--party 0,1,2,6] [--base-state S] [--frames N]` (scratch helper, copy of
-ff9-ds `tools/psx_battle_fixture.py`): from a paused, loaded field it forces the field exit (GameState.mode 2, flag 2),
+`tools/rt/enter_battle.py ENC [--field F] [--party 0,1,2,6] [--base-state S] [--frames N]` (adapted from
+ff9-ds `tools/psx_battle_fixture.py`; needs that checkout at `../ff9-ds` or `$FF9DS` for `scenario_catalog.py`): from a paused, loaded field it forces the field exit (GameState.mode 2, flag 2),
 breaks at main's dispatcher 0x80012834, writes the encounter's CD sector/length pair (read from `FF9.IMG`'s encounter
 directory) into GameData.unk7FC/unk804, GameData.fieldId/unkE = field/encounter and optionally the party pointers,
 then lets the normal battle loader run. Unlike the ff9-ds tool it keeps the save's own characters (no blob import).
@@ -91,7 +91,8 @@ disks/us/disc3/FF9.IMG [--find NAME]`. Any encounter whose data is on the insert
 returns to `--field` afterwards. Fields can't be entered this way (the helper only swaps the battle data); a field
 jump would need GameData.fieldId plus the field loader, untested.
 
-Battle experiment helpers in `build/rt/` (not tools; scratch, may be rewritten): `freeze.lua` (per-vsync memory
+Battle experiment helpers in `tools/rt/` (outputs go to `build/rt/`; `tools/rt/init.sh [STATE]` starts Redux on disc 3,
+loads a state and installs coverage + freeze): `freeze.lua` (per-vsync memory
 pokes, e.g. `Freeze.list={{0x80109268,"0000"}}` keeps the Malboro's ATB at 0), `cov.py`/`cov.lua` (exec breakpoints on
 every game function with ONE shared LuaJIT callback: a callback per breakpoint runs out of LuaJIT callback slots at
 ~900 and Redux reports "too many callbacks"), `act.py` (load state, play inputs, coverage/trace/watch, screenshots),
