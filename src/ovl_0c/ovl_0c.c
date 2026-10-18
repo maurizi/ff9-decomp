@@ -297,29 +297,29 @@ void func_800A95A0(void) {
         }
     }
     for (i = 1; i >= 0; i--) {
-        g_gameState->unk1C->unk7EC[i] = g_gameState->unk1C->unk7FC[i];
-        g_gameState->unk1C->unk7F4[i] = g_gameState->unk1C->unk804[i];
+        g_gameState->unk1C->returnSector[i] = g_gameState->unk1C->sceneSector[i];
+        g_gameState->unk1C->returnSectors[i] = g_gameState->unk1C->sceneSectors[i];
     }
     w_frameMapDestructor();
     gd = g_gameState->unk1C;
     mode = gd->unk8E4.world->unk8->unk1B;
     switch (mode) {
     case 2:
-        wm_depFindBackground(wm_depFindBattle(obj->unk24, &gd->unk7FC[0], &gd->unk804[0]), &g_gameState->unk1C->unk7FC[1],
-                      &g_gameState->unk1C->unk804[1]);
-        g_gameState->unk1C->unkE = obj->unk24;
+        wm_depFindBackground(wm_depFindBattle(obj->unk24, &gd->sceneSector[0], &gd->sceneSectors[0]), &g_gameState->unk1C->sceneSector[1],
+                      &g_gameState->unk1C->sceneSectors[1]);
+        g_gameState->unk1C->battleId = obj->unk24;
         g_gameState->mode = mode;
         g_gameState->unkA = 3;
         break;
     case 3:
-        i = wm_depFindArea(wm_depFindField(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]), &g_gameState->unk1C->unk7FC[0],
-                          &g_gameState->unk1C->unk804[0]);
+        i = wm_depFindArea(wm_depFindField(obj->unk24, &gd->sceneSector[1], &gd->sceneSectors[1]), &g_gameState->unk1C->sceneSector[0],
+                          &g_gameState->unk1C->sceneSectors[0]);
         g_gameState->unk1C->unk7DC = obj->unk24;
         g_gameState->unk1C->unk7DE = i;
         break;
     case 1:
-        g_gameState->unk1C->unk3A = wm_depFindArea(wm_depFindField(obj->unk24, &gd->unk7FC[1], &gd->unk804[1]),
-                                                 &g_gameState->unk1C->unk7FC[0], &g_gameState->unk1C->unk804[0]);
+        g_gameState->unk1C->unk3A = wm_depFindArea(wm_depFindField(obj->unk24, &gd->sceneSector[1], &gd->sceneSectors[1]),
+                                                 &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]);
         g_gameState->unk1C->fieldId = obj->unk24;
         g_gameState->mode = mode;
         g_gameState->unkA = 3;
@@ -328,7 +328,7 @@ void func_800A95A0(void) {
         SystemError(0x39, 0x194);
         break;
     }
-    g_gameState->unk1C->unk7E4 = (struct FileTable *)-1;
+    g_gameState->unk1C->depTable = (struct FileTable *)-1;
 }
 
 void func_800A98B8(void) {
@@ -424,13 +424,13 @@ s32 wm_loadFile(WorldMapObj *arg0) {
     s32 c;
 
     gd = g_gameState->unk1C;
-    func_8002177C(gd->unk854, gd->unk7FC[1], gd->unk804[1] << 11, arg0->unk30, 0, -1, 0);
+    func_8002177C(gd->unk854, gd->sceneSector[1], gd->sceneSectors[1] << 11, arg0->unk30, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     buf = arg0->unk30;
     a = db_lookup((s32)buf, 4, 0x1B0000, 0);
     b = db_lookup((s32)buf, 4, 0x1B0001, 0);
-    g_gameState->unk1C->unk7E4 = (struct FileTable *)db_lookup((s32)buf, 4, 0x140000, 0);
+    g_gameState->unk1C->depTable = (struct FileTable *)db_lookup((s32)buf, 4, 0x140000, 0);
     for (i = db_lookup(a, 1, 0x40000, 0) - 1; i >= 0; i--) {
         p = db_lookup(a, 2, (i & 0xFFFF) | 0x40000, 0);
         if (p != -1) {
@@ -461,11 +461,11 @@ s32 func_800A9DE4(WorldMapObj *arg0, s16 arg1) {
 
 s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
     s32 i;
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     s32 id = (u16)arg0 | 0x110000;
     FileEntry *e = t->unk4;
 
-    for (i = 0; i < g_gameState->unk1C->unk7E4->unk2; i++) {
+    for (i = 0; i < g_gameState->unk1C->depTable->unk2; i++) {
         if (e[i].unk0 == id) {
             if (arg1 != NULL) {
                 *arg1 = e[i].unk4;
@@ -481,7 +481,7 @@ s32 wm_depFindBattle(s16 arg0, s32 *arg1, s32 *arg2) {
 
 s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     s32 i;
     FileEntry *e = t->unk4;
 
@@ -491,7 +491,7 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
             break;
         }
     }
-    for (i = 0; i < g_gameState->unk1C->unk7E4->unk2; i++) {
+    for (i = 0; i < g_gameState->unk1C->depTable->unk2; i++) {
         if (e[i].unk0 == id) {
             if (arg1 != NULL) {
                 *arg1 = e[i].unk4;
@@ -507,11 +507,11 @@ s32 wm_depFindBackground(s32 arg0, s32 *arg1, s32 *arg2) {
 
 s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
     s32 i;
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     s32 id = (u16)arg0 | 0x50000;
     FileEntry *e = t->unk4;
 
-    for (i = 0; i < g_gameState->unk1C->unk7E4->unk2; i++) {
+    for (i = 0; i < g_gameState->unk1C->depTable->unk2; i++) {
         if (e[i].unk0 == id) {
             if (arg1 != NULL) {
                 *arg1 = e[i].unk4;
@@ -527,7 +527,7 @@ s32 wm_depFindField(s16 arg0, s32 *arg1, s32 *arg2) {
 
 s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
     s32 id = -1;
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     s32 i;
     FileEntry *e = t->unk4;
 
@@ -537,7 +537,7 @@ s32 wm_depFindArea(s32 arg0, s32 *arg1, s32 *arg2) {
             break;
         }
     }
-    for (i = 0; i < g_gameState->unk1C->unk7E4->unk2; i++) {
+    for (i = 0; i < g_gameState->unk1C->depTable->unk2; i++) {
         if (e[i].unk0 == id) {
             if (arg1 != NULL) {
                 *arg1 = e[i].unk4;
@@ -1184,7 +1184,7 @@ s32 *arg1;
     FileEntry *f;
 
     if (((arg0 >> 16) & 0xFF) == 7) {
-        e = dep_find(g_gameState->unk1C->unk7E4, arg0);
+        e = dep_find(g_gameState->unk1C->depTable, arg0);
         if (arg1 != NULL) {
             *arg1 = e->unk8 << 11;
         }
@@ -1199,7 +1199,7 @@ s32 *arg1;
 }
 
 s32 func_800AC344(s32 arg0) {
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     s32 i;
     FileEntry *e = t->unk4;
 
@@ -1390,8 +1390,8 @@ void func_800ACE24(void) {
 
     obj->unk26 = gd->unk81C[0];
     id = (u16)obj->unk24 | 0x110000;
-    e = g_gameState->unk1C->unk7E4->unk4;
-    for (; i < g_gameState->unk1C->unk7E4->unk2; i++) {
+    e = g_gameState->unk1C->depTable->unk4;
+    for (; i < g_gameState->unk1C->depTable->unk2; i++) {
         v = e[i].unkC;
         if (e[i].unk0 == id && ((v >> 16) & 0xFF) == 7) {
             g_gameState->unk1C->unk8E4.world->unk8->unk26 = v;
@@ -1453,14 +1453,14 @@ void func_800AD114(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void func_800AD180(void) {
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     u8 *dst;
 
     if (t != (FileTable *)-1) {
         dst = D_80067944 + 0x146F00;
         func_800AD114((s32)dst, (s32)t, (t->unk2 * 0x10) | 4);
         DrawSync(0);
-        g_gameState->unk1C->unk7E4 = (FileTable *)dst;
+        g_gameState->unk1C->depTable = (FileTable *)dst;
     }
 }
 

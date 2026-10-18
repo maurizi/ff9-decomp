@@ -1169,7 +1169,7 @@ void func_8001D3C4(void) {
     gd->unkA = 0x200;
     gd->unk18.m[0][0] = gd->unk18.m[1][1] = gd->unk18.m[2][2] = 0x1000;
     gd->unk3A = 1;
-    gd->unkE = 0x235;
+    gd->battleId = 0x235;
     gd->unk848 = -1;
     gd->unk7DC = 0x2331;
     gd->unk7DE = 0x44;
@@ -1223,12 +1223,12 @@ void func_8001D3C4(void) {
     gd->unk8E0 = NULL;
     gd->unk7D8 = NULL;
     for (i = 1; i >= 0; i--) {
-        gd->unk7EC[i] = -1;
-        gd->unk7F4[i] = -1;
-        gd->unk7FC[i] = -1;
-        gd->unk804[i] = -1;
+        gd->returnSector[i] = -1;
+        gd->returnSectors[i] = -1;
+        gd->sceneSector[i] = -1;
+        gd->sceneSectors[i] = -1;
     }
-    gd->unk7E4 = (struct FileTable *)-1;
+    gd->depTable = (struct FileTable *)-1;
     gd->unk8C0 = 0;
     gd->unk878 = 0;
     gd->unk87C = 0;
@@ -10042,7 +10042,7 @@ s32 func_80037D6C(s32 op) {
         r = D_8007AE3C;
         break;
     case 24:
-        r = (s16)g_gameState->unk1C->unkE;
+        r = (s16)g_gameState->unk1C->battleId;
         break;
     case 25:
         r = (u8)btlseq_isBusy();

@@ -3,7 +3,7 @@
 void btl_entry(void) {
     btl_initMode();
     do {
-        btl_main((s16)g_gameState->unk1C->unkE);
+        btl_main((s16)g_gameState->unk1C->battleId);
     } while (!(g_gameState->unk0 & 0x101));
     btl_exitMode();
 }
@@ -269,7 +269,7 @@ void btl_load(s32 arg0) {
     btl_initReturnInfo();
     g_gameState->unk0 &= ~0x30F;
     func_8001CCB4(0, 0, 0);
-    g_gameState->unk1C->unkE = arg0;
+    g_gameState->unk1C->battleId = arg0;
     btl_loadEncounterFile((Unk800AA08C *)p, arg0);
     btl_initEncounter((Unk800AA08C *)p, arg0);
     btl_loadBackgroundStep(p, -1, &st);
@@ -326,10 +326,10 @@ void btl_cleanup(void) {
     case 3:
     case 5:
         for (i = 1; i >= 0; i--) {
-            w = g_gameState->unk1C->unk7EC[i];
-            g_gameState->unk1C->unk7FC[i] = w;
-            v = g_gameState->unk1C->unk7F4[i];
-            g_gameState->unk1C->unk804[i] = v;
+            w = g_gameState->unk1C->returnSector[i];
+            g_gameState->unk1C->sceneSector[i] = w;
+            v = g_gameState->unk1C->returnSectors[i];
+            g_gameState->unk1C->sceneSectors[i] = v;
         }
         if (s->unk6 == 3) {
             g_gameState->unk1C->unk7DC = s->unk4;
@@ -464,14 +464,14 @@ s32 func_800A9BE4(s32 arg0) {
     switch (*state) {
     case 1:
         if (arg0 & 0x200) {
-            func_800AA24C(g_gameState->unk1C->unkE, 0x8000, (Unk800AA24C *)ld);
+            func_800AA24C(g_gameState->unk1C->battleId, 0x8000, (Unk800AA24C *)ld);
             *state = 2;
             break;
         }
         *state = 3;
         break;
     case 2:
-        if (func_800AA24C(g_gameState->unk1C->unkE, arg0, (Unk800AA24C *)ld) == 0) {
+        if (func_800AA24C(g_gameState->unk1C->battleId, arg0, (Unk800AA24C *)ld) == 0) {
             *state = 3;
         }
         break;
@@ -566,12 +566,12 @@ s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     GameData *gd = g_gameState->unk1C;
     u8 *cd = gd->unk854;
     Battle *b = gd->unk8E4.battle;
-    func_8002177C(cd, gd->unk7FC[0], gd->unk804[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
+    func_8002177C(cd, gd->sceneSector[0], gd->sceneSectors[0] << 11, (void *)arg0->unk24, 0, 0x2800, 0);
     while (func_800217C4(cd) != 0) {
     }
     b->unk1354->unk0[2] = (void *)v;
     db_register(v, 0);
-    gd->unk7E4 = (FileTable *)db_lookup(v, 2, 0x140000, 0);
+    gd->depTable = (FileTable *)db_lookup(v, 2, 0x140000, 0);
     return 0;
 }
 
@@ -594,7 +594,7 @@ s16 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     } else if (st->unk0 == 2) {
         gd2 = g_gameState->unk1C;
         st->unk24 = arg0->unk1C;
-        func_8002177C(cd, gd2->unk7FC[1], gd2->unk804[1] << 11, (void *)st->unk24, 0, -1, 0);
+        func_8002177C(cd, gd2->sceneSector[1], gd2->sceneSectors[1] << 11, (void *)st->unk24, 0, -1, 0);
         st->unk2 = 4;
         st->unk0 = 1;
     } else if (st->unk0 == 4) {
@@ -735,7 +735,7 @@ loop:
         st->unk0 = arg2->unk2;
         goto loop;
     case 2:
-        t = g_gameState->unk1C->unk7E4;
+        t = g_gameState->unk1C->depTable;
         ids = arg2->unk10.h;
         cnt = 0;
         arg2->unkA = 0;
@@ -771,7 +771,7 @@ loop:
         do {
             id = *p;
             if (id != 0xFFFF) {
-                f = dep_find(g_gameState->unk1C->unk7E4, id | 0x20000);
+                f = dep_find(g_gameState->unk1C->depTable, id | 0x20000);
                 if ((u32)f->unk4 < best) {
                     best = f->unk4;
                     bf = f;
@@ -1075,7 +1075,7 @@ u32 func_800AAEF0(u32 arg0, u16 *arg1, u16 *arg2, u16 **arg3, s32 *arg4) {
                     k = 7;
                     break;
                 }
-                f = dep_find(g_gameState->unk1C->unk7E4, (k << 16) | id);
+                f = dep_find(g_gameState->unk1C->depTable, (k << 16) | id);
                 if (f != NULL) {
                     start = f->unk4;
                     n = f->unk8;
@@ -1157,7 +1157,7 @@ s32 func_800AB26C(void **arg0, s32 arg1) {
 }
 
 s32 func_800AB2C8(void) {
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     FileEntry *base = t->unk4;
     FileEntry *e = &base[t->unk2] - 1;
     s32 v;
@@ -1172,14 +1172,14 @@ s32 func_800AB2C8(void) {
 }
 
 s32 func_800AB324(s32 arg0, s32 *arg1, s32 *arg2) {
-    FileEntry *e = dep_find(g_gameState->unk1C->unk7E4, arg0);
+    FileEntry *e = dep_find(g_gameState->unk1C->depTable, arg0);
     *arg1 = e->unk4;
     *arg2 = e->unk8;
     return arg0;
 }
 
 void func_800AB38C(s32 arg0, s32 *arg1, s32 *arg2) {
-    func_800AB324(dep_find(g_gameState->unk1C->unk7E4, arg0)->unkC, arg1, arg2);
+    func_800AB324(dep_find(g_gameState->unk1C->depTable, arg0)->unkC, arg1, arg2);
 }
 
 s32 func_800AB3E4(s32 arg0, s32 arg1) {
@@ -1219,7 +1219,7 @@ s16 func_800AB580(s32 arg0) {
     GameData *g = g_gameState->unk1C;
     s16 *state = (s16 *)&g->unk8E4.battle->unk11C0->unkC[0x9FD8 / 4];
     s16 *st;
-    s32 id = (s16)g->unkE;
+    s32 id = (s16)g->battleId;
     Unk800AA958 *ld;
     s16 s;
 
@@ -2030,7 +2030,7 @@ s32 func_800AE570(s32 arg0, s32 *arg1) {
     FileEntry *e;
     FileEntry *f;
     if (((arg0 >> 16) & 0xFF) == 7) {
-        e = dep_find(g_gameState->unk1C->unk7E4, arg0);
+        e = dep_find(g_gameState->unk1C->depTable, arg0);
         if (arg1 != 0) {
             *arg1 = e->unk8 << 11;
         }
@@ -2074,7 +2074,7 @@ s16 func_800AE618(s32 arg0, BtlStepTask *arg1) {
 }
 
 s32 func_800AE764(s32 arg0) {
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     FileEntry *e = t->unk4;
     s32 i;
     for (i = t->unk2 - 1; i >= 0; i--) {

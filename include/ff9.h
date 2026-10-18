@@ -261,7 +261,7 @@ typedef struct {
     u8 unk9;
     u16 unkA; /* projection distance (SetFogNearFar) */
     u16 fieldId; /* current field (runtime: Dali inn 351 -> street 350) */
-    u16 unkE;
+    u16 battleId; /* next battle (encounter bundle id), set by evt_setNextBattle / the field and world exits */
     u32 *unk10[2]; /* ordering tables, 0x1000 entries */
     MATRIX unk18;
     u8 unk38;
@@ -289,13 +289,13 @@ typedef struct {
     s16 unk7DC;
     u16 unk7DE;
     s32 unk7E0;
-    struct FileTable *unk7E4; /* -1 = none */
+    struct FileTable *depTable; /* the loaded field/world file's dependency table (dep_find), -1 = none */
     u16 unk7E8;
     u16 unk7EA;
-    s32 unk7EC[2];
-    s32 unk7F4[2];
-    s32 unk7FC[2]; /* CD sector, per area */
-    s32 unk804[2]; /* sector count */
+    s32 returnSector[2]; /* sceneSector/sceneSectors saved by fld_exit, to return to after a battle */
+    s32 returnSectors[2];
+    s32 sceneSector[2]; /* CD sectors of the next scene's files: field/world file + area, or battle bundle + background */
+    s32 sceneSectors[2]; /* their sector counts */
     u8 *unk80C; /* name text */
     u8 *unk810;
     void *unk814;
@@ -1728,7 +1728,7 @@ typedef struct {
     s32 unk4;
 } FileIdEntry;
 
-/* file id table (GameData.unk7E4) */
+/* file id table (GameData.depTable) */
 typedef struct FileTable {
     u16 unk0;
     u16 unk2; /* count */

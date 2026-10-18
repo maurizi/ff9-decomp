@@ -3897,7 +3897,7 @@ s32 func_800AA504(s32, s32, Unk800AA504 *);
 /* inlined into func_800AA24C: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */
 static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
-    FileTable *t = g_gameState->unk1C->unk7E4;
+    FileTable *t = g_gameState->unk1C->depTable;
     FileEntryX *first = (FileEntryX *)t->unk4;
     FileEntryX *e = &first[t->unk2] - 1;
     s16 *q = dst;

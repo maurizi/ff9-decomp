@@ -52,15 +52,15 @@ void battleEnd_init(void) {
         }
     }
     if (g_gameState->unk1C->unk56F & 1) {
-        e = dep_find(g_gameState->unk1C->unk7E4, g_gameState->unk1C->fieldId | 0x50000);
+        e = dep_find(g_gameState->unk1C->depTable, g_gameState->unk1C->fieldId | 0x50000);
         if (e != NULL) {
             g_gameState->unk1C->unk3A = e->unkC;
-            g_gameState->unk1C->unk7FC[1] = e->unk4;
-            g_gameState->unk1C->unk804[1] = e->unk8;
-            e = dep_find(g_gameState->unk1C->unk7E4, e->unkC);
+            g_gameState->unk1C->sceneSector[1] = e->unk4;
+            g_gameState->unk1C->sceneSectors[1] = e->unk8;
+            e = dep_find(g_gameState->unk1C->depTable, e->unkC);
             if (e != NULL) {
-                g_gameState->unk1C->unk7FC[0] = e->unk4;
-                g_gameState->unk1C->unk804[0] = e->unk8;
+                g_gameState->unk1C->sceneSector[0] = e->unk4;
+                g_gameState->unk1C->sceneSectors[0] = e->unk8;
             }
         }
     }
@@ -74,7 +74,7 @@ void func_801EF5C8(void) {
     if (!(g->unk56F & 8) && (g->unk0 & 0x20000000) && g->unk81C[0] != 0xFFFF) {
         g->unk0 |= 0x400000;
     }
-    g_gameState->unk1C->unk7E4 = (FileTable *)-1;
+    g_gameState->unk1C->depTable = (FileTable *)-1;
     if (g_gameState->mode == 0) {
         btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {
@@ -165,16 +165,16 @@ void func_801EF890(void) {
     if (b->unk6 != 1) {
         return;
     }
-    sector = g_gameState->unk1C->unk7FC[0];
+    sector = g_gameState->unk1C->sceneSector[0];
     id = g_gameState->unk1C->unk3A | 0x60000;
-    size = g_gameState->unk1C->unk804[0] << 11;
+    size = g_gameState->unk1C->sceneSectors[0] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
     func_80021974(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
-    sector = g_gameState->unk1C->unk7FC[1];
+    sector = g_gameState->unk1C->sceneSector[1];
     id = g_gameState->unk1C->fieldId | 0x50000;
-    size = g_gameState->unk1C->unk804[1] << 11;
+    size = g_gameState->unk1C->sceneSectors[1] << 11;
     at = D_80067944 - (dst + k);
     at = at / 0x800 * 0x800;
     func_80021974(preload_add(), 0, id, (s32)dst, at, size, sector, size);

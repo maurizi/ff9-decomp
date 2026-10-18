@@ -2129,7 +2129,7 @@ void func_801F9B00(Unk801F9BEC *h) {
         h->unk20 = gd->fieldId;
         h->unk22 = gd->unk3A;
     }
-    h->unk24 = gd->unkE;
+    h->unk24 = gd->battleId;
     h->unk26 = (s8)gd->unk848;
     h->unk28 = gd->unk7DC;
     h->unk2A = gd->unk7DE;
@@ -2147,7 +2147,7 @@ void func_801F9BEC(Unk801F9BEC *p) {
     g_gameState->unkA = p->unk1;
     gd->fieldId = p->unk20;
     gd->unk3A = p->unk22;
-    gd->unkE = p->unk24;
+    gd->battleId = p->unk24;
     gd->unk848 = p->unk26;
     gd->unk7DC = p->unk28;
     gd->unk7DE = p->unk2A;

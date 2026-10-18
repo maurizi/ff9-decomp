@@ -129,8 +129,8 @@ void func_800A741C(void) {
         for (;;) {
             if (e->unk0 == key) {
                 id = e->unk2;
-                ctx->unk7FC[1] = e->unk4;
-                ctx->unk804[1] = e[1].unk4 - e->unk4;
+                ctx->sceneSector[1] = e->unk4;
+                ctx->sceneSectors[1] = e[1].unk4 - e->unk4;
                 break;
             }
             e--;
@@ -142,8 +142,8 @@ void func_800A741C(void) {
         e = (Ovl14Dir *)start + gs->unk14->unk24 - 1;
         for (;;) {
             if (e->unk0 == id) {
-                ctx->unk7FC[0] = e->unk4;
-                ctx->unk804[0] = e[1].unk4 - e->unk4;
+                ctx->sceneSector[0] = e->unk4;
+                ctx->sceneSectors[0] = e[1].unk4 - e->unk4;
                 break;
             }
             e--;
@@ -193,8 +193,8 @@ void func_800A7600(void) {
         ctx->unk8B4[i] = 0xFFFF;
     }
     for (i = 1; i >= 0; i--) {
-        ctx->unk7EC[i] = -1;
-        ctx->unk7F4[i] = -1;
+        ctx->returnSector[i] = -1;
+        ctx->returnSectors[i] = -1;
     }
 }
 
