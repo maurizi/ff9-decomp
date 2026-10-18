@@ -7,48 +7,6 @@
  * The camera copies work->unk18 = work->unk8 are word copies (BTLFX_COPY_SVEC). */
 #include "fxmod/fx_134.h"
 
-typedef struct {
-    s32 vx;
-    s32 vy;
-    s32 vz;
-} Fx134Vec3;
-
-typedef struct {
-    s32 unk0; /* state */
-    s32 unk4; /* frame counter */
-    SVECTOR unk8; /* position */
-    SVECTOR unk10; /* target */
-    SVECTOR unk18; /* camera target */
-    u8 pad20[4];
-    Fx134Vec3 unk24; /* model position */
-    Fx134Vec3 unk30; /* model scale */
-    SVECTOR unk3C; /* model rotation */
-    Fx134Vec3 unk44; /* scale */
-    SVECTOR unk50; /* rotation */
-    s32 unk58; /* scroll */
-    s32 unk5C; /* models */
-    s32 unk60;
-    s32 unk64;
-    s32 unk68;
-    s32 unk6C;
-    s32 unk70;
-    s32 unk74;
-    u8 pad78[4];
-    Pool6CEntry *unk7C;
-    Pool6CEntry *unk80;
-} Fx134Work; /* 0x84 */
-
-typedef struct {
-    s16 unk0; /* state */
-    s16 unk2; /* phase */
-    SVECTOR unk4; /* velocity; pad = size index */
-    SVECTOR unkC; /* position */
-    SVECTOR unk14; /* rotation */
-    s16 unk1C;
-    s16 unk1E;
-    Pool6CEntry *unk20;
-} Fx134Orb; /* 0x24 */
-
 extern SVECTOR D_801EC860; /* caster position */
 extern CVECTOR D_801EC878[];
 extern s16 D_801EC880[4];
@@ -57,11 +15,6 @@ extern CVECTOR D_801EC894[2];
 extern Fx134Bolt D_801EC8F4[];
 extern BtlModel D_801ECB64[];
 extern u8 D_801ED1A4[];
-extern s32 D_801EF97C;
-extern s32 D_801EF980;
-
-s32 func_801E8658(s32 mode, Fx134Orb *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
-                  Fx134Work *parent);
 
 s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);

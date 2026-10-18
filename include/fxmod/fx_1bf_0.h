@@ -33,4 +33,17 @@ typedef struct {
 } Fx1bf0Pt;
 void func_801E7B70(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 ot);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    SVECTOR unk8;
+    SVECTOR unk10;
+    u8 pad18[0x28 - 0x18];
+} Fx1bf0Work; /* 0x28 */
+
+extern SVECTOR D_801E86BC;
+extern BtlModel D_801EA5FC[];
+extern u8 D_801EA1FC[];
+s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif
