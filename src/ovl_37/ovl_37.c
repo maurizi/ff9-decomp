@@ -117,7 +117,7 @@ void func_801F0F50(void) {
             D_801FAB78.unk7 = 0;
             return;
         }
-        func_8002EE8C(l, g_padRepeat);
+        menuList_input(l, g_padRepeat);
         func_8002F044(l, g_padRepeat);
         func_8002F0EC(l, g_padRepeat);
     }
@@ -523,7 +523,7 @@ void func_801F22C8(void) {
             return;
         }
         if (l->unk0 != 0) {
-            func_8002EE8C(l, g_padRepeat);
+            menuList_input(l, g_padRepeat);
             if (l->unk8 == 0) {
                 func_8002F044(l, g_padRepeat);
                 if (l->unk8 == 0) {

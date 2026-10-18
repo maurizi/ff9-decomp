@@ -11676,7 +11676,7 @@ void func_800C8C08(void) {
     u8 buf[16];
     s32 v;
 
-    v = func_80024030();
+    v = game_getPlayTime();
     ui_drawSprite(D_800C9EA0->x + 6, D_800C9EA0->y + 8, 0x13, 0xB1, 0);
     ui_drawSprite(D_800C9EA0->x + 6, D_800C9EA0->y + 0x15, 0x13, 0xB2, 0);
     ui_drawSmallDigits(D_800C9EA0->x + 0x13, D_800C9EA0->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));

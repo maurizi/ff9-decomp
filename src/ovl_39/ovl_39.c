@@ -1833,7 +1833,7 @@ void func_801F8DA4(u8 *buf) {
     u8 n;
 
     h = (SaveHeader *)(buf + 0x100);
-    t = func_80024030();
+    t = game_getPlayTime();
     func_801F9120(buf, t);
     n = 0;
     o = func_8004AE00();
@@ -2046,7 +2046,7 @@ u8 func_801F9804(void) {
     if (D_801FDEFE == func_801F973C(((SaveBuf *)0x801FCB00)->unk0, 0x13FE)) {
         h = &((SaveBuf *)0x801FCB00)->unk100;
         g_gameState->unkB = h->unk4;
-        func_80024000(h->unk2C);
+        game_setPlayTime(h->unk2C);
         func_801F9BEC(&((SaveBuf *)0x801FCB00)->unk180.unk0);
         func_801F9DF8(&((SaveBuf *)0x801FCB00)->unk180.unk40);
         func_801F99FC(&((SaveBuf *)0x801FCB00)->unk180.unk850);

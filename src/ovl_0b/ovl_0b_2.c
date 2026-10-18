@@ -9366,7 +9366,7 @@ void func_800EB05C(void) {
     func_800EA650();
     func_800EB2E0();
     for (i = 0; i < 4; i++) {
-        g_btlUi->unk12A4[i] = func_8002E43C(i);
+        g_btlUi->unk12A4[i] = win_get(i);
     }
 }
 

@@ -682,7 +682,7 @@ s32 func_80023938(); /* (s32 index); unprototyped, as the original's callers pas
 void win_drawAll(void);
 void win_updateAll(void);
 
-/* ---- 0x54-byte objects, 10 at D_80077530 (win_reapClosed..8002E3F0) ---- */
+/* ---- 0x54-byte objects, 10 at g_windows (win_reapClosed..8002E3F0) ---- */
 
 typedef struct {
     s16 unk0; /* item count */
@@ -741,7 +741,7 @@ typedef struct Window {
     void (*unk4C)(struct Window *);
     s32 unk50; /* user data */
 } Window; /* 0x54 */
-extern Window D_80077530[10];
+extern Window g_windows[10];
 
 void win_setOpenAnim(Window *, s32);
 void func_8002D1AC(Window *, s32);
@@ -1466,7 +1466,7 @@ typedef struct {
     s32 unk14;
 } Unk80080AA0;
 void func_8005A014(); /* (VoiceParams *, u8 *, u8 *, s32); callers pass Unk80080AA0 * */
-extern Unk80080AA0 D_80080AA0;
+extern Unk80080AA0 g_akaoArgs;
 extern Unk80080AA0 g_akaoCommandBlock; /* command block passed to the handlers */
 extern void (*g_akaoCommandHandlers[])(Unk80080AA0 *); /* sound command handlers */
 
@@ -1743,7 +1743,7 @@ typedef struct {
     u32 wh;
 } SprtWords; /* SPRT written as whole words */
 
-/* menu list/cursor state passed to func_8002EE8C etc. */
+/* menu list/cursor state passed to menuList_input etc. */
 
 
 /* visible window of a MenuList (func_8002F344) */
@@ -2097,7 +2097,7 @@ void win_stepOpen(Window *);
 void win_stepClose(Window *);
 MenuView *menuList_getView(MenuList *, MenuView *);
 void func_8002EDFC(MenuList *, s32, s32, s32, s32);
-void func_8002EE8C(MenuList *, s32);
+void menuList_input(MenuList *, s32);
 void func_8002F044(MenuList *, s32);
 void func_8002F0EC(MenuList *, s32);
 MenuView *func_8002F344(MenuList *, MenuView *);
@@ -2133,7 +2133,7 @@ void evt_init(u8 *); /* start the field script system on a script data block */
 #endif
 void func_8004BBF0(void);
 void func_8004BFB0(void);
-void func_80050A84(void);
+void evt_clearGlobalVars(void);
 void func_8005392C(void);
 s32 func_800551F0(void);
 void func_80055D40(void);
@@ -2666,7 +2666,7 @@ s32 func_80054F80(void);
 s32 func_80050AAC(void);
 void func_8005546C(s32, s32);
 void func_80056228(void);
-s32 func_80024030(void);
+s32 game_getPlayTime(void);
 s32 func_8002AA04(s32, u8 *, s32);
 extern s32 D_800704C0;
 extern u8 D_8006A218[]; /* item names */
@@ -3325,7 +3325,7 @@ void func_8001CBD0(void);
 s32 cd_init(void);
 void CdSetDebug(s32);
 void _bu_init(void);
-void func_80018F20(void);
+void pad_init(void);
 
 s32 func_8001D610(void);
 void func_8001D32C(void);
@@ -3344,7 +3344,7 @@ extern DRAWENV D_80073C88;
 void func_80018F50(void);
 void cd_resetState(void);
 void func_8001C6F8(void);
-void func_80021770(void);
+void mbg_resetState(void);
 void func_800320D8(void);
 void func_80053924(void);
 
@@ -4028,7 +4028,7 @@ s32 func_800C1B5C(u8 *);
 s32 func_800CA774(void);
 s32 func_800B7A14(s32);
 s32 func_800BE784(s32);
-u32 func_80024048(void);
+u32 game_getPlayTimeSeconds(void);
 s32 func_8002414C(void);
 s32 func_8006275C(void);
 s32 func_8004ECC4(void);

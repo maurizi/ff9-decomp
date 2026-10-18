@@ -1313,9 +1313,9 @@ INCLUDE_RODATA("asm/us/ovl_64/nonmatchings/ovl_64", D_8019903C);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_reset);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D110);
+INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_in);
 
-INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", func_8019D1A0);
+INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_out);
 
 INCLUDE_ASM("asm/us/ovl_64/nonmatchings/ovl_64", MDEC_in_sync);
 

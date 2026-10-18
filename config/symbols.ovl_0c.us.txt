@@ -16,3 +16,6 @@ w_frameMapDestructor = 0x800B8024; // type:func [string] prints D_800A71F4 "w_fr
 w_frameSystemDestructor = 0x800B8068; // type:func [string] prints D_800A720C "w_frameSystemDestructor", ends with w_memorymanDestructor
 w_frameExtruct = 0x800B828C; // type:func [string] prints D_800A79D0 "w_frameExtruct  extract data [Address%x /Figure  %d]" and D_800A7A0C "w_frameExtruct  already extracted"
 w_framePackGetPtr = 0x800B8388; // type:func [string] prints D_800A7A40 "w_framePackGetPtr  attempt to get %d element with %d max"
+g_worldMapDebugFlags = 0x800CCE50; // [code] each bit gates a group of the overlay's debug printfs (4 w_music, 8 encounter, 0x20 w_movementChange, 0x40 w_memoryman and destructors, 0x100 w_frameExtruct, 0x200 texture)
+g_worldMapErrorMsg = 0x800CCE6C; // [code] sprintf target printed as "==== ERROR ===== / %s" by w_readtxRequest, w_frmbufRequest and the no-polygon check
+g_worldMapError = 0x800CCE69; // [code] set to 1 beside every "==== ERROR ===== / %s" print

@@ -2117,7 +2117,7 @@ void func_8002E32C(Window *, s32);
 void func_8002E380(Window *, s32);
 void func_8002C584(s32);
 void win_close(Window *);
-Window *func_8002E43C(s32);
+Window *win_get(s32);
 ItemSlot *item_findSlot(s32);
 typedef struct {
     u8 unk0;

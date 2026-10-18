@@ -785,7 +785,7 @@ extern s32 D_800D32F0;
 extern WmTexPack *D_800D32EC;
 extern s32 D_800D3304;
 extern MATRIX D_800D3770;
-extern s32 D_800CCE50; /* debug flags */
+extern s32 g_worldMapDebugFlags; /* debug flags */
 extern s16 D_800CCD7C;
 extern u8 D_800CCE54;
 extern u16 D_800CF474;
@@ -815,8 +815,8 @@ extern Unk800D3EAC D_800D3EA8;
 extern Unk800D3EAC D_800D3EC0[6];
 extern s32 D_800D3E90;
 extern s32 D_800D3EB8;
-extern s8 D_800CCE69;
-extern char D_800CCE6C[];
+extern s8 g_worldMapError;
+extern char g_worldMapErrorMsg[];
 extern WmNode D_800D4848;
 extern WmNode D_800D53A0;
 extern WmNode D_800D4A40[60]; /* free list nodes */

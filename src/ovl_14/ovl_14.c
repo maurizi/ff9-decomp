@@ -161,7 +161,7 @@ void func_800A741C(void) {
 
 void func_800A7578(void) {
     func_800651D8();
-    func_80050A84();
+    evt_clearGlobalVars();
     func_8005392C();
     func_8003253C();
     func_800AB1E4();

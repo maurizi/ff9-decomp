@@ -275,7 +275,7 @@ typedef struct {
     u8 pad0[4];
     u8 unk4;   /* GameState.unkB */
     u8 pad5[0x2C - 5];
-    s32 unk2C; /* func_80024000 */
+    s32 unk2C; /* game_setPlayTime */
     u8 pad30[0x80 - 0x30];
 } SaveHdr;
 
@@ -382,7 +382,7 @@ char *strcpy(char *, const char *); /* C library (builtin) */
 s32 open(char *, s32); /* main exe: open */
 s32 func_801FA3D8(s32, char *);
 u8 func_801FA6AC(s32, char *);
-void func_80024000(s32); /* main exe */
+void game_setPlayTime(s32); /* main exe */
 void func_801F9BEC(Unk801F9BEC *);
 void func_801F9F5C(SaveItems *);
 void func_801F9D18(void *);

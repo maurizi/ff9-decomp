@@ -556,7 +556,7 @@ void func_801F5AE4(void) {
             func_801F57C8();
             return;
         }
-        func_8002EE8C(m, g_padRepeat);
+        menuList_input(m, g_padRepeat);
     }
 }
 
@@ -1054,7 +1054,7 @@ void func_801F74A8(void) {
             func_801F6F00();
             return;
         }
-        func_8002EE8C(m, g_padRepeat);
+        menuList_input(m, g_padRepeat);
     }
 }
 
@@ -1368,7 +1368,7 @@ void func_801F8434(void) {
             func_801F80D0();
             return;
         }
-        func_8002EE8C(m, g_padRepeat);
+        menuList_input(m, g_padRepeat);
         func_8002F044(m, g_padRepeat);
         func_8002F0EC(m, g_padRepeat);
     }

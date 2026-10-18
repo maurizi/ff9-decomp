@@ -729,7 +729,7 @@ void func_801F070C(void) {
             }
             return;
         }
-        func_8002EE8C(l, g_padRepeat);
+        menuList_input(l, g_padRepeat);
         func_8002F044(l, g_padRepeat);
         func_8002F0EC(l, g_padRepeat);
     }
@@ -1601,7 +1601,7 @@ void func_801F2DB4(void) {
             func_801F30D8();
             return;
         }
-        func_8002EE8C(&D_801FC840.unk4, g_padRepeat);
+        menuList_input(&D_801FC840.unk4, g_padRepeat);
     }
 }
 

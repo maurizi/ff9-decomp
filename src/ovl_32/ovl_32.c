@@ -102,7 +102,7 @@ void func_801F7DC0(void) {
             snd_playSe(0x66);
             return;
         }
-        func_8002EE8C(l, g_padRepeat);
+        menuList_input(l, g_padRepeat);
     }
 }
 

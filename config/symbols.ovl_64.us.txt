@@ -77,3 +77,5 @@ mbg_getEntryName = 0x8019AC9C; // type:func [code] strcpy of entry idx of movie 
 MDEC_reset = 0x8019D020; // type:func [string] "MDEC_restbad option(%d)", called by DecDCTReset (PsyQ libpress)
 MDEC_in_sync = 0x8019D22C; // type:func [string] passes its name "MDEC_in_sync" to the "%s timeout" report func_8019D36C
 MDEC_out_sync = 0x8019D2C0; // type:func [string] passes its name "MDEC_out_sync" to the "%s timeout" report func_8019D36C
+MDEC_in = 0x8019D110; // type:func [code] MDEC_in_sync then starts DMA0 (MDEC in) on buf+4 and writes the command word, called by DecDCTin and DecDCTPutEnv
+MDEC_out = 0x8019D1A0; // type:func [code] MDEC_out_sync then starts the MDEC out DMA, called by DecDCTout

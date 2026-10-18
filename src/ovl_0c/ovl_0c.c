@@ -3025,7 +3025,7 @@ void w_movementChange(void) {
     }
     D_800CE1F2 = D_800CE3C8->unk8 == 0;
     func_800AFCE0();
-    if (D_800CCE50 & 0x20) {
+    if (g_worldMapDebugFlags & 0x20) {
         printf("w_movementChange : %d -> %d\n", old, D_800CE3C4);
     }
 }
@@ -3539,7 +3539,7 @@ void w_movementChangeSP1(void) {
     func_800C4850(0x26, 0x7F, 0);
     w_musicRequestSend(p->unkB);
     func_800AE784(p->unk11, 0x40);
-    if (D_800CCE50 & 0x20) {
+    if (g_worldMapDebugFlags & 0x20) {
         printf("w_movementChange SP1 : %d -> %d\n", old, 0);
     }
 }
@@ -3558,7 +3558,7 @@ void w_movementChangeSP2(void) {
     }
     D_800CE1F2 = D_800CE3C8->unk8 == 0;
     func_800AFCE0();
-    if (D_800CCE50 & 0x20) {
+    if (g_worldMapDebugFlags & 0x20) {
         printf(D_800A7164);
     }
 }
@@ -4154,7 +4154,7 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         D_800CF4A8 = 1;
         break;
     }
-    if (D_800CCE50 & 0x80) {
+    if (g_worldMapDebugFlags & 0x80) {
         switch (arg0) {
         case 0:
             printf("*[ Request from script:Weather:%d ]\n", arg1);
@@ -4285,7 +4285,7 @@ s32 w_frameGetParameter(s32 arg0) {
     s32 k;
 
     v = D_800CCCC0[D_800CE3DC->unk11].unk8;
-    if ((D_800CCE50 & 0x80) && arg0 == 0xC8) {
+    if ((g_worldMapDebugFlags & 0x80) && arg0 == 0xC8) {
         printf("Event:CDAccessWait\n");
     }
     switch (arg0) {
@@ -4421,7 +4421,7 @@ void func_800B7F7C(void) {
 }
 
 void w_frameMapDestructor(void) {
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf(D_800A71F4);
     }
     func_800C43F0();
@@ -4433,7 +4433,7 @@ void w_frameSystemDestructor(void) {
 
     MoveImage(&r, 0x100, 0xFD);
     DrawSync(0);
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf(D_800A720C);
     }
     func_800C6EF8();
@@ -4497,14 +4497,14 @@ s32 w_frameExtruct(s32 *arg0) {
     u32 i;
 
     if (!(*arg0 & 0x80000000)) {
-        if (D_800CCE50 & 0x100) {
+        if (g_worldMapDebugFlags & 0x100) {
             printf(D_800A79D0, arg0, *arg0 & 0x7FFFFFFF);
         }
         *arg0 |= 0x80000000;
         for (i = 0; i < (*arg0 & 0x7FFFFFFF); i++) {
             arg0[i + 1] += (s32)arg0;
         }
-    } else if (D_800CCE50 & 0x100) {
+    } else if (g_worldMapDebugFlags & 0x100) {
         printf(D_800A7A0C, arg0);
     }
     return *arg0 & 0x7FFFFFFF;
@@ -4513,7 +4513,7 @@ s32 w_frameExtruct(s32 *arg0) {
 void *w_framePackGetPtr(void **arg0, s32 arg1) {
     s32 n = (s32)arg0[0] & 0x7FFFFFFF;
 
-    if ((D_800CCE50 & 0x100) && n < arg1) {
+    if ((g_worldMapDebugFlags & 0x100) && n < arg1) {
         printf(D_800A7A40, arg1, n);
     }
     return arg0[arg1 + 1];
@@ -4656,7 +4656,7 @@ void func_800B872C(void) {
         D_800CF598[3] = file_find(0xC, 0x400)->unk4 + g_gameState->unk20;
         D_800CF598[4] = file_find(0xC, 0x40A)->unk4 + g_gameState->unk20;
     }
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf(D_800A7BB8, D_800CF598[0]);
     }
 }
@@ -4668,14 +4668,14 @@ s32 w_memorymanHeapAlloc(s32 arg0) {
 
     if (D_800CFE14 >= 0x19U) {
         printf("w_memorymanHeapAlloc:(Error) Heap stack overflow\n");
-    } else if (D_800CCE50 & 0x40) {
+    } else if (g_worldMapDebugFlags & 0x40) {
         printf("w_memorymanHeapAlloc: [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
     }
     *p = D_800CFE18;
     D_800CFE1C = arg0;
     D_800CFE18 += arg0;
     D_800CFE10 += arg0;
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf("%x (%x/%x)[%x]\n", D_800CFE18, D_800CFE10, 0x24800, arg0);
     }
     return *p;
@@ -4692,7 +4692,7 @@ s32 w_memorymanHeapFree(void) {
         printf("w_memorymanHeapFree:no allocated heap.\n");
         return 0;
     }
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf("w_memorymanHeapFree : [%d]  =  %x - ", D_800CFE14 - 1, D_800CFE18);
     }
     stack = D_800CFDB0;
@@ -4703,7 +4703,7 @@ s32 w_memorymanHeapFree(void) {
     D_800CFE14 = n;
     D_800CFE18 = prev;
     D_800CFE10 -= size;
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf("%x\n", D_800CFE18);
     }
     return 1;
@@ -4721,7 +4721,7 @@ void w_memorymanDestructor(void) {
     if (D_800CFE14 != 0) {
         printf("w_memorymanDestructor:(Error) Memory leak can be found.\n");
     }
-    if (D_800CCE50 & 0x40) {
+    if (g_worldMapDebugFlags & 0x40) {
         printf(D_800A7CCC);
     }
 }
@@ -5231,11 +5231,11 @@ s32 func_800B9808(s32 cell, WmTexEnt *tex, VECTOR *pos, u32 *attr, s32 *idx, Unk
         y = pos->vy;
         printf("Not hit polygon\n");
         if (D_800D30C5 >= 2) {
-            sprintf(D_800CCE6C, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->pos.vx, D_800CE3DC->pos.vy,
+            sprintf(g_worldMapErrorMsg, "no polygon [ %d,%d,%d:%d ] \n", D_800CE3DC->pos.vx, D_800CE3DC->pos.vy,
                     D_800CE3DC->pos.vz, found);
-            printf(D_800A7D20, D_800CCE6C);
-            if (D_800CCE69 == 0) {
-                D_800CCE69 = 1;
+            printf(D_800A7D20, g_worldMapErrorMsg);
+            if (g_worldMapError == 0) {
+                g_worldMapError = 1;
             }
         }
     }
@@ -5625,7 +5625,7 @@ void func_800BB508(void) {
             break;
         }
     }
-    if (D_800CCE50 & 0x10) {
+    if (g_worldMapDebugFlags & 0x10) {
         printf("Scene:%d / Status:%d\n", *D_800CF430, i);
     }
     if (i >= 0 && D_800CF444 == 1) {
@@ -5675,7 +5675,7 @@ void func_800BB508(void) {
             }
             /* the original second jump table is 8-aligned */
             __asm__(".rdata\n\t.word 0\n\t.text");
-            if (D_800CCE50 & 0x10) {
+            if (g_worldMapDebugFlags & 0x10) {
                 switch (D_800CD010[n][i]) {
                 case 0:
                     printf("BGI Form : SGATE\n");
@@ -5734,7 +5734,7 @@ Unk800CF450 *func_800BBBA8(void) {
     zone = D_800CCFB4[area];
     lo = D_800D30D8[zone];
     hi = D_800D30D8[zone + 1];
-    if (D_800CCE50 & 8) {
+    if (g_worldMapDebugFlags & 8) {
         printf("- Encount Information -\n");
         printf("Now Area :%d\n", (D_800CCCC0[D_800CE3DC->unk11].unk8 & 0x3F00) >> 8);
         printf("Now Zone :%d\n", zone);
@@ -5744,11 +5744,11 @@ Unk800CF450 *func_800BBBA8(void) {
     for (i = lo; i < hi; i++) {
         t = D_800CF450[i].unk8 >> 2;
         f = D_800CF450[i].unk9 & 1;
-        if (D_800CCE50 & 8) {
+        if (g_worldMapDebugFlags & 8) {
             printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
         }
         if (t == (u8)D_800CCCC0[D_800CE3DC->unk11].unk8 >> 2 && f == D_800CCE4B) {
-            if (D_800CCE50 & 8) {
+            if (g_worldMapDebugFlags & 8) {
                 printf("Hit %d encount data\n", i);
             }
             add = 0;
@@ -6109,7 +6109,7 @@ void func_800BCBDC(void) {
                 func_800BC490(id, 1, &b);
             }
             if ((*cell & 0x80) && b.unk2 == 0) {
-                if (D_800CCE50 & 0x10) {
+                if (g_worldMapDebugFlags & 0x10) {
                     printf(D_800A7F94, id2);
                 }
                 *cell &= 0x7F;
@@ -6788,7 +6788,7 @@ void func_800BE894(void) {
             g_evtGlobalVars.h[i] |= 0xC000;
         }
     }
-    if (D_800CCE50 & 0x80) {
+    if (g_worldMapDebugFlags & 0x80) {
         printf("DEF SET NAVIMODE :%d\n", D_800D3E60);
     }
 }
@@ -7562,9 +7562,9 @@ s32 w_readtxRequest(s16 arg0) {
         if (p->unkC == -1) {
             D_800D3E90++;
             if (D_800D3E90 >= 4) {
-                sprintf(D_800CCE6C, "w_readtxRequest/reqover[%d/%d]\n", D_800D3E90, 3);
-                printf("==== ERROR ===== / %s", D_800CCE6C);
-                D_800CCE69 = 1;
+                sprintf(g_worldMapErrorMsg, "w_readtxRequest/reqover[%d/%d]\n", D_800D3E90, 3);
+                printf("==== ERROR ===== / %s", g_worldMapErrorMsg);
+                g_worldMapError = 1;
             }
             p->unkC = arg0;
             p->unk0->unk4 = p->unk4;
@@ -7649,7 +7649,7 @@ void func_800C20B0(s32 *arg0) {
     Unk800D3EAC *p;
     s32 i;
 
-    if (D_800CCE50 & 0x200) {
+    if (g_worldMapDebugFlags & 0x200) {
         printf(D_800A8098, arg0);
     }
     w_frameExtruct(arg0);
@@ -7723,9 +7723,9 @@ s32 w_frmbufRequest(s16 arg0) {
             if (p->unk8 == -1) {
                 D_800D3F20++;
                 if (D_800D3F20 >= 3) {
-                    sprintf(D_800CCE6C, D_800A80BC, D_800D3F20, 2);
-                    printf(D_800A80E0, D_800CCE6C);
-                    D_800CCE69 = 1;
+                    sprintf(g_worldMapErrorMsg, D_800A80BC, D_800D3F20, 2);
+                    printf(D_800A80E0, g_worldMapErrorMsg);
+                    g_worldMapError = 1;
                 }
                 p->unk8 = arg0;
                 p->unk0->unk4 = p->unk4;
@@ -7817,7 +7817,7 @@ void func_800C24D8(void) {
     for (i = 0; i < n; i++) {
         id = D_800D3F78[i].unk4;
         k = D_800D3F78[i].unk5 - 1;
-        if (D_800CCE50 & 0x200) {
+        if (g_worldMapDebugFlags & 0x200) {
             printf(D_800A8118, (u8)(id + 0x60), D_800D3F78[i].unk0, k);
         }
         px = &D_800CDF14[k];
@@ -8096,7 +8096,7 @@ void w_musicUpdate(void) {
     switch (D_800D4818) {
     case 1:
         if (D_800CF454 == 0) {
-            if (D_800CCE50 & 4) {
+            if (g_worldMapDebugFlags & 4) {
                 printf("w_musicUpdate : Play\n");
             }
             D_800CF454 = 2;
@@ -8113,10 +8113,10 @@ void w_musicUpdate(void) {
         if (st == 0) {
             D_800CF454 = 0;
             D_800D4818 = 0;
-            if (D_800CCE50 & 4) {
+            if (g_worldMapDebugFlags & 4) {
                 printf("w_musicUpdate : Ready\n");
             }
-        } else if (D_800CCE50 & 4) {
+        } else if (g_worldMapDebugFlags & 4) {
             printf("w_musicUpdate : Waiting [ State : %d ] \n", st);
         }
         break;
@@ -8283,7 +8283,7 @@ const char D_800A844C[0x38] = "w_musicRequestSend : music status is not ready no
 
 void w_musicRequestSend(u32 arg0) {
     if (D_800D4818 == 0) {
-        if (D_800CCE50 & 4) {
+        if (g_worldMapDebugFlags & 4) {
             switch (arg0) {
             case 0:
                 printf(D_800A832C);
@@ -8311,13 +8311,13 @@ void w_musicRequestSend(u32 arg0) {
         if (D_800D4828 != arg0) {
             D_800D4818 = 1;
             D_800D4828 = arg0;
-            if (D_800CCE50 & 4) {
+            if (g_worldMapDebugFlags & 4) {
                 printf(D_800A8424);
             }
-        } else if (D_800CCE50 & 4) {
+        } else if (g_worldMapDebugFlags & 4) {
             printf(D_800A8430);
         }
-    } else if (D_800CCE50 & 4) {
+    } else if (g_worldMapDebugFlags & 4) {
         printf(D_800A844C);
     }
 }
@@ -10722,7 +10722,7 @@ void func_800CBF18(void) {
     u8 buf[16];
     s32 v;
 
-    v = func_80024030();
+    v = game_getPlayTime();
     ui_drawSprite(D_800CE04C->x + 6, D_800CE04C->y + 8, 0x13, 0xB1, 0);
     ui_drawSprite(D_800CE04C->x + 6, D_800CE04C->y + 0x15, 0x13, 0xB2, 0);
     ui_drawSmallDigits(D_800CE04C->x + 0x13, D_800CE04C->y + 9, 0x13, buf, func_8002AA04(v, buf, 1));

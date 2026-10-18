@@ -511,6 +511,32 @@ func_8019D020 MDEC_reset  # [string] "MDEC_rest:bad option(%d)", called by DecDC
 func_8019D22C MDEC_in_sync  # [string] passes its name "MDEC_in_sync" to the "%s timeout:" report func_8019D36C
 func_8019D2C0 MDEC_out_sync  # [string] passes its name "MDEC_out_sync" to the "%s timeout:" report func_8019D36C
 
+## main: string/code sweep (code)
+func_800214E0 CdGetSector2  # [code] returns CD_getsector2(madr, size) == 0, the same PsyQ wrapper shape as CdGetSector, called by the libcd read internals func_800207D4
+func_80018F20 pad_init  # [code] PadInitDirect on the two port buffers D_80073940[0]/[1] then PadStartCom, called once by game_initLibraries
+func_80050A84 evt_clearGlobalVars  # [code] bzero(&g_evtGlobalVars, 0x800)
+func_80012B58 mbg_getState  # [code] returns g_mbgState
+func_80021770 mbg_resetState  # [code] g_mbgState = 0, last step of the per-session init func_80016A28
+func_80024000 game_setPlayTime  # [code] stores GameState.playTime and restarts the frame timer base D_80076B60 with VSync(-1), ovl_39 save load passes the header's play time
+func_80024030 game_getPlayTime  # [code] returns GameState.playTime (frames)
+func_80024048 game_getPlayTimeSeconds  # [code] returns GameState.playTime / 60
+D_80080AA0 g_akaoArgs  # [code] argument block the sound API wrappers fill before akao_command, which copies it into g_akaoCommandBlock for the handler
+func_80055AE0 akao_setCdVolume  # [code] g_akaoArgs.unk0 = volume then akao_command(0x70), the akao_cmdSetCdVolume handler
+func_80055B08 akao_fadeCdVolume  # [code] g_akaoArgs (2 words) then akao_command(0x71), the akao_cmdFadeCdVolume handler
+func_80055B38 akao_fadeCdVolumeFrom  # [code] g_akaoArgs (3 words) then akao_command(0x72), the akao_cmdFadeCdVolumeFrom handler
+D_80077530 g_windows  # [code] the 10 Window slots that win_open, win_closeAll and win_updateAll index
+func_8002E43C win_get  # [code] returns &g_windows[i], SystemError(0x59, 0x53) for i >= 10
+func_8002EE8C menuList_input  # [code] calls menuList_up/down/pageUp/pageDown with the pad bits unless the list's unk8 is set, menus ovl_32/33/37/3c pass g_padRepeat
+
+## ovl_0c: string/code sweep (code)
+D_800CCE50 g_worldMapDebugFlags  # [code] each bit gates a group of the overlay's debug printfs (4 w_music, 8 encounter, 0x20 w_movementChange, 0x40 w_memoryman and destructors, 0x100 w_frameExtruct, 0x200 texture)
+D_800CCE6C g_worldMapErrorMsg  # [code] sprintf target printed as "==== ERROR ===== / %s" by w_readtxRequest, w_frmbufRequest and the no-polygon check
+D_800CCE69 g_worldMapError  # [code] set to 1 beside every "==== ERROR ===== / %s" print
+
+## ovl_64: string/code sweep (code)
+func_8019D110 MDEC_in  # [code] MDEC_in_sync then starts DMA0 (MDEC in) on buf+4 and writes the command word, called by DecDCTin and DecDCTPutEnv
+func_8019D1A0 MDEC_out  # [code] MDEC_out_sync then starts the MDEC out DMA, called by DecDCTout
+
 # FIELDS
 # include/ovl_64.h Ovl64State: unk0=ended,unk1=rgb24,unk4=pauseReq,unk2C=width,unk30=height,unk44=vlcTable,unk48=mdecIn0,unk4C=mdecIn1,unk50=mdecOut0,unk54=mdecOut1,unk58=ringBuf,unk5C=audioBuf,unk60=endCallback
 # include/ovl_64.h Ovl64Dec: unk0=mdecIn,unk8=inIdx,unkC=mdecOut,unk14=outIdx,unk18=frameRect,unk28=slice,unk30=frameDone

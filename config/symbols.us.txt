@@ -287,3 +287,18 @@ btl_getUnitById = 0x800BED10; // type:func [runtime] ovl_0b function, see config
 btl_setBanner = 0x800F4F04; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 CD_newmedia = 0x8001E6B8; // type:func [string] its own messages "CD_newmedia Read error in cd_read(PVD)", "CD_newmedia %d dir entries found" (PsyQ libcd internal)
 CD_cachefile = 0x8001EA20; // type:func [string] its own messages "CD_cachefile searching...", "CD_cachefile dir not found" (PsyQ libcd internal)
+CdGetSector2 = 0x800214E0; // type:func [code] returns CD_getsector2(madr, size) == 0, the same PsyQ wrapper shape as CdGetSector, called by the libcd read internals func_800207D4
+pad_init = 0x80018F20; // type:func [code] PadInitDirect on the two port buffers D_80073940[0]/[1] then PadStartCom, called once by game_initLibraries
+evt_clearGlobalVars = 0x80050A84; // type:func [code] bzero(&g_evtGlobalVars, 0x800)
+mbg_getState = 0x80012B58; // type:func [code] returns g_mbgState
+mbg_resetState = 0x80021770; // type:func [code] g_mbgState = 0, last step of the per-session init func_80016A28
+game_setPlayTime = 0x80024000; // type:func [code] stores GameState.playTime and restarts the frame timer base D_80076B60 with VSync(-1), ovl_39 save load passes the header's play time
+game_getPlayTime = 0x80024030; // type:func [code] returns GameState.playTime (frames)
+game_getPlayTimeSeconds = 0x80024048; // type:func [code] returns GameState.playTime / 60
+g_akaoArgs = 0x80080AA0; // [code] argument block the sound API wrappers fill before akao_command, which copies it into g_akaoCommandBlock for the handler
+akao_setCdVolume = 0x80055AE0; // type:func [code] g_akaoArgs.unk0 = volume then akao_command(0x70), the akao_cmdSetCdVolume handler
+akao_fadeCdVolume = 0x80055B08; // type:func [code] g_akaoArgs (2 words) then akao_command(0x71), the akao_cmdFadeCdVolume handler
+akao_fadeCdVolumeFrom = 0x80055B38; // type:func [code] g_akaoArgs (3 words) then akao_command(0x72), the akao_cmdFadeCdVolumeFrom handler
+g_windows = 0x80077530; // [code] the 10 Window slots that win_open, win_closeAll and win_updateAll index
+win_get = 0x8002E43C; // type:func [code] returns &g_windows[i], SystemError(0x59, 0x53) for i >= 10
+menuList_input = 0x8002EE8C; // type:func [code] calls menuList_up/down/pageUp/pageDown with the pad bits unless the list's unk8 is set, menus ovl_32/33/37/3c pass g_padRepeat
