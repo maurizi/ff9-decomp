@@ -1,7 +1,7 @@
-/* Draft of fx_0ed fx_0ed_op80. Status: 9 aligned structural mismatches (mostly scheduling caused by register
- * choice). Twin of fx_09a op80 (same fixes: dead t / 30 for the sign word, *(D + (a != b)) file pick, byte-offset
- * ribbon loops). Open: global allocation differs (original: t s0, state/p s1, ex s2, frame s4; here state s0,
- * ex s1, frame s2, t s4), and the xor file-pick block loads entry->unk8 first in the original. */
+/* Draft of fx_0ed fx_0ed_op80. Status: 5 aligned structural mismatches. Twin of fx_09a op80 (same fixes: dead
+ * t / 30 for the sign word, *(D + (a != b)) file pick, byte-offset ribbon loops; separate t0/t3 per case give the
+ * original's s0 for them). Open: ex/env/const-1 registers (orig ex s2, env s6, 1 in s5; here s1, s5, s6), and the
+ * frame == 0x1F file-pick block, where the original loads entry->unk8 first and puts both '& 0xFFF' temps in a1. */
 #include "fxmod/fx_0ed.h"
 
 typedef struct {
@@ -51,6 +51,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     s32 amp;
     s32 t;
+    s32 t0;
+    s32 t3;
     s32 k;
     s32 i;
     Pool6CEntry *p;
@@ -109,7 +111,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         amp = 0;
         switch (state) {
         case 0:
-            t = (frame << 12) / 24;
+            t0 = (frame << 12) / 24;
             if (frame == 0) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unk18);
                 if (p != NULL) {
@@ -127,11 +129,11 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 pos.vx = work->unk18.vx;
                 pos.vy = work->unk18.vy;
                 pos.vz = work->unk18.vz;
-                k = ((0x1000 - ex->math_sin(t >> 2)) * 0x514) >> 12;
+                k = ((0x1000 - ex->math_sin(t0 >> 2)) * 0x514) >> 12;
                 pos.vy += k;
                 ex->Hi_SetEffModelSlice(work->unk28, k);
                 ex->Hi_DrawSliceEffModel(&work->unk2C, &pos, (s32)&work->unk34, work->unk28);
-                k = (((t >> 1) + 0x800) >> 5) - 0x80;
+                k = (((t0 >> 1) + 0x800) >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->unk28, k, k, k);
             }
             if (frame >= 0x18) {
@@ -206,14 +208,14 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 3:
-            t = (frame << 9) >> 2;
-            work->unk34.vx = work->unk34.vz = ((0x1000 - ex->math_sin(t)) * 0x1000) >> 12;
+            t3 = (frame << 9) >> 2;
+            work->unk34.vx = work->unk34.vz = ((0x1000 - ex->math_sin(t3)) * 0x1000) >> 12;
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
             ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->unk4)->unk60, 0x29 - frame);
             ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)&work->unk34, ((Fx0edSummon *)env->unk4)->unk60, 1);
-            amp = ex->math_cos(t);
+            amp = ex->math_cos(t3);
             k = (amp >> 5) - 0x80;
             ex->Hi_ModifySummonModelRGB(((Fx0edSummon *)env->unk4)->unk60, k, k, k);
             if (frame >= 8) {
