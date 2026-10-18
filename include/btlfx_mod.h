@@ -169,7 +169,7 @@ typedef struct BtlfxExports {
     void (*btlfx_setWeaponVisible)(s32, s32); /* 0x260 */
     void (*func_800D0B18)(s32, s32, s32, s32, s32, s32, CVECTOR *, s32, s32, s32, s32); /* 0x264 */
     void (*Hi_ModifyEffModelAbr)(s32, s32); /* 0x268 */
-    void (*Hi_ModifyEffModelRGB)(s32, s16, s16, s16); /* 0x26C */
+    void (*Hi_ModifyEffModelRGB)(s32, s32, s32, s32); /* 0x26C (modules pass full words; ovl_0b declares s16) */
     __typeof__(btlfx_turnUnit) *btlfx_turnUnit; /* 0x270 */
     void (*Hi_ShowSummonModelMesh)(s32, s32); /* 0x274 */
     void (*Hi_HideSummonModelMesh)(s32, s32); /* 0x278 */

@@ -6,8 +6,13 @@
 
 The C file must define func_X; other functions are stripped. Best results land in
 build/permuter/func_X/output-*/source.c.
+
+GTE macros (gte_*(...) from the headers) expand to asm statements, which the permuter's C parser
+rejects. They are kept as calls in base.c and defined late (#pragma _permuter latedefine), so the
+permuter never parses them and compile.sh preprocesses them back in.
 """
 import argparse
+import glob
 import os
 import re
 import shutil
@@ -25,7 +30,7 @@ COMPILE_SH = """#!/bin/sh
 set -e
 ROOT={root}
 IN="$1"; OUT="$3"; TMP="$OUT.cc1.s"
-{cc1} -quiet {cflags} "$IN" -o "$TMP"
+{late}{cc1} -quiet {cflags} "$IN" -o "$TMP"
 sed -i 's/^\t\.align\t3$/\t.align\t2/' "$TMP"
 python3 $ROOT/tools/maspsx/maspsx.py --aspsx-version={aspsx} --expand-div --run-assembler {asflags} -I$ROOT/include -o "$OUT" < "$TMP"
 rm -f "$TMP"
@@ -54,6 +59,36 @@ def restore_inlines(full, base_path):
     return n, len(defs)
 
 
+def late_macros(c_file, base):
+    """Write base.c with gte_* macro calls left unexpanded (renamed X<name>) and their expansions in a
+    latedefine block. Returns True if the file uses any."""
+    text = open(c_file).read()
+    heads = "".join(open(h).read() for h in glob.glob("include/*.h"))
+    names = [n for n in sorted(set(re.findall(r"\b(gte_\w+)\s*\(", text)))
+             if re.search(r"#define\s+" + n + r"\(", heads)]
+    if not names:
+        return False
+    defs = []
+    for n in names:
+        params = re.search(r"#define\s+" + n + r"\(([^)]*)\)", heads).group(1)
+        params = ", ".join(p.strip() for p in params.split(",") if p.strip())
+        snippet = f'#include "{os.path.abspath(c_file)}"\n@@@ {n}({params})\n'
+        out = subprocess.run(f"cpp -P {CPP_FLAGS} -", shell=True, input=snippet, capture_output=True,
+                             text=True, check=True).stdout
+        exp = " ".join(out[out.rindex("@@@") + 3:].split("\n")).strip()
+        defs.append(f"#pragma _permuter define X{n}({params}) {exp}")
+    renamed = base + ".late.c"
+    with open(renamed, "w") as f:
+        f.write(re.sub(r"\b(" + "|".join(names) + r")\s*\(", r"X\1(", text))
+    pre = subprocess.run(f"cpp -P {CPP_FLAGS} -I{os.path.dirname(os.path.abspath(c_file))} {renamed}",
+                         shell=True, capture_output=True, text=True, check=True).stdout
+    os.remove(renamed)
+    with open(base, "w") as f:
+        f.write("#pragma _permuter latedefine start\n" + "\n".join(defs) +
+                "\n#pragma _permuter latedefine end\n" + pre)
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("c_file")
@@ -74,6 +109,9 @@ def main():
     base = os.path.join(d, "base.c")
     subprocess.run(f"cpp -P {CPP_FLAGS} {a.c_file} -o {base}", shell=True, check=True)
     full = open(base).read()
+    late = late_macros(a.c_file, base)
+    if late:
+        print("GTE macros kept as late defines")
     subprocess.run([sys.executable, f"{PERMUTER}/strip_other_fns.py", base, a.func], check=True)
     n, total = restore_inlines(full, base)
     if total:
@@ -94,7 +132,8 @@ def main():
     sh = os.path.join(d, "compile.sh")
     with open(sh, "w") as f:
         f.write(COMPILE_SH.format(root=root, cc1=f"/opt/cc/{a.cc}/cc1", cflags=a.cflags,
-                                  aspsx=a.aspsx, asflags=ASFLAGS))
+                                  aspsx=a.aspsx, asflags=ASFLAGS,
+                                  late='cpp -P "$IN" > "$OUT.i"; IN="$OUT.i"\n' if late else ""))
     os.chmod(sh, os.stat(sh).st_mode | stat.S_IEXEC)
     with open(os.path.join(d, "settings.toml"), "w") as f:
         f.write(f'func_name = "{a.func}"\ncompiler_type = "gcc"\n')
