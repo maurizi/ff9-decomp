@@ -1,5 +1,7 @@
-/* Draft of func_801E7D18 (module fx_17d_0). Status: 8/167 aligned instructions with ccprobe; the original does not apply the SetRotMatrix the draft does.
- * Declarations it needs that are not yet in include/fxmod/fx_17d_0.h are repeated below. */
+/* Draft of func_801E7D18 (module fx_17d_0). Status: 6 aligned mismatches, all in the prologue: the original loads
+ * the 6th parameter (scale, 0x7C) before the 5th (morph, 0x78). The table is indexed as s16 pairs through j = i * 4 +
+ * 2 / + 3 (keeps (i << 3) | 4 and | 6 unreduced like the original), models is passed as an int and indexed with a
+ * precomputed k = i << 1 (the original adds it to the spilled models after the branch). */
 #include "fxmod/fx_17d_0.h"
 
 void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CVECTOR *rgb, s32 p, s32 abr);
@@ -10,18 +12,20 @@ void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CV
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 
-void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s16 *models, s16 *morph, s32 scale) {
+void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 models, s16 *morph, s32 scale) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9470);
     VECTOR pos;
     VECTOR sc;
     SVECTOR rot;
     s16 *f;
-    s16 *k;
     s32 n;
     s32 i;
+    s32 j;
+    s32 k;
 
     for (i = 0; i < 21; i++) {
-        f = (s16 *)ex->btlfx_getFileData(entry->unk8, D_801E9370[i].unk4);
+        j = i * 4 + 2;
+        f = (s16 *)ex->btlfx_getFileData(entry->unk8, ((s16 *)D_801E9370)[j]);
         n = frame;
         if (n >= f[1]) {
             n = f[1] - 1;
@@ -42,15 +46,17 @@ void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s16 *mod
             rot.vx = f[3];
             rot.vy = f[4];
             rot.vz = -f[5];
+            k = i << 1;
             if (*morph < 0) {
-                ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, models[i]);
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, *(s16 *)(k + models));
             } else {
-                f = (s16 *)ex->btlfx_getFileData(entry->unk8, D_801E9370[i].unk6);
+                j = i * 4 + 3;
+                f = (s16 *)ex->btlfx_getFileData(entry->unk8, ((s16 *)D_801E9370)[j]);
                 n = frame;
                 if (n >= f[1]) {
                     n = f[1] - 1;
                 }
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, models[i], *morph, f[2 + n * 3]);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, *(s16 *)(k + models), *morph, *(f = f + 2 + n * 3));
             }
         }
         morph++;
