@@ -1,10 +1,15 @@
-/* Draft of fx_1f2 fx_1f2_op80 (summon with many effect models, spark trails and a frame switch). Status: 2091 aligned
- * mismatches, 493 ignoring registers (of ~2640 instructions); frame size matches (0xF8). Types: Fx1f2Model (0x30
- * model records), Fx1f2Ring (0x38), Fx1f2Trail (0x150 trail + 16 points + 16 velocities). Levers so far: the
- * model records are initialised with setVector(&rec.unkX, ...) (the original computes &rec.unkX into a register
- * and stores at 0/2/4), the trail setup writes D_801EA690[i].unk50[j] by index, the ring and spark-trail loops
- * that end in a signed pointer compare are index loops (rg = &D_801EA300[i]: the eliminated biv leaves slt).
- * Open: the original keeps ex in s7 and the loop counters in fp (here the mode-1 counter is spilled). */
+/* Draft of fx_1f2 fx_1f2_op80 (summon with many effect models, spark trails and a frame switch). Status: 2004 aligned
+ * mismatches, 332 ignoring registers (of ~2640 instructions; was 2091/493); frame size matches (0xF8). Types:
+ * Fx1f2Model (0x30 model records), Fx1f2Ring (0x38), Fx1f2Trail (0x150 trail + 16 points + 16 velocities).
+ * Levers so far: setVector(&rec.unkX, ...) for the model records; the trail-clear loops are index loops passing
+ * &D_801EA690[i] (the extra multiply keeps loop.c from hoisting the constant 1 argument); work->unk110 is an
+ * SVECTOR[2] (work + c * 8 + 0x110 addressing); model loops are index loops with md = &D[i] inside and the draw
+ * arguments written &D[i].unkX (loop.c then reduces &D[i].unk20 / the ring's three addresses into their own
+ * registers, as the original does); D_801EA470.unk20 vx, vy, vz (sched reverses it); the ripple block's col, rot,
+ * scale declaration order, scale.vz = scale.vy = scale.vx and a block-local copy of work->unk20.
+ * Open: the unk4C block's i >= 8 path uses the SVECTOR at sp+0x88 (out's slot) as GTE input and the VECTOR at
+ * sp+0x78 (in's slot) as output, tr = &D_801EA690[i] recomputed from an index giv there, a hoisted loop bound 9
+ * (slt against t3); the spark loop's increment order (r, hi, j, lo); ex in s7 and loop counters in fp. */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -39,8 +44,7 @@ typedef struct {
     s32 pad90[(0x100 - 0x90) / 4];
     SVECTOR unk100;
     SVECTOR unk108;
-    SVECTOR unk110; /* bone 5 position */
-    SVECTOR unk118; /* bone 9 position */
+    SVECTOR unk110[2]; /* bone 5 and bone 9 positions */
     SVECTOR unk120; /* midpoint */
 } Fx1f2Work; /* 0x128 */
 
@@ -101,9 +105,9 @@ s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
+    CVECTOR col;
     SVECTOR rot;
     VECTOR scale;
-    CVECTOR col;
     MATRIX m;
     SVECTOR in[2];
     VECTOR out[2];
@@ -139,24 +143,24 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitPos(i, (s16 *)&D_801EA670[i]);
             D_801EA670[i].vy = 0;
         }
-        ex->func_800DC818(0x10, 5, (u16 *)&work->unk110);
-        ex->func_800DC818(0x10, 9, (u16 *)&work->unk118);
-        work->unk120.vx = work->unk110.vx;
-        work->unk120.vz = work->unk110.vz - 0x200;
-        work->unk120.vy = (work->unk110.vy + work->unk118.vy) >> 1;
+        ex->func_800DC818(0x10, 5, (u16 *)&work->unk110[0]);
+        ex->func_800DC818(0x10, 9, (u16 *)&work->unk110[1]);
+        work->unk120.vx = work->unk110[0].vx;
+        work->unk120.vz = work->unk110[0].vz - 0x200;
+        work->unk120.vy = (work->unk110[0].vy + work->unk110[1].vy) >> 1;
         D_801EA650.vx = 0;
         D_801EA650.vy = 0;
         D_801EA650.vz = 0;
         D_801EA660.vx = 0;
         D_801EA660.vy = 0;
         D_801EA660.vz = 0;
-        for (i = 0, tr = D_801EA690; i < 0x10; i++, tr++) {
-            tr->unk4C = 0;
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)tr,
-                                0);
+        for (i = 0; i < 0x10; i++) {
+            D_801EA690[i].unk4C = 0;
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, -1, 0x1000, 0x1000, 1,
+                                (u8 *)&D_801EA690[i], 0);
         }
-        for (i = 0, tr = D_801EA690; i < 8; i++, tr++) {
-            tr->unk4C = ex->btlfx_rand() & 0xF;
+        for (i = 0; i < 8; i++) {
+            D_801EA690[i].unk4C = ex->btlfx_rand() & 0xF;
             for (j = 0; j < 0x10;) {
                 if (i & 1) {
                     a = j << 8;
@@ -169,13 +173,13 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 lo = (ex->math_sin(a) * r) >> 12;
                 hi = ex->math_cos(a) * r;
-                D_801EA690[i].unk50[j].vx = (&work->unk110)[c].vx - lo;
-                D_801EA690[i].unk50[j].vz = (&work->unk110)[c].vz - (hi >> 12);
-                D_801EA690[i].unk50[j].vy = (&work->unk110)[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
+                D_801EA690[i].unk50[j].vx = work->unk110[c].vx - lo;
+                D_801EA690[i].unk50[j].vz = work->unk110[c].vz - (hi >> 12);
+                D_801EA690[i].unk50[j].vy = work->unk110[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
                 D_801EA690[i].unk50[j].pad = j + 1;
                 j++;
             }
-            tr->unk50[15].pad = 0;
+            D_801EA690[i].unk50[15].pad = 0;
         }
         D_801EA270.unk0 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x84), 0xFF);
         setVector(&D_801EA270.unk8, 0, 0, 0);
@@ -268,8 +272,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 0x2D:
             work->unk54 = 0x32;
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk110);
-            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk118);
+            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk110[0]);
+            ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk110[1]);
             p = work->unk80 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk120);
             if (p != NULL) {
                 p->unk22 = 0x200;
@@ -280,10 +284,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 0x5F:
             work->unk4C = 0;
-            for (i = 0, tr = D_801EA690; i < 0x10; i++, tr++) {
-                tr->unk4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)tr,
-                                    0);
+            for (i = 0; i < 0x10; i++) {
+                D_801EA690[i].unk4C = 0;
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, -1, 0x1000, 0x1000, 1,
+                                    (u8 *)&D_801EA690[i], 0);
             }
             work->unk20 = 0x40;
             work->unk0 = 1;
@@ -358,10 +362,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 0x18F:
             work->unk14 = 0x10;
-            for (i = 0, tr = D_801EBB90; i < 0x10; i++, tr++) {
-                tr->unk4C = 0;
-                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)tr,
-                                    0);
+            for (i = 0; i < 0x10; i++) {
+                D_801EBB90[i].unk4C = 0;
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, -1, 0x1000, 0x1000, 1,
+                                    (u8 *)&D_801EBB90[i], 0);
             }
             break;
         case 0x19F:
@@ -390,7 +394,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rg->unk18.vy = 0;
                 rg->unk18.vz = lo >> 12;
                 if (work->unk48 == 0) {
-                    ex->Hi_DrawEffModel(&rg->unk10, &rg->unk18, (s32)&rg->unk28, rg->unk8);
+                    ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk8);
                     if (work->unk44 != 0) {
                         if (--work->unk44 == 0) {
                             work->unk48 = 1;
@@ -403,7 +407,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 rg->unk18.vx += ex->btlfx_randRange(-8, 8);
                 rg->unk18.vy += ex->btlfx_randRange(-8, 8);
                 if (work->unk40 == 0) {
-                    ex->Hi_DrawEffModel(&rg->unk10, &rg->unk18, (s32)&rg->unk28, rg->unk4);
+                    ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk4);
                     if (work->unk3C != 0) {
                         if (--work->unk3C == 0) {
                             work->unk40 = 1;
@@ -412,14 +416,15 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         ex->Hi_ModifyEffModelRGB(rg->unk4, c, c, c);
                     }
                 }
-                ex->Hi_DrawEffModel(&rg->unk10, &rg->unk18, (s32)&rg->unk28, rg->unk0);
+                ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk0);
             }
-            for (i = 0, md = D_801EA410; i < 2; i++, md++) {
+            for (i = 0; i < 2; i++) {
+                md = &D_801EA410[i];
                 lo = ex->math_cos(md->unk8.vz) * md->unk4;
                 md->unk10.vx = 0;
                 md->unk10.vz = 0;
                 md->unk10.vy = lo >> 12;
-                ex->Hi_DrawEffModel(&md->unk8, &md->unk10, (s32)&md->unk20, md->unk0);
+                ex->Hi_DrawEffModel(&D_801EA410[i].unk8, &D_801EA410[i].unk10, (s32)&D_801EA410[i].unk20, md->unk0);
                 md->unk4 -= 4;
             }
             D_801EA270.unk8.vy++;
@@ -430,8 +435,8 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk4 != 0) {
             work->unk4--;
             D_801EA470.unk20.vx += 8;
-            D_801EA470.unk20.vz += 8;
             D_801EA470.unk20.vy += 8;
+            D_801EA470.unk20.vz += 8;
             FX1F2_DRAW(D_801EA470);
             if (work->unk4 > 0x60) {
                 c = (0x60 - work->unk4) * 2;
@@ -458,8 +463,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801EA4A0[1].unk8.vx = 0x700;
             D_801EA4A0[1].unk8.vy = D_801EA658.vy;
             D_801EA4A0[0].unk8.vy = D_801EA658.vy;
-            for (i = 0, md = D_801EA4A0; i < 2; i++, md++) {
-                ex->Hi_DrawEffModel(&md->unk8, &md->unk10, (s32)&md->unk20, md->unk0);
+            for (i = 0; i < 2; i++) {
+                md = &D_801EA4A0[i];
+                ex->Hi_DrawEffModel(&D_801EA4A0[i].unk8, &D_801EA4A0[i].unk10, (s32)&D_801EA4A0[i].unk20, md->unk0);
                 if (work->unk8 > 0x30) {
                     c = (0x30 - work->unk8) * 8;
                     ex->Hi_ModifyEffModelRGB(md->unk0, c, c, c);
@@ -472,10 +478,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk28 != 0) {
             work->unk28--;
-            for (i = 0, md = D_801EA530; i < 4; i++, md++) {
+            for (i = 0; i < 4; i++) {
+                md = &D_801EA530[i];
                 md->unk8.vx = D_801EA658.vx + 0x800;
                 md->unk8.vy = D_801EA658.vy;
-                ex->Hi_DrawEffModel(&md->unk8, &md->unk10, (s32)&md->unk20, md->unk0);
+                ex->Hi_DrawEffModel(&D_801EA530[i].unk8, &D_801EA530[i].unk10, (s32)&D_801EA530[i].unk20, md->unk0);
                 if (work->unk28 > 0x70) {
                     c = (0x70 - work->unk28) * 0x10;
                     ex->Hi_ModifyEffModelRGB(md->unk0, c, c, c);
@@ -540,9 +547,12 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 8), 1, c, c, c);
         }
         if (work->unk20 != 0) {
+            s32 k;
+
             work->unk20--;
-            scale.vx = scale.vy = scale.vz = work->unk20 * 3 + 0x1000;
-            col.r = col.g = col.b = work->unk20 * 2;
+            k = work->unk20;
+            scale.vz = scale.vy = scale.vx = k * 3 + 0x1000;
+            col.r = col.g = col.b = k * 2;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -619,15 +629,15 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (--tr->unk4C < 8) {
                             if (i & 1) {
                                 ex->func_800DC8AC(0x10, 5, (BtlBone *)&m);
-                                m.t[0] = work->unk110.vx;
-                                m.t[1] = work->unk110.vy;
-                                m.t[2] = work->unk110.vz;
+                                m.t[0] = work->unk110[0].vx;
+                                m.t[1] = work->unk110[0].vy;
+                                m.t[2] = work->unk110[0].vz;
                                 c = 0x200;
                             } else {
                                 ex->func_800DC8AC(0x10, 9, (BtlBone *)&m);
-                                m.t[0] = work->unk118.vx;
-                                m.t[1] = work->unk118.vy;
-                                m.t[2] = work->unk118.vz;
+                                m.t[0] = work->unk110[1].vx;
+                                m.t[1] = work->unk110[1].vy;
+                                m.t[2] = work->unk110[1].vz;
                                 c = 0x180;
                             }
                             gte_SetRotMatrix(&m);
