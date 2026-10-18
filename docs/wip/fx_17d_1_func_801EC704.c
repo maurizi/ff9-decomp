@@ -1,11 +1,11 @@
-/* Draft of func_801EC704 (module fx_17d_1). Status: 62 aligned mismatches, 26 ignoring registers and spill offsets
+/* Draft of func_801EC704 (module fx_17d_1). Status: 66 aligned mismatches, 18 ignoring registers and spill offsets
  * (spnorm 0x10). Pass 3: the q+4 giv is a separate pointer biv (q = p at the top of each row, q++ at the bottom) with
  * the addPrim argument copied first (pp = p++ at the top), which puts the giv increment at the bottom and a2/p at the
- * top as in the original; prologue statement order (searched) fixes j/dh (t2/t1) and the row header order y1, uu,
- * v1, q fixes x0/v1 (t5/t4) through global-alloc priorities. Open: the giv (65 refs) takes s0 and uu s1 where the
- * original has them swapped (uu cannot outrank the giv by priority, so something makes s0 unavailable to the giv
- * in the original: a conflicting hard-reg use or preference not found yet); sched2 order of sra fp (dw) in the
- * prologue and of the row-header copies.
+ * top as in the original; prologue statement order (searched) fixes j/dh (t2/t1); row header y1, v1, uu, q and clut
+ * before tpage (swap search). Open: the giv (65 refs) takes s0 and uu s1 where the original has them swapped (uu
+ * cannot outrank the giv by global-alloc priority, so something makes s0 unavailable to the giv in the original);
+ * x0/v1 (t4/t5) flip with the header order (y1, uu, v1, q gives the right t4/t5 at 62 rows/26 noreg); sched2
+ * position of sra fp (dw) in the prologue and of the abrBits reload in the loop.
  * Earlier: dw initialized through m (m = w >> 2; dw = m;), xs = dw * i and xa = xs + dw per iteration, k = i < 3
  * then i++, the r0 word store after clut. */
 #include "fxmod/fx_17d_1.h"
@@ -44,8 +44,8 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
     dw = m;
     for (j = 0; j < 4; j++) {
         y1 = y0 + dh;
-        uu = u;
         v1 = v + dh;
+        uu = u;
         q = p;
         for (i = 0; i < 4;) {
             col[0] = col[1] = col[2] = c;
@@ -72,8 +72,8 @@ void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clu
             q->y0 = q->y1 = y0;
             q->y2 = q->y3 = y1;
             tpage |= abrBits;
-            q->tpage = tpage;
             q->clut = clut;
+            q->tpage = tpage;
             *(u32 *)&q->r0 = *(u32 *)col;
             q++;
             ex->btlfx_addPrim(0x09000000, ot, pp);
