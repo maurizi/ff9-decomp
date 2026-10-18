@@ -175,7 +175,83 @@ void func_801E7D5C(void *trackA, void *trackB, Fx0e2Trail *trail, s32 size, s32 
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801E7FBC);
+void func_801E7FBC(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
+    Unk800F78A4 *env = D_801ECC0C;
+    Fx0e2Edge *e = D_801EE62C;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    MATRIX m;
+    VECTOR v;
+    SVECTOR ends[2];
+    SVECTOR rot;
+    SVECTOR a;
+    SVECTOR b;
+    SVECTOR p;
+    s32 i;
+    s16 z;
+
+    ends[0].vx = 0;
+    ends[0].vy = -w / 2;
+    ends[0].vz = 0;
+    ends[1].vx = 0;
+    ends[1].vy = w / 2;
+    ends[1].vz = 0;
+    for (i = 0; i < 60; i++, e++) {
+        func_801EC4A4(trackA, i, &a);
+        func_801EC4A4(trackB, i, &b);
+        ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, t, (s16 *)&p);
+        p.vx = p.vx * scale->vx / 4096;
+        p.vy = p.vy * scale->vy / 4096;
+        p.vz = p.vz * scale->vz / 4096;
+        rot.vx = 0;
+        rot.vz = 0;
+        rot.vy = rotY;
+        ex->func_800316D8(&rot, &m);
+        gte_SetRotMatrix(&m);
+        gte_ldtr0();
+        gte_ldv0(&p);
+        gte_rtv0tr();
+        gte_stlvnl(&v);
+        p.vx = v.vx;
+        p.vy = v.vy;
+        p.vz = v.vz + 0x4B0;
+        gte_SetRotMatrix(env->unk14);
+        gte_SetTransMatrix(env->unk14);
+        gte_ldv0(&p);
+        gte_rtv0tr();
+        gte_stlvnl(m.t);
+        rot.vx = 0;
+        rot.vy = 0;
+        rot.vz = 0;
+        if (twist != 0) {
+            if (i < 0x10) {
+                rot.vz = 0x400 - (i << 6);
+            } else if (i >= 0x1D) {
+                rot.vz = ex->math_sin(((i - 0x1C) << 7) / 4) / 4 + 0x80;
+                z = rot.vz;
+                if (z > 0x400) {
+                    z = 0x400;
+                }
+                rot.vz = z;
+                if (p.vz > 0) {
+                    rot.vz = -z;
+                }
+            }
+        } else {
+            rot.vz = 0x400;
+        }
+        ex->func_800316D8(&rot, &m);
+        ex->MulRotMatrix(&m);
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(&ends[0]);
+        gte_rtps();
+        gte_stsxy(&e->unk0);
+        gte_ldv0(&ends[1]);
+        gte_rtps();
+        gte_stsxy(&e->unk4);
+        gte_stszotz(&e->unk8);
+    }
+}
 
 void func_801E83B0(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
     Unk800F78A4 *env = D_801ECC0C;
