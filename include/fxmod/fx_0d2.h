@@ -107,5 +107,85 @@ void func_801E9FF4(Fx0d2Path *path, u16 *data);
 s32 func_801EA00C(Fx0d2Path *track, s32 t, VECTOR *out);
 extern Unk800F78A4 *D_801ED8E0;
 void func_801EA070(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
+typedef struct {
+    Fx0d2Keys keys;
+    s16 unk8; /* start */
+    s16 unkA; /* points */
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+} Fx0d2Trail;
+
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    SVECTOR unkC; /* slice rotation */
+    Fx0d2Vec3 unk14; /* slice position */
+    s32 pad20;
+    Fx0d2Vec3 unk24; /* slice scale */
+    s32 pad30;
+    SVECTOR unk34;
+    SVECTOR unk3C;
+    u16 unk44[6]; /* slice models */
+} Fx0d2Work81; /* 0x50 */
+
+extern Fx0d2Trail D_801EF1F0;
+extern Fx0d2Trail D_801EF210;
+extern u32 D_801EF300[];
+extern u8 D_801EF700[9][0x90];
+extern u8 D_801EFC10[11][0x50];
+extern SVECTOR D_801EFF80[8];
+extern VECTOR D_801EFFC0[8];
+s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    Pool6CEntry *unkC;
+    Pool6CEntry *unk10;
+    SVECTOR unk14; /* summon rotation */
+    Fx0d2Vec3 unk1C; /* summon position */
+    s32 pad28;
+    Fx0d2Vec3 unk2C; /* summon scale */
+    s32 pad38;
+    SVECTOR unk3C; /* slice rotation */
+    Fx0d2Vec3 unk44; /* slice position */
+    s32 pad50;
+    Fx0d2Vec3 unk54; /* slice scale */
+    u8 pad60[0x6C - 0x60];
+    SVECTOR unk6C;
+    SVECTOR unk74;
+    SVECTOR unk7C;
+    SVECTOR unk84;
+    SVECTOR unk8C;
+    s32 unk94;
+    s32 unk98;
+    s32 unk9C; /* path step */
+    s32 padA0;
+    u16 unkA4; /* slice model */
+} Fx0d2Work80; /* 0xA8 */
+
+/* the summon slot behind env->unk4 */
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180;
+        BtlUnit9CC *unk184;
+        BtlUnit9CC *unk188;
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx0d2Summon;
+
+extern BtlModel D_801ED8F0[];
+extern Fx0d2Keys D_801EF228;
+extern Fx0d2Keys D_801EF230;
+extern Fx0d2Keys D_801EF250;
+extern SVECTOR D_801F0040;
+extern SVECTOR D_801F0050[2];
+s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif
