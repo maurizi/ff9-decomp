@@ -26,4 +26,8 @@ typedef struct {
 extern Fx17d4Line D_801E987C;
 void func_801E7720(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
 
+extern s16 D_801E9724[18 * 4]; /* per strand: file, start, stride, width */
+extern Fx17d4Line *D_801E97B4[18];
+void func_801E77DC(Unk80100C78Entry *entry, SVECTOR *from, s32 n, s32 w, s32 a, s32 fade, s32 flag);
+
 #endif
