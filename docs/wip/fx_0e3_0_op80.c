@@ -375,7 +375,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             x = frame - 0xE;
             d = (x << 12) / 10;
-            f3 = ex->math_sin((x << 12) / 20);
+            f3 = ex->math_sin(d >> 1);
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
@@ -388,16 +388,18 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             pos.vx = 0;
             pos.vy = 0;
-            pos.vz = ex->math_cos((x << 12) / 40) / 3;
+            pos.vz = ex->math_cos(d >> 2) / 3;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk54);
             c = (f3 >> 6) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->unk54, c, c, c);
-            if (frame >= 0xE && frame - 0xE < 0x10) {
+        }
+        if (frame >= 0xE) {
+            x = frame - 0xE;
+            if (x < 0x10) {
                 union { CVECTOR c; s32 w[2]; } cu;
                 SVECTOR rot3;
                 VECTOR sc3;
 
-                x = frame - 0xE;
                 cu.c.r = cu.c.g = cu.c.b = 0x46;
                 rot3.vx = 0;
                 rot3.vy = 0;
