@@ -1,4 +1,4 @@
-/* Draft of fx_17a fx_17a_op80. Status: 235 lines, 59 ignoring registers (build/w/nd.py). */
+/* Draft of fx_17a fx_17a_op80. Status: 156 lines, 51 ignoring registers (build/w/nd.py). */
 #include "fxmod/fx_17a.h"
 
 typedef struct {
@@ -60,6 +60,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k;
     s32 x2;
     s32 n;
+    s32 f1;
+    s32 f2;
+    s32 f3;
 
     if (mode == 0) {
         init->unk0 = 0xB4;
@@ -112,16 +115,16 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                      (ex->math_sin(t >> 2) >> 5) - 0x80);
             work->unk4C.vz -= 0x400;
             env->unk28 = 0x100;
-            c = ex->math_sin(t >> 2) * 2;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, c, frame, 1, -1);
+            f2 = ex->math_sin(t >> 2) * 2;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, f2, frame, 1, -1);
             env->unk28 = 0;
             if (frame >= 0x12) {
                 work->unk0 = 3;
                 entry->unk0 = -1;
-                for (n = 0; n < 4; n++) {
-                    work->unk90[n].vx = 0x800 - n * 0x180;
-                    work->unk90[n].vy = n * 0xC0;
-                    work->unk90[n].vz = n * 0x60;
+                for (f3 = 0; f3 < 4; f3++) {
+                    work->unk90[f3].vx = 0x800 - f3 * 0x180;
+                    work->unk90[f3].vy = f3 * 0xC0;
+                    work->unk90[f3].vz = f3 * 0x60;
                 }
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&work->unk1C);
                 if (p != NULL) {
@@ -137,44 +140,43 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk4C.vy += 0x10;
             t = (frame << 12) / 24;
             g = (t >> 4) + 0x80;
-            r = 0x6AA;
-            if (frame >= 0xC) {
-                if (frame < 0x14) {
-                    r = 0x6AA - ((frame - 0xC) * 0x6AA) / 8;
-                } else {
-                    r = 0;
-                }
+            if (frame < 0xC) {
+                b = 0x6AA;
+            } else if (frame < 0x14) {
+                b = 0x6AA - ((frame - 0xC) * 0x6AA) / 8;
+            } else {
+                b = 0;
             }
-            if (r != 0) {
-                work->unk40.vx = work->unk40.vy = work->unk40.vz = r;
+            if (b != 0) {
+                work->unk40.vx = work->unk40.vy = work->unk40.vz = b;
                 ex->Hi_DrawEffModel(&work->unk4C, (VECTOR *)&work->unk34, (s32)&work->unk40, work->unk80);
                 work->unk4C.vz += 0x400;
                 ex->Hi_DrawEffModel(&work->unk4C, (VECTOR *)&work->unk34, (s32)&work->unk40, work->unk80);
                 work->unk4C.vz -= 0x400;
             }
-            r = r * 5 + 0x1000;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, r, frame, 1, -1);
+            b = b * 5 + 0x1000;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, b, frame, 1, -1);
             if ((u32)(frame - 0xF) < 6) {
-                r = 0x1000 - (((frame - 0xF) << 12) / 6);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, r, frame, 1, 0x1000);
+                b = 0x1000 - (((frame - 0xF) << 12) / 6);
+                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, b, frame, 1, 0x1000);
             }
             if (frame >= 0xC) {
-                a = ((frame - 0xC) << 10) / 12;
-                r = ex->math_sin(a) * 2 + 0x2000;
-                c = ex->math_sin(a);
-                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, r, 0, 1, c);
+                r = ((frame - 0xC) << 10) / 12;
+                b = ex->math_sin(r) * 2 + 0x2000;
+                i = ex->math_sin(r);
+                ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unk14, NULL, b, 0, 1, i);
             }
             if (frame >= 0xB) {
                 x2 = ((frame - 0xA) << 12) / 14;
-                a = x2 >> 2;
+                r = x2 >> 2;
                 sc.vx = sc.vy = sc.vz = (x2 * 0xB) / 12;
-                for (i = 0, j = 0; i < 4; i++, j += 0x30) {
-                    work->unk90[i].vz = (s16)(work->unk90[i].vz - 0x18) - j;
-                    ex->Hi_DrawEffModel(&work->unk90[i], (VECTOR *)&work->unk34, (s32)&sc, work->unk84);
+                for (a = 0, n = 0; a < 4; a++, n += 0x30) {
+                    work->unk90[a].vz = (s16)(work->unk90[a].vz - 0x18) - n;
+                    ex->Hi_DrawEffModel(&work->unk90[a], (VECTOR *)&work->unk34, (s32)&sc, work->unk84);
                     sc.vx = sc.vy = sc.vz = (sc.vx * 0x12) >> 4;
-                    ex->Hi_ModifyEffModelRGB(work->unk84, ((ex->math_sin(a) * 2) / 3 >> 5) - 0x80,
-                                             ((ex->math_sin(a) * 2) / 3 >> 5) - 0x80,
-                                             ((ex->math_sin(a) * 2) / 3 >> 5) - 0x80);
+                    ex->Hi_ModifyEffModelRGB(work->unk84, ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80,
+                                             ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80,
+                                             ((ex->math_sin(r) * 2) / 3 >> 5) - 0x80);
                 }
             }
             if (frame == 0xC) {
@@ -183,16 +185,16 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk22 = 0x80;
                 }
             }
-            c = (ex->math_sin(t >> 2) * 0x46) >> 12;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 2, c >> 1, c);
+            i = (ex->math_sin(t >> 2) * 0x46) >> 12;
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, i >> 2, i >> 1, i);
             if (frame >= 0x15) {
-                c = ((frame - 0x14) * 0xFF) / 4;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
+                i = ((frame - 0x14) * 0xFF) / 4;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, i, i, i);
             }
             if (frame >= 0x11) {
-                a = frame - 0x14;
-                c = ex->math_sin(a << 8);
-                ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &work->unkC, a, c);
+                r = frame - 0x14;
+                i = ex->math_sin(r << 8);
+                ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), &work->unkC, r, i);
             }
             if (frame >= 0x18) {
                 work->unk0 = 4;
@@ -228,26 +230,27 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 0x10) {
                 s32 v;
 
-                a = (frame << 12) >> 4;
-                work->unk40.vx = work->unk40.vy = work->unk40.vz = ex->math_sin((frame << 12) >> 6) >> 1;
+                n = (frame << 12) >> 4;
+                c = ex->math_sin((frame << 12) >> 6) >> 1;
+                work->unk40.vx = work->unk40.vy = work->unk40.vz = c;
                 ex->Hi_DrawEffModel(&work->unk4C, (VECTOR *)&work->unk34, (s32)&work->unk40, work->unk80);
-                v = ((0x1000 - a) >> 5) - 0x80;
+                v = ((0x1000 - n) >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->unk80, v, v, v);
             }
             env->unk28 = 0x100;
-            a = t >> 2;
-            c = ex->math_cos(a);
-            r = ex->math_sin(a) + 0x400;
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, r, frame, 1, -1);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unkC, NULL, r, frame, 1, c);
+            n = t >> 2;
+            a = ex->math_cos(n);
+            c = ex->math_sin(n) + 0x400;
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, c, frame, 1, -1);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unkC, NULL, c, frame, 1, a);
             env->unk28 = 0;
             if (frame < 6) {
-                s32 c = 0xFF - ((frame * 0xFF) / 6);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
+                s32 a = 0xFF - ((frame * 0xFF) / 6);
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, a, a, a);
             }
             if (frame >= 7) {
-                c = (frame - 7) * 0x55;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, c, c, c);
+                a = (frame - 7) * 0x55;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, a, a, a);
             }
             if (frame >= 0xA) {
                 work->unk0 = 5;
@@ -453,9 +456,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk2C->unk0[3].vz = work->unk24.vz;
             env->unk28 = 0x180;
             a = t >> 2;
-            r = ex->math_cos(a) + 0x400;
+            f1 = ex->math_cos(a) + 0x400;
             c = ex->math_cos(a);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &D_801E9AC4, NULL, r, 0, 1, c);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &D_801E9AC4, NULL, f1, 0, 1, c);
             env->unk28 = 0;
             c = (ex->math_cos(a) * 0xFF) >> 12;
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
