@@ -17,6 +17,43 @@ typedef struct {
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 
+typedef struct {
+    s32 unk0;
+    s32 unk4; /* frame */
+    SVECTOR unk8; /* summoner position */
+    SVECTOR unk10; /* summoner rotation */
+    SVECTOR unk18; /* summon position */
+    s32 unk20; /* ribbon head */
+    s32 unk24;
+    s32 unk28; /* slice model */
+    SVECTOR unk2C; /* summon rotation */
+    s32 unk34[3]; /* summon scale */
+} Fx05eWork; /* 0x40 */
+
+/* the summon slot behind env->unk4 */
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180;
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx05eSummon;
+
+extern s32 D_801E8860[2];
+extern SVECTOR D_801E8868;
+extern SVECTOR D_801E886C;
+extern SVECTOR D_801E8870;
+extern SVECTOR D_801E8874;
+extern SVECTOR D_801E887C;
+extern SVECTOR D_801E8884;
+extern u8 D_801E88D4[];
+extern Unk80100DC054 D_801E8E84;
+extern BtlModel D_801E9014[];
+extern u8 D_801E90E4[];
+extern Fx05eSeg D_801E9744[];
+extern Fx05eSeg D_801E9854[];
 extern Unk800F78A4 *D_801E8E74;
 
 void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx05eSeg *buf, s32 abr);

@@ -6,12 +6,20 @@
 
 /* falling rock, a pool item */
 typedef struct {
-    u8 pad0[0xC];
+    s32 unk0; /* state */
+    SVECTOR unk4; /* position */
     SVECTOR unkC; /* rotation */
-    u8 pad14[4];
-    SVECTOR unk18; /* position */
+    Pool6CEntry *unk14;
+    SVECTOR unk18; /* landing position */
     s32 unk20; /* index */
 } Fx038Item; /* 0x24 */
+
+/* trail strip for func_800D1494 */
+typedef struct {
+    u8 pad0[0x8C];
+} Fx038Strip;
+
+extern Fx038Strip D_801E857C[];
 
 typedef struct {
     s32 unk0;
