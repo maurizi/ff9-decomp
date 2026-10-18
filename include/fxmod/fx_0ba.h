@@ -108,4 +108,51 @@ void func_801EC124(void);
 void func_801EC130(Unk80100C78Entry *entry, SVECTOR *center, s32 r, SVECTOR *from, SVECTOR *to);
 s32 fx_0ba_op83(s32 mode, Fx0baWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    u8 pad0[0x180];
+    BtlUnit9CC *unk180;
+    BtlUnit9CC *unk184;
+    BtlUnit9CC *unk188;
+} Fx0baUnit;
+typedef struct {
+    u8 pad0[0x54];
+    Fx0baUnit *unk54;
+    u8 pad58[0x60 - 0x58];
+    s32 unk60; /* summon model */
+} Fx0baSummon;
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx0baVec3;
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    u8 pad8[8];
+    SVECTOR unk10; /* orb position */
+    SVECTOR unk18; /* bone position */
+    u8 pad20[8];
+    Fx0baVec3 unk28; /* model position */
+    Fx0baVec3 unk34; /* model scale */
+    SVECTOR unk40; /* model rotation */
+    Fx0baVec3 unk48; /* summon position */
+    Fx0baVec3 unk54; /* summon scale */
+    SVECTOR unk60; /* summon rotation */
+    SVECTOR unk68; /* model rotation */
+    Fx0baVec3 unk70; /* model scale */
+    s32 unk7C;
+    s32 unk80;
+    s32 unk84;
+    s32 unk88;
+    s32 unk8C;
+    s32 unk90;
+    s16 unk94;
+    s16 unk96;
+    s16 unk98;
+    s16 unk9A;
+    u8 pad9C[4];
+} Fx0baWork80; /* 0xA0 */
+extern BtlModel D_801EC600[];
+s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif
