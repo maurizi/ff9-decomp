@@ -1,12 +1,14 @@
 /* Draft of func_801E7704 (module fx_007; the same body is in fx_048, fx_097, fx_098, fx_0d3, fx_0d6, fx_0e1_0,
  * fx_1cc, fx_1fe): a grid of POLY_G4 quads coloured from a VRAM area that is then read back with StoreImage.
- * Status: 82 aligned mismatches, all register allocation. Structure and stack layout match; gcc's global
- * allocator orders prim (0.509) > py (0.450) > w (0.447) by priority (refs * log2(refs) / live length, see
- * build/prio.py), the original has w > py > prim (w in s4, py in s5, prim in s6). The permuter found nothing.
- * The gte_* macros it needs are in include/fxmod/fx_007.h. */
+ * Status: 70 aligned mismatches, all register allocation of three pseudos; every instruction is otherwise identical
+ * (row = colors - (u32)(w - 1) keeps (w - 1) << 1 unfolded, x0/py = -(n * size) >> 1 in one expression, hh = h + 1
+ * split from py, and the final rect.x/rect.y computed into x0/py match). The original allocates w to s4, py (and
+ * hh) to s5, prim to s6; here py (0.533) > prim (0.509) > w (0.447) in gcc's global-alloc priority
+ * (floor(log2(refs)) * refs / live length, refs weighted by loop depth; see build/prio.py), so py gets s4, prim s5,
+ * w s6. Merging py and hh drops py to 0.444, but prim still outranks w. The permuter found nothing. The gte_*
+ * macros it needs are in include/fxmod/fx_007.h. */
 #include "fxmod/fx_007.h"
 
-/* grid of gouraud quads coloured from a VRAM area, which is then read back for the next frame */
 void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
                    s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
     Unk800F78A4 *env = D_801E8EE8;
@@ -31,6 +33,7 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
     s32 j;
     s32 px;
     s32 py;
+    s32 hh;
     s32 x0;
     s32 col;
 
@@ -39,9 +42,9 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
     ex = BTLFX_EXPORTS(env);
     if (skip == 0) {
         w++;
-        py = h + 1;
+        hh = h + 1;
         prim = (POLY_G4 *)env->unk24;
-        env->unk24 = (s32)(prim + w * py);
+        env->unk24 = (s32)(prim + w * hh);
         tpage = ex->btlfx_allocDrMode(0, abr);
         gte_SetRotMatrix(env->unk14);
         gte_SetTransMatrix(env->unk14);
@@ -67,12 +70,10 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
         }
         gte_SetRotMatrix(&m);
         gte_SetTransMatrix(&m);
-        x0 = -(w * size);
-        x0 >>= 1;
-        h = py;
-        py = -(h * size);
-        py >>= 1;
-        row = colors - (w - 1);
+        x0 = -(w * size) >> 1;
+        h = hh;
+        py = -(h * size) >> 1;
+        row = colors - (u32)(w - 1);
         bright <<= 2;
         gte_ldVZ012_0();
         for (j = 0; j < h; j++) {
@@ -80,11 +81,9 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
             p = row;
             *(s32 *)&c0 = 0;
             *(s32 *)&c2 = 0;
-            for (i = 0; i < w; i++) {
-                v[0].vx = px;
-                v[2].vx = px;
-                v[0].vy = py;
-                v[1].vy = py;
+            for (i = 0; i < w; i++, prim++, p++) {
+                v[0].vx = v[2].vx = px;
+                v[0].vy = v[1].vy = py;
                 v[1].vx = v[3].vx = px + size;
                 v[2].vy = v[3].vy = py + size;
                 if (i >= w - 1) {
@@ -125,19 +124,19 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
                 if (flag != 0) {
                     ex->btlfx_addPrim(0x8000000, z, prim);
                 }
-                prim++;
-                p++;
                 px += size;
             }
-            row += w - 1;
+            row += (u32)(w - 1);
             py += size;
         }
         ex->btlfx_addPrim(0x1000000, z, tpage);
     }
     w--;
     h--;
-    rect.x = (tp & 0xF) * 64 + x + (idx % div) * w;
-    rect.y = (tp & 0x10) * 16 + y + (idx / div) * h;
+    x0 = (tp & 0xF) * 64 + x + (idx % div) * w;
+    py = (tp & 0x10) * 16 + y + (idx / div) * h;
+    rect.x = x0;
+    rect.y = py;
     rect.w = w;
     rect.h = h;
     ex->StoreImage(&rect, (u32 *)colors);
