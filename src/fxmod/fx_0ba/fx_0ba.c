@@ -117,7 +117,38 @@ s32 func_801EB1CC(SVECTOR *v) {
 
 INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", fx_0ba_op83);
 
-INCLUDE_ASM("asm/us/fx_0ba/nonmatchings/fx_0ba", func_801EBFB8);
+s32 func_801EBFB8(s32 mode, Fx0baPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 bias[2];
+    s32 c;
+    u8 *q;
+    s32 (*fn)(Pool6CEntry *, s32, SVECTOR *, SVECTOR *);
+
+    if (mode == 1) {
+        p->unk12 = ex->btlfx_randCentered(0x20) + 0x1080;
+    } else {
+        c = 0x1000 - (frame << 12) / 5;
+        q = p->unk18;
+        if (frame != 0) {
+            c >>= 1;
+        }
+        ((s16 *)q)[3] = (0x16 - frame * 4) >> 1;
+        fn = ex->func_800E0014;
+        bias[0] = 0;
+        bias[1] = 0;
+        fn((Pool6CEntry *)p, 0, (SVECTOR *)bias, (SVECTOR *)q);
+        if (p->unk16 == 0) {
+            p->unk18[-0x10] = p->unk18[-0xE] = 0x10;
+            p->unk18[-0xF] = 0;
+            ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x32), 0, NULL, frame, 0x1000, c, 1,
+                              p->unk18 - 4, 0);
+        }
+        if (frame >= 5) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 void func_801EC124(void) {
     D_801EEFDC = 0;
