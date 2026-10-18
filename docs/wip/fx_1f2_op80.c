@@ -1,15 +1,19 @@
-/* Draft of fx_1f2 fx_1f2_op80 (summon with many effect models, spark trails and a frame switch). Status: 2004 aligned
- * mismatches, 332 ignoring registers (of ~2640 instructions; was 2091/493); frame size matches (0xF8). Types:
+/* Draft of fx_1f2 fx_1f2_op80 (summon with many effect models, spark trails and a frame switch). Status: 1953 aligned
+ * mismatches, 273 ignoring registers (of ~2640 instructions; was 2091/493); frame size matches (0xF8). Types:
  * Fx1f2Model (0x30 model records), Fx1f2Ring (0x38), Fx1f2Trail (0x150 trail + 16 points + 16 velocities).
  * Levers so far: setVector(&rec.unkX, ...) for the model records; the trail-clear loops are index loops passing
  * &D_801EA690[i] (the extra multiply keeps loop.c from hoisting the constant 1 argument); work->unk110 is an
  * SVECTOR[2] (work + c * 8 + 0x110 addressing); model loops are index loops with md = &D[i] inside and the draw
  * arguments written &D[i].unkX (loop.c then reduces &D[i].unk20 / the ring's three addresses into their own
  * registers, as the original does); D_801EA470.unk20 vx, vy, vz (sched reverses it); the ripple block's col, rot,
- * scale declaration order, scale.vz = scale.vy = scale.vx and a block-local copy of work->unk20.
- * Open: the unk4C block's i >= 8 path uses the SVECTOR at sp+0x88 (out's slot) as GTE input and the VECTOR at
- * sp+0x78 (in's slot) as output, tr = &D_801EA690[i] recomputed from an index giv there, a hoisted loop bound 9
- * (slt against t3); the spark loop's increment order (r, hi, j, lo); ex in s7 and loop counters in fp. */
+ * scale declaration order, scale.vz = scale.vy = scale.vx and a block-local copy of work->unk20; the trail loops
+ * read D_801EA690[i].unk50[j] by index and write tr->unk4[j] through tr = &D_801EA690[i]; a block-local n = 9 as the
+ * j bound (the original compares against a register: slt j, t2/t3); the unk4C block's i >= 8 path uses the
+ * SVECTOR at sp+0x88 (out's slot) as GTE input and the VECTOR at sp+0x78 (in's slot) as output.
+ * Open: tr->unk4[j] stores: the original reduces .vx's address on its own (t0/t1) and .vy/.vz/.pad off the .pad
+ * giv (-4/-2/0), here they are combined into one giv; the i >= 8 path's stores are D[i].unk4[j] off v1 = &D[i];
+ * cse folds the block-local n there (slti 9); the spark loop's increment order (r, hi, j, lo); constant
+ * hoisting in the model init (0x1000 in s5, 0x800 loaded late); ex in s7 and loop counters in fp. */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -603,19 +607,22 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 tr = &D_801EA690[i];
                 if (tr->unk4C != 0) {
                     if (--tr->unk4C < 8) {
+                        s32 n = 9;
+
                         tr->unk0 = tr->unk2 = 8;
                         tr->unk1 = 0;
-                        for (j = 0; j < 9; j++) {
-                            tr->unk50[j].vx += tr->unkD0[j].vx;
-                            tr->unk50[j].vy += tr->unkD0[j].vy;
-                            tr->unk50[j].vz += tr->unkD0[j].vz;
-                            tr->unk4[j].vx = tr->unk50[j].vx;
-                            tr->unk4[j].vy = tr->unk50[j].vy;
-                            tr->unk4[j].vz = tr->unk50[j].vz;
+                        for (j = 0; j < n; j++) {
+                            D_801EA690[i].unk50[j].vx += D_801EA690[i].unkD0[j].vx;
+                            D_801EA690[i].unk50[j].vy += D_801EA690[i].unkD0[j].vy;
+                            D_801EA690[i].unk50[j].vz += D_801EA690[i].unkD0[j].vz;
+                            tr->unk4[j].vx = D_801EA690[i].unk50[j].vx;
+                            tr->unk4[j].vy = D_801EA690[i].unk50[j].vy;
+                            tr->unk4[j].vz = D_801EA690[i].unk50[j].vz;
                             tr->unk4[j].pad = work->unk38;
                         }
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000,
-                                            tr->unk4C << 9, 1, (u8 *)tr, 0);
+                        n = tr->unk4C << 9;
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, n, 1,
+                                            (u8 *)tr, 0);
                     }
                 }
             }
@@ -623,7 +630,11 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk4C != 0) {
             work->unk4C--;
-            for (i = 0, tr = D_801EA690; i < 0x10; i++, tr++) {
+            for (i = 0; i < 0x10; i++) {
+                s32 n;
+
+                tr = &D_801EA690[i];
+                n = 9;
                 if (i >= 8) {
                     if (tr->unk4C != 0) {
                         if (--tr->unk4C < 8) {
@@ -642,23 +653,23 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             }
                             gte_SetRotMatrix(&m);
                             gte_SetTransMatrix(&m);
-                            tr->unk0 = tr->unk2 = 8;
-                            tr->unk1 = 0;
-                            for (j = 0, a = 0; j < 9; j++, a += 0x60) {
-                                in[0].vx = tr->unk50[j].vx + a - 0x180;
-                                in[0].vz = tr->unk50[j].vz + c;
-                                in[0].vy = tr->unk50[j].vy;
-                                gte_ldv0(&in[0]);
+                            D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
+                            D_801EA690[i].unk1 = 0;
+                            for (j = 0, a = 0; j < n; j++, a += 0x60) {
+                                ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j].vx + a - 0x180;
+                                ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j].vz + c;
+                                ((SVECTOR *)out)->vy = D_801EA690[i].unk50[j].vy;
+                                gte_ldv0((SVECTOR *)out);
                                 gte_rtv0tr();
-                                gte_stlvnl(&out[0]);
+                                gte_stlvnl((VECTOR *)in);
                                 gte_stflg(&flag2);
-                                tr->unk4[j].vx = out[0].vx;
-                                tr->unk4[j].vy = out[0].vy;
-                                tr->unk4[j].pad = 0x40;
-                                tr->unk4[j].vz = out[0].vz;
-                                tr->unk50[j].vx += tr->unkD0[j].vx;
-                                tr->unk50[j].vy += tr->unkD0[j].vy;
-                                tr->unk50[j].vz += tr->unkD0[j].vz;
+                                D_801EA690[i].unk4[j].vx = ((VECTOR *)in)->vx;
+                                D_801EA690[i].unk4[j].vy = ((VECTOR *)in)->vy;
+                                D_801EA690[i].unk4[j].pad = 0x40;
+                                D_801EA690[i].unk4[j].vz = ((VECTOR *)in)->vz;
+                                D_801EA690[i].unk50[j].vx += D_801EA690[i].unkD0[j].vx;
+                                D_801EA690[i].unk50[j].vy += D_801EA690[i].unkD0[j].vy;
+                                D_801EA690[i].unk50[j].vz += D_801EA690[i].unkD0[j].vz;
                             }
                             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, (i & 1) ? 0xC : 6), 0, NULL,
                                                 frame, 0x1000, 0x800, 1, (u8 *)tr, 0);
@@ -666,25 +677,25 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     } else {
                         tr->unk4C = (ex->btlfx_rand() & 3) + 8;
                         for (j = 0; j < 9; j++) {
-                            tr->unk50[j].vx = 0;
-                            tr->unk50[j].vy = 0;
-                            tr->unk50[j].vz = 0;
-                            tr->unkD0[j].vx = (ex->btlfx_rand() & 0xF) - 8;
-                            tr->unkD0[j].vy = (ex->btlfx_rand() & 0x1F) - 0x10;
-                            tr->unkD0[j].vz = (ex->btlfx_rand() & 0x1F) - 0x10;
+                            D_801EA690[i].unk50[j].vx = 0;
+                            D_801EA690[i].unk50[j].vy = 0;
+                            D_801EA690[i].unk50[j].vz = 0;
+                            D_801EA690[i].unkD0[j].vx = (ex->btlfx_rand() & 0xF) - 8;
+                            D_801EA690[i].unkD0[j].vy = (ex->btlfx_rand() & 0x1F) - 0x10;
+                            D_801EA690[i].unkD0[j].vz = (ex->btlfx_rand() & 0x1F) - 0x10;
                         }
                     }
                 } else {
                     tr->unk0 = tr->unk2 = 8;
                     tr->unk1 = 0;
                     a = tr->unk4C;
-                    tr->unk4C = tr->unk50[a].pad;
-                    for (j = 0; j < 9; j++) {
-                        tr->unk4[j].vx = tr->unk50[a].vx;
-                        tr->unk4[j].vy = tr->unk50[a].vy;
+                    tr->unk4C = D_801EA690[i].unk50[a].pad;
+                    for (j = 0; j < n; j++) {
+                        tr->unk4[j].vx = D_801EA690[i].unk50[a].vx;
+                        tr->unk4[j].vy = D_801EA690[i].unk50[a].vy;
                         tr->unk4[j].pad = 0x80;
-                        tr->unk4[j].vz = tr->unk50[a].vz;
-                        a = tr->unk50[a].pad;
+                        tr->unk4[j].vz = D_801EA690[i].unk50[a].vz;
+                        a = D_801EA690[i].unk50[a].pad;
                     }
                     env->unk28 = 0x80;
                     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, (i & 1) ? 0xC : 6), 0, NULL, frame,
