@@ -1,4 +1,4 @@
-/* Draft of fx_17a fx_17a_op80. Status: 113 lines, 43 ignoring registers (build/w/nd.py). */
+/* Draft of fx_17a fx_17a_op80. Status: 85 lines, 17 ignoring registers (build/w/nd.py). Levers so far: loop increments in the for header in the original order (a and n, i and f4, k and j), copy-then-zero component order, t >> 2 inline as call arguments, a separate tint temp. */
 #include "fxmod/fx_17a.h"
 
 typedef struct {
@@ -66,6 +66,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 f4;
     s32 f5;
     s32 f6;
+    s32 c1;
 
     if (mode == 0) {
         init->unk0 = 0xB4;
@@ -173,7 +174,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 x2 = ((frame - 0xA) << 12) / 14;
                 r = x2 >> 2;
                 sc.vx = sc.vy = sc.vz = (x2 * 0xB) / 12;
-                for (a = 0, n = 0; a < 4; a++, n += 0x30) {
+                for (a = 0, n = 0; a < 4; n += 0x30, a++) {
                     work->unk90[a].vz = (s16)(work->unk90[a].vz - 0x18) - n;
                     ex->Hi_DrawEffModel(&work->unk90[a], (VECTOR *)&work->unk34, (s32)&sc, work->unk84);
                     sc.vx = sc.vy = sc.vz = (sc.vx * 0x12) >> 4;
@@ -241,9 +242,8 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk80, v, v, v);
             }
             env->unk28 = 0x100;
-            n = t >> 2;
-            a = ex->math_cos(n);
-            c = ex->math_sin(n) + 0x400;
+            a = ex->math_cos(t >> 2);
+            c = ex->math_sin(t >> 2) + 0x400;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &work->unkC, NULL, c, frame, 1, -1);
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unkC, NULL, c, frame, 1, a);
             env->unk28 = 0;
@@ -252,8 +252,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, a, a, a);
             }
             if (frame >= 7) {
-                a = (frame - 7) * 0x55;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, a, a, a);
+                c1 = frame - 7;
+                c1 *= 0x55;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, c1, c1, c1);
             }
             if (frame >= 0xA) {
                 work->unk0 = 5;
@@ -366,11 +367,10 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 a = 0x96C;
             }
             ang.vx = (ex->math_sin(t >> 2) * 2) / 3;
-            ang.vz = 0;
             ang.vy = work->unk4 << 3;
-            for (i = 0, f4 = work->unk4 * 0xC; i < 0x80; i++) {
+            ang.vz = 0;
+            for (i = 0, f4 = work->unk4 * 0xC; i < 0x80; i++, f4 += 0x20) {
                 ex->func_800D044C(&work->unkC, (s32)&at, 0, (XY32 *)&ang, a, f4);
-                f4 += 0x20;
                 ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0xE), &at, NULL, 0x2800, 0, 1, g2, 0,
                                         0);
                 ang.vx += 0x40;
@@ -387,16 +387,20 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&work->unkC,
                                         (s32 *)&work->unkC, -1, h, ex->math_cos(t >> 2), 1, (u8 *)&D_801E9B44[k], 1);
                 }
-                for (b = 0; b < 0x40; b++) {
-                    (&D_801E9B44[k].unk4[b])->vy -= 0x40;
+                {
+                    SVECTOR *pp = D_801E9B44[k].unk4;
+
+                    for (b = 0; b < 0x40; b++) {
+                        pp->vy -= 0x40;
+                        pp++;
+                    }
                 }
             }
             ang2.vx = ex->math_sin(work->unk4 << 7) >> 4;
-            ang2.vz = 0;
             ang2.vy = work->unk4 * 0x52 - 0x180;
-            for (k = 0, j = work->unk4 * 0x5C; k < 2; k++) {
+            ang2.vz = 0;
+            for (k = 0, j = work->unk4 * 0x5C; k < 2; k++, j += 0x800) {
                 ex->func_800D044C(&work->unkC, (s32)&at2, 0, (XY32 *)&ang2, w, j);
-                j += 0x800;
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), (s32)&at2, (s32 *)&work->unkC, 0, h,
                                     (ex->math_sin(t >> 1) >> 1) + 0x60E, 1, (u8 *)&D_801E9B44[k], 1);
             }
