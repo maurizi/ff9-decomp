@@ -1,8 +1,9 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: first draft from m2c + asm, 933
- * aligned mismatches, 301 ignoring registers and spill offsets (spnorm 0x80); untested. Open: the original frame is
- * 8 bytes larger (one more spill), several loop givs are based at other offsets (unit loop, band loop, bolt points)
- * and some statement orders (constant stores in mode 1 and case 0x7C). Two switches on frame: the first holds the
- * model setup of frames 0 and 0x7C, the second the timers; cases 0x64/0x7C and 0x3F/0xA5 share cross-jumped tails. */
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: first draft from m2c + asm, 909
+ * aligned mismatches, ~290 ignoring registers and spill offsets (spnorm 0x80); untested. Open: the original frame is
+ * 8 bytes larger (one more spill), several loop givs are based at other offsets (unit loops: the original keeps
+ * &D_801EC8C0[i], i * 0x34 and &D_801EC8C0[i].unk24 as three givs; band loop; bolt points) and some statement
+ * orders. Two switches on frame: the first holds the model setup of frames 0 and 0x7C, the second the timers; cases
+ * 0x64/0x7C and 0x3F/0xA5 share cross-jumped tails. */
 #include "fxmod/fx_0b8.h"
 
 typedef struct {
@@ -183,22 +184,22 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r = ex->btlfx_rand() & 0xFFF;
             a = (ex->btlfx_rand() & 0xDFF) + 0xB00;
             D_801EA7B0[i].vx = (ex->math_sin(a) * r) >> 12;
-            D_801EA7B0[i].vy = 0;
             D_801EA7B0[i].vz = ((ex->math_cos(a) * r) >> 12) + 0x418;
+            D_801EA7B0[i].vy = 0;
         }
-        work->unk1A8.vz = 0x418;
-        work->unk1BC.vz = -0x1000;
-        work->unk1C4.vz = -0xE00;
-        work->unk1CC.vx = -0x180;
-        work->unk1D4.vx = 0x180;
         work->unk1A8.vx = 0;
         work->unk1A8.vy = -0xC00;
+        work->unk1A8.vz = 0x418;
         work->unk1BC.vx = 0;
         work->unk1BC.vy = -0x2500;
+        work->unk1BC.vz = -0x1000;
         work->unk1C4.vx = 0;
         work->unk1C4.vy = -0x2500;
+        work->unk1C4.vz = -0xE00;
+        work->unk1CC.vx = -0x180;
         work->unk1CC.vy = -0x2C40;
         work->unk1CC.vz = -0xC00;
+        work->unk1D4.vx = 0x180;
         work->unk1D4.vy = -0x2C40;
         work->unk1D4.vz = -0xC00;
         work->unk1DC.vx = 0;
