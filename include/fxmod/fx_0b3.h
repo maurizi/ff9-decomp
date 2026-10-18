@@ -146,4 +146,23 @@ s32 func_801E7890(Fx0b3Track *track, s32 t);
 extern Unk800F78A4 *D_801ED5E0;
 void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    u8 pad8[8];
+    SVECTOR unk10; /* midpoint */
+    SVECTOR unk18;
+    u8 pad20[8];
+    Fx0b3Vec3 unk28; /* summon position */
+    Fx0b3Vec3 unk34; /* summon scale */
+    SVECTOR unk40; /* summon rotation */
+    u8 pad48[0x68 - 0x48];
+    Pool6CEntry *unk68;
+} Fx0b3Work85; /* 0x6C */
+
+extern CVECTOR D_801EB5D8;
+void func_801E9DFC(SVECTOR *a, SVECTOR *b, VECTOR *c, s32 r, s32 k, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9, s32 a10,
+                   s32 a11, s32 a12, s32 a13, s32 a14);
+s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif
