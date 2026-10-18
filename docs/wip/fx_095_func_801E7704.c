@@ -1,9 +1,10 @@
-/* Draft of fx_095 func_801E7704. Status: same instructions as the original (0 aligned mismatches ignoring
- * registers); register allocation only: global-alloc gives part/frame and scale/abr each other's registers (original:
- * ex s2, frame s3, part s4, abr s5, scale s6; here part s3, frame s4, scale s5, abr s6). Priorities (refs/live
- * length): frame 10/130 vs part 16/272, scale 7/73 vs abr 7/104. tools/equiv.py: equivalent (29/29 trials).
- * Levers that got here: math_cos before the abr/bright assignments in cases 0/2/3, a computed before abr/bright
- * in case 0 (keeps the 0x1000 copy), and (scale * 62) >> 12 into t. */
+/* Draft of fx_095 func_801E7704. Status: 2 instructions off (8 register rows): the original loads each table
+ * address with lui v1 / addiu v1,v1 (hi part in the result's register), here lui v0 / addiu v1,v0 (local-alloc
+ * gives the %hi pseudo v0; the tab pseudo is global so they cannot be tied); if/else, ternary, inline index,
+ * tab-then-override and switch forms tried. The s-register order (ex s2, frame s3, part s4, abr s5, scale s6)
+ * now matches through dead conditionals that add refs: "if (frame != 0) t = 0;" / ex at the switch, abr after it
+ * (abr is a known 0 at the switch). Earlier levers: math_cos before the abr/bright assignments in cases 0/2/3,
+ * a computed before abr/bright in case 0 (keeps the 0x1000 copy), and (scale * 62) >> 12 into t. */
 #include "fxmod/fx_095.h"
 extern s32 D_801E882C[];
 extern s32 D_801E885C[];
@@ -31,6 +32,12 @@ s32 func_801E7704(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry 
     bright = glow = a = scale = 0;
     glowFrame = 0;
     abr = scale;
+    if (frame != 0) {
+        t = 0;
+    }
+    if (ex != 0) {
+        t = 0;
+    }
     switch (part->unk4) {
     case 0:
         t = frame << 9;
@@ -80,6 +87,9 @@ s32 func_801E7704(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry 
             return 1;
         }
         break;
+    }
+    if (abr != 0) {
+        t = 0;
     }
     t = (scale * 62) >> 12;
     a -= 0x400;
