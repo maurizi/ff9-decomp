@@ -1,8 +1,6 @@
-/* Draft of fx_1cc fx_1cc_op80. Status: ~110 strict / ~40 shape rows. Matches through most cases; left: case 3's
- * piece spawn multiplies by 0x1DD with mult (the constant in s0, loaded after the first math_sin call; a C
- * constant becomes shift/add), its ch/tab registers (orig s1/s2), case 1's c = t store position. Levers that
- * helped: k = 0x9A variable for the RegisterTexEffModel calls, case 2 reusing t for the tint value, a separate
- * Pool6CEntry variable in case 1, work->unk20[i] / D_801E9B98[i] indexing in the init loop. */
+/* Draft of fx_1cc fx_1cc_op80. Status: 56 strict / 9 shape rows, all in case 3's piece spawn: the original holds
+ * 0x1DD in s0 (loaded after the first math_sin call) and the piece in s1; here j (the 0x1DD variable, a variable
+ * so the products use mult) gets s1 and is loaded before the call. Everything else matches. */
 #include "fxmod/fx_1cc.h"
 
 typedef struct {
@@ -40,10 +38,13 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 c;
     s32 frame;
     s32 i;
+    s32 j;
     s32 k;
     s32 t;
     s32 a;
     s32 v;
+    s32 x1;
+    s32 x2;
     u8 *f;
     s32 *m;
     s32 *q;
@@ -114,8 +115,8 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = 0x200;
             func_801E7CBC(&work->unk58, &rot, 0x4400, 0x80, 0x9A, 0x3D40, 0, 0x80, -((ex->math_sin(a) * 700) >> 12), 1);
-            c = t;
             ex->func_800E6624(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            c = t;
             rot.pad = 1;
             f = (u8 *)ex->btlfx_getFileData(entry->unk8, 0x26);
             ex->func_800D23D8(f, &work->unk58, &rot, ((((ex->math_sin(a) * 0x3000) >> 12) + 0x2000) * 3) >> 2, 0, 1,
@@ -182,9 +183,9 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ch3->unkC = work->unk58.vx;
                     ch3->unk10 = work->unk58.vy;
                     ch3->unk14 = work->unk58.vz;
-                    i = 0x1DD;
-                    ch3->unkC += (ex->math_sin(tab->vy + 0x800) * i) >> 12;
-                    ch3->unk14 += (ex->math_cos(tab->vy + 0x800) * i) >> 12;
+                    j = 0x1DD;
+                    ch3->unkC += (ex->math_sin(tab->vy + 0x800) * j) >> 12;
+                    ch3->unk14 += (ex->math_cos(tab->vy + 0x800) * j) >> 12;
                     ch3->unk18 = ch3->unkC;
                     ch3->unk1A = ch3->unk10;
                     ch3->unk1C = ch3->unk14;
@@ -217,7 +218,8 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 5:
             c = 0x1000;
-            ex->func_800E806C(0, (((frame << 12) / 10) << 7) >> 12);
+            t = (frame << 12) / 10;
+            ex->func_800E806C(0, (t << 7) >> 12);
             rot.vx = -0x400;
             rot.vy = 0;
             rot.vz = -0x400;
@@ -249,15 +251,15 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vx = -0x400;
                 rot.vy = 0;
                 rot.vz = -0x400;
-                for (i = 0; i < 6; i++) {
+                for (j = 0; j < 6; j++) {
                     ch = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                     if (ch != NULL) {
                         ch->unk2 = 1;
-                        ch->unk0 = i;
-                        ch->unk4 = i;
+                        ch->unk0 = j;
+                        ch->unk4 = j;
                         ch->unk8 = 0;
-                        ch->unk2C = work->unk20[i];
-                        func_801E8284((s16 *)&work->unk58, (s16 *)&rot, i, (s16 *)&r);
+                        ch->unk2C = work->unk20[j];
+                        func_801E8284((s16 *)&work->unk58, (s16 *)&rot, j, (s16 *)&r);
                         ((s32 *)&ch->unk20)[0] = ((s32 *)&rot)[0];
                         ((s32 *)&ch->unk20)[1] = ((s32 *)&rot)[1];
                         ch->unkC = r.vx << 4;
@@ -265,7 +267,8 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         ch->unk14 = r.vz << 4;
                         ch->unk28 = ex->btlfx_randCentered(0x5C);
                         ch->unk2A = ex->btlfx_randCentered(0x80);
-                        ex->func_800CFCA8(&rot, -((((ex->btlfx_rand() & 0xF) + 0x5C) - i * 8) << 4), (s32)&ch->unk18);
+                        x1 = (ex->btlfx_rand() & 0xF) + 0x5C;
+                        ex->func_800CFCA8(&rot, -((x1 - j * 8) << 4), (s32)&ch->unk18);
                         ch->unk18 += ex->btlfx_randCentered(0x3E0);
                         ch->unk1C += ex->btlfx_randCentered(0x3E0);
                     }
@@ -294,7 +297,8 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if ((u32)(work->unk0 - 2) < 4) {
             if (++work->unk7C < 11) {
-                work->unk80 = work->unk80 + 11 - (work->unk7C * 10) / 11;
+                x2 = work->unk80 + 11;
+                work->unk80 = x2 - (work->unk7C * 10) / 11;
             } else {
                 work->unk80++;
             }
@@ -303,8 +307,8 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (c != 0) {
             r.vx = 0x400;
             r.vy = 0;
-            r.pad = 1;
             r.vz = work->unk4 * 41;
+            r.pad = 1;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x24), &work->unk58, &r, (work->unk4 << 6) + 0x2800,
                               0, 1, c);
             r.vz = work->unk4 * 24 + 0x400;
