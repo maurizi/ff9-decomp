@@ -419,18 +419,65 @@ s32 func_801E8E00(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E8E58);
+void func_801E8E58(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+    s32 c = (from * (n - t) + to * t) / n;
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E8EF0);
+    BTLFX_EXPORTS(D_801E9258)->btlfx_drawScreenTint((u32 *)(D_801E9258->unk20 + ot), arg4, c, c, c);
+}
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E8F08);
+void func_801E8EF0(Fx180Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx180Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E8F6C);
+s32 func_801E8F08(Fx180Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx180Point *p;
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E8FD8);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E905C);
+void func_801E8F6C(s32 unit, s32 motion) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9258);
 
-INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E90A8);
+    ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
+    ex->btlfx_setMotionFrame(unit, 0);
+}
+
+s32 func_801E8FD8(s32 unit) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9258);
+
+    s32 r;
+
+    if (ex->btlfx_isUnitActive(unit)) {
+        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+    } else {
+        r = 0;
+    }
+    return r;
+}
+
+void func_801E905C(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E9258)->btlfx_isUnitActive(unit)) {
+        func_801E8F6C(unit, 2);
+    }
+}
+
+void func_801E90A8(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E9258)->btlfx_isUnitActive(unit)) {
+        func_801E8F6C(unit, 3);
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_180/nonmatchings/fx_180", func_801E90F4);

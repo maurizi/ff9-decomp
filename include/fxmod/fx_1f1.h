@@ -24,6 +24,6 @@ extern Unk800F78A4 *D_801E7F04;
 extern Fx1f1Unit D_801E7F14[];
 extern BtlModel D_801E8214[];
 
-s32 func_801E7704(s32 mode, s32 n, s32 t, s32 from, s32 to);
+s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

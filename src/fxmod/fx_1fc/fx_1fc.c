@@ -22,23 +22,73 @@ s32 func_801E86FC(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8754);
+void func_801E8754(Fx1fcPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1fcPoint *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E876C);
+s32 func_801E876C(Fx1fcPath *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx1fcPoint *p;
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E87D0);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
+
+void func_801E87D0(Fx1fcPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1fcPoint *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E87E8);
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E887C);
+void func_801E887C(Fx1fcPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1fcPoint *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8894);
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E88D8);
+void func_801E88D8(Fx1fcPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1fcPoint *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E88F0);
+s32 func_801E88F0(Fx1fcTrack6 *track, s32 t, VECTOR *out) {
+    s32 last = track->unk2 - 1;
+    s32 done = 1;
+    Fx1fcKey6 *k;
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8954);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    k = &track->unk4[t];
+    out->vx = k->x;
+    out->vy = k->y;
+    out->vz = k->z;
+    return done;
+}
+
+void func_801E8954(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+    s32 c = (from * (n - t) + to * t) / n;
+
+    BTLFX_EXPORTS(D_801EC14C)->btlfx_drawScreenTint((u32 *)(D_801EC14C->unk20 + ot), arg4, c, c, c);
+}
 
 INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E89EC);
 

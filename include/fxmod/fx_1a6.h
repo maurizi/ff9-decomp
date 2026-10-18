@@ -6,6 +6,11 @@
 
 typedef struct {
     Pool6CEntry *unk0;
+    SVECTOR unk4; /* target position */
+} Fx1a6Work;
+
+typedef struct {
+    Pool6CEntry *unk0;
     Pool6CEntry *unk4;
     Pool6CEntry *unk8;
     Pool6CEntry *unkC;

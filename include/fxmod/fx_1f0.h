@@ -36,6 +36,6 @@ extern Fx1f0Unit D_801E8558[4];
 extern BtlModel D_801E8608[];
 
 void func_801E7704(s32 mode, s32 n, s32 t, SVECTOR *pts, SVECTOR *out);
-s32 func_801E7948(s32 mode, s32 n, s32 t, s32 from, s32 to);
+s32 func_801E7948(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

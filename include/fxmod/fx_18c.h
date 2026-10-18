@@ -12,6 +12,6 @@ typedef struct {
 extern Unk800F78A4 *D_801E7B10;
 extern s32 D_801E7B20[3]; /* countdowns */
 
-s32 func_801E7704(s32, s32, s32, s32, s32);
+s32 func_801E7704(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif

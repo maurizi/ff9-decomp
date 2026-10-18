@@ -289,8 +289,27 @@ s32 fx_191_op81(s32 mode, Fx191Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_191/nonmatchings/fx_191", func_801E8460);
+void func_801E8460(Fx191Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx191Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_191/nonmatchings/fx_191", func_801E8478);
+s32 func_801E8478(Fx191Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx191Point *p;
+
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
 
 INCLUDE_RODATA("asm/us/fx_191/nonmatchings/fx_191", fx_191_headerPtr);

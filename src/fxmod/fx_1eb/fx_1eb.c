@@ -196,10 +196,18 @@ s32 func_801E80B0(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_1eb/nonmatchings/fx_1eb", func_801E8108);
+void func_801E8108(Fx1ebPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1ebPoint *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_1eb/nonmatchings/fx_1eb", func_801E8120);
 
-INCLUDE_ASM("asm/us/fx_1eb/nonmatchings/fx_1eb", func_801E81B4);
+void func_801E81B4(Fx1ebPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1ebPoint *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_1eb/nonmatchings/fx_1eb", func_801E81CC);

@@ -5,6 +5,11 @@
 #include "btlfx_mod.h"
 
 typedef struct {
+    Pool6CEntry *unk0;
+    SVECTOR unk4;
+} Fx19eWork;
+
+typedef struct {
     SVECTOR unk0; /* caster body position */
     SVECTOR unk8; /* angles */
     SVECTOR unk10; /* destination */

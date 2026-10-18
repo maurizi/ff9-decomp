@@ -243,6 +243,25 @@ s32 func_801E822C(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_1e6/nonmatchings/fx_1e6", func_801E8284);
+void func_801E8284(Fx1e6Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1e6Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_1e6/nonmatchings/fx_1e6", func_801E829C);
+s32 func_801E829C(Fx1e6Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx1e6Point *p;
+
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}

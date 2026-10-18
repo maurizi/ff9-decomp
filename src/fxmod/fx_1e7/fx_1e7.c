@@ -165,18 +165,63 @@ s32 fx_1e7_op81(s32 mode, Fx1e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E8054);
+void func_801E8054(Fx1e7Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1e7Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E806C);
+s32 func_801E806C(Fx1e7Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx1e7Point *p;
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E80D0);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E813C);
+void func_801E80D0(s32 unit, s32 motion) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E82E0);
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E81C0);
+    ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
+    ex->btlfx_setMotionFrame(unit, 0);
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E820C);
+s32 func_801E813C(s32 unit) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E82E0);
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E8258);
+    s32 r;
+
+    if (ex->btlfx_isUnitActive(unit)) {
+        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+    } else {
+        r = 0;
+    }
+    return r;
+}
+
+void func_801E81C0(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E82E0)->btlfx_isUnitActive(unit)) {
+        func_801E80D0(unit, 2);
+    }
+}
+
+void func_801E820C(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E82E0)->btlfx_isUnitActive(unit)) {
+        func_801E80D0(unit, 3);
+    }
+}
+
+void func_801E8258(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}
 
 INCLUDE_RODATA("asm/us/fx_1e7/nonmatchings/fx_1e7", fx_1e7_headerPtr);

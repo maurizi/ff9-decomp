@@ -238,18 +238,65 @@ s32 func_801E81B0(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E8208);
+void func_801E8208(Fx1b2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx1b2Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E8220);
+s32 func_801E8220(Fx1b2Track6 *track, s32 t, VECTOR *out) {
+    s32 last = track->unk2 - 1;
+    s32 done = 1;
+    Fx1b2Key6 *k;
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E8284);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    k = &track->unk4[t];
+    out->vx = k->x;
+    out->vy = k->y;
+    out->vz = k->z;
+    return done;
+}
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E831C);
+void func_801E8284(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+    s32 c = (from * (n - t) + to * t) / n;
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E8388);
+    BTLFX_EXPORTS(D_801E84EC)->btlfx_drawScreenTint((u32 *)(D_801E84EC->unk20 + ot), arg4, c, c, c);
+}
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E840C);
+void func_801E831C(s32 unit, s32 motion) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E84EC);
 
-INCLUDE_ASM("asm/us/fx_1b2/nonmatchings/fx_1b2", func_801E8458);
+    ex->btlfx_setUnitMotion(unit, ex->btlfx_getUnitMotion(unit, motion));
+    ex->btlfx_setMotionFrame(unit, 0);
+}
+
+s32 func_801E8388(s32 unit) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E84EC);
+
+    s32 r;
+
+    if (ex->btlfx_isUnitActive(unit)) {
+        r = ex->btlfx_getMotionFrame(unit) == ex->btlfx_getMotionLength(unit) - 1;
+    } else {
+        r = 0;
+    }
+    return r;
+}
+
+void func_801E840C(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E84EC)->btlfx_isUnitActive(unit)) {
+        func_801E831C(unit, 2);
+    }
+}
+
+void func_801E8458(s32 unit) {
+    if (BTLFX_EXPORTS(D_801E84EC)->btlfx_isUnitActive(unit)) {
+        func_801E831C(unit, 3);
+    }
+}
 
 INCLUDE_RODATA("asm/us/fx_1b2/nonmatchings/fx_1b2", fx_1b2_headerPtr);

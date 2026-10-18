@@ -226,7 +226,11 @@ s32 func_801E8184(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_183/nonmatchings/fx_183", func_801E81DC);
+void func_801E81DC(Fx183Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx183Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_183/nonmatchings/fx_183", func_801E81F4);
 
