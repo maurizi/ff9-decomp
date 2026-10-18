@@ -1,4 +1,4 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 24 aligned mismatches, 8
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 20 aligned mismatches, 4
  * ignoring registers (4 of the 24 are relocation addends: D_801EC8C8/D_801EC8D4 are emitted as D_801EC8C0+8/+0x14 and
  * link identically); untested.
  * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14);
@@ -836,14 +836,16 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801EA4E0(0xFF, 0, work->unk0[7], 8, 1, 0);
         }
         if (work->unk0[0xD] != 0) {
+            s32 sh;
             work->unk0[0xD]--;
+            sh = D_801ED8C0;
             n = work->unk0[0xD];
             scale.vz = scale.vy = scale.vx = n * 3 + 0x1000;
+            col.r = col.g = col.b = n << sh;
             scale.vz = scale.vy = scale.vx = 0x1000;
             ang2.vx = 0;
             ang2.vy = 0;
             ang2.vz = 0;
-            col.r = col.g = col.b = n << D_801ED8C0;
             ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &ang2, &scale, &col, 1, NULL);
         }
         return frame >= 0x134;
