@@ -80,4 +80,49 @@ typedef struct {
 } Fx123Path_0b4;
 s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
+/* PsyQ libgte.h macros: candidates for psyq.h */
+#define copyVector(d, s) (d)->vx = (s)->vx, (d)->vy = (s)->vy, (d)->vz = (s)->vz
+#define addVector(d, s) (d)->vx += (s)->vx, (d)->vy += (s)->vy, (d)->vz += (s)->vz
+
+typedef struct {
+    Pool6CEntry *unk0[6];
+    u8 pad18[0x30 - 0x18];
+    Pool6CEntry *unk30[6];
+    Pool6CEntry *unk48[6];
+    Pool6CEntry *unk60;
+    SVECTOR unk64;
+    SVECTOR unk6C[6];
+    VECTOR unk9C[6];
+    VECTOR unkFC;
+    s32 unk10C;
+    SVECTOR unk110[6];
+    SVECTOR unk140;
+    SVECTOR unk148[6];
+    s16 unk178;
+    u16 unk17A[6];
+    u16 unk186;
+} Fx123Work81; /* 0x188 */
+
+typedef struct {
+    SVECTOR unk0;
+    SVECTOR unk8;
+    SVECTOR unk10;
+    u16 unk18;
+    u16 unk1A;
+    s16 unk1C;
+    s16 unk1E;
+    s16 unk20;
+    s16 unk22;
+} Fx123Shot; /* 0x24 */
+
+extern Fx123Shot D_801E8F7C[6];
+extern u16 D_801E9054[6];
+extern u16 D_801E9060[6];
+extern s32 D_801E906C[6];
+extern BtlModel D_801E90DC[];
+extern Fx123Path_0b4 D_801E965C[6];
+extern u8 D_801E96BC[6][0xE0];
+extern SVECTOR D_801E9C5C[6];
+extern SVECTOR D_801E9C8C[6];
+
 #endif
