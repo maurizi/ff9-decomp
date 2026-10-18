@@ -1,5 +1,5 @@
 /* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: first full
- * draft, 47 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
+ * draft, 19 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
  * entry s2, env spilled; &sc/&b and 0x80/10000 in s-registers in the ribbon loop; c of the ribbon loop spilled to
  * 0xC0) and statement order in several blocks. Levers already applied: 12-byte vectors in the work block,
  * "((k * col) >> 11) / 3", inline RGB expressions, wave2 = (frame << 12) / 49 before the case-4 test, ribbon buffer
@@ -79,8 +79,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 c;
     s32 i;
     s32 glow;
-    s32 rib;
     s32 wave;
+    s32 rib;
     s32 wave2;
     s32 t;
     s32 o;
@@ -250,12 +250,12 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 D_801E9DBC = 0;
             }
             if (D_801E9DBC != 0) {
-                s32 d = (ex->math_sin((frame << 11) / 159) * 3) >> 2;
+                s32 d = ((ex->math_sin((frame << 11) / 159) * 3) >> 2) + 0x400;
 
                 env->unk28 = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk34);
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk34, NULL, 0x1000, 0, 1,
-                                  d + 0x400);
+                                  d);
                 env->unk28 = 0;
             }
             if (frame == 0) {
@@ -275,24 +275,28 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if ((u32)(frame - 0x7F) <= 0x10) {
                 s32 d = (frame - 0x7F) << 12;
+                s32 e = d >> 4;
 
                 if (work->unk44 != NULL) {
-                    work->unk44->unk20 = 0x1000 - (d >> 4);
+                    work->unk44->unk20 = 0x1000 - e;
                     if (work->unk44 != NULL) {
                         work->unk44->unk1C = 0x1000 - (d >> 5);
                     }
                 }
                 if (work->unk48 != NULL) {
-                    work->unk48->unk20 = 0x1000 - (d >> 4);
+                    work->unk48->unk20 = 0x1000 - e;
                 }
                 if (frame - 0x7F == 0x10) {
                     ex->func_800E3D54(work->unk44);
                     ex->func_800E3D54(work->unk48);
                 }
             }
-            glow = 0x1000;
-            if (frame >= 0x87) {
-                s32 d = ((frame - 0x87) << 12) / 24;
+            if (frame < 0x87) {
+                glow = 0x1000;
+            } else {
+                s32 d = frame - 0x87;
+
+                d = (d << 12) / 24;
 
                 k = 0x1000 - d;
                 wave2 = d;
@@ -372,24 +376,24 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sc2.vz = 0x555;
             pos.vz = work->unk8.vz;
             rot.vx = work->unk4 * 0xC;
-            rot.vz = frame * 8;
             rot.vy = work->unk4 * 4;
+            rot.vz = frame * 8;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc2, work->unk5C);
             ex->Hi_ModifyEffModelRGB(work->unk5C, ((glow * 3) >> 7) - 0x80, ((glow * 3) >> 7) - 0x80,
                                      ((glow * 3) >> 7) - 0x80);
             sc2.vx = sc2.vy = 0xAAA;
             sc2.vz = 0x400;
-            rot.vx = work->unk4 * -4;
-            rot.vz = frame * 0xC;
+            rot.vx = -work->unk4 * 4;
             rot.vy = work->unk4 * 0x10;
+            rot.vz = frame * 0xC;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc2, work->unk5C);
             ex->Hi_ModifyEffModelRGB(work->unk5C, ((glow * 7) >> 8) - 0x80, ((glow * 7) >> 8) - 0x80,
                                      ((glow * 7) >> 8) - 0x80);
             sc2.vx = sc2.vy = 0x800;
             sc2.vz = 0x333;
             rot.vx = work->unk4 * 4;
-            rot.vz = frame * 0x10;
             rot.vy = work->unk4 * 0xC;
+            rot.vz = frame * 0x10;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc2, work->unk5C);
             ex->Hi_ModifyEffModelRGB(work->unk5C, (glow >> 5) - 0x80, (glow >> 5) - 0x80, (glow >> 5) - 0x80);
             ex->func_800E6624(work->unk4 * 4, 0x2A0, 0x180, 0x10, 0x40, 0x2B0, 0x180);
