@@ -45,6 +45,8 @@ typedef struct {
 } Fx005Work; /* 0x18 */
 
 extern s16 D_801E8BD8[];
+extern Fx005Strip D_801E8C50[];
+extern Fx005Branch D_801E9280[];
 extern s32 D_801E95F0[];
 extern u16 D_801E8BC8[];
 extern u16 D_801E8BD0[];

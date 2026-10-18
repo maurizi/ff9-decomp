@@ -103,7 +103,75 @@ void func_801E7CEC(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *rot, s32 *scale, s
     ex->func_800D1FFC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1F), pos, &r, w, t, 1, *col);
 }
 
-INCLUDE_ASM("asm/us/fx_005/nonmatchings/fx_005", func_801E7F60);
+s32 func_801E7F60(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    Fx005Strip *strip;
+    Fx005Strip *br;
+    Pool6CEntry *p;
+    s32 c;
+    s32 t;
+
+    if (mode == 1) {
+        it->unk11 = 0;
+        return 0;
+    }
+    switch (it->unk11) {
+    case 0:
+        t = frame << 9;
+        if (it->unk14 < 2) {
+            c = ex->math_cos(t >> 2);
+            strip = &D_801E8C50[it->unk10];
+            br = (Fx005Strip *)&D_801E9280[it->unk10];
+            func_801E7704(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame * 0x97, 0x186, frame, c,
+                          ((0x1000 - t) * (it->unk15 + 0xFB)) >> 12, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
+            if (frame == 0) {
+                it->unk1C = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&it->unk0);
+                if (it->unk1C != NULL) {
+                    it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
+                }
+                if (it->unk10 & 1) {
+                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0xC, 0x46);
+                    p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&it->unk0);
+                    if (p != NULL) {
+                        p->unk22 = ex->func_800E7CC4(0, 0x40);
+                    }
+                }
+            }
+            if (frame >= 8) {
+                it->unk11 = 1;
+                ((s16 *)it)[-1] = -1;
+            }
+        } else {
+            t = (frame << 12) / 6;
+            c = ex->math_cos(t >> 2);
+            strip = &D_801E8C50[it->unk10];
+            br = (Fx005Strip *)&D_801E9280[it->unk10];
+            func_801E7704(entry, strip, it->unk18, &it->unk0, &it->unk8, 0, 0x200, frame << 6, 0x186, frame, c,
+                          ((0x1000 - t) * 0xAA) >> 12, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18, it->unk12, c, (0x1000 - t) >> 6, it->unk14);
+            func_801E7BF8(entry, strip, br, it->unk18 + 3, it->unk13, c, (0x1000 - t) >> 6, it->unk14);
+            if (frame == 0) {
+                it->unk1C = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&it->unk0);
+                if (it->unk1C != NULL) {
+                    it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
+                }
+            }
+            if (frame >= 6) {
+                it->unk11 = 1;
+                ((s16 *)it)[-1] = -1;
+            }
+        }
+        break;
+    case 1:
+        if (frame >= 6) {
+            return 1;
+        }
+        break;
+    }
+    return 0;
+}
 
 s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
