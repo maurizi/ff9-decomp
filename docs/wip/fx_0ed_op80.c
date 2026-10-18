@@ -146,7 +146,8 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->unk4)->unk60, 0);
+            t0 = ((Fx0edSummon *)env->unk4)->unk60;
+            ex->Hi_SetSummonMotFrame(t0, 0);
             ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)&work->unk34, ((Fx0edSummon *)env->unk4)->unk60, 1);
             if (frame >= 8) {
                 work->unk0 = 2;
