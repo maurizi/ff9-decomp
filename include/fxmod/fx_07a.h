@@ -6,6 +6,7 @@
 
 extern Unk800F78A4 *D_801E94F4;
 
+s32 func_801E77A8(s32 curve, s32 n, s32 t, SVECTOR *from, SVECTOR *to, SVECTOR *out);
 s32 func_801E78E4(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
 #endif
