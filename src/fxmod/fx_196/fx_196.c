@@ -98,8 +98,62 @@ INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", func_801E8370);
 
 INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", fx_196_op85);
 
-INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", fx_196_op86);
+s32 fx_196_op86(s32 mode, Fx196Work86 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    Pool6CEntry *p;
+    s32 i;
 
-INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", fx_196_op87);
+    if (mode == 0) {
+        *arg4 = 0x44;
+    } else if (mode == 1) {
+        D_801E915C = env;
+        work->unk40 = env->unkC->unk24;
+        for (i = 0; i < work->unk40; i++) {
+            if (ex->btlfx_isEnemyUnit(i) != 0) {
+                ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
+                work->unk0[i].vz -= ex->btlfx_getUnitRadius(i);
+                work->unk0[i].vy -= 0x200;
+                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk0[i]);
+                if (p != NULL) {
+                    p->unk22 = ex->func_800E7CC4(i, 0x200);
+                }
+            }
+        }
+    } else {
+        if (entry->unk0 >= 0x2E) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+s32 fx_196_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    s32 frame;
+    s32 n;
+
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        n = *arg4;
+        D_801E915C = env;
+        *work = n;
+    } else {
+        frame = entry->unk0;
+        func_801E7704((Fx196Track *)ex->btlfx_getFileData(entry->unk8, D_801E910C[*work].unk2), frame, &v);
+        env->unk2C->unk0[1].vx = v.vx;
+        env->unk2C->unk0[1].vy = v.vy;
+        env->unk2C->unk0[1].vz = v.vz;
+        func_801E7704((Fx196Track *)ex->btlfx_getFileData(entry->unk8, D_801E910C[*work].unk0), frame, &v);
+        env->unk2C->unk0[0].vx = v.vx;
+        env->unk2C->unk0[0].vy = v.vy;
+        env->unk2C->unk0[0].vz = v.vz;
+        if (frame >= D_801E910C[*work].unk4) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_196/nonmatchings/fx_196", fx_196_headerPtr);
