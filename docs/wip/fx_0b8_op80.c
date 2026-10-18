@@ -138,10 +138,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR pos;
     VECTOR sc;
     SVECTOR p2;
-    SVECTOR rot;
     SVECTOR ang;
-    VECTOR scale;
+    SVECTOR rot;
     CVECTOR col;
+    SVECTOR ang2;
+    VECTOR scale;
     Pool6CEntry *p;
     Fx0b8Bolt *b;
     Fx0b8Unit *u;
@@ -314,6 +315,9 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14C.vy = 0x555;
             work->unk14C.vz = 0x555;
             work->unk124 = 0x555;
+            work->unk13C.vx = 0;
+            work->unk13C.vy = -0x246A;
+            work->unk13C.vz = 0x418;
             work->unk11C.vx = 0x800;
             work->unkFC.vy = -0x186A;
             work->unk8C.vx = 0xC00;
@@ -321,9 +325,6 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8C.vz = 0xC00;
             work->unk6C.vy = -0x286A;
             work->unk1A0.vx = 0;
-            work->unk13C.vx = 0;
-            work->unk13C.vy = -0x246A;
-            work->unk13C.vz = 0x418;
             work->unk164.vx = 0;
             work->unk164.vy = -0x246A;
             work->unk164.vz = 0x418;
@@ -344,9 +345,9 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (frame) {
         case 0:
+            work->unk0[0] = 1;
             work->unk0[2] = 0x2C;
             work->unk0[0x11] = 0x4C;
-            work->unk0[0] = 1;
             work->unk0[8] = 1;
             work->unk0[9] = 1;
             work->unk0[0x12] = 0x30;
@@ -833,11 +834,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[0xD]--;
             scale.vz = scale.vy = scale.vx = work->unk0[0xD] * 3 + 0x1000;
             scale.vz = scale.vy = scale.vx = 0x1000;
-            ang.vx = 0;
-            ang.vy = 0;
-            ang.vz = 0;
+            ang2.vx = 0;
+            ang2.vy = 0;
+            ang2.vz = 0;
             col.r = col.g = col.b = work->unk0[0xD] << D_801ED8C0;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &ang, &scale, &col, 1, NULL);
+            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &ang2, &scale, &col, 1, NULL);
         }
         return frame >= 0x134;
     }
