@@ -1,9 +1,10 @@
-/* Draft of fx_081 fx_081_op81 (twin of fx_057 op81, 0.78). Status: 185 aligned mismatches, 53 ignoring registers;
- * the frame size (0x78) and frame's spill slot at 0x40 now match. Pass 2: case 2's second loop computes the
- * ang.vy partial into a (the first loop's s0 variable), and h is declared before c (spill slots h 0x44, c 0x48).
- * Open: the original hoists w << 4 out of the inner loop into s6 and keeps the second loop's particle pointer in a
- * spilled copy (sw s2,0x4C(sp)); here w << 4 stays in the loop and pp keeps its register. Explicit k = w << 4 and
- * pp2 = pp variants shift the spills elsewhere (see build notes). env is s6 / work s5 in the original (ours s4/s6). */
+/* Draft of fx_081 fx_081_op81 (twin of fx_057 op81, 0.78). Status: 176 aligned mismatches, 38 ignoring registers;
+ * the frame size (0x78), frame's spill slot (0x40) and the second loop's spilled particle pointer (0x4C) match.
+ * Pass 2 levers: in case 2 frame << 7 is computed into j before the tint (the original keeps it in s4 across the
+ * call), the second loop writes ang.vy = (w << 4) + (a = ...) so loop.c hoists w << 4 (lifetime long enough) and
+ * a is the first loop's variable, pp2 = pp for the second loop (spilled), h declared before c (spill slots).
+ * Open: global allocation at the top (original env s6, work s5, the constant 1 in s7, t/a in s4/s0; ours s7, s6,
+ * s4, s5); case 1's copy block (work->unkC / unk14 / unk1C) store order; loop 1's a += 0x155 / i++ order. */
 #include "btlfx_mod.h"
 
 extern Unk800F78A4 *D_801E8ED8;
@@ -69,6 +70,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 w;
     s32 vx;
     SVECTOR *pp;
+    SVECTOR *pp2;
 
     if (mode == 0) {
         *arg4 = sizeof(Fx081Work81);
@@ -161,12 +163,13 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
+            j = frame << 7;
             env->unk28 = 0;
             if (frame < 6) {
                 u = 0xFF - frame * 0xFF / 6;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, u >> 1, u, u);
             }
-            t = (frame << 7) >> 2;
+            t = j >> 2;
             c = ex->math_cos(t);
             h = ((ex->math_sin(t) * 0x60E) >> 12) + 0x100;
             ang.vx = 0;
@@ -188,14 +191,14 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             h = h * 2 / 3;
+            pp2 = pp;
             for (j = 0, w = 0; j < 10; j++, w += frame) {
                 vx = 0x400 - (j << 11) / 9;
                 for (i = 0; i < D_801E8E7C[j]; i++) {
                     ang.vx = vx;
-                    a = (i << 12) / D_801E8E7C[j] - (work->unk4 << 5);
-                    ang.vy = a + (w << 4);
-                    ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, h, (s16 *)pp);
-                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x25), pp, NULL, c + 0x800, 0, 1, c, 0,
+                    ang.vy = (w << 4) + (a = (i << 12) / D_801E8E7C[j] - (work->unk4 << 5));
+                    ex->func_800CFD78((s16 *)&work->unkC, (s16 *)&ang, h, (s16 *)pp2);
+                    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x25), pp2, NULL, c + 0x800, 0, 1, c, 0,
                                       0);
                 }
             }
