@@ -1,9 +1,186 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_1ac.h"
 
 INCLUDE_ASM("asm/us/fx_1ac/nonmatchings/fx_1ac", func_801E77D0);
 
 INCLUDE_RODATA("asm/us/fx_1ac/nonmatchings/fx_1ac", fx_1ac_headerPtr);
 
-INCLUDE_ASM("asm/us/fx_1ac/nonmatchings/fx_1ac", fx_1ac_op80);
+s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    SVECTOR a;
+    Pool6CEntry *p;
+    s32 frame;
+    s32 i;
+    s32 t;
+
+    if (mode == 0) {
+        *arg4 = 0x60;
+    } else if (mode == 1) {
+        D_801E8300 = env;
+        for (i = 7; i >= 0; i--) {
+            work->unk0[i] = 0;
+        }
+        ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
+        ex->btlfx_getUnitRot(0, (s16 *)&work->unk44);
+        work->unk4C[0] = NULL;
+        work->unk4C[1] = NULL;
+        work->unk4C[2] = NULL;
+        work->unk4C[3] = NULL;
+        work->unk4C[4] = NULL;
+    } else {
+        frame = entry->unk0;
+        if (work->unk4C[0] != NULL && work->unk4C[0]->unk30 == -1) {
+            work->unk4C[0] = NULL;
+        }
+        if (work->unk4C[1] != NULL && work->unk4C[1]->unk30 == -1) {
+            work->unk4C[1] = NULL;
+        }
+        if (work->unk4C[2] != NULL && work->unk4C[2]->unk30 == -1) {
+            work->unk4C[2] = NULL;
+        }
+        if (work->unk4C[3] != NULL && work->unk4C[3]->unk30 == -1) {
+            work->unk4C[3] = NULL;
+        }
+        if (work->unk4C[4] != NULL && work->unk4C[4]->unk30 == -1) {
+            work->unk4C[4] = NULL;
+        }
+        ex->func_800DC818(0x10, 4, (u16 *)&work->unk30);
+        switch (frame) {
+        case 0:
+            ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk20);
+            ex->btlfx_getUnitPos(0, (s16 *)&work->unk28);
+            D_801E8304 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk28);
+            if (p != NULL) {
+                p->unk14 = (s32)D_801E8310;
+                p->unk12 = 4;
+                p->unkC = 0x9C;
+                ((EffMotion *)p->unk0)->unk8 = func_801E81C4;
+            }
+            work->unk0[0] = 0xE;
+            break;
+        case 14:
+            ex->func_800E806C(0, 0);
+            ex->btlfx_getUnitHomePos(0, (s16 *)&v);
+            ex->btlfx_setUnitPos(0, (s16 *)&v);
+            break;
+        case 20:
+            ex->func_800DC818(0x10, 4, (u16 *)&D_801E8580);
+            work->unk4C[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E8580);
+            work->unk0[3] = 0x10;
+            break;
+        case 26:
+            ex->func_800DC818(0x10, 4, (u16 *)&D_801E8588);
+            work->unk4C[1] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E8588);
+            work->unk0[4] = 0x10;
+            break;
+        case 32:
+            ex->func_800DC818(0x10, 4, (u16 *)&D_801E8590);
+            work->unk4C[2] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801E8590);
+            work->unk0[5] = 0x10;
+            break;
+        case 46:
+            ex->func_800DC818(0x10, 4, (u16 *)&D_801E8598);
+            work->unk4C[3] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E8598);
+            work->unk0[6] = 0x10;
+            break;
+        case 50:
+            work->unk0[2] = 2;
+            ex->func_800E806C(0, 0x80);
+            ex->btlfx_setUnitRot(0, (s16 *)&work->unk44);
+            ex->btlfx_getUnitHomePos(0, (s16 *)&D_801E85A0);
+            work->unk4C[4] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&D_801E85A0);
+            work->unk0[7] = 0x10;
+            break;
+        }
+        if (work->unk0[0] != 0) {
+            work->unk0[0]--;
+            t = 0xE - work->unk0[0];
+            D_801E85A8.vx = ex->btlfx_lerpRatio(work->unk28.vx, work->unk30.vx, t, 0xE);
+            D_801E85A8.vz = ex->btlfx_lerpRatio(work->unk28.vz, work->unk30.vz, t, 0xE);
+            D_801E85A8.vy = work->unk28.vy - (t * 0x258 - (t * 0x25) * t);
+            ex->btlfx_setUnitPos(0, (s16 *)&D_801E85A8);
+            work->unk38.vx -= 0xAA;
+            ex->btlfx_setUnitRot(0, (s16 *)&work->unk38);
+        }
+        if (work->unk0[3] != 0) {
+            MATRIX m;
+
+            work->unk0[3]--;
+            ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
+            ex->func_800CFF40(&m, (s16 *)&a);
+            if (work->unk4C[0] != NULL) {
+                work->unk4C[0]->unk5C.vx = a.vx;
+                work->unk4C[0]->unk5C.vy = a.vy;
+                work->unk4C[0]->unk5C.vz = a.vz;
+            }
+            ex->func_800DC818(0x10, 4, (u16 *)&v);
+            ex->func_800E3D20((s32)work->unk4C[0], (s32)&v);
+        }
+        if (work->unk0[4] != 0) {
+            MATRIX m;
+
+            work->unk0[4]--;
+            ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
+            ex->func_800CFF40(&m, (s16 *)&a);
+            if (work->unk4C[1] != NULL) {
+                work->unk4C[1]->unk5C.vx = a.vx;
+                work->unk4C[1]->unk5C.vy = a.vy;
+                work->unk4C[1]->unk5C.vz = a.vz;
+            }
+            ex->func_800DC818(0x10, 4, (u16 *)&v);
+            ex->func_800E3D20((s32)work->unk4C[1], (s32)&v);
+        }
+        if (work->unk0[5] != 0) {
+            MATRIX m;
+
+            work->unk0[5]--;
+            ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
+            ex->func_800CFF40(&m, (s16 *)&a);
+            if (work->unk4C[2] != NULL) {
+                work->unk4C[2]->unk5C.vx = a.vx;
+                work->unk4C[2]->unk5C.vy = a.vy;
+                work->unk4C[2]->unk5C.vz = a.vz;
+            }
+            ex->func_800DC818(0x10, 4, (u16 *)&v);
+            ex->func_800E3D20((s32)work->unk4C[2], (s32)&v);
+        }
+        if (work->unk0[6] != 0) {
+            MATRIX m;
+
+            work->unk0[6]--;
+            ex->func_800DC8AC(0x10, 4, (BtlBone *)&m);
+            ex->func_800CFF40(&m, (s16 *)&a);
+            if (work->unk4C[3] != NULL) {
+                work->unk4C[3]->unk5C.vx = a.vx;
+                work->unk4C[3]->unk5C.vy = a.vy;
+                work->unk4C[3]->unk5C.vz = a.vz;
+            }
+            ex->func_800DC818(0x10, 4, (u16 *)&v);
+            ex->func_800E3D20((s32)work->unk4C[3], (s32)&v);
+        }
+        if (work->unk0[7] != 0) {
+            work->unk0[7]--;
+            a.vx = 0xC00;
+            a.vz = 0;
+            a.vy = 0;
+            if (work->unk4C[4] != NULL) {
+                work->unk4C[4]->unk5C.vx = a.vx;
+                work->unk4C[4]->unk5C.vy = a.vy;
+                work->unk4C[4]->unk5C.vz = a.vz;
+            }
+        }
+        if (work->unk0[2] != 0) {
+            work->unk0[2]--;
+            if (work->unk0[2] != 0) {
+                ex->btlfx_lerpVec((s16 *)&work->unk28, (s16 *)&work->unk20, (work->unk0[2] << 23) >> 12, (s16 *)&v);
+            } else {
+                ex->btlfx_getUnitHomePos(0, (s16 *)&v);
+            }
+            ex->btlfx_setUnitPos(0, (s16 *)&v);
+        }
+        return frame >= 0x46;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_1ac/nonmatchings/fx_1ac", func_801E81C4);
