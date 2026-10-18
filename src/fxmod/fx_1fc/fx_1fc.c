@@ -54,7 +54,46 @@ INCLUDE_RODATA("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_headerPtr);
 
 INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op83);
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op84);
+s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
+    s32 i;
+    s32 j;
+    SVECTOR *a;
+    SVECTOR *b;
+
+    if (mode == 0) {
+        *arg4 = 0xB0;
+    } else if (mode == 1) {
+        D_801EC14C = env;
+        for (j = 0; j < env->unkC->unk24; j++) {
+            work->unkA0[j] = 0;
+            ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk20[j]);
+            work->unk20[j].vy = -0xBB8;
+            ex->btlfx_setUnitPos(j, (s16 *)&work->unk20[j]);
+        }
+    } else {
+        frame = entry->unk0;
+        for (i = 0; i < env->unkC->unk24; i++) {
+            if (work->unkA0[i] == 0 && func_801E89EC(i, frame, 4, &work->unk20[i]) != 0) {
+                work->unkA0[i] = 1;
+                ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk20[i]);
+                ex->btlfx_setUnitPos(i, (s16 *)&work->unk20[i]);
+                a = (SVECTOR *)((u8 *)work + i * 8 + 0x20);
+                b = (SVECTOR *)((u8 *)work + i * 8 + 0x60);
+                b->vx = a->vx;
+                b->vy = a->vy;
+                b->vz = a->vz;
+                work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk60[i]);
+                if (work->unk0[i] != NULL) {
+                    work->unk0[i]->unk22 = 0x80;
+                }
+            }
+        }
+        return frame >= 0x28;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E86A0);
 

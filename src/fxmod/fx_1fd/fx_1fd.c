@@ -70,7 +70,55 @@ INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op82);
 
 INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op83);
 
-INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op84);
+s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR *a;
+    SVECTOR *b;
+    s32 frame;
+    s32 i;
+    s32 j;
+    Fx1fdPose *q;
+
+    if (mode == 0) {
+        *arg4 = 0xD0;
+    } else if (mode == 1) {
+        q = D_801EBADC;
+        D_801E9E4C = env;
+        for (j = 0; j < env->unkC->unk24; j++, q++) {
+            work->unkC0[j] = 0;
+            ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk40[j]);
+            work->unk40[j].vy = -0xBB8;
+            ex->btlfx_setUnitPos(j, (s16 *)&work->unk40[j]);
+            ex->btlfx_setUnitRot(j, (s16 *)&q->unk8);
+        }
+    } else {
+        frame = entry->unk0;
+        for (i = 0; i < env->unkC->unk24; i++) {
+            if (work->unkC0[i] == 0 && func_801E9984(i, frame, 4, &work->unk40[i]) != 0) {
+                work->unkC0[i] = 1;
+                ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk40[i]);
+                ex->btlfx_setUnitPos(i, (s16 *)&work->unk40[i]);
+                a = (SVECTOR *)((u8 *)work + i * 8 + 0x40);
+                b = (SVECTOR *)((u8 *)work + i * 8 + 0x80);
+                b->vx = a->vx;
+                b->vy = a->vy;
+                b->vz = a->vz;
+                work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x13), (s32)&work->unk80[i]);
+                work->unk20[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&work->unk80[i]);
+                if (work->unk0[i] != NULL) {
+                    work->unk0[i]->unk14 = (s32)D_801EC50C[i];
+                    work->unk0[i]->unk12 = 0xC;
+                    work->unk0[i]->unkC = 0x30;
+                }
+                if (work->unk20[i] != NULL) {
+                    work->unk20[i]->unk22 = ex->func_800E7CC4(i, 0x80);
+                }
+            }
+        }
+        return frame >= 0x3C;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", func_801E9710);
 
