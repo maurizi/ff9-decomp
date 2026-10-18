@@ -16,9 +16,9 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         }
         ex->func_800E6E1C(0x240, 0x100, 0x80, 0x80, D_801EDADC, 0, 0x200, 0x2BC);
         func_801E8AB8();
-        func_801E8B04(0, 1, 0, ex->btlfx_getFileData(entry->unk8, 0xE));
-        func_801E8B04(0, 2, 0, ex->btlfx_getFileData(entry->unk8, 0xC));
-        func_801E8B04(0, 3, 0, ex->btlfx_getFileData(entry->unk8, 0xA));
+        func_801E8B04(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0xE));
+        func_801E8B04(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0xC));
+        func_801E8B04(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0xA));
     } else {
         frame = entry->unk0;
         env->unk2C->unk30[1].vz = env->unk2C->unk0[2].vz;

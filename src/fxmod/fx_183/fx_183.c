@@ -120,7 +120,7 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk2C.vy = 0x1800;
         work->unk2C.vz = 0x1800;
         for (j = 0; j < 6; j++) {
-            func_801E81DC(&D_801E8878[j], (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8294[j]));
+            func_801E81DC(&D_801E8878[j], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E8294[j]));
             work->unk50[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8288[j]), 1);
         }
         work->unk48 = -1;
@@ -229,10 +229,10 @@ s32 func_801E8184(s32 from, s32 to, s32 t, s32 n) {
 void func_801E81DC(Fx183Path *path, u16 *data) {
     data++;
     path->unk2 = *data++;
-    path->unk4 = (Fx183Point *)data;
+    path->unk4 = (Fx183Key *)data;
 }
 
-s32 func_801E81F4(Fx183Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+s32 func_801E81F4(Fx183Path *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     Fx183Key *k;
     s32 r = 1;
 

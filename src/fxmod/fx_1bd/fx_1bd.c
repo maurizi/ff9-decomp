@@ -1,6 +1,6 @@
 #include "fxmod/fx_1bd.h"
 
-void func_801E77C0(Fx1bdKeys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
+void func_801E77C0(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
     SVECTOR v;
     SVECTOR *p;
     s32 cnt;
@@ -45,8 +45,8 @@ s32 fx_1bd_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E9E54 = env;
         ex->btlfx_initEffModels(D_801E9E64, 0x20);
         func_801E90CC();
-        func_801E9118(0, 1, 0, ex->btlfx_getFileData(entry->unk8, 0x15));
-        func_801E9118(0, 2, 0, ex->btlfx_getFileData(entry->unk8, 0x14));
+        func_801E9118(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0x15));
+        func_801E9118(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0x14));
         return 0;
     } else {
         frame = entry->unk0;
@@ -158,7 +158,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             for (i = 0; i < 13; i++) {
                 func_801E8E78(&D_801EB764.unk0, func_801E901C((u16 *)ex->btlfx_getFileData(entry->unk8, 0x16), i));
-                func_801E77C0(&D_801EB764, D_801EBC54[i], 0x50, D_801EB764.unk8, D_801EB764.unkA, D_801EB764.unk10,
+                func_801E77C0(&D_801EB764.unk0, D_801EBC54[i], 0x50, D_801EB764.unk8, D_801EB764.unkA, D_801EB764.unk10,
                               D_801EB764.unk12, 0);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x17), 0, NULL, 0, D_801EB764.unkE,
                                     D_801EB764.unkC, 1, D_801EBC54[i], 0);
@@ -295,7 +295,7 @@ s32 func_801E8FB8(Fx1bdTrack6 *track, s32 t, VECTOR *out) {
 }
 
 u16 *func_801E901C(u16 *base, u16 i) {
-    return (s32)base + ((s32 *)base)[(u16)i + 1];
+    return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
 }
 
 void func_801E9034(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {

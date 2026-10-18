@@ -41,11 +41,7 @@ void func_801E81A4(s32 unit);
 
 /* propagated */
 s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-extern SVECTOR D_801EDD30; /* particle paths: starts */
-extern SVECTOR D_801EDD50; /* ends */
 s32 func_801E7744(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-extern SVECTOR D_801EDD38; /* particle paths: starts */
-extern SVECTOR D_801EDD58; /* ends */
 s32 func_801E7784(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 
 #endif

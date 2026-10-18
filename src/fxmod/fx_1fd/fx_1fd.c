@@ -177,7 +177,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 frame;
     s32 i;
     s32 j;
-    Fx1fdPose *q;
+    Fx1fdOrbit *q;
 
     if (mode == 0) {
         *arg4 = 0xD0;
@@ -221,7 +221,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 u16 *func_801E9710(u8 *base, u16 i) {
-    return (s32)base + ((s32 *)base)[(u16)i + 1];
+    return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
 }
 
 void func_801E9728(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {

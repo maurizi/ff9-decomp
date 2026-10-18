@@ -101,9 +101,9 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E8AB0.vy = 0;
         D_801E8AB0.vz = -0x2EE;
         func_801E7704();
-        func_801E7738(0, 3, 0, ex->btlfx_getFileData(entry->unk8, 3));
-        func_801E7738(0, 1, 0, ex->btlfx_getFileData(entry->unk8, 4));
-        func_801E7738(0, 2, 0, ex->btlfx_getFileData(entry->unk8, 5));
+        func_801E7738(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 3));
+        func_801E7738(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 4));
+        func_801E7738(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 5));
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)&D_801EA680[0], 0);
         ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), 0, NULL, -1, 0x1000, 0x1000, 1, (u8 *)&D_801EA680[1], 0);
     } else {

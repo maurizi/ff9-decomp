@@ -29,7 +29,7 @@ s32 func_801E784C(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n)
     return 0;
 }
 
-void func_801E78AC(Fx114Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
+void func_801E78AC(Fx114Path *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
     SVECTOR v;
     SVECTOR *p;
     s32 cnt;
@@ -212,7 +212,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             for (i = 0, buf = D_801EE658[0]; i < 13; i++) {
                 func_801EA6DC(&D_801ED078.unk0, (u16 *)func_801EA8FC(ex->btlfx_getFileData(entry->unk8, 0x17), (u16)i));
-                func_801E78AC(&D_801ED078, buf, 0x50, D_801ED078.unk8, D_801ED078.unkA, D_801ED078.unk10, D_801ED078.unk12, 0);
+                func_801E78AC(&D_801ED078.unk0, buf, 0x50, D_801ED078.unk8, D_801ED078.unkA, D_801ED078.unk10, D_801ED078.unk12, 0);
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x15), 0, NULL, 0, D_801ED078.unkE, D_801ED078.unkC, 1,
                                     buf, 0);
                 buf += 0x50;

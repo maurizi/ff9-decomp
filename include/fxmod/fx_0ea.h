@@ -37,7 +37,7 @@ extern SVECTOR D_801E7E5C; /* path start */
 extern SVECTOR D_801E7E64[4]; /* path ends */
 extern SVECTOR D_801E7E84;
 
-s32 func_801E77D4(VECTOR *out, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n);
+s32 func_801E77D4(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n);
 void func_801E7DE0(Unk800F78A4 *env, s32 i, s32 value);
 
 /* propagated */

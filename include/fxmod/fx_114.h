@@ -112,12 +112,7 @@ s32 func_801E77E4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 s32 func_801E7818(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E784C(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
-typedef struct {
-    u16 unk0;
-    u16 unk2; /* count */
-    s16 *unk4;
-} Fx114Keys;
-void func_801E78AC(Fx114Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
+void func_801E78AC(Fx114Path *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
 s32 func_801EA8FC(s32 base, s32 i);
 
 typedef struct {

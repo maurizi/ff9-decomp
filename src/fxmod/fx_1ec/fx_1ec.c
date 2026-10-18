@@ -363,7 +363,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 u16 *func_801E8AFC(u8 *base, u16 i) {
-    return (s32)base + ((s32 *)base)[(u16)i + 1];
+    return (u16 *)((s32)base + ((s32 *)base)[(u16)i + 1]);
 }
 
 void func_801E8B14(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {

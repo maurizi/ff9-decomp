@@ -34,10 +34,11 @@ typedef struct {
 } Fx1fdWork84; /* 0xD0 */
 
 typedef struct {
-    u8 pad0[8];
-    SVECTOR unk8; /* rotation */
-    u8 pad10[0x14 - 0x10];
-} Fx1fdPose; /* 0x14 */
+    SVECTOR unk0; /* unit position */
+    SVECTOR unk8; /* unit rotation */
+    s16 unk10; /* distance from the centre */
+    s16 unk12; /* angle around it */
+} Fx1fdOrbit; /* 0x14 */
 extern s32 D_801EC50C[8][0x90];
 
 void func_801E97C4(Fx1fdPath *path, u16 *data);
@@ -85,13 +86,6 @@ typedef struct {
 } Fx1fdEdge;
 extern Fx1fdEdge D_801EB80C[];
 void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY);
-
-typedef struct {
-    SVECTOR unk0; /* unit position */
-    SVECTOR unk8; /* unit rotation */
-    s16 unk10; /* distance from the centre */
-    s16 unk12; /* angle around it */
-} Fx1fdOrbit;
 extern Fx1fdOrbit D_801EBADC[];
 s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 

@@ -5,13 +5,14 @@
 #include "btlfx_mod.h"
 
 typedef struct {
-    s16 x, y, z;
-} Fx183Point;
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx183Key; /* 0xC */
 
 typedef struct {
     s16 unk0;
-    u16 unk2; /* count */
-    Fx183Point *unk4;
+    u16 unk2; /* keys */
+    Fx183Key *unk4;
 } Fx183Path;
 
 typedef struct {
@@ -70,17 +71,6 @@ extern Unk800F78A4 *D_801E82E8;
 /* end copied */
 
 /* propagated */
-
-typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
-} Fx183Key; /* 0xC */
-
-typedef struct {
-    s16 unk0;
-    u16 unk2; /* keys */
-    Fx183Key *unk4;
-} Fx183Path_0b4;
-s32 func_801E81F4(Fx183Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+s32 func_801E81F4(Fx183Path *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 #endif

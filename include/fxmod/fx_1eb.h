@@ -15,6 +15,17 @@ typedef struct {
 } Fx1ebPath;
 
 typedef struct {
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx1ebKey; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx1ebKey *unk4;
+} Fx1ebKeyPath;
+
+typedef struct {
     Pool6CEntry *unk0;
     Pool6CEntry *unk4;
     SVECTOR unk8; /* caster body position */
@@ -49,13 +60,13 @@ extern u16 D_801E8210[3]; /* model files */
 extern u16 D_801E8218[3]; /* path files */
 extern Unk800F78A4 *D_801E8268;
 extern BtlModel D_801E8278[];
-extern Fx1ebPath D_801E8728[3];
+extern Fx1ebKeyPath D_801E8728[3];
 extern Fx1ebPath D_801E8740;
 extern s32 D_801E8748[];
 
 void func_801E806C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801E80B0(s32 from, s32 to, s32 t, s32 n);
-void func_801E8108(Fx1ebPath *path, u16 *data);
+void func_801E8108(Fx1ebKeyPath *path, u16 *data);
 void func_801E81B4(Fx1ebPath *path, u16 *data);
 
 /* copied */
@@ -63,24 +74,7 @@ extern Unk800F78A4 *D_801E8268;
 /* end copied */
 
 /* propagated */
-
-typedef struct {
-    s16 unk0[3]; /* position */
-    s16 unk6[3]; /* rotation */
-} Fx1ebKey; /* 0xC */
-
-typedef struct {
-    s16 unk0;
-    u16 unk2; /* keys */
-    Fx1ebKey *unk4;
-} Fx1ebPath_0b4;
-s32 func_801E8120(Fx1ebPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
-
-typedef struct {
-    u16 unk0;
-    u16 unk2; /* count */
-    s16 *unk4;
-} Fx1ebKeys;
+s32 func_801E8120(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 s32 func_801E81CC(Fx1ebPath *keys, s32 i, s32 *out);
 
 #endif

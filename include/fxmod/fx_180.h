@@ -98,6 +98,6 @@ extern Unk800F78A4 *D_801E9258;
 
 /* propagated */
 s32 func_801E90F4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start);
-s32 func_801E8DA4(u8 *base, u16 i);
+u16 *func_801E8DA4(u8 *base, u16 i);
 
 #endif

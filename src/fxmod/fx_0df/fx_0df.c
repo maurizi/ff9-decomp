@@ -28,8 +28,8 @@ void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
     out[1] = y;
 }
 
-void func_801E80B0(s16 *a, s16 *b) {
-    BTLFX_EXPORTS(D_801E9E90)->btlfx_aimAngles((s16 *)&D_801E9E90->unk2C->unk54, a, b);
+void func_801E80B0(SVECTOR *a, SVECTOR *b) {
+    BTLFX_EXPORTS(D_801E9E90)->btlfx_aimAngles((s16 *)&D_801E9E90->unk2C->unk54, (s16 *)a, (s16 *)b);
 }
 
 s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,

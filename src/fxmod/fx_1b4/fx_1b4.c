@@ -21,15 +21,15 @@ s32 func_801E77D4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
 }
 
 s32 func_801E7808(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E78A4(pt, pos, &D_801E86CC[0], frame, n);
+    return func_801E78A4(pt, pos, &D_801E86A4[5], frame, n);
 }
 
 s32 func_801E783C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E78A4(pt, pos, &D_801E86CC[1], frame, n);
+    return func_801E78A4(pt, pos, &D_801E86A4[6], frame, n);
 }
 
 s32 func_801E7870(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
-    return func_801E78A4(pt, pos, &D_801E86CC[2], frame, n);
+    return func_801E78A4(pt, pos, &D_801E86A4[7], frame, n);
 }
 
 s32 func_801E78A4(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
@@ -74,7 +74,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 0:
             for (i = 0; i < 8; i++) {
-                func_801E8540(&D_801E8664[i], (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E85DC[i]));
+                func_801E8540(&D_801E8664[i], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E85DC[i]));
                 func_801E8558(&D_801E8664[i], 0, &work->unk4C[i]);
                 v = (SVECTOR *)((u8 *)work + i * 8 + 0x4C);
                 v->vx += work->unk44.vx;
@@ -90,7 +90,7 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x17:
             for (i = 0; i < 8; i++) {
-                func_801E8540(&D_801E86A4[i], (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E85DC[i]));
+                func_801E8540(&D_801E86A4[i], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E85DC[i]));
                 work->unk20[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E85CC[i]), (s32)&D_801EF17C);
                 if (work->unk20[i] != NULL) {
                     work->unk20[i]->unk14 = (s32)D_801E8E64[i];

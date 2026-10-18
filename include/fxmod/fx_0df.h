@@ -54,7 +54,7 @@ s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
 /* propagated */
 extern s32 D_801EA418;
 void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
-void func_801E80B0(s16 *a, s16 *b);
+void func_801E80B0(SVECTOR *a, SVECTOR *b);
 
 typedef struct {
     SVECTOR unk0; /* from */
@@ -63,14 +63,7 @@ typedef struct {
     s32 *unk14; /* per-point (t offset, amplitude, step) */
 } Fx0dfArc;
 
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    SVECTOR unk4[15];
-} Fx0dfStrip; /* 0x7C */
-extern Fx0dfStrip D_801EA420[];
+extern Fx0dfBolt D_801EA420[];
 s32 func_801E9600(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 extern s32 D_801EA790[][3]; /* random arc profile */
 

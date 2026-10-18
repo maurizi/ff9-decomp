@@ -84,9 +84,9 @@ s32 fx_1eb_op82(s32 mode, Fx1ebWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vx = 0xAAA;
         work->unk30.vy = 0xAAA;
         work->unk30.vz = 0xAAA;
-        func_801E81B4(&D_801E8740, (u8 *)ex->btlfx_getFileData(entry->unk8, 7));
+        func_801E81B4(&D_801E8740, (u16 *)ex->btlfx_getFileData(entry->unk8, 7));
         for (j = 0; j < 3; j++) {
-            func_801E8108(&D_801E8728[j], (u8 *)ex->btlfx_getFileData(entry->unk8, D_801E8218[j]));
+            func_801E8108(&D_801E8728[j], (u16 *)ex->btlfx_getFileData(entry->unk8, D_801E8218[j]));
             work->unk52[j] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E8210[j]), 1);
         }
         work->unk58 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 6), 1);
@@ -196,13 +196,13 @@ s32 func_801E80B0(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-void func_801E8108(Fx1ebPath *path, u16 *data) {
+void func_801E8108(Fx1ebKeyPath *path, u16 *data) {
     data++;
     path->unk2 = *data++;
-    path->unk4 = (Fx1ebPoint *)data;
+    path->unk4 = (Fx1ebKey *)data;
 }
 
-s32 func_801E8120(Fx1ebPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+s32 func_801E8120(Fx1ebKeyPath *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
     Fx1ebKey *k;
     s32 r = 1;
 

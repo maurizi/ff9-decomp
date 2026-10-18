@@ -16,15 +16,15 @@ s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, 
     return func_801E77D4(pt, pos, &D_801E7E64[3], frame, n);
 }
 
-s32 func_801E77D4(VECTOR *out, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
+s32 func_801E77D4(Pool30Entry *pt, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7E54);
     s32 t = (frame << 12) / 18;
 
     ex->btlfx_lerpVec((s16 *)&D_801E7E5C, (s16 *)to, t, (s16 *)pos);
     pos->vy -= ex->math_sin(t / 2) * 800 / 4096;
-    out->vx = pos->vx << 12;
-    out->vy = pos->vy << 12;
-    out->vz = pos->vz << 12;
+    pt->unk0.vx = pos->vx << 12;
+    pt->unk0.vy = pos->vy << 12;
+    pt->unk0.vz = pos->vz << 12;
     if (frame >= n) {
         return -1;
     }

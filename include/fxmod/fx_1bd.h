@@ -76,12 +76,7 @@ extern Unk800F78A4 *D_801E9E54;
 
 /* propagated */
 
-typedef struct {
-    u16 unk0;
-    u16 unk2; /* count */
-    s16 *unk4;
-} Fx1bdKeys;
-void func_801E77C0(Fx1bdKeys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
+void func_801E77C0(Fx1bdPath *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
 u16 *func_801E901C(u16 *base, u16 i);
 
 typedef struct {
