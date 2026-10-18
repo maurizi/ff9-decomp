@@ -110,7 +110,77 @@ void func_801E7B88(s32 model, SVECTOR *center) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_1a2/nonmatchings/fx_1a2", func_801E7D68);
+void func_801E7D68(void) {
+    SVECTOR out;
+    SVECTOR rot;
+    SVECTOR c;
+    SVECTOR v[3];
+    SVECTOR bias;
+    VECTOR o;
+    VECTOR scale;
+    MATRIX m;
+    BtlfxExports *ex;
+    Fx1a2Tri *t;
+    Fx1a2Piece *p;
+    s32 i;
+    s32 k;
+
+    t = D_801E9854;
+    p = D_801EA484;
+    ((s32 *)&bias)[0] = 0;
+    ((s32 *)&bias)[1] = 0;
+    ex = BTLFX_EXPORTS(D_801E9844);
+    scale.vx = scale.vy = scale.vz = 0xF80;
+    for (i = 0; i < 130; i++, p++, t++) {
+        if (p->unk18 >= 0) {
+            if (p->unk18 < p->unk1A) {
+                p->unk18++;
+            } else {
+                c.vx = p->unk0 >> 12;
+                c.vy = p->unk4 >> 12;
+                c.vz = p->unk8 >> 12;
+                for (k = 0; k < 3; k++) {
+                    v[k].vx = t->unk0[k].vx - c.vx;
+                    v[k].vy = t->unk0[k].vy - c.vy;
+                    v[k].vz = t->unk0[k].vz - c.vz;
+                }
+                if (p->unk18 >= 3) {
+                    ex->func_800E0014((Pool6CEntry *)p, -3, &bias, &out);
+                    if (p->unkE < 0 && p->unk4 < 0) {
+                        p->unkE = -(p->unkE >> 1);
+                    }
+                }
+                rot.vx = p->unk14;
+                rot.vy = p->unk16;
+                rot.vz = 0;
+                ex->func_800316D8(&rot, &m);
+                ex->ScaleMatrix(&m, &scale);
+                m.t[0] = p->unk0 >> 12;
+                m.t[1] = p->unk4 >> 12;
+                m.t[2] = p->unk8 >> 12;
+                ex->SetRotMatrix(&m);
+                ex->SetTransMatrix(&m);
+                for (k = 0; k < 3; k++) {
+                    gte_ldv0(&v[k]);
+                    gte_rtv0tr();
+                    gte_stlvnl(&o);
+                    t->unk0[k].vx = o.vx;
+                    t->unk0[k].vy = o.vy;
+                    t->unk0[k].vz = o.vz;
+                }
+                if (++p->unk18 >= 0x40) {
+                    p->unk18 = -1;
+                    t->unk0[2].vz = 0;
+                    *(s32 *)&t->unk0[2] = 0;
+                    t->unk0[1].vz = 0;
+                    *(s32 *)&t->unk0[1] = 0;
+                    t->unk0[0].vz = 0;
+                    *(s32 *)&t->unk0[0] = 0;
+                }
+            }
+        }
+    }
+}
 
 s32 func_801E804C(s32 mode, Fx1a2Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame, s32 arg5, Fx1a2Inst *inst) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
