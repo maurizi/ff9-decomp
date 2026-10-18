@@ -1,5 +1,21 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_02d.h"
 
-INCLUDE_ASM("asm/us/fx_02d/nonmatchings/fx_02d", fx_02d_op80);
+s32 fx_02d_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+
+    if (mode == 0) {
+        *arg4 = 8;
+    } else if (mode == 1) {
+        work->vx = env->unkC->unk38;
+        work->vy = -0xC8;
+        work->vz = env->unkC->unk3C;
+        D_801E7838 = env;
+        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)work);
+        ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)work);
+    } else {
+        return entry->unk0 >= 0x28;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_02d/nonmatchings/fx_02d", fx_02d_headerPtr);

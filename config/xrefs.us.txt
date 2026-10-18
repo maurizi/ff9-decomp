@@ -1,0 +1,17 @@
+/* Names for overlay functions that main calls, resolved by the linker only (main's link, -T in the Makefile).
+ * splat never reads this file: a symbol in config/symbols.us.txt is also applied to every overlay's split, which
+ * breaks overlays that have their own code or data at the same address (0x800A859C is ovl_0c data and an ovl_14
+ * function). Names and evidence live in the owning overlay's symbols file. */
+btl_entry = 0x800A859C;       /* ovl_0b, mode 2 */
+battleEnd_main = 0x801EF284;  /* ovl_65, mode 8 */
+/* ovl_0b functions called from main (ovl_0b is resident in battle) */
+btl_setEnemyCmd = 0x800B1520;
+btl_getUnitAttr = 0x800BDED4;
+btl_setUnitAttr = 0x800BE1E0;
+btl_getUnitMask = 0x800BEC64;
+btl_getUnitById = 0x800BED10;
+btl_setBanner = 0x800F4F04;
+btlseq_startDirect = 0x800CA694;
+btlseq_isBusy = 0x800CA774;
+btl_getBattleVar = 0x800BE784;
+btl_setBattleVar = 0x800BE99C;

@@ -330,7 +330,7 @@ void func_800D0B18(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, C
     }
 }
 
-void func_800D0E14(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 p,
+void btlfx_drawTrail3D(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 p,
                    u32 *c1, u32 *c2, s32 tp) {
     Unk800D50A0Ctx c;
     u8 *prim;
@@ -363,11 +363,11 @@ void func_800D0E14(s32 arg0, s32 *arg1, s32 n, s32 arg3, s32 arg4, s32 arg5, s32
         c.unk16 = arg5;
         c.unk0 = g_btlfxEnv->unk28;
         c.unk2C = inv;
-        func_800D50A0(n, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitTrailRibbon3D(n, &c, prim, g_btlfxEnv->unk20);
     }
 }
 
-void func_800D0FFC(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 p, u32 *c1,
+void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 p, u32 *c1,
                    u32 *c2, s32 tp) {
     Unk800D4D6CCtx c;
     u8 *prim;
@@ -408,14 +408,14 @@ void func_800D0FFC(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 
         c.unk8 = inv;
         c.unk0 = g_btlfxEnv->unk28;
         if (arg6 >= 0) {
-            func_800D4D6C(n, &c, prim, g_btlfxEnv->unk20);
+            btlfx_emitTrailRibbonFlat(n, &c, prim, g_btlfxEnv->unk20);
         } else {
-            func_800D5568(n, &c, prim, g_btlfxEnv->unk20);
+            btlfx_emitTrailLines(n, &c, prim, g_btlfxEnv->unk20);
         }
     }
 }
 
-void func_800D12C4(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 p, u32 *c1,
+void btlfx_drawTrailScreen(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 p, u32 *c1,
                    u32 *c2, s32 tp) {
     Unk800D5C30Ctx c;
     u8 *prim;
@@ -445,11 +445,11 @@ void func_800D12C4(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 
         c.unk20 = inv;
         c.unk8 = inv;
         c.unk0 = g_btlfxEnv->unk28;
-        func_800D5C30(n, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitTrailRibbonScreen(n, &c, prim, g_btlfxEnv->unk20);
     }
 }
 
-void func_800D1494(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5, s32 tp, u8 *out, s32 mode) {
+void btlfx_drawTrail(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5, s32 tp, u8 *out, s32 mode) {
     s32 n;
     s32 k;
     s32 cnt;
@@ -494,15 +494,15 @@ void func_800D1494(u8 *p, s32 arg1, s32 *arg2, s32 frame, s32 scale, s32 arg5, s
         n = btlfx_pushTrailPoint(out, n, v, arg1);
     }
     if (mode == 0) {
-        func_800D12C4((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
+        btlfx_drawTrailScreen((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
     } else if (mode == 1) {
-        func_800D0E14((s32)out, arg2, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
+        btlfx_drawTrail3D((s32)out, arg2, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
     } else {
-        func_800D0FFC((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
+        btlfx_drawTrailFlat((s32)out, n, a, b, c, d, x, y, arg5, data, data + 1, tp);
     }
 }
 
-void func_800D1680(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
+void btlfx_drawParticles(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     VECTOR s;
     union {
         SVECTOR v;
@@ -586,7 +586,7 @@ void func_800D1680(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
     c.unk4 = arg7;
     c.unk8 = arg8;
     c.unk18 = g_btlfxEnv->unk28;
-    func_800D4478(arg0, &c, prim, g_btlfxEnv->unk20);
+    btlfx_emitParticles(arg0, &c, prim, g_btlfxEnv->unk20);
 }
 
 void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -697,7 +697,7 @@ void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     }
 }
 
-void func_800D1D74(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawAnimQuads(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
     VECTOR s;
     SVECTOR r;
@@ -757,11 +757,11 @@ void func_800D1D74(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
     c.unk18 = arg6;
     c.unk20 = g_btlfxEnv->unk28;
     if (c.unk1C != 0) {
-        func_800D3ED4(arg0, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitAnimQuads(arg0, &c, prim, g_btlfxEnv->unk20);
     }
 }
 
-void func_800D1FFC(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     Unk800D1D74Hdr *h = (Unk800D1D74Hdr *)arg0;
     VECTOR s;
     SVECTOR r;
@@ -1195,7 +1195,7 @@ void func_800D2DBC(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
     btlfx_addPrim(0x01000000, 0xFFE, mode);
 }
 
-void func_800D3030(BtlBgLayers *arg0, s32 arg1) {
+void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
     RECT r;
     s16 ofs[2];
     CVECTOR col;
@@ -1438,7 +1438,7 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D3ED4);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitAnimQuads);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D40CC);
 
@@ -1446,7 +1446,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4228);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D437C);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4478);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitParticles);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D45FC);
 
@@ -1456,11 +1456,11 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4A08);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4A30);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4D6C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailRibbonFlat);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D50A0);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailRibbon3D);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D5568);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailLines);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D57D0);
 
@@ -1468,7 +1468,7 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D597C);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D59D0);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D5C30);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailRibbonScreen);
 
 void btlfx_reset(void) {
     g_btlfxState.unk0 = -1;
@@ -1605,11 +1605,11 @@ void btlfx_runScript(void) {
 
     if (d->unk22 != 0 && func_800AB410(0) == 0) {
         d->unk22 = 0;
-        func_800E89D0();
+        btlfx_restorePartyLooks();
     }
     if (d->unk24 != 0 && func_800AB3E4(d->unk24 - 1, 0) == 0) {
         d->unk24 = 0;
-        func_800E8A80(0x10);
+        btlfx_restoreUnitLook(0x10);
     }
     switch (d->unk0) {
     case 0:
@@ -1840,7 +1840,7 @@ void btlfx_runScript(void) {
                     break;
                 case 15:
                     if (b == 0) {
-                        func_800E86E0(D_800FE530, (s32 *)btlfx_getFileData(d->unk8, a), 0x708);
+                        btlfx_copyWords(D_800FE530, (s32 *)btlfx_getFileData(d->unk8, a), 0x708);
                         func_80054A28(D_800FE530);
                         func_80054E88(0, 0, 1);
                         func_80054E88(0, 1, 1);
@@ -4459,6 +4459,8 @@ void func_800DD0B0(s32 arg0) {
     func_800DD10C(btl_getUnit(arg0)->unk9C);
 }
 
+/* Void in the original; effect modules read $v0 after it (export 0x318): func_800DD10C's u8 result.
+   Ports must return it (docs/effect-modules.md). */
 void func_800DD0DC(s32 arg0) {
     func_800DD10C(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
 }
@@ -4952,6 +4954,8 @@ s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
     return r * 8;
 }
 
+/* Void in the original; effect modules read $v0 after it (export 0x310): func_800DF7A0's u16 result.
+   Ports must return it (docs/effect-modules.md). */
 void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
     func_800DF7A0(btlfx_getEffModel(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
 }
@@ -5483,22 +5487,22 @@ s32 func_800E0168(Pool30 *pool) {
                     el->unk24(e, owner, &pos, vp, &scale, &alpha, &cnt, frame, frames);
                     break;
                 case 0:
-                    func_800D1680((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha, 0, 0);
+                    btlfx_drawParticles((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha, 0, 0);
                     break;
                 case 1:
                     func_800D198C((u8 *)mode, &pos, e->unk1D, cnt, alpha);
                     break;
                 case 2:
-                    func_800D1D74((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    btlfx_drawAnimQuads((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 3:
-                    func_800D1FFC((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
+                    btlfx_drawSprites((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 4:
-                    func_800D1494((u8 *)mode, (s32)&pos, (s32 *)owner->unk28, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 1);
+                    btlfx_drawTrail((u8 *)mode, (s32)&pos, (s32 *)owner->unk28, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 1);
                     break;
                 case 5:
-                    func_800D1494((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 2);
+                    btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 2);
                     break;
                 case 6:
                     func_800D23D8((u8 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
@@ -5507,7 +5511,7 @@ s32 func_800E0168(Pool30 *pool) {
                     func_800D2938((Unk800D2938 *)mode, &pos, vp, scale, e->unk1D, cnt, alpha);
                     break;
                 case 8:
-                    func_800D1494((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 0);
+                    btlfx_drawTrail((u8 *)mode, (s32)&pos, NULL, e->unk1D, scale, alpha, cnt, (u8 *)func_800E0134(e, owner), 0);
                     break;
                 }
                 if (el->unk1 == 0xFF) {
@@ -6219,7 +6223,7 @@ void func_800E2000(Pool30 *pool, Pool6C *list) {
                 tmp.vx = p->unk0.vx >> 12;
                 tmp.vy = p->unk0.vy >> 12;
                 tmp.vz = p->unk0.vz >> 12;
-                func_800D1494((u8 *)el->unk1C, (s32)&tmp, NULL, -1, 0, 0, 0, (u8 *)func_800E0134(p, e), 0);
+                btlfx_drawTrail((u8 *)el->unk1C, (s32)&tmp, NULL, -1, 0, 0, 0, (u8 *)func_800E0134(p, e), 0);
             }
         }
     }
@@ -6464,7 +6468,7 @@ void func_800E2F84(Pool30 *pool, Pool30Entry *e, SVECTOR *pos, SVECTOR *rot) {
                     dir.vx = p->unk0.vx >> 12;
                     dir.vy = p->unk0.vy >> 12;
                     dir.vz = p->unk0.vz >> 12;
-                    func_800D1494((u8 *)el->unk1C, (s32)&dir, NULL, -1, 0, 0, 0, (u8 *)func_800E0134(p, owner), 0);
+                    btlfx_drawTrail((u8 *)el->unk1C, (s32)&dir, NULL, -1, 0, 0, 0, (u8 *)func_800E0134(p, owner), 0);
                 }
             }
         }
@@ -7271,10 +7275,10 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
         }
         switch (arg1->unk0) {
         case 0:
-            func_800D1680(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, 0x1000, arg1->unk18, arg1->unk1A);
+            btlfx_drawParticles(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, 0x1000, arg1->unk18, arg1->unk1A);
             break;
         case 1:
-            func_800D1D74(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, 0x1000);
+            btlfx_drawAnimQuads(arg1->unk10, &arg1->unk1C, &rot, arg1->unk4, arg1->unk14, 1, 0x1000);
             break;
         case 2:
             if (arg1->unk14 == arg1->unkE) {
@@ -7869,8 +7873,8 @@ s32 func_800E7370(BtlUnit *arg0) {
     return arg0->unk9C->unk8->unk8;
 }
 
-void func_800E738C(s32 arg0) {
-    func_800E7370(btl_getUnit(arg0));
+s32 func_800E738C(s32 arg0) {
+    return func_800E7370(btl_getUnit(arg0));
 }
 
 void func_800E73B4(BtlUnit *arg0, u16 *arg1) {
@@ -8321,7 +8325,7 @@ s32 func_800E865C(s32 arg0, s32 arg1) {
     return ((f & 1) ? g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4 : 0x13) == k;
 }
 
-void func_800E86E0(s32 *arg0, s32 *arg1, u32 arg2) {
+void btlfx_copyWords(s32 *arg0, s32 *arg1, u32 arg2) {
     u32 i;
     u32 t = arg2 & 3;
     arg2 >>= 2;
@@ -8339,9 +8343,9 @@ s32 *func_800E871C(s32 arg0, s32 *arg1) {
     u32 size = (u32)func_8001C7FC(5, id, 0);
     s32 *p = func_8001C7FC(4, id, 0);
     if (*arg1 == 0x1234) {
-        func_800E86E0(p, arg1 + 1, size);
+        btlfx_copyWords(p, arg1 + 1, size);
     } else {
-        func_800E86E0(arg1 + 1, p, size);
+        btlfx_copyWords(arg1 + 1, p, size);
         *arg1 = 0x1234;
     }
     return p;
@@ -8349,7 +8353,7 @@ s32 *func_800E871C(s32 arg0, s32 *arg1) {
 
 void func_800E87C4(s32 arg0) {
     func_800AB4FC();
-    func_800E86E0(g_gameState->unk1C->unk8E4.battle->unk11C0->unk44, g_btlfxLoader.unk54->unk50[0], arg0 << 10);
+    btlfx_copyWords(g_gameState->unk1C->unk8E4.battle->unk11C0->unk44, g_btlfxLoader.unk54->unk50[0], arg0 << 10);
     g_btlfxLoader.unk54->unk50[0] = g_gameState->unk1C->unk8E4.battle->unk11C0->unk44;
 }
 
@@ -8376,7 +8380,7 @@ void func_800E8980(s32 arg0) {
     g_btlfxEnv->unkC->unk44 = btl_getUnitById(g_btlfxEnv->unkC->unk25[arg0]);
 }
 
-void func_800E89D0(void) {
+void btlfx_restorePartyLooks(void) {
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
     while (u != NULL) {
         if (u->unk68 & 1) {
@@ -8391,7 +8395,7 @@ void func_800E89D0(void) {
     }
 }
 
-void func_800E8A80(s32 arg0) {
+void btlfx_restoreUnitLook(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     if (u->unk68 & 1) {
         func_800C0D24(u);
@@ -8490,6 +8494,9 @@ void btl_setVsyncMode(s32 arg0) {
     g_gameState->vsyncMode = arg0;
 }
 
+/* Void in the original, but effect modules read $v0 after calling it (export 0x338): it holds the u16 from
+   Hi_RegisterTexListModel / Hi_RegisterGouEffModel. A u16 return adds an andi, so this stays void; ports must
+   return that value (docs/effect-modules.md). */
 void func_800E8F50(Unk800E8F50 *arg0, s32 arg1) {
     s32 i;
     s32 n;
@@ -8875,7 +8882,7 @@ void func_800E9DFC(void) {
     D_80104E68.unk1C = 0;
 }
 
-void func_800E9E10(void) {
+void btlui_reset(void) {
     memset(&D_80104E68, 0, 0x11C);
     func_800F2A0C();
     func_800F48DC();
@@ -9393,7 +9400,7 @@ void btlui_menuInput(void) {
 void btlui_updateMenu(void) {
     void (*fn)(void);
     func_800EB81C();
-    func_800EB924();
+    btlui_pollEscape();
     btl_updateAtb();
     func_800EAC88();
     fn = D_800F8DA8[g_btlUi->menuState];
@@ -9613,11 +9620,11 @@ void func_800EB81C(void) {
     }
 }
 
-void func_800EB924(void) {
+void btlui_pollEscape(void) {
     Unk80104E68 *p = (Unk80104E68 *)&D_80104E68;
     if (p->unk2 != 0) {
         if ((g_padHeld & (BTN_L1 | BTN_R1)) == 0x300000) {
-            g_gameState->unk1C->unk8E4.battle->unkD83 = 1;
+            g_gameState->unk1C->unk8E4.battle->escapeHeld = 1;
             if (p->unk13++ >= 0x3D) {
                 p->unk13 = 0;
                 btl_tryEscape(1);
@@ -9625,7 +9632,7 @@ void func_800EB924(void) {
                 btl_tryEscape(0);
             }
         } else {
-            g_gameState->unk1C->unk8E4.battle->unkD83 = 0;
+            g_gameState->unk1C->unk8E4.battle->escapeHeld = 0;
         }
     }
 }
@@ -9730,7 +9737,7 @@ void func_800EBD58(void) {
 void btlui_updateHelpText(void) {
     s32 (*fn)(void);
     D_80104F90.unk4 = 0;
-    if (g_gameState->unk1C->unk8E4.battle->unkD83 != 0) {
+    if (g_gameState->unk1C->unk8E4.battle->escapeHeld != 0) {
         D_80104F90.unk4 = (s32)text_get(4);
     } else {
         fn = D_800F8DC4[g_btlUi->menuState];
@@ -10558,7 +10565,7 @@ void btlui_listInput(void) {
         } else {
             menuList_up(l, g_padRepeat);
             menuList_down(l, g_padRepeat);
-            if (g_gameState->unk1C->unk8E4.battle->unkD83 == 0) {
+            if (g_gameState->unk1C->unk8E4.battle->escapeHeld == 0) {
                 menuList_pageUp(l, g_padRepeat);
                 menuList_pageDown(l, g_padRepeat);
             }
@@ -11478,7 +11485,7 @@ void btlui_targetInput(void) {
         btlui_confirmTarget();
         return;
     }
-    if (g_gameState->unk1C->unk8E4.battle->unkD83 == 0 && (g_padRepeat & (BTN_L1 | BTN_R1))) {
+    if (g_gameState->unk1C->unk8E4.battle->escapeHeld == 0 && (g_padRepeat & (BTN_L1 | BTN_R1))) {
         func_800EFF14();
         return;
     }

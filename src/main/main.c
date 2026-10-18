@@ -23,11 +23,11 @@ void game_main(void) {
                 break;
             case 2:
                 game_loadModeOverlay(2);
-                func_800A859C();
+                btl_entry();
                 break;
             case 8:
                 game_loadModeOverlay(8);
-                func_801EF284();
+                battleEnd_main();
                 break;
             case 3:
                 game_loadModeOverlay(3);
