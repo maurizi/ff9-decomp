@@ -8,16 +8,29 @@ typedef struct {
     s16 unk0;
     s16 unk2; /* scale */
     SVECTOR unk4; /* position */
-    u8 padC[0x14 - 0xC];
+    SVECTOR unkC; /* rotation */
     s16 unk14; /* spin angle */
     s16 unk16; /* spin speed */
-} Fx0cbPart;
+} Fx0cbPart; /* 0x18 */
 
 typedef struct {
-    u8 pad0[0x20];
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx0cbVec3;
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    s32 unk8; /* priority */
+    SVECTOR unkC; /* caster body position */
+    Fx0cbVec3 unk14;
     s32 unk20; /* model */
     s32 unk24; /* model */
-} Fx0cbWork;
+    s32 unk28;
+} Fx0cbWork; /* 0x2C */
+
+extern BtlModel D_801E8680[];
 
 extern Unk800F78A4 *D_801E8670;
 
