@@ -1,6 +1,16 @@
 #include "fxmod/fx_034.h"
 
-INCLUDE_ASM("asm/us/fx_034/nonmatchings/fx_034", func_801E7744);
+void func_801E7744(s32 model, s32 scale, u8 *buf) {
+    s32 n;
+    s32 j = 0;
+
+    n = BTLFX_EXPORTS(D_801E82A0)->func_800DD0DC(model & 0xFFFF);
+    for (; j < n; j++) {
+        for (model = 0; model < 8; model++) {
+            func_801E7810(model, D_801E82D0[model], scale, D_801E82B0[model]);
+        }
+    }
+}
 
 INCLUDE_RODATA("asm/us/fx_034/nonmatchings/fx_034", fx_034_headerPtr);
 
