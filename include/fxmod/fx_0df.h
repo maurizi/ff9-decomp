@@ -75,4 +75,27 @@ typedef struct {
 } Fx0dfWork83; /* 0x14 */
 s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    s32 unk8; /* ordering-table offset */
+    SVECTOR unkC; /* caster body position */
+    s32 unk14; /* caster body position, words */
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20; /* models */
+    s32 unk24;
+    s32 unk28;
+    s32 unk2C;
+    s32 pad30;
+    s32 unk34; /* scroll */
+    s32 unk38; /* yaw offset */
+    Pool6CEntry *unk3C;
+} Fx0dfWork80; /* 0x40 */
+
+extern BtlModel D_801E9EA0[];
+void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+                   void (*fn)(s32, s32, s32, s32, DVECTOR *));
+s32 fx_0df_op80(s32 mode, Fx0dfWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
+
 #endif
