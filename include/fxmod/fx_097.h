@@ -40,6 +40,30 @@ extern SVECTOR D_801E9CE8[];
 s32 func_801E82F4(s32 mode, Fx097Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx097Work *work);
 
+typedef struct {
+    u32 unk0; /* state */
+    s32 unk4; /* frame */
+    s32 unk8; /* models */
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20[14];
+    SVECTOR unk58; /* summon position */
+    SVECTOR unk60;
+    SVECTOR unk68;
+    SVECTOR unk70;
+    s16 unk78;
+    s16 unk7A; /* shards spawned */
+    s32 unk7C;
+    s32 unk80;
+    Pool6CEntry *unk84;
+} Fx097Work80; /* 0x88 */
+
+extern BtlModel D_801E9DC4[];
+extern s32 D_801E9D18[14];
+
 /* propagated */
 
 /* PsyQ gte_stszotz: SZ3 / 4 */
