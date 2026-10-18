@@ -812,7 +812,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
             arg1[1] = s[0];
         }
     }
-    if ((u8)btl_hasStatus(u, 0x200000)) {
+    if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
         return (u16)arg1[1];
     }
 }

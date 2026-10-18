@@ -312,10 +312,37 @@ typedef struct {
 } BtlUnit28;
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
-/* BtlUnit.status bits (runtime- or code-checked ones only) */
-#define STATUS_KO     0x100    /* runtime: set when the monster died */
-#define STATUS_LOW_HP 0x200    /* added when hp * 6 < maxHp */
-#define STATUS_SLEEP  0x20000  /* runtime: the Sleep spell; timer at +0x48 (unk46[1]) */
+/* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 and 0x40000 unidentified) */
+#define BTL_STATUS_PETRIFY         0x00000001 /* runtime: Break; model CLUT turns to stone (btl_setStoneClut) */
+#define BTL_STATUS_VENOM           0x00000002 /* code: the tick drains HP and MP (btl_tickPoison, btl_tickVenomMp) */
+#define BTL_STATUS_SILENCE         0x00000008 /* runtime: Silence */
+#define BTL_STATUS_BLIND           0x00000010 /* runtime: Blind */
+#define BTL_STATUS_TROUBLE         0x00000020 /* code: btl_spreadTroubleDamage splashes half the damage on allies */
+#define BTL_STATUS_ZOMBIE          0x00000040 /* code: healing hurts, drain reversed */
+#define BTL_STATUS_DEATH_IMMUNE    0x00000080 /* code: instant death/gravity formulas fail on it */
+#define BTL_STATUS_KO              0x00000100 /* runtime: set when the monster died */
+#define BTL_STATUS_LOW_HP          0x00000200 /* added when hp * 6 < maxHp */
+#define BTL_STATUS_CONFUSE         0x00000400 /* runtime: Confuse */
+#define BTL_STATUS_BERSERK         0x00000800 /* runtime: Berserk */
+#define BTL_STATUS_STOP            0x00001000 /* runtime: Stop */
+#define BTL_STATUS_AUTO_LIFE       0x00002000 /* code: KO queues the revive command 0x3D */
+#define BTL_STATUS_TRANCE          0x00004000 /* runtime */
+#define BTL_STATUS_DEFEND          0x00008000 /* runtime: removed by btl_setCmd at every action */
+#define BTL_STATUS_POISON          0x00010000 /* runtime: Poison */
+#define BTL_STATUS_SLEEP           0x00020000 /* runtime: Sleep; timer at +0x48 (unk46[1]) */
+#define BTL_STATUS_HASTE           0x00080000 /* runtime: Haste */
+#define BTL_STATUS_SLOW            0x00100000 /* runtime: Slow */
+#define BTL_STATUS_FLOAT           0x00200000 /* runtime: Float */
+#define BTL_STATUS_SHELL           0x00400000 /* runtime: Shell */
+#define BTL_STATUS_PROTECT         0x00800000 /* runtime: Protect */
+#define BTL_STATUS_HEAT            0x01000000 /* code: acting while it is set adds KO (btl_processCmdQueue) */
+#define BTL_STATUS_FREEZE          0x02000000 /* runtime */
+#define BTL_STATUS_VANISH          0x04000000 /* code: hides the meshes (btl_hideMeshes) */
+#define BTL_STATUS_DOOM            0x08000000 /* code: countdown number (btl_drawStatusCountdown) */
+#define BTL_STATUS_MINI            0x10000000 /* runtime: Mini */
+#define BTL_STATUS_REFLECT         0x20000000 /* runtime: Reflect */
+#define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
+#define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
 /* BtlUnit.unk38 bits */
 #define UNK38_REGEN   0x40000  /* runtime: the Regen spell; timer at +0x44 (unk40[2]) */
 
@@ -340,7 +367,7 @@ typedef struct BtlUnit {
     u8 unk33;
     s32 statusImmune; /* add-status (btl_addStatus) refuses these bits; runtime: Iifa monster 0x4400E004 */
     u32 unk38; /* runtime: the Regen spell sets 0x40000 here (UNK38_REGEN); support abilities set bits here at battle start; add-status (btl_addStatus) does nothing for a bit already set here */
-    u32 status; /* current STATUS_* bits; runtime: Sleep 0x20000, KO 0x100 (added by btl_addStatus) */
+    u32 status; /* current BTL_STATUS_* bits; runtime: Sleep 0x20000, KO 0x100 (added by btl_addStatus) */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
     s16 unk66;
@@ -3440,7 +3467,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u == NULL) {
         return 0;
     }
-    if (u->hp == 0 || (u8)btl_hasStatus(u, 0x42021D03) != 0) {
+    if (u->hp == 0 || (u8)btl_hasStatus(u, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) != 0) {
         return 0;
     }
     if ((g_btlRewards.unkA >> ((u8)u->unk68 >> 5)) & 1) {

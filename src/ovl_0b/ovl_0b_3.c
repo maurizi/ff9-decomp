@@ -394,7 +394,7 @@ void func_800C9A28(void) {
         u->unk8C[0] = u->unk98->unk0[0] = u->unkA0->unk14 = x << 16;
         p98 = u->unk98;
         pa0 = u->unkA0;
-        if ((u8)btl_hasStatus(u, 0x200000)) {
+        if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
             v = 0xFF380000;
         } else {
             v = 0;

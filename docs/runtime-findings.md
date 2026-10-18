@@ -729,7 +729,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   by "Unknown error in event listener" and the web server stopped answering (the modal-dialog case in docs/emulator.md).
   `tools/emu.py stop` cannot stop it in that state; the instance has to be killed before the next session.
 
-## Battle STATUS bits (BtlUnit.status)  (status: proposed — header defines)
+## Battle STATUS bits (BtlUnit.status)  (status: applied — BTL_STATUS_* in include/ovl_0b.h; 0x4 left unnamed)
 - binary ovl_0b. Runtime: trace of btl_addStatus while the patched spell hits (t_* runs, all from func_800C0ACC+0x48):
   Break 0x00000001 (petrify), Silence 0x8, Blind 0x10, Confuse 0x400, Berserk 0x800, Stop 0x1000, Poison 0x10000,
   Sleep 0x20000, Haste 0x80000, Slow 0x100000, Float 0x200000 (on Vivi), Shell 0x400000, Protect 0x800000,
