@@ -245,4 +245,110 @@ extern Fx114Track6 D_801ED1C0;
 /* Hi_RegisterTexListModel called with three arguments (the original leaves a3 unset) */
 #define REG_TEX_LIST(ex) ((u16 (*)(void *, void *, void *))(ex)->Hi_RegisterTexListModel)
 
+typedef struct {
+    u8 pad0[0x54];
+    struct {
+        u8 pad0[0x180];
+        BtlUnit9CC *unk180[4]; /* summon motions */
+    } *unk54;
+    u8 pad58[8];
+    s32 unk60; /* summon model */
+} Fx114Summon80;
+
+typedef struct {
+    Pool6CEntry *unk0;
+    Pool6CEntry *unk4;
+    Pool6CEntry *unk8;
+    s32 padC;
+    Pool6CEntry *unk10;
+    Pool6CEntry *unk14;
+    Pool6CEntry *unk18;
+    Pool6CEntry *unk1C;
+    SVECTOR unk20; /* summon rotation */
+    Fx114Vec3 unk28; /* summon position */
+    s32 pad34;
+    Fx114Vec3 unk38; /* summon scale */
+    s32 pad44;
+    s32 unk48;
+    SVECTOR unk4C;
+    SVECTOR unk54;
+    s32 unk5C;
+    SVECTOR unk60;
+    Fx114Vec3 unk68;
+    s32 pad74;
+    Fx114Vec3 unk78;
+    s32 pad84;
+    SVECTOR unk88;
+    Fx114Vec3 unk90;
+    s32 pad9C;
+    Fx114Vec3 unkA0;
+    s32 padAC;
+    s32 unkB0;
+    SVECTOR unkB4;
+    Fx114Vec3 unkBC;
+    s32 padC8;
+    Fx114Vec3 unkCC;
+    s32 padD8;
+    s32 unkDC;
+    SVECTOR unkE0;
+    Fx114Vec3 unkE8;
+    s32 padF4;
+    Fx114Vec3 unkF8;
+    s32 pad104;
+    s32 unk108;
+    SVECTOR unk10C;
+    Fx114Vec3 unk114;
+    s32 pad120;
+    Fx114Vec3 unk124;
+    s32 pad130;
+    SVECTOR unk134;
+    SVECTOR unk13C;
+    SVECTOR unk144;
+    SVECTOR unk14C;
+    u8 pad154[8];
+    u8 unk15C;
+    u8 unk15D;
+    u8 unk15E;
+    u8 pad15F;
+    s32 unk160;
+    s32 unk164;
+    s32 unk168;
+    s16 unk16C;
+    s16 unk16E;
+    s16 unk170;
+    s16 unk172;
+    s16 unk174;
+    s16 unk176;
+    u16 unk178;
+    u16 unk17A;
+    u16 unk17C;
+    u16 unk17E;
+    u16 unk180;
+    u8 pad182[0x198 - 0x182];
+} Fx114Work80; /* 0x198 */
+
+extern BtlModel D_801EB778[];
+extern u8 D_801EB6A4[];
+extern u8 D_801EB6BC[];
+extern Fx114Path D_801ED090;
+extern Fx114Path D_801ED098;
+extern Fx114Path D_801ED0A0;
+extern Fx114Path D_801ED0A8;
+extern Fx114Track6 D_801ED0B0;
+extern Fx114Track6 D_801ED0B8;
+extern Fx114Path D_801ED0C0;
+extern Fx114Path D_801ED0C8;
+extern Fx114Track6 D_801ED0D0;
+extern Fx114Track6 D_801ED0D8;
+extern Fx114Track6 D_801ED0E0;
+extern SVECTOR D_801EF288;
+extern SVECTOR D_801EF298[4];
+extern u8 D_801EE318[];
+extern u8 D_801EE3E8[];
+extern u8 D_801EE4B8[];
+extern u8 D_801EE588[];
+extern u8 D_801ED5C8[];
+extern u16 D_801EEA68[];
+extern u8 D_801EB71C[];
+
 #endif
