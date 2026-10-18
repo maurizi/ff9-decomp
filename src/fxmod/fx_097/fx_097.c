@@ -1,8 +1,279 @@
 #include "fxmod/fx_097.h"
 
-INCLUDE_ASM("asm/us/fx_097/nonmatchings/fx_097", func_801E7720);
+void func_801E7720(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s32 idx, s32 size, s32 w, s32 h,
+                   s32 scale, s32 bright, s32 abr, u16 *colors, s32 skip) {
+    Unk800F78A4 *env = D_801E9DB4;
+    RECT rect;
+    VECTOR sv;
+    SVECTOR zero;
+    SVECTOR v[4];
+    CVECTOR c1;
+    CVECTOR c3;
+    CVECTOR c0;
+    CVECTOR c2;
+    MATRIX m;
+    s32 z;
+    s32 flag;
+    DR_TPAGE *tpage;
+    s32 code;
+    BtlfxExports *ex;
+    POLY_G4 *prim;
+    u16 *row;
+    u16 *p;
+    s32 i;
+    s32 j;
+    s32 px;
+    s32 py;
+    s32 hh;
+    s32 x0;
+    s32 col;
 
-INCLUDE_ASM("asm/us/fx_097/nonmatchings/fx_097", func_801E7CBC);
+    *(s32 *)&zero.vx = 0;
+    *(s32 *)&zero.vz = 0;
+    ex = BTLFX_EXPORTS(env);
+    if (skip == 0) {
+        /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
+        do { do { do { w++; } while (0); } while (0); } while (0);
+        hh = h + 1;
+        prim = (POLY_G4 *)env->unk24;
+        env->unk24 = (u8 *)(prim + w * hh);
+        tpage = ex->btlfx_allocDrMode(0, abr);
+        gte_SetRotMatrix(env->unk14);
+        gte_SetTransMatrix(env->unk14);
+        gte_ldv0(pos);
+        if (rot == NULL) {
+            rot = &zero;
+        }
+        gte_rtv0tr_b();
+        ex->func_800316D8(rot, &m);
+        if (scale >= 0) {
+            sv.vx = sv.vy = sv.vz = scale;
+            ex->ScaleMatrix(&m, &sv);
+        }
+        gte_stlvnl(m.t);
+        gte_rtps();
+        code = 0x38;
+        if (abr != 0xFF) {
+            code = 0x3A;
+        }
+        gte_stszotz(&z);
+        if (rot->pad != 0) {
+            ex->MulRotMatrix(&m);
+        }
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        x0 = -(w * size) >> 1;
+        h = hh;
+        py = -(h * size) >> 1;
+        row = colors - (u32)(w - 1);
+        bright <<= 2;
+        gte_ldVZ012_0();
+        for (j = 0; j < h; j++, py += size, row += (u32)(w - 1)) {
+            px = x0;
+            p = row;
+            *(s32 *)&c0 = 0;
+            *(s32 *)&c2 = 0;
+            for (i = 0; i < w; i++, prim++, px += size, p++) {
+                v[0].vx = v[2].vx = px;
+                v[0].vy = v[1].vy = py;
+                v[1].vx = v[3].vx = px + size;
+                v[2].vy = v[3].vy = py + size;
+                if (i >= w - 1) {
+                    *(s32 *)&c1 = 0;
+                    *(s32 *)&c3 = 0;
+                } else {
+                    if (j == 0) {
+                        *(s32 *)&c1 = 0;
+                    } else {
+                        col = p[0];
+                        c1.r = ((col & 0x1F) * (bright << 2)) >> 12;
+                        c1.g = (((col >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        c1.b = (((col >> 10) & 0x1F) * (bright << 2)) >> 12;
+                    }
+                    if (j >= h - 1) {
+                        *(s32 *)&c3 = 0;
+                    } else {
+                        col = p[w - 1];
+                        c3.r = ((col & 0x1F) * (bright << 2)) >> 12;
+                        c3.g = (((col >> 5) & 0x1F) * (bright << 2)) >> 12;
+                        c3.b = (((col >> 10) & 0x1F) * (bright << 2)) >> 12;
+                    }
+                }
+                gte_ldv3xy(&v[0], &v[1], &v[2]);
+                c0.cd = code;
+                *(s32 *)&prim->r0 = *(s32 *)&c0;
+                gte_rtpt_b();
+                *(s32 *)&prim->r1 = *(s32 *)&c1;
+                *(s32 *)&prim->r2 = *(s32 *)&c2;
+                gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
+                gte_stopz(&flag);
+                gte_ldv0xy(&v[3]);
+                *(s32 *)&prim->r3 = *(s32 *)&c3;
+                gte_rtps_b();
+                *(s32 *)&c2 = *(s32 *)&c3;
+                *(s32 *)&c0 = *(s32 *)&c1;
+                gte_stsxy(&prim->x3);
+                if (flag != 0) {
+                    ex->btlfx_addPrim(0x8000000, z, prim);
+                }
+            }
+        }
+        ex->btlfx_addPrim(0x1000000, z, tpage);
+    }
+    w--;
+    h--;
+    x0 = (tp & 0xF) * 64 + x + (idx % div) * w;
+    py = (tp & 0x10) * 16 + y + (idx / div) * h;
+    rect.x = x0;
+    rect.y = py;
+    rect.w = w;
+    rect.h = h;
+    ex->StoreImage(&rect, (u32 *)colors);
+}
+
+void func_801E7CBC(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 h, s32 abr) {
+    Unk800F78A4 *env = D_801E9DB4;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    MATRIX m;
+    VECTOR sc;
+    SVECTOR q[4];
+    SVECTOR o;
+    s32 otz;
+    s32 row;
+    s32 code;
+    s32 rx;
+    s32 y;
+    POLY_GT4 *prim;
+    s32 col;
+    s32 d0;
+    s32 d1;
+    s32 d2;
+    s32 d3;
+    s32 k;
+    s32 tu;
+    s32 tu2;
+    s32 tv;
+    s32 tv2;
+
+    *(s32 *)&o.vx = 0;
+    o.vz = 0;
+    gte_SetRotMatrix(env->unk14);
+    gte_SetTransMatrix(env->unk14);
+    gte_ldv0(pos);
+    prim = (POLY_GT4 *)env->unk24;
+    code = 0x3C;
+    env->unk24 = (u8 *)(prim + 14 * 14);
+    if (abr != 0xFF) {
+        code = 0x3E;
+    }
+    tpage |= (abr & 3) << 5;
+    gte_rtv0tr_b();
+    ex->func_800316D8(rot, &m);
+    sc.vx = sc.vy = sc.vz = scale;
+    ex->ScaleMatrix(&m, &sc);
+    gte_stlvnl(m.t);
+    ex->MulRotMatrix(&m);
+    gte_SetRotMatrix(&m);
+    gte_SetTransMatrix(&m);
+    for (row = 0; row < 14; row++) {
+        y = (row << 6) - 0x180;
+        rx = row << 6;
+        for (col = 0; col < 14; col++) {
+            q[0].vz = q[1].vz = q[2].vz = q[3].vz = 0;
+            q[0].vx = q[2].vx = rx - 0x1C0;
+            q[1].vx = q[3].vx = y;
+            q[0].vy = q[1].vy = (col << 6) - 0x1C0;
+            q[2].vy = q[3].vy = (col << 6) - 0x180;
+            d0 = ex->btlfx_distance(&q[0], &o);
+            d1 = ex->btlfx_distance(&q[1], &o);
+            d2 = ex->btlfx_distance(&q[2], &o);
+            d3 = ex->btlfx_distance(&q[3], &o);
+            if (d0 > 0x100) {
+                q[0].vz = 0;
+            } else {
+                q[0].vz = -(((ex->math_cos(d0 * 8) + 0x1000) * h) >> 13);
+            }
+            if (d1 > 0x100) {
+                q[1].vz = 0;
+            } else {
+                q[1].vz = -(((ex->math_cos(d1 * 8) + 0x1000) * h) >> 13);
+            }
+            if (d2 > 0x100) {
+                q[2].vz = 0;
+            } else {
+                q[2].vz = -(((ex->math_cos(d2 * 8) + 0x1000) * h) >> 13);
+            }
+            if (d3 > 0x100) {
+                q[3].vz = 0;
+            } else {
+                q[3].vz = -(((ex->math_cos(d3 * 8) + 0x1000) * h) >> 13);
+            }
+            gte_ldv3c(q);
+            gte_rtpt();
+            k = c - (-q[0].vz >> 3);
+            if (k >= 0x100) {
+                k = 0xFF;
+            }
+            if (d0 > 0x1A0) {
+                k = 0;
+            }
+            prim->code = code;
+            prim->r0 = prim->g0 = prim->b0 = k;
+            k = c - (-q[1].vz >> 3);
+            if (k >= 0x100) {
+                k = 0xFF;
+            }
+            if (d1 > 0x1A0) {
+                k = 0;
+            }
+            prim->r1 = prim->g1 = prim->b1 = k;
+            k = c - (-q[2].vz >> 3);
+            if (k >= 0x100) {
+                k = 0xFF;
+            }
+            if (d2 > 0x1A0) {
+                k = 0;
+            }
+            prim->r2 = prim->g2 = prim->b2 = k;
+            k = c - (-q[3].vz >> 3);
+            if (k >= 0x100) {
+                k = 0xFF;
+            }
+            if (d3 > 0x1A0) {
+                k = 0;
+            }
+            prim->r3 = prim->g3 = prim->b3 = k;
+            gte_nclip();
+            prim->tpage = tpage;
+            prim->clut = clut;
+            gte_stopz(&otz);
+            if (otz != 0) {
+                gte_stsxy3(&prim->x0, &prim->x1, &prim->x2);
+                gte_avsz3();
+                gte_stszotz(&otz);
+                gte_ldv0(&q[3]);
+                gte_rtps();
+                tu = u + ((row & 3) << 5);
+                tu2 = tu + 0x20;
+                tv = v + ((col & 3) << 5);
+                if ((row & 3) == 3) {
+                    tu2 = tu + 0x1F;
+                }
+                tv2 = tv + 0x20;
+                if ((col & 3) == 3) {
+                    tv2 = tv + 0x1F;
+                }
+                prim->u0 = prim->u2 = tu;
+                prim->u1 = prim->u3 = tu2;
+                prim->v0 = prim->v1 = tv;
+                prim->v2 = prim->v3 = tv2;
+                ex->btlfx_addPrim(0xC000000, otz, prim);
+                gte_stsxy(&prim->x3);
+                prim++;
+            }
+        }
+    }
+}
 
 void func_801E8284(s16 *a, s16 *b, s32 i, s16 *out) {
     BTLFX_EXPORTS(D_801E9DB4)->func_800CFD78(a, b, -((D_801E9D50[i] * 0x455) >> 9), out);

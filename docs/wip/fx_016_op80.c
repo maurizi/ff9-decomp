@@ -1,8 +1,13 @@
-/* Draft of fx_016 op80 (Ramuh-style summon model: morph through four models, then a second morph pair). Status: 53
- * aligned mismatches, register allocation only. The original keeps m (the morph weight of the first branch) in s2
- * although it does not cross a call; here it lands in v1. Moving m above the sin() call makes it cross the call but
- * then it outranks a in the global-allocation priorities (see build/prio.py) and the two swap. fx_05f op80 is the
- * same function with different files and scales. */
+/* Draft of fx_016 op80 (Ramuh-style summon model: morph through four models, then a second morph pair). Status: 42
+ * aligned mismatches, register allocation only (equivalence not tested). Remaining: the original keeps m (the morph
+ * weight of the first branch) in s2; here global-alloc gives it a2. In find_reg pass 0 only regs that are not preferred
+ * by another pseudo are tried and every call-clobbered reg counts as already used, so s2 means m conflicts with all of
+ * v1/a2/a3/t0-t9 or crosses a call; neither is visible in the asm. Splitting m's computation in two (m = 0x1000 - a;
+ * m *= 4;) stops sched1 from treating it as a birthing insn and puts it at the original position (before rot.vy),
+ * and computing v before rot.vx in the else branch matches that block's schedule. In the else branch the original's
+ * q is a block-local pseudo (local-alloc gives the cos temporaries s0/s1, then q s2, &scale s3, &pos s4), so q must
+ * stay a separate variable; merging m into q gives q/m s4. fx_05f op80 is the same function with different files
+ * and scales. */
 #include "fxmod/fx_016.h"
 
 s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -54,7 +59,8 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         v = (((ex->math_sin(a >> 2) / 10) + 0x199) * work->unk34) >> 12;
         rot.vz = 0;
         rot.vx = 0;
-        m = (0x1000 - a) * 4;
+        m = 0x1000 - a;
+        m *= 4;
         rot.vy = -frame * 0x20;
         scale.vy = (v * 3) >> 2;
         scale.vz = v;
@@ -78,9 +84,9 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vy = work->unkC.vy;
         pos.vz = work->unkC.vz;
         rot.vz = 0;
+        v = (work->unk34 * 0x332) >> 12;
         rot.vx = 0;
         rot.vy = -frame * 0x20;
-        v = (work->unk34 * 0x332) >> 12;
         scale.vz = v;
         scale.vx = v;
         scale.vy = (v * 3) >> 2;

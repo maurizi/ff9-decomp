@@ -1,5 +1,10 @@
-/* Draft of fx_097 fx_097_op80. Status: 71 aligned diff lines with registers (26 without): register allocation; mode 1
- * keeps 0x9A in a callee-saved register. fx_098 op80 is the same code with other constants. */
+/* Draft of fx_097 fx_097_op80. Status: 79 aligned mismatches (7 of them the jump table's .word lines), register
+ * allocation only: case 5's cse'd &rot/&scale get s2/s0 and the spawn loop's i/it s1/s0 in the original (here s0/s1
+ * and s2/s1), plus one scheduling pair at the end. Levers: mode 1 sets c/i after the initEffModels call (sched1 moves
+ * them back above it since they cross calls), scale.vx = scale.vy = ..., case 1's k = t after the 6624 call, case 2
+ * sets k before t. A pointer pr = &rot for the calls (not the copy) makes &rot one register like the original but
+ * rotates s0-s3 (82). Separate pointers q0-q2 in case 1 keep the spawn results in v0, and reusing t for case 2's
+ * tint level gives it s2 like the original. fx_098 op80 is the same code with other constants. */
 #include "btlfx_mod.h"
 
 extern s16 D_801E9D50[];
@@ -78,6 +83,9 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 k;
     Fx097Item *it;
     Pool6CEntry *p;
+    Pool6CEntry *q0;
+    Pool6CEntry *q1;
+    Pool6CEntry *q2;
     SVECTOR *a;
     s32 frame;
     s32 i;
@@ -95,10 +103,10 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->unk14 = (s32)func_801E82F4;
         init->unk4 = 0x20;
     } else if (mode == 1) {
-        i = 0;
-        c = 0x9A;
         D_801E9DB4 = env;
         ex->btlfx_initEffModels(D_801E9DC4, 0x19);
+        c = 0x9A;
+        i = 0;
         work->unk8 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x14), c, 0x3DC0, 0x80, 0);
         work->unkC = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x12), c, 0x3DC0, 0x80, 0);
         work->unk10 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x13), c, 0x3DC0, 0x80, 0);
@@ -125,7 +133,7 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         pos.vx = work->unk58.vx;
         pos.vy = work->unk58.vy;
         pos.vz = work->unk58.vz;
-        scale.vy = scale.vx = 0x1DFE;
+        scale.vx = scale.vy = 0x1DFE;
         scale.vz = 0x1354;
         k = 0;
         switch (work->unk0) {
@@ -133,7 +141,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0x400;
             rot.vz = 0x200;
             rot.vy = 0;
-            func_801E7CBC(&work->unk58, &rot, 0x26A8, ((frame << 12) / 6) >> 5, 0x9A, 0x3D40, 0, 0x80, 0, 1);
+            t = (frame << 12) / 6;
+            func_801E7CBC(&work->unk58, &rot, 0x26A8, t >> 5, 0x9A, 0x3D40, 0, 0x80, 0, 1);
             ex->func_800E6624(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
             if (frame >= 6) {
                 work->unk0 = 1;
@@ -147,8 +156,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = 0x200;
             func_801E7CBC(&work->unk58, &rot, 0x26A8, 0x80, 0x9A, 0x3D40, 0, 0x80, -((ex->math_sin(u) * 0x2BC) >> 12), 1);
-            k = t;
             ex->func_800E6624(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            k = t;
             rot.pad = 1;
             d = ex->btlfx_getFileData(entry->unk8, 0x24);
             ex->func_800D23D8((u8 *)d, &work->unk58, &rot, ((((ex->math_sin(u) * 0x19FE) >> 12) + 0x1154) * 3) >> 2, 0, 1,
@@ -158,25 +167,26 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->unk0 = -1;
                 BTLFX_COPY_SVEC(&work->unk68, &work->unk58);
                 work->unk68.vy -= 0x5C6;
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x26), (s32)&work->unk58);
-                if (p != NULL) {
-                    p->unk22 = 0x80;
+                q0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x26), (s32)&work->unk58);
+                if (q0 != NULL) {
+                    q0->unk22 = 0x80;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x27), (s32)&work->unk68);
-                if (p != NULL) {
-                    p->unk22 = 0x80;
+                q1 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x27), (s32)&work->unk68);
+                if (q1 != NULL) {
+                    q1->unk22 = 0x80;
                 }
-                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x29), (s32)&work->unk58);
-                if (p != NULL) {
-                    p->unk22 = 0x80;
+                q2 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x29), (s32)&work->unk58);
+                if (q2 != NULL) {
+                    q2->unk22 = 0x80;
                 }
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0);
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0, 0x80);
             }
             break;
         case 2:
-            t = 0x2000 - (frame << 10);
             k = 0x1000;
+            t = frame << 10;
+            t = 0x2000 - t;
             rot.vx = -0x400;
             rot.vy = 0;
             rot.vz = -0x400;
@@ -185,8 +195,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->unk8, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk14);
             if (frame < 6) {
-                c = 0xFF - (frame * 0xFF) / 6;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 2, c * 2 / 3, c);
+                t = 0xFF - (frame * 0xFF) / 6;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, t >> 2, t * 2 / 3, t);
                 if (frame == 0) {
                     ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xFF, 0xFF, 0xFF);
                 }

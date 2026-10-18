@@ -1,6 +1,82 @@
 #include "fxmod/fx_1fd.h"
 
-INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", func_801E7704);
+void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist) {
+    Unk800F78A4 *env = D_801E9E4C;
+    Fx1fdEdge *e = D_801EB80C;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    MATRIX m;
+    VECTOR v;
+    SVECTOR ends[2];
+    SVECTOR rot;
+    SVECTOR a;
+    SVECTOR b;
+    SVECTOR p;
+    s32 i;
+    s16 z;
+
+    ends[0].vx = 0;
+    ends[0].vy = -w / 2;
+    ends[0].vz = 0;
+    ends[1].vx = 0;
+    ends[1].vy = w / 2;
+    ends[1].vz = 0;
+    for (i = 0; i < 60; i++, e++) {
+        func_801E97DC(trackA, i, &a);
+        func_801E97DC(trackB, i, &b);
+        ex->btlfx_lerpVec((s16 *)&a, (s16 *)&b, t, (s16 *)&p);
+        p.vx = p.vx * scale->vx / 4096;
+        p.vy = p.vy * scale->vy / 4096;
+        p.vz = p.vz * scale->vz / 4096;
+        rot.vx = 0;
+        rot.vz = 0;
+        rot.vy = rotY;
+        ex->func_800316D8(&rot, &m);
+        gte_SetRotMatrix(&m);
+        gte_ldtr0();
+        gte_ldv0(&p);
+        gte_rtv0tr();
+        gte_stlvnl(&v);
+        p.vx = v.vx;
+        p.vy = v.vy;
+        p.vz = v.vz + 0x4B0;
+        gte_SetRotMatrix(env->unk14);
+        gte_SetTransMatrix(env->unk14);
+        gte_ldv0(&p);
+        gte_rtv0tr();
+        gte_stlvnl(m.t);
+        rot.vx = 0;
+        rot.vy = 0;
+        rot.vz = 0;
+        if (twist != 0) {
+            if (i < 0x10) {
+                rot.vz = 0x400 - (i << 6);
+            } else if (i >= 0x1D) {
+                rot.vz = ex->math_sin(((i - 0x1C) << 7) / 4) / 4 + 0x80;
+                z = rot.vz;
+                if (z > 0x400) {
+                    z = 0x400;
+                }
+                rot.vz = z;
+                if (p.vz > 0) {
+                    rot.vz = -z;
+                }
+            }
+        } else {
+            rot.vz = 0x400;
+        }
+        ex->func_800316D8(&rot, &m);
+        ex->MulRotMatrix(&m);
+        gte_SetRotMatrix(&m);
+        gte_SetTransMatrix(&m);
+        gte_ldv0(&ends[0]);
+        gte_rtps();
+        gte_stsxy(&e->unk0);
+        gte_ldv0(&ends[1]);
+        gte_rtps();
+        gte_stsxy(&e->unk4);
+        gte_stszotz(&e->unk8);
+    }
+}
 
 void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY) {
     Unk800F78A4 *env = D_801E9E4C;
@@ -58,7 +134,85 @@ void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 r
     }
 }
 
-INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", func_801E7E18);
+void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
+    Fx1fdEdge *e = D_801EB80C;
+    POLY_GT4 *p;
+    BtlfxExports *ex;
+    u16 tp;
+    u16 cl;
+    s32 i;
+    s32 k;
+    s32 ua;
+    s32 ub;
+    s32 ca;
+    s32 cb;
+    s32 z;
+
+    tp = tpage | 0x20;
+    p = (POLY_GT4 *)D_801E9E4C->unk24;
+    D_801E9E4C->unk24 = (u8 *)(p + n);
+    cl = clut;
+    ex = BTLFX_EXPORTS(D_801E9E4C);
+    for (i = 0; i < n - 1; i++, p++, e++) {
+        p->tpage = tp;
+        p->clut = cl;
+        p->code = 0x3E;
+        p->x0 = e[0].unk0.vx;
+        p->y0 = e[0].unk0.vy;
+        p->x1 = e[0].unk4.vx;
+        p->y1 = e[0].unk4.vy;
+        p->x2 = e[1].unk0.vx;
+        p->y2 = e[1].unk0.vy;
+        p->x3 = e[1].unk4.vx;
+        p->y3 = e[1].unk4.vy;
+        p->v0 = p->v2 = v0;
+        p->v1 = p->v3 = v1;
+        k = i % 8;
+        ua = k << 5;
+        ub = (k + 1) << 5;
+        if (ua == 0x100) ua = 0xFF;
+        if (ub == 0x100) ub = 0xFF;
+        p->u2 = p->u3 = ub;
+        p->u0 = p->u1 = ua;
+        if (i < 8) {
+            ca = i * 16;
+            cb = (i + 1) * 16;
+            if (c < ca) {
+                ca = c;
+            }
+            if (c < cb) {
+                cb = c;
+            }
+            setRGB0(p, ca, ca, ca);
+            setRGB1(p, ca, ca, ca);
+            setRGB2(p, cb, cb, cb);
+            setRGB3(p, cb, cb, cb);
+        } else if (i >= 0x35) {
+            cb = 0x80 - (i - 0x34) * 16;
+            ca = 0x80 - (i - 0x33) * 16;
+            if (c < cb) {
+                cb = c;
+            }
+            if (c < ca) {
+                ca = c;
+            }
+            setRGB0(p, cb, cb, cb);
+            setRGB1(p, cb, cb, cb);
+            setRGB2(p, ca, ca, ca);
+            setRGB3(p, ca, ca, ca);
+        } else {
+            setRGB0(p, c, c, c);
+            setRGB1(p, c, c, c);
+            setRGB2(p, c, c, c);
+            setRGB3(p, c, c, c);
+        }
+        if (e[0].unk0.vx < e[1].unk0.vx) {
+            ex->btlfx_addPrim(0x0C000000, 0, p);
+        } else {
+            ex->btlfx_addPrim(0x0C000000, (e[0].unk8 + e[1].unk8) >> 1, p);
+        }
+    }
+}
 
 s32 fx_1fd_op80(s32 mode, Fx1fdWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);

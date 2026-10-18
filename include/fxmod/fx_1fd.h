@@ -88,5 +88,7 @@ extern Fx1fdEdge D_801EB80C[];
 void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 rotY);
 extern Fx1fdOrbit D_801EBADC[];
 s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scale, s32 w, s32 t, s32 rotY, s32 twist);
+void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1);
 
 #endif

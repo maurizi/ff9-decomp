@@ -124,7 +124,57 @@ void func_801E79E8(u32 *ot, s32 n, s32 h, s32 dz, SVECTOR *rot, SVECTOR *pts, CV
     gte_SetGeomScreen(oldh);
 }
 
-INCLUDE_ASM("asm/us/fx_17d_0/nonmatchings/fx_17d_0", func_801E7D18);
+void func_801E7D18(Unk80100C78Entry *entry, SVECTOR *origin, s32 frame, s32 models, s16 *morphs, s32 scale) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9470);
+    s16 *morph = morphs; /* a copy: the original loads scale before morphs */
+    VECTOR pos;
+    VECTOR sc;
+    SVECTOR rot;
+    s16 *f;
+    s32 n;
+    s32 i;
+    s32 j;
+    s32 k;
+
+    for (i = 0; i < 21; i++) {
+        j = i * 4 + 2;
+        f = (s16 *)ex->btlfx_getFileData(entry->unk8, ((s16 *)D_801E9370)[j]);
+        n = frame;
+        if (n >= f[1]) {
+            n = f[1] - 1;
+        }
+        if (i < 16 || i >= 19 || frame < 0x28) {
+            if (i != 16) {
+                f = f + 2 + n * 6;
+                sc.vx = sc.vy = sc.vz = scale;
+            } else {
+                f = f + 2 + n * 9;
+                sc.vx = (f[6] * scale) >> 12;
+                sc.vy = (f[7] * scale) >> 12;
+                sc.vz = (f[8] * scale) >> 12;
+            }
+            pos.vx = ((f[0] * scale) >> 12) + origin->vx;
+            pos.vy = ((f[1] * scale) >> 12) + origin->vy;
+            pos.vz = ((f[2] * scale) >> 12) + origin->vz;
+            rot.vx = f[3];
+            rot.vy = f[4];
+            rot.vz = -f[5];
+            k = i << 1;
+            if (*morph < 0) {
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, *(s16 *)(k + models));
+            } else {
+                j = i * 4 + 3;
+                f = (s16 *)ex->btlfx_getFileData(entry->unk8, ((s16 *)D_801E9370)[j]);
+                n = frame;
+                if (n >= f[1]) {
+                    n = f[1] - 1;
+                }
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&sc, *(s16 *)(k + models), *morph, *(f = f + 2 + n * 3));
+            }
+        }
+        morph++;
+    }
+}
 
 s32 func_801E7FE0(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
