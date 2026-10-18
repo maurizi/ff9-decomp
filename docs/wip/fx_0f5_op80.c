@@ -1,4 +1,4 @@
-/* Draft of fx_0f5 fx_0f5_op80. Status: 65 aligned mismatches ignoring registers (was ~150). Lever: case 2's body
+/* Draft of fx_0f5 fx_0f5_op80. Status: 61 aligned mismatches ignoring registers (was ~150). Lever: case 2's body
  * wrapped in do { } while (0) (loop depth doubles its register reference weights, which moves global allocation
  * toward the original: &scale/positions/0x2000/0x80 in s-registers across the calls). Open: the original also keeps
  * 300 (s5) across both func_801E7704 calls of each case and spills ex (reloaded through t0, here t1), and the
@@ -92,7 +92,9 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vy = scale.vx = 0x2000;
             func_801E7704(&work->unk10, &work->unk18, &scale, 0x1C8 - c, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d,
                           work->unk4 * 40, 300, 0x80, 1, 1);
-            pos.vx = work->unk10.vx;
+            do {
+                pos.vx = work->unk10.vx;
+            } while (0);
             pos.vy = work->unk10.vy;
             scale.vz = scale.vx = scale.vy = 0x1000;
             pos.vz = work->unk10.vz;
@@ -116,7 +118,9 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 scale.vz = scale.vy = scale.vx = (t >> 1) + 0x2000;
                 func_801E7704(&work->unk10, &work->unk18, &scale, 0x148, 0x280, 0x80, 0x17, 0x3D00, 0, 0x80, d, work->unk4 * 40,
                               300, 0x80, 1, 1);
-                pos.vx = work->unk10.vx;
+                do {
+                    pos.vx = work->unk10.vx;
+                } while (0);
                 pos.vy = work->unk10.vy;
                 scale.vz = scale.vx = scale.vy = 0x1000;
                 pos.vz = work->unk10.vz;
