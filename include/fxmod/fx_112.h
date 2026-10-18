@@ -28,6 +28,7 @@ extern u8 D_801E8130[][0x2D0];
 void func_801E7718(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy);
 s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+/* fx_112_op80 locals: each state reuses the same stack area (the original frame overlaps them). */
 typedef union {
     struct {
         VECTOR scale0;
