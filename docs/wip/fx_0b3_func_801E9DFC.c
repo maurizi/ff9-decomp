@@ -1,11 +1,11 @@
 /* Draft of fx_0b3 func_801E9DFC (wave grid: 18x19 cells of POLY_FT4+POLY_F4, column 0 POLY_GT4+POLY_G4, with
- * edge positions written to D_801EE340). Status: 68 aligned mismatches ignoring registers. Blocker: the original
- * keeps abr = 1 in $a2 unfolded through both "abr != 0xFF ? 0x2A : 0x28" / "abr == 0xFF ? 0x38 : 0x3A" ternaries
- * and "tpage |= abr << 5"; here cse2 (which follows the path past loop notes) still folds the first ternary. The
- * do {} while (0) before the ternaries keeps the second one; an if/else around abr = 1, REG_ASM and u8 abr do not
- * help. Other open rows: per-row y0 = zz + (-0x17CD) and per-cell x = xx + (-0x24EA) with the constant in a
- * register (fx_0b3 func_801E8DF4 needed a variable x0 = -10000 plus an explicit zz biv for this), the D_801EE340
- * row pointer (original s5 at offset 0), spill slots of xx/zz/j, and the loop tail order. */
+ * edge positions written to D_801EE340). Status: 41 lines (build/w/nd.py). Blocker: the original keeps abr = 1 in
+ * $a2 unfolded through both "abr != 0xFF ? 0x2A : 0x28" / "abr == 0xFF ? 0x38 : 0x3A" ternaries and
+ * "tpage |= abr << 5"; here cse2 (following the path past the loop notes) folds the first ternary. With
+ * "if (c != 0) abr = 1; else abr = 1;" (jump.c hoists one set) the first survives but cse's path following then
+ * folds the second (build/w/gb3*.py). Other open rows: the p[].vy stores are scheduled before the first math_sin
+ * call (original: after), the spill slots of the u/v halfwords, the loop tail. Fixed: D_801EE340[j] indexing
+ * instead of an out pointer (the original's s5 row pointer at offset 0). */
 #include "fxmod/fx_0b3.h"
 
 void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32 tpage, s32 clut, s32 u, s32 v,
@@ -34,7 +34,6 @@ void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32
     s32 y0;
     s32 y1;
     POLY_GT4 *gt4;
-    SVECTOR *out;
     s32 i;
     s32 x;
     s32 k;
@@ -85,9 +84,8 @@ void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32
     gte_SetTransMatrix(&m);
     x0 = -0x24EA;
     z0 = -0x17CD;
-    out = D_801EE340;
     zz = 0;
-    for (j = 0; j < 18; j++, out++, zz += 0x2A5) {
+    for (j = 0; j < 18; j++, zz += 0x2A5) {
         ph += dph;
         y0 = z0 + zz;
         y1 = y0 + 0x2A5;
@@ -176,18 +174,18 @@ void func_801E9DFC(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 c, s32 c2, s32
                     gte_ldv0(&p[0]);
                     gte_rtv0tr();
                     gte_stlvnl(&lv);
-                    out->vx = lv.vx;
-                    out->vy = lv.vy;
-                    out->vz = lv.vz;
+                    D_801EE340[j].vx = lv.vx;
+                    D_801EE340[j].vy = lv.vy;
+                    D_801EE340[j].vz = lv.vz;
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
                     gte_ldv0(&p[0]);
                     gte_rtps();
                     gte_stsxy(&sxy);
                     if ((u16)(sxy.vx + 0x20) > 0x180 || sxy.vy < -0x20 || sxy.vy > 0x110) {
-                        out->pad = 0;
+                        D_801EE340[j].pad = 0;
                     } else {
-                        out->pad = 1;
+                        D_801EE340[j].pad = 1;
                     }
                 }
                 gte_ldv0(&p[3]);
