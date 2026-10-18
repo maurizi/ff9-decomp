@@ -23,9 +23,13 @@ s32 fx_19e_op81(s32 mode, Fx19eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_19e/nonmatchings/fx_19e", func_801E78F4);
+void func_801E78F4(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(D_801E7EC8)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+}
 
-INCLUDE_ASM("asm/us/fx_19e/nonmatchings/fx_19e", func_801E7938);
+s32 func_801E7938(s32 from, s32 to, s32 t, s32 n) {
+    return (from * (n - t) + to * t) / n;
+}
 
 INCLUDE_ASM("asm/us/fx_19e/nonmatchings/fx_19e", func_801E7990);
 

@@ -1,4 +1,4 @@
-#include "btlfx_mod.h"
+#include "fxmod/fx_1bd.h"
 
 INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E77C0);
 
@@ -12,9 +12,13 @@ INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", fx_1bd_op82);
 
 INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", fx_1bd_op83);
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E8D5C);
+void func_801E8D5C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(D_801E9E54)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+}
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E8DA0);
+s32 func_801E8DA0(s32 from, s32 to, s32 t, s32 n) {
+    return (from * (n - t) + to * t) / n;
+}
 
 INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E8DF8);
 
