@@ -37,4 +37,48 @@ s32 func_801E7FE0(s32 mode, Fx17d0Part *p, Unk800F78A4 *env, Unk80100C78Entry *e
     "sw\t$12, 0(%0)" \
     : : "r"(r0) : "$12", "memory")
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx17d0Vec3;
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    SVECTOR unk8; /* summon position */
+    SVECTOR unk10; /* pieces origin */
+    Fx17d0Vec3 unk18; /* model position */
+    u8 pad24[0x30 - 0x24];
+    SVECTOR unk30;
+    SVECTOR unk38; /* model rotation */
+    SVECTOR unk40; /* spawn position */
+    SVECTOR unk48; /* camera */
+    u8 pad50[0x58 - 0x50];
+    s32 unk58; /* spark count */
+    s16 unk5C[21]; /* piece models */
+    s16 unk86[21]; /* piece morph models */
+    s16 unkB0[5]; /* body models */
+    s16 unkBA; /* model */
+} Fx17d0Work80; /* 0xBC */
+
+typedef struct {
+    u8 pad0[0x18];
+    u16 unk18[6];
+    u16 unk24[6];
+    u16 unk30[6];
+} Fx17d0SummonData;
+
+typedef struct {
+    u8 pad0[0x54];
+    Fx17d0SummonData *unk54;
+} Fx17d0Summon;
+
+extern SVECTOR D_801E9368;
+extern s16 D_801E9418[];
+extern s16 D_801E9424[];
+extern SVECTOR D_801E9480[];
+extern BtlModel D_801EA380[];
+extern VECTOR D_801EBC80;
+
 #endif
