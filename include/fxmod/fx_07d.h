@@ -58,5 +58,7 @@ void func_801E9834(Unk80100C78Entry *entry, Fx07dStrip *buf, s32 *tab, SVECTOR *
                    s32 step, s32 a9, s32 a10, s32 pad);
 s32 func_801E9A40(s32 mode, Fx07dArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 s32 func_801E8108(s32 mode, Fx07dOrb *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx07dWork80 *work);
+void func_801E7718(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to, RECT *src,
+                   void (*fn)(s32, s32, s32, s32, DVECTOR *));
 
 #endif

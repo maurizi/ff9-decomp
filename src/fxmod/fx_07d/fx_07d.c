@@ -143,4 +143,71 @@ s32 func_801E9A40(s32 mode, Fx07dArc *arc, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_07d/nonmatchings/fx_07d", fx_07d_op83);
+s32 fx_07d_op83(s32 mode, Fx07dWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    Fx07dArc *arc;
+    Fx07dArc *arc2;
+    s32 frame;
+    s32 i;
+    s32 t;
+    s32 *p;
+    s32 *tab;
+
+    if (mode == 0) {
+        ((EffInit *)arg4)->unk0 = sizeof(Fx07dWork83);
+        ((EffInit *)arg4)->unk8 = sizeof(Fx07dArc);
+        ((EffInit *)arg4)->unk14 = (s32)func_801E9A40;
+        ((EffInit *)arg4)->unk4 = 7;
+    } else if (mode == 1) {
+        D_801E9FB0 = env;
+        t = *arg4;
+        ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk0);
+        work->unk8 = D_801EA8B0[0];
+        p = work->unk8;
+        for (i = 0; i < 64; i++) {
+            *p++ = ex->btlfx_randCentered(0x100);
+            *p++ = ex->btlfx_randCentered(0x180);
+            *p++ = ex->btlfx_randCentered(0xC0);
+        }
+        work->unk10 = t;
+        work->unkC = 0;
+    } else {
+        frame = entry->unk0;
+        if (work->unk10 == 0) {
+            if (frame >= 0x29) {
+                return 1;
+            }
+            work->unkC++;
+            arc = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+            if (arc != NULL) {
+                ((s32 *)&arc->unk0)[0] = ((s32 *)&D_801EA470[ex->btlfx_rand() % 24])[0];
+                ((s32 *)&arc->unk0)[1] = ((s32 *)&D_801EA470[ex->btlfx_rand() % 24])[1];
+                ((s32 *)&arc->unk8)[0] = ((s32 *)&D_801EA470[ex->btlfx_rand() % 24])[0];
+                ((s32 *)&arc->unk8)[1] = ((s32 *)&D_801EA470[ex->btlfx_rand() % 24])[1];
+                arc->unk14 = work->unk8 + (ex->btlfx_rand() & 0x1F);
+                arc->unk10 = work->unkC % 7;
+            }
+        } else {
+            if (frame < 0x10) {
+                t = ex->btlfx_randCentered(0x300);
+                work->unkC++;
+                t += frame * 0x334;
+                arc2 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
+                if (arc2 != NULL) {
+                    ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&v);
+                    BTLFX_COPY_SVEC(&arc2->unk0, &v);
+                    v.vz += ex->math_cos(t) / 2;
+                    v.vy += ex->math_sin(t) / 2;
+                    BTLFX_COPY_SVEC(&arc2->unk8, &v);
+                    arc2->unk14 = work->unk8 + (ex->btlfx_rand() & 0x1F);
+                    arc2->unk10 = work->unkC % 7;
+                }
+            }
+            if (frame >= 0x10) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
