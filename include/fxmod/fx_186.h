@@ -34,4 +34,22 @@ typedef struct {
     s32 unk4;
 } Fx186Word2; /* an SVECTOR copied as two words */
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* position */
+    SVECTOR unk10;
+    Pool6CEntry *unk18;
+    s32 unk1C[10]; /* rock models */
+    s32 unk44; /* model */
+    s32 unk48; /* model */
+} Fx186Work80; /* 0x4C */
+
+extern s16 D_801E9B84[]; /* StoreImage buffer */
+extern u16 D_801E8DA4[10]; /* rock model files */
+extern u16 D_801E8DB8[10]; /* rock model files (alternate) */
+extern u32 D_801E8E14[];
+extern BtlModel D_801E9224[];
+s32 func_801E7704(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame);
+
 #endif

@@ -58,4 +58,28 @@ void func_801E878C(Unk80100C78Entry *entry, Fx085Strip *strip, Fx085Strip *out, 
                    s32 kind);
 s32 func_801E8880(s32 mode, Fx085Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
 
+typedef struct {
+    SVECTOR unk0; /* target body */
+    SVECTOR unk8; /* target */
+    s32 *unk10; /* jitter table */
+    s32 unk14; /* bolts spawned */
+    s32 unk18; /* kind */
+} Fx085Work83; /* 0x1C */
+
+extern SVECTOR D_801E9DEC; /* previous bolt end */
+extern Unk80100C78Entry *D_801E9DF8;
+extern s32 D_801EAAEC[];
+
+typedef struct {
+    SVECTOR unk0; /* target position */
+    SVECTOR unk8; /* ground position */
+    s32 unk10; /* state */
+    s32 unk14; /* model */
+    s32 unk18; /* model */
+    Pool6CEntry *unk1C;
+    Pool6CEntry *unk20;
+} Fx085Work80; /* 0x24 */
+
+extern BtlModel D_801E9DFC[];
+extern s32 D_801E9F8C;
 #endif

@@ -217,9 +217,268 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_op81);
+s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    s32 frame;
+    s32 f;
+    s32 i;
+    s32 i5;
+    s32 j;
+    s32 i2;
+    s32 n;
+    s32 m;
+    s32 k;
+    u8 *buf;
+    Pool6CEntry *p;
 
-INCLUDE_ASM("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_op82);
+    if (mode == 0) {
+        *arg4 = sizeof(Fx0d2Work81);
+    } else if (mode == 1) {
+        D_801ED8E0 = env;
+        work->unkC.vx = 0;
+        work->unkC.vy = 0;
+        work->unkC.vz = 0;
+        work->unk14.vx = 0;
+        work->unk14.vy = 0;
+        work->unk14.vz = 0;
+        work->unk24.vx = 0x1C00;
+        work->unk24.vy = 0x1C00;
+        work->unk24.vz = 0x1C00;
+        for (k = 0; k < 6; k++) {
+            func_801E9EEC((Fx0d2Path *)&D_801EF270[k],
+                          (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x90), k));
+            work->unk44[k] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[k]), 1);
+        }
+        D_801EF1F0.unkA = 6;
+        D_801EF1F0.unk8 = 0;
+        D_801EF1F0.unkC = 0x1000;
+        D_801EF1F0.unk10 = 0x40;
+        D_801EF1F0.unkE = 0x1000;
+        D_801EF1F0.unk12 = 0x20;
+        D_801EF210.unk10 = 0x80;
+        D_801EF210.unk8 = 0;
+        D_801EF210.unkA = 0;
+        D_801EF210.unkC = 0x1000;
+        D_801EF210.unkE = 0x1000;
+        D_801EF210.unk12 = 0x60;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 0:
+            work->unk34.vx = 0;
+            work->unk34.vy = 0;
+            work->unk34.vz = -0x7D4;
+            work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA6), (s32)&work->unk34);
+            if (work->unk0 != NULL) {
+                work->unk0->unk22 = 0x100;
+            }
+            break;
+        case 0x43:
+            work->unk3C.vx = 0;
+            work->unk3C.vy = 0;
+            work->unk3C.vz = 0x435;
+            work->unk4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk3C);
+            work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk3C);
+            if (work->unk4 != NULL) {
+                work->unk4->unk22 = 0x100;
+            }
+            if (work->unk8 != NULL) {
+                work->unk8->unk22 = 0x100;
+            }
+            break;
+        case 0x41:
+            ex->func_800E6E1C(0x2C0, 0x100, 0x80, 0x80, D_801EF300, 0, 0x200, 0x2BC);
+            break;
+        case 0x2C:
+            for (i2 = 0; i2 < env->unkC->unk24; i2++) {
+                ex->btlfx_getUnitPos(i2, (s16 *)&D_801EFF80[i2]);
+                ex->btlfx_getUnitScale(i2, &D_801EFFC0[i2]);
+            }
+            break;
+        case 0x19:
+            for (i2 = 0; i2 < 6; i2++) {
+                ex->Hi_FreeEffModel(work->unk44[i2]);
+            }
+            break;
+        }
+        if ((u32)frame < 0x19) {
+            f = frame;
+            for (i5 = 0; i5 < 6; i5++) {
+                func_801E9F04((Fx0d2KeyPath *)&D_801EF270[i5], f, &work->unkC, &v);
+                work->unk14.vx = v.vx;
+                work->unk14.vy = v.vy;
+                work->unk14.vz = v.vz;
+                ex->Hi_SetEffModelSlice(work->unk44[i5], work->unk14.vy);
+                ex->Hi_DrawSliceEffModel(&work->unkC, (VECTOR *)&work->unk14, (s32)&work->unk24, work->unk44[i5]);
+            }
+        }
+        if ((u32)(frame - 0x40) < 0x15) {
+            D_801EF1F0.unkA = (frame - 0x40) * 4;
+            D_801EF1F0.unkA = (D_801EF1F0.unkA > 0x10) ? 0x10 : D_801EF1F0.unkA;
+            for (i = 0; i < 9; i++) {
+                func_801E9E70((Fx0d2Path *)&D_801EF1F0,
+                              (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x80), i));
+                m = D_801EF1F0.unkA;
+                n = (D_801EF1F0.keys.unk2 >= m) ? m : D_801EF1F0.keys.unk2;
+                /* Dead test, gone after jump2: the extra reference ranks m above n in global-alloc, so n lands in a3. */
+                if (m != 7) {
+                    i5 = 0;
+                }
+                func_801E77A4(&D_801EF1F0.keys, D_801EF700[i], 0x90, D_801EF1F0.unk8, n, D_801EF1F0.unk10, D_801EF1F0.unk12, 1);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 0, NULL, 0, D_801EF1F0.unkE,
+                                    D_801EF1F0.unkC, 1, D_801EF700[i], 0);
+            }
+        }
+        if ((u32)(frame - 0x43) < 0xF) {
+            D_801EF210.unkA = (frame - 0x43) * 2;
+            D_801EF210.unkA = (D_801EF210.unkA > 9) ? 9 : D_801EF210.unkA;
+            for (j = 0; j < 11; j++) {
+                func_801E9E70((Fx0d2Path *)&D_801EF210,
+                              (u16 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x81), j));
+                func_801E77A4(&D_801EF210.keys, D_801EFC10[j], 0x50, D_801EF210.unk8, D_801EF210.unkA, D_801EF210.unk10,
+                              D_801EF210.unk12, 0);
+                ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x25), 0, NULL, 0, D_801EF210.unkE,
+                                    D_801EF210.unkC, 1, D_801EFC10[j], 0);
+            }
+        }
+        ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 5), frame);
+        return frame >= 0x64;
+    }
+    return 0;
+}
+
+s32 fx_0d2_op82(s32 mode, Fx0d2Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    SVECTOR w;
+    s32 t;
+    s32 frame;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 n;
+    Fx0d2Spawn *sp;
+    SVECTOR *rp;
+
+    if (mode == 0) {
+        *arg4 = sizeof(Fx0d2Work82);
+    } else if (mode == 1) {
+        work->unk1C[0].unk0.vx = 0;
+        work->unk1C[0].unk0.vy = 0x800;
+        work->unk1C[0].unk0.vz = 0;
+        work->unk1C[0].unk8.vx = 0;
+        work->unk1C[0].unk8.vy = 0;
+        work->unk1C[0].unk8.vz = 0;
+        work->unk1C[0].unk18.vx = 0x1C00;
+        work->unk1C[0].unk18.vy = 0x1C00;
+        work->unk1C[0].unk18.vz = 0x1C00;
+        D_801ED8E0 = env;
+        func_801E9EEC(&D_801EF240, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x84));
+        work->unkF4[0] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8E), 1);
+        work->unk1C[1].unk0.vx = 0;
+        work->unk1C[1].unk0.vy = 0;
+        work->unk1C[1].unk0.vz = 0;
+        work->unk1C[1].unk8.vx = 0;
+        work->unk1C[1].unk8.vy = 0;
+        work->unk1C[1].unk8.vz = 0;
+        work->unk1C[1].unk18.vx = 0x1000;
+        work->unk1C[1].unk18.vy = 0x1000;
+        work->unk1C[1].unk18.vz = 0x1000;
+        func_801E9F98(&D_801EF258, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x8F));
+        work->unkF4[1] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x86), 1);
+        work->unkF4[2] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8D), 1);
+        ex->Hi_SetEffModelOffset(work->unkF4[1], 0x32);
+        work->unk1C[2].unk0.vx = 0;
+        work->unk1C[2].unk0.vy = 0;
+        work->unk1C[2].unk0.vz = 0;
+        work->unk1C[2].unk8.vx = 0;
+        work->unk1C[2].unk8.vy = 0;
+        work->unk1C[2].unk8.vz = 0;
+        work->unk1C[2].unk18.vx = 0x1C00;
+        work->unk1C[2].unk18.vy = 0x1C00;
+        work->unk1C[2].unk18.vz = 0x1C00;
+        for (k = 0; k < 6; k++) {
+            func_801E9EEC(&D_801EF270[k], (u8 *)func_801E9DBC((u8 *)ex->btlfx_getFileData(entry->unk8, 0x91), k));
+            work->unkF4[k + 3] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801EA440[k]), 1);
+        }
+        work->unk1C[3].unk0.vx = 0;
+        work->unk1C[3].unk0.vy = 0;
+        work->unk1C[3].unk0.vz = 0;
+        work->unk1C[3].unk8.vx = 0;
+        work->unk1C[3].unk8.vy = 0;
+        work->unk1C[3].unk8.vz = 0;
+        work->unk1C[3].unk18.vx = 0x1000;
+        work->unk1C[3].unk18.vy = 0x1000;
+        work->unk1C[3].unk18.vz = 0x1000;
+        work->unkF4[9] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x9E), 1);
+    } else {
+        frame = entry->unk0;
+        if (frame == 0x29) {
+            ex->Hi_FreeEffModel(work->unkF4[0]);
+            ex->Hi_FreeEffModel(work->unkF4[1]);
+            ex->Hi_FreeEffModel(work->unkF4[2]);
+            for (i = 0; i < 6; i++) {
+                ex->Hi_FreeEffModel(work->unkF4[i + 3]);
+            }
+            ex->Hi_FreeEffModel(work->unkF4[9]);
+        }
+        for (sp = D_801EA3DC, i = 0; i < 7; i++, sp++) {
+            if (sp->unk4 == 0) {
+                if (frame == sp->unk2) {
+                    (&work->unkBC[i])->vx = sp->unk6[0], (&work->unkBC[i])->vy = sp->unk6[1],
+                    (&work->unkBC[i])->vz = sp->unk6[2];
+                    work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, sp->unk0), (s32)&work->unkBC[i]);
+                    if (i == 6 && work->unk0[6] != NULL) {
+                        work->unk0[6]->unk22 = 0x100;
+                    }
+                } else if (frame == 0x29) {
+                    sp->unk4 = 1;
+                    ex->func_800E3D54(work->unk0[i]);
+                }
+                if (frame >= sp->unk2 && work->unk0[i] != NULL) {
+                    if (work->unk0[i]->unk30 == -1) {
+                        work->unk0[i] = NULL;
+                    }
+                    if (work->unk0[i] != NULL) {
+                        work->unk0[i]->unk5C.vx = D_801EA474.vx;
+                        work->unk0[i]->unk5C.vy = D_801EA474.vy;
+                        work->unk0[i]->unk5C.vz = D_801EA474.vz;
+                    }
+                }
+            }
+        }
+        if (frame >= 1 && frame < 0x29) {
+            rp = &work->unk1C[0].unk0;
+            func_801E9F04(&D_801EF240, frame, rp, &v);
+            work->unk1C[0].unk8.vx = v.vx;
+            work->unk1C[0].unk8.vy = v.vy;
+            work->unk1C[0].unk8.vz = v.vz;
+            work->unk1C[0].unk0.vz = -work->unk1C[0].unk0.vz;
+            ex->Hi_SetEffModelSlice(work->unkF4[0], work->unk1C[0].unk8.vy - 0x2D5);
+            ex->Hi_DrawSliceEffModel(rp, (VECTOR *)&work->unk1C[0].unk8, (s32)&work->unk1C[0].unk18,
+                                     work->unkF4[0]);
+            func_801E9FB0(&D_801EF258, frame, &t);
+            ex->Hi_DrawMorphEffModel(&work->unk1C[1].unk0, (VECTOR *)&work->unk1C[1].unk8, (s32)&work->unk1C[1].unk18,
+                                     work->unkF4[1], work->unkF4[2], t);
+            for (n = 0; n < 6; n++) {
+                func_801E9F04(&D_801EF270[n], frame, &work->unk1C[2].unk0, &w);
+                work->unk1C[2].unk8.vx = w.vx;
+                work->unk1C[2].unk8.vy = w.vy;
+                work->unk1C[2].unk8.vz = w.vz;
+                ex->Hi_SetEffModelSlice(work->unkF4[n + 3], work->unk1C[2].unk8.vy);
+                ex->Hi_DrawSliceEffModel(&work->unk1C[2].unk0, (VECTOR *)&work->unk1C[2].unk8,
+                                         (s32)&work->unk1C[2].unk18, work->unkF4[n + 3]);
+            }
+            if (frame >= 1 && frame < 0x29) {
+                ex->Hi_DrawEffModel(&work->unk1C[3].unk0, (VECTOR *)&work->unk1C[3].unk8, (s32)&work->unk1C[3].unk18,
+                                    work->unkF4[9]);
+            }
+        }
+        return frame >= 0x2D;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_0d2/nonmatchings/fx_0d2", fx_0d2_headerPtr);
 

@@ -37,4 +37,8 @@ s32 func_801E7704(s32 mode, Fx095Part *part, Unk800F78A4 *env, Unk80100C78Entry 
 void func_801E7CBC(s32 n, s32 x, s32 y, u16 *buf, RECT *r);
 void func_801E7F48(s32 ot, s32 x, s32 y, s32 r, s32 c, RECT *rect);
 
+extern s32 D_801E882C[]; /* file ids */
+extern s32 D_801E885C[]; /* file ids */
+extern s32 D_801E888C[]; /* file ids */
+
 #endif

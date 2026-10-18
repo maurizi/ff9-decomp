@@ -82,7 +82,105 @@ void func_801E7CB4(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s3
     }
 }
 
-INCLUDE_ASM("asm/us/fx_0e1_0/nonmatchings/fx_0e1_0", func_801E80A8);
+void func_801E80A8(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32 dy, s32 abr, s32 sy, s32 tpage, s32 clut, s32 u,
+                   s32 v, s32 w, s32 h, s32 c, s32 amp, s32 ph, s32 dphx, s32 dphy) {
+    Unk800F78A4 *env = D_801E9E38;
+    BtlfxExports *ex;
+    POLY_FT4 *ft4;
+    POLY_GT4 *gt4;
+    s32 i;
+    s32 j;
+    s32 px;
+    s32 yo;
+    s32 u0;
+    s32 v0;
+    CVECTOR col;
+    s32 u1;
+    s32 v1;
+    s32 k;
+    s32 p;
+
+    yo = 0;
+    j = 0;
+    tpage |= (abr & 3) << 5;
+    ft4 = (POLY_FT4 *)env->unk24;
+    gt4 = (POLY_GT4 *)(ft4 + nx * (ny - 1));
+    ex = BTLFX_EXPORTS(env);
+    env->unk24 = (u8 *)(gt4 + nx);
+    col.r = col.g = col.b = c;
+    for (; j < ny; j++, yo -= dy) {
+        px = x;
+        p = ph + j * dphy;
+        for (i = 0; i < nx; i++, p += dphx, px += dx) {
+            k = i & 3;
+            u0 = u + ((k * w) >> 2);
+            u1 = u0 + (w >> 2);
+            if (k == 3) {
+                u1--;
+            }
+            k = j & 3;
+            v0 = v + ((k * h) >> 2);
+            v1 = v0 + (h >> 2);
+            if (k == 3) {
+                v1--;
+            }
+            if (j < ny - 1) {
+                ft4->x0 = px + ((ex->math_sin(p) * amp) >> 12);
+                ft4->x2 = px + ((ex->math_sin(p + dphy) * amp) >> 12);
+                ft4->x1 = (px + dx) + ((ex->math_sin(p + dphx) * amp) >> 12);
+                ft4->x3 = (px + dx) + ((ex->math_sin(p + dphy + dphx) * amp) >> 12);
+                if (j == 0) {
+                    ft4->y1 = y;
+                    ft4->y0 = y;
+                } else {
+                    ft4->y0 = y + (((yo + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
+                    ft4->y1 = y + (((yo + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
+                }
+                p += dphy;
+                ft4->y2 = y + ((((yo - dy) + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
+                ft4->y3 = y + ((((yo - dy) + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
+                p -= dphy;
+                ft4->tpage = tpage;
+                ft4->clut = clut;
+                ft4->u0 = ft4->u2 = u0;
+                ft4->u1 = ft4->u3 = u1;
+                ft4->v0 = ft4->v1 = v0;
+                ft4->v2 = ft4->v3 = v1;
+                col.cd = abr == 0xFF ? 0x2C : 0x2E;
+                *(s32 *)&ft4->r0 = *(s32 *)&col;
+                ex->btlfx_addPrim(0x09000000, ot, ft4);
+                ft4++;
+            } else {
+                gt4->x0 = px + ((ex->math_sin(p) * amp) >> 12);
+                gt4->x2 = px + ((ex->math_sin(p + dphy) * amp) >> 12);
+                gt4->x1 = (px + dx) + ((ex->math_sin(p + dphx) * amp) >> 12);
+                gt4->x3 = (px + dx) + ((ex->math_sin(p + dphy + dphx) * amp) >> 12);
+                if (j == 0) {
+                    gt4->y1 = y;
+                    gt4->y0 = y;
+                } else {
+                    gt4->y0 = y + (((yo + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
+                    gt4->y1 = y + (((yo + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
+                }
+                p += dphy;
+                gt4->y2 = y + ((((yo - dy) + ((ex->math_sin(p) * amp) >> 12)) * sy) >> 12);
+                gt4->y3 = y + ((((yo - dy) + ((ex->math_sin(p + dphx) * amp) >> 12)) * sy) >> 12);
+                p -= dphy;
+                gt4->tpage = tpage;
+                gt4->clut = clut;
+                gt4->u0 = gt4->u2 = u0;
+                gt4->u1 = gt4->u3 = u1;
+                gt4->v0 = gt4->v1 = v0;
+                gt4->v2 = gt4->v3 = v1;
+                col.cd = abr == 0xFF ? 0x3C : 0x3E;
+                *(s32 *)&gt4->r0 = *(s32 *)&gt4->r1 = *(s32 *)&col;
+                *(s32 *)&gt4->r2 = *(s32 *)&gt4->r3 = 0;
+                ex->btlfx_addPrim(0x0C000000, ot, gt4);
+                gt4++;
+            }
+        }
+    }
+}
 
 s32 func_801E8844(SVECTOR *out) {
     Unk800F78A4 *env = D_801E9E38;
