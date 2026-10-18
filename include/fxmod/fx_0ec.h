@@ -62,4 +62,29 @@ Fx0ecShard *func_801E802C(void);
 s32 func_801E8064(s32 y, SVECTOR *center);
 void func_801E82D8(void);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* caster position */
+    SVECTOR unk10; /* caster rotation */
+    SVECTOR unk18; /* summon position */
+    SVECTOR unk20;
+    SVECTOR unk28[2];
+    s32 unk38; /* models */
+    s32 unk3C;
+    s32 unk40[3];
+    s32 unk4C;
+    s32 unk50;
+    s32 unk54;
+    s32 unk58;
+    s32 unk5C; /* scale */
+    Pool6CEntry *unk60;
+} Fx0ecWork80; /* 0x64 */
+
+extern s32 D_801E9850[2];
+extern u8 D_801E98D0[];
+extern BtlModel D_801EEB80[];
+
+s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
+
 #endif
