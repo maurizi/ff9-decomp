@@ -83,7 +83,8 @@ extract-fxmod:
 split: $(DISKS)/$(MAIN)
 	rm -rf asm/$(VERSION)
 	for y in $(YAMLS); do $(SPLAT) $$y || exit 1; done
-	$(if $(FX_YAMLS),printf '%s\n' $(FX_YAMLS) | xargs -P 8 -n 1 $(SPLAT) >/dev/null)
+	@echo "splitting $(words $(FX_YAMLS)) effect modules"
+	@$(if $(FX_YAMLS),printf '%s\n' $(FX_YAMLS) | xargs -P 8 -n 1 $(SPLAT) >/dev/null)
 
 # Re-split after symbol/config changes, keeping decompiled C.
 resplit: $(DISKS)/$(MAIN)
