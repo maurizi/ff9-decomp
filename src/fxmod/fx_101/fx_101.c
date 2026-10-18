@@ -20,7 +20,7 @@ s32 func_801E8048(s32 mode, Fx101Spark *p, Unk800F78A4 *env, Unk80100C78Entry *e
         if (p->unk16 == 0) {
             ((Fx101Bolt *)((s32 *)p->unk18 - 4))->unk0 = ((Fx101Bolt *)((s32 *)p->unk18 - 4))->unk2 = 0xB;
             ((Fx101Bolt *)((s32 *)p->unk18 - 4))->unk1 = 0;
-            ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 8), 0, 0, 5, 0x1000, a, 1,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 8), 0, 0, 5, 0x1000, a, 1,
                               (u8 *)p->unk18 - 4, 0);
         }
         if (frame >= 8) {

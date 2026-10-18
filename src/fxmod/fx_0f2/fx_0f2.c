@@ -76,7 +76,7 @@ s32 fx_0f2_op80(s32 mode, Fx0f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             work->unk10.vz += work->unk34;
             work->unk20.vz += 0x100;
-            ex->func_800D3030((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), t);
+            ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), t);
         }
         if (frame >= 0x3C) {
             ex->btlfx_clearEffModels();

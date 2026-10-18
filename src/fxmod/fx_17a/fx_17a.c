@@ -16,7 +16,7 @@ s32 func_801E7BC0(s32 mode, Fx17aPart *p, Unk800F78A4 *env, Unk80100C78Entry *en
         p->unk20 = 0;
     } else if (p->unk0 == 4) {
         p->unkC.vx += -0x80 - p->unkA;
-        ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &p->unkC, NULL, p->unk4 * 3 >> 1, 0, 1, -1, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &p->unkC, NULL, p->unk4 * 3 >> 1, 0, 1, -1, 0, 0);
         if (frame >= 0x11) {
             return 1;
         }

@@ -29,7 +29,7 @@ void func_801E7B40(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVE
         pt++;
         ang += dang + ex->btlfx_randCentered(D_801EB378);
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 8), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 8), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
 void func_801E7D40(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,
@@ -59,7 +59,7 @@ void func_801E7D40(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR 
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 2), 0, (s32 *)arg1, arg8, 0x1000, arg9, 1, (u8 *)bolt, 1);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 2), 0, (s32 *)arg1, arg8, 0x1000, arg9, 1, (u8 *)bolt, 1);
 }
 
 s32 func_801E7F48(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *entry) {
@@ -88,7 +88,7 @@ s32 func_801E7F48(s32 mode, Fx0e30Puff *p, Unk800F78A4 *env, Unk80100C78Entry *e
         pos.vx = p->unk0.vx;
         pos.vy = p->unk0.vy - (0x1000 - ex->math_cos(t)) * 3;
         pos.vz = p->unk0.vz;
-        ex->func_800D1680((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &pos, &rot, size * 2, 0, 1, a, 0, 0);
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &pos, &rot, size * 2, 0, 1, a, 0, 0);
         if (p->unk8 > 0x1000) {
             return 1;
         }

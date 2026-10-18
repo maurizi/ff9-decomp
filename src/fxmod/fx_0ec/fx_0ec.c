@@ -13,7 +13,7 @@ s32 func_801E7704(s32 mode, SVECTOR *pos, Unk800F78A4 *env, Unk80100C78Entry *en
         rot.vz = 0;
         rot.pad = 1;
         d = (u8 *)ex->btlfx_getFileData(entry->unk8, 6);
-        ex->func_800D1680(d, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
+        ex->btlfx_drawParticles(d, pos, &rot, (ex->math_sin(t >> 2) >> 1) + 0x400, 0, 1, 0x1000 - t, 0, 0);
         if (frame >= 6) {
             return 1;
         }

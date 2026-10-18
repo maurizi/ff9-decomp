@@ -143,7 +143,7 @@ void func_801E8460(Unk80100C78Entry *entry, Fx134Bolt *bolt, SVECTOR *from, SVEC
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
 INCLUDE_RODATA("asm/us/fx_134/nonmatchings/fx_134", fx_134_headerPtr);

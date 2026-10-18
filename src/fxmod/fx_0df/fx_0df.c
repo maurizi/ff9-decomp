@@ -5,7 +5,7 @@ INCLUDE_ASM("asm/us/fx_0df/nonmatchings/fx_0df", func_801E7704);
 void func_801E7EB8(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E9E90);
 
-    ex->func_800D1680((u8 *)ex->btlfx_getFileData(D_801EA414->unk8, 0x10), pos, arg3, *arg4 / 2, arg7, 1, *arg5, 0, 0);
+    ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(D_801EA414->unk8, 0x10), pos, arg3, *arg4 / 2, arg7, 1, *arg5, 0, 0);
     BTLFX_COPY_SVEC(&D_801EA350[D_801EA410], pos);
     D_801EA410 = (D_801EA410 + 1) % 24;
 }
@@ -47,7 +47,7 @@ void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTO
         pt++;
     }
     env->unk28 = 0x200;
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 0, 0, arg9, 0x1000, arg10 * 2 / 3, 2, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 0, 0, arg9, 0x1000, arg10 * 2 / 3, 2, (u8 *)bolt, 0);
     env->unk28 = 0;
 }
 

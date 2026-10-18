@@ -27,7 +27,7 @@ void func_801EC71C(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         ang += dang + ex->btlfx_randCentered(0x100);
         pt++;
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x15), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x15), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
 void func_801EC910(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang, s32 dang,
@@ -57,7 +57,7 @@ void func_801EC910(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         ang += dang + ex->btlfx_randCentered(0xC0);
         pt++;
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), 0, 0, arg7, 0x1000, arg8, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), 0, 0, arg7, 0x1000, arg8, 1, (u8 *)bolt, 0);
 }
 
 void func_801ECAF8(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
@@ -87,7 +87,7 @@ void func_801ECAF8(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xA), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
 void func_801ECCF4(Unk80100C78Entry *entry, Fx0e31Bolt *src, Fx0e31Bolt *dst, s32 arg3) {
@@ -128,7 +128,7 @@ void func_801ECDEC(Unk80100C78Entry *entry, Fx0e31Bolt *bolt, SVECTOR *from, SVE
         ang += dang + ex->btlfx_randCentered(0x80);
         pt++;
     }
-    ex->func_800D1494((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
+    ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x23), 0, 0, arg8, 0x1000, arg9, 1, (u8 *)bolt, 0);
 }
 
 INCLUDE_ASM("asm/us/fx_0e3_1/nonmatchings/fx_0e3_1", func_801ECFE4);
