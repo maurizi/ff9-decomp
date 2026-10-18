@@ -52,7 +52,7 @@ Fx1b6Piece *func_801E7830(void) {
     return NULL;
 }
 
-void func_801E7868(s32 *thresh) {
+void func_801E7868(void) {
     Fx1b6Split *s = D_801E9744;
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E85B4);
     s32 t = D_801E974C;
@@ -166,7 +166,142 @@ void func_801E7AAC(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_1b6/nonmatchings/fx_1b6", fx_1b6_op80);
+s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR pos;
+    s32 sp;
+    Pool6CEntry *p;
+    u8 *buf;
+    s32 frame;
+    s32 t;
+    s32 c;
+    s32 i;
+
+    if (mode == 0) {
+        *arg4 = 0x64;
+    } else if (mode == 1) {
+        D_801E85B4 = env;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
+        pos.vy -= 0x110;
+        work->unk8[0] = pos.vx;
+        work->unk8[1] = pos.vy;
+        work->unk8[2] = pos.vz;
+        ex->btlfx_getUnitRot(0x10, (s16 *)&work->unk14);
+        ex->btlfx_getUnitScale(0x10, work->unk1C);
+        ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk44);
+        work->unk44.vy -= 0x397;
+        BTLFX_COPY_SVEC(&work->unk4C, &work->unk44);
+        work->unk4C.vz += 0x12C;
+        work->unk0 = 0;
+        work->unk4 = 0;
+        BTLFX_COPY_SVEC(&work->unk54, &work->unk4C);
+        work->unk14.vy += 0x800;
+        D_801E85B8 = entry;
+        work->unk5C = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk44);
+        if (p != NULL) {
+            p->unk22 = 0x140;
+        }
+        work->unk60 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk44);
+        if (p != NULL) {
+            p->unk22 = 0x140;
+        }
+        p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk44);
+        if (p != NULL) {
+            p->unk22 = 0x140;
+        }
+    } else {
+        frame = entry->unk0;
+        switch (work->unk0) {
+        case 0:
+            t = (frame << 12) / 24;
+            if (work->unk5C != NULL) {
+                if (work->unk5C->unk30 == -1) {
+                    work->unk5C = NULL;
+                }
+                if (work->unk5C != NULL) {
+                    work->unk5C->unk20 = 0x1000 - t;
+                }
+            }
+            if (work->unk60 != NULL) {
+                if (work->unk60->unk30 == -1) {
+                    work->unk60 = NULL;
+                }
+                if (work->unk60 != NULL) {
+                    work->unk60->unk20 = t;
+                }
+            }
+            if (frame == 1 || frame == 0xF) {
+                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0x40, 0x40, 0x40);
+            }
+            if (frame == 0x17) {
+                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0xFF, 0xFF, 0xFF);
+            }
+            if (frame >= 0x18) {
+                ex->func_800E3C58();
+                ex->func_800E806C(0x10, 0);
+                ex->func_800E87C4(0x64);
+                work->unk0 = 1;
+                entry->unk0 = -1;
+                ex->btlfx_initEffModels(D_801E9754, 7);
+                for (i = 0; i < 7; i++) {
+                    work->unk28[i] = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, D_801E855C[i]), 0);
+                }
+                buf = ((Fx1b6Summon *)env->unk4)->unk54->unk50 + 0x19000;
+                func_801E7704((Fx1b6Split *)buf, (SVECTOR (*)[3])(buf + 0xC5A8));
+                for (i = 0; i < 7; i++) {
+                    func_801E774C(work->unk28[i]);
+                }
+                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&work->unk54);
+                if (p != NULL) {
+                    p->unk22 = 0x140;
+                }
+                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk44);
+                if (p != NULL) {
+                    p->unk22 = 0x140;
+                }
+                p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk4C);
+                if (p != NULL) {
+                    p->unk14 = (s32)D_801E85C4;
+                    p->unk12 = 0x20;
+                    p->unkC = 0x8C;
+                    p->unk22 = 0x140;
+                }
+                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0x80, 0x80, 0x80);
+            }
+            break;
+        case 1:
+            t = (frame << 12) / 60;
+            if (frame < 8) {
+                c = (ex->math_cos((frame << 10) >> 3) << 7) >> 12;
+                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, c, c, c);
+            }
+            if (frame == 0) {
+                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0x20, 0x40, 0xFF);
+            }
+            if (frame > 0) {
+                for (i = 0; i < 7; i++) {
+                    ex->Hi_DrawEffModel(&work->unk14, (VECTOR *)work->unk8, (s32)work->unk1C, work->unk28[i]);
+                }
+                if (frame < 0x31) {
+                    D_801E974C = 0x514 - ((t * 0x960) >> 12);
+                } else {
+                    D_801E974C = -0x1000;
+                }
+                FX1B6_SPAD_STACK(&sp);
+                func_801E7868();
+                func_801E7AAC();
+                FX1B6_RESET_STACK(&sp);
+            }
+            if (frame >= 0x3C) {
+                ex->btlfx_clearEffModels();
+                return 1;
+            }
+            break;
+        }
+        work->unk4++;
+    }
+    return 0;
+}
 
 s32 fx_1b6_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -182,6 +317,24 @@ s32 fx_1b6_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1b6/nonmatchings/fx_1b6", fx_1b6_op87);
+s32 fx_1b6_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR pos;
+
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        D_801E85B4 = env;
+        ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
+        pos.vy += 0x180;
+        env->unk2C->unk0[3].vx = pos.vx;
+        env->unk2C->unk0[3].vy = pos.vy;
+        env->unk2C->unk0[3].vz = pos.vz;
+        return 1;
+    } else {
+        return 0;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_1b6/nonmatchings/fx_1b6", fx_1b6_headerPtr);
