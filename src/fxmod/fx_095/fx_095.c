@@ -64,7 +64,66 @@ s32 fx_095_op80(s32 mode, Fx095Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_095/nonmatchings/fx_095", func_801E7CBC);
+void func_801E7CBC(s32 n, s32 x, s32 y, u16 *buf, RECT *r) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8904);
+    RECT a;
+    RECT b;
+    RECT c;
+    s32 k = (n - 1) >> 1;
+    s32 h;
+    s32 h1;
+    s32 i;
+    u16 *p;
+    u32 v;
+    u32 px;
+    s32 cr;
+    s32 cg;
+    s32 cb;
+    s32 sx;
+    s32 sy;
+
+    if (n != 0) {
+        n = ((n - 1) & 1) + 1;
+    }
+    switch (n) {
+    case 0:
+        sx = r->x;
+        sy = r->y;
+        a.x = D_801E8904->unk1C->clip.x + (x - (r->w >> 1));
+        a.y = D_801E8904->unk1C->clip.y + (y - (r->h >> 1));
+        a.w = r->w;
+        a.h = r->h;
+        ex->MoveImage(&a, sx, sy);
+        break;
+    case 1:
+        h1 = (s16)(r->h / 3); /* an s32 holding the truncated quotient */
+        b.x = r->x;
+        b.y = r->y + k * h1;
+        b.w = r->w;
+        b.h = h1;
+        ex->StoreImage(&b, (u32 *)buf);
+    case 2:
+        h = (s16)(r->h / 3);
+        c.x = r->x;
+        c.y = r->y + k * h;
+        c.w = r->w;
+        c.h = h;
+        for (i = 0, p = buf; i < r->w * h; i++, p++) {
+            px = *p;
+            cr = (px & 0x1F) * 4;
+            cg = (px >> 3) & 0x7C;
+            cb = (px >> 8) & 0x7C;
+            v = (cr + cg + cb) / 3 >> 2;
+            if (v == 0) {
+                v = 1;
+            }
+            v = v | 0x8000 | (v << 5) | (v << 10);
+            *p = v;
+        }
+        ex->LoadImage(&c, (u32 *)buf);
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_095/nonmatchings/fx_095", func_801E7F48);
 

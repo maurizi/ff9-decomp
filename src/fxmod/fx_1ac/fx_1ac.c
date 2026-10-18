@@ -200,4 +200,45 @@ s32 fx_1ac_op80(s32 mode, Fx1acWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1ac/nonmatchings/fx_1ac", func_801E81C4);
+s32 func_801E81C4(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames) {
+    SVECTOR v;
+
+    switch (e->unk1F - 1) {
+    case 0: {
+        SVECTOR *src = &D_801E85A8;
+        s16 x = src->vx;
+        s16 y = src->vy;
+        s16 z = src->vz;
+
+        /* both cases copy through their own locals; jump2's cross-jumping merges the identical tails */
+        v.vx = x;
+        v.vy = y;
+        v.vz = z;
+        break;
+    }
+    default: {
+        SVECTOR *src = &D_801E85B0;
+        s16 x = src->vx;
+        s16 y = src->vy;
+        s16 z = src->vz;
+
+        v.vx = x;
+        v.vy = y;
+        v.vz = z;
+        break;
+    }
+    }
+    D_801E85B0.vx = e->unk0.vx >> 12;
+    D_801E85B0.vy = e->unk0.vy >> 12;
+    D_801E85B0.vz = e->unk0.vz >> 12;
+    pos->vx = v.vx;
+    pos->vy = v.vy;
+    pos->vz = v.vz;
+    e->unk0.vx = v.vx << 12;
+    e->unk0.vy = v.vy << 12;
+    e->unk0.vz = v.vz << 12;
+    if (frame >= frames) {
+        return -1;
+    }
+    return 0;
+}

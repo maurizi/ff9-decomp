@@ -255,7 +255,185 @@ void func_801E7E94(s32 i) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_197/nonmatchings/fx_197", func_801E81EC);
+s32 func_801E81EC(s32 mode, Fx197Item81 *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+                  Unk800DA1B8 *pool, Fx197Work81 *work) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR pos;
+    VECTOR scale;
+    SVECTOR rot;
+    SVECTOR p;
+    SVECTOR unused; /* allocated but never referenced in the original */
+    s32 m;
+    s32 m2;
+    s32 c;
+    s32 t;
+    s32 on;
+    Pool6CEntry *q;
+
+    if (mode == 1) {
+        it->unk0 = 0;
+        it->unk8 = 0;
+    } else if (it->unk2 < 6) {
+        switch (it->unk0) {
+        case 0:
+            func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->unk8, D_801E91D4[it->unk2]), frame, &p);
+            p.vx += work->unk8.vx;
+            p.vy += work->unk8.vy;
+            p.vz += work->unk8.vz;
+            pos.vx = p.vx;
+            pos.vy = p.vy;
+            pos.vz = p.vz;
+            scale.vx = 0x2000;
+            scale.vy = 0x2000;
+            scale.vz = 0x3000;
+            rot.vx = -0x200;
+            rot.vy = 0;
+            rot.vz = 0;
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, D_801EAF70);
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, D_801EAF74);
+            if (frame >= 3) {
+                it->unk0 = 1;
+                ((s16 *)it)[-1] = -1;
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0x20, 0x46);
+                it->unkC.vx = D_801E91EC[it->unk2].vx;
+                it->unkC.vy = D_801E91EC[it->unk2].vy;
+                it->unkC.vz = D_801E91EC[it->unk2].vz;
+                it->unkC.vx += work->unk8.vx;
+                it->unkC.vy += work->unk8.vy;
+                it->unkC.vz += work->unk8.vz;
+                it->unkC.vy = 0;
+                q = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&it->unkC);
+                if (q != NULL) {
+                    q->unk22 = 0x80;
+                }
+                break;
+            }
+            return 0;
+        case 1:
+            if (frame + (it->unk2 - 5) <= 0) {
+                m = work->unk18[it->unk2][0];
+                m2 = -1;
+            } else {
+                if (frame < 0x10) {
+                    m = work->unk18[it->unk2][D_801E921C[frame]];
+                } else {
+                    m = work->unk18[it->unk2][2];
+                }
+                if (frame >= 0x10) {
+                    m2 = work->unk6C[it->unk2];
+                } else {
+                    m2 = -1;
+                }
+            }
+            pos.vx = work->unk8.vx;
+            pos.vy = work->unk8.vy;
+            pos.vz = work->unk8.vz;
+            scale.vx = 0x1000;
+            scale.vy = 0x1000;
+            scale.vz = 0x1000;
+            rot.vx = 0;
+            rot.vy = 0;
+            rot.vz = 0;
+            if (m2 >= 0 && D_801E91C4 != 0) {
+                ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, m2);
+            }
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, m);
+            if (it->unk2 < 5) {
+                on = D_801E91C8;
+            } else {
+                on = D_801E91D0;
+            }
+            if (on != 0) {
+                it->unk0 = 2;
+                ((s16 *)it)[-1] = -1;
+                func_801E7A5C(it->unk2, 0x14, (Fx197Shatter *)(env->unk30 + D_801E9194[it->unk2].unk0),
+                              (Fx197Tri *)(env->unk30 + D_801E9194[it->unk2].unk4));
+                func_801E7AA0(it->unk2, work->unk18[it->unk2][2]);
+                return 0;
+            }
+            break;
+        case 2:
+            pos.vx = work->unk8.vx;
+            pos.vy = work->unk8.vy;
+            pos.vz = work->unk8.vz;
+            scale.vx = 0x1000;
+            scale.vy = 0x1000;
+            scale.vz = 0x1000;
+            rot.vx = 0;
+            rot.vy = 0;
+            rot.vz = 0;
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk18[it->unk2][2]);
+            if (frame >= 0xE) {
+                t = 0x1000 - ((frame - 0xE) << 12) / 6;
+                ex->Hi_ModifyEffModelAbr(work->unk18[it->unk2][2], 1);
+                c = (t / 2 >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->unk18[it->unk2][2], c, c, c);
+            } else {
+                ex->Hi_ModifyEffModelAbr(work->unk18[it->unk2][2], 1);
+                c = -0x40;
+                ex->Hi_ModifyEffModelRGB(work->unk18[it->unk2][2], c, c, c);
+            }
+            func_801E7C1C(it->unk2);
+            func_801E7E94(it->unk2);
+            if (frame < 0x14) {
+                break;
+            }
+            return 1;
+        default:
+            return 0;
+        }
+    } else {
+        switch (it->unk0) {
+        case 0:
+            pos.vx = work->unk8.vx;
+            pos.vy = work->unk8.vy;
+            pos.vz = work->unk8.vz;
+            scale.vx = 0x1000;
+            scale.vy = 0x1000;
+            scale.vz = 0x1000;
+            rot.vx = 0;
+            rot.vy = 0;
+            rot.vz = 0;
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk6C[6]);
+            if (frame < 8) {
+                s32 c0 = ((frame << 12) >> 9) - 0x80;
+
+                ex->Hi_ModifyEffModelRGB(work->unk6C[6], c0, c0, c0);
+            }
+            if (D_801E91CC != 0) {
+                it->unk0 = 1;
+                ((s16 *)it)[-1] = -1;
+                func_801E7A5C(it->unk2, 0x57, &D_801EAFC0, D_801EC5C0);
+                func_801E7AA0(it->unk2, work->unk6C[6]);
+                return 0;
+            }
+            break;
+        case 1:
+            pos.vx = work->unk8.vx;
+            pos.vy = work->unk8.vy;
+            pos.vz = work->unk8.vz;
+            scale.vx = 0x1000;
+            scale.vy = 0x1000;
+            scale.vz = 0x1000;
+            rot.vx = 0;
+            rot.vy = 0;
+            rot.vz = 0;
+            ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk6C[6]);
+            if (frame >= 0x37) {
+                s32 c1 = ((0x1000 - (((frame - 0x37) << 12) >> 5)) >> 5) - 0x80;
+
+                ex->Hi_ModifyEffModelRGB(work->unk6C[6], c1, c1, c1);
+            }
+            func_801E7C1C(6);
+            func_801E7E94(6);
+            if (frame >= 0x57) {
+                return 1;
+            }
+            break;
+        }
+    }
+    return 0;
+}
 
 s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);

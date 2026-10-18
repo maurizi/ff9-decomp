@@ -1,7 +1,8 @@
-/* Draft of fx_0b1 fx_0b1_op80. Status: full draft, 27 aligned diff lines ignoring registers: the original guards the
- * 21-point loop with li/beqz on the constant (bound probably held in a variable), writes the strip headers through
+/* Draft of fx_0b1 fx_0b1_op80. Status: full draft, ~31 aligned diff lines ignoring registers per ccprobe (several are ccprobe artifacts of the split
+ * symbols: sw x,20(base D_801E8D3C) vs sw x,0(base D_801E8D50) link to the same bytes): writes the strip headers through
  * &D_801EA8FC directly, and the D_801E8D7C/D_801EA86C/D_801EA884 stores schedule differently. The original addresses
- * D_801E8D3C[4]/[5] and D_801EA89C.vy through the split symbols D_801E8D4C/D_801E8D50/D_801EA89E. */
+ * D_801E8D3C[4]/[5] and D_801EA89C.vy through the split symbols D_801E8D4C/D_801E8D50/D_801EA89E. 
+ * The 21-point loop's li/beqz guard comes from 's32 n = 21' at the top and 'i < n' (n spilled, rematerialized). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -93,7 +94,7 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     s32 y;
     s32 w;
     s32 a;
-    s32 n;
+    s32 n = 21;
     s32 c;
 
     if (mode == 0) {
@@ -276,8 +277,8 @@ s32 fx_0b1_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             w = 0x40;
             a = 0x1000;
         }
-        for (i = 0; i < 21; i++, v0++, v1++) {
-            v1->vy = v0->vy = ex->btlfx_lerpRatio(D_801EA89C.vy, y, i, 21);
+        for (i = 0; i < n; i++, v0++, v1++) {
+            v1->vy = v0->vy = ex->btlfx_lerpRatio(D_801EA89C.vy, y, i, n);
             v1->vx = v0->vx = D_801EA89C.vx;
             v1->vz = v0->vz = D_801EA89C.vz;
             v0->pad = w;

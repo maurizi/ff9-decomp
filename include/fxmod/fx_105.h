@@ -52,5 +52,7 @@ extern s32 D_801EAB1C; /* frame */
 extern Fx105Track D_801EAB28[];
 void func_801E7B74(void);
 void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data);
+extern SVECTOR D_801EAC68[];
+void func_801E7BF8(void);
 
 #endif

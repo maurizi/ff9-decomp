@@ -50,4 +50,28 @@ extern SVECTOR D_801E9288[];
 s32 func_801E7788(s32 mode, Fx0dcItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5,
                   Fx0dcWork *work);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame */
+    s32 unk8; /* models */
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20[14]; /* shard models */
+    SVECTOR unk58; /* target position */
+    SVECTOR unk60;
+    SVECTOR unk68;
+    SVECTOR unk70;
+    s16 unk78;
+    s16 unk7A; /* shards spawned */
+    s32 unk7C;
+    s32 unk80;
+    Pool6CEntry *unk84;
+} Fx0dcWork80; /* 0x88 */
+
+extern s32 D_801E92B8[14];
+extern BtlModel D_801E9364[];
+
 #endif

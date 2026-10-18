@@ -19,11 +19,18 @@ typedef struct {
     s16 unkE; /* speed */
 } Fx0e30Puff;
 
+typedef struct {
+    SVECTOR unk0; /* pad: point valid */
+    SVECTOR unk8;
+} Fx0e30Seg; /* 0x10: one step of the ribbon history */
+
 extern Unk800F78A4 *D_801EA868;
 extern s32 D_801EB370;
 extern s32 D_801EB374;
 extern s32 D_801EB378;
 
+void func_801E7730(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s32 v, s32 w, s32 h, s32 p,
+                   Fx0e30Seg *buf, s32 abr, s32 phase);
 void func_801E7B40(Unk80100C78Entry *entry, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1, s32 ang,
                    s32 dang, s32 arg8, s32 arg9);
 void func_801E7D40(Unk80100C78Entry *entry, s32 arg1, Fx0e30Bolt *bolt, SVECTOR *from, SVECTOR *to, s32 amp, s32 ang,

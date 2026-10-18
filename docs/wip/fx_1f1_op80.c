@@ -1,5 +1,8 @@
-/* Draft of fx_1f1 fx_1f1_op80. Status: 171 strict mismatches, mostly register allocation; structure follows the
- * original. */
+/* Draft of fx_1f1 fx_1f1_op80. Status: 263 aligned mismatches, 45 ignoring registers. Since the last pass: the
+ * mode-1 vector clears as setVector(&D_801E7F14[i].unkXX, ...) (the original computes each address as i * 0x60 +
+ * (base + offset)), and unk50 through setVector so it becomes the reduced giv (s2 = &D[0].unk50) like the original.
+ * Open: the original computes all four setVector addresses before the stores and increments the i * 0x60 giv right
+ * after them; here each address is computed just before its stores. */
 #include "fxmod/fx_1f1.h"
 
 s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -25,21 +28,11 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
             u->unk18 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 2), 1);
             u->unk1C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 4), 1);
             ex->btlfx_getUnitPos(i, (s16 *)&D_801E7F14[i].unkC);
-            D_801E7F14[i].unk20.vx = 0;
-            D_801E7F14[i].unk20.vy = 0;
-            D_801E7F14[i].unk20.vz = 0;
-            D_801E7F14[i].unk28.vx = 0;
-            D_801E7F14[i].unk28.vy = 0;
-            D_801E7F14[i].unk28.vz = 0;
-            D_801E7F14[i].unk30.vx = 0x1100;
-            D_801E7F14[i].unk30.vy = 0x1000;
-            D_801E7F14[i].unk30.vz = 0x1100;
-            D_801E7F14[i].unk40.vx = 0x1000;
-            D_801E7F14[i].unk40.vy = 0x1000;
-            D_801E7F14[i].unk40.vz = 0x1000;
-            u->unk50.vy = -0x800;
-            u->unk50.vx = u->unkC.vx;
-            u->unk50.vz = u->unkC.vz;
+            setVector(&D_801E7F14[i].unk20, 0, 0, 0);
+            setVector(&D_801E7F14[i].unk28, 0, 0, 0);
+            setVector(&D_801E7F14[i].unk30, 0x1100, 0x1000, 0x1100);
+            setVector(&D_801E7F14[i].unk40, 0x1000, 0x1000, 0x1000);
+            setVector(&D_801E7F14[i].unk50, u->unkC.vx, -0x800, u->unkC.vz);
             u->unk4 = 0x20;
             u->unk14 = 0;
             u->unk0 = D_801E7E9C[i];

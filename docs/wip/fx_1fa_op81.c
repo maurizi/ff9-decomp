@@ -1,5 +1,9 @@
-/* Draft of fx_1fa fx_1fa_op81. Status: 24 strict mismatches: the init loop's i - j + 4 and the ring loop's unk10 -= 2
- * result register. fx_1ee op81 is the same code (one constant differs, 0x60 -> 0x40). */
+/* Draft of fx_1fa fx_1fa_op81. Status: 13 aligned mismatches with registers, 7 ignoring them: (1) mode 1 loads
+ * entry->unk8 before the D_801E80EC = 0 store; (2) the init loop's constant 8 is hoisted after a = i (original:
+ * before); (3) in the ring loop the original reloads unkC for math_sin and computes unk10 - 2 in v0, then
+ * 'move s1,v0' (looks like reload_cse turning a reload of unk10 into a move, i.e. cse1 did not reuse the value).
+ * Fixed here: i - (j - 4) via k (keeps j - 4 in the loop), a -= 0x2A9 before i++ and rr/ang before j++ in the
+ * increments (biv order). fx_1ee op81 is the same code (one constant differs, 0x60 -> 0x40). */
 #include "fxmod/fx_1fa.h"
 
 s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
@@ -69,11 +73,12 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E811C[11][1].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
         D_801E811C[11][2].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
         D_801E811C[11][3].unk8 = (u8 *)ex->btlfx_getFileData(entry->unk8, 5);
-        for (i = 0, a = 0; i < 12; i++, a -= 0x2A9) {
-            for (j = 0, rr = 0x10, ang = a; j < 4; j++, rr += 0x10, ang += 0xC0) {
+        for (i = 0, a = 0; i < 12; a -= 0x2A9, i++) {
+            for (j = 0, rr = 0x10, ang = a; j < 4; rr += 0x10, ang += 0xC0, j++) {
                 D_801E811C[i][j].unk10 = rr;
                 D_801E811C[i][j].unkC = ang;
-                D_801E811C[i][j].unk0 = i - j + 4;
+                k = j - 4;
+                D_801E811C[i][j].unk0 = i - k;
                 D_801E811C[i][j].unk4 = 8;
             }
         }

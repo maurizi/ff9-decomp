@@ -1,5 +1,8 @@
-/* Draft of fx_186 func_801E7704. Status: 13 strict mismatches: the constant 1 / alpha registers (s4/s3) are swapped,
- * and r - 0x2BC is computed in place after the sqrt call. */
+/* Draft of fx_186 func_801E7704. Status: 14 aligned mismatches ignoring registers (40 with): (1) case 1 loads
+ * the second o->unk8 (lh, for * 7 >> 3) before the unkA load and stores it after the vz update; no statement order
+ * of the six updates reproduces it (all 89 tried). (2) the constant 1 (mode test / case 1 / o->unk0 = 1) and a are
+ * swapped (s3/s4): a must outrank one in global-alloc (one 4 refs/102, a 6 refs/169); reusing a for the RGB value
+ * fixes the swap but changes the RGB code. (s16)(r - 0x2BC) fixed the in-place r - 0x2BC after the sqrt call. */
 #include "fxmod/fx_186.h"
 
 s32 func_801E7704(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame) {
@@ -48,7 +51,7 @@ s32 func_801E7704(s32 mode, Fx186Rock *o, Unk800F78A4 *env, s32 arg3, s32 frame)
                 r = ex->btlfx_randCentered(0x100);
                 x = o->unkC.vx / 7;
                 z = o->unkC.vz / 7;
-                o->unk6 = r - 0x2BC + ex->btlfx_sqrt(x * x + z * z, 0x14) / 2;
+                o->unk6 = (s16)(r - 0x2BC) + ex->btlfx_sqrt(x * x + z * z, 0x14) / 2;
                 o->unkA = o->unkC.vz / 4 + ex->btlfx_randCentered(0x80);
             }
             break;
