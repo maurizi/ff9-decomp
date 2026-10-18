@@ -39,7 +39,23 @@ void func_801E7704(u32 *ot, s32 abr, s32 h, s32 r, s32 g, s32 b) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_17d_0/nonmatchings/fx_17d_0", func_801E7894);
+void func_801E7894(s32 n, s32 r, SVECTOR *pts) {
+    SVECTOR *q;
+    u32 *col = (u32 *)(pts + n);
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9470);
+    s32 i;
+    s32 rad;
+    s32 a;
+
+    for (i = 0, q = pts; i < n; i++, col++, q++, pts++) {
+        *col = 0x7F7F7F7F;
+        rad = ex->btlfx_randRange(r >> 2, r >> 1);
+        a = ex->btlfx_rand() & 0xFFF;
+        pts->vx = (ex->math_cos(a) * rad) >> 12;
+        q->vy = (ex->math_sin(a) * rad) >> 12;
+        q->vz = ex->btlfx_rand() % 640 - 0x80;
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_17d_0/nonmatchings/fx_17d_0", func_801E79E8);
 
