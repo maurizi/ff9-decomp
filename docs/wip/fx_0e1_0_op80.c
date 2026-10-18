@@ -1,5 +1,5 @@
 /* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: first full
- * draft, 90 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
+ * draft, 86 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
  * entry s2, env spilled; &sc/&b and 0x80/10000 in s-registers in the ribbon loop; c of the ribbon loop spilled to
  * 0xC0) and statement order in several blocks. Levers already applied: 12-byte vectors in the work block,
  * "((k * col) >> 11) / 3", inline RGB expressions, wave2 = (frame << 12) / 49 before the case-4 test, ribbon buffer
@@ -273,15 +273,16 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if ((u32)(frame - 0x7F) <= 0x10) {
-                c = (frame - 0x7F) << 12;
+                s32 d = (frame - 0x7F) << 12;
+
                 if (work->unk44 != NULL) {
-                    work->unk44->unk20 = 0x1000 - (c >> 4);
+                    work->unk44->unk20 = 0x1000 - (d >> 4);
                     if (work->unk44 != NULL) {
-                        work->unk44->unk1C = 0x1000 - (c >> 5);
+                        work->unk44->unk1C = 0x1000 - (d >> 5);
                     }
                 }
                 if (work->unk48 != NULL) {
-                    work->unk48->unk20 = 0x1000 - (c >> 4);
+                    work->unk48->unk20 = 0x1000 - (d >> 4);
                 }
                 if (frame - 0x7F == 0x10) {
                     ex->func_800E3D54(work->unk44);
@@ -290,10 +291,11 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             glow = 0x1000;
             if (frame >= 0x87) {
-                c = ((frame - 0x87) << 12) / 24;
-                k = 0x1000 - c;
-                wave2 = c;
-                wave = c;
+                s32 d = ((frame - 0x87) << 12) / 24;
+
+                k = 0x1000 - d;
+                wave2 = d;
+                wave = wave2;
                 glow = k;
             }
             if (frame >= 0x9F) {
@@ -327,11 +329,11 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         case 4:
-            wave2 = (frame << 12) / 49;
+            t = (frame << 12) / 49;
             if (frame < 0x20) {
                 wave = ex->math_cos(frame << 5);
             }
-            wave2 += 0x1000;
+            wave2 = t + 0x1000;
             if (frame < 0x2C) {
                 ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->unk4)->unk60, 0xA9);
                 ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C,
