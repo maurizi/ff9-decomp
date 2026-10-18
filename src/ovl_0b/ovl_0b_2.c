@@ -4459,6 +4459,8 @@ void func_800DD0B0(s32 arg0) {
     func_800DD10C(btl_getUnit(arg0)->unk9C);
 }
 
+/* Void in the original; effect modules read $v0 after it (export 0x318): func_800DD10C's u8 result.
+   Ports must return it (docs/effect-modules.md). */
 void func_800DD0DC(s32 arg0) {
     func_800DD10C(btlfx_getEffModel(arg0, D_800A81A8)->unk0);
 }
@@ -4952,6 +4954,8 @@ s32 func_800DF670(BtlUnit9C *arg0, s32 arg1) {
     return r * 8;
 }
 
+/* Void in the original; effect modules read $v0 after it (export 0x310): func_800DF7A0's u16 result.
+   Ports must return it (docs/effect-modules.md). */
 void Hi_GetMdlVertexPtr(s32 arg0, u16 arg1, s32 arg2, s32 *arg3, s32 arg4) {
     func_800DF7A0(btlfx_getEffModel(arg0, D_800A825C)->unk0, arg1, arg2, arg3, arg4);
 }
@@ -7869,8 +7873,8 @@ s32 func_800E7370(BtlUnit *arg0) {
     return arg0->unk9C->unk8->unk8;
 }
 
-void func_800E738C(s32 arg0) {
-    func_800E7370(btl_getUnit(arg0));
+s32 func_800E738C(s32 arg0) {
+    return func_800E7370(btl_getUnit(arg0));
 }
 
 void func_800E73B4(BtlUnit *arg0, u16 *arg1) {
@@ -8490,6 +8494,9 @@ void btl_setVsyncMode(s32 arg0) {
     g_gameState->vsyncMode = arg0;
 }
 
+/* Void in the original, but effect modules read $v0 after calling it (export 0x338): it holds the u16 from
+   Hi_RegisterTexListModel / Hi_RegisterGouEffModel. A u16 return adds an andi, so this stays void; ports must
+   return that value (docs/effect-modules.md). */
 void func_800E8F50(Unk800E8F50 *arg0, s32 arg1) {
     s32 i;
     s32 n;

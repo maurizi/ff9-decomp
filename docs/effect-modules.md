@@ -412,20 +412,11 @@ arguments). No module function hands a void export's `$v0` on as its own result 
 
 | export | ovl_0b definition | `$v0` actually holds | sites | modules |
 |---|---|---|---|---|
-| 0x1F4 func_800E738C | void | func_800E7370()'s result (s32) | 5 | 5 |
 | 0x310 Hi_GetMdlVertexPtr | void | func_800DF7A0()'s result (u16) | 3 | 3 |
 | 0x318 func_800DD0DC | void | func_800DD10C()'s result (u8) | 4 | 2 |
 | 0x338 func_800E8F50 | void | Hi_RegisterTexListModel()'s result (u16) or Hi_RegisterGouEffModel()'s result (u16) | 339 | 89 |
 
 Sites per export (function, call address, then the address that reads `$v0`):
-
-**0x1F4 func_800E738C**
-
-- fx_05a: fx_05a_op80 801E7838→801E7850
-- fx_062: fx_062_op80 801E7A60→801E7A88
-- fx_079: fx_079_op80 801E7B70→801E7B98
-- fx_083: fx_083_op80 801E79C4→801E79D0
-- fx_122: fx_122_op80 801E77CC→801E77E4
 
 **0x310 Hi_GetMdlVertexPtr**
 
