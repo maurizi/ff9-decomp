@@ -520,3 +520,23 @@ Sites per export (function, call address, then the address that reads `$v0`):
 - fx_1fc: fx_1fc_op83 801E7AB4→801E7ABC, fx_1fc_op83 801E7BC0→801E7BCC
 - fx_1fd: fx_1fd_op82 801E85A0→801E85A8, fx_1fd_op82 801E85CC→801E85D4
 - fx_1fe: fx_1fe_op81 801E7DB4→801E7DBC, fx_1fe_op81 801E7DE0→801E7DE8, fx_1fe_op81 801E7E0C→801E7E18
+
+## Shared bodies
+
+Many modules contain the same functions (particle wrappers, path/key readers, whole op handlers).
+`python3 tools/fxmod_dups.py --groups` groups bodies that are identical apart from relocated fields and
+says which copy is matched. `tools/docker.sh python3 tools/fxmod_propagate.py --all` (needs a built tree)
+copies every matched body into the modules that still `INCLUDE_ASM` the same code; rerun it after merging
+new matches. One copy: `fxmod_propagate.py fx_09b:func_801E7704 fx_0ea:func_801E7738 [--dry]`.
+
+It maps the source object's relocations (symbol + addend) onto the destination's `.s` by instruction offset,
+so `&D_801E9A34[1]` becomes `&D_801E7E64[1]` when the destination has the table at D_801E7E64; renames
+`Fx<src>` types (a differing destination type of the same name gets a `_<src>` suffix) and copies the
+declarations the body needs into the destination header under `/* propagated */`. Each copy is rebuilt and
+checked against the module's sha1, in up to four variants (the body's signature or the destination's
+existing prototype; differing destination declarations kept or replaced), preferring one that adds no
+compiler warnings; a copy that never matches is rolled back and reported. Bodies in one group can still
+differ in struct offsets off non-sp bases or in local branch targets; the tool warns about the former
+("images differ outside relocations"). Check the build's warnings afterwards: where the copied body and the
+destination's own C type the same data differently, reconcile the types by hand (one struct, a cast at a
+`btlfx_getFileData` call).
