@@ -1,7 +1,8 @@
-/* Draft of fx_1f3 fx_1f3_op80. Status: 55 aligned mismatches; equivalent by construction. Open: scheduling in the
- * mode-1 ring init and the case 0x22 store; in the ring loop the original's second pointer giv is based at the
- * point's pad (offsets -4/-2/0) and it reloads unk12C for the func_801E7794 argument. Writing vx through a running
- * pointer and the other fields by index reproduces the original's two givs. */
+/* Draft of fx_1f3 fx_1f3_op80. Status: 27 aligned mismatches; equivalent by construction. Fixed since the 55-row
+ * draft: mode 1 stores unk5C.vz before vy, and case 0x22 tests work->unk40[0] itself (its NULL path then threads
+ * past the first post-switch check, as in the original). Open, all in the ring loop: the original's second pointer
+ * giv is based at the point's pad (offsets -4/-2/0), its l giv starts from the D_801EC4F0 register (+0x20) instead
+ * of its own lui, and it reloads unk12C for the func_801E7794 argument. */
 #include "fxmod/fx_1f3.h"
 
 typedef struct {
@@ -125,8 +126,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             *q = 0;
         }
         work->unk5C.vx = env->unkC->unk38;
-        work->unk5C.vy = -0x200;
         work->unk5C.vz = env->unkC->unk3C;
+        work->unk5C.vy = -0x200;
         for (i = 0; i < 16; i++) {
             D_801EC4F0[i].unk12C = 0;
             D_801EC4F0[i].unk130 = D_801E8CA8[i].unk0;
@@ -194,9 +195,9 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x22:
             ex->func_800DC818(0x10, 0x2E, (u16 *)&work->unk64);
-            p = work->unk40[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk64);
-            if (p != NULL) {
-                p->unk22 = 0x200;
+            work->unk40[0] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk64);
+            if (work->unk40[0] != NULL) {
+                work->unk40[0]->unk22 = 0x200;
             }
             break;
         case 0x2A:
