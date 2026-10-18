@@ -39,5 +39,10 @@ typedef struct {
 } Fx04dWork;
 
 extern SVECTOR D_801E8578[];
+extern Unk800F78A4 *D_801E8610;
+extern BtlModel D_801E8620[];
+
+s32 func_801E7704(s32 mode, Fx04dItem *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame,
+                  Unk800DA1B8 *pool, Fx04dWork *work);
 
 #endif
