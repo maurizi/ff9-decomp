@@ -1,5 +1,5 @@
 /* Draft of fx_0e1_0 fx_0e1_0_op80 (summon with water planes, glow models and four ribbons). Status: first full
- * draft, 86 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
+ * draft, 47 aligned diff lines ignoring registers (od.py). Open: global allocation (orig: k s6, glow s7, wave2 fp,
  * entry s2, env spilled; &sc/&b and 0x80/10000 in s-registers in the ribbon loop; c of the ribbon loop spilled to
  * 0xC0) and statement order in several blocks. Levers already applied: 12-byte vectors in the work block,
  * "((k * col) >> 11) / 3", inline RGB expressions, wave2 = (frame << 12) / 49 before the case-4 test, ribbon buffer
@@ -146,20 +146,20 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 0:
             k = 0x1000;
             if (frame < 0x10) {
-                c = 0xFF - ((frame * 0xFF) >> 4);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xFF - ((frame * 0xFF) >> 4),
+                                         0xFF - ((frame * 0xFF) >> 4), 0xFF - ((frame * 0xFF) >> 4));
             }
             if (frame < 0x2E) {
-                work->unk78.vz = work->unk78.vy = work->unk78.vx = k;
+                work->unk78.vx = work->unk78.vy = work->unk78.vz = k;
                 r = ex->math_cos((frame << 10) / 46);
                 work->unk6C.vx = D_801E9D7C.vx + ((ex->math_cos(work->unk4 << 8) * r) >> 17);
                 work->unk6C.vy = D_801E9D7C.vx + ((ex->math_sin(work->unk4 << 8) * r) >> 17);
                 r = 0x2000;
             } else {
-                r = ex->math_cos(((frame - 0x2E) << 10) / 18);
-                c = k - (((k - r) * 0xF00) >> 12);
-                r *= 2;
-                work->unk78.vz = work->unk78.vy = work->unk78.vx = c;
+                s32 v = ex->math_cos(((frame - 0x2E) << 10) / 18);
+
+                r = v * 2;
+                work->unk78.vx = work->unk78.vy = work->unk78.vz = k - (((k - v) * 0xF00) >> 12);
             }
             if (r > 0x1000) {
                 ex->Hi_DrawMorphEffModel(&work->unk64, (VECTOR *)&work->unk6C, (s32)&work->unk78, work->unk50, work->unk54,
@@ -250,11 +250,12 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 D_801E9DBC = 0;
             }
             if (D_801E9DBC != 0) {
-                c = (ex->math_sin((frame << 11) / 159) * 3) >> 2;
+                s32 d = (ex->math_sin((frame << 11) / 159) * 3) >> 2;
+
                 env->unk28 = 0xF5;
                 ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk34);
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk34, NULL, 0x1000, 0, 1,
-                                  c + 0x400);
+                                  d + 0x400);
                 env->unk28 = 0;
             }
             if (frame == 0) {
