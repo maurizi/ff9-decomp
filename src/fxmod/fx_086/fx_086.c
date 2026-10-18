@@ -2,7 +2,25 @@
 
 INCLUDE_ASM("asm/us/fx_086/nonmatchings/fx_086", func_801E7704);
 
-INCLUDE_ASM("asm/us/fx_086/nonmatchings/fx_086", func_801E7E18);
+void func_801E7E18(s32 n, s32 r, SVECTOR *pts) {
+    SVECTOR *p;
+    s32 *prev;
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E9D6C);
+    s32 i;
+    s32 rad;
+    s32 a;
+
+    p = pts;
+    prev = (s32 *)&p[n];
+    for (i = 0; i < n; i++, prev++, p++) {
+        *prev = 0x7F7F7F7F;
+        rad = ex->btlfx_randRange(r >> 2, r >> 1);
+        a = ex->btlfx_rand() & 0xFFF;
+        p->vx = (ex->math_cos(a) * rad) >> 12;
+        p->vy = (ex->math_sin(a) * rad) >> 12;
+        p->vz = ex->btlfx_rand() % 1280 - 0x100;
+    }
+}
 
 void func_801E7F6C(u32 *ot, s32 n, s32 h, s32 dz, void *src, SVECTOR *pt, CVECTOR *col, s32 p, s32 abr) {
     Unk800F78A4 *env = D_801E9D6C;
