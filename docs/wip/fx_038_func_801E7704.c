@@ -1,6 +1,8 @@
-/* Draft of fx_038 func_801E7704 (falling-rock pool callback). Status: ~236 aligned mismatches, mostly register
- * allocation: the original spills work (stack argument) and keeps frame in s7, env in s1 (reused for t >> 2 in case
- * 1), frame << 12 in s6 and the /3 magic in s5. */
+/* Draft of fx_038 func_801E7704 (falling-rock pool callback). Status: 203 aligned mismatches (build/sdiff.py
+ * --aligned), nearly all register allocation: the original keeps frame in s7, &it->unk4 in fp, (frame << 12) / 18 in
+ * s4, t >> 2 in s1 and the file pointer in s0 (ours: s6, s7, s0, s4, s1), and spills work (stack argument).
+ * tools/equiv.py: 47/47 trials agree, 86% coverage. Helped: `a.vz += 0x1000 - t`, the tint value as a block-local
+ * `c = 0x46; c -= frame * 0x46 / 4;` (the original loads 0x46 into the argument register and subtracts). */
 #include "fxmod/fx_038.h"
 
 s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
@@ -34,7 +36,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         BTLFX_COPY_SVEC(&a, &it->unk18);
         a.vy -= (0x1000 - t) * 2;
-        a.vz = a.vz + 0x1000 - t;
+        a.vz += 0x1000 - t;
         BTLFX_COPY_SVEC(&it->unk4, &a);
         pos.vx = it->unk4.vx;
         pos.vy = it->unk4.vy;
@@ -83,8 +85,9 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
     case 1:
         t = (frame << 12) / 18;
         if (frame < 4) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x46 - frame * 0x46 / 4, 0x46 - frame * 0x46 / 4,
-                                     0x46 - frame * 0x46 / 4);
+            s32 c = 0x46;
+            c -= frame * 0x46 / 4;
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
         }
         f = (u8 *)ex->btlfx_getFileData(entry->unk8, 1);
         k = t >> 2;

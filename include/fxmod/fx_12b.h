@@ -86,4 +86,14 @@ void func_801E97A8(Unk800F78A4 *env, s32 i, s32 v);
 /* propagated */
 s32 func_801E8000(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
+typedef struct {
+    Pool6CEntry *unk0[4];
+    SVECTOR unk10; /* target body position */
+} Fx12bWork80; /* 0x18 */
+
+extern u16 D_801E9AD4[6];
+extern u16 D_801E9AE0[6];
+extern u8 D_801E9BB4[];
+extern u8 D_801EB2C4[];
+
 #endif
