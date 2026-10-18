@@ -1,13 +1,13 @@
-/* Draft of fx_1f7 fx_1f7_op80. Status: 416 aligned mismatches, 116 ignoring registers (the previous draft: 404/148).
- * Pass 2: the original's stack holds a at 0x28, a separate b at 0x30 (second lerp point of the trail loop) and m at
- * 0x38 (it also passes &m.m[1][1] = sp+0x40 somewhere), so b is its own SVECTOR again; the frame is then 0xB0 vs
- * the original's 0xA8 because this C has one spill slot too many (0x58..0x80 vs 0x58..0x78). The trail loop as
- * tr = &D_801E8458[i] gets closer than the tr++ pointer loop, but the original keeps tr itself in s1 and steps it
- * by 0x118 (here: i * 0x118 giv spilled + base). With tr++ loop.c combines every tr->field DEST_ADDR giv into one
- * reduced tr + 0x10C register (combined benefit makes it worth while) and keeps the biv for (u8 *)tr; the
- * original reduces none of them (its 33-point loop reads unk110 through a register copy of tr, a2). A block-local
- * copy pointer for the inner loop gets propagated back by cse. Earlier notes: ex/entry reload register is t2 in the
- * original (t0/t1 hold pseudos), the 33-point copy loop holds n=0x21 in t1 and loads 0x80 inside the loop. */
+/* Draft of fx_1f7 fx_1f7_op80. Status: 166 aligned mismatches, 34 ignoring registers (was 416/116).
+ * Round 5: drawTrail takes (u8 *)&D_801E8458[i] instead of tr (cse shares the address, so the D_801E8458 base is
+ * worth hoisting, tr = &D_801E8458[i] becomes a giv and loop.c reduces it into s1 as in the original); the 33-point
+ * copy loop has its own counter jj (the original's a0; the shared j crossed calls) and a copy tc = tr for
+ * tc->unk110 (the original's a2), which puts pseudos in t0/t1 so reloads use t2 as in the original; d->pad = 0x80
+ * after d->vz makes loop.c combine the vy/vz/pad givs into the pad address (a1 = d + 0xA).
+ * Open: loop.c hoists the copy loop's 0x80 (the original loads it inside the loop) and the copy loop's registers
+ * (jj/tc/base/d/pad giv: v1/a1/a3/a2/a0 here, a0/a2/t0/a3/a1 in the original); i in fp vs s7 and the D_801E80D8
+ * base in s7 vs fp; the k loop's k/k*4 giv registers (s2/s4 vs s4/s3).
+ * Earlier notes: the original's stack holds a at 0x28, b at 0x30 (second lerp point) and m at 0x38. */
 #include "fxmod/fx_1f7.h"
 
 s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
