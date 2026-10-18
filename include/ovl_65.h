@@ -7,14 +7,14 @@
 #include "ff9.h"
 
 /* other overlays (battle, 0x800A7000+ / 0x800E....) */
-void func_800AD90C(s32, s32, s32, s32, s32);
+void btl_soundCmd(s32, s32, s32, s32, s32);
 void func_800E9DBC(void);
 void func_800F4E68(void);
 
 /* main exe: candidates for ff9.h */
 void func_800240B0(u8);
 
-/* Battle result (D_800FDF30). */
+/* Battle result (g_btlRewards). */
 typedef struct {
     u32 unk0; /* gil */
     u32 unk4; /* exp (split among members) */
@@ -24,7 +24,7 @@ typedef struct {
     u8 unkC[0x10]; /* dropped item ids, 0xFF = none */
     u8 unk1C;      /* card */
 } BattleResult;
-extern BattleResult D_800FDF30;
+extern BattleResult g_btlRewards;
 extern u8 D_800FDF4D;
 
 /* ---- overlay 0x65 ---- */

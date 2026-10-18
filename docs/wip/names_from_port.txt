@@ -537,6 +537,310 @@ D_800CCE69 g_worldMapError  # [code] set to 1 beside every "==== ERROR ===== / %
 func_8019D110 MDEC_in  # [code] MDEC_in_sync then starts DMA0 (MDEC in) on buf+4 and writes the command word, called by DecDCTin and DecDCTPutEnv
 func_8019D1A0 MDEC_out  # [code] MDEC_out_sync then starts the MDEC out DMA, called by DecDCTout
 
+## battle campaign 2 (runtime)
+# Names from battle campaign 2 (docs/runtime-findings.md, 2026-10-17). Each "## bin" sub-section is rename.py input.
+
+## main: main (battle campaign 2: enemy event-script trigger)
+func_8004AB7C evt_battleTrigger  # [runtime] docs/runtime-findings.md battle campaign 2, runs an enemy's event-script tag (0x2F turn, 0x35 hit/counter, 0x36 death, 0x37 any hit), callers btl_updateAtb when the enemy ATB fills and btl_applyCalcResult twice after every spell that hit the Malboro
+
+## ovl_0b: ovl_0b (battle campaign 2: battle sequences, command phases, status, formulas, rewards, sound, effects, camera, setup)
+func_800CA7CC btlseq_update  # [runtime] docs/runtime-findings.md battle campaign 2, runs the 4 enemy sequence slots once per tick from btl_drawScene, its opcode handlers only run when an enemy acts (not camera code)
+D_800F5858 g_btlseqOps  # [runtime] docs/runtime-findings.md battle campaign 2, 35 onEnter/step pairs dispatched by btlseq_update
+func_800CA530 btl_startEnemySeq  # [runtime] docs/runtime-findings.md battle campaign 2, from btl_startCmdEffect's enemy AI command case only in enemy runs, starts a sequence for subNo
+func_800CA5AC btlseq_start  # [runtime] docs/runtime-findings.md battle campaign 2, allocates one of the 4 sequence slots with pc = sequence table[subNo], only caller btl_startEnemySeq
+func_800CA694 btlseq_startDirect  # [code] docs/runtime-findings.md battle campaign 2, event opcode 0xE5 runs a sequence without a command
+func_800CA774 btlseq_isBusy  # [code] docs/runtime-findings.md battle campaign 2, 1 while any sequence slot is active
+func_800CA3CC btlseq_init  # [code] docs/runtime-findings.md battle campaign 2, resolves sequence offsets and the animation list from the battle data, clears the 4 slots
+func_800CAAD0 btlseq_opEnd  # [runtime] docs/runtime-findings.md battle campaign 2, op00 waits for animation/effect/popups then btl_onCmdEffectDone and frees the slot
+func_800CAC24 btlseq_opEndNoAnimWait  # [code] docs/runtime-findings.md battle campaign 2, op18 end without the animation wait
+func_800CAC98 btlseq_opWait  # [runtime] docs/runtime-findings.md battle campaign 2, op01 sets the wait counter from pc[1]
+func_800CACAC btlseq_stepWait  # [runtime] docs/runtime-findings.md battle campaign 2, op01 step counts the wait down
+func_800CACD8 btlseq_opExecCmd  # [runtime] docs/runtime-findings.md battle campaign 2, op02 btl_execCmd on every unit of the target mask, Osmose's damage
+func_800CAD6C btlseq_opMoveToTarget  # [code] docs/runtime-findings.md battle campaign 2, op03/op1E lerp of BtlUnit.unk8C toward the target
+func_800CAEC4 btlseq_stepMove  # [code] docs/runtime-findings.md battle campaign 2, step of the move ops over pc[1] frames
+func_800CAF90 btlseq_opMoveHome  # [code] docs/runtime-findings.md battle campaign 2, op04 move back to the home position
+func_800CB008 btlseq_opMoveTo  # [code] docs/runtime-findings.md battle campaign 2, op13 move to an absolute position
+func_800CB090 btlseq_stepMoveSetHome  # [code] docs/runtime-findings.md battle campaign 2, op13 step that also sets the home position
+func_800CB0F0 btlseq_opMoveBy  # [code] docs/runtime-findings.md battle campaign 2, op1B relative move
+func_800CB17C btlseq_findUnit  # [code] docs/runtime-findings.md battle campaign 2, first unit in a unit mask
+func_800CB1D4 btlseq_getTargetCenter  # [runtime] docs/runtime-findings.md battle campaign 2, average x/z of the target units, called from btlseq_opTurn
+func_800CB2E0 btlseq_opPlayAnim  # [runtime] docs/runtime-findings.md battle campaign 2, op05, 4 calls in the Osmose run and 2 in Ark's attack
+func_800CB3A4 btlseq_opDelayedEffect  # [code] docs/runtime-findings.md battle campaign 2, op06 effect id/arg/delay started by btlseq_update when unk25 runs out
+func_800CB4E8 btlseq_opWaitAnim  # [runtime] docs/runtime-findings.md battle campaign 2, op07, 60 calls in the Osmose run
+func_800CB3EC btlseq_opEffect  # [runtime] docs/runtime-findings.md battle campaign 2, op08/op1A, the enemy run's only btl_playCmdEffect call came from here
+func_800CB560 btlseq_opWaitEffectHit  # [code] docs/runtime-findings.md battle campaign 2, op09 waits for slot flag 2 set when the effect raises its hit flag
+func_800CB5C4 btlseq_opWaitEffect  # [code] docs/runtime-findings.md battle campaign 2, op0B waits for the effect to finish
+func_800CBBB0 btlseq_opScale  # [code] docs/runtime-findings.md battle campaign 2, op0C unit attr 0x37 scale
+func_800CBC38 btlseq_stepScale  # [code] docs/runtime-findings.md battle campaign 2, op0C step
+func_800CB618 btlseq_opHideMeshes  # [runtime] docs/runtime-findings.md battle campaign 2, op0D calls btl_hideMeshes, once in the Ark run
+func_800CB68C btlseq_opShowMeshes  # [runtime] docs/runtime-findings.md battle campaign 2, op0F calls btl_showMeshes, once in the Ark run
+func_800CB700 btlseq_opShowName  # [runtime] docs/runtime-findings.md battle campaign 2, op0E/op21 banner, the Osmose run's banner showed Osmose
+func_800CB848 btlseq_opSetCamera  # [code] docs/runtime-findings.md battle campaign 2, op10 sets Battle.unk131C
+func_800CB884 btlseq_opPlayCamera  # [code] docs/runtime-findings.md battle campaign 2, op12/op20 50 percent chance unless the camera option is off, then btlcam_playSeq
+func_800CBA58 btlseq_opTurn  # [code] docs/runtime-findings.md battle campaign 2, op14 turns the unit toward btlseq_getTargetCenter
+func_800CBD28 btlseq_opPlayTexAnim  # [code] docs/runtime-findings.md battle campaign 2, op15 texture animation play
+func_800CBDC8 btlseq_opLoopTexAnim  # [code] docs/runtime-findings.md battle campaign 2, op16 texture animation loop
+func_800CBE68 btlseq_opStopTexAnim  # [code] docs/runtime-findings.md battle campaign 2, op17 texture animation stop
+func_800CBEB4 btlseq_opDelayedSound  # [code] docs/runtime-findings.md battle campaign 2, op19 btl_playUnitSound after a delay
+func_800CBF28 btlseq_opFadeOut  # [code] docs/runtime-findings.md battle campaign 2, op1D btl_setUnitFade
+func_800C28F4 btl_startCmdEffect  # [runtime] docs/runtime-findings.md battle campaign 2, phase 1 once per action from btl_processCmdQueue, picks the effect per command, enemy commands go to btl_startEnemySeq
+func_800C2598 btl_playCmdEffect  # [runtime] docs/runtime-findings.md battle campaign 2, a1 equals the effect id btlfx_start receives in all 16 traced spells, fills the effect target list
+func_800B1B48 btl_checkCmdUsable  # [runtime] docs/runtime-findings.md battle campaign 2, phase 0 once per action, failure messages 0x17/0x18/0x1B, Jump sets status 0x40000000
+func_800B23B4 btl_validateTargets  # [code] docs/runtime-findings.md battle campaign 2, drops dead targets and re-targets a random living unit
+func_800B253C btl_updatePartyCmd  # [code] docs/runtime-findings.md battle campaign 2, phase 2 per tick for party actions, Defend kneel and Change row walk
+func_800B3C00 btl_onCmdEffectDone  # [code] docs/runtime-findings.md battle campaign 2, phase 3 also from btlseq_opEnd, replays a reflected spell on the bounce targets
+func_800B2988 btl_finishCmd  # [runtime] docs/runtime-findings.md battle campaign 2, resets the actor's ATB (write at +0xA8), drains trance per action, ends Jump
+func_800BD31C btl_waitHitMotions  # [code] docs/runtime-findings.md battle campaign 2, 0 while any unit is in its hit-reaction motion (unk68 bit 17)
+func_800B3188 btl_applyReflect  # [code] docs/runtime-findings.md battle campaign 2, targets with status 0x20000000 bounce reflectable spells to random units of the other side, once per spell from btl_playCmdEffect
+func_800B4478 btl_orTargets  # [code] docs/runtime-findings.md battle campaign 2, ORs four u16 unit masks
+func_800B3CEC btl_clearCmd  # [code] docs/runtime-findings.md battle campaign 2, clears a command slot
+func_800B3E7C btl_isCmdPending  # [code] docs/runtime-findings.md battle campaign 2, command queued or current
+func_800B3D54 btl_queueAutoCmd  # [runtime] docs/runtime-findings.md battle campaign 2, slot unk8, the counter-attack from btl_tryCounter
+func_800B4114 btl_removeUnitCmds  # [code] docs/runtime-findings.md battle campaign 2, removes a unit's commands from the queue
+func_800B41A4 btl_removeQueuedCmd  # [code] docs/runtime-findings.md battle campaign 2, removes command cmdNo of a unit from the queue
+func_800B4434 btl_releaseItem  # [runtime] docs/runtime-findings.md battle campaign 2, un-reserves a queued item, c_throw run
+func_800B2DD4 btl_flushCmdQueue  # [code] docs/runtime-findings.md battle campaign 2, flushes the command queue
+func_800B2F24 btl_clearCmdQueue  # [runtime] docs/runtime-findings.md battle campaign 2, victory and the all-enemies-stopped/petrified runs
+func_800B0EF8 btl_initCmdQueue  # [code] docs/runtime-findings.md battle campaign 2, initialises the command queue
+func_800B10F8 btl_initUnitCmds  # [code] docs/runtime-findings.md battle campaign 2, 6 command slots per party unit, 3 per enemy
+func_800B3B5C btl_autoAttack  # [code] docs/runtime-findings.md battle campaign 2, Confuse picks a random side, Berserk enemies, Attack 0xB0
+func_800CDEF0 btl_showCmdName  # [runtime] docs/runtime-findings.md battle campaign 2, ability/item name banner from btl_startCmdEffect in 37 runs including Defend and Change
+func_800EA0B4 btl_getAbilityName  # [code] docs/runtime-findings.md battle campaign 2, ability id to name text
+func_800CD75C btl_getItemName  # [code] docs/runtime-findings.md battle campaign 2, item id to name text
+func_800CD70C btl_getElementName  # [code] docs/runtime-findings.md battle campaign 2, element bit index to text
+func_800CD78C btl_getUnitName  # [code] docs/runtime-findings.md battle campaign 2, unit name text
+func_800C0ACC btl_addStatuses  # [runtime] docs/runtime-findings.md battle campaign 2, btl_addStatus per mask bit, every traced status spell adds its bit from +0x48
+func_800C0B6C btl_removeStatuses  # [runtime] docs/runtime-findings.md battle campaign 2, Esuna (via btl_cureAbilityStatus) and victory
+func_800C0C00 btl_initDotTimer  # [runtime] docs/runtime-findings.md battle campaign 2, Venom/Poison/Regen tick timers from spirit, only in s_poison and p_regen
+func_800BDD24 btl_tickPoison  # [runtime] docs/runtime-findings.md battle campaign 2, maxHp/16 damage, s_poison only
+func_800BDDA0 btl_tickRegen  # [runtime] docs/runtime-findings.md battle campaign 2, maxHp/16 heal (damage for undead), p_regen only
+func_800BDE78 btl_tickVenomMp  # [code] docs/runtime-findings.md battle campaign 2, maxMp/16 drain of the Venom tick
+func_800CC1A0 btl_spawnTickPopups  # [runtime] docs/runtime-findings.md battle campaign 2, numbers for the poison/regen ticks, s_poison/p_regen only
+func_800BD8F0 btl_resetAtbSpeed  # [runtime] docs/runtime-findings.md battle campaign 2, unk2E = 8/10/14 by battle speed, from btl_addStatus in p_haste and s_slow only
+func_800C02D4 btl_updateStatusColor  # [code] docs/runtime-findings.md battle campaign 2, Zombie/Berserk/Heat/Freeze tint into unkC1
+func_800C0430 btl_setStoneClut  # [runtime] docs/runtime-findings.md battle campaign 2, shifts the model CLUT rows for petrify, s_break
+func_800C0A70 btl_interruptUnit  # [code] docs/runtime-findings.md battle campaign 2, cancels the unit's commands and zeroes its ATB
+func_800C09EC btl_clearUnitStatus  # [code] docs/runtime-findings.md battle campaign 2, clears a unit's status
+func_800BD414 btl_hideMeshes  # [runtime] docs/runtime-findings.md battle campaign 2, p_vanish (from btl_addStatus) and the Ark sequence
+func_800BD464 btl_showMeshes  # [runtime] docs/runtime-findings.md battle campaign 2, counterpart of btl_hideMeshes, Ark sequence
+func_800BD4DC btl_hideWeapon  # [runtime] docs/runtime-findings.md battle campaign 2, c_jump via btlfx_setWeaponVisible
+func_800BD53C btl_showWeapon  # [runtime] docs/runtime-findings.md battle campaign 2, c_jump via btlfx_setWeaponVisible
+func_800E8408 btlfx_reapplyMini  # [code] docs/runtime-findings.md battle campaign 2, re-applies Mini after effects restore party models
+func_800E8460 btlfx_reapplyVanish  # [code] docs/runtime-findings.md battle campaign 2, re-applies Vanish after effects restore party models
+func_800CCDB8 btl_drawStatusIcons  # [code] docs/runtime-findings.md battle campaign 2, per tick from btl_drawPopups, draws the 12 status animations of g_btlStatusIcons at bones
+D_800F6A88 g_btlStatusIcons  # [code] docs/runtime-findings.md battle campaign 2, 12 entries of status mask, exclusion mask, sprite anim, bone
+func_800CD210 btl_drawStatusCountdown  # [code] docs/runtime-findings.md battle campaign 2, Doom and gradual-petrify counter digits from btl_drawPopups
+func_800BD774 btl_spreadTroubleDamage  # [code] docs/runtime-findings.md battle campaign 2, Trouble splashes half the damage on allies
+func_800C1704 btl_checkEnemiesKO  # [runtime] docs/runtime-findings.md battle campaign 2, s_death and victory from btl_addStatus's KO case, flushes the queue when no enemy is left
+func_800C15DC btl_checkPartyDisabled  # [code] docs/runtime-findings.md battle campaign 2, party-side check next to btl_checkEnemiesKO
+func_800BCEF0 btl_updateKo  # [runtime] docs/runtime-findings.md battle campaign 2, KO state machine, 364 calls while the Malboro died (death motion, sounds 0x79/0x78, fade-out, rewards)
+func_800BC78C btl_setIdleMotion  # [code] docs/runtime-findings.md battle campaign 2, sets the unit's idle motion
+func_800BCC64 btl_endPartyHitMotion  # [runtime] docs/runtime-findings.md battle campaign 2, attack run
+func_800BCDBC btl_endEnemyHitMotion  # [runtime] docs/runtime-findings.md battle campaign 2, 8 damage runs
+func_800BC21C btl_updateUnitModel  # [runtime] docs/runtime-findings.md battle campaign 2, per unit per tick from btl_updateCombat and btl_victory, rotation/translation matrix and motion end
+func_800B8664 btl_rollStatusHit  # [runtime] docs/runtime-findings.md battle campaign 2, hit then evade percent else miss flag, every s_ run
+func_800B9AFC btl_initStatusHitRate  # [runtime] docs/runtime-findings.md battle campaign 2, level + accuracy + magic/4 - target level, every s_ run
+func_800B9C30 btl_halveHitForShell  # [runtime] docs/runtime-findings.md battle campaign 2, target status 0x400000, s_ runs
+func_800B9C74 btl_halveHitForSpread  # [runtime] docs/runtime-findings.md battle campaign 2, multi-target status hit halved, s_ runs
+func_800BACB4 btl_applyAbilityStatus  # [runtime] docs/runtime-findings.md battle campaign 2, ability status set via btl_addStatuses, all s_ and p_ status runs
+func_800BAD64 btl_cureAbilityStatus  # [runtime] docs/runtime-findings.md battle campaign 2, p_esuna only
+func_800BADD4 btl_cureItemStatus  # [code] docs/runtime-findings.md battle campaign 2, item counterpart of btl_cureAbilityStatus
+func_800BA858 btl_halveForSpread  # [runtime] docs/runtime-findings.md battle campaign 2, magic multiplier halved for multi-target casts, Fire/Blizzard/Cure/Curaga
+func_800BA7D0 btl_missIfAirborne  # [runtime] docs/runtime-findings.md battle campaign 2, ground-only abilities miss Float or flying enemies, Fire/Blizzard/Ramuh runs
+func_800B918C btl_rollFlee  # [runtime] docs/runtime-findings.md battle campaign 2, escape chance from average levels, success queues cmd 0x38, c_flee only
+func_800BAEA8 btl_canFlee  # [runtime] docs/runtime-findings.md battle campaign 2, battle allows escape and someone can act, c_flee only
+func_800B9E50 btl_guardIfDeathImmune  # [runtime] docs/runtime-findings.md battle campaign 2, Guard when target status 0x80, s_death
+func_800B9D34 btl_missIfDeathImmune  # [runtime] docs/runtime-findings.md battle campaign 2, c_eat
+func_800BA1B4 btl_setEnemyAttackParams  # [runtime] docs/runtime-findings.md battle campaign 2, power ability defence target multiplier strength + random, Ark's attack formula 0x64
+func_800B9E88 btl_setAbilityPhysParams  # [code] docs/runtime-findings.md battle campaign 2, same as btl_setEnemyAttackParams for player physical abilities, formulas 8/0x62
+func_800BA094 btl_setWeaponAbilityParams  # [code] docs/runtime-findings.md battle campaign 2, weapon power * ability / 10
+func_800B9994 btl_canAddHitStatus  # [runtime] docs/runtime-findings.md battle campaign 2, weapon status on hit, from btl_applyCalcResult in the Attack runs
+func_800BAAE4 btl_calcPercentDamage  # [code] docs/runtime-findings.md battle campaign 2, Demi-type maxHp * rate / 100, 2/3 when spread
+func_800B9A5C btl_setDrainFlags  # [code] docs/runtime-findings.md battle campaign 2, drain formula flags
+func_800B9CDC btl_checkLevelMultiple  # [code] docs/runtime-findings.md battle campaign 2, LV-n spells
+func_800B9D6C btl_checkTargetIsPlayer  # [code] docs/runtime-findings.md battle campaign 2, target is a party unit
+func_800BAF3C btl_markTrouble  # [code] docs/runtime-findings.md battle campaign 2, target Trouble 0x20 sets popup flag 0x100
+func_800C12CC btl_addEnemyRewards  # [runtime] docs/runtime-findings.md battle campaign 2, exp/gil/item drops/card, victory only from btl_updateKo when the Malboro died
+D_800FDF30 g_btlRewards  # [code] docs/runtime-findings.md battle campaign 2, accumulator written by btl_addEnemyRewards
+func_800C1594 btl_clearRewards  # [code] docs/runtime-findings.md battle campaign 2, clears g_btlRewards
+func_800C1524 btl_initState  # [code] docs/runtime-findings.md battle campaign 2, initialises the battle state
+func_800C1794 btl_saveParty  # [runtime] docs/runtime-findings.md battle campaign 2, victory from btl_update+0x260
+func_800C1854 btl_saveCharacter  # [runtime] docs/runtime-findings.md battle campaign 2, 4 calls in victory for the 4 party members, writes HP/MP/trance back
+func_800C20B8 btl_playVictoryMusic  # [code] docs/runtime-findings.md battle campaign 2, from btl_victory, sound commands 0x8601/0x700
+func_800C19F8 btl_tryEscape  # [code] docs/runtime-findings.md battle campaign 2, message 4 when the battle forbids it, else flee formula 0x38
+func_800C1184 btl_rollAmbush  # [code] docs/runtime-findings.md battle campaign 2, 0 back attack 1 first strike 2 normal, support bits 0x200/0x400 change the odds
+func_800BE784 btl_getBattleVar  # [runtime] docs/runtime-findings.md battle campaign 2, event-script battle variables 32-42 read from the event VM func_80037D6C
+func_800BE99C btl_setBattleVar  # [code] docs/runtime-findings.md battle campaign 2, event opcode 0x4A, 32 force victory, 33-35 end modes, 38 add gil
+func_800B0A6C btl_applyAutoAbilities  # [code] docs/runtime-findings.md battle campaign 2, Auto-Reflect/Float/Haste/Regen/Life and immunity supports
+func_800B0CF8 btl_partyHasSupport  # [code] docs/runtime-findings.md battle campaign 2, any party member has a support ability
+func_800B0D4C btl_tryAutoPotion  # [runtime] docs/runtime-findings.md battle campaign 2, from btl_gainTrance in the Ark run
+func_800B081C btl_findCover  # [code] docs/runtime-findings.md battle campaign 2, Cover-type supports
+func_800C1E88 btl_hasEnemyFlag  # [code] docs/runtime-findings.md battle campaign 2, enemy category bits 0x10 undead 0x80 flying
+func_800C1EDC btl_getModelSlot  # [code] docs/runtime-findings.md battle campaign 2, unit model slot
+func_800C1F00 btl_countActiveUnits  # [code] docs/runtime-findings.md battle campaign 2, counts active units
+func_800C1F7C btl_pickRandomUnit  # [code] docs/runtime-findings.md battle campaign 2, random unit from a mask
+func_800C1CA0 btl_getUnitsWithStatus  # [code] docs/runtime-findings.md battle campaign 2, unit mask of units with a status
+func_800C1D8C btl_getUnitBySlot  # [code] docs/runtime-findings.md battle campaign 2, unit by slot index
+func_800C1938 btl_unlinkUnit  # [code] docs/runtime-findings.md battle campaign 2, removes a unit from the unit list
+func_800C1990 btl_insertUnit  # [code] docs/runtime-findings.md battle campaign 2, inserts a unit into the unit list
+func_800BED6C btl_findUnitByBit  # [code] docs/runtime-findings.md battle campaign 2, unit with a given unit bit
+func_800CD808 btl_startScan  # [code] docs/runtime-findings.md battle campaign 2, starts the Scan window
+func_800CD83C btl_updateScan  # [code] docs/runtime-findings.md battle campaign 2, LV, HP/MP and weakness lines
+func_800CDC68 btl_startDetect  # [code] docs/runtime-findings.md battle campaign 2, starts the Detect window
+func_800CDD68 btl_updateDetect  # [code] docs/runtime-findings.md battle campaign 2, Detect window per tick
+func_800AD90C btl_soundCmd  # [runtime] docs/runtime-findings.md battle campaign 2, the battle's GameData.unk83C sound hook, menu snd_playSe reaches it at snd_playSe+0x38
+func_800C22CC btl_playUnitSound  # [runtime] docs/runtime-findings.md battle campaign 2, sound panned at the unit, death sounds from btl_updateKo
+func_800C2200 btl_playHitSound  # [runtime] docs/runtime-findings.md battle campaign 2, weapon hit sound, z_attack via btlfx_playHitSound
+func_800C2250 btl_playDeathCry  # [runtime] docs/runtime-findings.md battle campaign 2, once per unit from btl_killUnit
+func_800C24E8 btl_setUnitFade  # [runtime] docs/runtime-findings.md battle campaign 2, 17 calls while the Malboro faded out
+func_800D62A0 btlfx_start  # [runtime] docs/runtime-findings.md battle campaign 2, receives the effect id of all 16 traced spells, -1 when busy
+D_800FEC40 g_btlfxState  # [runtime] docs/runtime-findings.md battle campaign 2, effect state (state, resolved id, script pc, header flags)
+func_800D616C btlfx_reset  # [code] docs/runtime-findings.md battle campaign 2, resets the effect system
+func_800E3DA8 btlfx_resetAll  # [runtime] docs/runtime-findings.md battle campaign 2, once per effect from btl_playCmdEffect
+func_800D650C btlfx_runScript  # [runtime] docs/runtime-findings.md battle campaign 2, per-frame effect script interpreter states 0-4, btlfx_spawnTask's only script caller
+func_800D6360 btlfx_findScript  # [code] docs/runtime-findings.md battle campaign 2, looks up the effect script
+func_800D64C8 btlfx_callScript  # [code] docs/runtime-findings.md battle campaign 2, weapon sub-script, op 0x7C
+func_800D6340 btlfx_retryOp  # [code] docs/runtime-findings.md battle campaign 2, re-runs the current op
+func_800D63B0 btlfx_swapVramPages  # [code] docs/runtime-findings.md battle campaign 2, swaps the effect VRAM pages
+func_800D6E70 btlfx_spawnTask  # [runtime] docs/runtime-findings.md battle campaign 2, 14-44 calls per action
+func_800D7094 btlfx_updateTasks  # [runtime] docs/runtime-findings.md battle campaign 2, per frame
+func_800D6D3C btlfx_initTasks  # [code] docs/runtime-findings.md battle campaign 2, clears the task slots
+func_800D6D8C btlfx_allocTaskMem  # [code] docs/runtime-findings.md battle campaign 2, task memory allocation
+D_80100C78 g_btlfxTasks  # [code] docs/runtime-findings.md battle campaign 2, effect task slots
+D_800F8D10 g_btlfxResidentOps  # [code] docs/runtime-findings.md battle campaign 2, effect opcodes 0x20-0x2F
+D_800F72E0 g_btlfxUnitOps  # [code] docs/runtime-findings.md battle campaign 2, effect opcodes 0x50-0x7F
+func_800DA4F4 btlfx_loadFile  # [runtime] docs/runtime-findings.md battle campaign 2, once per spell from btlfx_runScript, file ids per spell
+func_800DA92C btlfx_updateLoader  # [code] docs/runtime-findings.md battle campaign 2, per-frame effect file loader
+D_80100DC0 g_btlfxLoader  # [code] docs/runtime-findings.md battle campaign 2, effect file loader state
+func_800DA3A4 btlfx_findFileSlot  # [code] docs/runtime-findings.md battle campaign 2, slot of a loaded effect file
+func_800DA3D8 btlfx_getFileData  # [runtime] docs/runtime-findings.md battle campaign 2, data of an entry of a loaded effect file, also called by module code
+func_800DA480 btlfx_getFileDataSize  # [code] docs/runtime-findings.md battle campaign 2, size of an entry of a loaded effect file
+func_800DA104 btlfx_poolSize  # [runtime] docs/runtime-findings.md battle campaign 2, particle pool exported to effect modules
+func_800DA138 btlfx_poolInit  # [runtime] docs/runtime-findings.md battle campaign 2, particle pool exported to effect modules
+func_800DA1B8 btlfx_poolClear  # [runtime] docs/runtime-findings.md battle campaign 2, particle pool exported to effect modules
+func_800DA1F4 btlfx_poolSpawn  # [runtime] docs/runtime-findings.md battle campaign 2, module callers in Haste/Slow/Stop/Doom/Reflect/Ramuh
+func_800DA2AC btlfx_poolUpdate  # [runtime] docs/runtime-findings.md battle campaign 2, particle pool exported to effect modules
+func_800E3B34 btlfx_heapInit  # [code] docs/runtime-findings.md battle campaign 2, effect heap
+func_800E3B70 btlfx_heapAlloc  # [code] docs/runtime-findings.md battle campaign 2, effect heap
+func_800E3BF8 btlfx_heapWrapIfFull  # [code] docs/runtime-findings.md battle campaign 2, effect heap
+func_800E3C50 btlfx_heapFree  # [code] docs/runtime-findings.md battle campaign 2, effect heap (empty)
+func_800E4134 btlfx_reloadCommonData  # [runtime] docs/runtime-findings.md battle campaign 2, re-reads file 0x2BF into 0x801E7700 after a summon, d_summon only
+func_800E701C btlfx_setTargets  # [code] docs/runtime-findings.md battle campaign 2, g_btlfxEnv->unkC
+func_800E72B8 btlfx_clearTargets  # [code] docs/runtime-findings.md battle campaign 2, g_btlfxEnv->unkC
+func_800E70D0 btlfx_beginPrims  # [code] docs/runtime-findings.md battle campaign 2, prim buffer pointer, used by btl_drawStatusIcons
+func_800E7154 btlfx_endPrims  # [code] docs/runtime-findings.md battle campaign 2, prim buffer pointer, used by btl_drawStatusIcons
+func_800E8DC8 btlfx_execCmd  # [runtime] docs/runtime-findings.md battle campaign 2, btl_execCmd on one target or all, from btlfx_opApplyResult in every action run
+func_800E8E84 btlfx_showPopups  # [runtime] docs/runtime-findings.md battle campaign 2, btl_spawnPopups from btlfx_opApplyResult in every action run
+func_800E5DA8 btlfx_opApplyResult  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x25, runs in every action run
+func_800E4984 btlfx_startCasterTask  # [code] docs/runtime-findings.md battle campaign 2, starts the caster task of op 0x27
+func_800E4C88 btlfx_opCast  # [code] docs/runtime-findings.md battle campaign 2, effect op 0x27 the caster's cast motion
+func_800E5538 btlfx_opReturnHome  # [code] docs/runtime-findings.md battle campaign 2, effect op 0x28
+func_800E43D8 btlfx_moveUnitHome  # [code] docs/runtime-findings.md battle campaign 2, used by btlfx_opReturnHome
+func_800E60EC btlfx_opFadeBackground  # [code] docs/runtime-findings.md battle campaign 2, effect op 0x2A
+func_800E6270 btlfx_opFadeUnits  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x24, d_summon only
+func_800E813C btlfx_fadeUnitGroup  # [code] docs/runtime-findings.md battle campaign 2, from btlfx_opFadeUnits
+func_800E7FC0 btlfx_fadeUnit  # [code] docs/runtime-findings.md battle campaign 2, from btlfx_fadeUnitGroup
+func_800E7EC0 btlfx_setUnitBrightness  # [code] docs/runtime-findings.md battle campaign 2, from the unit fade
+func_800E5F24 btlfx_opPlayCamera  # [code] docs/runtime-findings.md battle campaign 2, effect op 0x29 calls btlcam_play
+func_800E5EAC btlfx_opAddCameraChoice  # [code] docs/runtime-findings.md battle campaign 2, effect op 0x23
+func_800E45D0 btlfx_opSetFrameRate  # [code] docs/runtime-findings.md battle campaign 2, effect op 0x2C
+func_800E8F40 btl_setVsyncMode  # [code] docs/runtime-findings.md battle campaign 2, g_gameState->vsyncMode = arg
+func_800D0858 btlfx_addPrim  # [code] docs/runtime-findings.md battle campaign 2, links a prim into the effect OT by depth
+func_800D08C4 btlfx_addPrimAbr  # [code] docs/runtime-findings.md battle campaign 2, btlfx_addPrim with a blend mode
+func_800D07B4 btlfx_linkPrimAbr  # [code] docs/runtime-findings.md battle campaign 2, blend-mode prim link
+func_800D090C btlfx_allocDrMode  # [code] docs/runtime-findings.md battle campaign 2, DR_MODE allocation
+func_800D2C78 btlfx_addSpriteQuad  # [code] docs/runtime-findings.md battle campaign 2, sprite quad prim
+func_800D0A0C btlfx_drawScreenTint  # [runtime] docs/runtime-findings.md battle campaign 2, 8 TILEs over the screen, module-called in summon/Death/Doom/Stop
+func_800E73EC btlfx_getUnitHomePos  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper (index 0x10 = caster)
+func_800E750C btlfx_getUnitPos  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E769C btlfx_getUnitBodyPos  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E76DC btlfx_setUnitPos  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E77D8 btlfx_getUnitRot  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E7824 btlfx_setUnitRot  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E7A44 btlfx_getUnitScale  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E7BA0 btlfx_getStrikePos  # [runtime] docs/runtime-findings.md battle campaign 2, point in front of the target at its radius, Attack runs
+func_800E72C8 btlfx_getUnitRadius  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E788C btlfx_isEnemyUnit  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800E7650 btlfx_applyFloatHeight  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D8658 btlfx_resetUnitMotion  # [code] docs/runtime-findings.md battle campaign 2, effect motion helper
+func_800D8774 btlfx_setMotionFrame  # [code] docs/runtime-findings.md battle campaign 2, effect motion helper
+func_800D87FC btlfx_getMotionFrame  # [code] docs/runtime-findings.md battle campaign 2, effect motion helper
+func_800D8820 btlfx_turnUnit  # [code] docs/runtime-findings.md battle campaign 2, effect motion helper
+func_800D8914 btlfx_playSwingSound  # [code] docs/runtime-findings.md battle campaign 2, weapon swing sound
+func_800D8988 btlfx_playHitSound  # [runtime] docs/runtime-findings.md battle campaign 2, calls btl_playHitSound in z_attack
+func_800D8A94 btlfx_isSameSide  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D8ACC btlfx_isSameUnit  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D8B70 btlfx_getUnitWeapon  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D8BB8 btlfx_setUnitVisible  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D8C08 btlfx_setWeaponVisible  # [runtime] docs/runtime-findings.md battle campaign 2, module caller in c_jump
+func_800D8C4C btlfx_isUnitActive  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D8C70 btlfx_getUnitStatus  # [code] docs/runtime-findings.md battle campaign 2, effect unit helper
+func_800D73AC btlfx_opSetParamsA  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x50, physical-command runs
+func_800D73E4 btlfx_opSetParamsB  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x51, physical-command runs
+func_800D7414 btlfx_opSwingSound  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x55 start
+func_800D8CB4 btlfx_stepSwingSound  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x55 step
+func_800D74B8 btlfx_opHitSound  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x56 start
+func_800D8CD8 btlfx_stepHitSound  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x56 step
+func_800D75EC btlfx_opPlayMotion  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x5A start
+func_800D8D68 btlfx_stepPlayMotion  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x5A step
+func_800D7660 btlfx_opPlayMotionWait  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x5B start
+func_800D8D94 btlfx_stepPlayMotionWait  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x5B step
+func_800D78EC btlfx_opResetMotion  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x62 start
+func_800D9038 btlfx_stepResetMotion  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x62 step
+func_800D7B2C btlfx_opRunHome  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x6A start
+func_800D9260 btlfx_stepRunHome  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x6A step
+func_800D7C9C btlfx_opJumpForward  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x6C start
+func_800D9488 btlfx_stepJumpForward  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x6C step
+func_800D7D64 btlfx_opJumpHome  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x6D start
+func_800D955C btlfx_stepJumpHome  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x6D step
+func_800D7F80 btlfx_opRunToTarget  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x70 start
+func_800D9990 btlfx_stepRunToTarget  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x70 step
+func_800D805C btlfx_opFaceTarget  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x71 start
+func_800D9AB0 btlfx_stepFaceTarget  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x71 step
+func_800D8124 btlfx_opFaceHome  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x72 start
+func_800D9D58 btlfx_stepFaceHome  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x72 step
+func_800D84C4 btlfx_opCallWeaponScript  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x7C start
+func_800DA030 btlfx_stepCallWeaponScript  # [runtime] docs/runtime-findings.md battle campaign 2, effect op 0x7C step
+func_800D71C8 btlfx_moveUnitArc  # [code] docs/runtime-findings.md battle campaign 2, arc move used by the jump ops
+func_800D72BC btlfx_moveUnitLinear  # [code] docs/runtime-findings.md battle campaign 2, linear move used by the run ops
+D_800F7510 g_btlfxModuleExports  # [runtime] docs/runtime-findings.md battle campaign 2, 216 function pointers then data pointers, every function with module-area callers is in this table
+func_800C3770 btlcam_update  # [code] docs/runtime-findings.md battle campaign 2, first call of btl_update every tick
+func_800C37BC btlcam_step  # [code] docs/runtime-findings.md battle campaign 2, builds eye/target per tick
+func_800C5530 btlcam_applyTargetView  # [code] docs/runtime-findings.md battle campaign 2, target-selection view
+func_800C4A3C btlcam_applySway  # [code] docs/runtime-findings.md battle campaign 2, camera sway per tick
+func_800C493C btlcam_applyShake  # [code] docs/runtime-findings.md battle campaign 2, camera shake per tick
+func_800C52B4 btlcam_lookAt  # [code] docs/runtime-findings.md battle campaign 2, view matrix into GameData.unk18
+func_800C316C btlcam_loadScript  # [code] docs/runtime-findings.md battle campaign 2, camera script load
+func_800C2F9C btlcam_play  # [runtime] docs/runtime-findings.md battle campaign 2, from btlfx_opPlayCamera and func_800E9290 once or twice per spell
+func_800C2F1C btlcam_playScene  # [runtime] docs/runtime-findings.md battle campaign 2, battle-start/victory scene camera, btl_victory
+func_800C2FFC btlcam_playSeq  # [code] docs/runtime-findings.md battle campaign 2, from btlseq_opPlayCamera
+func_800C2E04 btlcam_init  # [code] docs/runtime-findings.md battle campaign 2, camera init
+func_800C2E4C btlcam_beginEffect  # [runtime] docs/runtime-findings.md battle campaign 2, from btlfx_runScript
+func_800C30F4 btlcam_endEffect  # [code] docs/runtime-findings.md battle campaign 2, counterpart of btlcam_beginEffect
+func_800C57A4 btlcam_getUnitAnchors  # [code] docs/runtime-findings.md battle campaign 2, unit anchor points for the camera
+D_800FE3B8 g_btlCamera  # [code] docs/runtime-findings.md battle campaign 2, battle camera state
+func_800BAFEC btl_initParty  # [code] docs/runtime-findings.md battle campaign 2, battle setup of the party
+func_800BB4A0 btl_initPartyUnit  # [code] docs/runtime-findings.md battle campaign 2, (Character, BtlUnit, slot, n)
+func_800BB1F4 btl_initEnemies  # [code] docs/runtime-findings.md battle campaign 2, battle setup of the enemies
+func_800BBD3C btl_resetUnit  # [code] docs/runtime-findings.md battle campaign 2, battle setup unit reset
+func_800BBF5C btl_initWeapon  # [code] docs/runtime-findings.md battle campaign 2, battle setup weapon
+func_800BC0D0 btl_initEquipElements  # [code] docs/runtime-findings.md battle campaign 2, equipment element bits
+func_800C9EE0 btl_initEnemyUnit  # [code] docs/runtime-findings.md battle campaign 2, battle setup enemy unit
+func_800CA0A0 btl_setEnemyStats  # [code] docs/runtime-findings.md battle campaign 2, enemy stats from the battle data
+func_800B03B0 btl_startBattle  # [code] docs/runtime-findings.md battle campaign 2, battle phase 2
+func_800CE05C btlbg_init  # [code] docs/runtime-findings.md battle campaign 2, battle background init
+func_800CEE74 btlbg_getHeader  # [code] docs/runtime-findings.md battle campaign 2, battle background header
+
+## main: main references to ovl_0b (by hand: symbol line in the "ovl_0b functions called from main" block, rename in main.c and ff9.h)
+func_800CA694 btlseq_startDirect  # [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+func_800CA774 btlseq_isBusy  # [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+func_800BE784 btl_getBattleVar  # [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+func_800BE99C btl_setBattleVar  # [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+
+## ovl_65: ovl_65 references to ovl_0b (by hand: symbol line in the overlay symbols file, rename in its src and header)
+func_800AD90C btl_soundCmd  # [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+D_800FDF30 g_btlRewards  # [code] ovl_0b global, see config/symbols.ovl_0b.us.txt
+
 # FIELDS
 # include/ovl_64.h Ovl64State: unk0=ended,unk1=rgb24,unk4=pauseReq,unk2C=width,unk30=height,unk44=vlcTable,unk48=mdecIn0,unk4C=mdecIn1,unk50=mdecOut0,unk54=mdecOut1,unk58=ringBuf,unk5C=audioBuf,unk60=endCallback
 # include/ovl_64.h Ovl64Dec: unk0=mdecIn,unk8=inIdx,unkC=mdecOut,unk14=outIdx,unk18=frameRect,unk28=slice,unk30=frameDone

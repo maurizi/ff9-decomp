@@ -1897,7 +1897,7 @@ u8 cd_seekAsync(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
 typedef struct {
     u8 unk0[4]; /* stat bonuses */
-    u8 unk4[4]; /* OR'd into BtlUnit.unk70[] (func_800BC0D0) */
+    u8 unk4[4]; /* OR'd into BtlUnit.unk70[] (btl_initEquipElements) */
     u8 unk8;    /* OR'd into BtlUnit.unk79 */
     u8 pad9[0xC - 9];
 } Unk8006D548;
@@ -3598,8 +3598,8 @@ s32 func_800AA3F4(s32); /* uid; queues the actor's model */
 s32 func_800C3E18(s32, s32);
 s32 func_800C7570(s32, u16);
 void btl_setEnemyCmd(s32, s32, s32, s32);
-void func_800CA694(s32, s32, u16);
-void func_800BE99C(s32, s32);
+void btlseq_startDirect(s32, s32, u16);
+void btl_setBattleVar(s32, s32);
 s32 func_800ABA98(s32, s32, s32, s32, s32);
 s32 func_800AD944(s32, s32, s32);
 VECTOR *func_800AE750(void);
@@ -4025,9 +4025,9 @@ extern s32 D_8007AE20;
 void *func_80038618(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
 extern s32 D_8007AEC4;
 s32 func_800C1B5C(u8 *);
-s32 func_800CA774(void);
+s32 btlseq_isBusy(void);
 s32 func_800B7A14(s32);
-s32 func_800BE784(s32);
+s32 btl_getBattleVar(s32);
 u32 game_getPlayTimeSeconds(void);
 s32 func_8002414C(void);
 s32 func_8006275C(void);

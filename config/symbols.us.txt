@@ -285,6 +285,10 @@ btl_setUnitAttr = 0x800BE1E0; // type:func [runtime] ovl_0b function, see config
 btl_getUnitMask = 0x800BEC64; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 btl_getUnitById = 0x800BED10; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 btl_setBanner = 0x800F4F04; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btlseq_startDirect = 0x800CA694; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btlseq_isBusy = 0x800CA774; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_getBattleVar = 0x800BE784; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
+btl_setBattleVar = 0x800BE99C; // type:func [runtime] ovl_0b function, see config/symbols.ovl_0b.us.txt
 CD_newmedia = 0x8001E6B8; // type:func [string] its own messages "CD_newmedia Read error in cd_read(PVD)", "CD_newmedia %d dir entries found" (PsyQ libcd internal)
 CD_cachefile = 0x8001EA20; // type:func [string] its own messages "CD_cachefile searching...", "CD_cachefile dir not found" (PsyQ libcd internal)
 CdGetSector2 = 0x800214E0; // type:func [code] returns CD_getsector2(madr, size) == 0, the same PsyQ wrapper shape as CdGetSector, called by the libcd read internals func_800207D4
@@ -302,3 +306,4 @@ akao_fadeCdVolumeFrom = 0x80055B38; // type:func [code] g_akaoArgs (3 words) the
 g_windows = 0x80077530; // [code] the 10 Window slots that win_open, win_closeAll and win_updateAll index
 win_get = 0x8002E43C; // type:func [code] returns &g_windows[i], SystemError(0x59, 0x53) for i >= 10
 menuList_input = 0x8002EE8C; // type:func [code] calls menuList_up/down/pageUp/pageDown with the pad bits unless the list's unk8 is set, menus ovl_32/33/37/3c pass g_padRepeat
+evt_battleTrigger = 0x8004AB7C; // type:func [runtime] docs/runtime-findings.md battle campaign 2, runs an enemy's event-script tag (0x2F turn, 0x35 hit/counter, 0x36 death, 0x37 any hit), callers btl_updateAtb when the enemy ATB fills and btl_applyCalcResult twice after every spell that hit the Malboro

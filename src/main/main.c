@@ -10045,7 +10045,7 @@ s32 func_80037D6C(s32 op) {
         r = (s16)g_gameState->unk1C->unkE;
         break;
     case 25:
-        r = (u8)func_800CA774();
+        r = (u8)btlseq_isBusy();
         break;
     case 26:
         r = g_evtMode == 4;
@@ -10069,7 +10069,7 @@ s32 func_80037D6C(s32 op) {
         if (op >= 0xC0) {
             r = func_800B7A14(op);
         } else {
-            r = func_800BE784(op);
+            r = btl_getBattleVar(op);
         }
         break;
     }
@@ -11579,12 +11579,12 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xE5: {
         s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-        func_800CA694(x, z, evt_getArg8_inline());
+        btlseq_startDirect(x, z, evt_getArg8_inline());
         return 0;
     }
     case 0x4A:
         a = evt_getArg8_inline();
-        func_800BE99C(a, evt_getArg16_inline());
+        btl_setBattleVar(a, evt_getArg16_inline());
         return 0;
     case 0x1B:
         if (evt_getArg8_inline()) {
@@ -13467,7 +13467,7 @@ s32 func_8004AB64(Unk8004AB64 *a) {
     return t - D_8007ADFC;
 }
 
-s32 func_8004AB7C(s32 op, s32 bits, s32 v, s32 w) {
+s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
     s32 r = 0;
     s32 i;
     Unk8004AB64 *o;

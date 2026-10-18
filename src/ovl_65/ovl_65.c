@@ -45,7 +45,7 @@ void func_801EF45C(void) {
     func_801EF6F8();
     func_801EF6D8();
     func_801EF814();
-    if (s->unk10 != 0 && D_800FDF30.unkB != 0) {
+    if (s->unk10 != 0 && g_btlRewards.unkB != 0) {
         evt_init(s->unk10);
         if (s->unk14 != 0) {
             func_8004BFB0();
@@ -76,7 +76,7 @@ void func_801EF5C8(void) {
     }
     g_gameState->unk1C->unk7E4 = (FileTable *)-1;
     if (g_gameState->mode == 0) {
-        func_800AD90C(0x8601, 0, 0x1E, 0, 0);
+        btl_soundCmd(0x8601, 0, 0x1E, 0, 0);
         for (i = 29; i >= 0; i--) {
             VSync(0);
         }
@@ -483,7 +483,7 @@ void func_801F0A44(void) {
     i = 0;
     D_801F7A78.unk9 = 0;
     for (; i < 4; i++) {
-        if ((D_800FDF30.unkA >> i) & 1) {
+        if ((g_btlRewards.unkA >> i) & 1) {
             if (g_gameState->unk1C->party[i] != NULL) {
                 D_801F7A78.unk14[i] = func_801F_canExp(g_gameState->unk1C->party[i]);
                 D_801F7A78.unk18[i] = func_801F_canAp(g_gameState->unk1C->party[i]);
@@ -506,22 +506,22 @@ void func_801F0C0C(void) {
     memset(rw, 0, 0x88);
     func_801F0A44();
     if (D_801F7A78.unk9 != 0) {
-        q = D_800FDF30.unk4 / D_801F7A78.unk9;
+        q = g_btlRewards.unk4 / D_801F7A78.unk9;
     } else {
         q = 0;
     }
     rw->unk0 = q;
     rw->unkC = 0;
-    rw->unk4 = D_800FDF30.unk8;
-    rw->unk7C.unk0 = D_800FDF30.unk0;
-    rw->unk8 = (func_800625F8() < 100) ? D_800FDF30.unk1C : 0xFF;
+    rw->unk4 = g_btlRewards.unk8;
+    rw->unk7C.unk0 = g_btlRewards.unk0;
+    rw->unk8 = (func_800625F8() < 100) ? g_btlRewards.unk1C : 0xFF;
     for (i = 0; i < 16; i++) {
         found = 0;
-        if (D_800FDF30.unkC[i] == 0xFF) {
+        if (g_btlRewards.unkC[i] == 0xFF) {
             continue;
         }
         for (j = 0; j < rw->unkC; j++) {
-            if (D_800FDF30.unkC[i] == rw->unk10[j][0]) {
+            if (g_btlRewards.unkC[i] == rw->unk10[j][0]) {
                 found = 1;
                 rw->unk10[j][1]++;
                 break;
@@ -531,7 +531,7 @@ void func_801F0C0C(void) {
             if (rw->unkC >= 6) {
                 return;
             }
-            rw->unk10[rw->unkC][0] = D_800FDF30.unkC[i];
+            rw->unk10[rw->unkC][0] = g_btlRewards.unkC[i];
             rw->unk10[rw->unkC][1] = 1;
             rw->unkC++;
         }
@@ -611,7 +611,7 @@ s32 func_801F1004(void) {
         ret = D_800FDF4D != 0;
     } else if (mode != 7) {
         ret = 1;
-        if (D_800FDF30.unkB != 0) {
+        if (g_btlRewards.unkB != 0) {
             ret = 2;
         }
     }
@@ -776,7 +776,7 @@ void func_801F160C(void) {
             snd_playSe(se);
         }
         D_801F7A78.unk8++;
-        if (D_800FDF30.unk0 != 0) {
+        if (g_btlRewards.unk0 != 0) {
             func_8002F514(0x6D);
         }
     }
@@ -805,7 +805,7 @@ u8 func_801F171C(Character *arg0, s32 arg1) {
     if (!func_801F_alive(arg0)) {
         return 0;
     }
-    return (D_800FDF30.unkA >> arg1) & 1;
+    return (g_btlRewards.unkA >> arg1) & 1;
 }
 
 void func_801F1774(void) {

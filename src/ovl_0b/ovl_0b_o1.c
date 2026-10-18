@@ -4,56 +4,56 @@ u8 func_800C2DF4(void) {
     return D_800FE470;
 }
 
-void func_800C2E04(void) {
-    g_btlfxEnv->unk2C = &D_800FE3B8;
-    bzero(&D_800FE3B8, 0xD0);
-    D_800FE3B8.unk60 = 0x200;
-    D_800FE3B8.unk5E = 0x200;
+void btlcam_init(void) {
+    g_btlfxEnv->unk2C = &g_btlCamera;
+    bzero(&g_btlCamera, 0xD0);
+    g_btlCamera.unk60 = 0x200;
+    g_btlCamera.unk5E = 0x200;
 }
 
-void func_800C2E4C(void) {
+void btlcam_beginEffect(void) {
     bzero(&D_800FE488, 0x64);
     bcopy(g_btlfxEnv->unkC, &D_800FE368, 0x4C);
-    D_800FE3B8.unk5C = 0;
-    D_800FE3B8.unk53 = btlfx_rand() & 1;
+    g_btlCamera.unk5C = 0;
+    g_btlCamera.unk53 = btlfx_rand() & 1;
     if (g_btlfxEnv->unk0->unk1C & 4) {
-        func_800C57A4(D_800FE368.unk44, D_800FE488.unk50);
+        btlcam_getUnitAnchors(D_800FE368.unk44, D_800FE488.unk50);
     }
-    func_800C57A4(D_800FE368.unk0, D_800FE488.unk46);
-    func_800C57A4(D_800FE368.unk4, D_800FE488.unk5A);
+    btlcam_getUnitAnchors(D_800FE368.unk0, D_800FE488.unk46);
+    btlcam_getUnitAnchors(D_800FE368.unk4, D_800FE488.unk5A);
 }
 
-void func_800C2F1C(s32 arg0) {
-    D_800FE3B8.unkB9 = 0;
-    D_800FE3B8.unk52 = 0;
-    D_800FE3B8.unk5C = 0;
+void btlcam_playScene(s32 arg0) {
+    g_btlCamera.unkB9 = 0;
+    g_btlCamera.unk52 = 0;
+    g_btlCamera.unk5C = 0;
     bzero(&D_800FE488, 0x64);
     bzero(&D_800FE368, 0x4C);
-    func_800C316C(arg0);
-    if (D_800FE3B8.unkCC != 0) {
-        func_800C57A4(D_800FE3B8.unkCC, D_800FE488.unk46);
+    btlcam_loadScript(arg0);
+    if (g_btlCamera.unkCC != 0) {
+        btlcam_getUnitAnchors(g_btlCamera.unkCC, D_800FE488.unk46);
     }
 }
 
-void func_800C2F9C(s32 arg0) {
-    D_800FE3B8.unkB9 = 1;
-    D_800FE3B8.unk52 = 0;
+void btlcam_play(s32 arg0) {
+    g_btlCamera.unkB9 = 1;
+    g_btlCamera.unk52 = 0;
     D_800FE488.unk8 = 0;
-    if (D_800FE3B8.unk5C & 2) {
-        D_800FE3B8.unk5C = 0;
+    if (g_btlCamera.unk5C & 2) {
+        g_btlCamera.unk5C = 0;
     }
     func_800C36D0();
-    func_800C316C(arg0);
+    btlcam_loadScript(arg0);
 }
 
-void func_800C2FFC(s32 arg0) {
+void btlcam_playSeq(s32 arg0) {
     bzero(&D_800FE488, 0x64);
-    D_800FE3B8.unk53 = btlfx_rand() & 1;
-    func_800C57A4(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
-    func_800C57A4((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
-    func_800C2F9C(arg0);
-    D_800FE3B8.unkB9 = 2;
-    D_800FE3B8.unk5C = 0;
+    g_btlCamera.unk53 = btlfx_rand() & 1;
+    btlcam_getUnitAnchors(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
+    btlcam_getUnitAnchors((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
+    btlcam_play(arg0);
+    g_btlCamera.unkB9 = 2;
+    g_btlCamera.unk5C = 0;
 }
 
 void func_800C30B8(void) {
@@ -63,17 +63,17 @@ void func_800C30B8(void) {
     }
 }
 
-void func_800C30F4(void) {
+void btlcam_endEffect(void) {
     if (D_800FE488.unk45 == 0) {
-        D_800FE3B8.unkA8 = D_800FE488.unk18;
-        func_800C316C(func_800CA2B0(1));
-        D_800FE3B8.unk5E = D_800FE3B8.unk60;
+        g_btlCamera.unkA8 = D_800FE488.unk18;
+        btlcam_loadScript(func_800CA2B0(1));
+        g_btlCamera.unk5E = g_btlCamera.unk60;
     }
-    D_800FE3B8.unk5C = 1;
+    g_btlCamera.unk5C = 1;
     D_800FE488.unk45 = 0;
 }
 
-void func_800C316C(s32 arg) {
+void btlcam_loadScript(s32 arg) {
     s16 *arg0 = (s16 *)arg;
     u16 *p[4];
     s32 f0;
@@ -102,40 +102,40 @@ void func_800C316C(s32 arg) {
     data = (u8 *)arg0 + *q;
     for (i = 0; i < 4; i++) {
         if (flags & 1) {
-            bcopy(data, &D_800FE3B8.unk0[i], 6);
+            bcopy(data, &g_btlCamera.unk0[i], 6);
             data += 6;
         } else {
-            D_800FE3B8.unk0[i].vx = 0;
-            D_800FE3B8.unk0[i].vy = 0;
-            D_800FE3B8.unk0[i].vz = 0;
+            g_btlCamera.unk0[i].vx = 0;
+            g_btlCamera.unk0[i].vy = 0;
+            g_btlCamera.unk0[i].vz = 0;
         }
-        D_800FE3B8.unk30[i].vx = 0;
-        D_800FE3B8.unk30[i].vy = 0;
-        D_800FE3B8.unk30[i].vz = 0;
+        g_btlCamera.unk30[i].vx = 0;
+        g_btlCamera.unk30[i].vy = 0;
+        g_btlCamera.unk30[i].vz = 0;
         flags >>= 1;
     }
     if (p[3] != NULL) {
         t = p[3];
         switch (*t >> 14) {
         case 0:
-            D_800FE3B8.unkA8 = (*t >> 12) & 3;
+            g_btlCamera.unkA8 = (*t >> 12) & 3;
             break;
         case 1:
             r = btlfx_randRange(0, 9);
             if (!(*t & 0x3000)) {
                 if (r < ((*t >> 10) & 3) + 5) {
-                    D_800FE3B8.unkA8 = 0;
+                    g_btlCamera.unkA8 = 0;
                 } else {
-                    D_800FE3B8.unkA8 = 1;
+                    g_btlCamera.unkA8 = 1;
                 }
             } else {
                 n = ((*t >> 10) & 3) + 3;
                 if (r < n) {
-                    D_800FE3B8.unkA8 = 0;
+                    g_btlCamera.unkA8 = 0;
                 } else if (r < n + 3) {
-                    D_800FE3B8.unkA8 = 1;
+                    g_btlCamera.unkA8 = 1;
                 } else {
-                    D_800FE3B8.unkA8 = 2;
+                    g_btlCamera.unkA8 = 2;
                 }
             }
             break;
@@ -144,14 +144,14 @@ void func_800C316C(s32 arg) {
             case 0:
                 n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                 if (n == 2) {
-                    D_800FE3B8.unkA8 = n;
+                    g_btlCamera.unkA8 = n;
                 } else {
-                    D_800FE3B8.unkA8 = btlfx_randRange(0, 1);
+                    g_btlCamera.unkA8 = btlfx_randRange(0, 1);
                 }
-                D_800FE488.unk18 = D_800FE3B8.unkA8;
+                D_800FE488.unk18 = g_btlCamera.unkA8;
                 break;
             case 1:
-                D_800FE3B8.unkA8 = g_gameState->unk1C->unk8E4.battle->unk131C;
+                g_btlCamera.unkA8 = g_gameState->unk1C->unk8E4.battle->unk131C;
                 break;
             case 2:
                 w = D_800FE368.unk4;
@@ -163,28 +163,28 @@ void func_800C316C(s32 arg) {
                     n = m->unkA;
                 }
                 if (n == 0x4D7 || n >= 0xBB8) {
-                    D_800FE3B8.unkA8 = 2;
+                    g_btlCamera.unkA8 = 2;
                 } else if (n < 0x65) {
-                    D_800FE3B8.unkA8 = 0;
+                    g_btlCamera.unkA8 = 0;
                 } else {
-                    D_800FE3B8.unkA8 = 1;
+                    g_btlCamera.unkA8 = 1;
                     if (r < 0x159) {
-                        D_800FE3B8.unkA8 = 0;
+                        g_btlCamera.unkA8 = 0;
                     }
                     if (r >= 0x3E9) {
-                        D_800FE3B8.unkA8 = 2;
+                        g_btlCamera.unkA8 = 2;
                     }
                 }
                 break;
             case 3:
-                if (D_800FE3B8.unkCC == NULL) {
-                    D_800FE3B8.unkA8 = 0;
-                } else if ((D_800FE3B8.unkCC->status & 0x40001103) || !((D_800FDF30.unkA >> ((u8)D_800FE3B8.unkCC->unk68 >> 5)) & 1)) {
-                    D_800FE3B8.unkA8 = 0;
+                if (g_btlCamera.unkCC == NULL) {
+                    g_btlCamera.unkA8 = 0;
+                } else if ((g_btlCamera.unkCC->status & 0x40001103) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->unk68 >> 5)) & 1)) {
+                    g_btlCamera.unkA8 = 0;
                 } else {
                     n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
                     if (n == 2) {
-                        D_800FE3B8.unkA8 = n;
+                        g_btlCamera.unkA8 = n;
                     } else {
                         r = 0;
                         for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
@@ -193,15 +193,15 @@ void func_800C316C(s32 arg) {
                             }
                         }
                         if (r < 3) {
-                            D_800FE3B8.unkA8 = btlfx_randRange(0, 1) + 1;
+                            g_btlCamera.unkA8 = btlfx_randRange(0, 1) + 1;
                         } else {
                             r = btlfx_randRange(0, 5);
-                            D_800FE3B8.unkA8 = 0;
+                            g_btlCamera.unkA8 = 0;
                             if (r == 4) {
-                                D_800FE3B8.unkA8 = 1;
+                                g_btlCamera.unkA8 = 1;
                             }
                             if (r == 5) {
-                                D_800FE3B8.unkA8 = 2;
+                                g_btlCamera.unkA8 = 2;
                             }
                         }
                     }
@@ -210,19 +210,19 @@ void func_800C316C(s32 arg) {
             }
             break;
         case 3:
-            D_800FE3B8.unkA8 = D_800FE3B8.unkB8 & 3;
-            if (D_800FE3B8.unkA8 == 2) {
-                D_800FE3B8.unkA8 = 0;
+            g_btlCamera.unkA8 = g_btlCamera.unkB8 & 3;
+            if (g_btlCamera.unkA8 == 2) {
+                g_btlCamera.unkA8 = 0;
             }
-            if (D_800FE3B8.unkA8 == 3) {
-                D_800FE3B8.unkA8 = 2;
+            if (g_btlCamera.unkA8 == 3) {
+                g_btlCamera.unkA8 = 2;
             }
             break;
         }
     }
-    D_800FE488.unk0 = (u8 *)p[D_800FE3B8.unkA8];
+    D_800FE488.unk0 = (u8 *)p[g_btlCamera.unkA8];
     if (f0 & 0x200) {
-        D_800FE3B8.unkB8 = (f0 >> (D_800FE3B8.unkA8 * 2 + 10)) & 3;
+        g_btlCamera.unkB8 = (f0 >> (g_btlCamera.unkA8 * 2 + 10)) & 3;
     }
 }
 
@@ -230,22 +230,22 @@ void func_800C36D0(void) {
     s32 i;
     s32 t;
     for (i = 0; i < 2; i++) {
-        t = D_800FE3B8.unk68[i].unk1D != 0;
-        if (t && (u32)(D_800FE3B8.unk68[i].unk18 - 2) < 2) {
-            func_800C416C(1, &D_800FE3B8.unk68[i], D_800FE3B8.unk68[i].unk0[1].unk0);
-            D_800FE3B8.unk68[i].unk18 = 1;
+        t = g_btlCamera.unk68[i].unk1D != 0;
+        if (t && (u32)(g_btlCamera.unk68[i].unk18 - 2) < 2) {
+            func_800C416C(1, &g_btlCamera.unk68[i], g_btlCamera.unk68[i].unk0[1].unk0);
+            g_btlCamera.unk68[i].unk18 = 1;
         }
     }
 }
 
-void func_800C3770(void) {
-    if (D_800FE3B8.unk5D == 0 && func_800C37BC() != 0) {
-        func_800C37BC();
+void btlcam_update(void) {
+    if (g_btlCamera.unk5D == 0 && btlcam_step() != 0) {
+        btlcam_step();
     }
-    D_800FE3B8.unk5D = 0;
+    g_btlCamera.unk5D = 0;
 }
 
-s32 func_800C37BC(void) {
+s32 btlcam_step(void) {
     SVECTOR sv;
     SVECTOR sv2;
     s32 n;
@@ -267,32 +267,32 @@ s32 func_800C37BC(void) {
                 if (D_800FE488.unk4 != (p[0] & 0x3FF)) {
                     break;
                 }
-                if (!(D_800FE3B8.unk5C & 1)) {
-                    D_800FE3B8.unk5C |= 1;
-                    D_800FE3B8.unk5E = 0x200;
+                if (!(g_btlCamera.unk5C & 1)) {
+                    g_btlCamera.unk5C |= 1;
+                    g_btlCamera.unk5E = 0x200;
                 }
                 flags = p[1] | ((p[0] >> 10) << 16);
                 D_800FE488.unk0 += 4;
                 for (i = 0; i < 2; i++) {
                     m = (flags >> (i * 3)) & 7;
-                    if ((u32)(m - 2) < 2 && (u32)(D_800FE3B8.unk68[i].unk18 - 2) < 2 && D_800FE3B8.unk68[i].unk1D != 0) {
-                        func_800C416C(1, &D_800FE3B8.unk68[i], D_800FE3B8.unk68[i].unk0[1].unk0);
+                    if ((u32)(m - 2) < 2 && (u32)(g_btlCamera.unk68[i].unk18 - 2) < 2 && g_btlCamera.unk68[i].unk1D != 0) {
+                        func_800C416C(1, &g_btlCamera.unk68[i], g_btlCamera.unk68[i].unk0[1].unk0);
                     }
-                    if (m > 0 && D_800FE3B8.unk68[i].unk1B == 0) {
-                        D_800FE3B8.unk68[i].unk18 = m;
+                    if (m > 0 && g_btlCamera.unk68[i].unk1B == 0) {
+                        g_btlCamera.unk68[i].unk18 = m;
                     }
                     if ((u32)(m - 1) < 3) {
-                        func_800C3F78(&D_800FE3B8.unk68[i], (Unk800C3F78 *)D_800FE488.unk0);
+                        func_800C3F78(&g_btlCamera.unk68[i], (Unk800C3F78 *)D_800FE488.unk0);
                         D_800FE488.unk0 += 6;
                     }
                     if ((u32)(m - 2) < 3) {
-                        func_800C412C(&D_800FE3B8.unk68[i], D_800FE488.unk0);
+                        func_800C412C(&g_btlCamera.unk68[i], D_800FE488.unk0);
                         if (m == 4) {
-                            D_800FE3B8.unk68[i].unk0[1].unk0[2] = D_800FE488.unk0[1] << 5;
+                            g_btlCamera.unk68[i].unk0[1].unk0[2] = D_800FE488.unk0[1] << 5;
                         }
                         D_800FE488.unk0 += 4;
                     }
-                    D_800FE3B8.unk68[i].unk1B = 0;
+                    g_btlCamera.unk68[i].unk1B = 0;
                 }
                 if (flags & 0x40) {
                     D_800FE488.unk8 = *D_800FE488.unk0;
@@ -302,23 +302,23 @@ s32 func_800C37BC(void) {
                     D_800FE488.unk44 = 1;
                 }
                 if (flags & 0x100100) {
-                    D_800FE3B8.unk52 = 1;
+                    g_btlCamera.unk52 = 1;
                 }
                 if (flags & 0x200) {
                     D_800FE488.unk10 = *D_800FE488.unk0;
                     D_800FE488.unk0 += 2;
                 }
                 if (flags & 0x400) {
-                    D_800FE3B8.unkAC = *D_800FE488.unk0;
+                    g_btlCamera.unkAC = *D_800FE488.unk0;
                     D_800FE488.unk0 += 2;
                 }
                 if (flags & 0x800) {
                     D_800FE488.unk30 = D_800FE488.unk34 = D_800FE488.unk0[0];
                     D_800FE488.unk38 = D_800FE488.unk0[1];
-                    D_800FE488.unk3C = D_800FE3B8.unk5E;
+                    D_800FE488.unk3C = g_btlCamera.unk5E;
                     v = ((u16 *)D_800FE488.unk0)[1];
                     if (v == 0) {
-                        v = D_800FE3B8.unk60;
+                        v = g_btlCamera.unk60;
                     }
                     D_800FE488.unk40 = v;
                     D_800FE488.unk0 += 4;
@@ -331,12 +331,12 @@ s32 func_800C37BC(void) {
                     D_800FE488.unk0 += 4;
                 }
                 if (flags & 0x2000) {
-                    D_800FE3B8.unk53 = D_800FE3B8.unkA8;
+                    g_btlCamera.unk53 = g_btlCamera.unkA8;
                 }
                 if (flags & 0x4000) {
                     c = *D_800FE488.unk0;
                     if (c == 1) {
-                        D_800FE3B8.unk67 = c;
+                        g_btlCamera.unk67 = c;
                     } else {
                         g_gameState->unk1C->unk8E4.battle->unkD81++;
                     }
@@ -345,15 +345,15 @@ s32 func_800C37BC(void) {
                 if (flags & 0x8000) {
                     func_800C36D0();
                     for (j = 0; j < 2; j++) {
-                        D_800FE3B8.unk68[j].unk1B = 1;
-                        D_800FE3B8.unk68[j].unk18 = (D_800FE488.unk0[0] >> 5) & 3;
-                        D_800FE3B8.unk68[j].unk1C = D_800FE3B8.unk68[j].unk1D = D_800FE488.unk0[1];
-                        D_800FE3B8.unk68[j].unk1A = D_800FE488.unk0[2];
-                        D_800FE3B8.unk68[j].unk19 = 0;
+                        g_btlCamera.unk68[j].unk1B = 1;
+                        g_btlCamera.unk68[j].unk18 = (D_800FE488.unk0[0] >> 5) & 3;
+                        g_btlCamera.unk68[j].unk1C = g_btlCamera.unk68[j].unk1D = D_800FE488.unk0[1];
+                        g_btlCamera.unk68[j].unk1A = D_800FE488.unk0[2];
+                        g_btlCamera.unk68[j].unk19 = 0;
                     }
-                    D_800FE3B8.unkA8 = D_800FE488.unk18;
-                    func_800C316C(func_800CA2B0(1));
-                    D_800FE3B8.unk5E = D_800FE3B8.unk60;
+                    g_btlCamera.unkA8 = D_800FE488.unk18;
+                    btlcam_loadScript(func_800CA2B0(1));
+                    g_btlCamera.unk5E = g_btlCamera.unk60;
                     return 1;
                 }
                 if (flags & 0x80000) {
@@ -364,44 +364,44 @@ s32 func_800C37BC(void) {
                 D_800FE488.unk0 = NULL;
             }
         }
-        if (D_800FE3B8.unk68[0].unk1D != 0) {
-            D_800FE3B8.unk68[0].unk1D--;
+        if (g_btlCamera.unk68[0].unk1D != 0) {
+            g_btlCamera.unk68[0].unk1D--;
         }
-        if (D_800FE3B8.unk68[1].unk1D != 0) {
-            D_800FE3B8.unk68[1].unk1D--;
+        if (g_btlCamera.unk68[1].unk1D != 0) {
+            g_btlCamera.unk68[1].unk1D--;
         }
     }
-    if (D_800FE3B8.unk68[0].unk18 != 0 && D_800FE3B8.unk68[1].unk18 != 0) {
-        D_800FE3B8.unk66 = 0;
-        D_800FE3B8.unkBB = 0;
-        func_800C416C(0, &D_800FE3B8.unk68[0], &D_800FE3B8.unk54.vx);
-        func_800C416C(0, &D_800FE3B8.unk68[1], &sv.vx);
+    if (g_btlCamera.unk68[0].unk18 != 0 && g_btlCamera.unk68[1].unk18 != 0) {
+        g_btlCamera.unk66 = 0;
+        g_btlCamera.unkBB = 0;
+        func_800C416C(0, &g_btlCamera.unk68[0], &g_btlCamera.unk54.vx);
+        func_800C416C(0, &g_btlCamera.unk68[1], &sv.vx);
         if (D_800FE488.unk44 == 1) {
             D_800FE488.unk44 = 2;
-            bcopy(&D_800FE3B8.unk54, &D_800FE3B8.unk0[4], 8);
-            bcopy(&sv, &D_800FE3B8.unk0[5], 8);
+            bcopy(&g_btlCamera.unk54, &g_btlCamera.unk0[4], 8);
+            bcopy(&sv, &g_btlCamera.unk0[5], 8);
         }
-        func_800C5530(&D_800FE3B8.unk54, &sv);
-        func_800C4A3C(&D_800FE3B8.unk54.vx, &sv.vx);
-        func_800C493C(&sv.vx);
-        func_800C52B4(&g_gameState->unk1C->unk18, &D_800FE3B8.unk54, &sv);
-        D_800FE3B8.unk50 = -ratan2(D_800FE3B8.unk54.vx - sv.vx, D_800FE3B8.unk54.vz - sv.vz) - 0x800;
+        btlcam_applyTargetView(&g_btlCamera.unk54, &sv);
+        btlcam_applySway(&g_btlCamera.unk54.vx, &sv.vx);
+        btlcam_applyShake(&sv.vx);
+        btlcam_lookAt(&g_gameState->unk1C->unk18, &g_btlCamera.unk54, &sv);
+        g_btlCamera.unk50 = -ratan2(g_btlCamera.unk54.vx - sv.vx, g_btlCamera.unk54.vz - sv.vz) - 0x800;
     }
     if (D_800FE488.unk34 != 0) {
         D_800FE488.unk34--;
         r = btlfx_lerpRatio(D_800FE488.unk40, D_800FE488.unk3C, D_800FE488.unk34, D_800FE488.unk30);
         if (D_800FE488.unk38 & 1) {
-            D_800FE3B8.unk60 = r;
+            g_btlCamera.unk60 = r;
         }
         if (D_800FE488.unk38 & 2) {
-            D_800FE3B8.unk5E = r;
+            g_btlCamera.unk5E = r;
         }
     }
-    if (D_800FE3B8.unk66 == 0) {
-        g_gameState->unk1C->unkA = D_800FE3B8.unk5E;
+    if (g_btlCamera.unk66 == 0) {
+        g_gameState->unk1C->unkA = g_btlCamera.unk5E;
     }
     SetGeomScreen(g_gameState->unk1C->unkA);
-    e = D_800FE3B8.unk67;
+    e = g_btlCamera.unk67;
     if (e == 1) {
         b = g_gameState->unk1C->unk8E4.battle;
         if ((b->unkD85 & 7) == 7) {
@@ -410,10 +410,10 @@ s32 func_800C37BC(void) {
             } else {
                 g_gameState->unk1C->unk8E4.battle->unkD80 = 3;
             }
-            D_800FE3B8.unk67 = 0;
+            g_btlCamera.unk67 = 0;
         }
     }
-    if (D_800FE488.unk4 < 0x3FF && D_800FE3B8.unk52 == 0) {
+    if (D_800FE488.unk4 < 0x3FF && g_btlCamera.unk52 == 0) {
         D_800FE488.unk4++;
     }
     return 0;
@@ -603,22 +603,22 @@ void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
         arg2[2] = 0;
         arg2[3] = out.vz;
         for (i = 0; i < 4; i++) {
-            arg2[0] += (D_800FE3B8.unk0[i].vx * coef[i]) >> 12;
-            arg2[1] += (D_800FE3B8.unk0[i].vy * coef[i]) >> 12;
-            arg2[2] += (D_800FE3B8.unk0[i].vz * coef[i]) >> 12;
+            arg2[0] += (g_btlCamera.unk0[i].vx * coef[i]) >> 12;
+            arg2[1] += (g_btlCamera.unk0[i].vy * coef[i]) >> 12;
+            arg2[2] += (g_btlCamera.unk0[i].vz * coef[i]) >> 12;
         }
         break;
     default:
         func_800C4B9C(arg1->unk0[1].unk8, arg1->unk0[1].unk9, &v[1].vx, arg2);
         arg2[3] = v[1].vz;
         if ((u32)((arg1->unk0[1].unk8 & 0x1F) - 0x19) < 2) {
-            D_800FE3B8.unkBB++;
+            g_btlCamera.unkBB++;
         }
         break;
     }
 }
 
-void func_800C493C(s16 *arg0) {
+void btlcam_applyShake(s16 *arg0) {
     s32 t;
     if (D_800FE488.unk24 != 0) {
         D_800FE488.unk24--;
@@ -635,7 +635,7 @@ void func_800C493C(s16 *arg0) {
     }
 }
 
-void func_800C4A3C(s16 *arg0, s16 *arg1) {
+void btlcam_applySway(s16 *arg0, s16 *arg1) {
     s32 dx = arg0[0] - arg1[0];
     s32 dz = arg0[2] - arg1[2];
     s32 d = btlfx_sqrt(dx * dx + dz * dz, 0xF);
@@ -643,9 +643,9 @@ void func_800C4A3C(s16 *arg0, s16 *arg1) {
     if (D_800FE488.unk10 != 0) {
         v = ((math_sin(D_800FE488.unk14 << 6) * d) >> 13) * (D_800FE488.unk10 & 0xF0) >> 11;
         D_800FE488.unk14 += D_800FE488.unk10 & 0xF;
-    } else if (D_800FE3B8.unkAC != 0) {
-        v = ((math_sin(D_800FE3B8.unkB0 << 6) * d) >> 13) * (D_800FE3B8.unkAC & 0xF0) >> 11;
-        D_800FE3B8.unkB0 += D_800FE3B8.unkAC & 0xF;
+    } else if (g_btlCamera.unkAC != 0) {
+        v = ((math_sin(g_btlCamera.unkB0 << 6) * d) >> 13) * (g_btlCamera.unkAC & 0xF0) >> 11;
+        g_btlCamera.unkB0 += g_btlCamera.unkAC & 0xF;
     }
     arg0[1] += v;
     arg1[1] += v;
@@ -719,13 +719,13 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n >= 0x15) {
         n -= 0x15;
-        arg1[0] = D_800FE3B8.unk0[n].vx;
-        arg1[1] = D_800FE3B8.unk0[n].vy;
-        arg1[2] = D_800FE3B8.unk0[n].vz;
+        arg1[0] = g_btlCamera.unk0[n].vx;
+        arg1[1] = g_btlCamera.unk0[n].vy;
+        arg1[2] = g_btlCamera.unk0[n].vz;
         if (n < 4) {
-            arg2[0] = D_800FE3B8.unk30[n].vx;
-            arg2[1] = D_800FE3B8.unk30[n].vy;
-            arg2[2] = D_800FE3B8.unk30[n].vz;
+            arg2[0] = g_btlCamera.unk30[n].vx;
+            arg2[1] = g_btlCamera.unk30[n].vy;
+            arg2[2] = g_btlCamera.unk30[n].vz;
         }
         return;
     }
@@ -741,10 +741,10 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         u = D_800FE368.unk0;
     }
     if (n == 0xA) {
-        if (D_800FE3B8.unkCC == NULL) {
+        if (g_btlCamera.unkCC == NULL) {
             return;
         }
-        u = D_800FE3B8.unkCC;
+        u = g_btlCamera.unkCC;
     }
     if (n == 0xC) {
         u = g_gameState->unk1C->unk8E4.battle->unk11C4.unk148;
@@ -817,7 +817,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
 }
 
-void func_800C52B4(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2) {
+void btlcam_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2) {
     VECTOR d;
     VECTOR x;
     VECTOR y;
@@ -872,45 +872,45 @@ void func_800C52B4(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2) {
     CompMatrix(&m, arg0, arg0);
 }
 
-void func_800C5530(SVECTOR *arg0, SVECTOR *arg1) {
+void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
     s32 a, b;
     if (D_800FE488.unkC != 0) {
         D_800FE488.unkC--;
     }
-    if (D_800FE3B8.unkB4 != 0) {
-        D_800FE3B8.unkB4--;
+    if (g_btlCamera.unkB4 != 0) {
+        g_btlCamera.unkB4--;
     }
     if ((u8)func_800EA094() != 1 && ((u8)func_800EA004() || D_800FE488.unkC != 0)) {
-        if (D_800FE3B8.unkBA != 1) {
-            D_800FE3B8.unkBA = 1;
-            D_800FE3B8.unkB4 = 2;
+        if (g_btlCamera.unkBA != 1) {
+            g_btlCamera.unkBA = 1;
+            g_btlCamera.unkB4 = 2;
             D_800FE488.unkC = 0;
-            bcopy(arg0, &D_800FE3B8.unkBC, 8);
-            bcopy(arg1, &D_800FE3B8.unkC4, 8);
+            bcopy(arg0, &g_btlCamera.unkBC, 8);
+            bcopy(arg1, &g_btlCamera.unkC4, 8);
         }
-        if (D_800FE3B8.unkBA == 1 && ((D_800FE3B8.unkB9 == 1 && !(g_btlfxEnv->unk0->unk1C & 8)) || D_800FE3B8.unkB9 == 2)) {
-            if (D_800FE3B8.unkBB != 2) {
-                if (D_800FE3B8.unk65 != 0 || D_800FE3B8.unkB4 == 0) {
-                    bcopy(&D_800FE3B8.unk0[4], arg0, 8);
-                    bcopy(&D_800FE3B8.unk0[5], arg1, 8);
-                    D_800FE3B8.unkBB = 2;
+        if (g_btlCamera.unkBA == 1 && ((g_btlCamera.unkB9 == 1 && !(g_btlfxEnv->unk0->unk1C & 8)) || g_btlCamera.unkB9 == 2)) {
+            if (g_btlCamera.unkBB != 2) {
+                if (g_btlCamera.unk65 != 0 || g_btlCamera.unkB4 == 0) {
+                    bcopy(&g_btlCamera.unk0[4], arg0, 8);
+                    bcopy(&g_btlCamera.unk0[5], arg1, 8);
+                    g_btlCamera.unkBB = 2;
                 } else {
-                    a = D_800FE3B8.unkB4 * 0x555;
+                    a = g_btlCamera.unkB4 * 0x555;
                     b = 0x1000 - a;
-                    LoadAverageShort12(&D_800FE3B8.unkBC, &D_800FE3B8.unk0[4], a, b, arg0);
-                    LoadAverageShort12(&D_800FE3B8.unkC4, &D_800FE3B8.unk0[5], a, b, arg1);
+                    LoadAverageShort12(&g_btlCamera.unkBC, &g_btlCamera.unk0[4], a, b, arg0);
+                    LoadAverageShort12(&g_btlCamera.unkC4, &g_btlCamera.unk0[5], a, b, arg1);
                 }
             }
-            g_gameState->unk1C->unkA = D_800FE3B8.unk60;
-            D_800FE3B8.unk66 = 1;
+            g_gameState->unk1C->unkA = g_btlCamera.unk60;
+            g_btlCamera.unk66 = 1;
         }
     } else {
-        D_800FE3B8.unkBA = 0;
+        g_btlCamera.unkBA = 0;
     }
-    D_800FE3B8.unk65 = D_800FE3B8.unkBB;
+    g_btlCamera.unk65 = g_btlCamera.unkBB;
 }
 
-void func_800C57A4(BtlUnit *arg0, s16 *arg1) {
+void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
     s32 i;
     if (arg0->unk68 & 1) {
         s32 h = arg0->unk9C->unk8->unk8;

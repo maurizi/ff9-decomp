@@ -632,7 +632,8 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_800B1764 → btl_processCmdQueue (`(Battle *)`): takes the first runnable command from Battle.cmdQueue into
   curCmd (btl_removeCmd) and steps it through Battle.unk11BA phases (checks, btl_payMpCost, execution). Coverage:
   every tick; the queue functions in the action runs follow from it. medium-high.
-- func_800B05C0 → btl_drawScene: camera (func_800CA7CC), btlbg_draw, effects (func_800E3EEC), btl_drawPopups,
+- func_800B05C0 → btl_drawScene: enemy battle sequences (func_800CA7CC = btlseq_update; campaign 2 corrected the
+  earlier "camera" reading), btlbg_draw, effects (func_800E3EEC), btl_drawPopups,
   func_800F4E70. high (call structure + the ablations of its callees).
 
 ## btl_calcCmd formula steps  (status: applied except btl_rollSummonLength? (low); code-derived; runtime = which runs execute them)
@@ -742,7 +743,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   Bits 0x8000000|0x80000000 are the two shown with a countdown number (func_800CD210).
 - confidence: high for the traced bits, medium for the code-derived ones (0x4 unidentified).
 
-## Battle sequence (enemy action script) interpreter  (status: proposed)
+## Battle sequence (enemy action script) interpreter  (status: applied except btlseq_opReleaseEffect, btlseq_opSetStance (low-medium))
 - binary ovl_0b. Correction to campaign 1: func_800CA7CC is not camera code. It runs up to four sequence slots
   (Battle11C4.unk68[4], BtlScript) and dispatches one-byte opcodes through D_800F5858[35] = {onEnter, step} pairs.
 - func_800CA7CC → btlseq_update (`void (void)`): once per battle tick from btl_drawScene+0x3c (375 calls / 1500 frames
@@ -793,7 +794,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   - op19 func_800CBEB4 → btlseq_opDelayedSound (btl_playUnitSound after a delay). medium.
   - op1D func_800CBF28 → btlseq_opFadeOut (btl_setUnitFade). medium.
 
-## Command execution phases  (status: proposed)
+## Command execution phases  (status: applied)
 - binary ovl_0b; btl_processCmdQueue steps Battle.curCmd through unk11BA = 0 check, 1 start effect, 2 wait, 3 finish.
 - func_800C28F4 → btl_startCmdEffect (`(BtlCmd *)`): phase 1, once per action in every action run (caller
   btl_processCmdQueue+0x328). Picks the effect: Attack 0x64 + weapon type, Steal per character, Item/Throw by item
@@ -828,7 +829,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   Defend and Change). high. func_800EA0B4 → btl_getAbilityName, func_800CD75C → btl_getItemName,
   func_800CD70C → btl_getElementName (bit index → text), func_800CD78C → btl_getUnitName. medium-high.
 
-## Status application, ticks and looks  (status: proposed)
+## Status application, ticks and looks  (status: applied except btl_makeGreyCluts (low-medium))
 - func_800C0ACC → btl_addStatuses (`u32 (BtlUnit *, u32 mask)`): btl_addStatus per bit, keeps the best result. Runtime:
   every traced status spell adds its bit from func_800C0ACC+0x48; called from btl_rollAbilityStatus and func_800BACB4.
   high.
@@ -864,7 +865,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_800BC21C → btl_updateUnitModel (`(BtlUnit *, s32 *ot)`): per unit per tick from btl_updateCombat, btl_victory
   and func_800AF578 (rotation/translation matrix, motion end handling). medium.
 
-## Ability formula steps (btl_calcCmd)  (status: proposed)
+## Ability formula steps (btl_calcCmd)  (status: applied)
 - binary ovl_0b, `(BtlCalc *)` unless noted. Runtime = runs whose coverage contains the function.
 - func_800B8664 → btl_rollStatusHit (hit % then evade %, else miss flag): every s_* run. high.
 - func_800B9AFC → btl_initStatusHitRate (level + accuracy + magic/4 - target level; evade = magic evade): every s_* run.
@@ -890,7 +891,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_800B9A5C → btl_setDrainFlags, func_800B9CDC → btl_checkLevelMultiple (LV-n spells), func_800B9D6C →
   btl_checkTargetIsPlayer, func_800BAF3C → btl_markTrouble (target Trouble 0x20 → popup flag 0x100). medium (code).
 
-## Escape, rewards, end of battle, enemy AI hooks  (status: proposed)
+## Escape, rewards, end of battle, enemy AI hooks  (status: applied)
 - func_800C12CC → btl_addEnemyRewards (exp, gil, item drops 1/256, 32/256, 96/256, card): runtime victory only, from
   btl_updateKo+0x22c when the Malboro died. high. D_800FDF30 → g_btlRewards. medium. func_800C1594 →
   btl_clearRewards, func_800C1524 → btl_initState. medium.
@@ -917,7 +918,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - Scan/Detect: func_800CD808 → btl_startScan, func_800CD83C → btl_updateScan (LV, HP/MP, weakness lines),
   func_800CDC68 → btl_startDetect, func_800CDD68 → btl_updateDetect. medium (code; runs planned).
 
-## Battle sound  (status: proposed)
+## Battle sound  (status: applied except btl_setUnitBrightness (low-medium))
 - func_800AD90C → btl_soundCmd (`s32 (s32 op, s32 id, s32, s32 pan, s32 vol)`): the battle's GameData.unk83C sound hook
   (music 0/7, 0xC streams, 0xD000 sound effects); runtime: menu snd_playSe reaches it through the hook (caller
   snd_playSe+0x38). medium-high.
@@ -927,7 +928,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
 - func_800C24E8 → btl_setUnitFade (`(BtlUnit *, s32 level)`): 17 calls while the Malboro faded out. high.
 - func_800C1A8C → btl_setUnitBrightness. low-medium.
 
-## Effect system (spell/summon effects)  (status: proposed)
+## Effect system (spell/summon effects)  (status: applied)
 - binary ovl_0b. An effect id starts a 3-byte-opcode script (directory at 0x801E7700) run by an interpreter that spawns
   "tasks" (up to 11, callbacks (mode 0 size query, 1 start, 2 step)); opcodes < 0x20 are control, 0x20-0x2F resident
   ops (D_800F8D10), 0x50-0x7F unit/choreography ops (D_800F72E0), >= 0x80 ops exported by the CD-loaded module.
@@ -997,7 +998,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   g_btlfxTasks) that the CD-loaded effect modules call; runtime: functions whose recorded callers are inside the module
   area (Hi_DrawEffModel, btlfx_poolSpawn, btlfx_getFileData, func_800D3030, ...) are all in this table. medium-high.
 
-## Battle camera  (status: proposed)
+## Battle camera  (status: applied)
 - binary ovl_0b (ovl_0b_o1.c). func_800C3770 → btlcam_update: first call of btl_update every tick; func_800C37BC →
   btlcam_step builds eye/target, applies func_800C5530 → btlcam_applyTargetView (target-selection view),
   func_800C4A3C → btlcam_applySway, func_800C493C → btlcam_applyShake and func_800C52B4 → btlcam_lookAt (view matrix
@@ -1008,7 +1009,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   btlcam_beginEffect (runtime: from btlfx_runScript), func_800C30F4 → btlcam_endEffect, func_800C57A4 →
   btlcam_getUnitAnchors. medium. D_800FE3B8 → g_btlCamera. medium.
 
-## Battle setup (code)  (status: proposed)
+## Battle setup (code)  (status: applied)
 - No battle-entry coverage yet (entry.py prepared). From code: func_800BAFEC → btl_initParty, func_800BB4A0 →
   btl_initPartyUnit (`(Character *, BtlUnit *, u16 slot, u16 n)`), func_800BB1F4 → btl_initEnemies, func_800BBD3C →
   btl_resetUnit, func_800BBF5C → btl_initWeapon, func_800BC0D0 → btl_initEquipElements, func_800C9EE0 →
