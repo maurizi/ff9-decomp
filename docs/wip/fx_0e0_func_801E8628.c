@@ -1,7 +1,6 @@
-/* Draft of fx_0e0 func_801E8628. Status: 16 aligned mismatches, all registers match: in case 2 the original sets
- * the Hi_DrawEffModel argument registers a0/a1/a2 one load later than ours (its lhu 0x18 load delay stays a nop),
- * and case 4 computes frame << 6 one slot earlier. A do {} while (0) after o->unk14.vz -= 0x40 fixes case 2 only
- * (15). */
+/* Draft of fx_0e0 func_801E8628. Status: 9 aligned mismatches, one instruction: in case 4 the original computes
+ * frame << 6 (the math_cos argument) one load earlier (after lh 0xE(s1) instead of lh 0x10(s1)). Registers all
+ * match; case 2 needed the fresh x1 = t >> 1 (a reused t >>= 1 is hoisted into the draw call's delay slot). */
 #include "fxmod/fx_0e0.h"
 
 typedef struct {
@@ -45,6 +44,7 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *o, Unk800F78A4 *env, Unk80100C78Entry *ent
     s32 g;
     s32 i;
     s32 f;
+    s32 x1;
     Pool6CEntry *e;
 
     if (mode == 1) {
@@ -156,10 +156,10 @@ s32 func_801E8628(s32 mode, Fx0e0Obj *o, Unk800F78A4 *env, Unk80100C78Entry *ent
         pos.vy = o->unkC.vy;
         pos.vz = o->unkC.vz;
         ex->Hi_DrawEffModel(&o->unk14, &pos, (s32)&scale, inst->unk70);
-        t >>= 1;
-        r = (ex->math_sin(t) >> 5) - 0x80;
-        g = (ex->math_sin(t) >> 5) - 0x80;
-        ex->Hi_ModifyEffModelRGB(inst->unk70, r, g, (ex->math_sin(t) >> 5) - 0x80);
+        x1 = t >> 1;
+        r = (ex->math_sin(x1) >> 5) - 0x80;
+        g = (ex->math_sin(x1) >> 5) - 0x80;
+        ex->Hi_ModifyEffModelRGB(inst->unk70, r, g, (ex->math_sin(x1) >> 5) - 0x80);
         if (frame >= 0x18) {
             return 1;
         }
