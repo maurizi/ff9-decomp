@@ -2,9 +2,27 @@
 
 INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op80);
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op81);
+s32 fx_1fc_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    if (mode == 0) {
+        *arg4 = 0;
+    } else if (mode == 1) {
+        D_801EC14C = env;
+    } else {
+        return entry->unk0 > 0;
+    }
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_op82);
+s32 fx_1fc_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    if (mode == 0) {
+        *arg4 = 0;
+    } else if (mode == 1) {
+        D_801EC14C = env;
+    } else {
+        return entry->unk0 > 0;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_1fc/nonmatchings/fx_1fc", fx_1fc_headerPtr);
 

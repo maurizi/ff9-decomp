@@ -8,7 +8,16 @@ INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", func_801E7E18);
 
 INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op80);
 
-INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op81);
+s32 fx_1fd_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    if (mode == 0) {
+        *arg4 = 0;
+    } else if (mode == 1) {
+        D_801E9E4C = env;
+    } else {
+        return entry->unk0 > 0;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_1fd/nonmatchings/fx_1fd", fx_1fd_op82);
 
