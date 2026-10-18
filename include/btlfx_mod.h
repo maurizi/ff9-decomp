@@ -160,7 +160,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_showPopups)(s32); /* 0x230 */
     s32 (*btlfx_addPrim)(u32, s32, void *); /* 0x234 */
     s32 (*func_800E651C)(u8 *, CVECTOR *, s32); /* 0x238 */
-    s32 (*btlfx_linkPrimAbr)(void); /* 0x23C */
+    s32 (*btlfx_linkPrimAbr)(u32, u32 *, void *, s32); /* 0x23C */
     s32 (*func_800E6624)(s32, s32, s32, s32, s32, s32, s32); /* 0x240 */
     s32 (*Hi_DrawMorphModelByBone)(s32, s32, s32, s32, s32, s32); /* 0x244 */
     void (*func_800E6764)(u32, s32, s32, s32, s32, s32, s32, s32, s32, SVECTOR *, VECTOR *, CVECTOR *, s32,
