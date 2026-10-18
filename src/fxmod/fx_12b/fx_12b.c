@@ -185,7 +185,18 @@ s32 func_801E7F90(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
     return func_801E8000(p, pos, &v, frame, n);
 }
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E8000);
+s32 func_801E8000(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
+    pos->vx = src->vx;
+    pos->vy = src->vy;
+    pos->vz = src->vz;
+    pt->unk0.vx = pos->vx << 12;
+    pt->unk0.vy = pos->vy << 12;
+    pt->unk0.vz = pos->vz << 12;
+    if (frame >= n) {
+        return -1;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_op80);
 

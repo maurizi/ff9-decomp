@@ -10,4 +10,17 @@ extern s16 D_801E879C[16];
 extern Unk800F78A4 *D_801E8830;
 /* end copied */
 
+/* propagated */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[2];
+} Fx1bf0Line;
+
+extern Fx1bf0Line D_801E881C;
+void func_801E7704(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+
 #endif

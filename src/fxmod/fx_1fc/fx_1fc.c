@@ -95,7 +95,9 @@ s32 fx_1fc_op84(s32 mode, Fx1fcWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E86A0);
+s32 func_801E86A0(u8 *base, u16 i) {
+    return (s32)base + ((s32 *)base)[(u16)i + 1];
+}
 
 void func_801E86B8(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801EC14C)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
@@ -134,7 +136,28 @@ void func_801E87D0(Fx1fcPath *path, u16 *data) {
     path->unk4 = (Fx1fcPoint *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E87E8);
+s32 func_801E87E8(Fx1fcPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+    Fx1fcKey *k;
+    s32 r = 1;
+
+    if (i > path->unk2 - 1) {
+        i = path->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    k = &path->unk4[i];
+    if (rot != NULL) {
+        rot->vx = k->unk6[0];
+        rot->vy = k->unk6[1];
+        rot->vz = k->unk6[2];
+    }
+    if (pos != NULL) {
+        pos->vx = k->unk0[0];
+        pos->vy = k->unk0[1];
+        pos->vz = k->unk0[2];
+    }
+    return r;
+}
 
 void func_801E887C(Fx1fcPath *path, u16 *data) {
     data++;
@@ -142,7 +165,17 @@ void func_801E887C(Fx1fcPath *path, u16 *data) {
     path->unk4 = (Fx1fcPoint *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8894);
+s32 func_801E8894(Fx1fcKeys *keys, s32 i, s32 *out) {
+    s32 r = 1;
+
+    if (i > keys->unk2 - 1) {
+        i = keys->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    *out = *(s16 *)((u8 *)keys->unk4 + (i << 1));
+    return r;
+}
 
 void func_801E88D8(Fx1fcPath *path, u16 *data) {
     data++;
@@ -173,10 +206,77 @@ void func_801E8954(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     BTLFX_EXPORTS(D_801EC14C)->btlfx_drawScreenTint((u32 *)(D_801EC14C->unk20 + ot), arg4, c, c, c);
 }
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E89EC);
+s32 func_801E89EC(s32 a0, s32 t, s32 n, SVECTOR *b) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801EC14C);
+    SVECTOR a;
+    SVECTOR out;
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8AB8);
+    ex->btlfx_getUnitHomePos(a0, (s16 *)&a);
+    func_801E86B8(b, &a, (t << 12) / n, &out);
+    ex->btlfx_setUnitPos(a0, (s16 *)&out);
+    return t >= n;
+}
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8B04);
+void func_801E8AB8(void) {
+    s32 i;
+    s32 m = -1;
 
-INCLUDE_ASM("asm/us/fx_1fc/nonmatchings/fx_1fc", func_801E8B60);
+    for (i = 63; i >= 0; i--) {
+        D_801EDF9C[i].unk6 = m;
+    }
+    for (i = 3; i >= 0; i--) {
+        D_801EE39C[i] = 0;
+    }
+}
+
+void func_801E8B04(s16 start, u16 dst, s16 ch, s16 *data) {
+    s32 i;
+    s32 c;
+
+    data++;
+    c = *data;
+    for (i = 0; i < 64; i++) {
+        if (D_801EDF9C[i].unk6 == -1) {
+            D_801EDF9C[i].unk6 = 0;
+            D_801EDF9C[i].unk0 = data;
+            D_801EDF9C[i].unk4 = start;
+            D_801EDF9C[i].unkA = dst;
+            D_801EDF9C[i].unkC = 0;
+            D_801EDF9C[i].unkE = c;
+            D_801EDF9C[i].unk8 = ch;
+            return;
+        }
+    }
+}
+
+void func_801E8B60(s32 ch) {
+    Unk800F78A4 *env = D_801EC14C;
+    s32 i;
+    s32 k;
+    s32 d;
+
+    for (i = 0; i < 64; i++) {
+        if (D_801EDF9C[i].unk8 == ch) {
+            if (D_801EDF9C[i].unk6 == 0 && D_801EDF9C[i].unk4 == D_801EE39C[ch]) {
+                D_801EDF9C[i].unk6 = *D_801EDF9C[i].unk0;
+                D_801EDF9C[i].unk0++;
+            }
+            if (D_801EDF9C[i].unk6 > 0) {
+                D_801EDF9C[i].unk6--;
+                for (k = 0; k < 3; k++) {
+                    d = ((D_801EDF9C[i].unkA >> (k * 4)) & 0xF) - 1;
+                    if (d >= 0) {
+                        ((SVECTOR *)env->unk2C)[d].vx = D_801EDF9C[i].unk0[0];
+                        ((SVECTOR *)env->unk2C)[d].vy = D_801EDF9C[i].unk0[1];
+                        ((SVECTOR *)env->unk2C)[d].vz = D_801EDF9C[i].unk0[2];
+                        if (D_801EDF9C[i].unkC < D_801EDF9C[i].unkE) {
+                            D_801EDF9C[i].unk0 += 3;
+                            D_801EDF9C[i].unkC++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    D_801EE39C[ch]++;
+}

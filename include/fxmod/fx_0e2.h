@@ -70,12 +70,9 @@ extern u16 D_801ECB70[5];
 extern u32 D_801EE9CC[];
 extern SVECTOR D_801F103C[4];
 
-s32 func_801EC3D8(s32 data, s32 i);
 s32 fx_0e2_op81(s32 mode, Fx0e2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_0e2_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_0e2_op84(s32 mode, Fx0e2Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-s32 func_801EC64C(s32 unit, s32 frame, s32 n, SVECTOR *pos);
-s32 func_801EC520(void *track, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 void func_801EC5B4(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 void func_801EC3F0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
@@ -93,5 +90,36 @@ typedef struct {
 void func_801EC48C(Fx0e2Path *path, u16 *data);
 extern Fx0e2Path D_801EE99C[5]; /* piece tracks */
 void func_801EC920(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+
+/* propagated */
+
+typedef struct {
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx0e2Key; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx0e2Key *unk4;
+} Fx0e2Path_0b4;
+s32 func_801EC520(Fx0e2Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+s32 func_801EC3D8(u8 *base, u16 i);
+s32 func_801EC64C(s32 a0, s32 t, s32 n, SVECTOR *b);
+
+typedef struct {
+    s16 *unk0;
+    s16 unk4; /* start frame */
+    s16 unk6; /* frames left, -1 = free */
+    s16 unk8; /* channel */
+    u16 unkA; /* destination slots, 4 bits each */
+    u16 unkC;
+    u16 unkE;
+} Fx0e2Track; /* 0x10 */
+extern Fx0e2Track D_801F10DC[];
+extern s32 D_801F14DC[];
+void func_801EC718(void);
+void func_801EC764(s16 start, u16 dst, s16 ch, s16 *data);
+void func_801EC7C0(s32 ch);
 
 #endif

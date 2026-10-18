@@ -109,7 +109,22 @@ s32 fx_184_op82(s32 mode, Fx184Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_184/nonmatchings/fx_184", func_801E7BC4);
+s32 func_801E7BC4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7DC4);
+    SVECTOR pos;
+    s32 t;
+
+    if (frame == 0) {
+        ex->btlfx_getUnitPos(unit, (s16 *)start);
+    }
+    t = (frame << 12) / n;
+    func_801E7CE0(start, dst, t, &pos);
+    if (height) {
+        pos.vy -= (ex->math_sin(t >> 1) * height) >> 12;
+    }
+    ex->btlfx_setUnitPos(unit, (s16 *)&pos);
+    return frame >= n;
+}
 
 void func_801E7CE0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E7DC4)->LoadAverageShort12(a, b, 0x1000 - t, t, out);

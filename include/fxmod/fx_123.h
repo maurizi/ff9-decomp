@@ -51,4 +51,33 @@ typedef struct {
 void func_801E8E20(Fx123Path *path, u16 *data);
 void func_801E8ECC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
+/* propagated */
+extern SVECTOR D_801E968C[]; /* particle positions */
+s32 func_801E77B4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E77E8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E781C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7850(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7884(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+extern SVECTOR D_801E96B4[]; /* particle positions */
+s32 func_801E78B8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E78EC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7920(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7954(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7988(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E79BC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E79F0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7A24(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
+
+typedef struct {
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx123Key; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx123Key *unk4;
+} Fx123Path_0b4;
+s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+
 #endif

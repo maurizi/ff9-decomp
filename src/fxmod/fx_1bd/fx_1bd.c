@@ -1,6 +1,39 @@
 #include "fxmod/fx_1bd.h"
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E77C0);
+void func_801E77C0(Fx1bdKeys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
+    SVECTOR v;
+    SVECTOR *p;
+    s32 cnt;
+    s32 i;
+    s32 j;
+    s32 k;
+
+    cnt = (size - 4) / 8;
+    p = (SVECTOR *)(buf + 4);
+    buf[0] = buf[2] = cnt - 1;
+    buf[1] = 0;
+    if (n < cnt) {
+        for (i = 0; i < cnt - n; i++) {
+            p->pad = 0;
+            p++;
+        }
+    } else {
+        n = cnt;
+    }
+    for (i = 0; i < n; i++) {
+        k = i + 1;
+        j = n - k + start;
+        if (clip != 0 && j >= keys->unk2) {
+            break;
+        }
+        func_801E8E90(keys, j, &v);
+        p->vx = v.vx;
+        p->vy = v.vy;
+        p->vz = v.vz;
+        p->pad = from + (to - from) / keys->unk2 * (n - i);
+        p++;
+    }
+}
 
 s32 fx_1bd_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -261,7 +294,9 @@ s32 func_801E8FB8(Fx1bdTrack6 *track, s32 t, VECTOR *out) {
     return done;
 }
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E901C);
+u16 *func_801E901C(u16 *base, u16 i) {
+    return (s32)base + ((s32 *)base)[(u16)i + 1];
+}
 
 void func_801E9034(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
@@ -269,11 +304,69 @@ void func_801E9034(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     BTLFX_EXPORTS(D_801E9E54)->btlfx_drawScreenTint((u32 *)(D_801E9E54->unk20 + ot), arg4, c, c, c);
 }
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E90CC);
+void func_801E90CC(void) {
+    s32 i;
+    s32 m = -1;
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E9118);
+    for (i = 63; i >= 0; i--) {
+        D_801EC064[i].unk6 = m;
+    }
+    for (i = 3; i >= 0; i--) {
+        D_801EC464[i] = 0;
+    }
+}
 
-INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E9174);
+void func_801E9118(s16 start, u16 dst, s16 ch, s16 *data) {
+    s32 i;
+    s32 c;
+
+    data++;
+    c = *data;
+    for (i = 0; i < 64; i++) {
+        if (D_801EC064[i].unk6 == -1) {
+            D_801EC064[i].unk6 = 0;
+            D_801EC064[i].unk0 = data;
+            D_801EC064[i].unk4 = start;
+            D_801EC064[i].unkA = dst;
+            D_801EC064[i].unkC = 0;
+            D_801EC064[i].unkE = c;
+            D_801EC064[i].unk8 = ch;
+            return;
+        }
+    }
+}
+
+void func_801E9174(s32 ch) {
+    Unk800F78A4 *env = D_801E9E54;
+    s32 i;
+    s32 k;
+    s32 d;
+
+    for (i = 0; i < 64; i++) {
+        if (D_801EC064[i].unk8 == ch) {
+            if (D_801EC064[i].unk6 == 0 && D_801EC064[i].unk4 == D_801EC464[ch]) {
+                D_801EC064[i].unk6 = *D_801EC064[i].unk0;
+                D_801EC064[i].unk0++;
+            }
+            if (D_801EC064[i].unk6 > 0) {
+                D_801EC064[i].unk6--;
+                for (k = 0; k < 3; k++) {
+                    d = ((D_801EC064[i].unkA >> (k * 4)) & 0xF) - 1;
+                    if (d >= 0) {
+                        ((SVECTOR *)env->unk2C)[d].vx = D_801EC064[i].unk0[0];
+                        ((SVECTOR *)env->unk2C)[d].vy = D_801EC064[i].unk0[1];
+                        ((SVECTOR *)env->unk2C)[d].vz = D_801EC064[i].unk0[2];
+                        if (D_801EC064[i].unkC < D_801EC064[i].unkE) {
+                            D_801EC064[i].unk0 += 3;
+                            D_801EC064[i].unkC++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    D_801EC464[ch]++;
+}
 
 INCLUDE_ASM("asm/us/fx_1bd/nonmatchings/fx_1bd", func_801E92D4);
 

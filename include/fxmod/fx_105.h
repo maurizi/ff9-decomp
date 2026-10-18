@@ -38,4 +38,19 @@ typedef struct {
 } Fx105Seg; /* 0x10 */
 void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx105Seg *buf, s32 abr);
 
+/* propagated */
+
+typedef struct {
+    s32 unk0; /* start frame */
+    s32 unk4; /* frames left, -1 = free */
+    u32 unk8; /* destination slots, 4 bits each (1-based) */
+    u32 unkC; /* source slots, 4 bits each (1-based, 0 = none) */
+    s16 *unk10; /* data */
+} Fx105Track; /* 0x14 */
+
+extern s32 D_801EAB1C; /* frame */
+extern Fx105Track D_801EAB28[];
+void func_801E7B74(void);
+void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data);
+
 #endif

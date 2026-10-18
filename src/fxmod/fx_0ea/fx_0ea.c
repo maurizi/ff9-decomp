@@ -1,12 +1,20 @@
 #include "fxmod/fx_0ea.h"
 
-INCLUDE_ASM("asm/us/fx_0ea/nonmatchings/fx_0ea", func_801E7704);
+s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77D4(pt, pos, &D_801E7E64[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_0ea/nonmatchings/fx_0ea", func_801E7738);
+s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77D4(pt, pos, &D_801E7E64[1], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_0ea/nonmatchings/fx_0ea", func_801E776C);
+s32 func_801E776C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77D4(pt, pos, &D_801E7E64[2], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_0ea/nonmatchings/fx_0ea", func_801E77A0);
+s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77D4(pt, pos, &D_801E7E64[3], frame, n);
+}
 
 s32 func_801E77D4(VECTOR *out, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E7E54);

@@ -1,8 +1,12 @@
 #include "fxmod/fx_1e7.h"
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E7704);
+s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E776C(pt, pos, &D_801E82E8[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E7738);
+s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E776C(pt, pos, &D_801E82E8[1], frame, n);
+}
 
 s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E82E0);
@@ -35,15 +39,30 @@ s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E7908);
+s32 func_801E7908(SVECTOR *out, s32 arg1, s32 i) {
+    func_801E79BC(out, &D_801E8300[0], i);
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E792C);
+s32 func_801E792C(SVECTOR *out, s32 arg1, s32 i) {
+    func_801E79BC(out, &D_801E8300[1], i);
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E7950);
+s32 func_801E7950(SVECTOR *out, s32 arg1, s32 i) {
+    func_801E79BC(out, &D_801E8300[2], i);
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E7974);
+s32 func_801E7974(SVECTOR *out, s32 arg1, s32 i) {
+    func_801E79BC(out, &D_801E8300[3], i);
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_1e7/nonmatchings/fx_1e7", func_801E7998);
+s32 func_801E7998(SVECTOR *out, s32 arg1, s32 i) {
+    func_801E79BC(out, &D_801E8300[4], i);
+    return 0;
+}
 
 void func_801E79BC(SVECTOR *out, Fx1e7Path *path, s32 t) {
     SVECTOR v;

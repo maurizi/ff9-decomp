@@ -209,4 +209,25 @@ void func_801E8CB0(Fx1eaPath *path, u16 *data) {
     path->unk4 = (Fx1eaPoint *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_1ea/nonmatchings/fx_1ea", func_801E8CC8);
+s32 func_801E8CC8(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+    Fx1eaKey *k;
+    s32 r = 1;
+
+    if (i > path->unk2 - 1) {
+        i = path->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    k = &path->unk4[i];
+    if (rot != NULL) {
+        rot->vx = k->unk6[0];
+        rot->vy = k->unk6[1];
+        rot->vz = k->unk6[2];
+    }
+    if (pos != NULL) {
+        pos->vx = k->unk0[0];
+        pos->vy = k->unk0[1];
+        pos->vz = k->unk0[2];
+    }
+    return r;
+}

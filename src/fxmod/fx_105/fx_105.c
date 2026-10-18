@@ -82,9 +82,31 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
     }
 }
 
-INCLUDE_ASM("asm/us/fx_105/nonmatchings/fx_105", func_801E7B74);
+void func_801E7B74(void) {
+    s32 i;
+    s32 m;
 
-INCLUDE_ASM("asm/us/fx_105/nonmatchings/fx_105", func_801E7BA8);
+    D_801EAB1C = 0;
+    m = -1;
+    for (i = 15; i >= 0; i--) {
+        D_801EAB28[i].unk4 = m;
+    }
+}
+
+void func_801E7BA8(s32 start, u32 dst, u32 src, s16 *data) {
+    s32 i;
+
+    for (i = 0; i < 16; i++) {
+        if (D_801EAB28[i].unk4 == -1) {
+            D_801EAB28[i].unk4 = 0;
+            D_801EAB28[i].unk10 = data + 1;
+            D_801EAB28[i].unk0 = start;
+            D_801EAB28[i].unk8 = dst;
+            D_801EAB28[i].unkC = src;
+            return;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_105/nonmatchings/fx_105", func_801E7BF8);
 

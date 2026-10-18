@@ -1,6 +1,22 @@
 #include "fxmod/fx_1bf_0.h"
 
-INCLUDE_ASM("asm/us/fx_1bf_0/nonmatchings/fx_1bf_0", func_801E7704);
+void func_801E7704(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E8830);
+    SVECTOR *v;
+
+    D_801E881C.unk0 = D_801E881C.unk2 = 1;
+    D_801E881C.unk1 = 0;
+    v = D_801E881C.unk4;
+    v[0].vx = a->vx;
+    v[0].vy = a->vy;
+    v[0].vz = a->vz;
+    v[0].pad = arg6;
+    v[1].vx = b->vx;
+    v[1].vy = b->vy;
+    v[1].vz = b->vz;
+    v[1].pad = arg6;
+    ex->btlfx_drawTrail(file, 0, NULL, arg3, 0x1000, arg4, arg5, (u8 *)&D_801E881C, 0);
+}
 
 INCLUDE_ASM("asm/us/fx_1bf_0/nonmatchings/fx_1bf_0", func_801E77C0);
 

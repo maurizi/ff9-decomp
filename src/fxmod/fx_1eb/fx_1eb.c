@@ -202,7 +202,28 @@ void func_801E8108(Fx1ebPath *path, u16 *data) {
     path->unk4 = (Fx1ebPoint *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_1eb/nonmatchings/fx_1eb", func_801E8120);
+s32 func_801E8120(Fx1ebPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+    Fx1ebKey *k;
+    s32 r = 1;
+
+    if (i > path->unk2 - 1) {
+        i = path->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    k = &path->unk4[i];
+    if (rot != NULL) {
+        rot->vx = k->unk6[0];
+        rot->vy = k->unk6[1];
+        rot->vz = k->unk6[2];
+    }
+    if (pos != NULL) {
+        pos->vx = k->unk0[0];
+        pos->vy = k->unk0[1];
+        pos->vz = k->unk0[2];
+    }
+    return r;
+}
 
 void func_801E81B4(Fx1ebPath *path, u16 *data) {
     data++;
@@ -210,4 +231,14 @@ void func_801E81B4(Fx1ebPath *path, u16 *data) {
     path->unk4 = (Fx1ebPoint *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_1eb/nonmatchings/fx_1eb", func_801E81CC);
+s32 func_801E81CC(Fx1ebPath *keys, s32 i, s32 *out) {
+    s32 r = 1;
+
+    if (i > keys->unk2 - 1) {
+        i = keys->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    *out = *(s16 *)((u8 *)keys->unk4 + (i << 1));
+    return r;
+}

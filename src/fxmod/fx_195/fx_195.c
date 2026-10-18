@@ -94,7 +94,19 @@ void func_801E7AA0(Unk80100C78Entry *entry, Fx195Trail *trail, SVECTOR *from, SV
 
 INCLUDE_ASM("asm/us/fx_195/nonmatchings/fx_195", func_801E7C98);
 
-INCLUDE_ASM("asm/us/fx_195/nonmatchings/fx_195", func_801E83BC);
+void func_801E83BC(VECTOR *pos, SVECTOR *rot) {
+    Unk800F78A4 *env = D_801EA278;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR v;
+    s32 tmp;
+    s32 a;
+
+    v.vx = pos->vx;
+    v.vy = pos->vy;
+    v.vz = pos->vz;
+    ex->func_800D0674(&env->unk2C->unk54, &v, rot, (s32)&tmp, (s32)&tmp, &a);
+    rot->vz = -a + 0x400;
+}
 
 INCLUDE_ASM("asm/us/fx_195/nonmatchings/fx_195", fx_195_op80);
 

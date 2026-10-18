@@ -133,6 +133,16 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0e1_1/nonmatchings/fx_0e1_1", fx_0e1_1_op85);
+s32 fx_0e1_1_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    if (mode == 0) {
+        *arg4 = 0;
+    } else if (mode == 1) {
+        D_801ECDD0 = env;
+        env->unk2C->unk52 = 0;
+    } else {
+        return 1;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_0e1_1/nonmatchings/fx_0e1_1", fx_0e1_1_headerPtr);

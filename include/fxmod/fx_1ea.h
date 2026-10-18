@@ -43,4 +43,18 @@ s32 func_801E8C4C(Fx1eaPath *path, s32 t, SVECTOR *out);
 extern Unk800F78A4 *D_801E8DD8;
 /* end copied */
 
+/* propagated */
+
+typedef struct {
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx1eaKey; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx1eaKey *unk4;
+} Fx1eaPath_0b4;
+s32 func_801E8CC8(Fx1eaPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+
 #endif

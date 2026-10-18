@@ -34,8 +34,10 @@ typedef struct {
 extern Unk800F78A4 *D_801E7DC4;
 extern BtlModel D_801E7DD4[];
 
-s32 func_801E7BC4(s32 unit, SVECTOR *to, s32 t, s32 n, s32 height, SVECTOR *from);
 void func_801E7CE0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801E7D24(s32 from, s32 to, s32 t, s32 n);
+
+/* propagated */
+s32 func_801E7BC4(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start);
 
 #endif

@@ -13,4 +13,17 @@ typedef struct {
     s16 x, y, z;
 } Fx17d4Pt;
 
+/* propagated */
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 pad3;
+    SVECTOR unk4[2];
+} Fx17d4Line;
+
+extern Fx17d4Line D_801E987C;
+void func_801E7720(u8 *file, SVECTOR *a, SVECTOR *b, s32 arg3, s32 arg4, s32 arg5, s32 arg6);
+
 #endif

@@ -96,14 +96,43 @@ extern u8 D_801EE658[13][0x50];
 
 s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-void func_801E78AC(Fx114Wave *w, u8 *buf, s32 size, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_801EA6DC(Fx114Path *path, u16 *data);
 void func_801EA808(Fx114Track6 *track, u16 *data);
 s32 func_801EA81C(Fx114Track6 *track, s32 t, VECTOR *out);
-s32 func_801EA8FC(s32 data, s32 i);
 void func_801EA914(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
 void func_801EA5C0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801EA604(s32 from, s32 to, s32 t, s32 n);
+
+/* propagated */
+extern SVECTOR D_801EF268[]; /* particle positions */
+s32 func_801E777C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E77B0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E77E4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7818(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E784C(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
+
+typedef struct {
+    u16 unk0;
+    u16 unk2; /* count */
+    s16 *unk4;
+} Fx114Keys;
+void func_801E78AC(Fx114Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip);
+s32 func_801EA8FC(s32 base, s32 i);
+
+typedef struct {
+    s16 *unk0;
+    s16 unk4; /* start frame */
+    s16 unk6; /* frames left, -1 = free */
+    s16 unk8; /* channel */
+    u16 unkA; /* destination slots, 4 bits each */
+    u16 unkC;
+    u16 unkE;
+} Fx114Track; /* 0x10 */
+extern Fx114Track D_801EF2B8[];
+extern s32 D_801EF6B8[];
+void func_801EA9AC(void);
+void func_801EA9F8(s16 start, u16 dst, s16 ch, s16 *data);
+void func_801EAA54(s32 ch);
 
 #endif

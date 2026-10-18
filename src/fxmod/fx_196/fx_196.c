@@ -90,11 +90,31 @@ void func_801E78BC(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     }
 }
 
-INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", func_801E7A5C);
+s32 func_801E7A5C(s32 a) {
+    s32 v = BTLFX_EXPORTS(D_801E915C)->math_sin(a);
+
+    if (v < 0) {
+        v >>= 1;
+    }
+    return v;
+}
 
 INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", func_801E7AA0);
 
-INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", func_801E8370);
+s32 func_801E8370(SVECTOR *v) {
+    s32 i = D_801E90F8;
+
+    v->pad = 1;
+    v->vx = D_801E916C[i].vx;
+    v->vy = D_801E916C[i].vy;
+    v->vz = D_801E916C[i].vz;
+    i++;
+    if (i >= 16) {
+        i = 0;
+    }
+    D_801E90F8 = i;
+    return 0;
+}
 
 INCLUDE_ASM("asm/us/fx_196/nonmatchings/fx_196", fx_196_op85);
 

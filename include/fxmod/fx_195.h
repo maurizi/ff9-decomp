@@ -22,4 +22,7 @@ typedef struct {
 
 extern Unk800F78A4 *D_801EA278;
 
+/* propagated */
+void func_801E83BC(VECTOR *pos, SVECTOR *rot);
+
 #endif

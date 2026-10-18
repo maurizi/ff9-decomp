@@ -1,20 +1,36 @@
 #include "fxmod/fx_1b4.h"
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E7704);
+s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86A4[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E7738);
+s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86A4[1], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E776C);
+s32 func_801E776C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86A4[2], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E77A0);
+s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86A4[3], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E77D4);
+s32 func_801E77D4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86A4[4], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E7808);
+s32 func_801E7808(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86CC[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E783C);
+s32 func_801E783C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86CC[1], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1b4/nonmatchings/fx_1b4", func_801E7870);
+s32 func_801E7870(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E78A4(pt, pos, &D_801E86CC[2], frame, n);
+}
 
 s32 func_801E78A4(Pool30Entry *e, SVECTOR *pos, Fx1b4Path *path, s32 frame, s32 frames) {
     SVECTOR v;

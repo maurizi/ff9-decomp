@@ -362,7 +362,9 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_1ec/nonmatchings/fx_1ec", func_801E8AFC);
+u16 *func_801E8AFC(u8 *base, u16 i) {
+    return (s32)base + ((s32 *)base)[(u16)i + 1];
+}
 
 void func_801E8B14(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
     BTLFX_EXPORTS(D_801E8E94)->LoadAverageShort12(a, b, 0x1000 - t, t, out);

@@ -16,4 +16,13 @@ extern s32 D_801E8CE8; /* jump scale */
 
 s32 fx_0de_op81(s32 mode, Fx0deWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+/* propagated */
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* func_800E7D3C(0x10, 1) */
+} Fx0deWork84;
+s32 fx_0de_op84(s32 mode, Fx0deWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif

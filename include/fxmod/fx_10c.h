@@ -25,4 +25,12 @@ typedef struct {
 extern Unk800F78A4 *D_801E7B50;
 extern BtlModel D_801E7B60[];
 
+/* propagated */
+
+typedef struct {
+    Pool6CEntry *unk0;
+    SVECTOR unk4; /* caster body position */
+} Fx10cWork80_0bd;
+s32 fx_10c_op81(s32 mode, Fx10cWork80_0bd *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif

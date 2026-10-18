@@ -75,7 +75,6 @@ s32 func_801E7E40(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame,
 s32 func_801E7EB0(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E7F20(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
 s32 func_801E7F90(Fx12bParticle *p, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
-s32 func_801E8000(Fx12bParticle *p, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 s32 func_801E9744(Fx12bPath *path, s32 i, SVECTOR *out);
 void func_801E9690(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801E96D4(s32 from, s32 to, s32 t, s32 n);
@@ -83,5 +82,8 @@ s32 func_801E96D4(s32 from, s32 to, s32 t, s32 n);
 void func_801E972C(Fx12bPath *path, u16 *data);
 s32 fx_12b_op81(s32 mode, Fx12bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 void func_801E97A8(Unk800F78A4 *env, s32 i, s32 v);
+
+/* propagated */
+s32 func_801E8000(Fx12bParticle *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n);
 
 #endif

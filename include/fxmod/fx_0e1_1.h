@@ -32,4 +32,7 @@ extern Unk800F78A4 *D_801ECDD0;
 
 s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+/* propagated */
+s32 fx_0e1_1_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
 #endif

@@ -1,8 +1,30 @@
 #include "fxmod/fx_1ef.h"
 
-INCLUDE_ASM("asm/us/fx_1ef/nonmatchings/fx_1ef", func_801E7704);
+void func_801E7704(void) {
+    s32 i;
+    s32 m;
 
-INCLUDE_ASM("asm/us/fx_1ef/nonmatchings/fx_1ef", func_801E7738);
+    D_801E8BA0 = 0;
+    m = -1;
+    for (i = 15; i >= 0; i--) {
+        D_801E8BAC[i].unk4 = m;
+    }
+}
+
+void func_801E7738(s32 start, u32 dst, u32 src, s16 *data) {
+    s32 i;
+
+    for (i = 0; i < 16; i++) {
+        if (D_801E8BAC[i].unk4 == -1) {
+            D_801E8BAC[i].unk4 = 0;
+            D_801E8BAC[i].unk10 = data + 1;
+            D_801E8BAC[i].unk0 = start;
+            D_801E8BAC[i].unk8 = dst;
+            D_801E8BAC[i].unkC = src;
+            return;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_1ef/nonmatchings/fx_1ef", func_801E7788);
 

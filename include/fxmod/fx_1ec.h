@@ -65,7 +65,6 @@ extern SVECTOR D_801EFB7C;
 
 s32 func_801E78E0(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 func_801E79DC(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
-u16 *func_801E8AFC(u8 *data, u16 i);
 s32 func_801E8B58(s32 from, s32 to, s32 t, s32 n);
 void func_801E8BB0(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 void func_801E8C48(Fx1ecPath *path, u16 *data);
@@ -81,5 +80,8 @@ extern Fx1ecPath D_801E90C4[0x1E];
 extern SVECTOR D_801EFB6C;
 void func_801E8CC4(s32 unit, s32 motion);
 /* end copied */
+
+/* propagated */
+u16 *func_801E8AFC(u8 *base, u16 i);
 
 #endif

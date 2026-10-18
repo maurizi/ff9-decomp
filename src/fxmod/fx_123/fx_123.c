@@ -1,30 +1,65 @@
 #include "fxmod/fx_123.h"
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E77B4);
+s32 func_801E77B4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E77E8);
+s32 func_801E77E8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[1], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E781C);
+s32 func_801E781C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[2], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E7850);
+s32 func_801E7850(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[3], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E7884);
+s32 func_801E7884(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[4], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E78B8);
+s32 func_801E78B8(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E96B4[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E78EC);
+s32 func_801E78EC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E7920);
+s32 func_801E7920(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[1], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E7954);
+s32 func_801E7954(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[2], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E7988);
+s32 func_801E7988(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[3], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E79BC);
+s32 func_801E79BC(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E968C[4], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E79F0);
+s32 func_801E79F0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E7A24(pt, pos, &D_801E96B4[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E7A24);
+s32 func_801E7A24(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
+    pos->vx = src->vx;
+    pos->vy = src->vy;
+    pos->vz = src->vz;
+    pt->unk0.vx = pos->vx << 12;
+    pt->unk0.vy = pos->vy << 12;
+    pt->unk0.vz = pos->vz << 12;
+    if (frame >= n) {
+        return -1;
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_123/nonmatchings/fx_123", fx_123_headerPtr);
 
@@ -196,7 +231,28 @@ void func_801E8E20(Fx123Path *path, u16 *data) {
     path->unk4 = (Fx123Point *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E8E38);
+s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+    Fx123Key *k;
+    s32 r = 1;
+
+    if (i > path->unk2 - 1) {
+        i = path->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    k = &path->unk4[i];
+    if (rot != NULL) {
+        rot->vx = k->unk6[0];
+        rot->vy = k->unk6[1];
+        rot->vz = k->unk6[2];
+    }
+    if (pos != NULL) {
+        pos->vx = k->unk0[0];
+        pos->vy = k->unk0[1];
+        pos->vz = k->unk0[2];
+    }
+    return r;
+}
 
 void func_801E8ECC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;

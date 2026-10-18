@@ -20,6 +20,10 @@ typedef struct {
 
 extern Unk800F78A4 *D_801E7EC8;
 
-s32 func_801E7990(s32 unit, SVECTOR *to, s32 t, s32 n, s32 height, SVECTOR *from);
+
+/* propagated */
+s32 func_801E7AAC(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta);
+s32 func_801E7C28(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang);
+s32 func_801E7990(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start);
 
 #endif

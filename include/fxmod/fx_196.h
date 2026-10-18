@@ -31,4 +31,11 @@ void func_801E7704(Fx196Track *track, s32 t, SVECTOR *out);
 extern Unk800F78A4 *D_801E915C;
 /* end copied */
 
+/* propagated */
+s32 func_801E7A5C(s32 a);
+
+extern s32 D_801E90F8;
+extern SVECTOR D_801E916C[];
+s32 func_801E8370(SVECTOR *v);
+
 #endif

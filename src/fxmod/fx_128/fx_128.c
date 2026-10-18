@@ -84,7 +84,28 @@ void func_801E87F0(Fx128Path *path, u16 *data) {
     path->unk4 = (Fx128Point *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E8808);
+s32 func_801E8808(Fx128Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+    Fx128Key *k;
+    s32 r = 1;
+
+    if (i > path->unk2 - 1) {
+        i = path->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    k = &path->unk4[i];
+    if (rot != NULL) {
+        rot->vx = k->unk6[0];
+        rot->vy = k->unk6[1];
+        rot->vz = k->unk6[2];
+    }
+    if (pos != NULL) {
+        pos->vx = k->unk0[0];
+        pos->vy = k->unk0[1];
+        pos->vz = k->unk0[2];
+    }
+    return r;
+}
 
 void func_801E889C(Fx128Path *path, u16 *data) {
     data++;
@@ -115,6 +136,16 @@ void func_801E8918(Fx128Path *path, u16 *data) {
     path->unk4 = (Fx128Point *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E8930);
+s32 func_801E8930(Fx128Keys *keys, s32 i, s32 *out) {
+    s32 r = 1;
+
+    if (i > keys->unk2 - 1) {
+        i = keys->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    *out = *(s16 *)((u8 *)keys->unk4 + (i << 1));
+    return r;
+}
 
 INCLUDE_RODATA("asm/us/fx_128/nonmatchings/fx_128", fx_128_headerPtr);

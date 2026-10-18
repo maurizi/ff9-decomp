@@ -45,11 +45,41 @@ extern s32 D_801EA410; /* next slot in D_801EA350 */
 extern Unk80100C78Entry *D_801EA414;
 
 void func_801E7EB8(s32 arg0, s32 arg1, SVECTOR *pos, SVECTOR *arg3, s32 *arg4, s32 *arg5, s32 arg6, s32 arg7);
-void func_801E80B0(SVECTOR *pos, SVECTOR *rot);
 s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,
                   Fx0dfWork *work);
 void func_801E93F4(Unk80100C78Entry *entry, Fx0dfBolt *bolt, s32 *jitter, SVECTOR *from, SVECTOR *to, s32 amp0, s32 amp1,
                    s32 ang, s32 dang, s32 arg9, s32 arg10, s32 pad);
 s32 fx_0df_op84(s32 mode, Fx0dfWork84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+
+/* propagated */
+extern s32 D_801EA418;
+void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out);
+void func_801E80B0(s16 *a, s16 *b);
+
+typedef struct {
+    SVECTOR unk0; /* from */
+    SVECTOR unk8; /* to */
+    s32 unk10; /* buffer index */
+    s32 *unk14; /* per-point (t offset, amplitude, step) */
+} Fx0dfArc;
+
+typedef struct {
+    u8 unk0;
+    u8 unk1;
+    u8 unk2;
+    u8 unk3;
+    SVECTOR unk4[15];
+} Fx0dfStrip; /* 0x7C */
+extern Fx0dfStrip D_801EA420[];
+s32 func_801E9600(s32 mode, Fx0dfArc *arc, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame);
+extern s32 D_801EA790[][3]; /* random arc profile */
+
+typedef struct {
+    SVECTOR unk0; /* caster body position */
+    s32 *unk8; /* arc profile table */
+    s32 unkC; /* arcs spawned */
+    s32 unk10; /* variant */
+} Fx0dfWork83; /* 0x14 */
+s32 fx_0df_op83(s32 mode, Fx0dfWork83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
 #endif

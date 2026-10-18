@@ -1,10 +1,16 @@
 #include "fxmod/fx_1a6.h"
 
-INCLUDE_ASM("asm/us/fx_1a6/nonmatchings/fx_1a6", func_801E7704);
+s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77C4(pt, pos, &D_801EDD28, &D_801EDD48, frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1a6/nonmatchings/fx_1a6", func_801E7744);
+s32 func_801E7744(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77C4(pt, pos, &D_801EDD30, &D_801EDD50, frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_1a6/nonmatchings/fx_1a6", func_801E7784);
+s32 func_801E7784(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E77C4(pt, pos, &D_801EDD38, &D_801EDD58, frame, n);
+}
 
 s32 func_801E77C4(Pool30Entry *e, SVECTOR *pos, SVECTOR *from, SVECTOR *to, s32 frame, s32 frames) {
     BtlfxExports *ex = BTLFX_EXPORTS(D_801E8298);

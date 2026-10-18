@@ -232,6 +232,27 @@ void func_801E81DC(Fx183Path *path, u16 *data) {
     path->unk4 = (Fx183Point *)data;
 }
 
-INCLUDE_ASM("asm/us/fx_183/nonmatchings/fx_183", func_801E81F4);
+s32 func_801E81F4(Fx183Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
+    Fx183Key *k;
+    s32 r = 1;
+
+    if (i > path->unk2 - 1) {
+        i = path->unk2 - 1;
+    } else {
+        r = 0;
+    }
+    k = &path->unk4[i];
+    if (rot != NULL) {
+        rot->vx = k->unk6[0];
+        rot->vy = k->unk6[1];
+        rot->vz = k->unk6[2];
+    }
+    if (pos != NULL) {
+        pos->vx = k->unk0[0];
+        pos->vy = k->unk0[1];
+        pos->vz = k->unk0[2];
+    }
+    return r;
+}
 
 INCLUDE_RODATA("asm/us/fx_183/nonmatchings/fx_183", fx_183_headerPtr);

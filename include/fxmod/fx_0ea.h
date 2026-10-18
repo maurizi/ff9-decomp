@@ -40,4 +40,10 @@ extern SVECTOR D_801E7E84;
 s32 func_801E77D4(VECTOR *out, SVECTOR *pos, SVECTOR *to, s32 frame, s32 n);
 void func_801E7DE0(Unk800F78A4 *env, s32 i, s32 value);
 
+/* propagated */
+s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E776C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E77A0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+
 #endif

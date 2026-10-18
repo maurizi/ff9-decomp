@@ -64,10 +64,23 @@ extern s32 D_801E88A8[][0xF0];
 void func_801E8140(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801E8184(s32 from, s32 to, s32 t, s32 n);
 void func_801E81DC(Fx183Path *path, u16 *data);
-s32 func_801E81F4(Fx183Path *path, s32 t, SVECTOR *rot, SVECTOR *pos);
 
 /* copied */
 extern Unk800F78A4 *D_801E82E8;
 /* end copied */
+
+/* propagated */
+
+typedef struct {
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx183Key; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx183Key *unk4;
+} Fx183Path_0b4;
+s32 func_801E81F4(Fx183Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
 
 #endif

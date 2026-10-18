@@ -43,4 +43,25 @@ void func_801E8918(Fx128Path *path, u16 *data);
 void func_801E8754(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801E8798(s32 from, s32 to, s32 t, s32 n);
 
+/* propagated */
+
+typedef struct {
+    s16 unk0[3]; /* position */
+    s16 unk6[3]; /* rotation */
+} Fx128Key; /* 0xC */
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* keys */
+    Fx128Key *unk4;
+} Fx128Path_0b4;
+s32 func_801E8808(Fx128Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos);
+
+typedef struct {
+    u16 unk0;
+    u16 unk2; /* count */
+    s16 *unk4;
+} Fx128Keys;
+s32 func_801E8930(Fx128Keys *keys, s32 i, s32 *out);
+
 #endif

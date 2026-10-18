@@ -37,7 +37,6 @@ extern u16 D_801E8278[5]; /* path files */
 extern s32 (*D_801E8284[5])(SVECTOR *, SVECTOR *, s32, s32);
 extern Unk800F78A4 *D_801E82E0;
 extern s32 D_801E82E4; /* op81 frame */
-extern Fx1e7Path D_801E82E8;
 extern Fx1e7Path D_801E82F0;
 extern Fx1e7Path D_801E8300[5];
 extern s32 D_801E8330[];
@@ -48,8 +47,6 @@ extern SVECTOR D_801E84E0; /* angles */
 extern SVECTOR D_801E84E8;
 extern SVECTOR D_801E84F0[5];
 
-s32 func_801E7704(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
-s32 func_801E7738(Pool30Entry *e, Pool6CEntry *owner, SVECTOR *pos, s32 arg3, s32 frame, s32 frames);
 s32 func_801E776C(Pool30Entry *e, SVECTOR *pos, Fx1e7Path *path, s32 frame, s32 frames);
 void func_801E79BC(SVECTOR *out, Fx1e7Path *path, s32 t);
 void func_801E8054(Fx1e7Path *path, u16 *data);
@@ -57,5 +54,15 @@ s32 func_801E806C(Fx1e7Path *path, s32 t, SVECTOR *out);
 void func_801E80D0(s32 unit, s32 motion);
 s32 func_801E813C(s32 unit);
 void func_801E820C(s32 unit);
+
+/* propagated */
+extern Fx1e7Path D_801E82E8[];
+s32 func_801E7704(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7738(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n);
+s32 func_801E7908(SVECTOR *out, s32 arg1, s32 i);
+s32 func_801E792C(SVECTOR *out, s32 arg1, s32 i);
+s32 func_801E7950(SVECTOR *out, s32 arg1, s32 i);
+s32 func_801E7974(SVECTOR *out, s32 arg1, s32 i);
+s32 func_801E7998(SVECTOR *out, s32 arg1, s32 i);
 
 #endif

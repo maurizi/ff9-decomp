@@ -1,16 +1,68 @@
 #include "fxmod/fx_114.h"
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E777C);
+s32 func_801E777C(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E784C(pt, pos, &D_801EF268[0], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E77B0);
+s32 func_801E77B0(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E784C(pt, pos, &D_801EF268[1], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E77E4);
+s32 func_801E77E4(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E784C(pt, pos, &D_801EF268[2], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E7818);
+s32 func_801E7818(Pool30Entry *pt, s32 arg1, SVECTOR *pos, s32 arg3, s32 frame, s32 n) {
+    return func_801E784C(pt, pos, &D_801EF268[3], frame, n);
+}
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E784C);
+s32 func_801E784C(Pool30Entry *pt, SVECTOR *pos, SVECTOR *src, s32 frame, s32 n) {
+    pos->vx = src->vx;
+    pos->vy = src->vy;
+    pos->vz = src->vz;
+    pt->unk0.vx = pos->vx << 12;
+    pt->unk0.vy = pos->vy << 12;
+    pt->unk0.vz = pos->vz << 12;
+    if (frame >= n) {
+        return -1;
+    }
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801E78AC);
+void func_801E78AC(Fx114Keys *keys, u8 *buf, s32 size, s32 start, s32 n, s32 from, s32 to, s32 clip) {
+    SVECTOR v;
+    SVECTOR *p;
+    s32 cnt;
+    s32 i;
+    s32 j;
+    s32 k;
+
+    cnt = (size - 4) / 8;
+    p = (SVECTOR *)(buf + 4);
+    buf[0] = buf[2] = cnt - 1;
+    buf[1] = 0;
+    if (n < cnt) {
+        for (i = 0; i < cnt - n; i++) {
+            p->pad = 0;
+            p++;
+        }
+    } else {
+        n = cnt;
+    }
+    for (i = 0; i < n; i++) {
+        k = i + 1;
+        j = n - k + start;
+        if (clip != 0 && j >= keys->unk2) {
+            break;
+        }
+        func_801EA6F4(keys, j, &v);
+        p->vx = v.vx;
+        p->vy = v.vy;
+        p->vz = v.vz;
+        p->pad = from + (to - from) / keys->unk2 * (n - i);
+        p++;
+    }
+}
 
 INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", fx_114_op80);
 
@@ -336,7 +388,9 @@ s32 func_801EA898(Fx114Path *path, s32 t, VECTOR *out) {
     return done;
 }
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801EA8FC);
+s32 func_801EA8FC(s32 base, s32 i) {
+    return (s32)base + ((s32 *)base)[(u16)i + 1];
+}
 
 void func_801EA914(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
@@ -344,11 +398,69 @@ void func_801EA914(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     BTLFX_EXPORTS(D_801EB768)->btlfx_drawScreenTint((u32 *)(D_801EB768->unk20 + ot), arg4, c, c, c);
 }
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801EA9AC);
+void func_801EA9AC(void) {
+    s32 i;
+    s32 m = -1;
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801EA9F8);
+    for (i = 63; i >= 0; i--) {
+        D_801EF2B8[i].unk6 = m;
+    }
+    for (i = 3; i >= 0; i--) {
+        D_801EF6B8[i] = 0;
+    }
+}
 
-INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801EAA54);
+void func_801EA9F8(s16 start, u16 dst, s16 ch, s16 *data) {
+    s32 i;
+    s32 c;
+
+    data++;
+    c = *data;
+    for (i = 0; i < 64; i++) {
+        if (D_801EF2B8[i].unk6 == -1) {
+            D_801EF2B8[i].unk6 = 0;
+            D_801EF2B8[i].unk0 = data;
+            D_801EF2B8[i].unk4 = start;
+            D_801EF2B8[i].unkA = dst;
+            D_801EF2B8[i].unkC = 0;
+            D_801EF2B8[i].unkE = c;
+            D_801EF2B8[i].unk8 = ch;
+            return;
+        }
+    }
+}
+
+void func_801EAA54(s32 ch) {
+    Unk800F78A4 *env = D_801EB768;
+    s32 i;
+    s32 k;
+    s32 d;
+
+    for (i = 0; i < 64; i++) {
+        if (D_801EF2B8[i].unk8 == ch) {
+            if (D_801EF2B8[i].unk6 == 0 && D_801EF2B8[i].unk4 == D_801EF6B8[ch]) {
+                D_801EF2B8[i].unk6 = *D_801EF2B8[i].unk0;
+                D_801EF2B8[i].unk0++;
+            }
+            if (D_801EF2B8[i].unk6 > 0) {
+                D_801EF2B8[i].unk6--;
+                for (k = 0; k < 3; k++) {
+                    d = ((D_801EF2B8[i].unkA >> (k * 4)) & 0xF) - 1;
+                    if (d >= 0) {
+                        ((SVECTOR *)env->unk2C)[d].vx = D_801EF2B8[i].unk0[0];
+                        ((SVECTOR *)env->unk2C)[d].vy = D_801EF2B8[i].unk0[1];
+                        ((SVECTOR *)env->unk2C)[d].vz = D_801EF2B8[i].unk0[2];
+                        if (D_801EF2B8[i].unkC < D_801EF2B8[i].unkE) {
+                            D_801EF2B8[i].unk0 += 3;
+                            D_801EF2B8[i].unkC++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    D_801EF6B8[ch]++;
+}
 
 INCLUDE_ASM("asm/us/fx_114/nonmatchings/fx_114", func_801EABB4);
 

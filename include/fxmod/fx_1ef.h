@@ -56,8 +56,6 @@ extern Pool6CEntry *D_801EA8F4;
 extern SVECTOR D_801EA8FC;
 extern Fx1efTrail D_801EA90C[2];
 
-void func_801E7704(void);
-void func_801E7738(s32 arg0, s32 arg1, s32 arg2, s32 data);
 void func_801E7788(void);
 s32 func_801E792C(s32 curve, s32 n, s32 t, s32 from, s32 to);
 
@@ -70,5 +68,20 @@ extern s32 D_801ECA6C[4][0x1FE];
 /* copied */
 extern Unk800F78A4 *D_801E8B9C;
 /* end copied */
+
+/* propagated */
+
+typedef struct {
+    s32 unk0; /* start frame */
+    s32 unk4; /* frames left, -1 = free */
+    u32 unk8; /* destination slots, 4 bits each (1-based) */
+    u32 unkC; /* source slots, 4 bits each (1-based, 0 = none) */
+    s16 *unk10; /* data */
+} Fx1efTrack; /* 0x14 */
+
+extern s32 D_801E8BA0; /* frame */
+extern Fx1efTrack D_801E8BAC[];
+void func_801E7704(void);
+void func_801E7738(s32 start, u32 dst, u32 src, s16 *data);
 
 #endif

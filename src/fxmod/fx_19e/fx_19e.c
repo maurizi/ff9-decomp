@@ -49,10 +49,71 @@ s32 func_801E7938(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_19e/nonmatchings/fx_19e", func_801E7990);
+s32 func_801E7990(s32 unit, SVECTOR *dst, s32 frame, s32 n, s32 height, SVECTOR *start) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EC8);
+    SVECTOR pos;
+    s32 t;
 
-INCLUDE_ASM("asm/us/fx_19e/nonmatchings/fx_19e", func_801E7AAC);
+    if (frame == 0) {
+        ex->btlfx_getUnitPos(unit, (s16 *)start);
+    }
+    t = (frame << 12) / n;
+    func_801E78F4(start, dst, t, &pos);
+    if (height) {
+        pos.vy -= (ex->math_sin(t >> 1) * height) >> 12;
+    }
+    ex->btlfx_setUnitPos(unit, (s16 *)&pos);
+    return frame >= n;
+}
 
-INCLUDE_ASM("asm/us/fx_19e/nonmatchings/fx_19e", func_801E7C28);
+s32 func_801E7AAC(s32 unit, s32 frame, s32 n, SVECTOR *arg3, SVECTOR *delta) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EC8);
+    SVECTOR rot;
+    SVECTOR pos;
+
+    ex->btlfx_getUnitPos(unit, (s16 *)&pos);
+    if (frame == 0) {
+        ex->btlfx_getUnitRot(unit, (s16 *)&rot);
+    }
+    ex->btlfx_getUnitRot(unit, (s16 *)&rot);
+    rot.vx += delta->vx / n;
+    rot.vy += delta->vy / n;
+    rot.vz += delta->vz / n;
+    ex->btlfx_setUnitRot(unit, (s16 *)&rot);
+    return frame >= n - 1;
+}
+
+s32 func_801E7C28(s32 unit, s32 target, s32 frame, s32 n, s32 turnBack, s32 relative, SVECTOR *ang) {
+    BtlfxExports *ex = BTLFX_EXPORTS(D_801E7EC8);
+    SVECTOR from;
+    SVECTOR rot;
+    SVECTOR to;
+
+    if (frame == 0) {
+        ex->btlfx_getUnitPos(unit, (s16 *)&from);
+        ex->btlfx_getUnitPos(target, (s16 *)&to);
+        ex->btlfx_aimAngles((s16 *)&from, (s16 *)&to, (s16 *)ang);
+        if (relative) {
+            ex->btlfx_getUnitRot(unit, (s16 *)&rot);
+            ang->vx -= rot.vx;
+            ang->vy -= rot.vy;
+            ang->vz -= rot.vz;
+            if (ang->vy >= 0x800) {
+                ang->vy = 0x1000 - ang->vy;
+            } else if (ang->vy < -0x7FF) {
+                ang->vy = ang->vy + 0x1000;
+            }
+        }
+        if (turnBack == 1) {
+            ang->vy += 0x800;
+        }
+    }
+    ex->btlfx_getUnitRot(unit, (s16 *)&rot);
+    rot.vx += ang->vx / n;
+    rot.vy += ang->vy / n;
+    rot.vz += ang->vz / n;
+    ex->btlfx_setUnitRot(unit, (s16 *)&rot);
+    return frame >= n - 1;
+}
 
 INCLUDE_RODATA("asm/us/fx_19e/nonmatchings/fx_19e", fx_19e_headerPtr);
