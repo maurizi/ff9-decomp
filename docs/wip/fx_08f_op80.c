@@ -1,6 +1,10 @@
-/* Draft of fx_08f fx_08f_op80. Status: 229 aligned mismatches, logic complete. Register allocation: the original
- * keeps work in s7, env in fp and the /49 magic constant in s5 across case 1, and saves fp/s7 (frame 0xD0); ours
- * spills more. Lever used: x/y temporaries so 0x1B8 - k + 0x64 isn't folded. */
+/* Draft of fx_08f fx_08f_op80. Status: all instructions and registers match; only the frame is 8 bytes short
+ * (0xC8 vs 0xD0: the original has 8 unused bytes between the spill slots 0x98/0x9C and the register save area, so
+ * every save-area and incoming-argument offset is off by 8). Those bytes are probably two more spilled pseudos whose
+ * slot traffic reload removed. Levers (pass 2): separate variables for every reused temporary (y0, d2, n, k2/k3,
+ * w2, w3, c4), near declared after t so the spill slots come out t 0x98 / near 0x9C, pos.vz = work->unk1C.vx + w in
+ * case 2 (the original really reads unk1C.vx), getFileData inlined into the drawTrail calls, statement order from
+ * single-statement move sweeps. Earlier: x/y temporaries so 0x1B8 - k + 0x64 isn't folded. */
 #include "btlfx_mod.h"
 
 #define gte_stszotz(r0) __asm__ volatile( \
@@ -52,15 +56,23 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR v;
     Pool6CEntry *p;
     s32 frame;
-    s32 near;
     s32 t;
     s32 t2;
     s32 s;
+    s32 near;
     s32 k;
+    s32 k2;
+    s32 k3;
     s32 d;
+    s32 d2;
+    s32 n;
+    s32 w2;
+    s32 w3;
     s32 y;
+    s32 y0;
     s32 x;
     s32 c3;
+    s32 c4;
     s32 t3;
     s32 u;
     s32 w;
@@ -98,10 +110,10 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vy = s - 0x800;
             t = (frame << 12) / 49;
             if (!near) {
-                k = frame - 8;
-                pos.vx += ex->btlfx_randCentered(k * 3);
-                pos.vy += ex->btlfx_randCentered(k * 2);
-                pos.vz += ex->btlfx_randCentered(k * 2);
+                n = frame - 8;
+                pos.vx += ex->btlfx_randCentered(n * 3);
+                pos.vy += ex->btlfx_randCentered(n * 2);
+                pos.vz += ex->btlfx_randCentered(n * 2);
             }
             rot.vx = 0x200;
             rot.vz = -frame << 6;
@@ -116,11 +128,11 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk2C->unk0[3].vx = pos.vx;
             env->unk2C->unk0[3].vy = pos.vy;
             env->unk2C->unk0[3].vz = pos.vz;
-            d = (frame * 0x384) / 49;
-            k = (u16)env->unk2C->unk0[3].vz - 0x100;
-            env->unk2C->unk0[3].vz = k + d;
-            k = (u16)env->unk2C->unk0[3].vy + 0x180;
-            env->unk2C->unk0[3].vy = k - d;
+            k2 = (u16)env->unk2C->unk0[3].vz - 0x100;
+            d2 = (frame * 0x384) / 49;
+            env->unk2C->unk0[3].vz = k2 + d2;
+            k3 = (u16)env->unk2C->unk0[3].vy + 0x180;
+            env->unk2C->unk0[3].vy = k3 - d2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
             ex->func_800E6624(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk40);
@@ -135,17 +147,17 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk28, (t2 >> 5) - 0x80, (t2 >> 5) - 0x80, (t2 >> 5) - 0x80);
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), work->unk4);
             }
-            y = -0x64;
+            y0 = -0x64;
             c.r = 0x20;
+            c.g = 0x80;
             c.b = 0xFF;
             rot2.vy = -0x400;
-            c.g = 0x80;
             rot2.vx = 0x200;
             rot2.vz = 0;
             if (frame < 0x18) {
-                y = -0x46;
+                y0 = -0x46;
             }
-            func_801E7858((u32 *)(env->unk20 + 8), 0x180, 0x80, y, &rot2, D_801E9054, &c,
+            func_801E7858((u32 *)(env->unk20 + 8), 0x180, 0x80, y0, &rot2, D_801E9054, &c,
                           ex->math_cos((frame << 10) / 49) * 3 / 4 + 0x400, 1);
             if (frame == 2) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk14);
@@ -183,12 +195,12 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 2:
             u = (frame << 12) / 26;
             w = (0x1000 - u) * 3 / 2;
-            pos.vz = work->unk1C.vz + w;
+            pos.vz = work->unk1C.vx + w;
+            pos.vy = work->unk1C.vy - w;
             rot.vx = 0x200;
             pos.vx = 0;
             rot.vy = 0;
             rot.vz = -frame << 6;
-            pos.vy = work->unk1C.vy - w;
             s = 0x2000 - ex->math_sin(u >> 2) * 2;
             scale.vx = s;
             scale.vy = s;
@@ -213,12 +225,12 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk14, NULL, s >> 1, 0, 1, 0x1000);
             env->unk28 = 0;
             if (frame >= 13) {
-                w = ((ex->math_sin((((frame - 12) << 12) / 12) >> 2) << 6) >> 12) + 0x20;
-                c2.r = w;
-                c2.b = w >> 2;
+                w2 = ((ex->math_sin((((frame - 12) << 12) / 12) >> 2) << 6) >> 12) + 0x20;
+                c2.g = w2 >> 1;
+                c2.r = w2;
+                c2.b = w2 >> 2;
                 scale2.vx = 0x1200;
                 scale2.vy = 0x1200;
-                c2.g = w >> 1;
                 rot3.vz = 0;
                 rot3.vy = 0;
                 rot3.vx = 0;
@@ -229,23 +241,22 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0, NULL, -1, 0x3000, 0, 1,
                                     D_801EA254, 0);
             }
-            d = ex->btlfx_getFileData(entry->unk8, 0x1C);
-            ex->btlfx_drawTrail((u8 *)d, (s32)&work->unk14, NULL, 0, ex->math_cos(u >> 2) * 2 + 0x1000,
-                                ex->math_cos(u >> 2) / 2 + 0x800, 1, D_801EA254, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), (s32)&work->unk14, NULL, 0,
+                                ex->math_cos(u >> 2) * 2 + 0x1000, ex->math_cos(u >> 2) / 2 + 0x800, 1, D_801EA254, 0);
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), work->unk4);
             if (frame >= 9) {
                 v.vx = 0;
                 v.vy = 0;
                 v.vz = (frame << 5) + 0x7E8;
                 v.pad = 0;
-                c3 = ex->math_cos((frame - 8) << 6);
+                c4 = ex->math_cos((frame - 8) << 6);
                 ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &work->unk14, &v, 0x3000,
-                                      frame - 12, 1, c3);
+                                      frame - 12, 1, c4);
             }
             if (frame >= 13) {
-                w = frame - 12;
-                c3 = ex->math_cos((w << 10) / 12);
-                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &work->unk14, NULL, 0x3000, w,
+                w3 = frame - 12;
+                c3 = ex->math_cos((w3 << 10) / 12);
+                ex->btlfx_drawSprites((u8 *)ex->btlfx_getFileData(entry->unk8, 0x13), &work->unk14, NULL, 0x3000, w3,
                                       1, c3);
             }
             if (frame >= 0x18) {
@@ -257,9 +268,8 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t3 = (frame << 12) / 6;
             work->unk14.vz -= 0x40;
             work->unk14.vy += 0x40;
-            d = ex->btlfx_getFileData(entry->unk8, 0x1C);
-            ex->btlfx_drawTrail((u8 *)d, (s32)&work->unk14, NULL, 0, ex->math_cos(t3 >> 2), (0x1000 - t3) / 2, 1,
-                                D_801EA254, 0);
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), (s32)&work->unk14, NULL, 0,
+                                ex->math_cos(t3 >> 2), (0x1000 - t3) / 2, 1, D_801EA254, 0);
             if (frame >= 6) {
                 ex->btlfx_clearEffModels();
                 return 1;

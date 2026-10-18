@@ -1,12 +1,13 @@
-/* Draft of fx_17d_0 op80 (summon: four states, the piece models, the ring, the body). Status: 275 aligned
- * mismatches, about 40 of them only the spill register (t1 here, t0 in the original). The original's constant 1
- * from mode == 1 is spilled and rematerialised (it also feeds case 1's dispatch compare, case 0xA's and case 0's
- * last func_801E79E8 argument and the * 12's sllv); here it gets s1 and case 0's argument reads abr. Other open
- * points: the file pointer f lands in t0 (a3 in the original) and the two DrawMorph calls of case 2 are not
- * cross-jumped. Levers that got here: SVECTOR rot declared at the switch-body top (shared by cases 0xA and 0, freed
- * at the switch end so the final blocks reuse 0x38..), one loop counter per loop, code before abr before the * 12
- * (gives the sllv), frame % 10, A - (C + B) / A - (B - C) to beat fold's reassociation, (x / 7) >> 2 instead of
- * x / 28, pointer-reassign reads *(f += 2 + n * 3), one file-pointer variable. */
+/* Draft of fx_17d_0 op80 (summon: four states, the piece models, the ring, the body). Status: 2 mismatched
+ * instructions: in case 1 the second "0x1000 - cos(...)" intermediate (before >> 2 into b) is a0 in the original,
+ * v0 here (local-alloc; the first one is a0 in both through the call-argument tie). Pass 2 levers: the morph weights
+ * of case 2 loaded into a variable before each DrawMorph call (m / n = *(f += ...)), so f dies before a3 is loaded
+ * and gets a3 (that also frees t0 for reload: the spill register is t0 like the original); case 0's code/abr = 1
+ * after the func_801E79E8 call, so its last argument uses the mode == 1 constant pseudo; the piece table's second
+ * field read through a byte offset o = i0 * 8 + 2 (gives the original's separate 8i + 2 giv plus base register).
+ * Earlier levers: SVECTOR rot declared at the switch-body top (shared by cases 0xA and 0, freed at the switch end so
+ * the final blocks reuse 0x38..), one loop counter per loop, code before abr before the * 12 (gives the sllv),
+ * frame % 10, A - (C + B) / A - (B - C) to beat fold's reassociation, (x / 7) >> 2 instead of x / 28. */
 #include "fxmod/fx_17d_0.h"
 
 typedef struct {
@@ -65,6 +66,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 i;
     s32 i0;
     s32 i3;
+    s32 o;
 
     if (mode == 0) {
         arg4->unk0 = 0xBC;
@@ -148,8 +150,6 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             col.b = 0xFF;
             h = t >> 1;
             rot.vx = (0x1000 - ((0x1000 - ex->math_cos(h)) >> 1)) / 3;
-            code = 1;
-            abr = 1;
             sx = t >> 7;
             rot.vy = (0x1000 - ex->math_sin(q)) >> 2;
             rot.vz = work->unk4 * 4;
@@ -157,6 +157,8 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk38.vy = rot.vy >> 1;
             work->unk38.vz = rot.vz >> 1;
             func_801E79E8((u32 *)env->unk20 + 8, 0x140, 0x80, ~((t * 20) >> 12), &rot, D_801E9480, &col, 0x1000, 1);
+            code = 1;
+            abr = 1;
             a = ((0x1000 - ex->math_sin(q)) >> 5) + 0xA0;
             b = 0x6E - ((0x1000 - ((0x1000 - ex->math_cos(h)) >> 1)) >> 3);
             ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x1D), a, b, 0, 0xFF, t);
@@ -170,7 +172,8 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
                     work->unk5C[i0] = ex->func_800E8F50(
                         (Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, ((s16 *)D_801E9370)[i0 * 4]), 0);
-                    k = ((s16 *)D_801E9370)[i0 * 4 + 1];
+                    o = i0 * 8 + 2;
+                    k = *(s16 *)((u8 *)D_801E9370 + o);
                     v = -1;
                     if (k >= 0) {
                         v = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, k), 0);
@@ -287,11 +290,11 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     if (n >= f[1]) {
                         n = f[1] - 1;
                     }
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&D_801EBC80, work->unkB0[1], work->unkB0[2],
-                                             0x1000 - *(f += 2 + n * 3));
+                    n = 0x1000 - *(f += 2 + n * 3);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&D_801EBC80, work->unkB0[1], work->unkB0[2], n);
                 } else {
-                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&D_801EBC80, work->unkB0[0], work->unkB0[1],
-                                             *(f += 2 + frame * 3));
+                    n = *(f += 2 + frame * 3);
+                    ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&D_801EBC80, work->unkB0[0], work->unkB0[1], n);
                 }
             }
             if (frame >= 0x8E) {
@@ -312,7 +315,8 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (n >= f[1]) {
                     n = f[1] - 1;
                 }
-                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&D_801EBC80, work->unkB0[3], work->unkB0[4], *(f += 2 + n * 3));
+                n = *(f += 2 + n * 3);
+                ex->Hi_DrawMorphEffModel(&rot, &pos, (s32)&D_801EBC80, work->unkB0[3], work->unkB0[4], n);
             }
             if (frame < 0x9D) {
                 for (i3 = 0; i3 < 2; i3++) {
