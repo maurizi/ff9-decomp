@@ -1,8 +1,9 @@
-/* Draft of fx_1f3 fx_1f3_op80. Status: 27 aligned mismatches; equivalent by construction. Fixed since the 55-row
- * draft: mode 1 stores unk5C.vz before vy, and case 0x22 tests work->unk40[0] itself (its NULL path then threads
- * past the first post-switch check, as in the original). Open, all in the ring loop: the original's second pointer
- * giv is based at the point's pad (offsets -4/-2/0), its l giv starts from the D_801EC4F0 register (+0x20) instead
- * of its own lui, and it reloads unk12C for the func_801E7794 argument. */
+/* Draft of fx_1f3 fx_1f3_op80. Status: 31 aligned mismatches (11 ignoring registers); equivalent by construction.
+ * Fixed since the 55-row draft: mode 1 stores unk5C.vz before vy; case 0x22 tests work->unk40[0] itself (its NULL path
+ * then threads past the first post-switch check, as in the original); in the ring loop v.vy = 0 comes after v.vz and
+ * c is computed after the unk134 updates (the original reloads unk12C). Open, all in the ring loop: the original's
+ * l giv (s5) starts from the D_801EC4F0 register (+0x20) instead of its own lui and gets s5 (here s6, dst gets s5),
+ * and its second inner pointer giv is based at the point's pad (offsets -4/-2/0). */
 #include "fxmod/fx_1f3.h"
 
 typedef struct {
@@ -401,8 +402,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     dst = l->unk4;
                     for (j = 0; j < 0x21; j++, dst++) {
                         v.vx = (ex->math_sin(j * D_801EC4F0[i].unk140 + D_801EC4F0[i].unk134) * D_801EC4F0[i].unk13C) >> 12;
-                        v.vy = 0;
                         v.vz = (ex->math_cos(j * D_801EC4F0[i].unk140 + D_801EC4F0[i].unk134) * D_801EC4F0[i].unk13C) >> 12;
+                        v.vy = 0;
                         gte_ldv0(&v);
                         gte_rtv0tr();
                         gte_stlvnl(&out);
@@ -413,11 +414,11 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         l->unk4[j].pad = 0xC0;
                     }
                     if (D_801EC4F0[i].unk12C < 4) {
-                        c = D_801EC4F0[i].unk12C << 10;
                         D_801EC4F0[i].unk134 += func_801E7794(2, 8, D_801EC4F0[i].unk12C, D_801EC4F0[i].unk138, 0);
+                        c = D_801EC4F0[i].unk12C << 10;
                     } else {
-                        c = (8 - D_801EC4F0[i].unk12C) << 10;
                         D_801EC4F0[i].unk134 += D_801EC4F0[i].unk138;
+                        c = (8 - D_801EC4F0[i].unk12C) << 10;
                     }
                     ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x11), 0, NULL, 0, 0x1000, c, 1,
                                         (u8 *)&D_801EC4F0[i].unk20, 2);
