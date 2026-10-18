@@ -3,7 +3,13 @@
  * `sll a0,s6,6` (the cos argument) into the pos.vz load delay; the original uses the pos.vy one (case 3, the same
  * shape, matches). What got it here: mode 1 falling through to the common `return 0`, `if (frame >= N) return 1;`
  * per case, an unused SVECTOR for the 0xA0 frame, and `sin(a >> 1)` inline in case 2 (a separate `a >>= 1` moves
- * either the &it->unk14 argument or the shift). */
+ * either the &it->unk14 argument or the shift).
+ * Pass 2 (sched2 trace): sll a0 (insn 1313) depends only on the sra; it becomes ready at T-37 and is the only ready
+ * insn at T-39, so it fills the pos.vz load delay. The original stalls there instead, so in its sched2 input the
+ * sll must have had another successor among the pos.vy/pos.vz copies. A single-insn argument (frame << 4) does land
+ * in the pos.vy delay; no source order of the *31 statements, the pos copies or the scale line (144 variants), and
+ * no temporary for frame << 6 changes the two-insn case. The permuter found nothing in ~3800 iterations. fx_0e0
+ * func_801E8628 (0.98 twin, other partition) has the same open instruction. */
 #include "fxmod/fx_134.h"
 
 typedef struct {

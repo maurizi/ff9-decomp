@@ -3,7 +3,8 @@
  * `li s0,0x1000` (c) before `li a1,28` (original: after; sched2 breaks the tie by LUID, so c = 0x1000 must reach
  * sched2 after the a1 argument set; a single-set block-local `one = 0x1000` gets the order right but lands in v1);
  * branch 1's `li t0,1` (flag, spilled) comes first (original: after fp = 0; all 720 orders of the six branch-1
- * statements tried, the others change allocation). Pass 2 fixed: branch 2's y and branch 3's d share one variable
+ * statements tried, the others change allocation; the permuter's best (flag = 1 after fade = 0) fixes li t0 but then
+ * the j delay slot takes sw flag instead of sw m). Pass 2 fixed: branch 2's y and branch 3's d share one variable
  * (d; case 5 uses e instead), and branch 1's m = 0 after alpha (puts w/alpha/s2 in s7/s5/s2).
  * Earlier levers: case 5 in source order (p.vx, p.vy, p.vz, then q.vx, q.vy, q.vz), q.vx = p.vx copies after the
  * p stores, `c = 0x1000; c -= t;`, n/flag set first in branch 1, block-local x/y/z for the sin/cos call, case 6's y
