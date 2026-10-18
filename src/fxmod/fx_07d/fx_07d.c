@@ -33,7 +33,68 @@ void func_801E80C4(s16 *a, s16 *b) {
     BTLFX_EXPORTS(D_801E9FB0)->btlfx_aimAngles((s16 *)&D_801E9FB0->unk2C->unk54, a, b);
 }
 
-INCLUDE_ASM("asm/us/fx_07d/nonmatchings/fx_07d", func_801E8108);
+s32 func_801E8108(s32 mode, Fx07dOrb *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx07dWork80 *work) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    VECTOR pos;
+    VECTOR scale;
+    SVECTOR rot;
+    s32 c;
+    s32 s;
+    s32 m;
+    s32 a;
+    s32 a2;
+
+    if (mode == 1) {
+        p->unk0 = 0;
+        p->unk14 = ex->btlfx_rand();
+        p->unk16 = (ex->btlfx_rand() & 7) + 8;
+    } else {
+        a2 = (frame << 12) / 12;
+        p->unk14 += p->unk16;
+        func_801E80C4((s16 *)&p->unk4, (s16 *)&rot);
+        rot.vz = p->unk14;
+        pos.vx = p->unk4.vx;
+        pos.vy = p->unk4.vy;
+        pos.vz = p->unk4.vz;
+        m = ex->math_sin(a2 >> 2);
+        m *= 3;
+        s = p->unk2;
+        scale.vx = scale.vy = scale.vz = ((s * m) >> 13) + (s >> 1);
+        if (frame < 3) {
+            c = ((frame + 1) << 12) / 3;
+        } else {
+            c = ex->math_cos(((frame - 3) << 10) / 9);
+        }
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
+        s = c >> 5;
+        s -= 0x80;
+        ex->Hi_ModifyEffModelRGB(work->unk28, s, s, s);
+        ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk2C);
+        s = c * 2;
+        s -= 0x1000;
+        s >>= 5;
+        s -= 0x80;
+        ex->Hi_ModifyEffModelRGB(work->unk2C, s, s, s);
+        if (frame < 8) {
+            p->unkC.vz += 0xFF;
+            scale.vx = scale.vy = scale.vx / 5;
+            scale.vz = scale.vx / 7;
+            ex->Hi_DrawEffModel(&p->unkC, &pos, (s32)&scale, work->unk20);
+            a = frame << 10;
+            a >>= 3;
+            ex->Hi_ModifyEffModelRGB(work->unk20, (ex->math_cos(a) >> 5) - 0x80, (ex->math_cos(a) >> 5) - 0x80,
+                                     (ex->math_cos(a) >> 5) - 0x80);
+        }
+        env->unk28 = 0x200;
+        ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &p->unk4, NULL, (p->unk2 * 3) >> 1, 0, 1, c >> 1,
+                          0, 0);
+        env->unk28 = 0;
+        if (frame >= 12) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 INCLUDE_RODATA("asm/us/fx_07d/nonmatchings/fx_07d", fx_07d_headerPtr);
 

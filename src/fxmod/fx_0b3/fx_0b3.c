@@ -259,7 +259,158 @@ INCLUDE_ASM("asm/us/fx_0b3/nonmatchings/fx_0b3", fx_0b3_op83);
 
 INCLUDE_ASM("asm/us/fx_0b3/nonmatchings/fx_0b3", func_801E8DF4);
 
-INCLUDE_ASM("asm/us/fx_0b3/nonmatchings/fx_0b3", fx_0b3_op84);
+s32 fx_0b3_op84(s32 mode, Fx0b3Work84 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    SVECTOR a;
+    SVECTOR rot;
+    Fx0b3Vec3 scale;
+    Fx0b3Vec3 pos;
+    SVECTOR rot2;
+    Fx0b3Vec3 scale2;
+    Fx0b3Vec3 pos2;
+    SVECTOR rot3;
+    Fx0b3Vec3 scale3;
+    Pool6CEntry *e;
+    s32 frame;
+    s32 t;
+    s32 c;
+    s32 i;
+    s32 u;
+    s32 x;
+    s32 y;
+    s32 z;
+
+    if (mode == 0) {
+        *arg4 = sizeof(Fx0b3Work84);
+    } else if (mode == 1) {
+        work->unk0 = 0;
+        work->unk4 = 0;
+        work->unk60.vx = 0;
+        work->unk60.vy = 0;
+        work->unk60.vz = 0;
+        work->unk54.vx = 0x200;
+        work->unk54.vy = 0x200;
+        work->unk54.vz = 0x200;
+        work->unk48.vx = 0;
+        work->unk48.vy = 0;
+        work->unk48.vz = 0;
+        D_801ED5E0 = env;
+        work->unk88 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8E), 1);
+        work->unk8C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x8F), 1);
+        work->unk80.vx = 0;
+        work->unk80.vy = 0;
+        work->unk80.vz = 0;
+        work->unk74.vx = 0x2800;
+        work->unk74.vy = 0x2800;
+        work->unk74.vz = 0x2800;
+        work->unk68.vx = 0;
+        work->unk68.vy = 0;
+        work->unk68.vz = 0;
+        ex->Hi_SetSummonMotion(((Fx0b3Summon *)env->unk4)->unk54->unk18C, ((Fx0b3Summon *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotFrame(((Fx0b3Summon *)env->unk4)->unk60, 0x1A);
+    } else {
+        frame = entry->unk0;
+        if (work->unk0 == 0) {
+            ex->Hi_DrawEffModel(&work->unk80, (VECTOR *)&work->unk68, (s32)&work->unk74, D_801EE270);
+            func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 0x15), frame, &a);
+            work->unk48.vx = a.vx;
+            work->unk48.vy = a.vy;
+            work->unk48.vz = a.vz;
+            work->unk30.vx = a.vx;
+            work->unk30.vy = a.vy;
+            work->unk30.vz = a.vz;
+            ex->Hi_DrawSummonModel(&work->unk60, (VECTOR *)&work->unk48, (s32)&work->unk54,
+                                   ((Fx0b3Summon *)env->unk4)->unk60, 1);
+            if ((u32)(frame - 0x4B) < 5) {
+                func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 0x3F), frame, &a);
+                rot.vx = 0;
+                rot.vy = 0;
+                rot.vz = 0;
+                pos.vx = 0;
+                pos.vy = -0x5C3;
+                pos.vz = 0x61A8;
+                scale.vx = a.vx;
+                scale.vz = a.vz;
+                scale.vy = a.vy = a.vy / 3;
+                ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk8C);
+            }
+            if ((u32)(frame - 0x4F) < 0x10) {
+                func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), frame, &a);
+                pos2.vz = 0x61A8;
+                rot2.vx = 0;
+                rot2.vy = 0;
+                rot2.vz = 0;
+                pos2.vx = 0;
+                pos2.vy = 0;
+                scale2.vx = a.vx;
+                scale2.vy = a.vy;
+                scale2.vz = a.vz;
+                if (frame < 0x5F) {
+                    c = ex->math_cos((frame - 0x4F) << 6);
+                } else {
+                    c = 0x1000;
+                }
+                ex->Hi_DrawEffModel(&rot2, (VECTOR *)&pos2, (s32)&scale2, work->unk88);
+                y = c >> 5;
+                y -= 0x80;
+                ex->Hi_ModifyEffModelRGB(work->unk88, y, y, y);
+            }
+            if (frame >= 0x4E) {
+                t = frame - 0x4E;
+                u = (t << 12) / 26;
+                a.vz = 0x6590 - (((0x1000 - ex->math_cos(u >> 2)) * 0x8278) >> 12);
+                a.vy = -0x200;
+                scale3.vz = 0x2000;
+                scale3.vx = 0x2000;
+                a.vx = 0;
+                rot3.vz = 0;
+                rot3.vy = 0;
+                rot3.vx = 0;
+                if (frame < 0x53) {
+                    scale3.vy = (ex->math_sin(t * 0x5E8 / 5) >> 2) + 0x200;
+                } else {
+                    scale3.vy = ((ex->math_sin((((frame - 0x53) << 12) / 21) >> 2) * 3) >> 2) + 0x400;
+                }
+                func_801E8DF4(&a, &rot3, &scale3, 0x80, 0x17, 0x3D07, 0, 0x100, 0x400, 0x2BC, u * 3 / 2,
+                              0x100, 0x400, u >> 1, 0x80);
+                env->unk28 = 0x80;
+                for (i = 0; i < 20; i++) {
+                    BTLFX_COPY_SVEC(&a, &D_801EE2A0[i]);
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->unk8, 0x26), &a, NULL, ((i & 1) << 12) + 0x5000,
+                                      frame + i * 5, 1, 0x1000);
+                    a.vy = -0x100;
+                    ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->unk8, 0x24), &a, NULL, 0x7000, frame + i * 3, 1,
+                                      0xC00);
+                }
+                env->unk28 = 0;
+            }
+            func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, 0x27), frame, &work->unk28);
+            work->unk28.vy = -0x100;
+            if (frame == 0) {
+                e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1E), (s32)&work->unk28);
+                if (e != NULL) {
+                    e->unk22 = 0x100;
+                }
+                e = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x31), (s32)&work->unk30);
+                if (e != NULL) {
+                    e->unk14 = (s32)D_801ED0A0;
+                    e->unk12 = 0x30;
+                    e->unkC = 0x1C;
+                    e->unk22 = 0x100;
+                }
+            }
+            ex->func_800E6624(frame * 16, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+            ex->func_800E6624(frame * 12, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+            if (frame >= 0x68) {
+                work->unk0 = 1;
+                ex->func_800E3C58();
+                return 1;
+            }
+        }
+        work->unk4++;
+    }
+    return 0;
+}
 
 s32 func_801E9DB8(s32 a) {
     s32 v = BTLFX_EXPORTS(D_801ED5E0)->math_sin(a);
