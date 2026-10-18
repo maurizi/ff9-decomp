@@ -37,4 +37,32 @@ typedef struct {
 extern SVECTOR D_801E9B68[];
 void func_801E8284(s16 *from, s16 *to, s32 i, s16 *out);
 
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    s32 unk8; /* models */
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+    s32 unk20[14]; /* piece models */
+    SVECTOR unk58; /* position */
+    SVECTOR unk60;
+    SVECTOR unk68;
+    SVECTOR unk70;
+    s16 unk78;
+    s16 unk7A; /* spawned directions */
+    s32 unk7C;
+    s32 unk80;
+} Fx1ccWork80; /* 0x84 */
+
+extern BtlModel D_801E9C44[];
+extern s32 D_801E9B98[14];
+s32 func_801E82D0(s32 mode, Fx1ccObj *o, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 arg5,
+                  Fx1ccInst *inst);
+void func_801E7CBC(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 t, s32 a4, s32 a5, s32 a6, s32 a7, s32 a8, s32 a9);
+
+s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
+
 #endif
