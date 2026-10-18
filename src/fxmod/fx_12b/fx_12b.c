@@ -220,14 +220,39 @@ s32 fx_12b_op82(s32 mode, Fx12bWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E9690);
+void func_801E9690(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(D_801E9B34)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+}
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E96D4);
+s32 func_801E96D4(s32 from, s32 to, s32 t, s32 n) {
+    return (from * (n - t) + to * t) / n;
+}
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E972C);
+void func_801E972C(Fx12bPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx12bPoint *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E9744);
+s32 func_801E9744(Fx12bPath *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx12bPoint *p;
 
-INCLUDE_ASM("asm/us/fx_12b/nonmatchings/fx_12b", func_801E97A8);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
+
+void func_801E97A8(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}
 
 INCLUDE_RODATA("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_headerPtr);

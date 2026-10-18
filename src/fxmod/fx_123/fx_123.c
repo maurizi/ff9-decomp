@@ -148,14 +148,58 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", fx_123_op83);
+s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 frame;
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E8D84);
+    if (mode == 0) {
+        *arg4 = 4;
+    } else if (mode == 1) {
+        D_801E90CC = env;
+        work->unk2 = -1;
+        work->unk0 = -1;
+    } else {
+        frame = entry->unk0;
+        switch (frame) {
+        case 0:
+            work->unk0 = 0x10;
+            break;
+        case 20:
+            work->unk2 = 0x10;
+            break;
+        }
+        if (work->unk0 >= 0) {
+            func_801E8ECC(0, 0xFF, 0x10 - work->unk0, 0x10, 1, 0);
+            work->unk0--;
+        } else if (work->unk2 >= 0) {
+            func_801E8ECC(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
+            work->unk2--;
+        } else {
+            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xFF, 0xFF, 0xFF);
+        }
+        return frame >= 0x20;
+    }
+    return 0;
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E8DC8);
+void func_801E8D84(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(D_801E90CC)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+}
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E8E20);
+s32 func_801E8DC8(s32 from, s32 to, s32 t, s32 n) {
+    return (from * (n - t) + to * t) / n;
+}
+
+void func_801E8E20(Fx123Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx123Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E8E38);
 
-INCLUDE_ASM("asm/us/fx_123/nonmatchings/fx_123", func_801E8ECC);
+void func_801E8ECC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+    s32 c = (from * (n - t) + to * t) / n;
+
+    BTLFX_EXPORTS(D_801E90CC)->btlfx_drawScreenTint((u32 *)(D_801E90CC->unk20 + ot), arg4, c, c, c);
+}

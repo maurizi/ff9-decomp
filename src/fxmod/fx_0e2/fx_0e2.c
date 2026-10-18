@@ -361,19 +361,50 @@ s32 fx_0e2_op85(s32 mode, s16 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC3D8);
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC3F0);
+void func_801EC3F0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(D_801ECC0C)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+}
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC434);
+s32 func_801EC434(s32 from, s32 to, s32 t, s32 n) {
+    return (from * (n - t) + to * t) / n;
+}
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC48C);
+void func_801EC48C(Fx0e2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0e2Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC4A4);
+s32 func_801EC4A4(Fx0e2Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx0e2Point *p;
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC508);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
+
+void func_801EC508(Fx0e2Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0e2Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC520);
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC5B4);
+void func_801EC5B4(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
+    s32 c = (from * (n - t) + to * t) / n;
+
+    BTLFX_EXPORTS(D_801ECC0C)->btlfx_drawScreenTint((u32 *)(D_801ECC0C->unk20 + ot), arg4, c, c, c);
+}
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC64C);
 
@@ -383,4 +414,32 @@ INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC764);
 
 INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC7C0);
 
-INCLUDE_ASM("asm/us/fx_0e2/nonmatchings/fx_0e2", func_801EC920);
+void func_801EC920(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
+    s32 m = x % w;
+    Unk800F78A4 *env = D_801ECC0C;
+    u32 *p = (u32 *)env->unk24;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 n;
+    RECT r2;
+    RECT r;
+
+    env->unk24 = (u8 *)(p + 12);
+    n = w - m;
+    if (m != 0) {
+        r.x = sx;
+        r.y = sy;
+        r.w = m;
+        r.h = h;
+        ex->SetDrawMove(p, &r, dx + n, dy);
+        addPrim(env->unk20 + 0xFFF, p);
+    }
+    p += 6;
+    if (n != 0) {
+        r2.x = sx + m;
+        r2.y = sy;
+        r2.w = n;
+        r2.h = h;
+        ex->SetDrawMove(p, &r2, dx, dy);
+        addPrim(env->unk20 + 0xFFF, p);
+    }
+}

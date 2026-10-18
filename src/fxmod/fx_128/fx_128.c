@@ -78,15 +78,42 @@ s32 func_801E8798(s32 from, s32 to, s32 t, s32 n) {
     return (from * (n - t) + to * t) / n;
 }
 
-INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E87F0);
+void func_801E87F0(Fx128Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx128Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E8808);
 
-INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E889C);
+void func_801E889C(Fx128Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx128Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E88B4);
+s32 func_801E88B4(Fx128Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx128Point *p;
 
-INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E8918);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
+
+void func_801E8918(Fx128Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx128Point *)data;
+}
 
 INCLUDE_ASM("asm/us/fx_128/nonmatchings/fx_128", func_801E8930);
 

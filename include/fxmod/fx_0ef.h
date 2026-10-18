@@ -28,4 +28,16 @@ typedef struct {
 extern Fx0efSpawn D_801E7AC8[5];
 extern Unk800F78A4 *D_801E7B4C;
 
+typedef struct {
+    s16 x, y, z;
+} Fx0efPoint;
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* count */
+    Fx0efPoint *unk4;
+} Fx0efPath;
+void func_801E7A4C(Fx0efPath *path, u16 *data);
+s32 func_801E7A64(Fx0efPath *path, s32 t, SVECTOR *out);
+
 #endif

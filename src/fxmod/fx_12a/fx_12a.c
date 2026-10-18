@@ -150,6 +150,8 @@ s32 fx_12a_op82(s32 mode, Fx12aWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_12a/nonmatchings/fx_12a", func_801E7EA0);
+void func_801E7EA0(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}
 
 INCLUDE_RODATA("asm/us/fx_12a/nonmatchings/fx_12a", fx_12a_headerPtr);

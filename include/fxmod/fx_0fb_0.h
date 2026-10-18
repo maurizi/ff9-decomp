@@ -33,4 +33,10 @@ extern Unk800F78A4 *D_801EB3AC;
 s32 func_801E8540(s32 mode, Fx0fb0Rock *r, Unk800F78A4 *env);
 s32 fx_0fb_0_op81(s32 mode, Fx0fb0Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
 
+typedef struct {
+    SVECTOR unk0;
+    SVECTOR unk8;
+} Fx0fb0Seg; /* 0x10 */
+void func_801E7720(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 p, Fx0fb0Seg *buf, s32 abr);
+
 #endif

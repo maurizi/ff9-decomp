@@ -40,8 +40,46 @@ typedef struct {
     u16 unk68; /* model */
 } Fx114Work82; /* 0x6C */
 
+
 typedef struct {
-    u8 pad0[8];
+    s16 unk0, unk2, unk4; /* position */
+    s16 unk6, unk8, unkA; /* rotation */
+} Fx114Key12;
+
+typedef struct {
+    u16 unk0; /* count */
+    Fx114Key12 *unk4;
+} Fx114Track12;
+void func_801EA65C(Fx114Track12 *track, u16 *data);
+
+typedef struct {
+    s16 x, y, z;
+} Fx114Key6;
+
+typedef struct {
+    u16 unk0; /* count */
+    Fx114Key6 *unk4;
+} Fx114Track6;
+s32 func_801EA670(Fx114Track6 *track, s32 t, SVECTOR *out);
+
+typedef struct {
+    s16 x, y, z;
+} Fx114Point;
+
+typedef struct {
+    s16 unk0;
+    u16 unk2; /* count */
+    Fx114Point *unk4;
+} Fx114Path;
+s32 func_801EA6F4(Fx114Path *path, s32 t, SVECTOR *out);
+void func_801EA758(Fx114Track12 *track, u16 *data);
+s32 func_801EA76C(Fx114Track12 *track, s32 t, SVECTOR *rot, SVECTOR *pos);
+void func_801EA880(Fx114Path *path, u16 *data);
+s32 func_801EA898(Fx114Path *path, s32 t, VECTOR *out);
+void func_801EB154(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy);
+
+typedef struct {
+    Fx114Path unk0;
     s16 unk8;
     s16 unkA;
     s16 unkC; /* brightness */
@@ -52,20 +90,18 @@ typedef struct {
 
 extern Unk800F78A4 *D_801EB768;
 extern Fx114Wave D_801ED078;
+extern Fx114Track6 D_801ED0E8; /* scale keys */
 extern u32 D_801ED1C8[];
 extern u8 D_801EE658[13][0x50];
 
-void func_801E78AC(Fx114Wave *w, u8 *buf, s32 size, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_801EA6DC(Fx114Wave *w, s32 key);
-s32 func_801EA8FC(s32 data, s32 i);
-s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-extern u8 D_801ED0E8[]; /* scale keys */
-
 s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
-void func_801EA808(void *keys, s32 data);
-void func_801EA81C(void *keys, s32 frame, VECTOR *out);
-
-s32 func_801EA914(s32 r, s32 g, s32 t, s32 n, s32 arg4, s32 arg5);
+s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4);
+void func_801E78AC(Fx114Wave *w, u8 *buf, s32 size, s32 a, s32 b, s32 c, s32 d, s32 e);
+void func_801EA6DC(Fx114Path *path, u16 *data);
+void func_801EA808(Fx114Track6 *track, u16 *data);
+s32 func_801EA81C(Fx114Track6 *track, s32 t, VECTOR *out);
+s32 func_801EA8FC(s32 data, s32 i);
+void func_801EA914(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot);
 
 void func_801EA5C0(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out);
 s32 func_801EA604(s32 from, s32 to, s32 t, s32 n);

@@ -57,8 +57,27 @@ s32 fx_0ef_op81(s32 mode, Fx0efWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_0ef/nonmatchings/fx_0ef", func_801E7A4C);
+void func_801E7A4C(Fx0efPath *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx0efPoint *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_0ef/nonmatchings/fx_0ef", func_801E7A64);
+s32 func_801E7A64(Fx0efPath *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx0efPoint *p;
+
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
 
 INCLUDE_RODATA("asm/us/fx_0ef/nonmatchings/fx_0ef", fx_0ef_headerPtr);

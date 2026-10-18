@@ -121,16 +121,69 @@ s32 fx_138_op81(s32 mode, Fx138Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     return 0;
 }
 
-INCLUDE_ASM("asm/us/fx_138/nonmatchings/fx_138", func_801E813C);
+void func_801E813C(SVECTOR *a, SVECTOR *b, s32 t, SVECTOR *out) {
+    BTLFX_EXPORTS(D_801E8500)->LoadAverageShort12(a, b, 0x1000 - t, t, out);
+}
 
-INCLUDE_ASM("asm/us/fx_138/nonmatchings/fx_138", func_801E8180);
+s32 func_801E8180(s32 from, s32 to, s32 t, s32 n) {
+    return (from * (n - t) + to * t) / n;
+}
 
-INCLUDE_ASM("asm/us/fx_138/nonmatchings/fx_138", func_801E81D8);
+void func_801E81D8(Fx138Path *path, u16 *data) {
+    data++;
+    path->unk2 = *data++;
+    path->unk4 = (Fx138Point *)data;
+}
 
-INCLUDE_ASM("asm/us/fx_138/nonmatchings/fx_138", func_801E81F0);
+s32 func_801E81F0(Fx138Path *path, s32 t, SVECTOR *out) {
+    s32 last = path->unk2 - 1;
+    s32 done = 1;
+    Fx138Point *p;
 
-INCLUDE_ASM("asm/us/fx_138/nonmatchings/fx_138", func_801E8254);
+    if (last < t) {
+        t = last;
+    } else {
+        done = 0;
+    }
+    p = &path->unk4[t];
+    out->vx = p->x;
+    out->vy = p->y;
+    out->vz = p->z;
+    return done;
+}
 
-INCLUDE_ASM("asm/us/fx_138/nonmatchings/fx_138", func_801E8268);
+void func_801E8254(Unk800F78A4 *env, s32 i, s32 v) {
+    *((u8 *)env->unk0 + i + 0x10) = v;
+}
+
+void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
+    s32 m = x % w;
+    Unk800F78A4 *env = D_801E8500;
+    u32 *p = (u32 *)env->unk24;
+    BtlfxExports *ex = BTLFX_EXPORTS(env);
+    s32 n;
+    RECT r2;
+    RECT r;
+
+    env->unk24 = (u8 *)(p + 12);
+    n = w - m;
+    if (m != 0) {
+        r.x = sx;
+        r.y = sy;
+        r.w = m;
+        r.h = h;
+        ex->SetDrawMove(p, &r, dx + n, dy);
+        addPrim(env->unk20 + 0xFFF, p);
+    }
+    p += 6;
+    if (n != 0) {
+        r2.x = sx + m;
+        r2.y = sy;
+        r2.w = n;
+        r2.h = h;
+        ex->SetDrawMove(p, &r2, dx, dy);
+        addPrim(env->unk20 + 0xFFF, p);
+    }
+}
 
 INCLUDE_RODATA("asm/us/fx_138/nonmatchings/fx_138", fx_138_headerPtr);
