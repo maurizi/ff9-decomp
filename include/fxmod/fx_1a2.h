@@ -29,6 +29,21 @@ typedef struct {
 
 extern Fx1a2Tri D_801E9854[130];
 extern Fx1a2Piece D_801EA484[130];
+typedef struct {
+    s16 unk0; /* bounce count */
+    s16 unk2; /* sink speed */
+    s16 unk4; /* bounce height */
+    s16 unk6; /* wait frames */
+    s32 unk8; /* state */
+    SVECTOR unkC; /* position */
+    SVECTOR unk14; /* rotation */
+    s32 unk1C; /* scale */
+} Fx1a2Rock;
+
+typedef struct {
+    u8 pad0[0x48];
+    s32 unk48; /* model */
+} Fx1a2Inst;
 
 /* copied */
 extern Unk800F78A4 *D_801E9844;
