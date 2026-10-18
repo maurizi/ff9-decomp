@@ -3,6 +3,9 @@
  * of the allocation. Left: the original keeps the third block's value in s0 (t >>= 1 in place) while the first
  * branch's morph weight m stays in s2; here m and the third block share one variable (s2), and making them separate
  * moves m to v1. Also the else-branch v/sc store registers and the div temporary.
+ * Findings (later session): the original's first branch also does t >>= 2 in place (s0) for the RGB argument, and
+ * its third block t >>= 1 (s0); with both and a block-local y1 in the else branch, the else branch allocates exactly
+ * like the original (y1 s2, &pos s4, &sc s3) but m (no call crossed) then lands in v1 instead of s2 (55 rows).
  * Declarations it needs that are not yet in include/fxmod/fx_0de.h are repeated below. */
 #include "fxmod/fx_0de.h"
 
