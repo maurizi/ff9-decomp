@@ -1,6 +1,5 @@
-/* Draft of fx_097 fx_097_op80. Status: 26 aligned diff lines ignoring registers, rest register allocation. Mode 1
- * keeps 0x9A in a callee-saved register (c here); the original env is spilled to its argument slot. fx_098 op80 is
- * the same code with other constants. */
+/* Draft of fx_097 fx_097_op80. Status: 71 aligned diff lines with registers (26 without): register allocation; mode 1
+ * keeps 0x9A in a callee-saved register. fx_098 op80 is the same code with other constants. */
 #include "btlfx_mod.h"
 
 extern s16 D_801E9D50[];
@@ -63,6 +62,12 @@ extern BtlModel D_801E9DC4[];
 extern s32 D_801E9D18[14];
 void func_801E7CBC(SVECTOR *pos, SVECTOR *rot, s32 scale, s32 p, s32 u, s32 tpage, s32 a6, s32 a7, s32 a8, s32 abr);
 s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init);
+#define gte_stszotz(r0) __asm__ volatile( \
+    "mfc2\t$12, $19;" \
+    "nop;" \
+    "sra\t$12, $12, 2;" \
+    "sw\t$12, 0(%0)" \
+    : : "r"(r0) : "$12", "memory")
 
 s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -79,6 +84,9 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 t;
     s32 u;
     s32 c;
+    s32 c_7;
+    s32 c_5;
+    s32 c_3;
     s32 d;
 
     if (mode == 0) {
@@ -207,9 +215,9 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     it->unkC.vy = work->unk58.vy;
                     it->unkC.vz = work->unk58.vz;
                     t = ex->math_sin(a->vy + 0x800);
-                    c = 0xC8;
-                    it->unkC.vx += (t * c) >> 12;
-                    it->unkC.vz += (ex->math_cos(a->vy + 0x800) * c) >> 12;
+                    c_3 = 0xC8;
+                    it->unkC.vx += (t * c_3) >> 12;
+                    it->unkC.vz += (ex->math_cos(a->vy + 0x800) * c_3) >> 12;
                     it->unk18.vx = it->unkC.vx;
                     it->unk18.vy = it->unkC.vy;
                     it->unk18.vz = it->unkC.vz;
@@ -325,8 +333,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame < 8) {
-                c = 0xFF - ((frame * 0xFF) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 2, c * 2 / 3, c);
+                c_5 = 0xFF - ((frame * 0xFF) >> 3);
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c_5 >> 2, c_5 * 2 / 3, c_5);
                 if (frame == 0) {
                     ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xFF, 0xFF, 0xFF);
                 }
@@ -339,8 +347,8 @@ s32 fx_097_op80(s32 mode, Fx097Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0 - 2 < 4) {
             if (++work->unk7C < 11) {
-                c = work->unk80 + 11;
-                work->unk80 = c - (work->unk7C * 10) / 11;
+                c_7 = work->unk80 + 11;
+                work->unk80 = c_7 - (work->unk7C * 10) / 11;
             } else {
                 work->unk80++;
             }

@@ -1,5 +1,5 @@
-/* Draft of fx_07e fx_07e_op81. Status: full draft, 43 aligned diff lines, all register allocation (ex is $s1 in the
- * original, $s2 here) and the scheduling that follows; case 2 reuses t for the cosine. */
+/* Draft of fx_07e fx_07e_op81. Status: 39 aligned diff lines, register allocation and the scheduling that follows (ex
+ * is $s1 in the original). */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -46,6 +46,7 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     SVECTOR *pos;
     s32 frame;
     s32 t;
+    s32 t_3;
     s32 s;
     s32 c;
 
@@ -99,15 +100,15 @@ s32 fx_07e_op81(s32 mode, Fx07eWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r2.y = 0x180;
             r2.w = 0x7A;
             r2.h = 0x7A;
-            t = (frame << 12) / 12;
+            t_3 = (frame << 12) / 12;
             func_801E7704(1, xy.vx, xy.vy, 0x10, 6, 0xA, 0x80, 0x80, &r2, func_801E8498);
-            t >>= 2;
-            D_801E8B90 = ex->math_cos(t) >> 1;
+            t_3 >>= 2;
+            D_801E8B90 = ex->math_cos(t_3) >> 1;
             env->unk28 = work->unk8;
-            s = 0x1000 - ex->math_sin(t);
-            t = ex->math_cos(t);
-            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), pos, NULL, s * 2, 0, 1, t, 0, 0);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, s * 2, 0, 2, t);
+            s = 0x1000 - ex->math_sin(t_3);
+            t_3 = ex->math_cos(t_3);
+            ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), pos, NULL, s * 2, 0, 1, t_3, 0, 0);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), pos, NULL, s * 2, 0, 2, t_3);
             env->unk28 = 0;
             if (frame >= 12) {
                 return 1;

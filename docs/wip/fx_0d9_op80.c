@@ -1,5 +1,5 @@
-/* Draft of fx_0d9 fx_0d9_op80. Status: full draft, same instructions as the original apart from register allocation
- * (callee-saved registers shifted by one) and the scheduling that follows from it. */
+/* Draft of fx_0d9 fx_0d9_op80. Status: full draft; same instructions as the original apart from register allocation
+ * (122 aligned diff lines with registers, 26 without). Per-block temporaries (t_1, t_2, c_5) improved the allocation. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -52,7 +52,10 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     Pool6CEntry *e;
     s32 frame;
     s32 t;
+    s32 t_2;
+    s32 t_1;
     s32 c;
+    s32 c_5;
     s32 s;
     s32 i;
     s32 j;
@@ -126,10 +129,10 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 24) {
                 env->unk28 = 0x200;
-                t = (frame << 12) / 24;
-                t >>= 2;
+                t_1 = (frame << 12) / 24;
+                t_1 >>= 2;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1E), &work->unk8, NULL,
-                                  ex->math_cos(t) * 3 / 2 + 0x1000, 0, 1, ex->math_cos(t));
+                                  ex->math_cos(t_1) * 3 / 2 + 0x1000, 0, 1, ex->math_cos(t_1));
                 env->unk28 = 0;
             }
             rot.vx = 0x400;
@@ -150,9 +153,9 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = 0;
                 rot.vy = 0;
                 rot.pad = 1;
-                t = frame << 8;
+                t_2 = frame << 8;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x12), &work->unk8, &rot,
-                                  ex->math_sin(t >> 2) * 4, 0, 1, 0x1000 - t);
+                                  ex->math_sin(t_2 >> 2) * 4, 0, 1, 0x1000 - t_2);
             }
             rot2.vx = 0x400;
             rot2.vz = 0;
@@ -184,14 +187,14 @@ s32 fx_0d9_op80(s32 mode, Fx0d9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk14, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80, (ex->math_cos(t) * 2 / 3 >> 5) - 0x80,
                                          (ex->math_cos(t) * 2 / 3 >> 5) - 0x80);
                 env->unk28 = 0x20;
-                c = ex->math_cos(t);
+                c_5 = ex->math_cos(t);
                 for (i = 0, j = frame; i < 16; i++, j += 3) {
                     BTLFX_COPY_SVEC(&p, &work->unk8);
                     p.vx += (ex->math_cos(a) * D_801EA038) >> 12;
                     p.vz += (ex->math_sin(a) * D_801EA038) >> 12;
                     a += 0x100;
                     ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 0x18), &p, NULL,
-                                            0x1800 - ((i & 1) << 12), j & 7, 1, c, ex->btlfx_randCentered(5),
+                                            0x1800 - ((i & 1) << 12), j & 7, 1, c_5, ex->btlfx_randCentered(5),
                                             ex->btlfx_randCentered(5));
                 }
                 env->unk28 = 0;

@@ -1,7 +1,6 @@
-/* Draft of fx_0b3 fx_0b3_op85. Status: 60 aligned mismatches, logic complete. Open: g + (((i & 1) << 12) + 0x3800)
- * gets g + 0x3800 hoisted out of the loop in ours (the original adds per iteration), the case-0 loop counters are
- * allocated in swapped registers, and some scheduling around the 9DFC calls. Stack layout matches (shared
- * SVECTOR/VECTOR slots at 0x68..0x88). */
+/* Draft of fx_0b3 fx_0b3_op85. Status: 27 aligned diff lines with registers: an extra stack spill early on, the a.vy
+ * -0x400 ordering, the 0x3800+((i&1)<<12) addend (original keeps (i&1)<<12 live across the call and adds g last), k/r
+ * register swap. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -183,8 +182,12 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 d;
     s32 m;
     s32 s;
+    s32 s_6;
+    s32 s_5;
     s32 u;
+    s32 u_7;
     s32 k;
+    s32 k_10;
     s32 r;
     s32 g;
     s32 i;
@@ -236,16 +239,16 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     a.vx = 0x1000 - (t >> 1);
                     m = 2;
                 }
-                s = ex->math_sin(t >> 2);
-                u = f >> 2;
-                a.vy = ((0x1000 - s) >> 2) - 0x400 - ((ex->math_cos(u) * 0x44C) >> 12);
-                a.vz = ((0x1000 - ex->math_cos(u)) << 2) - 0x4000;
+                s_5 = ex->math_sin(t >> 2);
+                u_7 = f >> 2;
+                a.vy = ((0x1000 - s_5) >> 2) - 0x400 - ((ex->math_cos(u_7) * 0x44C) >> 12);
+                a.vz = ((0x1000 - ex->math_cos(u_7)) << 2) - 0x4000;
                 b.vx = 0x400;
                 b.vy = 0x400;
                 b.vz = 0;
                 c.vy = 0x1000;
                 c.vx = 0x1000;
-                c.vz = ex->math_cos(u);
+                c.vz = ex->math_cos(u_7);
                 if (frame < 0x10) {
                     d = ex->math_sin((frame << 10) >> 4) + 0x800;
                 } else {
@@ -270,7 +273,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               ex->math_cos(f >> 2) + 0x400, 0x100);
                 g = (t * 3) >> 3;
                 env->unk28 = 0x7C;
-                for (i = 0, j = frame; i < 18; i++, j += 2) {
+                for (i = 0, j = frame; i < 18; j += 2, i++) {
                     if (D_801EE340[i].pad != 0) {
                         ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->unk8, 0x24), &D_801EE340[i], NULL,
                                                 g + (((i & 1) << 12) + 0x3800), j, 1, 0x1000);
@@ -278,7 +281,7 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 env->unk28 = 0x37;
                 if (frame >= 0x1D) {
-                    for (i = 0, j = frame; i < 7; i++, j += 2) {
+                    for (i = 0, j = frame; i < 7; j += 2, i++) {
                         if (D_801EE340[i].pad != 0) {
                             ex->btlfx_drawAnimQuads((u8 *)ex->btlfx_getFileData(entry->unk8, 0x24), &D_801EE340[i], NULL,
                                                     0x2400, j + 4, 1, 0x1000);
@@ -311,9 +314,9 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame >= 0x2B) {
-                s = ((frame - 0x2B) << 10) / 38;
-                ex->math_cos(s);
-                ex->math_cos(s);
+                s_6 = ((frame - 0x2B) << 10) / 38;
+                ex->math_cos(s_6);
+                ex->math_cos(s_6);
                 ex->func_800D0B18((s32)(env->unk20 + 2), -0x20, 0x10, 3, 0x50, 1, &D_801EB5D8, 0x18, frame << 8, 0x186,
                                   0x100);
                 if (frame == 0x2B) {
@@ -324,13 +327,13 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame >= 0x2B) {
-                k = frame - 0x2B;
+                k_10 = frame - 0x2B;
                 p2.vx = 0;
                 p2.vy = 0;
                 p2.vz = 0;
                 scale.vz = 0x1000;
-                ((CVECTOR *)&p1)->r = ((CVECTOR *)&p1)->g = ((CVECTOR *)&p1)->b = -0x10 - (k * 0x8D) / 38;
-                scale.vx = scale.vy = 0x1400 - (k << 10) / 38;
+                ((CVECTOR *)&p1)->r = ((CVECTOR *)&p1)->g = ((CVECTOR *)&p1)->b = -0x10 - (k_10 * 0x8D) / 38;
+                scale.vx = scale.vy = 0x1400 - (k_10 << 10) / 38;
                 ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &p2, &scale, (CVECTOR *)&p1, 0, NULL);
             }
             func_801E78BC(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);

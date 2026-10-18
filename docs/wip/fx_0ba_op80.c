@@ -1,6 +1,6 @@
-/* Draft of fx_0ba fx_0ba_op80. Status: full draft, 54 aligned diff lines ignoring registers: the frame==0x3C copy of
- * unk48 into unk10 (original keeps both stores and re-reads unk10.vx for D_801ECAB8), the morph key index scheduling,
- * and the c accumulator sequence. The bone buffer shares the mpos stack slot here (block locals gave a worse layout). */
+/* Draft of fx_0ba fx_0ba_op80. Status: 54 aligned diff lines with registers: the frame==0x3C copy of unk48 into unk10
+ * (original keeps both stores and re-reads unk10.vx for D_801ECAB8), the morph key index scheduling, and the c
+ * accumulator sequence. */
 #include "btlfx_mod.h"
 
 typedef struct {
@@ -168,6 +168,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 fade;
     s32 bright;
     s32 k;
+    s32 k_2;
+    s32 k_1;
     Pool6CEntry *p;
     s16 *keys;
     s32 frame;
@@ -328,8 +330,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x27), &work->unk10, NULL, fade * 3 + 0x1000,
                                   0, 1, ex->math_cos(fade >> 2));
                 env->unk28 = 0;
-                k = ((fade * 3 / 4 + 0x400) >> 5) - 0x80;
-                ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->unk4)->unk60, k, k, k);
+                k_1 = ((fade * 3 / 4 + 0x400) >> 5) - 0x80;
+                ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->unk4)->unk60, k_1, k_1, k_1);
                 ex->func_800E6624(10000 - work->unk4 * 7, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
                 ex->func_800E6624(10000 - work->unk4 * 7, 0x280, 0x170, 0x38, 0x70, 0x280, 0x100);
             } else {
@@ -385,8 +387,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk28.vz += 0x96;
                 ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->unk8C);
                 ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->unk90);
-                k = ((((frame - 0x16) * 0x180) + 0x400) >> 5) - 0x80;
-                ex->Hi_ModifyEffModelRGB(work->unk90, k, k, k);
+                k_2 = ((((frame - 0x16) * 0x180) + 0x400) >> 5) - 0x80;
+                ex->Hi_ModifyEffModelRGB(work->unk90, k_2, k_2, k_2);
                 ex->func_800E6624(work->unk4 * 5, 0x160, 0x100, 0x20, 0x80, 0x140, 0x100);
             }
             ex->func_800E6624(work->unk4 * 3, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
