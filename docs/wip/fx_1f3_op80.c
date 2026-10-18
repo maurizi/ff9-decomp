@@ -1,6 +1,7 @@
-/* Draft of fx_1f3 fx_1f3_op80. Status: 67 aligned mismatches; equivalent by construction. Open: scheduling in the
- * mode-1 ring init, the case 0x22 store, the unkC8/unkD0 updates, and the ring loop (the original builds two pointer
- * givs for the line points and reloads unk12C for the func_801E7794 argument). */
+/* Draft of fx_1f3 fx_1f3_op80. Status: 55 aligned mismatches; equivalent by construction. Open: scheduling in the
+ * mode-1 ring init and the case 0x22 store; in the ring loop the original's second pointer giv is based at the
+ * point's pad (offsets -4/-2/0) and it reloads unk12C for the func_801E7794 argument. Writing vx through a running
+ * pointer and the other fields by index reproduces the original's two givs. */
 #include "fxmod/fx_1f3.h"
 
 typedef struct {
@@ -342,8 +343,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unkC4, c, c, c);
             }
             work->unkC8.vy = 0x400;
-            work->unkD0.vy = -0x400;
             work->unkC8.vx = 0x200;
+            work->unkD0.vy = -0x400;
             work->unkD0.vx = 0x200;
             work->unkC8.vz += 0x40;
             work->unkD0.vz += 0x40;
@@ -407,8 +408,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         gte_stflg(&flag);
                         dst->vx = out.vx;
                         l->unk4[j].vy = out.vy;
-                        l->unk4[j].pad = 0xC0;
                         l->unk4[j].vz = out.vz;
+                        l->unk4[j].pad = 0xC0;
                     }
                     if (D_801EC4F0[i].unk12C < 4) {
                         c = D_801EC4F0[i].unk12C << 10;
