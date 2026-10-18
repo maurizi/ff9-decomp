@@ -1,4 +1,4 @@
-/* Draft of fx_0e0 fx_0e0_op80. Status: 303 aligned mismatches (143 ignoring registers and spill offsets); equivalent
+/* Draft of fx_0e0 fx_0e0_op80. Status: 276 aligned mismatches (120 ignoring registers and spill offsets); equivalent
  * by construction, untested in the emulator. One temporary per case block fixed most of the global allocation (932
  * rows before); since then: one t for the frame-derived angle of cases 6, 7, 8 and 10 (the original keeps it in s6;
  * case 10 tints with 0xF5 - ((t * 0xF5) >> 12), t = frame << 8), and several adjacent statement swaps (the order of
@@ -86,6 +86,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 r1;
     s32 r2;
     s32 d1;
+    s32 tc;
     s32 frame;
     s32 col;
     s32 scl;
@@ -351,14 +352,15 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 10:
             t = frame << 8;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xF5 - ((t * 0xF5) >> 12),
-                                     0xF5 - ((t * 0xF5) >> 12), 0xF5 - ((t * 0xF5) >> 12));
+            tc = 0xF5 - ((t * 0xF5) >> 12);
+            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, tc, tc, tc);
             u.s.rot.vx = 0;
             u.s.rot.vy = 0;
             u.s.rot.vz = 0x20;
             sc.vy = sc.vx = 0x1100;
             sc.vz = 0x1000;
-            u.s.col.r = u.s.col.g = u.s.col.b = 0xA0 - ((frame << 15) >> 12);
+            tc = 0xA0 - ((frame << 15) >> 12);
+            u.s.col.r = u.s.col.g = u.s.col.b = tc;
             ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, 1, NULL);
             if (frame >= 0x10) {
                 ex->btlfx_clearEffModels();
