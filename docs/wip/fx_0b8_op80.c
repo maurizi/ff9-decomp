@@ -1,4 +1,4 @@
-/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 337 aligned mismatches, 87
+/* Draft of fx_0b8 fx_0b8_op80 (summon with bolt trails and unit lifting). Status: 329 aligned mismatches, 79
  * ignoring registers and spill offsets (spnorm 0x40); untested. c/y/k split per block.
  * Fixed since the 889-row first draft: Fx0b8Unit.unk8 is a 12-byte vector (the struct is 0x34, home position at 0x14),
  * the band loop indexes D_801EA6D8[i], the bolt point loop stores through one SVECTOR pointer d, the function is one
@@ -244,11 +244,11 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk2C.vz = 0;
             work->unk54 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x89), 0xB6, 0x3D40, 0, 0);
             work->unk58 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0x89), 0xB6, 0x3D40, 0, 0);
+            work->unk5C.vx = -0x400;
             work->unk5C.vy = 0x500;
             work->unk64.vy = 0x300;
             work->unk6C.vy = -0x1100;
             work->unk7C.vy = -0x100;
-            work->unk5C.vx = -0x400;
             work->unk5C.vz = 0;
             work->unk64.vx = -0x400;
             work->unk64.vz = 0;
@@ -315,6 +315,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14C.vy = 0x555;
             work->unk14C.vz = 0x555;
             work->unk124 = 0x555;
+            work->unk1A0.vx = 0;
             work->unk13C.vx = 0;
             work->unk13C.vy = -0x246A;
             work->unk13C.vz = 0x418;
@@ -324,7 +325,6 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk8C.vy = 0xC00;
             work->unk8C.vz = 0xC00;
             work->unk6C.vy = -0x286A;
-            work->unk1A0.vx = 0;
             work->unk164.vx = 0;
             work->unk164.vy = -0x246A;
             work->unk164.vz = 0x418;
