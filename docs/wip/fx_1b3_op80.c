@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 382 lines, 206 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 374 lines, 195 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -697,19 +697,17 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             case 3:
                 for (i = 0; i < 6; i++) {
                     if (D_801EB0C4[i].unk4C == 0 && work->unk0[2] >= 0xD) {
-                        s32 part;
                         s32 rad;
                         s32 ang;
 
                         D_801EB0C4[i].unk4C = (ex->btlfx_rand() & 3) + 4;
                         if (i & 1) {
-                            part = 3;
+                            ex->func_800DC818(0x10, 3, (u16 *)&v[0]);
                             rad = 0x200;
                         } else {
-                            part = 9;
+                            ex->func_800DC818(0x10, 9, (u16 *)&v[0]);
                             rad = 0x180;
                         }
-                        ex->func_800DC818(0x10, part, (u16 *)&v[0]);
                         ang = ex->btlfx_rand() & 0xFFF;
                         for (j = 0; j < 8; j++) {
                             D_801EB0C4[i].unk50[j].vx = v[0].vx + ((ex->math_sin(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
