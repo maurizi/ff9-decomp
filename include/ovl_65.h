@@ -201,13 +201,13 @@ extern RECT s_gameoverVramRect; /* const {0, 0, 640, 224} */
 typedef struct {
     DRAWENV draw;
     DISPENV disp;
-    u32 unk70[2]; /* ordering table */
-    DR_TPAGE unk78;
-    SPRT unk80;
-    DR_TPAGE unk94;
-    SPRT unk9C;
-    DR_TPAGE unkB0;
-    TILE unkB8;
+    u32 ot[2];
+    DR_TPAGE picTpage0;
+    SPRT pic0;          /* the GAME OVER picture, left 256 pixels */
+    DR_TPAGE picTpage1;
+    SPRT pic1;          /* right 64 pixels */
+    DR_TPAGE fadeTpage;
+    TILE fade;          /* subtractive black-to-clear fade over the picture */
 } DispBuf; /* 0xC8 */
 extern RECT s_rewardsItemsRect;
 extern u8 s_rewardsPrimBufs[2][0x1400]; /* primitive buffers */

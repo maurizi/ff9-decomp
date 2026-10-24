@@ -406,7 +406,7 @@ void menuStatus_closeAbilityPages(void) {
         s_menuStatus.state = STATUS_STATE_BUSY;
         for (i = 0; i < s_menuStatus.pagesOpen; i++) {
             if (s_menuStatus.pageOpen[i] != 0) {
-                s_menuStatusPageCloseTweens[i].unk0 = s_menuStatus.pagesOpen - 1 - i;
+                s_menuStatusPageCloseTweens[i].delay = s_menuStatus.pagesOpen - 1 - i;
                 func_80063118(&s_menuStatus.pageWins[i], &s_menuStatusPageCloseTweens[i], 0);
             }
         }
@@ -445,10 +445,10 @@ void menuStatus_updateHelp(void) {
     D_80077DE8.unk4 = 0xA;
     D_80077DE8.unk8 = text_get(STATUS_TEXT_HELP);
     for (i = 0; i < 7; i++) {
-        func_8002BE44(i, D_801F11CC[i].unk0);
-        func_8002BE74(i, D_801F11CC[i].unk4);
+        func_8002BE44(i, s_menuStatusHelpArgs[i].str);
+        func_8002BE74(i, s_menuStatusHelpArgs[i].val);
     }
-    func_8002BE44(i, D_801F1204);
+    func_8002BE44(i, s_menuStatusHelpArg7);
 }
 
 INCLUDE_RODATA("asm/us/ovl_38/nonmatchings/ovl_38", g_statusMenuText);

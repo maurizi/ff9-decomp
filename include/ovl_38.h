@@ -49,22 +49,23 @@ extern StatusMenu s_menuStatus;
 /* window slide animation for func_80063118: main's TweenDef, but with a signed delay (unk0), which is what
  * matches menuStatus_closeAbilityPages */
 typedef struct {
-    s16 unk0; /* start delay */
-    s16 unk2; /* frame count */
-    s8 *unk4; /* x deltas */
-    s8 *unk8; /* y deltas */
-    void (*unkC)(void); /* called when done */
+    s16 delay;  /* start delay */
+    s16 frames; /* frame count */
+    s8 *dx;     /* x deltas */
+    s8 *dy;     /* y deltas */
+    void (*onDone)(void);
 } TextTween;
 extern TextTween s_menuStatusPageCloseTweens[8]; /* page close, delay set per page */
 extern RECT s_menuStatusPageRects[];      /* page window positions */
 extern TextTween s_menuStatusPageOpenTween;    /* page open, then menuStatus_onPageOpened */
 
+/* string and value arguments of the help text's codes (func_8002BE44 / func_8002BE74) */
 typedef struct {
-    u8 *unk0;
-    s32 unk4;
-} Unk801F11CC;
-extern Unk801F11CC D_801F11CC[7];
-extern u8 D_801F1204[];
+    u8 *str;
+    s32 val;
+} HelpArg;
+extern HelpArg s_menuStatusHelpArgs[7];
+extern u8 s_menuStatusHelpArg7[];
 extern u8 g_statusMenuText[];
 extern void (*s_menuStatusInput[])(void);
 

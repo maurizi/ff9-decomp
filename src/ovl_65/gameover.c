@@ -15,27 +15,27 @@ void gameover_main(s32 arg0) {
     gameover_loadImage(arg0);
     while (1) {
         cur = (cur == &b[0]) ? &b[1] : &b[0];
-        ClearOTag(cur->unk70, 2);
+        ClearOTag(cur->ot, 2);
         switch (state) {
         case 0:
             state++;
             break;
         case 1:
-            setRGB0(&cur->unkB8, c, c, c);
+            setRGB0(&cur->fade, c, c, c);
             c -= 4;
-            addPrim(&cur->unk70[0], &cur->unk78);
-            addPrim(&cur->unk70[0], &cur->unk94);
-            addPrim(&cur->unk70[1], &cur->unkB0);
+            addPrim(&cur->ot[0], &cur->picTpage0);
+            addPrim(&cur->ot[0], &cur->picTpage1);
+            addPrim(&cur->ot[1], &cur->fadeTpage);
             if (c < 0) {
                 c = 0;
                 state++;
             }
             break;
         case 2:
-            setRGB0(&cur->unkB8, 0, 0, 0);
-            addPrim(&cur->unk70[0], &cur->unk78);
-            addPrim(&cur->unk70[0], &cur->unk94);
-            addPrim(&cur->unk70[1], &cur->unkB0);
+            setRGB0(&cur->fade, 0, 0, 0);
+            addPrim(&cur->ot[0], &cur->picTpage0);
+            addPrim(&cur->ot[0], &cur->picTpage1);
+            addPrim(&cur->ot[1], &cur->fadeTpage);
             if (g_padPortPressed[0] & BTN_CROSS) {
                 state++;
             }
@@ -49,10 +49,10 @@ void gameover_main(s32 arg0) {
                     state++;
                 }
             } else {
-                setRGB0(&cur->unkB8, c, c, c);
-                addPrim(&cur->unk70[0], &cur->unk78);
-                addPrim(&cur->unk70[0], &cur->unk94);
-                addPrim(&cur->unk70[1], &cur->unkB0);
+                setRGB0(&cur->fade, c, c, c);
+                addPrim(&cur->ot[0], &cur->picTpage0);
+                addPrim(&cur->ot[0], &cur->picTpage1);
+                addPrim(&cur->ot[1], &cur->fadeTpage);
             }
             break;
         case 4:
@@ -64,7 +64,7 @@ void gameover_main(s32 arg0) {
         DrawSync(0);
         VSync(0);
         PutDispEnv(&cur->disp);
-        DrawOTagEnv(cur->unk70, &cur->draw);
+        DrawOTagEnv(cur->ot, &cur->draw);
     }
 }
 
@@ -82,21 +82,21 @@ void gameover_initDisp(DispBuf *b) {
         b[i].draw.isbg = 1;
         b[i].disp.isinter = 0;
         setRECT(&b[i].disp.screen, 0, 8, 256, 224);
-        func_80063580(&b[i].unk78, GetTPage(2, 0, 0, 256));
-        setXY0(&b[i].unk80, 0, 0);
-        setUV0(&b[i].unk80, 0, 0);
-        setWH(&b[i].unk80, 256, 224);
-        setRGB0(&b[i].unk80, 0x80, 0x80, 0x80);
-        func_80063580(&b[i].unk94, GetTPage(2, 0, 256, 256));
-        setXY0(&b[i].unk9C, 256, 0);
-        setUV0(&b[i].unk9C, 0, 0);
-        setWH(&b[i].unk9C, 64, 224);
-        setRGB0(&b[i].unk9C, 0x80, 0x80, 0x80);
-        func_800635E0(&b[i].unkB0, GetTPage(0, 2, 0, 0));
-        setXY0(&b[i].unkB8, 0, 0);
-        setWH(&b[i].unkB8, 320, 224);
-        setRGB0(&b[i].unkB8, 0, 0, 0);
-        SetSemiTrans(&b[i].unkB8, 1);
+        func_80063580(&b[i].picTpage0, GetTPage(2, 0, 0, 256));
+        setXY0(&b[i].pic0, 0, 0);
+        setUV0(&b[i].pic0, 0, 0);
+        setWH(&b[i].pic0, 256, 224);
+        setRGB0(&b[i].pic0, 0x80, 0x80, 0x80);
+        func_80063580(&b[i].picTpage1, GetTPage(2, 0, 256, 256));
+        setXY0(&b[i].pic1, 256, 0);
+        setUV0(&b[i].pic1, 0, 0);
+        setWH(&b[i].pic1, 64, 224);
+        setRGB0(&b[i].pic1, 0x80, 0x80, 0x80);
+        func_800635E0(&b[i].fadeTpage, GetTPage(0, 2, 0, 0));
+        setXY0(&b[i].fade, 0, 0);
+        setWH(&b[i].fade, 320, 224);
+        setRGB0(&b[i].fade, 0, 0, 0);
+        SetSemiTrans(&b[i].fade, 1);
     }
 }
 

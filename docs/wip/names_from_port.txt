@@ -2148,3 +2148,10 @@ D_8019F7D0 g_mbgSlotRumble  # [code] per ring slot - the frame's pad vibration (
 ## ovl_64: ovl_64 (movie player, frame camera)
 D_8019F278 g_mbgStartCameraId  # [code] id (Ovl64FrameInfo.id) of the first frame's camera, saved with g_mbgStartCamera by mbg_readFrame and returned by mbg_getStartCamera
 # FIELDS include/ovl_64.h Ovl64FrameInfo: unk0=id,unk2..unk12=m00..m22,unk14=tx,unk18=ty,unk1C=tz,unk20=ofsX,unk22=ofsY; Ovl64Header: unk0..unk10=m00..m22,unk14=tx,unk18=ty,unk1C=tz; Ovl64Size: unk0=x,unk4=y; Ovl64Pair: unk0=size,unk4=data; Ovl64Cfg: b7=vibrationOff
+
+## ovl_38: ovl_38 (status menu, help arguments)
+D_801F11CC s_menuStatusHelpArgs  # [code] string and value arguments of help text 0 (func_8002BE44 / func_8002BE74), set by menuStatus_updateHelp
+D_801F1204 s_menuStatusHelpArg7  # [code] string argument 7 of help text 0
+# FIELDS include/ovl_38.h TextTween: unk0=delay,unk2=frames,unk4=dx,unk8=dy,unkC=onDone; Unk801F11CC renamed HelpArg: unk0=str,unk4=val
+# FIELDS include/ovl_34.h ConfigText: unk0=title,unk1=options; GaugeIcon: unk0=twX,unk1=twY,unk2=uv,unk4=w,unk5=h
+# FIELDS include/ovl_65.h DispBuf: unk70=ot,unk78=picTpage0,unk80=pic0,unk94=picTpage1,unk9C=pic1,unkB0=fadeTpage,unkB8=fade

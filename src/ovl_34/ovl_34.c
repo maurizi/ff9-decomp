@@ -355,7 +355,7 @@ void menuConfig_updateHelp(void) {
     if (s_menuConfig.editing == 0) {
         D_80077DE8.unk8 = text_get(i + CONFIG_TEXT_ROW_HELP);
         for (j = 0; j < 2; j++) {
-            func_8002BE44(j, text_get(s_menuConfigRowText[i].unk1[j]));
+            func_8002BE44(j, text_get(s_menuConfigRowText[i].options[j]));
         }
         return;
     }
@@ -396,22 +396,22 @@ void menuConfig_drawSlider(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
         }
     }
     func_80027710(x, y, otz, ic, 0);
-    func_80027710(x + width - ec->unk4, y, otz, ec, 0);
+    func_80027710(x + width - ec->w, y, otz, ec, 0);
     SetTexWindow(g_primPtr, &s_menuConfigSliderTexWindow);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
     p->rgbc = 0x64808080;
-    p->xy = ((x + ic->unk4) & 0xFFFF) | (y << 16);
-    p->uvclut = mid->unk2 << 16;
-    p->wh = (width - (ic->unk4 + ec->unk4)) | (mid->unk5 << 16);
+    p->xy = ((x + ic->w) & 0xFFFF) | (y << 16);
+    p->uvclut = mid->uv << 16;
+    p->wh = (width - (ic->w + ec->w)) | (mid->h << 16);
     addPrim(&g_ot[otz], p);
     g_primPtr = (u8 *)(p + 1);
-    r.x = mid->unk0;
-    r.y = mid->unk1;
-    r.w = mid->unk4;
-    r.h = mid->unk5;
+    r.x = mid->twX;
+    r.y = mid->twY;
+    r.w = mid->w;
+    r.h = mid->h;
     SetTexWindow(g_primPtr, &r);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
@@ -584,62 +584,62 @@ void menuConfig_drawRow(RECT *r, s32 otz, s32 i) {
 }
 
 void menuConfig_drawSoundRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_SOUND].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_SOUND) & 1, CONFIG_ROW_SOUND);
 }
 
 void menuConfig_drawControllerRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CONTROLLER].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CONTROLLER) & 1, CONFIG_ROW_CONTROLLER);
 }
 
 void menuConfig_drawCursorRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CURSOR].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CURSOR) & 1, CONFIG_ROW_CURSOR);
 }
 
 void menuConfig_drawAtbRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_ATB].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_ATB].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_ATB) & 1, CONFIG_ROW_ATB);
 }
 
 void menuConfig_drawCameraRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_CAMERA].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_CAMERA) & 1, CONFIG_ROW_CAMERA);
 }
 
 void menuConfig_drawBattleControlRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_CONTROL].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_BTL_CONTROL) & 1, CONFIG_ROW_BTL_CONTROL);
 }
 
 void menuConfig_drawMovementRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MOVEMENT].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_MOVEMENT) & 1, CONFIG_ROW_MOVEMENT);
 }
 
 void menuConfig_drawBattleSpeedRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_BTL_SPEED].title, 0);
     menuConfig_drawSliderRow(r, otz, (g_gameState->unk24 >> CFG_SHIFT_BTL_SPEED) & 7, CFG_BTL_SPEED_MAX, CONFIG_ROW_BTL_SPEED);
 }
 
 void menuConfig_drawMessageSpeedRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_MSG_SPEED].title, 0);
     menuConfig_drawSliderRow(r, otz, (g_gameState->unk24 >> CFG_SHIFT_MSG_SPEED) & 7, CFG_MSG_SPEED_MAX, CONFIG_ROW_MSG_SPEED);
 }
 
 void menuConfig_drawHereIconRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_HERE_ICON].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_HERE_ICON) & 1, CONFIG_ROW_HERE_ICON);
 }
 
 void menuConfig_drawWindowColorRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_WINDOW_COLOR].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_WINDOW_COLOR) & 1, CONFIG_ROW_WINDOW_COLOR);
 }
 
 void menuConfig_drawTargetWindowRow(RECT *r, s32 otz) {
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].unk0, 0);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_TARGET_WINDOW].title, 0);
     menuConfig_drawChoice(r, otz, (g_gameState->unk24 >> CFG_BIT_TARGET_WINDOW) & 1, CONFIG_ROW_TARGET_WINDOW);
 }
 
@@ -654,7 +654,7 @@ void menuConfig_drawVibrationRow(RECT *r, s32 otz) {
     } else {
         sel = c = 2;
     }
-    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_VIBRATION].unk0, c);
+    menuConfig_drawText(r->x + 0xF, r->y + 6, otz, s_menuConfigRowText[CONFIG_ROW_VIBRATION].title, c);
     menuConfig_drawChoice(r, otz, sel, CONFIG_ROW_VIBRATION);
 }
 
@@ -689,7 +689,7 @@ void menuConfig_drawChoice(RECT *r, s32 otz, s32 sel, s32 item) {
     s32 i;
 
     for (i = 0; i < 2; i++) {
-        menuConfig_drawText(r->x + 0x90 + i * 0x5A, r->y + 6, otz, s_menuConfigRowText[item].unk1[i], sel != i ? 2 : 0);
+        menuConfig_drawText(r->x + 0x90 + i * 0x5A, r->y + 6, otz, s_menuConfigRowText[item].options[i], sel != i ? 2 : 0);
     }
 }
 

@@ -129,8 +129,8 @@ void func_800355DC(void); /* empty function, passed to func_8003556C as a no-op 
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 
 typedef struct {
-    u8 unk0;    /* title text id */
-    u8 unk1[3]; /* option text ids */
+    u8 title;      /* title text id */
+    u8 options[3]; /* option text ids */
 } ConfigText;
 extern ConfigText s_menuConfigRowText[CONFIG_ROW_COUNT];
 extern void (*s_menuConfigSubInput[])(void);
@@ -183,11 +183,11 @@ u8 menuConfig_isWindowMoving(void);
 #endif
 /* slider gauge pieces drawn by func_80027710: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
-    u8 unk0; /* texture window x */
-    u8 unk1; /* texture window y */
-    u16 unk2; /* uv */
-    u8 unk4; /* width */
-    u8 unk5; /* height */
+    u8 twX;  /* texture window x */
+    u8 twY;  /* texture window y */
+    u16 uv;
+    u8 w;
+    u8 h;
     u8 pad6[2];
 } GaugeIcon;
 extern GaugeIcon D_80068988[3];
