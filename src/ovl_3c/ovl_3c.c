@@ -12,22 +12,22 @@ void shop_drawMessage(void) {
 void shop_inputMenu(void) {
     if (!func_8002F810()) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             shop_close();
             return;
         }
         if (g_padRepeat & PAD_UP) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             s_shop.cursor = s_shop.cursor == 0 ? s_shop.entryCount - 1 : s_shop.cursor - 1;
             return;
         }
         if (g_padRepeat & PAD_DOWN) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             s_shop.cursor = s_shop.cursor >= s_shop.entryCount - 1 ? 0 : s_shop.cursor + 1;
             return;
         }
         if (g_padRepeat & BTN_CROSS) {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             shop_selectMenu();
         }
     }
@@ -54,7 +54,7 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
 
     memset(sum, r, 4);
     for (i = 1; i < 5; i++) {
-        if (equip[i] != 0xFF) {
+        if (equip[i] != ITEM_NONE) {
             if (equip[i] < 0xE0) {
                 j = equip[i] - 0x58;
                 b = &D_8006D328[j];
@@ -83,7 +83,7 @@ s32 shop_sumArmorStat(s32 stat, u8 *equip) {
 }
 
 void shop_leaveMode(void) {
-    s_shop.messageOtz = 5;
+    s_shop.messageOtz = SHOP_OTZ_MENU;
     func_8002F9F0();
     func_8002F8A8(shop_onModeLeft);
 }
@@ -122,10 +122,10 @@ void shop_init(void) {
     s_shop.cursor = 0;
     s_shop.inMode = 0;
     s_shop.entryCount = shop_countEntries(s_shop.kind);
-    s_shop.savedOtz = func_8002F8E4(7);
-    s_shop.messageOtz = 5;
+    s_shop.savedOtz = func_8002F8E4(SHOP_FADE_OTZ);
+    s_shop.messageOtz = SHOP_OTZ_MENU;
     s_shop.visits = 0;
-    shop_setHelp(0xD);
+    shop_setHelp(SHOP_TEXT_WELCOME);
     text_setBank(g_shopText);
     func_8003556C(shop_updateHelp);
     func_80028720(s_shopImage, 0xD);
@@ -136,7 +136,7 @@ void shop_update(void) {
     shop_drawTitle();
     shop_drawMessage();
     if (s_shop.inMode != 0) {
-        s_shopModes[s_shop.kind][s_shop.cursor][1]();
+        s_shopModes[s_shop.kind][s_shop.cursor][SHOP_MODE_UPDATE]();
         return;
     }
     shop_inputMenu();
@@ -152,7 +152,7 @@ void shop_exit(void) {
 void shop_drawTitle(void) {
     func_8002DEE4(&s_shopTitleRect, 5, 2);
     func_8002705C(&s_shopTitleRect, 0x28, 2);
-    text_drawBlock(s_shopTitleRect.x + 0xA, s_shopTitleRect.y + 6, 4, (u8 *)text_getFrom(g_shopText, s_shop.kind), 0);
+    text_drawBlock(s_shopTitleRect.x + 0xA, s_shopTitleRect.y + 6, 4, (u8 *)text_getFrom(g_shopText, s_shop.kind + SHOP_TEXT_TITLE), 0);
 }
 
 void shop_drawMenuAll(void) {
@@ -174,11 +174,11 @@ void shop_drawMenuCursor(void) {
 
 void shop_onModeLeft(void) {
     s_shop.inMode = 0;
-    s_shopModes[s_shop.kind][s_shop.cursor][2]();
+    s_shopModes[s_shop.kind][s_shop.cursor][SHOP_MODE_EXIT]();
     func_8002F9D0();
     func_8003556C(shop_updateHelp);
     text_setBank(g_shopText);
-    shop_setHelp(s_shop.visits != 0 ? 0xE : 0xD);
+    shop_setHelp(s_shop.visits != 0 ? SHOP_TEXT_ANYTHING_ELSE : SHOP_TEXT_WELCOME);
 }
 
 s32 shop_countEntries(s32 kind) {
@@ -186,7 +186,7 @@ s32 shop_countEntries(s32 kind) {
     s32 i;
 
     n = 1;
-    for (i = 0; i < 3; i++) {
+    for (i = 0; i < SHOP_MODE_COUNT; i++) {
         if (s_shopModes[kind][i][0] != NULL || s_shopModes[kind][i][1] != NULL || s_shopModes[kind][i][2] != NULL) {
             n++;
         }
@@ -223,25 +223,25 @@ void shop_loadImages(void) {
 }
 
 s32 shop_getKind(s32 id) {
-    if (id < 0x20) {
+    if (id < SHOP_ID_SYNTH) {
         return shop_isEquipmentShop(id);
     }
-    return 2;
+    return SHOP_KIND_SYNTH;
 }
 
 void shop_enterMode(void) {
     s_shop.inMode = 1;
-    s_shopModes[s_shop.kind][s_shop.cursor][0]();
+    s_shopModes[s_shop.kind][s_shop.cursor][SHOP_MODE_INIT]();
     func_8002F9D0();
     func_8002F8A8(shop_onModeEntered);
 }
 
 void shop_onModeEntered(void) {
-    s_shop.messageOtz = 0x24;
+    s_shop.messageOtz = SHOP_OTZ_MODE;
 }
 
 void shopBuy_init(void) {
-    s_shopBuy.state = 1;
+    s_shopBuy.state = SHOP_ST_LIST;
     shopBuy_loadList();
     func_80035580(NULL);
     func_8003556C(shopBuy_updateHelp);
@@ -250,7 +250,7 @@ void shopBuy_init(void) {
     setRECT(&s_shopBuy.partyRect, 8, 0x97, 0x12C, 0x45);
     setRECT(&s_shopBuy.quantityRect, 0x62, 0x60, 0x7C, 0x45);
     text_setBank(g_shopBuyText);
-    shop_setHelp(0xF);
+    shop_setHelp(SHOP_TEXT_BUY_WHAT);
     func_8002EDFC(&s_shopBuy.list, s_shopBuy.count, s_shopBuy.hasEquipment ? 7 : 0xB, 1, s_shopBuy.listRect.h);
     shop_collectMembers();
 }
@@ -260,23 +260,23 @@ void shopBuy_inputQuantity(void) {
     s32 t;
 
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         shopBuy_closeQuantity();
         return;
     }
     if ((g_padRepeat & PAD_RIGHT) && s_shopBuy.quantity < s_shopBuy.maxQuantity) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_shopBuy.quantity++;
         return;
     }
     if ((g_padRepeat & PAD_LEFT) && s_shopBuy.quantity >= 2) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_shopBuy.quantity--;
         return;
     }
     if ((g_padRepeat & PAD_UP) && s_shopBuy.quantity < s_shopBuy.maxQuantity) {
-        snd_playSe(0x67);
-        q = s_shopBuy.quantity + 10;
+        snd_playSe(SE_CURSOR);
+        q = s_shopBuy.quantity + SHOP_QUANTITY_STEP;
         if (q > s_shopBuy.maxQuantity) {
             q = s_shopBuy.maxQuantity;
         }
@@ -284,8 +284,8 @@ void shopBuy_inputQuantity(void) {
         return;
     }
     if ((g_padRepeat & PAD_DOWN) && s_shopBuy.quantity >= 2) {
-        snd_playSe(0x67);
-        t = s_shopBuy.quantity - 10;
+        snd_playSe(SE_CURSOR);
+        t = s_shopBuy.quantity - SHOP_QUANTITY_STEP;
         q = 1;
         if (t > 0) {
             q = t;
@@ -294,7 +294,7 @@ void shopBuy_inputQuantity(void) {
         return;
     }
     if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x415);
+        snd_playSe(SE_SHOP);
         shopBuy_confirm();
     }
 }
@@ -396,7 +396,7 @@ void shopBuy_drawParty(void) {
                 cur = shop_sumArmorStat(kind, c->equip);
                 new = shop_sumArmorStat(kind, eq.v);
             }
-            if (kind == 4) {
+            if (kind == EQUIP_SLOT_ACCESSORY) {
                 *(s32 *)buf = s_shopBuyNoStat;
             } else {
                 text_formatNumber(new, buf, 3, 1);
@@ -404,9 +404,9 @@ void shopBuy_drawParty(void) {
             shop_drawStatIcon(x - 1, y + 0x2E, 0x1E, s_shopBuyStatIcon[kind], 0);
             ui_drawSmallDigits(x + 0xC, y + 0x2F, 0x1E, buf, 0);
             if (cur < new) {
-                shop_drawStatIcon(x - 1, y + 0x27, 0x1E, 5, 0);
+                shop_drawStatIcon(x - 1, y + 0x27, 0x1E, SHOP_ICON_UP, 0);
             } else if (new < cur) {
-                shop_drawStatIcon(x - 1, y + 0x28, 0x1E, 6, 0);
+                shop_drawStatIcon(x - 1, y + 0x28, 0x1E, SHOP_ICON_DOWN, 0);
             }
         }
         func_80028204(x, y, 0x1E, func_80028954((u8)s_shop.members[i]), 0x2D, !ok);
@@ -427,8 +427,8 @@ void shopBuy_drawQuantityWindow(Window *w) {
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
     func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, 0x19), 0);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, 0x1A), 0);
+    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
+    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     text_formatNumber(b->quantity, buf, 2, 1);
     ui_drawSmallDigits(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
     text_formatNumber(b->quantity * it->unk4, buf, 7, 1);
@@ -438,13 +438,13 @@ void shopBuy_drawQuantityWindow(Window *w) {
 
 void shopBuy_drawCursor(void) {
     if (!func_8002F810()) {
-        if (s_shopBuy.state == 1 || (D_80077DC0 & 3)) {
+        if (s_shopBuy.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
             D_80077DE8.unk4 = 0x14;
             D_80077DE8.unk0 = s_shopBuy.listRect.x - 8;
             D_80077DE8.unk2 = s_shopBuy.listRect.y + (s16)(s_shopBuy.list.cursor * 0xF + 0xB);
             func_800355E4();
         }
-        if (s_shopBuy.state == 2) {
+        if (s_shopBuy.state == SHOP_ST_QUANTITY) {
             D_80077DE8.unk0 = s_shopBuy.quantityWin->unk0 - 0xE;
             D_80077DE8.unk2 = s_shopBuy.quantityWin->unk2 + 0x22;
             D_80077DE8.unk4 = s_shopBuy.quantityWin->unk18 - 1;
@@ -468,25 +468,25 @@ void shopBuy_openQuantity(void) {
     id = m->items[l->unk5 + l->cursor];
     it = &D_80069018[id];
     have = item_getCount(id);
-    if (have < 99 && g_gameState->unk1C->gil >= it->unk4) {
+    if (have < ITEM_MAX_COUNT && g_gameState->unk1C->gil >= it->unk4) {
         m->quantity = 1;
-        q = it->unk4 != 0 ? g_gameState->unk1C->gil / it->unk4 : 99;
+        q = it->unk4 != 0 ? g_gameState->unk1C->gil / it->unk4 : ITEM_MAX_COUNT;
         n = q;
         m2 = &s_shopBuy;
-        if ((s32)n > 99 - have) {
-            n = 99 - have;
+        if ((s32)n > ITEM_MAX_COUNT - have) {
+            n = ITEM_MAX_COUNT - have;
         }
         m2->maxQuantity = n;
-        s_shopBuy.state = 0;
+        s_shopBuy.state = SHOP_ST_NONE;
         m2->quantityWin = func_8002DC54(&m2->quantityRect, 0xA, 2);
         win_setDrawContent(s_shopBuy.quantityWin, shopBuy_drawQuantityWindow);
         win_setOnOpened(s_shopBuy.quantityWin, shopBuy_onQuantityOpened);
         win_setOnClosed(s_shopBuy.quantityWin, shopBuy_onQuantityClosed);
         func_8002E31C(s_shopBuy.quantityWin, 1);
         func_8002E304(s_shopBuy.quantityWin, D_800704A4);
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     } else {
-        snd_playSe(0x66);
+        snd_playSe(SE_BUZZER);
     }
 }
 
@@ -509,8 +509,8 @@ s32 shop_isEquipmentShop(s32 shop) {
     u8 id;
 
     list = s_shopItems[shop];
-    for (i = 0; i < 0x20; i++) {
-        if (list[i] != 0xFF) {
+    for (i = 0; i < SHOP_LIST_SIZE; i++) {
+        if (list[i] != ITEM_NONE) {
             if (!(D_80069018[list[i]].unkF & 0xF0)) {
                 return 0;
             }
@@ -548,7 +548,7 @@ void shopBuy_inputList(void) {
 
     if (m->unk8 == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             shop_leaveMode();
             return;
         }
@@ -581,7 +581,7 @@ void shopBuy_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     ok = 0;
     id = s_shopBuy.items[idx];
     it = &D_80069018[id];
-    if (item_getCount(id) < 99) {
+    if (item_getCount(id) < ITEM_MAX_COUNT) {
         ok = g_gameState->unk1C->gil >= it->unk4;
     }
     x = 0x18;
@@ -594,18 +594,18 @@ void shopBuy_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
 }
 
 void shopBuy_closeQuantity(void) {
-    s_shopBuy.state = 0;
+    s_shopBuy.state = SHOP_ST_NONE;
     win_close(s_shopBuy.quantityWin);
 }
 
 void shopBuy_onQuantityOpened(Window *w) {
-    s_shopBuy.state = 2;
-    shop_setHelp(0x12);
+    s_shopBuy.state = SHOP_ST_QUANTITY;
+    shop_setHelp(SHOP_TEXT_BUY_HOW_MANY);
 }
 
 void shopBuy_onQuantityClosed(Window *w) {
-    s_shopBuy.state = 1;
-    shop_setHelp(0xF);
+    s_shopBuy.state = SHOP_ST_LIST;
+    shop_setHelp(SHOP_TEXT_BUY_WHAT);
 }
 
 void shopBuy_loadList(void) {
@@ -614,8 +614,8 @@ void shopBuy_loadList(void) {
     s_shopBuy.items = s_shopItems[shop_getId()];
     s_shopBuy.hasEquipment = 0;
     s_shopBuy.count = 0;
-    for (i = 0; i < 0x20; i++) {
-        if (s_shopBuy.items[i] == 0xFF) {
+    for (i = 0; i < SHOP_LIST_SIZE; i++) {
+        if (s_shopBuy.items[i] == ITEM_NONE) {
             break;
         }
         if (D_80069018[s_shopBuy.items[i]].unkF & 0xF8) {
@@ -649,17 +649,17 @@ void shopBuy_updateHelp(void) {
 
     D_80077DE8.unk8 = NULL;
     l = &s_shopBuy.list;
-    if (s_shopBuy.state == 1) {
+    if (s_shopBuy.state == SHOP_ST_LIST) {
         id = s_shopBuy.items[l->unk5 + l->cursor];
         D_80077DE8.unk8 = s_shopItemHelp + D_80069018[id].unk2;
-    } else if (s_shopBuy.state == 2) {
-        D_80077DE8.unk8 = text_get(3);
+    } else if (s_shopBuy.state == SHOP_ST_QUANTITY) {
+        D_80077DE8.unk8 = text_get(SHOP_BUY_TEXT_QUANTITY_HELP);
     }
 }
 
 void shopSynth_init(void) {
     shopSynth_loadRecipes();
-    s_shopSynth.state = 1;
+    s_shopSynth.state = SHOP_ST_LIST;
     func_80035580(NULL);
     func_8003556C(shopSynth_updateHelp);
     setRECT(&s_shopSynth.infoRect, 0xBC, 0x26, 0x78, s_shopSynth.hasEquipment ? 0x71 : 0xAD);
@@ -667,7 +667,7 @@ void shopSynth_init(void) {
     setRECT(&s_shopSynth.partyRect, 8, 0x97, 0x12C, 0x45);
     setRECT(&s_shopSynth.quantityRect, 0x62, 0x60, 0x7C, 0x45);
     text_setBank(g_shopSynthText);
-    shop_setHelp(0x11);
+    shop_setHelp(SHOP_TEXT_SYNTH_WHAT);
     func_8002EDFC(&s_shopSynth.list, s_shopSynth.count, s_shopSynth.hasEquipment ? 7 : 0xB, 1, s_shopSynth.listRect.h);
     shop_collectMembers();
 }
@@ -677,23 +677,23 @@ void shopSynth_inputQuantity(void) {
     s32 t;
 
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         shopSynth_closeQuantity();
         return;
     }
     if ((g_padRepeat & PAD_RIGHT) && s_shopSynth.quantity < s_shopSynth.maxQuantity) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_shopSynth.quantity++;
         return;
     }
     if ((g_padRepeat & PAD_LEFT) && s_shopSynth.quantity >= 2) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_shopSynth.quantity--;
         return;
     }
     if ((g_padRepeat & PAD_UP) && s_shopSynth.quantity < s_shopSynth.maxQuantity) {
-        snd_playSe(0x67);
-        q = s_shopSynth.quantity + 10;
+        snd_playSe(SE_CURSOR);
+        q = s_shopSynth.quantity + SHOP_QUANTITY_STEP;
         if (q > s_shopSynth.maxQuantity) {
             q = s_shopSynth.maxQuantity;
         }
@@ -701,8 +701,8 @@ void shopSynth_inputQuantity(void) {
         return;
     }
     if ((g_padRepeat & PAD_DOWN) && s_shopSynth.quantity >= 2) {
-        snd_playSe(0x67);
-        t = s_shopSynth.quantity - 10;
+        snd_playSe(SE_CURSOR);
+        t = s_shopSynth.quantity - SHOP_QUANTITY_STEP;
         q = 1;
         if (t > 0) {
             q = t;
@@ -711,7 +711,7 @@ void shopSynth_inputQuantity(void) {
         return;
     }
     if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x415);
+        snd_playSe(SE_SHOP);
         shopSynth_confirm();
     }
 }
@@ -745,7 +745,7 @@ void shopSynth_drawInfo(void) {
     text_formatNumber(func_80027F94(s->product), buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x5C, r->y + s_shopSynthInfoRowY[2], 0x1E, buf, equip ? 0 : 2);
     for (i = 0; i < 2; i++) {
-        if (s->ingredients[i] != 0xFF) {
+        if (s->ingredients[i] != ITEM_NONE) {
             have = item_getCount(s->ingredients[i]);
             if (s->ingredients[0] == s->ingredients[1]) {
                 ok = i < have;
@@ -829,7 +829,7 @@ void shopSynth_drawParty(void) {
                 cur = shop_sumArmorStat(kind, c->equip);
                 new = shop_sumArmorStat(kind, eq.v);
             }
-            if (kind == 4) {
+            if (kind == EQUIP_SLOT_ACCESSORY) {
                 *(s32 *)buf = s_shopSynthNoStat;
             } else {
                 text_formatNumber(new, buf, 3, 1);
@@ -837,9 +837,9 @@ void shopSynth_drawParty(void) {
             shop_drawStatIcon(x - 1, y + 0x2E, 0x1E, s_shopSynthStatIcon[kind], 0);
             ui_drawSmallDigits(x + 0xC, y + 0x2F, 0x1E, buf, 0);
             if (cur < new) {
-                shop_drawStatIcon(x - 1, y + 0x27, 0x1E, 5, 0);
+                shop_drawStatIcon(x - 1, y + 0x27, 0x1E, SHOP_ICON_UP, 0);
             } else if (new < cur) {
-                shop_drawStatIcon(x - 1, y + 0x28, 0x1E, 6, 0);
+                shop_drawStatIcon(x - 1, y + 0x28, 0x1E, SHOP_ICON_DOWN, 0);
             }
         }
         func_80028204(x, y, 0x1E, func_80028954((u8)s_shop.members[i]), 0x2D, !ok);
@@ -861,8 +861,8 @@ void shopSynth_drawQuantityWindow(Window *w) {
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
     func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, 0x19), 0);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, 0x1A), 0);
+    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
+    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     s = &s_shopSynth;
     text_formatNumber(s->quantity, buf, 2, 1);
     ui_drawSmallDigits(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
@@ -873,13 +873,13 @@ void shopSynth_drawQuantityWindow(Window *w) {
 
 void shopSynth_drawCursor(void) {
     if (!func_8002F810()) {
-        if (s_shopSynth.state == 1 || (D_80077DC0 & 3)) {
+        if (s_shopSynth.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
             D_80077DE8.unk4 = 0x14;
             D_80077DE8.unk0 = s_shopSynth.listRect.x - 8;
             D_80077DE8.unk2 = s_shopSynth.listRect.y + (s16)(s_shopSynth.list.cursor * 0xF + 0xB);
             func_800355E4();
         }
-        if (s_shopSynth.state == 2) {
+        if (s_shopSynth.state == SHOP_ST_QUANTITY) {
             D_80077DE8.unk0 = s_shopSynth.quantityWin->unk0 - 0xE;
             D_80077DE8.unk2 = s_shopSynth.quantityWin->unk2 + 0x22;
             D_80077DE8.unk4 = s_shopSynth.quantityWin->unk18 - 1;
@@ -905,7 +905,7 @@ void shopSynth_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     id = r->product;
     it = &D_80069018[id];
     k = 1;
-    if (item_getCount(id) < 99) {
+    if (item_getCount(id) < ITEM_MAX_COUNT) {
         ok = g_gameState->unk1C->gil >= r->price;
     }
     x = 0x18;
@@ -913,7 +913,7 @@ void shopSynth_drawRow(s32 unused, s32 row, s32 idx, MenuView *v) {
     y = row * 15 + (v->unk2 + y);
     i = 0;
 loop:
-    if (r->ingredients[i] != 0xFF) {
+    if (r->ingredients[i] != ITEM_NONE) {
         if (r->ingredients[0] == r->ingredients[1]) {
             t = i < item_getCount(r->ingredients[i]);
         } else {
@@ -953,34 +953,34 @@ void shopSynth_openQuantity(void) {
         need = 2;
     }
     have = item_getCount(r->product);
-    if (have < 99 && g_gameState->unk1C->gil >= r->price &&
-        (r->ingredients[0] == 0xFF || item_getCount(r->ingredients[0]) >= need) &&
-        (r->ingredients[1] == 0xFF || item_getCount(r->ingredients[1]) >= need)) {
+    if (have < ITEM_MAX_COUNT && g_gameState->unk1C->gil >= r->price &&
+        (r->ingredients[0] == ITEM_NONE || item_getCount(r->ingredients[0]) >= need) &&
+        (r->ingredients[1] == ITEM_NONE || item_getCount(r->ingredients[1]) >= need)) {
         s_shopSynth.quantity = 1;
-        n = r->price != 0 ? g_gameState->unk1C->gil / r->price : 99;
+        n = r->price != 0 ? g_gameState->unk1C->gil / r->price : ITEM_MAX_COUNT;
         m2 = &s_shopSynth;
-        if ((s32)n > 99 - have) {
-            n = 99 - have;
+        if ((s32)n > ITEM_MAX_COUNT - have) {
+            n = ITEM_MAX_COUNT - have;
         }
         m2->maxQuantity = n;
         m = m2;
-        if (r->ingredients[0] != 0xFF) {
+        if (r->ingredients[0] != ITEM_NONE) {
             m->maxQuantity = MIN(m->maxQuantity, item_getCount(r->ingredients[0]) / need);
         }
-        if (r->ingredients[1] != 0xFF) {
+        if (r->ingredients[1] != ITEM_NONE) {
             s_shopSynth.maxQuantity = MIN(s_shopSynth.maxQuantity, item_getCount(r->ingredients[1]) / need);
         }
         m3 = &s_shopSynth;
-        s_shopSynth.state = 0;
+        s_shopSynth.state = SHOP_ST_NONE;
         m3->quantityWin = func_8002DC54(&m3->quantityRect, 0xA, 2);
         win_setDrawContent(m3->quantityWin, shopSynth_drawQuantityWindow);
         win_setOnOpened(m3->quantityWin, shopSynth_onQuantityOpened);
         win_setOnClosed(m3->quantityWin, shopSynth_onQuantityClosed);
         func_8002E31C(m3->quantityWin, 1);
         func_8002E304(m3->quantityWin, D_800704A4);
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     } else {
-        snd_playSe(0x66);
+        snd_playSe(SE_BUZZER);
     }
 }
 
@@ -989,13 +989,13 @@ void shopSynth_loadRecipes(void) {
     s32 i;
     s32 n;
 
-    n = 0x40;
-    mask = 1 << (shop_getId() - 0x20);
+    n = SHOP_RECIPE_COUNT;
+    mask = 1 << (shop_getId() - SHOP_ID_SYNTH);
     s_shopSynth.count = 0;
     for (i = 0; i < n; i++) {
-        if ((s_shopRecipes[i].shopMask & mask) && s_shopRecipes[i].product != 0xFF) {
+        if ((s_shopRecipes[i].shopMask & mask) && s_shopRecipes[i].product != ITEM_NONE) {
             s_shopSynth.recipes[s_shopSynth.count++] = s_shopRecipes[i];
-            if (s_shopSynth.count >= 0x20) {
+            if (s_shopSynth.count >= SHOP_LIST_SIZE) {
                 break;
             }
         }
@@ -1046,7 +1046,7 @@ void shopSynth_inputList(void) {
 
     if (m->unk8 == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             shop_leaveMode();
             return;
         }
@@ -1069,18 +1069,18 @@ void shopSynth_drawScrollRows(void) {
 }
 
 void shopSynth_closeQuantity(void) {
-    s_shopSynth.state = 0;
+    s_shopSynth.state = SHOP_ST_NONE;
     win_close(s_shopSynth.quantityWin);
 }
 
 void shopSynth_onQuantityOpened(void) {
-    s_shopSynth.state = 2;
-    shop_setHelp(0x14);
+    s_shopSynth.state = SHOP_ST_QUANTITY;
+    shop_setHelp(SHOP_TEXT_SYNTH_HOW_MANY);
 }
 
 void shopSynth_onQuantityClosed(void) {
-    s_shopSynth.state = 1;
-    shop_setHelp(0x11);
+    s_shopSynth.state = SHOP_ST_LIST;
+    shop_setHelp(SHOP_TEXT_SYNTH_WHAT);
 }
 
 void shopSynth_confirm(void) {
@@ -1104,18 +1104,18 @@ void shopSynth_updateHelp(void) {
 
     D_80077DE8.unk8 = NULL;
     l = &s_shopSynth.list;
-    if (s_shopSynth.state == 1) {
+    if (s_shopSynth.state == SHOP_ST_LIST) {
         id = s_shopSynth.recipes[l->unk5 + l->cursor].product;
         D_80077DE8.unk8 = s_shopItemHelp + D_80069018[id].unk2;
-    } else if (s_shopSynth.state == 2) {
-        D_80077DE8.unk8 = text_get(4);
+    } else if (s_shopSynth.state == SHOP_ST_QUANTITY) {
+        D_80077DE8.unk8 = text_get(SHOP_SYNTH_TEXT_QUANTITY_HELP);
     }
 }
 
 void shopSell_init(void) {
-    s_shopSell.state = 1;
+    s_shopSell.state = SHOP_ST_LIST;
     text_setBank(g_shopSellText);
-    shop_setHelp(0x10);
+    shop_setHelp(SHOP_TEXT_SELL_WHAT);
     func_80035580(NULL);
     func_8003556C(shopSell_updateHelp);
     func_8002EDFC(&s_shopSell.list, 0xFF, 0xB, 2, 0xAD);
@@ -1129,23 +1129,23 @@ void shopSell_inputQuantity(void) {
     s32 t;
 
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         shopSell_closeQuantity();
         return;
     }
     if ((g_padRepeat & PAD_RIGHT) && s_shopSell.quantity < s_shopSell.maxQuantity) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_shopSell.quantity++;
         return;
     }
     if ((g_padRepeat & PAD_LEFT) && s_shopSell.quantity >= 2) {
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
         s_shopSell.quantity--;
         return;
     }
     if ((g_padRepeat & PAD_UP) && s_shopSell.quantity < s_shopSell.maxQuantity) {
-        snd_playSe(0x67);
-        q = s_shopSell.quantity + 10;
+        snd_playSe(SE_CURSOR);
+        q = s_shopSell.quantity + SHOP_QUANTITY_STEP;
         if (q > s_shopSell.maxQuantity) {
             q = s_shopSell.maxQuantity;
         }
@@ -1153,8 +1153,8 @@ void shopSell_inputQuantity(void) {
         return;
     }
     if ((g_padRepeat & PAD_DOWN) && s_shopSell.quantity >= 2) {
-        snd_playSe(0x67);
-        t = s_shopSell.quantity - 10;
+        snd_playSe(SE_CURSOR);
+        t = s_shopSell.quantity - SHOP_QUANTITY_STEP;
         q = 1;
         if (t > 0) {
             q = t;
@@ -1163,7 +1163,7 @@ void shopSell_inputQuantity(void) {
         return;
     }
     if (g_padRepeat & BTN_CROSS) {
-        snd_playSe(0x415);
+        snd_playSe(SE_SHOP);
         shopSell_confirm();
     }
 }
@@ -1214,8 +1214,8 @@ void shopSell_drawQuantityWindow(Window *w) {
     ui_drawItemIcon(w->unk0 + 8, w->unk2 + 8, w->unk18, id, 1);
     text_drawBlock(w->unk0 + 0x18, w->unk2 + 8, w->unk18, D_8006A218 + it->unk0, 0);
     func_800269F4(w->unk0 + 4, w->unk2 + 0x18, w->unk18, w->unk4 - 9);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, 0x19), 0);
-    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, 0x1A), 0);
+    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x1E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_QUANTITY), 0);
+    text_drawBlock(w->unk0 + 0xC, w->unk2 + 0x2E, w->unk18, text_getFrom(g_shopText, SHOP_TEXT_PRICE), 0);
     m = &s_shopSell;
     text_formatNumber(m->quantity, buf, 2, 1);
     ui_drawSmallDigits(w->unk0 + 0x5C, w->unk2 + 0x22, w->unk18, buf, 0);
@@ -1256,13 +1256,13 @@ void shopSell_drawCursor(void) {
 
     l = &s_shopSell.list;
     if (!func_8002F810()) {
-        if (s_shopSell.state == 1 || (D_80077DC0 & 3)) {
+        if (s_shopSell.state == SHOP_ST_LIST || (D_80077DC0 & 3)) {
             D_80077DE8.unk4 = 0x14;
             D_80077DE8.unk0 = l->unk7 * 0x96;
             D_80077DE8.unk2 = l->cursor * 0xF + 0x34;
             func_800355E4();
         }
-        if (s_shopSell.state == 2) {
+        if (s_shopSell.state == SHOP_ST_QUANTITY) {
             D_80077DE8.unk0 = s_shopSell.wins[0]->unk0 - 0xE;
             D_80077DE8.unk2 = s_shopSell.wins[0]->unk2 + 0x22;
             D_80077DE8.unk4 = s_shopSell.wins[0]->unk18 - 1;
@@ -1280,7 +1280,7 @@ void shopSell_openQuantity(void) {
     if (p->unk1 != 0) {
         s_shopSell.quantity = 1;
         s_shopSell.maxQuantity = p->unk1;
-        s_shopSell.state = 0;
+        s_shopSell.state = SHOP_ST_NONE;
         for (i = 0; i < 2; i++) {
             s_shopSell.wins[i] = func_8002DC54(&s_shopSell.winRects[i], s_shopSellWindows[i].otz, s_shopSellWindows[i].style);
             win_setDrawContent(s_shopSell.wins[i], s_shopSellWindows[i].draw);
@@ -1290,9 +1290,9 @@ void shopSell_openQuantity(void) {
             func_8002E31C(s_shopSell.wins[i], 1);
             func_8002E304(s_shopSell.wins[i], D_800703FC.unk0[s_shopSellWindows[i].label]);
         }
-        snd_playSe(0x67);
+        snd_playSe(SE_CURSOR);
     } else {
-        snd_playSe(0x66);
+        snd_playSe(SE_BUZZER);
     }
 }
 
@@ -1313,10 +1313,10 @@ void shopSell_confirm(void) {
     n = item_remove(id, s_shopSell.quantity);
     if (n != 0) {
         g_gameState->unk1C->gil += price * n;
-        if (g_gameState->unk1C->gil > 9999999) {
-            g_gameState->unk1C->gil = 9999999;
+        if (g_gameState->unk1C->gil > GIL_MAX) {
+            g_gameState->unk1C->gil = GIL_MAX;
         }
-        s_shopSell.state = 0;
+        s_shopSell.state = SHOP_ST_NONE;
         for (i = 0; i < 2; i++) {
             win_close(s_shopSell.wins[i]);
         }
@@ -1360,7 +1360,7 @@ void shopSell_inputList(void) {
 
     if (m->unk8 == 0) {
         if (g_padRepeat & BTN_CIRCLE) {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             shop_leaveMode();
             return;
         }
@@ -1410,20 +1410,20 @@ void shopSell_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
 void shopSell_closeQuantity(void) {
     s32 i;
 
-    s_shopSell.state = 0;
+    s_shopSell.state = SHOP_ST_NONE;
     for (i = 0; i < 2; i++) {
         win_close(s_shopSell.wins[i]);
     }
 }
 
 void shopSell_onQuantityOpened(Window *w) {
-    s_shopSell.state = 2;
-    shop_setHelp(0x13);
+    s_shopSell.state = SHOP_ST_QUANTITY;
+    shop_setHelp(SHOP_TEXT_SELL_HOW_MANY);
 }
 
 void shopSell_onQuantityClosed(Window *w) {
-    s_shopSell.state = 1;
-    shop_setHelp(0x10);
+    s_shopSell.state = SHOP_ST_LIST;
+    shop_setHelp(SHOP_TEXT_SELL_WHAT);
 }
 
 void shopSell_updateHelp(void) {
@@ -1435,7 +1435,7 @@ void shopSell_updateHelp(void) {
 
     h = &D_80077DE8;
     h->unk8 = NULL;
-    if (s_shopSell.state == 1) {
+    if (s_shopSell.state == SHOP_ST_LIST) {
         l = &s_shopSell.list;
         idx = (l->unk5 + l->cursor) * 2 + l->unk7;
         p = &g_gameState->unk1C->items.slots[idx];
@@ -1443,8 +1443,8 @@ void shopSell_updateHelp(void) {
             return;
         }
         text = s_shopItemHelp + D_80069018[p->unk0].unk2;
-    } else if (s_shopSell.state == 2) {
-        text = text_get(3);
+    } else if (s_shopSell.state == SHOP_ST_QUANTITY) {
+        text = text_get(SHOP_SELL_TEXT_QUANTITY_HELP);
     } else {
         return;
     }

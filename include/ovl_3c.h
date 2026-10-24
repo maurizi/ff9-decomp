@@ -1,8 +1,8 @@
 #ifndef OVL_3C_H
 #define OVL_3C_H
 
-/* Declarations local to overlay 0x3C (shop menus: a top-level hub that runs
- * one of several sub-menus, loaded at 0x801EDF00). Overlay addresses mean
+/* Declarations local to overlay 0x3C (the shop, menu type 2: a Buy/Sell/Exit or
+ * Synth/Exit menu that runs the Buy, Sell or Synth mode, loaded at 0x801EDF00). Overlay addresses mean
  * different things in different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
@@ -166,6 +166,12 @@ extern u8 s_shopImage[];
 
 extern u8 g_shopBuyText[];
 /* main exe: candidates for ff9.h */
+#ifndef SE_CURSOR
+#define SE_CURSOR 0x67  /* cursor move / pick */
+#define SE_BUZZER 0x66  /* refused action */
+#define SE_CANCEL 0x65  /* Circle backs out */
+#endif
+#define SE_SHOP 0x415   /* Cross in a shop quantity window: buy / sell / synthesize */
 s32 func_80028014(s32); /* equip slot of an item, -1 = not equipment */
 s32 func_80028954(s32); /* main.c defines it returning u8; used unmasked */
 typedef struct {
