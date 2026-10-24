@@ -12,33 +12,33 @@ void btlcam_init(void) {
 }
 
 void btlcam_beginEffect(void) {
-    bzero(&D_800FE488, 0x64);
+    bzero(&g_btlCamScript, 0x64);
     bcopy(g_btlfxEnv->unkC, &D_800FE368, 0x4C);
     g_btlCamera.unk5C = 0;
     g_btlCamera.unk53 = btlfx_rand() & 1;
     if (g_btlfxEnv->unk0->unk1C & 4) {
-        btlcam_getUnitAnchors(D_800FE368.unk44, D_800FE488.unk50);
+        btlcam_getUnitAnchors(D_800FE368.unk44, g_btlCamScript.unk50);
     }
-    btlcam_getUnitAnchors(D_800FE368.unk0, D_800FE488.unk46);
-    btlcam_getUnitAnchors(D_800FE368.unk4, D_800FE488.unk5A);
+    btlcam_getUnitAnchors(D_800FE368.unk0, g_btlCamScript.casterAnchors);
+    btlcam_getUnitAnchors(D_800FE368.unk4, g_btlCamScript.targetAnchors);
 }
 
 void btlcam_playScene(s32 arg0) {
     g_btlCamera.unkB9 = 0;
     g_btlCamera.unk52 = 0;
     g_btlCamera.unk5C = 0;
-    bzero(&D_800FE488, 0x64);
+    bzero(&g_btlCamScript, 0x64);
     bzero(&D_800FE368, 0x4C);
     btlcam_loadScript(arg0);
     if (g_btlCamera.unkCC != 0) {
-        btlcam_getUnitAnchors(g_btlCamera.unkCC, D_800FE488.unk46);
+        btlcam_getUnitAnchors(g_btlCamera.unkCC, g_btlCamScript.casterAnchors);
     }
 }
 
 void btlcam_play(s32 arg0) {
     g_btlCamera.unkB9 = 1;
     g_btlCamera.unk52 = 0;
-    D_800FE488.unk8 = 0;
+    g_btlCamScript.unk8 = 0;
     if (g_btlCamera.unk5C & 2) {
         g_btlCamera.unk5C = 0;
     }
@@ -47,10 +47,10 @@ void btlcam_play(s32 arg0) {
 }
 
 void btlcam_playSeq(s32 arg0) {
-    bzero(&D_800FE488, 0x64);
+    bzero(&g_btlCamScript, 0x64);
     g_btlCamera.unk53 = btlfx_rand() & 1;
-    btlcam_getUnitAnchors(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, D_800FE488.unk46);
-    btlcam_getUnitAnchors((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, D_800FE488.unk5A);
+    btlcam_getUnitAnchors(g_gameState->unk1C->unk8E4.battle->unk11C4.unk148, g_btlCamScript.casterAnchors);
+    btlcam_getUnitAnchors((BtlUnit *)g_gameState->unk1C->unk8E4.battle->unk11C4.unk14C, g_btlCamScript.targetAnchors);
     btlcam_play(arg0);
     g_btlCamera.unkB9 = 2;
     g_btlCamera.unk5C = 0;
@@ -64,13 +64,13 @@ void func_800C30B8(void) {
 }
 
 void btlcam_endEffect(void) {
-    if (D_800FE488.unk45 == 0) {
-        g_btlCamera.unkA8 = D_800FE488.unk18;
+    if (g_btlCamScript.unk45 == 0) {
+        g_btlCamera.unkA8 = g_btlCamScript.unk18;
         btlcam_loadScript(func_800CA2B0(1));
         g_btlCamera.unk5E = g_btlCamera.unk60;
     }
     g_btlCamera.unk5C = 1;
-    D_800FE488.unk45 = 0;
+    g_btlCamScript.unk45 = 0;
 }
 
 void btlcam_loadScript(s32 arg) {
@@ -88,7 +88,7 @@ void btlcam_loadScript(s32 arg) {
     BtlUnit *w;
     BtlUnit9C8 *m;
 
-    D_800FE488.unk4 = 1;
+    g_btlCamScript.frame = 1;
     f0 = flags = arg0[0];
     q = (u16 *)arg0 + 1;
     for (i = 0; i < 4; i++) {
@@ -148,7 +148,7 @@ void btlcam_loadScript(s32 arg) {
                 } else {
                     g_btlCamera.unkA8 = btlfx_randRange(0, 1);
                 }
-                D_800FE488.unk18 = g_btlCamera.unkA8;
+                g_btlCamScript.unk18 = g_btlCamera.unkA8;
                 break;
             case 1:
                 g_btlCamera.unkA8 = g_gameState->unk1C->unk8E4.battle->unk131C;
@@ -220,7 +220,7 @@ void btlcam_loadScript(s32 arg) {
             break;
         }
     }
-    D_800FE488.unk0 = (u8 *)p[g_btlCamera.unkA8];
+    g_btlCamScript.pc = (u8 *)p[g_btlCamera.unkA8];
     if (f0 & 0x200) {
         g_btlCamera.unkB8 = (f0 >> (g_btlCamera.unkA8 * 2 + 10)) & 3;
     }
@@ -260,11 +260,11 @@ s32 btlcam_step(void) {
     s32 e;
     Battle *b;
 
-    if (D_800FE488.unk4 != 0) {
-        if (D_800FE488.unk0 != NULL) {
+    if (g_btlCamScript.frame != 0) {
+        if (g_btlCamScript.pc != NULL) {
             for (n = 0; n < 10; n++) {
-                p = (u16 *)D_800FE488.unk0;
-                if (D_800FE488.unk4 != (p[0] & 0x3FF)) {
+                p = (u16 *)g_btlCamScript.pc;
+                if (g_btlCamScript.frame != (p[0] & 0x3FF)) {
                     break;
                 }
                 if (!(g_btlCamera.unk5C & 1)) {
@@ -272,7 +272,7 @@ s32 btlcam_step(void) {
                     g_btlCamera.unk5E = 0x200;
                 }
                 flags = p[1] | ((p[0] >> 10) << 16);
-                D_800FE488.unk0 += 4;
+                g_btlCamScript.pc += 4;
                 for (i = 0; i < 2; i++) {
                     m = (flags >> (i * 3)) & 7;
                     if ((u32)(m - 2) < 2 && (u32)(g_btlCamera.unk68[i].unk18 - 2) < 2 && g_btlCamera.unk68[i].unk1D != 0) {
@@ -282,86 +282,86 @@ s32 btlcam_step(void) {
                         g_btlCamera.unk68[i].unk18 = m;
                     }
                     if ((u32)(m - 1) < 3) {
-                        func_800C3F78(&g_btlCamera.unk68[i], (Unk800C3F78 *)D_800FE488.unk0);
-                        D_800FE488.unk0 += 6;
+                        func_800C3F78(&g_btlCamera.unk68[i], (Unk800C3F78 *)g_btlCamScript.pc);
+                        g_btlCamScript.pc += 6;
                     }
                     if ((u32)(m - 2) < 3) {
-                        func_800C412C(&g_btlCamera.unk68[i], D_800FE488.unk0);
+                        func_800C412C(&g_btlCamera.unk68[i], g_btlCamScript.pc);
                         if (m == 4) {
-                            g_btlCamera.unk68[i].unk0[1].unk0[2] = D_800FE488.unk0[1] << 5;
+                            g_btlCamera.unk68[i].unk0[1].unk0[2] = g_btlCamScript.pc[1] << 5;
                         }
-                        D_800FE488.unk0 += 4;
+                        g_btlCamScript.pc += 4;
                     }
                     g_btlCamera.unk68[i].unk1B = 0;
                 }
                 if (flags & 0x40) {
-                    D_800FE488.unk8 = *D_800FE488.unk0;
-                    D_800FE488.unk0 += 2;
+                    g_btlCamScript.unk8 = *g_btlCamScript.pc;
+                    g_btlCamScript.pc += 2;
                 }
                 if (flags & 0x80) {
-                    D_800FE488.unk44 = 1;
+                    g_btlCamScript.unk44 = 1;
                 }
                 if (flags & 0x100100) {
                     g_btlCamera.unk52 = 1;
                 }
                 if (flags & 0x200) {
-                    D_800FE488.unk10 = *D_800FE488.unk0;
-                    D_800FE488.unk0 += 2;
+                    g_btlCamScript.sway = *g_btlCamScript.pc;
+                    g_btlCamScript.pc += 2;
                 }
                 if (flags & 0x400) {
-                    g_btlCamera.unkAC = *D_800FE488.unk0;
-                    D_800FE488.unk0 += 2;
+                    g_btlCamera.unkAC = *g_btlCamScript.pc;
+                    g_btlCamScript.pc += 2;
                 }
                 if (flags & 0x800) {
-                    D_800FE488.unk30 = D_800FE488.unk34 = D_800FE488.unk0[0];
-                    D_800FE488.unk38 = D_800FE488.unk0[1];
-                    D_800FE488.unk3C = g_btlCamera.unk5E;
-                    v = ((u16 *)D_800FE488.unk0)[1];
+                    g_btlCamScript.zoomFrames = g_btlCamScript.zoomLeft = g_btlCamScript.pc[0];
+                    g_btlCamScript.zoomTarget = g_btlCamScript.pc[1];
+                    g_btlCamScript.zoomFrom = g_btlCamera.unk5E;
+                    v = ((u16 *)g_btlCamScript.pc)[1];
                     if (v == 0) {
                         v = g_btlCamera.unk60;
                     }
-                    D_800FE488.unk40 = v;
-                    D_800FE488.unk0 += 4;
+                    g_btlCamScript.zoomTo = v;
+                    g_btlCamScript.pc += 4;
                 }
                 if (flags & 0x1000) {
-                    D_800FE488.unk28 = D_800FE488.unk0[0];
-                    D_800FE488.unk2C = D_800FE488.unk0[1];
-                    D_800FE488.unk20 = D_800FE488.unk24 = D_800FE488.unk0[2];
-                    D_800FE488.unk1C = D_800FE488.unk0[3] & 3;
-                    D_800FE488.unk0 += 4;
+                    g_btlCamScript.shakeFrom = g_btlCamScript.pc[0];
+                    g_btlCamScript.shakeTo = g_btlCamScript.pc[1];
+                    g_btlCamScript.shakeFrames = g_btlCamScript.shakeLeft = g_btlCamScript.pc[2];
+                    g_btlCamScript.shakeAxes = g_btlCamScript.pc[3] & 3;
+                    g_btlCamScript.pc += 4;
                 }
                 if (flags & 0x2000) {
                     g_btlCamera.unk53 = g_btlCamera.unkA8;
                 }
                 if (flags & 0x4000) {
-                    c = *D_800FE488.unk0;
+                    c = *g_btlCamScript.pc;
                     if (c == 1) {
                         g_btlCamera.unk67 = c;
                     } else {
                         g_gameState->unk1C->unk8E4.battle->subPhase++;
                     }
-                    D_800FE488.unk0 += 2;
+                    g_btlCamScript.pc += 2;
                 }
                 if (flags & 0x8000) {
                     func_800C36D0();
                     for (j = 0; j < 2; j++) {
                         g_btlCamera.unk68[j].unk1B = 1;
-                        g_btlCamera.unk68[j].unk18 = (D_800FE488.unk0[0] >> 5) & 3;
-                        g_btlCamera.unk68[j].unk1C = g_btlCamera.unk68[j].unk1D = D_800FE488.unk0[1];
-                        g_btlCamera.unk68[j].unk1A = D_800FE488.unk0[2];
+                        g_btlCamera.unk68[j].unk18 = (g_btlCamScript.pc[0] >> 5) & 3;
+                        g_btlCamera.unk68[j].unk1C = g_btlCamera.unk68[j].unk1D = g_btlCamScript.pc[1];
+                        g_btlCamera.unk68[j].unk1A = g_btlCamScript.pc[2];
                         g_btlCamera.unk68[j].unk19 = 0;
                     }
-                    g_btlCamera.unkA8 = D_800FE488.unk18;
+                    g_btlCamera.unkA8 = g_btlCamScript.unk18;
                     btlcam_loadScript(func_800CA2B0(1));
                     g_btlCamera.unk5E = g_btlCamera.unk60;
                     return 1;
                 }
                 if (flags & 0x80000) {
-                    D_800FE488.unk45 = 1;
+                    g_btlCamScript.unk45 = 1;
                 }
             }
-            if (((u16 *)D_800FE488.unk0)[0] == 0) {
-                D_800FE488.unk0 = NULL;
+            if (((u16 *)g_btlCamScript.pc)[0] == 0) {
+                g_btlCamScript.pc = NULL;
             }
         }
         if (g_btlCamera.unk68[0].unk1D != 0) {
@@ -376,8 +376,8 @@ s32 btlcam_step(void) {
         g_btlCamera.unkBB = 0;
         func_800C416C(0, &g_btlCamera.unk68[0], &g_btlCamera.unk54.vx);
         func_800C416C(0, &g_btlCamera.unk68[1], &sv.vx);
-        if (D_800FE488.unk44 == 1) {
-            D_800FE488.unk44 = 2;
+        if (g_btlCamScript.unk44 == 1) {
+            g_btlCamScript.unk44 = 2;
             bcopy(&g_btlCamera.unk54, &g_btlCamera.unk0[4], 8);
             bcopy(&sv, &g_btlCamera.unk0[5], 8);
         }
@@ -387,13 +387,13 @@ s32 btlcam_step(void) {
         btlcam_lookAt(&g_gameState->unk1C->unk18, &g_btlCamera.unk54, &sv);
         g_btlCamera.unk50 = -ratan2(g_btlCamera.unk54.vx - sv.vx, g_btlCamera.unk54.vz - sv.vz) - 0x800;
     }
-    if (D_800FE488.unk34 != 0) {
-        D_800FE488.unk34--;
-        r = btlfx_lerpRatio(D_800FE488.unk40, D_800FE488.unk3C, D_800FE488.unk34, D_800FE488.unk30);
-        if (D_800FE488.unk38 & 1) {
+    if (g_btlCamScript.zoomLeft != 0) {
+        g_btlCamScript.zoomLeft--;
+        r = btlfx_lerpRatio(g_btlCamScript.zoomTo, g_btlCamScript.zoomFrom, g_btlCamScript.zoomLeft, g_btlCamScript.zoomFrames);
+        if (g_btlCamScript.zoomTarget & 1) {
             g_btlCamera.unk60 = r;
         }
-        if (D_800FE488.unk38 & 2) {
+        if (g_btlCamScript.zoomTarget & 2) {
             g_btlCamera.unk5E = r;
         }
     }
@@ -413,8 +413,8 @@ s32 btlcam_step(void) {
             g_btlCamera.unk67 = 0;
         }
     }
-    if (D_800FE488.unk4 < 0x3FF && g_btlCamera.unk52 == 0) {
-        D_800FE488.unk4++;
+    if (g_btlCamScript.frame < 0x3FF && g_btlCamera.unk52 == 0) {
+        g_btlCamScript.frame++;
     }
     return 0;
 }
@@ -492,18 +492,18 @@ void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
             if (arg1->unk1C == 0 || arg1->unk1D == 0) {
                 wa[i] = 0;
             } else {
-                k = (u32)((0x1000 - arg1->unk1C * D_800FE488.unk8) << 17) / (u32)(arg1->unk1C * arg1->unk1C);
+                k = (u32)((0x1000 - arg1->unk1C * g_btlCamScript.unk8) << 17) / (u32)(arg1->unk1C * arg1->unk1C);
                 switch (t & 3) {
                 case 0:
                     wa[i] = (0x10000000 / arg1->unk1C * arg1->unk1D) >> 16;
                     break;
                 case 1:
                     d = arg1->unk1C - arg1->unk1D;
-                    wa[i] = 0x1000 - ((k * d * d) >> 17) - d * D_800FE488.unk8;
+                    wa[i] = 0x1000 - ((k * d * d) >> 17) - d * g_btlCamScript.unk8;
                     break;
                 case 2:
                     d = arg1->unk1D;
-                    wa[i] = ((k * d * d) >> 17) + d * D_800FE488.unk8;
+                    wa[i] = ((k * d * d) >> 17) + d * g_btlCamScript.unk8;
                     break;
                 }
             }
@@ -620,14 +620,14 @@ void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
 
 void btlcam_applyShake(s16 *arg0) {
     s32 t;
-    if (D_800FE488.unk24 != 0) {
-        D_800FE488.unk24--;
-        t = btlfx_lerpRatio(D_800FE488.unk2C, D_800FE488.unk28, D_800FE488.unk24, D_800FE488.unk20) * 2;
+    if (g_btlCamScript.shakeLeft != 0) {
+        g_btlCamScript.shakeLeft--;
+        t = btlfx_lerpRatio(g_btlCamScript.shakeTo, g_btlCamScript.shakeFrom, g_btlCamScript.shakeLeft, g_btlCamScript.shakeFrames) * 2;
         if (t != 0) {
-            if (!(D_800FE488.unk1C & 1)) {
+            if (!(g_btlCamScript.shakeAxes & 1)) {
                 arg0[1] += btlfx_randRange(0, t) * 4 - t;
             }
-            if (!(D_800FE488.unk1C & 2)) {
+            if (!(g_btlCamScript.shakeAxes & 2)) {
                 arg0[0] += btlfx_randRange(0, t) * 4 - t;
                 arg0[2] += btlfx_randRange(0, t) * 4 - t;
             }
@@ -640,9 +640,9 @@ void btlcam_applySway(s16 *arg0, s16 *arg1) {
     s32 dz = arg0[2] - arg1[2];
     s32 d = btlfx_sqrt(dx * dx + dz * dz, 0xF);
     u32 v = 0;
-    if (D_800FE488.unk10 != 0) {
-        v = ((math_sin(D_800FE488.unk14 << 6) * d) >> 13) * (D_800FE488.unk10 & 0xF0) >> 11;
-        D_800FE488.unk14 += D_800FE488.unk10 & 0xF;
+    if (g_btlCamScript.sway != 0) {
+        v = ((math_sin(g_btlCamScript.swayPhase << 6) * d) >> 13) * (g_btlCamScript.sway & 0xF0) >> 11;
+        g_btlCamScript.swayPhase += g_btlCamScript.sway & 0xF;
     } else if (g_btlCamera.unkAC != 0) {
         v = ((math_sin(g_btlCamera.unkB0 << 6) * d) >> 13) * (g_btlCamera.unkAC & 0xF0) >> 11;
         g_btlCamera.unkB0 += g_btlCamera.unkAC & 0xF;
@@ -735,7 +735,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         arg1[2] = gs->unk1C->unk8E4.battle->scene.unk4->unk8[0].unk8;
         return;
     }
-    s = D_800FE488.unk46;
+    s = g_btlCamScript.casterAnchors;
     u = NULL;
     if (n == 1) {
         u = D_800FE368.unk0;
@@ -751,7 +751,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n == 0xF) {
         u = D_800FE368.unk44;
-        s = D_800FE488.unk50;
+        s = g_btlCamScript.unk50;
     }
     if (u != NULL) {
         if (arg0 & 0x20) {
@@ -764,7 +764,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
             arg2[2] = u->rot[2];
         }
     } else {
-        s = D_800FE488.unk5A;
+        s = g_btlCamScript.targetAnchors;
         u = (BtlUnit *)func_800C5890(n);
         if (u == NULL) {
             u = g_gameState->unk1C->unk8E4.battle->unitList;
@@ -874,17 +874,17 @@ void btlcam_lookAt(MATRIX *arg0, SVECTOR *arg1, SVECTOR *arg2) {
 
 void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
     s32 a, b;
-    if (D_800FE488.unkC != 0) {
-        D_800FE488.unkC--;
+    if (g_btlCamScript.unkC != 0) {
+        g_btlCamScript.unkC--;
     }
     if (g_btlCamera.unkB4 != 0) {
         g_btlCamera.unkB4--;
     }
-    if ((u8)func_800EA094() != 1 && ((u8)btlui_isTargetSelect() || D_800FE488.unkC != 0)) {
+    if ((u8)func_800EA094() != 1 && ((u8)btlui_isTargetSelect() || g_btlCamScript.unkC != 0)) {
         if (g_btlCamera.unkBA != 1) {
             g_btlCamera.unkBA = 1;
             g_btlCamera.unkB4 = 2;
-            D_800FE488.unkC = 0;
+            g_btlCamScript.unkC = 0;
             bcopy(arg0, &g_btlCamera.unkBC, 8);
             bcopy(arg1, &g_btlCamera.unkC4, 8);
         }

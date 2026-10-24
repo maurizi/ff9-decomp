@@ -1301,7 +1301,7 @@ typedef struct {
     u8 unk2;
     u8 unk3;
 } Unk80100D88;
-extern Unk80100D88 D_80100D88;
+extern Unk80100D88 g_btlfxOpArgs;
 
 
 typedef struct {
@@ -2940,30 +2940,30 @@ void btlfx_transformPoint(s32, s32, s32);
 extern Unk800686E8 D_80068BF0[]; /* digits */
 
 typedef struct {
-    u8 *unk0; /* camera script */
-    u32 unk4;
+    u8 *pc; /* camera script pointer (btlcam_step reads its commands) */
+    u32 frame; /* script frame, compared with each command's 10-bit frame */
     s32 unk8;
     s32 unkC;
-    u32 unk10;
-    s32 unk14;
+    u32 sway; /* sway: amplitude bits 4-7, speed bits 0-3 (btlcam_applySway) */
+    s32 swayPhase;
     s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
-    s32 unk28;
-    s32 unk2C;
-    s32 unk30;
-    s32 unk34;
-    s32 unk38;
-    s32 unk3C;
-    s32 unk40;
+    s32 shakeAxes; /* shake: bit 0 no vertical, bit 1 no horizontal (btlcam_applyShake) */
+    s32 shakeFrames;
+    s32 shakeLeft;
+    s32 shakeFrom;
+    s32 shakeTo;
+    s32 zoomFrames; /* projection-distance tween (btlcam_step) */
+    s32 zoomLeft;
+    s32 zoomTarget; /* 1 base distance (g_btlCamera.unk60), 2 current (unk5E) */
+    s32 zoomFrom;
+    s32 zoomTo;
     u8 unk44;
     u8 unk45;
-    s16 unk46[5];
+    s16 casterAnchors[5]; /* btlcam_getUnitAnchors of the acting unit */
     s16 unk50[5];
-    s16 unk5A[5];
+    s16 targetAnchors[5]; /* btlcam_getUnitAnchors of the target */
 } Unk800FE488; /* 0x64 */
-extern Unk800FE488 D_800FE488;
+extern Unk800FE488 g_btlCamScript;
 extern u32 D_800F8EA4[][4];
 extern void (*D_800F8E94[])(void);
 extern RECT D_800FDE58;

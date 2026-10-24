@@ -1181,3 +1181,7 @@ func_800AE570 btl_getSoundFileSectors  # [code] sector (and size) of a sound fil
 func_800AE764 btl_getDepLink  # [code] link field (unkC) of a dependency-table key
 func_800AE844 btl_onSoundRead  # [code] CD read callback of btl_soundCmd's sound-bank reads: passes the received part to func_80055E14 / func_80056048
 func_800AF1D0 btl_preloadExit  # [code] once GameData.unk56F & 0x40 (battle ending): preloads file 0x10065 to 0x801EDF00 and 0x2713 into the battle buffer
+
+## ovl_0b: ovl_0b (cleanup pass: camera script, effect op arguments)
+D_800FE488 g_btlCamScript  # [code] camera-script player: script pointer, frame, sway, shake and zoom tweens (btlcam_step, btlcam_applySway, btlcam_applyShake)
+D_80100D88 g_btlfxOpArgs  # [code] four bytes set by unit ops 0x50/0x51 (btlfx_opSetParamsA/B) and read as extra arguments by the following unit ops

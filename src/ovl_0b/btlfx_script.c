@@ -570,16 +570,16 @@ s32 btlfx_moveUnitLinear(s32 arg0, s16 *arg1, s32 arg2, s32 arg3, s16 *arg4, s32
 
 s32 btlfx_opSetParamsA(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 1) {
-        D_80100D88.unk0 = arg4[0];
-        D_80100D88.unk1 = arg4[1];
+        g_btlfxOpArgs.unk0 = arg4[0];
+        g_btlfxOpArgs.unk1 = arg4[1];
     }
     return 1;
 }
 
 s32 btlfx_opSetParamsB(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4) {
     if (arg0 == 1) {
-        D_80100D88.unk2 = arg4[0];
-        D_80100D88.unk3 = arg4[4];
+        g_btlfxOpArgs.unk2 = arg4[0];
+        g_btlfxOpArgs.unk3 = arg4[4];
     }
     return 1;
 }
@@ -606,8 +606,8 @@ s32 btlfx_opHitSound(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     } else if (arg0 == 1) {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
-        arg1[2] = D_80100D88.unk0;
-        arg1[3] = D_80100D88.unk1;
+        arg1[2] = g_btlfxOpArgs.unk0;
+        arg1[3] = g_btlfxOpArgs.unk1;
         if (btlfx_isPartyUnit(arg1[0]) == 0) {
             return 1;
         }
@@ -665,7 +665,7 @@ s32 func_800D76DC(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
-        arg1->unk2 = D_80100D88.unk0;
+        arg1->unk2 = g_btlfxOpArgs.unk0;
         D_800FEC54 = 0;
     }
     return 0;
@@ -692,7 +692,7 @@ s32 func_800D77E4(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
-        arg1->unk2 = D_80100D88.unk0;
+        arg1->unk2 = g_btlfxOpArgs.unk0;
         D_800FEC54 = 0;
     }
     return 0;
@@ -795,8 +795,8 @@ s32 func_800D7BA8(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         arg1->unk0 = 0x10;
         arg1->unk1 = arg4[0];
         arg1->unk8 = arg4[1];
-        arg1->unk4 = D_80100D88.unk0 | (D_80100D88.unk1 << 8);
-        arg1->unk6 = D_80100D88.unk2 | (D_80100D88.unk3 << 8);
+        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
+        arg1->unk6 = g_btlfxOpArgs.unk2 | (g_btlfxOpArgs.unk3 << 8);
         if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0) {
             D_800FEC55 = arg0;
             return 1;
@@ -820,7 +820,7 @@ s32 btlfx_opJumpForward(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *a
         arg1->unk1 = arg4[0];
         arg1->unk2 = arg4[1];
         arg1->unk3 = 1;
-        arg1->unk4 = D_80100D88.unk0 | (D_80100D88.unk1 << 8);
+        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
         if ((v = arg1->unk2) == arg0 && btlfx_isPartyUnit(arg1->unk1) != 0) {
             D_800FEC55 = v;
             return 1;
@@ -860,7 +860,7 @@ s32 func_800D7E14(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     } else {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
-        arg1->unk4 = D_80100D88.unk0;
+        arg1->unk4 = g_btlfxOpArgs.unk0;
         do {
             D_800FEC55 = 0;
         } while (0);
@@ -875,8 +875,8 @@ s32 func_800D7EA0(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         arg1->unk0 = 0x10;
         arg1->unk1 = arg4[0];
         arg1->unk8 = arg4[1];
-        arg1->unk4 = D_80100D88.unk0 | (D_80100D88.unk1 << 8);
-        arg1->unk2 = D_80100D88.unk2;
+        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
+        arg1->unk2 = g_btlfxOpArgs.unk2;
         if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0 || btlfx_isPartyUnit(arg1->unk1) != 0) {
             D_800FEC55 = arg0;
             return 1;
@@ -895,7 +895,7 @@ s32 btlfx_opRunToTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *a
         arg1->unk0 = 0x10;
         arg1->unk1 = arg4[0];
         arg1->unk8 = arg4[1];
-        arg1->unk4 = D_80100D88.unk0 | (D_80100D88.unk1 << 8);
+        arg1->unk4 = g_btlfxOpArgs.unk0 | (g_btlfxOpArgs.unk1 << 8);
         if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0) {
             D_800FEC55 = arg0;
             return 1;
@@ -916,9 +916,9 @@ s32 btlfx_opFaceTarget(s32 arg0, Unk800D805C *arg1, s32 arg2, s32 *arg3, s32 *ar
     } else if (arg0 == 1) {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
-        arg1->unk4 = D_80100D88.unk0;
-        arg1->unk2 = D_80100D88.unk1;
-        arg1->unk3 = D_80100D88.unk2;
+        arg1->unk4 = g_btlfxOpArgs.unk0;
+        arg1->unk2 = g_btlfxOpArgs.unk1;
+        arg1->unk3 = g_btlfxOpArgs.unk2;
         arg1->unk8 = 0;
         if (btlfx_isSameUnit(arg1->unk0, arg1->unk1) != 0) {
             D_800FEC56 = arg0;
@@ -937,8 +937,8 @@ s32 btlfx_opFaceHome(s32 arg0, Unk800D8124 *arg1, s32 arg2, s32 *arg3, s32 *arg4
     } else if (arg0 == 1) {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
-        arg1->unk4 = D_80100D88.unk0;
-        arg1->unk2 = D_80100D88.unk1;
+        arg1->unk4 = g_btlfxOpArgs.unk0;
+        arg1->unk2 = g_btlfxOpArgs.unk1;
         if (arg1->unk2 == 2 && btlfx_isPartyUnit(arg1->unk1) != 0) {
             D_800FEC56 = arg0;
             return 1;
@@ -958,7 +958,7 @@ s32 func_800D81EC(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     } else {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
-        arg1[2] = D_80100D88.unk0;
+        arg1[2] = g_btlfxOpArgs.unk0;
     }
     return 0;
 }
@@ -971,7 +971,7 @@ s32 func_800D8270(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else if (arg0 == 1) {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
-        arg1[2] = D_80100D88.unk0;
+        arg1[2] = g_btlfxOpArgs.unk0;
         if (func_800DA06C(arg1[0], arg1[2]) == 0) {
             D_800FEC57 = arg0;
             return 1;
@@ -993,7 +993,7 @@ s32 func_800D8368(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else if (arg0 == 1) {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
-        arg1[2] = D_80100D88.unk0;
+        arg1[2] = g_btlfxOpArgs.unk0;
         if (btlfx_isSameSide(arg1[0], arg1[1]) == 0) {
             D_800FEC57 = arg0;
             return 1;
@@ -1013,7 +1013,7 @@ s32 func_800D8414(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     } else if (arg0 == 1) {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
-        arg1[2] = D_80100D88.unk0;
+        arg1[2] = g_btlfxOpArgs.unk0;
         v = btlfx_isSameSide(arg1[0], arg1[1]);
         if (v == arg0) {
             D_800FEC57 = v;
