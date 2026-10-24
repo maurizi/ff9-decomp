@@ -602,9 +602,9 @@ u32 wm_loadActorModel(s32 arg0, Unk8004AB64 *arg1) {
 }
 
 s32 wm_findDefaultAnim(s32 arg0) {
-    Unk800AA39C *t = db_lookupRegistered(8, arg0, 0x120000);
+    WmAnimTable *t = db_lookupRegistered(8, arg0, 0x120000);
     s32 i;
-    Unk800AA39CEntry *e;
+    WmAnimTableEntry *e;
 
     e = t->unk4;
     for (i = 0; i < t->unk1; i++) {
@@ -1216,7 +1216,7 @@ s32 wm_unpackMusic(s32 arg0) {
     return 0;
 }
 
-void wm_streamSoundChunk(Unk800AC424 *arg0) {
+void wm_streamSoundChunk(WmStreamReq *arg0) {
     s32 a;
     s32 id;
     s32 t;

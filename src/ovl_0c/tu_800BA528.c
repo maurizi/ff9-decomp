@@ -19,7 +19,7 @@ void wm_setupWorldData(void) {
     void **f[6]; /* f[6] below overruns into the saved s0 slot, as in the original */
     void *p;
     void **t;
-    Unk800CFEA0Tbl *dst;
+    WmTexScrollTbl *dst;
     s32 i;
     s32 acc;
     s32 w;
@@ -123,9 +123,9 @@ void wm_setupWorldData(void) {
     g_worldDefaultBlocks = w_framePackGetPtr(g_worldDataPack, 0x42);
     D_800CF478 = w_framePackGetPtr(g_worldDataPack, 0);
     g_worldEncounterTable = w_framePackGetPtr(g_worldDataPack, 3);
-    g_worldWeatherData = *(Unk800D3FA0 *)w_framePackGetPtr(g_worldDataPack, 5);
-    dst = (Unk800CFEA0Tbl *)g_worldTexScrolls;
-    *dst = *(Unk800CFEA0Tbl *)w_framePackGetPtr(g_worldDataPack, 6);
+    g_worldWeatherData = *(WmWeatherData *)w_framePackGetPtr(g_worldDataPack, 5);
+    dst = (WmTexScrollTbl *)g_worldTexScrolls;
+    *dst = *(WmTexScrollTbl *)w_framePackGetPtr(g_worldDataPack, 6);
     g_worldEncounterEventRows = w_framePackGetPtr(g_worldDataPack, 4);
 }
 
@@ -537,8 +537,8 @@ void wm_chunkToPos(s32 arg0, s32 *arg1, s32 *arg2) {
     *arg2 = -((arg0 / g_worldChunksW) << 14);
 }
 
-void wm_getChunkEntry(s32 arg0, s32 arg1, WmCell *arg2) {
-    WmCell *cells;
+void wm_getChunkEntry(s32 arg0, s32 arg1, WmChunkEntry *arg2) {
+    WmChunkEntry *cells;
 
     cells = g_worldChunkTable->unk4;
     arg2->unk0 = cells[arg0 * 2 + arg1].unk0;
@@ -546,9 +546,9 @@ void wm_getChunkEntry(s32 arg0, s32 arg1, WmCell *arg2) {
     arg2->unk3 = cells[arg0 * 2 + arg1].unk3;
 }
 
-void wm_getChunkEntryT(s32 arg0, s32 arg1, WmCell *arg2) {
+void wm_getChunkEntryT(s32 arg0, s32 arg1, WmChunkEntry *arg2) {
     s32 k;
-    WmCell *cells;
+    WmChunkEntry *cells;
 
     k = arg0 % g_worldChunksW * g_worldChunksH + arg0 / g_worldChunksW;
     cells = g_worldChunkTableT->unk4;
@@ -571,7 +571,7 @@ void wm_chunkListInit(void) {
     g_worldChunkSlots[0].unk4 = &g_worldChunkSlots[1];
     g_worldChunkSlots[0].chunkId = -1;
     g_worldChunkSlots[0].generation = 0;
-    g_worldChunkSlots[0].unk8 = (WmTexPack *)g_worldChunkBuffer;
+    g_worldChunkSlots[0].unk8 = (WmChunkPack *)g_worldChunkBuffer;
     for (i = 1; i < 31; i++) {
         g_worldChunkSlots[i].unk0 = &g_worldChunkSlots[i - 1];
         g_worldChunkSlots[i].unk4 = &g_worldChunkSlots[i + 1];
@@ -581,7 +581,7 @@ void wm_chunkListInit(void) {
         g_worldChunkSlots[i].generation = 0;
     }
     for (i = 1; i < 16; i++) {
-        g_worldChunkSlots[i].unk8 = (WmTexPack *)(g_worldChunkBuffer + i * 0x4800);
+        g_worldChunkSlots[i].unk8 = (WmChunkPack *)(g_worldChunkBuffer + i * 0x4800);
         g_worldChunkSlots[i].generation = 0;
     }
     i = 31;
@@ -745,8 +745,8 @@ s32 wm_chunkRequest(s16 arg0) {
 }
 
 void wm_readChunks(void) {
-    WmCell a;
-    WmCell b;
+    WmChunkEntry a;
+    WmChunkEntry b;
     WmChunkSlot *n;
     u8 *cell;
     s32 id;
@@ -1028,10 +1028,10 @@ void wm_blockListInit(void) {
 }
 
 void wm_drawBlocks(void) {
-    Unk800D375C *n;
-    Unk800D3AB8 *pos;
+    WmBlockNode *n;
+    WmBlockPos *pos;
     MATRIX m;
-    Unk800A7FB8 quad = D_800A7FB8;
+    WmQuad quad = D_800A7FB8;
     long sxy[4];
     VECTOR a;
     VECTOR b;
@@ -1109,11 +1109,11 @@ void wm_updateVisibleBlocks(void) {
     s32 cnt2;
     s32 last;
     s32 id;
-    WmTexEnt *e;
+    WmBlock *e;
     SVECTOR *verts;
     WmScrRect *r;
     WmNearCell *c;
-    Unk800D375C *nd;
+    WmBlockNode *nd;
     s32 lim;
     s32 t;
 
@@ -1132,7 +1132,7 @@ void wm_updateVisibleBlocks(void) {
         for (i = -3; i < 4; i++) {
             wm_posToCell(g_worldCameraTarget[0] + (i << 13) + g_worldCameraDir[0] * 2,
                           g_worldCameraTarget[2] - (j << 13) + g_worldCameraDir[2] * 2, &cell);
-            e = (WmTexEnt *)wm_getCellBlock(cell, NULL);
+            e = (WmBlock *)wm_getCellBlock(cell, NULL);
             if (e != NULL) {
                 wm_cellToPos(cell, &pos.vx, &pos.vz);
                 D_800D3770.t[0] = pos.vx - g_worldCameraTarget[0];
@@ -1250,7 +1250,7 @@ void wm_updateVisibleBlocks(void) {
 }
 
 s32 wm_blockListRequest(s16 arg0) {
-    Unk800D375C *n = g_worldBlockHead.unk4;
+    WmBlockNode *n = g_worldBlockHead.unk4;
     u32 i = 0;
 
     do {
@@ -1286,7 +1286,7 @@ s32 wm_blockListRequest(s16 arg0) {
 }
 
 void wm_blockListResolve(void) {
-    Unk800D375C *n;
+    WmBlockNode *n;
     WmChunkSlot *p;
     u32 i;
     u32 j;
@@ -1378,8 +1378,8 @@ void wm_initBlockMatrix(void) {
 
 void wm_blockListCompact(void) {
     u32 i;
-    Unk800D375C *a;
-    Unk800D375C *b;
+    WmBlockNode *a;
+    WmBlockNode *b;
 
     if (g_worldBlockListDirty != 0) {
         a = g_worldBlockHead.unk4;
@@ -1403,7 +1403,7 @@ void wm_blockListCompact(void) {
     }
 }
 
-s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, Unk800CE288 *arg3, u16 *arg4) {
+s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, WmPolyCache *arg3, u16 *arg4) {
     VECTOR pos;
     VECTOR rel;
     VECTOR o;
@@ -1421,7 +1421,7 @@ s32 wm_getGroundHeight(VECTOR *arg0, u32 *arg1, s32 *arg2, Unk800CE288 *arg3, u1
         rel.vy = pos.vy;
         rel.vz = pos.vz - o.vz;
         /* callers pass a 16-bit variable but a word is stored */
-        *(s32 *)arg4 = wm_getBlockHeight(cell, (WmTexEnt *)r, &rel, arg1, arg2, arg3);
+        *(s32 *)arg4 = wm_getBlockHeight(cell, (WmBlock *)r, &rel, arg1, arg2, arg3);
         if ((u8)g_worldMoveMode - 2U < 2) {
             if (*arg1 - 0x38 < 2) {
                 *arg1 = 0x36;
@@ -1714,7 +1714,7 @@ void wm_naviDrawMarker(s32 arg0, s32 arg1, s32 arg2, s32 arg3, CVECTOR arg4, CVE
     g_worldPrimPtr += sizeof(POLY_FT4);
 
 void wm_naviDrawFullMap(void) {
-    Unk800A7FB8 arrow;
+    WmQuad arrow;
     VECTOR v[4];
     SVECTOR rot;
     SVECTOR rot0;
@@ -1850,7 +1850,7 @@ void wm_naviDrawFullMap(void) {
 }
 
 void wm_naviDrawMiniMap(void) {
-    Unk800A7FB8 arrow;
+    WmQuad arrow;
     VECTOR v[4];
     SVECTOR rot;
     SVECTOR rot0;

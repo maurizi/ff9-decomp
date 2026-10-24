@@ -628,14 +628,14 @@ typedef struct {
     unsigned unk7 : 8;
     u16 unk8;          /* file 0x19xxxx */
     u8 padA[2];
-} Unk800AA39CEntry; /* 0xC */
+} WmAnimTableEntry; /* 0xC */
 
 typedef struct {
     u8 unk0;
     u8 unk1; /* count */
     u8 pad2[2];
-    Unk800AA39CEntry unk4[1];
-} Unk800AA39C;
+    WmAnimTableEntry unk4[1];
+} WmAnimTable;
 
 /* model object (same layout in ovl_0a, ovl_0b and ovl_0c) */
 

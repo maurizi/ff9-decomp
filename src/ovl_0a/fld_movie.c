@@ -156,8 +156,8 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     u32 sum;
     WmModel *m;
     WmModelGroup *g;
-    Unk800AA39C *t;
-    Unk800AA39CEntry *e;
+    WmAnimTable *t;
+    WmAnimTableEntry *e;
     s32 i;
     u32 r;
     WmModel *a;
@@ -247,9 +247,9 @@ s32 fld_depFindByLink(s32 arg0) {
 }
 
 s32 fld_getModelAnimId(s32 arg0) {
-    Unk800AA39C *t = db_lookupRegistered(8, arg0, 0x120000);
+    WmAnimTable *t = db_lookupRegistered(8, arg0, 0x120000);
     s32 i;
-    Unk800AA39CEntry *e;
+    WmAnimTableEntry *e;
 
     e = t->unk4;
     for (i = t->unk1 - 1; i >= 0; i--) {
@@ -262,8 +262,8 @@ s32 fld_getModelAnimId(s32 arg0) {
 
 /* look up the three tables of an area entry */
 s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
-    Unk800AA39C *t = db_lookupRegistered(8, arg0, 0x120000);
-    Unk800AA39CEntry *e = t->unk4;
+    WmAnimTable *t = db_lookupRegistered(8, arg0, 0x120000);
+    WmAnimTableEntry *e = t->unk4;
     s32 i;
 
     for (i = t->unk1 - 1; i >= 0; i--) {

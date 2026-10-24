@@ -69,7 +69,7 @@ void wm_initClutAnims(void) {
     s32 src;
     s32 i;
     s32 j;
-    Unk800CFF18 *e;
+    WmClutAnim *e;
     s32 a;
     s32 b;
     u16 *dst;
@@ -365,7 +365,7 @@ void func_800B9774(void) {
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_memoryman", D_800A7CCC);
 
-s32 wm_getBlockHeight(s32 cell, WmTexEnt *tex, VECTOR *pos, u32 *attr, s32 *idx, Unk800CE288 *cache) {
+s32 wm_getBlockHeight(s32 cell, WmBlock *tex, VECTOR *pos, u32 *attr, s32 *idx, WmPolyCache *cache) {
     VECTOR v1;
     VECTOR v3;
     VECTOR v2;

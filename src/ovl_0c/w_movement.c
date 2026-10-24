@@ -364,7 +364,7 @@ void wm_cameraFollow(void) {
 void wm_updateCameraPreset(void) {
     s32 k;
     s32 m;
-    Unk800CE1E8 tmp;
+    WmCameraParams tmp;
 
     k = g_worldAreaCameraGroup[w_frameGetParameter(0xC0)];
     m = g_worldMoveModeInfo->cameraRow;
@@ -404,10 +404,10 @@ void wm_updateCameraPreset(void) {
     }
 }
 
-void wm_calcCameraPreset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, Unk800CE1E8 *arg4) {
-    Unk800CE1E8 *a;
-    Unk800CE1E8 *b;
-    Unk800CE1E8 *c;
+void wm_calcCameraPreset(s32 arg0, s32 arg1, s32 arg2, s32 arg3, WmCameraParams *arg4) {
+    WmCameraParams *a;
+    WmCameraParams *b;
+    WmCameraParams *c;
     s32 t;
     s16 tmp[5];
 
@@ -1328,7 +1328,7 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
     u32 cell;
     s32 h;
     WmMoveMode *mode;
-    Unk800CE288 *c;
+    WmPolyCache *c;
     u8 ok;
     s32 k;
     s32 ang;

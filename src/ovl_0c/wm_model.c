@@ -1352,9 +1352,9 @@ s32 wm_drawSprite3D(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale
 }
 
 /* upload every image and clut of an image pack (c walks the clut RECTs in the second loop) */
-void wm_loadImagePack(Unk800CB09C *arg0) {
+void wm_loadImagePack(WmImagePack *arg0) {
     RECT r;
-    Unk800CB09CClut *c;
+    WmImagePackClut *c;
     s16 *img;
     s32 i;
     s32 n;
@@ -1364,7 +1364,7 @@ void wm_loadImagePack(Unk800CB09C *arg0) {
     u8 *pix;
 
     ofs = arg0->unk0;
-    c = (Unk800CB09CClut *)((u8 *)arg0 + ofs);
+    c = (WmImagePackClut *)((u8 *)arg0 + ofs);
     ofs = arg0->unk4;
     i = 0;
     img = (s16 *)((u8 *)arg0 + ofs);
@@ -1382,14 +1382,14 @@ void wm_loadImagePack(Unk800CB09C *arg0) {
         img = (s16 *)((u8 *)img + size);
     }
     n2 = c->unk4;
-    c = (Unk800CB09CClut *)c->unk8;
+    c = (WmImagePackClut *)c->unk8;
     for (i = 0; i < n2; i++) {
         r.x = ((RECT *)c)->x;
         r.y = ((RECT *)c)->y;
         r.w = ((RECT *)c)->w;
         r.h = ((RECT *)c)->h;
         LoadImage(&r, (u32 *)pix);
-        c = (Unk800CB09CClut *)((RECT *)c + 1);
+        c = (WmImagePackClut *)((RECT *)c + 1);
         pix += r.w * r.h * 2;
     }
 }

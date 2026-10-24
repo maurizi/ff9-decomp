@@ -200,13 +200,13 @@ typedef struct WorldMap {
 typedef struct {
     u8 pad0[0x11];
     u8 unk11;
-} Unk800CE0E8;
+} WmCameraFlags;
 
 /* doubly linked list node; g_worldEffectFree is the list head */
-typedef struct WmNode {
+typedef struct WmEffect {
     s32 unk0;
-    struct WmNode *unk4;
-    struct WmNode *unk8;
+    struct WmEffect *unk4;
+    struct WmEffect *unk8;
     s8 unkC;
     s8 unkD;
     s16 unkE;
@@ -217,7 +217,7 @@ typedef struct WmNode {
     s16 pad1E;
     s32 unk20;
     s32 unk24;
-} WmNode; /* 0x28 */
+} WmEffect; /* 0x28 */
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
 typedef struct WmReadtxSlot {
@@ -254,7 +254,7 @@ typedef struct {
 
 typedef struct {
     s16 unk0[5];
-} Unk800CE1E8; /* 10 bytes */
+} WmCameraParams; /* 10 bytes */
 
 /* movement mode table entry (g_worldMoveModes[], current one at g_worldMoveModeInfo) */
 typedef struct {
@@ -502,13 +502,13 @@ typedef struct {
     u16 unk0;
     u8 unk2;
     u8 unk3;
-} WmCell;
+} WmChunkEntry;
 
 typedef struct {
     s16 unk0; /* width */
     s16 unk2; /* height */
-    WmCell unk4[1];
-} WmCellTable;
+    WmChunkEntry unk4[1];
+} WmChunkTable;
 
 /* filled by w_musicGetID */
 typedef struct {
@@ -519,19 +519,19 @@ typedef struct {
 
 typedef struct {
     s32 unk0[4];
-} Unk800D3AB8; /* 0x10 */
+} WmBlockPos; /* 0x10 */
 
 /* list nodes (wm_blockListCompact, wm_chunkListCompact): g_worldBlockHead (head) ->
  * g_worldBlockNodes[40] -> g_worldBlockTail (tail) */
-typedef struct Unk800D375C {
-    struct Unk800D375C *unk0; /* prev */
-    struct Unk800D375C *unk4; /* next */
-    struct WmTexEnt *unk8;
-    Unk800D3AB8 *unkC;
+typedef struct WmBlockNode {
+    struct WmBlockNode *unk0; /* prev */
+    struct WmBlockNode *unk4; /* next */
+    struct WmBlock *unk8;
+    WmBlockPos *unkC;
     s16 unk10;
     u8 unk12;
     s8 unk13;
-} Unk800D375C; /* 0x14 */
+} WmBlockNode; /* 0x14 */
 
 /* list: g_worldChunkHead (head) -> g_worldChunkSlots[32] -> g_worldChunkTail (tail) */
 typedef struct {
@@ -542,7 +542,7 @@ typedef struct {
     u16 unkE; /* attribute */
 } WmPoly; /* 0x10 */
 
-typedef struct WmTexEnt {
+typedef struct WmBlock {
     u8 unk0;
     u8 unk1;
     u16 unk2; /* polygon count */
@@ -551,12 +551,12 @@ typedef struct WmTexEnt {
     u8 unkC[0x14]; /* vertex indices */
     u8 unk20; /* vertex count */
     u8 unk21; /* sound id */
-} WmTexEnt;
+} WmBlock;
 
 /* visible cells sorted by distance (wm_updateVisibleBlocks) */
 typedef struct {
     s32 unk0; /* cell */
-    WmTexEnt *unk4;
+    WmBlock *unk4;
     s32 unk8; /* distance */
 } WmNearCell;
 
@@ -567,19 +567,19 @@ typedef struct {
     s16 y1;
 } WmScrRect;
 
-typedef struct WmTexPack {
+typedef struct WmChunkPack {
     u8 unk0;
     u8 unk1;
     u8 unk2;
     u8 unk3;
     s32 unk4;
-    WmTexEnt *unk8[4];
-} WmTexPack;
+    WmBlock *unk8[4];
+} WmChunkPack;
 
 typedef struct WmChunkSlot {
     struct WmChunkSlot *unk0; /* prev */
     struct WmChunkSlot *unk4; /* next */
-    struct WmTexPack *unk8;
+    struct WmChunkPack *unk8;
     s16 chunkId;
     u8 state;
     u8 generation;
@@ -592,14 +592,14 @@ typedef struct {
     CVECTOR unk0;
     u16 unk4;
     u16 unk6;
-} Unk800D1FD8;
+} WmFogParam;
 
 typedef struct {
     u16 unk0;
     s16 unk2;
     s16 unk4[3]; /* rgb */
     s16 pad;
-} Unk800D3FA0Sub; /* 0xC */
+} WmFog; /* 0xC */
 
 typedef union {
     SVECTOR v;
@@ -612,7 +612,7 @@ typedef struct {
     SVECTOR unk18;
     WmSkyCol unk20; /* back colour 1 */
     WmSkyCol unk28; /* back colour 2 */
-    Unk800D3FA0Sub unk30[3];
+    WmFog unk30[3];
     s16 unk54[3];
     u8 pad5A[2];
     u16 unk5C;
@@ -621,7 +621,7 @@ typedef struct {
 typedef struct {
     WmSky unk0[16]; /* presets: [mode * 4 + flag * 2 + 0/1] */
     WmSky unk5E0[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
-} Unk800D3FA0;
+} WmWeatherData;
 void wm_blendWeather(WmSky *, WmSky *, WmSky *, s32, s32);
 void wm_weatherAuto(void);
 void func_800B9774(void);
@@ -635,27 +635,27 @@ typedef struct {
     u8 pad6[2];
     s16 unk8; /* tpage */
     s16 unkA; /* clut */
-} Unk800D2FF8; /* 0xC */
+} WmTexArea; /* 0xC */
 
 typedef struct {
     s16 unk0;
     s16 unk2;
     s32 unk4; /* x */
     s32 unk8; /* z */
-} Unk800CD10C; /* 0xC */
+} WmNaviPlace; /* 0xC */
 
 /* file 0x12xxxx lookup table (wm_findDefaultAnim) */
 typedef struct {
     u16 unk0;
     u16 unk2;
-} Unk800AA39CEntry;
+} WmAnimTableEntry;
 
 typedef struct {
     u8 unk0;
     u8 unk1; /* count */
     u8 pad2[2];
-    Unk800AA39CEntry unk4[1];
-} Unk800AA39C;
+    WmAnimTableEntry unk4[1];
+} WmAnimTable;
 
 /* streamed load request (wm_streamSoundChunk) */
 typedef struct {
@@ -663,7 +663,7 @@ typedef struct {
     s32 unk8; /* address */
     s32 unkC; /* offset */
     s32 unk10; /* size */
-} Unk800AC424;
+} WmStreamReq;
 
 /* POLY_F4 with the screen coordinates as packed words */
 typedef struct {
@@ -811,7 +811,7 @@ extern RECT *s_menuMainTimeGilRect;
 extern u8 s_menuMainGilSuffix[];
 extern u8 g_worldFog;
 extern u8 D_800CCE4D;
-extern Unk800D2FF8 *D_800D27F0;
+extern WmTexArea *D_800D27F0;
 extern u8 *s_menuMainEquipLabels[5];
 extern char D_800A79D0[];
 extern char D_800A7A0C[];
@@ -834,8 +834,8 @@ extern u8 g_worldAreaCameraGroup[];
 extern u8 g_worldAreaZone[];
 extern u8 g_worldEncounterZoneStart[];
 extern char D_800A7F48[];
-extern Unk800CE1E8 g_worldCameraParams;
-extern Unk800CE1E8 g_worldCameraParamsFrom;
+extern WmCameraParams g_worldCameraParams;
+extern WmCameraParams g_worldCameraParamsFrom;
 extern u8 D_800CF46D;
 extern s32 g_worldReadyFrameCount;
 extern MATRIX D_800CF4C0;
@@ -850,7 +850,7 @@ extern s32 g_worldWidth; /* map width (wraps) */
 extern s32 g_worldDepth; /* map height (wraps) */
 extern RECT D_800A71E0;
 extern char D_800A720C[]; /* "w_frameSystemDestructor:\n" */
-extern Unk800CD10C g_worldNaviPlaces[][64];
+extern WmNaviPlace g_worldNaviPlaces[][64];
 extern s32 *g_worldTexBuffers[3];
 extern s32 D_800CE3F8;
 extern u8 D_800CE400[];
@@ -867,17 +867,17 @@ typedef struct {
     s16 unk4;
     s16 unk6; /* frame count */
     s16 unk8; /* speed */
-} Unk800CFF18; /* 0xA */
-extern Unk800CFF18 g_worldClutAnims[];
+} WmClutAnim; /* 0xA */
+extern WmClutAnim g_worldClutAnims[];
 extern s16 D_800CFE48[];
 extern u8 D_800CFE70[];
 extern u16 D_800CFE20[];
-extern Unk800D2FF8 D_800D2FF8[17];
+extern WmTexArea D_800D2FF8[17];
 extern s8 g_worldNaviPage;
 extern char D_800A8098[];
 extern s32 g_worldPrimPtr;
-extern WmCellTable *g_worldChunkTable;
-extern WmCellTable *g_worldChunkTableT;
+extern WmChunkTable *g_worldChunkTable;
+extern WmChunkTable *g_worldChunkTableT;
 extern u8 *g_worldBufIndex;
 extern s32 g_worldOt[];
 extern s32 g_worldEventResult;
@@ -889,21 +889,21 @@ extern s32 g_worldTimeDraw;
 extern s32 g_worldPrimUsed;
 extern s32 g_worldPrimUsedPercent;
 extern s32 g_worldTimeTotal;
-extern Unk800D1FD8 D_800D1FD8;
-extern Unk800D1FD8 D_800D1FE0[2];
+extern WmFogParam D_800D1FD8;
+extern WmFogParam D_800D1FE0[2];
 extern s32 g_worldChunksH;
-extern Unk800D375C g_worldBlockHead; /* list head */
+extern WmBlockNode g_worldBlockHead; /* list head */
 extern s32 g_worldBlockListDirty;
-extern Unk800D375C g_worldBlockNodes[40];
-extern Unk800D3AB8 D_800D3AB8[20];
-extern Unk800D375C g_worldBlockTail; /* list tail */
+extern WmBlockNode g_worldBlockNodes[40];
+extern WmBlockPos D_800D3AB8[20];
+extern WmBlockNode g_worldBlockTail; /* list tail */
 extern WmChunkSlot g_worldChunkTail;
 extern WmChunkSlot g_worldChunkHead;
 extern WmChunkSlot g_worldChunkSlots[32];
 extern s32 g_worldChunkCenter;
 extern s32 g_worldChunksLoadedCount;
 extern s32 g_worldChunkListDirty;
-extern Unk800D3FA0 g_worldWeatherData;
+extern WmWeatherData g_worldWeatherData;
 extern char D_800A71F4[]; /* "w_frameMapDestructor:\n" */
 extern char D_800A7A40[]; /* "w_framePackGetPtr : attempt to get %d element with %d max\n" */
 extern void (*s_menuMainInput[])(void);
@@ -917,7 +917,7 @@ extern s32 g_worldHeapLastSize;
 extern u16 *g_worldStoryCounterPtr;
 extern u8 g_worldDataSet;
 extern s32 g_worldCellsW;
-extern WmTexPack *g_worldDefaultBlocks;
+extern WmChunkPack *g_worldDefaultBlocks;
 extern s32 g_worldChunksW;
 extern MATRIX D_800D3770;
 extern s32 g_worldMapDebugFlags; /* debug flags */
@@ -933,14 +933,14 @@ typedef struct {
     u8 unk4;
     u8 unk5;
     u8 pad6[2];
-} Unk800D3F78;
-extern Unk800D3F78 D_800D3F78[];
+} WmTexTransfer;
+extern WmTexTransfer D_800D3F78[];
 extern s16 D_800CDF14[2];
 extern s16 D_800CDF18[2];
 extern s16 D_800CDF1C[2];
 extern s16 D_800CDF20[2];
 extern char D_800A8118[];
-extern Unk800CE0E8 *g_worldCameraFlags;
+extern WmCameraFlags *g_worldCameraFlags;
 extern u8 g_worldAutoPilot;
 extern u8 g_worldAutoPilotSavedAutoTurn;
 extern s32 g_worldAutoPilotDist;
@@ -952,11 +952,11 @@ extern s32 g_worldReadtxReqCount;
 extern s32 g_worldReadtxDirty;
 extern s8 g_worldMapError;
 extern char g_worldMapErrorMsg[];
-extern WmNode g_worldEffectFree;
-extern WmNode g_worldEffectActive;
-extern WmNode g_worldEffectNodes[60]; /* free list nodes */
-extern WmNode g_worldEffectFreeTail; /* list tail */
-extern WmNode g_worldEffectActiveTail; /* list tail */
+extern WmEffect g_worldEffectFree;
+extern WmEffect g_worldEffectActive;
+extern WmEffect g_worldEffectNodes[60]; /* free list nodes */
+extern WmEffect g_worldEffectFreeTail; /* list tail */
+extern WmEffect g_worldEffectActiveTail; /* list tail */
 extern s32 g_worldEffectSpeed;
 extern s32 D_800D53CC;
 extern s32 D_800D53E0;
@@ -1059,7 +1059,7 @@ typedef struct {
     u16 unk4; /* w */
     u16 unk6; /* h */
     u16 unk8; /* speed (8.8) */
-} Unk800CFEA0; /* 0xA */
+} WmTexScroll; /* 0xA */
 
 /* random-encounter table entry (g_worldEncounterTable, docs/encounters.md) */
 typedef struct {
@@ -1069,7 +1069,7 @@ typedef struct {
 } WmEncounter; /* 0xA */
 
 extern u16 D_800CFE88[8];
-extern Unk800CFEA0 g_worldTexScrolls[8];
+extern WmTexScroll g_worldTexScrolls[8];
 extern u16 D_800CFEF8;
 extern u16 D_800CFF02;
 extern void *D_800CE3F4;
@@ -1099,16 +1099,16 @@ void wm_musicStop(u16);
 
 /* image pack loaded by wm_loadImagePack; offsets are from the header start */
 typedef struct {
-    s32 unk0; /* offset: Unk800CB09CClut */
+    s32 unk0; /* offset: WmImagePackClut */
     s32 unk4; /* offset: images (RECT + pixels) */
     s32 unk8; /* image count */
-} Unk800CB09C;
+} WmImagePack;
 
 typedef struct {
     s32 unk0; /* offset: pixel data */
     s32 unk4; /* count */
     RECT unk8[1];
-} Unk800CB09CClut;
+} WmImagePackClut;
 
 /* text window contents passed to func_80063118 (as in ovl_38) */
 typedef struct {
@@ -1136,11 +1136,11 @@ typedef struct {
     u8 pad1[3];
     u16 unk4[6]; /* polygon */
     u16 unk10[6]; /* cell */
-} Unk800CE288; /* 0x1C: recently hit walkmesh polygons */
-s32 wm_getGroundHeight(VECTOR *, u32 *, s32 *, Unk800CE288 *, u16 *);
+} WmPolyCache; /* 0x1C: recently hit walkmesh polygons */
+s32 wm_getGroundHeight(VECTOR *, u32 *, s32 *, WmPolyCache *, u16 *);
 u8 wm_tryStep(VECTOR *, s32, s32, s32, u32 *, s32 *);
 u8 wm_findGetoffPos(ActorPos *);
-extern Unk800CE288 g_worldPolyCache[11];
+extern WmPolyCache g_worldPolyCache[11];
 extern Unk8004AB64 g_worldDummyActor;
 extern u8 D_800CE209;
 extern u8 D_800CE25D;
@@ -1191,7 +1191,7 @@ void wm_drawMap(void);
 void wm_naviDraw(void);
 void wm_drawEffects(void);
 s32 wm_getCellBlock(s16, u8 *);
-s32 wm_getBlockHeight(s32, WmTexEnt *, VECTOR *, u32 *, s32 *, Unk800CE288 *);
+s32 wm_getBlockHeight(s32, WmBlock *, VECTOR *, u32 *, s32 *, WmPolyCache *);
 void wm_wrapPos(s32 *, s32 *);
 void wm_posToCell(s32, s32, s32 *);
 void wm_cellToPos(s32, s32 *, s32 *);
@@ -1220,13 +1220,13 @@ typedef struct {
     u8 pad7;
     s16 unk8; /* w */
     s16 unkA; /* h */
-} Unk800CD744; /* 0xC */
-extern Unk800CD744 D_800CD744[4];
+} WmNaviFramePart; /* 0xC */
+extern WmNaviFramePart D_800CD744[4];
 void func_800C1824();
 extern s32 g_worldWeatherPointDist;
 void func_800C26DC(void);
 
-extern Unk800CE1E8 g_worldCameraPresets[];
+extern WmCameraParams g_worldCameraPresets[];
 extern u8 g_worldCameraPresetIndex[][3][3];
 extern VECTOR g_worldCameraUp;
 extern SVECTOR D_800CE0F8; /* look-at point passed to wm_lookAt, never written (zero: the scene is drawn relative to g_worldCameraTarget) */
@@ -1281,10 +1281,10 @@ typedef struct {
 extern s32 g_worldNaviCursorX; /* navi cursor */
 extern s32 D_800CD70C; /* marker snap distance */
 extern s32 g_worldNaviCursorY;
-typedef struct { SVECTOR v[4]; } Unk800A7FB8; /* shadow quad template */
-extern Unk800A7FB8 D_800A7FB8;
-extern Unk800A7FB8 D_800A8020; /* radar arrow */
-extern Unk800A7FB8 D_800A8000; /* big-map arrow */
+typedef struct { SVECTOR v[4]; } WmQuad; /* shadow quad template */
+extern WmQuad D_800A7FB8;
+extern WmQuad D_800A8020; /* radar arrow */
+extern WmQuad D_800A8000; /* big-map arrow */
 extern WmScrRect D_800CD09C[]; /* on-screen test rects */
 extern char D_800A8178[]; /* "Illegal Weather Mode" */
 extern VECTOR D_800CDF38;
@@ -1374,7 +1374,7 @@ static inline u32 wm_debugAdjustScreen_trg(void) {
     return g_padPortPressed;
 }
 
-void wm_freeEffect(WmNode *);
+void wm_freeEffect(WmEffect *);
 s32 wm_getSpriteFrameCount(u16 *);
 
 /* random byte from the main exe's table (rand_refill refills it) */
@@ -1454,22 +1454,22 @@ extern char D_800A7F94[];
 extern SVECTOR D_800A849C; /* rotation used by wm_drawEffects */
 s32 wm_readtxFind(s32, s32);
 u8 wm_findChunkRun(WmChunkSlot **, s32 *, s32 *);
-void wm_getChunkEntry(s32, s32, WmCell *);
-void wm_getChunkEntryT(s32, s32, WmCell *);
+void wm_getChunkEntry(s32, s32, WmChunkEntry *);
+void wm_getChunkEntryT(s32, s32, WmChunkEntry *);
 void wm_chunksLoaded(void);
 
 typedef struct {
     u8 b[0x1E0];
 } WmCellMap; /* g_worldChunkFlags as one block */
 typedef struct {
-    Unk800CFEA0 e[30];
-} Unk800CFEA0Tbl; /* g_worldTexScrolls and the entries after it */
+    WmTexScroll e[30];
+} WmTexScrollTbl; /* g_worldTexScrolls and the entries after it */
 extern u8 g_worldZoneEncounterCount[];
 extern s32 g_worldCellsH;
 void wm_applyStoryForms(void);
 void wm_chunkListInit(void);
 void wm_initBlockMatrix(void);
-void wm_loadImagePack(Unk800CB09C *);
+void wm_loadImagePack(WmImagePack *);
 
 #define gte_stir(r0) __asm__ volatile( \
     "swc2\t$9, 0(%0);" \
@@ -1515,7 +1515,7 @@ extern u8 D_800CE208;
 
 /* wm_cameraFollow (camera follow) */
 extern u8 D_800CE1E0;
-extern Unk800CE288 g_worldCameraPolyCache[4];
+extern WmPolyCache g_worldCameraPolyCache[4];
 extern s32 D_800CCAFC;
 extern s32 D_800CCB04;
 extern s32 D_800CCB08;
@@ -1532,7 +1532,7 @@ s32 wm_isMusicFadingOut(void);
 s32 wm_findSoundFile(); /* old-style: one caller passes a third argument */
 s32 wm_depGetLink(s32 arg0);
 s32 wm_unpackMusic(s32 arg0);
-void wm_streamSoundChunk(Unk800AC424 *arg0);
+void wm_streamSoundChunk(WmStreamReq *arg0);
 s32 func_800B8108(void);
 
 /* main exe: candidates for ff9.h (sound) */

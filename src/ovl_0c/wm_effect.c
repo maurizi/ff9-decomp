@@ -60,7 +60,7 @@ void wm_initEffects(void) {
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A849C);
 
 void wm_drawEffects(void) {
-    WmNode *o;
+    WmEffect *o;
     VECTOR a;
     VECTOR b;
     SVECTOR pos;
@@ -155,8 +155,8 @@ void wm_drawEffects(void) {
 }
 
 void wm_updateEffects(void) {
-    WmNode *o;
-    WmNode *cur;
+    WmEffect *o;
+    WmEffect *cur;
     s16 spd;
     u8 flag;
 
@@ -513,10 +513,10 @@ void wm_termEffects(void) {
 }
 
 void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    WmNode *p;
+    WmEffect *p;
     s32 v;
     u8 k;
-    WmNode *h;
+    WmEffect *h;
 
     p = g_worldEffectFree.unk8;
     h = &g_worldEffectActive;
@@ -583,7 +583,7 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 }
 
-void wm_freeEffect(WmNode *arg0) {
+void wm_freeEffect(WmEffect *arg0) {
     arg0->unk4->unk8 = arg0->unk8;
     arg0->unk8->unk4 = arg0->unk4;
     arg0->unk4 = &g_worldEffectFree;
