@@ -42,8 +42,23 @@ segments:
     vram: 0x800A7000
     bss_size: 0x0
     subsegments:
-      - [0x0, .rodata, ovl_0a]
-      - [0xA48, c, ovl_0a]
+      - [0x0, .rodata, fld_main]
+      - [0x40, .rodata, fld_movie]
+      - [0xCC, .rodata, tu_800B0124]
+      - [0x170, .rodata, tu_800B5004]
+      - [0x1F4, .rodata, bgi]
+      - [0x860, .rodata, tu_800C8124]
+      - [0xA48, c, fld_main]
+      - [0x33F4, c, fld_movie]
+      - [0x9124, c, tu_800B0124]
+      - [0xE004, c, tu_800B5004]
+      - [0xE958, c, fld_asm_800B5958]
+      - [0xF1A4, c, tu_800B61A4]
+      - [0x1ADC4, c, fld_asm_800C1DC4]
+      - [0x1AE14, c, tu_800C1E14]
+      - [0x1DB30, c, bgi]
+      - [0x21124, c, tu_800C8124]
+      - [0x22AB8, c, fld_asm_800C9AB8]
       - [0x22CCC, data]
 
   - [0x24800]
