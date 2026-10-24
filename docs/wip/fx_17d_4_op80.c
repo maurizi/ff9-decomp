@@ -309,7 +309,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 w3 = q_c3 + 0x1000;
                 pos.vx = work->unk48.vx;
                 pos.vy = work->unk48.vy;
-                o_3_c6 = ((0x1000 - q_c3) >> 5) - 0x80;
+                q6b = ((0x1000 - q_c3) >> 5) - 0x80;
                 pos.vz = work->unk48.vz;
                 for (i_c3 = 0, t_c3 = 0x20; i_c3 < 3; i_c3++, t_c3 += 0x10) {
                     s32 y;
@@ -322,7 +322,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     rot.vy = y;
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->unk78);
                     ex->Hi_ModifyEffModelAbr(work->unk78, 1);
-                    ex->Hi_ModifyEffModelRGB(work->unk78, o_3_c6, o_3_c6, o_3_c6);
+                    ex->Hi_ModifyEffModelRGB(work->unk78, q6b, q6b, q6b);
                     y = 0;
                 }
             }
@@ -475,7 +475,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame < 0x26) {
                 n5 = 0x20;
                 if (frame < 0x1E) {
-                    w13_c6 = 0x1000;
+                    k5 = 0x1000;
                     g = 0;
                     q_c6 = 0;
                     k = 0;
@@ -485,7 +485,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 } else {
                     q6b = (frame - 0x1E) << 9;
                     n5 = 0x27;
-                    w13_c6 = 0x1000;
+                    k5 = 0x1000;
                     g = 0;
                     q_c6 = 0x1000;
                     r_c2 = 0x1D;
@@ -503,11 +503,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 i_c3 = ((frame - 0x26) << 12) / 13;
                 n5 = (i_c3 >> 3) + 0x40;
                 f3 = 0x15;
-                w13_c6 = 0x1000 - i_c3 * 2 / 3;
-                k = w13_c6;
+                k5 = 0x1000 - i_c3 * 2 / 3;
+                k = k5;
                 q_c6 = k;
             }
-            func_801E77DC(entry, &D_801E971C, r_c2, n5, w13_c6, g, flag);
+            func_801E77DC(entry, &D_801E971C, r_c2, n5, k5, g, flag);
             if (q_c6 != 0) {
                 func_801E7B8C(entry, &D_801E971C, f3, q_c6);
                 func_801E7EB4(entry, &D_801E971C, k);
