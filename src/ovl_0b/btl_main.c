@@ -526,12 +526,12 @@ s32 func_800A9BE4(s32 arg0) {
             }
             func_800BD698(u, g_gameState->unk1C->party[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
-                if (u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
+                if (u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
                     u->model->unkC = (BtlUnit9CC *)u->motions[4];
                 } else {
                     goto use9;
                 }
-            } else if (u == g_gameState->unk1C->unk8E4.battle->curCmd->unk4 || ((u->unk68 >> 19) & 1)) {
+            } else if (u == g_gameState->unk1C->unk8E4.battle->curCmd->caster || ((u->unk68 >> 19) & 1)) {
             use9:
                 u->model->unkC = (BtlUnit9CC *)u->motions[9];
             } else {

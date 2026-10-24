@@ -73,7 +73,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
             } else if (u->status & BTL_STATUS_PETRIFY) {
                 u->hpChange = 0;
             } else {
-                if (u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
+                if (u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
                     v = (u->unk68 & 1) << 11;
                     u->unkA0->unk22 = v;
                     u->rot[1] = v;
@@ -169,7 +169,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
         arg0->hpChange = 0;
         return;
     }
-    if (arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
+    if (arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
         v = (arg0->unk68 & 1) << 11;
         arg0->unkA0->unk22 = v;
         arg0->rot[1] = v;
@@ -562,8 +562,8 @@ s32 btl_getBattleVar(s32 arg0) {
         r = b->subPhase;
         break;
     case 36:
-        if (b->curCmd != NULL && b->curCmd->unk4 != NULL) {
-            r = b->curCmd->unk4->unitBit;
+        if (b->curCmd != NULL && b->curCmd->caster != NULL) {
+            r = b->curCmd->caster->unitBit;
         }
         break;
     case 37:
@@ -572,14 +572,14 @@ s32 btl_getBattleVar(s32 arg0) {
         }
         break;
     case 38:
-        if (b->curCmd != NULL && b->curCmd->unk4 != NULL && b->curCmd->unk4->weapon != NULL) {
-            r = b->curCmd->unk4->weapon[6];
+        if (b->curCmd != NULL && b->curCmd->caster != NULL && b->curCmd->caster->weapon != NULL) {
+            r = b->curCmd->caster->weapon[6];
         }
         break;
     case 39:
-        if (b->curCmd != NULL && b->curCmd->unk4 != NULL) {
+        if (b->curCmd != NULL && b->curCmd->caster != NULL) {
             r = 0;
-            if (!(b->curCmd->unk4->support[1] & 1)) {
+            if (!(b->curCmd->caster->support[1] & 1)) {
                 r = b->curCmd->ability->element;
             }
         }

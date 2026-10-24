@@ -34,7 +34,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
 
     memset(sum, 0, 0x10);
     mask = 0;
-    b->fxTargets.unk0 = arg0->unk4;
+    b->fxTargets.unk0 = arg0->caster;
     l = &b->fxTargets;
     if (arg2 != NULL) {
         l->unk25[0] = arg2[0];
@@ -49,11 +49,11 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
     }
     l->unk27 = 0;
     l->unk24 = 0;
-    c = arg0->unk4;
+    c = arg0->caster;
     c->popupFlags = 0;
     c->mpChange = 0;
     c->hpChange = 0;
-    if (arg0->unk10.b.unk0_7 == 0) {
+    if (arg0->unk10.b.reflect == 0) {
         mask = btl_applyReflect(arg0);
         e = arg0->cmdNo;
         if (e == 0xE || e == 0x33) {
@@ -63,9 +63,9 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         } else if ((u8)(e - 0x39) < 2) {
             l->unk40 = 1;
         }
-    } else if (arg0->unk10.b.unk0_7 == 2) {
-        arg0->unk10.b.unk0_7 = 1;
-        if (!(arg0->unk4->unk68 & 1)) {
+    } else if (arg0->unk10.b.reflect == 2) {
+        arg0->unk10.b.reflect = 1;
+        if (!(arg0->caster->unk68 & 1)) {
             arg0->unk10.b.unk0_11 = 1;
         }
         l->unk40 = 0x11;
@@ -95,7 +95,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
 }
 
 void btl_startCmdEffect(BtlCmd *cmd) {
-    BtlUnit *u = cmd->unk4;
+    BtlUnit *u = cmd->caster;
     s32 id;
     s32 k;
     u16 t;
@@ -186,11 +186,11 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         }
         break;
     case BTL_CMD_ENEMY_TURN:
-        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & 8) && !cmd->unk10.b.unk0_0) {
+        if ((u16)cmd->targets < 0x10 && (cmd->ability->flags & 8) && !cmd->unk10.b.targeting) {
             t = btl_findCover((u16)cmd->targets);
             if (t) {
                 cmd->targets = t;
-                cmd->unk10.b.unk0_5 = 1;
+                cmd->unk10.b.covered = 1;
             }
         }
     case BTL_CMD_ENEMY_COUNTER:
@@ -233,7 +233,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
             break;
         }
     default:
-        if ((cmd->ability->targetType == 3 && !cmd->unk10.b.unk0_0) || (cmd->unk10.w & 0x600) ||
+        if ((cmd->ability->targetType == 3 && !cmd->unk10.b.targeting) || (cmd->unk10.w & 0x600) ||
             cmd->cmdNo == BTL_CMD_SEIKEN || cmd->cmdNo == BTL_CMD_SEIKEN2) {
             btl_playCmdEffect(cmd, cmd->ability->altEffect, 0);
         } else {

@@ -136,7 +136,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
 
     sp18 = arg1->unk11C0->unk34[arg0->unk8];
     done = 1;
-    if (g_btlfxEnv->unk0->unk0 != -1 || arg1->cmdQueue.unk0 != NULL || arg1->curCmd != NULL) {
+    if (g_btlfxEnv->unk0->unk0 != -1 || arg1->cmdQueue.next != NULL || arg1->curCmd != NULL) {
         done = 0;
     }
     for (u = arg1->unitList; u != NULL; u = u->next) {

@@ -145,7 +145,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
     BtlUnit9C *m;
 
     if (u->status & BTL_STATUS_KO) {
-        if ((u->unk68 & 0x20001) == 1 && u != cmd->unk4 && u->unk7D == 0) {
+        if ((u->unk68 & 0x20001) == 1 && u != cmd->caster && u->unk7D == 0) {
             cur = (s32)u->model->unkC;
             if (cur != u->motions[4] && cur != u->motions[9]) {
                 u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
@@ -158,7 +158,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         return 0;
     }
     {
-        if (u == cmd->unk4 && (u32)(cmd->cmdNo - 0x37) >= 7) {
+        if (u == cmd->caster && (u32)(cmd->cmdNo - 0x37) >= 7) {
             cur = (s32)u->model->unkC;
             if (cur == u->motions[10] || cur == u->motions[11]) {
                 u->model->unkC = (BtlUnit9CC *)u->motions[9];
@@ -384,7 +384,7 @@ void btl_updateKo(BtlUnit *u) {
 s32 btl_waitHitMotions(BtlCmd *arg0) {
     BtlUnit *u;
     s32 r;
-    u32 bit = arg0->unk10.b.unk0_5;
+    u32 bit = arg0->unk10.b.covered;
     do {
         r = 1;
         if (bit) {

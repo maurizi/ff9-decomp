@@ -1076,22 +1076,22 @@ typedef struct BtlCmd8 {
 } BtlCmd8;
 
 typedef struct BtlCmd {
-    struct BtlCmd *unk0; /* next */
-    BtlUnit *unk4;
+    struct BtlCmd *next; /* queue link */
+    BtlUnit *caster;
     BtlCmd8 *ability;
     s16 targets; /* unit bitmask: party bits 0-3, enemies from bit 4 */
     u8 cmdNo;    /* menu command: Attack 1, Focus 13, ... */
     u8 subNo;    /* ability id (Attack 176, Focus 188), or item id for item commands */
     union {
         struct {
-            u32 unk0_0 : 2;
+            u32 targeting : 2; /* btl_setCmd's last argument; 1 = several targets (btl_halveForSpread, btl_setEnemyCmd) */
             u32 unk0_2 : 2;
-            u32 unk0_4 : 1;
-            u32 unk0_5 : 1;
-            u32 unk0_6 : 1;
-            u32 unk0_7 : 2;
+            u32 automatic : 1; /* set for the ids above BTL_CMD_TABLE_COUNT (btl_setCmd, btl_setEnemyCmd) */
+            u32 covered : 1; /* retargeted to a Cover unit (btl_findCover) */
+            u32 dodged : 1; /* the target dodged; its step aside is undone at the end (btl_applyCalcResult) */
+            u32 reflect : 2; /* 2 = bounce pending, 1 = bounced (btl_playCmdEffect, btl_onCmdEffectDone) */
             u32 unk0_9 : 1;
-            u32 unk0_10 : 1;
+            u32 shortSummon : 1; /* plays the ability's altEffect (btl_rollShortSummon) */
             u32 unk0_11 : 1;
         } b;
         u32 w; /* cleared as a word */
@@ -1196,19 +1196,19 @@ typedef struct {
 
 /* Inlined copy of btl_clearCmd (clear a command); the original source inlines it. */
 static inline void btl_clearCmd_inline(BtlCmd *arg0) {
-    arg0->unk0 = 0;
+    arg0->next = 0;
     arg0->ability = 0;
     arg0->targets = 0;
     arg0->cmdNo = 0;
     arg0->subNo = 0;
-    arg0->unk10.b.unk0_0 = 0;
+    arg0->unk10.b.targeting = 0;
     arg0->unk10.b.unk0_2 = 0;
-    arg0->unk10.b.unk0_4 = 0;
-    arg0->unk10.b.unk0_5 = 0;
-    arg0->unk10.b.unk0_6 = 0;
-    arg0->unk10.b.unk0_7 = 0;
+    arg0->unk10.b.automatic = 0;
+    arg0->unk10.b.covered = 0;
+    arg0->unk10.b.dodged = 0;
+    arg0->unk10.b.reflect = 0;
     arg0->unk10.b.unk0_9 = 0;
-    arg0->unk10.b.unk0_10 = 0;
+    arg0->unk10.b.shortSummon = 0;
     arg0->unk10.b.unk0_11 = 0;
 }
 
@@ -4281,7 +4281,7 @@ extern u8 D_8007AF01;
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {
-    if ((arg1->unk4->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & 2)) {
+    if ((arg1->caster->status & BTL_STATUS_SILENCE) && (arg1->ability->flags & 2)) {
         btl_showMessage(0x15);
         return 0;
     }

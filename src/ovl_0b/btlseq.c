@@ -40,7 +40,7 @@ void btlseq_init(void) {
 
 void btl_startEnemySeq(BtlCmd *arg0) {
     if (g_gameState->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo] != 0 && btlseq_start(arg0) != NULL) {
-        BtlUnit *u = arg0->unk4;
+        BtlUnit *u = arg0->caster;
         if (!(u->unk68 & 1)) {
             u->rot[1] = 0;
         }
@@ -96,7 +96,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
         c->cmdNo = 0;
         c->subNo = id;
         c->targets = arg1;
-        c->unk4 = u;
+        c->caster = u;
         c->ability = &g_gameState->unk1C->unk8E4.battle->enemyAbilities[id];
         c->unk10.w = 0;
         e = btlseq_start(c);

@@ -110,7 +110,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
     case 17:
         if ((u->unk68 & 1) && (s32)u->model->unkC != u->motions[1] &&
-            g_gameState->unk1C->unk8E4.battle->curCmd->unk4 != u) {
+            g_gameState->unk1C->unk8E4.battle->curCmd->caster != u) {
             u->model->unkC = (BtlUnit9CC *)u->motions[1];
             u->unkA0->unk3A = 0;
         }
@@ -252,7 +252,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
             u->unkA0->unk3A = 0;
         }
         c = g_gameState->unk1C->unk8E4.battle->curCmd;
-        if (c->unk4 != u || c->cmdNo > 0x30) {
+        if (c->caster != u || c->cmdNo > 0x30) {
             u->cmdIssued = 0;
         }
         btl_removeQueuedCmd(u, BTL_CMD_KO);
@@ -384,7 +384,7 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
             }
         }
     }
-    if ((arg0->status & BTL_STATUS_CONFUSE) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
+    if ((arg0->status & BTL_STATUS_CONFUSE) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
         if (arg0->model->unkC == (BtlUnit9CC *)arg0->motions[0] || arg0->model->unkC == (BtlUnit9CC *)arg0->motions[1] ||
             ((arg0->unk68 & 1) && arg0->model->unkC == (BtlUnit9CC *)arg0->motions[9])) {
             arg0->rot[1] += 0x80;
