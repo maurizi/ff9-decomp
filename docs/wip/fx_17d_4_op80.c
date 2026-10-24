@@ -1,6 +1,4 @@
-/* Draft of fx_17d_4 fx_17d_4_op80. Status: 461 aligned mismatches (125 ignoring registers and spill offsets); frame
- * size now matches: case 6's func_801E7B8C third argument is its own variable f3 (spill slot 0x80), not flag.
- * Was: 620 aligned mismatches (128 ignoring registers and spill offsets);
+/* Draft of fx_17d_4 fx_17d_4_op80. Status: 620 aligned mismatches (128 ignoring registers and spill offsets);
  * equivalent by construction. Pass 3 fixes: the ring loops' frame * k stays a multiply when the product goes through
  * a block-local y with a dead `y = 0;` at the end of the body (y is then set twice in the loop, so loop.c does not
  * treat it as a giv; flow deletes the dead store), with sc.vx/sc.vz computed before rot.vy; case 0 calls
@@ -316,11 +314,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 entry->unk0 = -1;
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->unk20);
                 work->unk20.vx += 0x40;
-                work->unk20.vz -= 0x40;
                 work->unk20.vy -= 0x5A;
-                work->unk10.vz = work->unk20.vz;
+                work->unk20.vz -= 0x40;
                 work->unk10.vx = work->unk20.vx;
                 work->unk10.vy = work->unk20.vy;
+                work->unk10.vz = work->unk20.vz;
                 env->unk2C->unk0[2].vx = work->unk20.vx;
                 env->unk2C->unk0[2].vy = work->unk20.vy;
                 env->unk2C->unk0[2].vz = work->unk20.vz;
@@ -344,11 +342,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->unk74);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->unk20);
             work->unk20.vx += 0x40;
-            work->unk20.vz -= 0x40;
             work->unk20.vy -= 0x5A;
-            work->unk10.vz = work->unk20.vz;
+            work->unk20.vz -= 0x40;
             work->unk10.vx = work->unk20.vx;
             work->unk10.vy = work->unk20.vy;
+            work->unk10.vz = work->unk20.vz;
             if (frame >= 0xA) {
                 f = (0x1000 - ex->math_cos(((frame - 0xA) << 10) / 10)) * 0x258;
                 work->unk20.vy += f >> 13;
