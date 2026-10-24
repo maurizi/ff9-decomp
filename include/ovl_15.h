@@ -75,17 +75,17 @@ typedef struct {
     void (*unk8)(void); /* update */
     void (*unkC)(void); /* leave */
 } Ovl15Mode;
-extern Ovl15Mode D_800AE444[5];
+extern Ovl15Mode g_sceneModes[5];
 
 typedef struct {
-    u8 unk0; /* current mode, index into D_800AE444 */
+    u8 unk0; /* current mode, index into g_sceneModes */
     u8 unk1;
     u8 unk2;
     u8 unk3;
 } Ovl15ModeState;
-extern Ovl15ModeState D_800B0FD8;
+extern Ovl15ModeState g_scene;
 
-/* Per-mode screen state (D_800B0F50, D_800B0FE0, D_800B0FF0). */
+/* Per-mode screen state (g_bjAction, g_bjWagerMenu, g_endingMenu). */
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -97,146 +97,146 @@ typedef struct {
     s32 unk8; /* frame counter */
     s32 unkC;
 } Ovl15Screen;
-extern Ovl15Screen D_800B0F50;
-extern Ovl15Screen D_800B0FE0;
-extern Ovl15Screen D_800B0FF0;
+extern Ovl15Screen g_bjAction;
+extern Ovl15Screen g_bjWagerMenu;
+extern Ovl15Screen g_endingMenu;
 
 typedef struct {
     s16 x;
     s16 y;
 } Ovl15Pos;
-extern Ovl15Pos D_800AE3DC[4];
-extern Ovl15Pos D_800AE494[1];
-extern Ovl15Pos D_800AE498[4];
-extern void *D_800AE440;
+extern Ovl15Pos g_bjActionCursorPos[4];
+extern Ovl15Pos g_bjWagerCursorPos[1];
+extern Ovl15Pos g_endingMenuCursorPos[4];
+extern void *g_endingData;
 
-extern s8 D_800AE43C; /* sound request kind, -1 = none */
-extern u16 D_800AE0E0; /* flags */
-extern s32 D_800AE0E4; /* frame counter */
-extern u16 D_800AE4C8[2][4]; /* queued flag sets / clears */
-extern s32 D_800AE0E8; /* bankroll */
+extern s8 g_endingSoundPending; /* sound request kind, -1 = none */
+extern u16 g_movieFlags; /* flags */
+extern s32 g_movieFrame; /* frame counter */
+extern u16 g_movieFlagQueue[2][4]; /* queued flag sets / clears */
+extern s32 g_bjBankroll; /* bankroll */
 extern s16 D_800AE430;
-extern u16 D_800AE432;
-extern u8 D_800B0F44; /* double allowed */
-extern s32 D_800B0F48; /* bet */
-extern u8 D_800B0F4C; /* split allowed */
-extern u32 D_800B0FD0;
-extern SPRT D_800B0F60[2][2];
-extern DR_TPAGE D_800B0FB0[2][2];
-extern s32 D_800AE3EC;
-extern u32 D_800AE3F0[16];
-s32 func_800AC374(void);
-s32 func_800AC448(void);
-void func_800AC450(void);
-void func_800AC494(void);
+extern u16 g_endingImage;
+extern u8 g_bjCanDouble; /* double allowed */
+extern s32 g_bjWager; /* bet */
+extern u8 g_bjCanSplit; /* split allowed */
+extern u32 g_theEndState;
+extern SPRT g_theEndSprites[2][2];
+extern DR_TPAGE g_theEndTpages[2][2];
+extern s32 g_endingCodePos;
+extern u32 g_endingSecretCode[16];
+s32 ending_theEndInit(void);
+s32 ending_theEndExit(void);
+void ending_theEndClearOt(void);
+void ending_theEndSwap(void);
 extern s16 D_800AE4A8;
-extern s32 D_800AE4AC;
-extern u8 *D_800AE4B0; /* next free primitive */
-extern u32 D_800AE4C0; /* FMV state */
-extern u32 D_800AE4B8; /* main state */
-extern s32 D_800AE4D8;
-extern s32 D_800AE4DC;
-extern u8 D_800B1000[2][0x2000]; /* primitive buffers */
-extern u32 D_800B5000;
-extern RECT D_800AE4E0;
-extern u32 D_800AE0EC[8]; /* CLUT */
-extern DrTpageWords D_800AE4E8;
-extern u32 D_800B0DF8;
-extern SPRT D_800AE5F8[2][256];
-extern DR_TPAGE D_800AE4F8[2][16];
+extern s32 g_messagesFrame;
+extern u8 *g_messagesPrim; /* next free primitive */
+extern u32 g_movieState; /* FMV state */
+extern u32 g_endingState; /* main state */
+extern s32 g_bjSprtCount;
+extern s32 g_bjTpageCount;
+extern u8 g_messagesPrims[2][0x2000]; /* primitive buffers */
+extern u32 g_messagesState;
+extern RECT g_bjClutRect;
+extern u32 g_bjClut[8]; /* CLUT */
+extern DrTpageWords g_bjTpage;
+extern u32 g_bjState;
+extern SPRT g_bjSprites[2][256];
+extern DR_TPAGE g_bjTpages[2][16];
 /* Pip positions on a card face, [rank][pip]; rank 0-8 (cards 2-10) has rank + 2 pips. */
 typedef struct {
     s32 x;
     s32 y;
 } Ovl15Pip;
-extern Ovl15Pip D_800AE10C[][10];
+extern Ovl15Pip g_bjPips[][10];
 
-s32 func_800A8528(s32, s32);
-s32 func_800A91F0(Ovl15Hand *, s16, s16);
-s32 func_800A8630(s32, s32, s32, s32);
-void func_800AB1C8(void);
-void func_800A7838(void);
-void func_800A787C(void);
-s32 func_800A766C(s32, s32);
-void func_800A7A84(void);
-s32 func_800A7378(s32, s32);
-s32 func_800A9488(void);
-s32 func_800AB490(void);
-void func_800ACB98(void);
-void func_800ACC08(void);
-void func_800ACE1C(void);
-void func_800ACF00(void);
-s32 func_800AD7DC(void);
-void func_800AB34C(void);
-void func_800AB37C(void);
+s32 bj_drawCardBack(s32, s32);
+s32 bj_handInit(Ovl15Hand *, s16, s16);
+s32 bj_drawCard(s32, s32, s32, s32);
+void bj_actionInput(void);
+void ending_movieClearOt(void);
+void ending_movieSwap(void);
+s32 ending_movieInit(s32, s32);
+void ending_movieOnEnd(void);
+s32 ending_playMovie(s32, s32);
+s32 bj_main(void);
+s32 ending_theEnd(void);
+void ending_init(void);
+void ending_exit(void);
+void scene_init(void);
+void scene_exit(void);
+s32 ending_messages(void);
+void bj_actionDraw(void);
+void bj_actionTick(void);
 void func_800AB3C4(void);
 void func_800AB3CC(void);
-void func_800AB3D4(void);
-void func_800AB39C(void);
-void func_800AD358(void);
-void func_800AD644(void);
-void func_800AB45C(void);
-s32 func_800AC598(s32, s32, s32, s32, s32);
-void func_800ACCB4(void);
-void func_800ACD70(void);
-void func_800ACF58(s32);
-s32 func_800AD08C(s32);
-u8 func_800AD0C4(s32, s32);
-u8 func_800AD128(void);
-void func_800AD1FC(void);
-void func_800AD308(void);
-void func_800AD338(void);
+void bj_actionDrawCursor(void);
+void bj_actionDecide(void);
+void bj_wagerDecide(void);
+void ending_menuDecide(void);
+void bj_actionStepFadeIn(void);
+s32 ending_soundCmd(s32, s32, s32, s32, s32);
+void ending_loadMusic(void);
+void ending_loadData(void);
+void scene_set(s32);
+s32 scene_discIndex(s32);
+u8 scene_isDiscGone(s32, s32);
+u8 scene_getFadeScreen(void);
+void bj_wagerInput(void);
+void bj_wagerDraw(void);
+void bj_wagerTick(void);
 void func_800AD380(void);
 void func_800AD388(void);
-void func_800AD390(void);
-void func_800AD418(void);
-void func_800AD514(void);
-void func_800AD5EC(void);
-void func_800AD624(void);
+void bj_wagerDrawCursor(void);
+void bj_wagerStepFadeIn(void);
+void ending_menuInput(void);
+void ending_menuDraw(void);
+void ending_menuTick(void);
 void func_800AD678(void);
 void func_800AD680(void);
 void func_800AD688(void);
-void func_800AD690(void);
-void func_800AD728(void);
-void func_800AD75C(void);
-void func_800AD77C(void);
-extern u8 D_800A70EC[]; /* message table */
-s32 func_800ADC3C(void);
-void func_800ADC98(void);
-void func_800ADD04(void);
-u8 *func_800ADE14(u8 *, s32);
-void *func_800ADE30(s32, s32, u32 *, u8 *, void *);
-s32 func_800ADF90(u8 *);
-void *func_800AE028(s32, s32, u32 *, u32, s32 *, SprtWords *);
-s32 func_800A9228(Ovl15Hand *, Ovl15Hand *);
-s32 func_800A945C(Ovl15Hand *);
+void ending_menuDrawCursor(void);
+void ending_menuStepFadeIn(void);
+void ending_menuOnFadeOut(void);
+void ending_menuStartFadeIn(void);
+extern u8 g_endingMessages[]; /* message table */
+s32 ending_messagesInit(void);
+void ending_messagesClearOt(void);
+void ending_messagesSwap(void);
+u8 *ending_getMessage(u8 *, s32);
+void *ending_drawText(s32, s32, u32 *, u8 *, void *);
+s32 ending_textWidth(u8 *);
+void *ending_drawGlyph(s32, s32, u32 *, u32, s32 *, SprtWords *);
+s32 bj_splitHand(Ovl15Hand *, Ovl15Hand *);
+s32 bj_isBlackjack(Ovl15Hand *);
 
-/* func_800A9488's format strings and UI labels (INCLUDE_RODATA, never C literals) */
-extern const char D_800A7018[]; /* "%2d" */
-extern const char D_800A701C[]; /* "Bankroll" */
-extern const char D_800A7028[]; /* "%ld" */
-extern const char D_800A702C[]; /* "Wager" */
-extern const char D_800A7034[]; /* "Stand" */
-extern const char D_800A703C[]; /* "Hit" */
-extern const char D_800A7040[]; /* "Double" */
-extern const char D_800A7048[]; /* "Split" */
+/* bj_main's format strings and UI labels (INCLUDE_RODATA, never C literals) */
+extern const char g_bjFmt2d[]; /* "%2d" */
+extern const char g_bjStrBankroll[]; /* "Bankroll" */
+extern const char g_bjFmtLong[]; /* "%ld" */
+extern const char g_bjStrWager[]; /* "Wager" */
+extern const char g_bjStrStand[]; /* "Stand" */
+extern const char g_bjStrHit[]; /* "Hit" */
+extern const char g_bjStrDouble[]; /* "Double" */
+extern const char g_bjStrSplit[]; /* "Split" */
 
-/* used by func_800A9488 */
-extern Ovl15Shoe D_800B0E08;
-s32 func_800A8F58(Ovl15Shoe *);
-s32 func_800A8FA4(Ovl15Shoe *);
-s32 func_800A90B8(Ovl15Hand *, Ovl15Shoe *);
-s32 func_800A92FC(Ovl15Hand *);
-s32 func_800A9334(Ovl15Hand *, s32, s32, s32);
-void func_800ACEB8(void);
-s32 func_800A7ABC(s32, s32, s32, s32);
-void func_800AAFAC(void);
-void func_800AAFFC(void);
-s32 func_800AAFA4(void);
-s32 func_800AAD24(void);
-s32 func_800A8F00(s32, s32);
-/* func_800AB1B8 and func_800ACF48 (u8, defined later in ovl_15.c) stay undeclared for
- * func_800A9488: it calls them as implicit int (no andi 0xFF on the result). */
+/* used by bj_main */
+extern Ovl15Shoe g_bjShoe;
+s32 bj_shoeInit(Ovl15Shoe *);
+s32 bj_shoeShuffle(Ovl15Shoe *);
+s32 bj_dealCard(Ovl15Hand *, Ovl15Shoe *);
+s32 bj_handOptions(Ovl15Hand *);
+s32 bj_drawHand(Ovl15Hand *, s32, s32, s32);
+void scene_update(void);
+s32 bj_drawResult(s32, s32, s32, s32);
+void bj_clearOt(void);
+void bj_swapBuffers(void);
+s32 bj_exit(void);
+s32 bj_init(void);
+s32 bj_drawShoe(s32, s32);
+/* bj_actionGetCursor and scene_get (u8, defined later in ovl_15.c) stay undeclared for
+ * bj_main: it calls them as implicit int (no andi 0xFF on the result). */
 
 /* Random 0..2 from the main exe's random byte stream. */
 #define RND3() (({ s32 r_; if (g_randPtr >= g_randTableEnd) { rand_refill(); } r_ = *g_randPtr++; r_; }) % 3)

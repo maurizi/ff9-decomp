@@ -1,76 +1,76 @@
 #include "ovl_15.h"
 
-void func_800AB100(void) {
-    D_800B0F50.unk3 = 0;
+void bj_actionInit(void) {
+    g_bjAction.unk3 = 0;
 }
 
-void func_800AB10C(void) {
+void bj_actionEnter(void) {
     func_80032574();
     func_8002C4B0(1);
-    D_800B0F50.unk3 = 0;
-    D_800B0F50.unk0 = 1;
-    D_800B0F50.unk7 = 0;
-    D_800B0F50.unk6 = 0;
-    D_800B0F50.unk1 = 1;
-    D_800B0F50.unk2 = 0;
-    D_800B0F50.unk8 = 0;
-    D_800B0F50.unkC = 0;
+    g_bjAction.unk3 = 0;
+    g_bjAction.unk0 = 1;
+    g_bjAction.unk7 = 0;
+    g_bjAction.unk6 = 0;
+    g_bjAction.unk1 = 1;
+    g_bjAction.unk2 = 0;
+    g_bjAction.unk8 = 0;
+    g_bjAction.unkC = 0;
 }
 
-void func_800AB160(void) {
+void bj_actionUpdate(void) {
     func_8002C308(0);
-    func_800AB1C8();
-    func_800AB34C();
-    func_800AB37C();
+    bj_actionInput();
+    bj_actionDraw();
+    bj_actionTick();
 }
 
-void func_800AB198(void) {
+void bj_actionLeave(void) {
     func_8002C4B0(0);
 }
 
-u8 func_800AB1B8(void) {
-    return D_800B0F50.unk3;
+u8 bj_actionGetCursor(void) {
+    return g_bjAction.unk3;
 }
 
-void func_800AB1C8(void) {
-    if (D_800B0F50.unk1 != 0 && D_800B0F50.unk2 == 0) {
+void bj_actionInput(void) {
+    if (g_bjAction.unk1 != 0 && g_bjAction.unk2 == 0) {
         if (g_padRepeat & PAD_UP) {
             snd_playSe(0x67);
-            D_800B0F50.unk3 = D_800B0F50.unk3 != 0 ? D_800B0F50.unk3 - 1 : 3;
-            if (D_800B0F4C == 0 && D_800B0F50.unk3 == 3) {
-                D_800B0F50.unk3--;
+            g_bjAction.unk3 = g_bjAction.unk3 != 0 ? g_bjAction.unk3 - 1 : 3;
+            if (g_bjCanSplit == 0 && g_bjAction.unk3 == 3) {
+                g_bjAction.unk3--;
             }
-            if (D_800B0F44 == 0 && D_800B0F50.unk3 == 2) {
-                D_800B0F50.unk3--;
+            if (g_bjCanDouble == 0 && g_bjAction.unk3 == 2) {
+                g_bjAction.unk3--;
             }
         } else if (g_padRepeat & PAD_DOWN) {
             snd_playSe(0x67);
-            D_800B0F50.unk3 = D_800B0F50.unk3 < 3 ? D_800B0F50.unk3 + 1 : 0;
-            if (D_800B0F44 == 0 && D_800B0F50.unk3 == 2) {
-                D_800B0F50.unk3++;
+            g_bjAction.unk3 = g_bjAction.unk3 < 3 ? g_bjAction.unk3 + 1 : 0;
+            if (g_bjCanDouble == 0 && g_bjAction.unk3 == 2) {
+                g_bjAction.unk3++;
             }
-            if (D_800B0F4C == 0 && D_800B0F50.unk3 == 3) {
-                D_800B0F50.unk3 = 0;
+            if (g_bjCanSplit == 0 && g_bjAction.unk3 == 3) {
+                g_bjAction.unk3 = 0;
             }
         } else if (g_padRepeat & BTN_CROSS) {
-            func_800AB39C();
+            bj_actionDecide();
         }
     }
 }
 
-void func_800AB34C(void) {
+void bj_actionDraw(void) {
     func_800AB3C4();
     func_800AB3CC();
-    func_800AB3D4();
+    bj_actionDrawCursor();
 }
 
-void func_800AB37C(void) {
-    func_800AB45C();
+void bj_actionTick(void) {
+    bj_actionStepFadeIn();
 }
 
-void func_800AB39C(void) {
+void bj_actionDecide(void) {
     snd_playSe(0x67);
-    func_800ACF58(4);
+    scene_set(4);
 }
 
 void func_800AB3C4(void) {
@@ -79,19 +79,19 @@ void func_800AB3C4(void) {
 void func_800AB3CC(void) {
 }
 
-void func_800AB3D4(void) {
-    if (D_800B0F50.unk1 != 0 && D_800B0F50.unk2 == 0) {
-        D_80077DE8.unk0 = D_800AE3DC[D_800B0F50.unk3].x - 0x1A;
-        D_80077DE8.unk2 = D_800AE3DC[D_800B0F50.unk3].y + 3;
+void bj_actionDrawCursor(void) {
+    if (g_bjAction.unk1 != 0 && g_bjAction.unk2 == 0) {
+        D_80077DE8.unk0 = g_bjActionCursorPos[g_bjAction.unk3].x - 0x1A;
+        D_80077DE8.unk2 = g_bjActionCursorPos[g_bjAction.unk3].y + 3;
         D_80077DE8.unk4 = 3;
-        func_800355E4(&D_80077DE8, &D_800B0F50);
+        func_800355E4(&D_80077DE8, &g_bjAction);
     }
 }
 
-void func_800AB45C(void) {
-    D_800B0F50.unk8++;
-    if (D_800B0F50.unk8 > 48) {
-        D_800B0F50.unk8 = 0;
-        D_800B0F50.unk2 = 0;
+void bj_actionStepFadeIn(void) {
+    g_bjAction.unk8++;
+    if (g_bjAction.unk8 > 48) {
+        g_bjAction.unk8 = 0;
+        g_bjAction.unk2 = 0;
     }
 }

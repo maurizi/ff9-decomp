@@ -1,21 +1,21 @@
 #include "ovl_15.h"
 
-s32 func_800AB490(void) {
+s32 ending_theEnd(void) {
     s32 timer;
     s32 wait;
     s32 n;
 
     timer = -1;
     wait = 0;
-    func_800AC374();
-    D_800AE3EC = 0;
+    ending_theEndInit();
+    g_endingCodePos = 0;
     do {
-        func_800AC450();
+        ending_theEndClearOt();
         pad_update();
-        switch (D_800B0FD0) {
+        switch (g_theEndState) {
         case 0:
             timer = -1;
-            D_800B0FD0 = 1;
+            g_theEndState = 1;
             break;
         case 1:
             if (timer == -1) {
@@ -23,128 +23,128 @@ s32 func_800AB490(void) {
                 timer = 0x21C;
                 func_800320B8(1, 1, 0xB4, 0);
             } else if (timer != 0) {
-                setlen(&D_800B0F60[g_gameState->unk1C->unk8][0], 4);
-                D_800B0F60[g_gameState->unk1C->unk8][0].code = 0x64;
-                D_800B0F60[g_gameState->unk1C->unk8][0].r0 = 0x80;
-                D_800B0F60[g_gameState->unk1C->unk8][0].g0 = 0x80;
-                D_800B0F60[g_gameState->unk1C->unk8][0].b0 = 0x80;
-                D_800B0F60[g_gameState->unk1C->unk8][0].x0 = 0;
-                D_800B0F60[g_gameState->unk1C->unk8][0].y0 = 0;
-                D_800B0F60[g_gameState->unk1C->unk8][0].u0 = 0;
-                D_800B0F60[g_gameState->unk1C->unk8][0].v0 = 0;
-                D_800B0F60[g_gameState->unk1C->unk8][0].w = 0xC0;
-                D_800B0F60[g_gameState->unk1C->unk8][0].h = 0xE0;
-                D_800B0F60[g_gameState->unk1C->unk8][0].clut = 0x3800;
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800B0F60[g_gameState->unk1C->unk8][0]);
-                setDrawTPage(&D_800B0FB0[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800B0FB0[g_gameState->unk1C->unk8][0]);
-                setlen((D_800B0F60[g_gameState->unk1C->unk8] + 1), 4);
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->code = 0x64;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->g0 = 0x80;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->b0 = 0x80;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->x0 = 0xC0;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->y0 = 0;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->u0 = 0;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->v0 = 0;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->w = 0x80;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
-                (D_800B0F60[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800B0F60[g_gameState->unk1C->unk8] + 1));
-                setDrawTPage(D_800B0FB0[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800B0FB0[g_gameState->unk1C->unk8] + 1));
+                setlen(&g_theEndSprites[g_gameState->unk1C->unk8][0], 4);
+                g_theEndSprites[g_gameState->unk1C->unk8][0].code = 0x64;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].r0 = 0x80;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].g0 = 0x80;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].b0 = 0x80;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].x0 = 0;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].y0 = 0;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].u0 = 0;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].v0 = 0;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].w = 0xC0;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].h = 0xE0;
+                g_theEndSprites[g_gameState->unk1C->unk8][0].clut = 0x3800;
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndSprites[g_gameState->unk1C->unk8][0]);
+                setDrawTPage(&g_theEndTpages[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndTpages[g_gameState->unk1C->unk8][0]);
+                setlen((g_theEndSprites[g_gameState->unk1C->unk8] + 1), 4);
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->code = 0x64;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->g0 = 0x80;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->b0 = 0x80;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->x0 = 0xC0;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->y0 = 0;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->u0 = 0;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->v0 = 0;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->w = 0x80;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
+                (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndSprites[g_gameState->unk1C->unk8] + 1));
+                setDrawTPage(g_theEndTpages[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
             }
             break;
         case 2:
-            setlen(&D_800B0F60[g_gameState->unk1C->unk8][0], 4);
-            D_800B0F60[g_gameState->unk1C->unk8][0].code = 0x64;
-            D_800B0F60[g_gameState->unk1C->unk8][0].r0 = 0x80;
-            D_800B0F60[g_gameState->unk1C->unk8][0].g0 = 0x80;
-            D_800B0F60[g_gameState->unk1C->unk8][0].b0 = 0x80;
-            D_800B0F60[g_gameState->unk1C->unk8][0].x0 = 0;
-            D_800B0F60[g_gameState->unk1C->unk8][0].y0 = 0;
-            D_800B0F60[g_gameState->unk1C->unk8][0].u0 = 0;
-            D_800B0F60[g_gameState->unk1C->unk8][0].v0 = 0;
-            D_800B0F60[g_gameState->unk1C->unk8][0].w = 0xC0;
-            D_800B0F60[g_gameState->unk1C->unk8][0].h = 0xE0;
-            D_800B0F60[g_gameState->unk1C->unk8][0].clut = 0x3800;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800B0F60[g_gameState->unk1C->unk8][0]);
-            setDrawTPage(&D_800B0FB0[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800B0FB0[g_gameState->unk1C->unk8][0]);
-            setlen((D_800B0F60[g_gameState->unk1C->unk8] + 1), 4);
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->code = 0x64;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->g0 = 0x80;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->b0 = 0x80;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->x0 = 0xC0;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->y0 = 0;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->u0 = 0;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->v0 = 0;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->w = 0x80;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
-            (D_800B0F60[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800B0F60[g_gameState->unk1C->unk8] + 1));
-            setDrawTPage(D_800B0FB0[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (D_800B0FB0[g_gameState->unk1C->unk8] + 1));
+            setlen(&g_theEndSprites[g_gameState->unk1C->unk8][0], 4);
+            g_theEndSprites[g_gameState->unk1C->unk8][0].code = 0x64;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].r0 = 0x80;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].g0 = 0x80;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].b0 = 0x80;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].x0 = 0;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].y0 = 0;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].u0 = 0;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].v0 = 0;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].w = 0xC0;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].h = 0xE0;
+            g_theEndSprites[g_gameState->unk1C->unk8][0].clut = 0x3800;
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndSprites[g_gameState->unk1C->unk8][0]);
+            setDrawTPage(&g_theEndTpages[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndTpages[g_gameState->unk1C->unk8][0]);
+            setlen((g_theEndSprites[g_gameState->unk1C->unk8] + 1), 4);
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->code = 0x64;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->g0 = 0x80;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->b0 = 0x80;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->x0 = 0xC0;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->y0 = 0;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->u0 = 0;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->v0 = 0;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->w = 0x80;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
+            (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndSprites[g_gameState->unk1C->unk8] + 1));
+            setDrawTPage(g_theEndTpages[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
             if (timer == -1) {
                 timer = 0x5A;
                 func_800320B8(1, 1, timer, 0xFFFFFF);
             } else if (--timer == 0) {
-                D_800B0FD0 = 4;
+                g_theEndState = 4;
             }
             break;
         }
-        if (D_800AE3EC == 0x10) {
+        if (g_endingCodePos == 0x10) {
             if (g_padPortHeld[0] & 8) {
                 timer = -1;
-                D_800B0FD0 = 2;
+                g_theEndState = 2;
                 snd_playSe(0xC18);
                 D_80073998[0] = -1;
             }
-        } else if (g_padPortPressed[0] & D_800AE3F0[D_800AE3EC]) {
-            if (++D_800AE3EC == 0x10) {
+        } else if (g_padPortPressed[0] & g_endingSecretCode[g_endingCodePos]) {
+            if (++g_endingCodePos == 0x10) {
                 snd_playSe(0x67);
             }
         } else if (g_padPortPressed[0] != 0) {
             wait = 5;
-            D_800AE3EC = 0;
+            g_endingCodePos = 0;
         }
         D_800739B0[0].unk0 = 0;
         if (wait > 0) {
             wait--;
         }
         func_80032098();
-        func_800AC494();
-    } while ((u32)D_800B0FD0 < 3);
-    func_800AC448();
-    return D_800B0FD0 != 3;
+        ending_theEndSwap();
+    } while ((u32)g_theEndState < 3);
+    ending_theEndExit();
+    return g_theEndState != 3;
 }
 
-s32 func_800AC374(void) {
-    s32 p = (s32)db_lookupRegistered(4, D_800AE432 | 0x40000, 0);
+s32 ending_theEndInit(void) {
+    s32 p = (s32)db_lookupRegistered(4, g_endingImage | 0x40000, 0);
 
     func_8001D9CC(p, 0, 0xE0, 0x280, 0);
     func_8001D8A8(p);
     func_800552B8(0);
-    func_800AC598(0, 0x7009C, 0, 0, 0);
-    func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
+    ending_soundCmd(0, 0x7009C, 0, 0, 0);
+    ending_soundCmd(0xC401, 0x7009C, 0x5A, 0, 0x7F);
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    D_800B0FD0 = 0;
+    g_theEndState = 0;
     D_800AE430 = 0;
     D_80073998[0] = 0;
     return 0;
 }
 
-s32 func_800AC448(void) {
+s32 ending_theEndExit(void) {
     return 0;
 }
 
-void func_800AC450(void) {
+void ending_theEndClearOt(void) {
     GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-void func_800AC494(void) {
+void ending_theEndSwap(void) {
     GameData *ctx;
     u8 i;
 
@@ -160,7 +160,7 @@ void func_800AC494(void) {
     func_8002C0DC(g_gameState->unk1C->unk8);
 }
 
-s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 ending_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     GameData *g;
     s32 kind;
     s32 h;
@@ -175,8 +175,8 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_gameState->unk1C->unk851 != 0) {
                 return -1;
             }
-            if (D_800AE43C == -1) {
-                D_800AE43C = kind;
+            if (g_endingSoundPending == -1) {
+                g_endingSoundPending = kind;
             }
             if (g_gameState->unk1C->unk81C[0] != arg1) {
                 if (g_gameState->unk1C->unk0 & 0x20000000) {
@@ -192,7 +192,7 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (!(g->unk0 & 0x20000000)) {
                 func_80055A34(g->unk824[0], 0xA, 0, g->unk826[0]);
             }
-            D_800AE43C = -1;
+            g_endingSoundPending = -1;
             g_gameState->unk1C->unk0 |= 0x30000000;
             return 0;
         case 1:
@@ -310,36 +310,36 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return -1;
 }
 
-void func_800ACB98(void) {
+void ending_init(void) {
     s32 i;
 
     for (i = 1; i >= 0; i--) {
         D_800739B0[i].unk1 = 0;
         D_800739B0[i].unk0 = 0;
     }
-    g_gameState->unk1C->unk83C = func_800AC598;
-    func_800ACD70();
-    func_800ACCB4();
+    g_gameState->unk1C->unk83C = ending_soundCmd;
+    ending_loadData();
+    ending_loadMusic();
     func_800239D0();
     SetDispMask(1);
 }
 
-void func_800ACC08(void) {
+void ending_exit(void) {
     s32 i;
 
     SetDispMask(0);
     if (g_gameState->unk1C->unk0 & 0x20000000) {
-        func_800AC598(0x8301, 0x7009C, 0x5A, 0, 0);
+        ending_soundCmd(0x8301, 0x7009C, 0x5A, 0, 0);
         for (i = 0x59; i >= 0; i--) {
             VSync(0);
         }
     }
-    func_800AC598(0x100, 0x7009C, 0, 0, 0);
-    db_unregister(D_800AE440);
-    D_800AE440 = NULL;
+    ending_soundCmd(0x100, 0x7009C, 0, 0, 0);
+    db_unregister(g_endingData);
+    g_endingData = NULL;
 }
 
-void func_800ACCB4(void) {
+void ending_loadMusic(void) {
     s32 a;
     s32 b;
 
@@ -352,7 +352,7 @@ void func_800ACCB4(void) {
     func_80055E14(a, b, 1);
 }
 
-void func_800ACD70(void) {
+void ending_loadData(void) {
     u8 *buf;
     FileEntry *e;
 
@@ -361,6 +361,6 @@ void func_800ACD70(void) {
     func_8002177C(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
-    D_800AE440 = buf;
+    g_endingData = buf;
     db_register((s32)buf, 0);
 }

@@ -1,46 +1,46 @@
 #include "ovl_15.h"
 
-void func_800A713C(void) {
-    func_800ACB98();
-    func_800ACE1C();
-    D_800AE4B8 = 0;
-    while (D_800AE4B8 < 5) {
-        switch (D_800AE4B8) {
+void ending_main(void) {
+    ending_init();
+    scene_init();
+    g_endingState = 0;
+    while (g_endingState < 5) {
+        switch (g_endingState) {
         case 0:
-            func_800A7378(4, 0x12);
-            D_800AE4B8 = 3;
+            ending_playMovie(4, 0x12);
+            g_endingState = 3;
             break;
         case 1:
-            func_800AD7DC();
-            D_800AE4B8 = 2;
+            ending_messages();
+            g_endingState = 2;
             break;
         case 2:
-            func_800A7378(4, 0x13);
-            D_800AE4B8 = 3;
+            ending_playMovie(4, 0x13);
+            g_endingState = 3;
             break;
         case 3:
-            if (func_800AB490() == 1) {
-                D_800AE4B8 = 4;
+            if (ending_theEnd() == 1) {
+                g_endingState = 4;
             } else {
-                D_800AE4B8 = 3;
+                g_endingState = 3;
             }
             break;
         case 4:
-            func_800A9488();
-            D_800AE4B8 = 3;
+            bj_main();
+            g_endingState = 3;
             break;
         }
     }
-    func_800ACF00();
-    func_800ACC08();
+    scene_exit();
+    ending_exit();
 }
 
-void func_800A723C(void) {
+void ending_clearOt(void) {
     GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-void func_800A7280(void) {
+void ending_swapBuffers(void) {
     GameData *ctx;
     u8 i;
 

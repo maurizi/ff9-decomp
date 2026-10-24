@@ -1,66 +1,66 @@
 #include "ovl_15.h"
 
-void func_800AD44C(void) {
-    D_800B0FF0.unk3 = 0;
+void ending_menuInit(void) {
+    g_endingMenu.unk3 = 0;
 }
 
-void func_800AD458(void) {
+void ending_menuEnter(void) {
     func_80032574();
     func_8002C4B0(1);
-    D_800B0FF0.unk0 = 1;
-    D_800B0FF0.unk7 = 0;
-    D_800B0FF0.unk6 = 0;
-    D_800B0FF0.unk1 = 0;
-    D_800B0FF0.unk2 = 0;
-    D_800B0FF0.unk8 = 0;
-    D_800B0FF0.unkC = 0;
-    func_800AD77C();
+    g_endingMenu.unk0 = 1;
+    g_endingMenu.unk7 = 0;
+    g_endingMenu.unk6 = 0;
+    g_endingMenu.unk1 = 0;
+    g_endingMenu.unk2 = 0;
+    g_endingMenu.unk8 = 0;
+    g_endingMenu.unkC = 0;
+    ending_menuStartFadeIn();
 }
 
-void func_800AD4AC(void) {
+void ending_menuUpdate(void) {
     func_8002C308(0);
-    func_800AD514();
-    func_800AD5EC();
-    func_800AD624();
+    ending_menuInput();
+    ending_menuDraw();
+    ending_menuTick();
 }
 
-void func_800AD4E4(void) {
+void ending_menuLeave(void) {
     func_8002C4B0(0);
 }
 
-u8 func_800AD504(void) {
-    return D_800B0FF0.unk3;
+u8 ending_menuGetCursor(void) {
+    return g_endingMenu.unk3;
 }
 
-void func_800AD514(void) {
-    if (func_8002F810() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
+void ending_menuInput(void) {
+    if (func_8002F810() == 0 && g_endingMenu.unk1 != 0 && g_endingMenu.unk2 == 0) {
         if (g_padRepeat & PAD_UP) {
             snd_playSe(0x67);
-            D_800B0FF0.unk3 = D_800B0FF0.unk3 != 0 ? D_800B0FF0.unk3 - 1 : 3;
+            g_endingMenu.unk3 = g_endingMenu.unk3 != 0 ? g_endingMenu.unk3 - 1 : 3;
         } else if (g_padRepeat & PAD_DOWN) {
             snd_playSe(0x67);
-            D_800B0FF0.unk3 = D_800B0FF0.unk3 < 3 ? D_800B0FF0.unk3 + 1 : 0;
+            g_endingMenu.unk3 = g_endingMenu.unk3 < 3 ? g_endingMenu.unk3 + 1 : 0;
         } else if (g_padRepeat & BTN_CROSS) {
-            func_800AD644();
+            ending_menuDecide();
         }
     }
 }
 
-void func_800AD5EC(void) {
+void ending_menuDraw(void) {
     func_800AD678();
     func_800AD680();
     func_800AD688();
-    func_800AD690();
+    ending_menuDrawCursor();
 }
 
-void func_800AD624(void) {
-    func_800AD728();
+void ending_menuTick(void) {
+    ending_menuStepFadeIn();
 }
 
-void func_800AD644(void) {
+void ending_menuDecide(void) {
     snd_playSe(0x67);
     func_8002FAAC(0x10);
-    func_8002F8A8(func_800AD75C);
+    func_8002F8A8(ending_menuOnFadeOut);
 }
 
 void func_800AD678(void) {
@@ -72,36 +72,36 @@ void func_800AD680(void) {
 void func_800AD688(void) {
 }
 
-void func_800AD690(void) {
-    if (func_8002F810() == 0 && D_800B0FF0.unk1 != 0 && D_800B0FF0.unk2 == 0) {
-        D_80077DE8.unk0 = D_800AE498[D_800B0FF0.unk3].x - 0x1A;
-        D_80077DE8.unk2 = D_800AE498[D_800B0FF0.unk3].y + 3;
+void ending_menuDrawCursor(void) {
+    if (func_8002F810() == 0 && g_endingMenu.unk1 != 0 && g_endingMenu.unk2 == 0) {
+        D_80077DE8.unk0 = g_endingMenuCursorPos[g_endingMenu.unk3].x - 0x1A;
+        D_80077DE8.unk2 = g_endingMenuCursorPos[g_endingMenu.unk3].y + 3;
         D_80077DE8.unk4 = 3;
-        func_800355E4(&D_80077DE8, &D_800B0FF0);
+        func_800355E4(&D_80077DE8, &g_endingMenu);
     }
 }
 
-void func_800AD728(void) {
-    D_800B0FF0.unk8++;
-    if (D_800B0FF0.unk8 > 48) {
-        D_800B0FF0.unk8 = 0;
-        D_800B0FF0.unk2 = 0;
+void ending_menuStepFadeIn(void) {
+    g_endingMenu.unk8++;
+    if (g_endingMenu.unk8 > 48) {
+        g_endingMenu.unk8 = 0;
+        g_endingMenu.unk2 = 0;
     }
 }
 
-void func_800AD75C(void) {
-    func_800ACF58(4);
+void ending_menuOnFadeOut(void) {
+    scene_set(4);
 }
 
-void func_800AD77C(void) {
-    if (func_800AD128() == 0) {
-        D_800B0FF0.unk1 = 1;
-        D_800B0FF0.unk2 = 1;
-        D_800B0FF0.unk8 = 0;
+void ending_menuStartFadeIn(void) {
+    if (scene_getFadeScreen() == 0) {
+        g_endingMenu.unk1 = 1;
+        g_endingMenu.unk2 = 1;
+        g_endingMenu.unk8 = 0;
         return;
     }
-    D_800B0FF0.unk1 = 1;
-    D_800B0FF0.unk2 = 0;
-    D_800B0FF0.unk8 = 0;
+    g_endingMenu.unk1 = 1;
+    g_endingMenu.unk2 = 0;
+    g_endingMenu.unk8 = 0;
     func_8002FA50(0x20);
 }

@@ -1,6 +1,6 @@
 #include "ovl_15.h"
 
-s32 func_800AD7DC(void) {
+s32 ending_messages(void) {
     s32 t;
     s32 page;
     u32 *ot;
@@ -9,15 +9,15 @@ s32 func_800AD7DC(void) {
 
     page = 1;
     t = -1;
-    func_800ADC3C();
+    ending_messagesInit();
     do {
-        func_800ADC98();
+        ending_messagesClearOt();
         pad_update();
-        switch (D_800B5000) {
+        switch (g_messagesState) {
         case 0:
             page = 1;
             t = -1;
-            D_800B5000 = 1;
+            g_messagesState = 1;
             break;
         case 1:
             if (t == -1) {
@@ -25,16 +25,16 @@ s32 func_800AD7DC(void) {
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
-                msg = func_800ADE14(D_800A70EC, 0);
-                x = 0xA0 - (func_800ADF90(msg) >> 1);
-                D_800AE4B0 = func_800ADE30(x, 0x64, ot, msg, D_800AE4B0);
+                msg = ending_getMessage(g_endingMessages, 0);
+                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
                 if (t == 0x14) {
                     func_800320B8(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
                 t = -1;
-                D_800B5000 = 5;
+                g_messagesState = 5;
             }
             break;
         case 2:
@@ -43,13 +43,13 @@ s32 func_800AD7DC(void) {
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
-                msg = func_800ADE14(D_800A70EC, 1);
-                x = 0xA0 - (func_800ADF90(msg) >> 1);
-                D_800AE4B0 = func_800ADE30(x, 0x5F, ot, msg, D_800AE4B0);
+                msg = ending_getMessage(g_endingMessages, 1);
+                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
                 if (t < 0x8C) {
-                    msg = func_800ADE14(D_800A70EC, 2);
-                    x = 0xA0 - (func_800ADF90(msg) >> 1);
-                    D_800AE4B0 = func_800ADE30(x, 0x7D, ot, msg, D_800AE4B0);
+                    msg = ending_getMessage(g_endingMessages, 2);
+                    x = 0xA0 - (ending_textWidth(msg) >> 1);
+                    g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
                 if (t == 0x14) {
                     func_800320B8(1, 1, 0x14, 0xFFFFFF);
@@ -57,7 +57,7 @@ s32 func_800AD7DC(void) {
                 t--;
             } else {
                 t = -1;
-                D_800B5000 = 5;
+                g_messagesState = 5;
             }
             break;
         case 3:
@@ -66,16 +66,16 @@ s32 func_800AD7DC(void) {
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
-                msg = func_800ADE14(D_800A70EC, 3);
-                x = 0xA0 - (func_800ADF90(msg) >> 1);
-                D_800AE4B0 = func_800ADE30(x, 0x64, ot, msg, D_800AE4B0);
+                msg = ending_getMessage(g_endingMessages, 3);
+                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
                 if (t == 0x14) {
                     func_800320B8(1, 1, 0x14, 0xFFFFFF);
                 }
                 t--;
             } else {
                 t = -1;
-                D_800B5000 = 5;
+                g_messagesState = 5;
             }
             break;
         case 4:
@@ -84,13 +84,13 @@ s32 func_800AD7DC(void) {
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
                 ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
-                msg = func_800ADE14(D_800A70EC, 4);
-                x = 0xA0 - (func_800ADF90(msg) >> 1);
-                D_800AE4B0 = func_800ADE30(x, 0x5F, ot, msg, D_800AE4B0);
+                msg = ending_getMessage(g_endingMessages, 4);
+                x = 0xA0 - (ending_textWidth(msg) >> 1);
+                g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
                 if (t < 0x8C) {
-                    msg = func_800ADE14(D_800A70EC, 5);
-                    x = 0xA0 - (func_800ADF90(msg) >> 1);
-                    D_800AE4B0 = func_800ADE30(x, 0x7D, ot, msg, D_800AE4B0);
+                    msg = ending_getMessage(g_endingMessages, 5);
+                    x = 0xA0 - (ending_textWidth(msg) >> 1);
+                    g_messagesPrim = ending_drawText(x, 0x7D, ot, msg, g_messagesPrim);
                 }
                 if (t == 0x14) {
                     func_800320B8(1, 1, 0x14, 0xFFFFFF);
@@ -98,7 +98,7 @@ s32 func_800AD7DC(void) {
                 t--;
             } else {
                 t = -1;
-                D_800B5000 = 6;
+                g_messagesState = 6;
             }
             break;
         case 5:
@@ -108,34 +108,34 @@ s32 func_800AD7DC(void) {
                 t--;
             } else {
                 t = -1;
-                D_800B5000 = page + 1;
+                g_messagesState = page + 1;
                 page++;
             }
             break;
         }
         func_80032098();
-        func_800ADD04();
-    } while (D_800B5000 < 6);
+        ending_messagesSwap();
+    } while (g_messagesState < 6);
     return 0;
 }
 
-s32 func_800ADC3C(void) {
+s32 ending_messagesInit(void) {
     g_gameState->vsyncMode = 0;
     func_800320B8(1, 1, 0, 0xFFFFFF);
-    D_800B5000 = 0;
+    g_messagesState = 0;
     D_800AE4A8 = 0;
-    D_800AE4AC = 0;
+    g_messagesFrame = 0;
     D_80073998[0] = 0;
     return 0;
 }
 
-void func_800ADC98(void) {
+void ending_messagesClearOt(void) {
     GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
-    D_800AE4B0 = D_800B1000[g_gameState->unk1C->unk8];
+    g_messagesPrim = g_messagesPrims[g_gameState->unk1C->unk8];
 }
 
-void func_800ADD04(void) {
+void ending_messagesSwap(void) {
     GameData *ctx;
     u8 i;
 
@@ -149,14 +149,14 @@ void func_800ADD04(void) {
     g_gameState->unk1C->unk8 ^= 1;
     func_8002C0DC(g_gameState->unk1C->unk8);
     D_800AE4A8 = 0;
-    D_800AE4AC++;
+    g_messagesFrame++;
 }
 
-u8 *func_800ADE14(u8 *arg0, s32 arg1) {
+u8 *ending_getMessage(u8 *arg0, s32 arg1) {
     return arg0 + (arg0[arg1 * 4 + 4] + 4);
 }
 
-void *func_800ADE30(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
+void *ending_drawText(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
     Unk7D4 *f = g_gameState->unk1C->unk7D4;
     s32 w;
     s32 c;
@@ -167,10 +167,10 @@ void *func_800ADE30(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
         if (c >= hi) {
             c = (c << 8) + s[1] - f->unk4 + f->unk6;
             s++;
-            p = func_800AE028(x, y, ot, *(f->unkC + c), &w, p);
+            p = ending_drawGlyph(x, y, ot, *(f->unkC + c), &w, p);
             x += w;
         } else {
-            p = func_800AE028(x, y, ot, *(f->unkC + c), &w, p);
+            p = ending_drawGlyph(x, y, ot, *(f->unkC + c), &w, p);
             x += w;
         }
         c = *++s;
@@ -180,7 +180,7 @@ void *func_800ADE30(s32 x, s32 y, u32 *ot, u8 *s, void *p) {
     return (DR_TPAGE *)p + 1;
 }
 
-s32 func_800ADF90(u8 *s) {
+s32 ending_textWidth(u8 *s) {
     Unk7D4 *f;
     s32 n;
     s32 c;
@@ -204,7 +204,7 @@ s32 func_800ADF90(u8 *s) {
     return n;
 }
 
-void *func_800AE028(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
+void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
     u32 n;
 
     setlen(p, 4);
@@ -221,4 +221,4 @@ void *func_800AE028(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
     return p;
 }
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800AD7DC", D_800A70EC);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800AD7DC", g_endingMessages);
