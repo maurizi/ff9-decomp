@@ -295,7 +295,7 @@ ovl_0b btlfx_stepParticleAltDrag hand-written asm (battle agent: CF5xx-CFAxx / D
 ovl_0b btlfx_stepParticleNoDrag hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 block)
 ovl_0b btlfx_stepParticleNoDragAlt hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 block)
 ovl_0b btlfx_stepModuleParticle hand-written asm (battle agent: CF5xx-CFAxx / DFE4C-E0014 block)
-ovl_0a func_800B5958 hand-written asm (field agent)
+ovl_0a fldmdl_drawMesh hand-written asm (field agent)
 ovl_0a func_800C9AB8 hand-written asm (field agent)
 ovl_0c func_800CB1EC hand-written asm (field agent)
 ovl_0c func_800C709C hand-written asm (field agent)

@@ -1,6 +1,6 @@
 #include "ovl_0a.h"
 
-void func_800B61A4(Unk800C95C8 *arg0, u8 arg1) {
+void fldmdl_projectMesh(Unk800C95C8 *arg0, u8 arg1) {
     MATRIX m;
     WmModelGroup *g;
     MATRIX *bone;
@@ -67,7 +67,7 @@ void func_800B61A4(Unk800C95C8 *arg0, u8 arg1) {
 }
 
 /* attach a model file (relocating it once) and lay out its work buffers at arg1 */
-void func_800B6438(Unk800C95C8 *arg0, u8 *arg1) {
+void fldmdl_initModel(Unk800C95C8 *arg0, u8 *arg1) {
     WmModel *m;
     WmModelGroup *g;
     u32 i;
@@ -122,7 +122,7 @@ void func_800B6438(Unk800C95C8 *arg0, u8 *arg1) {
     arg0->unk44 = (WmModelOut *)(pp + m->unk2 * 32);
 }
 
-void func_800B6584(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
+void fldmdl_buildPackets(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
     WmModel *m;
     WmModelGroup *g;
     WmModelOut *out;
@@ -397,7 +397,7 @@ void func_800B6584(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
     }
 }
 
-void func_800B71E0(Unk800C95C8 *arg0, u8 arg1) {
+void fldmdl_drawMeshC(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -681,7 +681,7 @@ void func_800B71E0(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-void func_800B7CEC(Unk800C95C8 *arg0) {
+void fldmdl_applyScale(Unk800C95C8 *arg0) {
     MATRIX m;
 
     if (arg0->unk0 & 2) {
@@ -706,7 +706,7 @@ void func_800B7CEC(Unk800C95C8 *arg0) {
     }
 }
 
-void func_800B7E30(Unk800C95C8 *arg0) {
+void fldmdl_cullBehindCamera(Unk800C95C8 *arg0) {
     SVECTOR v;
     s32 sz;
 
@@ -728,7 +728,7 @@ void func_800B7E30(Unk800C95C8 *arg0) {
     }
 }
 
-void func_800B7F14(Unk800C95C8 *arg0, u16 arg1) {
+void fldmdl_calcBoneMatrices(Unk800C95C8 *arg0, u16 arg1) {
     SVECTOR sv;
     u16 nb;
     VECTOR *vec;
@@ -927,7 +927,7 @@ void func_800B7F14(Unk800C95C8 *arg0, u16 arg1) {
     }
 }
 
-void func_800B8834(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_addGroupRgb(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     WmModelGroup *g;
     u8 *p;
     u32 j;
@@ -943,51 +943,51 @@ void func_800B8834(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
             p += g->unk0;
         }
         for (j = 0; j < g->unk2; j++) {
-            *(u32 *)&((POLY_FT4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_FT4 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT4 *)p)->r0, arg2, arg3, arg4);
             p += sizeof(POLY_FT4);
         }
         for (j = 0; j < g->unk4; j++) {
-            *(u32 *)&((POLY_FT3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_FT3 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT3 *)p)->r0, arg2, arg3, arg4);
             p += sizeof(POLY_FT3);
         }
         for (j = 0; j < g->unk6; j++) {
-            *(u32 *)&((POLY_GT4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT4 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT4 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r2, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT4 *)p)->r3 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r3, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r1, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r2, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r3, arg2, arg3, arg4);
             p += sizeof(POLY_GT4);
         }
         for (j = 0; j < g->unk8; j++) {
-            *(u32 *)&((POLY_GT3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_GT3 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT3 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_GT3 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_GT3 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_GT3 *)p)->r2, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r1, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r2, arg2, arg3, arg4);
             p += sizeof(POLY_GT3);
         }
         for (j = 0; j < g->unkA; j++) {
-            *(u32 *)&((POLY_G4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G4 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G4 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r2, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G4 *)p)->r3 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r3, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r1, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r2, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r3, arg2, arg3, arg4);
             p += sizeof(POLY_G4);
         }
         for (j = 0; j < g->unkC; j++) {
-            *(u32 *)&((POLY_G3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_G3 *)p)->r0, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G3 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_G3 *)p)->r1, arg2, arg3, arg4);
-            *(u32 *)&((POLY_G3 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_G3 *)p)->r2, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r1, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r2, arg2, arg3, arg4);
             p += sizeof(POLY_G3);
         }
         for (j = 0; j < g->unkE; j++) {
-            *(u32 *)&((POLY_F4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_F4 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F4 *)p)->r0, arg2, arg3, arg4);
             p += sizeof(POLY_F4);
         }
         for (j = 0; j < g->unk10; j++) {
-            *(u32 *)&((POLY_F3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_F3 *)p)->r0, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F3 *)p)->r0, arg2, arg3, arg4);
             p += sizeof(POLY_F3);
         }
     }
 }
 
-void func_800B8C80(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_addGroupRgbCur(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     WmModelGroup *g;
     u8 *p;
     u32 j;
@@ -1001,50 +1001,50 @@ void func_800B8C80(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         p += g->unk0;
     }
     for (j = 0; j < g->unk2; j++) {
-        *(u32 *)&((POLY_FT4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_FT4 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT4 *)p)->r0, arg2, arg3, arg4);
         p += sizeof(POLY_FT4);
     }
     for (j = 0; j < g->unk4; j++) {
-        *(u32 *)&((POLY_FT3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_FT3 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_FT3 *)p)->r0, arg2, arg3, arg4);
         p += sizeof(POLY_FT3);
     }
     for (j = 0; j < g->unk6; j++) {
-        *(u32 *)&((POLY_GT4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT4 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT4 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r2, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT4 *)p)->r3 = func_800BA0F0(*(u32 *)&((POLY_GT4 *)p)->r3, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r1, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r2, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT4 *)p)->r3, arg2, arg3, arg4);
         p += sizeof(POLY_GT4);
     }
     for (j = 0; j < g->unk8; j++) {
-        *(u32 *)&((POLY_GT3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_GT3 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT3 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_GT3 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_GT3 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_GT3 *)p)->r2, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r1, arg2, arg3, arg4);
+        *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_GT3 *)p)->r2, arg2, arg3, arg4);
         p += sizeof(POLY_GT3);
     }
     for (j = 0; j < g->unkA; j++) {
-        *(u32 *)&((POLY_G4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G4 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G4 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r2, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G4 *)p)->r3 = func_800BA0F0(*(u32 *)&((POLY_G4 *)p)->r3, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r1, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r2, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G4 *)p)->r3, arg2, arg3, arg4);
         p += sizeof(POLY_G4);
     }
     for (j = 0; j < g->unkC; j++) {
-        *(u32 *)&((POLY_G3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_G3 *)p)->r0, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G3 *)p)->r1 = func_800BA0F0(*(u32 *)&((POLY_G3 *)p)->r1, arg2, arg3, arg4);
-        *(u32 *)&((POLY_G3 *)p)->r2 = func_800BA0F0(*(u32 *)&((POLY_G3 *)p)->r2, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r1, arg2, arg3, arg4);
+        *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*(u32 *)&((POLY_G3 *)p)->r2, arg2, arg3, arg4);
         p += sizeof(POLY_G3);
     }
     for (j = 0; j < g->unkE; j++) {
-        *(u32 *)&((POLY_F4 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_F4 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_F4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F4 *)p)->r0, arg2, arg3, arg4);
         p += sizeof(POLY_F4);
     }
     for (j = 0; j < g->unk10; j++) {
-        *(u32 *)&((POLY_F3 *)p)->r0 = func_800BA0F0(*(u32 *)&((POLY_F3 *)p)->r0, arg2, arg3, arg4);
+        *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)&((POLY_F3 *)p)->r0, arg2, arg3, arg4);
         p += sizeof(POLY_F3);
     }
 }
 
-void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_tintGroup(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u32 *col;
     WmModelGroup *g;
     u8 *p;
@@ -1065,7 +1065,7 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         }
         for (j = 0; j < g->unk2; j++) {
             c = ((POLY_FT4 *)p)->code;
-            *(u32 *)&((POLY_FT4 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcFT4 *)s)->unk10, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)s)->unk10, arg2, arg3, arg4);
             ((POLY_FT4 *)p)->code = c;
             p += sizeof(POLY_FT4);
             s += sizeof(WmSrcFT4);
@@ -1073,7 +1073,7 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
         for (j = 0; j < g->unk4; j++) {
             c = ((POLY_FT3 *)p)->code;
-            *(u32 *)&((POLY_FT3 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcFT3 *)s)->unk8, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)s)->unk8, arg2, arg3, arg4);
             ((POLY_FT3 *)p)->code = c;
             p += sizeof(POLY_FT3);
             s += sizeof(WmSrcFT3);
@@ -1082,13 +1082,13 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->unk6; j++) {
             c = ((POLY_GT4 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[0]];
-            *(u32 *)&((POLY_GT4 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[1]];
-            *(u32 *)&((POLY_GT4 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[2]];
-            *(u32 *)&((POLY_GT4 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[3]];
-            *(u32 *)&((POLY_GT4 *)p)->r3 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_GT4 *)p)->code = c;
             p += sizeof(POLY_GT4);
             s += sizeof(WmSrcGT4);
@@ -1097,11 +1097,11 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->unk8; j++) {
             c = ((POLY_GT3 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[0]];
-            *(u32 *)&((POLY_GT3 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[1]];
-            *(u32 *)&((POLY_GT3 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[2]];
-            *(u32 *)&((POLY_GT3 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_GT3 *)p)->code = c;
             p += sizeof(POLY_GT3);
             s += sizeof(WmSrcGT3);
@@ -1110,13 +1110,13 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->unkA; j++) {
             c = ((POLY_G4 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[0]];
-            *(u32 *)&((POLY_G4 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[1]];
-            *(u32 *)&((POLY_G4 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[2]];
-            *(u32 *)&((POLY_G4 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[3]];
-            *(u32 *)&((POLY_G4 *)p)->r3 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_G4 *)p)->code = c;
             p += sizeof(POLY_G4);
             s += sizeof(WmSrcG4);
@@ -1125,11 +1125,11 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         for (j = 0; j < g->unkC; j++) {
             c = ((POLY_G3 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[0]];
-            *(u32 *)&((POLY_G3 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[1]];
-            *(u32 *)&((POLY_G3 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[2]];
-            *(u32 *)&((POLY_G3 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_G3 *)p)->code = c;
             p += sizeof(POLY_G3);
             s += sizeof(WmSrcG3);
@@ -1137,7 +1137,7 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
         for (j = 0; j < g->unkE; j++) {
             c = ((POLY_F4 *)p)->code;
-            *(u32 *)&((POLY_F4 *)p)->r0 |= func_800BA0F0(*(u32 *)((WmSrcF4 *)s)->unk8, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F4 *)p)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)s)->unk8, arg2, arg3, arg4);
             ((POLY_F4 *)p)->code = c;
             p += sizeof(POLY_F4);
             s += sizeof(WmSrcF4);
@@ -1145,7 +1145,7 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 
         for (j = 0; j < g->unk10; j++) {
             c = ((POLY_F3 *)p)->code;
-            *(u32 *)&((POLY_F3 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcF3 *)s)->unk8, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)s)->unk8, arg2, arg3, arg4);
             ((POLY_F3 *)p)->code = c;
             p += sizeof(POLY_F3);
             s += sizeof(WmSrcF3);
@@ -1154,7 +1154,7 @@ void func_800B9134(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
 }
 
 /* recolour a model group in the current draw buffer (linked prims only) */
-void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_tintGroupCur(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     u32 *col;
     WmModelGroup *g;
     u8 *p;
@@ -1174,7 +1174,7 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     for (j = 0; j < g->unk2; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_FT4 *)p)->code;
-            *(u32 *)&((POLY_FT4 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcFT4 *)s)->unk10, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT4 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT4 *)s)->unk10, arg2, arg3, arg4);
             ((POLY_FT4 *)p)->code = c;
         }
         p += sizeof(POLY_FT4);
@@ -1184,7 +1184,7 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     for (j = 0; j < g->unk4; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_FT3 *)p)->code;
-            *(u32 *)&((POLY_FT3 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcFT3 *)s)->unk8, arg2, arg3, arg4);
+            *(u32 *)&((POLY_FT3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcFT3 *)s)->unk8, arg2, arg3, arg4);
             ((POLY_FT3 *)p)->code = c;
         }
         p += sizeof(POLY_FT3);
@@ -1195,13 +1195,13 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_GT4 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[0]];
-            *(u32 *)&((POLY_GT4 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[1]];
-            *(u32 *)&((POLY_GT4 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[2]];
-            *(u32 *)&((POLY_GT4 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT4 *)s)->unk10[3]];
-            *(u32 *)&((POLY_GT4 *)p)->r3 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_GT4 *)p)->code = c;
         }
         p += sizeof(POLY_GT4);
@@ -1212,11 +1212,11 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_GT3 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[0]];
-            *(u32 *)&((POLY_GT3 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[1]];
-            *(u32 *)&((POLY_GT3 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcGT3 *)s)->unk10[2]];
-            *(u32 *)&((POLY_GT3 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_GT3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_GT3 *)p)->code = c;
         }
         p += sizeof(POLY_GT3);
@@ -1227,13 +1227,13 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_G4 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[0]];
-            *(u32 *)&((POLY_G4 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[1]];
-            *(u32 *)&((POLY_G4 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[2]];
-            *(u32 *)&((POLY_G4 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG4 *)s)->unk8[3]];
-            *(u32 *)&((POLY_G4 *)p)->r3 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G4 *)p)->r3 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_G4 *)p)->code = c;
         }
         p += sizeof(POLY_G4);
@@ -1244,11 +1244,11 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_G3 *)p)->code;
             col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[0]];
-            *(u32 *)&((POLY_G3 *)p)->r0 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r0 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[1]];
-            *(u32 *)&((POLY_G3 *)p)->r1 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r1 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             col = (u32 *)g->unk24[((WmSrcG3 *)s)->unk8[2]];
-            *(u32 *)&((POLY_G3 *)p)->r2 = func_800BA0F0(*col, arg2, arg3, arg4);
+            *(u32 *)&((POLY_G3 *)p)->r2 = fldmdl_addRgbClamped(*col, arg2, arg3, arg4);
             ((POLY_G3 *)p)->code = c;
         }
         p += sizeof(POLY_G3);
@@ -1258,7 +1258,7 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     for (j = 0; j < g->unkE; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_F4 *)p)->code;
-            *(u32 *)&((POLY_F4 *)p)->r0 |= func_800BA0F0(*(u32 *)((WmSrcF4 *)s)->unk8, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F4 *)p)->r0 |= fldmdl_addRgbClamped(*(u32 *)((WmSrcF4 *)s)->unk8, arg2, arg3, arg4);
             ((POLY_F4 *)p)->code = c;
         }
         p += sizeof(POLY_F4);
@@ -1268,7 +1268,7 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     for (j = 0; j < g->unk10; j++) {
         if (*(u32 *)p & 0xFFFFFF) {
             c = ((POLY_F3 *)p)->code;
-            *(u32 *)&((POLY_F3 *)p)->r0 = func_800BA0F0(*(u32 *)((WmSrcF3 *)s)->unk8, arg2, arg3, arg4);
+            *(u32 *)&((POLY_F3 *)p)->r0 = fldmdl_addRgbClamped(*(u32 *)((WmSrcF3 *)s)->unk8, arg2, arg3, arg4);
             ((POLY_F3 *)p)->code = c;
         }
         p += sizeof(POLY_F3);
@@ -1276,7 +1276,7 @@ void func_800B9738(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-void func_800B9E4C(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void fldmdl_setGroupRgb(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     WmModelGroup *g;
     u32 c;
     u8 *p;
@@ -1326,7 +1326,7 @@ void func_800B9E4C(Unk800C95C8 *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-u32 func_800BA0F0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+u32 fldmdl_addRgbClamped(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s16 b = arg3 + ((arg0 >> 16) & 0xFF);
     s16 g = arg2 + ((arg0 >> 8) & 0xFF);
     s16 r = arg1 + (arg0 & 0xFF);
@@ -1349,7 +1349,7 @@ u32 func_800BA0F0(u32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
-void func_800BA190(Unk800C95C8 *arg0, u16 arg1) {
+void fldmdl_setSemiTrans(Unk800C95C8 *arg0, u16 arg1) {
     u32 i;
     u32 j;
     u8 *p;
@@ -1405,7 +1405,7 @@ void func_800BA190(Unk800C95C8 *arg0, u16 arg1) {
     }
 }
 
-void func_800BA3CC(Unk800C95C8 *arg0, u16 arg1) {
+void fldmdl_setAbr(Unk800C95C8 *arg0, u16 arg1) {
     u32 i;
     u32 j;
     u8 *p;
@@ -1439,7 +1439,7 @@ void func_800BA3CC(Unk800C95C8 *arg0, u16 arg1) {
     }
 }
 
-void func_800BA560(Unk800C95C8 *arg0, s32 arg1) {
+void fldmdl_calcBoneMatricesLookAt(Unk800C95C8 *arg0, s32 arg1) {
     VECTOR v;
     VECTOR up;
     VECTOR r0;
@@ -1696,7 +1696,7 @@ loop:
     }
 }
 
-void func_800BB090(BgAnimHdr *arg0) {
+void fldmdl_updateTexAnims(BgAnimHdr *arg0) {
     RECT r;
     u32 i;
     u32 j;
@@ -1770,7 +1770,7 @@ void func_800BB090(BgAnimHdr *arg0) {
     }
 }
 
-void func_800BB3C4(BgSprHdr *hdr, BgSprOfs *ofs) {
+void fldmdl_initTexAnims(BgSprHdr *hdr, BgSprOfs *ofs) {
     u32 i, j, k;
     u32 p;
     BgSprPart *part;
@@ -1811,7 +1811,7 @@ void func_800BB3C4(BgSprHdr *hdr, BgSprOfs *ofs) {
     }
 }
 
-void func_800BB508(Unk800C95C8 *arg0, u8 arg1) {
+void fldmdl_projectMeshClipY(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     MATRIX *bone;
     SVECTOR *vtx;
@@ -1869,7 +1869,7 @@ void func_800BB508(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-void func_800BB714(Unk800C95C8 *arg0, u8 arg1) {
+void fldmdl_drawMeshClipY(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -2167,7 +2167,7 @@ void func_800BB714(Unk800C95C8 *arg0, u8 arg1) {
 }
 
 /* reflect the mirrored model across the plane (unk64 normal, unk6C point) */
-void func_800BC33C(Unk800C95C8 *arg0) {
+void fldmdl_reflectModel(Unk800C95C8 *arg0) {
     MATRIX *m;
     s32 nx;
     s32 ny;
@@ -2207,7 +2207,7 @@ void func_800BC33C(Unk800C95C8 *arg0) {
     }
 }
 
-void func_800BC600(Unk800C95C8 *arg0, u8 arg1) {
+void fldmdl_drawMeshMirrored(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -2490,7 +2490,7 @@ void func_800BC600(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
+s32 fldbg_buildLayerSprites(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     BgPos *pos;
     BgTile *tile;
     u32 i;
@@ -2511,7 +2511,7 @@ s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
      * hand below) because its lui/ori must also sit above the barrier, and buf/the two offsets
      * are read early so their insns land where the original has them. */
     mask = 0xFFFF01FF;
-    bg = D_800C9DB4;
+    bg = g_fieldBgData;
     u = D_800CA108;
     posOfs = arg0->unk28;
     tileOfs = arg0->unk2C;
@@ -2563,26 +2563,26 @@ s32 func_800BD130(Unk800C9DB4Obj *arg0, BgSprt *arg1, BgSprt **arg2) {
     return 1;
 }
 
-s32 func_800BD3A0(void) {
+s32 fldbg_initEffectList(void) {
     u32 n;
     u32 i;
     Unk800C9DA4Tbl *tbl;
     Unk800C9DA4Trk *trk;
 
-    tbl = (Unk800C9DA4Tbl *)((u8 *)D_800C9DA4.unk10 + D_800C9DA4.unk10->unkC);
-    trk = (Unk800C9DA4Trk *)((u8 *)D_800C9DA4.unk10 + D_800C9DA4.unk10->unk10);
-    n = D_800C9DA4.unk10->unk6;
+    tbl = (Unk800C9DA4Tbl *)((u8 *)g_fieldBgCtx.unk10 + g_fieldBgCtx.unk10->unkC);
+    trk = (Unk800C9DA4Trk *)((u8 *)g_fieldBgCtx.unk10 + g_fieldBgCtx.unk10->unk10);
+    n = g_fieldBgCtx.unk10->unk6;
     i = 0;
-    D_800C9DA4.unk24 = 0;
-    D_800C9DA4.unk28 = (Unk800C9DA4Ent *)D_800C9DA4.unk2C;
+    g_fieldBgCtx.unk24 = 0;
+    g_fieldBgCtx.unk28 = (Unk800C9DA4Ent *)g_fieldBgCtx.unk2C;
     for (; i < n; i++) {
         if (trk[i].unk0 & 0x40) {
-            D_800C9DA4.unk28[D_800C9DA4.unk24].unk0 = 0x10;
-            D_800C9DA4.unk28[D_800C9DA4.unk24].unk1 = i;
-            D_800C9DA4.unk28[D_800C9DA4.unk24].unk4 = 0;
-            D_800C9DA4.unk28[D_800C9DA4.unk24].unk8 = 0;
-            D_800C9DA4.unk34 += 0xC;
-            D_800C9DA4.unk24++;
+            g_fieldBgCtx.unk28[g_fieldBgCtx.unk24].unk0 = 0x10;
+            g_fieldBgCtx.unk28[g_fieldBgCtx.unk24].unk1 = i;
+            g_fieldBgCtx.unk28[g_fieldBgCtx.unk24].unk4 = 0;
+            g_fieldBgCtx.unk28[g_fieldBgCtx.unk24].unk8 = 0;
+            g_fieldBgCtx.unk34 += 0xC;
+            g_fieldBgCtx.unk24++;
             if (trk[i].unk0 & 0x20) {
                 i += tbl->unk0 >> 8;
                 tbl++;
@@ -2592,8 +2592,8 @@ s32 func_800BD3A0(void) {
     return 1;
 }
 
-s32 func_800BD4D4(void) {
-    Unk800C9DB4 *d = D_800C9DB4;
+s32 fldbg_updateLayerAnims(void) {
+    Unk800C9DB4 *d = g_fieldBgData;
     u32 i;
     Unk800C9DB4Path *p;
     Unk800C9DB4Path *paths;
@@ -2612,7 +2612,7 @@ s32 func_800BD4D4(void) {
     for (; i < n; i++) {
         p = &paths[i];
         pos = p->unk5;
-        if ((p->unk0 & 2) && (p->unk0 & 0x14) && p->unk4 == D_800CA068.unk75) {
+        if ((p->unk0 & 2) && (p->unk0 & 0x14) && p->unk4 == g_fieldBgState.unk75) {
             st = (Unk800C9DB4Step *)((u8 *)d + p->unkC);
             cnt = p->unk1;
             for (j = 0; j < cnt; j++) {
@@ -2635,14 +2635,14 @@ s32 func_800BD4D4(void) {
             if (v >= p->unk1) {
                 if (p->unk0 & 0x20) {
                     p->unk5 = (p->unk1 - 1) << 8;
-                    func_800C17F0(i, -p->unk8);
+                    fldbg_setAnimSpeed(i, -p->unk8);
                 } else {
                     p->unk5 = 0;
                 }
             } else if (v < 0) {
                 if (p->unk0 & 0x20) {
                     p->unk5 = 0;
-                    func_800C17F0(i, -p->unk8);
+                    fldbg_setAnimSpeed(i, -p->unk8);
                 } else {
                     p->unk5 = (p->unk1 - 1) << 8;
                 }
@@ -2656,30 +2656,30 @@ s32 func_800BD4D4(void) {
 }
 
 /* initialise the screen fade quads */
-s32 func_800BD724(void) {
+s32 fldbg_initFollowLayers(void) {
     u16 i;
     u16 j;
 
-    D_800C9DA0 = 0;
+    g_fieldBgFollowLayerCount = 0;
     for (i = 0; i < 10; i++) {
-        D_800CA140[i].unk0 = -1;
-        D_800CA140[i].unk1 = 0x80;
-        D_800CA140[i].unk2 = 0x80;
-        D_800CA140[i].unk3 = 0x80;
-        D_800CA140[i].unk4 = -1;
-        D_800CA140[i].unk6 = 0;
-        D_800CA140[i].unk8 = 0;
+        g_fieldBgFollowLayers[i].unk0 = -1;
+        g_fieldBgFollowLayers[i].unk1 = 0x80;
+        g_fieldBgFollowLayers[i].unk2 = 0x80;
+        g_fieldBgFollowLayers[i].unk3 = 0x80;
+        g_fieldBgFollowLayers[i].unk4 = -1;
+        g_fieldBgFollowLayers[i].unk6 = 0;
+        g_fieldBgFollowLayers[i].unk8 = 0;
         for (j = 0; j < 4; j++) {
-            SetPolyF4(&D_800CA140[i].unkC[0][j]);
-            setRGB0(&D_800CA140[i].unkC[0][j], D_800CA140[i].unk1, D_800CA140[i].unk2, D_800CA140[i].unk3);
-            SetPolyF4(&D_800CA140[i].unkC[1][j]);
-            setRGB0(&D_800CA140[i].unkC[1][j], D_800CA140[i].unk1, D_800CA140[i].unk2, D_800CA140[i].unk3);
+            SetPolyF4(&g_fieldBgFollowLayers[i].unkC[0][j]);
+            setRGB0(&g_fieldBgFollowLayers[i].unkC[0][j], g_fieldBgFollowLayers[i].unk1, g_fieldBgFollowLayers[i].unk2, g_fieldBgFollowLayers[i].unk3);
+            SetPolyF4(&g_fieldBgFollowLayers[i].unkC[1][j]);
+            setRGB0(&g_fieldBgFollowLayers[i].unkC[1][j], g_fieldBgFollowLayers[i].unk1, g_fieldBgFollowLayers[i].unk2, g_fieldBgFollowLayers[i].unk3);
         }
     }
     return 1;
 }
 
-s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f) {
+s32 fldbg_drawFollowMask(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f) {
     u32 *ot;
     POLY_F4 *p;
     DR_TPAGE *tp;
@@ -2689,11 +2689,11 @@ s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade
     s16 v;
     s16 w;
 
-    ot = D_800C9DA4.unk8[*D_800C9DA4.unk0];
+    ot = g_fieldBgCtx.unk8[*g_fieldBgCtx.unk0];
     x = o->unkC + bg->unk24 - (st->unk4.unk0 - 0xA0);
     y = o->unkE + bg->unk26 - (st->unk4.unk2 - 0x70);
     if (x > 0) {
-        p = &f->unkC[*D_800C9DA4.unk0][0];
+        p = &f->unkC[*g_fieldBgCtx.unk0][0];
         u = y;
         if (u < 0) {
             u = 0;
@@ -2703,7 +2703,7 @@ s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade
     }
     if (y > 0) {
         u = x + o->unk4;
-        p = &f->unkC[*D_800C9DA4.unk0][1];
+        p = &f->unkC[*g_fieldBgCtx.unk0][1];
         if (u > 0x140) {
             u = 0x140;
         }
@@ -2717,7 +2717,7 @@ s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade
     if (x + o->unk4 < 0x140) {
         u = x + o->unk4;
         v = y + o->unk6;
-        p = &f->unkC[*D_800C9DA4.unk0][2];
+        p = &f->unkC[*g_fieldBgCtx.unk0][2];
         w = 0x140 - u;
         if (v > 0xE0) {
             v = 0xE0;
@@ -2726,7 +2726,7 @@ s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade
         addPrim(&ot[7], p);
     }
     if (y + o->unk6 < 0xE0) {
-        p = &f->unkC[*D_800C9DA4.unk0][3];
+        p = &f->unkC[*g_fieldBgCtx.unk0][3];
         v = x;
         if (v < 0) {
             v = 0;
@@ -2739,14 +2739,14 @@ s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade
         addPrim(&ot[7], p);
     }
     if (f->unk0 < 4) {
-        tp = &f->unkCC[*D_800C9DA4.unk0];
+        tp = &f->unkCC[*g_fieldBgCtx.unk0];
         SetDrawTPage(tp, 1, 1, GetTPage(2, f->unk0, 0, 0));
         addPrim(&ot[7], tp);
     }
     return 1;
 }
 
-s32 func_800BDC44(void) {
+s32 fldbg_updateFollowLayers(void) {
     SVECTOR v;
     s32 sxy;
     Unk800CA068 *st;
@@ -2762,11 +2762,11 @@ s32 func_800BDC44(void) {
     s16 y;
     s16 x;
 
-    if (D_800C9DA0 == 0) {
+    if (g_fieldBgFollowLayerCount == 0) {
         return 0;
     } else {
-        st = &D_800CA068;
-        bg = D_800C9DB4;
+        st = &g_fieldBgState;
+        bg = g_fieldBgData;
         objs = (Unk800C9DB4Obj *)((u8 *)bg + bg->unk10);
         mode = g_gameState->mode;
         if (mode == 5) {
@@ -2778,24 +2778,24 @@ s32 func_800BDC44(void) {
         }
         if (a != NULL) {
             v.vx = a->pos.vx;
-            v.vy = a->pos.vy - D_800CA068.unk76;
+            v.vy = a->pos.vy - g_fieldBgState.unk76;
             v.vz = a->pos.vz;
         } else {
             v.vx = 0;
             v.vy = 0;
             v.vz = 0;
         }
-        func_800C0F08();
-        gte_SetRotMatrix(D_800CA068.unk1C);
-        gte_SetTransMatrix(D_800CA068.unk1C);
-        gte_SetGeomScreen(*D_800CA068.unk20);
+        fldbg_applyGeomOffset();
+        gte_SetRotMatrix(g_fieldBgState.unk1C);
+        gte_SetTransMatrix(g_fieldBgState.unk1C);
+        gte_SetGeomScreen(*g_fieldBgState.unk20);
         gte_ldv0(&v);
         gte_rtps();
         gte_stsxy(&sxy);
         sx = sxy;
         sy = sxy >> 16;
-        f = D_800CA140;
-        for (i = 0; i < D_800C9DA0; i++, f++) {
+        f = g_fieldBgFollowLayers;
+        for (i = 0; i < g_fieldBgFollowLayerCount; i++, f++) {
             o = (Unk800C9DB4Obj *)((u16)f->unk4 * sizeof(Unk800C9DB4Obj) + (u32)objs);
             if ((o->unk0 & 2) && o->unk24 == st->unk75) {
                 x = st->unk4.unk0 + (sx - bg->unk24 - (f->unk6 + 0xA0));
@@ -2803,7 +2803,7 @@ s32 func_800BDC44(void) {
                 o->unkC = x;
                 o->unkE = st->unk4.unk2 + (sy - bg->unk24 - (y + 0x70));
                 if (f->unk0 >= 0) {
-                    func_800BD884(bg, o, st, f);
+                    fldbg_drawFollowMask(bg, o, st, f);
                 }
             }
         }
@@ -2811,7 +2811,7 @@ s32 func_800BDC44(void) {
     }
 }
 
-s32 func_800BDED4(u8 *arg0, BgSprt **arg1) {
+s32 fldbg_initLayers(u8 *arg0, BgSprt **arg1) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Cam *c;
     s32 x;
@@ -2823,45 +2823,45 @@ s32 func_800BDED4(u8 *arg0, BgSprt **arg1) {
     Unk800C9DB4Obj *objs;
     Unk800C9DB4Obj *p;
 
-    h = D_800C9DA4.unk10;
-    func_800C0BCC(D_800CA068.unk75);
-    c = &((Unk800C9DB4Cam *)((u8 *)h + h->unk18))[D_800CA068.unk75];
+    h = g_fieldBgCtx.unk10;
+    fldbg_setCamera(g_fieldBgState.unk75);
+    c = &((Unk800C9DB4Cam *)((u8 *)h + h->unk18))[g_fieldBgState.unk75];
     x = (c->unk28 + c->unk2A) / 2;
-    D_800CA068.unk4.unk0 = (D_800CA068.unkA4 = x);
-    D_800CA068.unk4.unk2 = (D_800CA068.unkA6 = (c->unk2C + c->unk2E) / 2);
+    g_fieldBgState.unk4.unk0 = (g_fieldBgState.unkA4 = x);
+    g_fieldBgState.unk4.unk2 = (g_fieldBgState.unkA6 = (c->unk2C + c->unk2E) / 2);
     x -= 160;
     h->unk30 = h->unk24 - x;
     n = h->unk6;
     objs = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
     size = n * 3;
-    y = D_800CA068.unk4.unk2 - 112;
+    y = g_fieldBgState.unk4.unk2 - 112;
     h->unk32 = h->unk26 - (s16)y;
-    D_800C9DA4.unk1C = arg0;
+    g_fieldBgCtx.unk1C = arg0;
     while (size / 4 * 4 != size) {
         size++;
     }
-    D_800C9DA4.unk20 = arg0 + size;
+    g_fieldBgCtx.unk20 = arg0 + size;
     size += n;
     while (size / 4 * 4 != size) {
         size++;
     }
     *arg1 = (BgSprt *)(arg0 + size);
     for (i = 0; i < 4; i++) {
-        D_800CA068.unkA8[i][0] = 0;
-        D_800CA068.unkA8[i][1] = 0;
-        D_800CA068.unkB8[i][0] = c->unk24;
-        D_800CA068.unkB8[i][1] = c->unk26;
-        D_800CA068.unkC8[i] = 0x100;
-        D_800CA068.unkD0[i] = 0x100;
+        g_fieldBgState.unkA8[i][0] = 0;
+        g_fieldBgState.unkA8[i][1] = 0;
+        g_fieldBgState.unkB8[i][0] = c->unk24;
+        g_fieldBgState.unkB8[i][1] = c->unk26;
+        g_fieldBgState.unkC8[i] = 0x100;
+        g_fieldBgState.unkD0[i] = 0x100;
     }
     for (i = 0; i < n; i++) {
         o = &objs[i];
-        D_800C9DA4.unk1C[i * 3 + 0] = 0x80;
-        D_800C9DA4.unk1C[i * 3 + 1] = 0x80;
-        D_800C9DA4.unk1C[i * 3 + 2] = 0x80;
-        D_800C9DA4.unk20[i] = 0;
+        g_fieldBgCtx.unk1C[i * 3 + 0] = 0x80;
+        g_fieldBgCtx.unk1C[i * 3 + 1] = 0x80;
+        g_fieldBgCtx.unk1C[i * 3 + 2] = 0x80;
+        g_fieldBgCtx.unk20[i] = 0;
         p = o;
-        if (func_800BD130(p, *arg1, arg1) != 1) {
+        if (fldbg_buildLayerSprites(p, *arg1, arg1) != 1) {
             return 0;
         }
         o->unk10 = -0x8000;
@@ -2869,13 +2869,13 @@ s32 func_800BDED4(u8 *arg0, BgSprt **arg1) {
         o->unk14 = -0x8000;
         p->unk16 = 0x7FFF;
     }
-    D_800CA068.unk73 = 0;
-    D_800CA068.unk72 = 0;
-    D_800CA068.unk0 &= ~0xC00;
+    g_fieldBgState.unk73 = 0;
+    g_fieldBgState.unk72 = 0;
+    g_fieldBgState.unk0 &= ~0xC00;
     return 1;
 }
 
-s32 func_800BE158(Unk800C9DB4Obj *o, u8 *arg1) {
+s32 fldbg_drawLayer(Unk800C9DB4Obj *o, u8 *arg1) {
     BgSprt *spr;
     u32 *ot;
     Unk800C9DA4Hdr *h;
@@ -2894,10 +2894,10 @@ s32 func_800BE158(Unk800C9DB4Obj *o, u8 *arg1) {
     u8 buf;
 
     spr = o->unk30;
-    buf = *D_800C9DA4.unk0;
-    h = D_800C9DA4.unk10;
+    buf = *g_fieldBgCtx.unk0;
+    h = g_fieldBgCtx.unk10;
     n = o->unk26;
-    ot = D_800C9DA4.unk8[buf];
+    ot = g_fieldBgCtx.unk8[buf];
     if (buf != 0) {
         spr += n;
     }
@@ -2912,14 +2912,14 @@ s32 func_800BE158(Unk800C9DB4Obj *o, u8 *arg1) {
         s16 k;
 
         if (o->unk0 & 1) {
-            ox = D_800CA068.unkA8[o->unk25_1][0];
-            oy = D_800CA068.unkA8[o->unk25_1][1];
+            ox = g_fieldBgState.unkA8[o->unk25_1][0];
+            oy = g_fieldBgState.unkA8[o->unk25_1][1];
         } else {
-            ox = D_800CA068.unkA8[o->unk25_1][0] + 0xA0 - D_800CA068.unk4.unk0;
-            oy = D_800CA068.unkA8[o->unk25_1][1] + 0x70 - D_800CA068.unk4.unk2;
+            ox = g_fieldBgState.unkA8[o->unk25_1][0] + 0xA0 - g_fieldBgState.unk4.unk0;
+            oy = g_fieldBgState.unkA8[o->unk25_1][1] + 0x70 - g_fieldBgState.unk4.unk2;
         }
-        wx = D_800CA068.unkB8[o->unk25_1][0];
-        wy = D_800CA068.unkB8[o->unk25_1][1];
+        wx = g_fieldBgState.unkB8[o->unk25_1][0];
+        wy = g_fieldBgState.unkB8[o->unk25_1][1];
         sx = o->unk1C;
         if (sx < 0) {
             k = 0x100 - sx;
@@ -3015,14 +3015,14 @@ s32 func_800BE158(Unk800C9DB4Obj *o, u8 *arg1) {
         s16 k;
 
         if (o->unk0 & 1) {
-            ox = D_800CA068.unkA8[o->unk25_1][0];
-            oy = D_800CA068.unkA8[o->unk25_1][1];
+            ox = g_fieldBgState.unkA8[o->unk25_1][0];
+            oy = g_fieldBgState.unkA8[o->unk25_1][1];
         } else {
-            ox = D_800CA068.unkA8[o->unk25_1][0] + 0xA0 - D_800CA068.unk4.unk0;
-            oy = D_800CA068.unkA8[o->unk25_1][1] + 0x70 - D_800CA068.unk4.unk2;
+            ox = g_fieldBgState.unkA8[o->unk25_1][0] + 0xA0 - g_fieldBgState.unk4.unk0;
+            oy = g_fieldBgState.unkA8[o->unk25_1][1] + 0x70 - g_fieldBgState.unk4.unk2;
         }
-        wx = D_800CA068.unkB8[o->unk25_1][0];
-        wy = D_800CA068.unkB8[o->unk25_1][1];
+        wx = g_fieldBgState.unkB8[o->unk25_1][0];
+        wy = g_fieldBgState.unkB8[o->unk25_1][1];
         if (o->unk25) {
             y = (y - ((s16)wy - o->unk6)) % o->unk6 + (wy - o->unk6);
             x += y * o->unk1C / o->unk6 % o->unk4;
@@ -3104,7 +3104,7 @@ s32 func_800BE158(Unk800C9DB4Obj *o, u8 *arg1) {
     return 1;
 }
 
-s32 func_800BEDE8(Unk800C9DA4Hdr *arg0) {
+s32 fldbg_updateLayerScroll(Unk800C9DA4Hdr *arg0) {
     s32 i;
     s32 n;
     Unk800C9DB4Obj *o;
@@ -3145,23 +3145,23 @@ s32 func_800BEDE8(Unk800C9DA4Hdr *arg0) {
             }
         }
         if (o->unk0 & 8) {
-            v = (o->unk8 << 8) + ((s16)D_800CA068.unk4.unk0 - D_800CA068.unkA4) * o->unk1C;
+            v = (o->unk8 << 8) + ((s16)g_fieldBgState.unk4.unk0 - g_fieldBgState.unkA4) * o->unk1C;
             o->unkC = v >> 8;
             o->unk20 = v & 0xFF;
-            v = (o->unkA << 8) + ((s16)D_800CA068.unk4.unk2 - D_800CA068.unkA6) * o->unk1E;
+            v = (o->unkA << 8) + ((s16)g_fieldBgState.unk4.unk2 - g_fieldBgState.unkA6) * o->unk1E;
             o->unkE = v >> 8;
             o->unk22 = v & 0xFF;
         }
     }
-    if (D_800CA068.unk0 & 0x80) {
-        D_800CA068.unk0 &= ~0x80;
-        D_800CA068.unk8.unk0 = D_800CA068.unk4.unk0;
-        D_800CA068.unk8.unk2 = D_800CA068.unk4.unk2;
+    if (g_fieldBgState.unk0 & 0x80) {
+        g_fieldBgState.unk0 &= ~0x80;
+        g_fieldBgState.unk8.unk0 = g_fieldBgState.unk4.unk0;
+        g_fieldBgState.unk8.unk2 = g_fieldBgState.unk4.unk2;
     }
     return 1;
 }
 
-s32 func_800BF0C4(void) {
+s32 fldbg_updateScroll(void) {
     s16 dur;
     u16 ox;
     u16 oy;
@@ -3182,32 +3182,32 @@ s32 func_800BF0C4(void) {
     s32 t;
     s32 y;
     s32 mode;
-    flags = D_800CA068.unk0;
+    flags = g_fieldBgState.unk0;
     if (!(flags & 0x40)) {
         return 0;
     }
     mode = flags & 7;
     smooth = flags & 8;
     if (mode == 1 || mode == 2 || mode == 3) {
-        ox = D_800CA068.unk4.unk0;
-        oy = D_800CA068.unk4.unk2;
-        h = D_800C9DB4;
-        wx = D_800CA068.unk14 - D_800CA068.unk10.unk0;
-        wy = D_800CA068.unk16 - D_800CA068.unk10.unk2;
-        cnt = D_800CA068.unk18;
-        dur = D_800CA068.unk1A;
+        ox = g_fieldBgState.unk4.unk0;
+        oy = g_fieldBgState.unk4.unk2;
+        h = g_fieldBgData;
+        wx = g_fieldBgState.unk14 - g_fieldBgState.unk10.unk0;
+        wy = g_fieldBgState.unk16 - g_fieldBgState.unk10.unk2;
+        cnt = g_fieldBgState.unk18;
+        dur = g_fieldBgState.unk1A;
         if (!smooth) {
-            D_800CA068.unk4.unk0 = D_800CA068.unk10.unk0 + wx * cnt / dur;
-            D_800CA068.unk4.unk2 = D_800CA068.unk10.unk2 + wy * cnt / dur;
+            g_fieldBgState.unk4.unk0 = g_fieldBgState.unk10.unk0 + wx * cnt / dur;
+            g_fieldBgState.unk4.unk2 = g_fieldBgState.unk10.unk2 + wy * cnt / dur;
         } else {
             y = math_cos(((cnt << 16) >> 5) / dur + 0x800) + 0x1000;
             ax = wx * y / 0x2000;
             ay = wy * y / 0x2000;
-            D_800CA068.unk4.unk0 = D_800CA068.unk10.unk0 + ax;
-            D_800CA068.unk4.unk2 = D_800CA068.unk10.unk2 + ay;
+            g_fieldBgState.unk4.unk0 = g_fieldBgState.unk10.unk0 + ax;
+            g_fieldBgState.unk4.unk2 = g_fieldBgState.unk10.unk2 + ay;
         }
-        ox = D_800CA068.unk4.unk0 - ox;
-        oy = D_800CA068.unk4.unk2 - oy;
+        ox = g_fieldBgState.unk4.unk0 - ox;
+        oy = g_fieldBgState.unk4.unk2 - oy;
         o = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
         for (i = 0; i < h->unk6; o++, i++) {
             if (o->unk0 & 4) {
@@ -3218,7 +3218,7 @@ s32 func_800BF0C4(void) {
                     o->unkE += oy;
                 }
                 dx = (s16)ox << 16;
-            s = D_800CA068.unkC8[o->unk25_1] << 8;
+            s = g_fieldBgState.unkC8[o->unk25_1] << 8;
             v = dx;
             if (s != 0x10000) {
                 if (s < 0) {
@@ -3229,7 +3229,7 @@ s32 func_800BF0C4(void) {
                 o->unkC = v >> 16;
                 o->unk20 = (v >> 8) & 0xFF;
             }
-            s = D_800CA068.unkD0[o->unk25_1] << 8;
+            s = g_fieldBgState.unkD0[o->unk25_1] << 8;
             v = oy << 16;
             if (s != 0x10000) {
                 if (s < 0) {
@@ -3246,7 +3246,7 @@ s32 func_800BF0C4(void) {
                 } else {
                     o->unkC += ox;
                 }
-            s = D_800CA068.unkC8[o->unk25_1] << 8;
+            s = g_fieldBgState.unkC8[o->unk25_1] << 8;
             v = (s16)ox << 16;
             if (s != 0x10000) {
                 if (s < 0) {
@@ -3257,7 +3257,7 @@ s32 func_800BF0C4(void) {
                 o->unkC = v >> 16;
                 o->unk20 = (v >> 8) & 0xFF;
             }
-            s = D_800CA068.unkD0[o->unk25_1] << 8;
+            s = g_fieldBgState.unkD0[o->unk25_1] << 8;
             v = oy << 16;
             if (s != 0x10000) {
                 if (s < 0) {
@@ -3274,28 +3274,28 @@ s32 func_800BF0C4(void) {
         }
         s = h->unk18;
         s = (s32)h - -s; /* keeps the h + off operand order (plus h s) */
-        s = s + D_800CA068.unk75 * sizeof(Unk800C9DB4Cam);
+        s = s + g_fieldBgState.unk75 * sizeof(Unk800C9DB4Cam);
         v = 160;
-        y = *(s16 *)&D_800CA068.unk4.unk0 - (((Unk800C9DB4Cam *)s)->unk24 >> 1);
+        y = *(s16 *)&g_fieldBgState.unk4.unk0 - (((Unk800C9DB4Cam *)s)->unk24 >> 1);
         i = v - y;
-        t = 112 - (*(s16 *)&D_800CA068.unk4.unk2 - (((Unk800C9DB4Cam *)s)->unk26 >> 1));
-        D_800CA068.unkC = i;
-        D_800CA068.unkE = t;
+        t = 112 - (*(s16 *)&g_fieldBgState.unk4.unk2 - (((Unk800C9DB4Cam *)s)->unk26 >> 1));
+        g_fieldBgState.unkC = i;
+        g_fieldBgState.unkE = t;
         if (mode == 1) {
-            D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 2;
+            g_fieldBgState.unk0 = (g_fieldBgState.unk0 & ~7) | 2;
         }
-        if (++D_800CA068.unk18 > dur) {
-            if ((D_800CA068.unk0 & 7) == 2) {
-                D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 0x84;
+        if (++g_fieldBgState.unk18 > dur) {
+            if ((g_fieldBgState.unk0 & 7) == 2) {
+                g_fieldBgState.unk0 = (g_fieldBgState.unk0 & ~7) | 0x84;
             } else {
-                D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 0x80;
+                g_fieldBgState.unk0 = (g_fieldBgState.unk0 & ~7) | 0x80;
             }
         }
     }
     return 1;
 }
 
-s32 func_800BF660(void) {
+s32 fldbg_followPlayer(void) {
     SVECTOR sv;
     long ofx, ofy;
     union {
@@ -3323,7 +3323,7 @@ s32 func_800BF660(void) {
     Unk800C9DB4Obj *o;
     s32 s;
     s32 v;
-    flags = D_800CA068.unk0;
+    flags = g_fieldBgState.unk0;
     if (flags & 7) {
         return 0;
     }
@@ -3338,12 +3338,12 @@ s32 func_800BF660(void) {
     } else {
         a = NULL;
     }
-    h = D_800C9DB4;
+    h = g_fieldBgData;
     c = (Unk800C9DB4Cam *)((u8 *)h + h->unk18);
-    c += D_800CA068.unk75;
+    c += g_fieldBgState.unk75;
     if (a != NULL) {
         sv.vx = a->pos.vx;
-        sv.vy = a->pos.vy - D_800CA068.unk76;
+        sv.vy = a->pos.vy - g_fieldBgState.unk76;
         sv.vz = a->pos.vz;
     } else {
         sv.vx = 0;
@@ -3352,25 +3352,25 @@ s32 func_800BF660(void) {
     }
     ReadGeomOffset(&ofx, &ofy);
     gte_SetGeomOffset(0xA0, 0x70);
-    gte_SetRotMatrix(D_800CA068.unk1C);
-    gte_SetTransMatrix(D_800CA068.unk1C);
-    gte_SetGeomScreen(*D_800CA068.unk20);
+    gte_SetRotMatrix(g_fieldBgState.unk1C);
+    gte_SetTransMatrix(g_fieldBgState.unk1C);
+    gte_SetGeomScreen(*g_fieldBgState.unk20);
     gte_ldv0(&sv);
     gte_rtps();
     gte_stsxy(&sxy);
     gte_SetGeomOffset(ofx, ofy);
     x = sxy.v.vx;
     y = sxy.w >> 16;
-    if (D_800CA068.unk0 & 0x80) {
-        D_800CA068.unk2C = x;
-        D_800CA068.unk2E = y;
+    if (g_fieldBgState.unk0 & 0x80) {
+        g_fieldBgState.unk2C = x;
+        g_fieldBgState.unk2E = y;
     }
-    x = (D_800CA068.unk2C + x) >> 1;
-    y = (D_800CA068.unk2E + y) >> 1;
+    x = (g_fieldBgState.unk2C + x) >> 1;
+    y = (g_fieldBgState.unk2E + y) >> 1;
     sx = 320 - x;
     sy = 224 - y;
-    D_800CA068.unk2C = x;
-    D_800CA068.unk2E = y;
+    g_fieldBgState.unk2C = x;
+    g_fieldBgState.unk2E = y;
     wx = (c->unk24 >> 1) + (s16)c->unk20;
     lim = wx - 160;
     cx = lim + x;
@@ -3402,29 +3402,29 @@ s32 func_800BF660(void) {
             sy = a - t;
         }
     }
-    D_800CA068.unkC = sx - c->unk20;
-    D_800CA068.unkE = sy - c->unk22;
+    g_fieldBgState.unkC = sx - c->unk20;
+    g_fieldBgState.unkE = sy - c->unk22;
     px = &dx;
     py = &dy;
-    if (D_800CA068.unk0 & 0x40) {
-        ox = D_800CA068.unk4.unk0;
-        oy = D_800CA068.unk4.unk2;
+    if (g_fieldBgState.unk0 & 0x40) {
+        ox = g_fieldBgState.unk4.unk0;
+        oy = g_fieldBgState.unk4.unk2;
         if ((s16)cx < c->unk28) {
-            D_800CA068.unk4.unk0 = c->unk28;
+            g_fieldBgState.unk4.unk0 = c->unk28;
         } else if (c->unk2A < (s16)cx) {
-            D_800CA068.unk4.unk0 = c->unk2A;
+            g_fieldBgState.unk4.unk0 = c->unk2A;
         } else {
-            D_800CA068.unk4.unk0 = cx;
+            g_fieldBgState.unk4.unk0 = cx;
         }
         if ((s16)cy < c->unk2C) {
-            D_800CA068.unk4.unk2 = c->unk2C;
+            g_fieldBgState.unk4.unk2 = c->unk2C;
         } else if (c->unk2E < (s16)cy) {
-            D_800CA068.unk4.unk2 = c->unk2E;
+            g_fieldBgState.unk4.unk2 = c->unk2E;
         } else {
-            D_800CA068.unk4.unk2 = cy;
+            g_fieldBgState.unk4.unk2 = cy;
         }
-        *px = D_800CA068.unk4.unk0 - ox;
-        *py = D_800CA068.unk4.unk2 - oy;
+        *px = g_fieldBgState.unk4.unk0 - ox;
+        *py = g_fieldBgState.unk4.unk2 - oy;
     }
     o = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
     for (i = 0; i < h->unk6; o++, i++) {
@@ -3435,7 +3435,7 @@ s32 func_800BF660(void) {
             if (o->unk1E != 0) {
                 o->unkE += dy;
             }
-        s = D_800CA068.unkC8[o->unk25_1] << 8;
+        s = g_fieldBgState.unkC8[o->unk25_1] << 8;
         v = dx << 16;
         if (s != 0x10000) {
             if (s < 0) {
@@ -3446,7 +3446,7 @@ s32 func_800BF660(void) {
             o->unkC = v >> 16;
             o->unk20 = (v >> 8) & 0xFF;
         }
-        s = D_800CA068.unkD0[o->unk25_1] << 8;
+        s = g_fieldBgState.unkD0[o->unk25_1] << 8;
         v = dy << 16;
         if (s != 0x10000) {
             if (s < 0) {
@@ -3463,7 +3463,7 @@ s32 func_800BF660(void) {
             } else {
                 o->unkC += dx;
             }
-        s = D_800CA068.unkC8[o->unk25_1] << 8;
+        s = g_fieldBgState.unkC8[o->unk25_1] << 8;
         v = dx << 16;
         if (s != 0x10000) {
             if (s < 0) {
@@ -3474,7 +3474,7 @@ s32 func_800BF660(void) {
             o->unkC = v >> 16;
             o->unk20 = (v >> 8) & 0xFF;
         }
-        s = D_800CA068.unkD0[o->unk25_1] << 8;
+        s = g_fieldBgState.unkD0[o->unk25_1] << 8;
         v = dy << 16;
         if (s != 0x10000) {
             if (s < 0) {
@@ -3493,7 +3493,7 @@ s32 func_800BF660(void) {
 }
 
 /* reset the field background state; returns the end of its allocations */
-BgSprt *func_800BFCE8(void) {
+BgSprt *fldbg_init(void) {
     SVECTOR v;
     BgSprt *spr;
     Unk800C9DA4Hdr *h;
@@ -3508,32 +3508,32 @@ BgSprt *func_800BFCE8(void) {
         DVECTOR v;
     } u; /* projected origin */
 
-    D_800CA068.unk0 = 0x60;
-    D_800CA068.unk74 = 0x40;
-    D_800CA068.unk76 = 0x144;
-    D_800CA068.unk78 = 0xE10;
-    *(s32 *)&D_800CA068.unk4 = 0;
-    *(s32 *)&D_800CA068.unk8 = 0;
-    *(s32 *)&D_800CA068.unkC = 0;
-    *(s32 *)&D_800CA068.unk10 = 0;
-    *(s32 *)&D_800CA068.unk14 = 0;
-    *(s32 *)&D_800CA068.unk18 = 0;
-    *(s32 *)&D_800CA068.unk24 = 0;
-    *(s32 *)&D_800CA068.unk28 = 0;
-    *(s32 *)&D_800CA068.unk2C = 0;
-    D_800CA068.unk75 = 0;
-    D_800CA068.unk9C = 0;
-    D_800CA068.unkA0 = 0;
-    D_800CA068.unkA1 = 0xFF;
-    D_800CA068.unkA2 = 0xFF;
-    D_800CA068.unkA3 = 0xFF;
-    *(s32 *)&D_800CA068.unkA4 = 0;
-    D_800CA068.unk1C = (MATRIX *)D_800C9DA4.unk14;
-    D_800CA068.unk20 = (u16 *)D_800C9DA4.unk4;
-    if (func_800BDED4(D_800C9DA4.unk18, &spr) != 1) {
+    g_fieldBgState.unk0 = 0x60;
+    g_fieldBgState.unk74 = 0x40;
+    g_fieldBgState.unk76 = 0x144;
+    g_fieldBgState.unk78 = 0xE10;
+    *(s32 *)&g_fieldBgState.unk4 = 0;
+    *(s32 *)&g_fieldBgState.unk8 = 0;
+    *(s32 *)&g_fieldBgState.unkC = 0;
+    *(s32 *)&g_fieldBgState.unk10 = 0;
+    *(s32 *)&g_fieldBgState.unk14 = 0;
+    *(s32 *)&g_fieldBgState.unk18 = 0;
+    *(s32 *)&g_fieldBgState.unk24 = 0;
+    *(s32 *)&g_fieldBgState.unk28 = 0;
+    *(s32 *)&g_fieldBgState.unk2C = 0;
+    g_fieldBgState.unk75 = 0;
+    g_fieldBgState.unk9C = 0;
+    g_fieldBgState.unkA0 = 0;
+    g_fieldBgState.unkA1 = 0xFF;
+    g_fieldBgState.unkA2 = 0xFF;
+    g_fieldBgState.unkA3 = 0xFF;
+    *(s32 *)&g_fieldBgState.unkA4 = 0;
+    g_fieldBgState.unk1C = (MATRIX *)g_fieldBgCtx.unk14;
+    g_fieldBgState.unk20 = (u16 *)g_fieldBgCtx.unk4;
+    if (fldbg_initLayers(g_fieldBgCtx.unk18, &spr) != 1) {
         return NULL;
     }
-    h = D_800C9DA4.unk10;
+    h = g_fieldBgCtx.unk10;
     anims = (Unk800C9DA4Anim *)((u8 *)h + h->unkC);
     trk = (Unk800C9DA4Trk *)((u8 *)h + h->unk10);
     n = h->unk4;
@@ -3544,36 +3544,36 @@ BgSprt *func_800BFCE8(void) {
         anims[i].unk0 = 1;
         trk[*((u8 *)h + anims[i].unkC)].unk0 |= 2;
     }
-    func_800BD3A0();
-    func_800BD724();
+    fldbg_initEffectList();
+    fldbg_initFollowLayers();
     v.vx = 0;
     v.vy = 0;
     v.vz = 0;
     gte_SetGeomOffset(0xA0, 0x70);
-    gte_SetRotMatrix(D_800CA068.unk1C);
-    gte_SetTransMatrix(D_800CA068.unk1C);
+    gte_SetRotMatrix(g_fieldBgState.unk1C);
+    gte_SetTransMatrix(g_fieldBgState.unk1C);
     gte_ldv0(&v);
     gte_rtps();
     gte_stsxy(&u.w);
     t = u.w;
     x = u.v.vx;
-    D_800CA068.unk2C = x;
-    D_800CA068.unk2E = t >> 16;
+    g_fieldBgState.unk2C = x;
+    g_fieldBgState.unk2E = t >> 16;
     return spr;
 }
 
-s32 func_800BFEE0(void) {
+s32 fldbg_update(void) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Obj *o;
     Unk800CA068 *c;
     u32 i;
     s32 j;
 
-    func_800BD4D4();
+    fldbg_updateLayerAnims();
     /* the switch results are dead; only the loads and the hoisted 0x10/0x40 survive */
     do {
-        for (i = 0; i < D_800C9DA4.unk24; i++) {
-            switch (D_800C9DA4.unk28[i].unk0) {
+        for (i = 0; i < g_fieldBgCtx.unk24; i++) {
+            switch (g_fieldBgCtx.unk28[i].unk0) {
             case 0x10:
                 j = 1;
                 break;
@@ -3584,24 +3584,24 @@ s32 func_800BFEE0(void) {
         }
     } while (0);
     j = 0;
-    func_800BF0C4();
-    func_800BF660();
-    func_800BEDE8(D_800C9DA4.unk10);
-    func_800BDC44();
-    c = &D_800CA068;
-    h = D_800C9DA4.unk10;
+    fldbg_updateScroll();
+    fldbg_followPlayer();
+    fldbg_updateLayerScroll(g_fieldBgCtx.unk10);
+    fldbg_updateFollowLayers();
+    c = &g_fieldBgState;
+    h = g_fieldBgCtx.unk10;
     h->unk30 = h->unk24 - (s16)(c->unk4.unk0 - 0xA0);
     h->unk32 = h->unk26 - (s16)(c->unk4.unk2 - 0x70);
     o = (Unk800C9DB4Obj *)((u8 *)h + h->unk10);
     for (j = 0; j < h->unk6; j++) {
         if ((o[j].unk0 & 2) && o[j].unk24 == c->unk75) {
-            func_800BE158(&o[j], D_800C9DA4.unk1C + j * 3);
+            fldbg_drawLayer(&o[j], g_fieldBgCtx.unk1C + j * 3);
         }
     }
     return 1;
 }
 
-s32 func_800C0038(s32 arg0, s32 arg1) {
+s32 fldbg_scrollToPlayer(s32 arg0, s32 arg1) {
     SVECTOR v;
     s16 xy[2];
     Unk800C9DB4Cam *c;
@@ -3618,7 +3618,7 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     Unk800C9DB4 *bg;
     Unk800CA068 *st = NULL; /* dead store: lets cse keep the st = p copy below */
 
-    if (!(D_800CA068.unk0 & 0x40)) {
+    if (!(g_fieldBgState.unk0 & 0x40)) {
         return 0;
     }
     mode = g_gameState->mode;
@@ -3630,11 +3630,11 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
             a = func_8004AE00();
         }
     }
-    bg = D_800C9DB4;
-    p = &D_800CA068;
+    bg = g_fieldBgData;
+    p = &g_fieldBgState;
     c = (Unk800C9DB4Cam *)((u8 *)bg + bg->unk18);
     cp = *(s32 *)&p->unk4;
-    /* a second pointer to D_800CA068 whose copy disappears after register allocation; it is what
+    /* a second pointer to g_fieldBgState whose copy disappears after register allocation; it is what
        makes sched1 order the copy/vx loads and local-alloc give the copy $v0 as in the original */
     st = p;
     *(s32 *)&st->unk10 = cp;
@@ -3677,60 +3677,60 @@ s32 func_800C0038(s32 arg0, s32 arg1) {
     } else if (c->unk2E < y) {
         y = c->unk2E;
     }
-    D_800CA068.unk14 = x;
-    D_800CA068.unk16 = y;
+    g_fieldBgState.unk14 = x;
+    g_fieldBgState.unk16 = y;
     if (arg0 == -1) {
-        D_800CA068.unk1A = 0x1E;
+        g_fieldBgState.unk1A = 0x1E;
     } else {
-        D_800CA068.unk1A = arg0;
+        g_fieldBgState.unk1A = arg0;
     }
-    D_800CA068.unk18 = 1;
+    g_fieldBgState.unk18 = 1;
     if (arg1 == -1) {
-        D_800CA068.unk0 = (D_800CA068.unk0 & ~7) | 3;
+        g_fieldBgState.unk0 = (g_fieldBgState.unk0 & ~7) | 3;
     } else {
-        f = D_800CA068.unk0 & ~0xF;
-        D_800CA068.unk0 = f | 3;
+        f = g_fieldBgState.unk0 & ~0xF;
+        g_fieldBgState.unk0 = f | 3;
         if (arg1 == 8) {
-            D_800CA068.unk0 = f | 8 | 3;
+            g_fieldBgState.unk0 = f | 8 | 3;
         } else {
-            D_800CA068.unk0 = f | 3;
+            g_fieldBgState.unk0 = f | 3;
         }
     }
     return 1;
 }
 
 /* add a screen fade: rectangle (arg0..arg2), mode arg3, colour arg4..arg6 */
-s32 func_800C02D0(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
+s32 fldbg_addFollowLayer(s16 arg0, s16 arg1, s16 arg2, s8 arg3, u8 arg4, u8 arg5, u8 arg6) {
     u32 i;
 
-    D_800CA140[D_800C9DA0].unk4 = arg0;
-    D_800CA140[D_800C9DA0].unk6 = arg1;
-    D_800CA140[D_800C9DA0].unk8 = arg2;
-    D_800CA140[D_800C9DA0].unk0 = arg3;
+    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk4 = arg0;
+    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk6 = arg1;
+    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk8 = arg2;
+    g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk0 = arg3;
     if (arg3 >= 0) {
-        D_800CA140[D_800C9DA0].unk1 = arg4;
-        D_800CA140[D_800C9DA0].unk2 = arg5;
-        D_800CA140[D_800C9DA0].unk3 = arg6;
+        g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk1 = arg4;
+        g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk2 = arg5;
+        g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unk3 = arg6;
         for (i = 0; i < 4; i++) {
-            SetPolyF4(&D_800CA140[D_800C9DA0].unkC[0][i]);
-            setRGB0(&D_800CA140[D_800C9DA0].unkC[0][i], arg4, arg5, arg6);
-            SetPolyF4(&D_800CA140[D_800C9DA0].unkC[0][i + 4]); /* = unkC[1][i] */
-            setRGB0(&D_800CA140[D_800C9DA0].unkC[1][i], arg4, arg5, arg6);
+            SetPolyF4(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i]);
+            setRGB0(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i], arg4, arg5, arg6);
+            SetPolyF4(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i + 4]); /* = unkC[1][i] */
+            setRGB0(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[1][i], arg4, arg5, arg6);
             if (arg3 >= 4) {
-                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[0][i], 0);
-                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[1][i], 0);
+                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i], 0);
+                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[1][i], 0);
             } else {
-                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[0][i], 1);
-                setSemiTrans(&D_800CA140[D_800C9DA0].unkC[1][i], 1);
+                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[0][i], 1);
+                setSemiTrans(&g_fieldBgFollowLayers[g_fieldBgFollowLayerCount].unkC[1][i], 1);
             }
         }
     }
-    D_800C9DA0++;
+    g_fieldBgFollowLayerCount++;
     return 1;
 }
 
 /* toggle a background object's tint */
-s32 func_800C0650(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_toggleLayerColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Obj *o;
     BgSprt *s;
@@ -3739,40 +3739,40 @@ s32 func_800C0650(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     s32 off;
     u16 i;
 
-    t = D_800C9DA4.unk20[arg0];
-    h = D_800C9DA4.unk10;
+    t = g_fieldBgCtx.unk20[arg0];
+    h = g_fieldBgCtx.unk10;
     if (t != 0) {
         o = &((Unk800C9DB4Obj *)((u8 *)h + h->unk10))[arg0];
         n = o->unk26;
         s = o->unk30;
         off = 0;
-        if (*D_800C9DA4.unk0 != 0) {
+        if (*g_fieldBgCtx.unk0 != 0) {
             off = n;
         }
         for (i = 0; i < n; i++) {
             setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
         }
-        D_800C9DA4.unk20[arg0] = 0;
+        g_fieldBgCtx.unk20[arg0] = 0;
         return 0;
     }
-    D_800C9DA4.unk1C[arg0 * 3 + 0] = arg1;
-    D_800C9DA4.unk1C[arg0 * 3 + 1] = arg2;
-    D_800C9DA4.unk1C[arg0 * 3 + 2] = arg3;
+    g_fieldBgCtx.unk1C[arg0 * 3 + 0] = arg1;
+    g_fieldBgCtx.unk1C[arg0 * 3 + 1] = arg2;
+    g_fieldBgCtx.unk1C[arg0 * 3 + 2] = arg3;
     o = &((Unk800C9DB4Obj *)((u8 *)h + h->unk10))[arg0];
     n = o->unk26;
     s = o->unk30;
     off = 0;
-    if (*D_800C9DA4.unk0 != 0) {
+    if (*g_fieldBgCtx.unk0 != 0) {
         off = n;
     }
     for (i = 0; i < n; i++) {
         setRGB0(&s[i + off].unk8, arg1, arg2, arg3);
     }
-    D_800C9DA4.unk20[arg0] = 1;
+    g_fieldBgCtx.unk20[arg0] = 1;
     return 1;
 }
 
-s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 arg6, u8 arg7) {
+s32 fldbg_startClutFade(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 arg6, u8 arg7) {
     s32 rgb[3];
     Unk800C9DA4Ent *e;
     FieldPalAnim *p;
@@ -3790,19 +3790,19 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     t = arg3 - 1;
     n = (u8)arg4 - t;
     size = n * 4 + 0x2C;
-    e = &D_800C9DA4.unk28[arg0];
+    e = &g_fieldBgCtx.unk28[arg0];
     e->unk0 = 0x80;
     e->unk8 = size;
-    h = D_800C9DA4.unk10;
+    h = g_fieldBgCtx.unk10;
     q = (u8 *)h + h->unk10;
     y = *(u32 *)((u8 *)h + ((Unk800C9DB4Obj *)q)[e->unk1].unk2C) & 0x1FF;
-    p = (FieldPalAnim *)(D_800C9DA4.unk2C + D_800C9DA4.unk34);
+    p = (FieldPalAnim *)(g_fieldBgCtx.unk2C + g_fieldBgCtx.unk34);
     /* size is reused for the new end offset (two sets keep sched1 from moving its computation down to
      * e->unk8), read through a copy so the add keeps the original operand order */
     k = size;
-    size = D_800C9DA4.unk34 + k;
-    D_800C9DA4.unk34 = size;
-    e->unk4 = (u8 *)p - (u8 *)D_800C9DA4.unk28;
+    size = g_fieldBgCtx.unk34 + k;
+    g_fieldBgCtx.unk34 = size;
+    e->unk4 = (u8 *)p - (u8 *)g_fieldBgCtx.unk28;
     p->unk0 = 1;
     p->unk1 = n;
     p->unk2 = arg3;
@@ -3870,34 +3870,34 @@ s32 func_800C07D8(s32 arg0, u8 arg1, u32 arg2, u8 arg3, s32 arg4, u8 arg5, u8 ar
     for (i = 0; i < n; i++) {
         v = w[i];
     }
-    D_800C9DA4.unk34 += e->unk8;
+    g_fieldBgCtx.unk34 += e->unk8;
     return 1;
 }
 
-s32 func_800C0BCC(s32 arg0) {
+s32 fldbg_setCamera(s32 arg0) {
     Unk800C9DB4Cam *c;
     Unk800C9DB4 *h;
 
-    h = D_800C9DB4;
+    h = g_fieldBgData;
     c = (Unk800C9DB4Cam *)((u8 *)h + h->unk18) + arg0;
-    *D_800CA068.unk20 = c->unk0;
+    *g_fieldBgState.unk20 = c->unk0;
     gte_SetGeomScreen(c->unk0);
-    D_800CA068.unk1C->m[0][0] = c->unk2[0][0];
-    D_800CA068.unk1C->m[0][1] = c->unk2[0][1];
-    D_800CA068.unk1C->m[0][2] = c->unk2[0][2];
-    D_800CA068.unk1C->m[1][0] = c->unk2[1][0];
-    D_800CA068.unk1C->m[1][1] = c->unk2[1][1];
-    D_800CA068.unk1C->m[1][2] = c->unk2[1][2];
-    D_800CA068.unk1C->m[2][0] = c->unk2[2][0];
-    D_800CA068.unk1C->m[2][1] = c->unk2[2][1];
-    D_800CA068.unk1C->m[2][2] = c->unk2[2][2];
-    D_800CA068.unk1C->t[0] = c->unk14[0];
-    D_800CA068.unk1C->t[1] = c->unk14[1];
-    D_800CA068.unk1C->t[2] = c->unk14[2];
+    g_fieldBgState.unk1C->m[0][0] = c->unk2[0][0];
+    g_fieldBgState.unk1C->m[0][1] = c->unk2[0][1];
+    g_fieldBgState.unk1C->m[0][2] = c->unk2[0][2];
+    g_fieldBgState.unk1C->m[1][0] = c->unk2[1][0];
+    g_fieldBgState.unk1C->m[1][1] = c->unk2[1][1];
+    g_fieldBgState.unk1C->m[1][2] = c->unk2[1][2];
+    g_fieldBgState.unk1C->m[2][0] = c->unk2[2][0];
+    g_fieldBgState.unk1C->m[2][1] = c->unk2[2][1];
+    g_fieldBgState.unk1C->m[2][2] = c->unk2[2][2];
+    g_fieldBgState.unk1C->t[0] = c->unk14[0];
+    g_fieldBgState.unk1C->t[1] = c->unk14[1];
+    g_fieldBgState.unk1C->t[2] = c->unk14[2];
     h->unk2A = c->unk2A;
     h->unk2E = c->unk2E;
-    D_800CA068.unk75 = arg0;
-    D_800CA068.unk0 |= 0x80;
+    g_fieldBgState.unk75 = arg0;
+    g_fieldBgState.unk0 |= 0x80;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30 = c->unk30;
     return 1;
 }
@@ -3905,106 +3905,106 @@ s32 func_800C0BCC(s32 arg0) {
 void func_800C0D38(void) {
 }
 
-void func_800C0D40(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
-    D_800C9DA4.unk0 = (u8 *)arg0;
-    D_800C9DA4.unk4 = arg1;
-    D_800C9DA4.unk8[0] = (u32 *)arg2;
-    D_800C9DA4.unk8[1] = (u32 *)arg3;
-    D_800C9DA4.unk10 = 0;
-    D_800C9DA4.unk24 = 0;
-    D_800C9DA4.unk28 = NULL;
-    D_800C9DA4.unk2C = 0;
-    D_800C9DA4.unk30 = 0;
-    D_800C9DA4.unk34 = 0;
-    D_800C9DA4.unk14 = arg4;
-    D_800C9DA4.unk18 = arg5;
-    D_800C9DA4.unk1C = arg5;
-    D_800C9DA4.unk20 = arg5;
+void fldbg_setRenderContext(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, u8 *arg5) {
+    g_fieldBgCtx.unk0 = (u8 *)arg0;
+    g_fieldBgCtx.unk4 = arg1;
+    g_fieldBgCtx.unk8[0] = (u32 *)arg2;
+    g_fieldBgCtx.unk8[1] = (u32 *)arg3;
+    g_fieldBgCtx.unk10 = 0;
+    g_fieldBgCtx.unk24 = 0;
+    g_fieldBgCtx.unk28 = NULL;
+    g_fieldBgCtx.unk2C = 0;
+    g_fieldBgCtx.unk30 = 0;
+    g_fieldBgCtx.unk34 = 0;
+    g_fieldBgCtx.unk14 = arg4;
+    g_fieldBgCtx.unk18 = arg5;
+    g_fieldBgCtx.unk1C = arg5;
+    g_fieldBgCtx.unk20 = arg5;
 }
 
-void func_800C0D8C(s32 arg0, s32 arg1) {
-    D_800C9DA4.unk2C = arg0;
-    D_800C9DA4.unk30 = arg1;
-    D_800C9DA4.unk34 = 0;
+void fldbg_setWorkBuffer(s32 arg0, s32 arg1) {
+    g_fieldBgCtx.unk2C = arg0;
+    g_fieldBgCtx.unk30 = arg1;
+    g_fieldBgCtx.unk34 = 0;
 }
 
-void func_800C0DA4(Unk800C9DB4 *arg0) {
-    D_800C9DB4 = arg0;
+void fldbg_setData(Unk800C9DB4 *arg0) {
+    g_fieldBgData = arg0;
 }
 
-s32 func_800C0DB0(s32 arg0, s32 arg1, s32 arg2) {
-    u16 x = D_800C9DB4->unk20 + arg0;
-    u16 y = D_800C9DB4->unk22 + arg1;
+s32 fldbg_moveOrigin(s32 arg0, s32 arg1, s32 arg2) {
+    u16 x = g_fieldBgData->unk20 + arg0;
+    u16 y = g_fieldBgData->unk22 + arg1;
     u16 z;
 
-    D_800C9DB4->unk20 = x;
-    D_800C9DB4->unk22 = y;
-    D_800C9DB4->unk24 = x;
-    D_800C9DB4->unk26 = y;
-    z = D_800C9DB4->unk1C + arg2;
-    D_800C9DB4->unk1C = z;
-    D_800C9DB4->unk1E = z;
+    g_fieldBgData->unk20 = x;
+    g_fieldBgData->unk22 = y;
+    g_fieldBgData->unk24 = x;
+    g_fieldBgData->unk26 = y;
+    z = g_fieldBgData->unk1C + arg2;
+    g_fieldBgData->unk1C = z;
+    g_fieldBgData->unk1E = z;
     return 1;
 }
 
-s32 func_800C0DF4(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
+s32 fldbg_scrollTo(s16 arg0, s16 arg1, s16 arg2, s32 arg3) {
     s32 f;
 
-    if (!(D_800CA068.unk0 & 0x40)) {
+    if (!(g_fieldBgState.unk0 & 0x40)) {
         return 0;
     }
-    D_800CA068.unk18 = 1;
-    D_800CA068.unk14 = arg0;
-    f = D_800CA068.unk0 & ~0xF;
-    D_800CA068.unk16 = arg1;
-    D_800CA068.unk1A = arg2;
-    D_800CA068.unk0 = f;
-    D_800CA068.unk10 = D_800CA068.unk4;
+    g_fieldBgState.unk18 = 1;
+    g_fieldBgState.unk14 = arg0;
+    f = g_fieldBgState.unk0 & ~0xF;
+    g_fieldBgState.unk16 = arg1;
+    g_fieldBgState.unk1A = arg2;
+    g_fieldBgState.unk0 = f;
+    g_fieldBgState.unk10 = g_fieldBgState.unk4;
     if (arg3 == 8) {
-        D_800CA068.unk0 = f | 8;
+        g_fieldBgState.unk0 = f | 8;
     } else {
-        D_800CA068.unk0 = f;
+        g_fieldBgState.unk0 = f;
     }
-    D_800CA068.unk0 |= 1;
+    g_fieldBgState.unk0 |= 1;
     return 1;
 }
 
-s32 func_800C0E6C(u16 *arg0, u16 *arg1) {
-    *arg0 = D_800CA068.unk4.unk0;
-    *arg1 = D_800CA068.unk4.unk2;
+s32 fldbg_getScroll(u16 *arg0, u16 *arg1) {
+    *arg0 = g_fieldBgState.unk4.unk0;
+    *arg1 = g_fieldBgState.unk4.unk2;
     return 1;
 }
 
-s32 func_800C0E94(s32 arg0, s32 arg1, s32 arg2) {
+s32 fldbg_setFollow(s32 arg0, s32 arg1, s32 arg2) {
     if (arg0 != 0) {
-        D_800CA068.unk0 |= 0x40;
+        g_fieldBgState.unk0 |= 0x40;
         if (arg1 > 0) {
-            func_800C0038(arg1, arg2);
+            fldbg_scrollToPlayer(arg1, arg2);
         }
     } else {
-        D_800CA068.unk0 &= ~0x40;
+        g_fieldBgState.unk0 &= ~0x40;
     }
     return 1;
 }
 
-s32 func_800C0EF0(void) {
-    if (D_800CA068.unk0 & 0x40) {
+s32 fldbg_isFollowing(void) {
+    if (g_fieldBgState.unk0 & 0x40) {
         return 1;
     }
     return 0;
 }
 
-s32 func_800C0F08(void) {
+s32 fldbg_applyGeomOffset(void) {
     Unk800C9DB4Cam *c = func_800C9DB4_cam(0);
 
-    c += D_800CA068.unk75;
+    c += g_fieldBgState.unk75;
     if (!(func_80012AD4() & 2) || g_mbgFrame < 2) {
-        gte_SetGeomOffset((s16)c->unk20 + D_800CA068.unkC, (s16)c->unk22 + D_800CA068.unkE);
+        gte_SetGeomOffset((s16)c->unk20 + g_fieldBgState.unkC, (s16)c->unk22 + g_fieldBgState.unkE);
     }
     return 1;
 }
 
-s32 func_800C0FB0(void) {
+s32 fldbg_resetGeomOffset(void) {
     if (!(func_80012AD4() & 2)) {
         gte_SetGeomOffset(0xA0, 0x70);
     }
@@ -4020,73 +4020,73 @@ s32 func_800C0FF4(s32 arg0) {
     return 1;
 }
 
-s32 func_800C1024(s16 arg0) {
-    D_800CA068.unk76 = arg0;
+s32 fldbg_setFollowHeight(s16 arg0) {
+    g_fieldBgState.unk76 = arg0;
     return 1;
 }
 
-s32 func_800C1034(void) {
-    if (D_800CA068.unk0 & 0x20) {
+s32 fldbg_hasScrollLimits(void) {
+    if (g_fieldBgState.unk0 & 0x20) {
         return 1;
     }
     return 0;
 }
 
-s32 func_800C104C(void) {
+s32 fldbg_disableScrollLimits(void) {
     Unk800C9DB4Cam *c;
 
-    if (!(D_800CA068.unk0 & 0x20)) {
+    if (!(g_fieldBgState.unk0 & 0x20)) {
         return 0;
     }
-    if (D_800C9DB4 != NULL) {
-        c = func_800C9DB4_cam(D_800CA068.unk75);
-        D_800CA068.unk24 = c->unk28;
-        D_800CA068.unk26 = c->unk2A;
-        D_800CA068.unk28 = c->unk2C;
-        D_800CA068.unk2A = c->unk2E;
+    if (g_fieldBgData != NULL) {
+        c = func_800C9DB4_cam(g_fieldBgState.unk75);
+        g_fieldBgState.unk24 = c->unk28;
+        g_fieldBgState.unk26 = c->unk2A;
+        g_fieldBgState.unk28 = c->unk2C;
+        g_fieldBgState.unk2A = c->unk2E;
         c->unk28 = -0x8000;
         c->unk2A = 0x7FFF;
         c->unk2C = -0x8000;
         c->unk2E = 0x7FFF;
-        D_800CA068.unk0 &= ~0x20;
+        g_fieldBgState.unk0 &= ~0x20;
     }
     return 1;
 }
 
-s32 func_800C1100(void) {
+s32 fldbg_enableScrollLimits(void) {
     Unk800C9DB4Cam *c;
 
-    if (D_800CA068.unk0 & 0x20) {
+    if (g_fieldBgState.unk0 & 0x20) {
         return 0;
     }
-    if (D_800C9DB4 != NULL) {
-        c = func_800C9DB4_cam(D_800CA068.unk75);
-        c->unk28 = D_800CA068.unk24;
-        c->unk2A = D_800CA068.unk26;
-        c->unk2C = D_800CA068.unk28;
-        c->unk2E = D_800CA068.unk2A;
-        D_800CA068.unk0 |= 0x20;
+    if (g_fieldBgData != NULL) {
+        c = func_800C9DB4_cam(g_fieldBgState.unk75);
+        c->unk28 = g_fieldBgState.unk24;
+        c->unk2A = g_fieldBgState.unk26;
+        c->unk2C = g_fieldBgState.unk28;
+        c->unk2E = g_fieldBgState.unk2A;
+        g_fieldBgState.unk0 |= 0x20;
     }
     return 1;
 }
 
-s32 func_800C119C(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    D_800CA068.unkA8[arg0][0] = arg1;
-    D_800CA068.unkA8[arg0][1] = arg2;
-    D_800CA068.unkB8[arg0][0] = arg3;
-    D_800CA068.unkB8[arg0][1] = arg4;
+s32 fldbg_setViewport(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    g_fieldBgState.unkA8[arg0][0] = arg1;
+    g_fieldBgState.unkA8[arg0][1] = arg2;
+    g_fieldBgState.unkB8[arg0][0] = arg3;
+    g_fieldBgState.unkB8[arg0][1] = arg4;
     return 1;
 }
 
-s32 func_800C11C8(s32 arg0, s16 arg1, s16 arg2) {
-    D_800CA068.unkC8[arg0] = arg1;
-    D_800CA068.unkD0[arg0] = arg2;
+s32 fldbg_setViewportScrollRate(s32 arg0, s16 arg1, s16 arg2) {
+    g_fieldBgState.unkC8[arg0] = arg1;
+    g_fieldBgState.unkD0[arg0] = arg2;
     return 1;
 }
 
 /* move a background object, clamped to its limits */
-s32 func_800C11E8(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
-    Unk800C9DB4Obj *o = &((Unk800C9DB4Obj *)((u8 *)D_800C9DB4 + D_800C9DB4->unk10))[arg0];
+s32 fldbg_moveLayer(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
+    Unk800C9DB4Obj *o = &((Unk800C9DB4Obj *)((u8 *)g_fieldBgData + g_fieldBgData->unk10))[arg0];
     s16 x = o->unk8 + arg1;
     s16 y = o->unkA + arg2;
     s16 z = arg3 + o->unk2;
@@ -4110,14 +4110,14 @@ s32 func_800C11E8(s32 arg0, s16 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 func_800C130C(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
-    *arg1 = D_800C9DA4.unk1C[arg0 * 3];
-    *arg2 = D_800C9DA4.unk1C[arg0 * 3 + 1];
-    *arg3 = D_800C9DA4.unk1C[arg0 * 3 + 2];
+s32 fldbg_getLayerColor(s32 arg0, u8 *arg1, u8 *arg2, u8 *arg3) {
+    *arg1 = g_fieldBgCtx.unk1C[arg0 * 3];
+    *arg2 = g_fieldBgCtx.unk1C[arg0 * 3 + 1];
+    *arg3 = g_fieldBgCtx.unk1C[arg0 * 3 + 2];
     return 1;
 }
 
-s32 func_800C1368(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_setLayerColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     Unk800C9DA4Hdr *h;
     Unk800C9DB4Obj *o;
     BgSprt *s;
@@ -4125,15 +4125,15 @@ s32 func_800C1368(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     s32 off;
     u16 i;
 
-    h = D_800C9DA4.unk10;
-    D_800C9DA4.unk1C[arg0 * 3 + 0] = arg1;
-    D_800C9DA4.unk1C[arg0 * 3 + 1] = arg2;
-    D_800C9DA4.unk1C[arg0 * 3 + 2] = arg3;
+    h = g_fieldBgCtx.unk10;
+    g_fieldBgCtx.unk1C[arg0 * 3 + 0] = arg1;
+    g_fieldBgCtx.unk1C[arg0 * 3 + 1] = arg2;
+    g_fieldBgCtx.unk1C[arg0 * 3 + 2] = arg3;
     o = &((Unk800C9DB4Obj *)((u8 *)h + h->unk10))[arg0];
     n = o->unk26;
     s = o->unk30;
     off = 0;
-    if (*D_800C9DA4.unk0 != 0) {
+    if (*g_fieldBgCtx.unk0 != 0) {
         off = n;
     }
     for (i = 0; i < n; i++) {
@@ -4142,7 +4142,7 @@ s32 func_800C1368(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     return 1;
 }
 
-s32 func_800C142C(s32 arg0, s32 arg1) {
+s32 fldbg_showLayer(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
     u8 v;
 
@@ -4155,7 +4155,7 @@ s32 func_800C142C(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C147C(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
+s32 fldbg_setLayerLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     if (arg1 != 0) {
@@ -4170,7 +4170,7 @@ s32 func_800C147C(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 func_800C14DC(s32 arg0, s32 arg1) {
+s32 fldbg_setLayerFlag1(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
     u8 v;
 
@@ -4183,7 +4183,7 @@ s32 func_800C14DC(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C152C(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
+s32 fldbg_setLayerSkewLoop(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     if (arg1 != 0) {
@@ -4205,7 +4205,7 @@ s32 func_800C152C(s32 arg0, s32 arg1, s16 arg2, s16 arg3, s32 arg4) {
     return 1;
 }
 
-s32 func_800C15BC(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
+s32 fldbg_setLayerParallax(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     if (arg1 != 0) {
@@ -4218,25 +4218,25 @@ s32 func_800C15BC(s32 arg0, s32 arg1, s16 arg2, s16 arg3) {
     return 1;
 }
 
-s32 func_800C1614(s32 arg0, s16 arg1, s16 arg2) {
+s32 fldbg_setLayerPos(s32 arg0, s16 arg1, s16 arg2) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     o->unkC = arg1;
     o->unk8 = arg1;
     o->unkE = arg2;
     o->unkA = arg2;
-    D_800CA068.unk0 |= 0x80;
+    g_fieldBgState.unk0 |= 0x80;
     return 1;
 }
 
-s32 func_800C1668(s32 arg0, s32 arg1) {
+s32 fldbg_setLayerViewport(s32 arg0, s32 arg1) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
 
     o->unk25_1 = arg1;
     return 1;
 }
 
-s32 func_800C16B0(s32 arg0, s32 arg1) {
+s32 fldbg_setAnimFrame(s32 arg0, s32 arg1) {
     Unk800C9DB4Path *p = func_800C9DB4_path(arg0);
 
     p->unkA = 0;
@@ -4245,7 +4245,7 @@ s32 func_800C16B0(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C16F4(s32 arg0, s32 arg1) {
+s32 fldbg_showAnimFrame(s32 arg0, s32 arg1) {
     s32 i;
     Unk800C9DB4Path *p;
     Unk800C9DB4Step *st;
@@ -4266,7 +4266,7 @@ s32 func_800C16F4(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C17AC(s32 arg0, s32 arg1) {
+s32 fldbg_playAnim(s32 arg0, s32 arg1) {
     Unk800C9DB4Path *p = func_800C9DB4_path(arg0);
     u8 v;
 
@@ -4279,12 +4279,12 @@ s32 func_800C17AC(s32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C17F0(s32 arg0, s16 arg1) {
+s32 fldbg_setAnimSpeed(s32 arg0, s16 arg1) {
     func_800C9DB4_path(arg0)->unk8 = arg1;
     return 1;
 }
 
-s32 func_800C1818(s32 arg0, u8 arg1) {
+s32 fldbg_setAnimDelayAll(s32 arg0, u8 arg1) {
     Unk800C9DB4Path *p = func_800C9DB4_path(arg0);
     Unk800C9DB4Step *st = func_800C9DB4_steps(p);
     s32 n = p->unk1;
@@ -4296,18 +4296,18 @@ s32 func_800C1818(s32 arg0, u8 arg1) {
     return 1;
 }
 
-s32 func_800C1868(s32 arg0, s32 arg1, u8 arg2) {
+s32 fldbg_setAnimStepDelay(s32 arg0, s32 arg1, u8 arg2) {
     func_800C9DB4_steps(func_800C9DB4_path(arg0))[arg1].unk1 = arg2;
     return 1;
 }
 
-s32 func_800C18A0(s32 arg0, s32 arg1) {
+s32 fldbg_setAnimFlags(s32 arg0, s32 arg1) {
     func_800C9DB4_path(arg0)->unk0 |= arg1 & 0x30;
     return 1;
 }
 
-s32 func_800C18D4(s32 arg0, u32 arg1, u32 arg2) {
-    Unk800C9DB4 *b = D_800C9DB4;
+s32 fldbg_playAnimRange(s32 arg0, u32 arg1, u32 arg2) {
+    Unk800C9DB4 *b = g_fieldBgData;
     Unk800C9DB4Path *p = &((Unk800C9DB4Path *)((u8 *)b + b->unkC))[arg0];
     Unk800C9DB4Step *st = (Unk800C9DB4Step *)((u8 *)b + p->unkC);
 
@@ -4321,8 +4321,8 @@ s32 func_800C18D4(s32 arg0, u32 arg1, u32 arg2) {
     return 1;
 }
 
-s32 func_800C196C(s32 arg0, s32 arg1) {
-    Unk800C9DB4 *d = D_800C9DB4;
+s32 fldbg_resetAnim(s32 arg0, s32 arg1) {
+    Unk800C9DB4 *d = g_fieldBgData;
     Unk800C9DB4Path *p = &((Unk800C9DB4Path *)((u8 *)d + d->unkC))[arg0];
     Unk800C9DB4Obj *objs;
     Unk800C9DB4Step *st;
@@ -4355,8 +4355,8 @@ s32 func_800C1A78(s32 arg0) {
 }
 
 /* set the camera scroll limits */
-s32 func_800C1A8C(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
-    Unk800C9DB4Cam *c = &((Unk800C9DB4Cam *)((u8 *)D_800C9DB4 + D_800C9DB4->unk18))[arg0];
+s32 fldbg_setScrollLimits(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
+    Unk800C9DB4Cam *c = &((Unk800C9DB4Cam *)((u8 *)g_fieldBgData + g_fieldBgData->unk18))[arg0];
     s16 v;
 
     c->unk28 = v = arg1 + 160;
@@ -4378,12 +4378,12 @@ s32 func_800C1A8C(s32 arg0, s16 arg1, s16 arg2, s16 arg3, s16 arg4) {
     return 1;
 }
 
-s32 func_800C1B5C(u8 *arg0) {
-    *arg0 = D_800CA068.unk75;
+s32 fldbg_getCamera(u8 *arg0) {
+    *arg0 = g_fieldBgState.unk75;
     return 1;
 }
 
-s32 func_800C1B74(s32 arg0, s16 arg1, s16 arg2) {
+s32 fldbg_setCameraCenter(s32 arg0, s16 arg1, s16 arg2) {
     Unk800C9DB4Cam *c = func_800C9DB4_cam(arg0);
 
     c->unk20 = arg1;
@@ -4391,7 +4391,7 @@ s32 func_800C1B74(s32 arg0, s16 arg1, s16 arg2) {
     return 1;
 }
 
-s32 func_800C1BB4(s32 arg0, u16 *arg1, u16 *arg2) {
+s32 fldbg_getCameraCenter(s32 arg0, u16 *arg1, u16 *arg2) {
     Unk800C9DB4Cam *c = func_800C9DB4_cam(arg0);
 
     *arg1 = c->unk20;
@@ -4399,19 +4399,19 @@ s32 func_800C1BB4(s32 arg0, u16 *arg1, u16 *arg2) {
     return 1;
 }
 
-s32 func_800C1C04(s32 arg0) {
+s32 fldbg_getClutFadeSize(s32 arg0) {
     return arg0 * 4 + 0x2C;
 }
 
-s32 func_800C1C10(s32 arg0) {
-    s32 r = D_800C9DA4.unk2C + D_800C9DA4.unk34;
+s32 fldbg_allocWork(s32 arg0) {
+    s32 r = g_fieldBgCtx.unk2C + g_fieldBgCtx.unk34;
 
-    D_800C9DA4.unk34 += arg0;
+    g_fieldBgCtx.unk34 += arg0;
     return r;
 }
 
-s32 func_800C1C30(void) {
-    Unk800C9DB4 *d = D_800C9DB4;
+s32 fldbg_resetAllAnims(void) {
+    Unk800C9DB4 *d = g_fieldBgData;
     u32 i;
     Unk800C9DB4Path *p;
     Unk800C9DB4Obj *objs;
@@ -4437,8 +4437,8 @@ s32 func_800C1CC0(void) {
     s32 type;
 
     ret = 1;
-    for (i = 0; i < D_800C9DA4.unk24; i++) {
-        type = D_800C9DA4.unk28[i].unk0;
+    for (i = 0; i < g_fieldBgCtx.unk24; i++) {
+        type = g_fieldBgCtx.unk28[i].unk0;
         if (type == 0x10) {
             type = 0;
         } else if (type == 0x40) {
@@ -4452,7 +4452,7 @@ s32 func_800C1D08(void) {
     return 1;
 }
 
-s32 func_800C1D10(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
+s32 fldbg_setLayerSpriteColor(s32 arg0, u8 arg1, u8 arg2, u8 arg3) {
     Unk800C9DB4Obj *o = func_800C9DB4_obj(arg0);
     u16 n = o->unk26;
     BgSprt *s = o->unk30;

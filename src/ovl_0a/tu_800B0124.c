@@ -1102,7 +1102,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         k = inf2->unk8.w;
         if (k >> 24 != 0) {
             for (j = ((Unk800C95C8 *)c->unk8)->unk8->unk3 - 1; j >= 0; j--) {
-                func_800B9E4C(c->unk8, j & 0xFF, (s16)(k & 0xFF), (s16)((k >> 8) & 0xFF), ((u32)k >> 16) & 0xFF);
+                fldmdl_setGroupRgb(c->unk8, j & 0xFF, (s16)(k & 0xFF), (s16)((k >> 8) & 0xFF), ((u32)k >> 16) & 0xFF);
             }
             inf2->unk8.w = inf2->unkC.w;
             inf2->unkC.w = 0;

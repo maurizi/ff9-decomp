@@ -214,7 +214,7 @@ typedef struct {
     u16 unk2;
 } __attribute__((aligned(4))) Unk800CA068Pair;
 
-/* field state (D_800CA068) */
+/* field state (g_fieldBgState) */
 typedef struct {
     s32 unk0; /* flags */
     Unk800CA068Pair unk4;
@@ -256,7 +256,7 @@ typedef struct {
     s16 unkD0[4];
 } Unk800CA068;
 
-/* walkmesh-like data block at D_800C9DB4: the header holds offsets (from the
+/* walkmesh-like data block at g_fieldBgData: the header holds offsets (from the
  * block start) of its tables */
 typedef struct Unk800C9DB4 {
     u8 pad0[4];
@@ -353,7 +353,7 @@ typedef struct {
     u8 pad34[4];
 } Unk800C9DB4Obj; /* 0x38 */
 
-/* Unk800C9DB4Obj's unk24/unk25/unk25_1 bitfield word as a plain u32 (func_800BD130 masks it by hand) */
+/* Unk800C9DB4Obj's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildLayerSprites masks it by hand) */
 typedef struct {
     u8 pad0[0x24];
     u32 unk24;
@@ -375,7 +375,7 @@ typedef struct {
     u8 pad32[0x34 - 0x32];
 } Unk800C9DB4Cam; /* 0x34 */
 
-/* sequence header (func_800BD3A0): offsets from the header start */
+/* sequence header (fldbg_initEffectList): offsets from the header start */
 typedef struct {
     u8 pad0[4];
     u16 unk4; /* Unk800C9DA4Anim count */
@@ -749,7 +749,7 @@ typedef struct {
     u8 unk2;  /* bone count */
     u8 unk3; /* group count */
     u8 pad4[2];
-    u8 unk6; /* look-at bone (func_800BA560) */
+    u8 unk6; /* look-at bone (fldmdl_calcBoneMatricesLookAt) */
     u8 pad7[0xC - 7];
     s32 unkC;
     WmModelGroup *unk10;
@@ -821,15 +821,15 @@ typedef struct Unk800C95C8 {
     u8 *unk20;
     MATRIX unk24; /* t: position */
     WmModelOut *unk44;
-    s16 unk48[3]; /* look-at target (func_800BA560) */
+    s16 unk48[3]; /* look-at target (fldmdl_calcBoneMatricesLookAt) */
     u8 pad4E[2];
     struct Unk800AB0B0 *unk50; /* file 0x19xxxx */
     u16 unk54; /* scale */
     u16 unk56;
     u16 unk58;
-    s16 unk5A; /* screen y limit (func_800BB508) */
+    s16 unk5A; /* screen y limit (fldmdl_projectMeshClipY) */
     s32 unk5C;
-    struct Unk800C95C8 *unk60; /* mirrored model (func_800BC33C) */
+    struct Unk800C95C8 *unk60; /* mirrored model (fldmdl_reflectModel) */
     SVECTOR4 unk64; /* mirror plane normal */
     SVECTOR4 unk6C; /* point on the mirror plane */
     s16 unk74; /* offset from the parent bone */
@@ -871,7 +871,7 @@ typedef struct FieldActorInfo {
     FieldActorExt *unk10;
 } FieldActorInfo;
 
-/* background VRAM animation (func_800BB090) */
+/* background VRAM animation (fldmdl_updateTexAnims) */
 typedef struct {
     RECT unk0;      /* destination area */
     DVECTOR *unk8;  /* per-frame source position */
@@ -896,7 +896,7 @@ typedef struct {
     BgAnim unk4[1];
 } BgAnimHdr;
 
-/* screen fade quads (D_800CA140, func_800C02D0) */
+/* screen fade quads (g_fieldBgFollowLayers, fldbg_addFollowLayer) */
 typedef struct {
     s8 unk0; /* flags */
     u8 unk1; /* rgb */
@@ -910,10 +910,10 @@ typedef struct {
     DR_TPAGE unkCC[2];
 } FieldFade; /* 0xDC */
 
-extern FieldFade D_800CA140[];
-extern u16 D_800C9DA0; /* FieldFade count */
+extern FieldFade g_fieldBgFollowLayers[];
+extern u16 g_fieldBgFollowLayerCount; /* FieldFade count */
 
-/* palette fade packet (func_800C07D8), in the D_800C9DA4.unk2C buffer */
+/* palette fade packet (fldbg_startClutFade), in the g_fieldBgCtx.unk2C buffer */
 typedef struct {
     u8 unk0;
     u8 unk1;  /* colour count */
@@ -1045,7 +1045,7 @@ typedef struct {
     s32 unk4; /* sector */
 } FieldDirEnt;
 
-/* background sprite sets (func_800BB3C4); offsets from the header start */
+/* background sprite sets (fldmdl_initTexAnims); offsets from the header start */
 typedef struct {
     u16 unk0;
     u16 unk2;
@@ -1108,7 +1108,7 @@ s32 func_8001E350(s32);
 s32 fld_setSlotColor(FieldEvtCtx *, s32, s32, s32);
 void fld_discChangeFinish(void);
 void fld_invalidateModelCache(s32);
-s32 func_800C0038(s32, s32);
+s32 fldbg_scrollToPlayer(s32, s32);
 void fld_init(void);
 void fld_quit(void);
 void fld_runArea(s32);
@@ -1149,8 +1149,8 @@ void func_800C92C8(u8);
 extern u8 g_fieldDiscChangeText[]; /* text */
 extern s32 g_fieldPreloadCursor;
 extern Unk800C9D5C g_fieldDiscChangeModes[];
-extern Unk800C9DA4 D_800C9DA4;
-extern Unk800C9DB4 *D_800C9DB4;
+extern Unk800C9DA4 g_fieldBgCtx;
+extern Unk800C9DB4 *g_fieldBgData;
 extern u8 D_800CA108; /* background sprite x extent */
 extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
@@ -1166,7 +1166,7 @@ extern s32 g_fieldPreloadExcludes[8];
 extern u8 g_fieldPreloadRequestCount; /* g_fieldPreloadRequests count */
 extern u8 g_fieldPreloadExcludeCount; /* g_fieldPreloadExcludes count */
 extern Unk800CA058 g_fieldDiscChange;
-extern Unk800CA068 D_800CA068;
+extern Unk800CA068 g_fieldBgState;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
 extern BgiFloorMove g_fieldBgiFloorMoves[];
@@ -1247,15 +1247,15 @@ s32 bgi_moveActor(BgiActor *);
 s32 bgi_slide(BgiActor *, BgiTriangle **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 bgi_applyPushes(BgiActor *, SVECTOR *, BgiTriangle **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
-s32 func_800BE158(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
-s32 func_800BF660(void); /* camera follow */
+s32 fldbg_drawLayer(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
+s32 fldbg_followPlayer(void); /* camera follow */
 extern BgiTriangle *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
 s32 bgi_initAnim(u32);
 s32 bgi_resetFloorMoves(void);
 s32 fld_readAreaFile(FieldMapObj *, s32);
-void func_800B5958(Unk800C95C8 *, u8);
-void func_800BB508(Unk800C95C8 *, u8);
-void func_800BB714(Unk800C95C8 *, u8);
+void fldmdl_drawMesh(Unk800C95C8 *, u8);
+void fldmdl_projectMeshClipY(Unk800C95C8 *, u8);
+void fldmdl_drawMeshClipY(Unk800C95C8 *, u8);
 
 /* run on a 12-byte frame at the top of the scratchpad (0x1F8003FC) and switch back */
 #define SetSpadStack12(addr) \
@@ -1313,21 +1313,21 @@ static inline BgiFloorMove *bgi_getFloorMove_inline(s32 i) {
     return &g_fieldBgiFloorMoves[i];
 }
 
-/* tables inside the D_800C9DB4 block (stored as offsets from its start) */
+/* tables inside the g_fieldBgData block (stored as offsets from its start) */
 static inline Unk800C9DB4Path *func_800C9DB4_path(s32 i) {
-    return &((Unk800C9DB4Path *)((u8 *)D_800C9DB4 + D_800C9DB4->unkC))[i];
+    return &((Unk800C9DB4Path *)((u8 *)g_fieldBgData + g_fieldBgData->unkC))[i];
 }
 
 static inline Unk800C9DB4Obj *func_800C9DB4_obj(s32 i) {
-    return &((Unk800C9DB4Obj *)((u8 *)D_800C9DB4 + D_800C9DB4->unk10))[i];
+    return &((Unk800C9DB4Obj *)((u8 *)g_fieldBgData + g_fieldBgData->unk10))[i];
 }
 
 static inline Unk800C9DB4Cam *func_800C9DB4_cam(s32 i) {
-    return &((Unk800C9DB4Cam *)((u8 *)D_800C9DB4 + D_800C9DB4->unk18))[i];
+    return &((Unk800C9DB4Cam *)((u8 *)g_fieldBgData + g_fieldBgData->unk18))[i];
 }
 
 static inline Unk800C9DB4Step *func_800C9DB4_steps(Unk800C9DB4Path *p) {
-    return (Unk800C9DB4Step *)((u8 *)D_800C9DB4 + p->unkC);
+    return (Unk800C9DB4Step *)((u8 *)g_fieldBgData + p->unkC);
 }
 
 /* tables inside the g_fieldBgi.unk8 block (offsets from its start) */
@@ -1347,20 +1347,20 @@ static inline BgiFloor *func_800C9DF8_tri(s32 i) {
     return &((BgiFloor *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->floorOffset))[i];
 }
 
-s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
-s32 func_800C0F08(void);
+s32 fldbg_drawFollowMask(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
+s32 fldbg_applyGeomOffset(void);
 
 
 /* field object drawing (fld_drawModels) */
 s32 bgi_getActorTilt(s32, s16 *, u16 *);
-void func_800B7CEC(Unk800C95C8 *);
-void func_800B7F14(Unk800C95C8 *, u16);
+void fldmdl_applyScale(Unk800C95C8 *);
+void fldmdl_calcBoneMatrices(Unk800C95C8 *, u16);
 s32 fld_isModelTexAnimActive(Unk800C95C8 *);
-void func_800BB090(BgAnimHdr *);
+void fldmdl_updateTexAnims(BgAnimHdr *);
 void fld_applyLights(FieldEvtCtx **, s32);
 void fld_playAnimSfx(FieldEvtCtx **, s32);
 void fld_applyModelCommands(FieldEvtCtx **, s32);
-void func_800BA560(Unk800C95C8 *, s32);
+void fldmdl_calcBoneMatricesLookAt(Unk800C95C8 *, s32);
 void fld_drawShadow(struct FieldObjPlace *, s32);
 s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 

@@ -71,7 +71,7 @@ void fld_main(s32 arg0) {
                 break;
             }
             if (!(g_gameState->unk1C->unk0 & 8)) {
-                func_800BFEE0();
+                fldbg_update();
             }
             if (!(g_gameState->unk1C->unk0 & 4)) {
                 fld_drawModels();
@@ -681,12 +681,12 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     GameData *gd = g_gameState->unk1C;
     s32 id;
 
-    func_800C0D40(&gd->unk8, &gd->unkA, gd->unk10[0], gd->unk10[1], &gd->unk18, D_80067948 + 0x400);
-    func_800C0D8C(D_80067948, 0x400);
+    fldbg_setRenderContext(&gd->unk8, &gd->unkA, gd->unk10[0], gd->unk10[1], &gd->unk18, D_80067948 + 0x400);
+    fldbg_setWorkBuffer(D_80067948, 0x400);
     id = fld_getBgKey(arg0, arg1);
     arg0->bg = db_lookupRegistered(4, id, 0);
-    func_800C0DA4(arg0->bg);
-    D_80067948 = func_800BFCE8();
+    fldbg_setData(arg0->bg);
+    D_80067948 = fldbg_init();
     bgi_clear();
     arg0->walkmesh = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0xB0000), 0);
     bgi_init((u8 *)arg0->walkmesh + 4);

@@ -1206,3 +1206,93 @@ D_800C9D5C g_fieldDiscChangeModes  # [code] {enter, update, leave} per mode - 1 
 D_800C9D98 g_fieldDiscChangeRect  # [code] window rect (96, 70, 128, 84) of the disc-change prompt (fld_discPromptDraw)
 D_800A7170 g_fieldDiscChangeLabel  # [string] "DISC CHANGE", drawn by fld_discPromptDraw
 D_800A717C g_fieldDiscChangeText  # [code] 5-entry text bank fld_discPromptEnter passes to text_setBank (prompt texts 0-2, help 3-4)
+### ovl_0a: tu_800B61A4.c (model, background layers/camera)
+func_800B61A4 fldmdl_projectMesh  # [code] per bone with vertices - composes the view matrix (GameData.unk18) with the bone matrix (model.unk20), RTPT into g_vtxScreenXY/Z; ovl_0b btl_projectMesh, func_800AB3CC/AC02C
+func_800B6438 fldmdl_initModel  # [code] relocates the model file once (flag 1), sums group packet sizes, resets scale 0x1000/parent/mirror, lays out packet buffer, bone matrices (unk20), group outputs (unk44)
+func_800B6584 fldmdl_buildPackets  # [code] fills POLY_FT4..F3 packets (both draw buffers) of every group from the model's source prims, uv table and tex pages/cluts, adds per-texture uv offsets; after fldmdl_initModel
+func_800B71E0 fldmdl_drawMeshC  # [code] NCLIP + OT link of one group's packets from g_vtxScreenXY/Z (source flag 2 = double sided); unused C twin of the asm func_800B5958 that func_800AB3CC calls
+func_800B7CEC fldmdl_applyScale  # [code] when model flag 2, multiplies the world matrix (unk24) by diag(unk54, unk56, unk58); func_800AB3CC after building the matrix; same as ovl_0b func_800C7B84
+func_800B7E30 fldmdl_cullBehindCamera  # [code] clears flag 0x10, copies it from the parent or sets it when the origin projects to sz 0; flag 0x10 makes every recolour function return early; no callers
+func_800B7F14 fldmdl_calcBoneMatrices  # [code] decodes animation (model.unkC) frame arg1 into per-bone rotations (func_80031264) and chains them via the bone table parent byte (scratchpad when < 31 bones); ovl_0b btl_calcBoneMatrices
+func_800B8834 fldmdl_addGroupRgb  # [code] adds clamped r/g/b offsets (fldmdl_addRgbClamped) to every packet colour of group arg1 in both draw buffers; no callers
+func_800B8C80 fldmdl_addGroupRgbCur  # [code] fldmdl_addGroupRgb for the current draw buffer only (GameData.unk8); no callers
+func_800B9134 fldmdl_tintGroup  # [code] packet colours = the group's source colours plus clamped r/g/b offsets, both draw buffers, keeps the code byte; no callers
+func_800B9738 fldmdl_tintGroupCur  # [code] fldmdl_tintGroup for the current draw buffer, skipping packets not linked (tag low 24 bits 0); no callers
+func_800B9E4C fldmdl_setGroupRgb  # [code] sets every packet colour of group arg1 (current buffer) to r|g<<8|b<<16 keeping the code byte; func_800AC02C (mirror colour), func_800B2D10 (actor colour)
+func_800BA0F0 fldmdl_addRgbClamped  # [code] byte-identical to ovl_0b btl_addRgbClamped - adds r/g/b to a packet colour word, clamping each to 0..255, keeps the code byte
+func_800BA190 fldmdl_setSemiTrans  # [code] sets the semi-transparency bit of every textured packet (current buffer) when arg1 != 0 or its source prim has flag 1, else clears it; func_800AC02C on actor visibility changes
+func_800BA3CC fldmdl_setAbr  # [code] replaces tpage ABR bits (0x60) of every textured packet with arg1; func_800AC02C passes FieldActorInfo.unk5 << 5
+func_800BA560 fldmdl_calcBoneMatricesLookAt  # [code] fldmdl_calcBoneMatrices plus: bone WmModel.unk6 is re-oriented toward model.unk48 (VectorNormal/OP basis) and rescaled; func_800AB3CC uses it when model flag 1
+func_800BB090 fldmdl_updateTexAnims  # [code] per-frame VRAM texture animations of model.unk50 - MoveImage of each rect at the frame's source position, random restart delay, scroll mode; func_800AB3CC per actor
+func_800BB3C4 fldmdl_initTexAnims  # [code] relocates the model.unk50 texture-animation offsets and adds the texture placement offsets to the rects and frame positions; func_800AAB30/ABA98 after fldmdl_buildPackets
+func_800BB508 fldmdl_projectMeshClipY  # [code] fldmdl_projectMesh that first clamps world y of each vertex to model.unk5A and flags it (gte_stsvclamp); func_800AB3CC when actor flag 0x100000 (object command 4)
+func_800BB714 fldmdl_drawMeshClipY  # [code] fldmdl_drawMeshC that skips faces whose vertices are all flagged by fldmdl_projectMeshClipY; paired with it in func_800AB3CC
+func_800BC33C fldmdl_reflectModel  # [code] world matrix = reflection of the source model's (unk60) across the plane unk64 (normal) / unk6C (point), shares its animation; func_800AC02C for actor mirror images
+func_800BC600 fldmdl_drawMeshMirrored  # [code] fldmdl_drawMeshC with the NCLIP test reversed (opz >= 0 culled) for the reflected winding; func_800AC02C after fldmdl_reflectModel
+func_800BD130 fldbg_buildLayerSprites  # [code] builds a layer's DR_TPAGE+SPRT_16 tiles for both draw buffers from its packed BgPos/BgTile tables, stores them at layer.unk30; only caller fldbg_initLayers
+func_800BD3A0 fldbg_initEffectList  # [code] resets the g_fieldBgCtx entry list (unk24/unk28) and adds a type 0x10 entry per layer with flag 0x40; fldbg_init
+func_800BD4D4 fldbg_updateLayerAnims  # [code] per frame - steps every running layer animation of the current camera, shows the layer of the current step (flag 2), loop/ping-pong/stop; first call of fldbg_update
+func_800BD724 fldbg_initFollowLayers  # [code] clears g_fieldBgFollowLayerCount and resets the 10 follow-layer entries and their mask POLY_F4s; fldbg_init
+func_800BD884 fldbg_drawFollowMask  # [code] adds up to 4 POLY_F4s covering the screen outside the follow layer's rect (plus a DR_TPAGE for ABR modes < 4) at OT 7; only caller fldbg_updateFollowLayers
+func_800BDC44 fldbg_updateFollowLayers  # [code] moves each follow layer so the projected player (minus follow height) sits at its offset, then fldbg_drawFollowMask; fldbg_update
+func_800BDED4 fldbg_initLayers  # [code] selects camera (fldbg_setCamera), centres scroll, allocates per-layer colour/tint arrays and sprites, resets the 4 viewports, fldbg_buildLayerSprites per layer; fldbg_init
+func_800BE158 fldbg_drawLayer  # [code] adds a layer's tile sprites to the OT at depth base+layer depth, handling loop scroll (flag 4), skew loop (0x80), viewport clipping and screen culling; fldbg_update
+func_800BEDE8 fldbg_updateLayerScroll  # [code] per frame - advances loop-scrolling layers by their 8.8 speed (wrap at unk4/unk6) and places parallax layers (flag 8) from the scroll delta; fldbg_update
+func_800BF0C4 fldbg_updateScroll  # [code] runs a scripted scroll (state modes 1-3) from unk10 to unk14/16 over unk1A frames, linear or cosine (flag 8), moves scrolling layers, ends with mode 0/4; fldbg_update
+func_800BF660 fldbg_followPlayer  # [code] when follow is on (flag 0x40) and no scroll runs - projects the player, smooths, clamps to the camera's scroll limits, sets the scroll and moves layers; fldbg_update
+func_800BFCE8 fldbg_init  # [code] resets g_fieldBgState (flags 0x60, follow height 0x144), fldbg_initLayers, inits layer animations, fldbg_initEffectList, fldbg_initFollowLayers; fld_setupBackground
+func_800BFEE0 fldbg_update  # [code] per-frame background - layer anims, scroll, follow, layer scroll, follow layers, then fldbg_drawLayer for visible layers of the current camera; fld_main unless GameData.unk0 & 8
+func_800C0038 fldbg_scrollToPlayer  # [code] event opcode 0x70 (and fldbg_setFollow) - scroll target = projected player clamped to the limits, over arg0 frames (default 30), mode 3, arg1 8 = smooth
+func_800C02D0 fldbg_addFollowLayer  # [code] event opcode 0x92 - adds a follow-layer entry (layer, x/y offset), mode >= 0 draws mask quads in rgb, semi-transparent ABR when mode < 4
+func_800C0650 fldbg_toggleLayerColor  # [code] if layer arg0 is tinted (g_fieldBgCtx.unk20) sets its sprites to rgb and clears the tint, else stores rgb and sets it; no callers
+func_800C07D8 fldbg_startClutFade  # [code] adds a type 0x80 entry - StoreImage of the layer's CLUT row and 16.16 r/g/b steps (add/subtract/mode 2) over arg2 frames; no callers
+func_800C0BCC fldbg_setCamera  # [code] event opcode 0x7E - loads background camera arg0 (projection distance, view matrix, OT bias FieldScene.unk30), sets g_fieldBgState.unk75 and flag 0x80
+func_800C0D40 fldbg_setRenderContext  # [code] stores the draw-buffer index, projection-distance, OT pair, view-matrix and allocation pointers in g_fieldBgCtx; fld_setupBackground with GameData members
+func_800C0D8C fldbg_setWorkBuffer  # [code] g_fieldBgCtx.unk2C/unk30 = work buffer and size, used = 0; fld_setupBackground (D_80067948, 0x400)
+func_800C0DA4 fldbg_setData  # [code] g_fieldBgData = the background file; fld_setupBackground passes FieldScene.unk14
+func_800C0DB0 fldbg_moveOrigin  # [code] event opcode 0x58 - adds dx/dy to the background origin (header unk20-26) and dz to its base depth (unk1C/1E)
+func_800C0DF4 fldbg_scrollTo  # [code] event opcode 0x6F - starts a scripted scroll from the current position to (arg0, arg1) over arg2 frames, mode 1, arg3 8 = smooth; needs follow flag 0x40
+func_800C0E6C fldbg_getScroll  # [code] event opcode 0xEA - returns the current scroll position g_fieldBgState.unk4
+func_800C0E94 fldbg_setFollow  # [code] event opcode 0x71 - sets/clears follow flag 0x40, with arg1 > 0 also fldbg_scrollToPlayer(arg1, arg2)
+func_800C0EF0 fldbg_isFollowing  # [code] returns follow flag 0x40 of g_fieldBgState; no callers
+func_800C0F08 fldbg_applyGeomOffset  # [code] SetGeomOffset to the current camera's centre (unk20/22) plus the scroll offset (state unkC/E); func_800AB3CC and main event/msg code around projections
+func_800C0FB0 fldbg_resetGeomOffset  # [code] SetGeomOffset(160, 112) unless func_80012AD4 & 2; called after every fldbg_applyGeomOffset
+func_800C1024 fldbg_setFollowHeight  # [code] event opcode 0x72 - g_fieldBgState.unk76, subtracted from the actor y in fldbg_followPlayer/fldbg_scrollToPlayer (default 0x144)
+func_800C1034 fldbg_hasScrollLimits  # [code] returns g_fieldBgState flag 0x20, which fldbg_disableScrollLimits clears and fldbg_enableScrollLimits sets; no callers
+func_800C104C fldbg_disableScrollLimits  # [code] event opcode 0x74 - saves the camera's scroll limits (unk28-2E) and opens them to -0x8000..0x7FFF, clears flag 0x20
+func_800C1100 fldbg_enableScrollLimits  # [code] event opcode 0x73 - restores the limits fldbg_disableScrollLimits saved, sets flag 0x20
+func_800C119C fldbg_setViewport  # [code] event opcode 0xC9 - viewport arg0 offset (unkA8) and size (unkB8), used by fldbg_drawLayer to place and clip layers
+func_800C11C8 fldbg_setViewportScrollRate  # [code] event opcode 0xED - viewport arg0 x/y scroll rates (unkC8/unkD0, 0x100 = 1.0) applied to camera motion by fldbg_updateScroll/fldbg_followPlayer
+func_800C11E8 fldbg_moveLayer  # [code] event opcode 0x5A - moves layer arg0 by dx/dy (clamped to its unk10-16 bounds) and its depth by dz
+func_800C130C fldbg_getLayerColor  # [code] reads layer arg0's stored rgb (g_fieldBgCtx.unk1C, 3 bytes per layer); no callers
+func_800C1368 fldbg_setLayerColor  # [code] event opcode 0x59 - stores rgb for layer arg0 and sets it on its current-buffer sprites
+func_800C142C fldbg_showLayer  # [code] event opcode 0x5B - sets/clears layer flag 2, which fldbg_update tests before fldbg_drawLayer
+func_800C147C fldbg_setLayerLoop  # [code] event opcode 0x5C - layer flag 4 (wrapping scroll in fldbg_updateLayerScroll/fldbg_drawLayer) with x/y speed unk1C/unk1E
+func_800C14DC fldbg_setLayerFlag1  # [code] event opcode 0xE6 - sets/clears layer flag 1 (fldbg_drawLayer then uses the viewport offset without the scroll correction); weak, rename once understood
+func_800C152C fldbg_setLayerSkewLoop  # [code] event opcode 0xE4 - layer flag 0x80, loops along one axis (arg4 selects, unk25) and shifts the other proportionally in fldbg_drawLayer
+func_800C15BC fldbg_setLayerParallax  # [code] event opcode 0x5D - layer flag 8, fldbg_updateLayerScroll places it at base + scroll delta * unk1C/unk1E (8.8)
+func_800C1614 fldbg_setLayerPos  # [code] event opcode 0x5E - sets layer arg0 base and current x/y, sets state flag 0x80
+func_800C1668 fldbg_setLayerViewport  # [code] event opcode 0xC3 - layer arg0 uses viewport arg1 (unk25_1 indexes unkA8/unkB8/unkC8/unkD0)
+func_800C16B0 fldbg_setAnimFrame  # [code] event opcode 0x5F - layer animation arg0 active (flag 2) at step arg1, delay counter reset
+func_800C16F4 fldbg_showAnimFrame  # [code] event opcode 0xE7 - shows only the layer of step arg1 of animation arg0 and stops it (flags = 1)
+func_800C17AC fldbg_playAnim  # [code] event opcode 0x60 - sets/clears flags 6 (active + playing) of layer animation arg0
+func_800C17F0 fldbg_setAnimSpeed  # [code] event opcode 0x61 - step increment (8.8, sign = direction) of layer animation arg0; fldbg_updateLayerAnims negates it for ping-pong
+func_800C1818 fldbg_setAnimDelayAll  # [code] sets the frame delay of every step of layer animation arg0; no callers
+func_800C1868 fldbg_setAnimStepDelay  # [code] event opcode 0x63 - frame delay of step arg1 of layer animation arg0
+func_800C18A0 fldbg_setAnimFlags  # [code] event opcode 0x64 - ORs arg1 & 0x30 into layer animation flags (0x10 loop, 0x20 ping-pong in fldbg_updateLayerAnims)
+func_800C18D4 fldbg_playAnimRange  # [code] event opcode 0x65 - plays layer animation arg0 from step arg1 and stops at step arg2 (delay -1 marker), direction from the order
+func_800C196C fldbg_resetAnim  # [code] event opcode 0xCA - speed 0x100, step 0, stopped, hides its layers (arg1 != 0 shows step 0's layer)
+func_800C1A8C fldbg_setScrollLimits  # [code] event opcode 0x1E - scroll limits (unk28-2E) of camera arg0 from screen-edge coordinates, clamped to the background size
+func_800C1B5C fldbg_getCamera  # [code] returns the current camera index g_fieldBgState.unk75; main event variable op 1 and func_80048F54's camera-change test
+func_800C1B74 fldbg_setCameraCenter  # [code] sets camera arg0's screen centre unk20/unk22 (fldbg_applyGeomOffset base); no callers
+func_800C1BB4 fldbg_getCameraCenter  # [code] reads camera arg0's unk20/unk22; no callers
+func_800C1C04 fldbg_getClutFadeSize  # [code] returns n*4 + 0x2C, the entry size fldbg_startClutFade allocates for n colours; no callers
+func_800C1C10 fldbg_allocWork  # [code] bump-allocates arg0 bytes from the g_fieldBgCtx work buffer (unk2C + unk34); no callers
+func_800C1C30 fldbg_resetAllAnims  # [code] fldbg_resetAnim for every layer animation, showing each one's first layer; no callers
+func_800C1D10 fldbg_setLayerSpriteColor  # [code] sets rgb on layer arg0's sprites in both draw buffers without storing it; no callers
+D_800C9DA4 g_fieldBgCtx  # [code] background context set by fldbg_setRenderContext/fldbg_setWorkBuffer - buffer index, OTs, view matrix, data (unk10), layer colours, entry list, work buffer
+D_800C9DB4 g_fieldBgData  # [code] the background file (header, layer animations unkC, layers unk10, cameras unk18), set by fldbg_setData; it is g_fieldBgCtx.unk10 under its own label
+D_800CA068 g_fieldBgState  # [code] background camera state - flags (0x20 limits, 0x40 follow, 0x80 reset, 7 scroll mode), scroll position, camera index, viewports; reset by fldbg_init
+D_800CA140 g_fieldBgFollowLayers  # [code] 10 follow-layer entries (layer, offset, mask mode/rgb, mask POLY_F4s) added by fldbg_addFollowLayer, run by fldbg_updateFollowLayers
+D_800C9DA0 g_fieldBgFollowLayerCount  # [code] number of g_fieldBgFollowLayers entries, cleared by fldbg_initFollowLayers, incremented by fldbg_addFollowLayer
+func_800B5958 fldmdl_drawMesh  # [code] hand-written asm group drawer fld_drawModels calls right after fldmdl_projectMesh (the C twin is fldmdl_drawMeshC)

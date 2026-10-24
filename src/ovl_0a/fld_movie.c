@@ -198,8 +198,8 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     }
     sum *= 2;
     sum += s->unk8->unk8->unk2 * 32 + s->unk8->unk8->unk3 * 12;
-    func_800B6438(s->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
-    func_800B6584(s->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
+    fldmdl_initModel(s->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
+    fldmdl_buildPackets(s->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 += sum;
     fld_trimModelCache();
     t = db_lookupRegistered(8, arg0, 0x120000);
@@ -211,7 +211,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     }
     if (sprId != -1) {
         s->unk8->unk50 = db_lookupRegistered(4, sprId, 0);
-        func_800BB3C4((BgSprHdr *)s->unk8->unk50, (BgSprOfs *)spr);
+        fldmdl_initTexAnims((BgSprHdr *)s->unk8->unk50, (BgSprOfs *)spr);
     }
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->walkmesh != NULL) {
         if (slot < 9) {
@@ -355,7 +355,7 @@ s32 fld_collectModels(FieldObjSlot **arg0) {
 
 void fld_drawModels(void) {
     /* block scope: fld_applyModelCommands calls it undeclared (int argument) */
-    void func_800B61A4(Unk800C95C8 *, u8);
+    void fldmdl_projectMesh(Unk800C95C8 *, u8);
     FieldEvtCtx *list[16];
     SVECTOR rot;
     DVECTOR sxy;
@@ -382,7 +382,7 @@ void fld_drawModels(void) {
         mbg_getGeomOffset(&ofs[0], &ofs[1]);
         SetGeomOffset(ofs[0], ofs[1]);
     } else {
-        func_800C0F08();
+        fldbg_applyGeomOffset();
     }
     i = 0;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
@@ -407,7 +407,7 @@ void fld_drawModels(void) {
             m->unk24.t[0] = o->unk14.vx;
             m->unk24.t[1] = o->unk14.vy;
             m->unk24.t[2] = o->unk14.vz;
-            func_800B7CEC(m);
+            fldmdl_applyScale(m);
         }
     }
     for (i = 0; i < n; i++) {
@@ -431,9 +431,9 @@ void fld_drawModels(void) {
             m = c->unk8;
             o = c->unkC;
             if (m->unk0 & 1) {
-                func_800BA560(m, o->unk3A);
+                fldmdl_calcBoneMatricesLookAt(m, o->unk3A);
             } else {
-                func_800B7F14(m, o->unk3A);
+                fldmdl_calcBoneMatrices(m, o->unk3A);
             }
         }
     }
@@ -467,16 +467,16 @@ void fld_drawModels(void) {
                 for (j = 0; j < lim; j++) {
                     f = 1 << j;
                     if (!(m->unk14 & (u32)f)) {
-                        func_800BB508(m, j);
-                        func_800BB714(m, j);
+                        fldmdl_projectMeshClipY(m, j);
+                        fldmdl_drawMeshClipY(m, j);
                     }
                 }
             } else {
                 cnt = lim;
                 for (j1 = 0; j1 < cnt; j1++) {
                     if (!(m->unk14 & (u32)(1 << j1))) {
-                        func_800B61A4(m, j1);
-                        func_800B5958(m, j1);
+                        fldmdl_projectMesh(m, j1);
+                        fldmdl_drawMesh(m, j1);
                     }
                 }
             }
@@ -503,7 +503,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            func_800BB090((BgAnimHdr *)((Unk800C95C8 *)c->unk8)->unk50);
+            fldmdl_updateTexAnims((BgAnimHdr *)((Unk800C95C8 *)c->unk8)->unk50);
         }
     }
     fld_applyLights(list, n);
@@ -513,7 +513,7 @@ void fld_drawModels(void) {
     fld_applyModelCommands(list, n);
     g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
     if (!(g_fieldMovieFlags & 0x40)) {
-        func_800C0FB0();
+        fldbg_resetGeomOffset();
     }
 }
 
@@ -595,13 +595,13 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             sum *= 2;
             sum += y->unk8->unk8->unk2 * 32 + y->unk8->unk8->unk3 * 12;
-            func_800B6438(y->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
-            func_800B6584(y->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
+            fldmdl_initModel(y->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
+            fldmdl_buildPackets(y->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 += sum;
             id = (s32)db_lookupRegistered(9, y->unk4, 0x190000);
             if (id != -1) {
                 y->unk8->unk50 = db_lookupRegistered(4, id, 0);
-                func_800BB3C4((BgSprHdr *)y->unk8->unk50, (BgSprOfs *)spr);
+                fldmdl_initTexAnims((BgSprHdr *)y->unk8->unk50, (BgSprOfs *)spr);
             }
             fld_trimModelCache();
             x->unk0 |= 0x02000001;
@@ -694,12 +694,12 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         }
         if (upd) {
             if (c->unk0 & 0x10000) {
-                func_800BA190(c->unk8, 1);
+                fldmdl_setSemiTrans(c->unk8, 1);
             } else {
-                func_800BA190(c->unk8, 0);
+                fldmdl_setSemiTrans(c->unk8, 0);
             }
             if (vis) {
-                func_800BA3CC(c->unk8, ((s32)(info->unk5 << 24) >> 19) & 0xFFE0);
+                fldmdl_setAbr(c->unk8, ((s32)(info->unk5 << 24) >> 19) & 0xFFE0);
             }
             if (c->unk0 & 0x20000) {
                 c->unk0 &= ~0x20000;
@@ -719,17 +719,17 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk54[c->unkC->unk3B];
         x = info->unk10;
         if (x != NULL && (x->unk0 & 0x01000000)) {
-            func_800BC33C(x->unk8);
+            fldmdl_reflectModel(x->unk8);
             y = x;
-            func_800B7F14(x->unk8, x->unkF8->unkC->unk3A);
+            fldmdl_calcBoneMatrices(x->unk8, x->unkF8->unkC->unk3A);
             n = x->unk8->unk8->unk3;
             for (j = 0; j < n; j++) {
-                func_800B61A4(y->unk8, j & 0xFF);
-                func_800BC600(y->unk8, j & 0xFF);
+                fldmdl_projectMesh(y->unk8, j & 0xFF);
+                fldmdl_drawMeshMirrored(y->unk8, j & 0xFF);
             }
             if (x->unk10C.c[3] != 0) {
                 for (j = n - 1; j >= 0; j--) {
-                    func_800B9E4C(y->unk8, j & 0xFF, x->unk10C.c[0], x->unk10C.c[1], x->unk10C.c[2]);
+                    fldmdl_setGroupRgb(y->unk8, j & 0xFF, x->unk10C.c[0], x->unk10C.c[1], x->unk10C.c[2]);
                 }
                 x->unk10C.c[3]--;
             }
@@ -1427,7 +1427,7 @@ void fld_updateEncounter(void) {
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 = D_80067948;
         a = func_8004AE00();
         if (a != NULL) {
-            func_800C0F08();
+            fldbg_applyGeomOffset();
             v.vx = a->pos.vx;
             v.vy = a->pos.vy;
             v.vz = a->pos.vz;
@@ -1442,7 +1442,7 @@ void fld_updateEncounter(void) {
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk38 = 160;
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3A = 112;
             }
-            func_800C0FB0();
+            fldbg_resetGeomOffset();
         }
         fld_findBattleMusic();
         if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C
@@ -1695,7 +1695,7 @@ void fld_drawSprites(void) {
         mbg_getGeomOffset(&xy[0], &xy[1]);
         SetGeomOffset(xy[0], xy[1]);
     } else {
-        func_800C0F08();
+        fldbg_applyGeomOffset();
     }
     prim = h->unkC[g_gameState->unk1C->unk8];
     ot = &g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30];
@@ -1722,7 +1722,7 @@ void fld_drawSprites(void) {
         }
     }
     if (!(g_fieldMovieFlags & 0x40)) {
-        func_800C0FB0();
+        fldbg_resetGeomOffset();
     }
 }
 
