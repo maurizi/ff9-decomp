@@ -1,90 +1,90 @@
 #include "ovl_14.h"
 
-void func_800A8574(void) {
-    D_800AB320.unk3 = 1;
-    func_800A880C();
+void opening_titleInit(void) {
+    g_titleMenu.unk3 = 1;
+    opening_titleLoadImages();
 }
 
-void func_800A859C(void) {
+void opening_titleEnter(void) {
     s32 i;
 
     func_80032574();
     func_8002C4B0(1);
-    D_800AB320.unk8 = 0;
-    D_800AB320.unk0 = 1;
-    D_800AB320.unk7 = 0;
-    D_800AB320.unk6 = 0;
-    D_800AB320.unk1 = 0;
-    D_800AB320.unk2 = 0;
-    D_800AB320.unkC = 0;
-    D_800AB320.unk10 = 0;
+    g_titleMenu.unk8 = 0;
+    g_titleMenu.unk0 = 1;
+    g_titleMenu.unk7 = 0;
+    g_titleMenu.unk6 = 0;
+    g_titleMenu.unk1 = 0;
+    g_titleMenu.unk2 = 0;
+    g_titleMenu.unkC = 0;
+    g_titleMenu.unk10 = 0;
     for (i = 0; i < 2; i++) {
-        D_800AB320.unk4[i] = 0;
+        g_titleMenu.unk4[i] = 0;
     }
-    func_800A8D2C();
-    func_800A8FDC();
+    opening_titleOpenCardEvents();
+    opening_titleStartFadeIn();
 }
 
-void func_800A8618(void) {
-    func_800A8FDC();
+void opening_titleRefresh(void) {
+    opening_titleStartFadeIn();
 }
 
-void func_800A8638(void) {
+void opening_titleUpdate(void) {
     func_8002C308(0);
-    if (D_800AB320.unk8 == 0) {
-        func_800A86D8();
-        func_800A87AC();
-        func_800A87E4();
+    if (g_titleMenu.unk8 == 0) {
+        opening_titleInput();
+        opening_titleDraw();
+        opening_titleTick();
     } else {
-        func_800A9180();
+        opening_titleConfirm();
     }
 }
 
-void func_800A8694(void) {
+void opening_titleLeave(void) {
     func_8002C4B0(0);
-    func_800A8DB0();
-    if (D_800AB320.unk3 == 1) {
+    opening_titleCloseCardEvents();
+    if (g_titleMenu.unk3 == 1) {
         menu_open(4, 1);
     }
 }
 
-void func_800A86D8(void) {
+void opening_titleInput(void) {
     if (func_8002F810() == 0) {
-        if (D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
+        if (g_titleMenu.unk1 != 0 && g_titleMenu.unk2 == 0) {
             if (g_padRepeat & PAD_UP) {
                 snd_playSe(0x67);
-                D_800AB320.unk3 = D_800AB320.unk3 != 0 ? D_800AB320.unk3 - 1 : 1;
+                g_titleMenu.unk3 = g_titleMenu.unk3 != 0 ? g_titleMenu.unk3 - 1 : 1;
             } else if (g_padRepeat & PAD_DOWN) {
                 snd_playSe(0x67);
-                D_800AB320.unk3 = D_800AB320.unk3 == 0 ? D_800AB320.unk3 + 1 : 0;
+                g_titleMenu.unk3 = g_titleMenu.unk3 == 0 ? g_titleMenu.unk3 + 1 : 0;
             } else if (g_padRepeat & (PAD_START | BTN_CROSS)) {
-                func_800A8A0C();
+                opening_titleDecide();
             }
         }
     }
 }
 
-void func_800A87AC(void) {
+void opening_titleDraw(void) {
     func_800A8A8C();
-    func_800A8A94();
-    func_800A8B7C();
-    func_800A8C60();
+    opening_titleDrawBackground();
+    opening_titleDrawChoices();
+    opening_titleDrawCursor();
 }
 
-void func_800A87E4(void) {
-    func_800A8E10();
-    func_800A8CF8();
+void opening_titleTick(void) {
+    opening_titlePollCard();
+    opening_titleStepFadeIn();
 }
 
-void func_800A880C(void) {
+void opening_titleLoadImages(void) {
     FileEntry *e;
 
     e = file_find(1, 0x3C);
     cd_readSync(g_gameState->unk20 + e->unk4, (e->unkC - e->unk4) << 11, (void *)0x801CDF00, e->unk4);
-    func_800A8868((s32 *)0x801CDF00);
+    opening_titleLoadTims((s32 *)0x801CDF00);
 }
 
-void func_800A8868(s32 *pack) {
+void opening_titleLoadTims(s32 *pack) {
     RECT *clut;
     RECT *img;
     TmTimLike *tim;
@@ -108,147 +108,147 @@ void func_800A8868(s32 *pack) {
         u = img->x & 0x3F;
         mode = tim->unk4 & 3;
         sh = 2 - mode;
-        D_800AB320.unk24[i].unk0.s.u = u << sh;
-        D_800AB320.unk24[i].unk0.s.v = img->y;
-        D_800AB320.unk24[i].unk4 = img->w << sh;
-        D_800AB320.unk24[i].unk5 = img->h;
+        g_titleMenu.unk24[i].unk0.s.u = u << sh;
+        g_titleMenu.unk24[i].unk0.s.v = img->y;
+        g_titleMenu.unk24[i].unk4 = img->w << sh;
+        g_titleMenu.unk24[i].unk5 = img->h;
         tp = mode << 7;
         yb = (s16)((s16)(img->y & 0x100) >> 4);
         xb = (img->x & 0x3FF) >> 6;
         y2 = (s16)(img->y & 0x200) << 2;
-        D_800AB320.unk24[i].unk6 = ((i == 10) ? (tp | (yb | 0x20)) : (tp | yb)) | xb | y2;
+        g_titleMenu.unk24[i].unk6 = ((i == 10) ? (tp | (yb | 0x20)) : (tp | yb)) | xb | y2;
         if (mode < 2) {
-            D_800AB320.unk24[i].unk0.s.clut = (clut->y << 6) | ((clut->x >> 4) & 0x3F);
+            g_titleMenu.unk24[i].unk0.s.clut = (clut->y << 6) | ((clut->x >> 4) & 0x3F);
         } else {
-            D_800AB320.unk24[i].unk0.s.clut = 0;
+            g_titleMenu.unk24[i].unk0.s.clut = 0;
         }
         DrawSync(0);
     }
 }
 
-void func_800A8A0C(void) {
-    if (D_800AB320.unk3 == 1 && func_800A8EA4() == 0) {
+void opening_titleDecide(void) {
+    if (g_titleMenu.unk3 == 1 && opening_titleHasCard() == 0) {
         snd_playSe(0x66);
         return;
     }
-    snd_playSe(D_800AB320.unk3 == 0 ? 0xC18 : 0x67);
+    snd_playSe(g_titleMenu.unk3 == 0 ? 0xC18 : 0x67);
     func_8002FAAC(0x10);
-    func_8002F8A8(func_800A8FBC);
+    func_8002F8A8(opening_titleOnFadeOut);
 }
 
 void func_800A8A8C(void) {
 }
 
-void func_800A8A94(void) {
+void opening_titleDrawBackground(void) {
     s32 i;
 
     for (i = 0; i < 10; i++) {
-        func_80027710(i << 5, 0, 10, &D_800AB320.unk24[i], 0);
+        func_80027710(i << 5, 0, 10, &g_titleMenu.unk24[i], 0);
     }
-    func_80027710(D_800AB298.x, D_800AB298.y, 5, &D_800AB320.unk24[10], 1);
-    if (D_800AB320.unk1 != 0) {
-        if (D_800AB320.unk2 == 0) {
-            func_80027710(D_800AB29C.x, D_800AB29C.y, 5, &D_800AB320.unk24[13], 0);
+    func_80027710(g_titleImage10Pos.x, g_titleImage10Pos.y, 5, &g_titleMenu.unk24[10], 1);
+    if (g_titleMenu.unk1 != 0) {
+        if (g_titleMenu.unk2 == 0) {
+            func_80027710(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.unk24[13], 0);
         } else {
-            func_800A903C(D_800AB29C.x, D_800AB29C.y, 5, &D_800AB320.unk24[13], 0);
+            opening_titleDrawFading(g_titleImage13Pos.x, g_titleImage13Pos.y, 5, &g_titleMenu.unk24[13], 0);
         }
     }
 }
 
-void func_800A8B7C(void) {
-    if (D_800AB320.unk1 != 0) {
-        if (D_800AB320.unk2 == 0) {
-            func_80027710(D_800AB2A0.x, D_800AB2A0.y, 5, &D_800AB320.unk24[11], 0);
-            func_80027710(D_800AB2A4.x, D_800AB2A4.y, 5, &D_800AB320.unk24[12], func_800A8EA4() == 0);
+void opening_titleDrawChoices(void) {
+    if (g_titleMenu.unk1 != 0) {
+        if (g_titleMenu.unk2 == 0) {
+            func_80027710(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.unk24[11], 0);
+            func_80027710(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.unk24[12], opening_titleHasCard() == 0);
         } else {
-            func_800A903C(D_800AB2A0.x, D_800AB2A0.y, 5, &D_800AB320.unk24[11], 0);
-            func_800A903C(D_800AB2A4.x, D_800AB2A4.y, 5, &D_800AB320.unk24[12], func_800A8EA4() == 0);
+            opening_titleDrawFading(g_titleNewGamePos.x, g_titleNewGamePos.y, 5, &g_titleMenu.unk24[11], 0);
+            opening_titleDrawFading(g_titleContinuePos.x, g_titleContinuePos.y, 5, &g_titleMenu.unk24[12], opening_titleHasCard() == 0);
         }
     }
 }
 
-void func_800A8C60(void) {
-    if (func_8002F810() == 0 && D_800AB320.unk1 != 0 && D_800AB320.unk2 == 0) {
-        D_80077DE8.unk0 = D_800AB2A8[D_800AB320.unk3].x - 0x1A;
-        D_80077DE8.unk2 = D_800AB2A8[D_800AB320.unk3].y + 3;
+void opening_titleDrawCursor(void) {
+    if (func_8002F810() == 0 && g_titleMenu.unk1 != 0 && g_titleMenu.unk2 == 0) {
+        D_80077DE8.unk0 = g_titleCursorPos[g_titleMenu.unk3].x - 0x1A;
+        D_80077DE8.unk2 = g_titleCursorPos[g_titleMenu.unk3].y + 3;
         D_80077DE8.unk4 = 3;
         func_800355E4(&D_80077DE8);
     }
 }
 
-void func_800A8CF8(void) {
-    if (++D_800AB320.unkC > 0x30) {
-        D_800AB320.unkC = 0;
-        D_800AB320.unk2 = 0;
+void opening_titleStepFadeIn(void) {
+    if (++g_titleMenu.unkC > 0x30) {
+        g_titleMenu.unkC = 0;
+        g_titleMenu.unk2 = 0;
     }
 }
 
-void func_800A8D2C(void) {
+void opening_titleOpenCardEvents(void) {
     s32 i;
     s32 h;
 
     EnterCriticalSection();
     for (i = 0; i < 4; i++) {
-        h = OpenEvent(0xF4000001, D_800AB2B4[i], 0x2000, 0);
-        D_800AB320.unk14[i] = h;
+        h = OpenEvent(0xF4000001, g_titleCardEvents[i], 0x2000, 0);
+        g_titleMenu.unk14[i] = h;
         EnableEvent(h);
     }
     ExitCriticalSection();
 }
 
-void func_800A8DB0(void) {
+void opening_titleCloseCardEvents(void) {
     s32 i;
 
     EnterCriticalSection();
     for (i = 0; i < 4; i++) {
-        DisableEvent(D_800AB320.unk14[i]);
-        CloseEvent(D_800AB320.unk14[i]);
+        DisableEvent(g_titleMenu.unk14[i]);
+        CloseEvent(g_titleMenu.unk14[i]);
     }
     ExitCriticalSection();
 }
 
-void func_800A8E10(void) {
+void opening_titlePollCard(void) {
     s32 r;
 
-    if (D_800AB320.unk7 == 0) {
-        func_800A8ED8();
-        D_800AB320.unk7 = 1;
+    if (g_titleMenu.unk7 == 0) {
+        opening_titleStartCardInfo();
+        g_titleMenu.unk7 = 1;
     }
-    r = func_800A8F44();
+    r = opening_titleTestCardEvents();
     if (r != -1) {
-        D_800AB320.unk4[D_800AB320.unk6] = (r == 0 || r == 3) ? 1 : 0;
-        D_800AB320.unk7 = 0;
-        D_800AB320.unk6 ^= 1;
+        g_titleMenu.unk4[g_titleMenu.unk6] = (r == 0 || r == 3) ? 1 : 0;
+        g_titleMenu.unk7 = 0;
+        g_titleMenu.unk6 ^= 1;
     }
 }
 
-u8 func_800A8EA4(void) {
+u8 opening_titleHasCard(void) {
     s32 i;
     u8 r = 0;
 
     for (i = 0; i < 2; i++) {
-        r |= D_800AB320.unk4[i];
+        r |= g_titleMenu.unk4[i];
     }
     return r;
 }
 
-void func_800A8ED8(void) {
+void opening_titleStartCardInfo(void) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
-        TestEvent(D_800AB320.unk14[i]);
+        TestEvent(g_titleMenu.unk14[i]);
     }
     _card_wait(0);
     _card_wait(1);
-    _card_info(D_800AB320.unk6 << 4);
+    _card_info(g_titleMenu.unk6 << 4);
 }
 
-s32 func_800A8F44(void) {
+s32 opening_titleTestCardEvents(void) {
     s32 i;
     s32 r = -1;
 
     for (i = 0; i < 4; i++) {
-        if (TestEvent(D_800AB320.unk14[i]) == 1) {
+        if (TestEvent(g_titleMenu.unk14[i]) == 1) {
             r = i;
             break;
         }
@@ -256,30 +256,30 @@ s32 func_800A8F44(void) {
     return r;
 }
 
-void func_800A8FBC(void) {
-    D_800AB320.unk8 = 1;
+void opening_titleOnFadeOut(void) {
+    g_titleMenu.unk8 = 1;
 }
 
-s32 func_800A8FCC(void) {
-    return D_800AB320.unk3;
+s32 opening_titleGetCursor(void) {
+    return g_titleMenu.unk3;
 }
 
-void func_800A8FDC(void) {
-    if (func_800A832C() == 0) {
-        D_800AB320.unk1 = 1;
-        D_800AB320.unk2 = 1;
-        D_800AB320.unkC = 0;
+void opening_titleStartFadeIn(void) {
+    if (scene_getFadeScreen() == 0) {
+        g_titleMenu.unk1 = 1;
+        g_titleMenu.unk2 = 1;
+        g_titleMenu.unkC = 0;
     } else {
-        D_800AB320.unk1 = 1;
-        D_800AB320.unk2 = 0;
-        D_800AB320.unkC = 0;
+        g_titleMenu.unk1 = 1;
+        g_titleMenu.unk2 = 0;
+        g_titleMenu.unkC = 0;
         func_8002FA50(0x20);
     }
 }
 
-void func_800A903C(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
+void opening_titleDrawFading(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
     SprtWords *p;
-    s32 c = D_800AB320.unkC;
+    s32 c = g_titleMenu.unkC;
 
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
@@ -294,22 +294,22 @@ void func_800A903C(s32 x, s32 y, s32 z, Ovl14Text *t, s32 arg4) {
     g_primPtr += sizeof(SprtWords); /* sic: the DR_TPAGE is only 8 bytes */
 }
 
-void func_800A9180(void) {
+void opening_titleConfirm(void) {
     s32 r;
 
-    switch (D_800AB320.unk3) {
+    switch (g_titleMenu.unk3) {
     case 0:
         g_gameState->unkB = 1;
-        r = func_800A81B8();
+        r = scene_checkDisc();
         if (r != 0xFF) {
             menu_open(8, ((r & 3) << 14) | 0x3A98);
-            func_800A812C(3);
+            scene_set(3);
         } else {
-            func_800A812C(4);
+            scene_set(4);
         }
         break;
     case 1:
-        func_800A812C(2);
+        scene_set(2);
         menu_open(4, 1);
         break;
     }

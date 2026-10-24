@@ -80,34 +80,34 @@ typedef struct {
     void (*unk8)(void); /* update */
     void (*unkC)(void); /* leave */
 } Ovl14Mode;
-extern Ovl14Mode D_800AB238[6];
+extern Ovl14Mode g_sceneModes[6];
 
 typedef struct {
-    u8 unk0; /* current mode, index into D_800AB238 */
+    u8 unk0; /* current mode, index into g_sceneModes */
     u8 unk1;
     u8 unk2;
     u8 unk3;
 } Ovl14ModeState;
-extern Ovl14ModeState D_800AB308;
-extern s32 D_800AB2B4[4];
-extern u32 D_800AB310;
-extern u8 D_800AB318;
+extern Ovl14ModeState g_scene;
+extern s32 g_titleCardEvents[4];
+extern u32 g_startFrames;
+extern u8 g_loadMenuClosed;
 
 typedef struct {
     s16 x;
     s16 y;
 } Ovl14Pos;
-extern Ovl14Pos D_800AB298;
-extern Ovl14Pos D_800AB29C;
-extern Ovl14Pos D_800AB2A0;
-extern Ovl14Pos D_800AB2A4;
-extern Ovl14Pos D_800AB2A8[3];
-extern u16 D_800AB2C4;
-extern s32 D_800AB2C8;
-extern s16 D_800AB3B8[2][4];
-extern void *D_800AB2D4;
-extern void *D_800AB2F0;
-extern s32 D_800AB3C8;
+extern Ovl14Pos g_titleImage10Pos;
+extern Ovl14Pos g_titleImage13Pos;
+extern Ovl14Pos g_titleNewGamePos;
+extern Ovl14Pos g_titleContinuePos;
+extern Ovl14Pos g_titleCursorPos[3];
+extern u16 g_movieFlags;
+extern s32 g_movieFrame;
+extern s16 g_movieFlagQueue[2][4];
+extern void *g_attractData;
+extern void *g_bootScreenData;
+extern s32 g_movieState;
 
 typedef struct {
     u8 unk0;
@@ -124,91 +124,91 @@ typedef struct {
     s32 unk14[4]; /* sound/voice handles */
     Ovl14Text unk24[14];
 } Ovl14Unk320;
-extern Ovl14Unk320 D_800AB320;
+extern Ovl14Unk320 g_titleMenu;
 
-extern void *D_800AB230;
-extern u32 D_800AB300; /* main state */
-extern u16 D_800AB2DC[];
-extern SPRT D_800AB3D0[2][2];
-extern DR_TPAGE D_800AB420[2][2];
-extern u8 D_800AB2EC;
-s32 func_800AA848(s32);
-s32 func_800AA960(s32);
-void func_800AA994(void);
-void func_800AA9D8(void);
-extern SPRT D_800AB448[2];
-extern DR_TPAGE D_800AB470[2];
-void func_800AAF40(void);
-void func_800AB06C(void);
-void func_800AB09C(void);
-void func_800AB0E0(void);
-extern u8 D_800AB2CC; /* 1: FMV skipped */
-extern u16 D_800AB2CE; /* FMV frame seen last loop; no splat symbol, see ovl_14.c */
-void func_800A9DD4(void);
-s32 func_800A82B0(void);
-void func_800A808C(void);
-s32 func_800A9968(void);
-void func_800A9B14(void);
-void func_800A9B58(void);
-extern s8 D_800AB234; /* sound request kind, -1 = none */
-void func_800A7F70(s32, s32);
-s32 func_800A9220(void);
-s32 func_800A9E14(s32);
-void func_800AAADC(void);
-void func_800A741C(void);
-void func_800A767C(void);
-void func_800A7FF0(void);
-void func_800A80D4(void);
-void func_800A77BC(void);
-extern u16 D_800AB2D8[];
-extern s32 D_800AB2F4;
-extern u32 D_800AB440;
+extern void *g_openingData;
+extern u32 g_openingState; /* main state */
+extern u16 g_attractImages[];
+extern SPRT g_attractSprites[2][2];
+extern DR_TPAGE g_attractTpages[2][2];
+extern u8 g_attractSkipped;
+s32 opening_attractInit(s32);
+s32 opening_attractFree(s32);
+void opening_attractClearOt(void);
+void opening_attractSwap(void);
+extern SPRT g_bootScreenSprite[2];
+extern DR_TPAGE g_bootScreenTpage[2];
+void opening_bootScreenLoad(void);
+void opening_bootScreenFree(void);
+void opening_bootClearOt(void);
+void opening_bootSwap(void);
+extern u8 g_movieSkipped; /* 1: FMV skipped */
+extern u16 g_movieLastFrame; /* FMV frame seen last loop; no splat symbol, see ovl_14.c */
+void opening_movieOnEnd(void);
+s32 scene_isTitleIdle(void);
+void scene_update(void);
+s32 opening_movieInit(void);
+void opening_movieClearOt(void);
+void opening_movieSwap(void);
+extern s8 g_openingSoundPending; /* sound request kind, -1 = none */
+void opening_setMusicVolume(s32, s32);
+s32 opening_movieThenTitle(void);
+s32 opening_attract(s32);
+void opening_bootScreen(void);
+void opening_findSceneSectors(void);
+void opening_init(void);
+void scene_init(void);
+void scene_exit(void);
+void opening_exit(void);
+extern u16 g_attractFiles[];
+extern s32 g_bootScreenImage;
+extern u32 g_attractState;
 typedef struct {
     u16 unk0; /* flags */
 } Ovl14Flags; /* a struct member in the original: loads of it are not moved above OT stores */
-extern Ovl14Flags D_800AB2D0;
+extern Ovl14Flags g_attractFlags;
 
-void func_800A7578(void);
-void func_800A75C8(void);
-void func_800A7600(void);
-void func_800A7768(void);
-void func_800A780C(void);
-void func_800A78C0(void);
-void func_800A796C(void);
-s32 func_800A799C(s32, s32, s32, s32, s32);
-s32 func_800A811C(void);
-void func_800A812C(s32);
-s32 func_800A81B8(void);
-s32 func_800A8260(s32);
-u8 func_800A8298(s32, s32);
-void func_800A82F4(s32);
-void func_800A8378(void);
-void func_800A84B0(void);
-void func_800A84EC(void);
-void func_800A8618(void);
-void func_800A86D8(void);
-void func_800A87AC(void);
-void func_800A87E4(void);
-void func_800A8868(s32 *);
-void func_800A8A0C(void);
+void opening_initNewGame(void);
+void opening_resetGameData(void);
+void opening_resetFieldState(void);
+void opening_resetMusicSlots(void);
+void opening_loadMusic(void);
+void opening_loadData(void);
+void opening_freeData(void);
+s32 opening_soundCmd(s32, s32, s32, s32, s32);
+s32 scene_get(void);
+void scene_set(s32);
+s32 scene_checkDisc(void);
+s32 scene_discIndex(s32);
+u8 scene_isDiscGone(s32, s32);
+void scene_setFadeScreen(s32);
+void opening_discOnClose(void);
+void opening_loadOnClose(void);
+void opening_loadDone(void);
+void opening_titleRefresh(void);
+void opening_titleInput(void);
+void opening_titleDraw(void);
+void opening_titleTick(void);
+void opening_titleLoadTims(s32 *);
+void opening_titleDecide(void);
 void func_800A8A8C(void);
-void func_800A8A94(void);
-void func_800A8B7C(void);
-void func_800A8C60(void);
-void func_800A8CF8(void);
-void func_800A8DB0(void);
-void func_800A8E10(void);
-u8 func_800A8EA4(void);
-void func_800A8FBC(void);
-void func_800A9180(void);
-void func_800A8ED8(void);
-s32 func_800A8F44(void);
-void func_800A903C(s32, s32, s32, Ovl14Text *, s32);
-u8 func_800A832C(void);
-void func_800A880C(void);
-void func_800A8D2C(void);
-s32 func_800A8FCC(void);
-void func_800A8FDC(void);
+void opening_titleDrawBackground(void);
+void opening_titleDrawChoices(void);
+void opening_titleDrawCursor(void);
+void opening_titleStepFadeIn(void);
+void opening_titleCloseCardEvents(void);
+void opening_titlePollCard(void);
+u8 opening_titleHasCard(void);
+void opening_titleOnFadeOut(void);
+void opening_titleConfirm(void);
+void opening_titleStartCardInfo(void);
+s32 opening_titleTestCardEvents(void);
+void opening_titleDrawFading(s32, s32, s32, Ovl14Text *, s32);
+u8 scene_getFadeScreen(void);
+void opening_titleLoadImages(void);
+void opening_titleOpenCardEvents(void);
+s32 opening_titleGetCursor(void);
+void opening_titleStartFadeIn(void);
 void func_800AB1E4(void);
 void func_800AB200(void);
 

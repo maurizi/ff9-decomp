@@ -1,44 +1,44 @@
 #include "ovl_14.h"
 
-void func_800AAADC(void) {
+void opening_bootScreen(void) {
     RECT *r;
     s32 t;
 
     t = 0xD2;
-    func_800AAF40();
-    func_8001D910((void *)D_800AB2F4, NULL, &r);
+    opening_bootScreenLoad();
+    func_8001D910((void *)g_bootScreenImage, NULL, &r);
     r->w *= 4;
     do {
-        func_800AB09C();
+        opening_bootClearOt();
         pad_update();
         if (t == 0xD2) {
             func_800320B8(1, 1, 0x3C, 0);
         } else if (t == 0x3C) {
             func_800320B8(1, 1, 0x3C, 0xFFFFFF);
         }
-        setlen(&D_800AB448[g_gameState->unk1C->unk8], 4);
-        D_800AB448[g_gameState->unk1C->unk8].code = 0x64;
-        D_800AB448[g_gameState->unk1C->unk8].r0 = 0x80;
-        D_800AB448[g_gameState->unk1C->unk8].g0 = 0x80;
-        D_800AB448[g_gameState->unk1C->unk8].b0 = 0x80;
-        D_800AB448[g_gameState->unk1C->unk8].x0 = (0x140 - r->w) / 2;
-        D_800AB448[g_gameState->unk1C->unk8].y0 = (0xE0 - r->h) / 2;
-        D_800AB448[g_gameState->unk1C->unk8].u0 = 0;
-        D_800AB448[g_gameState->unk1C->unk8].v0 = 0;
-        D_800AB448[g_gameState->unk1C->unk8].w = r->w;
-        D_800AB448[g_gameState->unk1C->unk8].h = r->h;
-        D_800AB448[g_gameState->unk1C->unk8].clut = 0x3800;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB448[g_gameState->unk1C->unk8]);
-        setDrawTPage(&D_800AB470[g_gameState->unk1C->unk8], 1, 1, 0xA);
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &D_800AB470[g_gameState->unk1C->unk8]);
+        setlen(&g_bootScreenSprite[g_gameState->unk1C->unk8], 4);
+        g_bootScreenSprite[g_gameState->unk1C->unk8].code = 0x64;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].r0 = 0x80;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].g0 = 0x80;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].b0 = 0x80;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].x0 = (0x140 - r->w) / 2;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].y0 = (0xE0 - r->h) / 2;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].u0 = 0;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].v0 = 0;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].w = r->w;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].h = r->h;
+        g_bootScreenSprite[g_gameState->unk1C->unk8].clut = 0x3800;
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_bootScreenSprite[g_gameState->unk1C->unk8]);
+        setDrawTPage(&g_bootScreenTpage[g_gameState->unk1C->unk8], 1, 1, 0xA);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_bootScreenTpage[g_gameState->unk1C->unk8]);
         t--;
         func_80032098();
-        func_800AB0E0();
+        opening_bootSwap();
     } while (t > 0);
-    func_800AB06C();
+    opening_bootScreenFree();
 }
 
-void func_800AAF40(void) {
+void opening_bootScreenLoad(void) {
     u8 *buf;
     FileEntry *e;
 
@@ -49,26 +49,26 @@ void func_800AAF40(void) {
     while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
     }
     buf = D_80067944 + 0x10000;
-    D_800AB2F0 = buf;
+    g_bootScreenData = buf;
     db_register((s32)buf, 0);
-    D_800AB2F4 = (s32)db_lookupRegistered(4, 0x44FB0, 0);
-    func_8001D9CC(D_800AB2F4, 0, 0xE0, 0x280, 0);
-    func_8001D8A8(D_800AB2F4);
+    g_bootScreenImage = (s32)db_lookupRegistered(4, 0x44FB0, 0);
+    func_8001D9CC(g_bootScreenImage, 0, 0xE0, 0x280, 0);
+    func_8001D8A8(g_bootScreenImage);
     func_800320B8(1, 1, 0, 0xFFFFFF);
     D_80073998[0] = 0;
 }
 
-void func_800AB06C(void) {
-    db_unregister(D_800AB2F0);
-    D_800AB2F0 = NULL;
+void opening_bootScreenFree(void) {
+    db_unregister(g_bootScreenData);
+    g_bootScreenData = NULL;
 }
 
-void func_800AB09C(void) {
+void opening_bootClearOt(void) {
     GameData *ctx = g_gameState->unk1C;
     ClearOTagR(ctx->unk10[ctx->unk8], 0x1000);
 }
 
-void func_800AB0E0(void) {
+void opening_bootSwap(void) {
     GameData *ctx;
     u8 i;
 
