@@ -1364,11 +1364,11 @@ static inline void wm_wrapPos_inline(s32 *x, s32 *z) {
 
 /* pad state, only read in mode 2 (wm_debugAdjustScreen) */
 static inline u32 wm_debugAdjustScreen_pad(void) {
-    return g_worldState == 2 ? g_padPortHeld[0] : 0;
+    return g_worldState == WM_STATE_RUNNING ? g_padPortHeld[0] : 0;
 }
 
 static inline u32 wm_debugAdjustScreen_trg(void) {
-    if (g_worldState != 2) {
+    if (g_worldState != WM_STATE_RUNNING) {
         return 0;
     }
     return g_padPortPressed;

@@ -937,7 +937,7 @@ void wm_chunksLoaded(void) {
                     g_worldCameraHold = 0;
                     g_worldMapLoaded = st;
                     g_worldState = WM_STATE_RUNNING;
-                    D_80073998[0] &= 0xFFF4FFFF;
+                    D_80073998[0] &= ~(BTN_CIRCLE | BTN_CROSS | BTN_SQUARE);
                     wm_snapActorsToFloor();
                 }
             }
@@ -1592,7 +1592,7 @@ void wm_naviUpdate(void) {
                     g_worldNaviCursorY -= 0xC8000;
                 }
             }
-            if (pad & 0x300000) {
+            if (pad & (BTN_L1 | BTN_R1)) {
                 if (g_evtGlobalVars.b[0x67] == 0) {
                     best = 0x7FFFFFFF;
                     bi = -1;
@@ -1615,10 +1615,10 @@ void wm_naviUpdate(void) {
                     }
                 }
                 if (g_evtGlobalVars.b[0x67] != 0 && dir != 0) {
-                    if (pad & 0x100000) {
+                    if (pad & BTN_L1) {
                         dir = 1;
                     }
-                    if (pad & 0x200000) {
+                    if (pad & BTN_R1) {
                         dir = -1;
                     }
                     do {
@@ -1659,7 +1659,7 @@ void wm_naviUpdate(void) {
             }
         }
     }
-    if ((wm_getPadHeld() & 0x10000) && g_worldNaviCursorDraw != 0) {
+    if ((wm_getPadHeld() & BTN_CIRCLE) && g_worldNaviCursorDraw != 0) {
         g_worldNaviVisible = 0;
     } else {
         g_worldNaviVisible = 1;

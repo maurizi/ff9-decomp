@@ -6,7 +6,7 @@ void fld_requestDiscChange(s32 arg0, s16 arg1) {
     g_fieldDiscChange.fieldId = arg1;
     g_fieldDiscChange.areaId = -1;
     g_gameState->unk1C->unk8E4.field->flags |= FLD_MAP_DISC_CHANGE;
-    g_gameState->unk0 |= 8;
+    g_gameState->unk0 |= GS_FLD_NEW_FIELD;
 }
 
 u8 fld_getDiscChangeDisc(void) {
@@ -41,7 +41,7 @@ void fld_discChangeEnter(void) {
     DrawSync(0);
     for (i = 0; i < 2; i++) {
         g_fieldDiscChange.savedFlags[i] = D_80073998[i];
-        D_80073998[i] = 0x04000300;
+        D_80073998[i] = (BTN_START | PAD_R2 | PAD_L2);
     }
     g_fieldDiscChange.mode = 1;
     g_fieldDiscChange.cursor = 0;

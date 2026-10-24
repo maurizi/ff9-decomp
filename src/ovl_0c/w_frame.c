@@ -66,7 +66,7 @@ void wm_systemInit(void) {
     func_80050E34(g_worldPointFxBufPtr);
     func_80050EFC(0x24, 0x30);
     func_800325A4();
-    D_80073998[0] |= 0xF0000;
+    D_80073998[0] |= (BTN_CIRCLE | BTN_CROSS | BTN_TRIANGLE | BTN_SQUARE);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/w_frame", g_worldVramSaveRect);
@@ -83,19 +83,19 @@ s32 wm_frameMain(void) {
         g_gameState->unk1C->unk892 = 1;
     }
     g_worldEventResult = 0;
-    if (wm_getPadPressed() & 0x40000) {
+    if (wm_getPadPressed() & BTN_TRIANGLE) {
         if (g_worldCdUser == WM_CD_FREE && g_worldMapLoaded != 0 && g_worldMusicState == WM_MUSIC_READY) {
             g_worldCdUser = WM_CD_SCRIPT;
-            g_gameState->unk1C->unk0 |= 2;
+            g_gameState->unk1C->unk0 |= GD_MENU_OPEN;
             menu_open(0, 0);
             func_8004A9E8();
         }
     }
-    if (!(g_gameState->unk1C->unk0 & 0x1C)) {
+    if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
         g_worldPrimPtr = g_worldPrimBuffers[*g_worldBufIndex];
         func_8004C204();
         g_worldTimeLogic = VSync(1);
-        if (!(g_gameState->unk1C->unk0 & 2)) {
+        if (!(g_gameState->unk1C->unk0 & GD_MENU_OPEN)) {
             wm_updateLogic();
         }
         if (g_worldFrameCount == 4 && g_worldState == WM_STATE_START) {
@@ -128,12 +128,12 @@ s32 wm_frameMain(void) {
     } else {
         g_worldSuspended = 1;
     }
-    if (!(g_gameState->unk1C->unk0 & 1)) {
+    if (!(g_gameState->unk1C->unk0 & GD_MENU_DISABLED)) {
         func_80032100();
     }
     func_80023A0C();
     busy = g_worldEventResult != 0;
-    if (g_gameState->unk1C->unk0 & 0x1C) {
+    if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
         busy = 1;
     }
     if (g_worldMogChoice != 0) {
@@ -596,7 +596,7 @@ void wm_debugAdjustScreen(void) {
     while (1) {
         pad_update();
         pad = wm_debugAdjustScreen_pad();
-        if (wm_debugAdjustScreen_trg() & 1) {
+        if (wm_debugAdjustScreen_trg() & PAD_SELECT) {
             switch (mode) {
             case 0:
                 mode = 1;
@@ -613,19 +613,19 @@ void wm_debugAdjustScreen(void) {
             env.screen.w = 255;
             PutDispEnv(&env);
         }
-        if (pad & 0x80) {
+        if (pad & PAD_LEFT) {
             env.disp.x -= 2;
         }
-        if (pad & 0x20) {
+        if (pad & PAD_RIGHT) {
             env.disp.x += 2;
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             env.disp.y -= 2;
         }
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             env.disp.y += 2;
         }
-        if (pad & 0x4000) {
+        if (pad & PAD_CROSS) {
             break;
         }
         VSync(0);
@@ -749,7 +749,7 @@ void wm_runEvents(void) {
 
     g_worldTimeEvents = VSync(1);
     m = g_worldState;
-    if ((m == 0 || m == 2) && !(g_gameState->unk1C->unk0 & 2) && (m == 0 || m == 2)) {
+    if ((m == 0 || m == 2) && !(g_gameState->unk1C->unk0 & GD_MENU_OPEN) && (m == 0 || m == 2)) {
         g_worldEventResult = func_8004BC38(m);
     }
     g_worldTimeEvents = VSync(1) - g_worldTimeEvents;

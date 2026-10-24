@@ -865,7 +865,7 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
     m->worldMatrix.t[1] = arg1->vy;
     m->worldMatrix.t[2] = arg1->vz;
     wm_applyScale(m);
-    m->anim = h = db_lookupRegistered(4, s->actor->unk36 | 0x30000, 0);
+    m->anim = h = db_lookupRegistered(4, s->actor->unk36 | DB_ANIM, 0);
     if (h != NULL) {
         if (IS_OFFSET(h->rotKeys)) {
             t = h->rotKeysLo;
@@ -1582,17 +1582,17 @@ void wm_controlWalk(void) {
     g_worldCameraFastRise = 0;
     g_worldFlyTurning = 0;
     mv = ((x | z) != 0) << 12;
-    if (wm_getPadHeld() & 0x40) {
+    if (wm_getPadHeld() & PAD_DOWN) {
         g_worldCameraFastRise = 1;
     } else {
         g_worldCameraFastRise = 0;
     }
-    if (wm_getPadHeld() & 0x100000) {
+    if (wm_getPadHeld() & BTN_L1) {
         g_worldCameraTurning = 1;
         g_worldCameraTurnedByHand = 1;
         g_worldCamera->yaw -= 0x20;
     }
-    if (wm_getPadHeld() & 0x200000) {
+    if (wm_getPadHeld() & BTN_R1) {
         g_worldCameraTurning = 1;
         g_worldCameraTurnedByHand = 1;
         g_worldCamera->yaw += 0x20;
@@ -1687,11 +1687,11 @@ void wm_controlSteer(void) {
     a = g_worldMoveModeInfo->turnSpeed * rx >> 7;
     g_worldCameraTurnedByHand = 0;
     g_worldPlayerTurn = a;
-    if (wm_getPadHeld() & 0x100000) {
+    if (wm_getPadHeld() & BTN_L1) {
         g_worldCameraTurnedByHand = 1;
         g_worldCamera->yaw -= 0x20;
     }
-    if (wm_getPadHeld() & 0x200000) {
+    if (wm_getPadHeld() & BTN_R1) {
         g_worldCameraTurnedByHand = 1;
         g_worldCamera->yaw += 0x20;
     }
@@ -1764,22 +1764,22 @@ void wm_controlFly(void) {
     y = -y;
     ox = x;
     btn = wm_getPadHeld();
-    if ((btn & 0x300000) && g_worldCameraFlags->autoTurnOff == 0 && g_worldAutoPilot != 0) {
+    if ((btn & (BTN_L1 | BTN_R1)) && g_worldCameraFlags->autoTurnOff == 0 && g_worldAutoPilot != 0) {
         wm_toggleCameraAutoTurn();
     }
     if (g_worldCameraFlags->autoTurnOff == 0) {
-        if (btn & 0x100000) {
+        if (btn & BTN_L1) {
             x = -0x7F;
         }
-        if (btn & 0x200000) {
+        if (btn & BTN_R1) {
             x = 0x7F;
         }
     } else {
-        if (btn & 0x200000) {
+        if (btn & BTN_R1) {
             g_worldCameraTurnedByHand = 1;
             g_worldCamera->yaw += 0x10;
         }
-        if (btn & 0x100000) {
+        if (btn & BTN_L1) {
             g_worldCameraTurnedByHand = 1;
             g_worldCamera->yaw -= 0x10;
         }
@@ -2111,7 +2111,7 @@ s32 wm_getLeftStickX(s32 *arg0) {
     s32 b;
 
     *arg0 = 0;
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == 7) {
+    if (((D_80073940[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = D_8007393A - 0x80;
         if (D_8007393A - 0x40U <= 0x80) {
             v = 0;
@@ -2128,10 +2128,10 @@ s32 wm_getLeftStickX(s32 *arg0) {
         }
     }
     b = wm_getPadHeld();
-    if (b & 0x80) {
+    if (b & PAD_LEFT) {
         *arg0 = -0x80;
     }
-    if (b & 0x20) {
+    if (b & PAD_RIGHT) {
         *arg0 = 0x80;
     }
     return 0;
@@ -2141,7 +2141,7 @@ s32 wm_getLeftStickY(s32 *arg0) {
     s32 v;
 
     *arg0 = 0;
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == 7) {
+    if (((D_80073940[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = D_8007393B - 0x80;
         if (D_8007393B - 0x40U <= 0x80) {
             v = 0;
@@ -2157,10 +2157,10 @@ s32 wm_getLeftStickY(s32 *arg0) {
             return 1;
         }
     }
-    if (wm_getPadHeld() & 0x10) {
+    if (wm_getPadHeld() & PAD_UP) {
         *arg0 = -0x80;
     }
-    if (wm_getPadHeld() & 0x40) {
+    if (wm_getPadHeld() & PAD_DOWN) {
         *arg0 = 0x80;
     }
     return 0;
@@ -2170,7 +2170,7 @@ s32 wm_getRightStickY(s32 *arg0) {
     s32 v;
 
     *arg0 = 0;
-    if (((D_80073940[0].unk0 >> 12) & 0xF) == 7) {
+    if (((D_80073940[0].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
         v = 0x80 - D_80073939;
         if (v + 0x40U <= 0x80) {
             v = 0;
@@ -2186,10 +2186,10 @@ s32 wm_getRightStickY(s32 *arg0) {
             return 1;
         }
     }
-    if (wm_getPadHeld() & 0x80000) {
+    if (wm_getPadHeld() & BTN_SQUARE) {
         *arg0 = -0x80;
     }
-    if (wm_getPadHeld() & 0x20000) {
+    if (wm_getPadHeld() & BTN_CROSS) {
         *arg0 = 0x80;
     }
     return 0;
@@ -2267,10 +2267,10 @@ void wm_controlPlayer(void) {
         wm_controlFly();
         break;
     }
-    if (g_worldMoveModeInfo->canToggleView != 0 && (wm_getPadPressed() & 0x800000)) {
+    if (g_worldMoveModeInfo->canToggleView != 0 && (wm_getPadPressed() & BTN_R2)) {
         wm_toggleCameraView();
     }
-    if (wm_getPadPressed() & 0x400000) {
+    if (wm_getPadPressed() & BTN_L2) {
         wm_toggleCameraAutoTurn();
     }
 }
