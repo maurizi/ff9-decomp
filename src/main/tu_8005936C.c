@@ -60,6 +60,6 @@ void func_80059414(void) {
                 mask &= ~(1 << v);
             }
         }
-        g_akaoSeState.unkC |= found & ~(g_akaoSeState.unk0 | D_80083174);
+        g_akaoSeState.unkC |= found & ~(g_akaoSeState.unk0 | g_akaoStreamVoices);
     }
 }

@@ -490,8 +490,8 @@ s32 func_80056048(s32 *a, s32 b, s32 c) {
     u32 i;
 
     for (i = 0; i < 7; i++) {
-        if (D_800809C0[i] == h->id) {
-            D_800809C0[i] = 0;
+        if (g_akaoLoadedBanks[i] == h->id) {
+            g_akaoLoadedBanks[i] = 0;
         }
     }
     i = h->slot + b * 8;
@@ -507,7 +507,7 @@ s32 func_80056048(s32 *a, s32 b, s32 c) {
             b += 4;
         }
     }
-    D_800809C0[b] = h->id;
+    g_akaoLoadedBanks[b] = h->id;
     akao_loadBankAt(a, c, i, y);
     return 0;
 }
@@ -515,7 +515,7 @@ s32 func_80056048(s32 *a, s32 b, s32 c) {
 s32 akao_setCdMix(s32 vol) {
     u8 v;
 
-    if (D_8008315C & 2) {
+    if (g_akaoOutputFlags & 2) {
         CdlATV *atv = &g_akaoCdAtv;
 
         v = (u32)(vol * 46448) >> 17;

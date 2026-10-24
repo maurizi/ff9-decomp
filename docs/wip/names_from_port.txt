@@ -4943,3 +4943,9 @@ func_80058830 akao_detachVoice  # [code] removes a SPU voice from every channel 
 func_800588B0 akao_readEnvelopes  # [code] reads each voice's envelope level (SpuGetVoiceEnvelope) into D_8007F798, detaching voices that went silent
 D_8007F798 g_akaoVoiceEnv  # [code] per-SPU-voice envelope level for voice allocation (akao_readEnvelopes, akao_findFreeVoice)
 func_800589F0 akao_updateVoices  # [code] per tick: envelopes, then voices for the sub and main sequences' channels, then key-on
+D_80083174 g_akaoStreamVoices  # [code] g_akaoStream's voice mask (+0xC) under its own symbol; excluded from the effect key-on masks
+D_800809C0 g_akaoLoadedBanks  # [code] ids of the AKAO banks loaded per bank slot (func_80056048 clears duplicates)
+D_800831C8 g_akaoVoiceOwner  # [code] sequence that wrote each SPU voice last (akao_assignVoices), cleared for effect channels
+D_8008315C g_akaoOutputFlags  # [code] bit 1: mono output (stream and CD mix use one level for both sides)
+D_8006F640 g_akaoMonoGain  # [code] level factor for mono output (bit 1 of g_akaoOutputFlags)
+D_8007BB80 g_msgTextBanks  # [code] up to 4 text banks of 8 texts each that message code can insert

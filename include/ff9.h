@@ -2062,7 +2062,7 @@ extern Unk4 D_80011A6C; /* rodata constant, used by msg_advanceText */
 
 void func_800615F8(void);
 extern u8 D_8006F40C[];
-extern Unk80080A10 *D_800831C8[24];
+extern Unk80080A10 *g_akaoVoiceOwner[24];
 void akao_setVoiceRelease(s32, s32, s32);
 void help_draw(void);
 void help_toggle(void);
@@ -2128,8 +2128,8 @@ s32 func_8005A5FC(s32);
 void akao_getSeData(u8 **, u8 **, s32);
 void akao_keyOn(u32);
 extern u8 *D_800809E8;
-extern s32 D_800809C0[];
-extern s32 D_800809D8; /* = D_800809C0[6] */
+extern s32 g_akaoLoadedBanks[];
+extern s32 D_800809D8; /* = g_akaoLoadedBanks[6] */
 void func_800616F8(s32, s32, s32, s32);
 s32 preload_isBusy(PreloadEntry *);
 u8 fade_clearEase(); /* called with an argument it ignores */
@@ -2466,7 +2466,7 @@ typedef struct Unk8007B954 {
     u16 unk4[1];
 } Unk8007B954;
 extern Unk8007B954 *g_msgTable;
-extern u8 *D_8007BB80[];
+extern u8 *g_msgTextBanks[];
 
 typedef struct {
     u8 pad0[2];
@@ -2993,10 +2993,10 @@ void win_drawSplitFill(RECT *, s32, MenuList *, s32);
 void win_drawDivider(RECT *, s32, MenuList *, s32);
 void win_drawLineBorder(RECT *, s32, u8, s32);
 void win_drawFill(RECT *, s32, u8, u8, s32);
-extern s32 D_8008315C;
+extern s32 g_akaoOutputFlags;
 extern s32 g_akaoSeVolume; /* sound effect volume */
 extern s32 D_800831C0;
-extern s16 D_8006F640;
+extern s16 g_akaoMonoGain;
 extern s16 g_akaoPanCurve[]; /* pan curve, 256 entries */
 /* item icon sprites (D_800689B0) */
 typedef struct {
@@ -3239,7 +3239,7 @@ extern Unk80080AA0 D_800809F0;
 typedef struct {
     u16 unk0[6];
 } Unk8007BD44Row;
-extern u32 D_80083174;
+extern u32 g_akaoStreamVoices;
 /* voice parameter block written to the SPU by akao_writeVoice */
 typedef struct {
     u8 pad0[4];
@@ -4198,7 +4198,7 @@ extern Unk80083228 g_akaoUpload;
 #define AKAO_MAGIC 0x4F414B41 /* "AKAO" */
 typedef struct {
     s32 magic; /* AKAO_MAGIC */
-    s32 id; /* bank id (D_800809C0 keeps the loaded ones) */
+    s32 id; /* bank id (g_akaoLoadedBanks keeps the loaded ones) */
     s32 unk8;
     s32 unkC;
     s32 spuAddr; /* where the samples go in SPU RAM */

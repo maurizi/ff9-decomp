@@ -486,8 +486,8 @@ void akao_calcChannelVoice(AkaoChannel *c, u32 bit) {
         vol = (vol * (s32)(((u32)g_akaoSeq->unk50 >> 16) & 0x7F)) >> 7;
         pan = (c->unkBE >> 8) + c->unk114;
         pan = (pan + (g_akaoSeq->unk5C >> 16) - 0x40) & 0xFF;
-        if (D_8008315C & 2) {
-            c->voiceVolL = c->voiceVolR = (vol * D_8006F640) >> 15;
+        if (g_akaoOutputFlags & 2) {
+            c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
         } else {
             c->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
             c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
@@ -569,8 +569,8 @@ void akao_calcSeChannelVoice(AkaoChannel *c, u32 bit) {
         } else {
             pan = 0x80;
         }
-        if (D_8008315C & 2) {
-            c->voiceVolL = c->voiceVolR = (vol * D_8006F640) >> 15;
+        if (g_akaoOutputFlags & 2) {
+            c->voiceVolL = c->voiceVolR = (vol * g_akaoMonoGain) >> 15;
         } else {
             c->voiceVolL = (vol * g_akaoPanCurve[pan]) >> 15;
             c->voiceVolR = (vol * g_akaoPanCurve[pan ^ 0xFF]) >> 15;
@@ -694,7 +694,7 @@ void akao_assignVoices(AkaoChannel *ch, u32 mask, u32 keep, u32 *used) {
                     }
                     if (ch->voice < 24) {
                         akao_writeVoice(ch->voice, (AkaoVoiceRegs *)&ch->voice, (u16)ch->voiceVolScale);
-                        D_800831C8[ch->voice] = g_akaoSeq;
+                        g_akaoVoiceOwner[ch->voice] = g_akaoSeq;
                         g_akaoFlags.unk8 |= 0x100;
                     }
                 } else if (ch->voice < 24) {
@@ -782,7 +782,7 @@ void akao_updateVoices(void) {
     Unk80080A10 *s;
     Unk80080A10 *t;
 
-    ex = g_akaoSeState.unk0 | g_akaoSeState.unk10 | D_80083174;
+    ex = g_akaoSeState.unk0 | g_akaoSeState.unk10 | g_akaoStreamVoices;
     keyon = 0;
     if ((g_akaoSeq->unk4 & g_akaoSeq->unk10) ||
         (g_akaoSubSeq != NULL && (g_akaoSubSeq->unk4 & g_akaoSubSeq->unk10))) {
@@ -904,7 +904,7 @@ void func_80058F94(void) {
 
     a = 0;
     out = 0;
-    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | D_80083174);
+    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | g_akaoStreamVoices);
     if (g_akaoSubSeq != NULL) {
         a = g_akaoSubSeq->unk18;
         m = a & g_akaoSubSeq->unk8;
@@ -943,7 +943,7 @@ void func_80059140(u32 *out, u32 m1, u32 m2, u32 extra) {
     u32 b;
     Unk80080A10 *s;
 
-    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | D_80083174);
+    keep = ~((g_akaoSeState.unk0 | g_akaoSeState.unk10) | g_akaoStreamVoices);
     a = 0;
     r = 0;
     s = g_akaoSubSeq;

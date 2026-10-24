@@ -69,7 +69,7 @@ void akao_startSeq(s32 addr, s32 mask) {
         bit = 0;
     }
     x = 0xFFFFFF;
-    g_akaoSeState.unkC |= ~bit & (~(g_akaoSeState.unk0 | D_80083174) & x);
+    g_akaoSeState.unkC |= ~bit & (~(g_akaoSeState.unk0 | g_akaoStreamVoices) & x);
     g_akaoSeq->unk18 = 0;
     if (D_800831C4 & 1) {
         g_akaoSeq->unk4 = 0;
@@ -181,8 +181,8 @@ void akao_stopSeq(Unk80080A10 *a, AkaoChannel *c, s32 id) {
         a->unk14 = 0;
         a->unk10 = 0;
         for (i = 0; i < 24; i++) {
-            if (D_800831C8[i] == a) {
-                D_800831C8[i] = NULL;
+            if (g_akaoVoiceOwner[i] == a) {
+                g_akaoVoiceOwner[i] = NULL;
                 akao_setVoiceRelease(i, 5, 3);
             }
         }
@@ -301,7 +301,7 @@ void akao_startSeChannel(AkaoChannel *c, VoiceParams *p, s32 mask, u8 *data) {
     c->unk70 = 0;
     c->unkB6 = 0;
     akao_resetChannel(c, data);
-    D_800831C8[c->voice] = NULL;
+    g_akaoVoiceOwner[c->voice] = NULL;
     akao_setVoiceRelease(c->voice, 5, 3);
     g_akaoSeState.unk0 |= mask;
     g_akaoSeState.unkC |= mask;
@@ -542,7 +542,7 @@ s32 func_8005A5FC(s32 a) {
         loop:
             i--;
             if (i != 0) {
-                if (a != D_800809C0[i - 1]) {
+                if (a != g_akaoLoadedBanks[i - 1]) {
                     goto loop;
                 }
                 i = i - 1;
@@ -1426,8 +1426,8 @@ void akao_cmd9E(void) {
     }
     akao_setVoicePitch(d->unk10, d->unk58);
     akao_setVoicePitch(d->unk10 + 1, d->unk58);
-    if (D_8008315C & 2) {
-        v = d->unk40 * D_8006F640 >> 16;
+    if (g_akaoOutputFlags & 2) {
+        v = d->unk40 * g_akaoMonoGain >> 16;
         akao_setVoiceVolume(d->unk10, v, v, 0);
         akao_setVoiceVolume(d->unk10 + 1, v, v, 0);
     } else if (d->unk8 & 1) {

@@ -203,7 +203,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
                 g = (c >> 4) & 3;
                 i = c & 7;
                 t = NULL;
-                if (g < 4 && i < 8 && (tbl = D_8007BB80[g]) != NULL) {
+                if (g < 4 && i < 8 && (tbl = g_msgTextBanks[g]) != NULL) {
                     k = g_msgNumbers[i];
                     if (k < *tbl) {
                         tbl++;
@@ -264,14 +264,14 @@ static inline void msg_renderText_type(MsgWindow *w, s32 n) {
     }
 }
 
-/* text b of message bank a (D_8007BB80) */
+/* text b of message bank a (g_msgTextBanks) */
 static inline u8 *msg_renderText_text(u32 a, u32 b) {
     u8 *t = NULL;
     u8 *tbl;
     u8 *q;
     s32 k;
 
-    if (a < 4 && b < 8 && (tbl = D_8007BB80[a]) != NULL) {
+    if (a < 4 && b < 8 && (tbl = g_msgTextBanks[a]) != NULL) {
         k = g_msgNumbers[b];
         if (k < *tbl) {
             tbl++;
@@ -883,7 +883,7 @@ void msg_resetChoices(void) {
         if (e == NULL || e[0] != 0xF9 || e[1] != 4) {
             break;
         }
-        D_8007BB80[i] = e + 2;
+        g_msgTextBanks[i] = e + 2;
     }
     g_msgChoiceDefault = 0;
     D_8007BBC8 = 0;
