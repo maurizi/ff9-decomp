@@ -115,7 +115,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             D_8007BD24 = 0x1400;
         }
         setlen(D_8007BD10, 2);
-        D_8007BD10[1] = 0xE6000001;
+        D_8007BD10[1] = _get_mask(1, 0);
         D_8007BD10[2] = 0;
         addPrim(D_8007BD0C, D_8007BD10);
         D_8007BD10 += 4;
@@ -124,7 +124,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     addPrim(D_8007BD0C, D_8007BD10);
     D_8007BD10 += 16;
     setlen(D_8007BD10, 2);
-    D_8007BD10[1] = 0xE6000000;
+    D_8007BD10[1] = _get_mask(0, 0);
     D_8007BD10[2] = 0;
     addPrim(&D_8007BD0C[3], D_8007BD10);
     D_8007BD10 += 4;
@@ -133,7 +133,7 @@ s32 swirl_update(s16 arg0, s16 arg1) {
     if (g_swirlFrame == 0) {
         DrawSync(0);
         setlen(D_8007BD10, 2);
-        D_8007BD10[1] = 0xE6000001;
+        D_8007BD10[1] = _get_mask(1, 0);
         D_8007BD10[2] = 0;
         DrawPrim(D_8007BD10);
         D_8007BD10 += 3;
@@ -142,13 +142,13 @@ s32 swirl_update(s16 arg0, s16 arg1) {
         DrawPrim(D_8007BD10);
         D_8007BD10 += 2;
         D_8007BD10[0] = 0x03000000;
-        D_8007BD10[1] = 0x62000000;
+        D_8007BD10[1] = GPU_CODE(GPU_TILE | GPU_ABE);
         D_8007BD10[2] = 0;
         D_8007BD10[3] = (g_gameState->unk10->clip.h << 16) | 0x140;
         DrawPrim(D_8007BD10);
         D_8007BD10 += 4;
         setlen(D_8007BD10, 2);
-        D_8007BD10[1] = 0xE6000000;
+        D_8007BD10[1] = _get_mask(0, 0);
         D_8007BD10[2] = 0;
         DrawPrim(D_8007BD10);
     }

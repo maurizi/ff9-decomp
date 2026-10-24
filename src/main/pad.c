@@ -65,7 +65,7 @@ void pad_update(void) {
         } else if (state == 1) {
             g_padFlags |= 4 << (i * 4);
         }
-        if (PADBUF(i)->unk0 == 0 && (((g_padBuf[i].unk0 >> 12) & 0xF) == 7 || ((g_padBuf[i].unk0 >> 12) & 0xF) == 4)) {
+        if (PADBUF(i)->unk0 == 0 && (((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG || ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_DIGITAL)) {
             if ((g_padFlags >> (i * 4)) & 1) {
                 if (g_padPortState[i] == 2) {
                     g_padFlags &= ~(1 << (i * 4));
@@ -107,7 +107,7 @@ void pad_update(void) {
                     g_padHoldFrames[i][j] = 0;
                 }
             }
-            if ((g_padFlags & 0x8000) && ((g_padBuf[i].unk0 >> 12) & 0xF) == 7) {
+            if ((g_padFlags & 0x8000) && ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG) {
                 if (g_padAnalog[i].unk0[2] < g_padAnalogThresholds.unk0[2]) {
                     g_padPortHeld[i] |= PAD_LEFT;
                 }

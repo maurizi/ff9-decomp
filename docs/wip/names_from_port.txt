@@ -4125,3 +4125,9 @@ func_80054294 swirl_buildMesh  # [code] 9x9 grid around (x, y) rotated and scale
 func_80054650 swirl_drawMesh  # [code] POLY_FT4 per mesh cell texturing the current frame buffer
 D_8007BD28 g_swirlFrame  # [code] frame counter of swirl_update (0..0x78)
 # xrefs: main references to overlay functions/data now use the overlays' names (config/xrefs.us.txt; build/xrefs_apply.py), e.g. fld_entry, wm_entry, opening_main, ending_main, tm_main, fldbg_*, bgi_*, fld_soundCommand, menuMainField_setCursor (ovl_0a 0x800C9510), menuMainWorld_setCursor (ovl_0c 0x800CC820), g_worldPlayerStepped
+# ff9.h constants (from the ovl_0a/0c analysis J.txt and the overlay headers): PAD_SOFT_RESET, PAD_ID_DIGITAL/ANALOG,
+# GS_* (GameState.unk0), GD_* (GameData.unk0), DB_* key kinds (incl. DB_MODEL 0x20000, DB_FONT 0xD0000), SND_* sound
+# command words (WM_SND_* values as SND_*), SE_CANCEL/BUZZER/CURSOR/PAGE, ITEM_NONE, ITEM_SLOT_COUNT, KEY_ITEM_COUNT,
+# LEVEL_MAX, EXP_MAX, GIL_MAX, ABILITY_MAX, ABILITY_SUPPORT_FIRST, SUPPORT_COUNT, MENU_SCREEN_*, WM_PARAM_*;
+# psyq.h: setSprt, setSprt16, _get_mask. Used in main.c, db.c, file.c, menu.c, msg.c, menulist.c, help.c, event.c,
+# pad.c, tu_8001D268.c, tu_80021640.c, tu_8002BEEC.c, tu_80053924.c.

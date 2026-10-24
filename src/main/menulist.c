@@ -112,12 +112,12 @@ void menuList_up(MenuList *m, u32 pad) {
     if (pad & PAD_UP) {
         if (m->cursor == 0) {
             if (m->top != 0) {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 m->scroll = 2;
             }
         } else {
             m->cursor--;
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         }
     }
 }
@@ -128,15 +128,15 @@ void menuList_down(MenuList *m, u32 pad) {
             if (m->cursor >= m->visibleRows - 1) {
                 if (m->top < m->rows - m->visibleRows) {
                     m->scroll = 1;
-                    snd_playSe(0x67);
+                    snd_playSe(SE_CURSOR);
                 }
             } else {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 m->cursor++;
             }
         } else if (m->cursor >= m->visibleRows - 1 && m->top < m->rows - m->visibleRows) {
             m->scroll = 9;
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
         }
     }
 }
@@ -148,15 +148,15 @@ void menuList_left(MenuList *arg0, s32 arg1) {
             if (arg0->cursor != 0) {
                 arg0->col = arg0->cols - 1;
                 arg0->cursor = arg0->cursor - 1;
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 return;
             }
             if (arg0->top != 0) {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 arg0->scroll = 0xA;
             }
         } else {
-            snd_playSe(0x67);
+            snd_playSe(SE_CURSOR);
             arg0->col--;
         }
     }
@@ -167,15 +167,15 @@ void menuList_right(MenuList *m, s32 pad) {
         if ((m->top + m->cursor) * m->cols + m->col < m->count - 1) {
             if (m->col >= m->cols - 1) {
                 if (m->cursor < m->visibleRows - 1) {
-                    snd_playSe(0x67);
+                    snd_playSe(SE_CURSOR);
                     m->col = 0;
                     m->cursor++;
                 } else if (m->top < m->rows - m->visibleRows) {
-                    snd_playSe(0x67);
+                    snd_playSe(SE_CURSOR);
                     m->scroll = 9;
                 }
             } else {
-                snd_playSe(0x67);
+                snd_playSe(SE_CURSOR);
                 m->col++;
             }
         }
@@ -197,7 +197,7 @@ void menuList_pageUp(MenuList *arg0, s32 arg1) {
             c = 0;
         }
         arg0->pageTop = c;
-        snd_playSe(0x417);
+        snd_playSe(SE_PAGE);
     }
 }
 
@@ -220,7 +220,7 @@ void menuList_pageDown(MenuList *arg0, s32 arg1) {
             a = c;
         }
         arg0->pageTop = a;
-        snd_playSe(0x417);
+        snd_playSe(SE_PAGE);
     }
 }
 
@@ -253,19 +253,19 @@ void menuList_getRowsRect(MenuList *m, RECT *src, RECT *dst) {
 }
 
 void snd_playSe(s32 a) {
-    g_gameState->unk1C->unk83C(0xD000, a, 0x800000, 0x80, 0x7F);
+    g_gameState->unk1C->unk83C(SND_SE_PLAY, a, 0x800000, 0x80, 0x7F);
 }
 
 void func_8002F4D0(s32 a) {
-    g_gameState->unk1C->unk83C(0x5100, a, 0x800000, 0, 0);
+    g_gameState->unk1C->unk83C(SND_SE_STOP, a, 0x800000, 0, 0);
 }
 
 void func_8002F514(s32 a) {
-    g_gameState->unk1C->unk83C(0xD000, a, 0, 0x80, 0x7F);
+    g_gameState->unk1C->unk83C(SND_SE_PLAY, a, 0, 0x80, 0x7F);
 }
 
 void func_8002F55C(s32 a) {
-    g_gameState->unk1C->unk83C(0x5100, a, 0, 0, 0);
+    g_gameState->unk1C->unk83C(SND_SE_STOP, a, 0, 0, 0);
 }
 
 s32 fade_reverse(void (*fn)(void)) {

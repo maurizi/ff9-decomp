@@ -3475,7 +3475,7 @@ void evt_onMenuOpen(void) {
     msg_startHereIcon(0);
     if (g_evtMode == 3) {
         s = D_800CF478;
-        n = (evt_getSysVar(0xC0) * 2) & 0x7F;
+        n = (evt_getSysVar(WM_PARAM_AREA) * 2) & 0x7F;
         while (n != 0) {
             while (*s++ != 0) {
             }

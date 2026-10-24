@@ -1838,6 +1838,126 @@ extern s32 g_padPortMask[];
 #define BTN_R2       0x800000
 #define BTN_START    0x4000000  /* raw Start (pad_setMapping in config_applyPadMapping) */
 #define BTN_SELECT   0x8000000  /* raw Select; toggles the help window (help_update) */
+#define PAD_SOFT_RESET (PAD_SELECT | PAD_START | PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1) /* 0xF09: fld/wm_endFrame set GS_RESET when all are held */
+#define PAD_ID_DIGITAL 4 /* controller-type nibble ((PadBuf.unk0 >> 12) & 0xF) pad_update accepts */
+#define PAD_ID_ANALOG 7 /* pad_update reads the stick bytes only for this type */
+
+/* GameState.unk0 flags. Each mode loop runs until its exit bits are set (battle: 0x100/0x200 in ovl_0b). */
+#define GS_RESET 0x1 /* game_main's inner loop ends: soft reset (PAD_SOFT_RESET) or restart */
+#define GS_FLD_LEAVE 0x2 /* fld_entry loop ends */
+#define GS_FLD_NEW_AREA 0x4 /* fld_runArea loop ends: next field in another area */
+#define GS_FLD_NEW_FIELD 0x8 /* fld_main loop ends: next field in the same area */
+#define GS_WM_LEAVE 0x1000 /* wm_entry loop ends */
+#define GS_WM_NEW_MAP 0x2000 /* wm_main loop ends without leaving wm_entry */
+#define GS_RELOAD_FILE_TABLES 0x100000 /* set at boot (game_resetState) and after a disc change; file_loadDirTables reloads, then clears it */
+
+/* GameData.unk0 flags */
+#define GD_MENU_DISABLED 0x1 /* menu_doOpen refuses to open */
+#define GD_MENU_OPEN 0x2 /* set by menu_doOpen, cleared by menu_finish; the field/world event update is skipped */
+#define GD_HIDE_MODELS 0x4
+#define GD_HIDE_BG 0x8
+#define GD_HIDE_SPRITES 0x10
+#define GD_HIDE_ALL (GD_HIDE_MODELS | GD_HIDE_BG | GD_HIDE_SPRITES) /* 0x1C: menu_onFadedOut sets it, menu_finish clears it */
+#define GD_NO_FLIP 0x20 /* fld/wm_endFrame keep the draw buffer (pause screens) */
+#define GD_PAUSED 0x100
+#define GD_MUSIC_STOP_PENDING 0x200000
+#define GD_SFX0_LOADED 0x01000000 /* resident SE slot 0 copied (fld_soundCommand with SND_RESIDENT) */
+#define GD_SFX0_PLAYING 0x02000000
+#define GD_SFX1_LOADED 0x04000000
+#define GD_SFX1_PLAYING 0x08000000
+#define GD_MUSIC_LOADED 0x10000000
+#define GD_MUSIC_PLAYING 0x20000000
+#define GD_MUSIC2_LOADED 0x40000000
+#define GD_MUSIC2_PLAYING 0x80000000
+
+/* menu sound effects (snd_playSe ids) */
+#define SE_CANCEL 0x65 /* Circle backs out; help closes */
+#define SE_BUZZER 0x66 /* refused action */
+#define SE_CURSOR 0x67 /* cursor move / pick (menuList_*) */
+#define SE_PAGE 0x417 /* menuList page / L1-R1 switch */
+
+/* inventory and character limits */
+#define ITEM_NONE 0xFF /* empty item id / equipment slot */
+#define ITEM_SLOT_COUNT 0x100 /* GameData.items slots */
+#define KEY_ITEM_COUNT 0x50 /* key item ids (keyItem_has) */
+#define LEVEL_MAX 99
+#define EXP_MAX 9999999
+#define GIL_MAX 9999999
+#define ABILITY_MAX 0x30 /* entries in a character's D_8006CB28 ability row (Character.ap) */
+#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define SUPPORT_COUNT 0x40
+
+/* main-menu screens (g_menuScreen.screen, menuScreen_open/switch; runtime field/menu campaign) */
+#define MENU_SCREEN_MAIN 0
+#define MENU_SCREEN_ITEM 1
+#define MENU_SCREEN_ABILITY 2
+#define MENU_SCREEN_EQUIP 3
+#define MENU_SCREEN_STATUS 4
+#define MENU_SCREEN_ORDER 5
+#define MENU_SCREEN_CARD 6
+#define MENU_SCREEN_CONFIG 7
+
+/* w_frameGetParameter ids: event-script expression variables >= 0xC0 on the world map
+ * (main evt_getSysVar's default branch) */
+#define WM_PARAM_AREA 0xC0 /* area of the cell under the player ("Now Area" in wm_getEncounterEntry) */
+#define WM_PARAM_TOPOGRAPHY 0xC1 /* topography of that cell ("Topograph") */
+#define WM_PARAM_REQ0 0xC3 /* g_worldReqParams[0..2], e.g. the WM_REQ_GET_GETOFF_POS result */
+#define WM_PARAM_REQ1 0xC4
+#define WM_PARAM_REQ2 0xC5
+#define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->unkC >> 4 */
+#define WM_PARAM_CD_BUSY 0xC8 /* "Event:CDAccessWait": g_worldCdUser | music request pending */
+#define WM_PARAM_PLAYER_X 0xC9
+#define WM_PARAM_PLAYER_Y 0xCA
+#define WM_PARAM_PLAYER_Z 0xCB
+#define WM_PARAM_WEATHER_POINT_DIST 0xCC /* g_worldWeatherPointDist */
+#define WM_PARAM_EVENT_BATTLE 0xCD /* 1 in g_worldEventBattleRate + 1 while walking on topography 0x24-0x26 */
+#define WM_PARAM_PLAYER_DIR 0xCE /* player rotY >> 4 */
+#define WM_PARAM_ZONE 0xCF /* wm_getAreaZone(area) */
+#define WM_PARAM_RUNNING 0xD1 /* g_worldState == WM_STATE_RUNNING */
+#define WM_PARAM_TITLE_PHASE 0xD2 /* g_worldTitlePhase */
+#define WM_PARAM_NAVI_VISIBLE 0xD3 /* g_worldNaviVisible */
+
+/* db keys: kind << 16 | id (db_lookup, docs/encounters.md) */
+#define DB_MODEL 0x20000 /* evt_createModel: an object's model id */
+#define DB_ANIM 0x30000 /* model animation (evt_getAnimFrameCount) */
+#define DB_TIM 0x40000 /* TIM images (file_loadTim, game_loadCommonImages) */
+#define DB_FIELD 0x50000 /* field / world file and its event script */
+#define DB_AREA 0x60000 /* area bundle */
+#define DB_MUSIC 0x70000 /* music sequences */
+#define DB_SE 0x80000 /* sound effects */
+#define DB_SOUND_BANK 0x90000 /* AKAO banks (game_loadCommonAkao, game_loadCommonDb's db) */
+#define DB_BG 0xA0000 /* field background */
+#define DB_WALKMESH 0xB0000 /* field walkmesh (bgi) */
+#define DB_FONT 0xD0000 /* the font (GameData.unk7D4, game_loadCommonImages) */
+#define DB_BATTLE 0x110000 /* encounter bundle */
+#define DB_MODEL_INFO 0x120000 /* per-model tables */
+#define DB_DEP_TABLE 0x140000 /* dependency table (GameData.depTable) */
+#define DB_SPRITE 0x160000
+#define DB_IMAGE_PACK 0x170000
+#define DB_TEX_ANIM 0x190000 /* model texture animations */
+#define DB_PACK 0x1B0000 /* nested container inside field/world files */
+#define DB_LIGHTS 0x1F0000
+
+/* Sound command words for the mode's sound handler (GameData.unk83C: fld_soundCommand / wm_soundCommand).
+ * Bits 12-13 type (0 music, 1 SE, 3 bank), 8-11 kind, 0-5 sub-command, 7 resident SE slot, 6 slot index.
+ * The SE/state/volume words carry the world map's debug-print names (ovl_0c WM_SND_*). */
+#define SND_MUSIC_PLAY 0x0000
+#define SND_MUSIC_STOP 0x0100
+#define SND_MUSIC_LOAD 0x0700 /* load only */
+#define SND_MUSIC_SUSPEND 0x0800 /* save song/volume, then stop */
+#define SND_MUSIC_RESUME 0x0900 /* replay the saved song */
+#define SND_GET_STATE 0x0C00 /* "Waiting [ State : %d ]": non-zero while loading */
+#define SND_SE_PLAY 0xD000 /* "SE Play" (snd_playSe) */
+#define SND_SE_STOP 0x5100 /* "SE Stop" */
+#define SND_SE_VOL 0x9201 /* "SE Vol" */
+#define SND_SE_PITCH 0x9203
+#define SND_SE_VOL_INTPL 0xD301 /* "SE Vol Intpl" */
+#define SND_SONG_VOL_INTPL 0x8301
+#define SND_MUSIC_VOL_INTPL 0x8601 /* "Music Vol Intpl", "Music Fade Force" */
+#define SND_SE_SUSPEND 0x1800
+#define SND_SE_RESUME 0x1900
+#define SND_BANK_LOAD 0x7700
+#define SND_RESIDENT 0x80
 extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
 extern u8 D_80077DB5;
 extern s32 D_80077DC0; /* frame counter? */

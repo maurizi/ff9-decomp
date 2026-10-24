@@ -193,7 +193,7 @@ void file_loadDirTables(void) {
     s32 key2; /* s32, unlike key: no zero_extend in the second inner loop, so loop.c can still hoist the constant 2 */
 
     gs = g_gameState;
-    if (!(gs->unk0 & 0x100000)) {
+    if (!(gs->unk0 & GS_RELOAD_FILE_TABLES)) {
         return;
     }
     cnt = 0;
@@ -286,7 +286,7 @@ void file_loadDirTables(void) {
     top -= size;
     gs->unk18[13] = top;
     memmove(gs->unk18[13], buf + ((dir[13].unk8 - base) << 11), size);
-    gs->unk0 &= ~0x100000;
+    gs->unk0 &= ~GS_RELOAD_FILE_TABLES;
 }
 
 FileEntry *file_find(s32 a, s32 id) {

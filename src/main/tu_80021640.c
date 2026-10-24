@@ -15,14 +15,14 @@ void func_80021680(a)
 }
 
 s32 evt_createModel(Unk8004AB64 *a) {
-    return g_gameState->unk1C->unk838(a->unk34 | 0x20000, a);
+    return g_gameState->unk1C->unk838(a->unk34 | DB_MODEL, a);
 }
 
 s32 evt_getAnimFrameCount(a, b)
     s32 a;
     u16 b;
 {
-    return ((u16 *)db_lookupRegistered(4, b | 0x30000, 0))[1];
+    return ((u16 *)db_lookupRegistered(4, b | DB_ANIM, 0))[1];
 }
 
 s32 func_8002170C(Unk8004AB64 *p) {

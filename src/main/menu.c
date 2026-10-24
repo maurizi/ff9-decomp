@@ -28,7 +28,7 @@ void menu_open(s32 a, s32 b) {
 void menu_doOpen(s32 a, s32 b) {
     GameState *st = g_gameState;
 
-    if (!(st->unk1C->unk0 & 1) && g_menu.open == 0 && g_menu.state == 0 && (u32)a < 9) {
+    if (!(st->unk1C->unk0 & GD_MENU_DISABLED) && g_menu.open == 0 && g_menu.state == 0 && (u32)a < 9) {
         g_menu.open = 1;
         g_menu.type = a;
         g_menu.arg = b;
@@ -43,7 +43,7 @@ void menu_doOpen(s32 a, s32 b) {
         if (st->mode == 1) {
             st->unk1C->unk8E4.ovl65->unk0 |= 0x1000;
         }
-        g_gameState->unk1C->unk0 |= 2;
+        g_gameState->unk1C->unk0 |= GD_MENU_OPEN;
         help_init();
         menu_loadOverlay();
         menu_startFadeOut();
@@ -56,7 +56,7 @@ void menu_onFadedOut(void) {
 
     g_menu.fadingOut = 0;
     g = g_gameState;
-    g->unk1C->unk0 |= 0x1C;
+    g->unk1C->unk0 |= GD_HIDE_ALL;
     g_menu.savedVsyncMode = g->vsyncMode;
     g->vsyncMode = 0;
     g_menu.savedR = g_gameState->unk10[0].r0;
@@ -84,8 +84,8 @@ void menu_finish(void) {
     if (g_gameState->mode == 1) {
         g_gameState->unk1C->unk8E4.ovl65->unk0 &= ~0x1000;
     }
-    g_gameState->unk1C->unk0 &= ~2;
-    g_gameState->unk1C->unk0 &= ~0x1C;
+    g_gameState->unk1C->unk0 &= ~GD_MENU_OPEN;
+    g_gameState->unk1C->unk0 &= ~GD_HIDE_ALL;
     win_closeAllNow();
     g_gameState->vsyncMode = g_menu.savedVsyncMode;
     g_gameState->unk10[0].r0 = g_menu.savedR;

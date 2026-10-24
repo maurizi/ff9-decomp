@@ -181,7 +181,7 @@ void help_toggle(void) {
             sprAnim_setOnDone(&g_menuHelp.iconAnim, help_onIconAnimDone);
             sprAnim_setPlaying(&g_menuHelp.iconAnim, 1);
         } else {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
             g_menuHelp.isOpen = 0;
             g_menuHelp.textShown = 0;
             sprAnim_setPlaying(&g_menuHelp.iconAnim, 0);

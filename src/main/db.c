@@ -194,7 +194,7 @@ void game_resetState(void) {
     GameState *gs = g_gameState;
     s32 i;
 
-    gs->unk0 = 0x100000;
+    gs->unk0 = GS_RELOAD_FILE_TABLES;
     gs->unkB = 0xFF;
     gs->unk4 = 0;
     gs->mode = 0;

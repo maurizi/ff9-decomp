@@ -1452,7 +1452,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
         if (n == 0) {
             D_8007BBE0 = 0;
         }
-        if (g_evtMode == 1 && !(g_gameState->unk1C->unk0 & 0x1C) && n < 58) {
+        if (g_evtMode == 1 && !(g_gameState->unk1C->unk0 & GD_HIDE_ALL) && n < 58) {
             s = &D_80068790;
             func_800515B8();
             func_80051300();
@@ -1577,7 +1577,7 @@ void msg_updatePlayerBubble(void) {
         D_8007BC0C += 4;
     }
     draw:
-    if (!(g_gameState->unk1C->unk0 & 0x1C)) {
+    if (!(g_gameState->unk1C->unk0 & GD_HIDE_ALL)) {
         o = evt_getObject(g_evtState->playerUid);
         if (o != NULL && o->unk5 == 4) {
             func_800515B8();
@@ -1599,7 +1599,7 @@ void msg_drawAtePrompt(void) {
         return;
     }
     D_8007BC14++;
-    if (g_gameState->unk1C->unk0 & 0x1C) {
+    if (g_gameState->unk1C->unk0 & GD_HIDE_ALL) {
         return;
     }
     func_800515B8();

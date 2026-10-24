@@ -154,7 +154,7 @@ void pad_updateRepeat(s32 port) {
 }
 
 s32 pad_isAnalog(s32 i) {
-    return ((g_padBuf[i].unk0 >> 12) & 0xF) == 7;
+    return ((g_padBuf[i].unk0 >> 12) & 0xF) == PAD_ID_ANALOG;
 }
 
 void pad_setStickAsDpad(u8 on) {
