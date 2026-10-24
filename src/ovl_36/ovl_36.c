@@ -807,7 +807,7 @@ void menuCard_loadImages(void) {
     u8 *a = s_menuCardImage1;
     u8 *b = s_menuCardImage2;
 
-    menuCard_saveVram((u8 *)0x801F6D30);
+    menuCard_saveVram(CARD_VRAM_SAVE_BUF);
     LoadImage(&s_menuCardImage1ClutRect, (u32 *)a);
     LoadImage(&s_menuCardImage1Rect, (u32 *)(a + 0x200));
     LoadImage(&s_menuCardImage2ClutRect, (u32 *)b);
@@ -816,7 +816,7 @@ void menuCard_loadImages(void) {
 }
 
 void menuCard_unloadImages(void) {
-    menuCard_restoreVram((u8 *)0x801F6D30);
+    menuCard_restoreVram(CARD_VRAM_SAVE_BUF);
     DrawSync(0);
 }
 

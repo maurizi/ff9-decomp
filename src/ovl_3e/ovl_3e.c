@@ -188,7 +188,7 @@ void discChange_updateState(void) {
 }
 
 void discChange_loadPicture(void) {
-    u32 *buf = (u32 *)0x801CDF00;
+    u32 *buf = DISC_PICTURE_BUF;
     s32 size;
     u32 *clut = s_discChangeClut;
     s32 i;
