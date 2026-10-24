@@ -474,7 +474,7 @@ typedef struct BtlUnit {
     struct BtlCmd *delayedCmd; /* Jump while in the air, trance Eidolon */
     struct BtlCmd *tranceCmd; /* BTL_CMD_TRANCE */
     s32 reviveCmd; /* BtlCmd *: BTL_CMD_AUTO_LIFE */
-    u16 unk1C[4];
+    u16 bounceMasks[4]; /* Reflect: units each reflected copy hits (btl_applyReflect), counted by btl_applyCalcResult */
     BtlUnit24 *max;
     u16 hp;
     s16 mp;
@@ -529,8 +529,8 @@ typedef struct BtlUnit {
     u8 onScreen; /* screenX/Y valid (btl_projectUnitPos) */
     u8 unkBD;
     u8 unkBE;
-    u8 unkBF;
-    u8 unkC0;
+    u8 shadowW; /* shadow width / 14 (btl_setShadowSize) */
+    u8 shadowD; /* shadow depth / 12 */
     u8 unkC1[3];
     u32 *support; /* support-ability bits (Character.unk88) */
     s16 tickHeal; /* btl_tickRegen */
@@ -1100,15 +1100,15 @@ typedef struct BtlCmd {
     } unk10;
 } BtlCmd;
 
-typedef struct Battle11C028 {
-    u32 unk0_0 : 8;
-    u32 unk0_8 : 12;
-    u32 unk0_20 : 12;
+typedef struct BtlShadow {
+    u32 shade : 8; /* grey level of the shadow quads (btl_drawShadow) */
+    u32 width : 12; /* btl_setShadowSize */
+    u32 depth : 12;
     u32 unk4_0 : 12;
     u32 unk4_12 : 10;
     u32 unk4_22 : 10;
     POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
-} Battle11C028; /* 0x28 */
+} BtlShadow; /* 0x28 */
 
 typedef struct Battle11C0 {
     s32 unk0;
@@ -1123,7 +1123,7 @@ typedef struct Battle11C0 {
     s32 unk1C;
     Battle11C020 *unk20;
     u16 *unk24; /* two offsets: model file table, offset table */
-    struct Battle11C028 *unk28;
+    struct BtlShadow *unk28;
     s32 unk2C[2]; /* per draw buffer */
     s32 unk34[2]; /* per draw buffer */
     s32 *unk3C;
@@ -1155,13 +1155,13 @@ typedef struct {
     u8 pad6[8 - 6];
 } Unk800F6A54;
 
-typedef struct Battle1358 {
-    struct BtlUnit *unk0;
+typedef struct BtlPopup {
+    struct BtlUnit *unit;
     u8 pad4[8 - 4];
-    s16 unk8;
-    s16 unkA;
-    s16 unkC;
-    u16 unkE; /* frame */
+    s16 x; /* base bone position (btl_newPopup) */
+    s16 y;
+    s16 z;
+    u16 frame; /* animation frame */
     union {
         s32 w; /* cleared as a word */
         struct {
@@ -1175,14 +1175,14 @@ typedef struct Battle1358 {
         u32 w; /* packed digits (btl_packDigits) */
         Unk800F6A54 *p;
     } unk14;
-    u16 unk18;
+    u16 clut;
     u8 pad1A[0x1C - 0x1A];
-} Battle1358; /* 0x1C */
+} BtlPopup; /* 0x1C */
 
 typedef struct {
-    Battle1358 unk0[16];
-    s16 unk1C0; /* last entry handed out (counts down, wraps to 15) */
-    s16 unk1C2;
+    BtlPopup entries[16];
+    s16 last; /* last entry handed out (counts down, wraps to 15) */
+    s16 tick; /* btl_drawPopups calls */
     s32 unk1C4; /* unit being scanned (BtlUnit *) */
     union {
         s32 w; /* cleared as a word */
@@ -1192,9 +1192,9 @@ typedef struct {
     u8 unk1D0;
     u8 unk1D1;
     u8 pad1D2[0x1D4 - 0x1D2];
-    u8 unk1D4; /* units hidden from status effects (mask) */
+    u8 hiddenMask; /* units hidden from status effects (mask) */
     u8 pad1D5[0x1D8 - 0x1D5];
-} Battle1358Ring; /* Battle.unk1358 (0x1D8) */
+} BtlPopupRing; /* Battle.unk1358 (0x1D8) */
 
 /* Inlined copy of btl_clearCmd (clear a command); the original source inlines it. */
 static inline void btl_clearCmd_inline(BtlCmd *arg0) {
@@ -1279,7 +1279,7 @@ typedef struct Battle {
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
     BtlFiles *files;
-    Battle1358Ring popups;
+    BtlPopupRing popups;
     s32 unk1530;
     s32 dataSector; /* battle data file sector */
     struct Battle1538 **unk1538;
@@ -1907,7 +1907,6 @@ typedef struct {
     s32 *unk98;
 } Unk800CB090;
 
-typedef Battle1358 Unk800CC278;
 
 extern RECT D_800FDF50;
 extern u16 D_800FDF60[][0x100]; /* CLUT rows */
@@ -2560,7 +2559,7 @@ s32 btl_cancelUnitCmds(BtlUnit *);
 void btlcam_loadScript(s32);
 void func_800C36D0(void);
 s32 btlseq_stepMove(BtlScript *, BtlUnit *);
-Unk800CC278 *btl_newPopup(struct BtlUnit *);
+BtlPopup *btl_newPopup(struct BtlUnit *);
 s32 btl_packDigits(u32);
 s32 btl_getWeaponSound(s32, u16);
 void btl_playUnitSound(BtlUnit *, u16, u8);
@@ -2885,8 +2884,8 @@ typedef struct {
 
 void btl_drawPopupGlyph(Unk800CCD00 *, Unk800686E8 *);
 void btl_drawPopupDigits(Unk800CCD00 *, u32);
-void btl_clampPopup(struct Battle1358 *, Unk800CCD00 *, s32, s32);
-extern void (*D_800F6A7C[])(struct Battle1358 *, Unk800CCD00 *);
+void btl_clampPopup(struct BtlPopup *, Unk800CCD00 *, s32, s32);
+extern void (*D_800F6A7C[])(struct BtlPopup *, Unk800CCD00 *);
 void btl_drawStatusCountdown(Unk800CCD00 *);
 void btl_drawStatusIcons(Unk800CCD00 *);
 
@@ -3179,7 +3178,7 @@ void btl_healHp(BtlUnit *, s32);
 void btl_damageMp(BtlUnit *, s32);
 void btl_healMp(BtlUnit *, s32);
 void btl_updateModelVisibility(BtlUnit9C *);
-u8 *btl_drawShadow(Battle11C028 *, s32, s32, s32, u8 *);
+u8 *btl_drawShadow(BtlShadow *, s32, s32, s32, u8 *);
 void btl_checkEnemiesKO(); /* defined as (void); callers pass the unit */
 void btl_startEnemySeq(BtlCmd *);
 void btlbg_setOtShift(s32);
@@ -3293,8 +3292,8 @@ u8 btlui_anyOnSecondPort(void);
 void btlfx_getUnitRot(s32, s16 *);
 
 extern u16 D_800F524C[][0x22];
-Unk800CC278 *btl_popupHp(s32, s16, s16, u8);
-Unk800CC278 *btl_popupMp(s32, s16, s16, u8);
+BtlPopup *btl_popupHp(s32, s16, s16, u8);
+BtlPopup *btl_popupMp(s32, s16, s16, u8);
 void btlui_setPauseRequest(s8);
 s32 btlfx_stepRunToTarget(Unk800D7C9C *, s32, s32 *);
 s32 func_800D974C(Unk800D7C9C *, s32, s32 *);

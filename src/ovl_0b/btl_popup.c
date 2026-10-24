@@ -70,53 +70,53 @@ void btl_spawnTickPopups(BtlUnit *arg0) {
     arg0->tickMpDamage = 0;
 }
 
-Unk800CC278 *btl_newPopup(BtlUnit *u) {
-    Battle1358Ring *r;
-    Battle1358 *p;
+BtlPopup *btl_newPopup(BtlUnit *u) {
+    BtlPopupRing *r;
+    BtlPopup *p;
     BtlBone *bone;
     s16 i;
 
     r = &g_gameState->unk1C->unk8E4.battle->popups;
-    i = r->unk1C0 - 1;
+    i = r->last - 1;
     if (i < 0) {
         i = 15;
     }
-    r->unk1C0 = i;
-    p = &r->unk0[i];
-    p->unk0 = u;
-    p->unkE = 0;
+    r->last = i;
+    p = &r->entries[i];
+    p->unit = u;
+    p->frame = 0;
     p->unk10.w = 0;
     bone = &u->model->unk20[u->unk7C];
-    p->unk8 = bone->unk14;
-    p->unkA = bone->unk18 - 4;
-    p->unkC = bone->unk1C;
+    p->x = bone->unk14;
+    p->y = bone->unk18 - 4;
+    p->z = bone->unk1C;
     return p;
 }
 
-Unk800CC278 *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
-    Unk800CC278 *p = btl_newPopup((BtlUnit *)arg0);
+BtlPopup *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
+    BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 0;
     p->unk10.b.unk0 = arg3;
-    p->unk18 = arg2;
+    p->clut = arg2;
     p->unk14.w = btl_packDigits(arg1);
     return p;
 }
 
-Unk800CC278 *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
-    Unk800CC278 *p = btl_newPopup((BtlUnit *)arg0);
+BtlPopup *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
+    BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 1;
     p->unk10.b.unk0 = arg3;
-    p->unk18 = arg2;
+    p->clut = arg2;
     p->unk14.w = btl_packDigits(arg1);
     return p;
 }
 
-Unk800CC278 *btl_popupText(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
-    Unk800CC278 *p = btl_newPopup((BtlUnit *)arg0);
+BtlPopup *btl_popupText(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
+    BtlPopup *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 2;
     p->unk10.b.unk0 = arg3;
     p->unk14.p = &D_800F6A54[arg1];
-    p->unk18 = arg2;
+    p->clut = arg2;
     return p;
 }
 
@@ -148,8 +148,8 @@ s32 btl_packDigits(u32 n) {
 
 u8 *btl_drawPopups(u8 *arg0) {
     Unk800CCD00 c;
-    Battle1358Ring *r;
-    Battle1358 *p;
+    BtlPopupRing *r;
+    BtlPopup *p;
     s16 i;
     s16 j;
     BtlUnit *u;
@@ -161,16 +161,16 @@ u8 *btl_drawPopups(u8 *arg0) {
     c.unk4 = &g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][4];
     gte_SetRotMatrix(&g_gameState->unk1C->unk18);
     gte_SetTransMatrix(&g_gameState->unk1C->unk18);
-    j = r->unk1C0;
+    j = r->last;
     for (i = 0; i < 16; i++) {
-        p = &r->unk0[j];
-        if (p->unk0 != NULL) {
+        p = &r->entries[j];
+        if (p->unit != NULL) {
             if (p->unk10.b.unk2 >= 3) {
-                p->unk0 = NULL;
+                p->unit = NULL;
             } else if (p->unk10.b.unk0 != 0) {
                 p->unk10.b.unk0--;
             } else {
-                gte_ldv0(&p->unk8);
+                gte_ldv0(&p->x);
                 gte_rtps();
                 gte_stsxy(&c.unk10);
                 if (p->unk10.b.unk1 != 0 && (u16)(c.unk10.s.y - 21) < 180) {
@@ -193,7 +193,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     if (((e->unk1C ^ 1) & 1) | ((e->unk0 == -1) | ((e->unk1C >> 15) & 1))) {
         btl_drawStatusIcons(&c);
     }
-    r->unk1C2++;
+    r->tick++;
     btl_updateScan();
     btl_updateDetect();
     mask = 0xFF;
@@ -202,27 +202,27 @@ u8 *btl_drawPopups(u8 *arg0) {
             mask &= ~u->unitBit;
         }
     }
-    r->unk1D4 = mask;
+    r->hiddenMask = mask;
     return (u8 *)c.unk0;
 }
 
-void btl_drawNumberPopup(Battle1358 *arg0, Unk800CCD00 *arg1) {
+void btl_drawNumberPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     u8 *anim;
     u8 c;
     u32 n;
     u32 w;
     s16 x;
 
-    if (arg0->unk18 == 0xC0) {
+    if (arg0->clut == 0xC0) {
         anim = D_800F6A38;
     } else {
         anim = D_800F6A28;
     }
-    c = anim[arg0->unkE];
-    if (!(arg0->unk0->model->unk0 & 0x10)) {
+    c = anim[arg0->frame];
+    if (!(arg0->unit->model->unk0 & 0x10)) {
         n = arg0->unk14.w;
         arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
-        arg1->unk14 = arg0->unk18;
+        arg1->unk14 = arg0->clut;
         w = (n >> 16) * 8;
         arg1->unk10.s.x -= w >> 1;
         arg1->unk10.s.y -= (c & 0x7F) + 5;
@@ -242,21 +242,21 @@ void btl_drawNumberPopup(Battle1358 *arg0, Unk800CCD00 *arg1) {
             btl_drawPopupGlyph(arg1, &D_80068BE8);
         }
     }
-    if (anim[++arg0->unkE] == 0xFF) {
-        arg0->unk0 = NULL;
+    if (anim[++arg0->frame] == 0xFF) {
+        arg0->unit = NULL;
     }
 }
 
-void btl_drawTextPopup(Battle1358 *arg0, Unk800CCD00 *arg1) {
+void btl_drawTextPopup(BtlPopup *arg0, Unk800CCD00 *arg1) {
     u8 *anim;
     u8 c;
     Unk800686E8 *g;
 
     anim = arg0->unk14.p->unk0;
-    c = anim[arg0->unkE];
-    if (!(arg0->unk0->model->unk0 & 0x10)) {
+    c = anim[arg0->frame];
+    if (!(arg0->unit->model->unk0 & 0x10)) {
         arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
-        arg1->unk14 = arg0->unk18;
+        arg1->unk14 = arg0->clut;
         g = &D_800686D0[arg0->unk14.p->unk4];
         arg1->unk10.s.x -= g->unk4 >> 1;
         arg1->unk10.s.y -= (g->unk5 >> 1) + (c & 0x1F);
@@ -265,14 +265,14 @@ void btl_drawTextPopup(Battle1358 *arg0, Unk800CCD00 *arg1) {
         }
         btl_drawPopupGlyph(arg1, g);
     }
-    arg0->unkE++;
-    if (anim[arg0->unkE] == 0xFF) {
-        arg0->unk0 = NULL;
+    arg0->frame++;
+    if (anim[arg0->frame] == 0xFF) {
+        arg0->unit = NULL;
     }
 }
 
-void btl_clampPopup(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
-    if (arg0->unkE == 0) {
+void btl_clampPopup(BtlPopup *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
+    if (arg0->frame == 0) {
         if (arg1->unk10.s.y - 21 < 0) {
             arg0->unk10.b.unk1 = 21 - arg1->unk10.s.y;
         } else if (arg1->unk10.s.y + h >= 211) {
@@ -325,7 +325,7 @@ void btl_drawPopupGlyph(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
 }
 
 void btl_drawStatusIcons(Unk800CCD00 *arg0) {
-    Battle1358Ring *r;
+    BtlPopupRing *r;
     BtlUnit *u;
     BtlUnit9C *mdl;
     BtlBone *b;
@@ -356,7 +356,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
         if (((u->unk68 >> 22) & 1) || (u->model->unk0 & 0x10)) {
             continue;
         }
-        if (r->unk1D4 & u->unitBit) {
+        if (r->hiddenMask & u->unitBit) {
             continue;
         }
         st = u->status | u->autoStatus;
@@ -397,7 +397,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
             pos.vz = b->unk1C + (((s16)z * cs) >> 12);
             pos.vy = b->unk18 + y;
             if (e->unkE != 0) {
-                f = (u16)r->unk1C2;
+                f = (u16)r->tick;
                 func_800D198C(e->unk8, &pos, f % (*(u16 *)e->unk8 & 0x7FFF), e->unkD, -1);
             } else {
                 if ((rot.pad = e->unkF) != 0) {
@@ -405,7 +405,7 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
                 } else {
                     rot.vy = 0;
                 }
-                btlfx_drawSprites(e->unk8, &pos, &rot, -1, (u16)r->unk1C2, e->unkD, -1);
+                btlfx_drawSprites(e->unk8, &pos, &rot, -1, (u16)r->tick, e->unkD, -1);
             }
         }
     }
@@ -434,7 +434,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
         if (((u->unk68 >> 22) & 1) || (u->model->unk0 & 0x10)) {
             continue;
         }
-        if (g_gameState->unk1C->unk8E4.battle->popups.unk1D4 & u->unitBit) {
+        if (g_gameState->unk1C->unk8E4.battle->popups.hiddenMask & u->unitBit) {
             continue;
         }
         st = u->status;

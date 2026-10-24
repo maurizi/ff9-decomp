@@ -462,7 +462,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         if (arg2 != 0 && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_INTRO) {
             btl_applyBgLight(arg0->model);
             k = btl_getModelSlot(arg0);
-            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_0 = btlbg_getHeader()->unkF;
+            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = btlbg_getHeader()->unkF;
         }
         break;
     case 0x36:
@@ -474,16 +474,16 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->model->unk56 = arg2;
         arg0->model->unk58 = arg2;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = ((u32)(arg0->unkBF * arg2) >> 12) * 14;
+        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].width = ((u32)(arg0->shadowW * arg2) >> 12) * 14;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_20 = ((u32)(arg0->unkC0 * arg2) >> 12) * 12;
+        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].depth = ((u32)(arg0->shadowD * arg2) >> 12) * 12;
         break;
     case BTL_ATTR_RESET_SCALE:
         arg0->model->unk0 &= ~2;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = arg0->unkBF * 14;
+        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].width = arg0->shadowW * 14;
         k = btl_getModelSlot(arg0);
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_20 = arg0->unkC0 * 12;
+        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].depth = arg0->shadowD * 12;
         break;
     case BTL_ATTR_HIDE_MESHES:
         btl_hideMeshes(arg0, arg2);

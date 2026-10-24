@@ -281,7 +281,7 @@ void btl_initUnitCmds(BtlUnit *arg0) {
         }
     }
     for (j = 3; j >= 0; j--) {
-        arg0->unk1C[j] = 0;
+        arg0->bounceMasks[j] = 0;
     }
 }
 
@@ -1078,14 +1078,14 @@ s32 btl_applyReflect(BtlCmd *arg0) {
         if (m != 0 && n != 0) {
             for (i = 0; i < 4; i++) {
                 if (i < m) {
-                    arg0->caster->unk1C[i] = buf[RAND8() % n];
+                    arg0->caster->bounceMasks[i] = buf[RAND8() % n];
                 } else {
-                    arg0->caster->unk1C[i] = 0;
+                    arg0->caster->bounceMasks[i] = 0;
                 }
             }
             if ((u16)mask == (u16)arg0->targets) {
                 arg0->unk10.b.reflect = 1;
-                arg0->targets = btl_orTargets(arg0->caster->unk1C);
+                arg0->targets = btl_orTargets(arg0->caster->bounceMasks);
             } else {
                 arg0->unk10.b.reflect = 2;
                 arg0->targets &= ~mask;
@@ -1180,7 +1180,7 @@ void btl_onCmdEffectDone(void) {
     s8 k = c->unk10.b.reflect;
     BtlUnit *u;
     if (k == 2) {
-        c->targets = btl_orTargets(c->caster->unk1C);
+        c->targets = btl_orTargets(c->caster->bounceMasks);
         btl_playCmdEffect(c, c->ability->effect, 0);
         b->cmdPhase = k;
         return;
@@ -2690,7 +2690,7 @@ void btl_applyCalcResult(BtlCalc *c) {
                 n = 0;
                 if (((c->cmd->flags >> 7) & 3) == 1) {
                     for (i = 0; i < 4; i++) {
-                        if (s->unk1C[i] & t->unitBit) {
+                        if (s->bounceMasks[i] & t->unitBit) {
                             n++;
                         }
                     }

@@ -7,11 +7,11 @@ void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
     if (!(arg0->unk68 & 1)) {
         k += 9;
     }
-    arg0->unkBF = (arg1 & 0xFFFF) / 14;
-    arg0->unkC0 = arg2 / 12;
-    g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_0 = 0;
-    g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = arg0->unkBF * 14;
-    g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_20 = arg0->unkC0 * 12;
+    arg0->shadowW = (arg1 & 0xFFFF) / 14;
+    arg0->shadowD = arg2 / 12;
+    g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = 0;
+    g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].width = arg0->shadowW * 14;
+    g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].depth = arg0->shadowD * 12;
 }
 
 void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {

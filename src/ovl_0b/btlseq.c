@@ -667,13 +667,13 @@ s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
 
 void btl_clearPopups(void) {
     s16 i;
-    Battle1358 *p;
-    g_gameState->unk1C->unk8E4.battle->popups.unk1C0 = 0;
-    g_gameState->unk1C->unk8E4.battle->popups.unk1C2 = 0;
-    g_gameState->unk1C->unk8E4.battle->popups.unk1D4 = 0xFF;
-    p = g_gameState->unk1C->unk8E4.battle->popups.unk0;
+    BtlPopup *p;
+    g_gameState->unk1C->unk8E4.battle->popups.last = 0;
+    g_gameState->unk1C->unk8E4.battle->popups.tick = 0;
+    g_gameState->unk1C->unk8E4.battle->popups.hiddenMask = 0xFF;
+    p = g_gameState->unk1C->unk8E4.battle->popups.entries;
     for (i = 15; i != -1; i--) {
-        p->unk0 = NULL;
+        p->unit = NULL;
         p++;
     }
     g_gameState->unk1C->unk8E4.battle->popups.unk1C4 = 0;

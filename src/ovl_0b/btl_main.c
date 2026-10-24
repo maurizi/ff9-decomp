@@ -288,7 +288,7 @@ void btl_load(s32 arg0) {
         func_8001E3A4(&g_gameState->unk1C->unk8E0[i]);
         g_gameState->unk1C->unk8E0[i].unk8 = (struct BtlUnit9C *)&g_gameState->unk1C->unk8DC[i];
     }
-    p->unk28 = (struct Battle11C028 *)D_80067948;
+    p->unk28 = (struct BtlShadow *)D_80067948;
     D_80067948 = func_800AD4AC(D_80067948, g_gameState->unk1C->unk38 + 9);
     p->unk8 = D_80067948;
     btlui_reset();
@@ -1520,12 +1520,12 @@ s32 btl_getModelTexInfo(u32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     return 0;
 }
 
-u8 *btl_drawShadow(Battle11C028 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
+u8 *btl_drawShadow(BtlShadow *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
     MATRIX m;
     s32 pad;
     SVECTOR v;
     s32 z[9];
-    Battle11C028 *e;
+    BtlShadow *e;
     BtlObj *o;
     s32 i;
     s32 k;
@@ -1541,7 +1541,7 @@ u8 *btl_drawShadow(Battle11C028 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *prim) {
     for (i = 0; i < 4; i++) {
         SHADOW_QUAD(i) = (POLY_FT4 *)prim;
         setPolyFT4(SHADOW_QUAD(i));
-        setRGB0(SHADOW_QUAD(i), e->unk0_0, e->unk0_0, e->unk0_0);
+        setRGB0(SHADOW_QUAD(i), e->shade, e->shade, e->shade);
         setSemiTrans(SHADOW_QUAD(i), 1);
         SHADOW_QUAD(i)->tpage = 0xC8;
         SHADOW_QUAD(i)->clut = 0x3FD0;
