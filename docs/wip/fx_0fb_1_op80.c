@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 286 lines, 138 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 264 lines, 129 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -6,7 +6,7 @@ typedef struct {
 } Fx0fb1V3;
 
 typedef struct {
-    u32 unk0; /* state */
+    s32 unk0; /* state */
     s32 unk4; /* frame counter */
     u8 pad8[4];
     SVECTOR unkC; /* position */
@@ -342,21 +342,23 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         break;
     case 3: {
         VECTOR sc;
+        s32 ca;
+        s32 cb;
 
         t = (frame << 12) / 37;
         trail = ex->math_cos(t >> 2);
         g = (t >> 4) + 0x80;
         ex->Hi_DrawSummonModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk28, ((Fx0fb1Summon *)env->unk4)->unk60, 0);
-        c = ((0x1000 - (t * 2) / 3) >> 5) - 0x80;
-        ex->Hi_ModifySummonModelRGB(((Fx0fb1Summon *)env->unk4)->unk60, c, c, c);
+        ca = ((0x1000 - (t * 2) / 3) >> 5) - 0x80;
+        ex->Hi_ModifySummonModelRGB(((Fx0fb1Summon *)env->unk4)->unk60, ca, ca, ca);
         work->unk1C.vy += 0x10E;
         ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->unkA4);
-        c = ((0x1000 - t) >> 5) - 0x80;
-        ex->Hi_ModifyEffModelRGB(work->unkA4, c, c, c);
+        cb = ((0x1000 - t) >> 5) - 0x80;
+        ex->Hi_ModifyEffModelRGB(work->unkA4, cb, cb, cb);
         glow = 0xAA;
         work->unk1C.vy -= 0x10E;
-        work->unk6C.vy += 0x10;
         work->unk6C.vx += 0x20;
+        work->unk6C.vy += 0x10;
         if (frame < 0xF) {
             b = 0x6AA;
         } else if (frame < 0x17) {
