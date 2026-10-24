@@ -244,4 +244,4 @@ void menuScreen_onOverlayRead(u8 *a) {
     }
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/tu_80035D3C", D_800110A0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/menu_screen", D_800110A0);

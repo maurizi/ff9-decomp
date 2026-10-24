@@ -276,6 +276,6 @@ CardInfo *card_getInfoTable(void) {
     return D_800121C8;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/tu_80062344", D_800121C0);
+INCLUDE_RODATA("asm/us/main/nonmatchings/card", D_800121C0);
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/tu_80062344", D_800121C8);
+INCLUDE_RODATA("asm/us/main/nonmatchings/card", D_800121C8);

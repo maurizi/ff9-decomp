@@ -197,4 +197,4 @@ void help_onIconAnimDone(void) {
     g_menuHelp.opening = 0;
 }
 
-INCLUDE_RODATA("asm/us/main/nonmatchings/tu_80035108", D_80010E48);
+INCLUDE_RODATA("asm/us/main/nonmatchings/help", D_80010E48);
