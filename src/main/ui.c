@@ -70,7 +70,7 @@ void func_800245F0(RECT *r, s32 otz) {
     DrTpageWords *t;
 
     setlen(g_primPtr, 3);
-    ((TileWords *)g_primPtr)->rgbc = 0x62000000;
+    ((TileWords *)g_primPtr)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     p = (TileWords *)g_primPtr;
     p->xy = (r->x + 3) | ((r->y + r->h) << 16);
     p->wh = r->w | 0x30000;
@@ -78,7 +78,7 @@ void func_800245F0(RECT *r, s32 otz) {
     g_primPtr = (u8 *)(p + 1);
 
     setlen(g_primPtr, 3);
-    ((TileWords *)g_primPtr)->rgbc = 0x62000000;
+    ((TileWords *)g_primPtr)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     p = (TileWords *)g_primPtr;
     p->xy = (r->x + r->w) | ((r->y + 3) << 16);
     p->wh = 3 | ((r->h - 3) << 16);
@@ -87,7 +87,7 @@ void func_800245F0(RECT *r, s32 otz) {
 
     setlen(g_primPtr, 1);
     t = (DrTpageWords *)g_primPtr;
-    t->code = 0xE1000600;
+    t->code = get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -98,7 +98,7 @@ void func_80024764(RECT *r, s32 otz) {
 
     p = (PolyF4Half *)g_primPtr;
     setlen(p, 5);
-    p->rgbc = 0x2A000000;
+    p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + 4;
     p->y0 = r->y + r->h - 1;
     p->x1 = r->x + r->w + 2;
@@ -112,7 +112,7 @@ void func_80024764(RECT *r, s32 otz) {
 
     p = (PolyF4Half *)g_primPtr;
     setlen(p, 5);
-    p->rgbc = 0x2A000000;
+    p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + r->w - 3;
     p->y0 = r->y + 2;
     p->x1 = r->x + r->w + 2;
@@ -126,7 +126,7 @@ void func_80024764(RECT *r, s32 otz) {
 
     setlen(g_primPtr, 1);
     t = (DrTpageWords *)g_primPtr;
-    t->code = 0xE1000600;
+    t->code = get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -137,7 +137,7 @@ void func_800249A8(RECT *r, s32 otz) {
 
     p = (PolyF4Half *)g_primPtr;
     setlen(p, 5);
-    p->rgbc = 0x2A000000;
+    p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + 2;
     p->y0 = r->y + r->h;
     p->x1 = r->x + r->w + 1;
@@ -151,7 +151,7 @@ void func_800249A8(RECT *r, s32 otz) {
 
     p = (PolyF4Half *)g_primPtr;
     setlen(p, 5);
-    p->rgbc = 0x2A000000;
+    p->rgbc = GPU_CODE(GPU_POLY_F4 | GPU_ABE);
     p->x0 = r->x + r->w - 3;
     p->y0 = r->y;
     p->x1 = r->x + r->w + 2;
@@ -165,7 +165,7 @@ void func_800249A8(RECT *r, s32 otz) {
 
     setlen(g_primPtr, 1);
     t = (DrTpageWords *)g_primPtr;
-    t->code = 0xE1000600;
+    t->code = get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -178,7 +178,7 @@ void func_80024BD8(void) {
     w = g_gameState->unkC->disp.w;
     setlen(g_primPtr, 8);
     p = (PolyG4Words *)g_primPtr;
-    p->rgbc0 = 0x3A000000;
+    p->rgbc0 = GPU_CODE(GPU_POLY_G4 | GPU_ABE);
     p->rgb2 = 0x505050;
     p->rgb3 = 0x505050;
     p->xy1 = w;
@@ -190,7 +190,7 @@ void func_80024BD8(void) {
     g_primPtr += sizeof(PolyG4Words);
 
     setlen(g_primPtr, 1);
-    ((DrTpageWords *)g_primPtr)->code = 0xE1000640;
+    ((DrTpageWords *)g_primPtr)->code = get_mode(1, 1, 0x40);
     addPrim(&g_ot[0xFFF], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
 
@@ -206,7 +206,7 @@ void func_80024BD8(void) {
     g_primPtr += sizeof(DrMode2Words);
 
     setlen(g_primPtr, 4);
-    ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+    ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     ((SprtWords *)g_primPtr)->xy = 0;
     ((SprtWords *)g_primPtr)->uvclut = D_80068DC0.unk2 << 16;
     ((SprtWords *)g_primPtr)->wh = w | 0x800000;
@@ -236,7 +236,7 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     pkt += sizeof(DrMode2Words);
 
     setlen(pkt, 4);
-    ((SprtWords *)pkt)->rgbc = 0x64808080;
+    ((SprtWords *)pkt)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     ((SprtWords *)pkt)->xy = (u16)r->x | (r->y << 16);
     ((SprtWords *)pkt)->uvclut = u | (v << 8) | (clut << 16);
     ((SprtWords *)pkt)->wh = r->w | (r->h << 16);
@@ -405,7 +405,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         d = &((Unk800689B0 *)D_800686D0)[D_80068FD0[style][i]];
         setlen(g_primPtr, 4);
         yy = y << 16;
-        ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+        ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
         if (i != 0) {
             ((SprtWords *)g_primPtr)->xy = ((x - (8 - w)) & 0xFFFF) | yy;
         } else {
@@ -428,7 +428,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         tw.w = d->unk4;
         tw.h = d->unk5;
         setlen(g_primPtr, 4);
-        ((SprtWords *)g_primPtr)->rgbc = 0x64808080;
+        ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
         ((SprtWords *)g_primPtr)->xy = ((x + 8) & 0xFFFF) | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (style << 10) | (clut << 16);
         ((SprtWords *)g_primPtr)->wh = (w - 0x10) | (d->unk5 << 16);
@@ -485,7 +485,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
         }
         setlen(g_primPtr, 8);
         p = (PolyG4Words *)g_primPtr;
-        p->rgbc0 = p->rgb2 = c1.r | (c1.g << 8) | (c1.b << 16) | 0x38000000;
+        p->rgbc0 = p->rgb2 = c1.r | (c1.g << 8) | (c1.b << 16) | GPU_CODE(GPU_POLY_G4);
         p->rgb1 = p->rgb3 = c2.r | (c2.g << 8) | (c2.b << 16);
         right = w + 2;
         p->xy0 = (x + 2) | ((y + 2) << 16);
@@ -517,7 +517,7 @@ void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
         clut = 0x3EA40000;
     }
     setlen(g_primPtr, 4);
-    ((SprtWords *)g_primPtr)->rgbc = flag ? 0x66808080 : 0x64808080;
+    ((SprtWords *)g_primPtr)->rgbc = flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080) : GPU_RGBC(GPU_SPRT, 0x808080);
     p = (SprtWords *)g_primPtr;
     p->xy = x | (y << 16);
     p->uvclut = g->unk0 | (g->unk1 << 8) | clut;
@@ -526,7 +526,7 @@ void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     g_primPtr = (u8 *)(p + 1);
     setlen(g_primPtr, 1);
     t = (DrTpageWords *)g_primPtr;
-    t->code = (g->unk6 & 0x9FF) | 0xE1000600;
+    t->code = (g->unk6 & 0x9FF) | get_mode(1, 1, 0);
     addPrim(&g_ot[otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -550,7 +550,7 @@ void func_800265B0(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
 
     setlen(g_primPtr, 9);
     o = &D_80068F48[shape];
-    ((PolyFT4Words *)g_primPtr)->rgbc = 0x2C808080;
+    ((PolyFT4Words *)g_primPtr)->rgbc = GPU_RGBC(GPU_POLY_FT4, 0x808080);
     ((PolyFT4Words *)g_primPtr)->xy0 = (x + o->x0) | ((y + o->y0) << 16);
     ((PolyFT4Words *)g_primPtr)->uv0clut = (u + o->x0) | ((v + o->y0) << 8) | (clut << 16);
     ((PolyFT4Words *)g_primPtr)->xy1 = (x + o->x1) | ((y + o->y1) << 16);
@@ -574,7 +574,7 @@ void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
     Unk80068F48 *t;
     setlen(g_primPtr, 5);
     p = (PolyF4Words *)g_primPtr;
-    p->rgbc = 0x28A8B078;
+    p->rgbc = GPU_RGBC(GPU_POLY_F4, 0xA8B078);
     t = &D_80068F48[idx];
     p->xy0 = (x + t->x0) | ((y + t->y0) << 16);
     p->xy1 = (x + t->x1) | ((y + t->y1) << 16);
@@ -590,7 +590,7 @@ void func_800269F4(s32 x, s32 y, s32 otz, s32 len) {
     LineF2W *p;
 
     col[0] = D_80068F20[(g_gameState->unk24 >> 18) & 1][1];
-    col[1] = 0x40403838;
+    col[1] = GPU_RGBC(GPU_LINE_F2, 0x403838);
     col[2] = D_80068F20[(g_gameState->unk24 >> 18) & 1][0];
 
     for (i = 0; i < 3; i++) {
@@ -632,7 +632,7 @@ u8 *func_80026C7C(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
 
     clut = d->unk2 + (flag ? e->unk9 << 6 : 0x3C0);
     setlen(pkt, 4);
-    ((SprtWords *)pkt)->rgbc = (flag == 0 ? 0x66808080 : 0x64808080);
+    ((SprtWords *)pkt)->rgbc = (flag == 0 ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080) : GPU_RGBC(GPU_SPRT, 0x808080));
     ((SprtWords *)pkt)->xy = (x & 0xFFFF) | (y << 16);
     ((SprtWords *)pkt)->uvclut = d->unk0 | (d->unk1 << 8) | (clut << 16);
     ((SprtWords *)pkt)->wh = d->unk4 | (d->unk5 << 16);
@@ -722,7 +722,7 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
         text_formatNumber(cur, buf, 3, 1);
         text_formatNumber(max, buf + 4, -1, 1);
         buf[3] = 0x2F;
-        pkt = func_80027B5C(x + 3, y + 2, ot, buf, flag ? 0x66606060 : 0x64808080, (SprtWords *)pkt);
+        pkt = func_80027B5C(x + 3, y + 2, ot, buf, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, 0x808080), (SprtWords *)pkt);
     }
     if (cur != 0) {
         t = d->unk4 - 6;
@@ -732,9 +732,9 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
             w = t;
         }
         setlen(pkt, 3);
-        rgbc = 0x6070A838;
+        rgbc = GPU_RGBC(GPU_TILE, 0x70A838);
         if (cur >= max) {
-            rgbc = 0x602838A8;
+            rgbc = GPU_RGBC(GPU_TILE, 0x2838A8);
         }
         if (flag) {
             rgbc |= 0x02000000;
@@ -771,7 +771,7 @@ void win_drawHelpFill(RECT *rect, s32 otz) {
 
     setlen(g_primPtr, 3);
     p = (TileWords *)g_primPtr;
-    p->rgbc = 0x60A8B078;
+    p->rgbc = GPU_RGBC(GPU_TILE, 0xA8B078);
     p->xy = (u16)rect->x | (rect->y << 16);
     p->wh = rect->w | (rect->h << 16);
     addPrim(&g_ot[otz], p);
@@ -822,9 +822,9 @@ u8 *func_80027834(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     setlen(s, 4);
     d = &D_800686D0[i];
     if (flag) {
-        s->rgbc = 0x66606060;
+        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
-        s->rgbc = 0x64808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
     s->uvclut = d->unk0;
@@ -833,7 +833,7 @@ u8 *func_80027834(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = (d->unk6 & 0x9FF) | 0xE1000600;
+    t->code = (d->unk6 & 0x9FF) | get_mode(1, 1, 0);
     addPrim(ot, t);
     *out = d->unk4;
     return (u8 *)(t + 1);
@@ -843,9 +843,9 @@ u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, Sprt
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
-        s->rgbc = 0x66606060;
+        s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
-        s->rgbc = 0x64808080;
+        s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     s->xy = (x & 0xFFFF) | (y << 16);
     s->uvclut = d->unk0;
@@ -854,7 +854,7 @@ u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, Sprt
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = (d->unk6 & 0x9FF) | 0xE1000600;
+    t->code = (d->unk6 & 0x9FF) | get_mode(1, 1, 0);
     addPrim(ot, t);
     *out = d->unk4;
     return (u8 *)(t + 1);
@@ -900,7 +900,7 @@ u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
                 }
             }
             setlen(p, 4);
-            p->rgbc = 0x64808080;
+            p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
             p->xy = (x & 0xFFFF) | (y << 16);
             g = &D_800687E0[idx];
             p->wh = g->unk4 | (g->unk5 << 16);
@@ -915,7 +915,7 @@ u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
     }
     t = (DrTpageWords *)p;
     setlen(t, 1);
-    t->code = 0xE100061F;
+    t->code = get_mode(1, 1, 0x1F);
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }
@@ -1083,7 +1083,7 @@ void func_80028204(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
             tpage = 0x90;
         }
         setlen(g_primPtr, 4);
-        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? 0x64808080 : 0x66606060;
+        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, 0x808080) : GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
         ((SprtWords *)g_primPtr)->xy = x | (y << 16);
         ((SprtWords *)g_primPtr)->uvclut = (u & 0xFF) | ((v & 0xFF) << 8) | (clut << 16);
         ((SprtWords *)g_primPtr)->wh = (h << 16) | 0x20;
@@ -1120,7 +1120,7 @@ void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     u = slot << 5;
     v = 0xE0;
     setlen(g_primPtr, 4);
-    ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? 0x64808080 : 0x66808080;
+    ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, 0x808080) : GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080);
     p = (SprtWords *)g_primPtr;
     g_primPtr += sizeof(SprtWords);
     p->xy = (x & 0xFFFF) | (y << 16);
@@ -1135,7 +1135,7 @@ void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
         v = (slot >> 1) * 14 - 0x20;
         h -= h0;
         setlen(g_primPtr, 4);
-        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? 0x64808080 : 0x66808080;
+        ((SprtWords *)g_primPtr)->rgbc = flag == 0 ? GPU_RGBC(GPU_SPRT, 0x808080) : GPU_RGBC(GPU_SPRT | GPU_ABE, 0x808080);
         q = (SprtWords *)g_primPtr;
         g_primPtr += sizeof(SprtWords);
         q->xy = (x & 0xFFFF) | ((y + 0x20) << 16);

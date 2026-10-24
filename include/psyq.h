@@ -35,6 +35,29 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define setPolyF4(p) setlen(p, 5), setcode(p, 0x28)
 #define setPolyFT4(p) setlen(p, 9), setcode(p, 0x2C)
 #define setPolyGT4(p) setlen(p, 12), setcode(p, 0x3C)
+/* GP0 primitive codes: the high byte of a packet's first (colour) word, as libgpu's setPolyF3() etc. write it.
+ * GPU_ABE = semi-transparent (setSemiTrans), GPU_TGE = texture without shading (setShadeTex). */
+#define GPU_POLY_F3 0x20
+#define GPU_POLY_FT3 0x24
+#define GPU_POLY_F4 0x28
+#define GPU_POLY_FT4 0x2C
+#define GPU_POLY_G3 0x30
+#define GPU_POLY_GT3 0x34
+#define GPU_POLY_G4 0x38
+#define GPU_POLY_GT4 0x3C
+#define GPU_LINE_F2 0x40
+#define GPU_LINE_G2 0x50
+#define GPU_TILE 0x60
+#define GPU_SPRT 0x64
+#define GPU_TILE_1 0x68
+#define GPU_TILE_8 0x70
+#define GPU_SPRT_8 0x74
+#define GPU_TILE_16 0x78
+#define GPU_SPRT_16 0x7C
+#define GPU_ABE 0x02
+#define GPU_TGE 0x01
+#define GPU_CODE(c) ((c) << 24)
+#define GPU_RGBC(c, rgb) (GPU_CODE(c) | (rgb)) /* code byte + 0xBBGGRR */
 /* libgpu.h primitive-word helpers */
 #define get_mode(dfe, dtd, tpage) \
     ((0xE1000000) | ((dtd) ? 0x0200 : 0) | ((dfe) ? 0x0400 : 0) | ((tpage) & 0x9FF))

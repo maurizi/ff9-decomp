@@ -147,7 +147,7 @@ void timer_draw(void) {
     }
     pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
     setlen(pkt, 3);
-    ((TileWords *)pkt)->rgbc = 0x62000000;
+    ((TileWords *)pkt)->rgbc = GPU_CODE(GPU_TILE | GPU_ABE);
     ((TileWords *)pkt)->xy = ((g_timerRect.x + 2) & 0xFFFF) | ((g_timerRect.y + 2) << 16);
     ((TileWords *)pkt)->wh = (g_timerRect.w - 4) | ((g_timerRect.h - 4) << 16);
     addPrim(ot, pkt);

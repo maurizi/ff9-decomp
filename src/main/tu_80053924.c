@@ -138,7 +138,7 @@ s32 func_80053A10(s16 arg0, s16 arg1) {
         DrawPrim(D_8007BD10);
         D_8007BD10 += 3;
         setlen(D_8007BD10, 1);
-        D_8007BD10[1] = 0xE1000120;
+        D_8007BD10[1] = get_mode(0, 0, 0x120);
         DrawPrim(D_8007BD10);
         D_8007BD10 += 2;
         D_8007BD10[0] = 0x03000000;
@@ -169,11 +169,11 @@ void func_800540E8(s32 x, s32 y) {
     c2 = v >> 23;
     g2 = (c2 << 16) | (c2 << 8) | c2;
     setlen(p, 1);
-    p[1] = 0xE1000340;
+    p[1] = get_mode(0, 1, 0x140);
     p += 7;
     for (i = 0; i < 4; i++) {
         p[0] = 0x06000000;
-        p[1] = ((c1 << 16) | (c1 << 8) | c1) | 0x32000000;
+        p[1] = ((c1 << 16) | (c1 << 8) | c1) | GPU_CODE(GPU_POLY_G3 | GPU_ABE);
         p[2] = ((D_8006F310[i] * g_gameState->unk10->clip.h) << 16) | ((D_8006F308[i] * 320) & 0xFFFF);
         p[3] = (c1 << 16) | (c1 << 8) | c1;
         p[4] = ((D_8006F310[i + 1] * g_gameState->unk10->clip.h) << 16) | ((D_8006F308[i + 1] * 320) & 0xFFFF);
@@ -270,7 +270,7 @@ void func_80054650(void) {
 
     p = D_8007BD10;
     c = (D_8007BD1C >> 4) & 0xFF;
-    rgbc = (c << 16) | (c << 8) | c | 0x2E000000;
+    rgbc = (c << 16) | (c << 8) | c | GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
     p += 10;
     for (i = 0; i < 8; i++) {
         v = &D_8007BD18[i * 9];

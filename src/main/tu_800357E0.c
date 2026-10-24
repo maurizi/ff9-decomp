@@ -6,7 +6,7 @@ void func_800357E0(s32 x, s32 y, s32 otz, s32 unused, Unk800357E0 *d) {
 
     setlen(g_primPtr, 4);
     s = (SprtWords *)g_primPtr;
-    s->rgbc = 0x64808080;
+    s->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     s->xy = ((x + d->unk2 - 0x80) & 0xFFFF) | ((y + d->unk3 - 0x80) << 16);
     s->uvclut = d->unk0 | (d->unk1 << 8) | ((u16)d->unk4 << 16);
     g_primPtr = (u8 *)(s + 1);
@@ -32,7 +32,7 @@ void func_8003595C(s32 x, s32 y, s32 otz, Unk80035B90 *unused, AnimCell *c) {
     y = y + c->unk0.unk3 - 0x80 + ((c->unk0.unkA - sh) >> 1);
     setlen(g_primPtr, 9);
     p = (PolyFT4Words *)g_primPtr;
-    p->rgbc = 0x2C808080;
+    p->rgbc = GPU_RGBC(GPU_POLY_FT4, 0x808080);
     p->xy0 = (x & 0xFFFF) | (y << 16);
     p->xy1 = ((x + sw) & 0xFFFF) | (y << 16);
     p->xy2 = (x & 0xFFFF) | ((y + sh) << 16);

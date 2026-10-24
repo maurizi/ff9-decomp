@@ -63,7 +63,7 @@ s32 func_80028F3C(s32 x, s32 y, s32 otz, u8 c, s32 mode) {
     setlen(g_primPtr, 4);
     w = (g >> 16) & 0xF;
     p = (SprtWords *)g_primPtr;
-    p->rgbc = 0x64808080;
+    p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     p->xy = (x + ((10 - w) >> 1)) | (y << 16);
     p->uvclut = (g & 0x40FFFF) | (D_8006BBA0[mode] << 16);
     p->wh = w | 0xD0000;
@@ -92,7 +92,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
         g = *(f->unkC + c);
         setlen(p, 4);
         k = (g >> 20) & 3;
-        p->rgbc = 0x64808080;
+        p->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
         w = g >> 28;
         spacing = 1;
         gx = x + k;
@@ -105,7 +105,7 @@ void text_draw(s32 x, s32 y, s32 otz, u8 *s, s32 pal) {
         s++;
     }
     setlen(p, 1);
-    ((DrTpageWords *)p)->code = 0xE100061E;
+    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, p);
     g_primPtr = (u8 *)p + 8;
 }
@@ -227,7 +227,7 @@ u8 *func_8002920C(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
         s++;
     }
     setlen(pkt, 1);
-    ((DrTpageWords *)pkt)->code = 0xE100061E;
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, pkt);
     pkt += sizeof(DrTpageWords);
     return pkt;
@@ -273,7 +273,7 @@ u8 *func_8002995C(s32 x, s32 y, u32 *ot, Character *ch, s32 *w, u8 *pkt) {
         s++;
     }
     setlen(pkt, 1);
-    ((DrTpageWords *)pkt)->code = 0xE100061E;
+    ((DrTpageWords *)pkt)->code = get_mode(1, 1, 0x1E);
     addPrim(ot, pkt);
     *w = x - x0;
     return pkt + 8;
@@ -289,15 +289,15 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     s32 c;
     s32 w;
 
-    rgbc = 0x64404040;
+    rgbc = GPU_RGBC(GPU_SPRT, 0x404040);
     if (mode == 0) {
-        rgbc = 0x64808080;
+        rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     tbl = (SpriteDesc16 *)D_800686D0;
     clut = tbl[46].clut;
     if (mode == 1) {
         clut += 0x40;
-        rgbc = 0x66000000;
+        rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     }
     if (s == NULL) {
         return (u8 *)p;
@@ -332,7 +332,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
         x += w - 1;
     }
     setlen(p, 1);
-    ((DrTpageWords *)p)->code = 0xE100061F;
+    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
     addPrim(ot, p);
     return (u8 *)p + 8;
 }
@@ -388,7 +388,7 @@ u8 *func_80029D60(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
                 u = 0;
             }
             setlen(p, 3);
-            p->rgbc = 0x74808080;
+            p->rgbc = GPU_RGBC(GPU_SPRT_8, 0x808080);
             q = p;
             if ((u8)(*s + 0x22) < 2) {
                 p->x = x - 7;
@@ -407,7 +407,7 @@ u8 *func_80029D60(s32 x, s32 y, u32 *ot, u8 *s, s32 pal, u8 *pkt) {
         }
     }
     setlen(p, 1);
-    ((DrTpageWords *)p)->code = 0xE100061F;
+    ((DrTpageWords *)p)->code = get_mode(1, 1, 0x1F);
     hi = getaddr(ot); /* reuses hi as the tag temp */
     setaddr(p, hi), setaddr(ot, p);
     return (u8 *)p + 8;
@@ -975,12 +975,12 @@ void text_drawBlock(s32 arg0, s32 arg1, s32 otz, u8 *arg3, s32 arg4) {
 u8 *func_8002B644(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     SprtWords *p = pkt;
     DrTpageWords *t;
-    u32 rgbc = 0x64808080;
+    u32 rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     s32 c;
     s32 u;
 
     if (style == 2) {
-        rgbc = 0x66606060;
+        rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     }
     while ((c = *s) != 0) {
         if ((u8)c != ' ') {
@@ -1004,18 +1004,18 @@ u8 *func_8002B644(s32 x, s32 y, u32 *ot, u8 *s, s32 style, void *pkt) {
     }
     t = (DrTpageWords *)p;
     setlen(t, 1);
-    t->code = 0xE100061F;
+    t->code = get_mode(1, 1, 0x1F);
     addPrim(ot, t);
     return (u8 *)(t + 1);
 }
 
 u8 *func_8002B7B0(s32 x, s32 y, u32 *ot, u32 a, s32 mode, s32 *out, SprtWords *p) {
-    u32 rgbc = 0x66000000;
+    u32 rgbc = GPU_CODE(GPU_SPRT | GPU_ABE);
     s32 dx = (a >> 20) & 3;
     s32 h = (a >> 16) & 0xF;
     s32 n = a >> 28;
     if (mode != 1) {
-        rgbc = 0x64808080;
+        rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
     setlen(p, 4);
     p->xy = ((x + dx) & 0xFFFF) | (y << 16);
@@ -1076,7 +1076,7 @@ s32 func_8002BA68(s32 arg0) {
 
 u8 *func_8002BA90(u32 *ot, DrTpageWords *p) {
     setlen(p, 1);
-    p->code = 0xE100061E;
+    p->code = get_mode(1, 1, 0x1E);
     addPrim(ot, p);
     return (u8 *)(p + 1);
 }
