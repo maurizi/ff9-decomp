@@ -33,9 +33,9 @@ s32 fx_043_op80(s32 mode, Fx043Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801E7BD0.vx = work->unkC.vx;
         D_801E7BD0.vy = work->unkC.vy;
         D_801E7BD0.vz = work->unkC.vz;
-        env->camera->unk0[0].vx = work->unkC.vx;
-        env->camera->unk0[0].vy = work->unkC.vy;
-        env->camera->unk0[0].vz = work->unkC.vz;
+        env->camera->points[0].vx = work->unkC.vx;
+        env->camera->points[0].vy = work->unkC.vy;
+        env->camera->points[0].vz = work->unkC.vz;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&D_801E7BE0);
         if (work->unk0 != NULL) {
             work->unk0->unk14 = (s32)D_801E7BE8;

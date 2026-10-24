@@ -186,7 +186,7 @@ void func_801E7FE0(s32 r, s32 a1, s32 a, s32 a3, s16 *out) {
 }
 
 void func_801E80B0(SVECTOR *a, SVECTOR *b) {
-    BTLFX_EXPORTS(D_801E9E90)->btlfx_aimAngles((s16 *)&D_801E9E90->camera->unk54, (s16 *)a, (s16 *)b);
+    BTLFX_EXPORTS(D_801E9E90)->btlfx_aimAngles((s16 *)&D_801E9E90->camera->eye, (s16 *)a, (s16 *)b);
 }
 
 s32 func_801E80F4(s32 mode, Fx0dfPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, Unk800DA1B8 *pool,

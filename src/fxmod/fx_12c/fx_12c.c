@@ -46,7 +46,7 @@ s32 fx_12c_op80(s32 mode, Fx12cWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         D_801E8110 = 0;
         ex->func_800DC858(0x10, 0, (u16 *)env->camera);
-        env->camera->unk0[0].vy = 0;
+        env->camera->points[0].vy = 0;
     } else {
         frame = entry->unk0;
         switch (frame) {

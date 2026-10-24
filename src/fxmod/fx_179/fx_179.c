@@ -272,9 +272,9 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             BTLFX_COPY_SVEC(&to, &work->unk10);
             to.vy -= 0x200;
             ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, (frame << 12) / 10, (s16 *)&out);
-            env->camera->unk0[3].vx = out.vx;
-            env->camera->unk0[3].vy = out.vy;
-            env->camera->unk0[3].vz = out.vz;
+            env->camera->points[3].vx = out.vx;
+            env->camera->points[3].vy = out.vy;
+            env->camera->points[3].vz = out.vz;
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk18);
         u.v.vx = u.v.vy = u.v.vz = 0xAAA;

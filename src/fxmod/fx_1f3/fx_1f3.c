@@ -238,7 +238,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
-            ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&work->unk5C, (s16 *)&work->unk90);
+            ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->unk5C, (s16 *)&work->unk90);
             ex->Hi_DrawEffModel(&work->unk90, (VECTOR *)&work->unk70, (s32)&work->unk80, work->unk6C);
             n1 = 0x80 - work->unk0[0];
             if (n1 < 8) {

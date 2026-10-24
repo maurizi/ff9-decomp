@@ -10,9 +10,9 @@ s32 fx_022_op80(s32 mode, Fx022Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7898 = env;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk4);
         ex->func_800DC858(0x10, 1, (u16 *)&work->unkC);
-        env->camera->unk0[0].vx = work->unk4.vx;
-        env->camera->unk0[0].vy = work->unk4.vy;
-        env->camera->unk0[0].vz = work->unk4.vz;
+        env->camera->points[0].vx = work->unk4.vx;
+        env->camera->points[0].vy = work->unk4.vy;
+        env->camera->points[0].vz = work->unk4.vz;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
     } else {
         frame = entry->unk0;

@@ -444,9 +444,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             v.vz = work->unk54.vz;
             ex->btlfx_aimAngles((s16 *)&work->unkC, (s16 *)&v, (s16 *)&work->unk6C);
             work->unk6C.vz = -0x100;
-            env->camera->unk0[3].vx = work->unk54.vx;
-            env->camera->unk0[3].vy = work->unk54.vy;
-            env->camera->unk0[3].vz = work->unk54.vz;
+            env->camera->points[3].vx = work->unk54.vx;
+            env->camera->points[3].vy = work->unk54.vy;
+            env->camera->points[3].vz = work->unk54.vz;
             BTLFX_COPY_SVEC(&work->unk3C, &work->unk54);
             D_801F0D30 = 0;
             D_801F0D38 = 0;
@@ -523,10 +523,10 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                 }
                 zz4++;
             }
-            env->camera->unk0[3].vx = work->unkC.vx;
-            env->camera->unk0[3].vy = work->unkC.vy;
+            env->camera->points[3].vx = work->unkC.vx;
+            env->camera->points[3].vy = work->unkC.vy;
             D_801F0D38 = 1;
-            env->camera->unk0[3].vz = work->unkC.vz;
+            env->camera->points[3].vz = work->unkC.vz;
             work->unk8C.vy = 0x800;
             work->unk8C.vx = 0;
             work->unk8C.vz = 0;
@@ -599,12 +599,12 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         t = (frame << 12) / 24;
         c = t >> 2;
         zz5 = ex->math_cos(c);
-        env->camera->unk0[3].vx = work->unkC.vx;
+        env->camera->points[3].vx = work->unkC.vx;
         s = zz5;
-        env->camera->unk0[3].vy = work->unkC.vy;
+        env->camera->points[3].vy = work->unkC.vy;
         glow = (t * 0xAA) >> 12;
-        env->camera->unk0[3].vz = work->unkC.vz;
-        env->camera->unk0[3].vy += ex->math_sin(c);
+        env->camera->points[3].vz = work->unkC.vz;
+        env->camera->points[3].vy += ex->math_sin(c);
         trail = 0x1000;
         if (frame >= 4) {
             work->unk1C.vx = work->unkC.vx;
@@ -718,9 +718,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             entry->unk0 = -1;
             BTLFX_COPY_SVEC(&work->unk3C, &D_801F082C);
             work->unk3C.vy += 0x400;
-            env->camera->unk0[3].vx = work->unk3C.vx;
-            env->camera->unk0[3].vy = work->unk3C.vy;
-            env->camera->unk0[3].vz = work->unk3C.vz;
+            env->camera->points[3].vx = work->unk3C.vx;
+            env->camera->points[3].vy = work->unk3C.vy;
+            env->camera->points[3].vz = work->unk3C.vz;
             work->unk54.vx = D_801F082C.vx;
             work->unk54.vy = D_801F082C.vy;
             work->unk54.vz = D_801F082C.vz;
@@ -737,11 +737,11 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         BTLFX_COPY_SVEC(&work->unk3C, &D_801F082C);
         t = (frame << 12) / 10;
         work->unk3C.vy += (0x1000 - t) >> 2;
-        env->camera->unk0[3].vx = work->unk3C.vx;
+        env->camera->points[3].vx = work->unk3C.vx;
         glow = 0xF0;
-        env->camera->unk0[3].vy = work->unk3C.vy;
+        env->camera->points[3].vy = work->unk3C.vy;
         g = 0x300;
-        env->camera->unk0[3].vz = work->unk3C.vz;
+        env->camera->points[3].vz = work->unk3C.vz;
         work->unk6C.vx += 0x20;
         work->unk6C.vy += 0x10;
         if (frame < 0x10) {
@@ -968,10 +968,10 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
     }
     case 6:
         BTLFX_COPY_SVEC(&work->unk3C, &D_801F082C);
-        env->camera->unk0[3].vx = work->unk3C.vx;
-        env->camera->unk0[3].vy = work->unk3C.vy;
+        env->camera->points[3].vx = work->unk3C.vx;
+        env->camera->points[3].vy = work->unk3C.vy;
         t = frame << 8;
-        env->camera->unk0[3].vz = work->unk3C.vz;
+        env->camera->points[3].vz = work->unk3C.vz;
         env->unk28 = 0x180;
         f1 = ex->math_cos(t >> 2) + 0x400;
         c = ex->math_cos(t >> 2);

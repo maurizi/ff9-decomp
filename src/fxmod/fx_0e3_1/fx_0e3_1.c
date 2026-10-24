@@ -281,7 +281,7 @@ void func_801ED708(VECTOR *pos, SVECTOR *rot) {
     v.vx = pos->vx;
     v.vy = pos->vy;
     v.vz = pos->vz;
-    ex->func_800D0674(&env->camera->unk54, &v, rot, (s32)&tmp, (s32)&tmp, &a);
+    ex->func_800D0674(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
     rot->vz = -a + 0x400;
 }
 
@@ -477,10 +477,10 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m);
             ex->func_800CFE88(&m, 0x40, (s32)&work->unk40);
             work->unk40.vy += 0x1000 - ex->math_sin(t >> 2);
-            env->camera->unk0[3].vx = work->unk40.vx;
-            env->camera->unk0[3].vy = work->unk40.vy;
+            env->camera->points[3].vx = work->unk40.vx;
+            env->camera->points[3].vy = work->unk40.vy;
             a = 0x100;
-            env->camera->unk0[3].vz = work->unk40.vz;
+            env->camera->points[3].vz = work->unk40.vz;
             if (frame >= 0x23) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -523,9 +523,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m4);
             ex->func_800CFE88(&m4, 0x40, (s32)&work->unk40);
-            env->camera->unk0[3].vx = work->unk40.vx;
-            env->camera->unk0[3].vy = work->unk40.vy;
-            env->camera->unk0[3].vz = work->unk40.vz;
+            env->camera->points[3].vx = work->unk40.vx;
+            env->camera->points[3].vy = work->unk40.vy;
+            env->camera->points[3].vz = work->unk40.vz;
             if (frame == 0) {
                 work->unk60 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x19), (s32)&work->unk30);
                 work->unk64 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk30);
@@ -615,9 +615,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->func_800CFD78(&work->unk48.vx, &work->unkBC.vx,
                                   -((ex->math_sin(((frame - 0xE) << 10) / 14) * 3) / 2), &work->unk40.vx);
             }
-            env->camera->unk0[3].vx = work->unk40.vx;
-            env->camera->unk0[3].vy = work->unk40.vy;
-            env->camera->unk0[3].vz = work->unk40.vz;
+            env->camera->points[3].vx = work->unk40.vx;
+            env->camera->points[3].vy = work->unk40.vy;
+            env->camera->points[3].vz = work->unk40.vz;
             if (frame == 1) {
                 work->unkB0.vx = work->unkB0.vy = 0x249;
             } else if (frame < 0x11) {
@@ -731,9 +731,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk40.vx = work->unk30.vx;
             work->unk40.vz = work->unk30.vz;
             work->unk40.vy -= 0x1000;
-            env->camera->unk0[3].vx = work->unk40.vx;
-            env->camera->unk0[3].vy = work->unk40.vy;
-            env->camera->unk0[3].vz = work->unk40.vz;
+            env->camera->points[3].vx = work->unk40.vx;
+            env->camera->points[3].vy = work->unk40.vy;
+            env->camera->points[3].vz = work->unk40.vz;
             func_801ED708((VECTOR *)&work->unkA4, &work->unkBC);
             ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkA0);
             BTLFX_COPY_SVEC(&a2, &work->unk30);
@@ -783,9 +783,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk40.vy = work->unk30.vy;
                 work->unk40.vz = work->unk30.vz;
                 work->unk40.vy -= 0x180 + (((0x1000 - ((frame << 12) >> 2)) * 3) >> 1);
-                env->camera->unk0[3].vx = work->unk40.vx;
-                env->camera->unk0[3].vy = work->unk40.vy;
-                env->camera->unk0[3].vz = work->unk40.vz;
+                env->camera->points[3].vx = work->unk40.vx;
+                env->camera->points[3].vy = work->unk40.vy;
+                env->camera->points[3].vz = work->unk40.vz;
             }
             if (frame == 4) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x20, 0x80, 0xFF);
@@ -798,9 +798,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     s32 dd = (k6 >> 6) * ((frame & 1) * 2 - 1) - 0x200;
                     work->unk40.vy = D_801F09B4.vy + dd;
                 }
-                env->camera->unk0[3].vx = work->unk40.vx;
-                env->camera->unk0[3].vy = work->unk40.vy;
-                env->camera->unk0[3].vz = work->unk40.vz;
+                env->camera->points[3].vx = work->unk40.vx;
+                env->camera->points[3].vy = work->unk40.vy;
+                env->camera->points[3].vz = work->unk40.vz;
             }
             if (work->unkB0.vx != 0) {
                 func_801ED708((VECTOR *)&work->unkA4, &work->unkBC);
@@ -888,9 +888,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk7A = ex->func_800E9930(0x31, entry->unk8, -1);
                 ex->func_800E9930(0x2D, entry->unk8, -1);
                 ex->func_800E9930(0x2E, entry->unk8, -1);
-                env->camera->unk0[2].vx = 0;
-                env->camera->unk0[2].vy = -0xC8;
-                env->camera->unk0[2].vz = 0x300;
+                env->camera->points[2].vx = 0;
+                env->camera->points[2].vy = -0xC8;
+                env->camera->points[2].vz = 0x300;
             }
             break;
         case 5:
@@ -913,9 +913,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk40.vy = work->unk30.vy;
             work->unk40.vz = work->unk30.vz;
             work->unk40.vy = -0x2D4 - ((t * 0x76C) >> 12);
-            env->camera->unk0[3].vx = work->unk40.vx;
-            env->camera->unk0[3].vy = work->unk40.vy;
-            env->camera->unk0[3].vz = work->unk40.vz;
+            env->camera->points[3].vx = work->unk40.vx;
+            env->camera->points[3].vy = work->unk40.vy;
+            env->camera->points[3].vz = work->unk40.vz;
             if (frame < 2) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF - (frame << 7), 0xFF - (frame << 7), 0xFF);
             } else if (frame == 2) {

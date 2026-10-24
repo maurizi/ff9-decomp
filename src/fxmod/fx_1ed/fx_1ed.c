@@ -250,9 +250,9 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             break;
         }
         if (D_801E8AC0[0] != 0) {
-            D_801E8A90.vx = env->camera->unk0[2].vx;
-            D_801E8A90.vy = env->camera->unk0[2].vy;
-            D_801E8A90.vz = env->camera->unk0[2].vz;
+            D_801E8A90.vx = env->camera->points[2].vx;
+            D_801E8A90.vy = env->camera->points[2].vy;
+            D_801E8A90.vz = env->camera->points[2].vz;
             ex->Hi_DrawSummonModel(&D_801E8A88, &D_801E8A90, (s32)&D_801E8AA0, SUMMON(env)->unk60, 1);
             if (D_801E8AC0[1] != 0) {
                 D_801E8AC0[1]--;

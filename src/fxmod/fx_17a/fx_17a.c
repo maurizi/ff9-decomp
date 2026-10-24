@@ -194,9 +194,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         {
         switch (work->unk0) {
         case 2:
-            env->camera->unk0[3].vx = work->unkC.vx;
-            env->camera->unk0[3].vy = work->unkC.vy;
-            env->camera->unk0[3].vz = work->unkC.vz;
+            env->camera->points[3].vx = work->unkC.vx;
+            env->camera->points[3].vy = work->unkC.vy;
+            env->camera->points[3].vz = work->unkC.vz;
             work->unk4C.vx += 0x20;
             work->unk4C.vy += 0x10;
             t = (frame << 12) / 18;
@@ -297,9 +297,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->unk0 = -1;
                 BTLFX_COPY_SVEC(&work->unk24, &D_801E9AC4);
                 work->unk24.vy += 0x400;
-                env->camera->unk0[3].vx = work->unk24.vx;
-                env->camera->unk0[3].vy = work->unk24.vy;
-                env->camera->unk0[3].vz = work->unk24.vz;
+                env->camera->points[3].vx = work->unk24.vx;
+                env->camera->points[3].vy = work->unk24.vy;
+                env->camera->points[3].vz = work->unk24.vz;
                 work->unk34.vx = D_801E9AC4.vx;
                 work->unk34.vy = D_801E9AC4.vy;
                 work->unk34.vz = D_801E9AC4.vz;
@@ -316,11 +316,11 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             BTLFX_COPY_SVEC(&work->unk24, &D_801E9AC4);
             t = (frame << 12) / 10;
             work->unk24.vy += (0x1000 - t) >> 2;
-            env->camera->unk0[3].vx = work->unk24.vx;
+            env->camera->points[3].vx = work->unk24.vx;
             glow = 0xF0;
-            env->camera->unk0[3].vy = work->unk24.vy;
+            env->camera->points[3].vy = work->unk24.vy;
             g = 0x300;
-            env->camera->unk0[3].vz = work->unk24.vz;
+            env->camera->points[3].vz = work->unk24.vz;
             work->unk4C.vx += 0x20;
             work->unk4C.vy += 0x10;
             if (frame < 0x10) {
@@ -548,10 +548,10 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         case 6:
             BTLFX_COPY_SVEC(&work->unk24, &D_801E9AC4);
-            env->camera->unk0[3].vx = work->unk24.vx;
-            env->camera->unk0[3].vy = work->unk24.vy;
+            env->camera->points[3].vx = work->unk24.vx;
+            env->camera->points[3].vy = work->unk24.vy;
             t = frame << 8;
-            env->camera->unk0[3].vz = work->unk24.vz;
+            env->camera->points[3].vz = work->unk24.vz;
             env->unk28 = 0x180;
             f1 = ex->math_cos(t >> 2) + 0x400;
             c = ex->math_cos(t >> 2);

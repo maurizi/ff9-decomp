@@ -7,8 +7,8 @@ u8 func_800C2DF4(void) {
 void btlcam_init(void) {
     g_btlfxEnv->camera = &g_btlCamera;
     bzero(&g_btlCamera, 0xD0);
-    g_btlCamera.unk60 = 0x200;
-    g_btlCamera.unk5E = 0x200;
+    g_btlCamera.baseProjDist = 0x200;
+    g_btlCamera.projDist = 0x200;
 }
 
 void btlcam_beginEffect(void) {
@@ -67,7 +67,7 @@ void btlcam_endEffect(void) {
     if (g_btlCamScript.unk45 == 0) {
         g_btlCamera.unkA8 = g_btlCamScript.unk18;
         btlcam_loadScript(btl_getSceneData(1));
-        g_btlCamera.unk5E = g_btlCamera.unk60;
+        g_btlCamera.projDist = g_btlCamera.baseProjDist;
     }
     g_btlCamera.unk5C = 1;
     g_btlCamScript.unk45 = 0;
@@ -102,12 +102,12 @@ void btlcam_loadScript(s32 arg) {
     data = (u8 *)arg0 + *q;
     for (i = 0; i < 4; i++) {
         if (flags & 1) {
-            bcopy(data, &g_btlCamera.unk0[i], 6);
+            bcopy(data, &g_btlCamera.points[i], 6);
             data += 6;
         } else {
-            g_btlCamera.unk0[i].vx = 0;
-            g_btlCamera.unk0[i].vy = 0;
-            g_btlCamera.unk0[i].vz = 0;
+            g_btlCamera.points[i].vx = 0;
+            g_btlCamera.points[i].vy = 0;
+            g_btlCamera.points[i].vz = 0;
         }
         g_btlCamera.unk30[i].vx = 0;
         g_btlCamera.unk30[i].vy = 0;
@@ -269,7 +269,7 @@ s32 btlcam_step(void) {
                 }
                 if (!(g_btlCamera.unk5C & 1)) {
                     g_btlCamera.unk5C |= 1;
-                    g_btlCamera.unk5E = 0x200;
+                    g_btlCamera.projDist = 0x200;
                 }
                 flags = p[1] | ((p[0] >> 10) << 16);
                 g_btlCamScript.pc += 4;
@@ -315,10 +315,10 @@ s32 btlcam_step(void) {
                 if (flags & 0x800) {
                     g_btlCamScript.zoomFrames = g_btlCamScript.zoomLeft = g_btlCamScript.pc[0];
                     g_btlCamScript.zoomTarget = g_btlCamScript.pc[1];
-                    g_btlCamScript.zoomFrom = g_btlCamera.unk5E;
+                    g_btlCamScript.zoomFrom = g_btlCamera.projDist;
                     v = ((u16 *)g_btlCamScript.pc)[1];
                     if (v == 0) {
-                        v = g_btlCamera.unk60;
+                        v = g_btlCamera.baseProjDist;
                     }
                     g_btlCamScript.zoomTo = v;
                     g_btlCamScript.pc += 4;
@@ -353,7 +353,7 @@ s32 btlcam_step(void) {
                     }
                     g_btlCamera.unkA8 = g_btlCamScript.unk18;
                     btlcam_loadScript(btl_getSceneData(1));
-                    g_btlCamera.unk5E = g_btlCamera.unk60;
+                    g_btlCamera.projDist = g_btlCamera.baseProjDist;
                     return 1;
                 }
                 if (flags & 0x80000) {
@@ -374,31 +374,31 @@ s32 btlcam_step(void) {
     if (g_btlCamera.unk68[0].unk18 != 0 && g_btlCamera.unk68[1].unk18 != 0) {
         g_btlCamera.unk66 = 0;
         g_btlCamera.unkBB = 0;
-        func_800C416C(0, &g_btlCamera.unk68[0], &g_btlCamera.unk54.vx);
+        func_800C416C(0, &g_btlCamera.unk68[0], &g_btlCamera.eye.vx);
         func_800C416C(0, &g_btlCamera.unk68[1], &sv.vx);
         if (g_btlCamScript.unk44 == 1) {
             g_btlCamScript.unk44 = 2;
-            bcopy(&g_btlCamera.unk54, &g_btlCamera.unk0[4], 8);
-            bcopy(&sv, &g_btlCamera.unk0[5], 8);
+            bcopy(&g_btlCamera.eye, &g_btlCamera.points[4], 8);
+            bcopy(&sv, &g_btlCamera.points[5], 8);
         }
-        btlcam_applyTargetView(&g_btlCamera.unk54, &sv);
-        btlcam_applySway(&g_btlCamera.unk54.vx, &sv.vx);
+        btlcam_applyTargetView(&g_btlCamera.eye, &sv);
+        btlcam_applySway(&g_btlCamera.eye.vx, &sv.vx);
         btlcam_applyShake(&sv.vx);
-        btlcam_lookAt(&g_gameState->unk1C->unk18, &g_btlCamera.unk54, &sv);
-        g_btlCamera.unk50 = -ratan2(g_btlCamera.unk54.vx - sv.vx, g_btlCamera.unk54.vz - sv.vz) - 0x800;
+        btlcam_lookAt(&g_gameState->unk1C->unk18, &g_btlCamera.eye, &sv);
+        g_btlCamera.yaw = -ratan2(g_btlCamera.eye.vx - sv.vx, g_btlCamera.eye.vz - sv.vz) - 0x800;
     }
     if (g_btlCamScript.zoomLeft != 0) {
         g_btlCamScript.zoomLeft--;
         r = btlfx_lerpRatio(g_btlCamScript.zoomTo, g_btlCamScript.zoomFrom, g_btlCamScript.zoomLeft, g_btlCamScript.zoomFrames);
         if (g_btlCamScript.zoomTarget & 1) {
-            g_btlCamera.unk60 = r;
+            g_btlCamera.baseProjDist = r;
         }
         if (g_btlCamScript.zoomTarget & 2) {
-            g_btlCamera.unk5E = r;
+            g_btlCamera.projDist = r;
         }
     }
     if (g_btlCamera.unk66 == 0) {
-        g_gameState->unk1C->unkA = g_btlCamera.unk5E;
+        g_gameState->unk1C->unkA = g_btlCamera.projDist;
     }
     SetGeomScreen(g_gameState->unk1C->unkA);
     e = g_btlCamera.unk67;
@@ -603,9 +603,9 @@ void func_800C416C(s32 arg0, Unk800C412C *arg1, s16 *arg2) {
         arg2[2] = 0;
         arg2[3] = out.vz;
         for (i = 0; i < 4; i++) {
-            arg2[0] += (g_btlCamera.unk0[i].vx * coef[i]) >> 12;
-            arg2[1] += (g_btlCamera.unk0[i].vy * coef[i]) >> 12;
-            arg2[2] += (g_btlCamera.unk0[i].vz * coef[i]) >> 12;
+            arg2[0] += (g_btlCamera.points[i].vx * coef[i]) >> 12;
+            arg2[1] += (g_btlCamera.points[i].vy * coef[i]) >> 12;
+            arg2[2] += (g_btlCamera.points[i].vz * coef[i]) >> 12;
         }
         break;
     default:
@@ -719,9 +719,9 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n >= 0x15) {
         n -= 0x15;
-        arg1[0] = g_btlCamera.unk0[n].vx;
-        arg1[1] = g_btlCamera.unk0[n].vy;
-        arg1[2] = g_btlCamera.unk0[n].vz;
+        arg1[0] = g_btlCamera.points[n].vx;
+        arg1[1] = g_btlCamera.points[n].vy;
+        arg1[2] = g_btlCamera.points[n].vz;
         if (n < 4) {
             arg2[0] = g_btlCamera.unk30[n].vx;
             arg2[1] = g_btlCamera.unk30[n].vy;
@@ -891,17 +891,17 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
         if (g_btlCamera.unkBA == 1 && ((g_btlCamera.unkB9 == 1 && !(g_btlfxEnv->unk0->unk1C & 8)) || g_btlCamera.unkB9 == 2)) {
             if (g_btlCamera.unkBB != 2) {
                 if (g_btlCamera.unk65 != 0 || g_btlCamera.unkB4 == 0) {
-                    bcopy(&g_btlCamera.unk0[4], arg0, 8);
-                    bcopy(&g_btlCamera.unk0[5], arg1, 8);
+                    bcopy(&g_btlCamera.points[4], arg0, 8);
+                    bcopy(&g_btlCamera.points[5], arg1, 8);
                     g_btlCamera.unkBB = 2;
                 } else {
                     a = g_btlCamera.unkB4 * 0x555;
                     b = 0x1000 - a;
-                    LoadAverageShort12(&g_btlCamera.unkBC, &g_btlCamera.unk0[4], a, b, arg0);
-                    LoadAverageShort12(&g_btlCamera.unkC4, &g_btlCamera.unk0[5], a, b, arg1);
+                    LoadAverageShort12(&g_btlCamera.unkBC, &g_btlCamera.points[4], a, b, arg0);
+                    LoadAverageShort12(&g_btlCamera.unkC4, &g_btlCamera.points[5], a, b, arg1);
                 }
             }
-            g_gameState->unk1C->unkA = g_btlCamera.unk60;
+            g_gameState->unk1C->unkA = g_btlCamera.baseProjDist;
             g_btlCamera.unk66 = 1;
         }
     } else {

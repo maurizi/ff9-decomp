@@ -242,7 +242,7 @@ void func_801E83BC(VECTOR *pos, SVECTOR *rot) {
     v.vx = pos->vx;
     v.vy = pos->vy;
     v.vz = pos->vz;
-    ex->func_800D0674(&env->camera->unk54, &v, rot, (s32)&tmp, (s32)&tmp, &a);
+    ex->func_800D0674(&env->camera->eye, &v, rot, (s32)&tmp, (s32)&tmp, &a);
     rot->vz = -a + 0x400;
 }
 
@@ -298,9 +298,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         switch (work->unk0) {
         case 0:
-            env->camera->unk0[3].vx = work->unk20.vx;
-            env->camera->unk0[3].vy = work->unk20.vy;
-            env->camera->unk0[3].vz = work->unk20.vz;
+            env->camera->points[3].vx = work->unk20.vx;
+            env->camera->points[3].vy = work->unk20.vy;
+            env->camera->points[3].vz = work->unk20.vz;
             if (frame >= 2) {
                 work->unk0 = 4;
                 entry->unk0 = -1;
@@ -353,9 +353,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vx = work->unk10.vx;
                 work->unk20.vz = work->unk10.vz;
                 work->unk20.vy += -0x180 - ((0x1000 - ((frame << 12) >> 2)) >> 1);
-                env->camera->unk0[3].vx = work->unk20.vx;
-                env->camera->unk0[3].vy = work->unk20.vy;
-                env->camera->unk0[3].vz = work->unk20.vz;
+                env->camera->points[3].vx = work->unk20.vx;
+                env->camera->points[3].vy = work->unk20.vy;
+                env->camera->points[3].vz = work->unk20.vz;
             }
             if (frame == 4) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x20, 0x80, 0xFF);
@@ -365,9 +365,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vx = D_801EA228.vx + ex->btlfx_randCentered(r);
                 work->unk20.vy = D_801EA228.vy + ex->btlfx_randCentered(r);
                 work->unk20.vy = D_801EA228.vy - 0x200 + (u >> 6) * ((frame & 1) * 2 - 1);
-                env->camera->unk0[3].vx = work->unk20.vx;
-                env->camera->unk0[3].vy = work->unk20.vy;
-                env->camera->unk0[3].vz = work->unk20.vz;
+                env->camera->points[3].vx = work->unk20.vx;
+                env->camera->points[3].vy = work->unk20.vy;
+                env->camera->points[3].vz = work->unk20.vz;
             }
             if (work->unk6C.vx != 0) {
                 func_801E83BC((VECTOR *)&work->unk60, &work->unk78);
@@ -445,9 +445,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk32 = ex->func_800E9930(0x23, entry->unk8, -1);
                 ex->func_800E9930(0x20, entry->unk8, -1);
                 ex->func_800E9930(0x21, entry->unk8, -1);
-                env->camera->unk0[2].vx = 0;
-                env->camera->unk0[2].vy = -0xC8;
-                env->camera->unk0[2].vz = 0x300;
+                env->camera->points[2].vx = 0;
+                env->camera->points[2].vy = -0xC8;
+                env->camera->points[2].vz = 0x300;
             }
             break;
         }
@@ -512,9 +512,9 @@ s32 fx_195_op80(s32 mode, Fx195Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vy = work->unk10.vy;
             work->unk20.vz = work->unk10.vz;
             work->unk20.vy = -0x2D4 - ((t * 0x76C) >> 12);
-            env->camera->unk0[3].vx = work->unk20.vx;
-            env->camera->unk0[3].vy = work->unk20.vy;
-            env->camera->unk0[3].vz = work->unk20.vz;
+            env->camera->points[3].vx = work->unk20.vx;
+            env->camera->points[3].vy = work->unk20.vy;
+            env->camera->points[3].vz = work->unk20.vz;
             if (frame < 2) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0xFF - (frame << 7), 0xFF - (frame << 7), 0xFF);
             } else if (frame == 2) {

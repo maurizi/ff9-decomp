@@ -385,8 +385,8 @@ void btlfx_drawTrailFlat(s32 arg0, s32 n, s32 arg2, s32 arg3, s32 arg4, s32 arg5
         g_btlfxEnv->prim = prim + n * 0x34;
         c.unk26 = (arg3 + arg5) << 8;
         c.unk24 = arg3 << 8;
-        s = math_sin(-g_btlfxEnv->camera->unk50 + 0x400);
-        c.unk28 = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->unk50 + 0x400) << 16);
+        s = math_sin(-g_btlfxEnv->camera->yaw + 0x400);
+        c.unk28 = (s & 0xFFFF) | (math_cos(-g_btlfxEnv->camera->yaw + 0x400) << 16);
         c.unkC.b[3] = (tp != 0xFF) ? 0x3E : 0x3C;
         c.unk18 = (((tp & 3) << 5) | arg6) << 16;
         c.unk1C = arg7 << 16;

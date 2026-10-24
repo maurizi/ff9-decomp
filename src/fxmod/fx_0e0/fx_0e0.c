@@ -597,9 +597,9 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk18.vy -= 0x400 + (ex->math_sin(a1) >> 1);
             scl = 0x80;
             xo = 0;
-            env->camera->unk0[3].vx = work->unk18.vx;
-            env->camera->unk0[3].vy = work->unk18.vy;
-            env->camera->unk0[3].vz = work->unk18.vz;
+            env->camera->points[3].vx = work->unk18.vx;
+            env->camera->points[3].vy = work->unk18.vy;
+            env->camera->points[3].vz = work->unk18.vz;
             work->unk3C.vz += 8;
             work->unk24.vy += 0x90;
             work->unk24.vz += 0x46;
@@ -796,9 +796,9 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18.vx = 0;
                 work->unk18.vy = -0x200;
                 work->unk18.vz = 0;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
             }
             break;
         case 10:

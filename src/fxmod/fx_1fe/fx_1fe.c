@@ -170,9 +170,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vy = D_801E88F8.vy;
         work->unk20.vz = D_801E88F8.vz;
         work->unk20.vy -= 0xA00;
-        env->camera->unk0[3].vx = work->unk20.vx;
-        env->camera->unk0[3].vy = work->unk20.vy;
-        env->camera->unk0[3].vz = work->unk20.vz;
+        env->camera->points[3].vx = work->unk20.vx;
+        env->camera->points[3].vy = work->unk20.vy;
+        env->camera->points[3].vz = work->unk20.vz;
     } else {
         frame = entry->unk0;
         switch (work->unk0) {
@@ -194,9 +194,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vy = D_801E88F8.vy;
             work->unk20.vz = D_801E88F8.vz;
             work->unk20.vy = (s16)(work->unk20.vy - 0x200) - (ex->math_sin(d >> 2) >> 1);
-            env->camera->unk0[3].vx = work->unk20.vx;
-            env->camera->unk0[3].vy = work->unk20.vy;
-            env->camera->unk0[3].vz = work->unk20.vz;
+            env->camera->points[3].vx = work->unk20.vx;
+            env->camera->points[3].vy = work->unk20.vy;
+            env->camera->points[3].vz = work->unk20.vz;
             if (frame >= 0x25) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
@@ -204,9 +204,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vy = D_801E88F8.vy;
                 work->unk20.vz = D_801E88F8.vz;
                 work->unk20.vy -= 0x200;
-                env->camera->unk0[3].vx = work->unk20.vx;
-                env->camera->unk0[3].vy = work->unk20.vy;
-                env->camera->unk0[3].vz = work->unk20.vz;
+                env->camera->points[3].vx = work->unk20.vx;
+                env->camera->points[3].vy = work->unk20.vy;
+                env->camera->points[3].vz = work->unk20.vz;
             }
             break;
         case 2:
@@ -305,9 +305,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vy = D_801E8900.vy;
                 work->unk20.vz = D_801E8900.vz;
                 work->unk20.vy -= 0x400;
-                env->camera->unk0[3].vx = work->unk20.vx;
-                env->camera->unk0[3].vy = work->unk20.vy;
-                env->camera->unk0[3].vz = work->unk20.vz;
+                env->camera->points[3].vx = work->unk20.vx;
+                env->camera->points[3].vy = work->unk20.vy;
+                env->camera->points[3].vz = work->unk20.vz;
             }
             break;
         case 6:
@@ -320,9 +320,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vy = D_801E8900.vy;
             work->unk20.vz = D_801E8900.vz;
             work->unk20.vy -= (0x1000 - ex->math_sin(t >> 2)) >> 2;
-            env->camera->unk0[3].vx = work->unk20.vx;
-            env->camera->unk0[3].vy = work->unk20.vy;
-            env->camera->unk0[3].vz = work->unk20.vz;
+            env->camera->points[3].vx = work->unk20.vx;
+            env->camera->points[3].vy = work->unk20.vy;
+            env->camera->points[3].vz = work->unk20.vz;
             if (frame == 0) {
                 work->unk10.vx = D_801E8900.vx;
                 work->unk10.vy = D_801E8900.vy;

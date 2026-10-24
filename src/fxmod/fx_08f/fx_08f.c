@@ -166,14 +166,14 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14.vy = pos.vy;
             work->unk14.vz = pos.vz - 0x46;
             work->unk14.vy += 0x1D;
-            env->camera->unk0[3].vx = pos.vx;
-            env->camera->unk0[3].vy = pos.vy;
-            env->camera->unk0[3].vz = pos.vz;
-            k2 = (u16)env->camera->unk0[3].vz - 0x100;
+            env->camera->points[3].vx = pos.vx;
+            env->camera->points[3].vy = pos.vy;
+            env->camera->points[3].vz = pos.vz;
+            k2 = (u16)env->camera->points[3].vz - 0x100;
             d2 = (frame * 0x384) / 49;
-            env->camera->unk0[3].vz = k2 + d2;
-            k3 = (u16)env->camera->unk0[3].vy + 0x180;
-            env->camera->unk0[3].vy = k3 - d2;
+            env->camera->points[3].vz = k2 + d2;
+            k3 = (u16)env->camera->points[3].vy + 0x180;
+            env->camera->points[3].vy = k3 - d2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
             ex->func_800E6624(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk40);
@@ -223,11 +223,11 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk1C.vx = 0;
                 work->unk1C.vy = -0x140;
                 work->unk1C.vz = 0;
-                env->camera->unk0[3].vx = work->unk1C.vx;
-                env->camera->unk0[3].vy = work->unk1C.vy;
-                env->camera->unk0[3].vz = work->unk1C.vz;
-                env->camera->unk0[3].vx += 0x1800;
-                env->camera->unk0[3].vx -= 0x1000;
+                env->camera->points[3].vx = work->unk1C.vx;
+                env->camera->points[3].vy = work->unk1C.vy;
+                env->camera->points[3].vz = work->unk1C.vz;
+                env->camera->points[3].vx += 0x1800;
+                env->camera->points[3].vx -= 0x1000;
                 ex->func_800E63E4(1, 1);
                 work->unk0 = 2;
                 entry->unk0 = -1;
@@ -250,9 +250,9 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14.vy = pos.vy;
             work->unk14.vz = pos.vz;
             if (frame < 0x19) {
-                env->camera->unk0[3].vx = pos.vx;
-                env->camera->unk0[3].vy = pos.vy;
-                env->camera->unk0[3].vz = pos.vz;
+                env->camera->points[3].vx = pos.vx;
+                env->camera->points[3].vy = pos.vy;
+                env->camera->points[3].vz = pos.vz;
             }
             if (frame == 7) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1B), (s32)&work->unk14);

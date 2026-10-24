@@ -419,9 +419,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_SetSummonMotFrame(SUMMON105(env)->unk60, 0);
             break;
         case 0xAB:
-            work->unkA0.vx = env->camera->unk0[2].vx;
-            work->unkA0.vy = env->camera->unk0[2].vy;
-            work->unkA0.vz = env->camera->unk0[2].vz;
+            work->unkA0.vx = env->camera->points[2].vx;
+            work->unkA0.vy = env->camera->points[2].vy;
+            work->unkA0.vz = env->camera->points[2].vz;
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x1D), (s32)&work->unkA0);
             break;
         case 0xD8:
@@ -488,9 +488,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x3B), (s32)&work->unk104);
             break;
         case 0x185:
-            env->camera->unk0[0].vx = 0;
-            env->camera->unk0[0].vy = -0x200;
-            env->camera->unk0[0].vz = 0x200;
+            env->camera->points[0].vx = 0;
+            env->camera->points[0].vy = -0x200;
+            env->camera->points[0].vz = 0x200;
             break;
         case 0x1B0:
             return 1;
@@ -601,11 +601,11 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk14 != 0) {
             work->unk14--;
-            ex->btlfx_aimAngles((s16 *)&env->camera->unk0[0], (s16 *)&env->camera->unk0[1], (s16 *)&work->unk190);
-            work->unk198[1] = env->camera->unk0[0].vy - ((ex->math_sin(work->unk190.vx) * 8) >> 12);
+            ex->btlfx_aimAngles((s16 *)&env->camera->points[0], (s16 *)&env->camera->points[1], (s16 *)&work->unk190);
+            work->unk198[1] = env->camera->points[0].vy - ((ex->math_sin(work->unk190.vx) * 8) >> 12);
             ka = abs((ex->math_cos(work->unk190.vx) * 8) >> 12);
-            work->unk198[0] = env->camera->unk0[0].vx + ((ex->math_sin(work->unk190.vy) * ka) >> 12);
-            work->unk198[2] = env->camera->unk0[0].vz + ((ex->math_cos(work->unk190.vy) * ka) >> 12);
+            work->unk198[0] = env->camera->points[0].vx + ((ex->math_sin(work->unk190.vy) * ka) >> 12);
+            work->unk198[2] = env->camera->points[0].vz + ((ex->math_cos(work->unk190.vy) * ka) >> 12);
             work->unk1A8[0] = 0x333;
             work->unk1A8[1] = 0x333;
             work->unk1A8[2] = 0x333;
@@ -629,9 +629,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unk0 != 0) {
-            D_801EADB8.vx = env->camera->unk0[2].vx;
-            D_801EADB8.vy = env->camera->unk0[2].vy;
-            D_801EADB8.vz = env->camera->unk0[2].vz;
+            D_801EADB8.vx = env->camera->points[2].vx;
+            D_801EADB8.vy = env->camera->points[2].vy;
+            D_801EADB8.vz = env->camera->points[2].vz;
             ex->Hi_DrawSummonModel(&D_801EADA8, &D_801EADB8, (s32)&D_801EADC8, SUMMON105(env)->unk60, 1);
         }
         if (work->unk4 != 0) {
@@ -647,9 +647,9 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E7704(&work->unk10C, &work->unk114, 0x10, &work->unk11C, &work->unk120, s4, D_801EAC98, 1);
         }
         if (work->unk10 != 0) {
-            work->unk158[0] = env->camera->unk0[3].vx;
-            work->unk158[1] = env->camera->unk0[3].vy;
-            work->unk158[2] = env->camera->unk0[3].vz;
+            work->unk158[0] = env->camera->points[3].vx;
+            work->unk158[1] = env->camera->points[3].vy;
+            work->unk158[2] = env->camera->points[3].vz;
             for (i = 0; i < 8; i++) {
                 if (D_801EAA90[i].unk0 == 0) {
                     if (D_801EAA90[i].unk4 != 0) {
@@ -817,9 +817,9 @@ void func_801E9E1C(void) {
         p->vx = t;
         p->vz = ex->btlfx_randRange(-0x1000, 0x2000);
         p->vy = p->vx >> 4;
-        p->vx += env->camera->unk0[2].vx;
-        p->vz += env->camera->unk0[2].vz;
-        p->vy += env->camera->unk0[2].vy;
+        p->vx += env->camera->points[2].vx;
+        p->vz += env->camera->points[2].vz;
+        p->vy += env->camera->points[2].vy;
     }
 }
 
@@ -846,7 +846,7 @@ void func_801E9F28(s32 c) {
     uv[2][1] = uv[3][1] = 0xEF;
     gte_SetRotMatrix(env->viewMatrix);
     gte_SetTransMatrix(env->viewMatrix);
-    gte_ldv0(&env->camera->unk0[2]);
+    gte_ldv0(&env->camera->points[2]);
     p = (POLY_FT4 *)env->prim;
     tp = 0x3A;
     env->prim = (u8 *)(p + 32);
@@ -890,7 +890,7 @@ void func_801E9F28(s32 c) {
         ex->btlfx_addPrim(0x09000000, otz >> 1, p);
         p++;
         D_801EC168[i].vz -= (D_801EC168[i].vx + 0x3000) >> 6;
-        if (D_801EC168[i].vz < env->camera->unk0[2].vz - 0x1000) {
+        if (D_801EC168[i].vz < env->camera->points[2].vz - 0x1000) {
             D_801EC168[i].vz = 0x2000;
         }
     }
@@ -916,9 +916,9 @@ void func_801EA298(s16 *data, s32 c, s32 h, s32 n) {
     a.vx = a.vz = b.vx = b.vz = 0;
     a.vy = -h;
     b.vy = h;
-    ex->btlfx_aimAngles(&env->camera->unk0[0].vx, &env->camera->unk0[1].vx, &ang.vx);
+    ex->btlfx_aimAngles(&env->camera->points[0].vx, &env->camera->points[1].vx, &ang.vx);
     i = 0;
-    cen.vy = env->camera->unk0[0].vy - ((ex->math_sin(ang.vx) * 0x800) >> 12);
+    cen.vy = env->camera->points[0].vy - ((ex->math_sin(ang.vx) * 0x800) >> 12);
     data += 2;
     r = ex->math_cos(ang.vx) * 0x800;
     r >>= 12;
@@ -931,8 +931,8 @@ void func_801EA298(s16 *data, s32 c, s32 h, s32 n) {
             r = -r;
         }
     } while (0);
-    cen.vx = env->camera->unk0[0].vx + ((fsin(av) * r) >> 12);
-    cen.vz = env->camera->unk0[0].vz + ((ex->math_cos(ang.vy) * r) >> 12);
+    cen.vx = env->camera->points[0].vx + ((fsin(av) * r) >> 12);
+    cen.vz = env->camera->points[0].vz + ((ex->math_cos(ang.vy) * r) >> 12);
     for (; i < 0x11; i++) {
         v.vx = -*data++ + cen.vx;
         v.vy = *data++ + cen.vy;

@@ -582,14 +582,14 @@ s32 fx_197_op87(s32 mode, Fx197Work87 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->unk8, D_801E9270[work->unk0].unk2), frame,
                       &work->unk4);
-        env->camera->unk0[1].vx = work->unk4.vx;
-        env->camera->unk0[1].vy = work->unk4.vy;
-        env->camera->unk0[1].vz = work->unk4.vz;
+        env->camera->points[1].vx = work->unk4.vx;
+        env->camera->points[1].vy = work->unk4.vy;
+        env->camera->points[1].vz = work->unk4.vz;
         func_801E7704((Fx197Track *)ex->btlfx_getFileData(entry->unk8, D_801E9270[work->unk0].unk0), frame,
                       &work->unkC);
-        env->camera->unk0[0].vx = work->unkC.vx;
-        env->camera->unk0[0].vy = work->unkC.vy;
-        env->camera->unk0[0].vz = work->unkC.vz;
+        env->camera->points[0].vx = work->unkC.vx;
+        env->camera->points[0].vy = work->unkC.vy;
+        env->camera->points[0].vz = work->unkC.vz;
         if (frame >= D_801E9270[work->unk0].unk4) {
             return 1;
         }

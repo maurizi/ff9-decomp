@@ -53,12 +53,12 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                 (u8 *)&D_801E8E40[i], 0);
         }
         if (env->targets->centerZ < 0) {
-            env->camera->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = -0x30C;
+            env->camera->points[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = -0x30C;
         } else {
-            env->camera->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = 0x30C;
+            env->camera->points[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = 0x30C;
         }
-        env->camera->unk0[0].vx = work->unkB8.vx = work->unk94.vx = work->unkA4.vx = 0;
-        env->camera->unk0[0].vy = work->unk94.vy = work->unkA4.vy = -0x600;
+        env->camera->points[0].vx = work->unkB8.vx = work->unk94.vx = work->unkA4.vx = 0;
+        env->camera->points[0].vy = work->unk94.vy = work->unkA4.vy = -0x600;
         work->unkB8.vy = 0;
         for (i = 0; i < env->targets->targetCount; i++) {
             D_801E9870[i].unk0 = (ex->btlfx_rand() & 7) + 0x30;
@@ -149,7 +149,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unkC8.vy -= 0x80;
         }
         if (work->unk0[1] != 0) {
-            ex->btlfx_aimAngles((s16 *)&work->unkA4, (s16 *)&env->camera->unk54, (s16 *)&work->unk40[1].unk4);
+            ex->btlfx_aimAngles((s16 *)&work->unkA4, (s16 *)&env->camera->eye, (s16 *)&work->unk40[1].unk4);
             work->unk40[0].unk4.vx = work->unk40[1].unk4.vx + 0x800;
             work->unk40[0].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;

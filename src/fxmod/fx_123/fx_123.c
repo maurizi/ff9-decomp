@@ -220,9 +220,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk178 = 4;
             break;
         }
-        env->camera->unk0[0].vx = work->unk64.vx;
-        env->camera->unk0[0].vy = work->unk64.vy;
-        env->camera->unk0[0].vz = work->unk64.vz - 0x5F5;
+        env->camera->points[0].vx = work->unk64.vx;
+        env->camera->points[0].vy = work->unk64.vy;
+        env->camera->points[0].vz = work->unk64.vz - 0x5F5;
         if (frame >= 0 && frame < 0x32) {
             k = frame;
             if (frame >= 3 && frame < 11) {

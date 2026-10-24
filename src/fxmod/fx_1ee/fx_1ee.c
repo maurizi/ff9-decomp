@@ -250,9 +250,9 @@ s32 fx_1ee_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             break;
         }
         if (D_801E92B4[0] != 0) {
-            D_801E9284.vx = env->camera->unk0[2].vx;
-            D_801E9284.vy = env->camera->unk0[2].vy;
-            D_801E9284.vz = env->camera->unk0[2].vz;
+            D_801E9284.vx = env->camera->points[2].vx;
+            D_801E9284.vy = env->camera->points[2].vy;
+            D_801E9284.vz = env->camera->points[2].vz;
             ex->Hi_DrawSummonModel(&D_801E927C, &D_801E9284, (s32)&D_801E9294, SUMMON(env)->unk60, 1);
             if (D_801E92B4[1] != 0) {
                 D_801E92B4[1]--;
@@ -383,9 +383,9 @@ s32 fx_1ee_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 D_801EB004[i][j].unk4 = 8;
             }
         }
-        D_801EAFD4.vx = env->camera->unk0[3].vx;
-        D_801EAFD4.vy = env->camera->unk0[3].vy;
-        D_801EAFD4.vz = env->camera->unk0[3].vz;
+        D_801EAFD4.vx = env->camera->points[3].vx;
+        D_801EAFD4.vy = env->camera->points[3].vy;
+        D_801EAFD4.vz = env->camera->points[3].vz;
     } else {
         frame = entry->unk0;
         switch (frame) {

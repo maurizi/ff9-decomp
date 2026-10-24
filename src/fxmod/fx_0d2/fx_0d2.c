@@ -206,8 +206,8 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->func_800E3D20((s32)work->unk10, (s32)&work->unk8C);
         }
-        env->camera->unk30[1].vz = env->camera->unk0[2].vz;
-        env->camera->unk5E = env->camera->unk0[3].vx;
+        env->camera->unk30[1].vz = env->camera->points[2].vz;
+        env->camera->projDist = env->camera->points[3].vx;
         func_801EA27C(0);
         if (frame >= 0x12C) {
             ex->btlfx_clearEffModels();
@@ -594,9 +594,9 @@ s32 fx_0d2_op83(s32 mode, Fx0d2Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (q = 0; q < env->targets->targetCount; q++) {
                 ex->func_800E7ACC(q, (s32 *)&D_801EFFC0[q]);
             }
-            env->camera->unk0[0].vx = 0;
-            env->camera->unk0[0].vy = 0;
-            env->camera->unk0[0].vz = 0x4B0;
+            env->camera->points[0].vx = 0;
+            env->camera->points[0].vy = 0;
+            env->camera->points[0].vz = 0x4B0;
             break;
         }
         k = frame - 1;

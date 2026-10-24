@@ -153,13 +153,13 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk18.vy = work->unk28.vy;
         work->unk18.vz = work->unk28.vz - 0x3000;
         work->unk18.vx += 0x400;
-        env->camera->unk0[1].vx = work->unk50.vx;
-        env->camera->unk0[1].vy = work->unk50.vy;
-        env->camera->unk0[1].vz = work->unk50.vz;
+        env->camera->points[1].vx = work->unk50.vx;
+        env->camera->points[1].vy = work->unk50.vy;
+        env->camera->points[1].vz = work->unk50.vz;
         work->unk18.vx += 0x20;
-        env->camera->unk0[2].vx = work->unk18.vx;
-        env->camera->unk0[2].vy = work->unk18.vy;
-        env->camera->unk0[2].vz = work->unk18.vz;
+        env->camera->points[2].vx = work->unk18.vx;
+        env->camera->points[2].vy = work->unk18.vy;
+        env->camera->points[2].vz = work->unk18.vz;
     } else {
         state = work->unk0;
         frame = entry->unk0;
@@ -180,13 +180,13 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vz = work->unk28.vz - 0x258;
             ex->Hi_DrawEffModel(&work->unk40, (VECTOR *)&work->unk28, (s32)&work->unk34, work->unk78);
             ex->Hi_ModifyEffModelRGB(work->unk78, (t >> 6) - 0x80, (t >> 6) - 0x80, (t >> 6) - 0x80);
-            env->camera->unk0[1].vx = work->unk50.vx;
-            env->camera->unk0[1].vy = work->unk50.vy;
-            env->camera->unk0[1].vz = work->unk50.vz;
+            env->camera->points[1].vx = work->unk50.vx;
+            env->camera->points[1].vy = work->unk50.vy;
+            env->camera->points[1].vz = work->unk50.vz;
             work->unk18.vx += 0x20;
-            env->camera->unk0[2].vx = work->unk18.vx;
-            env->camera->unk0[2].vy = work->unk18.vy;
-            env->camera->unk0[2].vz = work->unk18.vz;
+            env->camera->points[2].vx = work->unk18.vx;
+            env->camera->points[2].vy = work->unk18.vy;
+            env->camera->points[2].vz = work->unk18.vz;
             ex->func_800E6624(frame * 8, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
             if (frame < 12) {
                 tint = (ex->math_cos((frame << 10) / 12) << 7) >> 12;
@@ -250,9 +250,9 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk28.vy = -0x2000;
                 work->unk34.vx = work->unk34.vy = 0x333;
                 work->unk34.vz = 0xC00;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x9F), (s32)&work->unk10);
                 work->unk70 = p;
                 if (p != NULL) {
@@ -290,9 +290,9 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->func_800E6624(frame * 12, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
             if (frame >= 0x50) {
                 ex->btlfx_clearEffModels();
-                env->camera->unk0[3].vx = 0;
-                env->camera->unk0[3].vy = -0x1000;
-                env->camera->unk0[3].vz = 0;
+                env->camera->points[3].vx = 0;
+                env->camera->points[3].vy = -0x1000;
+                env->camera->points[3].vz = 0;
                 return 1;
             }
             break;

@@ -74,15 +74,15 @@ s32 fx_1ec_op80(s32 mode, Fx1ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk54.vy -= 0xC80;
         work->unk54.vz -= 0xFA0;
         work->unk5C.vy -= 0x2AF8;
-        env->camera->unk0[0].vx = work->unk4C.vx;
-        env->camera->unk0[0].vy = work->unk4C.vy;
-        env->camera->unk0[0].vz = work->unk4C.vz;
-        env->camera->unk0[1].vx = work->unk54.vx;
-        env->camera->unk0[1].vy = work->unk54.vy;
-        env->camera->unk0[1].vz = work->unk54.vz;
-        env->camera->unk0[2].vx = work->unk5C.vx;
-        env->camera->unk0[2].vy = work->unk5C.vy;
-        env->camera->unk0[2].vz = work->unk5C.vz;
+        env->camera->points[0].vx = work->unk4C.vx;
+        env->camera->points[0].vy = work->unk4C.vy;
+        env->camera->points[0].vz = work->unk4C.vz;
+        env->camera->points[1].vx = work->unk54.vx;
+        env->camera->points[1].vy = work->unk54.vy;
+        env->camera->points[1].vz = work->unk54.vz;
+        env->camera->points[2].vx = work->unk5C.vx;
+        env->camera->points[2].vy = work->unk5C.vy;
+        env->camera->points[2].vz = work->unk5C.vz;
     } else {
         frame = entry->unk0;
         switch (frame) {

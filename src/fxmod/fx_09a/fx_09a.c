@@ -154,23 +154,23 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_getUnitBodyPos(work->unk8, 0, (s16 *)&work->unk14);
             BTLFX_COPY_SVEC(&b, &work->unk24);
             b.vy -= 0x140;
-            env->camera->unk0[0].vx = b.vx;
-            env->camera->unk0[0].vy = b.vy;
-            env->camera->unk0[0].vz = b.vz;
+            env->camera->points[0].vx = b.vx;
+            env->camera->points[0].vy = b.vy;
+            env->camera->points[0].vz = b.vz;
             ex->func_800CFCA8(&work->unk1C, -0xD2, (s32)&a);
             b.vx = work->unk24.vx + a.vx;
             b.vy = work->unk24.vy + a.vy - 0x140;
             b.vz = work->unk24.vz + a.vz;
-            env->camera->unk0[1].vx = b.vx;
-            env->camera->unk0[1].vy = b.vy;
-            env->camera->unk0[1].vz = b.vz;
+            env->camera->points[1].vx = b.vx;
+            env->camera->points[1].vy = b.vy;
+            env->camera->points[1].vz = b.vz;
             ex->func_800CFCA8(&work->unk1C, -ex->btlfx_getUnitRadius(0), (s32)&a);
             b.vx = work->unk14.vx + a.vx;
             b.vy = a.vy - 0x140;
             b.vz = work->unk14.vz + a.vz;
-            env->camera->unk0[2].vx = b.vx;
-            env->camera->unk0[2].vy = b.vy;
-            env->camera->unk0[2].vz = b.vz;
+            env->camera->points[2].vx = b.vx;
+            env->camera->points[2].vy = b.vy;
+            env->camera->points[2].vz = b.vz;
             ex->Hi_SetSummonMotion(((Fx09aSummon *)env->unk4)->unk54->unk180, ((Fx09aSummon *)env->unk4)->unk60);
             ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->unk4)->unk60, 6);
             work->unk3C[2] = 0x1000;
@@ -218,7 +218,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p = (Pool6CEntry *)ex->func_800E3CEC(
                     ex->btlfx_getFileData(entry->unk8,
                                           *(D_801E87E4 + (((ang = work->unk1C.vy & 0xFFF) - 0x400U > 0x800) !=
-                                                          ((ang = env->camera->unk50 & 0xFFF) - 0x400U > 0x800)))),
+                                                          ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                     (s32)&work->unk14);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(work->unk8, 0x40);

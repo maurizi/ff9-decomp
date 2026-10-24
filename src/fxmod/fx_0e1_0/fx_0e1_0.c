@@ -399,9 +399,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk3C.vx = work->unk8.vx;
         work->unk3C.vy = work->unk8.vy;
         work->unk3C.vz = work->unk8.vz;
-        env->camera->unk0[3].vx = work->unk3C.vx;
-        env->camera->unk0[3].vy = work->unk3C.vy;
-        env->camera->unk0[3].vz = work->unk3C.vz;
+        env->camera->points[3].vx = work->unk3C.vx;
+        env->camera->points[3].vy = work->unk3C.vy;
+        env->camera->points[3].vz = work->unk3C.vz;
         work->unk84.vx = D_801E9D7C.vx;
         work->unk84.vy = D_801E9D7C.vy;
         work->unk84.vz = D_801E9D7C.vz;

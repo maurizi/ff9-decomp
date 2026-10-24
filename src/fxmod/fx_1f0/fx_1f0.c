@@ -197,9 +197,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        env->camera->unk0[0].vx = 0;
-        env->camera->unk0[0].vy = D_801E8558[0].unk20.vy;
-        env->camera->unk0[0].vz = D_801E8558[0].unk20.vz;
+        env->camera->points[0].vx = 0;
+        env->camera->points[0].vy = D_801E8558[0].unk20.vy;
+        env->camera->points[0].vz = D_801E8558[0].unk20.vz;
         work->unkA0.vy = work->unkA0.vy + work->unkB0 + 0x20;
         work->unkA8.vy = work->unkA8.vy - work->unkB4 - 0x20;
         if (work->unk0[4] | work->unk0[5] | work->unk0[6]) {

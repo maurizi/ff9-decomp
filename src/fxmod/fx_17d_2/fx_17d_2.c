@@ -82,9 +82,9 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->unk48[1] -= 0x5000;
         BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
         work->unk18.vy -= 0x1000;
-        env->camera->unk0[3].vx = work->unk18.vx;
-        env->camera->unk0[3].vy = work->unk18.vy;
-        env->camera->unk0[3].vz = work->unk18.vz;
+        env->camera->points[3].vx = work->unk18.vx;
+        env->camera->points[3].vy = work->unk18.vy;
+        env->camera->points[3].vz = work->unk18.vz;
         work->unk7C = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk10);
         if (work->unk7C != NULL) {
             work->unk7C->unk22 = 0x80;

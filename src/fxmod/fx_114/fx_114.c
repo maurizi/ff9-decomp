@@ -323,33 +323,33 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     }
     if (frame >= 0 && frame < 0x2F) {
         func_801EA6F4(&D_801ED090, work->unk168, &v40);
-        env->camera->unk0[0].vx = 0;
-        env->camera->unk0[0].vy = v40.vy;
-        env->camera->unk0[0].vz = -0x4B0;
+        env->camera->points[0].vx = 0;
+        env->camera->points[0].vy = v40.vy;
+        env->camera->points[0].vz = -0x4B0;
         func_801EA6F4(&D_801ED098, work->unk168, &v40);
-        env->camera->unk0[1].vx = v40.vx;
-        env->camera->unk0[1].vy = v40.vy;
-        env->camera->unk0[1].vz = v40.vz;
+        env->camera->points[1].vx = v40.vx;
+        env->camera->points[1].vy = v40.vy;
+        env->camera->points[1].vz = v40.vz;
     }
     if (frame >= 0x2F && frame < 0xA8) {
         func_801EA670(&D_801ED0B0, work->unk168, &v48);
-        env->camera->unk0[0].vx = work->unk28.vx + v48.vx * 3 / 2;
-        env->camera->unk0[0].vy = work->unk28.vy + v48.vy * 3 / 2;
-        env->camera->unk0[0].vz = work->unk28.vz + v48.vz * 3 / 2;
+        env->camera->points[0].vx = work->unk28.vx + v48.vx * 3 / 2;
+        env->camera->points[0].vy = work->unk28.vy + v48.vy * 3 / 2;
+        env->camera->points[0].vz = work->unk28.vz + v48.vz * 3 / 2;
         func_801EA670(&D_801ED0B8, work->unk168, &v48);
-        env->camera->unk0[1].vx = work->unk28.vx + v48.vx * 3 / 2;
-        env->camera->unk0[1].vy = work->unk28.vy + v48.vy * 3 / 2;
-        env->camera->unk0[1].vz = work->unk28.vz + v48.vz * 3 / 2;
+        env->camera->points[1].vx = work->unk28.vx + v48.vx * 3 / 2;
+        env->camera->points[1].vy = work->unk28.vy + v48.vy * 3 / 2;
+        env->camera->points[1].vz = work->unk28.vz + v48.vz * 3 / 2;
     }
     if (frame >= 0xA7 && frame < 0xDE) {
         func_801EA6F4(&D_801ED0A0, work->unk168, &v50);
-        env->camera->unk0[0].vx = v50.vx;
-        env->camera->unk0[0].vy = v50.vy;
-        env->camera->unk0[0].vz = v50.vz;
+        env->camera->points[0].vx = v50.vx;
+        env->camera->points[0].vy = v50.vy;
+        env->camera->points[0].vz = v50.vz;
         func_801EA6F4(&D_801ED0A8, work->unk168, &v50);
-        env->camera->unk0[1].vx = v50.vx;
-        env->camera->unk0[1].vy = v50.vy;
-        env->camera->unk0[1].vz = v50.vz;
+        env->camera->points[1].vx = v50.vx;
+        env->camera->points[1].vy = v50.vy;
+        env->camera->points[1].vz = v50.vz;
     }
     if (frame >= 0 && frame < 0xA8) {
         func_801EA6F4(&D_801ED0C0, frame + 0x10, &v58);
@@ -480,7 +480,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         r.vy = 0;
         r.vz = 0;
         ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &r, &s, &col, 1, 0);
-        env->camera->unk5E = 0x208 - k4 * k4 * 6;
+        env->camera->projDist = 0x208 - k4 * k4 * 6;
     }
     work->unk168++;
     work->unk16C++;
@@ -655,7 +655,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             col.r = col.g = col.b = 0x3C;
             rot.vz = rot.vy = rot.vx = 0;
             ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
-            env->camera->unk5E = 0x208 - t * t * 4;
+            env->camera->projDist = 0x208 - t * t * 4;
         }
         work->unk64++;
         return frame >= 0x1E;

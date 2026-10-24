@@ -1340,16 +1340,16 @@ typedef struct {
 } Unk800C412C; /* 0x20 */
 
 typedef struct Unk800FE3B8 {
-    SVECTOR unk0[6];
+    SVECTOR points[6]; /* camera path control points (cubic, btlcam_step); [4]/[5] keep the eye/target for script flag 0x80 */
     SVECTOR unk30[4];
-    s16 unk50;
+    s16 yaw; /* from eye to target (btlcam_step) */
     u8 unk52;
     u8 unk53;
-    SVECTOR unk54;
+    SVECTOR eye; /* eye position given to btlcam_lookAt */
     u8 unk5C;
     u8 unk5D;
-    u16 unk5E;
-    u16 unk60;
+    u16 projDist; /* projection distance (SetGeomScreen through GameData.unkA) */
+    u16 baseProjDist; /* default projection distance (0x200) */
     u8 pad62[0x65 - 0x62];
     u8 unk65;
     u8 unk66;

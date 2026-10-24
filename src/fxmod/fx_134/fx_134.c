@@ -630,9 +630,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     BTLFX_COPY_SVEC(&work->unk18, &D_801EC860);
                     a_c0 = frame << 6;
                     work->unk18.vy -= ex->math_sin(a_c0) * 3;
-                    env->camera->unk0[3].vx = work->unk18.vx;
-                    env->camera->unk0[3].vy = work->unk18.vy;
-                    env->camera->unk0[3].vz = work->unk18.vz;
+                    env->camera->points[3].vx = work->unk18.vx;
+                    env->camera->points[3].vy = work->unk18.vy;
+                    env->camera->points[3].vz = work->unk18.vz;
                     b_c0 = (ex->math_sin(a_c0) >> 3) - 0x200;
                 } else {
                     b_c0 = 0;
@@ -699,9 +699,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 d1 = 0x1000 - t;
                 work->unk18.vy += 0x400 + (d1 >> 1);
                 s = d1 >> 4;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk60);
                 a_c1 = t >> 2;
                 ex->Hi_ModifyEffModelRGB(work->unk60, (((ex->math_sin(a_c1) >> 1) + 0x800) >> 5) - 0x80,
@@ -777,9 +777,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
 
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 work->unk3C.vy += 4;
                 ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk64);
                 ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
@@ -830,10 +830,10 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             k_c3 = ex->math_cos(a3x);
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
 
-            env->camera->unk0[3].vx = work->unk18.vx;
-            env->camera->unk0[3].vy = work->unk18.vy;
+            env->camera->points[3].vx = work->unk18.vx;
+            env->camera->points[3].vy = work->unk18.vy;
             c = 0x97;
-            env->camera->unk0[3].vz = work->unk18.vz;
+            env->camera->points[3].vz = work->unk18.vz;
             s = (k_c3 >> 4) + 0x20;
             work->unk3C.vy += 4;
             n_c3 = t >> 7;
@@ -932,9 +932,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
 
-            env->camera->unk0[3].vx = work->unk18.vx;
-            env->camera->unk0[3].vy = work->unk18.vy;
-            env->camera->unk0[3].vz = work->unk18.vz;
+            env->camera->points[3].vx = work->unk18.vx;
+            env->camera->points[3].vy = work->unk18.vy;
+            env->camera->points[3].vz = work->unk18.vz;
             yo = 0;
             work->unk3C.vz += 0x20;
             work->unk24.vy += 0x60 + ex->btlfx_randCentered(8);
@@ -1052,9 +1052,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->func_800E6624(frame * 0x14, 0x1C0, 0x180, 0x18, 0x60, 0x320, 0x100);
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
 
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 work->unk3C.vz += 0x18;
                 work->unk24.vy += 0x20;
                 ex->Hi_DrawEffModel(&work->unk3C, (VECTOR *)&work->unk24, (s32)&work->unk30, work->unk64);
@@ -1165,9 +1165,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 s = 0x80;
                 yo = 0;
                 xo = 0;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 work->unk3C.vz += 8;
                 work->unk24.vy += 0x9B;
                 work->unk24.vz += 0x4D;
@@ -1368,9 +1368,9 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk18.vx = 0;
                 work->unk18.vy = -0x200;
                 work->unk18.vz = 0;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
             }
             break;
         case 10:

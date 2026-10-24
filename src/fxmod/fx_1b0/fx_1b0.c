@@ -236,10 +236,10 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk30.vy = work->unk28.vy;
         work->unk30.vz = work->unk28.vz;
         work->unk30.vy = 0;
-        env->camera->unk0[3].vx = v.vx;
-        env->camera->unk0[3].vy = v.vy;
+        env->camera->points[3].vx = v.vx;
+        env->camera->points[3].vy = v.vy;
         D_801EBF38 = entry;
-        env->camera->unk0[3].vz = v.vz;
+        env->camera->points[3].vz = v.vz;
         work->unk0 = 0;
         work->unk4 = 0;
     } else {

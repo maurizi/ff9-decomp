@@ -176,9 +176,9 @@ s32 fx_1af_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else if (mode == 1) {
         D_801E7F48 = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&v);
-        env->camera->unk0[3].vx = v.vx;
-        env->camera->unk0[3].vy = v.vy;
-        env->camera->unk0[3].vz = v.vz;
+        env->camera->points[3].vx = v.vx;
+        env->camera->points[3].vy = v.vy;
+        env->camera->points[3].vz = v.vz;
         return 1;
     } else {
         return 0;

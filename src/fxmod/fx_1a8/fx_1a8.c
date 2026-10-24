@@ -215,9 +215,9 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vx = D_801E937C.vx;
         work->unk8.vy = D_801E937C.vy - 0x2000;
         work->unk8.vz = D_801E937C.vz - 0x2000;
-        env->camera->unk0[3].vx = work->unk8.vx;
-        env->camera->unk0[3].vy = work->unk8.vy;
-        env->camera->unk0[3].vz = work->unk8.vz;
+        env->camera->points[3].vx = work->unk8.vx;
+        env->camera->points[3].vy = work->unk8.vy;
+        env->camera->points[3].vz = work->unk8.vz;
     } else {
         alpha = 0;
         size = 0;
@@ -282,10 +282,10 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_aimAngles((s16 *)&v, (s16 *)&D_801E937C, (s16 *)&work->unk2C);
                 work->unk34.vx = work->unk34.vy = work->unk34.vz = 0x5000;
                 work->unk2C.vx += 0x800;
-                env->camera->unk0[3].vx = D_801E937C.vx;
-                env->camera->unk0[3].vy = D_801E937C.vy;
-                env->camera->unk0[3].vz = D_801E937C.vz;
-                env->camera->unk0[3].vy -= 0x140;
+                env->camera->points[3].vx = D_801E937C.vx;
+                env->camera->points[3].vy = D_801E937C.vy;
+                env->camera->points[3].vz = D_801E937C.vz;
+                env->camera->points[3].vy -= 0x140;
             }
             ex->Hi_DrawEffModel(&work->unk2C, (VECTOR *)&work->unk40, (s32)&work->unk34, work->unk28);
             work->unk34.vx = work->unk34.vy = work->unk34.vz = work->unk34.vx / 2;
@@ -347,12 +347,12 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             t = frame << 7;
             if (frame < 8) {
-                env->camera->unk0[3].vx = D_801E937C.vx;
+                env->camera->points[3].vx = D_801E937C.vx;
                 d = ((frame & 1) * 2 - 1) * (0x20 - frame * 4);
-                env->camera->unk0[3].vy = D_801E937C.vy;
-                env->camera->unk0[3].vz = D_801E937C.vz;
-                env->camera->unk0[3].vy = env->camera->unk0[3].vy - (0x140 + d);
-                env->camera->unk0[3].vx += d;
+                env->camera->points[3].vy = D_801E937C.vy;
+                env->camera->points[3].vz = D_801E937C.vz;
+                env->camera->points[3].vy = env->camera->points[3].vy - (0x140 + d);
+                env->camera->points[3].vx += d;
             }
             work->unk40.vx = D_801E937C.vx;
             work->unk40.vy = D_801E937C.vy;

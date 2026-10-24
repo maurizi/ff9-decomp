@@ -45,12 +45,12 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_DrawEffModel(&work->unk30, &work->unk18, (s32)&work->unk38, work->unk4);
         work->unk28.vy -= 0x180;
         work->unk30.vy += 0x180;
-        env->camera->unk0[0].vx = work->unk8.vx;
-        env->camera->unk0[0].vy = work->unk8.vy;
-        env->camera->unk0[0].vz = work->unk8.vz;
-        env->camera->unk0[1].vx = work->unk18.vx;
-        env->camera->unk0[1].vy = work->unk18.vy;
-        env->camera->unk0[1].vz = work->unk18.vz;
+        env->camera->points[0].vx = work->unk8.vx;
+        env->camera->points[0].vy = work->unk8.vy;
+        env->camera->points[0].vz = work->unk8.vz;
+        env->camera->points[1].vx = work->unk18.vx;
+        env->camera->points[1].vy = work->unk18.vy;
+        env->camera->points[1].vz = work->unk18.vz;
     }
     switch (frame) {
     case 8:

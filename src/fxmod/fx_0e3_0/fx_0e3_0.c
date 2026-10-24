@@ -373,9 +373,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         BTLFX_COPY_SVEC(&work->unk30, &work->unk8);
         work->unk30.vx += (ex->btlfx_randCentered(0xA0) * (0x1000 - t)) >> 12;
         work->unk30.vz += (ex->btlfx_randCentered(0xA0) * (0x1000 - t)) >> 12;
-        env->camera->unk0[2].vx = work->unk30.vx;
-        env->camera->unk0[2].vy = work->unk30.vy;
-        env->camera->unk0[2].vz = work->unk30.vz;
+        env->camera->points[2].vx = work->unk30.vx;
+        env->camera->points[2].vy = work->unk30.vy;
+        env->camera->points[2].vz = work->unk30.vz;
         if (frame < 0x2E) {
             SVECTOR v0;
 
@@ -397,17 +397,17 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk30.vx = 0;
             work->unk30.vy = 0;
             work->unk30.vz = work->unk8.vz + 0x78E;
-            env->camera->unk0[3].vx = work->unk30.vx;
-            env->camera->unk0[3].vy = work->unk30.vy;
-            env->camera->unk0[3].vz = work->unk30.vz;
+            env->camera->points[3].vx = work->unk30.vx;
+            env->camera->points[3].vy = work->unk30.vy;
+            env->camera->points[3].vz = work->unk30.vz;
             work->unk30.vx = work->unk8.vx;
             work->unk30.vy = work->unk8.vy;
             work->unk30.vz = work->unk8.vz;
             work->unk30.vy -= 0x1FF;
             work->unk30.vz -= 0x800;
-            env->camera->unk0[1].vx = work->unk30.vx;
-            env->camera->unk0[1].vy = work->unk30.vy;
-            env->camera->unk0[1].vz = work->unk30.vz;
+            env->camera->points[1].vx = work->unk30.vx;
+            env->camera->points[1].vy = work->unk30.vy;
+            env->camera->points[1].vz = work->unk30.vz;
         }
         break;
     }
@@ -449,19 +449,19 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk30.vy = -0x1000;
             work->unk30.vx = 0x400;
         }
-        env->camera->unk0[3].vx = work->unk30.vx;
-        env->camera->unk0[3].vy = work->unk30.vy;
-        env->camera->unk0[3].vz = work->unk30.vz;
+        env->camera->points[3].vx = work->unk30.vx;
+        env->camera->points[3].vy = work->unk30.vy;
+        env->camera->points[3].vz = work->unk30.vz;
         work->unk30.vx = work->unk8.vx;
         work->unk30.vy = work->unk8.vy;
         work->unk30.vz = work->unk8.vz;
         work->unk30.vy -= 0x1FF;
         work->unk30.vz -= 0x800;
-        env->camera->unk0[1].vx = work->unk30.vx;
+        env->camera->points[1].vx = work->unk30.vx;
         nbolt = 2;
-        env->camera->unk0[1].vy = work->unk30.vy;
+        env->camera->points[1].vy = work->unk30.vy;
         trail = 0x1000;
-        env->camera->unk0[1].vz = work->unk30.vz;
+        env->camera->points[1].vz = work->unk30.vz;
         if (frame >= 0x18) {
             work->unk0 = 1;
             entry->unk0 = -1;
@@ -483,9 +483,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk30.vz = D_801EA7E8.vz;
             trail = 0;
             work->unk30.vy -= 0x400;
-            env->camera->unk0[2].vx = work->unk30.vx;
-            env->camera->unk0[2].vy = work->unk30.vy;
-            env->camera->unk0[2].vz = work->unk30.vz;
+            env->camera->points[2].vx = work->unk30.vx;
+            env->camera->points[2].vy = work->unk30.vy;
+            env->camera->points[2].vz = work->unk30.vz;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
             work->unk50 = 1;
             work->unk54 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 1);
@@ -498,10 +498,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         fade = 0;
         work->unk30.vz -= 0x10;
         trail = 0x1000;
-        env->camera->unk0[2].vx = work->unk30.vx;
+        env->camera->points[2].vx = work->unk30.vx;
         nbolt = 1;
-        env->camera->unk0[2].vy = work->unk30.vy;
-        env->camera->unk0[2].vz = work->unk30.vz;
+        env->camera->points[2].vy = work->unk30.vy;
+        env->camera->points[2].vz = work->unk30.vz;
         if (work->unk10.vz > -0xC000) {
             work->unk10.vz -= 0x1300;
         }
@@ -565,10 +565,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk1C.vx = 0x1000;
             work->unk1C.vy = 0x1000;
             work->unk1C.vz = 0x1000;
-            env->camera->unk0[2].vx = work->unk10.vx;
-            env->camera->unk0[2].vy = work->unk10.vy;
+            env->camera->points[2].vx = work->unk10.vx;
+            env->camera->points[2].vy = work->unk10.vy;
             trail = 0;
-            env->camera->unk0[2].vz = work->unk10.vz;
+            env->camera->points[2].vz = work->unk10.vz;
         }
         break;
     }
@@ -597,10 +597,10 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vz = vz - cz;
         }
         trail = 0x1000;
-        env->camera->unk0[2].vx = work->unk10.vx;
+        env->camera->points[2].vx = work->unk10.vx;
         fade = 0x1000;
-        env->camera->unk0[2].vy = work->unk10.vy;
-        env->camera->unk0[2].vz = work->unk10.vz;
+        env->camera->points[2].vy = work->unk10.vy;
+        env->camera->points[2].vz = work->unk10.vz;
         ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 0);
         f2 = ((((t * 3) >> 2) + 0x400) >> 5) - 0x80;
         ex->Hi_ModifySummonModelRGB(SUMMON(env)->unk60, f2, f2, f2);
@@ -613,9 +613,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk30.vy = -0x4966;
             work->unk30.vx = 0;
             work->unk30.vz = 0x3DAF;
-            env->camera->unk0[3].vx = work->unk30.vx;
-            env->camera->unk0[3].vy = work->unk30.vy;
-            env->camera->unk0[3].vz = work->unk30.vz;
+            env->camera->points[3].vx = work->unk30.vx;
+            env->camera->points[3].vy = work->unk30.vy;
+            env->camera->points[3].vz = work->unk30.vz;
         }
         break;
     }
@@ -645,11 +645,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 0);
         ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&work->unk30);
         work->unk30.vy -= 0x80;
-        env->camera->unk0[3].vx = work->unk30.vx;
+        env->camera->points[3].vx = work->unk30.vx;
         D_801EB370 = 0xA0;
         D_801EB374 = 0x4D;
-        env->camera->unk0[3].vy = work->unk30.vy;
-        env->camera->unk0[3].vz = work->unk30.vz;
+        env->camera->points[3].vy = work->unk30.vy;
+        env->camera->points[3].vz = work->unk30.vz;
         D_801EB378 = 0x180;
         ang = work->unk4 * 0x180;
         amp4 = 0x37;
@@ -750,9 +750,9 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         if ((u32)(frame - 0x1C) < 7) {
             v0.vx += (ex->math_cos(((frame - 0x1C) << 12) >> 5) >> 7) * ((frame & 1) * 2 - 1);
         }
-        env->camera->unk0[2].vx = v0.vx;
-        env->camera->unk0[2].vy = v0.vy;
-        env->camera->unk0[2].vz = v0.vz;
+        env->camera->points[2].vx = v0.vx;
+        env->camera->points[2].vy = v0.vy;
+        env->camera->points[2].vz = v0.vz;
         ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 0);
         if (frame < 0xC) {
             s32 ang;

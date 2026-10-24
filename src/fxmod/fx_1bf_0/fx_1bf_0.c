@@ -188,9 +188,9 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
         work->unk10.vx = work->unk8.vx;
         work->unk10.vy = work->unk8.vy;
         work->unk10.vz = work->unk8.vz;
-        env->camera->unk0[3].vx = work->unk8.vx;
-        env->camera->unk0[3].vy = work->unk8.vy;
-        env->camera->unk0[3].vz = work->unk8.vz;
+        env->camera->points[3].vx = work->unk8.vx;
+        env->camera->points[3].vy = work->unk8.vy;
+        env->camera->points[3].vz = work->unk8.vz;
         D_801EA1FC[0] = 0;
     } else {
         frame = entry->unk0;
@@ -296,9 +296,9 @@ s32 fx_1bf_0_op80(s32 mode, Fx1bf0Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 rot.vy = D_801E86BC.vy;
                 rot.vz = D_801E86BC.vz;
                 rot.vy -= 0x300;
-                env->camera->unk0[3].vx = rot.vx;
-                env->camera->unk0[3].vy = rot.vy;
-                env->camera->unk0[3].vz = rot.vz;
+                env->camera->points[3].vx = rot.vx;
+                env->camera->points[3].vy = rot.vy;
+                env->camera->points[3].vz = rot.vz;
                 ex->btlfx_clearEffModels();
                 return 1;
             }

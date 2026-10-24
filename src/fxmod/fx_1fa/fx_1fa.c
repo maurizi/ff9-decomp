@@ -59,9 +59,9 @@ s32 fx_1fa_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
                 D_801E811C[i][j].unk4 = 8;
             }
         }
-        D_801E80F4.vx = env->camera->unk0[3].vx;
-        D_801E80F4.vy = env->camera->unk0[3].vy;
-        D_801E80F4.vz = env->camera->unk0[3].vz;
+        D_801E80F4.vx = env->camera->points[3].vx;
+        D_801E80F4.vy = env->camera->points[3].vy;
+        D_801E80F4.vz = env->camera->points[3].vz;
     } else {
         frame = entry->unk0;
         switch (frame) {

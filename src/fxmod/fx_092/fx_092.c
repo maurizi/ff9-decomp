@@ -21,16 +21,16 @@ s32 fx_092_op80(s32 mode, Fx092Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk38.vy -= 0xC8;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk28);
         ex->func_800CFD78((s16 *)&work->unk28, (s16 *)&work->unk18, 0xC8, (s16 *)&work->unk28);
-        env->camera->unk0[0].vx = work->unk28.vx;
-        env->camera->unk0[0].vy = work->unk28.vy;
-        env->camera->unk0[0].vz = work->unk28.vz;
+        env->camera->points[0].vx = work->unk28.vx;
+        env->camera->points[0].vy = work->unk28.vy;
+        env->camera->points[0].vz = work->unk28.vz;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk28);
         if (work->unk0 != NULL) {
             work->unk0->unk22 = ex->func_800E7CC4(0x10, 0x20);
         }
     } else {
         frame = entry->unk0;
-        ex->btlfx_aimAngles(&env->camera->unk54.vx, (s16 *)&work->unk28, (s16 *)&work->unk40);
+        ex->btlfx_aimAngles(&env->camera->eye.vx, (s16 *)&work->unk28, (s16 *)&work->unk40);
         if (work->unk0 != NULL) {
             if (work->unk0->unk30 == -1) {
                 work->unk0 = NULL;

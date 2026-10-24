@@ -52,9 +52,9 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &it->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
         env->unk28 = 0;
         if (it->unk20 == 0) {
-            env->camera->unk0[0].vx = it->unk4.vx;
-            env->camera->unk0[0].vy = it->unk4.vy;
-            env->camera->unk0[0].vz = it->unk4.vz;
+            env->camera->points[0].vx = it->unk4.vx;
+            env->camera->points[0].vy = it->unk4.vy;
+            env->camera->points[0].vz = it->unk4.vz;
         }
         if (it->unk14 != NULL && it->unk14->unk30 == -1) {
             it->unk14 = NULL;

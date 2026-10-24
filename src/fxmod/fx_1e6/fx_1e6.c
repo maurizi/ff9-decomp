@@ -70,7 +70,7 @@ s32 fx_1e6_op80(s32 mode, Fx1e6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC = 0x1000;
     } else {
         frame = entry->unk0;
-        ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&work->unk4, (s16 *)&D_801E9300);
+        ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&work->unk4, (s16 *)&D_801E9300);
         if (frame < 0x20) {
             if ((s32)frame >= 0x18) {
                 work->unkC -= 0x400;

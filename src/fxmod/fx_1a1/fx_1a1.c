@@ -47,9 +47,9 @@ s32 fx_1a1_op80(s32 mode, Fx1a1Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_lerpVec((s16 *)&work->unk18, (s16 *)&work->unk10, (0x1000 / work->unk4) * work->unk0,
                               (s16 *)&work->unk20);
             ex->btlfx_setUnitPos(0x10, (s16 *)&work->unk20);
-            env->camera->unk0[0].vx = work->unk20.vx;
-            env->camera->unk0[0].vz = work->unk20.vz;
-            env->camera->unk0[0].vy = 0;
+            env->camera->points[0].vx = work->unk20.vx;
+            env->camera->points[0].vz = work->unk20.vz;
+            env->camera->points[0].vy = 0;
         }
         return frame >= 0x20;
     }

@@ -386,16 +386,16 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         sv.vx = work->unk18.vx + rot.vx;
         sv.vy = work->unk18.vy + rot.vy - 0x140;
         sv.vz = work->unk18.vz + rot.vz;
-        env->camera->unk0[1].vx = sv.vx;
-        env->camera->unk0[1].vy = sv.vy;
-        env->camera->unk0[1].vz = sv.vz;
+        env->camera->points[1].vx = sv.vx;
+        env->camera->points[1].vy = sv.vy;
+        env->camera->points[1].vz = sv.vz;
         ex->func_800CFCA8(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&rot);
         sv.vx = work->unk8.vx + rot.vx;
         sv.vy = work->unk8.vy + rot.vy - 0x140;
         sv.vz = work->unk8.vz + rot.vz;
-        env->camera->unk0[2].vx = sv.vx;
-        env->camera->unk0[2].vy = sv.vy;
-        env->camera->unk0[2].vz = sv.vz;
+        env->camera->points[2].vx = sv.vx;
+        env->camera->points[2].vy = sv.vy;
+        env->camera->points[2].vz = sv.vz;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         ex->btlfx_initEffModels(D_801EEB80, 9);
         work->unk38 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 1), 0x97, 0x3D40,
@@ -466,9 +466,9 @@ s32 fx_0ec_op80(s32 mode, Fx0ecWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         sv.vy = pos.vy;
         sv.vz = pos.vz;
         sv.vy -= (((SVECTOR *)p)->pad * sc.vy) >> 12;
-        env->camera->unk0[0].vx = sv.vx;
-        env->camera->unk0[0].vy = sv.vy;
-        env->camera->unk0[0].vz = sv.vz;
+        env->camera->points[0].vx = sv.vx;
+        env->camera->points[0].vy = sv.vy;
+        env->camera->points[0].vz = sv.vz;
         ex->Hi_SetEffModelSlice(work->unk38, h);
         ex->Hi_DrawSliceEffModel(&rot, &pos, (s32)&sc, work->unk38);
         ex->Hi_SetEffModelSlice(work->unk3C, h);

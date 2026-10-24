@@ -35,9 +35,9 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk38);
         work->unk38.vy += 0x80;
-        env->camera->unk0[3].vx = work->unk38.vx;
-        env->camera->unk0[3].vy = work->unk38.vy;
-        env->camera->unk0[3].vz = work->unk38.vz;
+        env->camera->points[3].vx = work->unk38.vx;
+        env->camera->points[3].vy = work->unk38.vy;
+        env->camera->points[3].vz = work->unk38.vz;
         work->unk0 = 0;
     } else {
     frame = entry->unk0;

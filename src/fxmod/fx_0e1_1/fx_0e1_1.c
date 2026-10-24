@@ -55,9 +55,9 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
                 work->unk24.vx = v.vx;
                 work->unk24.vy = v.vy;
                 work->unk24.vz = v.vz;
-                env->camera->unk0[2].vx = v.vx;
-                env->camera->unk0[2].vy = v.vy;
-                env->camera->unk0[2].vz = v.vz;
+                env->camera->points[2].vx = v.vx;
+                env->camera->points[2].vy = v.vy;
+                env->camera->points[2].vz = v.vz;
                 work->unk30 = p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk14);
                 if (p != NULL) {
                     p->unk22 = 0x80;
@@ -95,10 +95,10 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
             work->unk1C.vx = work->unk24.vx;
             work->unk1C.vy = work->unk24.vy;
             work->unk1C.vz = work->unk24.vz;
-            env->camera->unk0[2].vx = work->unk24.vx;
-            env->camera->unk0[2].vy = work->unk24.vy;
-            env->camera->unk0[2].vz = work->unk24.vz;
-            env->camera->unk0[2].vx += (ex->math_sin(work->unk4 << 7) * work->unk34) >> 12;
+            env->camera->points[2].vx = work->unk24.vx;
+            env->camera->points[2].vy = work->unk24.vy;
+            env->camera->points[2].vz = work->unk24.vz;
+            env->camera->points[2].vx += (ex->math_sin(work->unk4 << 7) * work->unk34) >> 12;
             if (frame < 0x18) {
                 ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 1, 0xFF - (frame * 255) / 24, 0xFF - (frame * 255) / 24,
                                          0xFF - (frame * 255) / 24);

@@ -21,7 +21,7 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         func_801E8B04(0, 3, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0xA));
     } else {
         frame = entry->unk0;
-        env->camera->unk30[1].vz = env->camera->unk0[2].vz;
+        env->camera->unk30[1].vz = env->camera->points[2].vz;
         func_801E8B60(0);
         return frame >= 0x78;
     }
@@ -164,9 +164,9 @@ s32 fx_1fc_op83(s32 mode, Fx1fcWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (q = 0; q < env->targets->targetCount; q++) {
                 ex->func_800E7ACC(q, (s32 *)&D_801EDF1C[q]);
             }
-            env->camera->unk0[0].vx = 0;
-            env->camera->unk0[0].vy = 0;
-            env->camera->unk0[0].vz = 0x4B0;
+            env->camera->points[0].vx = 0;
+            env->camera->points[0].vy = 0;
+            env->camera->points[0].vz = 0x4B0;
             break;
         }
         k = frame - 1;

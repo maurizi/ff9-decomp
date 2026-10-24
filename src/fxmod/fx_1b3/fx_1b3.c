@@ -80,9 +80,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&D_801EB7EC);
         D_801EB7EC.vy = -0x514;
         D_801EB7EC.vz += 0x800;
-        env->camera->unk0[1].vx = D_801EB7EC.vx;
-        env->camera->unk0[1].vy = 0;
-        env->camera->unk0[1].vz = 0;
+        env->camera->points[1].vx = D_801EB7EC.vx;
+        env->camera->points[1].vy = 0;
+        env->camera->points[1].vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk100);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk108);
         ((BtlTexInfo *)v)->unk0[0][0] = 0x8A;

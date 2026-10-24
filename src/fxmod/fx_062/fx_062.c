@@ -58,8 +58,8 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitScale(0, &D_801E8F6C);
         D_801E8F78 = ex->func_800E738C(0);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E8F5C);
-        env->camera->unk0[0].vx = work->unk94.vx = D_801E8F5C.vx;
-        env->camera->unk0[0].vz = work->unk94.vz = D_801E8F5C.vz;
+        env->camera->points[0].vx = work->unk94.vx = D_801E8F5C.vx;
+        env->camera->points[0].vz = work->unk94.vz = D_801E8F5C.vz;
         work->unk40[0].unk0 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 8), 0x137,
                                                          0xFFFF, 0, 0x80);
         work->unk40[0].unk4.vx = 0x800;
@@ -190,9 +190,9 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_setUnitPos(0, (s16 *)&pos);
             ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&D_801E8F5C);
         }
-        env->camera->unk0[0].vy = work->unk94.vy = D_801E8F5C.vy;
+        env->camera->points[0].vy = work->unk94.vy = D_801E8F5C.vy;
         if (work->unk0[1] != 0) {
-            ex->btlfx_aimAngles((s16 *)&D_801E8F5C, (s16 *)&env->camera->unk54, (s16 *)&work->unk40[1].unk4);
+            ex->btlfx_aimAngles((s16 *)&D_801E8F5C, (s16 *)&env->camera->eye, (s16 *)&work->unk40[1].unk4);
             work->unk40[0].unk4.vx = work->unk40[1].unk4.vx + 0x800;
             work->unk40[0].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;

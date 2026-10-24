@@ -327,9 +327,9 @@ s32 fx_1b6_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E85B4 = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
         pos.vy += 0x180;
-        env->camera->unk0[3].vx = pos.vx;
-        env->camera->unk0[3].vy = pos.vy;
-        env->camera->unk0[3].vz = pos.vz;
+        env->camera->points[3].vx = pos.vx;
+        env->camera->points[3].vy = pos.vy;
+        env->camera->points[3].vz = pos.vz;
         return 1;
     } else {
         return 0;

@@ -57,9 +57,9 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vz = work->unk30.vz;
     found:
         work->unk2E = work->unkC.vy;
-        env->camera->unk0[0].vx = work->unkC.vx;
-        env->camera->unk0[0].vy = work->unkC.vy;
-        env->camera->unk0[0].vz = work->unkC.vz;
+        env->camera->points[0].vx = work->unkC.vx;
+        env->camera->points[0].vy = work->unkC.vy;
+        env->camera->points[0].vz = work->unkC.vz;
         work->unk48 = -1;
         work->unk4A = -1;
         ex->btlfx_initEffModels(D_801E7D54, 1);

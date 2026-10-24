@@ -180,7 +180,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = 0;
             ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
-            env->camera->unk5E = 0x208 - t * t * 4;
+            env->camera->projDist = 0x208 - t * t * 4;
         }
         work->unk64++;
         return frame >= 0x32;

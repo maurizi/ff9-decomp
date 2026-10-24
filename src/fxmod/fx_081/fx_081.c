@@ -27,9 +27,9 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
         }
         BTLFX_COPY_SVEC(&D_801EA730, pos);
         if (frame < 0x1D) {
-            env->camera->unk0[3].vx = pos->vx;
-            env->camera->unk0[3].vy = pos->vy;
-            env->camera->unk0[3].vz = pos->vz;
+            env->camera->points[3].vx = pos->vx;
+            env->camera->points[3].vy = pos->vy;
+            env->camera->points[3].vz = pos->vz;
             return;
         }
         k = frame - 0x1D;
@@ -38,9 +38,9 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
         } else {
             BTLFX_COPY_SVEC(&v, &D_801EA728);
         }
-        env->camera->unk0[3].vx = v.vx;
-        env->camera->unk0[3].vy = v.vy;
-        env->camera->unk0[3].vz = v.vz;
+        env->camera->points[3].vx = v.vx;
+        env->camera->points[3].vy = v.vy;
+        env->camera->points[3].vz = v.vz;
     }
 }
 

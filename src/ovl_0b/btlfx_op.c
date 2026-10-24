@@ -1496,7 +1496,7 @@ s32 func_800E7C54(s32 arg0, s32 arg1) {
     btlfx_getUnitPos(arg0, a);
     btlfx_getUnitPos(arg1, b);
     r = a[2] <= b[2];
-    if (((g_btlfxEnv->camera->unk50 - 0x400) & 0xFFF) > 0x800) {
+    if (((g_btlfxEnv->camera->yaw - 0x400) & 0xFFF) > 0x800) {
         r = -r;
     }
     return r;

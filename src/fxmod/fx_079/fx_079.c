@@ -190,7 +190,7 @@ s32 fx_079_op80(s32 mode, Fx079Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk94.vx = D_801E8984.vx;
             work->unk94.vy = D_801E8984.vy;
             work->unk94.vz = D_801E8984.vz;
-            ex->btlfx_aimAngles((s16 *)&D_801E8984, (s16 *)&env->camera->unk54, (s16 *)&work->unk40[1].unk4);
+            ex->btlfx_aimAngles((s16 *)&D_801E8984, (s16 *)&env->camera->eye, (s16 *)&work->unk40[1].unk4);
             work->unk40[0].unk4.vx = work->unk40[1].unk4.vx + 0x800;
             work->unk40[0].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;

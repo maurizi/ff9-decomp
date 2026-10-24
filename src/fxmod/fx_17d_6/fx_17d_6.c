@@ -50,15 +50,15 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk18.vy = work->unk58.vy;
         work->unk18.vz = work->unk58.vz - 0x200;
         work->unk18.vy -= 0x200;
-        env->camera->unk0[2].vx = work->unk18.vx;
-        env->camera->unk0[2].vy = work->unk18.vy;
-        env->camera->unk0[2].vz = work->unk18.vz;
+        env->camera->points[2].vx = work->unk18.vx;
+        env->camera->points[2].vy = work->unk18.vy;
+        env->camera->points[2].vz = work->unk18.vz;
         work->unk20.vx = D_801E9360.vx;
         work->unk20.vy = D_801E9360.vy;
         work->unk20.vz = D_801E9360.vz;
-        env->camera->unk0[3].vx = work->unk20.vx;
-        env->camera->unk0[3].vy = work->unk20.vy;
-        env->camera->unk0[3].vz = work->unk20.vz;
+        env->camera->points[3].vx = work->unk20.vx;
+        env->camera->points[3].vy = work->unk20.vy;
+        env->camera->points[3].vz = work->unk20.vz;
         work->unk58.vx += 0x19F;
         work->unk58.vy -= 0x200;
         p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk10);
@@ -129,9 +129,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk70.vy = 0x800;
                 work->unk70.vz = 0;
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->unk18);
-                env->camera->unk0[2].vx = work->unk18.vx;
-                env->camera->unk0[2].vy = work->unk18.vy;
-                env->camera->unk0[2].vz = work->unk18.vz;
+                env->camera->points[2].vx = work->unk18.vx;
+                env->camera->points[2].vy = work->unk18.vy;
+                env->camera->points[2].vz = work->unk18.vz;
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 4), (s32)&work->unk30);
                 if (p != NULL) {
                     p->unk22 = 0x80;
@@ -156,9 +156,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                               ex->math_cos(u >> 2) / 3 + 0x5DC, 0, 1, u);
             env->unk28 = 0;
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
-            env->camera->unk0[2].vx = work->unk18.vx;
-            env->camera->unk0[2].vy = work->unk18.vy;
-            env->camera->unk0[2].vz = work->unk18.vz;
+            env->camera->points[2].vx = work->unk18.vx;
+            env->camera->points[2].vy = work->unk18.vy;
+            env->camera->points[2].vz = work->unk18.vz;
             if (frame == 0x18) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk30);
                 if (p != NULL) {
@@ -196,9 +196,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 D_801EB114 = 2;
                 BTLFX_COPY_SVEC(&work->unk18, &D_801E9360);
                 work->unk18.vy -= 0x200;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 BTLFX_COPY_SVEC(&work->unk10, &work->unk18);
                 work->unk10.vy -= 0x400;
             }
@@ -244,9 +244,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             u = (frame << 12) / 14;
             ex->Hi_DrawSummonModel(&work->unk70, (VECTOR *)&work->unk58, (s32)&work->unk64, SUMMON(env)->unk60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->unk18);
-            env->camera->unk0[2].vx = work->unk18.vx;
-            env->camera->unk0[2].vy = work->unk18.vy;
-            env->camera->unk0[2].vz = work->unk18.vz;
+            env->camera->points[2].vx = work->unk18.vx;
+            env->camera->points[2].vy = work->unk18.vy;
+            env->camera->points[2].vz = work->unk18.vz;
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->unk28);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[2], (u16 *)&work->unk30);
             BTLFX_COPY_SVEC(&D_801EB104, &work->unk28);
@@ -276,9 +276,9 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 cam.vy = D_801E9360.vy;
                 cam.vz = D_801E9360.vz;
                 cam.vy -= 0x300;
-                env->camera->unk0[3].vx = cam.vx;
-                env->camera->unk0[3].vy = cam.vy;
-                env->camera->unk0[3].vz = cam.vz;
+                env->camera->points[3].vx = cam.vx;
+                env->camera->points[3].vy = cam.vy;
+                env->camera->points[3].vz = cam.vz;
                 D_801EB114 = 1;
                 ex->btlfx_clearEffModels();
                 return 1;

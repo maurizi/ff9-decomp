@@ -119,12 +119,12 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkA4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
     } else {
         frame = entry->unk0;
-        env->camera->unk0[1].vx = 0;
-        env->camera->unk0[1].vy = -0x800;
-        env->camera->unk0[1].vz = 0x418;
-        env->camera->unk0[3].vx = w->unk64.vx;
-        env->camera->unk0[3].vy = w->unk64.vy;
-        env->camera->unk0[3].vz = w->unk64.vz;
+        env->camera->points[1].vx = 0;
+        env->camera->points[1].vy = -0x800;
+        env->camera->points[1].vz = 0x418;
+        env->camera->points[3].vx = w->unk64.vx;
+        env->camera->points[3].vy = w->unk64.vy;
+        env->camera->points[3].vz = w->unk64.vz;
         switch (frame) {
         case 0:
             w->unk0[1] = 0x28;
@@ -255,7 +255,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             aim.vx = w->unk64.vx;
             aim.vy = w->unk64.vy;
             aim.vz = w->unk64.vz;
-            ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&aim, (s16 *)&w->unk9C);
+            ex->btlfx_aimAngles((s16 *)&env->camera->eye, (s16 *)&aim, (s16 *)&w->unk9C);
             ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->unk94);
             if (w->unk0[6] != 0) {
                 ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->unk98);
@@ -299,7 +299,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->unk0[0xB]--;
                 a = w->unk0[0xB] << 8;
             }
-            ex->btlfx_aimAngles((s16 *)&w->unk8C, (s16 *)&env->camera->unk54, (s16 *)&rot2);
+            ex->btlfx_aimAngles((s16 *)&w->unk8C, (s16 *)&env->camera->eye, (s16 *)&rot2);
             pos.vz = 0xC18;
             pos.vx = 0;
             pos.vy = -0x1200;

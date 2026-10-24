@@ -89,10 +89,10 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vx = work->unk48.vx;
         work->unk18.vy = work->unk48.vy;
         work->unk18.vz = work->unk48.vz;
-        env->camera->unk0[3].vx = work->unk18.vx;
-        env->camera->unk0[3].vy = work->unk18.vy;
-        env->camera->unk0[3].vz = work->unk18.vz;
-        env->camera->unk0[3].vy -= 0x190;
+        env->camera->points[3].vx = work->unk18.vx;
+        env->camera->points[3].vy = work->unk18.vy;
+        env->camera->points[3].vz = work->unk18.vz;
+        env->camera->points[3].vy -= 0x190;
         D_801ECAB8.vz = 0;
         D_801ECAB8.vy = 0;
         D_801ECAB8.vx = 0;
@@ -138,10 +138,10 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawSummonModel(&work->unk60, &pos, (s32)&work->unk54, ((Fx0baSummon *)env->unk4)->unk60, 0);
             ex->Hi_GetSummonBonePos(((Fx0baSummon *)env->unk4)->unk60, 0x33, (u16 *)&work->unk18);
             work->unk18.vy += 0x40;
-            env->camera->unk0[2].vx = work->unk18.vx;
-            env->camera->unk0[2].vy = work->unk18.vy;
+            env->camera->points[2].vx = work->unk18.vx;
+            env->camera->points[2].vy = work->unk18.vy;
             c = 0;
-            env->camera->unk0[2].vz = work->unk18.vz;
+            env->camera->points[2].vz = work->unk18.vz;
             ex->func_800CFC2C(frame, 2, 7, -1, 0x555, &c);
             ex->func_800CFC2C(frame, 0xC, 2, 0, 0x1800, &c);
             ex->func_800CFC2C(frame, 0xE, 0xA, -1, 0x1800, &c);
@@ -235,9 +235,9 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18.vz = work->unk48.vz;
                 work->unk18.vy -= 0x127;
                 work->unk18.vz += 0x80;
-                env->camera->unk0[2].vx = work->unk18.vx;
-                env->camera->unk0[2].vy = work->unk18.vy;
-                env->camera->unk0[2].vz = work->unk18.vz;
+                env->camera->points[2].vx = work->unk18.vx;
+                env->camera->points[2].vy = work->unk18.vy;
+                env->camera->points[2].vz = work->unk18.vz;
                 work->unk80 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x82), 1);
                 work->unk90 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x83), 1);
             }
@@ -410,9 +410,9 @@ s32 fx_0ba_op81(s32 mode, Fx0baPWork81 *work, Unk800F78A4 *env, Unk80100C78Entry
         FX0BAP_W(work->unk18, 0) = FX0BAP_W(work->unk8, 0);
         FX0BAP_W(work->unk18, 1) = FX0BAP_W(work->unk8, 1);
         work->unk18.vy -= 0x1EA;
-        env->camera->unk0[3].vx = work->unk18.vx;
-        env->camera->unk0[3].vy = work->unk18.vy;
-        env->camera->unk0[3].vz = work->unk18.vz;
+        env->camera->points[3].vx = work->unk18.vx;
+        env->camera->points[3].vy = work->unk18.vy;
+        env->camera->points[3].vz = work->unk18.vz;
     } else {
         alpha = 0;
         base = 0;
@@ -888,9 +888,9 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         v.vx = keys[0];
         v.vy = keys[1] - 100;
         v.vz = keys[2];
-        env->camera->unk0[0].vx = v.vx;
-        env->camera->unk0[0].vy = v.vy;
-        env->camera->unk0[0].vz = v.vz;
+        env->camera->points[0].vx = v.vx;
+        env->camera->points[0].vy = v.vy;
+        env->camera->points[0].vz = v.vz;
         keys = (s16 *)ex->btlfx_getFileData(entry->unk8, 0x2F);
         i = frame;
         if (i >= keys[1]) {
@@ -900,9 +900,9 @@ s32 fx_0ba_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         v.vx = keys[0];
         v.vy = keys[1] - 100;
         v.vz = keys[2];
-        env->camera->unk0[1].vx = v.vx;
-        env->camera->unk0[1].vy = v.vy;
-        env->camera->unk0[1].vz = v.vz;
+        env->camera->points[1].vx = v.vx;
+        env->camera->points[1].vy = v.vy;
+        env->camera->points[1].vz = v.vz;
         if (frame >= 0x5A) {
             return 1;
         }

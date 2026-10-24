@@ -85,9 +85,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk20.vx = D_801E89F4.vx;
         work->unk20.vy = D_801E89F4.vy;
         work->unk20.vz = D_801E89F4.vz;
-        env->camera->unk0[2].vx = work->unk20.vx;
-        env->camera->unk0[2].vy = work->unk20.vy;
-        env->camera->unk0[2].vz = work->unk20.vz;
+        env->camera->points[2].vx = work->unk20.vx;
+        env->camera->points[2].vy = work->unk20.vy;
+        env->camera->points[2].vz = work->unk20.vz;
         work->unk5C.vx = 0;
         work->unk5C.vy = 0x400;
         work->unk5C.vz = 0;
@@ -101,9 +101,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             n1 = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
             ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), n1, 0x78, 0, 0xFF, t);
             work->unk20.vx -= 0x2E;
-            env->camera->unk0[2].vx = work->unk20.vx;
-            env->camera->unk0[2].vy = work->unk20.vy;
-            env->camera->unk0[2].vz = work->unk20.vz;
+            env->camera->points[2].vx = work->unk20.vx;
+            env->camera->points[2].vy = work->unk20.vy;
+            env->camera->points[2].vz = work->unk20.vz;
             if (frame >= 0x20) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -122,9 +122,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelRGB(work->unk6C, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
             ex->Hi_DrawEffModel(&work->unk5C, (VECTOR *)&work->unk28, (s32)&work->unk3C, work->unk64);
             work->unk20.vx -= (ex->math_cos(t >> 2) * 0x2E) >> 12;
-            env->camera->unk0[2].vx = work->unk20.vx;
-            env->camera->unk0[2].vy = work->unk20.vy;
-            env->camera->unk0[2].vz = work->unk20.vz;
+            env->camera->points[2].vx = work->unk20.vx;
+            env->camera->points[2].vy = work->unk20.vy;
+            env->camera->points[2].vz = work->unk20.vz;
             D_801E8FCC = 0x400;
             if (frame % 3 == 0) {
                 o = ex->btlfx_poolSpawn((s16 *)entry->unk10);
@@ -272,9 +272,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk20.vy = work->unk8.vy;
                 work->unk20.vz = work->unk8.vz;
                 work->unk20.vy -= 0x200;
-                env->camera->unk0[3].vx = work->unk20.vx;
-                env->camera->unk0[3].vy = work->unk20.vy;
-                env->camera->unk0[3].vz = work->unk20.vz;
+                env->camera->points[3].vx = work->unk20.vx;
+                env->camera->points[3].vy = work->unk20.vy;
+                env->camera->points[3].vz = work->unk20.vz;
             }
             break;
         case 4:

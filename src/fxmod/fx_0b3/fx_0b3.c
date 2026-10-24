@@ -1220,12 +1220,12 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                        ((Fx0b3Summon *)env->unk4)->unk60, 1);
             }
             if (frame == 0x32) {
-                p1.vx = env->camera->unk0[0].vx;
-                p1.vy = env->camera->unk0[0].vy;
-                p1.vz = env->camera->unk0[0].vz;
-                p2.vx = env->camera->unk0[1].vx;
-                p2.vy = env->camera->unk0[1].vy;
-                p2.vz = env->camera->unk0[1].vz;
+                p1.vx = env->camera->points[0].vx;
+                p1.vy = env->camera->points[0].vy;
+                p1.vz = env->camera->points[0].vz;
+                p2.vx = env->camera->points[1].vx;
+                p2.vy = env->camera->points[1].vy;
+                p2.vz = env->camera->points[1].vz;
                 work->unk10.vx = (p1.vx + p2.vx) / 2;
                 work->unk10.vy = (p1.vy + p2.vy) / 2;
                 work->unk10.vz = (p1.vz + p2.vz) / 2;
@@ -1263,9 +1263,9 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk18.vx = 0;
                 work->unk18.vy = -0x64;
                 work->unk18.vz = 0;
-                env->camera->unk0[3].vx = work->unk18.vx;
-                env->camera->unk0[3].vy = work->unk18.vy;
-                env->camera->unk0[3].vz = work->unk18.vz;
+                env->camera->points[3].vx = work->unk18.vx;
+                env->camera->points[3].vy = work->unk18.vy;
+                env->camera->points[3].vz = work->unk18.vz;
                 ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&a2);
                 if (a2.vy < -0x800) {
                     work->unk18.vz = 0x300;
@@ -1278,9 +1278,9 @@ s32 fx_0b3_op85(s32 mode, Fx0b3Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
             t = (frame << 12) / 24;
             u = t >> 2;
             work->unk18.vy -= (ex->math_cos(u) * 0x18) >> 12;
-            env->camera->unk0[3].vx = work->unk18.vx;
-            env->camera->unk0[3].vy = work->unk18.vy;
-            env->camera->unk0[3].vz = work->unk18.vz;
+            env->camera->points[3].vx = work->unk18.vx;
+            env->camera->points[3].vy = work->unk18.vy;
+            env->camera->points[3].vz = work->unk18.vz;
             a2.vx = 0;
             a2.vy = -0x200 - (ex->math_cos(u) >> 3);
             b2.vx = 0x400;
@@ -1349,21 +1349,21 @@ s32 fx_0b3_op87(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
             v.vy = env->targets->centerY;
             v.vz = env->targets->centerZ;
             v.vy -= 0x2BC;
-            env->camera->unk0[2].vx = v.vx;
-            env->camera->unk0[2].vy = v.vy;
-            env->camera->unk0[2].vz = v.vz;
+            env->camera->points[2].vx = v.vx;
+            env->camera->points[2].vy = v.vy;
+            env->camera->points[2].vz = v.vz;
             return 1;
         }
     } else {
         frame = entry->unk0;
         func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, D_801EB5E8[*work].unk2), frame, &v);
-        env->camera->unk0[1].vx = v.vx;
-        env->camera->unk0[1].vy = v.vy;
-        env->camera->unk0[1].vz = v.vz;
+        env->camera->points[1].vx = v.vx;
+        env->camera->points[1].vy = v.vy;
+        env->camera->points[1].vz = v.vz;
         func_801E7704((u8 *)ex->btlfx_getFileData(entry->unk8, D_801EB5E8[*work].unk0), frame, &v);
-        env->camera->unk0[0].vx = v.vx;
-        env->camera->unk0[0].vy = v.vy;
-        env->camera->unk0[0].vz = v.vz;
+        env->camera->points[0].vx = v.vx;
+        env->camera->points[0].vy = v.vy;
+        env->camera->points[0].vz = v.vz;
         if (frame >= D_801EB5E8[*work].unk4) {
             return 1;
         }

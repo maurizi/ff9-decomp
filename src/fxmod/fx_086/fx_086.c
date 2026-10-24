@@ -297,11 +297,11 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk14.vy = pos.vy;
             work->unk14.vz = pos.vz - 0x46;
             work->unk14.vy += 0x1D;
-            env->camera->unk0[3].vx = pos.vx;
-            env->camera->unk0[3].vy = pos.vy;
-            env->camera->unk0[3].vz = pos.vz;
-            env->camera->unk0[3].vz += frame * 900 / 49 - 0x100;
-            env->camera->unk0[3].vy += 0x180 - frame * 900 / 49;
+            env->camera->points[3].vx = pos.vx;
+            env->camera->points[3].vy = pos.vy;
+            env->camera->points[3].vz = pos.vz;
+            env->camera->points[3].vz += frame * 900 / 49 - 0x100;
+            env->camera->points[3].vy += 0x180 - frame * 900 / 49;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
             ex->func_800E6624(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
             scale.vz = scale.vz * 3 / 2;
@@ -359,11 +359,11 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 49) {
                 ex->func_800E3D54(work->unk44);
                 BTLFX_COPY_SVEC(&work->unk1C, &env->targets->centerX);
-                env->camera->unk0[3].vx = work->unk1C.vx;
-                env->camera->unk0[3].vy = work->unk1C.vy;
-                env->camera->unk0[3].vz = work->unk1C.vz;
-                env->camera->unk0[3].vx += 0x1800;
-                env->camera->unk0[3].vx -= 0x1000;
+                env->camera->points[3].vx = work->unk1C.vx;
+                env->camera->points[3].vy = work->unk1C.vy;
+                env->camera->points[3].vz = work->unk1C.vz;
+                env->camera->points[3].vx += 0x1800;
+                env->camera->points[3].vx -= 0x1000;
                 ex->func_800E63E4(1, 1);
                 work->unk0 = 2;
                 entry->unk0 = -1;
@@ -404,9 +404,9 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 BTLFX_COPY_SVEC(&v1, &work->unk1C);
                 v1.vy -= 0x200;
                 ex->btlfx_lerpVec((s16 *)&v0, (s16 *)&v1, (frame << 12) / 10, (s16 *)&v2);
-                env->camera->unk0[3].vx = v2.vx;
-                env->camera->unk0[3].vy = v2.vy;
-                env->camera->unk0[3].vz = v2.vz;
+                env->camera->points[3].vx = v2.vx;
+                env->camera->points[3].vy = v2.vy;
+                env->camera->points[3].vz = v2.vz;
             }
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk28);
@@ -487,12 +487,12 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x64, 0x20, 0x20);
             }
             if (frame < 21) {
-                env->camera->unk0[3].vx = work->unk1C.vx;
-                env->camera->unk0[3].vy = work->unk1C.vy - 0x200;
-                env->camera->unk0[3].vz = work->unk1C.vz;
+                env->camera->points[3].vx = work->unk1C.vx;
+                env->camera->points[3].vy = work->unk1C.vy - 0x200;
+                env->camera->points[3].vz = work->unk1C.vz;
                 c20 = ((0x1000 - (frame << 12) / 20) << 9) >> 12;
-                env->camera->unk0[3].vy += ex->btlfx_randCentered(c20);
-                env->camera->unk0[3].vz += ex->btlfx_randCentered(c20);
+                env->camera->points[3].vy += ex->btlfx_randCentered(c20);
+                env->camera->points[3].vz += ex->btlfx_randCentered(c20);
             }
             if (frame == 12) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk1C);

@@ -238,9 +238,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk20.vx = work->unk48.vx;
         work->unk20.vy = work->unk48.vy;
         work->unk20.vz = work->unk48.vz;
-        env->camera->unk0[3].vx = work->unk20.vx;
-        env->camera->unk0[3].vy = work->unk20.vy;
-        env->camera->unk0[3].vz = work->unk20.vz;
+        env->camera->points[3].vx = work->unk20.vx;
+        env->camera->points[3].vy = work->unk20.vy;
+        env->camera->points[3].vz = work->unk20.vz;
         D_801EB25C = 0;
     } else {
         frame = entry->unk0;
@@ -285,9 +285,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk20.vz = work->unk48.vz;
                 work->unk28.vy -= 0x400;
                 work->unk20.vy -= 0x8FC;
-                env->camera->unk0[3].vx = work->unk20.vx;
-                env->camera->unk0[3].vy = work->unk20.vy;
-                env->camera->unk0[3].vz = work->unk20.vz;
+                env->camera->points[3].vx = work->unk20.vx;
+                env->camera->points[3].vy = work->unk20.vy;
+                env->camera->points[3].vz = work->unk20.vz;
             }
             break;
         case 1:
@@ -419,9 +419,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                          0xF0 - frame * 0x14);
             }
             work->unk20.vy += 8;
-            env->camera->unk0[3].vx = work->unk20.vx;
-            env->camera->unk0[3].vy = work->unk20.vy;
-            env->camera->unk0[3].vz = work->unk20.vz;
+            env->camera->points[3].vx = work->unk20.vx;
+            env->camera->points[3].vy = work->unk20.vy;
+            env->camera->points[3].vz = work->unk20.vz;
             if (frame >= 0x40) {
                 work->unk0 = 4;
                 ex->func_800E3C58();
@@ -433,9 +433,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk10.vx = work->unk20.vx;
                 work->unk10.vy = work->unk20.vy;
                 work->unk10.vz = work->unk20.vz;
-                env->camera->unk0[2].vx = work->unk20.vx;
-                env->camera->unk0[2].vy = work->unk20.vy;
-                env->camera->unk0[2].vz = work->unk20.vz;
+                env->camera->points[2].vx = work->unk20.vx;
+                env->camera->points[2].vy = work->unk20.vy;
+                env->camera->points[2].vz = work->unk20.vz;
                 work->unk28.vy += 0x1000;
             }
             break;
@@ -468,9 +468,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk20.vy += f >> 13;
                 work->unk20.vz -= fk;
             }
-            env->camera->unk0[2].vx = work->unk20.vx;
-            env->camera->unk0[2].vy = work->unk20.vy;
-            env->camera->unk0[2].vz = work->unk20.vz;
+            env->camera->points[2].vx = work->unk20.vx;
+            env->camera->points[2].vy = work->unk20.vy;
+            env->camera->points[2].vz = work->unk20.vz;
             if (frame == 0) {
                 p_c4 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&work->unk10);
                 if (p_c4 != NULL) {
@@ -503,9 +503,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk10.vy = work->unk8.vy;
                 work->unk10.vx = work->unk8.vx;
                 work->unk10.vz = work->unk8.vz;
-                env->camera->unk0[3].vx = work->unk8.vx;
-                env->camera->unk0[3].vy = work->unk8.vy;
-                env->camera->unk0[3].vz = work->unk8.vz;
+                env->camera->points[3].vx = work->unk8.vx;
+                env->camera->points[3].vy = work->unk8.vy;
+                env->camera->points[3].vz = work->unk8.vz;
             }
             break;
         case 5:

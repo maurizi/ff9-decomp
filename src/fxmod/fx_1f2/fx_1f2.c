@@ -93,9 +93,9 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x128;
     } else if (mode == 1) {
-        env->camera->unk0[1].vx = 0;
-        env->camera->unk0[1].vz = -0x4000;
-        env->camera->unk0[1].vy = -0x6000;
+        env->camera->points[1].vx = 0;
+        env->camera->points[1].vz = -0x4000;
+        env->camera->points[1].vy = -0x6000;
         D_801EA260 = env;
         ex->btlfx_initEffModels(D_801ED090, 0x20);
         for (i = 0; i < 0x20; i++) {
@@ -342,7 +342,7 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         case 0x1BF:
             return 1;
         }
-        ex->btlfx_aimAngles((s16 *)&D_801EA650, (s16 *)&env->camera->unk54, (s16 *)&D_801EA658);
+        ex->btlfx_aimAngles((s16 *)&D_801EA650, (s16 *)&env->camera->eye, (s16 *)&D_801EA658);
         if (work->unk0 != 0) {
             D_801EA2A0.unk8.vx = D_801EA658.vx + 0x800;
             D_801EA2A0.unk8.vy = D_801EA658.vy;

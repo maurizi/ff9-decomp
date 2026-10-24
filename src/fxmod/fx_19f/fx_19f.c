@@ -159,9 +159,9 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         FX19F_W(work->unk18, 0) = FX19F_W(work->unk8, 0);
         FX19F_W(work->unk18, 1) = FX19F_W(work->unk8, 1);
         work->unk18.vy -= 0x1EA;
-        env->camera->unk0[3].vx = work->unk18.vx;
-        env->camera->unk0[3].vy = work->unk18.vy;
-        env->camera->unk0[3].vz = work->unk18.vz;
+        env->camera->points[3].vx = work->unk18.vx;
+        env->camera->points[3].vy = work->unk18.vy;
+        env->camera->points[3].vz = work->unk18.vz;
     } else {
         alpha = 0;
         base = 0;
@@ -637,9 +637,9 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         v.vx = k->unk0;
         v.vy = k->unk2 - 100;
         v.vz = ((s16 *)k)[2];
-        env->camera->unk0[0].vx = v.vx;
-        env->camera->unk0[0].vy = v.vy;
-        env->camera->unk0[0].vz = v.vz;
+        env->camera->points[0].vx = v.vx;
+        env->camera->points[0].vy = v.vy;
+        env->camera->points[0].vz = v.vz;
         k = (Fx19fKeys *)ex->btlfx_getFileData(entry->unk8, 0x2C);
         f = frame;
         if (f >= k->unk2) {
@@ -649,9 +649,9 @@ s32 fx_19f_op82(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         v.vx = k->unk0;
         v.vy = k->unk2 - 100;
         v.vz = ((s16 *)k)[2];
-        env->camera->unk0[1].vx = v.vx;
-        env->camera->unk0[1].vy = v.vy;
-        env->camera->unk0[1].vz = v.vz;
+        env->camera->points[1].vx = v.vx;
+        env->camera->points[1].vy = v.vy;
+        env->camera->points[1].vz = v.vz;
         if (frame >= 0x5A) {
             return 1;
         }

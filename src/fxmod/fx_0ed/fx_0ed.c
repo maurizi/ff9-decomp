@@ -138,23 +138,23 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk8);
         BTLFX_COPY_SVEC(&((SVECTOR *)&pos)[1], &work->unk18);
         ((SVECTOR *)&pos)[1].vy -= 0x140;
-        env->camera->unk0[0].vx = ((SVECTOR *)&pos)[1].vx;
-        env->camera->unk0[0].vy = ((SVECTOR *)&pos)[1].vy;
-        env->camera->unk0[0].vz = ((SVECTOR *)&pos)[1].vz;
+        env->camera->points[0].vx = ((SVECTOR *)&pos)[1].vx;
+        env->camera->points[0].vy = ((SVECTOR *)&pos)[1].vy;
+        env->camera->points[0].vz = ((SVECTOR *)&pos)[1].vz;
         ex->func_800CFCA8(&work->unk10, -0xD2, (s32)&pos);
         ((SVECTOR *)&pos)[1].vx = work->unk18.vx + ((SVECTOR *)&pos)->vx;
         ((SVECTOR *)&pos)[1].vy = work->unk18.vy + ((SVECTOR *)&pos)->vy - 0x140;
         ((SVECTOR *)&pos)[1].vz = work->unk18.vz + ((SVECTOR *)&pos)->vz;
-        env->camera->unk0[1].vx = ((SVECTOR *)&pos)[1].vx;
-        env->camera->unk0[1].vy = ((SVECTOR *)&pos)[1].vy;
-        env->camera->unk0[1].vz = ((SVECTOR *)&pos)[1].vz;
+        env->camera->points[1].vx = ((SVECTOR *)&pos)[1].vx;
+        env->camera->points[1].vy = ((SVECTOR *)&pos)[1].vy;
+        env->camera->points[1].vz = ((SVECTOR *)&pos)[1].vz;
         ex->func_800CFCA8(&work->unk10, -ex->btlfx_getUnitRadius(0), (s32)&pos);
         ((SVECTOR *)&pos)[1].vx = work->unk8.vx + ((SVECTOR *)&pos)->vx;
         ((SVECTOR *)&pos)[1].vy = ((SVECTOR *)&pos)->vy - 0x140;
         ((SVECTOR *)&pos)[1].vz = work->unk8.vz + ((SVECTOR *)&pos)->vz;
-        env->camera->unk0[2].vx = ((SVECTOR *)&pos)[1].vx;
-        env->camera->unk0[2].vy = ((SVECTOR *)&pos)[1].vy;
-        env->camera->unk0[2].vz = ((SVECTOR *)&pos)[1].vz;
+        env->camera->points[2].vx = ((SVECTOR *)&pos)[1].vx;
+        env->camera->points[2].vy = ((SVECTOR *)&pos)[1].vy;
+        env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->unk8, 2);
         ex->func_800E9000((Unk800E9000 *)ex->btlfx_getFileData(entry->unk8, 7), (s32 *)&file, 1, &D_801E9234);
         ex->Hi_SetSummonMotion(((Fx0edSummon *)env->unk4)->unk54->unk180, ((Fx0edSummon *)env->unk4)->unk60);
@@ -238,7 +238,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8,
                                                            *(D_801E8C10 + (((ang = work->unk10.vy & 0xFFF) - 0x400U > 0x800) !=
-                                                                      ((ang = env->camera->unk50 & 0xFFF) - 0x400U > 0x800)))),
+                                                                      ((ang = env->camera->yaw & 0xFFF) - 0x400U > 0x800)))),
                                       (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x40);
@@ -359,9 +359,9 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     work->unkC = (BtlUnit *)-1;
                 }
             } while (r == -2 || r == -1);
-            env->camera->unk0[0].vx = work->unk10.vx;
-            env->camera->unk0[0].vy = work->unk10.vy;
-            env->camera->unk0[0].vz = work->unk10.vz;
+            env->camera->points[0].vx = work->unk10.vx;
+            env->camera->points[0].vy = work->unk10.vy;
+            env->camera->points[0].vz = work->unk10.vz;
             u.v.vx = work->unk10.vx;
             u.v.vy = work->unk10.vy;
             u.v.vz = work->unk10.vz;
@@ -371,9 +371,9 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 u.v.vz -= 0x640;
             }
             u.v.vy -= 0x200;
-            env->camera->unk0[1].vx = u.v.vx;
-            env->camera->unk0[1].vy = u.v.vy;
-            env->camera->unk0[1].vz = u.v.vz;
+            env->camera->points[1].vx = u.v.vx;
+            env->camera->points[1].vy = u.v.vy;
+            env->camera->points[1].vz = u.v.vz;
             ex->func_800E9930(3, entry->unk8, -1);
             if (++work->unk8 >= 0x10 && r == 1) {
                 work->unk0 = 2;

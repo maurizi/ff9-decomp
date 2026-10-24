@@ -160,7 +160,7 @@ void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
 }
 
 void func_801E7EB8(s16 *a, s16 *b) {
-    BTLFX_EXPORTS(D_801E8670)->btlfx_aimAngles((s16 *)&D_801E8670->camera->unk54, a, b);
+    BTLFX_EXPORTS(D_801E8670)->btlfx_aimAngles((s16 *)&D_801E8670->camera->eye, a, b);
 }
 
 s32 func_801E7EFC(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work) {

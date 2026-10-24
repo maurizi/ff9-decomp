@@ -631,18 +631,18 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (frame < 0x10E) {
-            work->unk44.vx = env->camera->unk0[2].vx;
-            work->unk44.vy = env->camera->unk0[2].vy;
-            work->unk44.vz = env->camera->unk0[2].vz;
-            work->unk54.vx = env->camera->unk0[8].vx;
-            work->unk54.vy = env->camera->unk0[8].vy;
-            work->unk54.vz = env->camera->unk0[8].vz;
+            work->unk44.vx = env->camera->points[2].vx;
+            work->unk44.vy = env->camera->points[2].vy;
+            work->unk44.vz = env->camera->points[2].vz;
+            work->unk54.vx = env->camera->points[8].vx;
+            work->unk54.vy = env->camera->points[8].vy;
+            work->unk54.vz = env->camera->points[8].vz;
             D_801F0FEC.vx = work->unk54.vx;
             D_801F0FEC.vy = work->unk54.vy;
             D_801F0FEC.vz = work->unk54.vz;
-            work->unkC0.vx = env->camera->unk0[3].vx;
-            work->unkC0.vy = env->camera->unk0[3].vy;
-            work->unkC0.vz = env->camera->unk0[3].vz;
+            work->unkC0.vx = env->camera->points[3].vx;
+            work->unkC0.vy = env->camera->points[3].vy;
+            work->unkC0.vz = env->camera->points[3].vz;
         }
         n = frame - 0x2E;
         if (n >= 0 && n < 0x83) {
@@ -865,24 +865,24 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i8 = 1; i8 < 4; i8++) {
                 switch (i8) {
                 case 0:
-                    D_801F103C[i8].vx = env->camera->unk0[2].vx;
-                    D_801F103C[i8].vy = env->camera->unk0[2].vy;
-                    D_801F103C[i8].vz = env->camera->unk0[2].vz;
+                    D_801F103C[i8].vx = env->camera->points[2].vx;
+                    D_801F103C[i8].vy = env->camera->points[2].vy;
+                    D_801F103C[i8].vz = env->camera->points[2].vz;
                     break;
                 case 1:
-                    D_801F103C[i8].vx = env->camera->unk0[3].vx;
-                    D_801F103C[i8].vy = env->camera->unk0[3].vy;
-                    D_801F103C[i8].vz = env->camera->unk0[3].vz;
+                    D_801F103C[i8].vx = env->camera->points[3].vx;
+                    D_801F103C[i8].vy = env->camera->points[3].vy;
+                    D_801F103C[i8].vz = env->camera->points[3].vz;
                     break;
                 case 2:
-                    D_801F103C[i8].vx = env->camera->unk0[8].vx;
-                    D_801F103C[i8].vy = env->camera->unk0[8].vy;
-                    D_801F103C[i8].vz = env->camera->unk0[8].vz;
+                    D_801F103C[i8].vx = env->camera->points[8].vx;
+                    D_801F103C[i8].vy = env->camera->points[8].vy;
+                    D_801F103C[i8].vz = env->camera->points[8].vz;
                     break;
                 case 3:
-                    D_801F103C[i8].vx = env->camera->unk0[9].vx;
-                    D_801F103C[i8].vy = env->camera->unk0[9].vy;
-                    D_801F103C[i8].vz = env->camera->unk0[9].vz;
+                    D_801F103C[i8].vx = env->camera->points[9].vx;
+                    D_801F103C[i8].vy = env->camera->points[9].vy;
+                    D_801F103C[i8].vz = env->camera->points[9].vz;
                     break;
                 }
             }

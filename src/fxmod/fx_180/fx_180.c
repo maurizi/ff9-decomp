@@ -80,18 +80,18 @@ s32 fx_180_op80(s32 mode, Fx180Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk5C.vz -= 0xFA0;
         work->unk64.vy -= 0x2AF8;
         work->unk6C.vy -= 0x3E8;
-        env->camera->unk0[0].vx = work->unk54.vx;
-        env->camera->unk0[0].vy = work->unk54.vy;
-        env->camera->unk0[0].vz = work->unk54.vz;
-        env->camera->unk0[1].vx = work->unk5C.vx;
-        env->camera->unk0[1].vy = work->unk5C.vy;
-        env->camera->unk0[1].vz = work->unk5C.vz;
-        env->camera->unk0[2].vx = work->unk64.vx;
-        env->camera->unk0[2].vy = work->unk64.vy;
-        env->camera->unk0[2].vz = work->unk64.vz;
-        env->camera->unk0[3].vx = work->unk6C.vx;
-        env->camera->unk0[3].vy = work->unk6C.vy;
-        env->camera->unk0[3].vz = work->unk6C.vz;
+        env->camera->points[0].vx = work->unk54.vx;
+        env->camera->points[0].vy = work->unk54.vy;
+        env->camera->points[0].vz = work->unk54.vz;
+        env->camera->points[1].vx = work->unk5C.vx;
+        env->camera->points[1].vy = work->unk5C.vy;
+        env->camera->points[1].vz = work->unk5C.vz;
+        env->camera->points[2].vx = work->unk64.vx;
+        env->camera->points[2].vy = work->unk64.vy;
+        env->camera->points[2].vz = work->unk64.vz;
+        env->camera->points[3].vx = work->unk6C.vx;
+        env->camera->points[3].vy = work->unk6C.vy;
+        env->camera->points[3].vz = work->unk6C.vz;
     } else {
         frame = entry->unk0;
         switch (frame) {

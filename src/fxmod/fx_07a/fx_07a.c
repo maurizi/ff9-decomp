@@ -228,7 +228,7 @@ s32 fx_07a_op80(s32 mode, Fx07aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (work->unk0[1] != 0) {
-            ex->btlfx_aimAngles((s16 *)&D_801E9B94, (s16 *)&env->camera->unk54, (s16 *)&work->unk40[1].unk4);
+            ex->btlfx_aimAngles((s16 *)&D_801E9B94, (s16 *)&env->camera->eye, (s16 *)&work->unk40[1].unk4);
             work->unk40[0].unk4.vx = work->unk40[1].unk4.vx + 0x800;
             work->unk40[0].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;
