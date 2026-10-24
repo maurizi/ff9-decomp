@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 16 mismatched rows counting registers (was 936)
+ * Status (pass 3, build/w/cmp.py): 10 mismatched rows counting registers (was 936)
  * and stack offsets; frame size matches (400), same length (2501). ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
@@ -726,14 +726,14 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             from.vx = work->unk10.vx;
             from.vy = work->unk10.vy;
             from.vz = work->unk10.vz;
-            BTLFX_COPY_SVEC(&to, &from);
             BTLFX_COPY_SVEC(&mid, &from);
+            BTLFX_COPY_SVEC(&to, &from);
             y_b680 = y_b680 / 3 + 0x400;
             from.vy -= y_b680;
             to.vy += y_b680;
             amp = (ex->math_sin(pa) >> 1) + 0x180;
             a = pa;
-            for (i_b727 = 0, j_b725 = -1, k = work->unk4 * 0x9B - 0x400; i_b727 < 2; i_b727++, j_b725 += 2, k += 0x400) {
+            for (i_b727 = 0, j_b725 = -1, k = work->unk4 * 0x9B - 0x400; i_b727 < 2; j_b725 += 2, i_b727++, k += 0x400) {
                 d_b695 = ex->math_cos(a) + ex->btlfx_randCentered(0x400);
                 func_801E7D40(entry, (s32)&mid, &D_801EB388[i_b727], &from, &to, amp, k * j_b725,
                               ((ex->math_cos(a) >> 5) + 0x100) >> 1, 0, d_b695);
@@ -744,7 +744,7 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             xq = (xq << 12) / 37;
             y = (ex->math_cos(xq >> 2) * 0x57) >> 12;
             col.r = col.g = col.b = y;
-            sc3.vx = sc3.vy = 0x1200 - (xq >> 3);
+            sc3.vy = sc3.vx = 0x1200 - (xq >> 3);
             sc3.vz = 0x1000;
             rot3.vx = 0;
             rot3.vy = 0;
