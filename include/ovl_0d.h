@@ -8,6 +8,125 @@
 
 /* ---- Tetra Master ---- */
 
+/* Tasks (TmState.task), named by the debug strings tm_mainLoop passes to tm_debugPrint. */
+enum {
+    TM_TASK_PLAYER_SELECT, /* "PLAYER CARD SELECT", "PLAYER AUTO SELECT" with TmState.autoPlay */
+    TM_TASK_PLAYER_SET,    /* "PLAYER CARD SET" */
+    TM_TASK_ENEMY_SELECT,  /* "ENEMY CARD SELECT" */
+    TM_TASK_RESULT,        /* "RESULT" */
+    TM_TASK_INIT,          /* "INIT" */
+    TM_TASK_FLASH,         /* "FLASH" */
+    TM_TASK_BATTLE_SELECT, /* "BATTLE SELECT" */
+    TM_TASK_BATTLE,        /* "BATTLE" */
+    TM_TASK_TURN,          /* "TURN" */
+    TM_TASK_BATTLE_WIN,    /* "BATTLE WIN" */
+    TM_TASK_BATTLE_LOSE,   /* "BATTLE LOSE" */
+    TM_TASK_TRY_AGAIN,     /* "TRY AGAIN" */
+    TM_TASK_EXIT,          /* no handler, ends tm_mainLoop */
+    TM_TASK_CARD_CHANGE,   /* "CARD_CHANGE" */
+    TM_TASK_CARD_MOVE,     /* "CARD_MOVE" */
+    TM_TASK_FLASH2,        /* "FLASH2" */
+    TM_TASK_TRADE,         /* "TRADE" */
+    TM_TASK_CHANGE2,       /* "CHANGE2" */
+    TM_TASK_CHOICE,        /* "CHOICE" */
+    TM_TASK_CHOICE2,       /* "CHOICE2" */
+    TM_TASK_STAGE_SELECT,  /* "STAGE SELECT" */
+    TM_TASK_FIELD_FADE,    /* "FIELD FADE" */
+    TM_TASK_AWAY_INFO,     /* "AWAY INFO" */
+    TM_TASK_CARD_AWAY,     /* "CARD AWAY" */
+    TM_TASK_CARD_AWAY2,    /* "CARD AWAY2" */
+    TM_TASK_CARD_LESS5,    /* "CARD LESS5" */
+    TM_TASK_EXTENSION,     /* "EXTENSION" */
+    TM_TASK_END_FADE,      /* "END FADE" */
+    TM_TASK_COIN,          /* "COIN" */
+    TM_TASK_FLASH_ARROW,   /* "FLASH ARROW" */
+    TM_TASK_ENEMY_THINK,   /* "ENEMY THINK" */
+    TM_TASK_ENEMY_APPEAR = 33, /* "ENEMY APEAR" */
+    TM_TASK_GET_SELECT,    /* "GET SELECT" */
+    TM_TASK_GAME_QUIT      /* "GAME QUIT" */
+};
+
+/* TmCard.owner, TmState.turn ("TURN PLAYER" / "TURN ENEMY"), the side argument of the tm_count* helpers */
+#define TM_PLAYER 0
+#define TM_ENEMY  1
+
+/* TmState.result (tm_checkGameEnd) */
+enum { TM_RESULT_WIN, TM_RESULT_LOSE, TM_RESULT_DRAW };
+
+#define TM_HAND_SIZE 5 /* cards 0-4 the player's, 5-9 the enemy's */
+#define TM_NUM_CARDS 10
+
+/* Board on screen: square x, y is at (x * TM_SQUARE_W + TM_BOARD_X, y * TM_SQUARE_H + TM_BOARD_Y). */
+#define TM_SQUARE_W 43
+#define TM_SQUARE_H 52
+#define TM_BOARD_X  0x48
+#define TM_BOARD_Y  8
+#define TM_CARD_W   0x2A
+#define TM_CARD_H   0x33
+#define TM_PLAYER_HAND_X 0x104 /* x of the player's hand column, 0x108 when the hand is small */
+#define TM_ENEMY_HAND_X  0x10
+
+/* Arrow directions (TmCard.arrows bit, tm_stepDir), clockwise from up */
+enum { TM_DIR_UP, TM_DIR_UP_RIGHT, TM_DIR_RIGHT, TM_DIR_DOWN_RIGHT, TM_DIR_DOWN, TM_DIR_DOWN_LEFT, TM_DIR_LEFT, TM_DIR_UP_LEFT };
+
+/* Opponents 0x7C-0x7F (TmState.opponent): no "Cancel game" in the stock, no quitting, no rematch, and a draw
+ * plays again (EXTENSION). */
+#define TM_OPP_FORCED 0x7C
+
+/* tm_playSe / tm_stopSe index into g_tmSeIds */
+enum {
+    TM_SE_CURSOR = 1, /* cursor moves */
+    TM_SE_BUZZER,     /* refused: square taken, no card to battle, too few cards, stock full */
+    TM_SE_CANCEL,     /* Circle backs out */
+    TM_SE_RECEIVED,   /* a card is won (CARD_CHANGE) */
+    TM_SE_CARD,       /* card placed, picked, dealt or scrolled */
+    TM_SE_COIN,       /* coin toss, stopped by tm_stopSe when it lands */
+    TM_SE_BLOCK,      /* a block appears */
+    TM_SE_PERFECT,    /* win with all 10 cards */
+    TM_SE_FLASH,      /* cards flip */
+    TM_SE_COMBO,
+    TM_SE_BATTLE,
+    TM_SE_LOST,       /* a card is lost (CARD_CHANGE) */
+    TM_SE_WIN,
+    TM_SE_LOSE,
+    TM_SE_DRAW
+};
+
+/* g_tmText ids (decoded from the text bank) */
+#define TM_TEXT_REMATCH         2    /* "Play a rematch? Yes/No" */
+#define TM_TEXT_RECEIVED        3    /* " Received " */
+#define TM_TEXT_LOST            4    /* " Lost " */
+#define TM_TEXT_CONFIRM         6    /* "Confirm selection? Yes/No" */
+#define TM_TEXT_TRADE_END       7    /* "" after the card name */
+#define TM_TEXT_SELECT_CARDS    0x13 /* "Select cards" */
+#define TM_TEXT_OVER_100        0x16 /* "You have over 100 cards. Select card to discard." */
+#define TM_TEXT_DISCARD         0x17 /* "Discard " */
+#define TM_TEXT_DISCARD_ASK     0x18 /* "Discard? Yes/No" */
+#define TM_TEXT_DRAW            0x19 /* "The game ended in a draw. Another game will begin." */
+#define TM_TEXT_LESS_5          0x1A /* "You don't have 5 cards. End card game." */
+#define TM_TEXT_ICON_R1         0x1C /* button icon next to the card name and copy count */
+#define TM_TEXT_ICON_L1         0x1E
+#define TM_HELP_SELECT          0x21 /* "Select cards to use. select with .. confirm with .." */
+#define TM_HELP_PLACE           0x22 /* "Select where to place the card. .." */
+#define TM_HELP_BATTLE          0x23 /* "Select a card to battle. .." */
+#define TM_HELP_STOCK           0x24 /* "Select 5 cards to be used in the card game. Cancel game with .." */
+#define TM_HELP_BEGIN           0x25 /* "Begin game with cards currently selected." */
+#define TM_HELP_RESELECT        0x26 /* "Redo card selection." */
+#define TM_HELP_DISCARD_PICK    0x27 /* "Select card to discard." */
+#define TM_HELP_END_GAME        0x28 /* "End card game and continue the story." */
+#define TM_HELP_PLAY_AGAIN      0x29 /* "Play another card game." */
+#define TM_HELP_DISCARD_YES     0x2A /* "Discards selected card. .." */
+#define TM_HELP_DISCARD_NO      0x2B /* "Reselect card to discard. .." */
+#define TM_HELP_TAKE            0x2C /* "Select card to take." */
+#define TM_TEXT_QUIT_ASK        0x2D /* "End card game? Yes/No" */
+#define TM_HELP_QUIT_YES        0x2E /* "End card game." */
+#define TM_HELP_QUIT_NO         0x2F /* "Continue card game." */
+#define TM_HELP_PLACE_BLOCKED   0x30 /* "Select placement. You cannot place your card here. .." */
+#define TM_HELP_NO_BATTLE       0x31 /* "Select card to battle. There is no card to battle in this position .." */
+#define TM_HELP_STOCK_FORCED    0x32 /* "Select 5 cards to be used in the game." */
+#define TM_TEXT_STOCK           0x33 /* "Stock: " */
+#define TM_TEXT_STOCK_END       0x34 /* "" after the count */
+
 /* Card types (TmCard.type): what the power is tested against (tm_getBattleValues) and the
  * letter tm_drawCardStats shows. */
 enum {
@@ -103,6 +222,21 @@ typedef struct {
     u8 deck;    /* index into g_tmDecks */
     u8 aiLevel; /* TmState.aiLevel */
 } TmOpponent; /* g_tmOpponents entry */
+
+/* Image file (file 0x44C of directory 1, tm_loadImageFile): a table of {sector offset, ?} entries, then the
+ * entries. Its RAM is reused as the two primitive buffers once tm_setup has copied everything out. */
+#define TM_IMAGE_FILE     0x80104A00
+#define TM_PRIM_BUF       0x80104A00
+#define TM_PRIM_BUF_SIZE  0x4B000
+#define TM_FILE_CARDS     0 /* the 100 card picture TIMs, 0xA80 bytes each */
+#define TM_FILE_CARD_DATA 1 /* -> g_tmCardData */
+#define TM_FILE_DECKS     2 /* -> g_tmDecks */
+#define TM_FILE_OPPONENTS 3 /* -> g_tmOpponents */
+
+/* Tables tm_setup copies out of the image file, at fixed addresses. */
+#define g_tmCardData  ((TmCardData *)0x80103800) /* [100] */
+#define g_tmDecks     ((TmDeck *)0x80103C00)     /* [64] */
+#define g_tmOpponents ((TmOpponent *)0x80104000) /* [256] */
 
 /* Card stats as kept in the card stock (main's Unk6) */
 typedef struct {
@@ -253,7 +387,7 @@ typedef struct {
 
 extern s32 g_tmDataFile;
 extern s8 D_800B3664; /* sound request kind, -1 = none */
-extern u8 g_cardGameText[];
+extern u8 g_tmText[];
 extern s32 g_tmDataCopy;
 extern s32 g_tmSeIds[];
 extern s32 g_tmWindowOpening;

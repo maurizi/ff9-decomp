@@ -12,12 +12,12 @@ void tm_mainLoop(void) {
     tm_setup(&s);
     SetDispMask(1);
     SetDispMask(1);
-    while (s.task != 0xC) {
+    while (s.task != TM_TASK_EXIT) {
         tm_clearOt();
         pad_update();
         func_800A9B0C(&s);
         ctx = g_gameState->unk1C;
-        p = (void *)(ctx->unk8 * 0x4B000 + 0x80104A00);
+        p = (void *)(ctx->unk8 * TM_PRIM_BUF_SIZE + TM_PRIM_BUF);
         if (s.showScore != 0) {
             p = tm_drawScore(ctx->unk10[ctx->unk8], p, &s);
         }
@@ -25,21 +25,21 @@ void tm_mainLoop(void) {
             p = tm_drawBlocks(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         }
         p = tm_drawBackground(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
-        if (s.showBoard != 0 || s.task == 0x15) {
+        if (s.showBoard != 0 || s.task == TM_TASK_FIELD_FADE) {
             p = tm_drawBoard(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         }
         p = tm_drawCards(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         p = tm_drawCombo(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         p = tm_drawBattleValues(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
         switch (s.task) {
-        case 2:
+        case TM_TASK_ENEMY_SELECT:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "ENEMY CARD SELECT\n");
             tm_checkGameEnd(&s);
             tm_enemySelect(&s);
             tm_layoutCards(&s);
             break;
-        case 0:
+        case TM_TASK_PLAYER_SELECT:
             func_80035674(0);
             tm_checkGameEnd(&s);
             if (s.autoPlay == 0) {
@@ -51,94 +51,94 @@ void tm_mainLoop(void) {
             }
             tm_layoutCards(&s);
             break;
-        case 1:
+        case TM_TASK_PLAYER_SET:
             tm_debugPrint(&s, "PLAYER CARD SET\n");
             func_80035674(0);
             tm_taskPlayerSet(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             break;
-        case 3:
+        case TM_TASK_RESULT:
             D_80077DE8.unk8 = 0;
             tm_drawResult(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_debugPrint(&s, "RESULT\n");
             tm_taskResult(&s);
             break;
-        case 4:
+        case TM_TASK_INIT:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "INIT\n");
             tm_taskInit(&s);
             break;
-        case 5:
+        case TM_TASK_FLASH:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "FLASH\n");
             tm_layoutCards(&s);
             tm_drawFlash(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 6:
+        case TM_TASK_BATTLE_SELECT:
             tm_debugPrint(&s, "BATTLE SELECT\n");
             func_80035674(0);
             p = tm_taskBattleSelect(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             func_800ABEBC(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 7:
+        case TM_TASK_BATTLE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "BATTLE\n");
             tm_layoutCards(&s);
             tm_taskBattle(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 8:
+        case TM_TASK_TURN:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "TURN\n");
             tm_layoutCards(&s);
             tm_taskTurn(&s);
             break;
-        case 9:
+        case TM_TASK_BATTLE_WIN:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "BATTLE WIN\n");
             tm_layoutCards(&s);
             tm_taskBattleWin(&s);
             break;
-        case 10:
+        case TM_TASK_BATTLE_LOSE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "BATTLE LOSE\n");
             tm_layoutCards(&s);
             tm_taskBattleLose(&s);
             break;
-        case 11:
+        case TM_TASK_TRY_AGAIN:
             tm_debugPrint(&s, "TRY AGAIN\n");
             func_80035674(1);
             tm_taskTryAgain(&s);
             func_800B3480(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 13:
+        case TM_TASK_CARD_CHANGE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "CARD_CHANGE\n");
             tm_taskCardChange(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 14:
+        case TM_TASK_CARD_MOVE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "CARD_MOVE\n");
             tm_taskCardMove(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 15:
+        case TM_TASK_FLASH2:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "FLASH2\n");
             tm_drawFlash2(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 16:
+        case TM_TASK_TRADE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "TRADE\n");
             tm_taskTrade(&s);
             tm_drawTradeBadge(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 17:
+        case TM_TASK_CHANGE2:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "CHANGE2\n");
             func_80035674(1);
             tm_taskChange2(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 18:
+        case TM_TASK_CHOICE:
             tm_debugPrint(&s, "CHOICE\n");
             func_80035674(1);
             tm_stockInput(&s);
@@ -146,60 +146,60 @@ void tm_mainLoop(void) {
             tm_showStockCard(&s);
             tm_layoutCards(&s);
             break;
-        case 35:
+        case TM_TASK_GAME_QUIT:
             tm_debugPrint(&s, "GAME QUIT\n");
             tm_taskGameQuit(&s);
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_showStockCard(&s);
             tm_layoutCards(&s);
             break;
-        case 19:
+        case TM_TASK_CHOICE2:
             tm_debugPrint(&s, "CHOICE2\n");
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_showStockCard(&s);
             tm_taskChoice2(&s);
             tm_layoutCards(&s);
             break;
-        case 20:
+        case TM_TASK_STAGE_SELECT:
             tm_debugPrint(&s, "STAGE SELECT\n");
             tm_taskStageSelect(&s);
             break;
-        case 21:
+        case TM_TASK_FIELD_FADE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "FIELD FADE\n");
             tm_layoutCards(&s);
             break;
-        case 22:
+        case TM_TASK_AWAY_INFO:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "AWAY INFO\n");
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_taskAwayInfo(&s);
             break;
-        case 23:
+        case TM_TASK_CARD_AWAY:
             tm_debugPrint(&s, "CARD AWAY\n");
             func_80035674(1);
             tm_stockInput(&s);
             tm_showStockCard(&s);
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
-        case 24:
+        case TM_TASK_CARD_AWAY2:
             tm_debugPrint(&s, "CARD AWAY2\n");
             func_80035674(1);
             tm_showStockCard(&s);
             tm_drawStock(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_taskCardAway2(&s);
             break;
-        case 25:
+        case TM_TASK_CARD_LESS5:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "CARD LESS5\n");
             tm_taskCardLess5(&s);
             break;
-        case 26:
+        case TM_TASK_EXTENSION:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "EXTENSION\n");
             tm_taskExtension(&s);
             break;
-        case 27:
+        case TM_TASK_END_FADE:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "END FADE\n");
             if (s.quitting != 0) {
@@ -208,30 +208,30 @@ void tm_mainLoop(void) {
             }
             tm_taskEndFade(&s);
             break;
-        case 28:
+        case TM_TASK_COIN:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "COIN\n");
             tm_taskCoin(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
             break;
-        case 29:
+        case TM_TASK_FLASH_ARROW:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "FLASH ARROW\n");
             tm_taskFlashArrow(&s);
             break;
-        case 30:
+        case TM_TASK_ENEMY_THINK:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "ENEMY THINK\n");
             tm_taskEnemyThink(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_animEnemyThink(&s);
             break;
-        case 33:
+        case TM_TASK_ENEMY_APPEAR:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "ENEMY APEAR\n");
             tm_taskEnemyAppear(&s);
             tm_revealBlocks(&s);
             break;
-        case 34:
+        case TM_TASK_GET_SELECT:
             D_80077DE8.unk8 = 0;
             tm_debugPrint(&s, "GET SELECT\n");
             func_80035674(0);
@@ -243,16 +243,16 @@ void tm_mainLoop(void) {
             tm_debugPrint(&s, "NO TASK\n");
             break;
         }
-        if (s.turn == 0) {
+        if (s.turn == TM_PLAYER) {
             tm_debugPrint(&s, "TURN PLAYER\n");
         }
-        if (s.turn == 1) {
+        if (s.turn == TM_ENEMY) {
             tm_debugPrint(&s, "TURN ENEMY\n");
         }
         func_80023A0C();
         func_80032098();
-        if (s.task == 0x12 || s.task == 0x23 || s.task == 0x13 || s.task == 0 || s.task == 1 ||
-            s.task == 6 || s.task == 0xB || s.task == 0x22 || s.task == 0x17 || s.task == 0x18) {
+        if (s.task == TM_TASK_CHOICE || s.task == TM_TASK_GAME_QUIT || s.task == TM_TASK_CHOICE2 || s.task == TM_TASK_PLAYER_SELECT || s.task == TM_TASK_PLAYER_SET ||
+            s.task == TM_TASK_BATTLE_SELECT || s.task == TM_TASK_TRY_AGAIN || s.task == TM_TASK_GET_SELECT || s.task == TM_TASK_CARD_AWAY || s.task == TM_TASK_CARD_AWAY2) {
             func_8003563C(0);
         } else {
             func_8003563C(1);
@@ -290,9 +290,9 @@ void tm_clearOt(void) {
 void tm_endFrame(TmState *s) {
     GameData *ctx;
 
-    if ((g_padHeld & 0xF09) == 0xF09) {
+    if ((g_padHeld & (PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 | PAD_START | PAD_SELECT)) == (PAD_L2 | PAD_R2 | PAD_L1 | PAD_R1 | PAD_START | PAD_SELECT)) {
         g_gameState->unk0 |= 1;
-        s->task = 0xC;
+        s->task = TM_TASK_EXIT;
     }
     if (&g_gameState->unk10[g_gameState->unk1C->unk8].dfe != NULL) {
         DrawSync(0);
@@ -318,7 +318,7 @@ void tm_setup(TmState *s) {
     s32 v;
 
     tm_loadImageFile();
-    p = tm_getFileEntry(0);
+    p = tm_getFileEntry(TM_FILE_CARDS);
     for (i = 0; i < 100; i++) {
         x = i / 30;
         y = i % 30;
@@ -333,13 +333,13 @@ void tm_setup(TmState *s) {
     tm_loadTim((TmTim *)tm_getFileEntry(9), 0x200, 0x100, 0, 0xEC);
     tm_loadTim((TmTim *)tm_getFileEntry(0xA), 0x340, 0x1E0, 0, 0xED);
     tm_loadTim((TmTim *)tm_getFileEntry(6), 0x280, 0x100, 0, 0xE9);
-    tm_copyFileEntry((u8 *)0x80104000, 3, 0x200);
-    tm_copyFileEntry((u8 *)0x80103800, 1, 0x1F4);
-    tm_copyFileEntry((u8 *)0x80103C00, 2, 0x400);
+    tm_copyFileEntry((u8 *)g_tmOpponents, TM_FILE_OPPONENTS, 0x200);
+    tm_copyFileEntry((u8 *)g_tmCardData, TM_FILE_CARD_DATA, 0x1F4);
+    tm_copyFileEntry((u8 *)g_tmDecks, TM_FILE_DECKS, 0x400);
     g_evtMode = 1;
     g_gameState->vsyncMode = 0;
     func_800239D0();
-    text_setBank(g_cardGameText);
+    text_setBank(g_tmText);
     func_80035430();
     func_8003556C(func_800355DC);
     D_80077DE8.unk8 = 0;
@@ -354,8 +354,8 @@ void tm_setup(TmState *s) {
     s->hasLostCard = 0;
     s->quitting = 0;
     s->opponent = (u16)g_gameState->unk1C->unk8B2;
-    s->deck = ((TmOpponent *)0x80104000)[s->opponent].deck;
-    s->aiLevel = ((TmOpponent *)0x80104000)[s->opponent].aiLevel;
+    s->deck = g_tmOpponents[s->opponent].deck;
+    s->aiLevel = g_tmOpponents[s->opponent].aiLevel;
     s->unk454 = 1;
     tm_taskInit(s);
     s->savedConfig[0] = func_8002C700(0, 0);
@@ -437,13 +437,13 @@ void tm_loadImageFile(void) {
     if (f == NULL) {
         SystemError(0x46, 0x3E6);
     }
-    cd_readSync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x80104A00);
+    cd_readSync(g_gameState->unk20 + f->unk4, (f->unkC - f->unk4) << 11, (void *)TM_IMAGE_FILE);
 }
 
 u8 *tm_getFileEntry(s32 i) {
-    s32 *p = (s32 *)0x80104A00;
+    s32 *p = (s32 *)TM_IMAGE_FILE;
     p += i * 2;
-    return (u8 *)0x80104A00 + *p * 0x800;
+    return (u8 *)TM_IMAGE_FILE + *p * 0x800;
 }
 
 void tm_copyFileEntry(u8 *arg0, s32 arg1, s32 arg2) {
@@ -463,7 +463,7 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
     for (x = 0; x < 16; x++) {
         for (y = 0; y < 15; y++) {
             if (s->showBoard == 0 || x < 3) {
-                if (s->task == 0x15 && x >= 3) {
+                if (s->task == TM_TASK_FIELD_FADE && x >= 3) {
                     if (s->timer * 4 < 0x80) {
                         c = 0x80 - s->timer * 4;
                     } else {
@@ -494,7 +494,7 @@ void *tm_drawBackground(u32 *ot, SPRT_16 *p, TmState *s) {
     for (x = 0; x < 4; x++) {
         for (y = 0; y < 15; y++) {
             if (s->showBoard == 0 || x > 0) {
-                if (s->task == 0x15 && x == 0) {
+                if (s->task == TM_TASK_FIELD_FADE && x == 0) {
                     if (s->timer * 4 < 0x80) {
                         c = 0x80 - s->timer * 4;
                     } else {
@@ -529,14 +529,14 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *p, TmState *s) {
     DR_TPAGE *tp;
 
     c = s->brightness;
-    if (s->task == 0x15) {
+    if (s->task == TM_TASK_FIELD_FADE) {
         c = s->timer * 4;
     }
     for (x = 0; x < 14; x++) {
         for (y = 0; y < 15; y++) {
             setlen(p, 3);
             p->code = 0x7C;
-            if (s->task == 0x15) {
+            if (s->task == TM_TASK_FIELD_FADE) {
                 p->code = 0x7E;
             }
             p->x0 = x * 16 + 0x30;
@@ -556,7 +556,7 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *p, TmState *s) {
     tp->code[0] = (GetTPage(1, 1, 0x340, 0) & 0x9FF) | 0xE1000000;
     AddPrim(ot + 0xFFA, tp);
     tp++;
-    if (s->task == 0x15 && s->timer >= 0x20) {
+    if (s->task == TM_TASK_FIELD_FADE && s->timer >= 0x20) {
         s->showBoard = 1;
         tm_dealEnemyHand(s);
         s->showScore = 1;
@@ -567,7 +567,7 @@ void *tm_drawBoard(u32 *ot, SPRT_16 *p, TmState *s) {
         s->blocksDone = 0;
         s->blockTimer = 0;
         s->timer = 0;
-        s->task = 0x21;
+        s->task = TM_TASK_ENEMY_APPEAR;
     }
     return tp;
 }
@@ -612,12 +612,12 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
     c = s->brightness;
     for (i = 0; i < 2; i++) {
         if (i == 0) {
-            n = tm_countOnBoard(s, 0);
+            n = tm_countOnBoard(s, TM_PLAYER);
             x = 0x28;
             y = 0xB9;
             v = 0;
         } else {
-            n = tm_countOnBoard(s, 1);
+            n = tm_countOnBoard(s, TM_ENEMY);
             x = 0x1A;
             y = 0x93;
             v = 0x20;
@@ -683,10 +683,10 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
     s32 ry;
     s32 w;
 
-    if (tm_countInHand(s, 0) != 0) {
+    if (tm_countInHand(s, TM_PLAYER) != 0) {
         pad = g_padRepeat;
-        c = tm_getHandCard(s, 0, s->cursor);
-        if (tm_countInHand(s, 0) != 5) {
+        c = tm_getHandCard(s, TM_PLAYER, s->cursor);
+        if (tm_countInHand(s, TM_PLAYER) != TM_HAND_SIZE) {
             ry = c->y + 0x34;
             if (s->cursor == 3) {
                 ry = c->y - 0x19;
@@ -697,8 +697,8 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
                 ry = c->y - 0x19;
             }
         }
-        if (tm_countInHand(s, 0) != 0) {
-            if (tm_countPlayerHand(s, 0) != 5) {
+        if (tm_countInHand(s, TM_PLAYER) != 0) {
+            if (tm_countPlayerHand(s, TM_PLAYER) != TM_HAND_SIZE) {
                 w = 0x104;
                 x = c->x - 0xF;
                 y = c->y + 6;
@@ -711,8 +711,8 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             sp = tm_drawCursor(ot, p, s, x, y, 0);
             D_80077DE8.unk0 = x + 2;
             D_80077DE8.unk2 = y + 1;
-            D_80077DE8.unk8 = text_get(0x21);
-            text_drawBlock(0x12, 9, 0xFFA, text_get(0x1C), 0);
+            D_80077DE8.unk8 = text_get(TM_HELP_SELECT);
+            text_drawBlock(0x12, 9, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
             setlen(sp, 4);
             sp->code = 0x64;
             sp->x0 = 0x1F;
@@ -731,18 +731,18 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
             ((DR_TPAGE *)sp)->code[0] = (GetTPage(1, 0, 0x300, 0x100) & 0x9FF) | 0xE1000000;
             AddPrim(ot + 0x28, sp);
             p = (DR_TPAGE *)sp + 1;
-            if (pad & 0x10) {
+            if (pad & PAD_UP) {
                 if (s->cursor != 0) {
                     s->nameSlide = 0;
                     s->cursor--;
-                    tm_playSe(1);
+                    tm_playSe(TM_SE_CURSOR);
                 }
             }
-            if (pad & 0x40) {
-                if (s->cursor != tm_countInHand(s, 0) - 1) {
+            if (pad & PAD_DOWN) {
+                if (s->cursor != tm_countInHand(s, TM_PLAYER) - 1) {
                     s->nameSlide = 0;
                     s->cursor++;
-                    tm_playSe(1);
+                    tm_playSe(TM_SE_CURSOR);
                 }
             }
             if (g_padHeld & BTN_R1) {
@@ -765,10 +765,10 @@ void *tm_taskPlayerSelect(u32 *ot, void *p, TmState *s) {
                 text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->id), 0);
                 func_8002DEE4(&r, 5, 2);
             }
-            if (pad & 0x20000) {
-                s->task = 1;
+            if (pad & BTN_CROSS) {
+                s->task = TM_TASK_PLAYER_SET;
                 s->savedFrame = s->animFrame;
-                tm_playSe(1);
+                tm_playSe(TM_SE_CURSOR);
             }
         }
     }
@@ -787,17 +787,17 @@ void *tm_taskPlayerSet(u32 *ot, void *p, TmState *s) {
     s32 y;
     s32 one;
 
-    if (tm_countInHand(s, 0) == 0) {
+    if (tm_countInHand(s, TM_PLAYER) == 0) {
         return p;
     }
     pad = g_padRepeat;
-    tm_getHandCard(s, 0, s->cursor);
+    tm_getHandCard(s, TM_PLAYER, s->cursor);
     cell = tm_getCell(s, s->boardX, s->boardY);
-    cx = s->boardX * 43 + 0x48;
-    cy = s->boardY * 52 + 8;
+    cx = s->boardX * TM_SQUARE_W + TM_BOARD_X;
+    cy = s->boardY * TM_SQUARE_H + TM_BOARD_Y;
     p = tm_drawCursor(ot, p, s, cx - 0xF, cy + 6, 0);
-    c = tm_getHandCard(s, 0, s->cursor);
-    if (tm_countPlayerHand(s, 0) != 5) {
+    c = tm_getHandCard(s, TM_PLAYER, s->cursor);
+    if (tm_countPlayerHand(s, TM_PLAYER) != TM_HAND_SIZE) {
         x = c->x - 0xF;
         y = c->y + 6;
     } else {
@@ -807,53 +807,53 @@ void *tm_taskPlayerSet(u32 *ot, void *p, TmState *s) {
     p = tm_drawCursor(ot, p, s, x, y, 1);
     D_80077DE8.unk0 = cx - 0xD;
     D_80077DE8.unk2 = cy + 7;
-    if (cell->state == 1) {
-        D_80077DE8.unk8 = text_get(0x22);
+    if (cell->state == TM_CELL_EMPTY) {
+        D_80077DE8.unk8 = text_get(TM_HELP_PLACE);
     } else {
-        D_80077DE8.unk8 = text_get(0x30);
+        D_80077DE8.unk8 = text_get(TM_HELP_PLACE_BLOCKED);
     }
     func_80035580(NULL);
-    if (pad & 0x10000) {
+    if (pad & BTN_CIRCLE) {
         s->nameSlide = 0;
-        s->task = 0;
+        s->task = TM_TASK_PLAYER_SELECT;
         s->animFrame = s->savedFrame;
-        tm_playSe(3);
+        tm_playSe(TM_SE_CANCEL);
         return p;
     }
-    if (pad & 0x20000) {
-        if (cell->state == 1) {
-            c = tm_getHandCard(s, 0, s->cursor);
+    if (pad & BTN_CROSS) {
+        if (cell->state == TM_CELL_EMPTY) {
+            c = tm_getHandCard(s, TM_PLAYER, s->cursor);
             c->x = cx;
             c->y = cy;
             c->onBoard = 1;
             c->small = 0;
-            cell->state = 0;
+            cell->state = TM_CELL_CARD;
             cell->card = c;
             s->cursor = 0;
             s->srcX = s->boardX;
             s->srcY = s->boardY;
             tm_checkBattles(s);
-            tm_playSe(5);
+            tm_playSe(TM_SE_CARD);
             return p;
         }
-        tm_playSe(2);
+        tm_playSe(TM_SE_BUZZER);
     }
     ox = s->boardX;
     oy = s->boardY;
-    if ((pad & 0x20) && s->boardX != 3) {
+    if ((pad & PAD_RIGHT) && s->boardX != 3) {
         s->boardX++;
     }
-    if ((pad & 0x80) && s->boardX != 0) {
+    if ((pad & PAD_LEFT) && s->boardX != 0) {
         s->boardX--;
     }
-    if ((pad & 0x10) && s->boardY != 0) {
+    if ((pad & PAD_UP) && s->boardY != 0) {
         s->boardY--;
     }
-    if ((pad & 0x40) && s->boardY != 3) {
+    if ((pad & PAD_DOWN) && s->boardY != 3) {
         s->boardY++;
     }
     if (ox != s->boardX || oy != s->boardY) {
-        tm_playSe(1);
+        tm_playSe(TM_SE_CURSOR);
     }
     return p;
 }
@@ -875,10 +875,10 @@ void tm_taskResult(TmState *s) {
         case 2:
             tm_returnHand(s);
             tm_hideCards(s);
-            if ((u32)(s->opponent - 0x7C) < 4) {
+            if ((u32)(s->opponent - TM_OPP_FORCED) < 4) {
                 r.x = 0x59;
                 r.w = 0x8F;
-                r.w = func_8002BA68(text_get(0x19)) + 0x12;
+                r.w = func_8002BA68(text_get(TM_TEXT_DRAW)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x59;
                 r.h = 0x2B;
@@ -886,7 +886,7 @@ void tm_taskResult(TmState *s) {
                 win_setDrawContent(s->infoWin, tm_drawDrawWin);
                 func_8002E31C(s->infoWin, 1);
                 tm_waitWindow(s->infoWin);
-                s->task = 0x1A;
+                s->task = TM_TASK_EXTENSION;
             } else {
                 tm_askRematch(s);
             }
@@ -898,12 +898,12 @@ void tm_taskResult(TmState *s) {
 void tm_taskExtension(TmState *arg0) {
     if (g_tmWindowOpening == 0 && (g_padRepeat & (BTN_CIRCLE | BTN_CROSS))) {
         win_close(arg0->infoWin);
-        arg0->task = 4;
+        arg0->task = TM_TASK_INIT;
     }
 }
 
 void tm_drawDrawWin(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x19), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(TM_TEXT_DRAW), 0);
 }
 
 void tm_autoPlace(TmState *arg0) {
@@ -914,20 +914,20 @@ void tm_autoPlace(TmState *arg0) {
     TmCell *cell;
     TmCard *card;
 
-    if (tm_countInHand(arg0, 0) != 0) {
+    if (tm_countInHand(arg0, TM_PLAYER) != 0) {
         do {
             x = rand() & 3;
             y = rand() & 3;
             cell = tm_getCell(arg0, x, y);
-        } while (cell->state != 1);
-        px = x * 0x2B + 0x48;
-        py = y * 0x34 + 8;
-        card = tm_getHandCard(arg0, 0, 0);
+        } while (cell->state != TM_CELL_EMPTY);
+        px = x * TM_SQUARE_W + TM_BOARD_X;
+        py = y * TM_SQUARE_H + TM_BOARD_Y;
+        card = tm_getHandCard(arg0, TM_PLAYER, 0);
         card->x = px;
         card->y = py;
         card->small = 0;
         card->onBoard = 1;
-        cell->state = 0;
+        cell->state = TM_CELL_CARD;
         cell->card = card;
         arg0->srcX = x;
         arg0->srcY = y;
@@ -947,11 +947,11 @@ void tm_taskTryAgain(TmState *s) {
 
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
-        if (pad & 0x20000) {
+        if (pad & BTN_CROSS) {
             win_close(s->msgWin);
             if (s->cursor == 0) {
                 if (func_800625F8() < 5) {
-                    r.w = func_8002BA68(text_get(0x1A)) + 0x12;
+                    r.w = func_8002BA68(text_get(TM_TEXT_LESS_5)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
                     r.h = 0x2B;
@@ -959,47 +959,47 @@ void tm_taskTryAgain(TmState *s) {
                     win_setDrawContent(s->less5Win, tm_drawLess5Win);
                     func_8002E31C(s->less5Win, 1);
                     tm_waitWindow(s->less5Win);
-                    s->task = 0x19;
-                    tm_playSe(2);
+                    s->task = TM_TASK_CARD_LESS5;
+                    tm_playSe(TM_SE_BUZZER);
                 } else {
-                    s->task = 4;
+                    s->task = TM_TASK_INIT;
                 }
             } else {
                 tm_startEndFade(s);
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if ((pad & 0x10000) && s->cursor != 1) {
-            tm_playSe(3);
+        if ((pad & BTN_CIRCLE) && s->cursor != 1) {
+            tm_playSe(TM_SE_CANCEL);
             s->cursor = 1;
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             if (s->cursor != 0) {
-                tm_playSe(1);
+                tm_playSe(TM_SE_CURSOR);
                 s->cursor = 0;
             } else {
-                tm_playSe(1);
+                tm_playSe(TM_SE_CURSOR);
                 s->cursor = 1;
             }
         }
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             if (s->cursor != 1) {
-                tm_playSe(1);
+                tm_playSe(TM_SE_CURSOR);
                 s->cursor = 1;
             } else {
-                tm_playSe(1);
+                tm_playSe(TM_SE_CURSOR);
                 s->cursor = 0;
             }
         }
         if (s->cursor == 0) {
             D_80077DE8.unk0 = 0x7D;
             D_80077DE8.unk2 = 0x6B;
-            D_80077DE8.unk8 = text_get(0x29);
+            D_80077DE8.unk8 = text_get(TM_HELP_PLAY_AGAIN);
             ui_drawHand(0x7D, 0x6B, 3);
         } else {
             D_80077DE8.unk0 = 0x7D;
             D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = text_get(0x28);
+            D_80077DE8.unk8 = text_get(TM_HELP_END_GAME);
             ui_drawHand(0x7D, 0x7B, 3);
         }
         tm_setHelpArea(0x89);
@@ -1016,13 +1016,13 @@ void tm_stockInput(TmState *s) {
     Unk6 *d;
 
     ui_drawHand(s->stockCol * 15 + 3, s->stockRow * 15 + 0x30, 3);
-    if (s->task == 0x12 || s->task == 0x17) {
+    if (s->task == TM_TASK_CHOICE || s->task == TM_TASK_CARD_AWAY) {
         D_80077DE8.unk0 = s->stockCol * 15 + 3;
         D_80077DE8.unk2 = s->stockRow * 15 + 0x30;
-        if (s->task == 0x12) {
-            D_80077DE8.unk8 = text_get((u32)(s->opponent - 0x7C) >= 4 ? 0x24 : 0x32);
+        if (s->task == TM_TASK_CHOICE) {
+            D_80077DE8.unk8 = text_get((u32)(s->opponent - TM_OPP_FORCED) >= 4 ? TM_HELP_STOCK : TM_HELP_STOCK_FORCED);
         } else {
-            D_80077DE8.unk8 = text_get(0x27);
+            D_80077DE8.unk8 = text_get(TM_HELP_DISCARD_PICK);
         }
         r.x = 0xD;
         r.w = 0x9E;
@@ -1041,17 +1041,17 @@ void tm_stockInput(TmState *s) {
         }
     }
     if (n >= 2) {
-        if (pad & 0x200000) {
-            tm_playSe(5);
+        if (pad & BTN_R1) {
+            tm_playSe(TM_SE_CARD);
             pad = 0;
             s->phase = 0;
             s->scrollTimer = 4;
-        } else if (pad & 0x100000) {
+        } else if (pad & BTN_L1) {
             pad = 0;
             s->phase = 1;
             s->scrollTimer = 4;
             s->copyIdx--;
-            tm_playSe(5);
+            tm_playSe(TM_SE_CARD);
             if (s->copyIdx == -1) {
                 s->copyIdx = n - 1;
             }
@@ -1059,30 +1059,30 @@ void tm_stockInput(TmState *s) {
     }
     x = s->stockCol;
     y = s->stockRow;
-    if ((pad & 0x20) && x != 9) {
+    if ((pad & PAD_RIGHT) && x != 9) {
         s->stockCol = x + 1;
         s->copyIdx = 0;
     }
-    if ((pad & 0x80) && s->stockCol != 0) {
+    if ((pad & PAD_LEFT) && s->stockCol != 0) {
         s->stockCol--;
         s->copyIdx = 0;
     }
-    if ((pad & 0x40) && s->stockRow != 9) {
+    if ((pad & PAD_DOWN) && s->stockRow != 9) {
         s->stockRow++;
         s->copyIdx = 0;
     }
-    if ((pad & 0x10) && s->stockRow != 0) {
+    if ((pad & PAD_UP) && s->stockRow != 0) {
         s->stockRow--;
         s->copyIdx = 0;
     }
     if (x != s->stockCol || y != s->stockRow) {
-        tm_playSe(1);
+        tm_playSe(TM_SE_CURSOR);
         return;
     }
-    if (s->task == 0x12) {
-        if (((pad & 0x10000) && s->handCount == 0) || (pad & 0x80000)) {
-            if (s->opponent != 0x7C) if (s->opponent != 0x7D) if (s->opponent != 0x7E) if (s->opponent != 0x7F) {
-                r.w = func_8002BA68(text_get(0x2D)) + 0x12;
+    if (s->task == TM_TASK_CHOICE) {
+        if (((pad & BTN_CIRCLE) && s->handCount == 0) || (pad & BTN_SQUARE)) {
+            if (s->opponent != TM_OPP_FORCED) if (s->opponent != TM_OPP_FORCED + 1) if (s->opponent != TM_OPP_FORCED + 2) if (s->opponent != TM_OPP_FORCED + 3) {
+                r.w = func_8002BA68(text_get(TM_TEXT_QUIT_ASK)) + 0x12;
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x54;
                 r.h = 0x38;
@@ -1091,18 +1091,18 @@ void tm_stockInput(TmState *s) {
                 win_setDrawContent(s->quitWin, tm_drawQuitWin);
                 func_8002E31C(s->quitWin, 1);
                 tm_waitWindow(s->quitWin);
-                s->task = 0x23;
+                s->task = TM_TASK_GAME_QUIT;
                 return;
             }
         }
-        if (pad & 0x10000) {
+        if (pad & BTN_CIRCLE) {
             if (s->handCount != 0) {
                 s->handCount--;
                 c = &s->cards[s->handCount];
                 func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
-                tm_playSe(3);
+                tm_playSe(TM_SE_CANCEL);
             }
-        } else if (pad & 0x20000) {
+        } else if (pad & BTN_CROSS) {
             if (s->autoPlay != 0) {
                 func_80062724();
                 s->stockCol = rand() % 10;
@@ -1129,10 +1129,10 @@ void tm_stockInput(TmState *s) {
                 c->arrows = d->unk1;
                 func_800626D0(tm_getStockCursorId(s), s->copyIdx);
                 s->copyIdx = 0;
-                tm_playSe(5);
-                if (++s->handCount == 5) {
+                tm_playSe(TM_SE_CARD);
+                if (++s->handCount == TM_HAND_SIZE) {
                     D_80077DF0 = 0;
-                    r.w = func_8002BA68(text_get(6)) + 0x12;
+                    r.w = func_8002BA68(text_get(TM_TEXT_CONFIRM)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
                     r.h = 0x3A;
@@ -1141,13 +1141,13 @@ void tm_stockInput(TmState *s) {
                     func_8002E31C(s->msgWin, 1);
                     tm_waitWindow(s->msgWin);
                     s->cursor = 0;
-                    s->task = 0x13;
+                    s->task = TM_TASK_CHOICE2;
                 }
             }
         }
-    } else if ((pad & 0x20000) && func_80062560(tm_getStockCursorId(s)) != 0) {
+    } else if ((pad & BTN_CROSS) && func_80062560(tm_getStockCursorId(s)) != 0) {
         D_80077DF0 = 0;
-        r.w = func_8002BA68(text_get(0x18)) + 0x12;
+        r.w = func_8002BA68(text_get(TM_TEXT_DISCARD_ASK)) + 0x12;
         r.x = 0xB9;
         r.h = 0x38;
         r.y = 0x35;
@@ -1156,8 +1156,8 @@ void tm_stockInput(TmState *s) {
         win_setDrawContent(s->infoWin, tm_drawDiscardWin);
         func_8002E31C(s->infoWin, 1);
         tm_waitWindow(s->infoWin);
-        tm_playSe(1);
-        s->task = 0x18;
+        tm_playSe(TM_SE_CURSOR);
+        s->task = TM_TASK_CARD_AWAY2;
     }
 }
 
@@ -1167,48 +1167,48 @@ void tm_taskChoice2(TmState *s) {
 
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
-        if (pad & 0x20000) {
+        if (pad & BTN_CROSS) {
             if (s->cursor == 0) {
                 s->timer = 0;
-                s->task = 0x15;
+                s->task = TM_TASK_FIELD_FADE;
             } else {
-                s->task = 0x12;
+                s->task = TM_TASK_CHOICE;
                 s->handCount = 4;
                 c = &s->cards[4];
                 func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
             }
             win_close(s->msgWin);
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if ((pad & 0x10000) && s->cursor != 1) {
+        if ((pad & BTN_CIRCLE) && s->cursor != 1) {
             s->cursor = 1;
-            tm_playSe(3);
+            tm_playSe(TM_SE_CANCEL);
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             if (s->cursor != 0) {
                 s->cursor = 0;
             } else {
                 s->cursor = 1;
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             if (s->cursor != 1) {
                 s->cursor = 1;
             } else {
                 s->cursor = 0;
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
         if (s->cursor == 0) {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x6C;
-            D_80077DE8.unk8 = text_get(0x25);
+            D_80077DE8.unk8 = text_get(TM_HELP_BEGIN);
             ui_drawHand(0x7B, 0x6C, 3);
         } else {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = text_get(0x26);
+            D_80077DE8.unk8 = text_get(TM_HELP_RESELECT);
             ui_drawHand(0x7B, 0x7B, 3);
         }
         tm_setHelpArea(0x8D);
@@ -1216,11 +1216,11 @@ void tm_taskChoice2(TmState *s) {
 }
 
 void tm_drawConfirmWin(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(6), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(TM_TEXT_CONFIRM), 0);
 }
 
 void tm_drawLess5Win(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x1A), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(TM_TEXT_LESS_5), 0);
 }
 
 void tm_taskStageSelect(TmState *s) {
@@ -1231,43 +1231,43 @@ void tm_taskStageSelect(TmState *s) {
           s->arrowOdds[6] + s->arrowOdds[7] + s->arrowOdds[8];
     pad = g_padRepeat;
     if (!(g_padHeld & BTN_CIRCLE)) {
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             s->opponent--;
         }
-        if (pad & 0x20) {
+        if (pad & PAD_RIGHT) {
             s->opponent += 10;
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             s->opponent++;
         }
-        if (pad & 0x80) {
+        if (pad & PAD_LEFT) {
             s->opponent -= 10;
         }
-        if ((pad & 0x20000) && sum == 100) {
+        if ((pad & BTN_CROSS) && sum == 100) {
             tm_openStock(s);
         }
     } else {
-        if ((pad & 0x40) && s->oddsRow != 8) {
+        if ((pad & PAD_DOWN) && s->oddsRow != 8) {
             s->oddsRow++;
         }
-        if ((pad & 0x10) && s->oddsRow != 0) {
+        if ((pad & PAD_UP) && s->oddsRow != 0) {
             s->oddsRow--;
         }
-        if ((pad & 0x20) && sum != 100) {
+        if ((pad & PAD_RIGHT) && sum != 100) {
             s->arrowOdds[s->oddsRow]++;
         }
-        if ((pad & 0x80) && s->arrowOdds[s->oddsRow] != 0) {
+        if ((pad & PAD_LEFT) && s->arrowOdds[s->oddsRow] != 0) {
             s->arrowOdds[s->oddsRow]--;
         }
     }
-    s->deck = ((TmOpponent *)0x80104000)[s->opponent].deck;
-    s->aiLevel = ((TmOpponent *)0x80104000)[s->opponent].aiLevel;
+    s->deck = g_tmOpponents[s->opponent].deck;
+    s->aiLevel = g_tmOpponents[s->opponent].aiLevel;
 }
 
 void tm_taskAwayInfo(TmState *arg0) {
     if (g_tmWindowOpening == 0 && (g_padRepeat & (BTN_CROSS | BTN_SQUARE))) {
         win_close(arg0->infoWin);
-        arg0->task = 0x17;
+        arg0->task = TM_TASK_CARD_AWAY;
     }
 }
 
@@ -1276,51 +1276,51 @@ void tm_taskCardAway2(TmState *s) {
 
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
-        if (pad & 0x20000) {
+        if (pad & BTN_CROSS) {
             if (s->cursor == 0) {
                 func_800626D0(tm_getStockCursorId(s), s->copyIdx);
                 if (func_800625F8() > 100) {
                     s->copyIdx = 0;
-                    s->task = 0x17;
+                    s->task = TM_TASK_CARD_AWAY;
                 } else {
                     tm_hideCards(s);
                     tm_askRematch(s);
                 }
             } else {
-                s->task = 0x17;
+                s->task = TM_TASK_CARD_AWAY;
             }
             win_close(s->infoWin);
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if ((pad & 0x10000) && s->cursor != 1) {
+        if ((pad & BTN_CIRCLE) && s->cursor != 1) {
             s->cursor = 1;
-            tm_playSe(3);
+            tm_playSe(TM_SE_CANCEL);
         }
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             if (s->cursor != 0) {
                 s->cursor = 0;
             } else {
                 s->cursor = 1;
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             if (s->cursor != 1) {
                 s->cursor = 1;
             } else {
                 s->cursor = 0;
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
         if (s->cursor == 0) {
             D_80077DE8.unk0 = 0xBC;
             D_80077DE8.unk2 = 0x4D;
-            D_80077DE8.unk8 = text_get(0x2A);
+            D_80077DE8.unk8 = text_get(TM_HELP_DISCARD_YES);
             ui_drawHand(0xBC, 0x4D, 3);
         } else {
             D_80077DE8.unk0 = 0xBC;
             D_80077DE8.unk2 = 0x5C;
-            D_80077DE8.unk8 = text_get(0x2B);
+            D_80077DE8.unk8 = text_get(TM_HELP_DISCARD_NO);
             ui_drawHand(0xBC, 0x5C, 3);
         }
         tm_setHelpArea(0xCE);
@@ -1331,7 +1331,7 @@ void tm_taskCardAway2(TmState *s) {
 }
 
 void tm_drawDiscardWin(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 0xA, arg0->unk2 + 6, arg0->unk18, text_get(0x18), 0);
+    text_drawBlock(arg0->unk0 + 0xA, arg0->unk2 + 6, arg0->unk18, text_get(TM_TEXT_DISCARD_ASK), 0);
 }
 
 void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
@@ -1347,36 +1347,36 @@ void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
     pad = g_padRepeat;
     ox = s->boardX;
     oy = s->boardY;
-    if ((pad & 0x20) && ox != 3 && ox != s->srcX + 1) {
+    if ((pad & PAD_RIGHT) && ox != 3 && ox != s->srcX + 1) {
         s->boardX = ox + 1;
     }
-    if ((pad & 0x80) && s->boardX != 0 && s->boardX != s->srcX - 1) {
+    if ((pad & PAD_LEFT) && s->boardX != 0 && s->boardX != s->srcX - 1) {
         s->boardX--;
     }
-    if ((pad & 0x10) && s->boardY != 0 && s->boardY != s->srcY - 1) {
+    if ((pad & PAD_UP) && s->boardY != 0 && s->boardY != s->srcY - 1) {
         s->boardY--;
     }
-    if ((pad & 0x40) && s->boardY != 3 && s->boardY != s->srcY + 1) {
+    if ((pad & PAD_DOWN) && s->boardY != 3 && s->boardY != s->srcY + 1) {
         s->boardY++;
     }
     if (ox != s->boardX || oy != s->boardY) {
-        tm_playSe(1);
+        tm_playSe(TM_SE_CURSOR);
     }
-    if (pad & 0x20000) {
+    if (pad & BTN_CROSS) {
         cell = tm_getCell(s, s->boardX, s->boardY);
-        if (cell->state == 0) {
+        if (cell->state == TM_CELL_CARD) {
             c = cell->card;
             for (i = 0; i < s->numTargets; i++) {
                 if (c == s->targets[i]) {
                     s->timer = 0;
-                    s->task = 7;
+                    s->task = TM_TASK_BATTLE;
                     s->dstX = s->boardX;
                     s->dstY = s->boardY;
                 }
             }
         }
-        if (s->task != 7) {
-            tm_playSe(2);
+        if (s->task != TM_TASK_BATTLE) {
+            tm_playSe(TM_SE_BUZZER);
         }
     }
     x = s->boardX * 43;
@@ -1384,13 +1384,13 @@ void *tm_taskBattleSelect(u32 *ot, void *p, TmState *s) {
     p = tm_drawCursor(ot, p, s, x + 0x39, y + 0xE, 0);
     D_80077DE8.unk0 = x + 0x3B;
     D_80077DE8.unk2 = y + 0xF;
-    D_80077DE8.unk8 = text_get(0x31);
+    D_80077DE8.unk8 = text_get(TM_HELP_NO_BATTLE);
     cell = tm_getCell(s, s->boardX, s->boardY);
-    if (cell->state == 0) {
+    if (cell->state == TM_CELL_CARD) {
         c = cell->card;
         for (i = 0; i < s->numTargets; i++) {
             if (c == s->targets[i]) {
-                D_80077DE8.unk8 = text_get(0x23);
+                D_80077DE8.unk8 = text_get(TM_HELP_BATTLE);
             }
         }
     }
@@ -1445,13 +1445,13 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     s32 k;
 
     pad = g_padRepeat;
-    if ((pad & 0x10) && s->getCursor != 0) {
+    if ((pad & PAD_UP) && s->getCursor != 0) {
         s->getCursor--;
-        tm_playSe(1);
+        tm_playSe(TM_SE_CURSOR);
     }
-    if ((pad & 0x40) && s->getCursor != tm_countCaptured(s) - 1) {
+    if ((pad & PAD_DOWN) && s->getCursor != tm_countCaptured(s) - 1) {
         s->getCursor++;
-        tm_playSe(1);
+        tm_playSe(TM_SE_CURSOR);
     }
     sel = tm_getCaptured(s, s->getCursor);
     x = sel->x;
@@ -1459,13 +1459,13 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
     p = tm_drawCursor(ot, p, s, x + 0x22, y + 5, 2);
     D_80077DE8.unk0 = x + 0x25;
     D_80077DE8.unk2 = y + 6;
-    D_80077DE8.unk8 = text_get(0x2C);
+    D_80077DE8.unk8 = text_get(TM_HELP_TAKE);
     r.x = x + 0x2A;
     r.w = 0x12C;
     r.y = 0;
     r.h = 0xF0;
     func_80035580(&r);
-    if (pad & 0x20000) {
+    if (pad & BTN_CROSS) {
         if (s->hasLostCard != 0 && sel == &s->cards[s->lostSlot + 5]) {
             s->hasLostCard = 0;
         }
@@ -1474,28 +1474,28 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
         k = 0;
         e = s->flips;
         cards = s->cards;
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < TM_NUM_CARDS; i++) {
             c = &cards[i];
-            if (i < 5) {
-                if (c->owner == 1) {
+            if (i < TM_HAND_SIZE) {
+                if (c->owner == TM_ENEMY) {
                     e[k].card = c;
-                    e[k].mode = 1;
+                    e[k].mode = TM_FLIP_CHANGE;
                     e[k].arg = 0;
                     k++;
                 }
-            } else if (c->owner == 0 && sel != c) {
+            } else if (c->owner == TM_PLAYER && sel != c) {
                 e[k].card = c;
-                e[k].mode = 1;
+                e[k].mode = TM_FLIP_CHANGE;
                 e[k].arg = 1;
                 k++;
             }
         }
-        s->flashMode = 1;
-        s->task = 0xF;
+        s->flashMode = TM_FLIP_CHANGE;
+        s->task = TM_TASK_FLASH2;
     }
     n = 0;
     cards = s->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         if (i >= 5 && tm_getCaptured(s, s->getCursor) == &cards[i]) {
             n = func_80062560(cards[i].id);
             for (j = 0; j < 5; j++) {
@@ -1506,9 +1506,9 @@ void *tm_taskGetSelect(u32 *ot, void *p, TmState *s) {
         }
     }
     text_formatNumber(n, num, -1, 0);
-    func_8002BD54(buf, text_get(0x33));
+    func_8002BD54(buf, text_get(TM_TEXT_STOCK));
     text_append(buf, num);
-    text_append(buf, text_get(0x34));
+    text_append(buf, text_get(TM_TEXT_STOCK_END));
     r2.w = func_8002BA68((s32)buf) + 0x10;
     r2.x = 0x52;
     r2.y = sel->y - 9;
@@ -1525,28 +1525,28 @@ void tm_taskGameQuit(TmState *s) {
 
     if (g_tmWindowOpening == 0) {
         pad = g_padRepeat;
-        if (pad & 0x10) {
+        if (pad & PAD_UP) {
             if (s->quitChoice != 0) {
                 s->quitChoice = 0;
             } else {
                 s->quitChoice = 1;
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if (pad & 0x40) {
+        if (pad & PAD_DOWN) {
             if (s->quitChoice != 1) {
                 s->quitChoice = 1;
             } else {
                 s->quitChoice = 0;
             }
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
-        if (pad & 0x10000) {
+        if (pad & BTN_CIRCLE) {
             if (s->quitChoice != 1) {
                 s->quitChoice = 1;
-                tm_playSe(3);
+                tm_playSe(TM_SE_CANCEL);
             }
-        } else if (pad & 0x20000) {
+        } else if (pad & BTN_CROSS) {
             if (s->quitChoice == 0) {
                 for (i = 0; i < s->handCount; i++) {
                     c = &s->cards[i];
@@ -1558,20 +1558,20 @@ void tm_taskGameQuit(TmState *s) {
                 s->quitting = 1;
                 tm_startEndFade(s);
             } else {
-                s->task = 0x12;
+                s->task = TM_TASK_CHOICE;
             }
             win_close(s->quitWin);
-            tm_playSe(1);
+            tm_playSe(TM_SE_CURSOR);
         }
         if (s->quitChoice == 0) {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x6C;
-            D_80077DE8.unk8 = text_get(0x2E);
+            D_80077DE8.unk8 = text_get(TM_HELP_QUIT_YES);
             ui_drawHand(0x7B, 0x6C, 3);
         } else {
             D_80077DE8.unk0 = 0x7B;
             D_80077DE8.unk2 = 0x7B;
-            D_80077DE8.unk8 = text_get(0x2F);
+            D_80077DE8.unk8 = text_get(TM_HELP_QUIT_NO);
             ui_drawHand(0x7B, 0x7B, 3);
         }
         tm_setHelpArea(0x8D);
@@ -1581,7 +1581,7 @@ void tm_taskGameQuit(TmState *s) {
 }
 
 void tm_drawQuitWin(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(0x2D), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(TM_TEXT_QUIT_ASK), 0);
 }
 
 void *func_800ABEBC(u32 *ot, void *p, TmState *s) {
@@ -1620,19 +1620,19 @@ void tm_checkBattles(TmState *s) {
         arrows >>= 1;
     }
     if (n == 1) {
-        s->task = 7;
+        s->task = TM_TASK_BATTLE;
     } else if (n >= 2) {
-        if (s->turn == 0 && s->autoPlay == 0) {
+        if (s->turn == TM_PLAYER && s->autoPlay == 0) {
             s->timer = 0;
             s->numTargets = n;
-            s->task = 6;
+            s->task = TM_TASK_BATTLE_SELECT;
         } else {
-            s->task = 7;
+            s->task = TM_TASK_BATTLE;
         }
     } else if (tm_evalPlacement(s, owner, s->srcX, s->srcY, (TmCard *)-1) != 0) {
-        tm_setFlips(s, owner, s->srcX, s->srcY, 8, 1);
+        tm_setFlips(s, owner, s->srcX, s->srcY, TM_TASK_TURN, TM_FLIP_CHANGE);
     } else {
-        s->task = 8;
+        s->task = TM_TASK_TURN;
     }
 }
 
@@ -1655,7 +1655,7 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
     tm_getBattleValues((s32)s, &pos, a, b);
     s->valuesTimer = 0x3C;
     if (s->timer == 0x23) {
-        tm_playSe(0xB);
+        tm_playSe(TM_SE_BATTLE);
     }
     if (s->timer < 0x23) {
         s->atkShown = pos.atk;
@@ -1699,26 +1699,26 @@ void *tm_taskBattle(u32 *ot, void *vp, TmState *s) {
         if (s->timer >= 0x5A) {
             e = s->flips;
             tm_clearFlips(s);
-            e->mode = 3;
-            s->flashMode = 3;
-            s->task = 5;
-            tm_playSe(9);
+            e->mode = TM_FLIP_BATTLE;
+            s->flashMode = TM_FLIP_BATTLE;
+            s->task = TM_TASK_FLASH;
+            tm_playSe(TM_SE_FLASH);
             if (s->atkRoll > s->defRoll) {
                 l = a;
                 e->x = s->dstX;
                 e->y = s->dstY;
-                s->flashNext = 9;
+                s->flashNext = TM_TASK_BATTLE_WIN;
                 s->flipOwner = s->turn;
             } else {
-                if (s->turn == 0) {
-                    s->flipOwner = 1;
+                if (s->turn == TM_PLAYER) {
+                    s->flipOwner = TM_ENEMY;
                 } else {
-                    s->flipOwner = 0;
+                    s->flipOwner = TM_PLAYER;
                 }
                 e->x = s->srcX;
                 e->y = s->srcY;
                 l = b;
-                s->flashNext = 0xA;
+                s->flashNext = TM_TASK_BATTLE_LOSE;
             }
             switch (l->type) {
             case 0:
@@ -1803,32 +1803,32 @@ void tm_getBattleValues(s32 unused, TmBattle *out, TmCard *a, TmCard *b) {
 
 void tm_taskBattleWin(TmState *arg0) {
     if (tm_evalPlacement(arg0, arg0->turn, arg0->dstX, arg0->dstY, (TmCard *)-1) != 0) {
-        tm_setFlips(arg0, arg0->turn, arg0->dstX, arg0->dstY, -1, 2);
+        tm_setFlips(arg0, arg0->turn, arg0->dstX, arg0->dstY, -1, TM_FLIP_COMBO);
     } else {
         tm_checkBattles(arg0);
     }
 }
 
 void tm_taskBattleLose(TmState *arg0) {
-    s32 who = arg0->turn == 0;
+    s32 who = arg0->turn == TM_PLAYER;
     if (tm_evalPlacement(arg0, who, arg0->srcX, arg0->srcY, (TmCard *)-1) != 0) {
-        tm_setFlips(arg0, who, arg0->srcX, arg0->srcY, 8, 2);
+        tm_setFlips(arg0, who, arg0->srcX, arg0->srcY, TM_TASK_TURN, TM_FLIP_COMBO);
     } else {
-        arg0->task = 8;
+        arg0->task = TM_TASK_TURN;
     }
 }
 
 void tm_taskTurn(TmState *arg0) {
-    if (arg0->turn == 0) {
-        arg0->turn = 1;
+    if (arg0->turn == TM_PLAYER) {
+        arg0->turn = TM_ENEMY;
         arg0->timer = 0;
         arg0->phase = 0;
         arg0->thinkDelay = (rand() & 0xF) + 0xF;
-        arg0->task = 0x1E;
+        arg0->task = TM_TASK_ENEMY_THINK;
     } else {
         arg0->nameSlide = 0;
-        arg0->turn = 0;
-        arg0->task = 0;
+        arg0->turn = TM_PLAYER;
+        arg0->task = TM_TASK_PLAYER_SELECT;
     }
 }
 
@@ -1862,11 +1862,11 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
         k = t * 30;
         if (k >= 0x100) {
             c = 0xFF;
-            if (s->flashMode == 2) {
+            if (s->flashMode == TM_FLIP_COMBO) {
                 s->comboTimer = 0x32;
                 s->valuesTimer = 0;
                 s->comboShown = s->comboCount;
-                tm_playSe(10);
+                tm_playSe(TM_SE_COMBO);
             }
             s->phase = 1;
         } else {
@@ -1885,20 +1885,20 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
         }
     }
     for (i = 0; i < 10; i++) {
-        if (e[i].mode != 0) {
+        if (e[i].mode != TM_FLIP_NONE) {
             if (s->phase == 1) {
                 tm_getCell(s, e[i].x, e[i].y)->card->owner = s->flipOwner;
             }
-            if (s->flashMode == 1) {
+            if (s->flashMode == TM_FLIP_CHANGE) {
                 setlen(p, 3);
                 p->code = 0x62;
-                setXY0(p, e[i].x * 43 + 0x48, e[i].y * 52 + 8);
-                setWH(p, 0x2A, 0x33);
+                setXY0(p, e[i].x * TM_SQUARE_W + TM_BOARD_X, e[i].y * TM_SQUARE_H + TM_BOARD_Y);
+                setWH(p, TM_CARD_W, TM_CARD_H);
                 setRGB0(p, c, c, c);
                 AddPrim(ot + 0x1E, p);
                 p++;
             }
-            if (s->flashMode == 2) {
+            if (s->flashMode == TM_FLIP_COMBO) {
                 k = 0xFF - t * 9;
                 c = k;
                 d = &tbl.v[e[i].arg];
@@ -1906,8 +1906,8 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
                 dy = d->dirY;
                 ex = d->cornerX;
                 ey = d->cornerY;
-                bx = e[i].x * 43 + 0x48 + d->offX;
-                by = e[i].y * 52 + 8 + d->offY;
+                bx = e[i].x * TM_SQUARE_W + TM_BOARD_X + d->offX;
+                by = e[i].y * TM_SQUARE_H + TM_BOARD_Y + d->offY;
                 if (k < 0) {
                     c = 0;
                 }
@@ -1962,11 +1962,11 @@ void *tm_drawFlash(u32 *ot, TILE *p, TmState *s) {
                 AddPrim(ot + 0x1E, p);
                 p++;
             }
-            if (s->flashMode == 3) {
+            if (s->flashMode == TM_FLIP_BATTLE) {
                 setlen(p, 3);
                 p->code = 0x62;
-                setXY0(p, e[i].x * 43 + 0x48, e[i].y * 52 + 8);
-                setWH(p, 0x2A, 0x33);
+                setXY0(p, e[i].x * TM_SQUARE_W + TM_BOARD_X, e[i].y * TM_SQUARE_H + TM_BOARD_Y);
+                setWH(p, TM_CARD_W, TM_CARD_H);
                 if (s->timer & 4) {
                     setRGB0(p, 0x80, 0x80, 0x80);
                 } else {
@@ -2005,7 +2005,7 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
         c = t = 0xFF - s->timer * 12;
         if (t < 0) {
             c = 0;
-            if (s->result == 0) {
+            if (s->result == TM_RESULT_WIN) {
                 tm_returnHand(s);
             } else {
                 tm_returnKept(s);
@@ -2014,7 +2014,7 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
         }
     }
     for (i = 0; i < 10; i++) {
-        if (e[i].mode == 1) {
+        if (e[i].mode == TM_FLIP_CHANGE) {
             card = e[i].card;
             if (s->phase == 1) {
                 card->owner = e[i].arg;
@@ -2041,8 +2041,8 @@ void *tm_drawFlash2(u32 *ot, TILE *p, TmState *s) {
 void tm_taskFlashArrow(TmState *arg0) {
     if (arg0->timer >= 0x15) {
         arg0->timer = 0;
-        arg0->task = 5;
-        tm_playSe(9);
+        arg0->task = TM_TASK_FLASH;
+        tm_playSe(TM_SE_FLASH);
     }
 }
 
@@ -2052,7 +2052,7 @@ void tm_clearFlips(TmState *arg0) {
     arg0->timer = 0;
     arg0->phase = 0;
     for (i = 0; i < 10; i++) {
-        p[i].mode = 0;
+        p[i].mode = TM_FLIP_NONE;
         p[i].x = 0;
         p[i].y = 0;
     }
@@ -2077,7 +2077,7 @@ void tm_layoutCards(TmState *s) {
     a = NULL;
     b = NULL;
     k = 0;
-    if (s->task == 7) {
+    if (s->task == TM_TASK_BATTLE) {
         a = tm_getCell(s, s->srcX, s->srcY)->card;
         b = tm_getCell(s, s->dstX, s->dstY)->card;
         if ((u32)(s->timer - 0x23) < 0xF) {
@@ -2094,44 +2094,44 @@ void tm_layoutCards(TmState *s) {
     }
     x = 8;
     cards = s->cards;
-    for (i = 0, n = 0; i < 10; i++) {
+    for (i = 0, n = 0; i < TM_NUM_CARDS; i++) {
         c = &cards[i];
-        if (s->task == 0x12 || s->task == 0x23 || s->quitting != 0) {
+        if (s->task == TM_TASK_CHOICE || s->task == TM_TASK_GAME_QUIT || s->quitting != 0) {
             c->depth = i + 0x28;
         } else {
             c->depth = 0x3C - i;
         }
-        if (c->owner == 0) {
+        if (c->owner == TM_PLAYER) {
             if (c->onBoard == 0) {
                 c->small = 0;
                 c->y = x;
-                if (tm_countPlayerHand(s, 0) == 5 || s->task == 0x12 || s->task == 0x23 || s->quitting != 0) {
+                if (tm_countPlayerHand(s, TM_PLAYER) == TM_HAND_SIZE || s->task == TM_TASK_CHOICE || s->task == TM_TASK_GAME_QUIT || s->quitting != 0) {
                     x += 0x2A;
-                    c->x = 0x108;
+                    c->x = TM_PLAYER_HAND_X + 4;
                     c->small = 1;
                 } else {
                     x += 0x34;
                     c->small = 0;
-                    c->x = 0x104;
+                    c->x = TM_PLAYER_HAND_X;
                 }
             }
-            if (s->task == 0x22 && i >= 5) {
+            if (s->task == TM_TASK_GET_SELECT && i >= 5) {
                 if (tm_getCaptured(s, s->getCursor) == c) {
                     c->x = 0x16;
                 } else {
-                    c->x = 0x10;
+                    c->x = TM_ENEMY_HAND_X;
                 }
             }
-            if (s->task == 0xF && i >= 5) {
-                c->x = 0x10;
+            if (s->task == TM_TASK_FLASH2 && i >= 5) {
+                c->x = TM_ENEMY_HAND_X;
             }
         }
-        if (c->owner == 1 && c->onBoard == 0) {
+        if (c->owner == TM_ENEMY && c->onBoard == 0) {
             c->y = n * 14 + 0x1A;
             n++;
-            c->x = 0x10;
+            c->x = TM_ENEMY_HAND_X;
         }
-        if (s->task == 7) {
+        if (s->task == TM_TASK_BATTLE) {
             if (a == c) {
                 t = s->srcX * 43;
                 m = dx * k / 256 - 0x48;
@@ -2168,7 +2168,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
     u32 *o2;
 
     cards = s->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         c = &cards[i];
         if (cards[i].visible == 0) {
             continue;
@@ -2196,16 +2196,16 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
                 b -= (i - 5) * 22;
             }
         }
-        if (m == 1 && c->owner == 0 && c->onBoard == 0) {
+        if (m == 1 && c->owner == TM_PLAYER && c->onBoard == 0) {
             b = 0x40;
             a = b;
-            if (c == tm_getHandCard(s, 0, s->cursor)) {
+            if (c == tm_getHandCard(s, TM_PLAYER, s->cursor)) {
                 b = 0x80;
                 a = b;
             }
         }
         z = c->depth;
-        if (s->task == 6 && a != b) {
+        if (s->task == TM_TASK_BATTLE_SELECT && a != b) {
             o = ot + z;
             setlen((SPRT *)p, 4);
             ((SPRT *)p)->code = 0x64;
@@ -2226,12 +2226,12 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
             AddPrim(o, p);
             p = (DR_TPAGE *)p + 1;
         }
-        if (s->task == 0x22 && tm_getCaptured(s, s->getCursor) == c) {
+        if (s->task == TM_TASK_GET_SELECT && tm_getCaptured(s, s->getCursor) == c) {
             z = 0x28;
         }
         if (c->hidden == 0) {
             sel = 0;
-            if (s->task == 0x1D) {
+            if (s->task == TM_TASK_FLASH_ARROW) {
                 sel = s->comboCard == c;
             }
             o2 = ot + z;
@@ -2253,7 +2253,7 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
             ((SPRT *)p)->r0 = a;
             ((SPRT *)p)->g0 = a;
             ((SPRT *)p)->b0 = a;
-            if (cards[i].owner == 0) {
+            if (cards[i].owner == TM_PLAYER) {
                 ((SPRT *)p)->u0 = 8;
             } else {
                 ((SPRT *)p)->u0 = 0x38;
@@ -2303,20 +2303,20 @@ void *tm_drawCards(u32 *ot, void *p, TmState *s) {
 void tm_startCardMove(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         c[i].fromX = c[i].x << 8;
         c[i].fromY = c[i].y << 8;
-        if (i < 5) {
-            c[i].toX = 0x10400;
+        if (i < TM_HAND_SIZE) {
+            c[i].toX = (TM_PLAYER_HAND_X << 8);
             c[i].toY = i * 0x2000 + 0x1900;
         } else {
-            c[i].toX = 0x1000;
+            c[i].toX = TM_ENEMY_HAND_X << 8;
             c[i].toY = (i - 5) * 0x2000 + 0x1900;
         }
     }
     arg0->moveFrames = 0x14;
     arg0->timer = 0;
-    arg0->task = 0xE;
+    arg0->task = TM_TASK_CARD_MOVE;
 }
 
 void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
@@ -2335,7 +2335,7 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
 
     if (s->timer < s->moveFrames) {
         cards = s->cards;
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < TM_NUM_CARDS; i++) {
             c = &cards[i];
             a = (c->toX - c->fromX) / s->moveFrames;
             b = (c->toY - c->fromY) / s->moveFrames;
@@ -2344,38 +2344,38 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
         }
     } else {
         cards = s->cards;
-        for (i = 0; i < 10; i++) {
-            if (i < 5) {
-                cards[i].x = 0x104;
+        for (i = 0; i < TM_NUM_CARDS; i++) {
+            if (i < TM_HAND_SIZE) {
+                cards[i].x = TM_PLAYER_HAND_X;
                 cards[i].y = i * 32 + 0x19;
             } else {
-                cards[i].x = 0x10;
+                cards[i].x = TM_ENEMY_HAND_X;
                 cards[i].y = i * 32 - 0x87;
             }
         }
     }
     if (s->moveFrames + 10 < s->timer) {
-        if (s->result == 0) {
-            if (tm_countOwned(s, 0) != 10 && tm_countCaptured(s) != 1) {
+        if (s->result == TM_RESULT_WIN) {
+            if (tm_countOwned(s, TM_PLAYER) != 10 && tm_countCaptured(s) != 1) {
                 s->getCursor = 0;
-                st = 0x22;
+                st = TM_TASK_GET_SELECT;
                 goto done;
             }
         }
-        if (s->result == 0) {
-            if (s->hasLostCard != 0 && (&s->cards[5])[s->lostSlot].owner == 0) {
+        if (s->result == TM_RESULT_WIN) {
+            if (s->hasLostCard != 0 && (&s->cards[TM_HAND_SIZE])[s->lostSlot].owner == TM_PLAYER) {
                 s->hasLostCard = 0;
             }
         }
         flag = 0;
-        if (s->result == 0) {
-            n = tm_countOwned(s, 0);
+        if (s->result == TM_RESULT_WIN) {
+            n = tm_countOwned(s, TM_PLAYER);
             skip = -1;
             if (n == 10) {
                 s->hasLostCard = 0;
             }
         } else {
-            n = tm_countKept(s, 0);
+            n = tm_countKept(s, TM_PLAYER);
             skip = (rand() & 0xFF) % (5 - n);
         }
         cards = s->cards;
@@ -2383,22 +2383,22 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
         tm_clearFlips(s);
         k = 0;
         j = 0;
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < TM_NUM_CARDS; i++) {
             c = &cards[i];
-            if (i < 5) {
-                if (c->owner == 1) {
-                    if (k != skip && tm_countOwned(s, 1) != 10) {
+            if (i < TM_HAND_SIZE) {
+                if (c->owner == TM_ENEMY) {
+                    if (k != skip && tm_countOwned(s, TM_ENEMY) != 10) {
                         e[j].card = c;
-                        e[j].mode = 1;
+                        e[j].mode = TM_FLIP_CHANGE;
                         e[j].arg = 0;
                         j++;
                         flag = 1;
                     }
-                    if (s->result == 1) {
+                    if (s->result == TM_RESULT_LOSE) {
                         k++;
                     }
                 }
-            } else if (c->owner == 0) {
+            } else if (c->owner == TM_PLAYER) {
                 st = s->result;
                 if (st == 1) {
                     e[j].card = c;
@@ -2410,7 +2410,7 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
             }
         }
         if (flag == 0) {
-            if (s->result == 0) {
+            if (s->result == TM_RESULT_WIN) {
                 tm_returnHand(s);
             } else {
                 tm_returnKept(s);
@@ -2418,8 +2418,8 @@ void *tm_taskCardMove(u32 *ot, void *p, TmState *s) {
             tm_nextTrade(s);
             return p;
         }
-        s->flashMode = 1;
-        st = 0xF;
+        s->flashMode = TM_FLIP_CHANGE;
+        st = TM_TASK_FLASH2;
     done:
         s->task = st;
     }
@@ -2431,7 +2431,7 @@ s32 tm_countCapturedBeforeLost(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
     for (i = 0; i < arg0->lostSlot; i++) {
-        if (c[i + 5].owner == 0) {
+        if (c[i + 5].owner == TM_PLAYER) {
             n++;
         }
     }
@@ -2445,10 +2445,10 @@ s32 tm_countKept(TmState *arg0, s32 arg1) {
     if (arg1 == 0) {
         c = &arg0->cards[0];
     } else {
-        c = &arg0->cards[5];
+        c = &arg0->cards[TM_HAND_SIZE];
     }
     n = 0;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         if (c[i].owner == arg1) {
             n++;
         }
@@ -2466,17 +2466,17 @@ void tm_nextTrade(TmState *s) {
     TmCard *c;
 
     owner = 1;
-    if (s->result == 0) {
+    if (s->result == TM_RESULT_WIN) {
         owner = 0;
         j = 5;
-        x = 0x10;
+        x = TM_ENEMY_HAND_X;
     } else {
         j = 0;
-        x = 0x104;
+        x = TM_PLAYER_HAND_X;
     }
     found = 0;
     c = s->cards;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         if ((c + j)[i].owner == owner && (c + j)[i].x == x) {
             found = 1;
             s->tradeCard = &(c + j)[i];
@@ -2489,7 +2489,7 @@ void tm_nextTrade(TmState *s) {
     }
     if (found == 0) {
         if (func_800625F8() > 100) {
-            r.w = func_8002BA68(text_get(0x16)) + 0x12;
+            r.w = func_8002BA68(text_get(TM_TEXT_OVER_100)) + 0x12;
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
             r.h = 0x2A;
@@ -2499,23 +2499,23 @@ void tm_nextTrade(TmState *s) {
             tm_waitWindow(s->infoWin);
             tm_hideCards(s);
             tm_resetStockCursor(s);
-            s->task = 0x16;
-            tm_playSe(2);
+            s->task = TM_TASK_AWAY_INFO;
+            tm_playSe(TM_SE_BUZZER);
         } else {
             tm_askRematch(s);
         }
     } else {
-        s->task = 0xD;
-        tm_playSe(5);
+        s->task = TM_TASK_CARD_CHANGE;
+        tm_playSe(TM_SE_CARD);
     }
 }
 
 void tm_drawOver100Win(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(0x16), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 7, arg0->unk18, text_get(TM_TEXT_OVER_100), 0);
 }
 
 void tm_drawDiscardTitle(Window *arg0) {
-    text_drawBlock(0x82, 0x10, arg0->unk18, text_get(0x17), 0);
+    text_drawBlock(0x82, 0x10, arg0->unk18, text_get(TM_TEXT_DISCARD), 0);
 }
 
 void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
@@ -2540,7 +2540,7 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
         tm_stackHands(s, 0);
         return p;
     }
-    if (s->result == 0) {
+    if (s->result == TM_RESULT_WIN) {
         g_tmTradeBadge = func_80062420(c->id, c->arrows, c->power, c->type, c->pdef, c->mdef);
     } else {
         s->lostCard.id = c->id;
@@ -2554,7 +2554,7 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
         if (func_80062560(c->id) == 0) {
             found = NULL;
             cards = s->cards;
-            for (i = 0; i < 5; i++) {
+            for (i = 0; i < TM_HAND_SIZE; i++) {
                 if (cards[i].id == c->id) {
                     found = &cards[i];
                 }
@@ -2571,11 +2571,11 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
     g_tmTradeCardId = id = c->id;
     func_8002BD54(buf, (u8 *)func_8006276C(id));
     if (g_tmTradeLost == 0) {
-        text_append(buf, text_get(3));
+        text_append(buf, text_get(TM_TEXT_RECEIVED));
     } else {
-        text_append(buf, text_get(4));
+        text_append(buf, text_get(TM_TEXT_LOST));
     }
-    text_append(buf, text_get(7));
+    text_append(buf, text_get(TM_TEXT_TRADE_END));
     w = func_8002BA68(buf) + 0x10;
     r.x = 0xA0 - w / 2;
     r.y = 0x96;
@@ -2585,8 +2585,8 @@ void *tm_taskCardChange(u32 *ot, void *p, TmState *s) {
     win_setDrawContent(s->msgWin, tm_drawTradeWin);
     func_8002E31C(s->msgWin, 1);
     tm_waitWindow(s->msgWin);
-    tm_playSe(s->result == 0 ? 4 : 0xC);
-    s->task = 0x10;
+    tm_playSe(s->result == TM_RESULT_WIN ? TM_SE_RECEIVED : TM_SE_LOST);
+    s->task = TM_TASK_TRADE;
     return p;
 }
 
@@ -2600,7 +2600,7 @@ void *tm_drawTradeBadge(u32 *ot, SPRT *p, TmState *s) {
         p->code = 0x64;
         p->x0 = 0xA3;
         p->y0 = 0x45;
-        if (s->result == 0) {
+        if (s->result == TM_RESULT_WIN) {
             p->u0 = 0x20;
             p->v0 = 0x90;
         } else {
@@ -2630,12 +2630,12 @@ void tm_drawTradeWin(Window *w) {
 
     v = w;
     if (g_tmTradeLost == 0) {
-        func_8002BD54(buf, text_get(3));
+        func_8002BD54(buf, text_get(TM_TEXT_RECEIVED));
     } else {
-        func_8002BD54(buf, text_get(4));
+        func_8002BD54(buf, text_get(TM_TEXT_LOST));
     }
     text_append(buf, (u8 *)func_8006276C(g_tmTradeCardId));
-    text_append(buf, text_get(7));
+    text_append(buf, text_get(TM_TEXT_TRADE_END));
     text_drawBlock(0x9F - func_8002BA68((s32)buf) / 2, v->unk2 + 6, w->unk18, buf, 0);
 }
 
@@ -2645,7 +2645,7 @@ void tm_endTrade(TmState *arg0) {
     c->fromX = c->x << 8;
     c->fromY = c->y << 8;
     arg0->timer = 0;
-    arg0->task = 0x11;
+    arg0->task = TM_TASK_CHANGE2;
     win_close(arg0->msgWin);
 }
 
@@ -2656,20 +2656,20 @@ void *tm_taskChange2(u32 *ot, void *p, TmState *s) {
 
     c = s->tradeCard;
     if (s->timer < s->moveFrames) {
-        if (s->result == 0) {
-            dx = (0x10400 - c->fromX) / s->moveFrames;
+        if (s->result == TM_RESULT_WIN) {
+            dx = ((TM_PLAYER_HAND_X << 8) - c->fromX) / s->moveFrames;
         } else {
-            dx = (0x1000 - c->fromX) / s->moveFrames;
+            dx = ((TM_ENEMY_HAND_X << 8) - c->fromX) / s->moveFrames;
         }
         dy = (0x9900 - c->fromY) / s->moveFrames;
         c->x = (c->fromX + dx * s->timer) >> 8;
         c->y = (c->fromY + dy * s->timer) >> 8;
     } else {
         c->y = 0x19;
-        if (s->result == 0) {
-            c->x = 0x104;
+        if (s->result == TM_RESULT_WIN) {
+            c->x = TM_PLAYER_HAND_X;
         } else {
-            c->x = 0x10;
+            c->x = TM_ENEMY_HAND_X;
         }
         tm_stackHands(s, 1);
         tm_nextTrade(s);
@@ -2692,16 +2692,16 @@ void tm_stackHands(TmState *s, s32 flag) {
     for (side = 0; side < 2; side++) {
         if (side == 0) {
             first = &s->cards[0];
-            second = &s->cards[5];
-            x = 0x104;
+            second = &s->cards[TM_HAND_SIZE];
+            x = TM_PLAYER_HAND_X;
         } else {
-            first = &s->cards[5];
+            first = &s->cards[TM_HAND_SIZE];
             second = &s->cards[0];
-            x = 0x10;
+            x = TM_ENEMY_HAND_X;
         }
         n = 0;
         c = s->cards;
-        for (i = 0; i < 10; i++) {
+        for (i = 0; i < TM_NUM_CARDS; i++) {
             if (c[i].x == x) {
                 n++;
             }
@@ -2711,7 +2711,7 @@ void tm_stackHands(TmState *s, s32 flag) {
             step = 0x80 / (n - 1);
         }
         j = 0;
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < TM_HAND_SIZE; i++) {
             if (first[i].x == x) {
                 if (flag != 0) {
                     first[i].depth = 0x3C - j;
@@ -2720,7 +2720,7 @@ void tm_stackHands(TmState *s, s32 flag) {
                 j++;
             }
         }
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < TM_HAND_SIZE; i++) {
             if (second[i].x == x) {
                 if (flag != 0) {
                     second[i].depth = 0x3C - j;
@@ -2736,7 +2736,7 @@ s32 tm_countInHand(TmState *arg0, s32 arg1) {
     s32 n = 0;
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         if (c[i].owner == arg1 && c[i].onBoard == 0) {
             n++;
         }
@@ -2748,7 +2748,7 @@ s32 tm_countPlayerHand(TmState *arg0, s32 arg1) {
     s32 n = 0;
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         if (c[i].visible != 0 && c[i].owner == arg1 && c[i].onBoard == 0) {
             n++;
         }
@@ -2760,8 +2760,8 @@ s32 tm_countCaptured(TmState *arg0) {
     s32 n = 0;
     s32 i;
     TmCard *c = arg0->cards + 5;
-    for (i = 0; i < 5; i++) {
-        if (c[i].owner == 0) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
+        if (c[i].owner == TM_PLAYER) {
             n++;
         }
     }
@@ -2773,9 +2773,9 @@ TmCard *tm_getCaptured(TmState *arg0, s32 arg1) {
     TmCard *base;
     TmCard *c;
     i = 0;
-    c = base = &arg0->cards[5];
-    for (; i < 5; i++, c++) {
-        if (c->owner == 0) {
+    c = base = &arg0->cards[TM_HAND_SIZE];
+    for (; i < TM_HAND_SIZE; i++, c++) {
+        if (c->owner == TM_PLAYER) {
             if (arg1 == 0) {
                 return c;
             }
@@ -2789,7 +2789,7 @@ s32 tm_countOnBoard(TmState *arg0, s32 arg1) {
     s32 n = 0;
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         if (c[i].onBoard == 1 && c[i].owner == arg1) {
             n++;
         }
@@ -2801,7 +2801,7 @@ s32 tm_countOwned(TmState *arg0, s32 arg1) {
     s32 n = 0;
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         if (c[i].owner == arg1) {
             n++;
         }
@@ -2813,7 +2813,7 @@ TmCard *tm_getHandCard(TmState *arg0, s32 arg1, s32 arg2) {
     s32 n = 0;
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         if (c[i].owner == arg1 && c[i].onBoard == 0) {
             if (arg2 == n) {
                 return &c[i];
@@ -2833,14 +2833,14 @@ void tm_initHands(TmState *s) {
     s32 r;
     u8 id;
 
-    tbl = (TmCardData *)0x80103800;
+    tbl = g_tmCardData;
     base = s->cards;
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < TM_NUM_CARDS; i++) {
         c = &base[i];
         c->x = 0xDC;
         c->y = i * 30;
-        c->owner = 0;
+        c->owner = TM_PLAYER;
         c->onBoard = 0;
         c->hidden = 0;
         c->depth = 0x28;
@@ -2874,7 +2874,7 @@ void tm_initHands(TmState *s) {
         c->visible = 0;
         c->mdef = v;
     }
-    for (i = 5; i < 10; i++) {
+    for (i = TM_HAND_SIZE; i < TM_NUM_CARDS; i++) {
         base[i].visible = 0;
     }
 }
@@ -2888,14 +2888,14 @@ void tm_dealEnemyHand(TmState *s) {
     TmCard *base;
     TmDeck *odds;
 
-    odds = (TmDeck *)0x80103C00;
+    odds = g_tmDecks;
     s->lostSlot = rand() % 5;
-    base = &s->cards[5];
-    for (i = 0; i < 5; i++) {
+    base = &s->cards[TM_HAND_SIZE];
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         c = &base[i];
-        c->x = 0x10;
+        c->x = TM_ENEMY_HAND_X;
         c->y = 0x12C;
-        c->owner = 1;
+        c->owner = TM_ENEMY;
         c->onBoard = 0;
         c->hidden = 1;
         c->small = 0;
@@ -2976,7 +2976,7 @@ void tm_showStockCard(TmState *s) {
     s32 w;
 
     q = s->cards;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         p = &q[i];
         if (i < s->handCount) {
             p->visible = 1;
@@ -2988,7 +2988,7 @@ void tm_showStockCard(TmState *s) {
         q->visible = 0;
     }
     i = 5;
-    if (s->handCount != i && s->task != 0x1B) {
+    if (s->handCount != i && s->task != TM_TASK_END_FADE) {
         c0 = (TmCard *)tm_getStockCursorId(s);
         n = func_80062560((s32)c0);
         if (n != 0) {
@@ -3000,7 +3000,7 @@ void tm_showStockCard(TmState *s) {
             ui_drawDigits(0xE6 - w, 0x76, 0xFFA, buf, 0);
             m = n;
             k = s->copyIdx;
-            c0 = &s->cards[5];
+            c0 = &s->cards[TM_HAND_SIZE];
             if (m >= 6) {
                 m = 5;
             }
@@ -3027,7 +3027,7 @@ void tm_showStockCard(TmState *s) {
                 c->visible = 1;
                 c->small = 0;
                 c->onBoard = 1;
-                c->owner = 0;
+                c->owner = TM_PLAYER;
                 c->id = d->unk0;
                 if (i == 0) {
                     c0->arrows = d->unk1;
@@ -3055,8 +3055,8 @@ void tm_showStockCard(TmState *s) {
 void tm_returnKept(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 5; i++) {
-        if (c[i].owner == 0) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
+        if (c[i].owner == TM_PLAYER) {
             func_80062420(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
         }
     }
@@ -3065,8 +3065,8 @@ void tm_returnKept(TmState *arg0) {
 void tm_returnHand(TmState *arg0) {
     s32 i;
     TmCard *c = arg0->cards;
-    for (i = 0; i < 5; i++) {
-        if (arg0->result == 0) {
+    for (i = 0; i < TM_HAND_SIZE; i++) {
+        if (arg0->result == TM_RESULT_WIN) {
             tm_levelUpRandom(arg0, &c[i]);
         }
         func_80062420(c[i].id, c[i].arrows, c[i].power, c[i].type, c[i].pdef, c[i].mdef);
@@ -3133,7 +3133,7 @@ void tm_makeCard(TmState *s, TmCard *c, s32 arg2, s32 random) {
     s32 p0, p1, p2, p3, p4, p5, p6, p7;
 
     dirs = g_tmArrowBits;
-    tbl = (TmCardData *)0x80103800;
+    tbl = g_tmCardData;
     c->id = arg2;
     id = arg2;
     if (random == 0) {
@@ -3211,15 +3211,15 @@ void tm_taskEnemyAppear(TmState *s) {
     s32 d;
     TmCard *c;
 
-    c = &s->cards[5];
-    for (i = 0; i < 5; i++) {
+    c = &s->cards[TM_HAND_SIZE];
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         d = s->timer - 0xF;
         t = i * 6 - d;
         if (t <= 0) {
             t = 0;
             if (s->landed[i] == 0) {
                 s->landed[i] = 1;
-                tm_playSe(5);
+                tm_playSe(TM_SE_CARD);
             }
         }
         c[i].depth = 0x3C - i;
@@ -3229,12 +3229,12 @@ void tm_taskEnemyAppear(TmState *s) {
         s->timer = 0;
         s->phase = 0;
         if (rand() & 1) {
-            s->turn = 0;
+            s->turn = TM_PLAYER;
         } else {
-            s->turn = 1;
+            s->turn = TM_ENEMY;
         }
-        s->task = 0x1C;
-        tm_playSe(6);
+        s->task = TM_TASK_COIN;
+        tm_playSe(TM_SE_COIN);
     }
 }
 
@@ -3244,10 +3244,10 @@ void tm_animEnemyThink(TmState *s) {
     TmCard *c;
 
     n = 0;
-    c = &s->cards[5];
-    for (i = 0; i < 5; i++) {
+    c = &s->cards[TM_HAND_SIZE];
+    for (i = 0; i < TM_HAND_SIZE; i++) {
         if (c[i].onBoard == 0) {
-            c[i].x = 0x10;
+            c[i].x = TM_ENEMY_HAND_X;
             if (s->phase == 1) {
                 if (n == s->timer / 4) {
                     c[i].x = 0x1A;
@@ -3259,7 +3259,7 @@ void tm_animEnemyThink(TmState *s) {
         }
     }
     if (s->timer != 0 && s->phase == 1 && !(s->timer & 3)) {
-        tm_playSe(5);
+        tm_playSe(TM_SE_CARD);
     }
 }
 
@@ -3317,29 +3317,29 @@ void tm_checkGameEnd(TmState *s) {
     s32 a;
     s32 b;
 
-    if (tm_countInHand(s, 0) == 0 && tm_countInHand(s, 1) == 0) {
-        a = tm_countOnBoard(s, 0);
-        b = tm_countOnBoard(s, 1);
+    if (tm_countInHand(s, TM_PLAYER) == 0 && tm_countInHand(s, TM_ENEMY) == 0) {
+        a = tm_countOnBoard(s, TM_PLAYER);
+        b = tm_countOnBoard(s, TM_ENEMY);
         if (a > b) {
             func_80062750(0);
             func_800624A8();
-            s->result = 0;
+            s->result = TM_RESULT_WIN;
             s->wins++;
         }
         if (a < b) {
             func_80062750(1);
             func_800624E8();
-            s->result = 1;
+            s->result = TM_RESULT_LOSE;
             s->losses++;
         }
         if (a == b) {
             func_80062750(2);
             func_8006252C();
-            s->result = 2;
+            s->result = TM_RESULT_DRAW;
             s->draws++;
         }
         s->timer = 0;
-        s->task = 3;
+        s->task = TM_TASK_RESULT;
     }
 }
 
@@ -3354,24 +3354,24 @@ void *tm_drawResult(u32 *ot, SPRT *p, TmState *s) {
     if ((u8)(c - 0xF5) < 8) {
         switch (s->result) {
         case 0:
-            if (tm_countOnBoard(s, 0) != 10) {
-                snd = 0xD;
+            if (tm_countOnBoard(s, TM_PLAYER) != 10) {
+                snd = TM_SE_WIN;
             } else {
-                snd = 8;
+                snd = TM_SE_PERFECT;
             }
             break;
         case 1:
-            snd = 0xE;
+            snd = TM_SE_LOSE;
             break;
         default:
-            snd = 0xF;
+            snd = TM_SE_DRAW;
             break;
         }
         tm_playSe(snd);
     }
     switch (s->result) {
     case 0:
-        if (tm_countOnBoard(s, 0) == 10) {
+        if (tm_countOnBoard(s, TM_PLAYER) == 10) {
             setlen(p, 4);
             p->code = 0x66;
             p->x0 = 0x4A;
@@ -3540,7 +3540,7 @@ void tm_revealBlocks(TmState *arg0) {
         if (arg0->numBlocks != 0) {
             arg0->blocks[arg0->blockIdx].hidden = 0;
             if (arg0->blockTimer >= 9) {
-                tm_playSe(7);
+                tm_playSe(TM_SE_BLOCK);
                 arg0->blockTimer = 0;
                 if (++arg0->blockIdx == arg0->numBlocks) {
                     arg0->blocksDone = 1;
@@ -3565,7 +3565,7 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
     u8 u;
 
     c = s->brightness;
-    if (s->task == 0x15) {
+    if (s->task == TM_TASK_FIELD_FADE) {
         c = s->timer * 8;
     }
     e = s->blocks;
@@ -3573,7 +3573,7 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
         if (e[i].hidden != 0) {
             continue;
         }
-        if (s->task == 0x21 && s->blocksDone == 0 && i == s->blockIdx) {
+        if (s->task == TM_TASK_ENEMY_APPEAR && s->blocksDone == 0 && i == s->blockIdx) {
             n = 10 - s->blockTimer;
             if (n < 0) {
                 n = 0;
@@ -3613,7 +3613,7 @@ void *tm_drawBlocks(u32 *ot, void *p, TmState *s) {
         } else {
             setlen((SPRT *)p, 4);
             ((SPRT *)p)->code = 0x64;
-            if (s->task == 0x15) {
+            if (s->task == TM_TASK_FIELD_FADE) {
                 ((SPRT *)p)->code = 0x66;
             }
             ((SPRT *)p)->x0 = e[i].x;
@@ -3679,26 +3679,26 @@ void tm_placeBlocks(TmState *s) {
             x = rand() & 3;
             y = rand() & 3;
             cell = tm_getCell(s, x, y);
-        } while (cell->state != 1);
-        cell->state = 2;
-        base[i].x = x * 43 + 0x48;
+        } while (cell->state != TM_CELL_EMPTY);
+        cell->state = TM_CELL_BLOCK;
+        base[i].x = x * TM_SQUARE_W + TM_BOARD_X;
         base[i].hidden = 1;
-        base[i].y = y * 52 + 8;
+        base[i].y = y * TM_SQUARE_H + TM_BOARD_Y;
         base[i].style = rand() & 1;
     }
 }
 
 void *tm_taskEnemyThink(u32 *ot, void *p, TmState *s) {
-    if (tm_countInHand(s, 1) == 0) {
-        s->task = 2;
+    if (tm_countInHand(s, TM_ENEMY) == 0) {
+        s->task = TM_TASK_ENEMY_SELECT;
     } else if (s->phase == 0) {
         if (s->timer > s->thinkDelay) {
             s->timer = 0;
             s->phase = 1;
-            s->thinkDelay = (rand() % (tm_countInHand(s, 1) + 1)) * 4 - 2;
+            s->thinkDelay = (rand() % (tm_countInHand(s, TM_ENEMY) + 1)) * 4 - 2;
         }
     } else if (s->timer > s->thinkDelay) {
-        s->task = 2;
+        s->task = TM_TASK_ENEMY_SELECT;
     }
     return p;
 }
@@ -3724,13 +3724,13 @@ void tm_enemySelect(TmState *s) {
     TmCell *cell;
     TmCard *sel;
 
-    if (tm_countInHand(s, 1) == 0) {
+    if (tm_countInHand(s, TM_ENEMY) == 0) {
         return;
     }
-    if (tm_countOwned(s, 1) == tm_countOwned(s, 0)) {
+    if (tm_countOwned(s, TM_ENEMY) == tm_countOwned(s, TM_PLAYER)) {
         wgt = 0x40;
         mul = 1;
-    } else if (tm_countOwned(s, 1) >= tm_countOwned(s, 0)) {
+    } else if (tm_countOwned(s, TM_ENEMY) >= tm_countOwned(s, TM_PLAYER)) {
         wgt = 0x43;
         mul = 1;
     } else {
@@ -3752,14 +3752,14 @@ void tm_enemySelect(TmState *s) {
     best = -0x7FFF;
     cnt = 0;
     k = 0;
-    for (c = 0; c < tm_countInHand(s, 1); c++) {
+    for (c = 0; c < tm_countInHand(s, TM_ENEMY); c++) {
         for (x = 0; x < 4; x++) {
             for (y = 0; y < 4; y++) {
                 score[k] = 0;
-                if (tm_getCell(s, x, y)->state != 1) {
+                if (tm_getCell(s, x, y)->state != TM_CELL_EMPTY) {
                     score[k] = -0x7FFF;
                 } else {
-                    card = tm_getHandCard(s, 1, c);
+                    card = tm_getHandCard(s, TM_ENEMY, c);
                     v = tm_evalPlacement(s, 1, x, y, card);
                     if (v > 0) {
                         score[k] += v * wgt;
@@ -3794,7 +3794,7 @@ void tm_enemySelect(TmState *s) {
     k = 0;
     by = 0;
     bc = 0;
-    for (c = 0; c < tm_countInHand(s, 1); c++) {
+    for (c = 0; c < tm_countInHand(s, TM_ENEMY); c++) {
         for (x = 0; x < 4; x++) {
             for (y = 0; y < 4; y++) {
                 f = best < score[k];
@@ -3811,23 +3811,23 @@ void tm_enemySelect(TmState *s) {
             }
         }
     }
-    sel = tm_getHandCard(s, 1, bc);
+    sel = tm_getHandCard(s, TM_ENEMY, bc);
     cell = tm_getCell(s, bx, by);
-    cell->state = 0;
+    cell->state = TM_CELL_CARD;
     cell->card = sel;
-    sel->x = bx * 43 + 0x48;
-    sel->y = by * 52 + 8;
+    sel->x = bx * TM_SQUARE_W + TM_BOARD_X;
+    sel->y = by * TM_SQUARE_H + TM_BOARD_Y;
     sel->hidden = 0;
     sel->onBoard = 1;
     s->srcX = bx;
     s->srcY = by;
-    tm_playSe(5);
+    tm_playSe(TM_SE_CARD);
     tm_checkBattles(s);
 }
 
 s32 tm_setCellOwner(TmState *arg0, s32 arg1, s32 arg2, s32 arg3) {
     TmCell *cell = tm_getCell(arg0, arg2, arg3);
-    if (cell->state == 0) {
+    if (cell->state == TM_CELL_CARD) {
         TmCard *c = cell->card;
         if (c->owner != arg1) {
             c->owner = arg1;
@@ -3858,7 +3858,7 @@ s32 tm_evalPlacement(TmState *s, s32 owner, s32 x, s32 y, TmCard *c) {
             p.y = y;
             tm_stepDir(&p, i);
             cell = tm_getCell(s, p.x, p.y);
-            if (cell->state == 0) {
+            if (cell->state == TM_CELL_CARD) {
                 t = cell->card;
                 if (t->owner != owner) {
                     if (t->arrows & m.v[i]) {
@@ -3894,9 +3894,9 @@ TmCard *tm_findDefender(TmState *s, s32 x, s32 y, TmCard *c) {
             p.y = y;
             tm_stepDir(&p, i);
             cell = tm_getCell(s, p.x, p.y);
-            if (cell->state == 0) {
+            if (cell->state == TM_CELL_CARD) {
                 t = cell->card;
-                if (t->owner != 1 && (t->arrows & m.v[i])) {
+                if (t->owner != TM_ENEMY && (t->arrows & m.v[i])) {
                     return t;
                 }
             }
@@ -3931,9 +3931,9 @@ s32 tm_setFlips(TmState *s, s32 owner, s32 x, s32 y, s32 arg4, s32 mode) {
             p.y = y;
             tm_stepDir(&p, i);
             cell = tm_getCell(s, p.x, p.y);
-            if (cell->state == 0 && (c = cell->card)->owner != owner) {
+            if (cell->state == TM_CELL_CARD && (c = cell->card)->owner != owner) {
                 s->comboDirs |= bit;
-                if (mode == 2) {
+                if (mode == TM_FLIP_COMBO) {
                     e[i].arg = i;
                     s->comboX = x * 43 + 0x39;
                     s->comboY = y * 52 + 0x19;
@@ -3951,12 +3951,12 @@ s32 tm_setFlips(TmState *s, s32 owner, s32 x, s32 y, s32 arg4, s32 mode) {
     s->flipOwner = owner;
     s->flashNext = arg4;
     s->flashMode = mode;
-    if (mode != 2) {
-        s->task = 5;
-        tm_playSe(9);
+    if (mode != TM_FLIP_COMBO) {
+        s->task = TM_TASK_FLASH;
+        tm_playSe(TM_SE_FLASH);
     } else {
         s->timer = 0;
-        s->task = 0x1D;
+        s->task = TM_TASK_FLASH_ARROW;
     }
     return 0;
 }
@@ -3968,7 +3968,7 @@ TmCard *tm_getDefender(TmState *s, TmPos *p, s32 dir, s32 owner) {
 
     tm_stepDir(p, dir);
     cell = tm_getCell(s, p->x, p->y);
-    if (cell->state == 0) {
+    if (cell->state == TM_CELL_CARD) {
         c = cell->card;
         if (c->owner != owner && (c->arrows & m.v[dir])) {
             return c;
@@ -4143,10 +4143,10 @@ TmCell *tm_getCell(TmState *arg0, s32 arg1, s32 arg2) {
 void tm_initBoard(TmState *arg0) {
     s32 x, y;
     TmCell(*b)[4] = arg0->board;
-    g_tmOffBoardCell.state = 3;
+    g_tmOffBoardCell.state = TM_CELL_OFFBOARD;
     for (y = 0; y < 4; y++) {
         for (x = 3; x >= 0; x--) {
-            b[y][x].state = 1;
+            b[y][x].state = TM_CELL_EMPTY;
         }
     }
     tm_placeBlocks(arg0);
@@ -4167,7 +4167,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     s32 c;
 
     SetSprt(p);
-    if ((u32)(s->task - 0x12) < 2 || s->task == 0x23 || s->task == 0x1B) {
+    if ((u32)(s->task - TM_TASK_CHOICE) < 2 || s->task == TM_TASK_GAME_QUIT || s->task == TM_TASK_END_FADE) {
         SetSprt(p);
         p->w = 0x30;
         p->h = 0x18;
@@ -4412,7 +4412,7 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
     text_formatNumber(g_tmStockTypes, buf, 3, 3);
     ui_drawDigits(0x89, 0xC9, 0xFFA, buf, 0);
 
-    if ((u32)(s->task - 0x12) < 2 || s->task == 0x23 || s->task == 0x1B) {
+    if ((u32)(s->task - TM_TASK_CHOICE) < 2 || s->task == TM_TASK_GAME_QUIT || s->task == TM_TASK_END_FADE) {
 
         ui_drawSmallDigits(0xBC, 0x42, 0xFFA, "WIN", 7);
         text_formatNumber(func_80062498(), buf, 4, 1);
@@ -4540,14 +4540,14 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
         AddPrim(ot + 0xFFA, p);
         p = (SPRT *)((DR_TPAGE *)p + 1);
     }
-    if (s->handCount != 5 && s->task != 0x16 && func_80062560(tm_getStockCursorId(s)) >= 2) {
+    if (s->handCount != TM_HAND_SIZE && s->task != TM_TASK_AWAY_INFO && func_80062560(tm_getStockCursorId(s)) >= 2) {
         text_formatNumber(s->copyIdx + 1, buf, 3, 1);
         ui_drawSmallDigits(0xBF, 0xBA, 0xFFA, buf, 0);
         ui_drawSmallDigits(0xD4, 0xBA, 0xFFA, g_tmSlash, 0);
         text_formatNumber(func_80062560(tm_getStockCursorId(s)), buf, -1, 1);
         ui_drawSmallDigits(0xDB, 0xBA, 0xFFA, buf, 0);
-        text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(0x1E), 0);
-        text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(0x1C), 0);
+        text_drawBlock(0xB5, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_L1), 0);
+        text_drawBlock(0xF1, 0xB6, 0xFFA, text_get(TM_TEXT_ICON_R1), 0);
     }
     if (s->handCount == 0) {
         g_tmStockTypes = func_80062638();
@@ -4559,11 +4559,11 @@ void *tm_drawStock(u32 *ot, SPRT *p, TmState *s) {
 void tm_openStock(TmState *arg0) {
     g_tmStockTypes = func_80062638();
     g_tmStockCount = func_800625F8();
-    arg0->task = 0x12;
+    arg0->task = TM_TASK_CHOICE;
 }
 
 void tm_drawSelectTitle(Window *arg0) {
-    text_drawBlock(0x8A, 0x10, arg0->unk18, text_get(0x13), 0);
+    text_drawBlock(0x8A, 0x10, arg0->unk18, text_get(TM_TEXT_SELECT_CARDS), 0);
 }
 
 void tm_resetStockCursor(TmState *arg0) {
@@ -4651,14 +4651,14 @@ void *tm_taskCoin(u32 *ot, SPRT *p, TmState *s) {
     flip = 0;
     if (s->phase == 0) {
         frame = t & 7;
-        if (t >= 0x29 && ((s->turn == 0 && frame == 7) || (s->turn == 1 && frame == 3))) {
+        if (t >= 0x29 && ((s->turn == TM_PLAYER && frame == 7) || (s->turn == TM_ENEMY && frame == 3))) {
             s->phase = 1;
             s->timer = 0;
-            tm_stopSe(6);
+            tm_stopSe(TM_SE_COIN);
         }
     } else {
         frame = 3;
-        if (s->turn == 0) {
+        if (s->turn == TM_PLAYER) {
             frame = 7;
         }
         if (t >= 0x1F) {
@@ -4666,20 +4666,20 @@ void *tm_taskCoin(u32 *ot, SPRT *p, TmState *s) {
             flip = 1;
             dy = -(n * 82) / 12;
             dx = (n * 124) / 12;
-            if (s->turn == 1) {
+            if (s->turn == TM_ENEMY) {
                 dy = -(n * 66) / 12;
                 dx = (n * -119) / 12;
             }
         }
         if (t >= 0x2A) {
-            if (s->turn == 0) {
+            if (s->turn == TM_PLAYER) {
                 s->nameSlide = 0;
-                s->task = 0;
+                s->task = TM_TASK_PLAYER_SELECT;
             } else {
                 s->timer = 0;
                 s->phase = 0;
                 s->thinkDelay = (rand() & 0xF) + 0xF;
-                s->task = 0x1E;
+                s->task = TM_TASK_ENEMY_THINK;
             }
         }
     }
@@ -4860,8 +4860,8 @@ void *func_800B3480(u32 *ot, void *p, TmState *s) {
 void tm_askRematch(TmState *arg0) {
     RECT r;
 
-    if ((u32)(arg0->opponent - 0x7C) >= 4) {
-        r.w = func_8002BA68((s32)text_get(2)) + 0x12;
+    if ((u32)(arg0->opponent - TM_OPP_FORCED) >= 4) {
+        r.w = func_8002BA68((s32)text_get(TM_TEXT_REMATCH)) + 0x12;
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;
@@ -4870,20 +4870,20 @@ void tm_askRematch(TmState *arg0) {
         func_8002E31C(arg0->msgWin, 1);
         tm_waitWindow(arg0->msgWin);
         arg0->cursor = 0;
-        arg0->task = 0xB;
+        arg0->task = TM_TASK_TRY_AGAIN;
         return;
     }
     tm_startEndFade(arg0);
 }
 
 void tm_drawRematchWin(Window *arg0) {
-    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(2), 0);
+    text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(TM_TEXT_REMATCH), 0);
 }
 
 void tm_taskEndFade(TmState *arg0) {
     func_8002F93C((arg0->timer * 0x88) & 0xFF8);
     if (arg0->timer >= 0x1F) {
-        arg0->task = 0xC;
+        arg0->task = TM_TASK_EXIT;
     }
 }
 
@@ -4892,7 +4892,7 @@ void tm_startEndFade(TmState *arg0) {
     func_800320B8(2, 1, 0x1E, 0xFFFFFF);
     func_8002F93C(0);
     tm_soundCmd(0xC401, 0x42, 0x1E, 0x7F, 0);
-    arg0->task = 0x1B;
+    arg0->task = TM_TASK_END_FADE;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0d/nonmatchings/tu_800A7E10", g_tmSlash);
