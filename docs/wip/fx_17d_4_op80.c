@@ -377,8 +377,8 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk10.vz = work->unk20.vz;
             if (frame >= 0xA) {
                 f = (0x1000 - ex->math_cos(((frame - 0xA) << 10) / 10)) * 0x258;
-                work->unk20.vy += f >> 13;
                 work->unk20.vz -= f >> 12;
+                work->unk20.vy += f >> 13;
             }
             env->unk2C->unk0[2].vx = work->unk20.vx;
             env->unk2C->unk0[2].vy = work->unk20.vy;
@@ -488,9 +488,9 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     n5 = 0x27;
                     k5 = 0x1000;
                     g = 0;
-                    q_c6 = 0x1000;
                     x6n = 0x1D;
                     f3 = (frame - 0x1E) * 3;
+                    q_c6 = 0x1000;
                     if (q6b >= 0x800) {
                         k = (q6b - 0x800) * 2;
                     } else {
@@ -503,8 +503,8 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 x6n = 0x1D;
                 i_c3 = ((frame - 0x26) << 12) / 13;
                 n5 = (i_c3 >> 3) + 0x40;
-                f3 = 0x15;
                 k5 = 0x1000 - i_c3 * 2 / 3;
+                f3 = 0x15;
                 k = k5;
                 q_c6 = k;
             }
