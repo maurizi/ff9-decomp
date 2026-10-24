@@ -25,13 +25,14 @@
  * sparks block and the unk58 block's i * 0x150 to sp+0xCC (tr = &D_801EBB90[i] gives that but grows the frame by 8);
  * the original's reload register is t8 (all of t0-t7 used somewhere), ours t3); the mode-1 spark init's
  * i * 0x150 copy (s6 there, spilled here). *
- * Pass 28 update: 750 aligned mismatches, 114 ignoring registers (of which 4 are symbol-addend artefacts:
+ * Pass 28 update: 189 aligned mismatches, 61 ignoring registers (of which 4 are symbol-addend artefacts:
  * D_801EA278/D_801EA2D8/D_801EA3E8 = base + 8). Levers: the unk58 block's SVECTOR at sp+0x90 is
  * ((SVECTOR *)out)[1] (vx 0x90, vz 0x94); variables shared between distant blocks become long global pseudos
  * that take callee-saved registers, so block-specific copies (unk4C's dz/dx instead of c/a, the ring loop's lo,
  * the sparks' j, alpha, ...) fix most register choices (the reload register became t8 as in the original once
- * t0-t7 were used by locals). Open: ex is s7 and i fp in the original (here s5/s7): s5/s6 must be taken by
- * conflicting pseudos before ex is allocated; see build/w/g1f2.py (knob generator) and build/w/ksa.py. */
+ * t0-t7 were used by locals); unk58 passes -a * 2 / -a * 4 (the original negates a first). With per-block
+ * copies of i, j, tr, sv, alpha, lo, md and tint chosen by a knob search (build/w/g1f2.py + build/w/ksa.py)
+ * ex is s7 and the loop counters fp as in the original. */
 #include "fxmod/fx_1f2.h"
 
 typedef struct {
@@ -152,11 +153,25 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 alpha;
     s32 n;
     s32 tint;
-    s32 lo3;
-    s32 j5;
-    s32 al6;
-    s32 j7;
-    s32 a7;
+    s32 j_m1s;
+    s32 r_m1s;
+    Fx1f2Model *md_r0;
+    s32 tint_r0;
+    s32 lo_r0;
+    s32 i_sp;
+    Fx1f2Trail *tr_sp;
+    s32 lo_sp;
+    s32 i_sp2;
+    Fx1f2Trail *tr_sp2;
+    SVECTOR *sv_sp2;
+    s32 alpha_u4c;
+    s32 j_u4cn;
+    s32 alpha_u4cn;
+    s32 j_u58;
+    Fx1f2Trail *tr_u58;
+    s32 alpha_u58;
+    s32 a_u58;
+    SVECTOR *sv_u58;
     Fx1f2Model *mm;
     VECTOR *q;
     VECTOR *q2;
@@ -195,23 +210,23 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         for (i = 0; i < 8; i++) {
             D_801EA690[i].unk4C = ex->btlfx_rand() & 0xF;
-            for (j = 0; j < 0x10;) {
+            for (j_m1s = 0; j_m1s < 0x10;) {
                 if (i & 1) {
-                    a = j << 8;
+                    a = j_m1s << 8;
                     c = 1;
-                    r = (ex->btlfx_rand() & 0xFF) + 0x17E;
+                    r_m1s = (ex->btlfx_rand() & 0xFF) + 0x17E;
                 } else {
-                    a = 0x1000 - (j << 8);
+                    a = 0x1000 - (j_m1s << 8);
                     c = 0;
-                    r = (ex->btlfx_rand() & 0xFF) + 0x200;
+                    r_m1s = (ex->btlfx_rand() & 0xFF) + 0x200;
                 }
-                lo = (ex->math_sin(a) * r) >> 12;
-                hi = ex->math_cos(a) * r;
-                D_801EA690[i].unk50[j].vx = work->unk110[c].vx - lo;
-                D_801EA690[i].unk50[j].vz = work->unk110[c].vz - (hi >> 12);
-                D_801EA690[i].unk50[j].vy = work->unk110[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
-                D_801EA690[i].unk50[j].pad = j + 1;
-                j++;
+                lo = (ex->math_sin(a) * r_m1s) >> 12;
+                hi = ex->math_cos(a) * r_m1s;
+                D_801EA690[i].unk50[j_m1s].vx = work->unk110[c].vx - lo;
+                D_801EA690[i].unk50[j_m1s].vz = work->unk110[c].vz - (hi >> 12);
+                D_801EA690[i].unk50[j_m1s].vy = work->unk110[c].vy + (ex->btlfx_rand() & 0xFF) - 0x80;
+                D_801EA690[i].unk50[j_m1s].pad = j_m1s + 1;
+                j_m1s++;
             }
             D_801EA690[i].unk50[15].pad = 0;
         }
@@ -424,17 +439,17 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             for (i = 0; i < 4; i++) {
                 rg = &D_801EA300[i];
                 rg->unk18.vx = (ex->math_sin(rg->unk10.vy) * rg->unkC) >> 12;
-                lo3 = ex->math_cos(rg->unk10.vy) * rg->unkC;
+                lo_r0 = ex->math_cos(rg->unk10.vy) * rg->unkC;
                 rg->unk18.vy = 0;
-                rg->unk18.vz = lo3 >> 12;
+                rg->unk18.vz = lo_r0 >> 12;
                 if (work->unk48 == 0) {
                     ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk8);
                     if (work->unk44 != 0) {
                         if (--work->unk44 == 0) {
                             work->unk48 = 1;
                         }
-                        tint = (work->unk44 - 0x40) * 2;
-                        ex->Hi_ModifyEffModelRGB(rg->unk8, tint, tint, tint);
+                        tint_r0 = (work->unk44 - 0x40) * 2;
+                        ex->Hi_ModifyEffModelRGB(rg->unk8, tint_r0, tint_r0, tint_r0);
                         rg->unkC -= work->unk44 >> 4;
                     }
                 }
@@ -446,20 +461,20 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         if (--work->unk3C == 0) {
                             work->unk40 = 1;
                         }
-                        tint = (work->unk3C - 0x40) * 2;
-                        ex->Hi_ModifyEffModelRGB(rg->unk4, tint, tint, tint);
+                        tint_r0 = (work->unk3C - 0x40) * 2;
+                        ex->Hi_ModifyEffModelRGB(rg->unk4, tint_r0, tint_r0, tint_r0);
                     }
                 }
                 ex->Hi_DrawEffModel(&D_801EA300[i].unk10, &D_801EA300[i].unk18, (s32)&D_801EA300[i].unk28, rg->unk0);
             }
             for (i = 0; i < 2; i++) {
-                md = &D_801EA410[i];
-                lo3 = ex->math_cos(md->unk8.vz) * md->unk4;
-                md->unk10.vx = 0;
-                md->unk10.vz = 0;
-                md->unk10.vy = lo3 >> 12;
-                ex->Hi_DrawEffModel(&D_801EA410[i].unk8, &D_801EA410[i].unk10, (s32)&D_801EA410[i].unk20, md->unk0);
-                md->unk4 -= 4;
+                md_r0 = &D_801EA410[i];
+                lo_r0 = ex->math_cos(md_r0->unk8.vz) * md_r0->unk4;
+                md_r0->unk10.vx = 0;
+                md_r0->unk10.vz = 0;
+                md_r0->unk10.vy = lo_r0 >> 12;
+                ex->Hi_DrawEffModel(&D_801EA410[i].unk8, &D_801EA410[i].unk10, (s32)&D_801EA410[i].unk20, md_r0->unk0);
+                md_r0->unk4 -= 4;
             }
             D_801EA270.unk8.vy++;
             D_801EA2D0.unk8.vy--;
@@ -594,38 +609,38 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk34 != 0) {
             work->unk34--;
-            for (i = 0, tr = D_801EA690; i < 0x10; i++, tr++) {
-                if (tr->unk4C == 0 && work->unk34 >= 0xD) {
+            for (i_sp = 0, tr_sp = D_801EA690; i_sp < 0x10; i_sp++, tr_sp++) {
+                if (tr_sp->unk4C == 0 && work->unk34 >= 0xD) {
                     ex->func_800316D8(&D_801EA568, &m);
                     m.t[0] = D_801EA650.vx;
                     m.t[1] = D_801EA650.vy;
                     m.t[2] = D_801EA650.vz;
                     gte_SetRotMatrix(&m);
                     gte_SetTransMatrix(&m);
-                    for (lo = j5 = 0; j5 < 2; j5++, lo += 0x2400) {
-                        if (i & 1) {
-                            in[j5].vx = ex->btlfx_randRange(0xC00 - lo, 0x1800 - lo);
+                    for (lo_sp = j = 0; j < 2; j++, lo_sp += 0x2400) {
+                        if (i_sp & 1) {
+                            in[j].vx = ex->btlfx_randRange(0xC00 - lo_sp, 0x1800 - lo_sp);
                         } else {
-                            in[j5].vx = ex->btlfx_randRange(j5 * 0x2400 - 0x1800, j5 * 0x2400 - 0xC00);
+                            in[j].vx = ex->btlfx_randRange(j * 0x2400 - 0x1800, j * 0x2400 - 0xC00);
                         }
-                        in[j5].vy = (ex->btlfx_rand() & 0x1FFF) - 0x1000;
-                        in[j5].vz = (ex->btlfx_rand() & 0x1FFF) - 0x1000;
-                        gte_ldv0(&in[j5]);
+                        in[j].vy = (ex->btlfx_rand() & 0x1FFF) - 0x1000;
+                        in[j].vz = (ex->btlfx_rand() & 0x1FFF) - 0x1000;
+                        gte_ldv0(&in[j]);
                         gte_rtv0tr();
-                        gte_stlvnl(&out[j5]);
+                        gte_stlvnl(&out[j]);
                         gte_stflg(&flag);
                     }
-                    tr->unk4C = (ex->btlfx_rand() & 3) + 8;
+                    tr_sp->unk4C = (ex->btlfx_rand() & 3) + 8;
                     step.vx = (out[0].vx - out[1].vx) / 9;
                     step.vy = (out[0].vy - out[1].vy) / 9;
                     step.vz = (out[0].vz - out[1].vz) / 9;
-                    for (j5 = 0; j5 < 9; j5++) {
-                        tr->unk50[j5].vx = out[0].vx;
-                        tr->unk50[j5].vy = out[0].vy;
-                        tr->unk50[j5].vz = out[0].vz;
-                        tr->unkD0[j5].vx = ex->btlfx_randRange(-0x80, 0x80);
-                        tr->unkD0[j5].vy = ex->btlfx_randRange(-0x80, 0x80);
-                        tr->unkD0[j5].vz = ex->btlfx_randRange(-0x80, 0x80);
+                    for (j = 0; j < 9; j++) {
+                        D_801EA690[i_sp].unk50[j].vx = out[0].vx;
+                        D_801EA690[i_sp].unk50[j].vy = out[0].vy;
+                        D_801EA690[i_sp].unk50[j].vz = out[0].vz;
+                        D_801EA690[i_sp].unkD0[j].vx = ex->btlfx_randRange(-0x80, 0x80);
+                        D_801EA690[i_sp].unkD0[j].vy = ex->btlfx_randRange(-0x80, 0x80);
+                        D_801EA690[i_sp].unkD0[j].vz = ex->btlfx_randRange(-0x80, 0x80);
                         out[0].vx -= step.vx;
                         out[0].vy -= step.vy;
                         out[0].vz -= step.vz;
@@ -633,28 +648,28 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
             env->unk28 = 0x80;
-            for (i = 0; i < 0x10; i++) {
-                tr = &D_801EA690[i];
-                if (tr->unk4C != 0) {
-                    if (--tr->unk4C < 8) {
+            for (i_sp2 = 0; i_sp2 < 0x10; i_sp2++) {
+                tr_sp2 = &D_801EA690[i_sp2];
+                if (tr_sp2->unk4C != 0) {
+                    if (--tr_sp2->unk4C < 8) {
                         s32 n = 9;
 
-                        tr->unk0 = tr->unk2 = 8;
-                        tr->unk1 = 0;
-                        sv = tr->unk4;
+                        tr_sp2->unk0 = tr_sp2->unk2 = 8;
+                        tr_sp2->unk1 = 0;
+                        sv_sp2 = tr_sp2->unk4;
                         for (j = 0; j < n; j++) {
-                            D_801EA690[i].unk50[j].vx += D_801EA690[i].unkD0[j].vx;
-                            D_801EA690[i].unk50[j].vy += D_801EA690[i].unkD0[j].vy;
-                            D_801EA690[i].unk50[j].vz += D_801EA690[i].unkD0[j].vz;
-                            sv->vx = D_801EA690[i].unk50[j].vx;
-                            sv->vy = D_801EA690[i].unk50[j].vy;
-                            sv->vz = D_801EA690[i].unk50[j].vz;
-                            sv->pad = work->unk38;
-                            sv++;
+                            D_801EA690[i_sp2].unk50[j].vx += D_801EA690[i_sp2].unkD0[j].vx;
+                            D_801EA690[i_sp2].unk50[j].vy += D_801EA690[i_sp2].unkD0[j].vy;
+                            D_801EA690[i_sp2].unk50[j].vz += D_801EA690[i_sp2].unkD0[j].vz;
+                            sv_sp2->vx = D_801EA690[i_sp2].unk50[j].vx;
+                            sv_sp2->vy = D_801EA690[i_sp2].unk50[j].vy;
+                            sv_sp2->vz = D_801EA690[i_sp2].unk50[j].vz;
+                            sv_sp2->pad = work->unk38;
+                            sv_sp2++;
                         }
-                        al6 = tr->unk4C << 9;
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, al6, 1,
-                                            (u8 *)tr, 0);
+                        alpha = tr_sp2->unk4C << 9;
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha, 1,
+                                            (u8 *)tr_sp2, 0);
                     }
                 }
             }
@@ -690,10 +705,10 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                             sv = tr->unk4;
                             D_801EA690[i].unk0 = D_801EA690[i].unk2 = 8;
                             D_801EA690[i].unk1 = 0;
-                            for (j7 = 0, dx = 0; j7 < n; j7++, dx += 0x60) {
-                                ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j7].vx + dx - 0x180;
-                                ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j7].vz + dz;
-                                ((SVECTOR *)out)->vy = D_801EA690[i].unk50[j7].vy;
+                            for (j = 0, dx = 0; j < n; j++, dx += 0x60) {
+                                ((SVECTOR *)out)->vx = D_801EA690[i].unk50[j].vx + dx - 0x180;
+                                ((SVECTOR *)out)->vz = D_801EA690[i].unk50[j].vz + dz;
+                                ((SVECTOR *)out)->vy = D_801EA690[i].unk50[j].vy;
                                 gte_ldv0((SVECTOR *)out);
                                 gte_rtv0tr();
                                 gte_stlvnl((VECTOR *)in);
@@ -703,28 +718,28 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                                 sv->vz = ((VECTOR *)in)->vz;
                                 sv->pad = 0x40;
                                 sv++;
-                                D_801EA690[i].unk50[j7].vx += D_801EA690[i].unkD0[j7].vx;
-                                D_801EA690[i].unk50[j7].vy += D_801EA690[i].unkD0[j7].vy;
-                                D_801EA690[i].unk50[j7].vz += D_801EA690[i].unkD0[j7].vz;
+                                D_801EA690[i].unk50[j].vx += D_801EA690[i].unkD0[j].vx;
+                                D_801EA690[i].unk50[j].vy += D_801EA690[i].unkD0[j].vy;
+                                D_801EA690[i].unk50[j].vz += D_801EA690[i].unkD0[j].vz;
                             }
-                            alpha = 0x800;
+                            alpha_u4c = 0x800;
                             if (i & 1) {
                                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000,
-                                                    alpha, 1, (u8 *)tr, 0);
+                                                    alpha_u4c, 1, (u8 *)tr, 0);
                             } else {
                                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000,
-                                                    alpha, 1, (u8 *)tr, 0);
+                                                    alpha_u4c, 1, (u8 *)tr, 0);
                             }
                         }
                     } else {
                         tr->unk4C = (ex->btlfx_rand() & 3) + 8;
-                        for (j7 = 0; j7 < 9; j7++) {
-                            D_801EA690[i].unk50[j7].vx = 0;
-                            D_801EA690[i].unk50[j7].vy = 0;
-                            D_801EA690[i].unk50[j7].vz = 0;
-                            D_801EA690[i].unkD0[j7].vx = (ex->btlfx_rand() & 0xF) - 8;
-                            D_801EA690[i].unkD0[j7].vy = (ex->btlfx_rand() & 0x1F) - 0x10;
-                            D_801EA690[i].unkD0[j7].vz = (ex->btlfx_rand() & 0x1F) - 0x10;
+                        for (j = 0; j < 9; j++) {
+                            D_801EA690[i].unk50[j].vx = 0;
+                            D_801EA690[i].unk50[j].vy = 0;
+                            D_801EA690[i].unk50[j].vz = 0;
+                            D_801EA690[i].unkD0[j].vx = (ex->btlfx_rand() & 0xF) - 8;
+                            D_801EA690[i].unkD0[j].vy = (ex->btlfx_rand() & 0x1F) - 0x10;
+                            D_801EA690[i].unkD0[j].vz = (ex->btlfx_rand() & 0x1F) - 0x10;
                         }
                     }
                 } else {
@@ -732,23 +747,23 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     sv = tr->unk4;
                     tr->unk0 = tr->unk2 = 8;
                     tr->unk1 = 0;
-                    a7 = tr->unk4C;
-                    tr->unk4C = D_801EA690[i].unk50[a7].pad;
-                    for (j7 = 0; j7 < n; j7++) {
-                        sv->vx = D_801EA690[i].unk50[a7].vx;
-                        sv->vy = D_801EA690[i].unk50[a7].vy;
-                        sv->vz = D_801EA690[i].unk50[a7].vz;
+                    a = tr->unk4C;
+                    tr->unk4C = D_801EA690[i].unk50[a].pad;
+                    for (j_u4cn = 0; j_u4cn < n; j_u4cn++) {
+                        sv->vx = D_801EA690[i].unk50[a].vx;
+                        sv->vy = D_801EA690[i].unk50[a].vy;
+                        sv->vz = D_801EA690[i].unk50[a].vz;
                         sv->pad = 0x80;
                         sv++;
-                        a7 = D_801EA690[i].unk50[a7].pad;
+                        a = D_801EA690[i].unk50[a].pad;
                     }
                     env->unk28 = 0x80;
-                    alpha = 0xFFF;
+                    alpha_u4cn = 0xFFF;
                     if (i & 1) {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000, alpha,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xC), 0, NULL, frame, 0x1000, alpha_u4cn,
                                             1, (u8 *)tr, 0);
                     } else {
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha,
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u4cn,
                                             1, (u8 *)tr, 0);
                     }
                     env->unk28 = 0;
@@ -758,43 +773,44 @@ s32 fx_1f2_op80(s32 mode, Fx1f2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk58 != 0) {
             work->unk58--;
             env->unk28 = 0x40;
-            for (i = 0, tr = D_801EBB90; i < env->unkC->unk24; i++, tr++) {
-                if (tr->unk4C != 0) {
-                    if (--tr->unk4C < 8) {
+            for (i = 0; i < env->unkC->unk24; i++) {
+                tr_u58 = &D_801EBB90[i];
+                if (tr_u58->unk4C != 0) {
+                    if (--tr_u58->unk4C < 8) {
                         n = 9;
-                        sv = tr->unk4;
-                        tr->unk0 = tr->unk2 = 8;
-                        tr->unk1 = 0;
-                        for (j = 0; j < n; j++) {
-                            tr->unk50[j].vx += tr->unkD0[j].vx;
-                            tr->unk50[j].vy += tr->unkD0[j].vy;
-                            tr->unk50[j].vz += tr->unkD0[j].vz;
-                            sv->vx = tr->unk50[j].vx;
-                            sv->vy = tr->unk50[j].vy;
-                            sv->vz = tr->unk50[j].vz;
-                            sv->pad = 0x80;
-                            sv++;
+                        sv_u58 = tr_u58->unk4;
+                        tr_u58->unk0 = tr_u58->unk2 = 8;
+                        tr_u58->unk1 = 0;
+                        for (j_u58 = 0; j_u58 < n; j_u58++) {
+                            tr_u58->unk50[j_u58].vx += tr_u58->unkD0[j_u58].vx;
+                            tr_u58->unk50[j_u58].vy += tr_u58->unkD0[j_u58].vy;
+                            tr_u58->unk50[j_u58].vz += tr_u58->unkD0[j_u58].vz;
+                            sv_u58->vx = tr_u58->unk50[j_u58].vx;
+                            sv_u58->vy = tr_u58->unk50[j_u58].vy;
+                            sv_u58->vz = tr_u58->unk50[j_u58].vz;
+                            sv_u58->pad = 0x80;
+                            sv_u58++;
                         }
-                        alpha = 0x1000;
+                        alpha_u58 = 0x1000;
                         if (work->unk58 < 8) {
-                            alpha = work->unk58 << 9;
+                            alpha_u58 = work->unk58 << 9;
                         }
-                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha, 1,
-                                            (u8 *)tr, 0);
+                        ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 6), 0, NULL, frame, 0x1000, alpha_u58, 1,
+                                            (u8 *)tr_u58, 0);
                     }
                 } else {
-                    tr->unk4C = 8;
+                    tr_u58->unk4C = 8;
                     ((SVECTOR *)out)[1].vx = D_801EA670[i].vx + ex->btlfx_randRange(-0x40, 0x40);
                     ((SVECTOR *)out)[1].vz = D_801EA670[i].vz + ex->btlfx_randRange(-0x40, 0x40);
-                    for (j = 0; j < 9;) {
-                        a = j + 1;
-                        tr->unk50[j].vx = ((SVECTOR *)out)[1].vx + ex->btlfx_randRange(a * -2, a * 2);
-                        tr->unk50[j].vz = ((SVECTOR *)out)[1].vz + ex->btlfx_randRange(a * -2, a * 2);
-                        tr->unk50[j].vy = ex->btlfx_randRange(a * -4, 0) - (j << 6);
-                        tr->unkD0[j].vx = ex->btlfx_randRange(a * -2, a * 2);
-                        tr->unkD0[j].vz = ex->btlfx_randRange(a * -2, a * 2);
-                        j = a;
-                        tr->unkD0[j - 1].vy = -ex->btlfx_rand() & 7;
+                    for (j_u58 = 0; j_u58 < 9;) {
+                        a_u58 = j_u58 + 1;
+                        tr_u58->unk50[j_u58].vx = ((SVECTOR *)out)[1].vx + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr_u58->unk50[j_u58].vz = ((SVECTOR *)out)[1].vz + ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr_u58->unk50[j_u58].vy = ex->btlfx_randRange(-a_u58 * 4, 0) - (j_u58 << 6);
+                        tr_u58->unkD0[j_u58].vx = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        tr_u58->unkD0[j_u58].vz = ex->btlfx_randRange(-a_u58 * 2, a_u58 * 2);
+                        j_u58 = a_u58;
+                        tr_u58->unkD0[j_u58 - 1].vy = -ex->btlfx_rand() & 7;
                     }
                 }
             }
