@@ -920,7 +920,7 @@ void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
         arg1[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            arg1[i] = arg0->model->bones[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].unk0->unk29[i]].unk18;
+            arg1[i] = arg0->model->bones[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->bones[i]].unk18;
         }
     }
     arg1[3] = arg0->pos[0] >> 16;

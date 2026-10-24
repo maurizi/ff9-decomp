@@ -48,21 +48,21 @@ void btl_initEnemies(Battle *arg0) {
     s16 n = 4;
     Unk16D8 *p = func_8004AEBC()->unk0;
     BtlUnit *prev = NULL;
-    Battle488 *e;
+    BtlEnemy *e;
     BtlUnit *u;
     s16 m;
     s32 k;
 
     for (; i < g_gameState->unk1C->unk8E4.battle->scene.unk4->unk1; i++, n++) {
         e = &arg0->enemies[i];
-        e->unk4 = (e->unk4 & ~0x3F) | 0x20;
+        e->flags = (e->flags & ~0x3F) | 0x20;
         u = &arg0->units[n];
         u->modelId = m = btl_getEnemyModelId(i);
         if (m < 0) {
-            e->unk4 |= 0x200;
+            e->flags |= 0x200;
         } else {
             func_800BBF30(p->unk4, m);
-            e->unk4 &= ~0x200;
+            e->flags &= ~0x200;
             p = p->unk0;
         }
         k = i;
@@ -71,9 +71,9 @@ void btl_initEnemies(Battle *arg0) {
         u->flags = (u->flags & ~0x1E) | ((k & 0xF) << 1);
         u->flags = (u->flags & ~0xE0) | (((k + 4) & 7) << 5);
         u->flags &= ~0x40000000;
-        u->flags = (u->flags & ~0x800000) | (((e->unk4 >> 9) & 1) << 23);
+        u->flags = (u->flags & ~0x800000) | (((e->flags >> 9) & 1) << 23);
         btl_resetUnit(u, &g_gameState->unk1C->unk8E0[k]);
-        u->home = (struct BtlUnit98 *)&e->unkC;
+        u->home = (struct BtlUnit98 *)&e->home;
         u->weaponModel = NULL;
         u->support = (u32 *)D_800F5244;
         u->flags &= ~0x40000;
@@ -178,13 +178,13 @@ u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     s32 t;
     BtlUnitA0 *a0;
     s32 i;
-    Battle4880 *p;
+    BtlEnemyType *p;
 
     for (i = 0; i < g_gameState->unk1C->unk8E4.battle->scene.unk4->unk1; i++) {
         {
-            p = arg0->enemies[i].unk0;
+            p = arg0->enemies[i].type;
             u = &arg0->units[i + 4];
-            u->level = p->unk3;
+            u->level = p->level;
             u->max->maxAtb = (0x3C - u->speed) * 160;
             btl_resetAtbSpeed((Unk800BD8F0 *)u);
             if (g_randPtr >= g_randTableEnd) {

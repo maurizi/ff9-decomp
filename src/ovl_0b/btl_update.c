@@ -271,7 +271,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg0->unk56F |= 0x40;
             for (u = arg1->unitList; u != NULL; u = u->next) {
                 if (!(u->flags & 1)) {
-                    exp += g_gameState->unk1C->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].unk0->unk44;
+                    exp += g_gameState->unk1C->unk8E4.battle->enemies[(u->flags >> 1) & 0xF].type->exp;
                 }
             }
             if ((arg1->scene.unk0 & 0x4040) == 0x4000) {

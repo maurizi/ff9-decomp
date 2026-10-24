@@ -363,7 +363,7 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
     s32 idx;
     if (p[1] == 0xFF) {
         f = arg1->flags;
-        arg1->model->motion = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
+        arg1->model->motion = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].type->motions[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
         arg1->model->motion = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
@@ -462,7 +462,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     if (idx & 0x80) {
         btl_setBannerAt((s32)(txt + arg0->unk4->unk8->nameOfs), 1);
     } else {
-        idx += b->enemies[(arg1->flags >> 1) & 0xF].unk0->unk28;
+        idx += b->enemies[(arg1->flags >> 1) & 0xF].type->firstAbility;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
         if (pc[0] == 0x21) {
             btl_setBannerAt((s32)(txt + ofs), 3);
@@ -519,7 +519,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     s->unk148 = arg1;
     s->unk14C = (s32)btlseq_findUnit(arg0->unk4->unkC);
     g_gameState->unk1C->unk8E4.battle->unk131C = arg0->unk8[1];
-    btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF].unk0->unk2C);
+    btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF].type->camera);
 end:
     arg0->unk8 += 2;
     return 1;

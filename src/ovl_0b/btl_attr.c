@@ -306,7 +306,7 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         if (arg0->flags & 1) {
             r = (g_gameState->unk1C->characters + ((arg0->flags >> 1) & 0xF))->level;
         } else {
-            r = g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].unk0->unk3;
+            r = g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->level;
         }
         break;
     case BTL_ATTR_IMMUNE_HI:
@@ -369,7 +369,7 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r = (g_gameState->unk1C->characters + ((arg0->flags >> 1) & 0xF))->unkA;
         break;
     case 0x44:
-        r = g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].unk0->unk2;
+        r = g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->category;
         break;
     case 0x45:
         r = arg0->flags >> 18;
@@ -513,7 +513,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->flags = (arg0->flags & ~0x40000) | ((arg2 & 1) << 18);
         break;
     case BTL_ATTR_ADD_REWARDS:
-        btl_addEnemyRewards(g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].unk0);
+        btl_addEnemyRewards(g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type);
         break;
     case BTL_ATTR_STRENGTH:
         arg0->strength = arg2;

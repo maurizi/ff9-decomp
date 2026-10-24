@@ -1010,40 +1010,40 @@ extern u8 D_8010527C;
 extern s32 g_btlBannerOt[];
 
 typedef struct {
-    u16 unk0;
-    u8 unk2;
-    u8 unk3;
-    BtlUnit24 unk4; /* max stats */
+    u16 nameOfs; /* name text offset (btl_setupEnemies) */
+    u8 category; /* btl_hasEnemyFlag bits (BTL_ENEMY_*) */
+    u8 level;
+    BtlUnit24 max; /* max stats */
     u8 padA[0xC - 0xA];
-    BtlUnit9CC *unkC[6];
-    u16 unk24;
-    u8 unk26;
-    u8 unk27;
-    u8 unk28;
-    u8 unk29[3];
-    s32 unk2C;
-    u16 unk30;
+    BtlUnit9CC *motions[6]; /* motion table (BtlUnit.motions) */
+    u16 radius; /* btlfx_getUnitRadius */
+    u8 confuseAbility; /* enemy ability used under Confuse/Berserk (btl_setEnemyCmd) */
+    u8 eatAbility; /* Blue Magic learned by eating it (Eat formula 0x41) */
+    u8 firstAbility; /* first of its abilities in Battle.enemyAbilities (btl_setupEnemies) */
+    u8 bones[3]; /* bones for camera anchors; [2] the head (btl_getUnitBodyPos) */
+    s32 camera; /* cast camera data (btl_getSceneData(5 + type), btlfx_playCmdCamera) */
+    u16 deathCry; /* sound (btl_playDeathCry) */
     u8 unk32[6];
     u8 unk38[6];
     u8 unk3E[6];
-    u16 unk44; /* exp */
-    u16 unk46; /* gil */
+    u16 exp; /* exp */
+    u16 gil; /* gil */
     union {
         s32 w;
         u8 b[4]; /* item drops, rarest last */
-    } unk48;
-    s32 unk4C; /* card */
-} Battle4880; /* 0x50 */
+    } drops;
+    s32 card; /* card */
+} BtlEnemyType; /* 0x50 */
 
 typedef struct {
-    Battle4880 *unk0;
-    u32 unk4;
+    BtlEnemyType *type;
+    u32 flags; /* bit 6 its death triggers the event script (btl_applyCalcResult), 8 model owner (btl_findBodyUnit), 9 no model */
     union {
         s32 w;
-        u8 b[4]; /* item drops, -1 = none */
-    } unk8;
-    u8 unkC[0x18 - 0xC]; /* position block (BtlUnit.home) */
-} Battle488; /* 0x18 */
+        u8 b[4]; /* items to steal, 0xFF = none (btl_calcSteal) */
+    } steal;
+    u8 home[0x18 - 0xC]; /* home position block (BtlUnit.home) */
+} BtlEnemy; /* 0x18 */
 
 typedef struct {
     void *data[4]; /* registered battle files: [0] common data, [2] encounter, [3] background */
@@ -1264,7 +1264,7 @@ typedef struct {
         s32 w; /* cleared as a word */
         u8 b[4]; /* b[0]: delay, b[1]: item index, b[2]: state */
     } unk1C8;
-    Battle488 *unk1CC;
+    BtlEnemy *unk1CC;
     u8 unk1D0;
     u8 unk1D1;
     u8 pad1D2[0x1D4 - 0x1D2];
@@ -1321,8 +1321,8 @@ typedef struct Battle {
     s32 unk4;
     s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (btl_loadPartyMotions) */
     BtlModel weaponModels[4]; /* per party member: weapon model (BtlUnit.weaponModel, btl_initPartyUnit) */
-    Battle488 enemies[4];
-    Battle4880 enemyTypes[3]; /* enemy type records (Battle488.unk0 points here) */
+    BtlEnemy enemies[4];
+    BtlEnemyType enemyTypes[3]; /* enemy type records (BtlEnemy.unk0 points here) */
     struct BtlCmd8 enemyAbilities[18]; /* enemy attacks: BtlCmd.ability of enemy commands (btl_setEnemyCmd) and Return Magic */
     BtlUnit *unitList; /* active units, linked through BtlUnit.next */
     BtlUnit units[8]; /* runtime: party at [0..3] (Zidane 0x80108EFC, Vivi +0xD0, ...) */
@@ -3085,7 +3085,7 @@ void btl_copyAbility(BtlCmd8 *, BtlCmd8 *);
 s32 btl_getMpCost(BtlCmd8 *);
 void btl_initEnemyUnit(Unk800C9EE0 *, BtlUnit *, s32 *, s32);
 void btl_setEnemyStats(Unk800C9D1C *, BtlUnit *);
-void btl_initEnemyType(Unk800C9D1C *, Battle4880 *);
+void btl_initEnemyType(Unk800C9D1C *, BtlEnemyType *);
 s32 btl_rollAmbush(u32 *);
 void btlbg_setBrightness(s32);
 s32 btlbg_getBrightness(void);
@@ -3170,7 +3170,7 @@ BtlUnit *btl_findBodyUnit(void);
 u16 btl_findCover(s32);
 s32 btl_setKoMotion(BtlUnit *);
 void btl_checkSideDefeated(BtlUnit *);
-void btl_addEnemyRewards(Battle4880 *);
+void btl_addEnemyRewards(BtlEnemyType *);
 void btl_unlinkUnit(BtlUnit *);
 s32 btl_getModelSlot(BtlUnit *);
 void btl_makeGreyCluts(BtlUnit *);

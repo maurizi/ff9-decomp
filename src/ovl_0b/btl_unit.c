@@ -210,9 +210,9 @@ void btl_startHitMotion(BtlUnit *arg0) {
         } else {
             arg0->model->motion = (BtlUnit9CC *)arg0->motions[2];
         }
-    } else if (arg0->hp == 0 && (u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((f >> 1) & 0xF))->unk4 >> 7) {
+    } else if (arg0->hp == 0 && (u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((f >> 1) & 0xF))->flags >> 7) {
         arg0->model->motion = (BtlUnit9CC *)arg0->motions[3];
-        btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].unk0->unk30);
+        btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->flags >> 1) & 0xF].type->deathCry);
     } else {
         if ((arg0->flags >> 23) & 1) {
             arg0 = btl_findBodyUnit();
@@ -265,14 +265,14 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
     if (arg0->status & BTL_STATUS_KO) {
         m = arg0->model;
         a = arg0->motions;
-        if ((s32)m->motion == a[3] && ((u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->flags >> 1) & 0xF))->unk4 >> 7)) {
+        if ((s32)m->motion == a[3] && ((u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->flags >> 1) & 0xF))->flags >> 7)) {
             m->motion = (BtlUnit9CC *)a[4];
             arg0->obj->frame--;
             arg0->koState = 3;
             arg0->flags |= 0x200000;
             return;
         }
-        if (!(((g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->flags >> 1) & 0xF))->unk4 >> 6) & 1) && !((arg0->flags >> 20) & 1)) {
+        if (!(((g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->flags >> 1) & 0xF))->flags >> 6) & 1) && !((arg0->flags >> 20) & 1)) {
             arg0->koState = 1;
             return;
         }
@@ -281,7 +281,7 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
 }
 
 void btl_updateKo(BtlUnit *u) {
-    Battle488 *e;
+    BtlEnemy *e;
     BtlUnit9C *m;
     u32 f;
 
@@ -299,7 +299,7 @@ void btl_updateKo(BtlUnit *u) {
             } else {
                 u->koState = 5;
             }
-            btl_playDeathCry(u, e->unk0->unk30);
+            btl_playDeathCry(u, e->type->deathCry);
             return;
         case 2:
             if (u->obj->frame >= u->model->motion->unk2 - 1) {
@@ -312,12 +312,12 @@ void btl_updateKo(BtlUnit *u) {
             btl_playUnitSound(u, 0x78, 0x7F);
             u->koState++;
         case 4:
-            btl_setUnitFade(u, e->unk4 & 0x3F);
-            if ((e->unk4 & 0x3F) == 0) {
+            btl_setUnitFade(u, e->flags & 0x3F);
+            if ((e->flags & 0x3F) == 0) {
                 u->koState = 5;
                 return;
             }
-            e->unk4 = (e->unk4 & ~0x3F) | (((e->unk4 & 0x3F) - 2) & 0x3F);
+            e->flags = (e->flags & ~0x3F) | (((e->flags & 0x3F) - 2) & 0x3F);
             return;
         case 5:
             if (btl_hasEnemyFlag(u, 8) != 0) {
@@ -326,7 +326,7 @@ void btl_updateKo(BtlUnit *u) {
                 }
             }
             if (g_gameState->unk1C->unk56E != 4) {
-                btl_addEnemyRewards(e->unk0);
+                btl_addEnemyRewards(e->type);
             }
             u->koState++;
             if (g_gameState->unk1C->unk8E4.battle->phase != BTL_PHASE_END ||

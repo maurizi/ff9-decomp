@@ -301,7 +301,7 @@ void btl_setupEnemies(void) {
     u8 n;
     Unk800C9D1C *recs;
     Unk800C9D1C *rec;
-    Battle4880 *en;
+    BtlEnemyType *en;
     U16Pair *ofs;
     BtlCmd8 *src;
     u32 *flags;
@@ -325,10 +325,10 @@ void btl_setupEnemies(void) {
     src = (BtlCmd8 *)&recs[hdr->unk2];
     for (; i < hdr->unk2; i++) {
         btl_initEnemyType(rec, en);
-        en->unk2C = btl_getSceneData(i + 5);
-        en->unk0 = ofs->unk0 + 4;
+        en->camera = btl_getSceneData(i + 5);
+        en->nameOfs = ofs->unk0 + 4;
         ofs++;
-        en->unk28 = n;
+        en->firstAbility = n;
         n += rec->unk4F;
         en++;
         rec++;
@@ -424,34 +424,34 @@ void btl_placeParty(void) {
     }
 }
 
-void btl_initEnemyType(Unk800C9D1C *arg0, Battle4880 *arg1) {
+void btl_initEnemyType(Unk800C9D1C *arg0, BtlEnemyType *arg1) {
     s16 i;
     BtlUnit9CC *h;
-    arg1->unk24 = arg0->unk1C;
-    arg1->unk2 = arg0->unk41;
-    arg1->unk3 = arg0->unk40;
-    arg1->unk27 = arg0->unk47;
-    arg1->unk4.maxHp = arg0->unkC;
-    arg1->unk4.maxMp = arg0->unkE;
-    arg1->unk44 = arg0->unk10;
-    arg1->unk46 = arg0->unk12;
-    arg1->unk4C = arg0->unk69;
-    arg1->unk48.w = arg0->unk14;
+    arg1->radius = arg0->unk1C;
+    arg1->category = arg0->unk41;
+    arg1->level = arg0->unk40;
+    arg1->eatAbility = arg0->unk47;
+    arg1->max.maxHp = arg0->unkC;
+    arg1->max.maxMp = arg0->unkE;
+    arg1->exp = arg0->unk10;
+    arg1->gil = arg0->unk12;
+    arg1->card = arg0->unk69;
+    arg1->drops.w = arg0->unk14;
     for (i = 0; i < 6; i++) {
         h = db_lookupRegistered(4, arg0->unk20[i] | 0x30000, 0);
-        arg1->unkC[i] = h;
+        arg1->motions[i] = h;
         if (IS_OFFSET(h->unkC)) {
             h->unkC = (s32)h + h->unkC;
             if (h->unk10 != 0) {
-                h->unk10 = (s32)arg1->unkC[i] + h->unk10;
+                h->unk10 = (s32)arg1->motions[i] + h->unk10;
             }
         }
     }
     for (i = 0; i < 3; i++) {
-        arg1->unk29[i] = arg0->unk48[i];
+        arg1->bones[i] = arg0->unk48[i];
     }
-    arg1->unk30 = arg0->unk4C;
-    arg1->unk26 = arg0->unk4E;
+    arg1->deathCry = arg0->unk4C;
+    arg1->confuseAbility = arg0->unk4E;
     for (i = 0; i < 6; i++) {
         arg1->unk32[i] = arg0->unk50[i];
         arg1->unk38[i] = arg0->unk56[i];
@@ -461,17 +461,17 @@ void btl_initEnemyType(Unk800C9D1C *arg0, Battle4880 *arg1) {
 
 void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    Battle488 *s = &b->enemies[(arg1->flags >> 1) & 0xF];
-    Battle4880 *e;
+    BtlEnemy *s = &b->enemies[(arg1->flags >> 1) & 0xF];
+    BtlEnemyType *e;
     s16 r;
-    s->unk0 = &b->enemyTypes[arg0->unk0];
+    s->type = &b->enemyTypes[arg0->unk0];
     arg1->flags = (((arg1->flags & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
     e = &g_gameState->unk1C->unk8E4.battle->enemyTypes[arg0->unk0];
-    arg1->max = &e->unk4;
-    arg1->hp = e->unk4.maxHp;
+    arg1->max = &e->max;
+    arg1->hp = e->max.maxHp;
     arg1->mp = arg1->max->maxMp;
-    s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
-    if (!((s->unk4 >> 9) & 1)) {
+    s->flags = (s->flags & ~0x100) | ((arg0->unk1 << 7) & 0x100);
+    if (!((s->flags >> 9) & 1)) {
         arg1->pos[0] = arg1->home->pos[0] = arg1->obj->x = arg0->unk4 << 16;
         arg1->pos[1] = arg1->home->pos[1] = arg1->obj->y = arg0->unk6 << 16;
         arg1->pos[2] = arg1->home->pos[2] = arg1->obj->z = arg0->unk8 << 16;
@@ -483,12 +483,12 @@ void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
         arg1->obj->rotY = r;
         arg1->rot[1] = r;
     }
-    arg1->motions = (s32 *)s->unk0->unkC;
-    arg1->model->motion = s->unk0->unkC[0];
+    arg1->motions = (s32 *)s->type->motions;
+    arg1->model->motion = s->type->motions[0];
 }
 
 void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
-    Battle488 *s;
+    BtlEnemy *s;
     BtlShadow *t;
 
     arg1->statusImmune = arg0->unk0;
@@ -508,9 +508,9 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     *(s32 *)&arg1->hiddenMeshes = arg0->unk2C;
     arg1->baseBone = arg0->unk4B;
     s = &g_gameState->unk1C->unk8E4.battle->enemies[(arg1->flags >> 1) & 0xF];
-    s->unk8.w = arg0->unk18;
-    s->unk4 = (s->unk4 & ~0x40) | ((arg0->unk30 & 1) << 6);
-    s->unk4 = (s->unk4 & ~0x80) | ((arg0->unk30 << 6) & 0x80);
+    s->steal.w = arg0->unk18;
+    s->flags = (s->flags & ~0x40) | ((arg0->unk30 & 1) << 6);
+    s->flags = (s->flags & ~0x80) | ((arg0->unk30 << 6) & 0x80);
     btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
     arg1->unkBD = arg0->unk68;
     arg1->unkBE = arg0->unk6E;

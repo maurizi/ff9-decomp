@@ -863,38 +863,38 @@ s32 btl_rollAmbush(u32 *arg0) {
     return r;
 }
 
-void btl_addEnemyRewards(Battle4880 *arg0) {
+void btl_addEnemyRewards(BtlEnemyType *arg0) {
     u8 n;
     u8 it;
     Unk800FDF30 *d;
 
     n = 0;
     d = &g_btlRewards;
-    d->unk0 += arg0->unk44;
-    d->unk4 += arg0->unk46;
+    d->unk0 += arg0->exp;
+    d->unk4 += arg0->gil;
     for (; n < 16; n++) {
         if (d->unkC[n] == 0xFF) {
             break;
         }
     }
     if (n < 16) {
-        if (rand8_inline() < 1 && (it = arg0->unk48.b[3]) != 0xFF) {
+        if (rand8_inline() < 1 && (it = arg0->drops.b[3]) != 0xFF) {
             d->unkC[n++] = it;
-            arg0->unk48.b[3] = 0xFF;
-        } else if (rand8_inline() < 0x20 && (it = arg0->unk48.b[2]) != 0xFF) {
+            arg0->drops.b[3] = 0xFF;
+        } else if (rand8_inline() < 0x20 && (it = arg0->drops.b[2]) != 0xFF) {
             d->unkC[n++] = it;
-            arg0->unk48.b[2] = 0xFF;
-        } else if (rand8_inline() < 0x60 && (it = arg0->unk48.b[1]) != 0xFF) {
+            arg0->drops.b[2] = 0xFF;
+        } else if (rand8_inline() < 0x60 && (it = arg0->drops.b[1]) != 0xFF) {
             d->unkC[n++] = it;
-            arg0->unk48.b[1] = 0xFF;
+            arg0->drops.b[1] = 0xFF;
         }
-        if ((it = arg0->unk48.b[0]) != 0xFF) {
+        if ((it = arg0->drops.b[0]) != 0xFF) {
             d->unkC[n] = it;
         }
     }
-    if (d->unk1C == 0xFF && (u32)arg0->unk4C < 100) {
+    if (d->unk1C == 0xFF && (u32)arg0->card < 100) {
         if (rand8_inline() < 0x20) {
-            d->unk1C = arg0->unk4C;
+            d->unk1C = arg0->card;
         }
     }
 }
@@ -1123,7 +1123,7 @@ BtlUnit *btl_getUnitBySlot(s32 arg0) {
 BtlUnit *btl_findBodyUnit(void) {
     BtlUnit *u;
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
-        if (!(u->flags & 0x800001) && (((g_gameState->unk1C->unk8E4.battle->enemies + ((u->flags >> 1) & 0xF))->unk4 >> 8) & 1)) {
+        if (!(u->flags & 0x800001) && (((g_gameState->unk1C->unk8E4.battle->enemies + ((u->flags >> 1) & 0xF))->flags >> 8) & 1)) {
             return u;
         }
     }
@@ -1135,7 +1135,7 @@ s32 btl_hasEnemyFlag(BtlUnit *arg0, s32 arg1) {
     if (f & 1) {
         return 0;
     }
-    return g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unk2 & arg1;
+    return g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].type->category & arg1;
 }
 
 s32 btl_getModelSlot(BtlUnit *arg0) {
