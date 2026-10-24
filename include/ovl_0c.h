@@ -1229,7 +1229,7 @@ void func_800C26DC(void);
 extern Unk800CE1E8 g_worldCameraPresets[];
 extern u8 g_worldCameraPresetIndex[][3][3];
 extern VECTOR g_worldCameraUp;
-extern SVECTOR D_800CE0F8; /* camera up vector */
+extern SVECTOR D_800CE0F8; /* look-at point passed to wm_lookAt, never written (zero: the scene is drawn relative to g_worldCameraTarget) */
 extern SVECTOR D_800CE190;
 extern SVECTOR g_worldCameraEyeOffset;
 extern s32 g_worldCameraTargetHeight;
