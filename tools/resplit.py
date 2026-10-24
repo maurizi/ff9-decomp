@@ -257,6 +257,35 @@ def merge(old, fresh, aliases, old_ranges=()):
         if path in new:
             new[path] = new[path].rstrip("\n") + "\n" + tail
 
+    # Files splat just created (a subsegment split or rename) start with its `#include "common.h"`.
+    # One that took over the first item of an old file that is gone gets that file's whole preamble
+    # (its file-scope definitions, e.g. a .data variable, would otherwise be lost); the others get the
+    # #include lines of their binary's old files.
+    def holder(name, files):
+        for p in files:
+            if slot_re(name, "ASM|RODATA").search(new[p]) or any(
+                    i.name == name for i in parse(new[p])[1] if i.kind == "def"):
+                return p
+    taken = {}
+    for path in old:
+        if path in fresh or not parsed[path][0]:
+            continue
+        first = parsed[path][0][0]
+        p = holder(aliases.get(first.name, first.name), same_bin(path, new))
+        if p is None or p in old:
+            pre = parse(old[path])[0]
+            if pre.strip() != "\n".join(re.findall(r"^#include.*$", pre, re.M)):
+                print(f"warning: preamble of removed {path} not carried over; check its definitions")
+            continue
+        taken[p] = parse(old[path])[0]
+    for npath in new:
+        olds = same_bin(npath, old)
+        if npath in old or not olds:
+            continue
+        pre = taken.get(npath) or "".join(
+            dict.fromkeys(l + "\n" for p in olds for l in re.findall(r"^#include.*$", parse(old[p])[0], re.M))) + "\n"
+        new[npath] = pre + new[npath][len(parse(new[npath])[0]):]
+
     # Items that moved to another file (e.g. a C subsegment split in two) carry their INCLUDE_RODATA
     # lines along; point them at the new file's asm directory.
     for path in new:
