@@ -1,3 +1,9 @@
+/* Pass 4: 1001 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+ * top-level re-assignment (build/s/phase.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
+ * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
+ * in s7 and is kicked out by work (which then gets s7), so ex gets fp as in the original (local-alloc doubles
+ * REG_LIVE_LENGTH of work for its REG_EQUIV, so ex is allocated first); case 7 writes t >> 2 inline after the if;
+ * case 0's k as an if/else-if chain. Earlier header follows. */
 /* Draft of fx_134 fx_134_op80 (first draft from m2c; same family as fx_0e0 op80, whose draft gave the work layout).
  * Status: 2359 aligned mismatches, 747 ignoring registers, 523 ignoring registers and stack offsets (of ~3600
  * instructions; was 2398/796); frame 0x150 vs 0x148 (one spill slot too many: case 6 spills &work->unk24, which
