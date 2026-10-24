@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: first draft from m2c, 716 lines, 512 ignoring registers (build/w/nd.py); frame 192 bytes vs the original 176. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 534 lines, 319 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -70,7 +70,7 @@ extern BtlModel D_801EB7F4[];
 /* Hi_RegisterTexListModel called with three arguments (a3 is left as it is) */
 #define REGTEX(id) \
     ((s32(*)(BtlUnit9C8 *, BtlTexInfo *, s16 *))ex->Hi_RegisterTexListModel)( \
-        (BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, id), &tex, clut.unk0[0])
+        (BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, id), (BtlTexInfo *)v, ((BtlTexInfo *)w)->unk0[0])
 
 #define SET_ROT(p, r)              \
     if ((p) != NULL) {             \
@@ -81,8 +81,9 @@ extern BtlModel D_801EB7F4[];
 
 s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
-    BtlTexInfo tex;
-    BtlTexInfo clut;
+    SVECTOR v[3]; /* texture list, trail points */
+    SVECTOR w[3]; /* clut list, trail step, flash colour and rotation */
+    VECTOR sc;
     Pool6CEntry *p;
     Fx1b3Trail *tr;
     s32 frame;
@@ -111,27 +112,27 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->unk2C->unk0[1].vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk100);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk108);
-        tex.unk0[0][0] = 0x8A;
-        tex.unk0[0][1] = 0x3800;
-        tex.unk0[1][0] = 0x8C;
-        tex.unk0[1][1] = 0x3840;
-        clut.unk0[0][0] = 0;
-        clut.unk0[1][0] = 0;
-        clut.unk0[0][1] = 0;
-        clut.unk0[1][1] = 0;
+        ((BtlTexInfo *)v)->unk0[0][0] = 0x8A;
+        ((BtlTexInfo *)v)->unk0[0][1] = 0x3800;
+        ((BtlTexInfo *)v)->unk0[1][0] = 0x8C;
+        ((BtlTexInfo *)v)->unk0[1][1] = 0x3840;
+        ((BtlTexInfo *)w)->unk0[0][0] = 0;
+        ((BtlTexInfo *)w)->unk0[1][0] = 0;
+        ((BtlTexInfo *)w)->unk0[0][1] = 0;
+        ((BtlTexInfo *)w)->unk0[1][1] = 0;
         work->unk158 = REGTEX(0x81);
-        tex.unk0[0][0] = 0x8E;
-        tex.unk0[1][0] = 0x8F;
-        tex.unk0[0][1] = 0x3900;
-        tex.unk0[1][1] = 0x3980;
-        tex.unk0[2][1] = 0x39C0;
-        clut.unk0[2][0] = 0x30;
-        tex.unk0[2][0] = 0x8C;
-        clut.unk0[0][0] = 0;
-        clut.unk0[1][0] = 0;
-        clut.unk0[0][1] = 0;
-        clut.unk0[1][1] = 0;
-        clut.unk0[2][1] = 0x80;
+        ((BtlTexInfo *)v)->unk0[0][0] = 0x8E;
+        ((BtlTexInfo *)v)->unk0[1][0] = 0x8F;
+        ((BtlTexInfo *)v)->unk0[0][1] = 0x3900;
+        ((BtlTexInfo *)v)->unk0[1][1] = 0x3980;
+        ((BtlTexInfo *)v)->unk0[2][1] = 0x39C0;
+        ((BtlTexInfo *)w)->unk0[2][0] = 0x30;
+        ((BtlTexInfo *)v)->unk0[2][0] = 0x8C;
+        ((BtlTexInfo *)w)->unk0[0][0] = 0;
+        ((BtlTexInfo *)w)->unk0[1][0] = 0;
+        ((BtlTexInfo *)w)->unk0[0][1] = 0;
+        ((BtlTexInfo *)w)->unk0[1][1] = 0;
+        ((BtlTexInfo *)w)->unk0[2][1] = 0x80;
         work->unk16C.vx = 0;
         work->unk16C.vy = 0;
         work->unk16C.vz = 0;
@@ -163,10 +164,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         D_801EB0F4[7].unk4 = 0x64;
         D_801EB0F4[6].unk4 = 0x64;
         ex->func_800DD120(&D_801EB084, &D_801EB0A4, 0x2A0);
-        tex.unk0[0][0] = D_801EB084.unk0[5][0];
-        tex.unk0[0][1] = D_801EB084.unk0[5][1];
-        clut.unk0[0][0] = D_801EB0A4.unk0[5][0];
-        clut.unk0[0][1] = D_801EB0A4.unk0[5][1];
+        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[5][0];
+        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[5][1];
+        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[5][0];
+        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[5][1];
         D_801EB4A4[0].unk0 = REGTEX(0x91);
         D_801EB4A4[1].unk0 = REGTEX(0x8D);
         D_801EB4A4[1].unk4 = 0x80;
@@ -180,10 +181,10 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1BC.vx = 0x1000;
         work->unk1BC.vy = 0x1000;
         work->unk1BC.vz = 0x1000;
-        tex.unk0[0][0] = D_801EB084.unk0[0][0];
-        tex.unk0[0][1] = D_801EB084.unk0[0][1];
-        clut.unk0[0][0] = D_801EB0A4.unk0[0][0];
-        clut.unk0[0][1] = D_801EB0A4.unk0[0][1];
+        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[0][0];
+        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[0][1];
+        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[0][0];
+        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[0][1];
         D_801EB574.unk0 = REGTEX(0x8B);
         D_801EB574.unk4 = 0x80;
         work->unk1D4.vx = 0;
@@ -195,14 +196,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk1E4.vx = 0x1000;
         work->unk1E4.vy = 0x1000;
         work->unk1E4.vz = 0x1000;
-        tex.unk0[0][0] = D_801EB084.unk0[3][0];
-        tex.unk0[0][1] = D_801EB084.unk0[3][1];
-        clut.unk0[0][0] = D_801EB0A4.unk0[3][0];
-        clut.unk0[0][1] = D_801EB0A4.unk0[3][1];
-        tex.unk0[1][0] = D_801EB084.unk0[1][0];
-        tex.unk0[1][1] = D_801EB084.unk0[1][1];
-        clut.unk0[1][0] = D_801EB0A4.unk0[1][0];
-        clut.unk0[1][1] = D_801EB0A4.unk0[1][1];
+        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[3][0];
+        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[3][1];
+        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[3][0];
+        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[3][1];
+        ((BtlTexInfo *)v)->unk0[1][0] = D_801EB084.unk0[1][0];
+        ((BtlTexInfo *)v)->unk0[1][1] = D_801EB084.unk0[1][1];
+        ((BtlTexInfo *)w)->unk0[1][0] = D_801EB0A4.unk0[1][0];
+        ((BtlTexInfo *)w)->unk0[1][1] = D_801EB0A4.unk0[1][1];
         D_801EB5E4[0].unk0 = REGTEX(0x8E);
         D_801EB5E4[1].unk0 = REGTEX(0x8C);
         work->unk1FC.vx = 0;
@@ -214,18 +215,18 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk22C.vx = 0x1000;
         work->unk22C.vy = 0x1000;
         work->unk22C.vz = 0x1000;
-        tex.unk0[0][0] = D_801EB084.unk0[3][0];
-        tex.unk0[0][1] = D_801EB084.unk0[3][1];
-        clut.unk0[0][0] = D_801EB0A4.unk0[3][0];
-        clut.unk0[0][1] = D_801EB0A4.unk0[3][1];
-        tex.unk0[1][0] = D_801EB084.unk0[2][0];
-        tex.unk0[1][1] = D_801EB084.unk0[2][1];
-        clut.unk0[1][0] = D_801EB0A4.unk0[2][0];
-        clut.unk0[1][1] = D_801EB0A4.unk0[2][1];
-        tex.unk0[2][0] = D_801EB084.unk0[0][0];
-        tex.unk0[2][1] = D_801EB084.unk0[0][1];
-        clut.unk0[2][0] = D_801EB0A4.unk0[0][0];
-        clut.unk0[2][1] = D_801EB0A4.unk0[0][1];
+        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[3][0];
+        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[3][1];
+        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[3][0];
+        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[3][1];
+        ((BtlTexInfo *)v)->unk0[1][0] = D_801EB084.unk0[2][0];
+        ((BtlTexInfo *)v)->unk0[1][1] = D_801EB084.unk0[2][1];
+        ((BtlTexInfo *)w)->unk0[1][0] = D_801EB0A4.unk0[2][0];
+        ((BtlTexInfo *)w)->unk0[1][1] = D_801EB0A4.unk0[2][1];
+        ((BtlTexInfo *)v)->unk0[2][0] = D_801EB084.unk0[0][0];
+        ((BtlTexInfo *)v)->unk0[2][1] = D_801EB084.unk0[0][1];
+        ((BtlTexInfo *)w)->unk0[2][0] = D_801EB0A4.unk0[0][0];
+        ((BtlTexInfo *)w)->unk0[2][1] = D_801EB0A4.unk0[0][1];
         D_801EB6B4[0].unk0 = REGTEX(0x88);
         D_801EB6B4[1].unk0 = REGTEX(0x82);
         work->unk23C.vx = 0;
@@ -237,14 +238,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk244.vx = work->unk108.vx;
         work->unk244.vy = work->unk108.vy;
         work->unk244.vz = work->unk108.vz;
-        tex.unk0[0][0] = D_801EB084.unk0[4][0];
-        tex.unk0[0][1] = D_801EB084.unk0[4][1];
-        clut.unk0[0][0] = D_801EB0A4.unk0[4][0];
-        clut.unk0[0][1] = D_801EB0A4.unk0[4][1];
-        tex.unk0[1][0] = D_801EB084.unk0[0][0];
-        tex.unk0[1][1] = D_801EB084.unk0[0][1];
-        clut.unk0[1][0] = D_801EB0A4.unk0[0][0];
-        clut.unk0[1][1] = D_801EB0A4.unk0[0][1];
+        ((BtlTexInfo *)v)->unk0[0][0] = D_801EB084.unk0[4][0];
+        ((BtlTexInfo *)v)->unk0[0][1] = D_801EB084.unk0[4][1];
+        ((BtlTexInfo *)w)->unk0[0][0] = D_801EB0A4.unk0[4][0];
+        ((BtlTexInfo *)w)->unk0[0][1] = D_801EB0A4.unk0[4][1];
+        ((BtlTexInfo *)v)->unk0[1][0] = D_801EB084.unk0[0][0];
+        ((BtlTexInfo *)v)->unk0[1][1] = D_801EB084.unk0[0][1];
+        ((BtlTexInfo *)w)->unk0[1][0] = D_801EB0A4.unk0[0][0];
+        ((BtlTexInfo *)w)->unk0[1][1] = D_801EB0A4.unk0[0][1];
         D_801EB6B4[2].unk0 = REGTEX(0x80);
     } else {
         frame = entry->unk0;
@@ -623,21 +624,19 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 16; i++) {
                     tr = &D_801EB0C4[i];
                     if (tr->unk4C == 0 && work->unk0[2] >= 0xD) {
-                        SVECTOR pos;
-                        SVECTOR d;
 
-                        ex->func_800DC818(0x10, D_801EAFC4[ex->btlfx_rand() & 0xF], (u16 *)&pos);
+                        ex->func_800DC818(0x10, D_801EAFC4[ex->btlfx_rand() & 0xF], (u16 *)&v[0]);
                         tr->unk4C = (ex->btlfx_rand() & 7) + 4;
-                        d.vx = ex->btlfx_randRange(-0x100, 0x100);
-                        d.vy = ex->btlfx_randRange(-0x100, 0x100);
-                        d.vz = -(ex->btlfx_rand() % 255) - 0x200;
+                        w[0].vx = ex->btlfx_randRange(-0x100, 0x100);
+                        w[0].vy = ex->btlfx_randRange(-0x100, 0x100);
+                        w[0].vz = -(ex->btlfx_rand() % 255) - 0x200;
                         for (j = 0; j < 9; j++) {
-                            pos.vx += d.vx;
-                            pos.vy += d.vy;
-                            pos.vz += d.vz;
-                            tr->unk50[j].vx = pos.vx;
-                            tr->unk50[j].vy = pos.vy;
-                            tr->unk50[j].vz = pos.vz;
+                            v[0].vx += w[0].vx;
+                            v[0].vy += w[0].vy;
+                            v[0].vz += w[0].vz;
+                            tr->unk50[j].vx = v[0].vx;
+                            tr->unk50[j].vy = v[0].vy;
+                            tr->unk50[j].vz = v[0].vz;
                             tr->unk98[j].vx = ex->btlfx_randRange(-0x60, 0x60);
                             tr->unk98[j].vy = ex->btlfx_randRange(-0x60, 0x60);
                             tr->unk98[j].vz = 0;
@@ -654,35 +653,33 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                         tr->unk4C = (ex->btlfx_rand() & 3) + 4;
                         for (k = 0; k < 4; k++) {
-                            SVECTOR a;
-                            SVECTOR b;
                             s32 *tbl;
                             s32 m;
 
                             if (work->unk0[3] == 1) {
-                                ex->func_800DC818(0x10, D_801EB004[k], (u16 *)&a);
+                                ex->func_800DC818(0x10, D_801EB004[k], (u16 *)&v[1]);
                                 tbl = D_801EB004;
                             } else {
-                                ex->func_800DC818(0x10, D_801EB018[k], (u16 *)&a);
+                                ex->func_800DC818(0x10, D_801EB018[k], (u16 *)&v[1]);
                                 tbl = D_801EB018;
                             }
-                            ex->func_800DC818(0x10, tbl[k + 1], (u16 *)&b);
-                            b.vx += ex->btlfx_randRange(-0x100, 0x100);
-                            b.vy += ex->btlfx_randRange(-0x100, 0x100);
-                            b.vz += ex->btlfx_randRange(-0x100, 0x100);
-                            b.vx = (s16)(b.vx - a.vx) >> 2;
-                            b.vy = (s16)(b.vy - a.vy) >> 2;
-                            b.vz = (s16)(b.vz - a.vz) >> 2;
+                            ex->func_800DC818(0x10, tbl[k + 1], (u16 *)&v[2]);
+                            v[2].vx += ex->btlfx_randRange(-0x100, 0x100);
+                            v[2].vy += ex->btlfx_randRange(-0x100, 0x100);
+                            v[2].vz += ex->btlfx_randRange(-0x100, 0x100);
+                            v[2].vx = (s16)(v[2].vx - v[1].vx) >> 2;
+                            v[2].vy = (s16)(v[2].vy - v[1].vy) >> 2;
+                            v[2].vz = (s16)(v[2].vz - v[1].vz) >> 2;
                             for (m = 0; m < 2; m++) {
-                                tr->unk50[k * 2 + m].vx = a.vx;
-                                tr->unk50[k * 2 + m].vy = a.vy;
-                                tr->unk50[k * 2 + m].vz = a.vz;
+                                tr->unk50[k * 2 + m].vx = v[1].vx;
+                                tr->unk50[k * 2 + m].vy = v[1].vy;
+                                tr->unk50[k * 2 + m].vz = v[1].vz;
                                 tr->unk98[k * 2 + m].vx = ex->btlfx_randRange(-0x20, 0x20);
                                 tr->unk98[k * 2 + m].vz = ex->btlfx_randRange(-0x20, 0x20);
                                 tr->unk98[k * 2 + m].vy = ex->btlfx_randRange(-4, 4);
-                                a.vx += b.vx;
-                                a.vy += b.vy;
-                                a.vz += b.vz;
+                                v[1].vx += v[2].vx;
+                                v[1].vy += v[2].vy;
+                                v[1].vz += v[2].vz;
                             }
                             tr->unk98[8].vx = 0;
                             tr->unk98[8].vz = 0;
@@ -698,7 +695,6 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 for (i = 0; i < 6; i++) {
                     tr = &D_801EB0C4[i];
                     if (tr->unk4C == 0 && work->unk0[2] >= 0xD) {
-                        SVECTOR pos;
                         s32 part;
                         s32 rad;
                         s32 ang;
@@ -711,12 +707,12 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                             part = 9;
                             rad = 0x180;
                         }
-                        ex->func_800DC818(0x10, part, (u16 *)&pos);
+                        ex->func_800DC818(0x10, part, (u16 *)&v[0]);
                         ang = ex->btlfx_rand() & 0xFFF;
                         for (j = 0; j < 8; j++) {
-                            tr->unk50[j].vx = pos.vx + ((ex->math_sin(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
-                            tr->unk50[j].vz = pos.vz + ((ex->math_cos(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
-                            tr->unk50[j].vy = pos.vy + ex->btlfx_randRange(-0x40, 0x40);
+                            tr->unk50[j].vx = v[0].vx + ((ex->math_sin(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
+                            tr->unk50[j].vz = v[0].vz + ((ex->math_cos(ang) * (rad + (ex->btlfx_rand() & 0x7F))) >> 12);
+                            tr->unk50[j].vy = v[0].vy + ex->btlfx_randRange(-0x40, 0x40);
                             tr->unk98[j].vx = ex->btlfx_randRange(-0x20, 0x20);
                             tr->unk98[j].vz = ex->btlfx_randRange(-0x20, 0x20);
                             tr->unk98[j].vy = ex->btlfx_randRange(-0x20, 0x20);
@@ -858,17 +854,14 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (work->unk0[11] != 0) {
-            CVECTOR col;
-            SVECTOR rot;
-            VECTOR sc;
 
             work->unk0[11]--;
-            col.r = col.g = col.b = work->unk0[11] * 7;
-            rot.vx = 0;
-            rot.vy = 0;
-            rot.vz = 0;
+            ((CVECTOR *)&w[0])->r = ((CVECTOR *)&w[0])->g = ((CVECTOR *)&w[0])->b = work->unk0[11] * 7;
+            w[1].vx = 0;
+            w[1].vy = 0;
+            w[1].vz = 0;
             sc.vx = sc.vy = sc.vz = work->unk0[11] * 10 + 0x1000;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
+            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &w[1], &sc, (CVECTOR *)&w[0], 1, NULL);
         }
         if (frame >= 0x61) {
             work->unk15C.vy++;
