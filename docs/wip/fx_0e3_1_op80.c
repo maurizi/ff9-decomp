@@ -450,27 +450,26 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
             }
             if (frame < 0x21) {
-                y12 = frame;
-                y12 <<= 12;
-                x2 = ex->math_cos(y12 >> 7);
+                s32 ya;
+                s32 yb;
+                ya = frame << 12;
+                yb = ya >> 5;
+                x2 = ex->math_cos(ya >> 7);
                 i = 0;
-                y12 >>= 5;
-                y12 *= 2;
-                y12 += 0x900;
                 r2.vx = work->unkBC.vx;
                 r2.vy = work->unkBC.vy;
-                s2.vx = s2.vy = y12;
                 r2.vz = work->unkBC.vz;
                 s2.vz = 0;
+                s2.vx = s2.vy = yb * 2 + 0x900;
                 r2.vz = (frame << 5) + 0x400;
                 ex->func_800CFD78(&work->unk30.vx, &work->unkBC.vx, -0x80, &p2.vx);
-                x2k = (x2 >> 5) - 0x80;
+                y12 = (x2 >> 5) - 0x80;
                 v2.vx = p2.vx;
                 v2.vy = p2.vy;
                 v2.vz = p2.vz;
                 for (; i < 3; i++) {
                     ex->Hi_DrawEffModel(&r2, &v2, (s32)&s2, work->unkC4);
-                    ex->Hi_ModifyEffModelRGB(work->unkC4, x2k, x2k, x2k);
+                    ex->Hi_ModifyEffModelRGB(work->unkC4, y12, y12, y12);
                     s2.vx = s2.vy = (s2.vx * 3) >> 2;
                     r2.vz += 0x550;
                 }
