@@ -151,27 +151,27 @@ void func_801E7EB4(Unk80100C78Entry *entry, SVECTOR *from, s32 ot) {
 
 INCLUDE_RODATA("asm/us/fx_17d_4/nonmatchings/fx_17d_4", fx_17d_4_headerPtr);
 
+/* Matching notes: scalar temporaries are split per case and per use (names are role-search leftovers: _cN = case,
+ * the rest found by build/s/roles.py), since sharing a variable across cases makes it a call-crossing global and
+ * changes the allocation; which roles share a variable was searched. Case 6: func_801E7B8C's third argument (f3)
+ * is its own variable, o = 0x20 is set inside the frame < 0x1E branch, x and f3 are set first in their branches
+ * and x is declared before flag/f3 (spill slot order 0x78/0x7C/0x80). Case 4's
+ * f-update reuses one variable for 0x1000 - cos and f >> 12; case 5's offsets go through k5z/n5z and are copied
+ * a -> b; mode 1's copy order and other statement orders were searched (build/s/permhc.py, bperm.py, winperm.py). */
 s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 *arg4) {
     s32 q6b;
     s32 g5;
-    s32 x_c0;
     Pool6CEntry *p_c1;
     s32 w13_c2;
-    s32 t_c2;
     s32 r_c2;
-    s32 o_3_c3;
     s32 t_c3;
     s32 x_c3;
     s32 i_c3;
     s32 q_c3;
-    s32 q4_c4;
-    s32 i_c4;
     Pool6CEntry *p_c4;
     s32 t_c5;
     s32 q4_c6;
     s32 w13_c6;
-    s32 o_3_c6;
-    s32 x_c6;
     s32 r_c6;
     s32 q_c6;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
@@ -184,24 +184,14 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     SVECTOR rot2;
     SVECTOR b2;
     SVECTOR a2;
-    Pool6CEntry *p;
-    s32 q4;
-    s32 w13;
     s32 c_1;
-    s32 c_3;
     s32 c_5;
     s32 c_6;
-    s32 o_3;
     s32 frame;
-    s32 t;
-    s32 x;
-    s32 r;
-    s32 i;
     s32 k;
     s32 n;
     s32 m;
     s32 f;
-    s32 q;
     s32 g;
     s32 x6n;
     s32 flag;
@@ -209,13 +199,11 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 k5z;
     s32 n5z;
     s32 n5y;
-    s32 n5x;
     s32 k5x;
     s32 fk;
     s32 s6a;
     s32 c6a;
     s32 k5;
-    s32 n5;
     s32 w3;
 
     if (mode == 0) {
