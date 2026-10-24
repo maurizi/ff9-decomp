@@ -33,3 +33,13 @@ g_worldZoneEncounterCount = 0x800CCFF4; // [code] half the number of g_worldEnco
 g_worldDataSet = 0x800CF444; // [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4), selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
 g_worldFog = 0x800CCE4B; // [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
 g_worldEncounterEventRows = 0x800D32E4; // [code] world data pack entry 4 rows of 12 u16 entry numbers used by wm_applyEncounterEvents
+wm_blockVertsFog = 0x800B4270; // type:func [code] vertex pass (NCT, DPCS lit/fog colours, curvature, RTPT) that func_800BA2DC runs on a world block while g_worldFog is set, func_800BB07C passes the blocks of D_800D3758
+wm_blockVertsFar = 0x800B53FC; // type:func [code] vertex pass func_800BA2DC runs on a block without fog when its view z (func_800BBE24) is outside -10000..11000 (func_800BB07C)
+wm_blockVertsNear = 0x800B6338; // type:func [code] vertex pass func_800BA2DC runs on a block without fog when its view z is inside -10000..11000, NCT colour only
+wm_blockFacesFog = 0x800B4FD4; // type:func [code] face pass (fog POLY_G3 + POLY_GT3 per front face) after wm_blockVertsFog in func_800BA2DC
+wm_blockFacesFar = 0x800B5880; // type:func [code] face pass after wm_blockVertsFar in func_800BA2DC
+wm_blockFacesNear = 0x800B6598; // type:func [code] face pass after wm_blockVertsNear in func_800BA2DC, culls off-screen faces, no fog primitive
+wm_modelVerts = 0x800B4720; // type:func [code] vertex pass with curvature that func_800BA458 runs (modes 0, 1) on the pack models it places with ScaleMatrix/CompMatrix
+wm_modelVertsFlat = 0x800B4BDC; // type:func [code] vertex pass without the curvature that func_800BA458 runs in mode 2
+wm_modelFaces = 0x800B5CD0; // type:func [code] face pass (semi-transparent POLY_GT3) func_800BA458 runs in modes 0 and 2
+wm_modelFacesFog = 0x800B5FD0; // type:func [code] face pass func_800BA458 runs in mode 1 wm_modelFaces plus fog POLY_G3s

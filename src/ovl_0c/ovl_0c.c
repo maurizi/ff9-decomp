@@ -3755,25 +3755,25 @@ INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B3A80);
 
 INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B3FEC);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B4270);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_blockVertsFog);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B4720);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_modelVerts);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B4BDC);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_modelVertsFlat);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B4FD4);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_blockFacesFog);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B53FC);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_blockVertsFar);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B5880);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_blockFacesFar);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B5CD0);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_modelFaces);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B5FD0);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_modelFacesFog);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B6338);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_blockVertsNear);
 
-INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", func_800B6598);
+INCLUDE_ASM("asm/us/ovl_0c/nonmatchings/ovl_0c", wm_blockFacesNear);
 
 void func_800B6908(void) {
     D_800CF400 = D_800CE400;
@@ -5286,18 +5286,18 @@ void func_800BA2DC(u8 *arg0, s32 arg1, s32 arg2) {
     t = D_800CF460[*D_800CF45C];
     D_800D27F0 = &D_800D2FF8[arg0[1]];
     if (g_worldFog != 0) {
-        func_800B4270(arg0);
+        wm_blockVertsFog(arg0);
     } else if (arg2 == 0) {
-        func_800B6338(arg0);
+        wm_blockVertsNear(arg0);
     } else {
-        func_800B53FC(arg0);
+        wm_blockVertsFar(arg0);
     }
     if (g_worldFog != 0) {
-        D_800CF404 = func_800B4FD4(arg0, D_800CF404, t);
+        D_800CF404 = wm_blockFacesFog(arg0, D_800CF404, t);
     } else if (arg2 == 0) {
-        D_800CF404 = func_800B6598(arg0, D_800CF404, t);
+        D_800CF404 = wm_blockFacesNear(arg0, D_800CF404, t);
     } else {
-        D_800CF404 = func_800B5880(arg0, D_800CF404, t);
+        D_800CF404 = wm_blockFacesFar(arg0, D_800CF404, t);
     }
 }
 
@@ -5312,16 +5312,16 @@ void func_800BA458(s32 arg0, s32 arg1, u32 arg2) {
     s32 p = D_800CF460[*D_800CF45C] + arg1 * 4;
 
     if (arg2 < 2) {
-        func_800B4720(arg0);
+        wm_modelVerts(arg0);
     }
     if (arg2 == 2) {
-        func_800B4BDC(arg0);
+        wm_modelVertsFlat(arg0);
     }
     if (arg2 == 0 || arg2 == 2) {
-        D_800CF404 = func_800B5CD0(arg0, D_800CF404, p);
+        D_800CF404 = wm_modelFaces(arg0, D_800CF404, p);
     }
     if (arg2 == 1) {
-        D_800CF404 = func_800B5FD0(arg0, D_800CF404, p);
+        D_800CF404 = wm_modelFacesFog(arg0, D_800CF404, p);
     }
 }
 

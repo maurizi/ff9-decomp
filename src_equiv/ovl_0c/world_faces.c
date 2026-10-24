@@ -213,28 +213,28 @@ s32 func_800B3FEC(s32 o, s32 pkt, s32 ot) {
     return (s32)p;
 }
 
-/* World-block faces after func_800B4270 (g_worldFog set). */
-s32 func_800B4FD4(void *o, s32 pkt, s32 ot) {
+/* World-block faces after wm_blockVertsFog (g_worldFog set). */
+s32 wm_blockFacesFog(void *o, s32 pkt, s32 ot) {
     return wf_mesh(o, pkt, ot, WF_Z32 | WF_FOG | WF_NEED_LIT | WF_LOD, 0xFFE);
 }
 
-/* World-block faces after func_800B53FC (no fog, far block: view z outside -10000..11000). */
-s32 func_800B5880(void *o, s32 pkt, s32 ot) {
+/* World-block faces after wm_blockVertsFar (no fog, far block: view z outside -10000..11000). */
+s32 wm_blockFacesFar(void *o, s32 pkt, s32 ot) {
     return wf_mesh(o, pkt, ot, WF_Z32_GRID | WF_FOG | WF_NEED_LIT | WF_LOD, 0xFFE);
 }
 
-/* World-block faces after func_800B6338 (no fog, near block): off-screen faces culled, no fog primitive. */
-s32 func_800B6598(void *o, s32 pkt, s32 ot) {
+/* World-block faces after wm_blockVertsNear (no fog, near block): off-screen faces culled, no fog primitive. */
+s32 wm_blockFacesNear(void *o, s32 pkt, s32 ot) {
     return wf_mesh(o, pkt, ot, WF_Z32 | WF_CULL | WF_LOD, 0xF6A);
 }
 
 /* Placed-model faces (func_800BA458 modes 0 and 2): semi-transparent POLY_GT3 only. ot is the caller's OT
  * already offset by its layer argument. */
-s32 func_800B5CD0(s32 o, s32 pkt, s32 ot) {
+s32 wm_modelFaces(s32 o, s32 pkt, s32 ot) {
     return wf_mesh((u8 *)o, pkt, ot, WF_Z16 | WF_NEED_LIT | WF_ALT | WF_SEMI, 0xF6A);
 }
 
-/* Placed-model faces, mode 1: as func_800B5CD0 plus the fog POLY_G3. */
-s32 func_800B5FD0(s32 o, s32 pkt, s32 ot) {
+/* Placed-model faces, mode 1: as wm_modelFaces plus the fog POLY_G3. */
+s32 wm_modelFacesFog(s32 o, s32 pkt, s32 ot) {
     return wf_mesh((u8 *)o, pkt, ot, WF_Z16 | WF_FOG | WF_NEED_LIT | WF_ALT | WF_SEMI, 0xF6A);
 }

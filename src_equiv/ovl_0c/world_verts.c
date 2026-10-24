@@ -12,13 +12,13 @@
  * For each group of three vertices:
  *   - RTPT on the raw vertices (current rotation/translation) for their depths SZ, then NCT on their normals;
  *   - colours, either
- *       fog (all but func_800B6338): each NCT colour is pulled toward the far colour with DPCS by
+ *       fog (all but wm_blockVertsNear): each NCT colour is pulled toward the far colour with DPCS by
  *         depth(SZ, entry.unk6) into the lit colour D_800D23F0[i], and the entry's colour by
  *         4096 - depth(SZ, entry.unk4) into the fog colour D_800D1FF0[i], where
- *         depth(sz, ofs) = clamp((sz - 0x8000 + ofs) >> 2, 0, 4096) (>> 1 in func_800B53FC); or
- *       the NCT colour straight into D_800D23F0[i] (func_800B6338);
- *   - the world's curvature (all but func_800B4BDC): y *= (4096 - (SZ/16 + SZ/64)) / 4096, by a multiply, or
- *     in func_800B53FC by INTPL toward a zero red far colour (the original order of GTE loads is kept there);
+ *         depth(sz, ofs) = clamp((sz - 0x8000 + ofs) >> 2, 0, 4096) (>> 1 in wm_blockVertsFar); or
+ *       the NCT colour straight into D_800D23F0[i] (wm_blockVertsNear);
+ *   - the world's curvature (all but wm_modelVertsFlat): y *= (4096 - (SZ/16 + SZ/64)) / 4096, by a multiply, or
+ *     in wm_blockVertsFar by INTPL toward a zero red far colour (the original order of GTE loads is kept there);
  *   - RTPT again: screen xy into the scratchpad (one word per vertex from 0x1F800000) and the depth into
  *     D_800D29F8[i], as SZ (u32) or SZ / 8 (u16).
  * Like func_800B3A80 the loop reads (but doesn't use) the six words after the last group.
@@ -160,26 +160,26 @@ static void wv_transform(u8 *o, s32 flags) {
 }
 
 /* Fog, curved, depth as u32 SZ. World blocks (func_800BA2DC) while g_worldFog is set. */
-void func_800B4270(void *o) {
+void wm_blockVertsFog(void *o) {
     wv_transform(o, WV_FOG | WV_CURVE_MUL);
 }
 
 /* Fog, curved, depth as u16 SZ / 8. Placed models (func_800BA458), modes 0 and 1. */
-void func_800B4720(s32 o) {
+void wm_modelVerts(s32 o) {
     wv_transform((u8 *)o, WV_FOG | WV_CURVE_MUL | WV_SZ16);
 }
 
 /* Fog, flat, depth as u16 SZ / 8. Placed models (func_800BA458), mode 2. */
-void func_800B4BDC(s32 o) {
+void wm_modelVertsFlat(s32 o) {
     wv_transform((u8 *)o, WV_FOG | WV_SZ16);
 }
 
 /* Fog with the steeper ramp, curved through the GTE, depth as u32 SZ. Far world blocks without fog. */
-void func_800B53FC(void *o) {
+void wm_blockVertsFar(void *o) {
     wv_transform(o, WV_FOG | WV_DEPTH_HALF | WV_CURVE_GTE);
 }
 
 /* NCT colour only, curved, depth as u32 SZ. Near world blocks without fog. */
-void func_800B6338(void *o) {
+void wm_blockVertsNear(void *o) {
     wv_transform(o, WV_CURVE_MUL);
 }
