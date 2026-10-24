@@ -1,4 +1,4 @@
-/* Pass 4: 37 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 35 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -778,11 +778,11 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 7:
+            t = frame << 8;
+            c = 0xAD;
             yo = 0;
             xo = 0;
-            t = frame << 8;
             a_c7 = t >> 2;
-            c = 0xAD;
             s = a_c7 + 0x80;
             D_801EC894[1].r = (ex->math_sin(a_c7) * 0xFF) >> 12;
             D_801EC894[1].g = (ex->math_sin(a_c7) * 0xFF) >> 12;
