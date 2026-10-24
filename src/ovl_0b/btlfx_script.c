@@ -1,7 +1,7 @@
 #include "ovl_0b.h"
 
 void btlfx_reset(void) {
-    g_btlfxState.unk0 = -1;
+    g_btlfxState.phase = -1;
     g_btlfxState.unk22 = 0;
     g_btlfxState.unk24 = 0;
 }
@@ -41,30 +41,30 @@ s32 btlfx_resolveFirstUse(s32 arg0) {
 }
 
 s32 btlfx_start(s32 arg0) {
-    if (g_btlfxState.unk0 != -1) {
+    if (g_btlfxState.phase != -1) {
         return -1;
     }
-    g_btlfxState.unk0 = 0;
-    g_btlfxState.unk2 = btlfx_resolveFirstUse(arg0);
-    g_btlfxState.unkF = 0;
+    g_btlfxState.phase = 0;
+    g_btlfxState.effectId = btlfx_resolveFirstUse(arg0);
+    g_btlfxState.seqRelease = 0;
     g_btlfxState.unk23 = 0;
     g_btlfxState.unk4 = 0;
     g_btlfxState.unk10.w = 0;
     g_btlfxState.unk6 = 0;
-    g_btlfxState.unk8 = 0;
-    g_btlfxState.unk18 = 0;
+    g_btlfxState.file = 0;
+    g_btlfxState.pc = 0;
     g_btlfxState.unk22 = 0;
     g_btlfxState.unk24 = 0;
     g_btlfxState.unk25 = 0;
-    g_btlfxState.unk1C = 0x8000;
+    g_btlfxState.flags = 0x8000;
     func_800C30B8();
     g_btlfxEnv->unk30 = g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
     return 0;
 }
 
 void btlfx_retryOp(void) {
-    g_btlfxState.unk20 = 1;
-    g_btlfxState.unk18 -= 3;
+    g_btlfxState.retry = 1;
+    g_btlfxState.pc -= 3;
 }
 
 u8 *btlfx_findScript(s32 arg0) {
@@ -117,8 +117,8 @@ void btlfx_swapVramPages(s32 arg0, u32 *arg1, s32 arg2) {
 
 void btlfx_callScript(s32 arg0) {
     D_800FEC38 = 1;
-    D_800FEC3C = g_btlfxState.unk18;
-    g_btlfxState.unk18 = btlfx_findScript(arg0);
+    D_800FEC3C = g_btlfxState.pc;
+    g_btlfxState.pc = btlfx_findScript(arg0);
 }
 
 void btlfx_runScript(void) {
@@ -141,7 +141,7 @@ void btlfx_runScript(void) {
         d->unk24 = 0;
         btlfx_restoreUnitLook(0x10);
     }
-    switch (d->unk0) {
+    switch (d->phase) {
     case 0:
         r.x = 0x300;
         r.y = 0x140;
@@ -150,11 +150,11 @@ void btlfx_runScript(void) {
         btlfx_resetMaskBit();
         StoreImage(&r, (u32 *)0x801E7700);
         D_800FEC38 = 0;
-        d->unk0 = 1;
+        d->phase = 1;
         break;
     case 1:
-        hdr = ((u16 *)0x801E7700)[d->unk2];
-        d->unk1C = hdr & 0xFFFE;
+        hdr = ((u16 *)0x801E7700)[d->effectId];
+        d->flags = hdr & 0xFFFE;
         g_btlfxEnv->targets->kind &= ~8;
         if (hdr & 0xC00) {
             btlfx_swapVramPages(0, NULL, (hdr & 0xC00) >> 10);
@@ -166,36 +166,36 @@ void btlfx_runScript(void) {
             r.h = 0xB0;
             btlfx_resetMaskBit();
             StoreImage(&r, (u32 *)0x801E7700);
-            d->unk0 = 2;
-            d->unk1C &= ~8;
-            d->unk1C &= ~4;
+            d->phase = 2;
+            d->flags &= ~8;
+            d->flags &= ~4;
             break;
         }
         d->unk21 = 0;
         btlfx_updateCameraEnable();
         btlcam_beginEffect();
         if (!(g_btlfxEnv->targets->kind & 1)) {
-            btlfx_playCmdCamera(d->unk1C);
+            btlfx_playCmdCamera(d->flags);
         }
-        if (btlfx_loadFile(d->unk2) == 0) {
-            k = (u8)d->unk1C >> 4;
+        if (btlfx_loadFile(d->effectId) == 0) {
+            k = (u8)d->flags >> 4;
             if (k == 1) {
                 g_btlfxEnv->targets->kind |= 8;
             }
             btlfx_startCasterTask(k);
-            d->unk18 = D_800FF068;
-            d->unk0 = 3;
+            d->pc = D_800FF068;
+            d->phase = 3;
         }
         break;
     case 3:
         if (g_btlfxEnv->loader->unkE == 3) {
-            d->unk0 = 4;
+            d->phase = 4;
             g_btlfxEnv->camera->unk5C |= 2;
         }
         break;
     case 2:
-        d->unk18 = btlfx_findScript(d->unk2);
-        d->unk0 = 4;
+        d->pc = btlfx_findScript(d->effectId);
+        d->phase = 4;
         btlfx_showCasterCmdName();
         break;
     case 4:
@@ -209,21 +209,21 @@ void btlfx_runScript(void) {
                 }
                 d->unk4 = 0;
             }
-            p = d->unk18;
+            p = d->pc;
             op = p[0];
             a = p[1];
             b = p[2];
-            d->unk18 = p + 3;
+            d->pc = p + 3;
             if (op < 0x20) {
                 switch (op) {
                 case 0:
                     cont = 0;
-                    d->unk18 -= 3;
+                    d->pc -= 3;
                     if (func_800E8CE4() == 0) {
                         func_800E8C84(1);
                     }
                     if (g_btlfxTasks.unk0 == 0) {
-                        if (d->unk1C & 1) {
+                        if (d->flags & 1) {
                             if (d->unk21 == 0) {
                                 btlcam_endEffect();
                                 btlfx_initParticleSystem();
@@ -232,10 +232,10 @@ void btlfx_runScript(void) {
                                 btlfx_reloadCommonData(0);
                                 d->unk21 = 1;
                             } else if (btlfx_reloadCommonData(1) != 0) {
-                                d->unk1C &= ~1;
+                                d->flags &= ~1;
                             }
                         } else {
-                            d->unk0 = -1;
+                            d->phase = -1;
                             g_btlfxEnv->targets = NULL;
                             btlcam_endEffect();
                             btlfx_initParticleSystem();
@@ -251,7 +251,7 @@ void btlfx_runScript(void) {
                         cont = 0;
                     } else if (d->unk10.b[b] == 0) {
                         cont = 0;
-                        d->unk18 -= 3;
+                        d->pc -= 3;
                         d->unk10.b[b] = 0;
                     }
                     break;
@@ -269,7 +269,7 @@ void btlfx_runScript(void) {
                     break;
                 case 5:
                     d->unk6 = a;
-                    d->unk8 = btlfx_findFileSlot(a);
+                    d->file = btlfx_findFileSlot(a);
                     break;
                 case 6:
                     switch (a) {
@@ -296,9 +296,9 @@ void btlfx_runScript(void) {
                 case 8:
                     if (btlfx_isEnemyUnit(0x10) != 0) {
                         g_btlfxState.unk23 = 1;
-                        if (!(g_btlfxEnv->targets->kind & 0x10) && d->unkF == 0) {
+                        if (!(g_btlfxEnv->targets->kind & 0x10) && d->seqRelease == 0) {
                             cont = 0;
-                            d->unk18 -= 3;
+                            d->pc -= 3;
                         }
                     }
                     break;
@@ -317,7 +317,7 @@ void btlfx_runScript(void) {
                 case 11:
                     if (a != 0) {
                         if (d->unk22 != 0) {
-                            d->unk18 -= 3;
+                            d->pc -= 3;
                         }
                         cont = 0;
                     } else {
@@ -329,13 +329,13 @@ void btlfx_runScript(void) {
                 case 12:
                     if (g_btlfxEnv->loader->unk68 != 2) {
                         cont = 0;
-                        d->unk18 -= 3;
+                        d->pc -= 3;
                     }
                     break;
                 case 13:
                     if (a != 0) {
                         if (d->unk24 != 0) {
-                            d->unk18 -= 3;
+                            d->pc -= 3;
                         }
                         cont = 0;
                     } else {
@@ -349,7 +349,7 @@ void btlfx_runScript(void) {
                 case 7:
                     switch (a) {
                     case 0:
-                        btlfx_swapVramPages(1, NULL, (d->unk1C & 0xC00) >> 10);
+                        btlfx_swapVramPages(1, NULL, (d->flags & 0xC00) >> 10);
                         break;
                     case 1:
                         btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, b), 0);
@@ -365,12 +365,12 @@ void btlfx_runScript(void) {
                 case 14:
                     if (D_800FEC38 != 0) {
                         D_800FEC38 = 0;
-                        d->unk18 = D_800FEC3C;
+                        d->pc = D_800FEC3C;
                     }
                     break;
                 case 15:
                     if (b == 0) {
-                        btlfx_copyWords(D_800FE530, (s32 *)btlfx_getFileData(d->unk8, a), 0x708);
+                        btlfx_copyWords(D_800FE530, (s32 *)btlfx_getFileData(d->file, a), 0x708);
                         func_80054A28(D_800FE530);
                         func_80054E88(0, 0, 1);
                         func_80054E88(0, 1, 1);
@@ -386,9 +386,9 @@ void btlfx_runScript(void) {
                 }
             } else {
                 if (op < 0x80) {
-                    btlfx_spawnTask(op - 0x20, d->unk8, a, b);
+                    btlfx_spawnTask(op - 0x20, d->file, a, b);
                 } else {
-                    btlfx_spawnTask(op, d->unk8, a, b);
+                    btlfx_spawnTask(op, d->file, a, b);
                 }
             }
         } while (cont);
@@ -1060,7 +1060,7 @@ void btlfx_playUnitMotion(s32 arg0, s32 arg1) {
 
 void btlfx_setFileMotion(Unk800F78A40 *arg0, s32 arg1, s32 arg2) {
     if (btlfx_isPartyUnit(arg1) != 0) {
-        btlfx_setUnitMotion(arg1, btlfx_getFileData(arg0->unk8, arg2));
+        btlfx_setUnitMotion(arg1, btlfx_getFileData(arg0->file, arg2));
     }
 }
 

@@ -705,15 +705,15 @@ typedef struct {
 } BtlUnitList; /* 0x4C */
 
 typedef struct Unk800F78A40 {
-    s16 unk0;
-    s16 unk2;
+    s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
+    s16 effectId; /* effect being played (btlfx_start, after btlfx_resolveFirstUse) */
     u8 pad4[0x8 - 4];
-    s16 unk8;
+    s16 file; /* effect file slot of the script (btlfx_getFileData) */
     u8 padA[0xF - 0xA];
-    u8 unkF;
+    u8 seqRelease; /* set by btlseq op 0A; control op 8 waits for it with an enemy caster */
     u8 pad10[0x1C - 0x10];
-    u32 unk1C;
-    u8 unk20; /* cleared by btlfx_runFrame before btlfx_runScript; set: skip the frame's tasks */
+    u32 flags;
+    u8 retry; /* btlfx_retryOp: run the same op again next frame */
     u8 pad21[0x23 - 0x21];
     u8 unk23;
 } Unk800F78A40;
@@ -844,20 +844,20 @@ typedef struct {
 extern volatile Unk80104E68 g_btluiState;
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
+    s16 phase; /* -1 idle, else the btlfx_runScript state (0 save VRAM .. 4 run ops) */
+    s16 effectId; /* effect being played (btlfx_start, after btlfx_resolveFirstUse) */
     s16 unk4;
     s16 unk6;
-    s16 unk8;
+    s16 file; /* effect file slot of the script (btlfx_getFileData) */
     union {
         struct {
             u8 unk0[3];
             u8 unk3; /* count of unk0 */
         } b;
         u16 h[2]; /* cleared as two halfwords (btlfx_opAddCameraChoice) */
-    } unkA;
-    u8 unkE;
-    u8 unkF;
+    } cameras; /* camera choices of the effect (btlfx_opAddCameraChoice) */
+    u8 cameraPick; /* camera choice picked (btlfx_opPlayCamera) */
+    u8 seqRelease; /* set by btlseq op 0A; control op 8 waits for it with an enemy caster */
     union {
         s32 w; /* cleared as a word */
         u8 b[4]; /* b[2]: done */
@@ -866,9 +866,9 @@ typedef struct {
     s8 moveDone; /* unit ops: the move op has arrived (btlfx_opRunHome, btlfx_opJumpForward, ...) */
     s8 turnDone; /* unit ops: the turn op has finished (btlfx_opFaceTarget, btlfx_opFaceHome) */
     s8 unk17; /* unit ops 0x79-0x7B */
-    u8 *unk18; /* script pointer, 3-byte commands */
-    s32 unk1C;
-    u8 unk20;
+    u8 *pc; /* script pointer, 3-byte commands */
+    s32 flags;
+    u8 retry; /* btlfx_retryOp: run the same op again next frame */
     u8 unk21;
     u8 unk22;
     u8 unk23;

@@ -771,7 +771,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
     u16 n;
     u16 f;
 
-    if (g_btlfxEnv->state->unk0 != -1) {
+    if (g_btlfxEnv->state->phase != -1) {
         return;
     }
     b = g_gameState->unk1C->unk8E4.battle;

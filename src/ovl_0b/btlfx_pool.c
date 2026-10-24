@@ -218,7 +218,7 @@ s32 btlfx_waitSoundBank(s32 arg0, s32 arg1) {
 void btlfx_markCommonVram(RECT *arg0) {
     if (arg0->x >= 0x300 && arg0->x + arg0->w < 0x381) {
         if (arg0->y >= 0x100 && arg0->y + arg0->h < 0x201) {
-            g_btlfxState.unk1C |= 1;
+            g_btlfxState.flags |= 1;
         }
     }
 }
