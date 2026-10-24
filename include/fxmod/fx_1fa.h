@@ -14,7 +14,7 @@ typedef struct {
 
 extern Unk800F78A4 *D_801E80DC;
 extern SVECTOR D_801E80E4;
-extern s32 D_801E80EC; /* countdown */
+extern s32 D_801E80EC[]; /* countdown; an array (in-struct for alias analysis) */
 extern SVECTOR D_801E80F4;
 extern SVECTOR D_801E80FC[];
 extern Fx1faRing D_801E811C[12][4];

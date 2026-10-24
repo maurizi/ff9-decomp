@@ -21,7 +21,7 @@ typedef struct {
 
 typedef struct {
     s32 unk0; /* model */
-    s32 pad4;
+    s32 unk4; /* frames left */
     s32 unk8[8]; /* primitive counts */
     SVECTOR *unk28[8]; /* vertices */
     Fx1b3Piece *unk48[8]; /* pieces */
@@ -36,9 +36,14 @@ typedef struct {
     s16 unk8;
     s16 padA;
     s32 unkC; /* radius */
+    s32 unk10; /* sweep angle */
+    s32 unk14; /* sweep step */
 } Fx1b3Blast;
 
 extern Fx1b3Blast D_801EB0D4;
+
+void func_801EA39C(Fx1b3Split *sp);
+void func_801EA7E4(Fx1b3Split *sp);
 
 /* copied */
 extern Unk800F78A4 *D_801EB074;
