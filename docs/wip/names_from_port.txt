@@ -1072,3 +1072,73 @@ D_801F114C g_menuStatusPageCloseTweens  # [code] page window slide-outs, the fir
 D_801EDF04 g_menuStatusCmdTable  # [code] battle command table (name offset first), copied to the stack by menu_status_drawCommands
 D_801EE144 g_menuStatusCmdNames  # [code] battle command names ("Attack", "Steal", "Jump"...) indexed by g_menuStatusCmdTable
 # FIELDS include/ovl_38.h StatusMenu: unk0=state,unk1=pagesOpen,unk2=slot,unk3=pageCount,unk4=abilityCount,unk5=savedHelp,unk8=win,unk10=pageOpen,unk16=pageOnTop,unk1C=pageWins,unk7C=prim,unk80=primBufs,unk88=primFree,unk8C=header; TextWin renamed TextTween
+
+## ovl_34: ovl_34 (config menu)
+func_801EEA1C menu_config_init  # [code] main-menu entry Config (file 0x34 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0; text bank, the 13-row list, primitive buffers, the controller-port character rows
+func_801F00A8 menu_config_update  # [code] Config entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801F00D8 menu_config_exit  # [code] Config entry exit of main's D_8006E530, clears the help callback
+func_801F00F8 menu_config_input  # [code] list input, or the custom window's handler from g_menuConfigCustomInputFns
+func_801EECB4 menu_config_inputList  # [code] Circle back to the main menu (func_800361CC(0)), Cross opens a custom window, list up/down/page, Left/Right set the row's option
+func_801EED9C menu_config_inputPad  # [code] button mapping window - Start closes it (func_8002397C), Up/Down pick an action, a button press assigns that button
+func_801EEEF8 menu_config_inputPort  # [code] controller port window - Circle closes it, Left/Right set the character's port bit in the config word, Up/Down pick a character
+func_801EF938 menu_config_openCustom  # [code] Cross on Controller or Battle Control set to Custom - slides in the two custom windows
+func_801F1250 menu_config_closeCustom  # [code] tween callback of the custom windows' slide-out - editing = 0
+func_801EF50C menu_config_setOption  # [code] Left/Right on a row - writes the config word bitfield (sliders start a knob move), checks vibration support, plays SE_CURSOR and calls func_8002397C when changed
+func_801EFA54 menu_config_stepSlider  # [code] after 5 frames of knob movement adds +/-1 to the battle speed or message speed field
+func_801F0184 menu_config_draw  # [code] swaps the primitive buffers, draws the label and rule, the list, custom windows, scroll arrows and cursor
+func_801F025C menu_config_animate  # [code] help text, slider or window tweens, list scroll and the vibration test
+func_801EEB68 menu_config_drawList  # [code] the visible rows (menu_config_drawRow), plus the incoming ones during a page scroll
+func_801F049C menu_config_drawListScroll  # [code] rows scrolling in during a page scroll (menu_config_getScrollView)
+func_801F0550 menu_config_drawRow  # [code] divider and the row's drawer from g_menuConfigRowDrawFns
+func_801F05D0 menu_config_drawSound  # [code] row 0 Sound - Stereo/Mono from config bit 0
+func_801F0640 menu_config_drawController  # [code] row 1 Controller - Normal/Custom from config bit 1
+func_801F06B4 menu_config_drawCursor  # [code] row 2 Cursor - Initial/Memory from config bit 2
+func_801F0728 menu_config_drawAtb  # [code] row 3 ATB - Active/Wait from config bit 3
+func_801F079C menu_config_drawCamera  # [code] row 4 Battle Camera - Auto/Fixed from config bit 4
+func_801F0810 menu_config_drawBtlControl  # [code] row 5 Battle Control - Normal/Custom from config bit 5
+func_801F0884 menu_config_drawMovement  # [code] row 6 Movement - Walk/Run from config bit 6
+func_801F08F8 menu_config_drawBtlSpeed  # [code] row 7 Battle Speed slider (config bits 8-10)
+func_801F0974 menu_config_drawMsgSpeed  # [code] row 8 Field Message slider (config bits 14-16)
+func_801F09F0 menu_config_drawHereIcon  # [code] row 9 HERE Icon - ON/OFF from config bit 17
+func_801F0A64 menu_config_drawWindowColor  # [code] row 10 Window Color - Normal/Classic from config bit 18
+func_801F0AD8 menu_config_drawTargetWindow  # [code] row 11 Target Window - Auto/Always from config bit 19
+func_801F0B4C menu_config_drawVibration  # [code] row 12 Vibration - ON/OFF from config bit 7, greyed out without a vibration pad
+func_801F0D20 menu_config_drawChoice  # [code] the row's two option names, the unselected one greyed
+func_801F0DD8 menu_config_drawSlider  # [code] Slow/Fast labels and the gauge with the knob at value (plus the moving offset)
+func_801EFC20 menu_config_drawGauge  # [code] slider gauge - end caps, DR_TWIN-repeated middle and 3 LINE_F2 fill lines (same code as ovl_39 0x801F7FD4)
+func_801EF110 menu_config_drawPad  # [code] button mapping window - per action the mapped button, arrow, button and action name (GameState.unk28 nibbles)
+func_801EF2B4 menu_config_drawPort  # [code] controller port window - character names and port 1/port 2 icons
+func_801F0BE8 menu_config_drawCustom  # [code] frames of the two custom windows and the button mapping or port window
+func_801EF3F8 menu_config_drawHand  # [code] the hand at the list row, and at the custom window row while editing (blinking list hand)
+func_801F0C78 menu_config_drawScrollArrows  # [code] up/down arrow sprites 0xB8/0xB9, blinking while there is more to scroll
+func_801F0F48 menu_config_drawSmallText  # [code] func_80029D60 into the menu's primitive buffer
+func_801F0F94 menu_config_drawIcon  # [code] func_80027834 icon into the menu's primitive buffer
+func_801F0FE8 menu_config_drawText  # [code] text id via func_8002920C into the menu's primitive buffer
+func_801EFB38 menu_config_setHelpText  # [code] help-text callback - row help with its option names, or the custom window's help
+func_801EFF58 menu_config_getListView  # [code] visible rows/first row/y offset of the list, with scroll animation (like main's menuList_getView)
+func_801F1334 menu_config_getScrollView  # [code] rows scrolling in during a page scroll
+func_801F02CC menu_config_listPageUp  # [code] BTN_L1 - starts a page scroll up (flag 7), same code as ovl_39 0x801F8C34
+func_801F0380 menu_config_listPageDown  # [code] BTN_R1 - starts a page scroll down (flag 5), same code as ovl_39 0x801F8CE8
+func_801F043C menu_config_getScrollClip  # [code] clip RECT shifted by the list's scroll offset, same code as ovl_39 0x801F8BD4
+func_801F1074 menu_config_stepWindows  # [code] steps the custom windows' tweens (func_800631AC)
+func_801F10C8 menu_config_stepScroll  # [code] advances the list's row scroll (4 px) or page scroll (9 px)
+func_801F1168 menu_config_stepRumble  # [code] ends the vibration test after 9 frames (menu_config_setRumble(0))
+func_801F11C4 menu_config_setPadButton  # [code] maps button v to action slot, swapping with the slot that had it (GameState.unk28 nibbles)
+func_801F125C menu_config_isWindowMoving  # [code] custom window tween still running
+func_801F126C menu_config_hasVibration  # [code] a pad of type 7 (analog) or in state 6 is connected
+func_801F12D0 menu_config_setRumble  # [code] sets both pads' actuator bytes (D_800739B0) on or off
+D_801F1558 g_menuConfig  # [code] config menu state, ConfigMenu in include/ovl_34.h
+D_801F13F0 g_menuConfigRowText  # [code] per row - title and option text ids
+D_801F1424 g_menuConfigCustomInputFns  # [code] input handler per row while a custom window is open (rows 1 and 5)
+D_801F14BC g_menuConfigRowDrawFns  # [code] row drawers called by menu_config_drawRow
+D_801F1474 g_menuConfigPadBits  # [code] pad bit per button mapping slot
+D_801F14FC g_menuConfigPadActions  # [code] action text id and button sprite per mapping slot
+D_801F14F0 g_menuConfigSlowText  # [code] text id of the slider's left label "Slow"
+D_801F14F4 g_menuConfigFastText  # [code] text id of the slider's right label "Fast"
+D_801F1524 g_menuConfigCustomOpen  # [code] slide-in TweenDef of the custom windows (menu_config_openCustom)
+D_801F1534 g_menuConfigCustomRects  # [code] the custom windows' RECTs
+D_801F1464 g_menuConfigPadClose  # [code] slide-out TweenDef of the button mapping window, then menu_config_closeCustom
+D_801F14AC g_menuConfigPortClose  # [code] slide-out TweenDef of the port window, then menu_config_closeCustom
+D_801F1544 g_menuConfigGaugeTexWindow  # [code] texture window of the gauge (menu_config_drawGauge)
+D_801F154C g_menuConfigGaugeColors  # [code] colours of the gauge's 3 fill lines
+# FIELDS include/ovl_34.h ConfigMenu: unk0=subCursor,unk1=charCount,unk2=editing,unk3=rumbleTest,unk4=sliderDir,unk5=sliderTicks,unk6=rumbleTicks,unk8=charPortBit,unk11=charIdx,unk1C=wins,unk3C=list,unk4C=prim,unk50=primBufs,unk58=primFree; ScrollPos: unk0=rows,unk1=first,unk2=y; ConfigPadEntry: unk0=text,unk1=icon; ConfigBits: b0=sound,b1=controller,b2=cursor,b3=atb,b4=camera,b5=btlControl,b6=movement,b7=vibration,b8=btlSpeed,b14=msgSpeed,b17=hereIcon,b18=windowColor,b19=targetWindow,b20=charPort
