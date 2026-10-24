@@ -1,4 +1,4 @@
-/* Pass 4: 462 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 295 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -29,6 +29,9 @@ extern BtlModel D_801ECB64[];
 extern u8 D_801ED1A4[];
 
 s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *entry, EffInit *init) {
+    s32 n6;
+    s32 r6;
+    s32 d6;
     s32 a0b;
     s32 a_c4_w1;
     s32 k_c4_w2;
@@ -691,8 +694,8 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk44.vx = work->unk44.vy = 0x3800;
                 work->unk44.vz = 0x2000;
                 work->unk24.vy -= 0x578;
-                work->unk50.vz += 0x14;
                 work->unk24.vz += 0x2BC;
+                work->unk50.vz += 0x14;
                 ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
                 ex->Hi_ModifyEffModelRGB(work->unk68, (((ex->math_cos(a1_c6) >> 1) + 0x800) >> 5) - 0x80,
                                          (((ex->math_cos(a1_c6) >> 1) + 0x800) >> 5) - 0x80,
@@ -702,65 +705,74 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_ModifyEffModelRGB(work->unk68, (((ex->math_cos(a1_c6) >> 1) + 0x800) >> 5) - 0x80,
                                          (((ex->math_cos(a1_c6) >> 1) + 0x800) >> 5) - 0x80,
                                          (((ex->math_cos(a1_c6) >> 1) + 0x800) >> 5) - 0x80);
-                work->unk44.vz = 0x3000;
                 work->unk44.vx = work->unk44.vy = 0x2000;
                 work->unk50.vz += 0x200;
-                work->unk24.vz -= 0x2BC;
-                work->unk24.vz -= 0x9C4;
                 work->unk24.vy += 0x578;
+                work->unk24.vz -= 0x2BC;
+                work->unk44.vz = 0x3000;
                 work->unk24.vy -= 0x1388;
+                work->unk24.vz -= 0x9C4;
                 ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk6C);
                 ex->Hi_ModifyEffModelRGB(work->unk6C, -0x2B, -0x2B, -0x2B);
                 work->unk24.vy += 0x1388;
                 work->unk24.vz += 0x9C4;
                 if (frame > 0x28) {
+                    n6 = 0;
                     b_c6 = (frame - 0x28) << 8;
-                    k_c6 = ex->math_sin(b_c6 >> 2) * 5 / 2 + 0x400;
+                    scale.vx = scale.vy = (ex->math_sin(b_c6 >> 2) * 5) / 2 + 0x400;
+                    k_c6 = b_c6 >> 2;
                     scale.vz = b_c6 + 0x1800;
-                    scale.vx = scale.vy = k_c6;
                     rot.vx = -0x400;
                     rot.vy = 0;
-                    rot.vz = frame * 0x8D;
                     pos.vx = D_801EC860.vx;
-                    pos.vy = D_801EC860.vy - 0x100;
+                    rot.vz = frame * 0x8D;
+                    pos.vy = D_801EC860.vy;
                     pos.vz = D_801EC860.vz;
-                    for (i_c6 = 0; i_c6 < 1; i_c6++) {
+                    pos.vy -= 0x100;
+                    do {
                         ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk70);
-                        ex->Hi_ModifyEffModelRGB(work->unk70, (ex->math_sin(b_c6 >> 2) >> 5) - 0x80,
-                                                 (ex->math_sin(b_c6 >> 2) >> 5) - 0x80, (ex->math_sin(b_c6 >> 2) >> 5) - 0x80);
+                        ex->Hi_ModifyEffModelRGB(work->unk70, (ex->math_sin(k_c6) >> 5) - 0x80, (ex->math_sin(k_c6) >> 5) - 0x80,
+                                                 (ex->math_sin(k_c6) >> 5) - 0x80);
+                        n6++;
                         scale.vx = scale.vy = (scale.vx * 3) >> 2;
                         rot.vz += 0x400;
                         pos.vy += 0x20;
-                    }
-                    scale.vx = scale.vz = ex->math_sin(b_c6 >> 2) * 5 / 2 + 0x1000;
-                    scale.vy = (((frame - 0x28) * 0x300 << 8) >> 12) + 0x800;
+                    } while (n6 <= 0);
+                    scale.vx = scale.vz = (ex->math_sin(b_c6 >> 2) * 5) / 2 + 0x1000;
+                    scale.vy = ((b_c6 * 0x300) >> 12) + 0x800;
                     rot.vx = 0;
-                    rot.vz = 0;
                     rot.vy = frame * 0x8D;
+                    rot.vz = 0;
                     pos.vx = D_801EC860.vx;
                     pos.vy = D_801EC860.vy;
                     pos.vz = D_801EC860.vz;
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk74);
-                    ex->Hi_ModifyEffModelRGB(work->unk74, (ex->math_sin(b_c6 >> 1) >> 5) - 0x80,
-                                             (ex->math_sin(b_c6 >> 1) >> 5) - 0x80, (ex->math_sin(b_c6 >> 1) >> 5) - 0x80);
+                    n_c6 = b_c6 >> 1;
+                    ex->Hi_ModifyEffModelRGB(work->unk74, (ex->math_sin(n_c6) >> 5) - 0x80, (ex->math_sin(n_c6) >> 5) - 0x80,
+                                             (ex->math_sin(n_c6) >> 5) - 0x80);
                 }
                 from.vx = work->unk24.vx;
-                from.vy = work->unk24.vy + 0x1838;
-                from.vz = work->unk24.vz + 0xC1C;
-                for (i_c6 = 0, bolt = D_801EC8F4; i_c6 < 2; i_c6++, bolt++) {
-                    k_c6 = ex->btlfx_rand();
-                    n_c6 = ex->btlfx_randCentered(0x400);
+                from.vy = work->unk24.vy;
+                from.vz = work->unk24.vz;
+                from.vy += 0x1838;
+                from.vz += 0xC1C;
+                for (i_c6 = 0; i_c6 < 2; i_c6++) {
+                    r6 = ex->btlfx_rand();
+                    d6 = ex->btlfx_randCentered(0x400) + 0xC00;
                     ((s32 *)&to)[0] = work->unk24.vx;
                     ((s32 *)&to)[1] = work->unk24.vy;
-                    ex->func_800D044C(&from, (s32)&to, 0x1000, (XY32 *)&work->unk3C, 0x3000, k_c6);
-                    func_801E8460(entry, bolt, &from, &to, 0x100, 0x200, k_c6, 0xC0, 0, n_c6 + 0xC00, (ex->btlfx_rand() & 0x1F) + 0x58);
+                    ex->func_800D044C(&from, (s32)&to, 0x1000, (XY32 *)&work->unk3C, 0x3000, r6);
+                    func_801E8460(entry, &D_801EC8F4[i_c6], &from, &to, 0x100, 0x200, r6, 0xC0, 0, d6, (ex->btlfx_rand() & 0x1F) + 0x58);
                 }
                 if (frame >= 0x38) {
                     work->unk0 = 7;
                     entry->unk0 = -1;
-                    work->unk8.vx = work->unk10.vx = work->unk24.vx;
-                    work->unk8.vy = work->unk10.vy = work->unk24.vy;
-                    work->unk8.vz = work->unk10.vz = work->unk24.vz;
+                    work->unk8.vx = work->unk24.vx;
+                    work->unk8.vy = work->unk24.vy;
+                    work->unk8.vz = work->unk24.vz;
+                    work->unk10.vx = work->unk24.vx;
+                    work->unk10.vy = work->unk24.vy;
+                    work->unk10.vz = work->unk24.vz;
                 }
                 break;
             }
