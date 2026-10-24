@@ -5,7 +5,10 @@ splat never rewrites an existing .c file, so after symbol/boundary changes the
 INCLUDE_ASM list in src/**/*.c goes stale. Usage: resplit.py [yaml ...] This moves each C file aside, lets
 splat regenerate it, then merges back: the old preamble (everything before the
 first INCLUDE_ASM or function), and every decompiled function body replacing
-its INCLUDE_ASM line. Run inside the container: tools/docker.sh make resplit
+its INCLUDE_ASM line. Text between items (multi-line comments, #defines, top-level
+__asm__ padding, comments above INCLUDE_RODATA lines) travels with the item below it,
+so an unchanged layout round-trips byte for byte. A definition declared under an asm
+label (`T f_def(...) __asm__("f");`) fills f's slot. Run inside the container: tools/docker.sh make resplit
 """
 import glob
 import os
@@ -19,57 +22,207 @@ DEFAULT_YAMLS = ["config/slus_012.51.yaml"]
 FUNC_DEF = re.compile(
     r"^[A-Za-z_][^;{}():]*?\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:[A-Za-z_][^;{}()]*;\s*)*\{", re.M)
 ASM_SLOT = re.compile(r'^INCLUDE_ASM\("[^"]+",\s*(\w+)\);', re.M)
-INCLUDE = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*(\w+)\);\n', re.M)
+INCLUDE = re.compile(r'^INCLUDE_(ASM|RODATA)\("[^"]+",\s*(\w+)\);\n', re.M)
 # Data converted from INCLUDE_RODATA to C, e.g. `const u8 D_801EDF84[0x1260] = {...};`
 # Any name, so data keeps its body after tools/rename.py gives it a real one.
 DATA_DEF = re.compile(r"^(?:static\s+)?(?:const\s+)?[A-Za-z_][\w \*]*?\b([A-Za-z_]\w*)\s*(?:\[[^\]\n]*\]\s*)*=\s*\{", re.M)
-# Comments and INCLUDE_RODATA lines between a glued helper and the function that uses it.
-SKIP_COMMENTS = re.compile(r"\A(?:\s*(?:/\*.*?\*/|//[^\n]*|INCLUDE_RODATA\([^)]*\);))*\s*", re.S)
 LEADING_COMMENT = re.compile(r"(?:^(?:/\*.*\*/|//.*)\n)+\Z", re.M)
+# A declaration giving a C name an asm label, e.g. `T *func_X_def(s32, S) __asm__("func_X");`: the
+# definition of func_X_def is the body for func_X's slot.
+ASM_ALIAS = re.compile(r'\b([A-Za-z_]\w*)\s*\([^;{}]*\)\s*(?:__asm__|asm)\s*\(\s*"(\w+)"\s*\)\s*;')
+EMPTY_BODY = re.compile(r"\{\s*\}\n?$")
+
+
+def asm_aliases(texts):
+    """{C name: asm label} from every `__asm__("label")` declaration in headers and the given sources."""
+    out = {}
+    headers = [open(p).read() for p in glob.glob("include/**/*.h", recursive=True)]
+    for text in headers + list(texts):
+        for m in ASM_ALIAS.finditer(text):
+            if m.group(1) != m.group(2):
+                out[m.group(1)] = m.group(2)
+    return out
 
 
 def _with_comment(text, start):
     """Extend start backwards over comment lines directly above a definition."""
-    m = LEADING_COMMENT.search(text, 0, start)
-    return m.start() if m and m.end() == start else start
+    while start:
+        prev = text.rfind("\n", 0, start - 1) + 1
+        if not LEADING_COMMENT.fullmatch(text, prev, start):
+            break
+        start = prev
+    return start
 
 
-def split_c(text):
-    """Return (preamble, {name: body}) for a C file."""
-    starts = [m.start() for m in INCLUDE.finditer(text)] + [m.start() for m in FUNC_DEF.finditer(text)]
-    first = min(starts) if starts else len(text)
-    first = _with_comment(text, first)
-    preamble = text[:first]
-    bodies = {}
-    data = set()
+class Item:
+    """A top-level INCLUDE_ASM/INCLUDE_RODATA line ("asm"/"rodata") or C definition ("def").
+    lead: the text between the previous item and this one, minus the one blank separator line splat writes."""
+
+    def __init__(self, kind, name, start, end, text, data=False):
+        self.kind, self.name, self.start, self.end, self.data = kind, name, start, end, data
+        self.body = text[start:end]
+        self.lead = ""
+
+    @property
+    def chunk(self):
+        return self.lead + self.body
+
+
+def parse(text):
+    """Return (preamble, [Item], tail) for a C file; tail is the text after the last item."""
+    found = [(m.start(), m.end(), m.group(1).lower(), m.group(2)) for m in INCLUDE.finditer(text)]
     for m in FUNC_DEF.finditer(text):
         end = re.compile(r"^\}\n", re.M).search(text, m.end())
         if not end:
             sys.exit(f"unterminated function {m.group(1)}")
-        bodies[m.group(1)] = text[_with_comment(text, m.start()):end.end()]
+        found.append((m.start(), end.end(), "def", m.group(1)))
+    first = _with_comment(text, min(f[0] for f in found)) if found else len(text)
     for m in DATA_DEF.finditer(text):
         if m.start() < first:
             continue  # declarations in the preamble stay there
         end = re.compile(r"^\};\n", re.M).search(text, m.end())
         if not end:
             sys.exit(f"unterminated data definition {m.group(1)}")
-        bodies[m.group(1)] = text[_with_comment(text, m.start()):end.end()]
-        data.add(m.group(1))
-    # Rodata that splat migrated into a function's asm has no slot of its own; keep it
-    # glued to the function that directly follows it.
-    # Same for file-local helpers (`static [inline] f(...) {...}`) written next to their user.
-    for name in [n for n in bodies if n in data or bodies[n].lstrip().startswith(("static", "/*"))
-                 and re.search(r"^static\b", bodies[n], re.M)]:
-        body = bodies[name]
-        after = text[text.index(body) + len(body):]
-        nxt = FUNC_DEF.match(SKIP_COMMENTS.sub("", after, count=1))
-        if nxt and nxt.group(1) in bodies:
-            bodies[nxt.group(1)] = body + "\n" + bodies[nxt.group(1)]
-            del bodies[name]
-    return preamble, bodies
+        found.append((m.start(), end.end(), "data", m.group(1)))
+    items, pos = [], first
+    for start, end, kind, name in sorted(found):
+        if start < pos:
+            continue  # inside an earlier definition
+        if kind in ("def", "data"):
+            start = max(_with_comment(text, start), pos)
+        it = Item("def" if kind == "data" else kind, name, start, end, text, data=kind == "data")
+        gap = text[pos:start]
+        it.lead = gap[1:] if items and gap.startswith("\n") else gap
+        items.append(it)
+        pos = end
+    return text[:first], items, text[pos:]
 
 
-EMPTY_BODY = re.compile(r"\{\s*\}\n?$")
+def glue(items):
+    """Rodata that splat migrated into a function's asm has no slot of its own; keep it glued to the
+    function that directly follows it (only INCLUDE_RODATA lines in between). Same for file-local
+    helpers (`static [inline] f(...) {...}`) written next to their user. Returns (items, names of
+    INCLUDE_RODATA lines now carried inside a glued chunk)."""
+    out, absorbed, i = [], set(), 0
+    while i < len(items):
+        it = items[i]
+        helper = it.kind == "def" and (it.data or it.body.lstrip().startswith(("static", "/*"))
+                                       and re.search(r"^static\b", it.body, re.M))
+        j = i + 1
+        while j < len(items) and items[j].kind == "rodata":
+            j += 1
+        if helper and j < len(items) and items[j].kind == "def":
+            # The next function keeps its name and slot and carries everything from `it` on (a helper
+            # glued onto another helper is carried along by the next iteration).
+            absorbed.update(r.name for r in items[i + 1:j])
+            items[j].lead = it.chunk + "".join("\n" + r.chunk for r in items[i + 1:j]) + "\n" + items[j].lead
+            i = j
+            continue
+        out.append(it)
+        i += 1
+    return out, absorbed
+
+
+def split_c(text):
+    """Return (preamble, {name: body}) for a C file (bodies with glued helpers and comments)."""
+    preamble, items, _ = parse(text)
+    items, _ = glue(items)
+    return preamble, {it.name: it.chunk for it in items if it.kind == "def"}
+
+
+def slot_re(name, kinds="ASM|RODATA"):
+    return re.compile(r'^INCLUDE_(?:' + kinds + r')\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
+
+
+def merge(old, fresh, aliases):
+    """old, fresh: {path: text}. Returns (new texts, {path: kept count}, missing list)."""
+    # Fresh splat output, with each old file's preamble restored.
+    new = {}
+    for path, text in fresh.items():
+        if path in old:
+            text = parse(old[path])[0] + text[len(parse(text)[0]):]
+        new[path] = text
+    same_bin = lambda path, files: [p for p in files if os.path.dirname(p) == os.path.dirname(path)]
+
+    # INCLUDE_RODATA lines keep their place in front of the item that followed them (their order
+    # against the C functions' own rodata matters), as long as splat still emits them.
+    RODATA_ANY = re.compile(r'^INCLUDE_RODATA\("[^"]+",\s*(\w+)\);', re.M)
+    parsed = {}
+    for path, text in old.items():
+        _, items, tail = parse(text)
+        items, absorbed = glue(items)
+        still = set().union(*(set(RODATA_ANY.findall(new[p])) for p in same_bin(path, new)))
+        out, run = [], []
+        for it in items:
+            if it.kind == "rodata":
+                run.append(it)
+                continue
+            if run:
+                it.lead = "".join(r.chunk + "\n" if r.name in still else r.lead for r in run) + it.lead
+                absorbed.update(r.name for r in run)
+                run = []
+            out.append(it)
+        parsed[path] = out + run, absorbed, tail
+
+    # Rodata the old sources no longer INCLUDE_RODATA (now emitted by C, e.g. string literals), or that
+    # a glued chunk now carries itself, must not come back as a slot.
+    RODATA_SLOT = re.compile(r'^INCLUDE_RODATA\("[^"]+",\s*(\w+)\);\n(?:\n)?', re.M)
+    for npath in new:
+        olds = same_bin(npath, old)
+        if not olds:
+            continue
+        had = set().union(*(set(RODATA_SLOT.findall(old[p])) for p in olds))
+        gone = set().union(*(parsed[p][1] for p in olds))
+        new[npath] = RODATA_SLOT.sub(
+            lambda m: m.group(0) if m.group(1) in had and m.group(1) not in gone else "", new[npath])
+
+    # Put every item back over its slot, in whichever file of the same binary it now lives (overlays at
+    # the same address reuse names). Slots still INCLUDE'd keep their lead (comments above them).
+    missing, kept = [], {}
+    for path, (items, _, _) in parsed.items():
+        for it in items:
+            name = aliases.get(it.name, it.name)  # the slot is named after the asm label
+            if it.kind != "def":
+                if not it.lead:
+                    continue
+                pat = slot_re(name, it.kind.upper())
+                for npath in same_bin(path, new):
+                    new[npath], n = pat.subn(lambda m: it.lead + m.group(0), new[npath], count=1)
+                    if n:
+                        break
+                continue
+            if EMPTY_BODY.search(it.body):
+                # splat regenerates trivial functions as `void f(void) {}`; keep the
+                # hand-written signature (and what precedes it).
+                for npath in same_bin(path, new):
+                    hit = [n for n in parse(new[npath])[1]
+                           if n.kind == "def" and n.name == name and EMPTY_BODY.search(n.body)]
+                    if hit:
+                        new[npath] = new[npath][:hit[0].start] + it.chunk + new[npath][hit[0].end:]
+                        break
+                continue
+            for npath in same_bin(path, new):
+                new[npath], n = slot_re(name).subn(lambda _: it.chunk, new[npath], count=1)
+                if n:
+                    kept[npath] = kept.get(npath, 0) + 1
+                    break
+            else:
+                missing.append((path, it.name))
+
+    # Text after the last item (trailing comments or padding) stays at the end of its file.
+    for path, (_, _, tail) in parsed.items():
+        if path in new:
+            new[path] = new[path].rstrip("\n") + "\n" + tail
+
+    # Safety net: anything that was C before must not come back as INCLUDE_ASM.
+    for path, text in old.items():
+        siblings = same_bin(path, new)
+        now_asm = set().union(*(set(ASM_SLOT.findall(new[p])) for p in siblings)) if siblings else set()
+        old_asm_all = set().union(*(set(ASM_SLOT.findall(old[p])) for p in same_bin(path, old)))
+        for name in sorted(now_asm - old_asm_all):
+            if re.search(r"\b" + re.escape(name) + r"\s*\(", text):
+                missing.append((path, name + " (was C, would revert to asm)"))
+    return new, kept, missing
 
 
 def main():
@@ -111,76 +264,8 @@ def main():
             os.replace(path + ".bak", path)
         raise
 
-    # Fresh splat output, with each old file's preamble restored.
-    new = {}
-    for path in glob.glob("src/**/*.c", recursive=True):
-        if not mine(path):
-            continue
-        text = open(path).read()
-        if path in old:
-            pre, _ = split_c(old[path])
-            new_pre, _ = split_c(text)
-            text = pre + text[len(new_pre):]
-        new[path] = text
-
-    # Rodata the old sources no longer INCLUDE_RODATA (now emitted by C, e.g. string literals)
-    # must not come back as a slot.
-    RODATA_SLOT = re.compile(r'^INCLUDE_RODATA\("[^"]+",\s*(\w+)\);\n(?:\n)?', re.M)
-    for npath in new:
-        olds = [old[p] for p in old if os.path.dirname(p) == os.path.dirname(npath)]
-        if not olds:
-            continue
-        had = set().union(*(set(RODATA_SLOT.findall(t)) for t in olds))
-        new[npath] = RODATA_SLOT.sub(lambda m: m.group(0) if m.group(1) in had else "", new[npath])
-
-    # Comments documenting still-unmatched functions sit directly above their INCLUDE_ASM line;
-    # carry them over (deduplicated).
-    for path, text in old.items():
-        for m in re.finditer(r'((?:^(?:/\*.*\*/|//.*)\n)+)INCLUDE_ASM\("[^"]+",\s*(\w+)\);', text, re.M):
-            lines = list(dict.fromkeys(m.group(1).splitlines(keepends=True)))
-            pat = re.compile(r'^(INCLUDE_ASM\("[^"]+",\s*' + re.escape(m.group(2)) + r'\);)', re.M)
-            for npath in [p for p in new if os.path.dirname(p) == os.path.dirname(path)]:
-                new[npath], n = pat.subn(lambda mm: "".join(lines) + mm.group(1), new[npath], count=1)
-                if n:
-                    break
-
-    # Put every hand-written body back over its INCLUDE_ASM slot, in whichever file it now lives.
-    # Empty bodies are skipped: splat regenerates trivial functions as C itself.
-    missing, kept = [], {}
-    for path, text in old.items():
-        _, bodies = split_c(text)
-        for name, body in bodies.items():
-            if EMPTY_BODY.search(body):
-                # splat regenerates trivial functions as `void f(void) {}`; keep the
-                # hand-written signature if it differs.
-                for npath in [p for p in new if os.path.dirname(p) == os.path.dirname(path)]:
-                    _, nb = split_c(new[npath])
-                    if name in nb and EMPTY_BODY.search(nb[name]):
-                        if nb[name] != body:
-                            new[npath] = new[npath].replace(nb[name], body, 1)
-                        break
-                continue
-            pat = re.compile(r'^INCLUDE_(?:ASM|RODATA)\("[^"]+",\s*' + re.escape(name) + r"\);\n", re.M)
-            # Only files of the same binary: overlays at the same address reuse names.
-            for npath in [p for p in new if os.path.dirname(p) == os.path.dirname(path)]:
-                new[npath], n = pat.subn(lambda _: body, new[npath])
-                if n:
-                    kept[npath] = kept.get(npath, 0) + 1
-                    break
-            else:
-                missing.append((path, name))
-
-    # Safety net: anything that was C before must not come back as INCLUDE_ASM.
-    for path, text in old.items():
-        was_asm = set(ASM_SLOT.findall(text))
-        siblings = [p for p in new if os.path.dirname(p) == os.path.dirname(path)]
-        now_asm = set().union(*(set(ASM_SLOT.findall(new[p])) for p in siblings)) if siblings else set()
-        old_asm_all = set().union(*(set(ASM_SLOT.findall(old[p])) for p in old
-                                    if os.path.dirname(p) == os.path.dirname(path)))
-        for name in sorted(now_asm - old_asm_all):
-            if re.search(r"\b" + re.escape(name) + r"\s*\(", text):
-                missing.append((path, name + " (was C, would revert to asm)"))
-
+    fresh = {p: open(p).read() for p in glob.glob("src/**/*.c", recursive=True) if mine(p)}
+    new, kept, missing = merge(old, fresh, asm_aliases(old.values()))
     for path, text in new.items():
         open(path, "w").write(text)
     for path, n in sorted(kept.items()):

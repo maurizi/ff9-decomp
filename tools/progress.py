@@ -46,17 +46,19 @@ def functions():
     """{(binary, name): (size, addr)} for every function. Read from the committed indexes
     (written by --write-index after a full split), because a plain split only emits asm
     for functions still INCLUDE_ASM'd."""
-    if os.path.exists(INDEX):
-        out = {}
-        for path in (INDEX, FX_INDEX):
-            if not os.path.exists(path):
-                continue
-            for line in open(path):
-                f = line.split()
-                if len(f) == 4 and not line.startswith("#"):
-                    out[(f[0], f[1])] = (int(f[2], 16), int(f[3], 16))
-        return out
-    return functions_from_asm()
+    return functions_indexed() if os.path.exists(INDEX) else functions_from_asm()
+
+
+def functions_indexed():
+    out = {}
+    for path in (INDEX, FX_INDEX):
+        if not os.path.exists(path):
+            continue
+        for line in open(path):
+            f = line.split()
+            if len(f) == 4 and not line.startswith("#"):
+                out[(f[0], f[1])] = (int(f[2], 16), int(f[3], 16))
+    return out
 
 
 def functions_from_asm():
@@ -165,10 +167,26 @@ def main():
     ap.add_argument("--bin", help="restrict to one binary (main, ovl_0a, ...)")
     ap.add_argument("--write-index", action="store_true",
                     help="rewrite config/functions.us.txt from asm/ (needs a FULL split: make resplit)")
+    ap.add_argument("--force", action="store_true", help="--write-index even if asm/ lacks indexed functions")
     a = ap.parse_args()
 
     if a.write_index:
         funcs = functions_from_asm()
+        # A plain split only writes asm for functions still INCLUDE_ASM'd, so indexed functions that are
+        # missing from asm/ but defined in C mean the split wasn't full. (Functions that are gone from
+        # both, e.g. merged by a boundary change, may drop out.)
+        have = {b for b, _ in funcs}
+        lost, src = [], {}
+        for (b, n) in functions_indexed():
+            if b in have and (b, n) not in funcs:
+                if b not in src:
+                    src[b] = "".join(open(f).read() for f in glob.glob(f"src/**/{b}/*.c", recursive=True))
+                if re.search(r"\b" + re.escape(n) + r"\s*\(", src[b]):
+                    lost.append(f"{b}:{n}")
+        if lost and not a.force:
+            raise SystemExit(f"refusing to write the index: {len(lost)} indexed functions defined in C have no asm "
+                             f"(e.g. {', '.join(lost[:5])}), so asm/ comes from a plain split. Run "
+                             f"tools/docker.sh make resplit first, or pass --force if they really are gone.")
         for path, keep in ((INDEX, lambda b: not is_fx(b)), (FX_INDEX, is_fx)):
             sel = {k: v for k, v in funcs.items() if keep(k[0])}
             if path == FX_INDEX and not sel:
