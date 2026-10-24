@@ -82,8 +82,8 @@ void mbg_streamOnVideoSector(void) {
     }
     s = (Ovl64SectHdr *)p;
     if ((s->unk1C.w >> 28) & 2) {
-        g_mbgSlotMasks[g_mbgStream.unk68].unk0 = s->unk1C.w & 0xFFFF;
-        g_mbgSlotMasks[g_mbgStream.unk68].unk4 = (s32)((u8 *)s + (s->unk1C.h.hi & 0xFFF));
+        g_mbgSlotMasks[g_mbgStream.unk68].size = s->unk1C.w & 0xFFFF;
+        g_mbgSlotMasks[g_mbgStream.unk68].data = (s32)((u8 *)s + (s->unk1C.h.hi & 0xFFF));
     }
 end:
     g_mbgStream.sector++;
@@ -106,8 +106,8 @@ end:
             g_mbgStream.unk68 = g_mbgStream.slotCount;
         }
         g_mbgStream.unk68--;
-        g_mbgSlotMasks[g_mbgStream.unk68].unk0 = 0;
-        g_mbgSlotMasks[g_mbgStream.unk68].unk4 = 0;
+        g_mbgSlotMasks[g_mbgStream.unk68].size = 0;
+        g_mbgSlotMasks[g_mbgStream.unk68].data = 0;
     } else {
         g_mbgStream.unk64++;
     }
@@ -135,21 +135,21 @@ void mbg_streamOnAudioSector(void) {
             } else {
                 info = &s->unk14[0];
             }
-            g_mbgSlotCameras[g_mbgStream.unk68].unk0 = info->unk0;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk2 = info->unk2;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk4 = info->unk4;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk6 = info->unk6;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk8 = info->unk8;
-            g_mbgSlotCameras[g_mbgStream.unk68].unkA = info->unkA;
-            g_mbgSlotCameras[g_mbgStream.unk68].unkC = info->unkC;
-            g_mbgSlotCameras[g_mbgStream.unk68].unkE = info->unkE;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk10 = info->unk10;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk12 = info->unk12;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk14 = info->unk14;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk18 = info->unk18;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk1C = info->unk1C;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk20 = info->unk20;
-            g_mbgSlotCameras[g_mbgStream.unk68].unk22 = info->unk22;
+            g_mbgSlotCameras[g_mbgStream.unk68].id = info->id;
+            g_mbgSlotCameras[g_mbgStream.unk68].m00 = info->m00;
+            g_mbgSlotCameras[g_mbgStream.unk68].m01 = info->m01;
+            g_mbgSlotCameras[g_mbgStream.unk68].m02 = info->m02;
+            g_mbgSlotCameras[g_mbgStream.unk68].m10 = info->m10;
+            g_mbgSlotCameras[g_mbgStream.unk68].m11 = info->m11;
+            g_mbgSlotCameras[g_mbgStream.unk68].m12 = info->m12;
+            g_mbgSlotCameras[g_mbgStream.unk68].m20 = info->m20;
+            g_mbgSlotCameras[g_mbgStream.unk68].m21 = info->m21;
+            g_mbgSlotCameras[g_mbgStream.unk68].m22 = info->m22;
+            g_mbgSlotCameras[g_mbgStream.unk68].tx = info->tx;
+            g_mbgSlotCameras[g_mbgStream.unk68].ty = info->ty;
+            g_mbgSlotCameras[g_mbgStream.unk68].tz = info->tz;
+            g_mbgSlotCameras[g_mbgStream.unk68].ofsX = info->ofsX;
+            g_mbgSlotCameras[g_mbgStream.unk68].ofsY = info->ofsY;
             g_mbgStream.unk3 = 1;
         }
         if (s->unk5C < 0) {
@@ -195,8 +195,8 @@ void mbg_streamOnAudioSector(void) {
             g_mbgStream.unk68 = g_mbgStream.slotCount;
         }
         g_mbgStream.unk68--;
-        g_mbgSlotMasks[g_mbgStream.unk68].unk0 = 0;
-        g_mbgSlotMasks[g_mbgStream.unk68].unk4 = 0;
+        g_mbgSlotMasks[g_mbgStream.unk68].size = 0;
+        g_mbgSlotMasks[g_mbgStream.unk68].data = 0;
     }
     if (s->unk60 != 0xEEEEEEEE && s->unk60 != g_mbgStream.lastFrame) {
         g_mbgStream.lastFrame = s->unk60;
@@ -227,8 +227,8 @@ s32 mbg_streamStart(s32 unused, u32 arg1, s32 arg2, void (*arg3)(void), s32 arg4
     g_mbgStream.lastReadTime = VSync(-1);
     g_mbgStreamDeferred = 0;
     for (i = 0; i < 16; i++) {
-        g_mbgSlotMasks[i].unk0 = 0;
-        g_mbgSlotMasks[i].unk4 = 0;
+        g_mbgSlotMasks[i].size = 0;
+        g_mbgSlotMasks[i].data = 0;
     }
     g_mbgStreamBusy = 0;
     CdSetDebug(0);

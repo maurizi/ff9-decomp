@@ -84,3 +84,4 @@ g_mbgSectorLogCount = 0x8019DE0C; // [code] entries in g_mbgSectorLogFrame/g_mbg
 g_mbgSectorLogFrame = 0x801A07F0; // [code] frame number of each logged sector read
 g_mbgSectorLogSlot = 0x801A06F0; // [code] ring slot of each logged sector read
 g_mbgSlotRumble = 0x8019F7D0; // [code] per ring slot - the frame's pad vibration (MbgRumble), copied to the actuator bytes D_800739B0 by mbg_readFrame
+g_mbgStartCameraId = 0x8019F278; // [code] id (Ovl64FrameInfo.id) of the first frame's camera, saved with g_mbgStartCamera by mbg_readFrame and returned by mbg_getStartCamera

@@ -2144,3 +2144,7 @@ D_801A07F0 g_mbgSectorLogFrame  # [code] frame number of each logged sector read
 D_801A06F0 g_mbgSectorLogSlot  # [code] ring slot of each logged sector read
 D_8019F7D0 g_mbgSlotRumble  # [code] per ring slot - the frame's pad vibration (MbgRumble), copied to the actuator bytes D_800739B0 by mbg_readFrame
 # FIELDS include/ovl_64.h Ovl64Flag renamed MbgRumble: unk0=on,unk1=level
+
+## ovl_64: ovl_64 (movie player, frame camera)
+D_8019F278 g_mbgStartCameraId  # [code] id (Ovl64FrameInfo.id) of the first frame's camera, saved with g_mbgStartCamera by mbg_readFrame and returned by mbg_getStartCamera
+# FIELDS include/ovl_64.h Ovl64FrameInfo: unk0=id,unk2..unk12=m00..m22,unk14=tx,unk18=ty,unk1C=tz,unk20=ofsX,unk22=ofsY; Ovl64Header: unk0..unk10=m00..m22,unk14=tx,unk18=ty,unk1C=tz; Ovl64Size: unk0=x,unk4=y; Ovl64Pair: unk0=size,unk4=data; Ovl64Cfg: b7=vibrationOff

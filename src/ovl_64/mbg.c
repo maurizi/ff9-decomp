@@ -5,17 +5,17 @@ u8 *mbg_readFrame(Ovl64Out *out) {
     u8 *data;
     Ovl64RingHdr *hdr;
     Ovl64FrameInfo *info;
-    Ovl64Pair *pair;
-    MbgRumble *flag;
+    Ovl64Pair *mask;
+    MbgRumble *rumble;
     s32 tries;
     s32 ret;
     s8 hi;
 
     tries = 1000;
     info = NULL;
-    pair = NULL;
-    flag = NULL;
-    ret = mbg_streamGetFrame(&data, &hdr, &info, &pair, &flag);
+    mask = NULL;
+    rumble = NULL;
+    ret = mbg_streamGetFrame(&data, &hdr, &info, &mask, &rumble);
     while (ret != 0) {
         if (ret == 5) {
             g_mbgPlayer.ended = 1;
@@ -24,50 +24,50 @@ u8 *mbg_readFrame(Ovl64Out *out) {
         if (--tries == 0) {
             return NULL;
         }
-        ret = mbg_streamGetFrame(&data, &hdr, &info, &pair, &flag);
+        ret = mbg_streamGetFrame(&data, &hdr, &info, &mask, &rumble);
     }
     if (info != NULL) {
-        gte_SetGeomOffset((s16)info->unk20 + 0xA0, (s16)info->unk22 + 0x70);
+        gte_SetGeomOffset((s16)info->ofsX + 0xA0, (s16)info->ofsY + 0x70);
         if (g_mbgPlayer.unk6 != 0) {
-            g_mbgGeomOffset.unk0 = (s16)info->unk20 + 0xA0;
-            g_mbgGeomOffset.unk4 = (s16)info->unk22 + 0x70;
-            g_mbgStartCamera.unk0 = info->unk2;
-            g_mbgStartCamera.unk2 = info->unk4;
-            g_mbgStartCamera.unk4 = info->unk6;
-            g_mbgStartCamera.unk6 = info->unk8;
-            g_mbgStartCamera.unk8 = info->unkA;
-            g_mbgStartCamera.unkA = info->unkC;
-            g_mbgStartCamera.unkC = info->unkE;
-            g_mbgStartCamera.unkE = info->unk10;
-            g_mbgStartCamera.unk10 = info->unk12;
-            g_mbgStartCamera.unk14 = info->unk14;
-            g_mbgStartCamera.unk18 = info->unk18;
-            g_mbgStartCamera.unk1C = info->unk1C;
-            D_8019F278 = info->unk0;
+            g_mbgGeomOffset.x = (s16)info->ofsX + 0xA0;
+            g_mbgGeomOffset.y = (s16)info->ofsY + 0x70;
+            g_mbgStartCamera.m00 = info->m00;
+            g_mbgStartCamera.m01 = info->m01;
+            g_mbgStartCamera.m02 = info->m02;
+            g_mbgStartCamera.m10 = info->m10;
+            g_mbgStartCamera.m11 = info->m11;
+            g_mbgStartCamera.m12 = info->m12;
+            g_mbgStartCamera.m20 = info->m20;
+            g_mbgStartCamera.m21 = info->m21;
+            g_mbgStartCamera.m22 = info->m22;
+            g_mbgStartCamera.tx = info->tx;
+            g_mbgStartCamera.ty = info->ty;
+            g_mbgStartCamera.tz = info->tz;
+            g_mbgStartCameraId = info->id;
             g_mbgPlayer.unk6 = 0;
         } else {
-            g_gameState->unk1C->unk18.m[0][0] = info->unk2;
-            g_gameState->unk1C->unk18.m[0][1] = info->unk4;
-            g_gameState->unk1C->unk18.m[0][2] = info->unk6;
-            g_gameState->unk1C->unk18.m[1][0] = info->unk8;
-            g_gameState->unk1C->unk18.m[1][1] = info->unkA;
-            g_gameState->unk1C->unk18.m[1][2] = info->unkC;
-            g_gameState->unk1C->unk18.m[2][0] = info->unkE;
-            g_gameState->unk1C->unk18.m[2][1] = info->unk10;
-            g_gameState->unk1C->unk18.m[2][2] = info->unk12;
-            g_gameState->unk1C->unk18.t[0] = info->unk14;
-            g_gameState->unk1C->unk18.t[1] = info->unk18;
-            g_gameState->unk1C->unk18.t[2] = info->unk1C;
-            g_gameState->unk1C->unkA = info->unk0;
+            g_gameState->unk1C->unk18.m[0][0] = info->m00;
+            g_gameState->unk1C->unk18.m[0][1] = info->m01;
+            g_gameState->unk1C->unk18.m[0][2] = info->m02;
+            g_gameState->unk1C->unk18.m[1][0] = info->m10;
+            g_gameState->unk1C->unk18.m[1][1] = info->m11;
+            g_gameState->unk1C->unk18.m[1][2] = info->m12;
+            g_gameState->unk1C->unk18.m[2][0] = info->m20;
+            g_gameState->unk1C->unk18.m[2][1] = info->m21;
+            g_gameState->unk1C->unk18.m[2][2] = info->m22;
+            g_gameState->unk1C->unk18.t[0] = info->tx;
+            g_gameState->unk1C->unk18.t[1] = info->ty;
+            g_gameState->unk1C->unk18.t[2] = info->tz;
+            g_gameState->unk1C->unkA = info->id;
         }
     }
-    if (flag != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->b7 || g_gameState->mode == 5)) {
-        D_800739B0[0].unk0 = flag->on;
-        D_800739B0[0].unk1 = flag->level;
+    if (rumble != NULL && (!((Ovl64Cfg *)&g_gameState->unk24)->vibrationOff || g_gameState->mode == 5)) {
+        D_800739B0[0].unk0 = rumble->on;
+        D_800739B0[0].unk1 = rumble->level;
     }
-    if (pair != NULL && pair->unk0 != 0) {
-        bcopy((void *)pair->unk4, &g_mbgMaskData[g_gameState->unk1C->unk8 ^ 1], pair->unk0);
-        g_mbgMaskSize[g_gameState->unk1C->unk8 ^ 1] = pair->unk0;
+    if (mask != NULL && mask->size != 0) {
+        bcopy((void *)mask->data, &g_mbgMaskData[g_gameState->unk1C->unk8 ^ 1], mask->size);
+        g_mbgMaskSize[g_gameState->unk1C->unk8 ^ 1] = mask->size;
     } else {
         g_mbgMaskSize[g_gameState->unk1C->unk8 ^ 1] = 0;
     }
@@ -291,8 +291,8 @@ s32 mbg_play(u32 movie, s32 idx) {
         mbg_setRgb24(g_mbgMovie->rgb24);
     }
     w = g_mbgMovie->xOffset;
-    sz.unk4 = 0;
-    sz.unk0 = w;
+    sz.y = 0;
+    sz.x = w;
     if (g_mbgRgb24) {
         g_mbgPlayer.rgb24 = 1;
         g_mbgDecode.frameRect[0].x = w + 0x1E0;
@@ -717,19 +717,19 @@ s32 mbg_getStartCamera(Ovl64Header *arg0, u16 *arg1) {
     if (g_mbgPlayer.unk6 != 0) {
         return 0;
     }
-    arg0->unk0 = g_mbgStartCamera.unk0;
-    arg0->unk2 = g_mbgStartCamera.unk2;
-    arg0->unk4 = g_mbgStartCamera.unk4;
-    arg0->unk6 = g_mbgStartCamera.unk6;
-    arg0->unk8 = g_mbgStartCamera.unk8;
-    arg0->unkA = g_mbgStartCamera.unkA;
-    arg0->unkC = g_mbgStartCamera.unkC;
-    arg0->unkE = g_mbgStartCamera.unkE;
-    arg0->unk10 = g_mbgStartCamera.unk10;
-    arg0->unk14 = g_mbgStartCamera.unk14;
-    arg0->unk18 = g_mbgStartCamera.unk18;
-    arg0->unk1C = g_mbgStartCamera.unk1C;
-    *arg1 = D_8019F278;
+    arg0->m00 = g_mbgStartCamera.m00;
+    arg0->m01 = g_mbgStartCamera.m01;
+    arg0->m02 = g_mbgStartCamera.m02;
+    arg0->m10 = g_mbgStartCamera.m10;
+    arg0->m11 = g_mbgStartCamera.m11;
+    arg0->m12 = g_mbgStartCamera.m12;
+    arg0->m20 = g_mbgStartCamera.m20;
+    arg0->m21 = g_mbgStartCamera.m21;
+    arg0->m22 = g_mbgStartCamera.m22;
+    arg0->tx = g_mbgStartCamera.tx;
+    arg0->ty = g_mbgStartCamera.ty;
+    arg0->tz = g_mbgStartCamera.tz;
+    *arg1 = g_mbgStartCameraId;
     return 1;
 }
 
@@ -737,8 +737,8 @@ s32 mbg_getGeomOffset(s32 *arg0, s32 *arg1) {
     if (g_mbgPlayer.unk6 != 0) {
         return 0;
     }
-    *arg0 = g_mbgGeomOffset.unk0;
-    *arg1 = g_mbgGeomOffset.unk4;
+    *arg0 = g_mbgGeomOffset.x;
+    *arg1 = g_mbgGeomOffset.y;
     return 1;
 }
 
