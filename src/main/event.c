@@ -68,7 +68,7 @@ s32 func_80037D6C(s32 op) {
         r = g_gameState->unk1C->unk568;
         break;
     case 17:
-        r = func_8002414C();
+        r = timer_getSeconds();
         break;
     case 18:
         r = func_8006275C();
@@ -83,7 +83,7 @@ s32 func_80037D6C(s32 op) {
         }
         break;
     case 21:
-        r = func_800240E8();
+        r = timer_isEnabled();
         break;
     case 22:
         r = D_8007AE38;
@@ -2150,13 +2150,13 @@ s32 evt_execInstr(void) {
         g_gameState->unk1C->unk80C = D_8007AE8C;
         return 0;
     case 0x69:
-        func_8002412C(evt_getArg16_inline());
+        timer_setSeconds(evt_getArg16_inline());
         return 0;
     case 0x8D:
-        func_800240B0(evt_getArg8_inline());
+        timer_enable(evt_getArg8_inline());
         return 0;
     case 0x7D:
-        func_800240F8(evt_getArg8_inline());
+        timer_setRunning(evt_getArg8_inline());
         return 0;
     case 0xEC:
         a = evt_getArg8_inline();
@@ -2382,7 +2382,7 @@ void func_800475D8(Unk8004AB64 *obj) {
         }
     }
     if (!analog) {
-        run = ((GameStateUnk24 *)&g_gameState->unk24)->unk0_6;
+        run = ((GameConfig *)&g_gameState->unk24)->unk0_6;
         if ((pad & 0x10000) ? (run ^ 1) != 0 : run != 0) {
             speed = 60;
         }

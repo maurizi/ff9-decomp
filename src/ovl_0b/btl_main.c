@@ -30,7 +30,7 @@ void btl_main(s32 arg0) {
                     func_800AF1D0();
                     g_gameState->unk1C->unk8E4.battle->unk0 |= 0x40;
                 }
-                func_80023A4C();
+                game_updateTimer();
                 func_80032098();
                 preload_update();
             }
@@ -53,7 +53,7 @@ void func_800A882C(void) {
         if (!(gd->unk0 & 0x100) || (f & 0x20)) {
             gd->unk0 |= 0x100;
             func_8005562C(0);
-            func_80023F60(1);
+            game_resumeClock(1);
             for (i = 1; i >= 0; i--) {
                 g_padActuator[i].unk1 = 0;
                 g_padActuator[i].unk0 = 0;
@@ -96,7 +96,7 @@ void func_800A882C(void) {
     } else if (f & 0x20) {
         return;
     }
-    func_80023F60(0);
+    game_resumeClock(0);
     func_80055698(0);
     g_padPortMask[0] &= ~8;
     func_800EA34C();

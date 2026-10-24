@@ -90,7 +90,7 @@ void fld_main(s32 arg0) {
                 func_800B3684();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 1)) {
-                func_80023A0C();
+                game_updateWindows();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x800)) {
                 func_80032098();
@@ -99,7 +99,7 @@ void fld_main(s32 arg0) {
                 func_800AED6C();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x80)) {
-                func_80023A4C();
+                game_updateTimer();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x1000)) {
                 preload_update();
@@ -160,7 +160,7 @@ void func_800A8198(void) {
     func_800AC5F0();
     func_800A847C();
     func_800A83E0();
-    func_800239D0();
+    game_initGfx();
     if (g_gameState->unk1C->unk0 & 0x400000) {
         func_800B0124(0x8601, 0, 0x78, 0, 0);
     }

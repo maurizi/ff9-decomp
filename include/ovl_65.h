@@ -12,7 +12,7 @@ void func_800E9DBC(void);
 void func_800F4E68(void);
 
 /* main exe: candidates for ff9.h */
-void func_800240B0(u8);
+void timer_enable(u8);
 
 /* Battle result (g_btlRewards). */
 typedef struct {

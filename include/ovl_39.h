@@ -254,7 +254,7 @@ typedef struct {
 typedef struct {
     ItemInventory unk0;
     ItemFlags unk200;
-    GameStateUnk24 unk240; /* GameState.unk24/unk28 */
+    GameConfig unk240; /* GameState.unk24/unk28 */
     u8 pad248[0x258 - 0x248];
 } SaveItems;
 
@@ -300,7 +300,7 @@ Unk8004AB64 *func_8004AE00(void);
 u8 func_800B5074(void); /* other overlay */
 void func_801F9120(u8 *, s32);
 s32 func_801F9688(void);
-void func_8002397C(void);
+void config_apply(void);
 extern RECT D_801EDF14;
 extern s32 D_801FB050[]; /* text index per mode */
 extern RECT D_801FB058;

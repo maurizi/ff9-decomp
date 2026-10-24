@@ -1192,7 +1192,7 @@ u8 *func_8002BD54(u8 *dst, u8 *src) {
 }
 
 s32 func_8002BE10(s32 arg0) {
-    return D_8006BC18[func_80023938(arg0)];
+    return D_8006BC18[config_remapButton(arg0)];
 }
 
 void func_8002BE44(s32 i, u8 *v) {

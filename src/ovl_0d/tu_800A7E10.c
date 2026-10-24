@@ -249,7 +249,7 @@ void func_800A7E10(void) {
         if (s.unk434 == 1) {
             func_800A932C(&s, "TURN ENEMY\n");
         }
-        func_80023A0C();
+        game_updateWindows();
         func_80032098();
         if (s.unk0 == 0x12 || s.unk0 == 0x23 || s.unk0 == 0x13 || s.unk0 == 0 || s.unk0 == 1 ||
             s.unk0 == 6 || s.unk0 == 0xB || s.unk0 == 0x22 || s.unk0 == 0x17 || s.unk0 == 0x18) {
@@ -263,18 +263,18 @@ void func_800A7E10(void) {
         rand();
         func_800A8BC4(&s);
     }
-    func_8002C740(0, 0, s.unk558[0]);
-    func_8002C740(0, 1, s.unk558[1]);
-    func_8002C740(0, 2, s.unk558[2]);
-    func_8002C740(0, 3, s.unk558[3]);
-    func_8002C740(0, 8, s.unk558[4]);
-    func_8002C740(0, 0xA, s.unk558[6]);
-    func_8002C740(0, 9, s.unk558[5]);
-    func_8002C740(0, 0xB, s.unk558[7]);
-    func_8002C740(0, 4, s.unk558[8]);
-    func_8002C740(0, 5, s.unk558[9]);
-    func_8002C740(0, 6, s.unk558[10]);
-    func_8002C740(0, 7, s.unk558[11]);
+    pad_setRepeatEnabled(0, 0, s.unk558[0]);
+    pad_setRepeatEnabled(0, 1, s.unk558[1]);
+    pad_setRepeatEnabled(0, 2, s.unk558[2]);
+    pad_setRepeatEnabled(0, 3, s.unk558[3]);
+    pad_setRepeatEnabled(0, 8, s.unk558[4]);
+    pad_setRepeatEnabled(0, 0xA, s.unk558[6]);
+    pad_setRepeatEnabled(0, 9, s.unk558[5]);
+    pad_setRepeatEnabled(0, 0xB, s.unk558[7]);
+    pad_setRepeatEnabled(0, 4, s.unk558[8]);
+    pad_setRepeatEnabled(0, 5, s.unk558[9]);
+    pad_setRepeatEnabled(0, 6, s.unk558[10]);
+    pad_setRepeatEnabled(0, 7, s.unk558[11]);
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     SetDispMask(0);
@@ -307,7 +307,7 @@ void func_800A8BC4(TmState *s) {
     ctx = g_gameState->unk1C;
     DrawOTag(ctx->unk10[ctx->unk8] + 0xFFF);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }
 
 void func_800A8D74(TmState *s) {
@@ -338,7 +338,7 @@ void func_800A8D74(TmState *s) {
     func_800A93C8((u8 *)0x80103C00, 2, 0x400);
     g_evtMode = 1;
     g_gameState->vsyncMode = 0;
-    func_800239D0();
+    game_initGfx();
     text_setBank(g_cardGameText);
     help_init();
     help_setHandler(help_nullHandler);
@@ -358,26 +358,26 @@ void func_800A8D74(TmState *s) {
     s->unk44C = ((TmLevel *)0x80104000)[s->unk450].unk1;
     s->unk454 = 1;
     func_800A9298(s);
-    s->unk558[0] = func_8002C700(0, 0);
-    s->unk558[1] = func_8002C700(0, 1);
-    s->unk558[2] = func_8002C700(0, 2);
-    s->unk558[3] = func_8002C700(0, 3);
-    s->unk558[4] = func_8002C700(0, 8);
-    s->unk558[6] = func_8002C700(0, 0xA);
-    s->unk558[5] = func_8002C700(0, 9);
-    s->unk558[7] = func_8002C700(0, 0xB);
-    s->unk558[8] = func_8002C700(0, 4);
-    s->unk558[9] = func_8002C700(0, 5);
-    s->unk558[10] = func_8002C700(0, 6);
-    s->unk558[11] = func_8002C700(0, 7);
-    func_8002C740(0, 0, 1);
-    func_8002C740(0, 1, 1);
-    func_8002C740(0, 2, 1);
-    func_8002C740(0, 3, 1);
-    func_8002C740(0, 0x12, 1);
-    func_8002C740(0, 0x13, 1);
-    func_8002C740(0, 0xE, 0);
-    func_8002C740(0, 0xF, 0);
+    s->unk558[0] = pad_isRepeatEnabled(0, 0);
+    s->unk558[1] = pad_isRepeatEnabled(0, 1);
+    s->unk558[2] = pad_isRepeatEnabled(0, 2);
+    s->unk558[3] = pad_isRepeatEnabled(0, 3);
+    s->unk558[4] = pad_isRepeatEnabled(0, 8);
+    s->unk558[6] = pad_isRepeatEnabled(0, 0xA);
+    s->unk558[5] = pad_isRepeatEnabled(0, 9);
+    s->unk558[7] = pad_isRepeatEnabled(0, 0xB);
+    s->unk558[8] = pad_isRepeatEnabled(0, 4);
+    s->unk558[9] = pad_isRepeatEnabled(0, 5);
+    s->unk558[10] = pad_isRepeatEnabled(0, 6);
+    s->unk558[11] = pad_isRepeatEnabled(0, 7);
+    pad_setRepeatEnabled(0, 0, 1);
+    pad_setRepeatEnabled(0, 1, 1);
+    pad_setRepeatEnabled(0, 2, 1);
+    pad_setRepeatEnabled(0, 3, 1);
+    pad_setRepeatEnabled(0, 0x12, 1);
+    pad_setRepeatEnabled(0, 0x13, 1);
+    pad_setRepeatEnabled(0, 0xE, 0);
+    pad_setRepeatEnabled(0, 0xF, 0);
     s->unk4C8[0] = 1;
     s->unk4C8[1] = 4;
     s->unk4C8[2] = 0x10;
@@ -669,7 +669,7 @@ void *func_800A993C(u32 *ot, SPRT *p, TmState *s) {
 }
 
 void func_800A9B0C(TmState *s) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
 }
 
 void *func_800A9B2C(u32 *ot, void *p, TmState *s) {

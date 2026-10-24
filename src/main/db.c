@@ -172,8 +172,8 @@ void game_initState(void) {
     game_setScreenHeight(0xE0);
     file_initImg();
     file_loadDirTables();
-    func_80023918();
-    func_80023A2C();
+    config_init();
+    game_initTimer();
     gs->unk4 = g_allocTop;
 }
 

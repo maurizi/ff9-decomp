@@ -83,16 +83,16 @@ void func_800B52DC(void) {
 
 void func_800B532C(void) {
     func_80032100();
-    func_80023A0C();
+    game_updateWindows();
     func_80032098();
-    func_80023A4C();
+    game_updateTimer();
     DrawSync(0);
     VSync(0);
     ResetGraph(1);
     PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     DrawOTagEnv(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }
 
 void func_800B5430(s32 arg0) {
@@ -119,7 +119,7 @@ void func_800B54FC(void) {
 }
 
 void func_800B553C(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     func_800B559C();
     func_800B5660();
     help_update();

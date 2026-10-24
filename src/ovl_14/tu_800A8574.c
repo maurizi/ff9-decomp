@@ -9,7 +9,7 @@ void func_800A859C(void) {
     s32 i;
 
     func_80032574();
-    func_8002C4B0(1);
+    pad_setStickAsDpad(1);
     D_800AB320.unk8 = 0;
     D_800AB320.unk0 = 1;
     D_800AB320.unk7 = 0;
@@ -30,7 +30,7 @@ void func_800A8618(void) {
 }
 
 void func_800A8638(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     if (D_800AB320.unk8 == 0) {
         func_800A86D8();
         func_800A87AC();
@@ -41,7 +41,7 @@ void func_800A8638(void) {
 }
 
 void func_800A8694(void) {
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
     func_800A8DB0();
     if (D_800AB320.unk3 == 1) {
         menu_open(4, 1);

@@ -59,7 +59,7 @@ void func_800A767C(void) {
     func_800A78C0();
     func_800A780C();
     func_800A796C();
-    func_800239D0();
+    game_initGfx();
     SetDispMask(1);
 }
 

@@ -130,8 +130,8 @@ s32 battleEnd_update(void) {
         func_8004BC38();
         return 0;
     case 6:
-        if (func_800240E8()) {
-            func_800240B0(0);
+        if (timer_isEnabled()) {
+            timer_enable(0);
         }
         func_800F4E68();
         gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk1C);

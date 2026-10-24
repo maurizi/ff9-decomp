@@ -161,8 +161,8 @@ s32 func_80062498(void); /* collector points */
 s32 func_800624D8(void);
 s32 func_8006251C(void);
 /* defined as returning u16 in main.c, but called here without masking */
-s32 func_8002C7F0(s32, s32);
-s32 func_8002C830(s32, s32);
+s32 pad_getRepeatDelay(s32, s32);
+s32 pad_getRepeatInterval(s32, s32);
 /* text width; the call result passes through an inline return value */
 static inline s32 func_801F0F9C_width(u8 *s) {
     return func_8002BA68((s32)s);

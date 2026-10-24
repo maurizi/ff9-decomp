@@ -40,7 +40,7 @@ void func_800A88C4(s32 arg0) {
                 func_800ACAFC();
             }
             if (!(g_gameState->unk1C->unk8E4.world->unk0 & 0x800)) {
-                func_80023A4C();
+                game_updateTimer();
             }
         }
         func_800AC5C8();
@@ -76,7 +76,7 @@ void func_800A8B14(void) {
     func_800A8F8C();
     func_800A9220();
     func_800B69B4();
-    func_800239D0();
+    game_initGfx();
     if (func_800C45D8() == 0) {
         g_gameState->unk1C->unk0 |= 0x400000;
     }
@@ -1281,7 +1281,7 @@ void func_800AC5C8(void) {
     }
     if (!(g_gameState->unk1C->unk0 & 0x20)) {
         g_gameState->unk1C->unk8 ^= 1;
-        func_8002C0DC(g_gameState->unk1C->unk8);
+        gfx_setBuffer(g_gameState->unk1C->unk8);
     }
 }
 
@@ -1406,7 +1406,7 @@ void func_800ACEEC(void) {
     g_gameState->unk1C->unk0 ^= 0x100;
     if (g_gameState->unk1C->unk0 & 0x100) {
         func_8005562C(0);
-        func_80023F60(1);
+        game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
             g_padActuator[i].unk0 = 0;
@@ -1426,7 +1426,7 @@ void func_800ACEEC(void) {
         DrawOTag(&D_800CE0E0);
         g_gameState->unk1C->unk0 |= 0x20;
     } else {
-        func_80023F60(0);
+        game_resumeClock(0);
         func_80055698(0);
         g_gameState->unk1C->unk0 &= ~0x20;
     }

@@ -2190,14 +2190,14 @@ void func_801F9DF8(SaveEvents *s) {
 void func_801F9EA8(SaveItems *s) {
     s->unk0 = g_gameState->unk1C->items;
     s->unk200 = g_gameState->unk1C->unk774;
-    s->unk240 = *(GameStateUnk24 *)&g_gameState->unk24;
+    s->unk240 = *(GameConfig *)&g_gameState->unk24;
 }
 
 void func_801F9F5C(SaveItems *s) {
     g_gameState->unk1C->items = s->unk0;
     g_gameState->unk1C->unk774 = s->unk200;
-    *(GameStateUnk24 *)&g_gameState->unk24 = s->unk240;
-    func_8002397C();
+    *(GameConfig *)&g_gameState->unk24 = s->unk240;
+    config_apply();
 }
 
 void func_801FA01C(Unk801FA078 *p) {

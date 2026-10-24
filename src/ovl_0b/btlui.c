@@ -24,7 +24,7 @@ void btlui_vsync(void) {
         }
     }
     D_80104E68.unk1C++;
-    g_drawBufs.unk8++;
+    g_drawBufs.lastVsync++;
     D_80104E68.unk18++;
     D_80104E68.unkF = 0;
     D_80104E68.unk1 = 0;
@@ -32,7 +32,7 @@ void btlui_vsync(void) {
 
 void func_800E9BBC(void) {
     func_800EA5C4();
-    g_drawBufs.unk0 = g_gameState->unk1C->unk8 ^ 1;
+    g_drawBufs.cur = g_gameState->unk1C->unk8 ^ 1;
     if (D_80104E68.unk0 == 0) {
         func_800EA550();
     }
@@ -249,7 +249,7 @@ void func_800EA338(s8 arg0) {
 void func_800EA34C(void) {
     u8 v = g_gameState->unk1C->unk8;
     D_80104E68.unkC = 2;
-    g_drawBufs.unk0 = v;
+    g_drawBufs.cur = v;
 }
 
 void func_800EA378(void) {
@@ -694,8 +694,8 @@ void func_800EB46C(void) {
             func_800F2890(0);
         }
         for (i = 0; i < 2; i++) {
-            func_8002C740(i, 2, 0);
-            func_8002C740(i, 3, 0);
+            pad_setRepeatEnabled(i, 2, 0);
+            pad_setRepeatEnabled(i, 3, 0);
         }
     }
 }
@@ -1330,9 +1330,9 @@ void func_800ECF0C(void) {
     s32 i;
     if (g_btlUi->unk12A4[3]->unk1C == 2 || g_btlUi->unk12A4[3]->unk1C == 3) {
         for (i = 0; i < 4; i++) {
-            addPrim(&g_ot[18], &D_801050D8->unk0[i][g_drawBufs.unk0]);
+            addPrim(&g_ot[18], &D_801050D8->unk0[i][g_drawBufs.cur]);
         }
-        addPrim(&g_ot[18], &D_801050D8->unkA0[g_drawBufs.unk0]);
+        addPrim(&g_ot[18], &D_801050D8->unkA0[g_drawBufs.cur]);
     }
 }
 
@@ -1463,7 +1463,7 @@ void func_800ED7C0(s32 x, s32 y, s32 ot, s32 w, s32 h, CVECTOR *c) {
     s32 k;
     POLY_G4 *p;
 
-    k = D_80077150 & 0x1F;
+    k = g_winLastVsync & 0x1F;
     if (k < 16) {
         if (k >= 8) {
             k = 15 - k;
@@ -1536,7 +1536,7 @@ void func_800EDC3C(void) {
     s32 v = g_btlCmdMenu.unit->unkB4->unk1B;
     btlui_setMenuState(1);
     if (v != D_80104E68.unk15) {
-        func_8002C584(v);
+        pad_resetRepeats(v);
     }
     D_80104E68.unk15 = v;
 }
@@ -2176,8 +2176,8 @@ void func_800EF80C(Unk800EF80C *arg0) {
         func_800F27CC(g_btlTarget.unkF);
     }
     for (i = 0; i < 2; i++) {
-        func_8002C740(i, 2, 1);
-        func_8002C740(i, 3, 1);
+        pad_setRepeatEnabled(i, 2, 1);
+        pad_setRepeatEnabled(i, 3, 1);
     }
 }
 
@@ -2487,8 +2487,8 @@ void btlui_cancelTarget(void) {
         u->unk68 &= ~0x20000000;
     }
     for (i = 0; i < 2; i++) {
-        func_8002C740(i, 2, 0);
-        func_8002C740(i, 3, 0);
+        pad_setRepeatEnabled(i, 2, 0);
+        pad_setRepeatEnabled(i, 3, 0);
     }
 }
 
@@ -3114,12 +3114,12 @@ void func_800F2374(void) {
 }
 
 void func_800F2560(void) {
-    SPRT *a = &D_801050D8->unkB0[g_drawBufs.unk0];
-    SPRT *b = &D_801050D8->unkD8[g_drawBufs.unk0];
+    SPRT *a = &D_801050D8->unkB0[g_drawBufs.cur];
+    SPRT *b = &D_801050D8->unkD8[g_drawBufs.cur];
     a->y0 = b->y0 = func_800F3EA4()->unk60 - 4;
     addPrim(&g_ot[18], a);
     addPrim(&g_ot[18], b);
-    addPrim(&g_ot[18], &D_801050D8->unk100[g_drawBufs.unk0]);
+    addPrim(&g_ot[18], &D_801050D8->unk100[g_drawBufs.cur]);
 }
 
 void func_800F2684(s32 arg0) {
@@ -3426,22 +3426,22 @@ void btlui_drawPanelHighlight(void) {
     s32 d = 4;
     if (c != 0xFF && D_80104E77 != 0) {
         y = D_80105078->unk60 + (c * 12 + d);
-        p = &D_801050D8->unk310[g_drawBufs.unk0];
+        p = &D_801050D8->unk310[g_drawBufs.cur];
         p->y0 = p->y1 = y;
         p->y2 = p->y3 = y + 13;
         addPrim(&g_ot[20], p);
-        addPrim(&g_ot[20], &D_801050D8->unk358[g_drawBufs.unk0]);
+        addPrim(&g_ot[20], &D_801050D8->unk358[g_drawBufs.cur]);
     }
 }
 
 void btlui_drawPanelName(s32 arg0, u32 arg1) {
     s32 k = D_80105078->unk80[arg1];
-    SPRT *s = &D_801050D8->unk110[k][g_drawBufs.unk0];
+    SPRT *s = &D_801050D8->unk110[k][g_drawBufs.cur];
     s->y0 = D_80105078->unk60 + arg1 * 12 + 3;
     s->clut = D_800F9048[(u8)D_80105078->unk78[arg1]] + ((k >> 1) << 6);
     addPrim(&g_ot[16], s);
     if (arg1 >= D_80105078->unk5C - 1) {
-        addPrim(&g_ot[16], &D_801050D8->unk2F0[g_drawBufs.unk0]);
+        addPrim(&g_ot[16], &D_801050D8->unk2F0[g_drawBufs.cur]);
     }
 }
 
@@ -3492,8 +3492,8 @@ void func_800F3A8C(void) {
     SPRT *b;
     if (D_80105078->unk0 != 0 && D_80105078->unk5C != 0) {
         for (i = 0; i < D_80105078->unk5C; i++) {
-            b = &D_801050D8->unk1B0[i][g_drawBufs.unk0];
-            a = &D_801050D8->unk250[i][g_drawBufs.unk0];
+            b = &D_801050D8->unk1B0[i][g_drawBufs.cur];
+            a = &D_801050D8->unk250[i][g_drawBufs.cur];
             a->y0 = y;
             b->y0 = y;
             y += 12;
@@ -3503,7 +3503,7 @@ void func_800F3A8C(void) {
             addPrim(&g_ot[18], b);
             addPrim(&g_ot[18], a);
         }
-        addPrim(&g_ot[18], &D_801050D8->unk300[g_drawBufs.unk0]);
+        addPrim(&g_ot[18], &D_801050D8->unk300[g_drawBufs.cur]);
     }
 }
 
@@ -3731,18 +3731,18 @@ void func_800F4630(void) {
     s32 i;
     s32 j;
     u8 *row;
-    func_8002C4B0(1);
+    pad_setStickAsDpad(1);
     i = 0;
     row = D_80104E94[0];
     for (; i < 2; i++, row += 0x18) {
         for (j = 0; j < 0x17; j++) {
-            row[j] = func_8002C700(i, j);
+            row[j] = pad_isRepeatEnabled(i, j);
         }
-        func_8002C740(i, 2, 0);
-        func_8002C740(i, 3, 0);
-        func_8002C8E8(i, 0xE, 0xF, 0xA);
-        func_8002C740(i, 0xE, 1);
-        func_8002C64C(i);
+        pad_setRepeatEnabled(i, 2, 0);
+        pad_setRepeatEnabled(i, 3, 0);
+        pad_setRepeatTiming(i, 0xE, 0xF, 0xA);
+        pad_setRepeatEnabled(i, 0xE, 1);
+        pad_clearRepeats(i);
     }
     D_80104E76 = func_800F47D8();
 }
@@ -3752,16 +3752,16 @@ void func_800F4700(void) {
     u8 *p;
     for (i = 0, p = D_80104E94[0]; i < 2; i++) {
         for (j = 0; j < 0x17; j++) {
-            func_8002C740(i, j, p[j]);
+            pad_setRepeatEnabled(i, j, p[j]);
         }
         p += 0x18;
     }
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
 }
 
 void btlui_readPad(void) {
     pad_update();
-    func_8002C308(D_80104E68.unk15);
+    pad_updateRepeat(D_80104E68.unk15);
     if ((g_padRepeat & 8) && D_80104E68.unkB == 0) {
         D_80104E68.unkB = 1;
     }
@@ -3802,12 +3802,12 @@ void func_800F48E4(void) {
     u32 *a = func_800F2A60(0xC0);
     s32 b = (s32)func_800F2A60(0x4000);
     DRAWENV *e;
-    func_8002BEEC(a, a + 0x18, b, b + 0x2000);
+    gfx_init(a, a + 0x18, b, b + 0x2000);
     func_8002C064(2);
-    func_8002C138(g_gameState->unk1C->unk8);
+    gfx_setBufferIndex(g_gameState->unk1C->unk8);
     D_801051E0 = 0;
-    g_ot = g_drawBufs.unk14[0];
-    g_primPtr = g_drawBufs.unkC[0];
+    g_ot = g_drawBufs.ots[0];
+    g_primPtr = g_drawBufs.prims[0];
     e = g_gameState->unk10;
     e[1].dfe = 1;
     e[0].dfe = 1;
@@ -3815,8 +3815,8 @@ void func_800F48E4(void) {
     D_801051E8[0][1] = g_gameState->unkC[0].disp.y;
     D_801051E8[1][0] = g_gameState->unkC[1].disp.x;
     D_801051E8[1][1] = g_gameState->unkC[1].disp.y;
-    ClearOTagR(g_drawBufs.unk14[0], 0x18);
-    ClearOTagR(g_drawBufs.unk14[1], 0x18);
+    ClearOTagR(g_drawBufs.ots[0], 0x18);
+    ClearOTagR(g_drawBufs.ots[1], 0x18);
     DrawSync(0);
 }
 

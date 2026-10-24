@@ -94,7 +94,7 @@ void func_801EED9C(void) {
             for (i = 0; i < 2; i++) {
                 func_80063118(&D_801F1558.unk1C[i], D_801F1464, 0);
             }
-            func_8002397C();
+            config_apply();
             return;
         }
         if (g_padRepeat & PAD_UP) {
@@ -300,7 +300,7 @@ void func_801EF50C(u8 v) {
     }
     if (changed) {
         snd_playSe(0x67);
-        func_8002397C();
+        config_apply();
     }
 }
 

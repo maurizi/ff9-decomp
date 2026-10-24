@@ -363,13 +363,13 @@ extern u8 D_800A74A8[];
 
 /* main exe: candidates for ff9.h */
 s32 func_8002BA10(u8 *);
-void func_80023A0C(void);
+void game_updateWindows(void);
 void SetSprt16(SPRT_16 *);
 s32 func_80062794(s32); /* width of a number string? */
 s32 func_80062498(void);
 s32 func_800624D8(void);
 s32 func_8006251C(void);
-u8 func_8002C700(s32, s32);
+u8 pad_isRepeatEnabled(s32, s32);
 void help_nullHandler(void);
 void func_80062724();
 extern u8 *D_80077DF0; /* = g_help.text, referenced by its own name */

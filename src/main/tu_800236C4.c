@@ -1,7 +1,7 @@
 #include "ff9.h"
 
-void func_800236C4(void) {
-    GameStateUnk24 *p = (GameStateUnk24 *)&g_gameState->unk24;
+void config_reset(void) {
+    GameConfig *p = (GameConfig *)&g_gameState->unk24;
     s32 i;
 
     p->unk0_0 = 0;
@@ -16,14 +16,14 @@ void func_800236C4(void) {
     p->unk0_11 = 3;
     p->unk0_14 = 3;
     p->unk0_17 = 0;
-    p->unk4 = 0;
+    p->buttonMap = 0;
     for (i = 0; i < 8; i++) {
-        p->unk4 |= i << (i * 4);
+        p->buttonMap |= i << (i * 4);
     }
-    func_8002397C();
+    config_apply();
 }
 
-void func_80023784(void) {
+void config_applyPadMapping(void) {
     s32 *act;
     s32 port;
     s32 i;
@@ -34,10 +34,10 @@ void func_80023784(void) {
     for (; port < 2; port++) {
         for (i = 0; i < 8; i++) {
             act = D_800686A0;
-            pad_setMapping(port, tbl[i], act[func_80023784_remap(i)]);
+            pad_setMapping(port, tbl[i], act[config_applyPadMapping_remap(i)]);
         }
         for (i = 0; i < 1; i++) {
-            pad_setMapping(port, D_800686C0[i], act[func_80023784_remap(D_800686C4[i])]);
+            pad_setMapping(port, D_800686C0[i], act[config_applyPadMapping_remap(D_800686C4[i])]);
         }
         pad_setMapping(port, 0x04000000, 8);
         pad_setMapping(port, 0x02000000, 1);
@@ -45,50 +45,50 @@ void func_80023784(void) {
     }
 }
 
-void func_80023918(void) {
-    func_800236C4();
+void config_init(void) {
+    config_reset();
 }
 
 /* K&R: func_8002BE10 calls it without an argument */
-s32 func_80023938(arg0)
+s32 config_remapButton(arg0)
 s32 arg0;
 {
-    GameStateUnk24 *p = (GameStateUnk24 *)&g_gameState->unk24;
+    GameConfig *p = (GameConfig *)&g_gameState->unk24;
 
     if (p->unk0_1 != 1) {
         return arg0;
     }
-    return (p->unk4 >> (arg0 * 4)) & 0xF;
+    return (p->buttonMap >> (arg0 * 4)) & 0xF;
 }
 
-void func_8002397C(void) {
-    func_800239A4();
-    func_80023784();
+void config_apply(void) {
+    config_applySound();
+    config_applyPadMapping();
 }
 
-void func_800239A4(void) {
-    func_800555A8(g_gameState->unk24 & 1);
+void config_applySound(void) {
+    akao_setOutputMode(g_gameState->unk24 & 1);
 }
 
-void func_800239D0(void) {
+void game_initGfx(void) {
     GameData *d = g_gameState->unk1C;
-    func_8002BEEC(d->unk10[0], d->unk10[1], d->unk7E0, d->unk7E0 + 0x4000);
+    gfx_init(d->unk10[0], d->unk10[1], d->unk7E0, d->unk7E0 + 0x4000);
 }
 
-void func_80023A0C(void) {
-    func_8002BFD0();
+void game_updateWindows(void) {
+    win_runFrame();
 }
 
-void func_80023A2C(void) {
-    func_80023EB8();
+void game_initTimer(void) {
+    timer_resetAll();
 }
 
-void func_80023A4C(void) {
-    func_80023F00();
+void game_updateTimer(void) {
+    timer_update();
 }
 
-void func_80023A6C(void) {
-    UnkTimer *t;
+void timer_draw(void) {
+    EvtTimer *t;
     u8 blink;
     u8 *pkt;
     u32 *ot;
@@ -101,20 +101,20 @@ void func_80023A6C(void) {
     s32 hr;
     s32 min;
 
-    t = &D_80076B60.unk408;
-    d = D_80076B60.unk0 - t->unk4;
+    t = &g_clock.timer;
+    d = g_clock.lastVsync - t->startVsync;
     blink = 0;
-    min = t->unkC / 60;
+    min = t->remaining / 60;
     hr = min / 60;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 1;
-    D_800686C8.x = 4;
-    pkt = D_80076B60.unk404;
+    g_timerRect.x = 4;
+    pkt = g_clock.pktPtr;
     min %= 60;
     if (d < 8) {
-        D_800686C8.x = d * 8 - 0x3C;
+        g_timerRect.x = d * 8 - 0x3C;
         blink = 1;
     }
-    if (t->unk1 == 0) {
+    if (t->running == 0) {
         v = VSync(-1) % 60;
         colon = 0;
         if (blink || v >= 30) {
@@ -122,7 +122,7 @@ void func_80023A6C(void) {
         }
         shown = colon;
     } else if (hr != 0 || min != 0) {
-        v = t->unkC % 60;
+        v = t->remaining % 60;
         shown = 1;
         colon = v >= 30;
     } else {
@@ -133,66 +133,66 @@ void func_80023A6C(void) {
     if (shown) {
         dg = hr / 10;
         if (dg != 0) {
-            pkt = func_80027834(D_800686C8.x + 5, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+            pkt = func_80027834(g_timerRect.x + 5, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
         }
         dg = hr - dg * 10;
-        pkt = func_80027834(D_800686C8.x + 0xF, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        pkt = func_80027834(g_timerRect.x + 0xF, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
         dg = min / 10;
-        pkt = func_80027834(D_800686C8.x + 0x23, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        pkt = func_80027834(g_timerRect.x + 0x23, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
         dg = min - dg * 10;
-        pkt = func_80027834(D_800686C8.x + 0x2D, 8, ot, dg + 0xE0, t->unk1 == 0, &w, pkt);
+        pkt = func_80027834(g_timerRect.x + 0x2D, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
     }
     if (colon) {
-        pkt = func_80027834(D_800686C8.x + 0x19, 8, ot, 0xEA, t->unk1 == 0, &w, pkt);
+        pkt = func_80027834(g_timerRect.x + 0x19, 8, ot, 0xEA, t->running == 0, &w, pkt);
     }
-    pkt = win_buildBorder(&D_800686C8, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
+    pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
     setlen(pkt, 3);
     ((TileWords *)pkt)->rgbc = 0x62000000;
-    ((TileWords *)pkt)->xy = ((D_800686C8.x + 2) & 0xFFFF) | ((D_800686C8.y + 2) << 16);
-    ((TileWords *)pkt)->wh = (D_800686C8.w - 4) | ((D_800686C8.h - 4) << 16);
+    ((TileWords *)pkt)->xy = ((g_timerRect.x + 2) & 0xFFFF) | ((g_timerRect.y + 2) << 16);
+    ((TileWords *)pkt)->wh = (g_timerRect.w - 4) | ((g_timerRect.h - 4) << 16);
     addPrim(ot, pkt);
     pkt += sizeof(TileWords);
     SetDrawTPage(pkt, 1, 1, 0);
     addPrim(ot, pkt);
 }
 
-void func_80023EB8(void) {
-    func_80024070();
-    D_80076B60.unk404 = D_80076B60.unk4;
+void timer_resetAll(void) {
+    timer_clear();
+    g_clock.pktPtr = g_clock.pkt;
     g_gameState->playTime = 0;
-    D_80076B60.unk0 = VSync(-1);
+    g_clock.lastVsync = VSync(-1);
 }
 
-void func_80023F00(void) {
-    D_80076B60.unk404 = &D_80076B60.unk4[g_gameState->unk1C->unk8 << 9];
-    if (func_800240E8() != 0) {
-        func_80023A6C();
+void timer_update(void) {
+    g_clock.pktPtr = &g_clock.pkt[g_gameState->unk1C->unk8 << 9];
+    if (timer_isEnabled() != 0) {
+        timer_draw();
     }
-    func_8002417C();
+    game_tickClock();
 }
 
-void func_80023F60(u8 arg0) {
+void game_resumeClock(u8 arg0) {
     s32 now = VSync(-1);
     s32 d;
-    UnkTimer *t = &D_80076B60.unk408;
+    EvtTimer *t = &g_clock.timer;
 
     if (arg0) {
-        d = now - D_80076B60.unk0;
-        if (t->unk0 != 0 && t->unk1 != 0 && t->unkC != 0) {
-            t->unkC -= d;
-            if (t->unkC <= 0) {
-                t->unkC = 0;
+        d = now - g_clock.lastVsync;
+        if (t->enabled != 0 && t->running != 0 && t->remaining != 0) {
+            t->remaining -= d;
+            if (t->remaining <= 0) {
+                t->remaining = 0;
             }
         }
         g_gameState->playTime += d;
     } else {
-        D_80076B60.unk0 = now;
+        g_clock.lastVsync = now;
     }
 }
 
 void game_setPlayTime(s32 arg0) {
     g_gameState->playTime = arg0;
-    D_80076B60.unk0 = VSync(-1);
+    g_clock.lastVsync = VSync(-1);
 }
 
 s32 game_getPlayTime(void) {
@@ -203,60 +203,60 @@ u32 game_getPlayTimeSeconds(void) {
     return g_gameState->playTime / 60;
 }
 
-void func_80024070(void) {
-    D_80076F68.unk0 = 0;
-    D_80076F68.unkC = 0;
-    D_80076F68.unk8 = 0;
-    D_80076F68.unk1 = 0;
-    D_80076F68.unk4 = VSync(-1);
+void timer_clear(void) {
+    g_timer.enabled = 0;
+    g_timer.remaining = 0;
+    g_timer.initial = 0;
+    g_timer.running = 0;
+    g_timer.startVsync = VSync(-1);
 }
 
-void func_800240B0(u8 arg0) {
-    D_80076F68.unk0 = arg0;
-    D_80076F68.unk1 = 0;
-    D_80076F68.unk4 = VSync(-1);
+void timer_enable(u8 arg0) {
+    g_timer.enabled = arg0;
+    g_timer.running = 0;
+    g_timer.startVsync = VSync(-1);
 }
 
-u8 func_800240E8(void) {
-    return D_80076F68.unk0;
+u8 timer_isEnabled(void) {
+    return g_timer.enabled;
 }
 
-void func_800240F8(u8 arg0) {
-    if (D_80076B60.unk408.unk0 != 0) {
-        D_80076B60.unk408.unk1 = arg0;
+void timer_setRunning(u8 arg0) {
+    if (g_clock.timer.enabled != 0) {
+        g_clock.timer.running = arg0;
     }
 }
 
-u8 func_8002411C(void) {
-    return D_80076F68.unk1;
+u8 timer_isRunning(void) {
+    return g_timer.running;
 }
 
-void func_8002412C(s32 arg0) {
-    Unk80076B60 *p = &D_80076B60;
+void timer_setSeconds(s32 arg0) {
+    ClockState *p = &g_clock;
     s32 t = arg0 * 60;
 
-    p->unk408.unkC = t;
-    p->unk408.unk8 = t;
+    p->timer.remaining = t;
+    p->timer.initial = t;
 }
 
-s32 func_8002414C(void) {
-    return (D_80076F68.unkC + 59) / 60;
+s32 timer_getSeconds(void) {
+    return (g_timer.remaining + 59) / 60;
 }
 
-void func_8002417C(void) {
+void game_tickClock(void) {
     s32 now;
     s32 dt;
-    UnkTimer *t;
+    EvtTimer *t;
 
     now = VSync(-1);
-    dt = now - D_80076B60.unk0;
-    t = &D_80076B60.unk408;
-    if (t->unk0 != 0 && t->unk1 != 0 && t->unkC != 0) {
-        t->unkC -= dt;
-        if (t->unkC <= 0) {
-            t->unkC = 0;
+    dt = now - g_clock.lastVsync;
+    t = &g_clock.timer;
+    if (t->enabled != 0 && t->running != 0 && t->remaining != 0) {
+        t->remaining -= dt;
+        if (t->remaining <= 0) {
+            t->remaining = 0;
         }
     }
     g_gameState->playTime += dt;
-    D_80076B60.unk0 = now;
+    g_clock.lastVsync = now;
 }

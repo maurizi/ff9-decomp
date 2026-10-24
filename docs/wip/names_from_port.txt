@@ -1077,3 +1077,67 @@ D_80068668 g_cdStateHandlers  # [code] cd_onSync calls [g_cdLoad.state](CdlCompl
 D_80076178 g_cdRetryRequest  # [code] copy of the current request restarted by cd_onPaused after an error
 D_800761A8 g_cdRestartRequest  # [code] copy of the current request restarted by cd_onRestart
 # psyq.h: libcd Cdl* command/mode/status/intr constants added, used in src/main/cd.c
+func_800236C4 config_reset  # [code] default settings in GameState.unk24 (GameConfig bitfields) and the identity button map, then config_apply
+func_80023784 config_applyPadMapping  # [code] pad_setMapping for both ports from the default tables, routed through config_remapButton
+func_80023918 config_init  # [code] game_initState: config_reset
+func_80023938 config_remapButton  # [code] GameConfig.buttonMap nibble for game button i when the custom map bit is set, else i
+func_8002397C config_apply  # [code] config_applySound then config_applyPadMapping
+func_800239A4 config_applySound  # [code] passes GameConfig bit 0 (sound output mode) to akao_setOutputMode
+func_800555A8 akao_setOutputMode  # [code] AKAO command 0x81 for 1, 0x80 otherwise (handlers set the output mode word to 2 or 1); called with GameConfig bit 0 by config_applySound
+func_800239D0 game_initGfx  # [code] gfx_init with GameData's two OTs and the two packet buffers at unk7E0 (field/world/battle-end/ovl_0d/ovl_15 init)
+func_80023A0C game_updateWindows  # [code] wrapper for win_runFrame, called once per frame by the mode loops
+func_80023A2C game_initTimer  # [code] game_initState: timer_resetAll
+func_80023A4C game_updateTimer  # [code] wrapper for timer_update
+func_80023A6C timer_draw  # [code] draws the countdown timer window (hh:mm digits 0xE0+n, blinking colon 0xEA) with win_buildBorder, sliding in for 8 frames
+func_80023EB8 timer_resetAll  # [code] timer_clear, resets the packet pointer, play time 0 and the clock reference
+func_80023F00 timer_update  # [code] per frame: picks this buffer's packets, timer_draw while enabled, then game_tickClock
+func_80023F60 game_resumeClock  # [code] 1: adds the frames since the last update to the play time and the timer; 0: drops them (only restarts the reference) - battle/world/field pause and resume
+func_80024070 timer_clear  # [code] disables and stops the countdown timer, zeroes its frames
+func_800240B0 timer_enable  # [code] script opcode: shows/hides the timer, stopped, start time now
+func_800240E8 timer_isEnabled  # [code] EvtTimer.enabled; timer_update draws when set
+func_800240F8 timer_setRunning  # [code] script opcode: starts/stops the countdown (only while enabled)
+func_8002411C timer_isRunning  # [code] EvtTimer.running
+func_8002412C timer_setSeconds  # [code] script opcode: initial and remaining frames = seconds * 60
+func_8002414C timer_getSeconds  # [code] remaining frames / 60 rounded up; script variable read in evt code
+func_8002417C game_tickClock  # [code] per frame: counts the countdown timer down and adds the elapsed frames to GameState.playTime
+D_80076B60 g_clock  # [code] play-time reference VSync, the timer window packets and the countdown timer (ClockState)
+D_80076F68 g_timer  # [code] the countdown timer, g_clock.timer under its own symbol (timer_clear .. timer_getSeconds)
+D_800686C8 g_timerRect  # [code] timer window rect, x animated by timer_draw
+func_8002BEEC gfx_init  # [code] sets g_drawBufs' OTs, packet buffers and display positions, selects the current buffer, then pad_initRepeat and the window init
+func_8002BFD0 win_runFrame  # [code] win_updateAll once per elapsed VSync (at most 15), then win_drawAll
+func_8002C0DC gfx_setBuffer  # [code] gfx_selectBuffer that also stores the index in g_drawBufs.cur
+func_8002C138 gfx_setBufferIndex  # [code] g_drawBufs.cur = a
+func_8002C144 gfx_setTarget  # [code] sets g_ot and g_primPtr directly
+func_8002C1EC win_resetClock  # [code] g_drawBufs.lastVsync = VSync(-1), the reference win_runFrame counts updates from
+func_8002C210 pad_initRepeat  # [code] g_padRepeat/Pressed/Held from port 0, saves the stick thresholds, sets all 23 repeat channels of both ports from D_8006BC40
+func_8002C308 pad_updateRepeat  # [code] g_padHeld/g_padPressed from a port, g_padRepeat = pressed | the repeat channels firing (delay, then interval)
+func_8002C47C pad_isAnalog  # [code] pad buffer type nibble == 7 (analog controller)
+func_8002C4B0 pad_setStickAsDpad  # [code] 1: saves the flags and thresholds, sets g_padFlags 0x8000 with the D_8006BCF8 thresholds; 0: restores them
+func_8002C52C pad_disableRepeat  # [code] resets and disables all 23 repeat channels of a port
+func_8002C584 pad_resetRepeats  # [code] pad_resetRepeat for all channels of a port
+func_8002C5CC pad_resetRepeat  # [code] channel restarts with the current buttons counted as held (they must be released first)
+func_8002C64C pad_clearRepeats  # [code] pad_clearRepeat for all channels of a port
+func_8002C694 pad_clearRepeat  # [code] channel restarts with nothing held
+func_8002C700 pad_isRepeatEnabled  # [code] PadRepeat.enabled
+func_8002C740 pad_setRepeatEnabled  # [code] pad_resetRepeat, then PadRepeat.enabled = c
+func_8002C7F0 pad_getRepeatDelay  # [code] PadRepeat.delay
+func_8002C830 pad_getRepeatInterval  # [code] PadRepeat.interval
+func_8002C870 pad_setRepeatDelay  # [code] PadRepeat.delay = v
+func_8002C8AC pad_setRepeatInterval  # [code] PadRepeat.interval = v
+func_8002C8E8 pad_setRepeatTiming  # [code] pad_setRepeatDelay and pad_setRepeatInterval
+func_8002C934 pad_getRepeatMask  # [code] PadRepeat.mask
+func_8002C974 pad_setRepeatMask  # [code] PadRepeat.mask = v
+D_80077188 g_padRepeats  # [code] [port][23] PadRepeat channels (pad_updateRepeat)
+D_8006BC40 g_padRepeatDefs  # [code] default mask/enabled/delay/interval per channel (pad_initRepeat)
+D_80077178 g_padSavedStickFlag  # [code] g_padFlags 0x8000 saved by pad_setStickAsDpad
+D_8007717C g_padSavedThresholds  # [code] analog thresholds saved by pad_initRepeat/pad_setStickAsDpad
+D_8006BCF8 g_padStickDpadThresholds  # [code] thresholds pad_setStickAsDpad installs
+D_80077150 g_winLastVsync  # [code] g_drawBufs.lastVsync under its own symbol: win_runFrame runs one window update per VSync since it
+# Types renamed: GameStateUnk24 -> GameConfig (unk4 -> buttonMap), UnkTimer -> EvtTimer, Unk80076B60 -> ClockState,
+# Unk80076F68 dropped (D_80076F68/g_timer is an EvtTimer), Unk80077188 -> PadRepeat, Unk8006BC40 -> PadRepeatDef,
+# Unk80077148 -> DrawBufs
+# FIELDS include/ff9.h EvtTimer: unk0=enabled,unk1=running,unk4=startVsync,unk8=initial,unkC=remaining
+# FIELDS include/ff9.h ClockState: unk0=lastVsync,unk4=pkt,unk404=pktPtr,unk408=timer
+# FIELDS include/ff9.h PadRepeat: unk0=enabled,unk1=repeating,unk2=armed,unk4=prevHeld,unk8=lastVsync,unkC=mask,unk10=delay,unk12=interval
+# FIELDS include/ff9.h PadRepeatDef: unk0=mask,unk4=enabled,unk5=delay,unk6=interval
+# FIELDS include/ff9.h DrawBufs (g_drawBufs): unk0=cur,unk4=freeBytes,unk8=lastVsync,unkC=prims,unk14=ots,unk1C=dispPos

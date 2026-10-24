@@ -85,7 +85,7 @@ void func_800A72C0(void) {
     i = ctx->unk8;
     DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }
 
 void func_800A73B8(void) {

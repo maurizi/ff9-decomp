@@ -18,9 +18,9 @@ void battleEnd_main(void) {
             g_gameState->mode = 0;
             break;
         }
-        func_80023A0C();
+        game_updateWindows();
         func_80032098();
-        func_80023A4C();
+        game_updateTimer();
         preload_update();
         DrawSync(0);
         VSync(g_gameState->vsyncMode);
@@ -30,7 +30,7 @@ void battleEnd_main(void) {
         i = ctx->unk8;
         DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
         g_gameState->unk1C->unk8 ^= 1;
-        func_8002C0DC(g_gameState->unk1C->unk8);
+        gfx_setBuffer(g_gameState->unk1C->unk8);
     } while (g_gameState->mode == 8);
     func_801EF5C8();
 }
@@ -547,7 +547,7 @@ void func_801F0DE4(s32 arg0, s32 arg1, s32 arg2, u8 *arg3, s32 arg4) {
 }
 
 void func_801F0E30(void) {
-    func_800239D0();
+    game_initGfx();
     func_8002C064(0);
     help_setHandler(0);
     g_gameState->vsyncMode = 2;
@@ -577,9 +577,9 @@ u8 rewards_update(void) {
         if (D_801F7A78.unk2 != 0) {
             goto count;
         }
-        D_801F7A78.unk374 = D_801F7A78.unk378[g_drawBufs.unk0];
+        D_801F7A78.unk374 = D_801F7A78.unk378[g_drawBufs.cur];
         if (D_80077DB5 == 0) {
-            func_8002C308(0);
+            pad_updateRepeat(0);
         }
         func_801F1160();
         func_801F11B8();

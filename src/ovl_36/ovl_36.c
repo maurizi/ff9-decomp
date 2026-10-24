@@ -32,10 +32,10 @@ void func_801F08F4(void) {
     D_801F347C.unk18EC = file_find(1, 0x32);
     for (i = 0; i < 4; i++) {
         id = D_801F30D4[i];
-        D_801F347C.unk1948[i].unk0 = func_8002C7F0(0, id);
-        D_801F347C.unk1948[i].unk4 = func_8002C830(0, id);
-        func_8002C870(0, id, 0x10);
-        func_8002C8AC(0, id, 10);
+        D_801F347C.unk1948[i].unk0 = pad_getRepeatDelay(0, id);
+        D_801F347C.unk1948[i].unk4 = pad_getRepeatInterval(0, id);
+        pad_setRepeatDelay(0, id, 0x10);
+        pad_setRepeatInterval(0, id, 10);
     }
     func_801F1C88();
     id = D_801F347C.unk2 * 10 + D_801F347C.unk1;
@@ -556,8 +556,8 @@ void func_801F240C(void) {
 
     for (i = 0; i < 4; i++) {
         id = D_801F30E4[i];
-        func_8002C870(0, id, D_801F347C.unk1948[i].unk0);
-        func_8002C8AC(0, id, D_801F347C.unk1948[i].unk4);
+        pad_setRepeatDelay(0, id, D_801F347C.unk1948[i].unk0);
+        pad_setRepeatInterval(0, id, D_801F347C.unk1948[i].unk4);
     }
     help_setHandler(NULL);
     func_801F2EE8();

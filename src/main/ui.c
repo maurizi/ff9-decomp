@@ -457,7 +457,7 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
     e = &D_80068FD8[style];
     if (cur != 0) {
         if (blink && cur >= max) {
-            k = D_80077150 & 0x1F;
+            k = g_winLastVsync & 0x1F;
             if (k < 16) {
                 f1 = &e->c[2];
                 if (k >= 8) {

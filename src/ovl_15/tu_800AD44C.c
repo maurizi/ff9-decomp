@@ -6,7 +6,7 @@ void func_800AD44C(void) {
 
 void func_800AD458(void) {
     func_80032574();
-    func_8002C4B0(1);
+    pad_setStickAsDpad(1);
     D_800B0FF0.unk0 = 1;
     D_800B0FF0.unk7 = 0;
     D_800B0FF0.unk6 = 0;
@@ -18,14 +18,14 @@ void func_800AD458(void) {
 }
 
 void func_800AD4AC(void) {
-    func_8002C308(0);
+    pad_updateRepeat(0);
     func_800AD514();
     func_800AD5EC();
     func_800AD624();
 }
 
 void func_800AD4E4(void) {
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
 }
 
 u8 func_800AD504(void) {

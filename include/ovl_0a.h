@@ -1309,7 +1309,7 @@ s32 mbg_getFrame(void);
 void func_80032100(void);
 Unk8004AB64 *func_8004AE00(void);
 u32 func_8004AB64(void *); /* actor -> model slot */
-void func_80023A0C(void);
+void game_updateWindows(void);
 void preload_reset(void);
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 

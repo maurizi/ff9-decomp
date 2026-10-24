@@ -128,7 +128,7 @@ s32 func_800A9220(void) {
                 D_800AB3C8 = 6;
             }
             func_80032100();
-            func_80023A0C();
+            game_updateWindows();
         }
         if (!(D_800AB2C4 & 2)) {
             func_80032098();
@@ -203,7 +203,7 @@ void func_800A9B58(void) {
         DrawOTagEnv(g->unk10[g->unk8] + 0xFFF, &g_gameState->unk10[g->unk8]);
     }
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
     D_800AB2C4 |= D_800AB3B8[0][0];
     D_800AB2C4 &= ~D_800AB3B8[1][0];
     for (i = 0; i < 2; i++) {

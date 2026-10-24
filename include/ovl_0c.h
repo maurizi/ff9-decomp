@@ -1036,7 +1036,7 @@ extern TILE D_800CE0C8;
 extern DR_TPAGE D_800CE0D8;
 extern u32 D_800CE0E0;
 extern u8 D_800CE098[];
-void func_80023F60(s32);
+void game_resumeClock(s32);
 void func_8005562C(s32);
 void func_80055698(s32);
 extern s32 D_800CF4B0;

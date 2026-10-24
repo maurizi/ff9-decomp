@@ -131,7 +131,7 @@ s32 func_800B6BC4(void) {
     if (!(g_gameState->unk1C->unk0 & 1)) {
         func_80032100();
     }
-    func_80023A0C();
+    game_updateWindows();
     busy = D_800CF49C != 0;
     if (g_gameState->unk1C->unk0 & 0x1C) {
         busy = 1;

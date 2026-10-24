@@ -128,7 +128,7 @@ void func_800A787C(void) {
         DrawOTagEnv(ctx->unk10[k] + 0xFFF, &g_gameState->unk10[k]);
     }
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
     D_800AE0E0 |= D_800AE4C8[0][0];
     D_800AE0E0 &= ~D_800AE4C8[1][0];
     for (i = 0; i < 2; i++) {
@@ -1291,5 +1291,5 @@ void func_800AAFFC(void) {
     i = ctx->unk8;
     DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }

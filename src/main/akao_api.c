@@ -145,7 +145,7 @@ s32 func_8005553C(u32 id) {
     return 0;
 }
 
-void func_800555A8(s32 a) {
+void akao_setOutputMode(s32 a) {
     if (a == 1) {
         a = 0x81;
     } else {

@@ -297,13 +297,13 @@ void win_setClip(RECT *r, s32 otz, s32 style) {
     RECT *clip;
     s8 *o;
 
-    clip = &g_gameState->unkC[g_drawBufs.unk0 ^ 1].disp;
+    clip = &g_gameState->unkC[g_drawBufs.cur ^ 1].disp;
     offs = D_80010CE0;
     p = (DR_AREA *)g_primPtr;
     o = offs.unk0[style];
     if (r != NULL) {
-        t.x = g_drawBufs.unk1C[g_drawBufs.unk0 ^ 1].vx + (r->x + o[0]);
-        t.y = g_drawBufs.unk1C[g_drawBufs.unk0 ^ 1].vy + (r->y + o[1]);
+        t.x = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vx + (r->x + o[0]);
+        t.y = g_drawBufs.dispPos[g_drawBufs.cur ^ 1].vy + (r->y + o[1]);
         t.w = r->w + o[2];
         t.h = r->h + o[3];
         if (t.x < clip->x) {
@@ -602,7 +602,7 @@ void func_8002E660(Window *w) {
 }
 
 void win_drawScrollArrows(RECT *r, s32 otz, MenuList *m) {
-    s32 blink = ((u32)D_80077150 >> 4) & 1;
+    s32 blink = ((u32)g_winLastVsync >> 4) & 1;
     u8 top = m->unk5;
     u8 more = top < m->unk2 - m->unk3;
     s32 z = otz;

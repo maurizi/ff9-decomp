@@ -104,7 +104,7 @@ s32 func_800A9E14(s32 arg0) {
                 D_800AB440 = 4;
             }
             func_80032100();
-            func_80023A0C();
+            game_updateWindows();
             if (!(D_800AB2D0.unk0 & 0x10) && (u8)func_800A82B0() && timer < 0x5B) {
                 func_800320B8(1, 1, 0x5A, 0xFFFFFF);
                 if (g_gameState->unkB != 0xFF && (g_gameState->unkB & 1)) {
@@ -176,5 +176,5 @@ void func_800AA9D8(void) {
     i = ctx->unk8;
     DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }

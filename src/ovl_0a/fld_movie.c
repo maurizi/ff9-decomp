@@ -1381,7 +1381,7 @@ void func_800AE930(void) {
     }
     if (!(g_gameState->unk1C->unk0 & 0x20)) {
         g_gameState->unk1C->unk8 ^= 1;
-        func_8002C0DC(g_gameState->unk1C->unk8);
+        gfx_setBuffer(g_gameState->unk1C->unk8);
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
         g_gameState->unk1C->unk0 |= D_800C9EF0.unk0[0][0];
@@ -1546,7 +1546,7 @@ void func_800AF740(void) {
     g_gameState->unk1C->unk0 ^= 0x100;
     if (g_gameState->unk1C->unk0 & 0x100) {
         func_8005562C(0);
-        func_80023F60(1);
+        game_resumeClock(1);
         for (i = 1; i >= 0; i--) {
             g_padActuator[i].unk1 = 0;
             g_padActuator[i].unk0 = 0;
@@ -1588,7 +1588,7 @@ void func_800AF740(void) {
         DrawOTag(&D_800C9F98);
         g_gameState->unk1C->unk0 |= 0x20;
     } else {
-        func_80023F60(0);
+        game_resumeClock(0);
         func_80055698(0);
         g_gameState->unk1C->unk0 &= ~0x20;
     }

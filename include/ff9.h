@@ -409,35 +409,27 @@ static inline ItemSlot *item_findSlot_inline(s32 id) {
     return NULL;
 }
 
-/* ---- timers (VSync based) ---- */
+/* ---- event countdown timer and play-time clock (VSync based) ---- */
 
+/* script countdown timer (event opcodes: timer_setSeconds/timer_enable/timer_setRunning, timer_getSeconds) */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
+    u8 enabled; /* drawn by game_updateTimer */
+    u8 running; /* counting down */
     u8 pad2[2];
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-} UnkTimer;
+    s32 startVsync; /* VSync(-1) when enabled */
+    s32 initial; /* frames */
+    s32 remaining; /* frames */
+} EvtTimer;
 
 typedef struct {
-    s32 unk0; /* VSync(-1) at last update */
-    u8 unk4[0x400];
-    u8 *unk404; /* write pointer into unk4 */
-    UnkTimer unk408;
-} Unk80076B60;
-extern Unk80076B60 D_80076B60;
-
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 pad2[2];
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-} Unk80076F68;
-extern Unk80076F68 D_80076F68;
-extern RECT D_800686C8; /* countdown timer window */
+    s32 lastVsync; /* VSync(-1) at the last play-time update */
+    u8 pkt[0x400]; /* timer window packets, 0x200 per buffer */
+    u8 *pktPtr; /* write pointer into pkt */
+    EvtTimer timer;
+} ClockState;
+extern ClockState g_clock;
+extern EvtTimer g_timer; /* the same timer as g_clock.timer, under its own symbol in the original */
+extern RECT g_timerRect; /* countdown timer window */
 
 /* ---- CD / streaming state near libcd ---- */
 
@@ -608,20 +600,20 @@ extern s32 D_800770AC;
 extern u8 *D_800770B0[]; /* menu strings (func_8002BE44) */
 extern s32 D_800770F0[];
 extern u8 D_80077130[];
-extern s32 D_80077150;
+extern s32 g_winLastVsync;
 
 typedef struct {
-    u8 unk0;
+    u8 cur; /* buffer being built */
     u8 unk1;
     u8 unk2;
     u8 pad3;
-    s32 unk4; /* free bytes in the packet buffer */
-    s32 unk8;
-    u8 *unkC[2];   /* packet buffers */
-    u32 *unk14[2]; /* ordering tables */
-    DVECTOR unk1C[2]; /* display x/y per buffer */
-} Unk80077148;
-extern Unk80077148 g_drawBufs;
+    s32 freeBytes; /* free bytes in the packet buffer */
+    s32 lastVsync; /* VSync(-1) of the last window update (g_winLastVsync) */
+    u8 *prims[2];   /* packet buffers */
+    u32 *ots[2]; /* ordering tables */
+    DVECTOR dispPos[2]; /* display x/y per buffer */
+} DrawBufs;
+extern DrawBufs g_drawBufs;
 
 /* window frame insets per style (rodata, win_setClip) */
 typedef struct {
@@ -678,7 +670,7 @@ void func_8002AF70(void *, s32);
 #else
 TextSize func_8002AF70(u8 *); /* measure a text string */
 #endif
-s32 func_80023938(); /* (s32 index); unprototyped, as the original's callers pass ints unconverted */
+s32 config_remapButton(); /* (s32 index); unprototyped, as the original's callers pass ints unconverted */
 void win_drawAll(void);
 void win_updateAll(void);
 
@@ -1369,10 +1361,10 @@ void db_clear(void);
 s32 game_unloadCommonDb(void);
 s32 strncmp(char *, char *, s32);
 void game_setNextScene(u16);
-void func_800236C4(void);
-void func_8002BFD0(void);
-void func_80023EB8(void);
-void func_80023F00(void);
+void config_reset(void);
+void win_runFrame(void);
+void timer_resetAll(void);
+void timer_update(void);
 void func_8002FA50(s32);
 void func_8002FAAC(s32);
 void func_8002FB08(s32);
@@ -1444,13 +1436,13 @@ typedef union {
 } EventVars;
 extern EventVars g_evtGlobalVars;
 
-void func_800239A4(void);
-void func_80023784(void);
+void config_applySound(void);
+void config_applyPadMapping(void);
 void func_800325A4(void);
 void func_8003264C(void);
 s32 text_getFrom(u8 *, s32);
 s32 func_8002BA68(s32);
-void func_800555A8(s32);
+void akao_setOutputMode(s32);
 void func_800343C0(s32);
 void func_80034404(s32);
 void bzero(void *, s32);
@@ -1519,7 +1511,7 @@ void func_80059AA8(s32, s32);
 s32 preload_poll(void);
 void preload_clearBusy(void);
 void help_init(void);
-void func_80023918(void);
+void config_init(void);
 void func_80032078(void);
 void func_80061070(s32, s32, s32, void (*)(void));
 void func_800611BC(void);
@@ -1630,21 +1622,22 @@ extern u32 *D_8007BCA4;
 
 void akao_applyCdVolume(void);
 void func_800325E0(void);
-void func_80023A2C(void);
+void game_initTimer(void);
 s32 func_8002F8E4(s32);
 
+/* one auto-repeat channel: pad_updateRepeat ORs its buttons into g_padRepeat after delay, then every interval frames */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
+    u8 enabled;
+    u8 repeating; /* past the first delay */
+    u8 armed; /* buttons were released since the reset */
     u8 pad3;
-    s32 unk4;
-    s32 unk8; /* VSync(-1) timestamp */
-    s32 unkC;
-    u16 unk10;
-    u16 unk12;
-} Unk80077188; /* 20 bytes */
-extern Unk80077188 D_80077188[][23];
+    s32 prevHeld;
+    s32 lastVsync; /* VSync(-1) of the last repeat */
+    s32 mask; /* buttons this channel repeats */
+    u16 delay;
+    u16 interval;
+} PadRepeat; /* 20 bytes */
+extern PadRepeat g_padRepeats[][23];
 
 
 typedef struct {
@@ -1661,7 +1654,7 @@ void func_800512E4(s32);
 void preload_setEntry(PreloadEntry *, s32, s32, s32, s32, s32, s32, s32);
 PreloadEntry *preload_find(s32);
 s32 preload_wait(PreloadEntry *);
-void func_8002BEEC(u32 *, u32 *, s32, s32);
+void gfx_init(u32 *, u32 *, s32, s32);
 
 typedef struct {
     u8 pad0[0x8C];
@@ -1835,10 +1828,10 @@ extern RECT D_80073CE8[6]; /* transfer rects (file_copyViaVram) */
 void file_initImg(void);
 FileEntry *file_find(s32, s32);
 void evt_setNextLocation(s32);
-void func_80024070(void);
-void func_8002C5CC(s32, s32);
-void func_8002C694(s32, s32);
-void func_8002C740(s32, s32, s32);
+void timer_clear(void);
+void pad_resetRepeat(s32, s32);
+void pad_clearRepeat(s32, s32);
+void pad_setRepeatEnabled(s32, s32, s32);
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -1863,15 +1856,15 @@ typedef struct {
 extern Unk80077D68 D_80077D68;
 s32 func_8002FD98(s32, s32);
 void chr_init(s32);
-void func_8002C974(s32, s32, s32);
+void pad_setRepeatMask(s32, s32, s32);
 typedef struct {
-    s32 unk0;
-    u8 unk4;
-    u8 unk5;
-    u8 unk6;
+    s32 mask;
+    u8 enabled;
+    u8 delay;
+    u8 interval;
     u8 pad7;
-} Unk8006BC40;
-extern Unk8006BC40 D_8006BC40[23];
+} PadRepeatDef;
+extern PadRepeatDef g_padRepeatDefs[23]; /* pad_initRepeat defaults */
 typedef struct {
     u8 x0, y0, x1, y1, x2, y2, x3, y3;
 } Unk80068F48;
@@ -1889,7 +1882,7 @@ typedef struct {
     u8 unk5;
 } Unk8006DD88; /* base stats per character class */
 extern Unk8006DD88 D_8006DD88[];
-void func_8002C210(void);
+void pad_initRepeat(void);
 void func_8002E490(void);
 void preload_onReadDone(u8 *);
 u8 cd_seekAsync(s32, void (*)(u8 *));
@@ -1951,9 +1944,9 @@ u16 pad_getFlags(void);
 void pad_setFlags(u16, s32);
 void pad_getAnalogThresholds(Unk4 *);
 void pad_setAnalogThresholds(Unk4 *);
-extern u8 D_80077178;
-extern Unk4 D_8007717C;
-extern Unk4 D_8006BCF8;
+extern u8 g_padSavedStickFlag;
+extern Unk4 g_padSavedThresholds;
+extern Unk4 g_padStickDpadThresholds;
 void func_80035E40(void);
 void func_80035F94(void);
 void func_80060D1C(s32, s32, s32, s32);
@@ -1965,9 +1958,9 @@ extern CdRequest g_cdReadRequest;
 s32 func_8005EB40(s32 *, s32, s32, s32);
 s32 CdMode(void);
 s32 cd_startTransfer(); /* called with a u8 it ignores; callers see an int return (no prototype in the original) */
-u8 func_800240E8(void);
-void func_80023A6C(void);
-void func_8002417C(void);
+u8 timer_isEnabled(void);
+void timer_draw(void);
+void game_tickClock(void);
 extern Unk80035B90Data D_80010E48;
 void func_80035B24(Unk80035B90 *, Unk80035B90Data *);
 s32 func_800565DC(s32 *);
@@ -2039,7 +2032,7 @@ void cd_stopMotor(void);
 s32 cd_readSync(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
 s32 cd_isShellOpen(void);
 u8 cd_checkShellOpen(void);
-void func_800239D0(void);
+void game_initGfx(void);
 void func_80024BD8(void);
 void func_8002705C(RECT *, s32, s32);
 s32 func_80027710(s32, s32, s32, void *, u8);
@@ -2061,9 +2054,9 @@ void ui_drawSmallDigits(s32, s32, s32, u8 *, s32);
 void text_drawBlock(s32, s32, s32, u8 *, s32);
 u8 *func_8002BD54(u8 *, u8 *);
 void func_8002C064(s32);
-void func_8002C0DC(s32);
-void func_8002C308(s32);
-void func_8002C4B0(u8);
+void gfx_setBuffer(s32);
+void pad_updateRepeat(s32);
+void pad_setStickAsDpad(u8);
 void win_setClip(RECT *, s32, s32);
 Window *func_8002DC54(RECT *, s32, s32);
 Window *win_init(RECT *, s32, s32, Window *);
@@ -2236,7 +2229,7 @@ typedef struct {
     s32 unk8;
 } Unk8006C9D4;
 extern Unk8006C9D4 D_8006C9D4[];
-s32 func_8002C1EC(void);
+s32 win_resetClock(void);
 void help_update(void);
 
 extern s32 g_evtArgFlags;
@@ -2574,8 +2567,8 @@ extern Icon D_80068E30;
 extern Icon D_80068E38;
 extern s32 D_80070494;
 void ui_drawHand(s32, s32, s32);
-void func_8002C870(s32, s32, s32);
-void func_8002C8AC(s32, s32, s32);
+void pad_setRepeatDelay(s32, s32, s32);
+void pad_setRepeatInterval(s32, s32, s32);
 s32 cd_getState(void);
 s32 func_80062560(); /* defined K&R-style: u8 param, callers pass ints unmasked */
 Unk6 *func_800625A0(s32, s32);
@@ -2655,7 +2648,7 @@ typedef struct {
 #define PADBUF(i) ((PadBuf *)&g_padBuf[i])
 void pad_update(void);
 void func_80032098(void);
-void func_80023A4C(void);
+void game_updateTimer(void);
 void game_setScreenHeight(s32);
 s32 func_8004BC38(); /* defined K&R-style: u8 param (unused); some callers pass none */
 u8 func_80036300(s32);
@@ -3249,10 +3242,10 @@ extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
 
-/* GameState.unk24/unk28 viewed as a pair */
+/* GameState.unk24/unk28 viewed as a pair: the config menu's settings (saved by ovl_39) */
 typedef struct {
     u32 unk0_0 : 1;
-    u32 unk0_1 : 1; /* unk4 remaps indices (4 bits each) */
+    u32 unk0_1 : 1; /* buttonMap is used (config_remapButton) */
     u32 unk0_2 : 1;
     u32 unk0_3 : 1;
     u32 unk0_4 : 1;
@@ -3263,8 +3256,8 @@ typedef struct {
     u32 unk0_11 : 3;
     u32 unk0_14 : 3;
     u32 unk0_17 : 15;
-    u32 unk4;
-} GameStateUnk24;
+    u32 buttonMap; /* 8 x 4 bits: game button i -> pad button */
+} GameConfig;
 
 /* GameState.unk14 viewed as its 15 directory records */
 typedef struct {
@@ -3801,9 +3794,9 @@ void func_800333B0(s32, u8, s32);
 s32 func_8003470C(s32, s32);
 s32 func_80034220(s32, s32);
 s32 func_80053960(Unk800539FC *, s32);
-void func_8002412C(s32);
-void func_800240B0(u8);
-void func_800240F8(u8);
+void timer_setSeconds(s32);
+void timer_enable(u8);
+void timer_setRunning(u8);
 void func_8004BA20(SVECTOR *, s32 *, s32 *);
 s32 func_80054FB8(s32);
 s32 func_80054FE0(s32);
@@ -3916,14 +3909,14 @@ static inline s32 evt_execInstr_chr(s32 id) {
 
 
 
-/* Inlined helpers for the pad binding setup (func_80023784): GameState.unk24 bit 1
+/* Inlined helpers for the pad binding setup (config_applyPadMapping): GameState.unk24 bit 1
  * enables the custom button map in unk28 (4 bits per action). */
-static inline s32 func_80023784_custom(u32 *c) {
+static inline s32 config_applyPadMapping_custom(u32 *c) {
     return (c[0] >> 1) & 1;
 }
-static inline s32 func_80023784_remap(s32 k) {
+static inline s32 config_applyPadMapping_remap(s32 k) {
     u32 *c = &g_gameState->unk24;
-    if (func_80023784_custom(c) == 1) {
+    if (config_applyPadMapping_custom(c) == 1) {
         return (c[1] >> (k * 4)) & 0xF;
     }
     return k;
@@ -4032,7 +4025,7 @@ s32 btlseq_isBusy(void);
 s32 w_frameGetParameter(s32); /* ovl_0c */
 s32 btl_getBattleVar(s32);
 u32 game_getPlayTimeSeconds(void);
-s32 func_8002414C(void);
+s32 timer_getSeconds(void);
 s32 func_8006275C(void);
 s32 func_8004ECC4(void);
 

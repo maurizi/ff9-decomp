@@ -157,7 +157,7 @@ void func_800AC494(void) {
     i = ctx->unk8;
     DrawOTagEnv(ctx->unk10[i] + 0xFFF, &g_gameState->unk10[i]);
     g_gameState->unk1C->unk8 ^= 1;
-    func_8002C0DC(g_gameState->unk1C->unk8);
+    gfx_setBuffer(g_gameState->unk1C->unk8);
 }
 
 s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -320,7 +320,7 @@ void func_800ACB98(void) {
     g_gameState->unk1C->unk83C = func_800AC598;
     func_800ACD70();
     func_800ACCB4();
-    func_800239D0();
+    game_initGfx();
     SetDispMask(1);
 }
 

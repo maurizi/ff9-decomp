@@ -71,9 +71,9 @@ void func_80032238(void) {
     func_8002DE60();
     g_menu.unk18 = g_padPortMask[0];
     g_padPortMask[0] = 0x4000000;
-    func_8002C4B0(1);
+    pad_setStickAsDpad(1);
     for (i = 0; i < 2; i++) {
-        func_8002C584(i);
+        pad_resetRepeats(i);
     }
 }
 
@@ -101,7 +101,7 @@ void func_80032384(void) {
     if (fn != NULL) {
         fn(idx);
     }
-    func_8002C4B0(0);
+    pad_setStickAsDpad(0);
     g_padPortMask[0] = g_menu.unk18;
     if (g_menu.unk24 != 0) {
         ((void (*)(void))g_menu.unk24)();
@@ -112,14 +112,14 @@ void func_80032384(void) {
 }
 
 void func_8003253C(void) {
-    func_80023918();
+    config_init();
     func_80032078();
-    func_80023A2C();
+    game_initTimer();
     func_800325A4();
 }
 
 void func_80032574(void) {
-    func_80023918();
+    config_init();
     func_80032078();
     help_init();
 }
@@ -222,7 +222,7 @@ void func_800328E8(void) {
     void (*fn)(u8);
     u8 idx;
 
-    func_8002C308(0);
+    pad_updateRepeat(0);
     if (g_menu.unk9 != 0) {
         func_80024BD8();
     }
@@ -232,7 +232,7 @@ void func_800328E8(void) {
         fn(idx);
     }
     help_update();
-    func_8002C1EC();
+    win_resetClock();
     g_menu.unk10++;
 }
 
