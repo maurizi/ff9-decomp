@@ -102,14 +102,14 @@ s32 func_800AF578(GameData *arg0, Battle *arg1) {
                     }
                     u->unkA0->unk3A = 0;
                 }
-                if (!(u->status & 1)) {
+                if (!(u->status & BTL_STATUS_PETRIFY)) {
                     if ((s32)u->unk9C->unkC != u->unkA4[(u->unk68 >> 18) & 1] && (s32)u->unk9C->unkC != u->unkA4[4]) {
                         r = 0;
                     }
                 }
             } else if (arg1->unkD80 == 6) {
                 f = u->unk68;
-                if ((f & 1) && !(u->status & 0x1103) && ((arg1->unk132C.unk0 >> 6) & 1) && (g_gameState->unk1C->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
+                if ((f & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) && ((arg1->unk132C.unk0 >> 6) & 1) && (g_gameState->unk1C->characters + ((f >> 1) & 0xF))->unk34.b.unkA) {
                     m = u->unk9C;
                     if (u->unkA0->unk3A >= m->unkC->unk2) {
                         m->unkC = (BtlUnit9CC *)u->unkA4[19];
@@ -145,12 +145,12 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             switch (arg1->unkD81) {
             case 0:
                 btl_updateHpStatus(u);
-                if ((!(u->unk68 & 1) && !(u->status & 0x1003)) || ((u->unk68 & 1) && (u->status & BTL_STATUS_KO) && u->unk9C->unkC != (BtlUnit9CC *)u->unkA4[4])) {
+                if ((!(u->unk68 & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) || ((u->unk68 & 1) && (u->status & BTL_STATUS_KO) && u->unk9C->unkC != (BtlUnit9CC *)u->unkA4[4])) {
                     done = 0;
                 }
                 break;
             case 1:
-                if ((u->unk68 & 1) && u->unk9C->unkC != (BtlUnit9CC *)u->unkA4[4] && !(u->status & 0x1003)) {
+                if ((u->unk68 & 1) && u->unk9C->unkC != (BtlUnit9CC *)u->unkA4[4] && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP))) {
                     done = 0;
                 }
                 break;
@@ -169,7 +169,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     if (u->unk7D != 6) {
                         done = 0;
                     }
-                } else if (!(u->status & 0x02001003)) {
+                } else if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
                     if (u->unk9C->unkC != (BtlUnit9CC *)u->unkA4[0] &&
                         u->unk9C->unkC != (BtlUnit9CC *)u->unkA4[1]) {
                         done = 0;
@@ -186,7 +186,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                     } else if (btl_isCmdQueued(u, 0x3D) != 0) {
                         done = 0;
                     }
-                } else if ((u->unk68 & 1) && !(u->status & 0x42021143)) {
+                } else if ((u->unk68 & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
                     u->unk8C[2] += 0xFF9C0000;
                     btl_setUnitBrightness(u, (s8)arg1->unkD84);
                     if ((s8)arg1->unkD84 <= 0) {
@@ -223,8 +223,8 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                 }
                 for (u = arg1->unk6F8; u != NULL; u = u->unk0) {
                     if (u->unk68 & 1) {
-                        btl_removeStatuses(u, 0xBFFFBC00);
-                        if (!(u->status & 0x1103)) {
+                        btl_removeStatuses(u, (BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_AUTO_LIFE | BTL_STATUS_DEFEND | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_REGEN | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_FLOAT | BTL_STATUS_SHELL | BTL_STATUS_PROTECT | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_VANISH | BTL_STATUS_DOOM | BTL_STATUS_MINI | BTL_STATUS_REFLECT | BTL_STATUS_GRADUAL_PETRIFY));
+                        if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP))) {
                             if (u->hp != 0) {
                                 u->unk86[1] = u->unkA0->unk22 = (u->unk68 & 1) * 0x800;
                                 u->unk68 = (u->unk68 & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);

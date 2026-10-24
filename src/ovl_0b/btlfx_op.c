@@ -1570,7 +1570,7 @@ void btlfx_fadeUnit(BtlUnit *arg0, s32 arg1) {
                 btlfx_setUnitBrightness(arg0, arg1);
             }
         } else if ((arg0->unk68 >> 22) & 1) {
-            if (!(arg0->status & 0x40000000)) {
+            if (!(arg0->status & BTL_STATUS_JUMP)) {
                 arg0->unk68 &= ~0x400000;
             }
         } else {
@@ -1684,7 +1684,7 @@ void func_800E83EC(void) {
 }
 
 void btlfx_reapplyMini(BtlUnit *arg0) {
-    if (arg0->status & 0x10000000) {
+    if (arg0->status & BTL_STATUS_MINI) {
         arg0->unk9C->unk0 |= 2;
         arg0->unk9C->unk54 = 0x800;
         arg0->unk9C->unk56 = 0x800;
@@ -1693,7 +1693,7 @@ void btlfx_reapplyMini(BtlUnit *arg0) {
 }
 
 void btlfx_reapplyVanish(BtlUnit *arg0) {
-    if (arg0->status & 0x04000000) {
+    if (arg0->status & BTL_STATUS_VANISH) {
         btl_hideMeshes(arg0, arg0->unkAE);
     }
 }

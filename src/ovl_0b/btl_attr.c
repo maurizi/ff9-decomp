@@ -42,7 +42,7 @@ s32 func_800BD5A0(BtlUnit *arg0) {
     arg0->unk9C->unk50[0].unkC = 0;
     arg0->unk9C->unk50[0].unk12 = 0x1000;
     arg0->unkA0->unk3A = 0;
-    if (arg0->status & 0x2000) {
+    if (arg0->status & BTL_STATUS_AUTO_LIFE) {
         arg0->unk7D = 7;
         btl_setCmd(arg0->unk18, 0x3D, 0, arg0->unkB0, 0);
         btl_removeStatus(arg0, BTL_STATUS_AUTO_LIFE);
@@ -70,7 +70,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
             d = arg0->unk80 >> 1;
             if (u->status & BTL_STATUS_KO) {
                 u->unk7E = 0x20;
-            } else if (u->status & 1) {
+            } else if (u->status & BTL_STATUS_PETRIFY) {
                 u->unk80 = 0;
             } else {
                 if (u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
@@ -165,7 +165,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
         arg0->unk7E = 0x20;
         return;
     }
-    if (arg0->status & 1) {
+    if (arg0->status & BTL_STATUS_PETRIFY) {
         arg0->unk80 = 0;
         return;
     }
@@ -192,7 +192,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
 void btl_healHp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
         arg0->unk7E = 0x20;
-    } else if (arg0->status & 1) {
+    } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else {
         BtlUnit24 *m = arg0->max;
@@ -209,7 +209,7 @@ void btl_healHp(BtlUnit *arg0, s32 arg1) {
 void btl_damageMp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
         arg0->unk7E = 0x20;
-    } else if (arg0->status & 1) {
+    } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else if (arg1 < arg0->mp) {
         arg0->mp -= arg1;
@@ -222,7 +222,7 @@ void btl_damageMp(BtlUnit *arg0, s32 arg1) {
 void btl_healMp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
         arg0->unk7E = 0x20;
-    } else if (arg0->status & 1) {
+    } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else if (arg0->mp + arg1 < arg0->max->maxMp) {
         arg0->mp += arg1;
@@ -234,7 +234,7 @@ void btl_healMp(BtlUnit *arg0, s32 arg1) {
 
 void btl_tickPoison(BtlUnit *arg0) {
     s32 v = 0;
-    if (!(arg0->status & 1)) {
+    if (!(arg0->status & BTL_STATUS_PETRIFY)) {
         v = arg0->max->maxHp >> 4;
         if (v < arg0->hp) {
             arg0->hp -= v;
@@ -248,9 +248,9 @@ void btl_tickPoison(BtlUnit *arg0) {
 
 void btl_tickRegen(BtlUnit *arg0) {
     s32 v = 0;
-    if (!(arg0->status & 1)) {
+    if (!(arg0->status & BTL_STATUS_PETRIFY)) {
         v = arg0->max->maxHp >> 4;
-        if ((arg0->status & 0x40) || btl_hasEnemyFlag(arg0, 0x10) != 0) {
+        if ((arg0->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(arg0, 0x10) != 0) {
             arg0->unkCE |= 8;
             if (v < arg0->hp) {
                 arg0->hp -= v;
@@ -271,7 +271,7 @@ void btl_tickRegen(BtlUnit *arg0) {
 
 void btl_tickVenomMp(BtlUnit *arg0) {
     s32 v = 0;
-    if (!(arg0->status & 1)) {
+    if (!(arg0->status & BTL_STATUS_PETRIFY)) {
         v = arg0->max->maxMp >> 4;
         if (v < arg0->mp) {
             arg0->mp -= v;
@@ -316,10 +316,10 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r = arg0->statusImmune & 0xFFFFFF;
         break;
     case 0x2C:
-        r = ((u8 *)&arg0->unk38)[3];
+        r = ((u8 *)&arg0->autoStatus)[3];
         break;
     case 0x2D:
-        r = arg0->unk38 & 0xFFFFFF;
+        r = arg0->autoStatus & 0xFFFFFF;
         break;
     case 0x2E:
         r = ((u8 *)&arg0->status)[3];

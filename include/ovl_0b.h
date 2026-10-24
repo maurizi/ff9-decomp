@@ -317,7 +317,7 @@ typedef struct {
 } BtlUnit28;
 
 /* battle unit; 8 of them at Battle.unk6FC, linked through unk0 */
-/* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 unidentified). BtlUnit.unk38 uses the same
+/* BtlUnit.status bits (docs/runtime-findings.md "Battle STATUS bits"; 0x4 unidentified). BtlUnit.autoStatus uses the same
  * bits (btl_hasStatus tests both words). */
 #define BTL_STATUS_PETRIFY         0x00000001 /* runtime: Break; model CLUT turns to stone (btl_setStoneClut) */
 #define BTL_STATUS_VENOM           0x00000002 /* code: the tick drains HP and MP (btl_tickPoison, btl_tickVenomMp) */
@@ -371,7 +371,7 @@ typedef struct BtlUnit {
     u8 unk32;
     u8 unk33;
     s32 statusImmune; /* add-status (btl_addStatus) refuses these bits; runtime: Iifa monster 0x4400E004 */
-    u32 unk38; /* permanent BTL_STATUS_* bits: support abilities set them at battle start (e.g. BTL_STATUS_REGEN); add-status (btl_addStatus) does nothing for a bit already set here */
+    u32 autoStatus; /* permanent BTL_STATUS_* bits: support abilities set them at battle start (e.g. BTL_STATUS_REGEN); add-status (btl_addStatus) does nothing for a bit already set here */
     u32 status; /* current BTL_STATUS_* bits; runtime: Sleep 0x20000, KO 0x100 (added by btl_addStatus) */
     s16 unk40[3];
     s16 unk46[16]; /* status timers */
@@ -3841,7 +3841,7 @@ typedef struct {
 
 /* status bits set in either status word */
 static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
-    return (u->unk38 & m) || (u->status & m);
+    return (u->autoStatus & m) || (u->status & m);
 }
 
 /* disc cover open screen (func_800A882C) */
@@ -4165,7 +4165,7 @@ extern u8 D_8007AF01;
 
 /* the command's caster can't act (status 8 with flag 2): prints message 0x15 */
 static inline u8 btl_checkCmdUsable_can(BtlCmd *arg1) {
-    if ((arg1->unk4->status & 8) && (arg1->ability->unk8 & 2)) {
+    if ((arg1->unk4->status & BTL_STATUS_SILENCE) && (arg1->ability->unk8 & 2)) {
         btl_showMessage(0x15);
         return 0;
     }

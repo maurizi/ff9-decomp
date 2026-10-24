@@ -200,7 +200,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         return;
     case 0x3B:
         id = 0x1E9;
-        if (u->status & 0x4000) {
+        if (u->status & BTL_STATUS_TRANCE) {
             id = 0x101;
         }
         btl_playCmdEffect(cmd, id, 0);

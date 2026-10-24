@@ -75,7 +75,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     if (a->unk3A >= m->unkC->unk2) {
         if (!(u8)btl_setIdleMotion(u)) {
             u->unkA0->unk3A = 0;
-        } else if (u->status & 0x2001003) {
+        } else if (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) {
             u->unkA0->unk3A--;
         }
     }
@@ -89,7 +89,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         }
     }
     *ot = (s32)btl_calcBoneMatrices(m, a->unk3A, (u8 *)*ot);
-    if (!(u->status & 0x2001003) && !((u->unk68 >> 21) & 1)) {
+    if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) && !((u->unk68 >> 21) & 1)) {
         a->unk3A++;
     }
     n = m->unk8->unk3;
@@ -102,7 +102,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
             u->unk9C->unk0 |= 0x20;
         }
     }
-    if (!(u->status & 0x40000000)) {
+    if (!(u->status & BTL_STATUS_JUMP)) {
         func_800C9040((TexAnimSet *)m->unk50);
     }
     if (u->unkA8 != NULL) {
@@ -153,7 +153,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         }
         return 0;
     }
-    if ((u->status & 0x42001003) || ((u->unk68 >> 17) & 1)
+    if ((u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || ((u->unk68 >> 17) & 1)
         || ((u->unk68 & 1) && g->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2 && cmd->cmdNo == 0x1F)) {
         return 0;
     }
@@ -167,9 +167,9 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         }
         if (u->unk68 & 1) {
             if (!(u->unk68 & 0x06000000)) {
-                if ((b->escapeHeld != 0 || (b->unk11B8 & 1)) && !(u->status & 0x42021143)) {
+                if ((b->escapeHeld != 0 || (b->unk11B8 & 1)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
                     u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[17];
-                } else if (u->status & 0x8000) {
+                } else if (u->status & BTL_STATUS_DEFEND) {
                     u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[13];
                 } else if ((u->unk68 >> 19) & 1) {
                     if ((s32)u->unk9C->unkC == u->unkA4[(u->unk68 >> 18) & 1]) {
@@ -181,9 +181,9 @@ s32 btl_setIdleMotion(BtlUnit *u) {
                     m = u->unk9C;
                     a = u->unkA4;
                     cur = (s32)m->unkC;
-                    if (cur == a[0] && (u->status & 0x30202)) {
+                    if (cur == a[0] && (u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
                         m->unkC = (BtlUnit9CC *)a[7];
-                    } else if ((cur == a[1] || cur == a[6]) && !(u->status & 0x30202)) {
+                    } else if ((cur == a[1] || cur == a[6]) && !(u->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP))) {
                         m->unkC = (BtlUnit9CC *)a[5];
                     } else {
                         u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
@@ -247,7 +247,7 @@ void btl_endPartyHitMotion(BtlUnit *arg0) {
     } else if (c == a[6]) {
         if ((arg0->unk68 >> 19) & 1) {
             m->unkC = (BtlUnit9CC *)a[11];
-        } else if (arg0->status & 0x30202) {
+        } else if (arg0->status & (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) {
             arg0->unk68 &= ~0x20000;
         } else {
             m->unkC = (BtlUnit9CC *)a[5];

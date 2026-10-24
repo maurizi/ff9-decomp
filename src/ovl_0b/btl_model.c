@@ -492,7 +492,7 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     Battle11C028 *t;
 
     arg1->statusImmune = arg0->unk0;
-    arg1->unk38 = arg0->unk4;
+    arg1->autoStatus = arg0->unk4;
     arg1->status = arg0->unk8;
     arg1->hp = arg0->unkC;
     arg1->mp = arg0->unkE;

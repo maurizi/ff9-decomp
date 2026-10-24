@@ -359,8 +359,8 @@ void btl_drawStatusIcons(Unk800CCD00 *arg0) {
         if (r->unk1D4 & u->unkB0) {
             continue;
         }
-        st = u->status | u->unk38;
-        if ((st & 0x100) || !(st & 0x231B083A)) {
+        st = u->status | u->autoStatus;
+        if ((st & BTL_STATUS_KO) || !(st & (BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_BLIND | BTL_STATUS_TROUBLE | BTL_STATUS_BERSERK | BTL_STATUS_POISON | BTL_STATUS_SLEEP | BTL_STATUS_HASTE | BTL_STATUS_SLOW | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_REFLECT))) {
             continue;
         }
         if ((u->unk68 & 1) && u->unk9C->unkC == (BtlUnit9CC *)u->unkA4[0x11]) {
@@ -438,7 +438,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
             continue;
         }
         st = u->status;
-        if ((st & 0x100) || !(st & 0x88000000)) {
+        if ((st & BTL_STATUS_KO) || !(st & (BTL_STATUS_DOOM | BTL_STATUS_GRADUAL_PETRIFY))) {
             continue;
         }
         if (u->unk68 & 1) {

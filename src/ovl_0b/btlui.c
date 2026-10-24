@@ -3053,7 +3053,7 @@ void func_800F2118(Window *arg0) {
     for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
         if (u->unk68 & 1) {
             n = 0;
-            st = u->status | u->unk38;
+            st = u->status | u->autoStatus;
             x = w->unk0 + 4;
             for (i = 0; i < 16; i++) {
                 if (st & D_800F8F18[i].unk0) {
@@ -3081,7 +3081,7 @@ void func_800F224C(Window *arg0) {
     y = arg0->unk2 - d;
     for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
         if (u->unk68 & 1) {
-            st = u->status | u->unk38;
+            st = u->status | u->autoStatus;
             x = w->unk0 + 4;
             for (i = 0; i < 8; i++) {
                 if (st & D_800F8F98[i].unk0) {

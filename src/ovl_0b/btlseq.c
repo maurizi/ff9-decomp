@@ -183,7 +183,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
         arg1->unkA0->unk3A = 0;
         arg0->unk0 |= 4;
     }
-    if ((arg1->status & 0x02001002) || ((arg0->unk0 >> 2) & 1)) {
+    if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->unk0 >> 2) & 1)) {
         if (g_btlfxEnv->unk0->unk0 != -1) {
             return 0;
         }
@@ -403,7 +403,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C *m = arg1->unk9C;
     BtlUnitA0 *a = arg1->unkA0;
-    if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->status & 0x02001002))) {
+    if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->unk2C->unk52 = 0;
         arg0->unk8 += 1;
         return 1;

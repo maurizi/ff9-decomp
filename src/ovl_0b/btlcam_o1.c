@@ -179,7 +179,7 @@ void btlcam_loadScript(s32 arg) {
             case 3:
                 if (g_btlCamera.unkCC == NULL) {
                     g_btlCamera.unkA8 = 0;
-                } else if ((g_btlCamera.unkCC->status & 0x40001103) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->unk68 >> 5)) & 1)) {
+                } else if ((g_btlCamera.unkCC->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->unk68 >> 5)) & 1)) {
                     g_btlCamera.unkA8 = 0;
                 } else {
                     n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
@@ -188,7 +188,7 @@ void btlcam_loadScript(s32 arg) {
                     } else {
                         r = 0;
                         for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
-                            if ((u->unk68 & 1) && !(u->status & 0x40000100)) {
+                            if ((u->unk68 & 1) && !(u->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
                                 r++;
                             }
                         }

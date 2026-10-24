@@ -1206,7 +1206,7 @@ void btlfx_setWeaponVisible(s32 arg0, s32 arg1) {
 }
 
 s32 btlfx_isUnitActive(s32 arg0) {
-    return btlfx_getUnitStatus(arg0, 0x02001103) == 0;
+    return btlfx_getUnitStatus(arg0, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) == 0;
 }
 
 u32 btlfx_getUnitStatus(s32 arg0, u32 arg1) {
