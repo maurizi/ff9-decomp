@@ -1875,3 +1875,264 @@ func_800B3480 tm_drawTryAgain  # [string] empty drawer tm_mainLoop runs in the "
 # FIELDS include/ovl_0d.h TmCell: unk0=state,unk4=card; TmFlip (was TmUnk350): unk0=mode,unk4=x,unk8=y,unkC=arg,unk10=card; TmBlock (was TmUnk2F0): unk0=hidden,unk4=x,unk8=y,unkC=style; TmPos: unk0=x,unk4=y; TmBattle (new, tm_getBattleValues, was TmPos): atk,def
 # FIELDS include/ovl_0d.h TmCardData: unk0=power,unk1=type,unk2=pdef,unk3=mdef; TmDeck (was TmDeckOdds): v=ids; TmOpponent (was TmLevel): unk0=deck,unk1=aiLevel; TmArrow: unk0=x,unk4=y,unk8=smallX,unkC=smallY,unk10=u,unk14=v; TmCoinFrame: unk0=x,unk4=u,unk8=v,unkC=w; TmFlash: unk0=shape,unk4=dirX,unk8=dirY,unkC=cornerX,unk10=cornerY,unk14=offX,unk18=offY; TmTim: unk0=id,unk4=flags,unk8=clutLen,unkC=clutRect
 # FIELDS include/ovl_0d.h TmState: unk0=task,unk4=cursor,unk8=boardX,unkC=boardY,unk10=cards,unk268=board,unk2E8=timer,unk2EC=brightness,unk2F0=blocks,unk350=flips,unk418=phase,unk41C=flipOwner,unk420=flashNext,unk424=srcX,unk428=srcY,unk42C=dstX,unk430=dstY,unk434=turn,unk438=autoPlay,unk43C=wins,unk440=losses,unk444=draws,unk448=deck,unk44C=aiLevel,unk450=opponent,unk458=msgWin,unk45C=result,unk460=moveFrames,unk464=showScore,unk468=showBoard,unk46C=showBlocks,unk470=tradeCard,unk474=stockCol,unk478=stockRow,unk47C=handCount,unk480=animFrame,unk484=quitWin,unk488=savedFrame,unk48C=targets,unk4AC=numTargets,unk4B0=attacker,unk4B4=copyIdx,unk4B8=infoWin,unk4C4=less5Win,unk4C8=arrowOdds,unk4EC=oddsRow,unk4F0=comboTimer,unk4F4=comboX,unk4F8=comboY,unk4FC=comboShown,unk500=comboCount,unk504=flashMode,unk508=comboCard,unk50C=comboDirs,unk510=lostCard (TmCardStats id/arrows/power/type/pdef/mdef),unk54C=hasLostCard,unk550=lostSlot,unk558=savedRepeat,unk564=nameSlide,unk568=scrollTimer,unk56C=blockIdx,unk570=numBlocks,unk574=atkShown,unk578=defShown,unk57C=valuesTimer,unk590=landed,unk5A4=thinkDelay,unk5A8=blockTimer,unk5AC=blocksDone,unk5B0=getCursor,unk5B4=quitChoice,unk5B8=quitting,unk5BC=atkRoll,unk5C0=defRoll
+
+## ovl_14: ovl_14 (opening: boot screen, opening movie, title screen, attract images)
+# Source files renamed: tu_800A7088 opening, tu_800A7578 opening_setup, tu_800A7FF0 scene (module W, also in ovl_15), tu_800A833C opening_scenes, tu_800A8574 title_menu, tu_800A9220 opening_movie, tu_800A9E14 opening_attract, tu_800AAADC opening_boot
+func_800A7088 opening_main  # [code] overlay entry, loops boot screen, opening movie + title, attract image sets until the title starts a game, then hands over to the field (g_gameState->unk0 0x100000)
+func_800A727C opening_clearOt  # [code] ClearOTagR of this frame's OT, same as the copies in the movie/attract/boot loops (uncalled)
+func_800A72C0 opening_swapBuffers  # [code] DrawSync, VSync, PutDispEnv, DrawOTagEnv, flips GameData.unk8 (uncalled, ovl_15 ending_swapBuffers is the same code)
+func_800A741C opening_findSceneSectors  # [code] looks the field id (mode 1) or world id (mode 3) up in the directory lists at D_80067944 + 0x14C700 and stores GameData.sceneSector/sceneSectors
+func_800A7578 opening_initNewGame  # [code] run by the start scene's leave when the title cursor is on New Game, before the field id 0x46 is set; clears the event globals and calls the other new-game inits
+func_800A75C8 opening_resetGameData  # [code] opening_resetFieldState and other GameData resets, also run before a loaded game is started
+func_800A7600 opening_resetFieldState  # [code] clears GameData scene bytes and the return sectors (-1)
+func_800A767C opening_init  # [code] first call of opening_main, installs opening_soundCmd as GameData.unk83C, loads the data file and the title music
+func_800A7768 opening_resetMusicSlots  # [code] sets GameData.unk81C/unk820 to 0xFFFF and the volumes unk826 to 0x7F, the music slots opening_soundCmd fills
+func_800A77BC opening_exit  # [code] last call of opening_main, SetDispMask(0)
+func_800A780C opening_loadMusic  # [code] copies db entry 0x7003A (the music opening_soundCmd plays) to GameData.unk814 and loads sound bank 0x90122
+func_800A78C0 opening_loadData  # [code] reads file 0x2717 of dir 1 to D_80067944 + 0x10000 and db_registers it
+func_800A796C opening_freeData  # [code] db_unregister of the opening_loadData buffer
+func_800A799C opening_soundCmd  # [code] the opening's GameData.unk83C sound hook (same role as btl_soundCmd in ovl_0b), dispatches music (0x0xxx) and sound (0x1xxx) commands
+func_800A7F70 opening_setMusicVolume  # [code] stores the music volume in GameData.unk826[0], a fade to 0 records its length and start VSync
+func_800A7FB0 opening_isMusicFading  # [code] VSync(-1) - GameData.unk8C4 < unk842, the fade started by opening_setMusicVolume (uncalled)
+func_800A7FF0 scene_init  # [code] module W (also in ovl_15), calls every scene's init in g_sceneModes and enters scene 0
+func_800A808C scene_update  # [code] module W, calls the current scene's update
+func_800A80D4 scene_exit  # [code] module W, calls the current scene's leave
+func_800A811C scene_get  # [code] module W, returns g_scene.cur
+func_800A812C scene_set  # [code] module W, leaves the current scene and enters the new one when it differs
+func_800A81B8 scene_checkDisc  # [code] module W, re-reads the disc bits (g_gameState->unkB) and returns the index of the disc that was in before when that disc is gone, else 0xFF; the result goes to menu 8
+func_800A8260 scene_discIndex  # [code] module W, index of the lowest of 4 disc bits
+func_800A8298 scene_isDiscGone  # [code] module W, whether a disc bit of the first mask is missing from the second
+func_800A82B0 scene_isTitleIdle  # [code] module W, no fade running and the title scene is current; the title's idle timeout only runs then
+func_800A82F4 scene_setFadeScreen  # [code] module W, stores g_scene.fadeScreen and restarts the title fade-in when the title is current
+func_800A832C scene_getFadeScreen  # [code] module W, returns g_scene.fadeScreen
+func_800A8344 opening_discEnter  # [code] g_sceneModes[3] enter, sets opening_discOnClose as the menu close callback (the disc prompt of menu 8 is open in this scene)
+func_800A8378 opening_discOnClose  # [code] menu close callback of the disc scene, goes to the start scene
+func_800A83A0 opening_startEnter  # [code] g_sceneModes[4] enter, clears the frame counter
+func_800A83AC opening_startUpdate  # [code] g_sceneModes[4] update, goes to the end scene after 2 frames
+func_800A83E8 opening_startLeave  # [code] g_sceneModes[4] leave, New Game on the title: opening_initNewGame and field 0x46
+func_800A8450 opening_loadEnter  # [code] g_sceneModes[2] enter (Continue opened the load menu), sets opening_loadOnClose as the menu close callback
+func_800A847C opening_loadUpdate  # [code] g_sceneModes[2] update, runs opening_loadDone once the menu closed
+func_800A84B0 opening_loadOnClose  # [code] close callback of the load menu, flags it and checks func_801F5330 (ovl_39 loaded a game)
+func_800A84EC opening_loadDone  # [code] after the load menu: a loaded game goes to the disc prompt or the start scene, else back to the title with the cursor on Continue
+func_800A8574 opening_titleInit  # [code] g_sceneModes[1] init, cursor on Continue and loads the title images
+func_800A859C opening_titleEnter  # [code] g_sceneModes[1] enter, resets the title state, opens the memory card events, starts the fade-in
+func_800A8618 opening_titleRefresh  # [code] called by scene_setFadeScreen while the title is current, restarts the fade-in
+func_800A8638 opening_titleUpdate  # [code] g_sceneModes[1] update, input, draw and card polling until a choice is made, then opening_titleConfirm
+func_800A8694 opening_titleLeave  # [code] g_sceneModes[1] leave, closes the card events, opens the load menu (menu 4) when the cursor is on Continue
+func_800A86D8 opening_titleInput  # [code] Up/Down move the cursor between New Game and Continue, Start/Cross decide
+func_800A87AC opening_titleDraw  # [code] draws the title images, the two choices and the cursor
+func_800A87E4 opening_titleTick  # [code] polls the memory cards and steps the fade-in
+func_800A880C opening_titleLoadImages  # [code] reads file 0x3C of dir 1 to 0x801CDF00 and uploads it with opening_titleLoadTims
+func_800A8868 opening_titleLoadTims  # [code] uploads each TIM of the pack and fills g_titleMenu.images (uv, clut, size, tpage)
+func_800A8A0C opening_titleDecide  # [code] buzzer on Continue without a memory card, else plays the sound and fades out with opening_titleOnFadeOut
+func_800A8A94 opening_titleDrawBackground  # [code] draws title images 0-9 (10 strips 32 wide across the screen), then 10 and 13
+func_800A8B7C opening_titleDrawChoices  # [code] draws New Game and Continue (images 11, 12 at the cursor positions), Continue dimmed without a memory card
+func_800A8C60 opening_titleDrawCursor  # [code] the hand cursor left of g_titleCursorPos[cursor]
+func_800A8CF8 opening_titleStepFadeIn  # [code] counts the fade-in frames to 0x30, then ends the fade-in
+func_800A8D2C opening_titleOpenCardEvents  # [code] OpenEvent(0xF4000001, ...) for the 4 memory card events of g_titleCardEvents
+func_800A8DB0 opening_titleCloseCardEvents  # [code] DisableEvent and CloseEvent of the 4 memory card events
+func_800A8E10 opening_titlePollCard  # [code] starts _card_info on one port and records whether a card answered, alternating ports
+func_800A8EA4 opening_titleHasCard  # [code] whether a memory card is in either port
+func_800A8ED8 opening_titleStartCardInfo  # [code] clears the card events, _card_wait and _card_info of the polled port
+func_800A8F44 opening_titleTestCardEvents  # [code] index of the card event that fired (0 IOE, 3 NEW = card present), -1 = none
+func_800A8FBC opening_titleOnFadeOut  # [code] fade-out callback of opening_titleDecide, marks the choice made
+func_800A8FCC opening_titleGetCursor  # [code] returns the title cursor (0 New Game, 1 Continue)
+func_800A8FDC opening_titleStartFadeIn  # [code] fades the choices in, or shows them and fades the screen in when scene_getFadeScreen
+func_800A903C opening_titleDrawFading  # [code] sprite of a title image with the fade-in brightness
+func_800A9180 opening_titleConfirm  # [code] New Game: disc 1 check then the disc or start scene, Continue: load scene and menu 4
+func_800A9220 opening_movieThenTitle  # [code] plays the opening movie (ovl_64 list 1 entry 0) when disc 1 is in, then runs the scenes (title) until the idle timeout (0) or the end scene (1)
+func_800A9968 opening_movieInit  # [code] loads ovl_64 (file 0x64 of dir 0) to D_80067944 + 0xF1700 and finds the movie file
+func_800A9B14 opening_movieClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800A9B58 opening_movieSwap  # [code] frame swap of the movie loop, applies the queued flag sets and clears
+func_800A9DD4 opening_movieOnEnd  # [code] mbg_setEndCallback callback, shuts the player down and goes to the title
+func_800A9E14 opening_attract  # [code] shows the 4 images of attract set N (skippable with Start/Cross), then runs the scenes (title) until the idle timeout (0) or the end scene (1)
+func_800AA848 opening_attractInit  # [code] reads the image file g_attractFiles[set] and db_registers it
+func_800AA960 opening_attractFree  # [code] db_unregister of the attract image file
+func_800AA994 opening_attractClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800AA9D8 opening_attractSwap  # [code] frame swap of the attract loop
+func_800AAADC opening_bootScreen  # [code] first boot only (D_80067950 == 0), shows image 0x44FB0 centred for 0xD2 frames
+func_800AAF40 opening_bootScreenLoad  # [code] reads file 0x2718 of dir 1 and uploads image 0x44FB0
+func_800AB06C opening_bootScreenFree  # [code] db_unregister of the boot screen file
+func_800AB09C opening_bootClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800AB0E0 opening_bootSwap  # [code] frame swap of the boot screen loop (copy of opening_attractSwap)
+D_800AB230 g_openingData  # [code] buffer of opening_loadData
+D_800AB234 g_openingSoundPending  # [code] -1, set to the command kind while opening_soundCmd starts music, reset after
+D_800AB238 g_sceneModes  # [code] module W table, init enter update leave per scene id (SceneMode)
+D_800AB298 g_titleImage10Pos  # [code] position of title image 10 (opening_titleDrawBackground)
+D_800AB29C g_titleImage13Pos  # [code] position of title image 13 (opening_titleDrawBackground)
+D_800AB2A0 g_titleNewGamePos  # [code] position of the New Game image 11
+D_800AB2A4 g_titleContinuePos  # [code] position of the Continue image 12
+D_800AB2A8 g_titleCursorPos  # [code] cursor positions per choice, the first two equal the New Game and Continue image positions
+D_800AB2B4 g_titleCardEvents  # [code] memory card event specs opened by opening_titleOpenCardEvents (4 IOE, 0x8000 ERROR, 0x100 TIMOUT, 0x2000 NEW)
+D_800AB2C4 g_movieFlags  # [code] opening movie loop flags (MOVIE_*)
+D_800AB2C8 g_movieFrame  # [code] frames of the movie loop, ++ in opening_movieSwap
+D_800AB2CC g_movieSkipped  # [code] 1 when the movie was skipped or not played, passed to scene_setFadeScreen
+D_800AB2CE g_movieLastFrame  # [code] g_mbgFrame seen in the previous loop, a frame number that stops rising ends the movie
+D_800AB2D0 g_attractFlags  # [code] attract loop flags (ATTRACT_*)
+D_800AB2D4 g_attractData  # [code] buffer of opening_attractInit
+D_800AB2D8 g_attractFiles  # [code] dir 1 file id of each attract image set
+D_800AB2DC g_attractImages  # [code] db image ids, 4 per attract set
+D_800AB2EC g_attractSkipped  # [code] passed to scene_setFadeScreen after the attract images
+D_800AB2F0 g_bootScreenData  # [code] buffer of opening_bootScreenLoad
+D_800AB2F4 g_bootScreenImage  # [code] TIM 0x44FB0 drawn by opening_bootScreen
+D_800AB300 g_openingState  # [code] opening_main state (OPENING_*)
+D_800AB308 g_scene  # [code] module W state, current scene
+D_800AB310 g_startFrames  # [code] frames counted by opening_startUpdate
+D_800AB318 g_loadMenuClosed  # [code] set by opening_loadOnClose
+D_800AB320 g_titleMenu  # [code] title menu state (TitleMenu)
+D_800AB3B8 g_movieFlagQueue  # [code] [0] flags to set, [1] flags to clear, one entry per coming frame, shifted by opening_movieSwap
+D_800AB3C8 g_movieState  # [code] state of opening_movieThenTitle
+D_800AB3D0 g_attractSprites  # [code] the two sprites of an attract image, per buffer
+D_800AB420 g_attractTpages  # [code] their DR_TPAGEs
+D_800AB440 g_attractState  # [code] state of opening_attract
+D_800AB448 g_bootScreenSprite  # [code] sprite of the boot screen, per buffer
+D_800AB470 g_bootScreenTpage  # [code] its DR_TPAGE
+func_800A833C opening_discInit  # [code] g_sceneModes[3] init (empty)
+func_800A8368 opening_discUpdate  # [code] g_sceneModes[3] update (empty, the disc menu runs on its own)
+func_800A8370 opening_discLeave  # [code] g_sceneModes[3] leave (empty)
+func_800A8398 opening_startInit  # [code] g_sceneModes[4] init (empty)
+func_800A8448 opening_loadInit  # [code] g_sceneModes[2] init (empty)
+func_800A84A8 opening_loadLeave  # [code] g_sceneModes[2] leave (empty)
+D_8019DC68 g_mbgMovieLists[1].movies  # [code] by hand: the use became g_mbgMovieLists[1].movies[0].path (symbol line g_mbgMovieLists = 0x8019DC5C added)
+# FIELDS include/ovl_14.h Ovl14Text->TitleImage: unk0=uvClut,unk4=w,unk5=h,unk6=tpage; Ovl14Dir->SceneDirEntry: unk0=id,unk2=link,unk4=sector; Ovl14Mode->SceneMode: unk0=init,unk4=enter,unk8=update,unkC=leave; Ovl14ModeState->SceneState: unk0=cur,unk3=fadeScreen; Ovl14Unk320->TitleMenu: unk1=shown,unk2=fadingIn,unk3=cursor,unk4=cardIn,unk6=cardPort,unk7=cardPolling,unk8=decided,unkC=fadeFrames,unk14=cardEvents,unk24=images; Ovl14Flags->AttractFlags: unk0=bits; Ovl14Pos->ScreenPos
+
+## ovl_15: ovl_15 (ending: last movie, The End screen, Blackjack)
+# Source files renamed: tu_800A713C ending, tu_800A7378 blackjack, tu_800AB100 bj_action, tu_800AB490 the_end, tu_800ACE1C scene (module W), tu_800AD138 bj_wager, tu_800AD44C ending_menu, tu_800AD7DC ending_messages
+func_800A713C ending_main  # [code] overlay entry, plays the ending movie FMV059 (ovl_64 list 4 entry 0x12), then loops the end screen and Blackjack (states 1 and 2, the message pages and FMV060, are never reached)
+func_800A723C ending_clearOt  # [code] ClearOTagR of this frame's OT (uncalled copy)
+func_800A7280 ending_swapBuffers  # [code] DrawSync, VSync, PutDispEnv, DrawOTagEnv, flips GameData.unk8 (uncalled, same code as ovl_14 opening_swapBuffers)
+func_800A7378 ending_playMovie  # [code] plays ovl_64 movie list/entry (args) when disc 4 is in (g_gameState->unkB bit 3), with the flag-queue loop of ovl_14 opening_movieThenTitle
+func_800A766C ending_movieInit  # [code] loads ovl_64 (file 0x64 of dir 0) to D_80067944 + 0xF1700 and finds the movie file g_mbgMovieLists[list].movies[entry]
+func_800A7838 ending_movieClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800A787C ending_movieSwap  # [code] frame swap of the movie loop, applies the queued flag sets and clears
+func_800A7A84 ending_movieOnEnd  # [code] mbg_setEndCallback callback, shuts the player down and ends the loop
+func_800A7ABC bj_drawResult  # [code] Blackjack, draws result banner 0/1/2 (the player won / lost / push, by the callers in bj_main) from two sprites at brightness c
+func_800A8528 bj_drawCardBack  # [code] Blackjack, card-sized sprite 0x38x0x48 from v 0x80 with the back CLUT, drawn for the hole card, the shoe and dealt cards in flight
+func_800A8630 bj_drawCard  # [code] Blackjack, card face (rank, suit) with corner indices, suit pips from g_bjPips or a face picture for ranks 9-11
+func_800A8F00 bj_drawShoe  # [code] Blackjack, three stacked card backs at the shoe position (0xF0, 0xA) cards are dealt from
+func_800A8F58 bj_shoeInit  # [code] Blackjack, fills the shoe with 6 decks of cards 0-51
+func_800A8FA4 bj_shoeShuffle  # [code] Blackjack, 5 passes of random swaps over the 312 cards
+func_800A90B8 bj_dealCard  # [code] Blackjack, takes the next shoe card into the hand and updates its value (aces 11 or 1, bust over 21), flags a reshuffle after card 249
+func_800A91F0 bj_handInit  # [code] Blackjack, clears a hand and sets its screen position
+func_800A9228 bj_splitHand  # [code] Blackjack, moves the second card of the player hand to the split hand and revalues both (split aces flagged)
+func_800A92FC bj_handOptions  # [code] Blackjack, 2 = two cards (can double), 3 = a pair (can also split)
+func_800A9334 bj_drawHand  # [code] Blackjack, draws the hand's cards (or the first count), the hole card face down
+func_800A945C bj_isBlackjack  # [code] Blackjack, value 21 with two cards
+func_800A9488 bj_main  # [code] Blackjack game loop, bet, deal, hit stand double split, dealer draws to 17, settles the bankroll
+func_800AAD24 bj_init  # [code] uploads the Blackjack images and CLUT, starts the music
+func_800AAFA4 bj_exit  # [code] last call of bj_main (returns 0)
+func_800AAFAC bj_clearOt  # [code] ClearOTagR of this frame's OT and resets the Blackjack primitive counters
+func_800AAFFC bj_swapBuffers  # [code] frame swap of bj_main
+func_800AB100 bj_actionInit  # [code] g_sceneModes[3] init, cursor on Stand
+func_800AB10C bj_actionEnter  # [code] g_sceneModes[3] enter (bj_main sets scene 3 for the player's move)
+func_800AB160 bj_actionUpdate  # [code] g_sceneModes[3] update, input then draw
+func_800AB198 bj_actionLeave  # [code] g_sceneModes[3] leave
+func_800AB1B8 bj_actionGetCursor  # [code] the chosen move, 0 Stand 1 Hit 2 Double 3 Split (bj_main, matching the labels drawn at y 0x90-0xC0)
+func_800AB1C8 bj_actionInput  # [code] Up/Down over Stand Hit Double Split, skipping Double and Split when not allowed, Cross decides
+func_800AB34C bj_actionDraw  # [code] draws the cursor (the other two steps are empty)
+func_800AB37C bj_actionTick  # [code] steps the fade-in counter
+func_800AB39C bj_actionDecide  # [code] cursor sound, scene 4 (bj_main sees the move made)
+func_800AB3D4 bj_actionDrawCursor  # [code] hand cursor left of g_bjActionCursorPos[cursor]
+func_800AB45C bj_actionStepFadeIn  # [code] counts to 48, then ends the fade-in
+func_800AB490 ending_theEnd  # [code] shows the last ending image until the 16-button g_endingSecretCode is entered and Start is held, then fades out and returns 1 (Blackjack)
+func_800AC374 ending_theEndInit  # [code] uploads image g_endingImage, restarts the music
+func_800AC448 ending_theEndExit  # [code] last call of ending_theEnd (returns 0)
+func_800AC450 ending_theEndClearOt  # [code] ClearOTagR of this frame's OT (copy)
+func_800AC494 ending_theEndSwap  # [code] frame swap of ending_theEnd
+func_800AC598 ending_soundCmd  # [code] the ending's GameData.unk83C sound hook, same dispatcher as ovl_14 opening_soundCmd
+func_800ACB98 ending_init  # [code] first call of ending_main, installs ending_soundCmd, loads the data file and the music
+func_800ACC08 ending_exit  # [code] last call of ending_main, fades the music out and frees the data file
+func_800ACCB4 ending_loadMusic  # [code] copies db entry 0x7009C (the music ending_soundCmd plays) to GameData.unk814 and loads sound bank 0x901F3
+func_800ACD70 ending_loadData  # [code] reads file 0x2F44 of dir 1 to D_80067944 + 0x10000 and db_registers it
+func_800ACE1C scene_init  # [code] module W (also in ovl_14), calls every scene's init in g_sceneModes and enters scene 0
+func_800ACEB8 scene_update  # [code] module W, calls the current scene's update
+func_800ACF00 scene_exit  # [code] module W, calls the current scene's leave
+func_800ACF48 scene_get  # [code] module W, returns g_scene.cur
+func_800ACF58 scene_set  # [code] module W, leaves the current scene and enters the new one when it differs
+func_800ACFE4 scene_checkDisc  # [code] module W (uncalled here), see ovl_14 scene_checkDisc
+func_800AD08C scene_discIndex  # [code] module W, index of the lowest of 4 disc bits
+func_800AD0C4 scene_isDiscGone  # [code] module W, whether a disc bit of the first mask is missing from the second
+func_800AD0DC scene_isMenuIdle  # [code] module W (uncalled here), no fade running and one of the menu scenes 1-3 is current (ovl_14 scene_isTitleIdle)
+func_800AD11C scene_setFadeScreen  # [code] module W (uncalled here), stores g_scene.fadeScreen
+func_800AD128 scene_getFadeScreen  # [code] module W, returns g_scene.fadeScreen
+func_800AD138 bj_wagerInit  # [code] g_sceneModes[2] init
+func_800AD144 bj_wagerEnter  # [code] g_sceneModes[2] enter (bj_main sets scene 2 for the bet)
+func_800AD194 bj_wagerUpdate  # [code] g_sceneModes[2] update, input then draw
+func_800AD1CC bj_wagerLeave  # [code] g_sceneModes[2] leave
+func_800AD1EC bj_wagerGetCursor  # [code] returns the wager screen cursor (uncalled)
+func_800AD1FC bj_wagerInput  # [code] Right/Left raise and lower the wager by 10 (10 to 1000, at most the bankroll), Cross decides
+func_800AD308 bj_wagerDraw  # [code] draws the cursor (the other two steps are empty)
+func_800AD338 bj_wagerTick  # [code] steps the fade-in counter
+func_800AD358 bj_wagerDecide  # [code] cursor sound, scene 4 (bj_main deals)
+func_800AD390 bj_wagerDrawCursor  # [code] hand cursor left of g_bjWagerCursorPos
+func_800AD418 bj_wagerStepFadeIn  # [code] counts to 48, then ends the fade-in
+func_800AD44C ending_menuInit  # [code] g_sceneModes[1] init of a 4-choice menu nothing enters (scene_set is only called with 2, 3, 4), a copy of ovl_14's title menu
+func_800AD458 ending_menuEnter  # [code] g_sceneModes[1] enter (unused menu)
+func_800AD4AC ending_menuUpdate  # [code] g_sceneModes[1] update (unused menu)
+func_800AD4E4 ending_menuLeave  # [code] g_sceneModes[1] leave (unused menu)
+func_800AD504 ending_menuGetCursor  # [code] returns the unused menu's cursor (uncalled)
+func_800AD514 ending_menuInput  # [code] Up/Down over 4 choices, Cross decides (unused menu)
+func_800AD5EC ending_menuDraw  # [code] draws the cursor (unused menu)
+func_800AD624 ending_menuTick  # [code] steps the fade-in counter (unused menu)
+func_800AD644 ending_menuDecide  # [code] fades out with ending_menuOnFadeOut (unused menu)
+func_800AD690 ending_menuDrawCursor  # [code] hand cursor left of g_endingMenuCursorPos[cursor] (unused menu)
+func_800AD728 ending_menuStepFadeIn  # [code] counts to 48, then ends the fade-in (unused menu)
+func_800AD75C ending_menuOnFadeOut  # [code] fade-out callback, scene 4 (unused menu)
+func_800AD77C ending_menuStartFadeIn  # [code] same code as ovl_14 opening_titleStartFadeIn (unused menu)
+func_800AD7DC ending_messages  # [code] shows message pages 0-5 of g_endingMessages centred, fading each in and out (ending_main state 1, never reached)
+func_800ADC3C ending_messagesInit  # [code] resets the message loop
+func_800ADC98 ending_messagesClearOt  # [code] ClearOTagR of this frame's OT, resets the primitive pointer to this buffer
+func_800ADD04 ending_messagesSwap  # [code] frame swap of ending_messages
+func_800ADE14 ending_getMessage  # [code] string idx of a text bank (count, then u16 offset + u16 info per string)
+func_800ADE30 ending_drawText  # [code] draws a string with the GameData.unk7D4 font (two-byte codes above its first page), returns the next free primitive
+func_800ADF90 ending_textWidth  # [code] pixel width of a string in the GameData.unk7D4 font
+func_800AE028 ending_drawGlyph  # [code] one glyph sprite of the font, returns its advance in *out
+D_800A70EC g_endingMessages  # [code] text bank of ending_messages (6 Japanese strings)
+D_800AE0E0 g_movieFlags  # [code] ending movie loop flags (MOVIE_*, as ovl_14's)
+D_800AE0E4 g_movieFrame  # [code] frames of the movie loop, ++ in ending_movieSwap
+D_800AE0E8 g_bjBankroll  # [code] Blackjack money, starts at 1000 and is refilled to 1000 below 10, drawn under "Bankroll"
+D_800AE0EC g_bjClut  # [code] 16 white CLUT entries uploaded by bj_init
+D_800AE10C g_bjPips  # [code] pip positions on a card face per rank (bj_drawCard)
+D_800AE3DC g_bjActionCursorPos  # [code] cursor positions of Stand Hit Double Split (bj_actionDrawCursor)
+D_800AE3EC g_endingCodePos  # [code] how many buttons of g_endingSecretCode were entered, 16 = complete
+D_800AE3F0 g_endingSecretCode  # [code] the 16 buttons ending_theEnd compares with the pressed pad, in order
+D_800AE432 g_endingImage  # [code] db image id (| 0x40000) shown by ending_theEnd
+D_800AE43C g_endingSoundPending  # [code] -1, set to the command kind while ending_soundCmd starts music, reset after
+D_800AE440 g_endingData  # [code] buffer of ending_loadData
+D_800AE444 g_sceneModes  # [code] module W table, init enter update leave per scene id (SceneMode)
+D_800AE494 g_bjWagerCursorPos  # [code] cursor position of the wager screen
+D_800AE498 g_endingMenuCursorPos  # [code] cursor positions of the unused 4-choice menu
+D_800AE4AC g_messagesFrame  # [code] frames of ending_messages, ++ in ending_messagesSwap
+D_800AE4B0 g_messagesPrim  # [code] next free primitive of ending_messages, reset to g_messagesPrims[buffer] each frame
+D_800AE4B8 g_endingState  # [code] ending_main state
+D_800AE4C0 g_movieState  # [code] state of ending_playMovie
+D_800AE4C8 g_movieFlagQueue  # [code] [0] flags to set, [1] flags to clear, one entry per coming frame, shifted by ending_movieSwap
+D_800AE4D8 g_bjSprtCount  # [code] sprites used this frame from g_bjSprites
+D_800AE4DC g_bjTpageCount  # [code] DR_TPAGEs used this frame from g_bjTpages
+D_800AE4E0 g_bjClutRect  # [code] RECT of the g_bjClut upload
+D_800AE4E8 g_bjTpage  # [code] draw mode set before the Blackjack text
+D_800AE4F8 g_bjTpages  # [code] DR_TPAGE pool of Blackjack, per buffer
+D_800AE5F8 g_bjSprites  # [code] sprite pool of Blackjack, per buffer
+D_800B0DF8 g_bjState  # [code] bj_main state
+D_800B0E08 g_bjShoe  # [code] the 6-deck shoe (BjShoe)
+D_800B0F44 g_bjCanDouble  # [code] Double offered this move, bj_actionInput skips it otherwise and the label is drawn dimmed
+D_800B0F48 g_bjWager  # [code] Blackjack bet, 10 to 1000 in steps of 10, drawn under "Wager"
+D_800B0F4C g_bjCanSplit  # [code] Split offered this move
+D_800B0F50 g_bjAction  # [code] state of the action menu scene (SceneMenu)
+D_800B0F60 g_theEndSprites  # [code] the two sprites of the end image, per buffer
+D_800B0FB0 g_theEndTpages  # [code] their DR_TPAGEs
+D_800B0FD0 g_theEndState  # [code] state of ending_theEnd
+D_800B0FD8 g_scene  # [code] module W state, current scene
+D_800B0FE0 g_bjWagerMenu  # [code] state of the wager scene (SceneMenu)
+D_800B0FF0 g_endingMenu  # [code] state of the unused menu scene (SceneMenu)
+D_800B1000 g_messagesPrims  # [code] primitive buffers of ending_messages, per buffer
+D_800B5000 g_messagesState  # [code] state of ending_messages
+D_800A7018 g_bjFmt2d  # [string] "%2d", hand values in bj_main
+D_800A701C g_bjStrBankroll  # [string] "Bankroll" label in bj_main
+D_800A7028 g_bjFmtLong  # [string] "%ld", bankroll and wager in bj_main
+D_800A702C g_bjStrWager  # [string] "Wager" label in bj_main
+D_800A7034 g_bjStrStand  # [string] "Stand" label in bj_main
+D_800A703C g_bjStrHit  # [string] "Hit" label in bj_main
+D_800A7040 g_bjStrDouble  # [string] "Double" label in bj_main
+D_800A7048 g_bjStrSplit  # [string] "Split" label in bj_main
+# FIELDS include/ovl_15.h Ovl15Hand->BjHand: unk0=flags,unk2=count,unk4=value,unk6=hardValue,unk8=x,unkA=y,unkC=cards; Ovl15Shoe->BjShoe: unk0=flags,unk2=next,unk4=cards; Ovl15Mode->SceneMode: unk0=init,unk4=enter,unk8=update,unkC=leave; Ovl15ModeState->SceneState: unk0=cur,unk3=fadeScreen; Ovl15Screen->SceneMenu: unk1=shown,unk2=fadingIn,unk3=cursor,unk8=fadeFrames; Ovl15Pip->BjPip; Ovl15Pos->ScreenPos; Unk8019DC5C->MbgMovieList: unk0=count,unk4=movies; Unk8019DC5CSub->MbgMovie: unk0=path
