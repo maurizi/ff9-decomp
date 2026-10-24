@@ -1,4 +1,8 @@
-/* Draft of fx_0e0 fx_0e0_op80. Status: 234 aligned mismatches (92 ignoring registers and spill offsets); equivalent
+/* Draft of fx_0e0 fx_0e0_op80. Status: 127 aligned mismatches. Pass 4: an empty do { } while (0); barrier before case 6's
+ * `i = 0` (a call-crossing constant set floats up in sched1, which made i conflict with all s regs and spill); `one`
+ * set in the mode == 1 test and passed as case 10's 13th argument (the original's s0); case 6 scl before xo; the
+ * unk44/unk50/unk24 adjustments in cases 6 and 7 reordered (perm search).
+ * Was: 234 aligned mismatches (92 ignoring registers and spill offsets); equivalent
  * by construction, untested in the emulator. Pass 3 fixes: a dead-store-only if/else after the col/scl/xo = 0 inits
  * ends cse's block, so the per-case `xo = 0` stores survive (spill slot 0x7C as in the original); mode 1 stores all
  * three unk24 copies before the two `-=` (flow then keeps both stores and reload_cse turns the re-reads into the
@@ -98,13 +102,14 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     s32 i;
     s32 r;
     s32 d;
+    s32 one;
 
     if (mode == 0) {
         init->unk0 = 0x84;
         init->unk8 = 0x24;
         init->unk14 = (s32)func_801E8628;
         init->unk4 = 0x31;
-    } else if (mode == 1) {
+    } else if (one = 1, mode == one) {
         work->unk0 = 6;
         work->unk4 = 0;
         D_801EA918 = env;
@@ -151,8 +156,8 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             a1 = t >> 2;
             BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
             work->unk18.vy -= 0x400 + (ex->math_sin(a1) >> 1);
-            xo = 0;
             scl = 0x80;
+            xo = 0;
             env->unk2C->unk0[3].vx = work->unk18.vx;
             env->unk2C->unk0[3].vy = work->unk18.vy;
             env->unk2C->unk0[3].vz = work->unk18.vz;
@@ -175,18 +180,20 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->unk68, (((ex->math_cos(a1) >> 1) + 0x800) >> 5) - 0x80,
                                      (((ex->math_cos(a1) >> 1) + 0x800) >> 5) - 0x80,
                                      (((ex->math_cos(a1) >> 1) + 0x800) >> 5) - 0x80);
-            work->unk44.vz = 0x3000;
             work->unk44.vx = work->unk44.vy = 0x2000;
             work->unk50.vz += 0x200;
-            work->unk24.vz -= 0x2EE;
             work->unk24.vy += 0x5DC;
-            work->unk24.vz -= 0x8FC;
+            work->unk24.vz -= 0x2EE;
+            work->unk44.vz = 0x3000;
             work->unk24.vy -= 0x125C;
+            work->unk24.vz -= 0x8FC;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk6C);
             c1 = (((t * 2) - 0x1000) >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->unk6C, c1, c1, c1);
             work->unk24.vy += 0x125C;
             work->unk24.vz += 0x8FC;
+            do {
+            } while (0);
             i = 0;
             if (frame > 0x32) {
                 a = (frame - 0x32) << 8;
@@ -280,13 +287,13 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk68);
             ex->Hi_ModifyEffModelRGB(work->unk68, (ex->math_cos(t >> 2) >> 6) - 0x80, (ex->math_cos(t >> 2) >> 6) - 0x80,
                                      (ex->math_cos(t >> 2) >> 6) - 0x80);
-            work->unk44.vz = 0x3000;
             work->unk44.vx = work->unk44.vy = 0x2000;
             work->unk50.vz += 0x200;
-            work->unk24.vz -= 0x2EE;
             work->unk24.vy += 0x5DC;
-            work->unk24.vz -= 0x9C4;
+            work->unk24.vz -= 0x2EE;
+            work->unk44.vz = 0x3000;
             work->unk24.vy -= 0x1388;
+            work->unk24.vz -= 0x9C4;
             ex->Hi_DrawEffModel(&work->unk50, (VECTOR *)&work->unk24, (s32)&work->unk44, work->unk6C);
             ex->Hi_ModifyEffModelRGB(work->unk6C, (ex->math_cos(t >> 2) >> 5) - 0x80, (ex->math_cos(t >> 2) >> 5) - 0x80,
                                      (ex->math_cos(t >> 2) >> 5) - 0x80);
@@ -369,7 +376,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vz = 0x1000;
             tc = 0xA0 - ((frame << 15) >> 12);
             u.s.col.r = u.s.col.g = u.s.col.b = tc;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, 1, NULL);
+            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, one, NULL);
             if (frame >= 0x10) {
                 ex->btlfx_clearEffModels();
                 return 1;
