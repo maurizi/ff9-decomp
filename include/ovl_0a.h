@@ -174,18 +174,18 @@ typedef struct FieldMap {
 } FieldMap;
 
 /* 0x28-byte entries at D_800C9DF4 */
-typedef struct Unk800C9DF4 {
-    s16 unk0;
+typedef struct BgiActor {
+    s16 flags;
     s16 unk2;
-    s16 unk4;
-    s16 unk6;
-    s16 unk8;
-    s16 unkA;
+    s16 floor;
+    s16 triangle;
+    s16 lastFloor;
+    s16 lastTriangle;
     u8 padC[0x1C - 0xC];
-    s32 unk1C;
-    s32 unk20;
-    Unk8004AB64 *unk24;
-} Unk800C9DF4;
+    s32 radius;
+    s32 radiusSq;
+    Unk8004AB64 *actor;
+} BgiActor;
 
 /* 0xC-byte entries at D_800C9DCC */
 typedef struct {
@@ -473,152 +473,138 @@ typedef struct {
 } Unk800B3254;
 
 /* 6-byte vertex entries at g_fieldBgi.unkC */
-typedef struct Unk800C9DFC {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-} Unk800C9DFC;
+typedef struct BgiVertex {
+    s16 vx;
+    s16 vy;
+    s16 vz;
+} BgiVertex;
 
 /* the same vertex viewed as an array (bgi_pointInTriangle) */
 typedef struct {
     s16 unk0[3];
-} Unk800C9DFCv;
+} BgiVertexArr;
 
 /* header of the block g_fieldBgi.unk8 points to */
 typedef struct {
-    u16 unk0; /* data size */
-    s16 unk2; /* original position */
-    s16 unk4;
-    s16 unk6;
-    s16 unk8[3]; /* origin (current position) */
-    s16 unkE; /* minimum */
-    s16 unk10;
-    s16 unk12;
-    s16 unk14; /* maximum */
-    s16 unk16;
-    s16 unk18;
-    s16 unk1A; /* default character position */
-    s16 unk1C;
-    s16 unk1E;
-    s16 unk20; /* active floor */
-    s16 unk22; /* active triangle */
-    u16 unk24; /* triangle count */
-    u16 unk26; /* offset: Unk800C9E00[] */
-    u16 unk28; /* edge count */
-    u16 unk2A; /* offset: Unk800C9DF8Link[] */
-    u16 unk2C; /* keyframe animation count (g_fieldBgi.unk20) */
-    u16 unk2E; /* offset: g_fieldBgi.unk20 */
-    u16 unk30; /* floor count */
-    u16 unk32; /* offset: Unk800C9DF8Tri[] */
-    u16 unk34; /* normal count */
-    u16 unk36; /* offset: g_fieldBgi.unk14 */
-    u16 unk38; /* vertex count */
-    u16 unk3A; /* offset: g_fieldBgi.unkC */
-} Unk800C9DF8; /* walkmesh ("BGI") header */
+    u16 dataSize; /* data size */
+    s16 orgX; /* original position */
+    s16 orgY;
+    s16 orgZ;
+    s16 curPos[3]; /* origin (current position) */
+    s16 minX; /* minimum */
+    s16 minY;
+    s16 minZ;
+    s16 maxX; /* maximum */
+    s16 maxY;
+    s16 maxZ;
+    s16 charX; /* default character position */
+    s16 charY;
+    s16 charZ;
+    s16 activeFloor; /* active floor */
+    s16 activeTriangle; /* active triangle */
+    u16 triangleCount; /* triangle count */
+    u16 triangleOffset; /* offset: BgiTriangle[] */
+    u16 edgeCount; /* edge count */
+    u16 edgeOffset; /* offset: BgiEdgeView[] */
+    u16 animCount; /* keyframe animation count (g_fieldBgi.unk20) */
+    u16 animOffset; /* offset: g_fieldBgi.unk20 */
+    u16 floorCount; /* floor count */
+    u16 floorOffset; /* offset: BgiFloor[] */
+    u16 normalCount; /* normal count */
+    u16 normalOffset; /* offset: g_fieldBgi.unk14 */
+    u16 vertexCount; /* vertex count */
+    u16 vertexOffset; /* offset: g_fieldBgi.unkC */
+} BgiHeader; /* walkmesh ("BGI") header */
 
 typedef struct {
-    u16 unk0; /* low byte: flags, high byte: mask */
-    u8 pad2[2];
-    u16 unk4;
-    u8 pad6[0x28 - 6];
-} Unk800C9DF8Node; /* 0x28 */
+    u16 flags; /* flags */
+    s16 clone; /* clone */
+} BgiEdgeView; /* edge, 4 bytes */
 
 typedef struct {
-    u16 unk0; /* flags */
-    s16 unk2; /* clone */
-} Unk800C9DF8Link; /* edge, 4 bytes */
+    u16 flags; /* flags */
+    u16 floorIndex; /* floor index */
+    s16 orgPos[3]; /* base position */
+    u16 curPos[3]; /* current position */
+    s16 min[3]; /* minimum */
+    s16 max[3]; /* maximum */
+    u16 triangleCount; /* count of unk1E entries */
+    u16 triangleOffset; /* offset: s32[] (BgiTriangle indices) */
+} BgiFloor; /* 0x20 */
 
 typedef struct {
-    u16 unk0; /* flags */
-    u16 unk2; /* floor index */
-    s16 unk4[3]; /* base position */
-    u16 unkA[3]; /* current position */
-    s16 unk10[3]; /* minimum */
-    s16 unk16[3]; /* maximum */
-    u16 unk1C; /* count of unk1E entries */
-    u16 unk1E; /* offset: s32[] (Unk800C9E00 indices) */
-} Unk800C9DF8Tri; /* 0x20 */
+    s32 nx;
+    s32 ny;
+    s32 nz;
+    s32 invNy;
+} BgiNormal; /* 0x10 */
 
 typedef struct {
-    u8 pad0[2];
-    s16 unk2;
-    u16 unk4; /* count of unk6 entries */
-    u16 unk6; /* offset: s32[] (Unk800C9E00 indices) */
-} Unk800C9DF8Pt; /* 8 bytes */
+    u16 flags; /* flags */
+    u16 frameCount; /* count */
+    s16 frameRate;
+    s16 counter;
+    s32 curFrame;
+    s32 frameOffset; /* offset into g_fieldBgi.unk8 */
+} BgiAnim; /* 0x10 */
+
+/* keyframe of a walkmesh animation (BgiAnim.unkC) */
+typedef struct {
+    u16 flags; /* flags */
+    s16 value; /* value */
+    u16 triangleCount; /* triangle count */
+    u16 triangleOffset; /* offset: s32 triangle indices */
+} BgiKeyframe;
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
-    s32 unk8;
-    s32 unkC;
-} Unk800C9E04; /* 0x10 */
-
-typedef struct {
-    u16 unk0; /* flags */
-    u16 unk2; /* count */
-    s16 unk4;
-    s16 unk6;
-    s32 unk8;
-    s32 unkC; /* offset into g_fieldBgi.unk8 */
-} Unk800C9E10; /* 0x10 */
-
-/* keyframe of a walkmesh animation (Unk800C9E10.unkC) */
-typedef struct {
-    u16 unk0; /* flags */
-    s16 unk2; /* value */
-    u16 unk4; /* triangle count */
-    u16 unk6; /* offset: s32 triangle indices */
-} Unk800C9E10Frame;
-
-typedef struct {
-    u16 unk0; /* flags */
-    u16 unk2; /* data */
-    s16 unk4; /* Unk800C9DF8Tri index */
-    s16 unk6;
-    u16 unk8;
-    s16 unkA;
-    s16 unkC[3]; /* Unk800C9DFC (vertex) indices */
-    s16 unk12[3]; /* edge indices */
-    s16 unk18[3]; /* neighbour node ids, -1 = none */
-    s16 unk1E;
-    s16 unk20;
-    s16 unk22;
-    s32 unk24; /* plane distance (16.16) */
-} Unk800C9E00; /* 0x28 */
+    u16 flags; /* flags */
+    u16 data; /* data */
+    s16 floor; /* BgiFloor index */
+    s16 normal;
+    u16 thetaX;
+    s16 thetaZ;
+    s16 vertices[3]; /* BgiVertex (vertex) indices */
+    s16 edges[3]; /* edge indices */
+    s16 neighbors[3]; /* neighbour node ids, -1 = none */
+    s16 centerX;
+    s16 centerY;
+    s16 centerZ;
+    s32 d; /* plane distance (16.16) */
+} BgiTriangle; /* 0x28 */
 
 /* walkmesh edge */
 typedef struct {
-    s16 unk0;
-    s16 unk2; /* index in the neighbour's edge list, -1 = none */
-} Unk800C9E08;
+    s16 flags;
+    s16 clone; /* index in the neighbour's edge list, -1 = none */
+} BgiEdge;
 
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u16 unk2; /* count of unk4 entries */
-    struct Unk800C9DF4 *unk4;
-    Unk800C9DF8 *unk8;
-    struct Unk800C9DFC *unkC;
-    Unk800C9E00 *unk10;
-    Unk800C9E04 *unk14;
-    Unk800C9E08 *unk18;
-    Unk800C9DF8Tri *unk1C;
-    Unk800C9E10 *unk20;
-} Unk800C9DF0;
+    u8 loaded;
+    u8 maskFilter;
+    u16 actorCount; /* count of unk4 entries */
+    struct BgiActor *actors;
+    BgiHeader *header;
+    struct BgiVertex *vertices;
+    BgiTriangle *triangles;
+    BgiNormal *normals;
+    BgiEdge *edges;
+    BgiFloor *floors;
+    BgiAnim *anims;
+} BgiContext;
 
 typedef struct {
-    u16 unk0; /* flags */
-    u16 unk2; /* walkmesh floor */
-    u16 unk4; /* axis */
-    u16 unk6; /* curve: 0 linear, 1 cosine */
-    s16 unk8; /* min */
-    s16 unkA; /* max */
-    s16 unkC; /* current */
-    s16 unkE; /* previous */
-    u16 unk10;
-    s16 unk12; /* speed (8.8) */
-    s32 unk14;
-} Unk800CAE98; /* 0x18 */
+    u16 flags; /* flags */
+    u16 floor; /* walkmesh floor */
+    u16 axis; /* axis */
+    u16 curve; /* curve: 0 linear, 1 cosine */
+    s16 min; /* min */
+    s16 max; /* max */
+    s16 cur; /* current */
+    s16 prev; /* previous */
+    u16 range;
+    s16 speed; /* speed (8.8) */
+    s32 accum;
+} BgiFloorMove; /* 0x18 */
 
 /* file 0x1C0000 header */
 typedef struct {
@@ -851,23 +837,6 @@ typedef struct Unk800C95C8 {
     s16 unk78;
 } Unk800C95C8;
 
-/* walkmesh swap tables (bgi_remapActors) */
-typedef struct {
-    u8 pad0[0xC];
-    s32 unkC; /* offset of 8-byte link entries */
-} Unk800C6C04A;
-
-typedef struct {
-    u8 pad0[6];
-    u16 unk6; /* offset of the replacement id table */
-} Unk800C6C04B;
-
-typedef struct {
-    u8 pad0[4];
-    u16 unk4; /* count */
-    u16 unk6; /* offset of the id list */
-} Unk800C6C04E;
-
 typedef union {
     u32 w;
     u8 c[4];
@@ -1057,7 +1026,7 @@ s32 func_800AC3D8(s32, s32);
 FieldLight *func_800B3254(Unk800B3254 *);
 /* func_800B3294: called before its definition without a prototype */
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);
-s32 bgi_linkFrameNeighbors(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
+s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
 FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
@@ -1186,7 +1155,7 @@ extern u8 D_800CA108; /* background sprite x extent */
 extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
-extern Unk800C9DF0 g_fieldBgi;
+extern BgiContext g_fieldBgi;
 extern Unk800C9DCC *D_800C9DCC;
 extern s32 D_800C9F20[16];
 extern s8 D_800C9FF0[5];
@@ -1200,7 +1169,7 @@ extern Unk800CA058 D_800CA058;
 extern Unk800CA068 D_800CA068;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
-extern Unk800CAE98 g_fieldBgiFloorMoves[];
+extern BgiFloorMove g_fieldBgiFloorMoves[];
 extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
@@ -1216,10 +1185,10 @@ typedef struct {
     u32 code[5];
 } Unk800C9F60; /* 0x18 */
 extern Unk800C9F60 D_800C9F60[2];
-extern Unk800C9DF4 g_fieldBgiActors[24];
-Unk800C9E00 *bgi_getPassableNeighbor(Unk800C9DF4 *, Unk800C9E00 *, s32);
-s32 bgi_pointInTriangle(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *);
-s32 bgi_pointInTriangleXZ(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
+extern BgiActor g_fieldBgiActors[24];
+BgiTriangle *bgi_getPassableNeighbor(BgiActor *, BgiTriangle *, s32);
+s32 bgi_pointInTriangle(BgiHeader *, BgiFloor *, BgiTriangle *, s16 *);
+s32 bgi_pointInTriangleXZ(BgiHeader *, BgiFloor *, BgiTriangle *, SVECTOR *);
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -1274,13 +1243,13 @@ void fld_allocArea(void);
 void fld_initArea(void);
 /* fld_findAreaItem: called before its definition without a prototype */
 s32 bgi_placeActor(s32, s16, s16, s16);
-s32 bgi_moveActor(Unk800C9DF4 *);
-s32 bgi_slide(Unk800C9DF4 *, Unk800C9E00 **, s16 *, SVECTOR *, s16, s16, s32, s32);
-s32 bgi_applyPushes(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
+s32 bgi_moveActor(BgiActor *);
+s32 bgi_slide(BgiActor *, BgiTriangle **, s16 *, SVECTOR *, s16, s16, s32, s32);
+s32 bgi_applyPushes(BgiActor *, SVECTOR *, BgiTriangle **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
 s32 func_800BE158(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
 s32 func_800BF660(void); /* camera follow */
-extern Unk800C9E00 *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
+extern BgiTriangle *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
 s32 bgi_initAnim(u32);
 s32 bgi_resetFloorMoves(void);
 s32 fld_readAreaFile(FieldMapObj *, s32);
@@ -1340,7 +1309,7 @@ other:
 }
 
 /* Inlined copy of bgi_getFloorMove. */
-static inline Unk800CAE98 *bgi_getFloorMove_inline(s32 i) {
+static inline BgiFloorMove *bgi_getFloorMove_inline(s32 i) {
     return &g_fieldBgiFloorMoves[i];
 }
 
@@ -1362,20 +1331,20 @@ static inline Unk800C9DB4Step *func_800C9DB4_steps(Unk800C9DB4Path *p) {
 }
 
 /* tables inside the g_fieldBgi.unk8 block (offsets from its start) */
-static inline Unk800C9DF8Node *func_800C9DF8_node(s32 i) {
-    return &((Unk800C9DF8Node *)((u8 *)g_fieldBgi.unk8 + g_fieldBgi.unk8->unk26))[i];
+static inline BgiTriangle *func_800C9DF8_node(s32 i) {
+    return &((BgiTriangle *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->triangleOffset))[i];
 }
 
-static inline Unk800C9DF8Link *func_800C9DF8_link(s32 i) {
-    return &((Unk800C9DF8Link *)((u8 *)g_fieldBgi.unk8 + g_fieldBgi.unk8->unk2A))[i];
+static inline BgiEdgeView *func_800C9DF8_link(s32 i) {
+    return &((BgiEdgeView *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->edgeOffset))[i];
 }
 
-static inline Unk800C9DF8Pt *func_800C9DF8_pts(Unk800C9E10 *e) {
-    return (Unk800C9DF8Pt *)((u8 *)g_fieldBgi.unk8 + e->unkC);
+static inline BgiKeyframe *func_800C9DF8_pts(BgiAnim *e) {
+    return (BgiKeyframe *)((u8 *)g_fieldBgi.header + e->frameOffset);
 }
 
-static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
-    return &((Unk800C9DF8Tri *)((u8 *)g_fieldBgi.unk8 + g_fieldBgi.unk8->unk32))[i];
+static inline BgiFloor *func_800C9DF8_tri(s32 i) {
+    return &((BgiFloor *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->floorOffset))[i];
 }
 
 s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
@@ -1467,19 +1436,19 @@ u8 func_80053A10(s32, s32);
 /* bgi_slide (walkmesh slide along the triangle edges) */
 extern VECTOR g_fieldBgiDefaultNormal; /* normal used when a triangle has none */
 extern const u8 D_800A7170[]; /* "DISC CHANGE" label */
-s32 bgi_findEdgeCrossing(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *, s16 *, SVECTOR *, s16 *, s32);
+s32 bgi_findEdgeCrossing(BgiHeader *, BgiFloor *, BgiTriangle *, s16 *, s16 *, SVECTOR *, s16 *, s32);
 
 /* clears the visited flag (0x80) of every walkmesh triangle */
 static inline void bgi_slide_clear(void) {
     u16 k;
-    Unk800C9E00 *n;
+    BgiTriangle *n;
     s32 cnt;
     u16 m = ~0x80;
 
-    n = g_fieldBgi.unk10;
-    cnt = g_fieldBgi.unk8->unk24;
+    n = g_fieldBgi.triangles;
+    cnt = g_fieldBgi.header->triangleCount;
     for (k = 0; k < cnt; k++) {
-        n->unk0 &= m;
+        n->flags &= m;
         n++;
     }
 }

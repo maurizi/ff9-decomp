@@ -1070,3 +1070,5 @@ D_800CA9D8 g_fieldBgiPushVecs  # [code] the push vectors (x,_,z) bgi_pushOutOfEd
 D_800CAA38 g_fieldBgiPushOnEdge  # [code] per push the bgi_closestPointOnSegment flag (1 unless clamped to an edge end); bgi_applyPushes prefers these
 D_800CAA58 g_fieldBgiPushDist  # [code] per push the distance to the edge (bgi_pushOutOfEdges); written only
 D_800C9DE4 g_fieldBgiDefaultNormal  # [code] VECTOR normal bgi_slide projects with when the triangle has no normal (Normal Index < 0)
+# FIELD types: Unk800C9DF8 BgiHeader, Unk800C9E00 (+Unk800C9DF8Node) BgiTriangle, Unk800C9DF8Tri BgiFloor, Unk800C9E08 BgiEdge (Unk800C9DF8Link BgiEdgeView), Unk800C9E10 (+Unk800C6C04A) BgiAnim, Unk800C9E10Frame (+Unk800C9DF8Pt, Unk800C6C04B/E) BgiKeyframe, Unk800C9E04 BgiNormal, Unk800C9DFC BgiVertex, Unk800C9DF0 BgiContext, Unk800C9DF4 BgiActor, Unk800CAE98 BgiFloorMove
+# FIELD members from bgi_dumpText strings [string] and code (see build notes): header counts/offsets, triangle flags/floor/normal/thetaX/thetaZ/vertices/edges/neighbors/center/d, floor/edge/anim/keyframe/normal/context/actor/floor-mover members
