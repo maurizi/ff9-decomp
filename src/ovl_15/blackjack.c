@@ -612,21 +612,21 @@ s32 bj_isBlackjack(BjHand *h) {
 }
 
 /* bj_main's format strings and Blackjack UI labels */
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjFmt2d);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjFmt2d);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjStrBankroll);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrBankroll);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjFmtLong);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjFmtLong);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjStrWager);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrWager);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjStrStand);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrStand);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjStrHit);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrHit);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjStrDouble);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrDouble);
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800A7378", g_bjStrSplit);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/blackjack", g_bjStrSplit);
 
 s32 bj_main(void) {
     char buf[16];

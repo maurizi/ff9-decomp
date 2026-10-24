@@ -221,4 +221,4 @@ void *ending_drawGlyph(s32 x, s32 y, u32 *ot, u32 a, s32 *out, SprtWords *p) {
     return p;
 }
 
-INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/tu_800AD7DC", g_endingMessages);
+INCLUDE_RODATA("asm/us/ovl_15/nonmatchings/ending_messages", g_endingMessages);
