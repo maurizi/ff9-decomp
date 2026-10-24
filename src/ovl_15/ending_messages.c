@@ -24,7 +24,7 @@ s32 ending_messages(void) {
                 t = 0xA0;
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
+                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 0);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
@@ -42,7 +42,7 @@ s32 ending_messages(void) {
                 t = 0xDC;
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
+                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 1);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);
@@ -65,7 +65,7 @@ s32 ending_messages(void) {
                 t = 0xA0;
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
+                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 3);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x64, ot, msg, g_messagesPrim);
@@ -83,7 +83,7 @@ s32 ending_messages(void) {
                 t = 0x118;
                 func_800320B8(1, 1, 0x14, 0);
             } else if (t != 0) {
-                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 8;
+                ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + SCREEN_OTZ;
                 msg = ending_getMessage(g_endingMessages, 4);
                 x = 0xA0 - (ending_textWidth(msg) >> 1);
                 g_messagesPrim = ending_drawText(x, 0x5F, ot, msg, g_messagesPrim);

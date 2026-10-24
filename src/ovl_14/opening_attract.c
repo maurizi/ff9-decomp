@@ -46,9 +46,9 @@ s32 opening_attract(s32 arg0) {
                     g_attractSprites[g_gameState->unk1C->unk8][0].w = 0xC0;
                     g_attractSprites[g_gameState->unk1C->unk8][0].h = 0xE0;
                     g_attractSprites[g_gameState->unk1C->unk8][0].clut = 0x3800;
-                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_attractSprites[g_gameState->unk1C->unk8][0]);
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_attractSprites[g_gameState->unk1C->unk8][0]);
                     setDrawTPage(&g_attractTpages[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
-                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_attractTpages[g_gameState->unk1C->unk8][0]);
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_attractTpages[g_gameState->unk1C->unk8][0]);
                     setlen((g_attractSprites[g_gameState->unk1C->unk8] + 1), 4);
                     (g_attractSprites[g_gameState->unk1C->unk8] + 1)->code = 0x64;
                     (g_attractSprites[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
@@ -61,9 +61,9 @@ s32 opening_attract(s32 arg0) {
                     (g_attractSprites[g_gameState->unk1C->unk8] + 1)->w = 0x80;
                     (g_attractSprites[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
                     (g_attractSprites[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
-                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_attractSprites[g_gameState->unk1C->unk8] + 1));
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], (g_attractSprites[g_gameState->unk1C->unk8] + 1));
                     setDrawTPage(g_attractTpages[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
-                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_attractTpages[g_gameState->unk1C->unk8] + 1));
+                    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], (g_attractTpages[g_gameState->unk1C->unk8] + 1));
                     pad &= PAD_CROSS | PAD_START;
                     btn = pad;
                     if (!(g_attractFlags.bits & ATTRACT_FADING) || btn) {

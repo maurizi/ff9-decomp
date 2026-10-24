@@ -103,6 +103,9 @@ u8 func_801F5330(void);
 
 /* ---- this overlay ---- */
 
+#define SCREEN_OTZ 8 /* OT slot of the full-screen images (attract, boot screen) */
+#define TITLE_PACK_BUF ((void *)0x801CDF00) /* opening_titleLoadImages reads the title TIM pack here */
+
 /* g_openingState: the states of opening_main */
 enum {
     OPENING_MOVIE,    /* opening movie (disc 1 only), then the title */

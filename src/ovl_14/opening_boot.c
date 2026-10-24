@@ -28,9 +28,9 @@ void opening_bootScreen(void) {
         g_bootScreenSprite[g_gameState->unk1C->unk8].w = r->w;
         g_bootScreenSprite[g_gameState->unk1C->unk8].h = r->h;
         g_bootScreenSprite[g_gameState->unk1C->unk8].clut = 0x3800;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_bootScreenSprite[g_gameState->unk1C->unk8]);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_bootScreenSprite[g_gameState->unk1C->unk8]);
         setDrawTPage(&g_bootScreenTpage[g_gameState->unk1C->unk8], 1, 1, 0xA);
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_bootScreenTpage[g_gameState->unk1C->unk8]);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_bootScreenTpage[g_gameState->unk1C->unk8]);
         t--;
         func_80032098();
         opening_bootSwap();

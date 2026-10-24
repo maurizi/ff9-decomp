@@ -66,6 +66,9 @@ extern MbgMovieList g_mbgMovieLists[];
 
 /* ---- this overlay ---- */
 
+#define SCREEN_OTZ 8 /* OT slot of the end image and the message text */
+#define BJ_OTZ 10     /* OT slot of all Blackjack sprites */
+
 /* g_endingState: the states of ending_main */
 enum {
     ENDING_MOVIE,     /* FMV059 */

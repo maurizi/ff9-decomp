@@ -165,12 +165,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x68;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->unk1C->unk8][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], t);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
         setlen(p, 4);
@@ -183,12 +183,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x70;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->unk1C->unk8][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], t);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     case 1:
@@ -204,12 +204,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->h = 0x28;
         p->v0 = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->unk1C->unk8][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], t);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
         setlen(p, 4);
@@ -222,12 +222,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->v0 = 0x28;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->unk1C->unk8][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], t);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     case 2:
@@ -243,12 +243,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->v0 = 0xA0;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->unk1C->unk8][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 1, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], t);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], t);
         g_bjTpageCount++;
         p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
         setlen(p, 4);
@@ -261,12 +261,12 @@ s32 bj_drawResult(s32 kind, s32 c, s32 x, s32 y) {
         p->w = 0x90;
         p->h = 0x28;
         p->clut = 0x3A40;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
         g_bjSprtCount++;
         t = &g_bjTpages[g_gameState->unk1C->unk8][g_bjTpageCount];
         setlen(t, 1);
         t->code[0] = (GetTPage(1, 2, 0x280, 0x100) & 0x9FF) | 0xE1000400;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], t);
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], t);
         g_bjTpageCount++;
         break;
     }
@@ -286,7 +286,7 @@ s32 bj_drawCardBack(s32 x, s32 y) {
     p->h = 0x48;
     p->y0 = y;
     p->clut = 0x3940;
-    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
     g_bjSprtCount++;
     return 0;
 }
@@ -309,7 +309,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 9;
     p->h = 0xE;
     p->clut = 0x3980;
-    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
     g_bjSprtCount++;
 
     p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
@@ -323,7 +323,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 9;
     p->h = 0xE;
     p->clut = 0x3980;
-    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
     g_bjSprtCount++;
 
     p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
@@ -337,7 +337,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 0xB;
     p->h = 0xB;
     p->clut = 0x3900;
-    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
     g_bjSprtCount++;
 
     p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
@@ -351,7 +351,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->w = 0xB;
     p->h = 0xB;
     p->clut = 0x3900;
-    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
     g_bjSprtCount++;
 
     if (rank >= 9) {
@@ -368,7 +368,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->w = 0xB;
             p->h = 0xB;
             p->clut = 0x3900;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
             g_bjSprtCount++;
         } else {
             p = &g_bjSprites[g_gameState->unk1C->unk8][g_bjSprtCount];
@@ -390,7 +390,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->w = 0x2A;
             p->h = 0x33;
             p->clut = (f + 0xE0) << 6;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
             g_bjSprtCount++;
         }
     } else {
@@ -412,7 +412,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
             p->w = 0xB;
             p->h = 0xB;
             p->clut = 0x3900;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
             g_bjSprtCount++;
         }
     }
@@ -428,7 +428,7 @@ s32 bj_drawCard(s32 rank, s32 suit, s32 x, s32 y) {
     p->x0 = x;
     p->y0 = y;
     p->clut = 0x3900;
-    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][10], p);
+    addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][BJ_OTZ], p);
     g_bjSprtCount++;
     return 0;
 }
@@ -1191,7 +1191,7 @@ s32 bj_main(void) {
             }
         }
         bj_drawShoe(BJ_SHOE_X, BJ_SHOE_Y);
-        addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + 10, &g_bjTpage);
+        addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] + BJ_OTZ, &g_bjTpage);
         sprintf(buf, g_bjStrBankroll);
         ui_drawSmallDigits(0x10C - (func_8002B9B8(buf) >> 1), 0x58, 0x10, buf, 4);
         sprintf(buf, g_bjFmtLong, g_bjBankroll);

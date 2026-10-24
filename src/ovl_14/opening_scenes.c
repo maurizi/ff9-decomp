@@ -1,23 +1,23 @@
 #include "ovl_14.h"
 
-void func_800A833C(void) {
+void opening_discInit(void) {
 }
 
 void opening_discEnter(void) {
     func_80032628(opening_discOnClose);
 }
 
-void func_800A8368(void) {
+void opening_discUpdate(void) {
 }
 
-void func_800A8370(void) {
+void opening_discLeave(void) {
 }
 
 void opening_discOnClose(void) {
     scene_set(SCENE_START);
 }
 
-void func_800A8398(void) {
+void opening_startInit(void) {
 }
 
 void opening_startEnter(void) {
@@ -39,7 +39,7 @@ void opening_startLeave(void) {
     }
 }
 
-void func_800A8448(void) {
+void opening_loadInit(void) {
 }
 
 void opening_loadEnter(void) {
@@ -53,7 +53,7 @@ void opening_loadUpdate(void) {
     }
 }
 
-void func_800A84A8(void) {
+void opening_loadLeave(void) {
 }
 
 void opening_loadOnClose(void) {

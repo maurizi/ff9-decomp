@@ -35,9 +35,9 @@ s32 ending_theEnd(void) {
                 g_theEndSprites[g_gameState->unk1C->unk8][0].w = 0xC0;
                 g_theEndSprites[g_gameState->unk1C->unk8][0].h = 0xE0;
                 g_theEndSprites[g_gameState->unk1C->unk8][0].clut = 0x3800;
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndSprites[g_gameState->unk1C->unk8][0]);
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_theEndSprites[g_gameState->unk1C->unk8][0]);
                 setDrawTPage(&g_theEndTpages[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndTpages[g_gameState->unk1C->unk8][0]);
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_theEndTpages[g_gameState->unk1C->unk8][0]);
                 setlen((g_theEndSprites[g_gameState->unk1C->unk8] + 1), 4);
                 (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->code = 0x64;
                 (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
@@ -50,9 +50,9 @@ s32 ending_theEnd(void) {
                 (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->w = 0x80;
                 (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
                 (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndSprites[g_gameState->unk1C->unk8] + 1));
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], (g_theEndSprites[g_gameState->unk1C->unk8] + 1));
                 setDrawTPage(g_theEndTpages[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
-                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
+                addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
             }
             break;
         case THEEND_ST_FADE:
@@ -68,9 +68,9 @@ s32 ending_theEnd(void) {
             g_theEndSprites[g_gameState->unk1C->unk8][0].w = 0xC0;
             g_theEndSprites[g_gameState->unk1C->unk8][0].h = 0xE0;
             g_theEndSprites[g_gameState->unk1C->unk8][0].clut = 0x3800;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndSprites[g_gameState->unk1C->unk8][0]);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_theEndSprites[g_gameState->unk1C->unk8][0]);
             setDrawTPage(&g_theEndTpages[g_gameState->unk1C->unk8][0], 1, 1, 0x10A);
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], &g_theEndTpages[g_gameState->unk1C->unk8][0]);
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], &g_theEndTpages[g_gameState->unk1C->unk8][0]);
             setlen((g_theEndSprites[g_gameState->unk1C->unk8] + 1), 4);
             (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->code = 0x64;
             (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->r0 = 0x80;
@@ -83,9 +83,9 @@ s32 ending_theEnd(void) {
             (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->w = 0x80;
             (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->h = 0xE0;
             (g_theEndSprites[g_gameState->unk1C->unk8] + 1)->clut = 0x3800;
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndSprites[g_gameState->unk1C->unk8] + 1));
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], (g_theEndSprites[g_gameState->unk1C->unk8] + 1));
             setDrawTPage(g_theEndTpages[g_gameState->unk1C->unk8] + 1, 1, 1, 0x10D);
-            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][8], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
+            addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][SCREEN_OTZ], (g_theEndTpages[g_gameState->unk1C->unk8] + 1));
             if (timer == -1) {
                 timer = 0x5A;
                 func_800320B8(1, 1, timer, 0xFFFFFF);
