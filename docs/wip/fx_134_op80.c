@@ -1,4 +1,4 @@
-/* Pass 4: 598 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 522 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -562,7 +562,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 Fx134Bolt *bolt;
 
                 t = (frame << 12) / 23;
-                c = (frame << 12) / 2944 + 0x8D;
+                c = (t >> 7) + 0x8D;
                 s = (t >> 4) + 0x20;
                 ex->func_800E6624(frame * 0x14, 0x1C0, 0x180, 0x18, 0x60, 0x320, 0x100);
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
@@ -603,11 +603,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 scale.vx = scale.vy = ex->math_sin(a_c5) * 2 / 3 + 0x100;
                 pos.vx = work->unk24.vx;
                 a_c5_p2 = t >> 1;
-                pos.vy = work->unk24.vy + 0x80;
+                pos.vy = work->unk24.vy;
+                pos.vz = work->unk24.vz;
+                pos.vy += 0x80;
                 rot.vx = 0x400;
                 rot.vy = 0;
                 rot.vz = frame << 7;
-                pos.vz = work->unk24.vz;
                 for (i_c5 = 0; i_c5 < 3; i_c5++) {
                     ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk70);
                     ex->Hi_ModifyEffModelRGB(work->unk70, (ex->math_sin(a_c5_p2) >> 5) - 0x80, (ex->math_sin(a_c5_p2) >> 5) - 0x80,
@@ -617,14 +618,16 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     pos.vy += 0x20;
                 }
                 from.vx = work->unk24.vx;
-                from.vy = work->unk24.vy + 0x400;
+                from.vy = work->unk24.vy;
                 from.vz = work->unk24.vz;
+                from.vy += 0x400;
                 k_c5_p2 = ex->btlfx_rand();
                 for (i_c5_p2 = 0, bolt = D_801EC8F4; i_c5_p2 < 3; i_c5_p2++, bolt++) {
-                    n_c5 = ex->btlfx_randCentered(0x400);
-                    to.vx = work->unk8.vx + (ex->math_cos(k_c5_p2) >> 1);
-                    to.vz = work->unk8.vz + (ex->math_sin(k_c5_p2) >> 1);
-                    func_801E8460(entry, bolt, &from, &to, 0x100, 0x200, k_c5_p2, 0xC0, 0, n_c5 + 0xC00, (ex->btlfx_rand() & 0xF) + 0xF);
+                    n_c5 = ex->btlfx_randCentered(0x400) + 0xC00;
+                    BTLFX_COPY_SVEC(&to, &work->unk8);
+                    to.vx += ex->math_cos(k_c5_p2) >> 1;
+                    to.vz += ex->math_sin(k_c5_p2) >> 1;
+                    func_801E8460(entry, bolt, &from, &to, 0x100, 0x200, k_c5_p2, 0xC0, 0, n_c5, (ex->btlfx_rand() & 0xF) + 0xF);
                     k_c5_p2 += 0x554 + (ex->btlfx_rand() & 0xFF);
                 }
                 rot2.vx = -0x400;
