@@ -1,4 +1,4 @@
-/* Pass 4: 196 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 107 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -842,24 +842,23 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             break;
         case 8:
+            t = frame << 7;
             c = 0xBC;
+            s = 0x200;
             yo = 0;
             xo = 0;
-            t = frame << 7;
-            s = 0x200;
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 0xFF8), 0xFF, 0xFF, 0xFF, 0xC8);
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x40, 0, 0);
             if (frame >= 0x1A) {
-                k_c8 = ((frame - 0x1A) << 7) / 6;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, k_c8, k_c8, k_c8);
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, ((frame - 0x1A) << 7) / 6, ((frame - 0x1A) << 7) / 6,
+                                         ((frame - 0x1A) << 7) / 6);
             }
             if (frame >= 0xA) {
                 for (i_c8 = 0; i_c8 < 3; i_c8++) {
                     o_c8 = ex->btlfx_poolSpawn((s16 *)entry->unk10);
                     if (o_c8 != NULL) {
-                        k_c8 = ex->btlfx_randCentered(0x200);
+                        o_c8->unkC.vx = work->unk18.vx - ((t >> 4) + 0x1800) + ex->btlfx_randCentered(0x200);
                         o_c8->unkC.vy = 0x6A4 - ((0x1000 - t) >> 1);
-                        o_c8->unkC.vx = work->unk18.vx - ((t >> 4) + 0x1800) + k_c8;
                         o_c8->unkC.vz = work->unk18.vz + ex->btlfx_randCentered(0x1C00);
                         o_c8->unk4.vx = ex->btlfx_randCentered(0x100);
                         o_c8->unk4.vy = -0x140 - (ex->btlfx_rand() & 0xFF);
@@ -868,7 +867,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                         o_c8->unk14.vy = ex->btlfx_rand();
                         o_c8->unk14.vz = ex->btlfx_rand();
                         o_c8->unk0 = 3;
-                        o_c8->unk4.pad = t / 5 + (ex->btlfx_rand() & 0x3FF) + 0x80;
+                        o_c8->unk4.pad = t / 5 + (s16)((ex->btlfx_rand() & 0x3FF) + 0x80);
                     }
                 }
             }
@@ -900,7 +899,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 Fx134Vec3 scale;
 
                 t = frame << 7;
-                k_c9 = 0xF5 - ((frame * 0x7A80) >> 12);
+                k_c9 = 0xF5 - ((t * 0xF5) >> 12);
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, k_c9, k_c9, k_c9);
                 rot.vx = 0;
                 rot.vy = 0;
