@@ -178,7 +178,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
+            ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
         t = frame - 0x5B;
         if ((u32)t < 0xF) {
@@ -193,7 +193,7 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot2.vx = 0;
             rot2.vy = 0;
             rot2.vz = 0;
-            ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot2, &scale2, &col2, 1, 0);
+            ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot2, &scale2, &col2, 1, 0);
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x1C), frame);
         return frame >= 0x8C;

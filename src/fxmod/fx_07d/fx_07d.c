@@ -442,7 +442,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     s32 c = 0xFF - frame * 0xFF / 6;
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c, c >> 2, c >> 2);
                 }
-                ex->func_800E6624(work->unk34, 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
+                ex->btlfx_drawScrollMove(work->unk34, 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
                 work->unk34 += 8;
                 pos.vx = work->unkC.vx;
                 pos.vy = work->unkC.vy;
@@ -489,7 +489,7 @@ s32 fx_07d_op80(s32 mode, Fx07dWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame == 0) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x80, 0x80, 0x80);
                 }
-                ex->func_800E6624(work->unk34, 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
+                ex->btlfx_drawScrollMove(work->unk34, 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
                 work->unk34 -= 14;
                 pos.vx = work->unkC.vx;
                 pos.vy = work->unkC.vy;

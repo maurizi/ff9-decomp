@@ -546,8 +546,8 @@ s32 fx_0d3_op80(s32 mode, Fx0d3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_ModifyEffModelRGB(work->unk64, c, c, c);
             work->unk68 += 2;
             work->unk68 += t >> 9;
-            ex->func_800E6624(work->unk68, 0x240, 0x100, 0x1C, 0x70, 0x25C, 0x100);
-            ex->func_800E6624(work->unk68 * 2 / 3, 0x240, 0x170, 0x1C, 0x70, 0x25C, 0x170);
+            ex->btlfx_drawScrollMove(work->unk68, 0x240, 0x100, 0x1C, 0x70, 0x25C, 0x100);
+            ex->btlfx_drawScrollMove(work->unk68 * 2 / 3, 0x240, 0x170, 0x1C, 0x70, 0x25C, 0x170);
             func_801E7CBC(2, 0xA0, 0x78, 0x10, 4, 0x29, ((ex->math_sin(t >> 2) << 5) >> 12) + 0x40, 0, 0,
                           func_801E8A10);
             if (frame >= 0x4B) {
@@ -731,8 +731,8 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             a_174 >>= 2;
             ex->Hi_ModifyEffModelRGB(work->unk60, (ex->math_cos(a_174) * 3 / 2 >> 5) - 0x80,
                                      (ex->math_cos(a_174) * 3 / 2 >> 5) - 0x80, (ex->math_cos(a_174) * 3 / 2 >> 5) - 0x80);
-            ex->func_800E6624(frame_119 * 16, 0x240, 0x100, 0x1C, 0x70, 0x25C, 0x100);
-            ex->func_800E6624(frame_119 * 8, 0x240, 0x170, 0x1C, 0x70, 0x25C, 0x170);
+            ex->btlfx_drawScrollMove(frame_119 * 16, 0x240, 0x100, 0x1C, 0x70, 0x25C, 0x100);
+            ex->btlfx_drawScrollMove(frame_119 * 8, 0x240, 0x170, 0x1C, 0x70, 0x25C, 0x170);
         }
         if (frame_119 >= 0x18) {
             k_181 = frame_119 - 0x18;
@@ -851,8 +851,8 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vx = scale.vz = 0x400;
             scale.vy = (ex->math_sin(a_281 >> 2) / 2 + 0x800) >> 2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk58);
-            ex->func_800E6624(0x3E8 - frame_119 * 9, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(0x3E8 - k_286, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 9, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(0x3E8 - k_286, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             ex->math_cos(a_281);
             ex->math_cos(a_281 << 1);
             ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, D_801EB09C, 0x18, frame_119 * 0x190, 0x186,
@@ -928,7 +928,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->math_cos(t);
         ex->math_cos(t << 1);
         ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 2, 0x5A, 1, D_801EB0AC, 0x18, frame_119 * 0x140, 0x186, 0x100);
-        ex->func_800E6624(0x3E8 - frame_119 * 7, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+        ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 7, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
         D_801EDF44 = 4;
         D_801EDF48 = t >> 1;
         u.a.col.r = u.a.col.g = u.a.col.b = (ex->math_sin(t << 1) >> 7) - 0x73;
@@ -936,7 +936,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         u.a.rot.vx = 0;
         u.a.rot.vy = 0;
         u.a.rot.vz = 0;
-        ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.a.rot, &u.a.sc, &u.a.col, 0,
+        ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.a.rot, &u.a.sc, &u.a.col, 0,
                           (void (*)(SVECTOR *))func_801E90D4);
         if (frame_119 >= 0x17) {
             work->unk0 = 4;
@@ -977,7 +977,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         u.b.rot.vx = 0;
         u.b.rot.vy = 0;
         u.b.rot.vz = 0;
-        ex->func_800E6764(3, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.b.rot, &u.b.sc, &u.b.col, 0,
+        ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.b.rot, &u.b.sc, &u.b.col, 0,
                           (void (*)(SVECTOR *))func_801E90D4);
         ex->math_cos(t);
         ex->math_cos(t << 1);
@@ -1027,7 +1027,7 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         func_801E7720(&D_801EB040, &rot, 0x11C, 0, 0, 4, frame_119 & 0x1F, 0x190, 0xC, 0xC, a_457 + 0x1000, ex->math_cos(a_457), 1,
                       D_801EDF54, 0);
         env->unk28 = 0;
-        ex->func_800E6624(0x3E8 - frame_119 * 3, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+        ex->btlfx_drawScrollMove(0x3E8 - frame_119 * 3, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         env->unk28 = -0x80;
         if (frame_119 == 0) {
             for (i = 0; i < 6; i++) {
@@ -1043,13 +1043,13 @@ s32 fx_0d3_op81(s32 mode, Fx0d3Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           10000 - work->unk4);
         }
         env->unk28 = 0;
-        ex->func_800E6624(10000 - work->unk4 * 4, 0x300, 0x180, 0x10, 0x80, 0x310, 0x180);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 4, 0x300, 0x180, 0x10, 0x80, 0x310, 0x180);
         u.c.rot.vx = 0;
         u.c.rot.vy = 0;
         u.c.rot.vz = 0;
         u.c.col.r = u.c.col.g = u.c.col.b = ((t * 0x4D) >> 12) + 0xF;
         u.c.sc.vx = u.c.sc.vy = u.c.sc.vz = 0x1080;
-        ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.c.rot, &u.c.sc, &u.c.col, 1, NULL);
+        ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x1C, 4, 8, 2, 4, &u.c.rot, &u.c.sc, &u.c.col, 1, NULL);
         if (frame_119 >= 0x30) {
             c_498 = (frame_119 - 0x30) * 0xFF / 12;
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c_498, c_498, c_498);

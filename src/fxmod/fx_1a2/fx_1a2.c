@@ -406,7 +406,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                     p->unk22 = 0x40;
                 }
             }
-            ex->func_800E6624(0, 0x280, 0x1E0, 0x40, 0x20, 0x2C0, ((frame & 7) << 5) + 0x100);
+            ex->btlfx_drawScrollMove(0, 0x280, 0x1E0, 0x40, 0x20, 0x2C0, ((frame & 7) << 5) + 0x100);
             if (frame < 0xB) {
                 break;
             }
@@ -474,7 +474,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, w->unk44);
         ex->Hi_ModifyEffModelRGB(w->unk44, (ex->math_cos(t >> 2) >> 5) - 0x80, (ex->math_cos(t >> 2) >> 5) - 0x80,
                                  (ex->math_cos(t >> 2) >> 5) - 0x80);
-        ex->func_800E6624(frame * 8, 0x240, 0x100, 0x30, 0x80, 0x240, 0x180);
+        ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x100, 0x30, 0x80, 0x240, 0x180);
         if (frame >= 10) {
             if (frame == 10) {
                 ((SVECTOR *)&m)->vx = 0;

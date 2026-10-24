@@ -812,7 +812,7 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vz = 0x1000;
             tc = 0xA0 - ((frame << 15) >> 12);
             u.s.col.r = u.s.col.g = u.s.col.b = tc;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, one, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, one, NULL);
             if (frame >= 0x10) {
                 ex->btlfx_clearEffModels();
                 return 1;
@@ -826,10 +826,10 @@ s32 fx_0e0_op80(s32 mode, Fx0e0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             u.s.rot.vz = 0;
             sc.vy = sc.vx = scl + 0x1000;
             sc.vz = 0x1000;
-            ex->func_800E6764(1, xo + 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, xo + 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &u.s.rot, &sc, &u.s.col, 0, NULL);
         }
         if ((u32)(work->unk0 - 3) < 5) {
-            ex->func_800E6624((0x1F4 - work->unk4) * 8, 0x1E0, 0x100, 0x20, 0x80, 0x300, 0x100);
+            ex->btlfx_drawScrollMove((0x1F4 - work->unk4) * 8, 0x1E0, 0x100, 0x20, 0x80, 0x300, 0x100);
         }
         work->unk4++;
     }

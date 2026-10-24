@@ -521,7 +521,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             t = (frame << 12) / 6;
             func_801E7CBC(&work->unk58, &rot, 0x4400, t >> 5, 0x9A, 0x3D40, 0, 0x80, 0, 1);
-            ex->func_800E6624(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
             if (frame >= 6) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -534,7 +534,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = 0x200;
             func_801E7CBC(&work->unk58, &rot, 0x4400, 0x80, 0x9A, 0x3D40, 0, 0x80, -((ex->math_sin(a) * 700) >> 12), 1);
-            ex->func_800E6624(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(work->unk4 * 3, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
             c = t;
             rot.pad = 1;
             f = (u8 *)ex->btlfx_getFileData(entry->unk8, 0x26);
@@ -721,7 +721,7 @@ s32 fx_1cc_op80(s32 mode, Fx1ccWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 work->unk80++;
             }
-            ex->func_800E6624(work->unk80, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(work->unk80, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
         }
         if (c != 0) {
             r.vx = 0x400;

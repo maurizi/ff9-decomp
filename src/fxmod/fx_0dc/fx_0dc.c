@@ -433,7 +433,7 @@ s32 fx_0dc_op80(s32 mode, Fx0dcWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             } else {
                 w->unk80++;
             }
-            ex->func_800E6624(w->unk80, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(w->unk80, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
         }
         if (k != 0) {
             rot2.vx = 0x400;

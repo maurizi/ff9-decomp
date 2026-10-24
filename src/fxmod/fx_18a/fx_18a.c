@@ -120,7 +120,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             } else {
                 scale.vx = scale.vy = scale.vz = (ex->math_cos(((frame - 0x8C) << 10) / 40) >> 2) + 0x1000;
             }
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &ang, &scale, &col, 0, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &ang, &scale, &col, 0, 0);
             if (frame >= 0x8C) {
                 rot2.vx = 0x400;
                 rot2.pad = 1;
@@ -191,7 +191,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk24);
             ex->Hi_ModifyEffModelRGB(work->unk24, (c >> 5) - 0x80, (c >> 5) - 0x80, (c >> 5) - 0x80);
         }
-        ex->func_800E6624(work->unk4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
+        ex->btlfx_drawScrollMove(work->unk4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
         work->unk4++;
     }
     return 0;

@@ -120,7 +120,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            ex->func_800E6E1C(0x1C0, 0x100, 0x80, 0xA0, D_801EB854, 0, 0x168, 0xF6E);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x80, 0xA0, D_801EB854, 0, 0x168, 0xF6E);
             break;
         case 22:
             work->unk58.vx = -3;
@@ -179,7 +179,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
+            ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
             env->camera->projDist = 0x208 - t * t * 4;
         }
         work->unk64++;
@@ -462,7 +462,7 @@ s32 fx_1bd_op83(s32 mode, Fx1bdWork83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk14C, work->unkC8, work->unkC8, work->unkC8);
             }
         }
-        ex->func_800E6624(0x3C0 - work->unk10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
+        ex->btlfx_drawScrollMove(0x3C0 - work->unk10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
         work->unk10C++;
         return frame >= 0x3C;
     }

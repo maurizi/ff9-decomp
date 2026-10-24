@@ -520,7 +520,7 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vz = 0;
             sc.vy = sc.vx = sx + 0x1000;
             sc.vz = 0x1000;
-            ex->func_800E6764(code, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &sc, &col, abr, 0);
+            ex->btlfx_drawScreenGrid(code, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &sc, &col, abr, 0);
         }
         if (alpha != 0) {
             VECTOR pos;

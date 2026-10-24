@@ -428,7 +428,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             w.vy = 0;
             w.vz = 0;
             scale.vx = scale.vy = scale.vz = b + 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &w, &scale, (CVECTOR *)&v, 1, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &w, &scale, (CVECTOR *)&v, 1, 0);
         }
         work->unk4++;
     }

@@ -456,7 +456,7 @@ s32 fx_196_op85(s32 mode, Fx196Work85 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     sc2.vz = 0x1000;
                     ((CVECTOR *)&v0)->r = ((CVECTOR *)&v0)->g = ((CVECTOR *)&v0)->b = -0x10 - (d * 0x8D / 38);
                     sc2.vy = sc2.vx = 0x1400 - ((d << 10) / 38);
-                    ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &v1, &sc2, (CVECTOR *)&v0, 0, 0);
+                    ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &v1, &sc2, (CVECTOR *)&v0, 0, 0);
                 }
             }
             func_801E78BC(frame * 3, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);

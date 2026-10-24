@@ -282,7 +282,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (flag) {
                     s32 v;
 
-                    ex->func_800E6624(y, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
+                    ex->btlfx_drawScrollMove(y, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
                     v = ((frame << 12) / 29) >> 2;
                     sc.vx = sc.vz = ex->math_sin(v) / 4 + 0x80;
                     sc.vy = ex->math_sin(v) * 3 / 2 + 0x1000;

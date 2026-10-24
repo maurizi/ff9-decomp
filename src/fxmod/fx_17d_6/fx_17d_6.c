@@ -100,7 +100,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     ex->Hi_DrawEffModel(&ang, (VECTOR *)&work->unk38, (s32)&sc, work->unk80);
                 }
             }
-            ex->func_800E6624(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[0], (u16 *)&work->unk28);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801E9368[2], (u16 *)&work->unk30);
             BTLFX_COPY_SVEC(&D_801EB104, &work->unk28);
@@ -116,7 +116,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = 0;
             rot.vz = 0;
             vv.vz = 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 0, NULL);
             if (frame >= 0x42) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -187,7 +187,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vx = 0;
                 rot.vy = 0;
                 rot.vz = 0;
-                ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv2, &col, 1, NULL);
+                ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv2, &col, 1, NULL);
             }
             if (frame >= 0x64) {
                 work->unk0 = 2;
@@ -226,14 +226,14 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                               0, 1, ex->math_sin(u >> 2));
             env->unk28 = 0;
             ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), &work->unk10, (u >> 6) + 8, u / 2);
-            ex->func_800E6624(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x3E8 - frame * 6, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
             col.r = col.g = col.b = ((u * 0x58) >> 12) + 0x84U;
             vv.vy = vv.vx = 0x1080;
             vv.vz = 0x1000;
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 0, NULL);
             if (frame >= 0x12) {
                 work->unk0 = 3;
                 entry->unk0 = -1;
@@ -269,7 +269,7 @@ s32 fx_17d_6_op80(s32 mode, Fx17d6Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 1, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &vv, &col, 1, NULL);
             if (frame >= 0xE) {
                 work->unk0 = 4;
                 cam.vx = D_801E9360.vx;

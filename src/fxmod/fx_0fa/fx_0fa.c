@@ -125,12 +125,12 @@ s32 fx_0fa_op80(s32 mode, Fx0faWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[4] != 0) {
             work->unk0[4]--;
-            ex->func_800E6624(0, 0x2C0, 0x180, 0x40, 0x40, D_801E7FAC[work->unk0[4] >> 1].unk0,
+            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, D_801E7FAC[work->unk0[4] >> 1].unk0,
                               D_801E7FAC[work->unk0[4] >> 1].unk4);
         }
         if (work->unk0[5] != 0) {
             work->unk0[5]--;
-            ex->func_800E6624(0, 0x2C0, 0x180, 0x40, 0x40, D_801E7FCC[work->unk0[5]].unk0, D_801E7FCC[work->unk0[5]].unk4);
+            ex->btlfx_drawScrollMove(0, 0x2C0, 0x180, 0x40, 0x40, D_801E7FCC[work->unk0[5]].unk0, D_801E7FCC[work->unk0[5]].unk4);
         } else if (frame > 0x20) {
             if (!(ex->btlfx_rand() & 7)) {
                 work->unk0[5] = 4;

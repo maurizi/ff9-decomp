@@ -245,7 +245,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 c = (n1 << 5) - 0x100;
                 ex->Hi_ModifyEffModelRGB(work->unk6C, c, c, c);
             }
-            ex->func_800E6624(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
         }
         if (work->unk0[5] != 0) {
             work->unk0[5]--;
@@ -257,7 +257,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk98, c, c, c);
                 ex->Hi_ModifyEffModelRGB(work->unk9C, c, c, c);
             }
-            ex->func_800E6624(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x240, 0x100, 0x40, 0x80, 0x240, 0x180);
         }
         if (work->unk0[8] != 0) {
             work->unk0[8]--;
@@ -269,7 +269,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unkE8, c, c, c);
                 ex->Hi_ModifyEffModelRGB(work->unkEC, c, c, c);
             }
-            ex->func_800E6624(0x2710 - frame * 8, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
@@ -288,7 +288,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unkD0.vx = 0x200;
             work->unkC8.vz += 0x40;
             work->unkD0.vz += 0x40;
-            ex->func_800E6624(0x2710 - frame * 8, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
         }
         if (work->unk0[4] != 0) {
             work->unk0[4]--;

@@ -413,7 +413,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->Hi_DrawEffModel(&work->unk2C, &work->unk44, (s32)&work->unk34, work->unk28);
             ex->Hi_DrawEffModel(&work->unk5C, &work->unk6C, (s32)&work->unk8C, work->unk54);
             ex->Hi_DrawEffModel(&work->unk64, &work->unk7C, (s32)&work->unk8C, work->unk58);
-            ex->func_800E6624(0x2710 - frame * 8, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 8, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
         }
         if (work->unk0[0x1F] != 0) {
             ex->Hi_DrawEffModel(&work->unk5C, &work->unk6C, (s32)&work->unk8C, work->unk54);
@@ -698,19 +698,19 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         work->unk1E4 += work->unk1E8;
         if (work->unk0[5] != 0) {
-            ex->func_800E6624(frame * 0x10, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
         }
         if (work->unk0[6] != 0) {
-            ex->func_800E6624(0x2710 - frame * 0x10, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 0x10, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
         }
         if (work->unk0[0x22] != 0) {
-            ex->func_800E6624(0x2710 - work->unk1E4, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - work->unk1E4, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         }
         if (work->unk0[0x13] != 0) {
-            ex->func_800E6624(work->unk1E4, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
+            ex->btlfx_drawScrollMove(work->unk1E4, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
         }
         if (work->unk0[0x16] != 0) {
-            ex->func_800E6624(frame * 8, 0x1C0, 0x100, 0x18, 0x60, 0x1C0, 0x180);
+            ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x18, 0x60, 0x1C0, 0x180);
         }
         if (work->unk0[7] != 0) {
             work->unk0[7]--;
@@ -727,7 +727,7 @@ s32 fx_0b8_op80(s32 mode, Fx0b8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ang2.vx = 0;
             ang2.vy = 0;
             ang2.vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &ang2, &scale, &col, 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &ang2, &scale, &col, 1, NULL);
         }
         return frame >= 0x134;
     }

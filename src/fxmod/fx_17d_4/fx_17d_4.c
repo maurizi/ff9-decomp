@@ -266,7 +266,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             rot.vy = frame * 24;
             rot.vz = 0;
             ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&sc, work->unk74);
-            ex->func_800E6624(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             if (frame >= 0x14) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -295,7 +295,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk48.vy -= 0xC;
             ex->Hi_DrawSummonModel(&work->unk60, (VECTOR *)&work->unk48, (s32)&work->unk54, SUMMON(env)->unk60, 0);
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk28, (s32)&work->unk3C, work->unk68);
-            ex->func_800E6624(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             if (frame >= 0xA) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
@@ -339,7 +339,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                                          (ex->math_sin(t_c5 >> 2) >> 5) - 0x80);
                 y = 0;
             }
-            ex->func_800E6624(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(frame * 24, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             if (frame > 0x10) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, (frame - 0x10) * 0x3C, (frame - 0x10) * 0x3C,
                                          (frame - 0x10) * 0x3C);
@@ -413,7 +413,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     y = 0;
                 }
             }
-            ex->func_800E6624(0x2710 - frame * 3, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(0x2710 - frame * 3, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
             if (frame < 0xC) {
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xF0 - frame * 0x14, 0xF0 - frame * 0x14,
                                          0xF0 - frame * 0x14);

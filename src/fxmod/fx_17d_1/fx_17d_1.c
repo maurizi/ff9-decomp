@@ -187,7 +187,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->camera->points[2].vx = work->unk18.vx;
             env->camera->points[2].vy = work->unk18.vy;
             env->camera->points[2].vz = work->unk18.vz;
-            ex->func_800E6624(frame * 8, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
+            ex->btlfx_drawScrollMove(frame * 8, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
             if (frame < 12) {
                 tint = (ex->math_cos((frame << 10) / 12) << 7) >> 12;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 0x800), 0xFF, tint, tint, tint);
@@ -287,7 +287,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk70->unk5C.vz = work->unk48.vz;
                 }
             }
-            ex->func_800E6624(frame * 12, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
+            ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x40, 0x80, 0x340, 0x180);
             if (frame >= 0x50) {
                 ex->btlfx_clearEffModels();
                 env->camera->points[3].vx = 0;

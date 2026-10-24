@@ -203,8 +203,8 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkA0.vy = work->unkA0.vy + work->unkB0 + 0x20;
         work->unkA8.vy = work->unkA8.vy - work->unkB4 - 0x20;
         if (work->unk0[4] | work->unk0[5] | work->unk0[6]) {
-            ex->func_800E6624(frame, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
-            ex->func_800E6624(frame * 2, 0x1C0, 0x120, 0x38, 0x70, 0x1C0, 0x190);
+            ex->btlfx_drawScrollMove(frame, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
+            ex->btlfx_drawScrollMove(frame * 2, 0x1C0, 0x120, 0x38, 0x70, 0x1C0, 0x190);
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
@@ -240,7 +240,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
         }
         return frame >= 0x108;
     }

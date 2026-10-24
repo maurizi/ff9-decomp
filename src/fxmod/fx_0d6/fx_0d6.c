@@ -270,7 +270,7 @@ s32 fx_0d6_op80(s32 mode, Fx0d6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                               ex->math_cos(t >> 2) / 2 * 2 + 0x2000, 0, 1, ex->math_cos(t >> 2));
             env->unk28 = 0;
             if (f29) {
-                ex->func_800E6624(z, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
+                ex->btlfx_drawScrollMove(z, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
                 s = ((frame << 12) / 29) >> 2;
                 sc.vx = sc.vz = ex->math_sin(s) / 4 + 0x80;
                 sc.vy = ex->math_sin(s) * 3 / 2 + 0x1000;

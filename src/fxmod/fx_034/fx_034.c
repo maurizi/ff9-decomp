@@ -231,7 +231,7 @@ s32 fx_034_op80(s32 mode, Fx034Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk30 -= 8;
             }
             if (frame >= 24 && frame < 28) {
-                ex->func_800E6624(0x3C0 - work->unk6C * 0x10, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+                ex->btlfx_drawScrollMove(0x3C0 - work->unk6C * 0x10, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
                 work->unk6C++;
             }
         }

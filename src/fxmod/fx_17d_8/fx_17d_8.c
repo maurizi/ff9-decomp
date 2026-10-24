@@ -195,7 +195,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sv.vy = 0;
             sv.vz = 0;
             vv.vz = 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv, &vv, &cv, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv, &vv, &cv, 0, NULL);
             env->unk28 = 0x200;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unk54, NULL, (t >> 1) + 0x800, 0, 1,
                               ex->math_cos(t >> 2));
@@ -263,7 +263,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sv2.vy = 0;
             sv2.vz = 0;
             vv2.vz = 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv2, &cv2, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv2, &cv2, 0, NULL);
             ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), -0x2C, 0x78, 0, 0xFF, 0x1000);
             if (frame >= 0x18) {
                 work->unk0 = 4;
@@ -343,7 +343,7 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             sv2.vz = 0;
             vv3.vy = vv3.vx = 0x1020;
             vv3.vz = 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv3, &cv2, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &sv2, &vv3, &cv2, 0, NULL);
             ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), -0x2C, 0x78, 0, 1, c);
             if (frame >= 0x14) {
                 ex->btlfx_poolClear(entry->unk10);
@@ -352,8 +352,8 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             break;
         }
-        ex->func_800E6624(work->unk4 * 4, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
-        ex->func_800E6624(0x2710 - work->unk4 * 4, 0x300, 0x100, 0x20, 0x80, 0x320, 0x100);
+        ex->btlfx_drawScrollMove(work->unk4 * 4, 0x2C0, 0x100, 0x20, 0x80, 0x2E0, 0x100);
+        ex->btlfx_drawScrollMove(0x2710 - work->unk4 * 4, 0x300, 0x100, 0x20, 0x80, 0x320, 0x100);
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), work->unk4);
         work->unk4++;
     }

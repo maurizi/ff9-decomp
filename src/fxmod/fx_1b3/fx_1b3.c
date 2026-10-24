@@ -808,16 +808,16 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk0[13]--;
             switch (work->unk0[13]) {
             case 0x1F:
-                ex->func_800E6624(0, 0x380, 0, 0x28, 0x50, 0x380, 0x50);
+                ex->btlfx_drawScrollMove(0, 0x380, 0, 0x28, 0x50, 0x380, 0x50);
                 break;
             case 0x17:
-                ex->func_800E6624(0, 0x380, 0, 0x28, 0x50, 0x380, 0xA0);
+                ex->btlfx_drawScrollMove(0, 0x380, 0, 0x28, 0x50, 0x380, 0xA0);
                 break;
             case 0x13:
-                ex->func_800E6624(0, 0x380, 0, 0x28, 0x50, 0x3A8, 0);
+                ex->btlfx_drawScrollMove(0, 0x380, 0, 0x28, 0x50, 0x3A8, 0);
                 break;
             case 0xF:
-                ex->func_800E6624(0, 0x380, 0, 0x28, 0x50, 0x3A8, 0x50);
+                ex->btlfx_drawScrollMove(0, 0x380, 0, 0x28, 0x50, 0x3A8, 0x50);
                 break;
             }
         }
@@ -829,7 +829,7 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             w[1].vx = 0;
             w[1].vy = 0;
             w[1].vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &w[1], &sc, (CVECTOR *)&w[0], 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &w[1], &sc, (CVECTOR *)&w[0], 1, NULL);
         }
         if (frame >= 0x61) {
             work->unk15C.vy++;

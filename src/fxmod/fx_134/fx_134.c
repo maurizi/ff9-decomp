@@ -1049,7 +1049,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 t = (frame << 12) / 23;
                 c = (t >> 7) + 0x8D;
                 s = (t >> 4) + 0x20;
-                ex->func_800E6624(frame * 0x14, 0x1C0, 0x180, 0x18, 0x60, 0x320, 0x100);
+                ex->btlfx_drawScrollMove(frame * 0x14, 0x1C0, 0x180, 0x18, 0x60, 0x320, 0x100);
                 BTLFX_COPY_SVEC(&work->unk18, &work->unk8);
 
                 env->camera->points[3].vx = work->unk18.vx;
@@ -1391,7 +1391,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 scale.vy = 0x1100;
                 scale.vz = 0x1000;
                 col.r = col.g = col.b = k_c9;
-                ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, (VECTOR *)&scale, &col, 1, NULL);
+                ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, (VECTOR *)&scale, &col, 1, NULL);
                 if (frame >= 0x20) {
                     ex->btlfx_clearEffModels();
                     return 1;
@@ -1413,10 +1413,10 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vz = 0;
             scale.vy = scale.vx = s + 0x1000;
             scale.vz = 0x1000;
-            ex->func_800E6764(1, xo + 0xA0, yo + 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, (VECTOR *)&scale, &col, 0, NULL);
+            ex->btlfx_drawScreenGrid(1, xo + 0xA0, yo + 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, (VECTOR *)&scale, &col, 0, NULL);
         }
         if ((u32)(work->unk0 - 3) < 5) {
-            ex->func_800E6624((0x1F4 - work->unk4) * 8, 0x1E0, 0x100, 0x20, 0x80, 0x300, 0x100);
+            ex->btlfx_drawScrollMove((0x1F4 - work->unk4) * 8, 0x1E0, 0x100, 0x20, 0x80, 0x300, 0x100);
         }
         work->unk4++;
     }

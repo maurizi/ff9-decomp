@@ -175,7 +175,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             k3 = (u16)env->camera->points[3].vy + 0x180;
             env->camera->points[3].vy = k3 - d2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
-            ex->func_800E6624(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk40);
             ex->Hi_ModifyEffModelRGB(work->unk40, (s >> 5) - 0x80, (s >> 5) - 0x80, (s >> 5) - 0x80);
             if (!near) {
@@ -276,7 +276,7 @@ s32 fx_08f_op80(s32 mode, Fx08fWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot3.vy = 0;
                 rot3.vx = 0;
                 scale2.vz = 0x1000;
-                ex->func_800E6764(1, 0xA0, 0x78, 0x46, 0x38, 4, 4, 2, 2, &rot3, &scale2, &c2, 1, NULL);
+                ex->btlfx_drawScreenGrid(1, 0xA0, 0x78, 0x46, 0x38, 4, 4, 2, 2, &rot3, &scale2, &c2, 1, NULL);
             }
             if (frame == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), 0, NULL, -1, 0x3000, 0, 1,

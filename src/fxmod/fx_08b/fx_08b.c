@@ -67,7 +67,7 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             u.s.rot.vx = 0;
             u.s.rot.vy = 0;
             u.s.rot.vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &u.s.rot, &u.s.scale, &u.s.col, 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &u.s.rot, &u.s.scale, &u.s.col, 1, NULL);
         }
         if (work->unk0 != NULL) {
             if (work->unk0->unk30 == -1) {

@@ -1297,3 +1297,34 @@ func_800E9884 btlfx_stopSound  # [code] stops a voice and frees its D_80104E34 e
 func_800E9930 btlfx_playFileSound  # [code] sound n of an effect file (btlfx_getFileData) on a free slot, panned at a unit
 func_800E99B0 btlfx_replaceSound  # [code] btlfx_stopSound then btlfx_playFileSound
 func_800E9A00 btlfx_playCommonSound  # [code] common-data sound n (btlfx_getCommonData) on a free slot, panned at a unit
+
+## ovl_0b: ovl_0b (cleanup pass: battle background state, effect screen helpers; btlfx_mod.h members and src/fxmod renamed by hand)
+D_800FE514 g_btlbgHeader  # [code] the background's header (btlbg_init, btlbg_getHeader)
+D_800FE504 g_btlbgScrolls  # [code] texture-scroll entries of the background (BtlBgScroll, btlbg_draw)
+D_800FE518 g_btlbgScrollCount  # [code] header unkA: number of g_btlbgScrolls entries
+D_800FE4F4 g_btlbgTexAnims  # [code] the background's texture animations (btl_updateTexAnims from btlbg_draw)
+D_800FE508 g_btlbgTexAnimCount  # [code] header unk2: texture animations, all started by btlbg_init
+D_800FE50C g_btlbgId  # [code] header unk0, the background id btlbg_draw switches on for its moving groups (0x44, 0x70, 0x6E, 0xA8, 0xAB, 7)
+D_800FE510 g_btlbgSkySpeed  # [code] header unk4: added to g_btlbgSkyAngle every frame
+D_800FE4F0 g_btlbgSkyAngle  # [code] y rotation (>> 3) of the records of kind 8 (btlbg_draw)
+D_800FE4F8 g_btlbgSkyOwnProj  # [code] header unk6 != 0: kind-8 records drawn with their own translation and projection 0x200
+D_800FE51C g_btlbgLayerMask  # [code] record kinds btlbg_draw draws: 8 sky, 4, 2, 1 = kind 0 (btlbg_setLayerMask)
+D_800FE520 g_btlbgFrame  # [code] btlbg_draw calls
+D_800F7270 g_btlbgScrollPaused  # [code] nonzero stops the texture scrolls (btlbg_pauseScroll)
+func_800CEE84 btlbg_pauseScroll  # [code] sets g_btlbgScrollPaused
+func_800CEE90 btlbg_getId  # [code] returns g_btlbgId
+func_800CEEA0 btlbg_addSkySpeed  # [code] g_btlbgSkySpeed += n
+func_800CEEB8 btlbg_getSkySpeed  # [code] returns g_btlbgSkySpeed
+func_800CEEC8 btlbg_setLayerMask  # [code] sets g_btlbgLayerMask (0xF all; btlfx_drawBgOffscreen draws only kind 2)
+func_800E49D0 btlfx_playSoundSet  # [code] plays the three common-data sounds D_800F8CF4[n] at a unit
+func_800E4C04 btlfx_setPartyTexAnim  # [code] btlfx_setUnitTexAnim for party units only
+func_800E8B28 btlfx_setUnitTexAnim  # [code] starts (0, entry 0/1), stops (1) or starts entry 2 (2) of the unit model's texture animations
+func_800E6624 btlfx_drawScrollMove  # [code] two DR_MOVEs copying a w x h rect to (x, y) rotated by n rows (wrap-around scroll)
+func_800E6764 btlfx_drawScreenGrid  # [code] grid of FT4s textured from the display buffer, rotated/scaled, a callback may move each vertex (screen warps)
+func_800E6C58 btlfx_pushViewRotation  # [code] saves the view matrix (D_80104E10) and replaces it by a rotation at the projection distance
+func_800E6D58 btlfx_popViewMatrix  # [code] restores the view matrix btlfx_pushViewRotation saved
+D_80104E10 g_btlfxSavedView  # [code] view matrix saved by btlfx_pushViewRotation
+func_800E6DB8 btlfx_pushGeomScreen  # [code] saves the projection distance (D_80104E00) and sets a new one
+func_800E6DF4 btlfx_popGeomScreen  # [code] restores the projection distance btlfx_pushGeomScreen saved
+D_80104E00 g_btlfxSavedGeomScreen  # [code] projection distance saved by btlfx_pushGeomScreen
+func_800E6E1C btlfx_drawBgOffscreen  # [code] renders the battle background (layer 2, no rain) into an offscreen rect with its own draw environment

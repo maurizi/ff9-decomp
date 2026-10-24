@@ -100,7 +100,7 @@ s32 fx_194_op80(s32 mode, Fx194Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x73, 0x20, 0x17, 0xA, 0xA, 5, 5, &rot, &scale, &col, state,
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x73, 0x20, 0x17, 0xA, 0xA, 5, 5, &rot, &scale, &col, state,
                               func_801E7704);
             if (frame >= 0x20) {
                 return 1;

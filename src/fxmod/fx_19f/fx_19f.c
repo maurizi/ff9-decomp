@@ -418,7 +418,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.vz = rot.vy = rot.vx = 0;
                 sc.vz = 0x1000;
                 col.r = col.g = col.b = ((frame - 31) << 5) / 12;
-                ex->func_800E6764(0x200, 0xA0, 0x78, 0x50, 0x3C, cw, cw, ch, ch, &rot, &sc, &col, 1, 0);
+                ex->btlfx_drawScreenGrid(0x200, 0xA0, 0x78, 0x50, 0x3C, cw, cw, ch, ch, &rot, &sc, &col, 1, 0);
             }
             if (work->unk6C != NULL) {
                 work->unk6C->unk1C = (t >> 1) + 0x1000;
@@ -482,7 +482,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 col.r = col.g = col.b = 0x89;
                 sc.vz = sc.vy = sc.vx = 0x1000;
                 rot.vz = rot.vy = rot.vx = 0;
-                ex->func_800E6764(2, 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
+                ex->btlfx_drawScreenGrid(2, 0xA0, 0x78, 0x50, 0x3C, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
             }
             key = (Fx19fKey12 *)((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B) + (frame * 12 + 4));
             work->unk48[0] = key->x + work->unk8.vx;
@@ -522,7 +522,7 @@ s32 fx_19f_op81(s32 mode, Fx19fWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_DrawEffModel(&work->unk60, &pos, (s32)&sc, work->unk7C);
                 c12 = (c6 >> 5) - 0x80;
                 ex->Hi_ModifyEffModelRGB(work->unk7C, c12, c12, c12);
-                ex->func_800E6624(work->unk4 * 5, 0x260, 0x100, 0x20, 0x80, 0x240, 0x100);
+                ex->btlfx_drawScrollMove(work->unk4 * 5, 0x260, 0x100, 0x20, 0x80, 0x240, 0x100);
             }
             if (m != 0) {
                 ex->Hi_DrawEffModel(&work->unk60, &pos, (s32)work->unk54, work->unk80);

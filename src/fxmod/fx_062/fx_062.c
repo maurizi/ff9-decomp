@@ -99,7 +99,7 @@ s32 fx_062_op80(s32 mode, Fx062Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            ex->func_800E6E1C(0x280, 0x100, 0x70, 0x70, D_801E8B5C, D_801E8F64.vx, D_801E8F64.vz, -0x1000);
+            ex->btlfx_drawBgOffscreen(0x280, 0x100, 0x70, 0x70, D_801E8B5C, D_801E8F64.vx, D_801E8F64.vz, -0x1000);
             break;
         case 1:
             work->unk0[1] = 1;

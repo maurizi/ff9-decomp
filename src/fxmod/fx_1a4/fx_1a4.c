@@ -178,8 +178,8 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk30.vy = work->unk30.vy > 0x1000 ? 0x1000 : work->unk30.vy;
                 work->unk30.vz = work->unk30.vz > 0xCCC ? 0xCCC : work->unk30.vz;
             }
-            ex->func_800E6624(work->unk4E * 0x64 - work->unk4C * work->unk4E, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
-            ex->func_800E6624(work->unk50 * 0x64 - work->unk4C * work->unk50, 0x200, 0x180, 0x20, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->unk4E * 0x64 - work->unk4C * work->unk4E, 0x1E0, 0x180, 0x20, 0x80, 0x1E0, 0x100);
+            ex->btlfx_drawScrollMove(work->unk50 * 0x64 - work->unk4C * work->unk50, 0x200, 0x180, 0x20, 0x80, 0x200, 0x100);
             work->unk4C++;
         }
         if (frame >= 0x64) {

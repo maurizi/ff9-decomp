@@ -513,7 +513,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
                 rot.pad = 1;
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &D_801EE4DC, &rot, 0x5000, 0, 1, c);
             }
-            ex->func_800E6624(frame * 29, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
+            ex->btlfx_drawScrollMove(frame * 29, 0x200, 0x100, 0x40, 0x80, 0x200, 0x180);
             if (frame >= 0x38) {
                 r = (frame - 0x38) * 0xFF;
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, r >> 4, (r >> 4) * 2 / 3, r >> 5);
@@ -555,7 +555,7 @@ s32 fx_17d_5_op80(s32 mode, Fx17d5Work80 *w, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = 0;
             scale.vx = scale.vy = scale.vz = (fade >> 7) + 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, (CVECTOR *)&v, flag, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, (CVECTOR *)&v, flag, 0);
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 1), w->unk4);
         w->unk4++;

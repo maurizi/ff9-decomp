@@ -126,8 +126,8 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             env->unk28 = 0x100;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &work->unk10, NULL, 0xAAA, 0, 1, -1);
             env->unk28 = 0;
-            ex->func_800E6624(frame * 10, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
-            ex->func_800E6624(frame * 7, 0x240, 0x100, 0x40, 0x80, 0x280, 0x100);
+            ex->btlfx_drawScrollMove(frame * 10, 0x180, 0x100, 0x40, 0x80, 0x180, 0x180);
+            ex->btlfx_drawScrollMove(frame * 7, 0x240, 0x100, 0x40, 0x80, 0x280, 0x100);
             ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 8), frame / 3 + 0x10E, 0x40 - frame / 3,
                               0, 0xFF, -1);
             ex->func_800D1BC4(0xE00, (u8 *)ex->btlfx_getFileData(entry->unk8, 9), frame / 3 + 0xA0, 0x70 - frame / 3,
@@ -138,7 +138,7 @@ s32 fx_17d_2_op80(s32 mode, Fx17d2Work *work, Unk800F78A4 *env, Unk80100C78Entry
             r.vy = 0;
             r.vz = 0;
             sc.vz = 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r, &sc, &col, 0, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r, &sc, &col, 0, 0);
             if (work->unk7C != NULL && work->unk7C->unk30 == -1) {
                 work->unk7C = NULL;
             }

@@ -45,7 +45,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            ex->func_800E6E1C(0x1C0, 0x100, 0x100, 0x100, D_801E8798, 0, -0x550, -0x1000);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E8798, 0, -0x550, -0x1000);
             break;
         case 1:
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x10), (s32)&work->unk20);
@@ -101,7 +101,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             col.b = c;
             col.g = c;
             col.r = c;
-            ex->func_800E6764(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, NULL);
+            ex->btlfx_drawScreenGrid(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, NULL);
             ex->btlfx_drawScreenTint((u32 *)(env->ot + 4), 2, c, c, c);
         }
         return frame >= 0x58;

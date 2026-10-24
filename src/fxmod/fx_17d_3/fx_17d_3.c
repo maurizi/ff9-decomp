@@ -98,8 +98,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->unk70, 2);
             ex->Hi_ModifyEffModelRGB(work->unk70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);
-            ex->func_800E6624(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             {
             CVECTOR col;
             SVECTOR r2;
@@ -110,7 +110,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r2.vx = 0;
             r2.vy = 0;
             r2.vz = 0;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r2, &s2, &col, 1, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r2, &s2, &col, 1, 0);
             }
             if (frame >= 0x18) {
                 work->unk0 = 1;
@@ -170,8 +170,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelAbr(work->unk70, 2);
             ex->Hi_ModifyEffModelRGB(work->unk70, 0, 0, 0);
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);
-            ex->func_800E6624(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(frame * 0x18, 0x300, 0x140, 0x20, 0x80, 0x320, 0x140);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
             {
             CVECTOR col;
             SVECTOR r2;
@@ -182,7 +182,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r2.vx = 0;
             r2.vy = 0;
             r2.vz = 0;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r2, &s2, &col, 1, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r2, &s2, &col, 1, 0);
             }
             if (frame >= 0x18) {
                 work->unk0 = 2;
@@ -268,8 +268,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unk5C.vz = v.vz;
                 }
             }
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 3;
                 entry->unk0 = -1;
@@ -352,8 +352,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     work->unk7C->unk5C.vz = v.vz;
                 }
             }
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 4;
                 entry->unk0 = -1;
@@ -432,8 +432,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s2.vx = s2.vz = work->unk3C[0] / 2;
             s2.vy = work->unk3C[1] / 2;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->unk6C);
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x18) {
                 work->unk0 = 5;
                 entry->unk0 = -1;
@@ -521,8 +521,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s2.vx = s2.vz = work->unk3C[0] / 3;
             s2.vy = work->unk3C[1] / 2;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->unk6C);
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 6;
                 entry->unk0 = -1;
@@ -614,8 +614,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s2.vx = s2.vz = work->unk3C[0] / 3;
             s2.vy = work->unk3C[1] / 2;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->unk6C);
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x15) {
                 work->unk0 = 7;
                 entry->unk0 = -1;
@@ -677,8 +677,8 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             s2.vx = s2.vz = work->unk3C[0] / 3;
             s2.vy = work->unk3C[1] / 2;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)&s2, work->unk6C);
-            ex->func_800E6624(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
-            ex->func_800E6624(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(frame * 0x10, 0x2C0, 0x100, 0x40, 0x80, 0x2C0, 0x180);
+            ex->btlfx_drawScrollMove(work->unk4 * 0x10, 0x340, 0x100, 0x20, 0x80, 0x360, 0x100);
             if (frame >= 0x20) {
                 ex->func_800E3C58();
                 ex->btlfx_clearEffModels();

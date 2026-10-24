@@ -140,7 +140,7 @@ s32 fx_1e9_op80(s32 mode, Fx1e9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
         ex->Hi_ModifyEffModelRGB(work->unk24, a, a, a);
     }
-    ex->func_800E6624(work->unk4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
+    ex->btlfx_drawScrollMove(work->unk4 * 4, 0x1C0, 0x120, 0x20, 0x40, 0x1E0, 0x120);
     work->unk4++;
     }
     return 0;

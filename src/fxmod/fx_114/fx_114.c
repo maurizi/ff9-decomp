@@ -459,7 +459,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 6), n);
-        ex->func_800E6624(0x1180 - work->unk16C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
+        ex->btlfx_drawScrollMove(0x1180 - work->unk16C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
     }
     if (frame >= 0x7B && frame < 0xB7) {
         for (i = 0; i < 4; i++) {
@@ -479,7 +479,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         r.vx = 0;
         r.vy = 0;
         r.vz = 0;
-        ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &r, &s, &col, 1, 0);
+        ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &r, &s, &col, 1, 0);
         env->camera->projDist = 0x208 - k4 * k4 * 6;
     }
     work->unk168++;
@@ -600,7 +600,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (frame) {
         case 0:
-            ex->func_800E6E1C(0x1C0, 0x100, 0x80, 0xA0, D_801ED1C8, 0, 0x168, 0xF6E);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x80, 0xA0, D_801ED1C8, 0, 0x168, 0xF6E);
             break;
         case 9:
             work->unk58.vx = -3;
@@ -654,7 +654,7 @@ s32 fx_114_op82(s32 mode, Fx114Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc.vz = sc.vy = sc.vx = (t << 7) + 0x1000;
             col.r = col.g = col.b = 0x3C;
             rot.vz = rot.vy = rot.vx = 0;
-            ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
+            ex->btlfx_drawScreenGrid(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &sc, &col, 1, NULL);
             env->camera->projDist = 0x208 - t * t * 4;
         }
         work->unk64++;
@@ -935,7 +935,7 @@ s32 fx_114_op83(s32 mode, Fx114Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
         }
-        ex->func_800E6624(0x3C0 - work->unk10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
+        ex->btlfx_drawScrollMove(0x3C0 - work->unk10C * 16, 0x280, 0x100, 0x40, 0x80, 0x240, 0x100);
         work->unk10C++;
         return frame >= 0x3C;
     }

@@ -118,7 +118,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_poolUpdate)(Unk800DA1B8 *); /* 0x188 */
     s32 (*btlfx_findFileSlot)(s32); /* 0x18C */
     s32 (*Hi_SetSummonMotFrame)(s32, s32); /* 0x190 */
-    s32 (*func_800E6D58)(void); /* 0x194 */
+    s32 (*btlfx_popViewMatrix)(void); /* 0x194 */
     s32 (*btlfx_getFileData)(s32, s32); /* 0x198 */
     s32 (*btlfx_getFileDataSize)(s32, s32); /* 0x19C */
     s32 (*func_800DA4E8)(void); /* 0x1A0 */
@@ -138,8 +138,8 @@ typedef struct BtlfxExports {
     s32 (*func_800E3D20)(s32, s32); /* 0x1D8 */
     s32 (*func_800E3D54)(Pool6CEntry *); /* 0x1DC */
     s32 (*btlfx_setTargets)(BtlUnitList *); /* 0x1E0 */
-    s32 (*func_800E6DF4)(void); /* 0x1E4 */
-    s32 (*func_800E6DB8)(s32); /* 0x1E8 */
+    s32 (*btlfx_popGeomScreen)(void); /* 0x1E4 */
+    s32 (*btlfx_pushGeomScreen)(s32); /* 0x1E8 */
     s32 (*btlfx_clearTargets)(void); /* 0x1EC */
     s32 (*btlfx_getUnitRadius)(s32); /* 0x1F0 */
     s32 (*btlfx_getUnitHeight)(s32); /* 0x1F4 */
@@ -161,12 +161,12 @@ typedef struct BtlfxExports {
     s32 (*btlfx_addPrim)(u32, s32, void *); /* 0x234 */
     s32 (*btlfx_sampleGradient)(u8 *, CVECTOR *, s32); /* 0x238 */
     s32 (*btlfx_linkPrimAbr)(u32, u32 *, void *, s32); /* 0x23C */
-    s32 (*func_800E6624)(s32, s32, s32, s32, s32, s32, s32); /* 0x240 */
+    s32 (*btlfx_drawScrollMove)(s32, s32, s32, s32, s32, s32, s32); /* 0x240 */
     s32 (*Hi_DrawMorphModelByBone)(s32, s32, s32, s32, s32, s32); /* 0x244 */
-    void (*func_800E6764)(u32, s32, s32, s32, s32, s32, s32, s32, s32, SVECTOR *, VECTOR *, CVECTOR *, s32,
+    void (*btlfx_drawScreenGrid)(u32, s32, s32, s32, s32, s32, s32, s32, s32, SVECTOR *, VECTOR *, CVECTOR *, s32,
                           void (*)(SVECTOR *)); /* 0x248 (arg 13: per-vertex callback in the module) */
     s32 (*Hi_ModifySummonModelAbr)(s32, s32); /* 0x24C */
-    s32 (*func_800E6C58)(SVECTOR *); /* 0x250 */
+    s32 (*btlfx_pushViewRotation)(SVECTOR *); /* 0x250 */
     s32 (*Hi_GetSummonBonePos)(s32, s32, u16 *); /* 0x254 */
     s32 (*func_800DA4C4)(s32); /* 0x258 */
     s32 (*Hi_FreeEffModel)(s32); /* 0x25C */
@@ -194,7 +194,7 @@ typedef struct BtlfxExports {
     s32 (*func_800CFF40)(MATRIX *, s16 *); /* 0x2B4 */
     s32 (*btlfx_getWeaponPos)(s32, s32, s16 *); /* 0x2B8 */
     s32 (*btlfx_fadeUnitById)(s32, s32); /* 0x2BC */
-    s32 (*func_800E8B28)(s32, s32, s32); /* 0x2C0 */
+    s32 (*btlfx_setUnitTexAnim)(s32, s32, s32); /* 0x2C0 */
     s32 (*func_800DC8AC)(s32, s32, BtlBone *); /* 0x2C4 */
     s32 (*func_800DC8EC)(s32, s32, BtlBone *); /* 0x2C8 */
     s32 (*btlfx_startScreenFade)(s32, s32); /* 0x2CC */
@@ -207,7 +207,7 @@ typedef struct BtlfxExports {
     s32 (*btlfx_setUnitLight)(s32, s32); /* 0x2E8 */
     s32 (*btlfx_setUnitVisible)(s32, s32); /* 0x2EC */
     s32 (*func_800E8980)(s32); /* 0x2F0 */
-    s32 (*func_800E6E1C)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
+    s32 (*btlfx_drawBgOffscreen)(s32, s32, s32, s32, u32 *, s32, s32, s32); /* 0x2F4 */
     BtlUnit * (*btl_getUnit)(s32); /* 0x2F8 */
     s32 (*Hi_GetSplitMdlVertex)(s32, s32); /* 0x2FC */
     s32 (*func_800DF928)(void); /* 0x300 */

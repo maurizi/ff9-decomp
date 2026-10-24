@@ -236,7 +236,7 @@ typedef struct {
 } Unk8006CB88;
 extern Unk8006CB88 D_8006CB88[]; /* abilities */
 
-/* draw environment pair built in the primitive buffer by func_800E6E1C */
+/* draw environment pair built in the primitive buffer by btlfx_drawBgOffscreen */
 typedef struct {
     DRAWENV unk0;
     DRAWENV unk5C; /* previous */
@@ -859,18 +859,18 @@ typedef struct {
 extern Unk80104FD0 g_btluiList;
 
 extern u8 D_800FE470;
-extern s32 D_800F7270;
+extern s32 g_btlbgScrollPaused;
 extern s32 g_btlbgRainCount;
 extern MATRIX D_800F8D50;
-void func_800CEEC8(s32);
-extern s32 D_800FE50C;
-extern s32 D_800FE510;
-extern struct Unk800CEE74 *D_800FE514;
-extern s32 D_800FE51C;
-extern s32 D_800FE4F0;
-extern struct BtlUnit9C50 *D_800FE4F4;
-extern s32 D_800FE4F8;
-/* battle background: texture scroll entry (D_800FE504) */
+void btlbg_setLayerMask(s32);
+extern s32 g_btlbgId;
+extern s32 g_btlbgSkySpeed;
+extern struct Unk800CEE74 *g_btlbgHeader;
+extern s32 g_btlbgLayerMask;
+extern s32 g_btlbgSkyAngle;
+extern struct BtlUnit9C50 *g_btlbgTexAnims;
+extern s32 g_btlbgSkyOwnProj;
+/* battle background: texture scroll entry (g_btlbgScrolls) */
 typedef struct {
     s16 unk0; /* offset of the uv pair in the group data */
     u8 unk2;  /* 0 = wrap, 1 = bounce */
@@ -906,15 +906,15 @@ typedef struct {
     u16 unkE; /* triangle count */
 } BtlBgRec;
 
-extern BtlBgScroll *D_800FE504;
-extern s32 D_800FE520; /* frame counter */
+extern BtlBgScroll *g_btlbgScrolls;
+extern s32 g_btlbgFrame; /* frame counter */
 extern s32 D_800FE4FC;
 extern s32 D_800FE500;
 u8 *btlbg_drawRain(u8 *, u32 *, MATRIX *);
 u8 *btlbg_drawRecord(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
 void btlbg_projectVertices(BtlBgRec *, u8 *, u32 *, s32);
-extern s32 D_800FE508;
-extern s32 D_800FE518;
+extern s32 g_btlbgTexAnimCount;
+extern s32 g_btlbgScrollCount;
 extern s16 D_80100DCC;
 extern s32 *g_btlfxCommonTable; /* offset table, entries relative to its start */
 typedef struct {
@@ -1890,8 +1890,8 @@ extern Pool30 D_801044B8;
 extern Pool6C D_801044C8; /* 0x920 bytes */
 extern Unk80100D88 g_btlfxResArgs;
 extern Unk80100D88 g_btlfxResArgs2;
-extern s32 D_80104E00;
-extern MATRIX D_80104E10;
+extern s32 g_btlfxSavedGeomScreen;
+extern MATRIX g_btlfxSavedView;
 extern u16 D_800F8D0C[];
 extern Unk800F6A54 D_800F6A54[];
 extern char D_800A7F34[];
@@ -1937,7 +1937,7 @@ typedef struct Unk800D7E14 {
 
 typedef struct Unk800CEE74 {
     s16 unk0;
-    s16 unk2; /* count of D_800FE4F4 entries */
+    s16 unk2; /* count of g_btlbgTexAnims entries */
     s16 unk4;
     s16 unk6;
     s16 unk8; /* last group index */
@@ -2580,7 +2580,7 @@ void func_800E14D8(u32, Pool6C *);
 Pool6CEntry *func_800E1534(Pool30 *, Pool6C *, u8 *, s32);
 Pool6CEntry *func_800E3CEC(s32, s32);
 void btlfx_playBounceCamera(void);
-void func_800E49D0(s32, s32);
+void btlfx_playSoundSet(s32, s32);
 s32 btlfx_getBouncePos(s32, s16 *, s16 *);
 
 /* func_800E4634 work area */
@@ -2665,7 +2665,7 @@ void btlfx_heapInit(Heap *, s32);
 void btlfx_resetAll(void);
 void btlfx_initCommonData(void);
 s32 btlfx_isEnemyUnit(s32);
-void func_800E8B28(s32, s32, s32);
+void btlfx_setUnitTexAnim(s32, s32, s32);
 s32 btl_unloadCommonData(void);
 void btl_hideWeapon(BtlUnit *);
 void btl_showWeapon(BtlUnit *);
@@ -4225,7 +4225,7 @@ void btlfx_retryOp(void);
 extern s32 D_800FE530[];
 extern u8 D_800FF068[];
 extern const u8 D_800A857C[]; /* "TRANCE" label */
-/* BtlUnit9C.unk50 seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (func_800E8B28) */
+/* BtlUnit9C.unk50 seen as an array member: indexing it as an ARRAY_REF keeps `c ? 1 : 0` from folding into the address (btlfx_setUnitTexAnim) */
 typedef struct {
     BtlUnit9C50 e[3];
 } BtlUnit9C50Arr;
@@ -4253,7 +4253,7 @@ typedef void (*Unk800DA92CFn)(s32, Unk800F78A4 *, s32);
 void func_80054A28(void *);
 
 
-/* GTE loads used by func_800E6764 */
+/* GTE loads used by btlfx_drawScreenGrid */
 #define gte_ldvz012_0() __asm__ volatile("mtc2\t$0, $1;" "mtc2\t$0, $3;" "mtc2\t$0, $5")
 #define gte_ldxy3(r0, r1, r2) __asm__ volatile( \
     "lwc2\t$0, 0(%0);" \

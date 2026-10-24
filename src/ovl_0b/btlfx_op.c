@@ -221,7 +221,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
         c->unk28[0] = 0x400;
         c->unk4 = 1;
         c->unk28[1] += 0x800;
-        func_800E49D0(3, c->unk0 + 8);
+        btlfx_playSoundSet(3, c->unk0 + 8);
         c->unk0++;
     } else {
         c->unk0 = -1;
@@ -240,7 +240,7 @@ void btlfx_startCasterTask(s32 arg0) {
     btlfx_spawnTask(7, -1, a, b);
 }
 
-void func_800E49D0(s32 arg0, s32 arg1) {
+void btlfx_playSoundSet(s32 arg0, s32 arg1) {
     s32 i;
     for (i = 0; i < 3; i++) {
         btlfx_playCommonSound(D_800F8CF4[arg0][i], arg1);
@@ -279,7 +279,7 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
         if (btlfx_isUnitKind(0x10, 0) == 0) {
             goto zero;
         }
-        func_800E49D0(1, arg0);
+        btlfx_playSoundSet(1, arg0);
         break;
     case 1:
     case 7:
@@ -292,7 +292,7 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
             e->unk2C = *(s32 *)&arg2.b;
             e->unk22 = 0x20;
         }
-        func_800E49D0(2, arg0);
+        btlfx_playSoundSet(2, arg0);
         break;
     case 4:
         e = func_800E3CEC(btlfx_getCommonData(4), (s32)arg2.a);
@@ -302,15 +302,15 @@ Pool6CEntry *func_800E4A3C_def(s32 arg0, s32 arg1, Unk800E4A3CArgs arg2) {
             e->unk22 = 0x80;
         }
     zero:
-        func_800E49D0(0, arg0);
+        btlfx_playSoundSet(0, arg0);
         break;
     }
     return e;
 }
 
-void func_800E4C04(s32 arg0, s32 arg1, s32 arg2) {
+void btlfx_setPartyTexAnim(s32 arg0, s32 arg1, s32 arg2) {
     if (btlfx_isEnemyUnit(arg0) == 0) {
-        func_800E8B28(arg0, arg1, arg2);
+        btlfx_setUnitTexAnim(arg0, arg1, arg2);
     }
 }
 
@@ -359,7 +359,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         a = arg2->targets->kind & 1;
         c = btlfx_isEnemyUnit(arg1->unk2);
         arg1->unk8 = 100;
-        func_800E4C04(arg1->unk2, 1, 0);
+        btlfx_setPartyTexAnim(arg1->unk2, 1, 0);
         if ((a != 0 || arg1->unk0 == 0xF) && c == 0) {
             arg1->unk5 = 2;
             arg1->unk1 = 2;
@@ -406,7 +406,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             arg1->unk1 = 2;
             btlfx_getUnitPos(arg1->unk2, arg1->unkC);
             arg1->unk24 = func_800E4A3C(arg1->unk2, arg1->unk0, arg1->unkC, arg1->unk14);
-            func_800E4C04(arg1->unk2, 0, 0);
+            btlfx_setPartyTexAnim(arg1->unk2, 0, 0);
             btlfx_showCasterCmdName();
         }
         break;
@@ -460,7 +460,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 g_btlfxState.unk10.b[3] = 1;
                 g_btlfxState.unk25 = 1;
                 arg2->camera->unk52 = 0;
-                func_800E4C04(arg1->unk2, 2, 0);
+                btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
                 return 1;
             }
         } else if (arg1->unk5 == 0) {
@@ -484,7 +484,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             g_btlfxState.unk10.b[3] = 1;
             func_800E4C54();
             arg2->camera->unk52 = 0;
-            func_800E4C04(arg1->unk2, 2, 0);
+            btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
             btlfx_showCasterCmdName();
             return 1;
         }
@@ -492,7 +492,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
     case 3:
         if (t == 0 && arg1->unk5 != 1) {
             arg2->camera->unk52 = 0;
-            func_800E4C04(arg1->unk2, 0, 1);
+            btlfx_setPartyTexAnim(arg1->unk2, 0, 1);
         }
         if (arg1->unk5 != 3) {
             if (arg1->unk24 != NULL) {
@@ -531,7 +531,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             if (arg1->unk5 == 0 || arg1->unk5 == 3) {
                 btlfx_playUnitMotion(arg1->unk2, 9);
             }
-            func_800E4C04(arg1->unk2, 2, 0);
+            btlfx_setPartyTexAnim(arg1->unk2, 2, 0);
             g_btlfxState.unk10.b[3] = 1;
             func_800E4C54();
             return 1;
@@ -1002,7 +1002,7 @@ void btlfx_sampleGradient(u8 *p, CVECTOR *out, s32 x) {
     LoadAverageCol(p, p + 8, 0x1000 - c, c, (u8 *)out);
 }
 
-void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+void btlfx_drawScrollMove(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     RECT b;
     RECT a;
     DR_MOVE *p;
@@ -1030,7 +1030,7 @@ void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     }
 }
 
-void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
+void btlfx_drawScreenGrid(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8,
                    SVECTOR *arg9, VECTOR *arg10, CVECTOR *arg11, s32 arg12, void (*arg13)(SVECTOR *)) {
     XY32 buf[2][18];
     SVECTOR v[4];
@@ -1140,7 +1140,7 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     SetGeomOffset(ox, oy);
 }
 
-void func_800E6C58(SVECTOR *arg0) {
+void btlfx_pushViewRotation(SVECTOR *arg0) {
     MATRIX m;
     SVECTOR v;
     memset((s32)&v, 0, 8);
@@ -1151,25 +1151,25 @@ void func_800E6C58(SVECTOR *arg0) {
     m.t[1] = 0;
     m.t[0] = 0;
     m.t[2] = ReadGeomScreen();
-    D_80104E10 = *g_btlfxEnv->viewMatrix;
+    g_btlfxSavedView = *g_btlfxEnv->viewMatrix;
     *g_btlfxEnv->viewMatrix = m;
 }
 
-void func_800E6D58(void) {
-    *g_btlfxEnv->viewMatrix = D_80104E10;
+void btlfx_popViewMatrix(void) {
+    *g_btlfxEnv->viewMatrix = g_btlfxSavedView;
 }
 
-void func_800E6DB8(s32 arg0) {
-    s32 *p = &D_80104E00;
+void btlfx_pushGeomScreen(s32 arg0) {
+    s32 *p = &g_btlfxSavedGeomScreen;
     *p = ReadGeomScreen();
     SetGeomScreen(arg0);
 }
 
-void func_800E6DF4(void) {
-    SetGeomScreen(D_80104E00);
+void btlfx_popGeomScreen(void) {
+    SetGeomScreen(g_btlfxSavedGeomScreen);
 }
 
-void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 arg7) {
+void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 arg7) {
     long ox;
     long oy;
     s32 save;
@@ -1196,9 +1196,9 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     D_800F8D50.t[0] = -arg5;
     D_800F8D50.t[1] = arg6;
     D_800F8D50.t[2] = arg7 + 0x2900;
-    func_800CEEC8(2);
+    btlbg_setLayerMask(2);
     g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->unk1C->unk8E4.battle->unk11C0->unk1C, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
-    func_800CEEC8(0xF);
+    btlbg_setLayerMask(0xF);
     EnterCriticalSection();
     DrawOTagEnv(ot, &e->unk0);
     PutDrawEnv(&e->unk5C);
@@ -1828,7 +1828,7 @@ s32 btlfx_countVisibleParty(void) {
 }
 
 /* weapon texture animation: arg1 0 = start anim (arg2 ? 1 : 0), 1 = stop anim 2, 2 = start anim 2 */
-void func_800E8B28(s32 arg0, s32 arg1, s32 arg2) {
+void btlfx_setUnitTexAnim(s32 arg0, s32 arg1, s32 arg2) {
     BtlUnit *u = btl_getUnit(arg0);
 
     switch (arg1) {

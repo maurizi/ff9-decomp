@@ -223,7 +223,7 @@ s32 fx_1b2_op83(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
     } else {
         frame = entry->unk0;
         if (frame == 0) {
-            ex->func_800E6E1C(0x240, 0x100, 0x80, 0x80, D_801E875C, 0, -0x3E8, 0x1770);
+            ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, D_801E875C, 0, -0x3E8, 0x1770);
         }
         return frame >= 5;
     }

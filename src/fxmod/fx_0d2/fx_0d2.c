@@ -288,7 +288,7 @@ s32 fx_0d2_op81(s32 mode, Fx0d2Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x41:
-            ex->func_800E6E1C(0x2C0, 0x100, 0x80, 0x80, D_801EF300, 0, 0x200, 0x2BC);
+            ex->btlfx_drawBgOffscreen(0x2C0, 0x100, 0x80, 0x80, D_801EF300, 0, 0x200, 0x2BC);
             break;
         case 0x2C:
             for (i2 = 0; i2 < env->targets->targetCount; i2++) {

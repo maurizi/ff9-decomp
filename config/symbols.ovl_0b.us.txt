@@ -883,3 +883,32 @@ btlfx_stopSound = 0x800E9884; // type:func [code] stops a voice and frees its D_
 btlfx_playFileSound = 0x800E9930; // type:func [code] sound n of an effect file (btlfx_getFileData) on a free slot, panned at a unit
 btlfx_replaceSound = 0x800E99B0; // type:func [code] btlfx_stopSound then btlfx_playFileSound
 btlfx_playCommonSound = 0x800E9A00; // type:func [code] common-data sound n (btlfx_getCommonData) on a free slot, panned at a unit
+g_btlbgHeader = 0x800FE514; // [code] the background's header (btlbg_init, btlbg_getHeader)
+g_btlbgScrolls = 0x800FE504; // [code] texture-scroll entries of the background (BtlBgScroll, btlbg_draw)
+g_btlbgScrollCount = 0x800FE518; // [code] header unkA number of g_btlbgScrolls entries
+g_btlbgTexAnims = 0x800FE4F4; // [code] the background's texture animations (btl_updateTexAnims from btlbg_draw)
+g_btlbgTexAnimCount = 0x800FE508; // [code] header unk2 texture animations, all started by btlbg_init
+g_btlbgId = 0x800FE50C; // [code] header unk0, the background id btlbg_draw switches on for its moving groups (0x44, 0x70, 0x6E, 0xA8, 0xAB, 7)
+g_btlbgSkySpeed = 0x800FE510; // [code] header unk4 added to g_btlbgSkyAngle every frame
+g_btlbgSkyAngle = 0x800FE4F0; // [code] y rotation (>> 3) of the records of kind 8 (btlbg_draw)
+g_btlbgSkyOwnProj = 0x800FE4F8; // [code] header unk6 != 0 kind-8 records drawn with their own translation and projection 0x200
+g_btlbgLayerMask = 0x800FE51C; // [code] record kinds btlbg_draw draws 8 sky, 4, 2, 1 = kind 0 (btlbg_setLayerMask)
+g_btlbgFrame = 0x800FE520; // [code] btlbg_draw calls
+g_btlbgScrollPaused = 0x800F7270; // [code] nonzero stops the texture scrolls (btlbg_pauseScroll)
+btlbg_pauseScroll = 0x800CEE84; // type:func [code] sets g_btlbgScrollPaused
+btlbg_getId = 0x800CEE90; // type:func [code] returns g_btlbgId
+btlbg_addSkySpeed = 0x800CEEA0; // type:func [code] g_btlbgSkySpeed += n
+btlbg_getSkySpeed = 0x800CEEB8; // type:func [code] returns g_btlbgSkySpeed
+btlbg_setLayerMask = 0x800CEEC8; // type:func [code] sets g_btlbgLayerMask (0xF all, btlfx_drawBgOffscreen draws only kind 2)
+btlfx_playSoundSet = 0x800E49D0; // type:func [code] plays the three common-data sounds D_800F8CF4[n] at a unit
+btlfx_setPartyTexAnim = 0x800E4C04; // type:func [code] btlfx_setUnitTexAnim for party units only
+btlfx_setUnitTexAnim = 0x800E8B28; // type:func [code] starts (0, entry 0/1), stops (1) or starts entry 2 (2) of the unit model's texture animations
+btlfx_drawScrollMove = 0x800E6624; // type:func [code] two DR_MOVEs copying a w x h rect to (x, y) rotated by n rows (wrap-around scroll)
+btlfx_drawScreenGrid = 0x800E6764; // type:func [code] grid of FT4s textured from the display buffer, rotated/scaled, a callback may move each vertex (screen warps)
+btlfx_pushViewRotation = 0x800E6C58; // type:func [code] saves the view matrix (D_80104E10) and replaces it by a rotation at the projection distance
+btlfx_popViewMatrix = 0x800E6D58; // type:func [code] restores the view matrix btlfx_pushViewRotation saved
+g_btlfxSavedView = 0x80104E10; // [code] view matrix saved by btlfx_pushViewRotation
+btlfx_pushGeomScreen = 0x800E6DB8; // type:func [code] saves the projection distance (D_80104E00) and sets a new one
+btlfx_popGeomScreen = 0x800E6DF4; // type:func [code] restores the projection distance btlfx_pushGeomScreen saved
+g_btlfxSavedGeomScreen = 0x80104E00; // [code] projection distance saved by btlfx_pushGeomScreen
+btlfx_drawBgOffscreen = 0x800E6E1C; // type:func [code] renders the battle background (layer 2, no rain) into an offscreen rect with its own draw environment

@@ -303,7 +303,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->camera->points[3].vz += frame * 900 / 49 - 0x100;
             env->camera->points[3].vy += 0x180 - frame * 900 / 49;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk24);
-            ex->func_800E6624(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+            ex->btlfx_drawScrollMove(work->unk4 * 8, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
             scale.vz = scale.vz * 3 / 2;
             ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk40);
             scale.vz = scale.vz * 2 / 3;
@@ -348,7 +348,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 sc2.vy = 0x1080;
                 sc2.vz = 0x1000;
                 rot2.vx = rot2.vy = rot2.vz = 0;
-                ex->func_800E6764(1, 0xA0, 0x78, 0x20, 0x18, 0xA, 0xA, 5, 5, &rot2, &sc2, &col2, 1, NULL);
+                ex->btlfx_drawScreenGrid(1, 0xA0, 0x78, 0x20, 0x18, 0xA, 0xA, 5, 5, &rot2, &sc2, &col2, 1, NULL);
             }
             px = 0x1B8 - (frame & 7) * 60;
             py = 0x140 - (frame & 7) * 60;
@@ -423,7 +423,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 sc2.vy = 0x1200;
                 sc2.vz = 0x1000;
                 rot2.vx = rot2.vy = rot2.vz = 0;
-                ex->func_800E6764(1, 0xA0, 0x70, 0x46, 0x38, 4, 4, 2, 2, &rot2, &sc2, &col, 1, NULL);
+                ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x46, 0x38, 4, 4, 2, 2, &rot2, &sc2, &col, 1, NULL);
             }
             {
             VECTOR sc;
@@ -535,7 +535,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 sc2.vy = 0x1080;
                 sc2.vz = 0x1000;
                 rot2.vx = rot2.vy = rot2.vz = 0;
-                ex->func_800E6764(1, 0xA0, 0x78, 0x20, 0x18, 0xA, 0xA, 5, 5, &rot2, &sc2, &col, 1, NULL);
+                ex->btlfx_drawScreenGrid(1, 0xA0, 0x78, 0x20, 0x18, 0xA, 0xA, 5, 5, &rot2, &sc2, &col, 1, NULL);
             }
             if (frame < 13) {
                 cc = ex->math_cos((frame << 10) / 12);
@@ -613,7 +613,7 @@ s32 fx_086_op80(s32 mode, Fx086Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     rot.vx = 0;
                     rot.vy = ex->math_cos(a41) >> 2;
                     rot.vz = 0;
-                    ex->func_800E6624(work->unk4 * 8, 0x240, 0x100, 0x40, 0x80, 0x300, 0x100);
+                    ex->btlfx_drawScrollMove(work->unk4 * 8, 0x240, 0x100, 0x40, 0x80, 0x300, 0x100);
                     if (k < 3) {
                         c41b = 0x1C00;
                     }

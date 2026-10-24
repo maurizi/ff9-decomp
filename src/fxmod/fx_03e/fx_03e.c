@@ -84,7 +84,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_ModifyEffModelAbr(work->unk4, 1);
             ex->Hi_ModifyEffModelRGB(work->unk4, (ex->math_sin(t >> 1) >> 5) - 0x80, (ex->math_sin(t >> 1) >> 5) - 0x80,
                                      (ex->math_sin(t >> 1) >> 5) - 0x80);
-            ex->func_800E6624(((0x1000 - ex->math_cos(t >> 1)) >> 9) + frame * 5, 0x240, 0x180, 0x40, 0x80, 0x240, 0x100);
+            ex->btlfx_drawScrollMove(((0x1000 - ex->math_cos(t >> 1)) >> 9) + frame * 5, 0x240, 0x180, 0x40, 0x80, 0x240, 0x100);
             if (frame >= 0x10) {
                 work->unk0 = 3;
                 entry->unk0 = -1;

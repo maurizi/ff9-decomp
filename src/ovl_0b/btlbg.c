@@ -3,32 +3,32 @@
 void btlbg_init(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     s32 unused[4];
     s32 i;
-    D_800FE514 = arg0;
-    D_800FE504 = (BtlBgScroll *)arg0->unk10;
-    D_800FE50C = arg0->unk0;
+    g_btlbgHeader = arg0;
+    g_btlbgScrolls = (BtlBgScroll *)arg0->unk10;
+    g_btlbgId = arg0->unk0;
     btlbg_setOtShift(0);
-    D_800FE4F8 = 0;
-    if (D_800FE514->unk6 != 0) {
-        D_800FE4F8 = 1;
+    g_btlbgSkyOwnProj = 0;
+    if (g_btlbgHeader->unk6 != 0) {
+        g_btlbgSkyOwnProj = 1;
     }
-    D_800FE510 = D_800FE514->unk4;
-    D_800FE4F4 = arg1;
-    D_800FE508 = D_800FE514->unk2;
-    if (D_800FE508 != 0) {
+    g_btlbgSkySpeed = g_btlbgHeader->unk4;
+    g_btlbgTexAnims = arg1;
+    g_btlbgTexAnimCount = g_btlbgHeader->unk2;
+    if (g_btlbgTexAnimCount != 0) {
         btl_relocTexAnims((TexAnimSet *)arg1, NULL);
-        for (i = 0; i < D_800FE508; i++) {
+        for (i = 0; i < g_btlbgTexAnimCount; i++) {
             BtlUnit9C50 *a;
             BtlUnit9C50 *e;
-            a = D_800FE4F4 + i;
+            a = g_btlbgTexAnims + i;
             a->unk4 |= 1;
-            e = D_800FE4F4 + i;
+            e = g_btlbgTexAnims + i;
             e->unkC = 0;
             e->unk12 = 0x1000;
         }
     }
-    D_800FE518 = D_800FE514->unkA;
-    func_800CEEC8(0xF);
-    D_800FE4F0 = 0;
+    g_btlbgScrollCount = g_btlbgHeader->unkA;
+    btlbg_setLayerMask(0xF);
+    g_btlbgSkyAngle = 0;
     g_btlbgRainCount = g_gameState->unk1C->unk570;
     if (g_btlbgRainCount >= 0x1F) {
         g_btlbgRainCount = 0x1F;
@@ -58,7 +58,7 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     memset(&rot2, 0, 8);
     memset(&sv, 0, 8);
     done = 0;
-    D_800FE520++;
+    g_btlbgFrame++;
     if (!(u8)btlbg_getBrightness()) {
         return out;
     }
@@ -72,29 +72,29 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     t.vz = ((0x1000 - d) * 12500 + arg0->t[2] * d) / 0x1000;
     t.vx = 0;
     TransMatrix(&m2, &t);
-    if (D_800F7270 == 0) {
-        for (i = 0; i < D_800FE518; i++) {
-            a = arg1 + D_800FE504[i].unk0;
-            ((u8 *)a)[0] += D_800FE504[i].unk3;
-            ((u8 *)a)[1] += D_800FE504[i].unk4;
-            D_800FE504[i].unk5++;
-            if (D_800FE504[i].unk5 >= D_800FE504[i].unk6) {
-                switch (D_800FE504[i].unk2) {
+    if (g_btlbgScrollPaused == 0) {
+        for (i = 0; i < g_btlbgScrollCount; i++) {
+            a = arg1 + g_btlbgScrolls[i].unk0;
+            ((u8 *)a)[0] += g_btlbgScrolls[i].unk3;
+            ((u8 *)a)[1] += g_btlbgScrolls[i].unk4;
+            g_btlbgScrolls[i].unk5++;
+            if (g_btlbgScrolls[i].unk5 >= g_btlbgScrolls[i].unk6) {
+                switch (g_btlbgScrolls[i].unk2) {
                 case 0:
-                    ((u8 *)a)[0] -= D_800FE504[i].unk6 * D_800FE504[i].unk3;
-                    ((u8 *)a)[1] -= D_800FE504[i].unk6 * D_800FE504[i].unk4;
+                    ((u8 *)a)[0] -= g_btlbgScrolls[i].unk6 * g_btlbgScrolls[i].unk3;
+                    ((u8 *)a)[1] -= g_btlbgScrolls[i].unk6 * g_btlbgScrolls[i].unk4;
                     break;
                 case 1:
-                    D_800FE504[i].unk3 = -D_800FE504[i].unk3;
-                    D_800FE504[i].unk4 = -D_800FE504[i].unk4;
+                    g_btlbgScrolls[i].unk3 = -g_btlbgScrolls[i].unk3;
+                    g_btlbgScrolls[i].unk4 = -g_btlbgScrolls[i].unk4;
                     break;
                 }
-                D_800FE504[i].unk5 = 0;
+                g_btlbgScrolls[i].unk5 = 0;
             }
         }
     }
-    if (D_800FE508 != 0) {
-        btl_updateTexAnims((TexAnimSet *)D_800FE4F4);
+    if (g_btlbgTexAnimCount != 0) {
+        btl_updateTexAnims((TexAnimSet *)g_btlbgTexAnims);
     }
     SetRotMatrix(arg0);
     SetTransMatrix(arg0);
@@ -109,15 +109,15 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
             switch (rec->unk0) {
             case 8:
                 if (!done) {
-                    D_800FE4F0 += D_800FE510;
-                    rot.vy = D_800FE4F0 >> 3;
+                    g_btlbgSkyAngle += g_btlbgSkySpeed;
+                    rot.vy = g_btlbgSkyAngle >> 3;
                     func_80030AF4(&rot, &m);
                     done = 1;
                     MulMatrix2(arg0, &m);
                     SetRotMatrix(&m);
                 }
-                if (D_800FE51C & 8) {
-                    if (D_800FE4F8 != 0) {
+                if (g_btlbgLayerMask & 8) {
+                    if (g_btlbgSkyOwnProj != 0) {
                         SetTransMatrix(&m2);
                         SetGeomScreen(0x200);
                         out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
@@ -128,29 +128,29 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
                 }
                 break;
             case 4:
-                if (D_800FE51C & 4) {
+                if (g_btlbgLayerMask & 4) {
                     out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                 }
                 break;
             case 2:
-                if (D_800FE51C & 2) {
+                if (g_btlbgLayerMask & 2) {
                     out = btlbg_drawRecord(rec, out, (u32 *)arg4, grp);
                 }
                 break;
             case 0:
-                if (D_800FE51C & 1) {
+                if (g_btlbgLayerMask & 1) {
                     out = btlbg_drawRecord(rec, out, arg3, grp);
                 }
                 break;
             }
         }
-        if (k == D_800FE514->unk8) {
+        if (k == g_btlbgHeader->unk8) {
             return out;
         }
         k++;
         grp = (BtlBgGroup *)((u8 *)grp + grp->unk0);
         flag = 0;
-        switch (D_800FE514->unk0) {
+        switch (g_btlbgHeader->unk0) {
         case 0x44:
             a = math_sin((VSync(-1) * 26) & 0xFFE);
             sv.vx = 0x429;
@@ -228,12 +228,12 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
             break;
         case 7:
             if (k == 1) {
-                if (!((D_800FE520 + 0x1F) & 0x3F)) {
+                if (!((g_btlbgFrame + 0x1F) & 0x3F)) {
                     D_800FE4FC = rand() & 0x1FF;
                 }
                 rot2.vy = D_800FE4FC + (rand() & 0x3F);
             } else {
-                if (!(D_800FE520 & 0x3F)) {
+                if (!(g_btlbgFrame & 0x3F)) {
                     D_800FE500 = rand() & 0x3FF;
                 }
                 rot2.vy = D_800FE500 + (rand() & 0x7F);
@@ -313,25 +313,25 @@ u8 *btlbg_drawRain(u8 *arg0, u32 *arg1, MATRIX *arg2) {
 }
 
 Unk800CEE74 *btlbg_getHeader(void) {
-    return D_800FE514;
+    return g_btlbgHeader;
 }
 
-void func_800CEE84(s32 arg0) {
-    D_800F7270 = arg0;
+void btlbg_pauseScroll(s32 arg0) {
+    g_btlbgScrollPaused = arg0;
 }
 
-s32 func_800CEE90(void) {
-    return D_800FE50C;
+s32 btlbg_getId(void) {
+    return g_btlbgId;
 }
 
-void func_800CEEA0(s32 arg0) {
-    D_800FE510 += arg0;
+void btlbg_addSkySpeed(s32 arg0) {
+    g_btlbgSkySpeed += arg0;
 }
 
-s32 func_800CEEB8(void) {
-    return D_800FE510;
+s32 btlbg_getSkySpeed(void) {
+    return g_btlbgSkySpeed;
 }
 
-void func_800CEEC8(s32 arg0) {
-    D_800FE51C = arg0;
+void btlbg_setLayerMask(s32 arg0) {
+    g_btlbgLayerMask = arg0;
 }

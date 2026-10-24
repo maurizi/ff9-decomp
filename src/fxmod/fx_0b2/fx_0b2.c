@@ -346,8 +346,8 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         work->unk18.vz += -0x10 - work->unk4 * 2;
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 2), work->unk4);
-        ex->func_800E6624(10000 - work->unk4 * 8, 0x1C0, 0x170, 0x1C, 0x70, 0x1DC, 0x170);
-        ex->func_800E6624(10000 - work->unk4 * 12, 0x280, 0x100, 0x1C, 0x70, 0x29C, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 8, 0x1C0, 0x170, 0x1C, 0x70, 0x1DC, 0x170);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 12, 0x280, 0x100, 0x1C, 0x70, 0x29C, 0x100);
         i = 0;
         if (alpha != 0) {
             SVECTOR from;

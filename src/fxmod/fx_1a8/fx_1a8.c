@@ -257,7 +257,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 10) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
-                ex->func_800E6E1C(0x240, 0x1C0, 0x40, 0x40, D_801E93CC, D_801E937C.vx, D_801E937C.vz, 0x800);
+                ex->btlfx_drawBgOffscreen(0x240, 0x1C0, 0x40, 0x40, D_801E93CC, D_801E937C.vx, D_801E937C.vz, 0x800);
             }
             break;
         case 1: {
@@ -394,7 +394,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->Hi_DrawEffModel(&r1, (VECTOR *)&work->unk40, (s32)&s1, work->unk4C[i]);
                     ex->Hi_ModifyEffModelRGB(work->unk4C[i], a1, a1, a1);
                 }
-                ex->func_800E6624(work->unk4 << 4, 0x1C0, 0x100, 0x38, 0x70, 0x1C0, 0x170);
+                ex->btlfx_drawScrollMove(work->unk4 << 4, 0x1C0, 0x100, 0x38, 0x70, 0x1C0, 0x170);
             }
             if (frame < 0xC) {
                 work->unk40.vx = D_801E937C.vx;
@@ -447,7 +447,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             r4.vy = frame * 0x18;
             r4.vz = 0;
             x4 = 0x1000 - t;
-            ex->func_800E6624(10000 - (work->unk4 << 3), 0x240, 0x140, 0x20, 0x80, 0x260, 0x140);
+            ex->btlfx_drawScrollMove(10000 - (work->unk4 << 3), 0x240, 0x140, 0x20, 0x80, 0x260, 0x140);
             ex->Hi_DrawEffModel(&r4, (VECTOR *)&work->unk40, (s32)&s4, work->unk68);
             a4 = (x4 >> 5) - 0x80;
             ex->Hi_ModifyEffModelRGB(work->unk68, a4, a4, a4);
@@ -490,7 +490,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                           -work->unk4 << 8, 0xC00, 1, -1);
             func_801E7950(&work->unk20, &work->unk2C, &sc, 0x100, 0xA0, 0x100, 0x100, c, 0x19, 0x3D02, 0, 0,
                           (-work->unk4 << 8) - 0x800, 0xC00, 1, -1);
-            ex->func_800E6624(10000 - (work->unk4 << 4), 0x240, 0x100, 0x20, 0x40, 0x260, 0x100);
+            ex->btlfx_drawScrollMove(10000 - (work->unk4 << 4), 0x240, 0x100, 0x20, 0x40, 0x260, 0x100);
         }
         work->unk4++;
     }

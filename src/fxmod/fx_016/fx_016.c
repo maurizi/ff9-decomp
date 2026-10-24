@@ -90,7 +90,7 @@ s32 fx_016_op80(s32 mode, Fx016Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk30, (ex->math_cos(q) >> 5) - 0x80,
                                          (ex->math_cos(q) >> 5) - 0x80, (ex->math_cos(q) >> 5) - 0x80);
             }
-            ex->func_800E6624(frame, 0x240, 0x180, 0x10, 0x40, D_801E82B0[frame % 23 + 1].unk0,
+            ex->btlfx_drawScrollMove(frame, 0x240, 0x180, 0x10, 0x40, D_801E82B0[frame % 23 + 1].unk0,
                               D_801E82B0[frame % 23 + 1].unk2);
             if (frame >= 24) {
                 pos.vx = work->unkC.vx;

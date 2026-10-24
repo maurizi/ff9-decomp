@@ -557,13 +557,13 @@ s32 fx_197_op81(s32 mode, Fx197Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 c = 0x80 - (((frame - 20) << 7) >> 4);
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, c >> 2, c);
             }
-            ex->func_800E6624(frame * 2, 0x2C0, 0x180, 0x40, 0x80, 0x2C0, 0x100);
+            ex->btlfx_drawScrollMove(frame * 2, 0x2C0, 0x180, 0x40, 0x80, 0x2C0, 0x100);
             if (frame >= 126) {
                 return 1;
             }
             break;
         }
-        ex->func_800E6624(frame, 0x280, 0x100, 0x40, 0x80, 0x280, 0x180);
+        ex->btlfx_drawScrollMove(frame, 0x280, 0x100, 0x40, 0x80, 0x280, 0x180);
         work->unk4++;
     }
     return 0;

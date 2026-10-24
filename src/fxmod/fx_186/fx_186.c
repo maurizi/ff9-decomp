@@ -110,7 +110,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         switch (work->unk0) {
         case 3:
-            ex->func_800E6E1C(0x1C0, 0x100, 0x100, 0x100, D_801E8E14, work->unk8.vx, work->unk8.vz, 0xC00);
+            ex->btlfx_drawBgOffscreen(0x1C0, 0x100, 0x100, 0x100, D_801E8E14, work->unk8.vx, work->unk8.vz, 0xC00);
             work->unk0 = 0;
             entry->unk0 = -1;
             break;
@@ -191,7 +191,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     ex->Hi_ModifyEffModelAbr(work->unk48, 1);
                     ex->Hi_ModifyEffModelRGB(work->unk48, (ex->math_sin(d) >> 5) - 0x80, (ex->math_sin(d) >> 5) - 0x80,
                                              (ex->math_sin(d) >> 5) - 0x80);
-                    ex->func_800E6624(frame * 16, 0x2C0, 0x180, 0x20, 0x80, 0x2E0, 0x180);
+                    ex->btlfx_drawScrollMove(frame * 16, 0x2C0, 0x180, 0x20, 0x80, 0x2E0, 0x180);
                 }
                 if (frame >= 9) {
                     rot2.vx = 0x400;
@@ -352,7 +352,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             scale.vz = 0x1000;
             rot.vx = 0;
             rot.vy = 0;
-            ex->func_800E6764(2, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, &col, 0, 0);
+            ex->btlfx_drawScreenGrid(2, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, &scale, &col, 0, 0);
         }
         work->unk4++;
     }

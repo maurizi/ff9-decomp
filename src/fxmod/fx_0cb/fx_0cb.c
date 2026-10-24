@@ -252,7 +252,7 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u, u, u >> 1);
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
-            ex->func_800E6624(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
+            ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);
             if (frame < 0x20) {
                 if (frame == frame / 3 * 3) {
                     a = frame << 7;

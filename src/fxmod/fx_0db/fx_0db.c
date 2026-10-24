@@ -275,7 +275,7 @@ s32 fx_0db_op80(s32 mode, Fx0dbWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         }
-        ex->func_800E6624(work->unk2C, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
+        ex->btlfx_drawScrollMove(work->unk2C, 0x280, 0x180, 0x40, 0x80, 0x280, 0x100);
         work->unk28++;
     }
     return 0;

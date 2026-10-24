@@ -14,7 +14,7 @@ s32 fx_1fc_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->btlfx_getUnitPos(i, (s16 *)&D_801EDEDC[i]);
             ex->btlfx_getUnitScale(i, (s32 *)&D_801EDF1C[i]);
         }
-        ex->func_800E6E1C(0x240, 0x100, 0x80, 0x80, D_801EDADC, 0, 0x200, 0x2BC);
+        ex->btlfx_drawBgOffscreen(0x240, 0x100, 0x80, 0x80, D_801EDADC, 0, 0x200, 0x2BC);
         func_801E8AB8();
         func_801E8B04(0, 1, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0xE));
         func_801E8B04(0, 2, 0, (s16 *)ex->btlfx_getFileData(entry->unk8, 0xC));

@@ -332,13 +332,13 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         D_801E95D4 += D_801E95D8;
         if (w->unk0[5] != 0) {
-            ex->func_800E6624(D_801E95D4, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
+            ex->btlfx_drawScrollMove(D_801E95D4, 0x2C0, 0x100, 0x38, 0x70, 0x2C0, 0x170);
         }
         if (w->unk0[0x14] != 0) {
-            ex->func_800E6624(0x2710 - D_801E95D4, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+            ex->btlfx_drawScrollMove(0x2710 - D_801E95D4, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         }
         if (w->unk0[9] != 0) {
-            ex->func_800E6624(frame * 8, 0x240, 0x140, 0x18, 0x60, 0x240, 0x1A0);
+            ex->btlfx_drawScrollMove(frame * 8, 0x240, 0x140, 0x18, 0x60, 0x240, 0x1A0);
         }
         if (w->unk0[4] != 0) {
             w->unk0[4]--;
@@ -347,7 +347,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             rot.vx = 0;
             rot.vy = 0;
             rot.vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, NULL);
         }
     }
     return 0;

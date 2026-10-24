@@ -835,7 +835,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r4.vx = 0;
             r4.vy = 0;
             r4.vz = 0;
-            ex->func_800E6764(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &c3, 1, NULL);
+            ex->btlfx_drawScreenGrid(3, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r4, &s4, &c3, 1, NULL);
             BTLFX_COPY_SVEC(&a4, &work->unk30);
             ex->func_800CFD78(&a4.vx, &work->unkBC.vx, t - 0x2800, &b4.vx);
             w2 = (t >> 2) + 0x400;
@@ -1089,7 +1089,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk30, &r9, x19, 0, 1, y13);
             env->unk28 = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x16), frame);
-            ex->func_800E6624(work->unk4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
+            ex->btlfx_drawScrollMove(work->unk4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
             if (frame >= 0x4D) {
                 ex->btlfx_clearEffModels();
                 return 1;

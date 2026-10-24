@@ -302,9 +302,9 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         work->unk18.vz -= work->unk4 * 2 + 0x10;
-        ex->func_800E6624(10000 - work->unk4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
-        ex->func_800E6624(10000 - work->unk4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
-        ex->func_800E6624(work->unk4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 12, 0x1C0, 0x100, 0x40, 0x80, 0x200, 0x100);
+        ex->btlfx_drawScrollMove(10000 - work->unk4 * 6, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+        ex->btlfx_drawScrollMove(work->unk4 * 8, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
         work->unk4++;
     }
     return 0;

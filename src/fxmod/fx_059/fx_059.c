@@ -41,7 +41,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->unk0;
         rot.unk4 = work->unk18;
         work->unk18 += 0x10;
-        fn = ex->func_800E6C58;
+        fn = ex->btlfx_pushViewRotation;
         rot.unk0 = 0;
         fn((SVECTOR *)&rot);
         switch (work->unk0) {
@@ -66,7 +66,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 1:
             if (frame >= 7) {
-                ex->func_800E6D58();
+                ex->btlfx_popViewMatrix();
                 return 1;
             }
             break;
@@ -74,7 +74,7 @@ s32 fx_059_op80(s32 mode, Fx059Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk14 != NULL) {
             ex->btlfx_poolUpdate(work->unk14);
         }
-        ex->func_800E6D58();
+        ex->btlfx_popViewMatrix();
     }
     return 0;
 }

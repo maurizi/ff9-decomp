@@ -120,8 +120,8 @@ s32 fx_1f1_op80(s32 mode, s32 *work, Unk800F78A4 *env, Unk80100C78Entry *entry, 
                 }
             }
         }
-        ex->func_800E6624(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
-        ex->func_800E6624(frame * 4, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
+        ex->btlfx_drawScrollMove(frame * 8, 0x1C0, 0x100, 0x20, 0x80, 0x1E0, 0x100);
+        ex->btlfx_drawScrollMove(frame * 4, 0x1C0, 0x180, 0x20, 0x80, 0x1E0, 0x180);
         return frame >= 0x50;
     }
     return 0;

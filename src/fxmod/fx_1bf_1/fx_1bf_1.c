@@ -237,7 +237,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk7C);
                 ex->Hi_ModifyEffModelRGB(work->unk7C, (ex->math_cos(e) >> 5) - 0x80, (ex->math_cos(e) >> 5) - 0x80,
                                          (ex->math_cos(e) >> 5) - 0x80);
-                ex->func_800E6624(frame * 12, 0x340, 0x100, 0x10, 0x40, 0x350, 0x100);
+                ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x10, 0x40, 0x350, 0x100);
             }
             v.vx = v.vy = s;
             v.vz = 0x800;
@@ -296,7 +296,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 pos.vz = p60.vz;
                 sc.vy = (q * (m + 0x400)) >> 8;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk7C);
-                ex->func_800E6624(frame * 12, 0x340, 0x100, 0x10, 0x40, 0x350, 0x100);
+                ex->btlfx_drawScrollMove(frame * 12, 0x340, 0x100, 0x10, 0x40, 0x350, 0x100);
                 if (frame == 1 || frame == 3) {
                     ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0x80, 0x60, 0x10);
                 }
@@ -368,7 +368,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vz = 0;
                 D_801EFDD8 = (sc.vx * 0xA28) >> 12;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk80);
-                ex->func_800E6624(frame * 8, 0x360, 0x100, 0x20, 0x80, 0x360, 0x180);
+                ex->btlfx_drawScrollMove(frame * 8, 0x360, 0x100, 0x20, 0x80, 0x360, 0x180);
                 z = m6 * 0x122B / 64;
                 sc.vx = sc.vy = sc.vz = z;
                 pos.vx = work->unk8.vx;
@@ -387,7 +387,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vy = frame << 4;
                 rot.vz = 0;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk90);
-                ex->func_800E6624(frame * ((t >> 9) + 12), 0x200, 0x180, 0x20, 0x80, 0x220, 0x180);
+                ex->btlfx_drawScrollMove(frame * ((t >> 9) + 12), 0x200, 0x180, 0x20, 0x80, 0x220, 0x180);
                 rot.vx = (frame << 4) + 0x200;
                 rot.vy = frame << 5;
                 rot.vz = 0;
@@ -399,7 +399,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 rot.vz = 0;
                 sc.vx = sc.vy = sc.vz = z * 2 / 3;
                 ex->Hi_DrawEffModel(&rot, &pos, (s32)&sc, work->unk98);
-                ex->func_800E6624(frame * ((t >> 8) + 8), 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
+                ex->btlfx_drawScrollMove(frame * ((t >> 8) + 8), 0x200, 0x100, 0x20, 0x80, 0x220, 0x100);
             }
             if (frame >= 35) {
                 env->unk28 = 0x100;
@@ -565,7 +565,7 @@ s32 fx_1bf_1_op80(s32 mode, Fx1bf1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r2.vy = 0;
             r2.vz = 0;
             s2.vx = s2.vy = s2.vz = s9C + 0x1000;
-            ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r2, &s2, &col, 1, 0);
+            ex->btlfx_drawScreenGrid(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &r2, &s2, &col, 1, 0);
         }
         if (b != 0) {
             work->unk34.vy += 2;

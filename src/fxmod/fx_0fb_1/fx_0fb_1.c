@@ -851,7 +851,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         f6 = t >> 2;
         func_801EC738(&work->unkC, &work->unk8C, (VECTOR *)&work->unk80, 0x1C00, 0x1800, &col, 0x1B, 0x3E80, 0, 0,
                       ((ex->math_sin(f6) * 0x58) >> 12) + 0x40, 0xFF);
-        ex->func_800E6624(work->unk4 * 7, 0x2C0, 0x100, 0x20, 0x80, 0x360, 0x100);
+        ex->btlfx_drawScrollMove(work->unk4 * 7, 0x2C0, 0x100, 0x20, 0x80, 0x360, 0x100);
         if (frame < 0x20) {
             work->unk6C.vz += 0xC;
             r = 0x1000 - (frame << 7);
@@ -869,7 +869,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                                  (((ex->math_cos(f6) >> 1) + 0x800) >> 5) - 0x80,
                                  (((ex->math_cos(f6) >> 1) + 0x800) >> 5) - 0x80);
         ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x11), work->unk4);
-        ex->func_800E6624(work->unk4 * 10, 0x360, 0x180, 0x10, 0x40, 0x370, 0x180);
+        ex->btlfx_drawScrollMove(work->unk4 * 10, 0x360, 0x180, 0x10, 0x40, 0x370, 0x180);
         g2 = (ex->math_cos(f6) >> 1) + 0x800;
         if (frame < 0x18) {
             c = ((ex->math_sin((frame << 10) / 24) * 0x76C) >> 12) + 0x200;
@@ -953,7 +953,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             col2.r = col2.g = col2.b = n;
             rot2.vx = 0;
             rot2.vy = 0;
-            ex->func_800E6764(2, 0xA0, 0x70, 0x4D, 0x37, 4, 4, 2, 2, &rot2, &sc2, &col2, 1, 0);
+            ex->btlfx_drawScreenGrid(2, 0xA0, 0x70, 0x4D, 0x37, 4, 4, 2, 2, &rot2, &sc2, &col2, 1, 0);
         }
         if (frame >= 0x40) {
             work->unk0 = 6;
@@ -1019,10 +1019,10 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         rot.vz = 0;
         sc.vy = sc.vx = g + 0x1020;
         sc.vz = 0x1000;
-        ex->func_800E6764(0x200, 0xA0, 0x70, 0x4D, 0x37, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
+        ex->btlfx_drawScreenGrid(0x200, 0xA0, 0x70, 0x4D, 0x37, 4, 4, 2, 2, &rot, &sc, &col, 0, 0);
     }
     if (work->unk0 < 2) {
-        ex->func_800E6624(work->unk4 * 5, 0x2A0, 0x180, 0x10, 0x40, 0x2B0, 0x180);
+        ex->btlfx_drawScrollMove(work->unk4 * 5, 0x2A0, 0x180, 0x10, 0x40, 0x2B0, 0x180);
     }
     work->unk4++;
     }
