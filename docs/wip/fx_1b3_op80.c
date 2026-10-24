@@ -1,4 +1,4 @@
-/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 52 lines, 14 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
+/* Draft of fx_1b3 fx_1b3_op80 (Fx1b3Split/Fx1b3Blast in include/fxmod/fx_1b3.h). Status: 50 lines, 14 ignoring registers (build/w/nd.py). The frame matches with the tex/clut lists, trail points and flash locals sharing three function-scope buffers (v, w, sc), as the original stack offsets show. Hi_RegisterTexListModel is called with three arguments (a3 left over), see REGTEX. The frame switch is sparse (a compare tree, bodies in ascending case order). */
 #include "fxmod/fx_1b3.h"
 
 typedef struct {
@@ -639,16 +639,16 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                         w[0].vx = ex->btlfx_randRange(-0x100, 0x100);
                         w[0].vy = ex->btlfx_randRange(-0x100, 0x100);
                         w[0].vz = -(ex->btlfx_rand() % 255) - 0x200;
-                        for (zz1 = 0; zz1 < 9; zz1++) {
+                        for (j = 0; j < 9; j++) {
                             v[0].vx += w[0].vx;
                             v[0].vy += w[0].vy;
                             v[0].vz += w[0].vz;
-                            D_801EB0C4[i].unk50[zz1].vx = v[0].vx;
-                            D_801EB0C4[i].unk50[zz1].vy = v[0].vy;
-                            D_801EB0C4[i].unk50[zz1].vz = v[0].vz;
-                            D_801EB0C4[i].unk98[zz1].vx = ex->btlfx_randRange(-0x60, 0x60);
-                            D_801EB0C4[i].unk98[zz1].vy = ex->btlfx_randRange(-0x60, 0x60);
-                            D_801EB0C4[i].unk98[zz1].vz = 0;
+                            D_801EB0C4[i].unk50[j].vx = v[0].vx;
+                            D_801EB0C4[i].unk50[j].vy = v[0].vy;
+                            D_801EB0C4[i].unk50[j].vz = v[0].vz;
+                            D_801EB0C4[i].unk98[j].vx = ex->btlfx_randRange(-0x60, 0x60);
+                            D_801EB0C4[i].unk98[j].vy = ex->btlfx_randRange(-0x60, 0x60);
+                            D_801EB0C4[i].unk98[j].vz = 0;
                         }
                     }
                 }
