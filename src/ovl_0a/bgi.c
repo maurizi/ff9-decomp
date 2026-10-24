@@ -863,14 +863,14 @@ BgiActor *bgi_getActor(s32 arg0) {
 s32 bgi_bindActor(s32 arg0, FieldObjSlot *arg1) {
     g_fieldBgi.actors[arg0].flags = 0;
     g_fieldBgi.actors[arg0].unk2 = 0;
-    g_fieldBgi.actors[arg0].actor = arg1->unkC;
+    g_fieldBgi.actors[arg0].actor = arg1->actor;
     return 1;
 }
 
 s32 bgi_addActor(FieldObjSlot *arg0) {
     g_fieldBgi.actors[g_fieldBgi.actorCount].flags = 0;
     g_fieldBgi.actors[g_fieldBgi.actorCount].unk2 = 0;
-    g_fieldBgi.actors[g_fieldBgi.actorCount].actor = arg0->unkC;
+    g_fieldBgi.actors[g_fieldBgi.actorCount].actor = arg0->actor;
     g_fieldBgi.actorCount++;
     return 1;
 }

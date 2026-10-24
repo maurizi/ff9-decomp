@@ -65,7 +65,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                     g_gameState->unk1C->unk0 |= 0x200000;
                 }
                 g_gameState->unk1C->unk0 &= 0xCFFFFFFF;
-                SCENE->unk0 &= ~0x10;
+                SCENE->flags &= ~0x10;
                 g_gameState->unk1C->unk820[0] = t;
                 g_fieldSoundLoadId = id;
                 g_gameState->unk1C->unk81C[0] = arg1;
@@ -366,7 +366,7 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             if (g_gameState->unk1C->unk851 != 0) {
                 return -1;
             }
-            func_80056248(fld_isMoviePlaying() ? SCENE->unk5D : SCENE->unk5C);
+            func_80056248(fld_isMoviePlaying() ? SCENE->movieSndVolume : SCENE->sndVolume);
             func_800561C4(slot, arg2, arg3);
             SCENE->unk5F = 0;
             return 0;
@@ -376,13 +376,13 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 2:
             switch (arg0 & 0x3F) {
             case 1:
-                SCENE->unk5C = arg2;
+                SCENE->sndVolume = arg2;
                 if (fld_isMoviePlaying() == 0) {
                     func_80056248(arg2);
                 }
                 return 0;
             case 10:
-                SCENE->unk5D = arg2;
+                SCENE->movieSndVolume = arg2;
                 if (fld_isMoviePlaying() != 0) {
                     func_80056248(arg2);
                 }
@@ -403,10 +403,10 @@ s32 fld_soundCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         id = (arg1 & 0xFFFF) | 0x90000;
         switch (kind) {
         case 7:
-            SCENE->unk0 &= ~0x10;
+            SCENE->flags &= ~0x10;
             if (arg2 == 4) {
                 SCENE->soundBankSlot = arg3;
-                SCENE->unk0 |= 0x10;
+                SCENE->flags |= 0x10;
             }
             g_fieldMusicRequest = kind;
             g_fieldSoundLoadId = id;
@@ -447,12 +447,12 @@ state:
             }
         }
         g = g_gameState->unk1C;
-        if (!(g->unk8E4.field->unkC->unk14->unk0 & 0x10) && g->unk852 != 0x84) {
+        if (!(g->unk8E4.field->area->scene->flags & 0x10) && g->unk852 != 0x84) {
             func_80055DF4();
         }
         g_gameState->unk1C->unk8C0 = SCENE->heapTop ? SCENE->heapTop : D_80067948;
         g_gameState->unk1C->unk878 = 0x156F00 - (g_gameState->unk1C->unk8C0 - (s32)D_80067944);
-        if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
+        if (!(g_gameState->unk1C->unk8E4.field->flags & 4)) {
             g_gameState->unk1C->unk878 -= 0x3000;
         }
         m = g_gameState->unk1C->unk878;
@@ -469,7 +469,7 @@ state:
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
                 d = 0x156F00 - ((s32)g_gameState->unk1C->unk854[0].unk8 - (s32)D_80067944);
-                if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
+                if (!(g_gameState->unk1C->unk8E4.field->flags & 4)) {
                     d -= 0x3000;
                 }
                 d = d / 2048 * 2048;
@@ -536,7 +536,7 @@ void fld_getSoundPanVolume(s16 arg0, s16 arg1, s16 arg2, u8 *arg4, u8 *arg5) {
     gte_rtps();
     gte_stsxy(&sxy);
     gte_stsz(&z);
-    z = z / 4 + g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias;
+    z = z / 4 + g_gameState->unk1C->unk8E4.field->area->scene->otBias;
     if (z < 0) {
         z = 0;
     } else if (z >= 0x1000) {
@@ -643,28 +643,28 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
     s32 snd;
     s32 v;
 
-    base = g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfx;
-    n = g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfxCount;
+    base = g_gameState->unk1C->unk8E4.field->area->scene->animSfx;
+    n = g_gameState->unk1C->unk8E4.field->area->scene->animSfxCount;
     for (i = arg1 - 1; i >= 0; i--) {
         ctx = arg0[i];
-        if (ctx == NULL || (ctx->unk0 & 0x40)) {
+        if (ctx == NULL || (ctx->flags & 0x40)) {
             continue;
         }
         for (j = n - 1; j >= 0; j--) {
             t = &base[j];
-            if (t->unk0 == ctx->unkC->unk3B && t->anim == ctx->unkC->unk36 && t->frame == ctx->unkC->unk3A) {
+            if (t->uid == ctx->obj->uid && t->anim == ctx->obj->anim && t->frame == ctx->obj->animFrame) {
                 r = 0;
                 a = 0;
                 b = 0;
                 c = 0;
                 vol = 0x80;
                 pan = 0x7F;
-                bgi_getActorTriangle(ctx->unkC->unk3B, (u16 *)&a, (u16 *)&b);
+                bgi_getActorTriangle(ctx->obj->uid, (u16 *)&a, (u16 *)&b);
                 if (a != -1) {
                     bgi_getTriangleFlags(a, &c);
                     c = (s16)c >> 8;
                 }
-                ch = t->unk0 & 3;
+                ch = t->uid & 3;
                 ch = (0x10000 << ch) & 0xF0000;
                 snd = t->sound[(c >> 4) & 1] | 0x80000;
                 if (t->randomPitch != 0) {
@@ -674,7 +674,7 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
                     v = *g_randPtr++;
                     r = (v >> 4) - 8;
                 }
-                fld_getSoundPanVolume(ctx->unkC->unk14.vx, ctx->unkC->unk14.vy, ctx->unkC->unk14.vz, &vol, &pan);
+                fld_getSoundPanVolume(ctx->obj->pos.vx, ctx->obj->pos.vy, ctx->obj->pos.vz, &vol, &pan);
                 fld_soundCommand(0xD000, snd, ch, vol, pan);
                 if (r != 0) {
                     fld_soundCommand(0x9203, snd, ch, r, 0);
@@ -686,12 +686,12 @@ void fld_playAnimSfx(FieldEvtCtx **arg0, s32 arg1) {
 
 /* find the trigger matching the object, id and value (searching backwards) */
 FieldAnimSfx *fld_findAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
-    FieldScene *sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    FieldScene *sc = g_gameState->unk1C->unk8E4.field->area->scene;
     FieldAnimSfx *base = sc->animSfx;
     FieldAnimSfx *e = &base[sc->animSfxCount] - 1;
 
     do {
-        if (e->unk0 == arg0->unkC->unk3B && e->anim == arg1 && e->frame == arg2) {
+        if (e->uid == arg0->obj->uid && e->anim == arg1 && e->frame == arg2) {
             return e;
         }
         e--;
@@ -700,7 +700,7 @@ FieldAnimSfx *fld_findAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
 }
 
 FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
-    FieldScene *sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    FieldScene *sc = g_gameState->unk1C->unk8E4.field->area->scene;
     u8 i = sc->animSfxCount;
     FieldAnimSfx *e;
     u16 id;
@@ -709,8 +709,8 @@ FieldAnimSfx *fld_addAnimSfx(FieldEvtCtx *arg0, s32 arg1, s32 arg2) {
     n = i + 1;
     sc->animSfxCount = n;
     e = &sc->animSfx[i];
-    e->unk0 = arg0->unkC->unk3B;
-    id = arg0->unkC->unk34;
+    e->uid = arg0->obj->uid;
+    id = arg0->obj->unk34;
     e->anim = arg1;
     do {
         e->frame = arg2;
@@ -724,15 +724,15 @@ s32 fld_removeAnimSfx(FieldEvtCtx *arg0, u16 arg1, s16 arg2) {
     FieldAnimSfx *last;
     FieldAnimSfx *e;
 
-    base = g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfx;
-    e = &base[g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfxCount] - 1;
+    base = g_gameState->unk1C->unk8E4.field->area->scene->animSfx;
+    e = &base[g_gameState->unk1C->unk8E4.field->area->scene->animSfxCount] - 1;
     last = e;
     do {
-        if (e->unk0 == arg0->unkC->unk3B && e->anim == arg1 && e->frame == arg2) {
+        if (e->uid == arg0->obj->uid && e->anim == arg1 && e->frame == arg2) {
             if (e != last) {
                 *e = *last;
             }
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->animSfxCount--;
+            g_gameState->unk1C->unk8E4.field->area->scene->animSfxCount--;
         }
         e--;
     } while (e >= base);
@@ -762,22 +762,22 @@ void fld_findBattleMusic(void) {
     s32 v;
     s32 w;
 
-    o = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    o = g_gameState->unk1C->unk8E4.field->area->scene;
     o->battleMusic = g_gameState->unk1C->unk81C[0];
     key = (u16)o->nextId;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3E = g_gameState->unk1C->unk820[0];
+    g_gameState->unk1C->unk8E4.field->area->scene->battleMusicBank = g_gameState->unk1C->unk820[0];
     base = g_gameState->unk1C->depTable->unk4;
     key |= 0x110000;
     w = key;
     for (i = 0; i < g_gameState->unk1C->depTable->unk2; i++) {
         id = base[i].unkC;
         if (base[i].unk0 == w && ((id >> 16) & 0xFF) == 7) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic = id;
+            g_gameState->unk1C->unk8E4.field->area->scene->battleMusic = id;
             for (j = 0; j < g_gameState->unk1C->depTable->unk2; j++) {
                 w = base[j].unkC;
                 v = base[j].unk0;
                 if (((base[j].unk0 >> 16) & 0xFF) == 9 && w == id) {
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3E = v;
+                    g_gameState->unk1C->unk8E4.field->area->scene->battleMusicBank = v;
                     return;
                 }
             }
@@ -964,8 +964,8 @@ s32 fld_soundBankReadCallback(Unk800B29F8 *arg0) {
     }
     n = arg0->unk8 + n - a;
     if ((id & 0xFFFF) != 0x84) {
-        sc = gd->unk8E4.field->unkC->unk14;
-        if (sc->unk0 & 0x10) {
+        sc = gd->unk8E4.field->area->scene;
+        if (sc->flags & 0x10) {
             r = func_80056048(a, sc->soundBankSlot, 0);
         } else {
             r = func_80055E14(a, n, 0);
@@ -1027,7 +1027,7 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
     s32 k;
     FieldActorInfo *inf2;
 
-    sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    sc = g_gameState->unk1C->unk8E4.field->area->scene;
     lt = sc->lights;
     if (lt == NULL || fld_getLightColorTable(lt) == NULL) {
         return;
@@ -1043,15 +1043,15 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
         if (c == NULL) {
             continue;
         }
-        info = &infos[c->unkC->unk3B];
-        l = (Unk800B3294 *)fld_findLightColor(lt, c->unk4);
-        shade = c->unk0 & 4;
+        info = &infos[c->obj->uid];
+        l = (Unk800B3294 *)fld_findLightColor(lt, c->modelId);
+        shade = c->flags & 4;
         fl = fld_findFloorLight(lt, c, &floor);
-        if ((u8)info->unk4 != (u8)floor || shade != (info->unk0 & 4) || !(c->unk0 & 0x100)) {
+        if ((u8)info->litFloor != (u8)floor || shade != (info->flags & 4) || !(c->flags & 0x100)) {
             chg = 1;
         }
         if (chg) {
-            if (!(c->unk0 & 0x400)) {
+            if (!(c->flags & 0x400)) {
                 b = 0;
                 if (l != NULL) {
                     a = l->unk4;
@@ -1059,77 +1059,77 @@ void fld_applyLights(FieldEvtCtx **arg0, s32 arg1) {
                     a = def->unk4;
                 }
                 if (shade && dir != NULL) {
-                    b = dir->unk4;
+                    b = dir->color;
                 } else if (fl != NULL) {
-                    b = fl->unk4;
+                    b = fl->color;
                 } else if (amb != NULL) {
-                    b = amb->unk4;
+                    b = amb->color;
                 }
                 col = ((((a & 0xFF) + (b & 0xFF)) * 8) & 0xFF) | ((((a & 0xFF00) + (b & 0xFF00)) * 8) & 0xFF00)
                     | ((((a & 0xFF0000) + (b & 0xFF0000)) * 8) & 0xFF0000) | 0x01000000;
-                info->unkC.w = col;
-                info->unk8.w = col;
-                c->unk0 |= 0x100;
+                info->nextColor.w = col;
+                info->color.w = col;
+                c->flags |= 0x100;
             }
             if (l != NULL) {
-                dx = l->unk2;
-                dy = l->unk3;
+                dx = l->shadowShade;
+                dy = l->shadowSize;
             } else {
-                dx = def->unk2;
-                dy = def->unk3;
+                dx = def->shadowShade;
+                dy = def->shadowSize;
             }
             if (fl != NULL) {
-                dx += fl->unk2;
-                dy += fl->unk3;
+                dx += fl->shadowShade;
+                dy += fl->shadowSize;
             } else if (amb != NULL) {
-                dx += amb->unk2;
-                dy += amb->unk3;
+                dx += amb->shadowShade;
+                dy += amb->shadowSize;
             }
             dx *= 8;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows[c->unkC->unk3B].unk0.unk0 = dx;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows[c->unkC->unk3B].unk0.unk1 = dy * 14;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows[c->unkC->unk3B].unk0.unk2 = dy * 12;
+            g_gameState->unk1C->unk8E4.field->area->scene->shadows[c->obj->uid].params.shade = dx;
+            g_gameState->unk1C->unk8E4.field->area->scene->shadows[c->obj->uid].params.scaleX = dy * 14;
+            g_gameState->unk1C->unk8E4.field->area->scene->shadows[c->obj->uid].params.scaleZ = dy * 12;
         }
-        info->unk4 = floor;
-        info->unk0 = (info->unk0 & ~4) | shade;
+        info->litFloor = floor;
+        info->flags = (info->flags & ~4) | shade;
     }
     for (i = arg1 - 1; i >= 0; i--) {
         c = arg0[i];
         if (c == NULL) {
             continue;
         }
-        inf2 = &infos[c->unkC->unk3B];
-        k = inf2->unk8.w;
+        inf2 = &infos[c->obj->uid];
+        k = inf2->color.w;
         if (k >> 24 != 0) {
-            for (j = ((ModelObj *)c->unk8)->model->unk3 - 1; j >= 0; j--) {
-                fldmdl_setGroupRgb(c->unk8, j & 0xFF, (s16)(k & 0xFF), (s16)((k >> 8) & 0xFF), ((u32)k >> 16) & 0xFF);
+            for (j = ((ModelObj *)c->model)->model->groupCount - 1; j >= 0; j--) {
+                fldmdl_setGroupRgb(c->model, j & 0xFF, (s16)(k & 0xFF), (s16)((k >> 8) & 0xFF), ((u32)k >> 16) & 0xFF);
             }
-            inf2->unk8.w = inf2->unkC.w;
-            inf2->unkC.w = 0;
+            inf2->color.w = inf2->nextColor.w;
+            inf2->nextColor.w = 0;
         }
     }
 }
 
 /* set the object's light colour */
 s32 fld_setSlotColor(FieldEvtCtx *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u32 f = arg0->unk0;
-    FieldActorInfo *info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->actorInfo[arg0->unkC->unk3B];
+    u32 f = arg0->flags;
+    FieldActorInfo *info = &g_gameState->unk1C->unk8E4.field->area->scene->actorInfo[arg0->obj->uid];
     u32 col;
 
     if (!(f & 0x800)) {
         col = (arg1 & 0xFF) | ((arg2 << 8) & 0xFF00) | ((arg3 << 16) & 0xFF0000) | 0x01000000;
-        info->unkC.w = col;
-        info->unk8.w = col;
-        arg0->unk0 |= 0xC00;
+        info->nextColor.w = col;
+        info->color.w = col;
+        arg0->flags |= 0xC00;
         return 1;
     }
-    arg0->unk0 = f & ~0x800;
+    arg0->flags = f & ~0x800;
     return 0;
 }
 
 FieldLight *fld_getLightColorTable(Unk800B3254 *arg0) {
-    if (arg0 != NULL && arg0->unk9 != 0) {
-        return &arg0->unkC[arg0->unk6];
+    if (arg0 != NULL && arg0->colorCount != 0) {
+        return &arg0->lights[arg0->colorOffset];
     }
     return NULL;
 }
@@ -1141,14 +1141,14 @@ Unk800B3294 *fld_findLightColor(Unk800B3254 *arg0, u16 arg1) {
     u32 v;
 
     v = arg1;
-    if (arg0->unk9 == 0) {
+    if (arg0->colorCount == 0) {
         return NULL;
     }
     id = v & 0xFFFF;
-    base = (Unk800B3294 *)&arg0->unkC[arg0->unk6];
-    p = &base[arg0->unk9] - 1;
+    base = (Unk800B3294 *)&arg0->lights[arg0->colorOffset];
+    p = &base[arg0->colorCount] - 1;
     do {
-        if (p->unk0 == id) {
+        if (p->modelId == id) {
             return p;
         }
         p--;
@@ -1162,15 +1162,15 @@ FieldLight *fld_findGlobalLights(Unk800B3254 *arg0, FieldLight **arg1, FieldLigh
 
     *arg1 = NULL;
     *arg2 = NULL;
-    base = arg0->unkC;
-    if (arg0->unk7 == 0) {
+    base = arg0->lights;
+    if (arg0->lightCount == 0) {
         return NULL;
     }
-    p = &arg0->unkC[arg0->unk7 - 1];
+    p = &arg0->lights[arg0->lightCount - 1];
     do {
-        if (p->unk0 == 1) {
+        if (p->type == 1) {
             *arg1 = p;
-        } else if (p->unk0 == 2) {
+        } else if (p->type == 2) {
             *arg2 = p;
         }
         p--;
@@ -1185,15 +1185,15 @@ FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) 
     s32 n;
     s32 v;
 
-    bgi_getActorTriangle(arg1->unkC->unk3B, &tri, (u16 *)arg2);
-    if (arg0->unk7 != 0) {
+    bgi_getActorTriangle(arg1->obj->uid, &tri, (u16 *)arg2);
+    if (arg0->lightCount != 0) {
         if ((u8)*arg2 == 0xFF) {
             return NULL;
         }
-        p = &arg0->unkC[arg0->unk7 - 1];
+        p = &arg0->lights[arg0->lightCount - 1];
         do {
-            if (p->unk0 == 0) {
-                v = p->unk8;
+            if (p->type == 0) {
+                v = p->floors;
                 for (n = 3; n >= 0; n--) {
                     if ((v & 0xFF) == *arg2) {
                         return p;
@@ -1202,7 +1202,7 @@ FieldLight *fld_findFloorLight(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) 
                 }
             }
             p--;
-        } while (p >= arg0->unkC);
+        } while (p >= arg0->lights);
     }
     return NULL;
 }
@@ -1214,18 +1214,18 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
 
     if (arg0 == 0 && arg1 == 0) {
         if (arg2 != 0) {
-            if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100)) {
-                start = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
+            if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100)) {
+                start = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
                 if (start == 0) {
                     start = D_80067948;
                 }
                 if (func_800221C0(start, 0x5000) != 0) {
                     func_80022390(func_8002208C()->unk4);
                 }
-                if (g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop != 0) {
-                    start = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop = func_80050BE0(start);
-                    size = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop - start;
+                if (g_gameState->unk1C->unk8E4.field->area->scene->heapTop != 0) {
+                    start = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
+                    g_gameState->unk1C->unk8E4.field->area->scene->heapTop = func_80050BE0(start);
+                    size = g_gameState->unk1C->unk8E4.field->area->scene->heapTop - start;
                 } else {
                     start = D_80067948;
                     end = func_80050BE0(start);
@@ -1234,18 +1234,18 @@ s32 func_800B3444(s32 arg0, s32 arg1, s32 arg2) {
                 }
                 fld_trimModelCache();
                 func_80022280(start, size);
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100;
+                g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x100;
             }
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x200;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x200;
         } else {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x200;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x200;
         }
     }
     return 0;
 }
 
 void func_800B3684(void) {
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x200) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x200) {
         func_80050AAC();
     }
 }
@@ -1286,7 +1286,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         } else {
             fld_addPreloadRequest(0x1000B);
         }
-        if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100000)) {
             goto done;
         }
         p = func_80021E20();
@@ -1331,7 +1331,7 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
             x = 0x1000B;
         }
         fld_addPreloadExclude(x);
-        if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100000)) {
             goto done;
         }
         e = func_80021E20();
@@ -1341,12 +1341,12 @@ s32 fld_preloadRequest(s32 arg0, s32 arg1) {
         q = preload_find(id);
         if (!flag && (q == NULL || q->unk2 != 0)) {
         clear:
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x100000;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x100000;
         }
     set:
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x800000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x800000;
     done:
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x200000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x200000;
         return 0;
     }
 }
@@ -1572,7 +1572,7 @@ void fld_queueFieldPreloads(void) {
         for (i = g_gameState->unk1C->depTable->unk2 - 1; i >= 0; i--) {
             x = tbl[i].unk0;
             if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
-                if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->unkA && fld_findPreloadExclude(x) == NULL &&
+                if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
                     fld_queueFieldPreloads_grp(x & 0xFFFF) == fld_queueFieldPreloads_grp(g_gameState->unk1C->fieldId) && best < tbl[i].unk8) {
                     best = tbl[i].unk8;
                     sel = i;
@@ -1583,7 +1583,7 @@ void fld_queueFieldPreloads(void) {
             for (i = g_gameState->unk1C->depTable->unk2 - 1; i >= 0; i--) {
                 x = tbl[i].unk0;
                 if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
-                    if ((x & 0xFFFF) < 9000 && fld_findPreloadExclude(x) == NULL && (x & 0xFFFF) == g_gameState->unk1C->unk8E4.field->unkA) {
+                    if ((x & 0xFFFF) < 9000 && fld_findPreloadExclude(x) == NULL && (x & 0xFFFF) == g_gameState->unk1C->unk8E4.field->prevFieldId) {
                         best = tbl[i].unk8;
                         sel = i;
                         break;
@@ -1595,7 +1595,7 @@ void fld_queueFieldPreloads(void) {
             for (i = g_gameState->unk1C->depTable->unk2 - 1; i >= 0; i--) {
                 x = tbl[i].unk0;
                 if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
-                    if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->unkA && fld_findPreloadExclude(x) == NULL &&
+                    if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->prevFieldId && fld_findPreloadExclude(x) == NULL &&
                         best < tbl[i].unk8) {
                         sel = i;
                         break;
@@ -1623,7 +1623,7 @@ void fld_queueFieldPreloads(void) {
                 x = tbl[i].unk0;
                 if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
                     key = x & 0xFFFF;
-                    if (key < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->unkA && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                    if (key < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                         fld_findPreloadExclude(x) == NULL && fld_queueFieldPreloads_grp(key) == fld_queueFieldPreloads_grp(g_gameState->unk1C->fieldId) &&
                         best < tbl[i].unk8) {
                         best = tbl[i].unk8;
@@ -1637,7 +1637,7 @@ void fld_queueFieldPreloads(void) {
                     x = tbl[i].unk0;
                     if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
                         if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != (cur & 0xFFFF) && fld_findPreloadExclude(x) == NULL &&
-                            (x & 0xFFFF) == g_gameState->unk1C->unk8E4.field->unkA) {
+                            (x & 0xFFFF) == g_gameState->unk1C->unk8E4.field->prevFieldId) {
                             best = tbl[i].unk8;
                             sel = i;
                             break;
@@ -1649,7 +1649,7 @@ void fld_queueFieldPreloads(void) {
                 for (i = g_gameState->unk1C->depTable->unk2 - 1; i >= 0; i--) {
                     x = tbl[i].unk0;
                     if (tbl[i].unk8 != 0 && ((x >> 16) & 0xFF) == 5) {
-                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->unkA && (x & 0xFFFF) != (cur & 0xFFFF) &&
+                        if ((x & 0xFFFF) < 9000 && (x & 0xFFFF) != g_gameState->unk1C->unk8E4.field->prevFieldId && (x & 0xFFFF) != (cur & 0xFFFF) &&
                             fld_findPreloadExclude(x) == NULL && best < tbl[i].unk8) {
                             sel = i;
                             break;
@@ -1679,26 +1679,26 @@ s32 fld_preloadHook(void) {
     if ((u32)(g_gameState->unk1C->unk851 - 1) < 5) {
         return 1;
     }
-    s = g_gameState->unk1C->unk8E4.field->unkC->unk14;
-    if (s->unk0 & 0x800000) {
+    s = g_gameState->unk1C->unk8E4.field->area->scene;
+    if (s->flags & 0x800000) {
         if (func_80021FB4() <= 0) {
             func_800223CC();
-            if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x100000)) {
-                fld_setPreloadCursor(g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop);
+            if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x100000)) {
+                fld_setPreloadCursor(g_gameState->unk1C->unk8E4.field->area->scene->heapTop);
                 fld_queueFieldPreloads();
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100000;
+                g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x100000;
             }
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x800000;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x800000;
         }
         return 1;
     }
-    if (s->unk0 & 0x100000) {
+    if (s->flags & 0x100000) {
         return 0;
     }
-    if (s->unk0 & 0x10000) {
+    if (s->flags & 0x10000) {
         fld_setPreloadCursor(s->heapTop);
         fld_queueFieldPreloads();
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x100000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x100000;
     }
     return 0;
 }
@@ -1723,7 +1723,7 @@ void fld_showSplashImage(void) {
     n = 0;
     state = 0;
     i = 1;
-    p = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
+    p = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
     do {
         {
             /* dead struct initializer: it emits only a CLOBBER of q, which sched2 places in one of
@@ -1804,7 +1804,7 @@ void fld_showSplashImage(void) {
 
 s32 fld_needsSplashImage(void) {
     GameData *gd = g_gameState->unk1C;
-    FieldScene *sc = gd->unk8E4.field->unkC->unk14;
+    FieldScene *sc = gd->unk8E4.field->area->scene;
 
     if (sc->exitReason == FLD_EXIT_FIELD && (s16)gd->fieldId == 0x34 && sc->nextId == 100) {
         return 1;

@@ -14,15 +14,15 @@
 #include "ovl_0a.h"
 
 u8 *fld_emitSprite3D(u8 *src, FieldSprArgs *a, u8 *pkt, u32 *ot) {
-    u16 *uvTab = a->unk0;
-    u8 *colTab = a->unk4;
-    s32 hw = a->unk8;
-    s32 hh = a->unkC;
-    u32 tpage = (u32)a->unk10 << 16;
-    u32 clut = (u32)a->unk14 << 16;
-    s32 mod = a->unk18;
-    s32 n = a->unk1C;
-    u32 code = (u32)a->unk20 << 24;
+    u16 *uvTab = a->uvs;
+    u8 *colTab = a->colors;
+    s32 hw = a->halfW;
+    s32 hh = a->halfH;
+    u32 tpage = (u32)a->tpage << 16;
+    u32 clut = (u32)a->clut << 16;
+    s32 mod = a->fade;
+    s32 n = a->quadCount;
+    u32 code = (u32)a->primCode << 24;
     SVECTOR v[4];
     SVECTOR ir;
     u32 *p;

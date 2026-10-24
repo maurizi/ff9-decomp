@@ -485,24 +485,24 @@ u8 *fld_drawSprite3D(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 s
         ((s32 *)&zero)[0] = 0;
         ((s32 *)&zero)[1] = 0;
     }
-    n = h->unk0 & 0x7FFF;
+    n = h->frameCount & 0x7FFF;
     f = frame;
     if (f >= n) {
         f = frame % n;
     }
-    o = &h->unk8[f];
+    o = &h->frameOffsets[f];
     n = n * 2 + 8;
     b = (u8 *)h + n;
     p = (u16 *)b;
     f = *p++;
-    c.unk0 = p;
-    c.unk4 = (u8 *)(p + f + 1);
-    c.unk10 = h->unk2 | ((abr & 3) << 5);
-    c.unk14 = h->unk4;
-    c.unkC = (h->unk6 - 1) * 2;
-    c.unk8 = (h->unk7 - 1) * 2;
+    c.uvs = p;
+    c.colors = (u8 *)(p + f + 1);
+    c.tpage = h->tpage | ((abr & 3) << 5);
+    c.clut = h->clut;
+    c.halfH = (h->height - 1) * 2;
+    c.halfW = (h->width - 1) * 2;
     n = *o;
-    c.unk1C = ((u8 *)h)[n++];
+    c.quadCount = ((u8 *)h)[n++];
     h = (FieldSprHdr *)((u8 *)h + n);
     gte_SetRotMatrix(&g_gameState->unk1C->unk18);
     gte_SetTransMatrix(&g_gameState->unk1C->unk18);
@@ -519,8 +519,8 @@ u8 *fld_drawSprite3D(u8 *arg0, FieldSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 s
     }
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    c.unk20 = (abr == 0xFF) ? 0x2C : 0x2E;
-    c.unk18 = arg7;
+    c.primCode = (abr == 0xFF) ? 0x2C : 0x2E;
+    c.fade = arg7;
     return fld_emitSprite3D((u8 *)h, &c, arg0, arg8);
 }
 

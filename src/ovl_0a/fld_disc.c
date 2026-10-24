@@ -3,9 +3,9 @@
 void fld_requestDiscChange(s32 arg0, s16 arg1) {
     g_fieldDiscChange.discMask = 1 << arg0;
     g_fieldDiscChange.disc = arg0;
-    g_fieldDiscChange.arg = arg1;
-    g_fieldDiscChange.unk6 = -1;
-    g_gameState->unk1C->unk8E4.field->unk0 |= 0x100000;
+    g_fieldDiscChange.fieldId = arg1;
+    g_fieldDiscChange.areaId = -1;
+    g_gameState->unk1C->unk8E4.field->flags |= 0x100000;
     g_gameState->unk0 |= 8;
 }
 
@@ -18,11 +18,11 @@ u8 fld_getDiscChangeMask(void) {
 }
 
 s16 fld_getDiscChangeFieldId(void) {
-    return g_fieldDiscChange.arg;
+    return g_fieldDiscChange.fieldId;
 }
 
 s16 fld_getDiscChangeAreaId(void) {
-    return g_fieldDiscChange.unk6;
+    return g_fieldDiscChange.areaId;
 }
 
 void fld_runDiscChange(void) {
@@ -45,7 +45,7 @@ void fld_discChangeEnter(void) {
     }
     g_fieldDiscChange.mode = 1;
     g_fieldDiscChange.cursor = 0;
-    g_gameState->unk1C->unk8E4.field->unk0 = 0;
+    g_gameState->unk1C->unk8E4.field->flags = 0;
     func_8002DE60();
     g_fieldDiscChangeModes[g_fieldDiscChange.mode].enter();
 }
@@ -63,7 +63,7 @@ void fld_discChangeLeave(void) {
         D_80073998[i] = g_fieldDiscChange.savedFlags[i];
     }
     f = g_gameState->unk1C->unk8E4.field;
-    f->unk0 |= 0x10000;
+    f->flags |= 0x10000;
     func_8001DE50((GameState *)f);
     fld_refindSectors();
 }
@@ -108,7 +108,7 @@ void fld_discChangeSetMode(s32 arg0) {
 }
 
 s32 fld_isDiscChangePending(void) {
-    return (g_gameState->unk1C->unk8E4.field->unk0 >> 20) & 1;
+    return (g_gameState->unk1C->unk8E4.field->flags >> 20) & 1;
 }
 
 void fld_discPromptEnter(void) {
@@ -221,7 +221,7 @@ void fld_discChangeBackToPrompt(void) {
 }
 
 void fld_discChangeOpenMenu8(void) {
-    menu_open(8, ((g_fieldDiscChange.disc & 3) << 14) | g_fieldDiscChange.arg);
+    menu_open(8, ((g_fieldDiscChange.disc & 3) << 14) | g_fieldDiscChange.fieldId);
     func_80032628(fld_discChangeFinish);
     func_80032634(0);
 }

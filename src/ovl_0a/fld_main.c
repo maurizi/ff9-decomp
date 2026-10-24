@@ -37,27 +37,27 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 2)) {
                 switch (func_8004BC38()) {
                 case 3:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_BATTLE;
+                    g_gameState->unk1C->unk8E4.field->area->scene->exitReason = FLD_EXIT_BATTLE;
                     fld_startEncounter();
                     break;
                 case 4:
-                    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->nextId == 0x3E80) {
-                        g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = 4;
+                    if (g_gameState->unk1C->unk8E4.field->area->scene->nextId == 0x3E80) {
+                        g_gameState->unk1C->unk8E4.field->area->scene->exitReason = 4;
                         g_gameState->unk0 |= 2;
                     } else {
                         g_gameState->unk0 |= 8;
                     }
                     break;
                 case 5:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_WORLD;
+                    g_gameState->unk1C->unk8E4.field->area->scene->exitReason = FLD_EXIT_WORLD;
                     g_gameState->unk0 |= 2;
                     break;
                 case 7:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_TETRA_MASTER;
+                    g_gameState->unk1C->unk8E4.field->area->scene->exitReason = FLD_EXIT_TETRA_MASTER;
                     g_gameState->unk0 |= 2;
                     break;
                 case 8:
-                    g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_GAME_OVER;
+                    g_gameState->unk1C->unk8E4.field->area->scene->exitReason = FLD_EXIT_GAME_OVER;
                     g_gameState->unk0 |= 2;
                     break;
                 }
@@ -67,7 +67,7 @@ void fld_main(s32 arg0) {
             }
             if (g_gameState->unk0 & 0x100000) {
                 g_gameState->unk0 |= 8;
-                g_gameState->unk1C->unk8E4.field->unk0 |= 0x10000;
+                g_gameState->unk1C->unk8E4.field->flags |= 0x10000;
                 break;
             }
             if (!(g_gameState->unk1C->unk0 & 8)) {
@@ -76,11 +76,11 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 4)) {
                 fld_drawModels();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 8)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 8)) {
                 bgi_updateAnims();
                 bgi_updateFloorMoves();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x10)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 0x10)) {
                 func_80054B78();
             }
             if (!(g_gameState->unk1C->unk0 & 0x10)) {
@@ -89,19 +89,19 @@ void fld_main(s32 arg0) {
             if (!(g_gameState->unk1C->unk0 & 8)) {
                 func_800B3684();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 1)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 1)) {
                 func_80023A0C();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x800)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 0x800)) {
                 func_80032098();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 4)) {
                 fld_updateEncounter();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x80)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 0x80)) {
                 func_80023A4C();
             }
-            if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x1000)) {
+            if (!(g_gameState->unk1C->unk8E4.field->flags & 0x1000)) {
                 preload_update();
             }
         }
@@ -119,7 +119,7 @@ void fld_main(s32 arg0) {
 void fld_gameOver(void) {
     s32 i;
 
-    gameover_main(g_gameState->unk1C->unk8E4.field->unkC->unk14->eventScript);
+    gameover_main(g_gameState->unk1C->unk8E4.field->area->scene->eventScript);
     g_gameState->mode = 0;
     g_gameState->unk0 |= 0x100000;
     if ((g_gameState->unk1C->unk0 & 0x20000000) && g_gameState->unk1C->unk81C[0] != 0xFFFF) {
@@ -165,7 +165,7 @@ void fld_init(void) {
         fld_soundCommand(0x8601, 0, 0x78, 0, 0);
     }
     func_8002FC30();
-    f->unk4 = D_80067948;
+    f->loadEnd = D_80067948;
 }
 
 void fld_quit(void) {
@@ -190,16 +190,16 @@ void fld_initMap(void) {
     s32 i = 0x2B;
     FieldMap *fm = g_gameState->unk1C->unk8E4.field;
 
-    fm->unkA = -1;
-    fm->unk0 = 0;
-    fm->unk4 = 0;
-    fm->unk8 = 0;
+    fm->prevFieldId = -1;
+    fm->flags = 0;
+    fm->loadEnd = 0;
+    fm->playerObj = 0;
     fm->unk9 = 0;
     fm->unk14 = -1;
     fm->unk18 = -1;
-    fm->unk20 = -1;
-    fm->unk10 = NULL;
-    fm->unkC = NULL;
+    fm->soundBankSize = -1;
+    fm->commonFile = NULL;
+    fm->area = NULL;
     do {
         fm->unk24[i] = 0;
         i--;
@@ -212,7 +212,7 @@ s32 fld_readSoundBank(void) {
 
     func_8001DAA4((s32)(D_80067944 + 0x146F00), addr, size, NULL);
     DrawSync(0);
-    g_gameState->unk1C->unk8E4.field->unk20 = size;
+    g_gameState->unk1C->unk8E4.field->soundBankSize = size;
     return 0;
 }
 
@@ -231,17 +231,17 @@ s32 fld_loadCommon(void) {
         while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
         }
     }
-    g_gameState->unk1C->unk8E4.field->unk10 = (void *)D_80067948;
-    db_register((s32)g_gameState->unk1C->unk8E4.field->unk10, 0);
+    g_gameState->unk1C->unk8E4.field->commonFile = (void *)D_80067948;
+    db_register((s32)g_gameState->unk1C->unk8E4.field->commonFile, 0);
     return 0;
 }
 
 s32 fld_freeCommon(void) {
-    void *p = g_gameState->unk1C->unk8E4.field->unk10;
+    void *p = g_gameState->unk1C->unk8E4.field->commonFile;
 
     if (p != NULL) {
         db_unregister(p);
-        g_gameState->unk1C->unk8E4.field->unk10 = NULL;
+        g_gameState->unk1C->unk8E4.field->commonFile = NULL;
     }
     return 0;
 }
@@ -249,41 +249,41 @@ s32 fld_freeCommon(void) {
 void fld_loadArea(s32 arg0) {
     FieldMapObj *o;
 
-    D_80067948 = g_gameState->unk1C->unk8E4.field->unk4;
+    D_80067948 = g_gameState->unk1C->unk8E4.field->loadEnd;
     fld_allocArea();
-    o = g_gameState->unk1C->unk8E4.field->unkC;
+    o = g_gameState->unk1C->unk8E4.field->area;
     fld_initArea();
     func_8001CFB4();
     fld_readAreaFile(o, arg0);
     fld_findAreaItem(o, arg0);
-    o->unk4 = D_80067948;
+    o->loadEnd = D_80067948;
 }
 
 void fld_unloadArea(void) {
     GameData *gd = g_gameState->unk1C;
-    FieldMapObj *obj = gd->unk8E4.field->unkC;
+    FieldMapObj *obj = gd->unk8E4.field->area;
 
     fld_freeAreaFile(obj, gd->unk3A);
-    g_gameState->unk1C->unk3A = obj->unk10;
+    g_gameState->unk1C->unk3A = obj->areaId;
 }
 
 void fld_allocArea(void) {
     FieldMapObj *p = (FieldMapObj *)D_80067948;
 
     D_80067948 = (s32)(p + 1);
-    g_gameState->unk1C->unk8E4.field->unkC = p;
+    g_gameState->unk1C->unk8E4.field->area = p;
 }
 
 void fld_initArea(void) {
-    FieldMapObj *obj = g_gameState->unk1C->unk8E4.field->unkC;
+    FieldMapObj *obj = g_gameState->unk1C->unk8E4.field->area;
     s32 i;
 
     obj->unk0 = 0;
-    obj->unk4 = 0;
-    obj->unk8 = NULL;
-    obj->unkC = NULL;
-    obj->unk10 = g_gameState->unk1C->unk3A;
-    obj->unk14 = NULL;
+    obj->loadEnd = 0;
+    obj->msgTable = NULL;
+    obj->areaFile = NULL;
+    obj->areaId = g_gameState->unk1C->unk3A;
+    obj->scene = NULL;
     for (i = 1; i >= 0; i--) {
         obj->unk12[i] = 0;
     }
@@ -293,7 +293,7 @@ void fld_initArea(void) {
 }
 
 s32 fld_findAreaItem(FieldMapObj *arg0, u16 arg1) {
-    arg0->unk8 = db_lookupRegistered(4, arg1 | 0x60000, 0);
+    arg0->msgTable = db_lookupRegistered(4, arg1 | 0x60000, 0);
     return 0;
 }
 
@@ -328,15 +328,15 @@ s32 fld_readAreaFile(FieldMapObj *arg0, s32 arg1) {
         while (func_800217C4(cd) != 0) {
         }
     }
-    arg0->unkC = (void *)D_80067948;
+    arg0->areaFile = (void *)D_80067948;
     db_register(D_80067948, 0);
-    D_80067948 += func_8001CA70((s32)arg0->unkC);
+    D_80067948 += func_8001CA70((s32)arg0->areaFile);
     return 0;
 }
 
 s32 fld_freeAreaFile(FieldMapObj *arg0, s16 arg1) {
-    db_unregister(arg0->unkC);
-    arg0->unkC = NULL;
+    db_unregister(arg0->areaFile);
+    arg0->areaFile = NULL;
     return 0;
 }
 
@@ -346,23 +346,23 @@ void fld_load(s32 arg0) {
     s32 i;
     s32 j;
 
-    D_80067948 = g_gameState->unk1C->unk8E4.field->unkC->unk4;
+    D_80067948 = g_gameState->unk1C->unk8E4.field->area->loadEnd;
     fld_allocScene();
-    sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    sc = g_gameState->unk1C->unk8E4.field->area->scene;
     fld_initScene();
     func_8001CFB4();
     g_gameState->unk0 &= ~0x30F;
     g_gameState->unk1C->unk0 |= 0x20;
-    g_gameState->unk1C->unk8E4.field->unk0 |= 4;
+    g_gameState->unk1C->unk8E4.field->flags |= 4;
     func_8001CCB4(0, 0, 0);
     D_80073998[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
-            g_fieldFlagQueue.unk0[i][j] = 0;
-            g_fieldFlagQueue.unk10[i][j] = 0;
+            g_fieldFlagQueue.gameFlags[i][j] = 0;
+            g_fieldFlagQueue.mapFlags[i][j] = 0;
         }
     }
-    g_gameState->unk1C->unk8E4.field->unk8 = 0;
+    g_gameState->unk1C->unk8E4.field->playerObj = 0;
     fld_clearModelQueue();
     g_gameState->unk1C->unk8E4.field->unk9 = 0;
     g_gameState->unk1C->fieldId = arg0;
@@ -372,7 +372,7 @@ void fld_load(s32 arg0) {
     fld_loadVibration(sc, arg0);
     fld_setupBackground(sc, arg0);
     fld_findLights(sc, arg0);
-    fld_getShadowTexPos(&g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX, &g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
+    fld_getShadowTexPos(&g_gameState->unk1C->unk8E4.field->area->scene->shadowTexX, &g_gameState->unk1C->unk8E4.field->area->scene->shadowTexY);
     fld_initPreload();
     fld_startAudio();
     fld_soundCommand(0x900, -1, 0, 0, 0);
@@ -399,12 +399,12 @@ void fld_load(s32 arg0) {
     }
     sc->shadows = (FieldObjPlace *)D_80067948;
     D_80067948 = fld_initShadows(D_80067948, g_gameState->unk1C->unk38 + 9,
-                               g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX,
-                               g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
+                               g_gameState->unk1C->unk8E4.field->area->scene->shadowTexX,
+                               g_gameState->unk1C->unk8E4.field->area->scene->shadowTexY);
     fld_loadSoundBanks(sc, arg0);
     fld_resumeResidentSfx();
     sc->heapTop = D_80067948;
-    sc->unk4 = D_80067948;
+    sc->loadEnd = D_80067948;
     func_8004A8A4();
     D_80073998[0] |= 0x40000;
     g_gameState->unk1C->unk0 &= ~0x20;
@@ -415,7 +415,7 @@ void fld_exit(void) {
     s32 i;
     s32 id;
 
-    sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    sc = g_gameState->unk1C->unk8E4.field->area->scene;
     DrawSync(0);
     fld_stopSceneSfx(sc, g_gameState->unk1C->fieldId);
     D_80073998[0] &= 0xFFFF0006;
@@ -436,7 +436,7 @@ void fld_exit(void) {
         g_gameState->unk1C->returnSector[i] = g_gameState->unk1C->sceneSector[i];
         g_gameState->unk1C->returnSectors[i] = g_gameState->unk1C->sceneSectors[i];
     }
-    switch (g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason) {
+    switch (g_gameState->unk1C->unk8E4.field->area->scene->exitReason) {
     case FLD_EXIT_BATTLE:
         fld_depFindBackground(fld_depFindBattle(sc->nextId, &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]),
                       &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]);
@@ -474,8 +474,8 @@ void fld_exit(void) {
         g_gameState->unkA = 1;
         break;
     case FLD_EXIT_FIELD:
-        if (g_gameState->unk1C->unk8E4.field->unk0 & 0x10000) {
-            id = (s16)g_gameState->unk1C->unk8E4.field->unkC->unk10;
+        if (g_gameState->unk1C->unk8E4.field->flags & 0x10000) {
+            id = (s16)g_gameState->unk1C->unk8E4.field->area->areaId;
         } else {
             id = fld_depFindArea(fld_depFindField(sc->nextId, &g_gameState->unk1C->sceneSector[1], &g_gameState->unk1C->sceneSectors[1]),
                                &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]);
@@ -483,9 +483,9 @@ void fld_exit(void) {
         if (id != (g_gameState->unk1C->unk3A | 0x60000)) {
             g_gameState->unk0 |= 4;
         }
-        g_gameState->unk1C->unk8E4.field->unk0 &= ~0x10000;
-        g_gameState->unk1C->unk8E4.field->unkC->unk10 = id;
-        g_gameState->unk1C->unk8E4.field->unkA = g_gameState->unk1C->fieldId;
+        g_gameState->unk1C->unk8E4.field->flags &= ~0x10000;
+        g_gameState->unk1C->unk8E4.field->area->areaId = id;
+        g_gameState->unk1C->unk8E4.field->prevFieldId = g_gameState->unk1C->fieldId;
         g_gameState->unk1C->fieldId = sc->nextId;
         break;
     default:
@@ -499,7 +499,7 @@ void fld_exit(void) {
 void fld_allocScene(void) {
     FieldScene *sc;
 
-    g_gameState->unk1C->unk8E4.field->unkC->unk14 = sc = (FieldScene *)D_80067948;
+    g_gameState->unk1C->unk8E4.field->area->scene = sc = (FieldScene *)D_80067948;
     sc->modelBundles = sc->unk6C;
     D_80067948 += 0x90;
     sc->actorInfo = (FieldActorInfo *)D_80067948;
@@ -517,12 +517,12 @@ void fld_initScene(void) {
     u8 *c;
     u8 *c2;
 
-    sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
+    sc = g_gameState->unk1C->unk8E4.field->area->scene;
     sc->unk8 = 0;
-    sc->unk0 = 0;
-    sc->unk4 = 0;
+    sc->flags = 0;
+    sc->loadEnd = 0;
     sc->eventScript = NULL;
-    sc->unk4C = NULL;
+    sc->vibration = NULL;
     sc->bg = NULL;
     sc->walkmesh = NULL;
     base = D_80067944 + 0x106700;
@@ -539,32 +539,32 @@ void fld_initScene(void) {
     sc->movieWork = base;
     for (i = 23; i >= 0; i--) {
         info = &sc->actorInfo[i];
-        info->unk0 = 0;
-        info->unk4 = -1;
-        info->unk5 = 0;
+        info->flags = 0;
+        info->litFloor = -1;
+        info->abr = 0;
         info->unk7 = 0;
         info->unk6 = 0;
-        c = info->unk8.c;
+        c = info->color.c;
         c[2] = 0;
         c[1] = 0;
         c[0] = 0;
-        info->unk8.c[3] = 0;
-        c2 = info->unkC.c;
+        info->color.c[3] = 0;
+        c2 = info->nextColor.c;
         c = c2;
         c[2] = 0;
         c[1] = 0;
         c[0] = 0;
-        info->unkC.c[3] = 0;
-        info->unk10 = NULL;
+        info->nextColor.c[3] = 0;
+        info->mirror = NULL;
     }
     sc->encounterScreenX = 0xA0;
     sc->encounterScreenY = 0x70;
     sc->battleMusic = 0xFFFF;
-    sc->unk3E = 0xFFFF;
+    sc->battleMusicBank = 0xFFFF;
     sc->encounterStep = 0;
     sc->encounterMusicStep = 0;
-    sc->unk5C = 0x7F;
-    sc->unk5D = 0x7F;
+    sc->sndVolume = 0x7F;
+    sc->movieSndVolume = 0x7F;
     sc->unk5F = 0;
     sc->shadowTexY = 0;
     sc->shadowTexX = 0;
@@ -578,7 +578,7 @@ void fld_initScene(void) {
     sc->animSfxCount = 0;
     for (i = 15; i >= 0; i--) {
         t = &sc->animSfx[i];
-        t->unk0 = 0xFF;
+        t->uid = 0xFF;
         t->randomPitch = 0;
         t->unk2 = 0xFFFF;
         t->anim = 0xFFFF;
@@ -616,7 +616,7 @@ void fld_refindSectors(void) {
     gd = gs->unk1C;
     f = gd->unk8E4.field;
     id = -1;
-    if (f->unk0 & 0x10000) {
+    if (f->flags & 0x10000) {
         gs2 = gs;
         gd2 = gd;
         g = gs2->unk14;
@@ -624,7 +624,7 @@ void fld_refindSectors(void) {
         base = D_80067944 + ((t << 11) + 0x14C700);
         start = (FieldDirEnt *)(base + ((g->unk48 - t) << 11));
         e = &start[g->unk44] - 1;
-        key = f->unkC->unk14->nextId;
+        key = f->area->scene->nextId;
         do {
             if (e->unk0 == key) {
                 id = e->unk2;
@@ -644,7 +644,7 @@ void fld_refindSectors(void) {
             }
             e--;
         } while (e >= start);
-        g_gameState->unk1C->unk8E4.field->unkC->unk10 = id;
+        g_gameState->unk1C->unk8E4.field->area->areaId = id;
         g_gameState->unk1C->unk8A8 = -1;
         g_gameState->unk1C->unk84A = 0xFFFF;
         start = (FieldDirEnt *)(base + ((gs2->unk14->unk98 - t) << 11));
@@ -670,7 +670,7 @@ s32 fld_findEventScript(FieldScene *arg0, u16 arg1) {
 s32 fld_loadVibration(FieldScene *arg0, u16 arg1) {
     void *p = db_lookupRegistered(4, arg1 | 0x1E0000, 0);
 
-    arg0->unk4C = p;
+    arg0->vibration = p;
     if (p != NULL) {
         func_80054A28(p);
     }
@@ -706,10 +706,10 @@ void fld_startAudio(void) {
         fld_soundCommand(0x100, g_gameState->unk1C->unk81C[0], 0, 0, 0);
         g_gameState->unk1C->unk0 &= ~0x400000;
     }
-    if (g_gameState->unk1C->unk8E4.field->unk20 != -1) {
+    if (g_gameState->unk1C->unk8E4.field->soundBankSize != -1) {
         func_80055DF4();
-        func_80055E14((s32)D_80067944 + 0x146F00, g_gameState->unk1C->unk8E4.field->unk20, 1);
-        g_gameState->unk1C->unk8E4.field->unk20 = -1;
+        func_80055E14((s32)D_80067944 + 0x146F00, g_gameState->unk1C->unk8E4.field->soundBankSize, 1);
+        g_gameState->unk1C->unk8E4.field->soundBankSize = -1;
     }
 }
 
@@ -719,11 +719,11 @@ s32 fld_loadModelBundlesInCdOrder(void) {
     s32 min;
     s32 v;
 
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount != 0) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->modelQueueCount != 0) {
         while (1) {
             best = -1;
             min = 0x7FFFFFFF;
-            for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount - 1; i >= 0; i--) {
+            for (i = g_gameState->unk1C->unk8E4.field->area->scene->modelQueueCount - 1; i >= 0; i--) {
                 if (g_fieldModelQueue[i] != -1) {
                     v = file_find(0xA, g_fieldModelQueue[i])->unk4;
                     if (v < min) {

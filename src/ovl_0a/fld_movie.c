@@ -9,8 +9,8 @@ s32 fld_queueModelBundle(s32 uid) {
     }
     id = fld_remapModelId(id);
     if (db_lookupRegistered(4, id, 0) == NULL) {
-        g_fieldModelQueue[g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount] = id;
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount++;
+        g_fieldModelQueue[g_gameState->unk1C->unk8E4.field->area->scene->modelQueueCount] = id;
+        g_gameState->unk1C->unk8E4.field->area->scene->modelQueueCount++;
     }
     return 0;
 }
@@ -48,14 +48,14 @@ s32 fld_loadModelBundle(s32 arg0) {
     f = file_find(10, arg0);
     size = (f->unkC - f->unk4) << 11;
     c = fld_findModelCache(arg0);
-    if (c->unk4 == 0) {
+    if (c->addr == 0) {
         func_8002177C(g_gameState->unk1C->unk854, f->unk4, size,
-                      (void *)(fld_allocModelCache(arg0, size) != 0 ? c->unk4 : D_80067948), 0, -1, 0);
+                      (void *)(fld_allocModelCache(arg0, size) != 0 ? c->addr : D_80067948), 0, -1, 0);
         while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
         }
     }
-    if (c->unk4 != 0) {
-        s32 m = func_8001DAA4(D_80067948, c->unk4, size, NULL);
+    if (c->addr != 0) {
+        s32 m = func_8001DAA4(D_80067948, c->addr, size, NULL);
         DrawSync(0);
         fld_invalidateModelCache(D_80067948 + m);
     }
@@ -128,8 +128,8 @@ s32 fld_loadModelBundle(s32 arg0) {
         }
     }
     DrawSync(0);
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->modelBundles[g_gameState->unk1C->unk8E4.field->unkC->unk14->modelBundleCount] = pack1;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->modelBundleCount++;
+    g_gameState->unk1C->unk8E4.field->area->scene->modelBundles[g_gameState->unk1C->unk8E4.field->area->scene->modelBundleCount] = pack1;
+    g_gameState->unk1C->unk8E4.field->area->scene->modelBundleCount++;
     db_register(pack1, 0);
     D_80067948 = pack1 + func_8001CA70(pack1);
     return 0;
@@ -138,10 +138,10 @@ s32 fld_loadModelBundle(s32 arg0) {
 s32 fld_freeModelBundles(void) {
     s32 i;
 
-    for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->modelBundleCount - 1; i >= 0; i--) {
-        db_unregister((void *)g_gameState->unk1C->unk8E4.field->unkC->unk14->modelBundles[i]);
+    for (i = g_gameState->unk1C->unk8E4.field->area->scene->modelBundleCount - 1; i >= 0; i--) {
+        db_unregister((void *)g_gameState->unk1C->unk8E4.field->area->scene->modelBundles[i]);
     }
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->modelBundleCount = 0;
+    g_gameState->unk1C->unk8E4.field->area->scene->modelBundleCount = 0;
     return 0;
 }
 
@@ -173,47 +173,47 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         g_gameState->unk1C->unk39++;
     }
     arg0 = fld_remapModelId(arg0);
-    s->unk4 = arg0;
-    s->unkC = arg1;
-    s->unk8->model = db_lookupRegistered(4, arg0, 0);
-    if ((s->unk8->anim = db_lookupRegistered(4, fld_getModelAnimId(arg0), 0)) != NULL) {
-        a = s->unk8->anim;
-        if (IS_OFFSET(a->unkC)) {
-            a->unkC = (s32)a + a->unkC;
-            if (a->unk10 != NULL) {
-                a->unk10 = (WmModelGroup *)((u8 *)s->unk8->anim + (s32)a->unk10);
+    s->modelId = arg0;
+    s->actor = arg1;
+    s->model->model = db_lookupRegistered(4, arg0, 0);
+    if ((s->model->anim = db_lookupRegistered(4, fld_getModelAnimId(arg0), 0)) != NULL) {
+        a = s->model->anim;
+        if (IS_OFFSET(a->bones)) {
+            a->bones = (s32)a + a->bones;
+            if (a->groups != NULL) {
+                a->groups = (WmModelGroup *)((u8 *)s->model->anim + (s32)a->groups);
             }
         }
     }
     fld_getModelTables(arg0, &tex, &uv, &spr);
-    m = s->unk8->model;
-    g = m->unk10;
+    m = s->model->model;
+    g = m->groups;
     sum = 0;
     if (IS_OFFSET(g)) {
         g = (WmModelGroup *)((u8 *)m + (s32)g);
     }
-    for (k = 0; k < m->unk3; k++) {
-        sum += g->unk0;
+    for (k = 0; k < m->groupCount; k++) {
+        sum += g->packetSize;
         g++;
     }
     sum *= 2;
-    sum += s->unk8->model->unk2 * 32 + s->unk8->model->unk3 * 12;
-    fldmdl_initModel(s->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop);
-    fldmdl_buildPackets(s->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop += sum;
+    sum += s->model->model->boneCount * 32 + s->model->model->groupCount * 12;
+    fldmdl_initModel(s->model, (u8 *)g_gameState->unk1C->unk8E4.field->area->scene->heapTop);
+    fldmdl_buildPackets(s->model, (WmTexInfo *)tex, (s16(*)[2])uv);
+    g_gameState->unk1C->unk8E4.field->area->scene->heapTop += sum;
     fld_trimModelCache();
     t = db_lookupRegistered(8, arg0, 0x120000);
-    e = t->unk4;
-    for (i = t->unk1 - 1; i >= 0; i--) {
-        if (e->unk0 == (u16)arg0) {
+    e = t->entries;
+    for (i = t->count - 1; i >= 0; i--) {
+        if (e->modelId == (u16)arg0) {
             sprId = e->unk8 | 0x190000;
         }
     }
     if (sprId != -1) {
-        s->unk8->texAnims = db_lookupRegistered(4, sprId, 0);
-        fldmdl_initTexAnims((TexAnimRelocSet *)s->unk8->texAnims, (ModelTexOfs *)spr);
+        s->model->texAnims = db_lookupRegistered(4, sprId, 0);
+        fldmdl_initTexAnims((TexAnimRelocSet *)s->model->texAnims, (ModelTexOfs *)spr);
     }
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->walkmesh != NULL) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->walkmesh != NULL) {
         if (slot < 9) {
             bgi_bindActor(slot, s);
         } else {
@@ -221,8 +221,8 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
         }
         bgi_setActorActive(slot, 1);
     }
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x10000;
-    s->unk0 |= 1;
+    g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x10000;
+    s->flags |= 1;
     return slot;
 }
 
@@ -251,10 +251,10 @@ s32 fld_getModelAnimId(s32 arg0) {
     s32 i;
     WmAnimTableEntry *e;
 
-    e = t->unk4;
-    for (i = t->unk1 - 1; i >= 0; i--) {
-        if (e->unk0 == (u16)arg0) {
-            return e->unk2 | 0x30000;
+    e = t->entries;
+    for (i = t->count - 1; i >= 0; i--) {
+        if (e->modelId == (u16)arg0) {
+            return e->animId | 0x30000;
         }
     }
     return -1;
@@ -263,11 +263,11 @@ s32 fld_getModelAnimId(s32 arg0) {
 /* look up the three tables of an area entry */
 s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     WmAnimTable *t = db_lookupRegistered(8, arg0, 0x120000);
-    WmAnimTableEntry *e = t->unk4;
+    WmAnimTableEntry *e = t->entries;
     s32 i;
 
-    for (i = t->unk1 - 1; i >= 0; i--) {
-        if (e->unk0 == (u16)arg0) {
+    for (i = t->count - 1; i >= 0; i--) {
+        if (e->modelId == (u16)arg0) {
             *arg1 = (s32 *)((u8 *)e + e->unk4);
             *arg2 = *arg1 + e->unk7;
             *arg3 = *arg2 + e->unk7;
@@ -312,7 +312,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
             s = (FieldObjSlot *)func_8001E350(a->unk3B);
-            if (s->unk8->parent == NULL) {
+            if (s->model->parent == NULL) {
                 arg0[n++] = s;
             }
         }
@@ -321,10 +321,10 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
         a = e->unk4;
         if (a->unkE == 1 && (a->unkF & 1) && a->unk5 == 4) {
             s = (FieldObjSlot *)func_8001E350(a->unk3B);
-            p = s->unk8->parent;
+            p = s->model->parent;
             if (p != NULL) {
                 for (i = 0; i < n; i++) {
-                    if ((u16 *)arg0[i]->unk8 == p) {
+                    if ((u16 *)arg0[i]->model == p) {
                         arg0[n++] = s;
                         break;
                     }
@@ -332,20 +332,20 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
             }
         }
     }
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState != 0) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->movieState != 0) {
         for (i = 0; i < n; i++) {
-            o = arg0[i]->unk8;
+            o = arg0[i]->model;
             m = o->model;
-            g = m->unk10;
+            g = m->groups;
             sum = 0;
             if (IS_OFFSET(g)) {
                 g = (WmModelGroup *)((u8 *)m + (s32)g);
             }
-            for (k = 0; k < m->unk3; k++) {
-                sum += g->unk0;
+            for (k = 0; k < m->groupCount; k++) {
+                sum += g->packetSize;
                 g++;
             }
-            if (o->packets + (sum * 2 + (o->model->unk2 * 32 + o->model->unk3 * 12)) >= D_80067944 + 0xF1700) {
+            if (o->packets + (sum * 2 + (o->model->boneCount * 32 + o->model->groupCount * 12)) >= D_80067944 + 0xF1700) {
                 arg0[i] = NULL;
             }
         }
@@ -386,41 +386,41 @@ void fld_drawModels(void) {
     }
     i = 0;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
-    g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias;
+    g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + g_gameState->unk1C->unk8E4.field->area->scene->otBias;
     n = fld_collectVisibleModels((FieldObjSlot **)list);
     for (; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            m = c->unk8;
-            o = c->unkC;
-            if ((c->unk0 & 2) && bgi_getActorTilt(o->unk3B, &ax, &az)) {
+            m = c->model;
+            o = c->obj;
+            if ((c->flags & 2) && bgi_getActorTilt(o->uid, &ax, &az)) {
                 rot.vx = ax;
-                rot.vy = o->unk22;
+                rot.vy = o->rotY;
                 rot.vz = az;
                 func_80030EA4(&rot, &m->worldMatrix);
             } else {
-                rot.vx = o->unk20;
-                rot.vy = (o->unk22 + j) & 0xFFF;
-                rot.vz = o->unk24;
+                rot.vx = o->rotX;
+                rot.vy = (o->rotY + j) & 0xFFF;
+                rot.vz = o->rotZ;
                 func_80031244(&rot, &m->worldMatrix);
             }
-            m->worldMatrix.t[0] = o->unk14.vx;
-            m->worldMatrix.t[1] = o->unk14.vy;
-            m->worldMatrix.t[2] = o->unk14.vz;
+            m->worldMatrix.t[0] = o->pos.vx;
+            m->worldMatrix.t[1] = o->pos.vy;
+            m->worldMatrix.t[2] = o->pos.vz;
             fldmdl_applyScale(m);
         }
     }
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            o = c->unkC;
-            m = c->unk8;
-            w = db_lookupRegistered(4, o->unk36 | 0x30000, 0);
+            o = c->obj;
+            m = c->model;
+            w = db_lookupRegistered(4, o->anim | 0x30000, 0);
             m->anim = w;
-            if (w != NULL && IS_OFFSET(w->unkC)) {
-                w->unkC = (void *)((u8 *)w + (s32)w->unkC);
-                if (w->unk10 != NULL) {
-                    w->unk10 = (void *)((u8 *)m->anim + (s32)w->unk10);
+            if (w != NULL && IS_OFFSET(w->bones)) {
+                w->bones = (void *)((u8 *)w + (s32)w->bones);
+                if (w->groups != NULL) {
+                    w->groups = (void *)((u8 *)m->anim + (s32)w->groups);
                 }
             }
         }
@@ -428,12 +428,12 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            m = c->unk8;
-            o = c->unkC;
-            if (m->unk0 & 1) {
-                fldmdl_calcBoneMatricesLookAt(m, o->unk3A);
+            m = c->model;
+            o = c->obj;
+            if (m->flags & 1) {
+                fldmdl_calcBoneMatricesLookAt(m, o->animFrame);
             } else {
-                fldmdl_calcBoneMatrices(m, o->unk3A);
+                fldmdl_calcBoneMatrices(m, o->animFrame);
             }
         }
     }
@@ -442,7 +442,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            m = c->unk8;
+            m = c->model;
             rot.vx = ((Unk8004AB64 *)m->boneMatrices)->pos.vx;
             rot.vy = ((Unk8004AB64 *)m->boneMatrices)->pos.vy;
             rot.vz = ((Unk8004AB64 *)m->boneMatrices)->pos.vz;
@@ -450,7 +450,7 @@ void fld_drawModels(void) {
             gte_rtps();
             gte_stsxy(&sxy);
             gte_stsz(&z);
-            z = z / 4 + g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias;
+            z = z / 4 + g_gameState->unk1C->unk8E4.field->area->scene->otBias;
             if (z < lim || z > 0x1000 - lim) {
                 list[i] = NULL;
             }
@@ -459,9 +459,9 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            m = c->unk8;
-            f = c->unk0 & 0x100000;
-            lim = m->model->unk3;
+            m = c->model;
+            f = c->flags & 0x100000;
+            lim = m->model->groupCount;
             SetSpadStack12(0x1F8003FC);
             if (f) {
                 for (j = 0; j < lim; j++) {
@@ -486,13 +486,13 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            fld_drawShadow(g_gameState->unk1C->unk8E4.field->unkC->unk14->shadows, c->unkC->unk3B);
+            fld_drawShadow(g_gameState->unk1C->unk8E4.field->area->scene->shadows, c->obj->uid);
         }
     }
     for (i = 0; i < n; i++) {
         c = list[i];
-        if (c != NULL && !(c->unk0 & 0x1000)) {
-            m = c->unk8;
+        if (c != NULL && !(c->flags & 0x1000)) {
+            m = c->model;
             if (m->texAnims->unk0 >= 2 && fld_isModelTexAnimActive(m) == 0) {
                 m->texAnims->unk4[2].unk0 |= 1;
                 m->texAnims->unk4[2].unk8 = 0;
@@ -503,7 +503,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            fldmdl_updateTexAnims((TexAnimSet *)((ModelObj *)c->unk8)->texAnims);
+            fldmdl_updateTexAnims((TexAnimSet *)((ModelObj *)c->model)->texAnims);
         }
     }
     fld_applyLights(list, n);
@@ -533,107 +533,107 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 id;
     FieldAnimSfx *t;
 
-    info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->actorInfo[arg0];
+    info = &g_gameState->unk1C->unk8E4.field->area->scene->actorInfo[arg0];
     c = (FieldEvtCtx *)func_8001E350(arg0);
     switch (arg1) {
     case 0:
         if ((u8)arg2 == 0xFF) {
-            c->unk0 &= ~0x10000;
+            c->flags &= ~0x10000;
         } else {
-            if (arg2 != (s8)info->unk5) {
-                c->unk0 |= 0x40000;
+            if (arg2 != (s8)info->abr) {
+                c->flags |= 0x40000;
             }
-            c->unk0 |= 0x10000;
+            c->flags |= 0x10000;
         }
-        info->unk5 = arg2;
+        info->abr = arg2;
         break;
     case 4:
         if (arg2 != 0) {
-            ((ModelObj *)c->unk8)->clipY = arg3;
-            c->unk0 |= 0x100000;
+            ((ModelObj *)c->model)->clipY = arg3;
+            c->flags |= 0x100000;
         } else {
-            c->unk0 &= ~0x100000;
+            c->flags &= ~0x100000;
         }
         break;
     case 8:
     case 9:
     case 10:
     case 11:
-        x = info->unk10;
+        x = info->mirror;
         if (x == NULL) {
-            x = info->unk10 = (FieldActorExt *)g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
-            x->unk0 = 0;
-            x->unk4 = c->unk4;
-            x->unk8 = (ModelObj *)x->unk14;
-            x->unkC = (FieldEvtObj *)x->unkAC;
+            x = info->mirror = (FieldActorExt *)g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
+            x->flags = 0;
+            x->modelId = c->modelId;
+            x->model = (ModelObj *)x->modelBuf;
+            x->obj = (FieldEvtObj *)x->objBuf;
             x->unk10 = 0;
-            x->unkF8 = c;
-            x->unkFC.v.vx = 0;
-            x->unkFC.v.vy = 0;
-            x->unkFC.v.vz = 0;
-            x->unk104.v.vx = 0;
-            x->unk104.v.vy = 0x1000;
-            x->unk104.v.vz = 0;
-            x->unk10C.w = 0;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop += sizeof(FieldActorExt);
+            x->src = c;
+            x->mirrorPoint.v.vx = 0;
+            x->mirrorPoint.v.vy = 0;
+            x->mirrorPoint.v.vz = 0;
+            x->mirrorNormal.v.vx = 0;
+            x->mirrorNormal.v.vy = 0x1000;
+            x->mirrorNormal.v.vz = 0;
+            x->tint.w = 0;
+            g_gameState->unk1C->unk8E4.field->area->scene->heapTop += sizeof(FieldActorExt);
         }
         y = x;
-        if (!(x->unk0 & 1)) {
-            *y->unkC = *c->unkC;
-            y->unk8->model = ((ModelObj *)c->unk8)->model;
-            y->unk8->anim = ((ModelObj *)c->unk8)->anim;
-            fld_getModelTables(y->unk4, &tex, &uv, &spr);
-            m = y->unk8->model;
-            g = m->unk10;
+        if (!(x->flags & 1)) {
+            *y->obj = *c->obj;
+            y->model->model = ((ModelObj *)c->model)->model;
+            y->model->anim = ((ModelObj *)c->model)->anim;
+            fld_getModelTables(y->modelId, &tex, &uv, &spr);
+            m = y->model->model;
+            g = m->groups;
             sum = 0;
             if (IS_OFFSET(g)) {
                 g = (WmModelGroup *)((u8 *)m + (s32)g);
             }
-            for (k = 0; k < m->unk3; k++) {
-                sum += g->unk0;
+            for (k = 0; k < m->groupCount; k++) {
+                sum += g->packetSize;
                 g++;
             }
             sum *= 2;
-            sum += y->unk8->model->unk2 * 32 + y->unk8->model->unk3 * 12;
-            fldmdl_initModel(y->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop);
-            fldmdl_buildPackets(y->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop += sum;
-            id = (s32)db_lookupRegistered(9, y->unk4, 0x190000);
+            sum += y->model->model->boneCount * 32 + y->model->model->groupCount * 12;
+            fldmdl_initModel(y->model, (u8 *)g_gameState->unk1C->unk8E4.field->area->scene->heapTop);
+            fldmdl_buildPackets(y->model, (WmTexInfo *)tex, (s16(*)[2])uv);
+            g_gameState->unk1C->unk8E4.field->area->scene->heapTop += sum;
+            id = (s32)db_lookupRegistered(9, y->modelId, 0x190000);
             if (id != -1) {
-                y->unk8->texAnims = db_lookupRegistered(4, id, 0);
-                fldmdl_initTexAnims((TexAnimRelocSet *)y->unk8->texAnims, (ModelTexOfs *)spr);
+                y->model->texAnims = db_lookupRegistered(4, id, 0);
+                fldmdl_initTexAnims((TexAnimRelocSet *)y->model->texAnims, (ModelTexOfs *)spr);
             }
             fld_trimModelCache();
-            x->unk0 |= 0x02000001;
+            x->flags |= 0x02000001;
         }
         switch (arg1) {
         case 8:
             if (arg2 != 0) {
-                y->unk8->mirrorSrc = (ModelObj *)c->unk8;
-                y->unk8->mirrorNormal.w[0] = x->unk104.w[0];
-                y->unk8->mirrorNormal.w[1] = x->unk104.w[1];
-                y->unk8->mirrorPoint.w[0] = x->unkFC.w[0];
-                y->unk8->mirrorPoint.w[1] = x->unkFC.w[1];
-                x->unk0 |= 0x01000000;
+                y->model->mirrorSrc = (ModelObj *)c->model;
+                y->model->mirrorNormal.w[0] = x->mirrorNormal.w[0];
+                y->model->mirrorNormal.w[1] = x->mirrorNormal.w[1];
+                y->model->mirrorPoint.w[0] = x->mirrorPoint.w[0];
+                y->model->mirrorPoint.w[1] = x->mirrorPoint.w[1];
+                x->flags |= 0x01000000;
             } else {
-                x->unk0 &= ~0x01000000;
+                x->flags &= ~0x01000000;
             }
             break;
         case 9:
-            x->unkFC.v.vx = arg2;
-            x->unkFC.v.vy = arg3;
-            x->unkFC.v.vz = arg4;
+            x->mirrorPoint.v.vx = arg2;
+            x->mirrorPoint.v.vy = arg3;
+            x->mirrorPoint.v.vz = arg4;
             break;
         case 10:
-            x->unk104.v.vx = arg2;
-            x->unk104.v.vy = arg3;
-            x->unk104.v.vz = arg4;
+            x->mirrorNormal.v.vx = arg2;
+            x->mirrorNormal.v.vy = arg3;
+            x->mirrorNormal.v.vz = arg4;
             break;
         case 11:
-            x->unk10C.c[0] = arg2;
-            x->unk10C.c[1] = arg3;
-            x->unk10C.c[2] = arg4;
-            x->unk10C.c[3] = 2;
+            x->tint.c[0] = arg2;
+            x->tint.c[1] = arg3;
+            x->tint.c[2] = arg4;
+            x->tint.c[3] = 2;
             break;
         }
         break;
@@ -684,31 +684,31 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
             continue;
         }
         upd = 0;
-        info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->actorInfo[c->unkC->unk3B];
-        vis = c->unk0 & 0x10000;
-        chg = (info->unk0 & 0x10000) ^ vis;
-        f4 = c->unk0 & 0x40000;
-        f2 = c->unk0 & 0x20000;
+        info = &g_gameState->unk1C->unk8E4.field->area->scene->actorInfo[c->obj->uid];
+        vis = c->flags & 0x10000;
+        chg = (info->flags & 0x10000) ^ vis;
+        f4 = c->flags & 0x40000;
+        f2 = c->flags & 0x20000;
         if (chg || f4 || f2) {
             upd = 1;
         }
         if (upd) {
-            if (c->unk0 & 0x10000) {
-                fldmdl_setSemiTrans(c->unk8, 1);
+            if (c->flags & 0x10000) {
+                fldmdl_setSemiTrans(c->model, 1);
             } else {
-                fldmdl_setSemiTrans(c->unk8, 0);
+                fldmdl_setSemiTrans(c->model, 0);
             }
             if (vis) {
-                fldmdl_setAbr(c->unk8, ((s32)(info->unk5 << 24) >> 19) & 0xFFE0);
+                fldmdl_setAbr(c->model, ((s32)(info->abr << 24) >> 19) & 0xFFE0);
             }
-            if (c->unk0 & 0x20000) {
-                c->unk0 &= ~0x20000;
+            if (c->flags & 0x20000) {
+                c->flags &= ~0x20000;
             }
-            c->unk0 &= ~0x40000;
+            c->flags &= ~0x40000;
             if (chg || f4) {
-                c->unk0 |= 0x20000;
+                c->flags |= 0x20000;
             }
-            info->unk0 = (info->unk0 & ~0x10000) | vis;
+            info->flags = (info->flags & ~0x10000) | vis;
         }
     }
     for (i = arg1 - 1; i >= 0; i--) {
@@ -716,22 +716,22 @@ void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
         if (c == NULL) {
             continue;
         }
-        info = &g_gameState->unk1C->unk8E4.field->unkC->unk14->actorInfo[c->unkC->unk3B];
-        x = info->unk10;
-        if (x != NULL && (x->unk0 & 0x01000000)) {
-            fldmdl_reflectModel(x->unk8);
+        info = &g_gameState->unk1C->unk8E4.field->area->scene->actorInfo[c->obj->uid];
+        x = info->mirror;
+        if (x != NULL && (x->flags & 0x01000000)) {
+            fldmdl_reflectModel(x->model);
             y = x;
-            fldmdl_calcBoneMatrices(x->unk8, x->unkF8->unkC->unk3A);
-            n = x->unk8->model->unk3;
+            fldmdl_calcBoneMatrices(x->model, x->src->obj->animFrame);
+            n = x->model->model->groupCount;
             for (j = 0; j < n; j++) {
-                fldmdl_projectMesh(y->unk8, j & 0xFF);
-                fldmdl_drawMeshMirrored(y->unk8, j & 0xFF);
+                fldmdl_projectMesh(y->model, j & 0xFF);
+                fldmdl_drawMeshMirrored(y->model, j & 0xFF);
             }
-            if (x->unk10C.c[3] != 0) {
+            if (x->tint.c[3] != 0) {
                 for (j = n - 1; j >= 0; j--) {
-                    fldmdl_setGroupRgb(y->unk8, j & 0xFF, x->unk10C.c[0], x->unk10C.c[1], x->unk10C.c[2]);
+                    fldmdl_setGroupRgb(y->model, j & 0xFF, x->tint.c[0], x->tint.c[1], x->tint.c[2]);
                 }
-                x->unk10C.c[3]--;
+                x->tint.c[3]--;
             }
         }
     }
@@ -743,7 +743,7 @@ Unk800C9CCC *fld_findModelCache(s32 arg0) {
 
     id = (u16)arg0;
     for (i = 9; i >= 0; i--) {
-        if (g_fieldModelCache[i].unk2 == id) {
+        if (g_fieldModelCache[i].id == id) {
             return &g_fieldModelCache[i];
         }
     }
@@ -759,8 +759,8 @@ u32 fld_getModelCacheBottom(Unk800C9CCC **arg0) {
         *arg0 = NULL;
     }
     for (i = 9; i >= 0; i--) {
-        if (g_fieldModelCache[i].unk4 != 0 && g_fieldModelCache[i].unk4 < min) {
-            min = g_fieldModelCache[i].unk4;
+        if (g_fieldModelCache[i].addr != 0 && g_fieldModelCache[i].addr < min) {
+            min = g_fieldModelCache[i].addr;
             if (arg0 != NULL) {
                 *arg0 = &g_fieldModelCache[i];
             }
@@ -777,14 +777,14 @@ s32 fld_allocModelCache(s32 arg0, s32 arg1) {
 
     e = fld_findModelCache(arg0);
     min = fld_getModelCacheBottom(NULL);
-    lo = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
+    lo = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
     if (lo == 0) {
         lo = D_80067948;
     }
     a = min - arg1;
     if (lo < a) {
-        e->unk4 = a;
-        e->unk8 = arg1;
+        e->addr = a;
+        e->size = arg1;
         return 1;
     }
     return 0;
@@ -808,18 +808,18 @@ void fld_compactModelCache(void) {
     top = 0x801EDF00;
     for (i = 9; i >= 0; i--) {
         s = &g_fieldModelCache[i];
-        id = s->unk2;
-        if (s->unk4 != 0) {
+        id = s->id;
+        if (s->addr != 0) {
             found = 0;
-            for (j = g_gameState->unk1C->unk8E4.field->unkC->unk14->modelQueueCount - 1; j >= 0; j--) {
+            for (j = g_gameState->unk1C->unk8E4.field->area->scene->modelQueueCount - 1; j >= 0; j--) {
                 if ((u16)g_fieldModelQueue[j] == id) {
                     found = 1;
                     break;
                 }
             }
             if (!found) {
-                s->unk4 = 0;
-                s->unk8 = 0;
+                s->addr = 0;
+                s->size = 0;
             }
         }
     }
@@ -828,9 +828,9 @@ void fld_compactModelCache(void) {
         bi = -1;
         for (i = 9; i >= 0; i--) {
             t = &g_fieldModelCache[i];
-            sz = t->unk8;
-            end = t->unk4 + sz;
-            if (t->unk4 != 0 && end <= top && best < end) {
+            sz = t->size;
+            end = t->addr + sz;
+            if (t->addr != 0 && end <= top && best < end) {
                 best = end;
                 bi = i;
             }
@@ -839,10 +839,10 @@ void fld_compactModelCache(void) {
             break;
         }
         s = &g_fieldModelCache[bi];
-        addr = top - s->unk8;
-        if (s->unk4 != addr) {
-            func_8001DAA4(addr, s->unk4, s->unk8, NULL);
-            s->unk4 = addr;
+        addr = top - s->size;
+        if (s->addr != addr) {
+            func_8001DAA4(addr, s->addr, s->size, NULL);
+            s->addr = addr;
         }
         top = addr;
     }
@@ -854,13 +854,13 @@ void fld_clearModelCache(void) {
 
     for (i = 9; i >= 0; i--) {
         g_fieldModelCache[i].unk0 = 0;
-        g_fieldModelCache[i].unk4 = 0;
-        g_fieldModelCache[i].unk8 = 0;
+        g_fieldModelCache[i].addr = 0;
+        g_fieldModelCache[i].size = 0;
     }
 }
 
 void fld_trimModelCache(void) {
-    s32 v = g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop;
+    s32 v = g_gameState->unk1C->unk8E4.field->area->scene->heapTop;
 
     if (v == 0) {
         v = D_80067948;
@@ -872,9 +872,9 @@ void fld_invalidateModelCache(s32 arg0) {
     s32 i;
 
     for (i = 9; i >= 0; i--) {
-        if (g_fieldModelCache[i].unk4 != 0 && (u32)arg0 >= g_fieldModelCache[i].unk4) {
-            g_fieldModelCache[i].unk8 = 0;
-            g_fieldModelCache[i].unk4 = 0;
+        if (g_fieldModelCache[i].addr != 0 && (u32)arg0 >= g_fieldModelCache[i].addr) {
+            g_fieldModelCache[i].size = 0;
+            g_fieldModelCache[i].addr = 0;
         }
     }
 }
@@ -901,37 +901,37 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     e = &arg0[arg1];
     s = (FieldObjSlot *)func_8001E350(arg1);
     bias = 0;
-    if (s->unk0 & 0x10) {
+    if (s->flags & 0x10) {
         return;
     }
-    lt = g_gameState->unk1C->unk8E4.field->unkC->unk14->lights;
+    lt = g_gameState->unk1C->unk8E4.field->area->scene->lights;
     if (lt != NULL) {
-        t = (Unk800B3294Bias *)fld_findLightColor(lt, s->unk4);
+        t = (Unk800B3294Bias *)fld_findLightColor(lt, s->modelId);
         if (t == NULL) {
             t = (Unk800B3294Bias *)fld_findLightColor(lt, -1);
         }
         bias = t->unk7;
     }
-    fld_calcShadowMatrix(&e->unk0, s, &m);
-    u0 = (s16)(g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX % 64) * 2;
-    v0 = (s16)(g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY % 256);
+    fld_calcShadowMatrix(&e->params, s, &m);
+    u0 = (s16)(g_gameState->unk1C->unk8E4.field->area->scene->shadowTexX % 64) * 2;
+    v0 = (s16)(g_gameState->unk1C->unk8E4.field->area->scene->shadowTexY % 256);
     for (i = 0; i < 4; i++) {
         mask = NULL;
-        if (g_gameState->unk1C->unk8E4.field->unk0 & 0x200) {
-            mask = e->unk8[g_gameState->unk1C->unk8][i];
+        if (g_gameState->unk1C->unk8E4.field->flags & 0x200) {
+            mask = e->prims[g_gameState->unk1C->unk8][i];
             setlen(mask, 2);
             mask[1] = 0xE6000002;
             mask[2] = 0;
             p[i] = (POLY_FT4 *)(mask + 3);
         } else {
-            p[i] = e->unk8[g_gameState->unk1C->unk8][i];
+            p[i] = e->prims[g_gameState->unk1C->unk8][i];
         }
         setlen(p[i], 9);
         setcode(p[i], 0x2C);
         setSemiTrans(p[i], 1);
-        setRGB0(p[i], e->unk0.unk0, e->unk0.unk0, e->unk0.unk0);
-        p[i]->tpage = getTPage(1, 2, g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexX,
-                               g_gameState->unk1C->unk8E4.field->unkC->unk14->shadowTexY);
+        setRGB0(p[i], e->params.shade, e->params.shade, e->params.shade);
+        p[i]->tpage = getTPage(1, 2, g_gameState->unk1C->unk8E4.field->area->scene->shadowTexX,
+                               g_gameState->unk1C->unk8E4.field->area->scene->shadowTexY);
         p[i]->clut = 0x3FD0;
         switch (i) {
         case 0:
@@ -947,7 +947,7 @@ void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
             setUV4(p[3], u0 + 31, v0 + 31, u0, v0 + 31, u0 + 31, v0, u0, v0);
             break;
         }
-        if (g_gameState->unk1C->unk8E4.field->unk0 & 0x200) {
+        if (g_gameState->unk1C->unk8E4.field->flags & 0x200) {
             mk = (u32 *)(p[i] + 1);
             setlen(mk, 2);
             mk[1] = 0xE6000002;
@@ -1058,25 +1058,25 @@ void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
     s32 c;
     s32 sn;
 
-    if (arg1->unk0 & 0x20) {
-        c = math_cos(arg0->unk4);
-        sn = math_sin(arg0->unk4);
-        arg2->m[0][0] = c * arg0->unk1 >> 12;
+    if (arg1->flags & 0x20) {
+        c = math_cos(arg0->angle);
+        sn = math_sin(arg0->angle);
+        arg2->m[0][0] = c * arg0->scaleX >> 12;
         arg2->m[1][0] = 0;
-        arg2->m[2][0] = -sn * arg0->unk1 >> 12;
+        arg2->m[2][0] = -sn * arg0->scaleX >> 12;
         arg2->m[0][1] = 0;
         arg2->m[1][1] = 0x1000;
         arg2->m[2][1] = 0;
-        arg2->m[0][2] = sn * arg0->unk2 >> 12;
+        arg2->m[0][2] = sn * arg0->scaleZ >> 12;
         arg2->m[1][2] = 0;
-        arg2->m[2][2] = c * arg0->unk2 >> 12;
-        arg2->t[0] = ((c * arg0->unk4_12 + sn * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->pos.vx;
-        arg2->t[1] = ((Unk8004AB64 *)arg1->unkC)->pos.vy;
-        arg2->t[2] = ((-sn * arg0->unk4_12 + c * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->pos.vz;
+        arg2->m[2][2] = c * arg0->scaleZ >> 12;
+        arg2->t[0] = ((c * arg0->offsetX + sn * arg0->offsetZ) >> 12) + ((Unk8004AB64 *)arg1->actor)->pos.vx;
+        arg2->t[1] = ((Unk8004AB64 *)arg1->actor)->pos.vy;
+        arg2->t[2] = ((-sn * arg0->offsetX + c * arg0->offsetZ) >> 12) + ((Unk8004AB64 *)arg1->actor)->pos.vz;
     } else {
         /* word-wise copy of the joint matrix */
         d = (s32 *)&m;
-        s = (s32 *)&((MATRIX *)arg1->unk8->boneMatrices)[1];
+        s = (s32 *)&((MATRIX *)arg1->model->boneMatrices)[1];
         d[0] = s[0];
         d[1] = s[1];
         d[2] = s[2];
@@ -1108,18 +1108,18 @@ void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
         gte_ldopv2(&fwd);
         gte_op12();
         gte_stlvnl(&side);
-        arg2->m[0][0] = side.vx * arg0->unk1 >> 12;
-        arg2->m[1][0] = side.vy * arg0->unk1 >> 12;
-        arg2->m[2][0] = side.vz * arg0->unk1 >> 12;
+        arg2->m[0][0] = side.vx * arg0->scaleX >> 12;
+        arg2->m[1][0] = side.vy * arg0->scaleX >> 12;
+        arg2->m[2][0] = side.vz * arg0->scaleX >> 12;
         arg2->m[0][1] = up.vx;
         arg2->m[1][1] = up.vy;
         arg2->m[2][1] = up.vz;
-        arg2->m[0][2] = fwd.vx * arg0->unk2 >> 12;
-        arg2->m[1][2] = fwd.vy * arg0->unk2 >> 12;
-        arg2->m[2][2] = fwd.vz * arg0->unk2 >> 12;
-        arg2->t[0] = ((side.vx * arg0->unk4_12 + fwd.vx * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->boneMatrices)[1].t[0];
-        arg2->t[1] = ((side.vy * arg0->unk4_12 + fwd.vy * arg0->unk4_22) >> 12) + ((Unk8004AB64 *)arg1->unkC)->pos.vy;
-        arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->boneMatrices)[1].t[2];
+        arg2->m[0][2] = fwd.vx * arg0->scaleZ >> 12;
+        arg2->m[1][2] = fwd.vy * arg0->scaleZ >> 12;
+        arg2->m[2][2] = fwd.vz * arg0->scaleZ >> 12;
+        arg2->t[0] = ((side.vx * arg0->offsetX + fwd.vx * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[1].t[0];
+        arg2->t[1] = ((side.vy * arg0->offsetX + fwd.vy * arg0->offsetZ) >> 12) + ((Unk8004AB64 *)arg1->actor)->pos.vy;
+        arg2->t[2] = ((side.vz * arg0->offsetX + fwd.vz * arg0->offsetZ) >> 12) + ((MATRIX *)arg1->model->boneMatrices)[1].t[2];
     }
 }
 
@@ -1140,7 +1140,7 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
     case 4:
         return mbg_getFrame();
     case 5:
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 = arg1;
+        g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 = arg1;
         mbg_setRgb24(arg1);
         break;
     }
@@ -1149,13 +1149,13 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
 
 void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
     g_fieldMovieFlags = 0;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->movieList = arg0;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->movieEntry = arg1;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 = arg2;
+    g_gameState->unk1C->unk8E4.field->area->scene->movieList = arg0;
+    g_gameState->unk1C->unk8E4.field->area->scene->movieEntry = arg1;
+    g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 = arg2;
     fld_clearModelCache();
     func_800223CC();
-    g_gameState->unk1C->unk8E4.field->unk0 |= 0x1000;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 1;
+    g_gameState->unk1C->unk8E4.field->flags |= 0x1000;
+    g_gameState->unk1C->unk8E4.field->area->scene->movieState = 1;
 }
 
 void fld_movieUpdate(void) {
@@ -1164,7 +1164,7 @@ void fld_movieUpdate(void) {
     s32 t;
     s32 d;
 
-    switch (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState) {
+    switch (g_gameState->unk1C->unk8E4.field->area->scene->movieState) {
     case 1:
         if (cd_getState() == 0) {
             if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
@@ -1172,29 +1172,29 @@ void fld_movieUpdate(void) {
                 func_8002177C(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
                               (void *)(D_80067944 + 0xF1700), 0, 0x15000, NULL);
             }
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 2;
+            g_gameState->unk1C->unk8E4.field->area->scene->movieState = 2;
         }
         break;
     case 2:
         if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
             g_fieldMovieFlags |= 8;
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 3;
+            g_gameState->unk1C->unk8E4.field->area->scene->movieState = 3;
         }
         break;
     case 3:
         if (!(g_fieldMovieFlags & 8)) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->movieFile = cd_findFile(
-                g_mbgMovieLists[g_gameState->unk1C->unk8E4.field->unkC->unk14->movieList]
-                    .unk4[g_gameState->unk1C->unk8E4.field->unkC->unk14->movieEntry].unk0);
+            g_gameState->unk1C->unk8E4.field->area->scene->movieFile = cd_findFile(
+                g_mbgMovieLists[g_gameState->unk1C->unk8E4.field->area->scene->movieList]
+                    .unk4[g_gameState->unk1C->unk8E4.field->area->scene->movieEntry].unk0);
             if (cd_getState() == 0) {
-                func_80022ED4(g_gameState->unk1C->unk8E4.field->unkC->unk14->movieFile);
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 4;
+                func_80022ED4(g_gameState->unk1C->unk8E4.field->area->scene->movieFile);
+                g_gameState->unk1C->unk8E4.field->area->scene->movieState = 4;
             }
         }
         break;
     case 4:
         if (cd_getState() == 0) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 5;
+            g_gameState->unk1C->unk8E4.field->area->scene->movieState = 5;
         }
         break;
     case 5:
@@ -1203,32 +1203,32 @@ void fld_movieUpdate(void) {
             if (g_gameState->unk1C->unk8 != 0) {
                 b = 2;
             }
-            g_fieldFlagQueue.unk10[0][b - 1] = 0x600;
-            g_fieldFlagQueue.unk0[0][b - 1] = 0x19;
-            g_fieldFlagQueue.unk10[0][b - 1] |= 0x800;
-            if (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 != 0) {
-                g_fieldFlagQueue.unk0[0][b - 1] |= 0x44;
-                g_fieldFlagQueue.unk10[0][b - 1] |= 1;
+            g_fieldFlagQueue.mapFlags[0][b - 1] = 0x600;
+            g_fieldFlagQueue.gameFlags[0][b - 1] = 0x19;
+            g_fieldFlagQueue.mapFlags[0][b - 1] |= 0x800;
+            if (g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 != 0) {
+                g_fieldFlagQueue.gameFlags[0][b - 1] |= 0x44;
+                g_fieldFlagQueue.mapFlags[0][b - 1] |= 1;
             }
-            g_fieldFlagQueue.unk20[0][b - 1] = 0x40;
-            g_fieldFlagQueue.unk20[1][b] = 0x40;
-            g_fieldFlagQueue.unk20[0][b] = 2;
+            g_fieldFlagQueue.movieFlags[0][b - 1] = 0x40;
+            g_fieldFlagQueue.movieFlags[1][b] = 0x40;
+            g_fieldFlagQueue.movieFlags[0][b] = 2;
             if (!(D_80073998[0] & 0x04000000)) {
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x1000;
+                g_gameState->unk1C->unk8E4.field->area->scene->flags |= 0x1000;
                 D_80073998[0] |= 0x04000000;
             }
             g_gameState->vsyncMode = 4;
             func_80056248(0);
             func_80056228();
             DrawSync(0);
-            MBG_init(1, &g_gameState->unk1C->unk8E4.field->unkC->unk14->movieWork);
-            mbg_setRgb24(g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24);
+            MBG_init(1, &g_gameState->unk1C->unk8E4.field->area->scene->movieWork);
+            mbg_setRgb24(g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24);
             mbg_setEndCallback(fld_movieStop);
             g_fieldMovieLastFrame = g_mbgFrame;
-            func_8019AB98(2, 4, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5D);
-            mbg_play(g_gameState->unk1C->unk8E4.field->unkC->unk14->movieList,
-                          g_gameState->unk1C->unk8E4.field->unkC->unk14->movieEntry);
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 6;
+            func_8019AB98(2, 4, g_gameState->unk1C->unk8E4.field->area->scene->movieSndVolume);
+            mbg_play(g_gameState->unk1C->unk8E4.field->area->scene->movieList,
+                          g_gameState->unk1C->unk8E4.field->area->scene->movieEntry);
+            g_gameState->unk1C->unk8E4.field->area->scene->movieState = 6;
         }
         break;
     case 6:
@@ -1252,21 +1252,21 @@ void fld_movieUpdate(void) {
                 addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1],
                         &g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
                 DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1]);
-            } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
+            } else if (g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
                 g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
             }
             if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
                 if (g_fieldMovieLastFrame >= g_mbgFrame) {
                     ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
                     g_gameState->unk1C->unk0 &= ~0x1D;
-                    g_gameState->unk1C->unk8E4.field->unk0 &= ~0xE01;
-                    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
+                    g_gameState->unk1C->unk8E4.field->flags &= ~0xE01;
+                    if (g_gameState->unk1C->unk8E4.field->area->scene->movieRgb24 != 0 && g_gameState->unk1C->unk8 == 0) {
                         g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                     }
                     printf("Fr: %d\n", g_fieldMovieLastFrame);
                 } else {
-                    g_fieldFlagQueue.unk0[1][0] = 0x1D;
-                    g_fieldFlagQueue.unk10[1][0] = 0xE01;
+                    g_fieldFlagQueue.gameFlags[1][0] = 0x1D;
+                    g_fieldFlagQueue.mapFlags[1][0] = 0xE01;
                 }
                 g_fieldMovieFlags |= 0x100;
             }
@@ -1276,21 +1276,21 @@ void fld_movieUpdate(void) {
     case 7:
         if ((g_fieldMovieFlags & 4) && cd_getState() == 0) {
             fld_movieFinish();
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 8;
+            g_gameState->unk1C->unk8E4.field->area->scene->movieState = 8;
         }
         break;
     }
 }
 
 void fld_movieStop(void) {
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x1000) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->flags & 0x1000) {
         D_80073998[0] &= ~0x04000000;
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x1000;
+        g_gameState->unk1C->unk8E4.field->area->scene->flags &= ~0x1000;
     }
     mbg_shutdown();
     cd_cancel();
     g_fieldMovieFlags |= 4;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 7;
+    g_gameState->unk1C->unk8E4.field->area->scene->movieState = 7;
 }
 
 void fld_movieFinish(void) {
@@ -1299,15 +1299,15 @@ void fld_movieFinish(void) {
     g_gameState->unk1C->unk0 &= ~0x5D;
     f = g_gameState->unk1C->unk8E4.field;
     g_fieldMovieFlags &= 0xFE00;
-    f->unk0 &= ~0x1E01;
+    f->flags &= ~0x1E01;
     g_gameState->vsyncMode = 2;
     g_gameState->unkC[0].disp.x = 0x140;
     g_gameState->unkC[1].disp.x = 0;
-    fld_soundCommand(0x6201, -1, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5C, 0, 0);
+    fld_soundCommand(0x6201, -1, g_gameState->unk1C->unk8E4.field->area->scene->sndVolume, 0, 0);
 }
 
 s32 fld_isMoviePlaying(void) {
-    if ((u32)(g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState - 6) < 2 && (g_fieldMovieFlags & 2)
+    if ((u32)(g_gameState->unk1C->unk8E4.field->area->scene->movieState - 6) < 2 && (g_fieldMovieFlags & 2)
         && (func_80012AD4() & 2)) {
         return 1;
     }
@@ -1327,7 +1327,7 @@ void fld_movieRequestStop(void) {
 }
 
 void fld_beginFrame(void) {
-    if (g_gameState->unk1C->unk8E4.field->unk0 & 0x200) {
+    if (g_gameState->unk1C->unk8E4.field->flags & 0x200) {
         ClearOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
         setlen(&g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
         g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
@@ -1350,7 +1350,7 @@ void fld_endFrame(void) {
     }
     DrawSync(0);
     if (!(func_80012AD4() & 2)) {
-        if ((g_gameState->unk1C->unk0 & 0x1C) == 0x1C && (g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
+        if ((g_gameState->unk1C->unk0 & 0x1C) == 0x1C && (g_gameState->unk1C->unk8E4.field->flags & 4)) {
             g_gameState->vsyncMode = 0;
         } else {
             g_gameState->vsyncMode = 2;
@@ -1364,11 +1364,11 @@ void fld_endFrame(void) {
         ExitCriticalSection();
         g_fieldMovieFlags &= ~8;
     }
-    if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x20)) {
+    if (!(g_gameState->unk1C->unk8E4.field->flags & 0x20)) {
         PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
-        f = g_gameState->unk1C->unk8E4.field->unk0;
+        f = g_gameState->unk1C->unk8E4.field->flags;
         if (!(f & 0x40)) {
             if (f & 0x400) {
                 PutDrawEnv(&g_gameState->unk10[g_gameState->unk1C->unk8]);
@@ -1384,31 +1384,31 @@ void fld_endFrame(void) {
         func_8002C0DC(g_gameState->unk1C->unk8);
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
-        g_gameState->unk1C->unk0 |= g_fieldFlagQueue.unk0[0][0];
-        g_gameState->unk1C->unk0 &= ~g_fieldFlagQueue.unk0[1][0];
-        g_gameState->unk1C->unk8E4.field->unk0 |= g_fieldFlagQueue.unk10[0][0];
-        g_gameState->unk1C->unk8E4.field->unk0 &= ~g_fieldFlagQueue.unk10[1][0];
-        g_fieldMovieFlags |= g_fieldFlagQueue.unk20[0][0];
-        g_fieldMovieFlags &= ~g_fieldFlagQueue.unk20[1][0];
+        g_gameState->unk1C->unk0 |= g_fieldFlagQueue.gameFlags[0][0];
+        g_gameState->unk1C->unk0 &= ~g_fieldFlagQueue.gameFlags[1][0];
+        g_gameState->unk1C->unk8E4.field->flags |= g_fieldFlagQueue.mapFlags[0][0];
+        g_gameState->unk1C->unk8E4.field->flags &= ~g_fieldFlagQueue.mapFlags[1][0];
+        g_fieldMovieFlags |= g_fieldFlagQueue.movieFlags[0][0];
+        g_fieldMovieFlags &= ~g_fieldFlagQueue.movieFlags[1][0];
         for (i = 0; i < 2; i++) {
             for (j = 0; j < 3; j++) {
-                g_fieldFlagQueue.unk0[i][j] = g_fieldFlagQueue.unk0[i][j + 1];
-                g_fieldFlagQueue.unk10[i][j] = g_fieldFlagQueue.unk10[i][j + 1];
-                g_fieldFlagQueue.unk20[i][j] = g_fieldFlagQueue.unk20[i][j + 1];
+                g_fieldFlagQueue.gameFlags[i][j] = g_fieldFlagQueue.gameFlags[i][j + 1];
+                g_fieldFlagQueue.mapFlags[i][j] = g_fieldFlagQueue.mapFlags[i][j + 1];
+                g_fieldFlagQueue.movieFlags[i][j] = g_fieldFlagQueue.movieFlags[i][j + 1];
             }
-            g_fieldFlagQueue.unk0[i][3] = 0;
-            g_fieldFlagQueue.unk10[i][3] = 0;
-            g_fieldFlagQueue.unk20[i][3] = 0;
+            g_fieldFlagQueue.gameFlags[i][3] = 0;
+            g_fieldFlagQueue.mapFlags[i][3] = 0;
+            g_fieldFlagQueue.movieFlags[i][3] = 0;
         }
     }
 }
 
 void fld_startEncounter(void) {
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterStep = 0;
-    g_fieldFlagQueue.unk10[1][3] = 4;
-    g_fieldFlagQueue.unk0[0][0] = 0x43;
-    g_fieldFlagQueue.unk0[0][2] = 0x3C;
-    g_fieldFlagQueue.unk10[0][2] = 0x1919;
+    g_gameState->unk1C->unk8E4.field->area->scene->encounterStep = 0;
+    g_fieldFlagQueue.mapFlags[1][3] = 4;
+    g_fieldFlagQueue.gameFlags[0][0] = 0x43;
+    g_fieldFlagQueue.gameFlags[0][2] = 0x3C;
+    g_fieldFlagQueue.mapFlags[0][2] = 0x1919;
     D_80073998[0] |= 0x04000000;
 }
 
@@ -1420,11 +1420,11 @@ void fld_updateEncounter(void) {
     s32 i;
     s16 w;
 
-    if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterStep == 0) {
+    if (g_gameState->unk1C->unk8E4.field->area->scene->encounterStep == 0) {
         D_8007BD28 = 0;
         D_8007BD30 = D_80067944 + 0x153F00;
         fld_clearModelCache();
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop = D_80067948;
+        g_gameState->unk1C->unk8E4.field->area->scene->heapTop = D_80067948;
         a = func_8004AE00();
         if (a != NULL) {
             fldbg_applyGeomOffset();
@@ -1435,20 +1435,20 @@ void fld_updateEncounter(void) {
             gte_SetTransMatrix(&g_gameState->unk1C->unk18);
             gte_ldv0(&v);
             gte_rtps();
-            gte_stsxy(&g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenX);
-            if ((u16)g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenX >= 320
-                || g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenY < 0
-                || g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenY >= 224) {
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenX = 160;
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenY = 112;
+            gte_stsxy(&g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX);
+            if ((u16)g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX >= 320
+                || g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenY < 0
+                || g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenY >= 224) {
+                g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX = 160;
+                g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenY = 112;
             }
             fldbg_resetGeomOffset();
         }
         fld_findBattleMusic();
-        if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic
+        if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.field->area->scene->battleMusic
             && (g_gameState->unk1C->unk0 & 0x20000000)) {
             func_800559FC(0, 0xF, 0);
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep = 7;
+            g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = 7;
         }
         if (g_gameState->unk1C->unk830[0] != 0xFFFF && (g_gameState->unk1C->unk0 & 0x02000000)) {
             func_800557A8(g_gameState->unk1C->unk828, 0x100000, 0xF, 0);
@@ -1461,9 +1461,9 @@ void fld_updateEncounter(void) {
             D_800739B0[i].unk0 = 0;
         }
         func_80056228();
-        g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterStep++;
+        g_gameState->unk1C->unk8E4.field->area->scene->encounterStep++;
     } else {
-        if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 2)) {
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 2)) {
             if (func_800220E8(0x1000B) != 0) {
                 e = preload_find(0x1000B);
                 ClearOTag(&g_fieldTempOt, 1);
@@ -1489,44 +1489,44 @@ void fld_updateEncounter(void) {
             fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 2;
+            g_gameState->unk1C->unk8E4.field->area->scene->flags |= 2;
         }
-        if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 1)
-            && func_80053A10(g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenX,
-                             g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterScreenY)) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 1;
+        if (!(g_gameState->unk1C->unk8E4.field->area->scene->flags & 1)
+            && func_80053A10(g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenX,
+                             g_gameState->unk1C->unk8E4.field->area->scene->encounterScreenY)) {
+            g_gameState->unk1C->unk8E4.field->area->scene->flags |= 1;
         }
-        if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep > 0) {
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep--;
-        } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep == 0) {
-            if (g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic != 0xFFFF
-                && g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic != g_gameState->unk1C->unk81C[0]) {
+        if (g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep > 0) {
+            g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep--;
+        } else if (g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep == 0) {
+            if (g_gameState->unk1C->unk8E4.field->area->scene->battleMusic != 0xFFFF
+                && g_gameState->unk1C->unk8E4.field->area->scene->battleMusic != g_gameState->unk1C->unk81C[0]) {
                 if (g_gameState->unk1C->unk0 & 0x20000000) {
                     fld_soundCommand(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
                 }
-                fld_soundCommand(0x700, g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic, 0, 0, 0);
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep = -1;
+                fld_soundCommand(0x700, g_gameState->unk1C->unk8E4.field->area->scene->battleMusic, 0, 0, 0);
+                g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = -1;
             } else {
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep = -2;
+                g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = -2;
             }
-        } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep == -1) {
+        } else if (g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep == -1) {
             if (fld_soundCommand(0xC00, -1, 0, 0, 0) == 0) {
-                g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep = -2;
+                g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = -2;
             }
-        } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep == -2) {
+        } else if (g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep == -2) {
             fld_suspendResidentSfx();
-            if (g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic != 0xFFFF
+            if (g_gameState->unk1C->unk8E4.field->area->scene->battleMusic != 0xFFFF
                 && !(g_gameState->unk1C->unk0 & 0x20000000)) {
-                fld_soundCommand(0, g_gameState->unk1C->unk8E4.field->unkC->unk14->battleMusic, 0, 0, 0);
+                fld_soundCommand(0, g_gameState->unk1C->unk8E4.field->area->scene->battleMusic, 0, 0, 0);
                 func_800559C8(0, 0x7F);
             }
-            g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep = -3;
+            g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep = -3;
         }
     }
-    if ((g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 1)
-        && g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterMusicStep == -3) {
+    if ((g_gameState->unk1C->unk8E4.field->area->scene->flags & 1)
+        && g_gameState->unk1C->unk8E4.field->area->scene->encounterMusicStep == -3) {
         g_gameState->unk1C->unk0 &= ~0x7F;
-        g_gameState->unk1C->unk8E4.field->unk0 &= ~0x1919;
+        g_gameState->unk1C->unk8E4.field->flags &= ~0x1919;
         D_80073998[0] &= 0xFBFFFFFF;
         g_gameState->unk0 |= 2;
     }
@@ -1598,15 +1598,15 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldSpriteSet *h;
     FieldSprite *e;
 
-    h = g_gameState->unk1C->unk8E4.field->unkC->unk14->sprites;
+    h = g_gameState->unk1C->unk8E4.field->area->scene->sprites;
     if (h == NULL) {
         return;
     }
-    e = &h->unk8[arg0];
+    e = &h->entries[arg0];
     if (arg1 == 0x82) {
         if (arg2 != -1) {
             fld_resetSprite(e);
-            e->unk1 = arg2;
+            e->spriteId = arg2;
             e->sprite = db_lookupRegistered(4, (arg2 & 0xFFFF) | 0x160000, 0);
             e->frameEnd = fld_getSpriteFrameCount(e->sprite) * 16;
         } else {
@@ -1614,9 +1614,9 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
     } else if (arg1 == 0x83) {
         if (arg3 != 0) {
-            e->unk0_0 |= arg2;
+            e->flags |= arg2;
         } else {
-            e->unk0_0 &= ~arg2;
+            e->flags &= ~arg2;
         }
     } else if (arg1 == 0x87) {
         e->pos[0] = arg2;
@@ -1627,14 +1627,14 @@ void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         e->rot[1] = arg3;
         e->rot[2] = arg4;
     } else if (arg1 == 0x91) {
-        e->unk4 = arg2;
+        e->scale = arg2;
     } else if (arg1 == 0x96) {
         e->parent = func_8004B098(arg2);
         e->bone = arg3;
     } else if (arg1 == 0x9B) {
         e->unk7 = arg2;
     } else if (arg1 == 0x9C) {
-        e->unk0_4 = arg2;
+        e->abr = arg2;
     } else if (arg1 == 0xA0) {
         e->speed = arg2;
     } else if (arg1 == 0xA1) {
@@ -1653,7 +1653,7 @@ u8 *fld_initSprites(u8 *arg0) {
     s32 n;
     FieldSpriteSet *h;
 
-    fld_getBgKey(g_gameState->unk1C->unk8E4.field->unkC->unk14, (s16)g_gameState->unk1C->fieldId);
+    fld_getBgKey(g_gameState->unk1C->unk8E4.field->area->scene, (s16)g_gameState->unk1C->fieldId);
     i = 0;
     n = 0x10;
     h = (FieldSpriteSet *)arg0;
@@ -1661,19 +1661,19 @@ u8 *fld_initSprites(u8 *arg0) {
     h->unk4 = (u16 *)arg0;
     arg0 += 0x20;
     h->unk0 = 1;
-    h->unk2 = n;
-    h->unk3 = h->unk2;
+    h->capacity = n;
+    h->count = h->capacity;
     for (; i < n; i++) {
         h->unk4[i] = 0xFFFF;
     }
-    h->unk8 = (FieldSprite *)arg0;
-    arg0 += h->unk3 * 0x24;
-    for (i = 0; i < h->unk3; i++) {
-        fld_resetSprite(&h->unk8[i]);
+    h->entries = (FieldSprite *)arg0;
+    arg0 += h->count * 0x24;
+    for (i = 0; i < h->count; i++) {
+        fld_resetSprite(&h->entries[i]);
     }
-    h->unkC[0] = arg0;
-    h->unkC[1] = arg0 + 0x3000;
-    g_gameState->unk1C->unk8E4.field->unkC->unk14->sprites = h;
+    h->primBufs[0] = arg0;
+    h->primBufs[1] = arg0 + 0x3000;
+    g_gameState->unk1C->unk8E4.field->area->scene->sprites = h;
     return arg0 + 0x6000;
 }
 
@@ -1687,7 +1687,7 @@ void fld_drawSprites(void) {
     u32 *ot;
     long *t;
 
-    h = g_gameState->unk1C->unk8E4.field->unkC->unk14->sprites;
+    h = g_gameState->unk1C->unk8E4.field->area->scene->sprites;
     if (h == NULL) {
         return;
     }
@@ -1697,13 +1697,13 @@ void fld_drawSprites(void) {
     } else {
         fldbg_applyGeomOffset();
     }
-    prim = h->unkC[g_gameState->unk1C->unk8];
-    ot = &g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][g_gameState->unk1C->unk8E4.field->unkC->unk14->otBias];
-    for (i = 0; i < h->unk3; i++) {
-        e = &h->unk8[i];
-        if (e->sprite != NULL && (e->unk0_0 & 1)) {
+    prim = h->primBufs[g_gameState->unk1C->unk8];
+    ot = &g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][g_gameState->unk1C->unk8E4.field->area->scene->otBias];
+    for (i = 0; i < h->count; i++) {
+        e = &h->entries[i];
+        if (e->sprite != NULL && (e->flags & 1)) {
             if ((s8)e->parent != -1) {
-                t = ((MATRIX *)((FieldObjSlot *)func_8001E350((s8)e->parent))->unk8->boneMatrices)[e->bone].t;
+                t = ((MATRIX *)((FieldObjSlot *)func_8001E350((s8)e->parent))->model->boneMatrices)[e->bone].t;
                 e->pos[0] = t[0] + e->offset[0];
                 e->pos[1] = t[1] + e->offset[1];
                 e->pos[2] = t[2] + e->offset[2];
@@ -1712,7 +1712,7 @@ void fld_drawSprites(void) {
             rot.vy = e->rot[1];
             rot.vz = e->rot[2];
             rot.pad = 0;
-            prim = fld_drawSprite3D(prim, e->sprite, e->pos, &rot, e->unk4, e->frame >> 4, e->unk0_4 < 4 ? e->unk0_4 : 0xFF, e->unk7 << 4, &ot[e->otOffset]);
+            prim = fld_drawSprite3D(prim, e->sprite, e->pos, &rot, e->scale, e->frame >> 4, e->abr < 4 ? e->abr : 0xFF, e->unk7 << 4, &ot[e->otOffset]);
             e->frame += (s8)e->speed;
             if (e->frame >= e->frameEnd) {
                 e->frame = 0;
@@ -1730,12 +1730,12 @@ void fld_drawSprites(void) {
 void fld_resetSprite(FieldSprite *arg0) {
     s32 i;
 
-    arg0->unk4 = 0x1000;
+    arg0->scale = 0x1000;
     arg0->speed = 0x10;
     arg0->unk7 = 0x80;
-    arg0->unk0_0 = 1;
-    arg0->unk0_4 = 0xF;
-    arg0->unk1 = -1;
+    arg0->flags = 1;
+    arg0->abr = 0xF;
+    arg0->spriteId = -1;
     arg0->parent = -1;
     arg0->bone = 0;
     for (i = 0; i < 3; i++) {
