@@ -1,4 +1,4 @@
-/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 27 lines, 18 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. */
+/* Draft of fx_0fb_1 fx_0fb_1_op80. Status: 18 lines, 9 ignoring registers (build/w/nd.py, which now masks all |imm| >= 10000 data offsets). Cases 3-6 use fx_17a op80's final variable roles (src/fxmod/fx_17a); mode 0/1 are if/else-if branches with one return 0 (as fx_17a); further splits found by build/w/pgreedy.py + gen_regions.py. Case 3 reuses t (the original keeps it in t's spill slot), case 5's cos value is a block local declared after w (its slot comes last), and two dead `struct { s32 x; }` locals in the mode-1 block take the original's unused spill slots 196/200 (as in fx_0fb_0 op80). Left: mode-1 a0/a2 swap and second unkC.vy load, s0/s1 and s3/s6 swaps in case 5. */
 #include "fxmod/fx_0fb_1.h"
 
 typedef struct {
@@ -151,6 +151,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unk54.vz -= 0x2000;
         {
             SVECTOR v;
+            struct { s32 x; } q0 = { frame };
+            struct { s32 x; } q1 = { frame };
 
             v.vx = work->unk54.vx;
             v.vy = work->unk54.vy;
@@ -356,15 +358,15 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         s32 ca;
         s32 cb;
 
-        zz1 = (frame << 12) / 37;
-        trail = ex->math_cos(zz1 >> 2);
-        g = (zz1 >> 4) + 0x80;
+        t = (frame << 12) / 37;
+        trail = ex->math_cos(t >> 2);
+        g = (t >> 4) + 0x80;
         ex->Hi_DrawSummonModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk28, ((Fx0fb1Summon *)env->unk4)->unk60, 0);
-        ca = ((0x1000 - (zz1 * 2) / 3) >> 5) - 0x80;
+        ca = ((0x1000 - (t * 2) / 3) >> 5) - 0x80;
         ex->Hi_ModifySummonModelRGB(((Fx0fb1Summon *)env->unk4)->unk60, ca, ca, ca);
         work->unk1C.vy += 0x10E;
         ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->unkA4);
-        cb = ((0x1000 - zz1) >> 5) - 0x80;
+        cb = ((0x1000 - t) >> 5) - 0x80;
         ex->Hi_ModifyEffModelRGB(work->unkA4, cb, cb, cb);
         glow = 0xAA;
         work->unk1C.vy -= 0x10E;
@@ -415,7 +417,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
                 p->unk22 = 0x80;
             }
         }
-        k = (ex->math_sin(zz1 >> 2) * 0x46) >> 12;
+        k = (ex->math_sin(t >> 2) * 0x46) >> 12;
         ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, k >> 2, k >> 1, k);
         if (frame >= 0x22) {
             k = ((frame - 0x21) * 0xFF) / 4;
@@ -525,6 +527,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         SVECTOR rot2;
         VECTOR sc2;
         s32 w;
+        s32 h;
 
         t = frame << 6;
         env->unk28 = 0x100;
@@ -597,7 +600,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             ang.vx += 0x40;
             ang.vy -= 0x80;
         }
-        f3 = (ex->math_cos(t >> 2) >> 1) + 0x1000;
+        h = (ex->math_cos(t >> 2) >> 1) + 0x1000;
         if (frame < 0x18) {
             w = (ex->math_sin((frame << 10) / 24) >> 2) + 0x6A4;
         } else {
@@ -606,7 +609,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         for (m = 0; m < 2; m++) {
             if (frame == 0) {
                 ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&work->unkC, (s32 *)&work->unkC,
-                                    -1, f3, ex->math_cos(t >> 2), 1, (u8 *)&D_801F0914[m], 1);
+                                    -1, h, ex->math_cos(t >> 2), 1, (u8 *)&D_801F0914[m], 1);
             }
             {
                 SVECTOR *pp = D_801F0914[m].unk4;
@@ -622,7 +625,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         ang2.vz = 0;
         for (k = 0, j = work->unk4 * 0x5C; k < 2; k++, j += 0x800) {
             ex->func_800D044C(&work->unkC, (s32)&at2, 0, (XY32 *)&ang2, w, j);
-            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&at2, (s32 *)&work->unkC, 0, f3,
+            ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0x14), (s32)&at2, (s32 *)&work->unkC, 0, h,
                                 (ex->math_sin(t >> 1) >> 1) + 0x800, 1, (u8 *)&D_801F0914[k], 1);
         }
         if (frame < 0x18) {
