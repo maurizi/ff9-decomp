@@ -9,7 +9,7 @@ typedef struct {
     Pool6CEntry *unk4;
     Pool6CEntry *unk8;
     SVECTOR unkC; /* unk14 raised by 0xF0 */
-    SVECTOR unk14; /* position: env->unkC->unk38 */
+    SVECTOR unk14; /* position: env->targets->centerX */
     SVECTOR unk1C; /* unit 0x10 bone D_801E7C8C[0] */
     SVECTOR unk24; /* unit 0x10 bone D_801E7C8C[1] */
     SVECTOR unk2C; /* unkC, 0x300 to one side */

@@ -6,14 +6,14 @@
 
 typedef struct {
     Pool6CEntry *unk0;
-    SVECTOR unk4; /* position: env->unkC->unk38..3C */
+    SVECTOR unk4; /* position: env->targets->centerX..Z */
 } Fx0cfWork80;
 
 typedef struct {
     SVECTOR unk0; /* unit 0x10 body position */
     SVECTOR unk8; /* angles from unk0 to unk18, turned around */
     SVECTOR unk10; /* unk18 moved 0x320 along unk8 */
-    SVECTOR unk18; /* position: env->unkC->unk38..3C */
+    SVECTOR unk18; /* position: env->targets->centerX..Z */
     SVECTOR unk20; /* start position */
 } Fx0cfWork81;
 

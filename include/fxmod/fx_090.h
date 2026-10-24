@@ -18,7 +18,7 @@ typedef struct {
     VECTOR unk2C; /* model position */
     VECTOR unk3C; /* model scale */
     s32 unk4C; /* model brightness */
-    SVECTOR unk50; /* position: env->unkC->unk38..3C */
+    SVECTOR unk50; /* position: env->targets->centerX..Z */
     SVECTOR unk58; /* unk50 raised by 0x320 */
     SVECTOR unk60; /* unk50 raised by 0x4B0 */
     s32 unk68; /* fade-in countdown */

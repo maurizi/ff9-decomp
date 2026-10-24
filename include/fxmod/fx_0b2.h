@@ -7,7 +7,7 @@
 typedef struct {
     s32 unk0; /* state 0-3 */
     s32 unk4; /* frame */
-    SVECTOR unk8; /* centre: env->unkC->unk38 */
+    SVECTOR unk8; /* centre: env->targets->centerX */
     SVECTOR unk10; /* position */
     SVECTOR unk18;
 } Fx0b2Work; /* 0x20 */

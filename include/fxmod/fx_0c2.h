@@ -26,7 +26,7 @@ typedef struct {
 
 typedef struct {
     SVECTOR unk0; /* rotation step total */
-    SVECTOR unk8; /* position: env->unkC->unk38..3C */
+    SVECTOR unk8; /* position: env->targets->centerX..Z */
 } Fx0c2Work82;
 
 typedef struct {

@@ -8,7 +8,7 @@ typedef struct {
     Pool6CEntry *unk0;
     Pool6CEntry *unk4;
     SVECTOR unk8; /* func_800DC858(0x10, 0) */
-    SVECTOR unk10; /* angles from unk8 to env->unkC->unk38 */
+    SVECTOR unk10; /* angles from unk8 to env->targets->centerX */
     SVECTOR unk18; /* lerp start: env position at x = 0x5DC */
     SVECTOR unk20; /* lerp end: env position at x = -0x5DC */
     SVECTOR unk28; /* lerp output */

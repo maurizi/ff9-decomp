@@ -9,12 +9,12 @@ typedef struct {
     Pool6CEntry *unk4;
     SVECTOR unk8; /* unit 0x10 body position */
     SVECTOR unk10; /* func_800DC818(0x10, 0x17) */
-    SVECTOR unk18; /* angles from unk8 to env->unkC->unk38 */
+    SVECTOR unk18; /* angles from unk8 to env->targets->centerX */
 } Fx088Work80;
 
 typedef struct {
     SVECTOR unk0; /* rotation step total */
-    SVECTOR unk8; /* position: env->unkC->unk38..3C */
+    SVECTOR unk8; /* position: env->targets->centerX..Z */
 } Fx088Work81;
 
 extern Unk800F78A4 *D_801E7DA0;

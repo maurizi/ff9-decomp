@@ -7,7 +7,7 @@
 typedef struct {
     Pool6CEntry *unk0;
     Pool6CEntry *unk4;
-    SVECTOR unk8; /* position: env->unkC->unk38..3C */
+    SVECTOR unk8; /* position: env->targets->centerX..Z */
     SVECTOR unk10; /* func_800DC858(0x10, 0) */
     SVECTOR unk18; /* func_800DC858(0x10, 0), every frame */
     SVECTOR unk20; /* angles from unk10 to unk8 */
