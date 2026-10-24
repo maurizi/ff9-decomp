@@ -759,6 +759,6 @@ void menuEquip_drawStatLabel(s32 x, s32 y, s32 z, u8 id, s32 color) {
     text_drawBlock(x, y - 4, z, text_get(id), color);
 }
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801F1150", D_801EE644);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_equip", D_801EE644);
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801F1150", g_equipMenuText);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_equip", g_equipMenuText);

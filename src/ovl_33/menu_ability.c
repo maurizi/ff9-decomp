@@ -989,6 +989,6 @@ void menuAbility_initActionCursor(void) {
 void func_801F1148(void) {
 }
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801EE7C0", g_abilityMenuText);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_ability", g_abilityMenuText);
 
-INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/tu_801EE7C0", s_menuAbilityImage);
+INCLUDE_RODATA("asm/us/ovl_33/nonmatchings/menu_ability", s_menuAbilityImage);
