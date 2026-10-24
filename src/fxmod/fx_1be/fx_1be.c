@@ -73,7 +73,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         D_801E95D4 = 8;
         D_801E95D8 = 8;
         D_801E95D0 = 2;
-        for (i = 0; i < env->unkC->unk24; i++) {
+        for (i = 0; i < env->targets->unk24; i++) {
             D_801E95E8[i].unk34 = ex->btlfx_rand() & 7;
             D_801E95E8[i].unk30 = 0x28;
             D_801E95E8[i].unk28.vx = ex->btlfx_randRange(-0x20, 0x20);
@@ -119,12 +119,12 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         w->unkA4 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xA), 1);
     } else {
         frame = entry->unk0;
-        env->unk2C->unk0[1].vx = 0;
-        env->unk2C->unk0[1].vy = -0x800;
-        env->unk2C->unk0[1].vz = 0x418;
-        env->unk2C->unk0[3].vx = w->unk64.vx;
-        env->unk2C->unk0[3].vy = w->unk64.vy;
-        env->unk2C->unk0[3].vz = w->unk64.vz;
+        env->camera->unk0[1].vx = 0;
+        env->camera->unk0[1].vy = -0x800;
+        env->camera->unk0[1].vz = 0x418;
+        env->camera->unk0[3].vx = w->unk64.vx;
+        env->camera->unk0[3].vy = w->unk64.vy;
+        env->camera->unk0[3].vz = w->unk64.vz;
         switch (frame) {
         case 0:
             w->unk0[1] = 0x28;
@@ -198,7 +198,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             w->unk0[0xB] = 0x10;
             break;
         case 0x7C:
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 ex->func_800E7ACC(i, (s32 *)&D_801E95E8[i].unk8);
                 ex->btlfx_setUnitRot(i, (s16 *)&D_801E95E8[i].unk0);
             }
@@ -255,7 +255,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
             aim.vx = w->unk64.vx;
             aim.vy = w->unk64.vy;
             aim.vz = w->unk64.vz;
-            ex->btlfx_aimAngles((s16 *)&env->unk2C->unk54, (s16 *)&aim, (s16 *)&w->unk9C);
+            ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&aim, (s16 *)&w->unk9C);
             ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->unk94);
             if (w->unk0[6] != 0) {
                 ex->Hi_DrawEffModel(&w->unk9C, &w->unk64, (s32)&w->unk74, w->unk98);
@@ -269,7 +269,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0xC] != 0) {
             w->unk0[0xC]--;
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 u = &D_801E95E8[i];
                 if (u->unk34 == 0) {
                     if (u->unk30 != 0) {
@@ -299,7 +299,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->unk0[0xB]--;
                 a = w->unk0[0xB] << 8;
             }
-            ex->btlfx_aimAngles((s16 *)&w->unk8C, (s16 *)&env->unk2C->unk54, (s16 *)&rot2);
+            ex->btlfx_aimAngles((s16 *)&w->unk8C, (s16 *)&env->camera->unk54, (s16 *)&rot2);
             pos.vz = 0xC18;
             pos.vx = 0;
             pos.vy = -0x1200;
@@ -313,7 +313,7 @@ s32 fx_1be_op80(s32 mode, Fx1beWork80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
         }
         if (w->unk0[0x10] != 0) {
             w->unk0[0x10]--;
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 ex->btlfx_getUnitHomePos(i, (s16 *)&D_801E95E8[i].unk18);
                 D_801E95E8[i].unk18.vy -= ex->math_sin(w->unk0[0x10] << 7) >> 1;
                 ex->btlfx_setUnitPos(i, (s16 *)&D_801E95E8[i].unk18);
@@ -378,12 +378,12 @@ void func_801E89A8(SVECTOR *pos, SVECTOR *rot, s32 n, s32 tpage, s32 clut, s32 a
     uv0.u = uv2.u = 0;
     uv2.v = uv3.v = 0x9F;
     v[0].vy = v[1].vy = v[2].vy = v[3].vy = 0;
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    p = (POLY_GT4 *)env->unk24;
+    p = (POLY_GT4 *)env->prim;
     tpage |= (abr & 3) << 5;
-    env->unk24 = (u8 *)(p + 32);
+    env->prim = (u8 *)(p + 32);
     gte_rtv0tr_b();
     ex->func_800316D8(rot, &m);
     gte_stlvnl(m.t);

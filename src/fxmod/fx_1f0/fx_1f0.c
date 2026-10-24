@@ -104,7 +104,7 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             D_801E8558[i].unk4 = 0x80;
             D_801E8558[i].unk28 = NULL;
         }
-        for (i = 0; i < env->unkC->unk24; i++) {
+        for (i = 0; i < env->targets->unk24; i++) {
             u = &D_801E8558[i];
             u->unk28 = NULL;
             ex->func_800E806C(i, -2);
@@ -139,13 +139,13 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 ex->btlfx_setUnitPos(i, (s16 *)&D_801E8558[i].unk8);
             }
         }
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 if (D_801E8558[i].unk28 != NULL && D_801E8558[i].unk28->unk30 == -1) {
                     D_801E8558[i].unk28 = NULL;
                 }
@@ -197,9 +197,9 @@ s32 fx_1f0_op80(s32 mode, Fx1f0Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 }
             }
         }
-        env->unk2C->unk0[0].vx = 0;
-        env->unk2C->unk0[0].vy = D_801E8558[0].unk20.vy;
-        env->unk2C->unk0[0].vz = D_801E8558[0].unk20.vz;
+        env->camera->unk0[0].vx = 0;
+        env->camera->unk0[0].vy = D_801E8558[0].unk20.vy;
+        env->camera->unk0[0].vz = D_801E8558[0].unk20.vz;
         work->unkA0.vy = work->unkA0.vy + work->unkB0 + 0x20;
         work->unkA8.vy = work->unkA8.vy - work->unkB4 - 0x20;
         if (work->unk0[4] | work->unk0[5] | work->unk0[6]) {

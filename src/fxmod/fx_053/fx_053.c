@@ -52,9 +52,9 @@ s32 fx_053_op81(s32 mode, Fx053Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x14;
     } else if (mode == 1) {
-        work->unkC.vx = env->unkC->unk38;
-        work->unkC.vy = env->unkC->unk3A;
-        work->unkC.vz = env->unkC->unk3C;
+        work->unkC.vx = env->targets->unk38;
+        work->unkC.vy = env->targets->unk3A;
+        work->unkC.vz = env->targets->unk3C;
         D_801E7CAC = env;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unkC);
         if (work->unk0 != NULL) {
@@ -83,7 +83,7 @@ s32 fx_053_op82(s32 mode, Fx053Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
         work->unk18 = n;
         D_801E7CAC = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->unk24) {
             func_801E7C50(env, 7, 1);
             return 1;
         }

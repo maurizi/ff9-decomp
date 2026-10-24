@@ -22,11 +22,11 @@ void func_801E7718(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r, s32 p, CVEC
     s32 u1;
     s32 v1;
 
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    prim = (POLY_FT4 *)env->unk24;
-    env->unk24 = (u8 *)(prim + 320);
+    prim = (POLY_FT4 *)env->prim;
+    env->prim = (u8 *)(prim + 320);
     col.cd = abr == 0xFF ? 0x2C : 0x2E;
     col.r = (rgb->r * p) >> 12;
     col.g = (rgb->g * p) >> 12;
@@ -194,9 +194,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         {
         switch (work->unk0) {
         case 2:
-            env->unk2C->unk0[3].vx = work->unkC.vx;
-            env->unk2C->unk0[3].vy = work->unkC.vy;
-            env->unk2C->unk0[3].vz = work->unkC.vz;
+            env->camera->unk0[3].vx = work->unkC.vx;
+            env->camera->unk0[3].vy = work->unkC.vy;
+            env->camera->unk0[3].vz = work->unkC.vz;
             work->unk4C.vx += 0x20;
             work->unk4C.vy += 0x10;
             t = (frame << 12) / 18;
@@ -282,10 +282,10 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             i = (ex->math_sin(t >> 2) * 0x46) >> 12;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, i >> 2, i >> 1, i);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, i >> 2, i >> 1, i);
             if (frame >= 0x15) {
                 i = ((frame - 0x14) * 0xFF) / 4;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, i, i, i);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, i, i, i);
             }
             if (frame >= 0x11) {
                 n = frame - 0x14;
@@ -297,9 +297,9 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->unk0 = -1;
                 BTLFX_COPY_SVEC(&work->unk24, &D_801E9AC4);
                 work->unk24.vy += 0x400;
-                env->unk2C->unk0[3].vx = work->unk24.vx;
-                env->unk2C->unk0[3].vy = work->unk24.vy;
-                env->unk2C->unk0[3].vz = work->unk24.vz;
+                env->camera->unk0[3].vx = work->unk24.vx;
+                env->camera->unk0[3].vy = work->unk24.vy;
+                env->camera->unk0[3].vz = work->unk24.vz;
                 work->unk34.vx = D_801E9AC4.vx;
                 work->unk34.vy = D_801E9AC4.vy;
                 work->unk34.vz = D_801E9AC4.vz;
@@ -316,11 +316,11 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             BTLFX_COPY_SVEC(&work->unk24, &D_801E9AC4);
             t = (frame << 12) / 10;
             work->unk24.vy += (0x1000 - t) >> 2;
-            env->unk2C->unk0[3].vx = work->unk24.vx;
+            env->camera->unk0[3].vx = work->unk24.vx;
             glow = 0xF0;
-            env->unk2C->unk0[3].vy = work->unk24.vy;
+            env->camera->unk0[3].vy = work->unk24.vy;
             g = 0x300;
-            env->unk2C->unk0[3].vz = work->unk24.vz;
+            env->camera->unk0[3].vz = work->unk24.vz;
             work->unk4C.vx += 0x20;
             work->unk4C.vy += 0x10;
             if (frame < 0x10) {
@@ -341,11 +341,11 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk28 = 0;
             if (frame < 6) {
                 c1 = 0xFF - ((frame * 0xFF) / 6);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c1, c1, c1);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c1, c1, c1);
             }
             if (frame >= 7) {
                 c1 = (frame - 7) * 0x55;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, c1, c1, c1);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, c1, c1, c1);
             }
             if (frame >= 0xA) {
                 work->unk0 = 5;
@@ -374,7 +374,7 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (p != NULL) {
                     p->unk22 = 0x80;
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0xFF);
             }
             break;
         case 5: {
@@ -418,12 +418,12 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 5), &work->unkC, &dir, a, 0, 1, i);
             }
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 0xFF, 0xA0, 0, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 0xFF, 0xA0, 0, 0xFF);
             } else if (frame == 1) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
             } else if (frame < 6) {
                 i = 0xFF - ((frame * 0xFF) / 6);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, i >> 1, i >> 1, i);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, i >> 1, i >> 1, i);
             }
             work->unk6C.vz += 0x18;
             ex->func_800E651C(D_801E9ACC, &col, frame);
@@ -548,17 +548,17 @@ s32 fx_17a_op80(s32 mode, Fx17aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         case 6:
             BTLFX_COPY_SVEC(&work->unk24, &D_801E9AC4);
-            env->unk2C->unk0[3].vx = work->unk24.vx;
-            env->unk2C->unk0[3].vy = work->unk24.vy;
+            env->camera->unk0[3].vx = work->unk24.vx;
+            env->camera->unk0[3].vy = work->unk24.vy;
             t = frame << 8;
-            env->unk2C->unk0[3].vz = work->unk24.vz;
+            env->camera->unk0[3].vz = work->unk24.vz;
             env->unk28 = 0x180;
             f1 = ex->math_cos(t >> 2) + 0x400;
             c = ex->math_cos(t >> 2);
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 3), &D_801E9AC4, NULL, f1, 0, 1, c);
             env->unk28 = 0;
             c = (ex->math_cos(t >> 2) * 0xFF) >> 12;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c, c, c);
             if (frame >= 0x10) {
                 ex->btlfx_clearEffModels();
                 return 1;

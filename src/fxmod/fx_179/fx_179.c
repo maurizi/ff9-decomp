@@ -118,13 +118,13 @@ void func_801E7B68(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 jn;
     s32 kn;
 
-    gte_SetRotMatrix(D_801E8A0C->unk14);
-    gte_SetTransMatrix(D_801E8A0C->unk14);
+    gte_SetRotMatrix(D_801E8A0C->viewMatrix);
+    gte_SetTransMatrix(D_801E8A0C->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)D_801E8A0C->unk24;
+    gt4 = (POLY_GT4 *)D_801E8A0C->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)(gt4 + 2);
-    D_801E8A0C->unk24 = (u8 *)(ft4 + 14);
+    D_801E8A0C->prim = (u8 *)(ft4 + 14);
     c0.r = c0.g = c0.b = c;
     c1.r = c1.g = c1.b = c;
     c0.code = abr != 0xFF ? 0x2E : 0x2C;
@@ -242,9 +242,9 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         work->unk4 = 0;
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
-        work->unk10.vz = env->unkC->unk3C;
+        work->unk10.vx = env->targets->unk38;
+        work->unk10.vy = env->targets->unk3A;
+        work->unk10.vz = env->targets->unk3C;
         D_801E8A0C = env;
         ex->btlfx_initEffModels(D_801EAA9C, 1);
         work->unk18 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 2), 0x9A, 0x3D40, 0, 0);
@@ -272,9 +272,9 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             BTLFX_COPY_SVEC(&to, &work->unk10);
             to.vy -= 0x200;
             ex->btlfx_lerpVec((s16 *)&from, (s16 *)&to, (frame << 12) / 10, (s16 *)&out);
-            env->unk2C->unk0[3].vx = out.vx;
-            env->unk2C->unk0[3].vy = out.vy;
-            env->unk2C->unk0[3].vz = out.vz;
+            env->camera->unk0[3].vx = out.vx;
+            env->camera->unk0[3].vy = out.vy;
+            env->camera->unk0[3].vz = out.vz;
         }
         ex->Hi_DrawEffModel(&rot, &pos, (s32)&scale, work->unk18);
         u.v.vx = u.v.vy = u.v.vz = 0xAAA;
@@ -332,10 +332,10 @@ s32 fx_179_op80(s32 mode, Fx179Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 1:
         if (frame == 0) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 100, 100, 100);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 100, 100, 100);
         }
         if (frame == 1) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 70, 70, 70);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 70, 70, 70);
         }
         rot.vx = 0;
         rot.vy = 0;

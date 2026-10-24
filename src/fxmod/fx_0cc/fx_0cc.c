@@ -42,7 +42,7 @@ s32 func_801E7704(s32 mode, Fx0ccPart *part, Unk800F78A4 *env, Unk80100C78Entry 
                     part->unkC->unk38 = part->unkC->unk24->unk4.unk2;
                 }
                 part->unk4.vy = 0;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x20, 0, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0, 0);
             }
             break;
         case 1:
@@ -87,7 +87,7 @@ s32 fx_0cc_op80(s32 mode, Fx0ccWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         D_801E7C9C = env;
         ex->btlfx_initEffModels(D_801E7CAC, 1);
         work->unk10 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xF), 0);
-        BTLFX_COPY_SVEC(&work->unk4, &env->unkC->unk38);
+        BTLFX_COPY_SVEC(&work->unk4, &env->targets->unk38);
         work->unk4.vy = 0;
     } else {
         frame = entry->unk0;

@@ -85,9 +85,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk20.vx = D_801E89F4.vx;
         work->unk20.vy = D_801E89F4.vy;
         work->unk20.vz = D_801E89F4.vz;
-        env->unk2C->unk0[2].vx = work->unk20.vx;
-        env->unk2C->unk0[2].vy = work->unk20.vy;
-        env->unk2C->unk0[2].vz = work->unk20.vz;
+        env->camera->unk0[2].vx = work->unk20.vx;
+        env->camera->unk0[2].vy = work->unk20.vy;
+        env->camera->unk0[2].vz = work->unk20.vz;
         work->unk5C.vx = 0;
         work->unk5C.vy = 0x400;
         work->unk5C.vz = 0;
@@ -101,9 +101,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             n1 = (((0x1000 - ex->math_sin(t >> 3)) << 6) >> 12) - 0x2C;
             ex->func_800D1BC4(0xC00, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x10), n1, 0x78, 0, 0xFF, t);
             work->unk20.vx -= 0x2E;
-            env->unk2C->unk0[2].vx = work->unk20.vx;
-            env->unk2C->unk0[2].vy = work->unk20.vy;
-            env->unk2C->unk0[2].vz = work->unk20.vz;
+            env->camera->unk0[2].vx = work->unk20.vx;
+            env->camera->unk0[2].vy = work->unk20.vy;
+            env->camera->unk0[2].vz = work->unk20.vz;
             if (frame >= 0x20) {
                 work->unk0 = 1;
                 entry->unk0 = -1;
@@ -122,9 +122,9 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_ModifyEffModelRGB(work->unk6C, (t >> 5) - 0x80, (t >> 5) - 0x80, (t >> 5) - 0x80);
             ex->Hi_DrawEffModel(&work->unk5C, (VECTOR *)&work->unk28, (s32)&work->unk3C, work->unk64);
             work->unk20.vx -= (ex->math_cos(t >> 2) * 0x2E) >> 12;
-            env->unk2C->unk0[2].vx = work->unk20.vx;
-            env->unk2C->unk0[2].vy = work->unk20.vy;
-            env->unk2C->unk0[2].vz = work->unk20.vz;
+            env->camera->unk0[2].vx = work->unk20.vx;
+            env->camera->unk0[2].vy = work->unk20.vy;
+            env->camera->unk0[2].vz = work->unk20.vz;
             D_801E8FCC = 0x400;
             if (frame % 3 == 0) {
                 o = ex->btlfx_poolSpawn((s16 *)entry->unk10);
@@ -236,10 +236,10 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame == 0x16) {
                 {
                     s32 q0, q1, q2, q3;
-                    q0 = ((s32 *)env->unk14)[0];
-                    q1 = ((s32 *)env->unk14)[1];
-                    q2 = ((s32 *)env->unk14)[2];
-                    q3 = ((s32 *)env->unk14)[3];
+                    q0 = ((s32 *)env->viewMatrix)[0];
+                    q1 = ((s32 *)env->viewMatrix)[1];
+                    q2 = ((s32 *)env->viewMatrix)[2];
+                    q3 = ((s32 *)env->viewMatrix)[3];
                     ((s32 *)&work->unk7C)[0] = q0;
                     ((s32 *)&work->unk7C)[1] = q1;
                     ((s32 *)&work->unk7C)[2] = q2;
@@ -247,10 +247,10 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 }
                 {
                     s32 q0, q1, q2, q3;
-                    q0 = ((s32 *)env->unk14)[4];
-                    q1 = ((s32 *)env->unk14)[5];
-                    q2 = ((s32 *)env->unk14)[6];
-                    q3 = ((s32 *)env->unk14)[7];
+                    q0 = ((s32 *)env->viewMatrix)[4];
+                    q1 = ((s32 *)env->viewMatrix)[5];
+                    q2 = ((s32 *)env->viewMatrix)[6];
+                    q3 = ((s32 *)env->viewMatrix)[7];
                     ((s32 *)&work->unk7C)[4] = q0;
                     ((s32 *)&work->unk7C)[5] = q1;
                     ((s32 *)&work->unk7C)[6] = q2;
@@ -272,18 +272,18 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk20.vy = work->unk8.vy;
                 work->unk20.vz = work->unk8.vz;
                 work->unk20.vy -= 0x200;
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             break;
         case 4:
             {
                 s32 q0, q1, q2, q3;
-                q0 = ((s32 *)env->unk14)[0];
-                q1 = ((s32 *)env->unk14)[1];
-                q2 = ((s32 *)env->unk14)[2];
-                q3 = ((s32 *)env->unk14)[3];
+                q0 = ((s32 *)env->viewMatrix)[0];
+                q1 = ((s32 *)env->viewMatrix)[1];
+                q2 = ((s32 *)env->viewMatrix)[2];
+                q3 = ((s32 *)env->viewMatrix)[3];
                 ((s32 *)&work->unk9C)[0] = q0;
                 ((s32 *)&work->unk9C)[1] = q1;
                 ((s32 *)&work->unk9C)[2] = q2;
@@ -291,10 +291,10 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             {
                 s32 q0, q1, q2, q3;
-                q0 = ((s32 *)env->unk14)[4];
-                q1 = ((s32 *)env->unk14)[5];
-                q2 = ((s32 *)env->unk14)[6];
-                q3 = ((s32 *)env->unk14)[7];
+                q0 = ((s32 *)env->viewMatrix)[4];
+                q1 = ((s32 *)env->viewMatrix)[5];
+                q2 = ((s32 *)env->viewMatrix)[6];
+                q3 = ((s32 *)env->viewMatrix)[7];
                 ((s32 *)&work->unk9C)[4] = q0;
                 ((s32 *)&work->unk9C)[5] = q1;
                 ((s32 *)&work->unk9C)[6] = q2;
@@ -304,18 +304,18 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             r1 = ((s32 *)&work->unk7C)[1];
             r2 = ((s32 *)&work->unk7C)[2];
             r3 = ((s32 *)&work->unk7C)[3];
-            ((s32 *)env->unk14)[0] = r0;
-            ((s32 *)env->unk14)[1] = r1;
-            ((s32 *)env->unk14)[2] = r2;
-            ((s32 *)env->unk14)[3] = r3;
+            ((s32 *)env->viewMatrix)[0] = r0;
+            ((s32 *)env->viewMatrix)[1] = r1;
+            ((s32 *)env->viewMatrix)[2] = r2;
+            ((s32 *)env->viewMatrix)[3] = r3;
             r0 = ((s32 *)&work->unk7C)[4];
             r1 = ((s32 *)&work->unk7C)[5];
             r2 = ((s32 *)&work->unk7C)[6];
             r3 = ((s32 *)&work->unk7C)[7];
-            ((s32 *)env->unk14)[4] = r0;
-            ((s32 *)env->unk14)[5] = r1;
-            ((s32 *)env->unk14)[6] = r2;
-            ((s32 *)env->unk14)[7] = r3;
+            ((s32 *)env->viewMatrix)[4] = r0;
+            ((s32 *)env->viewMatrix)[5] = r1;
+            ((s32 *)env->viewMatrix)[6] = r2;
+            ((s32 *)env->viewMatrix)[7] = r3;
             t = (frame << 12) / 20;
             ex->Hi_DrawEffModel(&work->unk5C, (VECTOR *)&work->unk28, (s32)&work->unk3C, work->unk64);
             ex->Hi_ModifyEffModelAbr(work->unk64, 1);
@@ -325,18 +325,18 @@ s32 fx_17d_8_op80(s32 mode, Fx17d8Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             w1 = ((s32 *)&work->unk9C)[1];
             w2 = ((s32 *)&work->unk9C)[2];
             w3 = ((s32 *)&work->unk9C)[3];
-            ((s32 *)env->unk14)[0] = w0;
-            ((s32 *)env->unk14)[1] = w1;
-            ((s32 *)env->unk14)[2] = w2;
-            ((s32 *)env->unk14)[3] = w3;
+            ((s32 *)env->viewMatrix)[0] = w0;
+            ((s32 *)env->viewMatrix)[1] = w1;
+            ((s32 *)env->viewMatrix)[2] = w2;
+            ((s32 *)env->viewMatrix)[3] = w3;
             w0 = ((s32 *)&work->unk9C)[4];
             w1 = ((s32 *)&work->unk9C)[5];
             w2 = ((s32 *)&work->unk9C)[6];
             w3 = ((s32 *)&work->unk9C)[7];
-            ((s32 *)env->unk14)[4] = w0;
-            ((s32 *)env->unk14)[5] = w1;
-            ((s32 *)env->unk14)[6] = w2;
-            ((s32 *)env->unk14)[7] = w3;
+            ((s32 *)env->viewMatrix)[4] = w0;
+            ((s32 *)env->viewMatrix)[5] = w1;
+            ((s32 *)env->viewMatrix)[6] = w2;
+            ((s32 *)env->viewMatrix)[7] = w3;
             cv2.r = cv2.g = cv2.b = 0x84;
             sv2.vx = 0;
             sv2.vy = 0;

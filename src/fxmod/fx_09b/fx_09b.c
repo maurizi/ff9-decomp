@@ -68,9 +68,9 @@ s32 fx_09b_op80(s32 mode, Fx09bWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk5C.vx = work->unk3C.vx;
         work->unk5C.vy = work->unk3C.vy;
         work->unk5C.vz = work->unk3C.vz;
-        env->unk2C->unk0[0].vx = work->unk3C.vx;
-        env->unk2C->unk0[0].vy = work->unk3C.vy;
-        env->unk2C->unk0[0].vz = work->unk3C.vz;
+        env->camera->unk0[0].vx = work->unk3C.vx;
+        env->camera->unk0[0].vy = work->unk3C.vy;
+        env->camera->unk0[0].vz = work->unk3C.vz;
         work->unk14.vx = 0;
         work->unk14.vy = 0;
         work->unk14.vz = 0;

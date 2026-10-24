@@ -39,8 +39,8 @@ void func_801E7704(void *trackA, void *trackB, s32 arg2, s32 arg3, SVECTOR *scal
         p.vx = v.vx;
         p.vy = v.vy;
         p.vz = v.vz + 0x4B0;
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(&p);
         gte_rtv0tr();
         gte_stlvnl(m.t);
@@ -112,8 +112,8 @@ void func_801E7AF8(void *track, s32 arg1, s32 arg2, SVECTOR *scale, s32 w, s32 r
         p.vx = v.vx;
         p.vy = v.vy;
         p.vz = v.vz + 0x4B0;
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(&p);
         gte_rtv0tr();
         gte_stlvnl(m.t);
@@ -149,8 +149,8 @@ void func_801E7E18(s32 n, s32 c, s32 tpage, s32 clut, u16 v0, u16 v1) {
     s32 z;
 
     tp = tpage | 0x20;
-    p = (POLY_GT4 *)D_801E9E4C->unk24;
-    D_801E9E4C->unk24 = (u8 *)(p + n);
+    p = (POLY_GT4 *)D_801E9E4C->prim;
+    D_801E9E4C->prim = (u8 *)(p + n);
     cl = clut;
     ex = BTLFX_EXPORTS(D_801E9E4C);
     for (i = 0; i < n - 1; i++, p++, e++) {
@@ -296,10 +296,10 @@ s32 fx_1fd_op82(s32 mode, Fx1fdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x6C;
     } else if (mode == 1) {
-        work->unk50.vx = env->unkC->unk38;
+        work->unk50.vx = env->targets->unk38;
         D_801E9E4C = env;
-        work->unk50.vy = env->unkC->unk3A;
-        work->unk50.vz = env->unkC->unk3C;
+        work->unk50.vy = env->targets->unk3A;
+        work->unk50.vz = env->targets->unk3C;
         work->unk50.vy -= 0x3E8;
         D_801EB75C.unk1E = 0x200;
         D_801EB75C.unk18 = 0;
@@ -557,7 +557,7 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
         work->vy = 0;
         work->vz = 0x4B0;
         D_801E9E4C = env;
-        for (i = 0; i < env->unkC->unk24; i++, o++) {
+        for (i = 0; i < env->targets->unk24; i++, o++) {
             ex->btlfx_getUnitPos(i, (s16 *)&o->unk0);
             ex->btlfx_getUnitRot(i, (s16 *)&o->unk8);
             ex->btlfx_aimAngles((s16 *)work, (s16 *)&o->unk0, (s16 *)&a);
@@ -570,7 +570,7 @@ s32 fx_1fd_op83(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else {
         frame = entry->unk0;
         if (frame >= 0 && frame <= 0x40) {
-            for (j = 0, q = D_801EBADC; j < env->unkC->unk24; j++, q++) {
+            for (j = 0, q = D_801EBADC; j < env->targets->unk24; j++, q++) {
                 a.vx = work->vx + q->unk10 * ex->math_sin(q->unk12) / 4096;
                 a.vy = q->unk0.vy - frame * 120;
                 a.vz = work->vz + q->unk10 * ex->math_cos(q->unk12) / 4096;
@@ -601,7 +601,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         q = D_801EBADC;
         D_801E9E4C = env;
-        for (j = 0; j < env->unkC->unk24; j++, q++) {
+        for (j = 0; j < env->targets->unk24; j++, q++) {
             work->unkC0[j] = 0;
             ex->btlfx_getUnitHomePos(j, (s16 *)&work->unk40[j]);
             work->unk40[j].vy = -0xBB8;
@@ -610,7 +610,7 @@ s32 fx_1fd_op84(s32 mode, Fx1fdWork84 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
     } else {
         frame = entry->unk0;
-        for (i = 0; i < env->unkC->unk24; i++) {
+        for (i = 0; i < env->targets->unk24; i++) {
             if (work->unkC0[i] == 0 && func_801E9984(i, frame, 4, &work->unk40[i]) != 0) {
                 work->unkC0[i] = 1;
                 ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk40[i]);
@@ -704,7 +704,7 @@ s32 func_801E9858(Fx1fdPath_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
 void func_801E98EC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E9E4C)->btlfx_drawScreenTint((u32 *)(D_801E9E4C->unk20 + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(D_801E9E4C)->btlfx_drawScreenTint((u32 *)(D_801E9E4C->ot + ot), arg4, c, c, c);
 }
 
 s32 func_801E9984(s32 a0, s32 t, s32 n, SVECTOR *b) {
@@ -767,9 +767,9 @@ void func_801E9AF8(s32 ch) {
                 for (k = 0; k < 3; k++) {
                     d = ((D_801ED73C[i].unkA >> (k * 4)) & 0xF) - 1;
                     if (d >= 0) {
-                        ((SVECTOR *)env->unk2C)[d].vx = D_801ED73C[i].unk0[0];
-                        ((SVECTOR *)env->unk2C)[d].vy = D_801ED73C[i].unk0[1];
-                        ((SVECTOR *)env->unk2C)[d].vz = D_801ED73C[i].unk0[2];
+                        ((SVECTOR *)env->camera)[d].vx = D_801ED73C[i].unk0[0];
+                        ((SVECTOR *)env->camera)[d].vy = D_801ED73C[i].unk0[1];
+                        ((SVECTOR *)env->camera)[d].vz = D_801ED73C[i].unk0[2];
                         if (D_801ED73C[i].unkC < D_801ED73C[i].unkE) {
                             D_801ED73C[i].unk0 += 3;
                             D_801ED73C[i].unkC++;
@@ -785,13 +785,13 @@ void func_801E9AF8(s32 ch) {
 void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
     Unk800F78A4 *env = D_801E9E4C;
-    u32 *p = (u32 *)env->unk24;
+    u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
     RECT r2;
     RECT r;
 
-    env->unk24 = (u8 *)(p + 12);
+    env->prim = (u8 *)(p + 12);
     n = w - m;
     if (m != 0) {
         r.x = sx;
@@ -799,7 +799,7 @@ void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r.w = m;
         r.h = h;
         ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->unk20 + 0xFFF, p);
+        addPrim(env->ot + 0xFFF, p);
     }
     p += 6;
     if (n != 0) {
@@ -808,7 +808,7 @@ void func_801E9C58(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r2.w = n;
         r2.h = h;
         ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->unk20 + 0xFFF, p);
+        addPrim(env->ot + 0xFFF, p);
     }
 }
 

@@ -27,9 +27,9 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
         }
         BTLFX_COPY_SVEC(&D_801EA730, pos);
         if (frame < 0x1D) {
-            env->unk2C->unk0[3].vx = pos->vx;
-            env->unk2C->unk0[3].vy = pos->vy;
-            env->unk2C->unk0[3].vz = pos->vz;
+            env->camera->unk0[3].vx = pos->vx;
+            env->camera->unk0[3].vy = pos->vy;
+            env->camera->unk0[3].vz = pos->vz;
             return;
         }
         k = frame - 0x1D;
@@ -38,9 +38,9 @@ void func_801E7704(Pool30Entry *pt, Pool6CEntry *p, SVECTOR *pos, s32 arg3, s32 
         } else {
             BTLFX_COPY_SVEC(&v, &D_801EA728);
         }
-        env->unk2C->unk0[3].vx = v.vx;
-        env->unk2C->unk0[3].vy = v.vy;
-        env->unk2C->unk0[3].vz = v.vz;
+        env->camera->unk0[3].vx = v.vx;
+        env->camera->unk0[3].vy = v.vy;
+        env->camera->unk0[3].vz = v.vz;
     }
 }
 
@@ -128,7 +128,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             sc = (((0x1000 - t) * 3) >> 1) + 0x1000;
             if (frame < 4) {
                 u = 0xFF - frame * 0xFF / 4;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, u >> 1, u, u);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u >> 1, u, u);
             }
             if (frame >= 0x16) {
                 work->unk0 = 1;
@@ -181,7 +181,7 @@ s32 fx_081_op80(s32 mode, Fx081Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (e != NULL) {
                     e->unk22 = 0x80;
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x80, 0xFF);
             }
             if (frame >= 0x16) {
                 ex->func_800E3D54(work->unk2C);
@@ -308,7 +308,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 entry->unk0 = -1;
                 work->unk28 = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xA), 0xB9,
                                                          0x3E00, 0x80, 0);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0xFF);
             }
             break;
         case 1:
@@ -325,14 +325,14 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 4), &work->unkC, NULL, (t >> 1) + 0x3800, 0, 1,
                               0x1000);
             env->unk28 = 0;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0, 0x80);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x80);
             ex->func_800D3B6C((u8 *)ex->btlfx_getFileData(entry->unk8, 0xB), &work->unkC, work->unk4, 0x1000);
             if (frame >= 7) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
                 work->unk0 = 2;
                 entry->unk0 = -1;
                 ex->func_800E3D54(D_801EA740);
-                BTLFX_COPY_SVEC(&work->unkC, &env->unkC->unk38);
+                BTLFX_COPY_SVEC(&work->unkC, &env->targets->unk38);
                 work->unkC.vy -= 0x200;
                 BTLFX_COPY_SVEC(&work->unk14, &work->unkC);
                 work->unk1C.vx = work->unkC.vx;
@@ -367,7 +367,7 @@ s32 fx_081_op81(s32 mode, Fx081Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             env->unk28 = 0;
             if (frame < 6) {
                 u = 0xFF - frame * 0xFF / 6;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, u >> 1, u, u);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u >> 1, u, u);
             }
             /* the first loop's a (the original keeps it in s0; t keeps its own register) */
             a = j >> 2;

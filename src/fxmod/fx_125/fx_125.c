@@ -31,14 +31,14 @@ s32 fx_125_op80(s32 mode, Fx125Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_initEffModels(D_801E7D88, 3);
         work->unk24 = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0xB3,
                                                       0x3D40, 0, 0);
-        x = env->unk18->disp.x;
+        x = env->dispEnv->disp.x;
         if (x < 0x100) {
             x2 = x + 0x140;
         } else {
             x2 = x - 0x140;
         }
-        tp1 = getTPage(2, 3, x, env->unk18->disp.y);
-        tp2 = getTPage(2, 3, x2, env->unk18->disp.y);
+        tp1 = getTPage(2, 3, x, env->dispEnv->disp.y);
+        tp2 = getTPage(2, 3, x2, env->dispEnv->disp.y);
         work->unk28[0] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xE), tp1,
                                                          0xFFFF, 0, 0);
         work->unk28[1] = (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 0xE), tp2,

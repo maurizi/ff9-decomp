@@ -384,7 +384,7 @@ s32 fx_1ea_op82(s32 mode, Fx1eaWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E8B9C(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
             work->unk2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->unk20 + 0xFFF, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot + 0xFFF, 1, 0xFF, 0xFF, 0xFF);
         }
         return frame >= 0x43;
     }
@@ -402,7 +402,7 @@ s32 func_801E8B44(s32 from, s32 to, s32 t, s32 n) {
 void func_801E8B9C(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E8DD8)->btlfx_drawScreenTint((u32 *)(D_801E8DD8->unk20 + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(D_801E8DD8)->btlfx_drawScreenTint((u32 *)(D_801E8DD8->ot + ot), arg4, c, c, c);
 }
 
 void func_801E8C34(Fx1eaPath *path, u16 *data) {

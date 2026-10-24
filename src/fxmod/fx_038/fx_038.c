@@ -52,9 +52,9 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &it->unk4, NULL, 0x1000, 0, 1, -1, 0, 0);
         env->unk28 = 0;
         if (it->unk20 == 0) {
-            env->unk2C->unk0[0].vx = it->unk4.vx;
-            env->unk2C->unk0[0].vy = it->unk4.vy;
-            env->unk2C->unk0[0].vz = it->unk4.vz;
+            env->camera->unk0[0].vx = it->unk4.vx;
+            env->camera->unk0[0].vy = it->unk4.vy;
+            env->camera->unk0[0].vz = it->unk4.vz;
         }
         if (it->unk14 != NULL && it->unk14->unk30 == -1) {
             it->unk14 = NULL;
@@ -66,7 +66,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 it->unk14->unk38 = it->unk14->unk24->unk4.unk2;
             }
             it->unk4.vy = 0;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x18, 0x18, 0x18);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x18, 0x18, 0x18);
             it->unk14 = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&it->unk4);
             if (it->unk14 != NULL) {
                 it->unk14->unk22 = 0x46;
@@ -80,7 +80,7 @@ s32 func_801E7704(s32 mode, Fx038Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
         t = (frame << 12) / 18;
         if (frame < 4) {
             s32 c = 0x46 - frame * 0x46 / 4;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c, c, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c, c, c);
         }
         k1 = t >> 2;
         ex->btlfx_drawParticles((u8 *)ex->btlfx_getFileData(entry->unk8, 1), &it->unk4, NULL, (t << 1) + 0x1800, 0, 1, ex->math_cos(k1), 0, 0);

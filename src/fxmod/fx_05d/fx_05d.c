@@ -114,9 +114,9 @@ s32 fx_05d_op80(s32 mode, Fx05dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk20.vx += work->unk10.vx;
             work->unk20.vy += work->unk10.vy;
             work->unk20.vz += work->unk10.vz;
-            env->unk2C->unk0[0].vx = work->unk20.vx;
-            env->unk2C->unk0[0].vy = work->unk20.vy;
-            env->unk2C->unk0[0].vz = work->unk20.vz;
+            env->camera->unk0[0].vx = work->unk20.vx;
+            env->camera->unk0[0].vy = work->unk20.vy;
+            env->camera->unk0[0].vz = work->unk20.vz;
             func_801E7FE4(&D_801E8DB0, frame, &work->unk30);
             work->unk30.vx = work->unk30.vx * 2 / 3;
             work->unk30.vy = work->unk30.vy * 2 / 3;

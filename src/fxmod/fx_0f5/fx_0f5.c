@@ -34,12 +34,12 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 ft;
     s32 sn;
 
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    gt4 = (POLY_GT4 *)env->unk24;
+    gt4 = (POLY_GT4 *)env->prim;
     ft4 = (POLY_FT4 *)(gt4 + 32);
-    env->unk24 = (u8 *)(ft4 + 96);
+    env->prim = (u8 *)(ft4 + 96);
     if (flicker == 0) {
         col0.r = col0.g = col0.b = c;
         col1.r = col1.g = col1.b = c;
@@ -199,7 +199,7 @@ s32 fx_0f5_op80(s32 mode, Fx0f5Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 9), 1);
         work->unk0 = 0;
         work->unk4 = 0;
-        BTLFX_COPY_SVEC(&work->unk8, &env->unkC->unk38);
+        BTLFX_COPY_SVEC(&work->unk8, &env->targets->unk38);
         work->unk18.vx = 0x400;
         work->unk18.vy = 0x20;
         work->unk18.vz = 0;

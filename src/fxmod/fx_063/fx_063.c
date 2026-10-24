@@ -52,15 +52,15 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawTrail((u8 *)ex->btlfx_getFileData(entry->unk8, 0xD), 0, NULL, -1, 0x1000, 0x1000, 1,
                                 (u8 *)&D_801E8E40[i], 0);
         }
-        if (env->unkC->unk3C < 0) {
-            env->unk2C->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = -0x30C;
+        if (env->targets->unk3C < 0) {
+            env->camera->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = -0x30C;
         } else {
-            env->unk2C->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = 0x30C;
+            env->camera->unk0[0].vz = work->unkB8.vz = work->unk94.vz = work->unkA4.vz = 0x30C;
         }
-        env->unk2C->unk0[0].vx = work->unkB8.vx = work->unk94.vx = work->unkA4.vx = 0;
-        env->unk2C->unk0[0].vy = work->unk94.vy = work->unkA4.vy = -0x600;
+        env->camera->unk0[0].vx = work->unkB8.vx = work->unk94.vx = work->unkA4.vx = 0;
+        env->camera->unk0[0].vy = work->unk94.vy = work->unkA4.vy = -0x600;
         work->unkB8.vy = 0;
-        for (i = 0; i < env->unkC->unk24; i++) {
+        for (i = 0; i < env->targets->unk24; i++) {
             D_801E9870[i].unk0 = (ex->btlfx_rand() & 7) + 0x30;
             D_801E9870[i].unk4 = 0;
             D_801E9870[i].unk8 = ex->btlfx_rand() % 511 + 0x100;
@@ -149,7 +149,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unkC8.vy -= 0x80;
         }
         if (work->unk0[1] != 0) {
-            ex->btlfx_aimAngles((s16 *)&work->unkA4, (s16 *)&env->unk2C->unk54, (s16 *)&work->unk40[1].unk4);
+            ex->btlfx_aimAngles((s16 *)&work->unkA4, (s16 *)&env->camera->unk54, (s16 *)&work->unk40[1].unk4);
             work->unk40[0].unk4.vx = work->unk40[1].unk4.vx + 0x800;
             work->unk40[0].unk4.vy = work->unk40[1].unk4.vy;
             work->unk40[2].unk4.vy = work->unk40[1].unk4.vy;
@@ -170,7 +170,7 @@ s32 fx_063_op80(s32 mode, Fx063Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->Hi_DrawEffModel(&work->unkB0, &work->unkB8, (s32)&work->unkC8, work->unkAC);
         }
         if (work->unk0[7] != 0) {
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 if (D_801E9870[i].unk0 != 0) {
                     if (--D_801E9870[i].unk0 != 0) {
                         D_801E9870[i].unk4 += D_801E9870[i].unk8;

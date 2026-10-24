@@ -132,7 +132,7 @@ s32 func_801E7F60(s32 mode, Fx005Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
                 if (it->unk10 & 1) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0xC, 0x46);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
                     p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x17), (s32)&it->unk0);
                     if (p != NULL) {
                         p->unk22 = ex->func_800E7CC4(0, 0x40);
@@ -276,11 +276,11 @@ s32 fx_005_op83(s32 mode, Fx005Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0xF) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x40, 0x40, 0x40);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x40, 0x40, 0x40);
         }
         if (frame >= 0x10 && frame < 0x13) {
             c = 200 - (frame - 0x10) * 200 / 3;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 1, c >> 1, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c >> 1, c >> 1, c);
         }
         if (frame == 0x14) {
             p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x19), (s32)&work->unk8);

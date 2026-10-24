@@ -102,7 +102,7 @@ s32 fx_03a_op80(s32 mode, Fx03aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             col.g = c;
             col.r = c;
             ex->func_800E6764(5, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, NULL);
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 4), 2, c, c, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 4), 2, c, c, c);
         }
         return frame >= 0x58;
     }

@@ -5,7 +5,7 @@ void func_800E4098(void) {
     RECT r;
     D_80104DF8 = D_800F78B4;
     D_80104DE8 = 1;
-    g_btlfxEnv->unk24 = buf;
+    g_btlfxEnv->prim = buf;
     btlfx_reloadCommonData(0);
     while (btlfx_reloadCommonData(1) == 0) {
     }
@@ -15,7 +15,7 @@ void func_800E4098(void) {
     r.h = 2;
     LoadImage(&r, (u32 *)0x801F7700);
     DrawSync(0);
-    g_btlfxEnv->unk24 = 0;
+    g_btlfxEnv->prim = 0;
 }
 
 s32 btlfx_reloadCommonData(s32 arg0) {
@@ -234,7 +234,7 @@ s32 func_800E4634(s32 arg0, Unk800E4634 *c, Unk800E4634Arg2 *arg2, s32 *arg3, s3
 void btlfx_startCasterTask(s32 arg0) {
     s32 a = 0xFF;
     s32 b = arg0 * 16;
-    if (g_btlfxEnv->unkC->unk24 == 1) {
+    if (g_btlfxEnv->targets->unk24 == 1) {
         a = 0;
     }
     btlfx_spawnTask(7, -1, a, b);
@@ -315,7 +315,7 @@ void func_800E4C04(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void func_800E4C54(void) {
-    if (g_btlfxEnv->unkC->unk27 == 0) {
+    if (g_btlfxEnv->targets->unk27 == 0) {
         D_800FEC65 = 1;
     }
 }
@@ -341,14 +341,14 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         if (arg2->unk0->unk1C & 8) {
             func_800E8C84(0);
         }
-        if (arg2->unkC->unk27 != 0 && arg1->unk3 != 0xFF) {
-            if (arg2->unkC->unk27 == 1) {
+        if (arg2->targets->unk27 != 0 && arg1->unk3 != 0xFF) {
+            if (arg2->targets->unk27 == 1) {
                 arg1->unk3 += 8;
             } else {
                 arg1->unk3 = 0xFF;
             }
         }
-        if (arg2->unkC->unk40 & 4) {
+        if (arg2->targets->unk40 & 4) {
             arg1->unk2 = 0x11;
             arg1->unk3 = 0x10;
         }
@@ -356,7 +356,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         arg1->unk4 = ((u32)g_btlfxState.unk1C & 0x3000) >> 12;
         g_btlfxState.unk10.b[2] = 0;
         g_btlfxState.unk10.b[3] = 0;
-        a = arg2->unkC->unk40 & 1;
+        a = arg2->targets->unk40 & 1;
         c = btlfx_isEnemyUnit(arg1->unk2);
         arg1->unk8 = 100;
         func_800E4C04(arg1->unk2, 1, 0);
@@ -372,7 +372,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
             } else {
                 arg1->unk24 = NULL;
             }
-        } else if (arg2->unkC->unk40 & 2) {
+        } else if (arg2->targets->unk40 & 2) {
             arg1->unk5 = 3;
             arg1->unk1 = 2;
         } else {
@@ -430,19 +430,19 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 }
                 if (b == 0) {
                     arg1->unk8 = btlfx_getMotionLength(arg1->unk2);
-                    if (arg2->unkC->unk40 & 1) {
+                    if (arg2->targets->unk40 & 1) {
                         func_800E8D14();
                     }
                 }
                 switch (arg1->unk4) {
                 case 0:
-                    btlfx_drawScreenTint((u32 *)(arg2->unk20 + 1), 1, a, a, a);
+                    btlfx_drawScreenTint((u32 *)(arg2->ot + 1), 1, a, a, a);
                     if (b == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
                     break;
                 case 1:
-                    btlfx_drawScreenTint((u32 *)(arg2->unk20 + 1), 2, a, a, a);
+                    btlfx_drawScreenTint((u32 *)(arg2->ot + 1), 2, a, a, a);
                     if (b == 16) {
                         btlfx_fadeUnitGroup(2, 0);
                     }
@@ -459,7 +459,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
                 func_800E3D54(arg1->unk24);
                 g_btlfxState.unk10.b[3] = 1;
                 g_btlfxState.unk25 = 1;
-                arg2->unk2C->unk52 = 0;
+                arg2->camera->unk52 = 0;
                 func_800E4C04(arg1->unk2, 2, 0);
                 return 1;
             }
@@ -483,7 +483,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         } else if (g_btlfxState.unk10.b[2] != 0) {
             g_btlfxState.unk10.b[3] = 1;
             func_800E4C54();
-            arg2->unk2C->unk52 = 0;
+            arg2->camera->unk52 = 0;
             func_800E4C04(arg1->unk2, 2, 0);
             func_800E8D14();
             return 1;
@@ -491,7 +491,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         break;
     case 3:
         if (t == 0 && arg1->unk5 != 1) {
-            arg2->unk2C->unk52 = 0;
+            arg2->camera->unk52 = 0;
             func_800E4C04(arg1->unk2, 0, 1);
         }
         if (arg1->unk5 != 3) {
@@ -554,10 +554,10 @@ s32 btlfx_opReturnHome(s32 arg0, Unk800E5538 *arg1, Unk800F78A4 *arg2, s32 *arg3
     if (arg0 == 1) {
         arg1->unk1 = 0;
         arg1->unk2 = *arg4;
-        if (arg2->unkC->unk40 & 4) {
+        if (arg2->targets->unk40 & 4) {
             arg1->unk2 = 0x11;
         }
-        if (arg2->unkC->unk40 & 1) {
+        if (arg2->targets->unk40 & 1) {
             return 1;
         }
         if (btlfx_isEnemyUnit(arg1->unk2) != 0) {
@@ -640,8 +640,8 @@ s32 func_800E57B0(s32 arg0, Unk800E57B0 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32
         if (arg1->unk1 != 0xFF) {
             btlfx_getUnitBodyPos(arg1->unk1, 0, &arg1->unk1C.vx);
         } else {
-            *(s32 *)&arg1->unk1C.vx = *(s32 *)&arg2->unkC->unk38;
-            *(s32 *)&arg1->unk1C.vz = *(s32 *)&arg2->unkC->unk3C;
+            *(s32 *)&arg1->unk1C.vx = *(s32 *)&arg2->targets->unk38;
+            *(s32 *)&arg1->unk1C.vz = *(s32 *)&arg2->targets->unk3C;
             arg1->unk1C.vy -= 0xC0;
         }
         switch (arg1->unk0) {
@@ -767,7 +767,7 @@ s32 btlfx_opApplyResult(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32
         if (id == 0xFF) {
             id = -1;
         } else if (id == 0xFE) {
-            id = btlfx_rand() % g_btlfxEnv->unkC->unk24;
+            id = btlfx_rand() % g_btlfxEnv->targets->unk24;
         }
         if (a[1] == 0) {
             btlfx_execCmd(id);
@@ -824,7 +824,7 @@ s32 btlfx_opPlayCamera(s32 arg0, s32 arg1, s32 arg2, Unk800F78A40 *arg3, s32 *ar
             r = btlfx_getFileData(arg3->unk8, g_btlfxState.unkA.b.unk0[g_btlfxState.unkE]);
             break;
         case 3:
-            k = g_btlfxEnv->unk2C->unk53;
+            k = g_btlfxEnv->camera->unk53;
             if (k >= g_btlfxState.unkA.b.unk3) {
                 k = g_btlfxState.unkA.b.unk3 - 1;
             }
@@ -952,11 +952,11 @@ s32 func_800E6410(s32 arg0, Unk800E6410 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         if ((arg1->unk0 = p[1]) != 0) {
             return 0;
         }
-        btlfx_drawScreenTint(g_btlfxEnv->unk20 + 1, 0xFF, arg1->unk4, arg1->unk4, arg1->unk4);
+        btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->unk4, arg1->unk4, arg1->unk4);
         return 1;
     }
     n = *arg3;
-    btlfx_drawScreenTint(g_btlfxEnv->unk20 + 1, 0xFF, arg1->unk4, arg1->unk4, arg1->unk4);
+    btlfx_drawScreenTint(g_btlfxEnv->ot + 1, 0xFF, arg1->unk4, arg1->unk4, arg1->unk4);
     if (n < arg1->unk0) {
         *arg3 = n;
         return 0;
@@ -1008,8 +1008,8 @@ void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     DR_MOVE *p;
     s32 m = arg0 % arg4;
     s32 h;
-    p = (DR_MOVE *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(p + 2);
+    p = (DR_MOVE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(p + 2);
     h = arg4 - m;
     if (m != 0) {
         a.x = arg5;
@@ -1017,7 +1017,7 @@ void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
         a.w = arg3;
         a.h = m;
         SetDrawMove(p, &a, arg1, arg2 + h);
-        AddPrim(&g_btlfxEnv->unk20[0xFFF], p);
+        AddPrim(&g_btlfxEnv->ot[0xFFF], p);
     }
     p++;
     if (h != 0) {
@@ -1026,7 +1026,7 @@ void func_800E6624(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
         b.w = arg3;
         b.h = h;
         SetDrawMove(p, &b, arg1, arg2);
-        AddPrim(&g_btlfxEnv->unk20[0xFFF], p);
+        AddPrim(&g_btlfxEnv->ot[0xFFF], p);
     }
 }
 
@@ -1056,8 +1056,8 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     u32 len;
 
     ReadGeomOffset(&ox, &oy);
-    p = (POLY_FT4 *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(p + arg5 * arg6);
+    p = (POLY_FT4 *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(p + arg5 * arg6);
     if (arg12 != 0xFF) {
         arg11->cd = 0x2E;
     } else {
@@ -1066,8 +1066,8 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     if (arg12 == 0xFF) {
         arg12 = 0;
     }
-    tp0 = GetTPage(2, arg12, g_btlfxEnv->unk18->disp.x, g_btlfxEnv->unk18->disp.y);
-    tp1 = GetTPage(2, arg12, g_btlfxEnv->unk18->disp.x + 0x80, g_btlfxEnv->unk18->disp.y) << 16;
+    tp0 = GetTPage(2, arg12, g_btlfxEnv->dispEnv->disp.x, g_btlfxEnv->dispEnv->disp.y);
+    tp1 = GetTPage(2, arg12, g_btlfxEnv->dispEnv->disp.x + 0x80, g_btlfxEnv->dispEnv->disp.y) << 16;
     arg7 *= arg3;
     tp0 <<= 16;
     arg8 *= arg4;
@@ -1115,7 +1115,7 @@ void func_800E6764(u32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
                 gte_ldxy0(&v[2]);
                 if (arg0 < 0x1000) {
                     len = 0x09000000;
-                    addPrimLen(&g_btlfxEnv->unk20[arg0], p, len);
+                    addPrimLen(&g_btlfxEnv->ot[arg0], p, len);
                 }
                 gte_rtps_b();
                 *(u32 *)&p->u0 = uv[1].vx | (uv[1].vy << 8);
@@ -1151,12 +1151,12 @@ void func_800E6C58(SVECTOR *arg0) {
     m.t[1] = 0;
     m.t[0] = 0;
     m.t[2] = ReadGeomScreen();
-    D_80104E10 = *g_btlfxEnv->unk14;
-    *g_btlfxEnv->unk14 = m;
+    D_80104E10 = *g_btlfxEnv->viewMatrix;
+    *g_btlfxEnv->viewMatrix = m;
 }
 
 void func_800E6D58(void) {
-    *g_btlfxEnv->unk14 = D_80104E10;
+    *g_btlfxEnv->viewMatrix = D_80104E10;
 }
 
 void func_800E6DB8(s32 arg0) {
@@ -1177,9 +1177,9 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     DrawEnvPair *e;
 
     save = g_btlbgRainCount;
-    e = (DrawEnvPair *)g_btlfxEnv->unk24;
+    e = (DrawEnvPair *)g_btlfxEnv->prim;
     g_btlbgRainCount = 0;
-    g_btlfxEnv->unk24 = (u8 *)(e + 1);
+    g_btlfxEnv->prim = (u8 *)(e + 1);
     SetDefDrawEnv(&e->unk0, x, y, w, h);
     e->unk0.isbg = 1;
     e->unk0.dtd = 0;
@@ -1187,7 +1187,7 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     e->unk0.r0 = 7;
     e->unk0.g0 = 7;
     e->unk0.b0 = 7;
-    e->unk5C = *(DRAWENV *)&g_btlfxEnv->unk1C;
+    e->unk5C = *(DRAWENV *)&g_btlfxEnv->drawEnv;
     ClearOTag(ot, 0x100);
     mode = ReadGeomScreen();
     ReadGeomOffset(&ox, &oy);
@@ -1197,7 +1197,7 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     D_800F8D50.t[1] = arg6;
     D_800F8D50.t[2] = arg7 + 0x2900;
     func_800CEEC8(2);
-    g_btlfxEnv->unk24 = btlbg_draw(&D_800F8D50, g_gameState->unk1C->unk8E4.battle->unk11C0->unk1C, (s32)g_btlfxEnv->unk24, NULL, (s32)ot);
+    g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->unk1C->unk8E4.battle->unk11C0->unk1C, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
     func_800CEEC8(0xF);
     EnterCriticalSection();
     DrawOTagEnv(ot, &e->unk0);
@@ -1209,51 +1209,51 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
 }
 
 void btlfx_setTargets(BtlUnitList *arg0) {
-    g_btlfxEnv->unkC = arg0;
+    g_btlfxEnv->targets = arg0;
 }
 
 void func_800E702C(void) {
     GameData *gd;
     g_btlfxEnv->unk28 = 0;
     gd = g_gameState->unk1C;
-    g_btlfxEnv->unk20 = (s32 *)gd->unk10[gd->unk8];
-    g_btlfxEnv->unk18 = &g_gameState->unkC[g_gameState->unk1C->unk8];
-    g_btlfxEnv->unk1C = &g_gameState->unk10[g_gameState->unk1C->unk8];
-    g_btlfxEnv->unk14 = &g_gameState->unk1C->unk18;
+    g_btlfxEnv->ot = (s32 *)gd->unk10[gd->unk8];
+    g_btlfxEnv->dispEnv = &g_gameState->unkC[g_gameState->unk1C->unk8];
+    g_btlfxEnv->drawEnv = &g_gameState->unk10[g_gameState->unk1C->unk8];
+    g_btlfxEnv->viewMatrix = &g_gameState->unk1C->unk18;
 }
 
 void btlfx_beginPrims(u8 *arg0, s32 *arg1) {
     Unk800F78A4 *p = g_btlfxEnv;
     GameState *g = g_gameState;
     p->unk28 = 0;
-    p->unk20 = arg1;
-    p->unk18 = &g->unkC[g->unk1C->unk8];
-    p->unk1C = &g->unk10[g->unk1C->unk8];
-    p->unk14 = &g->unk1C->unk18;
-    p->unk24 = arg0;
+    p->ot = arg1;
+    p->dispEnv = &g->unkC[g->unk1C->unk8];
+    p->drawEnv = &g->unk10[g->unk1C->unk8];
+    p->viewMatrix = &g->unk1C->unk18;
+    p->prim = arg0;
 }
 
 u8 *btlfx_endPrims(void) {
-    return g_btlfxEnv->unk24;
+    return g_btlfxEnv->prim;
 }
 
 BtlUnit *btl_getUnit(s32 arg0) {
     if (arg0 == 0x10) {
-        return g_btlfxEnv->unkC->unk0;
+        return g_btlfxEnv->targets->unk0;
     }
     if (arg0 == 0x11) {
-        return g_btlfxEnv->unkC->unk44;
+        return g_btlfxEnv->targets->unk44;
     }
     if (arg0 < 8) {
-        if (arg0 < 0 || arg0 >= g_btlfxEnv->unkC->unk24) {
+        if (arg0 < 0 || arg0 >= g_btlfxEnv->targets->unk24) {
             SystemError(0x53, 0x136);
         }
-        return g_btlfxEnv->unkC->unk4[arg0];
+        return g_btlfxEnv->targets->unk4[arg0];
     }
-    if (arg0 - 8 < 0 || arg0 - 8 >= g_btlfxEnv->unkC->unk27) {
+    if (arg0 - 8 < 0 || arg0 - 8 >= g_btlfxEnv->targets->unk27) {
         SystemError(0x53, 0x136);
     }
-    return g_btlfxEnv->unkC->unk28[arg0 - 8];
+    return g_btlfxEnv->targets->unk28[arg0 - 8];
 }
 
 s32 func_800E7298(BtlUnit *arg0) {
@@ -1261,7 +1261,7 @@ s32 func_800E7298(BtlUnit *arg0) {
 }
 
 void btlfx_clearTargets(void) {
-    g_btlfxEnv->unkC = NULL;
+    g_btlfxEnv->targets = NULL;
 }
 
 s32 btlfx_getUnitRadius(s32 arg0) {
@@ -1369,7 +1369,7 @@ void btlfx_setUnitPos(s32 arg0, s16 *arg1) {
 }
 
 s32 func_800E774C(s32 arg0, s16 *arg1, s16 *arg2) {
-    BtlUnitList *l = g_btlfxEnv->unkC;
+    BtlUnitList *l = g_btlfxEnv->targets;
     BtlUnit *u = l->unk28[arg0];
     if (arg0 >= l->unk27) {
         return 1;
@@ -1496,7 +1496,7 @@ s32 func_800E7C54(s32 arg0, s32 arg1) {
     btlfx_getUnitPos(arg0, a);
     btlfx_getUnitPos(arg1, b);
     r = a[2] <= b[2];
-    if (((g_btlfxEnv->unk2C->unk50 - 0x400) & 0xFFF) > 0x800) {
+    if (((g_btlfxEnv->camera->unk50 - 0x400) & 0xFFF) > 0x800) {
         r = -r;
     }
     return r;
@@ -1533,8 +1533,8 @@ void func_800E7D3C(s32 arg0, s32 arg1, s16 *arg2) {
         arg2[1] = m.t[1];
         arg2[2] = m.t[2];
     }
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
 }
 
 void btlfx_setUnitBrightness(BtlUnit *arg0, s32 arg1) {
@@ -1790,7 +1790,7 @@ void func_800E8854(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {
 }
 
 void func_800E8980(s32 arg0) {
-    g_btlfxEnv->unkC->unk44 = btl_getUnitById(g_btlfxEnv->unkC->unk25[arg0]);
+    g_btlfxEnv->targets->unk44 = btl_getUnitById(g_btlfxEnv->targets->unk25[arg0]);
 }
 
 void btlfx_restorePartyLooks(void) {
@@ -1869,7 +1869,7 @@ void func_800E8D14(void) {
 s32 func_800E8D60(void) {
     s32 r = 0;
     if (btlfx_isEnemyUnit(0x10) != 0) {
-        if (g_btlfxEnv->unkC->unk25[0] == 0) {
+        if (g_btlfxEnv->targets->unk25[0] == 0) {
             return r;
         }
         r = (u8)(g_btlfxEnv->unk0->unk1C >> 8) >> 7;
@@ -1881,8 +1881,8 @@ void btlfx_execCmd(s32 arg0) {
     s32 i;
     if (func_800E8D60() == 0) {
         if (arg0 == -1) {
-            for (i = 0; i < g_btlfxEnv->unkC->unk24; i++) {
-                btl_execCmd(g_btlfxEnv->unkC->unk4[i]);
+            for (i = 0; i < g_btlfxEnv->targets->unk24; i++) {
+                btl_execCmd(g_btlfxEnv->targets->unk4[i]);
             }
         } else {
             btl_execCmd(btl_getUnit(arg0));
@@ -1894,8 +1894,8 @@ void btlfx_showPopups(s32 arg0) {
     s32 i;
     if (func_800E8D60() == 0) {
         if (arg0 == -1) {
-            for (i = 0; i < g_btlfxEnv->unkC->unk24; i++) {
-                btl_spawnPopups(g_btlfxEnv->unkC->unk4[i]);
+            for (i = 0; i < g_btlfxEnv->targets->unk24; i++) {
+                btl_spawnPopups(g_btlfxEnv->targets->unk4[i]);
             }
         } else {
             btl_spawnPopups(btl_getUnit(arg0));
@@ -1967,7 +1967,7 @@ void func_800E9000(Unk800E9000 *arg0, s32 *src, s32 n, Unk80100DC054 *e) {
 }
 
 BtlUnit *func_800E9124(void) {
-    if (g_btlfxEnv->unkC->unk27 == 0) {
+    if (g_btlfxEnv->targets->unk27 == 0) {
         return btl_getUnit(0);
     }
     return btl_getUnit(8);
@@ -2010,7 +2010,7 @@ void func_800E9290(s32 arg0) {
         return;
     }
     hi = arg0 & 0xF0;
-    if (D_800F8D74 == 0 || hi == 0xF0 || (g_btlfxEnv->unkC->unk40 & 2)) {
+    if (D_800F8D74 == 0 || hi == 0xF0 || (g_btlfxEnv->targets->unk40 & 2)) {
         return;
     }
     u = btl_getUnit(0x10);
@@ -2018,7 +2018,7 @@ void func_800E9290(s32 arg0) {
         return;
     }
     t = func_800E9124();
-    if (g_btlfxEnv->unkC->unk40 & 4) {
+    if (g_btlfxEnv->targets->unk40 & 4) {
         msg = func_800E454C(D_800F8D78[4]);
     } else if (u->unk68 & 1) {
         if ((u8)btl_hasStatus(u, BTL_STATUS_TRANCE) == 0) {
@@ -2048,7 +2048,7 @@ void func_800E9290(s32 arg0) {
 
 void func_800E94C4(void) {
     u8 v;
-    if (D_800F8D74 != 0 && g_btlfxEnv->unkC->unk27 != 0) {
+    if (D_800F8D74 != 0 && g_btlfxEnv->targets->unk27 != 0) {
         if (btl_getUnit(8)->unk68 & 1) {
             v = D_800F8D80;
         } else {
@@ -2152,8 +2152,8 @@ s32 btl_soundPan(s32 arg0) {
         v = &pos;
         btlfx_getUnitPos(arg0, (s16 *)v);
     }
-    gte_SetRotMatrix(g_btlfxEnv->unk14);
-    gte_SetTransMatrix(g_btlfxEnv->unk14);
+    gte_SetRotMatrix(g_btlfxEnv->viewMatrix);
+    gte_SetTransMatrix(g_btlfxEnv->viewMatrix);
     gte_ldv0(v);
     gte_rtps();
     gte_stsxy(&sxy);

@@ -137,7 +137,7 @@ s32 func_801E7F5C(s32 mode, Fx049Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
                 if ((it->unk10 & 1) && it->unk15 != 0xFF) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0xC, 0x46);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0xC, 0x46);
                     p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&it->unk0);
                     if (p != NULL) {
                         p->unk22 = ex->func_800E7CC4(0, 0x40);
@@ -198,9 +198,9 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->unk8 = 0x24;
         init->unk14 = (s32)func_801E7F5C;
         init->unk4 = 0xC;
-    } else if (mode == 1) {        work->unk0.vx = env->unkC->unk38;
-        work->unk0.vy = env->unkC->unk3A;
-        work->unk0.vz = env->unkC->unk3C;
+    } else if (mode == 1) {        work->unk0.vx = env->targets->unk38;
+        work->unk0.vy = env->targets->unk3A;
+        work->unk0.vz = env->targets->unk3C;
         D_801E8D88 = env;
         work->unk0.vy = 0;
         q = work->unk8 = D_801E9738;
@@ -282,11 +282,11 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 0xF) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x40, 0x40, 0x40);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x40, 0x40, 0x40);
         }
         if (frame >= 0x10 && frame < 0x13) {
             c = 200 - (frame - 0x10) * 200 / 3;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 1, c >> 1, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c >> 1, c >> 1, c);
         }
         if (frame == 0x14) {
             p2 = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x15), (s32)&work->unk0);
@@ -294,7 +294,7 @@ s32 fx_049_op83(s32 mode, Fx049Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 p2->unk18->unk24 = (void (*)())func_801E7CEC;
             }
         }
-        if (frame >= 0x22 && frame - 0x22 < env->unkC->unk24) {
+        if (frame >= 0x22 && frame - 0x22 < env->targets->unk24) {
             ex->btlfx_getUnitBodyPos(frame - 0x22, 0, (s16 *)&b);
             it = ex->btlfx_poolSpawn((s16 *)entry->unk10);
             if (it != NULL) {

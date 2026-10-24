@@ -166,12 +166,12 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame >= 26 && frame < 30) {
             t = frame - 26;
-            dm = (DrMode2Words *)env->unk24;
-            env->unk24 += sizeof(DrMode2Words);
+            dm = (DrMode2Words *)env->prim;
+            env->prim += sizeof(DrMode2Words);
             setlen(dm, 2);
             dm->code[0] = 0xE6000001;
             dm->code[1] = 0;
-            addPrim(&env->unk20[1], dm);
+            addPrim(&env->ot[1], dm);
             scale.vx = (t << 7) + 0x1000;
             scale.vy = (t << 7) + 0x1000;
             scale.vz = (t << 7) + 0x1000;
@@ -180,7 +180,7 @@ s32 fx_1bd_op82(s32 mode, Fx1bdWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             rot.vy = 0;
             rot.vz = 0;
             ex->func_800E6764(0, 0xA0, 0x78, 0xA0, 0x78, 2, 2, 1, 1, &rot, &scale, &col, 1, 0);
-            env->unk2C->unk5E = 0x208 - t * t * 4;
+            env->camera->unk5E = 0x208 - t * t * 4;
         }
         work->unk64++;
         return frame >= 0x32;
@@ -580,7 +580,7 @@ u16 *func_801E901C(u16 *base, u16 i) {
 void func_801E9034(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E9E54)->btlfx_drawScreenTint((u32 *)(D_801E9E54->unk20 + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(D_801E9E54)->btlfx_drawScreenTint((u32 *)(D_801E9E54->ot + ot), arg4, c, c, c);
 }
 
 void func_801E90CC(void) {
@@ -632,9 +632,9 @@ void func_801E9174(s32 ch) {
                 for (k = 0; k < 3; k++) {
                     d = ((D_801EC064[i].unkA >> (k * 4)) & 0xF) - 1;
                     if (d >= 0) {
-                        ((SVECTOR *)env->unk2C)[d].vx = D_801EC064[i].unk0[0];
-                        ((SVECTOR *)env->unk2C)[d].vy = D_801EC064[i].unk0[1];
-                        ((SVECTOR *)env->unk2C)[d].vz = D_801EC064[i].unk0[2];
+                        ((SVECTOR *)env->camera)[d].vx = D_801EC064[i].unk0[0];
+                        ((SVECTOR *)env->camera)[d].vy = D_801EC064[i].unk0[1];
+                        ((SVECTOR *)env->camera)[d].vz = D_801EC064[i].unk0[2];
                         if (D_801EC064[i].unkC < D_801EC064[i].unkE) {
                             D_801EC064[i].unk0 += 3;
                             D_801EC064[i].unkC++;
@@ -682,11 +682,11 @@ void func_801E92D4(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
         hh = h + 1;
-        prim = (POLY_G4 *)env->unk24;
-        env->unk24 = (u8 *)(prim + w * hh);
+        prim = (POLY_G4 *)env->prim;
+        env->prim = (u8 *)(prim + w * hh);
         tpage = ex->btlfx_allocDrMode(0, abr);
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(pos);
         if (rot == NULL) {
             rot = &zero;
@@ -781,13 +781,13 @@ void func_801E92D4(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
 void func_801E9874(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
     Unk800F78A4 *env = D_801E9E54;
-    u32 *p = (u32 *)env->unk24;
+    u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
     RECT r2;
     RECT r;
 
-    env->unk24 = (u8 *)(p + 12);
+    env->prim = (u8 *)(p + 12);
     n = w - m;
     if (m != 0) {
         r.x = sx;
@@ -795,7 +795,7 @@ void func_801E9874(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r.w = m;
         r.h = h;
         ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->unk20 + 0xFFF, p);
+        addPrim(env->ot + 0xFFF, p);
     }
     p += 6;
     if (n != 0) {
@@ -804,6 +804,6 @@ void func_801E9874(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r2.w = n;
         r2.h = h;
         ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->unk20 + 0xFFF, p);
+        addPrim(env->ot + 0xFFF, p);
     }
 }

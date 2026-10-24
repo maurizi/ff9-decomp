@@ -115,9 +115,9 @@ s32 fx_138_op80(s32 mode, Fx138Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk90 = 0;
         work->unk92 = -1;
         work->unk94 = 0;
-        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0x4FD, &env->unk2C->unk0[0].vx);
-        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0x87F, &env->unk2C->unk0[1].vx);
-        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0xCFF, &env->unk2C->unk0[2].vx);
+        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0x4FD, &env->camera->unk0[0].vx);
+        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0x87F, &env->camera->unk0[1].vx);
+        ex->func_800CFD78(&D_801E8E60.vx, &work->unk78.vx, 0xCFF, &env->camera->unk0[2].vx);
     } else {
         frame = entry->unk0;
         if (frame == 1) {
@@ -247,13 +247,13 @@ void func_801E8254(Unk800F78A4 *env, s32 i, s32 v) {
 void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
     s32 m = x % w;
     Unk800F78A4 *env = D_801E8500;
-    u32 *p = (u32 *)env->unk24;
+    u32 *p = (u32 *)env->prim;
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 n;
     RECT r2;
     RECT r;
 
-    env->unk24 = (u8 *)(p + 12);
+    env->prim = (u8 *)(p + 12);
     n = w - m;
     if (m != 0) {
         r.x = sx;
@@ -261,7 +261,7 @@ void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r.w = m;
         r.h = h;
         ex->SetDrawMove(p, &r, dx + n, dy);
-        addPrim(env->unk20 + 0xFFF, p);
+        addPrim(env->ot + 0xFFF, p);
     }
     p += 6;
     if (n != 0) {
@@ -270,7 +270,7 @@ void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {
         r2.w = n;
         r2.h = h;
         ex->SetDrawMove(p, &r2, dx, dy);
-        addPrim(env->unk20 + 0xFFF, p);
+        addPrim(env->ot + 0xFFF, p);
     }
 }
 

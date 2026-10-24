@@ -35,11 +35,11 @@ void func_801E7718(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
         hh = h + 1;
-        prim = (POLY_G4 *)env->unk24;
-        env->unk24 = (u8 *)(prim + w * hh);
+        prim = (POLY_G4 *)env->prim;
+        env->prim = (u8 *)(prim + w * hh);
         tpage = ex->btlfx_allocDrMode(0, abr);
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(pos);
         if (rot == NULL) {
             rot = &zero;
@@ -170,14 +170,14 @@ void func_801E7CB4(SVECTOR *a, SVECTOR *b, s32 n, s32 tpage, s32 clut, s32 u, s3
     buf->unk0.pad = 1;
     BTLFX_COPY_SVEC(&buf->unk8, b);
     n = i;
-    prim = (POLY_GT4 *)env->unk24;
-    env->unk24 = (u8 *)(prim + n);
+    prim = (POLY_GT4 *)env->prim;
+    env->prim = (u8 *)(prim + n);
     c.cd = abr == 0xFF ? 0x3C : 0x3E;
     w--;
     h--;
     tpage |= (abr & 3) << 5;
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     /* the last uv store (u1) is the address giv loop.c bases the others on, as in the original's s0 = &prim->u1 */
     /* i = j in the increment: i + 1 lives across the call in its own register and is copied back */
     for (i = 0; i < n; i = j, buf++, prim++, phase++) {
@@ -232,10 +232,10 @@ void func_801E80A8(s32 ot, s32 x, s32 y, s32 nx, s32 ny, s32 dx, s32 dy, s32 abr
     yo = 0;
     j = 0;
     tpage |= (abr & 3) << 5;
-    ft4 = (POLY_FT4 *)env->unk24;
+    ft4 = (POLY_FT4 *)env->prim;
     gt4 = (POLY_GT4 *)(ft4 + nx * (ny - 1));
     ex = BTLFX_EXPORTS(env);
-    env->unk24 = (u8 *)(gt4 + nx);
+    env->prim = (u8 *)(gt4 + nx);
     col.r = col.g = col.b = c;
     for (; j < ny; j++, yo -= dy) {
         px = x;
@@ -399,9 +399,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk3C.vx = work->unk8.vx;
         work->unk3C.vy = work->unk8.vy;
         work->unk3C.vz = work->unk8.vz;
-        env->unk2C->unk0[3].vx = work->unk3C.vx;
-        env->unk2C->unk0[3].vy = work->unk3C.vy;
-        env->unk2C->unk0[3].vz = work->unk3C.vz;
+        env->camera->unk0[3].vx = work->unk3C.vx;
+        env->camera->unk0[3].vy = work->unk3C.vy;
+        env->camera->unk0[3].vz = work->unk3C.vz;
         work->unk84.vx = D_801E9D7C.vx;
         work->unk84.vy = D_801E9D7C.vy;
         work->unk84.vz = D_801E9D7C.vz;
@@ -424,7 +424,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 0:
             k = 0x1000;
             if (frame < 0x10) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xFF - ((frame * 0xFF) >> 4),
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF - ((frame * 0xFF) >> 4),
                                          0xFF - ((frame * 0xFF) >> 4), 0xFF - ((frame * 0xFF) >> 4));
             }
             if (frame < 0x2E) {
@@ -469,7 +469,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 if (p != NULL) {
                     p->unk22 = 0xC;
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0xFF, 0x80, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0xFF, 0x80, 0);
                 work->unk44 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk8);
                 if (work->unk44 != NULL) {
                     work->unk44->unk22 = 0xC;

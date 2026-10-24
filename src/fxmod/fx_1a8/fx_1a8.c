@@ -83,13 +83,13 @@ void func_801E7950(SVECTOR *pos, SVECTOR *rot, VECTOR *scale, s32 r0, s32 r1, s3
     s32 ft;
     s32 k;
 
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     gte_ldv0(pos);
-    g = (POLY_GT4 *)env->unk24;
+    g = (POLY_GT4 *)env->prim;
     *(s32 *)&c2 = 0;
     f = (POLY_FT4 *)(g + 2);
-    env->unk24 = (u8 *)(f + 14);
+    env->prim = (u8 *)(f + 14);
     c0.r = c0.g = c0.b = col;
     c1.r = c1.g = c1.b = col;
     if (abr != 0xFF) {
@@ -215,9 +215,9 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vx = D_801E937C.vx;
         work->unk8.vy = D_801E937C.vy - 0x2000;
         work->unk8.vz = D_801E937C.vz - 0x2000;
-        env->unk2C->unk0[3].vx = work->unk8.vx;
-        env->unk2C->unk0[3].vy = work->unk8.vy;
-        env->unk2C->unk0[3].vz = work->unk8.vz;
+        env->camera->unk0[3].vx = work->unk8.vx;
+        env->camera->unk0[3].vy = work->unk8.vy;
+        env->camera->unk0[3].vz = work->unk8.vz;
     } else {
         alpha = 0;
         size = 0;
@@ -282,10 +282,10 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_aimAngles((s16 *)&v, (s16 *)&D_801E937C, (s16 *)&work->unk2C);
                 work->unk34.vx = work->unk34.vy = work->unk34.vz = 0x5000;
                 work->unk2C.vx += 0x800;
-                env->unk2C->unk0[3].vx = D_801E937C.vx;
-                env->unk2C->unk0[3].vy = D_801E937C.vy;
-                env->unk2C->unk0[3].vz = D_801E937C.vz;
-                env->unk2C->unk0[3].vy -= 0x140;
+                env->camera->unk0[3].vx = D_801E937C.vx;
+                env->camera->unk0[3].vy = D_801E937C.vy;
+                env->camera->unk0[3].vz = D_801E937C.vz;
+                env->camera->unk0[3].vy -= 0x140;
             }
             ex->Hi_DrawEffModel(&work->unk2C, (VECTOR *)&work->unk40, (s32)&work->unk34, work->unk28);
             work->unk34.vx = work->unk34.vy = work->unk34.vz = work->unk34.vx / 2;
@@ -296,7 +296,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 work->unk0 = 2;
                 entry->unk0 = -1;
-                ex->btlfx_drawScreenTint((u32 *)&env->unk20[1], 2, 0x46, 0x46, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 2, 0x46, 0x46, 0x46);
                 BTLFX_COPY_SVEC(&work->unk10, &D_801E937C);
                 ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk10);
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xD), (s32)&work->unk10);
@@ -347,12 +347,12 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
             t = frame << 7;
             if (frame < 8) {
-                env->unk2C->unk0[3].vx = D_801E937C.vx;
+                env->camera->unk0[3].vx = D_801E937C.vx;
                 d = ((frame & 1) * 2 - 1) * (0x20 - frame * 4);
-                env->unk2C->unk0[3].vy = D_801E937C.vy;
-                env->unk2C->unk0[3].vz = D_801E937C.vz;
-                env->unk2C->unk0[3].vy = env->unk2C->unk0[3].vy - (0x140 + d);
-                env->unk2C->unk0[3].vx += d;
+                env->camera->unk0[3].vy = D_801E937C.vy;
+                env->camera->unk0[3].vz = D_801E937C.vz;
+                env->camera->unk0[3].vy = env->camera->unk0[3].vy - (0x140 + d);
+                env->camera->unk0[3].vx += d;
             }
             work->unk40.vx = D_801E937C.vx;
             work->unk40.vy = D_801E937C.vy;
@@ -377,7 +377,7 @@ s32 fx_1a8_op80(s32 mode, Fx1a8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame < 6) {
                 at = 0xFF - (frame * 0xFF) / 6;
-                ex->btlfx_drawScreenTint((u32 *)&env->unk20[1], 1, at, at >> 1, at >> 1);
+                ex->btlfx_drawScreenTint((u32 *)&env->ot[1], 1, at, at >> 1, at >> 1);
             }
             if (frame < 0x10) {
                 work->unk40.vx = D_801E937C.vx;

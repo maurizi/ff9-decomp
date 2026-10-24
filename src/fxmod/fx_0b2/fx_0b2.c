@@ -62,13 +62,13 @@ void func_801E78FC(SVECTOR *arg0, SVECTOR *arg1, VECTOR *arg2, s32 arg3, s32 arg
     s32 ju;
     s32 rv;
 
-    gte_SetRotMatrix(D_801E90A0->unk14);
-    gte_SetTransMatrix(D_801E90A0->unk14);
+    gte_SetRotMatrix(D_801E90A0->viewMatrix);
+    gte_SetTransMatrix(D_801E90A0->viewMatrix);
     gte_ldv0(arg0);
-    gt4 = (POLY_GT4 *)D_801E90A0->unk24;
+    gt4 = (POLY_GT4 *)D_801E90A0->prim;
     *(s32 *)&c2 = 0;
     ft4 = (POLY_FT4 *)((u8 *)gt4 + arg15 * 0x68);
-    D_801E90A0->unk24 = (u8 *)ft4 + arg15 * 0xC8;
+    D_801E90A0->prim = (u8 *)ft4 + arg15 * 0xC8;
     c0.r = c0.g = c0.b = arg5;
     c1.r = c1.g = c1.b = arg5;
     c0.code = arg14 != 0xFF ? 0x2E : 0x2C;
@@ -197,8 +197,8 @@ s32 fx_0b2_op80(s32 mode, Fx0b2Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk0 = 0;
         work->unk4 = 0;
         D_801E90A0 = env;
-        ((s32 *)&work->unk8)[0] = ((s32 *)&env->unkC->unk38)[0];
-        ((s32 *)&work->unk8)[1] = ((s32 *)&env->unkC->unk38)[1];
+        ((s32 *)&work->unk8)[0] = ((s32 *)&env->targets->unk38)[0];
+        ((s32 *)&work->unk8)[1] = ((s32 *)&env->targets->unk38)[1];
         work->unk18.vx = 0x400;
         work->unk18.vy = 0x20;
         work->unk18.vz = 0;

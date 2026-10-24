@@ -49,7 +49,7 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
 
             t = (frame << 12) / 24;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 0xFF, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 0xFF, 0xFF, 0xFF, 0xFF);
             }
             ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0);
             pp.vx = work->unk48[0];
@@ -61,9 +61,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel((SVECTOR *)&pp, (VECTOR *)work->unk48, (s32)work->unk54, SUMMON(env)->unk60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[1], (u16 *)&work->unk20);
             work->unk20.vy -= frame * 12 - 0x2BC;
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             BTLFX_COPY_SVEC(&work->unk10, &work->unk20);
             work->unk10.vy += 0x300;
             if (frame == 0) {
@@ -133,9 +133,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel((SVECTOR *)&pp, (VECTOR *)work->unk48, (s32)work->unk54, SUMMON(env)->unk60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[0], (u16 *)&work->unk20);
             work->unk20.vy -= frame * 12 - 0x2BC;
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             BTLFX_COPY_SVEC(&work->unk10, &work->unk20);
             work->unk10.vy += 0x300;
             if (frame == 0) {
@@ -215,9 +215,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[0], (u16 *)&work->unk20);
                 work->unk20.vx = work->unk48[0];
                 work->unk20.vz = work->unk48[2];
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[0], (u16 *)&work->unk10);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC30[1], (u16 *)&work->unk18);
@@ -301,9 +301,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC2C[1], (u16 *)&work->unk18);
             if (frame < 18) {
                 work->unk20.vy += (ex->math_cos((frame << 10) / 18) * 0x29) >> 12;
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)work->unk28, (s32)work->unk3C, work->unk68);
             s2.vx = s2.vz = work->unk3C[0] / 2;
@@ -362,9 +362,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk28[1] -= 0xC18;
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0x21, (u16 *)&work->unk20);
                 work->unk20.vy -= 0x46;
-                env->unk2C->unk0[2].vx = work->unk20.vx;
-                env->unk2C->unk0[2].vy = work->unk20.vy;
-                env->unk2C->unk0[2].vz = work->unk20.vz;
+                env->camera->unk0[2].vx = work->unk20.vx;
+                env->camera->unk0[2].vy = work->unk20.vy;
+                env->camera->unk0[2].vz = work->unk20.vz;
             }
             break;
         }
@@ -458,9 +458,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel((SVECTOR *)&pp, (VECTOR *)work->unk48, (s32)work->unk54, SUMMON(env)->unk60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[0], (u16 *)&work->unk20);
             work->unk20.vy -= 0xAA;
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[0], (u16 *)&work->unk10);
             BTLFX_COPY_SVEC(&work->unk18, &work->unk10);
             work->unk18.vy -= 0x46;
@@ -531,9 +531,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_SetSummonMotFrame(SUMMON(env)->unk60, 0x18);
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[1], (u16 *)&work->unk20);
                 work->unk20.vy -= 0xAA;
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             break;
         }
@@ -551,9 +551,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->Hi_DrawSummonModel((SVECTOR *)&pp, (VECTOR *)work->unk48, (s32)work->unk54, SUMMON(env)->unk60, 0);
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[1], (u16 *)&work->unk20);
             work->unk20.vy -= 0xAA;
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, D_801EEC38[1], (u16 *)&work->unk10);
             BTLFX_COPY_SVEC(&work->unk18, &work->unk10);
             work->unk18.vy -= 0x46;
@@ -624,9 +624,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_SetSummonMotion(SUMMON(env)->unk54->unk180[6], SUMMON(env)->unk60);
                 ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 4, (u16 *)&work->unk20);
                 work->unk20.vy -= 0x380;
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             break;
         }
@@ -649,9 +649,9 @@ s32 fx_17d_3_op80(s32 mode, Fx17d3Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             } else {
                 work->unk20.vy += 0x80;
             }
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 4, (u16 *)&work->unk10);
             work->unk10.vz += 0x226;
             if (frame == 0xA) {

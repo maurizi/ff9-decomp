@@ -7,9 +7,9 @@ s32 fx_0b9_op80(s32 mode, Fx0b9Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        work->unk8.vx = env->unkC->unk38;
-        work->unk8.vy = env->unkC->unk3A;
-        work->unk8.vz = env->unkC->unk3C;
+        work->unk8.vx = env->targets->unk38;
+        work->unk8.vy = env->targets->unk3A;
+        work->unk8.vz = env->targets->unk3C;
         D_801E7B94 = env;
     } else {
         frame = entry->unk0;
@@ -74,7 +74,7 @@ s32 fx_0b9_op81(s32 mode, Fx0b9Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
         work->unk14 = n;
         D_801E7B94 = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->unk24) {
             return 1;
         }
         ex->btlfx_getUnitPos(n, (s16 *)&work->unk4);

@@ -48,11 +48,11 @@ s32 fx_08b_op80(s32 mode, Fx08bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 11:
             ex->printf("flash\n");
             work->unk58 = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, work->unk58, work->unk58, 0x80);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unk58, work->unk58, 0x80);
             break;
         case 10:
             work->unk58 = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, work->unk58, work->unk58, 0x80);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unk58, work->unk58, 0x80);
             work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xE), (s32)&work->unk38);
             work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unk38);
             work->unk14 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 8), (s32)&work->unk38);
@@ -104,7 +104,7 @@ s32 fx_08b_op81(s32 mode, Fx08bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 n = *arg4;
         work->unkC = n;
         D_801E7D74 = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->unk24) {
             func_801E7D18(env, 7, 1);
             return 1;
         }

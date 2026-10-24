@@ -24,9 +24,9 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk2C);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk14);
         work->unk14.vy += 0x800;
-        env->unk2C->unk0[0].vx = work->unk4.vx = work->unk2C.vx;
-        env->unk2C->unk0[0].vz = work->unk4.vz = work->unk2C.vz;
-        env->unk2C->unk0[0].vy = work->unk4.vy = work->unk2C.vy;
+        env->camera->unk0[0].vx = work->unk4.vx = work->unk2C.vx;
+        env->camera->unk0[0].vz = work->unk4.vz = work->unk2C.vz;
+        env->camera->unk0[0].vy = work->unk4.vy = work->unk2C.vy;
         work->unk1C.vz = 0x330;
         work->unk1C.vy = 0x330;
         work->unk1C.vx = 0x330;
@@ -100,7 +100,7 @@ s32 fx_129_op80(s32 mode, Fx129Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->func_800E7ACC(0, (s32 *)&work->unk70);
         }
-        env->unk2C->unk0[0].vy = work->unk4.vy = work->unk2C.vy + work->unk40;
+        env->camera->unk0[0].vy = work->unk4.vy = work->unk2C.vy + work->unk40;
         ex->Hi_DrawEffModel(&work->unk14, &work->unk4, (s32)&work->unk1C, work->unk0);
         if (work->unk34 >= 9) {
             if (work->unk4C < 0x10) {

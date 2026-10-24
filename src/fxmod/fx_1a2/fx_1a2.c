@@ -38,8 +38,8 @@ void func_801E7718(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
     buf->unk0.pad = 1;
     BTLFX_COPY_SVEC(&buf->unk8, b);
     n = i;
-    prim = (POLY_G4 *)env->unk24;
-    env->unk24 = (s32)(prim + n);
+    prim = (POLY_G4 *)env->prim;
+    env->prim = (s32)(prim + n);
     if (ca == NULL) {
         c0.r = c0.g = c0.b = 0;
     } else {
@@ -52,8 +52,8 @@ void func_801E7718(SVECTOR *a, SVECTOR *b, u32 n, CVECTOR *ca, CVECTOR *cb, s32 
         gte_DpqColorFar_nst(cb, p);
         gte_strgb(&c1);
     }
-    gte_SetRotMatrix(env->unk14);
-    gte_SetTransMatrix(env->unk14);
+    gte_SetRotMatrix(env->viewMatrix);
+    gte_SetTransMatrix(env->viewMatrix);
     c0.cd = abr != 0xFF ? 0x3A : 0x38;
     c1.cd = abr != 0xFF ? 0x3A : 0x38;
     for (i = 0; i < n; i++, buf++, prim++) {
@@ -379,8 +379,8 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                     }
                 }
             }
-            gte_SetRotMatrix(env->unk14);
-            gte_SetTransMatrix(env->unk14);
+            gte_SetRotMatrix(env->viewMatrix);
+            gte_SetTransMatrix(env->viewMatrix);
             rot.vy = ((s16 *)tbl)[frame * 3] + 0x800;
             ex->func_800316D8(&rot, &m);
             ex->ScaleMatrix(&m, &scale);
@@ -486,7 +486,7 @@ s32 fx_1a2_op80(s32 mode, Fx1a2Work80 *w, Unk800F78A4 *env, Unk80100C78Entry *en
                 w->unk20 = w->unk8.vx;
                 w->unk24 = w->unk8.vz;
                 w->unk22 -= 0x1AE;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x10, 0x3C, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x3C, 0x46);
                 ex->func_800E806C(0, 0);
                 ex->func_800E806C(0x11, -2);
                 ex->btlfx_setUnitPos(0x11, (s16 *)&w->unk8);

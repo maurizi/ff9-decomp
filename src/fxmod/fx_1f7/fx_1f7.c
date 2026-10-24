@@ -146,7 +146,7 @@ s32 fx_1f7_op80(s32 mode, Fx1f7Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk8 != 0) {
             work->unk8--;
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0, 0, work->unk8 << 6);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0, 0, work->unk8 << 6);
         }
         return frame >= 0x40;
     }

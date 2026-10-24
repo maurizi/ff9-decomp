@@ -43,11 +43,11 @@ s32 fx_02b_op80(s32 mode, Fx02bWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 11:
             work->unk4C = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, work->unk4C, work->unk4C, 0x80);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unk4C, work->unk4C, 0x80);
             break;
         case 10:
             work->unk4C = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, work->unk4C, work->unk4C, 0x80);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unk4C, work->unk4C, 0x80);
             work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xB), (s32)&work->unk34);
             work->unkC = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xC), (s32)&work->unk34);
             work->unk10 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk34);
@@ -103,7 +103,7 @@ s32 fx_02b_op81(s32 mode, Fx02bWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
         work->unkC = n;
         D_801E7D34 = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->unk24) {
             func_801E7CD8(env, 7, 1);
             return 1;
         }

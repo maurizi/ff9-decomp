@@ -45,7 +45,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (work->unkC != NULL) {
                 work->unkC->unk22 = 0x180;
             }
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 if (work->unk64 != 2) {
                     func_801E840C(i);
                 }
@@ -85,7 +85,7 @@ s32 fx_1b2_op80(s32 mode, Fx1b2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->Hi_ModifyEffModelRGB(work->unk6C, work->unk38, work->unk38, work->unk38);
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 3), t);
-            for (i = 0; i < env->unkC->unk24; i++) {
+            for (i = 0; i < env->targets->unk24; i++) {
                 if (func_801E8388(i) != 0) {
                     func_801E831C(i, 0);
                 }
@@ -264,7 +264,7 @@ s32 func_801E8220(Fx1b2Track6 *track, s32 t, VECTOR *out) {
 void func_801E8284(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E84EC)->btlfx_drawScreenTint((u32 *)(D_801E84EC->unk20 + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(D_801E84EC)->btlfx_drawScreenTint((u32 *)(D_801E84EC->ot + ot), arg4, c, c, c);
 }
 
 void func_801E831C(s32 unit, s32 motion) {

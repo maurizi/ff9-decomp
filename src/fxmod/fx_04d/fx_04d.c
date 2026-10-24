@@ -197,9 +197,9 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk2C = 0;
         work->unk28 = 0;
         work->unk30 = 0;
-        work->unk18.vx = env->unkC->unk38;
-        work->unk18.vy = env->unkC->unk3A;
-        work->unk18.vz = env->unkC->unk3C;
+        work->unk18.vx = env->targets->unk38;
+        work->unk18.vy = env->targets->unk3A;
+        work->unk18.vz = env->targets->unk3C;
         work->unk20.vx = work->unk18.vx;
         work->unk20.vy = work->unk18.vy;
         work->unk20.vz = work->unk18.vz;
@@ -270,7 +270,7 @@ s32 fx_04d_op80(s32 mode, Fx04dWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     case 2:
         if (frame < 5) {
             c = (4 - frame) * 250 / 4;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, c >> 2, c >> 1, c);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, c >> 2, c >> 1, c);
         }
         if (frame == 7) {
             p = (Pool6CEntry *)ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x19), (s32)&work->unk18);

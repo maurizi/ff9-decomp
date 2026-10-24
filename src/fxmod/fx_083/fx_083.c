@@ -148,12 +148,12 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 work->unk58[i].vy = work->unkAC - ((ex->math_sin(0x200) * work->unkA8) >> 12);
                 ex->Hi_DrawEffModel(&work->unk38[i], &work->unk58[i], (s32)&work->unk98, work->unk28[i]);
             }
-            env->unk2C->unk0[0].vx = work->unk58[0].vx;
-            env->unk2C->unk0[0].vy = work->unk58[0].vy;
-            env->unk2C->unk0[0].vz = work->unk58[0].vz;
-            env->unk2C->unk30[0].vx = 0x100;
-            env->unk2C->unk30[0].vy = work->unk38[0].vy;
-            env->unk2C->unk30[0].vz = 0;
+            env->camera->unk0[0].vx = work->unk58[0].vx;
+            env->camera->unk0[0].vy = work->unk58[0].vy;
+            env->camera->unk0[0].vz = work->unk58[0].vz;
+            env->camera->unk30[0].vx = 0x100;
+            env->camera->unk30[0].vy = work->unk38[0].vy;
+            env->camera->unk30[0].vz = 0;
         }
         if (work->unk0[8] != 0) {
             work->unk0[8]--;
@@ -193,7 +193,7 @@ s32 fx_083_op80(s32 mode, Fx083Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         }
         if (work->unk0[6] != 0) {
             work->unk0[6]--;
-            ex->btlfx_aimAngles((s16 *)&env->unk2C->unk54, (s16 *)&work->unk158, (s16 *)&work->unk140);
+            ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&work->unk158, (s16 *)&work->unk140);
             work->unk140.vx = 0;
             work->unk140.vz = 0;
             for (i = 0; i < 5; i++) {

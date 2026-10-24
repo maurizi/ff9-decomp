@@ -5,7 +5,7 @@ void func_801E7704(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
 
-    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + ot), arg4, c, c, c);
+    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
 }
 
 s32 func_801E7794(s32 curve, s32 n, s32 t, s32 from, s32 to) {
@@ -64,8 +64,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         for (i = 15, q = &work->unk0[15]; i >= 0; i--, q--) {
             *q = 0;
         }
-        work->unk5C.vx = env->unkC->unk38;
-        work->unk5C.vz = env->unkC->unk3C;
+        work->unk5C.vx = env->targets->unk38;
+        work->unk5C.vz = env->targets->unk3C;
         work->unk5C.vy = -0x200;
         for (i = 0; i < 16; i++) {
             D_801EC4F0[i].unk12C = 0;
@@ -89,8 +89,8 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801EC370[i].unk4 = (ex->btlfx_rand() & 0x1FF) + 0x100;
         }
         work->unk6C = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 1), 1);
-        work->unk70.vx = env->unkC->unk38;
-        work->unk70.vz = env->unkC->unk3C;
+        work->unk70.vx = env->targets->unk38;
+        work->unk70.vz = env->targets->unk3C;
         work->unk70.vy = -0x200;
         work->unk90.vx = 0;
         work->unk90.vy = 0;
@@ -238,7 +238,7 @@ s32 fx_1f3_op80(s32 mode, Fx1f3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
-            ex->btlfx_aimAngles((s16 *)&env->unk2C->unk54, (s16 *)&work->unk5C, (s16 *)&work->unk90);
+            ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&work->unk5C, (s16 *)&work->unk90);
             ex->Hi_DrawEffModel(&work->unk90, (VECTOR *)&work->unk70, (s32)&work->unk80, work->unk6C);
             n1 = 0x80 - work->unk0[0];
             if (n1 < 8) {

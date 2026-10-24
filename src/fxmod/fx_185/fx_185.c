@@ -19,9 +19,9 @@ s32 fx_185_op80(s32 mode, Fx185Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk0);
         work->unk0.vy = -0x7D0;
-        work->unk8.vx = env->unkC->unk38;
-        work->unk8.vy = env->unkC->unk3A;
-        work->unk8.vz = env->unkC->unk3C;
+        work->unk8.vx = env->targets->unk38;
+        work->unk8.vy = env->targets->unk3A;
+        work->unk8.vz = env->targets->unk3C;
         work->unk8.vx += ex->btlfx_randCentered(0x7D0);
         work->unk8.vz += ex->btlfx_randCentered(0x7D0);
         D_801E8764.vx = work->unk8.vx;

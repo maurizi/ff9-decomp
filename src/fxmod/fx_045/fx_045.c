@@ -43,7 +43,7 @@ s32 fx_045_op80(s32 mode, Fx045Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         switch (frame) {
         case 11:
             work->unk50 = 0x80;
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, work->unk50, work->unk50, 0x80);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unk50, work->unk50, 0x80);
             break;
         case 10:
             work->unk8 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 5), (s32)&work->unk38);
@@ -102,7 +102,7 @@ s32 fx_045_op81(s32 mode, Fx045Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
         work->unkC = n;
         D_801E7D38 = env;
-        if (n >= env->unkC->unk24) {
+        if (n >= env->targets->unk24) {
             func_801E7CDC(env, 7, 1);
             return 1;
         }

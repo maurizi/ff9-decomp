@@ -58,9 +58,9 @@ s32 fx_1b4_op80(s32 mode, Fx1b4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x94;
     } else if (mode == 1) {
-        work->unk44.vx = env->unkC->unk38;
-        work->unk44.vy = env->unkC->unk3A;
-        work->unk44.vz = env->unkC->unk3C;
+        work->unk44.vx = env->targets->unk38;
+        work->unk44.vy = env->targets->unk3A;
+        work->unk44.vz = env->targets->unk3C;
         D_801EF174.vx = work->unk44.vx;
         D_801EF174.vy = work->unk44.vy;
         D_801EF174.vz = work->unk44.vz;
@@ -127,10 +127,10 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x18;
     } else if (mode == 1) {
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
+        work->unk10.vx = env->targets->unk38;
+        work->unk10.vy = env->targets->unk3A;
         D_801E8654 = env;
-        work->unk10.vz = env->unkC->unk3C;
+        work->unk10.vz = env->targets->unk3C;
         work->unk10.vy -= 0x258;
     } else {
         frame = entry->unk0;
@@ -161,16 +161,16 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 0x1E:
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
             break;
         }
         if ((u32)(frame - 0x1F) < 0x3C) {
-            dm = (DrMode2Words *)env->unk24;
-            env->unk24 += sizeof(DrMode2Words);
+            dm = (DrMode2Words *)env->prim;
+            env->prim += sizeof(DrMode2Words);
             setlen(dm, 2);
             dm->code[0] = 0xE6000001;
             dm->code[1] = 0;
-            addPrim(&env->unk20[1], dm);
+            addPrim(&env->ot[1], dm);
             scale.vx = 0x1000;
             scale.vy = 0x1000;
             scale.vz = 0x1000;
@@ -182,12 +182,12 @@ s32 fx_1b4_op81(s32 mode, Fx1b4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         t = frame - 0x5B;
         if ((u32)t < 0xF) {
-            dm2 = (DrMode2Words *)env->unk24;
-            env->unk24 += sizeof(DrMode2Words);
+            dm2 = (DrMode2Words *)env->prim;
+            env->prim += sizeof(DrMode2Words);
             setlen(dm2, 2);
             dm2->code[0] = 0xE6000001;
             dm2->code[1] = 0;
-            addPrim(&env->unk20[1], dm2);
+            addPrim(&env->ot[1], dm2);
             scale2.vz = scale2.vy = scale2.vx = (t << 7) + 0x1000;
             col2.r = col2.g = col2.b = 0x28;
             rot2.vx = 0;
@@ -208,10 +208,10 @@ s32 fx_1b4_op82(s32 mode, Fx1b4Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x24;
     } else if (mode == 1) {
-        work->unk1C.vx = env->unkC->unk38;
-        work->unk1C.vy = env->unkC->unk3A;
+        work->unk1C.vx = env->targets->unk38;
+        work->unk1C.vy = env->targets->unk3A;
         D_801E8654 = env;
-        work->unk1C.vz = env->unkC->unk3C;
+        work->unk1C.vz = env->targets->unk3C;
         work->unk1C.vy -= 0x258;
     } else {
         frame = entry->unk0;
@@ -256,10 +256,10 @@ s32 fx_1b4_op83(s32 mode, Fx1b4Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0xC;
     } else if (mode == 1) {
-        work->unk4.vx = env->unkC->unk38;
-        work->unk4.vy = env->unkC->unk3A;
+        work->unk4.vx = env->targets->unk38;
+        work->unk4.vy = env->targets->unk3A;
         D_801E8654 = env;
-        work->unk4.vz = env->unkC->unk3C;
+        work->unk4.vz = env->targets->unk3C;
         work->unk4.vy -= 0x258;
     } else {
         frame = entry->unk0;

@@ -89,7 +89,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0xB && t == 0) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
-                env->unk2C->unk52 = 0;
+                env->camera->unk52 = 0;
                 ex->func_800E806C(0x10, -1);
                 ex->func_800E806C(0, -2);
                 work->unkC.vz += 0x64;
@@ -157,7 +157,7 @@ s32 fx_18a_op80(s32 mode, Fx18aWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame < 4) {
                 g3 = ex->math_cos(frame << 8) * 0xFF;
                 f = g3 >> 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, f, g3 >> 14, g3 >> 13);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, f, g3 >> 14, g3 >> 13);
             }
             rot.vx = 0x400;
             rot.vz = 0;

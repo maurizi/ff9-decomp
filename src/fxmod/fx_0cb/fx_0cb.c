@@ -33,8 +33,8 @@ void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
     s32 sx;
     s32 sy;
 
-    prim = (POLY_GT4 *)env->unk24;
-    env->unk24 = (u8 *)(prim + n * m);
+    prim = (POLY_GT4 *)env->prim;
+    env->prim = (u8 *)(prim + n * m);
     t = 0xFF;
     ex = BTLFX_EXPORTS(env);
     if (src == NULL) {
@@ -46,18 +46,18 @@ void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
         tp1 = getTPage(2, 0, src->x + 0x80, src->y);
         sx = src->x;
         sy = src->y;
-        src->x = env->unk1C->clip.x + (x - (src->w >> 1));
-        src->y = env->unk1C->clip.y + (y - (src->h >> 1));
-        move = (u32 *)env->unk24;
-        env->unk24 = (u8 *)move + 0x18;
+        src->x = env->drawEnv->clip.x + (x - (src->w >> 1));
+        src->y = env->drawEnv->clip.y + (y - (src->h >> 1));
+        move = (u32 *)env->prim;
+        env->prim = (u8 *)move + 0x18;
         ex->SetDrawMove(move, src, sx, sy);
         cx = (src->w >> 1) + (sx & 0x3F);
         cy = (src->h >> 1) + (sy & 0xFF);
     } else {
         cx = x;
         cy = y;
-        tp0 = getTPage(2, 1, env->unk18->disp.x, env->unk18->disp.y);
-        tp1 = getTPage(2, 1, env->unk18->disp.x + 0x80, env->unk18->disp.y);
+        tp0 = getTPage(2, 1, env->dispEnv->disp.x, env->dispEnv->disp.y);
+        tp1 = getTPage(2, 1, env->dispEnv->disp.x + 0x80, env->dispEnv->disp.y);
     }
     p = pts[1];
     tp0 <<= 16;
@@ -138,7 +138,7 @@ void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
                 *(s32 *)&prim->x2 = *(s32 *)&c;
                 *(s32 *)&prim->x3 = *(s32 *)&d;
                 if (ot < 0x1000) {
-                    addPrimLenIn(&env->unk20[ot], prim, 0xC000000);
+                    addPrimLenIn(&env->ot[ot], prim, 0xC000000);
                 }
                 prim++;
             }
@@ -155,12 +155,12 @@ void func_801E7704(u32 ot, s32 x, s32 y, s32 n, s32 m, s32 dr, s32 from, s32 to,
         }
     }
     if (src != NULL && ot < 0x1000) {
-        addPrimLenIn(&env->unk20[ot], move, 0x5000000);
+        addPrimLenIn(&env->ot[ot], move, 0x5000000);
     }
 }
 
 void func_801E7EB8(s16 *a, s16 *b) {
-    BTLFX_EXPORTS(D_801E8670)->btlfx_aimAngles((s16 *)&D_801E8670->unk2C->unk54, a, b);
+    BTLFX_EXPORTS(D_801E8670)->btlfx_aimAngles((s16 *)&D_801E8670->camera->unk54, a, b);
 }
 
 s32 func_801E7EFC(s32 mode, Fx0cbPart *p, Unk800F78A4 *env, Unk80100C78Entry *entry, s32 frame, s32 a5, Fx0cbWork *work) {
@@ -246,10 +246,10 @@ s32 fx_0cb_op80(s32 mode, Fx0cbWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         if (work->unk0 == 0) {
             t = (frame << 12) / 50;
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0, 0x40, 0x40);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0x40, 0x40);
             } else if (frame < 7) {
                 u = 0x78 - (frame - 1) * 0x14;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, u, u, u >> 1);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, u, u, u >> 1);
             }
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0xC), work->unk4);
             ex->func_800E6624(frame * 8, 0x240, 0x100, 0x38, 0x70, 0x278, 0x100);

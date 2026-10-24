@@ -9,9 +9,9 @@ s32 fx_0f8_op80(s32 mode, Fx0f8Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7BD0 = env;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk4);
-        work->unkC.vx = env->unkC->unk38;
-        work->unkC.vy = env->unkC->unk3A;
-        work->unkC.vz = env->unkC->unk3C;
+        work->unkC.vx = env->targets->unk38;
+        work->unkC.vy = env->targets->unk3A;
+        work->unkC.vz = env->targets->unk3C;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk4);
         ex->btlfx_aimAngles((s16 *)&work->unk4, (s16 *)&work->unkC, (s16 *)&work->unk14);
         work->unk14.vy -= 0x400;
@@ -44,9 +44,9 @@ s32 fx_0f8_op81(s32 mode, Fx0f8Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x50;
     } else if (mode == 1) {
-        work->unk28.vx = env->unkC->unk38;
-        work->unk28.vy = env->unkC->unk3A;
-        work->unk28.vz = env->unkC->unk3C;
+        work->unk28.vx = env->targets->unk38;
+        work->unk28.vy = env->targets->unk3A;
+        work->unk28.vz = env->targets->unk3C;
         D_801E7BD0 = env;
         for (t = D_801E7B78, i = 0; i < 4; i++, t++) {
             (work->unk30 + i)->vx = work->unk28.vx;

@@ -5,7 +5,7 @@ u8 func_800C2DF4(void) {
 }
 
 void btlcam_init(void) {
-    g_btlfxEnv->unk2C = &g_btlCamera;
+    g_btlfxEnv->camera = &g_btlCamera;
     bzero(&g_btlCamera, 0xD0);
     g_btlCamera.unk60 = 0x200;
     g_btlCamera.unk5E = 0x200;
@@ -13,7 +13,7 @@ void btlcam_init(void) {
 
 void btlcam_beginEffect(void) {
     bzero(&g_btlCamScript, 0x64);
-    bcopy(g_btlfxEnv->unkC, &D_800FE368, 0x4C);
+    bcopy(g_btlfxEnv->targets, &D_800FE368, 0x4C);
     g_btlCamera.unk5C = 0;
     g_btlCamera.unk53 = btlfx_rand() & 1;
     if (g_btlfxEnv->unk0->unk1C & 4) {
@@ -57,7 +57,7 @@ void btlcam_playSeq(s32 arg0) {
 }
 
 void func_800C30B8(void) {
-    BtlUnit *u = g_btlfxEnv->unkC->unk0;
+    BtlUnit *u = g_btlfxEnv->targets->unk0;
     if (u->unk68 & 1) {
         D_800FE484 = u;
     }

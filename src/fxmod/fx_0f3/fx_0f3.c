@@ -71,14 +71,14 @@ s32 fx_0f3_op80(s32 mode, Fx0f3Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
             ex->func_800E3D20((s32)work->unk24, (s32)&work->unk10);
             if (frame == 6 && work->unk4 == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 1, 2, 0x40, 0x40, 0x40);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 2, 0x40, 0x40, 0x40);
             }
             if (frame == 7) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk22 = ex->func_800E7CC4(0, 0x20);
                 }
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 1, 1, 0x5D, 0x5D, 0x5D);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, 0x5D, 0x5D, 0x5D);
             }
             if (frame >= 0xC) {
                 work->unk0 = 1;

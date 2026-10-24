@@ -138,7 +138,7 @@ s32 fx_016_op81(s32 mode, Fx016Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x68;
     } else if (mode == 1) {
         D_801E8358 = env;
-        work->unk40 = env->unkC->unk24;
+        work->unk40 = env->targets->unk24;
         for (i = 0; i < work->unk40; i++) {
             ex->btlfx_getUnitHomePos(i, (s16 *)&work->unk0[i]);
             work->unk44 = ((-0x140 - (ex->btlfx_rand() & 0x1F)) * D_801E89A8) >> 12;

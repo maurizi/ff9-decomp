@@ -42,9 +42,9 @@ s32 fx_11c_op81(s32 mode, Fx11cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x28;
     } else if (mode == 1) {
-        work->unk20.vx = env->unkC->unk38;
-        work->unk20.vy = env->unkC->unk3A;
-        work->unk20.vz = env->unkC->unk3C;
+        work->unk20.vx = env->targets->unk38;
+        work->unk20.vy = env->targets->unk3A;
+        work->unk20.vz = env->targets->unk3C;
         D_801E7F9C = env;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk20);
         work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 9), (s32)&work->unk20);
@@ -95,15 +95,15 @@ s32 fx_11c_op82(s32 mode, Fx11cWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x30;
     } else if (mode == 1) {
-        work->unk18.vx = env->unkC->unk38;
-        work->unk18.vy = env->unkC->unk3A;
-        work->unk18.vz = env->unkC->unk3C;
-        work->unk20.vx = env->unkC->unk38;
-        work->unk20.vy = env->unkC->unk3A;
-        work->unk20.vz = env->unkC->unk3C;
-        work->unk28.vx = env->unkC->unk38;
-        work->unk28.vy = env->unkC->unk3A;
-        work->unk28.vz = env->unkC->unk3C;
+        work->unk18.vx = env->targets->unk38;
+        work->unk18.vy = env->targets->unk3A;
+        work->unk18.vz = env->targets->unk3C;
+        work->unk20.vx = env->targets->unk38;
+        work->unk20.vy = env->targets->unk3A;
+        work->unk20.vz = env->targets->unk3C;
+        work->unk28.vx = env->targets->unk38;
+        work->unk28.vy = env->targets->unk3A;
+        work->unk28.vz = env->targets->unk3C;
         work->unk20.vx -= 0x190;
         work->unk28.vx += 0x190;
         D_801E7F9C = env;

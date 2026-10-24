@@ -11,8 +11,8 @@ s32 fx_047_op80(s32 mode, Fx047Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         D_801E796C = env;
-        ((s32 *)&work->unkC)[0] = ((s32 *)&env->unkC->unk38)[0];
-        t = ((s32 *)&env->unkC->unk38)[1];
+        ((s32 *)&work->unkC)[0] = ((s32 *)&env->targets->unk38)[0];
+        t = ((s32 *)&env->targets->unk38)[1];
         work->unkC.vy = 0;
         ((s32 *)&work->unkC)[1] = t;
         ((s32 *)&work->unk4)[0] = ((s32 *)&work->unkC)[0];

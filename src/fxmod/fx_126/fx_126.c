@@ -45,12 +45,12 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->Hi_DrawEffModel(&work->unk30, &work->unk18, (s32)&work->unk38, work->unk4);
         work->unk28.vy -= 0x180;
         work->unk30.vy += 0x180;
-        env->unk2C->unk0[0].vx = work->unk8.vx;
-        env->unk2C->unk0[0].vy = work->unk8.vy;
-        env->unk2C->unk0[0].vz = work->unk8.vz;
-        env->unk2C->unk0[1].vx = work->unk18.vx;
-        env->unk2C->unk0[1].vy = work->unk18.vy;
-        env->unk2C->unk0[1].vz = work->unk18.vz;
+        env->camera->unk0[0].vx = work->unk8.vx;
+        env->camera->unk0[0].vy = work->unk8.vy;
+        env->camera->unk0[0].vz = work->unk8.vz;
+        env->camera->unk0[1].vx = work->unk18.vx;
+        env->camera->unk0[1].vy = work->unk18.vy;
+        env->camera->unk0[1].vz = work->unk18.vz;
     }
     switch (frame) {
     case 8:
@@ -65,8 +65,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             p->unk22 = ex->func_800E7CC4(0, 0x80);
         }
         k = 3;
-        if (k >= env->unkC->unk24) {
-            k = env->unkC->unk24 - 1;
+        if (k >= env->targets->unk24) {
+            k = env->targets->unk24 - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
@@ -83,8 +83,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         break;
     case 10:
         k = 1;
-        if (k >= env->unkC->unk24) {
-            k = env->unkC->unk24 - 1;
+        if (k >= env->targets->unk24) {
+            k = env->targets->unk24 - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;
@@ -99,8 +99,8 @@ s32 fx_126_op80(s32 mode, Fx126Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         k = 2;
-        if (k >= env->unkC->unk24) {
-            k = env->unkC->unk24 - 1;
+        if (k >= env->targets->unk24) {
+            k = env->targets->unk24 - 1;
         }
         if (work->unk9C[k] == 0) {
             work->unk9C[k] = 1;

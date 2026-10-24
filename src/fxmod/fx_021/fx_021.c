@@ -10,7 +10,7 @@ s32 fx_021_op80(s32 mode, SVECTOR *work, Unk800F78A4 *env, Unk80100C78Entry *ent
     } else if (mode == 1) {
         D_801E7874 = env;
         ex->func_800DC858(0, 1, (u16 *)work);
-        v = env->unkC->unk25[0];
+        v = env->targets->unk25[0];
         if (v < 0x80) {
             work->vy += v * 4;
         } else {

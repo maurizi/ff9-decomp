@@ -62,9 +62,9 @@ void func_801E7788(void) {
                             y += ext[j].vy;
                             z += ext[j].vz;
                         } else {
-                            x += ((SVECTOR *)env->unk2C)[s].vx;
-                            y += ((SVECTOR *)env->unk2C)[s].vy;
-                            z += ((SVECTOR *)env->unk2C)[s].vz;
+                            x += ((SVECTOR *)env->camera)[s].vx;
+                            y += ((SVECTOR *)env->camera)[s].vy;
+                            z += ((SVECTOR *)env->camera)[s].vz;
                         }
                     }
                     if (d >= 10) {
@@ -73,9 +73,9 @@ void func_801E7788(void) {
                         ext[j].vy = y;
                         ext[j].vz = z;
                     } else {
-                        ((SVECTOR *)env->unk2C)[d].vx = x;
-                        ((SVECTOR *)env->unk2C)[d].vy = y;
-                        ((SVECTOR *)env->unk2C)[d].vz = z;
+                        ((SVECTOR *)env->camera)[d].vx = x;
+                        ((SVECTOR *)env->camera)[d].vy = y;
+                        ((SVECTOR *)env->camera)[d].vz = z;
                     }
                 }
             }
@@ -226,7 +226,7 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             ex->func_800E3D54(D_801EA608);
             ex->func_800E3D54(D_801EA618);
             ex->func_800E3D54(D_801EA628);
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xB0, 0xB0, 0xB0);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xB0, 0xB0, 0xB0);
             D_801EA640.vy = D_801EA630.vy;
             D_801EA640.vx = D_801EA630.vx;
             D_801EA640.vz = D_801EA630.vz;
@@ -250,9 +250,9 @@ s32 fx_1ed_op80(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
             break;
         }
         if (D_801E8AC0[0] != 0) {
-            D_801E8A90.vx = env->unk2C->unk0[2].vx;
-            D_801E8A90.vy = env->unk2C->unk0[2].vy;
-            D_801E8A90.vz = env->unk2C->unk0[2].vz;
+            D_801E8A90.vx = env->camera->unk0[2].vx;
+            D_801E8A90.vy = env->camera->unk0[2].vy;
+            D_801E8A90.vz = env->camera->unk0[2].vz;
             ex->Hi_DrawSummonModel(&D_801E8A88, &D_801E8A90, (s32)&D_801E8AA0, SUMMON(env)->unk60, 1);
             if (D_801E8AC0[1] != 0) {
                 D_801E8AC0[1]--;
@@ -349,7 +349,7 @@ s32 fx_1ed_op81(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E8910 = env;
-        for (i = 0; i < env->unkC->unk24; i++) {
+        for (i = 0; i < env->targets->unk24; i++) {
             ex->btlfx_getUnitBodyPos(i, 0, (s16 *)&D_801EA7E0[i]);
             ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&D_801EA7E0[i]);
         }

@@ -35,11 +35,11 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
         hh = h + 1;
-        prim = (POLY_G4 *)env->unk24;
-        env->unk24 = (u8 *)(prim + w * hh);
+        prim = (POLY_G4 *)env->prim;
+        env->prim = (u8 *)(prim + w * hh);
         tpage = ex->btlfx_allocDrMode(0, abr);
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(pos);
         if (rot == NULL) {
             rot = &zero;
@@ -170,9 +170,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk20.vy = D_801E88F8.vy;
         work->unk20.vz = D_801E88F8.vz;
         work->unk20.vy -= 0xA00;
-        env->unk2C->unk0[3].vx = work->unk20.vx;
-        env->unk2C->unk0[3].vy = work->unk20.vy;
-        env->unk2C->unk0[3].vz = work->unk20.vz;
+        env->camera->unk0[3].vx = work->unk20.vx;
+        env->camera->unk0[3].vy = work->unk20.vy;
+        env->camera->unk0[3].vz = work->unk20.vz;
     } else {
         frame = entry->unk0;
         switch (work->unk0) {
@@ -194,9 +194,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk20.vy = D_801E88F8.vy;
             work->unk20.vz = D_801E88F8.vz;
             work->unk20.vy = (s16)(work->unk20.vy - 0x200) - (ex->math_sin(d >> 2) >> 1);
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             if (frame >= 0x25) {
                 work->unk0 = 2;
                 entry->unk0 = -1;
@@ -204,9 +204,9 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vy = D_801E88F8.vy;
                 work->unk20.vz = D_801E88F8.vz;
                 work->unk20.vy -= 0x200;
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             break;
         case 2:
@@ -256,7 +256,7 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->func_800E6624(1000 - r, 0x280, 0x100, 0x20, 0x80, 0x2A0, 0x100);
                 ex->math_cos(f1);
                 ex->math_cos(f1 * 2);
-                ex->func_800D0B18((s32)(env->unk20 + 2), 0x42, 0x10, 3, 0x3C, 1, &D_801E8908, 0x18, frame * 400, 0x186, 0x100);
+                ex->func_800D0B18((s32)(env->ot + 2), 0x42, 0x10, 3, 0x3C, 1, &D_801E8908, 0x18, frame * 400, 0x186, 0x100);
             }
             if ((u32)(frame - 7) < 0x14) {
                 s32 u;
@@ -285,18 +285,18 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 5) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0, 0x64);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0, 0x64);
             }
             if (frame == 6) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0, 0x80, 0xFF);
             }
             if ((u32)(frame - 7) < 8) {
                 s32 v = 0xF0 - (((frame - 7) * 0xF0) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, v, v, v >> 1);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, v, v, v >> 1);
             }
             if (frame >= 0x18) {
                 s32 v = ((frame - 0x18) * 0xFF) >> 3;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, v, v, v);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, v, v, v);
             }
             if (frame >= 0x20) {
                 work->unk0 = 6;
@@ -305,24 +305,24 @@ s32 fx_1fe_op81(s32 mode, Fx1feWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk20.vy = D_801E8900.vy;
                 work->unk20.vz = D_801E8900.vz;
                 work->unk20.vy -= 0x400;
-                env->unk2C->unk0[3].vx = work->unk20.vx;
-                env->unk2C->unk0[3].vy = work->unk20.vy;
-                env->unk2C->unk0[3].vz = work->unk20.vz;
+                env->camera->unk0[3].vx = work->unk20.vx;
+                env->camera->unk0[3].vy = work->unk20.vy;
+                env->camera->unk0[3].vz = work->unk20.vz;
             }
             break;
         case 6:
             t = (frame << 12) / 87;
             if (frame < 0x18) {
                 s32 v = 0xFF - (frame * 0xFF) / 24;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, v, v, v);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, v, v, v);
             }
             work->unk20.vx = D_801E8900.vx;
             work->unk20.vy = D_801E8900.vy;
             work->unk20.vz = D_801E8900.vz;
             work->unk20.vy -= (0x1000 - ex->math_sin(t >> 2)) >> 2;
-            env->unk2C->unk0[3].vx = work->unk20.vx;
-            env->unk2C->unk0[3].vy = work->unk20.vy;
-            env->unk2C->unk0[3].vz = work->unk20.vz;
+            env->camera->unk0[3].vx = work->unk20.vx;
+            env->camera->unk0[3].vy = work->unk20.vy;
+            env->camera->unk0[3].vz = work->unk20.vz;
             if (frame == 0) {
                 work->unk10.vx = D_801E8900.vx;
                 work->unk10.vy = D_801E8900.vy;
@@ -359,7 +359,7 @@ s32 fx_1fe_op85(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         *arg4 = 0;
     } else if (mode == 1) {
         D_801E9060 = env;
-        env->unk2C->unk52 = 0;
+        env->camera->unk52 = 0;
     } else {
         return 1;
     }

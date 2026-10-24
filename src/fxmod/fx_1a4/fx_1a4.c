@@ -21,7 +21,7 @@ s32 fx_1a4_op80(s32 mode, Fx1a4Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk3C = -1;
         work->unk3E = -1;
         work->unk40 = -1;
-        work->unk38 = env->unkC->unk25[1] == 0;
+        work->unk38 = env->targets->unk25[1] == 0;
     } else {
         frame = entry->unk0;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk1C);
@@ -101,7 +101,7 @@ s32 fx_1a4_op81(s32 mode, Fx1a4Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x5C;
     } else if (mode == 1) {
         D_801E8168 = env;
-        if (env->unkC->unk25[1] != 0) {
+        if (env->targets->unk25[1] != 0) {
             return 1;
         }
         ex->btlfx_initEffModels(D_801E8178, 3);

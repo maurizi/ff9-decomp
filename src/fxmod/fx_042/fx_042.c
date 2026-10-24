@@ -112,7 +112,7 @@ s32 func_801E7CEC(s32 mode, Fx042Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 if (it->unk1C != NULL) {
                     it->unk1C->unk22 = ex->func_800E7CC4(0, 0x40);
                 }
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 7, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame >= 4) {
                 it->unk11 = 1;
@@ -158,9 +158,9 @@ s32 fx_042_op83(s32 mode, Fx042Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         init->unk4 = 0xC;
     } else {
         if (mode == 1) {
-            work->unk0.vx = env->unkC->unk38;
-            work->unk0.vy = env->unkC->unk3A;
-            work->unk0.vz = env->unkC->unk3C;
+            work->unk0.vx = env->targets->unk38;
+            work->unk0.vy = env->targets->unk3A;
+            work->unk0.vz = env->targets->unk3C;
             D_801E856C = env;
             work->unk0.vy = 0;
             q = work->unk8 = D_801E8F0C;

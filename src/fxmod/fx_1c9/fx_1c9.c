@@ -21,7 +21,7 @@ s32 fx_1c9_op80(s32 mode, Fx1c9Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame == 7) {
-            ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, work->unkC, work->unkC, work->unkC);
+            ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, work->unkC, work->unkC, work->unkC);
         }
         return frame >= 0x32;
     }

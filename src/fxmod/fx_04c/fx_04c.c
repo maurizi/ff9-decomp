@@ -11,8 +11,8 @@ s32 fx_04c_op80(s32 mode, Fx04cWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         work->unk0 = 0;
         D_801E7CB4 = env;
-        ((s32 *)&work->unk4)[0] = ((s32 *)&env->unkC->unk38)[0];
-        t = ((s32 *)&env->unkC->unk38)[1];
+        ((s32 *)&work->unk4)[0] = ((s32 *)&env->targets->unk38)[0];
+        t = ((s32 *)&env->targets->unk38)[1];
         work->unk4.vy = 0;
         ((s32 *)&work->unk4)[1] = t;
         p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk4);
@@ -44,7 +44,7 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x3C;
     } else if (mode == 1) {
         D_801E7CB4 = env;
-        work->unk34 = env->unkC->unk24;
+        work->unk34 = env->targets->unk24;
         ((u8 *)env->unk0)[0x12] = 0;
         for (i = 0; i < work->unk34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->unk4[i]);
@@ -94,7 +94,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         *arg4 = 0x3C;
     } else if (mode == 1) {
         D_801E7CB4 = env;
-        work->unk34 = env->unkC->unk24;
+        work->unk34 = env->targets->unk24;
         ((u8 *)env->unk0)[0x12] = 0;
         for (i = 0; i < work->unk34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->unk4[i]);

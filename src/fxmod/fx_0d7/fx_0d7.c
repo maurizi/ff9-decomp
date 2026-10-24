@@ -115,7 +115,7 @@ s32 func_801E7CEC(s32 mode, Fx0d7Bolt *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 env->unk28 = ex->func_800E7CC4(0, 0x46);
                 ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 8), &it->unk0, NULL, 0x1400, 4, 1, 0x1000);
                 env->unk28 = 0;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 7, 0x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 7, 0x20);
             }
             if (frame == 1) {
                 it->unk20 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 7), (s32)&it->unk0);

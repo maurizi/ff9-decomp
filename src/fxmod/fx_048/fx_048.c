@@ -35,11 +35,11 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
         hh = h + 1;
-        prim = (POLY_G4 *)env->unk24;
-        env->unk24 = (u8 *)(prim + w * hh);
+        prim = (POLY_G4 *)env->prim;
+        env->prim = (u8 *)(prim + w * hh);
         tpage = ex->btlfx_allocDrMode(0, abr);
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(pos);
         if (rot == NULL) {
             rot = &zero;
@@ -162,10 +162,10 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x38;
     } else if (mode == 1) {
-        work->unk0.vx = env->unkC->unk38;
+        work->unk0.vx = env->targets->unk38;
         D_801E8F3C = env;
-        work->unk0.vy = env->unkC->unk3A;
-        work->unk0.vz = env->unkC->unk3C;
+        work->unk0.vy = env->targets->unk3A;
+        work->unk0.vz = env->targets->unk3C;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;
@@ -214,7 +214,7 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 1:
             t = frame << 9;
-            ex->btlfx_drawScreenTint((u32 *)env->unk20 + 0x800, 1, (t * 70) >> 12, 0, 0);
+            ex->btlfx_drawScreenTint((u32 *)env->ot + 0x800, 1, (t * 70) >> 12, 0, 0);
             if (frame == 4) {
                 p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0x14), (s32)work);
                 if (p != NULL) {
@@ -244,10 +244,10 @@ s32 fx_048_op80(s32 mode, Fx048Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             t = (frame << 12) / 46;
             if (frame < 4) {
                 x = ex->math_cos(frame << 8) * 0xFF;
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 1, 1, x >> 12, x >> 13, x >> 15);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, x >> 12, x >> 13, x >> 15);
             }
             if (frame < 0x20) {
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 0xFFF, 0xFF,
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 0xFFF, 0xFF,
                                          ((ex->math_cos(frame << 5) / 2 + 0x800) * (ex->btlfx_rand() % 50 + 7)) >> 12, 0,
                                          0);
             }

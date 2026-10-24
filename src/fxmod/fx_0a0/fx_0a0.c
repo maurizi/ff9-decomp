@@ -12,8 +12,8 @@ void func_801E7704(SVECTOR *a, SVECTOR *b, CVECTOR *c0, CVECTOR *c1, s32 p, s32 
     if (p < 0) {
         p = 0x1000;
     }
-    prim = (LINE_G2 *)env->unk24;
-    env->unk24 += sizeof(LINE_G2);
+    prim = (LINE_G2 *)env->prim;
+    env->prim += sizeof(LINE_G2);
     gte_DpqColorFar_nst(c0, p);
     gte_strgb(&col0);
     gte_DpqColorFar_nst(c1, p);

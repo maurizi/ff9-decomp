@@ -1497,16 +1497,16 @@ void func_800E3E08(void) {
     RECT r;
     DR_MOVE *p;
     s32 i;
-    r.x = g_btlfxEnv->unk18->disp.x;
-    r.y = g_btlfxEnv->unk18->disp.y;
+    r.x = g_btlfxEnv->dispEnv->disp.x;
+    r.y = g_btlfxEnv->dispEnv->disp.y;
     r.w = 0x20;
     r.h = 0xDA;
     i = 0;
-    p = (DR_MOVE *)g_btlfxEnv->unk24;
-    g_btlfxEnv->unk24 = (u8 *)(p + 10);
+    p = (DR_MOVE *)g_btlfxEnv->prim;
+    g_btlfxEnv->prim = (u8 *)(p + 10);
     do {
-        SetDrawMove(p, &r, g_btlfxEnv->unk1C->clip.x + i, g_btlfxEnv->unk1C->clip.y);
-        AddPrim(g_btlfxEnv->unk20, p++);
+        SetDrawMove(p, &r, g_btlfxEnv->drawEnv->clip.x + i, g_btlfxEnv->drawEnv->clip.y);
+        AddPrim(g_btlfxEnv->ot, p++);
         i += 0x20;
         r.x += 0x20;
     } while (i < 0x140);

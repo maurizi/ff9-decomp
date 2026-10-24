@@ -127,7 +127,7 @@ s32 fx_1e7_op80(s32 mode, Fx1e7Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800E3D54(work->unk0);
             ex->func_800E3D54(work->unk4);
         }
-        ex->btlfx_aimAngles((s16 *)&env->unk2C->unk54, (s16 *)&work->unk8, (s16 *)&D_801E84E0);
+        ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&work->unk8, (s16 *)&D_801E84E0);
         return frame >= 0x3C;
     }
     return 0;

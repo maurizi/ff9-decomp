@@ -22,9 +22,9 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             (s16)ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->unk8, 2), 0xB8, 0x3D40, 0x80, 0x80);
         work->unk0 = 0;
         work->unk24 = 0;
-        work->unk14.vx = env->unkC->unk38;
-        work->unk14.vy = env->unkC->unk3A;
-        work->unk14.vz = env->unkC->unk3C;
+        work->unk14.vx = env->targets->unk38;
+        work->unk14.vy = env->targets->unk3A;
+        work->unk14.vz = env->targets->unk3C;
         work->unk1C.vx = work->unk14.vx;
         work->unk1C.vy = work->unk14.vy;
         work->unk1C.vz = work->unk14.vz;
@@ -101,7 +101,7 @@ s32 fx_03e_op80(s32 mode, Fx03eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     p->unk22 = ex->func_800E7CC4(0, 0x20);
                 }
                 ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xA), (s32)&work->unk1C);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0, 0x20, 0x46);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0, 0x20, 0x46);
             }
             break;
         case 3:

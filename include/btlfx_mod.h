@@ -4,7 +4,7 @@
 /* Battle effect modules (FF9.IMG dir 13, loaded at 0x801E7700 / 0x801EC700; docs/ff9img.md).
  * A module is its own binary and calls nothing directly. It reaches ovl_0b through the export table
  * g_btlfxModuleExports (ovl_0b 0x800F7510), whose address the effect environment carries
- * (g_btlfxEnv->unk10; env is an argument of every op handler). BtlfxExports is that table: one member per
+ * (g_btlfxEnv->exports; env is an argument of every op handler). BtlfxExports is that table: one member per
  * entry, named after the ovl_0b / main function it points to, with the parameter types of its definition.
  *
  * The modules' own view of the table differs from ovl_0b's definitions in two ways, both needed to match:
@@ -236,7 +236,7 @@ typedef struct BtlfxExports {
     s32 (*func_800DD120)(BtlTexInfo *, BtlTexInfo *, s32); /* 0x35C */
 } BtlfxExports; /* followed in ovl_0b by the g_btlfxEnv block (D_800F7870) */
 
-#define BTLFX_EXPORTS(env) ((BtlfxExports *)(env)->unk10)
+#define BTLFX_EXPORTS(env) ((BtlfxExports *)(env)->exports)
 
 /* Modules copy SVECTORs as two words (lw/sw pairs, not a halfword struct copy). */
 #define BTLFX_COPY_SVEC(dst, src) \

@@ -54,7 +54,7 @@ s32 func_801E7704(s32 mode, Fx058Item *it, Unk800F78A4 *env, Unk80100C78Entry *e
                 it->unk0 = 1;
                 ((s16 *)it)[-1] = -1;
                 if (work->unk20 & 1) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x20, 0x10, 0);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x10, 0);
                 }
             }
             break;

@@ -341,7 +341,7 @@ p = d->unk1C; cont = 1; d->unk10 = p[0]; d->unk12 = p[1]; d->unk1C += 2; d->unkC
                 p = d->unk1C;
                 d->unk16 = ((u8 *)p)[0];
                 d->unk17 = ((u8 *)p)[1];
-                if (g_btlfxEnv->unkC->unk40 & 8) {
+                if (g_btlfxEnv->targets->unk40 & 8) {
                     if (d->unk16 == 4 || d->unk16 == 9) {
                         if (func_800E8AD0() != 0) {
                             break;
@@ -412,7 +412,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
                     break;
                 case 9:
-                    if (g_btlfxEnv->unkC->unk40 & 8) {
+                    if (g_btlfxEnv->targets->unk40 & 8) {
                         btl_unloadPartyModels();
                         dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
@@ -488,7 +488,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     D_80100C70[d->unk8] = (EffFn *)(fh + 8);
                     fn = ((Unk800DA92CFn *)fh)[1];
                     if (fn != NULL) {
-                        fn(d->unk38, g_btlfxEnv, g_btlfxEnv->unk10);
+                        fn(d->unk38, g_btlfxEnv, g_btlfxEnv->exports);
                     }
                     d->unkE = 3;
                     d->unk2C.h[d->unk8] = d->unk1A;
@@ -545,7 +545,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                 case 9:
                     m = 1;
                     d->unk53 = 1;
-                    if (g_btlfxEnv->unkC->unk40 & 8) {
+                    if (g_btlfxEnv->targets->unk40 & 8) {
                         btl_unloadPartyModels();
                         base = (void *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {

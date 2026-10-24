@@ -128,9 +128,9 @@ s32 fx_0e7_op81(s32 mode, Fx0e7Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             ex->Hi_DrawEffModel(&work->unkC, &work->unk1C, (s32)&work->unk2C, work->unk78);
             ex->Hi_DrawEffModel(&work->unk14, &work->unk1C, (s32)&work->unk2C, work->unk7A);
-            env->unk2C->unk0[0].vx = work->unk1C.vx;
-            env->unk2C->unk0[0].vy = work->unk1C.vy;
-            env->unk2C->unk0[0].vz = work->unk1C.vz;
+            env->camera->unk0[0].vx = work->unk1C.vx;
+            env->camera->unk0[0].vy = work->unk1C.vy;
+            env->camera->unk0[0].vz = work->unk1C.vz;
             if (work->unk68 >= 0 || work->unk6C >= 0) {
                 if (work->unk6C >= 0) {
                     work->unk3C = func_801E7EA4(0, -0x80, 0x10 - work->unk6C, 0x10);

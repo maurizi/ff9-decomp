@@ -659,15 +659,15 @@ typedef struct {
     Unk800F78A40 *unk0;
     Unk800F78A44 *unk4;
     u8 pad8[0xC - 8];
-    BtlUnitList *unkC;
-    s32 unk10;
-    MATRIX *unk14;
-    DISPENV *unk18;
-    DRAWENV *unk1C;
-    s32 *unk20; /* ordering table */
-    u8 *unk24; /* next free primitive */
+    BtlUnitList *targets; /* effect target list (btlfx_setTargets) */
+    s32 exports; /* g_btlfxModuleExports, the table modules call through (btlfx_mod.h) */
+    MATRIX *viewMatrix; /* camera view matrix */
+    DISPENV *dispEnv;
+    DRAWENV *drawEnv;
+    s32 *ot; /* effect ordering table */
+    u8 *prim; /* next free primitive */
     s32 unk28;
-    struct Unk800FE3B8 *unk2C;
+    struct Unk800FE3B8 *camera; /* g_btlCamera (btlcam_init) */
     s32 unk30;
 } Unk800F78A4;
 extern Unk800F78A4 *g_btlfxEnv;

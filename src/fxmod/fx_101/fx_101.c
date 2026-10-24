@@ -82,7 +82,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame != 0 && t0 == 0 && ((Fx101BattleState *)env->unk0)->unk10 != 0) {
             work->unk0 = 2;
             entry->unk0 = -1;
-            env->unk2C->unk52 = 0;
+            env->camera->unk52 = 0;
             ex->func_800E806C(0x10, 0x80);
             ex->func_800E3D54(work->unk8);
             p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 0xF), (s32)&work->unkC);

@@ -143,7 +143,7 @@ s32 fx_052_op82(s32 mode, Fx052Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E7EC8(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
             work->unk2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
         }
         return frame >= 0x20;
     }
@@ -161,7 +161,7 @@ s32 func_801E7E70(s32 from, s32 to, s32 t, s32 n) {
 void func_801E7EC8(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E7FA8)->btlfx_drawScreenTint((u32 *)(D_801E7FA8->unk20 + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(D_801E7FA8)->btlfx_drawScreenTint((u32 *)(D_801E7FA8->ot + ot), arg4, c, c, c);
 }
 
 INCLUDE_RODATA("asm/us/fx_052/nonmatchings/fx_052", fx_052_headerPtr);

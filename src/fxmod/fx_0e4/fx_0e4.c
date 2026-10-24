@@ -86,9 +86,9 @@ s32 fx_0e4_op80(s32 mode, Fx0e4Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                     ex->Hi_SetEffModelSlice(m, work->unk10.vy);
                     ex->Hi_DrawSliceEffModel(&work->unk8, &work->unk10, (s32)&work->unk20, m);
                 }
-                env->unk2C->unk0[0].vx = work->unk10.vx;
-                env->unk2C->unk0[0].vy = work->unk10.vy;
-                env->unk2C->unk0[0].vz = work->unk10.vz;
+                env->camera->unk0[0].vx = work->unk10.vx;
+                env->camera->unk0[0].vy = work->unk10.vy;
+                env->camera->unk0[0].vz = work->unk10.vz;
                 if (f >= 4 && frame < 0xC) {
                     work->unk20.vy -= 0x400;
                 }

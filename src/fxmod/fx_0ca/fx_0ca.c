@@ -7,9 +7,9 @@ s32 fx_0ca_op80(s32 mode, Fx0caWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x18;
     } else if (mode == 1) {
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
-        work->unk10.vz = env->unkC->unk3C;
+        work->unk10.vx = env->targets->unk38;
+        work->unk10.vy = env->targets->unk3A;
+        work->unk10.vz = env->targets->unk3C;
         work->unk8.vx = work->unk10.vx;
         work->unk8.vy = work->unk10.vy;
         work->unk8.vz = work->unk10.vz;

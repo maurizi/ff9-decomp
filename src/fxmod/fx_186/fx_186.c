@@ -101,10 +101,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk8.vz = 0;
         work->unk44 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0xB), 1);
         work->unk48 = ex->func_800E8F50((Unk800E8F50 *)ex->btlfx_getFileData(entry->unk8, 0x1B), 1);
-        env->unk2C->unk0[3].vx = work->unk8.vx;
-        env->unk2C->unk0[3].vy = work->unk8.vy;
-        env->unk2C->unk0[3].vz = work->unk8.vz;
-        env->unk2C->unk0[3].vy -= 0x100;
+        env->camera->unk0[3].vx = work->unk8.vx;
+        env->camera->unk0[3].vy = work->unk8.vy;
+        env->camera->unk0[3].vz = work->unk8.vz;
+        env->camera->unk0[3].vy -= 0x100;
     } else {
         tint = 0;
         frame = entry->unk0;
@@ -133,10 +133,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s16 *r;
 
                 t = frame << 8;
-                env->unk2C->unk0[3].vx = work->unk8.vx;
-                env->unk2C->unk0[3].vy = work->unk8.vy;
-                env->unk2C->unk0[3].vz = work->unk8.vz;
-                env->unk2C->unk0[3].vy = (s16)(env->unk2C->unk0[3].vy - 0x100) - (t >> 7) * ((frame & 1) * 2 - 1);
+                env->camera->unk0[3].vx = work->unk8.vx;
+                env->camera->unk0[3].vy = work->unk8.vy;
+                env->camera->unk0[3].vz = work->unk8.vz;
+                env->camera->unk0[3].vy = (s16)(env->camera->unk0[3].vy - 0x100) - (t >> 7) * ((frame & 1) * 2 - 1);
                 if (frame == 1) {
                     for (r = D_801E9B84, k = 0; k < 0x60; k++, r++) {
                         *r = -1;
@@ -208,7 +208,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 if (frame >= 0x10) {
                     work->unk0 = 1;
                     entry->unk0 = -1;
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0xFF, 0xFF, 0xFF);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, 0xFF, 0xFF, 0xFF);
                     for (n = 0, q = D_801E9B84, k = 0; k < 0x60; k++, q++) {
                         if (*q == 0) {
                             n++;
@@ -242,10 +242,10 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s32 j;
                 Fx186Rock *o;
 
-                env->unk2C->unk0[3].vx = work->unk8.vx;
-                env->unk2C->unk0[3].vy = work->unk8.vy;
-                env->unk2C->unk0[3].vz = work->unk8.vz;
-                env->unk2C->unk0[3].vy = (s16)(env->unk2C->unk0[3].vy - 0x100) - ((frame & 1) * 2 - 1) * 16;
+                env->camera->unk0[3].vx = work->unk8.vx;
+                env->camera->unk0[3].vy = work->unk8.vy;
+                env->camera->unk0[3].vz = work->unk8.vz;
+                env->camera->unk0[3].vy = (s16)(env->camera->unk0[3].vy - 0x100) - ((frame & 1) * 2 - 1) * 16;
                 if (frame == 0) {
                     BTLFX_COPY_SVEC(&work->unk10, &work->unk8);
                     work->unk10.vy -= 0x180;
@@ -268,7 +268,7 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
                 if (frame < 4) {
                     c = 0xFF - ((frame * 0xFF) >> 2);
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, c, c, c);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, c, c, c);
                 }
                 if (frame < 0x18) {
                     t = (frame << 12) / 24;
@@ -322,16 +322,16 @@ s32 fx_186_op80(s32 mode, Fx186Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unk22 = 0x100;
                 }
             }
-            env->unk2C->unk0[3].vx = work->unk8.vx;
-            env->unk2C->unk0[3].vy = work->unk8.vy;
-            env->unk2C->unk0[3].vz = work->unk8.vz;
-            env->unk2C->unk0[3].vy =
-                (s16)(env->unk2C->unk0[3].vy - 0x100) - ((0x1000 - t) >> 7) * ((frame & 1) * 2 - 1);
+            env->camera->unk0[3].vx = work->unk8.vx;
+            env->camera->unk0[3].vy = work->unk8.vy;
+            env->camera->unk0[3].vz = work->unk8.vz;
+            env->camera->unk0[3].vy =
+                (s16)(env->camera->unk0[3].vy - 0x100) - ((0x1000 - t) >> 7) * ((frame & 1) * 2 - 1);
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 2, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 2, 0x80, 0x80, 0x80);
             } else if (frame < 9) {
                 c = 0x80 - (((frame - 1) << 7) >> 3);
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, c, c, c);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 2), 1, c, c, c);
             }
             if (frame >= 0x28) {
                 work->unk0 = 3;
@@ -375,10 +375,10 @@ s32 fx_186_op81(s32 mode, Fx186Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E9214 = env;
         {
-            s32 n = env->unkC->unk24;
+            s32 n = env->targets->unk24;
             /* The dead conditional store splits the block, so n lives across blocks and is left to global-alloc.
              * That leaves two local qtys here, which local-alloc sorts properly (its hand-written three-qty sort
-             * compares qty numbers instead of positions), giving %hi(D_801E9214) v0 and env->unkC v1. */
+             * compares qty numbers instead of positions), giving %hi(D_801E9214) v0 and env->targets v1. */
             if (n != 0) k = 0;
             k = 0;
             work->unk0 = 0;

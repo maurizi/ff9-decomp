@@ -60,9 +60,9 @@ s32 fx_183_op81(s32 mode, Fx183Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk18.vy = work->unk8.vy;
         work->unk18.vz = work->unk8.vz;
         work->unk18.vy = -0x7D0;
-        work->unk10.vx = env->unkC->unk38;
-        work->unk10.vy = env->unkC->unk3A;
-        work->unk10.vz = env->unkC->unk3C;
+        work->unk10.vx = env->targets->unk38;
+        work->unk10.vy = env->targets->unk3A;
+        work->unk10.vz = env->targets->unk3C;
         ex->btlfx_aimAngles((s16 *)&work->unk18, (s16 *)&work->unk10, (s16 *)&work->unk20);
         work->unk20.vx = ex->ratan2(work->unk10.vy - work->unk18.vy, work->unk18.vz - work->unk10.vz);
         work->unk38.vx = 0x1000;
@@ -103,10 +103,10 @@ s32 fx_183_op82(s32 mode, Fx183Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x5C;
     } else if (mode == 1) {
-        work->unk40.vx = env->unkC->unk38;
-        work->unk40.vy = env->unkC->unk3A;
+        work->unk40.vx = env->targets->unk38;
+        work->unk40.vy = env->targets->unk3A;
         D_801E82E8 = env;
-        work->unk40.vz = env->unkC->unk3C;
+        work->unk40.vz = env->targets->unk3C;
         work->unk4.vx = 0;
         work->unk4.vy = 0;
         work->unk4.vz = 0;
@@ -194,7 +194,7 @@ s32 fx_183_op83(s32 mode, Fx183Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         s32 unit = *arg4;
         work->unk14 = unit;
         D_801E82E8 = env;
-        if (unit >= env->unkC->unk24) {
+        if (unit >= env->targets->unk24) {
             return 1;
         }
         ex->btlfx_getUnitBodyPos(unit, 0, (s16 *)&work->unkC);

@@ -11,8 +11,8 @@ s32 fx_046_op80(s32 mode, Fx046Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         work->unk0 = 0;
         D_801E7890 = env;
-        ((s32 *)&work->unk4)[0] = ((s32 *)&env->unkC->unk38)[0];
-        t = ((s32 *)&env->unkC->unk38)[1];
+        ((s32 *)&work->unk4)[0] = ((s32 *)&env->targets->unk38)[0];
+        t = ((s32 *)&env->targets->unk38)[1];
         work->unk4.vy = 0;
         ((s32 *)&work->unk4)[1] = t;
         p = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 2), (s32)&work->unk4);

@@ -86,7 +86,7 @@ s32 fx_0ea_op81(s32 mode, Fx0eaWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         n = *arg4;
         work->unk20 = n;
         D_801E7E54 = env;
-        if (n >= env->unkC->unk24 || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->unk20)) {
+        if (n >= env->targets->unk24 || ex->btl_getUnit(0x10) == ex->btl_getUnit(work->unk20)) {
             func_801E7DE0(env, 7, 1);
             return 1;
         }

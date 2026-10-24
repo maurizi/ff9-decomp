@@ -5,8 +5,8 @@ void func_801E7718(s32 x, s32 y, s32 w, s32 h, s32 dx, s32 dy) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     RECT r;
 
-    r.x = env->unk18->disp.x + x - (w >> 1);
-    r.y = env->unk18->disp.y + y - (h >> 1);
+    r.x = env->dispEnv->disp.x + x - (w >> 1);
+    r.y = env->dispEnv->disp.y + y - (h >> 1);
     r.w = w;
     r.h = h;
     ex->MoveImage(&r, dx, dy);
@@ -35,9 +35,9 @@ s32 fx_112_op80(s32 mode, Fx112Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         ex->btlfx_getUnitScale(0, (VECTOR *)&work->unk14);
         ex->btlfx_getUnitBodyPos(0, 1, (s16 *)&work->unk38);
         work->unk38.vy += 0x80;
-        env->unk2C->unk0[3].vx = work->unk38.vx;
-        env->unk2C->unk0[3].vy = work->unk38.vy;
-        env->unk2C->unk0[3].vz = work->unk38.vz;
+        env->camera->unk0[3].vx = work->unk38.vx;
+        env->camera->unk0[3].vy = work->unk38.vy;
+        env->camera->unk0[3].vz = work->unk38.vz;
         work->unk0 = 0;
     } else {
     frame = entry->unk0;

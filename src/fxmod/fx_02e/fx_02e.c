@@ -31,7 +31,7 @@ s32 fx_02e_op80(s32 mode, Fx02eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             }
         }
         if (frame >= 0x24) {
-            ex->btlfx_aimAngles((s16 *)&env->unk2C->unk54, (s16 *)&work->unk18, (s16 *)&work->unk20);
+            ex->btlfx_aimAngles((s16 *)&env->camera->unk54, (s16 *)&work->unk18, (s16 *)&work->unk20);
             if (work->unk8 != NULL) {
                 if (work->unk8->unk30 == -1) {
                     work->unk8 = NULL;

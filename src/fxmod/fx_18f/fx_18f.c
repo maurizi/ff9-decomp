@@ -9,9 +9,9 @@ s32 fx_18f_op80(s32 mode, Fx18fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk4.vy = -0x1B58;
         work->unk4.vx = 0;
         work->unk4.vz = 0x7D0;
-        env->unk2C->unk0[0].vx = work->unk4.vx;
-        env->unk2C->unk0[0].vy = work->unk4.vy;
-        env->unk2C->unk0[0].vz = work->unk4.vz;
+        env->camera->unk0[0].vx = work->unk4.vx;
+        env->camera->unk0[0].vy = work->unk4.vy;
+        env->camera->unk0[0].vz = work->unk4.vz;
         D_801E7820 = env;
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk4);
     } else {

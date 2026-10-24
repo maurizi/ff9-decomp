@@ -5,7 +5,7 @@ void func_801E773C(s32 t, s32 n, s32 from, s32 to, s32 arg4, s32 ot) {
     BtlfxExports *ex = BTLFX_EXPORTS(env);
     s32 c = ex->btlfx_lerpRatio(from, to, t, n);
 
-    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + ot), arg4, c, c, c);
+    ex->btlfx_drawScreenTint((u32 *)(env->ot + ot), arg4, c, c, c);
 }
 
 s32 func_801E77CC(s32 curve, s32 n, s32 t, s32 from, s32 to) {
@@ -80,9 +80,9 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&D_801EB7EC);
         D_801EB7EC.vy = -0x514;
         D_801EB7EC.vz += 0x800;
-        env->unk2C->unk0[1].vx = D_801EB7EC.vx;
-        env->unk2C->unk0[1].vy = 0;
-        env->unk2C->unk0[1].vz = 0;
+        env->camera->unk0[1].vx = D_801EB7EC.vx;
+        env->camera->unk0[1].vy = 0;
+        env->camera->unk0[1].vz = 0;
         ex->btlfx_getUnitBodyPos(0x10, 0, (s16 *)&work->unk100);
         ex->btlfx_getUnitPos(0x10, (s16 *)&work->unk108);
         ((BtlTexInfo *)v)->unk0[0][0] = 0x8A;
@@ -578,17 +578,17 @@ s32 fx_1b3_op80(s32 mode, Fx1b3Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk0[0] != 0) {
             work->unk0[0]--;
             zz3 = ex->btlfx_lerpRatio(0x40, 0, work->unk0[0], 0x10);
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, zz3, zz3, zz3);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, zz3, zz3, zz3);
         }
         if (work->unk0[12] != 0) {
             work->unk0[12]--;
             zz3 = ex->btlfx_lerpRatio(0xFF, 0, work->unk0[12], 0x20);
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, zz3, zz3, zz3);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, zz3, zz3, zz3);
         }
         if (work->unk0[1] != 0) {
             work->unk0[1]--;
             zz3 = 0x40;
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, zz3, zz3, zz3);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, zz3, zz3, zz3);
         }
         if (work->unk0[2] != 0) {
             work->unk0[2]--;

@@ -11,7 +11,7 @@ s32 fx_093_op80(s32 mode, Fx093Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else if (mode == 1) {
         D_801E79F4 = env;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk0);
-        ex->func_800DC8AC(0x10, env->unkC->unk25[0], &bone);
+        ex->func_800DC8AC(0x10, env->targets->unk25[0], &bone);
         ex->func_800CFE88((MATRIX *)&bone, 0x100, (s32)&work->unk8);
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk18);

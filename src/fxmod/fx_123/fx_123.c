@@ -200,9 +200,9 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 19:
             for (s = D_801E8F7C, j = 0; j < 6; j++, s++) {
-                s->unk0.vx = env->unkC->unk38;
+                s->unk0.vx = env->targets->unk38;
                 s->unk0.vy = work->unk9C[j].vy;
-                s->unk0.vz = env->unkC->unk3C;
+                s->unk0.vz = env->targets->unk3C;
                 s->unk0.vx += ex->math_sin(s->unk20) * 350 / 4096;
                 s->unk0.vz += ex->math_cos(s->unk20) * 350 / 4096;
                 s->unk8.vx = work->unk6C[j].vx;
@@ -211,18 +211,18 @@ s32 fx_123_op81(s32 mode, Fx123Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 s->unk10.vx = ex->math_sin(s->unk20) * 1400 / 4096;
                 s->unk10.vy = 500;
                 s->unk10.vz = ex->math_cos(s->unk20) * 1400 / 4096;
-                s->unk10.vx += env->unkC->unk38;
-                s->unk10.vy += env->unkC->unk3A;
-                s->unk10.vz += env->unkC->unk3C;
+                s->unk10.vx += env->targets->unk38;
+                s->unk10.vy += env->targets->unk3A;
+                s->unk10.vz += env->targets->unk3C;
             }
             break;
         case 17:
             work->unk178 = 4;
             break;
         }
-        env->unk2C->unk0[0].vx = work->unk64.vx;
-        env->unk2C->unk0[0].vy = work->unk64.vy;
-        env->unk2C->unk0[0].vz = work->unk64.vz - 0x5F5;
+        env->camera->unk0[0].vx = work->unk64.vx;
+        env->camera->unk0[0].vy = work->unk64.vy;
+        env->camera->unk0[0].vz = work->unk64.vz - 0x5F5;
         if (frame >= 0 && frame < 0x32) {
             k = frame;
             if (frame >= 3 && frame < 11) {
@@ -327,10 +327,10 @@ s32 fx_123_op82(s32 mode, Fx123Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = 0x1C;
     } else if (mode == 1) {
-        work->unk14.vx = env->unkC->unk38;
-        work->unk14.vy = env->unkC->unk3A;
+        work->unk14.vx = env->targets->unk38;
+        work->unk14.vy = env->targets->unk3A;
         D_801E90CC = env;
-        work->unk14.vz = env->unkC->unk3C;
+        work->unk14.vz = env->targets->unk3C;
     } else {
         frame = entry->unk0;
         switch (frame) {
@@ -376,7 +376,7 @@ s32 fx_123_op83(s32 mode, Fx123Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             func_801E8ECC(0xFF, 0, 0x10 - work->unk2, 0x10, 1, 0);
             work->unk2--;
         } else {
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, 0xFF, 0xFF, 0xFF);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, 0xFF, 0xFF, 0xFF);
         }
         return frame >= 0x20;
     }
@@ -423,5 +423,5 @@ s32 func_801E8E38(Fx123Path_0b4 *path, s32 i, SVECTOR *rot, SVECTOR *pos) {
 void func_801E8ECC(s32 from, s32 to, s32 t, s32 n, s32 arg4, s32 ot) {
     s32 c = (from * (n - t) + to * t) / n;
 
-    BTLFX_EXPORTS(D_801E90CC)->btlfx_drawScreenTint((u32 *)(D_801E90CC->unk20 + ot), arg4, c, c, c);
+    BTLFX_EXPORTS(D_801E90CC)->btlfx_drawScreenTint((u32 *)(D_801E90CC->ot + ot), arg4, c, c, c);
 }

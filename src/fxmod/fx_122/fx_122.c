@@ -13,7 +13,7 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x50;
     } else if (mode == 1) {
         D_801E7D44 = env;
-        env->unk2C->unk52 = 0;
+        env->camera->unk52 = 0;
         ex->btlfx_getUnitPos(0, (s16 *)&work->unk30);
         ex->btlfx_getUnitRot(0, (s16 *)&work->unk38);
         work->unk4.vx = 0;
@@ -57,9 +57,9 @@ s32 fx_122_op80(s32 mode, Fx122Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unkC.vz = work->unk30.vz;
     found:
         work->unk2E = work->unkC.vy;
-        env->unk2C->unk0[0].vx = work->unkC.vx;
-        env->unk2C->unk0[0].vy = work->unkC.vy;
-        env->unk2C->unk0[0].vz = work->unkC.vz;
+        env->camera->unk0[0].vx = work->unkC.vx;
+        env->camera->unk0[0].vy = work->unkC.vy;
+        env->camera->unk0[0].vz = work->unkC.vz;
         work->unk48 = -1;
         work->unk4A = -1;
         ex->btlfx_initEffModels(D_801E7D54, 1);

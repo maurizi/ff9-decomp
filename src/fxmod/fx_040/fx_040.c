@@ -75,21 +75,21 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     if (mode == 0) {
         *arg4 = 0x50;
     } else if (mode == 1) {
-        work->unk28.vx = env->unkC->unk38;
-        work->unk28.vy = env->unkC->unk3A;
-        work->unk28.vz = env->unkC->unk3C;
-        D_801E7F08.vx = env->unkC->unk38;
-        D_801E7F08.vy = env->unkC->unk3A;
-        D_801E7F08.vz = env->unkC->unk3C;
+        work->unk28.vx = env->targets->unk38;
+        work->unk28.vy = env->targets->unk3A;
+        work->unk28.vz = env->targets->unk3C;
+        D_801E7F08.vx = env->targets->unk38;
+        D_801E7F08.vy = env->targets->unk3A;
+        D_801E7F08.vz = env->targets->unk3C;
         D_801E7EF8 = env;
         D_801E7F08.vy -= 0x190;
         ex->func_800DC858(0x10, 0, (u16 *)&work->unk40);
         D_801E7F00.vx = work->unk40.vx;
         D_801E7F00.vy = work->unk40.vy;
         D_801E7F00.vz = work->unk40.vz;
-        env->unk2C->unk0[0].vx = work->unk40.vx;
-        env->unk2C->unk0[0].vy = work->unk40.vy;
-        env->unk2C->unk0[0].vz = work->unk40.vz;
+        env->camera->unk0[0].vx = work->unk40.vx;
+        env->camera->unk0[0].vy = work->unk40.vy;
+        env->camera->unk0[0].vz = work->unk40.vz;
         for (i = 0; i < 4; i++) {
             work->unk0[i] = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, D_801E7E98[i]), (s32)&D_801E7F18[i]);
             if (work->unk0[i] != NULL) {
@@ -99,12 +99,12 @@ s32 fx_040_op80(s32 mode, Fx040Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     } else {
         frame = entry->unk0;
         if (frame == 0x12) {
-            work->unk30.vx = env->unkC->unk38;
-            work->unk30.vy = env->unkC->unk3A;
-            work->unk30.vz = env->unkC->unk3C;
-            work->unk38.vx = env->unkC->unk38;
-            work->unk38.vy = env->unkC->unk3A;
-            work->unk38.vz = env->unkC->unk3C;
+            work->unk30.vx = env->targets->unk38;
+            work->unk30.vy = env->targets->unk3A;
+            work->unk30.vz = env->targets->unk3C;
+            work->unk38.vx = env->targets->unk38;
+            work->unk38.vy = env->targets->unk3A;
+            work->unk38.vz = env->targets->unk3C;
             work->unk30.vx -= 0xC8;
             work->unk38.vx += 0xC8;
             work->unk18 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 3), (s32)&work->unk30);

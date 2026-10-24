@@ -74,7 +74,7 @@ s32 fx_05a_op80(s32 mode, Fx05aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 7), t);
         }
         if (frame >= 0x19 && frame < 0x21) {
-            ex->btlfx_drawScreenTint((u32 *)env->unk20, 1, work->unk42, work->unk42, work->unk42);
+            ex->btlfx_drawScreenTint((u32 *)env->ot, 1, work->unk42, work->unk42, work->unk42);
             work->unk42 -= 0x1F;
         }
         if (frame >= 0x3C) {

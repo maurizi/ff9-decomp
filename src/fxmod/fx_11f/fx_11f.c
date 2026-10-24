@@ -8,7 +8,7 @@ s32 fx_11f_op80(s32 mode, Fx11fWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         *arg4 = 0x18;
     } else if (mode == 1) {
         D_801E7990 = env;
-        env->unk2C->unk52 = 0;
+        env->camera->unk52 = 0;
         ex->btlfx_getUnitBodyPos(0, 0, (s16 *)&work->unk10);
         work->unk0 = ex->func_800E3CEC(ex->btlfx_getFileData(entry->unk8, 1), (s32)&work->unk10);
         if (work->unk0 != NULL) {

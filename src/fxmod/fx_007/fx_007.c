@@ -35,11 +35,11 @@ void func_801E7704(SVECTOR *pos, SVECTOR *rot, s32 tp, s32 x, s32 y, s32 div, s3
         /* The nesting only weights w's references for global-alloc (w gets s4 ahead of py and prim). */
         do { do { do { w++; } while (0); } while (0); } while (0);
         hh = h + 1;
-        prim = (POLY_G4 *)env->unk24;
-        env->unk24 = (u8 *)(prim + w * hh);
+        prim = (POLY_G4 *)env->prim;
+        env->prim = (u8 *)(prim + w * hh);
         tpage = ex->btlfx_allocDrMode(0, abr);
-        gte_SetRotMatrix(env->unk14);
-        gte_SetTransMatrix(env->unk14);
+        gte_SetRotMatrix(env->viewMatrix);
+        gte_SetTransMatrix(env->viewMatrix);
         gte_ldv0(pos);
         if (rot == NULL) {
             rot = &zero;
@@ -194,7 +194,7 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 1:
             t = frame << 9;
-            ex->btlfx_drawScreenTint((u32 *)env->unk20 + 0x800, 1, (t * 0x46) >> 12, 0, 0);
+            ex->btlfx_drawScreenTint((u32 *)env->ot + 0x800, 1, (t * 0x46) >> 12, 0, 0);
             if (frame == 4) {
                 Pool6CEntry *p;
 
@@ -242,11 +242,11 @@ s32 fx_007_op80(s32 mode, Fx007Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 if (frame < 4) {
                     n = ex->math_cos(frame << 8) * 0xFF;
-                    ex->btlfx_drawScreenTint((u32 *)env->unk20 + 1, 1, n >> 12, n >> 13, n >> 15);
+                    ex->btlfx_drawScreenTint((u32 *)env->ot + 1, 1, n >> 12, n >> 13, n >> 15);
                 }
                 if (frame < 0x20) {
                     a = ex->math_cos(frame << 5);
-                    ex->btlfx_drawScreenTint((u32 *)env->unk20 + 0xFFF, 0xFF,
+                    ex->btlfx_drawScreenTint((u32 *)env->ot + 0xFFF, 0xFF,
                                              ((a / 2 + 0x800) * (ex->btlfx_rand() % 50 + 7)) >> 12, 0, 0);
                 }
                 y = frame * 16;

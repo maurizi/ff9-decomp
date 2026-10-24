@@ -24,10 +24,10 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     if (mode == 0) {
         *arg4 = sizeof(Fx085Work80);
     } else if (mode == 1) {
-        work->unk0.vx = env->unkC->unk38;
-        work->unk0.vy = env->unkC->unk3A;
+        work->unk0.vx = env->targets->unk38;
+        work->unk0.vy = env->targets->unk3A;
         D_801E9DF4 = env;
-        work->unk0.vz = env->unkC->unk3C;
+        work->unk0.vz = env->targets->unk3C;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;
@@ -54,10 +54,10 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 0x1C) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x80, 0x40, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x40, 0);
             }
             if (frame == 0x1D) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0x80);
             }
             if (frame >= 0x1D) {
                 work->unk10 = 1;
@@ -72,7 +72,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 1:
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x20, 0x40, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x20, 0x40, 0xFF);
             }
             if (frame == 1) {
                 env->unk28 = 0x200;
@@ -84,7 +84,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 2), &work->unk8, NULL, 0x800, 0, 1, -1);
             env->unk28 = 0;
             if (frame == 2) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0x80, 0x80, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0x80, 0x80, 0xFF);
             }
             if (frame >= 2) {
                 work->unk10 = 2;
@@ -106,7 +106,7 @@ s32 fx_085_op80(s32 mode, Fx085Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
 
                 d = ex->math_cos((frame << 10) / 6) * 0xFF;
                 c = d >> 12;
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, d >> 14, d >> 13, c);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, d >> 14, d >> 13, c);
             }
             if (frame < 20) {
                 c = ex->math_cos((frame << 10) / 20);
@@ -389,10 +389,10 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
         init->unk14 = (s32)func_801E8880;
         init->unk4 = 0x10;
     } else if (mode == 1) {        kind = init->unk0;
-        work->unk0.vx = env->unkC->unk38;
-        work->unk0.vy = env->unkC->unk3A;
+        work->unk0.vx = env->targets->unk38;
+        work->unk0.vy = env->targets->unk3A;
         D_801E9DF4 = env;
-        work->unk0.vz = env->unkC->unk3C;
+        work->unk0.vz = env->targets->unk3C;
         work->unk0.vy -= 0x200;
         BTLFX_COPY_SVEC(&work->unk8, &work->unk0);
         work->unk8.vy = 0;
@@ -513,10 +513,10 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 8 || frame == 10 || frame == 13) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x10, 0x40, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x40, 0x80);
             }
             if (frame == 9) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 2, 0xFF, 0xFF, 0);
+                ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 2, 0xFF, 0xFF, 0);
             }
             if (frame >= 20) {
                 return 1;
@@ -598,7 +598,7 @@ s32 fx_085_op83(s32 mode, Fx085Work83 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             if (frame & 1) {
                 if (ex->btlfx_rand() & 1) {
-                    ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x10, 0x20, 0x46);
+                    ex->btlfx_drawScreenTint((u32 *)(env->ot + 1), 1, 0x10, 0x20, 0x46);
                 }
             }
             if (frame >= 31) {

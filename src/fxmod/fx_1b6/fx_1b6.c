@@ -231,10 +231,10 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 }
             }
             if (frame == 1 || frame == 0xF) {
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0x40, 0x40, 0x40);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x40, 0x40, 0x40);
             }
             if (frame == 0x17) {
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0xFF, 0xFF, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0xFF, 0xFF, 0xFF);
             }
             if (frame >= 0x18) {
                 ex->func_800E3C58();
@@ -266,17 +266,17 @@ s32 fx_1b6_op80(s32 mode, Fx1b6Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     p->unkC = 0x8C;
                     p->unk22 = 0x140;
                 }
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0x80, 0x80, 0x80);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x80, 0x80, 0x80);
             }
             break;
         case 1:
             t = (frame << 12) / 60;
             if (frame < 8) {
                 c = (ex->math_cos((frame << 10) >> 3) << 7) >> 12;
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, c, c, c);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, c, c, c);
             }
             if (frame == 0) {
-                ex->btlfx_drawScreenTint((u32 *)env->unk20 + 2, 1, 0x20, 0x40, 0xFF);
+                ex->btlfx_drawScreenTint((u32 *)env->ot + 2, 1, 0x20, 0x40, 0xFF);
             }
             if (frame > 0) {
                 for (i = 0; i < 7; i++) {
@@ -327,9 +327,9 @@ s32 fx_1b6_op87(s32 mode, void *work, Unk800F78A4 *env, Unk80100C78Entry *entry,
         D_801E85B4 = env;
         ex->btlfx_getUnitPos(0x10, (s16 *)&pos);
         pos.vy += 0x180;
-        env->unk2C->unk0[3].vx = pos.vx;
-        env->unk2C->unk0[3].vy = pos.vy;
-        env->unk2C->unk0[3].vz = pos.vz;
+        env->camera->unk0[3].vx = pos.vx;
+        env->camera->unk0[3].vy = pos.vy;
+        env->camera->unk0[3].vz = pos.vz;
         return 1;
     } else {
         return 0;
