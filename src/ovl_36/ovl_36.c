@@ -1,117 +1,117 @@
 #include "ovl_36.h"
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", g_cardMenuPointsUnit);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardPointsUnit);
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF08);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardSlotClutRect);
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EDF10);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardSlotRect);
 
 /* text bank for this menu (count + {offset, info} table, then strings) */
 INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", g_cardMenuText);
 
-void func_801F08F4(void) {
+void menuCard_init(void) {
     s32 i;
     s32 id;
 
-    D_801F347C.unk0 = 1;
-    D_801F347C.unk1 = 0;
-    D_801F347C.unk2 = 0;
-    D_801F347C.unk4 = 0;
-    D_801F347C.unk3 = func_80062638();
-    D_801F347C.unk6 = 0xFF;
+    s_menuCard.state = CARD_ST_GRID;
+    s_menuCard.row = 0;
+    s_menuCard.col = 0;
+    s_menuCard.loadingId = 0;
+    s_menuCard.kinds = func_80062638();
+    s_menuCard.unk6 = CARD_NONE;
     text_setBank(g_cardMenuText);
-    func_801F2E60();
-    func_801F2CD4();
-    func_8003556C(D_801F347C.unk3 ? func_801F22DC : 0);
-    setRECT(&D_801F347C.unk18D0, 8, 0x26, 0x9E, 0xB6);
-    setRECT(&D_801F347C.unk18D8, 0xAA, 0x26, 0x8A, 0x4E);
-    setRECT(&D_801F347C.unk18E0, 0xAA, 0x76, 0x8A, 0x66);
-    for (i = 0; i < 100; i++) {
-        D_801F347C.unk6C[i] = 0;
+    menuCard_loadImages();
+    menuCard_initImageCache();
+    func_8003556C(s_menuCard.kinds ? menuCard_updateHelp : 0);
+    setRECT(&s_menuCard.gridRect, 8, 0x26, 0x9E, 0xB6);
+    setRECT(&s_menuCard.infoRect, 0xAA, 0x26, 0x8A, 0x4E);
+    setRECT(&s_menuCard.cardInfoRect, 0xAA, 0x76, 0x8A, 0x66);
+    for (i = 0; i < CARD_COUNT; i++) {
+        s_menuCard.shown[i] = 0;
     }
-    func_801F2FCC();
+    menuCard_initFlip();
     while (cd_getState()) {
     }
-    D_801F347C.unk18EC = file_find(1, 0x32);
+    s_menuCard.imageFile = file_find(1, CARD_IMAGE_FILE);
     for (i = 0; i < 4; i++) {
         id = D_801F30D4[i];
-        D_801F347C.unk1948[i].unk0 = func_8002C7F0(0, id);
-        D_801F347C.unk1948[i].unk4 = func_8002C830(0, id);
+        s_menuCard.saved[i].unk0 = func_8002C7F0(0, id);
+        s_menuCard.saved[i].unk4 = func_8002C830(0, id);
         func_8002C870(0, id, 0x10);
         func_8002C8AC(0, id, 10);
     }
-    func_801F1C88();
-    id = D_801F347C.unk2 * 10 + D_801F347C.unk1;
-    if (D_801F347C.unk8[id]) {
-        func_801F2C5C(id);
+    menuCard_refresh();
+    id = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
+    if (s_menuCard.count[id]) {
+        menuCard_selectCard(id);
     }
 }
 
-void func_801F0AE8(void) {
+void menuCard_inputGrid(void) {
     s32 cur;
     s32 next;
     s32 dir;
 
-    cur = D_801F347C.unk2 * 10 + D_801F347C.unk1;
+    cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
     if (g_padRepeat & BTN_CIRCLE) {
-        snd_playSe(0x65);
+        snd_playSe(SE_CANCEL);
         func_800361CC(0);
         return;
     }
     if (g_padRepeat & BTN_CROSS) {
-        func_801F0CC8();
+        menuCard_openDiscard();
         return;
     }
     if (g_padRepeat & (PAD_UP | PAD_RIGHT | PAD_DOWN | PAD_LEFT)) {
-        if ((g_padRepeat & PAD_UP) && D_801F347C.unk1 != 0) {
-            D_801F347C.unk1--;
+        if ((g_padRepeat & PAD_UP) && s_menuCard.row != 0) {
+            s_menuCard.row--;
         }
-        if ((g_padRepeat & PAD_DOWN) && D_801F347C.unk1 < 9) {
-            D_801F347C.unk1++;
+        if ((g_padRepeat & PAD_DOWN) && s_menuCard.row < CARD_GRID_ROWS - 1) {
+            s_menuCard.row++;
         }
-        if ((g_padRepeat & PAD_LEFT) && D_801F347C.unk2 != 0) {
-            D_801F347C.unk2--;
+        if ((g_padRepeat & PAD_LEFT) && s_menuCard.col != 0) {
+            s_menuCard.col--;
         }
-        if ((g_padRepeat & PAD_RIGHT) && D_801F347C.unk2 < 9) {
-            D_801F347C.unk2++;
+        if ((g_padRepeat & PAD_RIGHT) && s_menuCard.col < CARD_GRID_COLS - 1) {
+            s_menuCard.col++;
         }
-        next = D_801F347C.unk2 * 10 + D_801F347C.unk1;
+        next = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
         if (next != cur) {
-            snd_playSe(0x67);
-            func_801F2C5C(next);
+            snd_playSe(SE_CURSOR);
+            menuCard_selectCard(next);
         }
     } else if (g_padRepeat & BTN_L1) {
-        dir = 0;
-        if (D_801F347C.unk8[cur] >= 2) {
-            func_801F2FE0(cur, dir);
-            snd_playSe(0x417);
+        dir = CARD_FLIP_PREV;
+        if (s_menuCard.count[cur] >= 2) {
+            menuCard_flipCopy(cur, dir);
+            snd_playSe(SE_PAGE);
         }
     } else if (g_padRepeat & BTN_R1) {
-        dir = 1;
-        if (D_801F347C.unk8[cur] >= 2) {
-            func_801F2FE0(cur, dir);
-            snd_playSe(0x417);
+        dir = CARD_FLIP_NEXT;
+        if (s_menuCard.count[cur] >= 2) {
+            menuCard_flipCopy(cur, dir);
+            snd_playSe(SE_PAGE);
         }
     }
 }
 
-void func_801F0CC8(void) {
-    if (D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1] != 0) {
-        snd_playSe(0x67);
-        D_801F347C.unk0 = 0;
-        D_801F347C.unk5 = 1;
-        D_801F347C.unk18E8 = func_8002DC54(&D_801F3100, 10, 2);
-        win_setDrawContent(D_801F347C.unk18E8, func_801F2F34);
-        win_setOnOpened(D_801F347C.unk18E8, func_801F2F14);
-        win_setOnClosed(D_801F347C.unk18E8, func_801F2F24);
-        func_8002E304(D_801F347C.unk18E8, D_800704C4);
-        func_8002E31C(D_801F347C.unk18E8, 1);
+void menuCard_openDiscard(void) {
+    if (s_menuCard.count[s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row] != 0) {
+        snd_playSe(SE_CURSOR);
+        s_menuCard.state = CARD_ST_NONE;
+        s_menuCard.discardCursor = CARD_DISCARD_NO;
+        s_menuCard.discardWin = func_8002DC54(&s_menuCardDiscardRect, 10, 2);
+        win_setDrawContent(s_menuCard.discardWin, menuCard_drawDiscardWindow);
+        win_setOnOpened(s_menuCard.discardWin, menuCard_onDiscardOpened);
+        win_setOnClosed(s_menuCard.discardWin, menuCard_onDiscardClosed);
+        func_8002E304(s_menuCard.discardWin, D_800704C4);
+        func_8002E31C(s_menuCard.discardWin, 1);
         return;
     }
-    snd_playSe(0x66);
+    snd_playSe(SE_BUZZER);
 }
 
-void func_801F0DB0(void) {
+void menuCard_drawGrid(void) {
     u8 buf[8];
     RECT *r;
     s32 a;
@@ -126,31 +126,31 @@ void func_801F0DB0(void) {
     s32 k = 8;
     s32 k2 = 0x80;
 
-    r = &D_801F347C.unk18D0;
+    r = &s_menuCard.gridRect;
     a = func_800625F8();
     b = func_80062638();
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_8007041C, 0);
     func_8002DEE4(r, 0x1E, 1);
     func_8002705C(r, 0x1E, 1);
-    s = text_get(0x27);
+    s = text_get(CARD_TEXT_STOCK);
     w = func_8002BA68(s);
     text_formatNumber(a, buf, 3, 1);
     text_drawBlock(r->x + 8, r->y + 0xA2, 0x14, s, 0);
     ui_drawDigits(r->x + (w + k), r->y + 0xA4, 0x14, buf, 0);
-    s = text_get(0x28);
+    s = text_get(CARD_TEXT_TYPE);
     w = func_8002BA68(s);
     text_formatNumber(b, buf, 3, 1);
     ui_drawDigits(r->x + 0x80, r->y + 0xA4, 0x14, buf, 0);
     text_drawBlock(r->x - (w - k2), r->y + 0xA2, 0x14, s, 0);
-    for (n = 0, i = 0, x = 4; i < 10; i++, x += 15) {
-        for (j = 0, y = 10; j < 10; j++, y += 15) {
-            func_801F2860(r->x + x, r->y + y, 0x14, n);
+    for (n = 0, i = 0, x = 4; i < CARD_GRID_COLS; i++, x += 15) {
+        for (j = 0, y = 10; j < CARD_GRID_ROWS; j++, y += 15) {
+            menuCard_drawCell(r->x + x, r->y + y, 0x14, n);
             n++;
         }
     }
 }
 
-void func_801F0F9C(void) {
+void menuCard_drawInfo(void) {
     u8 buf[8];
     RECT *r;
     s32 a;
@@ -159,7 +159,7 @@ void func_801F0F9C(void) {
     s32 rank;
     s32 w;
 
-    r = &D_801F347C.unk18D8;
+    r = &s_menuCard.infoRect;
     if (func_80062498() <= 99999) {
         a = func_80062498();
     } else {
@@ -175,20 +175,20 @@ void func_801F0F9C(void) {
     } else {
         c = 99999;
     }
-    rank = D_801F347C.unk7;
+    rank = s_menuCard.rank;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_80070460, 0);
     func_8002DEE4(r, 0x1E, 2);
     func_8002705C(r, 0x1F, 2);
     func_800269F4(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
-    text_formatNumber(D_801F347C.unk18F0[3], buf, 4, 1);
-    text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(0x29), 0);
+    text_formatNumber(s_menuCard.points[CARD_PTS_TOTAL], buf, 4, 1);
+    text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(CARD_TEXT_COLLECTORS), 0);
     text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(0x2A), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(0x2B), 0);
-    text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(0x2C), 0);
+    text_drawBlock(r->x + 0xA, r->y + 0x26, 0x14, text_get(CARD_TEXT_WIN), 0);
+    text_drawBlock(r->x + 0xA, r->y + 0x30, 0x14, text_get(CARD_TEXT_LOSE), 0);
+    text_drawBlock(r->x + 0xA, r->y + 0x3A, 0x14, text_get(CARD_TEXT_DRAW), 0);
     ui_drawSmallDigits(r->x + 0x5A, r->y + 9, 0x14, buf, 0);
-    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, g_cardMenuPointsUnit, 0);
-    w = func_801F0F9C_width(text_get(0x2C));
+    ui_drawSmallDigits(r->x + 0x78, r->y + 0xB, 0x14, s_menuCardPointsUnit, 0);
+    w = menuCard_drawInfo_width(text_get(CARD_TEXT_DRAW));
     text_formatNumber(a, buf, 5, 1);
     w += 0xB;
     ui_drawSmallDigits(r->x + w, r->y + 0x2A, 0x14, buf, 0);
@@ -198,10 +198,10 @@ void func_801F0F9C(void) {
     ui_drawSmallDigits(r->x + w, r->y + 0x3E, 0x14, buf, 0);
 }
 
-void func_801F12B8(s32 id) {
+void menuCard_drawCardStack(s32 id) {
     u8 buf[8];
     RECT *r;
-    CardTurn *turn;
+    CardFlip *turn;
     CardCache *cache;
     u8 *name;
     u8 same;
@@ -215,19 +215,19 @@ void func_801F12B8(s32 id) {
     s32 n;
     s32 cnt;
 
-    r = &D_801F347C.unk18E0;
-    n = D_801F347C.unk8[id];
+    r = &s_menuCard.cardInfoRect;
+    n = s_menuCard.count[id];
     cnt = n;
     if (n >= 6) {
         n = 5;
     }
-    turn = &D_801F347C.unk1941;
-    cache = &D_801F347C.unk1900;
+    turn = &s_menuCard.flip;
+    cache = &s_menuCard.cache;
     if (cnt != 0) {
-        same = id == cache->unk7;
+        same = id == cache->shown;
         name = (u8 *)func_8006276C(id);
         if (cnt >= 2) {
-            text_formatNumber(D_801F347C.unk6C[id] + 1, buf, 3, 1);
+            text_formatNumber(s_menuCard.shown[id] + 1, buf, 3, 1);
             text_formatNumber(cnt, buf + 4, -1, 1);
             buf[3] = '/';
             ui_drawSmallDigits(r->x + 0x2B, r->y + 0x43, 0x14, buf, 0);
@@ -237,7 +237,7 @@ void func_801F12B8(s32 id) {
             ui_drawSprite(r->x + 0x5E, r->y + 0x41, 0x14, b, 0);
         }
         i = 0;
-        func_801F1D6C(r->x + 0x10, r->y + 0x50, 0x14, 0x37, 0x64808080);
+        menuCard_drawSprite(r->x + 0x10, r->y + 0x50, 0x14, CARD_SPR_NAME_ICON, 0x64808080);
         text_drawBlock(r->x + 0x20, r->y + 0x50, 0x14, name, 0);
 
         while (i < n) {
@@ -245,14 +245,14 @@ void func_801F12B8(s32 id) {
             x = r->x + dx;
             dy = i + 9;
             y = r->y + dy;
-            if (i != 0 && turn->unk0 != 0) {
-                if (turn->unk1 == 0) {
-                    x += turn->unk2 - 4;
+            if (i != 0 && turn->active != 0) {
+                if (turn->dir == 0) {
+                    x += turn->ticks - 4;
                 } else {
-                    x -= turn->unk2;
+                    x -= turn->ticks;
                 }
             }
-            func_801F2730(x, y, 0x14, id, i, same);
+            menuCard_drawCard(x, y, 0x14, id, i, same);
             i++;
 
         }
@@ -261,8 +261,8 @@ void func_801F12B8(s32 id) {
     func_8002705C(r, 0x1F, 2);
 }
 
-void func_801F1508(void) {
-    RECT *r = &D_801F347C.unk18D0;
+void menuCard_drawCellHighlight(void) {
+    RECT *r = &s_menuCard.gridRect;
     s32 a;
     s32 x, y;
     u32 rgbc;
@@ -271,8 +271,8 @@ void func_801F1508(void) {
     if (a >= 0x20) {
         a = 0x3F - a;
     }
-    x = r->x + (s16)(D_801F347C.unk2 * 15 + 4);
-    y = r->y + (s16)(D_801F347C.unk1 * 15 + 10);
+    x = r->x + (s16)(s_menuCard.col * 15 + 4);
+    y = r->y + (s16)(s_menuCard.row * 15 + 10);
     setlen(g_primPtr, 5);
     rgbc = (a * 8) | 0x48000000;
     ((PolyF4Words *)g_primPtr)->rgbc = rgbc;
@@ -292,27 +292,27 @@ void func_801F1508(void) {
     g_primPtr += 0x18;
 }
 
-void func_801F166C(void) {
+void menuCard_drawCursor(void) {
     u8 blink = (D_80077DC0 & 3) != 0;
 
     if (!func_8002F810()) {
-        if (D_801F347C.unk0 == 1 || (D_801F347C.unk0 == 2 && blink)) {
+        if (s_menuCard.state == CARD_ST_GRID || (s_menuCard.state == CARD_ST_DISCARD && blink)) {
             D_80077DE8.unk4 = 0x11;
-            D_80077DE8.unk0 = D_801F347C.unk18D0.x + D_801F347C.unk2 * 15 - 20;
-            D_80077DE8.unk2 = D_801F347C.unk18D0.y + D_801F347C.unk1 * 15 + 14;
+            D_80077DE8.unk0 = s_menuCard.gridRect.x + s_menuCard.col * 15 - 20;
+            D_80077DE8.unk2 = s_menuCard.gridRect.y + s_menuCard.row * 15 + 14;
             func_800355E4();
         }
-        if (D_801F347C.unk0 == 2) {
-            Window *w = D_801F347C.unk18E8;
+        if (s_menuCard.state == CARD_ST_DISCARD) {
+            Window *w = s_menuCard.discardWin;
             D_80077DE8.unk0 = w->unk0 + 0x16;
-            D_80077DE8.unk2 = w->unk2 + (s16)(D_801F347C.unk5 * 15 + 0x32);
+            D_80077DE8.unk2 = w->unk2 + (s16)(s_menuCard.discardCursor * 15 + 0x32);
             D_80077DE8.unk4 = 9;
             func_800355E4();
         }
     }
 }
 
-void func_801F1778(void) {
+void menuCard_loadCardImage(void) {
     RECT a, b;
     CardCache *cc;
     CardSlot *s;
@@ -320,26 +320,26 @@ void func_801F1778(void) {
     s32 n;
     u32 k;
 
-    cc = &D_801F347C.unk1900;
-    ofs = D_801F0274;
-    if (cc->unk2 >= 12) {
-        cc->unkD[cc->unk0].unk0 = 0;
-        cc->unk2++;
-        cc->unk0 = (cc->unk0 + 1) % 12;
+    cc = &s_menuCard.cache;
+    ofs = s_menuCardImageOffsets;
+    if (cc->used >= CARD_CACHE_SLOTS) {
+        cc->slots[cc->oldest].used = 0;
+        cc->used++;
+        cc->oldest = (cc->oldest + 1) % CARD_CACHE_SLOTS;
     }
-    s = &cc->unkD[cc->unk1];
+    s = &cc->slots[cc->next];
     {
-        u8 id = D_801F347C.unk4;
-        s->unk0 = 1;
-        s->unk1 = id;
+        u8 id = s_menuCard.loadingId;
+        s->used = 1;
+        s->id = id;
     }
-    cc->unk2++;
-    cc->unk1 = (cc->unk1 + 1) % 12;
-    n = func_801F3034(D_801F347C.unk10D0, D_801F347C.unkD0);
-    if (ofs[D_801F347C.unk4 + 1] != ofs[D_801F347C.unk4]) {
-        func_801F3034((u8 *)D_801F0274 - 4 + ofs[D_801F347C.unk4], D_801F347C.unkD0 + n);
+    cc->used++;
+    cc->next = (cc->next + 1) % CARD_CACHE_SLOTS;
+    n = menuCard_decodeRle(s_menuCard.sectorBuf, s_menuCard.clutBuf);
+    if (ofs[s_menuCard.loadingId + 1] != ofs[s_menuCard.loadingId]) {
+        menuCard_decodeRle((u8 *)s_menuCardImageOffsets - 4 + ofs[s_menuCard.loadingId], s_menuCard.clutBuf + n);
     }
-    k = s->unk2;
+    k = s->vram;
     a.x = 0;
     a.w = 0x100;
     a.h = 1;
@@ -348,30 +348,30 @@ void func_801F1778(void) {
     a.y = k + 0x1F4;
     b.x = (u8)(k % 3) * 0x13;
     b.y = (u8)(k / 3) * 0x2F + 0x100;
-    LoadImage(&a, (u32 *)D_801F347C.unkD0);
-    LoadImage(&b, (u32 *)D_801F347C.unk2D0);
+    LoadImage(&a, (u32 *)s_menuCard.clutBuf);
+    LoadImage(&b, (u32 *)s_menuCard.pixelBuf);
     DrawSync(0);
-    if (s->unk1 == cc->unk5) {
-        func_801F2D88_inline(s);
+    if (s->id == cc->cur) {
+        menuCard_showCachedImage_inline(s);
     }
 }
 
-void func_801F1A48(void) {
-    CardCache *c = &D_801F347C.unk1900;
+void menuCard_updateImageLoad(void) {
+    CardCache *c = &s_menuCard.cache;
 
-    if (c->unkA != 0) {
+    if (c->reading != 0) {
         if (cd_getState() != 0) {
             return;
         }
-        c->unkA = 0;
-        func_801F1778();
-        func_801F1A48_read(c);
+        c->reading = 0;
+        menuCard_loadCardImage();
+        menuCard_updateImageLoad_read(c);
     } else {
-        func_801F1A48_read(c);
+        menuCard_updateImageLoad_read(c);
     }
 }
 
-void func_801F1AE8(s32 x, s32 y, s32 z, s32 dim) {
+void menuCard_drawFace(s32 x, s32 y, s32 z, s32 dim) {
     SprtWords *p;
     u32 clut = (GetClut(0, 0x1F2) << 16) | 0xB000;
     s32 c;
@@ -390,64 +390,64 @@ void func_801F1AE8(s32 x, s32 y, s32 z, s32 dim) {
     SetDrawTPage(g_primPtr, 1, 1, 0xBF);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
-    func_801F1D6C(x, y, 0x14, 0, rgbc);
+    menuCard_drawSprite(x, y, 0x14, CARD_SPR_FRAME, rgbc);
 }
 
-void func_801F1C88(void) {
+void menuCard_refresh(void) {
     s32 i;
     u8 n;
     CardMenu *m;
 
-    func_8003556C(func_800625F8() ? func_801F22DC : NULL);
-    for (i = 0; i < 100; i++) {
+    func_8003556C(func_800625F8() ? menuCard_updateHelp : NULL);
+    for (i = 0; i < CARD_COUNT; i++) {
         n = func_80062560(i);
-        D_801F347C.unk8[i] = n;
-        if (D_801F347C.unk6C[i] >= n) {
-            D_801F347C.unk6C[i] = n - 1;
+        s_menuCard.count[i] = n;
+        if (s_menuCard.shown[i] >= n) {
+            s_menuCard.shown[i] = n - 1;
         }
     }
-    func_801F2138(D_801F347C.unk18F0);
-    m = &D_801F347C;
-    m->unk7 = 0x20;
-    for (i = 1; i < 0x20; i++) {
-        if (m->unk18F0[3] < D_801F3128[i]) {
-            m->unk7 = i - 1;
+    menuCard_calcCollectorPoints(s_menuCard.points);
+    m = &s_menuCard;
+    m->rank = CARD_RANK_COUNT;
+    for (i = 1; i < CARD_RANK_COUNT; i++) {
+        if (m->points[CARD_PTS_TOTAL] < s_menuCardRankPoints[i]) {
+            m->rank = i - 1;
             return;
         }
     }
 }
 
-void func_801F1D6C(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
+void menuCard_drawSprite(s32 x, s32 y, s32 z, s32 idx, s32 rgbc) {
     SprtWords *p;
     Ovl36Sprite *t;
 
     setlen(g_primPtr, 4);
     p = (SprtWords *)g_primPtr;
-    t = &D_801F3188[idx];
+    t = &s_menuCardSprites[idx];
     p->rgbc = rgbc;
     p->xy = x | (y << 16);
-    p->uvclut = t->unk0;
-    p->wh = t->unk4 | (t->unk5 << 16);
+    p->uvclut = t->uvclut;
+    p->wh = t->w | (t->h << 16);
     g_primPtr = (u8 *)(p + 1);
     addPrim(&g_ot[z], p);
-    SetDrawTPage(g_primPtr, 1, 1, t->unk6 | 0x20);
+    SetDrawTPage(g_primPtr, 1, 1, t->tpage | 0x20);
     addPrim(&g_ot[z], g_primPtr);
     g_primPtr += 8;
 }
 
-void func_801F1EA0(u8 *buf) {
-    RECT a = D_801EDF08;
-    RECT b = D_801EDF10;
+void menuCard_saveVram(u8 *buf) {
+    RECT a = s_menuCardSlotClutRect;
+    RECT b = s_menuCardSlotRect;
     s32 i;
 
-    StoreImage(&D_801F3348, (u32 *)buf);
+    StoreImage(&s_menuCardSaveClutRect0, (u32 *)buf);
     buf += 0x200;
-    StoreImage(&D_801F3350, (u32 *)buf);
+    StoreImage(&s_menuCardSaveClutRect1, (u32 *)buf);
     buf += 0x200;
-    StoreImage(&D_801F3358, (u32 *)buf);
+    StoreImage(&s_menuCardSaveRect, (u32 *)buf);
     buf += 0x200;
     DrawSync(0);
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < CARD_CACHE_SLOTS; i++) {
         a.y = i + 0x1F4;
         b.x = (i % 3) * 0x13;
         b.y = (i / 3) * 0x2F + 0x100;
@@ -459,20 +459,20 @@ void func_801F1EA0(u8 *buf) {
     }
 }
 
-void func_801F1FE8(u8 *buf) {
-    RECT a = D_801EDF08;
-    RECT b = D_801EDF10;
+void menuCard_restoreVram(u8 *buf) {
+    RECT a = s_menuCardSlotClutRect;
+    RECT b = s_menuCardSlotRect;
     s32 i;
 
-    LoadImage(&D_801F3360, (u32 *)buf);
+    LoadImage(&s_menuCardRestoreClutRect0, (u32 *)buf);
     buf += 0x200;
-    LoadImage(&D_801F3368, (u32 *)buf);
-    buf += 0x200;
-    DrawSync(0);
-    LoadImage(&D_801F3370, (u32 *)buf);
+    LoadImage(&s_menuCardRestoreClutRect1, (u32 *)buf);
     buf += 0x200;
     DrawSync(0);
-    for (i = 0; i < 12; i++) {
+    LoadImage(&s_menuCardRestoreRect, (u32 *)buf);
+    buf += 0x200;
+    DrawSync(0);
+    for (i = 0; i < CARD_CACHE_SLOTS; i++) {
         a.y = i + 0x1F4;
         b.x = (i % 3) * 0x13;
         b.y = (i / 3) * 0x2F + 0x100;
@@ -484,10 +484,10 @@ void func_801F1FE8(u8 *buf) {
     }
 }
 
-void func_801F2138(s32 *out) {
+void menuCard_calcCollectorPoints(s32 *out) {
     s32 kinds;
-    s32 arrows;
-    s32 types;
+    s32 typePts;
+    s32 arrowPts;
     s32 i;
     s32 j;
     CardInfo *e;
@@ -495,134 +495,134 @@ void func_801F2138(s32 *out) {
 
     e = func_80062B30();
     kinds = 0;
-    arrows = 0;
-    types = 0;
-    for (i = 0; i < 100; i++) {
-        if (D_801F347C.unk8[i] != 0) {
+    typePts = 0;
+    arrowPts = 0;
+    for (i = 0; i < CARD_COUNT; i++) {
+        if (s_menuCard.count[i] != 0) {
             kinds += e[i].unk4;
         }
     }
-    memset(D_801F337C, 0, 0x100);
-    for (i = 0; i < 100; i++) {
-        for (j = 0; j < D_801F347C.unk8[i]; j++) {
+    memset(s_menuCardArrowsSeen, 0, 0x100);
+    for (i = 0; i < CARD_COUNT; i++) {
+        for (j = 0; j < s_menuCard.count[i]; j++) {
             c = func_800625A0(i, j);
-            D_801F337C[c->unk1] = 1;
-            arrows += D_801F3378[c->unk3];
+            s_menuCardArrowsSeen[c->unk1] = 1;
+            typePts += s_menuCardTypePoints[c->unk3];
         }
     }
     for (i = 0; i < 0x100; i++) {
-        if (D_801F337C[i] != 0) {
-            types += 5;
+        if (s_menuCardArrowsSeen[i] != 0) {
+            arrowPts += 5;
         }
     }
-    out[0] = kinds;
-    out[1] = arrows;
-    out[2] = types;
-    out[3] = kinds + arrows + types;
+    out[CARD_PTS_KINDS] = kinds;
+    out[CARD_PTS_TYPES] = typePts;
+    out[CARD_PTS_ARROWS] = arrowPts;
+    out[CARD_PTS_TOTAL] = kinds + typePts + arrowPts;
 }
 
-void func_801F22DC(void) {
+void menuCard_updateHelp(void) {
     RECT r;
     u8 n;
 
     D_80077DE8.unk8 = NULL;
     func_80035580(NULL);
-    if (D_801F347C.unk0 == 1) {
-        n = D_801F347C.unk8[D_801F347C.unk2 * 10 + D_801F347C.unk1];
+    if (s_menuCard.state == CARD_ST_GRID) {
+        n = s_menuCard.count[s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row];
         if (n != 0) {
-            D_80077DE8.unk8 = text_get(n >= 2 ? 0x24 : 0x23);
+            D_80077DE8.unk8 = text_get(n >= 2 ? CARD_TEXT_HELP_STACK : CARD_TEXT_HELP_CARD);
         }
-    } else if (D_801F347C.unk0 == 2) {
-        if (D_801F347C.unk5 == 1) {
+    } else if (s_menuCard.state == CARD_ST_DISCARD) {
+        if (s_menuCard.discardCursor == CARD_DISCARD_NO) {
             r.x = 0;
             r.y = 0x8C;
             r.w = g_gameState->unkC->disp.w;
             r.h = g_gameState->unkC->disp.h - 0x8C;
             func_80035580(&r);
         }
-        D_80077DE8.unk8 = text_get(D_801F347C.unk5 + 0x25);
+        D_80077DE8.unk8 = text_get(s_menuCard.discardCursor + CARD_TEXT_HELP_DISCARD);
     }
 }
 
-void func_801F23DC(void) {
-    func_801F24A0();
-    func_801F2508();
-    func_801F2548();
+void menuCard_update(void) {
+    menuCard_input();
+    menuCard_draw();
+    menuCard_updateAnims();
 }
 
-void func_801F240C(void) {
+void menuCard_exit(void) {
     s32 i;
     s32 id;
 
     for (i = 0; i < 4; i++) {
         id = D_801F30E4[i];
-        func_8002C870(0, id, D_801F347C.unk1948[i].unk0);
-        func_8002C8AC(0, id, D_801F347C.unk1948[i].unk4);
+        func_8002C870(0, id, s_menuCard.saved[i].unk0);
+        func_8002C8AC(0, id, s_menuCard.saved[i].unk4);
     }
     func_8003556C(NULL);
-    func_801F2EE8();
+    menuCard_unloadImages();
 }
 
-void func_801F24A0(void) {
+void menuCard_input(void) {
     void (*f)();
 
-    if (!func_8002F810() && D_801F347C.unk1941.unk0 == 0) {
-        f = D_801F30F4[D_801F347C.unk0];
+    if (!func_8002F810() && s_menuCard.flip.active == 0) {
+        f = s_menuCardInputFuncs[s_menuCard.state];
         if (f != NULL) {
             f();
         }
     }
 }
 
-void func_801F2508(void) {
-    func_801F0DB0();
-    func_801F0F9C();
-    func_801F2664();
-    func_801F1508();
-    func_801F166C();
+void menuCard_draw(void) {
+    menuCard_drawGrid();
+    menuCard_drawInfo();
+    menuCard_drawCardInfo();
+    menuCard_drawCellHighlight();
+    menuCard_drawCursor();
 }
 
-void func_801F2548(void) {
-    func_801F1A48();
-    func_801F2B94();
-    func_801F2C14();
+void menuCard_updateAnims(void) {
+    menuCard_updateImageLoad();
+    menuCard_updateFlip();
+    menuCard_updateFade();
 }
 
-void func_801F2578(void) {
+void menuCard_inputDiscard(void) {
     s32 cur;
 
-    cur = D_801F347C.unk2 * 10 + D_801F347C.unk1;
+    cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
     if (g_padRepeat & (BTN_CIRCLE | BTN_CROSS)) {
-        if ((g_padRepeat & BTN_CROSS) && D_801F347C.unk5 == 0) {
-            snd_playSe(0x67);
-            func_800626D0(cur, D_801F347C.unk6C[cur]);
-            func_801F1C88();
+        if ((g_padRepeat & BTN_CROSS) && s_menuCard.discardCursor == CARD_DISCARD_YES) {
+            snd_playSe(SE_CURSOR);
+            func_800626D0(cur, s_menuCard.shown[cur]);
+            menuCard_refresh();
         } else {
-            snd_playSe(0x65);
+            snd_playSe(SE_CANCEL);
         }
-        D_801F347C.unk0 = 0;
-        win_close(D_801F347C.unk18E8);
+        s_menuCard.state = CARD_ST_NONE;
+        win_close(s_menuCard.discardWin);
         return;
     }
     if (g_padRepeat & (PAD_UP | PAD_DOWN)) {
-        snd_playSe(0x67);
-        D_801F347C.unk5 ^= 1;
+        snd_playSe(SE_CURSOR);
+        s_menuCard.discardCursor ^= 1;
     }
 }
 
-void func_801F2664(void) {
-    RECT *r = &D_801F347C.unk18E0;
-    CardCache *c = &D_801F347C.unk1900;
+void menuCard_drawCardInfo(void) {
+    RECT *r = &s_menuCard.cardInfoRect;
+    CardCache *c = &s_menuCard.cache;
     s32 cur;
 
-    cur = D_801F347C.unk2 * 10 + D_801F347C.unk1;
+    cur = s_menuCard.col * CARD_GRID_ROWS + s_menuCard.row;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_80070418, 0);
-    if (c->unk7 != 0xFF) {
-        if (c->unk7 != cur && c->unk9 != 0) {
-            func_801F12B8(c->unk6);
+    if (c->shown != CARD_NONE) {
+        if (c->shown != cur && c->fading != 0) {
+            menuCard_drawCardStack(c->prev);
         } else {
             do {
-                func_801F12B8(cur);
+                menuCard_drawCardStack(cur);
             } while (0);
         }
     }
@@ -630,164 +630,164 @@ void func_801F2664(void) {
     func_8002705C(r, 0x1F, 2);
 }
 
-void func_801F2730(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
+void menuCard_drawCard(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {
     Unk6 *card;
     s32 c;
 
     if (flag) {
         if (dim == 0) {
-            card = func_800625A0(id, (s32)D_801F347C.unk6C[id] % (s32)D_801F347C.unk8[id]);
-            func_801F2AB8(x, y, 0x14, card);
-            func_801F2A04(x, y, 0x14, card);
+            card = func_800625A0(id, (s32)s_menuCard.shown[id] % (s32)s_menuCard.count[id]);
+            menuCard_drawStats(x, y, 0x14, card);
+            menuCard_drawArrows(x, y, 0x14, card);
         }
-        func_801F1AE8(x, y, 0x14, dim);
+        menuCard_drawFace(x, y, 0x14, dim);
         return;
     }
     c = 0x80 - dim * 0x16;
-    func_801F1D6C(x, y, 0x14, 1, c | (c << 8) | (c << 16) | 0x64000000);
+    menuCard_drawSprite(x, y, 0x14, CARD_SPR_BACK, c | (c << 8) | (c << 16) | 0x64000000);
 }
 
-void func_801F2860(s32 x, s32 y, s32 z, s32 id) {
+void menuCard_drawCell(s32 x, s32 y, s32 z, s32 id) {
     s32 n;
     s32 icon;
     s32 q;
     s32 d;
 
-    n = D_801F347C.unk8[id];
+    n = s_menuCard.count[id];
     if (n == 0) {
-        icon = 0x1E;
+        icon = CARD_SPR_EMPTY_CELL;
     } else if (n < 2) {
-        icon = func_800627BC(id) + 0x1F;
+        icon = func_800627BC(id) + CARD_SPR_CELL;
     } else {
-        icon = func_800627BC(id) + 0x26;
+        icon = func_800627BC(id) + CARD_SPR_CELL_STACK;
         d = n % 10;
         q = n / 10;
-        func_801F1D6C(x + 9, y + 7, 0x14, d + 0x2D, 0x64808080);
+        menuCard_drawSprite(x + 9, y + 7, 0x14, d + CARD_SPR_DIGIT, 0x64808080);
         if (n >= 10) {
             d = q % 10;
-            func_801F1D6C(x + 5, y + 7, 0x14, d + 0x2D, 0x64808080);
+            menuCard_drawSprite(x + 5, y + 7, 0x14, d + CARD_SPR_DIGIT, 0x64808080);
         }
         if (n >= 100) {
             d = n / 100;
-            func_801F1D6C(x + 1, y + 7, 0x14, d + 0x2D, 0x64808080);
+            menuCard_drawSprite(x + 1, y + 7, 0x14, d + CARD_SPR_DIGIT, 0x64808080);
         }
     }
-    func_801F1D6C(x, y, 0x14, icon, 0x64808080);
+    menuCard_drawSprite(x, y, 0x14, icon, 0x64808080);
 }
 
-void func_801F2A04(s32 x, s32 y, s32 otz, Unk6 *card) {
+void menuCard_drawArrows(s32 x, s32 y, s32 otz, Unk6 *card) {
     u32 color;
     s32 i;
 
-    color = func_801F30C8();
+    color = menuCard_getStatsColor();
     for (i = 0; i < 8; i++) {
         if ((card->unk1 >> i) & 1) {
-            func_801F1D6C(x + D_801F3108[i].unk2, y + D_801F3108[i].unk3, otz, D_801F3108[i].unk0, color);
+            menuCard_drawSprite(x + s_menuCardArrows[i].x, y + s_menuCardArrows[i].y, otz, s_menuCardArrows[i].sprite, color);
         }
     }
 }
 
-void func_801F2AB8(s32 x, s32 y, s32 otz, Unk6 *card) {
+void menuCard_drawStats(s32 x, s32 y, s32 otz, Unk6 *card) {
     u8 s[4];
     u32 color;
     s32 i;
     s32 dx;
 
-    color = func_801F30C8();
-    s[0] = (card->unk2 >> 4) + 0xA;
-    s[1] = card->unk3 + 0x1A;
-    s[2] = (card->unk4 >> 4) + 0xA;
-    s[3] = (card->unk5 >> 4) + 0xA;
+    color = menuCard_getStatsColor();
+    s[0] = (card->unk2 >> 4) + CARD_SPR_HEX;
+    s[1] = card->unk3 + CARD_SPR_TYPE;
+    s[2] = (card->unk4 >> 4) + CARD_SPR_HEX;
+    s[3] = (card->unk5 >> 4) + CARD_SPR_HEX;
     for (i = 0; i < 4; i++) {
-        func_801F1D6C(x + 9 + i * 6, y + 0x26, otz, s[i], color);
+        menuCard_drawSprite(x + 9 + i * 6, y + 0x26, otz, s[i], color);
     }
 }
 
-void func_801F2B94(void) {
-    CardTurn *t;
+void menuCard_updateFlip(void) {
+    CardFlip *t;
 
-    t = &D_801F347C.unk1941;
-    if (t->unk0 != 0) {
-        if (++t->unk2 >= 4) {
-            if (t->unk1 == 1) {
-                D_801F347C.unk6C[t->unk3] = D_801F347C.unk6C[t->unk3] >= D_801F347C.unk8[t->unk3] - 1 ? 0 : D_801F347C.unk6C[t->unk3] + 1;
+    t = &s_menuCard.flip;
+    if (t->active != 0) {
+        if (++t->ticks >= CARD_FLIP_FRAMES) {
+            if (t->dir == CARD_FLIP_NEXT) {
+                s_menuCard.shown[t->id] = s_menuCard.shown[t->id] >= s_menuCard.count[t->id] - 1 ? 0 : s_menuCard.shown[t->id] + 1;
             }
-            t->unk2 = 0;
-            t->unk0 = 0;
+            t->ticks = 0;
+            t->active = 0;
         }
     }
 }
 
-void func_801F2C14(void) {
-    CardCache *c = &D_801F347C.unk1900;
+void menuCard_updateFade(void) {
+    CardCache *c = &s_menuCard.cache;
 
-    if (c->unk9 != 0) {
-        if (++c->unk8 >= 4) {
-            c->unk9 = 0;
-            c->unk8 = 0;
+    if (c->fading != 0) {
+        if (++c->fadeTicks >= 4) {
+            c->fading = 0;
+            c->fadeTicks = 0;
         }
     }
 }
 
-void func_801F2C5C(s32 id) {
+void menuCard_selectCard(s32 id) {
     CardCache *c;
     CardSlot *s;
     u8 prev;
     s32 owned;
 
-    owned = D_801F347C.unk8[id];
-    c = &D_801F347C.unk1900;
-    prev = c->unk5;
-    c->unk9 = 1;
-    c->unk8 = 0;
-    c->unk5 = id;
-    c->unk6 = prev;
+    owned = s_menuCard.count[id];
+    c = &s_menuCard.cache;
+    prev = c->cur;
+    c->fading = 1;
+    c->fadeTicks = 0;
+    c->cur = id;
+    c->prev = prev;
     if (owned != 0) {
-        s = func_801F2D30(id);
+        s = menuCard_findCachedImage(id);
         if (s == NULL) {
-            c->unk4 = id;
+            c->pending = id;
             return;
         }
-        func_801F2D88(s);
+        menuCard_showCachedImage(s);
     }
 }
 
-void func_801F2CD4(void) {
-    CardCache *c = &D_801F347C.unk1900;
+void menuCard_initImageCache(void) {
+    CardCache *c = &s_menuCard.cache;
     s32 i;
 
-    c->unk1 = 0;
-    c->unk0 = 0;
-    c->unk2 = 0;
-    c->unk6 = 0xFF;
-    c->unk5 = 0xFF;
-    c->unk3 = 0xFF;
-    c->unk4 = 0xFF;
-    c->unkA = 0;
-    c->unk8 = 0;
-    c->unk7 = 0xFF;
-    for (i = 0; i < 12; i++) {
-        c->unkD[i].unk0 = 0;
-        c->unkD[i].unk1 = 0;
-        c->unkD[i].unk2 = i;
+    c->next = 0;
+    c->oldest = 0;
+    c->used = 0;
+    c->prev = CARD_NONE;
+    c->cur = CARD_NONE;
+    c->loading = CARD_NONE;
+    c->pending = CARD_NONE;
+    c->reading = 0;
+    c->fadeTicks = 0;
+    c->shown = CARD_NONE;
+    for (i = 0; i < CARD_CACHE_SLOTS; i++) {
+        c->slots[i].used = 0;
+        c->slots[i].id = 0;
+        c->slots[i].vram = i;
     }
 }
 
-CardSlot *func_801F2D30(s32 id) {
-    CardCache *c = &D_801F347C.unk1900;
+CardSlot *menuCard_findCachedImage(s32 id) {
+    CardCache *c = &s_menuCard.cache;
     s32 i;
 
-    for (i = 0; i < 12; i++) {
-        if (c->unkD[i].unk0 != 0 && c->unkD[i].unk1 == id) {
-            return &c->unkD[i];
+    for (i = 0; i < CARD_CACHE_SLOTS; i++) {
+        if (c->slots[i].used != 0 && c->slots[i].id == id) {
+            return &c->slots[i];
         }
     }
     return NULL;
 }
 
-void func_801F2D88(CardSlot *s) {
+void menuCard_showCachedImage(CardSlot *s) {
     RECT a, b;
-    u32 n = s->unk2;
+    u32 n = s->vram;
 
     a.x = 0;
     a.w = 0x100;
@@ -800,74 +800,74 @@ void func_801F2D88(CardSlot *s) {
     MoveImage(&a, 0, 0x1F2);
     MoveImage(&b, 0x3C0, 0x1B0);
     DrawSync(0);
-    D_801F347C.unk1900.unk7 = s->unk1;
+    s_menuCard.cache.shown = s->id;
 }
 
-void func_801F2E60(void) {
-    u8 *a = D_801EE1B4;
-    u8 *b = D_801EEFB4;
+void menuCard_loadImages(void) {
+    u8 *a = s_menuCardImage1;
+    u8 *b = s_menuCardImage2;
 
-    func_801F1EA0((u8 *)0x801F6D30);
-    LoadImage(&D_801F3168, (u32 *)a);
-    LoadImage(&D_801F3170, (u32 *)(a + 0x200));
-    LoadImage(&D_801F3178, (u32 *)b);
-    LoadImage(&D_801F3180, (u32 *)(b + 0x200));
+    menuCard_saveVram((u8 *)0x801F6D30);
+    LoadImage(&s_menuCardImage1ClutRect, (u32 *)a);
+    LoadImage(&s_menuCardImage1Rect, (u32 *)(a + 0x200));
+    LoadImage(&s_menuCardImage2ClutRect, (u32 *)b);
+    LoadImage(&s_menuCardImage2Rect, (u32 *)(b + 0x200));
     DrawSync(0);
 }
 
-void func_801F2EE8(void) {
-    func_801F1FE8((u8 *)0x801F6D30);
+void menuCard_unloadImages(void) {
+    menuCard_restoreVram((u8 *)0x801F6D30);
     DrawSync(0);
 }
 
-void func_801F2F14(Window *w) {
-    D_801F347C.unk0 = 2;
+void menuCard_onDiscardOpened(Window *w) {
+    s_menuCard.state = CARD_ST_DISCARD;
 }
 
-void func_801F2F24(Window *w) {
-    D_801F347C.unk0 = 1;
+void menuCard_onDiscardClosed(Window *w) {
+    s_menuCard.state = CARD_ST_GRID;
 }
 
-void func_801F2F34(Window *w) {
-    text_drawBlock(w->unk0 + 0xE, w->unk2 + 0xA, w->unk18, text_get(0x20), 0);
-    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x2E, w->unk18, text_get(0x21), 0);
-    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x3D, w->unk18, text_get(0x22), 0);
+void menuCard_drawDiscardWindow(Window *w) {
+    text_drawBlock(w->unk0 + 0xE, w->unk2 + 0xA, w->unk18, text_get(CARD_TEXT_DISCARD), 0);
+    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x2E, w->unk18, text_get(CARD_TEXT_DISCARD + 1), 0);
+    text_drawBlock(w->unk0 + 0x30, w->unk2 + 0x3D, w->unk18, text_get(CARD_TEXT_DISCARD + 2), 0);
 }
 
-void func_801F2FCC(void) {
-    CardTurn *t = &D_801F347C.unk1941;
+void menuCard_initFlip(void) {
+    CardFlip *t = &s_menuCard.flip;
 
-    t->unk0 = 0;
-    t->unk2 = 0;
+    t->active = 0;
+    t->ticks = 0;
 }
 
-void func_801F2FE0(s32 card, s32 dir) {
-    CardTurn *t;
+void menuCard_flipCopy(s32 card, s32 dir) {
+    CardFlip *t;
 
-    t = &D_801F347C.unk1941;
-    t->unk0 = 1;
-    t->unk2 = 0;
-    t->unk1 = dir;
-    t->unk3 = card;
-    if (dir == 0) {
-        if (D_801F347C.unk6C[t->unk3] != 0) {
-            D_801F347C.unk6C[t->unk3]--;
+    t = &s_menuCard.flip;
+    t->active = 1;
+    t->ticks = 0;
+    t->dir = dir;
+    t->id = card;
+    if (dir == CARD_FLIP_PREV) {
+        if (s_menuCard.shown[t->id] != 0) {
+            s_menuCard.shown[t->id]--;
         } else {
-            D_801F347C.unk6C[t->unk3] = D_801F347C.unk8[t->unk3] - 1;
+            s_menuCard.shown[t->id] = s_menuCard.count[t->id] - 1;
         }
     }
 }
 
-s32 func_801F3034(u8 *src, u8 *dst) {
+s32 menuCard_decodeRle(u8 *src, u8 *dst) {
     RleHeader *h = (RleHeader *)src;
     u8 *start = dst;
     u8 *end;
     u8 key;
     s32 n, i;
 
-    key = ~h->unk1;
+    key = ~h->notKey;
     src += 4;
-    end = src + h->unk2;
+    end = src + h->size;
     while (src < end) {
         if (*src <= key) {
             *dst++ = *src++;
@@ -882,12 +882,12 @@ s32 func_801F3034(u8 *src, u8 *dst) {
     return dst - start;
 }
 
-u32 func_801F30C8(void) {
+u32 menuCard_getStatsColor(void) {
     return 0x64808080;
 }
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EE1B4);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardImage1);
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801EEFB4);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardImage2);
 
-INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", D_801F0274);
+INCLUDE_RODATA("asm/us/ovl_36/nonmatchings/ovl_36", s_menuCardImageOffsets);
