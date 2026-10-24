@@ -1,4 +1,4 @@
-/* Pass 4: 107 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 82 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -45,7 +45,6 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
     s32 a_c5_p3;
     s32 k_c5_p2;
     s32 i_c5_p2;
-    s32 k_c9_p2;
     Fx134Orb *o_c1;
     Fx134Orb *o_c4;
     Fx134Orb *o_c8;
@@ -903,12 +902,12 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, k_c9, k_c9, k_c9);
                 rot.vx = 0;
                 rot.vy = 0;
-                k_c9_p2 = 0xA0 - ((frame << 14) >> 12);
+                k_c9 = 0xA0 - ((frame << 14) >> 12);
                 rot.vz = 0x20;
                 scale.vx = 0x1100;
                 scale.vy = 0x1100;
                 scale.vz = 0x1000;
-                col.r = col.g = col.b = k_c9_p2;
+                col.r = col.g = col.b = k_c9;
                 ex->func_800E6764(1, 0xA0, 0x70, 0x50, 0x38, 4, 4, 2, 2, &rot, (VECTOR *)&scale, &col, 1, NULL);
                 if (frame >= 0x20) {
                     ex->btlfx_clearEffModels();
