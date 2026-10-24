@@ -994,3 +994,40 @@ D_801F4738 g_menuPartyListRect  # [code] RECT of the PARTY window (menu_party_dr
 D_801F4740 g_menuPartyInfoRect  # [code] RECT of the INFO window (menu_party_drawInfo)
 D_801EDFE8 g_menuPartyImage  # [code] image data passed to func_80028720 by menu_party_init
 # FIELDS include/ovl_3b.h PartyRequest: unk0=size,unk4=party,unk8=reserve,unk10=fixed; Cursor: unk0=idx,unk1=row; PartySelect: unk0=mode,unk1=size,unk4=cursor,unk8=partyIdx,unk9=reserveIdx,unkA=slots,unk1A=fixed
+
+## ovl_3a: ovl_3a (name entry menu)
+func_801F3874 menu_name_init  # [code] menu 1 (file 0x3A in main's D_8006CA40) entry 0 of main's D_8006C9D4; sets the text bank, the name being edited and the windows
+func_801F4748 menu_name_update  # [code] menu 1 entry 1 of main's D_8006C9D4 (per frame), input then draw
+func_801F4770 menu_name_exit  # [code] menu 1 entry 2 of main's D_8006C9D4, clears the help callbacks and restores the CLUT row
+func_801F3A98 menu_name_input  # [code] Start jumps to Confirm, L1/R1 switch the character set, Cross selects, else moves in the side menu or the grid
+func_801F3BBC menu_name_moveInGrid  # [code] Up/Down/Right/Left in the 15-column character grid (Left from column 0 goes to the side menu), Circle deletes the last letter
+func_801F3D9C menu_name_select  # [code] Cross - side menu rows Alphabet/Symbol/Delete/Confirm/Default (Confirm copies the name into the character record and closes), or enters the grid character
+func_801F47E8 menu_name_moveInMenu  # [code] Up/Down in the 5-row side menu (wraps), Right goes to the grid
+func_801F47A0 menu_name_draw  # [code] calls the title, portrait, side menu, help, name/grid and cursor drawers
+func_801F48A0 menu_name_drawTitle  # [code] window with text 0 "Name"
+func_801F3FAC menu_name_drawPortrait  # [code] SPRT of the character portrait (CLUT row loaded by menu_name_loadPortrait) in the portrait window
+func_801F4110 menu_name_drawMenu  # [code] side menu window - "Alphabet"/"Symbol" (current one highlighted) and "Delete"/"Confirm"/"Default"
+func_801F490C menu_name_drawHelp  # [code] "HELP" label window with text 1 "Pick a name."
+func_801F4238 menu_name_drawEntry  # [code] the name with blinking underlines and the character grid of the current set
+func_801F459C menu_name_drawCursor  # [code] places the hand (D_80077DE8) at the side-menu row or the grid character
+func_801F49A0 menu_name_loadPortrait  # [code] saves the CLUT row (StoreImage) and loads the character's portrait CLUT and pixels from g_menuNamePortraits
+func_801F4A34 menu_name_restoreClut  # [code] LoadImage of the CLUT row saved by menu_name_loadPortrait
+func_801F4A68 menu_name_getNameId  # [code] menu argument -> chr_setDefaultName id (g_menuNameIds)
+func_801F4A84 menu_name_getCharIdx  # [code] name id -> character record index (g_menuNameCharIdx)
+func_801F4A9C menu_name_setHelpText  # [code] help-text callback (func_8003556C) - side-menu row help, or the grid's button help
+func_801F4AE0 menu_name_clampCursor  # [code] after switching to the smaller symbol grid, moves the grid cursor into its last row
+D_801F4BBC g_menuName  # [code] name entry state, NameEntry in include/ovl_3a.h
+D_801F4B48 g_menuNameHelpRect  # [code] help window RECT set with func_80035580 while the grid has focus (NULL = default otherwise)
+D_801F4B50 g_menuNameGridSize  # [code] characters per set (60, 30), copied to NameEntry.gridSize
+D_801F4B54 g_menuNameTitleWin  # [code] -> windows[0], menu_name_drawTitle
+D_801F4B58 g_menuNamePortraitWin  # [code] -> windows[1], menu_name_drawPortrait
+D_801F4B5C g_menuNameMenuWin  # [code] -> windows[2], menu_name_drawMenu
+D_801F4B60 g_menuNameHelpWin  # [code] -> windows[3], menu_name_drawHelp
+D_801F4B64 g_menuNameEntryWin  # [code] -> windows[4], menu_name_drawEntry
+D_801F4B68 g_menuNameClutRect  # [code] VRAM (0,256) 128x1, saved then loaded with the portrait CLUT by menu_name_loadPortrait
+D_801F4B70 g_menuNamePortraitRect  # [code] VRAM (960,432) 16x46, the portrait pixels
+D_801F4B78 g_menuNameClutRestoreRect  # [code] same CLUT row, restored by menu_name_restoreClut
+D_801F4B80 g_menuNameIds  # [code] menu argument -> name id table (menu_name_getNameId)
+D_801F4BB0 g_menuNameCharIdx  # [code] name id -> character index table (menu_name_getCharIdx)
+D_801EE0B4 g_menuNamePortraits  # [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menu_name_loadPortrait
+# FIELDS include/ovl_3a.h NameEntry: unk0=focus,unk1=menuCursor,unk2=charSet,unk3=gridCursor,unk4=len,unk5=gridSize,unk7=name,unk11=defaultName,unk1C=charSets,unk24=startDefault,unk28=savedClut,unk12C=nameId,unk130=charIdx,unk134=windows
