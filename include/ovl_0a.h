@@ -173,6 +173,23 @@ typedef struct FieldMap {
     u8 unk24[0x2C];
 } FieldMap;
 
+/* walkmesh flag bits (bgi_dumpText "Flags"; code in bgi.c / bgi_move.c) */
+#define BGI_FLAG_ACTIVE 0x1 /* triangle/floor walkable, actor entry or animation active */
+#define BGI_ANIM_PLAYING 0x4 /* BgiAnim / BgiFloorMove: advancing, cleared at the end */
+#define BGI_ANIM_BOUNCE 0x10 /* BgiAnim / BgiFloorMove: reverse at the ends instead of wrapping */
+#define BGI_TRI_VISITED 0x80 /* BgiTriangle: marked during a neighbour search, cleared before each */
+/* triangle mask byte (flags >> 8, ANDed with g_fieldBgi.maskFilter) */
+#define BGI_MASK_NO_PLAYER 0x80 /* blocks the player actor */
+#define BGI_MASK_NO_OTHERS 0x40 /* blocks every other actor */
+/* bgi_moveActor / bgi_updateActor results */
+#define BGI_MOVE_BLOCKED 0x1 /* position reverted (main event.c then calls bgi_revertActor) */
+#define BGI_MOVE_OK 0x2
+#define BGI_MOVE_STILL 0x4 /* position unchanged */
+#define BGI_MOVE_PUSHED 0x8 /* bgi_applyPushes moved the actor */
+#define BGI_MOVE_CORRECTED 0x10 /* x/z changed by the collision */
+#define BGI_ERR_NO_MESH 0x8000 /* no walkmesh loaded */
+#define BGI_ERR_BAD_ACTOR 0x4000 /* actor index >= actorCount */
+
 /* walkmesh actor entry (g_fieldBgi.actors, 0x28 bytes) */
 typedef struct BgiActor {
     s16 flags;
@@ -1414,7 +1431,7 @@ static inline void bgi_slide_clear(void) {
     u16 k;
     BgiTriangle *n;
     s32 cnt;
-    u16 m = ~0x80;
+    u16 m = ~BGI_TRI_VISITED;
 
     n = g_fieldBgi.triangles;
     cnt = g_fieldBgi.header->triangleCount;

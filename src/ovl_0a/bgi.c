@@ -433,7 +433,7 @@ s32 bgi_updateAnims(void) {
     cnt = b->animCount;
     nodes = g_fieldBgi.triangles;
     for (i = 0; i < cnt; e++, i++) {
-        if (!(e->flags & 1)) {
+        if (!(e->flags & BGI_FLAG_ACTIVE)) {
             continue;
         }
         if (!(e->flags & 0xC)) {
@@ -458,7 +458,7 @@ s32 bgi_updateAnims(void) {
         ids = (s32 *)((u8 *)b + pts[j].triangleOffset);
         m = pts[j].triangleCount;
         for (k = 0; k < m; k++) {
-            nodes[*ids++].flags |= 1;
+            nodes[*ids++].flags |= BGI_FLAG_ACTIVE;
         }
         if (old != j) {
             pt = &pts[j];
@@ -468,7 +468,7 @@ s32 bgi_updateAnims(void) {
         if (pts[j].value < 0) {
             pts[j].value = 0;
             e->counter = 0;
-            e->flags &= ~4;
+            e->flags &= ~BGI_ANIM_PLAYING;
             return 1;
         }
         e->counter++;
@@ -477,21 +477,21 @@ s32 bgi_updateAnims(void) {
             e->curFrame = pos + e->frameRate;
             v = e->curFrame >> 8;
             if (v >= e->frameCount) {
-                if (e->flags & 0x10) {
+                if (e->flags & BGI_ANIM_BOUNCE) {
                     e->curFrame = ((e->frameCount - 1) << 8) | 0xFF;
                     bgi_setAnimRate(i, (s16)-e->frameRate);
                 } else {
                     e->curFrame = 0;
                 }
-                e->flags &= ~4;
+                e->flags &= ~BGI_ANIM_PLAYING;
             } else if (v < 0) {
-                if (e->flags & 0x10) {
+                if (e->flags & BGI_ANIM_BOUNCE) {
                     e->curFrame = 0;
                     bgi_setAnimRate(i, (s16)-e->frameRate);
                 } else {
                     e->curFrame = ((e->frameCount - 1) << 8) | 0xFF;
                 }
-                e->flags &= ~4;
+                e->flags &= ~BGI_ANIM_PLAYING;
             }
         }
     }
@@ -523,11 +523,11 @@ s32 bgi_showAnimFrame(u32 arg0, u32 arg1) {
         ids = (s32 *)((u8 *)b + pt->triangleOffset);
         for (j = 0; j < pt->triangleCount; ids++, j++) {
             n = &g_fieldBgi.triangles[*ids];
-            if (n->flags & 1) {
+            if (n->flags & BGI_FLAG_ACTIVE) {
                 old = i;
-                n->flags &= ~1;
+                n->flags &= ~BGI_FLAG_ACTIVE;
             } else {
-                n->flags &= ~1;
+                n->flags &= ~BGI_FLAG_ACTIVE;
             }
         }
     }
@@ -536,7 +536,7 @@ s32 bgi_showAnimFrame(u32 arg0, u32 arg1) {
     ids = (s32 *)((u8 *)b + pt->triangleOffset);
     for (i = 0; i < pt->triangleCount; ids++, i++) {
         n = &g_fieldBgi.triangles[*ids];
-        n->flags |= 1;
+        n->flags |= BGI_FLAG_ACTIVE;
     }
     if (arg1 != old) {
         bgi_remapActors(b, e, pt, old, arg1 & 0xFFFF);
@@ -641,7 +641,7 @@ s32 bgi_remapActors(u8 *arg0, BgiAnim *arg1, BgiKeyframe *arg2, s16 arg3) {
     tbl = (s32 *)(arg0 + arg2->triangleOffset);
     a = g_fieldBgi.actors;
     for (i = 0; i < g_fieldBgi.actorCount; a++, i++) {
-        if (a->flags & 1) {
+        if (a->flags & BGI_FLAG_ACTIVE) {
             ids = (s32 *)(arg0 + e->triangleOffset);
             for (j = 0; j < e->triangleCount; j++, ids++) {
                 if (a->triangle == *ids) {
@@ -734,23 +734,23 @@ s32 arg0;
         e->prev = e->cur;
         e->cur = v;
         if (e->max < v) {
-            if (e->flags & 0x10) {
+            if (e->flags & BGI_ANIM_BOUNCE) {
                 e->cur = e->max;
                 e->speed = -e->speed;
             } else {
                 e->cur = e->min;
             }
             e->accum = (range << 8) - 0x100;
-            e->flags &= ~4;
+            e->flags &= ~BGI_ANIM_PLAYING;
         } else if (v < e->min) {
-            if (e->flags & 0x10) {
+            if (e->flags & BGI_ANIM_BOUNCE) {
                 e->cur = e->min;
                 e->speed = -e->speed;
             } else {
                 e->cur = e->max;
             }
             e->accum = 0;
-            e->flags &= ~4;
+            e->flags &= ~BGI_ANIM_PLAYING;
         }
     } else {
         return 0;
@@ -769,7 +769,7 @@ s32 bgi_updateFloorMoves(void) {
 
     e = g_fieldBgiFloorMoves;
     for (i = 0; i < 30; e++, i++) {
-        if (!(e->flags & 1) || !(e->flags & 0xC)) {
+        if (!(e->flags & BGI_FLAG_ACTIVE) || !(e->flags & 0xC)) {
             continue;
         }
         t = &g_fieldBgi.floors[e->floor];
@@ -941,7 +941,7 @@ s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
     if (arg1 != 0) {
         v = n->flags | 1;
     } else {
-        v = n->flags & ~1;
+        v = n->flags & ~BGI_FLAG_ACTIVE;
     }
     n->flags = v;
     return 1;
@@ -1015,10 +1015,10 @@ s32 bgi_initAnim(u32 arg0) {
         for (j = 0; j < pt->triangleCount; j++) {
             n = &g_fieldBgi.triangles[*ids];
             if (i == 0) {
-                n->flags |= 1;
+                n->flags |= BGI_FLAG_ACTIVE;
                 bgi_linkFrameNeighbors(b, e, pt);
             } else {
-                n->flags &= ~1;
+                n->flags &= ~BGI_FLAG_ACTIVE;
             }
             ids++;
         }
@@ -1038,7 +1038,7 @@ s32 bgi_setAnimFrame(u32 arg0, u32 arg1) {
     }
     e->curFrame = arg1 << 8;
     e->counter = 0;
-    e->flags |= 1;
+    e->flags |= BGI_FLAG_ACTIVE;
     return 1;
 }
 
@@ -1050,9 +1050,9 @@ s32 bgi_setAnimPlaying(u32 arg0, s32 arg1) {
     }
     e = &g_fieldBgi.anims[arg0];
     if (arg1 != 0) {
-        e->flags |= 5;
+        e->flags |= BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
     } else {
-        e->flags &= ~5;
+        e->flags &= ~(BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING);
     }
     return 1;
 }
@@ -1131,7 +1131,7 @@ s32 bgi_playAnimRange(u32 arg0, u32 arg1, u32 arg2) {
     pt = (BgiKeyframe *)((u8 *)b + e->frameOffset);
     e->curFrame = arg1 << 8;
     e->counter = 0;
-    e->flags |= 5;
+    e->flags |= BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
     pt += arg2;
     pt->value = -1;
     if ((e->frameRate > 0 && arg2 < arg1) || (e->frameRate < 0 && arg1 < arg2)) {
@@ -1163,9 +1163,9 @@ s32 bgi_resetAnim(u32 arg0, s32 arg1) {
         for (j = 0; j < pt->triangleCount; ids++, j++) {
             n = &g_fieldBgi.triangles[*ids];
             if (arg1 != 0 && i == 0) {
-                n->flags |= 1;
+                n->flags |= BGI_FLAG_ACTIVE;
             } else {
-                n->flags &= ~1;
+                n->flags &= ~BGI_FLAG_ACTIVE;
             }
         }
     }
@@ -1187,7 +1187,7 @@ s32 bgi_startFloorMove(s32 arg0, s32 arg1) {
     BgiFloorMove *e = &g_fieldBgiFloorMoves[arg0];
 
     e->accum = arg1 << 8;
-    e->flags |= 5;
+    e->flags |= BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING;
     bgi_stepFloorMove(arg0);
     return 1;
 }
@@ -1209,7 +1209,7 @@ s32 bgi_setFloorMovePlaying(s32 arg0, s32 arg1) {
     if (arg1 != 0) {
         v = e->flags | 5;
     } else {
-        v = e->flags & ~5;
+        v = e->flags & ~(BGI_FLAG_ACTIVE | BGI_ANIM_PLAYING);
     }
     e->flags = v;
     bgi_stepFloorMove(arg0);

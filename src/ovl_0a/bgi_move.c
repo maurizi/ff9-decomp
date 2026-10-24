@@ -37,10 +37,10 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
         goto fail;
     }
     n = &g_fieldBgi.triangles[id];
-    if (!(n->flags & 1)) {
+    if (!(n->flags & BGI_FLAG_ACTIVE)) {
         goto fail;
     }
-    if ((m = (n->flags >> 8) & g_fieldBgi.maskFilter) & 0xC0) {
+    if ((m = (n->flags >> 8) & g_fieldBgi.maskFilter) & (BGI_MASK_NO_PLAYER | BGI_MASK_NO_OTHERS)) {
         mode = g_gameState->mode;
         if (mode == 5) {
             a = (Unk8004AB64 *)g_gameState->unk1C->unk8E0[g_gameState->unk1C->unk8E4.field->unk8].unkC;
@@ -50,13 +50,13 @@ BgiTriangle *bgi_getPassableNeighbor(BgiActor *arg0, BgiTriangle *arg1, s32 arg2
             a = NULL;
         }
         if (arg0->actor == a) {
-            if (m & 0x80) {
+            if (m & BGI_MASK_NO_PLAYER) {
             fail:
                 return NULL;
             }
             return n;
         }
-        if (m & 0x40) {
+        if (m & BGI_MASK_NO_OTHERS) {
             return NULL;
         }
     }
@@ -203,8 +203,8 @@ s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *ar
         if ((u32)arg0->radiusSq >= d) {
             nb = bgi_getPassableNeighbor(arg0, arg2, i);
             if (nb != NULL) {
-                if (!(nb->flags & 0x80)) {
-                    nb->flags |= 0x80;
+                if (!(nb->flags & BGI_TRI_VISITED)) {
+                    nb->flags |= BGI_TRI_VISITED;
                     if (bgi_pushOutOfEdges(arg0, arg1, nb, arg3) == 0) {
                         *arg3 = i;
                         hit = 1;
@@ -237,7 +237,7 @@ s32 bgi_pushOutOfEdges(BgiActor *arg0, SVECTOR *arg1, BgiTriangle *arg2, s16 *ar
                         g_fieldBgiPushDist[n] = d;
                     }
                     hit = 1;
-                    arg2->flags |= 0x80;
+                    arg2->flags |= BGI_TRI_VISITED;
                     *arg3 = i;
                 }
             }
@@ -270,8 +270,8 @@ u16 bgi_findTriangleNear(BgiActor *arg0, BgiTriangle **arg1, s32 arg2, s32 arg3)
         }
         for (i = 0; i < 3; i++) {
             p[1] = bgi_getPassableNeighbor(arg0, p[0], i);
-            if (p[1] != NULL && !(p[1]->flags & 0x80)) {
-                p[1]->flags |= 0x80;
+            if (p[1] != NULL && !(p[1]->flags & BGI_TRI_VISITED)) {
+                p[1]->flags |= BGI_TRI_VISITED;
                 if (bgi_findTriangleNear(arg0, &p[1], arg2, arg3 + 1) == 1) {
                     *arg1 = p[1];
                     return 1;
@@ -522,7 +522,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
     s32 a;
     BgiFloor *t;
 
-    ret = 2;
+    ret = BGI_MOVE_OK;
     D_800C9DDE = 0;
     for (k = 0; k < 10; k++) {
         D_800CAA98[k] = -1;
@@ -540,7 +540,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
     if (cur.vx == prev.vx && cur.vy == prev.vy && cur.vz == prev.vz) {
         arg0->lastFloor = arg0->floor;
         arg0->lastTriangle = arg0->triangle;
-        return ret | 4;
+        return ret | BGI_MOVE_STILL;
     }
     id = arg0->triangle;
     node = &g_fieldBgi.triangles[id];
@@ -555,7 +555,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
         arg0->actor->pos.vx = arg0->actor->unk40.vx;
         arg0->actor->pos.vy = arg0->actor->unk40.vy;
         arg0->actor->pos.vz = arg0->actor->unk40.vz;
-        ret |= 1;
+        ret |= BGI_MOVE_BLOCKED;
         if (arg0->lastTriangle >= 0) {
             if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[arg0->lastFloor], &g_fieldBgi.triangles[arg0->lastTriangle], &prev.vx)) {
                 arg0->lastFloor = arg0->floor;
@@ -566,7 +566,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
     }
     if (!(u8)bgi_pushOutOfEdges_inline(arg0, &cur, node, &edge)) {
         if ((u8)bgi_applyPushes(arg0, &cur, &node, &edge)) {
-            ret |= 9;
+            ret |= BGI_MOVE_PUSHED | BGI_MOVE_BLOCKED;
         } else {
             arg0->triangle = save;
             if (save >= 0) {
@@ -577,7 +577,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
             arg0->actor->pos.vx = arg0->actor->unk40.vx;
             arg0->actor->pos.vy = arg0->actor->unk40.vy;
             arg0->actor->pos.vz = arg0->actor->unk40.vz;
-            ret |= 1;
+            ret |= BGI_MOVE_BLOCKED;
             if (arg0->lastTriangle >= 0 && arg0->lastFloor >= 0) {
             if (!(u8)bgi_pointInTriangle(g_fieldBgi.header, &g_fieldBgi.floors[arg0->lastFloor], &g_fieldBgi.triangles[arg0->lastTriangle], &prev.vx)) {
                 arg0->lastFloor = arg0->floor;
@@ -589,7 +589,7 @@ s32 bgi_moveActor(BgiActor *arg0) {
     }
     if (cur.vx != arg0->actor->pos.vx || cur.vz != arg0->actor->pos.vz) {
         arg0->actor->pos.vx = cur.vx;
-        ret |= 0x10;
+        ret |= BGI_MOVE_CORRECTED;
         arg0->actor->pos.vz = cur.vz;
     }
     if (node->normal >= 0) {
@@ -676,9 +676,9 @@ BgiActor *bgi_findPlayerActor(s32 *arg0) {
 
 s32 bgi_setActorActive(s32 arg0, s32 arg1) {
     if (arg1 != 0) {
-        g_fieldBgi.actors[arg0].flags |= 1;
+        g_fieldBgi.actors[arg0].flags |= BGI_FLAG_ACTIVE;
     } else {
-        g_fieldBgi.actors[arg0].flags &= ~1;
+        g_fieldBgi.actors[arg0].flags &= ~BGI_FLAG_ACTIVE;
         g_fieldBgi.actors[arg0].floor = -1;
         g_fieldBgi.actors[arg0].triangle = -1;
         g_fieldBgi.actors[arg0].lastFloor = -1;
@@ -822,13 +822,13 @@ s32 bgi_updateActor(u32 arg0) {
     BgiActor *e;
 
     if (g_fieldBgi.loaded == 0) {
-        return 0x8000;
+        return BGI_ERR_NO_MESH;
     }
     if (arg0 >= g_fieldBgi.actorCount) {
-        return 0x4000;
+        return BGI_ERR_BAD_ACTOR;
     }
     e = &g_fieldBgi.actors[arg0];
-    if (e->flags & 1) {
+    if (e->flags & BGI_FLAG_ACTIVE) {
         if (e->floor == -1 || e->triangle == -1) {
             return (bgi_placeActor(arg0, e->actor->pos.vx, e->actor->pos.vy, e->actor->pos.vz) != 0) * 2;
         }
@@ -902,17 +902,17 @@ s32 bgi_setFloorActive(s32 arg0, s32 arg1) {
 
     if (arg1 != 0) {
         ids = (s32 *)((u8 *)b + t->triangleOffset);
-        t->flags |= 1;
+        t->flags |= BGI_FLAG_ACTIVE;
         n = g_fieldBgi.triangles;
         for (i = 0; i < t->triangleCount; i++) {
-            n[ids[i]].flags |= 1;
+            n[ids[i]].flags |= BGI_FLAG_ACTIVE;
         }
     } else {
         ids = (s32 *)((u8 *)b + t->triangleOffset);
-        t->flags &= ~1;
+        t->flags &= ~BGI_FLAG_ACTIVE;
         n = g_fieldBgi.triangles;
         for (i = 0; i < t->triangleCount; i++) {
-            n[ids[i]].flags &= ~1;
+            n[ids[i]].flags &= ~BGI_FLAG_ACTIVE;
         }
     }
     return 1;
