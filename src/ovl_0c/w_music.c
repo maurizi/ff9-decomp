@@ -195,22 +195,22 @@ void w_musicRequestSend(u32 arg0) {
     if (g_worldMusicState == WM_MUSIC_READY) {
         if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
             switch (arg0) {
-            case 0:
+            case WM_SONG_NORMAL:
                 printf(D_800A832C);
                 break;
-            case 2:
+            case WM_SONG_AIRSHIP:
                 printf(D_800A8350);
                 break;
-            case 1:
+            case WM_SONG_CHOCOBO:
                 printf(D_800A8374);
                 break;
-            case 3:
+            case WM_SONG_DISC4:
                 printf(D_800A8398);
                 break;
-            case 4:
+            case WM_SONG_FIELD1:
                 printf(D_800A83B8);
                 break;
-            case 5:
+            case WM_SONG_FIELD2:
                 printf(D_800A83DC);
                 break;
             default:
@@ -379,16 +379,16 @@ void wm_seStop(s32 arg0) {
 s32 wm_getSongMusicId(u16 arg0) {
     u16 sc;
 
-    if (arg0 == 0) {
+    if (arg0 == WM_SONG_NORMAL) {
         sc = *g_worldStoryCounterPtr;
         if (sc - 0x2580U < 0x122) {
-            arg0 = 4;
+            arg0 = WM_SONG_FIELD1;
         }
         if (sc - 0x26A2U < 0x14) {
-            arg0 = 5;
+            arg0 = WM_SONG_FIELD2;
         }
         if (g_worldDataSet == WM_DATASET_DISC4) {
-            arg0 = 3;
+            arg0 = WM_SONG_DISC4;
         }
     }
     return g_worldSongMusicIds[arg0];
