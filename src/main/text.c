@@ -192,7 +192,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
-                    x += D_800686D0[D_80069018[k].unk8 + 0x5C].unk4;
+                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
                 }
             } else if (*s == TEXT_ARG_SPRITE) {
                 pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
@@ -204,7 +204,7 @@ u8 *text_buildBlock(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 if (k != 0xFF) {
                     pkt = text_buildFontTpage(ot, (DrTpageWords *)pkt);
                     pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
-                    x += D_800686D0[D_80069018[k].unk8 + 0x5C].unk4;
+                    x += g_uiSprites[g_itemTable[k].unk8 + 0x5C].unk4;
                 }
             } else {
                 pkt = text_buildCode(x, y, ot, *s, &w, pkt);
@@ -293,7 +293,7 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     if (mode == 0) {
         rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
     }
-    tbl = (SpriteDesc16 *)D_800686D0;
+    tbl = (SpriteDesc16 *)g_uiSprites;
     clut = tbl[46].clut;
     if (mode == 1) {
         clut += 0x40;
@@ -304,11 +304,11 @@ u8 *ui_buildLabel(s32 x, s32 y, u32 *ot, s32 str, s32 mode, u8 *pkt) {
     }
     while ((c = *s) != 0) {
         if ((u32)(c - 'A') < 26) {
-            g = &((SpriteDesc16 *)D_800686D0)[*s - 8];
+            g = &((SpriteDesc16 *)g_uiSprites)[*s - 8];
         } else if ((u32)(c - 'a') < 26) {
-            g = &((SpriteDesc16 *)D_800686D0)[*s - 0x28];
+            g = &((SpriteDesc16 *)g_uiSprites)[*s - 0x28];
         } else if ((u32)(c - '0') < 10) {
-            g = &((SpriteDesc16 *)D_800686D0)[*s - 2];
+            g = &((SpriteDesc16 *)g_uiSprites)[*s - 2];
         } else if ((u8)c == '&') {
             g = (SpriteDesc16 *)&D_80068890;
         } else if ((u8)c == '.') {
@@ -581,58 +581,58 @@ s32 text_getCodeWidth(s32 c) {
 
     switch (c & 0xFF) {
     case 0x30:
-        r = D_800686D0[5].unk4;
+        r = g_uiSprites[5].unk4;
         break;
     case 0x31:
-        r = D_800686D0[4].unk4;
+        r = g_uiSprites[4].unk4;
         break;
     case 0x32:
-        r = D_800686D0[7].unk4;
+        r = g_uiSprites[7].unk4;
         break;
     case 0x33:
-        r = D_800686D0[6].unk4;
+        r = g_uiSprites[6].unk4;
         break;
     case 0x34:
-        r = D_800686D0[8].unk4;
+        r = g_uiSprites[8].unk4;
         break;
     case 0x35:
-        r = D_800686D0[10].unk4;
+        r = g_uiSprites[10].unk4;
         break;
     case 0x36:
-        r = D_800686D0[9].unk4;
+        r = g_uiSprites[9].unk4;
         break;
     case 0x37:
-        r = D_800686D0[11].unk4;
+        r = g_uiSprites[11].unk4;
         break;
     case 0x60:
-        r = D_800686D0[text_getButtonSprite(0)].unk4;
+        r = g_uiSprites[text_getButtonSprite(0)].unk4;
         break;
     case 0x61:
-        r = D_800686D0[text_getButtonSprite(1)].unk4;
+        r = g_uiSprites[text_getButtonSprite(1)].unk4;
         break;
     case 0x62:
-        r = D_800686D0[text_getButtonSprite(2)].unk4;
+        r = g_uiSprites[text_getButtonSprite(2)].unk4;
         break;
     case 0x63:
-        r = D_800686D0[text_getButtonSprite(3)].unk4;
+        r = g_uiSprites[text_getButtonSprite(3)].unk4;
         break;
     case 0x64:
-        r = D_800686D0[text_getButtonSprite(4)].unk4;
+        r = g_uiSprites[text_getButtonSprite(4)].unk4;
         break;
     case 0x65:
-        r = D_800686D0[text_getButtonSprite(5)].unk4;
+        r = g_uiSprites[text_getButtonSprite(5)].unk4;
         break;
     case 0x66:
-        r = D_800686D0[text_getButtonSprite(6)].unk4;
+        r = g_uiSprites[text_getButtonSprite(6)].unk4;
         break;
     case 0x67:
-        r = D_800686D0[text_getButtonSprite(7)].unk4;
+        r = g_uiSprites[text_getButtonSprite(7)].unk4;
         break;
     case 0x38:
-        r = D_800686D0[17].unk4;
+        r = g_uiSprites[17].unk4;
         break;
     case 0x39:
-        r = D_800686D0[18].unk4;
+        r = g_uiSprites[18].unk4;
         break;
     case 0x3A:
     case 0x3B:
@@ -640,7 +640,7 @@ s32 text_getCodeWidth(s32 c) {
     case 0x3D:
     case 0x3E:
     case 0x3F:
-        r = D_800686D0[12].unk4;
+        r = g_uiSprites[12].unk4;
         break;
     case TEXT_CHAR_NAME + 0:
         r = text_measureWidth((s32)&g_gameState->unk1C->characters[0]);
@@ -886,19 +886,19 @@ TextSize text_measure(u8 *s) {
                 w += g_textMeasureFuncs[3](g_textStringArgs[*s]);
             } else if (*s == TEXT_SPRITE) {
                 s++;
-                w += D_800686D0[*s].unk4;
+                w += g_uiSprites[*s].unk4;
             } else if (*s == TEXT_ITEM_ICON) {
                 s++;
                 if (*s == 0xFF) {
-                    w += D_800686D0[D_8006A20E + 0x5C].unk4;
+                    w += g_uiSprites[D_8006A20E + 0x5C].unk4;
                 }
             } else if (*s == TEXT_ARG_SPRITE) {
                 s++;
-                w += D_800686D0[g_textIconArgs[*s]].unk4;
+                w += g_uiSprites[g_textIconArgs[*s]].unk4;
             } else if (*s == TEXT_ARG_ITEM_ICON) {
                 s++;
                 if (g_textIconArgs[*s] == 0xFF) {
-                    w += D_800686D0[D_8006A20E + 0x5C].unk4;
+                    w += g_uiSprites[D_8006A20E + 0x5C].unk4;
                 }
             } else if (*s == TEXT_Y_DOWN) {
                 s++;

@@ -132,7 +132,7 @@ void menuItem_selectItem(s32 idx, MenuList *l) {
     ok = 0;
     if (p->unk1 != 0 && p->unk0 != ITEM_NONE && p->unk0 >= ITEM_FIRST_USABLE) {
         id = p->unk0;
-        it = &D_80069018[id];
+        it = &g_itemTable[id];
         e = &D_8006B1F4[id - ITEM_FIRST_USABLE];
         if (it->unkF & 1) {
             s_menuItem.targetKind = e->unk0;
@@ -296,11 +296,11 @@ void menuItem_sortAuto(void) {
     }
     for (i = 0; i < n - 1; i++) {
         for (j = i + 1; j < n; j++) {
-            if (D_80069018[s_menuItemSortBuf[i].id].unk10 > D_80069018[s_menuItemSortBuf[j].id].unk10) {
+            if (g_itemTable[s_menuItemSortBuf[i].id].unk10 > g_itemTable[s_menuItemSortBuf[j].id].unk10) {
                 s_menuItemSortTmp = s_menuItemSortBuf[i];
                 s_menuItemSortBuf[i] = s_menuItemSortBuf[j];
                 s_menuItemSortBuf[j] = s_menuItemSortTmp;
-            } else if (D_80069018[s_menuItemSortBuf[i].id].unk10 == D_80069018[s_menuItemSortBuf[j].id].unk10 &&
+            } else if (g_itemTable[s_menuItemSortBuf[i].id].unk10 == g_itemTable[s_menuItemSortBuf[j].id].unk10 &&
                        s_menuItemSortBuf[j].id < s_menuItemSortBuf[i].id) {
                 s_menuItemSortTmp = s_menuItemSortBuf[i];
                 s_menuItemSortBuf[i] = s_menuItemSortBuf[j];
@@ -398,7 +398,7 @@ void menuItem_updateHelp(void) {
     }
     p = &g_gameState->unk1C->items.slots[menuItem_getSlot(l)];
     if (p->unk1 != 0) {
-        h->text = &s_menuItemHelp[D_80069018[p->unk0].unk2];
+        h->text = &s_menuItemHelp[g_itemTable[p->unk0].unk2];
     }
 }
 
@@ -655,13 +655,13 @@ void menuItem_drawRow(s32 col, s32 row, s32 i, MenuView *v) {
     u8 buf[8];
 
     if (p->unk1 != 0 && p->unk0 != ITEM_NONE) {
-        it = &D_80069018[p->unk0];
+        it = &g_itemTable[p->unk0];
         ok = it->unkF & 1;
         x = col * 0x96;
         y = row * 0xF + (v->unk2 + k);
         text_formatNumber(p->unk1, buf, 2, 1);
         x2 = x + 0x18;
-        text_drawBlock(x + 0x28, y, 0x1C, D_8006A218 + it->unk0, ok ? 0 : 2);
+        text_drawBlock(x + 0x28, y, 0x1C, g_itemNames + it->unk0, ok ? 0 : 2);
         ui_drawItemIcon(x2, y, 0x1C, p->unk0, ok);
         ui_drawSmallDigits(x2 + 0x6C, y + 4, 0x1C, buf, ok ? 0 : 2);
     }

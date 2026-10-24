@@ -152,7 +152,7 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case 0xF:
         /* padded: the first jump table is 8-aligned in its object */
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
-        switch (D_80069018[cmd->subNo].unk8) {
+        switch (g_itemTable[cmd->subNo].unk8) {
         case 1:
             btl_playCmdEffect(cmd, 0x110, 0);
             break;

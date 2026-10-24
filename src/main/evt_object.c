@@ -78,7 +78,7 @@ Unk8004AB64 *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
         evt_deleteObject(o);
     }
     nw = (a2 + 3) >> 2;
-    nv = (((ScriptEntry *)D_8007ADF8)[idx].unk4 + 3) >> 2;
+    nv = (((ScriptEntry *)g_evtScripts)[idx].unk4 + 3) >> 2;
     o = evt_allocObject(nw + nv + a3);
     end = (u32 *)o + nw + nv;
     for (p = (u32 *)o; p < end; p++) {
@@ -100,7 +100,7 @@ Unk8004AB64 *evt_createObject(s32 idx, s32 id, s32 a2, s32 a3) {
     o->unk7 = id;
     o->unk5 = 0;
     {
-        u8 *h = D_8007ADF8 + ((ScriptEntry *)D_8007ADF8)[idx].unk0;
+        u8 *h = g_evtScripts + ((ScriptEntry *)g_evtScripts)[idx].unk0;
         s32 c = *(u16 *)h >> 8;
         u16 *q = (u16 *)(h + 2);
 
@@ -173,7 +173,7 @@ s32 evt_exprUnitIncDec(s32 op) {
     }
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            D_8007B700 = g_evtUnitObjects[i];
             switch (op) {
             case 8:
                 r = evt_popResult();
@@ -221,7 +221,7 @@ s32 evt_exprUnitAssign(s32 op) {
     v = evt_popResult();
     for (i = 0; i < 8; i++) {
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            D_8007B700 = g_evtUnitObjects[i];
             switch (op) {
             case 0x2D:
                 r = v;
@@ -304,7 +304,7 @@ s32 evt_exprUnitSelect(s32 op) {
         for (i = 0; i < 8; i++) {
             r >>= 1;
             if (mask & 1) {
-                D_8007B700 = D_8007AED0[i];
+                D_8007B700 = g_evtUnitObjects[i];
                 if (evt_popResult() == 0) {
                     r |= 0x80;
                 }
@@ -317,7 +317,7 @@ s32 evt_exprUnitSelect(s32 op) {
         r = -0x8000;
         for (i = 0; i < 8; i++) {
             if (mask & 1) {
-                D_8007B700 = D_8007AED0[i];
+                D_8007B700 = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
                 if (r < x) {
@@ -333,7 +333,7 @@ s32 evt_exprUnitSelect(s32 op) {
         r = 0x7FFF;
         for (i = 0; i < 8; i++) {
             if (mask & 1) {
-                D_8007B700 = D_8007AED0[i];
+                D_8007B700 = g_evtUnitObjects[i];
                 x = evt_popResult();
                 g_evtExprSp++;
                 if (x < r) {
@@ -369,7 +369,7 @@ s32 evt_exprUnitCompare(s32 op) {
     for (i = 0; i < 8; i++) {
         r >>= 1;
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            D_8007B700 = g_evtUnitObjects[i];
             switch (op) {
             case 0x1C:
                 c = evt_popResult() < v;
@@ -427,7 +427,7 @@ s32 evt_exprUnitLogic(s32 op) {
     for (i = 0; i < 8; i++) {
         r >>= 1;
         if (mask & 1) {
-            D_8007B700 = D_8007AED0[i];
+            D_8007B700 = g_evtUnitObjects[i];
             if (evt_popResult() != 0) {
                 r |= 0x80;
             }
@@ -477,7 +477,7 @@ s32 evt_exprUnitFirst(void) {
         }
     }
     if (i < 8) {
-        D_8007B700 = D_8007AED0[i];
+        D_8007B700 = g_evtUnitObjects[i];
         r = evt_popResult();
     } else {
         g_evtExprSp--;

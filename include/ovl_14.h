@@ -21,7 +21,7 @@ typedef struct {
     u16 tpage;
 } TitleImage;
 
-/* 8-byte entry of the directory lists at D_80067944 + 0x14C700 (opening_findSceneSectors) */
+/* 8-byte entry of the directory lists at g_loadAreaEnd + 0x14C700 (opening_findSceneSectors) */
 typedef struct {
     u16 id;     /* field / world id, or the id the first lookup gives for the second list */
     u16 link;   /* id to look up in the second list */

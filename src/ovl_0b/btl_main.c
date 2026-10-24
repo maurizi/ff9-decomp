@@ -69,7 +69,7 @@ void func_800A882C(void) {
             if (g_gameState->unk1C->unk8E4.battle->unk0 & 0x20) {
                 text_buildSmall(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk34[g_gameState->unk1C->unk8]);
             } else {
-                ui_buildSprite((0x140 - D_800686D0[0xEB].unk4) / 2, (0xDA - D_800686D0[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
+                ui_buildSprite((0x140 - g_uiSprites[0xEB].unk4) / 2, (0xDA - g_uiSprites[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
             }
             setlen(&D_800FDE98, 3);
             D_800FDE98.code = 0x62;
@@ -166,7 +166,7 @@ void btl_exitMode(void) {
 
 void btl_allocBattle(void) {
     BattleMem *m;
-    D_80067948 = D_80067944 + 0x61800;
+    D_80067948 = g_loadAreaEnd + 0x61800;
     m = (BattleMem *)D_80067948;
     g_gameState->unk1C->unk8E4.battle = &m->unk0;
     D_80067948 = (s32)m->unk241C;
@@ -368,7 +368,7 @@ void btl_allocBuffers(void) {
     p->unk34[0] = D_80067948 + 0x800;
     p->unk34[1] = p->unk34[0] + 0x20000;
     D_80067948 = p->unk34[1] + 0x20000;
-    p->unkC = (s32 *)(D_80067944 + 0x136700);
+    p->unkC = (s32 *)(g_loadAreaEnd + 0x136700);
 }
 
 void btl_initReturnInfo(void) {
@@ -865,7 +865,7 @@ loop:
             q = &arg1->unk10.h[3];
             do {
                 if (*c != NULL) {
-                    *q = D_8006E0E8[(*c)->equip[0]].unk2;
+                    *q = g_weaponTable[(*c)->equip[0]].unk2;
                 }
                 c--;
                 q--;
@@ -1757,7 +1757,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 g_gameState->unk1C->unk820[0] = r;
                 g_gameState->unk1C->unk81C[0] = arg1;
                 if ((id & 0xFFFF) != 5) {
-                    g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x140700);
+                    g_gameState->unk1C->unk8C0 = (s32)(g_loadAreaEnd + 0x140700);
                     D_800F51EC = -1;
                     g_gameState->unk1C->unk878 = 0x16800;
                     D_800F51F0 = id;
@@ -1934,7 +1934,7 @@ stream:
             if (gf->unk854[0].unkC + gf->unk854[0].unk10 < gf->unk87C) {
                 gf->unk8C0 = (s32)gf->unk854[0].unk8;
                 gg = g_gameState->unk1C;
-                m = (s32)(D_80067944 + 0x156F00) - gg->unk8C0;
+                m = (s32)(g_loadAreaEnd + 0x156F00) - gg->unk8C0;
                 m = m / 2048 * 2048;
                 cdRead_init(gg->unk854, D_800F51F4, gg->unk854[0].unk4, (void *)gg->unk8C0,
                               gg->unk854[0].unkC + gg->unk854[0].unk10, m, func_800AE844);
@@ -2012,7 +2012,7 @@ s32 func_800AE4FC(s32 arg0) {
             } while (0);
         } while (0);
     }
-    return ((FileEntry16 *)file_find(8, D_8006E0E8[c->equip[0]].unk2))->unk2 | 0x90000;
+    return ((FileEntry16 *)file_find(8, g_weaponTable[c->equip[0]].unk2))->unk2 | 0x90000;
 }
 
 s32 func_800AE570(s32 arg0, s32 *arg1) {

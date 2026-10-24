@@ -97,7 +97,7 @@ void func_800A73B8(void) {
     ctx->unk3A = 1;
 }
 
-/* looks up the current area/field ids in the two directories at D_80067944 + 0x14C700 and stores their sector ranges */
+/* looks up the current area/field ids in the two directories at g_loadAreaEnd + 0x14C700 and stores their sector ranges */
 void opening_findSceneSectors(void) {
     GameState *gs = g_gameState;
     s32 mode = gs->mode;
@@ -114,7 +114,7 @@ void opening_findSceneSectors(void) {
         id = -1;
         f = gs->dirs;
         base = f->unk8;
-        area = D_80067944 + ((base << 11) + 0x14C700);
+        area = g_loadAreaEnd + ((base << 11) + 0x14C700);
         if (mode == 1) {
             key = (s16)ctx->fieldId;
             start = area + ((f->unk48 - base) << 11);

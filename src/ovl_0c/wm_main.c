@@ -98,7 +98,7 @@ void wm_shutdown(void) {
 }
 
 void wm_allocContext(void) {
-    D_80067948 = (s32)(D_80067944 + 0x32000);
+    D_80067948 = (s32)(g_loadAreaEnd + 0x32000);
     g_gameState->unk1C->unk8E4.world = (WorldMap *)D_80067948;
     D_80067948 += 0x3000;
 }
@@ -172,7 +172,7 @@ s32 wm_loadWorldData(void) {
 
     id = wm_getWorldDataFileId();
     f = file_find(1, id);
-    buf = D_80067944 + 0x34000;
+    buf = g_loadAreaEnd + 0x34000;
     if (preload_isReady(id) != 0) {
         e = preload_find(id);
         file_copyViaVram((s32)buf, e->unk8, e->unkC, 0);
@@ -335,7 +335,7 @@ void wm_setupMapObj(void) {
     WorldMap *wm = g_gameState->unk1C->unk8E4.world;
 
     wm->unk8 = &wm->unk48;
-    wm->unk8->unk2C = D_80067944 + 0x5EB00;
+    wm->unk8->unk2C = g_loadAreaEnd + 0x5EB00;
     D_80067948 = (s32)(wm + 1);
 }
 
@@ -392,7 +392,7 @@ void wm_fetchParkedSound(void) {
         h = 0xDA;
         r->x = g_gameState->drawEnv[gd->unk8].clip.x;
         r->y = g_gameState->drawEnv[g_gameState->unk1C->unk8].clip.y;
-        dst = (u32 *)(D_80067944 + 0x91800);
+        dst = (u32 *)(g_loadAreaEnd + 0x91800);
         r->h = h;
         r->w = ((u32)g_gameState->unk1C->unk8E4.world->parkedSoundSize >> 1) / h + 1;
         StoreImage(r, dst);
@@ -406,7 +406,7 @@ void wm_uploadParkedSound(void) {
     while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     if (g_gameState->unk1C->unk8E4.world->parkedSoundSize != -1) {
-        dst = D_80067944 + 0x91800;
+        dst = g_loadAreaEnd + 0x91800;
         akao_beginBankUpload();
         akao_uploadBank((s32)dst, g_gameState->unk1C->unk8E4.world->parkedSoundSize, 1);
         g_gameState->unk1C->unk8E4.world->parkedSoundSize = -1;
@@ -1047,10 +1047,10 @@ state:
         g_worldMusicSector = wm_findSoundFile(g_worldMusicReqId, &sz);
         akao_beginBankUpload();
         if (!(g_gameState->unk1C->unk8E4.world->unk0 & 0x400)) {
-            g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x35000);
+            g_gameState->unk1C->unk8C0 = (s32)(g_loadAreaEnd + 0x35000);
             g_gameState->unk1C->unk878 = -1;
         } else if (g_gameState->unk1C->unk8E4.world->unk0 & 1) {
-            g_gameState->unk1C->unk8C0 = (s32)(D_80067944 + 0x91800);
+            g_gameState->unk1C->unk8C0 = (s32)(g_loadAreaEnd + 0x91800);
             g_gameState->unk1C->unk878 = 0x48000;
         } else {
             g_gameState->unk1C->unk8C0 = func_800B8108();
@@ -1412,7 +1412,7 @@ void wm_togglePause(void) {
             g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&g_worldPauseOT, 1);
-        ui_buildSprite((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &g_worldPauseOT, 0xEB, 0, buf, D_800CE098);
+        ui_buildSprite((320 - g_uiSprites[235].unk4) / 2, (218 - g_uiSprites[235].unk5) / 2, &g_worldPauseOT, 0xEB, 0, buf, D_800CE098);
         setlen(&g_worldPauseTile, 3);
         g_worldPauseTile.code = 0x62;
         setRGB0(&g_worldPauseTile, 0x60, 0x60, 0x60);
@@ -1455,7 +1455,7 @@ void wm_saveDepTable(void) {
     u8 *dst;
 
     if (t != (FileTable *)-1) {
-        dst = D_80067944 + 0x146F00;
+        dst = g_loadAreaEnd + 0x146F00;
         wm_copyViaVram((s32)dst, (s32)t, (t->unk2 * 0x10) | 4);
         DrawSync(0);
         g_gameState->unk1C->depTable = (FileTable *)dst;

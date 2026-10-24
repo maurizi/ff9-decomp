@@ -136,7 +136,7 @@ void menuStatus_drawStats(void) {
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x57, 0x1D, buf, 0);
     text_formatNumber(c->spirit, buf, 2, 1);
     ui_drawSmallDigits(r->x + 0x58, r->y + 0x64, 0x1D, buf, 0);
-    text_formatNumber(D_8006E0E8[c->equip[0]].unk5, buf, 3, 1);
+    text_formatNumber(g_weaponTable[c->equip[0]].unk5, buf, 3, 1);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x72, 0x1D, buf, 0);
     text_formatNumber(c->defense, buf, 3, 1);
     ui_drawSmallDigits(r->x + 0x51, r->y + 0x7F, 0x1D, buf, 0);
@@ -204,7 +204,7 @@ void menuStatus_drawEquipment(void) {
         id = c->equip[i];
         if (id != ITEM_NONE) {
             ui_drawItemIcon(r->x + 0x8D, r->y + 0x68 + i * 15 - 1, 0x1D, id, 1);
-            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], D_8006A218 + D_80069018[id].unk0, 0, s_menuStatus.prim);
+            s_menuStatus.prim = text_buildBlock(r->x + 0x9D, r->y + 0x68 + i * 15 - 1, &g_ot[0x1D], g_itemNames + g_itemTable[id].unk0, 0, s_menuStatus.prim);
         }
     }
 }
@@ -254,8 +254,8 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
     if (ok && c->ap[i] == 0) {
         return;
     }
-    id = D_8006CB28[c->unk34.b.row][i].unk0;
-    max = D_8006CB28[c->unk34.b.row][i].unk1;
+    id = g_abilityRows[c->unk34.b.row][i].unk0;
+    max = g_abilityRows[c->unk34.b.row][i].unk1;
     if (id == 0) {
         return;
     }
@@ -266,7 +266,7 @@ void menuStatus_drawAbilityRow(s32 x, s32 y, s32 z, s32 i, u8 draw) {
         name = s_menuStatusActionNames + a->unkE;
         flag = !(a->unkB & 2);
     } else {
-        sup = &D_8006D128[id - STATUS_SUPPORT_FIRST];
+        sup = &g_supportAbilities[id - STATUS_SUPPORT_FIRST];
         name = s_menuStatusSupportNames + sup->unk2;
         if (chr_testSupportBit(c->supportAbilities, id)) {
             icon = 0xBD;
@@ -316,7 +316,7 @@ void menuStatus_setMember(s32 slot, s32 dir) {
     s_menuStatus.abilityCount = 0;
     if ((s32)(c->unk34.b.row) < 0x10) {
         for (i = 0; i < STATUS_ABILITY_MAX; i++) {
-            if (D_8006CB28[c->unk34.b.row][i].unk0 != 0) {
+            if (g_abilityRows[c->unk34.b.row][i].unk0 != 0) {
                 s_menuStatus.abilityCount++;
             }
         }

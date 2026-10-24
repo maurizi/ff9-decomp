@@ -158,7 +158,7 @@ void battleEnd_preloadScene(void) {
     f = file_find(1, id);
     k = -0x146F00;
     size = (f->unkC - f->unk4) << 11;
-    at = D_80067944 - (dst + k);
+    at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, f->unk4, size);
     dst += size;
@@ -168,14 +168,14 @@ void battleEnd_preloadScene(void) {
     sector = g_gameState->unk1C->sceneSector[0];
     id = g_gameState->unk1C->unk3A | 0x60000;
     size = g_gameState->unk1C->sceneSectors[0] << 11;
-    at = D_80067944 - (dst + k);
+    at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     dst += size;
     sector = g_gameState->unk1C->sceneSector[1];
     id = g_gameState->unk1C->fieldId | 0x50000;
     size = g_gameState->unk1C->sceneSectors[1] << 11;
-    at = D_80067944 - (dst + k);
+    at = g_loadAreaEnd - (dst + k);
     at = at / 0x800 * 0x800;
     preload_setEntry(preload_add(), 0, id, (s32)dst, at, size, sector, size);
     g = g_gameState->unk1C;
@@ -881,12 +881,12 @@ void rewards_addAp(s32 arg0, u32 arg1) {
         s_rewards.rewards.apGain[arg0].cur += arg1;
         for (i = 0; i < 5; i++) {
             if (c->equip[i] != ITEM_NONE) {
-                e = &D_80069018[c->equip[i]];
+                e = &g_itemTable[c->equip[i]];
                 for (j = 0; j < 3; j++) {
                     if (e->unkC[j] != 0) {
                         k = chr_findAbilitySlot(c->unk34.b.id, e->unkC[j]);
                         if (k >= 0) {
-                            need = D_8006CB28[c->unk34.b.row][k].unk1;
+                            need = g_abilityRows[c->unk34.b.row][k].unk1;
                             have = c->ap[k];
                             if (have < need) {
                                 if (arg1 >= need - have) {
@@ -920,13 +920,13 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     memset(s_rewardsAbilityItems, 0, 0x30);
     for (i = 0; i < 5; i++) {
         if (eq[i] != ITEM_NONE) {
-            e = &D_80069018[eq[i]];
+            e = &g_itemTable[eq[i]];
             for (j = 0; j < 3; j++) {
                 if (e->unkC[j] != 0) {
                     k = chr_findAbilitySlot(ch & 0xFF, e->unkC[j]);
                     if (k >= 0) {
                         have = c->ap[k];
-                        if (have < D_8006CB28[c->unk34.b.row][k].unk1) {
+                        if (have < g_abilityRows[c->unk34.b.row][k].unk1) {
                             s_rewardsAbilityItems[k]++;
                         }
                     }
@@ -937,7 +937,7 @@ u8 rewards_willLearn(Character *c, s32 arg1) {
     for (i = 0; i < 0x30; i++) {
         if (s_rewardsAbilityItems[i] != 0) {
             have = c->ap[i];
-            if (s_rewardsAbilityItems[i] * arg1 >= D_8006CB28[c->unk34.b.row][i].unk1 - have) {
+            if (s_rewardsAbilityItems[i] * arg1 >= g_abilityRows[c->unk34.b.row][i].unk1 - have) {
                 ret = 1;
                 break;
             }
@@ -963,7 +963,7 @@ void rewards_drawLearnWin(Window *w) {
         name = s_rewardsActionNames + s_rewardsActionTable[id].unkE;
         ui_drawSprite(w->unk0 + 6, w->unk2 + 7, w->unk18, 0xBC, 0);
     } else {
-        name = s_rewardsSupportNames + D_8006D128[id - ABILITY_SUPPORT_FIRST].unk2;
+        name = s_rewardsSupportNames + g_supportAbilities[id - ABILITY_SUPPORT_FIRST].unk2;
         if (chr_testSupportBit(g_gameState->unk1C->party[slot]->supportAbilities, id)) {
             icon = 0xBD;
         } else {
@@ -1385,12 +1385,12 @@ void rewards_drawItems(Window *w) {
     rw = &s_rewards.rewards;
     off = r->unk6 - r->unk8.h;
     for (; i < rw->itemCount; i++) {
-        it = &D_80069018[rw->items[i][0]];
+        it = &g_itemTable[rw->items[i][0]];
         y = i * 15 + 7;
         y2 = i * 15 + 10;
         text_formatNumber(rw->items[i][1], s_rewardsTextBuf, 2, 1);
         ui_drawItemIcon(r->unk0 + 7, r->unk2 + y - off, w->unk18, rw->items[i][0], 1);
-        text_drawBlock(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, D_8006A218 + it->unk0, 0);
+        text_drawBlock(r->unk0 + 0x16, r->unk2 + y - off, w->unk18, g_itemNames + it->unk0, 0);
         ui_drawSmallDigits(r->unk0 + 0x88, r->unk2 + y2 - off, w->unk18, s_rewardsTextBuf, 0);
     }
     if (rw->itemCount == 0) {

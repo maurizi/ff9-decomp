@@ -345,7 +345,7 @@ s32 fld_collectVisibleModels(FieldObjSlot **arg0) {
                 sum += g->unk0;
                 g++;
             }
-            if (o->packets + (sum * 2 + (o->model->unk2 * 32 + o->model->unk3 * 12)) >= D_80067944 + 0xF1700) {
+            if (o->packets + (sum * 2 + (o->model->unk2 * 32 + o->model->unk3 * 12)) >= g_loadAreaEnd + 0xF1700) {
                 arg0[i] = NULL;
             }
         }
@@ -1170,7 +1170,7 @@ void fld_movieUpdate(void) {
             if (cdRead_update(g_gameState->unk1C->unk854) == 0) {
                 FileEntry *f = file_find(0, 0x64);
                 cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11,
-                              (void *)(D_80067944 + 0xF1700), 0, 0x15000, NULL);
+                              (void *)(g_loadAreaEnd + 0xF1700), 0, 0x15000, NULL);
             }
             g_gameState->unk1C->unk8E4.field->unkC->unk14->movieState = 2;
         }
@@ -1422,7 +1422,7 @@ void fld_updateEncounter(void) {
 
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->encounterStep == 0) {
         g_swirlFrame = 0;
-        D_8007BD30 = D_80067944 + 0x153F00;
+        D_8007BD30 = g_loadAreaEnd + 0x153F00;
         fld_clearModelCache();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->heapTop = D_80067948;
         a = evt_getPlayer();
@@ -1485,7 +1485,7 @@ void fld_updateEncounter(void) {
             } else {
                 preload_remove(preload_waitCurrent()->unk4);
             }
-            preload_discardRange((s32)D_80067944, 0x156F00);
+            preload_discardRange((s32)g_loadAreaEnd, 0x156F00);
             fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
             fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
@@ -1552,7 +1552,7 @@ void fld_togglePause(void) {
             g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&g_fieldTempOt, 1);
-        ui_buildSprite((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
+        ui_buildSprite((320 - g_uiSprites[235].unk4) / 2, (224 - g_uiSprites[235].unk5) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
         bright = 0;
         if (fade_isActive() || fade_isBusy()) {
             bright = 1;
@@ -1572,7 +1572,7 @@ void fld_togglePause(void) {
                 sp = &g_fieldPauseSprite.unk0;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
-                             getTPage(0, 2, tpage_getX((s16)D_800686D0[235].unk6), tpage_getY((s16)D_800686D0[235].unk6)));
+                             getTPage(0, 2, tpage_getX((s16)g_uiSprites[235].unk6), tpage_getY((s16)g_uiSprites[235].unk6)));
             }
         }
         setlen(&g_fieldPauseDim, 3);

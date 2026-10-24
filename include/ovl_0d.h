@@ -542,7 +542,7 @@ s32 card_getLosses(void);
 s32 card_getDraws(void);
 u8 pad_isRepeatEnabled(s32, s32);
 void card_clearAll();
-extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 s32 akao_playMusic(void *);
 void akao_stopMusic(s32);
 void akao_playSe(s32, s32, s32, s32);

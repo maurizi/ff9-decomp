@@ -128,7 +128,7 @@ void menuEquip_drawInfo(void) {
     cur.unk8[1] = c->strength;
     cur.unk8[2] = c->magic;
     cur.unk8[3] = c->spirit;
-    cur.unkC[0] = D_8006E0E8[c->equip[0]].unk5;
+    cur.unkC[0] = g_weaponTable[c->equip[0]].unk5;
     cur.unkC[1] = c->defense;
     cur.unkC[2] = c->evade;
     cur.unkC[3] = c->magicDef;
@@ -184,9 +184,9 @@ void menuEquip_drawEquipment(void) {
         ui_drawSprite(r->x + 10, r->y + y10, 0x1D, i + 0xF9, sel);
         ui_drawSmallDigits(r->x + 0x19, r->y + y12, 0x1D, D_801EE644, sel ? grey : 0);
         if (c->equip[i] != ITEM_NONE) {
-            it = &D_80069018[c->equip[i]];
+            it = &g_itemTable[c->equip[i]];
             ui_drawItemIcon(r->x + 0x21, r->y + y8, 0x1D, c->equip[i], !sel);
-            text_drawBlock(r->x + 0x31, r->y + y8, 0x1D, D_8006A218 + it->unk0, sel ? grey : 0);
+            text_drawBlock(r->x + 0x31, r->y + y8, 0x1D, g_itemNames + it->unk0, sel ? grey : 0);
         }
         y8 += 17;
         y12 += 17;
@@ -229,19 +229,19 @@ void menuEquip_drawAbilities(void) {
         return;
     }
     ui_drawItemIcon(r->x + 0x21, r->y + 7, 0x1D, id, 1);
-    text_drawBlock(r->x + 0x31, r->y + 7, 0x1D, D_8006A218 + D_80069018[id].unk0, 0);
+    text_drawBlock(r->x + 0x31, r->y + 7, 0x1D, g_itemNames + g_itemTable[id].unk0, 0);
     for (i = 0; i < 3; i++) {
         y3 = i * 15;
         y2 = i * 15 + 0x21;
         y1 = i * 15 + 0x22;
-        ab = D_80069018[id].unkC[i];
+        ab = g_itemTable[id].unkC[i];
         if (ab == 0) {
             continue;
         }
         if (ab < ABILITY_SUPPORT_FIRST) {
             name = s_menuEquipActionNames + s_menuEquipActionTable[ab].unkE;
         } else {
-            name = s_menuEquipSupportNames + D_8006D128[ab - ABILITY_SUPPORT_FIRST].unk2;
+            name = s_menuEquipSupportNames + g_supportAbilities[ab - ABILITY_SUPPORT_FIRST].unk2;
         }
         if (func_80034A30(c)) {
             ok = chr_findAbilitySlot(c->unk34.b.id, ab) >= 0;
@@ -414,13 +414,13 @@ void menuEquip_optimize(void) {
     kind = chr_getDefaultSet(c);
     for (; i < EQUIP_SLOT_COUNT; i++) {
         if (c->equip[i] != ITEM_NONE) {
-            cur = D_80069018[c->equip[i]].unkA;
+            cur = g_itemTable[c->equip[i]].unkA;
         } else {
             cur = -1;
         }
         for (j = 0, max = -1, p = g_gameState->unk1C->items.slots; j < ITEM_SLOT_COUNT; j++, p++) {
             if (p->unk1 != 0) {
-                it = &D_80069018[p->unk0];
+                it = &g_itemTable[p->unk0];
                 if ((it->unkF & s_menuEquipOptSlotMask[i]) && (it->unk6 & s_menuEquipOptCharMask[kind])) {
                     if (it->unkA > max) {
                         max = it->unkA;
@@ -453,7 +453,7 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
         memset(s_menuEquipTaught, 0, SUPPORT_COUNT);
         for (i = 0; i < EQUIP_SLOT_COUNT; i++) {
             if (c->equip[i] != ITEM_NONE) {
-                it = &D_80069018[c->equip[i]];
+                it = &g_itemTable[c->equip[i]];
                 for (j = 0; j < 3; j++) {
                     id = it->unkC[j];
                     if (id != 0) {
@@ -464,13 +464,13 @@ void menuEquip_dropUnlearnedSupport(Character *c) {
                 }
             }
         }
-        a = D_8006CB28[c->unk34.b.row];
+        a = g_abilityRows[c->unk34.b.row];
         for (i = 0; i < ABILITY_MAX; i++, a++) {
             if (a->unk0 >= ABILITY_SUPPORT_FIRST && chr_hasSupportAbility(c->unk34.b.id, a->unk0)) {
                 if (s_menuEquipTaught[a->unk0 - ABILITY_SUPPORT_FIRST] == 0 && c->ap[i] < a->unk1) {
                     chr_setSupportAbility(c->unk34.b.id, a->unk0, 0);
-                    if (c->maxStones - c->stones >= D_8006D128[a->unk0 - ABILITY_SUPPORT_FIRST].unk1) {
-                        c->stones += D_8006D128[a->unk0 - ABILITY_SUPPORT_FIRST].unk1;
+                    if (c->maxStones - c->stones >= g_supportAbilities[a->unk0 - ABILITY_SUPPORT_FIRST].unk1) {
+                        c->stones += g_supportAbilities[a->unk0 - ABILITY_SUPPORT_FIRST].unk1;
                     } else {
                         c->stones = c->maxStones;
                     }
@@ -500,7 +500,7 @@ void menuEquip_buildItemList(void) {
     for (i = 0; i < ITEM_SLOT_COUNT; i++) {
 
         if (g_gameState->unk1C->items.slots[i].count != 0) {
-            it = &D_80069018[g_gameState->unk1C->items.slots[i].id];
+            it = &g_itemTable[g_gameState->unk1C->items.slots[i].id];
             if ((it->unk6 & mask) && (it->unkF & slot)) {
                 s_menuEquip.items[n] = g_gameState->unk1C->items.slots[i];
                 n++;
@@ -511,8 +511,8 @@ void menuEquip_buildItemList(void) {
         for (j = i + 1; j < n; j++) {
             a = s_menuEquip.items[i].id;
             b = s_menuEquip.items[j].id;
-            ra = D_80069018[a].unkA;
-            rb = D_80069018[b].unkA;
+            ra = g_itemTable[a].unkA;
+            rb = g_itemTable[b].unkA;
             if ((ra == rb && b < a) || rb < ra) {
                 tmp = s_menuEquip.items[i];
                 s_menuEquip.items[i] = s_menuEquip.items[j];
@@ -543,12 +543,12 @@ void menuEquip_updateHelp(void) {
         if (id == ITEM_NONE) {
             g_menuHelp.text = text_get(EQUIP_TEXT_NOTHING);
         } else {
-            g_menuHelp.text = s_menuEquipItemHelp + D_80069018[id].unk2;
+            g_menuHelp.text = s_menuEquipItemHelp + g_itemTable[id].unk2;
         }
     } else if (s_menuEquip.state == EQUIP_STATE_LIST && (l = &s_menuEquip.list)->rows != 0) {
         e = s_menuEquip.items + (l->top + l->cursor);
         if (e->unk1 != 0) {
-            g_menuHelp.text = s_menuEquipItemHelp + D_80069018[e->unk0].unk2;
+            g_menuHelp.text = s_menuEquipItemHelp + g_itemTable[e->unk0].unk2;
         }
     }
 }
@@ -650,7 +650,7 @@ void menuEquip_drawListRow(s32 col, s32 row, s32 i, MenuView *v) {
     w = &s_menuEquip.listWin;
     y = w->unk4.y + row * 0xF + v->unk2;
     ui_drawItemIcon(x + 0xB, y, 0x13, p->unk0, 1);
-    text_drawBlock(x + 0x1B, y, 0x13, D_8006A218 + D_80069018[p->unk0].unk0, 0);
+    text_drawBlock(x + 0x1B, y, 0x13, g_itemNames + g_itemTable[p->unk0].unk0, 0);
     text_formatNumber(p->unk1, buf, 2, 1);
     ui_drawSmallDigits(x + 0x8A, y + 4, 0x13, buf, 0);
 }

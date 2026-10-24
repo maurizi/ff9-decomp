@@ -10,39 +10,39 @@ void menuScreen_init(void) {
     g_menuScreen.unk4 = 0;
     g_menuScreen.unk8 = fade_getOtz();
     g_menuScreen.unk3 = party_getFirstMember();
-    D_80077E28.unk14 = D_8006E508;
-    D_80077E28.unk8 = 0;
-    D_80077E28.unk0 = 0;
-    D_80077E28.unk10 = 0xFF;
-    D_80077E28.unk1 = 0;
-    D_80077E28.unk4 = 0;
-    D_80077E28.unk6 = 0;
-    D_80077E28.unk5 = 0;
-    D_80077E28.unk1C = g_gameState->mode != 3 ? g_menuScreensField : g_menuScreensWorld;
+    g_menuScreenSwitch.unk14 = D_8006E508;
+    g_menuScreenSwitch.unk8 = 0;
+    g_menuScreenSwitch.unk0 = 0;
+    g_menuScreenSwitch.unk10 = 0xFF;
+    g_menuScreenSwitch.unk1 = 0;
+    g_menuScreenSwitch.unk4 = 0;
+    g_menuScreenSwitch.unk6 = 0;
+    g_menuScreenSwitch.unk5 = 0;
+    g_menuScreenSwitch.unk1C = g_gameState->mode != 3 ? g_menuScreensField : g_menuScreensWorld;
     t = D_80077E44;
     t[D_80077E52].unk0();
 }
 
 void menuScreen_drawCommands(void) {
     u8 all = 0;
-    RECT *r = &D_80077E28.unk14;
+    RECT *r = &g_menuScreenSwitch.unk14;
     s32 sel;
     s32 i;
     s32 y;
 
-    if (D_80077E52 == 0 || (D_80077E28.unk0 != 0 && (*(u32 *)&D_80077E28 & 0xFFFF00))) {
+    if (D_80077E52 == 0 || (g_menuScreenSwitch.unk0 != 0 && (*(u32 *)&g_menuScreenSwitch & 0xFFFF00))) {
         all = 1;
     }
     win_setClip(NULL, 2, 2);
-    if (D_80077E28.unk7 != 0) {
-        sel = D_80077E28.unk7 - 1;
+    if (g_menuScreenSwitch.unk7 != 0) {
+        sel = g_menuScreenSwitch.unk7 - 1;
     } else {
         sel = D_80077E52 - 1;
     }
     for (i = 0; i < 7; i++) {
         y = i * 15 + 6;
         if (all || i == sel) {
-            text_drawBlock(r->x + 10, r->y + y + D_80077E28.unk8, 2,
+            text_drawBlock(r->x + 10, r->y + y + g_menuScreenSwitch.unk8, 2,
                           (u8 *)text_getFrom(D_800110A0, i), 0);
         }
     }
@@ -52,45 +52,45 @@ void menuScreen_drawCommands(void) {
 }
 
 void menuScreen_updateOpen(void) {
-    if (D_80077E28.unk0 != 0) {
-        if (D_80077E28.unk3 != 0) {
+    if (g_menuScreenSwitch.unk0 != 0) {
+        if (g_menuScreenSwitch.unk3 != 0) {
             menuScreen_requestOverlay();
         }
-        if (D_80077E28.unk1 != 0) {
+        if (g_menuScreenSwitch.unk1 != 0) {
             menuScreen_stepTitleResize();
         }
-        if (D_80077E28.unk2 != 0) {
+        if (g_menuScreenSwitch.unk2 != 0) {
             menuScreen_stepTitleScroll();
         }
-        if (D_80077E28.unk6 == 0 && D_80077E28.unk3 == 0 && *(u16 *)&D_80077E28.unk4 == 0 &&
-            !(*(u32 *)&D_80077E28 & 0xFFFF00)) {
-            D_80077E28.unk0 = 0;
+        if (g_menuScreenSwitch.unk6 == 0 && g_menuScreenSwitch.unk3 == 0 && *(u16 *)&g_menuScreenSwitch.unk4 == 0 &&
+            !(*(u32 *)&g_menuScreenSwitch & 0xFFFF00)) {
+            g_menuScreenSwitch.unk0 = 0;
             g_menuScreen.unk4 = 0;
-            g_menuScreen.unk2 = D_80077E28.unk7;
+            g_menuScreen.unk2 = g_menuScreenSwitch.unk7;
             fade_inDefault();
             DrawSync(0);
             EnterCriticalSection();
             FlushCache();
             ExitCriticalSection();
-            D_80077E28.unk1C[g_menuScreen.unk2].unk0();
+            g_menuScreenSwitch.unk1C[g_menuScreen.unk2].unk0();
         }
     }
 }
 
 void menuScreen_stepTitleScroll(void) {
-    D_80077E28.unk8 += D_80077E28.unkC;
-    if (D_80077E28.unkC >= 0) {
-        if (D_80077E28.unk8 >= D_80077E28.unkA) {
-            D_80077E28.unk8 = D_80077E28.unkA;
-            D_80077E28.unk2 = 0;
-            D_80077E28.unkE = 0;
+    g_menuScreenSwitch.unk8 += g_menuScreenSwitch.unkC;
+    if (g_menuScreenSwitch.unkC >= 0) {
+        if (g_menuScreenSwitch.unk8 >= g_menuScreenSwitch.unkA) {
+            g_menuScreenSwitch.unk8 = g_menuScreenSwitch.unkA;
+            g_menuScreenSwitch.unk2 = 0;
+            g_menuScreenSwitch.unkE = 0;
         }
-    } else if (D_80077E28.unkA >= D_80077E28.unk8) {
-        D_80077E28.unk8 = D_80077E28.unkA;
-        D_80077E28.unk2 = 0;
-        D_80077E28.unkE = 0;
+    } else if (g_menuScreenSwitch.unkA >= g_menuScreenSwitch.unk8) {
+        g_menuScreenSwitch.unk8 = g_menuScreenSwitch.unkA;
+        g_menuScreenSwitch.unk2 = 0;
+        g_menuScreenSwitch.unkE = 0;
     }
-    D_80077E28.unkE++;
+    g_menuScreenSwitch.unkE++;
 }
 
 void menuScreen_update(void) {
@@ -114,17 +114,17 @@ void menuScreen_exit(void) {
 void menuScreen_open(s32 arg0) {
     s32 prev = D_80077E52;
 
-    if (D_80077E28.unk1C[arg0].unk4 != 0) {
-        D_80077E28.unk7 = arg0;
-        D_80077E28.unk0 = 1;
-        D_80077E28.unk1 = 1;
-        D_80077E28.unk5 = 1;
-        D_80077E28.unk3 = 0;
-        D_80077E28.unk4 = 0;
-        D_80077E28.unk6 = 0;
+    if (g_menuScreenSwitch.unk1C[arg0].unk4 != 0) {
+        g_menuScreenSwitch.unk7 = arg0;
+        g_menuScreenSwitch.unk0 = 1;
+        g_menuScreenSwitch.unk1 = 1;
+        g_menuScreenSwitch.unk5 = 1;
+        g_menuScreenSwitch.unk3 = 0;
+        g_menuScreenSwitch.unk4 = 0;
+        g_menuScreenSwitch.unk6 = 0;
         menuScreen_startTitleAnim();
         menuScreen_requestOverlay();
-        D_80077E28.unk20 = D_80077E28.unk1C[prev].unk8;
+        g_menuScreenSwitch.unk20 = g_menuScreenSwitch.unk1C[prev].unk8;
         fade_outDefault();
         fade_setOtz(3);
         fade_setOnDone(menuScreen_onOpenFaded);
@@ -132,9 +132,9 @@ void menuScreen_open(s32 arg0) {
 }
 
 void menuScreen_switch(u8 a) {
-    D_80077E28.unk0 = 1;
-    D_80077E28.unk6 = 1;
-    D_80077E28.unk7 = a;
+    g_menuScreenSwitch.unk0 = 1;
+    g_menuScreenSwitch.unk6 = 1;
+    g_menuScreenSwitch.unk7 = a;
     menuScreen_startTitleAnim();
     fade_out(0xC);
     fade_setOnDone(menuScreen_onSwitchFaded);
@@ -159,17 +159,17 @@ s32 menuScreen_getCommandHelp(s32 a) {
 }
 
 void menuScreen_stepTitleResize(void) {
-    if (D_80077E28.unk7 == 0) {
-        D_80077E28.unk14.h += 8;
-        if (D_80077E28.unk14.h >= 0x74) {
-            D_80077E28.unk14.h = 0x74;
-            D_80077E28.unk1 = 0;
+    if (g_menuScreenSwitch.unk7 == 0) {
+        g_menuScreenSwitch.unk14.h += 8;
+        if (g_menuScreenSwitch.unk14.h >= 0x74) {
+            g_menuScreenSwitch.unk14.h = 0x74;
+            g_menuScreenSwitch.unk1 = 0;
         }
     } else {
-        D_80077E28.unk14.h -= 8;
-        if (D_80077E28.unk14.h < 0x1B) {
-            D_80077E28.unk14.h = 0x1A;
-            D_80077E28.unk1 = 0;
+        g_menuScreenSwitch.unk14.h -= 8;
+        if (g_menuScreenSwitch.unk14.h < 0x1B) {
+            g_menuScreenSwitch.unk14.h = 0x1A;
+            g_menuScreenSwitch.unk1 = 0;
         }
     }
 }
@@ -190,10 +190,10 @@ void menuScreen_startTitleAnim(void) {
     } else {
         q = (d - 11) / 12;
     }
-    D_80077E28.unkC = q;
-    D_80077E28.unkA = v;
-    D_80077E28.unkE = 0;
-    D_80077E28.unk2 = 1;
+    g_menuScreenSwitch.unkC = q;
+    g_menuScreenSwitch.unkA = v;
+    g_menuScreenSwitch.unkE = 0;
+    g_menuScreenSwitch.unk2 = 1;
 }
 
 void menuScreen_requestOverlay(void) {
@@ -203,32 +203,32 @@ void menuScreen_requestOverlay(void) {
 }
 
 void menuScreen_loadOverlay(void) {
-    s32 id = g_menuScreenOvl[D_80077E28.unk7];
+    s32 id = g_menuScreenOvl[g_menuScreenSwitch.unk7];
     FileEntry *f;
 
-    if (id != 0xFF && id != D_80077E28.unk10) {
-        D_80077E28.unk3 = 1;
-        D_80077E28.unk10 = id;
+    if (id != 0xFF && id != g_menuScreenSwitch.unk10) {
+        g_menuScreenSwitch.unk3 = 1;
+        g_menuScreenSwitch.unk10 = id;
         f = file_find(0, id);
         if (cd_readAsync(g_gameState->imgSector + f->unk4, (f->unkC - f->unk4) << 11, (void *)0x801EDF00, menuScreen_onOverlayRead)) {
-            D_80077E28.unk4 = 1;
-            D_80077E28.unk3 = 0;
+            g_menuScreenSwitch.unk4 = 1;
+            g_menuScreenSwitch.unk3 = 0;
         }
     }
 }
 
 void menuScreen_onOpenFaded(void) {
-    D_80077E28.unk5 = 0;
-    if (D_80077E28.unk20 != NULL) {
-        D_80077E28.unk20();
+    g_menuScreenSwitch.unk5 = 0;
+    if (g_menuScreenSwitch.unk20 != NULL) {
+        g_menuScreenSwitch.unk20();
     }
 }
 
 void menuScreen_onSwitchFaded(void) {
-    D_80077E28.unk1C[g_menuScreen.unk2].unk8();
-    D_80077E28.unk0 = 0;
-    g_menuScreen.unk2 = D_80077E28.unk7;
-    D_80077E28.unk1C[g_menuScreen.unk2].unk0();
+    g_menuScreenSwitch.unk1C[g_menuScreen.unk2].unk8();
+    g_menuScreenSwitch.unk0 = 0;
+    g_menuScreen.unk2 = g_menuScreenSwitch.unk7;
+    g_menuScreenSwitch.unk1C[g_menuScreen.unk2].unk0();
     if (g_gameState->mode != 3) {
         menuMainField_setCursor(g_menuScreen.unk2 - 1);
     } else {

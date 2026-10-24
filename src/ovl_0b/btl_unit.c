@@ -10,8 +10,8 @@ void btl_initEquipElements(Character *c, BtlUnit *u) {
     u->unk70 = 0;
     for (i = 0; i < 5; i++) {
         if (c->equip[i] != 0xFF) {
-            func_800BDACC(&u->unk70, D_8006D548[D_80069018[c->equip[i]].unkB].unk4);
-            u->unk79 |= D_8006D548[D_80069018[c->equip[i]].unkB].unk8;
+            func_800BDACC(&u->unk70, D_8006D548[g_itemTable[c->equip[i]].unkB].unk4);
+            u->unk79 |= D_8006D548[g_itemTable[c->equip[i]].unkB].unk8;
         }
     }
 }

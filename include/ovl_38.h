@@ -16,8 +16,8 @@ enum {
 
 #define STATUS_NO_SLOT      0xFF /* StatusMenu.slot before the first character is shown */
 #define STATUS_PAGE_ROWS    8    /* abilities per page window */
-#define STATUS_ABILITY_MAX  0x30 /* entries in a character's D_8006CB28 ability row */
-#define STATUS_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define STATUS_ABILITY_MAX  0x30 /* entries in a character's g_abilityRows ability row */
+#define STATUS_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 
 /* g_statusMenuText ids */
 #define STATUS_TEXT_HELP   0   /* help: the status ailments */
@@ -125,7 +125,7 @@ typedef struct {
     u8 unk5; /* attack power */
     u8 pad6[0xC - 6];
 } Unk8006E0E8; /* weapon stats, 0xC (also in ovl_0b.h) */
-extern Unk8006E0E8 D_8006E0E8[];
+extern Unk8006E0E8 g_weaponTable[];
 
 void menuStatus_inputMain(void);
 void menuStatus_drawHeader(void);

@@ -309,9 +309,9 @@ void func_800513A4(s32 mode) {
     r_pkt += 8;
 }
 
-/* Icon from D_800686D0[i] (8 bytes: uv/CLUT word, w, h, texpage), bracketed by texpage 0x1E and its own. */
+/* Icon from g_uiSprites[i] (8 bytes: uv/CLUT word, w, h, texpage), bracketed by texpage 0x1E and its own. */
 void func_800513CC(s32 i) {
-    u8 *e = (u8 *)&D_800686D0[0] + i * 8;
+    u8 *e = (u8 *)&g_uiSprites[0] + i * 8;
     u32 w0 = *(u32 *)e;
     u32 w1 = *(u32 *)(e + 4);
     u32 *p;
@@ -1247,7 +1247,7 @@ s32 func_80052870(Unk16D8 *n) {
                 o->unk0 = r_ip;
                 st = evt_execInstr();
                 r_ip = o->unk0;
-                if (D_8007B6F8 <= 0) {
+                if (g_evtArgRead <= 0) {
                     r_ip--;
                 }
                 break;

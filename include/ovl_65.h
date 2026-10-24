@@ -22,7 +22,7 @@ void timer_enable(u8);
 #define LEVEL_MAX 99
 #define EXP_MAX   9999999
 #define GIL_MAX   9999999
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 /* support abilities, names from this overlay's name table (s_rewardsSupportNames) */
 #define SUPPORT_LEVEL_UP    0xEB /* "Level Up": exp x1.5 */
 #define SUPPORT_ABILITY_UP  0xEC /* "Ability Up": AP x2 */

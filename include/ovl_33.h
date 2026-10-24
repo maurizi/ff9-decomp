@@ -31,8 +31,8 @@ extern u8 s_menuAbilityCharCmds[][2];
 #define MENU_SCREEN_EQUIP   3
 #define MENU_NO_SLOT        0xFF /* party slot before the first member is shown */
 
-#define ABILITY_MAX           0x30 /* entries in a character's D_8006CB28 ability row */
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define ABILITY_MAX           0x30 /* entries in a character's g_abilityRows ability row */
+#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 #define SUPPORT_COUNT         0x40
 #define EQUIP_SLOT_COUNT      5    /* Character.equip: weapon first (it can't be removed) */
 
@@ -280,16 +280,16 @@ extern u8 s_menuAbilityActionHelp[];
 extern u8 s_menuAbilitySupportHelp[];
 extern u8 s_menuAbilityHelpArg[];
 extern u8 s_menuAbilityHelpBuf[];
-extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 typedef struct {
     u8 pad0[4];
     u16 unk4;
     u8 pad6[2];
-} SupportHelp; /* D_8006D128 entry: +4 = help text offset into s_menuAbilitySupportHelp */
+} SupportHelp; /* g_supportAbilities entry: +4 = help text offset into s_menuAbilitySupportHelp */
 
 /* support ability help text */
 static inline u8 *menuAbility_updateHelp_suphelp(s32 i) {
-    SupportHelp *b = (SupportHelp *)D_8006D128;
+    SupportHelp *b = (SupportHelp *)g_supportAbilities;
     i -= ABILITY_SUPPORT_FIRST;
     return s_menuAbilitySupportHelp + b[i].unk4;
 }

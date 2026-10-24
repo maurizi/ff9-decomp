@@ -416,7 +416,7 @@ void func_800EA908(Unk80104F88Entry *arg0) {
         for (i = 0; i < 5; i++) {
             e = c->equip[i];
             if (e != 0xFF) {
-                it = &D_80069018[e];
+                it = &g_itemTable[e];
                 for (j = 0; j < 3; j++) {
                     id = it->unkC[j];
                     if (id != 0 && id < 0xC0) {
@@ -756,7 +756,7 @@ void func_800EB63C(Unk80104F88Entry *arg0) {
     c = arg0->unk14;
     if (arg0->unk19 != 0) {
         i = 0;
-        row = D_8006CB28[c->unk34.b.row];
+        row = g_abilityRows[c->unk34.b.row];
         for (; i < 0xC0; i++) {
             v = chr_findAbilitySlot(c->unk34.b.id, i);
             if (v >= 0) {
@@ -775,7 +775,7 @@ void func_800EB6FC(Unk80104F88Entry *arg0) {
     for (i = 0; i < 5; i++) {
         u8 item = c->equip[i];
         if (item != 0xFF) {
-            Unk80069018 *e = &D_80069018[item];
+            Unk80069018 *e = &g_itemTable[item];
             for (j = 0; j < 3; j++) {
                 s32 a = e->unkC[j];
                 if (a != 0 && a < 0xC0) {
@@ -978,7 +978,7 @@ void func_800EBEFC(s32 arg0) {
                 D_80104FA8->unk0--;
             }
         }
-        if (arg0 < 0x58 && (D_8006E0E8[arg0].unk0 & 4)) {
+        if (arg0 < 0x58 && (g_weaponTable[arg0].unk0 & 4)) {
             i = func_800EC49C(arg0);
             if (i != 0xFF && D_80104FA8->unk80[i]->unk1 == 0) {
                 D_80104FA8->unk80[i] = 0;
@@ -1007,7 +1007,7 @@ void func_800EC070(s32 arg0) {
     if (arg0 >= 0xE0 && func_800EC44C(arg0) == 0xFF) {
         func_800EC334(arg0);
     }
-    if (arg0 < 0x58 && (D_8006E0E8[arg0].unk0 & 4) && func_800EC49C(arg0) == 0xFF) {
+    if (arg0 < 0x58 && (g_weaponTable[arg0].unk0 & 4) && func_800EC49C(arg0) == 0xFF) {
         func_800EC3C0(arg0);
     }
 }
@@ -1056,7 +1056,7 @@ void func_800EC258(void) {
     Unk80104FA8 *p = D_80104FA8;
     e = g_gameState->unk1C->items.slots;
     for (; i < 0x100; i++, e++) {
-        if (e->unk1 != 0 && e->unk0 != 0xFF && e->unk0 < 0x58 && (D_8006E0E8[e->unk0].unk0 & 4)) {
+        if (e->unk1 != 0 && e->unk0 != 0xFF && e->unk0 < 0x58 && (g_weaponTable[e->unk0].unk0 & 4)) {
             p->unk80[n] = e;
             n++;
         }
@@ -2023,11 +2023,11 @@ void btlui_drawItemRow(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
         if (n != 0) {
             id = e->unk0;
             x = r->x;
-            it = &D_80069018[id];
+            it = &g_itemTable[id];
             x5 = x + 5;
             y = r->y + arg1 * 15 + arg3->unk2 - dy;
             ui_drawItemIcon(x5, y, 7, id, 1);
-            text_draw(x + 0x14, y, 7, D_8006A218 + it->unk0, 0);
+            text_draw(x + 0x14, y, 7, g_itemNames + it->unk0, 0);
             text_formatNumber(n, buf, 2, 1);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
         }
@@ -2052,10 +2052,10 @@ void func_800EF390(s32 arg0, s32 arg1, s32 arg2, Window *arg3) {
         }
         if (n != 0) {
             x = r->x;
-            it = &D_80069018[e->unk0];
+            it = &g_itemTable[e->unk0];
             y = r->y + arg1 * 15 + arg3->unk2 - dy;
             text_formatNumber(n, buf, 2, 1);
-            text_draw(x + 5, y, 7, D_8006A218 + it->unk0, 0);
+            text_draw(x + 5, y, 7, g_itemNames + it->unk0, 0);
             ui_drawSmallDigits(x + 0x67, y + 4, 7, buf, 0);
         }
     }

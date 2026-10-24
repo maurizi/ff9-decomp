@@ -1931,7 +1931,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 RAND_REFILL2();
                 i = caster->unk31;
                 c.unk14 = i + RAND16() % (((caster->unk7A + i) >> 3) + 1);
-                c.unkE = D_8006E0E8[cmd->subNo].unk5 * 2;
+                c.unkE = g_weaponTable[cmd->subNo].unk5 * 2;
                 c.unk10 = target->unk6C;
                 if (caster->unkC4[0] & 0x10000000) {
                     c.unk14 = c.unk14 * 3 >> 1;

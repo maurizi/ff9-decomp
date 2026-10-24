@@ -49,7 +49,7 @@ void akao_saveMusic(void) {
 }
 
 s32 func_80055330(void) {
-    if (D_8007F790 == 0) {
+    if (g_akaoSubSeq == 0) {
         D_8007F95A = 0;
     }
     return 0;
@@ -104,7 +104,7 @@ void akao_playSeDefault(s32 a) {
 }
 
 u32 akao_getActiveSe(void) {
-    u32 mask = D_80080A70.unk0;
+    u32 mask = g_akaoSeState.unk0;
     AkaoChannel *c;
     u32 r;
     u32 bit;
@@ -112,7 +112,7 @@ u32 akao_getActiveSe(void) {
     if (mask == 0) {
         return 0;
     }
-    c = D_8007E3D8;
+    c = g_akaoSeChannels;
     r = 0;
     for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
         if (mask & bit) {
@@ -131,11 +131,11 @@ s32 akao_isSePlaying(u32 id) {
     if (id == 0) {
         return 0;
     }
-    mask = D_80080A70.unk0;
+    mask = g_akaoSeState.unk0;
     if (mask == 0) {
         return 0;
     }
-    c = D_8007E3D8;
+    c = g_akaoSeChannels;
     for (bit = 0x100; bit & 0xFFFFFF; bit <<= 1) {
         if ((mask & bit) && id == c->unk28) {
             return 1;
@@ -410,7 +410,7 @@ s32 akao_getSpuTransferState(void) {
 
 s32 akao_beginBankUpload(void) {
     D_8008322C = 0;
-    D_80083158.unk0 |= 1;
+    g_akaoFlags.unk0 |= 1;
     return 0;
 }
 
@@ -419,53 +419,53 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     u32 m;
     s32 slot;
 
-    if (D_80083158.unk0 & 1) {
-        if (D_80083228.unk4 == 0) {
+    if (g_akaoFlags.unk0 & 1) {
+        if (g_akaoUpload.unk4 == 0) {
             if (buf[0] == 0x4F414B41) {
-                func_8005CE04(buf, D_80080A30, 0x40);
+                func_8005CE04(buf, g_akaoBankHeader, 0x40);
                 buf += 16;
                 size -= 0x40;
-                D_80083228.unk4 = D_80080A30[4];
-                D_80080A30[6] = slot = D_80080A30[6];
-                D_80083228.unk8 = D_80080A30[5];
-                D_80083228.unk0 = &D_8007F970[slot];
-                D_80083228.unkC = D_80080A30[7] * 16;
+                g_akaoUpload.unk4 = g_akaoBankHeader[4];
+                g_akaoBankHeader[6] = slot = g_akaoBankHeader[6];
+                g_akaoUpload.unk8 = g_akaoBankHeader[5];
+                g_akaoUpload.unk0 = &g_akaoInstruments[slot];
+                g_akaoUpload.unkC = g_akaoBankHeader[7] * 16;
             } else {
                 size = 0;
-                D_80083228.unk8 = 0;
-                D_80083228.unkC = 0;
+                g_akaoUpload.unk8 = 0;
+                g_akaoUpload.unkC = 0;
             }
         }
-        if (D_80083228.unkC != 0) {
-            n = D_80083228.unkC;
+        if (g_akaoUpload.unkC != 0) {
+            n = g_akaoUpload.unkC;
             if (size == 0) {
                 goto end;
             }
             if (n >= size) {
                 n = size;
             }
-            func_8005CE04(buf, D_80083228.unk0, n);
+            func_8005CE04(buf, g_akaoUpload.unk0, n);
             buf += n >> 2;
             size -= n;
-            D_80083228.unk0 = (Unk8005EBB4 *)((s32 *)D_80083228.unk0 + (n >> 2));
-            D_80083228.unkC -= n;
-            if (D_80083228.unkC == 0) {
-                akao_relocInstruments((s32 *)&D_8007F970[D_80080A30[6]], &D_8007F970[D_80080A30[6]], D_80080A30[4], D_80080A30[7]);
+            g_akaoUpload.unk0 = (Unk8005EBB4 *)((s32 *)g_akaoUpload.unk0 + (n >> 2));
+            g_akaoUpload.unkC -= n;
+            if (g_akaoUpload.unkC == 0) {
+                akao_relocInstruments((s32 *)&g_akaoInstruments[g_akaoBankHeader[6]], &g_akaoInstruments[g_akaoBankHeader[6]], g_akaoBankHeader[4], g_akaoBankHeader[7]);
             }
         }
         if (size != 0) {
-            if (D_80083228.unk8 == 0) {
+            if (g_akaoUpload.unk8 == 0) {
                 goto clear;
             }
-            m = D_80083228.unk8;
+            m = g_akaoUpload.unk8;
             if (m >= size) {
                 m = size;
             }
             size = m;
-            SpuSetTransferStartAddr(D_80083228.unk4);
+            SpuSetTransferStartAddr(g_akaoUpload.unk4);
             akao_spuWrite(buf, size);
-            D_80083228.unk4 += size;
-            D_80083228.unk8 -= size;
+            g_akaoUpload.unk4 += size;
+            g_akaoUpload.unk8 -= size;
             if (wait != 0) {
                 akao_waitSpuTransfer();
             }
@@ -473,7 +473,7 @@ s32 akao_uploadBank(s32 *buf, u32 size, s32 wait) {
     end:
         if (D_80083230 == 0) {
         clear:
-            D_80083158.unk0 &= ~1;
+            g_akaoFlags.unk0 &= ~1;
         }
     }
     return D_80083230;
@@ -617,13 +617,13 @@ s32 akao_sendCmdE8(s32 a, s32 b) {
 }
 
 s32 func_80056488(void) {
-    D_80083168.unk24++;
-    D_80083168.unk38++;
-    if (D_80083168.unk3C - 1 < D_80083168.unk38) {
-        D_80083168.unk38 = 0;
+    g_akaoStream.unk24++;
+    g_akaoStream.unk38++;
+    if (g_akaoStream.unk3C - 1 < g_akaoStream.unk38) {
+        g_akaoStream.unk38 = 0;
     }
-    if ((D_80083168.unk8 & 0x1000000) && D_80083168.unk38 >= 2) {
+    if ((g_akaoStream.unk8 & 0x1000000) && g_akaoStream.unk38 >= 2) {
         func_80061C1C();
     }
-    return D_80083168.unk34;
+    return g_akaoStream.unk34;
 }

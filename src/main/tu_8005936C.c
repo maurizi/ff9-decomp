@@ -19,7 +19,7 @@ u16 akao_shiftInstrumentDown(u32 flags, AkaoChannel *c) {
 }
 
 void func_80059414(void) {
-    Unk80080A10 *a = D_8007F790;
+    Unk80080A10 *a = g_akaoSubSeq;
     Unk80080A10 *seq;
     u32 seq8, a8, seqC, aC;
     u32 seqBoth, aBoth;
@@ -49,7 +49,7 @@ void func_80059414(void) {
             if (mask & (1 << v)) {
                 n = 0x20;
                 bit = 1 << v;
-                ch = D_8007F71C;
+                ch = g_akaoSubChannels;
                 for (; n != 0; n--) {
                     if (ch->voice == v) {
                         ch->voice = 0x18;
@@ -60,6 +60,6 @@ void func_80059414(void) {
                 mask &= ~(1 << v);
             }
         }
-        D_80080A70.unkC |= found & ~(D_80080A70.unk0 | D_80083174);
+        g_akaoSeState.unkC |= found & ~(g_akaoSeState.unk0 | D_80083174);
     }
 }

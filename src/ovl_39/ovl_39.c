@@ -282,7 +282,7 @@ void menuSave_setFileHelp(void) {
     case SAVE_FILE_EMPTY:
     case SAVE_FILE_OTHER:
     case SAVE_FILE_CORRUPT:
-        D_80077DF0 = text_get(st + SAVE_TEXT_FILE_HELP);
+        g_menuHelpText = text_get(st + SAVE_TEXT_FILE_HELP);
         break;
     case SAVE_FILE_USED:
         s_menuSaveHelpBuf[0] = 0xFF;
@@ -303,7 +303,7 @@ void menuSave_setFileHelp(void) {
                 }
             }
         }
-        D_80077DF0 = s_menuSaveHelpBuf;
+        g_menuHelpText = s_menuSaveHelpBuf;
         break;
     }
 }

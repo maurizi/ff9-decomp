@@ -534,7 +534,7 @@ void config_apply(void);
 extern s32 D_80070420; /* "CHECK" */
 extern s32 D_80070444; /* "FILE" */
 void text_setNumberArg(s32, s32);
-extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
+extern u8 *g_menuHelpText; /* = g_menuHelp.text, referenced by its own name */
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
 s32 chr_getPortrait(s32); /* defined u8 in main; used unmasked */
 char *strcpy(char *, const char *); /* C library (builtin) */

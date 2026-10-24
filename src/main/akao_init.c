@@ -65,7 +65,7 @@ s32 akao_loadBankAt(s32 *buf, s32 wait, s32 slot, u32 addr) {
         SpuSetTransferStartAddr(addr);
         buf += 16;
         akao_spuWrite(buf + h[7] * 4, h[5]);
-        akao_relocInstruments(buf, &D_8007F970[slot], addr, h[7]);
+        akao_relocInstruments(buf, &g_akaoInstruments[slot], addr, h[7]);
         if (wait != 0) {
             akao_waitSpuTransfer();
         }
@@ -85,9 +85,9 @@ void akao_initState(void) {
     g_akaoSeq = &g_akaoMainSeq;
     cnt = (u16 *)SPU_CTRL;
     v = 0x18;
-    D_8007F790 = NULL;
+    g_akaoSubSeq = NULL;
     D_800809EC = g_akaoChannels;
-    D_8007F71C = NULL;
+    g_akaoSubChannels = NULL;
     D_8007F8D8[1] = 0;
     D_8007F8D8[0] = 0;
     D_800809C0[5] = 0;
@@ -98,16 +98,16 @@ void akao_initState(void) {
     D_8008314C = 0;
     D_800809C0[0] = 0;
     D_8007F8E0 = 1;
-    D_80083158.unk0 = 0;
-    D_80083158.unk4 = 1;
-    D_80080A70.unk0 = 0;
+    g_akaoFlags.unk0 = 0;
+    g_akaoFlags.unk4 = 1;
+    g_akaoSeState.unk0 = 0;
     g_akaoMainSeq.unk4 = 0;
     g_akaoMainSeq.unk8 = 0;
     g_akaoMainSeq.unk6A = 0;
-    D_80080A70.unk10 = 0;
+    g_akaoSeState.unk10 = 0;
     g_akaoMainSeq.unk1C = 0;
-    D_8007F8F0.unk6A = 0;
-    D_8007F8F0.unk4 = 0;
+    g_akaoSavedSeq.unk6A = 0;
+    g_akaoSavedSeq.unk4 = 0;
     g_akaoMainSeq.unk50 = 0x7F0000;
     g_akaoMainSeq.unk5C = 0x400000;
     g_akaoCdVolume = 0x7FFF0000;
@@ -120,11 +120,11 @@ void akao_initState(void) {
     g_akaoCdVolumeFadeTicks = 0;
     p = (u8 *)g_akaoChannels + 0x88;
     i = *cnt;
-    D_80080A70.unk1C = 0;
+    g_akaoSeState.unk1C = 0;
     g_akaoMainSeq.unk3C = 0;
-    D_80080A70.unk20 = 0;
+    g_akaoSeState.unk20 = 0;
     g_akaoMainSeq.unk40 = 0;
-    D_80080A70.unk24 = 0;
+    g_akaoSeState.unk24 = 0;
     g_akaoMainSeq.unk44 = 0;
     g_akaoMainSeq.unk74 = 0;
     g_akaoMainSeq.unk72 = 0;
@@ -137,8 +137,8 @@ void akao_initState(void) {
     D_800809B8 = 0;
     D_80080AC4 = 0;
     D_800831C4 = 0;
-    D_80083168.unk40 = 0x7F00;
-    D_80083168.unk48 = 0;
+    g_akaoStream.unk40 = 0x7F00;
+    g_akaoStream.unk48 = 0;
     D_80083238[2] = 0;
     D_80083238[1] = 0;
     D_80083238[0] = 0;
@@ -162,7 +162,7 @@ loop1:
     if (i < 32) {
         goto loop1;
     }
-    c = D_8007E3D8;
+    c = g_akaoSeChannels;
     for (i = 8; i < 24;) {
         c->unk34 = 0;
         c->voice = i;
@@ -179,15 +179,15 @@ loop1:
     g_akaoSeq->unk18 = 0;
     g_akaoSeq->unk14 = 0;
     g_akaoSeq->unk10 = 0;
-    D_80080A70.unk18 = 1;
-    D_80080A70.unk14.w = 0x66A80000;
-    D_80080A70.unkC = 0;
-    D_80080A70.unk8 = 0;
-    D_80080A70.unk4 = 0;
+    g_akaoSeState.unk18 = 1;
+    g_akaoSeState.unk14.w = 0x66A80000;
+    g_akaoSeState.unkC = 0;
+    g_akaoSeState.unk8 = 0;
+    g_akaoSeState.unk4 = 0;
     g_akaoSeq->unk48 = 0x3FFF000;
     g_akaoSeq->unk4C = 0;
     g_akaoSeq->unk66 = 0;
-    D_80083158.unk8 |= 0x80;
+    g_akaoFlags.unk8 |= 0x80;
     akao_setReverbMode(4);
     SpuSetReverb(1);
     for (i = 0; i < 24; i++) {

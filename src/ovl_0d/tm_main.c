@@ -50,7 +50,7 @@ s32 tm_loadMusic(void) {
 }
 
 s32 tm_loadDataFile(void) {
-    s32 dst = (s32)(D_80067944 + 0x57800);
+    s32 dst = (s32)(g_loadAreaEnd + 0x57800);
     FileEntry *f = file_find(1, 0x2715);
     cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, (void *)dst, 0, -1, 0);
     while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
@@ -62,7 +62,7 @@ s32 tm_loadDataFile(void) {
 
 s32 tm_copyDataFile(void) {
     s32 end = db_lookup(g_tmDataFile, 0, 0x70000, 0);
-    g_tmDataCopy = (s32)(D_80067944 + 0x141000);
+    g_tmDataCopy = (s32)(g_loadAreaEnd + 0x141000);
     memmove((void *)g_tmDataCopy, (void *)g_tmDataFile, end - g_tmDataFile);
     db_register(g_tmDataCopy, 0);
     return 0;

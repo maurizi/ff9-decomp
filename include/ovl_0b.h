@@ -1033,7 +1033,7 @@ typedef struct {
 /* Battle.unk1358 ring entry (func_800CC278 hands out the next one) */
 typedef struct {
     u8 *unk0; /* animation, 0xFF-terminated */
-    u16 unk4; /* glyph index into D_800686D0 */
+    u16 unk4; /* glyph index into g_uiSprites */
     u8 pad6[8 - 6];
 } Unk800F6A54;
 
@@ -1171,7 +1171,7 @@ typedef struct Battle {
     s32 unk22CC[64];
 } Battle; /* 0x23CC */
 
-/* battle work area, allocated at D_80067944 + 0x61800 */
+/* battle work area, allocated at g_loadAreaEnd + 0x61800 */
 typedef struct {
     Battle unk0;
     u8 unk23CC[0x240C - 0x23CC];
@@ -2175,7 +2175,7 @@ typedef struct {
     u8 unk5; /* attack */
     u8 pad6[0xC - 6];
 } Unk8006E0E8; /* 0xC */
-extern Unk8006E0E8 D_8006E0E8[];
+extern Unk8006E0E8 g_weaponTable[];
 void VSyncCallback(void (*)(void));
 void text_uploadPartyNames(void *);
 void akao_playSe(s32, s32, s32, s32);

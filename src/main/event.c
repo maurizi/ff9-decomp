@@ -31,7 +31,7 @@ s32 evt_getSysVar(s32 op) {
         o = evt_getObject_inline(id);
         r = -1;
         if (o != NULL) {
-            r = o->unk6 - (D_8007ADFC - 9);
+            r = o->unk6 - (g_evtScriptCount - 9);
         }
         break;
     case 6:
@@ -132,7 +132,7 @@ Unk8004AB64 *evt_getObjectArg(void) {
 
 /* Find the entry point for `key` in script `idx`. */
 static inline u8 *evt_callObjectFunc_find(s32 idx, s32 key) {
-    u8 *h = D_8007ADF8 + *(u16 *)(D_8007ADF8 + idx * 8);
+    u8 *h = g_evtScripts + *(u16 *)(g_evtScripts + idx * 8);
     s32 n = *(u16 *)h >> 8;
     u16 *p = (u16 *)(h + 2);
 
@@ -855,16 +855,16 @@ s32 evt_execInstr(void) {
     g_evtInstrStart = g_evtCurObj->unk0;
     op = *g_evtCurObj->unk0++;
     g_evtArgFlags = *g_evtCurObj->unk0++;
-    D_8007B6F8 = 0;
+    g_evtArgRead = 0;
 
     switch (op) {
     case 0x07:
         func_8004B3A8_inline(g_evtArgFlags, *g_evtCurObj->unk0++);
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 0;
     case 0x08:
         func_8004B3D0_inline(g_evtArgFlags, *g_evtCurObj->unk0++);
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 0;
     case 0x09:
         a = g_evtArgFlags;
@@ -873,7 +873,7 @@ s32 evt_execInstr(void) {
             a = g_evtState->unk16E4[a - 0xFB];
         }
         evt_execInstr_newactor(a, b);
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 0;
     case 0x46:
     case 0x79:
@@ -893,7 +893,7 @@ s32 evt_execInstr(void) {
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 1;
     case 0x14:
         a = evt_getArg8_inline();
@@ -903,7 +903,7 @@ s32 evt_execInstr(void) {
             evt_callObjectFunc(obj, a, c, 1);
         } else {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0x16:
@@ -917,7 +917,7 @@ s32 evt_execInstr(void) {
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 1;
     case 0x1A:
         a = evt_getArg8_inline();
@@ -925,7 +925,7 @@ s32 evt_execInstr(void) {
             evt_callObjectFunc(evt_getObject_inline(CUR_UID()), a, *g_evtCurObj->unk0++, 1);
         } else {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0x97:
@@ -1088,7 +1088,7 @@ s32 evt_execInstr(void) {
     case 0x50:
         if (actor->unkF & 0x80) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0x66:
@@ -1168,28 +1168,28 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), 0)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0xA5:
         a = evt_getArg16_inline();
         if (evt_moveObjectTo(a, 0, evt_getArg16_inline(), 1)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0x24:
         po = evt_getObjectArg();
         if (evt_moveObjectTo(po->pos.vx, po->pos.vy, po->pos.vz, (s32)po)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 1;
     case 0xA0:
         if (evt_moveObjectTo(D_8007AE24, 0, D_8007AE28, 0)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0xA2:
@@ -1198,7 +1198,7 @@ s32 evt_execInstr(void) {
         c = evt_getArg16_inline();
         if (evt_moveObjectTo(a, b, c, 2)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0xE8:
@@ -1207,7 +1207,7 @@ s32 evt_execInstr(void) {
         c = evt_getArg16_inline();
         if (evt_moveObjectTo(a, b, c, 3)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
         }
         return 1;
     case 0x55:
@@ -1278,7 +1278,7 @@ s32 evt_execInstr(void) {
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 1;
     case 0x29: {
         u32 cnt;
@@ -1504,11 +1504,11 @@ s32 evt_execInstr(void) {
         while (*str++ != 0) {
         }
         func_80052D0C(&str);
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         g_evtCurObj->unk0 = str + 1;
         return 0;
     case 0x4F:
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         g_evtCurObj->unk0++;
         return 6;
     case 0x33:
@@ -1566,7 +1566,7 @@ s32 evt_execInstr(void) {
             return 0;
         }
         g_evtCurObj->unk0 = g_evtInstrStart;
-        D_8007B6F8 = 1;
+        g_evtArgRead = 1;
         return 1;
     case 0x42:
         evt_onAnimEnd((Unk8004B9B8 *)actor);
@@ -1596,7 +1596,7 @@ s32 evt_execInstr(void) {
     case 0x44:
         if (evt_getObject_inline(g_evtCurObj->unk7 + 0x40) != NULL) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
             return 1;
         }
         return 0;
@@ -1853,7 +1853,7 @@ s32 evt_execInstr(void) {
         b = evt_getArg8_inline();
         if (fld_setObjectColor(obj->unk3B, a, b, evt_getArg8_inline())) {
             g_evtCurObj->unk0 = g_evtInstrStart;
-            D_8007B6F8 = 1;
+            g_evtArgRead = 1;
             return 1;
         }
         return 0;
@@ -2817,7 +2817,7 @@ void evt_updateBattleObjects(void) {
         D_8007AE10[i] = btl_getUnitMask(1);
         m = (u16)D_8007AE10[i];
         for (i = 4; i < 8; i++) {
-            o = D_8007AED0[i];
+            o = g_evtUnitObjects[i];
             if (o != NULL) {
                 switch (o->unkE) {
                 case 1:
@@ -3282,24 +3282,24 @@ u8 *evt_loadScripts(u8 *p) {
         }
     }
     n = p[3];
-    D_8007ADF8 = p + 0x80;
-    D_8007ADFC = n;
-    if (D_8007ADFC >= 10) {
-        dst = D_8007ADF8 + ((ScriptEntry *)D_8007ADF8)[D_8007ADFC - 9].unk0;
+    g_evtScripts = p + 0x80;
+    g_evtScriptCount = n;
+    if (g_evtScriptCount >= 10) {
+        dst = g_evtScripts + ((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9].unk0;
     } else {
-        dst = D_8007ADF8 + D_8007ADFC * 8;
+        dst = g_evtScripts + g_evtScriptCount * 8;
     }
     bit = 1;
-    for (e = &((ScriptEntry *)D_8007ADF8)[D_8007ADFC - 9]; e < &((ScriptEntry *)D_8007ADF8)[D_8007ADFC]; e++) {
+    for (e = &((ScriptEntry *)g_evtScripts)[g_evtScriptCount - 9]; e < &((ScriptEntry *)g_evtScripts)[g_evtScriptCount]; e++) {
         if (!(e->unk5 & 1)) {
             mask |= bit;
         }
         if (mask & bit) {
             if (e->unk0 != 0) {
-                src = D_8007ADF8 + e->unk0;
+                src = g_evtScripts + e->unk0;
                 if (src != dst && e->unk2 != 0) {
                     memmove(dst, src, e->unk2);
-                    e->unk0 = dst - D_8007ADF8;
+                    e->unk0 = dst - g_evtScripts;
                 }
                 dst += e->unk2 & ~3;
             }
@@ -3328,11 +3328,11 @@ void evt_init(u8 *data) {
     t = D_80011A44;
     pad_setAnalogThresholds(&t);
     k = data[3];
-    D_8007ADF8 = data + 0x80;
+    g_evtScripts = data + 0x80;
     gs = g_gameState;
     D_8007AE8C = data + 0x2C;
     gs->unk1C->unk810 = data + 4;
-    D_8007ADFC = k;
+    g_evtScriptCount = k;
     gs->unk1C->unk80C = data + 0x2C;
     mode = g_gameState->mode;
     switch (mode) {
@@ -3396,14 +3396,14 @@ void evt_init(u8 *data) {
     g_evtState->unk16D8->unk4->unkE = 2;
     evt_execInstr_party();
     for (i = 7; i >= 0; i--) {
-        D_8007AED0[i] = NULL;
+        g_evtUnitObjects[i] = NULL;
     }
     D_8007AE04 = 0;
     if (g_evtMode == 2) {
         for (i = 0; i < 4; i++) {
             r = msg_getPartyMemberId(i);
             if (r >= 0) {
-                evt_execInstr_newactor(r + D_8007ADFC - 9, 0);
+                evt_execInstr_newactor(r + g_evtScriptCount - 9, 0);
             }
         }
         g_evtState->unk16FC = (s32)g_evtState->unk16DC;
@@ -3497,7 +3497,7 @@ s32 func_8004AAF0(void) {
     if (p != NULL) {
         n = p->unk16D8;
         if (n != NULL) {
-            lim = D_8007ADFC - 9;
+            lim = g_evtScriptCount - 9;
             do {
                 Unk8004AB64 *e = n->unk4;
                 s32 t = 0;
@@ -3514,7 +3514,7 @@ s32 func_8004AAF0(void) {
 
 s32 func_8004AB64(Unk8004AB64 *a) {
     s32 t = a->unk6 + 9;
-    return t - D_8007ADFC;
+    return t - g_evtScriptCount;
 }
 
 s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
@@ -3534,7 +3534,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
         }
     }
     if (i < 8) {
-        o = D_8007AED0[i];
+        o = g_evtUnitObjects[i];
         if (op == 0x2F) {
             if (o->unk4 >= 4) {
                 o->unkB = 2;
@@ -3646,7 +3646,7 @@ s32 evt_getArg8(void) {
         r = *g_evtCurObj->unk0++;
     }
     g_evtArgFlags >>= 1;
-    D_8007B6F8 = 1;
+    g_evtArgRead = 1;
     return r;
 }
 
@@ -3662,7 +3662,7 @@ s32 evt_getArg16(void) {
         r = (s16)r;
     }
     g_evtArgFlags >>= 1;
-    D_8007B6F8 = 1;
+    g_evtArgRead = 1;
     return r;
 }
 
@@ -3703,7 +3703,7 @@ s32 evt_getModelSlot(s32 id) {
 
 s32 func_8004B120(s32 i) {
     s32 t = g_evtState->unk16E4[i] + 9;
-    u32 r = t - D_8007ADFC;
+    u32 r = t - g_evtScriptCount;
     s32 ret = 0;
     if (r < 9) {
         ret = r;
@@ -3840,7 +3840,7 @@ s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop) {
     }
     r = 0;
     for (i = 0; i < 8; i++) {
-        if (D_8007AED0[i] == o) {
+        if (g_evtUnitObjects[i] == o) {
             break;
         }
     }
@@ -3865,7 +3865,7 @@ void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
             return;
         }
         for (; i < 8; i++) {
-            if (D_8007AED0[i] == arg0) {
+            if (g_evtUnitObjects[i] == arg0) {
                 break;
             }
         }
@@ -3900,7 +3900,7 @@ s32 evt_getArg24(void) {
         v |= *pp->unk0++ << 8;
         v |= *pp->unk0++ << 16;
     }
-    g_evtArgFlags >>= (D_8007B6F8 = 1);
+    g_evtArgFlags >>= (g_evtArgRead = 1);
     return v;
 }
 
@@ -3934,7 +3934,7 @@ void func_8004BB30(void *p) {
     s32 i;
     s32 bit;
     for (i = 0; i < 8; i++) {
-        if (D_8007AED0[i] == p) {
+        if (g_evtUnitObjects[i] == p) {
             break;
         }
     }

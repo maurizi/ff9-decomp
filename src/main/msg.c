@@ -20,13 +20,13 @@ void msg_init(void) {
     D_8007BB98.unk8 = -1;
     switch (s->mode) {
     case 1:
-        D_8007B954 = s->unk1C->unk8E4.ovl65->unkC->unk8;
+        g_msgTable = s->unk1C->unk8E4.ovl65->unkC->unk8;
         break;
     case 3:
-        D_8007B954 = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk8->unk14;
+        g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk8->unk14;
         break;
     case 2:
-        D_8007B954 = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk11C0->unk14;
+        g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk11C0->unk14;
         break;
     }
     D_8007BBD4 = 1;
@@ -179,7 +179,7 @@ void msg_measureLine(u8 **pp, s32 *pw) {
             case 0xE:
                 n = g_msgNumbers[*s++];
                 if (n < 0x100) {
-                    str = D_8006A218 + D_80069018[n].unk0;
+                    str = g_itemNames + g_itemTable[n].unk0;
                 } else if (n < 0x200) {
                     str = D_8006ADAC + D_8006B374[n - 0x100].unk0;
                 } else {
@@ -677,8 +677,8 @@ void msg_drawText(MsgWindow *w) {
     u8 *e = NULL;
     s32 i = w->msgId;
 
-    if (i >= 0 && i < D_8007B954->unk0) {
-        e = (u8 *)D_8007B954->unk4;
+    if (i >= 0 && i < g_msgTable->unk0) {
+        e = (u8 *)g_msgTable->unk4;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
     }
     if (e != NULL) {
@@ -809,8 +809,8 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
     u8 *e;
 
     e = NULL;
-    if (msg >= 0 && msg < D_8007B954->unk0) {
-        e = (u8 *)D_8007B954->unk4;
+    if (msg >= 0 && msg < g_msgTable->unk0) {
+        e = (u8 *)g_msgTable->unk4;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? msg : msg * 2 + 1];
     }
     if (e == NULL) {
@@ -894,8 +894,8 @@ static inline u8 *msg_getEntry_inline(s32 i, WinLayout *out) {
     u8 *e = NULL;
     s32 v;
 
-    if (i >= 0 && i < D_8007B954->unk0) {
-        e = (u8 *)D_8007B954->unk4;
+    if (i >= 0 && i < g_msgTable->unk0) {
+        e = (u8 *)g_msgTable->unk4;
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
             out->unk2 = ((v >> 16) & 0xFFF) + 9;
@@ -915,12 +915,12 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
     s32 mask;
     s32 cnt;
 
-    p = msg_getEntry_inline(id, &D_8007B940);
+    p = msg_getEntry_inline(id, &g_msgLayout);
     if (p != NULL) {
         done = 0;
         D_8007BB90 = 0;
-        D_8007B940.unkA = 0;
-        D_8007B940.unkB = 0;
+        g_msgLayout.unkA = 0;
+        g_msgLayout.unkB = 0;
         *x = 0;
         *y = 0;
         *z = 0;
@@ -943,7 +943,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     mask >>= 1;
                 }
                 g_msgChoiceCount = n;
-                D_8007B940.unk9 -= (*p++ - n) * 14;
+                g_msgLayout.unk9 -= (*p++ - n) * 14;
                 n = -1;
                 mask = D_8007B960;
                 cnt = *p++;
@@ -957,10 +957,10 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 g_msgChoiceCancel = n;
                 break;
             case 0x3:
-                D_8007B940.unk0 = *p++;
-                D_8007B940.unk0 |= *p++ << 8;
-                D_8007B940.unk8 = *p++;
-                D_8007B940.unkA = 0xFF;
+                g_msgLayout.unk0 = *p++;
+                g_msgLayout.unk0 |= *p++ << 8;
+                g_msgLayout.unk8 = *p++;
+                g_msgLayout.unkA = 0xFF;
                 break;
             case 0x50:
             case 0x51:
@@ -973,7 +973,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             case 0x5A:
             case 0x5B:
             case 0x5C:
-                D_8007B940.unkA = p[-1];
+                g_msgLayout.unkA = p[-1];
                 break;
             case 0x5F:
                 *x = *p;
@@ -988,7 +988,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                 D_8007BB90 = 1;
                 break;
             case 0x45:
-                D_8007B940.unkB = 1;
+                g_msgLayout.unkB = 1;
                 break;
             case 0xD:
                 for (;;) {
@@ -999,8 +999,8 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
                     v &= 0xFFF;
                     if (t == 0 || ((D_8007B960 >> (t - 1)) & 1)) {
                         msg_measureLine(&p, &v);
-                        if (D_8007B940.unk2 < v) {
-                            D_8007B940.unk2 = v;
+                        if (g_msgLayout.unk2 < v) {
+                            g_msgLayout.unk2 = v;
                         }
                     } else {
                         while (*p++ != 0xFF) {
@@ -1014,7 +1014,7 @@ WinLayout *msg_getLayout(s32 id, s32 *x, s32 *y, s32 *z) {
             }
         }
     }
-    return &D_8007B940;
+    return &g_msgLayout;
 }
 
 void msg_setOtz(s32 a) {
@@ -1239,8 +1239,8 @@ u8 *msg_getEntry(s32 i, MsgInfo *out) {
     s32 v;
     u32 k;
 
-    if (i >= 0 && i < D_8007B954->unk0) {
-        e = (u8 *)D_8007B954->unk4;
+    if (i >= 0 && i < g_msgTable->unk0) {
+        e = (u8 *)g_msgTable->unk4;
         v = ((u32 *)e)[g_evtMode == 4 ? i : i * 2];
         if (out != NULL) {
             out->unk2 = ((v >> 16) & 0xFFF) + 9;
@@ -1254,8 +1254,8 @@ u8 *msg_getEntry(s32 i, MsgInfo *out) {
 void *msg_getText(s32 i) {
     u8 *e = NULL;
 
-    if (i >= 0 && i < D_8007B954->unk0) {
-        e = (u8 *)D_8007B954->unk4;
+    if (i >= 0 && i < g_msgTable->unk0) {
+        e = (u8 *)g_msgTable->unk4;
         e += *(u16 *)&((u32 *)e)[(g_evtMode == 2 || g_evtMode == 4) ? i : i * 2 + 1];
     }
     return e;
@@ -1331,7 +1331,7 @@ s32 msg_emitItemName(s32 id, s32 n) {
     u8 *t;
 
     if (id < 0x100) {
-        t = D_8006A218 + D_80069018[id].unk0;
+        t = g_itemNames + g_itemTable[id].unk0;
     } else if (id < 0x200) {
         t = D_8006ADAC + D_8006B374[id - 0x100].unk0;
     } else {

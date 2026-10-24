@@ -7,7 +7,7 @@ s32 opening_movieThenTitle(void) {
     s32 r;
     s32 end;
 
-    buf = D_80067944 + 0x106700;
+    buf = g_loadAreaEnd + 0x106700;
     timer = -1;
     opening_movieInit();
     do {
@@ -146,7 +146,7 @@ s32 opening_movieInit(void) {
     while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     f = file_find(0, 0x64);
-    cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, D_80067944 + 0xF1700, 0, 0x15000, NULL);
+    cdRead_init(g_gameState->unk1C->unk854, f->unk4, (f->unkC - f->unk4) << 11, g_loadAreaEnd + 0xF1700, 0, 0x15000, NULL);
     while (cdRead_update(g_gameState->unk1C->unk854) != 0) {
     }
     EnterCriticalSection();

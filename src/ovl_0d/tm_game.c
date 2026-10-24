@@ -1131,7 +1131,7 @@ void tm_stockInput(TmState *s) {
                 s->copyIdx = 0;
                 tm_playSe(TM_SE_CARD);
                 if (++s->handCount == TM_HAND_SIZE) {
-                    D_80077DF0 = 0;
+                    g_menuHelpText = 0;
                     r.w = text_measureWidth(text_get(TM_TEXT_CONFIRM)) + 0x12;
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
@@ -1146,7 +1146,7 @@ void tm_stockInput(TmState *s) {
             }
         }
     } else if ((pad & BTN_CROSS) && card_countOf(tm_getStockCursorId(s)) != 0) {
-        D_80077DF0 = 0;
+        g_menuHelpText = 0;
         r.w = text_measureWidth(text_get(TM_TEXT_DISCARD_ASK)) + 0x12;
         r.x = 0xB9;
         r.h = 0x38;

@@ -197,7 +197,7 @@ void file_loadDirTables(void) {
         return;
     }
     cnt = 0;
-    buf = D_80067944 + 0x14C700;
+    buf = g_loadAreaEnd + 0x14C700;
     size = (((DirInfo *)gs->dirs)[13].unk8 << 11) + ((DirInfo *)gs->dirs)[13].unk4 * 2;
     base = ((DirInfo *)gs->dirs)[0].unk8;
     t = size & 0x800;

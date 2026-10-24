@@ -4179,3 +4179,36 @@ func_8004BC38 evt_update  # [code] per frame unless D_8007B718: msg_update, idle
 func_8001E350 game_getModel  # [code] GameData model slot i (unk8D8 for i < 9, else unk8E0); objects keep the index in unk3B (evt_createModel)
 # Files renamed: tu_80054A28.c -> vib.c, tu_80063118.c -> tween.c, tu_80063580.c -> gfx_prim.c, tu_800651D8.c -> newgame.c, tu_8004BBF0.c -> evt_main.c
 # Files renamed: tu_800654F8.c -> item_use.c, tu_8001D268.c -> gamedata.c, tu_80036650.c -> evt_object.c
+D_80083168 g_akaoStream  # [code] SPU sample stream state: read pointer, loop start/length, bytes left, volume, pan (AKAO commands 0xE0-0xEE)
+D_80080A70 g_akaoSeState  # [code] sound-effect channel masks (active channels 0x100 << i over g_akaoSeChannels, key-off pending, ...)
+D_8007F790 g_akaoSubSeq  # [code] second running sequence: the music pushed by akao_cmdPushMusic/CrossfadeMusic keeps playing here (voice code updates it with g_akaoSeq)
+D_8007F71C g_akaoSubChannels  # [code] channels of g_akaoSubSeq
+D_8007F8F0 g_akaoSavedSeq  # [code] copy of a sequence made by akao_cmdSaveMusic/PushMusic; resumed when the same id is played again
+D_80080AC8 g_akaoSavedChannels  # [code] channel copies for g_akaoSavedSeq
+D_80083158 g_akaoFlags  # [code] driver flags (bank upload armed, output mode word, update flags)
+D_8007E3D8 g_akaoSeChannels  # [code] the 16 sound-effect channels on voices 8-23 (akao_initState)
+D_8007F970 g_akaoInstruments  # [code] instrument table filled by akao_loadBankAt/akao_uploadBank (relocated SPU addresses)
+D_80083228 g_akaoUpload  # [code] state of akao_uploadBank (destination, bytes left of the instrument table and of the samples)
+D_80080A30 g_akaoBankHeader  # [code] copy of the 0x40-byte AKAO bank header in akao_uploadBank
+D_8006F540 g_akaoPanCurve  # [code] 256-entry pan curve
+D_80069018 g_itemTable  # [code] item records (name offset, price +4, equip kind, flags) used by item_*, ui_buildItemIcon, chr_calcEquipStats
+D_800686D0 g_uiSprites  # [code] UI sprite descriptors (uv, clut, w/h, tpage) by sprite id (ui_drawSprite, ui_buildSprite)
+D_8006A218 g_itemNames  # [code] item name text, indexed by g_itemTable name offsets (msg_emitItemName)
+D_8006CB28 g_abilityRows  # [code] per character ability row: ability id and AP needed for each of the 48 slots (chr_findAbilitySlot, chr_getApNeeded)
+D_8006D128 g_supportAbilities  # [code] support ability table (stone cost +1) for ids 0xC0-0xFF (chr_countSupportStones, chr_fitSupportAbilities)
+D_8006E0E8 g_weaponTable  # [code] weapon records (attack +5) used by chr_calcEquipStats
+D_8007B6F8 g_evtArgRead  # [code] set to 1 by evt_getArg8/16/24 once an argument was read; evt_execInstr clears it per instruction
+D_8007AED0 g_evtUnitObjects  # [code] the event object of each battle unit 0-7 (evt_battleTrigger, evt_getObjectProp, per-unit expression ops)
+D_8007ADF8 g_evtScripts  # [code] script table of the loaded event data (evt_loadScripts; entry offsets per object script)
+D_8007ADFC g_evtScriptCount  # [code] number of scripts (evt_loadScripts); the last 9 are the characters'
+D_8007B954 g_msgTable  # [code] the current mode's message table {count, entries} (msg_init picks field/world/battle)
+D_8007B940 g_msgLayout  # [code] WinLayout returned by msg_getLayout
+D_80077E28 g_menuScreenSwitch  # [runtime] docs/runtime-findings.md field/menu campaign, the screen-switch state (+7 target screen, +0x14 command window rect, +0x1C screen table)
+D_80077DF0 g_menuHelpText  # [code] g_menuHelp.text under its own symbol (help callbacks in overlays write it)
+D_80067944 g_loadAreaEnd  # [code] end of the load area (file loads and preload_discardRange ranges are below it)
+D_8007BD10 g_swirlPkt  # [code] packet pointer of the swirl transition (swirl_update)
+D_8007BD0C g_swirlOt  # [code] the swirl's 5-entry OT, linked into the frame OT
+D_8007BD08 g_swirlParams  # [code] swirl parameter set (D_8006F2E0[0/1]: rotation, zoom and fade speeds)
+D_8007BD14 g_swirlColumns  # [code] the 9 column/row screen positions of the swirl mesh (swirl_buildMesh)
+D_8007BD18 g_swirlMesh  # [code] 9x9 WarpVert grid (swirl_buildMesh)
+D_80068CE8 g_winFillSprite  # [code] sprite descriptor of the window fill texture (win_buildFill, win_drawTailFill)

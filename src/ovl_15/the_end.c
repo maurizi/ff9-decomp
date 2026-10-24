@@ -356,7 +356,7 @@ void ending_loadData(void) {
     u8 *buf;
     FileEntry *e;
 
-    buf = D_80067944 + 0x10000;
+    buf = g_loadAreaEnd + 0x10000;
     e = file_find(1, 0x2F44);
     cdRead_init(g_gameState->unk1C->unk854, e->unk4, (e->unkC - e->unk4) << 11, buf, 0, -1, 0);
     while (cdRead_update(g_gameState->unk1C->unk854) != 0) {

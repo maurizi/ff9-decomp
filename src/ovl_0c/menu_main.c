@@ -328,7 +328,7 @@ void menuMain_setExpHelp(s32 arg0) {
         text_setStringArg(5, s_menuMainNextText);
         text_setStringArg(6, D_800CE080);
         text_setStringArg(7, c->status != 0 ? D_800CE090 : D_800CE088);
-        D_80077DF0 = text_get(5);
+        g_menuHelpText = text_get(5);
     }
 }
 
@@ -363,7 +363,7 @@ void menuMain_setEquipHelp(u8 arg0) {
         text_setStringArg(i, s_menuMainEquipLabels[i]);
         id = c->equip[i];
         if (id != 0xFF) {
-            text_setStringArg(j, D_8006A218 + D_80069018[id].unk0);
+            text_setStringArg(j, g_itemNames + g_itemTable[id].unk0);
         } else {
             text_setStringArg(j, text_get(0xD));
         }

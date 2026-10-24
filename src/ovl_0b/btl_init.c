@@ -291,7 +291,7 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 *b;
     s32 *c;
     s32 id;
-    arg1->unk74 = (u8 *)&D_8006E0E8[arg0->equip[0]];
+    arg1->unk74 = (u8 *)&g_weaponTable[arg0->equip[0]];
     id = ((Unk8006E0E8 *)arg1->unk74)->unk2 | 0x20000;
     arg1->unkA8->unk8 = (BtlUnit9C8 *)func_800AB6F0(id, (u8)arg1->unk68 >> 5);
     func_800AB758(id, (u8)arg1->unk68 >> 5, &a, &b, &c);

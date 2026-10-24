@@ -180,7 +180,7 @@ void fld_quit(void) {
 }
 
 void fld_allocMap(void) {
-    D_80067948 = (s32)(D_80067944 + 0x28000);
+    D_80067948 = (s32)(g_loadAreaEnd + 0x28000);
     D_80067948 += 0x2000;
     g_gameState->unk1C->unk8E4.field = (FieldMap *)D_80067948;
     D_80067948 += 0x50;
@@ -210,7 +210,7 @@ s32 fld_readSoundBank(void) {
     s32 addr = (s32)db_lookupRegistered(4, 0x90164, 0);
     s32 size = (s32)db_lookupRegistered(5, 0x90164, 0);
 
-    file_copyViaVram((s32)(D_80067944 + 0x146F00), addr, size, NULL);
+    file_copyViaVram((s32)(g_loadAreaEnd + 0x146F00), addr, size, NULL);
     DrawSync(0);
     g_gameState->unk1C->unk8E4.field->unk20 = size;
     return 0;
@@ -525,7 +525,7 @@ void fld_initScene(void) {
     sc->unk4C = NULL;
     sc->bg = NULL;
     sc->walkmesh = NULL;
-    base = D_80067944 + 0x106700;
+    base = g_loadAreaEnd + 0x106700;
     sc->otBias = 0;
     sc->sprites = NULL;
     sc->shadows = NULL;
@@ -621,7 +621,7 @@ void fld_refindSectors(void) {
         gd2 = gd;
         g = gs2->dirs;
         t = g->unk8;
-        base = D_80067944 + ((t << 11) + 0x14C700);
+        base = g_loadAreaEnd + ((t << 11) + 0x14C700);
         start = (FieldDirEnt *)(base + ((g->unk48 - t) << 11));
         e = &start[g->unk44] - 1;
         key = f->unkC->unk14->nextId;
@@ -708,7 +708,7 @@ void fld_startAudio(void) {
     }
     if (g_gameState->unk1C->unk8E4.field->unk20 != -1) {
         akao_beginBankUpload();
-        akao_uploadBank((s32)D_80067944 + 0x146F00, g_gameState->unk1C->unk8E4.field->unk20, 1);
+        akao_uploadBank((s32)g_loadAreaEnd + 0x146F00, g_gameState->unk1C->unk8E4.field->unk20, 1);
         g_gameState->unk1C->unk8E4.field->unk20 = -1;
     }
 }

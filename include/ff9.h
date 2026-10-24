@@ -81,7 +81,7 @@ typedef union {
         u32 unk9 : 1;
         u32 unkA : 1;
         u32 unkB : 1;
-        u32 row : 5;   /* ability table row (D_8006CB28) */
+        u32 row : 5;   /* ability table row (g_abilityRows) */
         u32 unk11 : 15;
     } b;
 } CharBits;
@@ -127,7 +127,7 @@ typedef struct {
     u8 equip[5]; /* item ids: weapon, head, arm, body, accessory (0xFF = none); runtime: Zidane 3 115 90 152 255 with no accessory */
     u16 unk3E[5]; /* stat bonuses from equipment */
     u8 pad48[0x58 - 0x48];
-    u8 ap[0x30]; /* AP per ability slot of the character's D_8006CB28 row (chr_getAp, chr_clearAp) */
+    u8 ap[0x30]; /* AP per ability slot of the character's g_abilityRows row (chr_getAp, chr_clearAp) */
     u32 supportAbilities[2]; /* equipped: bit (id - 0xC0) (runtime, chr_setSupportAbility) */
 } Character; /* 0x90 */
 
@@ -477,7 +477,7 @@ extern s16 D_80068F70[];
 extern u8 D_8006BB8C[];
 
 typedef struct {
-    u16 unk0; /* name offset into D_8006A218 */
+    u16 unk0; /* name offset into g_itemNames */
     u16 unk2; /* name offset into the shop's text block */
     u16 unk4; /* price */
     u16 unk6; /* who can equip (mask) */
@@ -490,7 +490,7 @@ typedef struct {
     u8 unk10;   /* sort key */
     u8 pad11;
 } Unk80069018; /* item table, 0x12-byte entries */
-extern Unk80069018 D_80069018[];
+extern Unk80069018 g_itemTable[];
 extern u8 D_8006CA9C[4]; /* max hp/mp support abilities */
 extern u8 D_8006CAA0[4]; /* stat caps */
 extern u8 D_8006D1C8[][4]; /* armor bonuses, indexed by item id (0x58..0xDF) */
@@ -501,7 +501,7 @@ typedef struct {
     u8 pad6[0xC - 6];
 } WeaponEntry;
 #if !defined(OVL_0B_H) && !defined(OVL_38_H) /* those headers declare their own view */
-extern WeaponEntry D_8006E0E8[];
+extern WeaponEntry g_weaponTable[];
 #endif
 extern u8 D_8006BB84[];
 extern u8 D_8006BB74[];
@@ -538,7 +538,7 @@ typedef struct {
     u16 unk6; /* tpage */
 } Unk800686E8;
 extern Unk800686E8 D_800686E8;
-extern Unk800686E8 D_800686D0[];
+extern Unk800686E8 g_uiSprites[];
 extern Unk800686E8 D_800687E0[]; /* digit glyphs */
 
 /* 12-tick toggle timer (ui_initMemberSwitch/D08/D2C) */
@@ -1304,7 +1304,7 @@ extern s32 D_8007B994;
 extern s32 D_8007B998;
 
 extern s32 g_textBank;
-extern s32 D_8007ADFC;
+extern s32 g_evtScriptCount;
 extern s32 D_8007AE00; /* party mask, set by evt_loadScripts */
 extern u32 g_padPortHeld[];
 extern u32 D_8007B97C;
@@ -1334,8 +1334,8 @@ typedef struct {
 extern Unk4 g_padAnalogThresholds;
 
 extern u8 D_800739B8[];
-extern Unk80080A10 *D_8007F790;
-extern Unk80080A10 D_8007F8F0;
+extern Unk80080A10 *g_akaoSubSeq;
+extern Unk80080A10 g_akaoSavedSeq;
 /* AKAO sequence file header (func_8005A320) */
 typedef struct {
     u8 pad0[4];
@@ -1364,7 +1364,7 @@ typedef struct {
     s32 unk4;
     s32 unk8;
 } Unk80083158;
-extern Unk80083158 D_80083158;
+extern Unk80083158 g_akaoFlags;
 /* menu state */
 typedef struct {
     u8 unk0;
@@ -1534,7 +1534,7 @@ typedef struct MsgWindow {
 extern MsgWindow g_msgWindows[];
 
 extern u8 D_80077E2F;
-extern s16 D_80077E30; /* = D_80077E28.unk8 */
+extern s16 D_80077E30; /* = g_menuScreenSwitch.unk8 */
 
 void menuScreen_loadOverlay(void);
 void akao_stopSeChannels(s32, s32);
@@ -1596,7 +1596,7 @@ typedef struct {
     u16 unkE;
 } Unk8005EBB4;
 extern u32 g_akaoSemitonePitch[12]; /* semitone pitch table */
-extern Unk8005EBB4 D_8007F970[];
+extern Unk8005EBB4 g_akaoInstruments[];
 u16 akao_calcPitch(Unk8005EBB4 *p, s32 note, u8 fine, s32 *out);
 extern u8 D_8006F374[]; /* operand length of opcodes 0xA0-0xFF, 0 = special */
 extern u8 D_8006F3D4[]; /* operand length of 0xFE xx opcodes */
@@ -1643,7 +1643,7 @@ typedef struct {
     Unk80077E28Entry *unk1C;
     void (*unk20)(void);
 } Unk80077E28;
-extern Unk80077E28 D_80077E28;
+extern Unk80077E28 g_menuScreenSwitch;
 
 extern s16 g_akaoCdVolumeFadeTicks;
 extern s32 g_akaoCdVolume;
@@ -1801,7 +1801,7 @@ typedef struct {
 } Unk800703FC; /* text table? */
 extern Unk800703FC g_winLabelStrings;
 
-extern u8 *D_80067944; /* end of load area */
+extern u8 *g_loadAreaEnd; /* end of load area */
 extern s32 D_80067948;
 extern u32 g_levelExp[]; /* exp needed for next level, by level */
 extern s32 D_80070424;
@@ -1883,8 +1883,8 @@ extern s32 g_padPortMask[];
 #define LEVEL_MAX 99
 #define EXP_MAX 9999999
 #define GIL_MAX 9999999
-#define ABILITY_MAX 0x30 /* entries in a character's D_8006CB28 ability row (Character.ap) */
-#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (D_8006D128) */
+#define ABILITY_MAX 0x30 /* entries in a character's g_abilityRows ability row (Character.ap) */
+#define ABILITY_SUPPORT_FIRST 0xC0 /* ability ids from here are support abilities (g_supportAbilities) */
 #define SUPPORT_COUNT 0x40
 
 /* main-menu screens (g_menuScreen.screen, menuScreen_open/switch; runtime field/menu campaign) */
@@ -2081,7 +2081,7 @@ s32 msg_overlapsRect(Unk8004EBC0 *r);
 extern s32 D_8007F720[]; /* AKAO header copy (0x70 bytes) */
 extern u8 D_8006CACC[];
 void menu_onOverlayRead(u8 *);
-extern AkaoChannel D_80080AC8[];
+extern AkaoChannel g_akaoSavedChannels[];
 void func_8005CE04(); /* (u32 *src, u32 *dst, u32 size): word copy */
 u16 akao_shiftInstrumentDown(u32, AkaoChannel *);
 s32 text_initNameImage(s32);
@@ -2349,7 +2349,7 @@ extern Unk80080A18 D_80080A18;
 
 extern AkaoChannel g_akaoChannels[];
 extern s32 D_80080AC4;
-extern AkaoChannel D_8007E3D8[];
+extern AkaoChannel g_akaoSeChannels[];
 extern s32 D_800831C4;
 
 typedef struct {
@@ -2368,10 +2368,10 @@ typedef struct {
     u32 unk24;
     u16 unk28;
 } Unk80080A70;
-extern Unk80080A70 D_80080A70;
+extern Unk80080A70 g_akaoSeState;
 void akao_opC4(AkaoChannel *, u32);
 void akao_opC6(AkaoChannel *, u32);
-extern u16 D_80080A98; /* = D_80080A70.unk28 */
+extern u16 D_80080A98; /* = g_akaoSeState.unk28 */
 extern s32 D_80080A80;
 
 
@@ -2385,7 +2385,7 @@ s32 win_resetClock(void);
 void help_update(void);
 
 extern s32 g_evtArgFlags;
-extern s32 D_8007B6F8;
+extern s32 g_evtArgRead;
 extern struct Unk8004AB64 *g_evtCurObj; /* current script object */
 void evt_evalExpr(void);
 s32 evt_popResult(void);
@@ -2460,7 +2460,7 @@ typedef struct Unk8007B954 {
     s32 unk0; /* count */
     u16 unk4[1];
 } Unk8007B954;
-extern Unk8007B954 *D_8007B954;
+extern Unk8007B954 *g_msgTable;
 extern u8 *D_8007BB80[];
 
 typedef struct {
@@ -2476,7 +2476,7 @@ extern CdRequest g_cdRetryRequest;
 extern CdRequest g_cdRestartRequest;
 extern Unk8004AB64 *D_8007B704;
 
-/* Same as evt_getArg8_inline, but written as `>>= (D_8007B6F8 = 1)` (srav). */
+/* Same as evt_getArg8_inline, but written as `>>= (g_evtArgRead = 1)` (srav). */
 static inline s32 evt_getArg8_inline2(void) {
     s32 r;
     if (g_evtArgFlags & 1) {
@@ -2485,7 +2485,7 @@ static inline s32 evt_getArg8_inline2(void) {
     } else {
         r = *g_evtCurObj->unk0++;
     }
-    g_evtArgFlags >>= (D_8007B6F8 = 1);
+    g_evtArgFlags >>= (g_evtArgRead = 1);
     return r;
 }
 
@@ -2505,7 +2505,7 @@ extern s32 D_8007B710;
 extern s32 D_8007BBC8;
 extern s32 D_8007BBE0;
 extern s32 D_8007BBE8;
-extern AkaoChannel *D_8007F71C;
+extern AkaoChannel *g_akaoSubChannels;
 
 typedef struct {
     u8 pad0[4];
@@ -2551,7 +2551,7 @@ typedef struct {
     u16 unk2; /* name offset */
     u8 pad4[4];
 } Unk8006D128; /* support abilities, indexed by id - 0xC0 */
-extern Unk8006D128 D_8006D128[];
+extern Unk8006D128 g_supportAbilities[];
 void chr_setSupportAbility(s32, s32, u8);
 extern s32 g_menuScreenOvl[];
 extern RECT D_8006E508;
@@ -2559,7 +2559,7 @@ extern Unk80077E28Entry g_menuScreensField[];
 extern Unk80077E28Entry g_menuScreensWorld[];
 u8 cd_readAsync(s32, s32, void *, void (*)(u8 *));
 void menuScreen_onOverlayRead(u8 *);
-extern void *D_8007AED0[8];
+extern void *g_evtUnitObjects[8];
 #ifndef OVL_0B_H /* battle overlay code; ovl_0b.h has the real prototypes */
 struct BtlUnit *btl_findUnitByBit(u16);
 s32 btl_getUnitById(s32, s32);
@@ -2615,7 +2615,7 @@ void akao_stopSeq(Unk80080A10 *, AkaoChannel *, s32);
 void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
-extern Unk80083168 D_80083168;
+extern Unk80083168 g_akaoStream;
 s32 func_80061BC8(); /* K&R: callers pass one or two arguments */
 s32 func_80061FBC(s32, s32, s32, void (*)(void));
 void akao_setVoiceLoopAddr(s32, s32);
@@ -2652,7 +2652,7 @@ typedef struct {
     u8 unk0; /* ability id, 0 = none */
     u8 unk1; /* ap needed? */
 } AbilityEntry;
-extern AbilityEntry D_8006CB28[16][0x30]; /* rows indexed by Character.unk34.b.row */
+extern AbilityEntry g_abilityRows[16][0x30]; /* rows indexed by Character.unk34.b.row */
 
 /* Inlined copy of chr_findAbilitySlot (ability slot of a character). */
 static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
@@ -2666,7 +2666,7 @@ static inline s32 chr_findAbilitySlot_inline(s32 ch, s32 id) {
         return -1;
     }
     for (i = 0; i < 0x30; i++) {
-        if (D_8006CB28[row][i].unk0 == id) {
+        if (g_abilityRows[row][i].unk0 == id) {
             return i;
         }
     }
@@ -2813,7 +2813,7 @@ void akao_sendCmdE2(void);
 s32 game_getPlayTime(void);
 s32 text_formatTime(s32, u8 *, s32);
 extern s32 D_800704C0;
-extern u8 D_8006A218[]; /* item names */
+extern u8 g_itemNames[]; /* item names */
 extern u8 D_8006ADAC[]; /* key item names */
 typedef struct {
     s16 unk0; /* name offset into D_8006ADAC */
@@ -2992,7 +2992,7 @@ extern s32 D_8008315C;
 extern s32 D_800831A8; /* sound effect volume */
 extern s32 D_800831C0;
 extern s16 D_8006F640;
-extern s16 D_8006F540[]; /* pan curve, 256 entries */
+extern s16 g_akaoPanCurve[]; /* pan curve, 256 entries */
 /* item icon sprites (D_800689B0) */
 typedef struct {
     u8 unk0; /* u */
@@ -3084,13 +3084,13 @@ void func_80051300(void);
 void func_80051380(void);
 void func_80050F4C(s32);
 
-/* Inlined lookup of message i in the current offset table (D_8007B954). */
+/* Inlined lookup of message i in the current offset table (g_msgTable). */
 static inline u8 *msg_drawText_msg(s32 i) {
     u8 *e = NULL;
     u16 *t;
 
-    if (i >= 0 && i < D_8007B954->unk0) {
-        t = D_8007B954->unk4;
+    if (i >= 0 && i < g_msgTable->unk0) {
+        t = g_msgTable->unk4;
         e = (u8 *)t;
         e += t[(g_evtMode == 2 || g_evtMode == 4) ? i * 2 : i * 4 + 2];
     }
@@ -3112,7 +3112,7 @@ static inline s32 chr_getApNeeded_inline(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return D_8006CB28[c->unk34.b.row][i].unk1;
+    return g_abilityRows[c->unk34.b.row][i].unk1;
 }
 void akao_setVoiceStartAddr(s32, s32);
 void akao_setVoiceDecay(s32, s32);
@@ -3179,7 +3179,7 @@ typedef struct {
 } Unk8004F5D4;
 void func_80051600(void);
 void msg_drawText(MsgWindow *);
-/* 8-byte message-table entry (D_8007B954 in modes other than 4) */
+/* 8-byte message-table entry (g_msgTable in modes other than 4) */
 typedef struct {
     u32 unk0;
     u16 unk4;
@@ -3248,7 +3248,7 @@ typedef struct {
     s16 volL; /* volume left */
     s16 volR; /* volume right */
 } AkaoVoiceRegs;
-/* script object (D_8007AED0[]) */
+/* script object (g_evtUnitObjects[]) */
 typedef struct Unk8007AED0 {
     u8 pad0[0xE];
     u8 unkE;
@@ -3319,10 +3319,10 @@ extern u32 *D_8007BBCC;
 extern s32 D_8007B94C;
 void win_closeAll(void);
 void msg_resetChoices(void);
-extern u8 *D_8007ADF8; /* script data */
-/* 8-byte entry of the field script directory at D_8007ADF8 */
+extern u8 *g_evtScripts; /* script data */
+/* 8-byte entry of the field script directory at g_evtScripts */
 typedef struct {
-    u16 unk0; /* offset from D_8007ADF8 */
+    u16 unk0; /* offset from g_evtScripts */
     u16 unk2; /* size */
     u8 unk4;
     u8 unk5; /* flags */
@@ -3363,11 +3363,11 @@ typedef struct {
     u32 code[2];
 } DrMode2Words; /* DR_MODE / DR_TWIN */
 extern Unk800689B0 D_80068DC0;
-extern Unk800689B0 D_80068CE8;
+extern Unk800689B0 g_winFillSprite;
 /* window frame tables (win_buildBorder) */
 extern u32 D_80068FA4[2]; /* edge rgbc, by flag */
 extern u32 D_80068FAC[2]; /* corner rgbc, by flag */
-extern u8 D_80068FB4[][4]; /* corner sprites (D_800686D0 index) per style */
+extern u8 D_80068FB4[][4]; /* corner sprites (g_uiSprites index) per style */
 extern u8 D_80068FC0[][2]; /* top/bottom edge sprites per style */
 extern u8 D_80068FC8[][2]; /* left/right edge sprites per style */
 extern u8 D_80068FD0[][3]; /* title bar sprites (left, right, middle) per style */
@@ -3678,7 +3678,7 @@ void msg_drawWindowContent(Unk8004F5D4 *);
 void msg_drawChoiceCursor(Window *);
 
 WinLayout *msg_getLayout(s32, s32 *, s32 *, s32 *);
-extern WinLayout D_8007B940;
+extern WinLayout g_msgLayout;
 void evt_placeBalloon(Unk8004AB64 *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
@@ -3812,7 +3812,7 @@ static inline s32 evt_getArg16_inline(void) {
         r = (s16)r;
     }
     g_evtArgFlags >>= 1;
-    D_8007B6F8 = 1;
+    g_evtArgRead = 1;
     return r;
 }
 
@@ -3828,7 +3828,7 @@ static inline s32 evt_getArg8_inline(void) {
         r = *g_evtCurObj->unk0++;
     }
     g_evtArgFlags >>= 1;
-    D_8007B6F8 = 1;
+    g_evtArgRead = 1;
     return r;
 }
 
@@ -3958,7 +3958,7 @@ static inline s32 evt_getArg24_inline(void) {
         v |= *pp->unk0++ << 8;
         v |= *pp->unk0++ << 16;
     }
-    g_evtArgFlags >>= (D_8007B6F8 = 1);
+    g_evtArgFlags >>= (g_evtArgRead = 1);
     return v;
 }
 
@@ -4007,7 +4007,7 @@ static inline void evt_execInstr_party(void) {
     }
     for (i = 0; mask != 0; i++) {
         if (mask & 1) {
-            *p++ = D_8007ADFC - 9 + D_8006E630[i];
+            *p++ = g_evtScriptCount - 9 + D_8006E630[i];
         }
         mask >>= 1;
     }
@@ -4051,7 +4051,7 @@ static inline void evt_execInstr_newactor(s32 uid, s32 b) {
         fld_queueModelBundle(uid);
         break;
     case 2:
-        D_8007AED0[D_8007AE04++] = p;
+        g_evtUnitObjects[D_8007AE04++] = p;
         break;
     }
 }
@@ -4106,16 +4106,16 @@ static inline void vib_init_max(u32 *m, u32 v) {
 }
 
 /* primitive buffer / ordering table used by swirl_drawFlash */
-extern u32 *D_8007BD0C;
-extern u32 *D_8007BD10;
+extern u32 *g_swirlOt;
+extern u32 *g_swirlPkt;
 extern u16 D_8007BD1E;
 /* battle-entry warp grid (swirl_buildMesh fills it, swirl_drawMesh draws it) */
 typedef struct {
     s16 x, y;
     s16 pad[2];
 } WarpVert; /* 9x9 screen vertices */
-extern DVECTOR *D_8007BD14; /* 9 texture columns/rows */
-extern WarpVert *D_8007BD18;
+extern DVECTOR *g_swirlColumns; /* 9 texture columns/rows */
+extern WarpVert *g_swirlMesh;
 /* battle-entry swirl (swirl_update) */
 typedef struct {
     s16 unk0; /* rotation */
@@ -4130,7 +4130,7 @@ typedef struct {
     s16 unk12;
 } SwirlDef; /* 0x14 */
 extern SwirlDef D_8006F2E0[2];
-extern SwirlDef *D_8007BD08;
+extern SwirlDef *g_swirlParams;
 extern u16 D_8007BD1C;
 extern s16 D_8007BD20;
 extern s16 D_8007BD22 __asm__("D_8007BD20+2"); /* no symbol of its own */
@@ -4152,7 +4152,7 @@ void SetDrawMove(void *p, RECT *rect, int x, int y);
 extern u8 D_8006F308[];
 extern u8 D_8006F310[];
 
-/* sound stream header (D_80083168.unk2C + 0x80), func_80061C1C */
+/* sound stream header (g_akaoStream.unk2C + 0x80), func_80061C1C */
 typedef struct {
     u8 pad0[0x10];
     s32 unk10;
@@ -4175,9 +4175,9 @@ typedef struct {
     u32 unk8;          /* sample bytes left */
     u32 unkC;          /* sample-info bytes left */
 } Unk80083228;
-extern Unk80083228 D_80083228;
-extern s32 D_80080A30[16]; /* AKAO header copy */
-extern u32 D_80083230; /* = D_80083228.unk8 */
+extern Unk80083228 g_akaoUpload;
+extern s32 g_akaoBankHeader[16]; /* AKAO header copy */
+extern u32 D_80083230; /* = g_akaoUpload.unk8 */
 
 /* ovl_0a functions called from the main script interpreter */
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);

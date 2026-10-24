@@ -59,20 +59,20 @@ s32 swirl_update(s16 arg0, s16 arg1) {
 
     x = arg0;
     y = arg1;
-    D_8007BD08 = D_8007BD2C ? &D_8006F2E0[1] : &D_8006F2E0[0];
-    D_8007BD0C = D_8007BD10 = D_8007BD30 + (g_gameState->unk1C->unk8 << 10);
-    ClearOTag(D_8007BD0C, 5);
-    D_8007BD10 += 5;
+    g_swirlParams = D_8007BD2C ? &D_8006F2E0[1] : &D_8006F2E0[0];
+    g_swirlOt = g_swirlPkt = D_8007BD30 + (g_gameState->unk1C->unk8 << 10);
+    ClearOTag(g_swirlOt, 5);
+    g_swirlPkt += 5;
     if (g_swirlFrame < 0x79) {
         if (g_swirlFrame == 0) {
             gs = g_gameState;
             gs->unk1C->unk0 &= ~0x20;
             *(u32 *)&gs->drawEnv[0].isbg = *(u32 *)&gs->drawEnv[1].isbg = 1;
             D_8007BD1E = 0;
-            D_8007BD1C = D_8007BD08->unkA;
-            D_8007BD20 = a = D_8007BD08->unk0;
-            D_8007BD24 = D_8007BD08->unk6;
-            D_8007BD22 = b = D_8007BD08->unk2;
+            D_8007BD1C = g_swirlParams->unkA;
+            D_8007BD20 = a = g_swirlParams->unk0;
+            D_8007BD24 = g_swirlParams->unk6;
+            D_8007BD22 = b = g_swirlParams->unk2;
             if ((arg0 ^ arg1) & 1) {
                 D_8007BD20 = -a;
                 D_8007BD22 = -b;
@@ -90,67 +90,67 @@ s32 swirl_update(s16 arg0, s16 arg1) {
             x += c * (160 - x) / 4096;
             y += c * (g_gameState->drawEnv->clip.h / 2 - y) / 4096;
         }
-        D_8007BD10 = swirl_buildMesh(D_8007BD10, x, y);
+        g_swirlPkt = swirl_buildMesh(g_swirlPkt, x, y);
         i = g_gameState->unk1C->unk8;
-        SetDrawMove(D_8007BD10, &g_gameState->dispEnv[i].disp, g_gameState->drawEnv[i].clip.x, g_gameState->drawEnv[i].clip.y);
-        addPrim(D_8007BD0C, D_8007BD10);
-        D_8007BD10 += 8;
+        SetDrawMove(g_swirlPkt, &g_gameState->dispEnv[i].disp, g_gameState->drawEnv[i].clip.x, g_gameState->drawEnv[i].clip.y);
+        addPrim(g_swirlOt, g_swirlPkt);
+        g_swirlPkt += 8;
         swirl_drawMesh();
-        if (g_swirlFrame >= D_8007BD08->unkC) {
-            D_8007BD1C -= D_8007BD08->unkE;
+        if (g_swirlFrame >= g_swirlParams->unkC) {
+            D_8007BD1C -= g_swirlParams->unkE;
             if ((s16)D_8007BD1C < 0) {
                 D_8007BD1C = 0;
             }
         }
-        if (g_swirlFrame >= D_8007BD08->unk10) {
+        if (g_swirlFrame >= g_swirlParams->unk10) {
             swirl_drawFlash(x, y);
-            D_8007BD1E += D_8007BD08->unk12;
+            D_8007BD1E += g_swirlParams->unk12;
             if ((s16)D_8007BD1E >= 0x1000) {
                 D_8007BD1E = 0xFFF;
             }
         }
         D_8007BD20 += D_8007BD22;
-        D_8007BD24 += D_8007BD08->unk8;
+        D_8007BD24 += g_swirlParams->unk8;
         if (D_8007BD24 > 0x1400) {
             D_8007BD24 = 0x1400;
         }
-        setlen(D_8007BD10, 2);
-        D_8007BD10[1] = _get_mask(1, 0);
-        D_8007BD10[2] = 0;
-        addPrim(D_8007BD0C, D_8007BD10);
-        D_8007BD10 += 4;
+        setlen(g_swirlPkt, 2);
+        g_swirlPkt[1] = _get_mask(1, 0);
+        g_swirlPkt[2] = 0;
+        addPrim(g_swirlOt, g_swirlPkt);
+        g_swirlPkt += 4;
     }
-    SetDrawEnv((DR_ENV *)D_8007BD10, &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
-    addPrim(D_8007BD0C, D_8007BD10);
-    D_8007BD10 += 16;
-    setlen(D_8007BD10, 2);
-    D_8007BD10[1] = _get_mask(0, 0);
-    D_8007BD10[2] = 0;
-    addPrim(&D_8007BD0C[3], D_8007BD10);
-    D_8007BD10 += 4;
-    setaddr(&D_8007BD0C[4], getaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]));
-    setaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], D_8007BD0C);
+    SetDrawEnv((DR_ENV *)g_swirlPkt, &g_gameState->drawEnv[g_gameState->unk1C->unk8]);
+    addPrim(g_swirlOt, g_swirlPkt);
+    g_swirlPkt += 16;
+    setlen(g_swirlPkt, 2);
+    g_swirlPkt[1] = _get_mask(0, 0);
+    g_swirlPkt[2] = 0;
+    addPrim(&g_swirlOt[3], g_swirlPkt);
+    g_swirlPkt += 4;
+    setaddr(&g_swirlOt[4], getaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8]));
+    setaddr(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], g_swirlOt);
     if (g_swirlFrame == 0) {
         DrawSync(0);
-        setlen(D_8007BD10, 2);
-        D_8007BD10[1] = _get_mask(1, 0);
-        D_8007BD10[2] = 0;
-        DrawPrim(D_8007BD10);
-        D_8007BD10 += 3;
-        setlen(D_8007BD10, 1);
-        D_8007BD10[1] = get_mode(0, 0, 0x120);
-        DrawPrim(D_8007BD10);
-        D_8007BD10 += 2;
-        D_8007BD10[0] = 0x03000000;
-        D_8007BD10[1] = GPU_CODE(GPU_TILE | GPU_ABE);
-        D_8007BD10[2] = 0;
-        D_8007BD10[3] = (g_gameState->drawEnv->clip.h << 16) | 0x140;
-        DrawPrim(D_8007BD10);
-        D_8007BD10 += 4;
-        setlen(D_8007BD10, 2);
-        D_8007BD10[1] = _get_mask(0, 0);
-        D_8007BD10[2] = 0;
-        DrawPrim(D_8007BD10);
+        setlen(g_swirlPkt, 2);
+        g_swirlPkt[1] = _get_mask(1, 0);
+        g_swirlPkt[2] = 0;
+        DrawPrim(g_swirlPkt);
+        g_swirlPkt += 3;
+        setlen(g_swirlPkt, 1);
+        g_swirlPkt[1] = get_mode(0, 0, 0x120);
+        DrawPrim(g_swirlPkt);
+        g_swirlPkt += 2;
+        g_swirlPkt[0] = 0x03000000;
+        g_swirlPkt[1] = GPU_CODE(GPU_TILE | GPU_ABE);
+        g_swirlPkt[2] = 0;
+        g_swirlPkt[3] = (g_gameState->drawEnv->clip.h << 16) | 0x140;
+        DrawPrim(g_swirlPkt);
+        g_swirlPkt += 4;
+        setlen(g_swirlPkt, 2);
+        g_swirlPkt[1] = _get_mask(0, 0);
+        g_swirlPkt[2] = 0;
+        DrawPrim(g_swirlPkt);
     }
     return g_swirlFrame++ > 0x78;
 }
@@ -163,7 +163,7 @@ void swirl_drawFlash(s32 x, s32 y) {
     u32 xy;
     u32 g2;
 
-    p = D_8007BD10;
+    p = g_swirlPkt;
     v = D_8007BD1E << 16;
     c1 = v >> 20;
     c2 = v >> 23;
@@ -182,9 +182,9 @@ void swirl_drawFlash(s32 x, s32 y) {
         setaddr(p - 7, p);
         p += 7;
     }
-    setaddr(p - 7, getaddr(&D_8007BD0C[2]));
-    setaddr(&D_8007BD0C[2], D_8007BD10);
-    D_8007BD10 = p;
+    setaddr(p - 7, getaddr(&g_swirlOt[2]));
+    setaddr(&g_swirlOt[2], g_swirlPkt);
+    g_swirlPkt = p;
 }
 
 u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
@@ -202,8 +202,8 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     DVECTOR *pts;
     WarpVert *p;
 
-    D_8007BD14 = (DVECTOR *)buf;
-    D_8007BD18 = (WarpVert *)((u8 *)buf + 0x24);
+    g_swirlColumns = (DVECTOR *)buf;
+    g_swirlMesh = (WarpVert *)((u8 *)buf + 0x24);
     buf = (u32 *)((u8 *)buf + 0x2AC);
     dx = g_gameState->dispEnv->disp.w - x;
     dy = g_gameState->dispEnv->disp.h - y;
@@ -215,7 +215,7 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     }
     for (i = 0; i < 5; i++) {
         t = math_cos(i << 8);
-        pts = D_8007BD14;
+        pts = g_swirlColumns;
         pts[i].vx = x - (x * t) / 4096;
         pts[8 - i].vx = x + (dx * t) / 4096;
         pts[i].vy = y - (y * t) / 4096;
@@ -232,7 +232,7 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     sv.vx = 0;
     sv.vz = (s16)D_8007BD20 >> 4;
     math_rotMatrixXYZ(&sv, &m);
-    v.vx = v.vy = D_8007BD08->unk4;
+    v.vx = v.vy = g_swirlParams->unk4;
     v.vz = 0;
     ScaleMatrix(&m, &v);
     m.t[0] = x;
@@ -240,7 +240,7 @@ u32 *swirl_buildMesh(u32 *buf, s32 x, s32 y) {
     m.t[2] = 0;
     gte_SetRotMatrix(&m);
     gte_SetTransMatrix(&m);
-    p = D_8007BD18;
+    p = g_swirlMesh;
     for (ex = 0; ex < 9; ex++) {
         q = py;
         sv.vx = xs[ex] - x;
@@ -268,32 +268,32 @@ void swirl_drawMesh(void) {
     s32 u1;
     u32 tp;
 
-    p = D_8007BD10;
+    p = g_swirlPkt;
     c = (D_8007BD1C >> 4) & 0xFF;
     rgbc = (c << 16) | (c << 8) | c | GPU_CODE(GPU_POLY_FT4 | GPU_ABE);
     p += 10;
     for (i = 0; i < 8; i++) {
-        v = &D_8007BD18[i * 9];
-        tp = ((((D_8007BD14[i].vx + g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
-        u0 = D_8007BD14[i].vx & 0x3F;
-        u1 = u0 + (D_8007BD14[i + 1].vx - D_8007BD14[i].vx) - 1;
+        v = &g_swirlMesh[i * 9];
+        tp = ((((g_swirlColumns[i].vx + g_gameState->dispEnv[g_gameState->unk1C->unk8].disp.x) & 0x3FF) >> 6) | 0x100) << 16;
+        u0 = g_swirlColumns[i].vx & 0x3F;
+        u1 = u0 + (g_swirlColumns[i + 1].vx - g_swirlColumns[i].vx) - 1;
         for (j = 0; j < 8; j++) {
             p[0] = 0x09000000;
             p[1] = rgbc;
             p[2] = (v->y << 16) | (u16)v->x;
-            p[3] = (D_8007BD14[j].vy << 8) | (u8)u0;
+            p[3] = (g_swirlColumns[j].vy << 8) | (u8)u0;
             p[4] = (v[9].y << 16) | (u16)v[9].x;
-            p[5] = (D_8007BD14[j].vy << 8) | (u8)u1 | tp;
+            p[5] = (g_swirlColumns[j].vy << 8) | (u8)u1 | tp;
             p[6] = (v[1].y << 16) | (u16)v[1].x;
-            p[7] = ((D_8007BD14[j + 1].vy - 1) << 8) | (u8)u0;
+            p[7] = ((g_swirlColumns[j + 1].vy - 1) << 8) | (u8)u0;
             p[8] = (v[10].y << 16) | (u16)v[10].x;
-            p[9] = ((D_8007BD14[j + 1].vy - 1) << 8) | (u8)u1;
+            p[9] = ((g_swirlColumns[j + 1].vy - 1) << 8) | (u8)u1;
             setaddr(p - 10, p);
             p += 10;
             v++;
         }
     }
-    setaddr(p - 10, getaddr(&D_8007BD0C[1]));
-    setaddr(&D_8007BD0C[1], D_8007BD10 + 10);
-    D_8007BD10 = p;
+    setaddr(p - 10, getaddr(&g_swirlOt[1]));
+    setaddr(&g_swirlOt[1], g_swirlPkt + 10);
+    g_swirlPkt = p;
 }

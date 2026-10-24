@@ -82,7 +82,7 @@ Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
     out->unk8[3] = in->unk0.unk0[7];
     id = in->unk14.unk0[0];
     if (id != 0xFF) {
-        out->unkC[0] = D_8006E0E8[id].unk5;
+        out->unkC[0] = g_weaponTable[id].unk5;
     }
     for (i = 0; i < 4; i++) {
         id = (&in->unk14.unk0[1])[i];
@@ -99,7 +99,7 @@ Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
     for (i = 0; i < 5; i++) {
         id = in->unk14.unk0[i];
         if (id != 0xFF) {
-            e = D_8006D548[D_80069018[id].unkB].unk0;
+            e = D_8006D548[g_itemTable[id].unkB].unk0;
             out->unk8[0] += e[0];
             out->unk8[1] += e[1];
             out->unk8[2] += e[2];
@@ -151,7 +151,7 @@ Unk80032E84Out *chr_calcEquipStats(Unk80032E84In *in, Unk80032E84Out *out) {
 
 s32 chr_calcAppearance(s32 kind, s32 flag, u8 *item) {
     u8 t = D_8006CAA4[kind][(u8)flag != 0];
-    u8 k = D_80069018[*item].unk8;
+    u8 k = g_itemTable[*item].unk8;
     s32 r;
 
     switch (t) {
@@ -501,7 +501,7 @@ void chr_fitSupportAbilities(Character *c) {
     s32 id;
 
     i = 0;
-    e = D_8006D128;
+    e = g_supportAbilities;
     id = c->unk34.b.id;
     c->stones = c->maxStones;
     do {
@@ -551,7 +551,7 @@ s32 chr_learnAbility(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    c->ap[i] = D_8006CB28[c->unk34.b.row][i].unk1;
+    c->ap[i] = g_abilityRows[c->unk34.b.row][i].unk1;
     return 1;
 }
 
@@ -648,7 +648,7 @@ u8 chr_getApNeeded(s32 ch, s32 id) {
     if (i < 0) {
         return 0;
     }
-    return D_8006CB28[c->unk34.b.row][i].unk1;
+    return g_abilityRows[c->unk34.b.row][i].unk1;
 }
 
 s32 chr_countSupportStones(s32 ch) {
@@ -657,7 +657,7 @@ s32 chr_countSupportStones(s32 ch) {
     u32 *bits = g_gameState->unk1C->characters[ch].supportAbilities;
     for (i = 0; i < 0x40; i++) {
         if (bits[i >> 5] & (1 << (i & 0x1F))) {
-            sum += D_8006D128[i].unk1;
+            sum += g_supportAbilities[i].unk1;
         }
     }
     return sum;
@@ -808,7 +808,7 @@ s32 chr_sumEquipBonus(u8 *eq, s32 k) {
 
     for (i = 0; i < 5; i++) {
         if (eq[i] != 0xFF) {
-            e = D_8006D548[D_80069018[eq[i]].unkB].unk0;
+            e = D_8006D548[g_itemTable[eq[i]].unkB].unk0;
             switch (k) {
             case 0:
                 sum += e[0];

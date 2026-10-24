@@ -257,7 +257,7 @@ void func_800CC9C8(Battle1358 *arg0, Unk800CCD00 *arg1) {
     if (!(arg0->unk0->unk9C->unk0 & 0x10)) {
         arg1->unk8 = (c & 0x80) ? 0x03000000 : 0x01000000;
         arg1->unk14 = arg0->unk18;
-        g = &D_800686D0[arg0->unk14.p->unk4];
+        g = &g_uiSprites[arg0->unk14.p->unk4];
         arg1->unk10.s.x -= g->unk4 >> 1;
         arg1->unk10.s.y -= (g->unk5 >> 1) + (c & 0x1F);
         if (arg0->unk10.b.unk3 == 0) {
@@ -545,7 +545,7 @@ s32 btl_getElementName(u8 arg0) {
 }
 
 u8 *btl_getItemName(u8 arg0) {
-    return &D_8006A218[D_80069018[arg0].unk0];
+    return &g_itemNames[g_itemTable[arg0].unk0];
 }
 
 void *btl_getUnitName(BtlUnit *arg0) {

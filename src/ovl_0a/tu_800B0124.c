@@ -451,7 +451,7 @@ state:
             akao_beginBankUpload();
         }
         g_gameState->unk1C->unk8C0 = SCENE->heapTop ? SCENE->heapTop : D_80067948;
-        g_gameState->unk1C->unk878 = 0x156F00 - (g_gameState->unk1C->unk8C0 - (s32)D_80067944);
+        g_gameState->unk1C->unk878 = 0x156F00 - (g_gameState->unk1C->unk8C0 - (s32)g_loadAreaEnd);
         if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
             g_gameState->unk1C->unk878 -= 0x3000;
         }
@@ -468,7 +468,7 @@ state:
             preload_discardRange((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
             if (g_gameState->unk1C->unk854[0].unkC + g_gameState->unk1C->unk854[0].unk10 < g_gameState->unk1C->unk87C) {
                 g_gameState->unk1C->unk8C0 = (s32)g_gameState->unk1C->unk854[0].unk8;
-                d = 0x156F00 - ((s32)g_gameState->unk1C->unk854[0].unk8 - (s32)D_80067944);
+                d = 0x156F00 - ((s32)g_gameState->unk1C->unk854[0].unk8 - (s32)g_loadAreaEnd);
                 if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
                     d -= 0x3000;
                 }
@@ -1490,8 +1490,8 @@ s32 fld_preloadFile(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         return 0;
     }
     top = fld_getModelCacheBottom(NULL);
-    if ((u32)(D_80067944 + 0x153F00) < top) {
-        top = (u32)(D_80067944 + 0x153F00);
+    if ((u32)(g_loadAreaEnd + 0x153F00) < top) {
+        top = (u32)(g_loadAreaEnd + 0x153F00);
     }
     size = top - g_fieldPreloadCursor;
     size = size / 2048 * 2048;

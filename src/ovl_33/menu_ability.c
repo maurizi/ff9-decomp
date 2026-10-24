@@ -20,7 +20,7 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = D_8006CB28[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -29,7 +29,7 @@ static inline s32 menuAbility_getSupportState_inline(s32 id, Character *c) {
             }
         }
     }
-    sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
+    sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
     if (sup->unk1 > c->stones) {
         return ABILITY_GREYED;
     }
@@ -437,7 +437,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
     if (c->unk34.b.row < 16) {
         m2 = m;
         slot = 0;
-        a = D_8006CB28[c->unk34.b.row];
+        a = g_abilityRows[c->unk34.b.row];
         for (; slot < ABILITY_MAX; slot++) {
             if (a->unk0 != 0) {
                 if (a->unk0 < ABILITY_SUPPORT_FIRST) {
@@ -460,7 +460,7 @@ void menuAbility_setMember(s32 slot, s32 arg1) {
     for (slot = 0; slot < 5; slot++) {
         id = c->equip[slot];
         if (id != 0xFF) {
-            it = &D_80069018[id];
+            it = &g_itemTable[id];
             for (j = 0; j < 3; j++) {
                 s_menuAbility.equipSlots[it->unkC[j]] |= 1 << slot;
                 s_menuAbility.equipItems[it->unkC[j]][slot] = id;
@@ -487,7 +487,7 @@ s32 menuAbility_getActionState(s32 id, Character *c) {
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = D_8006CB28[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -555,7 +555,7 @@ void menuAbility_toggleSupport(void) {
     c = g_gameState->unk1C->party[s_menuAbility.slot];
     if (l->rows != 0 && (idx = (l->top + l->cursor) * 2 + l->col) < s_menuAbility.supportCount) {
         id = s_menuAbility.supports[idx];
-        sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
+        sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
         st = menuAbility_getSupportState_inline(id, c);
         if (st >= ABILITY_USABLE) {
             chr_setSupportAbility(c->unk34.b.id, id, st == ABILITY_USABLE);
@@ -630,7 +630,7 @@ void menuAbility_updateHelp(void) {
         } else {
             id = s_menuAbility.supports[i];
             if (menuAbility_getSupportState_inline(id, c)) {
-                u8 **d = &D_80077DF0;
+                u8 **d = &g_menuHelpText;
                 *d = menuAbility_updateHelp_suphelp(id);
             }
         }
@@ -647,7 +647,7 @@ void menuAbility_updateHelp(void) {
             r.h = g_gameState->dispEnv->disp.h;
         }
         help_setBounds(&r);
-        D_80077DF0 = text_get(s_menuAbility.canTargetAll == 0 ? ABILITY_TEXT_SELECT_CHAR : ABILITY_TEXT_SELECT_CHAR_ALL);
+        g_menuHelpText = text_get(s_menuAbility.canTargetAll == 0 ? ABILITY_TEXT_SELECT_CHAR : ABILITY_TEXT_SELECT_CHAR_ALL);
     }
 }
 
@@ -805,7 +805,7 @@ void menuAbility_drawSupportRow(s32 x, s32 y, s32 i, Character *c) {
     s32 col;
 
     id = s_menuAbility.supports[i];
-    sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
+    sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
     st = menuAbility_getSupportState(id, c);
     if (st != 0) {
         col = s_menuAbilityStateColor[st];
@@ -862,7 +862,7 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
         }
         if (func_80034A30(c)) {
             ap = c->ap[slot];
-            need = D_8006CB28[c->unk34.b.row][slot].unk1;
+            need = g_abilityRows[c->unk34.b.row][slot].unk1;
             if (ap == 0) {
                 return 0;
             }
@@ -871,7 +871,7 @@ u32 menuAbility_getSupportState(s32 id, Character *c) {
             }
         }
     }
-    sup = &D_8006D128[id - ABILITY_SUPPORT_FIRST];
+    sup = &g_supportAbilities[id - ABILITY_SUPPORT_FIRST];
     if (sup->unk1 > c->stones) {
         return ABILITY_GREYED;
     }

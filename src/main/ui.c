@@ -221,13 +221,13 @@ void ui_drawBackground(void) {
 }
 
 u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
-    s32 clut = win_getClut(D_80068CE8.unk2, pal);
+    s32 clut = win_getClut(g_winFillSprite.unk2, pal);
     RECT tw;
 
-    tw.x = D_80068CE8.unk0;
-    tw.y = D_80068CE8.unk1;
-    tw.w = D_80068CE8.unk4;
-    tw.h = D_80068CE8.unk5;
+    tw.x = g_winFillSprite.unk0;
+    tw.y = g_winFillSprite.unk1;
+    tw.w = g_winFillSprite.unk4;
+    tw.h = g_winFillSprite.unk5;
 
     setlen(pkt, 2);
     ((DrMode2Words *)pkt)->code[0] = get_tw(&D_80068F40);
@@ -244,7 +244,7 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     pkt += sizeof(SprtWords);
 
     setlen(pkt, 2);
-    ((DrMode2Words *)pkt)->code[0] = get_mode(1, 1, D_80068CE8.unk6);
+    ((DrMode2Words *)pkt)->code[0] = get_mode(1, 1, g_winFillSprite.unk6);
     ((DrMode2Words *)pkt)->code[1] = get_tw(&tw);
     addPrim(ot, pkt);
     return pkt + sizeof(DrMode2Words);
@@ -307,14 +307,14 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     }
     d = NULL;
     if (style != 2) {
-        clut = win_getClut(D_800686D0[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
+        clut = win_getClut(g_uiSprites[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
     } else {
         clut = 0x3EA40000;
     }
     for (i = 0, y = r->y; i < 2; i++) {
         for (j = 0, x = r->x; j < 2; j++) {
             if (flag || i || !j) {
-                d = (Unk800689B0 *)&D_800686D0[D_80068FB4[style][i * 2 + j]];
+                d = (Unk800689B0 *)&g_uiSprites[D_80068FB4[style][i * 2 + j]];
                 setlen(pkt, 3);
                 ((Sprt8Words *)pkt)->rgbc = D_80068FAC[flag] | semi;
                 ((Sprt8Words *)pkt)->xy = (u16)x | (y << 16);
@@ -336,7 +336,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     if (r->w - 16 > 0) {
         y = r->y + r->h - 8;
         for (i = 0; i < n; i++) {
-            d = (Unk800689B0 *)&D_800686D0[D_80068FC0[style][i]];
+            d = (Unk800689B0 *)&g_uiSprites[D_80068FC0[style][i]];
             setlen(pkt, 4);
             ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
             ((SprtWords *)pkt)->xy = ((r->x + 8) & 0xFFFF) | (y << 16);
@@ -359,7 +359,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     if (r->h - 16 > 0) {
         x = r->x;
         for (i = 0; i < n; i++) {
-            d = (Unk800689B0 *)&D_800686D0[D_80068FC8[style][i]];
+            d = (Unk800689B0 *)&g_uiSprites[D_80068FC8[style][i]];
             setlen(pkt, 4);
             ((SprtWords *)pkt)->rgbc = D_80068FA4[flag] | semi;
             ((SprtWords *)pkt)->xy = (x & 0xFFFF) | ((r->y + 8) << 16);
@@ -395,14 +395,14 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
     s32 yy;
 
     if (style == 1) {
-        tbl = (Unk800689B0 *)D_800686D0;
+        tbl = (Unk800689B0 *)g_uiSprites;
         clut = tbl[D_80068FD0[1][0]].unk2;
     } else {
-        tbl2 = (Unk800689B0 *)D_800686D0;
+        tbl2 = (Unk800689B0 *)g_uiSprites;
         clut = win_getClut(tbl2[D_80068FD0[style][0]].unk2, abr);
     }
     for (i = 0; i < 2; i++) {
-        d = &((Unk800689B0 *)D_800686D0)[D_80068FD0[style][i]];
+        d = &((Unk800689B0 *)g_uiSprites)[D_80068FD0[style][i]];
         setlen(g_primPtr, 4);
         yy = y << 16;
         ((SprtWords *)g_primPtr)->rgbc = GPU_RGBC(GPU_SPRT, 0x808080);
@@ -422,7 +422,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         ((DrMode2Words *)g_primPtr)->code[1] = 0;
         addPrim(&g_ot[otz], g_primPtr);
         g_primPtr += sizeof(DrMode2Words);
-        d = &((Unk800689B0 *)D_800686D0)[D_80068FD0[style][2]];
+        d = &((Unk800689B0 *)g_uiSprites)[D_80068FD0[style][2]];
         tw.x = d->unk0;
         tw.y = d->unk1;
         tw.w = d->unk4;
@@ -536,11 +536,11 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     Unk80068F48 *o;
     u16 clut;
 
-    clut = D_80068CE8.unk2 - CONFIG_WINDOW_COLOR() * 0xC0;
-    tw.x = D_80068CE8.unk0;
-    tw.y = D_80068CE8.unk1;
-    tw.w = D_80068CE8.unk4;
-    tw.h = D_80068CE8.unk5;
+    clut = g_winFillSprite.unk2 - CONFIG_WINDOW_COLOR() * 0xC0;
+    tw.x = g_winFillSprite.unk0;
+    tw.y = g_winFillSprite.unk1;
+    tw.w = g_winFillSprite.unk4;
+    tw.h = g_winFillSprite.unk5;
 
     setlen(g_primPtr, 2);
     ((DrMode2Words *)g_primPtr)->code[0] = get_tw(&D_80068F40);
@@ -554,7 +554,7 @@ void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     ((PolyFT4Words *)g_primPtr)->xy0 = (x + o->x0) | ((y + o->y0) << 16);
     ((PolyFT4Words *)g_primPtr)->uv0clut = (u + o->x0) | ((v + o->y0) << 8) | (clut << 16);
     ((PolyFT4Words *)g_primPtr)->xy1 = (x + o->x1) | ((y + o->y1) << 16);
-    ((PolyFT4Words *)g_primPtr)->uv1tpage = (u + o->x1) | ((v + o->y1) << 8) | (D_80068CE8.unk6 << 16);
+    ((PolyFT4Words *)g_primPtr)->uv1tpage = (u + o->x1) | ((v + o->y1) << 8) | (g_winFillSprite.unk6 << 16);
     ((PolyFT4Words *)g_primPtr)->xy2 = (x + o->x2) | ((y + o->y2) << 16);
     ((PolyFT4Words *)g_primPtr)->uv2 = (u + o->x2) | ((v + o->y2) << 8);
     ((PolyFT4Words *)g_primPtr)->xy3 = (x + o->x3) | ((y + o->y3) << 16);
@@ -626,7 +626,7 @@ void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
 }
 
 u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
-    Unk80069018 *e = &D_80069018[item];
+    Unk80069018 *e = &g_itemTable[item];
     Unk800689B0 *d = &D_800689B0[e->unk8];
     s32 clut;
 
@@ -802,7 +802,7 @@ void win_drawMsgTailEdge(arg0, arg1, arg2, arg3, arg4)
 
 s32 ui_drawSprite(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
     s32 w;
-    Unk800686E8 *d = &D_800686D0[id];
+    Unk800686E8 *d = &g_uiSprites[id];
 
     g_primPtr = ui_buildSpriteDef_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
     return w;
@@ -820,7 +820,7 @@ u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     DrTpageWords *t;
     Unk800686E8 *d;
     setlen(s, 4);
-    d = &D_800686D0[i];
+    d = &g_uiSprites[i];
     if (flag) {
         s->rgbc = GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060);
     } else {
@@ -1026,7 +1026,7 @@ s32 item_countEquipped(s32 id) {
 
 s32 item_getEquipSlot(s32 arg0) {
     s32 i;
-    Unk80069018 *e = &D_80069018[arg0];
+    Unk80069018 *e = &g_itemTable[arg0];
 
     for (i = 0; i < 5; i++) {
         if (e->unkF & D_8006BB84[i]) {
