@@ -190,6 +190,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 k5;
     s32 k6;
     s32 k7;
+    s32 kd;
     s32 k8;
     s32 k9;
     s32 k10;
@@ -211,11 +212,13 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 w4;
     s32 t_s2;
     s32 i;
+    s32 i5;
     s32 i4;
     s32 j;
     s32 j2;
     s32 j1;
     s32 ang;
+    s32 ang3;
     s32 ang1;
     s32 ang4;
     s32 ang2;
@@ -439,20 +442,24 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             BTLFX_COPY_SVEC(&a1, &work->unk30);
             ex->func_800CFD78(&a1.vx, &work->unkBC.vx, -(t + 0x1000), &b1.vx);
-            for (kk = 0, ang = -work->unk4 << 7; kk < 3; kk++, ang += 0x554) {
+            for (kk = 0, ang3 = -work->unk4 << 7; kk < 3; kk++, ang3 += 0x554) {
                 g1 = ex->btlfx_randCentered(0x400) + 0xC00;
-                func_801ECAF8(entry, &D_801F0D14[kk], &a1, &b1, 0x7C, 0x200, ang, 0xC0, 0, g1, 0x1D);
+                func_801ECAF8(entry, &D_801F0D14[kk], &a1, &b1, 0x7C, 0x200, ang3, 0xC0, 0, g1, 0x1D);
                 for (j1 = 0; j1 < 4; j1++) {
                     func_801ECCF4(entry, &D_801F0D14[kk], (Fx0e31Bolt *)((Fx0e31Bolt5 *)D_801F0A14 + j1), g1);
                 }
             }
             if (frame < 0x21) {
-                y12 = frame << 12;
+                y12 = frame;
+                y12 <<= 12;
                 x2 = ex->math_cos(y12 >> 7);
+                i = 0;
                 y12 >>= 5;
+                y12 *= 2;
+                y12 += 0x900;
                 r2.vx = work->unkBC.vx;
                 r2.vy = work->unkBC.vy;
-                s2.vx = s2.vy = y12 * 2 + 0x900;
+                s2.vx = s2.vy = y12;
                 r2.vz = work->unkBC.vz;
                 s2.vz = 0;
                 r2.vz = (frame << 5) + 0x400;
@@ -461,7 +468,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 v2.vx = p2.vx;
                 v2.vy = p2.vy;
                 v2.vz = p2.vz;
-                for (i = 0; i < 3; i++) {
+                for (; i < 3; i++) {
                     ex->Hi_DrawEffModel(&r2, &v2, (s32)&s2, work->unkC4);
                     ex->Hi_ModifyEffModelRGB(work->unkC4, x2k, x2k, x2k);
                     s2.vx = s2.vy = (s2.vx * 3) >> 2;
@@ -566,8 +573,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unkB0.vz = 0x1555;
             } else if (frame == 4) {
                 work->unkB0.vx = work->unkB0.vy = 0x4000;
-            } else if (frame - 4 < 0xB) {
-                work->unkB0.vx = work->unkB0.vy = ((0x1000 - (((frame - 4) << 12) / 10)) * 3) >> 1;
+            } else if ((kd = frame - 4) < 0xB) {
+                kd = (kd << 12) / 10;
+                work->unkB0.vx = work->unkB0.vy = ((0x1000 - kd) * 3) >> 1;
             }
             if (frame < 5) {
                 work->unk40.vx = work->unk30.vx;
@@ -787,7 +795,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             p7.vx = work->unk30.vx;
             p7.vy = work->unk30.vy;
             p7.vz = work->unk30.vz;
-            for (i = 0, j = 7; i < 6; i++, j += 7) {
+            for (i = 0, j = 7; i < 6; j += 7, i++) {
                 k12 = frame - j;
                 if ((u32)k12 < 0x20) {
                     y8 = ex->math_cos((k12 << 12) >> 7);
@@ -830,8 +838,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             x16 = 0x1000 - ((t * 0xDAC) >> 12);
             ang = (work->unk4 << 9) + (ex->btlfx_rand() & 0x1FF);
             y10 = (ex->math_cos(t >> 2) * 0xF5) >> 12;
-            for (i = 0; i < 2; i++, ang += 0x800) {
-                func_801ECAF8(entry, &D_801F0D14[i], &f9, &t9, (x16 * 3) >> 2, x16, ang, 0xC0, 0, 0x1000, y10);
+            for (i5 = 0; i5 < 2; i5++, ang += 0x800) {
+                func_801ECAF8(entry, &D_801F0D14[i5], &f9, &t9, (x16 * 3) >> 2, x16, ang, 0xC0, 0, 0x1000, y10);
             }
             if (frame < 0x26) {
                 x16 = (x16 * 3) >> 1;
@@ -842,7 +850,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             env->unk28 = 0x300;
             ang = work->unk4 << 7;
             y11 = ((ex->math_cos(t >> 2) * 0xEB) >> 12) + 0x20;
-            for (i = 0; i < 5; i++) {
+            for (i5 = 0; i5 < 5; i5++) {
                 f9.vx = work->unk30.vx;
                 f9.vy = work->unk30.vy;
                 f9.vz = work->unk30.vz;
@@ -854,7 +862,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 t9.vx += ex->math_sin(ang);
                 t9.vz += ex->math_cos(ang);
                 t9.vy -= 0xF00;
-                func_801ECDEC(entry, (Fx0e31Bolt *)&D_801F0A14[i], &t9, &f9, 0x80, 0x200, ang, 0xFF, 0,
+                func_801ECDEC(entry, (Fx0e31Bolt *)&D_801F0A14[i5], &t9, &f9, 0x80, 0x200, ang, 0xFF, 0,
                               ex->math_cos(t >> 2), y11);
                 ang = ang + 0x333 + ex->btlfx_randCentered(0x20);
             }
