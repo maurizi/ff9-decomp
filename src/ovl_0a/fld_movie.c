@@ -211,7 +211,7 @@ s32 fld_setupActorModel(s32 arg0, void *arg1) {
     }
     if (sprId != -1) {
         s->unk8->texAnims = db_lookupRegistered(4, sprId, 0);
-        fldmdl_initTexAnims((BgSprHdr *)s->unk8->texAnims, (BgSprOfs *)spr);
+        fldmdl_initTexAnims((TexAnimRelocSet *)s->unk8->texAnims, (ModelTexOfs *)spr);
     }
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->walkmesh != NULL) {
         if (slot < 9) {
@@ -503,7 +503,7 @@ void fld_drawModels(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            fldmdl_updateTexAnims((BgAnimHdr *)((ModelObj *)c->unk8)->texAnims);
+            fldmdl_updateTexAnims((TexAnimSet *)((ModelObj *)c->unk8)->texAnims);
         }
     }
     fld_applyLights(list, n);
@@ -601,7 +601,7 @@ s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             id = (s32)db_lookupRegistered(9, y->unk4, 0x190000);
             if (id != -1) {
                 y->unk8->texAnims = db_lookupRegistered(4, id, 0);
-                fldmdl_initTexAnims((BgSprHdr *)y->unk8->texAnims, (BgSprOfs *)spr);
+                fldmdl_initTexAnims((TexAnimRelocSet *)y->unk8->texAnims, (ModelTexOfs *)spr);
             }
             fld_trimModelCache();
             x->unk0 |= 0x02000001;

@@ -935,7 +935,7 @@ s32 bgi_revertActor(s32 arg0) {
 }
 
 s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
-    BgiTriangle *n = func_800C9DF8_node(arg0);
+    BgiTriangle *n = bgi_trianglePtr(arg0);
     u16 v;
 
     if (arg1 != 0) {
@@ -954,24 +954,24 @@ s32 func_800C77DC(u16 *arg0, s16 **arg1) {
 }
 
 s32 bgi_getTriangleFlags(s16 arg0, u16 *arg1) {
-    *arg1 = func_800C9DF8_node(arg0)->flags & ((g_fieldBgi.maskFilter << 8) | 0xFF);
+    *arg1 = bgi_trianglePtr(arg0)->flags & ((g_fieldBgi.maskFilter << 8) | 0xFF);
     return 1;
 }
 
 s32 bgi_setTriangleMask(s16 arg0, s32 arg1) {
-    BgiTriangle *n = func_800C9DF8_node(arg0);
+    BgiTriangle *n = bgi_trianglePtr(arg0);
 
     n->flags = ((arg1 & 0xFF) << 8) | (n->flags & 0xFF);
     return 1;
 }
 
 s32 bgi_getTriangleMask(s16 arg0, u8 *arg1) {
-    *arg1 = (func_800C9DF8_node(arg0)->flags >> 8) & g_fieldBgi.maskFilter;
+    *arg1 = (bgi_trianglePtr(arg0)->flags >> 8) & g_fieldBgi.maskFilter;
     return 1;
 }
 
 s32 bgi_getTriangleFloor(s16 arg0, u16 *arg1) {
-    *arg1 = func_800C9DF8_node(arg0)->floor;
+    *arg1 = bgi_trianglePtr(arg0)->floor;
     return 1;
 }
 
@@ -982,12 +982,12 @@ s32 func_800C7914(u16 *arg0, s16 **arg1) {
 }
 
 s32 bgi_getEdgeFlags(s16 arg0, u16 *arg1) {
-    *arg1 = func_800C9DF8_link(arg0)->flags;
+    *arg1 = bgi_edgePtr(arg0)->flags;
     return 1;
 }
 
 s32 bgi_getFloorPosition(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
-    BgiFloor *t = func_800C9DF8_tri(arg0);
+    BgiFloor *t = bgi_floorPtr(arg0);
 
     *arg1 = t->curPos[0];
     *arg2 = t->curPos[1];

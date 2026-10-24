@@ -95,7 +95,7 @@ typedef struct {
     s16 nextId; /* current field, then the destination set by game_setNextScene */
     void *eventScript; /* db item 0x5xxxx (fld_findEventScript), passed to evt_init */
     struct FieldSpriteSet *sprites;
-    struct Unk800C9DB4 *bg; /* background (fld_setupBackground) */
+    struct BgFile *bg; /* background (fld_setupBackground) */
     void *walkmesh; /* the background's 0xB0000 link (fld_setupBackground) */
     void *lights; /* light data, file 0x1Fxxxx (fld_applyLights) */
     s32 heapTop;
@@ -212,22 +212,22 @@ typedef struct {
 typedef struct {
     u16 unk0;
     u16 unk2;
-} __attribute__((aligned(4))) Unk800CA068Pair;
+} __attribute__((aligned(4))) BgPoint;
 
 /* field state (g_fieldBgState) */
 typedef struct {
-    s32 unk0; /* flags */
-    Unk800CA068Pair unk4;
-    Unk800CA068Pair unk8;
+    s32 flags; /* flags */
+    BgPoint scroll;
+    BgPoint unk8;
     s16 unkC; /* geometry offset adjust */
     s16 unkE;
-    Unk800CA068Pair unk10;
-    s16 unk14;
-    s16 unk16;
-    s16 unk18;
-    s16 unk1A;
-    MATRIX *unk1C;
-    u16 *unk20;
+    BgPoint scrollFrom;
+    s16 scrollToX;
+    s16 scrollToY;
+    s16 scrollFrame;
+    s16 scrollFrames;
+    MATRIX *viewMatrix;
+    u16 *projDist;
     u16 unk24;
     u16 unk26;
     u16 unk28;
@@ -238,8 +238,8 @@ typedef struct {
     u8 unk72;
     u8 unk73;
     u8 unk74;
-    u8 unk75;
-    s16 unk76;
+    u8 cameraId;
+    s16 followHeight;
     s32 unk78;
     u8 pad7C[0x9C - 0x7C];
     s16 unk9C;
@@ -250,25 +250,25 @@ typedef struct {
     u8 unkA3;
     s16 unkA4;
     s16 unkA6;
-    s16 unkA8[4][2];
-    s16 unkB8[4][2];
-    s16 unkC8[4];
-    s16 unkD0[4];
-} Unk800CA068;
+    s16 viewportPos[4][2];
+    s16 viewportSize[4][2];
+    s16 viewportRateX[4];
+    s16 viewportRateY[4];
+} FieldBgState;
 
-/* walkmesh-like data block at g_fieldBgData: the header holds offsets (from the
- * block start) of its tables */
-typedef struct Unk800C9DB4 {
+/* field background file (g_fieldBgData = g_fieldBgCtx.unk10, fld_setupBackground): the header holds
+ * offsets (from the file start) of its overlay-animation, overlay and camera tables */
+typedef struct BgFile {
     u8 pad0[4];
-    u16 unk4; /* entries in the unkC table */
-    u16 unk6; /* entries in the unk10 table */
+    u16 overlayAnimCount; /* entries in the unkC table */
+    u16 overlayCount; /* entries in the unk10 table */
     u8 pad8[0xC - 8];
-    s32 unkC;  /* offset: Unk800C9DB4Path[] */
-    s32 unk10; /* offset: Unk800C9DB4Obj[] */
+    s32 overlayAnimOffset;  /* offset: BgOverlayAnim[] */
+    s32 overlayOffset; /* offset: BgOverlay[] */
     u8 pad14[0x18 - 0x14];
-    s32 unk18; /* offset: Unk800C9DB4Cam[] */
+    s32 cameraOffset; /* offset: BgCamera[] */
     u16 unk1C;
-    u16 unk1E;
+    u16 baseDepth;
     u16 unk20;
     u16 unk22;
     u16 unk24;
@@ -279,12 +279,12 @@ typedef struct Unk800C9DB4 {
     u16 unk2E;
     u16 unk30; /* screen origin x */
     u16 unk32; /* screen origin y */
-} Unk800C9DB4;
+} BgFile;
 
 typedef struct {
     u8 unk0;
     s8 unk1;
-} Unk800C9DB4Step;
+} BgAnimStep;
 
 typedef struct {
     unsigned unk0 : 8; /* flags */
@@ -293,8 +293,8 @@ typedef struct {
     signed unk5 : 24; /* position (8.8 step index) */
     s16 unk8;
     s16 unkA;
-    s32 unkC; /* offset: Unk800C9DB4Step[] */
-} Unk800C9DB4Path; /* 0x10 */
+    s32 unkC; /* offset: BgAnimStep[] */
+} BgOverlayAnim; /* 0x10 */
 
 /* background sprite: DR_TPAGE followed by a SPRT_16 (0x18 bytes) */
 typedef struct {
@@ -339,8 +339,8 @@ typedef struct {
     s16 unk16;
     u16 unk18;
     u16 unk1A;
-    s16 unk1C;
-    s16 unk1E;
+    s16 scrollX;
+    s16 scrollY;
     s16 unk20;
     s16 unk22;
     unsigned unk24 : 8;
@@ -349,65 +349,36 @@ typedef struct {
     u16 unk26;  /* tile count */
     s32 unk28;  /* offset: BgPos[] */
     s32 unk2C;  /* offset: BgTile[] */
-    BgSprt *unk30;
+    BgSprt *sprites;
     u8 pad34[4];
-} Unk800C9DB4Obj; /* 0x38 */
+} BgOverlay; /* 0x38 */
 
-/* Unk800C9DB4Obj's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
+/* BgOverlay's unk24/unk25/unk25_1 bitfield word as a plain u32 (fldbg_buildOverlaySprites masks it by hand) */
 typedef struct {
     u8 pad0[0x24];
     u32 unk24;
-} Unk800C9DB4ObjFlags;
+} BgOverlayFlags;
 
 typedef struct {
-    u16 unk0; /* projection distance */
-    s16 unk2[3][3];
-    s32 unk14[3];
-    u16 unk20;
-    u16 unk22;
-    s16 unk24;
-    s16 unk26;
-    s16 unk28;
-    s16 unk2A;
-    s16 unk2C;
-    s16 unk2E;
-    u16 unk30;
+    u16 projDist; /* projection distance */
+    s16 rot[3][3];
+    s32 trans[3];
+    u16 centerX;
+    u16 centerY;
+    s16 width;
+    s16 height;
+    s16 scrollMinX;
+    s16 scrollMaxX;
+    s16 scrollMinY;
+    s16 scrollMaxY;
+    u16 otBias;
     u8 pad32[0x34 - 0x32];
-} Unk800C9DB4Cam; /* 0x34 */
-
-/* sequence header (fldbg_initEffectList): offsets from the header start */
-typedef struct {
-    u8 pad0[4];
-    u16 unk4; /* Unk800C9DA4Anim count */
-    u16 unk6; /* track count */
-    u8 pad8[4];
-    s32 unkC; /* -> u32 table, 16-byte stride */
-    s32 unk10; /* -> track table, 0x38-byte stride */
-    u8 pad14[4];
-    s32 unk18; /* -> Unk800C9DB4Cam[] */
-    u8 pad1C[2];
-    u16 unk1E; /* base depth */
-    u8 pad20[0x24 - 0x20];
-    u16 unk24;
-    u16 unk26;
-    u8 pad28[0x30 - 0x28];
-    u16 unk30;
-    u16 unk32;
-} Unk800C9DA4Hdr;
-
-typedef struct {
-    u8 unk0;
-    u8 pad1[0x24 - 1];
-    u8 unk24;
-    u8 pad25[0x2C - 0x25];
-    s32 unk2C; /* offset: u32 palette position (y in the low 9 bits) */
-    u8 pad30[0x38 - 0x30];
-} Unk800C9DA4Trk; /* 0x38 */
+} BgCamera; /* 0x34 */
 
 typedef struct {
     u32 unk0;
     u8 pad4[0xC];
-} Unk800C9DA4Tbl; /* 0x10 */
+} BgOverlayAnimTbl; /* 0x10 */
 
 /* the same 0x10-byte table, as animation state */
 typedef struct {
@@ -417,7 +388,7 @@ typedef struct {
     s16 unk8;
     s16 unkA;
     s32 unkC; /* offset: u8 track index */
-} Unk800C9DA4Anim;
+} BgOverlayAnimView;
 
 typedef struct {
     u8 unk0;
@@ -425,24 +396,24 @@ typedef struct {
     u8 pad2[2];
     s32 unk4;
     s32 unk8;
-} Unk800C9DA4Ent; /* 0xC */
+} BgEntry; /* 0xC */
 
 typedef struct {
-    u8 *unk0; /* -> draw buffer index */
-    s32 unk4;
-    u32 *unk8[2]; /* ordering tables, per draw buffer */
-    Unk800C9DA4Hdr *unk10;
-    s32 unk14;
-    u8 *unk18;
-    u8 *unk1C; /* 3 bytes per entry */
+    u8 *bufIndex; /* -> draw buffer index */
+    s32 projDist;
+    u32 *ot[2]; /* ordering tables, per draw buffer */
+    BgFile *data;
+    s32 viewMatrix;
+    u8 *heap;
+    u8 *overlayRgb; /* 3 bytes per entry */
     u8 *unk20;
-    u8 unk24;
+    u8 entryCount;
     u8 pad25[3];
-    Unk800C9DA4Ent *unk28;
-    s32 unk2C;
-    s32 unk30;
-    s32 unk34;
-} Unk800C9DA4;
+    BgEntry *entries;
+    s32 work;
+    s32 workSize;
+    s32 workUsed;
+} FieldBgCtx;
 
 /* field light (12 bytes) */
 typedef struct {
@@ -875,7 +846,7 @@ typedef struct FieldActorInfo {
 typedef struct {
     RECT unk0;      /* destination area */
     DVECTOR *unk8;  /* per-frame source position */
-} BgAnimRect; /* 0xC */
+} TexAnimRect; /* 0xC */
 
 typedef struct {
     u8 unk0; /* flags: 1 active, 2 one-shot, 4 scroll */
@@ -887,14 +858,14 @@ typedef struct {
     u8 unkC; /* rect count */
     u8 padD;
     u16 unkE; /* last frame */
-    BgAnimRect *unk10;
-} BgAnim; /* 0x14 */
+    TexAnimRect *unk10;
+} TexAnim; /* 0x14 */
 
 typedef struct {
     u16 unk0; /* count */
     u8 pad2[2];
-    BgAnim unk4[1];
-} BgAnimHdr;
+    TexAnim unk4[1];
+} TexAnimSet;
 
 /* screen fade quads (g_fieldBgFollowOverlays, fldbg_addFollowOverlay) */
 typedef struct {
@@ -908,10 +879,10 @@ typedef struct {
     u8 padA[2];
     POLY_F4 unkC[2][4]; /* per draw buffer */
     DR_TPAGE unkCC[2];
-} FieldFade; /* 0xDC */
+} BgFollowOverlay; /* 0xDC */
 
-extern FieldFade g_fieldBgFollowOverlays[];
-extern u16 g_fieldBgFollowOverlayCount; /* FieldFade count */
+extern BgFollowOverlay g_fieldBgFollowOverlays[];
+extern u16 g_fieldBgFollowOverlayCount; /* BgFollowOverlay count */
 
 /* palette fade packet (fldbg_startClutFade), in the g_fieldBgCtx.unk2C buffer */
 typedef struct {
@@ -1051,36 +1022,36 @@ typedef struct {
     u16 unk2;
     u8 pad4[8 - 4];
     u32 unk8; /* offset: u16 (x, y) pairs */
-} BgSprPart; /* 0xC */
+} TexAnimRelocRect; /* 0xC */
 
 typedef struct {
     u8 unk0;
     u8 unk1; /* vertex count */
     u8 pad2[0xC - 2];
     u8 unkC; /* part count */
-    u8 unkD; /* BgSprOfs index */
+    u8 unkD; /* ModelTexOfs index */
     u16 unkE;
-    u32 unk10; /* offset: BgSprPart[] */
-} BgSprSet; /* 0x14 */
+    u32 unk10; /* offset: TexAnimRelocRect[] */
+} TexAnimReloc; /* 0x14 */
 
 typedef struct {
     u16 unk0; /* set count */
     u8 pad2[2];
-    BgSprSet unk4[1];
-} BgSprHdr;
+    TexAnimReloc unk4[1];
+} TexAnimRelocSet;
 
 typedef struct {
     u16 unk0;
     u16 unk2;
     u16 unk4;
     u16 unk6;
-} BgSprOfs;
+} ModelTexOfs;
 
-/* sprite vertex (BgSprPart.unk8) */
+/* sprite vertex (TexAnimRelocRect.unk8) */
 typedef struct {
     u16 unk0;
     u16 unk2;
-} BgSprVtx;
+} TexAnimRelocPos;
 
 /* streamed sound bank request (fld_soundBankReadCallback, as ovl_0c func_800AC424) */
 typedef struct {
@@ -1149,8 +1120,8 @@ void menuMain_setEquipHelp(u8);
 extern u8 g_fieldDiscChangeText[]; /* text */
 extern s32 g_fieldPreloadCursor;
 extern FieldDiscMode g_fieldDiscChangeModes[];
-extern Unk800C9DA4 g_fieldBgCtx;
-extern Unk800C9DB4 *g_fieldBgData;
+extern FieldBgCtx g_fieldBgCtx;
+extern BgFile *g_fieldBgData;
 extern u8 D_800CA108; /* background sprite x extent */
 extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
@@ -1166,7 +1137,7 @@ extern s32 g_fieldPreloadExcludes[8];
 extern u8 g_fieldPreloadRequestCount; /* g_fieldPreloadRequests count */
 extern u8 g_fieldPreloadExcludeCount; /* g_fieldPreloadExcludes count */
 extern FieldDiscChange g_fieldDiscChange;
-extern Unk800CA068 g_fieldBgState;
+extern FieldBgState g_fieldBgState;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
 extern BgiFloorMove g_fieldBgiFloorMoves[];
@@ -1247,7 +1218,7 @@ s32 bgi_moveActor(BgiActor *);
 s32 bgi_slide(BgiActor *, BgiTriangle **, s16 *, SVECTOR *, s16, s16, s32, s32);
 s32 bgi_applyPushes(BgiActor *, SVECTOR *, BgiTriangle **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
-s32 fldbg_drawOverlay(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
+s32 fldbg_drawOverlay(BgOverlay *, u8 *); /* adds a background layer's tiles to the OT */
 s32 fldbg_followPlayer(void); /* camera follow */
 extern BgiTriangle *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
 s32 bgi_initAnim(u32);
@@ -1314,40 +1285,40 @@ static inline BgiFloorMove *bgi_getFloorMove_inline(s32 i) {
 }
 
 /* tables inside the g_fieldBgData block (stored as offsets from its start) */
-static inline Unk800C9DB4Path *func_800C9DB4_path(s32 i) {
-    return &((Unk800C9DB4Path *)((u8 *)g_fieldBgData + g_fieldBgData->unkC))[i];
+static inline BgOverlayAnim *fldbg_overlayAnimPtr(s32 i) {
+    return &((BgOverlayAnim *)((u8 *)g_fieldBgData + g_fieldBgData->overlayAnimOffset))[i];
 }
 
-static inline Unk800C9DB4Obj *func_800C9DB4_obj(s32 i) {
-    return &((Unk800C9DB4Obj *)((u8 *)g_fieldBgData + g_fieldBgData->unk10))[i];
+static inline BgOverlay *fldbg_overlayPtr(s32 i) {
+    return &((BgOverlay *)((u8 *)g_fieldBgData + g_fieldBgData->overlayOffset))[i];
 }
 
-static inline Unk800C9DB4Cam *func_800C9DB4_cam(s32 i) {
-    return &((Unk800C9DB4Cam *)((u8 *)g_fieldBgData + g_fieldBgData->unk18))[i];
+static inline BgCamera *fldbg_cameraPtr(s32 i) {
+    return &((BgCamera *)((u8 *)g_fieldBgData + g_fieldBgData->cameraOffset))[i];
 }
 
-static inline Unk800C9DB4Step *func_800C9DB4_steps(Unk800C9DB4Path *p) {
-    return (Unk800C9DB4Step *)((u8 *)g_fieldBgData + p->unkC);
+static inline BgAnimStep *fldbg_animSteps(BgOverlayAnim *p) {
+    return (BgAnimStep *)((u8 *)g_fieldBgData + p->unkC);
 }
 
 /* tables inside the g_fieldBgi.unk8 block (offsets from its start) */
-static inline BgiTriangle *func_800C9DF8_node(s32 i) {
+static inline BgiTriangle *bgi_trianglePtr(s32 i) {
     return &((BgiTriangle *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->triangleOffset))[i];
 }
 
-static inline BgiEdgeView *func_800C9DF8_link(s32 i) {
+static inline BgiEdgeView *bgi_edgePtr(s32 i) {
     return &((BgiEdgeView *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->edgeOffset))[i];
 }
 
-static inline BgiKeyframe *func_800C9DF8_pts(BgiAnim *e) {
+static inline BgiKeyframe *bgi_keyframes(BgiAnim *e) {
     return (BgiKeyframe *)((u8 *)g_fieldBgi.header + e->frameOffset);
 }
 
-static inline BgiFloor *func_800C9DF8_tri(s32 i) {
+static inline BgiFloor *bgi_floorPtr(s32 i) {
     return &((BgiFloor *)((u8 *)g_fieldBgi.header + g_fieldBgi.header->floorOffset))[i];
 }
 
-s32 fldbg_drawFollowMask(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
+s32 fldbg_drawFollowMask(BgFile *bg, BgOverlay *o, FieldBgState *st, BgFollowOverlay *f);
 s32 fldbg_applyGeomOffset(void);
 
 
@@ -1356,7 +1327,7 @@ s32 bgi_getActorTilt(s32, s16 *, u16 *);
 void fldmdl_applyScale(ModelObj *);
 void fldmdl_calcBoneMatrices(ModelObj *, u16);
 s32 fld_isModelTexAnimActive(ModelObj *);
-void fldmdl_updateTexAnims(BgAnimHdr *);
+void fldmdl_updateTexAnims(TexAnimSet *);
 void fld_applyLights(FieldEvtCtx **, s32);
 void fld_playAnimSfx(FieldEvtCtx **, s32);
 void fld_applyModelCommands(FieldEvtCtx **, s32);
