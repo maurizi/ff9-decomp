@@ -1507,11 +1507,11 @@ extern u8 D_800C9D52;
 extern s32 D_800C9D54;
 s32 func_800B29F8(Unk800B29F8 *arg0);
 /* main exe: candidates for ff9.h */
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_80055310(void);
-s32 func_800553BC(void *, s32);
-void func_800553EC(s32, s32, s32, s32);
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_saveMusic(void);
+s32 akao_playMusicCount(void *, s32);
+void akao_playSe(s32, s32, s32, s32);
 void func_80055604(s32);
 void func_80055704(s32);
 void func_80055730(s32, s32);

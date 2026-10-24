@@ -284,7 +284,7 @@ void func_800A95A0(void) {
     DrawSync(0);
     while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
     }
-    func_8005546C(-1, 0);
+    akao_stopSe(-1, 0);
     func_800A9DE4(obj, g_gameState->unk1C->unk7DC);
     for (i = 0; i < 9; i++) {
         if (g_gameState->unk1C->unk8D8[i].unk0 & 1) {
@@ -826,13 +826,13 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             if (arg1 == 100) {
                 if (g_gameState->unk1C->unk0 & 0x20000000) {
-                    func_800552B8(g_gameState->unk1C->unk824[0]);
+                    akao_stopMusic(g_gameState->unk1C->unk824[0]);
                     g_gameState->unk1C->unk0 &= ~0x20000000;
                 }
                 g_gameState->unk1C->unk81C[1] = arg1;
                 g_gameState->unk1C->unk820[1] = func_800AC344(id);
                 g_gameState->unk1C->unk826[1] = 0x7F;
-                g_gameState->unk1C->unk824[1] = func_80055290((void *)g_gameState->unk1C->unk818);
+                g_gameState->unk1C->unk824[1] = akao_playMusic((void *)g_gameState->unk1C->unk818);
                 if (!(g_gameState->unk1C->unk0 & 0x80000000)) {
                     func_80055A34(g_gameState->unk1C->unk824[1], 0x1E, 0, g_gameState->unk1C->unk826[1]);
                 }
@@ -863,7 +863,7 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 goto done;
             }
         start:
-            g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+            g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
             if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
                 func_80055A34(g_gameState->unk1C->unk824[0], 0x1E, 0, g_gameState->unk1C->unk826[0]);
             }
@@ -877,17 +877,17 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             return func_800AC25C() ? 6 : 0;
         case 8:
-            func_80055310();
+            akao_saveMusic();
             g_gameState->unk1C->unk7E8 = g_gameState->unk1C->unk81C[0];
             g_gameState->unk1C->unk850 = g_gameState->unk1C->unk826[0];
             g_gameState->unk1C->unk7EA = g_gameState->unk1C->unk7DC;
         case 1:
             if (g_gameState->unk1C->unk81C[0] == arg1) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk826[0] = 0x7F;
                 g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
             } else if (g_gameState->unk1C->unk81C[1] == arg1) {
-                func_800552B8(g_gameState->unk1C->unk824[1]);
+                akao_stopMusic(g_gameState->unk1C->unk824[1]);
                 g_gameState->unk1C->unk826[0] = 0x7F;
                 g_gameState->unk1C->unk0 &= 0x7FFFFFFF;
             }
@@ -945,10 +945,10 @@ s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         __asm__(".rdata\n\t.word 0\n\t.text");
         switch (kind) {
         case 0:
-            func_800553EC(h, arg2, arg3, arg4);
+            akao_playSe(h, arg2, arg3, arg4);
             return 0;
         case 1:
-            func_8005546C(h, arg2);
+            akao_stopSe(h, arg2);
             return 0;
         case 2:
             switch (arg0 & 0x3F) {
@@ -1031,8 +1031,8 @@ state:
     case 1:
         if (func_800AC25C() == 0) {
             if (g_gameState->unk1C->unk0 & 0x200000) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
-                func_800552B8(g_gameState->unk1C->unk824[1]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[1]);
                 g_gameState->unk1C->unk0 &= ~0x200000;
             }
             g_gameState->unk1C->unk851 = 2;

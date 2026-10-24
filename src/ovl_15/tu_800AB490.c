@@ -125,7 +125,7 @@ s32 func_800AC374(void) {
 
     file_setTimPos(p, 0, 0xE0, 0x280, 0);
     file_loadTim(p);
-    func_800552B8(0);
+    akao_stopMusic(0);
     func_800AC598(0, 0x7009C, 0, 0, 0);
     func_800AC598(0xC401, 0x7009C, 0x5A, 0, 0x7F);
     game_startFade(1, 1, 0, 0xFFFFFF);
@@ -180,14 +180,14 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             if (g_gameState->unk1C->unk81C[0] != arg1) {
                 if (g_gameState->unk1C->unk0 & 0x20000000) {
-                    func_800552B8(g_gameState->unk1C->unk824[0]);
+                    akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 }
                 g_gameState->unk1C->unk0 &= 0xCFFFFFFF;
                 g_gameState->unk1C->unk820[0] = 0x1F3;
                 g_gameState->unk1C->unk81C[0] = arg1;
                 g_gameState->unk1C->unk826[0] = 0x7F;
             }
-            g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+            g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
             g = g_gameState->unk1C;
             if (!(g->unk0 & 0x20000000)) {
                 func_80055A34(g->unk824[0], 0xA, 0, g->unk826[0]);
@@ -197,7 +197,7 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             return 0;
         case 1:
             if (g_gameState->unk1C->unk81C[0] == (u16)id) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk826[0] = 0x7F;
                 g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
             }
@@ -247,10 +247,10 @@ s32 func_800AC598(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         }
         switch (kind) {
         case 0:
-            func_800553EC(h, arg2, arg3, arg4);
+            akao_playSe(h, arg2, arg3, arg4);
             return 0;
         case 1:
-            func_8005546C(h, arg2);
+            akao_stopSe(h, arg2);
             return 0;
         case 2:
             switch (arg0 & 0x3F) {
@@ -343,7 +343,7 @@ void func_800ACCB4(void) {
     s32 a;
     s32 b;
 
-    func_800552B8(0);
+    akao_stopMusic(0);
     a = (s32)db_lookupRegistered(4, 0x7009C, 0);
     memmove(g_gameState->unk1C->unk814, (void *)a, (s32)db_lookupRegistered(5, 0x7009C, 0));
     a = (s32)db_lookupRegistered(4, 0x901F3, 0);

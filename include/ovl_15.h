@@ -7,13 +7,13 @@
 #include "ff9.h"
 
 /* main exe: candidates for ff9.h */
-void func_800552B8(s32);
+void akao_stopMusic(s32);
 s32 text_measureSmall(u8 *); /* text width */
 void file_setTimPos(s32, s32, s32, s32, s32);
 s32 cd_findFile(s32);
 void cd_seekStreamAsync(s32);
-s32 func_80055290(void *);
-void func_800553EC(s32, s32, s32, s32);
+s32 akao_playMusic(void *);
+void akao_playSe(s32, s32, s32, s32);
 void func_80055704(s32);
 void func_80055730(s32, s32);
 void func_80055764(s32, s32, s32);

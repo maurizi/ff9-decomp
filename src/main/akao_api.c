@@ -1,11 +1,11 @@
 #include "ff9.h"
 
-s32 func_800551F0(void) {
+s32 snd_init(void) {
     akao_init();
     return 0;
 }
 
-s32 func_80055210(void) {
+s32 snd_quit(void) {
     akao_quit();
     return 0;
 }
@@ -28,23 +28,23 @@ s32 func_80055230(u8 *a) {
     return r;
 }
 
-s32 func_80055290(s32 a) {
+s32 akao_playMusic(s32 a) {
     g_akaoArgs.unk0 = a;
     return akao_command(0x10);
 }
 
-void func_800552B8(s32 a) {
+void akao_stopMusic(s32 a) {
     g_akaoArgs.unk0 = a;
     akao_command(0x11);
 }
 
-void func_800552E0(s32 a, s32 b) {
+void akao_playMusicFrom(s32 a, s32 b) {
     g_akaoArgs.unk0 = a;
     g_akaoArgs.unk4 = b;
     akao_command(0x14);
 }
 
-void func_80055310(void) {
+void akao_saveMusic(void) {
     akao_command(0x40);
 }
 
@@ -55,26 +55,26 @@ s32 func_80055330(void) {
     return 0;
 }
 
-void func_80055350(s32 a, s32 b) {
+void akao_pushMusic(s32 a, s32 b) {
     g_akaoArgs.unk0 = a;
     g_akaoArgs.unk4 = b & 0x7F;
     akao_command(0x19);
 }
 
-void func_80055384(s32 a, s32 b, s32 c) {
+void akao_crossfadeMusic(s32 a, s32 b, s32 c) {
     g_akaoArgs.unk0 = a;
     g_akaoArgs.unk4 = b;
     g_akaoArgs.unk8 = c & 0x7F;
     akao_command(0x1A);
 }
 
-s32 func_800553BC(s32 a, s32 b) {
+s32 akao_playMusicCount(s32 a, s32 b) {
     g_akaoArgs.unk0 = a;
     g_akaoArgs.unk4 = b;
     return akao_command(0x12);
 }
 
-s32 func_800553EC(s32 a, s32 b, s32 c, s32 d) {
+s32 akao_playSe(s32 a, s32 b, s32 c, s32 d) {
     s32 r;
 
     g_akaoArgs.unk0 = a;
@@ -92,18 +92,18 @@ s32 func_800553EC(s32 a, s32 b, s32 c, s32 d) {
     return akao_command(0x20);
 }
 
-void func_8005546C(s32 a, s32 b) {
+void akao_stopSe(s32 a, s32 b) {
     g_akaoArgs.unk0 = a;
     g_akaoArgs.unk4 = b & 0xFFFFFF;
     akao_command(0x21);
 }
 
-void func_800554A8(s32 a) {
+void akao_playSeDefault(s32 a) {
     g_akaoArgs.unk0 = a & 0x3FF;
     akao_command(0x30);
 }
 
-u32 func_800554D4(void) {
+u32 akao_getActiveSe(void) {
     u32 mask = D_80080A70.unk0;
     AkaoChannel *c;
     u32 r;
@@ -124,7 +124,7 @@ u32 func_800554D4(void) {
     return r;
 }
 
-s32 func_8005553C(u32 id) {
+s32 akao_isSePlaying(u32 id) {
     u32 mask;
     u32 bit;
     AkaoChannel *c;

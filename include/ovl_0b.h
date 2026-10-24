@@ -2178,7 +2178,7 @@ typedef struct {
 extern Unk8006E0E8 D_8006E0E8[];
 void VSyncCallback(void (*)(void));
 void text_uploadPartyNames(void *);
-void func_800553EC(s32, s32, s32, s32);
+void akao_playSe(s32, s32, s32, s32);
 s32 item_getCount(s32); /* main.c defines it returning u8 */
 typedef struct {
     u32 unk0_0 : 8;
@@ -2705,8 +2705,8 @@ extern u8 D_800F51F2; /* byte 2 of D_800F51F0 */
 extern s32 D_800F51F4;
 extern s8 D_800F51F8;
 /* main exe: candidates for ff9.h */
-void func_800552B8(s32);
-s32 func_80055290(void *);
+void akao_stopMusic(s32);
+s32 akao_playMusic(void *);
 void func_800559C8(s32, s32);
 void func_800559FC(s32, s32, s32);
 void func_80055A34(s32, s32, s32, s32);
@@ -3118,7 +3118,7 @@ void btl_startCmdEffect(BtlCmd *);
 void btl_finishCmd(Battle *);
 void btl_drawScene(GameData *, Battle *, s32);
 
-s32 func_8005553C(s32);
+s32 akao_isSePlaying(s32);
 void func_80055850(s32, s32, s32);
 s32 chr_findAbilitySlot(s32, s32);
 void func_800F3D3C(s32);

@@ -1751,7 +1751,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             ga = g_gameState->unk1C;
             if (ga->unk81C[0] != arg1 || ga->unk820[0] != (u16)r) {
                 if (ga->unk0 & 0x20000000) {
-                    func_800552B8(ga->unk824[0]);
+                    akao_stopMusic(ga->unk824[0]);
                 }
                 g_gameState->unk1C->unk0 &= 0xCFFFFFFF;
                 g_gameState->unk1C->unk820[0] = r;
@@ -1771,7 +1771,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
         finish:
             if (D_800F51F8 != 7) {
-                g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+                g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
                 gb = g_gameState->unk1C;
                 if (!(gb->unk0 & 0x20000000)) {
                     func_80055A34(gb->unk824[0], 0x1E, 0, gb->unk826[0]);
@@ -1781,7 +1781,7 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             D_800F51F8 = -1;
             return 0;
         case 1:
-            func_800552B8(g_gameState->unk1C->unk824[0]);
+            akao_stopMusic(g_gameState->unk1C->unk824[0]);
             g_gameState->unk1C->unk826[0] = 0x7F;
             g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
             return 0;
@@ -1833,10 +1833,10 @@ s32 btl_soundCmd(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         __asm__(".section .rodata\n\t.word 0\n\t.section .text");
         switch (kind) {
         case 0:
-            func_800553EC(h, arg2, arg3, arg4);
+            akao_playSe(h, arg2, arg3, arg4);
             return 0;
         case 1:
-            func_8005546C(h, arg2);
+            akao_stopSe(h, arg2);
             return 0;
         case 2:
             switch (arg0 & 0x3F) {

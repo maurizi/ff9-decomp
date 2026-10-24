@@ -462,13 +462,13 @@ void fld_exit(void) {
         g_gameState->unkA = 1;
         break;
     case 7:
-        func_8005546C(-1, 0);
+        akao_stopSe(-1, 0);
         func_80056228();
         g_gameState->mode = 7;
         g_gameState->unkA = 1;
         break;
     case 4:
-        func_8005546C(-1, 0);
+        akao_stopSe(-1, 0);
         func_80056228();
         g_gameState->mode = 4;
         g_gameState->unkA = 1;

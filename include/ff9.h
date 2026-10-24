@@ -1426,7 +1426,7 @@ void akao_init(void);
 void akao_quit(void);
 s32 akao_command(u32);
 void func_80055D80(s32, s32);
-void func_8005ECCC(AkaoChannel *, s32);
+void akao_opEnd(AkaoChannel *, s32);
 void func_80060938(void);
 void help_setCallback(void (*)(void));
 
@@ -1537,7 +1537,7 @@ extern u8 D_80077E2F;
 extern s16 D_80077E30; /* = D_80077E28.unk8 */
 
 void menuScreen_loadOverlay(void);
-void func_80059AA8(s32, s32);
+void akao_stopSeChannels(s32, s32);
 s32 preload_poll(void);
 void preload_clearBusy(void);
 void help_init(void);
@@ -1578,7 +1578,7 @@ u16 *func_800633E4(s32);
 void item_initNew(void);
 void func_8003431C(void);
 void party_initNewGame(void);
-s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
+s32 snd_quit(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
 void win_drawBoxEx(RECT *, s32, s32, s32);
@@ -1711,8 +1711,8 @@ extern s32 D_8007BB94;
 
 s32 SpuRead(s32, s32);
 void func_80056614(void);
-void func_8006008C(AkaoChannel *, s32);
-void func_800600C0(AkaoChannel *, s32);
+void akao_opAE(AkaoChannel *, s32);
+void akao_opAF(AkaoChannel *, s32);
 u8 cd_syncAsync(void (*)(u8 *));
 
 
@@ -1723,7 +1723,7 @@ extern u8 D_80083156; /* tempo scale */
 void func_8005E3FC(AkaoChannel *, u32);
 void func_800579B4(AkaoChannel *, u32, s32);
 
-void func_8005A658(Unk80080AA0 *);
+void akao_cmdPlayMusic(Unk80080AA0 *);
 
 /* ---- hoisted from overlay headers ---- */
 
@@ -2159,7 +2159,7 @@ void func_8004BBF0(void);
 void msg_init(void);
 void evt_clearGlobalVars(void);
 void func_8005392C(void);
-s32 func_800551F0(void);
+s32 snd_init(void);
 void func_80055D40(void);
 void func_80055D60(void);
 s32 func_80055DF4(void);
@@ -2249,8 +2249,8 @@ typedef struct {
     u16 unk28;
 } Unk80080A70;
 extern Unk80080A70 D_80080A70;
-void func_8005FD10(AkaoChannel *, u32);
-void func_8005FDD8(AkaoChannel *, u32);
+void akao_opC4(AkaoChannel *, u32);
+void akao_opC6(AkaoChannel *, u32);
 extern u16 D_80080A98; /* = D_80080A70.unk28 */
 extern s32 D_80080A80;
 
@@ -2491,7 +2491,7 @@ typedef struct {
 } Unk80083168;
 u32 SpuWrite(u8 *, u32);
 void func_80060FA8(void);
-void func_800599D4(Unk80080A10 *, AkaoChannel *, s32);
+void akao_stopSeq(Unk80080A10 *, AkaoChannel *, s32);
 void SpuGetReverbModeType(s32 *); /* libspu SpuGetReverbModeType */
 void func_800618C0(s32, s32);
 void func_80060AE0(s32, s32, s32);
@@ -2688,7 +2688,7 @@ s32 menuScreen_getCommandHelp(s32);
 void menuScreen_close(void);
 s32 func_80054F80(void);
 s32 func_80050AAC(void);
-void func_8005546C(s32, s32);
+void akao_stopSe(s32, s32);
 void func_80056228(void);
 s32 game_getPlayTime(void);
 s32 text_formatTime(s32, u8 *, s32);
@@ -3550,7 +3550,7 @@ extern s32 D_8007AE64;
 
 s32 func_800631AC(WinDef *);
 
-/* AKAO sequence header (func_8005ACB4) */
+/* AKAO sequence header (akao_cmdPlaySeBank) */
 typedef struct {
     u8 pad0[4];
     s32 unk4; /* track count */

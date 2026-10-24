@@ -2073,7 +2073,7 @@ void func_800E9578(void) {
     Unk80104E30Entry *e = p->unk4;
     for (i = 0; i < 6; i++, e++) {
         if (e->unk0 != 0) {
-            if (func_8005553C(e->unk0) == 0) {
+            if (akao_isSePlaying(e->unk0) == 0) {
                 e->unk0 = 0;
             } else {
                 n++;
@@ -2107,8 +2107,8 @@ s32 func_800E9638(s32 arg0) {
         bit = bestbit;
         e = best;
     }
-    if (func_8005553C(bit) != 0) {
-        func_8005546C(0, bit);
+    if (akao_isSePlaying(bit) != 0) {
+        akao_stopSe(0, bit);
     }
     if (e != NULL) {
         e->unk0 = bit;
@@ -2119,7 +2119,7 @@ s32 func_800E9638(s32 arg0) {
 }
 
 void func_800E970C(void) {
-    func_8005546C(0, 0x3F);
+    akao_stopSe(0, 0x3F);
 }
 
 Unk80104E34 *func_800E9730(s32 arg0) {
@@ -2169,7 +2169,7 @@ s32 btl_soundPan(s32 arg0) {
 void func_800E9884(s32 arg0) {
     Unk80104E34 *p = func_800E9730(arg0);
     if (p != NULL) {
-        func_8005546C(0, arg0);
+        akao_stopSe(0, arg0);
         p->unk0 = 0;
     }
 }
@@ -2194,7 +2194,7 @@ void func_800E98F8(s32 arg0) {
 s32 func_800E9930(s32 arg0, s32 arg1, s32 arg2) {
     s32 v = func_800E9638(arg2);
     if (v != 0) {
-        func_800553EC(btlfx_getFileData(arg1, arg0), v, btl_soundPan(arg2), 0x7F);
+        akao_playSe(btlfx_getFileData(arg1, arg0), v, btl_soundPan(arg2), 0x7F);
     }
     return v;
 }
@@ -2207,7 +2207,7 @@ void func_800E99B0(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 s32 func_800E9A00(s32 arg0, s32 arg1) {
     s32 v = func_800E9638(arg1);
     if (v != 0) {
-        func_800553EC(func_800E454C(arg0), v, btl_soundPan(arg1), 0x7F);
+        akao_playSe(func_800E454C(arg0), v, btl_soundPan(arg1), 0x7F);
     }
     return v;
 }

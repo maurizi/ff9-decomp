@@ -82,7 +82,7 @@ void func_801EF5C8(void) {
         }
         g = g_gameState->unk1C;
         g->unk0 &= ~0x400000;
-        func_80055210(g);
+        snd_quit(g);
         D_80067950++;
         g_gameState->unk1C->unk0 |= 0x100000;
     }

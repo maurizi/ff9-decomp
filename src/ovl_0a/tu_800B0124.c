@@ -76,7 +76,7 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 goto done;
             }
         start:
-            g_gameState->unk1C->unk824[0] = func_80055290(g_gameState->unk1C->unk814);
+            g_gameState->unk1C->unk824[0] = akao_playMusic(g_gameState->unk1C->unk814);
             if (!(g_gameState->unk1C->unk0 & 0x20000000)) {
                 func_80055A34(g_gameState->unk1C->unk824[0], 0xA, 0, g_gameState->unk1C->unk826[0]);
             }
@@ -90,7 +90,7 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
             return func_800B2C80() ? 6 : 0;
         case 8:
-            func_80055310();
+            akao_saveMusic();
             g_gameState->unk1C->unk7E8 = g_gameState->unk1C->unk81C[0];
             g_gameState->unk1C->unk840 = g_gameState->unk1C->unk820[0];
             g_gameState->unk1C->unk850 = g_gameState->unk1C->unk826[0];
@@ -99,12 +99,12 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             g_gameState->unk1C->unk8B0 = g_gameState->unk1C->unk84A;
         case 1:
             if ((arg0 & 0x3F) == 1) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk826[0] = 0x7F;
                 g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
                 return 0;
             }
-            func_800552B8(g_gameState->unk1C->unk824[0]);
+            akao_stopMusic(g_gameState->unk1C->unk824[0]);
             g_gameState->unk1C->unk826[0] = 0x7F;
             g_gameState->unk1C->unk0 &= 0xDFFFFFFF;
             return 0;
@@ -131,7 +131,7 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 }
                 break;
             case 7:
-                g_gameState->unk1C->unk824[0] = func_800553BC(g_gameState->unk1C->unk814, arg2);
+                g_gameState->unk1C->unk824[0] = akao_playMusicCount(g_gameState->unk1C->unk814, arg2);
                 g_gameState->unk1C->unk0 |= 0x20000000;
                 return 0;
             }
@@ -220,7 +220,7 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 mask2 = mask >> 1;
                 if (kind == 0 && g_gameState->unk1C->unk830[slot] != arg1) {
                     if (g_gameState->unk1C->unk0 & mask) {
-                        func_8005546C(SFXH(slot), arg2);
+                        akao_stopSe(SFXH(slot), arg2);
                         g_gameState->unk1C->unk0 ^= mask | mask2;
                     }
                     memcpy((void *)SFXH(slot), db_lookupRegistered(4, id, 0), (s32)db_lookupRegistered(5, id, 0));
@@ -249,7 +249,7 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             }
         case 0:
             if (!fp || !(g_gameState->unk1C->unk0 & mask)) {
-                func_800553EC(h, arg2, arg3, arg4);
+                akao_playSe(h, arg2, arg3, arg4);
             }
             if (fp) {
                 g_gameState->unk1C->unk8BA[slot] = arg3;
@@ -265,14 +265,14 @@ s32 func_800B0124(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         case 1:
             if ((arg0 & 0x3F) == 9 && fp) {
                 if (g_gameState->unk1C->unk0 & 0x2000000) {
-                    func_8005546C((s32)g_gameState->unk1C->unk828, 0x100000);
+                    akao_stopSe((s32)g_gameState->unk1C->unk828, 0x100000);
                 }
                 if (g_gameState->unk1C->unk0 & 0x8000000) {
-                    func_8005546C((s32)g_gameState->unk1C->unk82C, 0x200000);
+                    akao_stopSe((s32)g_gameState->unk1C->unk82C, 0x200000);
                 }
                 g_gameState->unk1C->unk0 &= 0xF5FFFFFF;
             } else {
-                func_8005546C(h, arg2);
+                akao_stopSe(h, arg2);
                 if (fp) {
                     g_gameState->unk1C->unk0 &= ~mask;
                 }
@@ -424,7 +424,7 @@ state:
     case 1:
         if (func_800B2C80() == 0) {
             if (g_gameState->unk1C->unk0 & 0x200000) {
-                func_800552B8(g_gameState->unk1C->unk824[0]);
+                akao_stopMusic(g_gameState->unk1C->unk824[0]);
                 g_gameState->unk1C->unk0 &= ~0x200000;
             }
             g_gameState->unk1C->unk851 = 2;
@@ -621,7 +621,7 @@ void func_800B1E04(FieldScene *arg0, s16 arg1) {
     s32 i;
 
     for (i = db_lookup(t, 1, 0x80000, 0) - 1; i >= 0; i--) {
-        func_8005546C(db_lookup(t, 2, (i & 0xFFFF) | 0x80000, 0), 0);
+        akao_stopSe(db_lookup(t, 2, (i & 0xFFFF) | 0x80000, 0), 0);
     }
     func_80056228();
 }

@@ -1402,10 +1402,10 @@ void func_800AC424(Unk800AC424 *arg0);
 s32 func_800B8108(void);
 
 /* main exe: candidates for ff9.h (sound) */
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_80055310(void);
-void func_800553EC(s32, s32, s32, s32);
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_saveMusic(void);
+void akao_playSe(s32, s32, s32, s32);
 void func_80055604(s32);
 void func_80055704(s32);
 void func_80055730(s32, s32);

@@ -373,9 +373,9 @@ u8 pad_isRepeatEnabled(s32, s32);
 void help_nullHandler(void);
 void card_clearAll();
 extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
-s32 func_80055290(void *);
-void func_800552B8(s32);
-void func_800553EC(s32, s32, s32, s32);
+s32 akao_playMusic(void *);
+void akao_stopMusic(s32);
+void akao_playSe(s32, s32, s32, s32);
 void func_80055704(s32);
 void func_80055730(s32, s32);
 void func_80055764(s32, s32, s32);

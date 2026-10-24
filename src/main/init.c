@@ -41,7 +41,7 @@ void game_reset(void) {
     SpuSetReverbDepth(&D_80073690);
     SpuGetReverbModeType(&D_800736A4);
     SpuClearReverbWorkArea(D_800736A4);
-    func_800551F0();
+    snd_init();
     SpuGetReverbModeType(&D_800736A4);
     SpuClearReverbWorkArea(D_800736A4);
     for (i = 0; i < 90; i++) {
@@ -55,7 +55,7 @@ void game_reset(void) {
 }
 
 void game_shutdown(void) {
-    func_80055210();
+    snd_quit();
     db_quit();
     D_80067950++;
 }
