@@ -766,39 +766,39 @@ typedef struct {
 } Unk80104F88Gauge;
 
 typedef struct Unk80104F88Entry {
-    Unk80104F88Gauge unk0[2]; /* hp, mp */
-    struct BtlUnit *unk10;
-    Character *unk14;
-    u8 unk18;
-    u8 unk19;
-    u8 unk1A;
-    u8 unk1B;
-    u8 *unk1C[0xC0]; /* -> Character.unk58[] */
-    u8 unk31C[0xC0];
-    u8 unk3DC[0xC0]; /* abilities available from equipment */
-    Unk800EB518 unk49C;
+    Unk80104F88Gauge gauges[2]; /* hp, mp readouts (btlui_updateGauges) */
+    struct BtlUnit *unit;
+    Character *chr;
+    u8 slot; /* unit slot id (flags bits 5-7) */
+    u8 learns; /* the character learns abilities (func_80034A30); 0: btlui_addLearnedAbilities skips it */
+    u8 defaultSet; /* func_800339F4 of the character */
+    u8 port; /* controller port in the two-controller option */
+    u8 *apCounters[0xC0]; /* -> Character.unk58[], AP gathered per ability id */
+    u8 apNeeded[0xC0];
+    u8 fromEquip[0xC0]; /* abilities available from equipment */
+    Unk800EB518 cursor; /* remembered command and list cursors (btlui_saveCursor) */
 } Unk80104F88Entry; /* 0x4A8, one per party member */
 
 typedef struct {
-    Unk80104F88Entry unk0[4];
+    Unk80104F88Entry entries[4];
     struct BtlUnit *cmdUnit; /* unit whose command menu is up (runtime) */
-    Window *unk12A4[4];
-    u8 menuState; /* runtime: 0 none, 1 command menu, 3 target select, 4 next member */
+    Window *windows[4]; /* 0 target names, 1 battle list, 2 ability/item list, 3 commands */
+    u8 menuState; /* BTLUI_MENU_* */
     u8 partyCount;
-    u8 unk12B6;
-    u8 unk12B7;
+    u8 frozenSide; /* side whose ATB stays still (btlui_getFrozenSide) */
+    u8 swdMagPartner; /* character 1 is in the party (btlui_checkSwdMagPartner) */
     union {
         u8 b[2]; /* set separately by btlui_checkSwdMagPartner */
         u16 h;   /* tested together */
-    } unk12B8;
+    } swdMagBlocked;
     u8 pad12BA[0x12BC - 0x12BA];
-    s32 unk12BC;
-    u32 unk12C0;
-    u8 unk12C4; /* queue count */
-    u8 unk12C5; /* queue head */
+    s32 ambush; /* scene.unk0 & 3 at battle start */
+    u32 tick; /* btlui_updateAtbFreeze calls */
+    u8 queueCount; /* units waiting for their command menu */
+    u8 queueHead;
     u8 unk12C6;
     u8 pad12C7;
-    struct BtlUnit *unk12C8[4];
+    struct BtlUnit *queue[4];
 } Unk80104F88;
 extern Unk80104F88 *g_btlUi;
 
