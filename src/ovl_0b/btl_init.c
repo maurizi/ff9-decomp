@@ -26,7 +26,7 @@ void btl_initParty(Battle *arg0) {
         arg0->units[n].unitBit = 0;
     }
     arg0->loadFlags |= 0x10;
-    func_800C9A28();
+    btl_placeParty();
     k = arg0->scene.unk0 & 3;
     if (k == 0) {
         for (u = arg0->unitList; u != NULL; u = u->next) {
@@ -57,7 +57,7 @@ void btl_initEnemies(Battle *arg0) {
         e = &arg0->enemies[i];
         e->unk4 = (e->unk4 & ~0x3F) | 0x20;
         u = &arg0->units[n];
-        u->modelId = m = func_800CA2E4(i);
+        u->modelId = m = btl_getEnemyModelId(i);
         if (m < 0) {
             e->unk4 |= 0x200;
         } else {
@@ -88,7 +88,7 @@ void btl_initEnemies(Battle *arg0) {
     prev->next = NULL;
     arg0->unitList = &arg0->units[4];
     arg0->loadFlags |= 8;
-    func_800C9794();
+    btl_setupEnemies();
     btlseq_init();
 }
 
@@ -120,10 +120,10 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->spirit = c->spirit;
     u->level = c->level;
     u->max = (BtlUnit24 *)&c->maxHp;
-    func_800BD8C0((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
+    btl_copyStats((Unk800BD8C0 *)&u->hp, (Unk800BD8C0 *)&c->hp);
     btl_resetUnit(u, &g_gameState->unk1C->unk8D8[c->unk34.w & 0xF]);
     u->unkAE = 0xFFFF;
-    func_800C0A3C((Unk800C09D8 *)u);
+    btl_initDoomCount((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
     k = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
@@ -141,7 +141,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
     }
     u->weaponModel = &g_gameState->unk1C->unk8E4.battle->weaponModels[n].unk0;
-    func_800BD698(u, (c->unk34.w >> 4) & 0x1F, n);
+    btl_loadPartyMotions(u, (c->unk34.w >> 4) & 0x1F, n);
     btl_initWeapon(c, u);
     u->defense = c->defense;
     u->evade = c->evade;
@@ -149,7 +149,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->magicEva = c->magicEva;
     btl_initEquipElements(c, u);
     for (i = 0; i < u->weaponModel->unk8->unk3; i++) {
-        func_800C8D18(u->weaponModel, i, 0, 0, 0);
+        btl_setMeshRgb(u->weaponModel, i, 0, 0, 0);
     }
     if (u->hp * 6 < u->max->maxHp) {
         u->status |= BTL_STATUS_LOW_HP;
@@ -162,7 +162,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->unk98 = (struct BtlUnit98 *)&u->unkA0->unk14;
     if (u->hp == 0 && btl_addStatus(u, BTL_STATUS_KO) == 2) {
         u->unk7D = 5;
-        func_800BD5A0(u);
+        btl_setKoMotion(u);
         return;
     }
     u->unk68 = (u->unk68 & ~0x40000) | ((btl_hasStatus(u, (BTL_STATUS_VENOM | BTL_STATUS_LOW_HP | BTL_STATUS_POISON | BTL_STATUS_SLEEP)) & 1) << 18);
@@ -170,7 +170,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     u->unkA0->unk3A = 0;
 }
 
-u32 *func_800BB974(Battle *arg0, u32 *arg1) {
+u32 *btl_initEnemyState(Battle *arg0, u32 *arg1) {
     SVECTOR r2;
     SVECTOR r;
     BtlUnit *u;
@@ -195,7 +195,7 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
             }
             u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
             u->weapon = NULL;
-            func_800C0A3C((Unk800C09D8 *)u);
+            btl_initDoomCount((Unk800C09D8 *)u);
             btl_hideMeshes(u, u->hiddenMeshes);
             if ((u->unk68 >> 23) & 1) {
                 u->atb = 0;
@@ -275,7 +275,7 @@ void btl_resetUnit(BtlUnit *arg0, Unk8E0 *arg1) {
         arg0->model->unk50[2].unkC = 0;
         arg0->model->unk50[2].unk12 = 0x1000;
         for (i = 0; i < arg0->model->unk8->unk3; i++) {
-            func_800C8D18(arg0->model, i, 0, 0, 0);
+            btl_setMeshRgb(arg0->model, i, 0, 0, 0);
         }
     }
     arg0->hiddenMeshes = 0;
@@ -295,8 +295,8 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     id = ((Unk8006E0E8 *)arg1->weapon)->unk2 | 0x20000;
     arg1->weaponModel->unk8 = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->unk68 >> 5);
     btl_getWeaponTexInfo(id, (u8)arg1->unk68 >> 5, &a, &b, &c);
-    func_800C7730(arg1->weaponModel, (s16 *)a, (s16 *)b);
-    func_800C2344(arg1->weaponModel);
+    btl_applyModelTextures(arg1->weaponModel, (s16 *)a, (s16 *)b);
+    btl_applyBgLight(arg1->weaponModel);
     arg1->weaponModel->unkC = 0;
     switch (arg0->unk34.b.unk4) {
     case 0:

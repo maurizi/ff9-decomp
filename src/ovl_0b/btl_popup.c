@@ -70,7 +70,7 @@ void btl_spawnTickPopups(BtlUnit *arg0) {
     arg0->tickMpDamage = 0;
 }
 
-Unk800CC278 *func_800CC278(BtlUnit *u) {
+Unk800CC278 *btl_newPopup(BtlUnit *u) {
     Battle1358Ring *r;
     Battle1358 *p;
     BtlBone *bone;
@@ -94,25 +94,25 @@ Unk800CC278 *func_800CC278(BtlUnit *u) {
 }
 
 Unk800CC278 *btl_popupHp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
-    Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
+    Unk800CC278 *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 0;
     p->unk10.b.unk0 = arg3;
     p->unk18 = arg2;
-    p->unk14.w = func_800CC444(arg1);
+    p->unk14.w = btl_packDigits(arg1);
     return p;
 }
 
 Unk800CC278 *btl_popupMp(s32 arg0, s16 arg1, s16 arg2, u8 arg3) {
-    Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
+    Unk800CC278 *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 1;
     p->unk10.b.unk0 = arg3;
     p->unk18 = arg2;
-    p->unk14.w = func_800CC444(arg1);
+    p->unk14.w = btl_packDigits(arg1);
     return p;
 }
 
 Unk800CC278 *btl_popupText(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
-    Unk800CC278 *p = func_800CC278((BtlUnit *)arg0);
+    Unk800CC278 *p = btl_newPopup((BtlUnit *)arg0);
     p->unk10.b.unk2 = 2;
     p->unk10.b.unk0 = arg3;
     p->unk14.p = &D_800F6A54[arg1];
@@ -121,7 +121,7 @@ Unk800CC278 *btl_popupText(s32 arg0, u8 arg1, s16 arg2, s8 arg3) {
 }
 
 /* Packs n (< 9999) as decimal digits, one per nibble, with the digit count in bits 16+. */
-s32 func_800CC444(u32 n) {
+s32 btl_packDigits(u32 n) {
     u32 r = 0;
     u16 d;
     u16 i;
@@ -206,7 +206,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     return (u8 *)c.unk0;
 }
 
-void func_800CC818(Battle1358 *arg0, Unk800CCD00 *arg1) {
+void btl_drawNumberPopup(Battle1358 *arg0, Unk800CCD00 *arg1) {
     u8 *anim;
     u8 c;
     u32 n;
@@ -231,15 +231,15 @@ void func_800CC818(Battle1358 *arg0, Unk800CCD00 *arg1) {
             if (arg0->unk10.b.unk2 != 0) {
                 x = D_80068BE8.unk4 + w;
             }
-            func_800CCAF0(arg0, arg1, x, 10);
+            btl_clampPopup(arg0, arg1, x, 10);
         } else {
             arg1->unk10.s.y += arg0->unk10.b.unk1;
         }
-        func_800CCBC0(arg1, n);
+        btl_drawPopupDigits(arg1, n);
         if (arg0->unk10.b.unk2 != 0) {
             arg1->unk10.s.x += (n >> 16) * 8;
             arg1->unk10.s.y += 3;
-            func_800CCD00(arg1, &D_80068BE8);
+            btl_drawPopupGlyph(arg1, &D_80068BE8);
         }
     }
     if (anim[++arg0->unkE] == 0xFF) {
@@ -247,7 +247,7 @@ void func_800CC818(Battle1358 *arg0, Unk800CCD00 *arg1) {
     }
 }
 
-void func_800CC9C8(Battle1358 *arg0, Unk800CCD00 *arg1) {
+void btl_drawTextPopup(Battle1358 *arg0, Unk800CCD00 *arg1) {
     u8 *anim;
     u8 c;
     Unk800686E8 *g;
@@ -261,9 +261,9 @@ void func_800CC9C8(Battle1358 *arg0, Unk800CCD00 *arg1) {
         arg1->unk10.s.x -= g->unk4 >> 1;
         arg1->unk10.s.y -= (g->unk5 >> 1) + (c & 0x1F);
         if (arg0->unk10.b.unk3 == 0) {
-            func_800CCAF0(arg0, arg1, g->unk4, g->unk5);
+            btl_clampPopup(arg0, arg1, g->unk4, g->unk5);
         }
-        func_800CCD00(arg1, g);
+        btl_drawPopupGlyph(arg1, g);
     }
     arg0->unkE++;
     if (anim[arg0->unkE] == 0xFF) {
@@ -271,7 +271,7 @@ void func_800CC9C8(Battle1358 *arg0, Unk800CCD00 *arg1) {
     }
 }
 
-void func_800CCAF0(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
+void btl_clampPopup(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
     if (arg0->unkE == 0) {
         if (arg1->unk10.s.y - 21 < 0) {
             arg0->unk10.b.unk1 = 21 - arg1->unk10.s.y;
@@ -292,7 +292,7 @@ void func_800CCAF0(Battle1358 *arg0, Unk800CCD00 *arg1, s32 w, s32 h) {
     }
 }
 
-void func_800CCBC0(Unk800CCD00 *arg0, u32 arg1) {
+void btl_drawPopupDigits(Unk800CCD00 *arg0, u32 arg1) {
     DVECTOR xy;
     s16 i;
     Unk800686E8 *g;
@@ -314,7 +314,7 @@ void func_800CCBC0(Unk800CCD00 *arg0, u32 arg1) {
     }
 }
 
-void func_800CCD00(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
+void btl_drawPopupGlyph(Unk800CCD00 *arg0, Unk800686E8 *arg1) {
     arg0->unk0[0] = 0x04000000;
     arg0->unk0[1] = arg0->unk8 | 0x64000000;
     arg0->unk0[2] = arg0->unk10.w;
@@ -487,7 +487,7 @@ void btl_drawStatusCountdown(Unk800CCD00 *arg0) {
                         n = 0x20010;
                     }
                     arg0->unk10.s.x -= (n >> 16) * 4;
-                    func_800CCBC0(arg0, n);
+                    btl_drawPopupDigits(arg0, n);
                 }
                 break;
             }

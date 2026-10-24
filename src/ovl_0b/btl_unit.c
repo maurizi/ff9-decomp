@@ -41,7 +41,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     BtlUnit9C *w;
 
     if ((u->unk68 >> 23) & 1) {
-        v = func_800C1DEC();
+        v = btl_findBodyUnit();
         u->rot[0] = v->rot[0];
         u->rot[1] = v->rot[1];
         u->rot[2] = v->rot[2];
@@ -79,7 +79,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
             u->unkA0->unk3A--;
         }
     }
-    func_800C7B84(m);
+    btl_applyModelScale(m);
     p = m->unkC;
     if (IS_OFFSET(p->unkC)) {
         t = p->unk10;
@@ -93,7 +93,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         a->unk3A++;
     }
     n = m->unk8->unk3;
-    func_800C7CC8(m);
+    btl_updateModelVisibility(m);
     u->model->unk0 &= ~0x20;
     for (i = 0; i < n; i++) {
         if (!(m->unk14 & (1 << i))) {
@@ -103,14 +103,14 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
         }
     }
     if (!(u->status & BTL_STATUS_JUMP)) {
-        func_800C9040((TexAnimSet *)m->unk50);
+        btl_updateTexAnims((TexAnimSet *)m->unk50);
     }
     if (u->weaponModel != NULL) {
         u->weaponModel->unk10 = 0;
         *ot = (s32)btl_calcBoneMatrices(u->weaponModel, 0, (u8 *)*ot);
         w = u->weaponModel;
         n = w->unk8->unk3;
-        func_800C7CC8(w);
+        btl_updateModelVisibility(w);
         u->weaponModel->unk0 &= ~0x20;
         for (i = 0; i < n; i++) {
             if (!(u->weaponModel->unk14 & (1 << i))) {
@@ -215,7 +215,7 @@ void btl_startHitMotion(BtlUnit *arg0) {
         btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
     } else {
         if ((arg0->unk68 >> 23) & 1) {
-            arg0 = func_800C1DEC();
+            arg0 = btl_findBodyUnit();
         }
         arg0->model->unkC = (BtlUnit9CC *)arg0->motions[((arg0->unk68 >> 18) & 1) + 2];
     }
@@ -373,7 +373,7 @@ void btl_updateKo(BtlUnit *u) {
                 break;
             }
         case 5:
-            if ((u8)func_800BD5A0(u)) {
+            if ((u8)btl_setKoMotion(u)) {
                 btl_checkSideDefeated(u);
             }
             break;

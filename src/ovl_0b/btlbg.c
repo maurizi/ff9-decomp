@@ -15,7 +15,7 @@ void btlbg_init(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     D_800FE4F4 = arg1;
     D_800FE508 = D_800FE514->unk2;
     if (D_800FE508 != 0) {
-        func_800C9374((TexAnimSet *)arg1, NULL);
+        btl_relocTexAnims((TexAnimSet *)arg1, NULL);
         for (i = 0; i < D_800FE508; i++) {
             BtlUnit9C50 *a;
             BtlUnit9C50 *e;
@@ -29,9 +29,9 @@ void btlbg_init(Unk800CEE74 *arg0, BtlUnit9C50 *arg1) {
     D_800FE518 = D_800FE514->unkA;
     func_800CEEC8(0xF);
     D_800FE4F0 = 0;
-    D_800F7274 = g_gameState->unk1C->unk570;
-    if (D_800F7274 >= 0x1F) {
-        D_800F7274 = 0x1F;
+    g_btlbgRainCount = g_gameState->unk1C->unk570;
+    if (g_btlbgRainCount >= 0x1F) {
+        g_btlbgRainCount = 0x1F;
     }
 }
 
@@ -94,12 +94,12 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
         }
     }
     if (D_800FE508 != 0) {
-        func_800C9040((TexAnimSet *)D_800FE4F4);
+        btl_updateTexAnims((TexAnimSet *)D_800FE4F4);
     }
     SetRotMatrix(arg0);
     SetTransMatrix(arg0);
-    if (D_800F7274 != 0) {
-        out = func_800CEBC8(out, arg3, arg0);
+    if (g_btlbgRainCount != 0) {
+        out = btlbg_drawRain(out, arg3, arg0);
     }
     grp = (BtlBgGroup *)arg1;
     k = 0;
@@ -261,15 +261,15 @@ u8 *btlbg_draw(MATRIX *arg0, s32 arg1, s32 arg2, u32 *arg3, s32 arg4) {
     }
 }
 
-void func_800CEBAC(void) {
-    D_800F7274 = 0x1F;
+void btlbg_startRain(void) {
+    g_btlbgRainCount = 0x1F;
 }
 
-void func_800CEBBC(void) {
-    D_800F7274 = 0;
+void btlbg_stopRain(void) {
+    g_btlbgRainCount = 0;
 }
 
-u8 *func_800CEBC8(u8 *arg0, u32 *arg1, MATRIX *arg2) {
+u8 *btlbg_drawRain(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     SVECTOR v;
     MATRIX m;
     long p;
@@ -287,7 +287,7 @@ u8 *func_800CEBC8(u8 *arg0, u32 *arg1, MATRIX *arg2) {
     m.t[1] = 0;
     m.t[2] = 1000;
     SetTransMatrix(&m);
-    for (; i < D_800F7274; i++) {
+    for (; i < g_btlbgRainCount; i++) {
         SetLineG2((LINE_G2 *)arg0);
         SetSemiTrans(arg0, 1);
         v.vx = (((rand() & 0x1FF) - 0x100) * 41) / 32;

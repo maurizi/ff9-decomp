@@ -17,7 +17,7 @@ u16 Hi_RegisterSolidEffModel(BtlUnit9C8 *arg0) {
     p->unk24 = 0;
     p->unk0->unk8 = arg0;
     p->unk0->unkC = NULL;
-    func_800C7730(p->unk0, NULL, NULL);
+    btl_applyModelTextures(p->unk0, NULL, NULL);
     return p->unk1E;
 }
 
@@ -38,7 +38,7 @@ u16 Hi_RegisterGouEffModel(BtlUnit9C8 *arg0) {
     p->unk24 = 0;
     p->unk0->unk8 = arg0;
     p->unk0->unkC = NULL;
-    func_800C7730(p->unk0, NULL, NULL);
+    btl_applyModelTextures(p->unk0, NULL, NULL);
     return p->unk1E;
 }
 
@@ -64,7 +64,7 @@ u16 Hi_RegisterTexEffModel(BtlUnit9C8 *arg0, s16 arg1, s16 arg2, s32 arg3, s32 a
     p->unk4.unk0[0][1] = arg2;
     v[0] = arg3;
     v[1] = arg4;
-    func_800C7730(p->unk0, p->unk4.unk0[0], v);
+    btl_applyModelTextures(p->unk0, p->unk4.unk0[0], v);
     return p->unk1E;
 }
 
@@ -86,7 +86,7 @@ u16 Hi_RegisterTexListModel(BtlUnit9C8 *arg0, BtlTexInfo *arg1, s16 *arg2, s32 a
     p->unk0->unk8 = arg0;
     p->unk0->unkC = NULL;
     p->unk4 = *arg1;
-    func_800C7730(p->unk0, p->unk4.unk0[0], arg2);
+    btl_applyModelTextures(p->unk0, p->unk4.unk0[0], arg2);
     return p->unk1E;
 }
 
@@ -107,7 +107,7 @@ u16 Hi_RegisterTexPtrModel(BtlUnit9C8 *arg0, s16 *arg1, s16 *arg2) {
     p->unk24 = 0;
     p->unk0->unk8 = arg0;
     p->unk0->unkC = NULL;
-    func_800C7730(p->unk0, arg1, arg2);
+    btl_applyModelTextures(p->unk0, arg1, arg2);
     return p->unk1E;
 }
 
@@ -149,9 +149,9 @@ s32 Hi_RegisterSummonModel(Unk80100DC054 *arg0, s16 *arg1) {
             arg1 += 4;
         }
     }
-    func_800C7730(p->unk0, p->unk4[0], t[0]);
+    btl_applyModelTextures(p->unk0, p->unk4[0], t[0]);
     p->unk0->unk50 = arg0->unk40;
-    func_800C9374((TexAnimSet *)p->unk0->unk50, (u16 (*)[4])p->unk1C);
+    btl_relocTexAnims((TexAnimSet *)p->unk0->unk50, (u16 (*)[4])p->unk1C);
     return (u16)p->unk4E;
 }
 
@@ -310,7 +310,7 @@ s32 Hi_DrawSummonModel(SVECTOR *arg0, VECTOR *arg1, s32 arg2, s32 arg3, s32 arg4
         }
     }
     if (s->unk4D != 0) {
-        func_800C9040((TexAnimSet *)s->unk0->unk50);
+        btl_updateTexAnims((TexAnimSet *)s->unk0->unk50);
     }
     f = s->unk50;
     g_btlfxEnv->unk24 = btl_calcBoneMatrices(s->unk0, f, g_btlfxEnv->unk24);
@@ -534,7 +534,7 @@ void btl_setModelTransform(BtlUnit9C *arg0, SVECTOR *arg1, VECTOR *arg2, VECTOR 
         arg0->unk54 = 0x1000;
         arg0->unk56 = 0x1000;
         arg0->unk58 = 0x1000;
-        func_800C7B84(arg0);
+        btl_applyModelScale(arg0);
     }
 }
 

@@ -35,7 +35,7 @@ void btl_showWeapon(BtlUnit *arg0) {
     }
 }
 
-s32 func_800BD5A0(BtlUnit *arg0) {
+s32 btl_setKoMotion(BtlUnit *arg0) {
     arg0->model->unkC = (BtlUnit9CC *)arg0->motions[4];
     arg0->model->unk50[2].unk4 &= ~3;
     arg0->model->unk50[0].unk4 |= 3;
@@ -52,7 +52,7 @@ s32 func_800BD5A0(BtlUnit *arg0) {
     return 1;
 }
 
-void func_800BD698(BtlUnit *arg0, s32 arg1, s32 arg2) {
+void btl_loadPartyMotions(BtlUnit *arg0, s32 arg1, s32 arg2) {
     u32 i;
     for (i = 0; i < 0x22; i++) {
         g_gameState->unk1C->unk8E4.battle->partyMotions[arg2][i] = (s32)db_lookupRegistered(4, D_800F524C[arg1][i] | 0x30000, 0);
@@ -93,7 +93,7 @@ void btl_spreadTroubleDamage(BtlUnit *arg0) {
     }
 }
 
-void func_800BD8C0(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1) {
+void btl_copyStats(Unk800BD8C0 *arg0, Unk800BD8C0 *arg1) {
     arg0->unk0 = arg1->unk0;
     arg0->unk2 = arg1->unk2;
     arg0->unk4 = arg1->unk4;
@@ -135,7 +135,7 @@ void btl_updateHpStatus(BtlUnit *arg0) {
     }
 }
 
-void func_800BDA60(BtlUnit *arg0) {
+void btl_toggleRow(BtlUnit *arg0) {
     s32 d = 0x01900000;
     u32 f;
     u32 v;
@@ -460,7 +460,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case 0x35:
         arg0->unk68 = (arg0->unk68 & ~0x400000) | ((arg2 & 1) << 22);
         if (arg2 != 0 && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_INTRO) {
-            func_800C2344(arg0->model);
+            btl_applyBgLight(arg0->model);
             k = btl_getModelSlot(arg0);
             g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_0 = btlbg_getHeader()->unkF;
         }
@@ -659,7 +659,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         break;
     case 36:
         if (b->phase == BTL_PHASE_SCRIPT) {
-            btlcam_playScene(func_800CA2B0(arg1));
+            btlcam_playScene(btl_getSceneData(arg1));
         }
         break;
     case 37:

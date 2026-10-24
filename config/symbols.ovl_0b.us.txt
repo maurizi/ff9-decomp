@@ -775,3 +775,56 @@ btl_onSoundRead = 0x800AE844; // type:func [code] CD read callback of btl_soundC
 btl_preloadExit = 0x800AF1D0; // type:func [code] once GameData.unk56F & 0x40 (battle ending) preloads file 0x10065 to 0x801EDF00 and 0x2713 into the battle buffer
 g_btlCamScript = 0x800FE488; // [code] camera-script player script pointer, frame, sway, shake and zoom tweens (btlcam_step, btlcam_applySway, btlcam_applyShake)
 g_btlfxOpArgs = 0x80100D88; // [code] four bytes set by unit ops 0x50/0x51 (btlfx_opSetParamsA/B) and read as extra arguments by the following unit ops
+btl_applyHitSupports = 0x800B0E04; // type:func [code] after an enemy hit (btl_gainTrance) support bit unkC4[1] 0x100000 restores half max HP at low HP, 0x800000 gains the attack's MP cost
+btl_initTargetCursor = 0x800B0FC0; // type:func [code] tpage and colours of the four target-cursor faces per draw buffer (Battle.cursorPrims)
+btl_clearBounceMasks = 0x800B44A0; // type:func [code] zeroes BtlUnit.unk1C[4], the Reflect bounce masks btl_applyReflect fills and btl_applyCalcResult counts
+btl_checkSwdMagUsable = 0x800B96AC; // type:func [code] enough MP and a character-kind-2 party member able to act, else message 0xF
+btl_initUndeadHitRate = 0x800B9B64; // type:func [code] for Zombie or undead (enemy flag 0x10) targets status hit rate and magic evade like btl_initStatusHitRate, 0 then
+btl_setMultiplierFromPower = 0x800BA078; // type:func [code] BtlCalc multiplier = ability power
+btl_calcUseItem = 0x800BAF70; // type:func [code] uses the item named by the ability's rate byte (btl_useItem, message 0x1F with its name) or message 10 when there is none
+btl_makeGreyCluts = 0x800C0544; // type:func [code] StoreImage each CLUT row of the unit's model, averages r/g/b to grey, LoadImage 12 rows lower (btl_addStatus, petrify), docs/runtime-findings.md had it low-medium
+btl_makeEnemyGreyCluts = 0x800C072C; // type:func [code] greys the enemy CLUT copy btl_saveEnemyCluts took and loads it at y 0xDA (btl_updateIntro once enemy models are loaded)
+btl_makePartyGreyCluts = 0x800C0840; // type:func [code] greys every third party CLUT row of btl_savePartyCluts' copy into y 0xF2.. (btl_updateIntro once party models are loaded)
+btl_saveEnemyCluts = 0x800C0C7C; // type:func [code] StoreImage of the 6 CLUT rows at (0x100, 0xE0)
+btl_savePartyCluts = 0x800C0CD0; // type:func [code] StoreImage of the 12 CLUT rows at (0x100, 0xE6)
+btl_initDoomCount = 0x800C0A3C; // type:func [code] BtlUnit.unk66 = (60 - spirit) * 8 * status 27 (Doom) timer scale
+btl_reapplyStatusLook = 0x800C0D24; // type:func [code] stone CLUT or status colour again, background light on model and weapon (btlfx_restorePartyLooks)
+btl_findBodyUnit = 0x800C1DEC; // type:func [code] the enemy whose record flag 0x100 marks it as the model owner, units with unk68 bit 23 have no model of their own and use its
+btl_applyBgLight = 0x800C2344; // type:func [code] sets every mesh group's colour to the background header's light colour (btlbg_getHeader unkC-E)
+btl_setKoMotion = 0x800BD5A0; // type:func [code] KO motion (motions[4]) and pose, with Auto-Life queues BTL_CMD_AUTO_LIFE and returns 0, else 1
+btl_loadPartyMotions = 0x800BD698; // type:func [code] the 0x22 motion addresses of a character kind into Battle.partyMotions[n] (db 0x30000 | D_800F524C) and points BtlUnit.motions there
+btl_copyStats = 0x800BD8C0; // type:func [code] copies hp, mp, atb (and the byte at 7) between two Character/BtlUnit stat blocks (btl_initPartyUnit)
+btl_toggleRow = 0x800BDA60; // type:func [code] Change moves the unit 0x190 forward/back in z (home too) and flips the row bits 8-9 of unk68
+btl_initEnemyState = 0x800BB974; // type:func [code] per enemy level, ATB, motion data relocation, home position from the model or the placement, random motion frame
+btl_updateUnits = 0x800AF578; // type:func [code] non-combat phases unit models, KO, entrance/victory motions, scene draw, returns 1 when all units are idle
+btl_setShadowSize = 0x800C23C8; // type:func [code] BtlUnit.unkBF/unkC0 = width / 14, depth / 12 and the unit's shadow record (Battle11C028) size, BTL_ATTR_SCALE scales them
+btl_clearPopups = 0x800CBF90; // type:func [code] empties the 16-entry popup ring (Battle.popups)
+btl_newPopup = 0x800CC278; // type:func [code] takes the next popup ring entry for a unit, at its base bone
+btl_packDigits = 0x800CC444; // type:func [code] decimal digits of n (< 9999) one per nibble, digit count in bits 16+
+btl_drawNumberPopup = 0x800CC818; // type:func [code] D_800F6A7C[0/1] HP/MP number popup with its bounce animation (D_800F6A28/38)
+btl_drawTextPopup = 0x800CC9C8; // type:func [code] D_800F6A7C[2] Miss/Guard/Critical glyph popup (D_800F6A54)
+btl_clampPopup = 0x800CCAF0; // type:func [code] keeps a popup inside the screen, with the y offset fixed on its first frame
+btl_drawPopupDigits = 0x800CCBC0; // type:func [code] one SPRT per packed digit (btl_packDigits)
+btl_drawPopupGlyph = 0x800CCD00; // type:func [code] one SPRT for a glyph record
+btl_buildMeshPrims = 0x800C67BC; // type:func [code] projects a model mesh group and links its F/G/FT/GT primitives into the OT by depth
+btl_applyModelTextures = 0x800C7730; // type:func [code] writes the tpage/clut words of a model's textured primitives from its texture tables (btl_registerModel, btl_initWeapon)
+btl_applyModelScale = 0x800C7B84; // type:func [code] with model flag 2 scales the model matrix by unk54/56/58 (BTL_ATTR_SCALE)
+btl_updateModelVisibility = 0x800C7CC8; // type:func [code] model flag 0x10 = off screen, from the projected position or the parent model (unk1C)
+btl_fillModelRgb = 0x800C8A3C; // type:func [code] sets the colour of every primitive of the visible mesh groups (btl_setUnitFade)
+btl_addMeshRgb = 0x800C8BE0; // type:func [code] adds r/g/b (clamped, btl_addRgbClamped) to a mesh group's FT4/FT3 colours
+btl_setMeshRgb = 0x800C8D18; // type:func [code] sets a mesh group's FT4/FT3 colours
+btl_updateTexAnims = 0x800C9040; // type:func [code] steps a model's texture animations MoveImage per frame, random pause, row scrolling for flag 4 (ff9-ds F11)
+btl_relocTexAnims = 0x800C9374; // type:func [code] turns a texture-animation set's offsets into pointers and adds the slot's VRAM offsets
+btl_initScene = 0x800C94B8; // type:func [code] scene tables of the encounter, enemy group (btl_pickEnemyGroup), camera choice Battle.unk131C
+btl_pickEnemyGroup = 0x800C9600; // type:func [code] weighted random enemy group of the encounter, or the forced GameData.unk848
+btl_setupEnemies = 0x800C9794; // type:func [code] ambush roll, enemy type records, enemy abilities, placed enemy units (btl_initEnemyUnit, btl_setEnemyStats)
+btl_placeParty = 0x800C9A28; // type:func [code] party units in a row 0x278 apart, rows and facing by the ambush kind, Float height, shadow size
+btl_initEnemyType = 0x800C9D1C; // type:func [code] copies an encounter enemy record into its Battle.enemyTypes entry (stats, motions, rewards)
+btl_copyAbility = 0x800CA28C; // type:func [code] *dst = *src for a 16-byte ability record
+btl_getSceneData = 0x800CA2B0; // type:func [code] entry n of the scene's self-relative offset table (scene.unk10) camera scenes, per-enemy data
+btl_getEnemyModelId = 0x800CA2E4; // type:func [code] model id of placement n of the enemy group, -1 for parts without a model
+btl_getEntranceSound = 0x800CA378; // type:func [code] sound of the first enemy type (scene record unk62), played when combat starts (btl_update)
+btlbg_startRain = 0x800CEBAC; // type:func [code] D_800F7274 = 0x1F streaks for btlbg_drawRain
+btlbg_stopRain = 0x800CEBBC; // type:func [code] D_800F7274 = 0
+btlbg_drawRain = 0x800CEBC8; // type:func [code] D_800F7274 random vertical LINE_G2 streaks in blue-grey around the camera, semi-transparent
+g_btlbgRainCount = 0x800F7274; // [code] number of streaks btlbg_drawRain draws (btlbg_startRain / btlbg_stopRain)

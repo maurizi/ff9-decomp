@@ -665,7 +665,7 @@ s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
     return 1;
 }
 
-void func_800CBF90(void) {
+void btl_clearPopups(void) {
     s16 i;
     Battle1358 *p;
     g_gameState->unk1C->unk8E4.battle->popups.unk1C0 = 0;

@@ -96,7 +96,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
                 btl_setCmd(u->koCmd, BTL_CMD_PETRIFY, 0, u->unitBit, 0);
             } else {
                 if (u->unk68 & 1) {
-                    func_800C0544(u);
+                    btl_makeGreyCluts(u);
                 }
                 s->unk8 |= f;
                 u->unk68 &= ~0x10000;
@@ -406,9 +406,9 @@ void btl_updateUnitTint(BtlUnit *arg0) {
     if (!((arg0->unk68 >> 22) & 1) && !(arg0->status & BTL_STATUS_PETRIFY)) {
         e = btlbg_getHeader();
         if (arg0->status & (BTL_STATUS_ZOMBIE | BTL_STATUS_BERSERK | BTL_STATUS_HEAT | BTL_STATUS_FREEZE)) {
-            func_800C8A3C(arg0->model, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
+            btl_fillModelRgb(arg0->model, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
             if (arg0->weaponModel != NULL) {
-                func_800C8A3C(arg0->weaponModel, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
+                btl_fillModelRgb(arg0->weaponModel, arg0->unkC1[0], arg0->unkC1[1], arg0->unkC1[2]);
             }
         } else {
             if (arg0->status & (BTL_STATUS_SHELL | BTL_STATUS_PROTECT)) {
@@ -534,7 +534,7 @@ void btl_setStoneClut(BtlUnit *arg0, s32 arg1) {
     }
 }
 
-void func_800C0544(BtlUnit *arg0) {
+void btl_makeGreyCluts(BtlUnit *arg0) {
     s16 i;
     s16 j;
     u8 c[3];
@@ -567,7 +567,7 @@ void func_800C0544(BtlUnit *arg0) {
     DrawSync(0);
 }
 
-void func_800C072C(void) {
+void btl_makeEnemyGreyCluts(void) {
     u16 *p = (u16 *)D_800FE360;
     s32 i;
     s8 c[3];
@@ -594,7 +594,7 @@ void func_800C072C(void) {
     LoadImage(&D_800FDF50, D_800FE360);
 }
 
-void func_800C0840(void) {
+void btl_makePartyGreyCluts(void) {
     s32 i;
     s32 j;
     s8 c[3];
@@ -653,7 +653,7 @@ void btl_clearUnitStatus(BtlUnit *arg0) {
     }
 }
 
-void func_800C0A3C(Unk800C09D8 *arg0) {
+void btl_initDoomCount(Unk800C09D8 *arg0) {
     s32 t = (0x3C - arg0->unk33) * 8;
     arg0->unk66 = t * g_gameState->unk1C->unk8E4.battle->statusInfo[27].unk2;
 }
@@ -710,7 +710,7 @@ void btl_initDotTimer(BtlUnit *u, s32 n) {
     u->unk40[k] = g_gameState->unk1C->unk8E4.battle->statusInfo[n].unk1 * v;
 }
 
-void func_800C0C7C(u32 *arg0) {
+void btl_saveEnemyCluts(u32 *arg0) {
     D_800FDF50.x = 0x100;
     D_800FDF50.y = 0xE0;
     D_800FDF50.w = 0x100;
@@ -719,7 +719,7 @@ void func_800C0C7C(u32 *arg0) {
     D_800FE360 = arg0;
 }
 
-void func_800C0CD0(u32 *arg0) {
+void btl_savePartyCluts(u32 *arg0) {
     D_800FDF50.x = 0x100;
     D_800FDF50.y = 0xE6;
     D_800FDF50.w = 0x100;
@@ -728,15 +728,15 @@ void func_800C0CD0(u32 *arg0) {
     D_800FE360 = arg0;
 }
 
-void func_800C0D24(BtlUnit *arg0) {
+void btl_reapplyStatusLook(BtlUnit *arg0) {
     if (arg0->status & BTL_STATUS_PETRIFY) {
         btl_setStoneClut(arg0, 1);
     } else if (arg0->status & (BTL_STATUS_ZOMBIE | BTL_STATUS_BERSERK | BTL_STATUS_HEAT | BTL_STATUS_FREEZE)) {
         btl_updateStatusColor(arg0);
     }
-    func_800C2344(arg0->model);
+    btl_applyBgLight(arg0->model);
     if (arg0->unk68 & 1) {
-        func_800C2344(arg0->weaponModel);
+        btl_applyBgLight(arg0->weaponModel);
     }
 }
 
@@ -1003,7 +1003,7 @@ void btl_saveCharacter(BtlUnit *arg0, s32 arg1) {
     } else {
         c->trance = arg0->trance;
     }
-    func_800BD8C0((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->hp);
+    btl_copyStats((Unk800BD8C0 *)&c->hp, (Unk800BD8C0 *)&arg0->hp);
     if ((arg0->support[1] & 0x8000) && arg1 == 0) {
         c->unk38 = 0;
         return;
@@ -1063,12 +1063,12 @@ void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
         e = btlbg_getHeader();
         btl_setModelAbr(arg0->model, 0x60);
         for (; i < arg0->model->unk8->unk3; i++) {
-            func_800C8D18(arg0->model, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
+            btl_setMeshRgb(arg0->model, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
         }
         if (arg0->weaponModel != NULL) {
             btl_setModelAbr(arg0->weaponModel, 0x60);
             for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
-                func_800C8D18(arg0->weaponModel, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
+                btl_setMeshRgb(arg0->weaponModel, i, (s32)((e->unkC * arg1) << 11) >> 16, (s32)((e->unkD * arg1) << 11) >> 16, (s32)((e->unkE * arg1) << 11) >> 16);
             }
         }
         f = arg0->unk68;
@@ -1120,7 +1120,7 @@ BtlUnit *btl_getUnitBySlot(s32 arg0) {
     return NULL;
 }
 
-BtlUnit *func_800C1DEC(void) {
+BtlUnit *btl_findBodyUnit(void) {
     BtlUnit *u;
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (!(u->unk68 & 0x800001) && (((g_gameState->unk1C->unk8E4.battle->enemies + ((u->unk68 >> 1) & 0xF))->unk4 >> 8) & 1)) {
@@ -1231,11 +1231,11 @@ void btl_playUnitSound(BtlUnit *arg0, u16 arg1, u8 arg2) {
     }
 }
 
-void func_800C2344(BtlUnit9C *arg0) {
+void btl_applyBgLight(BtlUnit9C *arg0) {
     s32 i;
     Unk800CEE74 *p = btlbg_getHeader();
     for (i = 0; i < arg0->unk8->unk3; i++) {
-        func_800C8D18(arg0, i & 0xFF, p->unkC, p->unkD, p->unkE);
+        btl_setMeshRgb(arg0, i & 0xFF, p->unkC, p->unkD, p->unkE);
     }
 }
 

@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-void func_800C8BE0(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void btl_addMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     BtlMesh *g = &arg0->unk8->unk10[arg1];
     u32 *p = g->unk1C;
     u32 i;
@@ -14,7 +14,7 @@ void func_800C8BE0(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     }
 }
 
-void func_800C8D18(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
+void btl_setMeshRgb(BtlUnit9C *arg0, u8 arg1, s16 arg2, s16 arg3, s16 arg4) {
     BtlMesh *g = &arg0->unk8->unk10[arg1];
     u32 *p = g->unk1C;
     u32 v = (arg4 << 16) | (arg3 << 8) | arg2;
@@ -113,7 +113,7 @@ void btl_setModelAbr(BtlUnit9C *arg0, s32 arg1) {
     }
 }
 
-void func_800C9040(TexAnimSet *arg0) {
+void btl_updateTexAnims(TexAnimSet *arg0) {
     RECT r;
     u32 i;
     u32 j;
@@ -183,7 +183,7 @@ void func_800C9040(TexAnimSet *arg0) {
     }
 }
 
-void func_800C9374(TexAnimSet *set, u16 (*ofs)[4]) {
+void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
     u32 i;
     u32 j;
     u32 k;
@@ -228,7 +228,7 @@ void func_800C9374(TexAnimSet *set, u16 (*ofs)[4]) {
     }
 }
 
-Battle11C020 *func_800C94B8(void) {
+Battle11C020 *btl_initScene(void) {
     Battle *b;
     Battle11C020 *s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk20;
     u16 *t = g_gameState->unk1C->unk8E4.battle->unk11C0->unk24;
@@ -239,7 +239,7 @@ Battle11C020 *func_800C94B8(void) {
 
     sc->unkC = (u16 *)((u8 *)t + t[0]);
     sc->unk10 = (s16 *)((u8 *)t + t[1]);
-    sc->unk4 = func_800C9600(g_gameState->unk1C->unk8E4.battle->unk11C0->unk20);
+    sc->unk4 = btl_pickEnemyGroup(g_gameState->unk1C->unk8E4.battle->unk11C0->unk20);
     sc->unk8 = (Battle1334 *)&g_gameState->unk1C->unk8E4.battle->unk11C0->unk20->unk8[s->unk1];
     n = sc->unk4->unk2;
     b = g_gameState->unk1C->unk8E4.battle;
@@ -256,7 +256,7 @@ Battle11C020 *func_800C94B8(void) {
     return s;
 }
 
-Battle1330 *func_800C9600(Battle11C020 *arg0) {
+Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
     Battle1330 *e;
     u16 r;
     u16 sum;
@@ -292,7 +292,7 @@ void func_800C972C(void) {
     D_800FDF38 = g_gameState->unk1C->unk8E4.battle->scene.unk4->unk4;
 }
 
-void func_800C9794(void) {
+void btl_setupEnemies(void) {
     Battle *b;
     Battle1330 *grp;
     Battle11C020 *hdr;
@@ -324,8 +324,8 @@ void func_800C9794(void) {
     ofs = (U16Pair *)(g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + 4);
     src = (BtlCmd8 *)&recs[hdr->unk2];
     for (; i < hdr->unk2; i++) {
-        func_800C9D1C(rec, en);
-        en->unk2C = func_800CA2B0(i + 5);
+        btl_initEnemyType(rec, en);
+        en->unk2C = btl_getSceneData(i + 5);
         en->unk0 = ofs->unk0 + 4;
         ofs++;
         en->unk28 = n;
@@ -335,7 +335,7 @@ void func_800C9794(void) {
     }
     dst = g_gameState->unk1C->unk8E4.battle->enemyAbilities;
     for (i = 0, cmd = src; i < hdr->unk3; i++, cmd++) {
-        func_800CA28C(cmd, dst);
+        btl_copyAbility(cmd, dst);
         dst->nameOfs = ofs->unk0 + 4;
         ofs++;
         dst++;
@@ -351,7 +351,7 @@ void func_800C9794(void) {
     }
 }
 
-void func_800C9A28(void) {
+void btl_placeParty(void) {
     s16 n;
     s16 i;
     Battle *b;
@@ -417,14 +417,14 @@ void func_800C9A28(void) {
         e = &tbl[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
         u->unkBD = e->unk0;
         u->unkBE = e->unk1;
-        func_800C23C8(u, e->unk2, e->unk3);
+        btl_setShadowSize(u, e->unk2, e->unk3);
         x -= 0x278;
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[(u->unk68 >> 1) & 0xF].unk4_22 = e->unk4;
         u = u->next;
     }
 }
 
-void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
+void btl_initEnemyType(Unk800C9D1C *arg0, Battle4880 *arg1) {
     s16 i;
     BtlUnit9CC *h;
     arg1->unk24 = arg0->unk1C;
@@ -511,7 +511,7 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     s->unk8.w = arg0->unk18;
     s->unk4 = (s->unk4 & ~0x40) | ((arg0->unk30 & 1) << 6);
     s->unk4 = (s->unk4 & ~0x80) | ((arg0->unk30 << 6) & 0x80);
-    func_800C23C8(arg1, arg0->unk64, arg0->unk66);
+    btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
     arg1->unkBD = arg0->unk68;
     arg1->unkBE = arg0->unk6E;
     t = &g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[((arg1->unk68 >> 1) & 0xF) + 9];
@@ -519,16 +519,16 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     t->unk4_22 = arg0->unk6C;
 }
 
-void func_800CA28C(BtlCmd8 *arg0, BtlCmd8 *arg1) {
+void btl_copyAbility(BtlCmd8 *arg0, BtlCmd8 *arg1) {
     *arg1 = *arg0;
 }
 
-s32 func_800CA2B0(s32 arg0) {
+s32 btl_getSceneData(s32 arg0) {
     s16 *t = g_gameState->unk1C->unk8E4.battle->scene.unk10;
     return (s32)t + t[arg0];
 }
 
-s16 func_800CA2E4(s16 arg0) {
+s16 btl_getEnemyModelId(s16 arg0) {
     Unk800C9EE0 *e = &g_gameState->unk1C->unk8E4.battle->scene.unk4->unk8[arg0];
     s32 r;
     if (arg0 > 0 && (e->unk1 & 2)) {
@@ -539,7 +539,7 @@ s16 func_800CA2E4(s16 arg0) {
     return r;
 }
 
-u16 func_800CA378(void) {
+u16 btl_getEntranceSound(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     return b->scene.unk8[b->scene.unk4->unk8[0].unk0].unk62;
 }

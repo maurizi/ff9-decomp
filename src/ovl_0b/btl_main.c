@@ -405,7 +405,7 @@ s32 btl_initEncounter(Unk800AA08C *arg0, s32 arg1) {
     arg0->unk20 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x100000), 0);
     arg0->unk10 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x50000), 0);
     arg0->unk14 = (s32)db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0x60000), 0);
-    func_800C94B8();
+    btl_initScene();
     evt_init(arg0->unk10);
     func_8004BFB0();
     return 0;
@@ -428,7 +428,7 @@ s32 btl_setupBackground(Battle11C0 *arg0, s32 arg1) {
         r.x = 0;
         r.h = 0;
         r.w = 0;
-        func_800C9374((TexAnimSet *)arg0->unk40, NULL);
+        btl_relocTexAnims((TexAnimSet *)arg0->unk40, NULL);
     }
     DrawSync(0);
     g_gameState->unk1C->unk8E4.battle->flags |= 1;
@@ -513,7 +513,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             pa = (s32 *)func_800634A8(k);
             pb = (s32 *)func_800634D8(k);
             pc = (s32 *)func_80063514(k);
-            func_800C7730(e->unk8, (s16 *)pa, (s16 *)pb);
+            btl_applyModelTextures(e->unk8, (s16 *)pa, (s16 *)pb);
             p = (s32)db_lookupRegistered(9, id, 0x190000);
             if (p != -1) {
                 v = (s32)db_lookupRegistered(4, p, 0);
@@ -522,9 +522,9 @@ s32 btl_reloadPartyStep(s32 arg0) {
             }
             e->unk8->unk50 = (BtlUnit9C50 *)v;
             if (v != 0) {
-                func_800C9374((TexAnimSet *)e->unk8->unk50, (u16 (*)[4])pc);
+                btl_relocTexAnims((TexAnimSet *)e->unk8->unk50, (u16 (*)[4])pc);
             }
-            func_800BD698(u, g_gameState->unk1C->party[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->units);
+            btl_loadPartyMotions(u, g_gameState->unk1C->party[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 if (u != g_gameState->unk1C->unk8E4.battle->curCmd->caster) {
                     u->model->unkC = (BtlUnit9CC *)u->motions[4];
@@ -543,7 +543,7 @@ s32 btl_reloadPartyStep(s32 arg0) {
             id2 = ((Unk8006E0E8 *)u->weapon)->unk2 | 0x20000;
             m->unk8 = (BtlUnit9C8 *)btl_getWeaponModelHeader(i);
             btl_getWeaponTexInfo(id2, i, &pa, &pb, &pc);
-            func_800C7730(m, (s16 *)pa, (s16 *)pb);
+            btl_applyModelTextures(m, (s16 *)pa, (s16 *)pb);
             m->unkC = 0;
             m->unk1C = e->unk8;
             m->unk4 = save;
@@ -1303,11 +1303,11 @@ u32 btl_registerModel(s32 arg0, s32 arg1) {
     }
     for (; i < cnt; i++) {
     }
-    func_800C7730(e->unk8, pa, pb);
+    btl_applyModelTextures(e->unk8, pa, pb);
     p = (s32)db_lookupRegistered(9, e->unk4, 0x190000);
     if (p != -1) {
         e->unk8->unk50 = (BtlUnit9C50 *)db_lookupRegistered(4, p, 0);
-        func_800C9374(e->unk8->unk50, pc);
+        btl_relocTexAnims(e->unk8->unk50, pc);
     }
     e->unk0 |= 1;
     return n;
@@ -1466,7 +1466,7 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             pa = func_800634A8(k);
             pb = func_800634D8(k);
             pc = func_80063514(k);
-            func_800C7730(ent->unk8, (s16 *)pa, (s16 *)pb);
+            btl_applyModelTextures(ent->unk8, (s16 *)pa, (s16 *)pb);
             p = (s32)db_lookupRegistered(9, id2, 0x190000);
             if (p != -1) {
                 anim = (s32)db_lookupRegistered(4, p, 0);
@@ -1475,9 +1475,9 @@ s32 btl_swapPartyModelStep(s32 arg0, s32 arg1) {
             }
             ent->unk8->unk50 = (BtlUnit9C50 *)anim;
             if (anim != 0) {
-                func_800C9374((TexAnimSet *)ent->unk8->unk50, (u16 (*)[4])pc);
+                btl_relocTexAnims((TexAnimSet *)ent->unk8->unk50, (u16 (*)[4])pc);
             }
-            func_800BD698(u, g_gameState->unk1C->party[arg0]->unk34.b.unk4,
+            btl_loadPartyMotions(u, g_gameState->unk1C->party[arg0]->unk34.b.unk4,
                           u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 u->model->unkC = (BtlUnit9CC *)u->motions[4];

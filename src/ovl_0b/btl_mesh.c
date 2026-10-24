@@ -68,7 +68,7 @@ void btl_projectMesh(BtlUnit9C *arg0, u8 arg1) {
     }
 }
 
-u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
+u8 *btl_buildMeshPrims(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     s32 opz;
     s32 otz;
     BtlMesh *g;
@@ -505,7 +505,7 @@ u8 *func_800C67BC(BtlUnit9C *arg0, u8 arg1, u8 *prim) {
     return prim + sizeof(P_TAG);
 }
 
-void func_800C7730(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
+void btl_applyModelTextures(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     BtlUnit9C8 *h;
     BtlMesh *m;
     u32 i;
@@ -614,7 +614,7 @@ void func_800C7730(BtlUnit9C *arg0, s16 *arg1, s16 *arg2) {
     }
 }
 
-void func_800C7B84(BtlUnit9C *arg0) {
+void btl_applyModelScale(BtlUnit9C *arg0) {
     union {
         MATRIX m;
         s32 w[8];
@@ -644,7 +644,7 @@ void func_800C7B84(BtlUnit9C *arg0) {
     }
 }
 
-void func_800C7CC8(BtlUnit9C *arg0) {
+void btl_updateModelVisibility(BtlUnit9C *arg0) {
     SVECTOR v;
     s32 z;
 
@@ -744,7 +744,7 @@ void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     }
 }
 
-void func_800C8A3C(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
+void btl_fillModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
     u32 col;

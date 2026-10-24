@@ -66,7 +66,7 @@ void func_800C30B8(void) {
 void btlcam_endEffect(void) {
     if (g_btlCamScript.unk45 == 0) {
         g_btlCamera.unkA8 = g_btlCamScript.unk18;
-        btlcam_loadScript(func_800CA2B0(1));
+        btlcam_loadScript(btl_getSceneData(1));
         g_btlCamera.unk5E = g_btlCamera.unk60;
     }
     g_btlCamera.unk5C = 1;
@@ -352,7 +352,7 @@ s32 btlcam_step(void) {
                         g_btlCamera.unk68[j].unk19 = 0;
                     }
                     g_btlCamera.unkA8 = g_btlCamScript.unk18;
-                    btlcam_loadScript(func_800CA2B0(1));
+                    btlcam_loadScript(btl_getSceneData(1));
                     g_btlCamera.unk5E = g_btlCamera.unk60;
                     return 1;
                 }

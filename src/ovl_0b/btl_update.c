@@ -13,15 +13,15 @@ s32 btl_update(void) {
         btl_updateIntro(g, b);
         break;
     case BTL_PHASE_SCRIPT:
-        func_800AF578(g, b);
+        btl_updateUnits(g, b);
         break;
     case BTL_PHASE_ENTRANCE:
-        if ((u8)func_800AF578(g, b)) {
+        if ((u8)btl_updateUnits(g, b)) {
             b->phase = BTL_PHASE_COMBAT;
             b->partyBrightness = 0;
             b->tick &= 0xF;
             for (u = b->unitList; u != NULL; u = u->next) {
-                if (!(u->unk68 & 1) && (id = func_800CA378()) != 0xFFFF) {
+                if (!(u->unk68 & 1) && (id = btl_getEntranceSound()) != 0xFFFF) {
                     btl_playUnitSound(u, id, 0x7F);
                     break;
                 }
@@ -49,7 +49,7 @@ s32 btl_update(void) {
         }
         break;
     case BTL_PHASE_EXIT:
-        func_800AF578(g, b);
+        btl_updateUnits(g, b);
         if (b->subPhase == 1) {
             func_8002FAAC(0x20);
             b->subPhase++;
@@ -61,7 +61,7 @@ s32 btl_update(void) {
         break;
     case BTL_PHASE_EXIT_DEFEAT:
     case BTL_PHASE_EXIT_OTHER:
-        if ((u8)func_800AF578(g, b)) {
+        if ((u8)btl_updateUnits(g, b)) {
             g->unk56F |= 0x40;
             if (b->subPhase == 0) {
                 if (g->unk56E != 5) {
@@ -81,7 +81,7 @@ s32 btl_update(void) {
     return 0;
 }
 
-s32 func_800AF578(GameData *arg0, Battle *arg1) {
+s32 btl_updateUnits(GameData *arg0, Battle *arg1) {
     BtlUnit *u = arg1->unitList;
     s32 r = 1;
     s32 sp = arg1->unk11C0->unk34[arg0->unk8];
@@ -241,7 +241,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
                         }
                     }
                 }
-                btlcam_playScene(func_800CA2B0(2));
+                btlcam_playScene(btl_getSceneData(2));
             } else if ((arg1->scene.unk0 >> 14) & 1) {
                 arg0->unk56F |= 8;
             }
@@ -317,10 +317,10 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
     ot = (u32 *)arg1->unk11C0->unk34[arg0->unk8];
     btl_loadModelsStep(0);
     if ((arg1->flags & 2) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
-        func_800C072C();
+        btl_makeEnemyGreyCluts();
         arg1->loadFlags |= 0x20;
     } else if ((arg1->flags & 4) && (*(u32 *)&arg1->fleeBrightness & 0x5000) == 0x1000) {
-        func_800C0840();
+        btl_makePartyGreyCluts();
         arg1->loadFlags |= 0x40;
     }
     for (u = arg1->unitList; u != NULL; u = u->next) {
@@ -347,9 +347,9 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
         f = arg1->loadFlags;
         if (!(f & 2)) {
             if (!(f & 8)) {
-                func_800C0C7C(ot);
+                btl_saveEnemyCluts(ot);
                 btl_initEnemies(arg1);
-                ot = func_800BB974(arg1, ot);
+                ot = btl_initEnemyState(arg1, ot);
             } else if (f & 0x20) {
                 if ((s8)arg1->enemyBrightness >= 0x20) {
                     arg1->loadFlags = f | 2;
@@ -363,7 +363,7 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
         g = arg1->loadFlags;
         if (!(g & 4)) {
             if (!(g & 0x10)) {
-                func_800C0CD0(ot);
+                btl_savePartyCluts(ot);
                 btl_initParty(arg1);
             } else if (g & 0x40) {
                 if ((s8)arg1->partyBrightness >= 0x20) {
@@ -390,6 +390,6 @@ void btl_initBattleState(void) {
     btl_initState();
     func_800E3D80();
     btlcam_init();
-    func_800CBF90();
+    btl_clearPopups();
     func_800F4DFC();
 }

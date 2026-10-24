@@ -1,6 +1,6 @@
 #include "ovl_0b.h"
 
-void func_800C23C8(BtlUnit *arg0, s32 arg1, u32 arg2) {
+void btl_setShadowSize(BtlUnit *arg0, s32 arg1, u32 arg2) {
     s32 k;
     k = arg0->unk68 >> 1;
     k &= 0xF;
@@ -17,7 +17,7 @@ void func_800C23C8(BtlUnit *arg0, s32 arg1, u32 arg2) {
 void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
     Unk800CEE74 *p = btlbg_getHeader();
     btl_setModelAbr(arg0->model, 0x60);
-    func_800C8A3C(arg0->model, (p->unkC * arg1) << 11 >> 16, (p->unkD * arg1) << 11 >> 16, (p->unkE * arg1) << 11 >> 16);
+    btl_fillModelRgb(arg0->model, (p->unkC * arg1) << 11 >> 16, (p->unkD * arg1) << 11 >> 16, (p->unkE * arg1) << 11 >> 16);
     if (arg1 == 0) {
         arg0->unk68 |= 0x400000;
     }

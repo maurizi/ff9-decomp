@@ -1176,9 +1176,9 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     s32 mode;
     DrawEnvPair *e;
 
-    save = D_800F7274;
+    save = g_btlbgRainCount;
     e = (DrawEnvPair *)g_btlfxEnv->unk24;
-    D_800F7274 = 0;
+    g_btlbgRainCount = 0;
     g_btlfxEnv->unk24 = (u8 *)(e + 1);
     SetDefDrawEnv(&e->unk0, x, y, w, h);
     e->unk0.isbg = 1;
@@ -1203,7 +1203,7 @@ void func_800E6E1C(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 arg6, s32 
     DrawOTagEnv(ot, &e->unk0);
     PutDrawEnv(&e->unk5C);
     ExitCriticalSection();
-    D_800F7274 = save;
+    g_btlbgRainCount = save;
     SetGeomScreen(mode);
     SetGeomOffset(ox, oy);
 }
@@ -1797,7 +1797,7 @@ void btlfx_restorePartyLooks(void) {
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     while (u != NULL) {
         if (u->unk68 & 1) {
-            func_800C0D24(u);
+            btl_reapplyStatusLook(u);
             btlfx_reapplyMini(u);
             btlfx_reapplyVanish(u);
         }
@@ -1811,7 +1811,7 @@ void btlfx_restorePartyLooks(void) {
 void btlfx_restoreUnitLook(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     if (u->unk68 & 1) {
-        func_800C0D24(u);
+        btl_reapplyStatusLook(u);
         btlfx_reapplyMini(u);
         btlfx_reapplyVanish(u);
     }
@@ -2029,9 +2029,9 @@ void func_800E9290(s32 arg0) {
                     msg = func_800E454C(D_800F8D78[3]);
                 }
             } else if (t->unk68 & 1) {
-                msg = func_800CA2B0(3);
+                msg = btl_getSceneData(3);
             } else {
-                msg = func_800CA2B0(4);
+                msg = btl_getSceneData(4);
             }
         } else if (t->unk68 & 1) {
             msg = func_800E454C(D_800F8D78[0]);
