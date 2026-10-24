@@ -20,15 +20,15 @@ void wm_main(s32 arg0) {
         if (!(g_gameState->unk1C->unk0 & 0x100)) {
             if (!(g_gameState->unk1C->unk8E4.world->unk0 & 0x100)) {
                 switch (wm_frameMain()) {
-                case 3:
-                    g_gameState->unk1C->unk8E4.world->unk8->unk1B = 2;
+                case WM_EVT_BATTLE:
+                    g_gameState->unk1C->unk8E4.world->unk8->unk1B = WM_EXIT_BATTLE;
                     wm_startBattleTransition();
                     break;
-                case 4:
-                    g_gameState->unk1C->unk8E4.world->unk8->unk1B = 1;
+                case WM_EVT_FIELD:
+                    g_gameState->unk1C->unk8E4.world->unk8->unk1B = WM_EXIT_FIELD;
                     g_gameState->unk0 |= 0x1000;
                     break;
-                case 5:
+                case WM_EVT_WORLD:
                     g_gameState->unk0 |= 0x2000;
                     break;
                 }
@@ -81,7 +81,7 @@ void wm_init(void) {
         g_gameState->unk1C->unk0 |= 0x400000;
     }
     if (g_gameState->unk1C->unk0 & 0x400000) {
-        wm_soundCommand(0x8601, 0, 0x78, 0, 0);
+        wm_soundCommand(WM_SND_MUSIC_VOL_INTPL, 0, 0x78, 0, 0);
     }
     wm->unk4 = (u8 *)D_80067948;
 }
@@ -247,7 +247,7 @@ void wm_load(s32 arg0) {
     wm_soundCommand(0x900, 0, 0, 0, 0);
     func_80049ED8(obj->unk10);
     evt_init(obj->unk10);
-    while (wm_soundCommand(0xC00, 0, 0, 0, 0) != 0) {
+    while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     func_8004BFB0();
     g_gameState->unk1C->unk38 = func_8004AAF0(0);
@@ -282,7 +282,7 @@ void wm_exit(void) {
 
     obj = g_gameState->unk1C->unk8E4.world->unk8;
     DrawSync(0);
-    while (wm_soundCommand(0xC00, 0, 0, 0, 0) != 0) {
+    while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     func_8005546C(-1, 0);
     wm_freeFile(obj, g_gameState->unk1C->unk7DC);
@@ -304,20 +304,20 @@ void wm_exit(void) {
     gd = g_gameState->unk1C;
     mode = gd->unk8E4.world->unk8->unk1B;
     switch (mode) {
-    case 2:
+    case WM_EXIT_BATTLE:
         wm_depFindBackground(wm_depFindBattle(obj->unk24, &gd->sceneSector[0], &gd->sceneSectors[0]), &g_gameState->unk1C->sceneSector[1],
                       &g_gameState->unk1C->sceneSectors[1]);
         g_gameState->unk1C->battleId = obj->unk24;
         g_gameState->mode = mode;
         g_gameState->unkA = 3;
         break;
-    case 3:
+    case WM_EXIT_WORLD:
         i = wm_depFindArea(wm_depFindField(obj->unk24, &gd->sceneSector[1], &gd->sceneSectors[1]), &g_gameState->unk1C->sceneSector[0],
                           &g_gameState->unk1C->sceneSectors[0]);
         g_gameState->unk1C->unk7DC = obj->unk24;
         g_gameState->unk1C->unk7DE = i;
         break;
-    case 1:
+    case WM_EXIT_FIELD:
         g_gameState->unk1C->unk3A = wm_depFindArea(wm_depFindField(obj->unk24, &gd->sceneSector[1], &gd->sceneSectors[1]),
                                                  &g_gameState->unk1C->sceneSector[0], &g_gameState->unk1C->sceneSectors[0]);
         g_gameState->unk1C->fieldId = obj->unk24;
@@ -362,7 +362,7 @@ void wm_resetMapObj(void) {
         o->unk34[i] = NULL;
     }
     o->unk24 = -1;
-    o->unk1B = 3;
+    o->unk1B = WM_EXIT_WORLD;
     for (i = 0; i < sizeof(o->unk8); i++) {
         o->unk8[i] = 0;
     }
@@ -403,7 +403,7 @@ void wm_fetchParkedSound(void) {
 void wm_uploadParkedSound(void) {
     u8 *dst;
 
-    while (wm_soundCommand(0xC00, 0, 0, 0, 0) != 0) {
+    while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
     if (g_gameState->unk1C->unk8E4.world->unk10 != -1) {
         dst = D_80067944 + 0x91800;
@@ -1320,9 +1320,9 @@ void wm_startBattleTransition(void) {
         func_800559FC(0, 0xF, 0);
     }
     g_gameState->unk1C->unk8E4.world->unk8->unk18 = 5;
-    wm_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
-    wm_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
-    wm_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
+    wm_soundCommand(WM_SND_SE_PLAY, 0x27C, 0, 0x80, 0x7F);
+    wm_soundCommand(WM_SND_SE_PLAY, 0x27B, 0, 0x80, 0x7F);
+    wm_soundCommand(WM_SND_SE_PLAY, 0x27A, 0, 0x80, 0x7F);
     g_gameState->unk1C->unk0 |= 0x2F;
     g_gameState->unk1C->unk8E4.world->unk0 |= 0x300;
     g_gameState->vsyncMode = 0;
@@ -1364,7 +1364,7 @@ void wm_updateBattleTransition(void) {
             g_gameState->unk1C->unk8E4.world->unk8->unk18 = -2;
         }
     } else if (o->unk18 == -1) {
-        if (wm_soundCommand(0xC00, 0, 0, 0, 0) == 0) {
+        if (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) == 0) {
             cd_seekAsync(g_gameState->unk20 + file_find(0, 0x1000B)->unk4, 0);
             wm_soundCommand(0, g_gameState->unk1C->unk8E4.world->unk8->unk26, 0, 0, 0);
             func_800559C8(0, 0x7F);

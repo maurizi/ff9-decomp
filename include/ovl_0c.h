@@ -6,6 +6,141 @@
  * live here, not in ff9.h. */
 #include "ff9.h"
 
+/* w_frameSetParameter request ids (event opcode 0xC4). Names follow Square's debug strings
+ * "*[ Request from script:... ]" printed for each id (spelling corrected), [code] where silent. */
+#define WM_REQ_WEATHER 0 /* "Weather": wm_setWeather(arg, WM_FOG_KEEP, param 0); WM_WEATHER_AUTO turns auto weather on */
+#define WM_REQ_ACTOR 1 /* "Actor": w_movementChange */
+#define WM_REQ_NAVI_ACTIVE 2 /* "Navi Active" */
+#define WM_REQ_NAVI_MODE 4 /* "Navi mode" */
+#define WM_REQ_CAMERA_LOOKUP_FIX 5 /* "Camera Lookup Fix mode" */
+#define WM_REQ_PARAM0 6 /* silent: g_worldReqParams[0..3] (6-9) */
+#define WM_REQ_PARAM1 7
+#define WM_REQ_PARAM2 8
+#define WM_REQ_PARAM3 9
+#define WM_REQ_SPAWN_EFFECT 10 /* silent: wm_spawnEffect(param 0-2, arg, param 3) */
+#define WM_REQ_TITLE_DRAW_TIME 11 /* "Title Draw Time" */
+#define WM_REQ_WEATHER_SPEED 14 /* "Whather Speed": param 0 */
+#define WM_REQ_WEATHER_AUTO 15 /* "Whather Auto" */
+#define WM_REQ_SE_PARAM0 16 /* "SE Param0".."SE Param3" (16-19): g_worldReqParams[0..3] */
+#define WM_REQ_SE_PARAM1 17
+#define WM_REQ_SE_PARAM2 18
+#define WM_REQ_SE_PARAM3 19
+#define WM_REQ_SE_PLAY 20 /* "SE Play" */
+#define WM_REQ_SE_VOL 21 /* "SE Vol" */
+#define WM_REQ_SE_VOL_INTPL 22 /* "SE Vol Intpl" */
+#define WM_REQ_SE_STOP 23 /* "SE Stop" */
+#define WM_REQ_MUSIC_VOL_INTPL 24 /* "Music Vol Intpl" */
+#define WM_REQ_CAMERA_SMOOTH 25 /* "Camera Smooth" */
+#define WM_REQ_EVENT_BATTLE_PROB 26 /* "EventBattleProbability" */
+#define WM_REQ_NAVI_CURSOR 27 /* "Navi Cursol" */
+#define WM_REQ_GET_GETOFF_POS 28 /* "Get Getoffpos": wm_findGetoffPos into params 0-2 (10000 each when none) */
+#define WM_REQ_CALL_CHOCOBO 29 /* "Call Chocobo" */
+#define WM_REQ_GETOFF_SP1 30 /* "Get Getoff SP1" */
+#define WM_REQ_GETOFF_SP2 31 /* "Get Getoff SP2" */
+#define WM_REQ_MUSIC_FADE 32 /* "Music Fade" */
+#define WM_REQ_MUSIC_FADE_FORCE 33 /* "Music Fade Force" */
+#define WM_REQ_AUTO_PILOT_ON 34 /* "Auto Pilot ON" */
+#define WM_REQ_MOG_CHOICE 35 /* "Mog choice" */
+#define WM_REQ_CURSOR_DRAW 36 /* "Cursol Draw" */
+#define WM_REQ_ALPHA0 37 /* "Alpha 0" (clears the smoothed speed/climb inputs) */
+#define WM_REQ_AUTO_PILOT_OFF 38 /* "Auto Pilot OFF" */
+#define WM_REQ_CD_USE_ON 39 /* "CD Use ON" */
+#define WM_REQ_CD_USE_OFF 40 /* "CD Use OFF" */
+#define WM_REQ_MAP_JUMP 41 /* "Map Jump" */
+
+/* w_frameGetParameter ids: event-script expression variables >= 0xC0 on the world map
+ * (main func_80037D6C's default branch) */
+#define WM_PARAM_AREA 0xC0 /* area of the cell under the player ("Now Area" in wm_getEncounterEntry) */
+#define WM_PARAM_TOPOGRAPHY 0xC1 /* topography of that cell ("Topograph") */
+#define WM_PARAM_REQ0 0xC3 /* g_worldReqParams[0..2], e.g. the WM_REQ_GET_GETOFF_POS result */
+#define WM_PARAM_REQ1 0xC4
+#define WM_PARAM_REQ2 0xC5
+#define WM_PARAM_CAMERA_YAW 0xC7 /* g_worldCamera->unkC >> 4 */
+#define WM_PARAM_CD_BUSY 0xC8 /* "Event:CDAccessWait": g_worldCdUser | music request pending */
+#define WM_PARAM_PLAYER_X 0xC9
+#define WM_PARAM_PLAYER_Y 0xCA
+#define WM_PARAM_PLAYER_Z 0xCB
+#define WM_PARAM_WEATHER_POINT_DIST 0xCC /* g_worldWeatherPointDist */
+#define WM_PARAM_EVENT_BATTLE 0xCD /* 1 in g_worldEventBattleRate + 1 while walking on topography 0x24-0x26 */
+#define WM_PARAM_PLAYER_DIR 0xCE /* player rotY >> 4 */
+#define WM_PARAM_ZONE 0xCF /* wm_getAreaZone(area) */
+#define WM_PARAM_RUNNING 0xD1 /* g_worldState == WM_STATE_RUNNING */
+#define WM_PARAM_TITLE_PHASE 0xD2 /* g_worldTitlePhase */
+#define WM_PARAM_NAVI_VISIBLE 0xD3 /* g_worldNaviVisible */
+
+/* cell attribute (WmActorType.unk8, wm_getBlockHeight): area in bits 8-13, topography in bits 2-7 (docs/encounters.md) */
+#define WM_ATTR_AREA(a) (((a) & 0x3F00) >> 8)
+#define WM_ATTR_TOPOGRAPHY(a) (((a) & 0xFC) >> 2)
+
+/* g_worldMapDebugFlags bits: each gates one group of debug prints */
+#define WM_DEBUG_MUSIC 0x4 /* w_music */
+#define WM_DEBUG_ENCOUNTER 0x8 /* "- Encount Information -" */
+#define WM_DEBUG_FORM 0x10 /* "BGI Form", "Scene:%d / Status:%d" */
+#define WM_DEBUG_MOVEMENT 0x20 /* w_movementChange */
+#define WM_DEBUG_MEMORY 0x40 /* w_memoryman, destructors */
+#define WM_DEBUG_REQUEST 0x80 /* "Request from script", "Event:CDAccessWait" */
+#define WM_DEBUG_PACK 0x100 /* w_frameExtruct, w_framePackGetPtr */
+#define WM_DEBUG_TEXTURE 0x200 /* "Texture ReadDone and Extruct", "Texture Transfer Area" */
+
+/* g_worldState */
+#define WM_STATE_START 0 /* only the event script runs */
+#define WM_STATE_SETUP 1 /* set by wm_frameMain on frame 4 */
+#define WM_STATE_RUNNING 2 /* set by wm_chunksLoaded after the first 16 chunks: draw and pad input */
+
+/* g_worldEventResult: event-script frame result returned by wm_frameMain */
+#define WM_EVT_BATTLE 3 /* -> WM_EXIT_BATTLE */
+#define WM_EVT_FIELD 4 /* "MAP JUMP" -> WM_EXIT_FIELD */
+#define WM_EVT_WORLD 5 /* next world map */
+
+/* WorldMapObj.exitReason, switched on by wm_exit */
+#define WM_EXIT_FIELD 1
+#define WM_EXIT_BATTLE 2
+#define WM_EXIT_WORLD 3
+
+/* g_worldCdUser: who holds the CD */
+#define WM_CD_FREE 0
+#define WM_CD_CHUNKS 1 /* wm_readChunks */
+#define WM_CD_MUSIC 2 /* w_musicUpdate */
+#define WM_CD_SCRIPT 3 /* "CD Use ON" */
+
+/* g_worldDataSet ("Read CD Image [Disc-1]" / "[Disc-4]") */
+#define WM_DATASET_DISC1 1
+#define WM_DATASET_DISC4 4
+
+/* g_worldFog / wm_setWeather fog argument */
+#define WM_FOG_OFF 0
+#define WM_FOG_ON 1
+#define WM_FOG_KEEP 2
+/* wm_setWeather mode */
+#define WM_WEATHER_AUTO 4 /* WM_REQ_WEATHER: turn auto weather on */
+#define WM_WEATHER_KEEP 5
+
+/* movement mode control types (WmMoveMode.unk0, wm_controlPlayer) */
+#define WM_CTRL_WALK 0
+#define WM_CTRL_FLY 1
+#define WM_CTRL_STEER 2
+
+/* songs (w_musicRequestSend strings) */
+#define WM_SONG_NORMAL 0 /* "Normal Song" */
+#define WM_SONG_CHOCOBO 1 /* "Chocobo Song" */
+#define WM_SONG_AIRSHIP 2 /* "Air Ship Song" */
+#define WM_SONG_DISC4 3 /* "Disc4 Song" */
+#define WM_SONG_FIELD1 4 /* "Field Song 1" */
+#define WM_SONG_FIELD2 5 /* "Field Song 2" */
+/* g_worldMusicState (w_musicUpdate strings) */
+#define WM_MUSIC_READY 0
+#define WM_MUSIC_REQUESTED 1
+#define WM_MUSIC_WAITING 2
+
+/* wm_soundCommand (GameData.unk83C) commands named by the request strings */
+#define WM_SND_GET_STATE 0xC00 /* "Waiting [ State : %d ]": non-zero while loading */
+#define WM_SND_SE_PLAY 0xD000 /* "SE Play" */
+#define WM_SND_SE_STOP 0x5100 /* "SE Stop" */
+#define WM_SND_SE_VOL 0x9201 /* "SE Vol" */
+#define WM_SND_SE_VOL_INTPL 0xD301 /* "SE Vol Intpl" */
+#define WM_SND_MUSIC_VOL_INTPL 0x8601 /* "Music Vol Intpl", "Music Fade Force" */
+
+
 /* palette animation entry (wm_setActorFog) */
 typedef struct WmPalAnim {
     u16 unk0; /* id */

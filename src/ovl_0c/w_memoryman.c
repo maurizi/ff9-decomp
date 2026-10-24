@@ -5,14 +5,14 @@ s32 w_memorymanHeapAlloc(s32 arg0) {
 
     if (g_worldHeapDepth >= 0x19U) {
         printf("w_memorymanHeapAlloc:(Error) Heap stack overflow\n");
-    } else if (g_worldMapDebugFlags & 0x40) {
+    } else if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf("w_memorymanHeapAlloc: [%d]  =  %x - ", g_worldHeapDepth - 1, g_worldHeapTop);
     }
     *p = g_worldHeapTop;
     g_worldHeapLastSize = arg0;
     g_worldHeapTop += arg0;
     g_worldHeapUsed += arg0;
-    if (g_worldMapDebugFlags & 0x40) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf("%x (%x/%x)[%x]\n", g_worldHeapTop, g_worldHeapUsed, 0x24800, arg0);
     }
     return *p;
@@ -29,7 +29,7 @@ s32 w_memorymanHeapFree(void) {
         printf("w_memorymanHeapFree:no allocated heap.\n");
         return 0;
     }
-    if (g_worldMapDebugFlags & 0x40) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf("w_memorymanHeapFree : [%d]  =  %x - ", g_worldHeapDepth - 1, g_worldHeapTop);
     }
     stack = g_worldHeapStack;
@@ -40,7 +40,7 @@ s32 w_memorymanHeapFree(void) {
     g_worldHeapDepth = n;
     g_worldHeapTop = prev;
     g_worldHeapUsed -= size;
-    if (g_worldMapDebugFlags & 0x40) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf("%x\n", g_worldHeapTop);
     }
     return 1;
@@ -58,7 +58,7 @@ void w_memorymanDestructor(void) {
     if (g_worldHeapDepth != 0) {
         printf("w_memorymanDestructor:(Error) Memory leak can be found.\n");
     }
-    if (g_worldMapDebugFlags & 0x40) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MEMORY) {
         printf(D_800A7CCC);
     }
 }

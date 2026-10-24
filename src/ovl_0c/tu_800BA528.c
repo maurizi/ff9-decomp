@@ -36,7 +36,7 @@ void wm_setupWorldData(void) {
     } while (i < 26);
     while (cd_getState() != 0) {
     }
-    if (g_worldDataSet == 1) {
+    if (g_worldDataSet == WM_DATASET_DISC1) {
         D_800CE3F4 = db_lookupRegistered(4, 0x411, 0);
         g_worldDataPack = db_lookupRegistered(4, 0x41B, 0);
         g_worldChunkTable = db_lookupRegistered(4, 0x425, 0);
@@ -226,7 +226,7 @@ void wm_updateMap(void) {
             g_worldAmbientSeDist[0] = 100;
         }
         v = g_worldAmbientSeDist[i];
-        if (i == 0 && g_worldDataSet == 4) {
+        if (i == 0 && g_worldDataSet == WM_DATASET_DISC4) {
             continue;
         }
         if (v < 0x3F) {
@@ -254,7 +254,7 @@ void wm_updateMap(void) {
             g_worldCameraTarget[2] += rand() % d - d / 2;
         }
     }
-    if (g_worldAmbientSeDist[1] < 0x22 && func_8004AE84() != 0 && ((flags & 0xFC) >> 2) == 0x17 && m - 1 < 7U) {
+    if (g_worldAmbientSeDist[1] < 0x22 && func_8004AE84() != 0 && WM_ATTR_TOPOGRAPHY(flags) == 0x17 && m - 1 < 7U) {
         g_worldPlayer->pos.vz += (0x22 - g_worldAmbientSeDist[1]) * 8;
         if (g_worldPlayer->pos.vx == g_worldPlayer->unk40.vx && g_worldPlayer->pos.vz == g_worldPlayer->unk40.vz) {
             g_worldPlayer->unk40.vx++;
@@ -298,10 +298,10 @@ void wm_applyStoryForms(void) {
             break;
         }
     }
-    if (g_worldMapDebugFlags & 0x10) {
+    if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
         printf("Scene:%d / Status:%d\n", *g_worldStoryCounterPtr, i);
     }
-    if (i >= 0 && g_worldDataSet == 1) {
+    if (i >= 0 && g_worldDataSet == WM_DATASET_DISC1) {
         for (n = 0; n < 7; n++) {
             switch (D_800CD010[n][i]) {
             case 1:
@@ -348,7 +348,7 @@ void wm_applyStoryForms(void) {
             }
             /* the original second jump table is 8-aligned */
             __asm__(".rdata\n\t.word 0\n\t.text");
-            if (g_worldMapDebugFlags & 0x10) {
+            if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
                 switch (D_800CD010[n][i]) {
                 case 0:
                     printf("BGI Form : SGATE\n");
@@ -403,13 +403,13 @@ Unk800CF450 *wm_getEncounterEntry(void) {
     s32 f;
     s32 add;
 
-    area = (g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 & 0x3F00) >> 8;
+    area = WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8);
     zone = g_worldAreaZone[area];
     lo = g_worldEncounterZoneStart[zone];
     hi = g_worldEncounterZoneStart[zone + 1];
-    if (g_worldMapDebugFlags & 8) {
+    if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
         printf("- Encount Information -\n");
-        printf("Now Area :%d\n", (g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 & 0x3F00) >> 8);
+        printf("Now Area :%d\n", WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8));
         printf("Now Zone :%d\n", zone);
         printf("Now Fog  :%d\n", g_worldFog);
         printf("Topograph:%d\n", (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2);
@@ -417,15 +417,15 @@ Unk800CF450 *wm_getEncounterEntry(void) {
     for (i = lo; i < hi; i++) {
         t = g_worldEncounterTable[i].unk8 >> 2;
         f = g_worldEncounterTable[i].unk9 & 1;
-        if (g_worldMapDebugFlags & 8) {
+        if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
             printf("Matching:%d  ( T:%d / F:%d )\n", i, t, f);
         }
         if (t == (u8)g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 >> 2 && f == g_worldFog) {
-            if (g_worldMapDebugFlags & 8) {
+            if (g_worldMapDebugFlags & WM_DEBUG_ENCOUNTER) {
                 printf("Hit %d encount data\n", i);
             }
             add = 0;
-            if (g_worldDataSet == 4 && i < 100) {
+            if (g_worldDataSet == WM_DATASET_DISC4 && i < 100) {
                 add = 0xFE;
             }
             return &g_worldEncounterTable[i + add];
@@ -756,7 +756,7 @@ void wm_readChunks(void) {
     s32 base;
     Unk800D335C *h;
 
-    if (g_worldCdUser == 0) {
+    if (g_worldCdUser == WM_CD_FREE) {
         wm_findChunkRun(D_800D33F8, &D_800D3320[D_800CD094], &D_800D3490[D_800CD094]);
         if (D_800D3490[D_800CD094] == 0) {
             goto end;
@@ -782,7 +782,7 @@ void wm_readChunks(void) {
                 wm_getChunkEntryT(id, 1, &b);
             }
             if ((*cell & 0x80) && b.unk2 == 0) {
-                if (g_worldMapDebugFlags & 0x10) {
+                if (g_worldMapDebugFlags & WM_DEBUG_FORM) {
                     printf(D_800A7F94, id2);
                 }
                 *cell &= 0x7F;
@@ -847,13 +847,13 @@ void wm_readChunks(void) {
                 D_800D3370[D_800D3728++].unk0 = D_800D3410[i].unk0;
             }
         }
-        g_worldCdUser = 1;
+        g_worldCdUser = WM_CD_CHUNKS;
         if (D_800D3728 != 0) {
             cd_readChunks(a.unk0 + base, D_800D3370, D_800D3728, 0);
         }
     }
 end:
-    if (g_worldCdUser == 1 && cd_getState() == 0) {
+    if (g_worldCdUser == WM_CD_CHUNKS && cd_getState() == 0) {
         wm_chunksLoaded();
     }
 }
@@ -936,14 +936,14 @@ void wm_chunksLoaded(void) {
                     D_800D30C5 = st;
                     g_worldCameraHold = 0;
                     g_worldMapLoaded = st;
-                    g_worldState = 2;
+                    g_worldState = WM_STATE_RUNNING;
                     D_80073998[0] &= 0xFFF4FFFF;
                     wm_snapActorsToFloor();
                 }
             }
         }
     }
-    g_worldCdUser = 0;
+    g_worldCdUser = WM_CD_FREE;
 }
 
 void wm_initTextureLists(void) {
@@ -1461,7 +1461,7 @@ void wm_naviInit(void) {
             g_evtGlobalVars.h[i] |= 0xC000;
         }
     }
-    if (g_worldMapDebugFlags & 0x80) {
+    if (g_worldMapDebugFlags & WM_DEBUG_REQUEST) {
         printf("DEF SET NAVIMODE :%d\n", g_worldNaviMode);
     }
 }

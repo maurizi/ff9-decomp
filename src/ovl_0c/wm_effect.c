@@ -243,7 +243,7 @@ void wm_drawBlockFx(u8 arg0) {
                  (u8)((u16)g_worldWeatherData.unk5E0[0].unk54[2] >> 5));
     switch (arg0) {
     case 4:
-        if (D_800D30CD == 0 && g_worldDataSet == 1) {
+        if (D_800D30CD == 0 && g_worldDataSet == WM_DATASET_DISC1) {
             VECTOR scale;
 
             func_80030AF4(&D_800CDF80, &m);
@@ -275,7 +275,7 @@ void wm_drawBlockFx(u8 arg0) {
         wm_drawModel(WM_PACK0(0x39), 0, 1);
         break;
     case 6:
-        if (g_worldDataSet == 4) {
+        if (g_worldDataSet == WM_DATASET_DISC4) {
             SVECTOR pos;
             u32 *ot;
             WmSprHdr *spr;

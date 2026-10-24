@@ -106,7 +106,7 @@ void wm_readtxDone(s32 *arg0) {
     Unk800D3EAC *p;
     s32 i;
 
-    if (g_worldMapDebugFlags & 0x200) {
+    if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
         printf(D_800A8098, arg0);
     }
     w_frameExtruct(arg0);

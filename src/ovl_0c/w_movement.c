@@ -91,7 +91,7 @@ void wm_updateCamera(void) {
     g_worldCameraDir[0] = math_cos(a);
     g_worldCameraDir[2] = math_sin(a);
     VectorNormal((VECTOR *)g_worldCameraDir, (VECTOR *)g_worldCameraDir);
-    if (*g_worldStoryCounterPtr < 0x137E && ((g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 & 0x3F00) >> 8) == 0xC) {
+    if (*g_worldStoryCounterPtr < 0x137E && WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8) == 0xC) {
         g_worldCamera->unk8 = 1;
     }
 }
@@ -431,7 +431,7 @@ void wm_toggleCameraView(void) {
     u8 r;
 
     if (g_worldCamera->unk8 == 0
-        && (*g_worldStoryCounterPtr >= 0x137E || ((g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 & 0x3F00) >> 8) != 0xC)) {
+        && (*g_worldStoryCounterPtr >= 0x137E || WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8) != 0xC)) {
         r = 0;
         if (g_worldCamera->unk2 == 0) {
             r = 1;
@@ -591,7 +591,7 @@ void wm_initMovement(void) {
         g_worldActorTypeInfo[i].unkC = 0;
         g_worldActorTypeInfo[i].unkE = 0;
     }
-    if (g_worldDataSet == 4) {
+    if (g_worldDataSet == WM_DATASET_DISC4) {
         g_worldMoveModes[9].unkB = 3;
         g_worldMoveModes[0].unkB = 3;
     } else {
@@ -1166,7 +1166,7 @@ void wm_movePlayer(Unk800CCCC0 *cc) {
     if (g_worldMoveModeInfo->unkD != 0 && g_worldPlayerPosChanged != 0 && w_frameGetParameter(0xC1) != 0x34 && g_worldTitleId == -1) {
         g_worldPlayerStepped = D_800CCE55;
     }
-    if (D_800CCE4A == 0 && g_worldNaviMode != 2 && g_worldMusicState == 0 && g_worldMapLoaded != 0 && D_800CE1E0 == 0) {
+    if (D_800CCE4A == 0 && g_worldNaviMode != 2 && g_worldMusicState == WM_MUSIC_READY && g_worldMapLoaded != 0 && D_800CE1E0 == 0) {
         wm_controlPlayer();
     }
     spd = g_worldPlayerSpeed;
@@ -1236,7 +1236,7 @@ void wm_movePlayer(Unk800CCCC0 *cc) {
             D_800CE208 = h2;
         }
         off = 0x1C20;
-        if (g_worldDataSet == 1) {
+        if (g_worldDataSet == WM_DATASET_DISC1) {
             off = 0x1964;
             lim = 0x1E78;
         } else {
@@ -1556,7 +1556,7 @@ void w_movementChange(void) {
     }
     g_worldCameraFourProbes = g_worldMoveModeInfo->unk8 == 0;
     wm_updateActors();
-    if (g_worldMapDebugFlags & 0x20) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf("w_movementChange : %d -> %d\n", old, g_worldMoveMode);
     }
 }
@@ -1960,7 +1960,7 @@ void wm_cameraAutoTurnWalk(void) {
             g_worldCameraTurnGain = 0;
         }
     }
-    if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->unk11 == 0 && g_worldState == 2) {
+    if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->unk11 == 0 && g_worldState == WM_STATE_RUNNING) {
         D_800CCE30 = abs(d);
         if (abs(d) < D_800CCE34) {
             D_800CCE30 = D_800CCE34;
@@ -2070,7 +2070,7 @@ void w_movementChangeSP1(void) {
     wm_seFadeVolume(0x26, 0x7F, 0);
     w_musicRequestSend(p->unkB);
     wm_blendCameraPreset(p->unk11, 0x40);
-    if (g_worldMapDebugFlags & 0x20) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf("w_movementChange SP1 : %d -> %d\n", old, 0);
     }
 }
@@ -2089,13 +2089,13 @@ void w_movementChangeSP2(void) {
     }
     g_worldCameraFourProbes = g_worldMoveModeInfo->unk8 == 0;
     wm_updateActors();
-    if (g_worldMapDebugFlags & 0x20) {
+    if (g_worldMapDebugFlags & WM_DEBUG_MOVEMENT) {
         printf(D_800A7164);
     }
 }
 
 u8 wm_testCellType(u32 *a, u32 c) {
-    c = (c & 0xFC) >> 2;
+    c = WM_ATTR_TOPOGRAPHY(c);
     if (c >= 32) {
         if ((a[0] >> (c - 32)) & 1) {
             return 1;

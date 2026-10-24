@@ -5,28 +5,28 @@ void w_musicUpdate(void) {
 
     switch (g_worldMusicState) {
     case 1:
-        if (g_worldCdUser == 0) {
-            if (g_worldMapDebugFlags & 4) {
+        if (g_worldCdUser == WM_CD_FREE) {
+            if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
                 printf("w_musicUpdate : Play\n");
             }
-            g_worldCdUser = 2;
+            g_worldCdUser = WM_CD_MUSIC;
             if (g_worldMusicSong != -1) {
                 wm_musicStop(g_worldMusicSong);
             }
             wm_musicPlay(g_worldMusicRequest);
-            g_worldMusicState = 2;
+            g_worldMusicState = WM_MUSIC_WAITING;
             g_worldMusicSong = g_worldMusicRequest;
         }
         break;
     case 2:
-        st = wm_soundCommand(0xC00, 0, 0, 0, 0);
+        st = wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0);
         if (st == 0) {
-            g_worldCdUser = 0;
-            g_worldMusicState = 0;
-            if (g_worldMapDebugFlags & 4) {
+            g_worldCdUser = WM_CD_FREE;
+            g_worldMusicState = WM_MUSIC_READY;
+            if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
                 printf("w_musicUpdate : Ready\n");
             }
-        } else if (g_worldMapDebugFlags & 4) {
+        } else if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
             printf("w_musicUpdate : Waiting [ State : %d ] \n", st);
         }
         break;
@@ -192,8 +192,8 @@ const char D_800A8430[] = "(Denied / same request)\n";
 const char D_800A844C[0x38] = "w_musicRequestSend : music status is not ready now\n";
 
 void w_musicRequestSend(u32 arg0) {
-    if (g_worldMusicState == 0) {
-        if (g_worldMapDebugFlags & 4) {
+    if (g_worldMusicState == WM_MUSIC_READY) {
+        if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
             switch (arg0) {
             case 0:
                 printf(D_800A832C);
@@ -219,15 +219,15 @@ void w_musicRequestSend(u32 arg0) {
             }
         }
         if (g_worldMusicRequest != arg0) {
-            g_worldMusicState = 1;
+            g_worldMusicState = WM_MUSIC_REQUESTED;
             g_worldMusicRequest = arg0;
-            if (g_worldMapDebugFlags & 4) {
+            if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
                 printf(D_800A8424);
             }
-        } else if (g_worldMapDebugFlags & 4) {
+        } else if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
             printf(D_800A8430);
         }
-    } else if (g_worldMapDebugFlags & 4) {
+    } else if (g_worldMapDebugFlags & WM_DEBUG_MUSIC) {
         printf(D_800A844C);
     }
 }
@@ -246,7 +246,7 @@ void wm_stopAllSe(void) {
         if (w_musicGetID(i, &s) & 0xFF) {
             m0 = s.unk0;
             for (j0 = 0; j0 < s.unk4; j0++) {
-                wm_soundCommand(0x5100, s.unk8[j0], m0, 0, 0);
+                wm_soundCommand(WM_SND_SE_STOP, s.unk8[j0], m0, 0, 0);
                 m0 >>= 1;
             }
         }
@@ -255,7 +255,7 @@ void wm_stopAllSe(void) {
         if (w_musicGetID(i, &s) & 0xFF) {
             m1 = s.unk0;
             for (j1 = 0; j1 < s.unk4; j1++) {
-                wm_soundCommand(0x5100, s.unk8[j1], m1, 0, 0);
+                wm_soundCommand(WM_SND_SE_STOP, s.unk8[j1], m1, 0, 0);
                 m1 >>= 1;
             }
         }
@@ -264,12 +264,12 @@ void wm_stopAllSe(void) {
         if (w_musicGetID(i, &s) & 0xFF) {
             m2 = s.unk0;
             for (j2 = 0; j2 < s.unk4; j2++) {
-                wm_soundCommand(0x5100, s.unk8[j2], m2, 0, 0);
+                wm_soundCommand(WM_SND_SE_STOP, s.unk8[j2], m2, 0, 0);
                 m2 >>= 1;
             }
         }
     }
-    if ((u8)func_800C49EC() && g_worldEventResult != 3) {
+    if ((u8)func_800C49EC() && g_worldEventResult != WM_EVT_BATTLE) {
         g_gameState->unk1C->unk0 |= 0x400000;
     }
 }
@@ -288,7 +288,7 @@ s32 func_800C45D8(void) {
 }
 
 void wm_musicInit(void) {
-    g_worldMusicState = 0;
+    g_worldMusicState = WM_MUSIC_READY;
     g_worldMusicId = -1;
     g_worldMusicSong = -1;
     g_worldMusicRequest = -1;
@@ -310,7 +310,7 @@ void wm_musicPlay(u16 arg0) {
     if (v == 0) {
         v = 0x7D;
     }
-    wm_soundCommand(0x8601, 0, 0x3C, v, 0);
+    wm_soundCommand(WM_SND_MUSIC_VOL_INTPL, 0, 0x3C, v, 0);
 }
 
 void wm_musicStop(u16 arg0) {
@@ -328,7 +328,7 @@ void wm_sePlay(s32 arg0, u8 arg1) {
     if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            wm_soundCommand(0xD000, s.unk8[i], v, 0x7F, arg1);
+            wm_soundCommand(WM_SND_SE_PLAY, s.unk8[i], v, 0x7F, arg1);
             v >>= 1;
         }
     }
@@ -339,10 +339,10 @@ void wm_seSetVolume(s32 arg0, u8 arg1) {
     s32 i;
     s32 v;
 
-    if (g_worldMusicState == 0 && (w_musicGetID(arg0, &s) & 0xFF)) {
+    if (g_worldMusicState == WM_MUSIC_READY && (w_musicGetID(arg0, &s) & 0xFF)) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            wm_soundCommand(0x9201, s.unk8[i], v, arg1, 0);
+            wm_soundCommand(WM_SND_SE_VOL, s.unk8[i], v, arg1, 0);
             v >>= 1;
         }
     }
@@ -356,7 +356,7 @@ void wm_seFadeVolume(s32 arg0, u16 arg1, u8 arg2) {
     if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            wm_soundCommand(0xD301, s.unk8[i], v, arg1, arg2);
+            wm_soundCommand(WM_SND_SE_VOL_INTPL, s.unk8[i], v, arg1, arg2);
             v >>= 1;
         }
     }
@@ -370,7 +370,7 @@ void wm_seStop(s32 arg0) {
     if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            wm_soundCommand(0x5100, s.unk8[i], v, 0, 0);
+            wm_soundCommand(WM_SND_SE_STOP, s.unk8[i], v, 0, 0);
             v >>= 1;
         }
     }
@@ -387,7 +387,7 @@ s32 wm_getSongMusicId(u16 arg0) {
         if (sc - 0x26A2U < 0x14) {
             arg0 = 5;
         }
-        if (g_worldDataSet == 4) {
+        if (g_worldDataSet == WM_DATASET_DISC4) {
             arg0 = 3;
         }
     }

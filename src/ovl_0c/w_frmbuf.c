@@ -118,7 +118,7 @@ void wm_frmbufTransfer(void) {
     for (i = 0; i < n; i++) {
         id = D_800D3F78[i].unk4;
         k = D_800D3F78[i].unk5 - 1;
-        if (g_worldMapDebugFlags & 0x200) {
+        if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
             printf(D_800A8118, (u8)(id + 0x60), D_800D3F78[i].unk0, k);
         }
         px = &D_800CDF14[k];
@@ -179,7 +179,7 @@ void wm_weatherAuto(void) {
         wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);
     }
     if (g_evtGlobalVars.b[0x66] == 0 && g_worldReadyFrameCount == 10) {
-        switch ((g_worldActorTypeInfo[g_worldPlayer->unk11].unk8 & 0x3F00) >> 8) {
+        switch (WM_ATTR_AREA(g_worldActorTypeInfo[g_worldPlayer->unk11].unk8)) {
         case 9:
         case 12:
         case 13:
@@ -211,7 +211,7 @@ s32 wm_getWeatherByPos(void) {
     if (SquareRoot0(dx * dx + dz * dz) < 0xB4) {
         r = 1;
     }
-    if (g_worldDataSet == 4) {
+    if (g_worldDataSet == WM_DATASET_DISC4) {
         dx = (g_worldPlayer->pos.vx >> 8) - 0x2FE;
         dz = (g_worldPlayer->pos.vz >> 8) + 0x140;
         d = SquareRoot0(dx * dx + dz * dz);
