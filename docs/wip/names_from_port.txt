@@ -1475,3 +1475,45 @@ func_800F3D3C btlui_showListHeader  # [code] slides panel labels 1-3 out and lab
 func_800F3DE0 btlui_hideListHeader  # [code] slides the panel labels back, remembering the menu state to return to
 func_800F4140 btlui_onPanelLabelsOut  # [code] slide done hook: hides labels 1-3, BTLUI_MENU_TARGET
 func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, back to the remembered menu state
+
+# FIELDS (ovl_0b cleanup pass; applied with tools/rename_fields.py, src/fxmod uses included)
+# include/ovl_0b.h BtlUnit: unk38=autoStatus,unk0=next,unk4=cmd,unk8=autoCmd,unkC=koCmd,unk10=delayedCmd,unk14=tranceCmd,unk18=reviveCmd,unk2E=atbSpeed,unk30=speed,unk31=strength,unk32=magic,unk33=spirit,unk6C=defense,unk6D=evade,unk6E=magicDef,unk6F=magicEva,unk70=elemGuard,unk71=elemAbsorb,unk72=elemHalf,unk73=elemWeak,unk74=weapon,unk78=trance,unk79=elemBoost,unk7A=level,unk7E=popupFlags,unk80=hpChange,unk82=mpChange,unk84=modelId,unk86=rot,unk8C=pos,unk9C=model,unkA4=motions,unkA8=weaponModel,unkAC=hiddenMeshes,unkB0=unitBit,unkB3=cmdIssued,unkB8=screenX,unkBA=screenY,unkBC=onScreen,unkC4=support,unkC8=tickHeal,unkCA=tickDamage,unkCC=tickMpDamage,unkCE=tickFlags,unkCF=inMenuQueue
+# include/ovl_0b.h BtlUnit: unk1C=bounceMasks,unkBF=shadowW,unkC0=shadowD
+# include/ovl_0b.h BtlUnit: unk40=dotTimers,unk46=statusTimers,unk66=countdownStep,unk68=flags,unk7C=baseBone,unk7D=koState,unk98=home,unkA0=obj,unkAE=vanishMeshes,unkB4=menu
+# include/ovl_0b.h Battle: unk0=flags,unk8=partyMotions,unk228=weaponModels,unk488=enemies,unk4E8=enemyTypes,unk5D8=enemyAbilities,unk6F8=unitList,unkD7C=tick,unkD80=phase,unkD81=subPhase,unkD82=exitTimer,unkD84=fleeBrightness,unkD85=loadFlags,unkD86=partyBrightness,unkD87=enemyBrightness,unkD90=cmdSlots,unk1060=escapeCmd,unk108C=cursorPrims,unk116C=fxTargets,unk11B8=cmdFlags,unk11BA=cmdPhase,unk11BB=eidolonAbility,unk11BC=eidolonTimer,unk132C=scene,unk1358=popups,unk1534=dataSector,unk154C=statusInfo,unk22CC=statusSets
+# include/ovl_0b.h Battle: unk1354=files
+# include/ovl_0b.h BtlCmd8 (ability record): unk0_0=targetType,unk0_8=effect,unk4=formula,unk5=power,unk6=element,unk7=rate,unk8=flags,unk9=statusSet,unkC=altEffect
+# include/ovl_0b.h BtlCalc: unk0=caster,unk4=target,unk8=cmd,unkC=statusRate,unkE=power,unk10=defense,unk12=evade,unk14=multiplier,unk16=hitRate,unk18=flags,unk1A=casterResult,unk1B=targetResult,unk1C=casterHpChange,unk1E=targetHpChange,unk20=casterMpChange,unk22=targetMpChange
+# include/ovl_0b.h BtlCalc8: unk8=ability,unkC=targets,unkE=cmdNo,unkF=subNo,unk10=flags
+# include/ovl_0b.h BtlCmd: unk0=next,unk4=caster,unk0_0=targeting,unk0_4=automatic,unk0_5=covered,unk0_6=dodged,unk0_7=reflect,unk0_10=shortSummon
+# include/ovl_0b.h BtlFiles (was Battle1354): unk0=data,unk10=enemyModels,unk20=weaponFiles,unk30=partyModels
+# include/ovl_0b.h Unk800FE488 (g_btlCamScript): unk0=pc,unk4=frame,unk10=sway,unk14=swayPhase,unk1C=shakeAxes,unk20=shakeFrames,unk24=shakeLeft,unk28=shakeFrom,unk2C=shakeTo,unk30=zoomFrames,unk34=zoomLeft,unk38=zoomTarget,unk3C=zoomFrom,unk40=zoomTo,unk46=casterAnchors,unk5A=targetAnchors
+# include/ovl_0b.h Unk800FE488: unk50=partnerAnchors
+# include/ovl_0b.h Unk80104FF0 (g_btlTarget): unk0=returnState,unk1=cmdNo,unk2=targetType,unk6=targetAll,unkA=side,unkB=allowKo,unkC=windowOpen,unkD=halfMp,unk10=doubleCast,unk13=firstCmdNo,unk14=firstTargeting,unk18=firstSubNo,unk1A=subNo,unk1C=firstTargets,unk20=unit
+# include/ovl_0b.h Unk80104FD0 (g_btluiList): unk0=cmdNo,unk4=cmd,unk8=label,unkC=label2,unk10=doubleCast,unk12=label2Width,unk14=unit,unk18=halfMp,unk19=trance
+# include/ovl_0b.h BtlPopup (was Battle1358): unk0=unit,unk8=x,unkA=y,unkC=z,unkE=frame,unk18=clut
+# include/ovl_0b.h BtlPopupRing (was Battle1358Ring): unk0=entries,unk1C0=last,unk1C2=tick,unk1D4=hiddenMask
+# include/ovl_0b.h BtlShadow (was Battle11C028): unk0_0=shade,unk0_8=width,unk0_20=depth
+# include/ovl_0b.h Unk800F78A4 (g_btlfxEnv): unkC=targets,unk10=exports,unk14=viewMatrix,unk18=dispEnv,unk1C=drawEnv,unk20=ot,unk24=prim,unk2C=camera
+# include/ovl_0b.h Unk800F78A4: unk0=state,unk4=loader
+# include/ovl_0b.h BtlUnitList: unk0=caster,unk4=targets,unk24=targetCount,unk27=bounceCount,unk28=bounced,unk38=centerX,unk3A=centerY,unk3C=centerZ,unk40=kind,unk44=partner
+# include/ovl_0b.h Unk800FE3B8 (g_btlCamera): unk0=points,unk50=yaw,unk54=eye,unk5E=projDist,unk60=baseProjDist
+# include/ovl_0b.h BtlBgHeader (was Unk800CEE74): unk0=id,unk2=texAnimCount,unk4=skySpeed,unk6=skyOwnProj,unk8=lastGroup,unkA=scrollCount,unkC=lightR,unkD=lightG,unkE=lightB,unkF=shadowShade
+# include/ovl_0b.h BtlMesh: unk2=nFT4,unk4=nFT3,unk6=nGT4,unk8=nGT3,unkA=nG4,unkC=nG3,unkE=nF4,unk10=nF3,unk14=vertexCounts,unk18=vertices,unk1C=prims
+# include/ovl_0b.h BtlMesh: unk20=uvs,unk24=colors
+# include/ovl_0b.h BtlUnit9C8 (model header): unk3=meshCount,unk8=height,unkA=radius,unk10=meshes
+# include/ovl_0b.h BtlUnit9C (model): unk4=parentBone,unk5=abr,unk8=header,unkC=motion,unk10=prims,unk14=hiddenMeshes,unk18=texPages,unk1C=parent,unk20=bones,unk24=matrix,unk50=texAnims,unk54=scaleX,unk56=scaleY,unk58=scaleZ,unk5C=morph
+# include/ovl_0b.h BtlUnit9C: unk0=flags
+# include/ovl_0b.h BtlUnitA0 (unit object): unk14=x,unk18=y,unk1C=z,unk20=rotX,unk22=rotY,unk24=rotZ,unk3A=frame
+# include/ovl_0b.h BtlUnit98 (home): unk0=pos
+# include/ovl_0b.h Unk801051F0 (g_btlBanner): unk0=text,unk80=timer,unk84=duration,unk88=size,unk8C=active,unk8D=useRect,unk90=priority,unk98=ot,unkA4=rect
+# include/ovl_0b.h BtlEnemyType (was Battle4880): unk0=nameOfs,unk2=category,unk3=level,unk4=max,unkC=motions,unk24=radius,unk26=confuseAbility,unk27=eatAbility,unk28=firstAbility,unk29=bones,unk2C=camera,unk30=deathCry,unk44=exp,unk46=gil,unk4C=card
+# include/ovl_0b.h BtlEnemyType: unk48=drops
+# include/ovl_0b.h BtlEnemy (was Battle488): unk0=type,unk4=flags,unk8=steal,unkC=home
+# include/ovl_0b.h BtlStatusInfo (was Battle154C): unk1=tickScale,unk2=timerScale,unk8=prevents
+# include/ovl_0b.h BtlUnit34 (status view): unk0=statusImmune,unk4=autoStatus,unk8=status,unkC=venomTimer,unkE=poisonTimer,unk10=regenTimer,unk12=statusTimers,unk2E=jumpTimer
+# include/ovl_0b.h Unk800FE368 (g_btlCamTargets): unk0=caster,unk4=target,unk38=centerX,unk3C=centerZ,unk44=partner
+# include/ovl_0b.h Unk800F78A40 (g_btlfxState view): unk0=phase,unk2=effectId,unk8=file,unkF=seqRelease,unk1C=flags,unk20=retry
+# include/ovl_0b.h Unk800FEC40 (g_btlfxState): unk2=effectId,unk8=file,unkE=cameraPick,unkF=seqRelease,unk18=pc,unk1C=flags,unk20=retry
+# include/ovl_0b.h Unk800FEC40: unk0=phase,unkA=cameras,pad14=motionDone/moveDone/turnDone/unk17
+# include/ovl_0b.h Unk80100C78Entry (effect task): unk0=frame,unk4=state,unk8=file,unkC=work,unk10=pool,unk14=handler
