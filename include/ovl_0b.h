@@ -308,7 +308,7 @@ typedef struct {
     s16 maxAtb;
 } BtlUnit24;
 
-/* current stats at BtlUnit.unk28, parallel to BtlUnit24 */
+/* current stats at BtlUnit.hp, parallel to BtlUnit24 */
 typedef struct {
     u16 unk0; /* hp */
     s16 unk2; /* mp */
@@ -516,7 +516,7 @@ typedef struct BtlUnit {
     struct BtlUnit98 *home; /* home position block */
     BtlUnit9C *model;
     BtlUnitA0 *obj; /* model object entry (GameData.unk8E0): start position/rotation, motion frame */
-    s32 *motions; /* motion table (BtlUnit9CC * per slot); unk9C->unkC is the playing one */
+    s32 *motions; /* motion table (BtlUnit9CC * per slot); model->motion is the playing one */
     BtlUnit9C *weaponModel;
     u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
     u16 vanishMeshes; /* mesh groups Vanish hides */
@@ -966,7 +966,7 @@ typedef struct {
         s32 w;
         u8 b[4]; /* item drops, -1 = none */
     } unk8;
-    u8 unkC[0x18 - 0xC]; /* position block (BtlUnit.unk98) */
+    u8 unkC[0x18 - 0xC]; /* position block (BtlUnit.home) */
 } Battle488; /* 0x18 */
 
 typedef struct {
@@ -2909,7 +2909,7 @@ extern u8 D_800F6C30[][6];
 /* status countdowns drawn as digits over battle units (btl_drawStatusCountdown) */
 typedef struct {
     s32 unk0; /* status mask */
-    s16 unk4; /* status timer index (BtlUnit.unk46) */
+    s16 unk4; /* status timer index (BtlUnit.statusTimers) */
     u16 unk6; /* nonzero: colour by level */
 } Unk800F6CA4;
 
@@ -3449,7 +3449,7 @@ s32 btlfx_poolUpdate(Unk800DA1B8 *);
 void btlui_targetDefault(u8, u8);
 BtlUnit *btlui_findKoUnit(u8);
 
-/* first unit flagged as the current target (bits 28 and 29 of unk68) */
+/* first unit flagged as the current target (bits 28 and 29 of BtlUnit.flags) */
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
     for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
@@ -3932,7 +3932,7 @@ u32 *func_8002FBC0(s32);
 void btl_spawnTickPopups(BtlUnit *);
 void btl_tickStatusTimers(BtlUnit *);
 
-/* BtlUnit.unk34 viewed as one block (status timers at unkC..) */
+/* BtlUnit.statusImmune viewed as one block (status timers at unkC..) */
 typedef struct {
     s32 unk0;
     u32 unk4;
