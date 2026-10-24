@@ -20,3 +20,4 @@ fld_depFindBattle = 0x800AA0F4; // type:func [code] dependency-table entry 0x110
 fld_depFindBackground = 0x800AA194; // type:func [code] resolves an entry's link in the dependency table and returns the linked key with its sector/length - the battle background for fld_exit case 2
 fld_depFindField = 0x800AA290; // type:func [code] dependency-table entry 0x50000|id -> field/world file sector/length (fld_exit cases 1 and 3)
 fld_depFindArea = 0x800AA330; // type:func [code] resolves a field entry's link (its 0x06 area bundle) in the dependency table (fld_exit cases 1 and 3)
+gameover_main = 0x801F3488; // type:func [runtime] ovl_65 function at this address (ovl_65 is loaded alongside this overlay for mode 7)

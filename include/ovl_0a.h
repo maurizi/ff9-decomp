@@ -1303,7 +1303,7 @@ s32 func_800AAB30(s32, void *);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 g_mbgFrame;
-void func_801F3488(void *); /* overlay 0x65 (loaded at 0x801F0000) */
+void gameover_main(void *); /* overlay 0x65 (loaded at 0x801F0000) */
 void mbg_setRgb24(s32); /* overlay loaded at 0x80198000 */
 s32 mbg_getFrame(void);
 void func_80032100(void);

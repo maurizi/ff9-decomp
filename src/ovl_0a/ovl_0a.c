@@ -121,7 +121,7 @@ void fld_main(s32 arg0) {
 void fld_gameOver(void) {
     s32 i;
 
-    func_801F3488(g_gameState->unk1C->unk8E4.field->unkC->unk14->unkC);
+    gameover_main(g_gameState->unk1C->unk8E4.field->unkC->unk14->unkC);
     g_gameState->mode = 0;
     g_gameState->unk0 |= 0x100000;
     if ((g_gameState->unk1C->unk0 & 0x20000000) && g_gameState->unk1C->unk81C[0] != 0xFFFF) {

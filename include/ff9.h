@@ -4030,7 +4030,7 @@ void *func_80038618(Unk8004AB64 *, s32, s32 *); /* nearest object of a kind */
 extern s32 D_8007AEC4;
 s32 func_800C1B5C(u8 *);
 s32 btlseq_isBusy(void);
-s32 func_800B7A14(s32);
+s32 w_frameGetParameter(s32); /* ovl_0c */
 s32 btl_getBattleVar(s32);
 u32 game_getPlayTimeSeconds(void);
 s32 func_8002414C(void);

@@ -10067,7 +10067,7 @@ s32 func_80037D6C(s32 op) {
         break;
     default:
         if (op >= 0xC0) {
-            r = func_800B7A14(op);
+            r = w_frameGetParameter(op);
         } else {
             r = btl_getBattleVar(op);
         }
