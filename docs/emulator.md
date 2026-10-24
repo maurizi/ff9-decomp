@@ -63,11 +63,23 @@ Card 2 holds GameFAQs saves 504, 505, 506, 507 and 3091 (one save each):
 FILE01 Pandemonium Lv 57 (disc 3; save 506, renamed from FILE05 to avoid a name clash), FILE02 Dali inn Lv 50 (disc 1; 3091),
 FILE05 Burmecia vault Lv 12 (disc 1; 504), FILE06 Iifa Tree trunk Lv 32 (disc 2; 505), FILE12 Crystal World Lv 60 (disc 4; 507).
 If a game's file name is already on the card, `memcard import` moves the save to the next free number. FF9 accepts that.
+The field/menu campaign (2026-10-24) saved once by accident: card 2 block 6 "FF9/FILE03/99:56" (a copy of the Dali inn
+game) is new. Saving to an empty block asks no confirmation, so don't press Cross on an empty FILE in the save screen.
 
 Existing Redux states. Disc 1: `title_screen`, `field_burmecia_vault` (Lv 99), `field_burmecia_vault_lv12`, `field_dali_inn`,
 `menu_main`, `menu_items`, `intro_test`. Disc 2 (`start --disc 2`): `disc2_load_menu`, `field_iifa_tree`,
 `field_iifa_outer_root` (random encounters), `battle_iifa_start` (battle HUD up, `ovl_0b` resident),
 `battle_iifa_command` (Vivi's command menu open). Steps to reproduce the battle are in `docs/runtime-findings.md`.
+
+Disc 1 menu states from the field/menu campaign (2026-10-24; boot with `frames 1800` before loading, as for disc 3):
+- From `menu_main` (Burmecia vault, Lv 99) with the pad: `menu_status` (Zidane), `menu_equip`, `menu_ability`,
+  `menu_card`, `menu_config` (each screen just opened, its overlay resident).
+- From `field_dali_inn` (Lv 50) by forcing `menu_open(type, arg)` (see "Field/menu campaign" in
+  `docs/runtime-findings.md`): `menu_shop_weapons` (ovl_3c, shop 0 "Weapons": Buy/Sell/Exit), `menu_shop_synth`
+  (shop 0x20, synthesis), `menu_name_entry` (ovl_3a, Zidane), `menu_party_select` (ovl_3b; bogus request, four
+  Zidanes), `menu_save` (ovl_39 save, slot select), `menu_chocograph` (ovl_32, nothing owned), `menu_chocograph2`
+  (three chocographs and three chocobo abilities poked into the event variables), `menu_disc_change` (ovl_3e,
+  "Change to DISC"). These menus were opened outside their story context; closing them returns to the Dali inn.
 
 Disc 3 (`start --disc 3`; boot first with `frames 1800`, a state loaded straight after a cold start can hang in the
 BIOS): `disc3_pandemonium_lv99_field` (= `disc3_scenario_field_ready`: card 1 FILE04 loaded, Pandemonium field 2714),
