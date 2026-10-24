@@ -13,22 +13,22 @@ void btl_main(s32 arg0) {
     SetDispMask(1);
     do {
         btl_beginFrame();
-        if (!(g_gameState->unk1C->unk8E4.battle->unk0 & 0x1000)) {
+        if (!(g_gameState->unk1C->unk8E4.battle->flags & 0x1000)) {
             func_800A8BF4();
             if (func_800EA30C() != 0) {
                 func_800A882C();
             }
             if (!(g_gameState->unk1C->unk0 & 0x100)) {
                 if (btl_update() == 1) {
-                    g_gameState->unk1C->unk8E4.battle->unk0 |= 0x1000;
+                    g_gameState->unk1C->unk8E4.battle->flags |= 0x1000;
                 }
-                if (!(g_gameState->unk1C->unk8E4.battle->unk0 & 0x10) && (g_gameState->unk1C->unk8E4.battle->unkD85 & 7) == 7) {
+                if (!(g_gameState->unk1C->unk8E4.battle->flags & 0x10) && (g_gameState->unk1C->unk8E4.battle->loadFlags & 7) == 7) {
                     btlui_init();
-                    g_gameState->unk1C->unk8E4.battle->unk0 |= 0x10;
+                    g_gameState->unk1C->unk8E4.battle->flags |= 0x10;
                 }
-                if (!(g_gameState->unk1C->unk8E4.battle->unk0 & 0x40) && (g_gameState->unk1C->unk56F & 0x40)) {
+                if (!(g_gameState->unk1C->unk8E4.battle->flags & 0x40) && (g_gameState->unk1C->unk56F & 0x40)) {
                     func_800AF1D0();
-                    g_gameState->unk1C->unk8E4.battle->unk0 |= 0x40;
+                    g_gameState->unk1C->unk8E4.battle->flags |= 0x40;
                 }
                 func_80023A4C();
                 func_80032098();
@@ -45,7 +45,7 @@ void btl_main(s32 arg0) {
 
 void func_800A882C(void) {
     GameData *gd = g_gameState->unk1C;
-    u16 f = gd->unk8E4.battle->unk0;
+    u16 f = gd->unk8E4.battle->flags;
     s32 i;
     s32 w;
 
@@ -58,7 +58,7 @@ void func_800A882C(void) {
                 D_800739B0[i].unk1 = 0;
                 D_800739B0[i].unk0 = 0;
             }
-            if (g_gameState->unk1C->unk8E4.battle->unk0 & 0x20) {
+            if (g_gameState->unk1C->unk8E4.battle->flags & 0x20) {
                 D_80073998[0] |= 8;
             }
             ClearOTag(D_800FDEB0, 1);
@@ -66,7 +66,7 @@ void func_800A882C(void) {
             D_800FDF18.code[0] = 0xE6000000;
             D_800FDF18.code[1] = 0;
             addPrim(D_800FDEB0, &D_800FDF18);
-            if (g_gameState->unk1C->unk8E4.battle->unk0 & 0x20) {
+            if (g_gameState->unk1C->unk8E4.battle->flags & 0x20) {
                 func_80029D60(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk34[g_gameState->unk1C->unk8]);
             } else {
                 func_80027834((0x140 - D_800686D0[0xEB].unk4) / 2, (0xDA - D_800686D0[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
@@ -110,18 +110,18 @@ void func_800A8BF4(void) {
     volatile s32 b;
     u16 f;
     a = func_800230A0();
-    f = g_gameState->unk1C->unk8E4.battle->unk0;
+    f = g_gameState->unk1C->unk8E4.battle->flags;
     if (f & 0x10) {
         if (!(f & 0x20)) {
             if (a != 0) {
                 func_800EA338(1);
-                g_gameState->unk1C->unk8E4.battle->unk0 |= 0x20;
+                g_gameState->unk1C->unk8E4.battle->flags |= 0x20;
             }
         } else {
             b = cd_getState();
             if (b == 0) {
                 func_800EA338(1);
-                g_gameState->unk1C->unk8E4.battle->unk0 &= ~0x20;
+                g_gameState->unk1C->unk8E4.battle->flags &= ~0x20;
             }
         }
     }
@@ -144,7 +144,7 @@ void btl_initMode(void) {
     g->unk39 = 0;
     g->unk38 = 0;
     g->unk84C = 0;
-    b->unk1534 = g_gameState->unk20 + g_gameState->unk14->unkDC;
+    b->dataSector = g_gameState->unk20 + g_gameState->unk14->unkDC;
     btl_loadCommonData();
     func_800A8F10();
     func_800A8F18();
@@ -177,7 +177,7 @@ void btl_allocBattle(void) {
 void btl_clearBattle(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     s32 i;
-    b->unk0 = 0;
+    b->flags = 0;
     b->unk4 = 0;
     for (i = 0; i < 16; i++) {
         *(b->unk1354->unk0 + i) = 0;
@@ -187,7 +187,7 @@ void btl_clearBattle(void) {
         b->unk1538[i] = 0;
     }
     b->unk1530 = 0;
-    b->unk1534 = -1;
+    b->dataSector = -1;
     b->unk11C0 = 0;
     for (i = 0; (u32)i < 2; i++) {
         b->unk2[i] = 0;
@@ -241,9 +241,9 @@ s32 btl_loadCommonData(void) {
     }
     b->unk1354->unk0[0] = (void *)p;
     db_register(p, 0);
-    func_8001DAA4((s32)b->unk154C, (s32)db_lookupRegistered(4, 0x1F4, 0), 0x180, NULL);
+    func_8001DAA4((s32)b->statusInfo, (s32)db_lookupRegistered(4, 0x1F4, 0), 0x180, NULL);
     func_8001DAA4((s32)b->abilities, (s32)db_lookupRegistered(4, 0x1F5, 0), 0xC00, NULL);
-    func_8001DAA4((s32)b->unk22CC, (s32)db_lookupRegistered(4, 0x1F6, 0), 0x100, NULL);
+    func_8001DAA4((s32)b->statusSets, (s32)db_lookupRegistered(4, 0x1F6, 0), 0x100, NULL);
     DrawSync(0);
     D_80067948 = db_lookup(p, 4, 0x1E, 0);
     return 0;
@@ -431,7 +431,7 @@ s32 btl_setupBackground(Battle11C0 *arg0, s32 arg1) {
         func_800C9374((TexAnimSet *)arg0->unk40, NULL);
     }
     DrawSync(0);
-    g_gameState->unk1C->unk8E4.battle->unk0 |= 1;
+    g_gameState->unk1C->unk8E4.battle->flags |= 1;
     return 0;
 }
 
@@ -456,7 +456,7 @@ s32 func_800A9BE4(s32 arg0) {
     u8 save;
 
     if (arg0 & 0x8000) {
-        b->unk0 &= ~4;
+        b->flags &= ~4;
         *state = 1;
     }
     switch (*state) {
@@ -549,7 +549,7 @@ s32 func_800A9BE4(s32 arg0) {
             m->unk4 = save;
         }
     done:
-        g_gameState->unk1C->unk8E4.battle->unk0 |= 4;
+        g_gameState->unk1C->unk8E4.battle->flags |= 4;
         *state = 0;
         break;
     }
@@ -579,7 +579,7 @@ s16 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
     GameData *gd2;
     st = arg2;
     if (arg1 == -1) {
-        b->unk0 &= ~1;
+        b->flags &= ~1;
         st->unk0 = 2;
     }
     if (st->unk0 == 1) {
@@ -596,7 +596,7 @@ s16 btl_loadBackgroundStep(Battle11C0 *arg0, s32 arg1, Unk800AA08C *arg2) {
         v = arg0->unk1C;
         b->unk1354->unk0[3] = (void *)v;
         db_register(v, 0);
-        b->unk0 |= 1;
+        b->flags |= 1;
         st->unk0 = 0;
     }
     return st->unk0;
@@ -618,7 +618,7 @@ s32 func_800AA24C(s16 arg0, s32 arg1, Unk800AA24C *arg2) {
     b = gd->unk8E4.battle;
     cd = gd->unk854;
     if (arg1 & 0x8000) {
-        b->unk0 &= ~2;
+        b->flags &= ~2;
         st->unk0 = 2;
     }
 loop:
@@ -715,7 +715,7 @@ s32 func_800AA504(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
     b = g_gameState->unk1C->unk8E4.battle;
     req = (Unk800AA958Req *)&b->unk11C0->unkC[0x9FA0 / 4];
     if (arg1 & 0x8000) {
-        b->unk0 &= ~2;
+        b->flags &= ~2;
         st->unk0 = 2;
     }
 loop:
@@ -818,7 +818,7 @@ loop:
         st->unk0 = 4;
         goto loop;
     case 7:
-        b->unk0 |= 2;
+        b->flags |= 2;
         st->unk0 = 0;
         break;
     }
@@ -845,7 +845,7 @@ s32 func_800AA958(s32 arg0, Unk800AA958 *arg1) {
     b = g_gameState->unk1C->unk8E4.battle;
     req = (Unk800AA958Req *)&b->unk11C0->unkC[0x9FA0 / 4];
     if (arg0 & 0x8000) {
-        b->unk0 &= ~4;
+        b->flags &= ~4;
         st->unk0 = 2;
     }
 loop:
@@ -929,7 +929,7 @@ s32 func_800AABC4(s32 arg0, Unk800AA958 *arg1) {
     b = g_gameState->unk1C->unk8E4.battle;
     req = (Unk800AA958Req *)&b->unk11C0->unkC[0x9FA0 / 4];
     if (arg0 & 0x8000) {
-        b->unk0 &= ~4;
+        b->flags &= ~4;
         st->unk0 = 1;
     }
 loop:
@@ -1194,14 +1194,14 @@ void func_800AB43C(void) {
     func_800AB26C(p->unk30, 3);
     func_800AB26C(g_gameState->unk1C->unk8E4.battle->unk1354->unk30, 3);
     func_800AB26C(g_gameState->unk1C->unk8E4.battle->unk1354->unk20, 3);
-    b->unk0 &= ~4;
+    b->flags &= ~4;
 }
 
 void func_800AB4FC(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     func_800AB26C(b->unk1354->unk10, 2);
     func_800AB26C(g_gameState->unk1C->unk8E4.battle->unk1354->unk10, 2);
-    b->unk0 &= ~2;
+    b->flags &= ~2;
 }
 
 s16 func_800AB580(s32 arg0) {
@@ -1236,7 +1236,7 @@ s16 func_800AB580(s32 arg0) {
         }
     } else if (s == 4) {
         if (func_800AABC4(0x22, ld) == 0) {
-            g_gameState->unk1C->unk8E4.battle->unk0 |= 4;
+            g_gameState->unk1C->unk8E4.battle->flags |= 4;
             *state = 0;
         }
     }

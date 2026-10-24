@@ -233,7 +233,7 @@ Battle11C020 *func_800C94B8(void) {
     Battle11C020 *s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk20;
     u16 *t = g_gameState->unk1C->unk8E4.battle->unk11C0->unk24;
     s32 r;
-    Battle132C *sc = &g_gameState->unk1C->unk8E4.battle->unk132C;
+    Battle132C *sc = &g_gameState->unk1C->unk8E4.battle->scene;
     u8 n;
     u8 m;
 
@@ -288,8 +288,8 @@ Battle1330 *func_800C9600(Battle11C020 *arg0) {
 
 void func_800C972C(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    b->unk132C.unk0 = (b->unk11C0->unk20->unk4 ^ 0x30) * 4;
-    D_800FDF38 = g_gameState->unk1C->unk8E4.battle->unk132C.unk4->unk4;
+    b->scene.unk0 = (b->unk11C0->unk20->unk4 ^ 0x30) * 4;
+    D_800FDF38 = g_gameState->unk1C->unk8E4.battle->scene.unk4->unk4;
 }
 
 void func_800C9794(void) {
@@ -311,16 +311,16 @@ void func_800C9794(void) {
     Battle1330 *grp2;
 
     b = g_gameState->unk1C->unk8E4.battle;
-    flags = &b->unk132C.unk0;
-    grp = b->unk132C.unk4;
+    flags = &b->scene.unk0;
+    grp = b->scene.unk4;
     hdr = b->unk11C0->unk20;
-    b->unk132C.unk0 = (b->unk132C.unk0 & ~3) | (btl_rollAmbush(flags) & 3);
+    b->scene.unk0 = (b->scene.unk0 & ~3) | (btl_rollAmbush(flags) & 3);
     i = 0;
     n = hdr->unk2 + hdr->unk3;
     grp2 = hdr->unk8;
     recs = (Unk800C9D1C *)(grp2 + hdr->unk1);
     rec = recs;
-    en = g_gameState->unk1C->unk8E4.battle->unk4E8;
+    en = g_gameState->unk1C->unk8E4.battle->enemyTypes;
     ofs = (U16Pair *)(g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + 4);
     src = (BtlCmd8 *)&recs[hdr->unk2];
     for (; i < hdr->unk2; i++) {
@@ -333,14 +333,14 @@ void func_800C9794(void) {
         en++;
         rec++;
     }
-    dst = g_gameState->unk1C->unk8E4.battle->unk5D8;
+    dst = g_gameState->unk1C->unk8E4.battle->enemyAbilities;
     for (i = 0, cmd = src; i < hdr->unk3; i++, cmd++) {
         func_800CA28C(cmd, dst);
         dst->nameOfs = ofs->unk0 + 4;
         ofs++;
         dst++;
     }
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     for (i = 0; i < grp->unk1; i++) {
         if (u == NULL) {
             break;
@@ -371,7 +371,7 @@ void func_800C9A28(void) {
 
     n = 0;
     b = g_gameState->unk1C->unk8E4.battle;
-    flags = &b->unk132C.unk0;
+    flags = &b->scene.unk0;
     for (i = 0; i < 4; i++) {
         if (g_gameState->unk1C->party[i] != NULL) {
             n++;
@@ -380,7 +380,7 @@ void func_800C9A28(void) {
     x = (n - 1) * 0x13C;
     i = 0;
     rot = ((*flags & 3) != 0) << 11;
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     for (; i < n; i++) {
         if (!(u->unk68 & 1)) {
             return;
@@ -461,12 +461,12 @@ void func_800C9D1C(Unk800C9D1C *arg0, Battle4880 *arg1) {
 
 void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    Battle488 *s = &b->unk488[(arg1->unk68 >> 1) & 0xF];
+    Battle488 *s = &b->enemies[(arg1->unk68 >> 1) & 0xF];
     Battle4880 *e;
     s16 r;
-    s->unk0 = &b->unk4E8[arg0->unk0];
+    s->unk0 = &b->enemyTypes[arg0->unk0];
     arg1->unk68 = (((arg1->unk68 & ~0x10000000) | ((arg0->unk1 & 1) << 28)) & ~0x300) | 0x200;
-    e = &g_gameState->unk1C->unk8E4.battle->unk4E8[arg0->unk0];
+    e = &g_gameState->unk1C->unk8E4.battle->enemyTypes[arg0->unk0];
     arg1->max = &e->unk4;
     arg1->hp = e->unk4.maxHp;
     arg1->mp = arg1->max->maxMp;
@@ -507,7 +507,7 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     *(s32 *)&arg1->elemGuard = arg0->unk3C;
     *(s32 *)&arg1->hiddenMeshes = arg0->unk2C;
     arg1->unk7C = arg0->unk4B;
-    s = &g_gameState->unk1C->unk8E4.battle->unk488[(arg1->unk68 >> 1) & 0xF];
+    s = &g_gameState->unk1C->unk8E4.battle->enemies[(arg1->unk68 >> 1) & 0xF];
     s->unk8.w = arg0->unk18;
     s->unk4 = (s->unk4 & ~0x40) | ((arg0->unk30 & 1) << 6);
     s->unk4 = (s->unk4 & ~0x80) | ((arg0->unk30 << 6) & 0x80);
@@ -524,22 +524,22 @@ void func_800CA28C(BtlCmd8 *arg0, BtlCmd8 *arg1) {
 }
 
 s32 func_800CA2B0(s32 arg0) {
-    s16 *t = g_gameState->unk1C->unk8E4.battle->unk132C.unk10;
+    s16 *t = g_gameState->unk1C->unk8E4.battle->scene.unk10;
     return (s32)t + t[arg0];
 }
 
 s16 func_800CA2E4(s16 arg0) {
-    Unk800C9EE0 *e = &g_gameState->unk1C->unk8E4.battle->unk132C.unk4->unk8[arg0];
+    Unk800C9EE0 *e = &g_gameState->unk1C->unk8E4.battle->scene.unk4->unk8[arg0];
     s32 r;
     if (arg0 > 0 && (e->unk1 & 2)) {
         r = -1;
     } else {
-        r = g_gameState->unk1C->unk8E4.battle->unk132C.unk8[e->unk0].unk1E;
+        r = g_gameState->unk1C->unk8E4.battle->scene.unk8[e->unk0].unk1E;
     }
     return r;
 }
 
 u16 func_800CA378(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    return b->unk132C.unk8[b->unk132C.unk4->unk8[0].unk0].unk62;
+    return b->scene.unk8[b->scene.unk4->unk8[0].unk0].unk62;
 }

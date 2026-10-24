@@ -5,7 +5,7 @@ u16 btl_getUnitMask(u32 arg0) {
     s32 r;
 
     r = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         switch (arg0) {
         case 0:
             if (u->unk68 & 1) {
@@ -27,7 +27,7 @@ u16 btl_getUnitMask(u32 arg0) {
 
 BtlUnit *btl_getUnitById(u16 arg0) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit == arg0) {
             return u;
         }
@@ -48,7 +48,7 @@ BtlUnit *btl_findUnitByBit(u16 arg0) {
 
 u32 btl_addStatus(BtlUnit *u, u32 f) {
     u32 n = 0;
-    Battle154C *tbl = g_gameState->unk1C->unk8E4.battle->unk154C;
+    Battle154C *tbl = g_gameState->unk1C->unk8E4.battle->statusInfo;
     BtlUnit34 *s = (BtlUnit34 *)&u->statusImmune;
     u32 i;
     u32 blk;
@@ -92,7 +92,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
     switch (n) {
     case 0:
         if (!btl_isCmdPending(u->koCmd)) {
-            if (g_gameState->unk1C->unk8E4.battle->unkD80 >= BTL_PHASE_ENTRANCE) {
+            if (g_gameState->unk1C->unk8E4.battle->phase >= BTL_PHASE_ENTRANCE) {
                 btl_setCmd(u->koCmd, BTL_CMD_PETRIFY, 0, u->unitBit, 0);
             } else {
                 if (u->unk68 & 1) {
@@ -105,7 +105,7 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
         }
         break;
     case 1:
-        if (g_gameState->unk1C->unk8E4.battle->unkD80 >= BTL_PHASE_ENTRANCE) {
+        if (g_gameState->unk1C->unk8E4.battle->phase >= BTL_PHASE_ENTRANCE) {
             btl_checkSideDefeated(u);
         }
     case 17:
@@ -214,7 +214,7 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
     if (!(s->unk8 & f)) {
         return 1;
     }
-    if (!(u->unk68 & 1) && g_gameState->unk1C->unk8E4.battle->unkD80 == BTL_PHASE_END && (f & 0x1003)) {
+    if (!(u->unk68 & 1) && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_END && (f & 0x1003)) {
         return 1;
     }
     s->unk8 &= ~f;
@@ -358,20 +358,20 @@ void btl_updateUnitStatus(BtlUnit *arg0) {
                 }
                 if ((arg0->status & BTL_STATUS_TRANCE) && ((arg0->unk68 >> 1) & 0xF) == 2) {
                     b = g_gameState->unk1C->unk8E4.battle;
-                    fl = b->unk11B8;
+                    fl = b->cmdFlags;
                     if (fl & 4) {
                         if (!(fl & 8)) {
-                            if (b->unk11BC <= 0) {
-                                btl_setCmd(arg0->delayedCmd, BTL_CMD_TRANCE_EIDOLON, g_gameState->unk1C->unk8E4.battle->unk11BB, btl_getUnitsWithStatus(1, 0), 8);
-                                g_gameState->unk1C->unk8E4.battle->unk11B8 |= 8;
+                            if (b->eidolonTimer <= 0) {
+                                btl_setCmd(arg0->delayedCmd, BTL_CMD_TRANCE_EIDOLON, g_gameState->unk1C->unk8E4.battle->eidolonAbility, btl_getUnitsWithStatus(1, 0), 8);
+                                g_gameState->unk1C->unk8E4.battle->cmdFlags |= 8;
                             } else {
-                                b->unk11BC -= arg0->atbSpeed;
+                                b->eidolonTimer -= arg0->atbSpeed;
                             }
                         }
                     }
                 }
                 btl_tickStatusTimers(arg0);
-            } else if ((arg0->status & BTL_STATUS_JUMP) && !(g_gameState->unk1C->unk8E4.battle->unk11B8 & 0x10)) {
+            } else if ((arg0->status & BTL_STATUS_JUMP) && !(g_gameState->unk1C->unk8E4.battle->cmdFlags & 0x10)) {
                 t->unk2E -= arg0->atbSpeed;
                 if (t->unk2E < 0) {
                     c = arg0->delayedCmd;
@@ -412,7 +412,7 @@ void btl_updateUnitTint(BtlUnit *arg0) {
             }
         } else {
             if (arg0->status & (BTL_STATUS_SHELL | BTL_STATUS_PROTECT)) {
-                n = g_gameState->unk1C->unk8E4.battle->unkD7C;
+                n = g_gameState->unk1C->unk8E4.battle->tick;
                 m = n;
                 m = m % 24;
                 /* v is the colour-select flag here and the fade level below; the table branch's level goes
@@ -447,7 +447,7 @@ void btl_updateUnitTint(BtlUnit *arg0) {
                 r = e->unkC + (p[0] - 0x80);
                 g = e->unkD + (p[1] - 0x80);
                 b = e->unkE + (p[2] - 0x80);
-                w = g_gameState->unk1C->unk8E4.battle->unkD7C & 0xF;
+                w = g_gameState->unk1C->unk8E4.battle->tick & 0xF;
                 if (w >= 8) {
                     w = 16 - w;
                 }
@@ -467,7 +467,7 @@ void btl_updateUnitTint(BtlUnit *arg0) {
 end:
     n = BtlUnitHasStatus(arg0, BTL_STATUS_FLOAT);
     if ((u8)n) {
-        arg0->pos[1] = t = 0xFF380000 - math_sin((g_gameState->unk1C->unk8E4.battle->unkD7C & 0xF) << 8) * 480;
+        arg0->pos[1] = t = 0xFF380000 - math_sin((g_gameState->unk1C->unk8E4.battle->tick & 0xF) << 8) * 480;
         arg0->unk98->unk0[1] = t;
     }
 }
@@ -655,7 +655,7 @@ void btl_clearUnitStatus(BtlUnit *arg0) {
 
 void func_800C0A3C(Unk800C09D8 *arg0) {
     s32 t = (0x3C - arg0->unk33) * 8;
-    arg0->unk66 = t * g_gameState->unk1C->unk8E4.battle->unk154C[27].unk2;
+    arg0->unk66 = t * g_gameState->unk1C->unk8E4.battle->statusInfo[27].unk2;
 }
 
 void btl_interruptUnit(BtlUnit *arg0, s32 arg1) {
@@ -707,7 +707,7 @@ void btl_initDotTimer(BtlUnit *u, s32 n) {
         v = (0x3C - u->spirit) * 4;
         k = 2;
     }
-    u->unk40[k] = g_gameState->unk1C->unk8E4.battle->unk154C[n].unk1 * v;
+    u->unk40[k] = g_gameState->unk1C->unk8E4.battle->statusInfo[n].unk1 * v;
 }
 
 void func_800C0C7C(u32 *arg0) {
@@ -773,7 +773,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
     s32 n;
 
     n = 6;
-    for (u = b->unk6F8; u != NULL; u = u->next) {
+    for (u = b->unitList; u != NULL; u = u->next) {
         if ((u->unk68 & 1) == (arg0->unk68 & 1)) {
             if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) || ((u->status & BTL_STATUS_KO) && u->unk7D != n)) {
                 return;
@@ -782,7 +782,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
     }
     if (!(arg0->unk68 & 1)) {
         found = 0;
-        for (u = b->unk6F8; u != NULL; u = u->next) {
+        for (u = b->unitList; u != NULL; u = u->next) {
             if (u->unk68 & 1) {
                 if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP)) || ((u->hp == 0 || (u->status & BTL_STATUS_KO)) && (u->status & BTL_STATUS_AUTO_LIFE)) || btl_isCmdQueued(u, BTL_CMD_AUTO_LIFE)) {
                     found = 1;
@@ -793,11 +793,11 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
         if (!found) {
             return;
         }
-        if (b->unkD81 != 1) {
-            b->unkD81 = 0;
+        if (b->subPhase != 1) {
+            b->subPhase = 0;
         }
     } else {
-        for (u = b->unk6F8; u != NULL; u = u->next) {
+        for (u = b->unitList; u != NULL; u = u->next) {
             f = u->unk68;
             if (f & 1) {
                 k = g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4;
@@ -822,11 +822,11 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 }
             }
         }
-        b->unkD81 = 1;
+        b->subPhase = 1;
         btl_showMessage(5);
     }
     func_800E9F68(0);
-    b->unkD80 = BTL_PHASE_END;
+    b->phase = BTL_PHASE_END;
     btl_clearCmdQueue(b);
 }
 
@@ -901,18 +901,18 @@ void btl_addEnemyRewards(Battle4880 *arg0) {
 
 void btl_initState(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    b->unk6F8 = NULL;
-    b->unkD7C = 0;
-    b->unkD80 = 0;
-    b->unkD81 = 0;
-    b->unkD82 = 0;
+    b->unitList = NULL;
+    b->tick = 0;
+    b->phase = 0;
+    b->subPhase = 0;
+    b->exitTimer = 0;
     b->escapeHeld = 0;
-    b->unkD84 = 0x20;
-    b->unkD85 = 0;
-    b->unkD86 = 0;
-    b->unkD87 = 0;
-    b->unk11BB = 0;
-    b->unk11BC = 0;
+    b->fleeBrightness = 0x20;
+    b->loadFlags = 0;
+    b->partyBrightness = 0;
+    b->enemyBrightness = 0;
+    b->eidolonAbility = 0;
+    b->eidolonTimer = 0;
     b->unk11BE = 0;
     D_800FDF3A = 0;
     btl_clearRewards();
@@ -942,7 +942,7 @@ void btl_checkPartyDisabled(BtlUnit *arg0) {
     BtlUnit *u;
     BtlUnit *six = 0;
     u32 st;
-    for (u = b->unk6F8; u != 0; u = u->next) {
+    for (u = b->unitList; u != 0; u = u->next) {
         if (((u->unk68 >> 1) & 0xF) == 6) {
             six = u;
         }
@@ -969,7 +969,7 @@ void btl_checkPartyDisabled(BtlUnit *arg0) {
 void btl_checkEnemiesKO(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     BtlUnit *u;
-    for (u = b->unk6F8; u != NULL; u = u->next) {
+    for (u = b->unitList; u != NULL; u = u->next) {
         if (!(u->unk68 & 1) && !(u->status & BTL_STATUS_KO)) {
             return;
         }
@@ -982,10 +982,10 @@ void btl_checkEnemiesKO(void) {
 s32 btl_saveParty(Battle *arg0) {
     GameData *gd = g_gameState->unk1C;
     u8 v = gd->unk56E;
-    if ((v == 3 || v == 6) && !((arg0->unk132C.unk0 >> 4) & 1)) {
+    if ((v == 3 || v == 6) && !((arg0->scene.unk0 >> 4) & 1)) {
         gd->unk56E = 6;
     } else {
-        BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+        BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
         while (u != NULL) {
             if (u->unk68 & 1) {
                 btl_saveCharacter(u, 0);
@@ -1016,7 +1016,7 @@ void btl_saveCharacter(BtlUnit *arg0, s32 arg1) {
 
 void btl_unlinkUnit(BtlUnit *arg0) {
     BtlUnit *p;
-    for (p = (BtlUnit *)&g_gameState->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->next) {
+    for (p = (BtlUnit *)&g_gameState->unk1C->unk8E4.battle->unitList; p != NULL; p = p->next) {
         if (p->next == arg0) {
             p->next = arg0->next;
             return;
@@ -1025,7 +1025,7 @@ void btl_unlinkUnit(BtlUnit *arg0) {
 }
 
 void btl_insertUnit(BtlUnit *arg0) {
-    BtlUnit **pp = &g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit **pp = &g_gameState->unk1C->unk8E4.battle->unitList;
     BtlUnit *n;
     s32 a;
     s32 b;
@@ -1044,8 +1044,8 @@ void btl_insertUnit(BtlUnit *arg0) {
 
 void btl_tryEscape(u8 arg0) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    if (!(b->unk11B8 & 1)) {
-        if ((u8)b->unk132C.unk0 >> 7 == 0) {
+    if (!(b->cmdFlags & 1)) {
+        if ((u8)b->scene.unk0 >> 7 == 0) {
             btl_showMessage(4);
         } else if (arg0 && (btl_isAtbRunning() & 0xFF)) {
             btl_calcCmd(0, 0, 0, 0x38);
@@ -1085,7 +1085,7 @@ u16 btl_getUnitsWithStatus(u32 arg0, s32 arg1) {
     BtlUnit *u;
     s32 r = 0;
     s32 all;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         all = arg1 == 0;
         if (all || (u8)btl_hasStatus(u, arg1)) {
             if ((u->unk68 >> 28) & 1) {
@@ -1112,7 +1112,7 @@ u16 btl_getUnitsWithStatus(u32 arg0, s32 arg1) {
 
 BtlUnit *btl_getUnitBySlot(s32 arg0) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if ((u8)u->unk68 >> 5 == arg0) {
             return u;
         }
@@ -1122,8 +1122,8 @@ BtlUnit *btl_getUnitBySlot(s32 arg0) {
 
 BtlUnit *func_800C1DEC(void) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
-        if (!(u->unk68 & 0x800001) && (((g_gameState->unk1C->unk8E4.battle->unk488 + ((u->unk68 >> 1) & 0xF))->unk4 >> 8) & 1)) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
+        if (!(u->unk68 & 0x800001) && (((g_gameState->unk1C->unk8E4.battle->enemies + ((u->unk68 >> 1) & 0xF))->unk4 >> 8) & 1)) {
             return u;
         }
     }
@@ -1135,7 +1135,7 @@ s32 btl_hasEnemyFlag(BtlUnit *arg0, s32 arg1) {
     if (f & 1) {
         return 0;
     }
-    return g_gameState->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unk2 & arg1;
+    return g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unk2 & arg1;
 }
 
 s32 btl_getModelSlot(BtlUnit *arg0) {
@@ -1148,7 +1148,7 @@ s32 btl_getModelSlot(BtlUnit *arg0) {
 }
 
 u32 btl_countActiveUnits(u32 arg0) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 n = 0;
     while (u != NULL) {
         u32 f = u->unk68;
@@ -1167,7 +1167,7 @@ s32 btl_pickRandomUnit(s32 arg0) {
     if (arg0 != 0) {
         arg0 = 1;
     }
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if ((u->unk68 & 1) == arg0 && !(u->status & BTL_STATUS_KO) && ((u->unk68 >> 28) & 1)) {
             ids[n++] = u->unitBit;
         }
@@ -1189,8 +1189,8 @@ s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
     }
     if (!(arg0->unk56F & 2)) {
         b = g_gameState->unk1C->unk8E4.battle;
-        b->unkD86 += 4;
-        if ((u32)(s8)b->unkD86 < arg1) {
+        b->partyBrightness += 4;
+        if ((u32)(s8)b->partyBrightness < arg1) {
             return 0;
         }
         btl_soundCmd(0x700, arg2, 0, 0, 0);

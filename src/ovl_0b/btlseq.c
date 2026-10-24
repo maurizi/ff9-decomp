@@ -3,7 +3,7 @@
 void btlseq_init(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     u16 i = 0;
-    u16 *h = b->unk132C.unkC;
+    u16 *h = b->scene.unkC;
     Battle11C4 *t = &b->unk11C4;
     u16 *p = h + 2;
     u32 *q;
@@ -86,7 +86,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
     if (b->unk11C4.unk8[id] == 0) {
         return;
     }
-    for (u = b->unk6F8; u != NULL; u = u->next) {
+    for (u = b->unitList; u != NULL; u = u->next) {
         if (u->unitBit & mask) {
             break;
         }
@@ -97,7 +97,7 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
         c->subNo = id;
         c->targets = arg1;
         c->unk4 = u;
-        c->ability = &g_gameState->unk1C->unk8E4.battle->unk5D8[id];
+        c->ability = &g_gameState->unk1C->unk8E4.battle->enemyAbilities[id];
         c->unk10.w = 0;
         e = btlseq_start(c);
         if (e != NULL) {
@@ -190,7 +190,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
         if (arg0->unk21 != 0) {
             return 0;
         }
-        if (g_gameState->unk1C->unk8E4.battle->unk1358.unk1C4 != 0) {
+        if (g_gameState->unk1C->unk8E4.battle->popups.unk1C4 != 0) {
             return 0;
         }
         if (!((arg0->unk0 >> 3) & 1)) {
@@ -227,7 +227,7 @@ s32 btlseq_stepWait(BtlScript *arg0) {
 }
 
 s32 btlseq_opExecCmd(BtlScript *arg0) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     u16 mask = arg0->unk4->unkC;
     while (u != NULL) {
         if (u->unitBit & mask) {
@@ -331,7 +331,7 @@ void btlseq_opMoveBy(BtlScript *arg0, BtlUnit *arg1) {
 
 BtlUnit *btlseq_findUnit(u16 arg0) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit & arg0) {
             break;
         }
@@ -344,7 +344,7 @@ void btlseq_getTargetCenter(u16 arg0, u16 *arg1, u16 *arg2) {
     s32 n = 0;
     *arg1 = 0;
     *arg2 = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if (u->unitBit & arg0) {
             *arg1 += u->pos[0] >> 16;
             n++;
@@ -363,7 +363,7 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
     s32 idx;
     if (p[1] == 0xFF) {
         f = arg1->unk68;
-        arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
+        arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
         arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
@@ -462,7 +462,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     if (idx & 0x80) {
         func_800F4F44((s32)(txt + arg0->unk4->unk8->nameOfs), 1);
     } else {
-        idx += b->unk488[(arg1->unk68 >> 1) & 0xF].unk0->unk28;
+        idx += b->enemies[(arg1->unk68 >> 1) & 0xF].unk0->unk28;
         ofs = ((u16 *)txt)[idx * 2 + 2] + 4;
         if (pc[0] == 0x21) {
             func_800F4F44((s32)(txt + ofs), 3);
@@ -498,7 +498,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
             goto end;
         }
         f = arg1->status;
-        for (u = b->unk6F8; u != NULL; u = u->next) {
+        for (u = b->unitList; u != NULL; u = u->next) {
             if (u->unitBit & arg0->unk4->unkC) {
                 f |= u->status;
             }
@@ -519,7 +519,7 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
     s->unk148 = arg1;
     s->unk14C = (s32)btlseq_findUnit(arg0->unk4->unkC);
     g_gameState->unk1C->unk8E4.battle->unk131C = arg0->unk8[1];
-    btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->unk488[(arg1->unk68 >> 1) & 0xF].unk0->unk2C);
+    btlcam_playSeq(g_gameState->unk1C->unk8E4.battle->enemies[(arg1->unk68 >> 1) & 0xF].unk0->unk2C);
 end:
     arg0->unk8 += 2;
     return 1;
@@ -668,14 +668,14 @@ s32 func_800CBF50(BtlScript *arg0, BtlUnit *arg1) {
 void func_800CBF90(void) {
     s16 i;
     Battle1358 *p;
-    g_gameState->unk1C->unk8E4.battle->unk1358.unk1C0 = 0;
-    g_gameState->unk1C->unk8E4.battle->unk1358.unk1C2 = 0;
-    g_gameState->unk1C->unk8E4.battle->unk1358.unk1D4 = 0xFF;
-    p = g_gameState->unk1C->unk8E4.battle->unk1358.unk0;
+    g_gameState->unk1C->unk8E4.battle->popups.unk1C0 = 0;
+    g_gameState->unk1C->unk8E4.battle->popups.unk1C2 = 0;
+    g_gameState->unk1C->unk8E4.battle->popups.unk1D4 = 0xFF;
+    p = g_gameState->unk1C->unk8E4.battle->popups.unk0;
     for (i = 15; i != -1; i--) {
         p->unk0 = NULL;
         p++;
     }
-    g_gameState->unk1C->unk8E4.battle->unk1358.unk1C4 = 0;
-    g_gameState->unk1C->unk8E4.battle->unk1358.unk1CC = 0;
+    g_gameState->unk1C->unk8E4.battle->popups.unk1C4 = 0;
+    g_gameState->unk1C->unk8E4.battle->popups.unk1CC = 0;
 }

@@ -152,7 +152,7 @@ s32 btlfx_loadFile(s32 arg0) {
         return -1;
     }
     ofs = ((FileEntry16 *)file_find(0xD, arg0))->unk0;
-    base = g_gameState->unk1C->unk8E4.battle->unk1534;
+    base = g_gameState->unk1C->unk8E4.battle->dataSector;
     g_btlfxLoader.unk2C.w = -1;
     g_btlfxLoader.unk4 = arg0;
     g_btlfxLoader.unk8 = 0;

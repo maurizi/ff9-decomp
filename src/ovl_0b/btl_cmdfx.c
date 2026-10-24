@@ -34,8 +34,8 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
 
     memset(sum, 0, 0x10);
     mask = 0;
-    b->unk116C.unk0 = arg0->unk4;
-    l = &b->unk116C;
+    b->fxTargets.unk0 = arg0->unk4;
+    l = &b->fxTargets;
     if (arg2 != NULL) {
         l->unk25[0] = arg2[0];
         l->unk25[1] = arg2[1];
@@ -70,7 +70,7 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         }
         l->unk40 = 0x11;
     }
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (u->unitBit & (u16)arg0->targets) {
             l->unk4[l->unk24++] = u;
             u->popupFlags = 0;
@@ -208,28 +208,28 @@ void btl_startCmdEffect(BtlCmd *cmd) {
     case BTL_CMD_EIDOLON:
         switch (cmd->subNo) {
         case 0x31:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x99;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x99;
             break;
         case 0x33:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x9A;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x9A;
             break;
         case 0x35:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x9B;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x9B;
             break;
         case 0x37:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x9C;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x9C;
             break;
         case 0x3A:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x9D;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x9D;
             break;
         case 0x3C:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x9E;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x9E;
             break;
         case 0x3E:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0x9F;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0x9F;
             break;
         case 0x40:
-            g_gameState->unk1C->unk8E4.battle->unk11BB = 0xA0;
+            g_gameState->unk1C->unk8E4.battle->eidolonAbility = 0xA0;
             break;
         }
     default:

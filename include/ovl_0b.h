@@ -1237,53 +1237,53 @@ typedef struct {
 
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
-    u16 unk0; /* flags */
+    u16 flags; /* 1 background set up (btlbg_draw draws), 4 set by the party-model loader func_800AB580 */
     u8 unk2[2];
     s32 unk4;
-    s32 unk8[4][0x22]; /* per party member: loaded file addresses */
-    BtlModel unk228[4]; /* per party member: model */
-    Battle488 unk488[4];
-    Battle4880 unk4E8[3];
-    struct BtlCmd8 unk5D8[18]; /* commands/abilities */
-    BtlUnit *unk6F8; /* list of active units */
+    s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (func_800BD698) */
+    BtlModel weaponModels[4]; /* per party member: weapon model (BtlUnit.weaponModel, btl_initPartyUnit) */
+    Battle488 enemies[4];
+    Battle4880 enemyTypes[3]; /* enemy type records (Battle488.unk0 points here) */
+    struct BtlCmd8 enemyAbilities[18]; /* enemy attacks: BtlCmd.ability of enemy commands (btl_setEnemyCmd) and Return Magic */
+    BtlUnit *unitList; /* active units, linked through BtlUnit.next */
     BtlUnit units[8]; /* runtime: party at [0..3] (Zidane 0x80108EFC, Vivi +0xD0, ...) */
-    s32 unkD7C;
-    u8 unkD80;
-    u8 unkD81;
-    u8 unkD82;
+    s32 tick; /* btl_update count; low 4 bits animate (bobbing, cursor) */
+    u8 phase; /* BTL_PHASE_* */
+    u8 subPhase; /* in BTL_PHASE_END how the battle ended (BTL_END_*); a step counter in the exit phases */
+    u8 exitTimer; /* exit phases: frames of the fade before btl_saveParty */
     u8 escapeHeld; /* runtime: 1 while L1+R1 are held (btlui_pollEscape), units take the run-away stance */
-    u8 unkD84;
-    u8 unkD85;
-    u8 unkD86;
-    u8 unkD87;
+    u8 fleeBrightness; /* escaping units' brightness, -2 per tick (btl_victory) */
+    u8 loadFlags; /* 1/2/4 setup steps (btlui_init runs once all three are set), 8 btl_initEnemies, 0x10 btl_initParty */
+    u8 partyBrightness; /* intro fade-in, +4 per tick to 0x20 (btl_updateIntro) */
+    u8 enemyBrightness; /* intro fade-in, +4 per tick to 0x20 */
     u8 padD88[0xD90 - 0xD88];
-    BtlCmd unkD90[36]; /* per unit: 6 (players) or 3 (enemies) */
-    BtlCmd unk1060;
+    BtlCmd cmdSlots[36]; /* per unit: 6 (players) or 3 (enemies); BtlUnit.cmd.. point here */
+    BtlCmd escapeCmd; /* the party's escape (BTL_CMD_ESCAPE) command */
     BtlCmd cmdQueue; /* list head (only unk0 used); runtime: commands are queued here when issued */
     BtlCmd *curCmd; /* runtime: Vivi's command while her Attack executes */
-    struct Battle108CSet unk108C[2]; /* per draw buffer */
-    BtlUnitList unk116C;
-    u16 unk11B8;
-    u8 unk11BA;
-    u8 unk11BB;
-    s16 unk11BC;
+    struct Battle108CSet cursorPrims[2]; /* target cursor, per draw buffer */
+    BtlUnitList fxTargets; /* effect target list (btl_playCmdEffect -> btlfx_setTargets) */
+    u16 cmdFlags; /* 1 escape queued, 4/8 trance Eidolon timer running/fired, 0x10 Spear pending */
+    u8 cmdPhase; /* curCmd's step in btl_processCmdQueue (0 check, 1 start effect, 2 wait, 3 finish) */
+    u8 eidolonAbility; /* ability of the trance Eidolon follow-up (btl_startCmdEffect, BTL_CMD_EIDOLON) */
+    s16 eidolonTimer; /* counts down by atbSpeed until BTL_CMD_TRANCE_EIDOLON */
     u16 unk11BE;
     struct Battle11C0 *unk11C0;
     struct Battle11C4 unk11C4;
     u8 unk131C;
     u8 pad131D[0x132C - 0x131D];
-    Battle132C unk132C;
+    Battle132C scene;
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
     Battle1354 *unk1354;
-    Battle1358Ring unk1358;
+    Battle1358Ring popups;
     s32 unk1530;
-    s32 unk1534; /* battle data file sector */
+    s32 dataSector; /* battle data file sector */
     struct Battle1538 **unk1538;
     s32 unk153C[4];
-    Battle154C unk154C[32];
+    Battle154C statusInfo[32];
     Battle16CC abilities[0xC0]; /* runtime: BtlCmd.ability = &abilities[subNo] (Attack 176, Focus 188) */
-    s32 unk22CC[64];
+    s32 statusSets[64]; /* status masks indexed by ability/weapon status-set bytes (btl_applyAbilityStatus) */
 } Battle; /* 0x23CC */
 
 /* battle work area, allocated at D_80067944 + 0x61800 */
@@ -3462,7 +3462,7 @@ extern u8 D_80104FF2;
 /* first unit flagged as the current target (bits 28 and 29 of unk68) */
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             return u;
         }
@@ -3596,7 +3596,7 @@ s32 chr_getDefaultSet(Character *);
 /* battle menu: unit under the target cursor (inlined by its callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
-    for (p = g_gameState->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->next) {
+    for (p = g_gameState->unk1C->unk8E4.battle->unitList; p != NULL; p = p->next) {
         if ((p->unk68 & 0x30000000) == 0x30000000) {
             return p;
         }
@@ -3612,7 +3612,7 @@ static inline s32 func_800F1B78_inline(void) {
         return 2;
     }
     n = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             n++;
         }

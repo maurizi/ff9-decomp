@@ -1279,7 +1279,7 @@ s32 btlfx_getUnitRadius(s32 arg0) {
     if ((f & 1) || flag != 0) {
         return u->model->unk8->unkA;
     }
-    return g_gameState->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unk24;
+    return g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0->unk24;
 }
 
 s32 func_800E7370(BtlUnit *arg0) {
@@ -1344,7 +1344,7 @@ void func_800E753C(BtlUnit *arg0, s32 arg1, s16 *arg2) {
     } else {
         func_800E73B4(arg0, (u16 *)arg2);
         if (arg1 == 1) {
-            arg2[1] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[2]].unk18;
+            arg2[1] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[2]].unk18;
         }
     }
 }
@@ -1606,7 +1606,7 @@ void func_800E80CC(s32 arg0, s32 arg1) {
 s32 btlfx_fadeUnitGroup(u32 type, s32 arg1) {
     BtlUnit *u;
     s32 n = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         switch (type) {
         case 0:
             if (u->unk68 & 1) {
@@ -1659,7 +1659,7 @@ s32 func_800E82CC(s32 id, s16 *arg1, BtlUnit **iter, s32 *out) {
     s32 r = 0;
 
     if (*iter == (BtlUnit *)-1) {
-        u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+        u = g_gameState->unk1C->unk8E4.battle->unitList;
     } else {
         if (*iter == NULL) {
             return -2;
@@ -1794,7 +1794,7 @@ void func_800E8980(s32 arg0) {
 }
 
 void btlfx_restorePartyLooks(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     while (u != NULL) {
         if (u->unk68 & 1) {
             func_800C0D24(u);
@@ -1818,7 +1818,7 @@ void btlfx_restoreUnitLook(s32 arg0) {
 }
 
 s32 func_800E8AD0(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 n = 0;
     while (u != NULL) {
         n += (u->unk68 & 0x400001) == 1;
@@ -1850,14 +1850,14 @@ void func_800E8B28(s32 arg0, s32 arg1, s32 arg2) {
 
 void func_800E8C84(s32 arg0) {
     if (arg0 != 0) {
-        g_gameState->unk1C->unk8E4.battle->unk11B8 |= 2;
+        g_gameState->unk1C->unk8E4.battle->cmdFlags |= 2;
     } else {
-        g_gameState->unk1C->unk8E4.battle->unk11B8 &= ~2;
+        g_gameState->unk1C->unk8E4.battle->cmdFlags &= ~2;
     }
 }
 
 s32 func_800E8CE4(void) {
-    return (g_gameState->unk1C->unk8E4.battle->unk11B8 >> 1) & 1;
+    return (g_gameState->unk1C->unk8E4.battle->cmdFlags >> 1) & 1;
 }
 
 void func_800E8D14(void) {
@@ -1989,9 +1989,9 @@ void func_800E9168(void) {
             r = 0;
         } else {
             if (b->unk68 & 1) {
-                v = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 >> 11;
+                v = g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 11;
             } else {
-                v = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 >> 12;
+                v = g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 12;
             }
             v &= 1;
             r = v == 0;
@@ -2039,7 +2039,7 @@ void func_800E9290(s32 arg0) {
             msg = func_800E454C(D_800F8D78[1]);
         }
     } else {
-        msg = g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk2C;
+        msg = g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk2C;
     }
     if (msg != 0) {
         btlcam_play(msg);

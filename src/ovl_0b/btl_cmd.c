@@ -7,38 +7,38 @@ void btl_startBattle(void) {
     b = g_gameState->unk1C->unk8E4.battle;
     p = b->unk11C0;
     btlbg_init(p->unk18, p->unk40);
-    b->unkD85 |= 1;
+    b->loadFlags |= 1;
     btl_initCmdQueue(b);
     func_800B0FC0(b);
     func_800C972C();
-    g_btlRewards.unkB = (b->unk132C.unk0 >> 13) & 1;
+    g_btlRewards.unkB = (b->scene.unk0 >> 13) & 1;
     func_8004C204();
     func_8004BC38();
     func_800AB580(1);
     func_8002FA50(0x20);
     btlcam_playScene(func_800CA2B0(0));
-    b->unkD80 = BTL_PHASE_INTRO;
+    b->phase = BTL_PHASE_INTRO;
 }
 
 void btl_updateCombat(GameData *arg0, Battle *arg1) {
     BtlUnit *u;
     s32 sp10;
-    u = arg1->unk6F8;
+    u = arg1->unitList;
     sp10 = arg1->unk11C0->unk34[arg0->unk8];
     while (u != NULL) {
-        if (((u->unk68 >> 29) & 1) && (arg1->unk11B8 & 2)) {
+        if (((u->unk68 >> 29) & 1) && (arg1->cmdFlags & 2)) {
             btl_projectUnitPos(u);
         } else {
             u->onScreen = 0;
         }
         u = u->next;
     }
-    u = arg1->unk6F8;
+    u = arg1->unitList;
     while (u != NULL) {
         if (!((u->unk68 >> 22) & 1)) {
             btl_updateUnitModel(u, &sp10);
         }
-        if (btlui_getActiveUnit() == u && (arg1->unk11B8 & 2) && !(u->model->unk0 & 0x10)) {
+        if (btlui_getActiveUnit() == u && (arg1->cmdFlags & 2) && !(u->model->unk0 & 0x10)) {
             btl_drawActiveMarker(arg0, arg1, u);
         }
         btl_updateHpStatus(u);
@@ -103,14 +103,14 @@ u16 btl_findCover(s32 arg0) {
     }
     g = g_gameState->unk1C;
     if (((g->characters + ((t->unk68 >> 1) & 0xF))->unkA & 2) && t->hp < (t->max->maxHp >> 1)) {
-        for (u = g->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        for (u = g->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if ((u->support[1] & 0x40) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && u != t && (best == NULL || best->hp < u->hp)) {
                 best = u;
             }
         }
     }
     if (best == NULL && (t->status & BTL_STATUS_LOW_HP)) {
-        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if ((u->support[1] & 0x20) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && u != t && (best == NULL || best->hp < u->hp)) {
                 best = u;
             }
@@ -226,12 +226,12 @@ void func_800B0E04(BtlUnit *arg0, u8 *arg1) {
 
 void btl_initCmdQueue(Battle *arg0) {
     arg0->curCmd = NULL;
-    arg0->unk11BA = 0;
-    arg0->unk11B8 = 2;
-    arg0->unk1060.unk4 = NULL;
+    arg0->cmdPhase = 0;
+    arg0->cmdFlags = 2;
+    arg0->escapeCmd.unk4 = NULL;
     arg0->cmdQueue.unk4 = NULL;
     btl_clearCmd_inline(&arg0->cmdQueue);
-    btl_clearCmd_inline(&arg0->unk1060);
+    btl_clearCmd_inline(&arg0->escapeCmd);
 }
 
 void func_800B0FC0(Battle *arg0) {
@@ -240,14 +240,14 @@ void func_800B0FC0(Battle *arg0) {
     s32 c;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 4; j++) {
-            func_80063640(&arg0->unk108C[i].unk0[j].unk0, GetTPage(0, 1, 0, 0));
+            func_80063640(&arg0->cursorPrims[i].unk0[j].unk0, GetTPage(0, 1, 0, 0));
             if (j < 3) {
                 c = 0xBC - j * 0x3C;
             } else {
                 c = 0xA0;
             }
-            setRGB0(&arg0->unk108C[i].unk0[j].unk8, c, c, 0);
-            SetSemiTrans(&arg0->unk108C[i].unk0[j].unk8, 1);
+            setRGB0(&arg0->cursorPrims[i].unk0[j].unk8, c, c, 0);
+            SetSemiTrans(&arg0->cursorPrims[i].unk0[j].unk8, 1);
         }
     }
 }
@@ -258,7 +258,7 @@ void btl_initUnitCmds(BtlUnit *arg0) {
     s32 k;
     s32 i;
     s32 j;
-    if (b->unkD80 == BTL_PHASE_INTRO) {
+    if (b->phase == BTL_PHASE_INTRO) {
         arg0->unkB2 = 1;
     }
     arg0->cmdIssued = 0;
@@ -268,7 +268,7 @@ void btl_initUnitCmds(BtlUnit *arg0) {
     } else {
         k = (((arg0->unk68 >> 5) & 7) - 4) * 3 + 0x18;
     }
-    c = &b->unkD90[k];
+    c = &b->cmdSlots[k];
     /* unk4..unk18 are the unit's six command slots */
     for (i = 0; i < 6; i++) {
         if ((arg0->unk68 & 1) || i < 3) {
@@ -294,21 +294,21 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     switch (arg1) {
     case BTL_CMD_SPEAR:
     case BTL_CMD_SPEAR_TRANCE:
-        g_gameState->unk1C->unk8E4.battle->unk11B8 |= 0x10;
+        g_gameState->unk1C->unk8E4.battle->cmdFlags |= 0x10;
         arg0->ability = (BtlCmd8 *)&g_gameState->unk1C->unk8E4.battle->abilities[arg2];
         break;
     case BTL_CMD_THROW:
         arg0->ability = (BtlCmd8 *)&g_gameState->unk1C->unk8E4.battle->abilities[BTL_ABIL_THROW];
         break;
     case BTL_CMD_RETURN_MAGIC:
-        arg0->ability = &g_gameState->unk1C->unk8E4.battle->unk5D8[arg2];
+        arg0->ability = &g_gameState->unk1C->unk8E4.battle->enemyAbilities[arg2];
         break;
     case BTL_CMD_ESCAPE:
-        if (g_gameState->unk1C->unk8E4.battle->unk11B8 & 1) {
+        if (g_gameState->unk1C->unk8E4.battle->cmdFlags & 1) {
             arg0->subNo = arg2;
             return;
         }
-        g_gameState->unk1C->unk8E4.battle->unk11B8 |= 1;
+        g_gameState->unk1C->unk8E4.battle->cmdFlags |= 1;
         arg0->ability = (BtlCmd8 *)&g_gameState->unk1C->unk8E4.battle->abilities[BTL_ABIL_FLEE];
         break;
     case BTL_CMD_ITEM:
@@ -366,20 +366,20 @@ void btl_setEnemyCmd(s32 arg0, s16 arg1, u32 arg2, u32 arg3) {
 
     u = btl_getUnitById(arg0);
     b = g_gameState->unk1C->unk8E4.battle;
-    if (b->unk11B8 & 1 || (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE))) {
+    if (b->cmdFlags & 1 || (u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE))) {
         goto fail;
     }
     if (arg2 == 0x2F) {
-        if (b->unkD80 != BTL_PHASE_COMBAT) {
+        if (b->phase != BTL_PHASE_COMBAT) {
             goto fail;
         }
         c = u->cmd;
         if (u->status & BTL_STATUS_CONFUSE) {
             arg1 = btl_pickRandomUnit(RAND8() & 1);
-            arg3 = g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk26;
+            arg3 = g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk26;
         } else if (u->status & BTL_STATUS_BERSERK) {
             arg1 = btl_pickRandomUnit(1);
-            arg3 = g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk26;
+            arg3 = g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk26;
         }
     } else {
         if (arg2 != 0x35) {
@@ -391,7 +391,7 @@ fail:
         }
         c = u->autoCmd;
     }
-    c->ability = &g_gameState->unk1C->unk8E4.battle->unk5D8[arg3];
+    c->ability = &g_gameState->unk1C->unk8E4.battle->enemyAbilities[arg3];
     c->targets = arg1;
     c->cmdNo = arg2;
     c->subNo = arg3;
@@ -463,25 +463,25 @@ void btl_processCmdQueue(Battle *b) {
         return;
     }
     u = cmd->unk4;
-    switch (b->unk11BA) {
+    switch (b->cmdPhase) {
     case 0:
         if (!(u8)btl_checkCmdUsable(b, cmd) || !(u8)btl_validateTargets(b, cmd) || !(u8)btl_payMpCost(cmd)) {
             btl_releaseItem(cmd);
             if (u != NULL && (u->unk68 & 1) && (s32)u->model->unkC == u->motions[9]) {
                 u->model->unkC = (BtlUnit9CC *)u->motions[32];
             }
-            b->unk11BA = 3;
+            b->cmdPhase = 3;
             break;
         }
         if (u != NULL && (s32)u->model->unkC != u->motions[9] && cmd->cmdNo < 0x2F) {
             u->model->unkC = (BtlUnit9CC *)u->motions[9];
             u->unkA0->unk3A = 0;
         }
-        b->unk11BA++;
+        b->cmdPhase++;
         break;
     case 1:
         btl_startCmdEffect(cmd);
-        b->unk11BA++;
+        b->cmdPhase++;
         break;
     case 2:
         if ((u->unk68 & 1) || cmd->unk10.b.unk0_11) {
@@ -496,7 +496,7 @@ void btl_processCmdQueue(Battle *b) {
         }
         break;
     }
-    if ((u8)btl_waitHitMotions(cmd) && b->unk11BA == 4) {
+    if ((u8)btl_waitHitMotions(cmd) && b->cmdPhase == 4) {
         btl_finishCmd(b);
     }
 }
@@ -533,7 +533,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     }
     switch (arg1->cmdNo) {
     case BTL_CMD_ATTACK:
-        if (((arg0->unk132C.unk0 >> 8) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
+        if (((arg0->scene.unk0 >> 8) & 1) && (*u->weapon & 1) && (u16)arg1->targets >= 0x10) {
             msg = 0x17;
             goto fail;
         }
@@ -615,7 +615,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             goto ret0;
         }
     case BTL_CMD_CHARGE_ATTACK:
-        if ((arg0->unk132C.unk0 >> 8) & 1) {
+        if ((arg0->scene.unk0 >> 8) & 1) {
             msg = 0x17;
             if (*u->weapon & 1) {
             fail:
@@ -636,20 +636,20 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
     ret0:
         return 0;
     case BTL_CMD_ESCAPE:
-        if (arg0->unkD80 != BTL_PHASE_COMBAT) {
+        if (arg0->phase != BTL_PHASE_COMBAT) {
             return 1;
         }
-        for (t = arg0->unk6F8; t != NULL; t = t->next) {
+        for (t = arg0->unitList; t != NULL; t = t->next) {
             if ((t->unk68 & 1) && !(t->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && t->hp != 0) {
                 if (t->model->unkC != (BtlUnit9CC *)t->motions[0x11]) {
                     t->model->unkC = (BtlUnit9CC *)t->motions[0x11];
                     t->unkA0->unk3A = 0;
                 }
-                arg0->unkD80 = BTL_PHASE_END;
-                arg0->unkD81 = 3;
+                arg0->phase = BTL_PHASE_END;
+                arg0->subPhase = 3;
             }
         }
-        if (*(u16 *)&arg0->unkD80 == 0x305) {
+        if (*(u16 *)&arg0->phase == 0x305) {
             func_800E9F68(0);
             g_gameState->unk1C->unk55C++;
             if (arg1->subNo == 0) {
@@ -657,12 +657,12 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             }
             btl_clearCmdQueue(arg0);
         } else {
-            arg0->unk11B8 &= ~1;
+            arg0->cmdFlags &= ~1;
         }
         return 0;
     case BTL_CMD_TRANCE_EIDOLON:
-        if (arg1->subNo != arg0->unk11BB) {
-            arg1->subNo = arg0->unk11BB;
+        if (arg1->subNo != arg0->eidolonAbility) {
+            arg1->subNo = arg0->eidolonAbility;
             arg1->ability = (BtlCmd8 *)&arg0->abilities[arg1->subNo];
         }
         break;
@@ -736,7 +736,7 @@ s32 btl_validateTargets(Battle *b, BtlCmd *cmd) {
             f = (*(u32 *)a >> 29) & 1;
             break;
         }
-        for (u = b->unk6F8; u != NULL; u = u->next) {
+        for (u = b->unitList; u != NULL; u = u->next) {
             if (((u->unk68 >> 28) & 1) && (u->unitBit & (u16)cmd->targets) &&
                 ((f && (u->unk68 & 1)) || !(u->status & BTL_STATUS_KO))) {
                 mask |= u->unitBit;
@@ -776,7 +776,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
     }
     b = g_gameState->unk1C->unk8E4.battle;
     u = arg0->unk4;
-    if (b->unk1358.unk1C4 != 0 || b->unk1358.unk1CC != NULL) {
+    if (b->popups.unk1C4 != 0 || b->popups.unk1CC != NULL) {
         return;
     }
     if (arg0->cmdNo == BTL_CMD_DEFEND) {
@@ -867,9 +867,9 @@ void btl_execCmd(BtlUnit *arg0) {
         if (s == 0 || s == t) {
             b = g_gameState->unk1C->unk8E4.battle;
             func_800E9F68(0);
-            if (b->unkD80 != BTL_PHASE_END) {
-                b->unkD80 = BTL_PHASE_END;
-                b->unkD81 = 0;
+            if (b->phase != BTL_PHASE_END) {
+                b->phase = BTL_PHASE_END;
+                b->subPhase = 0;
                 btl_clearCmdQueue(b);
             }
         }
@@ -895,12 +895,12 @@ void btl_finishCmd(Battle *b) {
             u->cmdIssued = 0;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR) {
             btl_removeStatus(u, BTL_STATUS_JUMP);
-            g_gameState->unk1C->unk8E4.battle->unk11B8 &= ~0x10;
+            g_gameState->unk1C->unk8E4.battle->cmdFlags &= ~0x10;
         } else if (cmd->cmdNo == BTL_CMD_SPEAR_TRANCE) {
             btl_addStatus(u, BTL_STATUS_JUMP);
             u->unkB2 = 2;
             u->unk68 |= 0x400000;
-            g_gameState->unk1C->unk8E4.battle->unk11B8 &= ~0x10;
+            g_gameState->unk1C->unk8E4.battle->cmdFlags &= ~0x10;
         }
         if ((u->status & BTL_STATUS_TRANCE) && cmd->cmdNo != BTL_CMD_JUMP && cmd->cmdNo != BTL_CMD_JUMP_TRANCE) {
             n = (0x12C - u->level) / u->spirit * 10;
@@ -912,19 +912,19 @@ void btl_finishCmd(Battle *b) {
             } else {
                 btl_removeStatus(u, BTL_STATUS_TRANCE);
             }
-            if (cmd->cmdNo == BTL_CMD_EIDOLON && b->unk11BB != 0) {
-                b->unk11B8 |= 4;
-                b->unk11BC = (0x3C - u->spirit) * 200;
+            if (cmd->cmdNo == BTL_CMD_EIDOLON && b->eidolonAbility != 0) {
+                b->cmdFlags |= 4;
+                b->eidolonTimer = (0x3C - u->spirit) * 200;
             }
         }
     } else if (cmd->cmdNo == BTL_CMD_TRANCE_EIDOLON) {
-        b->unk11B8 &= ~8;
-        b->unk11BC = (0x3C - u->spirit) * 200;
+        b->cmdFlags &= ~8;
+        b->eidolonTimer = (0x3C - u->spirit) * 200;
     } else if (cmd->cmdNo < 0x35 && btl_isCmdPending(u->cmd)) {
         u->unk68 |= 0x80000;
     }
     if (cmd->unk10.b.unk0_5) {
-        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if (u->unk68 & 1) {
                 u->pos[0] = u->unk98->unk0[0];
                 u->pos[1] = u->unk98->unk0[1];
@@ -948,7 +948,7 @@ void btl_finishCmd(Battle *b) {
     }
     btl_clearCmd_inline(cmd);
     b->curCmd = NULL;
-    b->unk11BA = 0;
+    b->cmdPhase = 0;
 }
 
 void btl_flushCmdQueue(Battle *arg0) {
@@ -1007,9 +1007,9 @@ void btl_clearCmdQueue(Battle *arg0) {
             p = c;
         }
     }
-    arg0->unk11BC = 0;
-    arg0->unk11BB = 0;
-    arg0->unk11B8 &= ~0xC;
+    arg0->eidolonTimer = 0;
+    arg0->eidolonAbility = 0;
+    arg0->cmdFlags &= ~0xC;
 }
 
 void btl_enqueueCmd(BtlCmd *arg0) {
@@ -1063,7 +1063,7 @@ s32 btl_applyReflect(BtlCmd *arg0) {
         !(arg0->unk4->support[0] & 0x40000000)) {
         n = 0;
         m = 0;
-        v = g_gameState->unk1C->unk8E4.battle->unk6F8;
+        v = g_gameState->unk1C->unk8E4.battle->unitList;
         side = (u16)arg0->targets >= 0x10;
         for (; v != NULL; v = v->next) {
             if (v->unitBit & (u16)arg0->targets) {
@@ -1102,7 +1102,7 @@ void btl_drawActiveMarker(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
     s32 ang;
     s32 i;
 
-    ang = (arg1->unkD7C & 0xF) << 8;
+    ang = (arg1->tick & 0xF) << 8;
     gte_SetRotMatrix(&arg0->unk18);
     gte_SetTransMatrix(&arg0->unk18);
     v.vx = arg2->pos[0] >> 16;
@@ -1121,40 +1121,40 @@ void btl_drawActiveMarker(GameData *arg0, Battle *arg1, BtlUnit *arg2) {
     gte_rtpt();
     gte_stsxy3(&sxy[1], &sxy[2], &sxy[3]);
     if (NormalClip(sxy[0], sxy[1], sxy[2]) > 0) {
-        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.x0 = sxy[0];
-        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.y0 = sxy[0] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.x1 = sxy[1];
-        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.y1 = sxy[1] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.x2 = sxy[2];
-        (arg1->unk108C + arg0->unk8)->unk0[0].unk8.y2 = sxy[2] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[0]);
+        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.x0 = sxy[0];
+        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.y0 = sxy[0] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.x1 = sxy[1];
+        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.y1 = sxy[1] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.x2 = sxy[2];
+        (arg1->cursorPrims + arg0->unk8)->unk0[0].unk8.y2 = sxy[2] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[0]);
     }
     if (NormalClip(sxy[0], sxy[2], sxy[3]) > 0) {
-        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.x0 = sxy[0];
-        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.y0 = sxy[0] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.x1 = sxy[2];
-        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.y1 = sxy[2] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.x2 = sxy[3];
-        (arg1->unk108C + arg0->unk8)->unk0[1].unk8.y2 = sxy[3] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[1]);
+        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.x0 = sxy[0];
+        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.y0 = sxy[0] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.x1 = sxy[2];
+        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.y1 = sxy[2] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.x2 = sxy[3];
+        (arg1->cursorPrims + arg0->unk8)->unk0[1].unk8.y2 = sxy[3] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[1]);
     }
     if (NormalClip(sxy[0], sxy[3], sxy[1]) > 0) {
-        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.x0 = sxy[0];
-        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.y0 = sxy[0] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.x1 = sxy[3];
-        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.y1 = sxy[3] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.x2 = sxy[1];
-        (arg1->unk108C + arg0->unk8)->unk0[2].unk8.y2 = sxy[1] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[2]);
+        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.x0 = sxy[0];
+        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.y0 = sxy[0] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.x1 = sxy[3];
+        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.y1 = sxy[3] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.x2 = sxy[1];
+        (arg1->cursorPrims + arg0->unk8)->unk0[2].unk8.y2 = sxy[1] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[2]);
     }
     if (NormalClip(sxy[1], sxy[3], sxy[2]) > 0) {
-        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.x0 = sxy[1];
-        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.y0 = sxy[1] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.x1 = sxy[3];
-        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.y1 = sxy[3] >> 16;
-        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.x2 = sxy[2];
-        (arg1->unk108C + arg0->unk8)->unk0[3].unk8.y2 = sxy[2] >> 16;
-        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->unk108C + arg0->unk8)->unk0[3]);
+        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.x0 = sxy[1];
+        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.y0 = sxy[1] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.x1 = sxy[3];
+        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.y1 = sxy[3] >> 16;
+        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.x2 = sxy[2];
+        (arg1->cursorPrims + arg0->unk8)->unk0[3].unk8.y2 = sxy[2] >> 16;
+        addPrim(&arg0->unk10[arg0->unk8][2], &(arg1->cursorPrims + arg0->unk8)->unk0[3]);
     }
 }
 
@@ -1182,12 +1182,12 @@ void btl_onCmdEffectDone(void) {
     if (k == 2) {
         c->targets = btl_orTargets(c->unk4->unk1C);
         btl_playCmdEffect(c, c->ability->unk0_8, 0);
-        b->unk11BA = k;
+        b->cmdPhase = k;
         return;
     }
     u = c->unk4;
     if (!(u->status & BTL_STATUS_AUTO_LIFE) || c->cmdNo != BTL_CMD_KO || (s32)u->model->unkC == u->motions[4]) {
-        b->unk11BA = 4;
+        b->cmdPhase = 4;
     }
 }
 
@@ -1209,7 +1209,7 @@ void btl_clearCmd(BtlCmd *arg0) {
 }
 
 void btl_queueAutoCmd(BtlUnit *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    if (!(arg0->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE)) && g_gameState->unk1C->unk8E4.battle->unkD80 == BTL_PHASE_COMBAT) {
+    if (!(arg0->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE)) && g_gameState->unk1C->unk8E4.battle->phase == BTL_PHASE_COMBAT) {
         btl_setCmd(arg0->autoCmd, arg1, arg2, arg3 & 0xFFFF, 0);
     }
 }
@@ -1225,9 +1225,9 @@ void func_800B3DBC(BtlUnit *arg0) {
                 break;
             }
         }
-        b->unk11BC = 0;
-        b->unk11BB = 0;
-        b->unk11B8 &= ~0xC;
+        b->eidolonTimer = 0;
+        b->eidolonAbility = 0;
+        b->cmdFlags &= ~0xC;
     }
 }
 
@@ -1346,7 +1346,7 @@ void btl_unlinkCmd(BtlCmd **arg0, u8 arg1) {
     p->unk10.b.unk0_2 = 0;
     p->unk10.b.unk0_4 = 0;
     if (arg1 && p->cmdNo == BTL_CMD_ESCAPE) {
-        g_gameState->unk1C->unk8E4.battle->unk11B8 &= ~1;
+        g_gameState->unk1C->unk8E4.battle->cmdFlags &= ~1;
     }
 }
 
@@ -1896,7 +1896,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 v = 9999;
             }
             c.unk1E = v;
-            for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+            for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
                 if ((u->unk68 & 0x10000001) == 0x10000000) {
                     c.unk4 = u;
                     btl_applyCalcResult(&c);
@@ -1912,7 +1912,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 c.unk1A = 0x18;
                 RAND_REFILL2();
                 c.unk20 = RAND16() % (target->level * 2);
-                for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+                for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
                     if ((u->unk68 & 0x10000001) == 0x10000001) {
                         c.unk0 = u;
                         btl_applyCalcResult(&c);
@@ -1972,7 +1972,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             s32 v;
             s32 d;
             if ((u32)(g_gameState->unk1C->characters[(caster->unk68 >> 1) & 0xF].equip[0] - 7) < 9) {
-                v = g_gameState->unk1C->unk8E4.battle->unk22CC[caster->weapon[1]];
+                v = g_gameState->unk1C->unk8E4.battle->statusSets[caster->weapon[1]];
                 if (!(v & 0x100) || btl_guardIfDeathImmune(&c)) {
                     d = btl_addStatuses(target, v);
                     if (d == 0) {
@@ -2106,7 +2106,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x36:
         {
             s32 v;
-            if ((target->unk68 & 1) || !((g_gameState->unk1C->unk8E4.battle->unk132C.unk0 >> 2) & 1)) {
+            if ((target->unk68 & 1) || !((g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 2) & 1)) {
                 v = (caster->unk68 & 1) << 11;
                 target->rot[1] = v;
                 target->unkA0->unk22 = v;
@@ -2129,7 +2129,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
     case 0x39:
         btl_tryEscape(0);
         if (btl_canFlee(&c)) {
-            btl_setCmd(&g_gameState->unk1C->unk8E4.battle->unk1060, BTL_CMD_ESCAPE, 0, 0xF, 1);
+            btl_setCmd(&g_gameState->unk1C->unk8E4.battle->escapeCmd, BTL_CMD_ESCAPE, 0, 0xF, 1);
         }
         break;
     case 0x3A:
@@ -2138,7 +2138,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             s16 d;
             s16 k;
             Battle488 *e;
-            e = &g_gameState->unk1C->unk8E4.battle->unk488[(target->unk68 >> 1) & 0xF];
+            e = &g_gameState->unk1C->unk8E4.battle->enemies[(target->unk68 >> 1) & 0xF];
             d = 0;
             for (k = 0; k < 4; k++) {
                 if (e->unk8.b[k] != 0xFF) {
@@ -2199,7 +2199,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             BtlUnit *u;
             if ((c.unk18 = btl_getUnitsWithStatus(0, BTL_STATUS_LOW_HP)) != 0) {
                 d = 0;
-                for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+                for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
                     if ((u->unitBit & c.unk18) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
                         d = 1;
                         v = btl_pickRandomUnit(0);
@@ -2249,7 +2249,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 if (target->max->maxHp / cmd->ability->unk5 < target->hp) {
                     btl_showMessage(0x10);
                 } else {
-                    i = g_gameState->unk1C->unk8E4.battle->unk488[(target->unk68 >> 1) & 0xF].unk0->unk27;
+                    i = g_gameState->unk1C->unk8E4.battle->enemies[(target->unk68 >> 1) & 0xF].unk0->unk27;
                     btl_killUnit(target);
                     if (i != 0 && !func_80034070((caster->unk68 >> 1) & 0xF, i)) {
                         func_80034220((caster->unk68 >> 1) & 0xF, i);
@@ -2495,7 +2495,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c)) {
             c.unk18 |= 0x80;
             target->hp = RAND8() % 9 + 1;
-            btl_addStatuses(target, g_gameState->unk1C->unk8E4.battle->unk22CC[cmd->ability->unk9]);
+            btl_addStatuses(target, g_gameState->unk1C->unk8E4.battle->statusSets[cmd->ability->unk9]);
         }
         break;
     case 0x5E:
@@ -2744,7 +2744,7 @@ void btl_applyCalcResult(BtlCalc *c) {
             }
         }
         if ((c->unk18 & 0x100) && t->hp != 0) {
-            a = g_gameState->unk1C->unk8E4.battle->unk22CC[s->weapon[1]];
+            a = g_gameState->unk1C->unk8E4.battle->statusSets[s->weapon[1]];
             if (!(a & 0x100) || !(t->status & BTL_STATUS_DEATH_IMMUNE)) {
                 btl_addStatuses(t, a);
             }
@@ -2757,7 +2757,7 @@ void btl_applyCalcResult(BtlCalc *c) {
         }
         id = c->unk8->unkF | (c->unk8->unkE << 8);
         if ((s->unk68 & 1) && !(t->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE))) {
-            if ((((g_gameState->unk1C->unk8E4.battle->unk488 + ((t->unk68 >> 1) & 0xF))->unk4 >> 6) & 1) && t->hp == 0) {
+            if ((((g_gameState->unk1C->unk8E4.battle->enemies + ((t->unk68 >> 1) & 0xF))->unk4 >> 6) & 1) && t->hp == 0) {
                 evt_battleTrigger(0x36, who, s->unitBit, id);
             } else if (t->hp != 0 && c->unk8->unkE < 0x30) {
                 evt_battleTrigger(0x35, who, s->unitBit, id);
@@ -2957,7 +2957,7 @@ void btl_applyKillerBonus(BtlCalc *arg0) {
     BtlUnit *u;
     if (!(f & 1)) {
         c = arg0->unk0->support[0];
-        e = g_gameState->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0;
+        e = g_gameState->unk1C->unk8E4.battle->enemies[(f >> 1) & 0xF].unk0;
         if (((c & 0x2000) && (e->unk2 & 0x80)) || ((c & 0x4000) && (e->unk2 & 0x40)) || ((c & 0x8000) && (e->unk2 & 0x20)) || ((c & 0x10000) && (e->unk2 & 0x10)) || ((c & 0x20000) && (e->unk2 & 8)) || ((c & 0x40000) && (e->unk2 & 4)) || ((c & 0x80000) && (e->unk2 & 2)) || ((c & 0x100000) && (e->unk2 & 1))) {
             arg0->unk14 = arg0->unk14 * 3 >> 1;
         }
@@ -3073,7 +3073,7 @@ void btl_setTargetHp(BtlCalc *arg0) {
     u->hp = 0;
     u->unk68 |= 0x100000;
     if (!(u->unk68 & 1)) {
-        btl_playDeathCry(u, g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk30);
+        btl_playDeathCry(u, g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk30);
     }
     m = u->model;
     if ((s32)m->unkC != u->motions[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->unkC != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
@@ -3094,7 +3094,7 @@ void btl_rollFlee(BtlCalc *arg0) {
     ne = np = 0;
     b = g_gameState->unk1C->unk8E4.battle;
     le = lp = 0;
-    u = b->unk6F8;
+    u = b->unitList;
     c = b->curCmd;
     for (; u != NULL; u = u->next) {
         if (u->unk68 & 1) {
@@ -3125,7 +3125,7 @@ void btl_rollFlee(BtlCalc *arg0) {
         }
     }
     if (r > ((*g_randPtr << 8) | *g_randPtr++) % 100 && (c == NULL || (c->unk4->unk68 & 1))) {
-        btl_setCmd((s32)&g_gameState->unk1C->unk8E4.battle->unk1060, BTL_CMD_ESCAPE, 1, 0xF, 1);
+        btl_setCmd((s32)&g_gameState->unk1C->unk8E4.battle->escapeCmd, BTL_CMD_ESCAPE, 1, 0xF, 1);
     }
 }
 
@@ -3140,7 +3140,7 @@ u8 btl_checkFrozenShatter(BtlCalc *arg0) {
     u->hp = 0;
     u->unk68 |= 0x100000;
     if (!(u->unk68 & 1)) {
-        btl_playDeathCry(u, g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF].unk0->unk30);
+        btl_playDeathCry(u, g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF].unk0->unk30);
     }
     m = u->model;
     if ((s32)m->unkC != u->motions[(u->unk68 >> 18) & 1] && (!(u->unk68 & 1) || (s32)m->unkC != u->motions[9]) && u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
@@ -3181,7 +3181,7 @@ s32 func_800B96AC(BtlUnit *arg0, s16 arg1) {
     BtlUnit *u;
     u32 f;
     if (arg0->mp >= arg1) {
-        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
             f = u->unk68;
             if ((f & 1) && g_gameState->unk1C->characters[(f >> 1) & 0xF].unk34.b.unk4 == 2) {
                 if (!(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_MINI)) && !(arg0->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_SILENCE | BTL_STATUS_KO | BTL_STATUS_CONFUSE | BTL_STATUS_BERSERK | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_HEAT | BTL_STATUS_FREEZE | BTL_STATUS_MINI))) {
@@ -3200,7 +3200,7 @@ void btl_killUnit(BtlUnit *arg0) {
     arg0->hp = 0;
     arg0->unk68 |= 0x100000;
     if (!(arg0->unk68 & 1)) {
-        btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
+        btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
     }
     m = arg0->model;
     if ((s32)m->unkC != arg0->motions[(arg0->unk68 >> 18) & 1] && (!(arg0->unk68 & 1) || (s32)m->unkC != arg0->motions[9]) && arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
@@ -3234,7 +3234,7 @@ void btl_rollShortSummon(BtlCmd *arg0) {
 }
 
 s32 btl_canAddHitStatus(BtlCalc *arg0) {
-    if (((arg0->unk18 & 0x100) && (g_gameState->unk1C->unk8E4.battle->unk22CC[arg0->unk0->weapon[1]] & 0x42001103)) || (arg0->unk8->unk8[8] & 0x40) || ((arg0->unk8->unk10 >> 5) & 1) || (arg0->unk4->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || arg0->unk0 == arg0->unk4) {
+    if (((arg0->unk18 & 0x100) && (g_gameState->unk1C->unk8E4.battle->statusSets[arg0->unk0->weapon[1]] & 0x42001103)) || (arg0->unk8->unk8[8] & 0x40) || ((arg0->unk8->unk10 >> 5) & 1) || (arg0->unk4->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_DEFEND | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) || arg0->unk0 == arg0->unk4) {
         return 0;
     }
     return 1;
@@ -3559,7 +3559,7 @@ void btl_applyAbilityElementBoost(BtlCalc *arg0) {
 }
 
 void func_800BA938(Unk800BA938 *arg0) {
-    if ((g_gameState->unk1C->unk8E4.battle->unk132C.unk0 >> 10) & 1) {
+    if ((g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 10) & 1) {
         arg0->unkE = 0x3C - arg0->unkE;
         if (arg0->unkE <= 0) {
             arg0->unkE = 1;
@@ -3638,13 +3638,13 @@ void btl_rollAbilityStatus(BtlCalc *arg0) {
     v = arg0->unk8->unk8[7];
     g_randPtr++;
     if (((r << 8) | r) % 100 < v) {
-        btl_addStatuses(arg0->unk4, g_gameState->unk1C->unk8E4.battle->unk22CC[arg0->unk8->unk8[9]]);
+        btl_addStatuses(arg0->unk4, g_gameState->unk1C->unk8E4.battle->statusSets[arg0->unk8->unk8[9]]);
     }
 }
 
 void btl_applyAbilityStatus(BtlCalc *arg0) {
     BtlCalc8 *c = arg0->unk8;
-    u32 mask = g_gameState->unk1C->unk8E4.battle->unk22CC[c->unk8[9]];
+    u32 mask = g_gameState->unk1C->unk8E4.battle->statusSets[c->unk8[9]];
     u32 r;
     if (!((c->unk10 >> 10) & 1) && c->unkE == 0x14) {
         mask |= 0x800000;
@@ -3658,7 +3658,7 @@ void btl_applyAbilityStatus(BtlCalc *arg0) {
 }
 
 void btl_cureAbilityStatus(BtlCalc *arg0) {
-    if (btl_removeStatuses(arg0->unk4, g_gameState->unk1C->unk8E4.battle->unk22CC[arg0->unk8->unk8[9]]) != 2) {
+    if (btl_removeStatuses(arg0->unk4, g_gameState->unk1C->unk8E4.battle->statusSets[arg0->unk8->unk8[9]]) != 2) {
         arg0->unk18 |= 1;
     }
 }
@@ -3684,10 +3684,10 @@ void btl_payMpAttack(BtlCalc *arg0) {
 u8 btl_canFlee(BtlCalc *arg0) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     BtlUnit *u;
-    if ((u8)b->unk132C.unk0 >> 7 == 0) {
+    if ((u8)b->scene.unk0 >> 7 == 0) {
         return 0;
     }
-    for (u = b->unk6F8; u != NULL; u = u->next) {
+    for (u = b->unitList; u != NULL; u = u->next) {
         if ((u->unk68 & 1) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
             return 1;
         }

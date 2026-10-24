@@ -10,7 +10,7 @@ void btlui_vsync(void) {
         func_800E9BBC();
     }
     g = g_gameState->unk1C;
-    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->unk0 & 0x20)) {
+    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->flags & 0x20)) {
         if (D_80104E68.unkC == 0 && (u8)func_800E9FF4()) {
             func_800EB578(0xBA);
             btlui_beginFrame();
@@ -37,7 +37,7 @@ void func_800E9BBC(void) {
         func_800EA550();
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
-        if (!(g_gameState->unk1C->unk8E4.battle->unk0 & 0x20)) {
+        if (!(g_gameState->unk1C->unk8E4.battle->flags & 0x20)) {
             if (D_80104E68.unk0 != 0) {
                 D_80104E68.unk8 = (g_padHeld >> 19) & 1;
                 D_80104E68.unkD = D_80104E68.unk2;
@@ -49,7 +49,7 @@ void func_800E9BBC(void) {
                 win_reapClosed();
             }
         }
-        if (!(g_gameState->unk1C->unk0 & 0x100) && !(g_gameState->unk1C->unk8E4.battle->unk0 & 0x20) && D_80104E68.unkC != 0) {
+        if (!(g_gameState->unk1C->unk0 & 0x100) && !(g_gameState->unk1C->unk8E4.battle->flags & 0x20) && D_80104E68.unkC != 0) {
             D_80104E68.unkC--;
         }
     }
@@ -232,7 +232,7 @@ u8 func_800EA27C(void) {
 void func_800EA290(void) {
     if (D_80104E68.unk6 == 0) {
         GameData *gd = g_gameState->unk1C;
-        if (!(gd->unk8E4.battle->unk0 & 0x100)) {
+        if (!(gd->unk8E4.battle->flags & 0x100)) {
             PutDispEnv(&g_gameState->unkC[gd->unk8]);
         }
     }
@@ -257,7 +257,7 @@ void func_800EA378(void) {
     s32 r = 0;
     volatile Unk80104E68 *p = &D_80104E68;
     s32 f;
-    if (((g->unk1C->unk8E4.battle->unk11B8 >> 1) ^ 1) & 1) {
+    if (((g->unk1C->unk8E4.battle->cmdFlags >> 1) ^ 1) & 1) {
         r = 1;
     } else {
         do {
@@ -328,14 +328,14 @@ void func_800EA550(void) {
 void func_800EA5C4(void) {
     if (D_80104E68.unkF != 0 && D_80104E68.unk6 != 0) {
         GameData *gd = g_gameState->unk1C;
-        if (!(gd->unk8E4.battle->unk0 & 0x100)) {
+        if (!(gd->unk8E4.battle->flags & 0x100)) {
             PutDispEnv(&g_gameState->unkC[gd->unk8]);
         }
     }
 }
 
 void func_800EA650(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     Unk80104F88Entry *e = g_btlUi->unk0;
     s8 n = 0;
     s8 f;
@@ -438,7 +438,7 @@ void btl_updateAtb(void) {
     BtlUnit28 *s;
     BtlUnit24 *m;
 
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     if (btl_isAtbRunning() == 0) {
         return;
     }
@@ -479,7 +479,7 @@ void func_800EAC88(void) {
     BtlUnit *u;
     s32 slot;
 
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     g_btlUi->unk12B7 = 0;
     g_btlUi->unk12B8.b[0] = 0;
     g_btlUi->unk12B8.b[1] = 0;
@@ -568,7 +568,7 @@ void func_800EB05C(void) {
     p->menuState = BTLUI_MENU_NONE;
     p->cmdUnit = NULL;
     g_btlUi->unk12C0 = 0;
-    g_btlUi->unk12BC = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+    g_btlUi->unk12BC = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
     g_btlUi->unk12B6 = func_800EB9E0();
     func_800EB5AC();
     func_800EA650();
@@ -661,7 +661,7 @@ void func_800EB358(BtlUnit *arg0) {
 }
 
 void func_800EB3A0(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     func_800EB2E0();
     while (u != NULL) {
         if (u->unk68 & 1) {
@@ -799,7 +799,7 @@ s32 func_800EB7B0(BtlUnit *arg0) {
 void func_800EB81C(void) {
     BtlUnit *u;
     u8 c;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         c = u->unkB2;
         if (c >= 2) {
             if (c == 2) {
@@ -1866,7 +1866,7 @@ s32 btlui_getAbilityState(s32 arg0) {
         if ((u8)btl_hasStatus(D_80104FE4, BTL_STATUS_SILENCE)) {
             return 1;
         }
-        if ((g_gameState->unk1C->unk8E4.battle->unk132C.unk0 >> 9) & 1) {
+        if ((g_gameState->unk1C->unk8E4.battle->scene.unk0 >> 9) & 1) {
             return 1;
         }
     }
@@ -2184,7 +2184,7 @@ void func_800EF80C(Unk800EF80C *arg0) {
 void func_800EFA10(s32 arg0) {
     BtlUnit *u;
     if (g_btlTarget.unk2 == 0xC) {
-        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+        for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
             if (((u->unk68 >> 28) & 1) && (!(u->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0)) {
                 u->unk68 |= 0x20000000;
             }
@@ -2217,7 +2217,7 @@ s32 func_800EFB3C(s32 arg0) {
     }
     memset((s32)list, 0, 0x10);
     n = 0;
-    for (p = g_gameState->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->next) {
+    for (p = g_gameState->unk1C->unk8E4.battle->unitList; p != NULL; p = p->next) {
         if (((p->unk68 >> 28) & 1) && (p->unk68 & 1) == g_btlTarget.unkA && (!(p->status & BTL_STATUS_KO) || g_btlTarget.unkB != 0)) {
             list[n] = p;
             if (p == u) {
@@ -2255,7 +2255,7 @@ s32 func_800EFD1C(u8 arg0) {
     u8 side;
     s32 k;
 
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             cur = u;
             goto found;
@@ -2271,7 +2271,7 @@ found:
         g_btlTarget.unkA = side;
         memset(list, 0, sizeof(list));
         n = 0;
-        for (t = g_gameState->unk1C->unk8E4.battle->unk6F8; t != NULL; t = t->next) {
+        for (t = g_gameState->unk1C->unk8E4.battle->unitList; t != NULL; t = t->next) {
             if (((t->unk68 >> 28) & 1) && (t->unk68 & 1) == side) {
                 if (!(t->status & BTL_STATUS_KO) || g_btlTarget.unkB) {
                     list[n++] = t;
@@ -2310,7 +2310,7 @@ void func_800EFF14(void) {
             u->unk68 |= 0x20000000;
             g_btlTarget.unk6 = 0;
         } else {
-            p = g_gameState->unk1C->unk8E4.battle->unk6F8;
+            p = g_gameState->unk1C->unk8E4.battle->unitList;
             u = BtlFindTargetCursor();
             n = 0;
             g_btlTarget.unk24 = u;
@@ -2377,7 +2377,7 @@ s32 func_800F028C(void) {
         return 1;
     }
     if (g_btlTarget.unk2 != 0xC) {
-        p = g_gameState->unk1C->unk8E4.battle->unk6F8;
+        p = g_gameState->unk1C->unk8E4.battle->unitList;
         n = 0;
         func_800F142C();
         while (p != NULL) {
@@ -2397,7 +2397,7 @@ s32 func_800F028C(void) {
 void btlui_confirmTarget(void) {
     s32 mask = 0;
     u8 ok = 1;
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     Unk800FD56C *e = &D_800FD56C[g_btlTarget.unk1];
     Unk80104FF0 *d;
     for (; u != NULL; u = u->next) {
@@ -2437,7 +2437,7 @@ s32 func_800F0620(s32 arg0) {
             v = 2;
         } else {
             n = 0;
-            for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+            for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
                 if ((u->unk68 & 0x30000000) == 0x30000000) {
                     n++;
                 }
@@ -2455,7 +2455,7 @@ s32 func_800F0620(s32 arg0) {
             v = 2;
         } else {
             n = 0;
-            for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+            for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
                 if ((u->unk68 & 0x30000000) == 0x30000000) {
                     n++;
                 }
@@ -2483,7 +2483,7 @@ void btlui_cancelTarget(void) {
         }
         func_800F2890(g_btlTarget.unk0);
     }
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         u->unk68 &= ~0x20000000;
     }
     for (i = 0; i < 2; i++) {
@@ -2517,7 +2517,7 @@ void btlui_updateTargetWindow(void) {
 void func_800F0A54(Window *arg0) {
     s32 y1 = arg0->unk2 + 8;
     s32 y2 = y1;
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 m;
     u32 f;
     u8 *name;
@@ -2550,7 +2550,7 @@ void func_800F0A54(Window *arg0) {
 void func_800F0BE0(Window *arg0) {
     Window *w = arg0;
     s32 n = 0;
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     RECT *r = &arg0->unk8;
     BtlUnit *p;
     RECT rc;
@@ -2638,7 +2638,7 @@ void *func_800F0F60(void) {
     } else if ((u8)(g_btlTarget.unk2 - 3) < 3) {
         n = 0;
         k = g_btlTarget.unk2 - 3;
-        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
             if ((u->unk68 >> 29) & 1) {
                 n++;
             }
@@ -2729,7 +2729,7 @@ s32 func_800F13BC(void) {
 }
 
 s32 func_800F13CC(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 n = 0;
     while (u != NULL) {
         if ((u->unk68 >> 29) & 1) {
@@ -2741,7 +2741,7 @@ s32 func_800F13CC(void) {
 }
 
 void func_800F142C(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     while (u != NULL) {
         u->unk68 &= ~0x20000000;
         u = u->next;
@@ -2754,7 +2754,7 @@ void func_800F1484(void) {
     BtlUnit *u;
     Unk80105020 *p;
     m = n = 0;
-    u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    u = g_gameState->unk1C->unk8E4.battle->unitList;
     p = &D_80105020;
     if (D_80104E6A != 0) {
         for (; u != NULL; u = u->next) {
@@ -2817,7 +2817,7 @@ void func_800F16A8(void) {
 }
 
 void func_800F16DC(u8 arg0, u8 arg1) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     if (arg0 == 0xFF) {
         arg0 = D_80104FFA;
     }
@@ -2834,7 +2834,7 @@ void func_800F16DC(u8 arg0, u8 arg1) {
 }
 
 void func_800F1790(u8 arg0, u8 arg1) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     u8 found = 0;
     BtlUnit *t;
     u32 f;
@@ -2876,7 +2876,7 @@ void func_800F1790(u8 arg0, u8 arg1) {
 
 BtlUnit *func_800F18F0(u8 arg0) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if (((u->unk68 >> 28) & 1) && (u->unk68 & 1) == arg0 && (u->status & BTL_STATUS_KO)) {
             return u;
         }
@@ -2931,7 +2931,7 @@ s32 func_800F1B78(void) {
         return 2;
     }
     n = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             n++;
         }
@@ -2942,7 +2942,7 @@ s32 func_800F1B78(void) {
 void func_800F1BFC(Window *arg0) {
     Window *w = arg0;
     s32 n = 0;
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     Unk80105020 *b = func_800F1548();
     Unk80105078 *m = func_800F3EA4();
     u32 c;
@@ -3001,7 +3001,7 @@ void func_800F1E84(Window *arg0) {
     s32 y = arg0->unk2 + 6;
     s32 dy = arg0->unk6 - arg0->unk8.h;
     s32 c;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0 && (u->unk68 & 1); u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0 && (u->unk68 & 1); u = u->next) {
         c = 3;
         if (u->hp != 0) {
             c = ((u->status & BTL_STATUS_LOW_HP) != 0) * 4;
@@ -3020,7 +3020,7 @@ void func_800F1FBC(Window *arg0) {
     u8 max[8];
     Window *w = arg0;
     s32 y = arg0->unk2 + 6;
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 dy = arg0->unk6 - arg0->unk8.h;
     s32 yy;
     s32 c;
@@ -3050,7 +3050,7 @@ void func_800F2118(Window *arg0) {
     u32 st;
     d -= 6;
     y = arg0->unk2 - d;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if (u->unk68 & 1) {
             n = 0;
             st = u->status | u->autoStatus;
@@ -3079,7 +3079,7 @@ void func_800F224C(Window *arg0) {
     u32 st;
     d -= 6;
     y = arg0->unk2 - d;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if (u->unk68 & 1) {
             st = u->status | u->autoStatus;
             x = w->unk0 + 4;
@@ -3221,7 +3221,7 @@ void *func_800F2A60(s32 arg0) {
 }
 
 void func_800F2AAC(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 n = 0;
     for (; u != NULL; u = u->next) {
         if (u->unk68 & 1) {
@@ -3340,7 +3340,7 @@ void func_800F316C(void) {
     s32 a;
     s32 t;
 
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
         if (!(u->unk68 & 1)) {
             continue;
         }
@@ -3668,7 +3668,7 @@ void btlui_drawPanelMp(BtlUnit *arg0, s32 arg1) {
 }
 
 void func_800F42F0(void) {
-    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+    BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unitList;
     s32 i = 0;
     if (D_80105078->unk5C != 0 && D_80104E70 == 0) {
         for (; u != 0; u = u->next) {
@@ -3688,7 +3688,7 @@ void func_800F4384(void) {
     Unk80068EE8 *s;
     s32 f;
 
-    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->unk0 & 0x20) && D_80104E68.unk0 != 0 &&
+    if (!(g->unk0 & 0x100) && !(g->unk8E4.battle->flags & 0x20) && D_80104E68.unk0 != 0 &&
         (f = (g_gameState->unk24 >> 5) & 1) == 1) {
         ClearOTag(&D_801050D4, 1);
         if (D_80104E68.unk18 & 0x20) {

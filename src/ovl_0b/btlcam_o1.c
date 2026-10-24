@@ -142,7 +142,7 @@ void btlcam_loadScript(s32 arg) {
         case 2:
             switch ((*t >> 12) & 3) {
             case 0:
-                n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+                n = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
                 if (n == 2) {
                     g_btlCamera.unkA8 = n;
                 } else {
@@ -182,12 +182,12 @@ void btlcam_loadScript(s32 arg) {
                 } else if ((g_btlCamera.unkCC->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_JUMP)) || !((g_btlRewards.unkA >> ((u8)g_btlCamera.unkCC->unk68 >> 5)) & 1)) {
                     g_btlCamera.unkA8 = 0;
                 } else {
-                    n = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+                    n = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
                     if (n == 2) {
                         g_btlCamera.unkA8 = n;
                     } else {
                         r = 0;
-                        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+                        for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != NULL; u = u->next) {
                             if ((u->unk68 & 1) && !(u->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
                                 r++;
                             }
@@ -338,7 +338,7 @@ s32 btlcam_step(void) {
                     if (c == 1) {
                         g_btlCamera.unk67 = c;
                     } else {
-                        g_gameState->unk1C->unk8E4.battle->unkD81++;
+                        g_gameState->unk1C->unk8E4.battle->subPhase++;
                     }
                     D_800FE488.unk0 += 2;
                 }
@@ -404,11 +404,11 @@ s32 btlcam_step(void) {
     e = g_btlCamera.unk67;
     if (e == 1) {
         b = g_gameState->unk1C->unk8E4.battle;
-        if ((b->unkD85 & 7) == 7) {
-            if ((b->unk132C.unk0 >> 2) & 1) {
-                b->unkD80 = e;
+        if ((b->loadFlags & 7) == 7) {
+            if ((b->scene.unk0 >> 2) & 1) {
+                b->phase = e;
             } else {
-                g_gameState->unk1C->unk8E4.battle->unkD80 = BTL_PHASE_ENTRANCE;
+                g_gameState->unk1C->unk8E4.battle->phase = BTL_PHASE_ENTRANCE;
             }
             g_btlCamera.unk67 = 0;
         }
@@ -731,8 +731,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
     }
     if (n == 0xB) {
         gs = g_gameState;
-        arg1[0] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk4;
-        arg1[2] = gs->unk1C->unk8E4.battle->unk132C.unk4->unk8[0].unk8;
+        arg1[0] = gs->unk1C->unk8E4.battle->scene.unk4->unk8[0].unk4;
+        arg1[2] = gs->unk1C->unk8E4.battle->scene.unk4->unk8[0].unk8;
         return;
     }
     s = D_800FE488.unk46;
@@ -767,7 +767,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         s = D_800FE488.unk5A;
         u = (BtlUnit *)func_800C5890(n);
         if (u == NULL) {
-            u = g_gameState->unk1C->unk8E4.battle->unk6F8;
+            u = g_gameState->unk1C->unk8E4.battle->unitList;
         }
         arg2[0] = u->unkA0->unk20;
         arg2[2] = u->unkA0->unk24;
@@ -920,7 +920,7 @@ void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
         arg1[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            arg1[i] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
+            arg1[i] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
         }
     }
     arg1[3] = arg0->pos[0] >> 16;

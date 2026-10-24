@@ -123,7 +123,7 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
     if ((u->unk68 >> 24) & 1) {
         id = (u->unkBE << 8) | u->unkBD;
         if (u->unk68 & 1) {
-            if (!(g_gameState->unk1C->unk8E4.battle->unk11B8 & 1)) {
+            if (!(g_gameState->unk1C->unk8E4.battle->cmdFlags & 1)) {
                 if (u->unk7B != g_gameState->unk1C->unk8E4.battle->escapeHeld) {
                     btl_setIdleMotion(u);
                 }
@@ -167,7 +167,7 @@ s32 btl_setIdleMotion(BtlUnit *u) {
         }
         if (u->unk68 & 1) {
             if (!(u->unk68 & 0x06000000)) {
-                if ((b->escapeHeld != 0 || (b->unk11B8 & 1)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
+                if ((b->escapeHeld != 0 || (b->cmdFlags & 1)) && !(u->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_ZOMBIE | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_SLEEP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP))) {
                     u->model->unkC = (BtlUnit9CC *)u->motions[17];
                 } else if (u->status & BTL_STATUS_DEFEND) {
                     u->model->unkC = (BtlUnit9CC *)u->motions[13];
@@ -210,9 +210,9 @@ void btl_startHitMotion(BtlUnit *arg0) {
         } else {
             arg0->model->unkC = (BtlUnit9CC *)arg0->motions[2];
         }
-    } else if (arg0->hp == 0 && (u8)(g_gameState->unk1C->unk8E4.battle->unk488 + ((f >> 1) & 0xF))->unk4 >> 7) {
+    } else if (arg0->hp == 0 && (u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((f >> 1) & 0xF))->unk4 >> 7) {
         arg0->model->unkC = (BtlUnit9CC *)arg0->motions[3];
-        btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
+        btl_playDeathCry(arg0, g_gameState->unk1C->unk8E4.battle->enemies[(arg0->unk68 >> 1) & 0xF].unk0->unk30);
     } else {
         if ((arg0->unk68 >> 23) & 1) {
             arg0 = func_800C1DEC();
@@ -265,14 +265,14 @@ void btl_endEnemyHitMotion(BtlUnit *arg0) {
     if (arg0->status & BTL_STATUS_KO) {
         m = arg0->model;
         a = arg0->motions;
-        if ((s32)m->unkC == a[3] && ((u8)(g_gameState->unk1C->unk8E4.battle->unk488 + ((arg0->unk68 >> 1) & 0xF))->unk4 >> 7)) {
+        if ((s32)m->unkC == a[3] && ((u8)(g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->unk68 >> 1) & 0xF))->unk4 >> 7)) {
             m->unkC = (BtlUnit9CC *)a[4];
             arg0->unkA0->unk3A--;
             arg0->unk7D = 3;
             arg0->unk68 |= 0x200000;
             return;
         }
-        if (!(((g_gameState->unk1C->unk8E4.battle->unk488 + ((arg0->unk68 >> 1) & 0xF))->unk4 >> 6) & 1) && !((arg0->unk68 >> 20) & 1)) {
+        if (!(((g_gameState->unk1C->unk8E4.battle->enemies + ((arg0->unk68 >> 1) & 0xF))->unk4 >> 6) & 1) && !((arg0->unk68 >> 20) & 1)) {
             arg0->unk7D = 1;
             return;
         }
@@ -289,7 +289,7 @@ void btl_updateKo(BtlUnit *u) {
         return;
     }
     if (!(u->unk68 & 1)) {
-        e = &g_gameState->unk1C->unk8E4.battle->unk488[(u->unk68 >> 1) & 0xF];
+        e = &g_gameState->unk1C->unk8E4.battle->enemies[(u->unk68 >> 1) & 0xF];
         switch (u->unk7D) {
         case 1:
             if (!((u->unk68 >> 23) & 1)) {
@@ -329,8 +329,8 @@ void btl_updateKo(BtlUnit *u) {
                 btl_addEnemyRewards(e->unk0);
             }
             u->unk7D++;
-            if (g_gameState->unk1C->unk8E4.battle->unkD80 != BTL_PHASE_END ||
-                (u32)(g_gameState->unk1C->unk8E4.battle->unkD81 - 2) >= 2) {
+            if (g_gameState->unk1C->unk8E4.battle->phase != BTL_PHASE_END ||
+                (u32)(g_gameState->unk1C->unk8E4.battle->subPhase - 2) >= 2) {
                 btl_checkSideDefeated(u);
             }
             btl_unlinkUnit(u);
@@ -391,7 +391,7 @@ s32 btl_waitHitMotions(BtlCmd *arg0) {
             return r;
         }
     } while (0);
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unitList; u != 0; u = u->next) {
         if ((u->unk68 >> 17) & 1) {
             r = 0;
             if (u->unkA0->unk3A >= u->model->unkC->unk2) {

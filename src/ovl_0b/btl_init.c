@@ -25,17 +25,17 @@ void btl_initParty(Battle *arg0) {
     for (; n < 4; n++) {
         arg0->units[n].unitBit = 0;
     }
-    arg0->unkD85 |= 0x10;
+    arg0->loadFlags |= 0x10;
     func_800C9A28();
-    k = arg0->unk132C.unk0 & 3;
+    k = arg0->scene.unk0 & 3;
     if (k == 0) {
-        for (u = arg0->unk6F8; u != NULL; u = u->next) {
+        for (u = arg0->unitList; u != NULL; u = u->next) {
             if (u->unk68 & 1) {
                 u->atb = 0;
             }
         }
     } else if (k == 1) {
-        for (u = arg0->unk6F8; u != NULL; u = u->next) {
+        for (u = arg0->unitList; u != NULL; u = u->next) {
             if (!(u->unk68 & 1)) {
                 u->atb = 0;
             }
@@ -53,8 +53,8 @@ void btl_initEnemies(Battle *arg0) {
     s16 m;
     s32 k;
 
-    for (; i < g_gameState->unk1C->unk8E4.battle->unk132C.unk4->unk1; i++, n++) {
-        e = &arg0->unk488[i];
+    for (; i < g_gameState->unk1C->unk8E4.battle->scene.unk4->unk1; i++, n++) {
+        e = &arg0->enemies[i];
         e->unk4 = (e->unk4 & ~0x3F) | 0x20;
         u = &arg0->units[n];
         u->modelId = m = func_800CA2E4(i);
@@ -86,8 +86,8 @@ void btl_initEnemies(Battle *arg0) {
         arg0->units[n].unitBit = 0;
     }
     prev->next = NULL;
-    arg0->unk6F8 = &arg0->units[4];
-    arg0->unkD85 |= 8;
+    arg0->unitList = &arg0->units[4];
+    arg0->loadFlags |= 8;
     func_800C9794();
     btlseq_init();
 }
@@ -126,7 +126,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
     func_800C0A3C((Unk800C09D8 *)u);
     u->max->maxAtb = (0x3C - u->speed) * 160;
     btl_resetAtbSpeed((Unk800BD8F0 *)u);
-    k = g_gameState->unk1C->unk8E4.battle->unk132C.unk0 & 3;
+    k = g_gameState->unk1C->unk8E4.battle->scene.unk0 & 3;
     if (k == 0) {
         u->atb = 0;
     } else if (k == 1) {
@@ -140,7 +140,7 @@ void btl_initPartyUnit(Character *c, BtlUnit *u, u16 slot, u16 n) {
         }
         u->atb = ((*g_randPtr << 8) | *g_randPtr++) % u->max->maxAtb;
     }
-    u->weaponModel = &g_gameState->unk1C->unk8E4.battle->unk228[n].unk0;
+    u->weaponModel = &g_gameState->unk1C->unk8E4.battle->weaponModels[n].unk0;
     func_800BD698(u, (c->unk34.w >> 4) & 0x1F, n);
     btl_initWeapon(c, u);
     u->defense = c->defense;
@@ -180,9 +180,9 @@ u32 *func_800BB974(Battle *arg0, u32 *arg1) {
     s32 i;
     Battle4880 *p;
 
-    for (i = 0; i < g_gameState->unk1C->unk8E4.battle->unk132C.unk4->unk1; i++) {
+    for (i = 0; i < g_gameState->unk1C->unk8E4.battle->scene.unk4->unk1; i++) {
         {
-            p = arg0->unk488[i].unk0;
+            p = arg0->enemies[i].unk0;
             u = &arg0->units[i + 4];
             u->level = p->unk3;
             u->max->maxAtb = (0x3C - u->speed) * 160;
