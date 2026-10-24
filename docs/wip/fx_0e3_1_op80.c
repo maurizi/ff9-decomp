@@ -1,14 +1,19 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast).
- * Status (pass 3): 218 aligned mismatches by build/w/cmp.py (142 ignoring branch targets, 62 ignoring registers and
- * stack offsets; was 314/244/146 by the same script). Pass 3 levers: call results passed to a later call go through
- * a fresh variable in its own { } block (qa, qb, q4b: the copy then lands in the next call's delay slot as in the
- * original); `shake = t;` after the func_800D23D8 call; case 2's y12 as `y12 >>= 5; y12 *= 2;` (stops combine
- * folding >> 5 << 1 into >> 4); shared loop variables split per loop (ang/j of the second ring loop, i/ang of case
- * 4's ring loop, case 1's ang); case 4's k7 block-local (k7a); the -0x200 term grouped with the product in a block
- * local; the frame == 0x26 call result in a block-local p26.
- * Open: case 2's dead store r2.vz = work->unkBC.vz is deleted by flow (the original keeps it: one instruction
- * short, all later branch targets shift); case 1's lui of the /6 constant before the a = 0x80 store; register
- * allocation in the remaining blocks.
+ * Status (pass 3): 66 aligned mismatches by build/w/cmp.py -b (ignoring branch targets; was 244), same length as
+ * the original (3210 instructions). Pass 3 levers:
+ * - a call result passed to a later call in a single-set variable (qa, qb, q4b, x2k; block-local in { }): sched1's
+ *   birthing boost then puts the v0 copy right before the next call (its delay slot), as in the original.
+ * - `shake = t;` after the func_800D23D8 call; y12 as `y12 >>= 5; y12 *= 2; y12 += 0x900;` (combine no longer folds
+ *   >> 5 << 1 into >> 4); x12's 0x1000 - ... as its own statement; the -0x200 term grouped with the product.
+ * - shared loop variables split per loop (ang1, ang2/j1/j2, i4/ang4, i9 kept), case 4's k7a, kb for k13 >> 6,
+ *   the frame == 0x26 call result in a block-local p26, y10 reused for the second ring's cos value (the original
+ *   keeps both in s4).
+ * - case 2's r2.vz = work->unkBC.vz survives flow's dead-store removal only when another stack store sits between
+ *   it and r2.vz = (frame << 5) + 0x400 (here s2.vz = 0).
+ * - a dead `struct { s32 x; } dq = { frame };` block at the start of the else branch: its CLOBBER gets the spill
+ *   slot at 0x280 that the original never references (all later spill slots then line up).
+ * Open: case 1's lui of the /6 constant before the a = 0x80 store; y12 in s3 instead of sharing s0 with x2k;
+ *   register permutations in the i9/y10 ring loop and case 5 tail; a few arg-register orders.
  * D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
 #include "fxmod/fx_0e3_1.h"
 
@@ -150,6 +155,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 q3;
     s32 q4;
     s32 x2;
+    s32 x2k;
     s32 x4;
     s32 x5;
     s32 x7;
@@ -208,7 +214,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 j2;
     s32 j1;
     s32 ang;
-    s32 ang_r274;
+    s32 ang1;
     s32 ang4;
     s32 ang2;
     Fx0e31Bolt *bl;
@@ -250,12 +256,16 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk88.vy = work->unk10.vy;
         work->unk88.vz = work->unk10.vz;
     } else {
+        {
+        struct { s32 x; } dq = { frame }; /* dead: its CLOBBER takes the original's unused spill slot 0x280 */
+        }
         a = 0;
         fade = 0;
         tint = 0;
         shake = 0;
         frame = entry->unk0;
-        switch (work->unk0) { s32 y6_l;
+        switch (work->unk0) {
+            s32 y6_l; /* declared here: its pseudo (spill slot) comes after the function-level ones */
         case 0:
             t = (frame << 12) / 35;
             ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, SUMMON(env)->unk60, 1);
@@ -292,7 +302,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 from.vy = work->unk30.vy;
                 from.vz = work->unk30.vz;
                 w1 = (tA >> 7) + 0x10;
-                ang_r274 = work->unk4 << 8;
+                ang1 = work->unk4 << 8;
                 n1 = (ex->math_sin(tA >> 2) * 6) >> 12;
                 for (i = 0; i < n1; i++) {
                     k1 = ex->btlfx_rand();
@@ -301,7 +311,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     to.vz = work->unk30.vz;
                     to.vy += ex->math_sin(k1) >> 2;
                     to.vx += ex->math_cos(k1) >> 2;
-                    func_801EC71C(entry, (Fx0e31Bolt *)&D_801F0A14[i], &from, &to, w1, w1, ang_r274, 0xFF, 0, tA);
+                    func_801EC71C(entry, (Fx0e31Bolt *)&D_801F0A14[i], &from, &to, w1, w1, ang1, 0xFF, 0, tA);
                 }
             }
             ex->Hi_GetSummonBoneMatrix(SUMMON(env)->unk60, 0x3D, (BtlBone *)&m4);
@@ -439,20 +449,21 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 x2 = ex->math_cos(y12 >> 7);
                 y12 >>= 5;
                 y12 *= 2;
+                y12 += 0x900;
                 r2.vx = work->unkBC.vx;
                 r2.vy = work->unkBC.vy;
-                s2.vx = s2.vy = y12 + 0x900;
-                s2.vz = 0;
+                s2.vx = s2.vy = y12;
                 r2.vz = work->unkBC.vz;
+                s2.vz = 0;
                 r2.vz = (frame << 5) + 0x400;
                 ex->func_800CFD78(&work->unk30.vx, &work->unkBC.vx, -0x80, &p2.vx);
-                x2 = (x2 >> 5) - 0x80;
+                x2k = (x2 >> 5) - 0x80;
+                v2.vx = p2.vx;
                 v2.vy = p2.vy;
                 v2.vz = p2.vz;
-                v2.vx = p2.vx;
                 for (i = 0; i < 3; i++) {
                     ex->Hi_DrawEffModel(&r2, &v2, (s32)&s2, work->unkC4);
-                    ex->Hi_ModifyEffModelRGB(work->unkC4, x2, x2, x2);
+                    ex->Hi_ModifyEffModelRGB(work->unkC4, x2k, x2k, x2k);
                     s2.vx = s2.vy = (s2.vx * 3) >> 2;
                     r2.vz += 0x550;
                 }
@@ -701,7 +712,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             } else if (frame == 2) {
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0xFF, 0xFF, 0xFF);
             } else if (frame < 0x13) {
-                x12 = ((0x1000 - (((frame - 3) << 12) >> 4)) * 0xA0) >> 12;
+                x12 = 0x1000 - (((frame - 3) << 12) >> 4);
+                x12 = (x12 * 0xA0) >> 12;
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, x12, x12, x12);
             }
             if (frame == 0x14) {
@@ -730,11 +742,12 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkD4);
             }
             if (frame >= 0x3B) {
-                k9 = (((frame - 0x3B) << 12) / 18) >> 2;
+                k9 = ((frame - 0x3B) << 12) / 18;
                 work->unkB0.vx = work->unkB0.vy = 0x1000;
                 func_801ED708((VECTOR *)&work->unkA4, &work->unkBC);
                 work->unkBC.vz += 0x400;
                 ex->Hi_DrawEffModel(&work->unkBC, (VECTOR *)&work->unkA4, (s32)&work->unkB0, work->unkD8);
+                k9 >>= 2;
                 ex->Hi_ModifyEffModelRGB(work->unkD8, (ex->math_cos(k9) >> 5) - 0x80, (ex->math_cos(k9) >> 5) - 0x80,
                                          (ex->math_cos(k9) >> 5) - 0x80);
             }
@@ -801,9 +814,11 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 r8.vx = 0;
                 r8.vz = 0;
                 s8.vx = s8.vz = (k13 >> 5) + 0x1200;
-                k13 >>= 6;
-                s8.vy = ex->math_sin(k13) + 0x1800;
-                y9 = ex->math_cos(k13);
+                {
+                    s32 kb = k13 >> 6;
+                    s8.vy = ex->math_sin(kb) + 0x1800;
+                    y9 = ex->math_cos(kb);
+                }
                 p8.vx = work->unk30.vx;
                 p8.vy = work->unk30.vy;
                 p8.vz = work->unk30.vz;
@@ -821,8 +836,8 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             if (frame < 0x26) {
                 x16 = (x16 * 3) >> 1;
-                q4 = (ex->math_cos(t >> 1) * 0xF5) >> 12;
-                func_801ECAF8(entry, &D_801F0D14[2], &f9, &t9, (x16 * 3) >> 2, x16, -ang, 0xC0, 0, 0x1000, q4);
+                y10 = (ex->math_cos(t >> 1) * 0xF5) >> 12;
+                func_801ECAF8(entry, &D_801F0D14[2], &f9, &t9, (x16 * 3) >> 2, x16, -ang, 0xC0, 0, 0x1000, y10);
             }
             x18 = 0x1000 - t;
             env->unk28 = 0x300;
