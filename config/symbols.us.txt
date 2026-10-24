@@ -875,3 +875,26 @@ msg_setAtePrompt = 0x80050080; // type:func [code] D_8007BC10 = mode, restarts t
 evt_modelOpField = 0x800500A8; // type:func [code] event opcodes 0x7F-0x85 and 0xD8 on an object's model in the field (GameData field scene model slots)
 evt_modelOpBattle = 0x80050410; // type:func [code] the same opcodes on battle models (unk11C0)
 evt_modelOpWorld = 0x80050744; // type:func [code] the same opcodes on world-map models
+evt_getObjectArg = 0x80038150; // type:func [code] the object whose uid is the next 8-bit script argument
+evt_placeBalloon = 0x80038FD8; // type:func [code] positions a message window layout beside an object's screen position (above/below, left/right), avoiding open message windows
+evt_followBalloon = 0x80039444; // type:func [code] moves an open balloon Window halfway toward its object's current screen position and its tail with it
+evt_getMsgLayout = 0x80039660; // type:func [code] [runtime] docs/runtime-findings.md field/menu campaign (the event layout helper before msg_open) - msg_getLayout plus the window position per placement code 0x50-0x5C
+evt_turnObject = 0x800398D0; // type:func [code] starts an object's turn to angle d (shortest way when wrap) with its turn animation and per-frame step
+evt_relaxLookAt = 0x80047B90; // type:func [code] moves an object's look-at point toward 500 units straight ahead (head tracking)
+evt_updateLookAt = 0x80047E1C; // type:func [code] head tracking picks the nearest object in front (or D_8007AE68) and moves the model's look-at point toward it
+evt_updateBattleObjects = 0x80048E80; // type:func [code] battle switches the enemy objects between states 1 and 3 from btl_getUnitMask(1)
+evt_onAnimEnd = 0x800499D8; // type:func [code] an object's animation reached its end back to the idle animation with a random speed, ends a turn
+evt_onAnimLimit = 0x80049B48; // type:func [code] animation hit its loop limit bounce (flag 0x20), hold (0x10) or evt_onAnimEnd
+evt_stepAnim = 0x80049C14; // type:func [code] advances an object's animation frame (4-bit fraction), forward/backward/linked to another object
+evt_loadScripts = 0x80049ED8; // type:func [code] sets the script table (D_8007ADF8) and compacts the entries of characters not in the party (mask from msg_getPartyMemberId)
+evt_createModels = 0x8004A8A4; // type:func [code] once after loading (D_8007AD1E) evt_createModel for every kind-4 object, field shadow/scale setup
+evt_reset = 0x8004AC80; // type:func [code] g_evtState = NULL, clears the last encounter and load flags
+evt_setDrawPosAtObject = 0x8004ACA4; // type:func [code] projects the object's head position and sets the text/sprite draw origin there (msg bubble and HERE icon)
+evt_getModelSlot = 0x8004B098; // type:func [code] the model slot (unk3B) of object uid, -1 if it has no model
+evt_resetIdleTimer = 0x8004B20C; // type:func [code] g_evtState.unk1700 = random (200..455) * 4, or * 2 when a != 0
+evt_initObjectList = 0x8004B378; // type:func [code] links the 32 object nodes at unk15D8 into the free list, empties the active list (unk16D8)
+evt_popBitCount = 0x8004B574; // type:func [code] number of set bits of the popped expression value
+evt_popRandomBit = 0x8004B5CC; // type:func [code] one random set bit (of the low 8) of the popped expression value
+evt_setObjectProp = 0x8004B7A4; // type:func [code] counterpart of evt_getObjectProp prop 2 sets unk22, others btl_setUnitAttr on the object's battle unit
+evt_getArg24 = 0x8004B914; // type:func [code] 24-bit script argument (or an expression), like evt_getArg16
+evt_projectToScreen = 0x8004BA20; // type:func [code] screen x/y of a world position through GameData's camera matrix

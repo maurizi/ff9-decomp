@@ -70,7 +70,7 @@ void menu_onFadedOut(void) {
     g_gameState->unk10[1].b0 = 0;
     win_closeAllNow();
     g_menu.savedPadMask = g_padPortMask[0];
-    g_padPortMask[0] = 0x4000000;
+    g_padPortMask[0] = BTN_START;
     pad_setStickAsDpad(1);
     for (i = 0; i < 2; i++) {
         pad_resetRepeats(i);

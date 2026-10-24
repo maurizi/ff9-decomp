@@ -1519,7 +1519,7 @@ void w_movementChange(void) {
     Unk800CE3C8 *p;
     Unk800CE3C8 *prev;
 
-    func_8004B20C(0);
+    evt_resetIdleTimer(0);
     D_800CE3BC = 0;
     D_800CE276 = 0;
     func_800B3638();
@@ -2079,7 +2079,7 @@ void w_movementChangeSP1(void) {
 const char D_800A7164[0x1C] = "w_movementChange SP2\n";
 
 void w_movementChangeSP2(void) {
-    func_8004B20C(0);
+    evt_resetIdleTimer(0);
     func_800C48F4(0x26);
     func_800C48F4(D_800CE3C8->unkC);
     D_800CE3C4 = g_evtGlobalVars.b[0xBE];

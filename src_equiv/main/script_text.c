@@ -47,7 +47,7 @@ extern u16 D_8006EAD0[];         /* atan table, 0x401 entries, 0 .. 0x200 (45 de
 s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop);
 u16 func_8004B404(s32 arg0);
 Unk8004AB64 *func_8004B4C4(s32 id);
-void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2);
+void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2);
 void func_8004B4A8(s32 i, s16 v);
 s32 func_80037ACC(s32 op);
 u32 msg_getPadPressed(void);
@@ -56,9 +56,9 @@ u32 msg_getPadHeld(void);
 s32 func_8004B85C(s32 slot);
 s32 func_800378C4(s32 slot);
 s32 func_800372A4(s32 op);
-s32 func_8004B5CC(void);
+s32 evt_popRandomBit(void);
 s32 func_80036CCC(s32 op);
-s32 func_8004B574(void);
+s32 evt_popBitCount(void);
 s32 func_80037738(void);
 s16 msg_isOpen(s32 i);
 void func_8004BB30(void *p);
@@ -666,7 +666,7 @@ void func_80051B58(const char *fmt, ...) {
  *   space 2/3: the current object's locals (g_evtObjVars)
  *   space 4: (uid << 8) | index on another object (func_8004B4C4 + evt_getObjectProp), read-only
  *   space 5: system variable `index` (func_8004B404 / func_8004B4A8)
- *   space 6: property `index` of D_8007B700 (evt_getObjectProp / func_8004B7A4)
+ *   space 6: property `index` of D_8007B700 (evt_getObjectProp / evt_setObjectProp)
  *   space 7: an immediate (26-bit, sign-extended)
  *   width (spaces 0-3): 0/1 bit, 2/3 24-bit signed, 4 s8, 5 u8, 6 s16, 7 u16
  */
@@ -757,7 +757,7 @@ void evt_popAssign(s32 v) {
 
     if (tag & 4) {
         if (tag & 2) {
-            func_8004B7A4((Unk800219D8 *)D_8007B700, t & 0xFF, v);
+            evt_setObjectProp((Unk800219D8 *)D_8007B700, t & 0xFF, v);
         } else if (tag & 1) {
             func_8004B4A8(t & 0xFF, v);
         }
@@ -1038,13 +1038,13 @@ void evt_runExpr(void) {
             SYNCED(func_80036CCC(op));
             break;
         case 0x2A:
-            SYNCED(func_8004B574());
+            SYNCED(evt_popBitCount());
             break;
         case 0x2B:
             SYNCED(func_80037738());
             break;
         case 0x4D:
-            SYNCED(func_8004B5CC());
+            SYNCED(evt_popRandomBit());
             break;
         case 0x78: /* reference to another object's variable: uid, index */
             push(((r_ip[0] << 8) | r_ip[1]) | 0x10000000);

@@ -5,7 +5,7 @@ void func_8004BBF0(void) {
     msg_resetWindows();
     msg_resetPad();
     rand_init(GetRCnt(2));
-    func_8004AC80();
+    evt_reset();
 }
 
 s32 func_8004BC38(a)

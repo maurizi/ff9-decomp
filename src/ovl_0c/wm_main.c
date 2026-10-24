@@ -245,7 +245,7 @@ void func_800A924C(s32 arg0) {
     func_800A99C4(obj, (s16)g_gameState->unk1C->unk7DE);
     func_800A9B54();
     func_800AB0C0(0x900, 0, 0, 0, 0);
-    func_80049ED8(obj->unk10);
+    evt_loadScripts(obj->unk10);
     evt_init(obj->unk10);
     while (func_800AB0C0(0xC00, 0, 0, 0, 0) != 0) {
     }
@@ -268,7 +268,7 @@ void func_800A924C(s32 arg0) {
     D_80067948 = func_800AAD0C(D_80067948, g_gameState->unk1C->unk38 + 9);
     obj->unk4 = (void *)D_80067948;
     obj->unk20 = (s32)obj->unk30;
-    func_8004A8A4();
+    evt_createModels();
     func_800B7F7C();
     preload_init();
     g_gameState->unk1C->unk8E4.world->unk0 &= ~1;

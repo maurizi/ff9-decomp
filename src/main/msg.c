@@ -1443,7 +1443,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
     s32 x;
     s32 nx;
 
-    if (g_evtState->controlEnabled != 0 && (msg_getPadPressed() & 1)) {
+    if (g_evtState->controlEnabled != 0 && (msg_getPadPressed() & PAD_SELECT)) {
         D_8007BBE8 = 60;
         D_8007BBE0 = 1;
     }
@@ -1456,7 +1456,7 @@ void msg_drawHereIcon(Unk8004AB64 *o) {
             s = &D_80068790;
             func_800515B8();
             func_80051300();
-            func_8004ACA4(o, 0, 0);
+            evt_setDrawPosAtObject(o, 0, 0);
             if (D_8007BBE8 == 57) {
                 D_8007BBE4 = D_8007BC9C.s.x < 24;
             }
@@ -1581,7 +1581,7 @@ void msg_updatePlayerBubble(void) {
         o = evt_getObject(g_evtState->playerUid);
         if (o != NULL && o->unk5 == 4) {
             func_800515B8();
-            func_8004ACA4(o, -2, 0);
+            evt_setDrawPosAtObject(o, -2, 0);
             msg_drawPlayerBubble();
             func_80051610();
         }

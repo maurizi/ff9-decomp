@@ -1554,3 +1554,27 @@ func_80050744 evt_modelOpWorld  # [code] the same opcodes on world-map models
 # Types renamed: Unk8007B9C0 -> MsgWindow, Unk80083248 -> CardInventory
 # FIELDS include/ff9.h MsgWindow: unk0=parent,unk4=x,unk6=y,unk8=open,unkC=onInput,unk14=window,unk18=w,unk1E=msgId,unk20=textPos,unk22=pageStart,unk27=h,unk28=flags,unk29=speed
 # FIELDS include/ff9.h CardInventory (g_cards): unk0=wins,unk2=losses,unk4=draws,unk6=cards
+func_80038150 evt_getObjectArg  # [code] the object whose uid is the next 8-bit script argument
+func_80038FD8 evt_placeBalloon  # [code] positions a message window layout beside an object's screen position (above/below, left/right), avoiding open message windows
+func_80039444 evt_followBalloon  # [code] moves an open balloon Window halfway toward its object's current screen position and its tail with it
+func_80039660 evt_getMsgLayout  # [code] [runtime] docs/runtime-findings.md field/menu campaign (the event layout helper before msg_open) - msg_getLayout plus the window position per placement code 0x50-0x5C
+func_800398D0 evt_turnObject  # [code] starts an object's turn to angle d (shortest way when wrap) with its turn animation and per-frame step
+func_80047B90 evt_relaxLookAt  # [code] moves an object's look-at point toward 500 units straight ahead (head tracking)
+func_80047E1C evt_updateLookAt  # [code] head tracking: picks the nearest object in front (or D_8007AE68) and moves the model's look-at point toward it
+func_80048E80 evt_updateBattleObjects  # [code] battle: switches the enemy objects between states 1 and 3 from btl_getUnitMask(1)
+func_800499D8 evt_onAnimEnd  # [code] an object's animation reached its end: back to the idle animation with a random speed, ends a turn
+func_80049B48 evt_onAnimLimit  # [code] animation hit its loop limit: bounce (flag 0x20), hold (0x10) or evt_onAnimEnd
+func_80049C14 evt_stepAnim  # [code] advances an object's animation frame (4-bit fraction), forward/backward/linked to another object
+func_80049ED8 evt_loadScripts  # [code] sets the script table (D_8007ADF8) and compacts the entries of characters not in the party (mask from msg_getPartyMemberId)
+func_8004A8A4 evt_createModels  # [code] once after loading (D_8007AD1E): evt_createModel for every kind-4 object, field shadow/scale setup
+func_8004AC80 evt_reset  # [code] g_evtState = NULL, clears the last encounter and load flags
+func_8004ACA4 evt_setDrawPosAtObject  # [code] projects the object's head position and sets the text/sprite draw origin there (msg bubble and HERE icon)
+func_8004B098 evt_getModelSlot  # [code] the model slot (unk3B) of object uid, -1 if it has no model
+func_8004B20C evt_resetIdleTimer  # [code] g_evtState.unk1700 = random (200..455) * 4, or * 2 when a != 0
+func_8004B378 evt_initObjectList  # [code] links the 32 object nodes at unk15D8 into the free list, empties the active list (unk16D8)
+func_8004B574 evt_popBitCount  # [code] number of set bits of the popped expression value
+func_8004B5CC evt_popRandomBit  # [code] one random set bit (of the low 8) of the popped expression value
+func_8004B7A4 evt_setObjectProp  # [code] counterpart of evt_getObjectProp: prop 2 sets unk22, others btl_setUnitAttr on the object's battle unit
+func_8004B914 evt_getArg24  # [code] 24-bit script argument (or an expression), like evt_getArg16
+func_8004BA20 evt_projectToScreen  # [code] screen x/y of a world position through GameData's camera matrix
+# ff9.h: BTN_START/BTN_SELECT (raw Start/Select game buttons); PAD_*/BTN_* used in pad.c, event.c, help.c, msg.c, menu.c, tu_800236C4.c, menulist.c

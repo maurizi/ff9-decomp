@@ -39,9 +39,9 @@ void config_applyPadMapping(void) {
         for (i = 0; i < 1; i++) {
             pad_setMapping(port, D_800686C0[i], act[config_applyPadMapping_remap(D_800686C4[i])]);
         }
-        pad_setMapping(port, 0x04000000, 8);
-        pad_setMapping(port, 0x02000000, 1);
-        pad_setMapping(port, 0x08000000, 1);
+        pad_setMapping(port, BTN_START, PAD_START);
+        pad_setMapping(port, 0x02000000, PAD_SELECT);
+        pad_setMapping(port, BTN_SELECT, PAD_SELECT);
     }
 }
 

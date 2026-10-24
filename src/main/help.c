@@ -103,7 +103,7 @@ void help_init(void) {
 
 void help_update(void) {
     HelpState *p;
-    if (g_menuHelp.locked == 0 && fade_isBusy() == 0 && (g_padRepeat & 0x8000000)) {
+    if (g_menuHelp.locked == 0 && fade_isBusy() == 0 && (g_padRepeat & BTN_SELECT)) {
         help_toggle();
     }
     p = &g_menuHelp;

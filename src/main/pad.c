@@ -21,20 +21,20 @@ void pad_resetState(void) {
             g_padMapping[i][j] = 0;
             g_padHoldFrames[i][j] = 0;
         }
-        pad_setMapping(i, 0x10, 0x10);
-        pad_setMapping(i, 0x40, 0x40);
-        pad_setMapping(i, 0x80, 0x80);
-        pad_setMapping(i, 0x20, 0x20);
-        pad_setMapping(i, 0x1000, 0x1000);
-        pad_setMapping(i, 0x2000, 0x2000);
-        pad_setMapping(i, 0x4000, 0x4000);
-        pad_setMapping(i, 0x8000, 0x8000);
-        pad_setMapping(i, 0x400, 0x400);
-        pad_setMapping(i, 0x100, 0x100);
-        pad_setMapping(i, 0x800, 0x800);
-        pad_setMapping(i, 0x200, 0x200);
-        pad_setMapping(i, 1, 1);
-        pad_setMapping(i, 8, 8);
+        pad_setMapping(i, PAD_UP, PAD_UP);
+        pad_setMapping(i, PAD_DOWN, PAD_DOWN);
+        pad_setMapping(i, PAD_LEFT, PAD_LEFT);
+        pad_setMapping(i, PAD_RIGHT, PAD_RIGHT);
+        pad_setMapping(i, PAD_TRIANGLE, PAD_TRIANGLE);
+        pad_setMapping(i, PAD_CIRCLE, PAD_CIRCLE);
+        pad_setMapping(i, PAD_CROSS, PAD_CROSS);
+        pad_setMapping(i, PAD_SQUARE, PAD_SQUARE);
+        pad_setMapping(i, PAD_L1, PAD_L1);
+        pad_setMapping(i, PAD_L2, PAD_L2);
+        pad_setMapping(i, PAD_R1, PAD_R1);
+        pad_setMapping(i, PAD_R2, PAD_R2);
+        pad_setMapping(i, PAD_SELECT, PAD_SELECT);
+        pad_setMapping(i, PAD_START, PAD_START);
         g_padFlags |= 1 << (i * 4);
     }
 }
@@ -109,29 +109,29 @@ void pad_update(void) {
             }
             if ((g_padFlags & 0x8000) && ((g_padBuf[i].unk0 >> 12) & 0xF) == 7) {
                 if (g_padAnalog[i].unk0[2] < g_padAnalogThresholds.unk0[2]) {
-                    g_padPortHeld[i] |= 0x80;
+                    g_padPortHeld[i] |= PAD_LEFT;
                 }
                 if (g_padAnalog[i].unk0[2] > g_padAnalogThresholds.unk0[3]) {
-                    g_padPortHeld[i] |= 0x20;
+                    g_padPortHeld[i] |= PAD_RIGHT;
                 }
                 if (g_padAnalog[i].unk0[3] < g_padAnalogThresholds.unk0[0]) {
-                    g_padPortHeld[i] |= 0x10;
+                    g_padPortHeld[i] |= PAD_UP;
                 }
                 if (g_padAnalog[i].unk0[3] > g_padAnalogThresholds.unk0[1]) {
-                    g_padPortHeld[i] |= 0x40;
+                    g_padPortHeld[i] |= PAD_DOWN;
                 }
             }
             g_padPortHeld[i] &= ~g_padPortMask[i];
-            if ((g_padPortMask[i] & 0x10) && (s8)g_padAnalog[i].unk0[3] >= 0) {
+            if ((g_padPortMask[i] & PAD_UP) && (s8)g_padAnalog[i].unk0[3] >= 0) {
                 g_padAnalog[i].unk0[3] = 0x80;
             }
-            if ((g_padPortMask[i] & 0x40) && g_padAnalog[i].unk0[3] > 0x80) {
+            if ((g_padPortMask[i] & PAD_DOWN) && g_padAnalog[i].unk0[3] > 0x80) {
                 g_padAnalog[i].unk0[3] = 0x80;
             }
-            if ((g_padPortMask[i] & 0x80) && (s8)g_padAnalog[i].unk0[2] >= 0) {
+            if ((g_padPortMask[i] & PAD_LEFT) && (s8)g_padAnalog[i].unk0[2] >= 0) {
                 g_padAnalog[i].unk0[2] = 0x80;
             }
-            if ((g_padPortMask[i] & 0x20) && g_padAnalog[i].unk0[2] > 0x80) {
+            if ((g_padPortMask[i] & PAD_RIGHT) && g_padAnalog[i].unk0[2] > 0x80) {
                 g_padAnalog[i].unk0[2] = 0x80;
             }
             g_padPortPressed[i] = (g_padPortHeld[i] ^ g_padPortPrevHeld[i]) & g_padPortHeld[i];

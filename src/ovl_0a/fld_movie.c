@@ -1629,7 +1629,7 @@ void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     } else if (arg1 == 0x91) {
         e->unk4 = arg2;
     } else if (arg1 == 0x96) {
-        e->unk2 = func_8004B098(arg2);
+        e->unk2 = evt_getModelSlot(arg2);
         e->unk3 = arg3;
     } else if (arg1 == 0x9B) {
         e->unk7 = arg2;

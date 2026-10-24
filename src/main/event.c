@@ -126,7 +126,7 @@ s32 evt_getSysVar(s32 op) {
     return r;
 }
 
-Unk8004AB64 *func_80038150(void) {
+Unk8004AB64 *evt_getObjectArg(void) {
     return func_8004B4C4_inline(evt_getArg8_inline2());
 }
 
@@ -492,7 +492,7 @@ s32 evt_rollEncounter(Unk8004AB64 *p) {
 }
 
 /* screen position of an actor's speech-bubble anchor */
-static inline void func_80038FD8_pos(Unk8004AB64 *obj, s32 *x, s32 *y) {
+static inline void evt_placeBalloon_pos(Unk8004AB64 *obj, s32 *x, s32 *y) {
     SVECTOR sv;
 
     sv.vx = obj->pos.vx;
@@ -503,10 +503,10 @@ static inline void func_80038FD8_pos(Unk8004AB64 *obj, s32 *x, s32 *y) {
         sv.vy += obj->unk8C;
         sv.vz += obj->unk8E;
     }
-    func_8004BA20(&sv, x, y);
+    evt_projectToScreen(&sv, x, y);
 }
 
-static inline void func_80038FD8_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
+static inline void evt_placeBalloon_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
     s32 width = w->unk2;
     s32 tx, l, r;
 
@@ -541,7 +541,7 @@ static inline void func_80038FD8_x(WinLayout *w, s32 sx, s32 right, s32 *ptx) {
     w->unk0 = (l + r) >> 1;
 }
 
-static inline void func_80038FD8_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
+static inline void evt_placeBalloon_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) {
     s32 h = w->unk9;
     s32 ty;
 
@@ -566,7 +566,7 @@ static inline void func_80038FD8_y(WinLayout *w, s32 sy, s32 *below, s32 fixed) 
     w->unk8 = ty;
 }
 
-void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
+void evt_placeBalloon(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
     s32 sx, sy;
     s32 ox, oy;
     s32 tx;
@@ -580,7 +580,7 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
         obj->unk8C = D_8007AE60;
         obj->unk8E = D_8007AE64;
     }
-    func_80038FD8_pos(obj, &sx, &sy);
+    evt_placeBalloon_pos(obj, &sx, &sy);
     if (dir < 0) {
         if (obj->unk7 == g_evtState->playerUid) {
             id = obj->unk93;
@@ -589,7 +589,7 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
         }
         other = evt_getObject_inline(id);
         if (other != NULL) {
-            func_80038FD8_pos(other, &ox, &oy);
+            evt_placeBalloon_pos(other, &ox, &oy);
             below = sy < oy;
             right = sx < ox;
         } else {
@@ -603,18 +603,18 @@ void func_80038FD8(Unk8004AB64 *obj, WinLayout *w, s32 dir, s32 fixed) {
     if (fixed == 0) {
         right = right ? right ^ (sx < 40) : sx > 280;
     }
-    func_80038FD8_x(w, sx, right, &tx);
-    func_80038FD8_y(w, sy, &below, fixed);
+    evt_placeBalloon_x(w, sx, right, &tx);
+    evt_placeBalloon_y(w, sy, &below, fixed);
     if (fixed == 0 && msg_overlapsRect((Unk8004EBC0 *)w)) {
         below ^= 1;
-        func_80038FD8_y(w, sy, &below, 0);
+        evt_placeBalloon_y(w, sy, &below, 0);
     }
     w->unk4 = tx - w->unk0;
     w->unk6 = (below << 1) | right;
 }
 
-/* bubble x/y targets for func_80039444 (func_80038FD8_x/_y without the flip logic) */
-static inline s32 func_80039444_x(s32 width, s32 sx, s32 right, s32 *ptx) {
+/* bubble x/y targets for evt_followBalloon (evt_placeBalloon_x/_y without the flip logic) */
+static inline s32 evt_followBalloon_x(s32 width, s32 sx, s32 right, s32 *ptx) {
     s32 tx, l, r;
 
     if (right) {
@@ -648,7 +648,7 @@ static inline s32 func_80039444_x(s32 width, s32 sx, s32 right, s32 *ptx) {
     return (l + r) >> 1;
 }
 
-static inline s32 func_80039444_y(s32 h, s32 *sy, s32 below) {
+static inline s32 evt_followBalloon_y(s32 h, s32 *sy, s32 below) {
     s32 ty;
 
     if (below) {
@@ -664,7 +664,7 @@ static inline s32 func_80039444_y(s32 h, s32 *sy, s32 below) {
     return ty;
 }
 
-void func_80039444(Unk8004AB64 *obj, Window *w) {
+void evt_followBalloon(Unk8004AB64 *obj, Window *w) {
     s32 sx, sy;
     s32 tx;
     s32 ox, oy;
@@ -673,11 +673,11 @@ void func_80039444(Unk8004AB64 *obj, Window *w) {
 
     ox = w->unk0;
     oy = w->unk2;
-    func_80038FD8_pos(obj, &sx, &sy);
+    evt_placeBalloon_pos(obj, &sx, &sy);
     below = (w->unk29 >> 1) & 1;
     right = w->unk29 & 1;
-    x = func_80039444_x(w->unk4 - 3, sx, right, &tx);
-    y = func_80039444_y(w->unk6 - 3, &sy, below);
+    x = evt_followBalloon_x(w->unk4 - 3, sx, right, &tx);
+    y = evt_followBalloon_y(w->unk6 - 3, &sy, below);
     w->unk0 = (ox + x) >> 1;
     w->unk2 = (oy + y) >> 1;
     w->unk2A = tx - w->unk0 - right * 16;
@@ -685,7 +685,7 @@ void func_80039444(Unk8004AB64 *obj, Window *w) {
     w->unk8.y += w->unk2 - oy;
 }
 
-WinLayout *func_80039660(Unk8004AB64 *obj, s32 id, s32 flags) {
+WinLayout *evt_getMsgLayout(Unk8004AB64 *obj, s32 id, s32 flags) {
     WinLayout *w = msg_getLayout(id, &D_8007AE5C, &D_8007AE60, &D_8007AE64);
     s32 ww;
     s32 wh;
@@ -704,16 +704,16 @@ WinLayout *func_80039660(Unk8004AB64 *obj, s32 id, s32 flags) {
         case 0x51:
         case 0x52:
         case 0x53:
-            func_80038FD8(obj, w, w->unkA & 3, 0);
+            evt_placeBalloon(obj, w, w->unkA & 3, 0);
             break;
         case 0x58:
         case 0x59:
         case 0x5A:
         case 0x5B:
-            func_80038FD8(obj, w, w->unkA & 3, 1);
+            evt_placeBalloon(obj, w, w->unkA & 3, 1);
             break;
         default:
-            func_80038FD8(obj, w, -1, 0);
+            evt_placeBalloon(obj, w, -1, 0);
             break;
         }
     } else {
@@ -761,7 +761,7 @@ WinLayout *func_80039660(Unk8004AB64 *obj, s32 id, s32 flags) {
     return w;
 }
 
-void func_800398D0(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
+void evt_turnObject(Unk8004AB64 *p, s32 d, s32 wrap, s32 speed) {
     s32 cur;
     s32 rate;
     s32 frames;
@@ -882,11 +882,11 @@ s32 evt_execInstr(void) {
         return 0;
     case 0x10:
         a = evt_getArg8_inline();
-        evt_callObjectFunc(func_80038150(), a, *g_evtCurObj->unk0++, 0);
+        evt_callObjectFunc(evt_getObjectArg(), a, *g_evtCurObj->unk0++, 0);
         return 0;
     case 0x12:
         a = evt_getArg8_inline();
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         c = *g_evtCurObj->unk0++;
         if (obj != NULL && a < obj->unk4) {
             evt_callObjectFunc(obj, a, c, 0);
@@ -897,7 +897,7 @@ s32 evt_execInstr(void) {
         return 1;
     case 0x14:
         a = evt_getArg8_inline();
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         c = *g_evtCurObj->unk0++;
         if (obj != NULL && a < obj->unk4) {
             evt_callObjectFunc(obj, a, c, 1);
@@ -929,7 +929,7 @@ s32 evt_execInstr(void) {
         }
         return 1;
     case 0x97:
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         if (obj != NULL) {
             obj->unkA = 0;
             obj->unkE = 2;
@@ -993,7 +993,7 @@ s32 evt_execInstr(void) {
         g_evtCurObj->unk11 = evt_getArg8_inline();
         return 0;
     case 0xBF:
-        po = func_80038150();
+        po = evt_getObjectArg();
     case 0x1D:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
@@ -1015,7 +1015,7 @@ s32 evt_execInstr(void) {
         D_8007AEA4 = 1;
         return 0;
     case 0xAD:
-        po = func_80038150();
+        po = evt_getObjectArg();
     case 0xA1:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
@@ -1034,7 +1034,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x87:
-        po = func_80038150();
+        po = evt_getObjectArg();
     case 0x36:
         po->pos.rotY = evt_getArg8_inline() << 4;
         return 0;
@@ -1061,30 +1061,30 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xBB:
-        actor = func_80038150();
+        actor = evt_getObjectArg();
     case 0x56:
         a = evt_getArg8_inline() << 4;
-        func_800398D0(actor, a, 1, evt_getArg8_inline());
+        evt_turnObject(actor, a, 1, evt_getArg8_inline());
         return 0;
     case 0xA7:
-        func_800398D0(actor, evt_getArg8_inline() << 4, 1, actor->unk73);
+        evt_turnObject(actor, evt_getArg8_inline() << 4, 1, actor->unk73);
         return 0;
     case 0x9B:
         a = evt_getArg16_inline() - actor->pos.vx;
         b = evt_getArg16_inline() - actor->pos.vz;
         if (a | b) {
-            func_800398D0(actor, func_80052F24(a, b), 1, actor->unk73);
+            evt_turnObject(actor, func_80052F24(a, b), 1, actor->unk73);
         }
         return 0;
     case 0x51:
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         a = evt_getArg8_inline();
         if (obj != NULL) {
-            func_800398D0(actor, func_80052F24(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
+            evt_turnObject(actor, func_80052F24(obj->pos.vx - actor->pos.vx, obj->pos.vz - actor->pos.vz), 1, a);
         }
         return 0;
     case 0xBC:
-        actor = func_80038150();
+        actor = evt_getObjectArg();
     case 0x50:
         if (actor->unkF & 0x80) {
             g_evtCurObj->unk0 = g_evtInstrStart;
@@ -1110,7 +1110,7 @@ s32 evt_execInstr(void) {
         c = evt_getArg8_inline();
         evt_execInstr_window(D_8007B704, c, D_8007B704->unk10);
         b = evt_getArg16_inline();
-        msg_open(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
+        msg_open(b, D_8007B704->unk10, evt_getMsgLayout(D_8007B704, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x20:
@@ -1118,24 +1118,24 @@ s32 evt_execInstr(void) {
         c = evt_getArg8_inline();
         evt_execInstr_window(D_8007B704, c, D_8007B704->unk10);
         b = evt_getArg16_inline();
-        msg_open(b, D_8007B704->unk10, func_80039660(D_8007B704, b, c), c);
+        msg_open(b, D_8007B704->unk10, evt_getMsgLayout(D_8007B704, b, c), c);
         return 0;
     case 0x95:
-        po = func_80038150();
+        po = evt_getObjectArg();
         D_8007B704->unk10 = evt_getArg8_inline();
         c = evt_getArg8_inline();
         evt_execInstr_window(po, c, D_8007B704->unk10);
         b = evt_getArg16_inline();
-        msg_open(b, D_8007B704->unk10, func_80039660(po, b, c), c);
+        msg_open(b, D_8007B704->unk10, evt_getMsgLayout(po, b, c), c);
         D_8007B704->unkD = 0xFE;
         return 1;
     case 0x96:
-        po = func_80038150();
+        po = evt_getObjectArg();
         D_8007B704->unk10 = evt_getArg8_inline();
         c = evt_getArg8_inline();
         evt_execInstr_window(po, c, D_8007B704->unk10);
         b = evt_getArg16_inline();
-        msg_open(b, D_8007B704->unk10, func_80039660(po, b, c), c);
+        msg_open(b, D_8007B704->unk10, evt_getMsgLayout(po, b, c), c);
         return 0;
     case 0x21:
         a = evt_getArg8_inline();
@@ -1179,7 +1179,7 @@ s32 evt_execInstr(void) {
         }
         return 1;
     case 0x24:
-        po = func_80038150();
+        po = evt_getObjectArg();
         if (evt_moveObjectTo(po->pos.vx, po->pos.vy, po->pos.vz, (s32)po)) {
             g_evtCurObj->unk0 = g_evtInstrStart;
             D_8007B6F8 = 1;
@@ -1432,9 +1432,9 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x4C:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
-        o = func_80038150();
+        o = evt_getObjectArg();
         m2 = func_8004AFF0_inline(o);
         a = evt_getArg8_inline();
         if (m != NULL && m2 != NULL) {
@@ -1443,14 +1443,14 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x4D:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
         if (m != NULL) {
             m->unk1C = NULL;
         }
         return 0;
     case 0x9F:
-        po = func_80038150();
+        po = evt_getObjectArg();
         m = func_8004AFF0_inline(po);
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
@@ -1464,7 +1464,7 @@ s32 evt_execInstr(void) {
         po->unk2F = b;
         return 0;
     case 0xC0:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
@@ -1474,7 +1474,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xC1:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
@@ -1484,7 +1484,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xC2:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
         b = evt_getArg8_inline();
         if (m != NULL) {
@@ -1552,7 +1552,7 @@ s32 evt_execInstr(void) {
         actor->unk61 = evt_getArg8_inline();
         return 0;
     case 0xBD:
-        actor = func_80038150();
+        actor = evt_getObjectArg();
     case 0x40:
         evt_execInstr_anim(actor, evt_getArg16_inline());
         if (actor->unk7 == g_evtState->playerUid) {
@@ -1560,7 +1560,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xBE:
-        actor = func_80038150();
+        actor = evt_getObjectArg();
     case 0x41:
         if (!(actor->unk62 & 0x80)) {
             return 0;
@@ -1569,10 +1569,10 @@ s32 evt_execInstr(void) {
         D_8007B6F8 = 1;
         return 1;
     case 0x42:
-        func_800499D8((Unk8004B9B8 *)actor);
+        evt_onAnimEnd((Unk8004B9B8 *)actor);
         return 0;
     case 0xB5:
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         if (obj != NULL) {
             if (obj != po) {
                 actor->unkA0 = obj;
@@ -1848,7 +1848,7 @@ s32 evt_execInstr(void) {
         return 0;
     }
     case 0x8F:
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         a = evt_getArg8_inline();
         b = evt_getArg8_inline();
         if (func_800B2CC0(obj->unk3B, a, b, evt_getArg8_inline())) {
@@ -1864,7 +1864,7 @@ s32 evt_execInstr(void) {
         func_800ABA98(po->unk3B, a, b, c, evt_getArg16_inline());
         return 0;
     case 0x3A:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
         a = evt_getArg8_inline();
         if (m != NULL) {
@@ -1872,7 +1872,7 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0x39:
-        o = func_80038150();
+        o = evt_getObjectArg();
         m = func_8004AFF0_inline(o);
         a = evt_getArg8_inline();
         if (m != NULL) {
@@ -1909,19 +1909,19 @@ s32 evt_execInstr(void) {
     case 0xC6:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        c = func_8004B914_inline();
+        c = evt_getArg24_inline();
         g_gameState->unk1C->unk83C(a, b, c, 0, 0);
         return 0;
     case 0xC7:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        c = func_8004B914_inline();
+        c = evt_getArg24_inline();
         g_gameState->unk1C->unk83C(a, b, c, evt_getArg8_inline(), 0);
         return 0;
     case 0xC8:
         a = evt_getArg16_inline();
         b = evt_getArg16_inline();
-        c = func_8004B914_inline();
+        c = evt_getArg24_inline();
         d = evt_getArg8_inline();
         g_gameState->unk1C->unk83C(a, b, c, d, evt_getArg8_inline());
         return 0;
@@ -1939,7 +1939,7 @@ s32 evt_execInstr(void) {
     }
     case 0x8A: {
         u8 vol, pan;
-        po = func_80038150();
+        po = evt_getObjectArg();
         func_800B1A20(po->pos.vx, po->pos.vy, po->pos.vz, &vol, &pan);
         D_8007AE38 = vol;
         D_8007AE3C = (pan * evt_getArg8_inline()) >> 7;
@@ -2000,12 +2000,12 @@ s32 evt_execInstr(void) {
         }
         return 0;
     case 0xCE:
-        if ((g_gameState->unk1C->gil += func_8004B914_inline()) > 9999999) {
+        if ((g_gameState->unk1C->gil += evt_getArg24_inline()) > 9999999) {
             g_gameState->unk1C->gil = 9999999;
         }
         return 0;
     case 0xCF:
-        if ((g_gameState->unk1C->gil -= func_8004B914_inline()) > 9999999) {
+        if ((g_gameState->unk1C->gil -= evt_getArg24_inline()) > 9999999) {
             g_gameState->unk1C->gil = 0;
         }
         return 0;
@@ -2169,12 +2169,12 @@ s32 evt_execInstr(void) {
         game_startFade(((a >> 2) & 1) + 1, (a >> 1) & 1, b, c | (d << 8) | (evt_getArg8_inline() << 16));
         return 0;
     case 0xA9:
-        obj = func_80038150();
+        obj = evt_getObjectArg();
         if (obj != NULL) {
             sv.vx = obj->pos.vx;
             sv.vy = obj->pos.vy;
             sv.vz = obj->pos.vz;
-            func_8004BA20(&sv, &D_8007AE2C, &D_8007AE30);
+            evt_projectToScreen(&sv, &D_8007AE2C, &D_8007AE30);
         }
         return 0;
     case 0x28:
@@ -2505,7 +2505,7 @@ s32 func_80047AB8(Unk8004AB64 *p, s32 b) {
 }
 
 /* point 500 units ahead of o at angle a, at head height */
-static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
+static inline void evt_updateLookAt_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     SVECTOR v;
     MATRIX m;
 
@@ -2526,11 +2526,11 @@ static inline void func_80047E1C_ahead(Unk8004AB64 *o, s32 a, VECTOR *out) {
     gte_stlvnl(out);
 }
 
-void func_80047B90(Unk8004AB64 *o, Unk80047B90 *m) {
+void evt_relaxLookAt(Unk8004AB64 *o, Unk80047B90 *m) {
     VECTOR out;
     s32 d;
 
-    func_80047E1C_ahead(o, o->pos.rotY, &out);
+    evt_updateLookAt_ahead(o, o->pos.rotY, &out);
     d = func_80052EC0(out.vx - o->unk84, out.vy - o->unk86, out.vz - o->unk88);
     if (d < 100) {
         d = 100;
@@ -2546,7 +2546,7 @@ void func_80047B90(Unk8004AB64 *o, Unk80047B90 *m) {
 }
 
 /* move the look-at point towards t */
-static inline void func_80047E1C_approach(Unk8004AB64 *o, Unk80047B90 *mdl, VECTOR *t) {
+static inline void evt_updateLookAt_approach(Unk8004AB64 *o, Unk80047B90 *mdl, VECTOR *t) {
     s32 d;
 
     d = func_80052EC0(t->vx - o->unk84, t->vy - o->unk86, t->vz - o->unk88);
@@ -2563,7 +2563,7 @@ static inline void func_80047E1C_approach(Unk8004AB64 *o, Unk80047B90 *mdl, VECT
 }
 
 /* is the look-at point still in front of o (within ~80 degrees)? */
-static inline s32 func_80047E1C_infront(Unk8004AB64 *o) {
+static inline s32 evt_updateLookAt_infront(Unk8004AB64 *o) {
     s32 ok = 1;
     s32 d;
 
@@ -2580,7 +2580,7 @@ static inline s32 func_80047E1C_infront(Unk8004AB64 *o) {
     return ok;
 }
 
-static inline s32 func_80047E1C_infront2(Unk8004AB64 *o, s32 *pa) {
+static inline s32 evt_updateLookAt_infront2(Unk8004AB64 *o, s32 *pa) {
     s32 ok = 1;
     s32 a;
     s32 d;
@@ -2600,7 +2600,7 @@ static inline s32 func_80047E1C_infront2(Unk8004AB64 *o, s32 *pa) {
     return ok;
 }
 
-void func_80047E1C(Unk8004AB64 *o) {
+void evt_updateLookAt(Unk8004AB64 *o) {
     VECTOR t;
     s32 ang;
     s32 save;
@@ -2664,13 +2664,13 @@ void func_80047E1C(Unk8004AB64 *o) {
             if (!(o->unk50 & 0x100)) {
                 if (!(o->unkF & 0x80)) {
                     o->unk50 |= 0x100;
-                    func_80047E1C_ahead(o, o->pos.rotY, &t);
+                    evt_updateLookAt_ahead(o, o->pos.rotY, &t);
                     o->unk84 = t.vx;
                     o->unk86 = t.vy;
                     o->unk88 = t.vz;
                 }
             }
-            if ((o->unk50 & 0x100) && func_80047E1C_infront(o)) {
+            if ((o->unk50 & 0x100) && evt_updateLookAt_infront(o)) {
                 {
                     t.vx = tgt->pos.vx;
                     t.vy = tgt->pos.vy;
@@ -2683,24 +2683,24 @@ void func_80047E1C(Unk8004AB64 *o) {
                     if ((u32)(d + 0x27F) < 0x4FF) {
                         t.vy = (((o->pos.vy << 6) + o->unk32 * (s8)o->unk2F) * 3 + (t.vy << 6) +
                                 tgt->unk32 * (s8)tgt->unk2F) >> 8;
-                        func_80047E1C_approach(o, mdl, &t);
+                        evt_updateLookAt_approach(o, mdl, &t);
                     } else if (func_80047AB8(o, ang)) {
                         a = d > 0x280 ? 0x280 : -0x280;
-                        func_80047E1C_ahead(o, a + o->pos.rotY, &t);
-                        func_80047E1C_approach(o, mdl, &t);
+                        evt_updateLookAt_ahead(o, a + o->pos.rotY, &t);
+                        evt_updateLookAt_approach(o, mdl, &t);
                     }
                 }
             }
-        } else if ((o->unk50 & 0x100) && func_80047E1C_infront2(o, &ang) && func_80047AB8(o, ang)) {
+        } else if ((o->unk50 & 0x100) && evt_updateLookAt_infront2(o, &ang) && func_80047AB8(o, ang)) {
             {
-                func_80047B90(o, mdl);
+                evt_relaxLookAt(o, mdl);
             }
         }
         if (o->unkF & 0x80) {
             o->pos.rotY = save;
         }
-    } else if ((o->unk50 & 0x100) && func_80047E1C_infront(o)) {
-        func_80047B90(o, mdl);
+    } else if ((o->unk50 & 0x100) && evt_updateLookAt_infront(o)) {
+        evt_relaxLookAt(o, mdl);
     }
     if (!(o->unk50 & 0x100)) {
         mdl->unk0 &= ~1;
@@ -2769,12 +2769,12 @@ void evt_checkPlayerAction(Unk8004AB64 *p) {
     Unk8004AB64 *o;
 
     t = msg_getPadPressed();
-    btn = t & (g_evtMode == 1 ? 0xA0000 : 0x20000);
+    btn = t & (g_evtMode == 1 ? (BTN_CROSS | BTN_SQUARE) : BTN_CROSS);
     if (btn && (o = evt_findNearestObject(p, 4, NULL)) != NULL) {
         D_8007AE20 = func_800531D0(p, o, p->pos.rotY);
         if ((u32)(D_8007AE20 + 0x3FF) < 0x7FF) {
             p->unk93 = o->unk7;
-            if (btn == 0x80000 && evt_callObjectFunc(o, 1, 8, 0)) {
+            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, 8, 0)) {
                 return;
             }
             if (evt_callObjectFunc(o, 1, 3, 0)) {
@@ -2791,7 +2791,7 @@ void evt_checkPlayerAction(Unk8004AB64 *p) {
     if (btn) {
         o = evt_checkPlayerAction_find(p, 3);
         if (o != NULL) {
-            if (btn == 0x80000 && evt_callObjectFunc(o, 1, 8, 0)) {
+            if (btn == BTN_SQUARE && evt_callObjectFunc(o, 1, 8, 0)) {
                 return;
             }
             evt_callObjectFunc(o, 1, 3, 0);
@@ -2807,7 +2807,7 @@ void evt_checkPlayerAction(Unk8004AB64 *p) {
     }
 }
 
-void func_80048E80(void) {
+void evt_updateBattleObjects(void) {
     s32 i;
     s32 m;
     Unk8007AED0 *o;
@@ -2928,12 +2928,12 @@ s32 evt_updateObjects(void) {
                 evt_updateObjects_save(z);
             }
             if (o->unkE == 1 && !world) {
-                func_80049C14(o);
+                evt_stepAnim(o);
             }
         }
     }
     if (world) {
-        func_80048E80();
+        evt_updateBattleObjects();
     }
     l = (Unk16D8 *)D_8007B6FC;
     D_8007AEA4 = 0;
@@ -3001,7 +3001,7 @@ s32 evt_updateObjects(void) {
                 if (p->unk3E != 0xFF) {
                     w = msg_getWindow(p->unk3E);
                     if (w != NULL) {
-                        func_80039444(p, w);
+                        evt_followBalloon(p, w);
                     } else {
                         p->unk3E = 0xFF;
                         if (D_8007AE68 == p) {
@@ -3021,7 +3021,7 @@ s32 evt_updateObjects(void) {
                         evt_updateObjects_turn(p);
                     }
                     if (p->unk34 != 0xFFFF) {
-                        func_80047E1C(p);
+                        evt_updateLookAt(p);
                     }
                 }
                 if (g_evtMode == 3 && (p->unkF & 0x80)) {
@@ -3096,7 +3096,7 @@ s32 evt_updateObjects(void) {
     return r;
 }
 
-void func_800499D8(Unk8004B9B8 *p) {
+void evt_onAnimEnd(Unk8004B9B8 *p) {
     s32 v;
     u32 *q;
 
@@ -3131,7 +3131,7 @@ void func_800499D8(Unk8004B9B8 *p) {
     }
 }
 
-static inline void func_80049B48_bounce(Unk8004AB64 *o, u8 f) {
+static inline void evt_onAnimLimit_bounce(Unk8004AB64 *o, u8 f) {
     u8 t;
     u8 pos;
 
@@ -3151,26 +3151,26 @@ static inline void func_80049B48_bounce(Unk8004AB64 *o, u8 f) {
     }
 }
 
-void func_80049B48(Unk8004AB64 *o) {
+void evt_onAnimLimit(Unk8004AB64 *o) {
     u8 f = o->unk62;
 
     if (f & 0x30) {
         if (o->unk63 != 0) {
             o->unk63--;
             if (o->unk63 != 0) {
-                func_80049B48_bounce(o, f);
+                evt_onAnimLimit_bounce(o, f);
             } else {
-                func_800499D8(o);
+                evt_onAnimEnd(o);
             }
         } else {
-            func_80049B48_bounce(o, f);
+            evt_onAnimLimit_bounce(o, f);
         }
     } else {
-        func_800499D8(o);
+        evt_onAnimEnd(o);
     }
 }
 
-void func_80049C14(Unk8004AB64 *p) {
+void evt_stepAnim(Unk8004AB64 *p) {
     Unk8004AB64 *q;
     u8 f;
     s32 last;
@@ -3211,7 +3211,7 @@ void func_80049C14(Unk8004AB64 *p) {
             p->unk3A = t;
             p->unk39 = old;
             if (last < t) {
-                func_80049B48(p);
+                evt_onAnimLimit(p);
             }
             if (p->unkF & 0x80) {
                 p->pos.rotY = (p->pos.rotY + p->unk6C) & 0xFFF;
@@ -3230,7 +3230,7 @@ void func_80049C14(Unk8004AB64 *p) {
             p->unk3A = t2;
             p->unk39 = old2;
             if (t2 < p->unk61) {
-                func_80049B48(p);
+                evt_onAnimLimit(p);
             }
         }
     } else {
@@ -3264,7 +3264,7 @@ void func_80049C14(Unk8004AB64 *p) {
     }
 }
 
-u8 *func_80049ED8(u8 *p) {
+u8 *evt_loadScripts(u8 *p) {
     s32 mask = 0;
     s32 i = 0;
     s32 c;
@@ -3443,7 +3443,7 @@ void evt_init(u8 *data) {
                                             : 0;
 }
 
-void func_8004A8A4(void) {
+void evt_createModels(void) {
     Unk16D8 *n;
     Unk8004AB64 *o;
     s16 *q;
@@ -3564,14 +3564,14 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
     return r;
 }
 
-void func_8004AC80(void) {
+void evt_reset(void) {
     g_evtState = NULL;
     g_evtLastEncounter = 0;
     D_8007954E = 0;
     D_8007AD1E = 0;
 }
 
-void func_8004ACA4(Unk8004AB64 *o, s32 dx, s32 dy) {
+void evt_setDrawPosAtObject(Unk8004AB64 *o, s32 dx, s32 dy) {
     SVECTOR v;
     SVECTOR *pv = &v;
     s32 p[2];
@@ -3685,7 +3685,7 @@ Unk8004AB64 *evt_getObject(s32 id) {
     return evt_getObject_inline(id);
 }
 
-s32 func_8004B098(s32 id) {
+s32 evt_getModelSlot(s32 id) {
     Unk8004AB64 *p = evt_getObject_inline(id);
     s32 r;
 
@@ -3723,7 +3723,7 @@ s32 func_8004B1FC(void) {
     return (s32)D_8007AEBC;
 }
 
-void func_8004B20C(s32 a) {
+void evt_resetIdleTimer(s32 a) {
     Unk8007AECC *p = g_evtState;
     s32 v;
     if (p->unk1700 >= 0) {
@@ -3753,7 +3753,7 @@ void func_8004B2F4(Unk8004AB64 *key) {
     func_8004B2F4_inline(key);
 }
 
-void func_8004B378(void) {
+void evt_initObjectList(void) {
     Unk16D8 *p = g_evtState->unk15D8;
     for (; p < &g_evtState->unk15D8[31]; p++) {
         p->unk0 = p + 1;
@@ -3782,7 +3782,7 @@ Unk8004AB64 *func_8004B4C4(s32 id) {
     return func_8004B4C4_inline(id);
 }
 
-s32 func_8004B574(void) {
+s32 evt_popBitCount(void) {
     s32 n = 0;
     s32 v = evt_popResult();
     s16 bit;
@@ -3792,7 +3792,7 @@ s32 func_8004B574(void) {
     return n;
 }
 
-s32 func_8004B5CC(void) {
+s32 evt_popRandomBit(void) {
     u8 buf[8];
     s32 bits = evt_popResult();
     s32 n = 0;
@@ -3853,7 +3853,7 @@ s32 evt_getObjectProp(Unk8004AB64 *o, s32 prop) {
     return r;
 }
 
-void func_8004B7A4(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
+void evt_setObjectProp(Unk800219D8 *arg0, s32 arg1, s32 arg2) {
     s32 i;
     s32 (*fn)(s32, s32);
     s32 r;
@@ -3887,7 +3887,7 @@ s32 func_8004B85C(s32 slot) {
     return func_8004B85C_find(func_8004B85C_key(slot), slot);
 }
 
-s32 func_8004B914(void) {
+s32 evt_getArg24(void) {
     s32 v;
     Unk8004AB64 *pp;
 
@@ -3908,7 +3908,7 @@ void func_8004B9B8(Unk8004B9B8 *p) {
     func_8004B9B8_inline(p);
 }
 
-void func_8004BA20(SVECTOR *v, s32 *x, s32 *y) {
+void evt_projectToScreen(SVECTOR *v, s32 *x, s32 *y) {
     DVECTOR s;
     GameData *gd;
 

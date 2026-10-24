@@ -1179,7 +1179,7 @@ typedef struct Unk8004AB64 {
     union { u32 w; u8 b[4]; } unk7C; /* colour */
     u16 unk80;
     u16 unk82;
-    s16 unk84; /* smoothed look-at point (func_80047B90) */
+    s16 unk84; /* smoothed look-at point (evt_relaxLookAt) */
     s16 unk86;
     s16 unk88;
     s16 unk8A; /* speech bubble anchor offset (copied from D_8007AE5C..64) */
@@ -1200,7 +1200,7 @@ typedef struct Unk8004AB64 {
     s16 unkAA;
 } Unk8004AB64;
 
-/* model header as seen by func_80047B90 (BtlUnit9C in ovl_0b) */
+/* model header as seen by evt_relaxLookAt (BtlUnit9C in ovl_0b) */
 typedef struct {
     u16 unk0; /* flags */
     u8 pad2[0x48 - 0x2];
@@ -1208,9 +1208,9 @@ typedef struct {
     s16 unk4A;
     s16 unk4C;
 } Unk80047B90;
-void func_80049B48(Unk8004AB64 *);
+void evt_onAnimLimit(Unk8004AB64 *);
 s32 func_80047AB8(Unk8004AB64 *, s32);
-void func_80047B90(Unk8004AB64 *, Unk80047B90 *);
+void evt_relaxLookAt(Unk8004AB64 *, Unk80047B90 *);
 s32 func_80052DEC(s32, s32, s32); /* distance */
 s32 func_80052EEC(s32);
 s32 func_80052E48(s32, s32, s32);
@@ -1305,7 +1305,7 @@ extern s32 D_8007B998;
 
 extern s32 g_textBank;
 extern s32 D_8007ADFC;
-extern s32 D_8007AE00; /* party mask, set by func_80049ED8 */
+extern s32 D_8007AE00; /* party mask, set by evt_loadScripts */
 extern u32 g_padPortHeld[];
 extern u32 D_8007B97C;
 extern u32 D_8007B980;
@@ -1836,6 +1836,8 @@ extern s32 g_padPortMask[];
 #define BTN_R1       0x200000
 #define BTN_L2       0x400000
 #define BTN_R2       0x800000
+#define BTN_START    0x4000000  /* raw Start (pad_setMapping in config_applyPadMapping) */
+#define BTN_SELECT   0x8000000  /* raw Select; toggles the help window (help_update) */
 extern u32 g_padRepeat; /* press, then auto-repeat after 15 frames, every 5 */
 extern u8 D_80077DB5;
 extern s32 D_80077DC0; /* frame counter? */
@@ -2045,7 +2047,7 @@ void func_80051568(void);
 void msg_resetWindows(void);
 void msg_resetPad(void);
 void rand_init(s32);
-void func_8004AC80(void);
+void evt_reset(void);
 extern u16 D_8007AE12;
 void menu_finish(void);
 void menu_loadOverlay(void);
@@ -2278,10 +2280,10 @@ extern s32 D_8007AEB0;
 extern s32 D_8007AEB4;
 extern u8 D_800CCE54; /* world map (ovl_0c) data */
 void evt_movePlayer(Unk8004AB64 *);
-void func_80047E1C(Unk8004AB64 *);
+void evt_updateLookAt(Unk8004AB64 *);
 void evt_checkPlayerAction(Unk8004AB64 *);
-void func_80048E80(void);
-void func_80049C14(Unk8004AB64 *);
+void evt_updateBattleObjects(void);
+void evt_stepAnim(Unk8004AB64 *);
 void msg_drawHereIcon(Unk8004AB64 *);
 s32 func_80052870(Unk16D8 *);
 s32 func_80052EC0(s32, s32, s32);
@@ -2302,7 +2304,7 @@ s32 func_800C75B4(s32, s32 *);
 s32 func_800C7720(s32);
 #endif
 Window *msg_getWindow(s32);
-void func_80039444(Unk8004AB64 *, Window *);
+void evt_followBalloon(Unk8004AB64 *, Window *);
 s32 func_800531D0(Unk8004AB64 *, Unk8004AB64 *, s32);
 void func_800530A8(SVECTOR *, s32, s32);
 void msg_updatePlayerBubble(void);
@@ -3039,7 +3041,7 @@ extern u8 D_8006E6D8[];
 extern u8 D_8006E690[];
 extern u8 D_8006E6F0[];
 Unk8004AB64 *evt_getObject(s32);
-void func_8004ACA4(Unk8004AB64 *, s32, s32);
+void evt_setDrawPosAtObject(Unk8004AB64 *, s32, s32);
 void msg_drawPlayerBubble(void);
 /* zero the first three bytes (r, g, b) of a 4-byte colour */
 static inline void fade_init_clear3(u8 *p) {
@@ -3522,7 +3524,7 @@ typedef struct {
 void sprAnim_drawScaledCell(s32, s32, s32, Unk80035B90 *, AnimCell *);
 
 
-/* dialog window layout (msg_getLayout / func_80039660) */
+/* dialog window layout (msg_getLayout / evt_getMsgLayout) */
 typedef struct {
     s16 unk0; /* x */
     s16 unk2; /* w */
@@ -3540,7 +3542,7 @@ void msg_drawChoiceCursor(Window *);
 
 WinLayout *msg_getLayout(s32, s32 *, s32 *, s32 *);
 extern WinLayout D_8007B940;
-void func_80038FD8(Unk8004AB64 *, WinLayout *, s32, s32);
+void evt_placeBalloon(Unk8004AB64 *, WinLayout *, s32, s32);
 extern s32 D_8007AE5C;
 extern s32 D_8007AE60;
 extern s32 D_8007AE64;
@@ -3641,7 +3643,7 @@ void func_800C7D30(s32, s32, s32);
 
 extern u8 *g_evtInstrStart;
 extern s32 D_8007AE04;
-Unk8004AB64 *func_80038150(void);
+Unk8004AB64 *evt_getObjectArg(void);
 void evt_returnFromFunc(Unk8004AB64 *);
 s32 evt_modelOpField(Unk8004AB64 *, s32);
 s32 evt_modelOpBattle(Unk8004AB64 *, s32);
@@ -3653,12 +3655,12 @@ extern s32 D_8007AE6C;
 extern s32 D_8007BBD8;
 extern s32 D_8007BB7C; /* message counter */
 extern u8 D_8006E688[]; /* text speed per config setting */
-void func_800398D0(Unk8004AB64 *, s32, s32, s32);
+void evt_turnObject(Unk8004AB64 *, s32, s32, s32);
 s32 func_80052F24(s32, s32);
 void msg_setNumber(u32, s32);
 void msg_setChoiceMask(s32, s32);
 void msg_keepWindowsOnInit(void);
-WinLayout *func_80039660(Unk8004AB64 *, s32, s32);
+WinLayout *evt_getMsgLayout(Unk8004AB64 *, s32, s32);
 void msg_open(s32, s32, WinLayout *, s32);
 
 static inline s32 evt_getArg16_inline(void) {
@@ -3791,7 +3793,7 @@ void msg_startHereIcon(s32);
 void func_80052D0C(u8 **);
 Unk16D8 *func_80036978(Unk8004AB64 *);
 Unk8004AB64 *func_80036650(s32);
-void func_800499D8(Unk8004B9B8 *);
+void evt_onAnimEnd(Unk8004B9B8 *);
 
 extern s32 D_8007AE2C;
 extern s32 D_8007AE30;
@@ -3805,8 +3807,8 @@ void keyItem_remove(s32);
 s32 card_add(s32);
 void chr_clearRecruited(u32);
 
-/* Inlined copy of func_8004B914 (24-bit script argument). */
-static inline s32 func_8004B914_inline(void) {
+/* Inlined copy of evt_getArg24 (24-bit script argument). */
+static inline s32 evt_getArg24_inline(void) {
     s32 v;
     Unk8004AB64 *pp;
 
@@ -3833,7 +3835,7 @@ s32 func_80053960(Unk800539FC *, s32);
 void timer_setSeconds(s32);
 void timer_enable(u8);
 void timer_setRunning(u8);
-void func_8004BA20(SVECTOR *, s32 *, s32 *);
+void evt_projectToScreen(SVECTOR *, s32 *, s32 *);
 s32 func_80054FB8(s32);
 s32 func_80054FE0(s32);
 s32 func_80054E88(s32, s32, s32);

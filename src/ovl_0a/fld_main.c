@@ -376,7 +376,7 @@ void fld_load(s32 arg0) {
     func_800B3A80();
     func_800A9998();
     func_800B0124(0x900, -1, 0, 0, 0);
-    func_80049ED8(sc->unkC);
+    evt_loadScripts(sc->unkC);
     evt_init(sc->unkC);
     func_800AC474();
     func_800A9AAC();
@@ -405,7 +405,7 @@ void fld_load(s32 arg0) {
     func_800B1C98();
     sc->unk20 = D_80067948;
     sc->unk4 = D_80067948;
-    func_8004A8A4();
+    evt_createModels();
     g_padPortMask[0] |= 0x40000;
     g_gameState->unk1C->unk0 &= ~0x20;
 }
