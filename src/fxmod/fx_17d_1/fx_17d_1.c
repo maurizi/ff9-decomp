@@ -1,6 +1,85 @@
 #include "fxmod/fx_17d_1.h"
 
-INCLUDE_ASM("asm/us/fx_17d_1/nonmatchings/fx_17d_1", func_801EC704);
+/* Matching notes: q is a separate pointer biv (the original's s1 giv), with the addPrim argument taken first
+ * (pp = p++). nu = uu + dw, copied back to uu after the call, is a block-local pseudo crossing the call that
+ * local-alloc puts in s0; that gives uu an s0 preference and keeps s0 from the giv in global-alloc. i = 0 before the
+ * row header and q++ before i++ order the giv inits; j = 0 before dw = m places sra fp late in the prologue. */
+void func_801EC704(s32 ot, s32 x, s32 y, s32 w, s32 h, s32 c, s32 tpage, s32 clut, s32 u, s32 v, s32 abr) {
+    POLY_FT4 *p;
+    BtlfxExports *ex;
+    u8 col[4];
+    s32 x0;
+    s32 y0;
+    s32 y1;
+    s32 dw;
+    s32 dh;
+    s32 v1;
+    s32 abrBits;
+    s32 uu;
+    s32 xa;
+    s32 xs;
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 m;
+    s32 ta;
+    s32 ts;
+    POLY_FT4 *q;
+    POLY_FT4 *pp;
+    s32 nu;
+
+    x0 = x - (w >> 1) * 3 / 2;
+    abrBits = (abr & 3) << 5;
+    m = w >> 2;
+    ex = BTLFX_EXPORTS(D_801ED420);
+    p = (POLY_FT4 *)D_801ED420->unk24;
+    dh = h >> 2;
+    D_801ED420->unk24 = (u8 *)(p + 16);
+    y0 = y - (h >> 1);
+    j = 0;
+    dw = m;
+    for (; j < 4; j++) {
+        i = 0;
+        y1 = y0 + dh;
+        v1 = v + dh;
+        uu = u;
+        q = p;
+        for (; i < 4;) {
+            col[0] = col[1] = col[2] = c;
+            if (abr != 0xFF) {
+                col[3] = 0x2E;
+            } else {
+                col[3] = 0x2C;
+            }
+            pp = p++;
+            xs = dw * i;
+            xa = xs + dw;
+            ta = xa * 3;
+            ts = xs * 3;
+            k = i < 3;
+            q->x0 = q->x2 = x0 + ts / 2;
+            q->u0 = q->u2 = uu;
+            nu = uu + dw;
+            q->u1 = q->u3 = nu - (k ^ 1);
+            m = j < 3;
+            q->v2 = q->v3 = v1 - (m ^ 1);
+            q->x1 = q->x3 = x0 + ta / 2;
+            q->v0 = q->v1 = v;
+            q->y0 = q->y1 = y0;
+            q->y2 = q->y3 = y1;
+            tpage |= abrBits;
+            q->clut = clut;
+            q->tpage = tpage;
+            *(u32 *)&q->r0 = *(u32 *)col;
+            q++;
+            i++;
+            ex->btlfx_addPrim(0x09000000, ot, pp);
+            uu = nu;
+        }
+        v += dh;
+        y0 += dh;
+    }
+}
 
 void func_801EC944(u32 *ot, s32 tpage, s32 x, s32 r, s32 g, s32 b) {
     BtlfxExports *ex;
