@@ -458,7 +458,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     pc = arg0->pc;
     idx = pc[1];
     b = g_gameState->unk1C->unk8E4.battle;
-    txt = b->unk11C0->unk14;
+    txt = b->work->texts;
     if (idx & 0x80) {
         btl_setBannerAt((s32)(txt + arg0->cmd->ability->nameOfs), 1);
     } else {

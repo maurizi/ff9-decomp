@@ -1527,3 +1527,5 @@ func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, bac
 # include/ovl_0b.h Unk80105078 (g_btluiPanel): unk0=shown,unk2=highlightRow,unk4=labels,unk54=pulse,unk58=returnState,unk5C=rowCount,unk60=y,unk64=menuUnit,unk68=units,unk78=rowColor,unk7C=cantAct,unk80=slot,unk84=atbKind,unk88=tranceKind
 # include/ovl_0b.h Unk800F412C (panel label): unk0=text,unk2=align,unk4=visible,unk6=frame,unk8=x,unkA=y,unkC=slide
 # include/ovl_0b.h Unk800F3F10 (label slide): unk0=dx,unk2=dy,unk4=frames,unk8=onDone
+# include/ovl_0b.h Battle: unk11C0=work
+# include/ovl_0b.h Battle11C0 (Battle.work): unk4=returnId,unk6=returnMode,unkC=loadBuf,unk14=texts,unk18=bgHeader,unk1C=bgData,unk20=encounter,unk24=sceneTables,unk28=shadows,unk2C=ot,unk34=prims,unk3C=weaponBufs,unk40=bgTexAnims,unk44=heapStart,unk48=heap

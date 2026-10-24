@@ -553,7 +553,7 @@ void *btl_getUnitName(BtlUnit *arg0) {
     Battle *b;
     if (!(f & 1)) {
         b = g_gameState->unk1C->unk8E4.battle;
-        return b->unk11C0->unk14 + b->enemies[(f >> 1) & 0xF].type->nameOfs;
+        return b->work->texts + b->enemies[(f >> 1) & 0xF].type->nameOfs;
     }
     return &g_gameState->unk1C->characters[(f >> 1) & 0xF];
 }
@@ -684,7 +684,7 @@ void btl_showCmdName(BtlCmd *arg0) {
         s = btl_getItemName(arg0->subNo);
         break;
     case BTL_CMD_RETURN_MAGIC:
-        s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + arg0->ability->nameOfs;
+        s = g_gameState->unk1C->unk8E4.battle->work->texts + arg0->ability->nameOfs;
         break;
     default:
         if (arg0->subNo < 0xC0) {

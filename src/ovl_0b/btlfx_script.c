@@ -58,7 +58,7 @@ s32 btlfx_start(s32 arg0) {
     g_btlfxState.unk25 = 0;
     g_btlfxState.flags = 0x8000;
     func_800C30B8();
-    g_btlfxEnv->unk30 = g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+    g_btlfxEnv->unk30 = g_gameState->unk1C->unk8E4.battle->work->loadBuf;
     return 0;
 }
 

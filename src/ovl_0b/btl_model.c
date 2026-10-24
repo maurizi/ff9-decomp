@@ -230,8 +230,8 @@ void btl_relocTexAnims(TexAnimSet *set, u16 (*ofs)[4]) {
 
 Battle11C020 *btl_initScene(void) {
     Battle *b;
-    Battle11C020 *s = g_gameState->unk1C->unk8E4.battle->unk11C0->unk20;
-    u16 *t = g_gameState->unk1C->unk8E4.battle->unk11C0->unk24;
+    Battle11C020 *s = g_gameState->unk1C->unk8E4.battle->work->encounter;
+    u16 *t = g_gameState->unk1C->unk8E4.battle->work->sceneTables;
     s32 r;
     Battle132C *sc = &g_gameState->unk1C->unk8E4.battle->scene;
     u8 n;
@@ -239,8 +239,8 @@ Battle11C020 *btl_initScene(void) {
 
     sc->unkC = (u16 *)((u8 *)t + t[0]);
     sc->unk10 = (s16 *)((u8 *)t + t[1]);
-    sc->unk4 = btl_pickEnemyGroup(g_gameState->unk1C->unk8E4.battle->unk11C0->unk20);
-    sc->unk8 = (Battle1334 *)&g_gameState->unk1C->unk8E4.battle->unk11C0->unk20->unk8[s->unk1];
+    sc->unk4 = btl_pickEnemyGroup(g_gameState->unk1C->unk8E4.battle->work->encounter);
+    sc->unk8 = (Battle1334 *)&g_gameState->unk1C->unk8E4.battle->work->encounter->unk8[s->unk1];
     n = sc->unk4->unk2;
     b = g_gameState->unk1C->unk8E4.battle;
     if (n >= 3) {
@@ -288,7 +288,7 @@ Battle1330 *btl_pickEnemyGroup(Battle11C020 *arg0) {
 
 void func_800C972C(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    b->scene.unk0 = (b->unk11C0->unk20->unk4 ^ 0x30) * 4;
+    b->scene.unk0 = (b->work->encounter->unk4 ^ 0x30) * 4;
     D_800FDF38 = g_gameState->unk1C->unk8E4.battle->scene.unk4->unk4;
 }
 
@@ -313,7 +313,7 @@ void btl_setupEnemies(void) {
     b = g_gameState->unk1C->unk8E4.battle;
     flags = &b->scene.unk0;
     grp = b->scene.unk4;
-    hdr = b->unk11C0->unk20;
+    hdr = b->work->encounter;
     b->scene.unk0 = (b->scene.unk0 & ~3) | (btl_rollAmbush(flags) & 3);
     i = 0;
     n = hdr->unk2 + hdr->unk3;
@@ -321,7 +321,7 @@ void btl_setupEnemies(void) {
     recs = (Unk800C9D1C *)(grp2 + hdr->unk1);
     rec = recs;
     en = g_gameState->unk1C->unk8E4.battle->enemyTypes;
-    ofs = (U16Pair *)(g_gameState->unk1C->unk8E4.battle->unk11C0->unk14 + 4);
+    ofs = (U16Pair *)(g_gameState->unk1C->unk8E4.battle->work->texts + 4);
     src = (BtlCmd8 *)&recs[hdr->unk2];
     for (; i < hdr->unk2; i++) {
         btl_initEnemyType(rec, en);
@@ -419,7 +419,7 @@ void btl_placeParty(void) {
         u->unkBE = e->unk1;
         btl_setShadowSize(u, e->unk2, e->unk3);
         x -= 0x278;
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[(u->flags >> 1) & 0xF].unk4_22 = e->unk4;
+        g_gameState->unk1C->unk8E4.battle->work->shadows[(u->flags >> 1) & 0xF].unk4_22 = e->unk4;
         u = u->next;
     }
 }
@@ -514,7 +514,7 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     btl_setShadowSize(arg1, arg0->unk64, arg0->unk66);
     arg1->unkBD = arg0->unk68;
     arg1->unkBE = arg0->unk6E;
-    t = &g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[((arg1->flags >> 1) & 0xF) + 9];
+    t = &g_gameState->unk1C->unk8E4.battle->work->shadows[((arg1->flags >> 1) & 0xF) + 9];
     t->unk4_12 = arg0->unk6A;
     t->unk4_22 = arg0->unk6C;
 }

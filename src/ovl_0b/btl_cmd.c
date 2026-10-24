@@ -5,8 +5,8 @@ void btl_startBattle(void) {
     Battle11C0 *p;
 
     b = g_gameState->unk1C->unk8E4.battle;
-    p = b->unk11C0;
-    btlbg_init(p->unk18, p->unk40);
+    p = b->work;
+    btlbg_init(p->bgHeader, p->bgTexAnims);
     b->loadFlags |= 1;
     btl_initCmdQueue(b);
     btl_initTargetCursor(b);
@@ -24,7 +24,7 @@ void btl_updateCombat(GameData *arg0, Battle *arg1) {
     BtlUnit *u;
     s32 sp10;
     u = arg1->unitList;
-    sp10 = arg1->unk11C0->unk34[arg0->unk8];
+    sp10 = arg1->work->prims[arg0->unk8];
     while (u != NULL) {
         if (((u->flags >> 29) & 1) && (arg1->cmdFlags & 2)) {
             btl_projectUnitPos(u);
@@ -54,8 +54,8 @@ void btl_drawScene(GameData *arg0, Battle *arg1, s32 arg2) {
         arg1->unk11BE -= 1;
     }
     btlseq_update();
-    arg2 = (s32)btlbg_draw(&arg0->unk18, arg1->unk11C0->unk1C, arg2, arg0->unk10[arg0->unk8],
-                              arg1->unk11C0->unk2C[arg0->unk8]);
+    arg2 = (s32)btlbg_draw(&arg0->unk18, arg1->work->bgData, arg2, arg0->unk10[arg0->unk8],
+                              arg1->work->ot[arg0->unk8]);
     arg2 = (s32)btlfx_runFrame((u8 *)arg2);
     arg2 = (s32)btl_drawPopups((u8 *)arg2);
     btl_drawBanner((u8 *)arg2);

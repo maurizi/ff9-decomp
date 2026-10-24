@@ -129,9 +129,9 @@ void btl_updateUnitModel(BtlUnit *u, s32 *ot) {
                 }
                 u->unk7B = g_gameState->unk1C->unk8E4.battle->escapeHeld;
             }
-            *ot = (s32)btl_drawShadow(g_gameState->unk1C->unk8E4.battle->unk11C0->unk28, (u->flags >> 1) & 0xF, 0, id, (u8 *)*ot);
+            *ot = (s32)btl_drawShadow(g_gameState->unk1C->unk8E4.battle->work->shadows, (u->flags >> 1) & 0xF, 0, id, (u8 *)*ot);
         } else if (u->koState < 4) {
-            *ot = (s32)btl_drawShadow(g_gameState->unk1C->unk8E4.battle->unk11C0->unk28, ((u->flags >> 1) & 0xF) + 9, 0, id, (u8 *)*ot);
+            *ot = (s32)btl_drawShadow(g_gameState->unk1C->unk8E4.battle->work->shadows, ((u->flags >> 1) & 0xF) + 9, 0, id, (u8 *)*ot);
         }
     }
 }

@@ -1197,7 +1197,7 @@ void btlfx_drawBgOffscreen(s32 x, s32 y, s32 w, s32 h, u32 *ot, s32 arg5, s32 ar
     D_800F8D50.t[1] = arg6;
     D_800F8D50.t[2] = arg7 + 0x2900;
     btlbg_setLayerMask(2);
-    g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->unk1C->unk8E4.battle->unk11C0->unk1C, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
+    g_btlfxEnv->prim = btlbg_draw(&D_800F8D50, g_gameState->unk1C->unk8E4.battle->work->bgData, (s32)g_btlfxEnv->prim, NULL, (s32)ot);
     btlbg_setLayerMask(0xF);
     EnterCriticalSection();
     DrawOTagEnv(ot, &e->unk0);
@@ -1766,8 +1766,8 @@ s32 *btlfx_swapModelData(s32 arg0, s32 *arg1) {
 
 void func_800E87C4(s32 arg0) {
     btl_unloadEnemyModels();
-    btlfx_copyWords(g_gameState->unk1C->unk8E4.battle->unk11C0->unk44, g_btlfxLoader.unk54->unk50[0], arg0 << 10);
-    g_btlfxLoader.unk54->unk50[0] = g_gameState->unk1C->unk8E4.battle->unk11C0->unk44;
+    btlfx_copyWords(g_gameState->unk1C->unk8E4.battle->work->heapStart, g_btlfxLoader.unk54->unk50[0], arg0 << 10);
+    g_btlfxLoader.unk54->unk50[0] = g_gameState->unk1C->unk8E4.battle->work->heapStart;
 }
 
 void btl_forEachModelVertex(BtlUnit9C8 *arg0, void (*arg1)(SVECTOR *, s32)) {

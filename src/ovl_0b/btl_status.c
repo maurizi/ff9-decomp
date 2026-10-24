@@ -173,12 +173,12 @@ u32 btl_addStatus(BtlUnit *u, u32 f) {
             u->model->scaleX = 0x800;
             u->model->scaleY = 0x800;
             u->model->scaleZ = 0x800;
-            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].width = (u->shadowW >> 1) * 14;
-            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].depth = (u->shadowD >> 1) * 12;
+            g_gameState->unk1C->unk8E4.battle->work->shadows[btl_getModelSlot(u)].width = (u->shadowW >> 1) * 14;
+            g_gameState->unk1C->unk8E4.battle->work->shadows[btl_getModelSlot(u)].depth = (u->shadowD >> 1) * 12;
         } else {
             u->model->flags &= ~2;
-            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].width = u->shadowW * 14;
-            g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].depth = u->shadowD * 12;
+            g_gameState->unk1C->unk8E4.battle->work->shadows[btl_getModelSlot(u)].width = u->shadowW * 14;
+            g_gameState->unk1C->unk8E4.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         }
         break;
     }
@@ -295,8 +295,8 @@ s32 btl_removeStatus(BtlUnit *u, u32 f) {
         break;
     case 0x10000000:
         u->model->flags &= ~2;
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].width = u->shadowW * 14;
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[btl_getModelSlot(u)].depth = u->shadowD * 12;
+        g_gameState->unk1C->unk8E4.battle->work->shadows[btl_getModelSlot(u)].width = u->shadowW * 14;
+        g_gameState->unk1C->unk8E4.battle->work->shadows[btl_getModelSlot(u)].depth = u->shadowD * 12;
         break;
     case 0x40000000:
         u->unkB2 = 3;
@@ -1077,7 +1077,7 @@ void btl_setUnitBrightness(BtlUnit *arg0, u32 arg1) {
         if (!(f & 1)) {
             k += 9;
         }
-        g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].shade = (s32)(btlbg_getHeader()->shadowShade * arg1) >> 5;
+        g_gameState->unk1C->unk8E4.battle->work->shadows[k].shade = (s32)(btlbg_getHeader()->shadowShade * arg1) >> 5;
     }
 }
 

@@ -1188,24 +1188,24 @@ typedef struct BtlShadow {
 
 typedef struct Battle11C0 {
     s32 unk0;
-    s16 unk4;
-    u8 unk6;
+    s16 returnId; /* field id or world position to return to (btl_initReturnInfo) */
+    u8 returnMode; /* GameState mode before the battle (btl_cleanup) */
     u8 unk7[1];
     s32 unk8;
-    s32 *unkC; /* offset table, entries relative to its start */
+    s32 *loadBuf; /* loader work buffer (CD requests and step states at 0x9FA0/0x9FD8) */
     s32 unk10;
-    u8 *unk14;
-    struct BtlBgHeader *unk18;
-    s32 unk1C;
-    Battle11C020 *unk20;
-    u16 *unk24; /* two offsets: model file table, offset table */
-    struct BtlShadow *unk28;
-    s32 unk2C[2]; /* per draw buffer */
-    s32 unk34[2]; /* per draw buffer */
-    s32 *unk3C;
-    BtlUnit9C50 *unk40;
-    u8 *unk44; /* work heap start */
-    u8 *unk48; /* work heap cursor */
+    u8 *texts; /* enemy and enemy-ability names (BtlEnemyType.nameOfs, btl_showCmdName) */
+    struct BtlBgHeader *bgHeader; /* background header (btlbg_init) */
+    s32 bgData; /* background groups (btlbg_draw) */
+    Battle11C020 *encounter; /* encounter header: groups, enemy records, abilities (btl_initScene) */
+    u16 *sceneTables; /* two offsets: sequence table, scene data table */
+    struct BtlShadow *shadows; /* per unit model slot (btl_drawShadow) */
+    s32 ot[2]; /* small ordering table per draw buffer (btl_beginFrame) */
+    s32 prims[2]; /* primitive buffer per draw buffer */
+    s32 *weaponBufs; /* per party slot: weapon model file buffer (btl_loadWeaponModelsStep) */
+    BtlUnit9C50 *bgTexAnims; /* background texture animations (btlbg_init) */
+    u8 *heapStart; /* work heap start */
+    u8 *heap; /* work heap cursor */
 } Battle11C0;
 
 typedef struct {
@@ -1347,7 +1347,7 @@ typedef struct Battle {
     u8 eidolonAbility; /* ability of the trance Eidolon follow-up (btl_startCmdEffect, BTL_CMD_EIDOLON) */
     s16 eidolonTimer; /* counts down by atbSpeed until BTL_CMD_TRANCE_EIDOLON */
     u16 unk11BE;
-    struct Battle11C0 *unk11C0;
+    struct Battle11C0 *work; /* battle work area: buffers, background, encounter, shadows (btl_allocBuffers) */
     struct Battle11C4 seq; /* enemy battle sequences (btlseq_*) */
     u8 unk131C;
     u8 pad131D[0x132C - 0x131D];

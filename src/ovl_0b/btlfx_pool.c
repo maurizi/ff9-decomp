@@ -119,7 +119,7 @@ s32 btlfx_getFileData(s32 arg0, s32 arg1) {
         base = D_80100E14->unk50[0];
         arg1 &= 0x7F;
     } else {
-        base = g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+        base = g_gameState->unk1C->unk8E4.battle->work->loadBuf;
         arg1 -= 0xC0;
     }
     return (s32)base + base[arg1];
@@ -198,7 +198,7 @@ s32 btlfx_loadSoundBank(s32 arg0) {
             return 1;
         }
     }
-    func_800562E0(g_gameState->unk1C->unk8E4.battle->unk11C0->unkC, 0);
+    func_800562E0(g_gameState->unk1C->unk8E4.battle->work->loadBuf, 0);
     g_btlfxLoader.unk67 = 1;
     g_btlfxLoader.unk66 = 1;
     return 0;
@@ -405,18 +405,18 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 case 7:
                     d->unk64 = 1;
-                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     break;
                 case 8:
                     d->unk68 = 1;
-                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                    dst = (u8 *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     break;
                 case 9:
                     if (g_btlfxEnv->targets->kind & 8) {
                         btl_unloadPartyModels();
                         dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
-                        dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                        dst = (u8 *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     }
                     break;
                 }
@@ -549,7 +549,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                         btl_unloadPartyModels();
                         base = (void *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
-                        base = (void *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
+                        base = (void *)g_gameState->unk1C->unk8E4.battle->work->loadBuf;
                     }
                     r.r.w = 0x40;
                     r.r.h = 0x80;
