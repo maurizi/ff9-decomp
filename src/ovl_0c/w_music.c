@@ -3,26 +3,26 @@
 void w_musicUpdate(void) {
     s32 st;
 
-    switch (D_800D4818) {
+    switch (g_worldMusicState) {
     case 1:
-        if (D_800CF454 == 0) {
+        if (g_worldCdUser == 0) {
             if (g_worldMapDebugFlags & 4) {
                 printf("w_musicUpdate : Play\n");
             }
-            D_800CF454 = 2;
-            if (D_800D481C != -1) {
-                func_800C46D8(D_800D481C);
+            g_worldCdUser = 2;
+            if (g_worldMusicSong != -1) {
+                wm_musicStop(g_worldMusicSong);
             }
-            func_800C465C(D_800D4828);
-            D_800D4818 = 2;
-            D_800D481C = D_800D4828;
+            wm_musicPlay(g_worldMusicRequest);
+            g_worldMusicState = 2;
+            g_worldMusicSong = g_worldMusicRequest;
         }
         break;
     case 2:
-        st = func_800AB0C0(0xC00, 0, 0, 0, 0);
+        st = wm_soundCommand(0xC00, 0, 0, 0, 0);
         if (st == 0) {
-            D_800CF454 = 0;
-            D_800D4818 = 0;
+            g_worldCdUser = 0;
+            g_worldMusicState = 0;
             if (g_worldMapDebugFlags & 4) {
                 printf("w_musicUpdate : Ready\n");
             }
@@ -192,7 +192,7 @@ const char D_800A8430[] = "(Denied / same request)\n";
 const char D_800A844C[0x38] = "w_musicRequestSend : music status is not ready now\n";
 
 void w_musicRequestSend(u32 arg0) {
-    if (D_800D4818 == 0) {
+    if (g_worldMusicState == 0) {
         if (g_worldMapDebugFlags & 4) {
             switch (arg0) {
             case 0:
@@ -218,9 +218,9 @@ void w_musicRequestSend(u32 arg0) {
                 break;
             }
         }
-        if (D_800D4828 != arg0) {
-            D_800D4818 = 1;
-            D_800D4828 = arg0;
+        if (g_worldMusicRequest != arg0) {
+            g_worldMusicState = 1;
+            g_worldMusicRequest = arg0;
             if (g_worldMapDebugFlags & 4) {
                 printf(D_800A8424);
             }
@@ -232,7 +232,7 @@ void w_musicRequestSend(u32 arg0) {
     }
 }
 
-void func_800C43F0(void) {
+void wm_stopAllSe(void) {
     Unk800C3FE4 s;
     s32 i;
     s32 j0;
@@ -246,7 +246,7 @@ void func_800C43F0(void) {
         if (w_musicGetID(i, &s) & 0xFF) {
             m0 = s.unk0;
             for (j0 = 0; j0 < s.unk4; j0++) {
-                func_800AB0C0(0x5100, s.unk8[j0], m0, 0, 0);
+                wm_soundCommand(0x5100, s.unk8[j0], m0, 0, 0);
                 m0 >>= 1;
             }
         }
@@ -255,7 +255,7 @@ void func_800C43F0(void) {
         if (w_musicGetID(i, &s) & 0xFF) {
             m1 = s.unk0;
             for (j1 = 0; j1 < s.unk4; j1++) {
-                func_800AB0C0(0x5100, s.unk8[j1], m1, 0, 0);
+                wm_soundCommand(0x5100, s.unk8[j1], m1, 0, 0);
                 m1 >>= 1;
             }
         }
@@ -264,12 +264,12 @@ void func_800C43F0(void) {
         if (w_musicGetID(i, &s) & 0xFF) {
             m2 = s.unk0;
             for (j2 = 0; j2 < s.unk4; j2++) {
-                func_800AB0C0(0x5100, s.unk8[j2], m2, 0, 0);
+                wm_soundCommand(0x5100, s.unk8[j2], m2, 0, 0);
                 m2 >>= 1;
             }
         }
     }
-    if ((u8)func_800C49EC() && D_800CF49C != 3) {
+    if ((u8)func_800C49EC() && g_worldEventResult != 3) {
         g_gameState->unk1C->unk0 |= 0x400000;
     }
 }
@@ -287,12 +287,12 @@ s32 func_800C45D8(void) {
     return v - 8U < 2;
 }
 
-void func_800C461C(void) {
-    D_800D4818 = 0;
-    D_800D4824 = -1;
-    D_800D481C = -1;
-    D_800D4828 = -1;
-    D_800D4820 = 0;
+void wm_musicInit(void) {
+    g_worldMusicState = 0;
+    g_worldMusicId = -1;
+    g_worldMusicSong = -1;
+    g_worldMusicRequest = -1;
+    g_worldMusicStarted = 0;
 }
 
 void func_800C464C(void) {
@@ -301,26 +301,26 @@ void func_800C464C(void) {
 void func_800C4654(void) {
 }
 
-void func_800C465C(u16 arg0) {
+void wm_musicPlay(u16 arg0) {
     u8 v = g_evtGlobalVars.b[0x68];
 
-    D_800D4824 = func_800C497C(arg0);
-    D_800D4820 = 1;
-    func_800AB0C0(0, D_800D4824, 0, 0, 0);
+    g_worldMusicId = wm_getSongMusicId(arg0);
+    g_worldMusicStarted = 1;
+    wm_soundCommand(0, g_worldMusicId, 0, 0, 0);
     if (v == 0) {
         v = 0x7D;
     }
-    func_800AB0C0(0x8601, 0, 0x3C, v, 0);
+    wm_soundCommand(0x8601, 0, 0x3C, v, 0);
 }
 
-void func_800C46D8(u16 arg0) {
-    func_800AB0C0(0x100, func_800C497C(arg0), 0, 0, 0);
+void wm_musicStop(u16 arg0) {
+    wm_soundCommand(0x100, wm_getSongMusicId(arg0), 0, 0, 0);
 }
 
-void func_800C4710(void) {
+void wm_musicFade(void) {
 }
 
-void func_800C4718(s32 arg0, u8 arg1) {
+void wm_sePlay(s32 arg0, u8 arg1) {
     Unk800C3FE4 s;
     s32 i;
     s32 v;
@@ -328,41 +328,27 @@ void func_800C4718(s32 arg0, u8 arg1) {
     if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            func_800AB0C0(0xD000, s.unk8[i], v, 0x7F, arg1);
+            wm_soundCommand(0xD000, s.unk8[i], v, 0x7F, arg1);
             v >>= 1;
         }
     }
 }
 
-void func_800C47B0(s32 arg0, u8 arg1) {
+void wm_seSetVolume(s32 arg0, u8 arg1) {
     Unk800C3FE4 s;
     s32 i;
     s32 v;
 
-    if (D_800D4818 == 0 && (w_musicGetID(arg0, &s) & 0xFF)) {
+    if (g_worldMusicState == 0 && (w_musicGetID(arg0, &s) & 0xFF)) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            func_800AB0C0(0x9201, s.unk8[i], v, arg1, 0);
+            wm_soundCommand(0x9201, s.unk8[i], v, arg1, 0);
             v >>= 1;
         }
     }
 }
 
-void func_800C4850(s32 arg0, u16 arg1, u8 arg2) {
-    Unk800C3FE4 s;
-    s32 i;
-    s32 v;
-
-    if (w_musicGetID(arg0, &s) & 0xFF) {
-        v = s.unk0;
-        for (i = 0; i < s.unk4; i++) {
-            func_800AB0C0(0xD301, s.unk8[i], v, arg1, arg2);
-            v >>= 1;
-        }
-    }
-}
-
-void func_800C48F4(s32 arg0) {
+void wm_seFadeVolume(s32 arg0, u16 arg1, u8 arg2) {
     Unk800C3FE4 s;
     s32 i;
     s32 v;
@@ -370,17 +356,31 @@ void func_800C48F4(s32 arg0) {
     if (w_musicGetID(arg0, &s) & 0xFF) {
         v = s.unk0;
         for (i = 0; i < s.unk4; i++) {
-            func_800AB0C0(0x5100, s.unk8[i], v, 0, 0);
+            wm_soundCommand(0xD301, s.unk8[i], v, arg1, arg2);
             v >>= 1;
         }
     }
 }
 
-s32 func_800C497C(u16 arg0) {
+void wm_seStop(s32 arg0) {
+    Unk800C3FE4 s;
+    s32 i;
+    s32 v;
+
+    if (w_musicGetID(arg0, &s) & 0xFF) {
+        v = s.unk0;
+        for (i = 0; i < s.unk4; i++) {
+            wm_soundCommand(0x5100, s.unk8[i], v, 0, 0);
+            v >>= 1;
+        }
+    }
+}
+
+s32 wm_getSongMusicId(u16 arg0) {
     u16 sc;
 
     if (arg0 == 0) {
-        sc = *D_800CF430;
+        sc = *g_worldStoryCounterPtr;
         if (sc - 0x2580U < 0x122) {
             arg0 = 4;
         }
@@ -391,20 +391,20 @@ s32 func_800C497C(u16 arg0) {
             arg0 = 3;
         }
     }
-    return D_800CDF30[arg0];
+    return g_worldSongMusicIds[arg0];
 }
 
 s32 func_800C49EC(void) {
-    u8 r = D_800D4824 == D_800CDF30[0];
+    u8 r = g_worldMusicId == g_worldSongMusicIds[0];
 
-    if (D_800D4824 == D_800CDF30[1]) {
+    if (g_worldMusicId == g_worldSongMusicIds[1]) {
         r = 1;
     }
-    if (D_800CE3C4 == 0) {
-        if (D_800D4824 == D_800CDF30[3]) {
+    if (g_worldMoveMode == 0) {
+        if (g_worldMusicId == g_worldSongMusicIds[3]) {
             r = 1;
         }
-        if (D_800D4824 == D_800CDF30[4]) {
+        if (g_worldMusicId == g_worldSongMusicIds[4]) {
             r = 1;
         }
     }

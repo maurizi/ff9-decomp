@@ -1,6 +1,6 @@
 #include "ovl_0c.h"
 
-void func_800C7914(Unk800C95C8 *arg0, u8 arg1) {
+void wm_projectMesh(Unk800C95C8 *arg0, u8 arg1) {
     MATRIX m;
     WmModelGroup *g;
     MATRIX *bone;
@@ -67,7 +67,7 @@ void func_800C7914(Unk800C95C8 *arg0, u8 arg1) {
 }
 
 /* attach a model file (relocating it once) and lay out its work buffers at arg1 */
-void func_800C7BA8(Unk800C95C8 *arg0, u8 *arg1) {
+void wm_initModel(Unk800C95C8 *arg0, u8 *arg1) {
     WmModel *m;
     WmModelGroup *g;
     u32 i;
@@ -122,7 +122,7 @@ void func_800C7BA8(Unk800C95C8 *arg0, u8 *arg1) {
     arg0->unk44 = (WmModelOut *)(pp + m->unk2 * 32);
 }
 
-void func_800C7CF4(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
+void wm_buildPackets(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
     WmModel *m;
     WmModelGroup *g;
     WmModelOut *out;
@@ -397,7 +397,7 @@ void func_800C7CF4(Unk800C95C8 *arg0, WmTexInfo *arg1, s16 (*arg2)[2]) {
     }
 }
 
-void func_800C8950(Unk800C95C8 *arg0, u8 arg1) {
+void wm_drawMeshC(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -685,7 +685,7 @@ void func_800C8950(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-void func_800C9484(Unk800C95C8 *arg0) {
+void wm_applyScale(Unk800C95C8 *arg0) {
     MATRIX m;
 
     if (arg0->unk0 & 2) {
@@ -710,7 +710,7 @@ void func_800C9484(Unk800C95C8 *arg0) {
     }
 }
 
-void func_800C95C8(Unk800C95C8 *arg0) {
+void wm_cullBehindCamera(Unk800C95C8 *arg0) {
     SVECTOR v;
     s32 sz;
 
@@ -732,7 +732,7 @@ void func_800C95C8(Unk800C95C8 *arg0) {
     }
 }
 
-void func_800C96AC(Unk800C95C8 *arg0, u16 arg1) {
+void wm_calcBoneMatrices(Unk800C95C8 *arg0, u16 arg1) {
     SVECTOR sv;
     u16 nb;
     VECTOR *vec;
@@ -931,7 +931,7 @@ void func_800C96AC(Unk800C95C8 *arg0, u16 arg1) {
     }
 }
 
-void func_800C9FCC(Unk800C95C8 *arg0, u8 arg1) {
+void wm_projectMeshClipY(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     MATRIX *bone;
     SVECTOR *vtx;
@@ -989,7 +989,7 @@ void func_800C9FCC(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-void func_800CA1D8(Unk800C95C8 *arg0, u8 arg1) {
+void wm_drawMeshClipY(Unk800C95C8 *arg0, u8 arg1) {
     WmModelGroup *g;
     u32 *ot;
     s32 opz;
@@ -1286,11 +1286,11 @@ void func_800CA1D8(Unk800C95C8 *arg0, u8 arg1) {
     }
 }
 
-s32 func_800CAE00(u16 *arg0) {
+s32 wm_getSpriteFrameCount(u16 *arg0) {
     return *arg0 & 0x7FFF;
 }
 
-s32 func_800CAE0C(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 arg7,
+s32 wm_drawSprite3D(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, s32 frame, s32 abr, s32 arg7,
                    s32 arg8, s32 arg9, s32 argA) {
     VECTOR s;
     SVECTOR zero;
@@ -1352,7 +1352,7 @@ s32 func_800CAE0C(s32 arg0, WmSprHdr *h, SVECTOR *pos, SVECTOR *rot, s32 scale, 
 }
 
 /* upload every image and clut of an image pack (c walks the clut RECTs in the second loop) */
-void func_800CB09C(Unk800CB09C *arg0) {
+void wm_loadImagePack(Unk800CB09C *arg0) {
     RECT r;
     Unk800CB09CClut *c;
     s16 *img;

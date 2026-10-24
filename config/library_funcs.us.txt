@@ -298,7 +298,7 @@ ovl_0b btlfx_stepModuleParticle hand-written asm (battle agent: CF5xx-CFAxx / DF
 ovl_0a fldmdl_drawMesh hand-written asm (field agent)
 ovl_0a fld_emitSprite3D hand-written asm (field agent)
 ovl_0c func_800CB1EC hand-written asm (field agent)
-ovl_0c func_800C709C hand-written asm (field agent)
+ovl_0c wm_drawMesh hand-written asm (field agent)
 ovl_64 mbg_vlcBuildTable libpress DecDCTvlc hand-written asm (frameless, scratchpad tables)
 ovl_64 mbg_vlcSetSize libpress DecDCTvlc hand-written asm (frameless, scratchpad tables)
 ovl_64 mbg_vlcDecode libpress DecDCTvlc hand-written asm (frameless, scratchpad tables)

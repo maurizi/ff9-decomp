@@ -1297,3 +1297,447 @@ D_800CA140 g_fieldBgFollowOverlays  # [code] 10 follow-layer entries (layer, off
 D_800C9DA0 g_fieldBgFollowOverlayCount  # [code] number of g_fieldBgFollowOverlays entries, cleared by fldbg_initFollowOverlays, incremented by fldbg_addFollowOverlay
 func_800B5958 fldmdl_drawMesh  # [code] hand-written asm group drawer fld_drawModels calls right after fldmdl_projectMesh (the C twin is fldmdl_drawMeshC)
 # hand renames: fldbg_*Layer* -> fldbg_*Overlay* (runtime campaign term), fldbg_update -> fldbg_draw, fld_collectModels -> fld_collectVisibleModels ([runtime] field/menu campaign)
+### ovl_0a + ovl_0c: main-menu command screen ([runtime] field/menu campaign) and sprite helpers
+D_800CB188 s_menuMain  # [runtime] field/menu campaign - cursor, state, orderCursor, orderTarget, orderPicked, panels (read at menu_main / menu_status / after an Order swap)
+func_800C93D4 menuMain_init  # [runtime] field/menu campaign - init of D_8006E530[0], once when the menu opens
+func_800C94B0 menuMain_update  # [runtime] field/menu campaign - D_8006E530[0] update, once per frame in every main-menu run
+func_800C94E0 menuMain_exit  # [runtime] field/menu campaign - D_8006E530[0] exit, once when Item/Ability/... is entered
+func_800C951C menuMain_input  # [runtime] field/menu campaign - dispatches s_menuMainInput[state]
+func_800C8284 menuMain_inputCommand  # [runtime] field/menu campaign - state-0 handler, Up/Down move the cursor, Cross selects, Circle closes the menu
+func_800C923C menuMain_selectCommand  # [runtime] field/menu campaign - once per Cross; Order -> state 2, screens needing a member -> state 1, others open the screen
+func_800C8354 menuMain_inputMember  # [runtime] field/menu campaign - state-1 handler (Down moved the hand to Vivi)
+func_800C842C menuMain_inputOrder  # [runtime] field/menu campaign - state-2 handler
+func_800C85B8 menuMain_reorder  # [runtime] field/menu campaign - (slotA, slotB), same slot toggles the row bit, else swaps party[a]/party[b]
+func_800C86C8 menuMain_swapPortraits  # [runtime] field/menu campaign - only for a real swap, swaps the two portraits in VRAM
+func_800C9580 menuMain_draw  # [runtime] field/menu campaign - calls the menuMain_draw* functions
+func_800C9630 menuMain_drawParty  # [runtime] field/menu campaign - ablation removes the four party panels
+func_800C883C menuMain_drawMember  # [runtime] field/menu campaign - ablation removes portrait, name, Lv/HP/MP, stones
+func_800C8AE8 menuMain_drawPortraitShade  # [runtime] field/menu campaign - ablation removes the dark TILE behind the portraits
+func_800C8C08 menuMain_drawTimeGil  # [runtime] field/menu campaign - ablation removes the TIME and GIL window
+func_800C8D40 menuMain_drawLocation  # [runtime] field/menu campaign - ablation removes the LOCATION window
+func_800C8E2C menuMain_drawCursor  # [runtime] field/menu campaign - ablation removes the hand
+func_800C9014 menuMain_updateHelp  # [runtime] field/menu campaign - help callback set by menuMain_init, runs only with the Select help open
+func_800C95B8 menuMain_updatePanels  # [runtime] field/menu campaign - steps the six panel tweens while D_80077E50.unk1 is set
+func_800C8124 menuMain_initPanels  # [runtime] field/menu campaign - sets the six panel rects and starts their slide-in
+func_800C92BC menuMain_onSlideInDone  # [runtime] field/menu campaign - clears D_80077E50.unk1, called once from the tween code
+func_800C9510 menuMain_setCursor  # [code] (field/menu campaign) main func_80036560 passes the screen being left
+func_800C90D0 menuMain_setExpHelp  # [code] (field/menu campaign) help text for the Status case of menuMain_updateHelp (EXP and next level)
+func_800C92C8 menuMain_setEquipHelp  # [code] (field/menu campaign) help text for the Equip case of menuMain_updateHelp (five slot labels)
+D_800C9E14 s_menuMainInput  # [code] {menuMain_inputCommand, menuMain_inputMember, menuMain_inputOrder} indexed by s_menuMain.state (menuMain_input)
+D_800C9E20 s_menuMainPanelRects  # [code] the 6 RECTs menuMain_initPanels copies into the panels - 0-3 party, 4 time/gil, 5 location
+D_800C9E60 s_menuMainSlideIn  # [code] tweens of the 4 party panels passed to func_80063118 by menuMain_initPanels, the last calls menuMain_onSlideInDone
+D_800C9EA0 s_menuMainTimeGilRect  # [code] = &s_menuMain.panels[4] rect, used by menuMain_drawTimeGil
+D_800C9EA8 s_menuMainLocationRect  # [code] = &s_menuMain.panels[5] rect, used by menuMain_drawLocation
+D_800C9EA4 s_menuMainGilSuffix  # [code] one glyph strcat'd after the gil number by menuMain_drawTimeGil
+D_800C9EAC s_menuMainEquipLabels  # [string] 5 kana labels weapon/head/arm/body/accessory, menuMain_setEquipHelp
+D_800CB168 s_menuMainExpText  # [code] text_formatNumber(exp) buffer of menuMain_setExpHelp
+D_800CB178 s_menuMainNextText  # [code] text_formatNumber(exp still needed) buffer of menuMain_setExpHelp
+D_800A7860 s_menuMainText  # [code] text bank menuMain_init passes to text_setBank
+func_800C9700 fld_getSpriteFrameCount  # [code] FieldSprHdr.unk0 & 0x7FFF, fld_spriteCommand multiplies it by 16 for the loop length (ovl_0c twin wm_getSpriteFrameCount)
+func_800C970C fld_drawSprite3D  # [code] draws frame (frame % count) of a FieldSprHdr at pos/rot/scale, sets the GTE matrices, emits it with fld_emitSprite3D (fld_drawSprites)
+func_800C9968 fld_loadImagePack  # [code] LoadImage of every image (RECT + pixels) and every CLUT rect of a 0x17 pack (fld_loadFile), ovl_0c twin wm_loadImagePack
+func_800C9AB8 fld_emitSprite3D  # [code] hand-written asm that builds the sprite primitives from FieldSprArgs for fld_drawSprite3D
+## ovl_0c (cleanup/naming pass): rename.py --bin ovl_0c (g_worldMapText -> s_menuMainText by hand)
+D_800D5438 s_menuMain  # [code] world-map copy of ovl_0a s_menuMain (same source linked into both overlays)
+func_800CC6E4 menuMain_init  # [code] D_8006E5B0[0].init (world screen table), copy of ovl_0a menuMain_init
+func_800CC7C0 menuMain_update  # [code] D_8006E5B0[0].update, copy of ovl_0a menuMain_update
+func_800CC7F0 menuMain_exit  # [code] D_8006E5B0[0].exit, copy of ovl_0a menuMain_exit
+func_800CC820 menuMain_setCursor  # [code] main func_80036560 calls it in mode 3 (world), copy of ovl_0a menuMain_setCursor
+func_800CB434 menuMain_initPanels  # [code] copy of ovl_0a menuMain_initPanels
+func_800CC82C menuMain_input  # [code] copy of ovl_0a menuMain_input (table s_menuMainInput)
+func_800CB594 menuMain_inputCommand  # [code] s_menuMainInput[0], copy of ovl_0a menuMain_inputCommand
+func_800CB664 menuMain_inputMember  # [code] s_menuMainInput[1], copy of ovl_0a menuMain_inputMember
+func_800CB73C menuMain_inputOrder  # [code] s_menuMainInput[2], copy of ovl_0a menuMain_inputOrder
+func_800CC54C menuMain_selectCommand  # [code] copy of ovl_0a menuMain_selectCommand
+func_800CB8C8 menuMain_reorder  # [code] copy of ovl_0a menuMain_reorder
+func_800CB9D8 menuMain_swapPortraits  # [code] copy of ovl_0a menuMain_swapPortraits
+func_800CC5CC menuMain_onSlideInDone  # [code] done-callback of the last s_menuMainSlideIn tween, copy of ovl_0a menuMain_onSlideInDone
+func_800CC8C8 menuMain_updatePanels  # [code] copy of ovl_0a menuMain_updatePanels
+func_800CC890 menuMain_draw  # [code] copy of ovl_0a menuMain_draw
+func_800CC940 menuMain_drawParty  # [code] copy of ovl_0a menuMain_drawParty
+func_800CBB4C menuMain_drawMember  # [code] copy of ovl_0a menuMain_drawMember
+func_800CBDF8 menuMain_drawPortraitShade  # [code] copy of ovl_0a menuMain_drawPortraitShade
+func_800CBF18 menuMain_drawTimeGil  # [code] copy of ovl_0a menuMain_drawTimeGil
+func_800CC050 menuMain_drawLocation  # [code] copy of ovl_0a menuMain_drawLocation
+func_800CC13C menuMain_drawCursor  # [code] copy of ovl_0a menuMain_drawCursor
+func_800CC324 menuMain_updateHelp  # [code] help callback set by menuMain_init, copy of ovl_0a menuMain_updateHelp
+func_800CC3E0 menuMain_setExpHelp  # [code] copy of ovl_0a menuMain_setExpHelp
+func_800CC5D8 menuMain_setEquipHelp  # [code] copy of ovl_0a menuMain_setEquipHelp
+D_800CDFC0 s_menuMainInput  # [code] {menuMain_inputCommand, menuMain_inputMember, menuMain_inputOrder}, copy of ovl_0a s_menuMainInput
+D_800CDFCC s_menuMainPanelRects  # [code] copy of ovl_0a s_menuMainPanelRects
+D_800CE00C s_menuMainSlideIn  # [code] copy of ovl_0a s_menuMainSlideIn, the last entry calls menuMain_onSlideInDone
+D_800CE04C s_menuMainTimeGilRect  # [code] = &s_menuMain.panels[4] rect, menuMain_drawTimeGil
+D_800CE054 s_menuMainLocationRect  # [code] = &s_menuMain.panels[5] rect, menuMain_drawLocation
+D_800CE050 s_menuMainGilSuffix  # [code] glyph strcat'd after the gil number, menuMain_drawTimeGil
+D_800CE058 s_menuMainEquipLabels  # [string] weapon/head/arm/body/accessory kana labels, menuMain_setEquipHelp
+D_800D5418 s_menuMainExpText  # [code] exp buffer of menuMain_setExpHelp
+D_800D5428 s_menuMainNextText  # [code] exp-to-next buffer of menuMain_setExpHelp
+func_800C7914 wm_projectMesh  # [code] byte-identical C to ovl_0a fldmdl_projectMesh; w_movement func_800AF66C before the asm group drawer func_800C709C
+func_800C7BA8 wm_initModel  # [code] identical C to fldmdl_initModel; wm_main func_800AA15C with the world allocation pointer
+func_800C7CF4 wm_buildPackets  # [code] identical C to fldmdl_buildPackets; wm_main func_800AA15C after wm_initModel
+func_800C8950 wm_drawMeshC  # [code] fldmdl_drawMeshC with OT index (sum z)>>6 instead of >>4; no callers (the asm func_800C709C is used)
+func_800C9484 wm_applyScale  # [code] identical C to fldmdl_applyScale; func_800AF66C after building the world matrix
+func_800C95C8 wm_cullBehindCamera  # [code] identical C to fldmdl_cullBehindCamera; no callers
+func_800C96AC wm_calcBoneMatrices  # [code] identical C to fldmdl_calcBoneMatrices (only the animation header type differs); func_800AF66C with the object's animation frame
+func_800C9FCC wm_projectMeshClipY  # [code] identical C to fldmdl_projectMeshClipY; func_800AF66C when the object is in a zone with depth (y limit = pos.y - depth + 100)
+func_800CA1D8 wm_drawMeshClipY  # [code] fldmdl_drawMeshClipY with OT shift >>5/>>3 instead of >>4/>>2; paired with wm_projectMeshClipY in func_800AF66C
+func_800CAE00 wm_getSpriteFrameCount  # [code] returns WmSprHdr.unk0 & 0x7FFF, which wm_drawSprite3D uses as the frame count; func_800C53DC/func_800C5A48 wrap frames with it
+func_800CAE0C wm_drawSprite3D  # [code] places a WmSprHdr frame (frame % count) at pos with optional rotation/scale/ABR, sets the GTE matrices and emits it with the asm func_800CB1EC, returns the packet pointer
+func_800CB09C wm_loadImagePack  # [code] LoadImage of every image (RECT header + pixels) and then every CLUT RECT of an image pack; func_800BA58C
+func_800C709C wm_drawMesh  # [code] hand-written asm group drawer called right after wm_projectMesh (the C twin is wm_drawMeshC)
+func_800C4A5C wm_initEffects  # [code] called by w_frame init, links 60 WmNodes into the free list and empties the active list, resets the block-effect angles/counters
+func_800C6F00 wm_spawnEffect  # [code] (x,y,z,type,size) takes a node off the free list, inserts it in the active list with sprite w_framePackGetPtr(pack, type+7); w_movement spawns wakes/dust behind the player
+func_800C7050 wm_freeEffect  # [code] unlinks a node and pushes it on the free list (D_800D4848)
+func_800C53DC wm_updateEffects  # [code] per-frame (w_frame mode 1/2), smooths the speed ratio, moves each active node by type, ages it and frees it at its lifetime or last sprite frame
+func_800C4DD8 wm_drawEffects  # [code] w_frame draw step, projects each active node (func_800BBE24) and draws its sprite frame with func_800CAE0C, per-type rotation/scale
+func_800C69F4 wm_updateBlockFx  # [code] (block attr unk21) called per visible block from tu_800BA528, advances the block's model angles and spawns effects from emitter table pack entry id+0x28
+func_800C5A48 wm_drawBlockFx  # [code] (block attr unk21) called per drawn block from tu_800BA528, draws the block's extra pack models 0x35-0x41 (ids 4, 6, 7) with their own light/back colour
+func_800C6EF8 wm_termEffects  # [code] empty, called by w_frameSystemDestructor; the effect module's teardown slot
+D_800D4848 g_worldEffectFree  # [code] free-list head, wm_initEffects/wm_spawnEffect/wm_freeEffect
+D_800D53A0 g_worldEffectActive  # [code] active-list head walked by wm_updateEffects/wm_drawEffects, wm_spawnEffect inserts after it
+D_800D4A40 g_worldEffectNodes  # [code] WmNode[60] pool linked into the free list by wm_initEffects
+D_800D53E8 g_worldEffectFreeTail  # [code] free-list tail sentinel (unk8 NULL), wm_initEffects
+D_800D48C0 g_worldEffectActiveTail  # [code] active-list tail sentinel, wm_initEffects
+D_800D53C8 g_worldEffectSpeedTarget  # [code] abs(player speed D_800CE3C0 << 12 / vehicle max D_800CE3C8->unk2), wm_updateEffects
+D_800D4A38 g_worldEffectSpeed  # [code] g_worldEffectSpeedTarget smoothed 1/32 per frame, scales types 14/15/18/19/22 in wm_drawEffects
+func_800A8860 wm_entry  # [code] main's mode-3 case calls it after game_loadModeOverlay(3) (like btl_entry); wm_init, wm_main until gameState flags 0x1001, wm_shutdown
+func_800A88C4 wm_main  # [code] per-map loop (arg GameData.unk7DC world id) - wm_load, per-frame update/draw until flags 0x3001, then wm_exit; counterpart of fld_main
+func_800A8B14 wm_init  # [code] once per mode-3 entry - allocates the WorldMap context, vsyncMode 3, sets GameData callbacks unk838/83C/8BC, loads world data, sounds, shadow texture
+func_800A8CA4 wm_shutdown  # [code] end of wm_entry - zeroes both pad actuator buffers D_800739B0, w_frameSystemDestructor, wm_freeWorldData
+func_800A8CF0 wm_allocContext  # [code] places the 0x3000-byte WorldMap context at D_80067944+0x32000 into GameData.unk8E4 and advances the allocator D_80067948
+func_800A8D28 wm_resetContext  # [code] zeroes the WorldMap context fields (unk10 = -1, unk14[0x34] cleared)
+func_800A8D78 wm_loadSoundBanks  # [code] items 0x9017B and 0x90139 (0x9xxxx = sound, see wm_soundCommand) - 0x17B is parked in VRAM (size in WorldMap.unk10), 0x139 goes to func_80055E14
+func_800A8F18 wm_loadResidentMusic  # [code] copies music item 0x70064 (id 100) to GameData.unk818, which wm_soundCommand plays in slot 1 when asked for music 100
+func_800A8F8C wm_loadShadowTexture  # [code] moves TIM 0x42774 to clut 0x280,0xDE / pixels 0x330,0xB0 - the same VRAM spots wm_initShadowPrims gives the shadow POLY_FT4s
+func_800A8FF0 wm_loadWorldData  # [code] reads dir-1 file wm_getWorldDataFileId (from the preload cache if present) to D_80067944+0x34000, registers it, stores it in WorldMap.unkC
+func_800A91B4 wm_freeWorldData  # [code] db_unregister of WorldMap.unkC (registered by wm_loadWorldData), called from wm_shutdown
+func_800A9228 wm_getWorldDataFileId  # [code] returns 0x2712, or 0x2716 when story counter g_evtGlobalVars.h[0] >= 0x2B52 (same test as g_worldDataSet)
+func_800A924C wm_load  # [code] per-map load (arg = world id) - stores GameData.unk7DC, wm_loadFile, area/map lookups, evt_init on the map file, model slots; counterpart of fld_load
+func_800A95A0 wm_exit  # [code] after the map loop - frees the map, then switches on WorldMapObj.unk1B (2 battle, 3 world, 1 field) to set sectors/ids and the next game mode; counterpart of fld_exit
+func_800A98B8 wm_setupMapObj  # [code] points WorldMap.unk8 at the embedded object unk48, sets its load buffer to D_80067944+0x5EB00, allocator after the context
+func_800A98F8 wm_resetMapObj  # [code] resets every WorldMapObj field (exit reason unk1B = 3, swirl centre 160,109, unk24/unk26 = -1)
+func_800A99C4 wm_findAreaData  # [code] WorldMapObj.unk14 = registered item 0x60000|arg1 (area bundle, GameData.unk7DE)
+func_800A9A04 wm_findMapScript  # [code] WorldMapObj.unk10 = registered item 0x50000|id, the data wm_load passes to evt_init and func_80049ED8
+func_800A9A44 wm_fetchParkedSound  # [code] StoreImage of the VRAM rect wm_loadSoundBanks used (WorldMap.unk10 bytes) back to D_80067944+0x91800
+func_800A9B54 wm_uploadParkedSound  # [code] after the music load finishes (wm_soundCommand 0xC00 = 0) sends the D_80067944+0x91800 copy to func_80055E14, sets WorldMap.unk10 = -1
+func_800A9DE4 wm_freeFile  # [code] db_unregister of WorldMapObj.unk34[1], which wm_loadFile registered; called by wm_exit
+func_800AA15C wm_loadActorModel  # [code] GameData.unk838 callback (main func_80021698 passes 0x20000|model, actor) - takes a model slot, looks up model + default animation, builds prims
+func_800AA39C wm_findDefaultAnim  # [code] table item 0x120000 maps a model id to its animation id (returns 0x30000|anim, -1 if none); used by wm_loadActorModel
+func_800AA418 wm_drawShadow  # [code] projects a 3x3 grid (SHADOW_PT) into the 4 POLY_FT4 shadow quads of WmObjEnt arg1, links each at its deepest corner in the OT
+func_800AAD0C wm_initShadowPrims  # [code] func_80062E3C with clut 0x280,0xDE and tpage 0x330,0xB0 (the shadow texture) for arg1 WmObjEnt entries, returns the next free address
+func_800AAD48 wm_calcShadowMatrix  # [code] matrix for wm_drawShadow - joint arg4's forward direction flattened to xz, scaled by WmObjEnt unk1/unk2, offset unk4_12/unk4_22, y = arg3
+func_800AB0C0 wm_soundCommand  # [code] GameData.unk83C handler (event opcodes 0xC5-0xC8, menulist/msg SE 0xD000) - music play/stop/volume (0x7xxxx), SE (0x8xxxx), streamed loads (0x9xxxx)
+func_800AC020 wm_calcSoundPanVolume  # [code] projects a 3D point with GameData.unk18 and returns pan (0-255 from screen x) and volume (127 scaled down by depth); no callers
+func_800AC21C wm_setMusicVolumeFade  # [code] stores the music volume GameData.unk826[0]; for a fade to 0 records its duration (unk842) and VSync time (unk8C4)
+func_800AC25C wm_isMusicFadingOut  # [code] true while VSync(-1) - GameData.unk8C4 < unk842 (the fade-out wm_setMusicVolumeFade started)
+func_800AC29C wm_findSoundFile  # [code] CD sector (+ byte size) of a sound id - 0x7xxxx music through the dependency table (dep_find), else file_find(0xB, id)
+func_800AC344 wm_depGetLink  # [code] returns the link (unkC) of dependency-table entry key arg0, -1 if absent (music id -> its data in wm_soundCommand)
+func_800AC3A8 wm_unpackMusic  # [code] memcpy of the 0x70000 item found in the loaded pack to the pack's start (end of the wm_soundCommand music load)
+func_800AC424 wm_streamSoundChunk  # [code] CD-read chunk callback of the wm_soundCommand music load - finds item 0x90000|GameData.unk852 and feeds the chunk to func_80055E14
+func_800AC580 wm_clearOT  # [code] ClearOTagR of this frame's OT (GameData.unk10[unk8] - 8, 0x1010 entries), first call of every wm_main frame
+func_800AC5C8 wm_endFrame  # [code] end of every wm_main frame - soft reset on L1+L2+R1+R2+Start+Select (0xF09), DrawSync/VSync, PutDispEnv, DrawOTag, swaps draw buffers
+func_800AC7D4 wm_startBattleTransition  # [code] when the world frame returns 3 (encounter) - swirl centre from the player's screen pos, battle music, SEs 0x27A-0x27C, flags 0x2F / 0x300
+func_800ACAFC wm_updateBattleTransition  # [code] runs while WorldMap flag 0x400 is clear - swirl (func_80053A10) until done, seeks/loads the battle music, then sets gameState 0x1000 to leave
+func_800ACE24 wm_findBattleMusic  # [code] WorldMapObj.unk26 = link of kind 7 (music) of dependency entry 0x110000|battle, default the current music GameData.unk81C[0]
+func_800ACEEC wm_togglePause  # [code] pad 0x04000000 toggles GameData flag 0x100 (wm_main skips updates, wm_endFrame skips DrawOTag), stops sound, draws a grey 320x218 tile and text 235
+func_800AD114 wm_copyViaVram  # [code] func_8001DAA4 copy, through VRAM rect 0x280,0 320x218 while WorldMap flag 0x400 is clear (battle transition), else the default rect
+func_800AD180 wm_saveDepTable  # [code] at battle start copies the dependency table (unk2 entries of 16 bytes) to D_80067944+0x146F00 and repoints GameData.depTable there
+func_800AD204 wm_initCamera  # [code] world start-up (func_800B69B4) - projection 0xDC, SetGeomOffset 160,112, up vector, default preset D_800CCA68[1], resets view/smooth state
+func_800AD39C wm_updateCamera  # [code] per frame - preset, follow, eye offset from yaw (unkC) and distance, then wm_lookAt into D_800CF448 (GameData.unk18) and the view direction
+func_800AD738 wm_cameraFollow  # [code] moves the camera target g_worldCameraTarget and eye g_worldCameraEye after the player with damping, walkmesh floor under the eye, height limits
+func_800AE280 wm_updateCameraPreset  # [code] computes g_worldCameraParams from the area's preset group (w_frameGetParameter 0xC0), mode row and view blend, or blends from the old params
+func_800AE4C8 wm_calcCameraPreset  # [code] lerps presets D_800CCA68[D_800CCACC[row][group][0/1]] by altitude (wm_cameraAltitudeBlend), then toward [2] by arg3, into arg4
+func_800AE670 wm_toggleCameraView  # [code] pad 0x800000 when the mode allows (unk9) - starts unk880.unk2 moving to 0 or 0x1000 (blend toward the third preset)
+func_800AE744 wm_getCameraTarget  # [code] returns g_worldCameraTarget; event opcode 0xB8 puts an actor there (main event.c)
+func_800AE750 wm_getCameraEye  # [code] returns g_worldCameraEye; event opcode 0xB7 puts an actor there (main event.c)
+func_800AE75C wm_updateCameraNoView  # [code] wm_updateCameraPreset + wm_cameraFollow without the view matrix, run once in the start-up frame (w_frame func_800B6BC4/func_800B84E8)
+func_800AE784 wm_blendCameraPreset  # [code] starts a blend from the current camera params to preset row arg0 at speed arg1 (w_movementChange passes mode unk11, 0x200 or 0x40)
+func_800AE7F0 wm_getCameraViewState  # [code] 0 / 2 when unk880.unk2 (view blend) is 0 / 0x1000, 1 while it moves
+func_800AE828 wm_toggleCameraAutoTurn  # [code] flips unk880.unk11; while it is 0 the camera yaw follows the player (func_800B2C24/func_800B2E54) and L/R turn the airship
+func_800AE860 wm_cameraSmooth  # [code] [string] w_frameSetParameter 25 "Camera Smooth" - sets the per-axis flags that ease the camera target to the player in wm_cameraFollow
+func_800AE880 wm_lookAt  # [code] builds a view matrix from eye arg1, target arg2 and up arg3 (normalised forward, two cross products), t = -R*eye
+func_800AEA94 wm_cameraAltitudeBlend  # [code] (height - 1000) * 4096 / 4500 clamped 0..0x1000, the altitude factor of wm_calcCameraPreset
+func_800AEADC wm_initMovement  # [code] world start-up - player = dummy actor, vehicles NULL, mode -1, speeds/flags 0, poly caches and per-type state cleared, mode 0/9 music by data set
+func_800AEC74 wm_setMountPalette  # [code] actor types 3-7 pick palette set 0-4 of pack 1 and copy it into the three WmPalAnim entries of that actor's model
+func_800AEF10 wm_findVehicles  # [code] scans world actors - types 1/2, 3-7 (g_worldMountActor), 8-10 (g_worldVehicleActor); sets the camera yaw behind the player after a field
+func_800AF08C wm_drawActors  # [code] per visible world actor inside the view cone and range - wm_setActorFog, wm_drawActorModel, wm_drawActorShadow (not for type 8 or a ridden player)
+func_800AF414 wm_setActorFog  # [code] far colour from the sky preset lerped by the actor's altitude and depth fade of its WmPalAnim palettes (func_800B3998 + LoadImage)
+func_800AF66C wm_drawActorModel  # [code] model matrix from the actor's rotation/position, relocates its animation (0x30000|unk36), two passes per group; [string] "Illigal Animation Data"
+func_800AF8C0 wm_drawActorShadow  # [code] sizes/fades the actor's WmObjEnt by height and distance, offsets the OT by D_800CF442, calls wm_drawShadow (fixed size for type 0xE)
+func_800AFCE0 wm_updateActors  # [code] per frame (w_frame func_800B7098) - player moves (wm_movePlayer), other actors get floor height, wm_updateActorHeight, camera auto-turn, roll decay
+func_800B01F0 wm_updateActorHeight  # [code] actor y = floor (D_800CCCC0.unkE) + ride offset (wm_getTerrainHeightOffset, eased), or clamped above the floor for flying types (unk3)
+func_800B0378 wm_movePlayer  # [code] moves the player by g_worldPlayerSpeed - ground modes sweep +-angles to slide along walls (wm_tryStep), airborne modes add climb speed
+func_800B0D6C wm_tryStep  # [code] steps arg0 by arg3 along heading + arg1, walkmesh lookup, accepts if the cell type is in mode arg2's mask (unk14) and the unk1 transition rule passes
+func_800B105C wm_findGetoffPos  # [code] [string] w_frameSetParameter 28 "Get Getoffpos" - searches 8 directions x 8 steps for a free spot by mode (7, 8/9, other), adds terrain offset
+func_800B17B4 wm_controlWalk  # [code] control type 0 - heading = camera yaw + stick angle, speed = mode unk2, L/R (0x100000/0x200000) turn the camera, terrain dust/splash effects
+func_800B1CD0 wm_controlSteer  # [code] control type 2 - stick X turns by mode unk4, either stick Y throttles (smoothed by D_800CCE24), loop SE volume by speed, wake effects
+func_800B20B8 wm_controlFly  # [code] control type 1 - turn (unk4), forward (unk2, right stick Y), climb (unk5, left stick Y), camera roll, auto-pilot steering, water spray when low
+func_800B2C24 wm_cameraAutoTurnWalk  # [code] control types 0/3 - turns camera yaw toward the player heading g_worldPlayerHeading with a dead zone, gain g_worldCameraTurnGain
+func_800B2E54 wm_cameraAutoTurnVehicle  # [code] control types 1/2 - eases camera yaw toward the player's rotY (fast while g_worldCameraRecenter), unless turned by hand or auto-turn off
+func_800B30C0 wm_snapActorsToFloor  # [code] every world actor - walkmesh floor and ride offset, wm_updateActorHeight, unk40 = pos; w_frameSetParameter 29 "Call Chocobo" and map-ready call it
+func_800B3340 wm_testCellType  # [code] bit (cell & 0xFC) >> 2 (topography) of the 64-bit mask arg0 (word 1 = types 0-31, word 0 = 32-63)
+func_800B3398 wm_getLeftStickX  # [code] analog pad (type 7) byte D_8007393A (left X, pad.c maps it to 0x80) with dead zone, else d-pad left/right -> -0x80/0x80
+func_800B345C wm_getLeftStickY  # [code] analog pad byte D_8007393B (left Y) with dead zone, else d-pad up/down (0x10/0x40) -> -0x80/0x80
+func_800B3524 wm_getRightStickY  # [code] analog pad byte D_80073939 (right Y, inverted) with dead zone, else buttons 0x80000/0x20000 -> -0x80/0x80; forward input of wm_controlFly
+func_800B35F4 wm_autoPilotOn  # [code] [string] w_frameSetParameter 34 "Auto Pilot ON" - state 2, destination = event var b[0x67] - 1, saves the camera auto-turn flag
+func_800B3638 wm_autoPilotOff  # [code] [string] w_frameSetParameter 38 "Auto Pilot OFF" - clears the auto-pilot state, restores the camera auto-turn flag
+func_800B36B4 wm_getTerrainHeightOffset  # [code] D_800CCB28[arg0][class of cell topography] (class 0 = types 0x24-0x26, sets *arg2), the ride offset wm_updateActorHeight adds to the floor
+func_800B3760 wm_controlPlayer  # [code] dispatches on mode unk0 (0 wm_controlWalk, 1 wm_controlFly, 2 wm_controlSteer), then the view toggle and camera auto-turn buttons
+D_800CCA10 g_worldMusicReqId  # [code] sound id of the pending streamed load in wm_soundCommand (byte 2 = kind, 7 music / 9 sound data)
+D_800CCA14 g_worldMusicReqKind  # [code] command kind of the pending wm_soundCommand request, -1 = none (7 load only, 9 resume)
+D_800CCA18 g_worldMusicSector  # [code] CD sector of the file being streamed by wm_soundCommand (wm_findSoundFile)
+D_800CE0C8 g_worldPauseTile  # [code] grey 320x218 TILE drawn by wm_togglePause
+D_800CE0D8 g_worldPauseTpage  # [code] DR_TPAGE (0xE1000240) linked before g_worldPauseTile by wm_togglePause
+D_800CE0E0 g_worldPauseOT  # [code] one-entry OT wm_togglePause draws the pause screen into
+D_800CE0F0 g_worldCamera  # [code] = &GameData.unk880 (wm_initCamera) - yaw unkC, yaw offset unkE, view blend unk2/unk4/unk8; kept across scenes
+D_800CE0E8 g_worldCameraFlags  # [code] the same &GameData.unk880, used only for byte unk11 (camera auto-turn off, wm_toggleCameraAutoTurn)
+D_800CE0EC g_worldCameraSmoothX  # [code] set by wm_cameraSmooth, wm_cameraFollow eases the target x toward the player by 1/8 per frame until within 16
+D_800CE0ED g_worldCameraSmoothY  # [code] as g_worldCameraSmoothX for the target y
+D_800CE0EE g_worldCameraSmoothZ  # [code] as g_worldCameraSmoothX for the target z
+D_800CE0EF g_worldCameraLookupFix  # [code] [string] w_frameSetParameter 5 "Camera Lookup Fix mode" - while set wm_cameraFollow keeps the target/eye heights
+D_800CE100 g_worldCameraRoll  # [code] z rotation of the camera up vector (wm_updateCamera), leans with turning in wm_controlFly (limit mode unk6), decays in wm_updateActors
+D_800CE108 g_worldCameraTarget  # [code] camera look-at point following the player (wm_cameraFollow), world drawn relative to it; wm_getCameraTarget
+D_800CE118 g_worldCameraPolyCache  # [code] four walkmesh poly caches for the floor probes under the camera eye in wm_cameraFollow
+D_800CE188 g_worldCameraBlendSpeed  # [code] per-frame step of the camera preset blend (wm_blendCameraPreset), 0 = no blend
+D_800CE198 g_worldCameraEye  # [code] camera position = player + eye offset, eased in y, floor-limited (wm_cameraFollow); wm_getCameraEye
+D_800CE1A8 g_worldCameraBlend  # [code] progress 0..0x1000 of the camera preset blend (wm_updateCameraPreset)
+D_800CE1B0 g_worldCameraUp  # [code] (0,-20000,0), rotated by roll and yaw into the up vector of wm_lookAt (wm_updateCamera)
+D_800CE1C0 g_worldCameraBlendRow  # [code] preset row the blend goes to (wm_blendCameraPreset arg0)
+D_800CE1C4 g_worldCameraTargetHeight  # [code] target height above the player = params[4], lowered with altitude in modes 8/9 (wm_updateCamera)
+D_800CE1C8 g_worldCameraEyeOffset  # [code] sin/cos(yaw) * distance params[1], height params[2] - eye offset from the player (wm_updateCamera)
+D_800CE1D0 g_worldCameraDir  # [code] normalised horizontal direction from eye to target (wm_updateCamera), used for culling/looking ahead in tu_800BA528
+D_800CE1E8 g_worldCameraParams  # [code] current camera preset {projection, distance, eye height, min eye height, target height} (wm_updateCameraPreset), [0] -> GameData.unkA
+D_800CE1F8 g_worldCameraParamsFrom  # [code] copy of g_worldCameraParams at the start of a preset blend (wm_blendCameraPreset)
+D_800CE1F2 g_worldCameraFourProbes  # [code] = mode unk8 == 0; wm_cameraFollow probes the floor at four points around the eye instead of one
+D_800CE202 g_worldCameraHold  # [code] 1 at wm_initCamera, cleared when the map blocks are loaded (tu_800BA528 func_800BD3F8); wm_updateCamera skips preset/follow while set
+D_800CCA68 g_worldCameraPresets  # [code] camera presets (Unk800CE1E8, 5 s16) indexed through D_800CCACC by wm_calcCameraPreset
+D_800CCACC g_worldCameraPresetIndex  # [code] [row][group][3] preset numbers - low / high altitude / alternate view (wm_calcCameraPreset)
+D_800CCA28 g_worldAreaCameraGroup  # [code] area (w_frameGetParameter 0xC0) -> camera preset group (wm_updateCameraPreset)
+D_800CCA20 g_worldCameraGroupOverride  # [code] when not -1 replaces the area's camera preset group (wm_updateCameraPreset)
+D_800CCA24 g_worldCameraDistScale  # [code] multiplies the preset distance (/4096) in wm_updateCamera
+D_800CE210 g_worldDummyActor  # [code] actor g_worldPlayer points to until the real player exists (wm_initMovement)
+D_800CE3DC g_worldPlayer  # [code] the controlled actor (func_8004AE00) that wm_movePlayer/wm_control* move and the camera follows
+D_800CE3C4 g_worldMoveMode  # [code] movement mode = event var b[0xBE] (w_movementChange), index into g_worldMoveModes
+D_800CE3C8 g_worldMoveModeInfo  # [code] &g_worldMoveModes[g_worldMoveMode] (w_movementChange)
+D_800CCB70 g_worldMoveModes  # [code] 0x1C-byte movement mode table (control type, speeds, music, loop SE, camera row, allowed cell types), selected by w_movementChange
+D_800CE3CC g_worldPlayerHeading  # [code] heading the player turns toward (wm_controlWalk) and moves along (wm_tryStep)
+D_800CE3C0 g_worldPlayerSpeed  # [code] forward speed per frame from the wm_control* functions, used by wm_movePlayer
+D_800CE278 g_worldPlayerClimbSpeed  # [code] vertical speed from wm_controlFly, added to y by wm_movePlayer for airborne modes
+D_800CE3E0 g_worldPlayerTurn  # [code] per-frame rotY change set by wm_controlSteer/wm_controlFly
+D_800CE3BC g_worldSpeedSmooth  # [code] smoothed forward input of wm_controlSteer/wm_controlFly; zeroed by w_movementChange and w_frameSetParameter 37
+D_800CE276 g_worldClimbSmooth  # [code] smoothed climb input of wm_controlFly; zeroed with g_worldSpeedSmooth
+D_800CE3BE g_worldCameraTurnedByHand  # [code] set while L/R turn the camera (wm_control*), stops the camera auto-turn
+D_800CE3D4 g_worldCameraTurnGain  # [code] 0x1000 while the player moves, -0x200 per still frame, scales wm_cameraAutoTurnWalk
+D_800CE27C g_worldCameraRecenter  # [code] set when the auto-turn is switched back on, makes wm_cameraAutoTurnVehicle turn fast until within 100
+D_800CE25C g_worldAutoPilot  # [code] auto-pilot state 0 off / 2 turning / 1 flying (wm_autoPilotOn, wm_controlFly, wm_autoPilotOff)
+D_800CE3E4 g_worldAutoPilotDist  # [code] last distance to the auto-pilot destination; wm_controlFly stops the auto-pilot when it grows or is < 50
+D_800CF480 g_worldAutoPilotDest  # [code] auto-pilot destination index into D_800CD10C (event var b[0x67] - 1, wm_autoPilotOn)
+D_800CE26C g_worldAutoPilotSavedAutoTurn  # [code] camera auto-turn flag saved by wm_autoPilotOn, restored by wm_autoPilotOff
+D_800CE268 g_worldMountActor  # [code] actor of type 3-7 (wm_findVehicles); its palette set by type (wm_setMountPalette), its heading taken when modes 1-6 start/end
+D_800CE3D0 g_worldVehicleActor  # [code] actor of type 8, 9 or 10 (wm_findVehicles), drawn on the map (tu_800BA528), banking unk24 damped in wm_updateActors
+D_800CE25E g_worldPlayerPosChanged  # [code] set each frame when the player's pos differs from unk40 (w_frame func_800B7098)
+D_800CCE54 g_worldPlayerStepped  # [code] cleared in wm_updateActors, set in wm_movePlayer when the mode counts steps (unkD); event.c copies it to D_8007AEAC (player moved)
+D_800CE264 g_worldDrawActors  # [code] 1 after wm_initMovement; w_frame func_800B72A4 runs wm_drawActors only while set
+D_800CE280 g_worldMountPaletteOverride  # [code] when non-zero wm_setMountPalette uses palette set value-1 instead of the mount's type
+D_800CE288 g_worldPolyCache  # [code] recently hit walkmesh polygons per actor type (D_800CCCC0.unk5), reset by wm_initMovement, used by wm_tryStep
+D_800CCCC0 g_worldActorTypeInfo  # [code] 22 entries indexed by actor unk11 - shadow size/joint, flying flag, current cell attribute unk8, ride offset unkC, floor y unkE
+D_800CCB28 g_worldTerrainHeightOffsets  # [code] [row][9] ride offsets by terrain class (wm_getTerrainHeightOffset, wm_findGetoffPos)
+D_800CCB20 g_worldWaterCellTypes  # [code] cell-type mask - walking or low flying over these spawns splash/spray effects at y -100/-200 (wm_controlWalk, wm_controlFly)
+D_800D30C6 g_worldUsePolyCache  # [code] cleared by wm_movePlayer at nine fixed spots and inside the sphere zone; w_memoryman walkmesh lookup ignores the cache when 0
+func_800B6908 wm_initBuffers  # [code] sets the prim buffers D_800CF420 (0x801A2300/0x801C8100), texture slots D_800CE3E8, chunk buffer D_800CF408 (0x80138800); first call of func_800B69B4
+func_800B69B4 wm_systemInit  # [code] world map start-up called once from wm_main init - data set from story counter, heap init, resets state, calls every subsystem init; pairs with w_frameSystemDestructor
+func_800B6BC4 wm_frameMain  # [code] per-frame entry called by wm_main's loop; runs logic/draw, profiles them with VSync(1), returns the event result D_800CF49C that wm_main switches on (3, 4, 5)
+func_800B7098 wm_updateLogic  # [code] logic half of wm_frameMain - wm_runEvents, movement/camera/weather/navi updates on the scratchpad stack, w_musicUpdate, sets the player-moved flag
+func_800B72A4 wm_updateDraw  # [code] draw half of wm_frameMain (only in state 2) - SetGeomScreen, wm_drawMap, navi/title draw, debug step markers D_800CCF70 0x64-0x6A
+func_800B7DAC wm_debugAdjustScreen  # [code] debug loop - pad moves DISPENV disp x/y, button 1 toggles 640x480/256x256, 0x4000 exits; no caller
+func_800B81A0 wm_callChocobo  # [string] w_frameSetParameter case 29 printed as "Request from script:Call Chocobo"; wraps func_800B30C0
+func_800B81C0 wm_lerp  # [code] a*(0x1000-t)/0x1000 + b*t/0x1000; used for colours (func_800BF544) and weather blends (func_800C3954)
+func_800B81F0 wm_lerpS8  # [code] wm_lerp on two s8 values with 10 bits of extra precision
+func_800B822C wm_lerpShift  # [code] wm_lerp (t/4 of 0x400) with (16-arg3) bits of headroom; func_800C3954 uses it with 13
+func_800B83FC wm_runEvents  # [code] runs the event-script frame (main func_8004BC38) in states 0/2 unless paused, stores its result in D_800CF49C, times it in D_800CF4B4
+func_800B8498 wm_getPadHeld  # [code] g_padPortHeld[0] while the map runs (state 2), else 0
+func_800B84C0 wm_getPadPressed  # [code] g_padPortPressed while the map runs (state 2), else 0
+func_800B8574 wm_initLighting  # [code] fills the light matrices D_800CF540/D_800CF520/D_800CF4C0, SetBackColor/SetFarColor 0, SetFogNearFar(5000, 30000), then func_800B8664
+func_800B8664 wm_updateColorMatrices  # [code] colour matrices D_800CF500/D_800CF4E0 from the current weather set D_800D3FA0.unk5E0[0] (unk0[3], unk18); called each frame by func_800C26EC
+func_800B872C wm_initDiscImage  # [string] prints "Read CD Image [Disc-1]" / "[Disc-4]" by g_worldDataSet and "Image Top Sector = %d"; fills the sector table D_800CF598 via file_find(0xC, ...)
+func_800B8A80 wm_heapInit  # [code] resets the w_memoryman heap (D_800CFE10/14/18/1C) and takes 0x24800 bytes from D_80067948 - the size w_memorymanHeapAlloc prints as the limit
+func_800B8B10 wm_initClutAnims  # [code] for the 18 entries of D_800CFF18 copies the palette lines (StoreImage, or pack entry 2 for 15-17) into D_800CFFD0 with shifted copies for animation; called when the map starts
+func_800B8DC0 wm_loadTim  # [code] uploads TIM arg1 of pack arg0 (image and clut, with offsets) directly at start-up, else as queued RECT+LoadImage in the prim buffer
+func_800B905C wm_scrollTextures  # [code] 8 VRAM rects of D_800CFEA0 scrolled each frame by MoveImage through 0x280,0xF8 by their speed unk8
+func_800B91A0 wm_animTextures  # [code] every D_800CFEF8 / D_800CFF02 frames uploads the next of 6 TIM frames from pack D_800CE3F4 (frame index D_800CFE98)
+func_800B93B8 wm_animCluts  # [code] picks the palette animation ranges (0-11 always, 12-17 by D_800D1FD0/D_800D30CB/frame buffer state) and runs wm_stepClutAnims on them
+func_800B94F8 wm_stepClutAnims  # [code] advances palette animations arg0..arg1 by their speed and LoadImages the rotated palette line from D_800CFFD0
+func_800B969C wm_updateVramAnims  # [code] wm_scrollTextures + wm_animTextures + wm_animCluts, called from wm_updateLogic
+func_800B96CC wm_loadTimPack  # [code] wm_loadTim for every entry of a {n, offsets} pack
+func_800B9808 wm_getBlockHeight  # [code] [string] point-in-triangle over a block's polygons (with a 6-entry cache), returns the plane height, sets attr and polygon index; prints "Not hit polygon" / "no polygon"
+func_800BA1E4 wm_initTexPages  # [code] fills D_800D2FF8[1..16] with getTPage/getClut for VRAM 0x300+,0x100 and clut lines 0xF0+
+func_800BA2DC wm_drawBlock  # [code] draws one map block - wm_blockVerts{Fog,Near,Far} + wm_blockFaces{Fog,Near,Far} by g_worldFog and the far flag
+func_800BA458 wm_drawModel  # [code] draws a pack model in mode 0/1/2 with wm_modelVerts/VertsFlat + wm_modelFaces/FacesFog
+func_800BA528 wm_relocatePack  # [code] turns a WmPack's offsets (unk4, unk8[i] and each entry's unk4/unk8) into pointers; run on pack entries 0x35-0x42 and on loaded chunks (func_800BD3F8)
+func_800BA58C wm_setupWorldData  # [code] db_lookupRegistered of the world data items 0x411../0x414.. by g_worldDataSet, sets map size, extracts packs, uploads TIMs, sets the encounter tables (pack entries 3, 4) and weather data (5)
+func_800BAEC0 wm_drawMap  # [code] sets light/colour matrices, draws the visible blocks (func_800BD78C) and, when D_800CF46D, pack entry 0x3B's model around the camera; timed as D_800CF4A0 in wm_updateDraw
+func_800BB07C wm_updateMap  # [code] per frame - map streaming (wm_updateChunks, wm_updateVisibleBlocks) once music started, 3 positional ambient SEs, camera shake near source 2, push near source 1, screen effect near a fixed point
+func_800BB508 wm_applyStoryForms  # [string] marks chunks 0x80 (replacement form) by story counter vs D_800CD060 and global flag D_8007AF55; debug prints "BGI Form : ...", "- Replace Mog Net -", "- Replace Chocobo Heaven -"
+func_800BBE24 wm_worldToView  # [code] world pos -> camera-relative pos with map wrap and the curvature factor s (returned through arg3); returns 1 when within +-0x8000; used by every world-object draw
+func_800BC0A8 wm_wrapPos  # [code] wraps x into [0, width) and z into (-depth, 0] (D_800D32D8/D_800D32DC)
+func_800BC130 wm_posToCell  # [code] wrapped x/z -> cell index (0x2000 units, row width D_800D32F0)
+func_800BC1FC wm_posToChunk  # [code] wrapped x/z -> chunk index (0x4000 units, row width D_800D3304)
+func_800BC2C8 wm_cellToPos  # [code] inverse of wm_posToCell
+func_800BC354 wm_cellToChunk  # [code] cell index -> index of the chunk (2x2 cells) containing it
+func_800BC3C4 wm_chunkToPos  # [code] inverse of wm_posToChunk
+func_800BC450 wm_getChunkEntry  # [code] copies chunk arg0's CD table entry (variant arg1) from D_800CF40C
+func_800BC490 wm_getChunkEntryT  # [code] same from the transposed table D_800CF410 (index x*h + y); used when the read run is vertical
+func_800BC528 wm_getAreaZone  # [code] returns g_worldAreaZone[area]; w_frameGetParameter 0xCF
+func_800BC540 wm_chunkListInit  # [code] builds the chunk LRU list D_800D3358 -> D_800D34A8[32] -> D_800D3340, 16 buffers of 0x4800 at D_800CF408
+func_800BC690 wm_updateChunks  # [code] chunk ahead of the camera (D_800CE198 + direction * speed); requests the 4x4 around it when it changes (wm_requestChunks), then wm_readChunks
+func_800BC84C wm_requestChunks  # [code] moves the 4x4 chunks around arg0 to the front of the LRU (wm_chunkRequest for missing ones) and requests their textures with w_readtxRequest
+func_800BCA6C wm_chunkRequest  # [code] finds or recycles a chunk slot for id arg0 behind the loaded ones; returns 0 when already queued
+func_800BCBDC wm_readChunks  # [code] when the CD is free (D_800CF454 0) picks a run of pending chunks and starts cd_readChunks (block + texture parts), sets D_800CF454 1; calls func_800BD3F8 when done
+func_800BD150 wm_findChunkRun  # [code] collects up to 9 adjacent pending chunks horizontally (stride 1) or vertically (stride 24), whichever is longer
+func_800BD3F8 wm_chunksLoaded  # [code] after the read: chunk state 2, wm_relocatePack + texture extract; after 16 loads sets D_800D33F4, state D_800CF46C = 2; frees the CD (D_800CF454 = 0)
+func_800BD57C wm_initTextureLists  # [code] wm_readtxInit + wm_frmbufInit, D_800D3338 = 0; called by wm_applyEncounterEvents at the map's setup
+func_800BD5D0 wm_chunkListCompact  # [code] moves buffers of the slots beyond 16 to free slots and clears those slots
+func_800BD674 wm_blockListInit  # [code] builds the visible-block list D_800D3758 -> D_800D3798[40] -> D_800D3BF8, 20 position slots D_800D3AB8
+func_800BD78C wm_drawBlocks  # [code] for each visible block - matrix from its position, wm_drawBlock when loaded (state 2), a black POLY_F4 at OT 0xFFA, and its block sound (unk21)
+func_800BDAB0 wm_updateVisibleBlocks  # [code] projects the 7x7 cells around the view, keeps on-screen ones, sorts by distance, keeps 16 (14 in mode 7, +1 without fog) and requests their frame buffers
+func_800BE138 wm_blockListRequest  # [code] LRU insert/move of cell arg0 in the visible-block list (40 nodes, 20 with storage)
+func_800BE238 wm_blockListResolve  # [code] sets each visible node's block from its loaded chunk (state 2) or the default blocks D_800D32EC
+func_800BE4A8 wm_getCellBlock  # [code] block data of cell arg0 from its loaded chunk, else the default block (*arg1 = 1)
+func_800BE674 wm_initBlockMatrix  # [code] D_800D3770 = identity, no translation (its t is set per block in wm_drawBlocks)
+func_800BE6B4 wm_blockListCompact  # [code] same compaction as wm_chunkListCompact for the visible-block list
+func_800BE748 wm_getGroundHeight  # [code] wraps pos, finds its cell and block, returns the ground height (wm_getBlockHeight) and the polygon attribute; called by w_movement for actors
+func_800BE894 wm_naviInit  # [code] [string] navi defaults - active, cursor on, title time 0x14, mode from event var 0x64 printed as "DEF SET NAVIMODE"
+func_800BE984 wm_naviDraw  # [code] draws the title (when D_800D3E75 >= 0) and, by navi mode, the mini map (1) or the full map (2) with markers
+func_800BEECC wm_naviUpdate  # [code] full-map cursor - stick moves D_800CD104/108 (wrap 0xF0000/0xC8000), L1/R1 jump between known places, snaps to places, writes event var 0x67
+func_800BF544 wm_naviDrawMarker  # [code] blinking marker (colour lerp by math_cos of the frame counter) as POLY_F4 or two FT4 sprites
+func_800BF978 wm_naviDrawFullMap  # [code] navi mode 2 - player arrow, camera view cone (POLY_G3 from D_800CE0F0 angle), map tiles (1 or 4 by D_800D3E74), background
+func_800C0888 wm_naviDrawMiniMap  # [code] navi mode 1 - same arrow/cone at 200,130 with the 96x80 mini map sprite
+func_800C0F34 wm_drawTitle  # [code] [string] title sprite faded in/out by D_800CF4AC vs D_800D3E6C ("Title Draw Time", w_frameSetParameter 11); phase in D_800D3E88 (getParam 0xD2)
+func_800C1428 wm_naviDrawPlaces  # [code] wm_naviDrawMarker on each known place of D_800CD10C[page]
+func_800C1604 wm_naviIsPlaceKnown  # [code] bit i of event vars h[0x2E..0x31] (64 places), 0 when the place has no coordinates
+func_800C1B00 wm_naviWorldToMap  # [code] world x/z -> map pixel coords for map variant arg4 (page*2 mini, page*2+1 full)
+func_800C1C98 wm_readtxInit  # [code] builds the w_readtx slot list D_800D3EA8 -> D_800D3EC0[6] -> D_800D3E98 with the 3 buffers D_800CE3E8
+func_800C1F3C wm_readtxCompact  # [code] clears the request counter and moves buffers of slots beyond 3 to free slots; called after wm_requestChunks (same shape as func_800C23CC)
+func_800C2050 wm_readtxFind  # [code] buffer of the w_readtx slot with id arg0 (low 6 bits) and extracted flag arg1, else 0
+func_800C20B0 wm_readtxDone  # [string] prints "Texture ReadDone and Extruct:%x", w_frameExtruct on the data, marks its slot extracted (unkE = 1)
+func_800C2134 wm_frmbufInit  # [code] builds the w_frmbuf list D_800D3F38 -> D_800D3F48[4] -> D_800D3F28 that w_frmbufRequest uses, VRAM areas 1-2
+func_800C23CC wm_frmbufCompact  # [code] resets w_frmbufRequest's counter D_800D3F20, moves VRAM areas from slots beyond 2 to free ones
+func_800C24D8 wm_frmbufTransfer  # [string] uploads newly assigned extracted textures (wm_readtxFind id,1) to their VRAM area, sets tpage/clut in D_800D2FF8; prints "Texture Transfer Area : [%c] / Memory..."
+func_800C26EC wm_weatherUpdate  # [code] auto weather, weather transition blend (D_800D3F94 by D_800D3F90), height blend of the two sets, then colour matrices and func_8001CCB4
+func_800C2830 wm_weatherAuto  # [code] when "Whather Auto" (D_800D3F9C) is on - wm_setWeather(wm_getWeatherByPos()) when the position's mode changes
+func_800C291C wm_getWeatherByPos  # [code] weather mode by distance of the player to fixed points (1, 2, and 3 only with data set 4, which also stores the distance in D_800D3F88)
+func_800C2A80 wm_setWeather  # [string] w_frameSetParameter case 0 "Weather"; sets mode (5 = keep), fog (2 = keep), speed, picks the target preset of D_800D3FA0; "Illigal Weather Mode : %d"
+func_800C3954 wm_blendWeather  # [code] arg0 = per-field lerp of weather parameter sets arg1 -> arg2 by arg3 (0..0x1000)
+func_800C3DEC wm_weatherInit  # [code] auto weather on, mode -2, speed 0x80
+func_800C3E28 wm_weatherStart  # [string] "start weather mode : %d / fog : %d" - mode from wm_getWeatherByPos, fog from func_800C3E88, applied at full blend
+func_800C3E88 wm_getStoryFog  # [code] 1 unless the story counter is in [0x1766, 0x2B53); the fog value wm_weatherStart prints and wm_weatherAuto passes
+func_800C43F0 wm_stopAllSe  # [code] sends SE stop (0x5100) for every world SE number w_musicGetID knows; called from w_frameMapDestructor
+func_800C461C wm_musicInit  # [code] music state 0, song/id/request -1
+func_800C465C wm_musicPlay  # [code] sound cmd 0 with the song's music id, then volume fade (0x8601) over 0x3C to event var 0x68 (default 0x7D); w_musicUpdate's Play step
+func_800C46D8 wm_musicStop  # [code] sound cmd 0x100 with the song's music id, sent for the previous song before wm_musicPlay (medium-low - cmd 0x100 not identified)
+func_800C4710 wm_musicFade  # [string] w_frameSetParameter case 32 "Music Fade" calls it; empty in this build
+func_800C4718 wm_sePlay  # [string] case 20 "SE Play"; sound cmd 0xD000 per id of w_musicGetID(arg0)
+func_800C47B0 wm_seSetVolume  # [string] case 21 "SE Vol"; cmd 0x9201, only when no music request is pending
+func_800C4850 wm_seFadeVolume  # [string] case 22 "SE Vol Intpl"; cmd 0xD301 with time and volume
+func_800C48F4 wm_seStop  # [string] case 23 "SE Stop"; cmd 0x5100
+func_800C497C wm_getSongMusicId  # [code] D_800CDF30[song]; song 0 (normal) becomes 4/5 in the field-song story ranges and 3 with data set 4 (song names from w_musicRequestSend)
+D_800CF404 g_worldPrimPtr  # [code] packet allocation pointer - every draw function writes primitives at it and advances it; reset to D_800CF420[buf] each frame
+D_800CF420 g_worldPrimBuffers  # [code] the two packet buffers (0x801A2300, 0x801C8100), 0x25E00 bytes = the 155136 that wm_frameMain divides by for D_800CCE5C
+D_800CF470 g_worldPrimUsed  # [code] bytes of packet buffer used this frame (wm_frameMain)
+D_800CCE5C g_worldPrimUsedPercent  # [code] D_800CF470 * 100 / 155136 (wm_frameMain)
+D_800CF460 g_worldOt  # [code] the two OT pointers (GameData.unk10[0/1]), indexed by *D_800CF45C in every draw
+D_800CF45C g_worldBufIndex  # [code] = &GameData.unk8, the double-buffer index selecting D_800CF420/D_800CF460
+D_800CF408 g_worldChunkBuffer  # [code] 0x80138800, 16 chunk buffers of 0x4800 (wm_chunkListInit)
+D_800CE3E8 g_worldTexBuffers  # [code] the 3 w_readtx texture buffers (wm_initBuffers, wm_readtxInit)
+D_800CF46C g_worldState  # [code] 0 start, 1 set up (wm_frameMain at frame 4), 2 running (wm_chunksLoaded); getParam 0xD1 is state == 2
+D_800CF4B0 g_worldFrameCount  # [code] +1 per wm_frameMain; blink phases, animation periods, 0xCD's > 400 check
+D_800CF4AC g_worldReadyFrameCount  # [code] +1 per frame once D_800D33F4 is set; title timing (wm_drawTitle), weather special case at 10
+D_800D33F4 g_worldMapLoaded  # [code] set by wm_chunksLoaded after the first 16 chunks; gates menu open, ready counter, camera shake
+D_800CF49C g_worldEventResult  # [code] event-script frame result (wm_runEvents) returned by wm_frameMain - 3 battle, 4 "MAP JUMP" field, 5 world map
+D_800CF454 g_worldCdUser  # [string] who holds the CD - 1 chunk read, 2 music, 3 script ("CD Use ON"/"OFF", cases 39/40) or menu; getParam 0xC8 "Event:CDAccessWait"
+D_800CF47D g_worldStartup  # [code] 1 during wm_systemInit - wm_loadTim then LoadImages directly instead of queueing; cleared by wm_frameMain
+D_800CF430 g_worldStoryCounterPtr  # [code] = g_evtGlobalVars.h; *ptr (story counter) compared with 0x1766/0x2B52 etc. in weather, music, title code
+D_800CF488 g_worldReqParams  # [string] w_frameSetParameter "SE Param0..3" (16-19, also 6-9), param 0 also "Whather Speed" (14); "Get Getoffpos" stores X/Y/Z; getParam 0xC3-0xC5
+D_800CF474 g_worldEventBattleRate  # [string] set by case 26 "EventBattleProbability"; getParam 0xCD rolls 1 in (rate+1)
+D_800CF440 g_worldMogChoice  # [string] set by case 35 "Mog choice"; while set wm_frameMain reports busy to func_80019160
+D_800CF4A8 g_worldMapJump  # [string] set by case 41 "Map Jump" (cleared in wm_systemInit)
+D_800CCF70 g_worldDebugStep  # [code] last update step (10, 0x64-0x6A) written through wm_updateLogic/wm_updateDraw
+D_800CF43C g_worldTimeLogic  # [code] VSync(1) delta around the logic step (wm_frameMain)
+D_800CF458 g_worldTimeDraw  # [code] VSync(1) delta around wm_updateDraw
+D_800CF4B4 g_worldTimeEvents  # [code] VSync(1) delta around the event-script frame (wm_runEvents)
+D_800CF4A0 g_worldTimeMapDraw  # [code] VSync(1) delta around wm_drawMap (wm_updateDraw)
+D_800CF4B8 g_worldTimeTotal  # [code] D_800CF43C + D_800CF4B4 + D_800CF458 (wm_frameMain)
+D_800CF598 g_worldImageSectors  # [string] CD sectors from file_find(0xC, ...), [0] printed as "Image Top Sector"; [3]/[4] (D_800CF5A4/A8) are the chunk read bases in wm_readChunks
+D_800CFDB0 g_worldHeapStack  # [code] w_memorymanHeapAlloc pushes the old top here (25 entries, "Heap stack overflow")
+D_800CFE14 g_worldHeapDepth  # [code] w_memorymanHeapAlloc/Free stack depth, "Memory leak" when non-zero in w_memorymanDestructor
+D_800CFE18 g_worldHeapTop  # [code] next free address of the w_memoryman heap
+D_800CFE10 g_worldHeapUsed  # [code] bytes allocated, printed against 0x24800
+D_800CFE1C g_worldHeapLastSize  # [code] size of the last w_memorymanHeapAlloc
+D_800CFFD0 g_worldClutBuf  # [code] palette lines for animation (wm_initClutAnims, wm_stepClutAnims); also the VRAM save area of wm_systemInit/func_800B7F7C
+D_800CFF18 g_worldClutAnims  # [code] 18 palette animation entries {x, y, x offset, width, speed} (wm_initClutAnims, wm_stepClutAnims)
+D_800CFEA0 g_worldTexScrolls  # [code] 8 VRAM scroll rects {x, y, w, h, speed} (wm_scrollTextures); pack entry 6
+D_800D3FA0 g_worldWeatherData  # [code] pack entry 5 - unk0[16] presets (mode*4 + fog*2 + 0/1, wm_setWeather), unk5E0[7] working sets (0 current)
+D_800D3F98 g_worldWeatherMode  # [string] mode set by wm_setWeather ("Illigal Weather Mode")
+D_800D3F8C g_worldWeatherAutoMode  # [code] last position mode applied by wm_weatherAuto (-1 forces a re-apply)
+D_800D3F9C g_worldWeatherAuto  # [string] case 15 "Whather Auto"; wm_weatherUpdate runs wm_weatherAuto while set
+D_800D3F90 g_worldWeatherSpeed  # [code] blend step per frame (wm_setWeather arg2, from "Whather Speed")
+D_800D3F94 g_worldWeatherBlend  # [code] transition progress 0..0x1000, -1 when finished (wm_weatherUpdate)
+D_800D3F88 g_worldWeatherPointDist  # [code] distance to wm_getWeatherByPos's data-set-4 point (mode 3 below 0x65); getParam 0xCC
+D_800D4818 g_worldMusicState  # [string] w_musicUpdate - 0 Ready, 1 requested (Play), 2 Waiting
+D_800D4828 g_worldMusicRequest  # [string] song accepted by w_musicRequestSend ("(Accepted)" / "(Denied / same request)")
+D_800D481C g_worldMusicSong  # [code] song now playing; stopped with wm_musicStop before the next one
+D_800D4824 g_worldMusicId  # [code] music id of the current song (wm_musicPlay), compared by func_800C49EC
+D_800D4820 g_worldMusicStarted  # [code] set by wm_musicPlay; wm_updateMap streams the map only once it is set
+D_800CDF30 g_worldSongMusicIds  # [code] song (0-5) -> music id (wm_getSongMusicId)
+D_800D3E60 g_worldNaviMode  # [string] case 4 "Navi mode"; 1 mini map, 2 full map (wm_naviDraw), default event var 0x64 ("DEF SET NAVIMODE")
+D_800D3E80 g_worldNaviActive  # [string] case 2 "Navi Active"; wm_naviDraw/wm_naviUpdate return early when 0
+D_800D3E78 g_worldNaviCursorOn  # [string] case 27 "Navi Cursol"; wm_naviUpdate reads stick/pad only when set
+D_800D3E77 g_worldNaviCursorDraw  # [string] case 36 "Cursol Draw"; wm_naviDraw draws the cursor window when set
+D_800D3E64 g_worldNaviVisible  # [code] 0 while BTN_CIRCLE (0x10000) is held with cursor drawing on - hides full-map markers/arrow; getParam 0xD3
+D_800D3E84 g_worldNaviPrevMode  # [code] last frame's navi mode; when it was 1 (mini map) wm_naviUpdate resets the full-map cursor to the player
+D_800D3E74 g_worldNaviPage  # [code] 1 when story counter >= 0x1766 (wm_loadWorldData); selects map textures and place table D_800CD10C[page] (also used by w_movement)
+D_800D3E89 g_worldNaviPlace  # [code] place the full-map cursor is on / cycled to with L1/R1 (wm_naviUpdate)
+D_800CD104 g_worldNaviCursorX  # [code] full-map cursor x (<< 12), wraps at 0xF0000 (wm_naviUpdate)
+D_800CD108 g_worldNaviCursorY  # [code] full-map cursor y (<< 12), wraps at 0xC8000
+D_800CD10C g_worldNaviPlaces  # [code] [2][64] place map coords per page (wm_naviUpdate, wm_naviDrawPlaces, wm_naviIsPlaceKnown)
+D_800D3E75 g_worldTitleId  # [code] title 0-3 for story counter 0x960/0x1766/0x2585/0x26A2, else -1 (wm_loadWorldData); wm_drawTitle sets -1 when done
+D_800D3E6C g_worldTitleDelay  # [string] case 11 "Title Draw Time"; frames before the title fades in (wm_drawTitle)
+D_800D3E76 g_worldTitleFade  # [code] title brightness 0..0x80, +-4 per frame (wm_drawTitle)
+D_800D3E88 g_worldTitlePhase  # [code] 0 wait, 1 fade in, 2 fade out, 3 done (wm_drawTitle); getParam 0xD2
+D_800D30F8 g_worldChunkFlags  # [code] per chunk (WM_CELL) - low 6 bits texture id for w_readtxRequest, 0x80 replacement form (wm_applyStoryForms, wm_readChunks)
+D_800D30C8 g_worldFormFlags  # [code] 16 flags, 1 = form k replaced (wm_applyStoryForms); selects TIM variant k + 16*flag in wm_loadWorldData
+D_800D3304 g_worldChunksW  # [code] map width in chunks (cell table unk0, wm_posToChunk)
+D_800D3308 g_worldChunksH  # [code] map height in chunks (cell table unk2)
+D_800D32F0 g_worldCellsW  # [code] 2 * chunks width (wm_posToCell)
+D_800D32F4 g_worldCellsH  # [code] 2 * chunks height
+D_800D32D8 g_worldWidth  # [code] chunks width << 14, wrap width (wm_wrapPos)
+D_800D32DC g_worldDepth  # [code] chunks height << 14, wrap depth (wm_wrapPos)
+D_800CF40C g_worldChunkTable  # [code] world data item 0x425/0x428, {w, h, WmCell[]} CD table (wm_getChunkEntry)
+D_800CF410 g_worldChunkTableT  # [code] world data item 0x42F/0x432, transposed table (wm_getChunkEntryT)
+D_800CF428 g_worldDataPack  # [code] world data item 0x41B/0x41E pack - entries 0 (D_800CF478), 2 palettes, 3 encounters, 4 event rows, 5 weather, 6 scrolls, 0x35-0x42 block packs
+D_800D32EC g_worldDefaultBlocks  # [code] pack entry 0x42 - block used for cells whose chunk is not loaded (wm_getCellBlock)
+D_800D3358 g_worldChunkHead  # [code] chunk LRU list head (wm_chunkListInit)
+D_800D34A8 g_worldChunkSlots  # [code] 32 chunk slots
+D_800D3340 g_worldChunkTail  # [code] chunk list tail
+D_800D33F0 g_worldChunkListDirty  # [code] chunks recycled past slot 16, compacted by wm_chunkListCompact
+D_800D3408 g_worldChunkCenter  # [code] last chunk wm_updateChunks requested around (-1 at init)
+D_800D3750 g_worldChunksLoadedCount  # [code] chunks loaded so far; 16 sets D_800D33F4 (wm_chunksLoaded)
+D_800D3758 g_worldBlockHead  # [code] visible-block list head (wm_blockListInit)
+D_800D3798 g_worldBlockNodes  # [code] 40 visible-block nodes
+D_800D3BF8 g_worldBlockTail  # [code] visible-block list tail
+D_800D3790 g_worldBlockListDirty  # [code] set when a node beyond 20 is used, compacted by wm_blockListCompact
+D_800D3EA8 g_worldReadtxHead  # [code] w_readtx slot list head (wm_readtxInit, w_readtxRequest)
+D_800D3EC0 g_worldReadtxSlots  # [code] 6 w_readtx slots, 3 with buffers
+D_800D3E98 g_worldReadtxTail  # [code] w_readtx list tail
+D_800D3E90 g_worldReadtxReqCount  # [string] requests this frame, printed by "w_readtxRequest/reqover[%d/%d]" when >= 4
+D_800D3EB8 g_worldReadtxDirty  # [code] new w_readtx requests, compacted by wm_readtxCompact
+D_800D3F38 g_worldFrmbufHead  # [code] w_frmbuf list head (wm_frmbufInit, w_frmbufRequest)
+D_800D3F48 g_worldFrmbufSlots  # [code] 4 w_frmbuf slots (VRAM areas 1-2)
+D_800D3F28 g_worldFrmbufTail  # [code] w_frmbuf list tail
+D_800D3F20 g_worldFrmbufReqCount  # [string] printed by "w_frmbufRequest:reqover [%d/%d]" when >= 3
+D_800D3F44 g_worldFrmbufDirty  # [code] new w_frmbuf requests, compacted by wm_frmbufCompact
+D_800CD078 g_worldAmbientSeX  # [code] x of the 3 positional SE sources (wm_updateMap)
+D_800CD084 g_worldAmbientSeZ  # [code] z of the 3 sources
+D_800CD090 g_worldAmbientSe  # [code] world SE numbers of the 3 sources (wm_sePlay/SetVolume/Stop)
+D_800D32F8 g_worldAmbientSeDist  # [code] player distance to each source (wm_updateMap)
+D_800D330C g_worldAmbientSeOn  # [code] 1 while source i's SE plays (within 0x3F)
