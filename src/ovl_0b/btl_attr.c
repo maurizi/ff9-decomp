@@ -401,9 +401,6 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
     return r;
 }
 
-/* padded: this jump table is 8-aligned in its object */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
-
 void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     s32 k;
     s32 off;
@@ -546,9 +543,6 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     }
 }
 
-/* padded: this jump table is 8-aligned in its object */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
-
 s32 btl_getBattleVar(s32 arg0) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
     s32 r = -1;
@@ -613,9 +607,6 @@ s32 btl_getBattleVar(s32 arg0) {
     }
     return r;
 }
-
-/* padded: this jump table is 8-aligned in its object */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 void btl_setBattleVar(s32 arg0, s32 arg1) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;

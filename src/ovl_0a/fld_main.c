@@ -16,8 +16,6 @@ void func_800A7AAC(s32 arg0) {
     func_800A8698();
 }
 
-INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/fld_main", D_800A7000);
-
 /* field main loop */
 void fld_main(s32 arg0) {
     fld_load(arg0);

@@ -43,8 +43,6 @@ void btl_main(s32 arg0) {
     btl_cleanup();
 }
 
-INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/btl_main", D_800A7000);
-
 void func_800A882C(void) {
     GameData *gd = g_gameState->unk1C;
     u16 f = gd->unk8E4.battle->unk0;
@@ -558,9 +556,6 @@ s32 func_800A9BE4(s32 arg0) {
     return *state;
 }
 
-/* padded: a zero word follows func_800A9BE4's jump table */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
-
 s32 btl_loadEncounterFile(Unk800AA08C *arg0, s32 arg1) {
     s32 v = arg0->unk24;
     GameData *gd = g_gameState->unk1C;
@@ -685,9 +680,6 @@ loop:
     }
     return st->unk0;
 }
-
-/* padded: a zero word follows func_800AA24C's jump table */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 s32 func_800AA504(s32 arg0, s32 arg1, Unk800AA504 *arg2) {
     Unk800AA504 *st;
@@ -832,9 +824,6 @@ loop:
     }
     return st->unk0;
 }
-
-/* padded: a zero word follows func_800AA504's jump table */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 s32 func_800AA958(s32 arg0, Unk800AA958 *arg1) {
     Unk800AA958 *st;

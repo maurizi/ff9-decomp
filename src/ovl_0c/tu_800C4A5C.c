@@ -154,9 +154,6 @@ void func_800C4DD8(void) {
     }
 }
 
-/* jump table padding emitted by the original toolchain */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
-
 void func_800C53DC(void) {
     WmNode *o;
     WmNode *cur;
@@ -511,9 +508,6 @@ void func_800C69F4(s32 arg0) {
         }
     }
 }
-
-/* jump table padding emitted by the original toolchain */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 void func_800C6EF8(void) {
 }

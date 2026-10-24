@@ -359,9 +359,6 @@ void btl_setCmd(BtlCmd *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     btl_enqueueCmd(arg0);
 }
 
-/* padded: the next jump table is 8-aligned in its object */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
-
 void btl_setEnemyCmd(s32 arg0, s16 arg1, u32 arg2, u32 arg3) {
     Battle *b;
     BtlUnit *u;

@@ -600,8 +600,6 @@ void func_800AEADC(void) {
     }
 }
 
-__asm__(".section .rodata\n\t.align 3\n\t.section .text");
-
 void func_800AEC74(void) {
     s32 id;
     s32 k;
@@ -672,9 +670,6 @@ void func_800AEC74(void) {
         }
     }
 }
-
-/* jump table padding emitted by the original toolchain */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
 
 /* find the world map actors (vehicles) and sync the camera with the player */
 void func_800AEF10(void) {

@@ -783,8 +783,6 @@ void func_800AAD48(WmObjEnt *arg0, WmObjSlot *arg1, MATRIX *arg2, s32 arg3, s32 
     arg2->t[2] = ((side.vz * arg0->unk4_12 + fwd.vz * arg0->unk4_22) >> 12) + ((MATRIX *)arg1->unk8->unk20)[arg4].t[2];
 }
 
-INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_main", D_800A7000);
-
 /* world map music/sound request handler (GameData.unk83C); unk851 drives the streamed music load */
 s32 func_800AB0C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 kind;

@@ -744,9 +744,6 @@ void btl_setModelRgb(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     }
 }
 
-/* padded: the next jump table is 8-aligned in its object */
-__asm__(".section .rodata\n\t.word 0\n\t.section .text");
-
 void func_800C8A3C(BtlUnit9C *arg0, s32 r, s32 g, s32 b) {
     u32 i;
     BtlPrim *p;
