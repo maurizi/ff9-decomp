@@ -816,7 +816,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
                 }
                 k = item_getCount(0xF9);
                 if (*g_randPtr++ < k) {
-                    func_800E9F68(1);
+                    btlui_setAtbEnabled(1);
                     btl_setCmd(u->cmd, BTL_CMD_REBIRTH_FLAME, BTL_ABIL_REBIRTH_FLAME, btl_getUnitMask(0) & 0xFFFF, 1);
                     return;
                 }
@@ -825,7 +825,7 @@ void btl_checkSideDefeated(BtlUnit *arg0) {
         b->subPhase = 1;
         btl_showMessage(5);
     }
-    func_800E9F68(0);
+    btlui_setAtbEnabled(0);
     b->phase = BTL_PHASE_END;
     btl_clearCmdQueue(b);
 }
@@ -960,7 +960,7 @@ void btl_checkPartyDisabled(BtlUnit *arg0) {
         }
     }
     if (six == 0 || !btl_isCmdQueued(six, BTL_CMD_REBIRTH_FLAME)) {
-        func_800E9F68(0);
+        btlui_setAtbEnabled(0);
         btl_flushCmdQueue(b);
         b->escapeHeld = 0;
     }
@@ -974,7 +974,7 @@ void btl_checkEnemiesKO(void) {
             return;
         }
     }
-    func_800E9F68(0);
+    btlui_setAtbEnabled(0);
     btl_flushCmdQueue(b);
     b->escapeHeld = 0;
 }

@@ -11,14 +11,14 @@ void btlui_submitOt(void) {
     ((u32 *)&D_80105120[D_801051E0])[1] = 0xE1000600;
     tw = &D_800FDE34;
     ((u32 *)&D_80105120[D_801051E0])[2] = get_tw(tw);
-    SetDrawOffset(&D_801050E0[D_801051E0], D_801051E8[g_drawBufs.unk0 ^ 1]);
+    SetDrawOffset(&D_801050E0[D_801051E0], g_btluiDispOrigin[g_drawBufs.unk0 ^ 1]);
     SetDrawArea(&D_80105100[D_801051E0], &g_gameState->unkC[g_drawBufs.unk0 ^ 1].disp);
     addPrim(&g_ot[0x17], &D_80105140[D_801051E0]);
     addPrim(&g_ot[0x17], &D_80105120[D_801051E0]);
     addPrim(&g_ot[0x17], &D_801050E0[D_801051E0]);
     addPrim(&g_ot[0x17], &D_80105100[D_801051E0]);
     addPrim(&g_ot[1], &D_80105160[D_801051E0]);
-    p = (Unk80104E68 *)&D_80104E68;
+    p = (Unk80104E68 *)&g_btluiState;
     if (p->unk10 == 0) {
         s32 r = BreakDraw();
         if (r == -1) {

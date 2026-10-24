@@ -424,7 +424,7 @@ typedef struct {
 #define BTL_PHASE_EXIT_DEFEAT 7 /* code: from a defeat (GameData.unk56E = 3) */
 #define BTL_PHASE_EXIT_OTHER  8 /* code: from an escape or a script-ended battle */
 
-/* g_btlUi->menuState: index of the per-state handler tables D_800F8D94 (input), D_800F8DA8, D_800F8DC4 */
+/* g_btlUi->menuState: index of the per-state handler tables g_btluiMenuInput (input), g_btluiMenuUpdate, g_btluiMenuHelp */
 #define BTLUI_MENU_NONE    0 /* runtime: no menu */
 #define BTLUI_MENU_CMD     1 /* runtime: command menu */
 #define BTLUI_MENU_LIST    2 /* code: ability/item list (btlui_listInput) */
@@ -537,7 +537,7 @@ typedef struct BtlUnit {
     s16 tickDamage; /* btl_tickPoison */
     s16 tickMpDamage; /* btl_tickVenomMp */
     u8 tickFlags; /* 1 regen, 2 poison, 4 venom, 8 regen hurts */
-    u8 inMenuQueue; /* waiting for its command menu (func_800EB358) */
+    u8 inMenuQueue; /* waiting for its command menu (btlui_queueMenuUnit) */
 } BtlUnit; /* 0xD0 */
 
 /* ability/command calculation context */
@@ -712,7 +712,7 @@ typedef struct {
     u8 unk12B6;
     u8 unk12B7;
     union {
-        u8 b[2]; /* set separately by func_800EAC88 */
+        u8 b[2]; /* set separately by btlui_checkSwdMagPartner */
         u16 h;   /* tested together */
     } unk12B8;
     u8 pad12BA[0x12BC - 0x12BA];
@@ -733,7 +733,7 @@ typedef struct {
     UnkPair *unk80[0x58];
     u8 unk1E0[0x100];
 } Unk80104FA8;
-extern Unk80104FA8 *D_80104FA8;
+extern Unk80104FA8 *g_btluiItems;
 
 /* battle menu / frame state */
 typedef struct {
@@ -765,7 +765,7 @@ typedef struct {
     s32 unk20;
     s32 unk24;
 } Unk80104E68;
-extern volatile Unk80104E68 D_80104E68;
+extern volatile Unk80104E68 g_btluiState;
 
 typedef struct {
     s16 unk0;
@@ -853,7 +853,7 @@ typedef struct {
     u8 unk18;
     u8 unk19;
 } Unk80104FD0;
-extern Unk80104FD0 D_80104FD0;
+extern Unk80104FD0 g_btluiList;
 
 extern u8 D_800FE470;
 extern s32 D_800F7270;
@@ -921,7 +921,7 @@ typedef struct {
     struct BtlUnit *unk4[4]; /* player units */
     s16 unk14[8][2];   /* screen positions */
 } Unk80105020;
-extern Unk80105020 D_80105020;
+extern Unk80105020 g_btluiCursors;
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -2028,7 +2028,7 @@ extern u8 D_800F8D81;
 extern char g_battleText[];
 
 extern u8 D_800F909C[];
-extern void (*D_800F8DA8[])(void);
+extern void (*g_btluiMenuUpdate[])(void);
 
 
 typedef struct {
@@ -2040,7 +2040,7 @@ typedef struct {
     u8 pad8[0xC - 8];
     s32 unkC;
 } Unk80104F90;
-extern volatile Unk80104F90 D_80104F90;
+extern volatile Unk80104F90 g_btluiHelp;
 extern u8 D_80104E75;
 
 struct Unk800F412C;
@@ -2081,13 +2081,13 @@ typedef struct {
     u8 unk84[4];
     u8 unk88[4];
 } Unk80105078;
-extern Unk80105078 *D_80105078;
+extern Unk80105078 *g_btluiPanel;
 extern s32 D_800F9028[];
 extern Unk800F3F10 D_800F9084;
 extern Unk800F3F10 D_800F9090;
 
-extern void *D_80104FA0;
-extern s32 (*D_800F8DC4[])(void);
+extern void *g_btluiHelpText;
+extern s32 (*g_btluiMenuHelp[])(void);
 
 typedef struct {
     u8 unk0;
@@ -2111,7 +2111,7 @@ typedef struct {
 } Unk80104FB0;
 extern Unk80104FB0 g_btlCmdMenu;
 extern Unk80104FC0 D_80104FC0; /* g_btlCmdMenu.unk10, also addressed by its own label */
-extern void (*D_800F8D94[])(void);
+extern void (*g_btluiMenuInput[])(void);
 
 
 
@@ -2170,7 +2170,7 @@ typedef struct {
     s32 unkC; /* used */
     s32 unk10; /* free */
 } Unk80105060;
-extern volatile Unk80105060 D_80105060;
+extern volatile Unk80105060 g_btluiHeap;
 
 
 typedef struct {
@@ -2254,7 +2254,7 @@ typedef struct {
     POLY_G4 unk310[2];
     DR_TPAGE unk358[2];
 } Unk801050D8; /* 0x368, double-buffered menu primitives */
-extern Unk801050D8 *D_801050D8;
+extern Unk801050D8 *g_btluiPrims;
 extern u8 D_801051E0;
 extern u8 D_80104E94[2][0x18];
 
@@ -2317,102 +2317,102 @@ s8 func_80021698(Unk8004AB64 *);
 s32 btlfx_moveUnitArc(s32, s16 *, s32, s32, s32, s16 *);
 void btlfx_setUnitRot(s32, s16 *);
 u16 btl_orTargets(u16 *);
-void func_800EB358(BtlUnit *);
+void btlui_queueMenuUnit(BtlUnit *);
 void func_800ECCA8(s32);
-s32 func_800EFB3C(s32);
-s32 func_800EFD1C(u8);
-void func_800EFA10(s32);
-void func_800EF7D4(Window *);
+s32 btlui_cycleTarget(s32);
+s32 btlui_switchTargetSide(u8);
+void btlui_setDefaultTargets(s32);
+void btlui_onListClosed(Window *);
 void btlui_cancelTarget(void);
 s32 btlui_isCmdUsable(void);
-s32 func_800F028C(void);
+s32 btlui_refreshTargets(void);
 void btlui_updateTargetWindow(void);
-void func_800F1AF8(Window *);
+void btlui_onTargetWindowClosed(Window *);
 void func_800F2684(s32);
 void func_800F2C74(s32);
 void func_800F2DC0(s32);
 void func_800F2ED0(s32);
-void func_800F316C(void);
+void btlui_updateGauges(void);
 void func_800F3DE0(s32);
 void func_800F3EDC(s32);
-void func_800F3F10(void);
-void func_800F3FDC(void);
-void func_800F42F0(void);
+void btlui_slidePanelLabels(void);
+void btlui_pulsePanelHighlight(void);
+void btlui_findHighlightRow(void);
 void func_800F4D80(u32 *, u32);
 void func_800F4FE8(s32);
-void func_800EB518(Unk800EB518 *, s32, s32, s32);
-void func_800EE120(Window *);
+void btlui_saveCursor(Unk800EB518 *, s32, s32, s32);
+void btlui_onPassClosed(Window *);
 s32 btlfx_stepHitSound(u8 *, s32, s32);
 void btl_saveCharacter(BtlUnit *, s32);
 void btl_tryEscape(u8);
 void btl_spawnPopups(BtlUnit *);
 s32 func_800E8D60(void);
-void func_800EA650(void);
-BtlUnit *func_800EAD94(void);
-void func_800EAE8C(void);
-void func_800EB5AC(void);
-s32 func_800EB7B0(BtlUnit *);
-void func_800EC4EC(void);
-void func_800EE154(void);
-void func_800EE24C(void);
-void func_800EE31C(void);
+void btlui_initPartyEntries(void);
+BtlUnit *btlui_popMenuUnit(void);
+void btlui_pruneMenuQueue(void);
+void btlui_clearAbilityLists(void);
+s32 btlui_canOpenMenu(BtlUnit *);
+void btlui_openCmdMenu(void);
+void btlui_slideLeft(void);
+void btlui_slideRight(void);
+void btlui_slideBack(void);
 s32 btl_setIdleMotion(BtlUnit *);
 u32 btl_addStatuses(BtlUnit *, u32);
 void func_800C8A3C(BtlUnit9C *, s32, s32, s32);
 void btl_setModelAbr(BtlUnit9C *, s32);
 void btlfx_setUnitBrightness(BtlUnit *, s32);
-void func_800EA7B8(Unk80104F88Entry *);
+void btlui_copyTranceAbilities(Unk80104F88Entry *);
 void func_800EA908(Unk80104F88Entry *);
-void func_800EB63C(Unk80104F88Entry *);
-void func_800EB6FC(Unk80104F88Entry *);
-void func_800EBCC4(u8);
-void func_800EC1B0(void);
-void func_800EC258(void);
-void func_800EC334(s32);
-void func_800EC3C0(s32);
-s32 func_800EC44C(s32);
-s32 func_800EC49C(s32);
-void func_800ECA50(void);
-void func_800EDCA0(void);
-void func_800EDD1C(void);
-void func_800EDD9C(void);
-void func_800EDDF8(void);
-void *func_800F2A60(s32);
-Unk80105078 *func_800F3EA4(void);
-void func_800F3ECC(u8);
+void btlui_addLearnedAbilities(Unk80104F88Entry *);
+void btlui_addEquipAbilities(Unk80104F88Entry *);
+void btlui_toggleHelp(u8);
+void btlui_buildItemList(void);
+void btlui_buildThrowList(void);
+void btlui_addItemListEntry(s32);
+void btlui_addThrowListEntry(s32);
+s32 btlui_findItemListEntry(s32);
+s32 btlui_findThrowListEntry(s32);
+void btlui_confirmCmd(void);
+void btlui_cmdCursorUp(void);
+void btlui_cmdCursorDown(void);
+void btlui_cmdSideInput(void);
+void btlui_passTurn(void);
+void *btlui_alloc(s32);
+Unk80105078 *btlui_getPanel(void);
+void btlui_showPanel(u8);
 void func_800DA898(void);
 void btl_updateAtb(void);
-void func_800EAC88(void);
+void btlui_checkSwdMagPartner(void);
 void btlui_menuInput(void);
 void btlui_updateMenu(void);
-void func_800EB2E0(void);
-void func_800EB2FC(void);
-void func_800EB410(void);
-void func_800EB46C(void);
-void func_800EB81C(void);
+void btlui_clearMenuQueue(void);
+void btlui_flushMenuQueue(void);
+void btlui_closeMenu(void);
+void btlui_closeWindows(void);
+void btlui_applyTargetable(void);
 void btlui_pollEscape(void);
-s32 func_800EB9E0(void);
+s32 btlui_getFrozenSide(void);
 void btlui_drawHelpWindow(void);
-void func_800EBB78(void);
-void func_800EBBB4(void);
-void func_800EBD58(void);
-void func_800EBEFC(s32);
-void func_800EC048(void);
+void btlui_helpInput(void);
+void btlui_updateHelpSlide(void);
+void btlui_closeHelp(void);
+void btlui_removeItem(s32);
+void btlui_buildItemLists(void);
 s32 btlui_getItemReserved(s32);
 void func_800ECDB8(void);
 void func_800ECF0C(void);
 void func_800EA518(void);
 void btlui_drawTargetCursors(void);
-s32 func_800F13CC(void);
-void func_800F142C(void);
+s32 btlui_countTargeted(void);
+void btlui_clearTargeted(void);
 void func_800F2374(void);
 void func_800F2560(void);
-void func_800F2AAC(void);
+void btlui_updatePanel(void);
 void btlui_drawPartyPanel(void);
 void func_800F386C(void);
 void func_800F3A8C(void);
-void func_800F3D0C(void);
-void func_800F4384(void);
+void btlui_updatePanelAnims(void);
+void btlui_drawPortIcons(void);
 void func_800AB4FC(void);
 u32 btl_addStatus(BtlUnit *, u32);
 u32 btl_countActiveUnits(u32);
@@ -2422,17 +2422,17 @@ void func_800E73B4(BtlUnit *, u16 *);
 void btlfx_copyWords(s32 *, s32 *, u32);
 s32 func_800E9638(s32);
 void btlui_vsync(void);
-void func_800E9F3C(u8);
-void func_800EB05C(void);
-void func_800EBB34(void);
-void func_800EC008(void);
-void func_800F2A0C(void);
-void func_800F3C08(void);
-void func_800F4630(void);
-void func_800F4700(void);
-void func_800F4884(void);
+void btlui_enable(u8);
+void btlui_initMenu(void);
+void btlui_initHelp(void);
+void btlui_initItemLists(void);
+void btlui_initHeap(void);
+void btlui_initPanel(void);
+void btlui_saveKeyRepeat(void);
+void btlui_restoreKeyRepeat(void);
+void btlui_initPrims(void);
 void func_800F48DC(void);
-void func_800F48E4(void);
+void btlui_initDrawBufs(void);
 void func_800F4D20(void);
 void btl_execCmd(BtlUnit *);
 void btl_flushCmdQueue(Battle *);
@@ -2440,7 +2440,7 @@ void btl_unlinkCmd(BtlCmd **, u8);
 void btl_releaseItem(BtlCmd *);
 void btl_calcCmd(BtlUnit *, BtlUnit *, BtlCmd *, s32);
 u16 btl_getUnitsWithStatus(u32, s32);
-void func_800EA0F8(s32);
+void btl_useReservedItem(s32);
 s32 btl_consumeMp(BtlUnit *, s16);
 void btl_killUnit(BtlUnit *);
 s32 btl_removeStatus(BtlUnit *, u32);
@@ -2474,20 +2474,20 @@ typedef struct {
     u8 unk8[4]; /* steal items, 0xFF = none */
 } Unk800B7F20; /* enemy steal slots */
 
-void func_800EA1B0(s32);
+void btl_addItem(s32);
 
 u32 func_800D89E8(s32);
 s32 func_800D9F5C(u8 *, s32, s32);
 void btlfx_error(char *);
 void func_800E3D80(void);
 u8 btl_isAtbRunning(void);
-void func_800EA164(s32);
-void func_800E9F68(u8);
-void func_800EF094(s32, s32, s32, MenuView *);
+void btl_useItem(s32);
+void btlui_setAtbEnabled(u8);
+void btlui_drawListRow(s32, s32, s32, MenuView *);
 void func_800F4DFC(void);
 s32 func_800AB26C(void **, s32);
 void func_800AB43C(void);
-void func_800E9E80(void);
+void btlui_exit(void);
 void btl_updateStatusColor(BtlUnit *);
 void btl_setStoneClut(BtlUnit *, s32);
 void func_800C2344(BtlUnit9C *);
@@ -2689,7 +2689,7 @@ void btlfx_playHitSound(s32, s32, s32);
 s32 btlfx_isPartyUnit(s32);
 s32 btlfx_getUnitWeapon(s32);
 s32 func_800DA0B8(s32);
-void func_800EA124(s32);
+void btl_unreserveItem(s32);
 s32 func_800A9BE4(s32);
 s32 func_800ABBC4(s32, s32);
 u32 btlfx_getUnitStatus(s32, u32);
@@ -2698,15 +2698,15 @@ void btlfx_playSwingSound(s32);
 void func_800D8A20(s32, s32);
 BtlUnit *btl_getUnit(s32);
 void func_800E9D84(void);
-void func_800EC070(s32);
-void func_800EC14C(s32);
-void func_800EC170(s32);
-void func_800ECB5C(void);
+void btlui_addItem(s32);
+void btlui_reserveItem(s32);
+void btlui_unreserveItem(s32);
+void btlui_buildCmdList(void);
 extern RECT D_800F8DDC; /* command window rect */
-extern RECT D_800F8E10; /* title bar texture window (func_800ED02C) */
+extern RECT D_800F8E10; /* title bar texture window (btlui_drawSideFrame) */
 void btlui_drawCmdList(Window *);
 void btlui_drawCmdOverlay(Window *);
-void func_800EDC3C(); /* used as a Window callback */
+void btlui_onCmdMenuOpened(); /* used as a Window callback */
 s32 btlui_setMenuState(s32);
 u8 func_800F1360(void);
 
@@ -2863,11 +2863,11 @@ extern s32 D_800F8E04[];
 extern RECT D_800F8EF4;
 extern RECT D_800F8EFC;
 Window *win_open(RECT *, s32, s32, s32);
-void func_800F1A8C(Window *);
+void btlui_onTargetWindowOpened(Window *);
 void func_800F29B4(Window *);
-void func_800F0A54(Window *);
-void func_800F0BE0(Window *);
-void func_800EE0FC(Window *);
+void btlui_drawTargetList(Window *);
+void btlui_drawTargetListOverlay(Window *);
+void btlui_onSideCmdClosed(Window *);
 
 typedef struct {
     s32 unk0;
@@ -2997,13 +2997,13 @@ void btl_updateKo(BtlUnit *);
 s32 btl_playVictoryMusic(GameData *, u32, s32);
 void btlcam_playScene(s32);
 void btl_clearCmdQueue(Battle *);
-extern s16 D_801051E8[][2];
+extern s16 g_btluiDispOrigin[][2];
 void btl_projectUnitPos(BtlUnit *);
-void func_800ED3F8(s32, s32, s32, char *);
-s32 func_800EB2A4(void);
-s32 func_800F13BC(void);
+void btlui_drawTranceLabel(s32, s32, s32, char *);
+s32 btlui_getMenuState(void);
+s32 btlui_getTargetReturnState(void);
 extern u8 D_800FD7AC[];
-void func_800EC928(); /* (Window *); btlui_drawCmdList passes its own */
+void btlui_drawSideCmd(); /* (Window *); btlui_drawCmdList passes its own */
 s32 func_800E865C(s32, s32);
 void btlfx_projectSliceMesh(BtlUnit9C *, u8);
 u8 *func_800DE11C(BtlUnit9C *, u8, u8 *);
@@ -3194,14 +3194,14 @@ void btlbg_setOtShift(s32);
 void func_80063640(DR_TPAGE *, u16);
 void func_800C9374(TexAnimSet *, u16 (*)[4]);
 void func_800B0E04(BtlUnit *, u8 *);
-void func_800EEDD4(void);
+void btlui_nextDoubleCast(void);
 void btl_playDeathCry(BtlUnit *, u16);
-void func_800EA550(void);
-void func_800EB238(void);
-void func_800EBC30(void);
-void func_800F3E60(void);
-void func_800F28F0(void);
-void func_800F1484(void);
+void btlui_applyEnable(void);
+void btlui_updateAtbFreeze(void);
+void btlui_checkHelpClose(void);
+void btlui_refreshPanel(void);
+void btlui_resizeListWindow(void);
+void btlui_collectCursorPositions(void);
 s32 func_800AB6F0(s32, s32);
 void func_800AB758(s32, s32, s32 **, s32 **, s32 **);
 BtlUnit *btlui_getActiveUnit(void);
@@ -3211,9 +3211,9 @@ u8 *btlfx_runFrame(u8 *);
 u8 *btl_drawPopups(u8 *);
 void btl_updateHpStatus(BtlUnit *);
 void btl_updateUnitStatus(BtlUnit *);
-void func_800ED02C(RECT *, s32);
+void btlui_drawSideFrame(RECT *, s32);
 extern s32 D_800F8DE4[];
-Window *func_800F1370(void);
+Window *btlui_getTargetWindow(void);
 void btlui_getHelpRect(RECT *, RECT *);
 void btlui_updateHelpText(void);
 s32 func_8002BE88(void);
@@ -3238,7 +3238,7 @@ s32 func_8005553C(s32);
 void func_80055850(s32, s32, s32);
 s32 func_80034430(s32, s32);
 void func_800F3D3C(s32);
-void func_800F1BFC(Window *);
+void btlui_drawListCursors(Window *);
 s32 btlfx_angleDiff(s32, s32, s32 *);
 s32 func_800C4E84(s32, s16 *, s16 *, s32 *);
 void func_800C4DC4(s32, s32, s16 *, s16 *, s32 *);
@@ -3298,7 +3298,7 @@ struct Battle11C020 *func_800C94B8(void);
 u8 func_8002C700(s32, s32);
 void func_8002C8E8(s32, s32, s32, s32);
 void func_8002C64C(s32);
-u8 func_800F47D8(void);
+u8 btlui_anyOnSecondPort(void);
 void btlfx_getUnitRot(s32, s16 *);
 
 extern u16 D_800F524C[][0x22];
@@ -3335,8 +3335,8 @@ void btl_setBanner(s32, s32);
 void func_800F4F44(s32, s32);
 s32 func_800F4FC8(void);
 extern u8 D_80104E77;
-void func_800F11A4(BtlUnit *);
-void func_800F1150(BtlUnit *);
+void btlui_onUnitUntargetable(BtlUnit *);
+void btlui_onUnitTargetable(BtlUnit *);
 u32 func_800AB810(s32, s32);
 void btl_load(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
 s32 func_800AD4AC(s32, s32);
@@ -3376,9 +3376,9 @@ void btlui_init(void);
 void func_800AF1D0(void);
 s32 preload_update(void);
 void btl_endFrame(void);
-void func_800E9EC4(void);
+void btlui_waitFrame(void);
 void func_800EA290(void);
-void func_800EA1F8(u32 *, DRAWENV *);
+void btlui_drawOTagEnv(u32 *, DRAWENV *);
 void btl_cleanup(void);
 s32 func_800AC280(u32, s32 **, s32 **, s32 **);
 u32 func_8004AB64(s32);
@@ -3428,7 +3428,7 @@ extern void (*D_800F8E00)(Unk800FD56C *);
 extern void (*D_800F9038[])(BtlUnit *, s32);
 void btlui_drawPanelHeader(void);
 u8 btl_isCmdQueued(BtlUnit *, u8);
-void func_800F16DC(u8, u8);
+void btlui_targetFirst(u8, u8);
 typedef struct {
     u32 unk0; /* status mask */
     s16 unk4; /* icon */
@@ -3437,17 +3437,17 @@ typedef struct {
 extern Unk800F8F98 D_800F8F98[];
 extern Unk800F8F98 D_800F8F18[];
 void btl_removeQueuedCmd(BtlUnit *, u8);
-void func_800E9BBC(void);
-s32 func_800E9FF4(void);
+void btlui_frameUpdate(void);
+s32 btlui_isEnabled(void);
 void func_800EA5C4(void);
 void func_800EA548(void);
 void btlui_readPad(void);
 void func_800EB578(s32);
 void btlui_beginFrame(void);
 void func_800EA4D0(void);
-void func_800EA400(void);
+void btlui_input(void);
 void btlui_drawWindows(void);
-void func_800EA498(void);
+void btlui_update(void);
 void btlui_submitOt(void);
 s32 btl_partyHasSupport(s32, u32);
 u32 btl_addRgbClamped(u32, s32, s32, s32);
@@ -3456,8 +3456,8 @@ void menuList_pageDown(MenuList *, s32);
 extern s16 D_800F9048[];
 void btlfx_heapFree(void *);
 s32 btlfx_poolUpdate(Unk800DA1B8 *);
-void func_800F1790(u8, u8);
-BtlUnit *func_800F18F0(u8);
+void btlui_targetDefault(u8, u8);
+BtlUnit *btlui_findKoUnit(u8);
 extern u8 D_80104FF2;
 
 /* first unit flagged as the current target (bits 28 and 29 of unk68) */
@@ -3472,7 +3472,7 @@ static inline BtlUnit *find_target(void) {
 }
 
 extern u8 D_800F8E68[][2];
-void func_800F1A20(s32);
+void btlui_closeTargetWindow(s32);
 s32 func_8001DA6C(s16);
 s32 func_80063830(s32);
 void btl_startHitMotion(BtlUnit *);
@@ -3508,7 +3508,7 @@ typedef struct {
 } Unk800D0940;
 
 extern s32 D_800F7278;
-void func_800EF80C(Unk800EF80C *);
+void btlui_startTargetSelect(Unk800EF80C *);
 
 void btl_endPartyHitMotion(BtlUnit *);
 void btl_endEnemyHitMotion(BtlUnit *);
@@ -3520,9 +3520,9 @@ s32 math_cos(s32);
 void btlfx_execCmd(s32);
 void btlfx_showPopups(s32);
 void btlui_confirmTarget(void);
-void func_800EFF14(void);
-void func_800F40D0(Unk800F412C *);
-void func_800F4010(s32);
+void btlui_toggleTargetAll(void);
+void btlui_alignPanelLabel(Unk800F412C *);
+void btlui_resetGauges(s32);
 
 BtlObjSlot *btlfx_allocEffModel(void);
 void func_800C7730(BtlUnit9C *, s16 *, s16 *);
@@ -3530,7 +3530,7 @@ void func_800C7730(BtlUnit9C *, s16 *, s16 *);
 void GeoSplitVertices(BtlUnit9C *, s32, s32);
 s32 func_800DF670(BtlUnit9C *, s32);
 
-/* argument block of func_800EE37C */
+/* argument block of btlui_openList */
 typedef struct {
     s16 unk0;
     u8 unk2;
@@ -3539,12 +3539,12 @@ typedef struct {
     s32 unk8;
     s32 unkC;
 } Unk800EE37C;
-void func_800EE37C(Unk800EE37C *);
+void btlui_openList(Unk800EE37C *);
 extern RECT D_800F8E30;
 void func_8002E3A8(Window *, MenuList *);
 void btlui_drawListContent(Window *);
 void btlui_drawListOverlay(Window *);
-void func_800EF00C(void);
+void btlui_onListOpened(void);
 s32 btlfx_isSameSide(s32, s32);
 s32 func_800DA064(u8 *, s32, s32);
 extern u8 D_80104E70;
@@ -3580,13 +3580,13 @@ extern Unk800F3F10 D_800F9064;
 extern U16Pair D_800F9070[];
 s32 btl_pickRandomUnit(s32);
 s32 btlfx_stepSwingSound(u8 *, s32, s32);
-void func_800EF044(void);
+void btlui_closeList(void);
 extern u16 D_800F6A74[];
 extern struct Unk80100DC054 *D_80100E14; /* g_btlfxLoader.unk54 */
 s32 func_800D9FD8(u8 *, s32, s32 *);
-u8 func_800F29A4(void);
-void func_800F2890(s32);
-void func_800EBA10(Window *);
+u8 btlui_isListWindowOpen(void);
+void btlui_closeListWindow(s32);
+void btlui_onCmdWindowClosed(Window *);
 
 /* main exe: candidates for ff9.h */
 void func_800562E0(s32 *, s32);
@@ -3605,8 +3605,8 @@ static inline BtlUnit *BtlFindTargetCursor(void) {
     return NULL;
 }
 
-/* inlined copy of func_800F1B78 */
-static inline s32 func_800F1B78_inline(void) {
+/* inlined copy of btlui_getTargeting */
+static inline s32 btlui_getTargeting_inline(void) {
     BtlUnit *u;
     s32 n;
     if (g_btlTarget.unk2 >= 9 && g_btlTarget.unk2 <= 11) {
@@ -3621,7 +3621,7 @@ static inline s32 func_800F1B78_inline(void) {
     return n >= 2;
 }
 
-/* Queue-entry validity check inlined into func_800EAE8C. */
+/* Queue-entry validity check inlined into btlui_pruneMenuQueue. */
 static inline u8 BtlUnitCanAct(BtlUnit *u) {
     if (u == NULL) {
         return 0;
@@ -3665,7 +3665,7 @@ void btlcam_applyShake(s16 *);
 s32 btlfx_lerpRatio(s32, s32, s32, s32);
 s32 btlfx_randRange(s32, s32);
 s32 btlfx_sqrt(s32, s32);
-s32 func_800EA004(void);
+s32 btlui_isTargetSelect(void);
 s32 func_800EA094(void);
 
 typedef struct {
@@ -3935,7 +3935,7 @@ typedef struct {
 } Unk800FDED0;
 extern Unk800FDED0 D_800FDED0[2];
 extern Unk800FDED0 D_800FDEB8[2];
-void func_800E9DFC(void);
+void btlui_resetVsyncCount(void);
 
 /* main exe: candidates for ff9.h */
 u32 *func_8002FBC0(s32);
@@ -4252,10 +4252,10 @@ typedef struct {
 } Unk800F57F0;
 extern Unk800F57F0 D_800F57F0[];
 void func_800C23C8(BtlUnit *, s32, u32);
-/* func_800ED3F8 */
+/* btlui_drawTranceLabel */
 extern u8 D_800F8E18[]; /* text measured for the highlight bar width */
 extern CVECTOR D_800F8E20[4]; /* highlight bar gradient colours */
-void func_800ED7C0(s32, s32, s32, s32, s32, CVECTOR *);
+void btlui_drawPulseGradient(s32, s32, s32, s32, s32, CVECTOR *);
 /* btlfx_updateLoader */
 extern u16 D_800FEC68[];
 extern s32 D_80100D90[][2];

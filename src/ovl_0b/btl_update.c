@@ -27,8 +27,8 @@ s32 btl_update(void) {
                 }
             }
             if (D_8007AFB1 == 0) {
-                func_800E9F3C(1);
-                func_800E9F68(1);
+                btlui_enable(1);
+                btlui_setAtbEnabled(1);
             }
             n = b->scene.unk0 & 3;
             if (n == 0) {
@@ -42,7 +42,7 @@ s32 btl_update(void) {
         btl_updateCombat(g, b);
         break;
     case BTL_PHASE_END:
-        func_800E9F68(0);
+        btlui_setAtbEnabled(0);
         btl_victory(g, b);
         if (b->subPhase != 3) {
             b->escapeHeld = 0;
@@ -211,7 +211,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         arg1->fleeBrightness -= 2;
     }
     if (done) {
-        func_800E9F3C(0);
+        btlui_enable(0);
         switch (arg1->subPhase) {
         case 0:
         case 4:

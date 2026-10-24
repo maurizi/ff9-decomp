@@ -880,7 +880,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
     if (g_btlCamera.unkB4 != 0) {
         g_btlCamera.unkB4--;
     }
-    if ((u8)func_800EA094() != 1 && ((u8)func_800EA004() || D_800FE488.unkC != 0)) {
+    if ((u8)func_800EA094() != 1 && ((u8)btlui_isTargetSelect() || D_800FE488.unkC != 0)) {
         if (g_btlCamera.unkBA != 1) {
             g_btlCamera.unkBA = 1;
             g_btlCamera.unkB4 = 2;

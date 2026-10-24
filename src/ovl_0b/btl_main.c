@@ -303,7 +303,7 @@ void btl_cleanup(void) {
 
     s = g_gameState->unk1C->unk8E4.battle->unk11C0;
     DrawSync(0);
-    func_800E9E80();
+    btlui_exit();
     func_80054F80();
     func_800AB43C();
     func_800AB26C(&g_gameState->unk1C->unk8E4.battle->unk1354->unk10[0], 2);
@@ -2141,14 +2141,14 @@ void btl_beginFrame(void) {
     addPrim((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8], &D_800FDEB8[g_gameState->unk1C->unk8].unkC);
     addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_8002FBC0(g_gameState->unk1C->unk8));
     addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_800F4FB4(g_gameState->unk1C->unk8));
-    func_800E9DFC();
+    btlui_resetVsyncCount();
 }
 
 void btl_endFrame(void) {
     if (!(g_gameState->unk1C->unk0 & 0x100) && ((g_padPortHeld[0] & 0xF09) == 0xF09 || (g_padPortHeld[1] & 0xF09) == 0xF09)) {
         g_gameState->unk0 |= 1;
     }
-    func_800E9EC4();
+    btlui_waitFrame();
     setlen(&D_800FDED0[g_gameState->unk1C->unk8].unk0, 2);
     ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unk0)[1] = 0xE6000001;
     ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unk0)[2] = 0;
@@ -2159,7 +2159,7 @@ void btl_endFrame(void) {
     addPrim(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &D_800FDED0[g_gameState->unk1C->unk8].unkC);
     func_800EA290();
     if (!(g_gameState->unk1C->unk0 & 0x100) && !(g_gameState->unk1C->unk8E4.ovl65->unk0 & 0x200)) {
-        func_800EA1F8(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
+        btlui_drawOTagEnv(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &g_gameState->unk10[g_gameState->unk1C->unk8]);
         DrawOTag(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF]);
     }
     if (!(g_gameState->unk1C->unk0 & 0x20)) {

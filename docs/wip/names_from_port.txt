@@ -959,3 +959,190 @@ D_800CCFF4 g_worldZoneEncounterCount  # [code] half the number of g_worldEncount
 D_800CF444 g_worldDataSet  # [code] 1, or 4 when the story counter is >= 0x2B52 (func_800B69B4); selects world data 0x41B.. or 0x41E.. and the +0xFE encounter entries
 D_800CCE4B g_worldFog  # [string] printed as "Now Fog" by wm_getEncounterEntry, matched against the encounter entries' fog bit
 D_800D32E4 g_worldEncounterEventRows  # [code] world data pack entry 4: rows of 12 u16 entry numbers used by wm_applyEncounterEvents
+
+## ovl_0b cleanup/naming pass
+# Names from the ovl_0b cleanup pass (code evidence, 2026-10-24). Each "## bin" sub-section is rename.py input.
+# Struct fields are listed as FIELDS lines at the end of the section (tools/rename_fields.py).
+
+## ovl_0b: ovl_0b (cleanup pass: battle UI, btlui.c)
+func_800E9BBC btlui_frameUpdate  # [code] btlui_vsync runs it once per battle frame (D_80104E68.unkF, set by btlui_waitFrame): help, panel, target positions, window reaping
+func_800E9EC4 btlui_waitFrame  # [code] from btl_endFrame: DrawSync, then VSync until vsyncMode-1 vblanks have passed since btlui_resetVsyncCount, marks the frame done for btlui_vsync
+func_800E9DFC btlui_resetVsyncCount  # [code] clears the vsync counter btlui_vsync increments (from btl_beginFrame)
+func_800E9E80 btlui_exit  # [code] disables the UI, removes the VSync callback btlui_init installed, restores the key-repeat settings
+func_800E9F3C btlui_enable  # [code] 1 requests the UI on (applied by btlui_applyEnable at the next frame), 0 turns it off
+func_800EA550 btlui_applyEnable  # [code] turns a pending btlui_enable(1) into the active flag, enables ATB, rebuilds the panel and item lists
+func_800E9FF4 btlui_isEnabled  # [code] returns the active flag btlui_enable/btlui_applyEnable set
+func_800E9F68 btlui_setAtbEnabled  # [code] sets the flag btl_isAtbRunning tests; 0 also closes the menu and the help window
+func_800EA004 btlui_isTargetSelect  # [code] menuState == BTLUI_MENU_TARGET
+func_800EA0F8 btl_useReservedItem  # [code] un-reserves the item and removes one from the inventory (btlui_unreserveItem + btlui_removeItem)
+func_800EA124 btl_unreserveItem  # [code] wrapper of btlui_unreserveItem
+func_800EA144 btl_reserveItem  # [code] wrapper of btlui_reserveItem (btl_tryAutoPotion reserves the potion it queues)
+func_800EA164 btl_useItem  # [code] removes one of the item; un-reserves it when that was the last one
+func_800EA1B0 btl_addItem  # [code] wrapper of btlui_addItem (formulas that give an item)
+func_800EA1F8 btlui_drawOTagEnv  # [code] DrawOTagEnv with the UI's busy flag set around it (btl_endFrame)
+func_800EA230 btlui_drawOTag  # [code] DrawOTag with the UI's busy flag set around it
+func_800EA400 btlui_input  # [code] while ATB runs: help toggle (btlui_helpInput) and btlui_menuInput
+func_800EA498 btlui_update  # [code] btlui_updateMenu, panel update, win_updateAll, help slide
+func_800EA650 btlui_initPartyEntries  # [code] links each party unit to its g_btlUi entry (BtlUnit.unkB4) and builds its ability list
+func_800EA7B8 btlui_copyTranceAbilities  # [code] copies the ability slots of the normal command list to the trance command list's positions (D_800FDDD0 / D_800FDDF8 per character)
+func_800EAC88 btlui_checkSwdMagPartner  # [code] sets g_btlUi->unk12B7 when character 1 is in the party and unk12B8 when it or character 3 can't take part; btlui_buildCmdList hides/greys Swd Mag (0x1F) with them
+func_800EAD94 btlui_popMenuUnit  # [code] takes the next unit off the menu queue that can still act
+func_800EAE8C btlui_pruneMenuQueue  # [code] drops units that can no longer act from the menu queue, one entry per unit
+func_800EB05C btlui_initMenu  # [code] allocates g_btlUi, ambush ATB freeze, party entries, empty menu queue, window pointers
+func_800EB238 btlui_updateAtbFreeze  # [code] for the first 75 ticks the ambushed side's ATB stays still (g_btlUi->unk12B6 = btlui_getFrozenSide), then nobody's
+func_800EB9E0 btlui_getFrozenSide  # [code] from the ambush kind (scene.unk0 & 3): 0 back attack -> 1 (party), 1 first strike -> 0 (enemies), else 2 (none); btl_updateAtb skips that side
+func_800EB2A4 btlui_getMenuState  # [code] returns g_btlUi->menuState
+func_800EB2E0 btlui_clearMenuQueue  # [code] zeroes the menu queue counters
+func_800EB2FC btlui_flushMenuQueue  # [code] clears inMenuQueue on every queued unit, then empties the queue
+func_800EB358 btlui_queueMenuUnit  # [code] appends a unit whose ATB filled to the 4-entry menu queue (btl_updateAtb)
+func_800EB3A0 btlui_resetMenuQueue  # [code] empties the queue and clears inMenuQueue on every party unit
+func_800EB410 btlui_closeMenu  # [code] releases the menu unit, sets BTLUI_MENU_CLOSING and closes the windows
+func_800EB46C btlui_closeWindows  # [code] closes all menu windows (and the battle list window)
+func_800EB518 btlui_saveCursor  # [code] remembers the command cursor (arg1 0) or the list cursor/scroll for that command (Unk800EB518)
+func_800EB54C btlui_clearCursor  # [code] zeroes a Unk800EB518 cursor memory
+func_800EB590 btlui_getQueuedUnit  # [code] g_btlUi->unk12C8[i]
+func_800EB5AC btlui_clearAbilityLists  # [code] zeroes the three 0xC0-entry ability tables of every party entry
+func_800EB600 btlui_buildAbilityList  # [code] learned abilities, equipment abilities, trance copies, the character-3 extra list
+func_800EB63C btlui_addLearnedAbilities  # [code] per ability id: the character's AP counter and the AP needed (func_80034430 slot)
+func_800EB6FC btlui_addEquipAbilities  # [code] marks the abilities of the five equipped items (D_80069018 unkC[3])
+func_800EB7B0 btlui_canOpenMenu  # [code] unit alive, able to act and allowed by the menu mask D_800FDF3A
+func_800EB81C btlui_applyTargetable  # [code] BtlUnit.unkB2 2/3 clear/set the targetable bits (unk68 16 and 28) and update the target cursor
+func_800EBA10 btlui_onCmdWindowClosed  # [code] window close callback: BTLUI_MENU_NONE
+func_800EBB34 btlui_initHelp  # [code] clears the help state D_80104F90, allocates its 0x100-byte text buffer D_80104FA0
+func_800EBB78 btlui_helpInput  # [code] the Select bit 0x08000000 toggles the help window (btlui_toggleHelp)
+func_800EBBB4 btlui_updateHelpSlide  # [code] counts the help window's 7-frame slide-in, then redraws the panel (func_800F3ECC(0))
+func_800EBC30 btlui_checkHelpClose  # [code] closes the help window when the panel shows no entries or a close was requested
+func_800EBCB4 btlui_isHelpOpen  # [code] D_80104F90.unk0
+func_800EBCC4 btlui_toggleHelp  # [code] opens (sound 0x2AA, slide in) or requests closing (sound 0x65) the help window
+func_800EBD58 btlui_closeHelp  # [code] requests closing the help window
+func_800EBEFC btlui_removeItem  # [code] item_remove one; when none are left drops it from the item list (>= 0xE0) and the throw list (weapons with flag 4)
+func_800EC008 btlui_initItemLists  # [code] allocates D_80104FA8 (0x2E0), clears the reservations, builds both lists
+func_800EC048 btlui_buildItemLists  # [code] btlui_buildItemList + btlui_buildThrowList
+func_800EC070 btlui_addItem  # [code] item_add-type call func_80027D84(id, 1), then adds the id to the item or throw list when missing
+func_800EC130 btlui_getThrowListEntry  # [code] D_80104FA8->unk80[i] (throwable weapons; btlui_getItemListEntry is the item list)
+func_800EC14C btlui_reserveItem  # [code] ++ the per-item reservation count btlui_getItemReserved reads
+func_800EC170 btlui_unreserveItem  # [code] -- the reservation count
+func_800EC1B0 btlui_buildItemList  # [code] inventory slots with items >= 0xE0 (battle items), up to 31
+func_800EC258 btlui_buildThrowList  # [code] inventory weapons (< 0x58) with D_8006E0E8 flag 4 (throwable), up to 0x58
+func_800EC334 btlui_addItemListEntry  # [code] puts item_findSlot(id) in the first free item-list entry
+func_800EC3C0 btlui_addThrowListEntry  # [code] same for the throw list
+func_800EC44C btlui_findItemListEntry  # [code] item-list index of an item id, 0xFF if absent
+func_800EC49C btlui_findThrowListEntry  # [code] throw-list index of an item id, 0xFF if absent
+func_800EC4EC btlui_openCmdMenu  # [code] opens the command window (window 3) for g_btlUi->cmdUnit with btlui_drawCmdList/Overlay, sound 0x414
+func_800EC928 btlui_drawSideCmd  # [code] draws the Defend/Change box sliding out of the command window (text D_800F8DE4[side], frame btlui_drawSideFrame)
+func_800ECA50 btlui_confirmCmd  # [code] Cross in the command menu: runs D_800F8DF0[kind] for the command, or the side command (Defend/Change)
+func_800ECB5C btlui_buildCmdList  # [code] Attack, the character's two commands (trance set D_800FDDF8 in trance), Item; hides/greys Swd Mag
+func_800ED02C btlui_drawSideFrame  # [code] the side-command box: three sprites, texture window, fill
+func_800ED3F8 btlui_drawTranceLabel  # [code] the TRANCE label drawn over a pulsing gradient with mask-bit tricks
+func_800ED7C0 btlui_drawPulseGradient  # [code] POLY_G4 whose colours pulse between two pairs of c[] with the frame counter
+func_800EDAD4 btlui_cmdInput  # [code] BTLUI_MENU_CMD input handler (D_800F8D94[1]): Triangle pass, Cross confirm, up/down, left/right side commands
+func_800EDB68 btlui_updateCmdMenu  # [code] BTLUI_MENU_CMD update handler (D_800F8DA8[1]): rebuilds the command list
+func_800EDC3C btlui_onCmdMenuOpened  # [code] window opened callback: BTLUI_MENU_CMD; switches input to the character's controller port (two-controller option, func_8002C584)
+func_800EDCA0 btlui_cmdCursorUp  # [code] cursor up, skipping empty slots, sound 0x67
+func_800EDD1C btlui_cmdCursorDown  # [code] cursor down, skipping empty slots
+func_800EDD9C btlui_cmdSideInput  # [code] left/right held: slide the side command out, else back
+func_800EDDF8 btlui_passTurn  # [code] Triangle: closes the command window and requeues the unit (btlui_onPassClosed)
+func_800EDE6C btlui_selectDirectCmd  # [code] command kind 0 (D_800F8DF0[0]): goes straight to target selection with the command's ability
+func_800EDF34 btlui_openAbilityList  # [code] command kind 1: btlui_openList with the ability-list labels
+func_800EDF90 btlui_openItemList  # [code] command kind 2: btlui_openList with the item labels
+func_800EDFEC btlui_openThrowList  # [code] command kind 3: btlui_openList with the throw labels
+func_800EE048 btlui_issueSideCmd  # [code] issues Defend (right) or Change (left) (D_800F8E04 = {0, 4, 7}) and closes the window
+func_800EE0FC btlui_onSideCmdClosed  # [code] window closed callback after btlui_issueSideCmd
+func_800EE120 btlui_onPassClosed  # [code] window closed callback after btlui_passTurn: requeues the unit
+func_800EE154 btlui_slideLeft  # [code] left: slides the Change box out (5 steps)
+func_800EE24C btlui_slideRight  # [code] right: slides the Defend box out
+func_800EE31C btlui_slideBack  # [code] neither held: slides the side box back in
+func_800EE37C btlui_openList  # [code] opens the ability/item list window (window 2) for the chosen command, restoring the remembered cursor
+func_800EE680 btlui_selectAbility  # [code] list confirm for abilities: usable ones go to target selection
+func_800EE7F8 btlui_selectItem  # [code] list confirm for items: one left after reservations goes to target selection
+func_800EE938 btlui_selectThrow  # [code] list confirm for throwable weapons
+func_800EED30 btlui_updateList  # [code] BTLUI_MENU_LIST update handler: closes the list when the command became unusable (Swd Mag partner, trance change)
+func_800EEDD4 btlui_nextDoubleCast  # [code] counts the first pick of Dbl Wht / Dbl Blk (D_80104FD0.unk10)
+func_800EEDF0 btlui_getListHelpText  # [code] help text of the list entry under the cursor (D_800F8E58[kind])
+func_800EEE3C btlui_listConfirm  # [code] Cross in the list: D_800F8E38[kind] select, sound 0x67 or 0x66
+func_800EEFA8 btlui_drawListScroll  # [code] draws the rows of the list's scrolling view
+func_800EF00C btlui_onListOpened  # [code] window opened callback: BTLUI_MENU_LIST
+func_800EF044 btlui_closeList  # [code] closes the list window, back to the command menu (btlui_onListClosed)
+func_800EF094 btlui_drawListRow  # [code] D_800F8E48[kind] row drawer (btlui_drawAbilityRow, btlui_drawItemRow, btlui_drawThrowRow)
+func_800EF390 btlui_drawThrowRow  # [code] weapon name and count left after reservations
+func_800EF4D8 btlui_resolveAbility  # [code] Carbuncle 0x44 -> 0x45-0x47 and Fenrir 0x42 -> 0x43 by the equipped accessory
+func_800EF5E0 btlui_getAbilityHelpText  # [code] help text of the ability under the list cursor (D_800F96E4 + D_800FB1F0[k])
+func_800EF674 btlui_getItemHelpText  # [code] help text of the item under the list cursor (D_800FB4F0 + D_800FD36C[id])
+func_800EF724 btlui_getThrowHelpText  # [code] same for the throw list
+func_800EF7D4 btlui_onListClosed  # [code] window closed callback: back to BTLUI_MENU_CMD
+func_800EF80C btlui_startTargetSelect  # [code] fills g_btlTarget from the chosen command/ability and sets the default targets
+func_800EFA10 btlui_setDefaultTargets  # [code] marks the default targets (unk68 bit 29) for the target type (all, self, D_800F8E68 side/all)
+func_800EFB3C btlui_cycleTarget  # [code] moves the single target cursor to the previous/next targetable unit of its side
+func_800EFD1C btlui_switchTargetSide  # [code] moves the cursor to the other side when the target type allows it
+func_800EFF14 btlui_toggleTargetAll  # [code] L1/R1: toggles between one target and the whole side
+func_800F028C btlui_refreshTargets  # [code] retargets when the cursor unit died or vanished
+func_800F0620 btlui_confirmDoubleCast  # [code] Dbl Wht / Dbl Blk: the first pick is stored, the second issues both (delayedCmd and cmd)
+func_800F0A54 btlui_drawTargetList  # [code] target-name window: enemy names left, party names right, colored by state
+func_800F0BE0 btlui_drawTargetListOverlay  # [code] target-name window labels and hand cursors
+func_800F0F60 btlui_getTargetHelpText  # [code] "<verb> <name>" / "all" help text for the current targets
+func_800F1150 btlui_onUnitTargetable  # [code] a unit became targetable while all-targeting: redo the default targets
+func_800F11A4 btlui_onUnitUntargetable  # [code] a targeted unit left: unmark it and redo the default targets
+func_800F1300 btlui_updateTarget  # [code] BTLUI_MENU_TARGET update handler (D_800F8DA8[3]): cancels when the command became unusable
+func_800F1370 btlui_getTargetWindow  # [code] g_btlUi->unk12A4[0]
+func_800F13BC btlui_getTargetReturnState  # [code] g_btlTarget.unk0, the menu state btlui_cancelTarget returns to
+func_800F13CC btlui_countTargeted  # [code] units with unk68 bit 29 (target cursor)
+func_800F142C btlui_clearTargeted  # [code] clears unk68 bit 29 on every unit
+func_800F1484 btlui_collectCursorPositions  # [code] screen positions of the targetable on-screen units into D_80105020 for btlui_drawTargetCursors
+func_800F1548 btlui_getCursorPositions  # [code] &D_80105020
+func_800F160C btlui_targetPrev  # [code] btlui_cycleTarget(0), sound 0x67
+func_800F1640 btlui_targetNext  # [code] btlui_cycleTarget(1)
+func_800F1674 btlui_targetEnemySide  # [code] btlui_switchTargetSide(0)
+func_800F16A8 btlui_targetPartySide  # [code] btlui_switchTargetSide(1)
+func_800F16DC btlui_targetFirst  # [code] marks the first (or every) targetable unit of a side
+func_800F1790 btlui_targetDefault  # [code] like btlui_targetFirst, preferring a KO unit (revive) or the caster itself
+func_800F18F0 btlui_findKoUnit  # [code] first targetable KO unit of a side
+func_800F1970 btlui_openTargetWindow  # [code] opens the target-name window (window 0)
+func_800F1A20 btlui_closeTargetWindow  # [code] closes the target-name window, state to restore in g_btlTarget.unk12
+func_800F1A8C btlui_onTargetWindowOpened  # [code] window opened callback: dims the list/command windows, sets the saved state
+func_800F1AF8 btlui_onTargetWindowClosed  # [code] window closed callback: undims, restores the saved state
+func_800F1B78 btlui_getTargeting  # [code] BtlCmd targeting value: 2 for target types 9-11, else 1 when several units are marked
+func_800F1BFC btlui_drawListCursors  # [code] hand sprites next to the targeted party rows of the battle list window
+func_800F1E84 btlui_drawHpList  # [code] party HP / max HP rows (battle list window page)
+func_800F1FBC btlui_drawMpList  # [code] party MP / max MP rows
+func_800F2118 btlui_drawStatusList  # [code] up to 9 status icons per party unit (D_800F8F18, 16 entries)
+func_800F224C btlui_drawStatusList2  # [code] status icons at fixed columns (D_800F8F98, 8 entries)
+func_800F27CC btlui_openListWindow  # [code] opens the battle list window (window 1) below the panel with page arg (D_800F8F04 drawers)
+func_800F2890 btlui_closeListWindow  # [code] closes the battle list window
+func_800F28F0 btlui_resizeListWindow  # [code] resizes the battle list window to the current entry count
+func_800F29A4 btlui_isListWindowOpen  # [code] D_80105058.unk0
+func_800F2A0C btlui_initHeap  # [code] UI bump allocator over GameData.unk7E0 (0x8000 bytes)
+func_800F2A60 btlui_alloc  # [code] bump allocation, rounded up to 4 bytes
+func_800F2AAC btlui_updatePanel  # [code] party panel rows: units, can-act, slot, ATB speed (2 slow/stop, 3 haste), trance gauge kind
+func_800F316C btlui_updateGauges  # [code] steps the animated HP/MP readouts (Unk80104F88Gauge) toward the units' values
+func_800F3C08 btlui_initPanel  # [code] allocates D_80105078 (0x8C), builds the panel rows and header labels
+func_800F3D0C btlui_updatePanelAnims  # [code] header label slides, gauge readouts, highlight pulse
+func_800F3E60 btlui_refreshPanel  # [code] btlui_updatePanel and the highlighted row
+func_800F3EA4 btlui_getPanel  # [code] returns D_80105078
+func_800F3EB4 btlui_isPanelShown  # [code] D_80105078->unk0
+func_800F3ECC btlui_showPanel  # [code] sets D_80105078->unk0
+func_800F3F10 btlui_slidePanelLabels  # [code] moves the panel header labels by their slide records (Unk800F3F10), calling the done hook
+func_800F3FDC btlui_pulsePanelHighlight  # [code] triangle wave 0..0x1F from the frame counter into D_80105078->unk54
+func_800F4010 btlui_resetGauges  # [code] snaps a row's HP/MP readouts to the unit's values
+func_800F40D0 btlui_alignPanelLabel  # [code] right-aligns a header label (kind 1) by its text width
+func_800F412C btlui_startLabelSlide  # [code] starts a header-label slide record
+func_800F42F0 btlui_findHighlightRow  # [code] panel row of the menu unit
+func_800F4384 btlui_drawPortIcons  # [code] two-controller option (GameState.unk24 bit 5): draws the controller-port icons by the active port into their own OT
+func_800F4630 btlui_saveKeyRepeat  # [code] saves both ports' 0x17 key-repeat enables (main func_8002C700) and sets the battle ones
+func_800F4700 btlui_restoreKeyRepeat  # [code] restores the key-repeat enables btlui_saveKeyRepeat saved
+func_800F4884 btlui_initPrims  # [code] allocates D_801050D8 (0x368) and builds the fixed sprites per draw buffer
+func_800F48E4 btlui_initDrawBufs  # [code] allocates the UI primitive/OT buffers (func_8002BEEC), sets g_ot/g_primPtr, stores both display origins in D_801051E8
+D_80104E68 g_btluiState  # [code] UI frame state: active flags, vsync counter (unk1C), frame-done flag (unkF), ATB enable (unk2) (btlui_vsync, btlui_enable, btl_isAtbRunning)
+D_80104F90 g_btluiHelp  # [code] help window state (btlui_toggleHelp, btlui_drawHelpWindow)
+D_80104FA0 g_btluiHelpText  # [code] 0x100-byte help text buffer (btlui_initHelp, btlui_getCmdHelpText)
+D_80104FA8 g_btluiItems  # [code] battle item and throw lists plus reservations (btlui_initItemLists)
+D_80104FD0 g_btluiList  # [code] state of the open ability/item list (btlui_openList)
+D_80105020 g_btluiCursors  # [code] target-cursor screen positions (btlui_collectCursorPositions)
+D_80105060 g_btluiHeap  # [code] UI bump allocator (btlui_initHeap, btlui_alloc)
+D_80105078 g_btluiPanel  # [code] party panel state (btlui_initPanel)
+D_801050D8 g_btluiPrims  # [code] fixed UI sprites per draw buffer (btlui_initPrims)
+D_801051E8 g_btluiDispOrigin  # [code] display x/y per draw buffer (btlui_initDrawBufs), added to DR_MOVE rects
+D_800F8D94 g_btluiMenuInput  # [code] per-menuState input handlers (btlui_menuInput)
+D_800F8DA8 g_btluiMenuUpdate  # [code] per-menuState update handlers (btlui_updateMenu)
+D_800F8DC4 g_btluiMenuHelp  # [code] per-menuState help-text getters (btlui_updateHelpText)
+func_800F47D8 btlui_anyOnSecondPort  # [code] two-controller option: 1 when a party member is assigned to port 2 (GameState.unk24 bits 20+)
+

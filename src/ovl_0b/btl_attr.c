@@ -537,8 +537,8 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->atb = arg0->max->maxAtb;
         arg0->cmdIssued = 1;
         btl_setCmd(arg0->cmd, BTL_CMD_SUMMON2, BTL_ABIL_TERRA_HOMING, (u16)arg2, 8);
-        func_800E9F3C(1);
-        func_800E9F68(1);
+        btlui_enable(1);
+        btlui_setAtbEnabled(1);
         break;
     }
 }
@@ -615,7 +615,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
 
     switch (arg0) {
     case 32:
-        func_800E9F68(0);
+        btlui_setAtbEnabled(0);
         b->phase = BTL_PHASE_END;
         b->escapeHeld = 0;
         b->subPhase = 2;

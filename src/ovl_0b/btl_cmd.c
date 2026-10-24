@@ -191,7 +191,7 @@ void btl_tryAutoPotion(BtlUnit *arg0, u8 arg1) {
     if (!(arg0->status & (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP | BTL_STATUS_FREEZE | BTL_STATUS_JUMP)) && arg1 < 0x30 && (arg0->support[1] & 0x01000000)) {
         for (i = 0xEC; (u8)i < 0xEE; i++) {
             if (item_getCount((u8)i) != 0) {
-                func_800EA144((u8)i);
+                btl_reserveItem((u8)i);
                 btl_queueAutoCmd(arg0, BTL_CMD_AUTO_POTION, (u8)i, arg0->unitBit);
                 return;
             }
@@ -650,7 +650,7 @@ s32 btl_checkCmdUsable(Battle *arg0, BtlCmd *arg1) {
             }
         }
         if (*(u16 *)&arg0->phase == 0x305) {
-            func_800E9F68(0);
+            btlui_setAtbEnabled(0);
             g_gameState->unk1C->unk55C++;
             if (arg1->subNo == 0) {
                 g_gameState->unk1C->unk56F |= 4;
@@ -856,7 +856,7 @@ void btl_execCmd(BtlUnit *arg0) {
         break;
     case BTL_CMD_ITEM:
     case BTL_CMD_AUTO_POTION:
-        func_800EA0F8(cmd->subNo);
+        btl_useReservedItem(cmd->subNo);
         tbl = D_8006B1F4;
         i = cmd->subNo - 0xE0;
         btl_calcCmd(u, arg0, cmd, ((BtlCmd8 *)(tbl + i))->formula);
@@ -866,7 +866,7 @@ void btl_execCmd(BtlUnit *arg0) {
         t = btl_getUnitsWithStatus(1, (BTL_STATUS_PETRIFY | BTL_STATUS_VENOM | BTL_STATUS_KO | BTL_STATUS_STOP));
         if (s == 0 || s == t) {
             b = g_gameState->unk1C->unk8E4.battle;
-            func_800E9F68(0);
+            btlui_setAtbEnabled(0);
             if (b->phase != BTL_PHASE_END) {
                 b->phase = BTL_PHASE_END;
                 b->subPhase = 0;
@@ -876,7 +876,7 @@ void btl_execCmd(BtlUnit *arg0) {
         btl_calcCmd(u, arg0, cmd, cmd->ability->formula);
         break;
     case BTL_CMD_THROW:
-        func_800EA0F8(cmd->subNo);
+        btl_useReservedItem(cmd->subNo);
     default:
         btl_calcCmd(u, arg0, cmd, cmd->ability->formula);
         break;
@@ -1374,7 +1374,7 @@ void btl_linkCmd(LinkNode *arg0, LinkNode **arg1) {
 void btl_releaseItem(BtlCmd *arg0) {
     u8 v = arg0->cmdNo;
     if ((u32)(v - 0xE) < 2 || v == 0x33) {
-        func_800EA124(arg0->subNo);
+        btl_unreserveItem(arg0->subNo);
     }
 }
 
@@ -2073,7 +2073,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
             sub2.subNo = cmd->ability->power;
             sub2.ability = (BtlCmd8 *)&g_gameState->unk1C->unk8E4.battle->abilities[0];
             btl_calcCmd(caster, target, &sub2, D_8006B1F4[sub2.subNo - 0xE0].unk4);
-            func_800EA164(sub2.subNo);
+            btl_useItem(sub2.subNo);
             return;
         }
         c.flags |= 1;
@@ -2384,7 +2384,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         btl_initStatusHitRate(&c);
         btl_halveHitForShell(&c);
         if (btl_rollStatusHit(&c)) {
-            func_800EA1B0(0xFE);
+            btl_addItem(0xFE);
         }
         break;
     case 0x55:
@@ -2489,7 +2489,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         target->magicDef >>= 1;
         break;
     case 0x5C:
-        func_800EA1B0(c.cmd->ability->power);
+        btl_addItem(c.cmd->ability->power);
         break;
     case 0x5D:
         if (btl_missIfDeathImmune(&c) && btl_checkTargetAlive(&c)) {
@@ -2779,7 +2779,7 @@ void btl_calcSteal(BtlCalc *arg0, Unk800B7F20 *arg1, s32 arg2) {
         if (g->unk56A < 9999) {
             g->unk56A++;
         }
-        func_800EA1B0(id);
+        btl_addItem(id);
         btl_showMessage(0xC, btl_getItemName(id));
         if (arg0->caster->support[1] & 0x20000000) {
             arg0->targetResult |= 1;
@@ -3707,7 +3707,7 @@ void func_800BAF70(BtlCalc *arg0) {
     if (item_getCount(id) == 0) {
         btl_showMessage(10);
     } else {
-        func_800EA164(id);
+        btl_useItem(id);
         btl_showMessage(0x1F, btl_getItemName(id));
     }
 }
