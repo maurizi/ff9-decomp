@@ -289,7 +289,7 @@ typedef struct BtlUnit9C {
     s16 unk78;
 } BtlUnit9C;
 
-/* GameData.unk8E0 entry as func_800AB810 fills it (ff9.h's Unk8E0 has pad4) */
+/* GameData.unk8E0 entry as btl_registerModel fills it (ff9.h's Unk8E0 has pad4) */
 typedef struct {
     s32 unk0; /* flags */
     s32 unk4; /* model id */
@@ -968,11 +968,11 @@ typedef struct {
 } Battle488; /* 0x18 */
 
 typedef struct {
-    void *unk0[4];
-    void *unk10[4];
-    void *unk20[4];
-    void *unk30[4];
-} Battle1354;
+    void *data[4]; /* registered battle files: [0] common data, [2] encounter, [3] background */
+    void *enemyModels[4]; /* enemy model files (btl_loadEnemyModelsStep) */
+    void *weaponFiles[4]; /* party weapon model files by slot (btl_loadWeaponModelsStep) */
+    void *partyModels[4]; /* party model files by slot (btl_loadPartyModelsStep) */
+} BtlFiles;
 
 typedef struct {
     u8 pad0;
@@ -1238,7 +1238,7 @@ typedef struct {
 
 /* GameData.unk8E4 while in battle */
 typedef struct Battle {
-    u16 flags; /* 1 background set up (btlbg_draw draws), 4 set by the party-model loader func_800AB580 */
+    u16 flags; /* 1 background loaded (btlbg_draw draws), 2 enemy models loaded, 4 party models loaded, 0x10 UI started, 0x20 disc cover open, 0x40 exit preloaded, 0x1000 battle over (btl_main) */
     u8 unk2[2];
     s32 unk4;
     s32 partyMotions[4][0x22]; /* per party member: motion data addresses; BtlUnit.motions points here (func_800BD698) */
@@ -1276,7 +1276,7 @@ typedef struct Battle {
     Battle132C scene;
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
-    Battle1354 *unk1354;
+    BtlFiles *files;
     Battle1358Ring popups;
     s32 unk1530;
     s32 dataSector; /* battle data file sector */
@@ -1969,7 +1969,7 @@ void btlbg_init(struct Unk800CEE74 *, BtlUnit9C50 *);
 void btl_initCmdQueue(struct Battle *);
 void func_800B0FC0(struct Battle *);
 void func_800C972C(void);
-s16 func_800AB580(s32);
+s16 btl_loadModelsStep(s32);
 extern s8 D_800FEC54;
 
 extern char g_btlfxErrorMsg[];
@@ -2413,7 +2413,7 @@ void func_800F386C(void);
 void func_800F3A8C(void);
 void btlui_updatePanelAnims(void);
 void btlui_drawPortIcons(void);
-void func_800AB4FC(void);
+void btl_unloadEnemyModels(void);
 u32 btl_addStatus(BtlUnit *, u32);
 u32 btl_countActiveUnits(u32);
 void btlcam_play(s32);
@@ -2485,8 +2485,8 @@ void btl_useItem(s32);
 void btlui_setAtbEnabled(u8);
 void btlui_drawListRow(s32, s32, s32, MenuView *);
 void func_800F4DFC(void);
-s32 func_800AB26C(void **, s32);
-void func_800AB43C(void);
+s32 btl_unregisterFiles(void **, s32);
+void btl_unloadPartyModels(void);
 void btlui_exit(void);
 void btl_updateStatusColor(BtlUnit *);
 void btl_setStoneClut(BtlUnit *, s32);
@@ -2547,7 +2547,7 @@ BtlUnit *btl_getUnitById(u16);
 void btl_main(s32);
 void btl_initMode(void);
 void btl_exitMode(void);
-s32 func_800AB324(s32, s32 *, s32 *);
+s32 btl_getDepSectors(s32, s32 *, s32 *);
 s32 btlfx_stepResetMotion(u8 *, s32, s32);
 s32 func_800D9110(u8 *, s32, s32);
 s32 btlfx_stepCallWeaponScript(u8 *, s32, s32);
@@ -2569,7 +2569,7 @@ void func_800C36D0(void);
 s32 btlseq_stepMove(BtlScript *, BtlUnit *);
 Unk800CC278 *func_800CC278(struct BtlUnit *);
 s32 func_800CC444(u32);
-s32 func_800AE47C(s32, u16);
+s32 btl_getWeaponSound(s32, u16);
 void btl_playUnitSound(BtlUnit *, u16, u8);
 s32 btlcam_step(void);
 void btlfx_spawnTask(s32, s32, s32, s32);
@@ -2675,7 +2675,7 @@ void btlfx_resetAll(void);
 void func_800E4098(void);
 s32 btlfx_isEnemyUnit(s32);
 void func_800E8B28(s32, s32, s32);
-s32 func_800A91EC(void);
+s32 btl_unloadCommonData(void);
 void btl_hideWeapon(BtlUnit *);
 void btl_showWeapon(BtlUnit *);
 s32 btlfx_align4(s32);
@@ -2690,8 +2690,8 @@ s32 btlfx_isPartyUnit(s32);
 s32 btlfx_getUnitWeapon(s32);
 s32 func_800DA0B8(s32);
 void btl_unreserveItem(s32);
-s32 func_800A9BE4(s32);
-s32 func_800ABBC4(s32, s32);
+s32 btl_reloadPartyStep(s32);
+s32 btl_swapPartyModelStep(s32, s32);
 u32 btlfx_getUnitStatus(s32, u32);
 void btlfx_resetUnitMotion(s32, u8);
 void btlfx_playSwingSound(s32);
@@ -2769,7 +2769,7 @@ typedef struct {
     s32 unkC;
 } Unk800AA958Req; /* CD read request */
 
-/* func_800ABBC4: model texture table (db_lookup section 2, tag 0x12) */
+/* btl_swapPartyModelStep: model texture table (db_lookup section 2, tag 0x12) */
 typedef struct {
     u16 unk0; /* model id */
     u8 pad2[4 - 2];
@@ -2812,10 +2812,10 @@ s32 func_8001CA70(s32);
 void func_80056048(s32, s32, s32);
 
 /* btl_soundCmd: sound/streamed music command handler */
-s32 func_800AE570(s32, s32 *);
-s32 func_800AE764(s32);
+s32 btl_getSoundFileSectors(s32, s32 *);
+s32 btl_getDepLink(s32);
 s32 func_800AE7C8(s32);
-void func_800AE844(Unk800AE844 *);
+void btl_onSoundRead(Unk800AE844 *);
 extern s32 D_800F51F0;
 extern u8 D_800F51F2; /* byte 2 of D_800F51F0 */
 extern s32 D_800F51F4;
@@ -2835,8 +2835,8 @@ void func_800557F0(s32);
 void func_80055730(s32, s32);
 void func_8005581C(s32, s32);
 
-s32 func_800AB07C(Unk800AA958 *, Unk800AA958Req *, s32, s32);
-s32 func_800ABA10(s32, s32);
+s32 btl_uploadModelTextures(Unk800AA958 *, Unk800AA958Req *, s32, s32);
+s32 btl_getPartyModelId(s32, s32);
 
 
 s32 btlfx_stepJumpHome(Unk800D955C *arg0, s32 arg1, s32 *arg2);
@@ -3027,7 +3027,7 @@ extern s32 g_btlbgBrightness;
 extern s32 g_btlbgOtShift;
 UnkPair *btlui_getItemListEntry(s32);
 Battle1330 *func_800C9600(Battle11C020 *);
-u32 func_800AAEF0(u32, u16 *, u16 *, u16 **, s32 *);
+u32 btl_findNearestFile(u32, u16 *, u16 *, u16 **, s32 *);
 s32 Hi_RegisterSummonModel(struct Unk80100DC054 *, s16 *);
 typedef struct {
     u32 unk0; /* uv/clut */
@@ -3047,7 +3047,7 @@ extern SprtWords D_801050C0;
 extern DR_TPAGE D_80105080;
 extern DR_STP D_80105090;
 extern u32 D_801050D4;
-s32 func_800AB2C8(void);
+s32 btl_findBackgroundId(void);
 Unk8010141C *btlfx_allocSummonModel(void);
 typedef struct {
     s16 unk0[6][2];
@@ -3202,8 +3202,8 @@ void btlui_checkHelpClose(void);
 void btlui_refreshPanel(void);
 void btlui_resizeListWindow(void);
 void btlui_collectCursorPositions(void);
-s32 func_800AB6F0(s32, s32);
-void func_800AB758(s32, s32, s32 **, s32 **, s32 **);
+s32 btl_findWeaponModel(s32, s32);
+void btl_getWeaponTexInfo(s32, s32, s32 **, s32 **, s32 **);
 BtlUnit *btlui_getActiveUnit(void);
 void btlseq_update(void);
 u8 *btlbg_draw(MATRIX *, s32, s32, u32 *, s32);
@@ -3304,7 +3304,7 @@ void btlfx_getUnitRot(s32, s16 *);
 extern u16 D_800F524C[][0x22];
 Unk800CC278 *btl_popupHp(s32, s16, s16, u8);
 Unk800CC278 *btl_popupMp(s32, s16, s16, u8);
-void func_800EA338(s8);
+void btlui_setPauseRequest(s8);
 s32 btlfx_stepRunToTarget(Unk800D7C9C *, s32, s32 *);
 s32 func_800D974C(Unk800D7C9C *, s32, s32 *);
 
@@ -3337,7 +3337,7 @@ s32 func_800F4FC8(void);
 extern u8 D_80104E77;
 void btlui_onUnitUntargetable(BtlUnit *);
 void btlui_onUnitTargetable(BtlUnit *);
-u32 func_800AB810(s32, s32);
+u32 btl_registerModel(s32, s32);
 void btl_load(); /* takes the battle id (s32); unprototyped, the caller passes an s16 unconverted */
 s32 func_800AD4AC(s32, s32);
 s32 func_8004AAF0(s32);
@@ -3364,23 +3364,23 @@ void func_80031244(SVECTOR *, MATRIX *);
 s32 btl_setupBackground(Battle11C0 *, s32);
 s32 btl_loadEncounterFile(Unk800AA08C *, s32);
 void btl_beginFrame(void);
-void func_800A8BF4(void);
-u8 func_800EA30C(void);
-void func_800A882C(void);
+void btl_checkDiscCover(void);
+u8 btlui_isPauseRequested(void);
+void btl_updatePause(void);
 s32 btl_update(void);
 extern u8 D_8007AFB1;
 void btl_updateIntro(GameData *, Battle *);
 void btl_updateCombat(GameData *, Battle *);
 void btl_victory(GameData *, Battle *);
 void btlui_init(void);
-void func_800AF1D0(void);
+void btl_preloadExit(void);
 s32 preload_update(void);
 void btl_endFrame(void);
 void btlui_waitFrame(void);
 void func_800EA290(void);
 void btlui_drawOTagEnv(u32 *, DRAWENV *);
 void btl_cleanup(void);
-s32 func_800AC280(u32, s32 **, s32 **, s32 **);
+s32 btl_getModelTexInfo(u32, s32 **, s32 **, s32 **);
 u32 func_8004AB64(s32);
 /* object slot returned by func_8001E350 in battle */
 typedef struct {
@@ -3960,7 +3960,7 @@ static inline u8 BtlUnitHasStatus(BtlUnit *u, u32 m) {
     return (u->autoStatus & m) || (u->status & m);
 }
 
-/* disc cover open screen (func_800A882C) */
+/* disc cover open screen (btl_updatePause) */
 extern u32 D_800FDEB0[1];
 extern DR_STP D_800FDF18;
 extern TILE D_800FDE98;
@@ -3971,9 +3971,9 @@ void func_80023F60(s32);
 void func_80055698(s32);
 void func_800EA34C(void);
 
-s32 func_800AA958(s32, Unk800AA958 *);
-s32 func_800AABC4(s32, Unk800AA958 *);
-s32 func_800ABB60(s32);
+s32 btl_loadWeaponModelsStep(s32, Unk800AA958 *);
+s32 btl_loadPartyModelsStep(s32, Unk800AA958 *);
+s32 btl_getWeaponModelHeader(s32);
 BtlUnit *btl_getUnitBySlot(s32);
 void func_800BD698(BtlUnit *, s32, s32);
 u8 *func_80063514(s32);
@@ -3989,7 +3989,7 @@ typedef struct {
     } unk8;
     u8 pad18[0x24 - 0x18];
     s32 unk24;
-} Unk800AA24C; /* model file load state (func_800AA24C) */
+} Unk800AA24C; /* model file load state (btl_loadSoundsStep) */
 
 typedef union {
     u32 w;
@@ -4007,8 +4007,8 @@ typedef struct {
     s32 unkC;
 } FileEntryX;
 
-s32 func_800AA24C(s16, s32, Unk800AA24C *);
-/* battle scene model load state (func_800AA504) */
+s32 btl_loadSoundsStep(s16, s32, Unk800AA24C *);
+/* battle scene model load state (btl_loadEnemyModelsStep) */
 typedef struct {
     s16 unk0; /* state */
     u16 unk2; /* next state */
@@ -4051,11 +4051,11 @@ typedef struct {
     s16 unk6;
 } Unk800AA504Pos8;
 
-s32 func_800AA504(s32, s32, Unk800AA504 *);
+s32 btl_loadEnemyModelsStep(s32, s32, Unk800AA504 *);
 
-/* inlined into func_800AA24C: append the ids of file-table entries of the
+/* inlined into btl_loadSoundsStep: append the ids of file-table entries of the
  * given type/kind to dst, skipping duplicates */
-static inline void func_800AA24C_collect(s16 *dst, u32 type, u32 kind) {
+static inline void btl_loadSoundsStep_collect(s16 *dst, u32 type, u32 kind) {
     FileTable *t = g_gameState->unk1C->depTable;
     FileEntryX *first = (FileEntryX *)t->unk4;
     FileEntryX *e = &first[t->unk2] - 1;
@@ -4217,7 +4217,7 @@ extern s32 D_800FEC5C; /* g_btlfxState.unk1C */
 
 /* btlfx_runScript: battle event script */
 s32 func_800AB3E4(s32, s32);
-s32 func_800AB410(s32);
+s32 btl_reloadParty(s32);
 void btlcam_beginEffect(void);
 void btlcam_endEffect(void);
 void btlfx_swapVramPages(s32, u32 *, s32);

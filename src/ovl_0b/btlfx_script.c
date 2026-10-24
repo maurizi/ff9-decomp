@@ -133,7 +133,7 @@ void btlfx_runScript(void) {
     s32 k;
     Unk800FEC40 *d = &g_btlfxState;
 
-    if (d->unk22 != 0 && func_800AB410(0) == 0) {
+    if (d->unk22 != 0 && btl_reloadParty(0) == 0) {
         d->unk22 = 0;
         btlfx_restorePartyLooks();
     }
@@ -321,7 +321,7 @@ void btlfx_runScript(void) {
                         }
                         cont = 0;
                     } else {
-                        func_800AB410(1);
+                        btl_reloadParty(1);
                         d->unk22 = 1;
                         cont = 0;
                     }
@@ -1133,7 +1133,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
 void btlfx_playSwingSound(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     if (btlfx_isPartyUnit(arg0) != 0) {
-        btl_soundCmd(0xD000, func_800AE47C((u8)u->unk68 >> 5, 0), 0, btl_soundPan(arg0), 0x7F);
+        btl_soundCmd(0xD000, btl_getWeaponSound((u8)u->unk68 >> 5, 0), 0, btl_soundPan(arg0), 0x7F);
     }
 }
 

@@ -238,11 +238,11 @@ void func_800EA290(void) {
     }
 }
 
-u8 func_800EA30C(void) {
+u8 btlui_isPauseRequested(void) {
     return g_btluiState.unk6 ? g_btluiState.unkB : 0;
 }
 
-void func_800EA338(s8 arg0) {
+void btlui_setPauseRequest(s8 arg0) {
     g_btluiState.unkB = arg0;
 }
 

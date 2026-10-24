@@ -1208,7 +1208,7 @@ s32 btl_playVictoryMusic(GameData *arg0, u32 arg1, s32 arg2) {
 
 void btl_playHitSound(BtlUnit *arg0, BtlUnit *arg1) {
     if (!(arg1->popupFlags & 0x20)) {
-        btl_playUnitSound(arg0, (u16)func_800AE47C((u8)arg0->unk68 >> 5, 1), 0x7F);
+        btl_playUnitSound(arg0, (u16)btl_getWeaponSound((u8)arg0->unk68 >> 5, 1), 0x7F);
     }
 }
 

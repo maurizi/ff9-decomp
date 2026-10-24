@@ -1765,7 +1765,7 @@ s32 *func_800E871C(s32 arg0, s32 *arg1) {
 }
 
 void func_800E87C4(s32 arg0) {
-    func_800AB4FC();
+    btl_unloadEnemyModels();
     btlfx_copyWords(g_gameState->unk1C->unk8E4.battle->unk11C0->unk44, g_btlfxLoader.unk54->unk50[0], arg0 << 10);
     g_btlfxLoader.unk54->unk50[0] = g_gameState->unk1C->unk8E4.battle->unk11C0->unk44;
 }

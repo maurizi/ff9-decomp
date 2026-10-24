@@ -315,7 +315,7 @@ void btl_updateIntro(GameData *arg0, Battle *arg1) {
     u8 g;
 
     ot = (u32 *)arg1->unk11C0->unk34[arg0->unk8];
-    func_800AB580(0);
+    btl_loadModelsStep(0);
     if ((arg1->flags & 2) && (*(u32 *)&arg1->fleeBrightness & 0x2800) == 0x800) {
         func_800C072C();
         arg1->loadFlags |= 0x20;

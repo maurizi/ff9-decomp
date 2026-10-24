@@ -14,7 +14,7 @@ void btl_startBattle(void) {
     g_btlRewards.unkB = (b->scene.unk0 >> 13) & 1;
     func_8004C204();
     func_8004BC38();
-    func_800AB580(1);
+    btl_loadModelsStep(1);
     func_8002FA50(0x20);
     btlcam_playScene(func_800CA2B0(0));
     b->phase = BTL_PHASE_INTRO;

@@ -293,8 +293,8 @@ void btl_initWeapon(Character *arg0, BtlUnit *arg1) {
     s32 id;
     arg1->weapon = (u8 *)&D_8006E0E8[arg0->equip[0]];
     id = ((Unk8006E0E8 *)arg1->weapon)->unk2 | 0x20000;
-    arg1->weaponModel->unk8 = (BtlUnit9C8 *)func_800AB6F0(id, (u8)arg1->unk68 >> 5);
-    func_800AB758(id, (u8)arg1->unk68 >> 5, &a, &b, &c);
+    arg1->weaponModel->unk8 = (BtlUnit9C8 *)btl_findWeaponModel(id, (u8)arg1->unk68 >> 5);
+    btl_getWeaponTexInfo(id, (u8)arg1->unk68 >> 5, &a, &b, &c);
     func_800C7730(arg1->weaponModel, (s16 *)a, (s16 *)b);
     func_800C2344(arg1->weaponModel);
     arg1->weaponModel->unkC = 0;

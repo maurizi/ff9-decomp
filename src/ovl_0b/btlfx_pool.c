@@ -382,7 +382,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 case 4:
                     d->unk50 = 1;
-                    func_800AB43C();
+                    btl_unloadPartyModels();
                     dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     d->unk54 = (Unk80100DC054 *)dst;
                     ((Unk80100DC054 *)dst)->unk4C = 0;
@@ -413,7 +413,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     break;
                 case 9:
                     if (g_btlfxEnv->unkC->unk40 & 8) {
-                        func_800AB43C();
+                        btl_unloadPartyModels();
                         dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
                         dst = (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;
@@ -546,7 +546,7 @@ x = *p++ << 11; rd += x; d->unk20 = (u8 *)0x801F1700 + x; dst = (u8 *)0x801F1700
                     m = 1;
                     d->unk53 = 1;
                     if (g_btlfxEnv->unkC->unk40 & 8) {
-                        func_800AB43C();
+                        btl_unloadPartyModels();
                         base = (void *)g_gameState->unk1C->unk8E4.battle->unk153C[0];
                     } else {
                         base = (void *)g_gameState->unk1C->unk8E4.battle->unk11C0->unkC;

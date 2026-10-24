@@ -1146,3 +1146,38 @@ D_800F8DA8 g_btluiMenuUpdate  # [code] per-menuState update handlers (btlui_upda
 D_800F8DC4 g_btluiMenuHelp  # [code] per-menuState help-text getters (btlui_updateHelpText)
 func_800F47D8 btlui_anyOnSecondPort  # [code] two-controller option: 1 when a party member is assigned to port 2 (GameState.unk24 bits 20+)
 
+
+## ovl_0b: ovl_0b (cleanup pass: battle flow and loaders, btl_main.c)
+func_800A882C btl_updatePause  # [string] "Disc Cover Open": pauses the battle (sound, CD) and draws the pause sprite 0xEB or the disc-cover message; resumes when the request clears (btl_main, after btlui_isPauseRequested)
+func_800A8BF4 btl_checkDiscCover  # [code] sets/clears Battle.flags 0x20 (disc cover open) from the CD lid state (func_800230A0, cd_getState) and requests the pause screen
+func_800EA30C btlui_isPauseRequested  # [code] the pause request btlui_readPad sets on Start (g_padRepeat 8) while the UI is up
+func_800EA338 btlui_setPauseRequest  # [code] sets/clears the pause request (btl_updatePause, btl_checkDiscCover)
+func_800A91EC btl_unloadCommonData  # [code] db_unregister of the common battle data btl_loadCommonData registered (from btl_exitMode)
+func_800A9BE4 btl_reloadPartyStep  # [code] state machine: sounds, weapon models, party models (btl_load*Step), then rebinds each party unit's model, motions and weapon; Battle.flags |= 4 when done (runtime: during summons, via func_800AB410)
+func_800AA24C btl_loadSoundsStep  # [code] CD state machine over the battle's sound files (kind 0xB): hands each file's 0x90000 block to the AKAO bank loaders (func_80055D80 / func_80056048)
+func_800AA504 btl_loadEnemyModelsStep  # [code] CD state machine over the dependency table's model entries (type 2, files 0x20000 | id), nearest sector first; uploads their textures, Battle.flags |= 2 when done
+func_800AA958 btl_loadWeaponModelsStep  # [code] CD state machine over the party's weapon models (D_8006E0E8[equip[0]].unk2, file kind 8), registered in Battle.unk1354->unk20[slot]
+func_800AABC4 btl_loadPartyModelsStep  # [code] CD state machine over the party models (btl_getPartyModelId, file kind 0xA), registered in Battle.unk1354->unk30[slot]
+func_800AAEF0 btl_findNearestFile  # [code] of a list of file ids, the one with the lowest disc sector (file_find, else the dependency table) and its size; it marks which to read next
+func_800AB07C btl_uploadModelTextures  # [code] uploads a model file's texture blocks (0x40000) to its slot's VRAM column and rewrites the tpage/clut words
+func_800AB26C btl_unregisterFiles  # [code] db_unregister and clear arr[0..n]
+func_800AB2C8 btl_findBackgroundId  # [code] dependency-table entry of kind 0xC (the background, btl_setupBackground)
+func_800AB324 btl_getDepSectors  # [code] sector and length of a dependency-table key
+func_800AB38C btl_getLinkedDepSectors  # [code] btl_getDepSectors of the key's link (unkC)
+func_800AB410 btl_reloadParty  # [code] btl_reloadPartyStep(0x207), 0x8207 restarts it; runtime 48-57 calls per summon (docs/runtime-findings.md "Summons")
+func_800AB43C btl_unloadPartyModels  # [code] unregisters the weapon and party model files, clears Battle.flags 4
+func_800AB4FC btl_unloadEnemyModels  # [code] unregisters the enemy model files, clears Battle.flags 2
+func_800AB580 btl_loadModelsStep  # [code] sounds, enemy models, weapons, party models in turn (each btl_load*Step), then Battle.flags |= 4; btl_updateIntro polls it
+func_800AB6F0 btl_findWeaponModel  # [code] block 4/id inside the slot's weapon file (btl_initWeapon)
+func_800AB758 btl_getWeaponTexInfo  # [code] the three texture tables (tpage, clut, rect) of the slot's weapon file (block 0x120000)
+func_800AB810 btl_registerModel  # [code] GameData.unk838 hook: fills a model slot (mesh, animation, textures, texture animations) for a model id, returns the slot
+func_800ABA10 btl_getPartyModelId  # [code] the party slot's model file id: D_800F5200 by character model, +0x13 for the other (trance) model
+func_800ABB60 btl_getWeaponModelHeader  # [code] block 0x20000 of the slot's weapon file
+func_800ABBC4 btl_swapPartyModelStep  # [code] reloads one party member's model (CD, textures, motions) and rebinds the unit (runtime: trance, via func_800AB3E4)
+func_800AC244 btl_getAnimFileId  # [code] animation file id (0x30000 | entry[1]) for a model id
+func_800AC280 btl_getModelTexInfo  # [code] texture tables of a model id; copied to the work heap for slots >= 9
+func_800AE47C btl_getWeaponSound  # [code] sound id (0x80000 | n entry) in the party slot's weapon file: 0 swing (btlfx_playSwingSound), 1 by btl_status.c
+func_800AE570 btl_getSoundFileSectors  # [code] sector (and size) of a sound file: dependency entry for kind 7, else file kind 11
+func_800AE764 btl_getDepLink  # [code] link field (unkC) of a dependency-table key
+func_800AE844 btl_onSoundRead  # [code] CD read callback of btl_soundCmd's sound-bank reads: passes the received part to func_80055E14 / func_80056048
+func_800AF1D0 btl_preloadExit  # [code] once GameData.unk56F & 0x40 (battle ending): preloads file 0x10065 to 0x801EDF00 and 0x2713 into the battle buffer
