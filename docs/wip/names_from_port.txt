@@ -985,7 +985,7 @@ func_800A9570 fld_refindSectors  # [code] when FieldMap.unk0 & 0x10000, finds th
 func_800A97D4 fld_findEventScript  # [code] FieldScene.unkC = db item 0x50000|field (the event script, docs/encounters.md), passed to evt_init by fld_load
 func_800A9860 fld_setupBackground  # [code] finds the field background (key from fld_getBgKey) -> FieldScene.unk14 for func_800C0DA4, and its 0xB0000 link (walkmesh) -> unk18 for func_800C3B80
 func_800A9998 fld_startAudio  # [code] waits for the sound request handler (func_800B0124 0xC00), starts the music when GameData.unk0 & 0x400000, uploads the fld_readSoundBank data
-func_800A9AAC fld_loadTexturesInCdOrder  # [code] loads the queued textures (D_800C9F20, FieldScene.unk60 entries) with func_800AA4E8, lowest CD sector (file_find(0xA)) first
+func_800A9AAC fld_loadModelBundlesInCdOrder  # [code] loads the queued model bundles (D_800C9F20, FieldScene.unk60 entries) with func_800AA4E8, lowest CD sector (file_find(0xA)) first
 func_800AA074 fld_freeFieldFile  # [code] db_unregister of FieldScene.unk24, the container fld_loadFile registered (fld_exit)
 func_800AA0C8 fld_getBgKey  # [code] db_lookup mode 3 (key by index) of block kind 0xA in the field file container FieldScene.unk24
 # FIELD FieldScene unkA nextId, unkC eventScript, unk14 bg, unk18 walkmesh, unk24 fieldFile, unk4A exitReason (FLD_EXIT_* in ovl_0a.h)
@@ -1072,3 +1072,137 @@ D_800CAA58 g_fieldBgiPushDist  # [code] per push the distance to the edge (bgi_p
 D_800C9DE4 g_fieldBgiDefaultNormal  # [code] VECTOR normal bgi_slide projects with when the triangle has no normal (Normal Index < 0)
 # FIELD types: Unk800C9DF8 BgiHeader, Unk800C9E00 (+Unk800C9DF8Node) BgiTriangle, Unk800C9DF8Tri BgiFloor, Unk800C9E08 BgiEdge (Unk800C9DF8Link BgiEdgeView), Unk800C9E10 (+Unk800C6C04A) BgiAnim, Unk800C9E10Frame (+Unk800C9DF8Pt, Unk800C6C04B/E) BgiKeyframe, Unk800C9E04 BgiNormal, Unk800C9DFC BgiVertex, Unk800C9DF0 BgiContext, Unk800C9DF4 BgiActor, Unk800CAE98 BgiFloorMove
 # FIELD members from bgi_dumpText strings [string] and code (see build notes): header counts/offsets, triangle flags/floor/normal/thetaX/thetaZ/vertices/edges/neighbors/center/d, floor/edge/anim/keyframe/normal/context/actor/floor-mover members
+### ovl_0a: fld_movie.c, tu_800B0124.c, tu_800B5004.c (fld_loadTexturesInCdOrder renamed fld_loadModelBundlesInCdOrder by hand)
+func_800AA3F4 fld_queueModelBundle  # [code] main evt init calls it per model object (unk5 4) with its uid, maps uid->id via the dep table, queues the id in D_800C9F20 when db item 4|id is not registered
+func_800AA4BC fld_clearModelQueue  # [code] sets the 16 D_800C9F20 entries to -1 (fld_load)
+func_800AA4E8 fld_loadModelBundle  # [code] reads dir-10 file id (from g_fieldModelCache or CD), registers its pack 0x1B0000, uploads pack 0x1B0001 images to VRAM and fills the tpage/clut/uv tables of item 0x120000
+func_800AAA54 fld_freeModelBundles  # [code] db_unregister of every FieldScene.unk28 pack fld_loadModelBundle registered, resets the count unk40 (fld_exit)
+func_800AAB30 fld_setupActorModel  # [code] GameData.unk838 (main func_80021698 passes actor.unk34|0x20000) - picks a model slot, binds model/anim/textures/sprite set, adds the bgi actor, returns the slot
+func_800AAEC4 fld_remapModelId  # [code] model 0xB9 becomes 0x2004C once event var h[0] >= 0x283C (fld_setupActorModel, fld_queueModelBundle)
+func_800AAEF8 fld_depFindByLink  # [code] returns the id of the dependency-table entry whose link (unkC) equals arg, -1 if none
+func_800AAF5C fld_getModelAnimId  # [code] finds the model in table 0x120000 and returns its unk2|0x30000 (the 0x3xxxx animation item, as fld_drawModels loads by FieldEvtObj.unk36)
+func_800AAFD4 fld_getModelTables  # [code] finds the model in table 0x120000 and returns its three tables (tpage/clut, uv, sprite offsets) used by func_800B6584 and func_800BB3C4
+func_800AB0B0 fld_isModelTexAnimActive  # [code] 1 when any entry of the model's unk50 animation table (BgAnimHdr) has its active bit 1 set
+func_800AB110 fld_collectModels  # [code] fills the draw list with the model slots of visible model actors, parents before attached children; during a movie drops models whose buffers reach the ovl_64 load area
+func_800AB3CC fld_drawModels  # [code] per-frame model pass from fld_main - matrices, anim lookup, posing, depth cull, func_800B61A4/func_800B5958 draw, shadows, tex anims, lights, anim sounds
+func_800ABA98 fld_modelCommand  # [code] event opcode 0x88 (object uid, cmd, 3 args) - 0 palette, 4 screen y limit, 8-11 mirror model/plane/tint, 16-19 animation sound triggers
+func_800AC02C fld_applyModelCommands  # [code] applies what fld_modelCommand set - palette changes (func_800BA190/func_800BA3CC on flag 0x10000) and draws mirrored models with their tint (fld_drawModels)
+func_800AC344 fld_findModelCache  # [code] returns the g_fieldModelCache slot whose id matches the low 16 bits, NULL otherwise
+func_800AC380 fld_getModelCacheBottom  # [code] lowest address of a filled g_fieldModelCache slot (0x801EDF00 when empty), optionally returns that slot
+func_800AC3D8 fld_allocModelCache  # [code] reserves size bytes below fld_getModelCacheBottom for the id's slot if that stays above the heap top (FieldScene.unk20 or D_80067948), returns 1 on success
+func_800AC474 fld_compactModelCache  # [code] empties slots whose id is no longer in D_800C9F20, then moves the rest up against 0x801EDF00 (fld_load)
+func_800AC5F0 fld_clearModelCache  # [code] zeroes the flags, address and size of all 10 g_fieldModelCache slots
+func_800AC620 fld_trimModelCache  # [code] fld_invalidateModelCache with the current heap top (FieldScene.unk20, else D_80067948)
+func_800AC67C fld_invalidateModelCache  # [code] empties every g_fieldModelCache slot whose address is <= arg (memory reused by a load below it)
+func_800AC6C0 fld_drawShadow  # [code] builds the 4 mirrored semi-transparent POLY_FT4 of an object's 3x3 shadow grid on y=0 (FieldScene.unk2C entry) and links them by depth (fld_drawModels)
+func_800AD44C fld_initShadows  # [code] func_80062E3C(addr, ..., count, 3) builds the shadow entries and their primitives, returns the next free address (fld_load, count unk38+9)
+func_800AD488 fld_calcShadowMatrix  # [code] shadow matrix from scale x/z, angle and offset - plain y rotation at the actor position (slot flag 0x20) or aligned to the model's bone 1
+func_800AE4F8 fld_movieStop  # [code] mbg end callback and movie command 1 - mbg_shutdown, cd_cancel, flag 4, movie state 7
+func_800AE5D4 fld_movieFinish  # [code] fld_movieUpdate state 7 - clears the movie flags, vsyncMode 2, resets the display x, restores the volume (sound command 0x6201 with FieldScene.unk5C)
+func_800AE68C fld_isMoviePlaying  # [code] 1 while the movie state is 6 or 7 and playback flags are set, selects FieldScene.unk5D instead of unk5C in fld_soundCommand
+func_800AE710 fld_moviePlay  # [code] wrapper of fld_movieCommand(0, list<<8|entry, rgb24)
+func_800AE738 fld_movieGo  # [code] wrapper of fld_movieCommand(2), sets g_fieldMovieFlags bit 1 that fld_movieUpdate state 5 waits for before mbg_play
+func_800AE760 fld_movieRequestStop  # [code] wrapper of fld_movieCommand(1), i.e. fld_movieStop
+func_800AE788 fld_beginFrame  # [code] first call of every fld_main iteration - clears the ordering table (with a mask-bit packet when field flag 0x200), func_8004C204
+func_800AE930 fld_endFrame  # [code] last call of every fld_main iteration - VSync, PutDispEnv, DrawOTag, buffer flip, applies g_fieldFlagQueue; L1+L2+R1+R2+Start+Select sets GameState.unk0 bit 0
+func_800AED04 fld_startEncounter  # [code] fld_main calls it when func_8004BC38 returns 3 (exit reason 2, battle) - resets the encounter step unk41 and queues the field flag changes
+func_800AED6C fld_updateEncounter  # [code] encounter transition per frame - projects the player to screen, swaps to the battle music, uploads file 0x1000B, plays sfx 0x27A-0x27C, func_80053A10, then ends the loop
+func_800AF740 fld_togglePause  # [code] fld_main pad combo - toggles GameData flag 0x100 (fld_main skips all updates), pauses sound and draws sprite 0xEB over a grey 320x224 TILE
+func_800AFAC0 fld_spriteCommand  # [code] event opcodes 0xB3/0xDA (sprite, cmd, 3 args) - 0x82 sprite file 0x16xxxx, 0x83 flags, 0x87 position, 0x8C rotation, 0x96 attach to object bone, 0xA5 offset
+func_800AFCBC fld_initSprites  # [code] lays out the 16-entry FieldEnt table and two 0x3000 primitive buffers at the heap pointer, stores the header in FieldScene.unk10, returns the next address
+func_800AFDE8 fld_drawSprites  # [code] per-frame (fld_main) - follows attached bones, draws each active FieldEnt with func_800C970C, advances its frame by unk6 and wraps at unkE
+func_800B00B0 fld_resetSprite  # [code] FieldEnt defaults - scale 0x1000, speed 0x10, unk7 0x80, flags 1, mode 0xF, no sprite, no parent (fld_initSprites, fld_spriteCommand 0x82)
+D_800C9F20 g_fieldModelQueue  # [code] 16 dir-10 ids queued by fld_queueModelBundle (count FieldScene.unk60), loaded by fld_main func_800A9AAC, kept by fld_compactModelCache
+D_800C9CCC g_fieldModelCache  # [code] 10 slots {u16 flags, u16 id, addr, size} with fixed ids (0x62, 0x8, 0x1571, 0xB9, ...) caching dir-10 model bundles below 0x801EDF00 (fld_loadModelBundle)
+D_800C9D44 g_fieldMovieFlags  # [code] movie playback bits - 1 go (fld_movieGo), 4 stopped, 8 flush cache after the ovl_64 read (fld_endFrame), 0x40 mbg geometry offset; third queue of g_fieldFlagQueue
+D_800C9D46 g_fieldMovieLastFrame  # [code] g_mbgFrame of the previous frame (fld_movieUpdate state 6, printed by "Fr: %d")
+D_800C9F6C g_fieldMovieMaskPkt  # [code] per-buffer 0xE6 mask-bit packets fld_movieUpdate draws when mbg_update reports a frame
+D_800C9F60 g_fieldMaskPkt  # [code] per-buffer 0xE6 mask-bit packets fld_beginFrame and fld_updateEncounter link at the end of the OT
+D_800C9EF0 g_fieldFlagQueue  # [code] 4-frame set/clear queues for GameData.unk0, FieldMap.unk0 and g_fieldMovieFlags, shifted by fld_endFrame
+D_800C9F98 g_fieldTempOt  # [code] one-entry ordering table that fld_togglePause and fld_updateEncounter clear and draw directly
+D_800C9F90 g_fieldPauseTPage  # [code] DR_TPAGE (0xE1000240) fld_togglePause links before the grey TILE
+D_800C9FA0 g_fieldPauseSprite  # [code] sprite 0xEB packet fld_togglePause builds with func_80027834 (centred on 320x224)
+D_800C9FE0 g_fieldPauseDim  # [code] grey (0x60) semi-transparent 320x224 TILE fld_togglePause draws over the frozen field
+func_800B0124 fld_soundCommand  # [code] GameData.unk83C, event opcodes 0xC5-0xC8, snd_playSe - bits 12-13 class (0 music 0x7xxxx, 1 sfx 0x8xxxx, 2 0x18xxxx, 3 bank 0x9xxxx), 8-11 action, 0xC00 polls the load
+func_800B1A20 fld_getSoundPanVolume  # [code] event opcodes 0x89/0x8A - projects a world position, pan 0-255 from screen x (wider at depth) and volume 0-127 from depth
+func_800B1C4C fld_suspendResidentSfx  # [code] sound command 0x1880|slot<<6 for slots 0/1 - kind 8 records the field id in GameData.unk8B4[slot], then stops the slot (fld_exit case 9, encounter)
+func_800B1C98 fld_resumeResidentSfx  # [code] sound command 0x1980|slot<<6 - kind 9 restarts the slot if GameData.unk8B4[slot] is the current field (fld_load)
+func_800B1CE4 fld_stopResidentSfx  # [code] sound command 0x5180 for every slot whose id GameData.unk830[i] is set (fld_quit)
+func_800B1D60 fld_clearSoundBankCache  # [code] sets the 5 D_800C9FF8 ids and D_800C9FF0 slots to -1 (fld_init)
+func_800B1D9C fld_dropSoundBankCache  # [code] when a load used >= 0x40000 bytes (fld_soundBankReadCallback), forgets every cached bank except types 1 and 4
+func_800B1E04 fld_stopSceneSfx  # [code] func_8005546C(.., 0) on every 0x8xxxx item of the field pack FieldScene.unk24, then func_80056228 (fld_exit)
+func_800B1E8C fld_playAnimSfx  # [code] per drawn object, plays FieldTrig sounds matching (uid, anim unk36, frame unk3A) at its position; sound by floor flag (footsteps), optional random pitch
+func_800B2100 fld_findAnimSfx  # [code] last FieldTrig entry matching the object's uid, anim and frame, NULL if none (fld_modelCommand 16-19)
+func_800B21A0 fld_addAnimSfx  # [code] appends a FieldTrig entry (uid, unk34, anim, frame) and bumps FieldScene.unk4B (fld_modelCommand 16-18)
+func_800B2218 fld_removeAnimSfx  # [code] removes the matching FieldTrig entries by moving the last one over them (fld_modelCommand 19)
+func_800B2328 fld_depGetLink  # [code] returns the link (unkC) of the dependency-table entry with id arg, -1 if none (music id -> its 0x9xxxx bank in fld_soundCommand)
+func_800B238C fld_findBattleMusic  # [code] FieldScene.unk3C/unk3E = music/bank linked to dep entry 0x110000|battle (type 7, then type 9), default the current music (fld_updateEncounter)
+func_800B2528 fld_loadSoundBanks  # [code] collects the field's 0x9xxxx entries linked to 0x8xxxx, keeps cached ones, assigns slots to type-4 banks, loads the rest with command 0x7700 in sector order (fld_load)
+func_800B29A0 fld_depGetFileSector  # [code] dep_find -> returns the entry's sector (unk4) and its size in bytes (unk8 << 11)
+func_800B29F8 fld_soundBankReadCallback  # [code] read callback fld_soundCommand passes to func_8002177C - locates bank 0x90000|GameData.unk852 in the data and uploads it (func_80056048 or func_80055E14)
+func_800B2BC4 fld_unpackMusicSeq  # [code] moves the first 0x7xxxx item of the loaded music container to its start (fld_soundCommand load state 5)
+func_800B2C40 fld_setMusicVolumeFade  # [code] GameData.unk826 = volume; for 0 also stores the fade time (unk842) and VSync(-1) start (unk8C4) (fld_soundCommand music volume commands)
+func_800B2C80 fld_isMusicFading  # [code] VSync(-1) - GameData.unk8C4 < unk842; fld_soundCommand 0xC00 returns 6 while it holds and delays a music change
+func_800B2CC0 fld_setObjectColor  # [code] event opcode 0x8F (r, g, b) - fld_setSlotColor on the object's slot, the script waits one frame
+func_800B2D10 fld_applyLights  # [code] per drawn object, colour = model light + floor/directional/ambient light, shadow shade/size from light offsets, then tints the model with func_800B9E4C
+func_800B31B8 fld_setSlotColor  # [code] stores rgb|0x01000000 in the object's FieldActorInfo colours and sets slot flags 0xC00; second call clears 0x800 and returns 0
+func_800B3254 fld_getLightColorTable  # [code] returns the 8-byte colour entries that follow the FieldLight list (unkC[unk6]) when the count unk9 is non-zero
+func_800B3294 fld_findLightColor  # [code] searches fld_getLightColorTable's entries for id (model file id, -1 = default), NULL if none
+func_800B3300 fld_findGlobalLights  # [code] returns the FieldLight entries of type 1 (ambient) and 2 (used when slot flag 4) in the two out pointers
+func_800B3378 fld_findFloorLight  # [code] type-0 FieldLight whose 4 floor ids contain the object's current walkmesh floor (bgi_getActorTriangle), NULL if none
+func_800B36E0 fld_preloadRequest  # [code] GameData.unk8BC, event opcode 0xFD (type, id) - type 5 field or 0x11 encounter file 0x1000B; bit 0x80 excludes instead of requesting
+func_800B3A80 fld_initPreload  # [code] preload_init, GameData.unk8BC = fld_preloadRequest, preload hook fld_preloadHook, clears both lists (fld_load)
+func_800B3ACC fld_clearPreloadLists  # [code] empties D_800CA010 (requests) and D_800CA030 (excludes), 8 entries each
+func_800B3B2C fld_setPreloadCursor  # [code] sets D_800C9D58, the address the next preload is read to, if non-zero
+func_800B3B40 fld_isEncounterPreloadRequested  # [code] file 0x1000B is in the request list D_800CA010
+func_800B3B64 fld_isEncounterPreloadExcluded  # [code] file 0x1000B is in the exclude list D_800CA030
+func_800B3B88 fld_hasFieldPreloadRequest  # [code] the request list holds a type-5 (field) id
+func_800B3BD8 fld_findPreloadRequest  # [code] address of id in D_800CA010, NULL if absent
+func_800B3C24 fld_removePreloadRequest  # [code] removes id from D_800CA010 (last entry moves into its place)
+func_800B3CAC fld_addPreloadRequest  # [code] adds id to D_800CA010 unless present or full (8)
+func_800B3D10 fld_findPreloadExclude  # [code] address of id in D_800CA030, NULL if absent
+func_800B3D5C fld_removePreloadExclude  # [code] removes id from D_800CA030
+func_800B3DE4 fld_addPreloadExclude  # [code] adds id to D_800CA030 unless present or full (8)
+func_800B3E48 fld_preloadFile  # [code] preload_add + func_80021974 for (id, mode, sector, size) into the space from D_800C9D58 up to the model cache / D_80067944+0x153F00
+func_800B3F8C fld_queueFieldPreloads  # [code] preloads file 0x1000B when needed, then the requested fields or the largest neighbouring field (id/50 group) with its area bundle
+func_800B4894 fld_preloadHook  # [code] preload_update callback - returns 1 (pause) while a music load runs (GameData.unk851 1-5) or a reset is pending; starts fld_queueFieldPreloads once
+func_800B4A5C fld_showSplashImage  # [code] after fld_main's loop (fld_needsSplashImage) - draws TIM 0x44E20 centred with a 60-frame fade in, 120 hold, 60 fade out in its own frame loop
+func_800B4F9C fld_needsSplashImage  # [code] 1 when the field exits to the next field (reason 1) from field 0x34 to field 100
+D_800C9FF8 g_fieldSoundBankIds  # [code] 5 cached sound bank ids (type in the top byte) kept across fields by fld_loadSoundBanks, cleared by fld_clearSoundBankCache
+D_800C9FF0 g_fieldSoundBankSlots  # [code] slot of each g_fieldSoundBankIds entry (passed as arg3 of command 0x7700)
+D_800C9D4C g_fieldMusicRequest  # [code] pending music action of fld_soundCommand (-1 none, 7 load only, 9 resume), read when the load finishes
+D_800C9D50 g_fieldSoundLoadId  # [code] id of the music/bank fld_soundCommand is loading; byte 2 (D_800C9D52) is its type
+D_800C9D54 g_fieldSoundLoadSector  # [code] CD sector of the file fld_soundCommand is loading (fld_depGetFileSector or the saved GameData.unk8A8)
+D_800C9D58 g_fieldPreloadCursor  # [code] address the next fld_preloadFile reads to, advanced by its size, set by fld_setPreloadCursor
+D_800CA010 g_fieldPreloadRequests  # [code] up to 8 file ids requested by fld_preloadRequest (fld_addPreloadRequest), consumed by fld_queueFieldPreloads
+D_800CA030 g_fieldPreloadExcludes  # [code] up to 8 file ids fld_queueFieldPreloads must not preload (fld_addPreloadExclude)
+D_800CA050 g_fieldPreloadRequestCount  # [code] entry count of g_fieldPreloadRequests
+D_800CA051 g_fieldPreloadExcludeCount  # [code] entry count of g_fieldPreloadExcludes
+func_800B5004 fld_requestDiscChange  # [code] event opcode 0xAC (disc << 14 | arg) - stores disc, 1 << disc and arg in g_fieldDiscChange, sets field flag 0x100000 and ends the field loop
+func_800B5064 fld_getDiscChangeDisc  # [code] returns g_fieldDiscChange.unk2, the disc number fld_requestDiscChange stored
+func_800B5074 fld_getDiscChangeMask  # [code] returns g_fieldDiscChange.unk1 (1 << disc)
+func_800B5084 fld_getDiscChangeArg  # [code] returns g_fieldDiscChange.unk4, the low 14 bits of the opcode 0xAC argument
+func_800B50A4 fld_runDiscChange  # [code] fld_main after the loop when fld_isDiscChangePending - enter, frame loop of mode updates until mode 4, leave
+func_800B5114 fld_discChangeEnter  # [code] saves D_80073998[0..1], mode 1, cursor 0, clears the field flags, closes windows, runs mode 1's enter
+func_800B51D0 fld_discChangeLeave  # [code] runs the mode's leave, restores D_80073998, sets field flag 0x10000 and calls fld_refindSectors (func_800A9570)
+func_800B5290 fld_discChangeBeginFrame  # [code] ClearOTagR + pad_update (fld_runDiscChange)
+func_800B52DC fld_discChangeUpdate  # [code] calls the current mode's update from g_fieldDiscChangeModes (fld_runDiscChange)
+func_800B532C fld_discChangeEndFrame  # [code] menu/window draw, VSync(0), PutDispEnv, DrawOTagEnv, buffer flip (fld_runDiscChange)
+func_800B5430 fld_discChangeSetMode  # [code] leave of the old mode, then enter of the new one (g_fieldDiscChangeModes); 4 ends fld_runDiscChange
+func_800B54CC fld_isDiscChangePending  # [code] FieldMap flag 0x100000 that fld_requestDiscChange sets (fld_main)
+func_800B54FC fld_discPromptEnter  # [code] mode 1 enter - sets the help callback fld_discPromptHelp and the text bank g_fieldDiscChangeText
+func_800B553C fld_discPromptUpdate  # [code] mode 1 update - input (fld_discPromptInput), draw (fld_discPromptDraw), help window
+func_800B5574 fld_discPromptLeave  # [code] mode 1 leave - resets the help rect and callback
+func_800B559C fld_discPromptInput  # [code] up/down toggles the cursor, circle selects option 1, cross confirms with fld_discPromptSelect as the fade callback (sfx 0x67)
+func_800B5660 fld_discPromptDraw  # [string] draws the "DISC CHANGE" label, texts 0-2 and the cursor hand in the g_fieldDiscChangeRect window
+func_800B5794 fld_discPromptSelect  # [code] cursor 0 -> mode 2 (menu 4), cursor 1 -> mode 3 (menu 8)
+func_800B57C8 fld_discPromptHelp  # [code] help callback (D_80077DE8.unkC) - help text 3 or 4 for the cursor option
+func_800B5870 fld_discChangeOpenMenu4  # [code] mode 2 enter - menu_open(4, 2) with close callback fld_discChangeBackToPrompt
+func_800B58B8 fld_discChangeBackToPrompt  # [code] menu close callback of mode 2 - back to mode 1
+func_800B58D8 fld_discChangeOpenMenu8  # [code] mode 3 enter - menu_open(8, disc << 14 | arg) as ovl_14 does with 0x3A98, close callback fld_discChangeFinish
+func_800B5938 fld_discChangeFinish  # [code] menu close callback of mode 3 - mode 4 ends fld_runDiscChange
+D_800CA058 g_fieldDiscChange  # [code] disc-change state - mode, 1 << disc, disc, cursor, arg, saved D_80073998 (fld_requestDiscChange, fld_runDiscChange)
+D_800C9D5C g_fieldDiscChangeModes  # [code] {enter, update, leave} per mode - 1 prompt (fld_discPrompt*), 2 menu 4, 3 menu 8 (fld_discChangeSetMode)
+D_800C9D98 g_fieldDiscChangeRect  # [code] window rect (96, 70, 128, 84) of the disc-change prompt (fld_discPromptDraw)
+D_800A7170 g_fieldDiscChangeLabel  # [string] "DISC CHANGE", drawn by fld_discPromptDraw
+D_800A717C g_fieldDiscChangeText  # [code] 5-entry text bank fld_discPromptEnter passes to text_setBank (prompt texts 0-2, help 3-4)

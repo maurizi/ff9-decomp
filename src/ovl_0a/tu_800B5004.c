@@ -1,66 +1,66 @@
 #include "ovl_0a.h"
 
-void func_800B5004(s32 arg0, s16 arg1) {
-    D_800CA058.unk1 = 1 << arg0;
-    D_800CA058.unk2 = arg0;
-    D_800CA058.unk4 = arg1;
-    D_800CA058.unk6 = -1;
+void fld_requestDiscChange(s32 arg0, s16 arg1) {
+    g_fieldDiscChange.unk1 = 1 << arg0;
+    g_fieldDiscChange.unk2 = arg0;
+    g_fieldDiscChange.unk4 = arg1;
+    g_fieldDiscChange.unk6 = -1;
     g_gameState->unk1C->unk8E4.field->unk0 |= 0x100000;
     g_gameState->unk0 |= 8;
 }
 
-u8 func_800B5064(void) {
-    return D_800CA058.unk2;
+u8 fld_getDiscChangeDisc(void) {
+    return g_fieldDiscChange.unk2;
 }
 
-u8 func_800B5074(void) {
-    return D_800CA058.unk1;
+u8 fld_getDiscChangeMask(void) {
+    return g_fieldDiscChange.unk1;
 }
 
-s16 func_800B5084(void) {
-    return D_800CA058.unk4;
+s16 fld_getDiscChangeArg(void) {
+    return g_fieldDiscChange.unk4;
 }
 
 s16 func_800B5094(void) {
-    return D_800CA058.unk6;
+    return g_fieldDiscChange.unk6;
 }
 
-void func_800B50A4(void) {
-    func_800B5114();
-    while (D_800CA058.unk0 != 4) {
-        func_800B5290();
-        func_800B52DC();
-        func_800B532C();
+void fld_runDiscChange(void) {
+    fld_discChangeEnter();
+    while (g_fieldDiscChange.unk0 != 4) {
+        fld_discChangeBeginFrame();
+        fld_discChangeUpdate();
+        fld_discChangeEndFrame();
     }
-    func_800B51D0();
+    fld_discChangeLeave();
 }
 
-void func_800B5114(void) {
+void fld_discChangeEnter(void) {
     s32 i;
 
     DrawSync(0);
     for (i = 0; i < 2; i++) {
-        D_800CA058.unk8[i] = D_80073998[i];
+        g_fieldDiscChange.unk8[i] = D_80073998[i];
         D_80073998[i] = 0x04000300;
     }
-    D_800CA058.unk0 = 1;
-    D_800CA058.unk3 = 0;
+    g_fieldDiscChange.unk0 = 1;
+    g_fieldDiscChange.unk3 = 0;
     g_gameState->unk1C->unk8E4.field->unk0 = 0;
     func_8002DE60();
-    D_800C9D5C[D_800CA058.unk0].unk0();
+    g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk0();
 }
 
 /* leave the current field mode */
-void func_800B51D0(void) {
+void fld_discChangeLeave(void) {
     FieldMap *f;
     s32 i;
 
-    if (D_800C9D5C[D_800CA058.unk0].unk8 != NULL) {
-        D_800C9D5C[D_800CA058.unk0].unk8();
+    if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8 != NULL) {
+        g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8();
     }
     DrawSync(0);
     for (i = 0; i < 2; i++) {
-        D_80073998[i] = D_800CA058.unk8[i];
+        D_80073998[i] = g_fieldDiscChange.unk8[i];
     }
     f = g_gameState->unk1C->unk8E4.field;
     f->unk0 |= 0x10000;
@@ -68,20 +68,20 @@ void func_800B51D0(void) {
     fld_refindSectors();
 }
 
-void func_800B5290(void) {
+void fld_discChangeBeginFrame(void) {
     GameData *gd = g_gameState->unk1C;
 
     ClearOTagR(gd->unk10[gd->unk8], 0x1000);
     pad_update();
 }
 
-void func_800B52DC(void) {
-    if (D_800C9D5C[D_800CA058.unk0].unk4 != NULL) {
-        D_800C9D5C[D_800CA058.unk0].unk4(D_800CA058.unk0);
+void fld_discChangeUpdate(void) {
+    if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk4 != NULL) {
+        g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk4(g_fieldDiscChange.unk0);
     }
 }
 
-void func_800B532C(void) {
+void fld_discChangeEndFrame(void) {
     func_80032100();
     func_80023A0C();
     func_80032098();
@@ -95,75 +95,75 @@ void func_800B532C(void) {
     func_8002C0DC(g_gameState->unk1C->unk8);
 }
 
-void func_800B5430(s32 arg0) {
-    if (arg0 != D_800CA058.unk0) {
-        if (D_800C9D5C[D_800CA058.unk0].unk8 != NULL) {
-            D_800C9D5C[D_800CA058.unk0].unk8();
+void fld_discChangeSetMode(s32 arg0) {
+    if (arg0 != g_fieldDiscChange.unk0) {
+        if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8 != NULL) {
+            g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk8();
         }
-        D_800CA058.unk0 = arg0;
-        if (D_800C9D5C[D_800CA058.unk0].unk0 != NULL) {
-            D_800C9D5C[D_800CA058.unk0].unk0();
+        g_fieldDiscChange.unk0 = arg0;
+        if (g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk0 != NULL) {
+            g_fieldDiscChangeModes[g_fieldDiscChange.unk0].unk0();
         }
     }
 }
 
-s32 func_800B54CC(void) {
+s32 fld_isDiscChangePending(void) {
     return (g_gameState->unk1C->unk8E4.field->unk0 >> 20) & 1;
 }
 
-void func_800B54FC(void) {
+void fld_discPromptEnter(void) {
     func_8002F9D0();
     func_80035430();
-    func_8003556C(func_800B57C8);
-    text_setBank(D_800A717C);
+    func_8003556C(fld_discPromptHelp);
+    text_setBank(g_fieldDiscChangeText);
 }
 
-void func_800B553C(void) {
+void fld_discPromptUpdate(void) {
     func_8002C308(0);
-    func_800B559C();
-    func_800B5660();
+    fld_discPromptInput();
+    fld_discPromptDraw();
     func_80035490();
 }
 
-void func_800B5574(void) {
+void fld_discPromptLeave(void) {
     func_80035580(NULL);
     func_8003556C(NULL);
 }
 
-void func_800B559C(void) {
+void fld_discPromptInput(void) {
     if (!func_8002F810()) {
         if (g_padRepeat & (PAD_UP | PAD_DOWN)) {
             snd_playSe(0x67);
-            D_800CA058.unk3 ^= 1;
+            g_fieldDiscChange.unk3 ^= 1;
         } else if (g_padRepeat & BTN_CIRCLE) {
-            if (D_800CA058.unk3 == 0) {
+            if (g_fieldDiscChange.unk3 == 0) {
                 snd_playSe(0x67);
-                D_800CA058.unk3 = 1;
+                g_fieldDiscChange.unk3 = 1;
             }
         } else if (g_padRepeat & BTN_CROSS) {
             snd_playSe(0x67);
             func_8002F9F0();
-            func_8002F8A8(func_800B5794);
+            func_8002F8A8(fld_discPromptSelect);
         }
     }
 }
 
 /* DISC CHANGE label */
-INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", D_800A7170);
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", g_fieldDiscChangeLabel);
 
-void func_800B5660(void) {
+void fld_discPromptDraw(void) {
     s32 y;
     Unk80077DE8 *m;
 
-    ui_drawLabel(D_800C9D98.x + 8, D_800C9D98.y - 3, 0xA, D_800A7170, 0);
-    text_drawBlock(D_800C9D98.x + 0xE, D_800C9D98.y + 0xA, 0xA, text_get(0), 0);
-    text_drawBlock(D_800C9D98.x + 0x30, D_800C9D98.y + 0x2E, 0xA, text_get(1), 0);
-    text_drawBlock(D_800C9D98.x + 0x30, D_800C9D98.y + 0x3D, 0xA, text_get(2), 0);
+    ui_drawLabel(g_fieldDiscChangeRect.x + 8, g_fieldDiscChangeRect.y - 3, 0xA, g_fieldDiscChangeLabel, 0);
+    text_drawBlock(g_fieldDiscChangeRect.x + 0xE, g_fieldDiscChangeRect.y + 0xA, 0xA, text_get(0), 0);
+    text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x2E, 0xA, text_get(1), 0);
+    text_drawBlock(g_fieldDiscChangeRect.x + 0x30, g_fieldDiscChangeRect.y + 0x3D, 0xA, text_get(2), 0);
     if (!func_8002F810()) {
         m = &D_80077DE8;
-        m->unk0 = D_800C9D98.x + 0x16;
-        y = D_800C9D98.y;
-        if (D_800CA058.unk3 == 0) {
+        m->unk0 = g_fieldDiscChangeRect.x + 0x16;
+        y = g_fieldDiscChangeRect.y;
+        if (g_fieldDiscChange.unk3 == 0) {
             m->unk2 = y + 0x32;
         } else {
             m->unk2 = y + 0x41;
@@ -171,25 +171,25 @@ void func_800B5660(void) {
         D_80077DEC = 9;
         func_800355E4();
     }
-    func_8002DEE4(&D_800C9D98, 0xA, 2);
+    func_8002DEE4(&g_fieldDiscChangeRect, 0xA, 2);
 }
 
-void func_800B5794(void) {
-    if (D_800CA058.unk3 == 0) {
-        func_800B5430(2);
+void fld_discPromptSelect(void) {
+    if (g_fieldDiscChange.unk3 == 0) {
+        fld_discChangeSetMode(2);
     } else {
-        func_800B5430(3);
+        fld_discChangeSetMode(3);
     }
 }
 
-void func_800B57C8(void) {
+void fld_discPromptHelp(void) {
     RECT r;
     s32 id;
     Unk80077DE8 *m = &D_80077DE8;
 
     m->unk8 = NULL;
     if (!func_8002F810()) {
-        if (D_800CA058.unk3 == 0) {
+        if (g_fieldDiscChange.unk3 == 0) {
             func_80035580(NULL);
             id = 3;
         } else {
@@ -204,9 +204,9 @@ void func_800B57C8(void) {
     }
 }
 
-void func_800B5870(void) {
+void fld_discChangeOpenMenu4(void) {
     menu_open(4, 2);
-    func_80032628(func_800B58B8);
+    func_80032628(fld_discChangeBackToPrompt);
     func_80032634(0);
 }
 
@@ -216,13 +216,13 @@ void func_800B58A8(void) {
 void func_800B58B0(void) {
 }
 
-void func_800B58B8(void) {
-    func_800B5430(1);
+void fld_discChangeBackToPrompt(void) {
+    fld_discChangeSetMode(1);
 }
 
-void func_800B58D8(void) {
-    menu_open(8, ((D_800CA058.unk2 & 3) << 14) | D_800CA058.unk4);
-    func_80032628(func_800B5938);
+void fld_discChangeOpenMenu8(void) {
+    menu_open(8, ((g_fieldDiscChange.unk2 & 3) << 14) | g_fieldDiscChange.unk4);
+    func_80032628(fld_discChangeFinish);
     func_80032634(0);
 }
 
@@ -232,8 +232,8 @@ void func_800B5928(void) {
 void func_800B5930(void) {
 }
 
-void func_800B5938(void) {
-    func_800B5430(4);
+void fld_discChangeFinish(void) {
+    fld_discChangeSetMode(4);
 }
 
-INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", D_800A717C);
+INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/tu_800B5004", g_fieldDiscChangeText);

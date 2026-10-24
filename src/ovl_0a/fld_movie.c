@@ -1,29 +1,29 @@
 #include "ovl_0a.h"
 
-s32 func_800AA3F4(s32 uid) {
+s32 fld_queueModelBundle(s32 uid) {
     s32 id;
 
-    id = func_800AAEF8(uid);
+    id = fld_depFindByLink(uid);
     if (id == -1) {
         return 0;
     }
-    id = func_800AAEC4(id);
+    id = fld_remapModelId(id);
     if (db_lookupRegistered(4, id, 0) == NULL) {
-        D_800C9F20[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60] = id;
+        g_fieldModelQueue[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60] = id;
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60++;
     }
     return 0;
 }
 
-void func_800AA4BC(void) {
+void fld_clearModelQueue(void) {
     s32 i;
 
     for (i = 15; i >= 0; i--) {
-        D_800C9F20[i] = -1;
+        g_fieldModelQueue[i] = -1;
     }
 }
 
-s32 func_800AA4E8(s32 arg0) {
+s32 fld_loadModelBundle(s32 arg0) {
     FileEntry *f;
     s32 size;
     Unk800C9CCC *c;
@@ -47,17 +47,17 @@ s32 func_800AA4E8(s32 arg0) {
 
     f = file_find(10, arg0);
     size = (f->unkC - f->unk4) << 11;
-    c = func_800AC344(arg0);
+    c = fld_findModelCache(arg0);
     if (c->unk4 == 0) {
         func_8002177C(g_gameState->unk1C->unk854, f->unk4, size,
-                      (void *)(func_800AC3D8(arg0, size) != 0 ? c->unk4 : D_80067948), 0, -1, 0);
+                      (void *)(fld_allocModelCache(arg0, size) != 0 ? c->unk4 : D_80067948), 0, -1, 0);
         while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
         }
     }
     if (c->unk4 != 0) {
         s32 m = func_8001DAA4(D_80067948, c->unk4, size, NULL);
         DrawSync(0);
-        func_800AC67C(D_80067948 + m);
+        fld_invalidateModelCache(D_80067948 + m);
     }
     vp = db_lookupRegistered(4, 0x1C0000, 0);
     n = D_80067948;
@@ -135,7 +135,7 @@ s32 func_800AA4E8(s32 arg0) {
     return 0;
 }
 
-s32 func_800AAA54(void) {
+s32 fld_freeModelBundles(void) {
     s32 i;
 
     for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk40 - 1; i >= 0; i--) {
@@ -145,7 +145,7 @@ s32 func_800AAA54(void) {
     return 0;
 }
 
-s32 func_800AAB30(s32 arg0, void *arg1) {
+s32 fld_setupActorModel(s32 arg0, void *arg1) {
     s32 *tex;
     s32 *uv;
     s32 *spr;
@@ -172,11 +172,11 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
         s = (FieldObjSlot *)func_8001E350(slot);
         g_gameState->unk1C->unk39++;
     }
-    arg0 = func_800AAEC4(arg0);
+    arg0 = fld_remapModelId(arg0);
     s->unk4 = arg0;
     s->unkC = arg1;
     s->unk8->unk8 = db_lookupRegistered(4, arg0, 0);
-    if ((s->unk8->unkC = db_lookupRegistered(4, func_800AAF5C(arg0), 0)) != NULL) {
+    if ((s->unk8->unkC = db_lookupRegistered(4, fld_getModelAnimId(arg0), 0)) != NULL) {
         a = s->unk8->unkC;
         if (IS_OFFSET(a->unkC)) {
             a->unkC = (s32)a + a->unkC;
@@ -185,7 +185,7 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
             }
         }
     }
-    func_800AAFD4(arg0, &tex, &uv, &spr);
+    fld_getModelTables(arg0, &tex, &uv, &spr);
     m = s->unk8->unk8;
     g = m->unk10;
     sum = 0;
@@ -201,7 +201,7 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
     func_800B6438(s->unk8, (u8 *)g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20);
     func_800B6584(s->unk8, (WmTexInfo *)tex, (s16(*)[2])uv);
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 += sum;
-    func_800AC620();
+    fld_trimModelCache();
     t = db_lookupRegistered(8, arg0, 0x120000);
     e = t->unk4;
     for (i = t->unk1 - 1; i >= 0; i--) {
@@ -226,14 +226,14 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
     return slot;
 }
 
-s32 func_800AAEC4(s32 arg0) {
+s32 fld_remapModelId(s32 arg0) {
     if ((arg0 & 0xFFFF) == 0xB9 && g_evtGlobalVars.h[0] >= 0x283C) {
         arg0 = 0x2004C;
     }
     return arg0;
 }
 
-s32 func_800AAEF8(s32 arg0) {
+s32 fld_depFindByLink(s32 arg0) {
     FileTable *t = g_gameState->unk1C->depTable;
     s32 i;
     FileEntry *e = t->unk4;
@@ -246,7 +246,7 @@ s32 func_800AAEF8(s32 arg0) {
     return -1;
 }
 
-s32 func_800AAF5C(s32 arg0) {
+s32 fld_getModelAnimId(s32 arg0) {
     Unk800AA39C *t = db_lookupRegistered(8, arg0, 0x120000);
     s32 i;
     Unk800AA39CEntry *e;
@@ -261,7 +261,7 @@ s32 func_800AAF5C(s32 arg0) {
 }
 
 /* look up the three tables of an area entry */
-s32 func_800AAFD4(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
+s32 fld_getModelTables(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     Unk800AA39C *t = db_lookupRegistered(8, arg0, 0x120000);
     Unk800AA39CEntry *e = t->unk4;
     s32 i;
@@ -278,7 +278,7 @@ s32 func_800AAFD4(s32 arg0, s32 **arg1, s32 **arg2, s32 **arg3) {
     return 0;
 }
 
-s32 func_800AB0B0(Unk800C95C8 *arg0) {
+s32 fld_isModelTexAnimActive(Unk800C95C8 *arg0) {
     Unk800AB0B0 *t = arg0->unk50;
     s32 i;
     Unk800AB0B0Entry *e;
@@ -294,7 +294,7 @@ s32 func_800AB0B0(Unk800C95C8 *arg0) {
     return 0;
 }
 
-s32 func_800AB110(FieldObjSlot **arg0) {
+s32 fld_collectModels(FieldObjSlot **arg0) {
     s32 n;
     Unk16D8 *e;
     FieldObjSlot *s;
@@ -353,8 +353,8 @@ s32 func_800AB110(FieldObjSlot **arg0) {
     return n;
 }
 
-void func_800AB3CC(void) {
-    /* block scope: func_800AC02C calls it undeclared (int argument) */
+void fld_drawModels(void) {
+    /* block scope: fld_applyModelCommands calls it undeclared (int argument) */
     void func_800B61A4(Unk800C95C8 *, u8);
     FieldEvtCtx *list[16];
     SVECTOR rot;
@@ -378,7 +378,7 @@ void func_800AB3CC(void) {
 
     lim = 100;
     j = 0;
-    if (D_800C9D44 & 0x40) {
+    if (g_fieldMovieFlags & 0x40) {
         mbg_getGeomOffset(&ofs[0], &ofs[1]);
         SetGeomOffset(ofs[0], ofs[1]);
     } else {
@@ -387,7 +387,7 @@ void func_800AB3CC(void) {
     i = 0;
     ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
     g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30;
-    n = func_800AB110((FieldObjSlot **)list);
+    n = fld_collectModels((FieldObjSlot **)list);
     for (; i < n; i++) {
         c = list[i];
         if (c != NULL) {
@@ -486,14 +486,14 @@ void func_800AB3CC(void) {
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL) {
-            func_800AC6C0(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk2C, c->unkC->unk3B);
+            fld_drawShadow(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk2C, c->unkC->unk3B);
         }
     }
     for (i = 0; i < n; i++) {
         c = list[i];
         if (c != NULL && !(c->unk0 & 0x1000)) {
             m = c->unk8;
-            if (m->unk50->unk0 >= 2 && func_800AB0B0(m) == 0) {
+            if (m->unk50->unk0 >= 2 && fld_isModelTexAnimActive(m) == 0) {
                 m->unk50->unk4[2].unk0 |= 1;
                 m->unk50->unk4[2].unk8 = 0;
                 m->unk50->unk4[2].unkE = 0x1000;
@@ -506,19 +506,19 @@ void func_800AB3CC(void) {
             func_800BB090((BgAnimHdr *)((Unk800C95C8 *)c->unk8)->unk50);
         }
     }
-    func_800B2D10(list, n);
+    fld_applyLights(list, n);
     if (!(g_gameState->unk1C->unk0 & 2)) {
-        func_800B1E8C(list, n);
+        fld_playAnimSfx(list, n);
     }
-    func_800AC02C(list, n);
+    fld_applyModelCommands(list, n);
     g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
-    if (!(D_800C9D44 & 0x40)) {
+    if (!(g_fieldMovieFlags & 0x40)) {
         func_800C0FB0();
     }
 }
 
 /* object command arg1 for object arg0 (palette, mirror, triggers) */
-s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+s32 fld_modelCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     FieldActorInfo *info;
     FieldEvtCtx *c;
     FieldActorExt *x;
@@ -582,7 +582,7 @@ s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             *y->unkC = *c->unkC;
             y->unk8->unk8 = ((Unk800C95C8 *)c->unk8)->unk8;
             y->unk8->unkC = ((Unk800C95C8 *)c->unk8)->unkC;
-            func_800AAFD4(y->unk4, &tex, &uv, &spr);
+            fld_getModelTables(y->unk4, &tex, &uv, &spr);
             m = y->unk8->unk8;
             g = m->unk10;
             sum = 0;
@@ -603,7 +603,7 @@ s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
                 y->unk8->unk50 = db_lookupRegistered(4, id, 0);
                 func_800BB3C4((BgSprHdr *)y->unk8->unk50, (BgSprOfs *)spr);
             }
-            func_800AC620();
+            fld_trimModelCache();
             x->unk0 |= 0x02000001;
         }
         switch (arg1) {
@@ -641,9 +641,9 @@ s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     case 17:
     case 18:
     case 19:
-        t = func_800B2100(c, arg2, arg3);
+        t = fld_findAnimSfx(c, arg2, arg3);
         if (t == NULL && arg1 != 19) {
-            t = func_800B21A0(c, arg2, arg3);
+            t = fld_addAnimSfx(c, arg2, arg3);
         }
         switch (arg1) {
         case 16:
@@ -656,7 +656,7 @@ s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
             t->unk1 = arg4 != 0;
             break;
         case 19:
-            func_800B2218(c, arg2, arg3);
+            fld_removeAnimSfx(c, arg2, arg3);
             break;
         }
         break;
@@ -664,7 +664,7 @@ s32 func_800ABA98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return 0;
 }
 
-void func_800AC02C(FieldEvtCtx **arg0, s32 arg1) {
+void fld_applyModelCommands(FieldEvtCtx **arg0, s32 arg1) {
     s32 i;
     s32 j;
     FieldEvtCtx *c;
@@ -737,20 +737,20 @@ void func_800AC02C(FieldEvtCtx **arg0, s32 arg1) {
     }
 }
 
-Unk800C9CCC *func_800AC344(s32 arg0) {
+Unk800C9CCC *fld_findModelCache(s32 arg0) {
     u32 id;
     s32 i;
 
     id = (u16)arg0;
     for (i = 9; i >= 0; i--) {
-        if (D_800C9CCC[i].unk2 == id) {
-            return &D_800C9CCC[i];
+        if (g_fieldModelCache[i].unk2 == id) {
+            return &g_fieldModelCache[i];
         }
     }
     return NULL;
 }
 
-u32 func_800AC380(Unk800C9CCC **arg0) {
+u32 fld_getModelCacheBottom(Unk800C9CCC **arg0) {
     u32 min;
     s32 i;
 
@@ -759,24 +759,24 @@ u32 func_800AC380(Unk800C9CCC **arg0) {
         *arg0 = NULL;
     }
     for (i = 9; i >= 0; i--) {
-        if (D_800C9CCC[i].unk4 != 0 && D_800C9CCC[i].unk4 < min) {
-            min = D_800C9CCC[i].unk4;
+        if (g_fieldModelCache[i].unk4 != 0 && g_fieldModelCache[i].unk4 < min) {
+            min = g_fieldModelCache[i].unk4;
             if (arg0 != NULL) {
-                *arg0 = &D_800C9CCC[i];
+                *arg0 = &g_fieldModelCache[i];
             }
         }
     }
     return min;
 }
 
-s32 func_800AC3D8(s32 arg0, s32 arg1) {
+s32 fld_allocModelCache(s32 arg0, s32 arg1) {
     Unk800C9CCC *e;
     u32 lo;
     u32 min;
     u32 a;
 
-    e = func_800AC344(arg0);
-    min = func_800AC380(NULL);
+    e = fld_findModelCache(arg0);
+    min = fld_getModelCacheBottom(NULL);
     lo = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
     if (lo == 0) {
         lo = D_80067948;
@@ -791,7 +791,7 @@ s32 func_800AC3D8(s32 arg0, s32 arg1) {
 }
 
 /* drop the cached textures no longer listed and pack the rest at the top of RAM */
-void func_800AC474(void) {
+void fld_compactModelCache(void) {
     u32 top;
     Unk800C9CCC *s;
     s32 i;
@@ -807,12 +807,12 @@ void func_800AC474(void) {
 
     top = 0x801EDF00;
     for (i = 9; i >= 0; i--) {
-        s = &D_800C9CCC[i];
+        s = &g_fieldModelCache[i];
         id = s->unk2;
         if (s->unk4 != 0) {
             found = 0;
             for (j = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; j >= 0; j--) {
-                if ((u16)D_800C9F20[j] == id) {
+                if ((u16)g_fieldModelQueue[j] == id) {
                     found = 1;
                     break;
                 }
@@ -827,7 +827,7 @@ void func_800AC474(void) {
         best = 0;
         bi = -1;
         for (i = 9; i >= 0; i--) {
-            t = &D_800C9CCC[i];
+            t = &g_fieldModelCache[i];
             sz = t->unk8;
             end = t->unk4 + sz;
             if (t->unk4 != 0 && end <= top && best < end) {
@@ -838,7 +838,7 @@ void func_800AC474(void) {
         if (bi == -1) {
             break;
         }
-        s = &D_800C9CCC[bi];
+        s = &g_fieldModelCache[bi];
         addr = top - s->unk8;
         if (s->unk4 != addr) {
             func_8001DAA4(addr, s->unk4, s->unk8, NULL);
@@ -849,37 +849,37 @@ void func_800AC474(void) {
     DrawSync(0);
 }
 
-void func_800AC5F0(void) {
+void fld_clearModelCache(void) {
     s32 i;
 
     for (i = 9; i >= 0; i--) {
-        D_800C9CCC[i].unk0 = 0;
-        D_800C9CCC[i].unk4 = 0;
-        D_800C9CCC[i].unk8 = 0;
+        g_fieldModelCache[i].unk0 = 0;
+        g_fieldModelCache[i].unk4 = 0;
+        g_fieldModelCache[i].unk8 = 0;
     }
 }
 
-void func_800AC620(void) {
+void fld_trimModelCache(void) {
     s32 v = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20;
 
     if (v == 0) {
         v = D_80067948;
     }
-    func_800AC67C(v);
+    fld_invalidateModelCache(v);
 }
 
-void func_800AC67C(s32 arg0) {
+void fld_invalidateModelCache(s32 arg0) {
     s32 i;
 
     for (i = 9; i >= 0; i--) {
-        if (D_800C9CCC[i].unk4 != 0 && (u32)arg0 >= D_800C9CCC[i].unk4) {
-            D_800C9CCC[i].unk8 = 0;
-            D_800C9CCC[i].unk4 = 0;
+        if (g_fieldModelCache[i].unk4 != 0 && (u32)arg0 >= g_fieldModelCache[i].unk4) {
+            g_fieldModelCache[i].unk8 = 0;
+            g_fieldModelCache[i].unk4 = 0;
         }
     }
 }
 
-void func_800AC6C0(FieldObjPlace *arg0, s32 arg1) {
+void fld_drawShadow(FieldObjPlace *arg0, s32 arg1) {
     MATRIX m;
     POLY_FT4 *p[4];
     SVECTOR v;
@@ -906,13 +906,13 @@ void func_800AC6C0(FieldObjPlace *arg0, s32 arg1) {
     }
     lt = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk1C;
     if (lt != NULL) {
-        t = (Unk800B3294Bias *)func_800B3294(lt, s->unk4);
+        t = (Unk800B3294Bias *)fld_findLightColor(lt, s->unk4);
         if (t == NULL) {
-            t = (Unk800B3294Bias *)func_800B3294(lt, -1);
+            t = (Unk800B3294Bias *)fld_findLightColor(lt, -1);
         }
         bias = t->unk7;
     }
-    func_800AD488(&e->unk0, s, &m);
+    fld_calcShadowMatrix(&e->unk0, s, &m);
     u0 = (s16)(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk50 % 64) * 2;
     v0 = (s16)(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk52 % 256);
     for (i = 0; i < 4; i++) {
@@ -1041,12 +1041,12 @@ void func_800AC6C0(FieldObjPlace *arg0, s32 arg1) {
     FIELD_SHADOW_ADD(k, 3);
 }
 
-s32 func_800AD44C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+s32 fld_initShadows(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return func_80062E3C(arg0, 0x100, 0xFF, arg2, arg3, arg1, 3);
 }
 
 /* object placement matrix: either a plain y rotation or facing the model's joint */
-void func_800AD488(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
+void fld_calcShadowMatrix(FieldObjEnt *arg0, FieldObjSlot *arg1, MATRIX *arg2) {
     MATRIX m;
     SVECTOR v;
     VECTOR dir;
@@ -1130,10 +1130,10 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
         fld_movieStart((arg1 >> 8) & 0xFF, arg1 & 0xFF, arg2);
         return 0;
     case 1:
-        func_800AE4F8();
+        fld_movieStop();
         return 0;
     case 2:
-        D_800C9D44 |= 1;
+        g_fieldMovieFlags |= 1;
         break;
     case 3:
         return fld_movieCommand_state();
@@ -1148,11 +1148,11 @@ s32 fld_movieCommand(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void fld_movieStart(s8 arg0, s8 arg1, s8 arg2) {
-    D_800C9D44 = 0;
+    g_fieldMovieFlags = 0;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48 = arg0;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49 = arg1;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 = arg2;
-    func_800AC5F0();
+    fld_clearModelCache();
     func_800223CC();
     g_gameState->unk1C->unk8E4.field->unk0 |= 0x1000;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 1;
@@ -1177,12 +1177,12 @@ void fld_movieUpdate(void) {
         break;
     case 2:
         if (func_800217C4(g_gameState->unk1C->unk854) == 0) {
-            D_800C9D44 |= 8;
+            g_fieldMovieFlags |= 8;
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 3;
         }
         break;
     case 3:
-        if (!(D_800C9D44 & 8)) {
+        if (!(g_fieldMovieFlags & 8)) {
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk44 = cd_findFile(
                 g_mbgMovieLists[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48]
                     .unk4[g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49].unk0);
@@ -1198,21 +1198,21 @@ void fld_movieUpdate(void) {
         }
         break;
     case 5:
-        if (D_800C9D44 & 1) {
+        if (g_fieldMovieFlags & 1) {
             b = 1;
             if (g_gameState->unk1C->unk8 != 0) {
                 b = 2;
             }
-            D_800C9EF0.unk10[0][b - 1] = 0x600;
-            D_800C9EF0.unk0[0][b - 1] = 0x19;
-            D_800C9EF0.unk10[0][b - 1] |= 0x800;
+            g_fieldFlagQueue.unk10[0][b - 1] = 0x600;
+            g_fieldFlagQueue.unk0[0][b - 1] = 0x19;
+            g_fieldFlagQueue.unk10[0][b - 1] |= 0x800;
             if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 != 0) {
-                D_800C9EF0.unk0[0][b - 1] |= 0x44;
-                D_800C9EF0.unk10[0][b - 1] |= 1;
+                g_fieldFlagQueue.unk0[0][b - 1] |= 0x44;
+                g_fieldFlagQueue.unk10[0][b - 1] |= 1;
             }
-            D_800C9EF0.unk20[0][b - 1] = 0x40;
-            D_800C9EF0.unk20[1][b] = 0x40;
-            D_800C9EF0.unk20[0][b] = 2;
+            g_fieldFlagQueue.unk20[0][b - 1] = 0x40;
+            g_fieldFlagQueue.unk20[1][b] = 0x40;
+            g_fieldFlagQueue.unk20[0][b] = 2;
             if (!(D_80073998[0] & 0x04000000)) {
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x1000;
                 D_80073998[0] |= 0x04000000;
@@ -1223,8 +1223,8 @@ void fld_movieUpdate(void) {
             DrawSync(0);
             MBG_init(1, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk34);
             mbg_setRgb24(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43);
-            mbg_setEndCallback(func_800AE4F8);
-            D_800C9D46 = g_mbgFrame;
+            mbg_setEndCallback(fld_movieStop);
+            g_fieldMovieLastFrame = g_mbgFrame;
             func_8019AB98(2, 4, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5D);
             mbg_play(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk48,
                           g_gameState->unk1C->unk8E4.field->unkC->unk14->unk49);
@@ -1232,107 +1232,107 @@ void fld_movieUpdate(void) {
         }
         break;
     case 6:
-        if (D_800C9D44 & 0x40) {
+        if (g_fieldMovieFlags & 0x40) {
             mbg_getStartCamera((void *)&g_gameState->unk1C->unk18, &g_gameState->unk1C->unkA);
         }
-        if ((D_800C9D44 & 2) && (func_80012AD4() & 2)) {
+        if ((g_fieldMovieFlags & 2) && (func_80012AD4() & 2)) {
             done = mbg_update(0);
             t = mbg_getLastFrame();
-            if (!(D_800C9D44 & 0x20) && (u32)t < 99999) {
+            if (!(g_fieldMovieFlags & 0x20) && (u32)t < 99999) {
                 d = t - g_mbgFrame;
                 if (d < 4) {
                     func_80056278(d * 4, 0);
-                    D_800C9D44 |= 0x20;
+                    g_fieldMovieFlags |= 0x20;
                 }
             }
             if (done != 0) {
-                setlen(&D_800C9F6C[g_gameState->unk1C->unk8 ^ 1], 2);
-                D_800C9F6C[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000002;
-                D_800C9F6C[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
+                setlen(&g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
+                g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000002;
+                g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
                 addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1],
-                        &D_800C9F6C[g_gameState->unk1C->unk8 ^ 1]);
+                        &g_fieldMovieMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
                 DrawOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1]);
             } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 != 0 && g_gameState->unk1C->unk8 == 0) {
                 g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
             }
-            if ((g_mbgFrame >= t || D_800C9D46 >= g_mbgFrame) && !(D_800C9D44 & 0x100)) {
-                if (D_800C9D46 >= g_mbgFrame) {
+            if ((g_mbgFrame >= t || g_fieldMovieLastFrame >= g_mbgFrame) && !(g_fieldMovieFlags & 0x100)) {
+                if (g_fieldMovieLastFrame >= g_mbgFrame) {
                     ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
                     g_gameState->unk1C->unk0 &= ~0x1D;
                     g_gameState->unk1C->unk8E4.field->unk0 &= ~0xE01;
                     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk43 != 0 && g_gameState->unk1C->unk8 == 0) {
                         g_gameState->unkC[g_gameState->unk1C->unk8].disp.x = 0x1E0;
                     }
-                    printf("Fr: %d\n", D_800C9D46);
+                    printf("Fr: %d\n", g_fieldMovieLastFrame);
                 } else {
-                    D_800C9EF0.unk0[1][0] = 0x1D;
-                    D_800C9EF0.unk10[1][0] = 0xE01;
+                    g_fieldFlagQueue.unk0[1][0] = 0x1D;
+                    g_fieldFlagQueue.unk10[1][0] = 0xE01;
                 }
-                D_800C9D44 |= 0x100;
+                g_fieldMovieFlags |= 0x100;
             }
-            D_800C9D46 = g_mbgFrame;
+            g_fieldMovieLastFrame = g_mbgFrame;
         }
         break;
     case 7:
-        if ((D_800C9D44 & 4) && cd_getState() == 0) {
-            func_800AE5D4();
+        if ((g_fieldMovieFlags & 4) && cd_getState() == 0) {
+            fld_movieFinish();
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 8;
         }
         break;
     }
 }
 
-void func_800AE4F8(void) {
+void fld_movieStop(void) {
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 0x1000) {
         D_80073998[0] &= ~0x04000000;
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 &= ~0x1000;
     }
     mbg_shutdown();
     cd_cancel();
-    D_800C9D44 |= 4;
+    g_fieldMovieFlags |= 4;
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 = 7;
 }
 
-void func_800AE5D4(void) {
+void fld_movieFinish(void) {
     FieldMap *f;
 
     g_gameState->unk1C->unk0 &= ~0x5D;
     f = g_gameState->unk1C->unk8E4.field;
-    D_800C9D44 &= 0xFE00;
+    g_fieldMovieFlags &= 0xFE00;
     f->unk0 &= ~0x1E01;
     g_gameState->vsyncMode = 2;
     g_gameState->unkC[0].disp.x = 0x140;
     g_gameState->unkC[1].disp.x = 0;
-    func_800B0124(0x6201, -1, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5C, 0, 0);
+    fld_soundCommand(0x6201, -1, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk5C, 0, 0);
 }
 
-s32 func_800AE68C(void) {
-    if ((u32)(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 - 6) < 2 && (D_800C9D44 & 2)
+s32 fld_isMoviePlaying(void) {
+    if ((u32)(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk42 - 6) < 2 && (g_fieldMovieFlags & 2)
         && (func_80012AD4() & 2)) {
         return 1;
     }
     return 0;
 }
 
-void func_800AE710(u16 arg0, s32 arg1) {
+void fld_moviePlay(u16 arg0, s32 arg1) {
     fld_movieCommand(0, arg0, arg1);
 }
 
-void func_800AE738(void) {
+void fld_movieGo(void) {
     fld_movieCommand(2, 0, 0);
 }
 
-void func_800AE760(void) {
+void fld_movieRequestStop(void) {
     fld_movieCommand(1, 0, 0);
 }
 
-void func_800AE788(void) {
+void fld_beginFrame(void) {
     if (g_gameState->unk1C->unk8E4.field->unk0 & 0x200) {
         ClearOTag(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
-        setlen(&D_800C9F60[g_gameState->unk1C->unk8 ^ 1], 2);
-        D_800C9F60[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
-        D_800C9F60[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1][0xFFF], &D_800C9F60[g_gameState->unk1C->unk8 ^ 1]);
+        setlen(&g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
+        g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
+        g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8 ^ 1][0xFFF], &g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1]);
     } else {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
     }
@@ -1340,7 +1340,7 @@ void func_800AE788(void) {
 }
 
 /* end of frame: flip buffers, draw and apply the queued flag changes */
-void func_800AE930(void) {
+void fld_endFrame(void) {
     s32 i;
     s32 j;
     u32 f;
@@ -1358,11 +1358,11 @@ void func_800AE930(void) {
     }
     VSync(g_gameState->vsyncMode);
     ResetGraph(1);
-    if (D_800C9D44 & 8) {
+    if (g_fieldMovieFlags & 8) {
         EnterCriticalSection();
         FlushCache();
         ExitCriticalSection();
-        D_800C9D44 &= ~8;
+        g_fieldMovieFlags &= ~8;
     }
     if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x20)) {
         PutDispEnv(&g_gameState->unkC[g_gameState->unk1C->unk8]);
@@ -1384,35 +1384,35 @@ void func_800AE930(void) {
         func_8002C0DC(g_gameState->unk1C->unk8);
     }
     if (!(g_gameState->unk1C->unk0 & 0x100)) {
-        g_gameState->unk1C->unk0 |= D_800C9EF0.unk0[0][0];
-        g_gameState->unk1C->unk0 &= ~D_800C9EF0.unk0[1][0];
-        g_gameState->unk1C->unk8E4.field->unk0 |= D_800C9EF0.unk10[0][0];
-        g_gameState->unk1C->unk8E4.field->unk0 &= ~D_800C9EF0.unk10[1][0];
-        D_800C9D44 |= D_800C9EF0.unk20[0][0];
-        D_800C9D44 &= ~D_800C9EF0.unk20[1][0];
+        g_gameState->unk1C->unk0 |= g_fieldFlagQueue.unk0[0][0];
+        g_gameState->unk1C->unk0 &= ~g_fieldFlagQueue.unk0[1][0];
+        g_gameState->unk1C->unk8E4.field->unk0 |= g_fieldFlagQueue.unk10[0][0];
+        g_gameState->unk1C->unk8E4.field->unk0 &= ~g_fieldFlagQueue.unk10[1][0];
+        g_fieldMovieFlags |= g_fieldFlagQueue.unk20[0][0];
+        g_fieldMovieFlags &= ~g_fieldFlagQueue.unk20[1][0];
         for (i = 0; i < 2; i++) {
             for (j = 0; j < 3; j++) {
-                D_800C9EF0.unk0[i][j] = D_800C9EF0.unk0[i][j + 1];
-                D_800C9EF0.unk10[i][j] = D_800C9EF0.unk10[i][j + 1];
-                D_800C9EF0.unk20[i][j] = D_800C9EF0.unk20[i][j + 1];
+                g_fieldFlagQueue.unk0[i][j] = g_fieldFlagQueue.unk0[i][j + 1];
+                g_fieldFlagQueue.unk10[i][j] = g_fieldFlagQueue.unk10[i][j + 1];
+                g_fieldFlagQueue.unk20[i][j] = g_fieldFlagQueue.unk20[i][j + 1];
             }
-            D_800C9EF0.unk0[i][3] = 0;
-            D_800C9EF0.unk10[i][3] = 0;
-            D_800C9EF0.unk20[i][3] = 0;
+            g_fieldFlagQueue.unk0[i][3] = 0;
+            g_fieldFlagQueue.unk10[i][3] = 0;
+            g_fieldFlagQueue.unk20[i][3] = 0;
         }
     }
 }
 
-void func_800AED04(void) {
+void fld_startEncounter(void) {
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk41 = 0;
-    D_800C9EF0.unk10[1][3] = 4;
-    D_800C9EF0.unk0[0][0] = 0x43;
-    D_800C9EF0.unk0[0][2] = 0x3C;
-    D_800C9EF0.unk10[0][2] = 0x1919;
+    g_fieldFlagQueue.unk10[1][3] = 4;
+    g_fieldFlagQueue.unk0[0][0] = 0x43;
+    g_fieldFlagQueue.unk0[0][2] = 0x3C;
+    g_fieldFlagQueue.unk10[0][2] = 0x1919;
     D_80073998[0] |= 0x04000000;
 }
 
-void func_800AED6C(void) {
+void fld_updateEncounter(void) {
     Unk8004AB64 *a;
     SVECTOR v;
     RECT r;
@@ -1423,7 +1423,7 @@ void func_800AED6C(void) {
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk41 == 0) {
         D_8007BD28 = 0;
         D_8007BD30 = D_80067944 + 0x153F00;
-        func_800AC5F0();
+        fld_clearModelCache();
         g_gameState->unk1C->unk8E4.field->unkC->unk14->unk20 = D_80067948;
         a = func_8004AE00();
         if (a != NULL) {
@@ -1444,7 +1444,7 @@ void func_800AED6C(void) {
             }
             func_800C0FB0();
         }
-        func_800B238C();
+        fld_findBattleMusic();
         if (g_gameState->unk1C->unk81C[0] != g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C
             && (g_gameState->unk1C->unk0 & 0x20000000)) {
             func_800559FC(0, 0xF, 0);
@@ -1466,12 +1466,12 @@ void func_800AED6C(void) {
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 2)) {
             if (func_800220E8(0x1000B) != 0) {
                 e = preload_find(0x1000B);
-                ClearOTag(&D_800C9F98, 1);
-                setlen(&D_800C9F60[g_gameState->unk1C->unk8 ^ 1], 2);
-                D_800C9F60[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
-                D_800C9F60[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
-                addPrim(&D_800C9F98, &D_800C9F60[g_gameState->unk1C->unk8]);
-                DrawOTag(&D_800C9F98);
+                ClearOTag(&g_fieldTempOt, 1);
+                setlen(&g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1], 2);
+                g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[0] = 0xE6000000;
+                g_fieldMaskPkt[g_gameState->unk1C->unk8 ^ 1].code[1] = 0;
+                addPrim(&g_fieldTempOt, &g_fieldMaskPkt[g_gameState->unk1C->unk8]);
+                DrawOTag(&g_fieldTempOt);
                 r.x = 0;
                 r.y = 0x100;
                 r.h = 0x100;
@@ -1486,9 +1486,9 @@ void func_800AED6C(void) {
                 func_80022390(func_8002208C()->unk4);
             }
             func_80022280((s32)D_80067944, 0x156F00);
-            func_800B0124(0xD000, 0x27C, 0, 0x80, 0x7F);
-            func_800B0124(0xD000, 0x27B, 0, 0x80, 0x7F);
-            func_800B0124(0xD000, 0x27A, 0, 0x80, 0x7F);
+            fld_soundCommand(0xD000, 0x27C, 0, 0x80, 0x7F);
+            fld_soundCommand(0xD000, 0x27B, 0, 0x80, 0x7F);
+            fld_soundCommand(0xD000, 0x27A, 0, 0x80, 0x7F);
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 2;
         }
         if (!(g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 & 1)
@@ -1502,22 +1502,22 @@ void func_800AED6C(void) {
             if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C != 0xFFFF
                 && g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C != g_gameState->unk1C->unk81C[0]) {
                 if (g_gameState->unk1C->unk0 & 0x20000000) {
-                    func_800B0124(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
+                    fld_soundCommand(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
                 }
-                func_800B0124(0x700, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C, 0, 0, 0);
+                fld_soundCommand(0x700, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C, 0, 0, 0);
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 = -1;
             } else {
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 = -2;
             }
         } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 == -1) {
-            if (func_800B0124(0xC00, -1, 0, 0, 0) == 0) {
+            if (fld_soundCommand(0xC00, -1, 0, 0, 0) == 0) {
                 g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 = -2;
             }
         } else if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 == -2) {
-            func_800B1C4C();
+            fld_suspendResidentSfx();
             if (g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C != 0xFFFF
                 && !(g_gameState->unk1C->unk0 & 0x20000000)) {
-                func_800B0124(0, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C, 0, 0, 0);
+                fld_soundCommand(0, g_gameState->unk1C->unk8E4.field->unkC->unk14->unk3C, 0, 0, 0);
                 func_800559C8(0, 0x7F);
             }
             g_gameState->unk1C->unk8E4.field->unkC->unk14->unk9 = -3;
@@ -1533,7 +1533,7 @@ void func_800AED6C(void) {
 }
 
 /* toggle the pause screen */
-void func_800AF740(void) {
+void fld_togglePause(void) {
     u8 c[4];
     u8 buf[8];
     s32 tmp;
@@ -1551,8 +1551,8 @@ void func_800AF740(void) {
             D_800739B0[i].unk1 = 0;
             D_800739B0[i].unk0 = 0;
         }
-        ClearOTag(&D_800C9F98, 1);
-        func_80027834((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &D_800C9F98, 0xEB, 0, &tmp, &D_800C9FA0);
+        ClearOTag(&g_fieldTempOt, 1);
+        func_80027834((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &g_fieldTempOt, 0xEB, 0, &tmp, &g_fieldPauseSprite);
         bright = 0;
         if (func_8002F800() || func_8002F810()) {
             bright = 1;
@@ -1568,24 +1568,24 @@ void func_800AF740(void) {
                 func_8002F9A8(c);
             }
             if (c[0] >= 200 && c[1] >= 200 && c[2] >= 200) {
-                D_800C9FA0.unk0.code |= 2;
-                sp = &D_800C9FA0.unk0;
+                g_fieldPauseSprite.unk0.code |= 2;
+                sp = &g_fieldPauseSprite.unk0;
                 sp++;
                 SetDrawTPage(sp, 1, 1,
                              getTPage(0, 2, func_8001DA30((s16)D_800686D0[235].unk6), func_8001DA3C((s16)D_800686D0[235].unk6)));
             }
         }
-        setlen(&D_800C9FE0, 3);
-        D_800C9FE0.code = 0x62;
-        setRGB0(&D_800C9FE0, 0x60, 0x60, 0x60);
-        setWH(&D_800C9FE0, 320, 224);
-        setXY0(&D_800C9FE0, 0, 0);
-        setlen(&D_800C9F90, 1);
-        a = getaddr(&D_800C9F98);
-        D_800C9F90.code[0] = 0xE1000240;
-        setaddr(&D_800C9FE0, a), setaddr(&D_800C9F98, &D_800C9FE0);
-        addPrim(&D_800C9F98, &D_800C9F90);
-        DrawOTag(&D_800C9F98);
+        setlen(&g_fieldPauseDim, 3);
+        g_fieldPauseDim.code = 0x62;
+        setRGB0(&g_fieldPauseDim, 0x60, 0x60, 0x60);
+        setWH(&g_fieldPauseDim, 320, 224);
+        setXY0(&g_fieldPauseDim, 0, 0);
+        setlen(&g_fieldPauseTPage, 1);
+        a = getaddr(&g_fieldTempOt);
+        g_fieldPauseTPage.code[0] = 0xE1000240;
+        setaddr(&g_fieldPauseDim, a), setaddr(&g_fieldTempOt, &g_fieldPauseDim);
+        addPrim(&g_fieldTempOt, &g_fieldPauseTPage);
+        DrawOTag(&g_fieldTempOt);
         g_gameState->unk1C->unk0 |= 0x20;
     } else {
         func_80023F60(0);
@@ -1594,7 +1594,7 @@ void func_800AF740(void) {
     }
 }
 
-void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+void fld_spriteCommand(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     Unk800AFCBC *h;
     FieldEnt *e;
 
@@ -1605,7 +1605,7 @@ void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     e = &h->unk8[arg0];
     if (arg1 == 0x82) {
         if (arg2 != -1) {
-            func_800B00B0(e);
+            fld_resetSprite(e);
             e->unk1 = arg2;
             e->unk18 = db_lookupRegistered(4, (arg2 & 0xFFFF) | 0x160000, 0);
             e->unkE = func_800C9700(e->unk18) * 16;
@@ -1648,7 +1648,7 @@ void func_800AFAC0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
 }
 
-u8 *func_800AFCBC(u8 *arg0) {
+u8 *fld_initSprites(u8 *arg0) {
     s32 i;
     s32 n;
     Unk800AFCBC *h;
@@ -1669,7 +1669,7 @@ u8 *func_800AFCBC(u8 *arg0) {
     h->unk8 = (FieldEnt *)arg0;
     arg0 += h->unk3 * 0x24;
     for (i = 0; i < h->unk3; i++) {
-        func_800B00B0(&h->unk8[i]);
+        fld_resetSprite(&h->unk8[i]);
     }
     h->unkC[0] = arg0;
     h->unkC[1] = arg0 + 0x3000;
@@ -1677,7 +1677,7 @@ u8 *func_800AFCBC(u8 *arg0) {
     return arg0 + 0x6000;
 }
 
-void func_800AFDE8(void) {
+void fld_drawSprites(void) {
     Unk800AFCBC *h;
     SVECTOR rot;
     s32 xy[2];
@@ -1691,7 +1691,7 @@ void func_800AFDE8(void) {
     if (h == NULL) {
         return;
     }
-    if (D_800C9D44 & 0x40) {
+    if (g_fieldMovieFlags & 0x40) {
         mbg_getGeomOffset(&xy[0], &xy[1]);
         SetGeomOffset(xy[0], xy[1]);
     } else {
@@ -1721,13 +1721,13 @@ void func_800AFDE8(void) {
             }
         }
     }
-    if (!(D_800C9D44 & 0x40)) {
+    if (!(g_fieldMovieFlags & 0x40)) {
         func_800C0FB0();
     }
 }
 
 /* reset a field entity */
-void func_800B00B0(FieldEnt *arg0) {
+void fld_resetSprite(FieldEnt *arg0) {
     s32 i;
 
     arg0->unk4 = 0x1000;

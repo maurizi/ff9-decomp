@@ -21,10 +21,10 @@ void fld_main(s32 arg0) {
     fld_load(arg0);
     SetDispMask(1);
     do {
-        func_800AE788();
+        fld_beginFrame();
         pad_update();
         if ((g_padPortPressed & 0x04000000) && (g_padPortHeld[0] & 0xF8) && !(g_padPortHeld[0] & 0xFE0001)) {
-            func_800AF740();
+            fld_togglePause();
         }
         if (!(g_gameState->unk1C->unk0 & 0x100)) {
             fld_movieUpdate();
@@ -38,7 +38,7 @@ void fld_main(s32 arg0) {
                 switch (func_8004BC38()) {
                 case 3:
                     g_gameState->unk1C->unk8E4.field->unkC->unk14->exitReason = FLD_EXIT_BATTLE;
-                    func_800AED04();
+                    fld_startEncounter();
                     break;
                 case 4:
                     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->nextId == 0x3E80) {
@@ -74,7 +74,7 @@ void fld_main(s32 arg0) {
                 func_800BFEE0();
             }
             if (!(g_gameState->unk1C->unk0 & 4)) {
-                func_800AB3CC();
+                fld_drawModels();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 8)) {
                 bgi_updateAnims();
@@ -84,7 +84,7 @@ void fld_main(s32 arg0) {
                 func_80054B78();
             }
             if (!(g_gameState->unk1C->unk0 & 0x10)) {
-                func_800AFDE8();
+                fld_drawSprites();
             }
             if (!(g_gameState->unk1C->unk0 & 8)) {
                 func_800B3684();
@@ -96,7 +96,7 @@ void fld_main(s32 arg0) {
                 func_80032098();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 4)) {
-                func_800AED6C();
+                fld_updateEncounter();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x80)) {
                 func_80023A4C();
@@ -105,13 +105,13 @@ void fld_main(s32 arg0) {
                 preload_update();
             }
         }
-        func_800AE930();
+        fld_endFrame();
     } while (!(g_gameState->unk0 & 0xF));
-    if (func_800B4F9C() != 0) {
-        func_800B4A5C();
+    if (fld_needsSplashImage() != 0) {
+        fld_showSplashImage();
     }
-    if ((u8)func_800B54CC()) {
-        func_800B50A4();
+    if ((u8)fld_isDiscChangePending()) {
+        fld_runDiscChange();
     }
     fld_exit();
 }
@@ -123,11 +123,11 @@ void fld_gameOver(void) {
     g_gameState->mode = 0;
     g_gameState->unk0 |= 0x100000;
     if ((g_gameState->unk1C->unk0 & 0x20000000) && g_gameState->unk1C->unk81C[0] != 0xFFFF) {
-        func_800B0124(0x8301, g_gameState->unk1C->unk81C[0], 0x1E, 0, 0);
+        fld_soundCommand(0x8301, g_gameState->unk1C->unk81C[0], 0x1E, 0, 0);
         for (i = 0x1D; i >= 0; i--) {
             VSync(0);
         }
-        func_800B0124(0x100, g_gameState->unk1C->unk81C[0], 0, 0, 0);
+        fld_soundCommand(0x100, g_gameState->unk1C->unk81C[0], 0, 0, 0);
     }
     D_80067950++;
 }
@@ -144,9 +144,9 @@ void fld_init(void) {
     func_8001CD04(0xE0);
     func_8001CFB4();
     SetDispMask(1);
-    g_gameState->unk1C->unk838 = func_800AAB30;
-    g_gameState->unk1C->unk83C = func_800B0124;
-    g_gameState->unk1C->unk8BC = func_800B36E0;
+    g_gameState->unk1C->unk838 = fld_setupActorModel;
+    g_gameState->unk1C->unk83C = fld_soundCommand;
+    g_gameState->unk1C->unk8BC = fld_preloadRequest;
     func_80021CDC(0);
     g_gameState->unk0 &= ~7;
     g_gameState->unk1C->unk84C = 0;
@@ -156,13 +156,13 @@ void fld_init(void) {
     gd2 = g_gameState->unk1C;
     gd2->unk836 = 0xFFFF;
     gd2->unk834 = 0xFFFF;
-    func_800B1D60();
-    func_800AC5F0();
+    fld_clearSoundBankCache();
+    fld_clearModelCache();
     fld_loadCommon();
     fld_readSoundBank();
     func_800239D0();
     if (g_gameState->unk1C->unk0 & 0x400000) {
-        func_800B0124(0x8601, 0, 0x78, 0, 0);
+        fld_soundCommand(0x8601, 0, 0x78, 0, 0);
     }
     func_8002FC30();
     f->unk4 = D_80067948;
@@ -175,7 +175,7 @@ void fld_quit(void) {
         D_800739B0[i].unk1 = 0;
         D_800739B0[i].unk0 = 0;
     }
-    func_800B1CE4();
+    fld_stopResidentSfx();
     fld_freeCommon();
 }
 
@@ -358,12 +358,12 @@ void fld_load(s32 arg0) {
     D_80073998[0] &= 0xFFFF0006;
     for (i = 1; i >= 0; i--) {
         for (j = 3; j >= 0; j--) {
-            D_800C9EF0.unk0[i][j] = 0;
-            D_800C9EF0.unk10[i][j] = 0;
+            g_fieldFlagQueue.unk0[i][j] = 0;
+            g_fieldFlagQueue.unk10[i][j] = 0;
         }
     }
     g_gameState->unk1C->unk8E4.field->unk8 = 0;
-    func_800AA4BC();
+    fld_clearModelQueue();
     g_gameState->unk1C->unk8E4.field->unk9 = 0;
     g_gameState->unk1C->fieldId = arg0;
     sc->nextId = arg0;
@@ -373,14 +373,14 @@ void fld_load(s32 arg0) {
     fld_setupBackground(sc, arg0);
     func_800A9954(sc, arg0);
     func_800AA01C(&g_gameState->unk1C->unk8E4.field->unkC->unk14->unk50, &g_gameState->unk1C->unk8E4.field->unkC->unk14->unk52);
-    func_800B3A80();
+    fld_initPreload();
     fld_startAudio();
-    func_800B0124(0x900, -1, 0, 0, 0);
+    fld_soundCommand(0x900, -1, 0, 0, 0);
     func_80049ED8(sc->eventScript);
     evt_init(sc->eventScript);
-    func_800AC474();
-    fld_loadTexturesInCdOrder();
-    while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
+    fld_compactModelCache();
+    fld_loadModelBundlesInCdOrder();
+    while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
     }
     func_8004BFB0();
     g_gameState->unk1C->unk38 = func_8004AAF0(0);
@@ -398,11 +398,11 @@ void fld_load(s32 arg0) {
         g_gameState->unk1C->unk8E0[i].unk8 = &g_gameState->unk1C->unk8DC[i];
     }
     sc->unk2C = (FieldObjPlace *)D_80067948;
-    D_80067948 = func_800AD44C(D_80067948, g_gameState->unk1C->unk38 + 9,
+    D_80067948 = fld_initShadows(D_80067948, g_gameState->unk1C->unk38 + 9,
                                g_gameState->unk1C->unk8E4.field->unkC->unk14->unk50,
                                g_gameState->unk1C->unk8E4.field->unkC->unk14->unk52);
-    func_800B2528(sc, arg0);
-    func_800B1C98();
+    fld_loadSoundBanks(sc, arg0);
+    fld_resumeResidentSfx();
     sc->unk20 = D_80067948;
     sc->unk4 = D_80067948;
     func_8004A8A4();
@@ -417,11 +417,11 @@ void fld_exit(void) {
 
     sc = g_gameState->unk1C->unk8E4.field->unkC->unk14;
     DrawSync(0);
-    func_800B1E04(sc, g_gameState->unk1C->fieldId);
+    fld_stopSceneSfx(sc, g_gameState->unk1C->fieldId);
     D_80073998[0] &= 0xFFFF0006;
     func_800AA0A8(sc, g_gameState->unk1C->fieldId);
     fld_freeFieldFile(sc, g_gameState->unk1C->fieldId);
-    func_800AAA54();
+    fld_freeModelBundles();
     for (i = 0; i < 9; i++) {
         if (g_gameState->unk1C->unk8D8[i].unk0 & 1) {
             g_gameState->unk1C->unk8D8[i].unk0 &= ~1;
@@ -454,9 +454,9 @@ void fld_exit(void) {
         break;
     case FLD_EXIT_TETRA_MASTER:
         if (g_gameState->unk1C->unk0 & 0x20000000) {
-            func_800B0124(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
+            fld_soundCommand(0x800, g_gameState->unk1C->unk81C[0], 0, 0, 0);
         }
-        func_800B1C4C();
+        fld_suspendResidentSfx();
         func_80056228();
         g_gameState->mode = 9;
         g_gameState->unkA = 1;
@@ -657,7 +657,7 @@ void fld_refindSectors(void) {
             }
             e--;
         } while (e >= start);
-        func_800AC5F0();
+        fld_clearModelCache();
         func_80022280((s32)g_gameState->unk1C->unk854[0].unk8, g_gameState->unk1C->unk854[0].unk10);
     }
 }
@@ -690,7 +690,7 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     bgi_clear();
     arg0->walkmesh = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0xB0000), 0);
     bgi_init((u8 *)arg0->walkmesh + 4);
-    D_80067948 = func_800AFCBC(D_80067948);
+    D_80067948 = fld_initSprites(D_80067948);
     return 0;
 }
 
@@ -700,10 +700,10 @@ s32 func_800A9954(FieldScene *arg0) {
 }
 
 void fld_startAudio(void) {
-    while (func_800B0124(0xC00, -1, 0, 0, 0) != 0) {
+    while (fld_soundCommand(0xC00, -1, 0, 0, 0) != 0) {
     }
     if (g_gameState->unk1C->unk0 & 0x400000) {
-        func_800B0124(0x100, g_gameState->unk1C->unk81C[0], 0, 0, 0);
+        fld_soundCommand(0x100, g_gameState->unk1C->unk81C[0], 0, 0, 0);
         g_gameState->unk1C->unk0 &= ~0x400000;
     }
     if (g_gameState->unk1C->unk8E4.field->unk20 != -1) {
@@ -713,7 +713,7 @@ void fld_startAudio(void) {
     }
 }
 
-s32 fld_loadTexturesInCdOrder(void) {
+s32 fld_loadModelBundlesInCdOrder(void) {
     s32 best;
     s32 i;
     s32 min;
@@ -724,8 +724,8 @@ s32 fld_loadTexturesInCdOrder(void) {
             best = -1;
             min = 0x7FFFFFFF;
             for (i = g_gameState->unk1C->unk8E4.field->unkC->unk14->unk60 - 1; i >= 0; i--) {
-                if (D_800C9F20[i] != -1) {
-                    v = file_find(0xA, D_800C9F20[i])->unk4;
+                if (g_fieldModelQueue[i] != -1) {
+                    v = file_find(0xA, g_fieldModelQueue[i])->unk4;
                     if (v < min) {
                         best = i;
                         min = v;
@@ -735,8 +735,8 @@ s32 fld_loadTexturesInCdOrder(void) {
             if (best == -1) {
                 break;
             }
-            func_800AA4E8(D_800C9F20[best]);
-            D_800C9F20[best] = -1;
+            fld_loadModelBundle(g_fieldModelQueue[best]);
+            g_fieldModelQueue[best] = -1;
         }
     }
     return 0;
@@ -772,7 +772,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
         while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
         }
     }
-    func_800AC67C((s32)g_gameState->unk1C->unk854[0].unk20);
+    fld_invalidateModelCache((s32)g_gameState->unk1C->unk854[0].unk20);
     base = D_80067948;
     g_gameState->unk1C->depTable = (FileTable *)db_lookup(base, 4, 0x140000, 0);
     id = db_lookup(base, 2, 0x1B0000, 0);
@@ -785,7 +785,7 @@ s32 fld_loadFile(FieldScene *sc, s32 arg1) {
             while (func_800217C4(g_gameState->unk1C->unk854) != 0) {
             }
             g_gameState->unk1C->unk854[0].unk10 += rest;
-            func_800AC67C((s32)g_gameState->unk1C->unk854[0].unk20);
+            fld_invalidateModelCache((s32)g_gameState->unk1C->unk854[0].unk20);
         }
         for (i = db_lookup(id, 1, 0x40000, 0) - 1; i >= 0; i--) {
             k = db_lookup(id, 2, (u16)i | 0x40000, 0);

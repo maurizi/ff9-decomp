@@ -22,7 +22,7 @@ typedef struct Unk800AB0B0 {
     Unk800AB0B0Entry unk4[1];
 } Unk800AB0B0;
 
-/* 0x24-byte entries at Unk800AFCBC.unk8 (func_800AFAC0 sets them) */
+/* 0x24-byte entries at Unk800AFCBC.unk8 (fld_spriteCommand sets them) */
 typedef struct {
     u32 unk0_0 : 4; /* flags */
     u32 unk0_4 : 4;
@@ -41,7 +41,7 @@ typedef struct {
     s16 unk22;
 } FieldEnt; /* 0x24 */
 
-/* initialised by func_800AFCBC */
+/* initialised by fld_initSprites */
 typedef struct Unk800AFCBC {
     u16 unk0;
     u8 unk2;
@@ -51,7 +51,7 @@ typedef struct Unk800AFCBC {
     u8 *unkC[2]; /* primitive buffers, per draw buffer */
 } Unk800AFCBC; /* 0x14, followed by the buffers it points to */
 
-/* trigger table entry (func_800B2218) */
+/* trigger table entry (fld_removeAnimSfx) */
 typedef struct FieldTrig {
     u8 unk0; /* object uid; low 2 bits also select a channel */
     u8 unk1;
@@ -61,7 +61,7 @@ typedef struct FieldTrig {
     u16 unk8[2];
 } FieldTrig; /* 0xC */
 
-/* script object (func_800B2218) */
+/* script object (fld_removeAnimSfx) */
 typedef struct {
     u8 pad0[0x14];
     struct {
@@ -127,7 +127,7 @@ typedef struct {
     u8 unk5D;
     u8 unk5E;
     u8 unk5F;
-    u8 unk60; /* D_800C9F20 count */
+    u8 unk60; /* g_fieldModelQueue count */
     u8 unk61[1];
     s16 unk62;
     s32 unk64;
@@ -614,7 +614,7 @@ typedef struct {
 } Unk800AA01C;
 
 /* deferred flag updates: [0] = set, [1] = clear, 4-frame queues for
- * GameData.unk0, FieldMap.unk0 and D_800C9D44 */
+ * GameData.unk0, FieldMap.unk0 and g_fieldMovieFlags */
 typedef struct {
     u16 unk0[2][4];
     u16 unk10[2][4];
@@ -632,7 +632,7 @@ typedef struct {
     WinDef unk8[6];
 } Unk800CB188;
 
-/* file 0x12xxxx lookup table (func_800AAF5C) */
+/* file 0x12xxxx lookup table (fld_getModelAnimId) */
 typedef struct {
     u16 unk0;
     u16 unk2;          /* file 0x3xxxx */
@@ -931,16 +931,16 @@ typedef struct {
     RECT unk24;
 } FieldPalAnim;
 
-/* pause screen (func_800AF740) */
+/* pause screen (fld_togglePause) */
 typedef struct {
     SPRT unk0;
     DR_TPAGE unk14;
     u8 pad1C[0x40 - 0x1C];
 } FieldPausePkt;
-extern DR_TPAGE D_800C9F90;
-extern u32 D_800C9F98;
-extern FieldPausePkt D_800C9FA0;
-extern TILE D_800C9FE0;
+extern DR_TPAGE g_fieldPauseTPage;
+extern u32 g_fieldTempOt;
+extern FieldPausePkt g_fieldPauseSprite;
+extern TILE g_fieldPauseDim;
 
 /* 3D sprite data (FieldEnt.unk18) */
 typedef struct {
@@ -969,7 +969,7 @@ u8 *func_800C970C(u8 *, FieldSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32,
 u8 *func_800C9AB8(u8 *, FieldSprArgs *, u8 *, u32 *);
 void func_800316D8(SVECTOR *, MATRIX *);
 
-/* object placement (func_800AD488) */
+/* object placement (fld_calcShadowMatrix) */
 typedef struct {
     unsigned unk0 : 8;
     unsigned unk1 : 12; /* scale x */
@@ -985,13 +985,13 @@ typedef struct FieldObjPlace {
     void *unk8[2][4]; /* shadow primitives, per draw buffer */
 } FieldObjPlace; /* 0x28 */
 
-/* Unk800B3294 seen bytewise: the top byte of the colour is a depth bias (func_800AC6C0) */
+/* Unk800B3294 seen bytewise: the top byte of the colour is a depth bias (fld_drawShadow) */
 typedef struct {
     u8 pad0[7];
     s8 unk7;
 } Unk800B3294Bias;
 
-/* texture set tables (func_800AA4E8) */
+/* texture set tables (fld_loadModelBundle) */
 typedef struct {
     s16 unk0;
     s16 unk2;
@@ -1021,14 +1021,14 @@ typedef struct {
     s16 unk20; /* x to skip */
 } FieldVramPos;
 
-s32 func_800AC3D8(s32, s32);
+s32 fld_allocModelCache(s32, s32);
 
-FieldLight *func_800B3254(Unk800B3254 *);
-/* func_800B3294: called before its definition without a prototype */
+FieldLight *fld_getLightColorTable(Unk800B3254 *);
+/* fld_findLightColor: called before its definition without a prototype */
 s32 bgi_getActorTriangle(s32, u16 *, u16 *);
 s32 bgi_linkFrameNeighbors(BgiHeader *, BgiAnim *, BgiKeyframe *);
-FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
-FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, s16 *);
+FieldLight *fld_findGlobalLights(Unk800B3254 *, FieldLight **, FieldLight **);
+FieldLight *fld_findFloorLight(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
 /* object model slot (func_8001E350) */
 typedef struct {
@@ -1082,7 +1082,7 @@ typedef struct {
     u16 unk2;
 } BgSprVtx;
 
-/* streamed sound bank request (func_800B29F8, as ovl_0c func_800AC424) */
+/* streamed sound bank request (fld_soundBankReadCallback, as ovl_0c func_800AC424) */
 typedef struct {
     u8 pad0[8];
     s32 unk8; /* address */
@@ -1091,23 +1091,23 @@ typedef struct {
 } Unk800B29F8;
 
 /* ---- overlay functions ---- */
-void func_800B1D9C(s32);
+void fld_dropSoundBankCache(s32);
 s32 fld_freeFieldFile(FieldScene *, s16);
 s32 func_800AA0A8(FieldScene *, s16);
-void func_800B1E04(FieldScene *, s16);
+void fld_stopSceneSfx(FieldScene *, s16);
 s32 fld_movieCommand(s32, s32, s32);
 s32 fld_freeCommon(void);
 s32 bgi_stepFloorMove();
 void func_80054A28(void *);
-s32 func_800B0124(s32, s32, s32, s32, s32);
-void func_800B1A20(s16, s16, s16, u8 *, u8 *);
-s32 func_800B36E0(s32, s32);
-s32 func_800B4894(void);
-void func_800B3ACC(void);
+s32 fld_soundCommand(s32, s32, s32, s32, s32);
+void fld_getSoundPanVolume(s16, s16, s16, u8 *, u8 *);
+s32 fld_preloadRequest(s32, s32);
+s32 fld_preloadHook(void);
+void fld_clearPreloadLists(void);
 s32 func_8001E350(s32);
-s32 func_800B31B8(FieldEvtCtx *, s32, s32, s32);
-void func_800B5938(void);
-void func_800AC67C(s32);
+s32 fld_setSlotColor(FieldEvtCtx *, s32, s32, s32);
+void fld_discChangeFinish(void);
+void fld_invalidateModelCache(s32);
 s32 func_800C0038(s32, s32);
 void fld_init(void);
 void fld_quit(void);
@@ -1115,24 +1115,24 @@ void fld_runArea(s32);
 void fld_main(s32);
 void fld_loadArea(s32);
 void fld_unloadArea(void);
-void func_800B5114(void);
-void func_800B51D0(void);
-void func_800B5290(void);
-void func_800B52DC(void);
-void func_800B532C(void);
-void func_800B57C8(void);
-void func_800B1CE4(void);
+void fld_discChangeEnter(void);
+void fld_discChangeLeave(void);
+void fld_discChangeBeginFrame(void);
+void fld_discChangeUpdate(void);
+void fld_discChangeEndFrame(void);
+void fld_discPromptHelp(void);
+void fld_stopResidentSfx(void);
 /* fld_getBgKey: some callers pass two arguments; no prototype */
 s32 fld_freeAreaFile(FieldMapObj *, s16);
-void func_800B5430(s32);
-s32 *func_800B3BD8(s32);
-s32 *func_800B3D10(s32);
+void fld_discChangeSetMode(s32);
+s32 *fld_findPreloadRequest(s32);
+s32 *fld_findPreloadExclude(s32);
 void func_800C951C(void);
 void func_800C95B8(void);
 void func_800C9580(void);
-void func_800B559C(void);
-void func_800B5660(void);
-void func_800B58B8(void);
+void fld_discPromptInput(void);
+void fld_discPromptDraw(void);
+void fld_discChangeBackToPrompt(void);
 void func_800C8C08(void);
 void func_800C8D40(void);
 void func_800C8E2C(void);
@@ -1146,9 +1146,9 @@ void func_800C923C(void);
 void func_800C92C8(u8);
 
 /* ---- overlay data ---- */
-extern u8 D_800A717C[]; /* text */
-extern s32 D_800C9D58;
-extern Unk800C9D5C D_800C9D5C[];
+extern u8 g_fieldDiscChangeText[]; /* text */
+extern s32 g_fieldPreloadCursor;
+extern Unk800C9D5C g_fieldDiscChangeModes[];
 extern Unk800C9DA4 D_800C9DA4;
 extern Unk800C9DB4 *D_800C9DB4;
 extern u8 D_800CA108; /* background sprite x extent */
@@ -1157,34 +1157,34 @@ extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
 extern BgiContext g_fieldBgi;
 extern Unk800C9DCC *D_800C9DCC;
-extern s32 D_800C9F20[16];
-extern s8 D_800C9FF0[5];
-extern s32 D_800C9FF8[5];
+extern s32 g_fieldModelQueue[16];
+extern s8 g_fieldSoundBankSlots[5];
+extern s32 g_fieldSoundBankIds[5];
 extern s32 D_800CA0E0;
-extern s32 D_800CA010[8];
-extern s32 D_800CA030[8];
-extern u8 D_800CA050; /* D_800CA010 count */
-extern u8 D_800CA051; /* D_800CA030 count */
-extern Unk800CA058 D_800CA058;
+extern s32 g_fieldPreloadRequests[8];
+extern s32 g_fieldPreloadExcludes[8];
+extern u8 g_fieldPreloadRequestCount; /* g_fieldPreloadRequests count */
+extern u8 g_fieldPreloadExcludeCount; /* g_fieldPreloadExcludes count */
+extern Unk800CA058 g_fieldDiscChange;
 extern Unk800CA068 D_800CA068;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
 extern BgiFloorMove g_fieldBgiFloorMoves[];
 extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
-extern Unk800C9EF0 D_800C9EF0;
-extern u16 D_800C9D44;
+extern Unk800C9EF0 g_fieldFlagQueue;
+extern u16 g_fieldMovieFlags;
 extern s16 g_fieldBgiPushCount;
 extern char D_800A7814[]; /* "          1/ny = %lx\n" (walkmesh dump) */
 extern s16 g_fieldBgiPushVecs[][3]; /* collision push vectors */
 extern s16 g_fieldBgiPushOnEdge[];
 extern s32 g_fieldBgiPushDist[];
-/* mask-bit primitives, one per draw buffer (func_800AE788) */
+/* mask-bit primitives, one per draw buffer (fld_beginFrame) */
 typedef struct {
     u32 tag;
     u32 code[5];
 } Unk800C9F60; /* 0x18 */
-extern Unk800C9F60 D_800C9F60[2];
+extern Unk800C9F60 g_fieldMaskPkt[2];
 extern BgiActor g_fieldBgiActors[24];
 BgiTriangle *bgi_getPassableNeighbor(BgiActor *, BgiTriangle *, s32);
 s32 bgi_pointInTriangle(BgiHeader *, BgiFloor *, BgiTriangle *, s16 *);
@@ -1203,7 +1203,7 @@ extern u8 D_800C9EA4[];
 extern RECT *D_800C9EA8;
 extern u8 *D_800C9EAC[5];
 extern u8 D_800A7860[]; /* text */
-extern RECT D_800C9D98;
+extern RECT g_fieldDiscChangeRect;
 
 /* text window contents passed to func_80063118 (as in ovl_38) */
 typedef struct {
@@ -1229,16 +1229,16 @@ extern u8 D_800C9EE4[];
 
 
 /* 10 VRAM cache slots at 0x800C9CCC. splat puts the first word at the end of
- * .text (as "D_800C9CCC"), so the array is reached through that label. */
+ * .text (as "g_fieldModelCache"), so the array is reached through that label. */
 typedef struct {
     s16 unk0;
     s16 unk2; /* id */
     u32 unk4; /* address (0 = free) */
     s32 unk8; /* size */
 } Unk800C9CCC; /* 0xC */
-extern Unk800C9CCC D_800C9CCC[10];
-Unk800C9CCC *func_800AC344(s32);
-u32 func_800AC380(Unk800C9CCC **);
+extern Unk800C9CCC g_fieldModelCache[10];
+Unk800C9CCC *fld_findModelCache(s32);
+u32 fld_getModelCacheBottom(Unk800C9CCC **);
 void fld_allocArea(void);
 void fld_initArea(void);
 /* fld_findAreaItem: called before its definition without a prototype */
@@ -1275,8 +1275,8 @@ extern s32 D_80077DEC; /* = D_80077DE8.unk4, referenced by its own name */
 s32 func_8002B980(u8 *, s32);
 extern s32 D_80077E54; /* overlaps Unk80077E50.unk4 in ff9.h */
 void func_800C85B8(s32, s32);
-void func_800B5794(void);
-s32 func_800AAB30(s32, void *);
+void fld_discPromptSelect(void);
+s32 fld_setupActorModel(s32, void *);
 void func_800C883C(s32);
 void func_800C8AE8(RECT *, s32);
 extern s32 g_mbgFrame;
@@ -1351,17 +1351,17 @@ s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade
 s32 func_800C0F08(void);
 
 
-/* field object drawing (func_800AB3CC) */
+/* field object drawing (fld_drawModels) */
 s32 bgi_getActorTilt(s32, s16 *, u16 *);
 void func_800B7CEC(Unk800C95C8 *);
 void func_800B7F14(Unk800C95C8 *, u16);
-s32 func_800AB0B0(Unk800C95C8 *);
+s32 fld_isModelTexAnimActive(Unk800C95C8 *);
 void func_800BB090(BgAnimHdr *);
-void func_800B2D10(FieldEvtCtx **, s32);
-void func_800B1E8C(FieldEvtCtx **, s32);
-void func_800AC02C(FieldEvtCtx **, s32);
+void fld_applyLights(FieldEvtCtx **, s32);
+void fld_playAnimSfx(FieldEvtCtx **, s32);
+void fld_applyModelCommands(FieldEvtCtx **, s32);
 void func_800BA560(Unk800C95C8 *, s32);
-void func_800AC6C0(struct FieldObjPlace *, s32);
+void fld_drawShadow(struct FieldObjPlace *, s32);
 s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
 
 #define gte_stir(r0) __asm__ volatile( \
@@ -1370,7 +1370,7 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
     "swc2\t$11, 8(%0)" \
     : : "r"(r0) : "memory")
 
-/* func_800AC6C0: project one corner of the 3x3 shadow grid */
+/* fld_drawShadow: project one corner of the 3x3 shadow grid */
 #define FIELD_SHADOW_PT(x, z) \
     v.vx = (x); \
     v.vy = 0; \
@@ -1378,7 +1378,7 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
     gte_ldv0(&v); \
     gte_rtps()
 
-/* func_800AC6C0: link shadow quad q at its deepest corner */
+/* fld_drawShadow: link shadow quad q at its deepest corner */
 #define FIELD_SHADOW_ADD(k, q) \
     k = (k >> 2) + bias; \
     if (-g_gameState->unk1C->unk8E4.field->unkC->unk14->unk30 < k \
@@ -1386,7 +1386,7 @@ s32 mbg_getGeomOffset(s32 *, s32 *); /* ovl_64 */
         addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][k], e->unk8[g_gameState->unk1C->unk8][q]); \
     }
 
-void func_800AD488(FieldObjEnt *, FieldObjSlot *, MATRIX *);
+void fld_calcShadowMatrix(FieldObjEnt *, FieldObjSlot *, MATRIX *);
 
 
 /* field movie playback (fld_movieUpdate) */
@@ -1403,10 +1403,10 @@ typedef struct {
     Unk8019DC5CEnt *unk4;
 } Unk8019DC5C;
 extern Unk8019DC5C g_mbgMovieLists[]; /* overlay loaded at 0x80198000 */
-extern u16 D_800C9D46;
-extern Unk800C9F6C D_800C9F6C[2];
-void func_800AE4F8(void);
-void func_800AE5D4(void);
+extern u16 g_fieldMovieLastFrame;
+extern Unk800C9F6C g_fieldMovieMaskPkt[2];
+void fld_movieStop(void);
+void fld_movieFinish(void);
 void MBG_init(s32, void *); /* overlay loaded at 0x80198000 */
 void mbg_setEndCallback(void (*)());
 void func_8019AB98(s32, s32, s32);
@@ -1420,10 +1420,10 @@ void func_8001D910(void *, RECT **, RECT **); /* TIM: clut rect, image rect */
 u8 func_80022ED4(s32);
 void func_80056248(s32);
 
-/* field setup (func_800AED6C) */
-void func_800AC5F0(void);
-void func_800B238C(void);
-void func_800B1C4C(void);
+/* field setup (fld_updateEncounter) */
+void fld_clearModelCache(void);
+void fld_findBattleMusic(void);
+void fld_suspendResidentSfx(void);
 /* main exe: candidates for ff9.h */
 extern s32 D_8007BD28;
 extern u8 *D_8007BD30;
@@ -1435,7 +1435,7 @@ u8 func_80053A10(s32, s32);
 
 /* bgi_slide (walkmesh slide along the triangle edges) */
 extern VECTOR g_fieldBgiDefaultNormal; /* normal used when a triangle has none */
-extern const u8 D_800A7170[]; /* "DISC CHANGE" label */
+extern const u8 g_fieldDiscChangeLabel[]; /* "DISC CHANGE" label */
 s32 bgi_findEdgeCrossing(BgiHeader *, BgiFloor *, BgiTriangle *, s16 *, s16 *, SVECTOR *, s16 *, s32);
 
 /* clears the visited flag (0x80) of every walkmesh triangle */
@@ -1477,12 +1477,12 @@ static inline void bgi_slide_push(SVECTOR *pos, s16 *org, s32 *fx, s32 *fz) {
     *fz = tz & 0xFFFF;
 }
 
-/* music/sound request handler (func_800B0124) */
-extern s8 D_800C9D4C;
-extern s32 D_800C9D50;
+/* music/sound request handler (fld_soundCommand) */
+extern s8 g_fieldMusicRequest;
+extern s32 g_fieldSoundLoadId;
 extern u8 D_800C9D52;
-extern s32 D_800C9D54;
-s32 func_800B29F8(Unk800B29F8 *arg0);
+extern s32 g_fieldSoundLoadSector;
+s32 fld_soundBankReadCallback(Unk800B29F8 *arg0);
 /* main exe: candidates for ff9.h */
 s32 func_80055290(void *);
 void func_800552B8(s32);
@@ -1523,8 +1523,8 @@ typedef struct {
 #define SFXH(i) (((GameDataSfx *)g_gameState->unk1C)->unk828[i])
 #define SCENE (g_gameState->unk1C->unk8E4.field->unkC->unk14)
 
-s32 func_800AD44C(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
+s32 fld_initShadows(s32, s32, s32, s32); /* returns func_80062E3C's result (the next free address) */
 
-FieldTrig *func_800B21A0(FieldEvtCtx *, s32, s32); /* returns the new entry */
+FieldTrig *fld_addAnimSfx(FieldEvtCtx *, s32, s32); /* returns the new entry */
 
 #endif
