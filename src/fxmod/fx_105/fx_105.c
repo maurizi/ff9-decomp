@@ -439,7 +439,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0xFC:
             ex->Hi_SetSummonMotion(SUMMON105(env)->unk54->unk180[5], SUMMON105(env)->unk60);
             for (i = 0; i < env->targets->targetCount; i++) {
-                work->unk1B8[i] = ex->func_800D89E8(i);
+                work->unk1B8[i] = ex->btlfx_holdMotion(i);
             }
             work->unk20 = 0x30;
             work->unk18 = 0x3C;
@@ -474,7 +474,7 @@ s32 fx_105_op80(s32 mode, Fx105Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         case 0x146:
             for (i = 0; i < env->targets->targetCount; i++) {
-                ex->func_800D8A20(i, work->unk1B8[i]);
+                ex->btlfx_setMotionHeld(i, work->unk1B8[i]);
             }
             break;
         case 0x165:

@@ -620,11 +620,11 @@ s32 btlfx_opHitSound(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D7578(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opUnitSound(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 4;
     } else if (arg0 != 1) {
-        return func_800D8D08(arg1, arg2, arg3);
+        return btlfx_stepUnitSound(arg1, arg2, arg3);
     } else {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
@@ -657,11 +657,11 @@ s32 btlfx_opPlayMotionWait(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32
     return 0;
 }
 
-s32 func_800D76DC(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opPlayMotionHold(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 8;
     } else if (arg0 != 1) {
-        return func_800D8E10(arg1, arg2, arg3);
+        return btlfx_stepPlayMotionHold(arg1, arg2, arg3);
     } else {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
@@ -722,11 +722,11 @@ s32 btlfx_opResetMotion(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D7948(s32 arg0, u8 *arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
+s32 btlfx_opFileMotion(s32 arg0, u8 *arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 4;
     } else if (arg0 != 1) {
-        return func_800D905C(arg1, arg2, arg3);
+        return btlfx_stepFileMotion(arg1, arg2, arg3);
     } else {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
@@ -734,11 +734,11 @@ s32 func_800D7948(s32 arg0, u8 *arg1, s32 arg2, Unk800F78A40 *arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D79BC(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opFileMotionWait(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 8;
     } else if (arg0 != 1) {
-        return func_800D908C(arg1, arg2, arg3);
+        return btlfx_stepFileMotionWait(arg1, arg2, arg3);
     } else {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
@@ -747,18 +747,18 @@ s32 func_800D79BC(s32 arg0, Unk800D8EA4 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D7A38(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opReleaseMotion(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 4;
     } else if (arg0 != 1) {
-        return func_800D9110(arg1, arg2, arg3);
+        return btlfx_stepReleaseMotion(arg1, arg2, arg3);
     } else {
         *arg1 = *arg4;
     }
     return 0;
 }
 
-s32 func_800D7A94(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opMoveToUnit(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 0x18;
     } else if (arg0 == 1) {
@@ -770,7 +770,7 @@ s32 func_800D7A94(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return func_800D9134((Unk800D9134 *)arg1, arg2, (s32 *)arg3);
+        return btlfx_stepMoveToUnit((Unk800D9134 *)arg1, arg2, (s32 *)arg3);
     }
     return 0;
 }
@@ -852,11 +852,11 @@ s32 btlfx_opJumpHome(s32 arg0, Unk800D955C *arg1, s32 arg2, s32 *arg3, s32 *arg4
     return 0;
 }
 
-s32 func_800D7E14(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opMoveToPoint(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 0x10;
     } else if (arg0 != 1) {
-        return func_800D960C(arg1, arg2, arg3);
+        return btlfx_stepMoveToPoint(arg1, arg2, arg3);
     } else {
         arg1->unk0 = arg4[0];
         arg1->unk1 = arg4[1];
@@ -868,7 +868,7 @@ s32 func_800D7E14(s32 arg0, Unk800D7E14 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D7EA0(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opMoveTowardTarget(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 0x1C;
     } else if (arg0 == 1) {
@@ -883,7 +883,7 @@ s32 func_800D7EA0(s32 arg0, Unk800D7C9C *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         }
         g_btlfxState.moveDone = 0;
     } else {
-        return func_800D974C(arg1, arg2, arg3);
+        return btlfx_stepMoveTowardTarget(arg1, arg2, arg3);
     }
     return 0;
 }
@@ -950,11 +950,11 @@ s32 btlfx_opFaceHome(s32 arg0, Unk800D8124 *arg1, s32 arg2, s32 *arg3, s32 *arg4
     return 0;
 }
 
-s32 func_800D81EC(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+s32 btlfx_opTurnUnit(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 4;
     } else if (arg0 != 1) {
-        return func_800D9F5C(arg1, arg2, arg3);
+        return btlfx_stepTurnUnit(arg1, arg2, arg3);
     } else {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
@@ -963,7 +963,7 @@ s32 func_800D81EC(s32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return 0;
 }
 
-s32 func_800D8270(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opWaitKindTime(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     s32 v;
     s32 w;
     if (arg0 == 0) {
@@ -972,7 +972,7 @@ s32 func_800D8270(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         arg1[0] = arg4[0];
         arg1[1] = arg4[1];
         arg1[2] = g_btlfxOpArgs.unk0;
-        if (func_800DA06C(arg1[0], arg1[2]) == 0) {
+        if (btlfx_getKindTiming(arg1[0], arg1[2]) == 0) {
             g_btlfxState.unk17 = arg0;
             return 1;
         }
@@ -982,12 +982,12 @@ s32 func_800D8270(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         }
         g_btlfxState.unk17 = 0;
     } else {
-        return func_800D9F88(arg1, arg2, arg3);
+        return btlfx_stepWaitKindTime(arg1, arg2, arg3);
     }
     return 0;
 }
 
-s32 func_800D8368(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opWaitOtherSide(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     if (arg0 == 0) {
         *arg4 = 4;
     } else if (arg0 == 1) {
@@ -1000,12 +1000,12 @@ s32 func_800D8368(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         }
         g_btlfxState.unk17 = 0;
     } else {
-        return func_800D9FD8(arg1, arg2, arg3);
+        return btlfx_stepWaitOtherSide(arg1, arg2, arg3);
     }
     return 0;
 }
 
-s32 func_800D8414(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+s32 btlfx_opWaitSameSide(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
     s32 v;
     u8 a, b;
     if (arg0 == 0) {
@@ -1021,7 +1021,7 @@ s32 func_800D8414(s32 arg0, u8 *arg1, s32 arg2, s32 *arg3, s32 *arg4) {
         }
         g_btlfxState.unk17 = 0;
     } else {
-        return func_800DA004(arg1, arg2, arg3);
+        return btlfx_stepWaitSameSide(arg1, arg2, arg3);
     }
     return 0;
 }
@@ -1058,7 +1058,7 @@ void btlfx_playUnitMotion(s32 arg0, s32 arg1) {
     }
 }
 
-void func_800D85F8(Unk800F78A40 *arg0, s32 arg1, s32 arg2) {
+void btlfx_setFileMotion(Unk800F78A40 *arg0, s32 arg1, s32 arg2) {
     if (btlfx_isPartyUnit(arg1) != 0) {
         btlfx_setUnitMotion(arg1, btlfx_getFileData(arg0->unk8, arg2));
     }
@@ -1145,14 +1145,14 @@ void btlfx_playHitSound(s32 arg0, s32 arg1, s32 arg2) {
     }
 }
 
-u32 func_800D89E8(s32 arg0) {
+u32 btlfx_holdMotion(s32 arg0) {
     BtlUnit *u = btl_getUnit(arg0);
     u32 f = u->unk68;
     u->unk68 = f | 0x200000;
     return (f >> 21) & 1;
 }
 
-void func_800D8A20(s32 arg0, s32 arg1) {
+void btlfx_setMotionHeld(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
     u->unk68 = (u->unk68 & ~0x200000) | ((arg1 & 1) << 21);
 }
@@ -1177,7 +1177,7 @@ s32 btlfx_isSameUnit(s32 arg0, s32 arg1) {
     return a == btl_getUnit(arg1);
 }
 
-s32 func_800D8B20(s32 arg0) {
+s32 btlfx_getUnitKind(s32 arg0) {
     s32 idx = (btl_getUnit(arg0)->unk68 >> 1) & 0xF;
     return g_gameState->unk1C->characters[idx].unk34.b.unk4;
 }
@@ -1234,7 +1234,7 @@ s32 btlfx_stepHitSound(u8 *arg0, s32 arg1, s32 arg2) {
     return 1;
 }
 
-s32 func_800D8D08(u8 *arg0, s32 arg1, s32 arg2) {
+s32 btlfx_stepUnitSound(u8 *arg0, s32 arg1, s32 arg2) {
     BtlUnit *u = btl_getUnit(arg0[0]);
     switch (arg0[1]) {
     case 0:
@@ -1265,7 +1265,7 @@ s32 btlfx_stepPlayMotionWait(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800D8E10(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepPlayMotionHold(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
         btlfx_playUnitMotion(arg0->unk0, arg0->unk1);
@@ -1273,7 +1273,7 @@ s32 func_800D8E10(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     }
     if (v >= arg0->unk4) {
         g_btlfxState.motionDone = 1;
-        func_800D89E8(arg0->unk0);
+        btlfx_holdMotion(arg0->unk0);
         return 1;
     }
     return 0;
@@ -1299,7 +1299,7 @@ s32 func_800D8F1C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
         arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - arg0->unk2 - 1;
     }
     if (v >= arg0->unk4) {
-        func_800D89E8(arg0->unk0);
+        btlfx_holdMotion(arg0->unk0);
         g_btlfxState.motionDone = 1;
         return 1;
     }
@@ -1326,15 +1326,15 @@ s32 btlfx_stepResetMotion(u8 *arg0, s32 arg1, s32 arg2) {
     return 1;
 }
 
-s32 func_800D905C(u8 *arg0, s32 arg1, Unk800F78A40 *arg2) {
-    func_800D85F8(arg2, arg0[0], arg0[1]);
+s32 btlfx_stepFileMotion(u8 *arg0, s32 arg1, Unk800F78A40 *arg2) {
+    btlfx_setFileMotion(arg2, arg0[0], arg0[1]);
     return 1;
 }
 
-s32 func_800D908C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepFileMotionWait(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
     if (v == 0) {
-        func_800D85F8((Unk800F78A40 *)arg2, arg0->unk0, arg0->unk1);
+        btlfx_setFileMotion((Unk800F78A40 *)arg2, arg0->unk0, arg0->unk1);
         arg0->unk4 = btlfx_getMotionLength(arg0->unk0) - 1;
     }
     if (v >= arg0->unk4) {
@@ -1344,12 +1344,12 @@ s32 func_800D908C(Unk800D8EA4 *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800D9110(u8 *arg0, s32 arg1, s32 arg2) {
-    func_800D8A20(*arg0, 0);
+s32 btlfx_stepReleaseMotion(u8 *arg0, s32 arg1, s32 arg2) {
+    btlfx_setMotionHeld(*arg0, 0);
     return 1;
 }
 
-s32 func_800D9134(Unk800D9134 *p, s32 arg1, s32 *arg2) {
+s32 btlfx_stepMoveToUnit(Unk800D9134 *p, s32 arg1, s32 *arg2) {
     s16 a[4];
     s16 b[4];
     s16 *pos;
@@ -1358,7 +1358,7 @@ s32 func_800D9134(Unk800D9134 *p, s32 arg1, s32 *arg2) {
     s32 v;
     if (btlfx_isPartyUnit(p->unk1) == 0) {
         if (n == 0) {
-            p->unk4 = func_800DA06C(p->unk0, 0);
+            p->unk4 = btlfx_getKindTiming(p->unk0, 0);
             pos = p->unk10;
             btlfx_getUnitPos(p->unk1, pos);
             v = p->unk4;
@@ -1389,7 +1389,7 @@ s32 btlfx_stepRunHome(Unk800D9260 *arg0, s32 arg1, s32 *arg2) {
     btlfx_getUnitHomePos(arg0->unk0, sp18);
     if (btlfx_isPartyUnit(arg0->unk1) == 0) {
         if (n == 0) {
-            v = func_800DA06C(arg0->unk0, 3);
+            v = btlfx_getKindTiming(arg0->unk0, 3);
             arg0->unk4 = v;
             if (v == 1) {
                 btlfx_setUnitPos(arg0->unk0, sp18);
@@ -1480,7 +1480,7 @@ s32 btlfx_stepJumpHome(Unk800D955C *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800D960C(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
+s32 btlfx_stepMoveToPoint(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
     s16 sp18[4];
     s32 n = *(s32 *)arg2;
     s32 v;
@@ -1519,7 +1519,7 @@ s32 func_800D960C(Unk800D7E14 *arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
-s32 func_800D974C(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepMoveTowardTarget(Unk800D7C9C *arg0, s32 arg1, s32 *arg2) {
     s16 a[4];
     s16 b[4];
     s16 c[4];
@@ -1678,21 +1678,21 @@ end:
     return 0;
 }
 
-s32 func_800D9F5C(u8 *arg0, s32 arg1, s32 arg2) {
+s32 btlfx_stepTurnUnit(u8 *arg0, s32 arg1, s32 arg2) {
     btlfx_turnUnit(arg0[0], arg0[2]);
     return 1;
 }
 
-s32 func_800D9F88(u8 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepWaitKindTime(u8 *arg0, s32 arg1, s32 *arg2) {
     s32 v = *arg2;
-    if (v == func_800DA06C(arg0[0], arg0[2]) - 1) {
+    if (v == btlfx_getKindTiming(arg0[0], arg0[2]) - 1) {
         g_btlfxState.unk17 = 1;
         return 1;
     }
     return 0;
 }
 
-s32 func_800D9FD8(u8 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepWaitOtherSide(u8 *arg0, s32 arg1, s32 *arg2) {
     if (*arg2 == arg0[2] - 1) {
         g_btlfxState.unk17 = 1;
         return 1;
@@ -1700,7 +1700,7 @@ s32 func_800D9FD8(u8 *arg0, s32 arg1, s32 *arg2) {
     return 0;
 }
 
-s32 func_800DA004(u8 *arg0, s32 arg1, s32 *arg2) {
+s32 btlfx_stepWaitSameSide(u8 *arg0, s32 arg1, s32 *arg2) {
     if (*arg2 == arg0[2] - 1) {
         g_btlfxState.unk17 = 1;
         return 1;
@@ -1709,7 +1709,7 @@ s32 func_800DA004(u8 *arg0, s32 arg1, s32 *arg2) {
 }
 
 s32 btlfx_stepCallWeaponScript(u8 *arg0, s32 arg1, s32 arg2) {
-    s32 v = func_800DA0B8(*arg0);
+    s32 v = btlfx_getWeaponScript(*arg0);
     D_80100D8C = v;
     btlfx_callScript(v);
     return 1;
@@ -1719,12 +1719,12 @@ s32 func_800DA064(u8 *arg0, s32 arg1, s32 arg2) {
     return 1;
 }
 
-s32 func_800DA06C(s32 arg0, s32 arg1) {
-    s32 i = func_800D8B20(arg0);
+s32 btlfx_getKindTiming(s32 arg0, s32 arg1) {
+    s32 i = btlfx_getUnitKind(arg0);
     return D_800F73A0[arg1][i];
 }
 
-s32 func_800DA0B8(s32 arg0) {
+s32 btlfx_getWeaponScript(s32 arg0) {
     s32 v = btlfx_getUnitWeapon(arg0);
     if (v >= 0x55) {
         v = 0;

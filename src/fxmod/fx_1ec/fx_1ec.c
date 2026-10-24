@@ -350,7 +350,7 @@ s32 fx_1ec_op82(s32 mode, Fx1ecWork82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (func_801E8D30(i) != 0) {
                     func_801E8CC4(i, 4);
-                    ex->func_800D89E8(i);
+                    ex->btlfx_holdMotion(i);
                 }
             }
         }

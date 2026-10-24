@@ -178,8 +178,8 @@ typedef struct BtlfxExports {
     s32 (*Hi_ShowSummonModelMesh)(s32, s32); /* 0x274 */
     s32 (*Hi_HideSummonModelMesh)(s32, s32); /* 0x278 */
     MATRIX * (*MulRotMatrix)(MATRIX *); /* 0x27C */
-    s32 (*func_800D8A20)(s32, s32); /* 0x280 */
-    u32 (*func_800D89E8)(s32); /* 0x284 */
+    s32 (*btlfx_setMotionHeld)(s32, s32); /* 0x280 */
+    u32 (*btlfx_holdMotion)(s32); /* 0x284 */
     s32 (*Hi_DrawEffModelByBone)(s32, s32, s32, s32); /* 0x288 */
     s32 (*Hi_DrawMorphEffModel)(SVECTOR *, VECTOR *, s32, s32, s32, s32); /* 0x28C */
     s32 (*Hi_GetSummonBoneMatrix)(s32, s32, BtlBone *); /* 0x290 */

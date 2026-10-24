@@ -335,7 +335,7 @@ s32 fx_180_op82(s32 mode, Fx180Work82 *work, Unk800F78A4 *env, Unk80100C78Entry 
             for (i = 0; i < env->targets->targetCount; i++) {
                 if (func_801E8FD8(i) != 0) {
                     func_801E8F6C(i, 4);
-                    ex->func_800D89E8(i);
+                    ex->btlfx_holdMotion(i);
                 }
             }
         }

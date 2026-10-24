@@ -2468,8 +2468,8 @@ typedef struct {
 
 void btl_addItem(s32);
 
-u32 func_800D89E8(s32);
-s32 func_800D9F5C(u8 *, s32, s32);
+u32 btlfx_holdMotion(s32);
+s32 btlfx_stepTurnUnit(u8 *, s32, s32);
 void btlfx_error(char *);
 void func_800E3D80(void);
 u8 btl_isAtbRunning(void);
@@ -2487,11 +2487,11 @@ void btl_setMeshRgb(BtlUnit9C *, u8, s16, s16, s16);
 Battle122C *btlseq_start(BtlCmd *);
 struct BtlBgHeader *btlbg_getHeader(void);
 s32 btlfx_stepPlayMotionWait(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D8E10(struct Unk800D8EA4 *, s32, s32 *);
+s32 btlfx_stepPlayMotionHold(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8EA4(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8F1C(struct Unk800D8EA4 *, s32, s32 *);
 s32 func_800D8FAC(struct Unk800D8EA4 *, s32, s32 *);
-s32 func_800D908C(struct Unk800D8EA4 *, s32, s32 *);
+s32 btlfx_stepFileMotionWait(struct Unk800D8EA4 *, s32, s32 *);
 typedef struct {
     u8 unk0;
     u8 unk1;
@@ -2500,7 +2500,7 @@ typedef struct {
     s16 unk8[4];
 } Unk800D9260;
 s32 btlfx_stepRunHome(Unk800D9260 *, s32, s32 *);
-s32 func_800D960C(struct Unk800D7E14 *, s32, s32);
+s32 btlfx_stepMoveToPoint(struct Unk800D7E14 *, s32, s32);
 s32 btl_soundCmd(s32, s32, s32, s32, s32);
 void btl_onCmdEffectDone(void);
 void btl_enqueueCmd(struct BtlCmd *);
@@ -2508,9 +2508,9 @@ void btl_reapplyStatusLook(BtlUnit *);
 void btl_clearRewards(void);
 void btl_setModelRgb(BtlUnit9C *, s32, s32, s32);
 void btl_showCmdName(BtlCmd *);
-s32 func_800D8D08(u8 *, s32, s32);
+s32 btlfx_stepUnitSound(u8 *, s32, s32);
 s32 btlfx_stepPlayMotion(u8 *, s32, s32);
-s32 func_800D905C(u8 *, s32, struct Unk800F78A40 *);
+s32 btlfx_stepFileMotion(u8 *, s32, struct Unk800F78A40 *);
 void btlfx_reapplyMini(BtlUnit *);
 void btlfx_reapplyVanish(BtlUnit *);
 s32 btl_soundPan(s32); /* unit id, or an SVECTOR pointer */
@@ -2541,7 +2541,7 @@ void btl_initMode(void);
 void btl_exitMode(void);
 s32 btl_getDepSectors(s32, s32 *, s32 *);
 s32 btlfx_stepResetMotion(u8 *, s32, s32);
-s32 func_800D9110(u8 *, s32, s32);
+s32 btlfx_stepReleaseMotion(u8 *, s32, s32);
 s32 btlfx_stepCallWeaponScript(u8 *, s32, s32);
 void btl_playHitSound(BtlUnit *, BtlUnit *);
 Unk8010141C *btlfx_getSummonModel(s32, char *);
@@ -2567,8 +2567,8 @@ s32 btlcam_step(void);
 void btlfx_spawnTask(s32, s32, s32, s32);
 void btlfx_setUnitMotion(s32, s32);
 s32 btlfx_getUnitMotion(s32, s32);
-s32 func_800D8B20(s32);
-s32 func_800DA06C(s32, s32);
+s32 btlfx_getUnitKind(s32);
+s32 btlfx_getKindTiming(s32, s32);
 s32 btlfx_getFileData(s32, s32);
 void btlfx_halt(char *);
 void func_800DC9D0(BtlUnit9C *, s32, u16 *);
@@ -2674,19 +2674,19 @@ void btlfx_linkPrimAbr(); /* (u32 code, u32 *ot, void *prim, s32 tpage) */
 u8 *btlfx_findScript(s32);
 void btlfx_callScript(s32);
 void btlfx_playUnitMotion(s32, s32);
-void func_800D85F8(struct Unk800F78A40 *, s32, s32);
+void btlfx_setFileMotion(struct Unk800F78A40 *, s32, s32);
 void btlfx_turnUnit(s32, s32);
 void btlfx_playHitSound(s32, s32, s32);
 s32 btlfx_isPartyUnit(s32);
 s32 btlfx_getUnitWeapon(s32);
-s32 func_800DA0B8(s32);
+s32 btlfx_getWeaponScript(s32);
 void btl_unreserveItem(s32);
 s32 btl_reloadPartyStep(s32);
 s32 btl_swapPartyModelStep(s32, s32);
 u32 btlfx_getUnitStatus(s32, u32);
 void btlfx_resetUnitMotion(s32, u8);
 void btlfx_playSwingSound(s32);
-void func_800D8A20(s32, s32);
+void btlfx_setMotionHeld(s32, s32);
 BtlUnit *btl_getUnit(s32);
 void func_800E9D84(void);
 void btlui_addItem(s32);
@@ -2964,7 +2964,7 @@ void btl_scaleModelMatrix(BtlUnit9C *, VECTOR *);
 void btlcam_getUnitAnchors(BtlUnit *, s16 *);
 s32 btlfx_rand(void);
 s32 btlfx_opJumpHome(s32, Unk800D955C *, s32, s32 *, s32 *);
-s32 func_800D8414(s32, u8 *, s32, s32 *, s32 *);
+s32 btlfx_opWaitSameSide(s32, u8 *, s32, s32 *, s32 *);
 
 
 extern u8 D_80104E6A;
@@ -3296,7 +3296,7 @@ BtlPopup *btl_popupHp(s32, s16, s16, u8);
 BtlPopup *btl_popupMp(s32, s16, s16, u8);
 void btlui_setPauseRequest(s8);
 s32 btlfx_stepRunToTarget(Unk800D7C9C *, s32, s32 *);
-s32 func_800D974C(Unk800D7C9C *, s32, s32 *);
+s32 btlfx_stepMoveTowardTarget(Unk800D7C9C *, s32, s32 *);
 
 typedef struct {
     u32 tag;
@@ -3501,7 +3501,7 @@ void btlui_startTargetSelect(Unk800EF80C *);
 
 void btl_endPartyHitMotion(BtlUnit *);
 void btl_endEnemyHitMotion(BtlUnit *);
-s32 func_800D9F88(u8 *, s32, s32 *);
+s32 btlfx_stepWaitKindTime(u8 *, s32, s32 *);
 
 extern u16 D_800FEC42;
 extern Unk800F412C D_800F8FD8[5];
@@ -3552,7 +3552,7 @@ typedef struct Unk800D9134 {
     s16 unk8[4];
     s16 unk10[4];
 } Unk800D9134;
-s32 func_800D9134(Unk800D9134 *, s32, s32 *);
+s32 btlfx_stepMoveToUnit(Unk800D9134 *, s32, s32 *);
 extern s32 D_80104DE8;
 extern s32 D_800F78B4[];
 extern u16 D_800F8CB4[];
@@ -3572,7 +3572,7 @@ s32 btlfx_stepSwingSound(u8 *, s32, s32);
 void btlui_closeList(void);
 extern u16 D_800F6A74[];
 extern struct Unk80100DC054 *D_80100E14; /* g_btlfxLoader.unk54 */
-s32 func_800D9FD8(u8 *, s32, s32 *);
+s32 btlfx_stepWaitOtherSide(u8 *, s32, s32 *);
 u8 btlui_isListWindowOpen(void);
 void btlui_closeListWindow(s32);
 void btlui_onCmdWindowClosed(Window *);

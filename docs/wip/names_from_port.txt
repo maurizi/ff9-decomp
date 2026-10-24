@@ -1328,3 +1328,35 @@ func_800E6DB8 btlfx_pushGeomScreen  # [code] saves the projection distance (D_80
 func_800E6DF4 btlfx_popGeomScreen  # [code] restores the projection distance btlfx_pushGeomScreen saved
 D_80104E00 g_btlfxSavedGeomScreen  # [code] projection distance saved by btlfx_pushGeomScreen
 func_800E6E1C btlfx_drawBgOffscreen  # [code] renders the battle background (layer 2, no rain) into an offscreen rect with its own draw environment
+
+## ovl_0b: ovl_0b (cleanup pass: effect unit ops 0x57-0x7B and helpers; btlfx_mod.h members renamed by hand)
+func_800D7578 btlfx_opUnitSound  # [code] unit op 0x57 (g_btlfxUnitOps): btlfx_stepUnitSound with the unit and sound choice
+func_800D8D08 btlfx_stepUnitSound  # [code] sound 0x456 (choice 0) or 0xAC0 (1) at the unit (btl_playUnitSound)
+func_800D89E8 btlfx_holdMotion  # [code] sets unk68 bit 21, which stops btl_updateUnitModel advancing the motion frame; returns the old bit
+func_800D8A20 btlfx_setMotionHeld  # [code] sets/clears unk68 bit 21 (motion frame frozen)
+func_800D76DC btlfx_opPlayMotionHold  # [code] unit op 0x5C: btlfx_stepPlayMotionHold, hold count from g_btlfxOpArgs
+func_800D8E10 btlfx_stepPlayMotionHold  # [code] plays a motion and freezes it (btlfx_holdMotion) n frames before its end
+func_800D85F8 btlfx_setFileMotion  # [code] party unit: motion n of the effect file (btlfx_getFileData) as its motion
+func_800D7948 btlfx_opFileMotion  # [code] unit op 0x63: btlfx_stepFileMotion
+func_800D905C btlfx_stepFileMotion  # [code] btlfx_setFileMotion
+func_800D79BC btlfx_opFileMotionWait  # [code] unit op 0x64: btlfx_stepFileMotionWait
+func_800D908C btlfx_stepFileMotionWait  # [code] btlfx_setFileMotion, then waits for its length (g_btlfxState.motionDone)
+func_800D7A38 btlfx_opReleaseMotion  # [code] unit op 0x65: btlfx_stepReleaseMotion
+func_800D9110 btlfx_stepReleaseMotion  # [code] btlfx_setMotionHeld(unit, 0)
+func_800D7A94 btlfx_opMoveToUnit  # [code] unit op 0x69: btlfx_stepMoveToUnit
+func_800D9134 btlfx_stepMoveToUnit  # [code] arcs a unit to another unit's position, or for a party destination 1000 in front of its home
+func_800D7E14 btlfx_opMoveToPoint  # [code] unit op 0x6E: btlfx_stepMoveToPoint, frames from g_btlfxOpArgs
+func_800D960C btlfx_stepMoveToPoint  # [code] arcs a unit to (0, 0, -0x100), its home or the targets' centre
+func_800D7EA0 btlfx_opMoveTowardTarget  # [code] unit op 0x6F: btlfx_stepMoveTowardTarget
+func_800D974C btlfx_stepMoveTowardTarget  # [code] arcs a unit a tenth-based fraction of the way to its strike position (btlfx_getStrikePos)
+func_800D81EC btlfx_opTurnUnit  # [code] unit op 0x73: btlfx_stepTurnUnit
+func_800D9F5C btlfx_stepTurnUnit  # [code] btlfx_turnUnit
+func_800D8270 btlfx_opWaitKindTime  # [code] unit op 0x79: waits the character-kind timing btlfx_getKindTiming (g_btlfxState.unk17)
+func_800D9F88 btlfx_stepWaitKindTime  # [code] done after btlfx_getKindTiming(unit, n) frames
+func_800D8368 btlfx_opWaitOtherSide  # [code] unit op 0x7A: waits n frames when the two units are on different sides
+func_800D9FD8 btlfx_stepWaitOtherSide  # [code] done after n frames (g_btlfxState.unk17)
+func_800D8414 btlfx_opWaitSameSide  # [code] unit op 0x7B: waits n frames when the two units are on the same side
+func_800DA004 btlfx_stepWaitSameSide  # [code] done after n frames (g_btlfxState.unk17)
+func_800DA06C btlfx_getKindTiming  # [code] D_800F73A0[n][the unit's character kind]
+func_800DA0B8 btlfx_getWeaponScript  # [code] effect sub-script id of the unit's weapon (btlfx_stepCallWeaponScript)
+func_800D8B20 btlfx_getUnitKind  # [code] the party unit's character kind (Character.unk34.b.unk4)
