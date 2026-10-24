@@ -62,8 +62,8 @@ void wm_readtxCompact(void) {
             i++;
         } while (i < 3);
         for (;;) {
-            while ((p != &g_worldReadtxTail) & (p->unk8 == NULL)) {
-                if ((p->unk8 == NULL) & (p->texId != -1)) {
+            while ((p != &g_worldReadtxTail) & (p->pack == NULL)) {
+                if ((p->pack == NULL) & (p->texId != -1)) {
                     p->texId = -1;
                 }
                 p = p->unk4;
@@ -71,11 +71,11 @@ void wm_readtxCompact(void) {
             if (p == &g_worldReadtxTail) {
                 break;
             }
-            while (q->unk8 != NULL) {
+            while (q->pack != NULL) {
                 q = q->unk4;
             }
-            q->unk8 = p->unk8;
-            p->unk8 = NULL;
+            q->pack = p->pack;
+            p->pack = NULL;
             p->extracted = 0;
             p->texId = -1;
             p = p->unk4;
@@ -96,7 +96,7 @@ s32 wm_readtxFind(s32 arg0, s32 arg1) {
 
     for (i = 0; i < 3; i++, p = p->unk4) {
         if ((p->texId & 0x3F) == (arg0 & 0x3F) && p->extracted == (arg1 & 0xFF)) {
-            return (s32)p->unk8;
+            return (s32)p->pack;
         }
     }
     return 0;
@@ -112,7 +112,7 @@ void wm_readtxDone(s32 *arg0) {
     w_frameExtruct(arg0);
     p = g_worldReadtxHead.unk4;
     for (i = 0; i < 3;) {
-        if (p->unk8 == arg0) {
+        if (p->pack == arg0) {
             p->extracted = 1;
             return;
         }

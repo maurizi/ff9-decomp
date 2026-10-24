@@ -187,7 +187,7 @@ void wm_updateLogic(void) {
     case 2:
         if (g_worldNaviMode != 2) {
             g_gameState->vsyncMode = 3;
-            g_gameState->unk1C->unk8E4.world->unk0 &= ~0x1000;
+            g_gameState->unk1C->unk8E4.world->flags &= ~0x1000;
             SetSpadStack(0x1F8003FC);
             wm_updateActors();
             ResetSpadStack();
@@ -202,7 +202,7 @@ void wm_updateLogic(void) {
             ResetSpadStack();
         } else {
             g_gameState->vsyncMode = 0;
-            g_gameState->unk1C->unk8E4.world->unk0 |= 0x1000;
+            g_gameState->unk1C->unk8E4.world->flags |= 0x1000;
             wm_seFadeVolume(0x26, 0x14, 0);
             wm_runEvents();
             wm_naviUpdate();
@@ -830,24 +830,24 @@ void wm_updateColorMatrices(void) {
     g_worldBlockFxColorMatrix.m[0][0] = 0;
     g_worldBlockFxColorMatrix.m[1][0] = 0;
     g_worldBlockFxColorMatrix.m[2][0] = 0;
-    g_worldMapColorMatrix.m[0][0] = g_worldWeatherData.unk5E0[0].unk0[0].vx;
-    g_worldMapColorMatrix.m[1][0] = g_worldWeatherData.unk5E0[0].unk0[0].vy;
-    g_worldMapColorMatrix.m[2][0] = g_worldWeatherData.unk5E0[0].unk0[0].vz;
-    g_worldMapColorMatrix.m[0][1] = g_worldWeatherData.unk5E0[0].unk0[1].vx;
-    g_worldMapColorMatrix.m[1][1] = g_worldWeatherData.unk5E0[0].unk0[1].vy;
-    g_worldMapColorMatrix.m[2][1] = g_worldWeatherData.unk5E0[0].unk0[1].vz;
-    g_worldMapColorMatrix.m[0][2] = g_worldWeatherData.unk5E0[0].unk0[2].vx;
-    g_worldMapColorMatrix.m[1][2] = g_worldWeatherData.unk5E0[0].unk0[2].vy;
-    g_worldMapColorMatrix.m[2][2] = g_worldWeatherData.unk5E0[0].unk0[2].vz;
-    g_worldBackdropColorMatrix.m[0][0] = g_worldWeatherData.unk5E0[0].unk18.vx;
-    g_worldBackdropColorMatrix.m[0][1] = g_worldWeatherData.unk5E0[0].unk18.vx;
-    g_worldBackdropColorMatrix.m[1][0] = g_worldWeatherData.unk5E0[0].unk18.vy;
-    g_worldBackdropColorMatrix.m[2][0] = g_worldWeatherData.unk5E0[0].unk18.vz;
-    g_worldBackdropColorMatrix.m[1][1] = g_worldWeatherData.unk5E0[0].unk18.vy;
-    g_worldBackdropColorMatrix.m[2][1] = g_worldWeatherData.unk5E0[0].unk18.vz;
-    g_worldBackdropColorMatrix.m[0][2] = g_worldWeatherData.unk5E0[0].unk18.vx;
-    g_worldBackdropColorMatrix.m[1][2] = g_worldWeatherData.unk5E0[0].unk18.vy;
-    g_worldBackdropColorMatrix.m[2][2] = g_worldWeatherData.unk5E0[0].unk18.vz;
+    g_worldMapColorMatrix.m[0][0] = g_worldWeatherData.work[0].lightColor[0].vx;
+    g_worldMapColorMatrix.m[1][0] = g_worldWeatherData.work[0].lightColor[0].vy;
+    g_worldMapColorMatrix.m[2][0] = g_worldWeatherData.work[0].lightColor[0].vz;
+    g_worldMapColorMatrix.m[0][1] = g_worldWeatherData.work[0].lightColor[1].vx;
+    g_worldMapColorMatrix.m[1][1] = g_worldWeatherData.work[0].lightColor[1].vy;
+    g_worldMapColorMatrix.m[2][1] = g_worldWeatherData.work[0].lightColor[1].vz;
+    g_worldMapColorMatrix.m[0][2] = g_worldWeatherData.work[0].lightColor[2].vx;
+    g_worldMapColorMatrix.m[1][2] = g_worldWeatherData.work[0].lightColor[2].vy;
+    g_worldMapColorMatrix.m[2][2] = g_worldWeatherData.work[0].lightColor[2].vz;
+    g_worldBackdropColorMatrix.m[0][0] = g_worldWeatherData.work[0].backdropLightColor.vx;
+    g_worldBackdropColorMatrix.m[0][1] = g_worldWeatherData.work[0].backdropLightColor.vx;
+    g_worldBackdropColorMatrix.m[1][0] = g_worldWeatherData.work[0].backdropLightColor.vy;
+    g_worldBackdropColorMatrix.m[2][0] = g_worldWeatherData.work[0].backdropLightColor.vz;
+    g_worldBackdropColorMatrix.m[1][1] = g_worldWeatherData.work[0].backdropLightColor.vy;
+    g_worldBackdropColorMatrix.m[2][1] = g_worldWeatherData.work[0].backdropLightColor.vz;
+    g_worldBackdropColorMatrix.m[0][2] = g_worldWeatherData.work[0].backdropLightColor.vx;
+    g_worldBackdropColorMatrix.m[1][2] = g_worldWeatherData.work[0].backdropLightColor.vy;
+    g_worldBackdropColorMatrix.m[2][2] = g_worldWeatherData.work[0].backdropLightColor.vz;
     g_worldBlockFxColorMatrix.m[0][1] = 0;
     g_worldBlockFxColorMatrix.m[1][1] = 0;
     g_worldBlockFxColorMatrix.m[2][1] = 0;

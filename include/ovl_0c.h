@@ -143,29 +143,29 @@
 
 /* palette animation entry (wm_setActorFog) */
 typedef struct WmPalAnim {
-    u16 unk0; /* id */
+    u16 modelId; /* id */
     u8 pad2[2];
-    s16 unk4; /* clut x */
-    s16 unk6; /* clut y */
-    u16 unk8[16]; /* source palette */
-    u16 unk28[2][16]; /* per draw buffer */
+    s16 clutX; /* clut x */
+    s16 clutY; /* clut y */
+    u16 srcPal[16]; /* source palette */
+    u16 workPal[2][16]; /* per draw buffer */
 } WmPalAnim; /* 0x68 */
 
 /* per-object entry in WorldMapObj.unk1C (0x28 bytes) */
 typedef struct {
-    unsigned unk0 : 8;
-    unsigned unk1 : 12; /* scale x */
-    unsigned unk2 : 12; /* scale z */
+    unsigned shade : 8;
+    unsigned scaleX : 12; /* scale x */
+    unsigned scaleZ : 12; /* scale z */
     unsigned unk4 : 12; /* angle */
-    signed unk4_12 : 10; /* offset x */
-    signed unk4_22 : 10; /* offset z */
-    POLY_FT4 *unk8[2][4]; /* shadow quads, per draw buffer */
+    signed offsetX : 10; /* offset x */
+    signed offsetZ : 10; /* offset z */
+    POLY_FT4 *prims[2][4]; /* shadow quads, per draw buffer */
 } WmObjEnt;
 
 /* object embedded in WorldMap (0x4C bytes) */
 typedef struct {
-    s32 unk0;
-    void *unk4;
+    s32 flags;
+    void *heapEnd;
     u8 unk8[4];
     s16 swirlX;
     s16 swirlY;
@@ -173,49 +173,49 @@ typedef struct {
     void *areaData; /* file 0x6xxxx */
     s8 battleStep;
     s8 swirlFrames;
-    u8 unk1A;
+    u8 palAnimCount;
     u8 exitReason;
     WmObjEnt *shadows;
     s32 primCursor;
     s16 sceneId; /* map id */
     u16 battleMusic;
-    struct WmPalAnim *unk28; /* count: unk1A */
-    u8 *unk2C;
-    u8 *unk30;
-    void *unk34[2]; /* [1] freed by wm_freeFile */
+    struct WmPalAnim *palAnims; /* count: unk1A */
+    u8 *loadBase;
+    u8 *loadPtr;
+    void *files[2]; /* [1] freed by wm_freeFile */
     u8 unk3C[16];
 } WorldMapObj;
 
 /* world map context, GameData.unk8E4.world */
 typedef struct WorldMap {
-    u32 unk0; /* flags: 0x100 0x200 0x400 0x800 skip per-frame updates */
-    u8 *unk4; /* end of the load area */
-    WorldMapObj *unk8; /* = &unk48 */
+    u32 flags; /* flags: 0x100 0x200 0x400 0x800 skip per-frame updates */
+    u8 *mapHeapBase; /* end of the load area */
+    WorldMapObj *obj; /* = &unk48 */
     void *worldData; /* allocation, freed by wm_freeWorldData */
     s32 parkedSoundSize;
     u8 unk14[0x34];
-    WorldMapObj unk48;
+    WorldMapObj objData;
 } WorldMap; /* 0x94 */
 
 typedef struct {
     u8 pad0[0x11];
-    u8 unk11;
+    u8 autoTurnOff;
 } WmCameraFlags;
 
 /* doubly linked list node; g_worldEffectFree is the list head */
 typedef struct WmEffect {
-    s32 unk0;
-    struct WmEffect *unk4;
-    struct WmEffect *unk8;
-    s8 unkC;
-    s8 unkD;
-    s16 unkE;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s16 unk1C;
+    s32 sprite;
+    struct WmEffect *prev;
+    struct WmEffect *next;
+    s8 abr;
+    s8 type;
+    s16 scale;
+    s32 x;
+    s32 y;
+    s32 z;
+    s16 frame;
     s16 pad1E;
-    s32 unk20;
+    s32 phase;
     s32 unk24;
 } WmEffect; /* 0x28 */
 
@@ -223,14 +223,14 @@ typedef struct WmEffect {
 typedef struct WmReadtxSlot {
     struct WmReadtxSlot *unk0; /* prev */
     struct WmReadtxSlot *unk4; /* next */
-    s32 *unk8; /* frame pack */
+    s32 *pack; /* frame pack */
     s16 texId; /* low 6 bits: id; -1: none */
     u8 extracted;
     u8 padF;
 } WmReadtxSlot; /* 0x10 */
 
 typedef struct {
-    s16 unk0;
+    s16 stickSide;
     s16 viewBlend;
     s32 viewBlendSpeed;
     s32 viewForceNormal;
@@ -239,14 +239,14 @@ typedef struct {
 } WmCameraState;
 
 typedef struct {
-    u8 unk0;
+    u8 terrainClass;
     u8 shadowWidth;
     u8 shadowDepth;
     u8 flying;
     u8 unk4;
     u8 polyCache;
     u8 shadowJoint;
-    u8 unk7;
+    u8 shadowOtBias;
     u32 cellAttr;
     s16 rideOffset;
     s16 floorY;
@@ -260,14 +260,14 @@ typedef struct {
 typedef struct {
     u8 controlType; /* mode */
     u8 checkTransitions;
-    s16 unk2; /* speed */
+    s16 speed; /* speed */
     u8 turnSpeed; /* turn speed */
     u8 climbSpeed;
     s8 maxRoll;
     u8 pad7;
     u8 airborne;
     u8 canToggleView;
-    u8 unkA;
+    u8 lookAhead;
     u8 music;
     u8 loopSe;
     u8 countsSteps;
@@ -275,7 +275,7 @@ typedef struct {
     u8 cameraInFront;
     u8 cameraRow;
     u8 pad12[2];
-    u32 unk14[2]; /* allowed cell types (bit mask) */
+    u32 allowedCells[2]; /* allowed cell types (bit mask) */
 } WmMoveMode; /* 0x1C */
 
 /* doubly linked node (wm_frmbufInit) */
@@ -292,122 +292,122 @@ typedef struct WmFrmbufSlot {
 /* primitive sources of a model group; index fields select vertices (unk0..),
  * uv pairs (WmModelGroup.unk20) and colours (WmModelGroup.unk24) */
 typedef struct {
-    u16 unk0[4];
-    u16 unk8[4]; /* uv */
-    u8 unk10[3]; /* rgb */
-    u8 unk13;    /* texture */
+    u16 vertices[4];
+    u16 uvs[4]; /* uv */
+    u8 rgb[3]; /* rgb */
+    u8 texture;    /* texture */
     u8 unk14;
-    u8 unk15; /* flags: 1 = semi transparent, 0xE0 = mode */
+    u8 flags; /* flags: 1 = semi transparent, 0xE0 = mode */
     u8 pad16[2];
 } WmSrcFT4; /* 0x18 */
 
 typedef struct {
-    u16 unk0[3];
-    u8 unk6; /* texture */
+    u16 vertices[3];
+    u8 texture; /* texture */
     u8 pad7;
-    u8 unk8[3]; /* rgb */
+    u8 rgb[3]; /* rgb */
     u8 padB;
-    u16 unkC[3]; /* uv */
-    u8 unk12;    /* flags */
+    u16 uvs[3]; /* uv */
+    u8 flags;    /* flags */
     u8 pad13;
 } WmSrcFT3; /* 0x14 */
 
 typedef struct {
-    u16 unk0[4];
-    u16 unk8[4];  /* uv */
-    u16 unk10[4]; /* colours */
+    u16 vertices[4];
+    u16 uvs[4];  /* uv */
+    u16 colors[4]; /* colours */
     u8 pad18[4];
-    u8 unk1C; /* flags */
-    u8 unk1D; /* texture */
+    u8 flags; /* flags */
+    u8 texture; /* texture */
     u8 pad1E[2];
 } WmSrcGT4; /* 0x20 */
 
 typedef struct {
-    u16 unk0[3];
-    u16 unk6[3]; /* uv */
+    u16 vertices[3];
+    u16 uvs[3]; /* uv */
     u8 padC[3];
-    u8 unkF;      /* flags */
-    u16 unk10[3]; /* colours */
-    u8 unk16;     /* texture */
+    u8 flags;      /* flags */
+    u16 colors[3]; /* colours */
+    u8 texture;     /* texture */
     u8 pad17;
 } WmSrcGT3; /* 0x18 */
 
 typedef struct {
-    u16 unk0[4];
-    u16 unk8[4]; /* colours */
+    u16 vertices[4];
+    u16 colors[4]; /* colours */
     u8 pad10[4];
-    u8 unk14; /* flags */
+    u8 flags; /* flags */
     u8 pad15[3];
 } WmSrcG4; /* 0x18 */
 
 typedef struct {
-    u16 unk0[3];
+    u16 vertices[3];
     u8 pad6[2];
-    u16 unk8[3]; /* colours */
+    u16 colors[3]; /* colours */
     u8 padE[5];
-    u8 unk13; /* flags */
+    u8 flags; /* flags */
 } WmSrcG3; /* 0x14 */
 
 typedef struct {
-    u16 unk0[4];
-    u8 unk8[3]; /* rgb */
+    u16 vertices[4];
+    u8 rgb[3]; /* rgb */
     u8 padB[2];
-    u8 unkD; /* flags */
+    u8 flags; /* flags */
     u8 padE[2];
 } WmSrcF4; /* 0x10 */
 
 typedef struct {
-    u16 unk0[3];
+    u16 vertices[3];
     u8 pad6[2];
-    u8 unk8[3]; /* rgb */
-    u8 unkB; /* flags */
+    u8 rgb[3]; /* rgb */
+    u8 flags; /* flags */
 } WmSrcF3; /* 0xC */
 
 typedef struct {
-    u16 unk0;
-    u16 unk2;  /* FT4 count */
-    u16 unk4;  /* FT3 */
-    u16 unk6;  /* GT4 */
-    u16 unk8;  /* GT3 */
-    u16 unkA;  /* G4 */
-    u16 unkC;  /* G3 */
-    u16 unkE;  /* F4 */
-    u16 unk10; /* F3 */
+    u16 packetSize;
+    u16 ft4Count;  /* FT4 count */
+    u16 ft3Count;  /* FT3 */
+    u16 gt4Count;  /* GT4 */
+    u16 gt3Count;  /* GT3 */
+    u16 g4Count;  /* G4 */
+    u16 g3Count;  /* G3 */
+    u16 f4Count;  /* F4 */
+    u16 f3Count; /* F3 */
     u8 pad12;
-    s8 unk13; /* ordering table bias */
-    void *unk14;
-    void *unk18;
-    u8 *unk1C;      /* primitive sources, in the order above */
-    u8 (*unk20)[2]; /* uv */
-    u8 (*unk24)[4]; /* colours */
+    s8 otBias; /* ordering table bias */
+    void *boneVertexCounts;
+    void *vertices;
+    u8 *prims;      /* primitive sources, in the order above */
+    u8 (*uvs)[2]; /* uv */
+    u8 (*colors)[4]; /* colours */
 } WmModelGroup; /* 0x28 */
 
 typedef struct {
-    u16 unk0; /* flags: 1 = relocated */
-    u8 unk2;
-    u8 unk3; /* group count */
+    u16 flags; /* flags: 1 = relocated */
+    u8 boneCount;
+    u8 groupCount; /* group count */
     u8 pad4[0xC - 4];
-    s32 unkC;
-    WmModelGroup *unk10;
+    s32 bones;
+    WmModelGroup *groups;
 } WmModel;
 
 typedef struct {
     s16 unk0;
     u8 pad2[2];
-    void *unk4; /* first primitive */
+    void *prims; /* first primitive */
     s32 unk8;
 } WmModelOut; /* 0xC */
 
 typedef struct {
-    u16 unk0; /* tpage */
-    u16 unk2; /* clut */
+    u16 tpage; /* tpage */
+    u16 clut; /* clut */
 } WmTexInfo;
 
 /* skeleton bone (WmModel.unkC, 4 bytes) */
 typedef struct {
-    s16 unk0; /* length: z offset from the parent */
+    s16 length; /* length: z offset from the parent */
     u8 unk2;
-    u8 unk3; /* parent bone */
+    u8 parent; /* parent bone */
 } WmBone;
 
 /* animation track: three 16-bit offsets/constants (x, y in unk0, z in unk4)
@@ -420,16 +420,16 @@ typedef struct {
 /* animation file header: offsets relocated by wm_loadActorModel */
 typedef struct WmAnimHdr {
     u8 pad0[4];
-    s16 unk4[3]; /* root position: constant, or offset of s16[frame] */
-    u16 unkA;    /* 1, 2, 4: unk4[i] is a constant */
-    s32 unkC;    /* -> WmAnimKey[], rotation tracks, one per bone */
-    s32 unk10;   /* -> WmAnimKey[], low rotation bits, two frames per byte */
+    s16 rootPos[3]; /* root position: constant, or offset of s16[frame] */
+    u16 constMask;    /* 1, 2, 4: rootPos[i] is a constant */
+    s32 rotKeys;    /* -> WmAnimKey[], rotation tracks, one per bone */
+    s32 rotKeysLo;   /* -> WmAnimKey[], low rotation bits, two frames per byte */
 } WmAnimHdr;
 
 typedef struct ModelObj {
-    u16 unk0; /* flags; 0x10: behind the camera */
+    u16 flags; /* flags; 0x10: behind the camera */
     u8 pad2[2];
-    u8 unk4; /* bone in the parent */
+    u8 parentBone; /* bone in the parent */
     u8 pad5[3];
     WmModel *model;
     struct WmAnimHdr *anim;
@@ -441,25 +441,25 @@ typedef struct ModelObj {
     MATRIX worldMatrix; /* t: position */
     WmModelOut *groupOut;
     u8 pad48[0x50 - 0x48];
-    s32 unk50;
+    s32 texAnims;
     u16 scaleX; /* scale */
     u16 scaleY;
     u16 scaleZ;
     u16 clipY;
     s32 unk5C;
-    s32 unk60;
+    s32 mirrorSrc;
     u8 pad64[0x74 - 0x64];
-    u16 unk74;
-    u16 unk76;
-    u16 unk78;
+    u16 attachX;
+    u16 attachY;
+    u16 attachZ;
 } ModelObj;
 
 /* model slot (func_8001E350) */
 typedef struct {
-    s32 unk0; /* flags: 1 = loaded */
-    s32 unk4; /* file id */
-    ModelObj *unk8;
-    Unk8004AB64 *unkC;
+    s32 flags; /* flags: 1 = loaded */
+    s32 modelId; /* file id */
+    ModelObj *obj;
+    Unk8004AB64 *actor;
 } WmObjSlot;
 s32 func_8004AB64(Unk8004AB64 *);
 void wm_drawMesh(ModelObj *, u8);
@@ -475,15 +475,15 @@ u8 *func_800634D8(s32);
 /* relocatable block: offsets are turned into pointers by wm_relocatePack */
 typedef struct {
     s32 unk0;
-    s32 unk4;
-    s32 unk8;
+    s32 verts;
+    s32 polys;
 } WmPackEntry;
 
 typedef struct {
-    s8 unk0; /* count */
+    s8 count; /* count */
     u8 pad1[3];
     s32 unk4;
-    WmPackEntry *unk8[1];
+    WmPackEntry *entries[1];
 } WmPack;
 
 /* text windows (menuMain_setCursor .. menuMain_updatePanels) */
@@ -499,15 +499,15 @@ typedef struct {
 
 /* map cell (4 bytes) */
 typedef struct {
-    u16 unk0;
-    u8 unk2;
-    u8 unk3;
+    u16 sector;
+    u8 packSectors;
+    u8 texSectors;
 } WmChunkEntry;
 
 typedef struct {
-    s16 unk0; /* width */
-    s16 unk2; /* height */
-    WmChunkEntry unk4[1];
+    s16 width; /* width */
+    s16 height; /* height */
+    WmChunkEntry entries[1];
 } WmChunkTable;
 
 /* filled by w_musicGetID */
@@ -518,46 +518,47 @@ typedef struct {
 } WmSeIds;
 
 typedef struct {
-    s32 unk0[4];
+    s32 pos[4];
 } WmBlockPos; /* 0x10 */
 
 /* list nodes (wm_blockListCompact, wm_chunkListCompact): g_worldBlockHead (head) ->
  * g_worldBlockNodes[40] -> g_worldBlockTail (tail) */
 typedef struct WmBlockNode {
-    struct WmBlockNode *unk0; /* prev */
-    struct WmBlockNode *unk4; /* next */
-    struct WmBlock *unk8;
-    WmBlockPos *unkC;
-    s16 unk10;
-    u8 unk12;
-    s8 unk13;
+    struct WmBlockNode *prev; /* prev */
+    struct WmBlockNode *next; /* next */
+    struct WmBlock *block;
+    WmBlockPos *pos;
+    s16 cell;
+    u8 state;
+    s8 slot;
 } WmBlockNode; /* 0x14 */
 
 /* list: g_worldChunkHead (head) -> g_worldChunkSlots[32] -> g_worldChunkTail (tail) */
 typedef struct {
-    u8 unk0; /* vertex indices */
-    u8 unk1;
-    u8 unk2;
+    u8 v0; /* vertex indices */
+    u8 v1;
+    u8 v2;
     u8 pad3[0xE - 3];
-    u16 unkE; /* attribute */
+    u16 attr; /* attribute */
 } WmPoly; /* 0x10 */
 
+/* terrain mesh block (4 per map chunk): wm_getBlockHeight walks its triangles, wm_drawBlock draws it */
 typedef struct WmBlock {
     u8 unk0;
-    u8 unk1;
-    u16 unk2; /* polygon count */
-    SVECTOR *unk4; /* vertices */
-    WmPoly *unk8;
-    u8 unkC[0x14]; /* vertex indices */
-    u8 unk20; /* vertex count */
-    u8 unk21; /* sound id */
+    u8 texArea;
+    u16 polyCount; /* polygon count */
+    SVECTOR *verts; /* vertices */
+    WmPoly *polys;
+    u8 outline[0x14]; /* vertex indices of the on-screen test (wm_updateVisibleBlocks) */
+    u8 outlineCount; /* vertex count */
+    u8 fxId; /* block effect id (wm_drawBlockFx, wm_updateBlockFx) */
 } WmBlock;
 
 /* visible cells sorted by distance (wm_updateVisibleBlocks) */
 typedef struct {
-    s32 unk0; /* cell */
-    WmBlock *unk4;
-    s32 unk8; /* distance */
+    s32 cell; /* cell */
+    WmBlock *block;
+    s32 dist; /* distance */
 } WmNearCell;
 
 typedef struct {
@@ -567,37 +568,38 @@ typedef struct {
     s16 y1;
 } WmScrRect;
 
+/* chunk pack read by wm_readChunks: the 4 terrain blocks of one map chunk (wm_getCellBlock) */
 typedef struct WmChunkPack {
     u8 unk0;
     u8 unk1;
-    u8 unk2;
+    u8 texArea;
     u8 unk3;
     s32 unk4;
-    WmBlock *unk8[4];
+    WmBlock *blocks[4];
 } WmChunkPack;
 
 typedef struct WmChunkSlot {
-    struct WmChunkSlot *unk0; /* prev */
-    struct WmChunkSlot *unk4; /* next */
-    struct WmChunkPack *unk8;
+    struct WmChunkSlot *prev; /* prev */
+    struct WmChunkSlot *next; /* next */
+    struct WmChunkPack *pack;
     s16 chunkId;
     u8 state;
     u8 generation;
-    u8 unk10;
+    u8 hasData;
     u8 pad11[3];
 } WmChunkSlot; /* 0x14 */
 
 /* colour + 2 values (8 bytes) */
 typedef struct {
-    CVECTOR unk0;
-    u16 unk4;
-    u16 unk6;
+    CVECTOR color;
+    u16 fogOffset;
+    u16 fogOffset2;
 } WmFogParam;
 
 typedef struct {
-    u16 unk0;
-    s16 unk2;
-    s16 unk4[3]; /* rgb */
+    u16 fogOffset;
+    s16 fogOffset2;
+    s16 color[3]; /* rgb */
     s16 pad;
 } WmFog; /* 0xC */
 
@@ -608,19 +610,19 @@ typedef union {
 
 /* sky / lighting parameter block (0x5E bytes); wm_blendWeather blends them */
 typedef struct {
-    SVECTOR unk0[3]; /* light directions */
-    SVECTOR unk18;
-    WmSkyCol unk20; /* back colour 1 */
-    WmSkyCol unk28; /* back colour 2 */
-    WmFog unk30[3];
-    s16 unk54[3];
+    SVECTOR lightColor[3]; /* light colours: columns of g_worldMapColorMatrix (wm_updateColorMatrices) */
+    SVECTOR backdropLightColor;
+    WmSkyCol backColor; /* back colour 1 */
+    WmSkyCol backdropBackColor; /* back colour 2 */
+    WmFog fog[3];
+    s16 fxBackColor[3];
     u8 pad5A[2];
     u16 unk5C;
 } WmSky; /* 0x5E */
 
 typedef struct {
-    WmSky unk0[16]; /* presets: [mode * 4 + flag * 2 + 0/1] */
-    WmSky unk5E0[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
+    WmSky presets[16]; /* presets: [mode * 4 + flag * 2 + 0/1] */
+    WmSky work[7]; /* [0] current, [1]/[2] blended from [3]..[6] */
 } WmWeatherData;
 void wm_blendWeather(WmSky *, WmSky *, WmSky *, s32, s32);
 void wm_weatherAuto(void);
@@ -628,41 +630,41 @@ void wm_updateFogParams(void);
 void wm_updateColorMatrices(void);
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    u8 unk4;
-    u8 unk5;
+    s16 tpage;
+    s16 clut;
+    u8 u;
+    u8 v;
     u8 pad6[2];
-    s16 unk8; /* tpage */
-    s16 unkA; /* clut */
+    s16 frmTpage; /* tpage */
+    s16 frmClut; /* clut */
 } WmTexArea; /* 0xC */
 
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s32 unk4; /* x */
-    s32 unk8; /* z */
+    s16 mapX;
+    s16 mapY;
+    s32 worldX; /* x */
+    s32 worldZ; /* z */
 } WmNaviPlace; /* 0xC */
 
 /* file 0x12xxxx lookup table (wm_findDefaultAnim) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
+    u16 modelId;
+    u16 animId;
 } WmAnimTableEntry;
 
 typedef struct {
     u8 unk0;
-    u8 unk1; /* count */
+    u8 count; /* count */
     u8 pad2[2];
-    WmAnimTableEntry unk4[1];
+    WmAnimTableEntry entries[1];
 } WmAnimTable;
 
 /* streamed load request (wm_streamSoundChunk) */
 typedef struct {
     u8 pad0[8];
-    s32 unk8; /* address */
-    s32 unkC; /* offset */
-    s32 unk10; /* size */
+    s32 addr; /* address */
+    s32 offset; /* offset */
+    s32 size; /* size */
 } WmStreamReq;
 
 /* POLY_F4 with the screen coordinates as packed words */
@@ -862,11 +864,11 @@ extern MATRIX g_worldBlockFxColorMatrix;
 extern u16 g_worldClutBuf[2][0x800]; /* palettes, [1] = shifted copy */
 /* texture animation entries (wm_stepClutAnims) */
 typedef struct {
-    s16 unk0;
-    s16 unk2;
-    s16 unk4;
-    s16 unk6; /* frame count */
-    s16 unk8; /* speed */
+    s16 x;
+    s16 y;
+    s16 start;
+    s16 count; /* frame count */
+    s16 speed; /* speed */
 } WmClutAnim; /* 0xA */
 extern WmClutAnim g_worldClutAnims[];
 extern s16 g_worldClutAnimAcc[];
@@ -927,9 +929,9 @@ extern u16 g_worldEventBattleRate;
 extern s32 g_worldReqParams[4]; /* script request parameters */
 /* texture transfer requests (wm_frmbufTransfer) */
 typedef struct {
-    s32 unk0;
-    u8 unk4;
-    u8 unk5;
+    s32 pack;
+    u8 area;
+    u8 vramArea;
     u8 pad6[2];
 } WmTexTransfer;
 extern WmTexTransfer g_worldFrmbufTransfers[];
@@ -1050,11 +1052,11 @@ extern WmFrmbufSlot g_worldFrmbufSlots[4];
 
 /* scrolling texture strips (wm_scrollTextures) */
 typedef struct {
-    u16 unk0; /* x */
-    u16 unk2; /* y */
-    u16 unk4; /* w */
-    u16 unk6; /* h */
-    u16 unk8; /* speed (8.8) */
+    u16 x; /* x */
+    u16 y; /* y */
+    u16 w; /* w */
+    u16 h; /* h */
+    u16 speed; /* speed (8.8) */
 } WmTexScroll; /* 0xA */
 
 /* random-encounter table entry (g_worldEncounterTable, docs/encounters.md) */
@@ -1092,15 +1094,15 @@ void wm_musicStop(u16);
 
 /* image pack loaded by wm_loadImagePack; offsets are from the header start */
 typedef struct {
-    s32 unk0; /* offset: WmImagePackClut */
-    s32 unk4; /* offset: images (RECT + pixels) */
-    s32 unk8; /* image count */
+    s32 clutOfs; /* offset: WmImagePackClut */
+    s32 imageOfs; /* offset: images (RECT + pixels) */
+    s32 imageCount; /* image count */
 } WmImagePack;
 
 typedef struct {
-    s32 unk0; /* offset: pixel data */
-    s32 unk4; /* count */
-    RECT unk8[1];
+    s32 dataOfs; /* offset: pixel data */
+    s32 count; /* count */
+    RECT rects[1];
 } WmImagePackClut;
 
 /* text window contents passed to func_80063118 (as in ovl_38) */
@@ -1125,10 +1127,10 @@ extern u8 s_menuMainStatusAbnormal[];
 
 /* wm_initMovement init state */
 typedef struct {
-    u8 unk0; /* last written slot */
+    u8 lastSlot; /* last written slot */
     u8 pad1[3];
-    u16 unk4[6]; /* polygon */
-    u16 unk10[6]; /* cell */
+    u16 polys[6]; /* polygon */
+    u16 cells[6]; /* cell */
 } WmPolyCache; /* 0x1C: recently hit walkmesh polygons */
 s32 wm_getGroundHeight(VECTOR *, u32 *, s32 *, WmPolyCache *, u16 *);
 u8 wm_tryStep(VECTOR *, s32, s32, s32, u32 *, s32 *);
@@ -1203,14 +1205,14 @@ extern s32 D_800CCF98[5];
 extern char D_800A7BB8[];
 /* sprite table (wm_naviDrawFrame) */
 typedef struct {
-    s16 unk0; /* x */
-    s16 unk2; /* y */
-    u8 unk4; /* u */
+    s16 x; /* x */
+    s16 y; /* y */
+    u8 u; /* u */
     u8 pad5;
-    u8 unk6; /* v */
+    u8 v; /* v */
     u8 pad7;
-    s16 unk8; /* w */
-    s16 unkA; /* h */
+    s16 w; /* w */
+    s16 h; /* h */
 } WmNaviFramePart; /* 0xC */
 extern WmNaviFramePart g_worldNaviFrameParts[4];
 void wm_naviDrawFrame();
@@ -1255,16 +1257,16 @@ void func_8004B20C(s32);
 
 /* world effect emitter table entry (wm_updateBlockFx) */
 typedef struct {
-    s32 unk0; /* position */
-    s32 unk4;
-    s32 unk8;
-    s32 unkC; /* random range */
-    s32 unk10;
-    s32 unk14;
+    s32 x; /* position */
+    s32 y;
+    s32 z;
+    s32 rangeX; /* random range */
+    s32 rangeY;
+    s32 rangeZ;
     u8 pad18[0x24 - 0x18];
-    s16 unk24; /* effect, -1 = end */
-    s16 unk26;
-    s16 unk28; /* chance (of 4096) */
+    s16 effect; /* effect, -1 = end */
+    s16 scale;
+    s16 chance; /* chance (of 4096) */
     u8 pad2A[0x40 - 0x2A];
 } WmEmitter; /* 0x40 */
 
@@ -1288,7 +1290,7 @@ extern VECTOR g_worldBlockFx4Scale;
 extern VECTOR g_worldBlockFx6RingScale;
 
 /* first entry of data pack `id` */
-#define WM_PACK0(id) ((s32)((WmPack *)w_framePackGetPtr(g_worldDataPack, id))->unk8[0])
+#define WM_PACK0(id) ((s32)((WmPack *)w_framePackGetPtr(g_worldDataPack, id))->entries[0])
 
 /* inline CompMatrix: c = a * b, c->t = a * b->t + a->t */
 #define gte_CompMatrix(a, b, c)    \
@@ -1405,34 +1407,34 @@ static inline u8 wm_testCellType_inline2(u32 *a, u32 c) {
 }
 
 typedef struct {
-    u16 unk0; /* frame count (low 15 bits) */
-    u16 unk2;
-    u16 unk4;
-    u8 unk6;
-    u8 unk7;
-    u16 unk8[1]; /* per-frame data offsets, then a counted u16 table */
+    u16 frameCount; /* frame count (low 15 bits) */
+    u16 tpage;
+    u16 clut;
+    u8 height;
+    u8 width;
+    u16 frameOffsets[1]; /* per-frame data offsets, then a counted u16 table */
 } WmSprHdr; /* sprite animation header (wm_drawSprite3D) */
 
 typedef struct {
-    u16 *unk0;
-    u16 *unk4;
-    s32 unk8;
-    s32 unkC;
-    s32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    s32 unk20;
-    s32 unk24;
-    s32 unk28;
+    u16 *uvs;
+    u16 *colors;
+    s32 halfW;
+    s32 halfH;
+    s32 tpage;
+    s32 clut;
+    s32 fade;
+    s32 quadCount;
+    s32 primCode;
+    s32 sizeShift;
+    s32 otBias;
 } WmSprCtx; /* draw context passed to wm_emitSprite3D */
 
 s32 wm_emitSprite3D(u8 *, WmSprCtx *, s32, s32);
 s32 wm_drawSprite3D(s32, WmSprHdr *, SVECTOR *, SVECTOR *, s32, s32, s32, s32, s32, s32, s32);
 
 typedef struct {
-    s32 unk0; /* size */
-    void *unk4; /* destination */
+    s32 size; /* size */
+    void *dest; /* destination */
 } WmLoadReq; /* CD read request (wm_readChunks, cd_readChunks) */
 
 extern WmLoadReq g_worldChunkReadReqs[];
@@ -1480,7 +1482,7 @@ void wm_calcShadowMatrix(WmObjEnt *, WmObjSlot *, MATRIX *, s32, s32);
 #define SHADOW_ADD(k, q) \
     k >>= 3; \
     if (-g_worldOtBias < k && k < 0x1000 - g_worldOtBias) { \
-        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][k], e->unk8[g_gameState->unk1C->unk8][q]); \
+        addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][k], e->prims[g_gameState->unk1C->unk8][q]); \
     }
 
 /* main exe: candidates for ff9.h */

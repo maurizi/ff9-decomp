@@ -19,7 +19,7 @@ void wm_initCamera(void) {
         g_worldCamera->viewBlendSpeed = 0;
         g_worldCamera->viewForceNormal = 0;
         g_worldCamera->yaw = 0;
-        g_worldCameraFlags->unk11 = 0;
+        g_worldCameraFlags->autoTurnOff = 0;
     }
     if (g_worldCamera->viewBlendSpeed < 0) {
         g_worldCamera->viewBlend = 0;
@@ -484,10 +484,10 @@ s32 wm_getCameraViewState() {
 }
 
 void wm_toggleCameraAutoTurn(void) {
-    if (g_worldCameraFlags->unk11 != 0) {
+    if (g_worldCameraFlags->autoTurnOff != 0) {
         g_worldCameraRecenter = 1;
     }
-    g_worldCameraFlags->unk11 = ~g_worldCameraFlags->unk11;
+    g_worldCameraFlags->autoTurnOff = ~g_worldCameraFlags->autoTurnOff;
 }
 
 void wm_cameraSmooth(void) {
@@ -580,10 +580,10 @@ void wm_initMovement(void) {
     g_worldCameraFastRise = 0;
     g_worldFlyTurning = 0;
     for (i = 0; i < 11; i++) {
-        g_worldPolyCache[i].unk0 = 0;
+        g_worldPolyCache[i].lastSlot = 0;
         for (j = 0; j < 6; j++) {
-            g_worldPolyCache[i].unk4[j] = j;
-            g_worldPolyCache[i].unk10[j] = -1;
+            g_worldPolyCache[i].polys[j] = j;
+            g_worldPolyCache[i].cells[j] = -1;
         }
     }
     for (i = 0; i < 22; i++) {
@@ -614,7 +614,7 @@ void wm_setMountPalette(void) {
 
     id = 0;
     k = 0;
-    e = g_gameState->unk1C->unk8E4.world->unk8->unk28;
+    e = g_gameState->unk1C->unk8E4.world->obj->palAnims;
     pal = w_framePackGetPtr(g_worldDataPack, 1);
     func_800B36AC();
     for (n = func_8004AE9C(); n != NULL; n = n->unk0) {
@@ -646,9 +646,9 @@ void wm_setMountPalette(void) {
         }
     }
     c = 0;
-    for (i = 0; i < g_gameState->unk1C->unk8E4.world->unk8->unk1A; i++, e++) {
-        if (e->unk0 == id) {
-            dst = e->unk8;
+    for (i = 0; i < g_gameState->unk1C->unk8E4.world->obj->palAnimCount; i++, e++) {
+        if (e->modelId == id) {
+            dst = e->srcPal;
             switch (c) {
             case 0:
                 for (j = 0; j < 16; j++) {
@@ -798,7 +798,7 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     RECT *r;
 
     id = arg0->unk34;
-    e = g_gameState->unk1C->unk8E4.world->unk8->unk28;
+    e = g_gameState->unk1C->unk8E4.world->obj->palAnims;
     t = -arg0->pos.vy;
     t -= 0xC1F;
     t <<= 12;
@@ -809,10 +809,10 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     if (t < 0) {
         t = 0;
     }
-    a = wm_lerp(g_worldWeatherData.unk5E0[0].unk30[1].unk0, g_worldWeatherData.unk5E0[0].unk30[0].unk0, t);
-    col[0] = wm_lerp(g_worldWeatherData.unk5E0[0].unk30[1].unk4[0], g_worldWeatherData.unk5E0[0].unk30[0].unk4[0], t);
-    col[1] = wm_lerp(g_worldWeatherData.unk5E0[0].unk30[1].unk4[1], g_worldWeatherData.unk5E0[0].unk30[0].unk4[1], t);
-    col[2] = wm_lerp(g_worldWeatherData.unk5E0[0].unk30[1].unk4[2], g_worldWeatherData.unk5E0[0].unk30[0].unk4[2], t);
+    a = wm_lerp(g_worldWeatherData.work[0].fog[1].fogOffset, g_worldWeatherData.work[0].fog[0].fogOffset, t);
+    col[0] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[0], g_worldWeatherData.work[0].fog[0].color[0], t);
+    col[1] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[1], g_worldWeatherData.work[0].fog[0].color[1], t);
+    col[2] = wm_lerp(g_worldWeatherData.work[0].fog[1].color[2], g_worldWeatherData.work[0].fog[0].color[2], t);
     SetFarColor((u8)col[0], (u8)col[1], (u8)col[2]);
     f = (arg1 * 8 + (d = a - 0x8000)) >> 2;
     if (f < 0) {
@@ -821,8 +821,8 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
     if (f >= 0x1000) {
         f = 0xFFF;
     }
-    for (i = 0; i < g_gameState->unk1C->unk8E4.world->unk8->unk1A; i++, e++) {
-        if (e->unk0 == id) {
+    for (i = 0; i < g_gameState->unk1C->unk8E4.world->obj->palAnimCount; i++, e++) {
+        if (e->modelId == id) {
             r = (RECT *)g_worldPrimPtr;
             if (f < 0) {
                 f = 0;
@@ -830,12 +830,12 @@ void wm_setActorFog(Unk8004AB64 *arg0, s32 arg1) {
             if (f > 0x1000) {
                 f = 0x1000;
             }
-            wm_depthCueClut(e->unk8, e->unk28[*g_worldBufIndex], f, g_worldWeatherData.unk5E0[0].unk54);
-            r->x = e->unk4;
-            r->y = e->unk6;
+            wm_depthCueClut(e->srcPal, e->workPal[*g_worldBufIndex], f, g_worldWeatherData.work[0].fxBackColor);
+            r->x = e->clutX;
+            r->y = e->clutY;
             r->w = 16;
             r->h = 1;
-            LoadImage(r, (u32 *)e->unk28[*g_worldBufIndex]);
+            LoadImage(r, (u32 *)e->workPal[*g_worldBufIndex]);
         }
     }
 }
@@ -854,30 +854,30 @@ s32 wm_drawActorModel(Unk8004AB64 *arg0, SVECTOR *arg1) {
 
     c = &g_worldActorTypeInfo[arg0->unk11];
     s = (WmObjSlot *)func_8001E350(arg0->unk3B);
-    m = s->unk8;
+    m = s->obj;
     memset(&r, 0, 8);
-    r.vx = s->unkC->pos.unk20;
-    r.vy = s->unkC->pos.rotY;
-    r.vz = s->unkC->unk24;
+    r.vx = s->actor->pos.unk20;
+    r.vy = s->actor->pos.rotY;
+    r.vz = s->actor->unk24;
     r2 = r;
     func_800316D8(&r2, &m->worldMatrix);
     m->worldMatrix.t[0] = arg1->vx;
     m->worldMatrix.t[1] = arg1->vy;
     m->worldMatrix.t[2] = arg1->vz;
     wm_applyScale(m);
-    m->anim = h = db_lookupRegistered(4, s->unkC->unk36 | 0x30000, 0);
+    m->anim = h = db_lookupRegistered(4, s->actor->unk36 | 0x30000, 0);
     if (h != NULL) {
-        if (IS_OFFSET(h->unkC)) {
-            t = h->unk10;
-            h->unkC = (s32)h + h->unkC;
+        if (IS_OFFSET(h->rotKeys)) {
+            t = h->rotKeysLo;
+            h->rotKeys = (s32)h + h->rotKeys;
             if (t != 0) {
-                h->unk10 = (s32)m->anim + t;
+                h->rotKeysLo = (s32)m->anim + t;
             }
         }
-        wm_calcBoneMatrices(m, s->unkC->unk3A);
+        wm_calcBoneMatrices(m, s->actor->unk3A);
         if (arg0->unk11 != 0xE) {
-            n = m->model->unk3;
-            if (c->unk0 != 0 && c->rideOffset > 0) {
+            n = m->model->groupCount;
+            if (c->terrainClass != 0 && c->rideOffset > 0) {
                 m->clipY = arg1->vy - c->rideOffset + 100;
                 if (m->parent != NULL) {
                     m->clipY = m->parent->clipY;
@@ -920,14 +920,14 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         arg1->vy -= d / 8;
         sz = sx - d / 2;
         sx -= d / 4;
-        g_worldOtBias = -c->shadowWidth * 4 - (s8)c->unk7;
+        g_worldOtBias = -c->shadowWidth * 4 - (s8)c->shadowOtBias;
         if (c->shadowWidth == 0) {
             return;
         }
         sx = (c->shadowWidth * sx) >> 11;
         sz = (c->shadowDepth * sz) >> 12;
         f = (0x8000 - arg2) >> 3;
-        f *= g_worldWeatherData.unk5E0[0].unk5C;
+        f *= g_worldWeatherData.work[0].unk5C;
         f >>= 12;
         if (f < 0) {
             f = 0;
@@ -943,12 +943,12 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (sz < 0) {
             sz = 0;
         }
-        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk1 = sx * 14;
-        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk2 = sx * 12;
-        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk0 = sz;
+        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleX = sx * 14;
+        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleZ = sx * 12;
+        g_gameState->unk1C->unk8E4.world->obj->shadows[k].shade = sz;
         ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot + g_worldOtBias;
-        wm_drawShadow(g_gameState->unk1C->unk8E4.world->unk8->shadows, k, arg1->vy, c->shadowJoint);
+        wm_drawShadow(g_gameState->unk1C->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
     } else {
         s = 0x7D0;
@@ -956,7 +956,7 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
             s = 0xAF0;
         }
         f = (0x7060 - arg2) >> 2;
-        f *= g_worldWeatherData.unk5E0[4].unk5C;
+        f *= g_worldWeatherData.work[4].unk5C;
         f >>= 12;
         if (f < 0) {
             f = 0;
@@ -973,13 +973,13 @@ void wm_drawActorShadow(Unk8004AB64 *arg0, SVECTOR *arg1, s32 arg2) {
         if (a < 0) {
             a = 0;
         }
-        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk1 = 0x302;
-        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk2 = 0x294;
-        g_gameState->unk1C->unk8E4.world->unk8->shadows[k].unk0 = a;
+        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleX = 0x302;
+        g_gameState->unk1C->unk8E4.world->obj->shadows[k].scaleZ = 0x294;
+        g_gameState->unk1C->unk8E4.world->obj->shadows[k].shade = a;
         ot = g_gameState->unk1C->unk10[g_gameState->unk1C->unk8];
         g_worldOtBias = -0x46;
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] -= 0x46;
-        wm_drawShadow(g_gameState->unk1C->unk8E4.world->unk8->shadows, k, arg1->vy, c->shadowJoint);
+        wm_drawShadow(g_gameState->unk1C->unk8E4.world->obj->shadows, k, arg1->vy, c->shadowJoint);
         g_gameState->unk1C->unk10[g_gameState->unk1C->unk8] = ot;
     }
 }
@@ -1110,9 +1110,9 @@ void wm_updateActorHeight(Unk8004AB64 *arg0) {
     if (g_worldMapLoaded != 0) {
         c = &g_worldActorTypeInfo[arg0->unk11];
         if (c->polyCache != 0xA) {
-            h = wm_getTerrainHeightOffset(c->unk0, c->cellAttr, &flat);
+            h = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, &flat);
             if (c->flying == 0) {
-                if (c->unk0 != 0) {
+                if (c->terrainClass != 0) {
                     if (c->unk4 == 7) {
                         c->rideOffset = 0x118;
                     } else if (flat != 0 || h == 0) {
@@ -1191,7 +1191,7 @@ void wm_movePlayer(WmActorType *cc) {
                 dx = p.vx - g_worldPlayer->unk40.vx;
                 dy = p.vy - g_worldPlayer->unk40.vy;
                 dz = p.vz - g_worldPlayer->unk40.vz;
-                if (wm_getTerrainHeightOffset(cc->unk0, cell, 0) != 0) {
+                if (wm_getTerrainHeightOffset(cc->terrainClass, cell, 0) != 0) {
                     dist = SquareRoot0(dx * dx + dz * dz);
                 } else {
                     dist = SquareRoot0(dx * dx + dy * dy + dz * dz);
@@ -1349,7 +1349,7 @@ u8 wm_tryStep(VECTOR *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) 
         wm_getGroundHeight(&v, &cell, &h, c, (u16 *)&v.vy);
     }
     if (h >= 0) {
-        ok = wm_testCellType(mode->unk14, cell);
+        ok = wm_testCellType(mode->allowedCells, cell);
         if (ok) {
             if (mode->checkTransitions != 0) {
                 a = wm_testCellType(g_worldWaterCellTypes, cell);
@@ -1599,7 +1599,7 @@ void wm_controlWalk(void) {
     }
     g_worldCamera->yaw &= 0xFFF;
     if (mv != 0 || g_worldCameraTurning != 0) {
-        g_worldCamera->unk0 = math_sin(ang);
+        g_worldCamera->stickSide = math_sin(ang);
         if (mv != 0) {
             g_worldCameraTurnedByHand = 0;
             if ((u32)(ang - 0x600) <= 0x400) {
@@ -1608,7 +1608,7 @@ void wm_controlWalk(void) {
                 g_worldCamera->yawOffset = 0;
             }
             g_worldPlayerHeading = (g_worldCamera->yaw + ang) & 0xFFF;
-            g_worldPlayerSpeed = mv * g_worldMoveModeInfo->unk2 >> 12;
+            g_worldPlayerSpeed = mv * g_worldMoveModeInfo->speed >> 12;
         }
     }
     a = g_worldPlayerHeading;
@@ -1698,7 +1698,7 @@ void wm_controlSteer(void) {
     g_worldCamera->yawOffset = 0;
     g_worldCamera->yaw &= 0xFFF;
     m = g_worldMoveModeInfo;
-    v = g_worldSpeedSmooth + (m->unk2 * ly / g_worldStickDiv - g_worldSpeedSmooth) / g_worldSpeedSmoothDiv;
+    v = g_worldSpeedSmooth + (m->speed * ly / g_worldStickDiv - g_worldSpeedSmooth) / g_worldSpeedSmoothDiv;
     g_worldSpeedSmooth = v;
     sp = v / g_worldSpeedScaleDiv;
     g_worldPlayerSpeed = sp;
@@ -1764,10 +1764,10 @@ void wm_controlFly(void) {
     y = -y;
     ox = x;
     btn = wm_getPadHeld();
-    if ((btn & 0x300000) && g_worldCameraFlags->unk11 == 0 && g_worldAutoPilot != 0) {
+    if ((btn & 0x300000) && g_worldCameraFlags->autoTurnOff == 0 && g_worldAutoPilot != 0) {
         wm_toggleCameraAutoTurn();
     }
-    if (g_worldCameraFlags->unk11 == 0) {
+    if (g_worldCameraFlags->autoTurnOff == 0) {
         if (btn & 0x100000) {
             x = -0x7F;
         }
@@ -1785,7 +1785,7 @@ void wm_controlFly(void) {
         }
     }
     g_worldCamera->yawOffset = 0;
-    a = g_worldMoveModeInfo->unk2 * z / g_worldStickDiv;
+    a = g_worldMoveModeInfo->speed * z / g_worldStickDiv;
     g_worldPlayerTurn = g_worldMoveModeInfo->turnSpeed * x >> 7;
     q = g_worldSpeedSmoothDiv;
     b = g_worldMoveModeInfo->climbSpeed * y / g_worldStickDiv;
@@ -1812,8 +1812,8 @@ void wm_controlFly(void) {
     }
     switch (g_worldAutoPilot) {
     case 1:
-        ex = (g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].unk4 - g_worldPlayer->pos.vx) >> 5;
-        ez = (g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].unk8 - g_worldPlayer->pos.vz) >> 5;
+        ex = (g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].worldX - g_worldPlayer->pos.vx) >> 5;
+        ez = (g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].worldZ - g_worldPlayer->pos.vz) >> 5;
         r = SquareRoot0(ex * ex + ez * ez);
         g_worldPlayerSpeed = r;
         if (g_worldPlayerSpeed > 400) {
@@ -1824,8 +1824,8 @@ void wm_controlFly(void) {
         }
         g_worldAutoPilotDist = g_worldPlayerSpeed;
     case 2:
-        dx = g_worldPlayer->pos.vx - g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].unk4;
-        dz = g_worldPlayer->pos.vz - g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].unk8;
+        dx = g_worldPlayer->pos.vx - g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].worldX;
+        dz = g_worldPlayer->pos.vz - g_worldNaviPlaces[g_worldNaviPage][g_worldAutoPilotDest].worldZ;
         if (dx > 0x30000) {
             dx -= 0x60000;
         }
@@ -1948,7 +1948,7 @@ void wm_cameraAutoTurnWalk(void) {
         a += 0x1000;
     }
     d = (g_worldPlayerHeading - a) * 0xC00 / 4096;
-    g_worldAutoTurnDeadZone = abs(g_worldCamera->unk0) >> 3;
+    g_worldAutoTurnDeadZone = abs(g_worldCamera->stickSide) >> 3;
     if (abs(d) < g_worldAutoTurnDeadZone) {
         d = 0;
     }
@@ -1960,7 +1960,7 @@ void wm_cameraAutoTurnWalk(void) {
             g_worldCameraTurnGain = 0;
         }
     }
-    if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->unk11 == 0 && g_worldState == WM_STATE_RUNNING) {
+    if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->autoTurnOff == 0 && g_worldState == WM_STATE_RUNNING) {
         g_worldAutoTurnDiv = abs(d);
         if (abs(d) < g_worldAutoTurnDivMin) {
             g_worldAutoTurnDiv = g_worldAutoTurnDivMin;
@@ -2001,7 +2001,7 @@ void wm_cameraAutoTurnVehicle(void) {
     }
     a = cur - a;
     a %= 4096;
-    if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->unk11 == 0) {
+    if (g_worldCameraTurnedByHand == 0 && g_worldCameraFlags->autoTurnOff == 0) {
         step = 16;
         if (g_worldCameraRecenter != 0) {
             step = ABS(a) * 256 >> 12;
@@ -2048,7 +2048,7 @@ void wm_snapActorsToFloor(void) {
                 c = &g_worldActorTypeInfo[o->unk11];
                 wm_getGroundHeight((VECTOR *)&pos, &c->cellAttr, &tmp, NULL, &h);
                 c->floorY = h;
-                c->rideOffset = wm_getTerrainHeightOffset(c->unk0, c->cellAttr, 0);
+                c->rideOffset = wm_getTerrainHeightOffset(c->terrainClass, c->cellAttr, 0);
                 wm_updateActorHeight(o);
                 o->unk40 = o->pos;
             }
@@ -2199,17 +2199,17 @@ void wm_autoPilotOn(void) {
     g_worldAutoPilot = 2;
     g_worldAutoPilotDist = 10000;
     g_worldAutoPilotDest = g_evtGlobalVars.b[0x67] - 1;
-    g_worldAutoPilotSavedAutoTurn = g_worldCameraFlags->unk11;
+    g_worldAutoPilotSavedAutoTurn = g_worldCameraFlags->autoTurnOff;
 }
 
 void wm_autoPilotOff(void) {
     if (g_worldAutoPilot != 0) {
         g_worldAutoPilotDist = 0;
         g_worldAutoPilot = 0;
-        if (g_worldAutoPilotSavedAutoTurn != g_worldCameraFlags->unk11) {
+        if (g_worldAutoPilotSavedAutoTurn != g_worldCameraFlags->autoTurnOff) {
             wm_toggleCameraAutoTurn();
         }
-        g_worldCameraFlags->unk11 = g_worldAutoPilotSavedAutoTurn;
+        g_worldCameraFlags->autoTurnOff = g_worldAutoPilotSavedAutoTurn;
     }
 }
 

@@ -14,15 +14,15 @@
 #include "ovl_0c.h"
 
 static u8 *draw(u8 *src, WmSprCtx *a, u8 *pkt, u32 *ot) {
-    s32 sh = a->unk24;
-    s32 bias = a->unk28;
-    s32 hw = (u32)a->unk8 << sh;
-    s32 hh = (u32)a->unkC << sh;
-    u32 tpage = (u32)a->unk10 << 16;
-    u32 clut = (u32)a->unk14 << 16;
-    s32 mod = a->unk18;
-    s32 n = a->unk1C;
-    u32 code = (u32)a->unk20 << 24;
+    s32 sh = a->sizeShift;
+    s32 bias = a->otBias;
+    s32 hw = (u32)a->halfW << sh;
+    s32 hh = (u32)a->halfH << sh;
+    u32 tpage = (u32)a->tpage << 16;
+    u32 clut = (u32)a->clut << 16;
+    s32 mod = a->fade;
+    s32 n = a->quadCount;
+    u32 code = (u32)a->primCode << 24;
     SVECTOR v[4];
     SVECTOR ir;
     u32 *p;
@@ -47,7 +47,7 @@ static u8 *draw(u8 *src, WmSprCtx *a, u8 *pkt, u32 *ot) {
         gte_rtpt();
         k = src[2];
         src += 3;
-        uv = a->unk0[k & 0xF];
+        uv = a->uvs[k & 0xF];
         u = uv & 0xFF;
         vv = uv >> 8;
         ur = u + ((u32)hw >> (sh + 1));
@@ -65,7 +65,7 @@ static u8 *draw(u8 *src, WmSprCtx *a, u8 *pkt, u32 *ot) {
         gte_ldv0(&v[3]);
         gte_rtps();
         gte_stsxy(&p[8]);
-        ce = (u8 *)a->unk4 + (k >> 4) * 4;
+        ce = (u8 *)a->colors + (k >> 4) * 4;
         c = *(u16 *)ce | ((u32)ce[2] << 16);
         if (mod >= 0) {
             gte_ldir0123(mod, c & 0xFF, (c >> 8) & 0xFF, (c >> 16) & 0xFF);

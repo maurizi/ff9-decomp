@@ -31,22 +31,22 @@ void wm_initEffects(void) {
     D_800D4960[5] = D_800D4960[1];
     D_800D4960[7] = D_800D4960[6];
     D_800D4960[8] = D_800D4960[6];
-    g_worldEffectFree.unk4 = NULL;
-    g_worldEffectFree.unk8 = &g_worldEffectNodes[0];
-    g_worldEffectNodes[0].unk4 = &g_worldEffectFree;
-    g_worldEffectNodes[0].unk8 = &g_worldEffectNodes[1];
+    g_worldEffectFree.prev = NULL;
+    g_worldEffectFree.next = &g_worldEffectNodes[0];
+    g_worldEffectNodes[0].prev = &g_worldEffectFree;
+    g_worldEffectNodes[0].next = &g_worldEffectNodes[1];
     for (i = 1; i < 59; i++) {
-        g_worldEffectNodes[i].unk4 = &g_worldEffectNodes[i - 1];
-        g_worldEffectNodes[i].unk8 = &g_worldEffectNodes[i + 1];
+        g_worldEffectNodes[i].prev = &g_worldEffectNodes[i - 1];
+        g_worldEffectNodes[i].next = &g_worldEffectNodes[i + 1];
     }
-    g_worldEffectNodes[i].unk4 = &g_worldEffectNodes[i - 1];
-    g_worldEffectNodes[i].unk8 = &g_worldEffectFreeTail;
-    g_worldEffectFreeTail.unk4 = &g_worldEffectNodes[i];
-    g_worldEffectFreeTail.unk8 = NULL;
-    g_worldEffectActive.unk4 = NULL;
-    g_worldEffectActive.unk8 = &g_worldEffectActiveTail;
-    g_worldEffectActiveTail.unk4 = &g_worldEffectActive;
-    g_worldEffectActiveTail.unk8 = NULL;
+    g_worldEffectNodes[i].prev = &g_worldEffectNodes[i - 1];
+    g_worldEffectNodes[i].next = &g_worldEffectFreeTail;
+    g_worldEffectFreeTail.prev = &g_worldEffectNodes[i];
+    g_worldEffectFreeTail.next = NULL;
+    g_worldEffectActive.prev = NULL;
+    g_worldEffectActive.next = &g_worldEffectActiveTail;
+    g_worldEffectActiveTail.prev = &g_worldEffectActive;
+    g_worldEffectActiveTail.next = NULL;
     g_worldBlockFx4Rot.vy = 0;
     g_worldBlockFx6RotA.vy = 0;
     g_worldBlockFx6RotB.vy = 0;
@@ -67,31 +67,31 @@ void wm_drawEffects(void) {
     s32 tex;
     s32 k;
 
-    o = g_worldEffectActive.unk8;
+    o = g_worldEffectActive.next;
     SetRotMatrix(g_worldViewMatrix);
     SetTransMatrix(g_worldViewMatrix);
-    while (o->unk8 != NULL) {
-        if ((u8)wm_worldToView((VECTOR *)&o->unk10, &a, &b, 0)) {
+    while (o->next != NULL) {
+        if ((u8)wm_worldToView((VECTOR *)&o->x, &a, &b, 0)) {
             pos.vx = a.vx;
             pos.vy = a.vy;
             pos.vz = a.vz;
             if (b.vz > 1000) {
                 tex = g_worldOt[*g_worldBufIndex];
-                switch ((u8)o->unkD) {
+                switch ((u8)o->type) {
                 case 2:
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE = o->unk1C * 400 + 6000,
-                                               (s16)((s16)(o->unk1C / 4) % 26), (u8)o->unkC, -1, tex, 0, 2);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale = o->frame * 400 + 6000,
+                                               (s16)((s16)(o->frame / 4) % 26), (u8)o->abr, -1, tex, 0, 2);
                     break;
                 case 3:
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE = o->unk1C * 400 + 6000,
-                                               (s16)((s16)(o->unk1C / 2) % 23), (u8)o->unkC, -1, tex, 0, 2);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale = o->frame * 400 + 6000,
+                                               (s16)((s16)(o->frame / 2) % 23), (u8)o->abr, -1, tex, 0, 2);
                     break;
                 case 8: {
                     SVECTOR r = g_worldEffectFlatRot;
                     g_worldOtBias = 20;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, o->unk1C, (u8)o->unkC,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
                                                -1, tex, 0, 0);
                     break;
                 }
@@ -99,19 +99,19 @@ void wm_drawEffects(void) {
                 case 22: {
                     SVECTOR r = g_worldEffectFlatRot;
                     g_worldOtBias = 20;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, o->unk1C, (u8)o->unkC,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
                                                g_worldEffectSpeed, tex, 0, 0);
                     break;
                 }
                 case 16: {
                     SVECTOR r = g_worldEffectFlatRot;
                     pos.vy -= 400;
-                    o->unkE = (8 - o->unk1C) * 4000;
-                    r.vy = o->unk1C * 128;
+                    o->scale = (8 - o->frame) * 4000;
+                    r.vy = o->frame * 128;
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, 0, 1, -1, tex, 0, 0);
-                    r.vy = o->unk1C * 200;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, 0, 2, -1, tex, 0, 0);
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, 0, 1, -1, tex, 0, 0);
+                    r.vy = o->frame * 200;
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, 0, 2, -1, tex, 0, 0);
                     break;
                 }
                 case 14:
@@ -127,8 +127,8 @@ void wm_drawEffects(void) {
                     g_worldOtBias = 50;
                     k = g_worldEffectSpeed * g_worldSprayLevel >> 12;
                     if (k >= 25) {
-                        g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE, o->unk1C,
-                                                   (u8)o->unkC, k, tex, 0, 0);
+                        g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale, o->frame,
+                                                   (u8)o->abr, k, tex, 0, 0);
                     }
                     break;
                 case 25:
@@ -136,21 +136,21 @@ void wm_drawEffects(void) {
                     SVECTOR r;
                     memset(&r, 0, 8);
                     r.pad = 1;
-                    r.vy = ratan2(0x30031 - o->unk10, -0x13F6E - o->unk18);
+                    r.vy = ratan2(0x30031 - o->x, -0x13F6E - o->z);
                     g_worldOtBias = 0;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, &r, o->unkE, o->unk1C, (u8)o->unkC,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, &r, o->scale, o->frame, (u8)o->abr,
                                                -1, tex, 0, 0);
                     break;
                 }
                 default:
                     g_worldOtBias = 40;
-                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->unk0, &pos, NULL, o->unkE, o->unk1C, (u8)o->unkC,
+                    g_worldPrimPtr = wm_drawSprite3D(g_worldPrimPtr, (WmSprHdr *)o->sprite, &pos, NULL, o->scale, o->frame, (u8)o->abr,
                                                -1, tex, 0, 0);
                     break;
                 }
             }
         }
-        o = o->unk8;
+        o = o->next;
     }
 }
 
@@ -161,69 +161,69 @@ void wm_updateEffects(void) {
     u8 flag;
 
     flag = 0;
-    o = g_worldEffectActive.unk8;
-    spd = g_worldMoveModeInfo->unk2;
+    o = g_worldEffectActive.next;
+    spd = g_worldMoveModeInfo->speed;
     if (spd != 0) {
         g_worldEffectSpeedTarget = abs((g_worldPlayerSpeed << 12) / spd);
     } else {
         g_worldEffectSpeedTarget = 0;
     }
     g_worldEffectSpeed += (g_worldEffectSpeedTarget - g_worldEffectSpeed) / 32;
-    while (o->unk8 != NULL) {
+    while (o->next != NULL) {
         /* dead flag: combine folds the test (flag is only ever 0) and jump2 drops the
          * body after register allocation, which leaves s7 = 0 and its save behind */
         if (flag) {
             wm_freeEffect(o);
         }
-        switch ((u8)o->unkD) {
+        switch ((u8)o->type) {
         case 2:
-            o->unk14 -= 60 + wm_rand8() % 24;
-            o->unk10 -= 30 - wm_rand8() % 60;
-            o->unk18 -= 30 - wm_rand8() % 60;
+            o->y -= 60 + wm_rand8() % 24;
+            o->x -= 30 - wm_rand8() % 60;
+            o->z -= 30 - wm_rand8() % 60;
             break;
         case 3:
-            o->unk14 -= 60 + wm_rand8() % 24;
-            o->unk10 -= 60 - wm_rand8() % 60;
-            o->unk18 -= 30 - wm_rand8() % 60;
+            o->y -= 60 + wm_rand8() % 24;
+            o->x -= 60 - wm_rand8() % 60;
+            o->z -= 30 - wm_rand8() % 60;
             break;
         case 23:
-            o->unk10 = math_sin((o->unk1C << 6) + o->unk20) / 2 + g_worldBlockFx4Pos.vx;
-            o->unk14 -= 80;
-            o->unk18 = math_cos((o->unk1C << 6) + o->unk20) / 2 + g_worldBlockFx4Pos.vz;
+            o->x = math_sin((o->frame << 6) + o->phase) / 2 + g_worldBlockFx4Pos.vx;
+            o->y -= 80;
+            o->z = math_cos((o->frame << 6) + o->phase) / 2 + g_worldBlockFx4Pos.vz;
             /* fallthrough */
         case 24:
-            o->unk10 -= 40 + wm_rand8() % 130;
-            o->unk14 -= 40 - wm_rand8() % 80;
-            o->unk18 += 300 + wm_rand8() % 300;
+            o->x -= 40 + wm_rand8() % 130;
+            o->y -= 40 - wm_rand8() % 80;
+            o->z += 300 + wm_rand8() % 300;
             break;
         }
-        o->unk1C++;
+        o->frame++;
         cur = o;
-        o = o->unk8;
-        switch ((u8)cur->unkD) {
+        o = o->next;
+        switch ((u8)cur->type) {
         case 2:
-            if (cur->unk1C >= 77) {
+            if (cur->frame >= 77) {
                 wm_freeEffect(cur);
             }
             break;
         case 3:
-            if (cur->unk1C >= 46) {
+            if (cur->frame >= 46) {
                 wm_freeEffect(cur);
             }
             break;
         case 16:
         case 17:
-            if (cur->unk1C >= 9) {
+            if (cur->frame >= 9) {
                 wm_freeEffect(cur);
             }
             break;
         case 32:
-            if (abs(cur->unk10 - g_worldPlayer->pos.vx) > 32000 || abs(cur->unk18 - g_worldPlayer->pos.vz) > 32000) {
+            if (abs(cur->x - g_worldPlayer->pos.vx) > 32000 || abs(cur->z - g_worldPlayer->pos.vz) > 32000) {
                 wm_freeEffect(cur);
             }
             break;
         default:
-            if (cur->unk1C == wm_getSpriteFrameCount((u16 *)cur->unk0)) {
+            if (cur->frame == wm_getSpriteFrameCount((u16 *)cur->sprite)) {
                 wm_freeEffect(cur);
             }
             break;
@@ -239,8 +239,8 @@ void wm_drawBlockFx(u8 arg0) {
 
     SetLightMatrix(&g_worldBlockFxLightMatrix);
     SetColorMatrix(&g_worldBlockFxColorMatrix);
-    SetBackColor((u8)((u16)g_worldWeatherData.unk5E0[0].unk54[0] >> 5), (u8)((u16)g_worldWeatherData.unk5E0[0].unk54[1] >> 5),
-                 (u8)((u16)g_worldWeatherData.unk5E0[0].unk54[2] >> 5));
+    SetBackColor((u8)((u16)g_worldWeatherData.work[0].fxBackColor[0] >> 5), (u8)((u16)g_worldWeatherData.work[0].fxBackColor[1] >> 5),
+                 (u8)((u16)g_worldWeatherData.work[0].fxBackColor[2] >> 5));
     switch (arg0) {
     case 4:
         if (g_worldFormFlags[5] == 0 && g_worldDataSet == WM_DATASET_DISC1) {
@@ -402,7 +402,7 @@ void wm_drawBlockFx(u8 arg0) {
     }
     SetLightMatrix(&g_worldMapLightMatrix);
     SetColorMatrix(&g_worldMapColorMatrix);
-    SetBackColor(g_worldWeatherData.unk5E0[0].unk20.c[0], g_worldWeatherData.unk5E0[0].unk20.c[2], g_worldWeatherData.unk5E0[0].unk20.c[4]);
+    SetBackColor(g_worldWeatherData.work[0].backColor.c[0], g_worldWeatherData.work[0].backColor.c[2], g_worldWeatherData.work[0].backColor.c[4]);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", g_worldBlockFx4Scale);
@@ -468,12 +468,12 @@ void wm_updateBlockFx(s32 arg0) {
     }
     if (on) {
         e = w_framePackGetPtr(g_worldDataPack, (u8)arg0 + 0x28);
-        for (; e->unk24 != -1; e++) {
-            if (rand() % 4096 < e->unk28) {
-                x = e->unk0 - e->unkC / 2;
-                y = e->unk4 - e->unk10 / 2;
-                z = e->unk8 - e->unk14 / 2;
-                if (e->unkC != 0) {
+        for (; e->effect != -1; e++) {
+            if (rand() % 4096 < e->chance) {
+                x = e->x - e->rangeX / 2;
+                y = e->y - e->rangeY / 2;
+                z = e->z - e->rangeZ / 2;
+                if (e->rangeX != 0) {
                     if (g_randPtr >= g_randTableEnd) {
                         rand_refill();
                         if (g_randPtr >= g_randTableEnd) {
@@ -481,9 +481,9 @@ void wm_updateBlockFx(s32 arg0) {
                         }
                     }
                     b = *g_randPtr++;
-                    x += ((b << 8) | b) % e->unkC;
+                    x += ((b << 8) | b) % e->rangeX;
                 }
-                if (e->unk10 != 0) {
+                if (e->rangeY != 0) {
                     if (g_randPtr >= g_randTableEnd) {
                         rand_refill();
                         if (g_randPtr >= g_randTableEnd) {
@@ -491,9 +491,9 @@ void wm_updateBlockFx(s32 arg0) {
                         }
                     }
                     b = *g_randPtr++;
-                    y += ((b << 8) | b) % e->unk10;
+                    y += ((b << 8) | b) % e->rangeY;
                 }
-                if (e->unk14 != 0) {
+                if (e->rangeZ != 0) {
                     if (g_randPtr >= g_randTableEnd) {
                         rand_refill();
                         if (g_randPtr >= g_randTableEnd) {
@@ -501,9 +501,9 @@ void wm_updateBlockFx(s32 arg0) {
                         }
                     }
                     b = *g_randPtr++;
-                    z += ((b << 8) | b) % e->unk14;
+                    z += ((b << 8) | b) % e->rangeZ;
                 }
-                wm_spawnEffect(x, y, z, e->unk24, e->unk26);
+                wm_spawnEffect(x, y, z, e->effect, e->scale);
             }
         }
     }
@@ -518,7 +518,7 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 k;
     WmEffect *h;
 
-    p = g_worldEffectFree.unk8;
+    p = g_worldEffectFree.next;
     h = &g_worldEffectActive;
     switch (arg3) {
     case 2:
@@ -559,37 +559,37 @@ void wm_spawnEffect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         k = 1;
         break;
     }
-    if (p->unk8 != 0) {
+    if (p->next != 0) {
         v = (s32)w_framePackGetPtr(g_worldDataPack, arg3 + 7);
-        p->unk4->unk8 = p->unk8;
-        p->unk8->unk4 = p->unk4;
-        p->unk4 = h;
-        p->unk8 = h->unk8;
-        h->unk8->unk4 = p;
-        h->unk8 = p;
-        p->unkC = k;
-        p->unk1C = 0;
-        p->unk10 = arg0;
-        p->unk14 = arg1;
-        p->unk18 = arg2;
-        p->unk0 = v;
-        p->unkE = arg4;
-        p->unkD = arg3;
-        p->unk20 = 0;
+        p->prev->next = p->next;
+        p->next->prev = p->prev;
+        p->prev = h;
+        p->next = h->next;
+        h->next->prev = p;
+        h->next = p;
+        p->abr = k;
+        p->frame = 0;
+        p->x = arg0;
+        p->y = arg1;
+        p->z = arg2;
+        p->sprite = v;
+        p->scale = arg4;
+        p->type = arg3;
+        p->phase = 0;
         p->unk24 = 0;
         if (arg3 == 0x17) {
-            p->unk20 = rand() & 0xFFF;
+            p->phase = rand() & 0xFFF;
         }
     }
 }
 
 void wm_freeEffect(WmEffect *arg0) {
-    arg0->unk4->unk8 = arg0->unk8;
-    arg0->unk8->unk4 = arg0->unk4;
-    arg0->unk4 = &g_worldEffectFree;
-    arg0->unk8 = g_worldEffectFree.unk8;
-    g_worldEffectFree.unk8->unk4 = arg0;
-    g_worldEffectFree.unk8 = arg0;
+    arg0->prev->next = arg0->next;
+    arg0->next->prev = arg0->prev;
+    arg0->prev = &g_worldEffectFree;
+    arg0->next = g_worldEffectFree.next;
+    g_worldEffectFree.next->prev = arg0;
+    g_worldEffectFree.next = arg0;
 }
 
 INCLUDE_RODATA("asm/us/ovl_0c/nonmatchings/wm_effect", D_800A8644);

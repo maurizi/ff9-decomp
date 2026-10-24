@@ -94,9 +94,9 @@ void wm_backdropVerts(s32 arg0) {
     u32 *lit = D_800D23F0;
     u32 *sxy = (u32 *)SCRATCHPAD;
     u16 *zs = D_800D29F8;
-    u32 fogCol = *(u32 *)&g_worldBackdropFog.unk0;
-    s32 fogOfs = (s16)g_worldBackdropFog.unk4;
-    s32 litOfs = (s16)g_worldBackdropFog.unk6;
+    u32 fogCol = *(u32 *)&g_worldBackdropFog.color;
+    s32 fogOfs = (s16)g_worldBackdropFog.fogOffset;
+    s32 litOfs = (s16)g_worldBackdropFog.fogOffset2;
     SVECTOR w[3];
     SVECTOR nrm[3];
     s32 z[3];

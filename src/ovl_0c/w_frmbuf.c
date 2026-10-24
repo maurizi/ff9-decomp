@@ -107,27 +107,27 @@ void wm_frmbufTransfer(void) {
         if (p->texId != -1 && p->vramArea != 0 && p->transferred == 0) {
             r = wm_readtxFind(p->texId, 1);
             if (r != 0) {
-                g_worldFrmbufTransfers[n].unk0 = r;
-                g_worldFrmbufTransfers[n].unk5 = p->vramArea;
-                g_worldFrmbufTransfers[n].unk4 = p->texId & 0x3F;
+                g_worldFrmbufTransfers[n].pack = r;
+                g_worldFrmbufTransfers[n].vramArea = p->vramArea;
+                g_worldFrmbufTransfers[n].area = p->texId & 0x3F;
                 n++;
                 p->transferred = 1;
             }
         }
     }
     for (i = 0; i < n; i++) {
-        id = g_worldFrmbufTransfers[i].unk4;
-        k = g_worldFrmbufTransfers[i].unk5 - 1;
+        id = g_worldFrmbufTransfers[i].area;
+        k = g_worldFrmbufTransfers[i].vramArea - 1;
         if (g_worldMapDebugFlags & WM_DEBUG_TEXTURE) {
-            printf(D_800A8118, (u8)(id + 0x60), g_worldFrmbufTransfers[i].unk0, k);
+            printf(D_800A8118, (u8)(id + 0x60), g_worldFrmbufTransfers[i].pack, k);
         }
         px = &g_worldFrmbufAreaX[k];
         py = &g_worldFrmbufAreaY[k];
         cx = &g_worldFrmbufClutX[k];
         cy = &g_worldFrmbufClutY[k];
-        wm_loadTimPack((s32 *)g_worldFrmbufTransfers[i].unk0, *px, *py, *cx, *cy);
-        g_worldTexAreas[id].unk8 = getTPage(1, 1, *px, *py);
-        g_worldTexAreas[id].unkA = getClut(*cx, *cy);
+        wm_loadTimPack((s32 *)g_worldFrmbufTransfers[i].pack, *px, *py, *cx, *cy);
+        g_worldTexAreas[id].frmTpage = getTPage(1, 1, *px, *py);
+        g_worldTexAreas[id].frmClut = getClut(*cx, *cy);
     }
 }
 
@@ -148,8 +148,8 @@ void wm_weatherUpdate(void) {
         if (g_worldWeatherBlend > 0x1000) {
             g_worldWeatherBlend = 0x1000;
         }
-        wm_blendWeather(&g_worldWeatherData.unk5E0[1], &g_worldWeatherData.unk5E0[3], &g_worldWeatherData.unk5E0[4], g_worldWeatherBlend, g_worldWeatherBlend);
-        wm_blendWeather(&g_worldWeatherData.unk5E0[2], &g_worldWeatherData.unk5E0[5], &g_worldWeatherData.unk5E0[6], g_worldWeatherBlend, g_worldWeatherBlend);
+        wm_blendWeather(&g_worldWeatherData.work[1], &g_worldWeatherData.work[3], &g_worldWeatherData.work[4], g_worldWeatherBlend, g_worldWeatherBlend);
+        wm_blendWeather(&g_worldWeatherData.work[2], &g_worldWeatherData.work[5], &g_worldWeatherData.work[6], g_worldWeatherBlend, g_worldWeatherBlend);
         if (g_worldWeatherBlend == 0x1000) {
             g_worldWeatherBlend = -1;
         }
@@ -164,11 +164,11 @@ void wm_weatherUpdate(void) {
     if (t < 0) {
         t = 0;
     }
-    wm_blendWeather(&g_worldWeatherData.unk5E0[0], &g_worldWeatherData.unk5E0[1], &g_worldWeatherData.unk5E0[2], t, t);
+    wm_blendWeather(&g_worldWeatherData.work[0], &g_worldWeatherData.work[1], &g_worldWeatherData.work[2], t, t);
     wm_updateFogParams();
     wm_updateColorMatrices();
-    func_8001CCB4((u8)g_worldWeatherData.unk5E0[0].unk30[1].unk4[0], (u8)g_worldWeatherData.unk5E0[0].unk30[1].unk4[1],
-                  (u8)g_worldWeatherData.unk5E0[0].unk30[1].unk4[2]);
+    func_8001CCB4((u8)g_worldWeatherData.work[0].fog[1].color[0], (u8)g_worldWeatherData.work[0].fog[1].color[1],
+                  (u8)g_worldWeatherData.work[0].fog[1].color[2]);
 }
 
 void wm_weatherAuto(void) {
@@ -183,8 +183,8 @@ void wm_weatherAuto(void) {
         case 9:
         case 12:
         case 13:
-            g_worldWeatherData.unk0[3].unk30[0].unk0 = 0x7F58;
-            g_worldWeatherData.unk0[3].unk30[0].unk2 = 0x7F58;
+            g_worldWeatherData.presets[3].fog[0].fogOffset = 0x7F58;
+            g_worldWeatherData.presets[3].fog[0].fogOffset2 = 0x7F58;
             wm_setWeather(id, wm_getStoryFog() & 0xFF, 0x80);
             g_worldBackdropOn = 0;
             break;
@@ -234,44 +234,44 @@ void wm_setWeather(s32 mode, s32 flag, s32 arg2) {
     g_worldFog = flag;
     g_worldWeatherSpeed = arg2;
     g_worldWeatherBlend = 0;
-    g_worldWeatherData.unk5E0[3] = g_worldWeatherData.unk5E0[1];
-    g_worldWeatherData.unk5E0[5] = g_worldWeatherData.unk5E0[2];
+    g_worldWeatherData.work[3] = g_worldWeatherData.work[1];
+    g_worldWeatherData.work[5] = g_worldWeatherData.work[2];
     if (g_worldFog != 0) {
         switch (mode) {
         case 0:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[3];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[2];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[3];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[2];
             return;
         case 1:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[7];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[6];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[7];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[6];
             return;
         case 2:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[11];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[10];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[11];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[10];
             return;
         case 3:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[15];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[14];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[15];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[14];
             return;
         }
     } else {
         switch (mode) {
         case 0:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[1];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[0];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[1];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[0];
             return;
         case 1:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[5];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[4];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[5];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[4];
             return;
         case 2:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[9];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[8];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[9];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[8];
             return;
         case 3:
-            g_worldWeatherData.unk5E0[4] = g_worldWeatherData.unk0[13];
-            g_worldWeatherData.unk5E0[6] = g_worldWeatherData.unk0[12];
+            g_worldWeatherData.work[4] = g_worldWeatherData.presets[13];
+            g_worldWeatherData.work[6] = g_worldWeatherData.presets[12];
             return;
         }
     }
@@ -296,76 +296,76 @@ void wm_blendWeather(WmSky *arg0, WmSky *arg1, WmSky *arg2, s32 arg3, s32 arg4) 
     if (arg4 > 0x1000) {
         arg4 = 0x1000;
     }
-    arg0->unk0[0].vx = wm_lerpShift(arg1->unk0[0].vx, arg2->unk0[0].vx, arg3, 0xD);
-    arg0->unk0[0].vy = wm_lerpShift(arg1->unk0[0].vy, arg2->unk0[0].vy, arg3, 0xD);
-    arg0->unk0[0].vz = wm_lerpShift(arg1->unk0[0].vz, arg2->unk0[0].vz, arg3, 0xD);
-    d = &arg0->unk0[1].vx;
-    a = &arg1->unk0[1].vx;
-    b = &arg2->unk0[1].vx;
+    arg0->lightColor[0].vx = wm_lerpShift(arg1->lightColor[0].vx, arg2->lightColor[0].vx, arg3, 0xD);
+    arg0->lightColor[0].vy = wm_lerpShift(arg1->lightColor[0].vy, arg2->lightColor[0].vy, arg3, 0xD);
+    arg0->lightColor[0].vz = wm_lerpShift(arg1->lightColor[0].vz, arg2->lightColor[0].vz, arg3, 0xD);
+    d = &arg0->lightColor[1].vx;
+    a = &arg1->lightColor[1].vx;
+    b = &arg2->lightColor[1].vx;
     d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
     d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
     d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    d = &arg0->unk0[2].vx;
-    a = &arg1->unk0[2].vx;
-    b = &arg2->unk0[2].vx;
+    d = &arg0->lightColor[2].vx;
+    a = &arg1->lightColor[2].vx;
+    b = &arg2->lightColor[2].vx;
     d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
     d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
     d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    d = &arg0->unk18.vx;
-    a = &arg1->unk18.vx;
-    b = &arg2->unk18.vx;
+    d = &arg0->backdropLightColor.vx;
+    a = &arg1->backdropLightColor.vx;
+    b = &arg2->backdropLightColor.vx;
     d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
     d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
     d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
-    d = arg0->unk54;
-    a = arg1->unk54;
-    b = arg2->unk54;
+    d = arg0->fxBackColor;
+    a = arg1->fxBackColor;
+    b = arg2->fxBackColor;
     d[0] = wm_lerpShift(a[0], b[0], arg3, 0xD);
     d[1] = wm_lerpShift(a[1], b[1], arg3, 0xD);
     d[2] = wm_lerpShift(a[2], b[2], arg3, 0xD);
     arg0->unk5C = wm_lerpShift((s16)arg1->unk5C, (s16)arg2->unk5C, arg3, 0xD);
-    d = &arg0->unk20.v.vx;
-    a = &arg1->unk20.v.vx;
-    b = &arg2->unk20.v.vx;
+    d = &arg0->backColor.v.vx;
+    a = &arg1->backColor.v.vx;
+    b = &arg2->backColor.v.vx;
     d[0] = wm_lerp(a[0] << 12, b[0] << 12, arg3) >> 12;
     d[1] = wm_lerp(a[1] << 12, b[1] << 12, arg3) >> 12;
     d[2] = wm_lerp(a[2] << 12, b[2] << 12, arg3) >> 12;
-    d = &arg0->unk28.v.vx;
-    a = &arg1->unk28.v.vx;
-    b = &arg2->unk28.v.vx;
+    d = &arg0->backdropBackColor.v.vx;
+    a = &arg1->backdropBackColor.v.vx;
+    b = &arg2->backdropBackColor.v.vx;
     d[0] = wm_lerp(a[0] << 12, b[0] << 12, arg3) >> 12;
     d[1] = wm_lerp(a[1] << 12, b[1] << 12, arg3) >> 12;
     d[2] = wm_lerp(a[2] << 12, b[2] << 12, arg3) >> 12;
-    d = arg0->unk30[0].unk4;
-    a = arg1->unk30[0].unk4;
-    b = arg2->unk30[0].unk4;
+    d = arg0->fog[0].color;
+    a = arg1->fog[0].color;
+    b = arg2->fog[0].color;
     d[0] = wm_lerp(a[0], b[0], arg3);
     d[1] = wm_lerp(a[1], b[1], arg3);
     d[2] = wm_lerp(a[2], b[2], arg3);
-    d = arg0->unk30[1].unk4;
-    a = arg1->unk30[1].unk4;
-    b = arg2->unk30[1].unk4;
+    d = arg0->fog[1].color;
+    a = arg1->fog[1].color;
+    b = arg2->fog[1].color;
     d[0] = wm_lerp(a[0], b[0], arg3);
     d[1] = wm_lerp(a[1], b[1], arg3);
     d[2] = wm_lerp(a[2], b[2], arg3);
-    d = arg0->unk30[2].unk4;
-    a = arg1->unk30[2].unk4;
-    b = arg2->unk30[2].unk4;
+    d = arg0->fog[2].color;
+    a = arg1->fog[2].color;
+    b = arg2->fog[2].color;
     d[0] = wm_lerp(a[0], b[0], arg3);
     d[1] = wm_lerp(a[1], b[1], arg3);
     d[2] = wm_lerp(a[2], b[2], arg3);
-    arg0->unk30[0].unk0 = wm_lerp(arg1->unk30[0].unk0, arg2->unk30[0].unk0, arg3);
-    arg0->unk30[0].unk2 = wm_lerp((u16)arg1->unk30[0].unk2, (u16)arg2->unk30[0].unk2, arg3);
-    arg0->unk30[1].unk0 = wm_lerp(arg1->unk30[1].unk0, arg2->unk30[1].unk0, arg3);
-    arg0->unk30[1].unk2 = wm_lerp((u16)arg1->unk30[1].unk2, (u16)arg2->unk30[1].unk2, arg3);
-    arg0->unk30[2].unk0 = wm_lerp(arg1->unk30[2].unk0, arg2->unk30[2].unk0, arg3);
-    arg0->unk30[2].unk2 = wm_lerp((u16)arg1->unk30[2].unk2, (u16)arg2->unk30[2].unk2, arg3);
-    arg0->unk30[0].unk0 &= 0xFFFE;
-    arg0->unk30[0].unk2 = (u16)arg0->unk30[0].unk2 & 0xFFFE;
-    arg0->unk30[1].unk0 &= 0xFFFE;
-    arg0->unk30[1].unk2 = (u16)arg0->unk30[1].unk2 & 0xFFFE;
-    arg0->unk30[2].unk0 &= 0xFFFE;
-    arg0->unk30[2].unk2 = (u16)arg0->unk30[2].unk2 & 0xFFFE;
+    arg0->fog[0].fogOffset = wm_lerp(arg1->fog[0].fogOffset, arg2->fog[0].fogOffset, arg3);
+    arg0->fog[0].fogOffset2 = wm_lerp((u16)arg1->fog[0].fogOffset2, (u16)arg2->fog[0].fogOffset2, arg3);
+    arg0->fog[1].fogOffset = wm_lerp(arg1->fog[1].fogOffset, arg2->fog[1].fogOffset, arg3);
+    arg0->fog[1].fogOffset2 = wm_lerp((u16)arg1->fog[1].fogOffset2, (u16)arg2->fog[1].fogOffset2, arg3);
+    arg0->fog[2].fogOffset = wm_lerp(arg1->fog[2].fogOffset, arg2->fog[2].fogOffset, arg3);
+    arg0->fog[2].fogOffset2 = wm_lerp((u16)arg1->fog[2].fogOffset2, (u16)arg2->fog[2].fogOffset2, arg3);
+    arg0->fog[0].fogOffset &= 0xFFFE;
+    arg0->fog[0].fogOffset2 = (u16)arg0->fog[0].fogOffset2 & 0xFFFE;
+    arg0->fog[1].fogOffset &= 0xFFFE;
+    arg0->fog[1].fogOffset2 = (u16)arg0->fog[1].fogOffset2 & 0xFFFE;
+    arg0->fog[2].fogOffset &= 0xFFFE;
+    arg0->fog[2].fogOffset2 = (u16)arg0->fog[2].fogOffset2 & 0xFFFE;
 }
 
 void wm_weatherInit(void) {
