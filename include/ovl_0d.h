@@ -314,7 +314,7 @@ typedef struct {
     s32 hasLostCard;
     s32 lostSlot;
     s32 unk554;
-    u8 savedConfig[12]; /* func_8002C700 values restored on exit */
+    u8 savedRepeat[12]; /* key-repeat flags of 12 buttons (func_8002C700), restored on exit */
     s32 nameSlide;  /* R1 card name slide-out (PLAYER CARD SELECT) */
     s32 scrollTimer; /* L1/R1 copy scroll animation in the stock */
     s32 blockIdx;   /* block appearing now (ENEMY APEAR) */
@@ -461,7 +461,7 @@ void tm_clearOt(void);
 void tm_endFrame(TmState *);
 void tm_setup(TmState *);
 void tm_debugPrint(TmState *, char *); /* debug print, stubbed */
-void func_800A9B0C(TmState *);
+void tm_updatePad(TmState *);
 void tm_taskInit(TmState *);
 void tm_loadImageFile(void);
 void tm_copyFileEntry(u8 *, s32, s32);
@@ -473,7 +473,7 @@ void *tm_taskPlayerSelect(u32 *, void *, TmState *);
 void *tm_taskPlayerSet(u32 *, void *, TmState *);
 void *tm_taskBattleSelect(u32 *, void *, TmState *);
 void *tm_taskGetSelect(u32 *, void *, TmState *);
-void *func_800ABEBC(u32 *, void *, TmState *);
+void *tm_drawBattleSelect(u32 *, void *, TmState *);
 void *tm_taskBattle(u32 *, void *, TmState *);
 void *tm_drawFlash(u32 *, TILE *, TmState *);
 void *tm_drawFlash2(u32 *, TILE *, TmState *);
@@ -492,7 +492,7 @@ void *tm_drawCardFace(u32 *, void *, TmState *, TmCard *, u8, s32);
 void *tm_taskCoin(u32 *, SPRT *, TmState *);
 void *tm_drawCombo(u32 *, SPRT *, TmState *);
 void *tm_drawBattleValues(u32 *, void *, TmState *);
-void *func_800B3480(u32 *, void *, TmState *);
+void *tm_drawTryAgain(u32 *, void *, TmState *);
 void tm_taskResult(TmState *);
 void tm_taskExtension(TmState *);
 void tm_autoPlace(TmState *);

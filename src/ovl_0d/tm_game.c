@@ -15,7 +15,7 @@ void tm_mainLoop(void) {
     while (s.task != TM_TASK_EXIT) {
         tm_clearOt();
         pad_update();
-        func_800A9B0C(&s);
+        tm_updatePad(&s);
         ctx = g_gameState->unk1C;
         p = (void *)(ctx->unk8 * TM_PRIM_BUF_SIZE + TM_PRIM_BUF);
         if (s.showScore != 0) {
@@ -79,7 +79,7 @@ void tm_mainLoop(void) {
             func_80035674(0);
             p = tm_taskBattleSelect(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             tm_layoutCards(&s);
-            func_800ABEBC(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
+            tm_drawBattleSelect(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_BATTLE:
             D_80077DE8.unk8 = 0;
@@ -109,7 +109,7 @@ void tm_mainLoop(void) {
             tm_debugPrint(&s, "TRY AGAIN\n");
             func_80035674(1);
             tm_taskTryAgain(&s);
-            func_800B3480(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
+            tm_drawTryAgain(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], p, &s);
             break;
         case TM_TASK_CARD_CHANGE:
             D_80077DE8.unk8 = 0;
@@ -263,18 +263,18 @@ void tm_mainLoop(void) {
         rand();
         tm_endFrame(&s);
     }
-    func_8002C740(0, 0, s.savedConfig[0]);
-    func_8002C740(0, 1, s.savedConfig[1]);
-    func_8002C740(0, 2, s.savedConfig[2]);
-    func_8002C740(0, 3, s.savedConfig[3]);
-    func_8002C740(0, 8, s.savedConfig[4]);
-    func_8002C740(0, 0xA, s.savedConfig[6]);
-    func_8002C740(0, 9, s.savedConfig[5]);
-    func_8002C740(0, 0xB, s.savedConfig[7]);
-    func_8002C740(0, 4, s.savedConfig[8]);
-    func_8002C740(0, 5, s.savedConfig[9]);
-    func_8002C740(0, 6, s.savedConfig[10]);
-    func_8002C740(0, 7, s.savedConfig[11]);
+    func_8002C740(0, 0, s.savedRepeat[0]);
+    func_8002C740(0, 1, s.savedRepeat[1]);
+    func_8002C740(0, 2, s.savedRepeat[2]);
+    func_8002C740(0, 3, s.savedRepeat[3]);
+    func_8002C740(0, 8, s.savedRepeat[4]);
+    func_8002C740(0, 0xA, s.savedRepeat[6]);
+    func_8002C740(0, 9, s.savedRepeat[5]);
+    func_8002C740(0, 0xB, s.savedRepeat[7]);
+    func_8002C740(0, 4, s.savedRepeat[8]);
+    func_8002C740(0, 5, s.savedRepeat[9]);
+    func_8002C740(0, 6, s.savedRepeat[10]);
+    func_8002C740(0, 7, s.savedRepeat[11]);
     DrawSync(0);
     VSync(g_gameState->vsyncMode);
     SetDispMask(0);
@@ -358,18 +358,18 @@ void tm_setup(TmState *s) {
     s->aiLevel = g_tmOpponents[s->opponent].aiLevel;
     s->unk454 = 1;
     tm_taskInit(s);
-    s->savedConfig[0] = func_8002C700(0, 0);
-    s->savedConfig[1] = func_8002C700(0, 1);
-    s->savedConfig[2] = func_8002C700(0, 2);
-    s->savedConfig[3] = func_8002C700(0, 3);
-    s->savedConfig[4] = func_8002C700(0, 8);
-    s->savedConfig[6] = func_8002C700(0, 0xA);
-    s->savedConfig[5] = func_8002C700(0, 9);
-    s->savedConfig[7] = func_8002C700(0, 0xB);
-    s->savedConfig[8] = func_8002C700(0, 4);
-    s->savedConfig[9] = func_8002C700(0, 5);
-    s->savedConfig[10] = func_8002C700(0, 6);
-    s->savedConfig[11] = func_8002C700(0, 7);
+    s->savedRepeat[0] = func_8002C700(0, 0);
+    s->savedRepeat[1] = func_8002C700(0, 1);
+    s->savedRepeat[2] = func_8002C700(0, 2);
+    s->savedRepeat[3] = func_8002C700(0, 3);
+    s->savedRepeat[4] = func_8002C700(0, 8);
+    s->savedRepeat[6] = func_8002C700(0, 0xA);
+    s->savedRepeat[5] = func_8002C700(0, 9);
+    s->savedRepeat[7] = func_8002C700(0, 0xB);
+    s->savedRepeat[8] = func_8002C700(0, 4);
+    s->savedRepeat[9] = func_8002C700(0, 5);
+    s->savedRepeat[10] = func_8002C700(0, 6);
+    s->savedRepeat[11] = func_8002C700(0, 7);
     func_8002C740(0, 0, 1);
     func_8002C740(0, 1, 1);
     func_8002C740(0, 2, 1);
@@ -668,7 +668,7 @@ void *tm_drawScore(u32 *ot, SPRT *p, TmState *s) {
     return (DR_TPAGE *)p + 1;
 }
 
-void func_800A9B0C(TmState *s) {
+void tm_updatePad(TmState *s) {
     func_8002C308(0);
 }
 
@@ -1584,7 +1584,7 @@ void tm_drawQuitWin(Window *arg0) {
     text_drawBlock(arg0->unk0 + 9, arg0->unk2 + 6, arg0->unk18, text_get(TM_TEXT_QUIT_ASK), 0);
 }
 
-void *func_800ABEBC(u32 *ot, void *p, TmState *s) {
+void *tm_drawBattleSelect(u32 *ot, void *p, TmState *s) {
     return p;
 }
 
@@ -4853,7 +4853,7 @@ void *tm_drawBigDigit(u32 *ot, SPRT *p, s32 x, s32 y, s32 n) {
     return p + 1;
 }
 
-void *func_800B3480(u32 *ot, void *p, TmState *s) {
+void *tm_drawTryAgain(u32 *ot, void *p, TmState *s) {
     return p;
 }
 

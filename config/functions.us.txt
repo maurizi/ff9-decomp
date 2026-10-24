@@ -3327,7 +3327,7 @@ ovl_0d tm_drawBackground 0x28c 0x800a9424
 ovl_0d tm_drawBoard 0x1bc 0x800a96b0
 ovl_0d tm_loadTim 0xd0 0x800a986c
 ovl_0d tm_drawScore 0x1d0 0x800a993c
-ovl_0d func_800A9B0C 0x20 0x800a9b0c
+ovl_0d tm_updatePad 0x20 0x800a9b0c
 ovl_0d tm_taskPlayerSelect 0x3e4 0x800a9b2c
 ovl_0d tm_taskPlayerSet 0x2ec 0x800a9f10
 ovl_0d tm_taskResult 0x16c 0x800aa1fc
@@ -3353,7 +3353,7 @@ ovl_0d tm_setHelpArea 0x34 0x800ab8f4
 ovl_0d tm_taskGetSelect 0x34c 0x800ab928
 ovl_0d tm_taskGameQuit 0x200 0x800abc74
 ovl_0d tm_drawQuitWin 0x48 0x800abe74
-ovl_0d func_800ABEBC 0x8 0x800abebc
+ovl_0d tm_drawBattleSelect 0x8 0x800abebc
 ovl_0d tm_checkBattles 0x19c 0x800abec4
 ovl_0d tm_taskBattle 0x468 0x800ac060
 ovl_0d tm_getBattleValues 0xe4 0x800ac4c8
@@ -3431,7 +3431,7 @@ ovl_0d tm_taskCoin 0x304 0x800b2c5c
 ovl_0d tm_drawCombo 0x238 0x800b2f60
 ovl_0d tm_drawBattleValues 0x234 0x800b3198
 ovl_0d tm_drawBigDigit 0xb4 0x800b33cc
-ovl_0d func_800B3480 0x8 0x800b3480
+ovl_0d tm_drawTryAgain 0x8 0x800b3480
 ovl_0d tm_askRematch 0xd4 0x800b3488
 ovl_0d tm_drawRematchWin 0x48 0x800b355c
 ovl_0d tm_taskEndFade 0x54 0x800b35a4
