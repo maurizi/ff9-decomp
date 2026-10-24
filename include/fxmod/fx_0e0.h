@@ -52,4 +52,63 @@ extern s32 D_801EA8B8[];
 extern s32 D_801EB1D8;
 extern s32 D_801EB1DC;
 
+typedef struct {
+    s32 vx;
+    s32 vy;
+    s32 vz;
+} Fx0e0Vec3;
+
+typedef struct {
+    s32 unk0; /* state */
+    s32 unk4; /* frame counter */
+    SVECTOR unk8; /* position */
+    SVECTOR unk10; /* target */
+    SVECTOR unk18; /* camera target */
+    u8 pad20[4];
+    Fx0e0Vec3 unk24; /* model position */
+    Fx0e0Vec3 unk30; /* model scale */
+    SVECTOR unk3C; /* model rotation */
+    Fx0e0Vec3 unk44; /* scale */
+    SVECTOR unk50; /* rotation */
+    u8 pad58[4];
+    s32 unk5C; /* models */
+    s32 unk60;
+    s32 unk64;
+    s32 unk68;
+    s32 unk6C;
+    s32 unk70;
+    s32 unk74;
+    u8 pad78[0xC];
+} Fx0e0Work80; /* 0x84 */
+
+typedef struct {
+    s16 unk0; /* state */
+    s16 unk2;
+    s16 unk4;
+    s16 unk6;
+    s16 unk8;
+    s16 unkA;
+    s16 unkC;
+    s16 unkE;
+    s16 unk10;
+    s16 unk12;
+    s16 unk14;
+    s16 unk16;
+    s16 unk18;
+} Fx0e0Spark;
+
+typedef union {
+    VECTOR v;
+    struct {
+        CVECTOR col;
+        s32 pad;
+        SVECTOR rot;
+    } s;
+} Fx0e0Tmp;
+
+extern SVECTOR D_801EA8B0;
+extern CVECTOR D_801EA8C8[];
+extern Fx0e0Bolt D_801EA928[];
+extern BtlModel D_801EAB98[];
+
 #endif
