@@ -1,5 +1,4 @@
 g_configMenuText = 0x801EDF38; // force_not_migration:True
-func_800355DC = 0x800355DC; // type:func main exe function passed to func_8003556C as a callback (splat named the address D_800355DC), drop this line once main's symbols.us.txt names it
 menuConfig_init = 0x801EEA1C; // type:func [code] main-menu entry Config (file 0x34 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0, text bank, the 13-row list, primitive buffers, the controller-port character rows [runtime] docs/runtime-findings.md field/menu campaign, screen 7 at menu_config, high
 menuConfig_update = 0x801F00A8; // type:func [code] Config entry update of main's D_8006E530 (per frame), input, draw, animate [runtime] docs/runtime-findings.md field/menu campaign, high
 menuConfig_exit = 0x801F00D8; // type:func [code] Config entry exit of main's D_8006E530, clears the help callback [runtime] docs/runtime-findings.md field/menu campaign, high
