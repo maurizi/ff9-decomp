@@ -1988,7 +1988,6 @@ typedef struct {
 extern RECT g_btlClutRect;
 extern u16 g_btlClutBuf[][0x100]; /* CLUT rows */
 extern u32 *g_btlSavedCluts;
-extern s32 D_800FE36C;
 extern s32 D_800FE490;
 
 
@@ -2387,7 +2386,7 @@ s32 btlfx_moveUnitArc(s32, s16 *, s32, s32, s32, s16 *);
 void btlfx_setUnitRot(s32, s16 *);
 u16 btl_orTargets(u16 *);
 void btlui_queueMenuUnit(BtlUnit *);
-void func_800ECCA8(s32);
+void btlui_initCachedCmdIcons(s32);
 s32 btlui_cycleTarget(s32);
 s32 btlui_switchTargetSide(u8);
 void btlui_setDefaultTargets(s32);
@@ -2397,13 +2396,13 @@ s32 btlui_isCmdUsable(void);
 s32 btlui_refreshTargets(void);
 void btlui_updateTargetWindow(void);
 void btlui_onTargetWindowClosed(Window *);
-void func_800F2684(s32);
-void func_800F2C74(s32);
-void func_800F2DC0(s32);
-void func_800F2ED0(s32);
+void btlui_initCachedHeader(s32);
+void btlui_initHighlightPrim(s32);
+void btlui_initNamePrims(s32);
+void btlui_initCachedRows(s32);
 void btlui_updateGauges(void);
-void func_800F3DE0(s32);
-void func_800F3EDC(s32);
+void btlui_hideListHeader(s32);
+void btlui_initPanelPrims(s32);
 void btlui_slidePanelLabels(void);
 void btlui_pulsePanelHighlight(void);
 void btlui_findHighlightRow(void);
@@ -2468,18 +2467,18 @@ void btlui_closeHelp(void);
 void btlui_removeItem(s32);
 void btlui_buildItemLists(void);
 s32 btlui_getItemReserved(s32);
-void func_800ECDB8(void);
-void func_800ECF0C(void);
+void btlui_cacheCmdIcons(void);
+void btlui_drawCachedCmdIcons(void);
 void func_800EA518(void);
 void btlui_drawTargetCursors(void);
 s32 btlui_countTargeted(void);
 void btlui_clearTargeted(void);
-void func_800F2374(void);
-void func_800F2560(void);
+void btlui_cacheHeader(void);
+void btlui_drawCachedHeader(void);
 void btlui_updatePanel(void);
 void btlui_drawPartyPanel(void);
-void func_800F386C(void);
-void func_800F3A8C(void);
+void btlui_cacheRows(void);
+void btlui_drawCachedRows(void);
 void btlui_updatePanelAnims(void);
 void btlui_drawPortIcons(void);
 void btl_unloadEnemyModels(void);
@@ -2634,7 +2633,7 @@ void btlfx_initSounds(void);
 s32 btlfx_playFileSound(s32, s32, s32);
 s32 btl_cancelUnitCmds(BtlUnit *);
 void btlcam_loadScript(s32);
-void func_800C36D0(void);
+void btlcam_finishPaths(void);
 s32 btlseq_stepMove(BtlScript *, BtlUnit *);
 BtlPopup *btl_newPopup(struct BtlUnit *);
 s32 btl_packDigits(u32);
@@ -2932,7 +2931,7 @@ extern RECT D_800F8EF4;
 extern RECT D_800F8EFC;
 Window *win_open(RECT *, s32, s32, s32);
 void btlui_onTargetWindowOpened(Window *);
-void func_800F29B4(Window *);
+void btlui_drawListWindow(Window *);
 void btlui_drawTargetList(Window *);
 void btlui_drawTargetListOverlay(Window *);
 void btlui_onSideCmdClosed(Window *);
@@ -3028,7 +3027,7 @@ typedef struct {
     u8 unk44;
     u8 unk45;
     s16 casterAnchors[5]; /* btlcam_getUnitAnchors of the acting unit */
-    s16 unk50[5];
+    s16 partnerAnchors[5]; /* btlcam_getUnitAnchors of the partner (effect flag 4) */
     s16 targetAnchors[5]; /* btlcam_getUnitAnchors of the target */
 } Unk800FE488; /* 0x64 */
 extern Unk800FE488 g_btlCamScript;
@@ -3305,12 +3304,12 @@ void btl_drawScene(GameData *, Battle *, s32);
 s32 func_8005553C(s32);
 void func_80055850(s32, s32, s32);
 s32 func_80034430(s32, s32);
-void func_800F3D3C(s32);
+void btlui_showListHeader(s32);
 void btlui_drawListCursors(Window *);
 s32 btlfx_angleDiff(s32, s32, s32 *);
 s32 func_800C4E84(s32, s16 *, s16 *, s32 *);
 void func_800C4DC4(s32, s32, s16 *, s16 *, s32 *);
-s32 func_800C5890(s32);
+s32 btlcam_getAnchorUnit(s32);
 
 typedef struct {
     u8 unk0;
@@ -3349,13 +3348,13 @@ s32 btlfx_stepFaceHome(Unk800D8124 *, s32, s32 *);
 s32 btlfx_isSameUnit(s32, s32);
 
 typedef struct {
-    BtlUnit *unk0;
-    BtlUnit *unk4;
+    BtlUnit *caster;
+    BtlUnit *target; /* first target */
     u8 pad8[0x38 - 8];
-    s32 unk38;
-    s32 unk3C;
+    s32 centerX; /* targets' centre (read as words) */
+    s32 centerZ;
     u8 pad40[0x44 - 0x40];
-    BtlUnit *unk44;
+    BtlUnit *partner;
     u8 pad48[0x4C - 0x48];
 } Unk800FE368;
 extern Unk800FE368 g_btlCamTargets;
@@ -3703,7 +3702,7 @@ static inline u8 BtlUnitCanAct(BtlUnit *u) {
 
 /* -O1 unit (ovl_0b_o1.c) */
 s32 btl_getSceneData(s32);
-void func_800C416C(s32, Unk800C412C *, s16 *);
+void btlcam_evalPath(s32, Unk800C412C *, s16 *);
 s32 btlfx_lerp(s32, s32, s32);
 
 typedef struct {
@@ -3722,8 +3721,8 @@ typedef struct {
     u8 unk3;
 } Unk800F5758;
 extern Unk800F5758 D_800F5758[];
-void func_800C3F78(Unk800C412C *, Unk800C3F78 *);
-void func_800C412C(Unk800C412C *, u8 *);
+void btlcam_setPathKey(Unk800C412C *, Unk800C3F78 *);
+void btlcam_setPathTiming(Unk800C412C *, u8 *);
 void btlcam_lookAt(MATRIX *, SVECTOR *, SVECTOR *);
 void btlcam_applyTargetView(SVECTOR *, SVECTOR *);
 void btlcam_applySway(s16 *, s16 *);

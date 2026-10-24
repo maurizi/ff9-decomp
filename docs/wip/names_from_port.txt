@@ -1451,3 +1451,27 @@ D_80100E30 g_btlfxHaltBufs  # [code] two DRAWENV/DISPENV buffers of the standalo
 func_800CB594 btlseq_opReleaseEffect  # [code] op 0A: sets the effect flag the effect script's control op 8 waits on for enemy casters (g_btlfxEnv->unk0->unkF); runtime-findings had it low-medium
 func_800CB808 btlseq_opSetStance  # [code] op 11: sets/clears the unit's flag bit 18, which picks the idle motion pair (motions[0/1]); runtime-findings had it low-medium
 func_800D2DBC btlfx_drawBackdropSprite  # [code] one SPRT or GT4 backdrop frame at x, y with its texture mode (btlfx_drawBackdrop); runtime-findings had it low-medium
+
+## ovl_0b: ovl_0b (cleanup pass: camera paths, cached UI strips, list header)
+func_800C3F78 btlcam_setPathKey  # [code] shifts a camera path (eye or target, g_btlCamera.unk68[]) to its next key and fills it from a script command, character-specific offsets from D_800F5758
+func_800C412C btlcam_setPathTiming  # [code] frame counts and mode bytes of a camera path from a script command
+func_800C416C btlcam_evalPath  # [code] point of a camera path at its current frame (linear, cubic through the control points, or a unit anchor)
+func_800C36D0 btlcam_finishPaths  # [code] snaps paths still moving (modes 2-3) to their end and stops them
+func_800C5890 btlcam_getAnchorUnit  # [code] anchor kinds 5/9: the first effect target, 0xD/0xE: the battle sequence's target
+func_800ECCA8 btlui_initCachedCmdIcons  # [code] four 14x16 SPRTs reading the screen strip btlui_cacheCmdIcons saved at VRAM (0x3C0, 0x1E0)
+func_800ECDB8 btlui_cacheCmdIcons  # [code] DR_MOVEs four 16-pixel rows of the displayed command window to VRAM (0x3C0, 0x1E0)
+func_800ECF0C btlui_drawCachedCmdIcons  # [code] draws btlui_initCachedCmdIcons' SPRTs while the command window opens/closes
+func_800F2374 btlui_cacheHeader  # [code] DR_MOVEs the panel header strip of the displayed frame to VRAM (0x3C0, 0x1F8/0x1FC)
+func_800F2560 btlui_drawCachedHeader  # [code] draws the cached header strip (SPRTs from btlui_initCachedHeader) at the panel's y
+func_800F2684 btlui_initCachedHeader  # [code] the two SPRTs and tpage of the cached header strip, per draw buffer
+func_800F2C74 btlui_initHighlightPrim  # [code] semi-transparent POLY_G4 (yellow fading) behind the highlighted panel row, per draw buffer
+func_800F2DC0 btlui_initNamePrims  # [code] the four 84x12 name SPRTs of the panel rows, per draw buffer (btlui_drawPanelName)
+func_800F2ED0 btlui_initCachedRows  # [code] two SPRTs per panel row reading the HP/MP columns btlui_cacheRows saved
+func_800F386C btlui_cacheRows  # [code] DR_MOVEs the panel's HP and MP columns of the displayed frame to VRAM (0x3C0/0x3E0, 0x1B0)
+func_800F3A8C btlui_drawCachedRows  # [code] draws the cached HP/MP column SPRTs per panel row
+func_800F3EDC btlui_initPanelPrims  # [code] btlui_initHighlightPrim, btlui_initNamePrims, btlui_initCachedRows for a draw buffer
+func_800F29B4 btlui_drawListWindow  # [code] the battle list window's page drawer D_800F8F04[page]
+func_800F3D3C btlui_showListHeader  # [code] slides panel labels 1-3 out and label 4 (the page title D_800F9070[page]) in for the list window
+func_800F3DE0 btlui_hideListHeader  # [code] slides the panel labels back, remembering the menu state to return to
+func_800F4140 btlui_onPanelLabelsOut  # [code] slide done hook: hides labels 1-3, BTLUI_MENU_TARGET
+func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, back to the remembered menu state

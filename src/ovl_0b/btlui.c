@@ -297,16 +297,16 @@ void btlui_update(void) {
 
 void func_800EA4D0(void) {
     if (g_btluiState.unkF != 0) {
-        func_800F386C();
-        func_800ECDB8();
-        func_800F2374();
+        btlui_cacheRows();
+        btlui_cacheCmdIcons();
+        btlui_cacheHeader();
     }
 }
 
 void func_800EA518(void) {
-    func_800F3A8C();
-    func_800ECF0C();
-    func_800F2560();
+    btlui_drawCachedRows();
+    btlui_drawCachedCmdIcons();
+    btlui_drawCachedHeader();
 }
 
 void func_800EA548(void) {
@@ -1286,7 +1286,7 @@ void btlui_buildCmdList(void) {
     }
 }
 
-void func_800ECCA8(s32 arg0) {
+void btlui_initCachedCmdIcons(s32 arg0) {
     s32 i;
     s32 u = 0x3C0;
     s32 y = 0x9A;
@@ -1309,7 +1309,7 @@ void func_800ECCA8(s32 arg0) {
     *g_btluiPrims->unkA0[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
-void func_800ECDB8(void) {
+void btlui_cacheCmdIcons(void) {
     RECT r = D_800A8584;
     s32 x = 0x3C0;
     s32 y = 0x1E0;
@@ -1326,7 +1326,7 @@ void func_800ECDB8(void) {
     } while (i < 4);
 }
 
-void func_800ECF0C(void) {
+void btlui_drawCachedCmdIcons(void) {
     s32 i;
     if (g_btlUi->unk12A4[3]->unk1C == 2 || g_btlUi->unk12A4[3]->unk1C == 3) {
         for (i = 0; i < 4; i++) {
@@ -3094,7 +3094,7 @@ void btlui_drawStatusList2(Window *arg0) {
     }
 }
 
-void func_800F2374(void) {
+void btlui_cacheHeader(void) {
     Unk80105078 *p;
     RECT r;
 
@@ -3113,7 +3113,7 @@ void func_800F2374(void) {
     g_primPtr += sizeof(DR_MOVE);
 }
 
-void func_800F2560(void) {
+void btlui_drawCachedHeader(void) {
     SPRT *a = &g_btluiPrims->unkB0[g_drawBufs.unk0];
     SPRT *b = &g_btluiPrims->unkD8[g_drawBufs.unk0];
     a->y0 = b->y0 = btlui_getPanel()->unk60 - 4;
@@ -3122,7 +3122,7 @@ void func_800F2560(void) {
     addPrim(&g_ot[18], &g_btluiPrims->unk100[g_drawBufs.unk0]);
 }
 
-void func_800F2684(s32 arg0) {
+void btlui_initCachedHeader(s32 arg0) {
     setlen(&g_btluiPrims->unkB0[arg0], 4);
     setcode(&g_btluiPrims->unkB0[arg0], 0x64);
     setRGB0(&g_btluiPrims->unkB0[arg0], 0x80, 0x80, 0x80);
@@ -3152,10 +3152,10 @@ void btlui_openListWindow(s32 arg0) {
     D_800F8EFC.h = p->unk5C * 12 + 8;
     w = win_open(&D_800F8EFC, 0xA, 0, 1);
     g_btlUi->unk12A4[1] = w;
-    win_setDrawContent(w, func_800F29B4);
+    win_setDrawContent(w, btlui_drawListWindow);
     win_setDrawOverlay(g_btlUi->unk12A4[1], btlui_drawListCursors);
     func_8002E334(g_btlUi->unk12A4[1], 7);
-    func_800F3D3C(arg0);
+    btlui_showListHeader(arg0);
     D_80105058.unk1 = arg0;
     D_80105058.unk0 = 1;
 }
@@ -3163,7 +3163,7 @@ void btlui_openListWindow(s32 arg0) {
 void btlui_closeListWindow(s32 arg0) {
     func_8002E380(g_btlUi->unk12A4[1], 7);
     win_close(g_btlUi->unk12A4[1]);
-    func_800F3DE0(arg0);
+    btlui_hideListHeader(arg0);
     D_80105058.unk0 = 0;
 }
 
@@ -3194,7 +3194,7 @@ u8 btlui_isListWindowOpen(void) {
     return D_80105058.unk0;
 }
 
-void func_800F29B4(Window *arg0) {
+void btlui_drawListWindow(Window *arg0) {
     if (btlui_getPanel()->unk0 != 0) {
         D_800F8F04[D_80105058.unk1](arg0);
     }
@@ -3250,7 +3250,7 @@ void btlui_updatePanel(void) {
     g_btluiPanel->unk2 = 0xFF;
 }
 
-void func_800F2C74(s32 arg0) {
+void btlui_initHighlightPrim(s32 arg0) {
     setPolyG4(&g_btluiPrims->unk310[arg0]);
     setSemiTrans(&g_btluiPrims->unk310[arg0], 1);
     setRGB0(&g_btluiPrims->unk310[arg0], 0x40, 0x40, 0);
@@ -3265,7 +3265,7 @@ void func_800F2C74(s32 arg0) {
     *g_btluiPrims->unk358[arg0].code = get_mode(1, 1, getTPage(0, 1, 0, 0));
 }
 
-void func_800F2DC0(s32 arg0) {
+void btlui_initNamePrims(s32 arg0) {
     s32 i;
     SPRT *s;
     for (i = 0; i < 4; i++) {
@@ -3286,7 +3286,7 @@ void func_800F2DC0(s32 arg0) {
     *g_btluiPrims->unk2F0[arg0].code = get_mode(1, 1, getTPage(0, 0, 0x380, 0x100));
 }
 
-void func_800F2ED0(s32 arg0) {
+void btlui_initCachedRows(s32 arg0) {
     s32 i;
     SPRT *s;
     for (i = 0; i < 4; i++) {
@@ -3463,7 +3463,7 @@ void btlui_drawPanelGauges(BtlUnit *arg0, s32 arg1) {
     }
 }
 
-void func_800F386C(void) {
+void btlui_cacheRows(void) {
     RECT a = D_800A858C;
     RECT b = D_800A8594;
     s16 h;
@@ -3484,7 +3484,7 @@ void func_800F386C(void) {
     }
 }
 
-void func_800F3A8C(void) {
+void btlui_drawCachedRows(void) {
     s32 y = g_btluiPanel->unk60 + 6;
     u8 v = 0xB0;
     u32 i;
@@ -3529,7 +3529,7 @@ void btlui_updatePanelAnims(void) {
     btlui_pulsePanelHighlight();
 }
 
-void func_800F3D3C(s32 arg0) {
+void btlui_showListHeader(s32 arg0) {
     btlui_startLabelSlide(&g_btluiPanel->unk4[1], &D_800F9058);
     btlui_startLabelSlide(&g_btluiPanel->unk4[2], &D_800F9058);
     btlui_startLabelSlide(&g_btluiPanel->unk4[3], &D_800F9058);
@@ -3538,7 +3538,7 @@ void func_800F3D3C(s32 arg0) {
     btlui_setMenuState(BTLUI_MENU_CLOSING);
 }
 
-void func_800F3DE0(s32 arg0) {
+void btlui_hideListHeader(s32 arg0) {
     g_btluiPanel->unk58 = arg0;
     btlui_startLabelSlide(&g_btluiPanel->unk4[1], &D_800F9084);
     btlui_startLabelSlide(&g_btluiPanel->unk4[2], &D_800F9084);
@@ -3566,10 +3566,10 @@ void btlui_showPanel(u8 arg0) {
     g_btluiPanel->unk0 = arg0;
 }
 
-void func_800F3EDC(s32 arg0) {
-    func_800F2C74(arg0);
-    func_800F2DC0(arg0);
-    func_800F2ED0(arg0);
+void btlui_initPanelPrims(s32 arg0) {
+    btlui_initHighlightPrim(arg0);
+    btlui_initNamePrims(arg0);
+    btlui_initCachedRows(arg0);
 }
 
 void btlui_slidePanelLabels(void) {
@@ -3637,14 +3637,14 @@ void btlui_startLabelSlide(Unk800F412C *arg0, Unk800F3F10 *arg1) {
     arg0->unk6 = 0;
 }
 
-void func_800F4140(void) {
+void btlui_onPanelLabelsOut(void) {
     g_btluiPanel->unk4[1].unk4 = 0;
     g_btluiPanel->unk4[2].unk4 = 0;
     g_btluiPanel->unk4[3].unk4 = 0;
     btlui_setMenuState(BTLUI_MENU_TARGET);
 }
 
-void func_800F4180(void) {
+void btlui_onListLabelOut(void) {
     g_btluiPanel->unk4[4].unk4 = 0;
     btlui_setMenuState(g_btluiPanel->unk58);
 }
@@ -3789,9 +3789,9 @@ void btlui_initPrims(void) {
     s32 i;
     g_btluiPrims = btlui_alloc(0x368);
     for (i = 0; i < 2; i++) {
-        func_800ECCA8(i);
-        func_800F2684(i);
-        func_800F3EDC(i);
+        btlui_initCachedCmdIcons(i);
+        btlui_initCachedHeader(i);
+        btlui_initPanelPrims(i);
     }
 }
 
