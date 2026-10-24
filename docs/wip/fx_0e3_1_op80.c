@@ -1,22 +1,26 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast).
- * Status (pass 3): 66 aligned mismatches by build/w/cmp.py -b (ignoring branch targets; was 244), same length as
- * the original (3210 instructions). Pass 3 levers:
- * - a call result passed to a later call in a single-set variable (qa, qb, q4b, x2k; block-local in { }): sched1's
+ * Status (pass 3): 2 mismatched instructions (build/w/cmp.py), same length (3210). The only difference: case 1's
+ * `lui v1,0x2AAA` (high half of the /6 magic) is the first insn of the case in the original, with the ori in the
+ * frame < 6 branch's delay slot, i.e. the whole constant load sat in the pre-branch block at RTL level. A do-while
+ * around the if/else makes loop.c hoist it there, but jump.c then rotates the blocks; with a trailing statement in
+ * the do-while the layout is right but loop.c calls the loop phony and nothing is hoisted.
+ * Pass 3 levers (each one lowered the row count):
+ * - a call result passed to a later call in a single-set variable (qa, qb, q4b, x2k, block-local in { }): sched1's
  *   birthing boost then puts the v0 copy right before the next call (its delay slot), as in the original.
- * - `shake = t;` after the func_800D23D8 call; y12 as `y12 >>= 5; y12 *= 2; y12 += 0x900;` (combine no longer folds
- *   >> 5 << 1 into >> 4); x12's 0x1000 - ... as its own statement; the -0x200 term grouped with the product.
- * - shared loop variables split per loop (ang1, ang2/j1/j2, i4/ang4, i9 kept), case 4's k7a, kb for k13 >> 6,
- *   the frame == 0x26 call result in a block-local p26, y10 reused for the second ring's cos value (the original
- *   keeps both in s4).
+ * - pseudos that must stay after a call don't cross one: case 2's frame << 12 lives in ya, ya >> 5 in yb (both
+ *   block-local), and yb * 2 + 0x900 is a temp; local-alloc ties all three to s0 like the original.
+ * - u4 = work->unk4 loaded before the from copies (a fresh single-set local), ang1 = u4 << 8 later.
+ * - `shake = t;` after the func_800D23D8 call; x12's 0x1000 - ... as its own statement; kd = frame - 4 in the
+ *   else-if condition; the -0x200 term grouped with the product; k9 >> 2 inline in the cos calls; j += 7, i++.
+ * - shared variables split by role (ang1, ang2/j1/j2, ang3, i4/ang4, i5, y13, x21, k7a, kb, p26) and reused where
+ *   the original reuses a register (x19/y12 pair in case 5, y10 for the second ring's cos, y12 for x2k).
+ * - ang += 0x333 + rand() as the loop increment (the bolt pointer giv is then bumped before the rand call).
  * - case 2's r2.vz = work->unkBC.vz survives flow's dead-store removal only when another stack store sits between
- *   it and r2.vz = (frame << 5) + 0x400 (here s2.vz = 0).
+ *   it and r2.vz = (frame << 5) + 0x400 (s2.vz = 0, s2.vx/vy).
  * - a dead `struct { s32 x; } dq = { frame };` block at the start of the else branch: its CLOBBER gets the spill
  *   slot at 0x280 that the original never references (all later spill slots then line up).
  * - the frame == 0x12 bone matrix shares its stack slot with s1/r1/a1 (union u1), as in the original's layout.
- * Open: case 1's lui of the /6 constant before the a = 0x80 store (a do-while around the if/else hoists it, but
- *   jump.c then rotates the blocks); y12 in s3 instead of sharing s0 with x2k;
- *   register permutations in the i9/y10 ring loop and case 5 tail; a few arg-register orders.
- * D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
+* D_801F0A14 is used with a 0x6C stride (13 points) and a 0x2C stride (5 points). */
 #include "fxmod/fx_0e3_1.h"
 
 typedef struct {
