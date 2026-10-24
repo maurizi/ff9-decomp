@@ -159,7 +159,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->file, 2);
         ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, 6), (s32 *)&file, 1, &D_801E8E84);
-        ex->Hi_SetSummonMotion(((Fx05eSummon *)env->unk4)->unk54->unk180, ((Fx05eSummon *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotion(((Fx05eSummon *)env->loader)->unk54->unk180, ((Fx05eSummon *)env->loader)->unk60);
         work->unk34[0] = work->unk34[1] = work->unk34[2] = 0x1000;
         work->unk2C.vx = 0;
         work->unk2C.vz = 0;
@@ -208,13 +208,13 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            t0 = ((Fx05eSummon *)env->unk4)->unk60;
+            t0 = ((Fx05eSummon *)env->loader)->unk60;
             ex->Hi_SetSummonMotFrame(t0, 0);
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->loader)->unk60, 1);
             if (frame >= 8) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->unk60, 0);
             }
             break;
         case 2:
@@ -224,7 +224,7 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->loader)->unk60, 1);
             if (frame == 0) {
                 amp = -1;
             } else if (frame < 0x18) {
@@ -280,10 +280,10 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->unk4)->unk60, 0x29 - frame);
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->unk4)->unk60, 1);
+            ex->Hi_SetSummonMotFrame(((Fx05eSummon *)env->loader)->unk60, 0x29 - frame);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx05eSummon *)env->loader)->unk60, 1);
             amp = ex->math_cos(t3);
-            ex->Hi_ModifySummonModelRGB(((Fx05eSummon *)env->unk4)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
+            ex->Hi_ModifySummonModelRGB(((Fx05eSummon *)env->loader)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
                                         (amp >> 5) - 0x80);
             if (frame >= 8) {
                 work->unk0 = 3;
@@ -293,9 +293,9 @@ s32 fx_05e_op80(s32 mode, Fx05eWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         }
         if (amp != 0) {
-            func_801E7B74(((Fx05eSummon *)env->unk4)->unk60, 9, &D_801E8874, &a);
-            func_801E7B74(((Fx05eSummon *)env->unk4)->unk60, 9, &D_801E887C, &b);
-            func_801E7B74(((Fx05eSummon *)env->unk4)->unk60, 9, &D_801E8884, &c);
+            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8874, &a);
+            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E887C, &b);
+            func_801E7B74(((Fx05eSummon *)env->loader)->unk60, 9, &D_801E8884, &c);
             if (amp < 0) {
                 func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E8868, (CVECTOR *)&D_801E886C, 0, D_801E9744, 1);
                 func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E886C, (CVECTOR *)&D_801E8870, 0, D_801E9854, 1);

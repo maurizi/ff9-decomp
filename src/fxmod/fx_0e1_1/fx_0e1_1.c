@@ -79,7 +79,7 @@ s32 fx_0e1_1_op80(s32 mode, Fx0e11Work *work, Unk800F78A4 *env, Unk80100C78Entry
             }
             break;
         case 1:
-            if (frame >= 0x35 && ((Fx0e11BattleState *)env->unk0)->unk22 == 0) {
+            if (frame >= 0x35 && ((Fx0e11BattleState *)env->state)->unk22 == 0) {
                 work->unk38 = 1;
             }
             work->unk34 -= 8;

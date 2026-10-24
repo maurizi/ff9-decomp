@@ -92,19 +92,19 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 1:
             work->unk94 = 0;
             work->unk98 = frame;
-            ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->unk4)->unk54->unk180, ((Fx0d2Summon *)env->unk4)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->loader)->unk54->unk180, ((Fx0d2Summon *)env->loader)->unk60);
             work->unk9C = frame;
             func_801E9E70((Fx0d2Path *)&D_801EF228, (u16 *)ex->btlfx_getFileData(entry->file, 0x92));
             break;
         case 0x29:
             work->unk94 = 1;
             work->unk98 = 0;
-            ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->unk4)->unk54->unk184, ((Fx0d2Summon *)env->unk4)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->loader)->unk54->unk184, ((Fx0d2Summon *)env->loader)->unk60);
             break;
         case 0x51:
             work->unk94 = 2;
             work->unk98 = 1;
-            ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->unk4)->unk54->unk188, ((Fx0d2Summon *)env->unk4)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0d2Summon *)env->loader)->unk54->unk188, ((Fx0d2Summon *)env->loader)->unk60);
             break;
         case 0x69:
             work->unk2C.vx = 0x433;
@@ -162,7 +162,7 @@ s32 fx_0d2_op80(s32 mode, Fx0d2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             work->unk1C.vy = v.vy;
             work->unk1C.vz = v.vz;
             ex->Hi_DrawSummonModel(&work->unk14, (VECTOR *)&work->unk1C, (s32)&work->unk2C,
-                                   ((Fx0d2Summon *)env->unk4)->unk60, work->unk98);
+                                   ((Fx0d2Summon *)env->loader)->unk60, work->unk98);
             work->unk9C++;
         }
         if ((u32)k < 0xDE) {

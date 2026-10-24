@@ -51,7 +51,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 0x10) {
             work->unk0 = 1;
             entry->frame = -1;
-            ((Fx101BattleState *)env->unk0)->unk10 = 0;
+            ((Fx101BattleState *)env->state)->unk10 = 0;
             ex->btlfx_fadeUnitById(0x10, 0);
             work->unk8 = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 5), (s32)&work->unk14);
             if (work->unk8 != NULL) {
@@ -79,7 +79,7 @@ s32 fx_101_op80(s32 mode, Fx101Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (work->unk8 != NULL && work->unk8->unk30 == -1) {
             work->unk8 = NULL;
         }
-        if (frame != 0 && t0 == 0 && ((Fx101BattleState *)env->unk0)->unk10 != 0) {
+        if (frame != 0 && t0 == 0 && ((Fx101BattleState *)env->state)->unk10 != 0) {
             work->unk0 = 2;
             entry->frame = -1;
             env->camera->unk52 = 0;

@@ -241,7 +241,7 @@ s32 func_801E81F0(Fx138Path *path, s32 t, SVECTOR *out) {
 }
 
 void func_801E8254(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->unk0 + i + 0x10) = v;
+    *((u8 *)env->state + i + 0x10) = v;
 }
 
 void func_801E8268(s32 x, s32 dx, s32 dy, s32 w, s32 h, s32 sx, s32 sy) {

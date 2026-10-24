@@ -123,7 +123,7 @@ s32 fx_045_op81(s32 mode, Fx045Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
 }
 
 void func_801E7CDC(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->unk0 + i + 0x10) = v;
+    *((u8 *)env->state + i + 0x10) = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_045/nonmatchings/fx_045", fx_045_headerPtr);

@@ -40,7 +40,7 @@ s32 fx_1a5_op80(s32 mode, Fx1a5Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
 }
 
 void func_801E78F4(Unk800F78A4 *env, s32 i, s32 v) {
-    env->unk0->pad10[i] = v;
+    env->state->pad10[i] = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_1a5/nonmatchings/fx_1a5", fx_1a5_headerPtr);

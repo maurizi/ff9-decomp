@@ -390,10 +390,10 @@ s32 fx_17d_0_op80(s32 mode, Fx17d0Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 work->unk10.vy = 0;
                 BTLFX_COPY_SVEC(&work->unk8, &work->unk18);
                 for (i = 0; i < 2; i++) {
-                    r0[i][0] = ((Fx17d0Summon *)env->unk4)->unk54->unk18[D_801E9424[i]];
-                    r0[i][1] = ((Fx17d0Summon *)env->unk4)->unk54->unk24[D_801E9424[i]];
+                    r0[i][0] = ((Fx17d0Summon *)env->loader)->unk54->unk18[D_801E9424[i]];
+                    r0[i][1] = ((Fx17d0Summon *)env->loader)->unk54->unk24[D_801E9424[i]];
                     r1[i][0] = 0;
-                    r1[i][1] = ((Fx17d0Summon *)env->unk4)->unk54->unk30[D_801E9424[i]];
+                    r1[i][1] = ((Fx17d0Summon *)env->loader)->unk54->unk30[D_801E9424[i]];
                 }
                 for (i = 0; i < 5; i++) {
                     work->unkB0[i] = ((s32 (*)(void *, void *, void *))ex->Hi_RegisterTexListModel)(

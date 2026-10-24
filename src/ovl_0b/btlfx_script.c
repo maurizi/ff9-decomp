@@ -188,7 +188,7 @@ void btlfx_runScript(void) {
         }
         break;
     case 3:
-        if (g_btlfxEnv->unk4->unkE == 3) {
+        if (g_btlfxEnv->loader->unkE == 3) {
             d->unk0 = 4;
             g_btlfxEnv->camera->unk5C |= 2;
         }
@@ -262,7 +262,7 @@ void btlfx_runScript(void) {
                     btlfx_loadNextBlock();
                     break;
                 case 4:
-                    if (g_btlfxEnv->unk4->unkE < a) {
+                    if (g_btlfxEnv->loader->unkE < a) {
                         cont = 0;
                         btlfx_retryOp();
                     }
@@ -274,19 +274,19 @@ void btlfx_runScript(void) {
                 case 6:
                     switch (a) {
                     case 2:
-                        if (g_btlfxEnv->unk4->unk53 == 0) {
+                        if (g_btlfxEnv->loader->unk53 == 0) {
                             cont = 0;
                             btlfx_retryOp();
                         }
                         break;
                     case 1:
-                        if (g_btlfxEnv->unk4->unk52 != 2) {
+                        if (g_btlfxEnv->loader->unk52 != 2) {
                             cont = 0;
                             btlfx_retryOp();
                         }
                         break;
                     case 0:
-                        if (g_btlfxEnv->unk4->unk50 != 2) {
+                        if (g_btlfxEnv->loader->unk50 != 2) {
                             cont = 0;
                             btlfx_retryOp();
                         }
@@ -327,7 +327,7 @@ void btlfx_runScript(void) {
                     }
                     break;
                 case 12:
-                    if (g_btlfxEnv->unk4->unk68 != 2) {
+                    if (g_btlfxEnv->loader->unk68 != 2) {
                         cont = 0;
                         d->unk18 -= 3;
                     }
@@ -355,7 +355,7 @@ void btlfx_runScript(void) {
                         btlfx_swapVramPages(2, (u32 *)btlfx_getFileData(-1, b), 0);
                         break;
                     case 2:
-                        if (g_btlfxEnv->unk4->unk69 < b) {
+                        if (g_btlfxEnv->loader->unk69 < b) {
                             cont = 0;
                             btlfx_retryOp();
                         }

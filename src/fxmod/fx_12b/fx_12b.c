@@ -514,7 +514,7 @@ s32 func_801E9744(Fx12bPath *path, s32 t, SVECTOR *out) {
 }
 
 void func_801E97A8(Unk800F78A4 *env, s32 i, s32 v) {
-    *((u8 *)env->unk0 + i + 0x10) = v;
+    *((u8 *)env->state + i + 0x10) = v;
 }
 
 INCLUDE_RODATA("asm/us/fx_12b/nonmatchings/fx_12b", fx_12b_headerPtr);

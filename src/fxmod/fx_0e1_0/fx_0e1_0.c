@@ -319,7 +319,7 @@ s32 func_801E8844(SVECTOR *out) {
     if (D_801E9DBC != 0) {
         out->pad = 1;
         n = D_801E9DB8;
-        ex->Hi_GetSummonBonePos(((Fx0e10EnvB *)env->unk4)->unk60, D_801E9D84[n++], (u16 *)out);
+        ex->Hi_GetSummonBonePos(((Fx0e10EnvB *)env->loader)->unk60, D_801E9D84[n++], (u16 *)out);
         if (n >= 5) {
             n = 0;
         }
@@ -496,9 +496,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (frame >= 0x20) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(((Fx0e10Summon *)env->unk4)->unk54->unk180,
-                                       ((Fx0e10Summon *)env->unk4)->unk60);
-                ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotion(((Fx0e10Summon *)env->loader)->unk54->unk180,
+                                       ((Fx0e10Summon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0);
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 0xC), (s32)&work->unk8);
                 if (p != NULL) {
                     p->unk24->unk0 = -1;
@@ -513,17 +513,17 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             k = 0x1000;
             if (frame == 0x50) {
-                ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->unk4)->unk60, 0x5A);
+                ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0x5A);
                 D_801E9DBC = 1;
             }
             if ((u32)(frame - 0x36) >= 0x1A) {
                 ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C,
-                                       ((Fx0e10Summon *)env->unk4)->unk60, 1);
+                                       ((Fx0e10Summon *)env->loader)->unk60, 1);
                 if (frame < 0x20) {
-                    ex->Hi_ModifySummonModelRGB(((Fx0e10Summon *)env->unk4)->unk60,
+                    ex->Hi_ModifySummonModelRGB(((Fx0e10Summon *)env->loader)->unk60,
                                                 (ex->math_sin((frame << 10) >> 5) >> 5) - 0x80,
                                                 ((frame << 7) >> 5) - 0x80, ((frame << 7) >> 5) - 0x80);
-                    ex->Hi_ModifySummonModelAbr(((Fx0e10Summon *)env->unk4)->unk60, 1);
+                    ex->Hi_ModifySummonModelAbr(((Fx0e10Summon *)env->loader)->unk60, 1);
                 }
                 rib = 0x1000;
             } else {
@@ -533,7 +533,7 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 s32 d = ((ex->math_sin((frame << 11) / 159) * 3) >> 2) + 0x400;
 
                 env->unk28 = 0xF5;
-                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk34);
+                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, 0, (u16 *)&work->unk34);
                 ex->btlfx_drawRings((u8 *)ex->btlfx_getFileData(entry->file, 5), &work->unk34, NULL, 0x1000, 0, 1,
                                   d);
                 env->unk28 = 0;
@@ -599,8 +599,8 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         case 3:
             wave = 0x1000;
             wave2 = 0x1000;
-            ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->unk4)->unk60, 0xA9);
-            ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, ((Fx0e10Summon *)env->unk4)->unk60,
+            ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0xA9);
+            ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C, ((Fx0e10Summon *)env->loader)->unk60,
                                    1);
             if (frame == 0xF) {
                 p = ex->btlfx_startEmitter(ex->btlfx_getFileData(entry->file, 4), (s32)&work->unk8);
@@ -620,9 +620,9 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             }
             wave2 = t + 0x1000;
             if (frame < 0x2C) {
-                ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->unk4)->unk60, 0xA9);
+                ex->Hi_SetSummonMotFrame(((Fx0e10Summon *)env->loader)->unk60, 0xA9);
                 ex->Hi_DrawSummonModel(&work->unk28, (VECTOR *)&work->unk10, (s32)&work->unk1C,
-                                       ((Fx0e10Summon *)env->unk4)->unk60, 1);
+                                       ((Fx0e10Summon *)env->loader)->unk60, 1);
             }
             if (frame >= 0x31) {
                 ex->btlfx_clearEffModels();
@@ -683,14 +683,14 @@ s32 fx_0e1_0_op80(s32 mode, Fx0e10Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             if (work->unk4C != 0) {
                 work->unk4C = 0;
                 for (i = 0; i < 4; i++) {
-                    ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
-                    ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
+                    ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
+                    ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
                     func_801E7CB4((SVECTOR *)&sc, &b, 0x3FC, 0, 0, 0, 0, 0, 0, 0, D_801E9E48[i], 1, 0);
                 }
             }
             for (i = 0; i < 4; i++) {
-                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
-                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->unk4)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
+                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk0, (u16 *)&sc);
+                ex->Hi_GetSummonBonePos(((Fx0e10Summon *)env->loader)->unk60, D_801E9D98[i].unk4, (u16 *)&b);
                 func_801E7CB4((SVECTOR *)&sc, &b, 0x14, 0x1B, 0x3D05, 0xC0, 0, 0x40, 0x80, ((rib >> 5) * 2) / 3, D_801E9E48[i], 1,
                               10000 - work->unk4);
             }

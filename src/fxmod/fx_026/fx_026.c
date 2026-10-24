@@ -207,9 +207,9 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         if (frame >= 40) {
             work->unk0 = 1;
             entry->frame = -1;
-            ex->Hi_SetSummonMotion(((Fx026Summon *)env->unk4)->unk54->unk180, ((Fx026Summon *)env->unk4)->unk60);
-            ex->Hi_SetSummonMotFrame(((Fx026Summon *)env->unk4)->unk60, 0);
-            ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->unk4)->unk60, 0, 0);
+            ex->Hi_SetSummonMotion(((Fx026Summon *)env->loader)->unk54->unk180, ((Fx026Summon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotFrame(((Fx026Summon *)env->loader)->unk60, 0);
+            ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->loader)->unk60, 0, 0);
         }
         break;
     case 1:
@@ -218,8 +218,8 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk40.vz = env->camera->points[2].vz;
         if (frame >= 2) {
             ex->Hi_DrawSummonModel(&work->unk58, (VECTOR *)&work->unk40, (s32)&work->unk4C,
-                                   ((Fx026Summon *)env->unk4)->unk60, 0);
-            ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk28);
+                                   ((Fx026Summon *)env->loader)->unk60, 0);
+            ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0, (u16 *)&work->unk28);
         }
         func_801E7704((Fx026Track *)ex->btlfx_getFileData(entry->file, 0xB), work->unk4, &p);
         work->unk40.vx = p.vx;
@@ -253,10 +253,10 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk40.vz = env->camera->points[2].vz;
         t = (frame << 12) / 50;
         ex->Hi_DrawSummonModel(&work->unk58, (VECTOR *)&work->unk40, (s32)&work->unk4C,
-                               ((Fx026Summon *)env->unk4)->unk60, 0);
-        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk28);
-        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0x19, (u16 *)&work->unk30);
-        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0x12, (u16 *)&work->unk38);
+                               ((Fx026Summon *)env->loader)->unk60, 0);
+        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0, (u16 *)&work->unk28);
+        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0x19, (u16 *)&work->unk30);
+        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0x12, (u16 *)&work->unk38);
         func_801E7704((Fx026Track *)ex->btlfx_getFileData(entry->file, 0xE), frame, &p);
         work->unk40.vx = p.vx;
         work->unk40.vy = p.vy;
@@ -277,7 +277,7 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
         }
         if (frame == 32) {
-            ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->unk4)->unk60, 1, 0);
+            ex->Hi_StartSummonTexAnim(((Fx026Summon *)env->loader)->unk60, 1, 0);
         }
         k = t;
         s = (k >> 1) + 0x800;
@@ -310,10 +310,10 @@ s32 fx_026_op80(s32 mode, Fx026Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk40.vy = env->camera->points[2].vy;
         work->unk40.vz = env->camera->points[2].vz;
         ex->Hi_DrawSummonModel(&work->unk58, (VECTOR *)&work->unk40, (s32)&work->unk4C,
-                               ((Fx026Summon *)env->unk4)->unk60, 0);
-        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0, (u16 *)&work->unk28);
-        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0x19, (u16 *)&work->unk30);
-        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->unk4)->unk60, 0x12, (u16 *)&work->unk38);
+                               ((Fx026Summon *)env->loader)->unk60, 0);
+        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0, (u16 *)&work->unk28);
+        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0x19, (u16 *)&work->unk30);
+        ex->Hi_GetSummonBonePos(((Fx026Summon *)env->loader)->unk60, 0x12, (u16 *)&work->unk38);
         func_801E7704((Fx026Track *)ex->btlfx_getFileData(entry->file, 0x11), frame, &p);
         work->unk40.vx = p.vx;
         work->unk40.vy = p.vy;

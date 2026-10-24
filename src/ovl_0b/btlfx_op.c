@@ -338,7 +338,7 @@ s32 btlfx_opCast(s32 arg0, Unk800E4C88 *arg1, Unk800F78A4 *arg2, s32 *arg3, s32 
         arg1->unk2 = (q[1] & 0xF) + 0x10;
         arg1->unk3 = q[0];
         arg1->unk24 = NULL;
-        if (arg2->unk0->unk1C & 8) {
+        if (arg2->state->unk1C & 8) {
             func_800E8C84(0);
         }
         if (arg2->targets->bounceCount != 0 && arg1->unk3 != 0xFF) {
@@ -754,7 +754,7 @@ void func_800E5D48(s8 arg0, s8 arg1, s8 arg2, s32 arg3, s32 arg4, s32 arg5) {
     g_btlfxResArgs2.unk1 = arg1;
     g_btlfxResArgs.unk1 = arg2;
     g_btlfxResArgs.unk0 = arg5 | 0x80;
-    btlfx_spawnTask(1, g_btlfxEnv->unk0->unk8, arg3, arg4);
+    btlfx_spawnTask(1, g_btlfxEnv->state->unk8, arg3, arg4);
 }
 
 s32 btlfx_opApplyResult(s32 arg0, void *arg1, Unk800F78A4 *arg2, void *arg3, s32 *arg4) {
@@ -1803,7 +1803,7 @@ void btlfx_restorePartyLooks(void) {
         }
         u = u->next;
     }
-    if (g_btlfxEnv->unk0->unk2 == 0x1BF) {
+    if (g_btlfxEnv->state->unk2 == 0x1BF) {
         btl_setIdleMotion(btl_getUnit(0x10));
     }
 }
@@ -1872,7 +1872,7 @@ s32 btlfx_isResultDeferred(void) {
         if (g_btlfxEnv->targets->unk25[0] == 0) {
             return r;
         }
-        r = (u8)(g_btlfxEnv->unk0->unk1C >> 8) >> 7;
+        r = (u8)(g_btlfxEnv->state->unk1C >> 8) >> 7;
     }
     return r;
 }
@@ -1979,7 +1979,7 @@ void btlfx_updateCameraEnable(void) {
     BtlUnit *b;
     s32 f;
     u32 v;
-    if (g_btlfxEnv->unk0->unk1C & 8) {
+    if (g_btlfxEnv->state->unk1C & 8) {
         r = 1;
     } else {
         a = btl_getUnit(0x10);

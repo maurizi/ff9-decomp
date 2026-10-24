@@ -126,7 +126,7 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
         work->unk8 = -1;
         work->unkC = -1;
         work->unk10 = env->targets->targetCount;
-        env->unk0->pad10[0] = 0;
+        env->state->pad10[0] = 0;
     } else {
         frame = entry->frame;
         k = 0;
@@ -171,8 +171,8 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             env->camera->points[2].vx = b.vx;
             env->camera->points[2].vy = b.vy;
             env->camera->points[2].vz = b.vz;
-            ex->Hi_SetSummonMotion(((Fx09aSummon *)env->unk4)->unk54->unk180, ((Fx09aSummon *)env->unk4)->unk60);
-            ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->unk4)->unk60, 6);
+            ex->Hi_SetSummonMotion(((Fx09aSummon *)env->loader)->unk54->unk180, ((Fx09aSummon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->loader)->unk60, 6);
             work->unk3C[2] = 0x1000;
             work->unk3C[1] = 0x1000;
             work->unk3C[0] = 0x1000;
@@ -189,13 +189,13 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk24.vx;
             pos.vy = work->unk24.vy;
             pos.vz = work->unk24.vz;
-            ex->Hi_DrawSummonModel(&work->unk34, &pos, (s32)work->unk3C, ((Fx09aSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk34, &pos, (s32)work->unk3C, ((Fx09aSummon *)env->loader)->unk60, 1);
             t = frame << 12;
             /* Dead store: only its sign word survives. */
             k = t / 30;
             if (frame < 6) {
                 rgb = (t / 6 >> 5) - 0x80;
-                ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->unk4)->unk60, rgb, rgb, rgb);
+                ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->loader)->unk60, rgb, rgb, rgb);
             }
             if (frame == 0) {
                 k = -1;
@@ -262,10 +262,10 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             pos.vx = work->unk24.vx;
             pos.vy = work->unk24.vy;
             pos.vz = work->unk24.vz;
-            ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->unk4)->unk60, 41 - frame);
-            ex->Hi_DrawSummonModel(&work->unk34, &pos, (s32)work->unk3C, ((Fx09aSummon *)env->unk4)->unk60, 1);
+            ex->Hi_SetSummonMotFrame(((Fx09aSummon *)env->loader)->unk60, 41 - frame);
+            ex->Hi_DrawSummonModel(&work->unk34, &pos, (s32)work->unk3C, ((Fx09aSummon *)env->loader)->unk60, 1);
             k = ex->math_cos(v >> 2);
-            ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->unk4)->unk60, (k >> 5) - 0x80, (k >> 5) - 0x80,
+            ex->Hi_ModifySummonModelRGB(((Fx09aSummon *)env->loader)->unk60, (k >> 5) - 0x80, (k >> 5) - 0x80,
                                         (k >> 5) - 0x80);
             if (frame >= 6) {
                 work->unk0 = 1;
@@ -274,15 +274,15 @@ s32 fx_09a_op80(s32 mode, Fx09aWork *work, Unk800F78A4 *env, Unk80100C78Entry *e
             break;
         case 4:
             if (frame >= 8) {
-                env->unk0->pad10[0] = 1;
+                env->state->pad10[0] = 1;
                 return 1;
             }
             break;
         }
         if (k != 0) {
-            func_801E7B74(((Fx09aSummon *)env->unk4)->unk60, 9, &D_801E87F8, &a);
-            func_801E7B74(((Fx09aSummon *)env->unk4)->unk60, 9, &D_801E8800, &b);
-            func_801E7B74(((Fx09aSummon *)env->unk4)->unk60, 9, &D_801E8808, &c);
+            func_801E7B74(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E87F8, &a);
+            func_801E7B74(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8800, &b);
+            func_801E7B74(((Fx09aSummon *)env->loader)->unk60, 9, &D_801E8808, &c);
             if (k < 0) {
                 func_801E7704(&a, &b, 0x3F8, (CVECTOR *)&D_801E87EC, (CVECTOR *)&D_801E87F0, 0, D_801E9058, 1);
                 func_801E7704(&b, &c, 0x3F8, (CVECTOR *)&D_801E87F0, (CVECTOR *)&D_801E87F4, 0, D_801E9168, 1);

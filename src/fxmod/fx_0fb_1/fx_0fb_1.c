@@ -397,7 +397,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         work->unk0 = 0;
         work->unk4 = 0;
         D_801F0D2C = env;
-        ex->btlfx_initEffModels(((Fx0fb1Summon *)env->unk4)->unk38, 0x1F);
+        ex->btlfx_initEffModels(((Fx0fb1Summon *)env->loader)->unk38, 0x1F);
         for (i = 0; i < 2; i++) {
             work->unk4C[i] = ex->Hi_RegisterTexEffModel((BtlUnit9C8 *)ex->btlfx_getFileData(entry->file, D_801F0864[i]),
                                                         0x9A, 0x3E00, 0, 0);
@@ -591,8 +591,8 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
             work->unk1C.vy = work->unkC.vy + 0x14C0;
             work->unk28.vz = 0x1000;
             work->unk14.vy += 0xCAC;
-            ex->Hi_SetSummonMotion(((Fx0fb1Summon *)env->unk4)->unk54->unk18C, ((Fx0fb1Summon *)env->unk4)->unk60);
-            ex->Hi_SetSummonMotFrame(((Fx0fb1Summon *)env->unk4)->unk60, 0);
+            ex->Hi_SetSummonMotion(((Fx0fb1Summon *)env->loader)->unk54->unk18C, ((Fx0fb1Summon *)env->loader)->unk60);
+            ex->Hi_SetSummonMotFrame(((Fx0fb1Summon *)env->loader)->unk60, 0);
         }
         break;
     case 2:
@@ -609,7 +609,7 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         if (frame >= 4) {
             work->unk1C.vx = work->unkC.vx;
             ex->Hi_DrawSummonModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk28,
-                                   ((Fx0fb1Summon *)env->unk4)->unk60, 1);
+                                   ((Fx0fb1Summon *)env->loader)->unk60, 1);
             work->unk1C.vy += 0x10E;
             ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->unkA4);
             work->unk1C.vy -= 0x10E;
@@ -646,9 +646,9 @@ s32 fx_0fb_1_op80(s32 mode, Fx0fb1Op80Work *work, Unk800F78A4 *env, Unk80100C78E
         t = (frame << 12) / 37;
         trail = ex->math_cos(t >> 2);
         g = (t >> 4) + 0x80;
-        ex->Hi_DrawSummonModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk28, ((Fx0fb1Summon *)env->unk4)->unk60, 0);
+        ex->Hi_DrawSummonModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk28, ((Fx0fb1Summon *)env->loader)->unk60, 0);
         ca = ((0x1000 - (t * 2) / 3) >> 5) - 0x80;
-        ex->Hi_ModifySummonModelRGB(((Fx0fb1Summon *)env->unk4)->unk60, ca, ca, ca);
+        ex->Hi_ModifySummonModelRGB(((Fx0fb1Summon *)env->loader)->unk60, ca, ca, ca);
         work->unk1C.vy += 0x10E;
         ex->Hi_DrawEffModel(&work->unk34, (VECTOR *)&work->unk1C, (s32)&work->unk94, work->unkA4);
         cb = ((0x1000 - t) >> 5) - 0x80;

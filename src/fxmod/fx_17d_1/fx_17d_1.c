@@ -133,7 +133,7 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         D_801ED420 = env;
         ex->btlfx_initEffModels(D_801ED430, 2);
         work->unk78 = ex->btlfx_registerEffectModel((Unk800E8F50 *)ex->btlfx_getFileData(entry->file, 0x9E), 1);
-        ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->unk4)->unk54->unk180, ((Fx17d1Summon *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotion(((Fx17d1Summon *)env->loader)->unk54->unk180, ((Fx17d1Summon *)env->loader)->unk60);
         work->unk28.vx = 0;
         work->unk28.vy = 0;
         work->unk68.vx = -0x400;
@@ -169,10 +169,10 @@ s32 fx_17d_1_op80(s32 mode, Fx17d1Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             work->unk50.vz -= 0x26C;
             work->unk28.vz -= 0x26C;
             if (frame != 0) {
-                ex->Hi_SetSummonMotFrame(((Fx17d1Summon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotFrame(((Fx17d1Summon *)env->loader)->unk60, 0);
                 ex->Hi_DrawSummonModel(&work->unk68, (VECTOR *)&work->unk50, (s32)&work->unk5C,
-                                       ((Fx17d1Summon *)env->unk4)->unk60, 0);
-                ex->Hi_ModifySummonModelRGB(((Fx17d1Summon *)env->unk4)->unk60, ((0x800 - (t >> 2)) >> 5) - 0x80,
+                                       ((Fx17d1Summon *)env->loader)->unk60, 0);
+                ex->Hi_ModifySummonModelRGB(((Fx17d1Summon *)env->loader)->unk60, ((0x800 - (t >> 2)) >> 5) - 0x80,
                                             ((0x800 - (t >> 2)) >> 5) - 0x80, ((0x800 - (t >> 2)) >> 5) - 0x80);
             }
             work->unk10.vx = work->unk28.vx;

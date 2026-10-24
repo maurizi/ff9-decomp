@@ -142,7 +142,7 @@ extern BtlModel D_801EADD8[];
 extern Fx105Drop D_801EB998[32];
 void func_801E7BF8(void);
 
-#define SUMMON105(env) ((Fx105Summon *)(env)->unk4)
+#define SUMMON105(env) ((Fx105Summon *)(env)->loader)
 
 /* propagated */
 

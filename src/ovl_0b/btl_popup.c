@@ -189,7 +189,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     c.unk0[1] = get_mode(0, 0, D_80068BF0[0].unk6);
     addPrim(c.unk4, c.unk0);
     c.unk0 += 2;
-    e = g_btlfxEnv->unk0;
+    e = g_btlfxEnv->state;
     if (((e->unk1C ^ 1) & 1) | ((e->unk0 == -1) | ((e->unk1C >> 15) & 1))) {
         btl_drawStatusIcons(&c);
     }

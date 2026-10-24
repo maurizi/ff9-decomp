@@ -16,7 +16,7 @@ void btlcam_beginEffect(void) {
     bcopy(g_btlfxEnv->targets, &g_btlCamTargets, 0x4C);
     g_btlCamera.unk5C = 0;
     g_btlCamera.unk53 = btlfx_rand() & 1;
-    if (g_btlfxEnv->unk0->unk1C & 4) {
+    if (g_btlfxEnv->state->unk1C & 4) {
         btlcam_getUnitAnchors(g_btlCamTargets.unk44, g_btlCamScript.unk50);
     }
     btlcam_getUnitAnchors(g_btlCamTargets.unk0, g_btlCamScript.casterAnchors);
@@ -888,7 +888,7 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
             bcopy(arg0, &g_btlCamera.unkBC, 8);
             bcopy(arg1, &g_btlCamera.unkC4, 8);
         }
-        if (g_btlCamera.unkBA == 1 && ((g_btlCamera.unkB9 == 1 && !(g_btlfxEnv->unk0->unk1C & 8)) || g_btlCamera.unkB9 == 2)) {
+        if (g_btlCamera.unkBA == 1 && ((g_btlCamera.unkB9 == 1 && !(g_btlfxEnv->state->unk1C & 8)) || g_btlCamera.unkB9 == 2)) {
             if (g_btlCamera.unkBB != 2) {
                 if (g_btlCamera.unk65 != 0 || g_btlCamera.unkB4 == 0) {
                     bcopy(&g_btlCamera.points[4], arg0, 8);

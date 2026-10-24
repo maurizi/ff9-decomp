@@ -28,10 +28,10 @@ u8 *btlfx_runFrame(u8 *out) {
     SetDrawStp((DR_STP *)stp, 1);
     AddPrim((u8 *)g_btlfxEnv->ot + 0x3FFC, stp);
     *(u32 *)(SCRATCHPAD + 0x3FC) = g_btlfxRandSeed;
-    g_btlfxEnv->unk0->unk20 = 0;
+    g_btlfxEnv->state->unk20 = 0;
     btlfx_runScript();
     btlfx_updateLoader(); /* scratchpad stack */
-    if (g_btlfxEnv->unk0->unk20 == 0) {
+    if (g_btlfxEnv->state->unk20 == 0) {
         if (D_800F78AC != 0) {
             D_800F78AC = 0;
             func_80055698(2);

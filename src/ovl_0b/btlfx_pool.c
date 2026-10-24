@@ -110,7 +110,7 @@ s32 btlfx_findFileSlot(s32 arg0) {
 s32 btlfx_getFileData(s32 arg0, s32 arg1) {
     s32 *base;
     if (arg1 < 0x40) {
-        base = g_btlfxEnv->unk4->unk30[arg0];
+        base = g_btlfxEnv->loader->unk30[arg0];
     } else if (arg1 < 0x80) {
         base = (s32 *)0x801F1700;
         arg1 -= 0x40;

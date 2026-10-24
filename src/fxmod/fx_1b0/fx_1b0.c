@@ -363,7 +363,7 @@ s32 fx_1b0_op80(s32 mode, Fx1b0Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x5A) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                buf = ((Fx1b0Summon *)env->unk4)->unk54->unk50 + 0x19000;
+                buf = ((Fx1b0Summon *)env->loader)->unk54->unk50 + 0x19000;
                 func_801E7704((Fx1b0Split *)buf, (SVECTOR (*)[3])(buf + 0xDB88));
                 for (i = 0; i < 8; i++) {
                     func_801E774C(work->unk3C[i]);

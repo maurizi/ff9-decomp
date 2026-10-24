@@ -45,6 +45,6 @@ extern u8 D_801EF084[];
 extern u8 D_801EFD44[];
 extern u8 D_801F02C4[];
 
-#define SUMMON(env) ((Fx17d3Summon *)(env)->unk4)
+#define SUMMON(env) ((Fx17d3Summon *)(env)->loader)
 
 #endif

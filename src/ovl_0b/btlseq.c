@@ -135,7 +135,7 @@ void btlseq_update(void) {
                 if (op >= 0x23) {
                     op = 0;
                 }
-                if ((s->unk0 & 1) && g_btlfxEnv->unk0->unk23 != 0) {
+                if ((s->unk0 & 1) && g_btlfxEnv->state->unk23 != 0) {
                     s->unk0 = (s->unk0 | 2) & ~1;
                 }
                 if (s->unk8 != s->unkC && g_btlseqOps[op].unk0 != NULL) {
@@ -184,7 +184,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
         arg0->unk0 |= 4;
     }
     if ((arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)) || ((arg0->unk0 >> 2) & 1)) {
-        if (g_btlfxEnv->unk0->unk0 != -1) {
+        if (g_btlfxEnv->state->unk0 != -1) {
             return 0;
         }
         if (arg0->unk21 != 0) {
@@ -202,7 +202,7 @@ s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
 }
 
 s32 btlseq_opEndNoAnimWait(BtlScript *arg0) {
-    if (g_btlfxEnv->unk0->unk0 == -1) {
+    if (g_btlfxEnv->state->unk0 == -1) {
         if (arg0->unk21 != 0) {
             return 0;
         }
@@ -385,7 +385,7 @@ s32 btlseq_opDelayedEffect(BtlScript *arg0) {
 s32 btlseq_opEffect(BtlScript *arg0) {
     s16 v[4];
     s32 id;
-    Unk800F78A40 *e = g_btlfxEnv->unk0;
+    Unk800F78A40 *e = g_btlfxEnv->state;
     if ((e->unk0 != -1) & !((e->unk1C >> 15) & 1)) {
         return 0;
     }
@@ -420,13 +420,13 @@ s32 btlseq_opWaitEffectHit(BtlScript *arg0) {
 }
 
 s32 btlseq_opReleaseEffect(BtlScript *arg0) {
-    g_btlfxEnv->unk0->unkF = 1;
+    g_btlfxEnv->state->unkF = 1;
     arg0->unk8 += 1;
     return 1;
 }
 
 s32 btlseq_opWaitEffect(BtlScript *arg0) {
-    Unk800F78A40 *p = g_btlfxEnv->unk0;
+    Unk800F78A40 *p = g_btlfxEnv->state;
     if ((p->unk0 == -1) | ((p->unk1C >> 15) & 1)) {
         arg0->unk8 += 1;
         return 1;

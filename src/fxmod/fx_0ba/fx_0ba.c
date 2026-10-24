@@ -122,8 +122,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             if (frame >= 0x20) {
                 work->unk0 = 1;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->unk4)->unk54->unk180, ((Fx0baSummon *)env->unk4)->unk60);
-                ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->unk180, ((Fx0baSummon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->unk60, 0);
             }
             break;
         case 1:
@@ -135,8 +135,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801ECAB0.vx = pos.vx;
             D_801ECAB0.vy = pos.vy;
             D_801ECAB0.vz = pos.vz;
-            ex->Hi_DrawSummonModel(&work->unk60, &pos, (s32)&work->unk54, ((Fx0baSummon *)env->unk4)->unk60, 0);
-            ex->Hi_GetSummonBonePos(((Fx0baSummon *)env->unk4)->unk60, 0x33, (u16 *)&work->unk18);
+            ex->Hi_DrawSummonModel(&work->unk60, &pos, (s32)&work->unk54, ((Fx0baSummon *)env->loader)->unk60, 0);
+            ex->Hi_GetSummonBonePos(((Fx0baSummon *)env->loader)->unk60, 0x33, (u16 *)&work->unk18);
             work->unk18.vy += 0x40;
             env->camera->points[2].vx = work->unk18.vx;
             env->camera->points[2].vy = work->unk18.vy;
@@ -148,7 +148,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             ex->btlfx_rangeProgress(frame, 0x18, 2, 0, 0x2000, &c);
             ex->btlfx_rangeProgress(frame, 0x1A, 0xF, -1, 0x2000, &c);
             c -= ex->math_cos(t >> 2) - 0x1000;
-            ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->unk4)->unk60, (c >> 5) - 0x80, (c >> 5) - 0x80,
+            ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->loader)->unk60, (c >> 5) - 0x80, (c >> 5) - 0x80,
                                         (c >> 5) - 0x80);
             tint2 = 0;
             ex->btlfx_rangeProgress(frame, 0, 6, -1, 0xBE, &tint2);
@@ -159,16 +159,16 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 ex->btlfx_drawScreenTint((u32 *)(env->ot + 0xC8), 1, tint2, tint2, tint2 / 3);
             }
             if (frame == 0xC) {
-                ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->unk4)->unk60, 1);
-                ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->unk4)->unk60, 2);
+                ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->loader)->unk60, 1);
+                ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->loader)->unk60, 2);
             }
             if (frame == 0x18) {
-                ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->unk4)->unk60, 1);
-                ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->unk4)->unk60, 2);
+                ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->loader)->unk60, 1);
+                ex->Hi_ShowSummonModelMesh(((Fx0baSummon *)env->loader)->unk60, 2);
             }
             if (frame == 0x3B) {
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->unk4)->unk54->unk184, ((Fx0baSummon *)env->unk4)->unk60);
-                ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->unk184, ((Fx0baSummon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->unk60, 0);
             }
             if (frame >= 0x3C) {
                 if (frame == 0x3C) {
@@ -215,7 +215,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                                   0, 1, ex->math_cos(fade >> 2));
                 env->unk28 = 0;
                 k_1 = ((fade * 3 / 4 + 0x400) >> 5) - 0x80;
-                ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->unk4)->unk60, k_1, k_1, k_1);
+                ex->Hi_ModifySummonModelRGB(((Fx0baSummon *)env->loader)->unk60, k_1, k_1, k_1);
                 ex->btlfx_drawScrollMove(10000 - work->unk4 * 7, 0x240, 0x170, 0x38, 0x70, 0x240, 0x100);
                 ex->btlfx_drawScrollMove(10000 - work->unk4 * 7, 0x280, 0x170, 0x38, 0x70, 0x280, 0x100);
             } else {
@@ -228,8 +228,8 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 D_801ECAB8.vz = 0;
                 D_801ECAB8.vy = 0;
                 D_801ECAB8.vx = 0;
-                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->unk4)->unk54->unk188, ((Fx0baSummon *)env->unk4)->unk60);
-                ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotion(((Fx0baSummon *)env->loader)->unk54->unk188, ((Fx0baSummon *)env->loader)->unk60);
+                ex->Hi_SetSummonMotFrame(((Fx0baSummon *)env->loader)->unk60, 0);
                 work->unk18.vx = work->unk48.vx;
                 work->unk18.vy = work->unk48.vy;
                 work->unk18.vz = work->unk48.vz;
@@ -249,12 +249,12 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             D_801ECAB0.vx = pos.vx;
             D_801ECAB0.vy = pos.vy;
             D_801ECAB0.vz = pos.vz;
-            ex->Hi_DrawSummonModel(&work->unk60, &pos, (s32)&work->unk54, ((Fx0baSummon *)env->unk4)->unk60, 0);
+            ex->Hi_DrawSummonModel(&work->unk60, &pos, (s32)&work->unk54, ((Fx0baSummon *)env->loader)->unk60, 0);
             work->unk48.vy -= 0x1000;
             ex->Hi_DrawEffModel(&work->unk68, (VECTOR *)&work->unk48, (s32)(VECTOR *)&work->unk70, work->unk80);
             work->unk48.vy += 0x1000;
             if (frame == 0x14) {
-                ex->Hi_GetSummonBonePos(((Fx0baSummon *)env->unk4)->unk60, 0x2F, (u16 *)&mpos);
+                ex->Hi_GetSummonBonePos(((Fx0baSummon *)env->loader)->unk60, 0x2F, (u16 *)&mpos);
                 work->unk28.vx = ((SVECTOR *)&mpos)->vx;
                 work->unk28.vy = ((SVECTOR *)&mpos)->vy;
                 work->unk28.vz = ((SVECTOR *)&mpos)->vz;
@@ -264,7 +264,7 @@ s32 fx_0ba_op80(s32 mode, Fx0baWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
                 work->unk34.vz = 0x1000;
                 work->unk34.vy = 0x1000;
                 work->unk34.vx = 0x1000;
-                ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->unk4)->unk60, 0);
+                ex->Hi_HideSummonModelMesh(((Fx0baSummon *)env->loader)->unk60, 0);
             }
             if (frame >= 0x14) {
                 work->unk28.vy += 0xAE;

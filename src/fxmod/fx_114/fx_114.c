@@ -198,8 +198,8 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x30:
         work->unk160 = 1;
         work->unk164 = 0;
-        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->unk4)->unk54->unk180[work->unk160],
-                               ((Fx114Summon80 *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->unk180[work->unk160],
+                               ((Fx114Summon80 *)env->loader)->unk60);
         break;
     case 0x61:
         work->unk168 = 0;
@@ -209,8 +209,8 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x62:
         work->unk160 = 2;
         work->unk164 = 0;
-        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->unk4)->unk54->unk180[work->unk160],
-                               ((Fx114Summon80 *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->unk180[work->unk160],
+                               ((Fx114Summon80 *)env->loader)->unk60);
         break;
     case 0x7A:
         work->unk168 = 0;
@@ -220,8 +220,8 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     case 0x7B:
         work->unk160 = 3;
         work->unk164 = 0;
-        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->unk4)->unk54->unk180[work->unk160],
-                               ((Fx114Summon80 *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotion(((Fx114Summon80 *)env->loader)->unk54->unk180[work->unk160],
+                               ((Fx114Summon80 *)env->loader)->unk60);
         break;
     case 0xA7:
         work->unk168 = 0x10;
@@ -356,7 +356,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unk28.vy = v58.vy;
         if (work->unk160 != 0) {
             ex->Hi_DrawSummonModel(&work->unk20, (VECTOR *)&work->unk28, (s32)&work->unk38,
-                                   ((Fx114Summon80 *)env->unk4)->unk60, work->unk164);
+                                   ((Fx114Summon80 *)env->loader)->unk60, work->unk164);
             if (work->unk160 > 0) {
                 k1 = frame / 16 % 8;
                 q1 = frame % 16;
@@ -392,7 +392,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         if (frame < 0xA8) {
             work->unk48 = 0x20;
-            ex->Hi_ModifySummonModelRGB(((Fx114Summon80 *)env->unk4)->unk60, 0x20, 0x20, 0x20);
+            ex->Hi_ModifySummonModelRGB(((Fx114Summon80 *)env->loader)->unk60, 0x20, 0x20, 0x20);
         }
         if (frame >= 0xE3) {
             k3 = frame - 0xE3;
@@ -463,7 +463,7 @@ s32 fx_114_op80(s32 mode, Fx114Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
     }
     if (frame >= 0x7B && frame < 0xB7) {
         for (i = 0; i < 4; i++) {
-            ex->Hi_GetSummonBonePos(((Fx114Summon80 *)env->unk4)->unk60, D_801EB71C[i], (u16 *)&D_801EF268[i]);
+            ex->Hi_GetSummonBonePos(((Fx114Summon80 *)env->loader)->unk60, D_801EB71C[i], (u16 *)&D_801EF268[i]);
         }
     }
     if (frame >= 0xA2 && frame < 0xA8) {
@@ -517,7 +517,7 @@ s32 fx_114_op81(s32 mode, Fx114Work81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         frame = entry->frame;
         switch (frame) {
         case 1:
-            ex->Hi_GetSummonBonePos(((Fx114Summon *)env->unk4)->unk60, 0x1B, (u16 *)&work->unk34);
+            ex->Hi_GetSummonBonePos(((Fx114Summon *)env->loader)->unk60, 0x1B, (u16 *)&work->unk34);
             work->unk10.vx = work->unk34.vx;
             work->unk10.vy = work->unk34.vy;
             work->unk10.vz = work->unk34.vz;

@@ -133,7 +133,7 @@ typedef struct {
     s32 unk60; /* summon model */
 } Fx0b8Summon;
 
-#define SUMMON(env) ((Fx0b8Summon *)(env)->unk4)
+#define SUMMON(env) ((Fx0b8Summon *)(env)->loader)
 
 extern Fx0b8Band D_801EA6D8[4];
 extern BtlModel D_801EA8B0[];

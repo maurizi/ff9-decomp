@@ -157,7 +157,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         env->camera->points[2].vz = ((SVECTOR *)&pos)[1].vz;
         file = (u8 *)ex->btlfx_getFileData(entry->file, 2);
         ex->btlfx_registerSummonModel((Unk800E9000 *)ex->btlfx_getFileData(entry->file, 7), (s32 *)&file, 1, &D_801E9234);
-        ex->Hi_SetSummonMotion(((Fx0edSummon *)env->unk4)->unk54->unk180, ((Fx0edSummon *)env->unk4)->unk60);
+        ex->Hi_SetSummonMotion(((Fx0edSummon *)env->loader)->unk54->unk180, ((Fx0edSummon *)env->loader)->unk60);
         work->unk34[0] = work->unk34[1] = work->unk34[2] = 0x1000;
         work->unk2C.vx = 0;
         work->unk2C.vz = 0;
@@ -206,13 +206,13 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            t0 = ((Fx0edSummon *)env->unk4)->unk60;
+            t0 = ((Fx0edSummon *)env->loader)->unk60;
             ex->Hi_SetSummonMotFrame(t0, 0);
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx0edSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx0edSummon *)env->loader)->unk60, 1);
             if (frame >= 8) {
                 work->unk0 = 2;
                 entry->frame = -1;
-                ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->unk4)->unk60, 0);
+                ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->loader)->unk60, 0);
             }
             break;
         case 2:
@@ -222,7 +222,7 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx0edSummon *)env->unk4)->unk60, 1);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx0edSummon *)env->loader)->unk60, 1);
             if (frame == 0) {
                 amp = -1;
             } else if (frame < 0x18) {
@@ -278,10 +278,10 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             pos.vx = work->unk18.vx;
             pos.vy = work->unk18.vy;
             pos.vz = work->unk18.vz;
-            ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->unk4)->unk60, 0x29 - frame);
-            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx0edSummon *)env->unk4)->unk60, 1);
+            ex->Hi_SetSummonMotFrame(((Fx0edSummon *)env->loader)->unk60, 0x29 - frame);
+            ex->Hi_DrawSummonModel(&work->unk2C, &pos, (s32)work->unk34, ((Fx0edSummon *)env->loader)->unk60, 1);
             amp = ex->math_cos(t3);
-            ex->Hi_ModifySummonModelRGB(((Fx0edSummon *)env->unk4)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
+            ex->Hi_ModifySummonModelRGB(((Fx0edSummon *)env->loader)->unk60, (amp >> 5) - 0x80, (amp >> 5) - 0x80,
                                         (amp >> 5) - 0x80);
             if (frame >= 8) {
                 work->unk0 = 3;
@@ -291,9 +291,9 @@ s32 fx_0ed_op80(s32 mode, Fx0edWork80 *work, Unk800F78A4 *env, Unk80100C78Entry 
             break;
         }
         if (amp != 0) {
-            func_801E7B74(((Fx0edSummon *)env->unk4)->unk60, 9, &D_801E8C24, &a);
-            func_801E7B74(((Fx0edSummon *)env->unk4)->unk60, 9, &D_801E8C2C, &b);
-            func_801E7B74(((Fx0edSummon *)env->unk4)->unk60, 9, &D_801E8C34, &c);
+            func_801E7B74(((Fx0edSummon *)env->loader)->unk60, 9, &D_801E8C24, &a);
+            func_801E7B74(((Fx0edSummon *)env->loader)->unk60, 9, &D_801E8C2C, &b);
+            func_801E7B74(((Fx0edSummon *)env->loader)->unk60, 9, &D_801E8C34, &c);
             if (amp < 0) {
                 func_801E7704(&a, &b, 0x3F8, &D_801E8C18, &D_801E8C1C, 0, D_801E9AF4, 1);
                 func_801E7704(&b, &c, 0x3F8, &D_801E8C1C, &D_801E8C20, 0, D_801E9C04, 1);
@@ -347,7 +347,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
         work->unkC = (BtlUnit *)-1;
         work->unk8 = 0;
         D_801E9224 = env;
-        ((Fx0edBattleState *)env->unk0)->unk10 = 0;
+        ((Fx0edBattleState *)env->state)->unk10 = 0;
     } else {
         frame = entry->frame;
         c = 0;
@@ -402,7 +402,7 @@ s32 fx_0ed_op81(s32 mode, Fx0edWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
             }
             break;
         case 2:
-            ((Fx0edBattleState *)env->unk0)->unk10 = 1;
+            ((Fx0edBattleState *)env->state)->unk10 = 1;
             env->camera->unk52 = 0;
             return 1;
         }

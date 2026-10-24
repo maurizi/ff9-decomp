@@ -45,7 +45,7 @@ s32 fx_04c_op81(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7CB4 = env;
         work->unk34 = env->targets->targetCount;
-        ((u8 *)env->unk0)[0x12] = 0;
+        ((u8 *)env->state)[0x12] = 0;
         for (i = 0; i < work->unk34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->unk4[i]);
             work->unk24[i] = NULL;
@@ -95,7 +95,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
     } else if (mode == 1) {
         D_801E7CB4 = env;
         work->unk34 = env->targets->targetCount;
-        ((u8 *)env->unk0)[0x12] = 0;
+        ((u8 *)env->state)[0x12] = 0;
         for (i = 0; i < work->unk34; i++) {
             ex->btlfx_getUnitPos(i, (s16 *)&work->unk4[i]);
             work->unk24[i] = NULL;
@@ -121,7 +121,7 @@ s32 fx_04c_op82(s32 mode, Fx04cWork81 *work, Unk800F78A4 *env, Unk80100C78Entry 
                     entry->frame = -1;
                 } else {
                     work->unk0 = 2;
-                    ((u8 *)env->unk0)[0x12] = 1;
+                    ((u8 *)env->state)[0x12] = 1;
                     entry->frame = -1;
                 }
             }

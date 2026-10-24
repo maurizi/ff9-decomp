@@ -539,13 +539,13 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         case 0x2E:
             work->unk128 = 0;
             work->unk12C = 0;
-            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->unk4)->unk54->unk180[0], ((Fx0e2Summon *)env->unk4)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->unk180[0], ((Fx0e2Summon *)env->loader)->unk60);
             break;
         case 0x97:
             work->unk3C.vx = 0x181;
             work->unk128 = 1;
             work->unk12C = 0;
-            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->unk4)->unk54->unk180[1], ((Fx0e2Summon *)env->unk4)->unk60);
+            ex->Hi_SetSummonMotion(((Fx0e2Summon *)env->loader)->unk54->unk180[1], ((Fx0e2Summon *)env->loader)->unk60);
             break;
         }
         switch (frame) {
@@ -646,18 +646,18 @@ s32 fx_0e2_op80(s32 mode, Fx0e2Work80 *work, Unk800F78A4 *env, Unk80100C78Entry 
         }
         n = frame - 0x2E;
         if (n >= 0 && n < 0x83) {
-            ex->Hi_DrawSummonModel(&work->unk3C, &work->unk44, (s32)&work->unk64, ((Fx0e2Summon *)env->unk4)->unk60,
+            ex->Hi_DrawSummonModel(&work->unk3C, &work->unk44, (s32)&work->unk64, ((Fx0e2Summon *)env->loader)->unk60,
                                    work->unk12C);
             if (n >= 0 && n < 0x14) {
-                ex->Hi_ModifySummonModelRGB(((Fx0e2Summon *)env->unk4)->unk60, -0x20, -0x20, -0x20);
+                ex->Hi_ModifySummonModelRGB(((Fx0e2Summon *)env->loader)->unk60, -0x20, -0x20, -0x20);
             }
             if (n >= 0x69) {
-                ex->Hi_ModifySummonModelAbr(((Fx0e2Summon *)env->unk4)->unk60, 1);
+                ex->Hi_ModifySummonModelAbr(((Fx0e2Summon *)env->loader)->unk60, 1);
             }
             if (work->unk140 >= 0) {
                 work->unk74 = func_801EC434(0, -0x80, 0x10 - work->unk140, 0x10);
                 work->unk140--;
-                ex->Hi_ModifySummonModelRGB(((Fx0e2Summon *)env->unk4)->unk60, work->unk74, work->unk74, work->unk74);
+                ex->Hi_ModifySummonModelRGB(((Fx0e2Summon *)env->loader)->unk60, work->unk74, work->unk74, work->unk74);
             }
         }
         if (work->unk144 >= 0) {

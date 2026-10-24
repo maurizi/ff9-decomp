@@ -732,9 +732,9 @@ typedef struct {
 } Unk800F78A44;
 
 typedef struct {
-    Unk800F78A40 *unk0;
-    Unk800F78A44 *unk4;
-    u8 pad8[0xC - 8];
+    Unk800F78A40 *state; /* &g_btlfxState */
+    Unk800F78A44 *loader; /* &g_btlfxLoader */
+    u8 pad8[0xC - 8]; /* &g_btlfxTasks */
     BtlUnitList *targets; /* effect target list (btlfx_setTargets) */
     s32 exports; /* g_btlfxModuleExports, the table modules call through (btlfx_mod.h) */
     MATRIX *viewMatrix; /* camera view matrix */
