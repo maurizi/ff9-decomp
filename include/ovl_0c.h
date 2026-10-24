@@ -226,8 +226,8 @@ typedef struct WmEffect {
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
 typedef struct WmReadtxSlot {
-    struct WmReadtxSlot *prev; /* prev */
-    struct WmReadtxSlot *next; /* next */
+    struct WmReadtxSlot *prev;
+    struct WmReadtxSlot *next;
     s32 *pack; /* frame pack */
     s16 texId; /* low 6 bits: id; -1: none */
     u8 extracted;
@@ -285,8 +285,8 @@ typedef struct {
 
 /* doubly linked node (wm_frmbufInit) */
 typedef struct WmFrmbufSlot {
-    struct WmFrmbufSlot *prev; /* prev */
-    struct WmFrmbufSlot *next; /* next */
+    struct WmFrmbufSlot *prev;
+    struct WmFrmbufSlot *next;
     s16 texId;
     s8 vramArea;
     u8 transferred;
@@ -531,8 +531,8 @@ typedef struct {
 /* list nodes (wm_blockListCompact, wm_chunkListCompact): g_worldBlockHead (head) ->
  * g_worldBlockNodes[40] -> g_worldBlockTail (tail) */
 typedef struct WmBlockNode {
-    struct WmBlockNode *prev; /* prev */
-    struct WmBlockNode *next; /* next */
+    struct WmBlockNode *prev;
+    struct WmBlockNode *next;
     struct WmBlock *block;
     WmBlockPos *pos;
     s16 cell;
@@ -586,8 +586,8 @@ typedef struct WmChunkPack {
 } WmChunkPack;
 
 typedef struct WmChunkSlot {
-    struct WmChunkSlot *prev; /* prev */
-    struct WmChunkSlot *next; /* next */
+    struct WmChunkSlot *prev;
+    struct WmChunkSlot *next;
     struct WmChunkPack *pack;
     s16 chunkId;
     u8 state;

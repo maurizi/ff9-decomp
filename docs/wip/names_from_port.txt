@@ -3250,3 +3250,308 @@ D_801EDF0C s_discChangeClut  # [code] 256-entry clut followed by the 194x168 pan
 # Main still calls two of these overlays' functions by placeholder (main-side, not renamed here): func_801F1A7C
 # (ovl_37 menuItem_callChocobo, from tu_800654F8.c) and func_801F0FF4 (ovl_65 rewards_requestClose, from event.c
 # opcode 0xE1); both want a line in config/xrefs.us.txt.
+
+## ovl_0a/0c pass 2
+# Types (ovl_0c.h; WmAnimTable/WmAnimTableEntry also ovl_0a.h): WmNode -> WmEffect, Unk800D375C -> WmBlockNode,
+# Unk800D3AB8 -> WmBlockPos, WmTexEnt -> WmBlock (terrain mesh block, not a texture), WmTexPack -> WmChunkPack,
+# WmCell -> WmChunkEntry, WmCellTable -> WmChunkTable, Unk800D3FA0 -> WmWeatherData, Unk800D3FA0Sub -> WmFog,
+# Unk800D1FD8 -> WmFogParam, Unk800D2FF8 -> WmTexArea, Unk800D3F78 -> WmTexTransfer, Unk800CD10C -> WmNaviPlace,
+# Unk800CFF18 -> WmClutAnim, Unk800CFEA0 -> WmTexScroll, Unk800CFEA0Tbl -> WmTexScrollTbl, Unk800CE288 -> WmPolyCache,
+# Unk800CE1E8 -> WmCameraParams, Unk800CE0E8 -> WmCameraFlags, Unk800A7FB8 -> WmQuad, Unk800CD744 -> WmNaviFramePart,
+# Unk800AA39C -> WmAnimTable, Unk800AA39CEntry -> WmAnimTableEntry, Unk800AC424 -> WmStreamReq,
+# Unk800CB09C -> WmImagePack, Unk800CB09CClut -> WmImagePackClut.
+# ovl_0c aliases folded into their arrays (extern removed): D_800CE19C = g_worldCameraEye[1], D_800CF48C/490 =
+# g_worldReqParams[1]/[2], D_800CF5A4/A8 = g_worldImageSectors[3]/[4], D_800D30CB/CD/D2 = g_worldFormFlags[3]/[5]/[10],
+# D_800D45D4 = g_worldWeatherData.work[0].fxBackColor, D_800D45DC = .work[0].unk5C, D_800D4754 = .work[4].unk5C.
+# Constants: FLD_MAP_*, FLD_SCN_*, FLD_OBJ_*, FLDBG_OVL_*, FLDBG_ANIM_*, FLDBG_CAMERA_CHANGED, TEXANIM_*, WMSRC_*,
+# MDL_BEHIND_CAMERA (ovl_0a.h), WM_MAP_*, MDL_BEHIND_CAMERA (ovl_0c.h); guarded ff9.h candidates in both headers:
+# BTN_START, PAD_SOFT_RESET, PAD_ID_ANALOG, setSprt, setSprt16, _get_mask, GS_*, GD_*, DB_*.
+### ovl_0c: rename.py --bin ovl_0c
+D_800CF448 g_worldViewMatrix  # [code] = &GameData.unk18 (wm_systemInit), filled by wm_lookAt in wm_updateCamera, composed with every block/model matrix in wm_drawBlocks/wm_drawBlockFx, wm_worldToView
+D_800CF540 g_worldMapLightMatrix  # [code] set by wm_initLighting, SetLightMatrix before wm_drawBlocks in wm_drawMap and restored at the end of wm_drawBlockFx
+D_800CF500 g_worldMapColorMatrix  # [code] from the current weather light colours (wm_updateColorMatrices), SetColorMatrix with g_worldMapLightMatrix in wm_drawMap/wm_drawBlockFx
+D_800CF520 g_worldBackdropLightMatrix  # [code] wm_initLighting, used by wm_drawMap only for the camera-centred pack model 0x3B (see g_worldBackdropOn)
+D_800CF4E0 g_worldBackdropColorMatrix  # [code] weather unk18 colour in every column (wm_updateColorMatrices), set with g_worldBackdropLightMatrix for pack model 0x3B in wm_drawMap
+D_800CF4C0 g_worldBlockFxLightMatrix  # [code] wm_initLighting, SetLightMatrix at the start of wm_drawBlockFx
+D_800CF560 g_worldBlockFxColorMatrix  # [code] all zero (wm_updateColorMatrices), SetColorMatrix in wm_drawBlockFx so its models are lit by the back colour only
+D_800D3770 g_worldBlockMatrix  # [code] identity set by wm_initBlockMatrix, translation = block position - camera target, composed with the view matrix in wm_drawBlocks/wm_updateVisibleBlocks
+D_800CD774 g_worldIdentityMatrix  # [code] data = identity MATRIX, copied as the starting matrices of the block fx 6 parts in wm_drawBlockFx
+D_800CE190 g_worldCameraEyeRel  # [code] camera eye minus camera target (wm_updateCamera), the eye argument of wm_lookAt
+D_800CE0F8 g_worldCameraLookAt  # [code] target argument of wm_lookAt in wm_updateCamera, never written (zero, the scene is drawn relative to g_worldCameraTarget)
+D_800CF46D g_worldBackdropOn  # [code] 1 at wm_systemInit, cleared by wm_weatherAuto for areas 9/12/13, gates wm_drawMap drawing pack model 0x3B with the view rotation only (translation zeroed) at a fixed height under the eye
+func_800BA3F4 wm_drawBackdrop  # [code] only caller wm_drawMap (pack model 0x3B, see g_worldBackdropOn), runs the asm vertex pass func_800B3A80 then the face pass func_800B3FEC into the OT
+func_800B3A80 wm_backdropVerts  # [code] asm vertex pass of wm_drawBackdrop, same layout as wm_blockVertsFog but with the fog block g_worldBackdropFog
+func_800B3FEC wm_backdropFaces  # [code] asm face pass of wm_drawBackdrop, returns the new packet pointer
+D_800D1FD8 g_worldBackdropFog  # [code] colour + two values from weather unk30[2] (func_800B9774), read only by the backdrop vertex pass func_800B3A80
+D_800D1FE0 g_worldFogParams  # [code] two {colour, unk4, unk6} from weather unk30[1]/[0] (func_800B9774), read by the asm vertex passes wm_blockVertsFog/Far and wm_modelVerts/VertsFlat
+func_800B9774 wm_updateFogParams  # [code] copies the current weather's unk30[0..2] fog colour/values into g_worldFogParams and g_worldBackdropFog, called by wm_weatherUpdate
+func_800B3998 wm_depthCueClut  # [code] asm - copies colour 0 and DPCL-blends the other 15 of a 16-entry CLUT toward colour arg3 by arg2, wm_setActorFog then LoadImages the result
+D_800D3730 g_worldChunkLookPos  # [code] camera eye pushed ahead along g_worldCameraDir (speed-scaled in modes 8/9), wrapped and turned into the centre chunk in wm_updateChunks
+D_800D3338 g_worldChunkGeneration  # [code] 0-3, stamped into requested slots by wm_chunkRequest, stepped every 4 misses and once per wm_requestChunks, reset in wm_initTextureLists
+D_800CD098 g_worldChunkRunGeneration  # [code] 0-3, wm_findChunkRun only starts runs from slots of this generation and steps it each call
+D_800D33F8 g_worldChunkRun  # [code] slot pointers of the run found by wm_findChunkRun, read and marked loading/loaded in wm_readChunks/wm_chunksLoaded
+D_800D3320 g_worldChunkRunCount  # [code] chunk count of the run (wm_findChunkRun out param), loop bound in wm_readChunks/wm_chunksLoaded, indexed by D_800CD094
+D_800D3490 g_worldChunkRunDir  # [code] run direction from wm_findChunkRun - 0 none, 1 horizontal (H image, sector base g_worldImageSectors[3]), 24 vertical (V image, [4])
+D_800CD094 g_worldChunkRunSlot  # [code] index into g_worldChunkRunCount/g_worldChunkRunDir used by wm_readChunks/wm_chunksLoaded
+D_800D3410 g_worldChunkReadReqs  # [code] 4 {size, dest} WmLoadReq per run chunk (block part, texture part of the two image entries), wm_readChunks
+D_800D3370 g_worldChunkReadList  # [code] the non-empty g_worldChunkReadReqs packed together and passed to cd_readChunks (wm_readChunks)
+D_800D3728 g_worldChunkReadCount  # [code] number of entries in g_worldChunkReadList, cd_readChunks count (wm_readChunks)
+D_800D3740 g_worldChunkRunPacks  # [code] block pack destination per run chunk, wm_relocatePack'd by wm_chunksLoaded
+D_800D3310 g_worldChunkRunTex  # [code] w_readtx slot per run chunk, passed to wm_readtxDone by wm_chunksLoaded
+D_800D30C5 g_worldLoadedFrames  # [code] set to 1 when all 16 chunks are loaded (wm_chunksLoaded), counts to 200 in wm_updateLogic; wm_getBlockHeight reports "no polygon" only once it is >= 2
+func_800BA29C wm_initMapState  # [code] called by wm_systemInit - wm_initTexPages, g_worldUsePolyCache = 1, clears g_worldLoadedFrames and D_800D30C4
+D_800D2FF8 g_worldTexAreas  # [string] "Texture Transfer Area" (D_800A8118, wm_frmbufTransfer) indexes it; 17 {tpage, clut, u, v, frmbuf tpage, frmbuf clut}, filled by wm_initTexPages and wm_frmbufTransfer, selected per block in wm_drawBlock
+D_800D27F0 g_worldCurTexArea  # [code] = &g_worldTexAreas[block[1]] set by wm_drawBlock before the asm vertex/face passes
+D_800D3C10 g_worldNearCells  # [code] WmNearCell {cell, block, distance} of on-screen cells, sorted nearest first and requested with wm_blockListRequest (wm_updateVisibleBlocks)
+D_800CD09C g_worldBlockCullRects  # [code] screen rects a cell corner must fall in to be visible, top raised with altitude in modes < 6 (wm_updateVisibleBlocks)
+D_800D3AB8 g_worldBlockPositions  # [code] 20 {x, y, z} attached to the first 20 block nodes (wm_blockListInit), filled by wm_cellToPos, the block translation in wm_drawBlocks
+D_800A7FB8 g_worldBlockBackQuad  # [code] rodata 4 corners (+-0x1000, 3000, +-0x1000) RotTransPers4'd per block in wm_drawBlocks and drawn as a black POLY_F4 at OT 0xFFA
+D_800D27F8 g_worldHitHeights  # [code] heights of the walkmesh triangles under the probe, the one nearest pos.vy wins (wm_getBlockHeight)
+D_800D2DF8 g_worldHitPolys  # [code] triangle index matching each g_worldHitHeights entry, returned through *idx (wm_getBlockHeight)
+D_800D3F78 g_worldFrmbufTransfers  # [code] {pack, texId, vram area} of loaded frame packs waiting for upload, wm_frmbufTransfer
+D_800CDF14 g_worldFrmbufAreaX  # [code] VRAM image x per frmbuf area (index area-1), wm_frmbufTransfer
+D_800CDF18 g_worldFrmbufAreaY  # [code] VRAM image y per frmbuf area, wm_frmbufTransfer
+D_800CDF1C g_worldFrmbufClutX  # [code] CLUT x per frmbuf area, wm_frmbufTransfer
+D_800CDF20 g_worldFrmbufClutY  # [code] CLUT y per frmbuf area, wm_frmbufTransfer
+D_800CE3F4 g_worldTexAnimPack  # [code] world data item 0x411/0x414 (wm_setupWorldData), the TIMs wm_animTextures uploads frame by frame
+D_800CCFAC g_worldTexAnimSeq  # [code] data {0,1,2,3,2,1} ping-pong frame order of wm_animTextures
+D_800CFE98 g_worldTexAnimStep  # [code] position (0-5) in g_worldTexAnimSeq of the two texture animations, wm_animTextures, reset in wm_initClutAnims
+D_800CFE88 g_worldTexScrollAcc  # [code] 8.8 fraction accumulators of the 8 VRAM scrolls (wm_scrollTextures), reset in wm_initClutAnims
+D_800CFE48 g_worldClutAnimAcc  # [code] 8.8 fraction accumulators per palette animation (wm_stepClutAnims)
+D_800CFE70 g_worldClutAnimFrame  # [code] current rotation per palette animation, mod width (wm_stepClutAnims)
+D_800CFE20 g_worldClutAnimOffset  # [code] offset of each palette animation's lines in g_worldClutBuf (wm_initClutAnims, wm_stepClutAnims)
+D_800D1FD0 g_worldClutAnimFx2  # [code] set when a visible block has fx 2 (wm_updateBlockFx), cleared per frame in wm_updateVisibleBlocks, enables palette animations 12-17 in wm_animCluts
+func_800BD5A8 wm_updateTextureLists  # [code] per frame from wm_drawMap, calls the empty func_800C2048 (w_readtx) and func_800C26E4 (w_frmbuf); counterpart of wm_initTextureLists
+func_800C2040 wm_readtxReset  # [code] empty, w_readtx slot called by wm_chunkListInit
+func_800C2048 wm_readtxUpdate  # [code] empty, w_readtx slot called every frame through func_800BD5A8
+func_800C26DC wm_frmbufReset  # [code] empty, w_frmbuf slot called by wm_chunkListInit
+func_800C26E4 wm_frmbufUpdate  # [code] empty, w_frmbuf slot called every frame through func_800BD5A8
+D_800D3E7C g_worldNaviConePrim  # [code] POLY_G3 view cone from the player marker (sin/cos of the camera angles), wm_naviDrawFullMap/wm_naviDrawMiniMap
+D_800CD728 g_worldNaviConeR  # [code] red of the full-map view cone vertex 0 (wm_naviDrawFullMap), data 0xFF
+D_800CD72C g_worldNaviConeG  # [code] green of the full-map view cone, data 0xFF
+D_800CD730 g_worldNaviConeB  # [code] blue of the full-map view cone, data 0x80
+D_800CD734 g_worldNaviTileR  # [code] red of the full-map tile POLY_FT4s (TILE macro, wm_naviDrawFullMap), data 0x67
+D_800CD738 g_worldNaviTileG  # [code] green of the full-map tiles
+D_800CD73C g_worldNaviTileB  # [code] blue of the full-map tiles
+D_800CD710 g_worldNaviPlaceR  # [code] red of the place markers (wm_naviDrawPlaces_color), data 0xFF
+D_800CD714 g_worldNaviPlaceG  # [code] green of the place markers, data 0xB4
+D_800CD718 g_worldNaviPlaceB  # [code] blue of the place markers, data 0xB4
+D_800CD70C g_worldNaviSnapDist  # [code] distance within which the full-map cursor is pulled toward a known place (wm_naviUpdate)
+D_800A7FF0 g_worldNaviVehicleColorA  # [code] rodata CVECTOR, first colour of the pulsing vehicle marker (wm_naviDraw -> wm_naviDrawMarker arg4)
+D_800A7FF4 g_worldNaviVehicleColorB  # [code] second colour of the vehicle marker pulse (arg5)
+D_800A7FF8 g_worldNaviMountColorA  # [code] first colour of the pulsing mount marker (g_worldMountActor, wm_naviDraw)
+D_800A7FFC g_worldNaviMountColorB  # [code] second colour of the mount marker pulse
+D_800A8000 g_worldNaviFullMapArrow  # [code] rodata 4-corner player arrow rotated by rotY in wm_naviDrawFullMap
+D_800A8020 g_worldNaviMiniMapArrow  # [code] rodata 4-corner player arrow rotated by rotY in wm_naviDrawMiniMap
+D_800D3E79 g_worldNaviPlaceCycled  # [code] set when L1/R1 steps g_worldNaviPlace in wm_naviUpdate, then the selected-place global b[0x67] is cleared instead of rewritten; reset in wm_naviInit
+func_800C1824 wm_naviDrawFrame  # [code] draws 4 POLY_FT4 pieces from g_worldNaviFrameParts at (arg0, arg1), pieces 2/3 rotated a quarter turn, called by func_800C16C0
+D_800CD744 g_worldNaviFrameParts  # [code] 4 {x, y, u, v, w, h} pieces drawn by func_800C1824
+D_800D3E68 g_worldTitlePrim  # [code] POLY_FT4 cursor of the two area-title sprites faded by g_worldTitleFade (wm_drawTitle)
+D_800CCE40 g_worldTitleWide  # [code] data 1, picks the title texture layout - 0 two 128x64 halves side by side, else two 256x32 strips (wm_setupWorldData load, wm_drawTitle UVs)
+D_800CDF50 g_worldBlockFx4Pos  # [code] world position of the fx 4 models (wm_drawBlockFx), also the centre effects circle around in wm_updateEffects
+D_800CDF80 g_worldBlockFx4Rot  # [code] rotation of fx 4 models 0x3A/0x35, vy -= 0x100 per frame (wm_updateBlockFx case 4)
+D_800CDFA0 g_worldBlockFx4PartRots  # [code] rotations of fx 4 models 0x36-0x38, spun at different rates in wm_updateBlockFx case 4
+D_800A8588 g_worldBlockFx4Scale  # [code] rodata scale (0x1770, 0x1000, 0x1770) of the fx 4 models (wm_drawBlockFx)
+D_800CDF38 g_worldBlockFx7Pos  # [code] world position of fx 7 model 0x39 (wm_drawBlockFx)
+D_800CDF48 g_worldBlockFx7Rot  # [code] rotation of fx 7 model 0x39, spun by wm_updateBlockFx case 7 while g_worldBlockFx7Spin
+D_800D5410 g_worldBlockFx7Spin  # [code] 1 unless the story counter is in 0x1B4E-0x2B51 (wm_applyEncounterEvents), makes wm_updateBlockFx spin g_worldBlockFx7Rot
+D_800CDF60 g_worldBlockFx6Pos  # [code] world position of every fx 6 part (disc-4 data set only), wm_drawBlockFx
+D_800CDF88 g_worldBlockFx6RotA  # [code] rotation of fx 6 model 0x3C, stepped in wm_updateBlockFx case 6
+D_800CDF90 g_worldBlockFx6RotB  # [code] rotation of fx 6 model 0x3D, stepped in wm_updateBlockFx case 6
+D_800CDF98 g_worldBlockFx6CoreRot  # [code] rotation of fx 6 model 0x3F (wm_drawBlockFx)
+D_800CDFB8 g_worldBlockFx6CoreOtOfs  # [code] OT offset (wm_drawModel arg1) of fx 6 model 0x3F, data 150
+D_800CDFBC g_worldBlockFx6SpriteSize  # [code] size argument of the fx 6 sprite (pack 0x25) wm_drawSprite3D call, data 0x59D8
+D_800D48E8 g_worldBlockFx6FlashTimer  # [code] per-part 0 idle / 1..32 lifetime of the 10 flashing fx 6 parts (models 0x40/0x41), back colour fades with it (wm_drawBlockFx)
+D_800D4910 g_worldBlockFx6FlashRot  # [code] random rotation chosen when a flash part starts, jittered in wm_updateBlockFx case 6
+D_800D48F8 g_worldBlockFx6FlashLen  # [code] y scale of each flash part, random 0x400-0x7FF at start and grown each frame (wm_drawBlockFx)
+D_800D4870 g_worldBlockFx6RingRot  # [code] rotation of the 10 fx 6 model 0x3E parts, vy decremented in wm_updateBlockFx case 6
+D_800D4830 g_worldBlockFx6RingDist  # [code] z offset of each model 0x3E part, grows by 3 and resets to 0x400 when its pulse colour hits 0 (wm_drawBlockFx)
+D_800A8598 g_worldBlockFx6RingScale  # [code] rodata scale (0x1830 x3) of the model 0x3E parts (wm_drawBlockFx)
+D_800A849C g_worldEffectFlatRot  # [code] rodata SVECTOR (0x400, 0, 0), quarter-turn about x for effect types 8/15/16/22 in wm_drawEffects
+D_800CF442 g_worldOtBias  # [code] OT offset for the next sprite (wm_drawSprite3D uses -it) and the actor shadow OT shift (wm_drawActorShadow), set per effect type in wm_drawEffects
+D_800D53E0 g_worldSprayTarget  # [code] spray strength from the altitude above water/cell 0x29 (wm_controlFly), clamped 0..0xFFF in wm_drawEffects
+D_800D53CC g_worldSprayLevel  # [code] g_worldSprayTarget smoothed 1/32 per frame, scales the spray effect types 14/18/19 in wm_drawEffects
+D_800CF468 g_worldTimeActorDraw  # [code] VSync(1) delta around wm_drawActors in wm_updateDraw, like g_worldTimeMapDraw
+D_800CF434 g_worldSuspended  # [code] set while wm_frameMain skips the frame (GameData.unk0 & 0x1C), on the next run it frees a WM_CD_SCRIPT CD lock
+D_800CF47C g_worldVehiclesFound  # [code] set at the end of wm_findVehicles, from then wm_frameMain holds GameData.unk892 = 1 during each frame
+D_800CF44C g_worldPointFxOn  # [code] wm_updateMap sets it when the player is within 0x47C of a fixed point (story b[0x66] 0/8, also sets func_80050EFC strength), wm_updateDraw then runs func_80050D38
+D_800CF400 g_worldPointFxBufPtr  # [code] = g_worldPointFxBuf (wm_initBuffers), node buffer handed to func_80050E34 in wm_systemInit
+D_800CE400 g_worldPointFxBuf  # [code] 0x1000-byte buffer pointed to by g_worldPointFxBufPtr, the 222 nodes of the func_80050D38 effect
+D_800CF580 g_worldImageNames  # [string] the 5 CD image names "\DISC1.IMG;1", S, T, H, V (or DISC4) copied by wm_initDiscImage
+D_800A71D8 g_worldVramSaveRect  # [code] rodata RECT (0x100, 0xFD, 0x100, 2) StoreImage'd into g_worldClutBuf by wm_systemInit
+D_800A71E0 g_worldVramParkRect  # [code] rodata RECT (0x280, 0xDC, 0x100, 2) - func_800B7F7C loads g_worldClutBuf there, w_frameSystemDestructor moves it back to (0x100, 0xFD)
+func_800B7F7C wm_finishLoad  # [code] last step of wm_load - clears GameData.unk0 0x400000, uploads g_worldClutBuf to g_worldVramParkRect, w_movementChange, w_musicUpdate, waits for the sound state
+func_800B8114 wm_getChunkBuffer  # [code] returns g_worldChunkBuffer, wm_startBattleTransition stores it in D_8007BD30
+func_800B8108 wm_getModelCacheBottom  # [code] returns the constant 0x801EDF00 (ovl_0a fld_getModelCacheBottom's empty-cache value), music stream buffer end in wm_soundCommand
+func_800AD10C wm_preloadRequest  # [code] returns 0, installed as GameData.unk8BC by wm_init (event opcode 0xFD callback; ovl_0a installs fld_preloadRequest there)
+func_800A91A4 wm_afterLoadWorldData  # [code] empty (returns 0), called by wm_init right after wm_loadWorldData
+func_800A919C wm_afterLoadSoundBanks  # [code] empty (returns 0), called by wm_init right after wm_loadSoundBanks
+func_800A91AC wm_afterLoadResidentMusic  # [code] empty (returns 0), called by wm_init right after wm_loadResidentMusic
+func_800A9220 wm_afterLoadShadowTexture  # [code] empty (returns 0), called by wm_init right after wm_loadShadowTexture
+func_800B8724 wm_frameSetup  # [code] empty, w_frame slot called in the frame-4 setup step of wm_frameMain (and func_800B84E8)
+func_800B69AC wm_frameTerm  # [code] empty, w_frame slot called by w_frameSystemDestructor
+func_800B8560 wm_postDraw  # [code] empty, called by wm_frameMain right after wm_updateDraw inside the draw timing
+func_800BC098 wm_mapTerm  # [code] empty, tu_800BA528 slot called by w_frameMapDestructor
+func_800BC0A0 wm_mapSystemTerm  # [code] empty, tu_800BA528 slot called by w_frameSystemDestructor
+func_800C464C wm_musicSetup  # [code] empty, w_music slot called in the frame-4 setup step of wm_frameMain (and func_800B84E8)
+func_800C4654 wm_musicTerm  # [code] empty, w_music slot called by w_frameSystemDestructor
+func_800C49EC wm_isMapSongPlaying  # [code] 1 when g_worldMusicId is song 0/1 (normal/chocobo) or, in move mode 0, song 3/4; wm_stopAllSe then sets GameData.unk0 0x400000
+D_800CCAFC g_worldCameraEaseDiv  # [code] divisor of the eased target/eye y steps, |dy| >> shift clamped (0x20-0x100, then g_worldCameraEaseDivMin/Max) in wm_cameraFollow
+D_800CCB08 g_worldCameraEaseDivMin  # [code] lower clamp of g_worldCameraEaseDiv for the eye (wm_cameraFollow), data 0
+D_800CCB0C g_worldCameraEaseDivMax  # [code] upper clamp of g_worldCameraEaseDiv for the eye (wm_cameraFollow), data 0x100
+D_800CCB10 g_worldCameraEaseScale  # [code] multiplier in the eye y step divisor for control types 0/3 (wm_cameraFollow), data 16
+D_800CE1E0 g_worldCameraSmoothing  # [code] OR of g_worldCameraSmoothX/Y/Z (wm_cameraFollow), wm_movePlayer ignores input while set
+D_800CE1F3 g_worldCameraStartPhase  # [code] 0 at wm_initCamera; wm_cameraFollow snaps eye/target once the map is loaded (-> 1), then starts the screen fade by global b[0x65] (-> 2)
+D_800CE25D g_worldCameraTurning  # [code] set while L1/R1 turn the camera by hand in wm_controlWalk, forces the fast eye ease in wm_cameraFollow
+D_800CE26D g_worldCameraFastRise  # [code] set by pad 0x40 in wm_controlWalk / right stick forward in wm_controlFly, makes wm_cameraFollow raise the floor-limited eye faster (k = 2)
+D_800CCE30 g_worldAutoTurnDiv  # [code] |angle difference| clamped to g_worldAutoTurnDivMin/Max, divides the auto-turn step (wm_cameraAutoTurnWalk)
+D_800CCE34 g_worldAutoTurnDivMin  # [code] lower clamp of g_worldAutoTurnDiv, data 0x36B0
+D_800CCE38 g_worldAutoTurnDivMax  # [code] upper clamp of g_worldAutoTurnDiv, data 0x10000
+D_800CCE3C g_worldAutoTurnDeadZone  # [code] |GameData camera unk0| >> 3, angle differences below it give no auto-turn (wm_cameraAutoTurnWalk)
+D_800CCE20 g_worldStickDiv  # [code] divisor applied to stick * mode speed/climb speed (wm_controlSteer, wm_controlFly), data 4
+D_800CCE24 g_worldSpeedSmoothDiv  # [code] smoothing divisor of g_worldSpeedSmooth/g_worldClimbSmooth (wm_controlSteer, wm_controlFly), data 8
+D_800CCE28 g_worldSpeedScaleDiv  # [code] g_worldPlayerSpeed/ClimbSpeed = smoothed value / this (wm_controlSteer, wm_controlFly), data 32
+D_800CE274 g_worldFastFly  # [code] never set (zeroed by wm_initMovement), doubles turn and speed in wm_controlFly - debug switch
+D_800CCF6C g_worldFastWalk  # [code] data 0, never written; when set wm_movePlayer moves ground modes 4x as move mode 10 - debug switch
+D_800CE209 g_worldFlyTurning  # [code] set while the left stick x is non-zero in wm_controlFly, cleared in walk/getoff; when clear wm_updateActors eases the vehicle bank frame back
+D_800CE260 g_worldCeilingGap  # [code] player y + 0x2A30 (wm_movePlayer), under 0x7E8 the upward climb speed is scaled down by it
+D_800CE208 g_worldPlayerFloorPoly  # [code] walkmesh triangle index from the last accepted wm_tryStep of the player (wm_movePlayer)
+D_800CE0B8 g_worldParkedSoundRects  # [code] VRAM RECT used to park sound bank 0x17B (wm_loadSoundBanks LoadImage, wm_fetchParkedSound StoreImage)
+D_800CCA1C g_worldParkedSoundRectIdx  # [code] index into g_worldParkedSoundRects (data 0), wm_loadSoundBanks/wm_fetchParkedSound
+D_800CE098 g_worldPauseSprite  # [code] sprite buffer passed to func_80027834 for the pause graphic in wm_togglePause (ovl_0a twin g_fieldPauseSprite)
+D_800CD010 g_worldFormStatusTable  # [code] [7][11] replacement-form case per form and story status index (D_800CD060 thresholds), switched on in wm_applyStoryForms
+D_800CE06C s_menuMainExpLabel  # [string] "EXP", token 1 of menuMain_setExpHelp (copy of ovl_0a s_menuMainExpLabel)
+D_800CE070 s_menuMainNextLabel  # [string] half-width kana "next", token 3 of menuMain_setExpHelp
+D_800CE078 s_menuMainUntilLabel  # [string] half-width kana "until", token 4 of menuMain_setExpHelp
+D_800CE080 s_menuMainStatusLabel  # [string] half-width kana "status", token 6 of menuMain_setExpHelp
+D_800CE088 s_menuMainStatusNormal  # [string] half-width kana "normal", token 7 when Character.unk38 == 0
+D_800CE090 s_menuMainStatusAbnormal  # [string] half-width kana "abnormal", token 7 when Character.unk38 != 0
+D_800CD060 g_worldFormStoryThresholds  # [code] u16[11] story-counter thresholds; wm_applyStoryForms picks the status index of g_worldFormStatusTable from the first one <= the counter
+D_800CCB04 g_worldCameraEaseShift  # [code] g_worldCameraEaseDiv = |dy| >> it in wm_cameraFollow
+### ovl_0a: rename.py --bin ovl_0a (fld_getDiscChangeArg -> fld_getDiscChangeFieldId by hand)
+func_800A9814 fld_loadVibration  # [code] fld_load - looks up the field's file 0x1Exxxx into FieldScene.unk4C and starts it with main func_80054A28 (that table drives D_800739B0, the PadSetAct actuator buffer, pad.c)
+func_800AA0A8 fld_freeVibration  # [code] fld_exit, called next to fld_freeFieldFile - only main func_80054F80, which zeroes the actuator buffer D_800739B0 and the vibration player D_8007BD38
+func_800B5094 fld_getDiscChangeAreaId  # [code] returns g_fieldDiscChange.unk6; ovl_39 func_801F9B00 saves it where it otherwise stores GameData.unk3A (area id), next to fld_getDiscChangeArg in place of fieldId
+func_800C1A4C fldbg_getEntryType  # [code] *arg1 = g_fieldBgCtx.entries[arg0].unk0, the entry type (0x10 layer effect from fldbg_initEffectList, 0x80 clut fade from fldbg_startClutFade)
+func_800C1A78 fldbg_getWorkBlock  # [code] returns g_fieldBgCtx.work + arg0 * 0x200 (512-byte block arg0 of the background work buffer)
+D_800CA108 g_fieldBgClutRows  # [code] fldbg_buildOverlaySprites keeps max(tile clutY) here as (max - 0xDF) & 0xFF, i.e. the number of palette rows used from 0xE0 up; never read elsewhere
+D_800C9EC0 s_menuMainExpLabel  # [string] "EXP", token 1 of the exp help text built by menuMain_setExpHelp
+D_800C9EC4 s_menuMainNextLabel  # [string] half-width kana " ツギノ" (next), token 3 of menuMain_setExpHelp
+D_800C9ECC s_menuMainUntilLabel  # [string] half-width kana " マデ" (until), token 4 of menuMain_setExpHelp
+D_800C9ED4 s_menuMainStatusLabel  # [string] half-width kana "ステータス" (status), token 6 of menuMain_setExpHelp
+D_800C9EDC s_menuMainStatusNormal  # [string] half-width kana " セイジョウ" (normal), token 7 when Character.unk38 (status) == 0
+D_800C9EE4 s_menuMainStatusAbnormal  # [string] half-width kana " イジョウ" (abnormal), token 7 when Character.unk38 != 0
+fld_getDiscChangeArg fld_getDiscChangeFieldId  # [code] ovl_39 func_801F9B00 stores its result where it otherwise stores GameData.fieldId
+# FIELDS include/ovl_0c.h WorldMap: unk0=flags,unk4=mapHeapBase,unk8=obj,unk48=objData
+# FIELDS include/ovl_0c.h WorldMapObj: unk0=flags,unk4=heapEnd,unk1A=palAnimCount,unk28=palAnims,unk2C=loadBase,unk30=loadPtr,unk34=files
+# FIELDS include/ovl_0c.h WmObjEnt: unk0=shade,unk1=scaleX,unk2=scaleZ,unk4_12=offsetX,unk4_22=offsetZ,unk8=prims
+# FIELDS include/ovl_0c.h WmEffect: unk0=sprite,unk4=prev,unk8=next,unkC=abr,unkD=type,unkE=scale,unk10=x,unk14=y,unk18=z,unk1C=frame,unk20=phase
+# FIELDS include/ovl_0c.h WmEmitter: unk0=x,unk4=y,unk8=z,unkC=rangeX,unk10=rangeY,unk14=rangeZ,unk24=effect,unk26=scale,unk28=chance
+# FIELDS include/ovl_0c.h WmSprHdr: unk0=frameCount,unk2=tpage,unk4=clut,unk6=height,unk7=width,unk8=frameOffsets
+# FIELDS include/ovl_0c.h WmSprCtx: unk0=uvs,unk4=colors,unk8=halfW,unkC=halfH,unk10=tpage,unk14=clut,unk18=fade,unk1C=quadCount,unk20=primCode,unk24=sizeShift,unk28=otBias
+# FIELDS include/ovl_0c.h WmPalAnim: unk0=modelId,unk4=clutX,unk6=clutY,unk8=srcPal,unk28=workPal
+# FIELDS include/ovl_0c.h WmObjSlot: unk0=flags,unk4=modelId,unk8=obj,unkC=actor
+# FIELDS include/ovl_0c.h ModelObj: unk0=flags,unk4=parentBone,unk50=texAnims,unk60=mirrorSrc,unk74=attachX,unk76=attachY,unk78=attachZ
+# FIELDS include/ovl_0c.h WmModel: unk0=flags,unk2=boneCount,unk3=groupCount,unkC=bones,unk10=groups
+# FIELDS include/ovl_0c.h WmModelGroup: unk0=packetSize,unk2=ft4Count,unk4=ft3Count,unk6=gt4Count,unk8=gt3Count,unkA=g4Count,unkC=g3Count,unkE=f4Count,unk10=f3Count,unk13=otBias,unk14=boneVertexCounts,unk18=vertices,unk1C=prims,unk20=uvs,unk24=colors
+# FIELDS include/ovl_0c.h WmModelOut: unk4=prims
+# FIELDS include/ovl_0c.h WmBone: unk0=length,unk3=parent
+# FIELDS include/ovl_0c.h WmAnimHdr: unk4=rootPos,unkA=constMask,unkC=rotKeys,unk10=rotKeysLo
+# FIELDS include/ovl_0c.h WmTexInfo: unk0=tpage,unk2=clut
+# FIELDS include/ovl_0c.h WmSrcFT4: unk0=vertices,unk8=uvs,unk10=rgb,unk13=texture,unk15=flags
+# FIELDS include/ovl_0c.h WmSrcFT3: unk0=vertices,unk6=texture,unk8=rgb,unkC=uvs,unk12=flags
+# FIELDS include/ovl_0c.h WmSrcGT4: unk0=vertices,unk8=uvs,unk10=colors,unk1C=flags,unk1D=texture
+# FIELDS include/ovl_0c.h WmSrcGT3: unk0=vertices,unk6=uvs,unkF=flags,unk10=colors,unk16=texture
+# FIELDS include/ovl_0c.h WmSrcG4: unk0=vertices,unk8=colors,unk14=flags
+# FIELDS include/ovl_0c.h WmSrcG3: unk0=vertices,unk8=colors,unk13=flags
+# FIELDS include/ovl_0c.h WmSrcF4: unk0=vertices,unk8=rgb,unkD=flags
+# FIELDS include/ovl_0c.h WmSrcF3: unk0=vertices,unk8=rgb,unkB=flags
+# FIELDS include/ovl_0c.h WmPack: unk0=count,unk8=entries
+# FIELDS include/ovl_0c.h WmPackEntry: unk4=verts,unk8=polys
+# FIELDS include/ovl_0c.h WmBlock: unk1=texArea,unk2=polyCount,unk4=verts,unk8=polys,unkC=outline,unk20=outlineCount,unk21=fxId
+# FIELDS include/ovl_0c.h WmChunkPack: unk2=texArea,unk8=blocks
+# FIELDS include/ovl_0c.h WmPoly: unk0=v0,unk1=v1,unk2=v2,unkE=attr
+# FIELDS include/ovl_0c.h WmChunkSlot: unk0=prev,unk4=next,unk8=pack,unk10=hasData
+# FIELDS include/ovl_0c.h WmReadtxSlot: unk8=pack
+# FIELDS include/ovl_0c.h WmChunkEntry: unk0=sector,unk2=packSectors,unk3=texSectors
+# FIELDS include/ovl_0c.h WmChunkTable: unk0=width,unk2=height,unk4=entries
+# FIELDS include/ovl_0c.h WmBlockNode: unk0=prev,unk4=next,unk8=block,unkC=pos,unk10=cell,unk12=state,unk13=slot
+# FIELDS include/ovl_0c.h WmBlockPos: unk0=pos
+# FIELDS include/ovl_0c.h WmSky: unk0=lightColor,unk18=backdropLightColor,unk20=backColor,unk28=backdropBackColor,unk30=fog,unk54=fxBackColor
+# FIELDS include/ovl_0c.h WmFog: unk0=fogOffset,unk2=fogOffset2,unk4=color
+# FIELDS include/ovl_0c.h WmWeatherData: unk0=presets,unk5E0=work
+# FIELDS include/ovl_0c.h WmFogParam: unk0=color,unk4=fogOffset,unk6=fogOffset2
+# FIELDS include/ovl_0c.h WmTexArea: unk0=tpage,unk2=clut,unk4=u,unk5=v,unk8=frmTpage,unkA=frmClut
+# FIELDS include/ovl_0c.h WmTexTransfer: unk0=pack,unk4=area,unk5=vramArea
+# FIELDS include/ovl_0c.h WmNaviPlace: unk0=mapX,unk2=mapY,unk4=worldX,unk8=worldZ
+# FIELDS include/ovl_0c.h WmNaviFramePart: unk0=x,unk2=y,unk4=u,unk6=v,unk8=w,unkA=h
+# FIELDS include/ovl_0c.h WmClutAnim: unk0=x,unk2=y,unk4=start,unk6=count,unk8=speed
+# FIELDS include/ovl_0c.h WmTexScroll: unk0=x,unk2=y,unk4=w,unk6=h,unk8=speed
+# FIELDS include/ovl_0c.h WmActorType: unk0=terrainClass,unk7=shadowOtBias
+# FIELDS include/ovl_0c.h WmMoveMode: unk2=speed,unkA=lookAhead,unk14=allowedCells
+# FIELDS include/ovl_0c.h WmCameraState: unk0=stickSide
+# FIELDS include/ovl_0c.h WmCameraFlags: unk11=autoTurnOff
+# FIELDS include/ovl_0c.h WmPolyCache: unk0=lastSlot,unk4=polys,unk10=cells
+# FIELDS include/ovl_0c.h WmAnimTable: unk1=count,unk4=entries
+# FIELDS include/ovl_0c.h WmAnimTableEntry: unk0=modelId,unk2=animId
+# FIELDS include/ovl_0c.h WmStreamReq: unk8=addr,unkC=offset,unk10=size
+# FIELDS include/ovl_0c.h WmImagePack: unk0=clutOfs,unk4=imageOfs,unk8=imageCount
+# FIELDS include/ovl_0c.h WmImagePackClut: unk0=dataOfs,unk4=count,unk8=rects
+# FIELDS include/ovl_0c.h WmLoadReq: unk0=size,unk4=dest
+# FIELDS include/ovl_0c.h WmNearCell: unk0=cell,unk4=block,unk8=dist
+# FIELDS include/ovl_0c.h WmFrmbufSlot: unk0=prev,unk4=next
+# FIELDS include/ovl_0c.h WmReadtxSlot: unk0=prev,unk4=next
+# FIELDS include/ovl_0a.h FieldMap: unk0=flags,unk4=loadEnd,unk8=playerObj,unkA=prevFieldId,unkC=area,unk10=commonFile,unk20=soundBankSize
+# FIELDS include/ovl_0a.h FieldMapObj: unk4=loadEnd,unk8=msgTable,unkC=areaFile,unk10=areaId,unk14=scene
+# FIELDS include/ovl_0a.h FieldScene: unk0=flags,unk4=loadEnd,unk3E=battleMusicBank,unk4C=vibration,unk5C=sndVolume,unk5D=movieSndVolume
+# FIELDS include/ovl_0a.h FieldEvtCtx: unk0=flags,unk4=modelId,unk8=model,unkC=obj
+# FIELDS include/ovl_0a.h FieldEvtObj: unk14=pos,unk20=rotX,unk22=rotY,unk24=rotZ,unk36=anim,unk3A=animFrame,unk3B=uid
+# FIELDS include/ovl_0a.h FieldAnimSfx: unk0=uid
+# FIELDS include/ovl_0a.h FieldActorInfo: unk0=flags,unk4=litFloor,unk5=abr,unk8=color,unkC=nextColor,unk10=mirror
+# FIELDS include/ovl_0a.h FieldActorExt: unk0=flags,unk4=modelId,unk8=model,unkC=obj,unk14=modelBuf,unkAC=objBuf,unkF8=src,unkFC=mirrorPoint,unk104=mirrorNormal,unk10C=tint
+# FIELDS include/ovl_0a.h FieldLight: unk0=type,unk2=shadowShade,unk3=shadowSize,unk4=color,unk8=floors
+# FIELDS include/ovl_0a.h Unk800B3294: unk0=modelId,unk2=shadowShade,unk3=shadowSize
+# FIELDS include/ovl_0a.h Unk800B3254: unk6=colorOffset,unk7=lightCount,unk9=colorCount,unkC=lights
+# FIELDS include/ovl_0a.h FieldObjEnt: unk0=shade,unk1=scaleX,unk2=scaleZ,unk4=angle,unk4_12=offsetX,unk4_22=offsetZ
+# FIELDS include/ovl_0a.h FieldObjPlace: unk0=params,unk8=prims
+# FIELDS include/ovl_0a.h FieldObjSlot: unk0=flags,unk4=modelId,unk8=model,unkC=actor
+# FIELDS include/ovl_0a.h Unk800C9CCC: unk2=id,unk4=addr,unk8=size
+# FIELDS include/ovl_0a.h WmModel: unk0=flags,unk2=boneCount,unk3=groupCount,unk6=lookAtBone,unkC=bones,unk10=groups
+# FIELDS include/ovl_0a.h WmModelGroup: unk0=packetSize,unk2=ft4Count,unk4=ft3Count,unk6=gt4Count,unk8=gt3Count,unkA=g4Count,unkC=g3Count,unkE=f4Count,unk10=f3Count,unk13=otBias,unk14=boneVertexCounts,unk18=vertices,unk1C=prims,unk20=uvs,unk24=colors
+# FIELDS include/ovl_0a.h WmModelOut: unk4=prims
+# FIELDS include/ovl_0a.h WmSrcFT4: unk0=vertices,unk8=uvs,unk10=rgb,unk13=texture,unk15=flags
+# FIELDS include/ovl_0a.h WmSrcFT3: unk0=vertices,unk6=texture,unk8=rgb,unkC=uvs,unk12=flags
+# FIELDS include/ovl_0a.h WmSrcGT4: unk0=vertices,unk8=uvs,unk10=colors,unk1C=flags,unk1D=texture
+# FIELDS include/ovl_0a.h WmSrcGT3: unk0=vertices,unk6=uvs,unkF=flags,unk10=colors,unk16=texture
+# FIELDS include/ovl_0a.h WmSrcG4: unk0=vertices,unk8=colors,unk14=flags
+# FIELDS include/ovl_0a.h WmSrcG3: unk0=vertices,unk8=colors,unk13=flags
+# FIELDS include/ovl_0a.h WmSrcF4: unk0=vertices,unk8=rgb,unkD=flags
+# FIELDS include/ovl_0a.h WmSrcF3: unk0=vertices,unk8=rgb,unkB=flags
+# FIELDS include/ovl_0a.h WmTexInfo: unk0=tpage,unk2=clut
+# FIELDS include/ovl_0a.h WmBone: unk0=length,unk3=parent
+# FIELDS include/ovl_0a.h WmAnim: unk4=rootPos,unkA=constMask,unkC=rotKeys,unk10=rotKeysLo
+# FIELDS include/ovl_0a.h ModelObj: unk0=flags,unk4=parentBone,unk74=attachX,unk76=attachY,unk78=attachZ
+# FIELDS include/ovl_0a.h TexAnimSet: unk0=count,unk4=anims
+# FIELDS include/ovl_0a.h TexAnim: unk0=flags,unk1=frameCount,unk2=speed,unk4=delayBase,unk6=delayRange,unk8=pos,unkC=rectCount,unkE=lastFrame,unk10=rects
+# FIELDS include/ovl_0a.h TexAnimRect: unk0=dest,unk8=frames
+# FIELDS include/ovl_0a.h TexAnimReloc: unk1=frameCount,unkC=rectCount,unkD=texOfsIndex,unkE=lastFrame,unk10=rects
+# FIELDS include/ovl_0a.h TexAnimRelocSet: unk0=count,unk4=anims
+# FIELDS include/ovl_0a.h TexAnimRelocRect: unk0=destX,unk2=destY,unk8=frames
+# FIELDS include/ovl_0a.h ModelTexOfs: unk0=srcX,unk2=srcY,unk4=destX,unk6=destY
+# FIELDS include/ovl_0a.h FieldSpriteSet: unk2=capacity,unk3=count,unk8=entries,unkC=primBufs
+# FIELDS include/ovl_0a.h FieldSprite: unk0_0=flags,unk0_4=abr,unk1=spriteId,unk4=scale
+# FIELDS include/ovl_0a.h FieldSprHdr: unk0=frameCount,unk2=tpage,unk4=clut,unk6=height,unk7=width,unk8=frameOffsets
+# FIELDS include/ovl_0a.h BgFile: unk1C=orgDepth,unk20=orgX,unk22=orgY,unk24=posX,unk26=posY,unk30=screenX,unk32=screenY
+# FIELDS include/ovl_0a.h BgOverlay: unk0=flags,unk1=depth,unk2=baseDepth,unk4=width,unk6=height,unk8=baseX,unkA=baseY,unkC=x,unkE=y,unk10=minX,unk12=maxX,unk14=minY,unk16=maxY,unk18=screenX,unk1A=screenY,unk20=fracX,unk22=fracY,unk24=cameraId,unk25=skewVertical,unk25_1=viewport,unk26=tileCount,unk28=posOffset,unk2C=tileOffset
+# FIELDS include/ovl_0a.h BgOverlayAnim: unk0=flags,unk1=stepCount,unk4=cameraId,unk5=pos,unkA=delayCounter,unkC=stepOffset
+# FIELDS include/ovl_0a.h BgAnimStep: unk0=overlay,unk1=delay
+# FIELDS include/ovl_0a.h BgFollowOverlay: unk0=abr,unk1=r,unk2=g,unk3=b,unk4=overlay,unk6=offsetX,unk8=offsetY,unkC=quads,unkCC=tpages
+# FIELDS include/ovl_0a.h BgEntry: unk0=type,unk1=overlay,unk4=dataOffset,unk8=dataSize
+# FIELDS include/ovl_0a.h FieldBgCtx: unk20=overlayTinted
+# FIELDS include/ovl_0a.h FieldPalAnim: unk0=active,unk1=count,unk2=first,unk3=last,unk8=frames,unkC=frame,unk10=stepR,unk14=stepG,unk18=stepB,unk1C=savedOffset,unk20=workOffset,unk24=rect
+# FIELDS include/ovl_0a.h FieldBgState: unk8=cameraScroll,unkC=geomOffsetX,unkE=geomOffsetY,unk24=savedScrollMinX,unk26=savedScrollMaxX,unk28=savedScrollMinY,unk2A=savedScrollMaxY,unk2C=playerScreenX,unk2E=playerScreenY,unkA4=parallaxOriginX,unkA6=parallaxOriginY
+# FIELDS include/ovl_0a.h FieldDiscChange: unk6=areaId,arg=fieldId
+# FIELDS include/ovl_0a.h Unk800C9EF0: unk0=gameFlags,unk10=mapFlags,unk20=movieFlags
+# FIELDS include/ovl_0a.h WmAnimTable: unk1=count,unk4=entries
+# FIELDS include/ovl_0a.h WmAnimTableEntry: unk0=modelId,unk2=animId
+# FIELDS include/ovl_0a.h FieldSprArgs: unk0=uvs,unk4=colors,unk8=halfW,unkC=halfH,unk10=tpage,unk14=clut,unk18=fade,unk1C=quadCount,unk20=primCode
