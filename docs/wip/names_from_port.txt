@@ -1031,3 +1031,44 @@ D_801F4B80 g_menuNameIds  # [code] menu argument -> name id table (menu_name_get
 D_801F4BB0 g_menuNameCharIdx  # [code] name id -> character index table (menu_name_getCharIdx)
 D_801EE0B4 g_menuNamePortraits  # [code] 0x6C0-byte portrait images (CLUT + pixels) by func_80028954 index, menu_name_loadPortrait
 # FIELDS include/ovl_3a.h NameEntry: unk0=focus,unk1=menuCursor,unk2=charSet,unk3=gridCursor,unk4=len,unk5=gridSize,unk7=name,unk11=defaultName,unk1C=charSets,unk24=startDefault,unk28=savedClut,unk12C=nameId,unk130=charIdx,unk134=windows
+
+## ovl_38: ovl_38 (status menu)
+func_801EE440 menu_status_init  # [code] main-menu entry Status (file 0x38 in main's D_8006E510) init of main's D_8006E530/D_8006E5B0 tables; text bank, first character, window, primitive buffers
+func_801EF69C menu_status_update  # [code] Status entry update of main's D_8006E530 (per frame), input, draw, animate
+func_801EF6CC menu_status_exit  # [code] Status entry exit of main's D_8006E530, stores the shown party slot in D_80077E53, restores the help flag
+func_801EF708 menu_status_input  # [code] runs the D_801EFBA4 input handler of the current state
+func_801EE568 menu_status_inputMain  # [code] state 1 - Circle back to the main menu (func_800361CC(0)), Cross opens the ability pages, R1/L1 next/previous character
+func_801EF8A0 menu_status_inputPages  # [code] state 2 - Circle closes the ability pages, Cross opens the next one
+func_801EF760 menu_status_draw  # [code] swaps the primitive buffers and calls every window drawer
+func_801EF80C menu_status_animate  # [code] steps the page windows' slide animations (func_800631AC) and the character header
+func_801EF904 menu_status_drawFrame  # [code] the main window with its divider lines
+func_801EE650 menu_status_drawHeader  # [code] character header, magic-stone gauge (Character.stones/maxStones) and status icons
+func_801EE740 menu_status_drawCommands  # [code] the four battle commands of the character (names from the copied command table) under label D_8007042C
+func_801EE9E8 menu_status_drawStats  # [code] Speed/Strength/Magic/Spirit and Attack/Defense/Evade/Magic Def/Magic Eva labels and values
+func_801EED18 menu_status_drawExp  # [code] Trance gauge (when D_8007AF00 is set), EXP and Next (g_levelExp)
+func_801EEF00 menu_status_drawEquip  # [code] the five equipment slots - slot icon, item icon and item name
+func_801EF0A0 menu_status_drawPages  # [code] the open ability page windows, 8 rows each, with the page number on the top one
+func_801EF258 menu_status_drawAbility  # [code] one ability row - icon, name (action table or D_8006D128 support) and AP gauge (func_80027170)
+func_801EF494 menu_status_openPage  # [code] Cross - slides in the next ability page window (D_801F1134, then func_801EFA80), or closes them all after the last
+func_801EF9D4 menu_status_closePages  # [code] slides out the open page windows (D_801F114C, the last one calls func_801EFABC)
+func_801EFA80 menu_status_onPageOpened  # [code] tween callback of D_801F1134 - state 2, the previous page loses its top flag, pagesOpen++
+func_801EFABC menu_status_onPagesClosed  # [code] tween callback of D_801F114C[0] - state 1, clears the page flags
+func_801EFAF8 menu_status_onHeaderReady  # [code] callback given to func_80028CF8 - state 1 once the character header is in place
+func_801EF568 menu_status_setChar  # [code] shows party slot (func_80028D08 slides the header in direction dir) and counts its learnable abilities and pages
+func_801EFB08 menu_status_setHelpText  # [code] help-text callback (func_8003556C) - text 0 (status ailments) and its string/value arguments
+D_801F120C g_menuStatus  # [code] status menu state, StatusMenu in include/ovl_38.h
+D_801EFBA4 g_menuStatusInputFns  # [code] input handler per StatusMenu.state (NULL, inputMain, inputPages, NULL)
+D_801EFBB4 g_menuStatusCmds  # [code] the four command ids drawn by menu_status_drawCommands (Attack, two per character, Item)
+D_801EFBB8 g_menuStatusCharCmds  # [code] the two character-specific command ids per command set (Character.unk34.b.row)
+D_801EFBE0 g_menuStatusBaseStatText  # [code] text ids of Speed, Strength, Magic, Spirit
+D_801EFBF0 g_menuStatusBattleStatText  # [code] text ids of Attack, Defense, Evade, Magic Def, Magic Eva
+D_801EFC08 g_menuStatusActionAbilities  # [code] action ability table read by menu_status_drawAbility for ids below 0xC0
+D_801F0808 g_menuStatusActionNames  # [code] action ability name pool (g_menuStatusActionAbilities.unkE offsets)
+D_801F0E50 g_menuStatusSupportNames  # [code] support ability name pool (D_8006D128.unk2 offsets)
+D_801EFC04 g_menuStatusPageLabel  # [code] page number label, its digit patched to '1'+page by menu_status_drawPages
+D_801F10E4 g_menuStatusPageRects  # [code] page window positions, copied into pageWins by menu_status_openPage
+D_801F1134 g_menuStatusPageOpenTween  # [code] page window slide-in, callback menu_status_onPageOpened
+D_801F114C g_menuStatusPageCloseTweens  # [code] page window slide-outs, the first with callback menu_status_onPagesClosed
+D_801EDF04 g_menuStatusCmdTable  # [code] battle command table (name offset first), copied to the stack by menu_status_drawCommands
+D_801EE144 g_menuStatusCmdNames  # [code] battle command names ("Attack", "Steal", "Jump"...) indexed by g_menuStatusCmdTable
+# FIELDS include/ovl_38.h StatusMenu: unk0=state,unk1=pagesOpen,unk2=slot,unk3=pageCount,unk4=abilityCount,unk5=savedHelp,unk8=win,unk10=pageOpen,unk16=pageOnTop,unk1C=pageWins,unk7C=prim,unk80=primBufs,unk88=primFree,unk8C=header; TextWin renamed TextTween
