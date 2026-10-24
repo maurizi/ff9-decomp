@@ -3545,7 +3545,8 @@ void func_800AFAC0(s32, s32, s32, s32, s32);
 void func_800B1A20(s16, s16, s16, u8 *arg4, u8 *arg5);
 s32 func_800B2CC0(s32, s32, s32, s32);
 void func_800B5004(s32, s16);
-void func_800B73F8(u32, s32);
+void w_frameSetParameter(u32, s32); /* ovl_0c */
+void fld_gameOver(void); /* ovl_0a */
 s32 func_800C02D0(s32, s16, s16, s8, u8, u8, u8);
 s32 func_800C0BCC(s32);
 s32 func_800C0DB0(s16, s16, s16);

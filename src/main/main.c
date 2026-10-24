@@ -39,7 +39,7 @@ void game_main(void) {
                 break;
             case 7:
                 game_loadModeOverlay(7);
-                func_800A80A4();
+                fld_gameOver();
                 break;
             case 4:
                 game_loadModeOverlay(4);
@@ -12152,7 +12152,7 @@ s32 evt_execInstr(void) {
         return 0;
     case 0xC4:
         a = evt_getArg8_inline();
-        func_800B73F8(a, evt_getArg16_inline());
+        w_frameSetParameter(a, evt_getArg16_inline());
         return 0;
     case 0xD1:
         evt_clearGlobalVars();
