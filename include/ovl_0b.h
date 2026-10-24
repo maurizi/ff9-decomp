@@ -125,12 +125,16 @@ typedef struct BtlUnit9C8 {
     BtlMesh *unk10;
 } BtlUnit9C8;
 
+/* animation (btl_calcBoneMatrices) */
 typedef struct BtlUnit9CC {
     u8 pad0[2];
     u16 unk2;
-    u8 pad4[0xC - 4];
-    s32 unkC; /* offset, relocated on load */
-    s32 unk10; /* offset, relocated on load */
+    u16 unk4; /* root x: the value (unkA bit 0) or the offset of a per-frame s16 table */
+    u16 unk6; /* root y (bit 1) */
+    u16 unk8; /* root z (bit 2) */
+    u16 unkA; /* flags */
+    s32 unkC; /* offset, relocated on load: per-bone rotation keys, 8 bytes (3 u16 + flags u16) */
+    s32 unk10; /* offset, relocated on load: per-bone low-nibble keys, or 0 */
 } BtlUnit9CC;
 
 typedef struct {
@@ -225,6 +229,7 @@ extern Unk800FD6E0 D_800FD6E0;
 extern u8 D_800F8D84[]; /* ability ids */
 
 /* main exe: candidates for ff9.h */
+void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 typedef struct {
     u8 unk0;
     u8 unk1; /* ap needed */
@@ -760,11 +765,23 @@ typedef struct {
     u16 pad2;
     u16 unk4; /* record count */
     u16 unk6; /* record offset */
+    u16 pad8;
+    u16 unkA; /* offset of the texture word table (clut << 16 | tpage, indexed by color bits 24-28) */
+    u16 padC;
+    u16 unkE; /* offset of the packed 6-byte vertices */
 } BtlBgGroup;
 
 typedef struct {
-    u16 unk0; /* kind */
-    u8 pad2[0x10 - 2];
+    u16 unk0; /* kind; btlbg_drawRecord: 0 = OT index from the depth sum << g_btlbgOtShift, else bit 3 = back
+               * (0x3FC), bit 1 = front (0), otherwise sum >> 6 (quads) / >> 4 (triangles) << 2 */
+    u16 unk2; /* vertex count (a multiple of 6) */
+    u16 unk4; /* first vertex */
+    u16 unk6; /* offset of the colors (a word per primitive: bgr, texture index << 24, bit 29 = semi-transparent,
+               * bits 30-31 = blend mode) */
+    u16 unk8; /* offset of the vertex indices (scratchpad byte offsets, 4 per quad then 3 per triangle) */
+    u16 unkA; /* offset of the uvs */
+    u16 unkC; /* quad count */
+    u16 unkE; /* triangle count */
 } BtlBgRec;
 
 extern BtlBgScroll *D_800FE504;
@@ -773,6 +790,7 @@ extern s32 D_800FE4FC;
 extern s32 D_800FE500;
 u8 *func_800CEBC8(u8 *, u32 *, MATRIX *);
 u8 *btlbg_drawRecord(BtlBgRec *, u8 *, u32 *, BtlBgGroup *);
+void btlbg_projectVertices(BtlBgRec *, u8 *, u32 *, s32);
 extern s32 D_800FE508;
 extern s32 D_800FE518;
 extern s16 D_80100DCC;

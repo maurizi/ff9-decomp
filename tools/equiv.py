@@ -326,7 +326,8 @@ class Cpu:
                 elif sub == 4:
                     self.g[rd] = r[rt]
                 elif sub == 6:
-                    self.g[32 + rd] = r[rt]
+                    # RT33, L33 and LB3 keep 16 bits (a matrix's padding halfword goes into the upper half)
+                    self.g[32 + rd] = sx16(r[rt]) & MASK if rd in (4, 12, 20) else r[rt]
                 else:
                     raise RuntimeError(f"cop2 {ins:08X} at {pc:08X}")
             elif op in (0x20, 0x21, 0x23, 0x24, 0x25, 0x22, 0x26):
@@ -393,6 +394,11 @@ def main():
     ap.add_argument("--arg-mask", action="append", default=[], metavar="N:MASK",
                     help="AND argument N (0-3) with MASK (hex) in every trial, e.g. 1:0xF for a loop count that "
                          "would otherwise run into the step limit")
+    ap.add_argument("--arg-set", action="append", default=[], metavar="N=VALUE",
+                    help="fix argument N (0-3) to VALUE (hex), e.g. a pointer that --poke fills")
+    ap.add_argument("--poke", action="append", default=[], metavar="ADDR=VALUE[:SIZE]",
+                    help="memory both versions start from (hex address and value, SIZE 1/2/4 bytes, default 4), "
+                         "e.g. a loop count inside a structure an --arg-set pointer points to")
     ap.add_argument("--end", help="run the original up to this address (hex) instead of the next symbol: for an "
                                   "entry that jumps into a following function's body (shared tails)")
     ap.add_argument("--uncovered", action="store_true", help="list the original's instructions no trial ran")
@@ -469,6 +475,12 @@ def main():
     n_args = 4 if n_args is None else n_args
 
     ignore = [tuple(int(x, 16) for x in r.split("-")) for r in a.ignore]
+    poked = {}  # poked bytes count as written only when a version changes them
+    for pk in a.poke:
+        addr, val = pk.split("=")
+        val, _, size = val.partition(":")
+        for i in range(int(size or "4")):
+            poked[(int(addr, 16) + i) & MASK] = (int(val, 16) >> (8 * i)) & 0xFF
     paths, bad, covered, skipped = set(), 0, set(), 0
     for t in range(a.trials):
         res = []
@@ -480,6 +492,13 @@ def main():
             for am in a.arg_mask:
                 i, msk = am.split(":")
                 args[int(i)] &= int(msk, 16)
+            for st in a.arg_set:
+                i, val = st.split("=")
+                args[int(i)] = int(val, 16) & MASK
+            for pk in a.poke:
+                addr, val = pk.split("=")
+                val, _, size = val.partition(":")
+                mem.write(int(addr, 16), int(val, 16), int(size or "4"))
             lo, hi = (oaddr, oaddr + osize) if which == "orig" else (dlo, dhi)
             cpu = Cpu(mem, lo, hi, protos, names, t, args, stops if which == "draft" else ())
             try:
@@ -489,7 +508,7 @@ def main():
                 cpu.fault = str(e)
             except RuntimeError as e:
                 cpu.events.append(str(e))
-            written = {k: v for k, v in mem.w.items() if not (STACK_TOP - 0x10000 <= k < STACK_TOP + 16)
+            written = {k: v for k, v in mem.w.items() if poked.get(k) != v and not (STACK_TOP - 0x10000 <= k < STACK_TOP + 16)
                        and not any(lo_ <= k < hi_ for lo_, hi_ in ignore)}
             res.append((cpu, written))
         (co, wo), (cd, wd) = res
