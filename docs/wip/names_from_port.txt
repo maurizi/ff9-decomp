@@ -1457,3 +1457,265 @@ D_801EF260 s_gameoverClearRect  # [code] {0, 0, 320, 224}, cleared by gameover_m
 D_801EF27C s_gameoverVramRect  # [code] {0, 0, 640, 224}, cleared by gameover_initDisp
 # FIELDS include/ovl_65.h Unk801F7A78 renamed RewardsMenu: unk0=active,unk1=running,unk2=closing,unk3=gilSkipped,unk4=done,unk8=state,unk9=expMembers,unkA=screen,unkC=timer,unk10=closeFrames,unk14=getsExp,unk18=getsAp,unk1C=levelsUp,unk20=learns,unk24=rewards,unkAC=wins,unk14C=winShown,unk158=levelWins,unk1D8=learnWins,unk258=levelPopups,unk2B8=learned,unk348=fullWin,unk368=itemsWin,unk36C=frame,unk370=savedOtz,unk374=prim,unk378=primBufs
 # FIELDS include/ovl_65.h Rewards: unk0=expEach,unk4=ap,unk8=card,unkC=itemCount,unk10=items,unk1C=exp,unk4C=apGain,unk7C=gil; Counter: unk0=target,unk4=step,unk8=cur; WinSlot: unk0=win,unk4=queued,unk6=shown,unk8=delay,unkA=ids,unk1C=timer; Popup: unk0=active,unk1=phase,unk2=enabled,unk4=timer,unk14=pending,unk15=count,unk16=y; LearnList: unk10=count,unk11=ids; WinInit: unk0=rect,unk8=shown; BattleResult (ovl_65's view of ovl_0b g_btlRewards): unk0=gil,unk4=exp,unk8=ap,unkA=expMask,unkC=items,unk1C=card
+
+## ovl_39: ovl_39 (save / load menu, menu 4)
+func_801F4414 menuSave_init  # [code] menu 4 (file 0x39 in main's D_8006CA40) entry 0 of main's D_8006C9D4, takes the mode from g_menu.unkC, sets the text bank, opens the card events and starts at the card slot select [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[4], high
+func_801F5280 menuSave_update  # [code] menu 4 entry 1 of main's D_8006C9D4 (per frame), title, help, input, state draw and tick [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[4], high
+func_801F52C0 menuSave_exit  # [code] menu 4 entry 2 of main's D_8006C9D4, closes the card events and restores VRAM and the pad settings [runtime] docs/runtime-findings.md field/menu campaign, D_8006C9D4[4], high
+func_801F4538 menuSave_drawHelp  # [code] help window (label D_80070450) plus the box with the selected card slot name, text 3/4 "slot 1/2", greyed when the slot can't be used [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv.png, high
+func_801F4664 menuSave_inputSlot  # [code] state 1 input (s_menuSaveInputFns[1]), Up/Down pick card slot 1/2 in g_menu.unk2, Cross selects, Circle leaves the menu [runtime] docs/runtime-findings.md field/menu campaign, runs sv_idle/sv_up, high
+func_801F4760 menuSave_drawSlotWindow  # [code] states 1-2 draw (s_menuSaveDrawFns), "slot 1"/"slot 2" list greyed unless menuSave_isSlotReady [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv.png, high
+func_801F4840 menuSave_drawFileList  # [code] states 3-6 draw, the 15 file rows of 60 px with the page scroll and the scroll arrows [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv2.png, high
+func_801F49C4 menuSave_drawFile  # [code] one row, "File00"+n then the drawer for its SaveSlot.state from s_menuSaveFileDrawers [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv2.png, high
+func_801F4B18 menuSave_drawFileInfo  # [code] row drawer for a used file, "/DISC" list, party portraits, leader name and level, play time, gil, location [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv2.png, high
+func_801F4E00 menuSave_drawCursor  # [code] hand cursor at the card slot (state 1) or the file row (states 4/5, blinking in 3) [runtime] docs/runtime-findings.md field/menu campaign, ablation, high
+func_801F4F30 menuSave_updateFileList  # [code] state 4 tick (s_menuSaveUpdateFns[4]), message 0x2D when the card is pulled, else steps the list scroll animation
+func_801F500C menuSave_updateHelp  # [code] help callback given to func_8003556C, text 5-8 "Saves to/Loads from MEMORY CARD slot N", the file help or the confirm help [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5114 menuSave_setFileHelp  # [code] help of the file under the cursor, text 10-12 for empty/other/corrupt, party "name Lv" lines (text 0xD-0x11) for a used one [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5330 menuSave_isLoaded  # [code] returns SaveMenu.loaded, set by menuSave_onFileIoDone after a load (no caller in this overlay)
+func_801F5340 menuSave_isSlotReady  # [code] card status of a slot is CARD_RES_DONE, or also CARD_RES_NEW when allowNew
+func_801F5384 menuSave_backToSlots  # [code] Circle in the file list, fades out to menuSave_returnToSlots
+func_801F53B0 menuSave_close  # [code] restores the func_8002F8E4 mode and closes the menu (func_800325E0)
+func_801F53E0 menuSave_drawTitle  # [code] title window with text[mode] "Save"/"Load" [runtime] docs/runtime-findings.md field/menu campaign, ablation abl_sv.png, high
+func_801F5460 menuSave_drawState  # [code] calls s_menuSaveDrawFns[state] and menuSave_drawCursor [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F54C8 menuSave_input  # [code] message window input in phase 1, s_menuSaveInputFns[state] in phase 2 [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5550 menuSave_updateState  # [code] polls the card (menuSave_cardPoll), refreshes both slots' status, runs s_menuSaveUpdateFns[state], book animation, help visibility [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F55D8 menuSave_inputFileList  # [code] state 4 input, Circle back to the slots, Cross selects the file, Up/Down/L1/R1 move in the list [runtime] docs/runtime-findings.md field/menu campaign, run sv_slot2down, high
+func_801F5688 menuSave_drawScrollRows  # [code] rows scrolling in during a page jump (menuSave_getScrollView)
+func_801F573C menuSave_drawScrollArrows  # [code] blinking sprites 0xB8/0xB9 when the list can scroll up/down [runtime] docs/runtime-findings.md field/menu campaign, ablation, high
+func_801F57E4 menuSave_drawEmptyFile  # [code] row drawer for state 1, text 0x13 "Empty block."
+func_801F5838 menuSave_drawOtherFile  # [code] row drawer for state 2, text 0x14 "Data from another game."
+func_801F588C menuSave_drawCorruptFile  # [code] row drawer for state 3, text 0x15 "Data corrupted."
+func_801F58E0 menuSave_selectSlot  # [code] Cross on a card slot, buzzer and message 0x2D unless usable, else starts the card check [runtime] docs/runtime-findings.md field/menu campaign, Cross in run sv_slot2, high
+func_801F5960 menuSave_selectFile  # [code] Cross on a file, menuSave_loadFile in load mode, else menuSave_saveFile [runtime] docs/runtime-findings.md field/menu campaign, run sv_yesno, high
+func_801F59B8 menuSave_updateHelpVisibility  # [code] func_8003563C(hide) unless ready in state 1, 3 or 4 and nothing loaded
+func_801F5A24 menuSave_returnToSlots  # [code] fade callback, state 1 with help 0x16 "Select MEMORY CARD slot." then fade in
+func_801F5A68 menuSave_drawBookIcon  # [code] SPRT frame idx of the book sheet (s_menuSaveBookFrames, CLUT row 0xE0) plus its DR_TPAGE [runtime] docs/runtime-findings.md field/menu campaign, the animated book of the CHECK window, medium (code + cov)
+func_801F5BE0 menuSave_saveVram  # [code] init, backs up the VRAM CLUT row 0xE0 and the 0x58x33 area at (0x40,0x100) then uploads s_menuSaveBookImage there [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5D00 menuSave_restoreVram  # [code] exit, puts back the VRAM saved by menuSave_saveVram [runtime] docs/runtime-findings.md field/menu campaign, medium (code + cov)
+func_801F5DE0 menuSave_updateBookAnim  # [code] advances the book frame (0-3) every 8 ticks while enabled
+func_801F5E40 menuSave_resetBookAnim  # [code] frame and tick of s_menuSaveBookAnim to 0
+func_801F5E54 menuSave_enableBookAnim  # [code] sets s_menuSaveBookAnim.enabled, returns the old value
+func_801F5E68 menuSave_drawBook  # [code] menuSave_drawBookIcon with the current frame [runtime] docs/runtime-findings.md field/menu campaign, the animated book of the CHECK window, medium (code + cov)
+func_801F5E90 menuSave_openConfirm  # [code] state 3, Yes/No window for question text id with help text ids for Yes and No [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F5FE4 menuSave_drawConfirm  # [code] confirm window content, question plus text 0x21 "Yes" / 0x22 "No" [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F60DC menuSave_drawConfirmCursor  # [code] confirm window overlay, hand at Yes/No once the window is open [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F61B0 menuSave_initConfirm  # [code] clears s_menuSaveConfirm.active
+func_801F61BC menuSave_inputConfirm  # [code] state 3 input, Cross closes with the choice, Circle closes on No, Up/Down toggle [runtime] docs/runtime-findings.md field/menu campaign, medium (code)
+func_801F6274 menuSave_updateConfirm  # [code] state 3 tick, closes the dialog with message 0x2D when the card is pulled
+func_801F62F0 menuSave_setConfirmCallback  # [code] callback run by menuSave_onConfirmClosed on Yes
+func_801F62FC menuSave_isConfirmActive  # [code] getter of s_menuSaveConfirm.active (no caller)
+func_801F630C menuSave_setConfirmActive  # [code] setter of s_menuSaveConfirm.active returning the old value (no caller)
+func_801F6320 menuSave_getConfirmHelp  # [code] help text id of the Yes or No under the cursor
+func_801F6368 menuSave_onConfirmOpened  # [code] confirm window opened callback, phase ready
+func_801F6378 menuSave_onConfirmClosed  # [code] confirm window closed callback, back to state 4 and runs the callback on Yes
+func_801F63D8 menuSave_openCheck  # [code] state 2, opens the "Checking..." window and starts _card_clear or _card_load on the slot by its card status [runtime] docs/runtime-findings.md field/menu campaign, opens the CHECK window in run sv_slot2, medium-high
+func_801F65C4 menuSave_onCardLoaded  # [code] _card_load callback, retries per result (s_menuSaveCheckRetries) then reads the directory or treats the card as unformatted
+func_801F6694 menuSave_readDir  # [code] fills the file list from the directory, FF9 files by their number, other games' files by block count from the end
+func_801F6938 menuSave_onHeaderRead  # [code] read callback of a file's first 0x180 bytes, copies the save header into its row and reads the next FF9 file
+func_801F6A84 menuSave_enterFileList  # [code] fade callback, state 4 with help 0x1A "Select block.", cursor on the newest save
+func_801F6B48 menuSave_findNewest  # [code] marks wrong-version files corrupt and finds the used file with the highest save counter
+func_801F6BD4 menuSave_initCheck  # [code] clears s_menuSaveCheck.active
+func_801F6BE0 menuSave_updateCheck  # [code] state 2 tick, message 0x2D when the card is pulled, else s_menuSaveCheckSteps[step]
+func_801F6C50 menuSave_isCheckActive  # [code] getter of s_menuSaveCheck.active (no caller)
+func_801F6C60 menuSave_setCheckActive  # [code] setter of s_menuSaveCheck.active returning the old value (no caller)
+func_801F6C74 menuSave_findLastEmpty  # [code] last row still SAVE_FILE_EMPTY, for other games' blocks
+func_801F6CD0 menuSave_findUsed  # [code] row of the n-th used file
+func_801F6D24 menuSave_parseFileNumber  # [code] the two ASCII digits at 0x12 of a card file name
+func_801F6D4C menuSave_checkWaitClear  # [code] check step 1 (s_menuSaveCheckSteps), once _card_clear is done starts _card_load
+func_801F6DAC menuSave_onCardFormatted  # [code] _card_load succeeded, formatted flag, reads the directory and the FF9 files' headers
+func_801F6E1C menuSave_onCardUnformatted  # [code] _card_load gave CARD_RES_NEW, load mode says 0x30 "No FF9 save data.", save mode goes to the list (format on save)
+func_801F6E68 menuSave_retryCheck  # [code] repeats _card_clear or _card_load after a failed result
+func_801F6EDC menuSave_drawCheck  # [code] "Checking..." window content, book and text 0x12 "Do not remove MEMORY CARDs..."
+func_801F6F3C menuSave_onCheckOpened  # [code] CHECK window opened callback, help 0x17 "Checking..."
+func_801F6F74 menuSave_onCheckClosed  # [code] CHECK window closed callback (empty)
+func_801F6F7C menuSave_checkSpace  # [code] save needs a free block (0x2F "MEMORY CARD is full."), load needs an FF9 file (0x30)
+func_801F6FE8 menuSave_countFiles  # [code] reads the directory 3 times until two counts agree, then _card_info
+func_801F7084 menuSave_finishCheck  # [code] check done, menuSave_findNewest then fades over to menuSave_enterFileList with SE 0x414
+func_801F70E4 menuSave_onFileListFadedIn  # [code] fade-in callback of the file list, phase ready unless a message is up
+func_801F7108 menuSave_readHeader  # [code] opens a file and reads its first 0x180 bytes into s_menuSaveCheck.buf
+func_801F7190 menuSave_copyHeader  # [code] SaveHeader read from the card into a file row
+func_801F72B4 menuSave_checkError  # [code] closes the CHECK window and shows an error message
+func_801F7300 menuSave_checkNotice  # [code] closes the CHECK window and shows a NOTICE message
+func_801F734C menuSave_initSavedMsg  # [code] clears s_menuSaveSavedMsg
+func_801F7364 menuSave_openSavedMsg  # [code] state 6, small window with text 0x2C "Data saved." next to the file row
+func_801F740C menuSave_inputSavedMsg  # [code] state 6 input, Circle or Cross closes the "Data saved." window
+func_801F7474 menuSave_updateSavedMsg  # [code] state 6 tick, closes the "Data saved." window after 0x40 frames
+func_801F74F4 menuSave_onSavedMsgOpened  # [code] "Data saved." window opened callback, state 6
+func_801F7510 menuSave_onSavedMsgClosed  # [code] "Data saved." window closed callback, back to state 4
+func_801F7560 menuSave_drawSavedMsg  # [code] "Data saved." window content, text 0x2C centred
+func_801F75C8 menuSave_openMessage  # [code] message window for text id with a title, clears every row's state
+func_801F770C menuSave_initMessage  # [code] clears s_menuSaveMessage.active
+func_801F7718 menuSave_inputMessage  # [code] phase 1 input, Circle or Cross closes the message
+func_801F7780 menuSave_showError  # [string] message window labelled "ERROR" (D_80070440, entry 17 of main's label table D_800703FC), used for every failed card access
+func_801F77A8 menuSave_showNotice  # [string] message window labelled "NOTICE" (D_8007048C, entry 36 of D_800703FC), used for card missing, card full and no FF9 data
+func_801F77D0 menuSave_setMessageActive  # [code] setter of s_menuSaveMessage.active returning the old value (no caller)
+func_801F77E4 menuSave_isMessageActive  # [code] getter of s_menuSaveMessage.active
+func_801F77F4 menuSave_drawMessage  # [code] message window content
+func_801F7830 menuSave_onMessageOpened  # [code] message window opened callback, phase 1 (message input)
+func_801F7840 menuSave_onMessageClosed  # [code] message window closed callback, fades back to the slots in the states marked in s_menuSaveResetAfterMsg
+func_801F78CC menuSave_resetToSlots  # [code] fade callback, state 1 with help 0x16 then fade in
+func_801F7918 menuSave_onSlotsFadedIn  # [code] fade-in callback of menuSave_resetToSlots, phase ready
+func_801F7928 menuSave_loadImage  # [code] init, func_80028720(s_menuSaveImage, 10)
+func_801F7950 menuSave_freeImage  # [code] exit, func_8002886C (pair of menuSave_loadImage)
+func_801F7970 menuSave_getPortrait  # [code] portrait id stored in a SaveMember, drawn by func_80028204 in menuSave_drawFileInfo
+func_801F79F4 menuSave_startAccess  # [code] state 5, opens the access window (title s_menuSaveAccessTitles[mode]) for a save (0) or load (1)
+func_801F7AF4 menuSave_updateSave  # [code] access stages of a save, formats first when the card is unformatted ("Formatting..."), then writes ("Saving...")
+func_801F7C20 menuSave_updateLoad  # [code] access stages of a load, help 0x1E "Loading..." then reads
+func_801F7CD0 menuSave_drawAccess  # [code] access window content, book, "Do not remove..." and the progress gauge, or 0x2A "Formatting MEMORY CARD."
+func_801F7E68 menuSave_writeFile  # [code] creates the file for an empty row (name from menuSave_getFilePrefix), opens it and writes the 0x1400-byte save buffer
+func_801F7FD4 menuSave_drawGauge  # [code] progress bar, 3 LINE_F2 fill rows of length pos plus left cap, tiled middle and right cap sprites from D_80068988 (same code as ovl_34 0x801EFC20)
+func_801F830C menuSave_initAccess  # [code] clears s_menuSaveAccess.active
+func_801F8318 menuSave_updateAccess  # [code] state 5 tick, message 0x2D when the card is pulled, else menuSave_updateSave or menuSave_updateLoad
+func_801F8394 menuSave_isAccessActive  # [code] getter of s_menuSaveAccess.active (no caller)
+func_801F83A4 menuSave_setAccessActive  # [code] setter of s_menuSaveAccess.active returning the old value (no caller)
+func_801F83B8 menuSave_getFilePrefix  # [code] copy of "BASLUS-01251", the first 12 characters of every FF9 card file name
+func_801F8408 menuSave_onAccessOpened  # [code] access window opened callback, stage 1
+func_801F8424 menuSave_onAccessClosed  # [code] access window closed callback, "Data saved." after a save, state 4 after a load
+func_801F8478 menuSave_readFile  # [code] opens the file of the selected row and reads 0x1400 bytes into the save buffer
+func_801F8524 menuSave_formatCard  # [code] _card_format then _card_load with menuSave_onFormatDone, 0x32 "Failed to format." on error
+func_801F8588 menuSave_onFileIo  # [code] read/write completion callback, closes the file then done or failed by the card result
+func_801F8610 menuSave_onFileIoDone  # [code] saved, updates the row and plays SE 0x4ED, or loaded, applies the data and closes the menu
+func_801F86C0 menuSave_onFileIoFailed  # [code] 0x33 "Failed to save data." / 0x34 "Failed to load data." for results 1-3
+func_801F8704 menuSave_storeSavedFile  # [code] after a save, the row gets the new file name, SAVE_FILE_USED and the header just written
+func_801F889C menuSave_abortAccess  # [code] closes the file and the access window and shows an error message
+func_801F8904 menuSave_onFormatDone  # [code] _card_load callback after the format, goes on to write ("Saving...") or fails with 0x33
+func_801F89A0 menuSave_onAccessAborted  # [code] access window closed callback after an error
+func_801F89B8 menuSave_getListView  # [code] copy of main's menuList_getView with 60-pixel rows
+func_801F8B10 menuSave_getScrollView  # [code] rows of the page coming in during a page jump (MenuList.unk8 & 4)
+func_801F8BD4 menuSave_getScrollClip  # [code] clip rect of the incoming page during a page jump (same code as ovl_34 0x801F043C)
+func_801F8C34 menuSave_pageUp  # [code] copy of main's menuList_pageUp (pad 0x100000) with SE_CURSOR (same code as ovl_34 0x801F02CC)
+func_801F8CE8 menuSave_pageDown  # [code] copy of main's menuList_pageDown (pad 0x200000) with SE_CURSOR (same code as ovl_34 0x801F0380)
+func_801F8DA4 menuSave_buildHeader  # [code] card file header plus the SaveHeader shown in the file list (version, disc, leader, time, gil, location, party)
+func_801F9024 menuSave_getLocation  # [code] location name for the header, GameData.unk80C, "Start of DISC N" (text 0x36+) in mode 2, text 0x20 when none
+func_801F9120 menuSave_buildCardHeader  # [code] PS1 card file header, "SC", icon flag 0x11, 1 block, title "FF9/FILEnn/hhmm/", icon picked by the play time
+func_801F94D0 menuSave_saveFile  # [code] Cross on a file when saving, format question (0x23+slot) or overwrite question (0x27), or saves straight away [runtime] docs/runtime-findings.md field/menu campaign, run sv_yesno (saveFile(2, 2) wrote FILE03), high
+func_801F95E4 menuSave_startSave  # [code] builds the save buffer, header, game data and CRC-16, then menuSave_startAccess(0)
+func_801F963C menuSave_packData  # [code] game data part of the save buffer, state, events, party, misc, items, cards
+func_801F9688 menuSave_getDiscBit  # [code] 1/2/4/8 from the story counter g_evtGlobalVars.h[0], shown as the "/DISC" list
+func_801F96CC menuSave_initCrcTable  # [code] reflected CRC-16 table, polynomial 0x8408
+func_801F973C menuSave_crc16  # [code] CRC-16 over n bytes, initial 0xFFFF
+func_801F9788 menuSave_loadFile  # [code] Cross on a file when loading, used files only (buzzer otherwise) [runtime] docs/runtime-findings.md field/menu campaign, the load-mode branch of menuSave_selectFile, high
+func_801F9804 menuSave_applyLoaded  # [code] checks the buffer's CRC-16 then unpacks it into the game state, 0x35 "Data corrupted." otherwise
+func_801F98D0 menuSave_startLoad  # [code] menuSave_startAccess(1)
+func_801F9904 menuSave_packParty  # [code] characters, party, gil and the next GameData fields into SaveParty
+func_801F99FC menuSave_unpackParty  # [code] reverse of menuSave_packParty
+func_801F9B00 menuSave_packState  # [code] GameState mode and unkA, field/battle ids into SaveState
+func_801F9BEC menuSave_unpackState  # [code] reverse of menuSave_packState
+func_801F9C58 menuSave_copyCards  # [code] copies the D_80083248 block (func_80062824), the Tetra Master card list of ovl_0d/ovl_36 (100 cards)
+func_801F9CE8 menuSave_packCards  # [code] card list into the save buffer
+func_801F9D18 menuSave_unpackCards  # [code] card list from the save buffer
+func_801F9D48 menuSave_packEvents  # [code] g_evtGlobalVars and D_8007AEC4 into SaveEvents
+func_801F9DF8 menuSave_unpackEvents  # [code] reverse of menuSave_packEvents
+func_801F9EA8 menuSave_packItems  # [code] GameData.items, unk774 and GameState.unk24 into SaveItems
+func_801F9F5C menuSave_unpackItems  # [code] reverse of menuSave_packItems
+func_801FA01C menuSave_packMisc  # [code] GameData unk844, unk880, unk892 into SaveMisc
+func_801FA078 menuSave_unpackMisc  # [code] reverse of menuSave_packMisc
+func_801FA0C8 menuSave_cardInit  # [code] clears the card op, the info state and the info callbacks
+func_801FA0F4 menuSave_firstFile  # [code] firstfile on "bu00*" or "bu10*"
+func_801FA184 menuSave_nextFile  # [code] nextfile wrapper
+func_801FA1C4 menuSave_readDirectory  # [code] fills consecutive DIRENTRYs with firstfile/nextfile, returns the count
+func_801FA21C menuSave_getCardStatus  # [code] last _card_info result of channel 0 or 0x10
+func_801FA240 menuSave_cardInfoSync  # [code] _card_info and waits for its software card event
+func_801FA290 menuSave_getCardOp  # [code] getter of s_menuSaveCardOp (no caller)
+func_801FA2A0 menuSave_resetReadProgress  # [code] clears s_menuSaveSectorsDone (same body as menuSave_resetWriteProgress)
+func_801FA2AC menuSave_resetWriteProgress  # [code] clears s_menuSaveSectorsDone (same body as menuSave_resetReadProgress)
+func_801FA2B8 menuSave_getReadProgress  # [code] sectors done, used by menuSave_drawAccess in load mode
+func_801FA2C8 menuSave_getWriteProgress  # [code] sectors done, used by menuSave_drawAccess in save mode
+func_801FA2D8 menuSave_isCardBusy  # [code] s_menuSaveCardOp != CARD_OP_INFO
+func_801FA2E8 menuSave_cardClearSync  # [code] _card_clear and waits for its hardware card event
+func_801FA350 menuSave_cardLoad  # [code] menuSave_cardLoadStart and sets the completion callback
+func_801FA37C menuSave_cardLoadStart  # [code] _card_load on a channel, op CARD_OP_LOAD
+func_801FA3D8 menuSave_openFile  # [code] open "bu00"/"bu10" + name, mode 0x8003 (read, write, async)
+func_801FA478 menuSave_closeFile  # [code] close wrapper
+func_801FA4B8 menuSave_writeAsync  # [code] menuSave_writeStart and sets the completion callback
+func_801FA4E4 menuSave_writeStart  # [code] sets fd, buffer and sector count, writes the first 0x80-byte sector
+func_801FA53C menuSave_writeSector  # [code] write of one 0x80-byte sector, op CARD_OP_WRITE
+func_801FA5A4 menuSave_readAsync  # [code] menuSave_readStart and sets the completion callback
+func_801FA5D0 menuSave_readStart  # [code] sets fd, buffer and sector count, reads the first 0x80-byte sector
+func_801FA644 menuSave_readSector  # [code] read of one 0x80-byte sector, op CARD_OP_READ
+func_801FA6AC menuSave_createFile  # [code] open "bu00"/"bu10" + name with mode 0x10200 (create, 1 block) and closes it
+func_801FA754 menuSave_cardFormat  # [code] _card_format wrapper
+func_801FA794 menuSave_cardPoll  # [code] per frame, polls _card_info on both slots while idle, else the pending load or the next read/write sector, then the callback
+func_801FAAE4 menuSave_getCardResult  # [code] last card event result
+func_801FAAF4 menuSave_cardIdle  # [code] op CARD_OP_INFO, info not pending
+func_801FAB08 menuSave_testSwCard  # [code] which SwCARD event fired, IOE/ERROR/TIMOUT/NEW as 0-3, or -1
+func_801FABB8 menuSave_testHwCard  # [code] which HwCARD event fired, IOE/ERROR/TIMOUT/NEW as 0-3, or -1
+func_801FAC68 menuSave_openCardEvents  # [code] OpenEvent/EnableEvent of the 4 SwCARD and 4 HwCARD events
+func_801FAE1C menuSave_clearSwCard  # [code] TestEvent on the 4 SwCARD events
+func_801FAE74 menuSave_clearHwCard  # [code] TestEvent on the 4 HwCARD events
+func_801FAECC menuSave_closeCardEvents  # [code] CloseEvent of the 8 card events
+D_801FB1A8 s_menuSave  # [code] save menu state, see SaveMenu in include/ovl_39.h [runtime] docs/runtime-findings.md field/menu campaign, D_801FB1A8 state seen in runs sv_idle/sv_up/sv_slot2, high
+D_801FBAC8 s_menuSaveBookAnim  # [code] book animation (menuSave_updateBookAnim)
+D_801FBACC s_menuSaveVramBackup  # [code] VRAM saved by menuSave_saveVram, put back by menuSave_restoreVram
+D_801FBEE0 s_menuSaveConfirm  # [code] Yes/No dialog state (menuSave_openConfirm)
+D_801FBEF8 s_menuSaveCheck  # [code] card check state (menuSave_openCheck)
+D_801FC348 s_menuSaveSavedMsg  # [code] "Data saved." window state (menuSave_openSavedMsg)
+D_801FC358 s_menuSaveMessage  # [code] message window state (menuSave_openMessage)
+D_801FC368 s_menuSaveFilePrefix  # [code] buffer of menuSave_getFilePrefix
+D_801FC388 s_menuSaveAccess  # [code] save/load/format access state (menuSave_startAccess)
+D_801FC3B8 s_menuSaveLocationBuf  # [code] location name buffer of menuSave_getLocation
+D_801FC3E0 s_menuSaveCrcTable  # [code] CRC-16 table (menuSave_initCrcTable)
+D_801FB0A8 s_menuSaveHelpBuf  # [code] help text built by menuSave_setFileHelp
+D_801FB074 s_menuSaveCardOp  # [code] pending card operation polled by menuSave_cardPoll, CARD_OP_*
+D_801FB078 s_menuSaveCardInfoBusy  # [code] _card_info issued, waiting for its event (menuSave_cardPoll)
+D_801FB07C s_menuSaveCardInfoChan  # [code] channel of the last _card_info, alternates 0 and 0x10
+D_801FB080 s_menuSaveFileChan  # [code] channel given to menuSave_openFile (not read)
+D_801FB084 s_menuSaveSectorsDone  # [code] 0x80-byte sectors read or written so far, the access gauge
+D_801FB088 s_menuSaveCardStatus  # [code] last _card_info result per slot, read by menuSave_getCardStatus
+D_801FB090 s_menuSaveCardTimeouts  # [code] per slot, a timeout only counts after one retry (menuSave_cardPoll)
+D_801FB098 s_menuSaveCardCallback  # [code] completion callback of a card load/read/write
+D_801FB09C s_menuSaveInfoCallback1  # [code] slot 1 callback after a _card_info result (menuSave_cardPoll), never set
+D_801FB0A0 s_menuSaveInfoCallback2  # [code] slot 2 callback after a _card_info result (menuSave_cardPoll), never set
+D_801FC5E0 s_menuSaveSectorsLeft  # [code] sectors after the current one (menuSave_readStart/writeStart)
+D_801FC5E4 s_menuSaveFd  # [code] file of the current read/write
+D_801FC5E8 s_menuSaveIoBuf  # [code] buffer address of the current sector
+D_801FC5EC s_menuSaveCardChan  # [code] channel of the current _card_info/_card_load
+D_801FC5F4 s_menuSaveSwEventIoe  # [code] SwCARD EvSpIOE event (menuSave_openCardEvents), result CARD_RES_DONE of menuSave_testSwCard
+D_801FC5F8 s_menuSaveSwEventError  # [code] SwCARD EvSpERROR event (menuSave_openCardEvents)
+D_801FC5FC s_menuSaveSwEventTimeout  # [code] SwCARD EvSpTIMOUT event (menuSave_openCardEvents)
+D_801FC600 s_menuSaveSwEventNew  # [code] SwCARD EvSpNEW event (menuSave_openCardEvents)
+D_801FC604 s_menuSaveCardResult  # [code] last card event result (menuSave_getCardResult)
+D_801FC608 s_menuSaveHwEventIoe  # [code] HwCARD EvSpIOE event (menuSave_openCardEvents), result CARD_RES_DONE of menuSave_testHwCard
+D_801FC60C s_menuSaveHwEventError  # [code] HwCARD EvSpERROR event (menuSave_openCardEvents)
+D_801FC610 s_menuSaveHwEventTimeout  # [code] HwCARD EvSpTIMOUT event (menuSave_openCardEvents)
+D_801FC614 s_menuSaveHwEventNew  # [code] HwCARD EvSpNEW event (menuSave_openCardEvents)
+D_801FAF74 s_menuSaveTitleRect  # [code] RECT of the title window (menuSave_drawTitle)
+D_801FAF7C s_menuSaveHelpRect  # [code] RECT of the help window (menuSave_drawHelp)
+D_801FAF84 s_menuSaveSlotNameRect  # [code] RECT of the selected card slot name box (menuSave_drawHelp)
+D_801FAFE0 s_menuSaveSlotWindowRect  # [code] RECT of the card slot list (menuSave_drawSlotWindow)
+D_801FB00C s_menuSaveCheckRect  # [code] RECT of the "Checking..." window (menuSave_openCheck)
+D_801FB030 s_menuSaveSavedMsgRect  # [code] RECT of the "Data saved." window (menuSave_openSavedMsg)
+D_801FB058 s_menuSaveAccessRect  # [code] RECT of the access window (menuSave_startAccess)
+D_801EDF14 s_menuSaveSlotHelpRect  # [code] help window RECT given to func_80035580 in state 1 (menuSave_updateHelp)
+D_801FAF8C s_menuSaveInputFns  # [code] input function per state (menuSave_input)
+D_801FAFA8 s_menuSaveDrawFns  # [code] draw function per state (menuSave_drawState)
+D_801FAFC4 s_menuSaveUpdateFns  # [code] tick function per state (menuSave_updateState)
+D_801FAFE8 s_menuSaveFileDrawers  # [code] row drawer per SaveSlot.state (menuSave_drawFile)
+D_801FAFFC s_menuSaveBookFrames  # [code] u, v, w, h of the 4 book frames (menuSave_drawBookIcon)
+D_801FB014 s_menuSaveCheckSteps  # [code] function per check step (menuSave_updateCheck)
+D_801FB02C s_menuSaveCheckRetries  # [code] tries allowed per card result (menuSave_onCardLoaded)
+D_801FB038 s_menuSaveResetAfterMsg  # [code] per state, nonzero = fade back to the card slots when a message closes (menuSave_onMessageClosed)
+D_801FB040 s_menuSavePortraitIds  # [code] portrait per func_80028954 result (menuSave_getPortrait)
+D_801FB050 s_menuSaveAccessTitles  # [string] label index into main's D_800703FC per access mode, 0x2B "SAVE" and 0x1B "LOAD" (menuSave_startAccess)
+D_801FB060 s_menuSaveGaugeTexWindow  # [code] texture window reset after the gauge middle (menuSave_drawGauge)
+D_801FB068 s_menuSaveGaugeColors  # [code] colours of the 3 gauge fill lines (menuSave_drawGauge)
+D_801EE4D4 s_menuSaveImage  # [code] image data passed to func_80028720 by menuSave_loadImage
+D_801F2854 s_menuSaveBookImage  # [code] CLUT and 0x58x33 image of the book frames (menuSave_saveVram)
+D_801F4104 s_menuSaveIconEven  # [code] card file icon for an even frame count (menuSave_buildCardHeader)
+D_801F41A4 s_menuSaveIconOdd  # [code] card file icon for an odd frame count (menuSave_buildCardHeader)
+D_801F4244 s_menuSaveIconMinute  # [code] card file icon when the play time is a whole minute (menuSave_buildCardHeader)
+D_801F42E4 s_menuSaveIconHour  # [code] card file icon when the play time is a whole hour (menuSave_buildCardHeader)
+D_801F43A8 s_menuSaveProductCode  # [string] "BASLUS-01251", the card file name prefix (menuSave_getFilePrefix)
+D_801F43B8 s_menuSaveTitleTemplate  # [code] SJIS card file title "FF9/FILE00/0000/" (menuSave_buildCardHeader)
+# FIELDS include/ovl_39.h SaveMenu: unk0=mode,unk1=state,unk2=phase,unk3=file,unk4=cardStatus,unk6=formatted,unk7=loaded,unk8=showCursor,unkC=newestCounter,unk10=newestFile,unk14=savedFadeOtz,unk20=help,unk24=list,unk34=files
+# FIELDS include/ovl_39.h SaveFile (was SaveSlot): unk0=version,unk4=fileName,unk1A=state,unk1B=index,unk1C=discs,unk1D=level,unk1E=name,unk28=location,unk44=cursor,unk48=windowColor,unk4C=counter,unk50=playTime,unk54=gil,unk58=party
+# FIELDS include/ovl_39.h SaveHeader: unk0=version,unk4=discs,unk5=level,unk6=name,unk10=location,unk2C=playTime,unk30=gil,unk34=party,unk74=windowColor,unk78=counter,unk7C=cursor (SaveHdr merged into it)
+# FIELDS include/ovl_39.h SaveMember: unk0=present,unk1=portrait,unk2=name,unkC=level; SaveFileName: unk0=name,unk14=term; DirEnt: unk0=name,unk14=attr,unk18=size,unk1C=next,unk20=head,unk24=system
+# FIELDS include/ovl_39.h BookAnim (was Unk801FBAC8): unk0=enabled,unk1=tick,unk2=frame; SaveConfirm (was Unk801FBEE0): unk0=active,unk1=choice,unk2=textSize,unk4=text,unk8=win,unkC=onYes,unk10=yesHelp,unk12=noHelp
+# FIELDS include/ovl_39.h SaveCheck (was Unk801FBEF8): unk0=active,unk1=step,unk2=file,unk3=tries,unk4=triesPerResult,unk8=dirCount,unkC=otherBlocks,unk10=ff9Files,unk14=headersRead,unk18=fd,unk1C=win,unk20=dir,unk2D0=buf
+# FIELDS include/ovl_39.h SavedMsg (was Unk801FC348): unk0=active,unk4=timer,unk8=win; SaveMessage (was Unk801FC358): unk0=active,unk2=textSize,unk4=win,unk8=text
+# FIELDS include/ovl_39.h SaveAccess (was Unk801FC388): unk0=active,unk2=stage,unk3=mode,unk4=lastProgress,unk5=progressTicks,unk6=fileName,unk1C=win,unk20=fd,unk24=delay
+# FIELDS include/ovl_39.h SaveState (was Unk801F9BEC): unk0=mode,unk2=reserved2,unk20=fieldId,unk24=battleId,unk2C=reserved2C; SaveEvents: unk0=vars; SaveParty: unk0=characters,unk510=party,unk516=firstUseFxSeen,unk518=gil; SaveMisc (was Unk801FA078); SaveItems: unk0=items,unk200=flags; SaveData: unk0=state,unk40=events,unk850=party,unkD88=misc,unkDA0=items,unkFF8=cards; Ovl39Sprite: unk0=u,unk1=v,unk2=w,unk3=h
+# FIELDS include/ovl_39.h SaveBuf: unk0=card (CardFileHeader: magic,iconFlag,blocks,title,pad44,icon),unk100=hdr,unk180=data,unk13FE=crc; the buffer at 0x801FCB00 is SAVE_BUF, D_801FDEFE is SAVE_BUF->crc
+# D_801FB08C is s_menuSaveCardStatus[1]; D_801FBF18 is s_menuSaveCheck.dir; D_80077DB2 is g_menu.unk2, D_80077DC0 is g_menu.unk10 (now written that way)
