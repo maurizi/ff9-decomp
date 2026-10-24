@@ -6,86 +6,129 @@
  * different things in different overlays, so they live here, not in ff9.h. */
 #include "ff9.h"
 
-/* Shop hub state (s_shop). */
+/* Shop.kind (shop_getKind): row of s_shopModes */
+enum { SHOP_KIND_ITEMS, SHOP_KIND_EQUIPMENT, SHOP_KIND_SYNTH };
+#define SHOP_ID_SYNTH   0x20 /* shop ids from here on are synthesis shops */
+#define SHOP_LIST_SIZE  0x20 /* items per s_shopItems entry, recipes per synthesis shop */
+#define SHOP_RECIPE_COUNT 0x40
+#define SHOP_MODE_COUNT 3    /* s_shopModes options per kind (the last menu option, Exit, has none) */
+enum { SHOP_MODE_INIT, SHOP_MODE_UPDATE, SHOP_MODE_EXIT }; /* s_shopModes[kind][option][] */
+#define SHOP_OTZ_MENU 5
+#define SHOP_OTZ_MODE 0x24
+#define SHOP_FADE_OTZ 7      /* func_8002F8E4 while the shop is open */
+
+/* ShopBuy/ShopSynth/ShopSell.state: index into their input tables */
+enum { SHOP_ST_NONE, SHOP_ST_LIST, SHOP_ST_QUANTITY };
+#define SHOP_QUANTITY_STEP 10 /* Up/Down in the quantity window */
+#define ITEM_NONE      0xFF
+#define ITEM_MAX_COUNT 99
+#define GIL_MAX        9999999
+
+/* g_shopText ids */
+#define SHOP_TEXT_TITLE        0    /* + kind: "Shop", "Weapons", "Synth" */
+                                    /* 3-5 "Buy" "Sell" "Exit", 6-7 "Synth" "Exit": s_shopMenuText[kind] + option */
+                                    /* 8-0xC: their help, s_shopMenuHelpText[kind] + option */
+#define SHOP_TEXT_WELCOME      0xD  /* "Welcome!" */
+#define SHOP_TEXT_ANYTHING_ELSE 0xE /* "Anything else I can help you with?" */
+#define SHOP_TEXT_BUY_WHAT     0xF  /* "What would you like to buy?" */
+#define SHOP_TEXT_SELL_WHAT    0x10 /* "What would you like to sell?" */
+#define SHOP_TEXT_SYNTH_WHAT   0x11 /* "What would you like to synthesize?" */
+#define SHOP_TEXT_BUY_HOW_MANY 0x12 /* "How many?" (buy), 0x13 sell, 0x14 synthesis */
+#define SHOP_TEXT_SELL_HOW_MANY 0x13
+#define SHOP_TEXT_SYNTH_HOW_MANY 0x14
+                                    /* 0x15-0x18 "Funds" "Stock" "Equipped" "Required Item": INFO rows */
+#define SHOP_TEXT_QUANTITY     0x19 /* "Quantity" */
+#define SHOP_TEXT_PRICE        0x1A /* "Price" */
+/* g_shopBuyText / g_shopSellText id 3, g_shopSynthText id 4: "Select quantity" help of the quantity window */
+#define SHOP_BUY_TEXT_QUANTITY_HELP   3
+#define SHOP_SELL_TEXT_QUANTITY_HELP  3
+#define SHOP_SYNTH_TEXT_QUANTITY_HELP 4
+
+/* s_shopIcons entries (shop_drawStatIcon): 0-4 per equip slot, then the comparison arrows */
+#define SHOP_ICON_UP   5
+#define SHOP_ICON_DOWN 6
+#define EQUIP_SLOT_ACCESSORY 4 /* func_80028014: 0 weapon, 1-3 armor, 4 accessory (no stat shown) */
+
+/* Shop state (s_shop). */
 typedef struct {
-    u8 unk0; /* shop kind */
-    u8 unk1; /* cursor */
-    u8 unk2; /* option count */
-    u8 unk3; /* sub-menu running */
-    u8 unk4; /* sub-menu has been used */
+    u8 kind;       /* SHOP_KIND_* */
+    u8 cursor;     /* menu option: an s_shopModes entry, the last one is Exit */
+    u8 entryCount; /* menu options (shop_countEntries) */
+    u8 inMode;     /* a mode (Buy/Sell/Synth) is running */
+    u8 visits;     /* modes entered: text SHOP_TEXT_ANYTHING_ELSE instead of SHOP_TEXT_WELCOME */
     u8 pad5[3];
-    s32 unk8;  /* shop id (D_80077DBC) */
-    s32 unkC;  /* saved func_8002F8E4 mode */
-    u8 *unk10; /* title text */
-    s32 unk14; /* party member count */
-    s8 unk18[8]; /* party member indices */
-    s32 unk20;   /* OT layer */
-} ShopHub;
-extern ShopHub s_shop;
+    s32 id;        /* shop id (g_menu.unkC when the menu opens) */
+    s32 savedOtz;  /* func_8002F8E4 (fade otz) before the shop set its own */
+    u8 *help;      /* message of the top window (shop_setHelp) */
+    s32 memberCount;
+    s8 members[8]; /* character indices for the stat comparison (shop_collectMembers) */
+    s32 messageOtz; /* otz of the message window: SHOP_OTZ_MENU, SHOP_OTZ_MODE in a mode */
+} Shop;
+extern Shop s_shop;
 
 /* Buy menu (s_shopBuy). */
 typedef struct {
-    u8 unk0; /* state, index into s_shopBuyInputFuncs */
-    u8 unk1; /* item count */
-    u8 unk2; /* quantity */
-    u8 unk3; /* max quantity */
-    u8 unk4; /* sells equipment */
+    u8 state;       /* SHOP_ST_*, index into s_shopBuyInputFuncs */
+    u8 count;       /* items in the list */
+    u8 quantity;
+    u8 maxQuantity;
+    u8 hasEquipment; /* the list has equipment: shorter list, party window */
     u8 pad5[3];
-    RECT unk8;
-    RECT unk10;
-    RECT unk18;
-    RECT unk20;
-    MenuList unk28;
-    Window *unk38;
-    u8 *unk3C; /* item list */
+    RECT infoRect;     /* shopBuy_drawInfo */
+    RECT listRect;     /* shopBuy_drawList */
+    RECT partyRect;    /* shopBuy_drawParty */
+    RECT quantityRect; /* quantity window */
+    MenuList list;
+    Window *quantityWin;
+    u8 *items; /* s_shopItems[id] */
 } ShopBuy;
 extern ShopBuy s_shopBuy;
 
 typedef struct {
-    u16 unk0; /* price */
-    u8 unk2[2]; /* ingredients */
-    u8 unk4;  /* result */
-    u8 unk5;  /* shop mask */
+    u16 price;
+    u8 ingredients[2]; /* item ids, ITEM_NONE = unused */
+    u8 product;        /* item id */
+    u8 shopMask;       /* bit (shop id - SHOP_ID_SYNTH) per synthesis shop that offers it */
 } SynthRecipe;
 extern SynthRecipe s_shopRecipes[64];
 
 /* Synthesis menu (s_shopSynth). */
 typedef struct {
-    u8 unk0; /* state, index into s_shopSynthInputFuncs */
-    u8 unk1;
-    u8 unk2; /* quantity */
-    u8 unk3; /* max quantity */
-    u8 unk4;
+    u8 state;       /* SHOP_ST_*, index into s_shopSynthInputFuncs */
+    u8 count;       /* recipes in the list */
+    u8 quantity;
+    u8 maxQuantity;
+    u8 hasEquipment; /* a product is equipment: shorter list, party window */
     u8 pad5[3];
-    RECT unk8;
-    RECT unk10;
-    RECT unk18;
-    RECT unk20;
-    MenuList unk28;
-    Window *unk38;
-    SynthRecipe unk3C[32];
+    RECT infoRect;     /* shopSynth_drawInfo */
+    RECT listRect;     /* shopSynth_drawList */
+    RECT partyRect;    /* shopSynth_drawParty */
+    RECT quantityRect; /* quantity window */
+    MenuList list;
+    Window *quantityWin;
+    SynthRecipe recipes[SHOP_LIST_SIZE];
     u8 padFC[4];
 } ShopSynth;
 extern ShopSynth s_shopSynth;
 
 /* Sell menu (s_shopSell). */
 typedef struct {
-    u8 unk0; /* state, index into s_shopSellInputFuncs */
-    u8 unk1; /* quantity */
-    u8 unk2; /* max quantity */
+    u8 state;       /* SHOP_ST_*, index into s_shopSellInputFuncs */
+    u8 quantity;
+    u8 maxQuantity;
     u8 pad3;
-    MenuList unk4;
-    RECT unk14;
-    RECT unk1C[2];
-    Window *unk2C[2];
+    MenuList list;  /* rows of 2 inventory slots */
+    RECT listRect;
+    RECT winRects[2]; /* QUANTITY, INFO */
+    Window *wins[2];
 } ShopSell;
 extern ShopSell s_shopSell;
 
 typedef struct {
-    s32 unk0; /* OT layer */
-    void (*unk4)(Window *);
-    s32 unk8;
-    s32 unkC; /* text index into D_800703FC */
+    s32 style; /* func_8002DC54 3rd argument */
+    void (*draw)(Window *);
+    s32 otz;
+    s32 label; /* index into D_800703FC */
 } ShopWinDef;
 extern ShopWinDef s_shopSellWindows[2];
 void shopSell_onQuantityOpened(Window *);
