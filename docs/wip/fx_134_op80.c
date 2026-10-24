@@ -1,4 +1,4 @@
-/* Pass 4: 622 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 598 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -500,11 +500,11 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             k_c4_w3 = ex->math_sin(a_c4_w1);
             pos3.vx = work->unk24.vx;
             pos3.vy = work->unk24.vy;
+            pos3.vz = work->unk24.vz;
             rot3.pad = 0;
             rot3.vy = 0;
             rot3.vx = 0;
             rot3.vz = frame << 5;
-            pos3.vz = work->unk24.vz;
             for (i_c4 = 0; i_c4 < 0x10; i_c4++) {
                 pos3.vy -= 0x19F;
                 ex->btlfx_rand();
@@ -532,7 +532,7 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             ex->func_800D1BC4(0xFFE, (u8 *)ex->btlfx_getFileData(entry->unk8, 0x20), 0x28 - a_c4_p2, 0x28, 0, 1, -1);
             work->unk58 += 4 + ((t * 10) >> 12);
             func_801E7940(0, work->unk58 % 320, 0xA0 - (t >> 8), 0x80, 0x80, 0x80, 0x9C, 0x3E00, 0x80, 0, 1, 0);
-            func_801E7940(0xFFF, (work->unk58 / 320) * 0xA0 - (work->unk58 >> 1), (t >> 9) + 0x8C, 0x80, 0x80, 0x80, 0x9C,
+            func_801E7940(0xFFF, -((work->unk58 >> 1) % 160), (t >> 9) + 0x8C, 0x80, 0x80, 0x80, 0x9C,
                           0x3E00, 0x80, 0, 0, 1);
             if (frame >= 0x28) {
                 work->unk0 = 5;
