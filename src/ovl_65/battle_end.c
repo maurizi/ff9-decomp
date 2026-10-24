@@ -5,7 +5,7 @@ void battleEnd_main(void) {
     GameData *ctx;
     u8 i;
 
-    s = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
+    s = g_gameState->unk1C->unk8E4.ovl65->work;
     battleEnd_init();
     do {
         ClearOTagR(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], 0x1000);
@@ -36,7 +36,7 @@ void battleEnd_main(void) {
 }
 
 void battleEnd_init(void) {
-    Unk11C0 *s = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
+    Unk11C0 *s = g_gameState->unk1C->unk8E4.ovl65->work;
     FileEntry *e;
 
     game_freezeScreen();
@@ -133,10 +133,10 @@ void battleEnd_preloadScene(void) {
     s32 sector;
     s32 k;
 
-    b = g_gameState->unk1C->unk8E4.ovl65->unk11C0;
+    b = g_gameState->unk1C->unk8E4.ovl65->work;
     preload_init();
     g_gameState->unk1C->unk8BC = NULL;
-    if (g_gameState->unk1C->battleEndKind == 6) {
+    if (g_gameState->unk1C->battleResult == 6) {
         return;
     }
     id = 0x1000C;
@@ -604,7 +604,7 @@ void rewards_requestClose(void) {
 }
 
 s32 rewards_getKind(void) {
-    u8 mode = g_gameState->unk1C->battleEndKind;
+    u8 mode = g_gameState->unk1C->battleResult;
     s32 ret = 0;
 
     if (mode == 4) {

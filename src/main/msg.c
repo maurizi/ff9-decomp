@@ -26,7 +26,7 @@ void msg_init(void) {
         g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk8->unk14;
         break;
     case 2:
-        g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->unk11C0->unk14;
+        g_msgTable = (Unk8007B954 *)s->unk1C->unk8E4.ovl65->work->unk14;
         break;
     }
     D_8007BBD4 = 1;
@@ -1705,7 +1705,7 @@ s32 evt_modelOpField(Unk8004AB64 *o, s32 op) {
         func_800B3444(0, 0, 1);
         a = evt_getArg8();
         func_80050CA8(a, evt_getArg8());
-        g_gameState->unk1C->unk570 = a;
+        g_gameState->unk1C->rainCount = a;
         return 0;
     default:
         return 1;
@@ -1729,32 +1729,32 @@ s32 evt_modelOpBattle(Unk8004AB64 *o, s32 op) {
     case 0x81:
         a = evt_getArg8();
         b = evt_getArg8();
-        g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk0_8 = a * 14;
-        g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk0_20 = b * 12;
+        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk0_8 = a * 14;
+        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk0_20 = b * 12;
         return 0;
     case 0x82:
         a = evt_getArg16();
         b = evt_getArg16();
-        g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk4_12 = a;
-        g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk4_22 = b;
+        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk4_12 = a;
+        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk4_22 = b;
         return 0;
     case 0x83:
         a = evt_getArg8();
         p = (u32 *)game_getModel(o->unk3B);
         gs = g_gameState;
         *p |= 0x20;
-        gs->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk4_0 = a * 16;
+        gs->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk4_0 = a * 16;
         return 0;
     case 0x84:
         *(u32 *)game_getModel(o->unk3B) &= ~0x20;
         return 0;
     case 0x85:
-        g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk28[o->unk3B].unk0_0 = evt_getArg8();
+        g_gameState->unk1C->unk8E4.ovl65->work->unk28[o->unk3B].unk0_0 = evt_getArg8();
         return 0;
     case 0xD8:
         a = evt_getArg8();
         evt_getArg8();
-        g_gameState->unk1C->unk570 = a;
+        g_gameState->unk1C->rainCount = a;
         return 0;
     default:
         return 1;
@@ -1803,7 +1803,7 @@ s32 evt_modelOpWorld(Unk8004AB64 *o, s32 op) {
     case 0xD8:
         a = evt_getArg8();
         func_80050EFC(a, evt_getArg8());
-        g_gameState->unk1C->unk570 = a;
+        g_gameState->unk1C->rainCount = a;
         return 0;
     default:
         return 1;

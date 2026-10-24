@@ -325,7 +325,7 @@ void btl_updateKo(BtlUnit *u) {
                     g_gameState->unk1C->unk56C++;
                 }
             }
-            if (g_gameState->unk1C->battleEndKind != 4) {
+            if (g_gameState->unk1C->battleResult != 4) {
                 btl_addEnemyRewards(e->type);
             }
             u->koState++;

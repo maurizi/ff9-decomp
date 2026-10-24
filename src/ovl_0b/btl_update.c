@@ -64,7 +64,7 @@ s32 btl_update(void) {
         if ((u8)btl_updateUnits(g, b)) {
             g->unk56F |= 0x40;
             if (b->subPhase == 0) {
-                if (g->battleEndKind != 5) {
+                if (g->battleResult != 5) {
                     fade_out(0x20);
                 }
                 b->subPhase++;
@@ -216,7 +216,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
         case BTL_END_VICTORY:
         case BTL_END_SCRIPT_VICTORY:
             arg0->unk56F |= 0x40;
-            arg0->battleEndKind = 1;
+            arg0->battleResult = 1;
             if ((arg1->scene.unk0 >> 6) & 1) {
                 if ((u8)btl_playVictoryMusic(arg0, 0x1E, 5) == 0) {
                     break;
@@ -248,7 +248,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             arg1->phase = BTL_PHASE_EXIT;
             break;
         case BTL_END_DEFEAT:
-            arg0->battleEndKind = 3;
+            arg0->battleResult = 3;
             arg1->phase = BTL_PHASE_EXIT_DEFEAT;
             break;
         case BTL_END_STOPPED:
@@ -277,7 +277,7 @@ void btl_victory(GameData *arg0, Battle *arg1) {
             if ((arg1->scene.unk0 & 0x4040) == 0x4000) {
                 arg0->unk56F |= 8;
             }
-            arg0->battleEndKind = 4;
+            arg0->battleResult = 4;
             arg1->phase = BTL_PHASE_EXIT_OTHER;
             btl_clearRewards();
             if (arg0->unk56F & 4) {
@@ -386,7 +386,7 @@ void btl_initBattleState(void) {
         v = 8;
     }
     gd->characters[3].unk34.w = (gd->characters[3].unk34.w & ~0x1F0) | (v << 4);
-    g_gameState->unk1C->battleEndKind = 0;
+    g_gameState->unk1C->battleResult = 0;
     btl_initState();
     btlfx_initAll();
     btlcam_init();

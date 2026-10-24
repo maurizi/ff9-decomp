@@ -29,7 +29,7 @@ void btlbg_init(BtlBgHeader *arg0, BtlUnit9C50 *arg1) {
     g_btlbgScrollCount = g_btlbgHeader->scrollCount;
     btlbg_setLayerMask(0xF);
     g_btlbgSkyAngle = 0;
-    g_btlbgRainCount = g_gameState->unk1C->unk570;
+    g_btlbgRainCount = g_gameState->unk1C->rainCount;
     if (g_btlbgRainCount >= 0x1F) {
         g_btlbgRainCount = 0x1F;
     }

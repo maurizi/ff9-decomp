@@ -13,7 +13,7 @@ void config_reset(void) {
     p->movementRun = 0;
     p->vibration = 1;
     p->battleSpeed = 1;
-    p->unk0_11 = 3;
+    p->battleMsgSpeed = 3;
     p->messageSpeed = 3;
     p->unk0_17 = 0;
     p->buttonMap = 0;

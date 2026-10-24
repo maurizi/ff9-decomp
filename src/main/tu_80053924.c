@@ -8,9 +8,9 @@ void func_8005392C(void) {
     d->unk568 = 0;
     d->unk56A = 0;
     d->unk56C = 0;
-    d->battleEndKind = 0;
+    d->battleResult = 0;
     d->unk56F = 0;
-    d->unk570 = 0;
+    d->rainCount = 0;
     d->unk571 = 0;
 }
 

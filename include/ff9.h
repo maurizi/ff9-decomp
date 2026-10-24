@@ -191,9 +191,9 @@ typedef struct {
     Unk11C0 *unk8;
     Unk8E4C *unkC;
     u8 pad10[0xD80 - 0x10];
-    u8 unkD80;
+    u8 phase; /* ovl_0b Battle.phase */
     u8 padD81[0x11C0 - 0xD81];
-    Unk11C0 *unk11C0;
+    Unk11C0 *work; /* ovl_0b Battle.work */
     u8 pad11C4[0x1340 - 0x11C4];
     u8 unk1340;
     u8 pad1341[0x1354 - 0x1341];
@@ -276,9 +276,9 @@ typedef struct {
     s16 unk568;
     s16 unk56A;
     s16 unk56C;
-    u8 battleEndKind; /* 6 = game over (ovl_65 battle_end; event system variable 27) */
+    u8 battleResult; /* how the battle ended, 6 = game over (ovl_0b, ovl_65 battle_end; event system variable 27) */
     u8 unk56F;
-    u8 unk570;
+    u8 rainCount; /* rain streaks (event opcode 0xD8, ovl_0b) */
     u8 unk571;
     u8 pad572[2];
     ItemInventory items;
@@ -1917,6 +1917,11 @@ extern s32 g_padPortMask[];
 #define WM_PARAM_TITLE_PHASE 0xD2 /* g_worldTitlePhase */
 #define WM_PARAM_NAVI_VISIBLE 0xD3 /* g_worldNaviVisible */
 
+/* battle commands main sends through btl_setEnemyCmd / evt_battleTrigger (ovl_0b.h has the full list) */
+#define BTL_CMD_ENEMY_TURN 0x2F /* the enemy AI's command (event-script trigger 0x2F) */
+#define BTL_CMD_ENEMY_COUNTER 0x35 /* enemy command from the event script (trigger 0x35 = hit) */
+#define BTL_CMD_ENEMY_DEATH 0x36 /* enemy command from the event script (trigger 0x36 = killed) */
+
 /* db keys: kind << 16 | id (db_lookup, docs/encounters.md) */
 #define DB_MODEL 0x20000 /* evt_createModel: an object's model id */
 #define DB_ANIM 0x30000 /* model animation (evt_getAnimFrameCount) */
@@ -3411,11 +3416,24 @@ extern RECT g_noTexWindow;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
 
-/* GameState.config bits (ovl_34 rows, runtime field/menu campaign) that GameConfig can't name */
-#define CONFIG_HERE_ICON_OFF (1 << 17)
-#define CONFIG_WINDOW_CLASSIC (1 << 18)
-#define CONFIG_TARGET_WINDOW_ALWAYS (1 << 19)
-#define CONFIG_WINDOW_COLOR() ((g_gameState->config >> 18) & 1) /* the window palette (pal/abr) of all window drawing */
+/* GameState.config bits (the Config screen rows, ovl_34; runtime field/menu campaign) */
+#define CFG_BIT_SOUND         0  /* 1 = mono */
+#define CFG_BIT_CONTROLLER    1  /* 1 = custom button mapping (GameState.unk28) */
+#define CFG_BIT_CURSOR        2  /* 1 = memory */
+#define CFG_BIT_ATB           3  /* 1 = wait */
+#define CFG_BIT_CAMERA        4  /* 1 = fixed */
+#define CFG_BIT_BTL_CONTROL   5  /* 1 = custom: controller port per character (CFG_SHIFT_CHAR_PORT bits) */
+#define CFG_BIT_MOVEMENT      6  /* 1 = run */
+#define CFG_BIT_VIBRATION     7  /* 1 = off */
+#define CFG_SHIFT_BTL_SPEED   8  /* 3 bits, 0..CFG_BTL_SPEED_MAX */
+#define CFG_SHIFT_MSG_SPEED   14 /* 3 bits, 0..CFG_MSG_SPEED_MAX */
+#define CFG_BIT_HERE_ICON     17 /* 1 = off */
+#define CFG_BIT_WINDOW_COLOR  18 /* 1 = classic */
+#define CFG_BIT_TARGET_WINDOW 19 /* 1 = always */
+#define CFG_SHIFT_CHAR_PORT   20 /* one bit per character: 1 = controller port 2 */
+#define CFG_BTL_SPEED_MAX     2
+#define CFG_MSG_SPEED_MAX     6
+#define CONFIG_WINDOW_COLOR() ((g_gameState->config >> 18) & 1) /* CFG_BIT_WINDOW_COLOR: the window palette (pal/abr) of all window drawing */
 
 /* GameState.config/padMap viewed as a pair: the config menu's settings (saved by ovl_39) */
 typedef struct {
@@ -3428,9 +3446,9 @@ typedef struct {
     u32 movementRun : 1;
     u32 vibration : 1;
     u32 battleSpeed : 3;
-    u32 unk0_11 : 3;
+    u32 battleMsgSpeed : 3; /* bits 11-13: ovl_0b's battle message speed */
     u32 messageSpeed : 3;
-    u32 unk0_17 : 15; /* bit 17 HERE Icon off, 18 Window Color classic, 19 Target Window always (CONFIG_*) */
+    u32 unk0_17 : 15; /* CFG_BIT_HERE_ICON, CFG_BIT_WINDOW_COLOR, CFG_BIT_TARGET_WINDOW, CFG_SHIFT_CHAR_PORT.. */
     u32 buttonMap; /* 8 x 4 bits: game button i -> pad button (GameState.padMap) */
 } GameConfig;
 

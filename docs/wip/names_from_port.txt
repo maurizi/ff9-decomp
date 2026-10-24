@@ -4929,3 +4929,7 @@ func_8005A20C akao_getSeData  # [code] the two channel data pointers of sound ef
 func_8005A284 akao_markSeqDirty  # [code] marks the voice registers of a sequence's active channels for rewrite (after volume/pan changes)
 func_8005A2CC akao_markSeDirty  # [code] marks the voice registers of the active sound-effect channels for rewrite
 func_8005A320 akao_resumeSeq  # [code] restores the sequence saved in g_akaoSavedSeq for addr (akao_cmdPlayMusic with the same id)
+# FIELDS include/ff9.h Unk8E4 (GameData.unk8E4.ovl65 view): unkD80=phase,unk11C0=work (ovl_0b Battle names)
+# FIELDS include/ff9.h GameData: battleEndKind=battleResult (second pass), unk570=rainCount
+# FIELDS include/ff9.h GameConfig: unk0_11=battleMsgSpeed
+# ff9.h: BTL_CMD_ENEMY_TURN/COUNTER/DEATH hoisted from ovl_0b.h (used in event.c); CFG_BIT_*/CFG_SHIFT_* hoisted from ovl_34.h (replacing CONFIG_HERE_ICON_OFF/WINDOW_CLASSIC/TARGET_WINDOW_ALWAYS); psyq.h: GPU_STP

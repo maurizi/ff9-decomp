@@ -273,13 +273,13 @@ void wm_updateMap(void) {
                 h >>= 4;
                 func_80050EFC(h, 0x40);
                 D_800CF44C = 1;
-                g_gameState->unk1C->unk570 = h >> 4;
+                g_gameState->unk1C->rainCount = h >> 4;
                 return;
             }
         }
     }
     D_800CF44C = 0;
-    g_gameState->unk1C->unk570 = 0;
+    g_gameState->unk1C->rainCount = 0;
 }
 
 /* mark the map cells changed by the story progress */

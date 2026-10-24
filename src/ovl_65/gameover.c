@@ -112,7 +112,7 @@ s32 battleEnd_update(void) {
 
     g = g_gameState->unk1C;
     msg_beginDraw();
-    switch (g->battleEndKind) {
+    switch (g->battleResult) {
     case 1:
     case 2:
     case 3:
@@ -120,8 +120,8 @@ s32 battleEnd_update(void) {
     case 5:
     case 7:
         if (!rewards_update()) {
-            if (g->battleEndKind == 2) {
-                g->battleEndKind = 1;
+            if (g->battleResult == 2) {
+                g->battleResult = 1;
             }
             func_800F4E68();
             rewards_exit();
@@ -134,7 +134,7 @@ s32 battleEnd_update(void) {
             timer_enable(0);
         }
         func_800F4E68();
-        gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk1C);
+        gameover_main((s32)g_gameState->unk1C->unk8E4.ovl65->work->unk1C);
         return 2;
     }
     return 0;

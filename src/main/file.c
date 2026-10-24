@@ -317,7 +317,7 @@ void game_setNextScene(u16 arg0) {
         g_gameState->unk1C->unk8E4.ovl65->unkC->unk14->unkA = arg0;
         break;
     case 2:
-        g_gameState->unk1C->unk8E4.ovl65->unk11C0->unk4 = arg0;
+        g_gameState->unk1C->unk8E4.ovl65->work->unk4 = arg0;
         break;
     case 3:
         g_gameState->unk1C->unk8E4.ovl65->unk8->unk24 = arg0;

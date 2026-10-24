@@ -37,6 +37,7 @@ int abs(int); /* libc; gcc expands it inline (copy, bgez, negu) */
 #define setPolyGT4(p) setlen(p, 12), setcode(p, 0x3C)
 #define setSprt(p) setlen(p, 4), setcode(p, 0x64)
 #define setSprt16(p) setlen(p, 3), setcode(p, 0x7C)
+#define GPU_STP(set, check) (0xE6000000 | ((check) << 1) | (set)) /* GP0(E6h) as ovl_0b writes it */
 #define _get_mask(set, chk) (0xE6000000 | ((chk) ? 2 : 0) | ((set) ? 1 : 0)) /* GP0(E6h) mask-bit setting word */
 /* GP0 primitive codes: the high byte of a packet's first (colour) word, as libgpu's setPolyF3() etc. write it.
  * GPU_ABE = semi-transparent (setSemiTrans), GPU_TGE = texture without shading (setShadeTex). */

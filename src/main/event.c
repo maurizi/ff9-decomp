@@ -101,7 +101,7 @@ s32 evt_getSysVar(s32 op) {
         r = g_evtMode == 4;
         break;
     case 27:
-        r = g_gameState->unk1C->battleEndKind;
+        r = g_gameState->unk1C->battleResult;
         break;
     case 28:
         r = (D_8007AE34 >> 8) & 0xFF;
@@ -110,7 +110,7 @@ s32 evt_getSysVar(s32 op) {
         r = (u8)D_8007AE34;
         break;
     case 30:
-        r = g_gameState->unk1C->unk8E4.ovl65->unkD80;
+        r = g_gameState->unk1C->unk8E4.ovl65->phase;
         break;
     case 31:
         r = g_gameState->unk1C->unk8E4.ovl65->unk1340;
@@ -1611,17 +1611,17 @@ s32 evt_execInstr(void) {
         switch (g_evtCurObj->unk4) {
         case 0: {
             s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-            btl_setEnemyCmd(x, z, 0x36, evt_getArg8_inline());
+            btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_DEATH, evt_getArg8_inline());
             break;
         }
         case 1: {
             s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-            btl_setEnemyCmd(x, z, 0x35, evt_getArg8_inline());
+            btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_COUNTER, evt_getArg8_inline());
             break;
         }
         case 3: {
             s32 x = (u16)D_8007AE10[1], z = (u16)D_8007AE10[0];
-            btl_setEnemyCmd(x, z, 0x2F, evt_getArg8_inline());
+            btl_setEnemyCmd(x, z, BTL_CMD_ENEMY_TURN, evt_getArg8_inline());
             g_evtCurObj->unkB = 0;
             break;
         }
@@ -2812,7 +2812,7 @@ void evt_updateBattleObjects(void) {
     s32 m;
     Unk8007AED0 *o;
 
-    if (g_gameState->unk1C->unk8E4.ovl65->unkD80 != 0) {
+    if (g_gameState->unk1C->unk8E4.ovl65->phase != 0) {
         i = 3;
         D_8007AE10[i] = btl_getUnitMask(1);
         m = (u16)D_8007AE10[i];
@@ -3408,7 +3408,7 @@ void evt_init(u8 *data) {
         }
         g_evtState->unk16FC = (s32)g_evtState->unk16DC;
     } else {
-        g_gameState->unk1C->unk570 = 0;
+        g_gameState->unk1C->rainCount = 0;
     }
     D_8007AE04 = 4;
     if ((g_evtMode == 1 && g_evtSavedState.unk16EE == g_evtMode && g_evtSavedState.unk16F4 == (s16)g_gameState->unk1C->fieldId) ||
@@ -3535,7 +3535,7 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
     }
     if (i < 8) {
         o = g_evtUnitObjects[i];
-        if (op == 0x2F) {
+        if (op == BTL_CMD_ENEMY_TURN) {
             if (o->unk4 >= 4) {
                 o->unkB = 2;
                 r = 1;
@@ -3544,12 +3544,12 @@ s32 evt_battleTrigger(s32 op, s32 bits, s32 v, s32 w) {
             a = 2;
             b = 7;
             switch (op) {
-            case 0x35:
+            case BTL_CMD_ENEMY_COUNTER:
                 b = 6;
                 D_8007AE10[0] = v;
                 a = 1;
                 break;
-            case 0x36:
+            case BTL_CMD_ENEMY_DEATH:
                 b = 9;
                 D_8007AE10[0] = v;
                 a = 0;
