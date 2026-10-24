@@ -42,7 +42,7 @@ void btl_startEnemySeq(BtlCmd *arg0) {
     if (g_gameState->unk1C->unk8E4.battle->unk11C4.unk8[arg0->subNo] != 0 && btlseq_start(arg0) != NULL) {
         BtlUnit *u = arg0->unk4;
         if (!(u->unk68 & 1)) {
-            u->unk86[1] = 0;
+            u->rot[1] = 0;
         }
     }
 }
@@ -86,13 +86,13 @@ void btlseq_startDirect(u16 mask, s16 arg1, u16 id) {
     if (b->unk11C4.unk8[id] == 0) {
         return;
     }
-    for (u = b->unk6F8; u != NULL; u = u->unk0) {
-        if (u->unkB0 & mask) {
+    for (u = b->unk6F8; u != NULL; u = u->next) {
+        if (u->unitBit & mask) {
             break;
         }
     }
     if (u != NULL) {
-        c = u->unk4;
+        c = u->cmd;
         c->cmdNo = 0;
         c->subNo = id;
         c->targets = arg1;
@@ -144,7 +144,7 @@ void btlseq_update(void) {
                 s->unkC = s->unk8;
             } while ((u16)g_btlseqOps[op].unk4(s, u));
             if (s->unk21 != 0) {
-                u->unk86[1] = s->unk1C + s->unk1E * s->unk20 / s->unk21;
+                u->rot[1] = s->unk1C + s->unk1E * s->unk20 / s->unk21;
                 if (s->unk20++ >= s->unk21) {
                     s->unk21 = 0;
                 }
@@ -177,9 +177,9 @@ void btlseq_update(void) {
 }
 
 s32 btlseq_opEnd(BtlScript *arg0, BtlUnit *arg1) {
-    BtlUnit9C *m = arg1->unk9C;
+    BtlUnit9C *m = arg1->model;
     if (!((arg0->unk0 >> 2) & 1) && arg0->unk14 != 0 && arg1->unkA0->unk3A >= m->unkC->unk2) {
-        m->unkC = (BtlUnit9CC *)arg1->unkA4[(arg1->unk68 >> 18) & 1];
+        m->unkC = (BtlUnit9CC *)arg1->motions[(arg1->unk68 >> 18) & 1];
         arg1->unkA0->unk3A = 0;
         arg0->unk0 |= 4;
     }
@@ -230,10 +230,10 @@ s32 btlseq_opExecCmd(BtlScript *arg0) {
     BtlUnit *u = g_gameState->unk1C->unk8E4.battle->unk6F8;
     u16 mask = arg0->unk4->unkC;
     while (u != NULL) {
-        if (u->unkB0 & mask) {
+        if (u->unitBit & mask) {
             btl_execCmd(u);
         }
-        u = u->unk0;
+        u = u->next;
     }
     arg0->unk8 += 1;
     return 1;
@@ -249,7 +249,7 @@ void btlseq_opMoveToTarget(BtlScript *arg0, BtlUnit *arg1) {
     p[6] = arg0->unk8[1];
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
-        *q = arg1->unk8C[i] >> 16;
+        *q = arg1->pos[i] >> 16;
     }
     p[4] = p[1];
     btlseq_getTargetCenter(arg0->unk4->unkC, (u16 *)&p[3], (u16 *)&p[5]);
@@ -270,7 +270,7 @@ s32 btlseq_stepMove(BtlScript *arg0, BtlUnit *arg1) {
     s16 i;
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
-        arg1->unk8C[i] = ((q[3] - q[0]) * arg0->unk10 / p[6] + q[0]) << 16;
+        arg1->pos[i] = ((q[3] - q[0]) * arg0->unk10 / p[6] + q[0]) << 16;
     }
     if (arg0->unk10 >= p[6]) {
         arg0->unk8 += (u16)p[7];
@@ -287,7 +287,7 @@ void btlseq_opMoveHome(BtlScript *arg0, BtlUnit *arg1) {
     p[6] = arg0->unk8[1];
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
-        q[0] = arg1->unk8C[i] >> 16;
+        q[0] = arg1->pos[i] >> 16;
         v = arg1->unk98->unk0;
         q[3] = v[i] >> 16;
     }
@@ -301,7 +301,7 @@ void btlseq_opMoveTo(BtlScript *arg0, BtlUnit *arg1) {
     p[6] = arg0->unk8[1];
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
-        q[0] = arg1->unk8C[i] >> 16;
+        q[0] = arg1->pos[i] >> 16;
         q[3] = arg0->unk8[i * 2 + 2] | (arg0->unk8[i * 2 + 3] << 8);
     }
 }
@@ -323,7 +323,7 @@ void btlseq_opMoveBy(BtlScript *arg0, BtlUnit *arg1) {
     p[6] = arg0->unk8[1];
     for (i = 0; i < 3; i++) {
         s16 *q = p + i;
-        s16 v = arg1->unk8C[i] >> 16;
+        s16 v = arg1->pos[i] >> 16;
         q[0] = v;
         q[3] = v + (arg0->unk8[i * 2 + 2] | (arg0->unk8[i * 2 + 3] << 8));
     }
@@ -331,8 +331,8 @@ void btlseq_opMoveBy(BtlScript *arg0, BtlUnit *arg1) {
 
 BtlUnit *btlseq_findUnit(u16 arg0) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
-        if (u->unkB0 & arg0) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        if (u->unitBit & arg0) {
             break;
         }
     }
@@ -344,11 +344,11 @@ void btlseq_getTargetCenter(u16 arg0, u16 *arg1, u16 *arg2) {
     s32 n = 0;
     *arg1 = 0;
     *arg2 = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
-        if (u->unkB0 & arg0) {
-            *arg1 += u->unk8C[0] >> 16;
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
+        if (u->unitBit & arg0) {
+            *arg1 += u->pos[0] >> 16;
             n++;
-            *arg2 += u->unk8C[2] >> 16;
+            *arg2 += u->pos[2] >> 16;
         }
     }
     if (n >= 2) {
@@ -363,10 +363,10 @@ s32 btlseq_opPlayAnim(BtlScript *arg0, BtlUnit *arg1) {
     s32 idx;
     if (p[1] == 0xFF) {
         f = arg1->unk68;
-        arg1->unk9C->unkC = g_gameState->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
+        arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->unk488[(f >> 1) & 0xF].unk0->unkC[(f >> 18) & 1];
     } else {
         idx = arg0->unk16 + p[1];
-        arg1->unk9C->unkC = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
+        arg1->model->unkC = g_gameState->unk1C->unk8E4.battle->unk11C4.unk0[idx];
     }
     arg1->unkA0->unk3A = 0;
     arg0->unk14 = 0;
@@ -401,7 +401,7 @@ s32 btlseq_opEffect(BtlScript *arg0) {
 }
 
 s32 btlseq_opWaitAnim(BtlScript *arg0, BtlUnit *arg1) {
-    BtlUnit9C *m = arg1->unk9C;
+    BtlUnit9C *m = arg1->model;
     BtlUnitA0 *a = arg1->unkA0;
     if (arg0->unk14 != 0 && (a->unk3A >= m->unkC->unk2 || (arg1->status & (BTL_STATUS_VENOM | BTL_STATUS_STOP | BTL_STATUS_FREEZE)))) {
         g_btlfxEnv->unk2C->unk52 = 0;
@@ -435,14 +435,14 @@ s32 btlseq_opWaitEffect(BtlScript *arg0) {
 }
 
 s32 btlseq_opHideMeshes(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->unkAC |= arg0->unk8[1] | (arg0->unk8[2] << 8);
+    arg1->hiddenMeshes |= arg0->unk8[1] | (arg0->unk8[2] << 8);
     btl_hideMeshes(arg1, arg0->unk8[1] | (arg0->unk8[2] << 8));
     arg0->unk8 += 3;
     return 1;
 }
 
 s32 btlseq_opShowMeshes(BtlScript *arg0, BtlUnit *arg1) {
-    arg1->unkAC &= ~(arg0->unk8[1] | (arg0->unk8[2] << 8));
+    arg1->hiddenMeshes &= ~(arg0->unk8[1] | (arg0->unk8[2] << 8));
     btl_showMeshes(arg1, arg0->unk8[1] | (arg0->unk8[2] << 8));
     arg0->unk8 += 3;
     return 1;
@@ -498,8 +498,8 @@ s32 btlseq_opPlayCamera(BtlScript *arg0, BtlUnit *arg1) {
             goto end;
         }
         f = arg1->status;
-        for (u = b->unk6F8; u != NULL; u = u->unk0) {
-            if (u->unkB0 & arg0->unk4->unkC) {
+        for (u = b->unk6F8; u != NULL; u = u->next) {
+            if (u->unitBit & arg0->unk4->unkC) {
                 f |= u->status;
             }
         }
@@ -539,7 +539,7 @@ s32 btlseq_opTurn(BtlScript *arg0, BtlUnit *arg1) {
     ang = a;
     b = pc[3] | (pc[4] << 8);
     arg0->unk21 = pc[5];
-    w = arg1->unk86[1];
+    w = arg1->rot[1];
     arg0->unk20 = 1;
     arg0->unk1C = w;
     if (a & 0x8000) {
@@ -549,23 +549,23 @@ s32 btlseq_opTurn(BtlScript *arg0, BtlUnit *arg1) {
             break;
         case 1:
             btlseq_getTargetCenter(arg0->unk4->unkC, (u16 *)&d[0], (u16 *)&d[1]);
-            x = (arg1->unk8C[0] >> 16) - d[0];
-            z = (arg1->unk8C[2] >> 16) - d[1];
+            x = (arg1->pos[0] >> 16) - d[0];
+            z = (arg1->pos[2] >> 16) - d[1];
             d[0] = x;
             d[1] = z;
             if (x == 0 && z == 0) {
-                ang = arg1->unk86[1];
+                ang = arg1->rot[1];
             } else {
                 ang = ratan2(d[0], d[1]);
             }
             break;
         default:
-            ang = arg1->unk86[1];
+            ang = arg1->rot[1];
             break;
         }
     }
     ang = (ang + b) & 0xFFF;
-    v = ((u16)arg1->unk86[1] - ang) & 0xFFF;
+    v = ((u16)arg1->rot[1] - ang) & 0xFFF;
     if (v > 0x800) {
         arg0->unk1E = 0x1000 - v;
     } else {
@@ -577,7 +577,7 @@ s32 btlseq_opTurn(BtlScript *arg0, BtlUnit *arg1) {
 
 void btlseq_opScale(BtlScript *arg0, BtlUnit *arg1) {
     s16 *p = arg0->unk28;
-    s16 a = arg1->unk9C->unk54;
+    s16 a = arg1->model->unk54;
     s16 v;
     s16 r;
     p[0] = a;
@@ -597,7 +597,7 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
     u16 v = arg0->unk28[0] + p[1] * arg0->unk10 / p[2];
     btl_setUnitAttr((s32)arg1, 0x37, v);
     if (v == 0x1000) {
-        arg1->unk9C->unk0 &= ~2;
+        arg1->model->unk0 &= ~2;
     }
     if (arg0->unk10 >= p[2]) {
         arg0->unk8 += 4;
@@ -608,11 +608,11 @@ s32 btlseq_stepScale(BtlScript *arg0, BtlUnit *arg1) {
 
 s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
-    BtlUnit9C50 *e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    BtlUnit9C50 *e = &arg1->model->unk50[arg0->unk8[1]];
     e->unk4 |= 1;
-    g = &arg1->unk9C->unk50[arg0->unk8[1]];
+    g = &arg1->model->unk50[arg0->unk8[1]];
     g->unkC = 0;
-    e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    e = &arg1->model->unk50[arg0->unk8[1]];
     e->unk12 = 0x1000;
     arg0->unk8 += 2;
     return 1;
@@ -620,11 +620,11 @@ s32 btlseq_opPlayTexAnim(BtlScript *arg0, BtlUnit *arg1) {
 
 s32 btlseq_opLoopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     BtlUnit9C50 *g;
-    BtlUnit9C50 *e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    BtlUnit9C50 *e = &arg1->model->unk50[arg0->unk8[1]];
     e->unk4 |= 3;
-    g = &arg1->unk9C->unk50[arg0->unk8[1]];
+    g = &arg1->model->unk50[arg0->unk8[1]];
     g->unkC = 0;
-    e = &arg1->unk9C->unk50[arg0->unk8[1]];
+    e = &arg1->model->unk50[arg0->unk8[1]];
     e->unk12 = 0x1000;
     arg0->unk8 += 2;
     return 1;
@@ -632,7 +632,7 @@ s32 btlseq_opLoopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
 
 s32 btlseq_opStopTexAnim(BtlScript *arg0, BtlUnit *arg1) {
     u8 i = arg0->unk8[1];
-    BtlUnit9C *m = arg1->unk9C;
+    BtlUnit9C *m = arg1->model;
     BtlUnit9C50 *e;
     (*(e = m->unk50 + i)).unk4 &= 0xFC;
     arg0->unk8 += 2;

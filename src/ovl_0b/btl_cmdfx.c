@@ -16,8 +16,8 @@ void func_800C23C8(BtlUnit *arg0, s32 arg1, u32 arg2) {
 
 void btl_setUnitFade(BtlUnit *arg0, s32 arg1) {
     Unk800CEE74 *p = btlbg_getHeader();
-    btl_setModelAbr(arg0->unk9C, 0x60);
-    func_800C8A3C(arg0->unk9C, (p->unkC * arg1) << 11 >> 16, (p->unkD * arg1) << 11 >> 16, (p->unkE * arg1) << 11 >> 16);
+    btl_setModelAbr(arg0->model, 0x60);
+    func_800C8A3C(arg0->model, (p->unkC * arg1) << 11 >> 16, (p->unkD * arg1) << 11 >> 16, (p->unkE * arg1) << 11 >> 16);
     if (arg1 == 0) {
         arg0->unk68 |= 0x400000;
     }
@@ -50,9 +50,9 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
     l->unk27 = 0;
     l->unk24 = 0;
     c = arg0->unk4;
-    c->unk7E = 0;
-    c->unk82 = 0;
-    c->unk80 = 0;
+    c->popupFlags = 0;
+    c->mpChange = 0;
+    c->hpChange = 0;
     if (arg0->unk10.b.unk0_7 == 0) {
         mask = btl_applyReflect(arg0);
         e = arg0->cmdNo;
@@ -70,16 +70,16 @@ void btl_playCmdEffect(BtlCmd *arg0, s32 arg1, s16 *arg2) {
         }
         l->unk40 = 0x11;
     }
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
-        if (u->unkB0 & (u16)arg0->targets) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
+        if (u->unitBit & (u16)arg0->targets) {
             l->unk4[l->unk24++] = u;
-            u->unk7E = 0;
-            u->unk82 = 0;
-            u->unk80 = 0;
+            u->popupFlags = 0;
+            u->mpChange = 0;
+            u->hpChange = 0;
             sum[0] += u->unk98->unk0[0] >> 16;
             sum[2] += u->unk98->unk0[2] >> 16;
         }
-        if (u->unkB0 & mask) {
+        if (u->unitBit & mask) {
             l->unk28[l->unk27++] = u;
         }
         if (arg0->cmdNo == 0x1F && (u->unk68 & 1) && g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4 == 2) {
@@ -137,13 +137,13 @@ void btl_startCmdEffect(BtlCmd *cmd) {
         break;
     case 0x4:
         btl_showCmdName(cmd);
-        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[12];
+        u->model->unkC = (BtlUnit9CC *)u->motions[12];
         u->unkA0->unk3A = 0;
         btl_execCmd(u);
         return;
     case 0x7:
         btl_showCmdName(cmd);
-        u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+        u->model->unkC = (BtlUnit9CC *)u->motions[9];
         return;
     case 0xE:
     case 0x33:

@@ -527,20 +527,20 @@ s32 func_800A9BE4(s32 arg0) {
             func_800BD698(u, g_gameState->unk1C->party[i]->unk34.b.unk4, u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
                 if (u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
-                    u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
+                    u->model->unkC = (BtlUnit9CC *)u->motions[4];
                 } else {
                     goto use9;
                 }
             } else if (u == g_gameState->unk1C->unk8E4.battle->curCmd->unk4 || ((u->unk68 >> 19) & 1)) {
             use9:
-                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[9];
+                u->model->unkC = (BtlUnit9CC *)u->motions[9];
             } else {
-                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+                u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             }
             e->unkC->unk3A = 0;
-            m = u->unkA8;
+            m = u->weaponModel;
             save = m->unk4;
-            id2 = ((Unk8006E0E8 *)u->unk74)->unk2 | 0x20000;
+            id2 = ((Unk8006E0E8 *)u->weapon)->unk2 | 0x20000;
             m->unk8 = (BtlUnit9C8 *)func_800ABB60(i);
             func_800AB758(id2, i, &pa, &pb, &pc);
             func_800C7730(m, (s16 *)pa, (s16 *)pb);
@@ -1325,7 +1325,7 @@ s32 func_800ABA10(s32 arg0, s32 arg1) {
     if (!(arg1 & 0x20)) {
         u = btl_getUnitBySlot(arg0);
         if (u != NULL) {
-            m = ((s16)u->unk84 != D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
+            m = ((s16)u->modelId != D_800F5200[(u->unk68 & 1) ? (g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.w >> 4) & 0x1F : 0x13]) << 4;
         }
     }
     idx = g_gameState->unk1C->party[arg0]->unk34.w >> 4;
@@ -1480,12 +1480,12 @@ s32 func_800ABBC4(s32 arg0, s32 arg1) {
             func_800BD698(u, g_gameState->unk1C->party[arg0]->unk34.b.unk4,
                           u - g_gameState->unk1C->unk8E4.battle->units);
             if (u->status & BTL_STATUS_KO) {
-                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[4];
+                u->model->unkC = (BtlUnit9CC *)u->motions[4];
             } else {
-                u->unk9C->unkC = (BtlUnit9CC *)u->unkA4[(u->unk68 >> 18) & 1];
+                u->model->unkC = (BtlUnit9CC *)u->motions[(u->unk68 >> 18) & 1];
             }
             ent->unkC->unk3A = 0;
-            u->unkA8->unk1C = ent->unk8;
+            u->weaponModel->unk1C = ent->unk8;
         }
         *state = 0;
         break;

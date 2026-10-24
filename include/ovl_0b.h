@@ -351,25 +351,140 @@ typedef struct {
 #define BTL_STATUS_JUMP            0x40000000 /* code: in the air (btl_checkCmdUsable) */
 #define BTL_STATUS_GRADUAL_PETRIFY 0x80000000 /* code: countdown number (btl_drawStatusCountdown) */
 
+/* BtlCmd.cmdNo. 0x00-0x2F index the command table D_800FD56C; the names are its menu texts (D_800FD7AC; the table's
+ * own name for a repeated text gets a number). Ids from 0x30 up are queued by the battle code itself. */
+#define BTL_CMD_NONE          0x00
+#define BTL_CMD_ATTACK        0x01 /* runtime: Attack (ability 0xB0) */
+#define BTL_CMD_STEAL         0x02 /* ability 0xB1 Steal (0xB5 Mug with a support bit, btl_setCmd) */
+#define BTL_CMD_JUMP          0x03 /* runtime: Jump; ability 0xB2 */
+#define BTL_CMD_DEFEND        0x04 /* runtime: Defend */
+#define BTL_CMD_FLEE          0x05 /* runtime: Flee */
+#define BTL_CMD_CHANGE        0x07 /* runtime: Change (row) */
+#define BTL_CMD_EAT           0x08 /* runtime: Eat */
+#define BTL_CMD_COOK          0x09
+#define BTL_CMD_SPEAR         0x0A /* code: the landing of Jump (cmd 3) queues it with ability 0xB9 Spear */
+#define BTL_CMD_SPEAR_TRANCE  0x0B /* code: the landing of cmd 0xC queues it with ability 0xBA Spear */
+#define BTL_CMD_JUMP_TRANCE   0x0C /* table text Jump, ability 0xAC */
+#define BTL_CMD_FOCUS         0x0D /* runtime: Focus */
+#define BTL_CMD_ITEM          0x0E
+#define BTL_CMD_THROW         0x0F /* runtime: Throw */
+#define BTL_CMD_SUMMON        0x10 /* code: btl_rollShortSummon handles 0x10/0x12/0x14 */
+#define BTL_CMD_WHT_MAG       0x11 /* runtime: Wht Mag */
+#define BTL_CMD_EIDOLON       0x12
+#define BTL_CMD_WHT_MAG2      0x13
+#define BTL_CMD_SUMMON2       0x14
+#define BTL_CMD_DBL_WHT       0x15
+#define BTL_CMD_BLK_MAG       0x16 /* runtime: Blk Mag */
+#define BTL_CMD_DBL_BLK       0x17
+#define BTL_CMD_BLU_MAG       0x18 /* runtime: Blu Mag */
+#define BTL_CMD_SKILL         0x19 /* runtime: Skill */
+#define BTL_CMD_DYNE          0x1A
+#define BTL_CMD_DRAGON        0x1B
+#define BTL_CMD_FLAIR         0x1C
+#define BTL_CMD_ELAN          0x1D
+#define BTL_CMD_SWD_ART       0x1E
+#define BTL_CMD_SWD_MAG       0x1F
+#define BTL_CMD_SEIKEN        0x20
+#define BTL_CMD_SEIKEN2       0x21
+#define BTL_CMD_WHT_MAG3      0x22
+#define BTL_CMD_ENEMY_TURN    0x2F /* runtime: the enemy AI's command (event-script trigger 0x2F, btl_setEnemyCmd) */
+#define BTL_CMD_TABLE_COUNT   0x30 /* entries in D_800FD56C; lower ids are chosen commands, higher ones automatic */
+#define BTL_CMD_COUNTER       0x31 /* runtime: Counter queues it with Attack against the attacker (btl_tryCounter) */
+#define BTL_CMD_RETURN_MAGIC  0x32 /* code: Return Magic queues it with the spell that hit (btl_tryCounter) */
+#define BTL_CMD_AUTO_POTION   0x33 /* code: btl_tryAutoPotion queues it with the item; handled like Item */
+#define BTL_CMD_CHARGE_ATTACK 0x34 /* code: formula 0x3D (ability Charge!) queues an Attack by each low-HP party unit */
+#define BTL_CMD_ENEMY_COUNTER 0x35 /* code: enemy command from the event script (trigger 0x35 = hit) */
+#define BTL_CMD_ENEMY_DEATH   0x36 /* code: enemy command from the event script (trigger 0x36 = killed) */
+#define BTL_CMD_ENEMY_REACT   0x37 /* code: btl_startCmdEffect plays a sequence for it like 0x2F/0x35/0x36 */
+#define BTL_CMD_ESCAPE        0x38 /* runtime: queued by btl_rollFlee / btl_tryEscape; ability 0xB4 Flee */
+#define BTL_CMD_TRANCE_EIDOLON 0x39 /* code: trance Eidolon timer (btl_updateUnitStatus) casts Battle.unk11BB */
+#define BTL_CMD_REBIRTH_FLAME 0x3A /* code: the item 0xF9 chance in btl_checkSideDefeated, ability 0x49 Rebirth Flame */
+#define BTL_CMD_TRANCE        0x3B /* code: adding/removing BTL_STATUS_TRANCE queues it; effect 0x101 in trance */
+#define BTL_CMD_KO            0x3C /* code: adding BTL_STATUS_KO queues it (btl_addStatus) */
+#define BTL_CMD_AUTO_LIFE     0x3D /* code: KO with BTL_STATUS_AUTO_LIFE queues it */
+#define BTL_CMD_PETRIFY       0x3E /* code: adding BTL_STATUS_PETRIFY during combat queues it */
+
+/* BtlCmd.subNo / Battle.abilities indices with a fixed use in the code (names from the ability text D_800F909C) */
+#define BTL_ABIL_REBIRTH_FLAME 0x49
+#define BTL_ABIL_ATTACK        0xB0
+#define BTL_ABIL_FLEE          0xB4
+#define BTL_ABIL_MUG           0xB5
+#define BTL_ABIL_SPEAR         0xB9
+#define BTL_ABIL_SPEAR_TRANCE  0xBA
+#define BTL_ABIL_TERRA_HOMING  0xBB
+#define BTL_ABIL_THROW         0xBE
+
+/* Battle.unkD80 (phase), as btl_update switches on it */
+#define BTL_PHASE_SCRIPT   1 /* code: waits for the event script (btl_setBattleVar 33-36 act only now) */
+#define BTL_PHASE_INTRO    2 /* code: btl_startBattle; btl_updateIntro loads and fades the units in */
+#define BTL_PHASE_ENTRANCE 3 /* code: waits for the entrance motions, then combat and the ambush messages */
+#define BTL_PHASE_COMBAT   4 /* runtime */
+#define BTL_PHASE_END      5 /* runtime: btl_victory; Battle.unkD81 says how (victory, defeat, escape) */
+#define BTL_PHASE_EXIT     6 /* runtime: after a victory, fade out, then btl_saveParty */
+#define BTL_PHASE_EXIT_DEFEAT 7 /* code: from a defeat (GameData.unk56E = 3) */
+#define BTL_PHASE_EXIT_OTHER  8 /* code: from an escape or a script-ended battle */
+
+/* g_btlUi->menuState: index of the per-state handler tables D_800F8D94 (input), D_800F8DA8, D_800F8DC4 */
+#define BTLUI_MENU_NONE    0 /* runtime: no menu */
+#define BTLUI_MENU_CMD     1 /* runtime: command menu */
+#define BTLUI_MENU_LIST    2 /* code: ability/item list (btlui_listInput) */
+#define BTLUI_MENU_TARGET  3 /* runtime: target select (btlui_targetInput) */
+#define BTLUI_MENU_CLOSING 4 /* runtime: command issued, menu closing; no input */
+#define BTLUI_MENU_KEEP    5 /* btlui_setMenuState ignores it */
+
+/* btl_getUnitAttr / btl_setUnitAttr ids (event-script unit variables) */
+#define BTL_ATTR_INSERT        0x20 /* set: btl_insertUnit */
+#define BTL_ATTR_REMOVE        0x21 /* set: btl_cancelUnitCmds + btl_unlinkUnit */
+#define BTL_ATTR_CANCEL_CMDS   0x22
+#define BTL_ATTR_MAX_HP        0x23 /* runtime */
+#define BTL_ATTR_HP            0x24 /* runtime */
+#define BTL_ATTR_MAX_MP        0x25 /* runtime */
+#define BTL_ATTR_MP            0x26 /* runtime */
+#define BTL_ATTR_MAX_ATB       0x27 /* runtime */
+#define BTL_ATTR_ATB           0x28
+#define BTL_ATTR_LEVEL         0x29 /* runtime */
+#define BTL_ATTR_IMMUNE_HI     0x2A /* statusImmune bits 24-31 */
+#define BTL_ATTR_IMMUNE_LO     0x2B /* statusImmune bits 0-23 */
+#define BTL_ATTR_AUTO_STATUS_HI 0x2C
+#define BTL_ATTR_AUTO_STATUS_LO 0x2D
+#define BTL_ATTR_STATUS_HI     0x2E
+#define BTL_ATTR_STATUS_LO     0x2F
+#define BTL_ATTR_ELEM_GUARD    0x30 /* runtime: element bytes unk70-unk73 */
+#define BTL_ATTR_ELEM_ABSORB   0x31
+#define BTL_ATTR_ELEM_HALF     0x32
+#define BTL_ATTR_ELEM_WEAK     0x33
+#define BTL_ATTR_SCALE         0x37 /* code: btlseq_opScale */
+#define BTL_ATTR_RESET_SCALE   0x38
+#define BTL_ATTR_MODEL         0x39
+#define BTL_ATTR_HIDE_MESHES   0x3B
+#define BTL_ATTR_SHOW_MESHES   0x3C
+#define BTL_ATTR_ADD_REWARDS   0x47 /* set: btl_addEnemyRewards */
+#define BTL_ATTR_STRENGTH      0x48
+#define BTL_ATTR_MAGIC         0x49
+#define BTL_ATTR_DEFENCE       0x4A
+#define BTL_ATTR_EVADE         0x4B
+#define BTL_ATTR_MAGIC_DEFENCE 0x4C
+#define BTL_ATTR_MAGIC_EVADE   0x4D
+
 typedef struct BtlUnit {
-    struct BtlUnit *unk0; /* next */
-    struct BtlCmd *unk4;
-    struct BtlCmd *unk8;
-    struct BtlCmd *unkC;
-    struct BtlCmd *unk10;
-    struct BtlCmd *unk14;
-    s32 unk18;
+    struct BtlUnit *next; /* active-unit list (Battle.unk6F8) */
+    struct BtlCmd *cmd; /* six command slots (btl_initUnitCmds; enemies have the first three): chosen command */
+    struct BtlCmd *autoCmd; /* btl_queueAutoCmd: counter, Return Magic, Auto-Potion, Spear, enemy reactions */
+    struct BtlCmd *koCmd; /* BTL_CMD_KO / BTL_CMD_PETRIFY */
+    struct BtlCmd *delayedCmd; /* Jump while in the air, trance Eidolon */
+    struct BtlCmd *tranceCmd; /* BTL_CMD_TRANCE */
+    s32 reviveCmd; /* BtlCmd *: BTL_CMD_AUTO_LIFE */
     u16 unk1C[4];
     BtlUnit24 *max;
     u16 hp;
     s16 mp;
     s16 atb; /* fills over time, stops when the command menu is ready (runtime) */
-    s8 unk2E;
+    s8 atbSpeed; /* added to atb per tick (btl_updateAtb); btl_resetAtbSpeed */
     u8 pad2F;
-    u8 unk30;
-    u8 unk31;
-    u8 unk32;
-    u8 unk33;
+    u8 speed; /* Character.speed (btl_initPartyUnit) */
+    u8 strength;
+    u8 magic;
+    u8 spirit;
     s32 statusImmune; /* add-status (btl_addStatus) refuses these bits; runtime: Iifa monster 0x4400E004 */
     u32 autoStatus; /* permanent BTL_STATUS_* bits: support abilities set them at battle start (e.g. BTL_STATUS_REGEN); add-status (btl_addStatus) does nothing for a bit already set here */
     u32 status; /* current BTL_STATUS_* bits; runtime: Sleep 0x20000, KO 0x100 (added by btl_addStatus) */
@@ -377,52 +492,52 @@ typedef struct BtlUnit {
     s16 unk46[16]; /* status timers */
     s16 unk66;
     u32 unk68; /* flags: bit 0 player, bits 1-4 character slot, bits 5-7 id */
-    u8 unk6C;
-    u8 unk6D;
-    u8 unk6E;
-    u8 unk6F;
-    u8 unk70;
-    u8 unk71;
-    u8 unk72;
-    u8 unk73;
-    u8 *unk74;
-    u8 unk78;
-    u8 unk79;
-    u8 unk7A;
+    u8 defense; /* Character.defense (btl_initPartyUnit) */
+    u8 evade;
+    u8 magicDef;
+    u8 magicEva;
+    u8 elemGuard; /* element bits taking no damage ("Guard", btl_applyWeaponElement) */
+    u8 elemAbsorb; /* absorbed: the damage heals */
+    u8 elemHalf;
+    u8 elemWeak; /* x1.5 */
+    u8 *weapon; /* weapon stats (D_8006E0E8 entry, btl_initWeapon): [1] status set, [5] power, [6] element */
+    u8 trance; /* gauge 0-0xFF (Character.trance; btl_gainTrance) */
+    u8 elemBoost; /* element bits dealt x1.5 (btl_applyWeaponElementBoost) */
+    u8 level; /* Character.level, enemy record level */
     u8 unk7B;
     u8 unk7C;
     u8 unk7D;
-    u16 unk7E;
-    s16 unk80;
-    s16 unk82;
-    u16 unk84; /* model id */
-    s16 unk86[3];
-    s32 unk8C[3]; /* position, 16.16 */
+    u16 popupFlags; /* btl_spawnPopups: BtlCalc.unk1B bits (1 hp, 2 heal, 4 critical, 8 mp, 0x10 mp heal), 0x20 miss, 0x40 killed, 0x80 guard */
+    s16 hpChange; /* damage or heal shown by btl_spawnPopups */
+    s16 mpChange;
+    u16 modelId;
+    s16 rot[3]; /* rot[1] = facing */
+    s32 pos[3]; /* position, 16.16 */
     struct BtlUnit98 *unk98;
-    BtlUnit9C *unk9C;
+    BtlUnit9C *model;
     BtlUnitA0 *unkA0;
-    s32 *unkA4;
-    BtlUnit9C *unkA8;
-    u16 unkAC;
+    s32 *motions; /* motion table (BtlUnit9CC * per slot); unk9C->unkC is the playing one */
+    BtlUnit9C *weaponModel;
+    u16 hiddenMeshes; /* BTL_ATTR_HIDE_MESHES / BTL_ATTR_SHOW_MESHES */
     u16 unkAE;
-    u16 unkB0;
+    u16 unitBit; /* bit in target masks (BtlCmd.targets): party 0-3, enemies from 4 */
     u8 unkB2;
-    u8 unkB3;
+    u8 cmdIssued; /* set when the menu issues its command, cleared when it ends */
     struct Unk80104F88Entry *unkB4; /* menu data (party members) */
-    s16 unkB8; /* screen x */
-    s16 unkBA; /* screen y */
-    u8 unkBC; /* on screen */
+    s16 screenX;
+    s16 screenY;
+    u8 onScreen; /* screenX/Y valid (btl_projectUnitPos) */
     u8 unkBD;
     u8 unkBE;
     u8 unkBF;
     u8 unkC0;
     u8 unkC1[3];
-    u32 *unkC4;
-    s16 unkC8; /* hp change shown */
-    s16 unkCA;
-    s16 unkCC;
-    u8 unkCE;
-    u8 unkCF;
+    u32 *support; /* support-ability bits (Character.unk88) */
+    s16 tickHeal; /* btl_tickRegen */
+    s16 tickDamage; /* btl_tickPoison */
+    s16 tickMpDamage; /* btl_tickVenomMp */
+    u8 tickFlags; /* 1 regen, 2 poison, 4 venom, 8 regen hurts */
+    u8 inMenuQueue; /* waiting for its command menu (func_800EB358) */
 } BtlUnit; /* 0xD0 */
 
 /* ability/command calculation context */
@@ -3347,7 +3462,7 @@ extern u8 D_80104FF2;
 /* first unit flagged as the current target (bits 28 and 29 of unk68) */
 static inline BtlUnit *find_target(void) {
     BtlUnit *u;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             return u;
         }
@@ -3481,7 +3596,7 @@ s32 chr_getDefaultSet(Character *);
 /* battle menu: unit under the target cursor (inlined by its callers) */
 static inline BtlUnit *BtlFindTargetCursor(void) {
     BtlUnit *p;
-    for (p = g_gameState->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->unk0) {
+    for (p = g_gameState->unk1C->unk8E4.battle->unk6F8; p != NULL; p = p->next) {
         if ((p->unk68 & 0x30000000) == 0x30000000) {
             return p;
         }
@@ -3497,7 +3612,7 @@ static inline s32 func_800F1B78_inline(void) {
         return 2;
     }
     n = 0;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
         if ((u->unk68 & 0x30000000) == 0x30000000) {
             n++;
         }

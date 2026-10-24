@@ -4,7 +4,7 @@ void btl_hideMeshes(BtlUnit *arg0, u16 arg1) {
     s32 i;
     for (i = 0; i < 16; i++) {
         if ((arg1 >> i) & 1) {
-            arg0->unk9C->unk14 |= 1 << i;
+            arg0->model->unk14 |= 1 << i;
         }
     }
 }
@@ -12,39 +12,39 @@ void btl_hideMeshes(BtlUnit *arg0, u16 arg1) {
 void btl_showMeshes(BtlUnit *arg0, u16 arg1) {
     s32 i;
     if (!(arg0->unk68 & 1)) {
-        arg0->unk9C->unk0 &= ~0x20;
+        arg0->model->unk0 &= ~0x20;
     }
     for (i = 0; i < 16; i++) {
         if ((arg1 >> i) & 1) {
-            arg0->unk9C->unk14 &= ~(1 << i);
+            arg0->model->unk14 &= ~(1 << i);
         }
     }
 }
 
 void btl_hideWeapon(BtlUnit *arg0) {
     s32 i;
-    for (i = 0; i < arg0->unkA8->unk8->unk3; i++) {
-        arg0->unkA8->unk14 |= 1 << i;
+    for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
+        arg0->weaponModel->unk14 |= 1 << i;
     }
 }
 
 void btl_showWeapon(BtlUnit *arg0) {
     s32 i;
-    for (i = 0; i < arg0->unkA8->unk8->unk3; i++) {
-        arg0->unkA8->unk14 &= ~(1 << i);
+    for (i = 0; i < arg0->weaponModel->unk8->unk3; i++) {
+        arg0->weaponModel->unk14 &= ~(1 << i);
     }
 }
 
 s32 func_800BD5A0(BtlUnit *arg0) {
-    arg0->unk9C->unkC = (BtlUnit9CC *)arg0->unkA4[4];
-    arg0->unk9C->unk50[2].unk4 &= ~3;
-    arg0->unk9C->unk50[0].unk4 |= 3;
-    arg0->unk9C->unk50[0].unkC = 0;
-    arg0->unk9C->unk50[0].unk12 = 0x1000;
+    arg0->model->unkC = (BtlUnit9CC *)arg0->motions[4];
+    arg0->model->unk50[2].unk4 &= ~3;
+    arg0->model->unk50[0].unk4 |= 3;
+    arg0->model->unk50[0].unkC = 0;
+    arg0->model->unk50[0].unk12 = 0x1000;
     arg0->unkA0->unk3A = 0;
     if (arg0->status & BTL_STATUS_AUTO_LIFE) {
         arg0->unk7D = 7;
-        btl_setCmd(arg0->unk18, 0x3D, 0, arg0->unkB0, 0);
+        btl_setCmd(arg0->reviveCmd, 0x3D, 0, arg0->unitBit, 0);
         btl_removeStatus(arg0, BTL_STATUS_AUTO_LIFE);
         return 0;
     }
@@ -57,33 +57,33 @@ void func_800BD698(BtlUnit *arg0, s32 arg1, s32 arg2) {
     for (i = 0; i < 0x22; i++) {
         g_gameState->unk1C->unk8E4.battle->unk8[arg2][i] = (s32)db_lookupRegistered(4, D_800F524C[arg1][i] | 0x30000, 0);
     }
-    arg0->unkA4 = g_gameState->unk1C->unk8E4.battle->unk8[arg2];
+    arg0->motions = g_gameState->unk1C->unk8E4.battle->unk8[arg2];
 }
 
 void btl_spreadTroubleDamage(BtlUnit *arg0) {
     BtlUnit *u;
     s32 d;
     s32 v;
-    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->unk0) {
+    for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != 0; u = u->next) {
         if ((u->unk68 & 1) == (arg0->unk68 & 1) && u != arg0 && ((u->unk68 >> 28) & 1)) {
-            u->unk7E = 1;
-            d = arg0->unk80 >> 1;
+            u->popupFlags = 1;
+            d = arg0->hpChange >> 1;
             if (u->status & BTL_STATUS_KO) {
-                u->unk7E = 0x20;
+                u->popupFlags = 0x20;
             } else if (u->status & BTL_STATUS_PETRIFY) {
-                u->unk80 = 0;
+                u->hpChange = 0;
             } else {
                 if (u != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
                     v = (u->unk68 & 1) << 11;
                     u->unkA0->unk22 = v;
-                    u->unk86[1] = v;
+                    u->rot[1] = v;
                 }
                 if (d < u->hp) {
                     u->hp -= d;
                 } else {
                     u->hp = 0;
                 }
-                u->unk80 = d;
+                u->hpChange = d;
                 if (u->hp == 0) {
                     btl_killUnit(u);
                 }
@@ -143,7 +143,7 @@ void func_800BDA60(BtlUnit *arg0) {
     if ((arg0->unk68 >> 8) & 3) {
         d = 0xFE700000;
     }
-    arg0->unk8C[2] = arg0->unk98->unk0[2] + d;
+    arg0->pos[2] = arg0->unk98->unk0[2] + d;
     arg0->unk98->unk0[2] += d;
     f = arg0->unk68;
     m = f & ~0x300;
@@ -162,24 +162,24 @@ void func_800BDACC(u8 *arg0, u8 *arg1) {
 void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
     s32 v;
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->unk7E = 0x20;
+        arg0->popupFlags = 0x20;
         return;
     }
     if (arg0->status & BTL_STATUS_PETRIFY) {
-        arg0->unk80 = 0;
+        arg0->hpChange = 0;
         return;
     }
     if (arg0 != g_gameState->unk1C->unk8E4.battle->curCmd->unk4) {
         v = (arg0->unk68 & 1) << 11;
         arg0->unkA0->unk22 = v;
-        arg0->unk86[1] = v;
+        arg0->rot[1] = v;
     }
     if (arg1 < arg0->hp) {
         arg0->hp -= arg1;
     } else {
         arg0->hp = 0;
     }
-    arg0->unk80 = arg1;
+    arg0->hpChange = arg1;
     if (arg2) {
         btl_startHitMotion(arg0);
         return;
@@ -191,7 +191,7 @@ void btl_damageHp(BtlUnit *arg0, s32 arg1, u8 arg2) {
 
 void btl_healHp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->unk7E = 0x20;
+        arg0->popupFlags = 0x20;
     } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else {
@@ -203,12 +203,12 @@ void btl_healHp(BtlUnit *arg0, s32 arg1) {
             arg0->hp = m->maxHp;
         }
     }
-    arg0->unk80 = arg1;
+    arg0->hpChange = arg1;
 }
 
 void btl_damageMp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->unk7E = 0x20;
+        arg0->popupFlags = 0x20;
     } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else if (arg1 < arg0->mp) {
@@ -216,12 +216,12 @@ void btl_damageMp(BtlUnit *arg0, s32 arg1) {
     } else {
         arg0->mp = 0;
     }
-    arg0->unk82 = arg1;
+    arg0->mpChange = arg1;
 }
 
 void btl_healMp(BtlUnit *arg0, s32 arg1) {
     if (arg0->status & BTL_STATUS_KO) {
-        arg0->unk7E = 0x20;
+        arg0->popupFlags = 0x20;
     } else if (arg0->status & BTL_STATUS_PETRIFY) {
         arg1 = 0;
     } else if (arg0->mp + arg1 < arg0->max->maxMp) {
@@ -229,7 +229,7 @@ void btl_healMp(BtlUnit *arg0, s32 arg1) {
     } else {
         arg0->mp = arg0->max->maxMp;
     }
-    arg0->unk82 = arg1;
+    arg0->mpChange = arg1;
 }
 
 void btl_tickPoison(BtlUnit *arg0) {
@@ -242,8 +242,8 @@ void btl_tickPoison(BtlUnit *arg0) {
             btl_killUnit(arg0);
         }
     }
-    arg0->unkCA = v;
-    arg0->unkCE |= 2;
+    arg0->tickDamage = v;
+    arg0->tickFlags |= 2;
 }
 
 void btl_tickRegen(BtlUnit *arg0) {
@@ -251,7 +251,7 @@ void btl_tickRegen(BtlUnit *arg0) {
     if (!(arg0->status & BTL_STATUS_PETRIFY)) {
         v = arg0->max->maxHp >> 4;
         if ((arg0->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(arg0, 0x10) != 0) {
-            arg0->unkCE |= 8;
+            arg0->tickFlags |= 8;
             if (v < arg0->hp) {
                 arg0->hp -= v;
             } else {
@@ -265,8 +265,8 @@ void btl_tickRegen(BtlUnit *arg0) {
             }
         }
     }
-    arg0->unkC8 = v;
-    arg0->unkCE |= 1;
+    arg0->tickHeal = v;
+    arg0->tickFlags |= 1;
 }
 
 void btl_tickVenomMp(BtlUnit *arg0) {
@@ -279,8 +279,8 @@ void btl_tickVenomMp(BtlUnit *arg0) {
             arg0->mp = 0;
         }
     }
-    arg0->unkCC = v;
-    arg0->unkCE |= 4;
+    arg0->tickMpDamage = v;
+    arg0->tickFlags |= 4;
 }
 
 u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
@@ -328,16 +328,16 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r = arg0->status & 0xFFFFFF;
         break;
     case 0x30:
-        r = arg0->unk70;
+        r = arg0->elemGuard;
         break;
     case 0x31:
-        r = arg0->unk71;
+        r = arg0->elemAbsorb;
         break;
     case 0x32:
-        r = arg0->unk72;
+        r = arg0->elemHalf;
         break;
     case 0x33:
-        r = arg0->unk73;
+        r = arg0->elemWeak;
         break;
     case 0x34:
         r = arg0->unk68 >> 28;
@@ -348,10 +348,10 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r &= 1;
         break;
     case 0x39:
-        r = (s16)arg0->unk84;
+        r = (s16)arg0->modelId;
         break;
     case 0x3A:
-        r = arg0->unkAC;
+        r = arg0->hiddenMeshes;
         break;
     case 0x40:
         r = arg0->unk68 >> 8;
@@ -380,22 +380,22 @@ u32 btl_getUnitAttr(BtlUnit *arg0, s32 arg1) {
         r &= 0xF;
         break;
     case 0x48:
-        r = arg0->unk31;
+        r = arg0->strength;
         break;
     case 0x49:
-        r = arg0->unk32;
+        r = arg0->magic;
         break;
     case 0x4A:
-        r = arg0->unk6C;
+        r = arg0->defense;
         break;
     case 0x4B:
-        r = arg0->unk6D;
+        r = arg0->evade;
         break;
     case 0x4C:
-        r = arg0->unk6E;
+        r = arg0->magicDef;
         break;
     case 0x4D:
-        r = arg0->unk6F;
+        r = arg0->magicEva;
         break;
     }
     return r;
@@ -417,7 +417,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case 0x22:
         if ((u8)btl_cancelUnitCmds(arg0)) {
-            arg0->unkB3 = 0;
+            arg0->cmdIssued = 0;
         }
         break;
     case 0x23:
@@ -436,16 +436,16 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->atb = arg2;
         break;
     case 0x30:
-        arg0->unk70 = arg2;
+        arg0->elemGuard = arg2;
         break;
     case 0x31:
-        arg0->unk71 = arg2;
+        arg0->elemAbsorb = arg2;
         break;
     case 0x32:
-        arg0->unk72 = arg2;
+        arg0->elemHalf = arg2;
         break;
     case 0x33:
-        arg0->unk73 = arg2;
+        arg0->elemWeak = arg2;
         break;
     case 0x34:
         if (g_gameState->unk1C->unk8E4.battle->unkD80 == 2) {
@@ -460,7 +460,7 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
     case 0x35:
         arg0->unk68 = (arg0->unk68 & ~0x400000) | ((arg2 & 1) << 22);
         if (arg2 != 0 && g_gameState->unk1C->unk8E4.battle->unkD80 == 2) {
-            func_800C2344(arg0->unk9C);
+            func_800C2344(arg0->model);
             k = btl_getModelSlot(arg0);
             g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_0 = btlbg_getHeader()->unkF;
         }
@@ -469,17 +469,17 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         arg0->unk68 = (arg0->unk68 & ~0x1000000) | ((arg2 & 1) << 24);
         break;
     case 0x37:
-        arg0->unk9C->unk0 |= 2;
-        arg0->unk9C->unk54 = arg2;
-        arg0->unk9C->unk56 = arg2;
-        arg0->unk9C->unk58 = arg2;
+        arg0->model->unk0 |= 2;
+        arg0->model->unk54 = arg2;
+        arg0->model->unk56 = arg2;
+        arg0->model->unk58 = arg2;
         k = btl_getModelSlot(arg0);
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = ((u32)(arg0->unkBF * arg2) >> 12) * 14;
         k = btl_getModelSlot(arg0);
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_20 = ((u32)(arg0->unkC0 * arg2) >> 12) * 12;
         break;
     case 0x38:
-        arg0->unk9C->unk0 &= ~2;
+        arg0->model->unk0 &= ~2;
         k = btl_getModelSlot(arg0);
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[k].unk0_8 = arg0->unkBF * 14;
         k = btl_getModelSlot(arg0);
@@ -487,27 +487,27 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         break;
     case 0x3B:
         btl_hideMeshes(arg0, arg2);
-        arg0->unkAC |= arg2;
+        arg0->hiddenMeshes |= arg2;
         break;
     case 0x3C:
         btl_showMeshes(arg0, arg2);
-        arg0->unkAC &= ~arg2;
+        arg0->hiddenMeshes &= ~arg2;
         break;
     case 0x3D:
         off = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + off))->unk4 |= 1;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + off))->unkC = 0;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + off))->unk12 = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + off))->unk4 |= 1;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + off))->unkC = 0;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + off))->unk12 = 0x1000;
         break;
     case 0x3E:
         w = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + w))->unk4 &= ~3;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + w))->unk4 &= ~3;
         break;
     case 0x3F:
         x = arg2 * 20;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + x))->unk4 |= 3;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + x))->unkC = 0;
-        ((BtlUnit9C50 *)((u8 *)arg0->unk9C->unk50 + x))->unk12 = 0x1000;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + x))->unk4 |= 3;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + x))->unkC = 0;
+        ((BtlUnit9C50 *)((u8 *)arg0->model->unk50 + x))->unk12 = 0x1000;
         break;
     case 0x45:
         arg0->unk68 = (arg0->unk68 & ~0x40000) | ((arg2 & 1) << 18);
@@ -516,27 +516,27 @@ void btl_setUnitAttr(BtlUnit *arg0, s32 arg1, u32 arg2) {
         btl_addEnemyRewards(g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0);
         break;
     case 0x48:
-        arg0->unk31 = arg2;
+        arg0->strength = arg2;
         break;
     case 0x49:
-        arg0->unk32 = arg2;
+        arg0->magic = arg2;
         break;
     case 0x4A:
-        arg0->unk6C = arg2;
+        arg0->defense = arg2;
         break;
     case 0x4B:
-        arg0->unk6D = arg2;
+        arg0->evade = arg2;
         break;
     case 0x4C:
-        arg0->unk6E = arg2;
+        arg0->magicDef = arg2;
         break;
     case 0x4D:
-        arg0->unk6F = arg2;
+        arg0->magicEva = arg2;
         break;
     case 0x4E:
         arg0->atb = arg0->max->maxAtb;
-        arg0->unkB3 = 1;
-        btl_setCmd(arg0->unk4, 0x14, 0xBB, (u16)arg2, 8);
+        arg0->cmdIssued = 1;
+        btl_setCmd(arg0->cmd, 0x14, 0xBB, (u16)arg2, 8);
         func_800E9F3C(1);
         func_800E9F68(1);
         break;
@@ -563,7 +563,7 @@ s32 btl_getBattleVar(s32 arg0) {
         break;
     case 36:
         if (b->curCmd != NULL && b->curCmd->unk4 != NULL) {
-            r = b->curCmd->unk4->unkB0;
+            r = b->curCmd->unk4->unitBit;
         }
         break;
     case 37:
@@ -572,14 +572,14 @@ s32 btl_getBattleVar(s32 arg0) {
         }
         break;
     case 38:
-        if (b->curCmd != NULL && b->curCmd->unk4 != NULL && b->curCmd->unk4->unk74 != NULL) {
-            r = b->curCmd->unk4->unk74[6];
+        if (b->curCmd != NULL && b->curCmd->unk4 != NULL && b->curCmd->unk4->weapon != NULL) {
+            r = b->curCmd->unk4->weapon[6];
         }
         break;
     case 39:
         if (b->curCmd != NULL && b->curCmd->unk4 != NULL) {
             r = 0;
-            if (!(b->curCmd->unk4->unkC4[1] & 1)) {
+            if (!(b->curCmd->unk4->support[1] & 1)) {
                 r = b->curCmd->ability->unk6;
             }
         }
@@ -592,7 +592,7 @@ s32 btl_getBattleVar(s32 arg0) {
         break;
     case 42:
         r = 0;
-        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+        for (u = b->unk6F8; u != NULL; u = u->next) {
             if (u->unk68 & 1) {
                 k = g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4;
             } else {
@@ -621,7 +621,7 @@ void btl_setBattleVar(s32 arg0, s32 arg1) {
         b->unkD81 = 2;
         b->unk11B8 &= ~1;
         btl_clearCmdQueue(b);
-        for (u = b->unk6F8; u != NULL; u = u->unk0) {
+        for (u = b->unk6F8; u != NULL; u = u->next) {
             u->unk68 &= ~0x80000;
         }
         break;

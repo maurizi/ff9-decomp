@@ -347,7 +347,7 @@ void func_800C9794(void) {
         }
         btl_initEnemyUnit(&grp->unk8[i], u, (s32 *)flags, i);
         ((void (*)(Unk800C9D1C *, BtlUnit *, s32))btl_setEnemyStats)(&recs[grp->unk8[i].unk0], u, i);
-        u = u->unk0;
+        u = u->next;
     }
 }
 
@@ -391,7 +391,7 @@ void func_800C9A28(void) {
         if (!(*flags & 3)) {
             u->unk68 = (u->unk68 & ~0x300) | ((((u->unk68 >> 8) & 3) ^ 1) << 8);
         }
-        u->unk8C[0] = u->unk98->unk0[0] = u->unkA0->unk14 = x << 16;
+        u->pos[0] = u->unk98->unk0[0] = u->unkA0->unk14 = x << 16;
         p98 = u->unk98;
         pa0 = u->unkA0;
         if ((u8)btl_hasStatus(u, BTL_STATUS_FLOAT)) {
@@ -399,20 +399,20 @@ void func_800C9A28(void) {
         } else {
             v = 0;
         }
-        u->unk8C[1] = p98->unk0[1] = pa0->unk18 = v;
+        u->pos[1] = p98->unk0[1] = pa0->unk18 = v;
         q98 = u->unk98;
         qa0 = u->unkA0;
         w = 0xF9E80000;
         if (!((u->unk68 >> 8) & 3)) {
             w = 0xF8580000;
         }
-        u->unk8C[2] = q98->unk0[2] = qa0->unk1C = w;
+        u->pos[2] = q98->unk0[2] = qa0->unk1C = w;
         u->unkA0->unk20 = 0;
-        u->unk86[0] = 0;
+        u->rot[0] = 0;
         u->unkA0->unk22 = rot;
-        u->unk86[1] = rot;
+        u->rot[1] = rot;
         u->unkA0->unk24 = 0;
-        u->unk86[2] = 0;
+        u->rot[2] = 0;
         tbl = D_800F57F0;
         e = &tbl[g_gameState->unk1C->characters[(u->unk68 >> 1) & 0xF].unk34.b.unk4];
         u->unkBD = e->unk0;
@@ -420,7 +420,7 @@ void func_800C9A28(void) {
         func_800C23C8(u, e->unk2, e->unk3);
         x -= 0x278;
         g_gameState->unk1C->unk8E4.battle->unk11C0->unk28[(u->unk68 >> 1) & 0xF].unk4_22 = e->unk4;
-        u = u->unk0;
+        u = u->next;
     }
 }
 
@@ -472,19 +472,19 @@ void btl_initEnemyUnit(Unk800C9EE0 *arg0, BtlUnit *arg1, s32 *arg2, s32 arg3) {
     arg1->mp = arg1->max->maxMp;
     s->unk4 = (s->unk4 & ~0x100) | ((arg0->unk1 << 7) & 0x100);
     if (!((s->unk4 >> 9) & 1)) {
-        arg1->unk8C[0] = arg1->unk98->unk0[0] = arg1->unkA0->unk14 = arg0->unk4 << 16;
-        arg1->unk8C[1] = arg1->unk98->unk0[1] = arg1->unkA0->unk18 = arg0->unk6 << 16;
-        arg1->unk8C[2] = arg1->unk98->unk0[2] = arg1->unkA0->unk1C = arg0->unk8 << 16;
+        arg1->pos[0] = arg1->unk98->unk0[0] = arg1->unkA0->unk14 = arg0->unk4 << 16;
+        arg1->pos[1] = arg1->unk98->unk0[1] = arg1->unkA0->unk18 = arg0->unk6 << 16;
+        arg1->pos[2] = arg1->unk98->unk0[2] = arg1->unkA0->unk1C = arg0->unk8 << 16;
         arg1->unkA0->unk20 = 0;
-        arg1->unk86[0] = 0;
+        arg1->rot[0] = 0;
         arg1->unkA0->unk24 = 0;
-        arg1->unk86[2] = 0;
+        arg1->rot[2] = 0;
         r = (arg0->unkA + D_800F5850[*arg2 & 3]) & 0xFFF;
         arg1->unkA0->unk22 = r;
-        arg1->unk86[1] = r;
+        arg1->rot[1] = r;
     }
-    arg1->unkA4 = (s32 *)s->unk0->unkC;
-    arg1->unk9C->unkC = s->unk0->unkC[0];
+    arg1->motions = (s32 *)s->unk0->unkC;
+    arg1->model->unkC = s->unk0->unkC[0];
 }
 
 void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
@@ -496,16 +496,16 @@ void btl_setEnemyStats(Unk800C9D1C *arg0, BtlUnit *arg1) {
     arg1->status = arg0->unk8;
     arg1->hp = arg0->unkC;
     arg1->mp = arg0->unkE;
-    arg1->unk6C = arg0->unk43[0];
-    arg1->unk6D = arg0->unk43[1];
-    arg1->unk6E = arg0->unk43[2];
-    arg1->unk6F = arg0->unk43[3];
-    arg1->unk30 = arg0->unk34[0];
-    arg1->unk31 = arg0->unk34[1];
-    arg1->unk32 = arg0->unk34[2];
-    arg1->unk33 = arg0->unk34[3];
-    *(s32 *)&arg1->unk70 = arg0->unk3C;
-    *(s32 *)&arg1->unkAC = arg0->unk2C;
+    arg1->defense = arg0->unk43[0];
+    arg1->evade = arg0->unk43[1];
+    arg1->magicDef = arg0->unk43[2];
+    arg1->magicEva = arg0->unk43[3];
+    arg1->speed = arg0->unk34[0];
+    arg1->strength = arg0->unk34[1];
+    arg1->magic = arg0->unk34[2];
+    arg1->spirit = arg0->unk34[3];
+    *(s32 *)&arg1->elemGuard = arg0->unk3C;
+    *(s32 *)&arg1->hiddenMeshes = arg0->unk2C;
     arg1->unk7C = arg0->unk4B;
     s = &g_gameState->unk1C->unk8E4.battle->unk488[(arg1->unk68 >> 1) & 0xF];
     s->unk8.w = arg0->unk18;

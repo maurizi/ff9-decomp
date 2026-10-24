@@ -470,19 +470,19 @@ void btlfx_clearSummonModels(void) {
 }
 
 void func_800DC818(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btl_getUnit(arg0)->unk9C, arg1, arg2);
+    func_800DC9D0(btl_getUnit(arg0)->model, arg1, arg2);
 }
 
 void func_800DC858(s32 arg0, s32 arg1, u16 *arg2) {
-    func_800DC9D0(btl_getUnit(arg0)->unk9C, g_btlfxEnv->unkC->unk25[arg1], arg2);
+    func_800DC9D0(btl_getUnit(arg0)->model, g_btlfxEnv->unkC->unk25[arg1], arg2);
 }
 
 void func_800DC8AC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btl_getUnit(arg0)->unk9C, arg1, arg2);
+    func_800DCA18(btl_getUnit(arg0)->model, arg1, arg2);
 }
 
 void func_800DC8EC(s32 arg0, s32 arg1, BtlBone *arg2) {
-    func_800DCA18(btl_getUnit(arg0)->unk9C, g_btlfxEnv->unkC->unk25[arg1], arg2);
+    func_800DCA18(btl_getUnit(arg0)->model, g_btlfxEnv->unkC->unk25[arg1], arg2);
 }
 
 INCLUDE_RODATA("asm/us/ovl_0b/nonmatchings/hi_model", D_800A7F34);
@@ -642,7 +642,7 @@ Unk8010141C *btlfx_getSummonModel(s32 arg0, char *arg1) {
 }
 
 void func_800DD0B0(s32 arg0) {
-    func_800DD10C(btl_getUnit(arg0)->unk9C);
+    func_800DD10C(btl_getUnit(arg0)->model);
 }
 
 /* Void in the original; effect modules read $v0 after it (export 0x318): func_800DD10C's u8 result.

@@ -158,7 +158,7 @@ void btlcam_loadScript(s32 arg) {
                 n = 0;
                 r = n;
                 if (w != NULL) {
-                    m = w->unk9C->unk8;
+                    m = w->model->unk8;
                     r = m->unk8;
                     n = m->unkA;
                 }
@@ -187,7 +187,7 @@ void btlcam_loadScript(s32 arg) {
                         g_btlCamera.unkA8 = n;
                     } else {
                         r = 0;
-                        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->unk0) {
+                        for (u = g_gameState->unk1C->unk8E4.battle->unk6F8; u != NULL; u = u->next) {
                             if ((u->unk68 & 1) && !(u->status & (BTL_STATUS_KO | BTL_STATUS_JUMP))) {
                                 r++;
                             }
@@ -759,9 +759,9 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
             arg2[1] = u->unkA0->unk22;
             arg2[2] = u->unkA0->unk24;
         } else {
-            arg2[0] = u->unk86[0];
-            arg2[1] = u->unk86[1];
-            arg2[2] = u->unk86[2];
+            arg2[0] = u->rot[0];
+            arg2[1] = u->rot[1];
+            arg2[2] = u->rot[2];
         }
     } else {
         s = D_800FE488.unk5A;
@@ -782,8 +782,8 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
             arg1[0] = u->unk98->unk0[0] >> 16;
             arg1[2] = u->unk98->unk0[2] >> 16;
         } else {
-            arg1[0] = u->unk8C[0] >> 16;
-            arg1[2] = u->unk8C[2] >> 16;
+            arg1[0] = u->pos[0] >> 16;
+            arg1[2] = u->pos[2] >> 16;
         }
     } else {
         arg1[0] = s[3];
@@ -798,7 +798,7 @@ s32 func_800C4E84(s32 arg0, s16 *arg1, s16 *arg2, s32 *arg3) {
         arg1[0] = gs->unk1C->unk8E4.battle->unk11C4.unk150;
         arg1[2] = gs->unk1C->unk8E4.battle->unk11C4.unk154;
     }
-    *arg3 = u->unk9C->unk8->unkA;
+    *arg3 = u->model->unk8->unkA;
     arg1[1] = 0;
     if (n != 0xB) {
         arg0 &= 0xC0;
@@ -913,18 +913,18 @@ void btlcam_applyTargetView(SVECTOR *arg0, SVECTOR *arg1) {
 void btlcam_getUnitAnchors(BtlUnit *arg0, s16 *arg1) {
     s32 i;
     if (arg0->unk68 & 1) {
-        s32 h = arg0->unk9C->unk8->unk8;
-        s16 y = arg0->unk8C[1] >> 16;
+        s32 h = arg0->model->unk8->unk8;
+        s16 y = arg0->pos[1] >> 16;
         arg1[0] = y - (h >> 2);
         arg1[1] = y - (h >> 1);
         arg1[2] = y - (h - (h >> 2));
     } else {
         for (i = 0; i < 3; i++) {
-            arg1[i] = arg0->unk9C->unk20[g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
+            arg1[i] = arg0->model->unk20[g_gameState->unk1C->unk8E4.battle->unk488[(arg0->unk68 >> 1) & 0xF].unk0->unk29[i]].unk18;
         }
     }
-    arg1[3] = arg0->unk8C[0] >> 16;
-    arg1[4] = arg0->unk8C[2] >> 16;
+    arg1[3] = arg0->pos[0] >> 16;
+    arg1[4] = arg0->pos[2] >> 16;
 }
 
 s32 func_800C5890(s32 arg0) {

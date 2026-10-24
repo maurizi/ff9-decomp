@@ -1066,18 +1066,18 @@ void func_800D85F8(Unk800F78A40 *arg0, s32 arg1, s32 arg2) {
 
 void btlfx_resetUnitMotion(s32 arg0, u8 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    btlfx_setUnitMotion(arg0, u->unkA4[0]);
+    btlfx_setUnitMotion(arg0, u->motions[0]);
     if (arg1) {
-        u->unk86[0] = u->unkA0->unk20;
-        u->unk86[1] = u->unkA0->unk22;
-        u->unk86[2] = u->unkA0->unk24;
+        u->rot[0] = u->unkA0->unk20;
+        u->rot[1] = u->unkA0->unk22;
+        u->rot[2] = u->unkA0->unk24;
     }
 }
 
 void btlfx_setUnitMotion(s32 arg0, s32 arg1) {
     if (btlfx_isPartyUnit(arg0) != 0) {
         BtlUnit *u = btl_getUnit(arg0);
-        BtlUnit9C *m = u->unk9C;
+        BtlUnit9C *m = u->model;
         if (m != NULL) {
             m->unkC = (BtlUnit9CC *)arg1;
             u->unkA0->unk3A = 0;
@@ -1086,19 +1086,19 @@ void btlfx_setUnitMotion(s32 arg0, s32 arg1) {
 }
 
 s32 btlfx_getUnitMotion(s32 arg0, s32 arg1) {
-    return btl_getUnit(arg0)->unkA4[arg1];
+    return btl_getUnit(arg0)->motions[arg1];
 }
 
 void btlfx_setMotionFrame(s32 arg0, s32 arg1) {
     BtlUnit *u = btl_getUnit(arg0);
-    if (arg1 >= u->unk9C->unkC->unk2) {
-        arg1 = u->unk9C->unkC->unk2;
+    if (arg1 >= u->model->unkC->unk2) {
+        arg1 = u->model->unkC->unk2;
     }
     u->unkA0->unk3A = arg1;
 }
 
 s32 btlfx_getMotionLength(s32 arg0) {
-    return btl_getUnit(arg0)->unk9C->unkC->unk2;
+    return btl_getUnit(arg0)->model->unkC->unk2;
 }
 
 u8 btlfx_getMotionFrame(s32 arg0) {
@@ -1112,7 +1112,7 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
     s16 c[4];
     switch (arg1) {
     case 0:
-        u->unk86[1] = u->unkA0->unk22 + 0x800;
+        u->rot[1] = u->unkA0->unk22 + 0x800;
         break;
     case 1:
         btlfx_getUnitPos(arg0, a);
@@ -1123,9 +1123,9 @@ void btlfx_turnUnit(s32 arg0, s32 arg1) {
         btlfx_setUnitRot(arg0, c);
         break;
     case 2:
-        u->unk86[0] = u->unkA0->unk20;
-        u->unk86[1] = u->unkA0->unk22;
-        u->unk86[2] = u->unkA0->unk24;
+        u->rot[0] = u->unkA0->unk20;
+        u->rot[1] = u->unkA0->unk22;
+        u->rot[2] = u->unkA0->unk24;
         break;
     }
 }
@@ -1654,9 +1654,9 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
     u = btl_getUnit(arg0->unk0);
     if (arg0->unk2 == 0 || btlfx_isPartyUnit(arg0->unk1) == 0) {
         if (v == 0) {
-            arg0->unk8[0] = u->unkA0->unk20 - u->unk86[0];
-            arg0->unk8[1] = u->unkA0->unk22 - u->unk86[1];
-            arg0->unk8[2] = u->unkA0->unk24 - u->unk86[2];
+            arg0->unk8[0] = u->unkA0->unk20 - u->rot[0];
+            arg0->unk8[1] = u->unkA0->unk22 - u->rot[1];
+            arg0->unk8[2] = u->unkA0->unk24 - u->rot[2];
         }
         btlfx_getUnitRot(arg0->unk0, rot);
         rot[0] += arg0->unk8[0] / arg0->unk4;
@@ -1669,10 +1669,10 @@ s32 btlfx_stepFaceHome(Unk800D8124 *arg0, s32 arg1, s32 *arg2) {
         D_800FEC56 = 1;
         return 1;
     }
-    u->unk86[0] = u->unkA0->unk20;
+    u->rot[0] = u->unkA0->unk20;
     a = u->unkA0;
-    u->unk86[1] = a->unk22;
-    *(volatile s16 *)&u->unk86[2] = a->unk24;
+    u->rot[1] = a->unk22;
+    *(volatile s16 *)&u->rot[2] = a->unk24;
     return D_800FEC56 = 1;
 end:
     return 0;
