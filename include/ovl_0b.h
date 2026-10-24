@@ -428,6 +428,20 @@ typedef struct {
 #define BTL_PHASE_EXIT_DEFEAT 7 /* code: from a defeat (GameData.unk56E = 3) */
 #define BTL_PHASE_EXIT_OTHER  8 /* code: from an escape or a script-ended battle */
 
+/* element bits (BtlUnit.elem*, BtlCmd8.element, weapon[6]); names from the element texts btl_getElementName returns */
+#define BTL_ELEM_FIRE    0x01
+#define BTL_ELEM_ICE     0x02
+#define BTL_ELEM_THUNDER 0x04
+#define BTL_ELEM_EARTH   0x08 /* misses Float and flying enemies (btl_missIfAirborne) */
+#define BTL_ELEM_WATER   0x10
+#define BTL_ELEM_WIND    0x20
+#define BTL_ELEM_HOLY    0x40
+#define BTL_ELEM_SHADOW  0x80
+
+/* btl_hasEnemyFlag categories (enemy type record unk2) */
+#define BTL_ENEMY_UNDEAD 0x10 /* code: Regen and healing hurt it like Zombie (btl_tickRegen, btl_calcHeal) */
+#define BTL_ENEMY_FLYING 0x80 /* code: Earth attacks miss it (btl_missIfAirborne) */
+
 /* btl_showMessage ids: entry id + 8 of the message table D_800F6CB4 (its first 8 entries are the element names);
  * the names are the US texts */
 #define BTL_MSG_PREEMPTIVE         0x01 /* "Preemptive strike!" */

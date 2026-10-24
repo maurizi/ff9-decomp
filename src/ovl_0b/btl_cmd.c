@@ -1531,7 +1531,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         {
             s32 v;
             if (func_800B9DDC(&c) && (btl_initUndeadHitRate(&c) || btl_rollStatusHit(&c))) {
-                if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, 0x10) == 0) {
+                if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) == 0) {
                     if (btl_checkTargetIsPlayer(&c)) {
                         v = target->max->maxHp * (target->spirit + cmd->ability->power);
                         if (caster->support[1] & 2) {
@@ -1554,7 +1554,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         }
     case 0xE:
         if (btl_guardIfDeathImmune(&c)) {
-            if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, 0x10) != 0) {
+            if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
                 if (btl_checkTargetAlive(&c)) {
                     target->hp = target->max->maxHp;
                 }
@@ -1587,7 +1587,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                         v = 9999;
                     }
                 }
-                if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, 0x10) != 0) {
+                if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
                     c.targetResult |= 0x10;
                     if (caster->mp < v) {
                         v = caster->mp;
@@ -1938,7 +1938,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                 }
                 btl_applyCasterStatusMod(&c);
                 btl_applyTargetStatusMod(&c);
-                if (btl_hasEnemyFlag(target, 0x80) != 0) {
+                if (btl_hasEnemyFlag(target, BTL_ENEMY_FLYING) != 0) {
                     c.multiplier = c.multiplier * 3 >> 1;
                 }
                 btl_finishPhysDamage(&c);
@@ -2320,7 +2320,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
                     v = 9999;
                 }
                 c.targetResult |= 8;
-                if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, 0x10) == 0) {
+                if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) == 0) {
                     c.targetResult |= 0x10;
                 }
                 c.targetMpChange = v;
@@ -2329,7 +2329,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         }
     case 0x47:
         if (btl_checkTargetAlive(&c)) {
-            if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, 0x10) == 0) {
+            if (!(target->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) == 0) {
                 target->hp = target->max->maxHp;
                 target->mp = target->max->maxMp;
             } else {
@@ -2340,7 +2340,7 @@ void btl_calcCmd(BtlUnit *caster, BtlUnit *target, BtlCmd *cmd, s32 type) {
         break;
     case 0x48:
         if (func_800B9DDC(&c)) {
-            if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, 0x10) != 0) {
+            if ((target->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(target, BTL_ENEMY_UNDEAD) != 0) {
                 target->hp = RAND8() % 10;
                 if (target->hp == 0) {
                     btl_killUnit(target);
@@ -3014,10 +3014,10 @@ u8 btl_applyAbilityElement(BtlCalc *arg0) {
     if (arg0->target->elemWeak & e) {
         arg0->multiplier = arg0->multiplier * 3 >> 1;
     }
-    if (e & 0x12) {
+    if (e & (BTL_ELEM_ICE | BTL_ELEM_WATER)) {
         btl_removeStatus(arg0->target, BTL_STATUS_HEAT);
     }
-    if (e & 1) {
+    if (e & BTL_ELEM_FIRE) {
         btl_removeStatus(arg0->target, BTL_STATUS_FREEZE);
     }
     return 1;
@@ -3245,7 +3245,7 @@ void btl_setDrainFlags(BtlCalc *arg0) {
     arg0->targetResult |= 1;
     u = arg0->target;
     arg0->casterResult |= 1;
-    if ((u->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(u, 0x10) != 0) {
+    if ((u->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(u, BTL_ENEMY_UNDEAD) != 0) {
         arg0->targetResult |= 2;
     } else {
         arg0->casterResult |= 2;
@@ -3270,7 +3270,7 @@ void btl_initStatusHitRate(BtlCalc *arg0) {
 
 u8 btl_initUndeadHitRate(BtlCalc *arg0) {
     BtlUnit *t = arg0->target;
-    if ((t->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(t, 0x10) != 0) {
+    if ((t->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(t, BTL_ENEMY_UNDEAD) != 0) {
         BtlUnit *c = arg0->caster;
         arg0->hitRate = c->level + (arg0->cmd->ability->rate + (c->magic >> 2)) - arg0->target->level;
         if (arg0->hitRate > 100) {
@@ -3525,18 +3525,18 @@ u8 btl_applyWeaponElement(BtlCalc *arg0) {
     if (arg0->target->elemWeak & e) {
         arg0->multiplier = arg0->multiplier * 3 >> 1;
     }
-    if (e & 0x12) {
+    if (e & (BTL_ELEM_ICE | BTL_ELEM_WATER)) {
         btl_removeStatus(arg0->target, BTL_STATUS_HEAT);
     }
-    if (e & 1) {
+    if (e & BTL_ELEM_FIRE) {
         btl_removeStatus(arg0->target, BTL_STATUS_FREEZE);
     }
     return 1;
 }
 
 u8 btl_missIfAirborne(BtlCalc *arg0) {
-    if ((btl_hasStatus(arg0->target, BTL_STATUS_FLOAT) & 0xFF) || btl_hasEnemyFlag(arg0->target, 0x80) != 0) {
-        if (arg0->cmd->ability->element & 8) {
+    if ((btl_hasStatus(arg0->target, BTL_STATUS_FLOAT) & 0xFF) || btl_hasEnemyFlag(arg0->target, BTL_ENEMY_FLYING) != 0) {
+        if (arg0->cmd->ability->element & BTL_ELEM_EARTH) {
             arg0->flags |= 1;
             return 0;
         }
@@ -3575,7 +3575,7 @@ void btl_calcHeal(BtlCalc *arg0) {
     }
     u = arg0->target;
     arg0->targetResult |= 1;
-    if (!(u->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(u, 0x10) == 0) {
+    if (!(u->status & BTL_STATUS_ZOMBIE) && btl_hasEnemyFlag(u, BTL_ENEMY_UNDEAD) == 0) {
         arg0->targetResult |= 2;
     }
     arg0->targetHpChange = v;

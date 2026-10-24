@@ -250,7 +250,7 @@ void btl_tickRegen(BtlUnit *arg0) {
     s32 v = 0;
     if (!(arg0->status & BTL_STATUS_PETRIFY)) {
         v = arg0->max->maxHp >> 4;
-        if ((arg0->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(arg0, 0x10) != 0) {
+        if ((arg0->status & BTL_STATUS_ZOMBIE) || btl_hasEnemyFlag(arg0, BTL_ENEMY_UNDEAD) != 0) {
             arg0->tickFlags |= 8;
             if (v < arg0->hp) {
                 arg0->hp -= v;
