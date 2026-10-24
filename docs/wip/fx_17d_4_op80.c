@@ -145,13 +145,13 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         work->unk34.vx = 0;
         work->unk34.vy = 0;
         work->unk34.vz = 0;
+        work->unk28.vx = work->unk48.vx;
+        work->unk28.vz = work->unk48.vz;
         work->unk3C.vy = 0x1000;
         work->unk28.vy += 0x800;
         work->unk20.vx = work->unk48.vx;
         work->unk20.vy = work->unk48.vy;
         work->unk20.vz = work->unk48.vz;
-        work->unk28.vx = work->unk48.vx;
-        work->unk28.vz = work->unk48.vz;
         env->unk2C->unk0[3].vx = work->unk20.vx;
         env->unk2C->unk0[3].vy = work->unk20.vy;
         env->unk2C->unk0[3].vz = work->unk20.vz;
