@@ -49,3 +49,83 @@ fld_startAudio = 0x800A9998; // type:func [code] waits for the sound request han
 fld_loadTexturesInCdOrder = 0x800A9AAC; // type:func [code] loads the queued textures (D_800C9F20, FieldScene.unk60 entries) with func_800AA4E8, lowest CD sector (file_find(0xA)) first
 fld_freeFieldFile = 0x800AA074; // type:func [code] db_unregister of FieldScene.unk24, the container fld_loadFile registered (fld_exit)
 fld_getBgKey = 0x800AA0C8; // type:func [code] db_lookup mode 3 (key by index) of block kind 0xA in the field file container FieldScene.unk24
+bgi_segmentsCross = 0x800C1E14; // type:func [code] 2D cross-product test whether segment a0-a1 crosses segment a2-a3 on axes x/z, func_800C519C uses it to pick which of two crossed edges
+bgi_getPassableNeighbor = 0x800C1F98; // type:func [code] returns triangle.neighbor[edge] if it has flag 1 and its mask byte doesn't block (0x80 blocks the player actor func_8004AE00, 0x40 everyone else), else NULL
+bgi_closestPointOnSegment = 0x800C20BC; // type:func [code] dot-product clamp of point a0 onto segment a1-a2, writes the point to a3, a4 = 1 unless clamped to an end, returns squared distance
+bgi_projectOnPlane = 0x800C2390; // type:func [code] turns the move vector a1 into a vector in the plane of normal a0 (cross products with the horizontal perpendicular (-z,0,x)), used by bgi_slide per triangle
+bgi_pushOutOfEdges = 0x800C2524; // type:func [code] for each triangle edge closer than the actor radius (unk20 = r^2) recurse into the passable neighbour or record a push vector of length r in D_800CA9D8, returns 1 when nothing hit
+bgi_findTriangleNear = 0x800C2920; // type:func [code] point-in-triangle on the current triangle, then its passable neighbours, then recursively (depth < 9, flag 0x80 marks visited), updates *a1 and the actor's floor/triangle
+bgi_slide = 0x800C2AF0; // type:func [code] moves an actor from a2 to a3 across the walkmesh, projecting the move onto each triangle's plane and following the neighbour across the crossed edge (bgi_findEdgeCrossing), recursive retries
+bgi_applyPushes = 0x800C31F8; // type:func [code] adds the averaged distinct push vectors D_800CA9D8[D_800C9DDC] to the position and actor, clears the count, then re-runs bgi_slide from the old position
+bgi_moveActor = 0x800C3608; // type:func [code] per-actor walkmesh step pos (unk40 -> pos), result bits 2 always, 4 not moved, 1 blocked (position reverted), 8 pushed, 0x10 corrected, sets the y from the triangle plane
+bgi_init = 0x800C3B80; // type:func [code] fld_main.c passes the BGI file data +4 ("[+4 for file magic]" in bgi_dumpText), sets every D_800C9DF0 table pointer, resets the 24 actor entries, anims and floor moves
+bgi_findPlayerActor = 0x800C3D28; // type:func [code] returns the D_800C9DF0.unk4 entry (and its index in *a0) whose actor is the player object (func_8004AE00 in mode 1, party leader in mode 5)
+bgi_setActorActive = 0x800C3E18; // type:func [code] sets/clears actor-entry flag 1, clearing also resets floor/triangle (unk4..unkA) to -1, event opcode 0xA8, and opcodes 0x1D/0xA1 disable it around a teleport
+bgi_placeActor = 0x800C3EC0; // type:func [code] scans every triangle containing (x,z), keeps the nearest height >= y, sets the actor's floor/triangle and position, called by bgi_updateActor when its triangle is -1
+bgi_setActorTriangle = 0x800C420C; // type:func [code] puts actor entry a0 on triangle a1 (floor from triangle.unk4) at the triangle centre (unk1E..22) + floor/mesh offset, pos and previous pos
+bgi_setActorFloorTriangle = 0x800C4378; // type:func [code] as bgi_setActorTriangle but the triangle is entry a2 of floor a1's triangle index list (floor.unk1E)
+bgi_updateActor = 0x800C44F4; // type:func [code] 0x8000 when no walkmesh, 0x4000 bad index, 0 inactive, active entries go to bgi_placeActor (triangle unknown) or bgi_moveActor, main func_8002170C returns this
+bgi_findTriangleBelow = 0x800C45C0; // type:func [code] scans every triangle containing (x,z), returns 1 and the index/pointer of the one whose height is the smallest value >= y
+bgi_setFloorActive = 0x800C47E4; // type:func [code] event opcode 0xCB (floor, on) - sets/clears flag 1 on the floor and on every triangle of its index list
+bgi_getHeight = 0x800C48DC; // type:func [code] height at (x,z) from the first triangle containing it (plane or first vertex), without a walkmesh the player actor's y, -0x7FFF when outside
+bgi_pointInTriangle = 0x800C4B30; // type:func [code] crossing-number point-in-triangle test (edges count as inside), projects on x/y or y/z instead of x/z when the triangle's normal ny is small (steep)
+bgi_pointInTriangleXZ = 0x800C4EC8; // type:func [code] the same test as bgi_pointInTriangle always on the x/z plane, used to find triangles under a point (bgi_placeActor, bgi_getHeight)
+bgi_findEdgeCrossing = 0x800C519C; // type:func [code] intersects the move segment a3-a4 with the triangle's edges (skipping edge a7), writes the hit point (with interpolated height) to a5 and the edge to a6
+bgi_updateAnims = 0x800C60F0; // type:func [code] per-frame from fld_main - for running keyframe anims (flags 1 and 4/8) enables the current frame's triangles, swaps actors over (bgi_remapActors), advances "Current Frame" by "Frame Rate"
+bgi_showAnimFrame = 0x800C6408; // type:func [code] event opcode 0xFF0A (anim, frame) - enables frame a1's triangles at once, disables the others, moves actors over and sets Current Frame
+bgi_transferActorPos = 0x800C65CC; // type:func [code] re-expresses the actor position on triangle n0 by barycentric weights and maps it onto triangle n1, height from n1's plane
+bgi_remapActors = 0x800C6C04; // type:func [code] for every active actor on a triangle of the old frame, moves it to the triangle at the same index in the new frame (bgi_transferActorPos)
+bgi_linkFrameNeighbors = 0x800C6DA4; // type:func [code] for the frame's triangles, writes their index into the neighbour's neighbour slot given by the edge's Edge Clone, and the clone back
+bgi_resetFloorMoves = 0x800C6E94; // type:func [code] clears the 30 D_800CAE98 entries (flags 2, speed 0x100), called by bgi_init
+bgi_stepFloorMove = 0x800C6EEC; // type:func [code] advances one D_800CAE98 entry by its speed, linear or cosine curve (unk6), between min and max, at the end bounces (flag 0x10) or wraps and clears flag 4
+bgi_updateFloorMoves = 0x800C7100; // type:func [code] per-frame from fld_main - sets each running mover's floor Current Position on its axis and moves the actors standing on that floor with it
+bgi_setMesh = 0x800C72D8; // type:func [code] sets D_800C9DF0's table pointers from a BGI header like bgi_init, but keeps the actor entries, resets anims and floor moves, no callers
+bgi_updateActors = 0x800C73AC; // type:func [code] runs bgi_updateActor on every actor entry and returns how many returned > 0, no callers
+bgi_clear = 0x800C7430; // type:func [code] fld_main.c, before bgi_init - clears the BGI header pointer, actor count/list and the loaded flag
+bgi_setMaskFilter = 0x800C7464; // type:func [code] event opcode 0x27 - sets D_800C9DF0.unk1, which ANDs with the triangle mask byte (bgi_getPassableNeighbor, bgi_getTriangleFlags)
+bgi_getMaskFilter = 0x800C7474; // type:func [code] reads D_800C9DF0.unk1 (bgi_setMaskFilter), no callers
+bgi_getActor = 0x800C748C; // type:func [code] &D_800C9DF0.unk4[i], main event.c reads its unk8/unkA (last floor/triangle) and writes them on reload
+bgi_bindActor = 0x800C74A8; // type:func [code] fld_movie.c - for slot < 9 clears entry a0 and points it at the object slot's actor
+bgi_addActor = 0x800C74F0; // type:func [code] fld_movie.c - for slot >= 9 appends an entry (D_800C9DF0.unk2++) for the object slot's actor
+bgi_setActorRadius = 0x800C7570; // type:func [code] event opcode 0x4B (value*4) - sets entry unk1C and unk20 = r*r, the radius bgi_pushOutOfEdges keeps from edges
+bgi_getActorRadius = 0x800C75B4; // type:func [code] returns entry unk1C (bgi_setActorRadius), main event.c divides it by 4 back into the object
+bgi_getActorRadiusSq = 0x800C75E0; // type:func [code] returns entry unk20 = radius squared, no callers
+bgi_getActorNormal = 0x800C760C; // type:func [code] returns the four words (nx, ny, nz, 1/ny) of the normal of the actor's triangle, no callers
+bgi_getActorTilt = 0x800C768C; // type:func [code] returns -Theta Z and Theta X of the actor's triangle, fld_movie.c uses them as the model's x/z rotation
+bgi_getActorTriangle = 0x800C76E8; // type:func [code] returns the actor's triangle (unk6) and floor (unk4), main script variables 0x70/0x71 read them, tu_800B0124.c feeds the triangle to bgi_getTriangleFlags
+bgi_revertActor = 0x800C7720; // type:func [code] restores pos from the previous position (unk40) and floor/triangle from unk8/unkA, main event.c calls it when bgi_updateActor reports bit 1 (blocked)
+bgi_setTriangleActive = 0x800C778C; // type:func [code] event opcode 0x9A (16-bit triangle, on) - sets/clears triangle flag 1
+bgi_getTriangleFlags = 0x800C7800; // type:func [code] triangle flags word with the mask byte ANDed by D_800C9DF0.unk1, tu_800B0124.c takes the high byte
+bgi_setTriangleMask = 0x800C784C; // type:func [code] sets the triangle flags' high (mask) byte, no callers
+bgi_getTriangleMask = 0x800C7890; // type:func [code] returns the triangle's high flag byte AND D_800C9DF0.unk1, no callers
+bgi_getTriangleFloor = 0x800C78D8; // type:func [code] returns the triangle's Floor Index (unk4), no callers
+bgi_getEdgeFlags = 0x800C7938; // type:func [code] returns the edge's Flags word (bgi_dumpText "Edge" record), no callers
+bgi_getFloorPosition = 0x800C7968; // type:func [code] returns the floor's Current Position (unkA[3]), no callers
+bgi_initAnim = 0x800C79B0; // type:func [code] bgi_init/bgi_setMesh call it per anim - enables the triangles of frame 0 (and links their neighbours), disables the other frames' triangles
+bgi_setAnimFrame = 0x800C7AF8; // type:func [code] event opcode 0xFF09 (anim, frame) - Current Frame = frame<<8, Counter 0, flag 1, bgi_updateAnims applies it
+bgi_setAnimPlaying = 0x800C7B68; // type:func [code] event opcode 0xFF0B (anim, on) - sets/clears flags 1|4, bgi_updateAnims only advances anims with 4 (or 8)
+bgi_setAnimRate = 0x800C7BC4; // type:func [code] event opcode 0xFF0D (anim, s16) - sets Frame Rate (unk4), bgi_updateAnims negates it on a bounce
+bgi_setAnimFrameValues = 0x800C7C04; // type:func [code] event opcode 0xFF0E (anim, v) - sets every frame's Value, the frame's hold time in bgi_updateAnims (negative stops the anim)
+bgi_setAnimFrameValue = 0x800C7C70; // type:func [code] event opcode 0xFF0F (anim, frame, v) - sets one frame's Value (hold time)
+bgi_setAnimMode = 0x800C7CDC; // type:func [code] event opcode 0xFF0C (anim, bits) - replaces flag bits 0x18 (0x10 bounce at the ends in bgi_updateAnims)
+bgi_playAnimRange = 0x800C7D30; // type:func [code] event opcode 0xFF10 (anim, from, to) - starts at frame from, marks frame to with Value -1 (stop) and turns Frame Rate toward it
+bgi_resetAnim = 0x800C7DF0; // type:func [code] event opcode 0xFF11 (anim, on) - rate 0x100, flags 2, frame 0, enables frame 0's triangles only if on
+bgi_getAnimFrame = 0x800C7EE8; // type:func [code] returns Current Frame >> 8, main script variable 0x65
+bgi_startFloorMove = 0x800C7F34; // type:func [code] event opcode 0xFF00 (mover, pos) - accumulator = pos<<8, flags |= 5, one step
+bgi_stopFloorMove = 0x800C7F7C; // type:func [code] event opcode 0xFF01 (mover, pos) - accumulator = pos<<8, flags = 0, one step
+bgi_setFloorMovePlaying = 0x800C7FBC; // type:func [code] event opcode 0xFF02 (mover, on) - sets/clears flags 1|4, one step
+bgi_setFloorMoveMode = 0x800C8010; // type:func [code] event opcode 0xFF03 - replaces flag bits 0x18 (0x10 bounce in bgi_stepFloorMove)
+bgi_setFloorMoveFloor = 0x800C8044; // type:func [code] event opcode 0xFF04 - sets the floor index the mover drives (unk2)
+bgi_setFloorMoveSpeed = 0x800C8068; // type:func [code] event opcode 0xFF05 (16-bit) - sets the 8.8 speed (unk12)
+bgi_setFloorMoveCurve = 0x800C808C; // type:func [code] event opcode 0xFF06 - sets unk6, 0 linear and 1 cosine in bgi_stepFloorMove
+bgi_setFloorMoveRange = 0x800C80B0; // type:func [code] event opcode 0xFF07 (mover, min, max) - sets min/max and range = max - min
+bgi_setFloorMoveAxis = 0x800C80E4; // type:func [code] event opcode 0xFF08 - sets the axis (0 x, 1 y, 2 z) of the floor position the mover drives
+bgi_getFloorMove = 0x800C8108; // type:func [code] &D_800CAE98[i] (inlined into the 0xFF0x handlers)
+g_fieldBgi = 0x800C9DF0; // [code] walkmesh context - bgi_init points its tables at the BGI file (header, vertices, triangles, normals, edges, floors, anims)
+g_fieldBgiActors = 0x800CAAD8; // [code] the 24 actor entries bgi_init installs as D_800C9DF0.unk4 (floor, triangle, radius, actor)
+g_fieldBgiFloorMoves = 0x800CAE98; // [code] 30 floor movers (event opcodes 0xFF00-0xFF08), applied by bgi_updateFloorMoves
+g_fieldBgiPushCount = 0x800C9DDC; // [code] number of push vectors bgi_pushOutOfEdges recorded (max 16), consumed and cleared by bgi_applyPushes
+g_fieldBgiPushVecs = 0x800CA9D8; // [code] the push vectors (x,_,z) bgi_pushOutOfEdges records and bgi_applyPushes averages
+g_fieldBgiPushOnEdge = 0x800CAA38; // [code] per push the bgi_closestPointOnSegment flag (1 unless clamped to an edge end), bgi_applyPushes prefers these
+g_fieldBgiPushDist = 0x800CAA58; // [code] per push the distance to the edge (bgi_pushOutOfEdges), written only
+g_fieldBgiDefaultNormal = 0x800C9DE4; // [code] VECTOR normal bgi_slide projects with when the triangle has no normal (Normal Index < 0)

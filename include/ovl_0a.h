@@ -472,19 +472,19 @@ typedef struct {
     FieldLight unkC[1];
 } Unk800B3254;
 
-/* 6-byte vertex entries at D_800C9DF0.unkC */
+/* 6-byte vertex entries at g_fieldBgi.unkC */
 typedef struct Unk800C9DFC {
     s16 unk0;
     s16 unk2;
     s16 unk4;
 } Unk800C9DFC;
 
-/* the same vertex viewed as an array (func_800C4B30) */
+/* the same vertex viewed as an array (bgi_pointInTriangle) */
 typedef struct {
     s16 unk0[3];
 } Unk800C9DFCv;
 
-/* header of the block D_800C9DF0.unk8 points to */
+/* header of the block g_fieldBgi.unk8 points to */
 typedef struct {
     u16 unk0; /* data size */
     s16 unk2; /* original position */
@@ -506,14 +506,14 @@ typedef struct {
     u16 unk26; /* offset: Unk800C9E00[] */
     u16 unk28; /* edge count */
     u16 unk2A; /* offset: Unk800C9DF8Link[] */
-    u16 unk2C; /* keyframe animation count (D_800C9DF0.unk20) */
-    u16 unk2E; /* offset: D_800C9DF0.unk20 */
+    u16 unk2C; /* keyframe animation count (g_fieldBgi.unk20) */
+    u16 unk2E; /* offset: g_fieldBgi.unk20 */
     u16 unk30; /* floor count */
     u16 unk32; /* offset: Unk800C9DF8Tri[] */
     u16 unk34; /* normal count */
-    u16 unk36; /* offset: D_800C9DF0.unk14 */
+    u16 unk36; /* offset: g_fieldBgi.unk14 */
     u16 unk38; /* vertex count */
-    u16 unk3A; /* offset: D_800C9DF0.unkC */
+    u16 unk3A; /* offset: g_fieldBgi.unkC */
 } Unk800C9DF8; /* walkmesh ("BGI") header */
 
 typedef struct {
@@ -559,7 +559,7 @@ typedef struct {
     s16 unk4;
     s16 unk6;
     s32 unk8;
-    s32 unkC; /* offset into D_800C9DF0.unk8 */
+    s32 unkC; /* offset into g_fieldBgi.unk8 */
 } Unk800C9E10; /* 0x10 */
 
 /* keyframe of a walkmesh animation (Unk800C9E10.unkC) */
@@ -851,7 +851,7 @@ typedef struct Unk800C95C8 {
     s16 unk78;
 } Unk800C95C8;
 
-/* walkmesh swap tables (func_800C6C04) */
+/* walkmesh swap tables (bgi_remapActors) */
 typedef struct {
     u8 pad0[0xC];
     s32 unkC; /* offset of 8-byte link entries */
@@ -1056,8 +1056,8 @@ s32 func_800AC3D8(s32, s32);
 
 FieldLight *func_800B3254(Unk800B3254 *);
 /* func_800B3294: called before its definition without a prototype */
-s32 func_800C76E8(s32, u16 *, u16 *);
-s32 func_800C6DA4(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
+s32 bgi_getActorTriangle(s32, u16 *, u16 *);
+s32 bgi_linkFrameNeighbors(Unk800C9DF8 *, Unk800C9E10 *, Unk800C9DF8Pt *);
 FieldLight *func_800B3300(Unk800B3254 *, FieldLight **, FieldLight **);
 FieldLight *func_800B3378(Unk800B3254 *, FieldEvtCtx *, s16 *);
 
@@ -1128,7 +1128,7 @@ s32 func_800AA0A8(FieldScene *, s16);
 void func_800B1E04(FieldScene *, s16);
 s32 fld_movieCommand(s32, s32, s32);
 s32 fld_freeCommon(void);
-s32 func_800C6EEC();
+s32 bgi_stepFloorMove();
 void func_80054A28(void *);
 s32 func_800B0124(s32, s32, s32, s32, s32);
 void func_800B1A20(s16, s16, s16, u8 *, u8 *);
@@ -1186,7 +1186,7 @@ extern u8 D_800CA108; /* background sprite x extent */
 extern s32 D_800C9DD0;
 extern u16 D_800C9DDE;
 extern u16 D_800C9DE0;
-extern Unk800C9DF0 D_800C9DF0;
+extern Unk800C9DF0 g_fieldBgi;
 extern Unk800C9DCC *D_800C9DCC;
 extern s32 D_800C9F20[16];
 extern s8 D_800C9FF0[5];
@@ -1200,26 +1200,26 @@ extern Unk800CA058 D_800CA058;
 extern Unk800CA068 D_800CA068;
 extern s16 D_800CAA98[];
 extern s16 D_800CAAB8[];
-extern Unk800CAE98 D_800CAE98[];
+extern Unk800CAE98 g_fieldBgiFloorMoves[];
 extern Unk800CB188 D_800CB188;
 extern void (*D_800C9E14[])(void);
 extern Unk800C9EF0 D_800C9EF0;
 extern u16 D_800C9D44;
-extern s16 D_800C9DDC;
+extern s16 g_fieldBgiPushCount;
 extern char D_800A7814[]; /* "          1/ny = %lx\n" (walkmesh dump) */
-extern s16 D_800CA9D8[][3]; /* collision push vectors */
-extern s16 D_800CAA38[];
-extern s32 D_800CAA58[];
+extern s16 g_fieldBgiPushVecs[][3]; /* collision push vectors */
+extern s16 g_fieldBgiPushOnEdge[];
+extern s32 g_fieldBgiPushDist[];
 /* mask-bit primitives, one per draw buffer (func_800AE788) */
 typedef struct {
     u32 tag;
     u32 code[5];
 } Unk800C9F60; /* 0x18 */
 extern Unk800C9F60 D_800C9F60[2];
-extern Unk800C9DF4 D_800CAAD8[24];
-Unk800C9E00 *func_800C1F98(Unk800C9DF4 *, Unk800C9E00 *, s32);
-s32 func_800C4B30(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *);
-s32 func_800C4EC8(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
+extern Unk800C9DF4 g_fieldBgiActors[24];
+Unk800C9E00 *bgi_getPassableNeighbor(Unk800C9DF4 *, Unk800C9E00 *, s32);
+s32 bgi_pointInTriangle(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *);
+s32 bgi_pointInTriangleXZ(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, SVECTOR *);
 typedef struct {
     s32 unk0;
     s32 unk4;
@@ -1273,16 +1273,16 @@ u32 func_800AC380(Unk800C9CCC **);
 void fld_allocArea(void);
 void fld_initArea(void);
 /* fld_findAreaItem: called before its definition without a prototype */
-s32 func_800C3EC0(s32, s16, s16, s16);
-s32 func_800C3608(Unk800C9DF4 *);
-s32 func_800C2AF0(Unk800C9DF4 *, Unk800C9E00 **, s16 *, SVECTOR *, s16, s16, s32, s32);
-s32 func_800C31F8(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
+s32 bgi_placeActor(s32, s16, s16, s16);
+s32 bgi_moveActor(Unk800C9DF4 *);
+s32 bgi_slide(Unk800C9DF4 *, Unk800C9E00 **, s16 *, SVECTOR *, s16, s16, s32, s32);
+s32 bgi_applyPushes(Unk800C9DF4 *, SVECTOR *, Unk800C9E00 **, s16 *);
 s32 func_800C1DC4(s32, s32); /* 16.16 multiply */
 s32 func_800BE158(Unk800C9DB4Obj *, u8 *); /* adds a background layer's tiles to the OT */
 s32 func_800BF660(void); /* camera follow */
-extern Unk800C9E00 *D_800C9E00; /* = D_800C9DF0.unk10, referenced by its own name */
-s32 func_800C79B0(u32);
-s32 func_800C6E94(void);
+extern Unk800C9E00 *D_800C9E00; /* = g_fieldBgi.unk10, referenced by its own name */
+s32 bgi_initAnim(u32);
+s32 bgi_resetFloorMoves(void);
 s32 fld_readAreaFile(FieldMapObj *, s32);
 void func_800B5958(Unk800C95C8 *, u8);
 void func_800BB508(Unk800C95C8 *, u8);
@@ -1339,9 +1339,9 @@ other:
     return (v < 5) << 4;
 }
 
-/* Inlined copy of func_800C8108. */
-static inline Unk800CAE98 *func_800C8108_inline(s32 i) {
-    return &D_800CAE98[i];
+/* Inlined copy of bgi_getFloorMove. */
+static inline Unk800CAE98 *bgi_getFloorMove_inline(s32 i) {
+    return &g_fieldBgiFloorMoves[i];
 }
 
 /* tables inside the D_800C9DB4 block (stored as offsets from its start) */
@@ -1361,21 +1361,21 @@ static inline Unk800C9DB4Step *func_800C9DB4_steps(Unk800C9DB4Path *p) {
     return (Unk800C9DB4Step *)((u8 *)D_800C9DB4 + p->unkC);
 }
 
-/* tables inside the D_800C9DF0.unk8 block (offsets from its start) */
+/* tables inside the g_fieldBgi.unk8 block (offsets from its start) */
 static inline Unk800C9DF8Node *func_800C9DF8_node(s32 i) {
-    return &((Unk800C9DF8Node *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk26))[i];
+    return &((Unk800C9DF8Node *)((u8 *)g_fieldBgi.unk8 + g_fieldBgi.unk8->unk26))[i];
 }
 
 static inline Unk800C9DF8Link *func_800C9DF8_link(s32 i) {
-    return &((Unk800C9DF8Link *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk2A))[i];
+    return &((Unk800C9DF8Link *)((u8 *)g_fieldBgi.unk8 + g_fieldBgi.unk8->unk2A))[i];
 }
 
 static inline Unk800C9DF8Pt *func_800C9DF8_pts(Unk800C9E10 *e) {
-    return (Unk800C9DF8Pt *)((u8 *)D_800C9DF0.unk8 + e->unkC);
+    return (Unk800C9DF8Pt *)((u8 *)g_fieldBgi.unk8 + e->unkC);
 }
 
 static inline Unk800C9DF8Tri *func_800C9DF8_tri(s32 i) {
-    return &((Unk800C9DF8Tri *)((u8 *)D_800C9DF0.unk8 + D_800C9DF0.unk8->unk32))[i];
+    return &((Unk800C9DF8Tri *)((u8 *)g_fieldBgi.unk8 + g_fieldBgi.unk8->unk32))[i];
 }
 
 s32 func_800BD884(Unk800C9DB4 *bg, Unk800C9DB4Obj *o, Unk800CA068 *st, FieldFade *f);
@@ -1383,7 +1383,7 @@ s32 func_800C0F08(void);
 
 
 /* field object drawing (func_800AB3CC) */
-s32 func_800C768C(s32, s16 *, u16 *);
+s32 bgi_getActorTilt(s32, s16 *, u16 *);
 void func_800B7CEC(Unk800C95C8 *);
 void func_800B7F14(Unk800C95C8 *, u16);
 s32 func_800AB0B0(Unk800C95C8 *);
@@ -1464,20 +1464,20 @@ void func_800559C8(s32, s32);
 void func_800219D8(PreloadEntry *, s16, s16, s16, s16);
 u8 func_80053A10(s32, s32);
 
-/* func_800C2AF0 (walkmesh slide along the triangle edges) */
-extern VECTOR D_800C9DE4; /* normal used when a triangle has none */
+/* bgi_slide (walkmesh slide along the triangle edges) */
+extern VECTOR g_fieldBgiDefaultNormal; /* normal used when a triangle has none */
 extern const u8 D_800A7170[]; /* "DISC CHANGE" label */
-s32 func_800C519C(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *, s16 *, SVECTOR *, s16 *, s32);
+s32 bgi_findEdgeCrossing(Unk800C9DF8 *, Unk800C9DF8Tri *, Unk800C9E00 *, s16 *, s16 *, SVECTOR *, s16 *, s32);
 
 /* clears the visited flag (0x80) of every walkmesh triangle */
-static inline void func_800C2AF0_clear(void) {
+static inline void bgi_slide_clear(void) {
     u16 k;
     Unk800C9E00 *n;
     s32 cnt;
     u16 m = ~0x80;
 
-    n = D_800C9DF0.unk10;
-    cnt = D_800C9DF0.unk8->unk24;
+    n = g_fieldBgi.unk10;
+    cnt = g_fieldBgi.unk8->unk24;
     for (k = 0; k < cnt; k++) {
         n->unk0 &= m;
         n++;
@@ -1486,7 +1486,7 @@ static inline void func_800C2AF0_clear(void) {
 
 /* scales the x/z offset of pos from org (16.16, fractions in *fx/*fz) by 1.05, 1.10, ...
  * until its integer part changes */
-static inline void func_800C2AF0_push(SVECTOR *pos, s16 *org, s32 *fx, s32 *fz) {
+static inline void bgi_slide_push(SVECTOR *pos, s16 *org, s32 *fx, s32 *fz) {
     s32 x, z, k, i, tx, tz;
 
     x = ((pos->vx - org[0]) << 16) | (u16)*fx;

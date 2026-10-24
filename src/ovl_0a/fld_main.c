@@ -77,8 +77,8 @@ void fld_main(s32 arg0) {
                 func_800AB3CC();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 8)) {
-                func_800C60F0();
-                func_800C7100();
+                bgi_updateAnims();
+                bgi_updateFloorMoves();
             }
             if (!(g_gameState->unk1C->unk8E4.field->unk0 & 0x10)) {
                 func_80054B78();
@@ -687,9 +687,9 @@ s32 fld_setupBackground(FieldScene *arg0, s32 arg1) {
     arg0->bg = db_lookupRegistered(4, id, 0);
     func_800C0DA4(arg0->bg);
     D_80067948 = func_800BFCE8();
-    func_800C7430();
+    bgi_clear();
     arg0->walkmesh = db_lookupRegistered(4, (s32)db_lookupRegistered(9, id, 0xB0000), 0);
-    func_800C3B80((u8 *)arg0->walkmesh + 4);
+    bgi_init((u8 *)arg0->walkmesh + 4);
     D_80067948 = func_800AFCBC(D_80067948);
     return 0;
 }

@@ -659,9 +659,9 @@ void func_800B1E8C(FieldEvtCtx **arg0, s32 arg1) {
                 c = 0;
                 vol = 0x80;
                 pan = 0x7F;
-                func_800C76E8(ctx->unkC->unk3B, (u16 *)&a, (u16 *)&b);
+                bgi_getActorTriangle(ctx->unkC->unk3B, (u16 *)&a, (u16 *)&b);
                 if (a != -1) {
-                    func_800C7800(a, &c);
+                    bgi_getTriangleFlags(a, &c);
                     c = (s16)c >> 8;
                 }
                 ch = t->unk0 & 3;
@@ -1185,7 +1185,7 @@ FieldLight *func_800B3378(Unk800B3254 *arg0, FieldEvtCtx *arg1, s16 *arg2) {
     s32 n;
     s32 v;
 
-    func_800C76E8(arg1->unkC->unk3B, &tri, (u16 *)arg2);
+    bgi_getActorTriangle(arg1->unkC->unk3B, &tri, (u16 *)arg2);
     if (arg0->unk7 != 0) {
         if ((u8)*arg2 == 0xFF) {
             return NULL;

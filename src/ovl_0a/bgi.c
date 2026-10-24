@@ -1,6 +1,6 @@
 #include "ovl_0a.h"
 
-s32 func_800C4B30(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
+s32 bgi_pointInTriangle(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
     s8 c[2];
     s32 d[2];
     Unk800C9DFCv *pv[2];
@@ -18,7 +18,7 @@ s32 func_800C4B30(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
     x = 0;
     z = 2;
     if (n->unk6 >= 0) {
-        pl = &D_800C9DF0.unk14[n->unk6];
+        pl = &g_fieldBgi.unk14[n->unk6];
         if ((u32)(pl->unk4 + 0x50F4) <= 0xA1E8) {
             a = pl->unk0;
             cz = pl->unk8;
@@ -33,7 +33,7 @@ s32 func_800C4B30(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
     }
     r = 0;
     i = 0;
-    vtx = (Unk800C9DFCv *)D_800C9DF0.unkC;
+    vtx = (Unk800C9DFCv *)g_fieldBgi.unkC;
     o[x] = b->unk8[x] + t->unkA[x];
     o[z] = b->unk8[z] + t->unkA[z];
     c[0] = 0;
@@ -81,7 +81,7 @@ s32 func_800C4B30(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *p) {
     return r;
 }
 
-s32 func_800C4EC8(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *sv) {
+s32 bgi_pointInTriangleXZ(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *sv) {
     s16 *p = (s16 *)sv;
     s8 c[2];
     s32 d[2];
@@ -98,7 +98,7 @@ s32 func_800C4EC8(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *sv
     z = 2;
     r = 0;
     i = 0;
-    vtx = (Unk800C9DFCv *)D_800C9DF0.unkC;
+    vtx = (Unk800C9DFCv *)g_fieldBgi.unkC;
     o[x] = b->unk8[x] + t->unkA[x];
     o[z] = b->unk8[z] + t->unkA[z];
     c[0] = 0;
@@ -146,7 +146,7 @@ s32 func_800C4EC8(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, SVECTOR *sv
     return r;
 }
 
-s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, s16 *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
+s32 bgi_findEdgeCrossing(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, s16 *arg4, SVECTOR *arg5, s16 *arg6, s32 arg7) {
     s16 o[3];
     Unk800C9DFCv *pv[3];
     Unk800C9DFCv v[3];
@@ -177,7 +177,7 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, 
     z = 2;
     y = 1;
     if (n->unk6 >= 0) {
-        pl = &D_800C9DF0.unk14[n->unk6];
+        pl = &g_fieldBgi.unk14[n->unk6];
         if ((u32)(pl->unk4 + 0x50F4) <= 0xA1E8) {
             a = pl->unk0;
             c = pl->unk8;
@@ -270,7 +270,7 @@ s32 func_800C519C(Unk800C9DF8 *b, Unk800C9DF8Tri *t, Unk800C9E00 *n, s16 *arg3, 
             pv[2] = &v[1];
             break;
         }
-        if (func_800C1E14(pv[0]->unk0, arg3, pv[2]->unk0, pv[1]->unk0, x, z)) {
+        if (bgi_segmentsCross(pv[0]->unk0, arg3, pv[2]->unk0, pv[1]->unk0, x, z)) {
             *arg6 = idx[0];
             arg5->vx = hit[0][0];
             arg5->vy = hit[0][1];
@@ -408,7 +408,7 @@ void bgi_dumpText(Unk800C9DF8 *arg0) {
     }
 }
 
-s32 func_800C60F0(void) {
+s32 bgi_updateAnims(void) {
     Unk800C9DF8 *b;
     Unk800C9E10 *e;
     u16 cnt;
@@ -428,10 +428,10 @@ s32 func_800C60F0(void) {
     u16 num;
     u16 m;
 
-    b = D_800C9DF0.unk8;
-    e = D_800C9DF0.unk20;
+    b = g_fieldBgi.unk8;
+    e = g_fieldBgi.unk20;
     cnt = b->unk2C;
-    nodes = D_800C9DF0.unk10;
+    nodes = g_fieldBgi.unk10;
     for (i = 0; i < cnt; e++, i++) {
         if (!(e->unk0 & 1)) {
             continue;
@@ -462,8 +462,8 @@ s32 func_800C60F0(void) {
         }
         if (old != j) {
             pt = &pts[j];
-            func_800C6C04(b, e, pt, old, j);
-            func_800C6DA4(b, e, pt);
+            bgi_remapActors(b, e, pt, old, j);
+            bgi_linkFrameNeighbors(b, e, pt);
         }
         if (pts[j].unk2 < 0) {
             pts[j].unk2 = 0;
@@ -479,7 +479,7 @@ s32 func_800C60F0(void) {
             if (v >= e->unk2) {
                 if (e->unk0 & 0x10) {
                     e->unk8 = ((e->unk2 - 1) << 8) | 0xFF;
-                    func_800C7BC4(i, (s16)-e->unk4);
+                    bgi_setAnimRate(i, (s16)-e->unk4);
                 } else {
                     e->unk8 = 0;
                 }
@@ -487,7 +487,7 @@ s32 func_800C60F0(void) {
             } else if (v < 0) {
                 if (e->unk0 & 0x10) {
                     e->unk8 = 0;
-                    func_800C7BC4(i, (s16)-e->unk4);
+                    bgi_setAnimRate(i, (s16)-e->unk4);
                 } else {
                     e->unk8 = ((e->unk2 - 1) << 8) | 0xFF;
                 }
@@ -498,7 +498,7 @@ s32 func_800C60F0(void) {
     return 1;
 }
 
-s32 func_800C6408(u32 arg0, u32 arg1) {
+s32 bgi_showAnimFrame(u32 arg0, u32 arg1) {
     Unk800C9DF8 *b;
     Unk800C9E10 *e;
     Unk800C9DF8Pt *pt;
@@ -509,11 +509,11 @@ s32 func_800C6408(u32 arg0, u32 arg1) {
     Unk800C9E00 *n;
     u16 f;
 
-    b = D_800C9DF0.unk8;
+    b = g_fieldBgi.unk8;
     if (arg0 >= b->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     old = -1;
     if (arg1 >= e->unk2) {
         return 0;
@@ -522,7 +522,7 @@ s32 func_800C6408(u32 arg0, u32 arg1) {
     for (i = 0; i < e->unk2; pt++, i++) {
         ids = (s32 *)((u8 *)b + pt->unk6);
         for (j = 0; j < pt->unk4; ids++, j++) {
-            n = &D_800C9DF0.unk10[*ids];
+            n = &g_fieldBgi.unk10[*ids];
             if (n->unk0 & 1) {
                 old = i;
                 n->unk0 &= ~1;
@@ -535,12 +535,12 @@ s32 func_800C6408(u32 arg0, u32 arg1) {
     pt += arg1;
     ids = (s32 *)((u8 *)b + pt->unk6);
     for (i = 0; i < pt->unk4; ids++, i++) {
-        n = &D_800C9DF0.unk10[*ids];
+        n = &g_fieldBgi.unk10[*ids];
         n->unk0 |= 1;
     }
     if (arg1 != old) {
-        func_800C6C04(b, e, pt, old, arg1 & 0xFFFF);
-        func_800C6DA4(b, e, pt);
+        bgi_remapActors(b, e, pt, old, arg1 & 0xFFFF);
+        bgi_linkFrameNeighbors(b, e, pt);
     }
     e->unk8 = arg1 << 8;
     return 1;
@@ -549,7 +549,7 @@ s32 func_800C6408(u32 arg0, u32 arg1) {
 /* walkmesh triangle transfer: express the actor position relative to triangle n0 by cross products (nv, over
    the triangle's doubled area) and re-project it onto triangle n1; the height comes from n1's plane or, without
    one, from n1's first vertex */
-s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *n1) {
+s32 bgi_transferActorPos(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *n1) {
     SVECTOR o;
     SVECTOR v[3];
     SVECTOR p;
@@ -564,7 +564,7 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     s32 k;
     s32 c;
 
-    t = &D_800C9DF0.unk1C[n0->unk4];
+    t = &g_fieldBgi.unk1C[n0->unk4];
     o.vx = b->unk8[0] + t->unkA[0];
     o.vy = b->unk8[1] + t->unkA[1];
     o.vz = b->unk8[2] + t->unkA[2];
@@ -592,7 +592,7 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     nv.vx = dx1 * dz2 - dx2 * dz1;
     nv.vy = dx2 * d - dx0 * dz2;
     nv.vz = dx0 * dz1 - dx1 * d;
-    t = &D_800C9DF0.unk1C[n1->unk4];
+    t = &g_fieldBgi.unk1C[n1->unk4];
     o.vx = b->unk8[0] + t->unkA[0];
     o.vy = b->unk8[1] + t->unkA[1];
     o.vz = b->unk8[2] + t->unkA[2];
@@ -611,21 +611,21 @@ s32 func_800C65CC(Unk800C9DF8 *b, Unk800C9DF4 *a, Unk800C9E00 *n0, Unk800C9E00 *
     a->unk24->pos.vz = r.vz + o.vz;
     k = n1->unk6;
     if (k >= 0) {
-        pl = &D_800C9DF0.unk14[k];
+        pl = &g_fieldBgi.unk14[k];
         c = func_800C1DC4(pl->unk0, a->unk24->pos.vx << 16);
         a->unk24->pos.vy = func_800C1DC4(n1->unk24 - c - func_800C1DC4(pl->unk8, a->unk24->pos.vz << 16), pl->unkC) >> 16;
-        a->unk24->pos.vy += (s16)D_800C9DF0.unk1C[n1->unk4].unkA[1] - D_800C9DF0.unk1C[n1->unk4].unk4[1];
+        a->unk24->pos.vy += (s16)g_fieldBgi.unk1C[n1->unk4].unkA[1] - g_fieldBgi.unk1C[n1->unk4].unk4[1];
     } else {
         Unk800C9DF8Tri *t3;
         Unk800C9DFC *vt;
-        t3 = D_800C9DF0.unk1C + n1->unk4;
-        vt = D_800C9DF0.unkC + n1->unkC[0];
-        a->unk24->pos.vy = (s16)(vt->unk2 + (D_800C9DF0.unk8->unk8[1] + t3->unkA[1]));
+        t3 = g_fieldBgi.unk1C + n1->unk4;
+        vt = g_fieldBgi.unkC + n1->unkC[0];
+        a->unk24->pos.vy = (s16)(vt->unk2 + (g_fieldBgi.unk8->unk8[1] + t3->unkA[1]));
     }
     return 1;
 }
 
-s32 func_800C6C04(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
+s32 bgi_remapActors(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
     Unk800C6C04E *e;
     s32 *tbl;
     s32 *ids;
@@ -639,15 +639,15 @@ s32 func_800C6C04(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
     e = (Unk800C6C04E *)(arg0 + arg1->unkC);
     e += arg3;
     tbl = (s32 *)(arg0 + arg2->unk6);
-    a = D_800C9DF0.unk4;
-    for (i = 0; i < D_800C9DF0.unk2; a++, i++) {
+    a = g_fieldBgi.unk4;
+    for (i = 0; i < g_fieldBgi.unk2; a++, i++) {
         if (a->unk0 & 1) {
             ids = (s32 *)(arg0 + e->unk6);
             for (j = 0; j < e->unk4; j++, ids++) {
                 if (a->unk6 == *ids) {
-                    func_800C65CC(arg0, a, &D_800C9DF0.unk10[a->unk6], &D_800C9DF0.unk10[tbl[j]]);
+                    bgi_transferActorPos(arg0, a, &g_fieldBgi.unk10[a->unk6], &g_fieldBgi.unk10[tbl[j]]);
                     a->unk6 = tbl[j];
-                    a->unk4 = D_800C9DF0.unk10[tbl[j]].unk4;
+                    a->unk4 = g_fieldBgi.unk10[tbl[j]].unk4;
                 }
             }
         }
@@ -656,7 +656,7 @@ s32 func_800C6C04(u8 *arg0, Unk800C6C04A *arg1, Unk800C6C04B *arg2, s16 arg3) {
 }
 
 /* link the neighbour edges between the nodes of different triangles */
-s32 func_800C6DA4(Unk800C9DF8 *arg0, Unk800C9E10 *arg1, Unk800C9DF8Pt *arg2) {
+s32 bgi_linkFrameNeighbors(Unk800C9DF8 *arg0, Unk800C9E10 *arg1, Unk800C9DF8Pt *arg2) {
     s32 *ids = (s32 *)((u8 *)arg0 + arg2->unk6);
     Unk800C9E00 *n;
     Unk800C9E00 *m;
@@ -667,17 +667,17 @@ s32 func_800C6DA4(Unk800C9DF8 *arg0, Unk800C9E10 *arg1, Unk800C9DF8Pt *arg2) {
     u16 k;
 
     for (i = 0; i < arg2->unk4; i++, ids++) {
-        n = &D_800C9DF0.unk10[*ids];
+        n = &g_fieldBgi.unk10[*ids];
         for (j = 0; j < 3; j++) {
             nb = n->unk18[j];
             if (nb >= 0) {
-                m = &D_800C9DF0.unk10[nb];
+                m = &g_fieldBgi.unk10[nb];
                 if (n->unk4 != m->unk4) {
-                    e = &D_800C9DF0.unk18[n->unk12[j]];
+                    e = &g_fieldBgi.unk18[n->unk12[j]];
                     if (e->unk2 >= 0) {
                         k = e->unk2;
                         m->unk18[k] = *ids;
-                        e = &D_800C9DF0.unk18[m->unk12[k]];
+                        e = &g_fieldBgi.unk18[m->unk12[k]];
                         e->unk2 = j;
                     }
                 }
@@ -687,27 +687,27 @@ s32 func_800C6DA4(Unk800C9DF8 *arg0, Unk800C9E10 *arg1, Unk800C9DF8Pt *arg2) {
     return 1;
 }
 
-s32 func_800C6E94(void) {
+s32 bgi_resetFloorMoves(void) {
     s32 i;
 
     for (i = 0; i < 30; i++) {
-        D_800CAE98[i].unk0 = 2;
-        D_800CAE98[i].unk2 = 0;
-        D_800CAE98[i].unk4 = 0;
-        D_800CAE98[i].unk6 = 0;
-        D_800CAE98[i].unk10 = 0;
-        D_800CAE98[i].unk14 = 0;
-        D_800CAE98[i].unk12 = 0x100;
-        D_800CAE98[i].unk8 = 0;
-        D_800CAE98[i].unkA = 0;
-        D_800CAE98[i].unkC = 0;
-        D_800CAE98[i].unkE = 0;
+        g_fieldBgiFloorMoves[i].unk0 = 2;
+        g_fieldBgiFloorMoves[i].unk2 = 0;
+        g_fieldBgiFloorMoves[i].unk4 = 0;
+        g_fieldBgiFloorMoves[i].unk6 = 0;
+        g_fieldBgiFloorMoves[i].unk10 = 0;
+        g_fieldBgiFloorMoves[i].unk14 = 0;
+        g_fieldBgiFloorMoves[i].unk12 = 0x100;
+        g_fieldBgiFloorMoves[i].unk8 = 0;
+        g_fieldBgiFloorMoves[i].unkA = 0;
+        g_fieldBgiFloorMoves[i].unkC = 0;
+        g_fieldBgiFloorMoves[i].unkE = 0;
     }
     return 1;
 }
 
-/* old-style definition: func_800C7F34/func_800C7FBC call it without arguments */
-s32 func_800C6EEC(arg0)
+/* old-style definition: bgi_startFloorMove/bgi_setFloorMovePlaying call it without arguments */
+s32 bgi_stepFloorMove(arg0)
 s32 arg0;
 {
     Unk800CAE98 *e;
@@ -715,7 +715,7 @@ s32 arg0;
     s16 range;
     s16 v;
 
-    e = &D_800CAE98[arg0];
+    e = &g_fieldBgiFloorMoves[arg0];
     e->unk14 += e->unk12;
     step = e->unk14 >> 8;
     range = e->unkA - e->unk8;
@@ -758,7 +758,7 @@ s32 arg0;
     return 1;
 }
 
-s32 func_800C7100(void) {
+s32 bgi_updateFloorMoves(void) {
     Unk800CAE98 *e;
     Unk800C9DF4 *a;
     Unk800C9DF8Tri *t;
@@ -767,15 +767,15 @@ s32 func_800C7100(void) {
     Unk8004AB64 *p;
     u16 flags;
 
-    e = D_800CAE98;
+    e = g_fieldBgiFloorMoves;
     for (i = 0; i < 30; e++, i++) {
         if (!(e->unk0 & 1) || !(e->unk0 & 0xC)) {
             continue;
         }
-        t = &D_800C9DF0.unk1C[e->unk2];
+        t = &g_fieldBgi.unk1C[e->unk2];
         t->unkA[e->unk4] = t->unk4[e->unk4] + e->unkC;
-        a = D_800C9DF0.unk4;
-        for (j = 0; j < D_800C9DF0.unk2; a++, j++) {
+        a = g_fieldBgi.unk4;
+        for (j = 0; j < g_fieldBgi.unk2; a++, j++) {
             flags = a->unk0;
             if ((flags & 1) && a->unk4 == e->unk2 && a->unk6 >= 0) {
                 p = a->unk24;
@@ -793,48 +793,48 @@ s32 func_800C7100(void) {
                 }
             }
         }
-        func_800C6EEC(i);
+        bgi_stepFloorMove(i);
     }
     return 1;
 }
 
-s32 func_800C72D8(Unk800C9DF8 *arg0) {
+s32 bgi_setMesh(Unk800C9DF8 *arg0) {
     s32 i;
 
-    D_800C9DF0.unk8 = arg0;
-    D_800C9DF0.unkC = (Unk800C9DFC *)((u8 *)arg0 + arg0->unk3A);
-    D_800C9DF0.unk10 = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
-    D_800C9DF0.unk14 = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
-    D_800C9DF0.unk18 = (u8 *)arg0 + arg0->unk2A;
-    D_800C9DF0.unk1C = (Unk800C9DF8Tri *)((u8 *)arg0 + arg0->unk32);
-    D_800C9DF0.unk20 = (Unk800C9E10 *)((u8 *)arg0 + arg0->unk2E);
-    for (i = 0; i < D_800C9DF0.unk8->unk2C; i++) {
-        func_800C79B0(i);
+    g_fieldBgi.unk8 = arg0;
+    g_fieldBgi.unkC = (Unk800C9DFC *)((u8 *)arg0 + arg0->unk3A);
+    g_fieldBgi.unk10 = (Unk800C9E00 *)((u8 *)arg0 + arg0->unk26);
+    g_fieldBgi.unk14 = (Unk800C9E04 *)((u8 *)arg0 + arg0->unk36);
+    g_fieldBgi.unk18 = (u8 *)arg0 + arg0->unk2A;
+    g_fieldBgi.unk1C = (Unk800C9DF8Tri *)((u8 *)arg0 + arg0->unk32);
+    g_fieldBgi.unk20 = (Unk800C9E10 *)((u8 *)arg0 + arg0->unk2E);
+    for (i = 0; i < g_fieldBgi.unk8->unk2C; i++) {
+        bgi_initAnim(i);
     }
-    func_800C6E94();
+    bgi_resetFloorMoves();
     return 1;
 }
 
-s32 func_800C73AC(void) {
+s32 bgi_updateActors(void) {
     s32 n = 0;
     s16 i = 0;
 
-    if (D_800C9DF0.unk2 != 0) {
+    if (g_fieldBgi.unk2 != 0) {
         do {
-            if (func_800C44F4(i) > 0) {
+            if (bgi_updateActor(i) > 0) {
                 n++;
             }
             i++;
-        } while (i < D_800C9DF0.unk2);
+        } while (i < g_fieldBgi.unk2);
     }
     return n & 0xFFFF;
 }
 
-s32 func_800C7430(void) {
-    D_800C9DF0.unk8 = 0;
-    D_800C9DF0.unk2 = 0;
-    D_800C9DF0.unk4 = 0;
-    D_800C9DF0.unk0 = 0;
+s32 bgi_clear(void) {
+    g_fieldBgi.unk8 = 0;
+    g_fieldBgi.unk2 = 0;
+    g_fieldBgi.unk4 = 0;
+    g_fieldBgi.unk0 = 0;
     return 1;
 }
 
@@ -846,59 +846,59 @@ void func_800C7458(s32 *arg0) {
     *arg0 = 1;
 }
 
-s32 func_800C7464(u8 arg0) {
-    D_800C9DF0.unk1 = arg0;
+s32 bgi_setMaskFilter(u8 arg0) {
+    g_fieldBgi.unk1 = arg0;
     return 1;
 }
 
-s32 func_800C7474(u8 *arg0) {
-    *arg0 = D_800C9DF0.unk1;
+s32 bgi_getMaskFilter(u8 *arg0) {
+    *arg0 = g_fieldBgi.unk1;
     return 1;
 }
 
-Unk800C9DF4 *func_800C748C(s32 arg0) {
-    return &D_800C9DF0.unk4[arg0];
+Unk800C9DF4 *bgi_getActor(s32 arg0) {
+    return &g_fieldBgi.unk4[arg0];
 }
 
-s32 func_800C74A8(s32 arg0, FieldObjSlot *arg1) {
-    D_800C9DF0.unk4[arg0].unk0 = 0;
-    D_800C9DF0.unk4[arg0].unk2 = 0;
-    D_800C9DF0.unk4[arg0].unk24 = arg1->unkC;
+s32 bgi_bindActor(s32 arg0, FieldObjSlot *arg1) {
+    g_fieldBgi.unk4[arg0].unk0 = 0;
+    g_fieldBgi.unk4[arg0].unk2 = 0;
+    g_fieldBgi.unk4[arg0].unk24 = arg1->unkC;
     return 1;
 }
 
-s32 func_800C74F0(FieldObjSlot *arg0) {
-    D_800C9DF0.unk4[D_800C9DF0.unk2].unk0 = 0;
-    D_800C9DF0.unk4[D_800C9DF0.unk2].unk2 = 0;
-    D_800C9DF0.unk4[D_800C9DF0.unk2].unk24 = arg0->unkC;
-    D_800C9DF0.unk2++;
+s32 bgi_addActor(FieldObjSlot *arg0) {
+    g_fieldBgi.unk4[g_fieldBgi.unk2].unk0 = 0;
+    g_fieldBgi.unk4[g_fieldBgi.unk2].unk2 = 0;
+    g_fieldBgi.unk4[g_fieldBgi.unk2].unk24 = arg0->unkC;
+    g_fieldBgi.unk2++;
     return 1;
 }
 
-s32 func_800C7570(s32 arg0, u16 arg1) {
-    D_800C9DF0.unk4[arg0].unk1C = arg1;
-    D_800C9DF0.unk4[arg0].unk20 = arg1 * arg1;
+s32 bgi_setActorRadius(s32 arg0, u16 arg1) {
+    g_fieldBgi.unk4[arg0].unk1C = arg1;
+    g_fieldBgi.unk4[arg0].unk20 = arg1 * arg1;
     return 1;
 }
 
-s32 func_800C75B4(s32 arg0, s32 *arg1) {
-    *arg1 = D_800C9DF0.unk4[arg0].unk1C;
+s32 bgi_getActorRadius(s32 arg0, s32 *arg1) {
+    *arg1 = g_fieldBgi.unk4[arg0].unk1C;
     return 1;
 }
 
-s32 func_800C75E0(s32 arg0, s32 *arg1) {
-    *arg1 = D_800C9DF0.unk4[arg0].unk20;
+s32 bgi_getActorRadiusSq(s32 arg0, s32 *arg1) {
+    *arg1 = g_fieldBgi.unk4[arg0].unk20;
     return 1;
 }
 
-s32 func_800C760C(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
+s32 bgi_getActorNormal(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
     Unk800C9E04 *e;
     Unk800C9E00 *n;
     struct Unk800C9DF4 *a;
 
-    a = D_800C9DF0.unk4 + arg0;
-    n = D_800C9DF0.unk10 + a->unk6;
-    e = D_800C9DF0.unk14 + n->unk6;
+    a = g_fieldBgi.unk4 + arg0;
+    n = g_fieldBgi.unk10 + a->unk6;
+    e = g_fieldBgi.unk14 + n->unk6;
     *arg1 = e->unk0;
     *arg2 = e->unk4;
     *arg3 = e->unk8;
@@ -906,25 +906,25 @@ s32 func_800C760C(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
     return 1;
 }
 
-s32 func_800C768C(s32 arg0, s16 *arg1, u16 *arg2) {
-    Unk800C9DF4 *a = &D_800C9DF0.unk4[arg0];
-    Unk800C9E00 *e = &D_800C9DF0.unk10[a->unk6];
+s32 bgi_getActorTilt(s32 arg0, s16 *arg1, u16 *arg2) {
+    Unk800C9DF4 *a = &g_fieldBgi.unk4[arg0];
+    Unk800C9E00 *e = &g_fieldBgi.unk10[a->unk6];
 
     *arg1 = -e->unkA;
     *arg2 = e->unk8;
     return 1;
 }
 
-s32 func_800C76E8(s32 arg0, u16 *arg1, u16 *arg2) {
-    Unk800C9DF4 *e = &D_800C9DF0.unk4[arg0];
+s32 bgi_getActorTriangle(s32 arg0, u16 *arg1, u16 *arg2) {
+    Unk800C9DF4 *e = &g_fieldBgi.unk4[arg0];
 
     *arg1 = e->unk6;
     *arg2 = e->unk4;
     return 1;
 }
 
-s32 func_800C7720(s32 arg0) {
-    Unk800C9DF4 *e = &D_800C9DF0.unk4[arg0];
+s32 bgi_revertActor(s32 arg0) {
+    Unk800C9DF4 *e = &g_fieldBgi.unk4[arg0];
 
     e->unk24->pos.vx = e->unk24->unk40.vx;
     e->unk24->pos.vy = e->unk24->unk40.vy;
@@ -934,7 +934,7 @@ s32 func_800C7720(s32 arg0) {
     return 1;
 }
 
-s32 func_800C778C(s32 arg0, s32 arg1) {
+s32 bgi_setTriangleActive(s32 arg0, s32 arg1) {
     Unk800C9DF8Node *n = func_800C9DF8_node(arg0);
     u16 v;
 
@@ -953,24 +953,24 @@ s32 func_800C77DC(u16 *arg0, s16 **arg1) {
     return 1;
 }
 
-s32 func_800C7800(s16 arg0, u16 *arg1) {
-    *arg1 = func_800C9DF8_node(arg0)->unk0 & ((D_800C9DF0.unk1 << 8) | 0xFF);
+s32 bgi_getTriangleFlags(s16 arg0, u16 *arg1) {
+    *arg1 = func_800C9DF8_node(arg0)->unk0 & ((g_fieldBgi.unk1 << 8) | 0xFF);
     return 1;
 }
 
-s32 func_800C784C(s16 arg0, s32 arg1) {
+s32 bgi_setTriangleMask(s16 arg0, s32 arg1) {
     Unk800C9DF8Node *n = func_800C9DF8_node(arg0);
 
     n->unk0 = ((arg1 & 0xFF) << 8) | (n->unk0 & 0xFF);
     return 1;
 }
 
-s32 func_800C7890(s16 arg0, u8 *arg1) {
-    *arg1 = (func_800C9DF8_node(arg0)->unk0 >> 8) & D_800C9DF0.unk1;
+s32 bgi_getTriangleMask(s16 arg0, u8 *arg1) {
+    *arg1 = (func_800C9DF8_node(arg0)->unk0 >> 8) & g_fieldBgi.unk1;
     return 1;
 }
 
-s32 func_800C78D8(s16 arg0, u16 *arg1) {
+s32 bgi_getTriangleFloor(s16 arg0, u16 *arg1) {
     *arg1 = func_800C9DF8_node(arg0)->unk4;
     return 1;
 }
@@ -981,12 +981,12 @@ s32 func_800C7914(u16 *arg0, s16 **arg1) {
     return 1;
 }
 
-s32 func_800C7938(s16 arg0, u16 *arg1) {
+s32 bgi_getEdgeFlags(s16 arg0, u16 *arg1) {
     *arg1 = func_800C9DF8_link(arg0)->unk0;
     return 1;
 }
 
-s32 func_800C7968(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
+s32 bgi_getFloorPosition(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
     Unk800C9DF8Tri *t = func_800C9DF8_tri(arg0);
 
     *arg1 = t->unkA[0];
@@ -995,7 +995,7 @@ s32 func_800C7968(s32 arg0, u16 *arg1, u16 *arg2, u16 *arg3) {
     return 1;
 }
 
-s32 func_800C79B0(u32 arg0) {
+s32 bgi_initAnim(u32 arg0) {
     Unk800C9DF8 *b;
     Unk800C9E10 *e;
     Unk800C9DF8Pt *pt;
@@ -1004,19 +1004,19 @@ s32 func_800C79B0(u32 arg0) {
     s32 j;
     Unk800C9E00 *n;
 
-    b = D_800C9DF0.unk8;
+    b = g_fieldBgi.unk8;
     if (arg0 >= b->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     pt = (Unk800C9DF8Pt *)((u8 *)b + e->unkC);
     for (i = 0; i < e->unk2; pt++, i++) {
         ids = (s32 *)((u8 *)b + pt->unk6);
         for (j = 0; j < pt->unk4; j++) {
-            n = &D_800C9DF0.unk10[*ids];
+            n = &g_fieldBgi.unk10[*ids];
             if (i == 0) {
                 n->unk0 |= 1;
-                func_800C6DA4(b, e, pt);
+                bgi_linkFrameNeighbors(b, e, pt);
             } else {
                 n->unk0 &= ~1;
             }
@@ -1026,13 +1026,13 @@ s32 func_800C79B0(u32 arg0) {
     return 1;
 }
 
-s32 func_800C7AF8(u32 arg0, u32 arg1) {
+s32 bgi_setAnimFrame(u32 arg0, u32 arg1) {
     Unk800C9E10 *e;
 
-    if (arg0 >= D_800C9DF0.unk8->unk2C) {
+    if (arg0 >= g_fieldBgi.unk8->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     if (arg1 >= e->unk2) {
         return 0;
     }
@@ -1042,13 +1042,13 @@ s32 func_800C7AF8(u32 arg0, u32 arg1) {
     return 1;
 }
 
-s32 func_800C7B68(u32 arg0, s32 arg1) {
+s32 bgi_setAnimPlaying(u32 arg0, s32 arg1) {
     Unk800C9E10 *e;
 
-    if (arg0 >= D_800C9DF0.unk8->unk2C) {
+    if (arg0 >= g_fieldBgi.unk8->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     if (arg1 != 0) {
         e->unk0 |= 5;
     } else {
@@ -1057,19 +1057,19 @@ s32 func_800C7B68(u32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C7BC4(u32 arg0, s16 arg1) {
+s32 bgi_setAnimRate(u32 arg0, s16 arg1) {
     Unk800C9E10 *e;
 
-    if (arg0 >= D_800C9DF0.unk8->unk2C) {
+    if (arg0 >= g_fieldBgi.unk8->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     e->unk4 = arg1;
     return 1;
 }
 
-s32 func_800C7C04(u32 arg0, s16 arg1) {
-    Unk800C9DF8 *b = D_800C9DF0.unk8;
+s32 bgi_setAnimFrameValues(u32 arg0, s16 arg1) {
+    Unk800C9DF8 *b = g_fieldBgi.unk8;
     Unk800C9E10 *e;
     Unk800C9DF8Pt *pt;
     s32 i;
@@ -1077,7 +1077,7 @@ s32 func_800C7C04(u32 arg0, s16 arg1) {
     if (arg0 >= b->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     pt = (Unk800C9DF8Pt *)((u8 *)b + e->unkC);
     for (i = 0; i < e->unk2; pt++, i++) {
         pt->unk2 = arg1;
@@ -1085,15 +1085,15 @@ s32 func_800C7C04(u32 arg0, s16 arg1) {
     return 1;
 }
 
-s32 func_800C7C70(u32 arg0, u32 arg1, s16 arg2) {
-    Unk800C9DF8 *b = D_800C9DF0.unk8;
+s32 bgi_setAnimFrameValue(u32 arg0, u32 arg1, s16 arg2) {
+    Unk800C9DF8 *b = g_fieldBgi.unk8;
     Unk800C9E10 *e;
     Unk800C9DF8Pt *pt;
 
     if (arg0 >= b->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     if (arg1 >= e->unk2) {
         return 0;
     }
@@ -1102,26 +1102,26 @@ s32 func_800C7C70(u32 arg0, u32 arg1, s16 arg2) {
     return 1;
 }
 
-s32 func_800C7CDC(u32 arg0, s32 arg1) {
+s32 bgi_setAnimMode(u32 arg0, s32 arg1) {
     Unk800C9E10 *e;
 
-    if (arg0 >= D_800C9DF0.unk8->unk2C) {
+    if (arg0 >= g_fieldBgi.unk8->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     e->unk0 = (e->unk0 & 0xFFE7) | (arg1 & 0x18);
     return 1;
 }
 
-s32 func_800C7D30(u32 arg0, u32 arg1, u32 arg2) {
-    Unk800C9DF8 *b = D_800C9DF0.unk8;
+s32 bgi_playAnimRange(u32 arg0, u32 arg1, u32 arg2) {
+    Unk800C9DF8 *b = g_fieldBgi.unk8;
     Unk800C9E10 *e;
     Unk800C9DF8Pt *pt;
 
     if (arg0 >= b->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     if (arg1 >= e->unk2) {
         return 0;
     }
@@ -1140,8 +1140,8 @@ s32 func_800C7D30(u32 arg0, u32 arg1, u32 arg2) {
     return 1;
 }
 
-s32 func_800C7DF0(u32 arg0, s32 arg1) {
-    Unk800C9DF8 *b = D_800C9DF0.unk8;
+s32 bgi_resetAnim(u32 arg0, s32 arg1) {
+    Unk800C9DF8 *b = g_fieldBgi.unk8;
     Unk800C9E10 *e;
     Unk800C9DF8Pt *pt;
     s32 *ids;
@@ -1152,7 +1152,7 @@ s32 func_800C7DF0(u32 arg0, s32 arg1) {
     if (arg0 >= b->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     e->unk4 = 0x100;
     e->unk0 = 2;
     e->unk8 = 0;
@@ -1161,7 +1161,7 @@ s32 func_800C7DF0(u32 arg0, s32 arg1) {
     for (i = 0; i < e->unk2; pt++, i++) {
         ids = (s32 *)((u8 *)b + pt->unk6);
         for (j = 0; j < pt->unk4; ids++, j++) {
-            n = &D_800C9DF0.unk10[*ids];
+            n = &g_fieldBgi.unk10[*ids];
             if (arg1 != 0 && i == 0) {
                 n->unk0 |= 1;
             } else {
@@ -1172,38 +1172,38 @@ s32 func_800C7DF0(u32 arg0, s32 arg1) {
     return 1;
 }
 
-s32 func_800C7EE8(u32 arg0, s32 *arg1) {
+s32 bgi_getAnimFrame(u32 arg0, s32 *arg1) {
     Unk800C9E10 *e;
 
-    if (arg0 >= D_800C9DF0.unk8->unk2C) {
+    if (arg0 >= g_fieldBgi.unk8->unk2C) {
         return 0;
     }
-    e = &D_800C9DF0.unk20[arg0];
+    e = &g_fieldBgi.unk20[arg0];
     *arg1 = e->unk8 >> 8;
     return 1;
 }
 
-s32 func_800C7F34(s32 arg0, s32 arg1) {
-    Unk800CAE98 *e = &D_800CAE98[arg0];
+s32 bgi_startFloorMove(s32 arg0, s32 arg1) {
+    Unk800CAE98 *e = &g_fieldBgiFloorMoves[arg0];
 
     e->unk14 = arg1 << 8;
     e->unk0 |= 5;
-    func_800C6EEC(arg0);
+    bgi_stepFloorMove(arg0);
     return 1;
 }
 
-s32 func_800C7F7C(s32 arg0, s32 arg1) {
-    Unk800CAE98 *e = func_800C8108_inline(arg0);
+s32 bgi_stopFloorMove(s32 arg0, s32 arg1) {
+    Unk800CAE98 *e = bgi_getFloorMove_inline(arg0);
 
     arg1 <<= 8;
     e->unk14 = arg1;
     e->unk0 = 0;
-    func_800C6EEC(arg0);
+    bgi_stepFloorMove(arg0);
     return 1;
 }
 
-s32 func_800C7FBC(s32 arg0, s32 arg1) {
-    Unk800CAE98 *e = func_800C8108_inline(arg0);
+s32 bgi_setFloorMovePlaying(s32 arg0, s32 arg1) {
+    Unk800CAE98 *e = bgi_getFloorMove_inline(arg0);
     u16 v;
 
     if (arg1 != 0) {
@@ -1212,34 +1212,34 @@ s32 func_800C7FBC(s32 arg0, s32 arg1) {
         v = e->unk0 & ~5;
     }
     e->unk0 = v;
-    func_800C6EEC(arg0);
+    bgi_stepFloorMove(arg0);
     return 1;
 }
 
-s32 func_800C8010(s32 arg0, s32 arg1) {
-    Unk800CAE98 *e = func_800C8108_inline(arg0);
+s32 bgi_setFloorMoveMode(s32 arg0, s32 arg1) {
+    Unk800CAE98 *e = bgi_getFloorMove_inline(arg0);
 
     e->unk0 = (e->unk0 & 0xFFE7) | (arg1 & 0x18);
     return 1;
 }
 
-s32 func_800C8044(s32 arg0, s16 arg1) {
-    func_800C8108_inline(arg0)->unk2 = arg1;
+s32 bgi_setFloorMoveFloor(s32 arg0, s16 arg1) {
+    bgi_getFloorMove_inline(arg0)->unk2 = arg1;
     return 1;
 }
 
-s32 func_800C8068(s32 arg0, s16 arg1) {
-    func_800C8108_inline(arg0)->unk12 = arg1;
+s32 bgi_setFloorMoveSpeed(s32 arg0, s16 arg1) {
+    bgi_getFloorMove_inline(arg0)->unk12 = arg1;
     return 1;
 }
 
-s32 func_800C808C(s32 arg0, s16 arg1) {
-    func_800C8108_inline(arg0)->unk6 = arg1;
+s32 bgi_setFloorMoveCurve(s32 arg0, s16 arg1) {
+    bgi_getFloorMove_inline(arg0)->unk6 = arg1;
     return 1;
 }
 
-s32 func_800C80B0(s32 arg0, s16 arg1, s16 arg2) {
-    Unk800CAE98 *e = func_800C8108_inline(arg0);
+s32 bgi_setFloorMoveRange(s32 arg0, s16 arg1, s16 arg2) {
+    Unk800CAE98 *e = bgi_getFloorMove_inline(arg0);
 
     e->unk8 = arg1;
     e->unkA = arg2;
@@ -1247,13 +1247,13 @@ s32 func_800C80B0(s32 arg0, s16 arg1, s16 arg2) {
     return 1;
 }
 
-s32 func_800C80E4(s32 arg0, s16 arg1) {
-    func_800C8108_inline(arg0)->unk4 = arg1;
+s32 bgi_setFloorMoveAxis(s32 arg0, s16 arg1) {
+    bgi_getFloorMove_inline(arg0)->unk4 = arg1;
     return 1;
 }
 
-Unk800CAE98 *func_800C8108(s32 arg0) {
-    return &D_800CAE98[arg0];
+Unk800CAE98 *bgi_getFloorMove(s32 arg0) {
+    return &g_fieldBgiFloorMoves[arg0];
 }
 
 INCLUDE_RODATA("asm/us/ovl_0a/nonmatchings/bgi", D_800A7814);

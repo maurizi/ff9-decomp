@@ -215,11 +215,11 @@ s32 func_800AAB30(s32 arg0, void *arg1) {
     }
     if (g_gameState->unk1C->unk8E4.field->unkC->unk14->walkmesh != NULL) {
         if (slot < 9) {
-            func_800C74A8(slot, s);
+            bgi_bindActor(slot, s);
         } else {
-            func_800C74F0(s);
+            bgi_addActor(s);
         }
-        func_800C3E18(slot, 1);
+        bgi_setActorActive(slot, 1);
     }
     g_gameState->unk1C->unk8E4.field->unkC->unk14->unk0 |= 0x10000;
     s->unk0 |= 1;
@@ -393,7 +393,7 @@ void func_800AB3CC(void) {
         if (c != NULL) {
             m = c->unk8;
             o = c->unkC;
-            if ((c->unk0 & 2) && func_800C768C(o->unk3B, &ax, &az)) {
+            if ((c->unk0 & 2) && bgi_getActorTilt(o->unk3B, &ax, &az)) {
                 rot.vx = ax;
                 rot.vy = o->unk22;
                 rot.vz = az;
