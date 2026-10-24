@@ -4177,3 +4177,4 @@ func_800651D8 game_newGame  # [code] item_initNew, party_initNewGame (new game d
 func_8004BBF0 evt_initSystem  # [code] game_reset: message windows, pad, rand_init(GetRCnt(2)), evt_reset
 func_8004BC38 evt_update  # [code] per frame unless D_8007B718: msg_update, idle timer, evt_updateObjects, bubble, ATE prompt; returns the objects' result
 func_8001E350 game_getModel  # [code] GameData model slot i (unk8D8 for i < 9, else unk8E0); objects keep the index in unk3B (evt_createModel)
+# Files renamed: tu_80054A28.c -> vib.c, tu_80063118.c -> tween.c, tu_80063580.c -> gfx_prim.c, tu_800651D8.c -> newgame.c, tu_8004BBF0.c -> evt_main.c

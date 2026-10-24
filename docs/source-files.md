@@ -107,12 +107,12 @@ Game TUs (start - end, function count, evidence for the start / end edges):
 | menu_screen.c | 80035D3C-80036650 | 19 | medium | medium (no call crosses 0x80036650, data cut) | rodata 80011078-800112A4 holds "path=%s" and the assert path "f:/code/dms/loc_us/ff9db.h": Square's db code; `menuScreen_*` (was tu_80035D3C.c) |
 | tu_80036650.c | 80036650-80037D6C | 11 | medium | medium (data cut 0x800378C4-0x80037D6C) | rodata 800112A4-80011594 |
 | event.c | 80037D6C-8004BB7C | 62 | medium | strong (math asm) | rodata 80011594-80011A6C; `evt_execInstr`, `evt_init`, `evt_getArg*` |
-| tu_8004BBF0.c | 8004BBF0-8004BC90 | 2 | strong | strong (libapi COUNTER first caller here) | |
+| evt_main.c | 8004BBF0-8004BC90 | 2 | strong | strong (libapi COUNTER first caller here) | `evt_initSystem`, `evt_update` (was tu_8004BBF0.c) |
 | rand.c | 8004BE00-8004BF20 | 1 | strong | strong | `rand_init`; the asm `rand_refill` follows |
 | msg.c | 8004BFB0-80050CF8 | 60 | strong | strong (GetTPage first caller 0x80050BE0) | rodata 80011A6C-80012090; `msg_open`, `evt_clearGlobalVars`; weak internal candidate at 0x80050044 |
 | tu_80050D38.c | 80050D38-80050F4C | 3 | strong | strong | |
 | tu_80053924.c | 80053924-80054888 | 9 | strong | strong (SetDrawMove first caller 0x80053A10) | |
-| tu_80054A28.c | 80054A28-800551F0 | 16 | strong | medium (bss 0x8007BD38-0x8007BD44 used only by 0x80054A28-0x800551D4; akao state from 0x80055230) | |
+| vib.c | 80054A28-800551F0 | 16 | strong | medium (bss 0x8007BD38-0x8007BD44 used only by 0x80054A28-0x800551D4; akao state from 0x80055230) | `vib_*` pad vibration player (was tu_80054A28.c) |
 | akao_api.c | 800551F0-8005650C | 69 | medium | strong (CdMix first caller 0x80055E14) | small exported wrappers, `akao_*CdVolume*` |
 | akao_init.c | 8005658C-80056CAC | 12 | strong | strong | `akao_initState`, `akao_init`, `akao_quit` |
 | akao_voice.c | 8005715C-800592CC | 41 | strong | strong | `akao_keyOn` .. `akao_flushVoice` |
@@ -121,7 +121,7 @@ Game TUs (start - end, function count, evidence for the start / end edges):
 | akao.c | 8005CDE4-80062304 | 147 | strong | strong (SpuSetIRQAddr first caller 0x80060ED8) | rodata 800120C0-800121C0 = splat suggestion 0x28C0, parity 0; weak internal candidates at 0x8005FCEC and 0x80060784 (no calls cross) |
 | card.c | 80062344-80062B3C | 24 | strong | strong | rodata 800121C0-80012578; `card_*` (was tu_80062344.c) |
 | dep.c | 80062E3C-800630E8 | 2 | strong | strong | `dep_find` |
-| tu_80063118.c, tu_800633E4.c, tu_80063580.c, tu_80063830.c, tu_800651D8.c | | 3, 4, 6, 1, 1 | strong | strong | small objects between library modules |
+| tween.c, tu_800633E4.c, gfx_prim.c, tu_80063830.c, newgame.c | | 3, 4, 6, 1, 1 | strong | strong | small objects between library modules (tween.c, gfx_prim.c, newgame.c were tu_80063118.c, tu_80063580.c, tu_800651D8.c) |
 | tu_80064BE4.c | 80064BE4-80064D78 | 6 | strong | strong | rodata 80012658-8001266C; `func_80064C24` (INCLUDE_ASM) is game code |
 | tu_800654F8.c | 800654F8-80065E60 | 20 | strong | strong | rodata 8001268C-800127A0 = splat suggestion 0x2E8C, parity 4 |
 
@@ -381,7 +381,7 @@ need updating there:
 |---|---|---|
 | 8 | main.c | main.c (×1) |
 | 9 | main.c | main.c (×1) |
-| 10 | main.c | tu_8004BBF0.c (×1) |
+| 10 | main.c | evt_main.c (×1) |
 | 12 | ovl_0a.c | fld_main.c (×1) |
 | 14 | main.c | cd.c (×1) |
 | 15 | main.c | preload.c (×2) |
