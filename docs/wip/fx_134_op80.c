@@ -1,4 +1,4 @@
-/* Pass 4: 699 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 636 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -482,19 +482,19 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
             work->unk24.vy += 0xB86;
             if (frame > 0x1C) {
                 b_c4 = frame - 0x1C;
+                k_c4 = (b_c4 << 12) / 12;
                 pos.vx = work->unk24.vx;
-                pos.vy = work->unk24.vy + 0x6A4;
+                pos.vy = work->unk24.vy;
+                pos.vz = work->unk24.vz;
+                pos.vy += 0x6A4;
                 rot.vx = 0;
                 rot.vy = frame << 6;
                 rot.vz = 0;
-                pos.vz = work->unk24.vz;
-                k_c4 = (b_c4 << 12) / 48;
-                scale.vx = scale.vz = ((ex->math_sin(k_c4) * 7) >> 3) + 0x578;
-                scale.vy = ex->math_sin(k_c4) * 2 / 3 + 0x400;
+                scale.vx = scale.vz = ((ex->math_sin(k_c4 >> 2) * 7) >> 3) + 0x578;
+                scale.vy = ex->math_sin(k_c4 >> 2) * 2 / 3 + 0x400;
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk74);
-                k_c4_w2 = (b_c4 << 12) / 24;
-                ex->Hi_ModifyEffModelRGB(work->unk74, (ex->math_sin(k_c4_w2) >> 5) - 0x80, (ex->math_sin(k_c4_w2) >> 5) - 0x80,
-                                         (ex->math_sin(k_c4_w2) >> 5) - 0x80);
+                ex->Hi_ModifyEffModelRGB(work->unk74, (ex->math_sin(k_c4 >> 1) >> 5) - 0x80, (ex->math_sin(k_c4 >> 1) >> 5) - 0x80,
+                                         (ex->math_sin(k_c4 >> 1) >> 5) - 0x80);
             }
             env->unk28 = 0x100;
             k_c4_w3 = ex->math_sin(a_c4_w1);
