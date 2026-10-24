@@ -228,6 +228,10 @@ typedef struct {
 extern Unk800FD6E0 D_800FD6E0;
 extern u8 D_800F8D84[]; /* ability ids */
 
+/* GPU mask-bit setting word (GP0 E6, what libgpu's SetDrawStp writes): set = draw with the mask bit set,
+ * check = don't draw over masked pixels. Candidate for psyq.h. */
+#define GPU_STP(set, check) (0xE6000000 | ((check) << 1) | (set))
+
 /* main exe: candidates for ff9.h */
 void func_80031264(void *, void *); /* rotation (SVECTOR) -> bone matrix */
 typedef struct {

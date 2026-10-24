@@ -63,7 +63,7 @@ void btl_updatePause(void) {
             }
             ClearOTag(D_800FDEB0, 1);
             setlen(&D_800FDF18, 2);
-            D_800FDF18.code[0] = 0xE6000000;
+            D_800FDF18.code[0] = GPU_STP(0, 0);
             D_800FDF18.code[1] = 0;
             addPrim(D_800FDEB0, &D_800FDF18);
             if (g_gameState->unk1C->unk8E4.battle->flags & 0x20) {
@@ -82,9 +82,9 @@ void btl_updatePause(void) {
             D_800FDE98.y0 = 0;
             addPrim(D_800FDEB0, &D_800FDE98);
             setlen(&D_800FDEA8, 1);
-            D_800FDEA8.code[0] = 0xE1000240;
+            D_800FDEA8.code[0] = get_mode(0, 1, getTPage(0, 2, 0, 0));
             addPrim(D_800FDEB0, &D_800FDEA8);
-            D_800FDF24.code[0] = 0xE6000001;
+            D_800FDF24.code[0] = GPU_STP(1, 0);
             setlen(&D_800FDF24, 2);
             D_800FDF24.code[1] = 0;
             addPrim(D_800FDEB0, &D_800FDF24);
@@ -2132,11 +2132,11 @@ void btl_beginFrame(void) {
     ClearOTagR(func_8002FBC0(g_gameState->unk1C->unk8), 1);
     ClearOTagR((u32 *)btl_getBannerOt(g_gameState->unk1C->unk8), 1);
     setlen(&D_800FDEB8[g_gameState->unk1C->unk8].unk0, 2);
-    ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unk0)[1] = 0xE6000000;
+    ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unk0)[1] = GPU_STP(0, 0);
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unk0)[2] = 0;
     addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], &D_800FDEB8[g_gameState->unk1C->unk8].unk0);
     setlen(&D_800FDEB8[g_gameState->unk1C->unk8].unkC, 2);
-    ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unkC)[1] = 0xE6000000;
+    ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unkC)[1] = GPU_STP(0, 0);
     ((u32 *)&D_800FDEB8[g_gameState->unk1C->unk8].unkC)[2] = 0;
     addPrim((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8], &D_800FDEB8[g_gameState->unk1C->unk8].unkC);
     addPrim(g_gameState->unk1C->unk10[g_gameState->unk1C->unk8], func_8002FBC0(g_gameState->unk1C->unk8));
@@ -2150,11 +2150,11 @@ void btl_endFrame(void) {
     }
     btlui_waitFrame();
     setlen(&D_800FDED0[g_gameState->unk1C->unk8].unk0, 2);
-    ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unk0)[1] = 0xE6000001;
+    ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unk0)[1] = GPU_STP(1, 0);
     ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unk0)[2] = 0;
     addPrim(&g_gameState->unk1C->unk10[g_gameState->unk1C->unk8][0xFFF], &D_800FDED0[g_gameState->unk1C->unk8].unk0);
     setlen(&D_800FDED0[g_gameState->unk1C->unk8].unkC, 2);
-    ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unkC)[1] = 0xE6000001;
+    ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unkC)[1] = GPU_STP(1, 0);
     ((u32 *)&D_800FDED0[g_gameState->unk1C->unk8].unkC)[2] = 0;
     addPrim(&((u32 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk2C[g_gameState->unk1C->unk8])[0xFF], &D_800FDED0[g_gameState->unk1C->unk8].unkC);
     func_800EA290();

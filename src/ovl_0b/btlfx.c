@@ -257,7 +257,7 @@ void btlfx_resetMaskBit(void) {
         ot = &p->unkC;
         g_btlfxEnv->prim = (u8 *)(p + 1);
         setlen(p, 2);
-        p->unk4 = 0xE6000000;
+        p->unk4 = GPU_STP(0, 0);
         p->unk8 = 0;
         ClearOTag(ot, n);
         addPrim(ot, p);

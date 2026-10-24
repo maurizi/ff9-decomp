@@ -186,7 +186,7 @@ u8 *btl_drawPopups(u8 *arg0) {
     }
     btl_drawStatusCountdown(&c);
     ((u8 *)c.unk0)[3] = 1;
-    c.unk0[1] = (D_80068BF0[0].unk6 & 0x9FF) | 0xE1000000;
+    c.unk0[1] = get_mode(0, 0, D_80068BF0[0].unk6);
     addPrim(c.unk4, c.unk0);
     c.unk0 += 2;
     e = g_btlfxEnv->unk0;

@@ -1306,7 +1306,7 @@ void func_800ECCA8(s32 arg0) {
         y += 0x10;
     }
     setlen(&g_btluiPrims->unkA0[arg0], 1);
-    *g_btluiPrims->unkA0[arg0].code = 0xE100071F;
+    *g_btluiPrims->unkA0[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
 void func_800ECDB8(void) {
@@ -1413,8 +1413,8 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(TileWords);
     setlen(g_primPtr, 1);
-    tp = 0xE1000620;
-    stp = 0xE6000001;
+    tp = get_mode(1, 1, getTPage(0, 1, 0, 0));
+    stp = GPU_STP(1, 0);
     ((DrTpageWords *)g_primPtr)->code = tp;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrTpageWords);
@@ -1425,13 +1425,13 @@ void btlui_drawTranceLabel(s32 x, s32 y, s32 otz, char *str) {
     g_primPtr += sizeof(DrMode2Words);
     btlui_drawPulseGradient(x, y, otz, w, 7, D_800F8E20);
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = 0xE6000002;
+    ((DrMode2Words *)g_primPtr)->code[0] = GPU_STP(0, 1);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
     ui_drawLabel(x, y, otz, (s32)str, 1);
     setlen(g_primPtr, 2);
-    ((DrMode2Words *)g_primPtr)->code[0] = 0xE6000000;
+    ((DrMode2Words *)g_primPtr)->code[0] = GPU_STP(0, 0);
     ((DrMode2Words *)g_primPtr)->code[1] = 0;
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += sizeof(DrMode2Words);
@@ -2617,7 +2617,7 @@ void btlui_drawTargetCursors(void) {
     }
     setlen(g_primPtr, 1);
     t = (DR_TPAGE *)g_primPtr;
-    t->code[0] = 0xE100061F;
+    t->code[0] = get_mode(1, 1, getTPage(0, 0, 0x3C0, 0x100));
     addPrim(&g_ot[17], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -2988,7 +2988,7 @@ void btlui_drawListCursors(Window *arg0) {
     }
     setlen(g_primPtr, 1);
     t = (DR_TPAGE *)g_primPtr;
-    t->code[0] = (D_80068EEE & 0x9FF) | 0xE1000600;
+    t->code[0] = get_mode(1, 1, D_80068EEE);
     addPrim(&g_ot[arg0->unk18], t);
     g_primPtr = (u8 *)(t + 1);
 }
@@ -3142,7 +3142,7 @@ void func_800F2684(s32 arg0) {
     g_btluiPrims->unkD8[arg0].w = 0x30;
     g_btluiPrims->unkD8[arg0].h = 4;
     setlen(&g_btluiPrims->unk100[arg0], 1);
-    *g_btluiPrims->unk100[arg0].code = 0xE100071F;
+    *g_btluiPrims->unk100[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
 void btlui_openListWindow(s32 arg0) {
@@ -3262,7 +3262,7 @@ void func_800F2C74(s32 arg0) {
     g_btluiPrims->unk310[arg0].x3 = 0x137;
     g_btluiPrims->unk310[arg0].x2 = 0x8E;
     setlen(&g_btluiPrims->unk358[arg0], 1);
-    *g_btluiPrims->unk358[arg0].code = 0xE1000620;
+    *g_btluiPrims->unk358[arg0].code = get_mode(1, 1, getTPage(0, 1, 0, 0));
 }
 
 void func_800F2DC0(s32 arg0) {
@@ -3283,7 +3283,7 @@ void func_800F2DC0(s32 arg0) {
         g_btluiPrims->unk110[i][arg0].v0 = 0xF0;
     }
     setlen(&g_btluiPrims->unk2F0[arg0], 1);
-    *g_btluiPrims->unk2F0[arg0].code = 0xE100061E;
+    *g_btluiPrims->unk2F0[arg0].code = get_mode(1, 1, getTPage(0, 0, 0x380, 0x100));
 }
 
 void func_800F2ED0(s32 arg0) {
@@ -3308,7 +3308,7 @@ void func_800F2ED0(s32 arg0) {
         g_btluiPrims->unk250[i][arg0].clut = 0;
     }
     setlen(&g_btluiPrims->unk300[arg0], 1);
-    *g_btluiPrims->unk300[arg0].code = 0xE100071F;
+    *g_btluiPrims->unk300[arg0].code = get_mode(1, 1, getTPage(2, 0, 0x3C0, 0x100));
 }
 
 void btlui_drawPartyPanel(void) {
@@ -3716,10 +3716,10 @@ void btlui_drawPortIcons(void) {
         D_801050A0.wh = s->unk4 | (s->unk5 << 16);
         addPrim(&D_801050D4, &D_801050A0);
         setlen(&D_80105080, 1);
-        D_80105080.code[0] = 0xE1000600 | (s->unk6 & 0x9FF);
+        D_80105080.code[0] = get_mode(1, 1, s->unk6);
         addPrim(&D_801050D4, &D_80105080);
         setlen(&D_80105090, 2);
-        D_80105090.code[0] = 0xE6000001;
+        D_80105090.code[0] = GPU_STP(1, 0);
         D_80105090.code[1] = 0;
         addPrim(&D_801050D4, &D_80105090);
         DrawOTag(&D_801050D4);

@@ -5,10 +5,10 @@ void btlui_submitOt(void) {
     Unk80104E68 *p;
 
     setlen(&D_80105140[g_btluiBuf], 2);
-    D_80105140[g_btluiBuf].code[0] = 0xE6000001;
+    D_80105140[g_btluiBuf].code[0] = GPU_STP(1, 0);
     D_80105140[g_btluiBuf].code[1] = 0;
     setlen(&D_80105120[g_btluiBuf], 2);
-    ((u32 *)&D_80105120[g_btluiBuf])[1] = 0xE1000600;
+    ((u32 *)&D_80105120[g_btluiBuf])[1] = get_mode(1, 1, 0);
     tw = &D_800FDE34;
     ((u32 *)&D_80105120[g_btluiBuf])[2] = get_tw(tw);
     SetDrawOffset(&D_801050E0[g_btluiBuf], g_btluiDispOrigin[g_drawBufs.unk0 ^ 1]);
