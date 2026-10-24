@@ -184,26 +184,26 @@ u8 *func_8002920C(s32 x, s32 y, u32 *ot, u8 *s, s32 mode, u8 *pkt) {
                 x += func_8002BA10(D_800770A8);
             } else if (*s == 0x4B) {
                 pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                pkt = func_80027834(x, y, ot, *++s, 0, &w, pkt);
+                pkt = ui_buildSprite(x, y, ot, *++s, 0, &w, pkt);
                 x += w;
             } else if (*s == 0x4C) {
                 s++;
                 k = *s;
                 if (k != 0xFF) {
                     pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                    pkt = func_80026C7C(x, y, ot, k, 1, pkt);
+                    pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
                     x += D_800686D0[D_80069018[k].unk8 + 0x5C].unk4;
                 }
             } else if (*s == 0x4D) {
                 pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                pkt = func_80027834(x, y, ot, D_80077130[*++s], 0, &w, pkt);
+                pkt = ui_buildSprite(x, y, ot, D_80077130[*++s], 0, &w, pkt);
                 x += w;
             } else if (*s == 0x4E) {
                 s++;
                 k = D_80077130[*s];
                 if (k != 0xFF) {
                     pkt = func_8002BA90(ot, (DrTpageWords *)pkt);
-                    pkt = func_80026C7C(x, y, ot, k, 1, pkt);
+                    pkt = ui_buildItemIcon(x, y, ot, k, 1, pkt);
                     x += D_800686D0[D_80069018[k].unk8 + 0x5C].unk4;
                 }
             } else {
@@ -457,58 +457,58 @@ u8 *func_80029FE4(s32 x, s32 y, u32 *ot, s32 code, s32 *w, u8 *pkt) {
         *w = 0;
         break;
     case 0x30:
-        pkt = func_80027834(x, y + 2, ot, 5, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 5, 0, w, pkt);
         break;
     case 0x31:
-        pkt = func_80027834(x, y + 2, ot, 4, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 4, 0, w, pkt);
         break;
     case 0x32:
-        pkt = func_80027834(x, y + 2, ot, 7, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 7, 0, w, pkt);
         break;
     case 0x33:
-        pkt = func_80027834(x, y + 2, ot, 6, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 6, 0, w, pkt);
         break;
     case 0x34:
-        pkt = func_80027834(x, y + 2, ot, 8, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 8, 0, w, pkt);
         break;
     case 0x35:
-        pkt = func_80027834(x, y + 2, ot, 10, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 10, 0, w, pkt);
         break;
     case 0x36:
-        pkt = func_80027834(x, y + 2, ot, 9, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 9, 0, w, pkt);
         break;
     case 0x37:
-        pkt = func_80027834(x, y + 2, ot, 11, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 11, 0, w, pkt);
         break;
     case 0x60:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(1), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(1), 0, w, pkt);
         break;
     case 0x61:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(0), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(0), 0, w, pkt);
         break;
     case 0x62:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(2), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(2), 0, w, pkt);
         break;
     case 0x63:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(3), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(3), 0, w, pkt);
         break;
     case 0x64:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(4), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(4), 0, w, pkt);
         break;
     case 0x65:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(5), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(5), 0, w, pkt);
         break;
     case 0x66:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(6), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(6), 0, w, pkt);
         break;
     case 0x67:
-        pkt = func_80027834(x, y + 2, ot, func_8002BE10(7), 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, func_8002BE10(7), 0, w, pkt);
         break;
     case 0x38:
-        pkt = func_80027834(x, y + 2, ot, 0x11, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 0x11, 0, w, pkt);
         break;
     case 0x39:
-        pkt = func_80027834(x, y + 2, ot, 0x12, 0, w, pkt);
+        pkt = ui_buildSprite(x, y + 2, ot, 0x12, 0, w, pkt);
         break;
     case 0x3A:
         pkt = func_8002B890(x, y + 2, ot, 1, 0, w, pkt);
@@ -1034,10 +1034,10 @@ u8 *func_8002B890(s32 x, s32 y, u32 *ot, u32 mask, u8 b, s32 *c, u8 *pkt) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (mask & (1 << i)) {
-            pkt = func_80027834(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
+            pkt = ui_buildSprite(x + D_8006BC0C[i].unk0, y + D_8006BC0C[i].unk1, ot, D_8006BC0C[i].unk2, b, tmp, pkt);
         }
     }
-    return func_80027834(x, y, ot, 0xC, b, c, pkt);
+    return ui_buildSprite(x, y, ot, 0xC, b, c, pkt);
 }
 
 s32 func_8002B980(u8 *s, s32 idx) {

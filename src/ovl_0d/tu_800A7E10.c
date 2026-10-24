@@ -763,7 +763,7 @@ void *func_800A9B2C(u32 *ot, void *p, TmState *s) {
                 k = s->unk564 * 0xC - 0x78;
                 r.x -= k;
                 text_drawBlock(r.x + 8, r.y + 6, 5, (u8 *)func_8006276C(c->unk0), 0);
-                func_8002DEE4(&r, 5, 2);
+                win_drawBoxPal(&r, 5, 2);
             }
             if (pad & 0x20000) {
                 s->unk0 = 1;
@@ -882,9 +882,9 @@ void func_800AA1FC(TmState *s) {
                 r.x = 0xA0 - r.w / 2;
                 r.y = 0x59;
                 r.h = 0x2B;
-                s->unk4B8 = func_8002DC54(&r, 5, 2);
+                s->unk4B8 = win_openFree(&r, 5, 2);
                 win_setDrawContent(s->unk4B8, func_800AA3C0);
-                func_8002E31C(s->unk4B8, 1);
+                win_setShadow(s->unk4B8, 1);
                 func_800AB89C(s->unk4B8);
                 s->unk0 = 0x1A;
             } else {
@@ -955,9 +955,9 @@ void func_800AA548(TmState *s) {
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x5B;
                     r.h = 0x2B;
-                    s->unk4C4 = func_8002DC54(&r, 6, 2);
+                    s->unk4C4 = win_openFree(&r, 6, 2);
                     win_setDrawContent(s->unk4C4, func_800AB0A8);
-                    func_8002E31C(s->unk4C4, 1);
+                    win_setShadow(s->unk4C4, 1);
                     func_800AB89C(s->unk4C4);
                     s->unk0 = 0x19;
                     func_800B01E8(2);
@@ -1087,9 +1087,9 @@ void func_800AA790(TmState *s) {
                 r.y = 0x54;
                 r.h = 0x38;
                 s->unk5B4 = 1;
-                s->unk484 = func_8002DC54(&r, 5, 2);
+                s->unk484 = win_openFree(&r, 5, 2);
                 win_setDrawContent(s->unk484, func_800ABE74);
-                func_8002E31C(s->unk484, 1);
+                win_setShadow(s->unk484, 1);
                 func_800AB89C(s->unk484);
                 s->unk0 = 0x23;
                 return;
@@ -1136,9 +1136,9 @@ void func_800AA790(TmState *s) {
                     r.x = 0xA0 - r.w / 2;
                     r.y = 0x53;
                     r.h = 0x3A;
-                    s->unk458 = func_8002DC54(&r, 6, 2);
+                    s->unk458 = win_openFree(&r, 6, 2);
                     win_setDrawContent(s->unk458, func_800AB060);
-                    func_8002E31C(s->unk458, 1);
+                    win_setShadow(s->unk458, 1);
                     func_800AB89C(s->unk458);
                     s->unk4 = 0;
                     s->unk0 = 0x13;
@@ -1152,9 +1152,9 @@ void func_800AA790(TmState *s) {
         r.h = 0x38;
         r.y = 0x35;
         s->unk4 = 1;
-        s->unk4B8 = func_8002DC54(&r, 5, 2);
+        s->unk4B8 = win_openFree(&r, 5, 2);
         win_setDrawContent(s->unk4B8, func_800AB52C);
-        func_8002E31C(s->unk4B8, 1);
+        win_setShadow(s->unk4B8, 1);
         func_800AB89C(s->unk4B8);
         func_800B01E8(1);
         s->unk0 = 0x18;
@@ -1514,7 +1514,7 @@ void *func_800AB928(u32 *ot, void *p, TmState *s) {
     r2.y = sel->unk10 - 9;
     r2.h = 0x19;
     text_drawBlock(0x5A, r2.y + 6, 3, buf, 0);
-    func_8002DEE4(&r2, 3, 2);
+    win_drawBoxPal(&r2, 3, 2);
     return p;
 }
 
@@ -2493,9 +2493,9 @@ void func_800ADE5C(TmState *s) {
             r.x = 0xA0 - r.w / 2;
             r.y = 0x5B;
             r.h = 0x2A;
-            s->unk4B8 = func_8002DC54(&r, 5, 2);
+            s->unk4B8 = win_openFree(&r, 5, 2);
             win_setDrawContent(s->unk4B8, func_800ADFFC);
-            func_8002E31C(s->unk4B8, 1);
+            win_setShadow(s->unk4B8, 1);
             func_800AB89C(s->unk4B8);
             func_800AF288(s);
             func_800B29DC(s);
@@ -2581,9 +2581,9 @@ void *func_800AE084(u32 *ot, void *p, TmState *s) {
     r.y = 0x96;
     r.w = w;
     r.h = 0x1A;
-    s->unk458 = func_8002DC54(&r, 5, 2);
+    s->unk458 = win_openFree(&r, 5, 2);
     win_setDrawContent(s->unk458, func_800AE494);
-    func_8002E31C(s->unk458, 1);
+    win_setShadow(s->unk458, 1);
     func_800AB89C(s->unk458);
     func_800B01E8(s->unk45C == 0 ? 4 : 0xC);
     s->unk0 = 0x10;
@@ -4865,9 +4865,9 @@ void func_800B3488(TmState *arg0) {
         r.x = 0xA0 - r.w / 2;
         r.y = 0x54;
         r.h = 0x39;
-        arg0->unk458 = func_8002DC54(&r, 5, 2);
+        arg0->unk458 = win_openFree(&r, 5, 2);
         win_setDrawContent(arg0->unk458, func_800B355C);
-        func_8002E31C(arg0->unk458, 1);
+        win_setShadow(arg0->unk458, 1);
         func_800AB89C(arg0->unk458);
         arg0->unk4 = 0;
         arg0->unk0 = 0xB;

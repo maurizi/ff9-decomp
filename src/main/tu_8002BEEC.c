@@ -14,7 +14,7 @@ void gfx_init(u32 *ot0, u32 *ot1, s32 pk0, s32 pk1) {
     g_primPtr = g_drawBufs.prims[g_drawBufs.cur];
     g_ot = g_drawBufs.ots[g_drawBufs.cur];
     pad_initRepeat();
-    func_8002E490();
+    win_initAll();
     g_drawBufs.unk1 = 0;
     g_drawBufs.lastVsync = VSync(-1);
     g_drawBufs.unk2 = 0;

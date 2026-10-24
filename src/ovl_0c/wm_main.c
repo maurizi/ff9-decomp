@@ -1412,7 +1412,7 @@ void func_800ACEEC(void) {
             g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&D_800CE0E0, 1);
-        func_80027834((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &D_800CE0E0, 0xEB, 0, buf, D_800CE098);
+        ui_buildSprite((320 - D_800686D0[235].unk4) / 2, (218 - D_800686D0[235].unk5) / 2, &D_800CE0E0, 0xEB, 0, buf, D_800CE098);
         setlen(&D_800CE0C8, 3);
         D_800CE0C8.code = 0x62;
         setRGB0(&D_800CE0C8, 0x60, 0x60, 0x60);

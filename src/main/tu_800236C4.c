@@ -133,17 +133,17 @@ void timer_draw(void) {
     if (shown) {
         dg = hr / 10;
         if (dg != 0) {
-            pkt = func_80027834(g_timerRect.x + 5, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
+            pkt = ui_buildSprite(g_timerRect.x + 5, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
         }
         dg = hr - dg * 10;
-        pkt = func_80027834(g_timerRect.x + 0xF, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0xF, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
         dg = min / 10;
-        pkt = func_80027834(g_timerRect.x + 0x23, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0x23, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
         dg = min - dg * 10;
-        pkt = func_80027834(g_timerRect.x + 0x2D, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0x2D, 8, ot, dg + 0xE0, t->running == 0, &w, pkt);
     }
     if (colon) {
-        pkt = func_80027834(g_timerRect.x + 0x19, 8, ot, 0xEA, t->running == 0, &w, pkt);
+        pkt = ui_buildSprite(g_timerRect.x + 0x19, 8, ot, 0xEA, t->running == 0, &w, pkt);
     }
     pkt = win_buildBorder(&g_timerRect, ot, 1, 1, 1, (g_gameState->unk24 >> 18) & 1, pkt);
     setlen(pkt, 3);

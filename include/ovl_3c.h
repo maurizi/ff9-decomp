@@ -123,8 +123,8 @@ extern u8 D_801EDF3C[];
 
 extern u8 D_801F3E98[];
 /* main exe: candidates for ff9.h */
-s32 func_80028014(s32); /* equip slot of an item, -1 = not equipment */
-s32 func_80028954(s32); /* main.c defines it returning u8; used unmasked */
+s32 item_getEquipSlot(s32); /* equip slot of an item, -1 = not equipment */
+s32 chr_getPortrait(s32); /* main.c defines it returning u8; used unmasked */
 typedef struct {
     u8 v[5];
 } Equip5; /* Character.unk39 copied as a whole */
@@ -137,7 +137,7 @@ extern u8 D_801FC0D8[5];
 extern u16 D_801FC0E0[];
 extern s32 D_801F3FFC;
 s32 item_getCount(s32); /* main.c defines it returning u8 */
-s32 func_80027F94(s32);
+s32 item_countEquipped(s32);
 extern s32 D_801FC050[3]; /* row y offsets */
 extern u8 D_801FC05C[4];
 extern u8 D_801FC060[]; /* gil suffix */

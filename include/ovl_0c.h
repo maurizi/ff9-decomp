@@ -1115,7 +1115,7 @@ s32 math_cos(s32); /* cos */
 s32 math_sin(s32); /* sin */
 void SetGeomScreen(u16);
 s32 func_80050D38(s32);
-extern u32 D_80076F80[]; /* VRAM save buffer */
+extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0;
 s32 func_8002B980(u8 *, s32);

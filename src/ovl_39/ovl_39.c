@@ -42,9 +42,9 @@ void func_801F4538(void) {
         text_drawBlock(D_801FAF7C.x + 0xA, D_801FAF7C.y + 6, 5, D_801FB1A8.unk20, 0);
     }
     ui_drawLabel(D_801FAF7C.x + 6, D_801FAF7C.y - 3, 5, D_80070450, 0);
-    func_8002DEE4(&D_801FAF84, 5, 0);
-    func_8002DEE4(&D_801FAF7C, 5, 1);
-    func_8002705C(&D_801FAF7C, 5, 1);
+    win_drawBoxPal(&D_801FAF84, 5, 0);
+    win_drawBoxPal(&D_801FAF7C, 5, 1);
+    win_drawShadow(&D_801FAF7C, 5, 1);
 }
 
 void func_801F4664(void) {
@@ -76,8 +76,8 @@ void func_801F4760(void) {
     u8 *str;
     u8 s;
 
-    func_8002DEE4(&D_801FAFE0, 0x34, 2);
-    func_8002705C(&D_801FAFE0, 0x34, 2);
+    win_drawBoxPal(&D_801FAFE0, 0x34, 2);
+    win_drawShadow(&D_801FAFE0, 0x34, 2);
     for (i = 0; i < 2; i++) {
         str = text_get(i + 3);
         ok = 0;
@@ -142,7 +142,7 @@ void func_801F49C4(RECT *r, s32 otz, s32 slot) {
         v = g_gameState->unk24 >> 18;
         v &= 1;
     }
-    func_8002CD4C(r, 0x2D, 0, v);
+    win_drawBox(r, 0x2D, 0, v);
 }
 
 void func_801F4B18(RECT *r, s32 z, s32 i) {
@@ -164,7 +164,7 @@ void func_801F4B18(RECT *r, s32 z, s32 i) {
     ui_drawSmallDigits(r->x + 0x56, r->y + 3, z, buf, 0);
     for (j = 0; j < 4; j++) {
         if (s->unk58[j].unk1 != 0xFF) {
-            func_80028204(r->x + 6 + j * 0x21, r->y + 0xD, z, s->unk58[j].unk1, 0x2C, 0);
+            ui_drawPortrait(r->x + 6 + j * 0x21, r->y + 0xD, z, s->unk58[j].unk1, 0x2C, 0);
         }
     }
     text_formatNumber(s->unk1D, buf, 2, 1);
@@ -183,7 +183,7 @@ void func_801F4B18(RECT *r, s32 z, s32 i) {
     rr.w = 0x9C;
     rr.h = 0x15;
     text_drawBlock(rr.x + 8, rr.y + 3, z, (u8 *)&s->unk28, 0);
-    func_8002CD4C(&rr, z, 0, s->unk48);
+    win_drawBox(&rr, z, 0, s->unk48);
 }
 
 void func_801F4E00(void) {
@@ -356,8 +356,8 @@ void func_801F53B0(void) {
 }
 
 void func_801F53E0(void) {
-    func_8002DEE4(&D_801FAF74, 5, 2);
-    func_8002705C(&D_801FAF74, 5, 2);
+    win_drawBoxPal(&D_801FAF74, 5, 2);
+    win_drawShadow(&D_801FAF74, 5, 2);
     text_drawBlock(D_801FAF74.x + 0xA, D_801FAF74.y + 6, 4, (u8 *)text_getFrom(g_saveMenuText, D_801FB1A8.unk0), 0);
 }
 
@@ -433,7 +433,7 @@ void func_801F5688(void) {
     for (i = 0; i < v.unk0; i++) {
         r.y = i * 0x3C + (s16)(v.unk2 + 0x2A);
         func_801F49C4(&r, 0x2D, v.unk1 + i);
-        func_8002DEE4(&r, 0x2D, 0);
+        win_drawBoxPal(&r, 0x2D, 0);
     }
 }
 
@@ -632,13 +632,13 @@ void func_801F5E90(s32 id, s32 yes, s32 no) {
     r.h = h;
     r.x = (g_gameState->unkC->disp.w - w) >> 1;
     r.y = (g_gameState->unkC->disp.h - h) >> 1;
-    D_801FBEE0.unk8 = func_8002DC54(&r, 0x19, 2);
+    D_801FBEE0.unk8 = win_openFree(&r, 0x19, 2);
     win_setOnOpened(D_801FBEE0.unk8, func_801F6368);
     win_setOnClosed(D_801FBEE0.unk8, func_801F6378);
     win_setDrawContent(D_801FBEE0.unk8, func_801F5FE4);
     win_setDrawOverlay(D_801FBEE0.unk8, func_801F60DC);
-    func_8002E31C(D_801FBEE0.unk8, 1);
-    func_8002E304(D_801FBEE0.unk8, D_8007048C);
+    win_setShadow(D_801FBEE0.unk8, 1);
+    win_setLabel(D_801FBEE0.unk8, D_8007048C);
 }
 
 void func_801F5FE4(Window *w) {
@@ -754,7 +754,7 @@ void func_801F63D8(void) {
     D_801FB1A8.unkC = 0;
     D_801FBEF8.unk1 = 0;
     D_801FBEF8.unk0 = 1;
-    D_801FBEF8.unk1C = func_8002DC54(&D_801FB00C, 0x1E, 2);
+    D_801FBEF8.unk1C = win_openFree(&D_801FB00C, 0x1E, 2);
     D_801FBEF8.unk18 = 0xFF;
     D_801FBEF8.unk3 = 0;
     D_801FBEF8.unk10 = 0;
@@ -775,8 +775,8 @@ void func_801F63D8(void) {
     win_setDrawContent(D_801FBEF8.unk1C, func_801F6EDC);
     win_setOnOpened(D_801FBEF8.unk1C, func_801F6F3C);
     win_setOnClosed(D_801FBEF8.unk1C, func_801F6F74);
-    func_8002E304(D_801FBEF8.unk1C, D_80070420);
-    func_8002E31C(D_801FBEF8.unk1C, 1);
+    win_setLabel(D_801FBEF8.unk1C, D_80070420);
+    win_setShadow(D_801FBEF8.unk1C, 1);
     sl = g_menu.unk2;
     switch (D_801FB1A8.unk4[sl]) {
     case 3:
@@ -904,7 +904,7 @@ void func_801F6A84(void) {
     D_801FB1A8.unk2 = 2;
     D_801FB1A8.unk1 = 4;
     D_801FB1A8.unk20 = text_get(0x1A);
-    func_8002DE10(D_801FBEF8.unk1C);
+    win_destroy(D_801FBEF8.unk1C);
     func_8002EDFC(&D_801FB1A8.unk24, 0xF, 3, 1, 0xB4);
     if (D_801FB1A8.unk34[D_801FB1A8.unk10].unk1A == 4) {
         D_801FB1A8.unk24.cursor = D_801FB1A8.unk34[D_801FB1A8.unk10].unk44;
@@ -1157,11 +1157,11 @@ void func_801F7364(SaveMenu *m) {
         D_801FB1A8.unk2 = 0;
         D_801FC348.unk4 = 0;
         D_801FB030.y = D_801FB1A8.unk24.cursor * 0x3C + 0x3F;
-        D_801FC348.unk8 = func_8002DC54(&D_801FB030, 0x14, 2);
+        D_801FC348.unk8 = win_openFree(&D_801FB030, 0x14, 2);
         win_setDrawContent(D_801FC348.unk8, func_801F7560);
         win_setOnOpened(D_801FC348.unk8, func_801F74F4);
         win_setOnClosed(D_801FC348.unk8, func_801F7510);
-        func_8002E31C(D_801FC348.unk8, 1);
+        win_setShadow(D_801FC348.unk8, 1);
     }
 }
 
@@ -1175,7 +1175,7 @@ void func_801F740C(void) {
 
 void func_801F7474(void) {
     if (!func_801F5340(g_menu.unk2, 0)) {
-        func_8002DE10(D_801FC348.unk8);
+        win_destroy(D_801FC348.unk8);
         func_801F77A8(0x2D);
         return;
     }
@@ -1227,12 +1227,12 @@ void func_801F75C8(s32 id, s32 title) {
         r.h = h;
         r.x = (g_gameState->unkC->disp.w - w) >> 1;
         r.y = (g_gameState->unkC->disp.h - h) >> 1;
-        m->unk4 = func_8002DC54(&r, 0xF, 2);
+        m->unk4 = win_openFree(&r, 0xF, 2);
         win_setDrawContent(m->unk4, func_801F77F4);
         win_setOnOpened(m->unk4, func_801F7830);
         win_setOnClosed(m->unk4, func_801F7840);
-        func_8002E31C(m->unk4, 1);
-        func_8002E304(m->unk4, title);
+        win_setShadow(m->unk4, 1);
+        win_setLabel(m->unk4, title);
     }
 }
 
@@ -1302,11 +1302,11 @@ void func_801F7918(void) {
 }
 
 void func_801F7928(void) {
-    func_80028720(D_801EE4D4, 10);
+    ui_loadPortraits(D_801EE4D4, 10);
 }
 
 void func_801F7950(void) {
-    func_8002886C();
+    ui_restorePortraits();
 }
 
 u8 func_801F7970(Character *c) {
@@ -1315,7 +1315,7 @@ u8 func_801F7970(Character *c) {
     if (c == NULL) {
         return 0xFF;
     }
-    m = func_80028954(c->unk34.b.id);
+    m = chr_getPortrait(c->unk34.b.id);
     if (m == 0xFF) {
         return 0xFF;
     }
@@ -1338,12 +1338,12 @@ u8 func_801F79F4(s32 mode) {
     func_801F5E40();
     func_801FA2A0();
     func_801FA2AC();
-    D_801FC388.unk1C = func_8002DC54(&D_801FB058, 0x1E, 2);
+    D_801FC388.unk1C = win_openFree(&D_801FB058, 0x1E, 2);
     win_setDrawContent(D_801FC388.unk1C, func_801F7CD0);
     win_setOnOpened(D_801FC388.unk1C, func_801F8408);
     win_setOnClosed(D_801FC388.unk1C, func_801F8424);
-    func_8002E31C(D_801FC388.unk1C, 1);
-    func_8002E304(D_801FC388.unk1C, D_800703FC.unk0[D_801FB050[mode]]);
+    win_setShadow(D_801FC388.unk1C, 1);
+    win_setLabel(D_801FC388.unk1C, D_800703FC.unk0[D_801FB050[mode]]);
     return 1;
 }
 
@@ -1521,8 +1521,8 @@ void func_801F7FD4(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             g_primPtr = (u8 *)(l + 1);
         }
     }
-    func_80027710(x, y, otz, ic, 0);
-    func_80027710(x + width - ec->unk4, y, otz, ec, 0);
+    ui_drawSpriteDef(x, y, otz, ic, 0);
+    ui_drawSpriteDef(x + width - ec->unk4, y, otz, ec, 0);
     SetTexWindow(g_primPtr, &D_801FB060);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;

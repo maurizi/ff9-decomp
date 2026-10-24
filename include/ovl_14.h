@@ -18,7 +18,7 @@ typedef struct {
     u8 unk4;  /* w */
     u8 unk5;  /* h */
     u16 unk6; /* tpage */
-} Ovl14Text; /* 8-byte item drawn by func_80027710 */
+} Ovl14Text; /* 8-byte item drawn by ui_drawSpriteDef */
 
 /* 8-byte directory entry in the area at D_80067944 + 0x14C700 */
 typedef struct {

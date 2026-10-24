@@ -1981,9 +1981,9 @@ s32 evt_execInstr(void) {
         a = evt_getArg16_inline();
         b = evt_getArg8_inline();
         if (a < 0x100) {
-            func_80027D84(a, b);
+            item_add(a, b);
         } else if (a < 0x200) {
-            func_80028074(a - 0x100);
+            keyItem_add(a - 0x100);
         } else {
             while (--b != -1) {
                 func_8006238C(a - 0x200);
@@ -1996,7 +1996,7 @@ s32 evt_execInstr(void) {
         if (a < 0x100) {
             item_remove(a, b);
         } else if (a < 0x200) {
-            func_800280CC(a - 0x100);
+            keyItem_remove(a - 0x100);
         }
         return 0;
     case 0xCE:

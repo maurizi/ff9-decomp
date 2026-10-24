@@ -2152,7 +2152,7 @@ s32 btlfx_fadeUnitGroup(u32, s32);
 
 /* main exe: candidates for ff9.h */
 extern Unk800689B0 D_80068E78[3];
-s32 func_80027480(s32);
+s32 win_getPalClut(s32);
 void SetTexWindow(void *, RECT *); /* PsyQ */
 void win_reapClosed(void);
 u8 func_800339F4(s32, u8);
@@ -2161,8 +2161,8 @@ extern u32 D_800686D8;
 void func_800316D8(void *, void *);
 void gfx_selectBuffer(s32);
 void pad_setRepeatEnabled(s32, s32, s32);
-void func_8002E32C(Window *, s32);
-void func_8002E380(Window *, s32);
+void win_setVisible(Window *, s32);
+void win_setCloseFrames(Window *, s32);
 void pad_resetRepeats(s32);
 void win_close(Window *);
 Window *win_get(s32);
@@ -3425,7 +3425,7 @@ typedef struct {
 } Unk800EE37C;
 void func_800EE37C(Unk800EE37C *);
 extern RECT D_800F8E30;
-void func_8002E3A8(Window *, MenuList *);
+void win_setList(Window *, MenuList *);
 void btlui_drawListContent(Window *);
 void btlui_drawListOverlay(Window *);
 void func_800EF00C(void);

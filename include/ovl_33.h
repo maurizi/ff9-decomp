@@ -123,7 +123,7 @@ void func_801F3278(s32, s32);
 void func_801EF900(s32, s32);
 void func_801F0ED4(void);
 void func_801F0890(void);
-void func_80027110(s32, s32, s32, s32, s32, u8, u8); /* main exe */
+void ui_drawMeter(s32, s32, s32, s32, s32, u8, u8); /* main exe */
 s32 func_80034584(s32, s32); /* main exe */
 s32 func_800347D8(s32, s32); /* main exe */
 extern u8 D_8007AFD3;
@@ -169,7 +169,7 @@ extern s32 D_800704B8;
 extern s32 D_80077E54; /* = D_80077E50.unk4, referenced by its own name */
 extern s32 D_80070498;
 extern s32 D_8007042C;
-void func_80026EA0(s32, s32, s32, s32, s32);
+void ui_drawPartyMemberMode(s32, s32, s32, s32, s32);
 s32 func_80034430(s32, s32);
 void ui_drawItemIcon(s32, s32, s32, s32, u8); /* main exe */
 void func_801F32E0(Character *);

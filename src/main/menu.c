@@ -68,7 +68,7 @@ void func_80032238(void) {
     g_gameState->unk10[1].r0 = 0;
     g_gameState->unk10[1].g0 = 0;
     g_gameState->unk10[1].b0 = 0;
-    func_8002DE60();
+    win_destroyAll();
     g_menu.unk18 = g_padPortMask[0];
     g_padPortMask[0] = 0x4000000;
     pad_setStickAsDpad(1);
@@ -86,7 +86,7 @@ void func_80032384(void) {
     }
     g_gameState->unk1C->unk0 &= ~2;
     g_gameState->unk1C->unk0 &= ~0x1C;
-    func_8002DE60();
+    win_destroyAll();
     g_gameState->vsyncMode = g_menu.unk14;
     g_gameState->unk10[0].r0 = g_menu.unk20;
     g_gameState->unk10[0].g0 = g_menu.unk21;
@@ -224,7 +224,7 @@ void func_800328E8(void) {
 
     pad_updateRepeat(0);
     if (g_menu.unk9 != 0) {
-        func_80024BD8();
+        ui_drawBackground();
     }
     fn = D_8006C9D4[g_menu.unk1].unk4;
     idx = g_menu.unk1;
@@ -276,7 +276,7 @@ void func_80032A44(void) {
     ExitCriticalSection();
     g_menu.unk0 = 3;
     if (g_menu.unk1 == 0 && func_80033D28()) {
-        func_80028B20((u8 *)0x801EDF00);
+        ui_loadPartyPortraits((u8 *)0x801EDF00);
         func_80033D1C(0);
     }
     func_8002FA50(0x10);

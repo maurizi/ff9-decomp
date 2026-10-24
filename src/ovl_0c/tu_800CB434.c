@@ -140,9 +140,9 @@ void func_800CB9D8(s32 arg0, s32 arg1) {
     RECT b1;
     RECT b2;
 
-    func_80028A40(arg0, &a0, &a1, &a2);
-    func_80028A40(arg1, &b0, &b1, &b2);
-    StoreImage(&a0, D_80076F80);
+    ui_getPartyPortraitRects(arg0, &a0, &a1, &a2);
+    ui_getPartyPortraitRects(arg1, &b0, &b1, &b2);
+    StoreImage(&a0, g_portraitSavedVram);
     DrawSync(0);
     MoveImage(&a1, 0x3C0, 0x1B0);
     DrawSync(0);
@@ -158,7 +158,7 @@ void func_800CB9D8(s32 arg0, s32 arg1) {
     a1.y = 0x1B0;
     a2.x = 0x3D0;
     a2.y = 0x1B0;
-    LoadImage(&b0, D_80076F80);
+    LoadImage(&b0, g_portraitSavedVram);
     DrawSync(0);
     MoveImage(&a1, b1.x, b1.y);
     DrawSync(0);
@@ -180,9 +180,9 @@ void func_800CBB4C(s32 arg0) {
     if (!c->unk34.b.unk9) {
         x = r->x + 0x16;
     }
-    func_800283E0(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
+    ui_drawPartyPortraitH(x, r->y + 1, 0x14, arg0, 0x2D, c->hp == 0);
     text_drawBlock(r->x + 0x3C, r->y + 3, 0x14, c->unk0, 0);
-    func_80026FC4(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
+    ui_drawStatusIcons(r->x + 0x86, r->y + 4, 0x14, c->unk38, 0);
     text_formatNumber(c->level, buf, 2, 1);
     ui_drawSprite(r->x + 0x3C, r->y + 0x12, 0x14, 0xB4, 0);
     ui_drawSmallDigits(r->x + 0x60, r->y + 0x12, 0x14, buf, 0);
@@ -203,7 +203,7 @@ void func_800CBB4C(s32 arg0) {
     color = ((s16)(maxmp / 6) >= c->mp) * 4;
     text_formatNumber(maxmp, &buf[4], -1, 1);
     ui_drawSmallDigits(r->x + 0x59, r->y + 0x24, 0x14, buf, color);
-    func_800273C0(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
+    ui_drawStones(r->x + 0x9B, r->y + 0x14, 0x14, c->stones, c->maxStones);
 }
 
 void func_800CBDF8(RECT *r, s32 otz) {
@@ -233,15 +233,15 @@ void func_800CBF18(void) {
     strcat(buf, D_800CE050);
     ui_drawSmallDigits(D_800CE04C->x + 0x13, D_800CE04C->y + 0x16, 0x13, buf, 0);
     ui_drawLabel(D_800CE04C->x + 6, D_800CE04C->y - 3, 0x13, D_800704C0, 0);
-    func_8002DEE4(D_800CE04C, 0x14, 2);
+    win_drawBoxPal(D_800CE04C, 0x14, 2);
 }
 
 void func_800CC050(void) {
     GameData *gd;
 
     ui_drawLabel(D_800CE054->x + 8, D_800CE054->y - 3, 0x13, D_8007046C, 0);
-    func_8002DEE4(D_800CE054, 0x14, 2);
-    func_8002705C(D_800CE054, 0x14, 2);
+    win_drawBoxPal(D_800CE054, 0x14, 2);
+    win_drawShadow(D_800CE054, 0x14, 2);
     gd = g_gameState->unk1C;
     if (gd->unk80C != NULL && *gd->unk80C != 0xFF) {
         text_drawBlock(D_800CE054->x + 8, D_800CE054->y + 7, 0x13, gd->unk80C, 0);
@@ -457,9 +457,9 @@ void func_800CC940(void) {
             func_800CBB4C(i);
         }
         func_800CBDF8(p, 0x14);
-        func_8002DEE4(&r, 0x14, 0);
-        func_8002DEE4(p, 0x14, 0);
-        func_8002705C(p, 0x15, 0);
+        win_drawBoxPal(&r, 0x14, 0);
+        win_drawBoxPal(p, 0x14, 0);
+        win_drawShadow(p, 0x15, 0);
         i++;
     } while (i < 4);
 }

@@ -543,7 +543,7 @@ s32 func_80037ACC(s32 op) {
         if (x < 0x100) {
             r = item_getCount(x);
         } else if (x < 0x200) {
-            r = (u8)func_800281A4(x - 0x100);
+            r = (u8)keyItem_has(x - 0x100);
         } else {
             r = func_80062560(x - 0x200);
         }

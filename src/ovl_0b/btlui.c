@@ -74,7 +74,7 @@ void func_800E9D84(void) {
 void func_800E9DBC(void) {
     void *p = db_lookupRegistered(4, 0x1E, 0);
     if (p != NULL) {
-        func_80028B20(p);
+        ui_loadPartyPortraits(p);
         func_80033D1C(0);
     }
 }
@@ -1001,7 +1001,7 @@ void func_800EC048(void) {
 }
 
 void func_800EC070(s32 arg0) {
-    if (func_80027D84(arg0, 1) == 0) {
+    if (item_add(arg0, 1) == 0) {
         return;
     }
     if (arg0 >= 0xE0 && func_800EC44C(arg0) == 0xFF) {
@@ -1346,7 +1346,7 @@ void func_800ED02C(RECT *r, s32 otz) {
     u32 w;
 
     ot = &g_ot[otz];
-    clut = func_80027480(D_80068E78[0].unk2) << 16;
+    clut = win_getPalClut(D_80068E78[0].unk2) << 16;
     d2 = &D_80068E78[2];
     setlen(g_primPtr, 4);
     d1 = &D_80068E78[1];
@@ -1742,7 +1742,7 @@ void func_800EE37C(Unk800EE37C *arg0) {
         l.cursor = c->unk4[e->unk49C.unk0];
     }
     g_btlUi->unk12A4[2] = win_open(&D_800F8E30, 8, 1, 2);
-    func_8002E3A8(g_btlUi->unk12A4[2], &l);
+    win_setList(g_btlUi->unk12A4[2], &l);
     win_setDrawContent(g_btlUi->unk12A4[2], btlui_drawListContent);
     win_setDrawOverlay(g_btlUi->unk12A4[2], btlui_drawListOverlay);
     win_setOnOpened(g_btlUi->unk12A4[2], (void (*)(Window *))func_800EF00C);
@@ -2523,7 +2523,7 @@ void func_800F0A54(Window *arg0) {
     u8 *name;
     s32 c;
     Window *w = arg0;
-    func_800269F4(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
+    ui_drawSeparator(arg0->unk0 + 0x6E, arg0->unk2 + 4, arg0->unk18, 9 - arg0->unk6);
     m = func_8002BE88();
     for (; u != NULL; u = u->unk0) {
         name = btl_getUnitName(u);
@@ -2908,17 +2908,17 @@ void func_800F1A20(s32 arg0) {
 
 void func_800F1A8C(Window *arg0) {
     if (g_btlTarget.unk0 == 2) {
-        func_8002E32C(g_btlUi->unk12A4[2], 0);
+        win_setVisible(g_btlUi->unk12A4[2], 0);
     }
-    func_8002E32C(g_btlUi->unk12A4[3], 0);
+    win_setVisible(g_btlUi->unk12A4[3], 0);
     btlui_setMenuState(g_btlTarget.unk11);
 }
 
 void func_800F1AF8(Window *arg0) {
     if (g_btlTarget.unk0 == 2) {
-        func_8002E32C(g_btlUi->unk12A4[2], 1);
+        win_setVisible(g_btlUi->unk12A4[2], 1);
     }
-    func_8002E32C(g_btlUi->unk12A4[3], 1);
+    win_setVisible(g_btlUi->unk12A4[3], 1);
     g_btlTarget.unkC = 0;
     g_btlUi->unk12A4[0] = 0;
     btlui_setMenuState((u8)g_btlTarget.unk12);
@@ -3154,14 +3154,14 @@ void func_800F27CC(s32 arg0) {
     g_btlUi->unk12A4[1] = w;
     win_setDrawContent(w, func_800F29B4);
     win_setDrawOverlay(g_btlUi->unk12A4[1], func_800F1BFC);
-    func_8002E334(g_btlUi->unk12A4[1], 7);
+    win_setOpenFrames(g_btlUi->unk12A4[1], 7);
     func_800F3D3C(arg0);
     D_80105058.unk1 = arg0;
     D_80105058.unk0 = 1;
 }
 
 void func_800F2890(s32 arg0) {
-    func_8002E380(g_btlUi->unk12A4[1], 7);
+    win_setCloseFrames(g_btlUi->unk12A4[1], 7);
     win_close(g_btlUi->unk12A4[1]);
     func_800F3DE0(arg0);
     D_80105058.unk0 = 0;

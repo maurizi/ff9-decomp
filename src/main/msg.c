@@ -849,15 +849,15 @@ void msg_open(s32 msg, s32 id, WinLayout *l, s32 flags) {
         win_setDrawContent(w->unk14, (void (*)(Window *))func_8004F5D4);
         win_setDrawOverlay(w->unk14, func_8004F660);
         if (l->unk4 != 0 && !(flags & 4)) {
-            func_8002D398(w->unk14, l->unk6 & 3, l->unk4);
+            win_setTail(w->unk14, l->unk6 & 3, l->unk4);
         }
         if (D_8007BB90 != 0) {
             win_setOpenAnim(w->unk14, 3);
         }
         if (flags & 0x40) {
-            func_8002E304(w->unk14, (s32)D_80011EFC);
+            win_setLabel(w->unk14, (s32)D_80011EFC);
         } else if (flags & 8) {
-            func_8002E304(w->unk14, (s32)D_80011F10);
+            win_setLabel(w->unk14, (s32)D_80011F10);
         }
     }
     if (!(l->unkB & 1)) {

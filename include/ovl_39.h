@@ -359,7 +359,7 @@ void func_801F7FD4(s32, s32, s32, s32, s32);
 void func_801F8408(Window *);
 void func_801F8424(Window *);
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
-s32 func_80028954(s32); /* defined u8 in main; used unmasked */
+s32 chr_getPortrait(s32); /* defined u8 in main; used unmasked */
 
 extern RECT D_801FAF74; /* a RECT in .data (splat starts .data late) */
 extern u8 g_saveMenuText[];
@@ -547,7 +547,7 @@ extern IconTmpl D_801F4244;
 extern IconTmpl D_801F42E4;
 
 /* main exe: candidates for ff9.h */
-/* slider gauge pieces drawn by func_80027710: left cap, middle (repeated via DR_TWIN), right cap */
+/* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
     u8 unk0; /* texture window x */
     u8 unk1; /* texture window y */

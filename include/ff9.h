@@ -584,7 +584,7 @@ extern Unk80077DB0 g_menu;
 extern s32 D_80077140;
 extern s32 D_80077144;
 extern u8 D_80010BD0[]; /* font glyph start/width nibbles, func_80028DB0 */
-extern void (*D_80068F80[])(RECT *, s32);
+extern void (*g_winShadowFuncs[])(RECT *, s32);
 extern s32 (*D_8006BBEC[])(u8 *); /* text width of a value, per format */
 extern u8 D_8006A20E;
 s32 func_8002A730(s32);
@@ -629,32 +629,32 @@ void (*CdReadyCallback(void (*)()))(); /* returns the previous callback */
 void preload_clearEntry(PreloadEntry *);
 void cd_controlF(u8, u8 *);
 void cd_onStreamReady(u8, u8 *);
-void func_8002423C(s32, s32, s32, Character *);
+void ui_drawCharStatus(s32, s32, s32, Character *);
 u8 *win_buildFill(RECT *, u32 *, u8, u8, s32, u8 *);
 u8 *win_buildBorder(RECT *, u32 *, u8, u8, s32, s32, u8 *);
-void func_80026BDC(RECT *, s32, u8, u8, s32);
-void func_80027568(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
-void func_800275A4(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
-void func_800265B0(s32, s32, s32, s32, s32, s32);
+void win_drawHelpBorder(RECT *, s32, u8, u8, s32);
+void win_drawHelpTailEdge(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
+void win_drawMsgTailEdge(); /* (s16 x, s16 y, s32 otz, s32 n, u8 flag), K&R */
+void win_drawTailFill(s32, s32, s32, s32, s32, s32);
 void win_drawHelpFill(RECT *, s32);
-void func_80026900(s32, s32, s32, s32);
-void func_8002642C(s16, s16, s32, s32, u8, u8);
-u8 *func_80026C7C(s32, s32, u32 *, s32, u8, u8 *);
-void func_80026F8C(s32, s32, s32, s32);
-void func_80027A4C(s32, s32, s32, s32);
-u8 *func_80027170(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
+void win_drawHelpTailFill(s32, s32, s32, s32);
+void win_drawTailEdge(s16, s16, s32, s32, u8, u8);
+u8 *ui_buildItemIcon(s32, s32, u32 *, s32, u8, u8 *);
+void ui_drawPartyStatus(s32, s32, s32, s32);
+void ui_drawCharStatuses(s32, s32, s32, s32);
+u8 *ui_buildMeter(s32, s32, u32 *, s32, s32, u8, u8, u8 *);
 s32 ui_drawSprite(s32, s32, s32, s32, u8);
-void func_80028AF0(s32, s32, s32, s32, u8);
+void ui_drawPartyPortrait(s32, s32, s32, s32, u8);
 
 void text_formatNumber(s32, u8 *, s32, u8);
-void func_80027D18(void);
-void func_80027D4C(void);
-s32 func_80027D84(s32, s32);
-void func_80028204(s32, s32, s32, s32, s32, u8);
-extern s32 D_80076F7C; /* number of portraits (func_80028204) */
-void func_800283E0(s32, s32, s32, s32, s32, u8);
-void func_80028A40(s32, RECT *, RECT *, RECT *);
-void func_80028BE8(u8 *, s32);
+void item_clearAll(void);
+void keyItem_clearAll(void);
+s32 item_add(s32, s32);
+void ui_drawPortrait(s32, s32, s32, s32, s32, u8);
+extern s32 g_portraitCount; /* number of portraits (ui_drawPortrait) */
+void ui_drawPartyPortraitH(s32, s32, s32, s32, s32, u8);
+void ui_getPartyPortraitRects(s32, RECT *, RECT *, RECT *);
+void ui_loadPartyPortrait(u8 *, s32);
 s32 func_80028DB0(s32, s32, s32);
 u8 *ui_buildLabel(s32, s32, u32 *, s32, s32, u8 *);
 u8 *func_80029D60(s32, s32, u32 *, u8 *, s32, u8 *);
@@ -699,7 +699,7 @@ typedef struct {
     u8 unk0[4];
 } Unk4; /* 4 bytes, byte-aligned (copied with lwl/lwr) */
 
-/* Menu window object (func_8002DC54 returns one of these). */
+/* Menu window object (win_openFree returns one of these). */
 typedef struct Window {
     s16 unk0; /* x */
     s16 unk2; /* y */
@@ -736,8 +736,8 @@ typedef struct Window {
 extern Window g_windows[10];
 
 void win_setOpenAnim(Window *, s32);
-void func_8002D1AC(Window *, s32);
-void func_8002D398(Window *, s32, s32);
+void win_setCloseAnim(Window *, s32);
+void win_setTail(Window *, s32, s32);
 
 /* ---- misc globals (batch 1) ---- */
 
@@ -1545,13 +1545,13 @@ extern u32 D_80077DB4;
 extern u8 D_8006CAB8[][2];
 
 u16 *func_800633E4(s32);
-void func_80027CB0(void);
+void item_initNew(void);
 void func_8003431C(void);
 void party_initNewGame(void);
 s32 func_80055210(); /* unprototyped: main calls it with no args, ovl_65 passes a pointer */
 void db_quit(void);
 void *db_lookupRegistered(s32, s32, s32); /* mode 4: address, 5: size */
-void func_8002CD4C(RECT *, s32, s32, s32);
+void win_drawBox(RECT *, s32, s32, s32);
 void func_80032A44(void);
 Unk800367D0 *func_800367D0(s32, s32, s32, s32);
 s32 CdSyncCallback(void (*)(u8, u8 *));
@@ -1868,7 +1868,7 @@ extern PadRepeatDef g_padRepeatDefs[23]; /* pad_initRepeat defaults */
 typedef struct {
     u8 x0, y0, x1, y1, x2, y2, x3, y3;
 } Unk80068F48;
-extern Unk80068F48 D_80068F48[];
+extern Unk80068F48 g_winTailShapes[];
 void akao_setVoiceAttack(s32, s32, s32);
 void akao_setVoiceSustain(s32, s32, s32);
 s32 func_80033964(u32);
@@ -1883,7 +1883,7 @@ typedef struct {
 } Unk8006DD88; /* base stats per character class */
 extern Unk8006DD88 D_8006DD88[];
 void pad_initRepeat(void);
-void func_8002E490(void);
+void win_initAll(void);
 void preload_onReadDone(u8 *);
 u8 cd_seekAsync(s32, void (*)(u8 *));
 void func_8005EC20(AkaoChannel *, u32);
@@ -2033,9 +2033,9 @@ s32 cd_readSync(); /* TODO: (sector, size, dst); ovl_14 passes a 4th argument */
 s32 cd_isShellOpen(void);
 u8 cd_checkShellOpen(void);
 void game_initGfx(void);
-void func_80024BD8(void);
-void func_8002705C(RECT *, s32, s32);
-s32 func_80027710(s32, s32, s32, void *, u8);
+void ui_drawBackground(void);
+void win_drawShadow(RECT *, s32, s32);
+s32 ui_drawSpriteDef(s32, s32, s32, void *, u8);
 u8 *text_append(u8 *, u8 *);
 s32 func_8002AE7C(u8 *);
 s32 func_8002B9B8(u8 *s);
@@ -2058,7 +2058,7 @@ void gfx_setBuffer(s32);
 void pad_updateRepeat(s32);
 void pad_setStickAsDpad(u8);
 void win_setClip(RECT *, s32, s32);
-Window *func_8002DC54(RECT *, s32, s32);
+Window *win_openFree(RECT *, s32, s32);
 Window *win_init(RECT *, s32, s32, Window *);
 
 /* Inlined copy of win_close (close window). */
@@ -2066,23 +2066,23 @@ static inline void win_close_inline(Window *w) {
     if (w != NULL && w->unk1C != 0 && w->unk1C != 2) {
         w->unk1C = 2;
         if (g_drawBufs.unk1 != 2) {
-            func_8002D1AC(w, w->unk28);
+            win_setCloseAnim(w, w->unk28);
         }
     }
 }
 
 void win_close(Window *);
-void func_8002DE10(Window *);
-void func_8002DE60(void);
-void func_8002DEE4(RECT *, s32, s32);
-void func_8002E040(RECT *, s32, s32, MenuList *);
+void win_destroy(Window *);
+void win_destroyAll(void);
+void win_drawBoxPal(RECT *, s32, s32);
+void win_drawListFrame(RECT *, s32, s32, MenuList *);
 void win_setOnOpened(Window *, void (*)(Window *));
 void win_setDrawContent(Window *, void (*)(Window *));
 void win_setDrawOverlay(Window *, void (*)(Window *));
 void win_setOnClosed(Window *, void (*)(Window *));
-void func_8002E304(Window *, s32);
-void func_8002E31C(Window *, u8);
-void func_8002E334(Window *, s16);
+void win_setLabel(Window *, s32);
+void win_setShadow(Window *, u8);
+void win_setOpenFrames(Window *, s16);
 void SystemError(s32, s32);
 void func_8002EB74(MenuList *);
 void win_stepOpen(Window *);
@@ -2475,7 +2475,7 @@ void func_800621D4(void);
 /* ---- main batch 5 ---- */
 s32 preload_isUsed(PreloadEntry *);
 PreloadEntry *preload_getCurrent(void);
-void func_80028B20(u8 *);
+void ui_loadPartyPortraits(u8 *);
 u8 func_80033D28(void);
 void FlushCache(void);
 extern u8 *g_randPtr;
@@ -2495,7 +2495,7 @@ void help_setAtCursor(u8);
 void func_800361CC(s32);
 s32 func_800337D0(s32);
 s32 func_8003380C(s32);
-void func_800269F4(s32, s32, s32, s32);
+void ui_drawSeparator(s32, s32, s32, s32);
 typedef struct {
     u8 unk0; /* ability id, 0 = none */
     u8 unk1; /* ap needed? */
@@ -2541,27 +2541,27 @@ typedef struct {
     u8 unk3; /* second party slot */
     s32 unk4; /* slide step */
 } Unk80024428;
-void func_80024428(s32, s32, s32, Unk80024428 *);
-void func_80026FC4(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
-void func_800273C0(s32, s32, s32, s32, s32);
+void ui_drawCharSwitch(s32, s32, s32, Unk80024428 *);
+void ui_drawStatusIcons(s32, s32, s32, u8, s32); /* arg4 unused, callers pass 0 */
+void ui_drawStones(s32, s32, s32, s32, s32);
 void chr_setDefaultName(u8 *, s32); /* default name by id */
 s32 func_8002BCC0(u8 *); /* strlen */
 extern u32 D_80077DBC; /* = g_menu.unkC, read on its own by ovl_3a */
 extern u32 g_padPressed; /* buttons that went down this frame */
-void func_8002886C(void);
-void func_80028994(s32, RECT *, RECT *);
+void ui_restorePortraits(void);
+void ui_getPortraitRects(s32, RECT *, RECT *);
 typedef struct {
     u32 *unk0; /* portrait image data, 0x6C0 bytes each */
     s32 unk4;  /* count */
 } Unk80076F78;
-extern Unk80076F78 D_80076F78;
-extern u32 D_80076F80[]; /* first CLUT, right after D_80076F78 */
+extern Unk80076F78 g_portraits;
+extern u32 g_portraitSavedVram[]; /* first CLUT, right after g_portraits */
 s32 item_remove(s32, s32);
 typedef struct {
     u8 pad0[4];
     u8 unk4; /* width */
     u8 pad5[3];
-} Icon; /* sprite drawn by func_80027710 */
+} Icon; /* sprite drawn by ui_drawSpriteDef */
 extern Icon D_800687C0;
 extern Icon D_80068E30;
 extern Icon D_80068E38;
@@ -2586,10 +2586,10 @@ s32 func_800627BC(s32);
 extern s32 D_800704C4;
 extern s32 D_80070418;
 void help_setDisabled(u8);
-s32 func_800281A4(s32);
+s32 keyItem_has(s32);
 s32 func_800632B4(s32, s8 *);
 extern s32 g_padPortState[];
-u8 *func_80027834(s32, s32, u32 *, s32, u8, s32 *, void *);
+u8 *ui_buildSprite(s32, s32, u32 *, s32, u8, s32 *, void *);
 u8 *func_8002995C(s32, s32, u32 *, Character *, s32 *, u8 *);
 u8 *func_8002B890(s32, s32, u32 *, u32, u8, s32 *, u8 *);
 u8 *func_80029FE4(s32, s32, u32 *, s32, s32 *, u8 *); /* draw a text control icon */
@@ -2613,7 +2613,7 @@ extern s32 D_80070430;
 extern u8 D_8007AF02;
 void func_8003384C(Character *);
 s32 func_80033280(s32, s32, u8 *);
-void func_80028720(void *, s32);
+void ui_loadPortraits(void *, s32);
 void func_8002C1E4(void);
 s32 nextfile(s32);
 s32 close(s32);
@@ -2782,17 +2782,17 @@ typedef struct {
     s16 y1;
 } LineF2Words; /* LINE_F2 */
 extern u32 D_80068F20[][4]; /* line colours */
-extern s8 D_80068F94[4][4]; /* shadow line offsets (func_80025108) */
+extern s8 D_80068F94[4][4]; /* shadow line offsets (win_drawLineBorder) */
 typedef struct {
     s16 x0;
     s16 y0;
     s16 x1;
     s16 y1;
 } LineXY;
-u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s);
-u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
-/* Inlined copy of func_80027948 (SPRT + DR_TPAGE from a sprite descriptor). */
-static inline u8 *func_80027948_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s);
+u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p);
+/* Inlined copy of ui_buildSpriteDef (SPRT + DR_TPAGE from a sprite descriptor). */
+static inline u8 *ui_buildSpriteDef_inline(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
@@ -2832,9 +2832,9 @@ static inline void func_8004B2F4_inline(Unk8004AB64 *key) {
     g_evtState->unk15D4 = n;
 }
 void win_drawScrollArrows(RECT *, s32, MenuList *);
-void func_8002E7FC(RECT *, s32, MenuList *, s32);
-void func_8002E960(RECT *, s32, MenuList *, s32);
-void func_80025108(RECT *, s32, u8, s32);
+void win_drawSplitFill(RECT *, s32, MenuList *, s32);
+void win_drawDivider(RECT *, s32, MenuList *, s32);
+void win_drawLineBorder(RECT *, s32, u8, s32);
 void win_drawFill(RECT *, s32, u8, u8, s32);
 extern s32 D_8008315C;
 extern s32 D_800831A8; /* sound effect volume */
@@ -2851,10 +2851,10 @@ typedef struct {
     u16 unk6; /* tpage */
 } Unk800689B0;
 extern Unk800689B0 D_800689B0[];
-extern Unk800689B0 D_80068D70[];
+extern Unk800689B0 g_winTailSprites[];
 u8 win_isVisible(Window *);
 void win_drawFrame(Window *);
-void func_8002E588(Window *);
+void win_drawLabel(Window *);
 /* sprite cell of a frame animation (func_800357E0) */
 typedef struct {
     u8 unk0; /* u */
@@ -2984,7 +2984,7 @@ void func_80061624(void);
 void func_8006100C(void);
 void func_80060A98(void);
 u8 *func_8002B7B0(s32, s32, u32 *, u32, s32, s32 *, SprtWords *);
-void func_8002E660(Window *);
+void win_drawTail(Window *);
 s32 chr_calcBaseSpeed(s32, s32, u8);
 s32 chr_calcBaseStrength(s32, s32, u8);
 s32 chr_calcBaseMagic(s32, s32, u8);
@@ -3237,7 +3237,7 @@ typedef struct {
     u32 uv3;
 } PolyFT4Words; /* POLY_FT4 written as whole words */
 
-u16 func_800274B4(s32, s32);
+u16 win_getClut(s32, s32);
 extern RECT D_80068F40;
 void func_80058F34(AkaoChannel *, u32 *, u32, u32);
 /* ---- main: boot, system setup, TIM helpers ---- */
@@ -3764,8 +3764,8 @@ extern s32 D_8007AE3C;
 void func_80050068(s32);
 void func_80050080(s32);
 void func_8004A9E8(void);
-void func_80028074(s32);
-void func_800280CC(s32);
+void keyItem_add(s32);
+void keyItem_remove(s32);
 s32 func_8006238C(s32);
 void func_80033C0C(u32);
 

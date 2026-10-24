@@ -69,7 +69,7 @@ void func_800A882C(void) {
             if (g_gameState->unk1C->unk8E4.battle->unk0 & 0x20) {
                 func_80029D60(0x66, 0x6D, D_800FDEB0, "Disc Cover Open", 4, (u8 *)g_gameState->unk1C->unk8E4.battle->unk11C0->unk34[g_gameState->unk1C->unk8]);
             } else {
-                func_80027834((0x140 - D_800686D0[0xEB].unk4) / 2, (0xDA - D_800686D0[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
+                ui_buildSprite((0x140 - D_800686D0[0xEB].unk4) / 2, (0xDA - D_800686D0[0xEB].unk5) / 2, D_800FDEB0, 0xEB, 0, &w, D_800FDE60);
             }
             setlen(&D_800FDE98, 3);
             D_800FDE98.code = 0x62;

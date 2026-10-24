@@ -1,6 +1,6 @@
 #include "ff9.h"
 
-void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
+void ui_drawCharStatus(s32 x, s32 y, s32 otz, Character *c) {
     u8 buf[16];
     s32 col;
 
@@ -29,7 +29,7 @@ void func_8002423C(s32 x, s32 y, s32 otz, Character *c) {
     ui_drawSmallDigits(x + 0x1D, y + 0x20, otz, buf, col);
 }
 
-void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
+void ui_drawCharSwitch(s32 x, s32 y, s32 otz, Unk80024428 *s) {
     Character *a = g_gameState->unk1C->party[s->unk2];
     Character *b = g_gameState->unk1C->party[s->unk3];
     RECT r1;
@@ -55,17 +55,17 @@ void func_80024428(s32 x, s32 y, s32 otz, Unk80024428 *s) {
         r2.y = y - 2;
         r2.w = 0x24;
         r2.h = 0x32;
-        func_80025108(&r2, otz, 0, (g_gameState->unk24 >> 18) & 1);
-        func_80028AF0(px, y, otz, s->unk3, b->hp == 0);
+        win_drawLineBorder(&r2, otz, 0, (g_gameState->unk24 >> 18) & 1);
+        ui_drawPartyPortrait(px, y, otz, s->unk3, b->hp == 0);
         win_setClip(&r1, otz, 4);
-        func_8002423C(x + 0x26, y + 3, otz, g_gameState->unk1C->party[s->unk3]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, g_gameState->unk1C->party[s->unk3]);
     } else {
-        func_8002423C(x + 0x26, y + 3, otz, a);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, a);
     }
-    func_80028AF0(x, y, otz, s->unk2, a->hp == 0);
+    ui_drawPartyPortrait(x, y, otz, s->unk2, a->hp == 0);
 }
 
-void func_800245F0(RECT *r, s32 otz) {
+void win_drawShadowRect(RECT *r, s32 otz) {
     TileWords *p;
     DrTpageWords *t;
 
@@ -92,7 +92,7 @@ void func_800245F0(RECT *r, s32 otz) {
     g_primPtr = (u8 *)(t + 1);
 }
 
-void func_80024764(RECT *r, s32 otz) {
+void win_drawShadowSlant(RECT *r, s32 otz) {
     PolyF4Half *p;
     DrTpageWords *t;
 
@@ -131,7 +131,7 @@ void func_80024764(RECT *r, s32 otz) {
     g_primPtr = (u8 *)(t + 1);
 }
 
-void func_800249A8(RECT *r, s32 otz) {
+void win_drawShadowSlant2(RECT *r, s32 otz) {
     PolyF4Half *p;
     DrTpageWords *t;
 
@@ -170,7 +170,7 @@ void func_800249A8(RECT *r, s32 otz) {
     g_primPtr = (u8 *)(t + 1);
 }
 
-void func_80024BD8(void) {
+void ui_drawBackground(void) {
     s32 w;
     RECT tw;
     PolyG4Words *p;
@@ -221,7 +221,7 @@ void func_80024BD8(void) {
 }
 
 u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
-    s32 clut = func_800274B4(D_80068CE8.unk2, pal);
+    s32 clut = win_getClut(D_80068CE8.unk2, pal);
     RECT tw;
 
     tw.x = D_80068CE8.unk0;
@@ -250,7 +250,7 @@ u8 *win_buildFill(RECT *r, u32 *ot, u8 u, u8 v, s32 pal, u8 *pkt) {
     return pkt + sizeof(DrMode2Words);
 }
 
-void func_80025108(RECT *r, s32 otz, u8 skip, s32 abr) {
+void win_drawLineBorder(RECT *r, s32 otz, u8 skip, s32 abr) {
     LineXY l[4];
     s32 i;
     u32 *col;
@@ -307,7 +307,7 @@ u8 *win_buildBorder(RECT *r, u32 *ot, u8 flag, u8 abe, s32 style, s32 pal, u8 *p
     }
     d = NULL;
     if (style != 2) {
-        clut = func_800274B4(D_800686D0[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
+        clut = win_getClut(D_800686D0[D_80068FB4[style][0]].unk0 >> 16, pal) << 16;
     } else {
         clut = 0x3EA40000;
     }
@@ -399,7 +399,7 @@ void ui_drawRule(s32 x, s32 y, s32 otz, s32 style, s32 w, s32 abr) {
         clut = tbl[D_80068FD0[1][0]].unk2;
     } else {
         tbl2 = (Unk800689B0 *)D_800686D0;
-        clut = func_800274B4(tbl2[D_80068FD0[style][0]].unk2, abr);
+        clut = win_getClut(tbl2[D_80068FD0[style][0]].unk2, abr);
     }
     for (i = 0; i < 2; i++) {
         d = &((Unk800689B0 *)D_800686D0)[D_80068FD0[style][i]];
@@ -505,8 +505,8 @@ void ui_drawGauge(s32 x, s32 y, s32 otz, s32 cur, s32 max, s32 style, u8 blink) 
     g_primPtr += sizeof(TileWords);
 }
 
-void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
-    Unk800689B0 *g = &D_80068D70[idx];
+void win_drawTailEdge(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
+    Unk800689B0 *g = &g_winTailSprites[idx];
     u32 clut;
     SprtWords *p;
     DrTpageWords *t;
@@ -526,12 +526,12 @@ void func_8002642C(s16 x, s16 y, s32 otz, s32 idx, u8 flag, u8 mode) {
     g_primPtr = (u8 *)(p + 1);
     setlen(g_primPtr, 1);
     t = (DrTpageWords *)g_primPtr;
-    t->code = (g->unk6 & 0x9FF) | get_mode(1, 1, 0);
+    t->code = get_mode(1, 1, g->unk6);
     addPrim(&g_ot[otz], t);
     g_primPtr = (u8 *)(t + 1);
 }
 
-void func_800265B0(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
+void win_drawTailFill(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     RECT tw;
     Unk80068F48 *o;
     u16 clut;
@@ -549,7 +549,7 @@ void func_800265B0(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     g_primPtr += sizeof(DrMode2Words);
 
     setlen(g_primPtr, 9);
-    o = &D_80068F48[shape];
+    o = &g_winTailShapes[shape];
     ((PolyFT4Words *)g_primPtr)->rgbc = GPU_RGBC(GPU_POLY_FT4, 0x808080);
     ((PolyFT4Words *)g_primPtr)->xy0 = (x + o->x0) | ((y + o->y0) << 16);
     ((PolyFT4Words *)g_primPtr)->uv0clut = (u + o->x0) | ((v + o->y0) << 8) | (clut << 16);
@@ -569,13 +569,13 @@ void func_800265B0(s32 x, s32 y, s32 otz, s32 shape, s32 u, s32 v) {
     g_primPtr += sizeof(DrMode2Words);
 }
 
-void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
+void win_drawHelpTailFill(s32 x, s32 y, s32 otz, s32 idx) {
     PolyF4Words *p;
     Unk80068F48 *t;
     setlen(g_primPtr, 5);
     p = (PolyF4Words *)g_primPtr;
     p->rgbc = GPU_RGBC(GPU_POLY_F4, 0xA8B078);
-    t = &D_80068F48[idx];
+    t = &g_winTailShapes[idx];
     p->xy0 = (x + t->x0) | ((y + t->y0) << 16);
     p->xy1 = (x + t->x1) | ((y + t->y1) << 16);
     p->xy2 = (x + t->x2) | ((y + t->y2) << 16);
@@ -584,7 +584,7 @@ void func_80026900(s32 x, s32 y, s32 otz, s32 idx) {
     g_primPtr = (u8 *)(p + 1);
 }
 
-void func_800269F4(s32 x, s32 y, s32 otz, s32 len) {
+void ui_drawSeparator(s32 x, s32 y, s32 otz, s32 len) {
     u32 col[3];
     s32 i;
     LineF2W *p;
@@ -613,19 +613,19 @@ void win_drawBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     g_primPtr = win_buildBorder(arg0, &g_ot[otz], arg2, arg3, 0, arg4, g_primPtr);
 }
 
-void func_80026B84(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+void win_drawBalloonBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     g_primPtr = win_buildBorder(arg0, &g_ot[otz], arg2, arg3, 1, arg4, g_primPtr);
 }
 
-void func_80026BDC(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
+void win_drawHelpBorder(RECT *arg0, s32 otz, u8 arg2, u8 arg3, s32 arg4) {
     g_primPtr = win_buildBorder(arg0, &g_ot[otz], arg2, arg3, 2, arg4, g_primPtr);
 }
 
 void ui_drawItemIcon(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
-    g_primPtr = func_80026C7C(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+    g_primPtr = ui_buildItemIcon(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-u8 *func_80026C7C(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
+u8 *ui_buildItemIcon(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
     Unk80069018 *e = &D_80069018[item];
     Unk800689B0 *d = &D_800689B0[e->unk8];
     s32 clut;
@@ -645,36 +645,36 @@ u8 *func_80026C7C(s32 x, s32 y, u32 *ot, s32 item, u8 flag, u8 *pkt) {
 }
 
 void func_80026DCC(s32 arg0, s32 arg1, s32 otz, s32 arg3, u8 arg4) {
-    g_primPtr = func_80026C7C(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
+    g_primPtr = ui_buildItemIcon(arg0, arg1, &g_ot[otz], arg3, arg4, g_primPtr);
 }
 
-void func_80026E14(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+void ui_drawPartyMember(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     Character *p = g_gameState->unk1C->party[arg3];
 
     if (p != NULL) {
-        func_80028AF0(arg0, arg1, arg2, arg3, p->hp == 0);
-        func_80026F8C(arg0 + 0x26, arg1 + 3, arg2, arg3);
+        ui_drawPartyPortrait(arg0, arg1, arg2, arg3, p->hp == 0);
+        ui_drawPartyStatus(arg0 + 0x26, arg1 + 3, arg2, arg3);
     }
 }
 
-void func_80026EA0(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
+void ui_drawPartyMemberMode(s32 x, s32 y, s32 otz, s32 slot, s32 mode) {
     Character *p = g_gameState->unk1C->party[slot];
     if (p != NULL && mode >= 0) {
         if (mode < 3) {
-            func_800283E0(x, y, otz, slot, 0x29, p->hp == 0);
-            func_80026F8C(x + 0x26, y, otz, slot);
+            ui_drawPartyPortraitH(x, y, otz, slot, 0x29, p->hp == 0);
+            ui_drawPartyStatus(x + 0x26, y, otz, slot);
         } else if (mode < 5) {
-            func_800283E0(x, y, otz, slot, 0x29, p->hp == 0);
-            func_80027A4C(x + 0x26, y, otz, slot);
+            ui_drawPartyPortraitH(x, y, otz, slot, 0x29, p->hp == 0);
+            ui_drawCharStatuses(x + 0x26, y, otz, slot);
         }
     }
 }
 
-void func_80026F8C(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    func_8002423C(arg0, arg1, arg2, g_gameState->unk1C->party[arg3]);
+void ui_drawPartyStatus(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    ui_drawCharStatus(arg0, arg1, arg2, g_gameState->unk1C->party[arg3]);
 }
 
-void func_80026FC4(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
+void ui_drawStatusIcons(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
     s32 i;
 
     for (i = 0; i < 7; i++) {
@@ -685,8 +685,8 @@ void func_80026FC4(s32 arg0, s32 arg1, s32 arg2, u8 arg3, s32 arg4) {
     }
 }
 
-void func_8002705C(RECT *arg0, s32 arg1, s32 arg2) {
-    void (*fn)(RECT *, s32) = D_80068F80[arg2];
+void win_drawShadow(RECT *arg0, s32 arg1, s32 arg2) {
+    void (*fn)(RECT *, s32) = g_winShadowFuncs[arg2];
 
     if (fn != 0) {
         fn(arg0, arg1);
@@ -701,11 +701,11 @@ void ui_drawHand(s32 arg0, s32 arg1, s32 arg2) {
     ui_drawSprite(arg0, arg1, arg2, 1, 0);
 }
 
-void func_80027110(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4, u8 arg5, u8 arg6) {
-    g_primPtr = func_80027170(arg0, arg1, &g_ot[otz], arg3, arg4, arg5, arg6, g_primPtr);
+void ui_drawMeter(s32 arg0, s32 arg1, s32 otz, s32 arg3, s32 arg4, u8 arg5, u8 arg6) {
+    g_primPtr = ui_buildMeter(arg0, arg1, &g_ot[otz], arg3, arg4, arg5, arg6, g_primPtr);
 }
 
-u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 *pkt) {
+u8 *ui_buildMeter(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 *pkt) {
     u8 buf[16];
     s32 tmp[2];
     s32 w;
@@ -717,12 +717,12 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
         cur = max;
     }
     if (cur != 0 && cur >= max) {
-        pkt = func_80027834(x + 4, y, ot, 0xC0, flag, tmp, pkt);
+        pkt = ui_buildSprite(x + 4, y, ot, 0xC0, flag, tmp, pkt);
     } else if (show) {
         text_formatNumber(cur, buf, 3, 1);
         text_formatNumber(max, buf + 4, -1, 1);
         buf[3] = 0x2F;
-        pkt = func_80027B5C(x + 3, y + 2, ot, buf, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, 0x808080), (SprtWords *)pkt);
+        pkt = ui_buildDigits(x + 3, y + 2, ot, buf, flag ? GPU_RGBC(GPU_SPRT | GPU_ABE, 0x606060) : GPU_RGBC(GPU_SPRT, 0x808080), (SprtWords *)pkt);
     }
     if (cur != 0) {
         t = d->unk4 - 6;
@@ -737,7 +737,7 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
             rgbc = GPU_RGBC(GPU_TILE, 0x2838A8);
         }
         if (flag) {
-            rgbc |= 0x02000000;
+            rgbc |= GPU_CODE(GPU_ABE);
         }
         ((TileWords *)pkt)->rgbc = rgbc;
         ((TileWords *)pkt)->xy = ((x + 3) & 0xFFFF) | ((y + 1) << 16);
@@ -745,10 +745,10 @@ u8 *func_80027170(s32 x, s32 y, u32 *ot, s32 cur, s32 max, u8 show, u8 flag, u8 
         addPrim(ot, pkt);
         pkt += sizeof(TileWords);
     }
-    return func_80027948(x, y, ot, d, flag, tmp, (SprtWords *)pkt);
+    return ui_buildSpriteDef(x, y, ot, d, flag, tmp, (SprtWords *)pkt);
 }
 
-void func_800273C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+void ui_drawStones(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u8 buf[8];
 
     text_formatNumber(arg3, &buf[0], 2, 1);
@@ -758,11 +758,11 @@ void func_800273C0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     ui_drawDigits(arg0 + 15, arg1 + 1, arg2, buf, arg3 == 0 ? 4 : 0);
 }
 
-u16 func_80027480(s32 arg0) {
+u16 win_getPalClut(s32 arg0) {
     return arg0 - ((g_gameState->unk24 >> 18) & 1) * 0xC0;
 }
 
-u16 func_800274B4(s32 arg0, s32 arg1) {
+u16 win_getClut(s32 arg0, s32 arg1) {
     return arg0 - arg1 * 0xC0;
 }
 
@@ -779,43 +779,43 @@ void win_drawHelpFill(RECT *rect, s32 otz) {
 }
 
 /* K&R definition: callers pass plain ints */
-void func_80027568(arg0, arg1, arg2, arg3, arg4)
+void win_drawHelpTailEdge(arg0, arg1, arg2, arg3, arg4)
     s16 arg0;
     s16 arg1;
     s32 arg2;
     s32 arg3;
     u8 arg4;
 {
-    func_8002642C(arg0, arg1, arg2, arg3, arg4, 1);
+    win_drawTailEdge(arg0, arg1, arg2, arg3, arg4, 1);
 }
 
 /* K&R definition: callers pass plain ints */
-void func_800275A4(arg0, arg1, arg2, arg3, arg4)
+void win_drawMsgTailEdge(arg0, arg1, arg2, arg3, arg4)
     s16 arg0;
     s16 arg1;
     s32 arg2;
     s32 arg3;
     u8 arg4;
 {
-    func_8002642C(arg0, arg1, arg2, arg3, arg4, 0);
+    win_drawTailEdge(arg0, arg1, arg2, arg3, arg4, 0);
 }
 
 s32 ui_drawSprite(s32 x, s32 y, s32 otz, s32 id, u8 flag) {
     s32 w;
     Unk800686E8 *d = &D_800686D0[id];
 
-    g_primPtr = func_80027948_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
+    g_primPtr = ui_buildSpriteDef_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
     return w;
 }
 
-s32 func_80027710(s32 x, s32 y, s32 otz, void *d, u8 flag) {
+s32 ui_drawSpriteDef(s32 x, s32 y, s32 otz, void *d, u8 flag) {
     s32 w;
 
-    g_primPtr = func_80027948_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
+    g_primPtr = ui_buildSpriteDef_inline(x, y, &g_ot[otz], d, flag, &w, (SprtWords *)g_primPtr);
     return w;
 }
 
-u8 *func_80027834(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
+u8 *ui_buildSprite(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     SprtWords *s = pkt;
     DrTpageWords *t;
     Unk800686E8 *d;
@@ -833,13 +833,13 @@ u8 *func_80027834(s32 x, s32 y, u32 *ot, s32 i, u8 flag, s32 *out, void *pkt) {
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = (d->unk6 & 0x9FF) | get_mode(1, 1, 0);
+    t->code = get_mode(1, 1, d->unk6);
     addPrim(ot, t);
     *out = d->unk4;
     return (u8 *)(t + 1);
 }
 
-u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
+u8 *ui_buildSpriteDef(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, SprtWords *s) {
     DrTpageWords *t;
     setlen(s, 4);
     if (flag) {
@@ -854,13 +854,13 @@ u8 *func_80027948(s32 x, s32 y, u32 *ot, Unk800686E8 *d, u8 flag, s32 *out, Sprt
     s++;
     t = (DrTpageWords *)s;
     setlen(t, 1);
-    t->code = (d->unk6 & 0x9FF) | get_mode(1, 1, 0);
+    t->code = get_mode(1, 1, d->unk6);
     addPrim(ot, t);
     *out = d->unk4;
     return (u8 *)(t + 1);
 }
 
-void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
+void ui_drawCharStatuses(s32 x, s32 y, s32 otz, s32 slot) {
     Character *c = g_gameState->unk1C->party[slot];
     u8 buf[16];
     RECT r;
@@ -872,15 +872,15 @@ void func_80027A4C(s32 x, s32 y, s32 otz, s32 slot) {
     text_drawBlock(x, y, otz, c->unk0, 0);
     ui_drawSmallDigits(x + 0x26, y + 0xE, otz, buf, 0);
     ui_drawSprite(x, y + 0xE, otz, 0xB4, 0);
-    func_80026FC4(x, y + 0x1C, otz, c->unk38, 0);
+    ui_drawStatusIcons(x, y + 0x1C, otz, c->unk38, 0);
     r.x = x - 4;
     r.y = y + 0x18;
     r.w = 0x60;
     r.h = 0x12;
-    func_8002DEE4(&r, otz, 0);
+    win_drawBoxPal(&r, otz, 0);
 }
 
-u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
+u8 *ui_buildDigits(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
     s32 idx;
     s32 adv;
     Unk800686E8 *g;
@@ -920,18 +920,18 @@ u8 *func_80027B5C(s32 x, s32 y, u32 *ot, u8 *s, s32 unused, SprtWords *p) {
     return (u8 *)(t + 1);
 }
 
-void func_80027CB0(void) {
+void item_initNew(void) {
     u8 *p = D_8006BB74;
 
-    func_80027D18();
-    func_80027D4C();
+    item_clearAll();
+    keyItem_clearAll();
     while (*p != 0xFF) {
-        func_80027D84(p[0], p[1]);
+        item_add(p[0], p[1]);
         p += 2;
     }
 }
 
-void func_80027D18(void) {
+void item_clearAll(void) {
     s32 i;
 
     for (i = 0; i < 0x100; i++) {
@@ -939,7 +939,7 @@ void func_80027D18(void) {
     }
 }
 
-void func_80027D4C(void) {
+void keyItem_clearAll(void) {
     s32 i;
 
     for (i = 0; i < 0x40; i++) {
@@ -947,7 +947,7 @@ void func_80027D4C(void) {
     }
 }
 
-s32 func_80027D84(s32 id, s32 n) {
+s32 item_add(s32 id, s32 n) {
     ItemSlot *e;
     s32 i;
     if (id == 0xFF) {
@@ -1008,7 +1008,7 @@ s32 item_getCount(s32 id) {
     return e != NULL ? e->count : 0;
 }
 
-s32 func_80027F94(s32 id) {
+s32 item_countEquipped(s32 id) {
     s32 i, j;
     s32 n = 0;
 
@@ -1024,7 +1024,7 @@ s32 func_80027F94(s32 id) {
     return n;
 }
 
-s32 func_80028014(s32 arg0) {
+s32 item_getEquipSlot(s32 arg0) {
     s32 i;
     Unk80069018 *e = &D_80069018[arg0];
 
@@ -1036,43 +1036,43 @@ s32 func_80028014(s32 arg0) {
     return -1;
 }
 
-void func_80028074(s32 id) {
+void keyItem_add(s32 id) {
     s32 idx = id >> 2;
 
     g_gameState->unk1C->unk774.unk0[idx] |= 1 << ((id & 3) * 2);
     g_gameState->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
-void func_800280CC(s32 id) {
+void keyItem_remove(s32 id) {
     s32 idx = id >> 2;
 
     g_gameState->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2));
     g_gameState->unk1C->unk774.unk0[idx] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
-void func_80028128(s32 id) {
+void keyItem_setSeen(s32 id) {
     g_gameState->unk1C->unk774.unk0[id >> 2] |= 1 << ((id & 3) * 2 + 1);
 }
 
-void func_80028164(s32 id) {
+void keyItem_clearSeen(s32 id) {
     g_gameState->unk1C->unk774.unk0[id >> 2] &= ~(1 << ((id & 3) * 2 + 1));
 }
 
-s32 func_800281A4(s32 arg0) {
+s32 keyItem_has(s32 arg0) {
     return (g_gameState->unk1C->unk774.unk0[arg0 >> 2] >> ((arg0 & 3) * 2)) & 1;
 }
 
-s32 func_800281D0(s32 id) {
+s32 keyItem_isSeen(s32 id) {
     return (g_gameState->unk1C->unk774.unk0[id >> 2] >> ((id & 3) * 2 + 1)) & 1;
 }
 
-void func_80028204(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
+void ui_drawPortrait(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     u16 clut = GetClut(0, id + 0x1F3);
     s32 u;
     s32 v;
     s32 tpage;
 
-    if (id >= 0 && id < D_80076F7C) {
+    if (id >= 0 && id < g_portraitCount) {
         u = id << 5;
         if (id < 4) {
             v = 0xB0;
@@ -1096,7 +1096,7 @@ void func_80028204(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 flag) {
     }
 }
 
-void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
+void ui_drawPartyPortraitH(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     s16 h0;
     s32 cx;
     s32 cy;
@@ -1148,7 +1148,7 @@ void func_800283E0(s32 x, s32 y, s32 otz, s32 slot, s32 h, u8 flag) {
     }
 }
 
-void func_80028720(void *data, s32 n) {
+void ui_loadPortraits(void *data, s32 n) {
     RECT r0;
     RECT r1;
     s32 i;
@@ -1156,18 +1156,18 @@ void func_80028720(void *data, s32 n) {
     u32 *q = prev;
     u32 *cur;
 
-    D_80076F78.unk4 = n;
-    D_80076F78.unk0 = prev;
-    func_80028994(0, &r0, &r1);
-    StoreImage(&r0, D_80076F80);
+    g_portraits.unk4 = n;
+    g_portraits.unk0 = prev;
+    ui_getPortraitRects(0, &r0, &r1);
+    StoreImage(&r0, g_portraitSavedVram);
     DrawSync(0);
     LoadImage(&r0, prev);
     DrawSync(0);
     LoadImage(&r1, prev + 0x40);
     DrawSync(0);
     cur = prev + 0x1B0;
-    for (i = 1; i < D_80076F78.unk4; i++) {
-        func_80028994(i, &r0, &r1);
+    for (i = 1; i < g_portraits.unk4; i++) {
+        ui_getPortraitRects(i, &r0, &r1);
         StoreImage(&r0, prev);
         DrawSync(0);
         if (i >= 4) {
@@ -1184,18 +1184,18 @@ void func_80028720(void *data, s32 n) {
     }
 }
 
-void func_8002886C(void) {
+void ui_restorePortraits(void) {
     RECT clut;
     RECT img;
-    u32 *p = D_80076F78.unk0;
+    u32 *p = g_portraits.unk0;
     u32 *q;
     s32 i;
-    func_80028994(0, &clut, &img);
-    LoadImage(&clut, D_80076F80);
+    ui_getPortraitRects(0, &clut, &img);
+    LoadImage(&clut, g_portraitSavedVram);
     DrawSync(0);
     q = p;
-    for (i = 1; i < D_80076F78.unk4; i++) {
-        func_80028994(i, &clut, &img);
+    for (i = 1; i < g_portraits.unk4; i++) {
+        ui_getPortraitRects(i, &clut, &img);
         LoadImage(&clut, p);
         DrawSync(0);
         if (i >= 4) {
@@ -1207,11 +1207,11 @@ void func_8002886C(void) {
     }
 }
 
-u8 func_80028954(s32 arg0) {
+u8 chr_getPortrait(s32 arg0) {
     return D_8006BB8C[g_gameState->unk1C->characters[arg0].unk34.b.unk4];
 }
 
-void func_80028994(s32 arg0, RECT *clut, RECT *img) {
+void ui_getPortraitRects(s32 arg0, RECT *clut, RECT *img) {
     clut->y = arg0 + 0x1F3;
     clut->w = 0x80;
     clut->h = 1;
@@ -1229,11 +1229,11 @@ void func_80028994(s32 arg0, RECT *clut, RECT *img) {
     img->h = 0x2E;
 }
 
-void func_80028A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
-    func_80028204(arg0, arg1, arg2, arg3, 0x2E, arg4);
+void ui_drawPortraitFull(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
+    ui_drawPortrait(arg0, arg1, arg2, arg3, 0x2E, arg4);
 }
 
-void func_80028A40(s32 arg0, RECT *a, RECT *b, RECT *c) {
+void ui_getPartyPortraitRects(s32 arg0, RECT *a, RECT *b, RECT *c) {
     s32 x, y;
 
     if (g_gameState->mode == 3) {
@@ -1257,11 +1257,11 @@ void func_80028A40(s32 arg0, RECT *a, RECT *b, RECT *c) {
     c->h = 0xE;
 }
 
-void func_80028AF0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
-    func_800283E0(arg0, arg1, arg2, arg3, 0x2E, arg4);
+void ui_drawPartyPortrait(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u8 arg4) {
+    ui_drawPartyPortraitH(arg0, arg1, arg2, arg3, 0x2E, arg4);
 }
 
-void func_80028B20(u8 *buf) {
+void ui_loadPartyPortraits(u8 *buf) {
     s32 i;
 
     for (i = 0; i < 4; i++) {
@@ -1269,15 +1269,15 @@ void func_80028B20(u8 *buf) {
         Character *p = d->party[i];
 
         if (p != NULL) {
-            func_80028BE8(buf + D_8006BB8C[d->characters[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
+            ui_loadPartyPortrait(buf + D_8006BB8C[d->characters[p->unk34.b.id].unk34.b.unk4] * 0x6C0, i);
         }
     }
 }
 
-void func_80028BE8(u8 *buf, s32 arg1) {
+void ui_loadPartyPortrait(u8 *buf, s32 arg1) {
     RECT a, b, c;
 
-    func_80028A40(arg1, &a, &b, &c);
+    ui_getPartyPortraitRects(arg1, &a, &b, &c);
     LoadImage(&a, (u32 *)buf);
     DrawSync(0);
     LoadImage(&b, (u32 *)(buf + 0x100));
@@ -1286,10 +1286,10 @@ void func_80028BE8(u8 *buf, s32 arg1) {
     DrawSync(0);
 }
 
-void func_80028C70(u8 *buf, s32 arg1) {
+void ui_savePartyPortrait(u8 *buf, s32 arg1) {
     RECT a, b, c;
 
-    func_80028A40(arg1, &a, &b, &c);
+    ui_getPartyPortraitRects(arg1, &a, &b, &c);
     StoreImage(&a, (u32 *)buf);
     DrawSync(0);
     StoreImage(&b, (u32 *)(buf + 0x100));

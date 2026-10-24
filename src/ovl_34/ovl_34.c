@@ -44,7 +44,7 @@ void func_801EEB68(void) {
     for (; i < sp.unk0; i++) {
         r.y = i * 0x14 + (s16)(sp.unk2 + 0x2A);
         func_801F0550(&r, 0x17, sp.unk1 + i);
-        func_8002DEE4(&r, 0x17, 0);
+        win_drawBoxPal(&r, 0x17, 0);
     }
     if (l->unk8 & 4) {
         a.x = 8;
@@ -394,8 +394,8 @@ void func_801EFC20(s32 x, s32 y, s32 otz, s32 pos, s32 w) {
             g_primPtr = (u8 *)(l + 1);
         }
     }
-    func_80027710(x, y, otz, ic, 0);
-    func_80027710(x + width - ec->unk4, y, otz, ec, 0);
+    ui_drawSpriteDef(x, y, otz, ic, 0);
+    ui_drawSpriteDef(x + width - ec->unk4, y, otz, ec, 0);
     SetTexWindow(g_primPtr, &D_801F1544);
     addPrim(&g_ot[otz], g_primPtr);
     g_primPtr += 0xC;
@@ -573,12 +573,12 @@ void func_801F049C(void) {
     for (; i < sp.unk0; i++) {
         r.y = i * 0x14 + (s16)(sp.unk2 + 0x2A);
         func_801F0550(&r, 0x17, sp.unk1 + i);
-        func_8002DEE4(&r, 0x17, 0);
+        win_drawBoxPal(&r, 0x17, 0);
     }
 }
 
 void func_801F0550(RECT *r, s32 otz, s32 i) {
-    func_800269F4(r->x + 0x70, r->y + 1, otz, 4 - r->h);
+    ui_drawSeparator(r->x + 0x70, r->y + 1, otz, 4 - r->h);
     D_801F14BC[i](r, otz);
 }
 
@@ -662,8 +662,8 @@ void func_801F0BE8(void) {
 
     i = D_801F1558.unk3C.unk5 + D_801F1558.unk3C.cursor;
     if (D_801F1558.unk2 != 0) {
-        func_8002DEE4(&D_801F1558.unk1C[0].unk4, 0x12, 2);
-        func_8002DEE4(&D_801F1558.unk1C[1].unk4, 0x12, 2);
+        win_drawBoxPal(&D_801F1558.unk1C[0].unk4, 0x12, 2);
+        win_drawBoxPal(&D_801F1558.unk1C[1].unk4, 0x12, 2);
         if (i == 1) {
             func_801EF110();
             return;
@@ -724,7 +724,7 @@ void func_801F0F48(s32 x, s32 y, s32 otz, u8 *s, s32 arg4) {
 void func_801F0F94(s32 x, s32 y, s32 otz, s32 n, u8 arg4) {
     s32 buf[2];
 
-    D_801F1558.unk4C = func_80027834(x, y, &g_ot[otz], n, arg4, buf, D_801F1558.unk4C);
+    D_801F1558.unk4C = ui_buildSprite(x, y, &g_ot[otz], n, arg4, buf, D_801F1558.unk4C);
 }
 
 void func_801F0FE8(s32 x, s32 y, s32 otz, s32 text, s32 color) {

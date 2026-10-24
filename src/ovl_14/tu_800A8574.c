@@ -143,12 +143,12 @@ void func_800A8A94(void) {
     s32 i;
 
     for (i = 0; i < 10; i++) {
-        func_80027710(i << 5, 0, 10, &D_800AB320.unk24[i], 0);
+        ui_drawSpriteDef(i << 5, 0, 10, &D_800AB320.unk24[i], 0);
     }
-    func_80027710(D_800AB298.x, D_800AB298.y, 5, &D_800AB320.unk24[10], 1);
+    ui_drawSpriteDef(D_800AB298.x, D_800AB298.y, 5, &D_800AB320.unk24[10], 1);
     if (D_800AB320.unk1 != 0) {
         if (D_800AB320.unk2 == 0) {
-            func_80027710(D_800AB29C.x, D_800AB29C.y, 5, &D_800AB320.unk24[13], 0);
+            ui_drawSpriteDef(D_800AB29C.x, D_800AB29C.y, 5, &D_800AB320.unk24[13], 0);
         } else {
             func_800A903C(D_800AB29C.x, D_800AB29C.y, 5, &D_800AB320.unk24[13], 0);
         }
@@ -158,8 +158,8 @@ void func_800A8A94(void) {
 void func_800A8B7C(void) {
     if (D_800AB320.unk1 != 0) {
         if (D_800AB320.unk2 == 0) {
-            func_80027710(D_800AB2A0.x, D_800AB2A0.y, 5, &D_800AB320.unk24[11], 0);
-            func_80027710(D_800AB2A4.x, D_800AB2A4.y, 5, &D_800AB320.unk24[12], func_800A8EA4() == 0);
+            ui_drawSpriteDef(D_800AB2A0.x, D_800AB2A0.y, 5, &D_800AB320.unk24[11], 0);
+            ui_drawSpriteDef(D_800AB2A4.x, D_800AB2A4.y, 5, &D_800AB320.unk24[12], func_800A8EA4() == 0);
         } else {
             func_800A903C(D_800AB2A0.x, D_800AB2A0.y, 5, &D_800AB320.unk24[11], 0);
             func_800A903C(D_800AB2A4.x, D_800AB2A4.y, 5, &D_800AB320.unk24[12], func_800A8EA4() == 0);

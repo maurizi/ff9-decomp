@@ -1291,7 +1291,7 @@ MATRIX *func_80030EA4(SVECTOR *, MATRIX *);
 extern s32 g_vtxScreenXY[]; /* projected screen xy per model vertex */
 extern s32 g_vtxScreenZ[]; /* projected z per model vertex */
 s32 func_80056048(s32, s32, s32);
-extern u32 D_80076F80[]; /* VRAM save buffer */
+extern u32 g_portraitSavedVram[]; /* VRAM save buffer */
 extern u8 D_80077E51;
 extern u8 *D_80077DF0; /* = g_help.text, referenced by its own name */
 extern s32 D_80077DEC; /* = g_help.otz, referenced by its own name */

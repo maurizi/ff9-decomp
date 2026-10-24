@@ -1552,7 +1552,7 @@ void func_800AF740(void) {
             g_padActuator[i].unk0 = 0;
         }
         ClearOTag(&D_800C9F98, 1);
-        func_80027834((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &D_800C9F98, 0xEB, 0, &tmp, &D_800C9FA0);
+        ui_buildSprite((320 - D_800686D0[235].unk4) / 2, (224 - D_800686D0[235].unk5) / 2, &D_800C9F98, 0xEB, 0, &tmp, &D_800C9FA0);
         bright = 0;
         if (func_8002F800() || func_8002F810()) {
             bright = 1;

@@ -167,8 +167,8 @@ void func_801F11E4(void) {
         ui_drawLabel((D_801F30A8->x + 0x120) - w, D_801F30A8->y - 3, 0x1D, D_800703FC.unk94, 0);
     }
     menuList_getView(il->unk8, &view);
-    func_8002E040(D_801F30A8, 0x1D, 1, il->unk8);
-    func_8002705C(D_801F30A8, 0x1D, 1);
+    win_drawListFrame(D_801F30A8, 0x1D, 1, il->unk8);
+    win_drawShadow(D_801F30A8, 0x1D, 1);
     idx = view.unk1 * 2;
     win_setClip(NULL, 0x1C, 1);
     for (row = 0; row < view.unk0; row++) {
@@ -326,11 +326,11 @@ s32 func_801F1A7C(void) {
         if (func_800B8124()) {
             g_evtGlobalVars.b[0xB5] = 1;
             func_800B81A0();
-            m->unk4C = func_8002DC54(&D_801F3148, 0xF, 2);
+            m->unk4C = win_openFree(&D_801F3148, 0xF, 2);
             win_setOnOpened(m->unk4C, func_801F2B20);
             win_setDrawContent(m->unk4C, func_801F2B58);
-            func_8002E304(m->unk4C, (s32)D_801F3140);
-            func_8002E31C(m->unk4C, 1);
+            win_setLabel(m->unk4C, (s32)D_801F3140);
+            win_setShadow(m->unk4C, 1);
             m->unk50 = 1;
             m->unk1 = 0;
             help_setDisabled(1);
@@ -418,7 +418,7 @@ void func_801F1D88(void) {
                 D_801FAB78.unk55 = 0;
                 D_801FAB78.unk54 = 0;
                 D_801FAB78.unk1 = 2;
-                func_80028128(D_801FAB78.unk56);
+                keyItem_setSeen(D_801FAB78.unk56);
                 help_setDisabled(0);
             }
         }
@@ -609,8 +609,8 @@ void func_801F262C(void) {
     for (i = 0; i < 3; i++) {
         text_drawBlock(r->x + D_801F309C[i], r->y + 6, 0x1C, text_get(D_801F3098[i]), 0);
     }
-    func_8002DEE4(r, 0x1D, 2);
-    func_8002705C(r, 0x1D, 2);
+    win_drawBoxPal(r, 0x1D, 2);
+    win_drawShadow(r, 0x1D, 2);
 }
 
 void func_801F26E0(void) {
@@ -638,11 +638,11 @@ void func_801F27A0(void) {
     if (D_801FAB78.unk8 != 0) {
         for (i = 0; i < 4; i++) {
             if (g_gameState->unk1C->party[i] != NULL) {
-                func_80026EA0(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, D_801FAB78.unk4);
+                ui_drawPartyMemberMode(r->x + 8, r->y + 6 + i * 0x2B, 0x14, i, D_801FAB78.unk4);
             }
         }
-        func_8002DEE4(r, 0x14, 2);
-        func_8002705C(r, 0x14, 2);
+        win_drawBoxPal(r, 0x14, 2);
+        win_drawShadow(r, 0x14, 2);
     }
 }
 
@@ -680,7 +680,7 @@ void func_801F29D0(s32 col, s32 row, s32 i, MenuView *v) {
     if (i < D_801FAB78.unkB0) {
         id = D_801FAB78.unk60[i];
         t = &D_8006B374[id];
-        got = func_800281D0(id);
+        got = keyItem_isSeen(id);
         x = col * 0x96 + 0x18;
         y = row * 0xF + (v->unk2 + k);
         name = D_8006ADAC + t->unk0;
@@ -753,7 +753,7 @@ void func_801F2CEC(void) {
 
     n = 0;
     for (i = 0; i < 0x50; i++) {
-        if ((u8)func_800281A4(i)) {
+        if ((u8)keyItem_has(i)) {
             D_801FAB78.unk60[n] = i;
             n++;
         }
@@ -765,12 +765,12 @@ void func_801F2D58(void) {
     MenuList *l;
 
     l = D_801F3040[1].unk8;
-    D_801FAB78.unk4C = func_8002DC54(&D_801F30B8, 0x14, 2);
+    D_801FAB78.unk4C = win_openFree(&D_801F30B8, 0x14, 2);
     win_setDrawContent(D_801FAB78.unk4C, func_801F2E40);
     win_setOnOpened(D_801FAB78.unk4C, func_801F2EBC);
     win_setOnClosed(D_801FAB78.unk4C, func_801F2ECC);
-    func_8002E31C(D_801FAB78.unk4C, 1);
-    func_8002E304(D_801FAB78.unk4C, D_80070408);
+    win_setShadow(D_801FAB78.unk4C, 1);
+    win_setLabel(D_801FAB78.unk4C, D_80070408);
     D_801FAB78.unk5 = 0;
     D_801FAB78.unk6 = l->unk7 + (l->unk5 + l->cursor) * 2;
     D_801FAB78.unk1 = 0;

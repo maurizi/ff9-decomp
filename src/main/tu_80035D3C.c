@@ -47,8 +47,8 @@ void func_80035E40(void) {
         }
     }
     win_setClip(r, 2, 2);
-    func_8002DEE4(r, 2, 2);
-    func_8002705C(r, 2, 2);
+    win_drawBoxPal(r, 2, 2);
+    win_drawShadow(r, 2, 2);
 }
 
 void func_80035F94(void) {

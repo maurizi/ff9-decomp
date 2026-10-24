@@ -46,7 +46,7 @@ void func_800B5114(void) {
     D_800CA058.unk0 = 1;
     D_800CA058.unk3 = 0;
     g_gameState->unk1C->unk8E4.field->unk0 = 0;
-    func_8002DE60();
+    win_destroyAll();
     D_800C9D5C[D_800CA058.unk0].unk0();
 }
 
@@ -171,7 +171,7 @@ void func_800B5660(void) {
         D_80077DEC = 9;
         func_800355E4();
     }
-    func_8002DEE4(&D_800C9D98, 0xA, 2);
+    win_drawBoxPal(&D_800C9D98, 0xA, 2);
 }
 
 void func_800B5794(void) {

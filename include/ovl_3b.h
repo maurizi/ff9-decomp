@@ -42,7 +42,7 @@ extern RECT D_801F4740;
 
 /* main exe: candidates for ff9.h. Defined as u8 in main, but callers here
  * (and ovl_3a) use the result unmasked, i.e. called it unprototyped. */
-s32 func_80028954(s32);
+s32 chr_getPortrait(s32);
 
 void func_801F37A8(void);
 void func_801F38D8(void);
@@ -61,7 +61,7 @@ u8 func_801F4614(s32);
 u8 func_801F465C(void);
 void func_801F457C(PartyRequest *);
 void func_801F46FC(void);
-extern u8 D_801EDFE8[]; /* image data for func_80028720 */
+extern u8 D_801EDFE8[]; /* image data for ui_loadPortraits */
 
 extern const u8 g_partyMenuText[]; /* text bank for this menu */
 

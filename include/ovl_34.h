@@ -118,7 +118,7 @@ void func_801F11C4(s32, s32);
 u8 func_801F125C(void);
 
 /* main exe: candidates for ff9.h */
-/* slider gauge pieces drawn by func_80027710: left cap, middle (repeated via DR_TWIN), right cap */
+/* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
     u8 unk0; /* texture window x */
     u8 unk1; /* texture window y */

@@ -1141,3 +1141,86 @@ D_80077150 g_winLastVsync  # [code] g_drawBufs.lastVsync under its own symbol: w
 # FIELDS include/ff9.h PadRepeat: unk0=enabled,unk1=repeating,unk2=armed,unk4=prevHeld,unk8=lastVsync,unkC=mask,unk10=delay,unk12=interval
 # FIELDS include/ff9.h PadRepeatDef: unk0=mask,unk4=enabled,unk5=delay,unk6=interval
 # FIELDS include/ff9.h DrawBufs (g_drawBufs): unk0=cur,unk4=freeBytes,unk8=lastVsync,unkC=prims,unk14=ots,unk1C=dispPos
+func_8002423C ui_drawCharStatus  # [code] name, "Lv" + level, HP cur/max and MP cur/max (red below 1/6, colour 3 when KO) of a Character
+func_80024428 ui_drawCharSwitch  # [code] portrait + ui_drawCharStatus of party[s.unk2], or both party[unk2] and party[unk3] sliding by s.unk4 frames (L1/R1 character change in ovl_33/ovl_38)
+func_800245F0 win_drawShadowRect  # [code] two semi-transparent black TILEs right of and below a rect (g_winShadowFuncs[0/1])
+func_80024764 win_drawShadowSlant  # [code] two slanted semi-transparent black POLY_F4s right of and below a rect (g_winShadowFuncs[2])
+func_800249A8 win_drawShadowSlant2  # [code] smaller variant of win_drawShadowSlant (g_winShadowFuncs[3])
+func_8002705C win_drawShadow  # [code] calls g_winShadowFuncs[style](rect, otz); win_drawAll draws it for windows with the shadow flag
+D_80068F80 g_winShadowFuncs  # [code] per window style: win_drawShadowRect x2, win_drawShadowSlant, win_drawShadowSlant2, NULL
+func_80024BD8 ui_drawBackground  # [code] full-width grey gradient POLY_G4 plus a 128-line textured SPRT at the back of the OT (0xFFF); menu.c and battle_end draw it behind menus
+func_80025108 win_drawLineBorder  # [code] the double-line border of window styles 0 and 1 (LINE_F2 pairs coloured from D_80068F20[pal], first line optional)
+func_8002642C win_drawTailEdge  # [code] SPRT of a speech-balloon tail (g_winTailSprites[dir]), with the window's palette or the help window's fixed clut
+func_80027568 win_drawHelpTailEdge  # [code] win_drawTailEdge with the help window clut (win_drawHelpFrame)
+func_800275A4 win_drawMsgTailEdge  # [code] win_drawTailEdge with the configured palette (win_drawTail)
+func_800265B0 win_drawTailFill  # [code] textured POLY_FT4 filling a balloon tail shape (D_80068F48[dir]) with the window fill texture (win_drawTail)
+func_80026900 win_drawHelpTailFill  # [code] flat POLY_F4 of a tail shape in the help-window colour 0xA8B078 (win_drawHelpFrame, same colour as win_drawHelpFill)
+D_80068F48 g_winTailShapes  # [code] quad vertex offsets per tail direction (win_drawTailFill, win_drawHelpTailFill)
+D_80068D70 g_winTailSprites  # [code] sprite descriptors per tail direction (win_drawTailEdge)
+func_800269F4 ui_drawSeparator  # [code] three LINE_F2s (palette colours) forming a horizontal, or for len < 0 vertical, separator
+func_80026B84 win_drawBalloonBorder  # [code] win_buildBorder style 1, used for window style 3 (balloon with tail) and win_drawBox style 3
+func_80026BDC win_drawHelpBorder  # [code] win_buildBorder style 2 (fixed clut), used by win_drawHelpFrame
+func_80026C7C ui_buildItemIcon  # [code] item icon SPRT from D_80069018[item] (ui_drawItemIcon)
+func_80026E14 ui_drawPartyMember  # [code] portrait (ui_drawPartyPortrait) and ui_drawPartyStatus of party slot
+func_80026EA0 ui_drawPartyMemberMode  # [code] portrait plus status (modes 0-2) or status icons (modes 3-4) of a party slot
+func_80026F8C ui_drawPartyStatus  # [code] ui_drawCharStatus of party[slot]
+func_80026FC4 ui_drawStatusIcons  # [code] one sprite per set bit (7 bits) of a character status byte (Character.unk38), 12 px apart
+func_80027110 ui_drawMeter  # [code] ui_buildMeter into g_primPtr
+func_80027170 ui_buildMeter  # [code] cur/max digits (or sprite 0xC0 when full) and a bar TILE, green / red when full
+func_800273C0 ui_drawStones  # [code] stone sprite 0xC1 and "cur/max" magic stones (callers pass Character.stones/maxStones)
+func_80027480 win_getPalClut  # [code] clut - 0xC0 * GameConfig bit 18 (the window palette setting win_drawFrame passes as pal)
+func_800274B4 win_getClut  # [code] clut - pal * 0xC0: selects the window palette's CLUT row
+func_80027710 ui_drawSpriteDef  # [code] ui_drawSprite with a sprite descriptor instead of an id
+func_80027834 ui_buildSprite  # [code] SPRT + DR_TPAGE for sprite id (D_800686D0), half-bright semi-transparent when flag
+func_80027948 ui_buildSpriteDef  # [code] ui_buildSprite with a descriptor
+func_80027A4C ui_drawCharStatuses  # [code] name, level, ui_drawStatusIcons of Character.unk38 in a box (party slot)
+func_80027B5C ui_buildDigits  # [code] SPRTs for a string of digits, '/', '%' from D_800687E0
+func_80027CB0 item_initNew  # [code] clears items and key items, then item_add for each (id, count) pair of D_8006BB74 until 0xFF
+func_80027D18 item_clearAll  # [code] zeroes the counts of the 256 GameData item slots
+func_80027D4C keyItem_clearAll  # [code] zeroes the 64 bytes of 2-bit key-item flags in GameData.unk774
+func_80027D84 item_add  # [code] adds n of id to its slot (capped at 99) or the first empty slot; script opcode 0x48 for ids < 0x100
+func_80027F94 item_countEquipped  # [code] how many characters (flag unk34.b.unkB) have id in one of their 5 equipment slots
+func_80028014 item_getEquipSlot  # [code] first of the 5 equipment slot masks (D_8006BB84) set in the item's D_80069018 flags, -1 if none
+func_80028074 keyItem_add  # [code] script opcode 0x48 with ids 0x100-0x1FF: sets the key item's have bit, clears its seen bit
+func_800280CC keyItem_remove  # [code] script opcode 0x49 with ids 0x100-0x1FF: clears both bits
+func_80028128 keyItem_setSeen  # [code] sets the key item's second bit (ovl_37 sets it when the item is read)
+func_80028164 keyItem_clearSeen  # [code] clears the key item's second bit
+func_800281A4 keyItem_has  # [code] key item's first bit (ovl_37 lists the items that have it)
+func_800281D0 keyItem_isSeen  # [code] key item's second bit
+func_80028204 ui_drawPortrait  # [code] portrait id (0..g_portraitCount) as a 32 x h SPRT from the portrait VRAM loaded by ui_loadPortraits
+func_800283E0 ui_drawPartyPortraitH  # [code] party slot's portrait (VRAM from ui_loadPartyPortrait), 32 x h in up to two SPRTs, half-bright when flag
+func_80028720 ui_loadPortraits  # [code] uploads n portraits (CLUT + image, 0x6C0 bytes each), saving the VRAM they cover (D_80076F80, the data buffer)
+func_8002886C ui_restorePortraits  # [code] puts back the VRAM saved by ui_loadPortraits
+func_80028954 chr_getPortrait  # [code] D_8006BB8C[character's unk34.b.unk4]: portrait index of a character
+func_80028994 ui_getPortraitRects  # [code] CLUT row 0x1F3 + i and image rect of portrait i
+func_80028A10 ui_drawPortraitFull  # [code] ui_drawPortrait with height 0x2E
+func_80028A40 ui_getPartyPortraitRects  # [code] CLUT, image and lower-image rects of party slot i's portrait (world map uses other VRAM)
+func_80028AF0 ui_drawPartyPortrait  # [code] ui_drawPartyPortraitH with height 0x2E
+func_80028B20 ui_loadPartyPortraits  # [code] ui_loadPartyPortrait for each party slot from a portrait file buffer (0x6C0 bytes per chr_getPortrait index)
+func_80028BE8 ui_loadPartyPortrait  # [code] LoadImage of a portrait's CLUT and two image parts into party slot i's VRAM
+func_80028C70 ui_savePartyPortrait  # [code] StoreImage counterpart of ui_loadPartyPortrait
+func_8002CD4C win_drawBox  # [code] border and fill of window style 0-3 for a rect, without a Window object
+func_8002DEE4 win_drawBoxPal  # [code] win_drawBox with the configured window palette
+func_8002E400 win_drawFillPal  # [code] win_drawFill with the configured window palette
+func_8002D1AC win_setCloseAnim  # [code] close steps for anim mode from the close frame count (Window.unk12); win_close
+func_8002D398 win_setTail  # [code] style 3 balloon: tail direction and x offset; open steps for each side of the tail (anim mode 2)
+func_8002DC54 win_openFree  # [code] win_init on the first free g_windows slot, NULL when all 10 are used
+func_8002DE10 win_destroy  # [code] immediately frees a window (no close animation), running its on-closed callback
+func_8002DE60 win_destroyAll  # [code] win_destroy for every used window
+func_8002E040 win_drawListFrame  # [code] list frame for a rect (rule + scroll arrows for mode 1) and its fill, split when the list has flag 4
+func_8002E304 win_setLabel  # [code] Window.unk24 = label id at offset (6, -3); win_drawLabel draws it with ui_drawLabel
+func_8002E31C win_setShadow  # [code] Window.unk1F: win_drawAll draws win_drawShadow when set
+func_8002E324 win_setTranslucent  # [code] Window.unk1D, the semi-transparency flag passed to the border and tail drawing
+func_8002E32C win_setVisible  # [code] Window.unk23; win_isVisible returns 0 when clear
+func_8002E334 win_setOpenFrames  # [code] Window.unk10 and recomputes the open steps (win_setOpenAnim / win_setTail)
+func_8002E380 win_setCloseFrames  # [code] Window.unk12 and recomputes the close steps (win_setCloseAnim)
+func_8002E3A8 win_setList  # [code] copies a MenuList into Window.unk30
+func_8002E3F0 win_setLabelAt  # [code] Window label id and its x/y offset
+func_8002E490 win_initAll  # [code] marks all 10 windows free and numbers them (gfx_init)
+func_8002E588 win_drawLabel  # [code] ui_drawLabel of the window's label above its top edge, clipped while opening
+func_8002E660 win_drawTail  # [code] the tail of a style-3 balloon window (win_drawMsgTailEdge + win_drawTailFill) above or below it
+func_8002E7FC win_drawSplitFill  # [code] fill in two parts around the divider line at MenuList.unk9 (MenuList flag 4)
+func_8002E960 win_drawDivider  # [code] LINE_F2 across a window at MenuList.unk9 from the top (flag 2) or bottom
+D_80076F78 g_portraits  # [code] {data, count} of the portraits uploaded by ui_loadPortraits
+D_80076F7C g_portraitCount  # [code] g_portraits.count under its own symbol: ui_drawPortrait draws ids below it
+D_80076F80 g_portraitSavedVram  # [code] VRAM saved by ui_loadPortraits, put back by ui_restorePortraits

@@ -100,12 +100,12 @@ void func_801F0CC8(void) {
         snd_playSe(0x67);
         D_801F347C.unk0 = 0;
         D_801F347C.unk5 = 1;
-        D_801F347C.unk18E8 = func_8002DC54(&D_801F3100, 10, 2);
+        D_801F347C.unk18E8 = win_openFree(&D_801F3100, 10, 2);
         win_setDrawContent(D_801F347C.unk18E8, func_801F2F34);
         win_setOnOpened(D_801F347C.unk18E8, func_801F2F14);
         win_setOnClosed(D_801F347C.unk18E8, func_801F2F24);
-        func_8002E304(D_801F347C.unk18E8, D_800704C4);
-        func_8002E31C(D_801F347C.unk18E8, 1);
+        win_setLabel(D_801F347C.unk18E8, D_800704C4);
+        win_setShadow(D_801F347C.unk18E8, 1);
         return;
     }
     snd_playSe(0x66);
@@ -130,8 +130,8 @@ void func_801F0DB0(void) {
     a = func_800625F8();
     b = func_80062638();
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_8007041C, 0);
-    func_8002DEE4(r, 0x1E, 1);
-    func_8002705C(r, 0x1E, 1);
+    win_drawBoxPal(r, 0x1E, 1);
+    win_drawShadow(r, 0x1E, 1);
     s = text_get(0x27);
     w = func_8002BA68(s);
     text_formatNumber(a, buf, 3, 1);
@@ -177,9 +177,9 @@ void func_801F0F9C(void) {
     }
     rank = D_801F347C.unk7;
     ui_drawLabel(r->x + 8, r->y - 3, 0x1E, D_80070460, 0);
-    func_8002DEE4(r, 0x1E, 2);
-    func_8002705C(r, 0x1F, 2);
-    func_800269F4(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
+    win_drawBoxPal(r, 0x1E, 2);
+    win_drawShadow(r, 0x1F, 2);
+    ui_drawSeparator(r->x + 4, r->y + 0x24, 0x14, r->w - 9);
     text_formatNumber(D_801F347C.unk18F0[3], buf, 4, 1);
     text_drawBlock(r->x + 0xA, r->y + 5, 0x14, text_get(0x29), 0);
     text_drawBlock(r->x + 0xA, r->y + 0x14, 0x14, text_get(rank), 0);
@@ -257,8 +257,8 @@ void func_801F12B8(s32 id) {
 
         }
     }
-    func_8002DEE4(r, 0x1E, 2);
-    func_8002705C(r, 0x1F, 2);
+    win_drawBoxPal(r, 0x1E, 2);
+    win_drawShadow(r, 0x1F, 2);
 }
 
 void func_801F1508(void) {
@@ -626,8 +626,8 @@ void func_801F2664(void) {
             } while (0);
         }
     }
-    func_8002DEE4(r, 0x1E, 2);
-    func_8002705C(r, 0x1F, 2);
+    win_drawBoxPal(r, 0x1E, 2);
+    win_drawShadow(r, 0x1F, 2);
 }
 
 void func_801F2730(s32 x, s32 y, s32 z, s32 id, s32 dim, u8 flag) {

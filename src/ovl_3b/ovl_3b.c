@@ -80,7 +80,7 @@ void func_801F3B3C(void) {
 
     ui_drawLabel(D_801F4738.x + 8, D_801F4738.y - 3, 7, D_80070494, 0);
     for (i = 0; i < 3; i++) {
-        func_800269F4(D_801F4738.x + 4, D_801F4738.y + 0x35 + i * 0x33, 7, D_801F4738.w - 9);
+        ui_drawSeparator(D_801F4738.x + 4, D_801F4738.y + 0x35 + i * 0x33, 7, D_801F4738.w - 9);
     }
     for (i = 0; i < 4; i++) {
         id = D_801F4748.unkA[0][i];
@@ -96,8 +96,8 @@ void func_801F3B3C(void) {
                           i >= D_801F4748.unk1 ? 2 : 0);
         }
     }
-    func_8002DEE4(&D_801F4738, 7, 2);
-    func_8002705C(&D_801F4738, 7, 2);
+    win_drawBoxPal(&D_801F4738, 7, 2);
+    win_drawShadow(&D_801F4738, 7, 2);
 }
 
 void func_801F3CF0(void) {
@@ -107,9 +107,9 @@ void func_801F3CF0(void) {
     s32 dy;
 
     ui_drawLabel(D_801F4740.x + 0xC, D_801F4740.y - 3, 7, D_80070460, 0);
-    func_800269F4(D_801F4740.x + 4, D_801F4740.y + 0x35, 8, D_801F4740.w - 8);
-    func_8002DEE4(&D_801F4740, 8, 1);
-    func_8002705C(&D_801F4740, 9, 1);
+    ui_drawSeparator(D_801F4740.x + 4, D_801F4740.y + 0x35, 8, D_801F4740.w - 8);
+    win_drawBoxPal(&D_801F4740, 8, 1);
+    win_drawShadow(&D_801F4740, 9, 1);
     id = D_801F4748.unkA[D_801F4748.unk4[D_801F4748.unk0].unk1][D_801F4748.unk4[D_801F4748.unk0].unk0];
     if (id != 0xFF) {
         func_801F4360(D_801F4740.x + 0x10, D_801F4740.y + 6, 6, id);
@@ -172,7 +172,7 @@ INCLUDE_RODATA("asm/us/ovl_3b/nonmatchings/ovl_3b", g_partyMenuText);
 void func_801F3FEC(void) {
     text_setBank(g_partyMenuText);
     help_setHandler(func_801F46FC);
-    func_80028720(D_801EDFE8, 0xD);
+    ui_loadPortraits(D_801EDFE8, 0xD);
     D_801F4748.unk0 = 0;
     D_801F4748.unk4[1].unk0 = 0;
     D_801F4748.unk4[0].unk0 = 0;
@@ -190,7 +190,7 @@ void func_801F405C(void) {
 
 void func_801F4084(void) {
     help_setHandler(NULL);
-    func_8002886C();
+    ui_restorePortraits();
 }
 
 void func_801F40AC(void) {
@@ -220,15 +220,15 @@ void func_801F4150(void) {
 }
 
 void func_801F4190(void) {
-    func_8002DEE4(&D_801F4728, 8, 2);
-    func_8002705C(&D_801F4728, 8, 2);
+    win_drawBoxPal(&D_801F4728, 8, 2);
+    win_drawShadow(&D_801F4728, 8, 2);
     text_drawBlock(D_801F4728.x + 9, D_801F4728.y + 6, 6, text_get(0), 0);
 }
 
 void func_801F4204(void) {
     ui_drawLabel(D_801F4730.x + 0xC, D_801F4730.y - 3, 8, D_80070450, 0);
-    func_8002DEE4(&D_801F4730, 8, 1);
-    func_8002705C(&D_801F4730, 9, 1);
+    win_drawBoxPal(&D_801F4730, 8, 1);
+    win_drawShadow(&D_801F4730, 9, 1);
     text_drawBlock(D_801F4730.x + 0x12, D_801F4730.y + 6, 6, text_get(D_801F4748.unk1), 0);
 }
 
@@ -252,7 +252,7 @@ void func_801F42A4(void) {
 void func_801F4360(s32 x, s32 y, s32 otz, s32 id) {
     if (id != 0xFF) {
         func_801F43FC(x, y, otz, id, 0x2D, D_801F4748.unk1A[id]);
-        func_8002423C(x + 0x26, y + 3, otz, &g_gameState->unk1C->characters[id]);
+        ui_drawCharStatus(x + 0x26, y + 3, otz, &g_gameState->unk1C->characters[id]);
     }
 }
 
@@ -268,19 +268,19 @@ void func_801F43FC(s32 x, s32 y, s32 otz, s32 id, s32 h, u8 arg5) {
         c = &g_gameState->unk1C->characters[id];
         if (c->unk38 & 2) {
             icon = &D_800687C0;
-            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy = base - 0xF;
         }
         if (c->unk38 & 1) {
             icon = &D_80068E38;
-            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
             yy -= 7;
         }
         if (c->hp == 0) {
             icon = &D_80068E30;
-            func_80027710(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
+            ui_drawSpriteDef(x + ((0x20 - icon->unk4) >> 1), yy, otz, icon, 0);
         }
-        func_80028204(x, y, otz, func_80028954(id), h, arg5);
+        ui_drawPortrait(x, y, otz, chr_getPortrait(id), h, arg5);
     }
 }
 

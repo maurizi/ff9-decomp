@@ -69,10 +69,10 @@ void func_801EE650(void) {
     x = w->x + 0x72;
     y = w->y + 4;
     setRECT(&r, x, y, 0x5C, 0x12);
-    func_800273C0(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
-    func_80024428(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
-    func_80026FC4(r.x + 4, r.y + 4, 0x1D, c->unk38, 0);
-    func_8002DEE4(&r, 0x1D, 0);
+    ui_drawStones(x + 0x19, y + 0x14, 0x1E, c->stones, c->maxStones);
+    ui_drawCharSwitch(w->x + 8, w->y + 6, 0x1D, (Unk80024428 *)&D_801F120C.unk8C);
+    ui_drawStatusIcons(r.x + 4, r.y + 4, 0x1D, c->unk38, 0);
+    win_drawBoxPal(&r, 0x1D, 0);
 }
 
 void func_801EE740(void) {
@@ -105,8 +105,8 @@ void func_801EE740(void) {
         D_801F120C.unk7C = func_8002920C(r.x + 0xC, r.y + y, g_ot + 25, pool.s + k, 0, D_801F120C.unk7C);
     }
     ui_drawLabel(r.x + 6, r.y - 3, 0x19, D_8007042C, 0);
-    func_8002DEE4(&r, 0x19, 2);
-    func_8002705C(&r, 0x19, 2);
+    win_drawBoxPal(&r, 0x19, 2);
+    win_drawShadow(&r, 0x19, 2);
 }
 
 void func_801EE9E8(void) {
@@ -199,7 +199,7 @@ void func_801EEF00(void) {
     st = &D_801F120C;
     c = g_gameState->unk1C->party[st->unk2];
     for (i = 0; i < 5; i++) {
-        D_801F120C.unk7C = func_80027834(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
+        D_801F120C.unk7C = ui_buildSprite(r->x + 0x74, r->y + 0x68 + i * 15 + 1, &g_ot[0x1D], i + 0xF9, 0, buf, D_801F120C.unk7C);
         D_801F120C.unk7C = func_80029D60(r->x + 0x84, r->y + 0x68 + i * 15 + 3, &g_ot[0x1D], D_801EE264, 0, D_801F120C.unk7C);
         id = c->equip[i];
         if (id != 0xFF) {
@@ -230,8 +230,8 @@ void func_801EF0A0(void) {
                 ui_drawLabel(r->x + 0x90, r->y - 3, z, D_800703FC.unk88, 0);
                 ui_drawLabel(r->x + 0x9A, r->y - 3, z, (s32)D_801EFC04, 0);
             }
-            func_8002DEE4(r, z, 2);
-            func_8002705C(r, z, 2);
+            win_drawBoxPal(r, z, 2);
+            win_drawShadow(r, z, 2);
         }
         base += 8;
     }
@@ -280,9 +280,9 @@ void func_801EF258(s32 x, s32 y, s32 z, s32 i, u8 draw) {
         D_801F120C.unk7C = func_8002920C(x + 0x10, y, g_ot + z, name, 0, D_801F120C.unk7C);
     }
     if (ok) {
-        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = ui_buildMeter(x + 0x70, y + 3, g_ot + z, cur, max, flag, 0, D_801F120C.unk7C);
     } else {
-        D_801F120C.unk7C = func_80027170(x + 0x70, y + 3, g_ot + z, 1, 1, 0, 0, D_801F120C.unk7C);
+        D_801F120C.unk7C = ui_buildMeter(x + 0x70, y + 3, g_ot + z, 1, 1, 0, 0, D_801F120C.unk7C);
     }
 }
 
@@ -388,11 +388,11 @@ void func_801EF8A0(void) {
 void func_801EF904(void) {
     RECT *r = &D_801F120C.unk8;
 
-    func_800269F4(r->x + 0x6D, r->y + 0x63, 0x1E, r->w - 0x71);
-    func_800269F4(r->x + 0x6B, r->y + 0x38, 0x1E, 0x3E - r->h);
-    func_800269F4(r->x + 4, r->y + 0x36, 0x1E, r->w - 9);
-    func_8002DEE4(r, 0x1E, 2);
-    func_8002705C(r, 0x1E, 2);
+    ui_drawSeparator(r->x + 0x6D, r->y + 0x63, 0x1E, r->w - 0x71);
+    ui_drawSeparator(r->x + 0x6B, r->y + 0x38, 0x1E, 0x3E - r->h);
+    ui_drawSeparator(r->x + 4, r->y + 0x36, 0x1E, r->w - 9);
+    win_drawBoxPal(r, 0x1E, 2);
+    win_drawShadow(r, 0x1E, 2);
 }
 
 void func_801EF9B4(void) {
