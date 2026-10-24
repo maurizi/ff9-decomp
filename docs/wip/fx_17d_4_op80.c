@@ -1,4 +1,6 @@
-/* Draft of fx_17d_4 fx_17d_4_op80. Status: 620 aligned mismatches (128 ignoring registers and spill offsets);
+/* Draft of fx_17d_4 fx_17d_4_op80. Status: 461 aligned mismatches (125 ignoring registers and spill offsets); frame
+ * size now matches: case 6's func_801E7B8C third argument is its own variable f3 (spill slot 0x80), not flag.
+ * Was: 620 aligned mismatches (128 ignoring registers and spill offsets);
  * equivalent by construction. Pass 3 fixes: the ring loops' frame * k stays a multiply when the product goes through
  * a block-local y with a dead `y = 0;` at the end of the body (y is then set twice in the loop, so loop.c does not
  * treat it as a giv; flow deletes the dead store), with sc.vx/sc.vz computed before rot.vy; case 0 calls
@@ -90,6 +92,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 q;
     s32 g;
     s32 flag;
+    s32 f3;
 
     if (mode == 0) {
         *arg4 = 0x84;
@@ -445,7 +448,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     k = 0;
                     x = frame;
                     flag = 1;
-                    flag = 0;
+                    f3 = 0;
                 } else {
                     q4 = (frame - 0x1E) << 9;
                     o_3 = 0x27;
@@ -453,7 +456,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                     g = 0;
                     q = 0x1000;
                     x = 0x1D;
-                    flag = (frame - 0x1E) * 3;
+                    f3 = (frame - 0x1E) * 3;
                     if (q4 >= 0x800) {
                         k = (q4 - 0x800) * 2;
                     } else {
@@ -466,14 +469,14 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 x = 0x1D;
                 r = ((frame - 0x26) << 12) / 13;
                 o_3 = (r >> 3) + 0x40;
-                flag = 0x15;
+                f3 = 0x15;
                 w13 = 0x1000 - r * 2 / 3;
                 k = w13;
                 q = k;
             }
             func_801E77DC(entry, &D_801E971C, x, o_3, w13, g, flag);
             if (q != 0) {
-                func_801E7B8C(entry, &D_801E971C, flag, q);
+                func_801E7B8C(entry, &D_801E971C, f3, q);
                 func_801E7EB4(entry, &D_801E971C, k);
             }
             if (frame >= 0x33) {
