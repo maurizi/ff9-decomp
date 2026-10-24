@@ -9,16 +9,16 @@ s32 w_frmbufRequest(s16 arg0) {
     u32 i;
 
     if (arg0 & 0x3F) {
-        p = g_worldFrmbufHead.unk4;
+        p = g_worldFrmbufHead.next;
         i = 0;
         while (1) {
             if (p->texId == arg0) {
-                p->unk0->unk4 = p->unk4;
-                p->unk4->unk0 = p->unk0;
-                p->unk4 = g_worldFrmbufHead.unk4;
-                p->unk0 = &g_worldFrmbufHead;
-                g_worldFrmbufHead.unk4->unk0 = p;
-                g_worldFrmbufHead.unk4 = p;
+                p->prev->next = p->next;
+                p->next->prev = p->prev;
+                p->next = g_worldFrmbufHead.next;
+                p->prev = &g_worldFrmbufHead;
+                g_worldFrmbufHead.next->prev = p;
+                g_worldFrmbufHead.next = p;
                 break;
             }
             if (p->texId == -1) {
@@ -29,16 +29,16 @@ s32 w_frmbufRequest(s16 arg0) {
                     g_worldMapError = 1;
                 }
                 p->texId = arg0;
-                p->unk0->unk4 = p->unk4;
-                p->unk4->unk0 = p->unk0;
-                p->unk4 = g_worldFrmbufHead.unk4;
-                p->unk0 = &g_worldFrmbufHead;
+                p->prev->next = p->next;
+                p->next->prev = p->prev;
+                p->next = g_worldFrmbufHead.next;
+                p->prev = &g_worldFrmbufHead;
                 g_worldFrmbufDirty++;
-                g_worldFrmbufHead.unk4->unk0 = p;
-                g_worldFrmbufHead.unk4 = p;
+                g_worldFrmbufHead.next->prev = p;
+                g_worldFrmbufHead.next = p;
                 break;
             }
-            p = p->unk4;
+            p = p->next;
             i++;
             if (i >= 4) {
                 break;
@@ -59,12 +59,12 @@ void wm_frmbufCompact(void) {
 
     g_worldFrmbufReqCount = 0;
     if (g_worldFrmbufDirty != 0) {
-        p = g_worldFrmbufHead.unk4;
+        p = g_worldFrmbufHead.next;
         i = 0;
         g_worldFrmbufDirty = 0;
         q = p;
         do {
-            p = p->unk4;
+            p = p->next;
             i++;
         } while (i < 2);
         for (;;) {
@@ -72,19 +72,19 @@ void wm_frmbufCompact(void) {
                 if (((u8)p->vramArea == 0) & (p->texId != -1)) {
                     p->texId = -1;
                 }
-                p = p->unk4;
+                p = p->next;
             }
             if (p == &g_worldFrmbufTail) {
                 break;
             }
             while (q->vramArea != 0) {
-                q = q->unk4;
+                q = q->next;
             }
             q->vramArea = p->vramArea;
             p->vramArea = 0;
             p->transferred = 0;
             p->texId = -1;
-            p = p->unk4;
+            p = p->next;
         }
     }
 }
@@ -102,8 +102,8 @@ void wm_frmbufTransfer(void) {
     s16 *cy;
 
     n = 0;
-    p = g_worldFrmbufHead.unk4;
-    for (i = 0; i < 2; i++, p = p->unk4) {
+    p = g_worldFrmbufHead.next;
+    for (i = 0; i < 2; i++, p = p->next) {
         if (p->texId != -1 && p->vramArea != 0 && p->transferred == 0) {
             r = wm_readtxFind(p->texId, 1);
             if (r != 0) {

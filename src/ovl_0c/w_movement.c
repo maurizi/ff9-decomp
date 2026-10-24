@@ -278,7 +278,7 @@ void wm_cameraFollow(void) {
         if (d < -0x100) {
             dir = 2;
         }
-        g_worldCameraEaseDiv = (d >= 0 ? d : -d) >> D_800CCB04;
+        g_worldCameraEaseDiv = (d >= 0 ? d : -d) >> g_worldCameraEaseShift;
         if (g_worldCameraEaseDiv < g_worldCameraEaseDivMin) {
             g_worldCameraEaseDiv = g_worldCameraEaseDivMin;
         }

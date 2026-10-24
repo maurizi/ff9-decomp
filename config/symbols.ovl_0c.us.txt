@@ -606,3 +606,5 @@ s_menuMainUntilLabel = 0x800CE078; // [string] half-width kana "until", token 4 
 s_menuMainStatusLabel = 0x800CE080; // [string] half-width kana "status", token 6 of menuMain_setExpHelp
 s_menuMainStatusNormal = 0x800CE088; // [string] half-width kana "normal", token 7 when Character.unk38 == 0
 s_menuMainStatusAbnormal = 0x800CE090; // [string] half-width kana "abnormal", token 7 when Character.unk38 != 0
+g_worldFormStoryThresholds = 0x800CD060; // [code] u16[11] story-counter thresholds, wm_applyStoryForms picks the status index of g_worldFormStatusTable from the first one <= the counter
+g_worldCameraEaseShift = 0x800CCB04; // [code] g_worldCameraEaseDiv = |dy| >> it in wm_cameraFollow

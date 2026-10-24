@@ -294,7 +294,7 @@ void wm_applyStoryForms(void) {
         *p-- = 0;
     }
     for (i = 10; i >= 0; i--) {
-        if (D_800CD060[i] <= *g_worldStoryCounterPtr) {
+        if (g_worldFormStoryThresholds[i] <= *g_worldStoryCounterPtr) {
             break;
         }
     }
@@ -2172,14 +2172,14 @@ void wm_naviWorldToMap(s32 arg0, s32 arg1, s32 *arg2, s32 *arg3, u8 arg4) {
 void wm_readtxInit(void) {
     u32 i;
 
-    g_worldReadtxSlots[0].unk0 = &g_worldReadtxHead;
-    g_worldReadtxSlots[0].unk4 = &g_worldReadtxSlots[1];
+    g_worldReadtxSlots[0].prev = &g_worldReadtxHead;
+    g_worldReadtxSlots[0].next = &g_worldReadtxSlots[1];
     g_worldReadtxSlots[0].extracted = 0;
     g_worldReadtxSlots[0].texId = -1;
     g_worldReadtxSlots[0].pack = g_worldTexBuffers[0];
     for (i = 1; i < 5; i++) {
-        g_worldReadtxSlots[i].unk0 = &g_worldReadtxSlots[i - 1];
-        g_worldReadtxSlots[i].unk4 = &g_worldReadtxSlots[i + 1];
+        g_worldReadtxSlots[i].prev = &g_worldReadtxSlots[i - 1];
+        g_worldReadtxSlots[i].next = &g_worldReadtxSlots[i + 1];
         g_worldReadtxSlots[i].pack = NULL;
         g_worldReadtxSlots[i].extracted = 0;
         g_worldReadtxSlots[i].texId = -1;
@@ -2188,16 +2188,16 @@ void wm_readtxInit(void) {
         g_worldReadtxSlots[i].pack = g_worldTexBuffers[i];
     }
     i = 5;
-    g_worldReadtxSlots[i].unk0 = &g_worldReadtxSlots[i - 1];
-    g_worldReadtxSlots[i].unk4 = &g_worldReadtxTail;
+    g_worldReadtxSlots[i].prev = &g_worldReadtxSlots[i - 1];
+    g_worldReadtxSlots[i].next = &g_worldReadtxTail;
     g_worldReadtxSlots[i].texId = -1;
     g_worldReadtxSlots[i].pack = NULL;
     g_worldReadtxSlots[i].extracted = 0;
-    g_worldReadtxHead.unk0 = NULL;
-    g_worldReadtxHead.unk4 = &g_worldReadtxSlots[0];
-    g_worldReadtxTail.unk4 = &g_worldReadtxSlots[3];
+    g_worldReadtxHead.prev = NULL;
+    g_worldReadtxHead.next = &g_worldReadtxSlots[0];
+    g_worldReadtxTail.next = &g_worldReadtxSlots[3];
     g_worldReadtxReqCount = 0;
-    g_worldReadtxTail.unk0 = NULL;
+    g_worldReadtxTail.prev = NULL;
     g_worldReadtxDirty = 0;
 }
 

@@ -226,8 +226,8 @@ typedef struct WmEffect {
 
 /* frame pack slot list: g_worldReadtxHead (head) -> g_worldReadtxSlots[6] -> g_worldReadtxTail (tail) */
 typedef struct WmReadtxSlot {
-    struct WmReadtxSlot *unk0; /* prev */
-    struct WmReadtxSlot *unk4; /* next */
+    struct WmReadtxSlot *prev; /* prev */
+    struct WmReadtxSlot *next; /* next */
     s32 *pack; /* frame pack */
     s16 texId; /* low 6 bits: id; -1: none */
     u8 extracted;
@@ -285,8 +285,8 @@ typedef struct {
 
 /* doubly linked node (wm_frmbufInit) */
 typedef struct WmFrmbufSlot {
-    struct WmFrmbufSlot *unk0; /* prev */
-    struct WmFrmbufSlot *unk4; /* next */
+    struct WmFrmbufSlot *prev; /* prev */
+    struct WmFrmbufSlot *next; /* next */
     s16 texId;
     s8 vramArea;
     u8 transferred;
@@ -1008,7 +1008,7 @@ extern u8 g_worldUsePolyCache;
 extern u8 g_worldChunkGeneration;
 extern u8 g_worldChunkFlags[]; /* map cells, g_worldChunksW per row */
 #define WM_CELL(x, y) g_worldChunkFlags[(y) * g_worldChunksW + (x)]
-extern u16 D_800CD060[11]; /* story progress thresholds (wm_applyStoryForms) */
+extern u16 g_worldFormStoryThresholds[11]; /* story progress thresholds (wm_applyStoryForms) */
 extern u8 g_worldFormStatusTable[][11];
 extern u8 D_8007AF55; /* = g_evtGlobalVars.b[0x65], general global flags */
 extern u32 D_800CCB18[2]; /* cell type masks */
@@ -1515,7 +1515,7 @@ extern u8 g_worldPlayerFloorPoly;
 extern u8 g_worldCameraSmoothing;
 extern WmPolyCache g_worldCameraPolyCache[4];
 extern s32 g_worldCameraEaseDiv;
-extern s32 D_800CCB04;
+extern s32 g_worldCameraEaseShift;
 extern s32 g_worldCameraEaseDivMin;
 extern s32 g_worldCameraEaseDivMax;
 extern s32 g_worldCameraEaseScale;

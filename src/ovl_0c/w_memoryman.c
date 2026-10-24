@@ -285,14 +285,14 @@ void wm_animCluts(void) {
             d = 0x11;
         }
     }
-    n = g_worldFrmbufHead.unk4;
+    n = g_worldFrmbufHead.next;
     if ((n->texId & 0x3F) == 4) {
         on = 1;
         if (n->vramArea == 2) {
             e = 8;
         }
     }
-    n = n->unk4;
+    n = n->next;
     if ((n->texId & 0x3F) == 4) {
         on = 1;
         if (n->vramArea == 2) {
