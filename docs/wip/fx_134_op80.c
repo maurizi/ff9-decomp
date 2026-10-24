@@ -1,4 +1,4 @@
-/* Pass 4: 743 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
+/* Pass 4: 699 aligned mismatches, frame size matches. Variables split per case (build/s/split17.py) and at each
  * top-level re-assignment (build/s/phase.py) and at nested assignments
  * whose value stays in their block (build/s/webs.py); case 3's first angle is t >> 2 of t = (frame << 12) / 24 in a
  * block-local variable (a3x): with it the case-3 block has eight call-crossing locals, the 0x1000 constant lands
@@ -385,20 +385,22 @@ s32 fx_134_op80(s32 mode, Fx134Work *work, Unk800F78A4 *env, Unk80100C78Entry *e
                 ex->Hi_DrawEffModel(&rot, (VECTOR *)&pos, (s32)&scale, work->unk70);
                 ex->Hi_ModifyEffModelRGB(work->unk70, (ex->math_sin(a_c3) >> 5) - 0x80, (ex->math_sin(a_c3) >> 5) - 0x80,
                                          (ex->math_sin(a_c3) >> 5) - 0x80);
-                pos.vy += 0x40;
-                rot.vz += 0x200;
                 scale.vx = scale.vy = scale.vx * 2 / 3;
+                rot.vz += 0x200;
+                pos.vy += 0x40;
             }
+            i_c3_p2 = 0;
+            k_c3_p2 = ex->math_sin(t >> 2);
             a_c3_p2 = t >> 2;
-            k_c3_p2 = ex->math_sin(a_c3_p2);
             scale2.vz = (t >> 1) + 0x1000;
             pos2.vx = work->unk24.vx;
-            pos2.vy = work->unk24.vy + 0xC00;
+            pos2.vy = work->unk24.vy;
+            pos2.vz = work->unk24.vz;
+            pos2.vy += 0xC00;
             rot2.vx = -0x400;
             rot2.vy = 0;
             rot2.vz = 0xC0 - (frame << 6);
-            pos2.vz = work->unk24.vz;
-            for (i_c3_p2 = 0; i_c3_p2 < 4; i_c3_p2++) {
+            for (; i_c3_p2 < 4; i_c3_p2++) {
                 scale2.vx = scale2.vy = ((k_c3_p2 * 3 / 2 + 0x1500) * ((ex->math_sin((i_c3_p2 << 10) / 3) >> 1) + 0x800)) >> 12;
                 ex->Hi_DrawEffModel(&rot2, (VECTOR *)&pos2, (s32)&scale2, work->unk70);
                 ex->Hi_ModifyEffModelRGB(work->unk70, (ex->math_cos(a_c3_p2) >> 5) - 0x80, (ex->math_cos(a_c3_p2) >> 5) - 0x80,
