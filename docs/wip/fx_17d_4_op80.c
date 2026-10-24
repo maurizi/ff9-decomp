@@ -113,6 +113,7 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 g;
     s32 flag;
     s32 f3;
+    s32 n5z;
     s32 n5y;
     s32 n5x;
     s32 k5x;
@@ -432,10 +433,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             c_1 = ex->math_cos(t_c5 >> 1) >> 1;
             g5 = ex->math_cos(t_c5 >> 2) >> 1;
             k5x = (ex->math_cos(c_1) * g5) >> 12;
-            n5y = (ex->math_sin(c_1) * g5) >> 12;
+            n5z = (ex->math_sin(c_1) * g5) >> 12;
             a.vx = work->unk8.vx + k5x;
             a.vy = work->unk8.vy;
-            a.vz = work->unk8.vz + n5y;
+            a.vz = work->unk8.vz + n5z;
             b.vx = a.vx;
             b.vy = work->unk8.vy - 0x1000;
             b.vz = a.vz;
