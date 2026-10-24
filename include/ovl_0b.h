@@ -646,37 +646,37 @@ typedef struct BtlCalc {
     s16 targetMpChange; /* target mp change */
 } BtlCalc;
 
-/* battle script interpreter context */
+/* BtlCmd as the sequence interpreter reads it (BtlScript.cmd) */
 typedef struct {
     u8 pad0[4];
-    struct BtlUnit *unk4;
-    struct BtlCmd8 *unk8;
-    u16 unkC;
+    struct BtlUnit *caster;
+    struct BtlCmd8 *ability;
+    u16 targets;
 } BtlScript4;
 
 typedef struct BtlScript {
-    u32 unk0; /* flags */
-    BtlScript4 *unk4;
-    u8 *unk8; /* script pointer */
-    u8 *unkC; /* previous script pointer */
-    s16 unk10;
-    s16 unk12;
-    s16 unk14;
-    u8 unk16;
-    u8 unk17;
-    s16 unk18;
+    u32 flags; /* 1 waiting for the effect hit, 2 hit seen, 4 end motion done, 8 started without a command (btlseq_startDirect) */
+    BtlScript4 *cmd; /* command it runs for, NULL = free slot */
+    u8 *pc; /* script pointer */
+    u8 *prevPc; /* an op's enter handler runs when pc moved */
+    s16 opFrame; /* frames in the current op */
+    s16 waitLeft; /* btlseq_opWait counter */
+    s16 frame; /* frames since the start */
+    u8 seqFlags; /* Battle.seq.seqFlags of the sequence */
+    u8 soundDelay; /* btlseq_opDelayedSound */
+    s16 sound;
     u8 pad1A;
-    u8 unk1B;
-    u16 unk1C;
-    s16 unk1E;
-    u8 unk20;
-    u8 unk21;
-    s16 unk22;
-    u8 unk24;
-    u8 unk25;
-    u8 unk26;
-    u8 unk27;
-    s16 unk28[8]; /* per-command work area */
+    u8 soundVol;
+    u16 turnFrom; /* btlseq_opTurn: start angle */
+    s16 turnBy;
+    u8 turnFrame;
+    u8 turnFrames; /* 0 = not turning */
+    s16 fxId; /* btlseq_opDelayedEffect */
+    u8 fxArg;
+    u8 fxDelay;
+    u8 fadeFrames; /* btlseq_opFadeOut */
+    u8 fadeLeft;
+    s16 work[8]; /* per-op work area */
 } BtlScript;
 typedef struct {
     void (*unk0)(BtlScript *, BtlUnit *);
@@ -1259,7 +1259,7 @@ typedef struct {
     BtlPopup entries[16];
     s16 last; /* last entry handed out (counts down, wraps to 15) */
     s16 tick; /* btl_drawPopups calls */
-    s32 unk1C4; /* unit being scanned (BtlUnit *) */
+    s32 scanUnit; /* BtlUnit *: unit being scanned (btl_startScan); btlseq_opEnd waits while set */
     union {
         s32 w; /* cleared as a word */
         u8 b[4]; /* b[0]: delay, b[1]: item index, b[2]: state */

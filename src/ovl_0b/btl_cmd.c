@@ -776,7 +776,7 @@ void btl_updatePartyCmd(BtlCmd *arg0) {
     }
     b = g_gameState->unk1C->unk8E4.battle;
     u = arg0->caster;
-    if (b->popups.unk1C4 != 0 || b->popups.unk1CC != NULL) {
+    if (b->popups.scanUnit != 0 || b->popups.unk1CC != NULL) {
         return;
     }
     if (arg0->cmdNo == BTL_CMD_DEFEND) {

@@ -559,13 +559,13 @@ void *btl_getUnitName(BtlUnit *arg0) {
 }
 
 void btl_startScan(s32 arg0) {
-    g_gameState->unk1C->unk8E4.battle->popups.unk1C4 = arg0;
+    g_gameState->unk1C->unk8E4.battle->popups.scanUnit = arg0;
     g_gameState->unk1C->unk8E4.battle->popups.unk1C8.w = 0;
 }
 
 void btl_updateScan(void) {
     Battle *b = g_gameState->unk1C->unk8E4.battle;
-    BtlUnit *s = (BtlUnit *)b->popups.unk1C4;
+    BtlUnit *s = (BtlUnit *)b->popups.scanUnit;
     u8 buf[64];
     u32 k;
     u32 j;
@@ -619,7 +619,7 @@ void btl_updateScan(void) {
             }
         }
     default:
-        g_gameState->unk1C->unk8E4.battle->popups.unk1C4 = 0;
+        g_gameState->unk1C->unk8E4.battle->popups.scanUnit = 0;
         btl_setBanner(0, 2);
         return;
     }

@@ -1517,3 +1517,8 @@ func_800F4180 btlui_onListLabelOut  # [code] slide done hook: hides label 4, bac
 # include/ovl_0b.h Unk800FEC40 (g_btlfxState): unk2=effectId,unk8=file,unkE=cameraPick,unkF=seqRelease,unk18=pc,unk1C=flags,unk20=retry
 # include/ovl_0b.h Unk800FEC40: unk0=phase,unkA=cameras,pad14=motionDone/moveDone/turnDone/unk17
 # include/ovl_0b.h Unk80100C78Entry (effect task): unk0=frame,unk4=state,unk8=file,unkC=work,unk10=pool,unk14=handler
+# include/ovl_0b.h Battle: unk11C4=seq
+# include/ovl_0b.h Battle11C4 (Battle.seq): unk0=anims,unk4=seqFlags,unk8=seqs,unk68=slots,unk148=camCaster,unk14C=camTarget,unk150=camCenterX,unk152=camCenterY,unk154=camCenterZ
+# include/ovl_0b.h BtlScript: unk0=flags,unk4=cmd,unk8=pc,unkC=prevPc,unk10=opFrame,unk12=waitLeft,unk14=frame,unk16=seqFlags,unk17=soundDelay,unk18=sound,unk1B=soundVol,unk1C=turnFrom,unk1E=turnBy,unk20=turnFrame,unk21=turnFrames,unk22=fxId,unk24=fxArg,unk25=fxDelay,unk26=fadeFrames,unk27=fadeLeft,unk28=work
+# include/ovl_0b.h BtlScript4: unk4=caster,unk8=ability,unkC=targets
+# include/ovl_0b.h BtlPopupRing: unk1C4=scanUnit
