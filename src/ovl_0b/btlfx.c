@@ -1128,7 +1128,7 @@ s32 arg10, arg11;
     btlfx_addPrim(0x09000000, 0xFFE, p);
 }
 
-void func_800D2DBC(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
+void btlfx_drawBackdropSprite(u8 *arg0, s32 x, s32 y, s32 frame, s32 tp, s32 p) {
     struct {
         u16 rg;
         u8 b;
@@ -1322,7 +1322,7 @@ void btlfx_drawBackdrop(BtlBgLayers *arg0, s32 arg1) {
                     f = 0x1000;
                 }
                 if (fd->unk0 != 0) {
-                    func_800D2DBC((u8 *)arg0 + fd->unk0 + 4, fd->unk8, fd->unkA, e, L->unk8, f);
+                    btlfx_drawBackdropSprite((u8 *)arg0 + fd->unk0 + 4, fd->unk8, fd->unkA, e, L->unk8, f);
                 }
             }
             break;

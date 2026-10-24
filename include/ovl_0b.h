@@ -1559,7 +1559,7 @@ typedef struct {
     s32 count;
 } Grad;
 void btlfx_sampleGradient(u8 *, CVECTOR *, s32);
-/* sprite set header (btlfx_drawAnimQuads, func_800D2DBC): u16 frame offsets, then at
+/* sprite set header (btlfx_drawAnimQuads, btlfx_drawBackdropSprite): u16 frame offsets, then at
    unk8[count] a palette (u16 count, u16 entries[]) and per frame a byte count of
    3-byte sprites */
 typedef struct {
@@ -1588,7 +1588,7 @@ void btlfx_emitSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void btlfx_emitFixedSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 void btlfx_emitDots(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 DR_TPAGE *btlfx_allocDrMode(s32, s32);
-void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
+void btlfx_drawBackdropSprite(u8 *, s32, s32, s32, s32, s32);
 
 
 typedef struct {

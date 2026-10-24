@@ -2277,12 +2277,12 @@ ovl_0b btlseq_opDelayedEffect 0x48 0x800cb3a4
 ovl_0b btlseq_opEffect 0xfc 0x800cb3ec
 ovl_0b btlseq_opWaitAnim 0x78 0x800cb4e8
 ovl_0b btlseq_opWaitEffectHit 0x34 0x800cb560
-ovl_0b func_800CB594 0x30 0x800cb594
+ovl_0b btlseq_opReleaseEffect 0x30 0x800cb594
 ovl_0b btlseq_opWaitEffect 0x54 0x800cb5c4
 ovl_0b btlseq_opHideMeshes 0x74 0x800cb618
 ovl_0b btlseq_opShowMeshes 0x74 0x800cb68c
 ovl_0b btlseq_opShowName 0x108 0x800cb700
-ovl_0b func_800CB808 0x40 0x800cb808
+ovl_0b btlseq_opSetStance 0x40 0x800cb808
 ovl_0b btlseq_opSetCamera 0x3c 0x800cb848
 ovl_0b btlseq_opPlayCamera 0x1d4 0x800cb884
 ovl_0b btlseq_opTurn 0x158 0x800cba58
@@ -2383,7 +2383,7 @@ ovl_0b btlfx_drawSprites 0x3dc 0x800d1ffc
 ovl_0b btlfx_drawRings 0x560 0x800d23d8
 ovl_0b btlfx_drawFan 0x340 0x800d2938
 ovl_0b btlfx_addSpriteQuad 0x144 0x800d2c78
-ovl_0b func_800D2DBC 0x274 0x800d2dbc
+ovl_0b btlfx_drawBackdropSprite 0x274 0x800d2dbc
 ovl_0b btlfx_drawBackdrop 0xa3c 0x800d3030
 ovl_0b btlfx_ease 0x100 0x800d3a6c
 ovl_0b btlfx_drawSpriteLine 0x368 0x800d3b6c

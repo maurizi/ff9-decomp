@@ -419,7 +419,7 @@ s32 btlseq_opWaitEffectHit(BtlScript *arg0) {
     return 0;
 }
 
-s32 func_800CB594(BtlScript *arg0) {
+s32 btlseq_opReleaseEffect(BtlScript *arg0) {
     g_btlfxEnv->unk0->unkF = 1;
     arg0->unk8 += 1;
     return 1;
@@ -474,7 +474,7 @@ s32 btlseq_opShowName(BtlScript *arg0, BtlUnit *arg1) {
     return 1;
 }
 
-s32 func_800CB808(BtlScript *arg0, BtlUnit *arg1) {
+s32 btlseq_opSetStance(BtlScript *arg0, BtlUnit *arg1) {
     arg1->flags = (arg1->flags & ~0x40000) | ((arg0->unk8[1] & 1) << 18);
     arg0->unk8 += 2;
     return 1;

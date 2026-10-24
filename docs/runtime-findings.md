@@ -743,7 +743,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   Bits 0x8000000|0x80000000 are the two shown with a countdown number (func_800CD210).
 - confidence: high for the traced bits, medium for the code-derived ones (0x4 unidentified).
 
-## Battle sequence (enemy action script) interpreter  (status: applied except btlseq_opReleaseEffect, btlseq_opSetStance (low-medium))
+## Battle sequence (enemy action script) interpreter  (status: applied; btlseq_opReleaseEffect and btlseq_opSetStance applied later with [code] evidence in the ovl_0b cleanup pass)
 - binary ovl_0b. Correction to campaign 1: func_800CA7CC is not camera code. It runs up to four sequence slots
   (Battle11C4.unk68[4], BtlScript) and dispatches one-byte opcodes through D_800F5858[35] = {onEnter, step} pairs.
 - func_800CA7CC → btlseq_update (`void (void)`): once per battle tick from btl_drawScene+0x3c (375 calls / 1500 frames
@@ -829,7 +829,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   Defend and Change). high. func_800EA0B4 → btl_getAbilityName, func_800CD75C → btl_getItemName,
   func_800CD70C → btl_getElementName (bit index → text), func_800CD78C → btl_getUnitName. medium-high.
 
-## Status application, ticks and looks  (status: applied except btl_makeGreyCluts (low-medium))
+## Status application, ticks and looks  (status: applied; btl_makeGreyCluts applied later with [code] evidence in the ovl_0b cleanup pass)
 - func_800C0ACC → btl_addStatuses (`u32 (BtlUnit *, u32 mask)`): btl_addStatus per bit, keeps the best result. Runtime:
   every traced status spell adds its bit from func_800C0ACC+0x48; called from btl_rollAbilityStatus and func_800BACB4.
   high.
@@ -1083,7 +1083,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   btl_calcCmd+0xE1C. After it the Malboro got LOW_HP (btl_addStatus 0x200 from btl_updateHpStatus+0xAC), i.e. HP 1.
 - confidence: medium-high.
 
-## Summons  (status: applied; the leads stay unnamed)
+## Summons  (status: applied; the leads were named from code in the ovl_0b cleanup pass: btl_reloadParty, btlfx_loadSoundBank/btlfx_waitSoundBank, btlfx_countVisibleParty, btlfx_loadNextBlock)
 - func_800B989C → btl_rollShortSummon (`void (BtlCmd *)`; was "btl_rollSummonLength?"): for command 0x10/0x12/0x14
   (from btl_checkCmdUsable+0x264) it sets cmd.unk10 bit 0x400 with chance 0xE6/256 (MP > 2x cost) or 0xAA/256. That bit
   makes btl_startCmdEffect play ability->unkC (short version) instead of ability->unk0_8. Support bit unkC4[1] 0x08000000
@@ -1104,7 +1104,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   sound bank) in the summons with their own sounds; func_800E8AD0 counts party units with unk68 & 0x400001 == 1, per frame
   from btlfx_updateLoader during summons; func_800DA5C4 (Ark, Bahamut, Madeen) restarts g_btlfxLoader.
 
-## Trance entry  (status: reference: btl_gainTrance was already [runtime]; the leads stay unnamed)
+## Trance entry  (status: reference: btl_gainTrance was already [runtime]; leads named from code in the ovl_0b cleanup pass: btl_swapPartyModelStep, btl_loadPartyMotions, btl_reapplyStatusLook, btl_applyBgLight, btl_setMeshRgb; func_800AB3E4 stays unnamed)
 - With the party's trance gauges poked to 0xFE (+0x78) and the Malboro left to act (`g_trance4`, deterministic):
   btl_gainTrance is called 2x from btl_applyCalcResult+0x318 when "Virus Tentacles" hit. Eiko's gauge overflowed, so
   btl_addStatus(Eiko, 0x4000) ran from btl_gainTrance+0x1B4. Effect 0x101 (the trance transformation) followed.
@@ -1113,7 +1113,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   btlfx_runScript+0x68 / +0x684, reads CD via cd_readChunks: probably the trance model swap), func_800BD698,
   func_800C0D24 → func_800C2344 → func_800C8D18. Leads only.
 
-## Battle entry (from the ovl_0b entry point)  (status: applied except btl_loadSoundBanks (low-medium) and the leads; main's call to btl_entry stays func_800A859C, see names_from_port.txt)
+## Battle entry (from the ovl_0b entry point)  (status: applied except btl_loadSoundBanks (low-medium); leads named from code in the ovl_0b cleanup pass: btl_loadModelsStep, btl_registerModel, btl_initEnemyState, btl_saveEnemyCluts, btl_savePartyCluts; main's call to btl_entry stays func_800A859C, see names_from_port.txt)
 - Run e_malboro: `build/rt3/entry3.py e_malboro 899 2714 1200` (enter_battle from `disc3_pandemonium_lv99_field`,
   break at 0x800A859C, then coverage). Order by first-hit frame is in `build/rt3/order.py e_malboro --all`.
 - func_800A859C → btl_entry: game_main's mode-2 case calls it right after game_loadModeOverlay(2) (the break hit there).
@@ -1156,7 +1156,7 @@ for a name on its own. Port names are leads; the decomp code has to confirm each
   ellipses under all units (abl_model, 0.51 % of pixels; build/rt3/abld_model.png). Stubbing func_800C7B84,
   func_800C7CC8, func_800C9040 or func_800C1A8C changed nothing at idle. high / medium-high.
 
-## Effect emitters and wrappers (ovl_0b D0B18-D5C30)  (status: applied for medium and up, incl. the btlfx_mod.h members; not applied: D437C/D4228/D40CC (no names proposed), D198C/D45FC/D1BC4/D2938 (medium-low), D2DBC/D0B18/D23D8 (low-medium/low), leads)
+## Effect emitters and wrappers (ovl_0b D0B18-D5C30)  (status: applied for medium and up, incl. the btlfx_mod.h members; the ovl_0b cleanup pass added D198C btlfx_drawSprite, D1BC4 btlfx_drawSpriteAtOt, D2938 btlfx_drawFan, D2DBC btlfx_drawBackdropSprite, D0B18 btlfx_drawRippleGrid, D23D8 btlfx_drawRings, D3B6C btlfx_drawSpriteLine from code; the inner emitters D40CC, D4228, D437C, D45FC, D57D0, D59D0 carry btlfx_emit* names)
 - Hit counts per effect (fx_* runs, effect range only): an emitter runs once per wrapper call that passes the
   wrapper's depth/count checks, so its count equals the wrapper's or is slightly lower. D1680 = D4478,
   D1D74 = D3ED4, D198C = D45FC, D1FFC = D40CC + D4228 + D437C, D23D8 ⊃ D4768 + D4A30, D2938 = D57D0 + D59D0,
