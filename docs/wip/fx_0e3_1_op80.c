@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_1 fx_0e3_1_op80 (summon: hand lightning, bolt rings, final blast).
- * Status (pass 3): 66 aligned mismatches by build/w/cmp.py -b (ignoring branch targets; was 244), same length as
+ * Status (pass 3): 59 aligned mismatches by build/w/cmp.py -b (ignoring branch targets; was 244), same length as
  * the original (3210 instructions). Pass 3 levers:
  * - a call result passed to a later call in a single-set variable (qa, qb, q4b, x2k; block-local in { }): sched1's
  *   birthing boost then puts the v0 copy right before the next call (its delay slot), as in the original.
@@ -8,6 +8,8 @@
  * - shared loop variables split per loop (ang1, ang2/j1/j2, i4/ang4, i9 kept), case 4's k7a, kb for k13 >> 6,
  *   the frame == 0x26 call result in a block-local p26, y10 reused for the second ring's cos value (the original
  *   keeps both in s4).
+ * - case 5's second func_800D23D8 pair reuses x19/y12 (the original keeps them in s4/s3 for both calls); the
+ *   shake block's k16 >> 12 is its own variable x21 (t0 in the original).
  * - case 2's r2.vz = work->unkBC.vz survives flow's dead-store removal only when another stack store sits between
  *   it and r2.vz = (frame << 5) + 0x400 (here s2.vz = 0).
  * - a dead `struct { s32 x; } dq = { frame };` block at the start of the else branch: its CLOBBER gets the spill
@@ -170,6 +172,7 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
     s32 x18;
     s32 x19;
     s32 x20;
+    s32 x21;
     s32 y1;
     s32 y2;
     s32 y3;
@@ -877,9 +880,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             x19 = ex->math_cos(k14) + 0x1800;
             y12 = ((ex->math_cos(k14) * 3) >> 2) + 0x400;
             ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1C), &work->unk30, NULL, x19, 0, 1, y12);
-            x20 = 0x5000 - t * 2;
-            x19 = ex->math_cos(k14);
-            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk30, &r9, x20, 0, 1, x19);
+            x19 = 0x5000 - t * 2;
+            y12 = ex->math_cos(k14);
+            ex->func_800D23D8((u8 *)ex->btlfx_getFileData(entry->unk8, 0x1B), &work->unk30, &r9, x19, 0, 1, y12);
             env->unk28 = 0;
             ex->btlfx_drawBackdrop((BtlBgLayers *)ex->btlfx_getFileData(entry->unk8, 0x16), frame);
             ex->func_800E6624(work->unk4 * 8, 0x340, 0x100, 0x20, 0xC0, 0x360, 0x100);
@@ -905,9 +908,9 @@ s32 fx_0e3_1_op80(s32 mode, Fx0e31Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         }
         if (shake != 0) {
             k16 = shake << 7;
-            x20 = k16 >> 12;
+            x21 = k16 >> 12;
             if (work->unk4 == work->unk4 / 6 * 6) {
-                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0, x20 * 2 / 3, x20);
+                ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 1, 0, x21 * 2 / 3, x21);
             }
             if (!((work->unk4 - 3) & 7)) {
                 ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 2), 2, k16 >> 13, k16 >> 13, 0);
