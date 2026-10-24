@@ -1,5 +1,5 @@
 /* Draft of fx_0e3_0 fx_0e3_0_op80.
- * Status (pass 3, build/w/cmp.py): 89 mismatched rows ignoring registers and stack offsets (was 312), 274 counting
+ * Status (pass 3, build/w/cmp.py): 38 mismatched rows ignoring registers and stack offsets (was 312), 217 counting
  * registers (was 936); frame size matches (400), 2498 vs 2501 instructions. ex/work now get s2/s3 like the original:
  * the multi-role variables were split by role (build/w/greedy.py with split2.py; the _bNNN names are those splits).
  * Pass 3 levers: modes 0/1 fall through to one `return 0` (if/else chain; `if (done) return 1;` before
@@ -633,13 +633,11 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
         ex->Hi_GetSummonBonePos(SUMMON(env)->unk60, 0, (u16 *)&work->unk30);
         work->unk30.vy -= 0x200;
         if (frame >= 5) {
-            work->unk30.vy += 0x80 + ((ex->math_sin(((frame - 4) << 12) / 244) * 0x180) >> 12);
+            work->unk30.vy += 0x80 + ((ex->math_sin((((frame - 4) << 12) / 61) >> 2) * 0x180) >> 12);
         } else {
             work->unk30.vy += frame << 5;
         }
-        v0.vx = work->unk30.vx;
-        v0.vy = work->unk30.vy;
-        v0.vz = work->unk30.vz;
+        BTLFX_COPY_SVEC(&v0, &work->unk30);
         if ((u32)(frame - 0x1C) < 7) {
             v0.vx += (ex->math_cos(((frame - 0x1C) << 12) >> 5) >> 7) * ((frame & 1) * 2 - 1);
         }
@@ -663,7 +661,8 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
                 func_801E7B40(entry, (Fx0e30Bolt *)&D_801EB0E8[i_b635], &ba, &bb, amp5, amp5, ang, 0x200, 0,
                               ex->btlfx_randCentered(0x400) + 0xC00);
             }
-        } else {
+        }
+        if (frame >= 0xC) {
             s32 ang;
             s32 cnt;
             s32 amp;
@@ -688,17 +687,19 @@ s32 fx_0e3_0_op80(s32 mode, Fx0e30Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             ex->btlfx_drawScreenTint((u32 *)(env->unk20 + 1), 1, 0x5C, 0x5C, 0x5C);
         }
         if (frame >= 0x14) {
-            a_b664 = ((frame - 0x14) << 12) / 180;
-            y_b657 = ex->math_cos(a_b664);
+            a_b664 = (((frame - 0x14) << 12) / 45) >> 2;
+            y_b657 = ex->math_cos(a_b664) / 3 + 0x200;
             rot2.vx = 0x800;
+            rot2.vy = 0;
             rot2.vz = 0;
             pos2.vx = work->unk10.vx;
-            pos2.vy = work->unk10.vy + 0x5A5;
-            rot2.vy = (frame << 5) + 0x800;
+            pos2.vy = work->unk10.vy;
             pos2.vz = work->unk10.vz;
+            pos2.vy += 0x5A5;
+            rot2.vy = (frame << 5) + 0x800;
             sc2.vy = ex->math_cos(a_b664) >> 2;
             b = ex->math_sin(a_b664) * 4 + 0x800;
-            d = ((y_b657 / 3 + 0x200) >> 5) - 0x80;
+            d = (y_b657 >> 5) - 0x80;
             for (i_b671 = 0; i_b671 < 9; i_b671++) {
                 pos2.vy -= 0x11F;
                 sc2.vx = sc2.vz = ((ex->math_sin((i_b671 << 11) >> 3) + 0x800) * b) >> 12;
