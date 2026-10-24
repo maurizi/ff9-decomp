@@ -500,10 +500,10 @@ s32 fx_17d_4_op80(s32 mode, Fx17d4Work80 *work, Unk800F78A4 *env, Unk80100C78Ent
             } else {
                 g = 1;
                 r_c2 = 0x1D;
-                r_c6 = ((frame - 0x26) << 12) / 13;
-                n5 = (r_c6 >> 3) + 0x40;
+                i_c3 = ((frame - 0x26) << 12) / 13;
+                n5 = (i_c3 >> 3) + 0x40;
                 f3 = 0x15;
-                w13_c6 = 0x1000 - r_c6 * 2 / 3;
+                w13_c6 = 0x1000 - i_c3 * 2 / 3;
                 k = w13_c6;
                 q_c6 = k;
             }
