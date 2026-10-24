@@ -149,7 +149,7 @@ s32 wm_frameMain(void) {
         cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
-        while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
+        while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
         }
         break;
     case WM_EVT_FIELD:
@@ -160,7 +160,7 @@ s32 wm_frameMain(void) {
         cd_syncAsync(0);
         while (cd_getState() != 0) {
         }
-        while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
+        while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
         }
         break;
     }
@@ -320,7 +320,7 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         wm_seStop(g_worldReqParams[0]);
         break;
     case WM_REQ_MUSIC_VOL_INTPL:
-        wm_soundCommand(WM_SND_MUSIC_VOL_INTPL, 0, g_worldReqParams[2], g_worldReqParams[1], 0);
+        wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, g_worldReqParams[2], g_worldReqParams[1], 0);
         break;
     case WM_REQ_CAMERA_SMOOTH:
         wm_cameraSmooth();
@@ -351,7 +351,7 @@ void w_frameSetParameter(u32 arg0, s32 arg1) {
         wm_musicFade(arg1);
         break;
     case WM_REQ_MUSIC_FADE_FORCE:
-        wm_soundCommand(WM_SND_MUSIC_VOL_INTPL, 0, arg1, 0, 0);
+        wm_soundCommand(SND_MUSIC_VOL_INTPL, 0, arg1, 0, 0);
         break;
     case WM_REQ_AUTO_PILOT_ON:
         wm_autoPilotOn();
@@ -641,7 +641,7 @@ void wm_finishLoad(void) {
     DrawSync(0);
     w_movementChange();
     w_musicUpdate();
-    while (wm_soundCommand(WM_SND_GET_STATE, 0, 0, 0, 0) != 0) {
+    while (wm_soundCommand(SND_GET_STATE, 0, 0, 0, 0) != 0) {
     }
 }
 
