@@ -548,3 +548,15 @@ btlfx_stepParticleAltDrag = 0x800DFE54; // type:func [code] btlfx_stepParticle w
 btlfx_stepParticleNoDrag = 0x800DFF5C; // type:func [code] particle motion step without drag (motion types 2 and 4) - an s16 accumulator at unk10 grows by speed * step >> 7 and is added to the y step, position += direction * time step, src_equiv/ovl_0b/math.c, jumps into btlfx_stepParticleNoDragAlt
 btlfx_stepParticleNoDragAlt = 0x800DFF64; // type:func [code] btlfx_stepParticleNoDrag with the accumulator at unk24.s.x (motion type 3), src_equiv/ovl_0b/math.c
 btlfx_stepModuleParticle = 0x800E0014; // type:func [code] export slot 0x008, the effect modules' own particle records (fx_026 shards etc.) - velocity scaled by the drag at +0x12, gravity added to the stored velocity.y, position += velocity + bias (z, x, y order) << 6, out = position >> 12, src_equiv/ovl_0b/math.c
+btlfx_emitSprites = 0x800D40CC; // type:func [code] btlfx_drawSprites' SPRT (0x14-byte packets) emitter - RTPS per 3-byte point, w x h from the context, all into one OT entry, src_equiv/ovl_0b/sprites.c
+btlfx_emitFixedSprites = 0x800D4228; // type:func [code] btlfx_drawSprites' fixed-size SPRT (0x10-byte packets) emitter, src_equiv/ovl_0b/sprites.c
+btlfx_emitDots = 0x800D437C; // type:func [code] btlfx_drawSprites' TILE_1 (0xC-byte packets) emitter, src_equiv/ovl_0b/sprites.c
+btlfx_emitScreenSprites = 0x800D45FC; // type:func [code] screen-space SPRT per 10-byte record with a DR_MODE per tpage run, returns the advanced DR_MODE buffer (func_800D198C, func_800D1BC4), src_equiv/ovl_0b/sprites.c
+btlfx_emitRingQuads = 0x800D4768; // type:func [code] func_800D23D8's textured POLY_FT4 ring grid (rings of GPF-scaled direction pairs), src_equiv/ovl_0b/rings.c
+btlfx_fadeColor = 0x800D4A08; // type:func [code] DPCS of $s1 by 0x1000 - $t1, called by btlfx_emitRingGouraud for its four colors, src_equiv/ovl_0b/rings.c
+btlfx_emitRingGouraud = 0x800D4A30; // type:func [code] func_800D23D8's POLY_G4 ring grid with a DR_MODE per quad, src_equiv/ovl_0b/rings.c
+btlfx_emitFrameQuad = 0x800D57D0; // type:func [code] func_800D2938's textured POLY_FT4 for a sprite frame, src_equiv/ovl_0b/frames.c
+btlfx_linkFrameTri = 0x800D597C; // type:func [code] btlfx_emitFrameFan's OT link of a POLY_G3 (length 6) with the caller's registers, src_equiv/ovl_0b/frames.c
+btlfx_emitFrameFan = 0x800D59D0; // type:func [code] func_800D2938's Gouraud frame - three POLY_G3 in a fan and a DR_MODE, src_equiv/ovl_0b/frames.c
+btlfx_runFrame = 0x800E3EEC; // type:func [code] btl_drawScene's per-frame effect update - DR_STP bracket at OT 0xFFF, effect random seed swapped in from g_btlfxRandSeed, btlfx_runScript, btlfx_updateLoader / btlfx_updateTasks / func_800E3C98 (partly on the scratchpad stack), returns the packet pointer, src_equiv/ovl_0b/effect_frame.c
+g_btlfxRsqrtTable = 0x800CFA80; // [code] s16 table in .text, entry i = 0x1000 * sqrt(64 / (i + 64)) for i < 192 (checked against the values), btlfx_emitTrailRibbon3D / btlfx_emitTrailRibbonScreen normalize vectors with it after LZCS

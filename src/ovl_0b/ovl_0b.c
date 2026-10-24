@@ -2650,7 +2650,7 @@ void btl_drawScene(GameData *arg0, Battle *arg1, s32 arg2) {
     btlseq_update();
     arg2 = (s32)btlbg_draw(&arg0->unk18, arg1->unk11C0->unk1C, arg2, arg0->unk10[arg0->unk8],
                               arg1->unk11C0->unk2C[arg0->unk8]);
-    arg2 = (s32)func_800E3EEC((u8 *)arg2);
+    arg2 = (s32)btlfx_runFrame((u8 *)arg2);
     arg2 = (s32)btl_drawPopups((u8 *)arg2);
     btl_drawBanner((u8 *)arg2);
 }

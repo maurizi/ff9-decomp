@@ -78,6 +78,41 @@ for f, nb, counts in [("btlfx_projectSliceMesh", 4, [2, 0, 4, 3]), ("btlfx_proje
         pk[0x80103000 + 2 * i] = (c, 2)
     run(f, "mesh_project.c", 60, ["--arg-set", f"0={M:x}", "--arg-set", "1=0", "--arg-mask", "2:ffff"], pk)
 
+# sprites.c: context at M, points at 0x80101000, packets at 0x80200000, OT at 0x80300000
+PTRS = ["--arg-set", "0=80101000", "--arg-set", f"1={M:x}", "--arg-set", "2=80200000", "--arg-set", "3=80300000"]
+for f in ["btlfx_emitAnimQuads", "btlfx_emitSprites", "btlfx_emitFixedSprites", "btlfx_emitDots"]:
+    for fade in (0x800, 0xFFFFFFFF):
+        run(f, "sprites.c", 100, PTRS, {M: (0x80102000, 4), M + 4: (0x80103000, 4), M + 0x1C: (3, 4),
+                                         M + 0x18: (fade, 4), M + 0x20: (0, 4)})
+for n in (3, 0):
+    run("btlfx_emitParticles", "sprites.c", 100, PTRS, {M + 0x14: (n, 4), M + 0x18: (0, 4)})
+    run("btlfx_emitScreenSprites", "sprites.c", 100, PTRS, {M + 0x14: (n, 4), M + 0x18: (0x80104000, 4)})
+
+# rings.c (btlfx_emitRingGouraud calls btlfx_fadeColor, just below it, with its own registers)
+for f, extra in [("btlfx_emitRingQuads", []), ("btlfx_emitRingGouraud", ["--start", "800D4A08"])]:
+    for stride, on in [(3, 1), (7, 0), (1, 1)]:
+        pk = {M + 0x8: (0x80101000, 4), 0x80101000: (on, 2), M + 0xC: (0x80102000, 4), M + 0x10: (0x80103000, 4),
+              M + 0x14: (0x80104000, 4), M + 0x18: (0, 4), M + 0x1C: (4, 4), M + 0x24: (2, 4)}
+        if f == "btlfx_emitRingGouraud":
+            pk[M + 0x20] = (0x80105000, 4)
+        run(f, "rings.c", 60, ["--arg-set", f"0={stride:x}"] + PTRS[2:] + extra, pk)
+
+# frames.c (btlfx_emitFrameFan calls btlfx_linkFrameTri, just below it, with its own registers)
+for f, extra in [("btlfx_emitFrameQuad", []), ("btlfx_emitFrameFan", ["--start", "800D597C"])]:
+    for fade in (0x800, 0xFFFFFFFF):
+        pk = {M + 4: (0, 4), M + 8: (fade, 4), M + 0x10: (0x80104000 if f == "btlfx_emitFrameQuad" else 0x40, 4),
+              M + 0x14: (1, 4)}
+        run(f, "frames.c", 100, ["--arg-set", "0=80102000"] + PTRS[2:] + extra, pk)
+
+# trails.c: ring buffer at 0x80101000 (last index, head)
+for f in ["btlfx_emitTrailRibbonFlat", "btlfx_emitTrailRibbon3D", "btlfx_emitTrailLines", "btlfx_emitTrailRibbonScreen"]:
+    for count, last, head in [(3, 5, 2), (1, 5, 5), (4, 2, 1)]:
+        run(f, "trails.c", 80, ["--arg-set", f"0={count:x}"] + PTRS[2:],
+            {M: (0, 4), M + 4: (0x80101000, 4), 0x80101000: (last, 1), 0x80101001: (head, 1)})
+
+# effect_frame.c: the original saves $sp in g_btlfxSavedSp (the C doesn't switch stacks)
+run("btlfx_runFrame", "effect_frame.c", 200, ["--ignore", "800FF468-800FF46C"])
+
 
 def main():
     only = set(sys.argv[1:])

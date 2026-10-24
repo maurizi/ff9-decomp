@@ -642,7 +642,7 @@ void func_800D198C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3, s32 arg4) {
     c.unk18 = g_btlfxEnv->unk24;
     z = (z - g_btlfxEnv->unk28) >> 2;
     if ((u32)z < 0x1000) {
-        g_btlfxEnv->unk24 = func_800D45FC(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+        g_btlfxEnv->unk24 = btlfx_emitScreenSprites(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
     }
 }
 
@@ -693,7 +693,7 @@ void func_800D1BC4(u32 arg0, u8 *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s
     c.unk8 = arg3;
     c.unk18 = g_btlfxEnv->unk24;
     if (arg0 < 0x1000) {
-        g_btlfxEnv->unk24 = func_800D45FC(arg1, &c, prim, &g_btlfxEnv->unk20[arg0]);
+        g_btlfxEnv->unk24 = btlfx_emitScreenSprites(arg1, &c, prim, &g_btlfxEnv->unk20[arg0]);
     }
 }
 
@@ -846,11 +846,11 @@ void btlfx_drawSprites(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg
     z = (z - g_btlfxEnv->unk28) >> 2;
     if ((u32)z < 0x1000 && c.unk1C != 0) {
         if (size == 0x14) {
-            func_800D40CC(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+            btlfx_emitSprites(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
         } else if (size == 0xC) {
-            func_800D437C(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+            btlfx_emitDots(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
         } else {
-            func_800D4228(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
+            btlfx_emitFixedSprites(arg0, &c, prim, &g_btlfxEnv->unk20[z]);
         }
         addPrimLenIn(&g_btlfxEnv->unk20[z], tp, 0x1000000);
     }
@@ -958,7 +958,7 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
         c.unk24 = cnt;
         c.unk1C = w;
         c.unk18 = g_btlfxEnv->unk28;
-        func_800D4768(k, &c, prim, g_btlfxEnv->unk20);
+        btlfx_emitRingQuads(k, &c, prim, g_btlfxEnv->unk20);
         break;
     case 2:
         m2 = s1[0] ? 2 : 1;
@@ -982,7 +982,7 @@ void func_800D23D8(u8 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s32 arg4, s
         d.unk28 = (arg5 & 3) << 5;
         d.unk1C = w;
         d.unk18 = g_btlfxEnv->unk28;
-        func_800D4A30(m2, &d, prim, g_btlfxEnv->unk20);
+        btlfx_emitRingGouraud(m2, &d, prim, g_btlfxEnv->unk20);
         break;
     }
 }
@@ -1062,7 +1062,7 @@ void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c1.unk4 = g_btlfxEnv->unk28;
         prim = g_btlfxEnv->unk24;
         g_btlfxEnv->unk24 = prim + 0x28;
-        func_800D57D0((u8 *)arg0, &c1, prim, g_btlfxEnv->unk20);
+        btlfx_emitFrameQuad((u8 *)arg0, &c1, prim, g_btlfxEnv->unk20);
     } else {
         c2.unkC = (arg5 & 3) << 5;
         c2.unk14 = t;
@@ -1072,7 +1072,7 @@ void func_800D2938(Unk800D2938 *arg0, SVECTOR *arg1, SVECTOR *arg2, s32 arg3, s3
         c2.unk4 = g_btlfxEnv->unk28;
         prim = g_btlfxEnv->unk24;
         g_btlfxEnv->unk24 = prim + 0x5C;
-        func_800D59D0((u8 *)arg0, &c2, prim, g_btlfxEnv->unk20);
+        btlfx_emitFrameFan((u8 *)arg0, &c2, prim, g_btlfxEnv->unk20);
     }
 }
 
@@ -1440,21 +1440,21 @@ void func_800D3B6C(u8 *arg0, SVECTOR *arg1, s32 arg2, s32 arg3) {
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitAnimQuads);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D40CC);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitSprites);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4228);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitFixedSprites);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D437C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitDots);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitParticles);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D45FC);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitScreenSprites);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4768);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitRingQuads);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4A08);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_fadeColor);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D4A30);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitRingGouraud);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailRibbonFlat);
 
@@ -1462,11 +1462,11 @@ INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailRibbon3D);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailLines);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D57D0);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitFrameQuad);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D597C);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_linkFrameTri);
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800D59D0);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitFrameFan);
 
 INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_emitTrailRibbonScreen);
 
@@ -6585,7 +6585,7 @@ void func_800E3E08(void) {
     }
 }
 
-INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", func_800E3EEC);
+INCLUDE_ASM("asm/us/ovl_0b/nonmatchings/ovl_0b_2", btlfx_runFrame);
 
 void func_800E4098(void) {
     u8 buf[0x40];

@@ -521,7 +521,8 @@ typedef struct Unk800F78A40 {
     u8 unkF;
     u8 pad10[0x1C - 0x10];
     u32 unk1C;
-    u8 pad20[0x23 - 0x20];
+    u8 unk20; /* cleared by btlfx_runFrame before btlfx_runScript; set: skip the frame's tasks */
+    u8 pad21[0x23 - 0x21];
     u8 unk23;
 } Unk800F78A40;
 
@@ -554,6 +555,8 @@ typedef struct {
     s32 unk30;
 } Unk800F78A4;
 extern Unk800F78A4 *g_btlfxEnv;
+/* u16 table inside .text (0x800CFA80): 0x1000 * sqrt(64 / i) for i = 0x40-0xFF, the trail ribbons' normalization */
+extern s16 g_btlfxRsqrtTable[];
 
 typedef struct {
     s32 unk0;
@@ -1464,9 +1467,9 @@ typedef struct {
     s32 unk24; /* code */
 } Unk800D3ED4Ctx;
 void btlfx_emitAnimQuads(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
-void func_800D40CC(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
-void func_800D4228(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
-void func_800D437C(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void btlfx_emitSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void btlfx_emitFixedSprites(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
+void btlfx_emitDots(u8 *, Unk800D3ED4Ctx *, u8 *, s32 *);
 DR_TPAGE *btlfx_allocDrMode(s32, s32);
 void func_800D2DBC(u8 *, s32, s32, s32, s32, s32);
 
@@ -2525,7 +2528,9 @@ typedef struct {
     u16 *unk10;
     s32 unk14;
     s32 unk18; /* tpage */
-    u8 pad1C[0x28 - 0x1C];
+    u32 unk1C; /* set by btlfx_emitFrameQuad: the quad's last corner (x word, z) */
+    u32 unk20;
+    u8 pad24[0x28 - 0x24];
 } Unk800D57D0Ctx;
 
 typedef struct {
@@ -2537,8 +2542,10 @@ typedef struct {
     s32 unk14;
 } Unk800D59D0Ctx;
 
-void func_800D57D0(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
-void func_800D59D0(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
+void btlfx_emitFrameQuad(u8 *, Unk800D57D0Ctx *, u8 *, s32 *);
+void btlfx_emitFrameFan(u8 *, Unk800D59D0Ctx *, u8 *, s32 *);
+/* asm convention: packet $a2, OT $a3, SZ $t2, z base $t4 (src_equiv/ovl_0b/frames.c) */
+void btlfx_linkFrameTri(u8 *, s32 *, u32, s32);
 void func_800D2938(Unk800D2938 *, SVECTOR *, SVECTOR *, s32, s32, s32, s32);
 void func_800E2F84(Pool30 *, Pool30Entry *, SVECTOR *, SVECTOR *);
 extern s32 D_801014B0; /* saved g_btlfxEnv->unk28 */
@@ -3084,7 +3091,7 @@ void func_800AB758(s32, s32, s32 **, s32 **, s32 **);
 BtlUnit *btlui_getActiveUnit(void);
 void btlseq_update(void);
 u8 *btlbg_draw(MATRIX *, s32, s32, u32 *, s32);
-u8 *func_800E3EEC(u8 *);
+u8 *btlfx_runFrame(u8 *);
 u8 *btl_drawPopups(u8 *);
 void btl_updateHpStatus(BtlUnit *);
 void btl_updateUnitStatus(BtlUnit *);
@@ -3194,6 +3201,18 @@ extern s32 D_800F78AC;
 void SetDrawMove(DR_MOVE *p, RECT *rect, int x, int y);
 void func_8005562C(s32);
 void func_800D0940(void);
+/* the frame update btlfx_runFrame runs (src_equiv/ovl_0b/effect_frame.c) */
+void func_800E702C(void);
+void btlfx_runScript(void);
+void btlfx_updateLoader(void);
+s32 btlfx_updateTasks(void);
+void func_800E3C98(void);
+void func_800E3E08(void);
+void func_800E9578(void);
+extern s32 g_btlfxRandSeed;
+extern s32 g_btlfxSavedSp;
+/* main exe: candidates for ff9.h */
+s32 func_80054B78(void);
 extern u8 D_800F6FB8[];
 extern u8 D_800A7C20[]; /* "/\xFF" suffix string */
 void btl_setBanner(s32, s32);
@@ -3704,7 +3723,7 @@ typedef struct {
     u8 *unk18;
 } Unk800D1BC4Ctx;
 
-u8 *func_800D45FC(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
+u8 *btlfx_emitScreenSprites(u8 *, Unk800D1BC4Ctx *, u8 *, s32 *);
 
 
 #define gte_stszotz(r0) __asm__ volatile( \
@@ -4002,8 +4021,10 @@ typedef struct {
     u8 pad2C[0x40 - 0x2C];
 } Unk800D4A30Ctx;
 
-void func_800D4768(s32, Unk800D4768Ctx *, u8 *, s32 *);
-void func_800D4A30(s32, Unk800D4A30Ctx *, u8 *, s32 *);
+void btlfx_emitRingQuads(s32, Unk800D4768Ctx *, u8 *, s32 *);
+void btlfx_emitRingGouraud(s32, Unk800D4A30Ctx *, u8 *, s32 *);
+/* asm convention: color in $s1 (result in $s1), fade in $t1 (src_equiv/ovl_0b/rings.c) */
+u32 btlfx_fadeColor(u32, s32);
 
 /* GTE: load 3 halfwords into IR1-3; general purpose interpolation with base */
 #define gte_ldsv(r0) __asm__ volatile( \

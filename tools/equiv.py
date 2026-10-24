@@ -188,6 +188,15 @@ class Cpu:
         for i, reg in enumerate(sorted(GTE_OUT)):
             self.g[reg] = struct.unpack_from("<I", h, i * 4)[0]
         self.g[63] = struct.unpack_from("<I", h, 124)[0]
+        # The hardware's register widths, so that depths land in an ordering table and code that tests them
+        # takes both ways: OTZ and SZ0-SZ3 are u16, IR0-IR3 s16, LZCR 0-32; MAC0 is 0 one time in eight.
+        for reg in (7, 16, 17, 18, 19):
+            self.g[reg] &= 0xFFFF
+        for reg in (8, 9, 10, 11):
+            self.g[reg] = sx16(self.g[reg]) & MASK
+        self.g[31] %= 33
+        if self.g[63] % 8 == 0:
+            self.g[24] = 0
 
     def external(self, target):
         name = self.names.get(target, f"0x{target:08X}")
@@ -401,6 +410,8 @@ def main():
                          "e.g. a loop count inside a structure an --arg-set pointer points to")
     ap.add_argument("--end", help="run the original up to this address (hex) instead of the next symbol: for an "
                                   "entry that jumps into a following function's body (shared tails)")
+    ap.add_argument("--start", help="run the original from this address (hex) up: for a helper below the function "
+                                    "that it calls with its own register convention (the call then runs in place)")
     ap.add_argument("--uncovered", action="store_true", help="list the original's instructions no trial ran")
     ap.add_argument("-v", action="store_true", help="print the first difference in full")
     a = ap.parse_args()
@@ -424,6 +435,7 @@ def main():
     osize = max(osize, min((v for v, _ in index.values() if v > oaddr), default=oaddr + osize) - oaddr)
     if a.end:
         osize = int(a.end, 16) - oaddr
+    ostart = int(a.start, 16) if a.start else oaddr
 
     # Only rodata + text are real; .data/.bss read as random like everything else.
     images = []
@@ -499,7 +511,7 @@ def main():
                 addr, val = pk.split("=")
                 val, _, size = val.partition(":")
                 mem.write(int(addr, 16), int(val, 16), int(size or "4"))
-            lo, hi = (oaddr, oaddr + osize) if which == "orig" else (dlo, dhi)
+            lo, hi = (ostart, oaddr + osize) if which == "orig" else (dlo, dhi)
             cpu = Cpu(mem, lo, hi, protos, names, t, args, stops if which == "draft" else ())
             try:
                 cpu.run(oaddr if which == "orig" else dsyms[func])
