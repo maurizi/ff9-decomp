@@ -9,15 +9,19 @@
  * 0x1F800000), depths in D_800D29F8, lit colours in D_800D23F0 and fog colours in D_800D1FF0.
  *   o+0x02: face count (s16 in func_800B3FEC, u16 elsewhere; read once, do-while, so 0 means 65536)
  *   o+0x08: faces, 16 bytes each: word 0 = the three vertex indices in bytes 0-2 (bit 24: depths + 0x200
- *           in the land routines); words 1-3 = the POLY_GT3 uv0|clut, uv1|tpage and uv2 words (bit 17 of
+ *           in the world-block routines); words 1-3 = the POLY_GT3 uv0|clut, uv1|tpage and uv2 words (bit 17 of
  *           word 3: use the alternate texture page described by the 12-byte entry *D_800D27F0, which every
  *           routine but func_800B3FEC first copies to the scratchpad at 0x1F8003D0).
  * A face is drawn when NCLIP of its three screen points is > 0 and its OT slot is in range. It gets
  *   - a POLY_G3 of the fog colours, if any of them is non-zero (in the variants that draw fog); its code is
  *     0x30, or 0x32 (semi-transparent) when the face has a non-zero lit colour;
- *   - a POLY_GT3 of the lit colours (code 0x34, or 0x36 in the sea routines), in most variants only when a
+ *   - a POLY_GT3 of the lit colours (code 0x34, or 0x36 in the placed-model routines), in most variants only when a
  *     lit colour is non-zero.
  * Both go into the same OT slot, the G3 first. The routines return the next free packet address.
+ * World-block faces in OT slots >= 0x9C4 get half-resolution UVs: with the alternate-page bit they are moved
+ * into that page (CLUT and tpage from it), otherwise the CLUT moves back 16 entries and the tpage's colour
+ * depth bits are cleared (4-bit). Nearer faces, and all placed-model faces, only swap in the alternate page's
+ * CLUT offset and tpage when the bit is set.
  * A vertex index >= 0xF4 would read the scratchpad's alternate-page copy or register save area, as in the
  * original (the game's meshes stay below that).
  *
@@ -178,6 +182,22 @@ static u32 *wf_face(u32 *face, u32 *pkt, u32 *ot, s32 flags, s32 limit) {
     return pkt + 10;
 }
 
+static s32 wf_mesh(u8 *o, s32 pkt, s32 ot, s32 flags, s32 limit) {
+    u32 *alt = (u32 *)(SCRATCHPAD + 0x3D0);
+    u32 *src = (u32 *)D_800D27F0;
+    u32 *face = *(u32 **)(o + 8);
+    u16 n = *(u16 *)(o + 2);
+    u32 *p = (u32 *)pkt;
+
+    alt[0] = src[0];
+    alt[1] = src[1];
+    alt[2] = src[2];
+    do {
+        p = wf_face(face, p, (u32 *)ot, flags, limit);
+        face += 4;
+    } while (--n != 0);
+    return (s32)p;
+}
 
 /* Faces of a func_800B3A80 mesh (u16 depths unused): all into OT slot 0xFA0, POLY_G3 fog under every
  * POLY_GT3. */
@@ -191,4 +211,30 @@ s32 func_800B3FEC(s32 o, s32 pkt, s32 ot) {
         face += 4;
     } while (--n != 0);
     return (s32)p;
+}
+
+/* World-block faces after func_800B4270 (g_worldFog set). */
+s32 func_800B4FD4(void *o, s32 pkt, s32 ot) {
+    return wf_mesh(o, pkt, ot, WF_Z32 | WF_FOG | WF_NEED_LIT | WF_LOD, 0xFFE);
+}
+
+/* World-block faces after func_800B53FC (no fog, far block: view z outside -10000..11000). */
+s32 func_800B5880(void *o, s32 pkt, s32 ot) {
+    return wf_mesh(o, pkt, ot, WF_Z32_GRID | WF_FOG | WF_NEED_LIT | WF_LOD, 0xFFE);
+}
+
+/* World-block faces after func_800B6338 (no fog, near block): off-screen faces culled, no fog primitive. */
+s32 func_800B6598(void *o, s32 pkt, s32 ot) {
+    return wf_mesh(o, pkt, ot, WF_Z32 | WF_CULL | WF_LOD, 0xF6A);
+}
+
+/* Placed-model faces (func_800BA458 modes 0 and 2): semi-transparent POLY_GT3 only. ot is the caller's OT
+ * already offset by its layer argument. */
+s32 func_800B5CD0(s32 o, s32 pkt, s32 ot) {
+    return wf_mesh((u8 *)o, pkt, ot, WF_Z16 | WF_NEED_LIT | WF_ALT | WF_SEMI, 0xF6A);
+}
+
+/* Placed-model faces, mode 1: as func_800B5CD0 plus the fog POLY_G3. */
+s32 func_800B5FD0(s32 o, s32 pkt, s32 ot) {
+    return wf_mesh((u8 *)o, pkt, ot, WF_Z16 | WF_FOG | WF_NEED_LIT | WF_ALT | WF_SEMI, 0xF6A);
 }
