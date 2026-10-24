@@ -1,4 +1,4 @@
-/* ovl_0a func_800B5958: link one mesh group's prebuilt primitives into the current OT (hand-written asm in the
+/* ovl_0a fldmdl_drawMesh: link one mesh group's prebuilt primitives into the current OT (hand-written asm in the
  * original, standard C ABI otherwise).
  *
  * The primitives already hold their colours/UVs; this fills in the screen positions from g_vtxScreenXY (computed
@@ -38,7 +38,7 @@ static const PrimKind kinds[8] = {
     { 0x10, 0, 0x0C, 0x0B, 0x14, 4, { 0x08, 0x0C, 0x10 } },        /* flat triangle */
 };
 
-void func_800B5958(Unk800C95C8 *model, u8 group) {
+void fldmdl_drawMesh(ModelObj *model, u8 group) {
     u8 *m = (u8 *)model;
     u8 *grp = *(u8 **)(*(u8 **)(m + 8) + 0x10) + group * 0x28;
     u8 *pkt = *(u8 **)(*(u8 **)(m + 0x44) + group * 12 + 4);

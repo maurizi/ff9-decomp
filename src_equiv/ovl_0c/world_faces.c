@@ -228,7 +228,7 @@ s32 wm_blockFacesNear(void *o, s32 pkt, s32 ot) {
     return wf_mesh(o, pkt, ot, WF_Z32 | WF_CULL | WF_LOD, 0xF6A);
 }
 
-/* Placed-model faces (func_800BA458 modes 0 and 2): semi-transparent POLY_GT3 only. ot is the caller's OT
+/* Placed-model faces (wm_drawModel modes 0 and 2): semi-transparent POLY_GT3 only. ot is the caller's OT
  * already offset by its layer argument. */
 s32 wm_modelFaces(s32 o, s32 pkt, s32 ot) {
     return wf_mesh((u8 *)o, pkt, ot, WF_Z16 | WF_NEED_LIT | WF_ALT | WF_SEMI, 0xF6A);

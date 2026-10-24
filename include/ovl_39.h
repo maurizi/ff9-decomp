@@ -1,29 +1,195 @@
 #ifndef OVL_39_H
 #define OVL_39_H
 
-/* Declarations local to overlay 0x39 (save / load menu, loaded at
+/* Declarations local to overlay 0x39 (save / load menu, menu 4, loaded at
  * 0x801EDF00). Overlay addresses mean different things in different
  * overlays, so they live here, not in ff9.h. */
 #define FF9_BUILTIN_MEMCPY /* see memcpy in psyq.h */
 #include "ff9.h"
 
+/* ---- constants ---- */
+
+/* SaveMenu.mode, from g_menu.arg; also the title text id (Save/Load/Save) */
+enum {
+    SAVE_MODE_SAVE,
+    SAVE_MODE_LOAD,
+    SAVE_MODE_NEXT_DISC /* disc change: location "Start of DISC N", disc and field from the 0x800B50xx overlay */
+};
+
+/* SaveMenu.state: index into s_menuSaveInputFns / s_menuSaveDrawFns / s_menuSaveUpdateFns */
+enum {
+    SAVE_ST_NONE,
+    SAVE_ST_SLOT,    /* picking MEMORY CARD slot 1/2 */
+    SAVE_ST_CHECK,   /* the CHECK window, "Checking..." the card */
+    SAVE_ST_CONFIRM, /* Yes/No question (format, overwrite) */
+    SAVE_ST_LIST,    /* picking a file */
+    SAVE_ST_ACCESS,  /* formatting, saving or loading */
+    SAVE_ST_SAVED    /* "Data saved." */
+};
+
+/* SaveMenu.phase */
+enum {
+    SAVE_PH_WAIT,    /* a window or fade is in progress */
+    SAVE_PH_MESSAGE, /* message window open (menuSave_inputMessage) */
+    SAVE_PH_READY    /* state input runs */
+};
+
+#define SAVE_FILES   15      /* rows of the file list, one per card block */
+#define SAVE_VERSION 0x30005 /* SaveHeader.version of a valid save, others show as corrupt */
+#define SAVE_ROW_H   0x3C    /* file row height in pixels */
+#define SAVE_LIST_ROWS 3     /* rows shown at once */
+#define SAVE_LIST_X  8
+#define SAVE_LIST_Y  0x2A
+#define SAVE_LIST_W  0x12C
+#define SAVE_LIST_H  (SAVE_LIST_ROWS * SAVE_ROW_H)
+#define PORTRAIT_NONE 0xFF   /* SaveMember.portrait of an empty party slot */
+
+/* SaveFile.state: s_menuSaveFileDrawers index, text SAVE_TEXT_FILE_HELP + state */
+enum {
+    SAVE_FILE_NONE,    /* cleared while a message is up */
+    SAVE_FILE_EMPTY,   /* "Empty block." */
+    SAVE_FILE_OTHER,   /* "Data from another game." */
+    SAVE_FILE_CORRUPT, /* "Data corrupted." (wrong SAVE_VERSION) */
+    SAVE_FILE_USED     /* FF9 save */
+};
+
+/* Card event results (menuSave_testSwCard/testHwCard: IOE, ERROR, TIMOUT, NEW) and card status per slot */
+enum {
+    CARD_RES_DONE,
+    CARD_RES_ERROR,
+    CARD_RES_TIMEOUT, /* no card: "MEMORY CARD is not inserted" */
+    CARD_RES_NEW      /* new card (_card_info), or unformatted (_card_load) */
+};
+
+/* s_menuSaveCardOp: what menuSave_cardPoll waits for */
+enum {
+    CARD_OP_INFO,  /* idle: polls _card_info on both slots in turn */
+    CARD_OP_LOAD,  /* _card_load */
+    CARD_OP_CLEAR, /* HwCARD events, as _card_clear gives (never set here) */
+    CARD_OP_3,
+    CARD_OP_READ,  /* read of one sector */
+    CARD_OP_WRITE  /* write of one sector */
+};
+
+#define CARD_SECTOR 0x80   /* read/write unit */
+#define CARD_BLOCK  0x2000 /* card block, the unit of DIRENTRY.size */
+#define CARD_CHAN(slot) ((slot) << 4) /* slot 0/1 (g_menu.unk2) -> channel 0x00/0x10 */
+
+/* s_menuSaveCheck.step: index into s_menuSaveCheckSteps */
+enum {
+    CHECK_STEP_NONE,
+    CHECK_STEP_CLEAR,   /* new card: _card_clear, then load */
+    CHECK_STEP_LOAD,    /* _card_load */
+    CHECK_STEP_HEADERS, /* reading each FF9 file's header */
+    CHECK_STEP_DONE,
+    CHECK_STEP_FAILED
+};
+#define CHECK_HEADER_SIZE 0x180 /* CardFileHeader + SaveHeader, what the file list needs */
+
+/* s_menuSaveAccess.mode */
+enum { ACCESS_SAVE, ACCESS_LOAD };
+
+/* s_menuSaveAccess.stage */
+enum {
+    ACCESS_STAGE_NONE,
+    ACCESS_STAGE_OPEN,       /* window opening, a 4-tick delay */
+    ACCESS_STAGE_FORMAT,     /* save to an unformatted card: _card_format next */
+    ACCESS_STAGE_FORMATTING, /* waiting for menuSave_onFormatDone */
+    ACCESS_STAGE_IO,         /* open the file and start the read/write next */
+    ACCESS_STAGE_WAIT        /* waiting for menuSave_onFileIo */
+};
+#define ACCESS_TICKS 4 /* ticks between access stages */
+#define ACCESS_GAUGE_STEP 5 /* gauge pixels per sector */
+#define ACCESS_GAUGE_W (SAVE_BUF_SIZE / CARD_SECTOR * ACCESS_GAUGE_STEP)
+
+/* s_menuSaveConfirm.choice */
+enum { CONFIRM_YES, CONFIRM_NO };
+
+#define SAVED_MSG_TICKS 0x40 /* "Data saved." closes by itself after this */
+
+/* Animated book of the CHECK and access windows: s_menuSaveBookImage goes to VRAM at
+ * (BOOK_X, BOOK_Y), 8-bit, BOOK_STRIPS strips of BOOK_STRIP_H lines,
+ * its CLUT to line BOOK_CLUT_Y; 4 frames of 0x2C x 0x21 (s_menuSaveBookFrames). */
+#define BOOK_CLUT_Y     0xE0
+#define BOOK_CLUT_SIZE  0x200 /* 256 colours */
+#define BOOK_X          0x40
+#define BOOK_Y          0x100
+#define BOOK_W          0x58  /* in 16-bit VRAM units */
+#define BOOK_STRIP_H    3
+#define BOOK_STRIPS     11
+#define BOOK_STRIP_SIZE (BOOK_W * 2 * BOOK_STRIP_H)
+#define BOOK_ANIM_TICKS  8 /* ticks per frame */
+#define BOOK_ANIM_FRAMES 4
+
+#define CRC16_POLY 0x8408 /* reflected CCITT polynomial */
+#define CRC16_INIT 0xFFFF
+
+/* g_saveMenuText ids */
+#define SAVE_TEXT_SLOT1           3    /* "slot 1", +1 "slot 2" */
+#define SAVE_TEXT_SAVES_TO        5    /* "Saves to\nMEMORY CARD slot 1." (+ slot) */
+#define SAVE_TEXT_LOADS_FROM      7    /* "Loads from\nMEMORY CARD slot 1." (+ slot) */
+#define SAVE_TEXT_FILE_HELP       9    /* + SaveFile.state: 10 "There is no save data." .. 12 */
+#define SAVE_TEXT_MEMBER1         0xD  /* party member name and level line, 0xD-0x10 */
+#define SAVE_TEXT_NEWLINE         0x11
+#define SAVE_TEXT_DO_NOT_REMOVE   0x12 /* "Do not remove MEMORY CARDs\nor Controllers..." */
+#define SAVE_TEXT_EMPTY_BLOCK     0x13
+#define SAVE_TEXT_OTHER_GAME      0x14
+#define SAVE_TEXT_DATA_CORRUPTED  0x15
+#define SAVE_TEXT_SELECT_SLOT     0x16 /* "Select MEMORY CARD slot." */
+#define SAVE_TEXT_CHECKING        0x17
+#define SAVE_TEXT_FORMATTING      0x19
+#define SAVE_TEXT_SELECT_BLOCK    0x1A
+#define SAVE_TEXT_SAVING          0x1D
+#define SAVE_TEXT_LOADING         0x1E
+#define SAVE_TEXT_NO_LOCATION     0x20 /* "Honolulu Harbor Court", when there is no location name */
+#define SAVE_TEXT_YES             0x21
+#define SAVE_TEXT_NO              0x22
+#define SAVE_TEXT_UNFORMATTED     0x23 /* "MEMORY CARD is unformatted.\nDo you want to format?" (+ slot) */
+#define SAVE_TEXT_FORMAT_YES      0x25 /* "Begins MEMORY CARD formatting." */
+#define SAVE_TEXT_FORMAT_NO       0x26 /* "Cancels MEMORY CARD formatting." */
+#define SAVE_TEXT_OVERWRITE       0x27 /* "Overwriting erases\nprevious file.\nOverwrite?" */
+#define SAVE_TEXT_OVERWRITE_YES   0x28
+#define SAVE_TEXT_OVERWRITE_NO    0x29 /* "Cancels the save." */
+#define SAVE_TEXT_FORMATTING_CARD 0x2A /* "Formatting MEMORY CARD." */
+#define SAVE_TEXT_DATA_SAVED      0x2C
+#define SAVE_TEXT_NO_CARD         0x2D /* "MEMORY CARD is not inserted\ninto the selected slot." */
+#define SAVE_TEXT_CHECK_FAILED    0x2E /* "Failed to check MEMORY CARD." */
+#define SAVE_TEXT_CARD_FULL       0x2F /* "MEMORY CARD is full.\n1 block required to save." */
+#define SAVE_TEXT_NO_FF9_DATA     0x30
+#define SAVE_TEXT_FORMAT_FAILED   0x32
+#define SAVE_TEXT_SAVE_FAILED     0x33
+#define SAVE_TEXT_LOAD_FAILED     0x34
+#define SAVE_TEXT_CORRUPTED       0x35 /* "Data corrupted." (CRC mismatch) */
+#define SAVE_TEXT_DISC_START      0x36 /* "Start of DISC 1" .. 0x39 "Start of DISC 4" */
+
+/* sounds besides the menu ones */
+#define SE_SAVE_LIST    0x414 /* card read, the file list fades in; also format done */
+#define SE_SAVE_MESSAGE 0x416 /* a message window opens */
+#define SE_SAVE_DONE    0x4ED /* save or load finished */
+
+/* ---- card file layout ---- */
+
 typedef struct {
     u8 v[20];
 } SaveName20; /* memory card file name (DIRENTRY.name) */
 
+/* "BASLUS-01251" + "00000-" + the file number in 2 ASCII digits */
+#define SAVE_PREFIX_LEN  12   /* "BASLUS-01251", what marks an FF9 file */
+#define SAVE_NAME_NUMBER 0x12 /* offset of the digits */
+
 typedef struct {
-    SaveName20 unk0;
-    u8 unk14[2]; /* terminator */
+    SaveName20 name;
+    u8 term[2]; /* terminator */
 } __attribute__((aligned(2))) SaveFileName; /* copied as a halfword-aligned block */
 
 /* PsyQ libapi struct DIRENTRY */
 typedef struct {
-    SaveName20 unk0; /* name */
-    s32 unk14; /* attr */
-    s32 unk18; /* size */
-    void *unk1C; /* next */
-    s32 unk20; /* head */
-    u8 unk24[4]; /* system */
+    SaveName20 name;
+    s32 attr;
+    s32 size;
+    void *next;
+    s32 head;
+    u8 system[4];
 } DirEnt;
 
 typedef struct {
@@ -36,190 +202,64 @@ typedef struct {
 
 typedef struct {
     s32 v[7];
-} SaveBlk1C;
+} SaveLocation; /* location name, 0x1C bytes of text */
 
 typedef struct {
-    u8 unk0; /* present */
-    u8 unk1;
-    u8 unk2[0xA]; /* name */
-    u8 unkC; /* level */
+    u8 present;
+    u8 portrait; /* menuSave_getPortrait, 0xFF = none */
+    u8 name[0xA];
+    u8 level;
     u8 padD[3];
 } SaveMember;
 
-/* Per-slot entry of the save list (0x98 bytes; the first byte is the state). */
 typedef struct {
-    s32 unk0; /* version tag, 0x30005 */
-    SaveFileName unk4;
-    u8 unk1A; /* state: 1 = empty, 3 = foreign, 4 = used */
-    u8 unk1B; /* slot index */
-    u8 unk1C;
-    u8 unk1D;
-    SaveName unk1E;
-    SaveBlk1C unk28;
-    u8 unk44;
-    u8 pad45[0x48 - 0x45];
-    s32 unk48; /* config bit */
-    u32 unk4C; /* save counter */
-    s32 unk50;
-    s32 unk54;
-    SaveMember unk58[4]; /* party */
-} SaveSlot;
-
-/* Save file header block read into D_801FBEF8.unk2D0 + 0x100 (func_801F7190). */
+    u8 v[0x23];
+} TitleTmpl; /* memory card title template (SJIS) */
 typedef struct {
-    s32 unk0;
-    u8 unk4;
-    u8 unk5;
-    SaveName unk6;
-    SaveBlk1C unk10;
-    s32 unk2C;
-    s32 unk30;
-    SaveMember unk34[4];
-    s32 unk74;
-    s32 unk78;
-    u8 unk7C;
-} SaveHeader;
+    u8 v[0xA0];
+} IconTmpl; /* memory card icon: CLUT (0x20) + 16x16 4-bit bitmap (0x80) */
 
-/* Save menu state (D_801FB1A8). */
+/* PS1 memory card file header (the first two 0x80-byte frames of the file) */
+#define CARD_MAGIC 0x4353 /* "SC" */
+#define CARD_ICON_1FRAME 0x11
 typedef struct {
-    u8 unk0;
-    u8 unk1; /* state */
-    u8 unk2; /* 1 = busy, 2 = done */
-    u8 unk3; /* selected slot */
-    u8 unk4[2]; /* card status per slot */
-    u8 unk6;
-    u8 unk7;
-    u8 unk8;
-    u8 pad9[3];
-    u32 unkC;  /* highest save counter */
-    s32 unk10; /* slot holding it */
-    s32 unk14; /* saved fade_setOtz mode */
-    s32 unk18[2]; /* saved g_padPortMask[] */
-    u8 *unk20; /* help text */
-    MenuList unk24; /* slot list */
-    SaveSlot unk34[15];
-} SaveMenu;
-extern SaveMenu D_801FB1A8;
+    u16 magic;      /* CARD_MAGIC */
+    u8 iconFlag;    /* 0x11: one-frame icon */
+    u8 blocks;      /* 1 */
+    u8 title[0x40]; /* SJIS, from s_menuSaveTitleTemplate */
+    u8 pad44[0x1C];
+    IconTmpl icon;
+} CardFileHeader; /* 0x100 */
 
+/* What the file list shows of a save, after the CardFileHeader (menuSave_buildHeader). */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-} Unk801FBAC8;
-extern Unk801FBAC8 D_801FBAC8;
+    s32 version; /* SAVE_VERSION */
+    u8 discs;    /* menuSave_getDiscBit; GameState.unkB on load */
+    u8 level;    /* leader's level */
+    SaveName name; /* leader's name */
+    SaveLocation location;
+    s32 playTime; /* game_getPlayTime, frames */
+    s32 gil;
+    SaveMember party[4];
+    s32 windowColor; /* config Window Color (GameState.unk24 bit 18, ovl_34 row 10), the row is drawn in it */
+    u32 counter; /* save counter, the newest save gets the cursor */
+    u8 cursor;   /* list cursor row when saved */
+    u8 pad7D[3];
+} SaveHeader; /* 0x80 */
 
-typedef struct Unk801FBEE0 {
-    u8 unk0;
-    u8 unk1;
-    u16 unk2; /* text size: w | rows << 12 */
-    s32 unk4;
-    Window *unk8;
-    void (*unkC)(struct Unk801FBEE0 *);
-    u16 unk10; /* text ids */
-    u16 unk12;
-} Unk801FBEE0;
-extern Unk801FBEE0 D_801FBEE0;
-s32 text_getInfo(s32); /* main exe */
-
+/* game state part of the save data */
 typedef struct {
-    u8 unk0;
-    u8 unk1; /* state, index into D_801FB014 */
-    u8 unk2; /* slot */
-    u8 unk3; /* attempts */
-    u8 unk4[4]; /* attempts per result */
-    s32 unk8;
-    s32 unkC;  /* used slots */
-    s32 unk10; /* file count */
-    s32 unk14;
-    s32 unk18; /* file descriptor */
-    Window *unk1C;
-    DirEnt unk20[15];
-    u8 pad278[0x2B4 - 0x278];
-    u8 unk2B4[15];
-    u8 pad2C3[0x2D0 - 0x2C3];
-    u8 unk2D0[0x180]; /* read buffer */
-} Unk801FBEF8;
-extern Unk801FBEF8 D_801FBEF8;
-
-typedef struct {
-    u8 unk0;
-    u8 pad1[3];
-    u32 unk4; /* frame counter */
-    Window *unk8;
-} Unk801FC348;
-extern Unk801FC348 D_801FC348;
-
-typedef struct {
-    u8 unk0;
-    u8 pad1;
-    u16 unk2; /* text size: w | rows << 12 */
-    Window *unk4;
-    u8 *unk8; /* text */
-} Unk801FC358;
-extern Unk801FC358 D_801FC358;
-
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2;
-    u8 unk3;
-    u8 unk4;
-    u8 unk5;
-    SaveFileName unk6; /* file name */
-    Window *unk1C;
-    s32 unk20; /* card channel */
-    s32 unk24;
-} Unk801FC388;
-extern Unk801FC388 D_801FC388;
-
-/* memory card status */
-extern s32 D_801FB074;
-extern s32 D_801FB078;
-extern s32 D_801FB07C;
-extern s32 D_801FB080;
-extern s32 D_801FB084;
-extern s32 D_801FB088;
-extern s32 D_801FB08C;
-extern s32 D_801FC604;
-extern void (*D_801FB098)(void); /* memory card completion callback */
-extern s32 D_801FB09C;
-extern s32 D_801FB0A0;
-extern u8 D_801EE4D4[];
-extern u16 D_801FC3E0[256]; /* CRC-16 table */
-/* CRC accumulator: the union initializer emits a clobber, so gcc cannot prove
-   the upper bits are zero and keeps both andi 0xFFFF (func_801F973C). */
-typedef union { s32 w; u16 h; } Crc16;
-extern s32 D_801FC5E0;
-extern s32 D_801FC5E4;
-extern s32 D_801FC5E8;
-extern s32 D_801FC5EC;
-extern s32 D_801FC5F4;
-extern s32 D_801FC5F8;
-extern s32 D_801FC5FC;
-extern s32 D_801FC600;
-extern s32 D_801FC608;
-extern s32 D_801FC60C;
-extern s32 D_801FC610;
-extern s32 D_801FC614;
-
-typedef struct {
-    s32 unk0;
-    Unk880 unk4;
-    u8 unk14;
-} Unk801FA078;
-
-typedef struct {
-    u8 unk0;
-    u8 unk1;
-    u8 unk2[0x20 - 2];
-    u16 unk20;
-    u16 unk22;
-    u16 unk24;
-    s16 unk26;
-    u16 unk28;
-    u16 unk2A;
-    u8 unk2C[0x14];
-} Unk801F9BEC;
+    u8 mode; /* GameState.mode */
+    u8 unk1; /* GameState.unkA */
+    u8 reserved2[0x20 - 2]; /* written as 0 */
+    u16 fieldId;
+    u16 unk22; /* GameData.unk3A */
+    u16 battleId;
+    s16 unk26; /* GameData.unk848 */
+    u16 unk28; /* GameData.unk7DC */
+    u16 unk2A; /* GameData.unk7DE */
+    u8 reserved2C[0x14]; /* written as 0 */
+} SaveState;
 
 typedef struct {
     u16 unk0;
@@ -228,325 +268,280 @@ typedef struct {
     Unk6 unk6[0x69];
     u16 unk27C;
     u16 unk27E;
-} CardData; /* Tetra Master cards (card_getInventory) */
+} CardData; /* Tetra Master card list, g_cards (card_getInventory) */
 
 /* other overlay */
 u16 func_800B5084(void);
 u16 func_800B5094(void);
 
 typedef struct {
-    EventVars unk0;
+    EventVars vars; /* g_evtGlobalVars */
     s32 unk800; /* D_8007AEC4 */
 } SaveEvents;
 
+#define SAVE_CHARACTERS 9 /* GameData.characters; also "no member" in SaveParty.party */
 typedef struct {
-    Character unk0[9];
-    u8 unk510[4]; /* party: character index, 9 = none */
-    u16 unk514;
-    u16 unk516;
-    u32 unk518; /* gil */
+    Character characters[SAVE_CHARACTERS];
+    u8 party[4]; /* character index, SAVE_CHARACTERS = none */
+    u16 unk514; /* GameData.unk55C */
+    u16 firstUseFxSeen;
+    u32 gil;
     u16 unk51C;
     u16 unk51E;
     u16 unk520;
 } SaveParty; /* 0x524 */
 
-/* inventory part of a save block (func_801F9EA8 / func_801F9F5C) */
 typedef struct {
-    ItemInventory unk0;
-    ItemFlags unk200;
+    s32 unk0; /* GameData.unk844 */
+    Unk880 unk4; /* GameData.unk880 */
+    u8 unk14; /* GameData.unk892 */
+} SaveMisc;
+
+typedef struct {
+    ItemInventory items;
+    ItemFlags flags; /* GameData.unk774 */
     GameConfig unk240; /* GameState.unk24/unk28 */
     u8 pad248[0x258 - 0x248];
 } SaveItems;
 
-/* game data part of a save block */
+/* game data part of the save buffer (menuSave_packData) */
 typedef struct {
-    Unk801F9BEC unk0;
-    SaveEvents unk40;
+    SaveState state;
+    SaveEvents events;
     u8 pad844[0x850 - 0x844];
-    SaveParty unk850;
+    SaveParty party;
     u8 padD74[0xD88 - 0xD74];
-    Unk801FA078 unkD88;
-    SaveItems unkDA0;
-    u8 unkFF8[0x127C - 0xFF8];
+    SaveMisc misc;
+    SaveItems items;
+    u8 cards[0x127C - 0xFF8]; /* CardData */
 } SaveData; /* 0x127C */
 
-/* save block buffer at 0x801FCB00 */
+/* The save file's contents, written and read as SAVE_BUF_SIZE bytes at a fixed address past the overlay. */
 typedef struct {
-    u8 pad0[4];
-    u8 unk4;   /* GameState.unkB */
-    u8 pad5[0x2C - 5];
-    s32 unk2C; /* game_setPlayTime */
-    u8 pad30[0x80 - 0x30];
-} SaveHdr;
-
-typedef struct {
-    u8 unk0[0x100]; /* header */
-    SaveHdr unk100;
-    SaveData unk180;
+    CardFileHeader card;
+    SaveHeader hdr;
+    SaveData data;
     u8 pad13FC[2];
-    u16 unk13FE; /* CRC-16 of everything before it */
+    u16 crc; /* menuSave_crc16 of everything before it */
 } SaveBuf;
+#define SAVE_BUF      ((SaveBuf *)0x801FCB00)
+#define SAVE_BUF_SIZE 0x1400
+#define SAVE_CRC_LEN  0x13FE /* bytes covered by SaveBuf.crc: everything before it */
 
-void func_801F963C(SaveData *);
-void func_801FA01C(Unk801FA078 *);
+/* ---- menu state ---- */
+
+/* One row of the file list. */
 typedef struct {
-    u8 pad0[0x12];
-    u8 unk12; /* ASCII digits */
-    u8 unk13;
-} Unk801F6D24;
+    s32 version; /* SaveHeader.version */
+    SaveFileName fileName;
+    u8 state; /* SAVE_FILE_* */
+    u8 index; /* row */
+    u8 discs;
+    u8 level;
+    SaveName name;
+    SaveLocation location;
+    u8 cursor;
+    u8 pad45[0x48 - 0x45];
+    s32 windowColor; /* SaveHeader.windowColor */
+    u32 counter;
+    s32 playTime;
+    s32 gil;
+    SaveMember party[4];
+} SaveFile; /* 0x98 */
+
+/* Save menu state (s_menuSave). */
+typedef struct {
+    u8 mode;  /* SAVE_MODE_* */
+    u8 state; /* SAVE_ST_* */
+    u8 phase; /* SAVE_PH_* */
+    u8 file;  /* selected row */
+    u8 cardStatus[2]; /* per slot, CARD_RES_* from menuSave_getCardStatus */
+    u8 formatted;  /* the checked card is formatted */
+    u8 loaded;     /* a load succeeded (menuSave_isLoaded) */
+    u8 showCursor; /* cursor and help shown; off while formatting */
+    u8 pad9[3];
+    u32 newestCounter; /* highest SaveFile.counter */
+    s32 newestFile;    /* row holding it */
+    s32 savedFadeOtz; /* fade_setOtz (fade_setOtz in docs/runtime-findings.md) old value, restored by menuSave_close */
+    s32 unk18[2]; /* g_padPortMask[] restored by menuSave_exit */
+    u8 *help; /* help text */
+    MenuList list;
+    SaveFile files[SAVE_FILES];
+} SaveMenu;
+extern SaveMenu s_menuSave;
+
+/* Book animation of the CHECK and access windows (s_menuSaveBookAnim). */
+typedef struct {
+    u8 enabled;
+    u8 tick;  /* 0-7 */
+    u8 frame; /* 0-3, s_menuSaveBookFrames */
+} BookAnim;
+extern BookAnim s_menuSaveBookAnim;
+
+/* Yes/No dialog (s_menuSaveConfirm). */
+typedef struct SaveConfirm {
+    u8 active;
+    u8 choice; /* 0 = Yes, 1 = No */
+    u16 textSize; /* text_getInfo: w | rows << 12 */
+    s32 text; /* the question (u8 *) */
+    Window *win;
+    void (*onYes)(struct SaveConfirm *);
+    u16 yesHelp; /* text ids */
+    u16 noHelp;
+} SaveConfirm;
+extern SaveConfirm s_menuSaveConfirm;
+s32 text_getInfo(s32); /* main exe */
+
+/* Card check, the CHECK window and directory/header reads (s_menuSaveCheck). */
+typedef struct {
+    u8 active;
+    u8 step; /* CHECK_STEP_* */
+    u8 file; /* row whose header is being read */
+    u8 tries;
+    u8 triesPerResult[4]; /* CARD_RES_* */
+    s32 dirCount;    /* directory entries */
+    s32 otherBlocks; /* blocks of other games' files */
+    s32 ff9Files;
+    s32 headersRead;
+    s32 fd;
+    Window *win;
+    DirEnt dir[SAVE_FILES];
+    u8 pad278[0x2B4 - 0x278];
+    u8 unk2B4[SAVE_FILES]; /* cleared, not read */
+    u8 pad2C3[0x2D0 - 0x2C3];
+    u8 buf[CHECK_HEADER_SIZE];
+} SaveCheck;
+extern SaveCheck s_menuSaveCheck;
+
+/* "Data saved." window (s_menuSaveSavedMsg). */
+typedef struct {
+    u8 active; /* never set */
+    u8 pad1[3];
+    u32 timer; /* closes at 0x40 */
+    Window *win;
+} SavedMsg;
+extern SavedMsg s_menuSaveSavedMsg;
+
+/* Message window (s_menuSaveMessage). */
+typedef struct {
+    u8 active;
+    u8 pad1;
+    u16 textSize; /* text_getInfo: w | rows << 12 */
+    Window *win;
+    u8 *text;
+} SaveMessage;
+extern SaveMessage s_menuSaveMessage;
+
+/* Format / save / load (s_menuSaveAccess). */
+typedef struct {
+    u8 active;
+    u8 unk1;
+    u8 stage; /* ACCESS_STAGE_* */
+    u8 mode;  /* ACCESS_SAVE / ACCESS_LOAD */
+    u8 lastProgress;  /* sectors done at the last draw */
+    u8 progressTicks; /* draws since it changed, eases the gauge */
+    SaveFileName fileName;
+    Window *win;
+    s32 fd;
+    s32 delay; /* counts to ACCESS_TICKS */
+} SaveAccess;
+extern SaveAccess s_menuSaveAccess;
+
+typedef struct {
+    u8 u;
+    u8 v;
+    u8 w;
+    u8 h;
+} Ovl39Sprite;
+extern Ovl39Sprite s_menuSaveBookFrames[];
+
+/* ---- memory card ---- */
+
+extern s32 s_menuSaveCardOp; /* CARD_OP_* */
+extern s32 s_menuSaveCardInfoBusy;
+extern s32 s_menuSaveCardInfoChan;
+extern s32 s_menuSaveFileChan;
+extern s32 s_menuSaveSectorsDone;
+extern s32 s_menuSaveCardStatus[2];   /* per slot, CARD_RES_* */
+extern s32 s_menuSaveCardTimeouts[2]; /* per slot, a timeout counts after one retry */
+extern void (*s_menuSaveCardCallback)(void); /* card load/read/write completion */
+/* per slot, called after a _card_info result (s32: called through a cast) */
+extern s32 s_menuSaveInfoCallback1;
+extern s32 s_menuSaveInfoCallback2;
+extern s32 s_menuSaveSectorsLeft;
+extern s32 s_menuSaveFd;
+extern s32 s_menuSaveIoBuf;
+extern s32 s_menuSaveCardChan;
+/* SwCARD events by result (menuSave_testSwCard) */
+extern s32 s_menuSaveSwEventIoe;
+extern s32 s_menuSaveSwEventError;
+extern s32 s_menuSaveSwEventTimeout;
+extern s32 s_menuSaveSwEventNew;
+extern s32 s_menuSaveCardResult;
+/* HwCARD events by result (menuSave_testHwCard) */
+extern s32 s_menuSaveHwEventIoe;
+extern s32 s_menuSaveHwEventError;
+extern s32 s_menuSaveHwEventTimeout;
+extern s32 s_menuSaveHwEventNew;
+
+extern u16 s_menuSaveCrcTable[256];
+/* CRC accumulator: the union initializer emits a clobber, so gcc cannot prove
+   the upper bits are zero and keeps both andi 0xFFFF (menuSave_crc16). */
+typedef union { s32 w; u16 h; } Crc16;
 
 /* main exe: candidates for ff9.h */
+/* PsyQ libapi event classes and specs of the memory card */
+#ifndef SwCARD
+#define SwCARD     0xF4000001
+#define HwCARD     0xF0000011
+#define EvSpIOE    0x0004
+#define EvSpERROR  0x8000
+#define EvSpTIMOUT 0x0100
+#define EvSpNEW    0x2000
+#define EvMdNOINTR 0x2000
+#endif
+/* PsyQ sys/file.h open() modes; FCREAT takes the block count in bits 16+ */
+#ifndef FREAD
+#define FREAD  0x0001
+#define FWRITE 0x0002
+#define FCREAT 0x0200
+#define FASYNC 0x8000
+#endif
+/* GameState.unk24 config word bit (ovl_34): Window Color, 1 = classic */
+#ifndef CFG_BIT_WINDOW_COLOR
+#define CFG_BIT_WINDOW_COLOR 18
+#endif
+/* Window.unk1C once win_stepOpen has fully opened the window */
+#ifndef WIN_OPEN
+#define WIN_OPEN 3
+#endif
+#ifndef SEEK_CUR
+#define SEEK_CUR 1
+#endif
+/* Menu sounds for snd_playSe: main's menuList_up/down play SE_CURSOR on a move, menus play it on a pick too,
+ * SE_CANCEL on Circle backing out, SE_BUZZER when an action is refused. */
+#ifndef SE_CURSOR
+#define SE_CURSOR 0x67
+#define SE_BUZZER 0x66
+#define SE_CANCEL 0x65
+#endif
 Unk8004AB64 *evt_getPlayer(void);
 u8 func_800B5074(void); /* other overlay */
-void func_801F9120(u8 *, s32);
-s32 func_801F9688(void);
+u8 func_800B5064(void); /* other overlay */
 void config_apply(void);
-extern RECT D_801EDF14;
-extern s32 D_801FB050[]; /* text index per mode */
-extern RECT D_801FB058;
-void func_801F5E40(void);
-void func_801F5E90(s32, s32, s32);
-void func_801F95E4(); /* also used as a Unk801FBEE0 callback */
-void func_801F62F0(void (*)(Unk801FBEE0 *));
-void func_801F6BD4(void);
-void func_801F770C(void);
-void func_801F734C(void);
-void func_801F61B0(void);
-void func_801F830C(void);
-void func_801F7928(void);
-void func_801F5A60(void);
-void func_801F5BE0(void);
-void func_801F500C(void);
-u8 func_801F8524(void);
-void func_801F6EDC(Window *);
-void func_801F6F3C(Window *);
-void func_801F6F74(Window *);
-u8 func_801F5E54(u8);
-extern RECT D_801FB00C;
-extern s32 D_80070420;
-void func_801F6368(Window *);
-void func_801F6378(Window *);
-void func_801F5FE4(Window *);
-void func_801F60DC(Window *);
-void func_801F49C4(RECT *, s32, s32);
-void func_801F5688(void);
-void func_801F573C(void);
-void func_801F8BD4(MenuList *, RECT *, RECT *);
-extern s32 D_80070444;
-extern u8 D_801FB0A8[]; /* help text buffer */
-void text_setNumberArg(s32, s32); /* main exe */
+/* Window labels: entries of main's label string table D_800703FC (ASCII), e.g. D_80070440 "ERROR",
+ * D_8007048C "NOTICE", D_80070450 "HELP" (declared in ff9.h) */
+extern s32 D_80070420; /* "CHECK" */
+extern s32 D_80070444; /* "FILE" */
+void text_setNumberArg(s32, s32);
 extern u8 *D_80077DF0; /* = g_menuHelp.text, referenced by its own name */
-extern void (*D_801FAFE8[])(RECT *, s32, s32); /* slot drawer per state */
-typedef struct {
-    u8 unk0; /* u */
-    u8 unk1; /* v */
-    u8 unk2; /* w */
-    u8 unk3; /* h */
-} Ovl39Sprite;
-extern Ovl39Sprite D_801FAFFC[];
-u8 func_801F7E68(void);
-extern RECT D_801FAF7C;
-extern RECT D_801FAF84;
-void func_801F77F4(Window *);
-void func_801F7830(Window *);
-void func_801F7840(Window *);
-void func_801F5114(void);
-u8 *func_801F6320(void);
-void func_801F7CD0(Window *);
-s32 func_801FA2B8();
-s32 func_801FA2C8();
-void func_801F7FD4(s32, s32, s32, s32, s32);
-void func_801F8408(Window *);
-void func_801F8424(Window *);
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
 s32 chr_getPortrait(s32); /* defined u8 in main; used unmasked */
-
-extern RECT D_801FAF74; /* a RECT in .data (splat starts .data late) */
-extern u8 g_saveMenuText[];
-extern u8 D_801FB040[]; /* save icon per character model */
-extern u16 D_801FDEFE;
-void func_801F96CC(void);
-extern RECT D_801FAFE0;
-extern u8 D_801FBACC[]; /* CLUT + image buffer */
-extern u8 D_801F2854[]; /* icon images, 0x210 each */
-s32 func_801FA1C4(s32, s32);
-extern u8 D_801FC3B8[0x26]; /* name buffer */
-u8 func_800B5064(void); /* other overlay */
-void func_801F9024(u8 *);
-extern u8 D_801FB02C[]; /* retries allowed per result */
-void func_801F6E68(s32);
-void func_801F6DAC(void);
-void func_801F6E1C(void);
-void func_801F70E4(void);
 char *strcpy(char *, const char *); /* C library (builtin) */
-s32 open(char *, s32); /* main exe: open */
-s32 func_801FA3D8(s32, char *);
-u8 func_801FA6AC(s32, char *);
-void game_setPlayTime(s32); /* main exe */
-void func_801F9BEC(Unk801F9BEC *);
-void func_801F9F5C(SaveItems *);
-void func_801F9D18(void *);
-void func_801FA078(Unk801FA078 *);
-void func_801F8DA4(u8 *);
-u16 func_801F973C(u8 *, s32);
-void func_801F9B00(Unk801F9BEC *);
-void func_801F9D48(SaveEvents *);
-void func_801F9DF8(SaveEvents *);
-void func_801F99FC(SaveParty *);
-void func_801F9904(SaveParty *);
+s32 open(char *, s32);
+void game_setPlayTime(s32);
 extern s32 D_8007AEC4;
-void func_801F9EA8(SaveItems *);
-void func_801F9CE8(void *);
-void func_801F6938(void);
-
-
-void func_801F4538(void);
-void func_801F53E0(void);
-void func_801F5460(void);
-void func_801F54C8(void);
-void func_801F5550(void);
-void func_801F5A24(void);
-void func_801F5A68(s32, s32, s32, s32);
-void func_801F75C8(s32, s32);
-void func_801F7084(void);
-void func_801F5E68(s32, s32, s32);
-void func_801F6A84(void);
-void func_801F6B48(void);
-void func_801F72B4(s32);
-u8 func_801F77E4(void);
-void func_801F9788(s32, s32);
-void func_801F94D0(s32, s32);
-s32 func_801FA53C(void);
-void func_801FAE74(void);
-s32 func_801FA2D8(void);
-s32 func_801FA350(s32, void (*)(void));
-s32 func_801FA754(s32);
-void func_801F65C4(void);
-void func_801F7300(s32);
-void func_801F7364(SaveMenu *);
-void func_801F77A8(s32);
-void func_801F7918(void);
-void func_801F889C(s32);
-s32 func_801FAB08(void);
-void func_801FAE1C(void);
-void func_801F7780(s32);
-u8 func_801F79F4(s32);
-void func_801F9C58(CardData *, CardData *);
-s32 func_801FA37C(s32);
-s32 func_801FA4E4(s32, s32, s32);
-s32 func_801FA5D0(s32, s32, s32);
-void func_801FAAF4(void);
-void func_801F4E00(void);
-void func_801F5D00(void);
-u8 func_801F6694(void);
-s32 func_801F6CD0(s32);
-void func_801F7108(s32);
-void func_801F7190(SaveSlot *, SaveHeader *);
-void func_801F7950(void);
-void func_801F89A0(Window *);
-s32 func_801FA478(s32);
-s32 func_801FA184(s32);
-s32 func_801FABB8(void);
-void func_801FAECC(void);
-u8 func_801F5340(s32, u8);
-s32 func_801FA0F4(s32, s32);
-void func_801F8904(void);
-extern u8 D_801FC368[13];
-extern u8 D_801F43A8[13]; /* "BASLUS-01251" */
-s32 func_801FA2E8(s32);
-s32 func_801FA644(void);
-s32 func_801FA21C(s32);
-void func_801FA794(void);
-void func_801F7718(void);
-void func_801F7AF4(void);
-void func_801F7C20(void);
-void func_801F98D0(void);
-void func_801F63D8(void);
-void func_801F59B8(void);
-void func_801F5DE0(void);
-extern RECT D_801FB030;
-extern u8 D_801FB038[];
-extern s32 D_801FBF18;
-s32 func_801FA240(s32);
-s32 func_801FAAE4(); /* unprototyped: callers pass the channel or nothing */
-void func_801F8610(void);
-void func_801F86C0(s32);
-void func_801F78CC(void);
-void func_801F74F4(Window *);
-void func_801F7510(Window *);
-void func_801F7560(Window *);
-u8 func_801F8478(void);
-void func_801F8588(void);
-MenuView *func_801F89B8(MenuList *, MenuView *);
-void func_801F8704(s32, SaveHeader *);
-u8 func_801F9804(void);
-void func_801F5384(void);
-void func_801F53B0(void);
-void func_801F5960(void);
-void func_801F8C34(MenuList *, s32);
-void func_801F8CE8(MenuList *, s32);
-MenuView *func_801F8B10(MenuList *, MenuView *);
-void func_801F49C4(RECT *, s32, s32);
-extern void (*D_801FAF8C[])(void);
-extern void (*D_801FAFC4[])(void);
-extern void (*D_801FAFA8[])(void);
-extern void (*D_801FB014[])(void);
-
-
-
-/* Inlined copy of func_801F5340 (slot usable?). */
-static inline u8 func_801F5340_inline(s32 slot, u8 any) {
-    s32 st = D_801FB1A8.unk4[slot];
-    s32 r;
-
-    if (any) {
-        r = 0;
-        if (st == 0 || st == 3) {
-            r = 1;
-        }
-        return r;
-    }
-    return st == 0;
-}
-
-extern s32 D_801FB090[2]; /* per card port: retries; D_801FB088 holds the status */
-/* main exe: candidates for ff9.h */
 void lseek(s32, s32, s32);
-/* card status helpers inlined into func_801FA794 */
-static inline void func_801FA794_set(s32 chan, s32 r) {
-    s32 *p = &D_801FB088;
-    p[chan / 16] = r;
-    D_801FB090[chan / 16] = 0;
-}
-
-static inline void func_801FA794_retry(s32 chan, s32 r) {
-    s32 *p = D_801FB090;
-    if (p[chan / 16] > 0) {
-        (&D_801FB088)[chan / 16] = r;
-    } else {
-        p[chan / 16]++;
-    }
-}
-
-s32 func_801F6FE8(void);
-u8 *func_801F83B8(void);
-s32 func_801F6D24(Unk801F6D24 *);
-s32 func_801F6C74(void);
-s32 func_801F6F7C(void);
-
-typedef struct {
-    u8 v[0x23];
-} TitleTmpl; /* memory card title template (SJIS) */
-typedef struct {
-    u8 v[0xA0];
-} IconTmpl; /* memory card icon CLUT + bitmap */
-extern TitleTmpl D_801F43B8;
-extern IconTmpl D_801F4104;
-extern IconTmpl D_801F41A4;
-extern IconTmpl D_801F4244;
-extern IconTmpl D_801F42E4;
-
-/* main exe: candidates for ff9.h */
 /* slider gauge pieces drawn by ui_drawSpriteDef: left cap, middle (repeated via DR_TWIN), right cap */
 typedef struct {
     u8 unk0; /* texture window x */
@@ -558,7 +553,6 @@ typedef struct {
 } GaugeIcon;
 extern GaugeIcon D_80068988[3];
 void SetTexWindow(void *p, RECT *r);
-
 /* LINE_F2 written as whole words */
 typedef struct {
     u32 tag;
@@ -566,8 +560,242 @@ typedef struct {
     u32 xy0;
     u32 xy1;
 } LineWords;
-extern u32 D_801FB068[3]; /* gauge line colours */
-extern RECT D_801FB060; /* gauge texture window */
 
+/* ---- data ---- */
+
+extern u8 g_saveMenuText[];
+extern u8 s_menuSaveImage[];
+extern u8 s_menuSaveBookImage[]; /* CLUT (0x200) then 11 strips of 0x58x3, 0x210 each */
+extern TitleTmpl s_menuSaveTitleTemplate;
+extern IconTmpl s_menuSaveIconEven;
+extern IconTmpl s_menuSaveIconOdd;
+extern IconTmpl s_menuSaveIconMinute;
+extern IconTmpl s_menuSaveIconHour;
+extern u8 s_menuSaveProductCode[13]; /* "BASLUS-01251" */
+extern RECT s_menuSaveSlotHelpRect;
+extern RECT s_menuSaveTitleRect; /* a RECT in .data (splat starts .data late) */
+extern RECT s_menuSaveHelpRect;
+extern RECT s_menuSaveSlotNameRect;
+extern RECT s_menuSaveSlotWindowRect;
+extern RECT s_menuSaveCheckRect;
+extern RECT s_menuSaveSavedMsgRect;
+extern RECT s_menuSaveAccessRect;
+extern void (*s_menuSaveInputFns[])(void);
+extern void (*s_menuSaveDrawFns[])(void);
+extern void (*s_menuSaveUpdateFns[])(void);
+extern void (*s_menuSaveFileDrawers[])(RECT *, s32, s32); /* by SaveFile.state */
+extern void (*s_menuSaveCheckSteps[])(void);
+extern u8 s_menuSaveCheckRetries[]; /* tries allowed per CARD_RES_* */
+extern u8 s_menuSaveResetAfterMsg[]; /* per SAVE_ST_* */
+extern u8 s_menuSavePortraitIds[]; /* portrait per chr_getPortrait result */
+extern s32 s_menuSaveAccessTitles[]; /* D_800703FC index per ACCESS_* */
+extern RECT s_menuSaveGaugeTexWindow;
+extern u32 s_menuSaveGaugeColors[3];
+extern u8 s_menuSaveHelpBuf[];
+extern u8 s_menuSaveVramBackup[]; /* CLUT row + first image strip */
+extern u8 s_menuSaveFilePrefix[13];
+extern u8 s_menuSaveLocationBuf[0x26];
+
+/* ---- functions ---- */
+
+/* menu */
+void menuSave_drawHelp(void);
+void menuSave_drawTitle(void);
+void menuSave_drawState(void);
+void menuSave_input(void);
+void menuSave_updateState(void);
+void menuSave_drawCursor(void);
+void menuSave_updateHelp(void);
+void menuSave_setFileHelp(void);
+void menuSave_updateHelpVisibility(void);
+void menuSave_backToSlots(void);
+void menuSave_returnToSlots(void);
+void menuSave_resetToSlots(void);
+void menuSave_onSlotsFadedIn(void);
+void menuSave_close(void);
+void menuSave_selectFile(void);
+void func_801F5A60(void);
+void menuSave_loadImage(void);
+void menuSave_freeImage(void);
+u8 menuSave_isSlotReady(s32, u8);
+
+/* file list */
+void menuSave_drawFile(RECT *, s32, s32);
+void menuSave_drawScrollRows(void);
+void menuSave_drawScrollArrows(void);
+MenuView *menuSave_getListView(MenuList *, MenuView *);
+MenuView *menuSave_getScrollView(MenuList *, MenuView *);
+void menuSave_getScrollClip(MenuList *, RECT *, RECT *);
+void menuSave_pageUp(MenuList *, s32);
+void menuSave_pageDown(MenuList *, s32);
+
+/* book animation */
+void menuSave_saveVram(void);
+void menuSave_restoreVram(void);
+void menuSave_drawBookIcon(s32, s32, s32, s32);
+void menuSave_updateBookAnim(void);
+void menuSave_resetBookAnim(void);
+u8 menuSave_enableBookAnim(u8);
+void menuSave_drawBook(s32, s32, s32);
+
+/* confirm */
+void menuSave_openConfirm(s32, s32, s32);
+void menuSave_initConfirm(void);
+void menuSave_setConfirmCallback(void (*)(SaveConfirm *));
+u8 *menuSave_getConfirmHelp(void);
+void menuSave_drawConfirm(Window *);
+void menuSave_drawConfirmCursor(Window *);
+void menuSave_onConfirmOpened(Window *);
+void menuSave_onConfirmClosed(Window *);
+
+/* card check */
+void menuSave_initCheck(void);
+void menuSave_openCheck(void);
+void menuSave_onCardLoaded(void);
+u8 menuSave_readDir(void);
+void menuSave_onHeaderRead(void);
+void menuSave_enterFileList(void);
+void menuSave_findNewest(void);
+s32 menuSave_findLastEmpty(void);
+s32 menuSave_findUsed(s32);
+s32 menuSave_parseFileNumber(u8 *);
+void menuSave_onCardFormatted(void);
+void menuSave_onCardUnformatted(void);
+void menuSave_retryCheck(s32);
+void menuSave_drawCheck(Window *);
+void menuSave_onCheckOpened(Window *);
+void menuSave_onCheckClosed(Window *);
+s32 menuSave_checkSpace(void);
+s32 menuSave_countFiles(void);
+void menuSave_finishCheck(void);
+void menuSave_onFileListFadedIn(void);
+void menuSave_readHeader(s32);
+void menuSave_copyHeader(SaveFile *, SaveHeader *);
+void menuSave_checkError(s32);
+void menuSave_checkNotice(s32);
+
+/* messages */
+void menuSave_initSavedMsg(void);
+void menuSave_openSavedMsg(SaveMenu *);
+void menuSave_onSavedMsgOpened(Window *);
+void menuSave_onSavedMsgClosed(Window *);
+void menuSave_drawSavedMsg(Window *);
+void menuSave_openMessage(s32, s32);
+void menuSave_initMessage(void);
+void menuSave_inputMessage(void);
+void menuSave_showError(s32);
+void menuSave_showNotice(s32);
+u8 menuSave_isMessageActive(void);
+void menuSave_drawMessage(Window *);
+void menuSave_onMessageOpened(Window *);
+void menuSave_onMessageClosed(Window *);
+
+/* access */
+u8 menuSave_startAccess(s32);
+void menuSave_initAccess(void);
+void menuSave_updateSave(void);
+void menuSave_updateLoad(void);
+void menuSave_drawAccess(Window *);
+u8 menuSave_writeFile(void);
+u8 menuSave_readFile(void);
+u8 menuSave_formatCard(void);
+void menuSave_drawGauge(s32, s32, s32, s32, s32);
+u8 *menuSave_getFilePrefix(void);
+void menuSave_onAccessOpened(Window *);
+void menuSave_onAccessClosed(Window *);
+void menuSave_onFileIo(void);
+void menuSave_onFileIoDone(void);
+void menuSave_onFileIoFailed(s32);
+void menuSave_storeSavedFile(s32, SaveHeader *);
+void menuSave_abortAccess(s32);
+void menuSave_onFormatDone(void);
+void menuSave_onAccessAborted(Window *);
+
+/* save data */
+void menuSave_saveFile(s32, s32);
+void menuSave_loadFile(s32, s32);
+void menuSave_startSave(); /* also used as a SaveConfirm callback */
+void menuSave_startLoad(void);
+void menuSave_buildHeader(SaveBuf *);
+void menuSave_getLocation(u8 *);
+void menuSave_buildCardHeader(CardFileHeader *, s32);
+s32 menuSave_getDiscBit(void);
+void menuSave_initCrcTable(void);
+u16 menuSave_crc16(u8 *, s32);
+u8 menuSave_applyLoaded(void);
+void menuSave_packData(SaveData *);
+void menuSave_packState(SaveState *);
+void menuSave_unpackState(SaveState *);
+void menuSave_packEvents(SaveEvents *);
+void menuSave_unpackEvents(SaveEvents *);
+void menuSave_packParty(SaveParty *);
+void menuSave_unpackParty(SaveParty *);
+void menuSave_packMisc(SaveMisc *);
+void menuSave_unpackMisc(SaveMisc *);
+void menuSave_packItems(SaveItems *);
+void menuSave_unpackItems(SaveItems *);
+void menuSave_copyCards(CardData *, CardData *);
+void menuSave_packCards(void *);
+void menuSave_unpackCards(void *);
+
+/* memory card wrappers */
+s32 menuSave_firstFile(s32, s32);
+s32 menuSave_nextFile(s32);
+s32 menuSave_readDirectory(s32, s32);
+s32 menuSave_getCardStatus(s32);
+s32 menuSave_cardInfoSync(s32);
+s32 menuSave_getReadProgress();
+s32 menuSave_getWriteProgress();
+s32 menuSave_isCardBusy(void);
+s32 menuSave_cardClearSync(s32);
+s32 menuSave_cardLoad(s32, void (*)(void));
+s32 menuSave_cardLoadStart(s32);
+s32 menuSave_openFile(s32, char *);
+s32 menuSave_closeFile(s32);
+s32 menuSave_writeStart(s32, s32, s32);
+s32 menuSave_writeSector(void);
+s32 menuSave_readStart(s32, s32, s32);
+s32 menuSave_readSector(void);
+u8 menuSave_createFile(s32, char *);
+s32 menuSave_cardFormat(s32);
+void menuSave_cardPoll(void);
+s32 menuSave_getCardResult(); /* unprototyped: callers pass the channel or nothing */
+void menuSave_cardIdle(void);
+s32 menuSave_testSwCard(void);
+s32 menuSave_testHwCard(void);
+void menuSave_clearSwCard(void);
+void menuSave_clearHwCard(void);
+void menuSave_closeCardEvents(void);
+
+/* Inlined copy of menuSave_isSlotReady. */
+static inline u8 menuSave_isSlotReady_inline(s32 slot, u8 allowNew) {
+    s32 st = s_menuSave.cardStatus[slot];
+    s32 r;
+
+    if (allowNew) {
+        r = 0;
+        if (st == CARD_RES_DONE || st == CARD_RES_NEW) {
+            r = 1;
+        }
+        return r;
+    }
+    return st == CARD_RES_DONE;
+}
+
+/* card status helpers inlined into menuSave_cardPoll */
+static inline void menuSave_cardPoll_set(s32 chan, s32 r) {
+    s32 *p = s_menuSaveCardStatus;
+    p[chan / 16] = r;
+    s_menuSaveCardTimeouts[chan / 16] = 0;
+}
+
+static inline void menuSave_cardPoll_retry(s32 chan, s32 r) {
+    s32 *p = s_menuSaveCardTimeouts;
+    if (p[chan / 16] > 0) {
+        s_menuSaveCardStatus[chan / 16] = r;
+    } else {
+        p[chan / 16]++;
+    }
+}
 
 #endif

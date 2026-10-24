@@ -1,21 +1,24 @@
 # FF9.IMG dir 0 (id 1) code overlays: identical on all four discs.
 # <file id> <vram> <.text start> <.data start>   # purpose (guessed from strings)
+# Menus at 0x801EDF00: menu_open(type, arg) loads main's D_8006CA40[type] and runs D_8006C9D4[type]
+# {init, update, exit}; type 0 is the main menu, whose screens load D_8006E510[screen] (docs/runtime-findings.md,
+# field/menu campaign). Type 6 loads 3d, which holds no code; type 7 (rewards) loads nothing.
 0a 800A7000 A48   22CCC   # field (confirmed at runtime: resident in the field)
 0b 800A7000 159C  4E1E8   # battle (confirmed at runtime: resident in battle)
 0c 800A7000 1860  25A10   # world map ("w_movementChange", "MAP JUMP")
 0d 800A7000 52C   C660    # Tetra Master ("ENEMY CARD SELECT")
 14 800A7000 88    4230    # opening / logo sequencer (resident during boot logos and intro FMV)
-15 800A7000 13C   70E0    # Blackjack minigame (6-deck shoe, hit/stand/double/split; from its code)
-32 801EDF00 9BC0  B7E4    # menu: Chocograph
-33 801EDF00 8C0   54A8    # menu: equip / abilities
-34 801EDF00 B1C   34F0    # menu: config
-36 801EDF00 29F4  51D4    # menu: card collector ranks
-37 801EDF00 2D18  5140    # menu: items (confirmed at runtime)
-38 801EDF00 540   1CA4    # menu: status
-39 801EDF00 6514  D074    # menu: save / load (confirmed at runtime)
-3a 801EDF00 5974  6C48    # menu: name entry
-3b 801EDF00 58A8  6828    # menu: party select
-3c 801EDF00 6100  A8EC    # menu: ? (mostly graphics data)
-3e 801EDF00 815C  8C60    # menu: ? (mostly graphics data)
-65 801EDF00 1384  5C88    # menu: battle rewards ("EXP Received")
+15 800A7000 13C   70E0    # ending + Blackjack minigame (6-deck shoe, hit/stand/double/split; from its code)
+32 801EDF00 9BC0  B7E4    # menu type 5: Chocograph (confirmed at runtime)
+33 801EDF00 8C0   54A8    # main-menu screens Ability (first file) and Equip (second file) (confirmed at runtime)
+34 801EDF00 B1C   34F0    # main-menu screen Config (confirmed at runtime)
+36 801EDF00 29F4  51D4    # main-menu screen Card: the Tetra Master card collection (confirmed at runtime)
+37 801EDF00 2D18  5140    # main-menu screen Item (confirmed at runtime)
+38 801EDF00 540   1CA4    # main-menu screen Status (confirmed at runtime)
+39 801EDF00 6514  D074    # menu type 4: save / load (confirmed at runtime)
+3a 801EDF00 5974  6C48    # menu type 1: name entry (confirmed at runtime)
+3b 801EDF00 58A8  6828    # menu type 3: party select (confirmed at runtime)
+3c 801EDF00 6100  A8EC    # menu type 2: shop (buy / sell / synthesis) (confirmed at runtime)
+3e 801EDF00 815C  8C60    # menu type 8: disc change ("Change to DISC") (confirmed at runtime)
+65 801EDF00 1384  5C88    # battle end: rewards (menu type 7, no load) and game over (confirmed at runtime)
 64 80198700 9A0   4CFC    # movie player (MBG_init/mbg_play; loaded by field ovl_0a, opening ovl_14, ending ovl_15)

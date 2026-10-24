@@ -47,8 +47,8 @@ typedef struct {
 extern Ovl64Movie g_mbgMovieLists[6];
 
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 x;
+    s32 y;
 } Ovl64Size;
 extern Ovl64Size g_mbgGeomOffset;
 
@@ -85,24 +85,18 @@ typedef struct {
 } Ovl64State;
 extern Ovl64State g_mbgPlayer;
 
-/* sector header of the current frame */
+/* a frame's camera, laid out like a MATRIX (mbg_readFrame copies it into GameData.unk18) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
-    u16 unk6;
-    u16 unk8;
-    u16 unkA;
-    u16 unkC;
-    u16 unkE;
-    u16 unk10;
+    u16 m00, m01, m02;
+    u16 m10, m11, m12;
+    u16 m20, m21, m22;
     u8 pad12[2];
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
+    s32 tx;
+    s32 ty;
+    s32 tz;
 } Ovl64Header;
 extern Ovl64Header g_mbgStartCamera;
-extern u16 D_8019F278;
+extern u16 g_mbgStartCameraId; /* id of the start camera (Ovl64FrameInfo.id) */
 
 /* decode / display state (g_mbgDecode) */
 typedef struct {
@@ -153,23 +147,18 @@ typedef struct {
     } unk1C;
 } Ovl64SectHdr;
 
-/* per-frame info copied out of the stream (g_mbgSlotCameras) */
+/* per-frame camera record copied out of the stream (g_mbgSlotCameras); mbg_readFrame applies it to the GTE and
+ * GameData.unk18 (rotation, translation) and GameData.unkA (id) */
 typedef struct {
-    u16 unk0;
-    u16 unk2;
-    u16 unk4;
-    u16 unk6;
-    u16 unk8;
-    u16 unkA;
-    u16 unkC;
-    u16 unkE;
-    u16 unk10;
-    u16 unk12;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1C;
-    u16 unk20;
-    u16 unk22;
+    u16 id;
+    u16 m00, m01, m02;
+    u16 m10, m11, m12;
+    u16 m20, m21, m22;
+    s32 tx;
+    s32 ty;
+    s32 tz;
+    u16 ofsX; /* geometry offset - 160 */
+    u16 ofsY; /* geometry offset - 112 */
 } Ovl64FrameInfo; /* 0x24 */
 
 /* 2 KB stream sector */
@@ -181,10 +170,12 @@ typedef struct {
     u32 unk60;
 } Ovl64StreamSect;
 
+/* per ring slot: the pad vibration of the frame (frame header +0x5C), copied to the actuator bytes g_padActuator
+ * (which ovl_34's vibration test also writes) while the frame shows */
 typedef struct {
-    u8 unk0;
-    u8 unk1;
-} Ovl64Flag;
+    u8 on;    /* header byte 1 >= 0x80 */
+    u8 level;
+} MbgRumble;
 
 typedef struct {
     u8 unk0;
@@ -224,7 +215,7 @@ typedef struct {
     u32 unk8C;
     u8 *unk90;
 } Ovl64Stream;
-extern s32 D_8019DE0C;
+extern s32 g_mbgSectorLogCount;
 extern Ovl64Stream g_mbgStream;
 
 /* mbg_drawStreamDebug: CD ring debug view, one colour per 8 sectors and a POLY_F4 per sector */
@@ -237,13 +228,14 @@ extern Ovl64Rgb g_mbgDebugRingColors[];
 extern POLY_F4 g_mbgDebugRingPolys[2][80];
 extern s32 g_mbgStreamBusy;
 extern s32 g_mbgStreamDeferred;
+/* per ring slot: the frame's mask data (applied by mbg_applyMask) */
 typedef struct {
-    s32 unk0;
-    s32 unk4;
+    s32 size;
+    s32 data;
 } Ovl64Pair;
 extern Ovl64FrameInfo g_mbgSlotCameras[];
 extern Ovl64Pair g_mbgSlotMasks[16];
-extern Ovl64Flag D_8019F7D0[];
+extern MbgRumble g_mbgSlotRumble[];
 
 void mbg_streamReadyCallback(u8, u8 *); /* CdReadyCallback */
 void mbg_streamOnVideoSector(void);
@@ -275,9 +267,9 @@ typedef struct {
 extern Ovl64Sub g_mbgMaskData[2];
 typedef struct {
     u32 b0 : 7;
-    u32 b7 : 1;
+    u32 vibrationOff : 1; /* the Config screen's Vibration OFF (ovl_34 CFG_BIT_VIBRATION) */
     u32 pad : 24;
-} Ovl64Cfg; /* view of GameState.unk24 */
+} Ovl64Cfg; /* view of GameState.unk24, the config word */
 
 /* PsyQ inline_c.h; candidate for psyq.h */
 #define gte_SetGeomOffset(r0, r1) __asm__ volatile( \
@@ -343,7 +335,7 @@ typedef struct {
 
 
 /* used by mbg_play */
-extern char D_8019903C[];
+extern char g_mbgScratchpadMsg[];
 s32 mbg_setRgb24(s32);
 void mbg_vlcBuildTable(void *);
 void mbg_vlcDecode(u8 *, u32 *, void *);
@@ -362,8 +354,8 @@ void mbg_mdecOutCallback(void);
 /* mbg_streamReadyCallback: the two cross-jumped timeout blocks (one inline, called twice) */
 void cd_restartAt(s32); /* main exe */
 s32 DecDCToutSync(s32);
-extern s32 D_801A07F0[];
-extern s32 D_801A06F0[];
+extern s32 g_mbgSectorLogFrame[];
+extern s32 g_mbgSectorLogSlot[];
 static inline void mbg_streamReadyCallback_retry(void) {
     s32 limit;
 

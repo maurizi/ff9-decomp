@@ -1,4 +1,4 @@
-D_800A7170 = 0x800A7170; // force_not_migration:True
+g_fieldDiscChangeLabel = 0x800A7170; // force_not_migration:True
 fld_load = 0x800A89C4; // type:func [runtime] called (350) when Zidane walks out of the Dali inn, sets GameData.fieldId and loads that field
 fld_main = 0x800A7B10; // type:func [runtime] per-field loop - re-entered with the new field id after an exit, its Triangle check opens the menu
 fld_gameOver = 0x800A80A4; // type:func [code] [runtime] mode 7 entry (field exit reason 7 sets mode 7 and loads ovl_65), calls gameover_main then mode 0
@@ -24,3 +24,378 @@ gameover_main = 0x801F3488; // type:func [runtime] ovl_65 function at this addre
 fld_movieCommand = 0x800AD944; // type:func [code] event-script opcode 0x28 (main) passes (mode, list<<8|entry, rgb24), mode 0 starts a movie (fld_movieStart), 4 returns mbg_getFrame, 5 mbg_setRgb24, main's script variables 14/15 read modes 4/3
 fld_movieStart = 0x800ADA7C; // type:func [code] stores the movie list/entry/rgb24 for fld_movieUpdate and sets its state to 1
 fld_movieUpdate = 0x800ADB74; // type:func [code] per-frame field movie state machine called from fld_main - loads ovl_64 (file 0x64) to 0x80198700, MBG_init/mbg_play/mbg_update, shutdown at the end
+fld_entry = 0x800A7A48; // type:func [code] mode-1 entry, called by main game_main after game_loadModeOverlay(1) - fld_init, fld_runArea until GameState.unk0 & 3, fld_quit
+fld_runArea = 0x800A7AAC; // type:func [code] fld_loadArea, then fld_main(GameData.fieldId) until GameState.unk0 & 7, then fld_unloadArea (called by fld_entry with GameData.unk3A)
+fld_init = 0x800A8198; // type:func [code] field-mode init called once by fld_entry - allocates the FieldMap, vsyncMode 2, GameData callbacks unk838/83C/8BC, loads the common file and sound bank
+fld_quit = 0x800A82F8; // type:func [code] end of fld_entry - clears D_800739B0[0..1], func_800B1CE4, fld_freeCommon
+fld_allocMap = 0x800A8344; // type:func [code] puts the 0x50-byte FieldMap (GameData.unk8E4.field) at D_80067944+0x2A000 and advances the allocation pointer D_80067948
+fld_initMap = 0x800A8380; // type:func [code] resets every FieldMap member (fld_init)
+fld_readSoundBank = 0x800A83E0; // type:func [code] copies db item 0x90164 to D_80067944+0x146F00 and keeps its size in FieldMap.unk20, fld_startAudio uploads it with func_80055E14 (AKAO data)
+fld_loadCommon = 0x800A847C; // type:func [code] loads dir-1 file 0x2714 (preloaded copy or CD) at D_80067948 and registers it as a db container in FieldMap.unk10 (fld_init)
+fld_freeCommon = 0x800A8588; // type:func [code] db_unregister of FieldMap.unk10, the fld_loadCommon container (fld_quit)
+fld_loadArea = 0x800A85F4; // type:func [code] allocates and resets the FieldMapObj, reads the area bundle (fld_readAreaFile) and finds its 0x60000|id item (fld_runArea)
+fld_unloadArea = 0x800A8698; // type:func [code] fld_freeAreaFile, then GameData.unk3A = FieldMapObj.unk10, the area to load next (fld_runArea)
+fld_allocArea = 0x800A86FC; // type:func [code] takes a FieldMapObj from the allocation pointer D_80067948 and stores it in FieldMap.unkC
+fld_initArea = 0x800A8724; // type:func [code] resets the FieldMapObj, unk10 = GameData.unk3A
+fld_findAreaItem = 0x800A879C; // type:func [code] FieldMapObj.unk8 = db item 0x60000|area (fld_loadArea)
+fld_readAreaFile = 0x800A87DC; // type:func [code] reads the area bundle at GameData.sceneSector[0] (or its preload copy) to D_80067948 and registers it (FieldMapObj.unkC)
+fld_freeAreaFile = 0x800A8990; // type:func [code] db_unregister of FieldMapObj.unkC (fld_unloadArea)
+fld_allocScene = 0x800A9350; // type:func [code] allocates the FieldScene at D_80067948 plus its actor-info (0x1E0) and trigger (0xC0) tables (fld_load)
+fld_initScene = 0x800A939C; // type:func [code] resets every FieldScene member, the 24 FieldActorInfo records and the 16 FieldTrig entries (fld_load)
+fld_refindSectors = 0x800A9570; // type:func [code] when FieldMap.unk0 & 0x10000, finds the field, area and music sectors again in the CD directory tables (GameState.unk14), called after the disc-change screen
+fld_findEventScript = 0x800A97D4; // type:func [code] FieldScene.unkC = db item 0x50000|field (the event script, docs/encounters.md), passed to evt_init by fld_load
+fld_setupBackground = 0x800A9860; // type:func [code] finds the field background (key from fld_getBgKey) -> FieldScene.unk14 for func_800C0DA4, and its 0xB0000 link (walkmesh) -> unk18 for func_800C3B80
+fld_startAudio = 0x800A9998; // type:func [code] waits for the sound request handler (func_800B0124 0xC00), starts the music when GameData.unk0 & 0x400000, uploads the fld_readSoundBank data
+fld_loadModelBundlesInCdOrder = 0x800A9AAC; // type:func [code] loads the queued model bundles (D_800C9F20, FieldScene.unk60 entries) with func_800AA4E8, lowest CD sector (file_find(0xA)) first
+fld_freeFieldFile = 0x800AA074; // type:func [code] db_unregister of FieldScene.unk24, the container fld_loadFile registered (fld_exit)
+fld_getBgKey = 0x800AA0C8; // type:func [code] db_lookup mode 3 (key by index) of block kind 0xA in the field file container FieldScene.unk24
+bgi_segmentsCross = 0x800C1E14; // type:func [code] 2D cross-product test whether segment a0-a1 crosses segment a2-a3 on axes x/z, func_800C519C uses it to pick which of two crossed edges
+bgi_getPassableNeighbor = 0x800C1F98; // type:func [code] returns triangle.neighbor[edge] if it has flag 1 and its mask byte doesn't block (0x80 blocks the player actor func_8004AE00, 0x40 everyone else), else NULL
+bgi_closestPointOnSegment = 0x800C20BC; // type:func [code] dot-product clamp of point a0 onto segment a1-a2, writes the point to a3, a4 = 1 unless clamped to an end, returns squared distance
+bgi_projectOnPlane = 0x800C2390; // type:func [code] turns the move vector a1 into a vector in the plane of normal a0 (cross products with the horizontal perpendicular (-z,0,x)), used by bgi_slide per triangle
+bgi_pushOutOfEdges = 0x800C2524; // type:func [code] for each triangle edge closer than the actor radius (unk20 = r^2) recurse into the passable neighbour or record a push vector of length r in D_800CA9D8, returns 1 when nothing hit
+bgi_findTriangleNear = 0x800C2920; // type:func [code] point-in-triangle on the current triangle, then its passable neighbours, then recursively (depth < 9, flag 0x80 marks visited), updates *a1 and the actor's floor/triangle
+bgi_slide = 0x800C2AF0; // type:func [code] moves an actor from a2 to a3 across the walkmesh, projecting the move onto each triangle's plane and following the neighbour across the crossed edge (bgi_findEdgeCrossing), recursive retries
+bgi_applyPushes = 0x800C31F8; // type:func [code] adds the averaged distinct push vectors D_800CA9D8[D_800C9DDC] to the position and actor, clears the count, then re-runs bgi_slide from the old position
+bgi_moveActor = 0x800C3608; // type:func [code] per-actor walkmesh step pos (unk40 -> pos), result bits 2 always, 4 not moved, 1 blocked (position reverted), 8 pushed, 0x10 corrected, sets the y from the triangle plane
+bgi_init = 0x800C3B80; // type:func [code] fld_main.c passes the BGI file data +4 ("[+4 for file magic]" in bgi_dumpText), sets every D_800C9DF0 table pointer, resets the 24 actor entries, anims and floor moves
+bgi_findPlayerActor = 0x800C3D28; // type:func [code] returns the D_800C9DF0.unk4 entry (and its index in *a0) whose actor is the player object (func_8004AE00 in mode 1, party leader in mode 5)
+bgi_setActorActive = 0x800C3E18; // type:func [code] sets/clears actor-entry flag 1, clearing also resets floor/triangle (unk4..unkA) to -1, event opcode 0xA8, and opcodes 0x1D/0xA1 disable it around a teleport
+bgi_placeActor = 0x800C3EC0; // type:func [code] scans every triangle containing (x,z), keeps the nearest height >= y, sets the actor's floor/triangle and position, called by bgi_updateActor when its triangle is -1
+bgi_setActorTriangle = 0x800C420C; // type:func [code] puts actor entry a0 on triangle a1 (floor from triangle.unk4) at the triangle centre (unk1E..22) + floor/mesh offset, pos and previous pos
+bgi_setActorFloorTriangle = 0x800C4378; // type:func [code] as bgi_setActorTriangle but the triangle is entry a2 of floor a1's triangle index list (floor.unk1E)
+bgi_updateActor = 0x800C44F4; // type:func [code] 0x8000 when no walkmesh, 0x4000 bad index, 0 inactive, active entries go to bgi_placeActor (triangle unknown) or bgi_moveActor, main func_8002170C returns this
+bgi_findTriangleBelow = 0x800C45C0; // type:func [code] scans every triangle containing (x,z), returns 1 and the index/pointer of the one whose height is the smallest value >= y
+bgi_setFloorActive = 0x800C47E4; // type:func [code] event opcode 0xCB (floor, on) - sets/clears flag 1 on the floor and on every triangle of its index list
+bgi_getHeight = 0x800C48DC; // type:func [code] height at (x,z) from the first triangle containing it (plane or first vertex), without a walkmesh the player actor's y, -0x7FFF when outside
+bgi_pointInTriangle = 0x800C4B30; // type:func [code] crossing-number point-in-triangle test (edges count as inside), projects on x/y or y/z instead of x/z when the triangle's normal ny is small (steep)
+bgi_pointInTriangleXZ = 0x800C4EC8; // type:func [code] the same test as bgi_pointInTriangle always on the x/z plane, used to find triangles under a point (bgi_placeActor, bgi_getHeight)
+bgi_findEdgeCrossing = 0x800C519C; // type:func [code] intersects the move segment a3-a4 with the triangle's edges (skipping edge a7), writes the hit point (with interpolated height) to a5 and the edge to a6
+bgi_updateAnims = 0x800C60F0; // type:func [code] per-frame from fld_main - for running keyframe anims (flags 1 and 4/8) enables the current frame's triangles, swaps actors over (bgi_remapActors), advances "Current Frame" by "Frame Rate"
+bgi_showAnimFrame = 0x800C6408; // type:func [code] event opcode 0xFF0A (anim, frame) - enables frame a1's triangles at once, disables the others, moves actors over and sets Current Frame
+bgi_transferActorPos = 0x800C65CC; // type:func [code] re-expresses the actor position on triangle n0 by barycentric weights and maps it onto triangle n1, height from n1's plane
+bgi_remapActors = 0x800C6C04; // type:func [code] for every active actor on a triangle of the old frame, moves it to the triangle at the same index in the new frame (bgi_transferActorPos)
+bgi_linkFrameNeighbors = 0x800C6DA4; // type:func [code] for the frame's triangles, writes their index into the neighbour's neighbour slot given by the edge's Edge Clone, and the clone back
+bgi_resetFloorMoves = 0x800C6E94; // type:func [code] clears the 30 D_800CAE98 entries (flags 2, speed 0x100), called by bgi_init
+bgi_stepFloorMove = 0x800C6EEC; // type:func [code] advances one D_800CAE98 entry by its speed, linear or cosine curve (unk6), between min and max, at the end bounces (flag 0x10) or wraps and clears flag 4
+bgi_updateFloorMoves = 0x800C7100; // type:func [code] per-frame from fld_main - sets each running mover's floor Current Position on its axis and moves the actors standing on that floor with it
+bgi_setMesh = 0x800C72D8; // type:func [code] sets D_800C9DF0's table pointers from a BGI header like bgi_init, but keeps the actor entries, resets anims and floor moves, no callers
+bgi_updateActors = 0x800C73AC; // type:func [code] runs bgi_updateActor on every actor entry and returns how many returned > 0, no callers
+bgi_clear = 0x800C7430; // type:func [code] fld_main.c, before bgi_init - clears the BGI header pointer, actor count/list and the loaded flag
+bgi_setMaskFilter = 0x800C7464; // type:func [code] event opcode 0x27 - sets D_800C9DF0.unk1, which ANDs with the triangle mask byte (bgi_getPassableNeighbor, bgi_getTriangleFlags)
+bgi_getMaskFilter = 0x800C7474; // type:func [code] reads D_800C9DF0.unk1 (bgi_setMaskFilter), no callers
+bgi_getActor = 0x800C748C; // type:func [code] &D_800C9DF0.unk4[i], main event.c reads its unk8/unkA (last floor/triangle) and writes them on reload
+bgi_bindActor = 0x800C74A8; // type:func [code] fld_movie.c - for slot < 9 clears entry a0 and points it at the object slot's actor
+bgi_addActor = 0x800C74F0; // type:func [code] fld_movie.c - for slot >= 9 appends an entry (D_800C9DF0.unk2++) for the object slot's actor
+bgi_setActorRadius = 0x800C7570; // type:func [code] event opcode 0x4B (value*4) - sets entry unk1C and unk20 = r*r, the radius bgi_pushOutOfEdges keeps from edges
+bgi_getActorRadius = 0x800C75B4; // type:func [code] returns entry unk1C (bgi_setActorRadius), main event.c divides it by 4 back into the object
+bgi_getActorRadiusSq = 0x800C75E0; // type:func [code] returns entry unk20 = radius squared, no callers
+bgi_getActorNormal = 0x800C760C; // type:func [code] returns the four words (nx, ny, nz, 1/ny) of the normal of the actor's triangle, no callers
+bgi_getActorTilt = 0x800C768C; // type:func [code] returns -Theta Z and Theta X of the actor's triangle, fld_movie.c uses them as the model's x/z rotation
+bgi_getActorTriangle = 0x800C76E8; // type:func [code] returns the actor's triangle (unk6) and floor (unk4), main script variables 0x70/0x71 read them, tu_800B0124.c feeds the triangle to bgi_getTriangleFlags
+bgi_revertActor = 0x800C7720; // type:func [code] restores pos from the previous position (unk40) and floor/triangle from unk8/unkA, main event.c calls it when bgi_updateActor reports bit 1 (blocked)
+bgi_setTriangleActive = 0x800C778C; // type:func [code] event opcode 0x9A (16-bit triangle, on) - sets/clears triangle flag 1
+bgi_getTriangleFlags = 0x800C7800; // type:func [code] triangle flags word with the mask byte ANDed by D_800C9DF0.unk1, tu_800B0124.c takes the high byte
+bgi_setTriangleMask = 0x800C784C; // type:func [code] sets the triangle flags' high (mask) byte, no callers
+bgi_getTriangleMask = 0x800C7890; // type:func [code] returns the triangle's high flag byte AND D_800C9DF0.unk1, no callers
+bgi_getTriangleFloor = 0x800C78D8; // type:func [code] returns the triangle's Floor Index (unk4), no callers
+bgi_getEdgeFlags = 0x800C7938; // type:func [code] returns the edge's Flags word (bgi_dumpText "Edge" record), no callers
+bgi_getFloorPosition = 0x800C7968; // type:func [code] returns the floor's Current Position (unkA[3]), no callers
+bgi_initAnim = 0x800C79B0; // type:func [code] bgi_init/bgi_setMesh call it per anim - enables the triangles of frame 0 (and links their neighbours), disables the other frames' triangles
+bgi_setAnimFrame = 0x800C7AF8; // type:func [code] event opcode 0xFF09 (anim, frame) - Current Frame = frame<<8, Counter 0, flag 1, bgi_updateAnims applies it
+bgi_setAnimPlaying = 0x800C7B68; // type:func [code] event opcode 0xFF0B (anim, on) - sets/clears flags 1|4, bgi_updateAnims only advances anims with 4 (or 8)
+bgi_setAnimRate = 0x800C7BC4; // type:func [code] event opcode 0xFF0D (anim, s16) - sets Frame Rate (unk4), bgi_updateAnims negates it on a bounce
+bgi_setAnimFrameValues = 0x800C7C04; // type:func [code] event opcode 0xFF0E (anim, v) - sets every frame's Value, the frame's hold time in bgi_updateAnims (negative stops the anim)
+bgi_setAnimFrameValue = 0x800C7C70; // type:func [code] event opcode 0xFF0F (anim, frame, v) - sets one frame's Value (hold time)
+bgi_setAnimMode = 0x800C7CDC; // type:func [code] event opcode 0xFF0C (anim, bits) - replaces flag bits 0x18 (0x10 bounce at the ends in bgi_updateAnims)
+bgi_playAnimRange = 0x800C7D30; // type:func [code] event opcode 0xFF10 (anim, from, to) - starts at frame from, marks frame to with Value -1 (stop) and turns Frame Rate toward it
+bgi_resetAnim = 0x800C7DF0; // type:func [code] event opcode 0xFF11 (anim, on) - rate 0x100, flags 2, frame 0, enables frame 0's triangles only if on
+bgi_getAnimFrame = 0x800C7EE8; // type:func [code] returns Current Frame >> 8, main script variable 0x65
+bgi_startFloorMove = 0x800C7F34; // type:func [code] event opcode 0xFF00 (mover, pos) - accumulator = pos<<8, flags |= 5, one step
+bgi_stopFloorMove = 0x800C7F7C; // type:func [code] event opcode 0xFF01 (mover, pos) - accumulator = pos<<8, flags = 0, one step
+bgi_setFloorMovePlaying = 0x800C7FBC; // type:func [code] event opcode 0xFF02 (mover, on) - sets/clears flags 1|4, one step
+bgi_setFloorMoveMode = 0x800C8010; // type:func [code] event opcode 0xFF03 - replaces flag bits 0x18 (0x10 bounce in bgi_stepFloorMove)
+bgi_setFloorMoveFloor = 0x800C8044; // type:func [code] event opcode 0xFF04 - sets the floor index the mover drives (unk2)
+bgi_setFloorMoveSpeed = 0x800C8068; // type:func [code] event opcode 0xFF05 (16-bit) - sets the 8.8 speed (unk12)
+bgi_setFloorMoveCurve = 0x800C808C; // type:func [code] event opcode 0xFF06 - sets unk6, 0 linear and 1 cosine in bgi_stepFloorMove
+bgi_setFloorMoveRange = 0x800C80B0; // type:func [code] event opcode 0xFF07 (mover, min, max) - sets min/max and range = max - min
+bgi_setFloorMoveAxis = 0x800C80E4; // type:func [code] event opcode 0xFF08 - sets the axis (0 x, 1 y, 2 z) of the floor position the mover drives
+bgi_getFloorMove = 0x800C8108; // type:func [code] &D_800CAE98[i] (inlined into the 0xFF0x handlers)
+g_fieldBgi = 0x800C9DF0; // [code] walkmesh context - bgi_init points its tables at the BGI file (header, vertices, triangles, normals, edges, floors, anims)
+g_fieldBgiActors = 0x800CAAD8; // [code] the 24 actor entries bgi_init installs as D_800C9DF0.unk4 (floor, triangle, radius, actor)
+g_fieldBgiFloorMoves = 0x800CAE98; // [code] 30 floor movers (event opcodes 0xFF00-0xFF08), applied by bgi_updateFloorMoves
+g_fieldBgiPushCount = 0x800C9DDC; // [code] number of push vectors bgi_pushOutOfEdges recorded (max 16), consumed and cleared by bgi_applyPushes
+g_fieldBgiPushVecs = 0x800CA9D8; // [code] the push vectors (x,_,z) bgi_pushOutOfEdges records and bgi_applyPushes averages
+g_fieldBgiPushOnEdge = 0x800CAA38; // [code] per push the bgi_closestPointOnSegment flag (1 unless clamped to an edge end), bgi_applyPushes prefers these
+g_fieldBgiPushDist = 0x800CAA58; // [code] per push the distance to the edge (bgi_pushOutOfEdges), written only
+g_fieldBgiDefaultNormal = 0x800C9DE4; // [code] VECTOR normal bgi_slide projects with when the triangle has no normal (Normal Index < 0)
+fld_queueModelBundle = 0x800AA3F4; // type:func [code] main evt init calls it per model object (unk5 4) with its uid, maps uid->id via the dep table, queues the id in D_800C9F20 when db item 4|id is not registered
+fld_clearModelQueue = 0x800AA4BC; // type:func [code] sets the 16 D_800C9F20 entries to -1 (fld_load)
+fld_loadModelBundle = 0x800AA4E8; // type:func [code] reads dir-10 file id (from g_fieldModelCache or CD), registers its pack 0x1B0000, uploads pack 0x1B0001 images to VRAM and fills the tpage/clut/uv tables of item 0x120000
+fld_freeModelBundles = 0x800AAA54; // type:func [code] db_unregister of every FieldScene.unk28 pack fld_loadModelBundle registered, resets the count unk40 (fld_exit)
+fld_setupActorModel = 0x800AAB30; // type:func [code] GameData.unk838 (main func_80021698 passes actor.unk34|0x20000) - picks a model slot, binds model/anim/textures/sprite set, adds the bgi actor, returns the slot
+fld_remapModelId = 0x800AAEC4; // type:func [code] model 0xB9 becomes 0x2004C once event var h[0] >= 0x283C (fld_setupActorModel, fld_queueModelBundle)
+fld_depFindByLink = 0x800AAEF8; // type:func [code] returns the id of the dependency-table entry whose link (unkC) equals arg, -1 if none
+fld_getModelAnimId = 0x800AAF5C; // type:func [code] finds the model in table 0x120000 and returns its unk2|0x30000 (the 0x3xxxx animation item, as fld_drawModels loads by FieldEvtObj.unk36)
+fld_getModelTables = 0x800AAFD4; // type:func [code] finds the model in table 0x120000 and returns its three tables (tpage/clut, uv, sprite offsets) used by func_800B6584 and func_800BB3C4
+fld_isModelTexAnimActive = 0x800AB0B0; // type:func [code] 1 when any entry of the model's unk50 animation table (BgAnimHdr) has its active bit 1 set
+fld_collectVisibleModels = 0x800AB110; // type:func [code] fills the draw list with the model slots of visible model actors, parents before attached children, during a movie drops models whose buffers reach the ovl_64 load area [runtime] field/menu campaign, its stub removes every model
+fld_drawModels = 0x800AB3CC; // type:func [code] per-frame model pass from fld_main - matrices, anim lookup, posing, depth cull, func_800B61A4/func_800B5958 draw, shadows, tex anims, lights, anim sounds [runtime] field/menu campaign, ablation removes Zidane and the Moogle
+fld_modelCommand = 0x800ABA98; // type:func [code] event opcode 0x88 (object uid, cmd, 3 args) - 0 palette, 4 screen y limit, 8-11 mirror model/plane/tint, 16-19 animation sound triggers
+fld_applyModelCommands = 0x800AC02C; // type:func [code] applies what fld_modelCommand set - palette changes (func_800BA190/func_800BA3CC on flag 0x10000) and draws mirrored models with their tint (fld_drawModels)
+fld_findModelCache = 0x800AC344; // type:func [code] returns the g_fieldModelCache slot whose id matches the low 16 bits, NULL otherwise
+fld_getModelCacheBottom = 0x800AC380; // type:func [code] lowest address of a filled g_fieldModelCache slot (0x801EDF00 when empty), optionally returns that slot
+fld_allocModelCache = 0x800AC3D8; // type:func [code] reserves size bytes below fld_getModelCacheBottom for the id's slot if that stays above the heap top (FieldScene.unk20 or D_80067948), returns 1 on success
+fld_compactModelCache = 0x800AC474; // type:func [code] empties slots whose id is no longer in D_800C9F20, then moves the rest up against 0x801EDF00 (fld_load)
+fld_clearModelCache = 0x800AC5F0; // type:func [code] zeroes the flags, address and size of all 10 g_fieldModelCache slots
+fld_trimModelCache = 0x800AC620; // type:func [code] fld_invalidateModelCache with the current heap top (FieldScene.unk20, else D_80067948)
+fld_invalidateModelCache = 0x800AC67C; // type:func [code] empties every g_fieldModelCache slot whose address is <= arg (memory reused by a load below it)
+fld_drawShadow = 0x800AC6C0; // type:func [code] builds the 4 mirrored semi-transparent POLY_FT4 of an object's 3x3 shadow grid on y=0 (FieldScene.unk2C entry) and links them by depth (fld_drawModels)
+fld_initShadows = 0x800AD44C; // type:func [code] func_80062E3C(addr, ..., count, 3) builds the shadow entries and their primitives, returns the next free address (fld_load, count unk38+9)
+fld_calcShadowMatrix = 0x800AD488; // type:func [code] shadow matrix from scale x/z, angle and offset - plain y rotation at the actor position (slot flag 0x20) or aligned to the model's bone 1
+fld_movieStop = 0x800AE4F8; // type:func [code] mbg end callback and movie command 1 - mbg_shutdown, cd_cancel, flag 4, movie state 7
+fld_movieFinish = 0x800AE5D4; // type:func [code] fld_movieUpdate state 7 - clears the movie flags, vsyncMode 2, resets the display x, restores the volume (sound command 0x6201 with FieldScene.unk5C)
+fld_isMoviePlaying = 0x800AE68C; // type:func [code] 1 while the movie state is 6 or 7 and playback flags are set, selects FieldScene.unk5D instead of unk5C in fld_soundCommand
+fld_moviePlay = 0x800AE710; // type:func [code] wrapper of fld_movieCommand(0, list<<8|entry, rgb24)
+fld_movieGo = 0x800AE738; // type:func [code] wrapper of fld_movieCommand(2), sets g_fieldMovieFlags bit 1 that fld_movieUpdate state 5 waits for before mbg_play
+fld_movieRequestStop = 0x800AE760; // type:func [code] wrapper of fld_movieCommand(1), i.e. fld_movieStop
+fld_beginFrame = 0x800AE788; // type:func [code] first call of every fld_main iteration - clears the ordering table (with a mask-bit packet when field flag 0x200), func_8004C204 [runtime] field/menu campaign, ablation shows a stale background
+fld_endFrame = 0x800AE930; // type:func [code] last call of every fld_main iteration - VSync, PutDispEnv, DrawOTag, buffer flip, applies g_fieldFlagQueue, L1+L2+R1+R2+Start+Select sets GameState.unk0 bit 0 [runtime] field/menu campaign, the btl_endFrame counterpart
+fld_startEncounter = 0x800AED04; // type:func [code] fld_main calls it when func_8004BC38 returns 3 (exit reason 2, battle) - resets the encounter step unk41 and queues the field flag changes
+fld_updateEncounter = 0x800AED6C; // type:func [code] encounter transition per frame - projects the player to screen, swaps to the battle music, uploads file 0x1000B, plays sfx 0x27A-0x27C, func_80053A10, then ends the loop
+fld_togglePause = 0x800AF740; // type:func [code] fld_main pad combo - toggles GameData flag 0x100 (fld_main skips all updates), pauses sound and draws sprite 0xEB over a grey 320x224 TILE
+fld_spriteCommand = 0x800AFAC0; // type:func [code] event opcodes 0xB3/0xDA (sprite, cmd, 3 args) - 0x82 sprite file 0x16xxxx, 0x83 flags, 0x87 position, 0x8C rotation, 0x96 attach to object bone, 0xA5 offset
+fld_initSprites = 0x800AFCBC; // type:func [code] lays out the 16-entry FieldEnt table and two 0x3000 primitive buffers at the heap pointer, stores the header in FieldScene.unk10, returns the next address
+fld_drawSprites = 0x800AFDE8; // type:func [code] per-frame (fld_main) - follows attached bones, draws each active FieldEnt with func_800C970C, advances its frame by unk6 and wraps at unkE
+fld_resetSprite = 0x800B00B0; // type:func [code] FieldEnt defaults - scale 0x1000, speed 0x10, unk7 0x80, flags 1, mode 0xF, no sprite, no parent (fld_initSprites, fld_spriteCommand 0x82)
+g_fieldModelQueue = 0x800C9F20; // [code] 16 dir-10 ids queued by fld_queueModelBundle (count FieldScene.unk60), loaded by fld_main func_800A9AAC, kept by fld_compactModelCache
+g_fieldModelCache = 0x800C9CCC; // [code] 10 slots {u16 flags, u16 id, addr, size} with fixed ids (0x62, 0x8, 0x1571, 0xB9, ...) caching dir-10 model bundles below 0x801EDF00 (fld_loadModelBundle)
+g_fieldMovieFlags = 0x800C9D44; // [code] movie playback bits - 1 go (fld_movieGo), 4 stopped, 8 flush cache after the ovl_64 read (fld_endFrame), 0x40 mbg geometry offset, third queue of g_fieldFlagQueue
+g_fieldMovieLastFrame = 0x800C9D46; // [code] g_mbgFrame of the previous frame (fld_movieUpdate state 6, printed by "Fr %d")
+g_fieldMovieMaskPkt = 0x800C9F6C; // [code] per-buffer 0xE6 mask-bit packets fld_movieUpdate draws when mbg_update reports a frame
+g_fieldMaskPkt = 0x800C9F60; // [code] per-buffer 0xE6 mask-bit packets fld_beginFrame and fld_updateEncounter link at the end of the OT
+g_fieldFlagQueue = 0x800C9EF0; // [code] 4-frame set/clear queues for GameData.unk0, FieldMap.unk0 and g_fieldMovieFlags, shifted by fld_endFrame
+g_fieldTempOt = 0x800C9F98; // [code] one-entry ordering table that fld_togglePause and fld_updateEncounter clear and draw directly
+g_fieldPauseTPage = 0x800C9F90; // [code] DR_TPAGE (0xE1000240) fld_togglePause links before the grey TILE
+g_fieldPauseSprite = 0x800C9FA0; // [code] sprite 0xEB packet fld_togglePause builds with func_80027834 (centred on 320x224)
+g_fieldPauseDim = 0x800C9FE0; // [code] grey (0x60) semi-transparent 320x224 TILE fld_togglePause draws over the frozen field
+fld_soundCommand = 0x800B0124; // type:func [code] GameData.unk83C, event opcodes 0xC5-0xC8, snd_playSe - bits 12-13 class (0 music 0x7xxxx, 1 sfx 0x8xxxx, 2 0x18xxxx, 3 bank 0x9xxxx), 8-11 action, 0xC00 polls the load
+fld_getSoundPanVolume = 0x800B1A20; // type:func [code] event opcodes 0x89/0x8A - projects a world position, pan 0-255 from screen x (wider at depth) and volume 0-127 from depth
+fld_suspendResidentSfx = 0x800B1C4C; // type:func [code] sound command 0x1880|slot<<6 for slots 0/1 - kind 8 records the field id in GameData.unk8B4[slot], then stops the slot (fld_exit case 9, encounter)
+fld_resumeResidentSfx = 0x800B1C98; // type:func [code] sound command 0x1980|slot<<6 - kind 9 restarts the slot if GameData.unk8B4[slot] is the current field (fld_load)
+fld_stopResidentSfx = 0x800B1CE4; // type:func [code] sound command 0x5180 for every slot whose id GameData.unk830[i] is set (fld_quit)
+fld_clearSoundBankCache = 0x800B1D60; // type:func [code] sets the 5 D_800C9FF8 ids and D_800C9FF0 slots to -1 (fld_init)
+fld_dropSoundBankCache = 0x800B1D9C; // type:func [code] when a load used >= 0x40000 bytes (fld_soundBankReadCallback), forgets every cached bank except types 1 and 4
+fld_stopSceneSfx = 0x800B1E04; // type:func [code] func_8005546C(.., 0) on every 0x8xxxx item of the field pack FieldScene.unk24, then func_80056228 (fld_exit)
+fld_playAnimSfx = 0x800B1E8C; // type:func [code] per drawn object, plays FieldTrig sounds matching (uid, anim unk36, frame unk3A) at its position, sound by floor flag (footsteps), optional random pitch
+fld_findAnimSfx = 0x800B2100; // type:func [code] last FieldTrig entry matching the object's uid, anim and frame, NULL if none (fld_modelCommand 16-19)
+fld_addAnimSfx = 0x800B21A0; // type:func [code] appends a FieldTrig entry (uid, unk34, anim, frame) and bumps FieldScene.unk4B (fld_modelCommand 16-18)
+fld_removeAnimSfx = 0x800B2218; // type:func [code] removes the matching FieldTrig entries by moving the last one over them (fld_modelCommand 19)
+fld_depGetLink = 0x800B2328; // type:func [code] returns the link (unkC) of the dependency-table entry with id arg, -1 if none (music id -> its 0x9xxxx bank in fld_soundCommand)
+fld_findBattleMusic = 0x800B238C; // type:func [code] FieldScene.unk3C/unk3E = music/bank linked to dep entry 0x110000|battle (type 7, then type 9), default the current music (fld_updateEncounter)
+fld_loadSoundBanks = 0x800B2528; // type:func [code] collects the field's 0x9xxxx entries linked to 0x8xxxx, keeps cached ones, assigns slots to type-4 banks, loads the rest with command 0x7700 in sector order (fld_load)
+fld_depGetFileSector = 0x800B29A0; // type:func [code] dep_find -> returns the entry's sector (unk4) and its size in bytes (unk8 << 11)
+fld_soundBankReadCallback = 0x800B29F8; // type:func [code] read callback fld_soundCommand passes to func_8002177C - locates bank 0x90000|GameData.unk852 in the data and uploads it (func_80056048 or func_80055E14)
+fld_unpackMusicSeq = 0x800B2BC4; // type:func [code] moves the first 0x7xxxx item of the loaded music container to its start (fld_soundCommand load state 5)
+fld_setMusicVolumeFade = 0x800B2C40; // type:func [code] GameData.unk826 = volume, for 0 also stores the fade time (unk842) and VSync(-1) start (unk8C4) (fld_soundCommand music volume commands)
+fld_isMusicFading = 0x800B2C80; // type:func [code] VSync(-1) - GameData.unk8C4 < unk842, fld_soundCommand 0xC00 returns 6 while it holds and delays a music change
+fld_setObjectColor = 0x800B2CC0; // type:func [code] event opcode 0x8F (r, g, b) - fld_setSlotColor on the object's slot, the script waits one frame
+fld_applyLights = 0x800B2D10; // type:func [code] per drawn object, colour = model light + floor/directional/ambient light, shadow shade/size from light offsets, then tints the model with func_800B9E4C
+fld_setSlotColor = 0x800B31B8; // type:func [code] stores rgb|0x01000000 in the object's FieldActorInfo colours and sets slot flags 0xC00, second call clears 0x800 and returns 0
+fld_getLightColorTable = 0x800B3254; // type:func [code] returns the 8-byte colour entries that follow the FieldLight list (unkC[unk6]) when the count unk9 is non-zero
+fld_findLightColor = 0x800B3294; // type:func [code] searches fld_getLightColorTable's entries for id (model file id, -1 = default), NULL if none
+fld_findGlobalLights = 0x800B3300; // type:func [code] returns the FieldLight entries of type 1 (ambient) and 2 (used when slot flag 4) in the two out pointers
+fld_findFloorLight = 0x800B3378; // type:func [code] type-0 FieldLight whose 4 floor ids contain the object's current walkmesh floor (bgi_getActorTriangle), NULL if none
+fld_preloadRequest = 0x800B36E0; // type:func [code] GameData.unk8BC, event opcode 0xFD (type, id) - type 5 field or 0x11 encounter file 0x1000B, bit 0x80 excludes instead of requesting
+fld_initPreload = 0x800B3A80; // type:func [code] preload_init, GameData.unk8BC = fld_preloadRequest, preload hook fld_preloadHook, clears both lists (fld_load)
+fld_clearPreloadLists = 0x800B3ACC; // type:func [code] empties D_800CA010 (requests) and D_800CA030 (excludes), 8 entries each
+fld_setPreloadCursor = 0x800B3B2C; // type:func [code] sets D_800C9D58, the address the next preload is read to, if non-zero
+fld_isEncounterPreloadRequested = 0x800B3B40; // type:func [code] file 0x1000B is in the request list D_800CA010
+fld_isEncounterPreloadExcluded = 0x800B3B64; // type:func [code] file 0x1000B is in the exclude list D_800CA030
+fld_hasFieldPreloadRequest = 0x800B3B88; // type:func [code] the request list holds a type-5 (field) id
+fld_findPreloadRequest = 0x800B3BD8; // type:func [code] address of id in D_800CA010, NULL if absent
+fld_removePreloadRequest = 0x800B3C24; // type:func [code] removes id from D_800CA010 (last entry moves into its place)
+fld_addPreloadRequest = 0x800B3CAC; // type:func [code] adds id to D_800CA010 unless present or full (8)
+fld_findPreloadExclude = 0x800B3D10; // type:func [code] address of id in D_800CA030, NULL if absent
+fld_removePreloadExclude = 0x800B3D5C; // type:func [code] removes id from D_800CA030
+fld_addPreloadExclude = 0x800B3DE4; // type:func [code] adds id to D_800CA030 unless present or full (8)
+fld_preloadFile = 0x800B3E48; // type:func [code] preload_add + func_80021974 for (id, mode, sector, size) into the space from D_800C9D58 up to the model cache / D_80067944+0x153F00
+fld_queueFieldPreloads = 0x800B3F8C; // type:func [code] preloads file 0x1000B when needed, then the requested fields or the largest neighbouring field (id/50 group) with its area bundle
+fld_preloadHook = 0x800B4894; // type:func [code] preload_update callback - returns 1 (pause) while a music load runs (GameData.unk851 1-5) or a reset is pending, starts fld_queueFieldPreloads once
+fld_showSplashImage = 0x800B4A5C; // type:func [code] after fld_main's loop (fld_needsSplashImage) - draws TIM 0x44E20 centred with a 60-frame fade in, 120 hold, 60 fade out in its own frame loop
+fld_needsSplashImage = 0x800B4F9C; // type:func [code] 1 when the field exits to the next field (reason 1) from field 0x34 to field 100
+g_fieldSoundBankIds = 0x800C9FF8; // [code] 5 cached sound bank ids (type in the top byte) kept across fields by fld_loadSoundBanks, cleared by fld_clearSoundBankCache
+g_fieldSoundBankSlots = 0x800C9FF0; // [code] slot of each g_fieldSoundBankIds entry (passed as arg3 of command 0x7700)
+g_fieldMusicRequest = 0x800C9D4C; // [code] pending music action of fld_soundCommand (-1 none, 7 load only, 9 resume), read when the load finishes
+g_fieldSoundLoadId = 0x800C9D50; // [code] id of the music/bank fld_soundCommand is loading, byte 2 (D_800C9D52) is its type
+g_fieldSoundLoadSector = 0x800C9D54; // [code] CD sector of the file fld_soundCommand is loading (fld_depGetFileSector or the saved GameData.unk8A8)
+g_fieldPreloadCursor = 0x800C9D58; // [code] address the next fld_preloadFile reads to, advanced by its size, set by fld_setPreloadCursor
+g_fieldPreloadRequests = 0x800CA010; // [code] up to 8 file ids requested by fld_preloadRequest (fld_addPreloadRequest), consumed by fld_queueFieldPreloads
+g_fieldPreloadExcludes = 0x800CA030; // [code] up to 8 file ids fld_queueFieldPreloads must not preload (fld_addPreloadExclude)
+g_fieldPreloadRequestCount = 0x800CA050; // [code] entry count of g_fieldPreloadRequests
+g_fieldPreloadExcludeCount = 0x800CA051; // [code] entry count of g_fieldPreloadExcludes
+fld_requestDiscChange = 0x800B5004; // type:func [code] event opcode 0xAC (disc << 14 | arg) - stores disc, 1 << disc and arg in g_fieldDiscChange, sets field flag 0x100000 and ends the field loop
+fld_getDiscChangeDisc = 0x800B5064; // type:func [code] returns g_fieldDiscChange.unk2, the disc number fld_requestDiscChange stored
+fld_getDiscChangeMask = 0x800B5074; // type:func [code] returns g_fieldDiscChange.unk1 (1 << disc)
+fld_getDiscChangeArg = 0x800B5084; // type:func [code] returns g_fieldDiscChange.unk4, the low 14 bits of the opcode 0xAC argument
+fld_runDiscChange = 0x800B50A4; // type:func [code] fld_main after the loop when fld_isDiscChangePending - enter, frame loop of mode updates until mode 4, leave
+fld_discChangeEnter = 0x800B5114; // type:func [code] saves D_80073998[0..1], mode 1, cursor 0, clears the field flags, closes windows, runs mode 1's enter
+fld_discChangeLeave = 0x800B51D0; // type:func [code] runs the mode's leave, restores D_80073998, sets field flag 0x10000 and calls fld_refindSectors (func_800A9570)
+fld_discChangeBeginFrame = 0x800B5290; // type:func [code] ClearOTagR + pad_update (fld_runDiscChange)
+fld_discChangeUpdate = 0x800B52DC; // type:func [code] calls the current mode's update from g_fieldDiscChangeModes (fld_runDiscChange)
+fld_discChangeEndFrame = 0x800B532C; // type:func [code] menu/window draw, VSync(0), PutDispEnv, DrawOTagEnv, buffer flip (fld_runDiscChange)
+fld_discChangeSetMode = 0x800B5430; // type:func [code] leave of the old mode, then enter of the new one (g_fieldDiscChangeModes), 4 ends fld_runDiscChange
+fld_isDiscChangePending = 0x800B54CC; // type:func [code] FieldMap flag 0x100000 that fld_requestDiscChange sets (fld_main)
+fld_discPromptEnter = 0x800B54FC; // type:func [code] mode 1 enter - sets the help callback fld_discPromptHelp and the text bank g_fieldDiscChangeText
+fld_discPromptUpdate = 0x800B553C; // type:func [code] mode 1 update - input (fld_discPromptInput), draw (fld_discPromptDraw), help window
+fld_discPromptLeave = 0x800B5574; // type:func [code] mode 1 leave - resets the help rect and callback
+fld_discPromptInput = 0x800B559C; // type:func [code] up/down toggles the cursor, circle selects option 1, cross confirms with fld_discPromptSelect as the fade callback (sfx 0x67)
+fld_discPromptDraw = 0x800B5660; // type:func [string] draws the "DISC CHANGE" label, texts 0-2 and the cursor hand in the g_fieldDiscChangeRect window
+fld_discPromptSelect = 0x800B5794; // type:func [code] cursor 0 -> mode 2 (menu 4), cursor 1 -> mode 3 (menu 8)
+fld_discPromptHelp = 0x800B57C8; // type:func [code] help callback (D_80077DE8.unkC) - help text 3 or 4 for the cursor option
+fld_discChangeOpenMenu4 = 0x800B5870; // type:func [code] mode 2 enter - menu_open(4, 2) with close callback fld_discChangeBackToPrompt
+fld_discChangeBackToPrompt = 0x800B58B8; // type:func [code] menu close callback of mode 2 - back to mode 1
+fld_discChangeOpenMenu8 = 0x800B58D8; // type:func [code] mode 3 enter - menu_open(8, disc << 14 | arg) as ovl_14 does with 0x3A98, close callback fld_discChangeFinish
+fld_discChangeFinish = 0x800B5938; // type:func [code] menu close callback of mode 3 - mode 4 ends fld_runDiscChange
+g_fieldDiscChange = 0x800CA058; // [code] disc-change state - mode, 1 << disc, disc, cursor, arg, saved D_80073998 (fld_requestDiscChange, fld_runDiscChange)
+g_fieldDiscChangeModes = 0x800C9D5C; // [code] {enter, update, leave} per mode - 1 prompt (fld_discPrompt*), 2 menu 4, 3 menu 8 (fld_discChangeSetMode)
+g_fieldDiscChangeRect = 0x800C9D98; // [code] window rect (96, 70, 128, 84) of the disc-change prompt (fld_discPromptDraw)
+g_fieldDiscChangeText = 0x800A717C; // [code] 5-entry text bank fld_discPromptEnter passes to text_setBank (prompt texts 0-2, help 3-4)
+fldmdl_projectMesh = 0x800B61A4; // type:func [code] per bone with vertices - composes the view matrix (GameData.unk18) with the bone matrix (model.unk20), RTPT into g_vtxScreenXY/Z, ovl_0b btl_projectMesh, func_800AB3CC/AC02C
+fldmdl_initModel = 0x800B6438; // type:func [code] relocates the model file once (flag 1), sums group packet sizes, resets scale 0x1000/parent/mirror, lays out packet buffer, bone matrices (unk20), group outputs (unk44)
+fldmdl_buildPackets = 0x800B6584; // type:func [code] fills POLY_FT4..F3 packets (both draw buffers) of every group from the model's source prims, uv table and tex pages/cluts, adds per-texture uv offsets, after fldmdl_initModel
+fldmdl_drawMeshC = 0x800B71E0; // type:func [code] NCLIP + OT link of one group's packets from g_vtxScreenXY/Z (source flag 2 = double sided), unused C twin of the asm func_800B5958 that func_800AB3CC calls
+fldmdl_applyScale = 0x800B7CEC; // type:func [code] when model flag 2, multiplies the world matrix (unk24) by diag(unk54, unk56, unk58), func_800AB3CC after building the matrix, same as ovl_0b func_800C7B84
+fldmdl_cullBehindCamera = 0x800B7E30; // type:func [code] clears flag 0x10, copies it from the parent or sets it when the origin projects to sz 0, flag 0x10 makes every recolour function return early, no callers
+fldmdl_calcBoneMatrices = 0x800B7F14; // type:func [code] decodes animation (model.unkC) frame arg1 into per-bone rotations (func_80031264) and chains them via the bone table parent byte (scratchpad when < 31 bones), ovl_0b btl_calcBoneMatrices
+fldmdl_addGroupRgb = 0x800B8834; // type:func [code] adds clamped r/g/b offsets (fldmdl_addRgbClamped) to every packet colour of group arg1 in both draw buffers, no callers
+fldmdl_addGroupRgbCur = 0x800B8C80; // type:func [code] fldmdl_addGroupRgb for the current draw buffer only (GameData.unk8), no callers
+fldmdl_tintGroup = 0x800B9134; // type:func [code] packet colours = the group's source colours plus clamped r/g/b offsets, both draw buffers, keeps the code byte, no callers
+fldmdl_tintGroupCur = 0x800B9738; // type:func [code] fldmdl_tintGroup for the current draw buffer, skipping packets not linked (tag low 24 bits 0), no callers
+fldmdl_setGroupRgb = 0x800B9E4C; // type:func [code] sets every packet colour of group arg1 (current buffer) to r|g<<8|b<<16 keeping the code byte, func_800AC02C (mirror colour), func_800B2D10 (actor colour)
+fldmdl_addRgbClamped = 0x800BA0F0; // type:func [code] byte-identical to ovl_0b btl_addRgbClamped - adds r/g/b to a packet colour word, clamping each to 0..255, keeps the code byte
+fldmdl_setSemiTrans = 0x800BA190; // type:func [code] sets the semi-transparency bit of every textured packet (current buffer) when arg1 != 0 or its source prim has flag 1, else clears it, func_800AC02C on actor visibility changes
+fldmdl_setAbr = 0x800BA3CC; // type:func [code] replaces tpage ABR bits (0x60) of every textured packet with arg1, func_800AC02C passes FieldActorInfo.unk5 << 5
+fldmdl_calcBoneMatricesLookAt = 0x800BA560; // type:func [code] fldmdl_calcBoneMatrices plus bone WmModel.unk6 is re-oriented toward model.unk48 (VectorNormal/OP basis) and rescaled, func_800AB3CC uses it when model flag 1
+fldmdl_updateTexAnims = 0x800BB090; // type:func [code] per-frame VRAM texture animations of model.unk50 - MoveImage of each rect at the frame's source position, random restart delay, scroll mode, func_800AB3CC per actor
+fldmdl_initTexAnims = 0x800BB3C4; // type:func [code] relocates the model.unk50 texture-animation offsets and adds the texture placement offsets to the rects and frame positions, func_800AAB30/ABA98 after fldmdl_buildPackets
+fldmdl_projectMeshClipY = 0x800BB508; // type:func [code] fldmdl_projectMesh that first clamps world y of each vertex to model.unk5A and flags it (gte_stsvclamp), func_800AB3CC when actor flag 0x100000 (object command 4)
+fldmdl_drawMeshClipY = 0x800BB714; // type:func [code] fldmdl_drawMeshC that skips faces whose vertices are all flagged by fldmdl_projectMeshClipY, paired with it in func_800AB3CC
+fldmdl_reflectModel = 0x800BC33C; // type:func [code] world matrix = reflection of the source model's (unk60) across the plane unk64 (normal) / unk6C (point), shares its animation, func_800AC02C for actor mirror images
+fldmdl_drawMeshMirrored = 0x800BC600; // type:func [code] fldmdl_drawMeshC with the NCLIP test reversed (opz >= 0 culled) for the reflected winding, func_800AC02C after fldmdl_reflectModel
+fldbg_buildOverlaySprites = 0x800BD130; // type:func [code] builds a layer's DR_TPAGE+SPRT_16 tiles for both draw buffers from its packed BgPos/BgTile tables, stores them at layer.unk30, only caller fldbg_initOverlays
+fldbg_initEffectList = 0x800BD3A0; // type:func [code] resets the g_fieldBgCtx entry list (unk24/unk28) and adds a type 0x10 entry per layer with flag 0x40, fldbg_init
+fldbg_updateOverlayAnims = 0x800BD4D4; // type:func [code] per frame - steps every running layer animation of the current camera, shows the layer of the current step (flag 2), loop/ping-pong/stop, first call of fldbg_draw
+fldbg_initFollowOverlays = 0x800BD724; // type:func [code] clears g_fieldBgFollowOverlayCount and resets the 10 follow-layer entries and their mask POLY_F4s, fldbg_init
+fldbg_drawFollowMask = 0x800BD884; // type:func [code] adds up to 4 POLY_F4s covering the screen outside the follow layer's rect (plus a DR_TPAGE for ABR modes < 4) at OT 7, only caller fldbg_updateFollowOverlays
+fldbg_updateFollowOverlays = 0x800BDC44; // type:func [code] moves each follow layer so the projected player (minus follow height) sits at its offset, then fldbg_drawFollowMask, fldbg_draw
+fldbg_initOverlays = 0x800BDED4; // type:func [code] selects camera (fldbg_setCamera), centres scroll, allocates per-layer colour/tint arrays and sprites, resets the 4 viewports, fldbg_buildOverlaySprites per layer, fldbg_init
+fldbg_drawOverlay = 0x800BE158; // type:func [code] adds a layer's tile sprites to the OT at depth base+layer depth, handling loop scroll (flag 4), skew loop (0x80), viewport clipping and screen culling, fldbg_draw [runtime] field/menu campaign (bg_drawOverlay), 16 calls per frame, the stub leaves only the models
+fldbg_updateOverlayScroll = 0x800BEDE8; // type:func [code] per frame - advances loop-scrolling layers by their 8.8 speed (wrap at unk4/unk6) and places parallax layers (flag 8) from the scroll delta, fldbg_draw
+fldbg_updateScroll = 0x800BF0C4; // type:func [code] runs a scripted scroll (state modes 1-3) from unk10 to unk14/16 over unk1A frames, linear or cosine (flag 8), moves scrolling layers, ends with mode 0/4, fldbg_draw
+fldbg_followPlayer = 0x800BF660; // type:func [code] when follow is on (flag 0x40) and no scroll runs - projects the player, smooths, clamps to the camera's scroll limits, sets the scroll and moves layers, fldbg_draw
+fldbg_init = 0x800BFCE8; // type:func [code] resets g_fieldBgState (flags 0x60, follow height 0x144), fldbg_initOverlays, inits layer animations, fldbg_initEffectList, fldbg_initFollowOverlays, fld_setupBackground
+fldbg_draw = 0x800BFEE0; // type:func [code] per-frame background - layer anims, scroll, follow, layer scroll, follow layers, then fldbg_drawOverlay for visible layers of the current camera, fld_main unless GameData.unk0 & 8 [runtime] field/menu campaign (bg_draw), once per frame
+fldbg_scrollToPlayer = 0x800C0038; // type:func [code] event opcode 0x70 (and fldbg_setFollow) - scroll target = projected player clamped to the limits, over arg0 frames (default 30), mode 3, arg1 8 = smooth
+fldbg_addFollowOverlay = 0x800C02D0; // type:func [code] event opcode 0x92 - adds a follow-layer entry (layer, x/y offset), mode >= 0 draws mask quads in rgb, semi-transparent ABR when mode < 4
+fldbg_toggleOverlayColor = 0x800C0650; // type:func [code] if layer arg0 is tinted (g_fieldBgCtx.unk20) sets its sprites to rgb and clears the tint, else stores rgb and sets it, no callers
+fldbg_startClutFade = 0x800C07D8; // type:func [code] adds a type 0x80 entry - StoreImage of the layer's CLUT row and 16.16 r/g/b steps (add/subtract/mode 2) over arg2 frames, no callers
+fldbg_setCamera = 0x800C0BCC; // type:func [code] event opcode 0x7E - loads background camera arg0 (projection distance, view matrix, OT bias FieldScene.unk30), sets g_fieldBgState.unk75 and flag 0x80
+fldbg_setRenderContext = 0x800C0D40; // type:func [code] stores the draw-buffer index, projection-distance, OT pair, view-matrix and allocation pointers in g_fieldBgCtx, fld_setupBackground with GameData members
+fldbg_setWorkBuffer = 0x800C0D8C; // type:func [code] g_fieldBgCtx.unk2C/unk30 = work buffer and size, used = 0, fld_setupBackground (D_80067948, 0x400)
+fldbg_setData = 0x800C0DA4; // type:func [code] g_fieldBgData = the background file, fld_setupBackground passes FieldScene.unk14
+fldbg_moveOrigin = 0x800C0DB0; // type:func [code] event opcode 0x58 - adds dx/dy to the background origin (header unk20-26) and dz to its base depth (unk1C/1E)
+fldbg_scrollTo = 0x800C0DF4; // type:func [code] event opcode 0x6F - starts a scripted scroll from the current position to (arg0, arg1) over arg2 frames, mode 1, arg3 8 = smooth, needs follow flag 0x40
+fldbg_getScroll = 0x800C0E6C; // type:func [code] event opcode 0xEA - returns the current scroll position g_fieldBgState.unk4
+fldbg_setFollow = 0x800C0E94; // type:func [code] event opcode 0x71 - sets/clears follow flag 0x40, with arg1 > 0 also fldbg_scrollToPlayer(arg1, arg2)
+fldbg_isFollowing = 0x800C0EF0; // type:func [code] returns follow flag 0x40 of g_fieldBgState, no callers
+fldbg_applyGeomOffset = 0x800C0F08; // type:func [code] SetGeomOffset to the current camera's centre (unk20/22) plus the scroll offset (state unkC/E), func_800AB3CC and main event/msg code around projections
+fldbg_resetGeomOffset = 0x800C0FB0; // type:func [code] SetGeomOffset(160, 112) unless func_80012AD4 & 2, called after every fldbg_applyGeomOffset
+fldbg_setFollowHeight = 0x800C1024; // type:func [code] event opcode 0x72 - g_fieldBgState.unk76, subtracted from the actor y in fldbg_followPlayer/fldbg_scrollToPlayer (default 0x144)
+fldbg_hasScrollLimits = 0x800C1034; // type:func [code] returns g_fieldBgState flag 0x20, which fldbg_disableScrollLimits clears and fldbg_enableScrollLimits sets, no callers
+fldbg_disableScrollLimits = 0x800C104C; // type:func [code] event opcode 0x74 - saves the camera's scroll limits (unk28-2E) and opens them to -0x8000..0x7FFF, clears flag 0x20
+fldbg_enableScrollLimits = 0x800C1100; // type:func [code] event opcode 0x73 - restores the limits fldbg_disableScrollLimits saved, sets flag 0x20
+fldbg_setViewport = 0x800C119C; // type:func [code] event opcode 0xC9 - viewport arg0 offset (unkA8) and size (unkB8), used by fldbg_drawOverlay to place and clip layers
+fldbg_setViewportScrollRate = 0x800C11C8; // type:func [code] event opcode 0xED - viewport arg0 x/y scroll rates (unkC8/unkD0, 0x100 = 1.0) applied to camera motion by fldbg_updateScroll/fldbg_followPlayer
+fldbg_moveOverlay = 0x800C11E8; // type:func [code] event opcode 0x5A - moves layer arg0 by dx/dy (clamped to its unk10-16 bounds) and its depth by dz
+fldbg_getOverlayColor = 0x800C130C; // type:func [code] reads layer arg0's stored rgb (g_fieldBgCtx.unk1C, 3 bytes per layer), no callers
+fldbg_setOverlayColor = 0x800C1368; // type:func [code] event opcode 0x59 - stores rgb for layer arg0 and sets it on its current-buffer sprites
+fldbg_showOverlay = 0x800C142C; // type:func [code] event opcode 0x5B - sets/clears layer flag 2, which fldbg_draw tests before fldbg_drawOverlay
+fldbg_setOverlayLoop = 0x800C147C; // type:func [code] event opcode 0x5C - layer flag 4 (wrapping scroll in fldbg_updateOverlayScroll/fldbg_drawOverlay) with x/y speed unk1C/unk1E
+fldbg_setOverlayFlag1 = 0x800C14DC; // type:func [code] event opcode 0xE6 - sets/clears layer flag 1 (fldbg_drawOverlay then uses the viewport offset without the scroll correction), weak, rename once understood
+fldbg_setOverlaySkewLoop = 0x800C152C; // type:func [code] event opcode 0xE4 - layer flag 0x80, loops along one axis (arg4 selects, unk25) and shifts the other proportionally in fldbg_drawOverlay
+fldbg_setOverlayParallax = 0x800C15BC; // type:func [code] event opcode 0x5D - layer flag 8, fldbg_updateOverlayScroll places it at base + scroll delta * unk1C/unk1E (8.8)
+fldbg_setOverlayPos = 0x800C1614; // type:func [code] event opcode 0x5E - sets layer arg0 base and current x/y, sets state flag 0x80
+fldbg_setOverlayViewport = 0x800C1668; // type:func [code] event opcode 0xC3 - layer arg0 uses viewport arg1 (unk25_1 indexes unkA8/unkB8/unkC8/unkD0)
+fldbg_setAnimFrame = 0x800C16B0; // type:func [code] event opcode 0x5F - layer animation arg0 active (flag 2) at step arg1, delay counter reset
+fldbg_showAnimFrame = 0x800C16F4; // type:func [code] event opcode 0xE7 - shows only the layer of step arg1 of animation arg0 and stops it (flags = 1)
+fldbg_playAnim = 0x800C17AC; // type:func [code] event opcode 0x60 - sets/clears flags 6 (active + playing) of layer animation arg0
+fldbg_setAnimSpeed = 0x800C17F0; // type:func [code] event opcode 0x61 - step increment (8.8, sign = direction) of layer animation arg0, fldbg_updateOverlayAnims negates it for ping-pong
+fldbg_setAnimDelayAll = 0x800C1818; // type:func [code] sets the frame delay of every step of layer animation arg0, no callers
+fldbg_setAnimStepDelay = 0x800C1868; // type:func [code] event opcode 0x63 - frame delay of step arg1 of layer animation arg0
+fldbg_setAnimFlags = 0x800C18A0; // type:func [code] event opcode 0x64 - ORs arg1 & 0x30 into layer animation flags (0x10 loop, 0x20 ping-pong in fldbg_updateOverlayAnims)
+fldbg_playAnimRange = 0x800C18D4; // type:func [code] event opcode 0x65 - plays layer animation arg0 from step arg1 and stops at step arg2 (delay -1 marker), direction from the order
+fldbg_resetAnim = 0x800C196C; // type:func [code] event opcode 0xCA - speed 0x100, step 0, stopped, hides its layers (arg1 != 0 shows step 0's layer)
+fldbg_setScrollLimits = 0x800C1A8C; // type:func [code] event opcode 0x1E - scroll limits (unk28-2E) of camera arg0 from screen-edge coordinates, clamped to the background size
+fldbg_getCamera = 0x800C1B5C; // type:func [code] returns the current camera index g_fieldBgState.unk75, main event variable op 1 and func_80048F54's camera-change test
+fldbg_setCameraCenter = 0x800C1B74; // type:func [code] sets camera arg0's screen centre unk20/unk22 (fldbg_applyGeomOffset base), no callers
+fldbg_getCameraCenter = 0x800C1BB4; // type:func [code] reads camera arg0's unk20/unk22, no callers
+fldbg_getClutFadeSize = 0x800C1C04; // type:func [code] returns n*4 + 0x2C, the entry size fldbg_startClutFade allocates for n colours, no callers
+fldbg_allocWork = 0x800C1C10; // type:func [code] bump-allocates arg0 bytes from the g_fieldBgCtx work buffer (unk2C + unk34), no callers
+fldbg_resetAllAnims = 0x800C1C30; // type:func [code] fldbg_resetAnim for every layer animation, showing each one's first layer, no callers
+fldbg_setOverlaySpriteColor = 0x800C1D10; // type:func [code] sets rgb on layer arg0's sprites in both draw buffers without storing it, no callers
+g_fieldBgCtx = 0x800C9DA4; // [code] background context set by fldbg_setRenderContext/fldbg_setWorkBuffer - buffer index, OTs, view matrix, data (unk10), layer colours, entry list, work buffer
+g_fieldBgData = 0x800C9DB4; // [code] the background file (header, layer animations unkC, layers unk10, cameras unk18), set by fldbg_setData, it is g_fieldBgCtx.unk10 under its own label
+g_fieldBgState = 0x800CA068; // [code] background camera state - flags (0x20 limits, 0x40 follow, 0x80 reset, 7 scroll mode), scroll position, camera index, viewports, reset by fldbg_init
+g_fieldBgFollowOverlays = 0x800CA140; // [code] 10 follow-layer entries (layer, offset, mask mode/rgb, mask POLY_F4s) added by fldbg_addFollowOverlay, run by fldbg_updateFollowOverlays
+g_fieldBgFollowOverlayCount = 0x800C9DA0; // [code] number of g_fieldBgFollowOverlays entries, cleared by fldbg_initFollowOverlays, incremented by fldbg_addFollowOverlay
+fldmdl_drawMesh = 0x800B5958; // type:func [code] hand-written asm group drawer fld_drawModels calls right after fldmdl_projectMesh (the C twin is fldmdl_drawMeshC)
+s_menuMain = 0x800CB188; // [runtime] field/menu campaign - cursor, state, orderCursor, orderTarget, orderPicked, panels (read at menu_main / menu_status / after an Order swap)
+menuMain_init = 0x800C93D4; // type:func [runtime] field/menu campaign - init of D_8006E530[0], once when the menu opens
+menuMain_update = 0x800C94B0; // type:func [runtime] field/menu campaign - D_8006E530[0] update, once per frame in every main-menu run
+menuMain_exit = 0x800C94E0; // type:func [runtime] field/menu campaign - D_8006E530[0] exit, once when Item/Ability/... is entered
+menuMain_input = 0x800C951C; // type:func [runtime] field/menu campaign - dispatches s_menuMainInput[state]
+menuMain_inputCommand = 0x800C8284; // type:func [runtime] field/menu campaign - state-0 handler, Up/Down move the cursor, Cross selects, Circle closes the menu
+menuMain_selectCommand = 0x800C923C; // type:func [runtime] field/menu campaign - once per Cross, Order -> state 2, screens needing a member -> state 1, others open the screen
+menuMain_inputMember = 0x800C8354; // type:func [runtime] field/menu campaign - state-1 handler (Down moved the hand to Vivi)
+menuMain_inputOrder = 0x800C842C; // type:func [runtime] field/menu campaign - state-2 handler
+menuMain_reorder = 0x800C85B8; // type:func [runtime] field/menu campaign - (slotA, slotB), same slot toggles the row bit, else swaps party[a]/party[b]
+menuMain_swapPortraits = 0x800C86C8; // type:func [runtime] field/menu campaign - only for a real swap, swaps the two portraits in VRAM
+menuMain_draw = 0x800C9580; // type:func [runtime] field/menu campaign - calls the menuMain_draw* functions
+menuMain_drawParty = 0x800C9630; // type:func [runtime] field/menu campaign - ablation removes the four party panels
+menuMain_drawMember = 0x800C883C; // type:func [runtime] field/menu campaign - ablation removes portrait, name, Lv/HP/MP, stones
+menuMain_drawPortraitShade = 0x800C8AE8; // type:func [runtime] field/menu campaign - ablation removes the dark TILE behind the portraits
+menuMain_drawTimeGil = 0x800C8C08; // type:func [runtime] field/menu campaign - ablation removes the TIME and GIL window
+menuMain_drawLocation = 0x800C8D40; // type:func [runtime] field/menu campaign - ablation removes the LOCATION window
+menuMain_drawCursor = 0x800C8E2C; // type:func [runtime] field/menu campaign - ablation removes the hand
+menuMain_updateHelp = 0x800C9014; // type:func [runtime] field/menu campaign - help callback set by menuMain_init, runs only with the Select help open
+menuMain_updatePanels = 0x800C95B8; // type:func [runtime] field/menu campaign - steps the six panel tweens while D_80077E50.unk1 is set
+menuMain_initPanels = 0x800C8124; // type:func [runtime] field/menu campaign - sets the six panel rects and starts their slide-in
+menuMain_onSlideInDone = 0x800C92BC; // type:func [runtime] field/menu campaign - clears D_80077E50.unk1, called once from the tween code
+menuMain_setCursor = 0x800C9510; // type:func [code] (field/menu campaign) main func_80036560 passes the screen being left
+menuMain_setExpHelp = 0x800C90D0; // type:func [code] (field/menu campaign) help text for the Status case of menuMain_updateHelp (EXP and next level)
+menuMain_setEquipHelp = 0x800C92C8; // type:func [code] (field/menu campaign) help text for the Equip case of menuMain_updateHelp (five slot labels)
+s_menuMainInput = 0x800C9E14; // [code] {menuMain_inputCommand, menuMain_inputMember, menuMain_inputOrder} indexed by s_menuMain.state (menuMain_input)
+s_menuMainPanelRects = 0x800C9E20; // [code] the 6 RECTs menuMain_initPanels copies into the panels - 0-3 party, 4 time/gil, 5 location
+s_menuMainSlideIn = 0x800C9E60; // [code] tweens of the 4 party panels passed to func_80063118 by menuMain_initPanels, the last calls menuMain_onSlideInDone
+s_menuMainTimeGilRect = 0x800C9EA0; // [code] = &s_menuMain.panels[4] rect, used by menuMain_drawTimeGil
+s_menuMainLocationRect = 0x800C9EA8; // [code] = &s_menuMain.panels[5] rect, used by menuMain_drawLocation
+s_menuMainGilSuffix = 0x800C9EA4; // [code] one glyph strcat'd after the gil number by menuMain_drawTimeGil
+s_menuMainEquipLabels = 0x800C9EAC; // [string] 5 kana labels weapon/head/arm/body/accessory, menuMain_setEquipHelp
+s_menuMainExpText = 0x800CB168; // [code] text_formatNumber(exp) buffer of menuMain_setExpHelp
+s_menuMainNextText = 0x800CB178; // [code] text_formatNumber(exp still needed) buffer of menuMain_setExpHelp
+s_menuMainText = 0x800A7860; // [code] text bank menuMain_init passes to text_setBank
+fld_getSpriteFrameCount = 0x800C9700; // type:func [code] FieldSprHdr.unk0 & 0x7FFF, fld_spriteCommand multiplies it by 16 for the loop length (ovl_0c twin wm_getSpriteFrameCount)
+fld_drawSprite3D = 0x800C970C; // type:func [code] draws frame (frame % count) of a FieldSprHdr at pos/rot/scale, sets the GTE matrices, emits it with fld_emitSprite3D (fld_drawSprites)
+fld_loadImagePack = 0x800C9968; // type:func [code] LoadImage of every image (RECT + pixels) and every CLUT rect of a 0x17 pack (fld_loadFile), ovl_0c twin wm_loadImagePack
+fld_emitSprite3D = 0x800C9AB8; // type:func [code] hand-written asm that builds the sprite primitives from FieldSprArgs for fld_drawSprite3D
+fld_fixMul = 0x800C1DC4; // type:func [code] hand-written asm - bits 16..47 of the 64-bit product (16.16 multiply), used by the walkmesh and background code
+fld_fixDiv = 0x800C1DE0; // type:func [code] hand-written asm - (a / (b >> 8)) << 8, a 16.16 division (src_equiv/ovl_0a/fixed.c)
+fld_fixRound = 0x800C1DF4; // type:func [code] hand-written asm - (a + 0x8000) >> 16, rounds 16.16 to an integer
+fld_fixRound8 = 0x800C1E04; // type:func [code] hand-written asm - (a + 0x8000) >> 8
+fld_getShadowTexPos = 0x800AA01C; // type:func [code] reads the shadow texture position (header unk30/unk32 of db item 0x1C0000) into FieldScene.shadowTexX/Y, used by fld_drawShadow/fld_initShadows (fld_load)
+fld_findLights = 0x800A9954; // type:func [code] FieldScene.lights = db item 0x1F0000 | background key (fld_getBgKey), the light data fld_applyLights reads (fld_load)
+g_fieldBgCtxEntries = 0x800C9DCC; // [code] label of g_fieldBgCtx.entries (the effect entry list, fldbg_initEffectList)
+g_fieldBgCtxWork = 0x800C9DD0; // [code] label of g_fieldBgCtx.work (work buffer set by fldbg_setWorkBuffer)
+g_fieldBgiTriangles = 0x800C9E00; // [code] label of g_fieldBgi.triangles, read under its own name by bgi_moveActor
+g_fieldSoundLoadKind = 0x800C9D52; // [code] byte 2 of g_fieldSoundLoadId, the kind of the file fld_soundCommand is loading (7 music, 9 sound bank)

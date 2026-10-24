@@ -1,4 +1,4 @@
-/* ovl_0a func_800C9AB8: draw a list of field sprites (hand-written asm in the original, standard C ABI).
+/* ovl_0a fld_emitSprite3D: draw a list of field sprites (hand-written asm in the original, standard C ABI).
  *
  * src: a->unk1C entries of { s8 x, s8 y, u8 k } (x and y in units of 4). Each becomes a 10-word textured quad
  * (POLY_FT4 layout) of half size (a->unk8, a->unkC) around (x, y, 0), projected with RTPT + RTPS. k & 0xF
@@ -13,7 +13,7 @@
  * random count it loops for millions of quads, and the two runs are cut off at different points). */
 #include "ovl_0a.h"
 
-u8 *func_800C9AB8(u8 *src, FieldSprArgs *a, u8 *pkt, u32 *ot) {
+u8 *fld_emitSprite3D(u8 *src, FieldSprArgs *a, u8 *pkt, u32 *ot) {
     u16 *uvTab = a->unk0;
     u8 *colTab = a->unk4;
     s32 hw = a->unk8;

@@ -159,17 +159,17 @@ static void wv_transform(u8 *o, s32 flags) {
     } while (n > 0);
 }
 
-/* Fog, curved, depth as u32 SZ. World blocks (func_800BA2DC) while g_worldFog is set. */
+/* Fog, curved, depth as u32 SZ. World blocks (wm_drawBlock) while g_worldFog is set. */
 void wm_blockVertsFog(void *o) {
     wv_transform(o, WV_FOG | WV_CURVE_MUL);
 }
 
-/* Fog, curved, depth as u16 SZ / 8. Placed models (func_800BA458), modes 0 and 1. */
+/* Fog, curved, depth as u16 SZ / 8. Placed models (wm_drawModel), modes 0 and 1. */
 void wm_modelVerts(s32 o) {
     wv_transform((u8 *)o, WV_FOG | WV_CURVE_MUL | WV_SZ16);
 }
 
-/* Fog, flat, depth as u16 SZ / 8. Placed models (func_800BA458), mode 2. */
+/* Fog, flat, depth as u16 SZ / 8. Placed models (wm_drawModel), mode 2. */
 void wm_modelVertsFlat(s32 o) {
     wv_transform((u8 *)o, WV_FOG | WV_SZ16);
 }

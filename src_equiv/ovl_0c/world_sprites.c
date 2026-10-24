@@ -1,4 +1,4 @@
-/* ovl_0c func_800CB1EC: the world map's copy of ovl_0a func_800C9AB8, with two extra context fields: +0x24 is
+/* ovl_0c wm_emitSprite3D: the world map's copy of ovl_0a func_800C9AB8, with two extra context fields: +0x24 is
  * a size shift (half sizes << shift, texel span = half size >> (shift + 1)) and +0x28 an OT bias (slot = (SZ3 >> 3)
  * + bias; quads whose slot is >= 0x1000 are not linked, but their packet space is still used).
  *
@@ -87,6 +87,6 @@ static u8 *draw(u8 *src, WmSprCtx *a, u8 *pkt, u32 *ot) {
 }
 
 /* Prototype as in ovl_0c.h (packet and OT passed as s32). */
-s32 func_800CB1EC(u8 *src, WmSprCtx *a, s32 pkt, s32 ot) {
+s32 wm_emitSprite3D(u8 *src, WmSprCtx *a, s32 pkt, s32 ot) {
     return (s32)draw(src, a, (u8 *)pkt, (u32 *)ot);
 }
