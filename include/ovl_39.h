@@ -362,7 +362,7 @@ typedef struct {
     u8 pad9[3];
     u32 newestCounter; /* highest SaveFile.counter */
     s32 newestFile;    /* row holding it */
-    s32 unk14; /* func_8002F8E4 value restored by menuSave_close */
+    s32 savedFadeOtz; /* func_8002F8E4 (fade_setOtz in docs/runtime-findings.md) old value, restored by menuSave_close */
     s32 unk18[2]; /* D_80073998[] restored by menuSave_exit */
     u8 *help; /* help text */
     MenuList list;
@@ -529,8 +529,10 @@ Unk8004AB64 *func_8004AE00(void);
 u8 func_800B5074(void); /* other overlay */
 u8 func_800B5064(void); /* other overlay */
 void func_8002397C(void);
-extern s32 D_80070420;
-extern s32 D_80070444;
+/* Window labels: entries of main's label string table D_800703FC (ASCII), e.g. D_80070440 "ERROR",
+ * D_8007048C "NOTICE", D_80070450 "HELP" (declared in ff9.h) */
+extern s32 D_80070420; /* "CHECK" */
+extern s32 D_80070444; /* "FILE" */
 void func_8002BE5C(s32, s32);
 extern u8 *D_80077DF0; /* = D_80077DE8.unk8, referenced by its own name */
 s32 firstfile(char *, s32); /* PsyQ libapi: struct DIRENTRY *firstfile(char *, struct DIRENTRY *) */
@@ -670,7 +672,7 @@ void menuSave_onFileListFadedIn(void);
 void menuSave_readHeader(s32);
 void menuSave_copyHeader(SaveFile *, SaveHeader *);
 void menuSave_checkError(s32);
-void menuSave_checkInfo(s32);
+void menuSave_checkNotice(s32);
 
 /* messages */
 void menuSave_initSavedMsg(void);
@@ -682,7 +684,7 @@ void menuSave_openMessage(s32, s32);
 void menuSave_initMessage(void);
 void menuSave_inputMessage(void);
 void menuSave_showError(s32);
-void menuSave_showInfo(s32);
+void menuSave_showNotice(s32);
 u8 menuSave_isMessageActive(void);
 void menuSave_drawMessage(Window *);
 void menuSave_onMessageOpened(Window *);

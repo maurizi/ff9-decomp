@@ -3966,7 +3966,7 @@ ovl_39 menuSave_onFileListFadedIn 0x24 0x801f70e4
 ovl_39 menuSave_readHeader 0x88 0x801f7108
 ovl_39 menuSave_copyHeader 0x124 0x801f7190
 ovl_39 menuSave_checkError 0x4c 0x801f72b4
-ovl_39 menuSave_checkInfo 0x4c 0x801f7300
+ovl_39 menuSave_checkNotice 0x4c 0x801f7300
 ovl_39 menuSave_initSavedMsg 0x18 0x801f734c
 ovl_39 menuSave_openSavedMsg 0xa8 0x801f7364
 ovl_39 menuSave_inputSavedMsg 0x68 0x801f740c
@@ -3978,7 +3978,7 @@ ovl_39 menuSave_openMessage 0x144 0x801f75c8
 ovl_39 menuSave_initMessage 0xc 0x801f770c
 ovl_39 menuSave_inputMessage 0x68 0x801f7718
 ovl_39 menuSave_showError 0x28 0x801f7780
-ovl_39 menuSave_showInfo 0x28 0x801f77a8
+ovl_39 menuSave_showNotice 0x28 0x801f77a8
 ovl_39 menuSave_setMessageActive 0x14 0x801f77d0
 ovl_39 menuSave_isMessageActive 0x10 0x801f77e4
 ovl_39 menuSave_drawMessage 0x3c 0x801f77f4

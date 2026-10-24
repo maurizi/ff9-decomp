@@ -4,7 +4,7 @@ void menuSave_init(void) {
     s32 i;
 
     s_menuSave.mode = g_menu.unkC;
-    s_menuSave.unk14 = func_8002F8E4(7);
+    s_menuSave.savedFadeOtz = func_8002F8E4(7);
     s_menuSave.state = SAVE_ST_SLOT;
     s_menuSave.phase = SAVE_PH_READY;
     s_menuSave.loaded = 0;
@@ -212,7 +212,7 @@ void menuSave_updateFileList(void) {
     s32 dec;
 
     if (s_menuSave.cardStatus[g_menu.unk2] != CARD_RES_DONE) {
-        menuSave_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
     }
     if (l->unk8 != 0) {
@@ -353,7 +353,7 @@ void menuSave_backToSlots(void) {
 }
 
 void menuSave_close(void) {
-    func_8002F8E4(s_menuSave.unk14);
+    func_8002F8E4(s_menuSave.savedFadeOtz);
     func_800325E0();
 }
 
@@ -462,7 +462,7 @@ void menuSave_drawCorruptFile(RECT *r, s32 otz) {
 void menuSave_selectSlot(void) {
     if (!menuSave_isSlotReady_inline(g_menu.unk2, 1)) {
         snd_playSe(SE_BUZZER);
-        menuSave_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
     }
     snd_playSe(SE_CURSOR);
@@ -713,7 +713,7 @@ void menuSave_updateConfirm(void) {
         win_close(s_menuSaveConfirm.win);
         s_menuSaveConfirm.active = 0;
         s_menuSaveConfirm.win = NULL;
-        menuSave_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showNotice(SAVE_TEXT_NO_CARD);
     }
 }
 
@@ -1019,7 +1019,7 @@ void menuSave_onCardFormatted(void) {
 void menuSave_onCardUnformatted(void) {
     s_menuSave.formatted = 0;
     if (s_menuSave.mode == SAVE_MODE_LOAD) {
-        menuSave_checkInfo(SAVE_TEXT_NO_FF9_DATA);
+        menuSave_checkNotice(SAVE_TEXT_NO_FF9_DATA);
         return;
     }
     menuSave_finishCheck();
@@ -1053,11 +1053,11 @@ void menuSave_onCheckClosed(Window *w) {
 s32 menuSave_checkSpace(void) {
     if (s_menuSave.mode != SAVE_MODE_LOAD) {
         if (s_menuSaveCheck.otherBlocks >= SAVE_FILES) {
-            menuSave_checkInfo(SAVE_TEXT_CARD_FULL);
+            menuSave_checkNotice(SAVE_TEXT_CARD_FULL);
             return 0;
         }
     } else if (s_menuSaveCheck.ff9Files == 0) {
-        menuSave_checkInfo(SAVE_TEXT_NO_FF9_DATA);
+        menuSave_checkNotice(SAVE_TEXT_NO_FF9_DATA);
         return 0;
     }
     return 1;
@@ -1145,11 +1145,11 @@ void menuSave_checkError(s32 id) {
     menuSave_showError(id);
 }
 
-void menuSave_checkInfo(s32 id) {
+void menuSave_checkNotice(s32 id) {
     s_menuSaveCheck.step = CHECK_STEP_FAILED;
     win_close(s_menuSaveCheck.win);
     s_menuSaveCheck.win = NULL;
-    menuSave_showInfo(id);
+    menuSave_showNotice(id);
 }
 
 void menuSave_initSavedMsg(void) {
@@ -1182,7 +1182,7 @@ void menuSave_inputSavedMsg(void) {
 void menuSave_updateSavedMsg(void) {
     if (!menuSave_isSlotReady(g_menu.unk2, 0)) {
         func_8002DE10(s_menuSaveSavedMsg.win);
-        menuSave_showInfo(SAVE_TEXT_NO_CARD);
+        menuSave_showNotice(SAVE_TEXT_NO_CARD);
         return;
     }
     if (++s_menuSaveSavedMsg.timer >= SAVED_MSG_TICKS) {
@@ -1258,7 +1258,7 @@ void menuSave_showError(s32 id) {
     menuSave_openMessage(id, D_80070440);
 }
 
-void menuSave_showInfo(s32 id) {
+void menuSave_showNotice(s32 id) {
     menuSave_openMessage(id, D_8007048C);
 }
 
